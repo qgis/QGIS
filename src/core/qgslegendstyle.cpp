@@ -83,7 +83,8 @@ void QgsLegendStyle::writeXml( const QString &name, QDomElement &elem, QDomDocum
 void QgsLegendStyle::readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
   Q_UNUSED( doc )
-  if ( elem.isNull() ) return;
+  if ( elem.isNull() )
+    return;
 
   QDomNodeList textFormatNodeList = elem.elementsByTagName( QStringLiteral( "text-style" ) );
   if ( !textFormatNodeList.isEmpty() )
@@ -106,7 +107,7 @@ void QgsLegendStyle::readXml( const QDomElement &elem, const QDomDocument &doc, 
   mMarginMap[Left] = elem.attribute( QStringLiteral( "marginLeft" ), QStringLiteral( "0" ) ).toDouble();
   mMarginMap[Right] = elem.attribute( QStringLiteral( "marginRight" ), QStringLiteral( "0" ) ).toDouble();
 
-  mAlignment = static_cast< Qt::Alignment >( elem.attribute( QStringLiteral( "alignment" ), QString::number( Qt::AlignLeft ) ).toInt() );
+  mAlignment = static_cast<Qt::Alignment>( elem.attribute( QStringLiteral( "alignment" ), QString::number( Qt::AlignLeft ) ).toInt() );
   mIndent = elem.attribute( QStringLiteral( "indent" ), QStringLiteral( "0" ) ).toDouble();
 }
 

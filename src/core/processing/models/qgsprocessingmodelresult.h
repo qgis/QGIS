@@ -31,7 +31,6 @@
 class CORE_EXPORT QgsProcessingModelChildAlgorithmResult
 {
   public:
-
     QgsProcessingModelChildAlgorithmResult();
 
     /**
@@ -103,12 +102,10 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithmResult
     }
 
   private:
-
     Qgis::ProcessingModelChildAlgorithmExecutionStatus mExecutionStatus = Qgis::ProcessingModelChildAlgorithmExecutionStatus::NotExecuted;
     QVariantMap mInputs;
     QVariantMap mOutputs;
     QString mHtmlLog;
-
 };
 
 /**
@@ -120,7 +117,6 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithmResult
 class CORE_EXPORT QgsProcessingModelResult
 {
   public:
-
     QgsProcessingModelResult();
 
     /**
@@ -140,7 +136,7 @@ class CORE_EXPORT QgsProcessingModelResult
      *
      * Map keys refer to the child algorithm IDs.
      */
-    QMap< QString, QgsProcessingModelChildAlgorithmResult > childResults() const { return mChildResults; }
+    QMap<QString, QgsProcessingModelChildAlgorithmResult> childResults() const { return mChildResults; }
 
     /**
      * Returns a reference to the map of child algorithm results.
@@ -149,7 +145,7 @@ class CORE_EXPORT QgsProcessingModelResult
      *
      * \note Not available in Python bindings
      */
-    QMap< QString, QgsProcessingModelChildAlgorithmResult > &childResults() SIP_SKIP { return mChildResults; }
+    QMap<QString, QgsProcessingModelChildAlgorithmResult> &childResults() SIP_SKIP { return mChildResults; }
 
     /**
      * Returns a reference to the map of raw child algorithm inputs.
@@ -177,26 +173,20 @@ class CORE_EXPORT QgsProcessingModelResult
      *
      * \note Not available in Python bindings
      */
-    QSet< QString > &executedChildIds() SIP_SKIP { return mExecutedChildren; }
+    QSet<QString> &executedChildIds() SIP_SKIP { return mExecutedChildren; }
 
     /**
      * Returns the set of child algorithm IDs which were executed during the model execution.
      */
-    QSet< QString > executedChildIds() const { return mExecutedChildren; }
+    QSet<QString> executedChildIds() const { return mExecutedChildren; }
 
   private:
+    QMap<QString, QgsProcessingModelChildAlgorithmResult> mChildResults;
 
-    QMap< QString, QgsProcessingModelChildAlgorithmResult > mChildResults;
-
-    QSet< QString > mExecutedChildren;
+    QSet<QString> mExecutedChildren;
     QVariantMap mRawChildInputs;
     QVariantMap mRawChildOutputs;
-
 };
 
 
 #endif // QGSPROCESSINGMODELRESULT_H
-
-
-
-

@@ -48,7 +48,6 @@ class CORE_EXPORT QgsProviderSublayerTask : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProviderSublayerTask, which retrieves sublayer details for the
      * specified \a uri.
@@ -73,23 +72,20 @@ class CORE_EXPORT QgsProviderSublayerTask : public QgsTask
     void cancel() override;
 
   protected:
-
     bool run() override;
 
   private:
-
     QString mUri;
 
     QString mProviderKey;
 
     bool mIncludeSystemTables = false;
 
-    std::unique_ptr< QgsFeedback > mFeedback;
+    std::unique_ptr<QgsFeedback> mFeedback;
 
     QList<QgsProviderSublayerDetails> mResults;
 
     mutable QReadWriteLock mLock;
-
 };
 
 #endif // QGSPROVIDERSUBLAYERTASKTASK_H

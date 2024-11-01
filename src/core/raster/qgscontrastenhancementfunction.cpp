@@ -74,7 +74,6 @@ void QgsContrastEnhancementFunction::setMaximumValue( double value )
 
 void QgsContrastEnhancementFunction::setMinimumValue( double value )
 {
-
   if ( mMinimumValuePossible > value )
   {
     mMinimumValue = mMinimumValuePossible;

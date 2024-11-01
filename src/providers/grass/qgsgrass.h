@@ -22,8 +22,7 @@
 #include <setjmp.h>
 
 // GRASS header files
-extern "C"
-{
+extern "C" {
 #include <grass/version.h>
 #include <grass/gis.h>
 #include <grass/form.h>
@@ -47,25 +46,50 @@ class QgsRectangle;
 class QgsAttributes;
 
 // Make the release string because it may be for example 0beta1
-#define STR(x) #x
-#define EXPAND(x) STR(x)
+#define STR( x ) #x
+#define EXPAND( x ) STR( x )
 #define GRASS_VERSION_RELEASE_STRING EXPAND( GRASS_VERSION_RELEASE )
 
 // try/catch like macros using setjmp
-#define G_TRY try { if( !setjmp(*G_fatal_longjmp(1)) )
-#define G_CATCH else { throw QgsGrass::Exception( QgsGrass::errorMessage() ); } } catch
+#define G_TRY \
+  try         \
+  {           \
+    if ( !setjmp( *G_fatal_longjmp( 1 ) ) )
+#define G_CATCH                                                   \
+  else { throw QgsGrass::Exception( QgsGrass::errorMessage() ); } \
+  }                                                               \
+  catch
 
 // Throw QgsGrass::Exception if G_fatal_error happens when calling F
-#define G_FATAL_THROW(F) if( !setjmp(*G_fatal_longjmp(1)) ) { F; } else { throw QgsGrass::Exception( QgsGrass::errorMessage() ); }
+#define G_FATAL_THROW( F )                                 \
+  if ( !setjmp( *G_fatal_longjmp( 1 ) ) )                  \
+  {                                                        \
+    F;                                                     \
+  }                                                        \
+  else                                                     \
+  {                                                        \
+    throw QgsGrass::Exception( QgsGrass::errorMessage() ); \
+  }
 
 // Element info container
 class GRASS_LIB_EXPORT QgsGrassObject
 {
   public:
     //! Element type
-    enum Type { None, Location, Mapset, Raster, Group, Vector, Region,
-                Strds, Stvds, Str3ds, Stds
-              };
+    enum Type
+    {
+      None,
+      Location,
+      Mapset,
+      Raster,
+      Group,
+      Vector,
+      Region,
+      Strds,
+      Stvds,
+      Str3ds,
+      Stds
+    };
 
     QgsGrassObject() = default;
     QgsGrassObject( const QString &gisdbase, const QString &location = QString(),
@@ -115,11 +139,12 @@ class GRASS_LIB_EXPORT QgsGrassObject
     static QString newNameRegExp( Type type );
 
     bool operator==( const QgsGrassObject &other ) const;
+
   private:
     QString mGisdbase;
     QString mLocation;
     QString mMapset;
-    QString mName;  // map name
+    QString mName; // map name
     Type mType = None;
 };
 
@@ -155,14 +180,15 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 #endif
     struct Exception : public std::runtime_error
     {
-      //Exception( const std::string &msg ) : std::runtime_error( msg ) {}
-      explicit Exception( const QString &msg ) : std::runtime_error( msg.toUtf8().constData() ) {}
+        //Exception( const std::string &msg ) : std::runtime_error( msg ) {}
+        explicit Exception( const QString &msg )
+          : std::runtime_error( msg.toUtf8().constData() ) {}
     };
 
     struct Color
     {
-      double value1, value2;
-      int red1, red2, green1, green2, blue1, blue2;
+        double value1, value2;
+        int red1, red2, green1, green2, blue1, blue2;
     };
 
     QgsGrass() = default;
@@ -240,13 +266,13 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     //! Error codes returned by error()
     enum GError
     {
-      OK, //!< OK. No error.
+      OK,      //!< OK. No error.
       Warning, //!< Warning, non fatal error. Should be printed by application.
-      Fatal //!< Fatal error
+      Fatal    //!< Fatal error
     };
 
     //! Reset error code (to OK). Call this before a piece of code where an error is expected
-    static void resetError( void );  // reset error status
+    static void resetError( void ); // reset error status
 
     //! Check if any error occurred in lately called functions. Returns value from ERROR.
     static int error( void );
@@ -320,7 +346,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // TODO rename elements to objects
     static QStringList elements( const QString &gisdbase, const QString &locationName,
                                  const QString &mapsetName, const QString &element );
-    static QStringList elements( const QString  &mapsetPath, const QString  &element );
+    static QStringList elements( const QString &mapsetPath, const QString &element );
 
     //! List of existing objects
     static QStringList grassObjects( const QgsGrassObject &mapsetObject, QgsGrassObject::Type type );
@@ -423,14 +449,14 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      * \param qgisModule append GRASS major version (for modules built in qgis)
      * \throws QgsGrass::Exception
     */
-    static QProcess *startModule( const QString &gisdbase, const QString  &location,
-                                  const QString &mapset, const QString  &moduleName,
+    static QProcess *startModule( const QString &gisdbase, const QString &location,
+                                  const QString &mapset, const QString &moduleName,
                                   const QStringList &arguments, QTemporaryFile &gisrcFile,
                                   bool qgisModule = true );
 
     //! Run a GRASS module in any gisdbase/location
-    static QByteArray runModule( const QString &gisdbase, const QString  &location,
-                                 const QString &mapset, const QString  &moduleName,
+    static QByteArray runModule( const QString &gisdbase, const QString &location,
+                                 const QString &mapset, const QString &moduleName,
                                  const QStringList &arguments, int timeOut = 30000,
                                  bool qgisModule = true );
 
@@ -448,8 +474,8 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
      * \param sampleSize sample size for statistics
      * \param timeOut timeout
      */
-    static QString getInfo( const QString  &info, const QString  &gisdbase,
-                            const QString &location, const QString  &mapset = "PERMANENT",
+    static QString getInfo( const QString &info, const QString &gisdbase,
+                            const QString &location, const QString &mapset = "PERMANENT",
                             const QString &map = QString(), const QgsGrassObject::Type type = QgsGrassObject::None,
                             double x = 0.0, double y = 0.0,
                             const QgsRectangle &extent = QgsRectangle(), int sampleRows = 0,
@@ -576,7 +602,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // path to QGIS GRASS modules like qgis.g.info etc.
     static QString qgisGrassModulePath()
     {
-#if defined(_MSC_VER) && !defined(USING_NMAKE) && !defined(USING_NINJA)
+#if defined( _MSC_VER ) && !defined( USING_NMAKE ) && !defined( USING_NINJA )
       if ( QgsApplication::isRunningFromBuildDir() )
       {
         return QCoreApplication::applicationDirPath() + "/../../grass/modules/" + QgsApplication::cfgIntDir();
@@ -697,7 +723,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
   private:
     static bool sNonInitializable;
     static int sInitialized; // Set to 1 after initialization
-    static bool sActive; // is active mode
+    static bool sActive;     // is active mode
     static QStringList sGrassModulesPaths;
     static QString sDefaultGisdbase;
     static QString sDefaultLocation;
@@ -708,7 +734,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     QFileSystemWatcher *mMapsetSearchPathWatcher = nullptr;
 
     /* last error in GRASS libraries */
-    static GError sLastError;         // static, because used in constructor
+    static GError sLastError; // static, because used in constructor
     static QString sErrorMessage;
     // error set in init() if it failed
     static QString sInitError;
@@ -718,7 +744,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // - const char* msg - in CVS from 04/2007
     // this way compiler chooses suitable call
     static int error_routine( const char *msg, int fatal ); // static because pointer to this function is set later
-    static int error_routine( char *msg, int fatal ); // static because pointer to this function is set later
+    static int error_routine( char *msg, int fatal );       // static because pointer to this function is set later
 
     // Current mapset lock file path
     static QString sMapsetLock;

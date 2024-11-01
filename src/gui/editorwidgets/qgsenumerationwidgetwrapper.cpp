@@ -83,4 +83,3 @@ void QgsEnumerationWidgetWrapper::updateValues( const QVariant &value, const QVa
     mComboBox->setCurrentIndex( mComboBox->findData( value ) );
   }
 }
-

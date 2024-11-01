@@ -30,7 +30,8 @@
 class CORE_EXPORT QgsWkbException : public QgsException
 {
   public:
-    QgsWkbException( QString const &what ) : QgsException( what ) {}
+    QgsWkbException( QString const &what )
+      : QgsException( what ) {}
 };
 #endif
 
@@ -75,57 +76,147 @@ class CORE_EXPORT QgsWkbPtr
 
     QgsWkbPtr( unsigned char *p SIP_ARRAY, int size SIP_ARRAYSIZE );
 
-    inline const QgsWkbPtr &operator>>( double &v ) const { read( v ); return *this; } SIP_SKIP
-    inline const QgsWkbPtr &operator>>( float &r ) const { double v; read( v ); r = v; return *this; } SIP_SKIP
+    inline const QgsWkbPtr &operator>>( double &v ) const
+    {
+      read( v );
+      return *this;
+    }
+    SIP_SKIP
+    inline const QgsWkbPtr &operator>>( float &r ) const
+    {
+      double v;
+      read( v );
+      r = v;
+      return *this;
+    }
+    SIP_SKIP
     //! Reads an integer value into a qint32
-    inline const QgsWkbPtr &operator>>( qint32 &v ) const { read( v ); return *this; } SIP_SKIP
+    inline const QgsWkbPtr &operator>>( qint32 &v ) const
+    {
+      read( v );
+      return *this;
+    }
+    SIP_SKIP
     //! Reads an integer value into a longlong
-    inline const QgsWkbPtr &operator>>( qint64 &r ) const { quint32 v; read( v ); r = v; return *this; } SIP_SKIP
+    inline const QgsWkbPtr &operator>>( qint64 &r ) const
+    {
+      quint32 v;
+      read( v );
+      r = v;
+      return *this;
+    }
+    SIP_SKIP
     //! Reads an unsigned integer value
-    inline const QgsWkbPtr &operator>>( quint32 &v ) const { read( v ); return *this; } SIP_SKIP
+    inline const QgsWkbPtr &operator>>( quint32 &v ) const
+    {
+      read( v );
+      return *this;
+    }
+    SIP_SKIP
     //! Reads an char value
-    inline const QgsWkbPtr &operator>>( char &v ) const { read( v ); return *this; } SIP_SKIP
+    inline const QgsWkbPtr &operator>>( char &v ) const
+    {
+      read( v );
+      return *this;
+    }
+    SIP_SKIP
     //! Reads a Qgis::WkbType enum value
-    inline const QgsWkbPtr &operator>>( Qgis::WkbType &v ) const { read( v ); return *this; } SIP_SKIP
+    inline const QgsWkbPtr &operator>>( Qgis::WkbType &v ) const
+    {
+      read( v );
+      return *this;
+    }
+    SIP_SKIP
 
     //! Writes a double to the pointer
-    inline QgsWkbPtr &operator<<( double v ) { write( v ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( double v )
+    {
+      write( v );
+      return *this;
+    }
+    SIP_SKIP
     //! Writes a float to the pointer
-    inline QgsWkbPtr &operator<<( float r ) { double v = r; write( v ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( float r )
+    {
+      double v = r;
+      write( v );
+      return *this;
+    }
+    SIP_SKIP
     //! Writes an int to the pointer
-    inline QgsWkbPtr &operator<<( qint32 v ) { write( v ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( qint32 v )
+    {
+      write( v );
+      return *this;
+    }
+    SIP_SKIP
     //! Writes a longlong as int to the pointer
-    inline QgsWkbPtr &operator<<( qint64 r ) { quint32 v = r; write( v ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( qint64 r )
+    {
+      quint32 v = r;
+      write( v );
+      return *this;
+    }
+    SIP_SKIP
     //! Writes an unsigned int to the pointer
-    inline QgsWkbPtr &operator<<( quint32 v ) { write( v ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( quint32 v )
+    {
+      write( v );
+      return *this;
+    }
+    SIP_SKIP
     //! Writes a char to the pointer
-    inline QgsWkbPtr &operator<<( char v ) { write( v ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( char v )
+    {
+      write( v );
+      return *this;
+    }
+    SIP_SKIP
     //! Writes a WKB type value to the pointer
-    inline QgsWkbPtr &operator<<( Qgis::WkbType v ) { write( v ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( Qgis::WkbType v )
+    {
+      write( v );
+      return *this;
+    }
+    SIP_SKIP
     //! Append data from a byte array
-    inline QgsWkbPtr &operator<<( const QByteArray &data ) { write( data ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( const QByteArray &data )
+    {
+      write( data );
+      return *this;
+    }
+    SIP_SKIP
 
-    inline void operator+=( int n ) const { verifyBound( n ); mP += n; } SIP_SKIP
+    inline void operator+=( int n ) const
+    {
+      verifyBound( n );
+      mP += n;
+    }
+    SIP_SKIP
 
-    inline operator unsigned char *() const { return mP; } SIP_SKIP
+    inline operator unsigned char *() const { return mP; }
+    SIP_SKIP
 
     /**
      * \brief size
      * \note not available in Python bindings
      */
-    inline int size() const { return mEnd - mStart; } SIP_SKIP
+    inline int size() const { return mEnd - mStart; }
+    SIP_SKIP
 
     /**
      * \brief remaining
      * \note not available in Python bindings
      */
-    inline int remaining() const { return mEnd - mP; } SIP_SKIP
+    inline int remaining() const { return mEnd - mP; }
+    SIP_SKIP
 
     /**
      * \brief writtenSize
      * \note not available in Python bindings
      */
-    inline int writtenSize() const { return mP - mStart; } SIP_SKIP
+    inline int writtenSize() const { return mP - mStart; }
+    SIP_SKIP
 };
 
 /**
@@ -172,27 +263,64 @@ class CORE_EXPORT QgsConstWkbPtr
      */
     Qgis::WkbType readHeader() const SIP_SKIP;
 
-    inline const QgsConstWkbPtr &operator>>( double &v ) const { read( v ); return *this; } SIP_SKIP
-    inline const QgsConstWkbPtr &operator>>( float &r ) const { double v; read( v ); r = v; return *this; } SIP_SKIP
-    inline const QgsConstWkbPtr &operator>>( int &v ) const { read( v ); return *this; } SIP_SKIP
-    inline const QgsConstWkbPtr &operator>>( unsigned int &v ) const { read( v ); return *this; } SIP_SKIP
-    inline const QgsConstWkbPtr &operator>>( char &v ) const { read( v ); return *this; } SIP_SKIP
+    inline const QgsConstWkbPtr &operator>>( double &v ) const
+    {
+      read( v );
+      return *this;
+    }
+    SIP_SKIP
+    inline const QgsConstWkbPtr &operator>>( float &r ) const
+    {
+      double v;
+      read( v );
+      r = v;
+      return *this;
+    }
+    SIP_SKIP
+    inline const QgsConstWkbPtr &operator>>( int &v ) const
+    {
+      read( v );
+      return *this;
+    }
+    SIP_SKIP
+    inline const QgsConstWkbPtr &operator>>( unsigned int &v ) const
+    {
+      read( v );
+      return *this;
+    }
+    SIP_SKIP
+    inline const QgsConstWkbPtr &operator>>( char &v ) const
+    {
+      read( v );
+      return *this;
+    }
+    SIP_SKIP
 
     //! Read a point
-    const QgsConstWkbPtr &operator>>( QPointF &point ) const; SIP_SKIP
+    const QgsConstWkbPtr &operator>>( QPointF &point ) const;
+    SIP_SKIP
     //! Read a point array
-    const QgsConstWkbPtr &operator>>( QPolygonF &points ) const; SIP_SKIP
+    const QgsConstWkbPtr &operator>>( QPolygonF &points ) const;
+    SIP_SKIP
 
-    inline void operator+=( int n ) const { verifyBound( n ); mP += n; } SIP_SKIP
-    inline void operator-=( int n ) const { mP -= n; } SIP_SKIP
+    inline void operator+=( int n ) const
+    {
+      verifyBound( n );
+      mP += n;
+    }
+    SIP_SKIP
+    inline void operator-=( int n ) const { mP -= n; }
+    SIP_SKIP
 
-    inline operator const unsigned char *() const { return mP; } SIP_SKIP
+    inline operator const unsigned char *() const { return mP; }
+    SIP_SKIP
 
     /**
      * \brief remaining
      * \note not available in Python bindings
      */
-    inline int remaining() const { return mEnd - mP; } SIP_SKIP
+    inline int remaining() const { return mEnd - mP; }
+    SIP_SKIP
 
   private:
     template<typename T> void endian_swap( T &value ) const SIP_SKIP

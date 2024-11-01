@@ -77,7 +77,6 @@ class CORE_EXPORT QgsDataItem : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsDataItem, with the specified \a parent item.
      *
@@ -96,12 +95,14 @@ class CORE_EXPORT QgsDataItem : public QObject
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsDataItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+        QString str
+      = QStringLiteral( "<QgsDataItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    bool hasChildren();
+      bool
+      hasChildren();
 
     /**
      * Returns TRUE if the data item is a collection of layers
@@ -321,13 +322,13 @@ class CORE_EXPORT QgsDataItem : public QObject
      * \since QGIS 3.38
      */
     template<class T>
-    static QList< T * > filteredItems( const QList< QgsDataItem * > &items )
+    static QList<T *> filteredItems( const QList<QgsDataItem *> &items )
     {
-      QList< T * > result;
+      QList<T *> result;
       result.reserve( items.size() );
       for ( QgsDataItem *item : items )
       {
-        if ( T *matchedItem = qobject_cast< T * >( item ) )
+        if ( T *matchedItem = qobject_cast<T *>( item ) )
           result << matchedItem;
       }
       return result;
@@ -584,7 +585,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     // Set to true if object has to be deleted when possible (nothing running in threads)
     bool mDeferredDelete = false;
-    QFutureWatcher< QVector <QgsDataItem *> > *mFutureWatcher = nullptr;
+    QFutureWatcher<QVector<QgsDataItem *>> *mFutureWatcher = nullptr;
     // number of items currently in loading (populating) state
     static QgsAnimatedIcon *sPopulatingIcon;
 };
@@ -597,19 +598,16 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
 {
     Q_OBJECT
   public:
-
     QgsErrorItem( QgsDataItem *parent, const QString &error, const QString &path );
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsErrorItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+        QString str
+      = QStringLiteral( "<QgsErrorItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
-
 };
 
 #endif // QGSDATAITEM_H
-
-

@@ -36,7 +36,7 @@
 //
 
 QgsProviderSublayerItem::QgsProviderSublayerItem( QgsDataItem *parent, const QString &name,
-    const QgsProviderSublayerDetails &details, const QString &filePath )
+                                                  const QgsProviderSublayerDetails &details, const QString &filePath )
   : QgsLayerItem( parent, name, filePath.isEmpty() ? details.uri() : filePath, details.uri(), layerTypeFromSublayer( details ), details.providerKey() )
   , mDetails( details )
 {
@@ -73,7 +73,7 @@ QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()
       if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RetrieveRelationships ) )
       {
         QString relationError;
-        QList< QgsWeakRelation > relations;
+        QList<QgsWeakRelation> relations;
         try
         {
           relations = conn->relationships( QString(), mDetails.name() );
@@ -85,7 +85,7 @@ QVector<QgsDataItem *> QgsProviderSublayerItem::createChildren()
 
         if ( !relations.empty() || !relationError.isEmpty() )
         {
-          std::unique_ptr< QgsRelationshipsItem > relationsItem = std::make_unique< QgsRelationshipsItem >( this, mPath + "/relations", conn->uri(), QStringLiteral( "ogr" ), QString(), mDetails.name() );
+          std::unique_ptr<QgsRelationshipsItem> relationsItem = std::make_unique<QgsRelationshipsItem>( this, mPath + "/relations", conn->uri(), QStringLiteral( "ogr" ), QString(), mDetails.name() );
           // force this item to appear last by setting a maximum string value for the sort key
           relationsItem->setSortKey( QString( QChar( 0x11FFFF ) ) );
           children.append( relationsItem.release() );
@@ -232,10 +232,10 @@ QgsFileDataCollectionItem::QgsFileDataCollectionItem( QgsDataItem *parent, const
 
 QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
 {
-  QList< QgsProviderSublayerDetails> sublayers;
+  QList<QgsProviderSublayerDetails> sublayers;
   if ( QgsProviderUtils::sublayerDetailsAreIncomplete( mSublayers, QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownFeatureCount ) )
   {
-    QSet< QString > providers;
+    QSet<QString> providers;
     for ( const QgsProviderSublayerDetails &details : std::as_const( mSublayers ) )
     {
       providers.insert( details.providerKey() );
@@ -275,11 +275,11 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
   // or the item won't "refresh" and update its sublayers when the actual file changes
   mSublayers.clear();
   // remove the fast flag -- after the first population we need to requery the dataset
-  setCapabilities( capabilities2() & ~static_cast< int >( Qgis::BrowserItemCapability::Fast ) );
+  setCapabilities( capabilities2() & ~static_cast<int>( Qgis::BrowserItemCapability::Fast ) );
 
   QVector<QgsDataItem *> children;
   children.reserve( sublayers.size() );
-  QMap< QStringList, QgsFileDataCollectionGroupItem * > groupItems;
+  QMap<QStringList, QgsFileDataCollectionGroupItem *> groupItems;
   for ( const QgsProviderSublayerDetails &sublayer : std::as_const( sublayers ) )
   {
     QgsProviderSublayerItem *item = new QgsProviderSublayerItem( nullptr, sublayer.name(), sublayer, QString() );
@@ -346,7 +346,7 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
 
     if ( !fieldDomains.empty() || !domainError.isEmpty() )
     {
-      std::unique_ptr< QgsFieldDomainsItem > domainsItem = std::make_unique< QgsFieldDomainsItem >( this, mPath + "/domains", conn->uri(), QStringLiteral( "ogr" ) );
+      std::unique_ptr<QgsFieldDomainsItem> domainsItem = std::make_unique<QgsFieldDomainsItem>( this, mPath + "/domains", conn->uri(), QStringLiteral( "ogr" ) );
       // force this item to appear last by setting a maximum string value for the sort key
       domainsItem->setSortKey( QString( QChar( 0x10FFFF ) ) );
       children.append( domainsItem.release() );
@@ -355,7 +355,7 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
   if ( conn && ( mCachedCapabilities & QgsAbstractDatabaseProviderConnection::Capability::RetrieveRelationships ) )
   {
     QString relationError;
-    QList< QgsWeakRelation > relations;
+    QList<QgsWeakRelation> relations;
     try
     {
       relations = conn->relationships();
@@ -367,7 +367,7 @@ QVector<QgsDataItem *> QgsFileDataCollectionItem::createChildren()
 
     if ( !relations.empty() || !relationError.isEmpty() )
     {
-      std::unique_ptr< QgsRelationshipsItem > relationsItem = std::make_unique< QgsRelationshipsItem >( this, mPath + "/relations", conn->uri(), QStringLiteral( "ogr" ) );
+      std::unique_ptr<QgsRelationshipsItem> relationsItem = std::make_unique<QgsRelationshipsItem>( this, mPath + "/relations", conn->uri(), QStringLiteral( "ogr" ) );
       // force this item to appear last by setting a maximum string value for the sort key
       relationsItem->setSortKey( QString( QChar( 0x11FFFF ) ) );
       children.append( relationsItem.release() );
@@ -419,7 +419,7 @@ bool QgsFileDataCollectionItem::canAddVectorLayers() const
   }
 
   // DO NOT UNDER *****ANY***** CIRCUMSTANCES OPEN DATASETS HERE!!!!
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,4,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 4, 0 )
   const bool isSingleTableDriver = !GDALGetMetadataItem( hDriver, GDAL_DCAP_MULTIPLE_VECTOR_LAYERS, nullptr );
 #else
   const QFileInfo pathInfo( path() );
@@ -460,7 +460,7 @@ QgsAbstractDatabaseProviderConnection *QgsFileDataCollectionItem::databaseConnec
   GDALDriverH hDriver = GDALIdentifyDriverEx( path().toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr );
   CPLPopErrorHandler();
 
-  if ( ! hDriver )
+  if ( !hDriver )
   {
     QgsDebugMsgLevel( QStringLiteral( "GDALIdentifyDriverEx error # %1 : %2 on %3" ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ).arg( path() ), 2 );
     return nullptr;
@@ -482,7 +482,7 @@ QgsAbstractDatabaseProviderConnection *QgsFileDataCollectionItem::databaseConnec
     if ( QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "spatialite" ) ) )
     {
       QgsDataSourceUri uri;
-      uri.setDatabase( path( ) );
+      uri.setDatabase( path() );
       conn = static_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( uri.uri(), {} ) );
     }
   }
@@ -608,8 +608,7 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItemForPathPrivate( const Q
     return nullptr;
   }
   // GDAL 3.1 Shapefile driver directly handles .shp.zip files
-  else if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) &&
-            GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr ) )
+  else if ( path.endsWith( QLatin1String( ".shp.zip" ), Qt::CaseInsensitive ) && GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr ) )
   {
     suffix = QStringLiteral( "shp.zip" );
   }
@@ -622,9 +621,10 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItemForPathPrivate( const Q
 
   // should we fast scan only?
   if ( ( settings.value( QStringLiteral( "qgis/scanItemsInBrowser2" ),
-                         "extension" ).toString() == QLatin1String( "extension" ) ) ||
-       ( parentItem && settings.value( QStringLiteral( "qgis/scanItemsFastScanUris" ),
-                                       QStringList() ).toStringList().contains( parentItem->path() ) ) )
+                         "extension" )
+           .toString()
+         == QLatin1String( "extension" ) )
+       || ( parentItem && settings.value( QStringLiteral( "qgis/scanItemsFastScanUris" ), QStringList() ).toStringList().contains( parentItem->path() ) ) )
   {
     queryFlags |= Qgis::SublayerQueryFlag::FastScan;
   }
@@ -660,8 +660,7 @@ QgsDataItem *QgsFileBasedDataItemProvider::createDataItemForPathPrivate( const Q
 
   if ( sublayers.size() == 1
        && ( ( ( queryFlags & Qgis::SublayerQueryFlag::FastScan ) && !QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownFeatureCount | QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownGeometryType ) )
-            || ( !( queryFlags & Qgis::SublayerQueryFlag::FastScan ) && !QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownFeatureCount ) ) )
-     )
+            || ( !( queryFlags & Qgis::SublayerQueryFlag::FastScan ) && !QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers, QgsProviderUtils::SublayerCompletenessFlag::IgnoreUnknownFeatureCount ) ) ) )
   {
     QgsProviderSublayerItem *item = new QgsProviderSublayerItem( parentItem, name, sublayers.at( 0 ), path );
     item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );

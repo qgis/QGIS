@@ -35,9 +35,9 @@
 
 #include <iostream>
 
-#define LEFT(x) (2*x+1)
-#define RIGHT(x) (2*x+2)
-#define PARENT(x) ((x-1)/2)
+#define LEFT( x ) ( 2 * x + 1 )
+#define RIGHT( x ) ( 2 * x + 2 )
+#define PARENT( x ) ( ( x - 1 ) / 2 )
 
 
 namespace pal
@@ -51,9 +51,7 @@ namespace pal
    */
   class PriorityQueue
   {
-
     public:
-
       /**
        * \brief Create a priority queue of max size n
        * \\param n max size of the queuet
@@ -88,8 +86,8 @@ namespace pal
 
 
       int getId( int key ) const;
-    private:
 
+    private:
       int size;
       int maxsize;
       int maxId;
@@ -100,6 +98,6 @@ namespace pal
       bool ( *greater )( double l, double r );
   };
 
-} // namespace
+} // namespace pal
 
 #endif

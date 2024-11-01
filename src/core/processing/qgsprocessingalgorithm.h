@@ -39,22 +39,21 @@ class QgsPointCloudLayer;
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include <qgsprocessingmodelalgorithm.h>
-% End
+  % End
 #endif
 
-/**
+  /**
  * \class QgsProcessingAlgorithm
  * \ingroup core
  * \brief Abstract base class for processing algorithms.
  */
-class CORE_EXPORT QgsProcessingAlgorithm
+  class CORE_EXPORT QgsProcessingAlgorithm
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast< QgsProcessingModelAlgorithm * >( sipCpp ) != NULL )
+    if ( dynamic_cast<QgsProcessingModelAlgorithm *>( sipCpp ) != NULL )
       sipType = sipType_QgsProcessingModelAlgorithm;
-    else if ( dynamic_cast< QgsProcessingFeatureBasedAlgorithm * >( sipCpp ) != NULL )
+    else if ( dynamic_cast<QgsProcessingFeatureBasedAlgorithm *>( sipCpp ) != NULL )
       sipType = sipType_QgsProcessingFeatureBasedAlgorithm;
     else
       sipType = sipType_QgsProcessingAlgorithm;
@@ -62,7 +61,6 @@ class CORE_EXPORT QgsProcessingAlgorithm
 #endif
 
   public:
-
     /**
      * Constructor for QgsProcessingAlgorithm.
      *
@@ -312,17 +310,17 @@ class CORE_EXPORT QgsProcessingAlgorithm
      */
     struct VectorProperties
     {
-      //! Fields
-      QgsFields fields;
+        //! Fields
+        QgsFields fields;
 
-      //! Geometry (WKB) type
-      Qgis::WkbType wkbType = Qgis::WkbType::Unknown;
+        //! Geometry (WKB) type
+        Qgis::WkbType wkbType = Qgis::WkbType::Unknown;
 
-      //! Coordinate Reference System
-      QgsCoordinateReferenceSystem crs;
+        //! Coordinate Reference System
+        QgsCoordinateReferenceSystem crs;
 
-      //! Availability of the properties. By default properties are not available.
-      Qgis::ProcessingPropertyAvailability availability = Qgis::ProcessingPropertyAvailability::NotAvailable;
+        //! Availability of the properties. By default properties are not available.
+        Qgis::ProcessingPropertyAvailability availability = Qgis::ProcessingPropertyAvailability::NotAvailable;
     };
 
     /**
@@ -341,9 +339,9 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \since QGIS 3.14
      */
     virtual QgsProcessingAlgorithm::VectorProperties sinkProperties( const QString &sink,
-        const QVariantMap &parameters,
-        QgsProcessingContext &context,
-        const QMap< QString, QgsProcessingAlgorithm::VectorProperties > &sourceProperties ) const;
+                                                                     const QVariantMap &parameters,
+                                                                     QgsProcessingContext &context,
+                                                                     const QMap<QString, QgsProcessingAlgorithm::VectorProperties> &sourceProperties ) const;
 
     /**
      * Executes the algorithm using the specified \a parameters. This method internally
@@ -422,7 +420,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * implements the QgsExpressionContextGenerator interface.
      */
     virtual QgsExpressionContext createExpressionContext( const QVariantMap &parameters,
-        QgsProcessingContext &context, QgsProcessingFeatureSource *source = nullptr ) const;
+                                                          QgsProcessingContext &context, QgsProcessingFeatureSource *source = nullptr ) const;
 
     /**
      * Checks whether the coordinate reference systems for the specified set of \a parameters
@@ -480,7 +478,6 @@ class CORE_EXPORT QgsProcessingAlgorithm
     virtual bool supportInPlaceEdit( const QgsMapLayer *layer ) const;
 
   protected:
-
     /**
      * Creates a new instance of the algorithm class.
      *
@@ -748,7 +745,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * to use parameterAsCompatibleSourceLayerPathAndLayerName() which may avoid conversion in more situations.
      */
     QString parameterAsCompatibleSourceLayerPath( const QVariantMap &parameters, const QString &name,
-        QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = nullptr ) const;
+                                                  QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = nullptr ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a source vector layer file path and layer name of compatible format.
@@ -780,7 +777,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \since QGIS 3.10
      */
     QString parameterAsCompatibleSourceLayerPathAndLayerName( const QVariantMap &parameters, const QString &name,
-        QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = nullptr, QString *layerName SIP_OUT = nullptr ) const;
+                                                              QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat = QString( "shp" ), QgsProcessingFeedback *feedback = nullptr, QString *layerName SIP_OUT = nullptr ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a map layer.
@@ -917,7 +914,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * Evaluates the parameter with matching \a name to a list of map layers.
      * The \a flags are used to set options for loading layers (e.g. skip index generation).
      */
-    QList< QgsMapLayer *> parameterAsLayerList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() ) const;
+    QList<QgsMapLayer *> parameterAsLayerList( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags = QgsProcessing::LayerOptionsFlags() ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a list of files (for QgsProcessingParameterMultipleLayers in QgsProcessing:TypeFile mode).
@@ -1101,14 +1098,13 @@ class CORE_EXPORT QgsProcessingAlgorithm
     static QString writeFeatureError( QgsFeatureSink *sink, const QVariantMap &parameters, const QString &name );
 
   private:
-
     QgsProcessingProvider *mProvider = nullptr;
     QgsProcessingParameterDefinitions mParameters;
     QgsProcessingOutputDefinitions mOutputs;
     bool mHasPrepared = false;
     bool mHasExecuted = false;
     bool mHasPostProcessed = false;
-    std::unique_ptr< QgsProcessingContext > mLocalContext;
+    std::unique_ptr<QgsProcessingContext> mLocalContext;
 
     bool createAutoOutputForParameter( QgsProcessingParameterDefinition *parameter );
 
@@ -1122,7 +1118,6 @@ class CORE_EXPORT QgsProcessingAlgorithm
 #ifdef SIP_RUN
     QgsProcessingAlgorithm( const QgsProcessingAlgorithm &other );
 #endif
-
 };
 
 
@@ -1151,7 +1146,6 @@ class CORE_EXPORT QgsProcessingAlgorithm
 class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-
     QgsProcessingFeatureBasedAlgorithm() = default;
 
     Qgis::ProcessingAlgorithmFlags flags() const override SIP_HOLDGIL;
@@ -1210,7 +1204,6 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
     virtual QString inputParameterDescription() const SIP_HOLDGIL;
 
   protected:
-
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
 
     /**
@@ -1306,14 +1299,12 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
     void prepareSource( const QVariantMap &parameters, QgsProcessingContext &context );
 
     QgsProcessingAlgorithm::VectorProperties sinkProperties( const QString &sink,
-        const QVariantMap &parameters,
-        QgsProcessingContext &context,
-        const QMap< QString, QgsProcessingAlgorithm::VectorProperties > &sourceProperties ) const override;
+                                                             const QVariantMap &parameters,
+                                                             QgsProcessingContext &context,
+                                                             const QMap<QString, QgsProcessingAlgorithm::VectorProperties> &sourceProperties ) const override;
 
   private:
-
-    std::unique_ptr< QgsProcessingFeatureSource > mSource;
-
+    std::unique_ptr<QgsProcessingFeatureSource> mSource;
 };
 
 // clazy:excludeall=qstring-allocations

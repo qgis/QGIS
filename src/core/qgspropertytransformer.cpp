@@ -140,12 +140,12 @@ QgsGenericNumericTransformer::QgsGenericNumericTransformer( double minValue, dou
 
 QgsGenericNumericTransformer *QgsGenericNumericTransformer::clone() const
 {
-  std::unique_ptr< QgsGenericNumericTransformer > t( new QgsGenericNumericTransformer( mMinValue,
-      mMaxValue,
-      mMinOutput,
-      mMaxOutput,
-      mNullOutput,
-      mExponent ) );
+  std::unique_ptr<QgsGenericNumericTransformer> t( new QgsGenericNumericTransformer( mMinValue,
+                                                                                     mMaxValue,
+                                                                                     mMinOutput,
+                                                                                     mMaxOutput,
+                                                                                     mNullOutput,
+                                                                                     mExponent ) );
   if ( mCurveTransform )
     t->setCurveTransform( new QgsCurveTransform( *mCurveTransform ) );
   return t.release();
@@ -253,7 +253,7 @@ QgsGenericNumericTransformer *QgsGenericNumericTransformer::fromExpression( cons
     if ( !f )
       return nullptr;
     nullValue = QgsExpression( args[1]->dump() ).evaluate().toDouble( &ok );
-    if ( ! ok )
+    if ( !ok )
       return nullptr;
     args = f->args()->list();
   }
@@ -288,7 +288,7 @@ QgsGenericNumericTransformer *QgsGenericNumericTransformer::fromExpression( cons
 
   if ( args[0]->nodeType() == QgsExpressionNode::ntColumnRef )
   {
-    fieldName = static_cast< QgsExpressionNodeColumnRef * >( args[0] )->name();
+    fieldName = static_cast<QgsExpressionNodeColumnRef *>( args[0] )->name();
   }
   else
   {
@@ -296,7 +296,6 @@ QgsGenericNumericTransformer *QgsGenericNumericTransformer::fromExpression( cons
   }
   return new QgsGenericNumericTransformer( minValue, maxValue, minOutput, maxOutput, nullValue, exponent );
 }
-
 
 
 //
@@ -314,13 +313,13 @@ QgsSizeScaleTransformer::QgsSizeScaleTransformer( ScaleType type, double minValu
 
 QgsSizeScaleTransformer *QgsSizeScaleTransformer::clone() const
 {
-  std::unique_ptr< QgsSizeScaleTransformer > t( new QgsSizeScaleTransformer( mType,
-      mMinValue,
-      mMaxValue,
-      mMinSize,
-      mMaxSize,
-      mNullSize,
-      mExponent ) );
+  std::unique_ptr<QgsSizeScaleTransformer> t( new QgsSizeScaleTransformer( mType,
+                                                                           mMinValue,
+                                                                           mMaxValue,
+                                                                           mMinSize,
+                                                                           mMaxSize,
+                                                                           mNullSize,
+                                                                           mExponent ) );
   if ( mCurveTransform )
     t->setCurveTransform( new QgsCurveTransform( *mCurveTransform ) );
   return t.release();
@@ -330,7 +329,7 @@ QVariant QgsSizeScaleTransformer::toVariant() const
 {
   QVariantMap transformerMap = QgsPropertyTransformer::toVariant().toMap();
 
-  transformerMap.insert( QStringLiteral( "scaleType" ), static_cast< int >( mType ) );
+  transformerMap.insert( QStringLiteral( "scaleType" ), static_cast<int>( mType ) );
   transformerMap.insert( QStringLiteral( "minSize" ), mMinSize );
   transformerMap.insert( QStringLiteral( "maxSize" ), mMaxSize );
   transformerMap.insert( QStringLiteral( "nullSize" ), mNullSize );
@@ -345,7 +344,7 @@ bool QgsSizeScaleTransformer::loadVariant( const QVariant &transformer )
 
   QVariantMap transformerMap = transformer.toMap();
 
-  mType = static_cast< ScaleType >( transformerMap.value( QStringLiteral( "scaleType" ), Linear ).toInt() );
+  mType = static_cast<ScaleType>( transformerMap.value( QStringLiteral( "scaleType" ), Linear ).toInt() );
   mMinSize = transformerMap.value( QStringLiteral( "minSize" ), 0.0 ).toDouble();
   mMaxSize = transformerMap.value( QStringLiteral( "maxSize" ), 1.0 ).toDouble();
   mNullSize = transformerMap.value( QStringLiteral( "nullSize" ), 0.0 ).toDouble();
@@ -367,7 +366,6 @@ double QgsSizeScaleTransformer::size( double value ) const
     case Flannery:
     case Exponential:
       return mMinSize + std::pow( std::clamp( value, mMinValue, mMaxValue ) - mMinValue, mExponent ) * ( mMaxSize - mMinSize ) / std::pow( mMaxValue - mMinValue, mExponent );
-
   }
   return 0;
 }
@@ -431,7 +429,6 @@ QString QgsSizeScaleTransformer::toExpression( const QString &baseExpression ) c
     case Flannery:
     case Exponential:
       return QStringLiteral( "coalesce(scale_polynomial(%1, %2, %3, %4, %5, %6), %7)" ).arg( baseExpression, minValueString, maxValueString, minSizeString, maxSizeString, exponentString, nullSizeString );
-
   }
   return QString();
 }
@@ -466,7 +463,7 @@ QgsSizeScaleTransformer *QgsSizeScaleTransformer::fromExpression( const QString 
     if ( !f )
       return nullptr;
     nullSize = QgsExpression( args[1]->dump() ).evaluate().toDouble( &ok );
-    if ( ! ok )
+    if ( !ok )
       return nullptr;
     args = f->args()->list();
   }
@@ -478,7 +475,7 @@ QgsSizeScaleTransformer *QgsSizeScaleTransformer::fromExpression( const QString 
   else if ( "scale_polynomial" == QgsExpression::Functions()[f->fnIndex()]->name() )
   {
     exponent = QgsExpression( args[5]->dump() ).evaluate().toDouble( &ok );
-    if ( ! ok )
+    if ( !ok )
       return nullptr;
     if ( qgsDoubleNear( exponent, 0.57, 0.001 ) )
       type = Flannery;
@@ -509,7 +506,7 @@ QgsSizeScaleTransformer *QgsSizeScaleTransformer::fromExpression( const QString 
 
   if ( args[0]->nodeType() == QgsExpressionNode::ntColumnRef )
   {
-    fieldName = static_cast< QgsExpressionNodeColumnRef * >( args[0] )->name();
+    fieldName = static_cast<QgsExpressionNodeColumnRef *>( args[0] )->name();
   }
   else
   {
@@ -524,15 +521,14 @@ QgsSizeScaleTransformer *QgsSizeScaleTransformer::fromExpression( const QString 
 //
 
 QgsColorRampTransformer::QgsColorRampTransformer( double minValue, double maxValue,
-    QgsColorRamp *ramp,
-    const QColor &nullColor,
-    const QString &rampName )
+                                                  QgsColorRamp *ramp,
+                                                  const QColor &nullColor,
+                                                  const QString &rampName )
   : QgsPropertyTransformer( minValue, maxValue )
   , mGradientRamp( ramp )
   , mNullColor( nullColor )
   , mRampName( rampName )
 {
-
 }
 
 QgsColorRampTransformer::QgsColorRampTransformer( const QgsColorRampTransformer &other )
@@ -541,7 +537,6 @@ QgsColorRampTransformer::QgsColorRampTransformer( const QgsColorRampTransformer 
   , mNullColor( other.mNullColor )
   , mRampName( other.mRampName )
 {
-
 }
 
 QgsColorRampTransformer &QgsColorRampTransformer::operator=( const QgsColorRampTransformer &other )
@@ -557,9 +552,9 @@ QgsColorRampTransformer &QgsColorRampTransformer::operator=( const QgsColorRampT
 
 QgsColorRampTransformer *QgsColorRampTransformer::clone() const
 {
-  std::unique_ptr< QgsColorRampTransformer > c( new QgsColorRampTransformer( mMinValue, mMaxValue,
-      mGradientRamp ? mGradientRamp->clone() : nullptr,
-      mNullColor ) );
+  std::unique_ptr<QgsColorRampTransformer> c( new QgsColorRampTransformer( mMinValue, mMaxValue,
+                                                                           mGradientRamp ? mGradientRamp->clone() : nullptr,
+                                                                           mNullColor ) );
   c->setRampName( mRampName );
   if ( mCurveTransform )
     c->setCurveTransform( new QgsCurveTransform( *mCurveTransform ) );
@@ -627,8 +622,7 @@ QString QgsColorRampTransformer::toExpression( const QString &baseExpression ) c
   QString maxValueString = QString::number( mMaxValue );
   QString nullColorString = mNullColor.name();
 
-  return QStringLiteral( "coalesce(ramp_color('%1',scale_linear(%2, %3, %4, 0, 1)), '%5')" ).arg( !mRampName.isEmpty() ? mRampName : QStringLiteral( "custom ramp" ),
-         baseExpression, minValueString, maxValueString, nullColorString );
+  return QStringLiteral( "coalesce(ramp_color('%1',scale_linear(%2, %3, %4, 0, 1)), '%5')" ).arg( !mRampName.isEmpty() ? mRampName : QStringLiteral( "custom ramp" ), baseExpression, minValueString, maxValueString, nullColorString );
 }
 
 QColor QgsColorRampTransformer::color( double value ) const
@@ -677,7 +671,7 @@ QgsCurveTransform::QgsCurveTransform( const QList<QgsPointXY> &controlPoints )
 
 QgsCurveTransform::~QgsCurveTransform()
 {
-  delete [] mSecondDerivativeArray;
+  delete[] mSecondDerivativeArray;
 }
 
 QgsCurveTransform::QgsCurveTransform( const QgsCurveTransform &other )
@@ -685,7 +679,7 @@ QgsCurveTransform::QgsCurveTransform( const QgsCurveTransform &other )
 {
   if ( other.mSecondDerivativeArray )
   {
-    mSecondDerivativeArray = new double[ mControlPoints.count()];
+    mSecondDerivativeArray = new double[mControlPoints.count()];
     memcpy( mSecondDerivativeArray, other.mSecondDerivativeArray, sizeof( double ) * mControlPoints.count() );
   }
 }
@@ -697,8 +691,8 @@ QgsCurveTransform &QgsCurveTransform::operator=( const QgsCurveTransform &other 
     mControlPoints = other.mControlPoints;
     if ( other.mSecondDerivativeArray )
     {
-      delete [] mSecondDerivativeArray;
-      mSecondDerivativeArray = new double[ mControlPoints.count()];
+      delete[] mSecondDerivativeArray;
+      mSecondDerivativeArray = new double[mControlPoints.count()];
       memcpy( mSecondDerivativeArray, other.mSecondDerivativeArray, sizeof( double ) * mControlPoints.count() );
     }
   }
@@ -711,8 +705,8 @@ void QgsCurveTransform::setControlPoints( const QList<QgsPointXY> &points )
   std::sort( mControlPoints.begin(), mControlPoints.end(), sortByX );
   for ( int i = 0; i < mControlPoints.count(); ++i )
   {
-    mControlPoints[ i ] = QgsPointXY( std::clamp( mControlPoints.at( i ).x(), 0.0, 1.0 ),
-                                      std::clamp( mControlPoints.at( i ).y(), 0.0, 1.0 ) );
+    mControlPoints[i] = QgsPointXY( std::clamp( mControlPoints.at( i ).x(), 0.0, 1.0 ),
+                                    std::clamp( mControlPoints.at( i ).y(), 0.0, 1.0 ) );
   }
   calcSecondDerivativeArray();
 }
@@ -750,7 +744,7 @@ double QgsCurveTransform::y( double x ) const
 {
   int n = mControlPoints.count();
   if ( n < 2 )
-    return std::clamp( x,  0.0, 1.0 ); // invalid
+    return std::clamp( x, 0.0, 1.0 ); // invalid
   else if ( n < 3 )
   {
     // linear
@@ -762,7 +756,7 @@ double QgsCurveTransform::y( double x ) const
     {
       double dx = mControlPoints.at( 1 ).x() - mControlPoints.at( 0 ).x();
       double dy = mControlPoints.at( 1 ).y() - mControlPoints.at( 0 ).y();
-      return std::clamp( ( x - mControlPoints.at( 0 ).x() ) * ( dy / dx ) + mControlPoints.at( 0 ).y(), 0.0,  1.0 );
+      return std::clamp( ( x - mControlPoints.at( 0 ).x() ) * ( dy / dx ) + mControlPoints.at( 0 ).y(), 0.0, 1.0 );
     }
   }
 
@@ -850,7 +844,7 @@ QVector<double> QgsCurveTransform::y( const QVector<double> &x ) const
 
       double a = 1 - t;
 
-      result << std::clamp( a * currentControlPoint.y() + t * nextControlPoint.y() + ( h * h / 6 ) * ( ( a * a * a - a )*mSecondDerivativeArray[i] + ( t * t * t - t )*mSecondDerivativeArray[i + 1] ), 0.0, 1.0 );
+      result << std::clamp( a * currentControlPoint.y() + t * nextControlPoint.y() + ( h * h / 6 ) * ( ( a * a * a - a ) * mSecondDerivativeArray[i] + ( t * t * t - t ) * mSecondDerivativeArray[i + 1] ), 0.0, 1.0 );
       xIndex++;
       if ( xIndex == x.count() )
         return result;
@@ -886,7 +880,7 @@ bool QgsCurveTransform::readXml( const QDomElement &elem, const QDomDocument & )
   if ( xVals.count() != yVals.count() )
     return false;
 
-  QList< QgsPointXY > newPoints;
+  QList<QgsPointXY> newPoints;
   bool ok = false;
   for ( int i = 0; i < xVals.count(); ++i )
   {
@@ -950,7 +944,7 @@ bool QgsCurveTransform::loadVariant( const QVariant &transformer )
   if ( xVals.count() != yVals.count() )
     return false;
 
-  QList< QgsPointXY > newPoints;
+  QList<QgsPointXY> newPoints;
   bool ok = false;
   for ( int i = 0; i < xVals.count(); ++i )
   {
@@ -978,8 +972,8 @@ void QgsCurveTransform::calcSecondDerivativeArray()
 
   delete[] mSecondDerivativeArray;
 
-  double *matrix = new double[ n * 3 ];
-  double *result = new double[ n ];
+  double *matrix = new double[n * 3];
+  double *result = new double[n];
   matrix[0] = 0;
   matrix[1] = 1;
   matrix[2] = 0;
@@ -993,9 +987,9 @@ void QgsCurveTransform::calcSecondDerivativeArray()
 
   for ( int i = 1; i < n - 1; ++i )
   {
-    matrix[i * 3 + 0 ] = ( pointI.x() - pointIm1.x() ) / 6.0;
-    matrix[i * 3 + 1 ] = ( pointIp1.x() - pointIm1.x() ) / 3.0;
-    matrix[i * 3 + 2 ] = ( pointIp1.x() - pointI.x() ) / 6.0;
+    matrix[i * 3 + 0] = ( pointI.x() - pointIm1.x() ) / 6.0;
+    matrix[i * 3 + 1] = ( pointIp1.x() - pointIm1.x() ) / 3.0;
+    matrix[i * 3 + 2] = ( pointIp1.x() - pointI.x() ) / 6.0;
     result[i] = ( pointIp1.y() - pointI.y() ) / ( pointIp1.x() - pointI.x() ) - ( pointI.y() - pointIm1.y() ) / ( pointI.x() - pointIm1.x() );
 
     // shuffle points
@@ -1039,4 +1033,3 @@ void QgsCurveTransform::calcSecondDerivativeArray()
   delete[] result;
   delete[] matrix;
 }
-

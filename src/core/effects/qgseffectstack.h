@@ -42,9 +42,7 @@
 
 class CORE_EXPORT QgsEffectStack : public QgsPaintEffect SIP_NODEFAULTCTORS
 {
-
   public:
-
     /**
      * Creates a new QgsEffectStack effect. This method ignores
      * the map parameter, and always returns an empty effect stack.
@@ -122,7 +120,7 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect SIP_NODEFAULTCTORS
      * the stack
      * \returns list of QgsPaintEffects within the stack
      */
-    QList< QgsPaintEffect * > *effectList();
+    QList<QgsPaintEffect *> *effectList();
 
     /**
      * Returns count of effects contained by the stack
@@ -143,15 +141,12 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect SIP_NODEFAULTCTORS
 
 
   protected:
-
     void draw( QgsRenderContext &context ) override;
 
   private:
-
-    QList< QgsPaintEffect * > mEffectList;
+    QList<QgsPaintEffect *> mEffectList;
 
     void clearStack();
 };
 
 #endif // QGSEFFECTSTACK_H
-

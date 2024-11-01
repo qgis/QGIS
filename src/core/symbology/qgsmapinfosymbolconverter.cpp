@@ -35,12 +35,12 @@ void QgsMapInfoSymbolConversionContext::pushWarning( const QString &warning )
 
 QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, QgsMapInfoSymbolConversionContext &context, const QColor &foreColor, double size, Qgis::RenderUnit sizeUnit, bool interleaved )
 {
-  std::unique_ptr< QgsSimpleLineSymbolLayer > simpleLine = std::make_unique< QgsSimpleLineSymbolLayer >( foreColor, size );
+  std::unique_ptr<QgsSimpleLineSymbolLayer> simpleLine = std::make_unique<QgsSimpleLineSymbolLayer>( foreColor, size );
   simpleLine->setWidthUnit( sizeUnit );
   simpleLine->setPenCapStyle( Qt::RoundCap );
   simpleLine->setPenJoinStyle( Qt::RoundJoin );
 
-  QVector< qreal > dashPattern;
+  QVector<qreal> dashPattern;
   double patternOffset = 0;
   switch ( identifier )
   {
@@ -300,8 +300,8 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
   if ( !dashPattern.isEmpty() )
   {
     // scale dash pattern -- sizes above expect a 1 pt width line
-    for ( int i = 0; i < dashPattern.size() ; ++i )
-      dashPattern[ i ] *= size;
+    for ( int i = 0; i < dashPattern.size(); ++i )
+      dashPattern[i] *= size;
 
     simpleLine->setCustomDashVector( dashPattern );
     simpleLine->setUseCustomDashPattern( true );
@@ -311,11 +311,11 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
     simpleLine->setDashPatternOffsetUnit( sizeUnit );
   }
 
-  std::unique_ptr< QgsLineSymbol > symbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << simpleLine.release() );
+  std::unique_ptr<QgsLineSymbol> symbol = std::make_unique<QgsLineSymbol>( QgsSymbolLayerList() << simpleLine.release() );
 
   if ( ( identifier >= 26 && identifier < 29 ) || ( identifier >= 31 && identifier < 34 ) || ( identifier >= 36 && identifier < 38 ) || ( identifier >= 47 && identifier <= 53 ) || identifier == 118 )
   {
-    std::unique_ptr< QgsHashedLineSymbolLayer > hash = std::make_unique< QgsHashedLineSymbolLayer >();
+    std::unique_ptr<QgsHashedLineSymbolLayer> hash = std::make_unique<QgsHashedLineSymbolLayer>();
 
     double spacing = 1;
     double offset = 1;
@@ -432,43 +432,43 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
     hash->setHashLength( length * size );
     hash->setHashLengthUnit( sizeUnit );
 
-    std::unique_ptr< QgsSimpleLineSymbolLayer > subSimpleLine = std::make_unique< QgsSimpleLineSymbolLayer >( foreColor, size );
+    std::unique_ptr<QgsSimpleLineSymbolLayer> subSimpleLine = std::make_unique<QgsSimpleLineSymbolLayer>( foreColor, size );
     subSimpleLine->setWidthUnit( sizeUnit );
     subSimpleLine->setPenCapStyle( Qt::RoundCap );
     subSimpleLine->setPenJoinStyle( Qt::RoundJoin );
 
-    std::unique_ptr< QgsLineSymbol > subSymbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << subSimpleLine.release() );
+    std::unique_ptr<QgsLineSymbol> subSymbol = std::make_unique<QgsLineSymbol>( QgsSymbolLayerList() << subSimpleLine.release() );
     hash->setSubSymbol( subSymbol.release() );
 
     if ( identifier == 31 || identifier == 33 )
     {
-      std::unique_ptr< QgsHashedLineSymbolLayer > hash2( hash->clone() );
+      std::unique_ptr<QgsHashedLineSymbolLayer> hash2( hash->clone() );
       hash->setOffsetAlongLine( hash->offsetAlongLine() - size );
       hash2->setOffsetAlongLine( hash2->offsetAlongLine() + size );
       symbol->appendSymbolLayer( hash2.release() );
     }
     else if ( identifier == 36 || identifier == 37 )
     {
-      std::unique_ptr< QgsHashedLineSymbolLayer > hash2( hash->clone() );
+      std::unique_ptr<QgsHashedLineSymbolLayer> hash2( hash->clone() );
       hash2->setOffsetAlongLine( dashPattern.at( 0 ) );
       symbol->appendSymbolLayer( hash2.release() );
     }
     else if ( identifier == 52 || identifier == 53 )
     {
-      std::unique_ptr< QgsHashedLineSymbolLayer > hash2( hash->clone() );
+      std::unique_ptr<QgsHashedLineSymbolLayer> hash2( hash->clone() );
       hash2->setOffsetAlongLine( hash->offsetAlongLine() * 2 );
       symbol->appendSymbolLayer( hash2.release() );
     }
     else if ( identifier == 118 )
     {
-      qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->setColor( QColor( 0, 0, 0 ) );
-      qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->setWidth( 0 );
+      qgis::down_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) )->setColor( QColor( 0, 0, 0 ) );
+      qgis::down_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) )->setWidth( 0 );
       symbol->symbolLayer( 0 )->setLocked( true );
 
-      std::unique_ptr<QgsSimpleLineSymbolLayer > secondRail( qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->clone() );
+      std::unique_ptr<QgsSimpleLineSymbolLayer> secondRail( qgis::down_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) )->clone() );
       const double offset = 2 * size;
-      qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->setOffset( offset );
-      qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->setOffsetUnit( sizeUnit );
+      qgis::down_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) )->setOffset( offset );
+      qgis::down_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) )->setOffsetUnit( sizeUnit );
       secondRail->setOffset( -offset );
       secondRail->setOffsetUnit( sizeUnit );
 
@@ -499,7 +499,7 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
         break;
     }
 
-    std::unique_ptr< QgsHashedLineSymbolLayer > hash = std::make_unique< QgsHashedLineSymbolLayer >();
+    std::unique_ptr<QgsHashedLineSymbolLayer> hash = std::make_unique<QgsHashedLineSymbolLayer>();
     hash->setInterval( spacing * size * 2 );
     hash->setIntervalUnit( sizeUnit );
 
@@ -509,14 +509,14 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
     hash->setHashLength( 3.5 * size * 0.5 );
     hash->setHashLengthUnit( sizeUnit );
 
-    std::unique_ptr< QgsSimpleLineSymbolLayer > subSimpleLine = std::make_unique< QgsSimpleLineSymbolLayer >( foreColor, size );
+    std::unique_ptr<QgsSimpleLineSymbolLayer> subSimpleLine = std::make_unique<QgsSimpleLineSymbolLayer>( foreColor, size );
     subSimpleLine->setWidthUnit( sizeUnit );
     subSimpleLine->setPenCapStyle( Qt::RoundCap );
     subSimpleLine->setPenJoinStyle( Qt::RoundJoin );
 
-    std::unique_ptr< QgsLineSymbol > subSymbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << subSimpleLine.release() );
+    std::unique_ptr<QgsLineSymbol> subSymbol = std::make_unique<QgsLineSymbol>( QgsSymbolLayerList() << subSimpleLine.release() );
     hash->setSubSymbol( subSymbol.release() );
-    std::unique_ptr< QgsHashedLineSymbolLayer > hash2( hash->clone() );
+    std::unique_ptr<QgsHashedLineSymbolLayer> hash2( hash->clone() );
 
     hash->setOffset( -hash->hashLength() );
     hash->setOffsetUnit( hash->hashLengthUnit() );
@@ -535,8 +535,8 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
       case 30:
       case 35:
       {
-        std::unique_ptr< QgsHashedLineSymbolLayer > hash3( hash->clone() );
-        std::unique_ptr< QgsHashedLineSymbolLayer > hash4( hash2->clone() );
+        std::unique_ptr<QgsHashedLineSymbolLayer> hash3( hash->clone() );
+        std::unique_ptr<QgsHashedLineSymbolLayer> hash4( hash2->clone() );
 
         hash->setOffsetAlongLine( hash->offsetAlongLine() - size );
         hash3->setOffsetAlongLine( hash3->offsetAlongLine() + size );
@@ -553,7 +553,7 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
   }
   else if ( ( identifier >= 38 && identifier < 41 ) || ( identifier >= 54 && identifier <= 61 ) || ( identifier >= 78 && identifier <= 109 ) || ( identifier >= 114 && identifier <= 117 ) )
   {
-    std::unique_ptr< QgsMarkerLineSymbolLayer > marker = std::make_unique< QgsMarkerLineSymbolLayer >();
+    std::unique_ptr<QgsMarkerLineSymbolLayer> marker = std::make_unique<QgsMarkerLineSymbolLayer>();
 
     double spacing = 1;
     double offset = 1;
@@ -805,20 +805,20 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
 
     if ( identifier >= 78 && identifier <= 109 )
     {
-      qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->setColor( QColor( 0, 0, 0 ) );
-      qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->setWidth( 0 );
+      qgis::down_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) )->setColor( QColor( 0, 0, 0 ) );
+      qgis::down_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) )->setWidth( 0 );
       symbol->symbolLayer( 0 )->setLocked( true );
 
-      if ( ( identifier >= 84 && identifier <= 85 ) || ( identifier >= 92 && identifier <= 93 ) || ( identifier >= 100 && identifier <= 101 )  || ( identifier >= 108 && identifier <= 109 ) )
+      if ( ( identifier >= 84 && identifier <= 85 ) || ( identifier >= 92 && identifier <= 93 ) || ( identifier >= 100 && identifier <= 101 ) || ( identifier >= 108 && identifier <= 109 ) )
       {
-        std::unique_ptr<QgsSimpleLineSymbolLayer > secondRail( qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->clone() );
+        std::unique_ptr<QgsSimpleLineSymbolLayer> secondRail( qgis::down_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) )->clone() );
 
         double offset = 2 * size;
         if ( identifier == 85 || identifier == 93 || identifier == 101 || identifier == 109 )
           offset = 3 * size;
 
-        qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->setOffset( offset );
-        qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->setOffsetUnit( sizeUnit );
+        qgis::down_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) )->setOffset( offset );
+        qgis::down_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) )->setOffsetUnit( sizeUnit );
         secondRail->setOffset( -offset );
         secondRail->setOffsetUnit( sizeUnit );
 
@@ -837,7 +837,7 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
     marker->setOffset( lineOffset * size );
     marker->setOffsetUnit( sizeUnit );
 
-    std::unique_ptr< QgsSimpleMarkerSymbolLayer > subSimpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >( shape, markerSize * size );
+    std::unique_ptr<QgsSimpleMarkerSymbolLayer> subSimpleMarker = std::make_unique<QgsSimpleMarkerSymbolLayer>( shape, markerSize * size );
     subSimpleMarker->setColor( foreColor );
     subSimpleMarker->setSizeUnit( sizeUnit );
     subSimpleMarker->setStrokeWidth( size );
@@ -856,36 +856,36 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
       subSimpleMarker->setStrokeStyle( Qt::NoPen );
     }
 
-    std::unique_ptr< QgsMarkerSymbol > subSymbol = std::make_unique< QgsMarkerSymbol >( QgsSymbolLayerList() << subSimpleMarker.release() );
+    std::unique_ptr<QgsMarkerSymbol> subSymbol = std::make_unique<QgsMarkerSymbol>( QgsSymbolLayerList() << subSimpleMarker.release() );
     marker->setSubSymbol( subSymbol.release() );
 
     if ( identifier == 56 )
     {
-      std::unique_ptr< QgsMarkerLineSymbolLayer > marker2( marker->clone() );
+      std::unique_ptr<QgsMarkerLineSymbolLayer> marker2( marker->clone() );
       marker2->setOffsetAlongLine( 19 * size );
-      qgis::down_cast< QgsMarkerSymbol * >( marker2->subSymbol() )->setAngle( 0 );
+      qgis::down_cast<QgsMarkerSymbol *>( marker2->subSymbol() )->setAngle( 0 );
       symbol->appendSymbolLayer( marker2.release() );
     }
     else if ( identifier == 61 )
     {
-      std::unique_ptr< QgsMarkerLineSymbolLayer > marker2( marker->clone() );
+      std::unique_ptr<QgsMarkerLineSymbolLayer> marker2( marker->clone() );
       marker2->setPlacements( Qgis::MarkerLinePlacement::FirstVertex );
-      qgis::down_cast< QgsMarkerSymbol * >( marker2->subSymbol() )->setAngle( 180 );
+      qgis::down_cast<QgsMarkerSymbol *>( marker2->subSymbol() )->setAngle( 180 );
       symbol->appendSymbolLayer( marker2.release() );
     }
     else if ( identifier == 80 || identifier == 88 || identifier == 96 || identifier == 104 )
     {
-      std::unique_ptr< QgsMarkerLineSymbolLayer > marker2( marker->clone() );
+      std::unique_ptr<QgsMarkerLineSymbolLayer> marker2( marker->clone() );
       marker2->setPlacements( Qgis::MarkerLinePlacement::LastVertex );
-      qgis::down_cast< QgsMarkerSymbol * >( marker2->subSymbol() )->setAngle( 180 );
+      qgis::down_cast<QgsMarkerSymbol *>( marker2->subSymbol() )->setAngle( 180 );
       symbol->appendSymbolLayer( marker2.release() );
     }
 
     if ( identifier == 116 )
     {
-      std::unique_ptr< QgsMarkerLineSymbolLayer > marker2( marker->clone() );
+      std::unique_ptr<QgsMarkerLineSymbolLayer> marker2( marker->clone() );
 
-      qgis::down_cast< QgsSimpleMarkerSymbolLayer * >( marker2->subSymbol()->symbolLayer( 0 ) )->setShape( Qgis::MarkerShape::EquilateralTriangle );
+      qgis::down_cast<QgsSimpleMarkerSymbolLayer *>( marker2->subSymbol()->symbolLayer( 0 ) )->setShape( Qgis::MarkerShape::EquilateralTriangle );
       marker2->setOffsetAlongLine( 16 * size );
       marker2->setOffset( -1.5 * size );
       symbol->appendSymbolLayer( marker2.release() );
@@ -896,25 +896,25 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
   else if ( identifier >= 41 && identifier < 45 )
   {
     const int count = identifier - 40;
-    QgsSimpleLineSymbolLayer *simpleLine = dynamic_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) );
-    simpleLine->setCustomDashVector( QVector< qreal >() <<  0 << 5.25 * size << 4 * size << ( 3.25 * size  + ( count - 1 ) * ( 7.25 * size ) ) );
+    QgsSimpleLineSymbolLayer *simpleLine = dynamic_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) );
+    simpleLine->setCustomDashVector( QVector<qreal>() << 0 << 5.25 * size << 4 * size << ( 3.25 * size + ( count - 1 ) * ( 7.25 * size ) ) );
     simpleLine->setCustomDashPatternUnit( sizeUnit );
     simpleLine->setUseCustomDashPattern( true );
 
-    for ( int i = 1 ; i < count; ++i )
+    for ( int i = 1; i < count; ++i )
     {
-      std::unique_ptr< QgsSimpleLineSymbolLayer > dashLine( simpleLine->clone() );
+      std::unique_ptr<QgsSimpleLineSymbolLayer> dashLine( simpleLine->clone() );
 
-      dashLine->setCustomDashVector( QVector< qreal >() <<  0 << 5.25 * size + ( i * 7.25 * size ) << 4 * size << ( 3.25 * size  + ( count - 1 - i ) * ( 7.25 * size ) ) );
+      dashLine->setCustomDashVector( QVector<qreal>() << 0 << 5.25 * size + ( i * 7.25 * size ) << 4 * size << ( 3.25 * size + ( count - 1 - i ) * ( 7.25 * size ) ) );
       symbol->appendSymbolLayer( dashLine.release() );
     }
 
-    std::unique_ptr< QgsSimpleLineSymbolLayer > simpleLine2 = std::make_unique< QgsSimpleLineSymbolLayer >( foreColor, 1.6 * size );
+    std::unique_ptr<QgsSimpleLineSymbolLayer> simpleLine2 = std::make_unique<QgsSimpleLineSymbolLayer>( foreColor, 1.6 * size );
     simpleLine2->setWidthUnit( sizeUnit );
     simpleLine2->setPenCapStyle( Qt::RoundCap );
     simpleLine2->setPenJoinStyle( Qt::RoundJoin );
 
-    simpleLine2->setCustomDashVector( QVector< qreal >() << 2 * size << 10.5 * size + ( count - 1 ) * ( 7.25 * size ) );
+    simpleLine2->setCustomDashVector( QVector<qreal>() << 2 * size << 10.5 * size + ( count - 1 ) * ( 7.25 * size ) );
     simpleLine2->setUseCustomDashPattern( true );
     simpleLine2->setCustomDashPatternUnit( sizeUnit );
 
@@ -922,12 +922,12 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
   }
   else if ( identifier == 45 )
   {
-    std::unique_ptr< QgsSimpleLineSymbolLayer > simpleLine2 = std::make_unique< QgsSimpleLineSymbolLayer >( foreColor, 1.6 * size );
+    std::unique_ptr<QgsSimpleLineSymbolLayer> simpleLine2 = std::make_unique<QgsSimpleLineSymbolLayer>( foreColor, 1.6 * size );
     simpleLine2->setWidthUnit( sizeUnit );
     simpleLine2->setPenCapStyle( Qt::RoundCap );
     simpleLine2->setPenJoinStyle( Qt::RoundJoin );
 
-    simpleLine2->setCustomDashVector( QVector< qreal >() << 0 << 2 * size << 1.25 * size << 6.5 * size );
+    simpleLine2->setCustomDashVector( QVector<qreal>() << 0 << 2 * size << 1.25 * size << 6.5 * size );
     simpleLine2->setUseCustomDashPattern( true );
     simpleLine2->setCustomDashPatternUnit( sizeUnit );
 
@@ -935,7 +935,7 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
   }
   else if ( identifier == 46 )
   {
-    std::unique_ptr< QgsHashedLineSymbolLayer > hashLine = std::make_unique< QgsHashedLineSymbolLayer >();
+    std::unique_ptr<QgsHashedLineSymbolLayer> hashLine = std::make_unique<QgsHashedLineSymbolLayer>();
 
     hashLine->setInterval( 4 * size );
     hashLine->setIntervalUnit( sizeUnit );
@@ -946,16 +946,16 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
 
     hashLine->setSubSymbol( symbol.release() );
 
-    symbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << hashLine.release() );
+    symbol = std::make_unique<QgsLineSymbol>( QgsSymbolLayerList() << hashLine.release() );
   }
   else if ( identifier == 62 )
   {
-    std::unique_ptr< QgsMarkerLineSymbolLayer > markerLine = std::make_unique< QgsMarkerLineSymbolLayer >();
+    std::unique_ptr<QgsMarkerLineSymbolLayer> markerLine = std::make_unique<QgsMarkerLineSymbolLayer>();
     markerLine->setPlacements( Qgis::MarkerLinePlacement::FirstVertex );
     markerLine->setOffsetAlongLine( 2 * size );
     markerLine->setOffsetAlongLineUnit( sizeUnit );
 
-    std::unique_ptr< QgsSimpleMarkerSymbolLayer > subSimpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >( Qgis::MarkerShape::Line, size * 4 );
+    std::unique_ptr<QgsSimpleMarkerSymbolLayer> subSimpleMarker = std::make_unique<QgsSimpleMarkerSymbolLayer>( Qgis::MarkerShape::Line, size * 4 );
     subSimpleMarker->setColor( foreColor );
     subSimpleMarker->setSizeUnit( sizeUnit );
     subSimpleMarker->setStrokeWidth( 1.25 * size );
@@ -965,24 +965,24 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
     subSimpleMarker->setPenJoinStyle( Qt::RoundJoin );
     subSimpleMarker->setPenCapStyle( Qt::RoundCap );
 
-    std::unique_ptr< QgsMarkerSymbol > subSymbol = std::make_unique< QgsMarkerSymbol >( QgsSymbolLayerList() << subSimpleMarker.release() );
+    std::unique_ptr<QgsMarkerSymbol> subSymbol = std::make_unique<QgsMarkerSymbol>( QgsSymbolLayerList() << subSimpleMarker.release() );
     markerLine->setSubSymbol( subSymbol.release() );
 
     symbol->appendSymbolLayer( markerLine.release() );
   }
   else if ( ( identifier >= 63 && identifier <= 69 ) || ( identifier >= 72 && identifier <= 77 ) )
   {
-    std::unique_ptr< QgsSimpleLineSymbolLayer > upperLine( qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->clone() );
+    std::unique_ptr<QgsSimpleLineSymbolLayer> upperLine( qgis::down_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) )->clone() );
     upperLine->setUseCustomDashPattern( false );
 
-    if ( identifier < 65  || ( identifier >= 68 && identifier <= 69 ) || identifier == 73 )
+    if ( identifier < 65 || ( identifier >= 68 && identifier <= 69 ) || identifier == 73 )
     {
       upperLine->setColor( QColor( 255, 255, 255 ) );
       upperLine->setLocked( true );
     }
     else if ( identifier < 67 || identifier == 72 || identifier == 75 || identifier == 76 )
     {
-      qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->setColor( QColor( 0, 0, 0 ) );
+      qgis::down_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) )->setColor( QColor( 0, 0, 0 ) );
       symbol->symbolLayer( 0 )->setLocked( true );
     }
     else if ( identifier <= 69 || identifier == 77 )
@@ -998,20 +998,20 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
 
     if ( identifier >= 73 && identifier <= 75 )
     {
-      upperLine->setCustomDashVector( QVector< qreal >() << 0 << 10 * size << 12 * size << 2 * size );
+      upperLine->setCustomDashVector( QVector<qreal>() << 0 << 10 * size << 12 * size << 2 * size );
       upperLine->setUseCustomDashPattern( true );
       upperLine->setCustomDashPatternUnit( sizeUnit );
     }
     else if ( identifier == 76 )
     {
-      upperLine->setCustomDashVector( QVector< qreal >() << 0 << 10 * size << 24 * size << 14 * size );
+      upperLine->setCustomDashVector( QVector<qreal>() << 0 << 10 * size << 24 * size << 14 * size );
       upperLine->setUseCustomDashPattern( true );
       upperLine->setCustomDashPatternUnit( sizeUnit );
     }
 
     if ( identifier == 75 || identifier == 76 )
     {
-      std::unique_ptr< QgsSimpleLineSymbolLayer > middleLine = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 255, 255, 255 ), upperLine->width() );
+      std::unique_ptr<QgsSimpleLineSymbolLayer> middleLine = std::make_unique<QgsSimpleLineSymbolLayer>( QColor( 255, 255, 255 ), upperLine->width() );
       middleLine->setWidthUnit( sizeUnit );
       middleLine->setLocked( true );
       middleLine->setPenCapStyle( Qt::RoundCap );
@@ -1029,7 +1029,7 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
 
     if ( identifier == 64 || identifier == 66 )
     {
-      std::unique_ptr< QgsSimpleLineSymbolLayer > middleLine = std::make_unique< QgsSimpleLineSymbolLayer >( identifier == 64 ? foreColor : QColor( 0, 0, 0 ), 0 );
+      std::unique_ptr<QgsSimpleLineSymbolLayer> middleLine = std::make_unique<QgsSimpleLineSymbolLayer>( identifier == 64 ? foreColor : QColor( 0, 0, 0 ), 0 );
       if ( identifier == 66 )
         middleLine->setLocked( true );
 
@@ -1042,9 +1042,9 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
 
     else if ( identifier == 69 )
     {
-      std::unique_ptr< QgsHashedLineSymbolLayer > hashedLine = std::make_unique< QgsHashedLineSymbolLayer >();
+      std::unique_ptr<QgsHashedLineSymbolLayer> hashedLine = std::make_unique<QgsHashedLineSymbolLayer>();
 
-      std::unique_ptr< QgsSimpleLineSymbolLayer > middleLine = std::make_unique< QgsSimpleLineSymbolLayer >( foreColor, 0 );
+      std::unique_ptr<QgsSimpleLineSymbolLayer> middleLine = std::make_unique<QgsSimpleLineSymbolLayer>( foreColor, 0 );
       hashedLine->setSubSymbol( new QgsLineSymbol( { middleLine.release() } ) );
       hashedLine->setInterval( 18 * size );
       hashedLine->setIntervalUnit( sizeUnit );
@@ -1061,12 +1061,12 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
     }
     else if ( identifier == 77 )
     {
-      std::unique_ptr< QgsSimpleLineSymbolLayer > middleLine = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 255, 255, 255 ), qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 1 ) )->width() );
+      std::unique_ptr<QgsSimpleLineSymbolLayer> middleLine = std::make_unique<QgsSimpleLineSymbolLayer>( QColor( 255, 255, 255 ), qgis::down_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 1 ) )->width() );
       middleLine->setWidthUnit( sizeUnit );
       middleLine->setLocked( true );
       middleLine->setPenCapStyle( Qt::RoundCap );
       middleLine->setPenJoinStyle( Qt::RoundJoin );
-      middleLine->setCustomDashVector( QVector< qreal >() << 0 << 10 * size << 12 * size << 2 * size );
+      middleLine->setCustomDashVector( QVector<qreal>() << 0 << 10 * size << 12 * size << 2 * size );
       middleLine->setUseCustomDashPattern( true );
       middleLine->setCustomDashPatternUnit( sizeUnit );
       if ( interleaved )
@@ -1078,18 +1078,18 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
   }
   else if ( identifier >= 70 && identifier <= 71 )
   {
-    qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->setColor( QColor( 0, 0, 0 ) );
-    qgis::down_cast< QgsSimpleLineSymbolLayer * >( symbol->symbolLayer( 0 ) )->setLocked( true );
+    qgis::down_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) )->setColor( QColor( 0, 0, 0 ) );
+    qgis::down_cast<QgsSimpleLineSymbolLayer *>( symbol->symbolLayer( 0 ) )->setLocked( true );
 
-    std::unique_ptr< QgsSimpleLineSymbolLayer > simpleLine2 = std::make_unique< QgsSimpleLineSymbolLayer >( foreColor, size );
+    std::unique_ptr<QgsSimpleLineSymbolLayer> simpleLine2 = std::make_unique<QgsSimpleLineSymbolLayer>( foreColor, size );
     simpleLine2->setWidthUnit( sizeUnit );
     simpleLine2->setPenCapStyle( Qt::RoundCap );
     simpleLine2->setPenJoinStyle( Qt::RoundJoin );
 
     if ( identifier == 70 )
-      simpleLine2->setCustomDashVector( QVector< qreal >() << 0 << 12 * size << 12 * size << 0 );
+      simpleLine2->setCustomDashVector( QVector<qreal>() << 0 << 12 * size << 12 * size << 0 );
     else if ( identifier == 71 )
-      simpleLine2->setCustomDashVector( QVector< qreal >() << 0 << 16 * size << 12 * size << 4 * size );
+      simpleLine2->setCustomDashVector( QVector<qreal>() << 0 << 16 * size << 12 * size << 4 * size );
 
     simpleLine2->setUseCustomDashPattern( true );
     simpleLine2->setCustomDashPatternUnit( sizeUnit );
@@ -1354,7 +1354,7 @@ QgsFillSymbol *QgsMapInfoSymbolConverter::convertFillSymbol( int identifier, Qgs
   QgsSymbolLayerList layers;
   if ( backColor.isValid() && style != Qt::SolidPattern && ( useLineFill || style != Qt::NoBrush ) )
   {
-    std::unique_ptr< QgsSimpleFillSymbolLayer > backgroundFill = std::make_unique< QgsSimpleFillSymbolLayer >( backColor );
+    std::unique_ptr<QgsSimpleFillSymbolLayer> backgroundFill = std::make_unique<QgsSimpleFillSymbolLayer>( backColor );
     backgroundFill->setLocked( true );
     backgroundFill->setStrokeStyle( Qt::NoPen );
     layers << backgroundFill.release();
@@ -1362,16 +1362,16 @@ QgsFillSymbol *QgsMapInfoSymbolConverter::convertFillSymbol( int identifier, Qgs
 
   if ( !useLineFill )
   {
-    std::unique_ptr< QgsSimpleFillSymbolLayer > foregroundFill = std::make_unique< QgsSimpleFillSymbolLayer >( foreColor );
+    std::unique_ptr<QgsSimpleFillSymbolLayer> foregroundFill = std::make_unique<QgsSimpleFillSymbolLayer>( foreColor );
     foregroundFill->setBrushStyle( style );
     foregroundFill->setStrokeStyle( Qt::NoPen );
     layers << foregroundFill.release();
   }
   else
   {
-    std::unique_ptr< QgsLinePatternFillSymbolLayer > lineFill = std::make_unique< QgsLinePatternFillSymbolLayer >();
+    std::unique_ptr<QgsLinePatternFillSymbolLayer> lineFill = std::make_unique<QgsLinePatternFillSymbolLayer>();
 
-    std::unique_ptr< QgsSimpleLineSymbolLayer > simpleLine = std::make_unique< QgsSimpleLineSymbolLayer >( foreColor, lineWidth );
+    std::unique_ptr<QgsSimpleLineSymbolLayer> simpleLine = std::make_unique<QgsSimpleLineSymbolLayer>( foreColor, lineWidth );
     simpleLine->setWidthUnit( Qgis::RenderUnit::Points );
     lineFill->setSubSymbol( new QgsLineSymbol( QgsSymbolLayerList() << simpleLine.release() ) );
 
@@ -1381,7 +1381,7 @@ QgsFillSymbol *QgsMapInfoSymbolConverter::convertFillSymbol( int identifier, Qgs
 
     if ( crossFill )
     {
-      std::unique_ptr< QgsLinePatternFillSymbolLayer > lineFill2( lineFill->clone() );
+      std::unique_ptr<QgsLinePatternFillSymbolLayer> lineFill2( lineFill->clone() );
       lineFill2->setLineAngle( lineFill->lineAngle() + 90 );
       layers << lineFill2.release();
     }
@@ -1513,7 +1513,7 @@ QgsMarkerSymbol *QgsMapInfoSymbolConverter::convertMarkerSymbol( int identifier,
       return nullptr;
   }
 
-  std::unique_ptr< QgsSimpleMarkerSymbolLayer > simpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >( shape, size );
+  std::unique_ptr<QgsSimpleMarkerSymbolLayer> simpleMarker = std::make_unique<QgsSimpleMarkerSymbolLayer>( shape, size );
   simpleMarker->setSizeUnit( sizeUnit );
   simpleMarker->setAngle( angle );
   simpleMarker->setVerticalAnchorPoint( vertAlign );
@@ -1539,7 +1539,7 @@ QgsMarkerSymbol *QgsMapInfoSymbolConverter::convertMarkerSymbol( int identifier,
   QgsSymbolLayerList symbols;
   if ( hasShadow )
   {
-    std::unique_ptr< QgsSimpleMarkerSymbolLayer > shadow( simpleMarker->clone() );
+    std::unique_ptr<QgsSimpleMarkerSymbolLayer> shadow( simpleMarker->clone() );
     shadow->setColor( QColor( 0, 0, 0 ) );
     shadow->setLocked( true );
     shadow->setOffset( shadowOffset );
@@ -1552,7 +1552,7 @@ QgsMarkerSymbol *QgsMapInfoSymbolConverter::convertMarkerSymbol( int identifier,
   {
     if ( identifier == 51 )
     {
-      std::unique_ptr< QgsSimpleMarkerSymbolLayer > second( simpleMarker->clone() );
+      std::unique_ptr<QgsSimpleMarkerSymbolLayer> second( simpleMarker->clone() );
       second->setShape( Qgis::MarkerShape::Cross2 );
       symbols << second.release();
     }

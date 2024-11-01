@@ -45,7 +45,7 @@
  *
  * \see QgsPointXY
  */
-class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
+class CORE_EXPORT QgsPoint : public QgsAbstractGeometry
 {
     Q_GADGET
 
@@ -55,7 +55,6 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     Q_PROPERTY( double m READ m WRITE setM )
 
   public:
-
     /**
      * Construct a point with the provided initial coordinate values.
      *
@@ -85,9 +84,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 #ifndef SIP_RUN
     QgsPoint( double x = std::numeric_limits<double>::quiet_NaN(), double y = std::numeric_limits<double>::quiet_NaN(), double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN(), Qgis::WkbType wkbType = Qgis::WkbType::Unknown );
 #else
-    QgsPoint( SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QPointF, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT z SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT m SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT wkbType SIP_TYPEHINT( Optional[int] ) = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, Qgis::WkbType wkbType = Qgis::WkbType::Unknown )];
-    % MethodCode
-    if ( sipCanConvertToType( a0, sipType_QgsPointXY, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
+    QgsPoint( SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QPointF, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT z SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT m SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT wkbType SIP_TYPEHINT( Optional[int] ) = Py_None )[( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, Qgis::WkbType wkbType = Qgis::WkbType::Unknown )];
+    % MethodCode if ( sipCanConvertToType( a0, sipType_QgsPointXY, SIP_NOT_NONE ) && a1 == Py_None && a2 == Py_None && a3 == Py_None && a4 == Py_None )
     {
       int state;
       sipIsErr = 0;
@@ -118,10 +116,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
       }
     }
     else if (
-      ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) &&
-      ( a1 == Py_None || PyFloat_AsDouble( a1 ) != -1.0 || !PyErr_Occurred() ) &&
-      ( a2 == Py_None || PyFloat_AsDouble( a2 ) != -1.0 || !PyErr_Occurred() ) &&
-      ( a3 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) )
+      ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) && ( a1 == Py_None || PyFloat_AsDouble( a1 ) != -1.0 || !PyErr_Occurred() ) && ( a2 == Py_None || PyFloat_AsDouble( a2 ) != -1.0 || !PyErr_Occurred() ) && ( a3 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) )
     {
       double x = a0 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a0 );
       double y = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
@@ -166,7 +161,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
                       std::function<bool( double, double, double, double, double, double, double )> comparatorMeasure,
                       std::function<bool( double, double, double, double, double )> comparator2D ) const
     {
-      const QgsPoint *pt = qgsgeometry_cast< const QgsPoint * >( &other );
+      const QgsPoint *pt = qgsgeometry_cast<const QgsPoint *>( &other );
       if ( !pt )
         return false;
 
@@ -195,59 +190,51 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     bool fuzzyEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
     {
       return fuzzyHelper(
-               epsilon,
-               other,
-               is3D(),
-               isMeasure(),
-               []( double epsilon, double x1, double y1, double z1, double m1,
-                   double x2, double y2, double z2, double m2 )
-      {
-        return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, z1, m1, x2, y2, z2, m2 );
-      },
-      []( double epsilon, double x1, double y1, double z1,
-          double x2, double y2, double z2 )
-      {
-        return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, z1, x2, y2, z2 );
-      },
-      []( double epsilon, double x1, double y1, double m1,
-          double x2, double y2, double m2 )
-      {
-        return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, m1, x2, y2, m2 );
-      },
-      []( double epsilon, double x1, double y1,
-          double x2, double y2 )
-      {
-        return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, x2, y2 );
-      } );
+        epsilon,
+        other,
+        is3D(),
+        isMeasure(),
+        []( double epsilon, double x1, double y1, double z1, double m1,
+            double x2, double y2, double z2, double m2 ) {
+          return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, z1, m1, x2, y2, z2, m2 );
+        },
+        []( double epsilon, double x1, double y1, double z1,
+            double x2, double y2, double z2 ) {
+          return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, z1, x2, y2, z2 );
+        },
+        []( double epsilon, double x1, double y1, double m1,
+            double x2, double y2, double m2 ) {
+          return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, m1, x2, y2, m2 );
+        },
+        []( double epsilon, double x1, double y1,
+            double x2, double y2 ) {
+          return QgsGeometryUtilsBase::fuzzyEqual( epsilon, x1, y1, x2, y2 );
+        } );
     }
 
     bool fuzzyDistanceEqual( const QgsAbstractGeometry &other, double epsilon = 1e-8 ) const override SIP_HOLDGIL
     {
       return fuzzyHelper(
-               epsilon,
-               other,
-               is3D(),
-               isMeasure(),
-               []( double epsilon, double x1, double y1, double z1, double m1,
-                   double x2, double y2, double z2, double m2 )
-      {
-        return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, z1, m1, x2, y2, z2, m2 );
-      },
-      []( double epsilon, double x1, double y1, double z1,
-          double x2, double y2, double z2 )
-      {
-        return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, z1, x2, y2, z2 );
-      },
-      []( double epsilon, double x1, double y1, double m1,
-          double x2, double y2, double m2 )
-      {
-        return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, m1, x2, y2, m2 );
-      },
-      []( double epsilon, double x1, double y1,
-          double x2, double y2 )
-      {
-        return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, x2, y2 );
-      } );
+        epsilon,
+        other,
+        is3D(),
+        isMeasure(),
+        []( double epsilon, double x1, double y1, double z1, double m1,
+            double x2, double y2, double z2, double m2 ) {
+          return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, z1, m1, x2, y2, z2, m2 );
+        },
+        []( double epsilon, double x1, double y1, double z1,
+            double x2, double y2, double z2 ) {
+          return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, z1, x2, y2, z2 );
+        },
+        []( double epsilon, double x1, double y1, double m1,
+            double x2, double y2, double m2 ) {
+          return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, m1, x2, y2, m2 );
+        },
+        []( double epsilon, double x1, double y1,
+            double x2, double y2 ) {
+          return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, x1, y1, x2, y2 );
+        } );
     }
 
     bool operator==( const QgsAbstractGeometry &other ) const override SIP_HOLDGIL
@@ -295,7 +282,11 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see setX()
      * \note not available in Python bindings
      */
-    double &rx() SIP_SKIP { clearCache(); return mX; }
+    double &rx() SIP_SKIP
+    {
+      clearCache();
+      return mX;
+    }
 
     /**
      * Returns a reference to the y-coordinate of this point.
@@ -304,7 +295,11 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see setY()
      * \note not available in Python bindings
      */
-    double &ry() SIP_SKIP { clearCache(); return mY; }
+    double &ry() SIP_SKIP
+    {
+      clearCache();
+      return mY;
+    }
 
     /**
      * Returns a reference to the z-coordinate of this point.
@@ -313,7 +308,11 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see setZ()
      * \note not available in Python bindings
      */
-    double &rz() SIP_SKIP { clearCache(); return mZ; }
+    double &rz() SIP_SKIP
+    {
+      clearCache();
+      return mZ;
+    }
 
     /**
      * Returns a reference to the m value of this point.
@@ -322,7 +321,11 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see setM()
      * \note not available in Python bindings
      */
-    double &rm() SIP_SKIP { clearCache(); return mM; }
+    double &rm() SIP_SKIP
+    {
+      clearCache();
+      return mM;
+    }
 
     /**
      * Sets the point's x-coordinate.
@@ -538,22 +541,44 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     /**
      * Adds a vector to this point in place.
      */
-    QgsPoint &operator+=( QgsVector v ) SIP_HOLDGIL { mX += v.x(); mY += v.y(); return *this; }
+    QgsPoint &operator+=( QgsVector v ) SIP_HOLDGIL
+    {
+      mX += v.x();
+      mY += v.y();
+      return *this;
+    }
 
     /**
      * Subtracts a vector from this point in place.
      */
-    QgsPoint &operator-=( QgsVector v ) SIP_HOLDGIL { mX -= v.x(); mY -= v.y(); return *this; }
+    QgsPoint &operator-=( QgsVector v ) SIP_HOLDGIL
+    {
+      mX -= v.x();
+      mY -= v.y();
+      return *this;
+    }
 
     /**
      * Adds a vector to this point.
      */
-    QgsPoint operator+( QgsVector v ) const SIP_HOLDGIL { QgsPoint r = *this; r.rx() += v.x(); r.ry() += v.y(); return r; }
+    QgsPoint operator+( QgsVector v ) const SIP_HOLDGIL
+    {
+      QgsPoint r = *this;
+      r.rx() += v.x();
+      r.ry() += v.y();
+      return r;
+    }
 
     /**
      * Subtracts a vector from this point.
      */
-    QgsPoint operator-( QgsVector v ) const SIP_HOLDGIL { QgsPoint r = *this; r.rx() -= v.x(); r.ry() -= v.y(); return r; }
+    QgsPoint operator-( QgsVector v ) const SIP_HOLDGIL
+    {
+      QgsPoint r = *this;
+      r.rx() -= v.x();
+      r.ry() -= v.y();
+      return r;
+    }
 
     //implementation of inherited methods
     void normalize() final SIP_HOLDGIL;
@@ -621,8 +646,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
 #ifndef SIP_RUN
 
-    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
-    void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
+    void filterVertices( const std::function<bool( const QgsPoint & )> &filter ) override;
+    void transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform ) override;
 
     /**
      * Cast the \a geom to a QgsPoint.
@@ -643,14 +668,16 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsPoint: %1>" ).arg( sipCpp->asWkt() );
+        QString str
+      = QStringLiteral( "<QgsPoint: %1>" ).arg( sipCpp->asWkt() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-  protected:
+      protected :
 
-    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
+      int
+      compareToSameClass( const QgsAbstractGeometry *other ) const final;
     int childCount() const override;
     QgsPoint childPoint( int index ) const override;
 

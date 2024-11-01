@@ -37,7 +37,7 @@ class QgsMapClippingRegion;
 typedef QList<int> QgsAttributeList;
 
 #include "qgis_sip.h"
-#include "qgsfields.h"  // QgsFields
+#include "qgsfields.h" // QgsFields
 #include "qgsfeatureiterator.h"
 #include "qgsvectorsimplifymethod.h"
 #include "qgsfeedback.h"
@@ -75,7 +75,6 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     void setLayerRenderingTimeHint( int time ) override;
 
   private:
-
     /**
      * Registers label and diagram layer
      * \param layer diagram layer
@@ -101,7 +100,6 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     bool renderInternal( QgsFeatureRenderer *renderer, int rendererIndex );
 
   private:
-
     std::unique_ptr<QgsFeedback> mFeedback = nullptr;
 
     //! The rendered layer
@@ -114,10 +112,10 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QString mTemporalFilter;
 
-    std::unique_ptr< QgsVectorLayerFeatureSource > mSource;
+    std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
 
     QgsFeatureRenderer *mRenderer = nullptr;
-    std::vector< std::unique_ptr< QgsFeatureRenderer> > mRenderers;
+    std::vector<std::unique_ptr<QgsFeatureRenderer>> mRenderers;
 
     bool mDrawVertexMarkers;
     bool mVertexMarkerOnlyForSelection;
@@ -145,7 +143,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     QgsVectorSimplifyMethod mSimplifyMethod;
     bool mSimplifyGeometry;
 
-    QList< QgsMapClippingRegion > mClippingRegions;
+    QList<QgsMapClippingRegion> mClippingRegions;
     QgsGeometry mClipFilterGeom;
     bool mApplyClipFilter = false;
     QgsGeometry mClipFeatureGeom;
@@ -163,8 +161,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     bool mEnableProfile = false;
     quint64 mPreparationTime = 0;
 
-    std::unique_ptr< QgsSymbol > mSelectionSymbol;
-
+    std::unique_ptr<QgsSymbol> mSelectionSymbol;
 };
 
 

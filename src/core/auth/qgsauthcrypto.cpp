@@ -90,9 +90,9 @@ void QgsAuthCrypto::passwordKeyHash( const QString &pass, QString *salt, QString
 }
 
 bool QgsAuthCrypto::verifyPasswordKeyHash( const QString &pass,
-    const QString &salt,
-    const QString &hash,
-    QString *hashderived )
+                                           const QString &salt,
+                                           const QString &hash,
+                                           QString *hashderived )
 {
   if ( QgsAuthCrypto::isDisabled() )
     return false;

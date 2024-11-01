@@ -36,7 +36,6 @@
 class CORE_EXPORT QgsReportSectionContext
 {
   public:
-
     //! Current feature
     QgsFeature feature;
 
@@ -56,12 +55,11 @@ class CORE_EXPORT QgsReportSectionContext
  */
 class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast< QgsReportSectionFieldGroup * >( sipCpp ) )
+    if ( dynamic_cast<QgsReportSectionFieldGroup *>( sipCpp ) )
       sipType = sipType_QgsReportSectionFieldGroup;
-    else if ( dynamic_cast< QgsReportSectionLayout * >( sipCpp ) )
+    else if ( dynamic_cast<QgsReportSectionLayout *>( sipCpp ) )
       sipType = sipType_QgsReportSectionLayout;
     else
       sipType = NULL;
@@ -69,7 +67,6 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
 #endif
 
   public:
-
     /**
      * Constructor for QgsAbstractReportSection, attached to the specified \a parent section.
      * Note that ownership is not transferred to \a parent.
@@ -150,7 +147,11 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      *
      * \a ok will be set to FALSE if no bodies remain for this section.
      */
-    virtual QgsLayout *nextBody( bool &ok SIP_OUT ) { ok = false; return nullptr; }
+    virtual QgsLayout *nextBody( bool &ok SIP_OUT )
+    {
+      ok = false;
+      return nullptr;
+    }
 
     /**
      * Returns TRUE if the header for the section is enabled.
@@ -243,7 +244,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      * \see insertChild()
      * \see removeChild()
      */
-    QList< QgsAbstractReportSection * > childSections() const { return mChildren; }
+    QList<QgsAbstractReportSection *> childSections() const { return mChildren; }
 
     /**
      * Returns the child section at the specified \a index.
@@ -318,15 +319,14 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
   protected:
-
     //! Report sub-sections
     enum SubSection
     {
-      Header, //!< Header for section
-      Body, //!< Body of section
+      Header,   //!< Header for section
+      Body,     //!< Body of section
       Children, //!< Child sections
-      Footer, //!< Footer for section
-      End, //!< End of section (i.e. past all available content)
+      Footer,   //!< Footer for section
+      End,      //!< End of section (i.e. past all available content)
     };
 
     /**
@@ -355,7 +355,6 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 
   private:
-
     QgsAbstractReportSection *mParent = nullptr;
 
     int mSectionNumber = 0;
@@ -365,10 +364,10 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
 
     bool mHeaderEnabled = false;
     bool mFooterEnabled = false;
-    std::unique_ptr< QgsLayout > mHeader;
-    std::unique_ptr< QgsLayout > mFooter;
+    std::unique_ptr<QgsLayout> mHeader;
+    std::unique_ptr<QgsLayout> mFooter;
 
-    QList< QgsAbstractReportSection * > mChildren;
+    QList<QgsAbstractReportSection *> mChildren;
 
     QgsReportSectionContext mContext;
 

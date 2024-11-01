@@ -63,8 +63,7 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
   connect( extractFileAction, &QAction::triggered, this, &QgsAbstractFileContentSourceLineEdit::extractFile );
   sourceMenu->addAction( extractFileAction );
 
-  connect( sourceMenu, &QMenu::aboutToShow, this, [this, extractFileAction]
-  {
+  connect( sourceMenu, &QMenu::aboutToShow, this, [this, extractFileAction] {
     extractFileAction->setEnabled( mMode == ModeBase64 );
   } );
 
@@ -77,8 +76,7 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
   connect( mFileToolButton, &QToolButton::clicked, this, &QgsAbstractFileContentSourceLineEdit::selectFile );
 
   connect( mFileLineEdit, &QLineEdit::textEdited, this, &QgsAbstractFileContentSourceLineEdit::mFileLineEdit_textEdited );
-  connect( mFileLineEdit, &QgsFilterLineEdit::cleared, this, [ = ]
-  {
+  connect( mFileLineEdit, &QgsFilterLineEdit::cleared, this, [=] {
     mMode = ModeFile;
     mFileLineEdit->setPlaceholderText( QString() );
     mBase64.clear();
@@ -86,7 +84,6 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
   } );
 
   mPropertyOverrideButton->setVisible( mPropertyOverrideButtonVisible );
-
 }
 
 QString QgsAbstractFileContentSourceLineEdit::source() const
@@ -143,9 +140,9 @@ void QgsAbstractFileContentSourceLineEdit::selectFile()
 {
   QgsSettings s;
   const QString file = QFileDialog::getOpenFileName( nullptr,
-                       selectFileTitle(),
-                       defaultPath(),
-                       fileFilter() );
+                                                     selectFileTitle(),
+                                                     defaultPath(),
+                                                     fileFilter() );
   const QFileInfo fi( file );
   if ( file.isEmpty() || !fi.exists() || file == source() )
   {
@@ -177,9 +174,9 @@ void QgsAbstractFileContentSourceLineEdit::embedFile()
 {
   QgsSettings s;
   const QString file = QFileDialog::getOpenFileName( nullptr,
-                       embedFileTitle(),
-                       defaultPath(),
-                       fileFilter() );
+                                                     embedFileTitle(),
+                                                     defaultPath(),
+                                                     fileFilter() );
   const QFileInfo fi( file );
   if ( file.isEmpty() || !fi.exists() )
   {
@@ -216,9 +213,9 @@ void QgsAbstractFileContentSourceLineEdit::extractFile()
 {
   QgsSettings s;
   const QString file = QFileDialog::getSaveFileName( nullptr,
-                       extractFileTitle(),
-                       defaultPath(),
-                       fileFilter() );
+                                                     extractFileTitle(),
+                                                     defaultPath(),
+                                                     fileFilter() );
   // return dialog focus on Mac
   activateWindow();
   raise();
@@ -285,7 +282,6 @@ QgsMessageBar *QgsAbstractFileContentSourceLineEdit::messageBar() const
 {
   return mMessageBar;
 }
-
 
 
 //
@@ -411,5 +407,3 @@ QString QgsPictureSourceLineEditBase::defaultSettingsKey() const
 }
 
 ///@endcond
-
-

@@ -33,7 +33,8 @@ class VectorStream
 {
   public:
     size_t mOffset = 0;
-    VectorStream( const QByteArray &vec ) : mVec( vec ) {}
+    VectorStream( const QByteArray &vec )
+      : mVec( vec ) {}
     const void *read( size_t bytes )
     {
       if ( ( size_t ) mVec.size() < mOffset + bytes )
@@ -48,6 +49,7 @@ class VectorStream
     {
       return mVec.size() - mOffset;
     }
+
   private:
     const QByteArray &mVec;
 };
@@ -80,29 +82,27 @@ static uint16_t zigZagDecode( uint16_t value )
 }
 
 static std::vector<uint32_t> parseU32OrU16Array( VectorStream &stream,
-    bool isU32, size_t countMult )
+                                                 bool isU32, size_t countMult )
 {
   std::vector<uint32_t> values;
   if ( isU32 )
   {
     // Pad to multiple of 4
     stream.read( stream.mOffset % 4 );
-    const uint32_t *countBase =
-      reinterpret_cast<const uint32_t *>( stream.read( sizeof( uint32_t ) ) );
+    const uint32_t *countBase = reinterpret_cast<const uint32_t *>( stream.read( sizeof( uint32_t ) ) );
     size_t count = static_cast<size_t>( *countBase ) * countMult;
     values.resize( count );
     const uint32_t *valuesRaw = reinterpret_cast<const uint32_t *>(
-                                  stream.read( sizeof( uint32_t ) * count ) );
+      stream.read( sizeof( uint32_t ) * count ) );
     std::copy( valuesRaw, valuesRaw + count, values.begin() );
   }
   else
   {
-    const uint32_t *countBase =
-      reinterpret_cast<const uint32_t *>( stream.read( sizeof( uint32_t ) ) );
+    const uint32_t *countBase = reinterpret_cast<const uint32_t *>( stream.read( sizeof( uint32_t ) ) );
     size_t count = static_cast<size_t>( *countBase ) * countMult;
     values.resize( count );
     const uint16_t *valuesRaw = reinterpret_cast<const uint16_t *>(
-                                  stream.read( sizeof( uint16_t ) * count ) );
+      stream.read( sizeof( uint16_t ) * count ) );
     std::copy( valuesRaw, valuesRaw + count, values.begin() );
   }
   return values;
@@ -118,14 +118,14 @@ QgsQuantizedMeshTile::QgsQuantizedMeshTile( const QByteArray &data )
 
   VectorStream stream( data );
   mHeader = *reinterpret_cast<const QgsQuantizedMeshHeader *>(
-              stream.read( sizeof( QgsQuantizedMeshHeader ) ) );
+    stream.read( sizeof( QgsQuantizedMeshHeader ) ) );
 
   auto uArr = reinterpret_cast<const uint16_t *>(
-                stream.read( sizeof( uint16_t ) * mHeader.vertexCount ) );
+    stream.read( sizeof( uint16_t ) * mHeader.vertexCount ) );
   auto vArr = reinterpret_cast<const uint16_t *>(
-                stream.read( sizeof( uint16_t ) * mHeader.vertexCount ) );
+    stream.read( sizeof( uint16_t ) * mHeader.vertexCount ) );
   auto heightArr = reinterpret_cast<const uint16_t *>(
-                     stream.read( sizeof( uint16_t ) * mHeader.vertexCount ) );
+    stream.read( sizeof( uint16_t ) * mHeader.vertexCount ) );
 
   uint16_t u = 0, v = 0, height = 0;
   mVertexCoords.resize( static_cast<size_t>( mHeader.vertexCount ) * 3 );
@@ -141,8 +141,7 @@ QgsQuantizedMeshTile::QgsQuantizedMeshTile( const QByteArray &data )
   }
 
   bool vertexIndices32Bit = mHeader.vertexCount > 65536;
-  mTriangleIndices =
-    parseU32OrU16Array( stream, vertexIndices32Bit, 3 );
+  mTriangleIndices = parseU32OrU16Array( stream, vertexIndices32Bit, 3 );
   uint32_t highest = 0;
   for ( auto &idx : mTriangleIndices )
   {
@@ -152,21 +151,15 @@ QgsQuantizedMeshTile::QgsQuantizedMeshTile( const QByteArray &data )
       highest++;
   }
 
-  mWestVertices =
-    parseU32OrU16Array( stream, vertexIndices32Bit, 1 );
-  mSouthVertices =
-    parseU32OrU16Array( stream, vertexIndices32Bit, 1 );
-  mEastVertices =
-    parseU32OrU16Array( stream, vertexIndices32Bit, 1 );
-  mNorthVertices =
-    parseU32OrU16Array( stream, vertexIndices32Bit, 1 );
+  mWestVertices = parseU32OrU16Array( stream, vertexIndices32Bit, 1 );
+  mSouthVertices = parseU32OrU16Array( stream, vertexIndices32Bit, 1 );
+  mEastVertices = parseU32OrU16Array( stream, vertexIndices32Bit, 1 );
+  mNorthVertices = parseU32OrU16Array( stream, vertexIndices32Bit, 1 );
 
   while ( stream.remaining() > 0 )
   {
-    uint8_t extensionId =
-      *reinterpret_cast<const uint8_t *>( stream.read( sizeof( char ) ) );
-    uint32_t length =
-      *reinterpret_cast<const uint32_t *>( stream.read( sizeof( uint32_t ) ) );
+    uint8_t extensionId = *reinterpret_cast<const uint8_t *>( stream.read( sizeof( char ) ) );
+    uint32_t length = *reinterpret_cast<const uint32_t *>( stream.read( sizeof( uint32_t ) ) );
 
     if ( extensionId == normalsExtensionId )
     {
@@ -174,9 +167,9 @@ QgsQuantizedMeshTile::QgsQuantizedMeshTile( const QByteArray &data )
       for ( size_t i = 0; i < mHeader.vertexCount; i++ )
       {
         auto normal = oct16Decode(
-                        *reinterpret_cast<const uint8_t *>( stream.read( sizeof( char ) ) ),
-                        *reinterpret_cast<const uint8_t *>( stream.read( sizeof( char ) ) ) );
-        mNormalCoords.insert( mNormalCoords.end(), {normal.x(), normal.y(), normal.z()} );
+          *reinterpret_cast<const uint8_t *>( stream.read( sizeof( char ) ) ),
+          *reinterpret_cast<const uint8_t *>( stream.read( sizeof( char ) ) ) );
+        mNormalCoords.insert( mNormalCoords.end(), { normal.x(), normal.y(), normal.z() } );
       }
       continue;
     }
@@ -198,7 +191,7 @@ void QgsQuantizedMeshTile::removeDegenerateTriangles()
     uint32_t c = mTriangleIndices[i + 2];
     if ( a != b && b != c && a != c )
     {
-      newTriangleIndices.insert( newTriangleIndices.end(), {a, b, c} );
+      newTriangleIndices.insert( newTriangleIndices.end(), { a, b, c } );
     }
   }
   mTriangleIndices = newTriangleIndices;
@@ -206,8 +199,7 @@ void QgsQuantizedMeshTile::removeDegenerateTriangles()
 
 void QgsQuantizedMeshTile::generateNormals()
 {
-  auto vertexAsVector = [ this ]( size_t idx )
-  {
+  auto vertexAsVector = [this]( size_t idx ) {
     Q_ASSERT( idx * 3 + 2 < mVertexCoords.size() );
     return QVector3D( mVertexCoords[idx * 3], mVertexCoords[idx * 3 + 1], mVertexCoords[idx * 3 + 2] );
   };
@@ -218,7 +210,7 @@ void QgsQuantizedMeshTile::generateNormals()
   // Sum up contributing normals from all triangles
   for ( size_t i = 0; i < mTriangleIndices.size(); i += 3 )
   {
-    std::array<size_t, 3> vtxIdxs {mTriangleIndices[i], mTriangleIndices[i + 1], mTriangleIndices[i + 2]};
+    std::array<size_t, 3> vtxIdxs { mTriangleIndices[i], mTriangleIndices[i + 1], mTriangleIndices[i + 2] };
     auto a = vertexAsVector( vtxIdxs[0] );
     auto b = vertexAsVector( vtxIdxs[1] );
     auto c = vertexAsVector( vtxIdxs[2] );
@@ -249,8 +241,8 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
 
   tinygltf::Buffer vertexBuffer;
   vertexBuffer.data.resize( mVertexCoords.size() * sizeof( float ) );
-  std::vector<double> coordMinimums = {32767, 32767, mHeader.MaximumHeight};
-  std::vector<double> coordMaximums = {0, 0, mHeader.MinimumHeight};
+  std::vector<double> coordMinimums = { 32767, 32767, mHeader.MaximumHeight };
+  std::vector<double> coordMaximums = { 0, 0, mHeader.MinimumHeight };
 
   for ( size_t i = 0; i < mVertexCoords.size(); i++ )
   {
@@ -260,7 +252,7 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
     {
       coord = ( coord * ( mHeader.MaximumHeight - mHeader.MinimumHeight ) ) + mHeader.MinimumHeight;
     }
-    ( ( float * ) vertexBuffer.data.data() )[i] = ( float )coord;
+    ( ( float * ) vertexBuffer.data.data() )[i] = ( float ) coord;
     if ( coordMinimums[i % 3] > coord )
       coordMinimums[i % 3] = coord;
     if ( coordMaximums[i % 3] < coord )
@@ -274,36 +266,27 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
   if ( addSkirt )
   {
     // We first need to sort the edge-indices by coordinate to later create a quad for each "gap"
-    std::sort( mWestVertices.begin(), mWestVertices.end(), [&]( uint32_t a, uint32_t b )
-    {
+    std::sort( mWestVertices.begin(), mWestVertices.end(), [&]( uint32_t a, uint32_t b ) {
       return mVertexCoords[a * 3 + 1] < mVertexCoords[b * 3 + 1];
     } );
-    std::sort( mSouthVertices.begin(), mSouthVertices.end(), [&]( uint32_t a, uint32_t b )
-    {
+    std::sort( mSouthVertices.begin(), mSouthVertices.end(), [&]( uint32_t a, uint32_t b ) {
       return mVertexCoords[a * 3] > mVertexCoords[b * 3];
     } );
-    std::sort( mEastVertices.begin(), mEastVertices.end(), [&]( uint32_t a, uint32_t b )
-    {
+    std::sort( mEastVertices.begin(), mEastVertices.end(), [&]( uint32_t a, uint32_t b ) {
       return mVertexCoords[a * 3 + 1] > mVertexCoords[b * 3 + 1];
     } );
-    std::sort( mNorthVertices.begin(), mNorthVertices.end(), [&]( uint32_t a, uint32_t b )
-    {
+    std::sort( mNorthVertices.begin(), mNorthVertices.end(), [&]( uint32_t a, uint32_t b ) {
       return mVertexCoords[a * 3] < mVertexCoords[b * 3];
     } );
 
     size_t edgeVertexCount = mWestVertices.size() + mSouthVertices.size() + mEastVertices.size() + mNorthVertices.size();
-    size_t skirtBottomCoordCount =
-      ( ( mWestVertices.size() > 1 ) +
-        ( mSouthVertices.size() > 1 ) +
-        ( mEastVertices.size() > 1 ) +
-        ( mNorthVertices.size() > 1 ) ) * 6;
+    size_t skirtBottomCoordCount = ( ( mWestVertices.size() > 1 ) + ( mSouthVertices.size() > 1 ) + ( mEastVertices.size() > 1 ) + ( mNorthVertices.size() > 1 ) ) * 6;
     // Add new vertex for each existing edge vertex, projected to Z = minHeight
     coordMinimums[2] = mHeader.MinimumHeight - skirtDepth;
     size_t skirtVerticesIdxStart = mVertexCoords.size() / 3;
     vertexBuffer.data.resize( vertexBuffer.data.size() + ( edgeVertexCount * 3 + skirtBottomCoordCount ) * sizeof( float ) );
-    float *skirtVertexCoords = ( float * )( vertexBuffer.data.data() + ( skirtVerticesIdxStart * 3 * sizeof( float ) ) );
-    auto addSkirtVertices = [&]( const std::vector<uint32_t> &idxs )
-    {
+    float *skirtVertexCoords = ( float * ) ( vertexBuffer.data.data() + ( skirtVerticesIdxStart * 3 * sizeof( float ) ) );
+    auto addSkirtVertices = [&]( const std::vector<uint32_t> &idxs ) {
       size_t startIdx = ( ( uint8_t * ) skirtVertexCoords - vertexBuffer.data.data() ) / sizeof( float ) / 3;
       for ( uint32_t idx : idxs )
       {
@@ -331,20 +314,16 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
     size_t eastBottomVerticesIdx = addSkirtVertices( mEastVertices );
     size_t northBottomVerticesIdx = addSkirtVertices( mNorthVertices );
     // Check that we didn't miscalculate buffer size
-    Q_ASSERT( skirtVertexCoords == ( float * )( vertexBuffer.data.data() + vertexBuffer.data.size() ) );
+    Q_ASSERT( skirtVertexCoords == ( float * ) ( vertexBuffer.data.data() + vertexBuffer.data.size() ) );
 
     // Add skirt triangles (a trapezoid for each pair of edge vertices)
     size_t skirtTrianglesStartIdx = triangleBuffer.data.size();
     size_t edgeQuadCount =
       // For 0/1 point we have 0 quads, for N we have N-1, and an additional one for skirtDepth
-      ( mWestVertices.size() > 1 ? mWestVertices.size() : 0 ) +
-      ( mSouthVertices.size() > 1 ? mSouthVertices.size() : 0 ) +
-      ( mEastVertices.size() > 1 ? mEastVertices.size() : 0 ) +
-      ( mNorthVertices.size() > 1 ? mNorthVertices.size() : 0 );
+      ( mWestVertices.size() > 1 ? mWestVertices.size() : 0 ) + ( mSouthVertices.size() > 1 ? mSouthVertices.size() : 0 ) + ( mEastVertices.size() > 1 ? mEastVertices.size() : 0 ) + ( mNorthVertices.size() > 1 ? mNorthVertices.size() : 0 );
     triangleBuffer.data.resize( triangleBuffer.data.size() + edgeQuadCount * 6 * sizeof( uint32_t ) );
-    uint32_t *skirtTriangles = ( uint32_t * )( triangleBuffer.data.data() + skirtTrianglesStartIdx );
-    auto addSkirtTriangles = [&]( const std::vector<uint32_t> &topIdxs, size_t bottomVertexIdxStart )
-    {
+    uint32_t *skirtTriangles = ( uint32_t * ) ( triangleBuffer.data.data() + skirtTrianglesStartIdx );
+    auto addSkirtTriangles = [&]( const std::vector<uint32_t> &topIdxs, size_t bottomVertexIdxStart ) {
       size_t bottomVertexIdx = bottomVertexIdxStart;
       for ( size_t i = 1; i < topIdxs.size(); i++ )
       {
@@ -382,7 +361,7 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
     addSkirtTriangles( mSouthVertices, southBottomVerticesIdx );
     addSkirtTriangles( mEastVertices, eastBottomVerticesIdx );
     addSkirtTriangles( mNorthVertices, northBottomVerticesIdx );
-    Q_ASSERT( skirtTriangles == ( uint32_t * )( triangleBuffer.data.data() + triangleBuffer.data.size() ) );
+    Q_ASSERT( skirtTriangles == ( uint32_t * ) ( triangleBuffer.data.data() + triangleBuffer.data.size() ) );
   }
 
   model.buffers.push_back( vertexBuffer );
@@ -440,8 +419,8 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
     normalBufferView.target = TINYGLTF_TARGET_ARRAY_BUFFER;
     model.bufferViews.push_back( normalBufferView );
 
-    std::vector<double> normalMinimums = {1, 1, 1};
-    std::vector<double> normalMaximums = {-1, -1, -1};
+    std::vector<double> normalMinimums = { 1, 1, 1 };
+    std::vector<double> normalMaximums = { -1, -1, -1 };
 
     for ( size_t i = 0; i < mNormalCoords.size(); i++ )
     {
@@ -470,19 +449,22 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
 
     tinygltf::Buffer textureCoordBuffer;
     textureCoordBuffer.data.resize( vertexBuffer.data.size() / 3 * 2 );
-    std::vector<double> texCoordMinimums = {1.0, 1.0};
-    std::vector<double> texCoordMaximums = {0.0, 0.0};
+    std::vector<double> texCoordMinimums = { 1.0, 1.0 };
+    std::vector<double> texCoordMaximums = { 0.0, 0.0 };
     auto textureCoordFloats = reinterpret_cast<float *>( textureCoordBuffer.data.data() );
 
-    auto addTexCoordForVertex = [&]( size_t vertexIdx )
-    {
+    auto addTexCoordForVertex = [&]( size_t vertexIdx ) {
       double u = mVertexCoords[vertexIdx * 3] / 32767.0;
       // V coord needs to be flipped for terrain for some reason
       double v = 1.0 - ( mVertexCoords[vertexIdx * 3 + 1] / 32767.0 );
-      if ( texCoordMinimums[0] > u ) texCoordMinimums[0] = u;
-      if ( texCoordMinimums[1] > v ) texCoordMinimums[1] = v;
-      if ( texCoordMaximums[0] < u ) texCoordMaximums[0] = u;
-      if ( texCoordMaximums[1] < v ) texCoordMaximums[1] = v;
+      if ( texCoordMinimums[0] > u )
+        texCoordMinimums[0] = u;
+      if ( texCoordMinimums[1] > v )
+        texCoordMinimums[1] = v;
+      if ( texCoordMaximums[0] < u )
+        texCoordMaximums[0] = u;
+      if ( texCoordMaximums[1] < v )
+        texCoordMaximums[1] = v;
       *textureCoordFloats++ = u;
       *textureCoordFloats++ = v;
     };
@@ -495,8 +477,7 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
     if ( addSkirt )
     {
       // Add UV for generated bottom vertices matching the top edge vertices
-      auto addSkirtVertexUVs = [&]( const std::vector<uint32_t> &idxs )
-      {
+      auto addSkirtVertexUVs = [&]( const std::vector<uint32_t> &idxs ) {
         for ( uint32_t idx : idxs )
         {
           addTexCoordForVertex( idx );
@@ -515,7 +496,7 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
       addSkirtVertexUVs( mNorthVertices );
     }
 
-    Q_ASSERT( textureCoordFloats == ( float * )( textureCoordBuffer.data.data() + textureCoordBuffer.data.size() ) );
+    Q_ASSERT( textureCoordFloats == ( float * ) ( textureCoordBuffer.data.data() + textureCoordBuffer.data.size() ) );
 
     model.buffers.push_back( textureCoordBuffer );
 
@@ -566,18 +547,18 @@ QgsMesh QgsQuantizedMeshTile::toMesh( QgsRectangle tileBounds )
     double x = ( mVertexCoords[i] / 32767.0 ) * ( tileBounds.width() ) + tileBounds.xMinimum();
     double y = ( mVertexCoords[i + 1] / 32767.0 ) * ( tileBounds.height() ) + tileBounds.yMinimum();
     double z = ( mVertexCoords[i + 2] / 32767.0 ) * ( mHeader.MaximumHeight - mHeader.MinimumHeight ) + mHeader.MinimumHeight;
-    mesh.vertices.push_back( {x, y, z} );
+    mesh.vertices.push_back( { x, y, z } );
   }
 
   mesh.faces.reserve( mTriangleIndices.size() / 3 );
   for ( size_t i = 0; i < mTriangleIndices.size(); i += 3 )
   {
     mesh.faces.push_back(
-    {
-      static_cast<int>( mTriangleIndices[i] ),
-      static_cast<int>( mTriangleIndices[i + 1] ),
-      static_cast<int>( mTriangleIndices[i + 2] ),
-    } );
+      {
+        static_cast<int>( mTriangleIndices[i] ),
+        static_cast<int>( mTriangleIndices[i + 1] ),
+        static_cast<int>( mTriangleIndices[i + 2] ),
+      } );
   }
 
   return mesh;

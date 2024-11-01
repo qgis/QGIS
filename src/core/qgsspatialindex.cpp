@@ -31,7 +31,6 @@
 using namespace SpatialIndex;
 
 
-
 /**
  * \ingroup core
  * \class QgisVisitor
@@ -45,7 +44,9 @@ class QgisVisitor : public SpatialIndex::IVisitor
       : mList( list ) {}
 
     void visitNode( const INode &n ) override
-    { Q_UNUSED( n ) }
+    {
+      Q_UNUSED( n )
+    }
 
     void visitData( const IData &d ) override
     {
@@ -53,7 +54,9 @@ class QgisVisitor : public SpatialIndex::IVisitor
     }
 
     void visitData( std::vector<const IData *> &v ) override
-    { Q_UNUSED( v ) }
+    {
+      Q_UNUSED( v )
+    }
 
   private:
     QList<QgsFeatureId> &mList;
@@ -71,7 +74,9 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
       : mNewIndex( newIndex ) {}
 
     void visitNode( const INode &n ) override
-    { Q_UNUSED( n ) }
+    {
+      Q_UNUSED( n )
+    }
 
     void visitData( const IData &d ) override
     {
@@ -82,7 +87,9 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
     }
 
     void visitData( std::vector<const IData *> &v ) override
-    { Q_UNUSED( v ) }
+    {
+      Q_UNUSED( v )
+    }
 
   private:
     SpatialIndex::ISpatialIndex *mNewIndex = nullptr;
@@ -92,25 +99,24 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
 class QgsNearestNeighborComparator : public INearestNeighborComparator
 {
   public:
-
-    QgsNearestNeighborComparator( const QHash< QgsFeatureId, QgsGeometry > *geometries, const QgsPointXY &point, double maxDistance )
+    QgsNearestNeighborComparator( const QHash<QgsFeatureId, QgsGeometry> *geometries, const QgsPointXY &point, double maxDistance )
       : mGeometries( geometries )
       , mGeom( QgsGeometry::fromPointXY( point ) )
       , mMaxDistance( maxDistance )
     {
     }
 
-    QgsNearestNeighborComparator( const QHash< QgsFeatureId, QgsGeometry > *geometries, const QgsGeometry &geometry, double maxDistance )
+    QgsNearestNeighborComparator( const QHash<QgsFeatureId, QgsGeometry> *geometries, const QgsGeometry &geometry, double maxDistance )
       : mGeometries( geometries )
       , mGeom( geometry )
       , mMaxDistance( maxDistance )
     {
     }
 
-    const QHash< QgsFeatureId, QgsGeometry > *mGeometries = nullptr;
+    const QHash<QgsFeatureId, QgsGeometry> *mGeometries = nullptr;
     QgsGeometry mGeom;
     double mMaxDistance = 0;
-    QSet< QgsFeatureId > mFeaturesOutsideMaxDistance;
+    QSet<QgsFeatureId> mFeaturesOutsideMaxDistance;
 
     double getMinimumDistance( const IShape &query, const IShape &entry ) override
     {
@@ -164,7 +170,7 @@ class QgsFeatureIteratorDataStream : public IDataStream
   public:
     //! constructor - needs to load all data to a vector for later access when bulk loading
     explicit QgsFeatureIteratorDataStream( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags(),
-                                           const std::function< bool( const QgsFeature & ) > *callback = nullptr )
+                                           const std::function<bool( const QgsFeature & )> *callback = nullptr )
       : mFi( fi )
       , mFeedback( feedback )
       , mFlags( flags )
@@ -194,12 +200,16 @@ class QgsFeatureIteratorDataStream : public IDataStream
     bool hasNext() override { return nullptr != mNextData; }
 
     //! returns the total number of entries available in the stream.
-    uint32_t size() override { Q_ASSERT( false && "not available" ); return 0; }
+    uint32_t size() override
+    {
+      Q_ASSERT( false && "not available" );
+      return 0;
+    }
 
     //! sets the stream pointer to the first entry, if possible.
     void rewind() override { Q_ASSERT( false && "not available" ); }
 
-    QHash< QgsFeatureId, QgsGeometry > geometries;
+    QHash<QgsFeatureId, QgsGeometry> geometries;
 
   protected:
     void readNextEntry()
@@ -233,8 +243,7 @@ class QgsFeatureIteratorDataStream : public IDataStream
     RTree::Data *mNextData = nullptr;
     QgsFeedback *mFeedback = nullptr;
     QgsSpatialIndex::Flags mFlags = QgsSpatialIndex::Flags();
-    const std::function< bool( const QgsFeature & ) > *mCallback = nullptr;
-
+    const std::function<bool( const QgsFeature & )> *mCallback = nullptr;
 };
 
 
@@ -255,7 +264,7 @@ class QgsSpatialIndexData : public QSharedData
 
     QgsSpatialIndex::Flags mFlags = QgsSpatialIndex::Flags();
 
-    QHash< QgsFeatureId, QgsGeometry > mGeometries;
+    QHash<QgsFeatureId, QgsGeometry> mGeometries;
 
     /**
      * Constructor for QgsSpatialIndexData which bulk loads features from the specified feature iterator
@@ -266,7 +275,7 @@ class QgsSpatialIndexData : public QSharedData
      * that of the spatial index construction.
      */
     explicit QgsSpatialIndexData( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags(),
-                                  const std::function< bool( const QgsFeature & ) > *callback = nullptr )
+                                  const std::function<bool( const QgsFeature & )> *callback = nullptr )
       : mFlags( flags )
     {
       QgsFeatureIteratorDataStream fids( fi, feedback, mFlags, callback );
@@ -285,7 +294,7 @@ class QgsSpatialIndexData : public QSharedData
       initTree();
 
       // copy R-tree data one by one (is there a faster way??)
-      double low[]  = { std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest() };
+      double low[] = { std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest() };
       double high[] = { std::numeric_limits<double>::max(), std::numeric_limits<double>::max() };
       const SpatialIndex::Region query( low, high, 2 );
       QgsSpatialIndexCopyVisitor visitor( mRTree );
@@ -317,7 +326,7 @@ class QgsSpatialIndexData : public QSharedData
 
       if ( inputStream && inputStream->hasNext() )
         mRTree = RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, *inputStream, *mStorage, fillFactor, indexCapacity,
-                 leafCapacity, dimension, variant, indexId );
+                                                   leafCapacity, dimension, variant, indexId );
       else
         mRTree = RTree::createNewRTree( *mStorage, fillFactor, indexCapacity,
                                         leafCapacity, dimension, variant, indexId );
@@ -330,7 +339,6 @@ class QgsSpatialIndexData : public QSharedData
     SpatialIndex::ISpatialIndex *mRTree = nullptr;
 
     mutable QRecursiveMutex mMutex;
-
 };
 
 ///@endcond
@@ -349,7 +357,7 @@ QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *fee
 }
 
 ///@cond PRIVATE // else throws a doxygen warning?
-QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi, const std::function< bool( const QgsFeature & )> &callback, QgsSpatialIndex::Flags flags )
+QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator &fi, const std::function<bool( const QgsFeature & )> &callback, QgsSpatialIndex::Flags flags )
 {
   d = new QgsSpatialIndexData( fi, nullptr, flags, &callback );
 }
@@ -365,7 +373,7 @@ QgsSpatialIndex::QgsSpatialIndex( const QgsSpatialIndex &other ) //NOLINT
 {
 }
 
-QgsSpatialIndex:: ~QgsSpatialIndex() //NOLINT
+QgsSpatialIndex::~QgsSpatialIndex() //NOLINT
 {
 }
 
@@ -526,10 +534,10 @@ QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsPointXY &point, c
   {
     // trim features outside of max distance
     list.erase( std::remove_if( list.begin(), list.end(),
-                                [&nnc]( QgsFeatureId id )
-    {
-      return nnc.mFeaturesOutsideMaxDistance.contains( id );
-    } ), list.end() );
+                                [&nnc]( QgsFeatureId id ) {
+                                  return nnc.mFeaturesOutsideMaxDistance.contains( id );
+                                } ),
+                list.end() );
   }
 
   return list;
@@ -551,10 +559,10 @@ QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsGeometry &geometr
   {
     // trim features outside of max distance
     list.erase( std::remove_if( list.begin(), list.end(),
-                                [&nnc]( QgsFeatureId id )
-    {
-      return nnc.mFeaturesOutsideMaxDistance.contains( id );
-    } ), list.end() );
+                                [&nnc]( QgsFeatureId id ) {
+                                  return nnc.mFeaturesOutsideMaxDistance.contains( id );
+                                } ),
+                list.end() );
   }
 
   return list;

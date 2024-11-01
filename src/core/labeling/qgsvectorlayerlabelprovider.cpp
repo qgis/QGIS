@@ -49,7 +49,7 @@ using namespace pal;
 
 QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings, const QString &layerName )
   : QgsAbstractLabelProvider( layer, providerId )
-  , mSettings( settings ? * settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
+  , mSettings( settings ? *settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
   , mLayerGeometryType( layer->geometryType() )
   , mRenderer( layer->renderer() )
   , mFields( layer->fields() )
@@ -67,7 +67,7 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer *layer,
 
 QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( Qgis::GeometryType geometryType, const QgsFields &fields, const QgsCoordinateReferenceSystem &crs, const QString &providerId, const QgsPalLayerSettings *settings, QgsMapLayer *layer, const QString &layerName )
   : QgsAbstractLabelProvider( layer, providerId )
-  , mSettings( settings ? * settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
+  , mSettings( settings ? *settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
   , mLayerGeometryType( geometryType )
   , mRenderer( nullptr )
   , mFields( fields )
@@ -194,10 +194,10 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
   return mLabels;
 }
 
-QList< QgsLabelFeature * > QgsVectorLayerLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
+QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
 {
-  std::unique_ptr< QgsLabelFeature > label = mSettings.registerFeatureWithDetails( feature, context, obstacleGeometry, symbol );
-  QList< QgsLabelFeature * > res;
+  std::unique_ptr<QgsLabelFeature> label = mSettings.registerFeatureWithDetails( feature, context, obstacleGeometry, symbol );
+  QList<QgsLabelFeature *> res;
   if ( label )
   {
     res << label.get();
@@ -212,9 +212,9 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     return QgsGeometry();
 
   bool isMultiPoint = fet.geometry().constGet()->nCoordinates() > 1;
-  std::unique_ptr< QgsAbstractGeometry > obstacleGeom;
+  std::unique_ptr<QgsAbstractGeometry> obstacleGeom;
   if ( isMultiPoint )
-    obstacleGeom = std::make_unique< QgsMultiPolygon >();
+    obstacleGeom = std::make_unique<QgsMultiPolygon>();
 
   // for each point
   for ( int i = 0; i < fet.geometry().constGet()->nCoordinates(); ++i )
@@ -246,25 +246,25 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
       if ( symbol->type() == Qgis::SymbolType::Marker )
       {
         if ( bounds.isValid() )
-          bounds = bounds.united( static_cast< QgsMarkerSymbol * >( symbol )->bounds( pt, context, fet ) );
+          bounds = bounds.united( static_cast<QgsMarkerSymbol *>( symbol )->bounds( pt, context, fet ) );
         else
-          bounds = static_cast< QgsMarkerSymbol * >( symbol )->bounds( pt, context, fet );
+          bounds = static_cast<QgsMarkerSymbol *>( symbol )->bounds( pt, context, fet );
       }
     }
 
     //convert bounds to a geometry
-    QVector< double > bX;
+    QVector<double> bX;
     bX << bounds.left() << bounds.right() << bounds.right() << bounds.left();
-    QVector< double > bY;
+    QVector<double> bY;
     bY << bounds.top() << bounds.top() << bounds.bottom() << bounds.bottom();
-    std::unique_ptr< QgsLineString > boundLineString = std::make_unique< QgsLineString >( bX, bY );
+    std::unique_ptr<QgsLineString> boundLineString = std::make_unique<QgsLineString>( bX, bY );
 
     //then transform back to map units
     //TODO - remove when labeling is refactored to use screen units
     for ( int i = 0; i < boundLineString->numPoints(); ++i )
     {
       QgsPointXY point = context.mapToPixel().toMapCoordinates( static_cast<int>( boundLineString->xAt( i ) ),
-                         static_cast<int>( boundLineString->yAt( i ) ) );
+                                                                static_cast<int>( boundLineString->yAt( i ) ) );
       boundLineString->setXAt( i, point.x() );
       boundLineString->setYAt( i, point.y() );
     }
@@ -284,15 +284,14 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     if ( context.coordinateTransform().isValid() )
     {
       // coordinate transforms may have resulted in nan coordinates - if so, strip these out
-      boundLineString->filterVertices( []( const QgsPoint & point )->bool
-      {
+      boundLineString->filterVertices( []( const QgsPoint &point ) -> bool {
         return std::isfinite( point.x() ) && std::isfinite( point.y() );
       } );
       if ( !boundLineString->isRing() )
         return QgsGeometry();
     }
 
-    std::unique_ptr< QgsPolygon > obstaclePolygon = std::make_unique< QgsPolygon >();
+    std::unique_ptr<QgsPolygon> obstaclePolygon = std::make_unique<QgsPolygon>();
     obstaclePolygon->setExteriorRing( boundLineString.release() );
 
     if ( isMultiPoint )
@@ -343,7 +342,7 @@ void QgsVectorLayerLabelProvider::drawCallout( QgsRenderContext &context, pal::L
     calloutContext.originalFeatureCrs = label->getFeaturePart()->feature()->originalFeatureCrs();
     mSettings.callout()->render( context, rect, label->getAlpha() * 180 / M_PI, g, calloutContext );
 
-    const QList< QgsCalloutPosition > renderedPositions = calloutContext.positions();
+    const QList<QgsCalloutPosition> renderedPositions = calloutContext.positions();
 
     for ( QgsCalloutPosition position : renderedPositions )
     {
@@ -368,7 +367,7 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
   QgsPalLayerSettings tmpLyr( mSettings );
 
   // apply any previously applied data defined settings for the label
-  const QMap< QgsPalLayerSettings::Property, QVariant > &ddValues = lf->dataDefinedValues();
+  const QMap<QgsPalLayerSettings::Property, QVariant> &ddValues = lf->dataDefinedValues();
 
   //font
   QFont dFont = lf->definedFont();
@@ -506,7 +505,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
   QPointF outPt = xform.transform( label->getX(), label->getY() ).toQPointF();
 
-  if ( mEngine->engineSettings().testFlag( Qgis::LabelingFlag::DrawLabelRectOnly ) )  // TODO: this should get directly to labeling engine
+  if ( mEngine->engineSettings().testFlag( Qgis::LabelingFlag::DrawLabelRectOnly ) ) // TODO: this should get directly to labeling engine
   {
     //debugging rect
     if ( drawType != Qgis::TextComponent::Text )
@@ -591,7 +590,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       painter->drawRect( outerBoundsPixel );
     }
 
-    if ( QgsTextLabelFeature *textFeature = dynamic_cast< QgsTextLabelFeature * >( label->getFeaturePart()->feature() ) )
+    if ( QgsTextLabelFeature *textFeature = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() ) )
     {
       const QgsTextDocumentMetrics &metrics = textFeature->documentMetrics();
       const QgsTextDocument &document = textFeature->document();
@@ -621,11 +620,10 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
             painter->drawLine( QPointF( rect.left() + left, rect.top() + blockBaseLine + fragmentVerticalOffset ),
                                QPointF( rect.left() + left, rect.top() + prevBlockBaseline ) );
-
           }
 
           painter->setPen( QColor( 0, 0, 255, 220 ) );
-          painter->drawLine( QPointF( rect.left() + left, rect.top()  + blockBaseLine + fragmentVerticalOffset ),
+          painter->drawLine( QPointF( rect.left() + left, rect.top() + blockBaseLine + fragmentVerticalOffset ),
                              QPointF( rect.left() + right, rect.top() + blockBaseLine + fragmentVerticalOffset ) );
           left = right;
         }
@@ -697,10 +695,9 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     // add the direction symbol if needed
     // note that IF we do this, we can no longer use the original text document and metrics
     // but have to re-calculate these with the newly added text!
-    std::optional< QgsTextDocument > newDocument;
-    std::optional< QgsTextDocumentMetrics > newDocumentMetrics;
-    if ( !txt.isEmpty() && tmpLyr.placement == Qgis::LabelPlacement::Line &&
-         tmpLyr.lineSettings().addDirectionSymbol() )
+    std::optional<QgsTextDocument> newDocument;
+    std::optional<QgsTextDocumentMetrics> newDocumentMetrics;
+    if ( !txt.isEmpty() && tmpLyr.placement == Qgis::LabelPlacement::Line && tmpLyr.lineSettings().addDirectionSymbol() )
     {
       newDocument.emplace( *document );
       bool prependSymb = false;
@@ -740,7 +737,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
 
         case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight:
         {
-          QgsTextBlock &block = newDocument.value()[ 0 ];
+          QgsTextBlock &block = newDocument.value()[0];
           if ( prependSymb )
           {
             block.insert( 0, QgsTextFragment( symb ) );

@@ -33,10 +33,9 @@ class QgsMeshLayer;
  *
  * \since QGIS 3.16
  */
-class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
+class QgsMeshExtraDatasetStore : public QgsMeshDatasetSourceInterface
 {
   public:
-
     //! Adds a dataset group, returns the index of the added dataset group
     int addDatasetGroup( QgsMeshDatasetGroup *datasetGroup );
 
@@ -116,7 +115,7 @@ class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
  *
  * \since QGIS 3.16
  */
-class QgsMeshDatasetGroupStore: public QObject
+class QgsMeshDatasetGroupStore : public QObject
 {
     Q_OBJECT
 
@@ -252,7 +251,7 @@ class QgsMeshDatasetGroupStore: public QObject
     QgsMeshLayer *mLayer = nullptr;
     QgsMeshDataProvider *mPersistentProvider = nullptr;
     QgsMeshExtraDatasetStore mExtraDatasets;
-    QMap < int, DatasetGroup> mRegistry;
+    QMap<int, DatasetGroup> mRegistry;
     QList<int> mPersistentExtraDatasetGroupIndexes;
     QMap<QString, int> mGroupNameToGlobalIndex;
     std::unique_ptr<QgsMeshDatasetGroupTreeItem> mDatasetGroupTreeRootItem;

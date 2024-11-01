@@ -60,20 +60,20 @@ QgsRasterBlock *QgsRasterSingleColorRenderer::block( int, const QgsRectangle &ex
 {
   QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2" ).arg( width ).arg( height ), 4 );
 
-  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
+  std::unique_ptr<QgsRasterBlock> outputBlock( new QgsRasterBlock() );
   if ( !mInput || mInputBand == -1 )
   {
     return outputBlock.release();
   }
 
-  const std::shared_ptr< QgsRasterBlock > inputBlock( mInput->block( mInputBand, extent, width, height, feedback ) );
+  const std::shared_ptr<QgsRasterBlock> inputBlock( mInput->block( mInputBand, extent, width, height, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugError( QStringLiteral( "No raster data!" ) );
     return outputBlock.release();
   }
 
-  std::shared_ptr< QgsRasterBlock > alphaBlock;
+  std::shared_ptr<QgsRasterBlock> alphaBlock;
   if ( mAlphaBand > 0 )
   {
     alphaBlock = inputBlock;
@@ -88,7 +88,7 @@ QgsRasterBlock *QgsRasterSingleColorRenderer::block( int, const QgsRectangle &ex
   const QRgb rendererColor = qRgba( mColor.red(), mColor.green(), mColor.blue(), mColor.alpha() );
 
   bool isNoData = false;
-  const qgssize blockSize = static_cast< qgssize >( width ) * height;
+  const qgssize blockSize = static_cast<qgssize>( width ) * height;
   for ( qgssize i = 0; i < blockSize; i++ )
   {
     double value = inputBlock->valueAndNoData( i, isNoData );
@@ -135,7 +135,8 @@ QgsRasterBlock *QgsRasterSingleColorRenderer::block( int, const QgsRectangle &ex
 
 void QgsRasterSingleColorRenderer::setColor( const QColor &color )
 {
-  mColor = color;;
+  mColor = color;
+  ;
 }
 
 QColor QgsRasterSingleColorRenderer::color() const

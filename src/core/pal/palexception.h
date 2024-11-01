@@ -45,7 +45,6 @@ namespace pal
   class PalException
   {
     public:
-
       /**
        * \brief Thrown when a feature is not yet implemented
        * \ingroup core
@@ -124,6 +123,6 @@ namespace pal
       };
   };
 
-} // namespace
+} // namespace pal
 
 #endif

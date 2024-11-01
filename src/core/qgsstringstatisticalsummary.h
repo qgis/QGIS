@@ -43,7 +43,6 @@
 class CORE_EXPORT QgsStringStatisticalSummary
 {
   public:
-
     /**
      * Constructor for QgsStringStatistics
      * \param stats flags for statistics to calculate
@@ -147,7 +146,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * Returns the set of distinct string values.
      * \see countDistinct()
      */
-    QSet< QString > distinctValues() const;
+    QSet<QString> distinctValues() const;
 
     /**
      * Returns the number of missing (null) string values.
@@ -206,11 +205,10 @@ class CORE_EXPORT QgsStringStatisticalSummary
     static QString displayName( Qgis::StringStatistic statistic );
 
   private:
-
     Qgis::StringStatistics mStatistics;
 
     int mCount;
-    QMap< QString, int > mValues;
+    QMap<QString, int> mValues;
     int mCountMissing;
     QString mMin;
     QString mMax;

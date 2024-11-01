@@ -33,7 +33,6 @@ class QgsMessageBar;
 class GUI_EXPORT QgsExternalResourceWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
-
     /**
      * Constructor for QgsExternalResourceWidgetFactory, where \a name is a human-readable
      * name for the factory and \a messageBar the message bar used to report messages.

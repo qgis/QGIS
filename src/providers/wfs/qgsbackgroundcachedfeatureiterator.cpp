@@ -52,7 +52,6 @@ QgsFeatureDownloaderProgressTask::QgsFeatureDownloaderProgressTask( const QStrin
              QgsTask::CanCancel | QgsTask::CancelWithoutPrompt | QgsTask::Silent )
   , mTotalCount( totalCount )
 {
-
 }
 
 bool QgsFeatureDownloaderProgressTask::run()
@@ -86,17 +85,17 @@ void QgsFeatureDownloaderProgressTask::finalize()
 
 void QgsFeatureDownloaderProgressTask::setDownloaded( long long count )
 {
-  setProgress( static_cast< double >( count ) / static_cast< double >( mTotalCount ) * 100 );
+  setProgress( static_cast<double>( count ) / static_cast<double>( mTotalCount ) * 100 );
 }
-
 
 
 // -------------------------
 
-QgsFeatureDownloaderImpl::QgsFeatureDownloaderImpl( QgsBackgroundCachedSharedData *shared, QgsFeatureDownloader *downloader ): mSharedBase( shared ), mDownloader( downloader )
+QgsFeatureDownloaderImpl::QgsFeatureDownloaderImpl( QgsBackgroundCachedSharedData *shared, QgsFeatureDownloader *downloader )
+  : mSharedBase( shared ), mDownloader( downloader )
 {
   // Needed because used by a signal
-  qRegisterMetaType< QVector<QgsFeatureUniqueIdPair> >( "QVector<QgsFeatureUniqueIdPair>" );
+  qRegisterMetaType<QVector<QgsFeatureUniqueIdPair>>( "QVector<QgsFeatureUniqueIdPair>" );
 }
 
 QgsFeatureDownloaderImpl::~QgsFeatureDownloaderImpl()
@@ -162,9 +161,9 @@ void QgsFeatureDownloaderImpl::createProgressTask( long long numberMatched )
 }
 
 void QgsFeatureDownloaderImpl::endOfRun( bool serializeFeatures,
-    bool success, int totalDownloadedFeatureCount,
-    bool truncatedResponse, bool interrupted,
-    const QString &errorMessage )
+                                         bool success, int totalDownloadedFeatureCount,
+                                         bool truncatedResponse, bool interrupted,
+                                         const QString &errorMessage )
 {
   {
     QMutexLocker locker( &mMutexCreateProgressTask );
@@ -327,9 +326,7 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
   // are requested by Fid and we already have them in cache, no need to
   // download anything.
   auto cacheDataProvider = mShared->cacheDataProvider();
-  if ( cacheDataProvider &&
-       ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Fid ||
-         ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Fids && mRequest.filterFids().size() < 100000 ) ) )
+  if ( cacheDataProvider && ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Fid || ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Fids && mRequest.filterFids().size() < 100000 ) ) )
   {
     QgsFeatureRequest requestCache;
     QgsFeatureIds qgisIds;
@@ -361,9 +358,7 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
     }
   }
 
-  int genCounter = ( mShared->isRestrictedToRequestBBOX() && !mFilterRect.isNull() ) ?
-                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), mFilterRect, serverExpression ) :
-                   mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), QgsRectangle(), serverExpression );
+  int genCounter = ( mShared->isRestrictedToRequestBBOX() && !mFilterRect.isNull() ) ? mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), mFilterRect, serverExpression ) : mShared->registerToCache( this, static_cast<int>( mRequest.limit() ), QgsRectangle(), serverExpression );
   // Reload cacheDataProvider as registerToCache() has likely refreshed it
   cacheDataProvider = mShared->cacheDataProvider();
   mDownloadFinished = genCounter < 0;
@@ -372,7 +367,7 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
 
   QgsDebugMsgLevel( QStringLiteral( "QgsBackgroundCachedFeatureIterator::constructor(): genCounter=%1 " ).arg( genCounter ), 4 );
 
-  QgsFeatureRequest requestCache = initRequestCache( genCounter ) ;
+  QgsFeatureRequest requestCache = initRequestCache( genCounter );
   fillRequestCache( requestCache );
   mCacheIterator = cacheDataProvider->getFeatures( requestCache );
 }
@@ -384,8 +379,7 @@ QgsFeatureRequest QgsBackgroundCachedFeatureIterator::initRequestCache( int genC
   const QgsFields fields = mShared->fields();
 
   auto cacheDataProvider = mShared->cacheDataProvider();
-  if ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Fid ||
-       mRequest.filterType() == Qgis::FeatureRequestFilterType::Fids )
+  if ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Fid || mRequest.filterType() == Qgis::FeatureRequestFilterType::Fids )
   {
     QgsFeatureIds qgisIds;
     if ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Fid )
@@ -419,7 +413,7 @@ QgsFeatureRequest QgsBackgroundCachedFeatureIterator::initRequestCache( int genC
       {
         // Transfer and transform context
         requestCache.setFilterExpression( mRequest.filterExpression()->expression() );
-        QgsExpressionContext ctx { *mRequest.expressionContext( ) };
+        QgsExpressionContext ctx { *mRequest.expressionContext() };
         QgsExpressionContextScope *scope { ctx.activeScopeForVariable( QgsExpressionContext::EXPR_FIELDS ) };
         if ( scope )
         {
@@ -441,9 +435,7 @@ void QgsBackgroundCachedFeatureIterator::fillRequestCache( QgsFeatureRequest req
 {
   requestCache.setFilterRect( mFilterRect );
 
-  if ( ( !( mRequest.flags() & Qgis::FeatureRequestFlag::NoGeometry ) || !mFilterRect.isNull() ) ||
-       ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin ) ||
-       ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Expression && mRequest.filterExpression()->needsGeometry() ) )
+  if ( ( !( mRequest.flags() & Qgis::FeatureRequestFlag::NoGeometry ) || !mFilterRect.isNull() ) || ( mRequest.spatialFilterType() == Qgis::SpatialFilterType::DistanceWithin ) || ( mRequest.filterType() == Qgis::FeatureRequestFilterType::Expression && mRequest.filterExpression()->needsGeometry() ) )
   {
     mFetchGeometry = true;
   }
@@ -478,7 +470,7 @@ void QgsBackgroundCachedFeatureIterator::fillRequestCache( QgsFeatureRequest req
           if ( cacheFieldIdx >= 0 && !cacheSubSet.contains( cacheFieldIdx ) )
             cacheSubSet.append( cacheFieldIdx );
 
-          if ( wfsFieldIdx >= 0  && !mSubSetAttributes.contains( wfsFieldIdx ) )
+          if ( wfsFieldIdx >= 0 && !mSubSetAttributes.contains( wfsFieldIdx ) )
             mSubSetAttributes.append( wfsFieldIdx );
         }
       }
@@ -591,8 +583,8 @@ void QgsBackgroundCachedFeatureIterator::featureReceivedSynchronous( const QVect
   }
   if ( !mWriterFile && mWriterByteArray.size() > mWriteTransferThreshold )
   {
-    const QString thisStr = QStringLiteral( "%1" ).arg( reinterpret_cast< quintptr >( this ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
-    ++ mCounter;
+    const QString thisStr = QStringLiteral( "%1" ).arg( reinterpret_cast<quintptr>( this ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
+    ++mCounter;
     mWriterFilename = QDir( mShared->acquireCacheDirectory() ).filePath( QStringLiteral( "iterator_%1_%2.bin" ).arg( thisStr ).arg( mCounter ) );
     QgsDebugMsgLevel( QStringLiteral( "Transferring feature iterator cache to %1" ).arg( mWriterFilename ), 4 );
     mWriterFile.reset( new QFile( mWriterFilename ) );
@@ -675,8 +667,7 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
     }
 
     QgsGeometry constGeom = cachedFeature.geometry();
-    if ( !mFilterRect.isNull() &&
-         ( constGeom.isNull() || !constGeom.intersects( mFilterRect ) ) )
+    if ( !mFilterRect.isNull() && ( constGeom.isNull() || !constGeom.intersects( mFilterRect ) ) )
     {
       continue;
     }
@@ -776,8 +767,7 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
         }
 
         QgsGeometry constGeom = feat.geometry();
-        if ( !mFilterRect.isNull() &&
-             ( constGeom.isNull() || !constGeom.intersects( mFilterRect ) ) )
+        if ( !mFilterRect.isNull() && ( constGeom.isNull() || !constGeom.intersects( mFilterRect ) ) )
         {
           continue;
         }
@@ -826,9 +816,7 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
         break;
       }
       const int delayCheckInterruption = 50;
-      const int timeout = ( requestTimeout > 0 ) ?
-                          std::min( requestTimeout - ( int ) timeRequestTimeout.elapsed(), delayCheckInterruption ) :
-                          delayCheckInterruption;
+      const int timeout = ( requestTimeout > 0 ) ? std::min( requestTimeout - ( int ) timeRequestTimeout.elapsed(), delayCheckInterruption ) : delayCheckInterruption;
       if ( timeout < 0 )
       {
         mTimeoutOrInterruptionOccurred = true;
@@ -848,7 +836,6 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
         break;
       }
     }
-
   }
 }
 
@@ -925,8 +912,7 @@ void QgsBackgroundCachedFeatureIterator::copyFeature( const QgsFeature &srcFeatu
   const QgsFields &fields = mShared->fields();
   dstFeature.initAttributes( fields.size() );
 
-  auto setAttr = [ & ]( const int i )
-  {
+  auto setAttr = [&]( const int i ) {
     int idx = srcFeature.fields().indexFromName( srcIsCache ? mShared->getSpatialiteFieldNameFromUserVisibleName( fields.at( i ).name() ) : fields.at( i ).name() );
     if ( idx >= 0 )
     {

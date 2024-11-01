@@ -35,7 +35,6 @@ class QgsFeatureSink;
 class ANALYSIS_EXPORT QgsVectorWarper
 {
   public:
-
     /**
      * Constructor for QgsVectorWarper.
      *
@@ -43,7 +42,7 @@ class ANALYSIS_EXPORT QgsVectorWarper
      * \param points list of GCP points to use for the transformation
      * \param destinationCrs target CRS for transformed features
      */
-    explicit QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod method, const QList < QgsGcpPoint > &points,
+    explicit QgsVectorWarper( QgsGcpTransformerInterface::TransformMethod method, const QList<QgsGcpPoint> &points,
                               const QgsCoordinateReferenceSystem &destinationCrs );
 
     /**
@@ -64,11 +63,10 @@ class ANALYSIS_EXPORT QgsVectorWarper
 
   private:
     QgsGcpTransformerInterface::TransformMethod mMethod = QgsGcpTransformerInterface::TransformMethod::Linear;
-    QList < QgsGcpPoint > mPoints;
+    QList<QgsGcpPoint> mPoints;
     QgsCoordinateReferenceSystem mDestinationCrs;
 
     mutable QString mError;
-
 };
 
 
@@ -83,7 +81,6 @@ class ANALYSIS_EXPORT QgsVectorWarperTask : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsVectorWarperTask.
      *
@@ -93,7 +90,7 @@ class ANALYSIS_EXPORT QgsVectorWarperTask : public QgsTask
      * \param layer source layer
      * \param fileName filename for destination layer
      */
-    QgsVectorWarperTask( QgsGcpTransformerInterface::TransformMethod method, const QList < QgsGcpPoint > &points,
+    QgsVectorWarperTask( QgsGcpTransformerInterface::TransformMethod method, const QList<QgsGcpPoint> &points,
                          const QgsCoordinateReferenceSystem &destinationCrs,
                          QgsVectorLayer *layer,
                          const QString &fileName );
@@ -103,9 +100,9 @@ class ANALYSIS_EXPORT QgsVectorWarperTask : public QgsTask
     //! Task results
     enum class Result
     {
-      Success, //!< Warping completed successfully
+      Success,  //!< Warping completed successfully
       Canceled, //!< Task was canceled before completion
-      Error, //!< An error occurred while warping
+      Error,    //!< An error occurred while warping
     };
 
     /**
@@ -119,20 +116,18 @@ class ANALYSIS_EXPORT QgsVectorWarperTask : public QgsTask
     QString errorMessage() const { return mErrorMessage; }
 
   protected:
-
     bool run() override;
 
   private:
-
     QgsGcpTransformerInterface::TransformMethod mMethod = QgsGcpTransformerInterface::TransformMethod::Linear;
     long long mFeatureCount = 0;
-    std::unique_ptr< QgsVectorLayerFeatureSource > mSource;
-    QList < QgsGcpPoint > mPoints;
+    std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
+    QList<QgsGcpPoint> mPoints;
     QgsCoordinateReferenceSystem mDestinationCrs;
 
     QString mDestFileName;
 
-    std::unique_ptr< QgsFeedback > mFeedback;
+    std::unique_ptr<QgsFeedback> mFeedback;
 
     QgsCoordinateTransformContext mTransformContext;
     QgsFields mFields;

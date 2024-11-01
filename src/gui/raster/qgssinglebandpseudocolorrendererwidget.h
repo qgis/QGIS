@@ -35,13 +35,11 @@ class QgsRasterMinMaxWidget;
  * a raster min max widget and a band selector.
  *
  */
-class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget, private Ui::QgsSingleBandPseudoColorRendererWidgetBase
+class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget : public QgsRasterRendererWidget, private Ui::QgsSingleBandPseudoColorRendererWidgetBase
 {
-
     Q_OBJECT
 
   public:
-
     //! Creates new raster renderer widget
     QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 
@@ -58,11 +56,23 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
      */
     void setFromRenderer( const QgsRasterRenderer *r );
 
-    QString min( int index = 0 ) override { Q_UNUSED( index ) return mMinLineEdit->text(); }
-    QString max( int index = 0 ) override { Q_UNUSED( index ) return mMaxLineEdit->text(); }
+    QString min( int index = 0 ) override
+    {
+      Q_UNUSED( index )
+      return mMinLineEdit->text();
+    }
+    QString max( int index = 0 ) override
+    {
+      Q_UNUSED( index )
+      return mMaxLineEdit->text();
+    }
     void setMin( const QString &value, int index = 0 ) override;
     void setMax( const QString &value, int index = 0 ) override;
-    int selectedBand( int index = 0 ) override { Q_UNUSED( index ) return mBandComboBox->currentBand(); }
+    int selectedBand( int index = 0 ) override
+    {
+      Q_UNUSED( index )
+      return mBandComboBox->currentBand();
+    }
 
   public slots:
     //! called when new min/max values are loaded

@@ -53,7 +53,6 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     Q_PROPERTY( QgsSnappingConfig config READ config WRITE setConfig NOTIFY configChanged )
 
   public:
-
     /**
      * Constructor for QgsSnappingUtils
      * \param parent parent object
@@ -104,10 +103,10 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     enum IndexingStrategy
     {
-      IndexAlwaysFull,    //!< For all layers build index of full extent. Uses more memory, but queries are faster.
-      IndexNeverFull,     //!< For all layers only create temporary indexes of small extent. Low memory usage, slower queries.
-      IndexHybrid,        //!< For "big" layers using IndexNeverFull, for the rest IndexAlwaysFull. Compromise between speed and memory usage.
-      IndexExtent         //!< For all layer build index of extent given in map settings
+      IndexAlwaysFull, //!< For all layers build index of full extent. Uses more memory, but queries are faster.
+      IndexNeverFull,  //!< For all layers only create temporary indexes of small extent. Low memory usage, slower queries.
+      IndexHybrid,     //!< For "big" layers using IndexNeverFull, for the rest IndexAlwaysFull. Compromise between speed and memory usage.
+      IndexExtent      //!< For all layer build index of extent given in map settings
     };
 
     //! Sets a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be
@@ -120,8 +119,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
      */
     struct LayerConfig
     {
-
-      /**
+        /**
        * Create a new configuration for a snapping layer.
        *
        * \code{.py}
@@ -138,31 +136,31 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
        * \param tol The tolerance radius in which the snapping will trigger
        * \param u   The unit in which the tolerance is specified
        */
-      LayerConfig( QgsVectorLayer *l, QgsPointLocator::Types t, double tol, Qgis::MapToolUnit u )
-        : layer( l )
-        , type( t )
-        , tolerance( tol )
-        , unit( u )
-      {}
+        LayerConfig( QgsVectorLayer *l, QgsPointLocator::Types t, double tol, Qgis::MapToolUnit u )
+          : layer( l )
+          , type( t )
+          , tolerance( tol )
+          , unit( u )
+        {}
 
-      // TODO c++20 - replace with = default
-      bool operator==( const QgsSnappingUtils::LayerConfig &other ) const
-      {
-        return layer == other.layer && type == other.type && tolerance == other.tolerance && unit == other.unit;
-      }
-      bool operator!=( const QgsSnappingUtils::LayerConfig &other ) const
-      {
-        return !operator==( other );
-      }
+        // TODO c++20 - replace with = default
+        bool operator==( const QgsSnappingUtils::LayerConfig &other ) const
+        {
+          return layer == other.layer && type == other.type && tolerance == other.tolerance && unit == other.unit;
+        }
+        bool operator!=( const QgsSnappingUtils::LayerConfig &other ) const
+        {
+          return !operator==( other );
+        }
 
-      //! The layer to configure.
-      QgsVectorLayer *layer = nullptr;
-      //! To which geometry properties of this layers a snapping should happen.
-      QgsPointLocator::Types type;
-      //! The range around snapping targets in which snapping should occur.
-      double tolerance;
-      //! The units in which the tolerance is specified.
-      Qgis::MapToolUnit unit;
+        //! The layer to configure.
+        QgsVectorLayer *layer = nullptr;
+        //! To which geometry properties of this layers a snapping should happen.
+        QgsPointLocator::Types type;
+        //! The range around snapping targets in which snapping should occur.
+        double tolerance;
+        //! The units in which the tolerance is specified.
+        Qgis::MapToolUnit unit;
     };
 
     //! Query layers used for snapping
@@ -250,7 +248,6 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     void configChanged( const QgsSnappingConfig &snappingConfig );
 
   protected:
-
     //! Called when starting to index with snapToMap - can be overridden and e.g. progress dialog can be provided
     virtual void prepareIndexStarting( int count ) { Q_UNUSED( count ); }
     //! Called when finished indexing a layer with snapToMap. When index == count the indexing is complete
@@ -274,7 +271,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //! Returns a temporary locator with index only for a small area (will be replaced by another one on next request)
     QgsPointLocator *temporaryLocatorForLayer( QgsVectorLayer *vl, const QgsPointXY &pointMap, double tolerance );
 
-    typedef QPair< QgsVectorLayer *, QgsRectangle > LayerAndAreaOfInterest;
+    typedef QPair<QgsVectorLayer *, QgsRectangle> LayerAndAreaOfInterest;
 
     //! Returns TRUE if \a loc index is ready to be used in the area of interest \a areaOfInterest
     bool isIndexPrepared( QgsPointLocator *loc, const QgsRectangle &areaOfInterest );

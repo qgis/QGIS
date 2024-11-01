@@ -30,16 +30,14 @@ class QgsLineString;
  */
 class CORE_EXPORT QgsLineSegment2D
 {
-
   public:
-
     /**
      * Constructor for a QgsLineSegment2D from the specified \a start point to
      * the \a end point.
      */
     QgsLineSegment2D( const QgsPointXY &start, const QgsPointXY &end ) SIP_HOLDGIL
-  : mStart( start )
-    , mEnd( end )
+      : mStart( start ),
+        mEnd( end )
     {}
 
     /**
@@ -47,8 +45,8 @@ class CORE_EXPORT QgsLineSegment2D
      * (\a x2, \a y2).
      */
     QgsLineSegment2D( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL
-  : mStart( QgsPointXY( x1, y1 ) )
-    , mEnd( QgsPointXY( x2, y2 ) )
+      : mStart( QgsPointXY( x1, y1 ) ),
+        mEnd( QgsPointXY( x2, y2 ) )
     {}
 
     /**
@@ -231,10 +229,8 @@ class CORE_EXPORT QgsLineSegment2D
     }
 
   private:
-
     QgsPointXY mStart;
     QgsPointXY mEnd;
-
 };
 
 #endif // QGSLINESEGMENT_H

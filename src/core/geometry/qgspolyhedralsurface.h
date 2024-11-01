@@ -34,7 +34,7 @@
  *
  * \since QGIS 3.40
  */
-class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
+class CORE_EXPORT QgsPolyhedralSurface : public QgsSurface
 {
   public:
     QgsPolyhedralSurface();
@@ -52,7 +52,7 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
   private:
     bool fuzzyHelper( const QgsAbstractGeometry &other, double epsilon, bool useDistance ) const
     {
-      const QgsPolyhedralSurface *otherPolygon = qgsgeometry_cast< const QgsPolyhedralSurface * >( &other );
+      const QgsPolyhedralSurface *otherPolygon = qgsgeometry_cast<const QgsPolyhedralSurface *>( &other );
       if ( !otherPolygon )
         return false;
 
@@ -65,20 +65,17 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
 
       for ( int i = 0; i < mPatches.count(); ++i )
       {
-        if ( ( !mPatches.at( i ) && otherPolygon->mPatches.at( i ) ) ||
-             ( mPatches.at( i ) && !otherPolygon->mPatches.at( i ) ) )
+        if ( ( !mPatches.at( i ) && otherPolygon->mPatches.at( i ) ) || ( mPatches.at( i ) && !otherPolygon->mPatches.at( i ) ) )
           return false;
 
         if ( useDistance )
         {
-          if ( mPatches.at( i ) && otherPolygon->mPatches.at( i ) &&
-               !( *mPatches.at( i ) ).fuzzyDistanceEqual( *otherPolygon->mPatches.at( i ), epsilon ) )
+          if ( mPatches.at( i ) && otherPolygon->mPatches.at( i ) && !( *mPatches.at( i ) ).fuzzyDistanceEqual( *otherPolygon->mPatches.at( i ), epsilon ) )
             return false;
         }
         else
         {
-          if ( mPatches.at( i ) && otherPolygon->mPatches.at( i ) &&
-               !( *mPatches.at( i ) ).fuzzyEqual( *otherPolygon->mPatches.at( i ), epsilon ) )
+          if ( mPatches.at( i ) && otherPolygon->mPatches.at( i ) && !( *mPatches.at( i ) ).fuzzyEqual( *otherPolygon->mPatches.at( i ), epsilon ) )
             return false;
         }
       }
@@ -186,15 +183,14 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
      * \see numPatches()
      */
     SIP_PYOBJECT patchN( int i ) SIP_HOLDGIL SIP_TYPEHINT( QgsPolygon );
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPatches() )
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->numPatches() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      return sipConvertFromType( const_cast< QgsPolygon * >( sipCpp->patchN( a0 ) ), sipType_QgsPolygon, NULL );
+      return sipConvertFromType( const_cast<QgsPolygon *>( sipCpp->patchN( a0 ) ), sipType_QgsPolygon, NULL );
     }
     % End
 #endif
@@ -228,8 +224,7 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
      *
      */
     bool removePatch( int ringIndex );
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPatches() )
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->numPatches() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -297,8 +292,8 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
     QgsMultiPolygon *toMultiPolygon() const SIP_FACTORY;
 
 #ifndef SIP_RUN
-    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
-    void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
+    void filterVertices( const std::function<bool( const QgsPoint & )> &filter ) override;
+    void transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform ) override;
 
     /**
      * Cast the \a geom to a QgsPolyhedralSurface.
@@ -325,22 +320,25 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString wkt = sipCpp->asWkt();
+        QString wkt
+      = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
       wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
     QString str = QStringLiteral( "<QgsPolyhedralSurface: %1>" ).arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 
-    /**
+      /**
      * Returns the number of patches within the polyhedral surface.
      */
-    int __len__() const;
+      int
+      __len__() const;
     % MethodCode
-    sipRes = sipCpp->numPatches();
+        sipRes
+      = sipCpp->numPatches();
     % End
 
-    /**
+        /**
     * Returns the geometry at the specified ``index``.
     *
     * Indexes can be less than 0, in which case they correspond to geometries from the end of the collect. E.g. an index of -1
@@ -348,9 +346,9 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
     *
     * \throws IndexError if no geometry with the specified ``index`` exists.
     */
-    SIP_PYOBJECT __getitem__( int index ) SIP_TYPEHINT( QgsPolygon );
-    % MethodCode
-    const int count = sipCpp->numPatches();
+        SIP_PYOBJECT
+      __getitem__( int index ) SIP_TYPEHINT( QgsPolygon );
+    % MethodCode const int count = sipCpp->numPatches();
     if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
@@ -367,14 +365,15 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
     % End
 #endif
 
-  protected:
+      protected :
 
-    int childCount() const override;
+      int
+      childCount() const override;
     QgsAbstractGeometry *childGeometry( int index ) const override;
     int compareToSameClass( const QgsAbstractGeometry *other ) const override;
     QgsBox3D calculateBoundingBox3D() const override;
 
-    QVector< QgsPolygon * > mPatches;
+    QVector<QgsPolygon *> mPatches;
 };
 
 // clazy:excludeall=qstring-allocations

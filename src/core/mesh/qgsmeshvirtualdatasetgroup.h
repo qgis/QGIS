@@ -35,10 +35,9 @@
  *
  * \since QGIS 3.16
  */
-class CORE_EXPORT QgsMeshVirtualDatasetGroup: public QgsMeshDatasetGroup
+class CORE_EXPORT QgsMeshVirtualDatasetGroup : public QgsMeshDatasetGroup
 {
   public:
-
     /**
      * Constructor
      * \param name name of the dataset group
@@ -60,7 +59,7 @@ class CORE_EXPORT QgsMeshVirtualDatasetGroup: public QgsMeshDatasetGroup
     QStringList datasetGroupNamesDependentOn() const override;
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     QString description() const override;
-    QgsMeshDatasetGroup::Type type() const override {return QgsMeshDatasetGroup::Virtual;}
+    QgsMeshDatasetGroup::Type type() const override { return QgsMeshDatasetGroup::Virtual; }
 
   private:
     QString mFormula;

@@ -32,7 +32,6 @@ QgsAnnotationManager::QgsAnnotationManager( QgsProject *project )
   : QObject( project )
   , mProject( project )
 {
-
 }
 
 QgsAnnotationManager::~QgsAnnotationManager()
@@ -109,15 +108,14 @@ bool QgsAnnotationManager::readXmlPrivate( const QDomElement &element, const Qgs
   //restore each annotation
   bool result = true;
 
-  auto createAnnotationFromElement = [this, &context, layer, &transformContext]( const QDomElement & element )
-  {
-    std::unique_ptr< QgsAnnotation > annotation( createAnnotationFromXml( element, context ) );
+  auto createAnnotationFromElement = [this, &context, layer, &transformContext]( const QDomElement &element ) {
+    std::unique_ptr<QgsAnnotation> annotation( createAnnotationFromXml( element, context ) );
     if ( !annotation )
       return;
 
     if ( layer )
     {
-      std::unique_ptr< QgsAnnotationItem > annotationItem = convertToAnnotationItem( annotation.get(), layer, transformContext );
+      std::unique_ptr<QgsAnnotationItem> annotationItem = convertToAnnotationItem( annotation.get(), layer, transformContext );
       if ( annotationItem )
       {
         layer->addItem( annotationItem.release() );
@@ -137,7 +135,7 @@ bool QgsAnnotationManager::readXmlPrivate( const QDomElement &element, const Qgs
   QDomElement annotationsElem = element.firstChildElement( QStringLiteral( "Annotations" ) );
 
   QDomElement annotationElement = annotationsElem.firstChildElement( QStringLiteral( "Annotation" ) );
-  while ( ! annotationElement.isNull() )
+  while ( !annotationElement.isNull() )
   {
     createAnnotationFromElement( annotationElement );
     annotationElement = annotationElement.nextSiblingElement( QStringLiteral( "Annotation" ) );
@@ -173,8 +171,7 @@ bool QgsAnnotationManager::readXmlPrivate( const QDomElement &element, const Qgs
 
 std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem( QgsAnnotation *annotation, QgsAnnotationLayer *layer, const QgsCoordinateTransformContext &transformContext )
 {
-  auto setCommonProperties = [layer, &transformContext]( const QgsAnnotation * source, QgsAnnotationItem * destination ) -> bool
-  {
+  auto setCommonProperties = [layer, &transformContext]( const QgsAnnotation *source, QgsAnnotationItem *destination ) -> bool {
     destination->setEnabled( source->isVisible() );
     if ( source->hasFixedMapPosition() )
     {
@@ -192,7 +189,7 @@ std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem
 
       destination->setCalloutAnchor( QgsGeometry::fromPointXY( mapPosition ) );
 
-      std::unique_ptr< QgsBalloonCallout > callout = std::make_unique< QgsBalloonCallout >();
+      std::unique_ptr<QgsBalloonCallout> callout = std::make_unique<QgsBalloonCallout>();
       if ( QgsFillSymbol *fill = source->fillSymbol() )
         callout->setFillSymbol( fill->clone() );
 
@@ -209,7 +206,7 @@ std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem
     return true;
   };
 
-  if ( const QgsSvgAnnotation *svg = dynamic_cast< const QgsSvgAnnotation *>( annotation ) )
+  if ( const QgsSvgAnnotation *svg = dynamic_cast<const QgsSvgAnnotation *>( annotation ) )
   {
     QgsPointXY mapPosition = svg->mapPosition();
     QgsCoordinateTransform transform( svg->mapPositionCrs(), layer->crs(), transformContext );
@@ -222,8 +219,8 @@ std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem
       QgsDebugError( QStringLiteral( "Error transforming annotation position" ) );
     }
 
-    std::unique_ptr< QgsAnnotationPictureItem > item = std::make_unique< QgsAnnotationPictureItem >( Qgis::PictureFormat::SVG,
-        svg->filePath(), QgsRectangle::fromCenterAndSize( mapPosition, 1, 1 ) );
+    std::unique_ptr<QgsAnnotationPictureItem> item = std::make_unique<QgsAnnotationPictureItem>( Qgis::PictureFormat::SVG,
+                                                                                                 svg->filePath(), QgsRectangle::fromCenterAndSize( mapPosition, 1, 1 ) );
     if ( !setCommonProperties( annotation, item.get() ) )
       return nullptr;
 
@@ -254,7 +251,7 @@ std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem
 
     return item;
   }
-  else if ( const QgsTextAnnotation *text = dynamic_cast< const QgsTextAnnotation *>( annotation ) )
+  else if ( const QgsTextAnnotation *text = dynamic_cast<const QgsTextAnnotation *>( annotation ) )
   {
     QgsPointXY mapPosition = text->mapPosition();
     QgsCoordinateTransform transform( text->mapPositionCrs(), layer->crs(), transformContext );
@@ -267,7 +264,7 @@ std::unique_ptr<QgsAnnotationItem> QgsAnnotationManager::convertToAnnotationItem
       QgsDebugError( QStringLiteral( "Error transforming annotation position" ) );
     }
 
-    std::unique_ptr< QgsAnnotationRectangleTextItem > item = std::make_unique< QgsAnnotationRectangleTextItem >( text->document()->toHtml(), QgsRectangle::fromCenterAndSize( mapPosition, 1, 1 ) );
+    std::unique_ptr<QgsAnnotationRectangleTextItem> item = std::make_unique<QgsAnnotationRectangleTextItem>( text->document()->toHtml(), QgsRectangle::fromCenterAndSize( mapPosition, 1, 1 ) );
     if ( !setCommonProperties( annotation, item.get() ) )
       return nullptr;
 

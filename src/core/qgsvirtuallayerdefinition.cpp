@@ -41,7 +41,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
 
   int layerIdx = 0;
 
-  const QList<QPair<QString, QString> > items = QUrlQuery( url ).queryItems( QUrl::FullyEncoded );
+  const QList<QPair<QString, QString>> items = QUrlQuery( url ).queryItems( QUrl::FullyEncoded );
   for ( int i = 0; i < items.size(); i++ )
   {
     const QString key = items.at( i ).first;
@@ -191,10 +191,11 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
       // please do so... this is GROSS!
       urlQuery.addQueryItem( fromEncodedComponent_helper( "layer" ),
                              fromEncodedComponent_helper( QStringLiteral( "%1:%4:%2:%3" ) // the order is important, since the 4th argument may contain '%2' as well
-                                 .arg( l.provider(),
-                                       QString( QUrl::toPercentEncoding( l.name() ) ),
-                                       l.encoding(),
-                                       QString( QUrl::toPercentEncoding( l.source() ) ) ).toUtf8() ) );
+                                                            .arg( l.provider(),
+                                                                  QString( QUrl::toPercentEncoding( l.name() ) ),
+                                                                  l.encoding(),
+                                                                  QString( QUrl::toPercentEncoding( l.source() ) ) )
+                                                            .toUtf8() ) );
   }
 
   if ( !query().isEmpty() )
@@ -210,7 +211,7 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
   else if ( !geometryField().isEmpty() )
   {
     if ( hasDefinedGeometry() )
-      urlQuery.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "%1:%2:%3" ).arg( geometryField() ). arg( qgsEnumValueToKey( geometryWkbType() ) ).arg( geometrySrid() ).toUtf8() );
+      urlQuery.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "%1:%2:%3" ).arg( geometryField() ).arg( qgsEnumValueToKey( geometryWkbType() ) ).arg( geometrySrid() ).toUtf8() );
     else
       urlQuery.addQueryItem( QStringLiteral( "geometry" ), geometryField() );
   }
@@ -234,7 +235,7 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
     urlQuery.addQueryItem( QStringLiteral( "lazy" ), QString() );
   }
 
-  if ( ! subsetString().isEmpty() )
+  if ( !subsetString().isEmpty() )
   {
     urlQuery.addQueryItem( QStringLiteral( "subsetstring" ), QUrl::toPercentEncoding( subsetString() ) );
   }

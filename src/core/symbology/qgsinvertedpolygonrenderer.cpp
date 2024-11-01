@@ -104,21 +104,17 @@ QgsInvertedPolygonRenderer *QgsInvertedPolygonRenderer::convertFromRenderer( con
   {
     return dynamic_cast<QgsInvertedPolygonRenderer *>( renderer->clone() );
   }
-  else if ( renderer->type() == QLatin1String( "singleSymbol" ) ||
-            renderer->type() == QLatin1String( "categorizedSymbol" ) ||
-            renderer->type() == QLatin1String( "graduatedSymbol" ) ||
-            renderer->type() == QLatin1String( "RuleRenderer" ) )
+  else if ( renderer->type() == QLatin1String( "singleSymbol" ) || renderer->type() == QLatin1String( "categorizedSymbol" ) || renderer->type() == QLatin1String( "graduatedSymbol" ) || renderer->type() == QLatin1String( "RuleRenderer" ) )
   {
-    std::unique_ptr< QgsInvertedPolygonRenderer > res = std::make_unique< QgsInvertedPolygonRenderer >( renderer->clone() );
+    std::unique_ptr<QgsInvertedPolygonRenderer> res = std::make_unique<QgsInvertedPolygonRenderer>( renderer->clone() );
     renderer->copyRendererData( res.get() );
     return res.release();
   }
   else if ( renderer->type() == QLatin1String( "mergedFeatureRenderer" ) )
   {
-    std::unique_ptr< QgsInvertedPolygonRenderer > res = std::make_unique< QgsInvertedPolygonRenderer >( renderer->embeddedRenderer() ? renderer->embeddedRenderer()->clone() : nullptr );
+    std::unique_ptr<QgsInvertedPolygonRenderer> res = std::make_unique<QgsInvertedPolygonRenderer>( renderer->embeddedRenderer() ? renderer->embeddedRenderer()->clone() : nullptr );
     renderer->copyRendererData( res.get() );
     return res.release();
   }
   return nullptr;
 }
-

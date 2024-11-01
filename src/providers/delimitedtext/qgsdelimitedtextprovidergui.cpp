@@ -26,7 +26,6 @@
 class QgsDelimitedTextSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-
     QString providerKey() const override { return QStringLiteral( "delimitedtext" ); }
     QString text() const override { return QObject::tr( "Delimited Text" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 30; }

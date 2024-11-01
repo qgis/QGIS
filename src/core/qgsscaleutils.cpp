@@ -63,9 +63,9 @@ bool QgsScaleUtils::loadScaleList( const QString &fileName, QStringList &scales,
   if ( !doc.setContent( &file, true, &errorStr, &errorLine, &errorColumn ) )
   {
     errorMessage = QStringLiteral( "Parse error at line %1, column %2:\n%3" )
-                   .arg( errorLine )
-                   .arg( errorColumn )
-                   .arg( errorStr );
+                     .arg( errorLine )
+                     .arg( errorColumn )
+                     .arg( errorStr );
     return false;
   }
 

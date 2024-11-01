@@ -141,7 +141,8 @@ void QgsSingleSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, co
 
   QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElem, newProps );
 
-  if ( mSymbol ) mSymbol->toSld( doc, ruleElem, newProps );
+  if ( mSymbol )
+    mSymbol->toSld( doc, ruleElem, newProps );
 }
 
 QgsSymbolList QgsSingleSymbolRenderer::symbols( QgsRenderContext &context ) const
@@ -257,19 +258,19 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element
     return nullptr;
 
   // now create the symbol
-  std::unique_ptr< QgsSymbol > symbol;
+  std::unique_ptr<QgsSymbol> symbol;
   switch ( geomType )
   {
     case Qgis::GeometryType::Line:
-      symbol = std::make_unique< QgsLineSymbol >( layers );
+      symbol = std::make_unique<QgsLineSymbol>( layers );
       break;
 
     case Qgis::GeometryType::Polygon:
-      symbol = std::make_unique< QgsFillSymbol >( layers );
+      symbol = std::make_unique<QgsFillSymbol>( layers );
       break;
 
     case Qgis::GeometryType::Point:
-      symbol = std::make_unique< QgsMarkerSymbol >( layers );
+      symbol = std::make_unique<QgsMarkerSymbol>( layers );
       break;
 
     default:
@@ -328,11 +329,11 @@ QgsLegendSymbolList QgsSingleSymbolRenderer::legendSymbolItems() const
   return lst;
 }
 
-QSet< QString > QgsSingleSymbolRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
+QSet<QString> QgsSingleSymbolRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   Q_UNUSED( feature )
   Q_UNUSED( context )
-  return QSet< QString >() << QStringLiteral( "0" );
+  return QSet<QString>() << QStringLiteral( "0" );
 }
 
 QString QgsSingleSymbolRenderer::legendKeyToExpression( const QString &key, QgsVectorLayer *, bool &ok ) const

@@ -56,7 +56,6 @@ class CORE_EXPORT QgsMapLayerSelectionProperties : public QObject
 #endif
 
   public:
-
     /**
      * Constructor for QgsMapLayerSelectionProperties, with the specified \a parent object.
      */

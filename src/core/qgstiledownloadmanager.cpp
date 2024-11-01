@@ -60,7 +60,7 @@ void QgsTileDownloadManagerWorker::queueUpdated()
     // mQueue elsewhere while still trying to iterate over it here => crash
     // WARNING: there may be event loops/processEvents in play here, because in some circumstances
     // (authentication handling, ssl errors) QgsNetworkAccessManager will trigger these.
-    std::vector< QNetworkReply * > replies;
+    std::vector<QNetworkReply *> replies;
     replies.reserve( mManager->mQueue.size() );
     for ( auto it = mManager->mQueue.begin(); it != mManager->mQueue.end(); ++it )
     {
@@ -246,7 +246,7 @@ QgsTileDownloadManagerReply *QgsTileDownloadManager::get( const QNetworkRequest 
     entry.objWorker = new QgsTileDownloadManagerReplyWorkerObject( this, request );
     entry.objWorker->moveToThread( mWorkerThread );
 
-    QObject::connect( entry.objWorker, &QgsTileDownloadManagerReplyWorkerObject::finished, reply, &QgsTileDownloadManagerReply::requestFinished );  // should be queued connection
+    QObject::connect( entry.objWorker, &QgsTileDownloadManagerReplyWorkerObject::finished, reply, &QgsTileDownloadManagerReply::requestFinished ); // should be queued connection
 
     addEntry( entry );
   }
@@ -254,7 +254,7 @@ QgsTileDownloadManagerReply *QgsTileDownloadManager::get( const QNetworkRequest 
   {
     QgsDebugMsgLevel( QStringLiteral( "Tile download manager: get (existing entry): " ) + request.url().toString(), 2 );
 
-    QObject::connect( entry.objWorker, &QgsTileDownloadManagerReplyWorkerObject::finished, reply, &QgsTileDownloadManagerReply::requestFinished );  // should be queued connection
+    QObject::connect( entry.objWorker, &QgsTileDownloadManagerReplyWorkerObject::finished, reply, &QgsTileDownloadManagerReply::requestFinished ); // should be queued connection
 
     ++mStats.requestsMerged;
   }
@@ -294,7 +294,7 @@ void QgsTileDownloadManager::shutdown()
   {
     const QMutexLocker locker( &mMutex );
     if ( !mWorkerThread )
-      return;  // nothing to stop
+      return; // nothing to stop
 
     // let's signal to the thread
     mShuttingDown = true;
@@ -307,7 +307,7 @@ void QgsTileDownloadManager::shutdown()
     {
       const QMutexLocker locker( &mMutex );
       if ( !mWorkerThread )
-        return;  // the thread has stopped
+        return; // the thread has stopped
     }
 
     QThread::usleep( 1000 );

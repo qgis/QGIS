@@ -47,9 +47,8 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
   mFileWidget->lineEdit()->hide();
   mFileWidget->setFilter( QgsVectorFileWriter::filterForDriver( QStringLiteral( "GPKG" ) ) );
 
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
-  {
-    const QString fileName{ QFileInfo( path ).fileName() };
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [=]( const QString &path ) {
+    const QString fileName { QFileInfo( path ).fileName() };
     if ( mCboConnection->findData( path ) == -1 )
     {
       // the call to filePath standardizes the path and prevents
@@ -80,8 +79,7 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
   }
 
   connect( mCboProject, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::projectChanged );
-  connect( mCboProject, qOverload< const QString & >( &QComboBox::currentTextChanged ), this, [ = ]( const QString & )
-  {
+  connect( mCboProject, qOverload<const QString &>( &QComboBox::currentTextChanged ), this, [=]( const QString & ) {
     mCboProject->setItemData( mCboProject->currentIndex(), false );
   } );
   connect( mCboConnection, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::populateProjects );
@@ -89,7 +87,6 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
   // If possible, set the item currently displayed database
   const QString toSelect = QgsOgrDbConnection::selectedConnection( QStringLiteral( "GPKG" ) );
   mCboConnection->setCurrentIndex( mCboConnection->findText( toSelect ) );
-
 }
 
 QString QgsGeoPackageProjectStorageDialog::connectionName() const
@@ -161,7 +158,7 @@ void QgsGeoPackageProjectStorageDialog::removeProject()
   populateProjects();
 }
 
-QString QgsGeoPackageProjectStorageDialog::currentProjectUri( )
+QString QgsGeoPackageProjectStorageDialog::currentProjectUri()
 {
   QgsGeoPackageProjectUri gpkgUri;
   gpkgUri.database = mCboConnection->currentData().toString();

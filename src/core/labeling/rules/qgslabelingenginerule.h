@@ -40,7 +40,6 @@ namespace pal
 class CORE_EXPORT QgsLabelingEngineContext
 {
   public:
-
     /**
      * Constructor for QgsLabelingEngineContext.
      */
@@ -60,7 +59,8 @@ class CORE_EXPORT QgsLabelingEngineContext
      * Returns a reference to the context's render context.
      * \note Not available in Python bindings.
      */
-    const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
+    const QgsRenderContext &renderContext() const { return mRenderContext; }
+    SIP_SKIP
 
     /**
      * Returns the map extent defining the limits for labeling.
@@ -107,7 +107,6 @@ class CORE_EXPORT QgsLabelingEngineContext
     void setMapBoundaryGeometry( const QgsGeometry &geometry );
 
   private:
-
 #ifdef SIP_RUN
     QgsLabelingEngineContext( const QgsLabelingEngineContext &other );
 #endif
@@ -131,7 +130,6 @@ class CORE_EXPORT QgsLabelingEngineContext
  */
 class CORE_EXPORT QgsAbstractLabelingEngineRule
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->id() == "minimumDistanceLabelToFeature" )
@@ -158,7 +156,6 @@ class CORE_EXPORT QgsAbstractLabelingEngineRule
 #endif
 
   public:
-
     virtual ~QgsAbstractLabelingEngineRule();
 
     /**
@@ -293,17 +290,14 @@ class CORE_EXPORT QgsAbstractLabelingEngineRule
     virtual void alterCandidateCost( pal::LabelPosition *candidate, QgsLabelingEngineContext &context ) const SIP_SKIP;
 
   protected:
-
     /**
      * Copies common properties from this object to an \a other.
      */
     virtual void copyCommonProperties( QgsAbstractLabelingEngineRule *other ) const;
 
   private:
-
     QString mName;
     bool mIsActive = true;
-
 };
 
 #endif // QGSLABELINGENGINESETTINGS_H

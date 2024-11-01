@@ -65,7 +65,7 @@ void QgsAttributeEditorRelation::loadConfiguration( const QDomElement &element, 
     config = relationEditorConfiguration();
 
   // pre QGIS 3.18 compatibility
-  if ( ! config.contains( QStringLiteral( "buttons" ) ) )
+  if ( !config.contains( QStringLiteral( "buttons" ) ) )
   {
     if ( element.hasAttribute( "buttons" ) )
     {

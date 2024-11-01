@@ -34,7 +34,6 @@ struct QgsRasterViewPort;
 class CORE_EXPORT QgsRasterIterator
 {
   public:
-
     /**
      * Constructor for QgsRasterIterator, iterating over the specified \a input raster source.
      *
@@ -127,7 +126,7 @@ class CORE_EXPORT QgsRasterIterator
     */
     bool readNextRasterPart( int bandNumber,
                              int &nCols, int &nRows,
-                             std::unique_ptr< QgsRasterBlock > &block,
+                             std::unique_ptr<QgsRasterBlock> &block,
                              int &topLeftCol, int &topLeftRow,
                              QgsRectangle *blockExtent = nullptr,
                              int *tileColumns = nullptr, int *tileRows = nullptr, int *tileTopLeftColumn = nullptr, int *tileTopLeftRow = nullptr ) SIP_SKIP;
@@ -180,10 +179,10 @@ class CORE_EXPORT QgsRasterIterator
     //Stores information about reading of a raster band. Columns and rows are in unsampled coordinates
     struct RasterPartInfo
     {
-      qgssize currentCol;
-      qgssize currentRow;
-      qgssize nCols;
-      qgssize nRows;
+        qgssize currentCol;
+        qgssize currentRow;
+        qgssize nCols;
+        qgssize nRows;
     };
 
     QgsRasterInterface *mInput = nullptr;

@@ -30,7 +30,6 @@ class QgsReportSectionModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsReportSectionModel, for the specified \a report.
      */
@@ -48,7 +47,7 @@ class QgsReportSectionModel : public QAbstractItemModel
     QModelIndex parent( const QModelIndex &index ) const override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
-    void addSection( const QModelIndex &parent, std::unique_ptr< QgsAbstractReportSection > section );
+    void addSection( const QModelIndex &parent, std::unique_ptr<QgsAbstractReportSection> section );
 
     /**
      * Returns the report section for the given \a index.

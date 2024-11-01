@@ -43,7 +43,6 @@ class QgsMatrix4x4;
 class CORE_EXPORT QgsOrientedBox3D
 {
   public:
-
     /**
      * Constructor for a null oriented box.
      */
@@ -52,12 +51,12 @@ class CORE_EXPORT QgsOrientedBox3D
     /**
      * Constructor for a oriented box, with a specified center and half axes matrix.
      */
-    QgsOrientedBox3D( const QList<double> &center, const QList< double > &halfAxes );
+    QgsOrientedBox3D( const QList<double> &center, const QList<double> &halfAxes );
 
     /**
      * Constructor for a oriented box, with a specified center and half axes matrix.
      */
-    QgsOrientedBox3D( const QgsVector3D &center, const QList< QgsVector3D > &halfAxes );
+    QgsOrientedBox3D( const QgsVector3D &center, const QList<QgsVector3D> &halfAxes );
 
     /**
      * Constructs an oriented box from an axis-aligned bounding box.
@@ -127,7 +126,7 @@ class CORE_EXPORT QgsOrientedBox3D
     /**
      * Returns the half axes matrix;
      */
-    QList< double > halfAxesList() const SIP_HOLDGIL SIP_PYNAME( halfAxes );
+    QList<double> halfAxesList() const SIP_HOLDGIL SIP_PYNAME( halfAxes );
 
     /**
      * Returns the overall bounding box of the object.
@@ -137,7 +136,7 @@ class CORE_EXPORT QgsOrientedBox3D
     /**
      * Returns an array of all corners as 3D vectors.
      */
-    QVector< QgsVector3D > corners() const SIP_HOLDGIL;
+    QVector<QgsVector3D> corners() const SIP_HOLDGIL;
 
     /**
      * Returns size of sides of the box.
@@ -164,30 +163,30 @@ class CORE_EXPORT QgsOrientedBox3D
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsOrientedBox3D([%1, %2, %3], [%4, %5, %6, %7, %8, %9, %10, %11, %12])>" )
-                  .arg( sipCpp->centerX() )
-                  .arg( sipCpp->centerY() )
-                  .arg( sipCpp->centerZ() )
-                  .arg( sipCpp->halfAxes()[0] )
-                  .arg( sipCpp->halfAxes()[1] )
-                  .arg( sipCpp->halfAxes()[2] )
-                  .arg( sipCpp->halfAxes()[3] )
-                  .arg( sipCpp->halfAxes()[4] )
-                  .arg( sipCpp->halfAxes()[5] )
-                  .arg( sipCpp->halfAxes()[6] )
-                  .arg( sipCpp->halfAxes()[7] )
-                  .arg( sipCpp->halfAxes()[8] );
+        QString str
+      = QStringLiteral( "<QgsOrientedBox3D([%1, %2, %3], [%4, %5, %6, %7, %8, %9, %10, %11, %12])>" )
+          .arg( sipCpp->centerX() )
+          .arg( sipCpp->centerY() )
+          .arg( sipCpp->centerZ() )
+          .arg( sipCpp->halfAxes()[0] )
+          .arg( sipCpp->halfAxes()[1] )
+          .arg( sipCpp->halfAxes()[2] )
+          .arg( sipCpp->halfAxes()[3] )
+          .arg( sipCpp->halfAxes()[4] )
+          .arg( sipCpp->halfAxes()[5] )
+          .arg( sipCpp->halfAxes()[6] )
+          .arg( sipCpp->halfAxes()[7] )
+          .arg( sipCpp->halfAxes()[8] );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-  private:
+      private :
 
-    double mCenter[ 3 ] { std::numeric_limits< double >::quiet_NaN(), std::numeric_limits< double >::quiet_NaN(), std::numeric_limits< double >::quiet_NaN() };
+      double mCenter[3] { std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() };
     double mHalfAxes[9] { 1, 0, 0, 0, 1, 0, 0, 0, 1 };
 
     friend class QgsCesiumUtils;
-
 };
 
 

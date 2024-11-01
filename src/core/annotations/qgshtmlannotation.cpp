@@ -57,7 +57,7 @@ QgsHtmlAnnotation::QgsHtmlAnnotation( QObject *parent )
 
 QgsHtmlAnnotation *QgsHtmlAnnotation::clone() const
 {
-  std::unique_ptr< QgsHtmlAnnotation > c( new QgsHtmlAnnotation() );
+  std::unique_ptr<QgsHtmlAnnotation> c( new QgsHtmlAnnotation() );
   copyCommonProperties( c.get() );
   c->setSourceFile( mHtmlFile );
   return c.release();
@@ -74,7 +74,7 @@ void QgsHtmlAnnotation::setSourceFile( const QString &htmlFile )
   else
   {
     QTextStream in( &file );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     in.setCodec( "UTF-8" );
 #endif
     mHtmlSource = in.readAll();
@@ -172,7 +172,7 @@ void QgsHtmlAnnotation::setAssociatedFeature( const QgsFeature &feature )
 {
   QgsAnnotation::setAssociatedFeature( feature );
   QString newText;
-  QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer * >( mapLayer() );
+  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( mapLayer() );
   if ( feature.isValid() && vectorLayer )
   {
     QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vectorLayer ) );

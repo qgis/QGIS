@@ -23,11 +23,10 @@
 #include "qgis_app.h"
 
 //! A dialog to enter a mesh calculation expression
-class APP_EXPORT QgsMeshCalculatorDialog: public QDialog, private Ui::QgsMeshCalculatorDialogBase
+class APP_EXPORT QgsMeshCalculatorDialog : public QDialog, private Ui::QgsMeshCalculatorDialogBase
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for mesh calculator dialog
      * \param meshLayer main mesh layer, will be used for default extent and projection
@@ -123,7 +122,7 @@ class APP_EXPORT QgsMeshCalculatorDialog: public QDialog, private Ui::QgsMeshCal
     void getMeshDrivers();
 
     //! Populates the combo box with output formats
-    void populateDriversComboBox( );
+    void populateDriversComboBox();
 
     QgsMeshLayer *mLayer;
     QHash<QString, QgsMeshDriverMetadata> mMeshDrivers;

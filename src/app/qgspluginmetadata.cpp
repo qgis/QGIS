@@ -25,7 +25,6 @@ QgsPluginMetadata::QgsPluginMetadata( const QString &_libraryPath,
   , libraryPath( _libraryPath )
   , m_plugin( _plugin )
 {
-
 }
 
 QString QgsPluginMetadata::name() const

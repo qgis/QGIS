@@ -25,7 +25,6 @@ QgsProjectViewSettings::QgsProjectViewSettings( QgsProject *project )
   : QObject( project )
   , mProject( project )
 {
-
 }
 
 void QgsProjectViewSettings::reset()
@@ -84,15 +83,15 @@ QgsReferencedRectangle QgsProjectViewSettings::fullExtent() const
   }
   else
   {
-    const QList< QgsMapLayer * > layers = mProject->mapLayers( true ).values();
+    const QList<QgsMapLayer *> layers = mProject->mapLayers( true ).values();
 
-    QList< QgsMapLayer * > nonBaseMapLayers;
+    QList<QgsMapLayer *> nonBaseMapLayers;
     std::copy_if( layers.begin(), layers.end(),
                   std::back_inserter( nonBaseMapLayers ),
-    []( const QgsMapLayer * layer ) { return !( layer->properties() & Qgis::MapLayerProperty::IsBasemapLayer ); } );
+                  []( const QgsMapLayer *layer ) { return !( layer->properties() & Qgis::MapLayerProperty::IsBasemapLayer ); } );
 
     // unless ALL layers from the project are basemap layers, we exclude these by default as their extent won't be useful for the project.
-    if ( !nonBaseMapLayers.empty( ) )
+    if ( !nonBaseMapLayers.empty() )
       return QgsReferencedRectangle( QgsMapLayerUtils::combinedExtent( nonBaseMapLayers, mProject->crs(), mProject->transformContext() ), mProject->crs() );
     else
       return QgsReferencedRectangle( QgsMapLayerUtils::combinedExtent( layers, mProject->crs(), mProject->transformContext() ), mProject->crs() );
@@ -102,7 +101,7 @@ QgsReferencedRectangle QgsProjectViewSettings::fullExtent() const
 void QgsProjectViewSettings::setMapScales( const QVector<double> &scales )
 {
   // sort scales in descending order
-  QVector< double > sorted = scales;
+  QVector<double> sorted = scales;
   std::sort( sorted.begin(), sorted.end(), std::greater<double>() );
 
   if ( sorted == mapScales() )
@@ -147,7 +146,7 @@ bool QgsProjectViewSettings::readXml( const QDomElement &element, const QgsReadW
   const bool useProjectScale = element.attribute( QStringLiteral( "UseProjectScales" ), QStringLiteral( "0" ) ).toInt();
 
   QDomNodeList scalesNodes = element.elementsByTagName( QStringLiteral( "Scales" ) );
-  QVector< double > newScales;
+  QVector<double> newScales;
   if ( !scalesNodes.isEmpty() )
   {
     const QDomElement scalesElement = scalesNodes.at( 0 ).toElement();

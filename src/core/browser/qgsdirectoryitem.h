@@ -34,7 +34,6 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsDirectoryItem, with the specified \a parent item.
      *
@@ -72,11 +71,13 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsDirectoryItem: %1 - %2>" ).arg( sipCpp->dirPath(), sipCpp->path() );
+        QString str
+      = QStringLiteral( "<QgsDirectoryItem: %1 - %2>" ).arg( sipCpp->dirPath(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
-    void setState( Qgis::BrowserItemState state ) override;
+      void
+      setState( Qgis::BrowserItemState state ) override;
 
     QVector<QgsDataItem *> createChildren() override;
 
@@ -200,11 +201,9 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     void directoryChanged();
 
   protected:
-
     QString mDirPath;
 
   private:
-
     void init( const QString &dirName );
 
     void createOrDestroyFileSystemWatcher();
@@ -259,7 +258,6 @@ class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProjectHomeItem.
      */
@@ -267,11 +265,8 @@ class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
 
     QIcon icon() override;
     QVariant sortKey() const override;
-
 };
 
 #endif
 
 #endif // QGSDATAITEM_H
-
-

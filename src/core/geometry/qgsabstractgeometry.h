@@ -52,13 +52,13 @@ class QgsPoint;
 class QgsRectangle;
 class QgsBox3D;
 
-typedef QVector< QgsPoint > QgsPointSequence;
+typedef QVector<QgsPoint> QgsPointSequence;
 #ifndef SIP_RUN
-typedef QVector< QgsPointSequence > QgsRingSequence;
-typedef QVector< QgsRingSequence > QgsCoordinateSequence;
+typedef QVector<QgsPointSequence> QgsRingSequence;
+typedef QVector<QgsRingSequence> QgsCoordinateSequence;
 #else
-typedef QVector< QVector< QgsPoint > > QgsRingSequence;
-typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
+typedef QVector<QVector<QgsPoint>> QgsRingSequence;
+typedef QVector<QVector<QVector<QgsPoint>>> QgsCoordinateSequence;
 #endif
 
 
@@ -78,7 +78,6 @@ typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
  */
 class CORE_EXPORT QgsAbstractGeometry
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qgsgeometry_cast<QgsPoint *>( sipCpp ) != nullptr )
@@ -115,7 +114,6 @@ class CORE_EXPORT QgsAbstractGeometry
     Q_GADGET
 
   public:
-
     //! Segmentation tolerance as maximum angle or maximum difference between approximation and circle
     enum SegmentationToleranceType
     {
@@ -300,10 +298,9 @@ class CORE_EXPORT QgsAbstractGeometry
      * WKB export flags.
      * \since QGIS 3.14
      */
-    enum WkbFlag SIP_ENUM_BASETYPE( IntFlag )
-    {
+    enum WkbFlag SIP_ENUM_BASETYPE( IntFlag ) {
       FlagExportTrianglesAsPolygons = 1 << 0, //!< Triangles should be exported as polygon geometries
-      FlagExportNanAsDoubleMin = 1 << 1, //!< Use -DOUBLE_MAX to represent NaN \since QGIS 3.30
+      FlagExportNanAsDoubleMin = 1 << 1,      //!< Use -DOUBLE_MAX to represent NaN \since QGIS 3.30
     };
     Q_DECLARE_FLAGS( WkbFlags, WkbFlag )
 
@@ -415,7 +412,8 @@ class CORE_EXPORT QgsAbstractGeometry
      * Similarly, m-values can be scaled via \a mScale and translated via \a mTranslate.
      */
     virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0,
-                            double mTranslate = 0.0, double mScale = 1.0 ) = 0;
+                            double mTranslate = 0.0, double mScale = 1.0 )
+      = 0;
 
     /**
      * Draws the geometry using the specified QPainter.
@@ -813,7 +811,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \note Not available in Python bindings
      * \since QGIS 3.2
      */
-    virtual void filterVertices( const std::function< bool( const QgsPoint & ) > &filter );
+    virtual void filterVertices( const std::function<bool( const QgsPoint & )> &filter );
 
     /**
      * Transforms the vertices from the geometry in place, applying the \a transform function
@@ -829,7 +827,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \note Not available in Python bindings
      * \since QGIS 3.4
      */
-    virtual void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform );
+    virtual void transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform );
 
     /**
      * \ingroup core
@@ -839,7 +837,6 @@ class CORE_EXPORT QgsAbstractGeometry
     class CORE_EXPORT part_iterator
     {
       private:
-
         int mIndex = 0; //!< Current part in the geometry
         QgsAbstractGeometry *mGeometry = nullptr;
 
@@ -909,7 +906,6 @@ class CORE_EXPORT QgsAbstractGeometry
     class CORE_EXPORT const_part_iterator
     {
       private:
-
         int mIndex = 0; //!< Current part in the geometry
         const QgsAbstractGeometry *mGeometry = nullptr;
 
@@ -968,7 +964,6 @@ class CORE_EXPORT QgsAbstractGeometry
     class CORE_EXPORT vertex_iterator
     {
       private:
-
         /**
          * A helper structure to keep track of vertex traversal within one level within a geometry.
          * For example, linestring geometry will have just one level, while multi-polygon has three levels
@@ -976,16 +971,16 @@ class CORE_EXPORT QgsAbstractGeometry
          */
         struct Level
         {
-          const QgsAbstractGeometry *g = nullptr;  //!< Current geometry
-          int index = 0;               //!< Ptr in the current geometry
+            const QgsAbstractGeometry *g = nullptr; //!< Current geometry
+            int index = 0;                          //!< Ptr in the current geometry
 
-          bool operator==( const Level &other ) const;
+            bool operator==( const Level &other ) const;
         };
 
-        std::array<Level, 3> levels;  //!< Stack of levels - three levels should be sufficient (e.g. part index, ring index, vertex index)
-        int depth = -1;               //!< At what depth level are we right now
+        std::array<Level, 3> levels; //!< Stack of levels - three levels should be sufficient (e.g. part index, ring index, vertex index)
+        int depth = -1;              //!< At what depth level are we right now
 
-        void digDown();   //!< Prepare the stack of levels so that it points to a leaf child geometry
+        void digDown(); //!< Prepare the stack of levels so that it points to a leaf child geometry
 
       public:
         //! Create invalid iterator
@@ -1106,7 +1101,6 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 SIP_FACTORY;
 
   protected:
-
     /**
      * Returns the sort index for the geometry, used in the compareTo() method to compare
      * geometries of different types.
@@ -1143,7 +1137,11 @@ class CORE_EXPORT QgsAbstractGeometry
      * Returns pointer to child geometry (for geometries with child geometries - i.e. geom. collection / polygon)
      * \note used for vertex_iterator implementation
      */
-    virtual QgsAbstractGeometry *childGeometry( int index ) const { Q_UNUSED( index ) return nullptr; }
+    virtual QgsAbstractGeometry *childGeometry( int index ) const
+    {
+      Q_UNUSED( index )
+      return nullptr;
+    }
 
     /**
      * Returns point at index (for geometries without child geometries - i.e. curve / point)
@@ -1184,7 +1182,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
 #ifndef SIP_RUN
 
-template <class T>
+template<class T>
 inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
 {
   return const_cast<T>( std::remove_pointer<T>::type::cast( geom ) );
@@ -1201,7 +1199,6 @@ inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
 class CORE_EXPORT QgsVertexIterator
 {
   public:
-
     QgsVertexIterator() = default;
 
     //! Constructs iterator for the given geometry
@@ -1224,22 +1221,22 @@ class CORE_EXPORT QgsVertexIterator
 #ifdef SIP_RUN
     QgsVertexIterator *__iter__();
     % MethodCode
-    sipRes = sipCpp;
+        sipRes
+      = sipCpp;
     % End
 
-    SIP_PYOBJECT __next__() SIP_TYPEHINT( QgsPoint );
-    % MethodCode
-    if ( sipCpp->hasNext() )
-      sipRes = sipConvertFromType( new QgsPoint( sipCpp->next() ), sipType_QgsPoint, Py_None );
-    else
-      PyErr_SetString( PyExc_StopIteration, "" );
+        SIP_PYOBJECT
+      __next__() SIP_TYPEHINT( QgsPoint );
+    % MethodCode if ( sipCpp->hasNext() )
+        sipRes
+      = sipConvertFromType( new QgsPoint( sipCpp->next() ), sipType_QgsPoint, Py_None );
+    else PyErr_SetString( PyExc_StopIteration, "" );
     % End
 #endif
 
-  private:
-    const QgsAbstractGeometry *g = nullptr;
+      private : const QgsAbstractGeometry *g
+      = nullptr;
     QgsAbstractGeometry::vertex_iterator i, n;
-
 };
 
 /**
@@ -1250,7 +1247,6 @@ class CORE_EXPORT QgsVertexIterator
 class CORE_EXPORT QgsGeometryPartIterator
 {
   public:
-
     QgsGeometryPartIterator() = default;
 
     //! Constructs iterator for the given geometry
@@ -1273,22 +1269,22 @@ class CORE_EXPORT QgsGeometryPartIterator
 #ifdef SIP_RUN
     QgsGeometryPartIterator *__iter__();
     % MethodCode
-    sipRes = sipCpp;
+        sipRes
+      = sipCpp;
     % End
 
-    SIP_PYOBJECT __next__() SIP_TYPEHINT( QgsAbstractGeometry );
-    % MethodCode
-    if ( sipCpp->hasNext() )
-      sipRes = sipConvertFromType( sipCpp->next(), sipType_QgsAbstractGeometry, NULL );
-    else
-      PyErr_SetString( PyExc_StopIteration, "" );
+        SIP_PYOBJECT
+      __next__() SIP_TYPEHINT( QgsAbstractGeometry );
+    % MethodCode if ( sipCpp->hasNext() )
+        sipRes
+      = sipConvertFromType( sipCpp->next(), sipType_QgsAbstractGeometry, NULL );
+    else PyErr_SetString( PyExc_StopIteration, "" );
     % End
 #endif
 
-  private:
-    QgsAbstractGeometry *g = nullptr;
+      private : QgsAbstractGeometry *g
+      = nullptr;
     QgsAbstractGeometry::part_iterator i, n;
-
 };
 
 
@@ -1300,7 +1296,6 @@ class CORE_EXPORT QgsGeometryPartIterator
 class CORE_EXPORT QgsGeometryConstPartIterator
 {
   public:
-
     QgsGeometryConstPartIterator() = default;
 
     //! Constructs iterator for the given geometry
@@ -1323,22 +1318,22 @@ class CORE_EXPORT QgsGeometryConstPartIterator
 #ifdef SIP_RUN
     QgsGeometryConstPartIterator *__iter__();
     % MethodCode
-    sipRes = sipCpp;
+        sipRes
+      = sipCpp;
     % End
 
-    SIP_PYOBJECT __next__() SIP_TYPEHINT( QgsAbstractGeometry );
-    % MethodCode
-    if ( sipCpp->hasNext() )
-      sipRes = sipConvertFromType( const_cast< QgsAbstractGeometry * >( sipCpp->next() ), sipType_QgsAbstractGeometry, NULL );
-    else
-      PyErr_SetString( PyExc_StopIteration, "" );
+        SIP_PYOBJECT
+      __next__() SIP_TYPEHINT( QgsAbstractGeometry );
+    % MethodCode if ( sipCpp->hasNext() )
+        sipRes
+      = sipConvertFromType( const_cast<QgsAbstractGeometry *>( sipCpp->next() ), sipType_QgsAbstractGeometry, NULL );
+    else PyErr_SetString( PyExc_StopIteration, "" );
     % End
 #endif
 
-  private:
-    const QgsAbstractGeometry *g = nullptr;
+      private : const QgsAbstractGeometry *g
+      = nullptr;
     QgsAbstractGeometry::const_part_iterator i, n;
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractGeometry::WkbFlags )

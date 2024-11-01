@@ -45,9 +45,9 @@ class CORE_EXPORT QgsMeshCalcNode
     //! types of mesh node
     enum Type
     {
-      tOperator = 1, //!< Operator (e.g. +, -)
-      tNumber, //!< Number (e.g. 1)
-      tNoData, //!< Nodata (NaN)
+      tOperator = 1,   //!< Operator (e.g. +, -)
+      tNumber,         //!< Number (e.g. 1)
+      tNoData,         //!< Nodata (NaN)
       tDatasetGroupRef //!< Dataset group
     };
 

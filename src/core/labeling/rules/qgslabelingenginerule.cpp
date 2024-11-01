@@ -23,7 +23,6 @@
 QgsLabelingEngineContext::QgsLabelingEngineContext( QgsRenderContext &renderContext )
   : mRenderContext( renderContext )
 {
-
 }
 
 QgsGeometry QgsLabelingEngineContext::mapBoundaryGeometry() const
@@ -54,7 +53,6 @@ QgsAbstractLabelingEngineRule::~QgsAbstractLabelingEngineRule() = default;
 
 void QgsAbstractLabelingEngineRule::resolveReferences( const QgsProject * )
 {
-
 }
 
 bool QgsAbstractLabelingEngineRule::candidatesAreConflicting( const pal::LabelPosition *, const pal::LabelPosition * ) const
@@ -74,7 +72,6 @@ bool QgsAbstractLabelingEngineRule::candidateIsIllegal( const pal::LabelPosition
 
 void QgsAbstractLabelingEngineRule::alterCandidateCost( pal::LabelPosition *, QgsLabelingEngineContext & ) const
 {
-
 }
 
 void QgsAbstractLabelingEngineRule::copyCommonProperties( QgsAbstractLabelingEngineRule *other ) const

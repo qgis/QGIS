@@ -34,19 +34,18 @@
  * \brief Thread used to monitor the fcgi socket
  * \since QGIS 3.36
  */
-class QgsSocketMonitoringThread: public QThread
+class QgsSocketMonitoringThread : public QThread
 {
     Q_OBJECT
 
   public:
-
     /**
      * \brief QgsSocketMonitoringThread
      * \param  isResponseFinished
      * \param  feedback
      */
     QgsSocketMonitoringThread( bool *isResponseFinished, QgsFeedback *feedback );
-    void run( );
+    void run();
 
   private:
     bool *mIsResponseFinished = nullptr;
@@ -59,10 +58,9 @@ class QgsSocketMonitoringThread: public QThread
  * \class QgsFcgiServerResponse
  * \brief Class defining fcgi response
  */
-class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
+class SERVER_EXPORT QgsFcgiServerResponse : public QgsServerResponse
 {
   public:
-
     /**
      * Constructor for QgsFcgiServerResponse.
      * \param method The HTTP method (Get by default)
@@ -84,7 +82,7 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
 
     int statusCode() const override { return mStatusCode; }
 
-    void sendError( int code,  const QString &message ) override;
+    void sendError( int code, const QString &message ) override;
 
     QIODevice *io() override;
 
@@ -112,7 +110,7 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
   private:
     QMap<QString, QString> mHeaders;
     QBuffer mBuffer;
-    bool mFinished    = false;
+    bool mFinished = false;
     bool mHeadersSent = false;
     QgsServerRequest::Method mMethod;
     int mStatusCode = 0;

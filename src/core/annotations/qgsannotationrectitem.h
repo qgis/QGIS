@@ -33,7 +33,6 @@
 class CORE_EXPORT QgsAnnotationRectItem : public QgsAnnotationItem
 {
   public:
-
     /**
      * Constructor for QgsAnnotationRectItem, rendering the annotation
      * within the specified \a bounds geometry.
@@ -43,7 +42,7 @@ class CORE_EXPORT QgsAnnotationRectItem : public QgsAnnotationItem
 
     Qgis::AnnotationItemFlags flags() const override;
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
-    QList< QgsAnnotationItemNode > nodesV2( const QgsAnnotationItemEditContext &context ) const override;
+    QList<QgsAnnotationItemNode> nodesV2( const QgsAnnotationItemEditContext &context ) const override;
     Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) override;
     QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) override SIP_FACTORY;
     QgsRectangle boundingBox() const override;
@@ -208,20 +207,18 @@ class CORE_EXPORT QgsAnnotationRectItem : public QgsAnnotationItem
     virtual void renderInBounds( QgsRenderContext &context, const QRectF &painterRect, QgsFeedback *feedback ) = 0;
 
   private:
-
     Qgis::AnnotationPlacementMode mPlacementMode = Qgis::AnnotationPlacementMode::SpatialBounds;
     QgsRectangle mBounds;
 
     QSizeF mFixedSize;
     Qgis::RenderUnit mFixedSizeUnit = Qgis::RenderUnit::Millimeters;
     bool mDrawBackground = false;
-    std::unique_ptr< QgsFillSymbol > mBackgroundSymbol;
+    std::unique_ptr<QgsFillSymbol> mBackgroundSymbol;
     bool mDrawFrame = false;
-    std::unique_ptr< QgsFillSymbol > mFrameSymbol;
+    std::unique_ptr<QgsFillSymbol> mFrameSymbol;
 
 #ifdef SIP_RUN
     QgsAnnotationRectItem( const QgsAnnotationRectItem &other );
 #endif
-
 };
 #endif // QGSANNOTATIONRECTITEM_H

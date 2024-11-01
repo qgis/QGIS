@@ -33,7 +33,6 @@
 QgsMapRendererAbstractCustomPainterJob::QgsMapRendererAbstractCustomPainterJob( const QgsMapSettings &settings )
   : QgsMapRendererJob( settings )
 {
-
 }
 
 void QgsMapRendererAbstractCustomPainterJob::preparePainter( QPainter *painter, const QColor &backgroundColor )
@@ -48,8 +47,8 @@ void QgsMapRendererAbstractCustomPainterJob::preparePainter( QPainter *painter, 
 #ifndef QT_NO_DEBUG
   QPaintDevice *paintDevice = painter->device();
   const QString errMsg = QStringLiteral( "pre-set DPI not equal to painter's DPI (%1 vs %2)" )
-                         .arg( paintDevice->logicalDpiX() )
-                         .arg( mSettings.outputDpi() );
+                           .arg( paintDevice->logicalDpiX() )
+                           .arg( mSettings.outputDpi() );
   Q_ASSERT_X( qgsDoubleNear( paintDevice->logicalDpiX(), mSettings.outputDpi(), 1.0 ),
               "Job::startRender()", errMsg.toLatin1().data() );
 #endif
@@ -285,7 +284,7 @@ void QgsMapRendererCustomPainterJob::staticRender( QgsMapRendererCustomPainterJo
 
 void QgsMapRendererCustomPainterJob::doRender()
 {
-  const bool hasSecondPass = ! mSecondPassLayerJobs.empty();
+  const bool hasSecondPass = !mSecondPassLayerJobs.empty();
   QgsDebugMsgLevel( QStringLiteral( "Starting to render layer stack." ), 5 );
   QElapsedTimer renderTime;
   renderTime.start();
@@ -302,7 +301,7 @@ void QgsMapRendererCustomPainterJob::doRender()
 
     emit layerRenderingStarted( job.layerId );
 
-    if ( ! hasSecondPass && job.context()->useAdvancedEffects() )
+    if ( !hasSecondPass && job.context()->useAdvancedEffects() )
     {
       // Set the QPainter composition mode so that this layer is rendered using
       // the desired blending mode
@@ -336,7 +335,7 @@ void QgsMapRendererCustomPainterJob::doRender()
       job.renderingTime += layerTime.elapsed();
     }
 
-    if ( ! hasSecondPass && job.img )
+    if ( !hasSecondPass && job.img )
     {
       // If we flattened this layer for alternate blend modes, composite it now
       mPainter->setOpacity( job.opacity );
@@ -357,7 +356,7 @@ void QgsMapRendererCustomPainterJob::doRender()
   emit renderingLayersFinished();
   QgsDebugMsgLevel( QStringLiteral( "Done rendering map layers" ), 5 );
 
-  if ( mapShadingRenderer.isActive() &&  mainElevationMap )
+  if ( mapShadingRenderer.isActive() && mainElevationMap )
   {
     QImage image( mainElevationMap->rawElevationImage().size(), QImage::Format_RGB32 );
     image.setDevicePixelRatio( mSettings.devicePixelRatio() );
@@ -404,7 +403,7 @@ void QgsMapRendererCustomPainterJob::doRender()
     }
   }
 
-  if ( ! hasSecondPass )
+  if ( !hasSecondPass )
   {
     if ( mLabelJob.img && mLabelJob.complete )
     {

@@ -46,7 +46,7 @@ void QgsPointCloudAttributeStatistics::cumulateStatistics( const QgsPointCloudAt
   {
     int c = classCount.value( it.key(), 0 );
     c += it.value();
-    classCount[ it.key() ] = c;
+    classCount[it.key()] = c;
   }
 }
 
@@ -54,13 +54,11 @@ void QgsPointCloudAttributeStatistics::cumulateStatistics( const QgsPointCloudAt
 
 QgsPointCloudStatistics::QgsPointCloudStatistics()
 {
-
 }
 
 QgsPointCloudStatistics::QgsPointCloudStatistics( int sampledPointsCount, const QMap<QString, QgsPointCloudAttributeStatistics> &stats )
   : mSampledPointsCount( sampledPointsCount ), mStatisticsMap( stats )
 {
-
 }
 
 void QgsPointCloudStatistics::clear()
@@ -89,7 +87,7 @@ QList<int> QgsPointCloudStatistics::classesOf( const QString &attribute ) const
 {
   if ( !mStatisticsMap.contains( attribute ) )
     return QList<int>();
-  QgsPointCloudAttributeStatistics s = mStatisticsMap[ attribute ];
+  QgsPointCloudAttributeStatistics s = mStatisticsMap[attribute];
   return s.classCount.keys();
 }
 
@@ -97,35 +95,35 @@ QMap<int, int> QgsPointCloudStatistics::availableClasses( const QString &attribu
 {
   if ( !mStatisticsMap.contains( attribute ) )
     return QMap<int, int>();
-  return mStatisticsMap[ attribute ].classCount;
+  return mStatisticsMap[attribute].classCount;
 }
 
 double QgsPointCloudStatistics::minimum( const QString &attribute ) const
 {
   if ( !mStatisticsMap.contains( attribute ) )
     return std::numeric_limits<double>::quiet_NaN();
-  return mStatisticsMap[ attribute ].minimum;
+  return mStatisticsMap[attribute].minimum;
 }
 
 double QgsPointCloudStatistics::maximum( const QString &attribute ) const
 {
   if ( !mStatisticsMap.contains( attribute ) )
     return std::numeric_limits<double>::quiet_NaN();
-  return mStatisticsMap[ attribute ].maximum;
+  return mStatisticsMap[attribute].maximum;
 }
 
 double QgsPointCloudStatistics::mean( const QString &attribute ) const
 {
   if ( !mStatisticsMap.contains( attribute ) )
     return std::numeric_limits<double>::quiet_NaN();
-  return mStatisticsMap[ attribute ].mean;
+  return mStatisticsMap[attribute].mean;
 }
 
 double QgsPointCloudStatistics::stDev( const QString &attribute ) const
 {
   if ( !mStatisticsMap.contains( attribute ) )
     return std::numeric_limits<double>::quiet_NaN();
-  return mStatisticsMap[ attribute ].stDev;
+  return mStatisticsMap[attribute].stDev;
 }
 
 
@@ -137,9 +135,9 @@ void QgsPointCloudStatistics::combineWith( const QgsPointCloudStatistics &stats 
     QgsPointCloudAttributeStatistics s = it.value();
     if ( mStatisticsMap.contains( attribute ) )
     {
-      s.cumulateStatistics( mStatisticsMap[ attribute ] );
+      s.cumulateStatistics( mStatisticsMap[attribute] );
     }
-    mStatisticsMap[ attribute ] = s;
+    mStatisticsMap[attribute] = s;
   }
   mSampledPointsCount += stats.mSampledPointsCount;
 }

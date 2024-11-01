@@ -33,7 +33,6 @@
 class CORE_EXPORT QgsMapClippingRegion
 {
   public:
-
     /**
      * Feature clipping behavior, which controls how features from vector layers
      * will be clipped.
@@ -41,8 +40,8 @@ class CORE_EXPORT QgsMapClippingRegion
     enum class FeatureClippingType : int
     {
       ClipToIntersection, //!< Clip the geometry of these features to the region prior to rendering (i.e. feature boundaries will follow the clip region)
-      ClipPainterOnly, //!< Applying clipping on the painter only (i.e. feature boundaries will be unchanged, but may be invisible where the feature falls outside the clipping region)
-      NoClipping, //!< Only render features which intersect the clipping region, but do not clip these features to the region
+      ClipPainterOnly,    //!< Applying clipping on the painter only (i.e. feature boundaries will be unchanged, but may be invisible where the feature falls outside the clipping region)
+      NoClipping,         //!< Only render features which intersect the clipping region, but do not clip these features to the region
     };
 
     /**
@@ -116,7 +115,7 @@ class CORE_EXPORT QgsMapClippingRegion
      * \see restrictedLayers()
      * \see setRestrictToLayers()
      */
-    void setRestrictedLayers( const QList< QgsMapLayer * > &layers );
+    void setRestrictedLayers( const QList<QgsMapLayer *> &layers );
 
     /**
      * Returns the list of layers to restrict the clipping region effects to.
@@ -128,7 +127,7 @@ class CORE_EXPORT QgsMapClippingRegion
      * \see setRestrictedLayers()
      * \see restrictToLayers()
      */
-    QList< QgsMapLayer * > restrictedLayers() const;
+    QList<QgsMapLayer *> restrictedLayers() const;
 
     /**
      * Returns TRUE if the clipping region should be applied to the specified map \a layer.
@@ -136,7 +135,6 @@ class CORE_EXPORT QgsMapClippingRegion
     bool appliesToLayer( const QgsMapLayer *layer ) const;
 
   private:
-
     //! Geometry of clipping region (in destination map coordinates and CRS)
     QgsGeometry mGeometry;
 
@@ -144,7 +142,6 @@ class CORE_EXPORT QgsMapClippingRegion
     QgsWeakMapLayerPointerList mRestrictToLayersList;
 
     FeatureClippingType mFeatureClip = FeatureClippingType::ClipToIntersection;
-
 };
 
 #endif // QGSMAPCLIPPINGREGION_H

@@ -74,16 +74,14 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildrenOapif()
   const bool forceRefresh = false;
 
   QgsOapifLandingPageRequest landingPageRequest( uri );
-  if ( landingPageRequest.request( synchronous, forceRefresh ) &&
-       landingPageRequest.errorCode() == QgsBaseNetworkRequest::NoError )
+  if ( landingPageRequest.request( synchronous, forceRefresh ) && landingPageRequest.errorCode() == QgsBaseNetworkRequest::NoError )
   {
     QString url = landingPageRequest.collectionsUrl();
     while ( !url.isEmpty() )
     {
       QgsOapifCollectionsRequest collectionsRequest( uri, url );
       url.clear();
-      if ( collectionsRequest.request( synchronous, forceRefresh ) &&
-           collectionsRequest.errorCode() == QgsBaseNetworkRequest::NoError )
+      if ( collectionsRequest.request( synchronous, forceRefresh ) && collectionsRequest.errorCode() == QgsBaseNetworkRequest::NoError )
       {
         for ( const auto &collection : collectionsRequest.collections() )
         {
@@ -160,7 +158,7 @@ QVector<QgsDataItem *> QgsWfsRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
 
-  const QStringList list = QgsWfsConnection::connectionList() ;
+  const QStringList list = QgsWfsConnection::connectionList();
   for ( const QString &connName : list )
   {
     const QgsWfsConnection connection( connName );

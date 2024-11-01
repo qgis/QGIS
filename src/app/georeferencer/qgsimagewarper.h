@@ -21,7 +21,7 @@
 #include <gdalwarper.h>
 #include <vector>
 
-#include"qgis_app.h"
+#include "qgis_app.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsogrutils.h"
 #include "qgstaskmanager.h"
@@ -36,7 +36,6 @@ class APP_EXPORT QgsImageWarper
     Q_GADGET
 
   public:
-
     QgsImageWarper();
 
     enum class ResamplingMethod : int
@@ -52,13 +51,13 @@ class APP_EXPORT QgsImageWarper
     //! Task results
     enum class Result
     {
-      Success, //!< Warping completed successfully
-      Canceled, //!< Task was canceled before completion
-      InvalidParameters, //!< Invalid transform parameters
-      SourceError, //!< Error reading source
-      TransformError, //!< Error creating GDAL transformer
+      Success,                  //!< Warping completed successfully
+      Canceled,                 //!< Task was canceled before completion
+      InvalidParameters,        //!< Invalid transform parameters
+      SourceError,              //!< Error reading source
+      TransformError,           //!< Error creating GDAL transformer
       DestinationCreationError, //!< Error creating destination file
-      WarpFailure, //!< Failed warping source
+      WarpFailure,              //!< Failed warping source
     };
     Q_ENUM( Result )
 
@@ -88,10 +87,10 @@ class APP_EXPORT QgsImageWarper
   private:
     struct TransformChain
     {
-      GDALTransformerFunc GDALTransformer;
-      void               *GDALTransformerArg = nullptr;
-      double              adfGeotransform[6];
-      double              adfInvGeotransform[6];
+        GDALTransformerFunc GDALTransformer;
+        void *GDALTransformerArg = nullptr;
+        double adfGeotransform[6];
+        double adfInvGeotransform[6];
     };
 
     //! \sa addGeoToPixelTransform
@@ -128,7 +127,6 @@ class QgsImageWarperTask : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsImageWarperTask.
      *
@@ -159,14 +157,12 @@ class QgsImageWarperTask : public QgsTask
     QgsImageWarper::Result result() const { return mResult; }
 
   protected:
-
     bool run() override;
 
   private:
-
     QString mInput;
     QString mOutput;
-    std::unique_ptr< QgsGeorefTransform > mTransform;
+    std::unique_ptr<QgsGeorefTransform> mTransform;
     QgsImageWarper::ResamplingMethod mResamplingMethod = QgsImageWarper::ResamplingMethod::Bilinear;
     bool mUseZeroAsTrans = false;
     QString mCompression;
@@ -174,7 +170,7 @@ class QgsImageWarperTask : public QgsTask
     double mDestinationResX = 0;
     double mDestinationResY = 0;
 
-    std::unique_ptr< QgsFeedback > mFeedback;
+    std::unique_ptr<QgsFeedback> mFeedback;
 
     QgsImageWarper::Result mResult = QgsImageWarper::Result::Success;
 };

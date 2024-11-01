@@ -39,14 +39,13 @@ class QgsConstWkbPtr;
 class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
 {
   public:
-
     //! Constructor
     QgsMapToPixelSimplifier( int simplifyFlags, double tolerance, Qgis::VectorSimplificationAlgorithm simplifyAlgorithm = Qgis::VectorSimplificationAlgorithm::Distance );
 
     //! Applicable simplification flags
     enum SimplifyFlag
     {
-      NoFlags          = 0, //!< No simplification can be applied
+      NoFlags = 0,          //!< No simplification can be applied
       SimplifyGeometry = 1, //!< The geometries can be simplified using the current map2pixel context state
       SimplifyEnvelope = 2, //!< The geometries can be fully simplified by its BoundingBox
     };
@@ -90,7 +89,6 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
 
     // MapToPixel simplification helper methods
   public:
-
     //! Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
     static bool isGeneralizableByMapBoundingBox( const QgsRectangle &envelope, double map2pixelTol );
 

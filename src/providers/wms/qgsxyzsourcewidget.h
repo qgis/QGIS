@@ -64,7 +64,6 @@ class QgsXyzSourceWidget : public QgsProviderSourceWidget, private Ui::QgsXyzSou
     void validate();
 
   private:
-
     QVariantMap mSourceParts;
     bool mIsValid = false;
 

@@ -83,7 +83,6 @@ inline Vector3D::Vector3D( double x, double y, double z )
   , mY( y )
   , mZ( z )
 {
-
 }
 
 //-------------------------------------------setter and getters-------------------------------

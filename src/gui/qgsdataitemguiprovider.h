@@ -41,7 +41,6 @@ class QgsBrowserTreeView;
 class GUI_EXPORT QgsDataItemGuiContext
 {
   public:
-
     QgsDataItemGuiContext() = default;
 
     /**
@@ -79,7 +78,6 @@ class GUI_EXPORT QgsDataItemGuiContext
     void setView( QgsBrowserTreeView *view );
 
   private:
-
     QgsMessageBar *mMessageBar = nullptr;
 
     QgsBrowserTreeView *mView = nullptr;
@@ -101,7 +99,6 @@ Q_DECLARE_METATYPE( QgsDataItemGuiContext );
 class GUI_EXPORT QgsDataItemGuiProvider
 {
   public:
-
     virtual ~QgsDataItemGuiProvider() = default;
 
     /**

@@ -35,7 +35,6 @@
 QgsInputControllerManager::QgsInputControllerManager( QObject *parent )
   : QObject( parent )
 {
-
 }
 
 QgsInputControllerManager::~QgsInputControllerManager()
@@ -79,7 +78,7 @@ QStringList QgsInputControllerManager::available2DMapControllers() const
   QStringList devices = m2DMapControllers.keys();
 
 #ifdef HAVE_QTGAMEPAD
-  const QList< int > gamepadIds = QGamepadManager::instance()->connectedGamepads();
+  const QList<int> gamepadIds = QGamepadManager::instance()->connectedGamepads();
   for ( int id : gamepadIds )
   {
     devices.append( QStringLiteral( "gamepad2d:%1" ).arg( id ) );
@@ -105,7 +104,7 @@ QgsAbstract2DMapController *QgsInputControllerManager::create2DMapController( co
   if ( it == m2DMapControllers.constEnd() )
     return nullptr;
 
-  return qgis::down_cast< QgsAbstract2DMapController *>( it.value()->clone() );
+  return qgis::down_cast<QgsAbstract2DMapController *>( it.value()->clone() );
 }
 
 QStringList QgsInputControllerManager::available3DMapControllers() const
@@ -113,7 +112,7 @@ QStringList QgsInputControllerManager::available3DMapControllers() const
   QStringList devices = m3DMapControllers.keys();
 
 #ifdef HAVE_QTGAMEPAD
-  const QList< int > gamepadIds = QGamepadManager::instance()->connectedGamepads();
+  const QList<int> gamepadIds = QGamepadManager::instance()->connectedGamepads();
   for ( int id : gamepadIds )
   {
     devices.append( QStringLiteral( "gamepad3d:%1" ).arg( id ) );
@@ -139,6 +138,5 @@ QgsAbstract3DMapController *QgsInputControllerManager::create3DMapController( co
   if ( it == m3DMapControllers.constEnd() )
     return nullptr;
 
-  return qgis::down_cast< QgsAbstract3DMapController *>( it.value()->clone() );
+  return qgis::down_cast<QgsAbstract3DMapController *>( it.value()->clone() );
 }
-

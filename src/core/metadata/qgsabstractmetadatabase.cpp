@@ -246,7 +246,7 @@ bool QgsAbstractMetadataBase::readMetadataXml( const QDomElement &metadataElemen
     oneContact.email = mne.namedItem( QStringLiteral( "email" ) ).toElement().text();
     oneContact.role = mne.namedItem( QStringLiteral( "role" ) ).toElement().text();
 
-    QList< QgsAbstractMetadataBase::Address > addresses;
+    QList<QgsAbstractMetadataBase::Address> addresses;
     const QDomNodeList addressList = mne.elementsByTagName( QStringLiteral( "contactAddress" ) );
     for ( int j = 0; j < addressList.size(); j++ )
     {
@@ -304,7 +304,7 @@ bool QgsAbstractMetadataBase::readMetadataXml( const QDomElement &metadataElemen
       for ( int i = 0; i < dateNodeList.size(); i++ )
       {
         const QDomElement dateElement = dateNodeList.at( i ).toElement();
-        const Qgis::MetadataDateType type = static_cast< Qgis::MetadataDateType >( dateEnum.keyToValue( dateElement.attribute( QStringLiteral( "type" ) ).toStdString().c_str() ) );
+        const Qgis::MetadataDateType type = static_cast<Qgis::MetadataDateType>( dateEnum.keyToValue( dateElement.attribute( QStringLiteral( "type" ) ).toStdString().c_str() ) );
         const QDateTime value = QDateTime::fromString( dateElement.attribute( QStringLiteral( "value" ) ), Qt::ISODate );
         if ( value.isValid() && !value.isNull() )
           mDates.insert( type, value );
@@ -466,11 +466,11 @@ bool QgsAbstractMetadataBase::writeMetadataXml( QDomElement &metadataElement, QD
     QDomElement datesElement = document.createElement( QStringLiteral( "dates" ) );
     for ( int k = 0; k < dateEnum.keyCount(); k++ )
     {
-      const Qgis::MetadataDateType type = static_cast< Qgis::MetadataDateType >( dateEnum.value( k ) );
+      const Qgis::MetadataDateType type = static_cast<Qgis::MetadataDateType>( dateEnum.value( k ) );
       if ( mDates.contains( type ) && mDates.value( type ).isValid() )
       {
         QDomElement dateElement = document.createElement( QStringLiteral( "date" ) );
-        dateElement.setAttribute( QStringLiteral( "type" ), dateEnum.valueToKey( static_cast< int >( type ) ) );
+        dateElement.setAttribute( QStringLiteral( "type" ), dateEnum.valueToKey( static_cast<int>( type ) ) );
         dateElement.setAttribute( QStringLiteral( "value" ), mDates.value( type ).toString( Qt::ISODate ) );
         datesElement.appendChild( dateElement );
       }
@@ -519,60 +519,31 @@ void QgsAbstractMetadataBase::combine( const QgsAbstractMetadataBase *other )
   const QMetaEnum dateEnum = QMetaEnum::fromType<Qgis::MetadataDateType>();
   for ( int k = 0; k < dateEnum.keyCount(); k++ )
   {
-    const Qgis::MetadataDateType type = static_cast< Qgis::MetadataDateType >( dateEnum.value( k ) );
+    const Qgis::MetadataDateType type = static_cast<Qgis::MetadataDateType>( dateEnum.value( k ) );
     if ( other->mDates.contains( type ) && other->mDates.value( type ).isValid() )
     {
       mDates.insert( type, other->mDates[type] );
     }
   }
-
 }
 
-bool QgsAbstractMetadataBase::equals( const QgsAbstractMetadataBase &metadataOther )  const
+bool QgsAbstractMetadataBase::equals( const QgsAbstractMetadataBase &metadataOther ) const
 {
-  return ( ( mIdentifier == metadataOther.mIdentifier ) &&
-           ( mParentIdentifier == metadataOther.mParentIdentifier ) &&
-           ( mLanguage == metadataOther.mLanguage ) &&
-           ( mType == metadataOther.mType ) &&
-           ( mTitle == metadataOther.mTitle ) &&
-           ( mAbstract == metadataOther.mAbstract ) &&
-           ( mHistory == metadataOther.mHistory ) &&
-           ( mKeywords == metadataOther.mKeywords ) &&
-           ( mContacts == metadataOther.mContacts ) &&
-           ( mLinks == metadataOther.mLinks ) &&
-           ( mDates == metadataOther.mDates ) );
+  return ( ( mIdentifier == metadataOther.mIdentifier ) && ( mParentIdentifier == metadataOther.mParentIdentifier ) && ( mLanguage == metadataOther.mLanguage ) && ( mType == metadataOther.mType ) && ( mTitle == metadataOther.mTitle ) && ( mAbstract == metadataOther.mAbstract ) && ( mHistory == metadataOther.mHistory ) && ( mKeywords == metadataOther.mKeywords ) && ( mContacts == metadataOther.mContacts ) && ( mLinks == metadataOther.mLinks ) && ( mDates == metadataOther.mDates ) );
 }
 
 
 bool QgsAbstractMetadataBase::Contact::operator==( const QgsAbstractMetadataBase::Contact &other ) const
 {
-  return name == other.name &&
-         organization == other.organization &&
-         position == other.position &&
-         addresses == other.addresses &&
-         voice == other.voice &&
-         fax == other.fax &&
-         email == other.email &&
-         role == other.role;
+  return name == other.name && organization == other.organization && position == other.position && addresses == other.addresses && voice == other.voice && fax == other.fax && email == other.email && role == other.role;
 }
 
 bool QgsAbstractMetadataBase::Link::operator==( const QgsAbstractMetadataBase::Link &other ) const
 {
-  return name == other.name &&
-         type == other.type &&
-         description == other.description &&
-         url == other.url &&
-         format == other.format &&
-         mimeType == other.mimeType &&
-         size == other.size;
+  return name == other.name && type == other.type && description == other.description && url == other.url && format == other.format && mimeType == other.mimeType && size == other.size;
 }
 
 bool QgsAbstractMetadataBase::Address::operator==( const QgsAbstractMetadataBase::Address &other ) const
 {
-  return type == other.type &&
-         address == other.address &&
-         city == other.city &&
-         administrativeArea == other.administrativeArea &&
-         postalCode == other.postalCode &&
-         country == other.country;
+  return type == other.type && address == other.address && city == other.city && administrativeArea == other.administrativeArea && postalCode == other.postalCode && country == other.country;
 }

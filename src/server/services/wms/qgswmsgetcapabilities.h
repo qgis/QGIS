@@ -36,10 +36,10 @@ namespace QgsWms
    * Create element for get capabilities document
    */
   QDomElement getLayersAndStylesCapabilitiesElement( QDomDocument &doc,
-      QgsServerInterface *serverIface,
-      const QgsProject *project,
-      const QgsWmsRequest &request,
-      bool projectSettings );
+                                                     QgsServerInterface *serverIface,
+                                                     const QgsProject *project,
+                                                     const QgsWmsRequest &request,
+                                                     bool projectSettings );
 
   /**
    * Create WFSLayers element for get capabilities document
@@ -97,7 +97,7 @@ namespace QgsWms
    * \returns True if at least one layer form the layers ids is queryable
    * \since QGIS 3.28.0
    */
-  bool hasQueryableLayers( const QStringList &layerIds, const QMap< QString, QgsWmsLayerInfos > &wmsLayerInfos );
+  bool hasQueryableLayers( const QStringList &layerIds, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos );
 
   /**
    * Returns the combination of the WGS84 bounding rectangle of the layers from the list of layers ids
@@ -106,7 +106,7 @@ namespace QgsWms
    * \returns the extent combination of the WGS84 bounding rectangle of the layers from the list of layers ids
    * \since QGIS 3.28.0
    */
-  QgsRectangle combineWgs84BoundingRect( const QStringList &layerIds, const QMap< QString, QgsWmsLayerInfos > &wmsLayerInfos );
+  QgsRectangle combineWgs84BoundingRect( const QStringList &layerIds, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos );
 
   /**
    * Returns the combinations of the extent CRSes of the layers from the list of layers ids
@@ -115,7 +115,7 @@ namespace QgsWms
    * \returns the extent combination of the WGS84 bounding rectangle of the layers from the list of layers ids
    * \since QGIS 3.28.0
    */
-  QMap<QString, QgsRectangle> combineCrsExtents( const QStringList &layerIds, const QMap< QString, QgsWmsLayerInfos > &wmsLayerInfos );
+  QMap<QString, QgsRectangle> combineCrsExtents( const QStringList &layerIds, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos );
 
 } // namespace QgsWms
 

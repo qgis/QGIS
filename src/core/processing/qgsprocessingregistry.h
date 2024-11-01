@@ -35,7 +35,6 @@ class QgsProcessingAlgorithmConfigurationWidgetFactory;
 class CORE_EXPORT QgsProcessingAlgorithmInformation
 {
   public:
-
     //! Algorithm display name
     QString displayName;
 
@@ -58,7 +57,6 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingRegistry.
      */
@@ -108,7 +106,7 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      * Returns a list of all available algorithms from registered providers.
      * \see algorithmById()
      */
-    QList< const QgsProcessingAlgorithm *> algorithms() const;
+    QList<const QgsProcessingAlgorithm *> algorithms() const;
 
     /**
      * Returns basic algorithm information for the algorithm with matching ID.
@@ -231,16 +229,15 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     void parameterTypeRemoved( QgsProcessingParameterType *type );
 
   private:
-
     //! Map of available providers by id. This class owns the pointers
     QMap<QString, QgsProcessingProvider *> mProviders;
 
     //! Hash of available parameter types by id. This object owns the pointers.
     QMap<QString, QgsProcessingParameterType *> mParameterTypes;
 
-    QMap< QString, QString > mAlgorithmAliases;
+    QMap<QString, QString> mAlgorithmAliases;
 
-    mutable QMap< QString, QgsProcessingAlgorithmInformation > mCachedInformation;
+    mutable QMap<QString, QgsProcessingAlgorithmInformation> mCachedInformation;
 
 #ifdef SIP_RUN
     QgsProcessingRegistry( const QgsProcessingRegistry &other );
@@ -250,5 +247,3 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
 };
 
 #endif // QGSPROCESSINGREGISTRY_H
-
-

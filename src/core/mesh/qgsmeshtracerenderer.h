@@ -87,7 +87,6 @@ class QgsMeshVectorValueInterpolator
     bool isVectorValid( const QgsVector &v ) const;
 
   private:
-
     void activeFaceFilter( QgsVector &vector, int faceIndex ) const;
 
     virtual QgsVector interpolatedValuePrivate( int faceIndex, const QgsPointXY point ) const = 0;
@@ -101,7 +100,7 @@ class QgsMeshVectorValueInterpolator
  * \note not available in Python bindings
  * \since QGIS 3.12
  */
-class QgsMeshVectorValueInterpolatorFromVertex: public QgsMeshVectorValueInterpolator
+class QgsMeshVectorValueInterpolatorFromVertex : public QgsMeshVectorValueInterpolator
 {
   public:
     //! Constructor
@@ -134,7 +133,7 @@ class QgsMeshVectorValueInterpolatorFromVertex: public QgsMeshVectorValueInterpo
  * \note not available in Python bindings
  * \since QGIS 3.12
  */
-class QgsMeshVectorValueInterpolatorFromFace: public QgsMeshVectorValueInterpolator
+class QgsMeshVectorValueInterpolatorFromFace : public QgsMeshVectorValueInterpolator
 {
   public:
     //! Constructor
@@ -172,10 +171,10 @@ class QgsMeshStreamField
   public:
     struct FieldData
     {
-      double magnitude;
-      float time;
-      int directionX;
-      int directionY;
+        double magnitude;
+        float time;
+        int directionX;
+        int directionY;
     };
 
     //! Constructor
@@ -274,7 +273,7 @@ class QgsMeshStreamField
     QgsPointXY positionToMapCoordinates( const QPoint &pixelPosition, const QgsPointXY &positionInPixel );
     bool addPixelToChunkTrace( QPoint &pixel,
                                QgsMeshStreamField::FieldData &data,
-                               std::list<QPair<QPoint, QgsMeshStreamField::FieldData> > &chunkTrace );
+                               std::list<QPair<QPoint, QgsMeshStreamField::FieldData>> &chunkTrace );
     void setChunkTrace( std::list<QPair<QPoint, FieldData>> &chunkTrace );
     virtual void drawTrace( const QPoint & ) const {}
     void clearChunkTrace( std::list<QPair<QPoint, FieldData>> &chunkTrace );
@@ -285,7 +284,6 @@ class QgsMeshStreamField
     virtual bool isTraceExists( const QPoint &pixel ) const = 0;
 
   protected:
-
     QSize mFieldSize;
     std::unique_ptr<QPainter> mPainter = std::unique_ptr<QPainter>( nullptr );
     int mFieldResolution = 1;
@@ -335,7 +333,7 @@ class QgsMeshStreamField
  * \note not available in Python bindings
  * \since QGIS 3.12
  */
-class QgsMeshStreamlinesField: public QgsMeshStreamField
+class QgsMeshStreamlinesField : public QgsMeshStreamField
 {
   public:
     //! Constructor
@@ -380,7 +378,6 @@ class QgsMeshStreamlinesField: public QgsMeshStreamField
     QgsMeshDataBlock mScalarActiveFaceFlagValues;
     QgsMeshDatasetGroupMetadata::DataType mDataType = QgsMeshDatasetGroupMetadata::DataOnVertices;
     QgsMeshLayerRendererFeedback *mFeedBack = nullptr;
-
 };
 
 class QgsMeshParticleTracesField;
@@ -395,10 +392,10 @@ class QgsMeshParticleTracesField;
  */
 struct QgsMeshTraceParticle
 {
-  double lifeTime = 0;
-  QPoint position;
-  std::list<QPoint> tail;
-  double remainingTime = 0; //time remaining to spend in the current pixel at the end of the time step
+    double lifeTime = 0;
+    QPoint position;
+    std::list<QPoint> tail;
+    double remainingTime = 0; //time remaining to spend in the current pixel at the end of the time step
 };
 
 /**
@@ -409,7 +406,7 @@ struct QgsMeshTraceParticle
  * \note not available in Python bindings
  * \since QGIS 3.12
  */
-class QgsMeshParticleTracesField: public QgsMeshStreamField
+class QgsMeshParticleTracesField : public QgsMeshStreamField
 {
   public:
     //! Constructor
@@ -522,7 +519,7 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
  * \note not available in Python bindings
  * \since QGIS 3.12
  */
-class QgsMeshVectorStreamlineRenderer: public QgsMeshVectorRenderer
+class QgsMeshVectorStreamlineRenderer : public QgsMeshVectorRenderer
 {
   public:
     //!Constructor
@@ -566,7 +563,7 @@ class QgsMeshVectorStreamlineRenderer: public QgsMeshVectorRenderer
  * \note not available in Python bindings
  * \since QGIS 3.12
  */
-class QgsMeshVectorTraceRenderer: public QgsMeshVectorRenderer
+class QgsMeshVectorTraceRenderer : public QgsMeshVectorRenderer
 {
   public:
     //!Constructor
@@ -655,7 +652,7 @@ class CORE_EXPORT QgsMeshVectorTraceAnimationGenerator
   private:
     std::unique_ptr<QgsMeshParticleTracesField> mParticleField;
     const QgsRenderContext &mRendererContext;
-    int mFPS = 15; //frame per second of the output, used to calculate orher parameters of the field
+    int mFPS = 15;       //frame per second of the output, used to calculate orher parameters of the field
     int mVpixMax = 2000; //is the number of pixels that are going through for 1 s
     double mParticleLifeTime = 5;
 

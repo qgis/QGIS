@@ -33,7 +33,6 @@ class QgsVectorLayer;
 class CORE_EXPORT QgsFieldFormatterContext
 {
   public:
-
     QgsFieldFormatterContext() = default;
 
     /**
@@ -68,7 +67,6 @@ class CORE_EXPORT QgsFieldFormatterContext
 class CORE_EXPORT QgsFieldFormatter
 {
   public:
-
     QgsFieldFormatter() = default;
 
     virtual ~QgsFieldFormatter() = default;
@@ -78,9 +76,8 @@ class CORE_EXPORT QgsFieldFormatter
      *
      * \since QGIS 3.12
      */
-    enum Flag SIP_ENUM_BASETYPE( IntFlag )
-    {
-      CanProvideAvailableValues =  1   //!< Can provide possible values
+    enum Flag SIP_ENUM_BASETYPE( IntFlag ) {
+      CanProvideAvailableValues = 1 //!< Can provide possible values
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -141,7 +138,7 @@ class CORE_EXPORT QgsFieldFormatter
      * \note not available in Python bindings
      * \since QGIS 3.12
      */
-    virtual QList< QgsVectorLayerRef > layerDependencies( const QVariantMap &config ) const SIP_SKIP;
+    virtual QList<QgsVectorLayerRef> layerDependencies( const QVariantMap &config ) const SIP_SKIP;
 
     /**
      * Returns a list of the values that would be possible to select with this widget type

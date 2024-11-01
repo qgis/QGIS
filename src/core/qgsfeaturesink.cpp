@@ -41,4 +41,3 @@ bool QgsFeatureSink::addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::
   }
   return result;
 }
-

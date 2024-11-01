@@ -111,11 +111,11 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   if ( !subsetStringDialect.isEmpty() && !subsetStringHelpUrl.isEmpty() )
   {
     lblProviderFilterInfo->setOpenExternalLinks( true );
-    lblProviderFilterInfo->setText( tr( "Enter a <a href=\"%1\">%2</a> to filter the layer" ).arg( subsetStringHelpUrl ).arg( subsetStringDialect ) ) ;
+    lblProviderFilterInfo->setText( tr( "Enter a <a href=\"%1\">%2</a> to filter the layer" ).arg( subsetStringHelpUrl ).arg( subsetStringDialect ) );
   }
   else if ( !subsetStringDialect.isEmpty() )
   {
-    lblProviderFilterInfo->setText( tr( "Enter a %1 to filter the layer" ).arg( subsetStringDialect ) ) ;
+    lblProviderFilterInfo->setText( tr( "Enter a %1 to filter the layer" ).arg( subsetStringDialect ) );
   }
   else
   {
@@ -211,7 +211,7 @@ void QgsQueryBuilder::btnSampleValues_clicked()
   }
 
   //Clear and fill the mModelValues
-  fillValues( mModelFields->data( lstFields->currentIndex(), static_cast< int >( QgsFieldModel::CustomRole::FieldName ) ).toString(), 25 );
+  fillValues( mModelFields->data( lstFields->currentIndex(), static_cast<int>( QgsFieldModel::CustomRole::FieldName ) ).toString(), 25 );
 
   if ( prevSubsetString != mLayer->subsetString() )
   {
@@ -234,7 +234,7 @@ void QgsQueryBuilder::btnGetAllValues_clicked()
   }
 
   //Clear and fill the mModelValues
-  fillValues( mModelFields->data( lstFields->currentIndex(), static_cast< int >( QgsFieldModel::CustomRole::FieldName ) ).toString(), -1 );
+  fillValues( mModelFields->data( lstFields->currentIndex(), static_cast<int>( QgsFieldModel::CustomRole::FieldName ) ).toString(), -1 );
 
   if ( prevSubsetString != mLayer->subsetString() )
   {
@@ -273,7 +273,7 @@ void QgsQueryBuilder::test()
     QMessageBox::warning( this,
                           tr( "Query Result" ),
                           tr( "An error occurred when executing the query." )
-                          + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( QLatin1Char( '\n' ) ) ) );
+                            + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( QLatin1Char( '\n' ) ) ) );
     mLayer->dataProvider()->clearErrors();
   }
   else
@@ -296,7 +296,7 @@ void QgsQueryBuilder::accept()
         QMessageBox::warning( this,
                               tr( "Query Result" ),
                               tr( "An error occurred when executing the query." )
-                              + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( QLatin1Char( '\n' ) ) ) );
+                                + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( QLatin1Char( '\n' ) ) ) );
         mLayer->dataProvider()->clearErrors();
       }
       else
@@ -387,7 +387,7 @@ void QgsQueryBuilder::lstFields_clicked( const QModelIndex &index )
 
 void QgsQueryBuilder::lstFields_doubleClicked( const QModelIndex &index )
 {
-  mTxtSql->insertText( '\"' + mModelFields->data( index, static_cast< int >( QgsFieldModel::CustomRole::FieldName ) ).toString() + '\"' );
+  mTxtSql->insertText( '\"' + mModelFields->data( index, static_cast<int>( QgsFieldModel::CustomRole::FieldName ) ).toString() + '\"' );
   mTxtSql->setFocus();
 }
 
@@ -496,7 +496,7 @@ bool QgsQueryBuilder::saveQueryToFile( const QString &subset )
   if ( !saveFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     QMessageBox::critical( nullptr, tr( "Save Query to File" ), tr( "Could not open file for writing." ) );
-    return false ;
+    return false;
   }
 
   QDomDocument xmlDoc;

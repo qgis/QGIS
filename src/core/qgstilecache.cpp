@@ -56,7 +56,7 @@ bool QgsTileCache::tile( const QUrl &url, QImage &image )
 
       // cache it as well (mutex is already locked)
       // Check for null because it could be a redirect (see: https://github.com/qgis/QGIS/issues/24336 )
-      if ( ! image.isNull( ) )
+      if ( !image.isNull() )
       {
         sTileCache.insert( adjUrl, new QImage( image ) );
         success = true;

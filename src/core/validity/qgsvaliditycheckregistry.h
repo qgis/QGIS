@@ -35,9 +35,7 @@
  */
 class CORE_EXPORT QgsValidityCheckRegistry
 {
-
   public:
-
     QgsValidityCheckRegistry();
 
     ~QgsValidityCheckRegistry();
@@ -81,10 +79,9 @@ class CORE_EXPORT QgsValidityCheckRegistry
      * This is a blocking call, which will run all matching checks in the main
      * thread and only return when they have all completed.
      */
-    QList< QgsValidityCheckResult > runChecks( int type, const QgsValidityCheckContext *context, QgsFeedback *feedback ) const;
+    QList<QgsValidityCheckResult> runChecks( int type, const QgsValidityCheckContext *context, QgsFeedback *feedback ) const;
 
   private:
-
 #ifdef SIP_RUN
     QgsValidityCheckRegistry( const QgsValidityCheckRegistry &rh );
 #endif
@@ -92,11 +89,10 @@ class CORE_EXPORT QgsValidityCheckRegistry
     /**
      * Returns a list containing new copies of all available checks of the matching \a type.
      */
-    std::vector<std::unique_ptr< QgsAbstractValidityCheck > > createChecks( int type ) const SIP_FACTORY;
+    std::vector<std::unique_ptr<QgsAbstractValidityCheck>> createChecks( int type ) const SIP_FACTORY;
 
     //! Available checks, owned by this class
-    QList< QgsAbstractValidityCheck * > mChecks;
-
+    QList<QgsAbstractValidityCheck *> mChecks;
 };
 
 #endif // QGSVALIDITYCHECKREGISTRY_H

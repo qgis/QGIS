@@ -55,15 +55,15 @@ class QgsOapifApiRequest : public QgsBaseNetworkRequest
     //! Describes a simple queryable parameter.
     struct SimpleQueryable
     {
-      // type as in a JSON schema: "string", "integer", "number", etc.
-      QString mType;
+        // type as in a JSON schema: "string", "integer", "number", etc.
+        QString mType;
     };
 
     //! Describes the properties of a collection.
     struct CollectionProperties
     {
-      // Map of simple queryables items (that is as query parameters). The key of the map is a queryable name.
-      QMap<QString, SimpleQueryable> mSimpleQueryables;
+        // Map of simple queryables items (that is as query parameters). The key of the map is a queryable name.
+        QMap<QString, SimpleQueryable> mSimpleQueryables;
     };
 
     //! Get collection properties. The key of the map is a collection name.
@@ -91,7 +91,6 @@ class QgsOapifApiRequest : public QgsBaseNetworkRequest
     QMap<QString, CollectionProperties> mCollectionProperties;
 
     ApplicationLevelError mAppLevelError = ApplicationLevelError::NoError;
-
 };
 
 #endif // QGSOAPIFAPIREQUEST_H

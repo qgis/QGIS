@@ -35,7 +35,6 @@ class QgsProviderSublayerModelSublayerNode;
 ///@endcond
 
 
-
 /**
  * \ingroup core
  *
@@ -51,34 +50,33 @@ class QgsProviderSublayerModelSublayerNode;
  *
  * \since QGIS 3.22
  */
-class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
+class CORE_EXPORT QgsProviderSublayerModel : public QAbstractItemModel
 {
     Q_OBJECT
 
   public:
-
     //! Custom model roles
     enum class Role : int
     {
       ProviderKey = Qt::UserRole + 1, //!< Provider key
-      LayerType, //!< Layer type
-      Uri, //!< Layer URI
-      Name, //!< Layer name
-      Description, //!< Layer description
-      Path, //!< Layer path
-      FeatureCount, //!< Feature count (for vector sublayers)
-      WkbType, //!< WKB geometry type (for vector sublayers)
-      GeometryColumnName, //!< Geometry column name (for vector sublayers)
-      LayerNumber, //!< Layer number
-      IsNonLayerItem, //!< TRUE if item is a non-sublayer item (e.g. an embedded project)
-      NonLayerItemType, //!< Item type (for non-sublayer items)
-      Flags, //!< Sublayer flags
+      LayerType,                      //!< Layer type
+      Uri,                            //!< Layer URI
+      Name,                           //!< Layer name
+      Description,                    //!< Layer description
+      Path,                           //!< Layer path
+      FeatureCount,                   //!< Feature count (for vector sublayers)
+      WkbType,                        //!< WKB geometry type (for vector sublayers)
+      GeometryColumnName,             //!< Geometry column name (for vector sublayers)
+      LayerNumber,                    //!< Layer number
+      IsNonLayerItem,                 //!< TRUE if item is a non-sublayer item (e.g. an embedded project)
+      NonLayerItemType,               //!< Item type (for non-sublayer items)
+      Flags,                          //!< Sublayer flags
     };
 
     //! Model columns
     enum class Column : int
     {
-      Name = 0, //!< Layer name
+      Name = 0,        //!< Layer name
       Description = 1, //!< Layer description
     };
 
@@ -92,7 +90,6 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
     class CORE_EXPORT NonLayerItem
     {
       public:
-
         /**
          * Returns the item's type.
          * \see setType()
@@ -159,19 +156,19 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsProviderSublayerModel.NonLayerItem: %1 - %2>" ).arg( sipCpp->type(), sipCpp->name() );
+            QString str
+          = QStringLiteral( "<QgsProviderSublayerModel.NonLayerItem: %1 - %2>" ).arg( sipCpp->type(), sipCpp->name() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
 #endif
 
-      private:
+          private :
 
-        QString mType;
+          QString mType;
         QString mName;
         QString mDescription;
         QString mUri;
         QIcon mIcon;
-
     };
 
     /**
@@ -184,14 +181,14 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
      *
      * \see sublayerDetails()
      */
-    void setSublayerDetails( const QList< QgsProviderSublayerDetails > &details );
+    void setSublayerDetails( const QList<QgsProviderSublayerDetails> &details );
 
     /**
      * Returns the sublayer details shown in the model.
      *
      * \see setSublayerDetails()
      */
-    QList< QgsProviderSublayerDetails > sublayerDetails() const;
+    QList<QgsProviderSublayerDetails> sublayerDetails() const;
 
     /**
      * Returns the sublayer corresponding to the given \a index.
@@ -226,11 +223,10 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
     ///@endcond
 
   protected:
-
     //! Sublayer list
     QList<QgsProviderSublayerDetails> mSublayers;
 
-    std::unique_ptr< QgsProviderSublayerModelGroup > mRootNode;
+    std::unique_ptr<QgsProviderSublayerModelGroup> mRootNode;
 
   private:
     QModelIndex indexOfParentNode( QgsProviderSublayerModelNode *parentNode ) const;
@@ -245,7 +241,6 @@ class CORE_EXPORT QgsProviderSublayerModel: public QAbstractItemModel
 class CORE_EXPORT QgsProviderSublayerModelNode
 {
   public:
-
     virtual ~QgsProviderSublayerModelNode();
 
     /**
@@ -266,7 +261,6 @@ class CORE_EXPORT QgsProviderSublayerModelNode
     virtual int childCount() const = 0;
 
   protected:
-
     QgsProviderSublayerModelGroup *mParent = nullptr;
 
     friend class QgsProviderSublayerModelGroup;
@@ -275,7 +269,6 @@ class CORE_EXPORT QgsProviderSublayerModelNode
 class CORE_EXPORT QgsProviderSublayerModelGroup : public QgsProviderSublayerModelNode
 {
   public:
-
     /**
      * Constructor for a QgsProviderSublayerModelGroup, with the specified \a title.
      */
@@ -292,7 +285,7 @@ class CORE_EXPORT QgsProviderSublayerModelGroup : public QgsProviderSublayerMode
     /**
      * Adds a \a child node to this node.
      */
-    QgsProviderSublayerModelNode *addChild( std::unique_ptr< QgsProviderSublayerModelNode > child );
+    QgsProviderSublayerModelNode *addChild( std::unique_ptr<QgsProviderSublayerModelNode> child );
 
     /**
      * Returns the index of the specified \a child node.
@@ -329,18 +322,14 @@ class CORE_EXPORT QgsProviderSublayerModelGroup : public QgsProviderSublayerMode
     void populateFromSublayers( const QList<QgsProviderSublayerDetails> &sublayers );
 
   protected:
-
-
-    std::deque< std::unique_ptr< QgsProviderSublayerModelNode > > mChildren;
+    std::deque<std::unique_ptr<QgsProviderSublayerModelNode>> mChildren;
 
     QString mGroupTitle;
-
 };
 
 class CORE_EXPORT QgsProviderSublayerModelSublayerNode : public QgsProviderSublayerModelNode
 {
   public:
-
     QgsProviderSublayerModelSublayerNode( const QgsProviderSublayerDetails &sublayer );
     int childCount() const override final { return 0; }
     QVariant data( int role = Qt::DisplayRole, int column = 0 ) const override;
@@ -348,13 +337,11 @@ class CORE_EXPORT QgsProviderSublayerModelSublayerNode : public QgsProviderSubla
 
   private:
     QgsProviderSublayerDetails mSublayer;
-
 };
 
 class CORE_EXPORT QgsProviderSublayerModelNonLayerItemNode : public QgsProviderSublayerModelNode
 {
   public:
-
     QgsProviderSublayerModelNonLayerItemNode( const QgsProviderSublayerModel::NonLayerItem &item );
     int childCount() const override final { return 0; }
     QVariant data( int role = Qt::DisplayRole, int column = 0 ) const override;
@@ -363,7 +350,6 @@ class CORE_EXPORT QgsProviderSublayerModelNonLayerItemNode : public QgsProviderS
 
   private:
     QgsProviderSublayerModel::NonLayerItem mItem;
-
 };
 
 ///@endcond PRIVATE
@@ -376,12 +362,11 @@ class CORE_EXPORT QgsProviderSublayerModelNonLayerItemNode : public QgsProviderS
  *
  * \since QGIS 3.22
  */
-class CORE_EXPORT QgsProviderSublayerProxyModel: public QSortFilterProxyModel
+class CORE_EXPORT QgsProviderSublayerProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProviderSublayerProxyModel, with the specified \a parent object.
      */
@@ -436,11 +421,9 @@ class CORE_EXPORT QgsProviderSublayerProxyModel: public QSortFilterProxyModel
     bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
 
   private:
-
     QString mFilterString;
     bool mIncludeSystemTables = false;
     bool mIncludeEmptyLayers = true;
-
 };
 
 

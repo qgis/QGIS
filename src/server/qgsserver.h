@@ -48,7 +48,6 @@ class QgsProject;
 class SERVER_EXPORT QgsServer
 {
   public:
-
     /**
      * Creates the server instance
      */
@@ -77,7 +76,7 @@ class SERVER_EXPORT QgsServer
 
 
     //! Returns a pointer to the server interface
-    QgsServerInterfaceImpl SIP_PYALTERNATIVETYPE( QgsServerInterface ) *serverInterface() { return sServerInterface; }
+    QgsServerInterfaceImpl SIP_PYALTERNATIVETYPE( QgsServerInterface ) * serverInterface() { return sServerInterface; }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 
@@ -109,7 +108,7 @@ class SERVER_EXPORT QgsServer
      * \param logLevel
      */
     static void printRequestParameters(
-      const QMap< QString, QString> &parameterMap,
+      const QMap<QString, QString> &parameterMap,
       Qgis::MessageLevel logLevel );
 
     /**

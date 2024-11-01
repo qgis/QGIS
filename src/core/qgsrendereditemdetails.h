@@ -25,18 +25,17 @@
 // this is needed for the "convert to subclass" code below to compile
 % ModuleHeaderCode
 #include "qgsrenderedannotationitemdetails.h"
-% End
+  % End
 #endif
 
-/**
+  /**
  * \ingroup core
  * \brief Base class for detailed information about a rendered item.
  * \since QGIS 3.22
  */
-class CORE_EXPORT QgsRenderedItemDetails
+  class CORE_EXPORT QgsRenderedItemDetails
 {
   public:
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsRenderedAnnotationItemDetails *>( sipCpp ) )
@@ -73,7 +72,6 @@ class CORE_EXPORT QgsRenderedItemDetails
     void setBoundingBox( const QgsRectangle &bounds ) { mBounds = bounds; }
 
   private:
-
     QString mLayerId;
     QgsRectangle mBounds;
 };

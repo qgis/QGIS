@@ -36,7 +36,6 @@ class QStyleOptionGraphicsItem;
 class CORE_EXPORT QgsLayoutUtils
 {
   public:
-
     /**
      * Rotates a point / vector around the origin.
      * \param angle rotation angle in degrees, counterclockwise
@@ -252,10 +251,9 @@ class CORE_EXPORT QgsLayoutUtils
      *
      * \since QGIS 3.20
      */
-    static QVector< double > predefinedScales( const QgsLayout *layout );
+    static QVector<double> predefinedScales( const QgsLayout *layout );
 
   private:
-
     //! Scale factor for upscaling fontsize and downscaling painter
     static constexpr double FONT_WORKAROUND_SCALE = 10;
 

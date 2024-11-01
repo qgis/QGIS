@@ -34,7 +34,6 @@
 class CORE_EXPORT QgsDatumEnsembleMember
 {
   public:
-
     /**
      * Returns the name of the member.
      */
@@ -63,7 +62,7 @@ class CORE_EXPORT QgsDatumEnsembleMember
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString id;
+        QString id;
     if ( !sipCpp->code().isEmpty() )
       id = QStringLiteral( "%1 (%2:%3)" ).arg( sipCpp->name(), sipCpp->authority(), sipCpp->code() );
     else
@@ -73,9 +72,9 @@ class CORE_EXPORT QgsDatumEnsembleMember
     % End
 #endif
 
-  private:
+      private :
 
-    QString mName;
+      QString mName;
     QString mScope;
     QString mRemarks;
     QString mAuthority;
@@ -94,7 +93,6 @@ class CORE_EXPORT QgsDatumEnsembleMember
 class CORE_EXPORT QgsDatumEnsemble
 {
   public:
-
     /**
      * Returns TRUE if the datum ensemble is a valid object, or FALSE if it is a null/invalid
      * object.
@@ -134,12 +132,12 @@ class CORE_EXPORT QgsDatumEnsemble
     /**
      * Contains a list of members of the ensemble.
      */
-    QList< QgsDatumEnsembleMember > members() const { return mMembers; }
+    QList<QgsDatumEnsembleMember> members() const { return mMembers; }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str;
+        QString str;
     if ( !sipCpp->isValid() )
     {
       str = QStringLiteral( "<QgsDatumEnsemble: invalid>" );
@@ -157,16 +155,17 @@ class CORE_EXPORT QgsDatumEnsemble
     % End
 #endif
 
-  private:
+      private :
 
-    bool mValid = false;
+      bool mValid
+      = false;
     QString mName;
     double mAccuracy = 0;
     QString mAuthority;
     QString mCode;
     QString mScope;
     QString mRemarks;
-    QList< QgsDatumEnsembleMember > mMembers;
+    QList<QgsDatumEnsembleMember> mMembers;
 
     friend class QgsCoordinateReferenceSystem;
 };

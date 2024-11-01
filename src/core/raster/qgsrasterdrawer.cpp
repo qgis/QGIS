@@ -72,7 +72,7 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
 
   // We know that the output data type of last pipe filter is QImage data
 
-  std::unique_ptr< QgsRasterBlock > block;
+  std::unique_ptr<QgsRasterBlock> block;
 
   // readNextRasterPart calcs and resets  nCols, nRows, topLeftCol, topLeftRow
   while ( mIterator->readNextRasterPart( bandNumber, nCols, nRows,
@@ -194,4 +194,3 @@ void QgsRasterDrawer::drawImage( QPainter *p, QgsRasterViewPort *viewPort, const
   p->drawRoundedRect( br, rad, rad );
 #endif
 }
-

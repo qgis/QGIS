@@ -46,7 +46,6 @@ class QgsFeatureSource;
 class ANALYSIS_EXPORT QgsZonalStatistics
 {
   public:
-
     /**
      * Convenience constructor for QgsZonalStatistics, using an input raster layer.
      *
@@ -128,7 +127,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     static QMap<Qgis::ZonalStatistic, QVariant> calculateStatistics( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, double cellSizeX, double cellSizeY, int rasterBand, Qgis::ZonalStatistics statistics );
 #endif
 
-///@cond PRIVATE
+    ///@cond PRIVATE
     // Required to fix https://github.com/qgis/QGIS/issues/43245 (SIP is failing to convert the enum to values)
 
     /**
@@ -140,7 +139,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
      * \since QGIS 3.16
      */
     static QMap<int, QVariant> calculateStatisticsInt( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, double cellSizeX, double cellSizeY, int rasterBand, Qgis::ZonalStatistics statistics ) SIP_PYNAME( calculateStatistics );
-/// @endcond
+    /// @endcond
 
   private:
     QgsZonalStatistics() = default;
@@ -187,8 +186,8 @@ class ANALYSIS_EXPORT QgsZonalStatistics
         double count = 0.0;
         double max = std::numeric_limits<double>::lowest();
         double min = std::numeric_limits<double>::max();
-        QMap< double, int > valueCount;
-        QList< double > values;
+        QMap<double, int> valueCount;
+        QList<double> values;
 
       private:
         bool mStoreValues = false;

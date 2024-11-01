@@ -45,7 +45,7 @@ namespace QgsRayCastingUtils
   class Ray3D;
   struct RayCastContext;
   struct RayHit;
-}
+} // namespace QgsRayCastingUtils
 
 #include <QVector3D>
 #include <QMatrix4x4>

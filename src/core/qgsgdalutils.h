@@ -35,18 +35,17 @@
 class CORE_EXPORT QgsGdalOption
 {
   public:
-
     /**
      * Option types
      */
     enum class Type
     {
       Invalid, //!< Invalid option
-      Select, //!< Selection option
+      Select,  //!< Selection option
       Boolean, //!< Boolean option
-      Text, //!< Text option
-      Int, //!< Integer option
-      Double, //!< Double option
+      Text,    //!< Text option
+      Int,     //!< Integer option
+      Double,  //!< Double option
     };
 
     //! Option name
@@ -84,7 +83,7 @@ class CORE_EXPORT QgsGdalOption
     /**
      * Returns a list of all GDAL options from an XML \a node.
      */
-    static QList< QgsGdalOption > optionsFromXml( const CPLXMLNode *node );
+    static QList<QgsGdalOption> optionsFromXml( const CPLXMLNode *node );
 };
 
 
@@ -99,7 +98,6 @@ class CORE_EXPORT QgsGdalOption
 class CORE_EXPORT QgsGdalUtils
 {
   public:
-
     /**
      * Reads whether a driver supports GDALCreate() for raster purposes.
      * \param driver GDAL driver
@@ -194,7 +192,7 @@ class CORE_EXPORT QgsGdalUtils
      *
      * \since QGIS 3.26
      */
-    static gdal::dataset_unique_ptr blockToSingleBandMemoryDataset( int pixelWidth, int pixelHeight, const QgsRectangle &extent, void *block,  GDALDataType dataType );
+    static gdal::dataset_unique_ptr blockToSingleBandMemoryDataset( int pixelWidth, int pixelHeight, const QgsRectangle &extent, void *block, GDALDataType dataType );
 
     /**
      * Converts a raster \a block to a single band GDAL memory dataset.
@@ -213,7 +211,7 @@ class CORE_EXPORT QgsGdalUtils
      *
      * \since QGIS 3.30
      */
-    static gdal::dataset_unique_ptr blockToSingleBandMemoryDataset( double rotation, const QgsPointXY &origin, double gridXSize,  double gridYSize,   QgsRasterBlock *block );
+    static gdal::dataset_unique_ptr blockToSingleBandMemoryDataset( double rotation, const QgsPointXY &origin, double gridXSize, double gridYSize, QgsRasterBlock *block );
 
     /**
      * This is a copy of GDALAutoCreateWarpedVRT optimized for imagery using RPC georeferencing
@@ -306,11 +304,11 @@ class CORE_EXPORT QgsGdalUtils
      */
     struct VsiNetworkFileSystemDetails
     {
-      //! VSI handler identifier, eg "vsis3"
-      QString identifier;
+        //! VSI handler identifier, eg "vsis3"
+        QString identifier;
 
-      //! Translated, user-friendly name.
-      QString name;
+        //! Translated, user-friendly name.
+        QString name;
     };
 
     /**
@@ -318,7 +316,7 @@ class CORE_EXPORT QgsGdalUtils
      *
      * \since QGIS 3.40
      */
-    static QList< VsiNetworkFileSystemDetails > vsiNetworkFileSystems();
+    static QList<VsiNetworkFileSystemDetails> vsiNetworkFileSystems();
 
     /**
      * Returns TRUE if \a prefix is a supported archive style container prefix (e.g. "/vsizip/").

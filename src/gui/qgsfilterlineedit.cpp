@@ -178,7 +178,6 @@ bool QgsFilterLineEdit::showSpinner() const
 
 void QgsFilterLineEdit::setShowSpinner( bool showSpinner )
 {
-
   if ( showSpinner == mShowSpinner )
     return;
 

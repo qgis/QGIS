@@ -31,21 +31,19 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 {
     Q_GADGET
   public:
-
     /**
        * Possible buttons shown in the relation editor
        * \deprecated QGIS 3.18. Use QgsRelationEditorWidget::Button instead.
        * \since QGIS 3.16
        */
-    enum Button SIP_ENUM_BASETYPE( IntFlag )
-    {
-      Link = 1 << 1, //!< Link button
-      Unlink = 1 << 2, //!< Unlink button
-      SaveChildEdits = 1 << 3, //!< Save child edits button
-      AddChildFeature = 1 << 4, //!< Add child feature (as in some projects we only want to allow linking/unlinking existing features)
-      DuplicateChildFeature = 1 << 5, //!< Duplicate child feature
-      DeleteChildFeature = 1 << 6, //!< Delete child feature button
-      ZoomToChildFeature = 1 << 7, //!< Zoom to child feature
+    enum Button SIP_ENUM_BASETYPE( IntFlag ) {
+      Link = 1 << 1,                                                                                                                  //!< Link button
+      Unlink = 1 << 2,                                                                                                                //!< Unlink button
+      SaveChildEdits = 1 << 3,                                                                                                        //!< Save child edits button
+      AddChildFeature = 1 << 4,                                                                                                       //!< Add child feature (as in some projects we only want to allow linking/unlinking existing features)
+      DuplicateChildFeature = 1 << 5,                                                                                                 //!< Duplicate child feature
+      DeleteChildFeature = 1 << 6,                                                                                                    //!< Delete child feature button
+      ZoomToChildFeature = 1 << 7,                                                                                                    //!< Zoom to child feature
       AllButtons = Link | Unlink | SaveChildEdits | AddChildFeature | DuplicateChildFeature | DeleteChildFeature | ZoomToChildFeature //!< All buttons
     };
     // TODO QGIS 4: remove

@@ -24,7 +24,6 @@
 QgsShadowEffect::QgsShadowEffect()
   : mColor( Qt::black )
 {
-
 }
 
 void QgsShadowEffect::draw( QgsRenderContext &context )
@@ -68,7 +67,7 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
 
   const double offsetDist = context.convertToPainterUnits( mOffsetDist, mOffsetUnit, mOffsetMapUnitScale );
 
-  const double   angleRad = mOffsetAngle * M_PI / 180; // to radians
+  const double angleRad = mOffsetAngle * M_PI / 180; // to radians
   const QPointF transPt( -offsetDist * std::cos( angleRad + M_PI_2 ),
                          -offsetDist * std::sin( angleRad + M_PI_2 ) );
 
@@ -119,7 +118,7 @@ QVariantMap QgsShadowEffect::properties() const
 void QgsShadowEffect::readProperties( const QVariantMap &props )
 {
   bool ok;
-  const QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
+  const QPainter::CompositionMode mode = static_cast<QPainter::CompositionMode>( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
   if ( ok )
   {
     mBlendMode = mode;
@@ -141,7 +140,7 @@ void QgsShadowEffect::readProperties( const QVariantMap &props )
     }
   }
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
-  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
+  mDrawMode = static_cast<QgsPaintEffect::DrawMode>( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
   const double level = props.value( QStringLiteral( "blur_level" ) ).toDouble( &ok );
   if ( ok )
   {
@@ -200,7 +199,6 @@ QgsPaintEffect *QgsDropShadowEffect::create( const QVariantMap &map )
 QgsDropShadowEffect::QgsDropShadowEffect()
   : QgsShadowEffect()
 {
-
 }
 
 QString QgsDropShadowEffect::type() const
@@ -233,7 +231,6 @@ QgsPaintEffect *QgsInnerShadowEffect::create( const QVariantMap &map )
 QgsInnerShadowEffect::QgsInnerShadowEffect()
   : QgsShadowEffect()
 {
-
 }
 
 QString QgsInnerShadowEffect::type() const

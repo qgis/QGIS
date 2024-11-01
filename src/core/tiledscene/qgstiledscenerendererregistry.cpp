@@ -23,11 +23,11 @@ QgsTiledSceneRendererRegistry::QgsTiledSceneRendererRegistry()
 {
   // add default renderers
   addRenderer( new QgsTiledSceneRendererMetadata( QStringLiteral( "texture" ),
-               QObject::tr( "Textured" ),
-               QgsTiledSceneTextureRenderer::create ) );
+                                                  QObject::tr( "Textured" ),
+                                                  QgsTiledSceneTextureRenderer::create ) );
   addRenderer( new QgsTiledSceneRendererMetadata( QStringLiteral( "wireframe" ),
-               QObject::tr( "Wireframe" ),
-               QgsTiledSceneWireframeRenderer::create ) );
+                                                  QObject::tr( "Wireframe" ),
+                                                  QgsTiledSceneWireframeRenderer::create ) );
 }
 
 QgsTiledSceneRendererRegistry::~QgsTiledSceneRendererRegistry()
@@ -77,4 +77,3 @@ QgsTiledSceneRenderer *QgsTiledSceneRendererRegistry::defaultRenderer( const Qgs
 {
   return new QgsTiledSceneTextureRenderer();
 }
-

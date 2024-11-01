@@ -31,9 +31,7 @@
  */
 class QgsBookmarksToLayerAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsBookmarksToLayerAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -53,9 +51,7 @@ class QgsBookmarksToLayerAlgorithm : public QgsProcessingAlgorithm
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    QList< QgsBookmark > mBookmarks;
-
-
+    QList<QgsBookmark> mBookmarks;
 };
 
 /**
@@ -63,9 +59,7 @@ class QgsBookmarksToLayerAlgorithm : public QgsProcessingAlgorithm
  */
 class QgsLayerToBookmarksAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsLayerToBookmarksAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -85,14 +79,10 @@ class QgsLayerToBookmarksAlgorithm : public QgsProcessingAlgorithm
     QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    QList< QgsBookmark > mBookmarks;
+    QList<QgsBookmark> mBookmarks;
     int mDest = 0;
-
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSBOOKMARKALGORITHMS_H
-
-

@@ -36,14 +36,13 @@
  */
 class CORE_EXPORT QWebFrame : public QObject
 {
-/// @cond NOT_STABLE_API
+    /// @cond NOT_STABLE_API
     Q_OBJECT
 
   public:
     QWebFrame( QObject *parent = nullptr )
       : QObject( parent )
     {
-
     }
 
     void setZoomFactor( qreal factor )
@@ -71,12 +70,10 @@ class CORE_EXPORT QWebFrame : public QObject
 
     void render( QPainter *, const QRegion = QRegion() )
     {
-
     }
 
     void addToJavaScriptWindowObject( const QString &, QObject * )
     {
-
     }
 
     QVariant evaluateJavaScript( const QString & )
@@ -88,7 +85,7 @@ class CORE_EXPORT QWebFrame : public QObject
     void loadFinished( bool ok );
 
     void javaScriptWindowObjectCleared();
-/// @endcond
+    /// @endcond
 };
 #endif
 #endif // QGSWEBFRAME_H

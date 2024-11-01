@@ -131,7 +131,7 @@ void QgsPointCloudExpression::detach()
 
   if ( d->ref > 1 )
   {
-    ( void )d->ref.deref();
+    ( void ) d->ref.deref();
 
     d = new QgsPointCloudExpressionPrivate( *d );
   }

@@ -91,9 +91,9 @@ bool QgsPlotAxis::readXml( const QDomElement &element, const QgsReadWriteContext
   mNumericFormat.reset( QgsApplication::numericFormatRegistry()->createFromXml( numericFormatElement, context ) );
 
   const QDomElement gridMajorElement = element.firstChildElement( QStringLiteral( "gridMajorSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-  mGridMajorSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( gridMajorElement, context ) );
+  mGridMajorSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( gridMajorElement, context ) );
   const QDomElement gridMinorElement = element.firstChildElement( QStringLiteral( "gridMinorSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-  mGridMinorSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( gridMinorElement, context ) );
+  mGridMinorSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( gridMinorElement, context ) );
 
   const QDomElement textFormatElement = element.firstChildElement( QStringLiteral( "textFormat" ) );
   mLabelTextFormat.readXml( textFormatElement, context );
@@ -217,9 +217,9 @@ bool Qgs2DPlot::readXml( const QDomElement &element, const QgsReadWriteContext &
   mYAxis.readXml( yAxisElement, context );
 
   const QDomElement backgroundElement = element.firstChildElement( QStringLiteral( "backgroundSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-  mChartBackgroundSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( backgroundElement, context ) );
+  mChartBackgroundSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( backgroundElement, context ) );
   const QDomElement borderElement = element.firstChildElement( QStringLiteral( "borderSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-  mChartBorderSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( borderElement, context ) );
+  mChartBorderSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( borderElement, context ) );
 
   mMargins = QgsMargins::fromString( element.attribute( QStringLiteral( "margins" ) ) );
 
@@ -260,7 +260,7 @@ void Qgs2DPlot::render( QgsRenderContext &context )
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "y" ), true ) );
   if ( mYAxis.labelInterval() > 0 )
   {
-    for ( double currentY = firstYLabel; ; currentY += mYAxis.labelInterval() )
+    for ( double currentY = firstYLabel;; currentY += mYAxis.labelInterval() )
     {
       const bool hasMoreLabels = currentY + mYAxis.labelInterval() <= mMaxY && !qgsDoubleNear( currentY + mYAxis.labelInterval(), mMaxY, yTolerance );
       plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentY, true ) );
@@ -303,13 +303,12 @@ void Qgs2DPlot::render( QgsRenderContext &context )
 
   // chart background
   mChartBackgroundSymbol->renderPolygon( QPolygonF(
-  {
-    QPointF( chartAreaLeft, chartAreaTop ),
-    QPointF( chartAreaRight, chartAreaTop ),
-    QPointF( chartAreaRight, chartAreaBottom ),
-    QPointF( chartAreaLeft, chartAreaBottom ),
-    QPointF( chartAreaLeft, chartAreaTop )
-  } ), nullptr, nullptr, context );
+                                           { QPointF( chartAreaLeft, chartAreaTop ),
+                                             QPointF( chartAreaRight, chartAreaTop ),
+                                             QPointF( chartAreaRight, chartAreaBottom ),
+                                             QPointF( chartAreaLeft, chartAreaBottom ),
+                                             QPointF( chartAreaLeft, chartAreaTop ) } ),
+                                         nullptr, nullptr, context );
 
   const double xScale = ( chartAreaRight - chartAreaLeft ) / ( mMaxX - mMinX );
   const double yScale = ( chartAreaBottom - chartAreaTop ) / ( mMaxY - mMinY );
@@ -335,11 +334,10 @@ void Qgs2DPlot::render( QgsRenderContext &context )
 
     QgsLineSymbol *currentGridSymbol = isMinor ? mXAxis.gridMinorSymbol() : mXAxis.gridMajorSymbol();
     currentGridSymbol->renderPolyline( QPolygonF(
-                                         QVector<QPointF>
-    {
-      QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, chartAreaBottom ),
-      QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, chartAreaTop )
-    } ), nullptr, context );
+                                         QVector<QPointF> {
+                                           QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, chartAreaBottom ),
+                                           QPointF( ( currentX - mMinX ) * xScale + chartAreaLeft, chartAreaTop ) } ),
+                                       nullptr, context );
   }
 
   // y
@@ -359,11 +357,10 @@ void Qgs2DPlot::render( QgsRenderContext &context )
 
     QgsLineSymbol *currentGridSymbol = isMinor ? mYAxis.gridMinorSymbol() : mYAxis.gridMajorSymbol();
     currentGridSymbol->renderPolyline( QPolygonF(
-                                         QVector<QPointF>
-    {
-      QPointF( chartAreaLeft, chartAreaBottom - ( currentY - mMinY ) * yScale ),
-      QPointF( chartAreaRight, chartAreaBottom - ( currentY - mMinY ) * yScale )
-    } ), nullptr, context );
+                                         QVector<QPointF> {
+                                           QPointF( chartAreaLeft, chartAreaBottom - ( currentY - mMinY ) * yScale ),
+                                           QPointF( chartAreaRight, chartAreaBottom - ( currentY - mMinY ) * yScale ) } ),
+                                       nullptr, context );
   }
 
   // axis labels
@@ -373,7 +370,7 @@ void Qgs2DPlot::render( QgsRenderContext &context )
   objectNumber = 0;
   if ( mXAxis.labelInterval() > 0 )
   {
-    for ( double currentX = firstXLabel; ; currentX += mXAxis.labelInterval(), ++objectNumber )
+    for ( double currentX = firstXLabel;; currentX += mXAxis.labelInterval(), ++objectNumber )
     {
       const bool hasMoreLabels = objectNumber + 1 < MAX_OBJECTS && ( currentX + mXAxis.labelInterval() <= mMaxX || qgsDoubleNear( currentX + mXAxis.labelInterval(), mMaxX, xTolerance ) );
       plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentX, true ) );
@@ -415,7 +412,7 @@ void Qgs2DPlot::render( QgsRenderContext &context )
   objectNumber = 0;
   if ( mYAxis.labelInterval() > 0 )
   {
-    for ( double currentY = firstYLabel; ; currentY += mYAxis.labelInterval(), ++objectNumber )
+    for ( double currentY = firstYLabel;; currentY += mYAxis.labelInterval(), ++objectNumber )
     {
       const bool hasMoreLabels = objectNumber + 1 < MAX_OBJECTS && ( currentY + mYAxis.labelInterval() <= mMaxY || qgsDoubleNear( currentY + mYAxis.labelInterval(), mMaxY, yTolerance ) );
       plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentY, true ) );
@@ -460,13 +457,12 @@ void Qgs2DPlot::render( QgsRenderContext &context )
 
   // border
   mChartBorderSymbol->renderPolygon( QPolygonF(
-  {
-    QPointF( chartAreaLeft, chartAreaTop ),
-    QPointF( chartAreaRight, chartAreaTop ),
-    QPointF( chartAreaRight, chartAreaBottom ),
-    QPointF( chartAreaLeft, chartAreaBottom ),
-    QPointF( chartAreaLeft, chartAreaTop )
-  } ), nullptr, nullptr, context );
+                                       { QPointF( chartAreaLeft, chartAreaTop ),
+                                         QPointF( chartAreaRight, chartAreaTop ),
+                                         QPointF( chartAreaRight, chartAreaBottom ),
+                                         QPointF( chartAreaLeft, chartAreaBottom ),
+                                         QPointF( chartAreaLeft, chartAreaTop ) } ),
+                                     nullptr, nullptr, context );
 
   mChartBackgroundSymbol->stopRender( context );
   mChartBorderSymbol->stopRender( context );
@@ -478,7 +474,6 @@ void Qgs2DPlot::render( QgsRenderContext &context )
 
 void Qgs2DPlot::renderContent( QgsRenderContext &, const QRectF & )
 {
-
 }
 
 Qgs2DPlot::~Qgs2DPlot() = default;
@@ -518,7 +513,7 @@ QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context ) const
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "x" ), true ) );
   if ( mXAxis.labelInterval() > 0 )
   {
-    for ( double currentX = firstXLabel; ; currentX += mXAxis.labelInterval(), labelNumber++ )
+    for ( double currentX = firstXLabel;; currentX += mXAxis.labelInterval(), labelNumber++ )
     {
       const bool hasMoreLabels = labelNumber + 1 < MAX_LABELS && ( currentX + mXAxis.labelInterval() <= mMaxX || qgsDoubleNear( currentX + mXAxis.labelInterval(), mMaxX, xTolerance ) );
 
@@ -557,7 +552,7 @@ QRectF Qgs2DPlot::interiorPlotArea( QgsRenderContext &context ) const
   double maxYAxisLabelWidth = 0;
   labelNumber = 0;
   plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis" ), QStringLiteral( "y" ), true ) );
-  for ( double currentY = firstMinorYGrid; ; currentY += mYAxis.gridIntervalMinor(), labelNumber ++ )
+  for ( double currentY = firstMinorYGrid;; currentY += mYAxis.gridIntervalMinor(), labelNumber++ )
   {
     const bool hasMoreLabels = labelNumber + 1 < MAX_LABELS && ( currentY + mYAxis.gridIntervalMinor() <= mMaxY || qgsDoubleNear( currentY + mYAxis.gridIntervalMinor(), mMaxY, yTolerance ) );
     plotScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "plot_axis_value" ), currentY, true ) );
@@ -629,12 +624,10 @@ void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
   QgsNumericFormatContext numericContext;
 
   auto refineIntervalForAxis = [&]( double axisMinimum, double axisMaximum,
-                                    const std::function< double( double ) > &sizeForLabel,
+                                    const std::function<double( double )> &sizeForLabel,
                                     double availableSize, double idealSizePercent, double sizeTolerancePercent,
-                                    double & labelInterval, double & majorInterval, double & minorInterval )
-  {
-    auto roundBase10 = []( double value )->double
-    {
+                                    double &labelInterval, double &majorInterval, double &minorInterval ) {
+    auto roundBase10 = []( double value ) -> double {
       return std::pow( 10, std::floor( std::log10( value ) ) );
     };
 
@@ -651,7 +644,7 @@ void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
     }
 
     // we consider the current interval as "good enough" if it results in somewhere between 20-60% label text coverage over the size
-    if ( initialLabelCount >= MAX_LABELS || ( totalSize  / availableSize < ( idealSizePercent - sizeTolerancePercent ) ) || ( totalSize  / availableSize > ( idealSizePercent + sizeTolerancePercent ) ) )
+    if ( initialLabelCount >= MAX_LABELS || ( totalSize / availableSize < ( idealSizePercent - sizeTolerancePercent ) ) || ( totalSize / availableSize > ( idealSizePercent + sizeTolerancePercent ) ) )
     {
       // we start with trying to fit 30 labels in and then raise the interval till we're happy
       int numberLabelsInitial = std::floor( availableSize / 30 );
@@ -710,15 +703,15 @@ void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
     double majorIntervalX = mXAxis.gridIntervalMajor();
     double minorIntervalX = mXAxis.gridIntervalMinor();
     const QString suffixX = mXAxis.labelSuffix();
-    const double suffixWidth = !suffixX.isEmpty() ? QgsTextRenderer::textWidth( context,  mXAxis.textFormat(), { suffixX } ) : 0;
-    refineIntervalForAxis( mMinX, mMaxX, [this, &context, suffixWidth, &numericContext]( double position ) -> double
-    {
-      const QString text = mXAxis.numericFormat()->formatDouble( position, numericContext );
-      // this isn't accurate, as we're always considering the suffix to be present... but it's too tricky to actually consider
-      // the suffix placement!
-      return QgsTextRenderer::textWidth( context,  mXAxis.textFormat(), { text } ) + suffixWidth;
-    }, availableWidth,
-    IDEAL_WIDTH, TOLERANCE, labelIntervalX, majorIntervalX, minorIntervalX );
+    const double suffixWidth = !suffixX.isEmpty() ? QgsTextRenderer::textWidth( context, mXAxis.textFormat(), { suffixX } ) : 0;
+    refineIntervalForAxis(
+      mMinX, mMaxX, [this, &context, suffixWidth, &numericContext]( double position ) -> double {
+        const QString text = mXAxis.numericFormat()->formatDouble( position, numericContext );
+        // this isn't accurate, as we're always considering the suffix to be present... but it's too tricky to actually consider
+        // the suffix placement!
+        return QgsTextRenderer::textWidth( context, mXAxis.textFormat(), { text } ) + suffixWidth;
+      },
+      availableWidth, IDEAL_WIDTH, TOLERANCE, labelIntervalX, majorIntervalX, minorIntervalX );
     mXAxis.setLabelInterval( labelIntervalX );
     mXAxis.setGridIntervalMajor( majorIntervalX );
     mXAxis.setGridIntervalMinor( minorIntervalX );
@@ -729,14 +722,14 @@ void Qgs2DPlot::calculateOptimisedIntervals( QgsRenderContext &context )
     double majorIntervalY = mYAxis.gridIntervalMajor();
     double minorIntervalY = mYAxis.gridIntervalMinor();
     const QString suffixY = mYAxis.labelSuffix();
-    refineIntervalForAxis( mMinY, mMaxY, [this, &context, suffixY, &numericContext]( double position ) -> double
-    {
-      const QString text = mYAxis.numericFormat()->formatDouble( position, numericContext );
-      // this isn't accurate, as we're always considering the suffix to be present... but it's too tricky to actually consider
-      // the suffix placement!
-      return QgsTextRenderer::textHeight( context, mYAxis.textFormat(), { text + suffixY } );
-    }, availableHeight,
-    IDEAL_WIDTH, TOLERANCE, labelIntervalY, majorIntervalY, minorIntervalY );
+    refineIntervalForAxis(
+      mMinY, mMaxY, [this, &context, suffixY, &numericContext]( double position ) -> double {
+        const QString text = mYAxis.numericFormat()->formatDouble( position, numericContext );
+        // this isn't accurate, as we're always considering the suffix to be present... but it's too tricky to actually consider
+        // the suffix placement!
+        return QgsTextRenderer::textHeight( context, mYAxis.textFormat(), { text + suffixY } );
+      },
+      availableHeight, IDEAL_WIDTH, TOLERANCE, labelIntervalY, majorIntervalY, minorIntervalY );
     mYAxis.setLabelInterval( labelIntervalY );
     mYAxis.setGridIntervalMajor( majorIntervalY );
     mYAxis.setGridIntervalMinor( minorIntervalY );
@@ -784,26 +777,26 @@ QgsNumericFormat *QgsPlotDefaultSettings::axisLabelNumericFormat()
 
 QgsLineSymbol *QgsPlotDefaultSettings::axisGridMajorSymbol()
 {
-  std::unique_ptr< QgsSimpleLineSymbolLayer > gridMajor = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 20, 20, 20, 150 ), 0.1 );
+  std::unique_ptr<QgsSimpleLineSymbolLayer> gridMajor = std::make_unique<QgsSimpleLineSymbolLayer>( QColor( 20, 20, 20, 150 ), 0.1 );
   gridMajor->setPenCapStyle( Qt::FlatCap );
   return new QgsLineSymbol( QgsSymbolLayerList( { gridMajor.release() } ) );
 }
 
 QgsLineSymbol *QgsPlotDefaultSettings::axisGridMinorSymbol()
 {
-  std::unique_ptr< QgsSimpleLineSymbolLayer > gridMinor = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 20, 20, 20, 50 ), 0.1 );
+  std::unique_ptr<QgsSimpleLineSymbolLayer> gridMinor = std::make_unique<QgsSimpleLineSymbolLayer>( QColor( 20, 20, 20, 50 ), 0.1 );
   gridMinor->setPenCapStyle( Qt::FlatCap );
   return new QgsLineSymbol( QgsSymbolLayerList( { gridMinor.release() } ) );
 }
 
 QgsFillSymbol *QgsPlotDefaultSettings::chartBackgroundSymbol()
 {
-  std::unique_ptr< QgsSimpleFillSymbolLayer > chartFill = std::make_unique< QgsSimpleFillSymbolLayer >( QColor( 255, 255, 255 ) );
+  std::unique_ptr<QgsSimpleFillSymbolLayer> chartFill = std::make_unique<QgsSimpleFillSymbolLayer>( QColor( 255, 255, 255 ) );
   return new QgsFillSymbol( QgsSymbolLayerList( { chartFill.release() } ) );
 }
 
 QgsFillSymbol *QgsPlotDefaultSettings::chartBorderSymbol()
 {
-  std::unique_ptr< QgsSimpleLineSymbolLayer > chartBorder = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 20, 20, 20 ), 0.1 );
+  std::unique_ptr<QgsSimpleLineSymbolLayer> chartBorder = std::make_unique<QgsSimpleLineSymbolLayer>( QColor( 20, 20, 20 ), 0.1 );
   return new QgsFillSymbol( QgsSymbolLayerList( { chartBorder.release() } ) );
 }

@@ -32,13 +32,13 @@
 #include "callouts/qgscalloutwidget.h"
 #ifdef Q_OS_MACOS
 #include "qgsmacnative.h"
-#elif defined (Q_OS_WIN)
+#elif defined( Q_OS_WIN )
 #ifndef __MINGW32__
 #include "qgswinnative.h"
 #else
 #include "qgsnative.h"
 #endif
-#elif defined (Q_OS_LINUX)
+#elif defined( Q_OS_LINUX )
 #include "qgslinuxnative.h"
 #else
 #include "qgsnative.h"
@@ -276,7 +276,7 @@ QgsGui::~QgsGui()
 QColor QgsGui::sampleColor( QPoint point )
 {
   QScreen *screen = findScreenAt( point );
-  if ( ! screen )
+  if ( !screen )
   {
     return QColor();
   }
@@ -290,7 +290,7 @@ QColor QgsGui::sampleColor( QPoint point )
 
 QScreen *QgsGui::findScreenAt( QPoint point )
 {
-  const QList< QScreen * > screens = QGuiApplication::screens();
+  const QList<QScreen *> screens = QGuiApplication::screens();
   for ( QScreen *screen : screens )
   {
     if ( screen->geometry().contains( point ) )
@@ -307,13 +307,13 @@ QgsGui::QgsGui()
   QgsMacNative *macNative = new QgsMacNative();
   macNative->setIconPath( QgsApplication::iconsPath() + QStringLiteral( "qgis-icon-macos.png" ) );
   mNative = macNative;
-#elif defined (Q_OS_WIN)
+#elif defined( Q_OS_WIN )
 #ifndef __MINGW32__
   mNative = new QgsWinNative();
 #else
   mNative = new QgsNative();
 #endif
-#elif defined(Q_OS_LINUX)
+#elif defined( Q_OS_LINUX )
   mNative = new QgsLinuxNative();
 #else
   mNative = new QgsNative();
@@ -368,7 +368,7 @@ QgsGui::QgsGui()
   mProcessingRecentAlgorithmLog = new QgsProcessingRecentAlgorithmLog();
   mProcessingGuiRegistry = new QgsProcessingGuiRegistry();
 
-  qRegisterMetaType< QgsHistoryEntry >( "QgsHistoryEntry" );
+  qRegisterMetaType<QgsHistoryEntry>( "QgsHistoryEntry" );
 }
 
 bool QgsGui::pythonEmbeddedInProjectAllowed( void ( *lambda )(), QgsMessageBar *messageBar, Qgis::PythonEmbeddedType embeddedType )
@@ -445,8 +445,7 @@ bool QgsGui::pythonEmbeddedInProjectAllowed( void ( *lambda )(), QgsMessageBar *
               0,
               messageBar );
 
-            connect( btnEnableMacros, &QToolButton::clicked, messageBar, [ = ]()
-            {
+            connect( btnEnableMacros, &QToolButton::clicked, messageBar, [=]() {
               lambda();
               messageBar->popWidget( macroMsg );
             } );
@@ -478,8 +477,7 @@ bool QgsGui::pythonEmbeddedInProjectAllowed( void ( *lambda )(), QgsMessageBar *
             0,
             messageBar );
 
-          connect( btnEnableExpressionsFromProject, &QToolButton::clicked, messageBar, [ = ]()
-          {
+          connect( btnEnableExpressionsFromProject, &QToolButton::clicked, messageBar, [=]() {
             QgsProject::instance()->loadFunctionsFromProject( true );
             messageBar->popWidget( expressionFromProjectMsg );
           } );
@@ -497,11 +495,8 @@ bool QgsGui::pythonEmbeddedInProjectAllowed( void ( *lambda )(), QgsMessageBar *
 void QgsGui::initCalloutWidgets()
 {
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]( )
-  {
-
-    auto _initCalloutWidgetFunction = []( const QString & name, QgsCalloutWidgetFunc f )
-    {
+  std::call_once( initialized, [=]() {
+    auto _initCalloutWidgetFunction = []( const QString &name, QgsCalloutWidgetFunc f ) {
       QgsCalloutRegistry *registry = QgsApplication::calloutRegistry();
 
       QgsCalloutAbstractMetadata *abstractMetadata = registry->calloutMetadata( name );
@@ -512,7 +507,7 @@ void QgsGui::initCalloutWidgets()
       QgsCalloutMetadata *metadata = dynamic_cast<QgsCalloutMetadata *>( abstractMetadata );
       if ( !metadata )
       {
-        QgsDebugError( QStringLiteral( "Failed to cast callout's metadata: " ) .arg( name ) );
+        QgsDebugError( QStringLiteral( "Failed to cast callout's metadata: " ).arg( name ) );
       }
       else
       {

@@ -76,15 +76,14 @@ void QgsAttributeFormEditorWidget::createSearchWidgetWrappers( const QgsAttribut
   const int fieldIdx = mEditorWidget->fieldIdx();
 
   QgsSearchWidgetWrapper *sww = QgsGui::editorWidgetRegistry()->createSearchWidget( mWidgetType, layer(), fieldIdx, config,
-                                searchWidgetFrame(), context );
+                                                                                    searchWidgetFrame(), context );
   setSearchWidgetWrapper( sww );
   searchWidgetFrame()->layout()->addWidget( mAggregateButton );
-  if ( sww->supportedFlags() & QgsSearchWidgetWrapper::Between ||
-       sww->supportedFlags() & QgsSearchWidgetWrapper::IsNotBetween )
+  if ( sww->supportedFlags() & QgsSearchWidgetWrapper::Between || sww->supportedFlags() & QgsSearchWidgetWrapper::IsNotBetween )
   {
     // create secondary widget for between type searches
     QgsSearchWidgetWrapper *sww2 = QgsGui::editorWidgetRegistry()->createSearchWidget( mWidgetType, layer(), fieldIdx, config,
-                                   searchWidgetFrame(), context );
+                                                                                       searchWidgetFrame(), context );
     addAdditionalSearchWidgetWrapper( sww2 );
   }
 }
@@ -142,7 +141,6 @@ void QgsAttributeFormEditorWidget::changesCommitted()
 }
 
 
-
 void QgsAttributeFormEditorWidget::initialize( const QVariant &initialValue, bool mixedValues, const QVariantList &additionalFieldValues )
 {
   if ( mEditorWidget )
@@ -163,7 +161,6 @@ QVariant QgsAttributeFormEditorWidget::currentValue() const
 {
   return mEditorWidget->value();
 }
-
 
 
 void QgsAttributeFormEditorWidget::editorWidgetValuesChanged( const QVariant &value, const QVariantList &additionalFieldValues )

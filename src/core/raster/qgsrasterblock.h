@@ -132,7 +132,7 @@ class CORE_EXPORT QgsRasterBlock
     static bool typeIsColor( Qgis::DataType type );
 
     //! Returns data type
-    Qgis::DataType dataType() const  SIP_HOLDGIL { return mDataType; }
+    Qgis::DataType dataType() const SIP_HOLDGIL { return mDataType; }
 
     //! For given data type returns wider type and sets no data value
     static Qgis::DataType typeWithNoDataValue( Qgis::DataType dataType, double *noDataValue );
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsRasterBlock
     */
     double value( int row, int column ) const SIP_HOLDGIL
     {
-      return value( static_cast< qgssize >( row ) * mWidth + column );
+      return value( static_cast<qgssize>( row ) * mWidth + column );
     }
 
     /**
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsRasterBlock
      */
     double valueAndNoData( int row, int column, bool &isNoData ) const SIP_SKIP
     {
-      return valueAndNoData( static_cast< qgssize >( row ) * mWidth + column, isNoData );
+      return valueAndNoData( static_cast<qgssize>( row ) * mWidth + column, isNoData );
     }
 
     /**
@@ -256,7 +256,7 @@ class CORE_EXPORT QgsRasterBlock
     {
       if ( mDataType != Qgis::DataType::Byte )
         return nullptr;
-      return static_cast< const quint8 * >( mData );
+      return static_cast<const quint8 *>( mData );
     }
 
     /**
@@ -267,7 +267,8 @@ class CORE_EXPORT QgsRasterBlock
     */
     QRgb color( int row, int column ) const SIP_HOLDGIL
     {
-      if ( !mImage ) return NO_DATA_COLOR;
+      if ( !mImage )
+        return NO_DATA_COLOR;
 
       return mImage->pixel( column, row );
     }
@@ -279,7 +280,7 @@ class CORE_EXPORT QgsRasterBlock
     */
     QRgb color( qgssize index ) const SIP_HOLDGIL
     {
-      const int row = static_cast< int >( std::floor( static_cast< double >( index ) / mWidth ) );
+      const int row = static_cast<int>( std::floor( static_cast<double>( index ) / mWidth ) );
       const int column = index % mWidth;
       return color( row, column );
     }
@@ -293,7 +294,7 @@ class CORE_EXPORT QgsRasterBlock
     */
     bool isNoData( int row, int column ) const SIP_HOLDGIL
     {
-      return isNoData( static_cast< qgssize >( row ) * mWidth + column );
+      return isNoData( static_cast<qgssize>( row ) * mWidth + column );
     }
 
     /**
@@ -305,7 +306,7 @@ class CORE_EXPORT QgsRasterBlock
     */
     bool isNoData( qgssize row, qgssize column ) const SIP_HOLDGIL
     {
-      return isNoData( row * static_cast< qgssize >( mWidth ) + column );
+      return isNoData( row * static_cast<qgssize>( mWidth ) + column );
     }
 
     /**
@@ -318,7 +319,7 @@ class CORE_EXPORT QgsRasterBlock
     {
       if ( !mHasNoDataValue && !mNoDataBitmap )
         return false;
-      if ( index >= static_cast< qgssize >( mWidth )*mHeight )
+      if ( index >= static_cast<qgssize>( mWidth ) * mHeight )
       {
         QgsDebugError( QStringLiteral( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
         return true; // we consider no data if outside
@@ -335,9 +336,9 @@ class CORE_EXPORT QgsRasterBlock
         return false;
       }
       // TODO: optimize
-      const int row = static_cast< int >( index ) / mWidth;
+      const int row = static_cast<int>( index ) / mWidth;
       const int column = index % mWidth;
-      const qgssize byte = static_cast< qgssize >( row ) * mNoDataBitmapWidth + column / 8;
+      const qgssize byte = static_cast<qgssize>( row ) * mNoDataBitmapWidth + column / 8;
       const int bit = column % 8;
       const int mask = 0x80 >> bit;
       //int x = mNoDataBitmap[byte] & mask;
@@ -354,7 +355,7 @@ class CORE_EXPORT QgsRasterBlock
     */
     bool setValue( int row, int column, double value ) SIP_HOLDGIL
     {
-      return setValue( static_cast< qgssize >( row ) * mWidth + column, value );
+      return setValue( static_cast<qgssize>( row ) * mWidth + column, value );
     }
 
     /**
@@ -370,7 +371,7 @@ class CORE_EXPORT QgsRasterBlock
         QgsDebugError( QStringLiteral( "Data block not allocated" ) );
         return false;
       }
-      if ( index >= static_cast< qgssize >( mWidth ) *mHeight )
+      if ( index >= static_cast<qgssize>( mWidth ) * mHeight )
       {
         QgsDebugError( QStringLiteral( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
         return false;
@@ -388,7 +389,7 @@ class CORE_EXPORT QgsRasterBlock
     */
     bool setColor( int row, int column, QRgb color ) SIP_HOLDGIL
     {
-      return setColor( static_cast< qgssize >( row ) * mWidth + column, color );
+      return setColor( static_cast<qgssize>( row ) * mWidth + column, color );
     }
 
     /**
@@ -405,14 +406,14 @@ class CORE_EXPORT QgsRasterBlock
         return false;
       }
 
-      if ( index >= static_cast< qgssize >( mImage->width() ) * mImage->height() )
+      if ( index >= static_cast<qgssize>( mImage->width() ) * mImage->height() )
       {
         QgsDebugError( QStringLiteral( "index %1 out of range" ).arg( index ) );
         return false;
       }
 
       // setPixel() is slow, see Qt doc -> use direct access
-      QRgb *bits = reinterpret_cast< QRgb * >( mImage->bits() );
+      QRgb *bits = reinterpret_cast<QRgb *>( mImage->bits() );
       bits[index] = color;
       return true;
     }
@@ -428,7 +429,7 @@ class CORE_EXPORT QgsRasterBlock
     {
       if ( !mImage )
         return nullptr;
-      return reinterpret_cast< QRgb * >( mImage->bits() );
+      return reinterpret_cast<QRgb *>( mImage->bits() );
     }
 
     /**
@@ -439,7 +440,7 @@ class CORE_EXPORT QgsRasterBlock
     */
     bool setIsNoData( int row, int column ) SIP_HOLDGIL
     {
-      return setIsNoData( static_cast< qgssize >( row ) * mWidth + column );
+      return setIsNoData( static_cast<qgssize>( row ) * mWidth + column );
     }
 
     /**
@@ -463,9 +464,9 @@ class CORE_EXPORT QgsRasterBlock
           }
         }
         // TODO: optimize
-        const int row = static_cast< int >( index ) / mWidth;
+        const int row = static_cast<int>( index ) / mWidth;
         const int column = index % mWidth;
-        const qgssize byte = static_cast< qgssize >( row ) * mNoDataBitmapWidth + column / 8;
+        const qgssize byte = static_cast<qgssize>( row ) * mNoDataBitmapWidth + column / 8;
         const int bit = column % 8;
         const int nodata = 0x80 >> bit;
         //QgsDebugMsg ( QString("set byte = %1 bit = %2 no data by %3").arg(byte).arg(bit).arg(nodata, 0,2 ) );
@@ -496,7 +497,7 @@ class CORE_EXPORT QgsRasterBlock
     */
     void setIsData( int row, int column ) SIP_HOLDGIL
     {
-      setIsData( static_cast< qgssize >( row )*mWidth + column );
+      setIsData( static_cast<qgssize>( row ) * mWidth + column );
     }
 
     /**
@@ -520,9 +521,9 @@ class CORE_EXPORT QgsRasterBlock
       }
 
       // TODO: optimize
-      const int row = static_cast< int >( index ) / mWidth;
+      const int row = static_cast<int>( index ) / mWidth;
       const int column = index % mWidth;
-      const qgssize byte = static_cast< qgssize >( row ) * mNoDataBitmapWidth + column / 8;
+      const qgssize byte = static_cast<qgssize>( row ) * mNoDataBitmapWidth + column / 8;
       const int bit = column % 8;
       const int nodata = 0x80 >> bit;
       mNoDataBitmap[byte] = mNoDataBitmap[byte] & ~nodata;
@@ -647,7 +648,7 @@ class CORE_EXPORT QgsRasterBlock
     QgsError error() const { return mError; }
 
     //! Sets the last error
-    void setError( const QgsError &error ) { mError = error;}
+    void setError( const QgsError &error ) { mError = error; }
 
     QString toString() const;
 
@@ -690,8 +691,7 @@ class CORE_EXPORT QgsRasterBlock
       // TODO: optimize no data value test by memcmp()
       // More precise would be std::isnan(value) && std::isnan(noDataValue(bandNo)), but probably
       // not important and slower
-      return std::isnan( value ) ||
-             qgsDoubleNear( value, noDataValue );
+      return std::isnan( value ) || qgsDoubleNear( value, noDataValue );
     }
 
     /**
@@ -773,21 +773,21 @@ inline double QgsRasterBlock::readValue( void *data, Qgis::DataType type, qgssiz
   switch ( type )
   {
     case Qgis::DataType::Byte:
-      return static_cast< double >( ( static_cast< quint8 * >( data ) )[index] );
+      return static_cast<double>( ( static_cast<quint8 *>( data ) )[index] );
     case Qgis::DataType::Int8:
-      return static_cast< double >( ( static_cast< qint8 * >( data ) )[index] );
+      return static_cast<double>( ( static_cast<qint8 *>( data ) )[index] );
     case Qgis::DataType::UInt16:
-      return static_cast< double >( ( static_cast< quint16 * >( data ) )[index] );
+      return static_cast<double>( ( static_cast<quint16 *>( data ) )[index] );
     case Qgis::DataType::Int16:
-      return static_cast< double >( ( static_cast< qint16 * >( data ) )[index] );
+      return static_cast<double>( ( static_cast<qint16 *>( data ) )[index] );
     case Qgis::DataType::UInt32:
-      return static_cast< double >( ( static_cast< quint32 * >( data ) )[index] );
+      return static_cast<double>( ( static_cast<quint32 *>( data ) )[index] );
     case Qgis::DataType::Int32:
-      return static_cast< double >( ( static_cast< qint32 * >( data ) )[index] );
+      return static_cast<double>( ( static_cast<qint32 *>( data ) )[index] );
     case Qgis::DataType::Float32:
-      return static_cast< double >( ( static_cast< float * >( data ) )[index] );
+      return static_cast<double>( ( static_cast<float *>( data ) )[index] );
     case Qgis::DataType::Float64:
-      return static_cast< double >( ( static_cast< double * >( data ) )[index] );
+      return static_cast<double>( ( static_cast<double *>( data ) )[index] );
     case Qgis::DataType::CInt16:
     case Qgis::DataType::CInt32:
     case Qgis::DataType::CFloat32:
@@ -795,7 +795,7 @@ inline double QgsRasterBlock::readValue( void *data, Qgis::DataType type, qgssiz
     case Qgis::DataType::ARGB32:
     case Qgis::DataType::ARGB32_Premultiplied:
     case Qgis::DataType::UnknownDataType:
-      QgsDebugError( QStringLiteral( "Data type %1 is not supported" ).arg( qgsEnumValueToKey< Qgis::DataType >( type ) ) );
+      QgsDebugError( QStringLiteral( "Data type %1 is not supported" ).arg( qgsEnumValueToKey<Qgis::DataType>( type ) ) );
       break;
   }
 
@@ -804,33 +804,34 @@ inline double QgsRasterBlock::readValue( void *data, Qgis::DataType type, qgssiz
 
 inline void QgsRasterBlock::writeValue( void *data, Qgis::DataType type, qgssize index, double value ) SIP_SKIP
 {
-  if ( !data ) return;
+  if ( !data )
+    return;
 
   switch ( type )
   {
     case Qgis::DataType::Byte:
-      ( static_cast< quint8 * >( data ) )[index] = static_cast< quint8 >( value );
+      ( static_cast<quint8 *>( data ) )[index] = static_cast<quint8>( value );
       break;
     case Qgis::DataType::Int8:
-      ( static_cast< qint8 * >( data ) )[index] = static_cast< qint8 >( value );
+      ( static_cast<qint8 *>( data ) )[index] = static_cast<qint8>( value );
       break;
     case Qgis::DataType::UInt16:
-      ( static_cast< quint16 * >( data ) )[index] = static_cast< quint16 >( value );
+      ( static_cast<quint16 *>( data ) )[index] = static_cast<quint16>( value );
       break;
     case Qgis::DataType::Int16:
-      ( static_cast< qint16 * >( data ) )[index] = static_cast< qint16 >( value );
+      ( static_cast<qint16 *>( data ) )[index] = static_cast<qint16>( value );
       break;
     case Qgis::DataType::UInt32:
-      ( static_cast< quint32 * >( data ) )[index] = static_cast< quint32 >( value );
+      ( static_cast<quint32 *>( data ) )[index] = static_cast<quint32>( value );
       break;
     case Qgis::DataType::Int32:
-      ( static_cast< qint32 * >( data ) )[index] = static_cast< qint32 >( value );
+      ( static_cast<qint32 *>( data ) )[index] = static_cast<qint32>( value );
       break;
     case Qgis::DataType::Float32:
-      ( static_cast< float * >( data ) )[index] = static_cast< float >( value );
+      ( static_cast<float *>( data ) )[index] = static_cast<float>( value );
       break;
     case Qgis::DataType::Float64:
-      ( static_cast< double * >( data ) )[index] = value;
+      ( static_cast<double *>( data ) )[index] = value;
       break;
     case Qgis::DataType::CInt16:
     case Qgis::DataType::CInt32:
@@ -839,7 +840,7 @@ inline void QgsRasterBlock::writeValue( void *data, Qgis::DataType type, qgssize
     case Qgis::DataType::ARGB32:
     case Qgis::DataType::ARGB32_Premultiplied:
     case Qgis::DataType::UnknownDataType:
-      QgsDebugError( QStringLiteral( "Data type %1 is not supported" ).arg( qgsEnumValueToKey< Qgis::DataType >( type ) ) );
+      QgsDebugError( QStringLiteral( "Data type %1 is not supported" ).arg( qgsEnumValueToKey<Qgis::DataType>( type ) ) );
       break;
   }
 }
@@ -862,7 +863,7 @@ inline double QgsRasterBlock::valueAndNoData( qgssize index, bool &isNoData ) co
     isNoData = true;
     return std::numeric_limits<double>::quiet_NaN();
   }
-  if ( index >= static_cast< qgssize >( mWidth )*mHeight )
+  if ( index >= static_cast<qgssize>( mWidth ) * mHeight )
   {
     QgsDebugError( QStringLiteral( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
     isNoData = true; // we consider no data if outside
@@ -901,5 +902,3 @@ inline bool QgsRasterBlock::isNoDataValue( double value ) const SIP_SKIP
 }
 
 #endif
-
-

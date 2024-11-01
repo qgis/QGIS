@@ -32,9 +32,7 @@ class QDomElement;
  */
 class CORE_EXPORT QgsRasterTransparency
 {
-
   public:
-
     QgsRasterTransparency() = default;
 
     /**
@@ -43,8 +41,7 @@ class CORE_EXPORT QgsRasterTransparency
      */
     struct TransparentThreeValuePixel
     {
-
-      /**
+        /**
       * Constructor for TransparentThreeValuePixel.
       * \param red red pixel value
       * \param green green pixel value
@@ -55,39 +52,39 @@ class CORE_EXPORT QgsRasterTransparency
       * \param fuzzyToleranceBlue (since QGIS 3.40) allows specifying a tolerance for the blue color component, where the pixel's blue component can deviate from values specified here by a maximum of this tolerance amount
       * \since QGIS 3.38
       */
-      TransparentThreeValuePixel( double red = 0, double green = 0, double blue = 0, double opacity = 0, double fuzzyToleranceRed = 4 * std::numeric_limits<double>::epsilon(), double fuzzyToleranceGreen = 4 * std::numeric_limits<double>::epsilon(), double fuzzyToleranceBlue = 4 * std::numeric_limits<double>::epsilon() )
-        : red( red )
-        , green( green )
-        , blue( blue )
-        , opacity( opacity )
-        , fuzzyToleranceRed( fuzzyToleranceRed )
-        , fuzzyToleranceGreen( fuzzyToleranceGreen )
-        , fuzzyToleranceBlue( fuzzyToleranceBlue )
-      {}
+        TransparentThreeValuePixel( double red = 0, double green = 0, double blue = 0, double opacity = 0, double fuzzyToleranceRed = 4 * std::numeric_limits<double>::epsilon(), double fuzzyToleranceGreen = 4 * std::numeric_limits<double>::epsilon(), double fuzzyToleranceBlue = 4 * std::numeric_limits<double>::epsilon() )
+          : red( red )
+          , green( green )
+          , blue( blue )
+          , opacity( opacity )
+          , fuzzyToleranceRed( fuzzyToleranceRed )
+          , fuzzyToleranceGreen( fuzzyToleranceGreen )
+          , fuzzyToleranceBlue( fuzzyToleranceBlue )
+        {}
 
-      /**
+        /**
        * Red pixel value.
        */
-      double red;
+        double red;
 
-      /**
+        /**
       * Green pixel value.
       */
-      double green;
+        double green;
 
-      /**
+        /**
        * Blue pixel value.
        */
-      double blue;
+        double blue;
 
-      /**
+        /**
       * Opacity for pixel, between 0 and 1.0.
       *
       * \since QGIS 3.38
       */
-      double opacity = 0;
+        double opacity = 0;
 
-      /**
+        /**
       * Fuzzy tolerance for red values.
       *
       * If non zero, the pixel's red component can deviate from values specified in this object by a maximum of this tolerance amount.
@@ -95,12 +92,12 @@ class CORE_EXPORT QgsRasterTransparency
       * \since QGIS 3.40
       */
 #ifndef SIP_RUN
-      double fuzzyToleranceRed = 4 * std::numeric_limits<double>::epsilon();
+        double fuzzyToleranceRed = 4 * std::numeric_limits<double>::epsilon();
 #else
-      double fuzzyToleranceRed;
+        double fuzzyToleranceRed;
 #endif
 
-      /**
+        /**
       * Fuzzy tolerance for green values.
       *
       * If non zero, the pixel's green component can deviate from values specified in this object by a maximum of this tolerance amount.
@@ -108,12 +105,12 @@ class CORE_EXPORT QgsRasterTransparency
       * \since QGIS 3.40
       */
 #ifndef SIP_RUN
-      double fuzzyToleranceGreen = 4 * std::numeric_limits<double>::epsilon();
+        double fuzzyToleranceGreen = 4 * std::numeric_limits<double>::epsilon();
 #else
-      double fuzzyToleranceGreen;
+        double fuzzyToleranceGreen;
 #endif
 
-      /**
+        /**
       * Fuzzy tolerance for blue values.
       *
       * If non zero, the pixel's blue component can deviate from values specified in this object by a maximum of this tolerance amount.
@@ -121,36 +118,36 @@ class CORE_EXPORT QgsRasterTransparency
       * \since QGIS 3.40
       */
 #ifndef SIP_RUN
-      double fuzzyToleranceBlue = 4 * std::numeric_limits<double>::epsilon();
+        double fuzzyToleranceBlue = 4 * std::numeric_limits<double>::epsilon();
 #else
-      double fuzzyToleranceBlue;
+        double fuzzyToleranceBlue;
 #endif
 
-      bool operator==( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const
-      {
-        return qgsDoubleNear( red, other.red )
-               && qgsDoubleNear( green, other.green )
-               && qgsDoubleNear( blue, other.blue )
-               && qgsDoubleNear( opacity, other.opacity )
-               && qgsDoubleNear( fuzzyToleranceRed, other.fuzzyToleranceRed )
-               && qgsDoubleNear( fuzzyToleranceGreen, other.fuzzyToleranceGreen )
-               && qgsDoubleNear( fuzzyToleranceBlue, other.fuzzyToleranceBlue );
-      }
-      bool operator!=( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const
-      {
-        return !( *this == other );
-      }
+        bool operator==( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const
+        {
+          return qgsDoubleNear( red, other.red )
+                 && qgsDoubleNear( green, other.green )
+                 && qgsDoubleNear( blue, other.blue )
+                 && qgsDoubleNear( opacity, other.opacity )
+                 && qgsDoubleNear( fuzzyToleranceRed, other.fuzzyToleranceRed )
+                 && qgsDoubleNear( fuzzyToleranceGreen, other.fuzzyToleranceGreen )
+                 && qgsDoubleNear( fuzzyToleranceBlue, other.fuzzyToleranceBlue );
+        }
+        bool operator!=( const QgsRasterTransparency::TransparentThreeValuePixel &other ) const
+        {
+          return !( *this == other );
+        }
 
 #ifdef SIP_RUN
-      SIP_PYOBJECT __repr__();
-      % MethodCode
-      QString str;
-      if ( !qgsDoubleNear( sipCpp->fuzzyToleranceRed, 0 ) || !qgsDoubleNear( sipCpp->fuzzyToleranceGreen, 0 ) || !qgsDoubleNear( sipCpp->fuzzyToleranceBlue, 0 ) )
-        str = QStringLiteral( "<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4, %5, %6, %7>" ).arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity ).arg( sipCpp->fuzzyToleranceRed ).arg( sipCpp->fuzzyToleranceGreen ).arg( sipCpp->fuzzyToleranceBlue );
-      else
-        str = QStringLiteral( "<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4>" ).arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity );
-      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-      % End
+        SIP_PYOBJECT __repr__();
+        % MethodCode
+            QString str;
+        if ( !qgsDoubleNear( sipCpp->fuzzyToleranceRed, 0 ) || !qgsDoubleNear( sipCpp->fuzzyToleranceGreen, 0 ) || !qgsDoubleNear( sipCpp->fuzzyToleranceBlue, 0 ) )
+          str = QStringLiteral( "<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4, %5, %6, %7>" ).arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity ).arg( sipCpp->fuzzyToleranceRed ).arg( sipCpp->fuzzyToleranceGreen ).arg( sipCpp->fuzzyToleranceBlue );
+        else
+          str = QStringLiteral( "<QgsRasterTransparency.TransparentThreeValuePixel: %1, %2, %3, %4>" ).arg( sipCpp->red ).arg( sipCpp->green ).arg( sipCpp->blue ).arg( sipCpp->opacity );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
 #endif
     };
 
@@ -160,8 +157,7 @@ class CORE_EXPORT QgsRasterTransparency
      */
     struct TransparentSingleValuePixel
     {
-
-      /**
+        /**
        * Constructor for TransparentSingleValuePixel.
        * \param minimum minimum pixel value to include in range
        * \param maximum maximum pixel value to include in range
@@ -171,65 +167,64 @@ class CORE_EXPORT QgsRasterTransparency
        *
        * \since QGIS 3.38
        */
-      TransparentSingleValuePixel( double minimum = 0, double maximum = 0, double opacity = 0, bool includeMinimum = true, bool includeMaximum = true )
-        : min( minimum )
-        , max( maximum )
-        , opacity( opacity )
-        , includeMinimum( includeMinimum )
-        , includeMaximum( includeMaximum )
-      {}
+        TransparentSingleValuePixel( double minimum = 0, double maximum = 0, double opacity = 0, bool includeMinimum = true, bool includeMaximum = true )
+          : min( minimum )
+          , max( maximum )
+          , opacity( opacity )
+          , includeMinimum( includeMinimum )
+          , includeMaximum( includeMaximum )
+        {}
 
-      /**
+        /**
        * Minimum pixel value to include in range.
        */
-      double min;
+        double min;
 
-      /**
+        /**
        * Maximum pixel value to include in range.
        */
-      double max;
+        double max;
 
-      /**
+        /**
        * Opacity for pixel, between 0 and 1.0.
        *
        * \since QGIS 3.38
        */
-      double opacity = 0;
+        double opacity = 0;
 
-      /**
+        /**
        * TRUE if pixels matching the min value should be considered transparent,
        * or FALSE if only pixels greater than the min value should be transparent.
        *
        * \since QGIS 3.38
        */
-      bool includeMinimum = true;
+        bool includeMinimum = true;
 
-      /**
+        /**
        * TRUE if pixels matching the max value should be considered transparent,
        * or FALSE if only pixels less than the max value should be transparent.
        *
        * \since QGIS 3.38
        */
-      bool includeMaximum = true;
+        bool includeMaximum = true;
 
-      bool operator==( const QgsRasterTransparency::TransparentSingleValuePixel &other ) const
-      {
-        return qgsDoubleNear( min, other.min )
-               && qgsDoubleNear( max, other.max )
-               && qgsDoubleNear( opacity, other.opacity )
-               && includeMinimum == other.includeMinimum && includeMaximum == other.includeMaximum;
-      }
-      bool operator!=( const QgsRasterTransparency::TransparentSingleValuePixel &other ) const
-      {
-        return !( *this == other );
-      }
+        bool operator==( const QgsRasterTransparency::TransparentSingleValuePixel &other ) const
+        {
+          return qgsDoubleNear( min, other.min )
+                 && qgsDoubleNear( max, other.max )
+                 && qgsDoubleNear( opacity, other.opacity )
+                 && includeMinimum == other.includeMinimum && includeMaximum == other.includeMaximum;
+        }
+        bool operator!=( const QgsRasterTransparency::TransparentSingleValuePixel &other ) const
+        {
+          return !( *this == other );
+        }
 
 #ifdef SIP_RUN
-      SIP_PYOBJECT __repr__();
-      % MethodCode
-      const QString str = QStringLiteral( "<QgsRasterTransparency.TransparentSingleValuePixel: %1, %2, %3>" ).arg( sipCpp->min ).arg( sipCpp->max ).arg( sipCpp->opacity );
-      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-      % End
+        SIP_PYOBJECT __repr__();
+        % MethodCode const QString str = QStringLiteral( "<QgsRasterTransparency.TransparentSingleValuePixel: %1, %2, %3>" ).arg( sipCpp->min ).arg( sipCpp->max ).arg( sipCpp->opacity );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
 #endif
     };
 
@@ -335,6 +330,5 @@ class CORE_EXPORT QgsRasterTransparency
 
     //! \brief The list to hold transparency values for single value pixel layers
     QVector<QgsRasterTransparency::TransparentSingleValuePixel> mTransparentSingleValuePixelList;
-
 };
 #endif

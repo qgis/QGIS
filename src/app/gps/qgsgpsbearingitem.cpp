@@ -91,8 +91,7 @@ void QgsGpsBearingItem::updateLine()
     double totalLength = 0;
     try
     {
-      totalLength = 2 * da1.measureLine( mMapCanvas->mapSettings().extent().center(), QgsPointXY( mMapCanvas->mapSettings().extent().xMaximum(),
-                                         mMapCanvas->mapSettings().extent().yMaximum() ) );
+      totalLength = 2 * da1.measureLine( mMapCanvas->mapSettings().extent().center(), QgsPointXY( mMapCanvas->mapSettings().extent().xMaximum(), mMapCanvas->mapSettings().extent().yMaximum() ) );
     }
     catch ( QgsCsException & )
     {

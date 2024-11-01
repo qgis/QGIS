@@ -56,9 +56,7 @@ class QgsVector3D;
 */
 class CORE_EXPORT QgsCoordinateTransform
 {
-
   public:
-
     //! Default constructor, creates an invalid QgsCoordinateTransform.
     QgsCoordinateTransform();
 
@@ -131,9 +129,9 @@ class CORE_EXPORT QgsCoordinateTransform
      * \deprecated QGIS 3.40. Will be removed in QGIS 4.0. Use the constructor with a QgsCoordinateTransformContext argument instead.
      */
     Q_DECL_DEPRECATED explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
-        const QgsCoordinateReferenceSystem &destination,
-        int sourceDatumTransformId,
-        int destinationDatumTransformId ) SIP_DEPRECATED;
+                                                       const QgsCoordinateReferenceSystem &destination,
+                                                       int sourceDatumTransformId,
+                                                       int destinationDatumTransformId ) SIP_DEPRECATED;
 
     QgsCoordinateTransform( const QgsCoordinateTransform &o );
     QgsCoordinateTransform &operator=( const QgsCoordinateTransform &o );
@@ -615,15 +613,15 @@ class CORE_EXPORT QgsCoordinateTransform
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsCoordinateTransform: %1 to %2>" ).arg( sipCpp->sourceCrs().isValid() ? sipCpp->sourceCrs().authid() : QStringLiteral( "NULL" ),
-                  sipCpp->destinationCrs().isValid() ? sipCpp->destinationCrs().authid() : QStringLiteral( "NULL" ) );
+        QString str
+      = QStringLiteral( "<QgsCoordinateTransform: %1 to %2>" ).arg( sipCpp->sourceCrs().isValid() ? sipCpp->sourceCrs().authid() : QStringLiteral( "NULL" ), sipCpp->destinationCrs().isValid() ? sipCpp->destinationCrs().authid() : QStringLiteral( "NULL" ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
 #ifndef SIP_RUN
 
-    /**
+      /**
      * Sets a custom handler to use when a coordinate transform is created between \a sourceCrs and
      * \a destinationCrs, yet the coordinate operation requires a transform \a grid which is not present
      * on the system.
@@ -635,9 +633,10 @@ class CORE_EXPORT QgsCoordinateTransform
      * \note Not available in Python bindings
      * \since QGIS 3.8
      */
-    static void setCustomMissingRequiredGridHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        const QgsDatumTransform::GridDetails &grid )> &handler );
+      static void
+      setCustomMissingRequiredGridHandler( const std::function<void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                                                     const QgsCoordinateReferenceSystem &destinationCrs,
+                                                                     const QgsDatumTransform::GridDetails &grid )> &handler );
 
     /**
      * Sets a custom handler to use when a coordinate transform is created between \a sourceCrs and
@@ -655,10 +654,10 @@ class CORE_EXPORT QgsCoordinateTransform
      * \note Not available in Python bindings
      * \since QGIS 3.8
      */
-    static void setCustomMissingPreferredGridHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        const QgsDatumTransform::TransformDetails &preferredOperation,
-        const QgsDatumTransform::TransformDetails &availableOperation )> &handler );
+    static void setCustomMissingPreferredGridHandler( const std::function<void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                                                                const QgsCoordinateReferenceSystem &destinationCrs,
+                                                                                const QgsDatumTransform::TransformDetails &preferredOperation,
+                                                                                const QgsDatumTransform::TransformDetails &availableOperation )> &handler );
 
     /**
      * Sets a custom handler to use when a coordinate transform was required between \a sourceCrs and
@@ -672,9 +671,9 @@ class CORE_EXPORT QgsCoordinateTransform
      * \note Not available in Python bindings
      * \since QGIS 3.8
      */
-    static void setCustomCoordinateOperationCreationErrorHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        const QString &error )> &handler );
+    static void setCustomCoordinateOperationCreationErrorHandler( const std::function<void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                                                                            const QgsCoordinateReferenceSystem &destinationCrs,
+                                                                                            const QString &error )> &handler );
 
     /**
      * Sets a custom handler to use when a coordinate operation was specified for use between \a sourceCrs and
@@ -688,9 +687,9 @@ class CORE_EXPORT QgsCoordinateTransform
      * \note Not available in Python bindings
      * \since QGIS 3.8
      */
-    static void setCustomMissingGridUsedByContextHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        const QgsDatumTransform::TransformDetails &desiredOperation )> &handler );
+    static void setCustomMissingGridUsedByContextHandler( const std::function<void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                                                                    const QgsCoordinateReferenceSystem &destinationCrs,
+                                                                                    const QgsDatumTransform::TransformDetails &desiredOperation )> &handler );
 
 
     /**
@@ -699,9 +698,9 @@ class CORE_EXPORT QgsCoordinateTransform
      *
      * \since QGIS 3.10.3
      */
-    static void setFallbackOperationOccurredHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        const QString &desiredOperation )> &handler );
+    static void setFallbackOperationOccurredHandler( const std::function<void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                                                               const QgsCoordinateReferenceSystem &destinationCrs,
+                                                                               const QString &desiredOperation )> &handler );
 
     /**
      * Sets a custom \a handler to use when the desired coordinate operation for use between \a sourceCrs and
@@ -709,13 +708,12 @@ class CORE_EXPORT QgsCoordinateTransform
      *
      * \since QGIS 3.20
      */
-    static void setDynamicCrsToDynamicCrsWarningHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs )> &handler );
+    static void setDynamicCrsToDynamicCrsWarningHandler( const std::function<void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                                                                   const QgsCoordinateReferenceSystem &destinationCrs )> &handler );
 
 #endif
 
   private:
-
 #ifndef SIP_RUN
     friend class QgsProjContext;
 
@@ -754,21 +752,21 @@ class CORE_EXPORT QgsCoordinateTransform
      * The same auth_id pairs might have multiple transformations, as they can be based on different coordinate
      * operations, allowance of ballpark transforms, and the source or destination coordinate epoch.
      */
-    static QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > sTransforms;
+    static QMultiHash<QPair<QString, QString>, QgsCoordinateTransform> sTransforms;
     static bool sDisableCache;
 
 
-    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-                                const QgsCoordinateReferenceSystem &destinationCrs,
-                                const QString &desiredOperation )> sFallbackOperationOccurredHandler;
+    static std::function<void( const QgsCoordinateReferenceSystem &sourceCrs,
+                               const QgsCoordinateReferenceSystem &destinationCrs,
+                               const QString &desiredOperation )>
+      sFallbackOperationOccurredHandler;
 
     friend class TestQgsCoordinateTransform;
-
 };
 
 //! Output stream operator
 #ifndef SIP_RUN
-inline std::ostream &operator << ( std::ostream &os, const QgsCoordinateTransform &r )
+inline std::ostream &operator<<( std::ostream &os, const QgsCoordinateTransform &r )
 {
   QString mySummary( QStringLiteral( "\n%%%%%%%%%%%%%%%%%%%%%%%%\nCoordinate Transform def begins:" ) );
   mySummary += QLatin1String( "\n\tInitialized? : " );

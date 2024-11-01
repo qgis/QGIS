@@ -81,7 +81,7 @@ bool QgsZipUtils::unzip( const QString &zipFilename, const QString &dir, QString
         const size_t len = stat.size;
 
         struct zip_file *file = zip_fopen_index( z, i, 0 );
-        const std::unique_ptr< char[] > buf( new char[len] );
+        const std::unique_ptr<char[]> buf( new char[len] );
         if ( zip_fread( file, buf.get(), len ) != -1 )
         {
           const QString fileName( stat.name );
@@ -228,7 +228,7 @@ bool QgsZipUtils::decodeGzip( const char *bytesIn, std::size_t size, QByteArray 
     bytesInLeft -= bytesToProcess;
 
     if ( bytesToProcess == 0 )
-      break;  // we end with an error - no more data but inflate() wants more data
+      break; // we end with an error - no more data but inflate() wants more data
 
     // run inflate() on input until output buffer not full
     do
@@ -244,8 +244,7 @@ bool QgsZipUtils::decodeGzip( const char *bytesIn, std::size_t size, QByteArray 
       }
       const unsigned have = CHUNK - strm.avail_out;
       bytesOut.append( QByteArray::fromRawData( reinterpret_cast<const char *>( out ), static_cast<int>( have ) ) );
-    }
-    while ( strm.avail_out == 0 );
+    } while ( strm.avail_out == 0 );
   }
 
   inflateEnd( &strm );
@@ -285,9 +284,8 @@ bool QgsZipUtils::encodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut )
 
     const unsigned have = CHUNK - strm.avail_out;
     bytesOut.append( QByteArray::fromRawData( reinterpret_cast<const char *>( out ), static_cast<int>( have ) ) );
-  }
-  while ( strm.avail_out == 0 );
-  Q_ASSERT( ret == Z_STREAM_END );      // stream will be complete
+  } while ( strm.avail_out == 0 );
+  Q_ASSERT( ret == Z_STREAM_END ); // stream will be complete
 
   // clean up and return
   deflateEnd( &strm );

@@ -31,7 +31,6 @@
 QgsProcessingFeedback::QgsProcessingFeedback( bool logFeedback )
   : mLogFeedback( logFeedback )
 {
-
 }
 
 void QgsProcessingFeedback::setProgressText( const QString &text )
@@ -139,7 +138,7 @@ void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provid
   pushDebugInfo( tr( "PROJ version: %1" ).arg( info.release ) );
 
 #ifdef HAVE_PDAL_QGIS
-#if PDAL_VERSION_MAJOR_INT > 1 || (PDAL_VERSION_MAJOR_INT == 1 && PDAL_VERSION_MINOR_INT >= 7)
+#if PDAL_VERSION_MAJOR_INT > 1 || ( PDAL_VERSION_MAJOR_INT == 1 && PDAL_VERSION_MINOR_INT >= 7 )
   pushDebugInfo( tr( "PDAL version: %1" ).arg( QString::fromStdString( pdal::Config::fullVersionString() ) ) );
 #else
   pushDebugInfo( tr( "PDAL version: %1" ).arg( QString::fromStdString( pdal::GetFullVersionString() ) ) );
@@ -159,7 +158,7 @@ void QgsProcessingFeedback::pushFormattedResults( const QgsProcessingAlgorithm *
 
   pushInfo( tr( "Results:" ) );
 
-  const QList< const QgsProcessingOutputDefinition * > outputs = algorithm->outputDefinitions();
+  const QList<const QgsProcessingOutputDefinition *> outputs = algorithm->outputDefinitions();
   for ( const QgsProcessingOutputDefinition *output : outputs )
   {
     const QString outputName = output->name();
@@ -202,7 +201,7 @@ QgsProcessingMultiStepFeedback::QgsProcessingMultiStepFeedback( int childAlgorit
 void QgsProcessingMultiStepFeedback::setCurrentStep( int step )
 {
   mCurrentStep = step;
-  mFeedback->setProgress( 100.0 * static_cast< double >( mCurrentStep ) / mChildSteps );
+  mFeedback->setProgress( 100.0 * static_cast<double>( mCurrentStep ) / mChildSteps );
 }
 
 void QgsProcessingMultiStepFeedback::setProgressText( const QString &text )
@@ -257,8 +256,7 @@ QString QgsProcessingMultiStepFeedback::textLog() const
 
 void QgsProcessingMultiStepFeedback::updateOverallProgress( double progress )
 {
-  const double baseProgress = 100.0 * static_cast< double >( mCurrentStep ) / mChildSteps;
+  const double baseProgress = 100.0 * static_cast<double>( mCurrentStep ) / mChildSteps;
   const double currentAlgorithmProgress = progress / mChildSteps;
   mFeedback->setProgress( baseProgress + currentAlgorithmProgress );
 }
-

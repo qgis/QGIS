@@ -37,7 +37,7 @@ class QgsDxfPaintDevice;
  * \brief Custom paint engine for rendering to DXF drawings.
 */
 
-class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
+class CORE_EXPORT QgsDxfPaintEngine : public QPaintEngine
 {
   public:
     QgsDxfPaintEngine( const QgsDxfPaintDevice *dxfDevice, QgsDxfExport *dxf );

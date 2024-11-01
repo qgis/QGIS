@@ -24,7 +24,6 @@
 QgsAbstractPropertyCollection::QgsAbstractPropertyCollection( const QString &name )
   : mName( name )
 {
-
 }
 
 QDateTime QgsAbstractPropertyCollection::valueAsDateTime( int key, const QgsExpressionContext &context, const QDateTime &defaultDateTime, bool *ok ) const
@@ -110,7 +109,6 @@ bool QgsAbstractPropertyCollection::readXml( const QDomElement &collectionElem, 
   QVariant collection = QgsXmlUtils::readVariant( collectionElem.firstChild().toElement() );
   return loadVariant( collection.toMap(), definitions );
 }
-
 
 
 //
@@ -207,7 +205,7 @@ bool QgsPropertyCollection::hasProperty( int key ) const
 
   auto it = mProperties.constFind( key );
   if ( it != mProperties.constEnd() )
-    return static_cast< bool >( *it );
+    return static_cast<bool>( *it );
   return false;
 }
 
@@ -222,7 +220,7 @@ QgsProperty QgsPropertyCollection::property( int key ) const
 QgsProperty &QgsPropertyCollection::property( int key )
 {
   mDirty = true;
-  return mProperties[ key ];
+  return mProperties[key];
 }
 
 QVariant QgsPropertyCollection::value( int key, const QgsExpressionContext &context, const QVariant &defaultValue ) const
@@ -251,9 +249,9 @@ bool QgsPropertyCollection::prepare( const QgsExpressionContext &context ) const
   return result;
 }
 
-QSet< QString > QgsPropertyCollection::referencedFields( const QgsExpressionContext &context, bool ignoreContext ) const
+QSet<QString> QgsPropertyCollection::referencedFields( const QgsExpressionContext &context, bool ignoreContext ) const
 {
-  QSet< QString > cols;
+  QSet<QString> cols;
   QHash<int, QgsProperty>::const_iterator it = mProperties.constBegin();
   for ( ; it != mProperties.constEnd(); ++it )
   {
@@ -372,10 +370,7 @@ bool QgsPropertyCollection::loadVariant( const QVariant &collection, const QgsPr
     mCount++;
 
     mHasActiveProperties = mHasActiveProperties || prop.isActive();
-    mHasDynamicProperties = mHasDynamicProperties ||
-                            ( prop.isActive() &&
-                              ( prop.propertyType() == Qgis::PropertyType::Field ||
-                                prop.propertyType() == Qgis::PropertyType::Expression ) );
+    mHasDynamicProperties = mHasDynamicProperties || ( prop.isActive() && ( prop.propertyType() == Qgis::PropertyType::Field || prop.propertyType() == Qgis::PropertyType::Expression ) );
   }
   return true;
 }
@@ -474,7 +469,7 @@ bool QgsPropertyCollectionStack::hasDynamicProperties() const
 
 bool QgsPropertyCollectionStack::isActive( int key ) const
 {
-  return static_cast< bool >( property( key ) );
+  return static_cast<bool>( property( key ) );
 }
 
 QgsProperty QgsPropertyCollectionStack::property( int key ) const
@@ -504,9 +499,9 @@ QVariant QgsPropertyCollectionStack::value( int key, const QgsExpressionContext 
   return p.value( context, defaultValue );
 }
 
-QSet< QString > QgsPropertyCollectionStack::referencedFields( const QgsExpressionContext &context, bool ignoreContext ) const
+QSet<QString> QgsPropertyCollectionStack::referencedFields( const QgsExpressionContext &context, bool ignoreContext ) const
 {
-  QSet< QString > cols;
+  QSet<QString> cols;
   const auto constMStack = mStack;
   for ( QgsPropertyCollection *collection : constMStack )
   {

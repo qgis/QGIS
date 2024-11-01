@@ -110,9 +110,9 @@ void QgsAuthAuthoritiesEditor::setupCaCertsTree()
   treeWidgetCAs->setColumnCount( 4 );
   treeWidgetCAs->setHeaderLabels(
     QStringList() << tr( "Common Name" )
-    << tr( "Serial #" )
-    << tr( "Expiry Date" )
-    << tr( "Trust Policy" ) );
+                  << tr( "Serial #" )
+                  << tr( "Expiry Date" )
+                  << tr( "Trust Policy" ) );
   treeWidgetCAs->setColumnWidth( 0, 300 );
   treeWidgetCAs->setColumnWidth( 1, 75 );
   treeWidgetCAs->setColumnWidth( 2, 200 );
@@ -156,7 +156,7 @@ void QgsAuthAuthoritiesEditor::populateCaCertsView()
 
 void QgsAuthAuthoritiesEditor::refreshCaCertsView()
 {
-//  QgsApplication::authManager()->rebuildCaCertsCache();
+  //  QgsApplication::authManager()->rebuildCaCertsCache();
   populateCaCertsView();
 }
 
@@ -203,7 +203,7 @@ void QgsAuthAuthoritiesEditor::populateRootCaCerts()
 }
 
 void QgsAuthAuthoritiesEditor::populateCaCertsSection( QTreeWidgetItem *item, const QList<QSslCertificate> &certs,
-    QgsAuthAuthoritiesEditor::CaType catype )
+                                                       QgsAuthAuthoritiesEditor::CaType catype )
 {
   if ( btnGroupByOrg->isChecked() )
   {
@@ -216,8 +216,8 @@ void QgsAuthAuthoritiesEditor::populateCaCertsSection( QTreeWidgetItem *item, co
 }
 
 void QgsAuthAuthoritiesEditor::appendCertsToGroup( const QList<QSslCertificate> &certs,
-    QgsAuthAuthoritiesEditor::CaType catype,
-    QTreeWidgetItem *parent )
+                                                   QgsAuthAuthoritiesEditor::CaType catype,
+                                                   QTreeWidgetItem *parent )
 {
   if ( certs.empty() )
     return;
@@ -228,15 +228,15 @@ void QgsAuthAuthoritiesEditor::appendCertsToGroup( const QList<QSslCertificate> 
   }
 
   // TODO: find all organizational name, sort and make subsections
-  const QMap< QString, QList<QSslCertificate> > orgcerts(
+  const QMap<QString, QList<QSslCertificate>> orgcerts(
     QgsAuthCertUtils::certsGroupedByOrg( certs ) );
 
-  QMap< QString, QList<QSslCertificate> >::const_iterator it = orgcerts.constBegin();
+  QMap<QString, QList<QSslCertificate>>::const_iterator it = orgcerts.constBegin();
   for ( ; it != orgcerts.constEnd(); ++it )
   {
     QTreeWidgetItem *grpitem( new QTreeWidgetItem( parent,
-                              QStringList() << it.key(),
-                              static_cast<int>( QgsAuthAuthoritiesEditor::OrgName ) ) );
+                                                   QStringList() << it.key(),
+                                                   static_cast<int>( QgsAuthAuthoritiesEditor::OrgName ) ) );
     grpitem->setFirstColumnSpanned( true );
     grpitem->setFlags( Qt::ItemIsEnabled );
     grpitem->setExpanded( true );
@@ -255,8 +255,8 @@ void QgsAuthAuthoritiesEditor::appendCertsToGroup( const QList<QSslCertificate> 
 }
 
 void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate> &certs,
-    QgsAuthAuthoritiesEditor::CaType catype,
-    QTreeWidgetItem *parent )
+                                                  QgsAuthAuthoritiesEditor::CaType catype,
+                                                  QTreeWidgetItem *parent )
 {
   if ( certs.empty() )
     return;
@@ -366,7 +366,7 @@ void QgsAuthAuthoritiesEditor::showCertInfo( QTreeWidgetItem *item )
 
   const QString digest( item->data( 0, Qt::UserRole ).toString() );
 
-  const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > cacertscache(
+  const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate>> cacertscache(
     QgsApplication::authManager()->caCertsCache() );
 
   if ( !cacertscache.contains( digest ) )
@@ -404,7 +404,7 @@ void QgsAuthAuthoritiesEditor::checkSelection()
   {
     QTreeWidgetItem *item( treeWidgetCAs->currentItem() );
 
-    switch ( ( QgsAuthAuthoritiesEditor::CaType )item->type() )
+    switch ( ( QgsAuthAuthoritiesEditor::CaType ) item->type() )
     {
       case QgsAuthAuthoritiesEditor::RootCaCert:
         iscert = true;
@@ -430,7 +430,7 @@ void QgsAuthAuthoritiesEditor::handleDoubleClick( QTreeWidgetItem *item, int col
   Q_UNUSED( col )
   bool iscert = true;
 
-  switch ( ( QgsAuthAuthoritiesEditor::CaType )item->type() )
+  switch ( ( QgsAuthAuthoritiesEditor::CaType ) item->type() )
   {
     case QgsAuthAuthoritiesEditor::Section:
       iscert = false;
@@ -521,7 +521,8 @@ void QgsAuthAuthoritiesEditor::btnRemoveCa_clicked()
              "Certificate Authority from the database?\n\n"
              "Operation can NOT be undone!" ),
          QMessageBox::Ok | QMessageBox::Cancel,
-         QMessageBox::Cancel ) == QMessageBox::Cancel )
+         QMessageBox::Cancel )
+       == QMessageBox::Cancel )
   {
     return;
   }
@@ -556,7 +557,7 @@ void QgsAuthAuthoritiesEditor::btnRemoveCa_clicked()
   item->parent()->removeChild( item );
   delete item;
 
-//  populateDatabaseCaCerts();
+  //  populateDatabaseCaCerts();
   mDbCaSecItem->setExpanded( true );
 }
 
@@ -609,7 +610,7 @@ void QgsAuthAuthoritiesEditor::editDefaultTrustPolicy()
   hlayout2->addWidget( lblpolicy );
 
   QComboBox *cmbpolicy = new QComboBox( dlg );
-  QList < QPair<QgsAuthCertUtils::CertTrustPolicy, QString> > policies;
+  QList<QPair<QgsAuthCertUtils::CertTrustPolicy, QString>> policies;
   policies << qMakePair( QgsAuthCertUtils::Trusted,
                          QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Trusted ) )
            << qMakePair( QgsAuthCertUtils::Untrusted,
@@ -627,7 +628,7 @@ void QgsAuthAuthoritiesEditor::editDefaultTrustPolicy()
   layout->addLayout( hlayout2 );
 
   QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Close | QDialogButtonBox::Ok,
-      Qt::Horizontal, dlg );
+                                                      Qt::Horizontal, dlg );
   buttonBox->button( QDialogButtonBox::Close )->setDefault( true );
 
   layout->addWidget( buttonBox );
@@ -643,7 +644,7 @@ void QgsAuthAuthoritiesEditor::editDefaultTrustPolicy()
   if ( dlg->exec() )
   {
     const QgsAuthCertUtils::CertTrustPolicy trustpolicy(
-      ( QgsAuthCertUtils::CertTrustPolicy )cmbpolicy->currentData().toInt() );
+      ( QgsAuthCertUtils::CertTrustPolicy ) cmbpolicy->currentData().toInt() );
     if ( mDefaultTrustPolicy != trustpolicy )
     {
       defaultTrustPolicyChanged( trustpolicy );
@@ -669,8 +670,8 @@ void QgsAuthAuthoritiesEditor::defaultTrustPolicyChanged( QgsAuthCertUtils::Cert
 void QgsAuthAuthoritiesEditor::btnCaFile_clicked()
 {
   QgsAuthImportCertDialog *dlg = new QgsAuthImportCertDialog( this,
-      QgsAuthImportCertDialog::CaFilter,
-      QgsAuthImportCertDialog::FileInput );
+                                                              QgsAuthImportCertDialog::CaFilter,
+                                                              QgsAuthImportCertDialog::FileInput );
   dlg->setWindowModality( Qt::WindowModal );
   dlg->resize( 400, 250 );
   if ( dlg->exec() )
@@ -691,7 +692,7 @@ void QgsAuthAuthoritiesEditor::btnCaFile_clicked()
                   Qgis::MessageLevel::Warning );
     }
     if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "cafileallowinvalid" ),
-         QVariant( dlg->allowInvalidCerts() ) ) )
+                                                           QVariant( dlg->allowInvalidCerts() ) ) )
     {
       logMessage( QObject::tr( "Could not store 'CA file allow invalids' setting in authentication database." ),
                   QObject::tr( "Authorities Manager" ),

@@ -139,7 +139,7 @@ bool QgsNativeMetadataValidator::validate( const QgsAbstractMetadataBase *baseMe
 {
   results.clear();
 
-  const QgsLayerMetadata *metadata = dynamic_cast< const QgsLayerMetadata * >( baseMetadata );
+  const QgsLayerMetadata *metadata = dynamic_cast<const QgsLayerMetadata *>( baseMetadata );
   if ( !metadata )
     return false;
 
@@ -189,7 +189,7 @@ bool QgsNativeProjectMetadataValidator::validate( const QgsAbstractMetadataBase 
 {
   results.clear();
 
-  const QgsProjectMetadata *metadata = dynamic_cast< const QgsProjectMetadata * >( baseMetadata );
+  const QgsProjectMetadata *metadata = dynamic_cast<const QgsProjectMetadata *>( baseMetadata );
   if ( !metadata )
     return false;
 

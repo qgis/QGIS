@@ -65,18 +65,17 @@ void QgsAnnotationPictureItem::renderInBounds( QgsRenderContext &context, const 
       const double pictureHeight = picture.boundingRect().height();
 
       double xOffset = 0;
-      if ( lockAspectRatio && static_cast< int >( painterBounds.width() ) > pictureWidth )
+      if ( lockAspectRatio && static_cast<int>( painterBounds.width() ) > pictureWidth )
       {
         xOffset = ( painterBounds.width() - pictureWidth ) * 0.5;
       }
       double yOffset = 0;
-      if ( lockAspectRatio && static_cast< int >( painterBounds.height() ) > pictureHeight )
+      if ( lockAspectRatio && static_cast<int>( painterBounds.height() ) > pictureHeight )
       {
         yOffset = ( painterBounds.height() - pictureHeight ) * 0.5;
       }
 
-      QgsPainting::drawPicture( context.painter(), QPointF( painterBounds.left() + pictureWidth / 2 + xOffset,
-                                painterBounds.top() + pictureHeight / 2 + yOffset ), picture );
+      QgsPainting::drawPicture( context.painter(), QPointF( painterBounds.left() + pictureWidth / 2 + xOffset, painterBounds.top() + pictureHeight / 2 + yOffset ), picture );
 
       break;
     }
@@ -84,15 +83,15 @@ void QgsAnnotationPictureItem::renderInBounds( QgsRenderContext &context, const 
     case Qgis::PictureFormat::Raster:
     {
       const QImage im = QgsApplication::imageCache()->pathAsImage( mPath,
-                        QSize( static_cast< int >( std::round( painterBounds.width() ) ), static_cast< int >( std::round( painterBounds.height() ) ) ),
-                        lockAspectRatio, 1, fitsInCache );
+                                                                   QSize( static_cast<int>( std::round( painterBounds.width() ) ), static_cast<int>( std::round( painterBounds.height() ) ) ),
+                                                                   lockAspectRatio, 1, fitsInCache );
       double xOffset = 0;
-      if ( lockAspectRatio && static_cast< int >( painterBounds.width() ) > im.width() )
+      if ( lockAspectRatio && static_cast<int>( painterBounds.width() ) > im.width() )
       {
         xOffset = ( painterBounds.width() - im.width() ) * 0.5;
       }
       double yOffset = 0;
-      if ( lockAspectRatio && static_cast< int >( painterBounds.height() ) > im.height() )
+      if ( lockAspectRatio && static_cast<int>( painterBounds.height() ) > im.height() )
       {
         yOffset = ( painterBounds.height() - im.height() ) * 0.5;
       }
@@ -132,7 +131,7 @@ bool QgsAnnotationPictureItem::readXml( const QDomElement &element, const QgsRea
 
 QgsAnnotationPictureItem *QgsAnnotationPictureItem::clone() const
 {
-  std::unique_ptr< QgsAnnotationPictureItem > item = std::make_unique< QgsAnnotationPictureItem >( mFormat, mPath, bounds() );
+  std::unique_ptr<QgsAnnotationPictureItem> item = std::make_unique<QgsAnnotationPictureItem>( mFormat, mPath, bounds() );
   item->setLockAspectRatio( mLockAspectRatio );
 
   item->copyCommonProperties( this );

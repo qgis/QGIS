@@ -33,12 +33,12 @@ QgsMultiCurve::QgsMultiCurve()
 
 QgsCurve *QgsMultiCurve::curveN( int index )
 {
-  return qgsgeometry_cast< QgsCurve * >( geometryN( index ) );
+  return qgsgeometry_cast<QgsCurve *>( geometryN( index ) );
 }
 
 const QgsCurve *QgsMultiCurve::curveN( int index ) const
 {
-  return qgsgeometry_cast< const QgsCurve * >( geometryN( index ) );
+  return qgsgeometry_cast<const QgsCurve *>( geometryN( index ) );
 }
 
 QString QgsMultiCurve::geometryType() const
@@ -48,7 +48,7 @@ QString QgsMultiCurve::geometryType() const
 
 QgsMultiCurve *QgsMultiCurve::createEmptyWithSameType() const
 {
-  auto result = std::make_unique< QgsMultiCurve >();
+  auto result = std::make_unique<QgsMultiCurve>();
   result->mWkbType = mWkbType;
   return result.release();
 }
@@ -76,7 +76,7 @@ bool QgsMultiCurve::fromWkt( const QString &wkt )
                             QStringLiteral( "LineString" ) );
 }
 
-QDomElement QgsMultiCurve::asGml2( QDomDocument &doc, int precision, const QString &ns, const  AxisOrder axisOrder ) const
+QDomElement QgsMultiCurve::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
   // GML2 does not support curves
   QDomElement elemMultiLineString = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
@@ -88,7 +88,7 @@ QDomElement QgsMultiCurve::asGml2( QDomDocument &doc, int precision, const QStri
   {
     if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
     {
-      std::unique_ptr< QgsLineString > lineString( static_cast<const QgsCurve *>( geom )->curveToLine() );
+      std::unique_ptr<QgsLineString> lineString( static_cast<const QgsCurve *>( geom )->curveToLine() );
 
       QDomElement elemLineStringMember = doc.createElementNS( ns, QStringLiteral( "lineStringMember" ) );
       elemLineStringMember.appendChild( lineString->asGml2( doc, precision, ns, axisOrder ) );
@@ -123,22 +123,20 @@ QDomElement QgsMultiCurve::asGml3( QDomDocument &doc, int precision, const QStri
 
 json QgsMultiCurve::asJsonObject( int precision ) const
 {
-  json coordinates( json::array( ) );
+  json coordinates( json::array() );
   for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     if ( qgsgeometry_cast<const QgsCurve *>( geom ) )
     {
-      std::unique_ptr< QgsLineString > lineString( static_cast<const QgsCurve *>( geom )->curveToLine() );
+      std::unique_ptr<QgsLineString> lineString( static_cast<const QgsCurve *>( geom )->curveToLine() );
       QgsPointSequence pts;
       lineString->points( pts );
       coordinates.push_back( QgsGeometryUtils::pointsToJson( pts, precision ) );
     }
   }
-  return
-  {
-    {  "type",  "MultiLineString"  },
-    {  "coordinates", coordinates }
-  };
+  return {
+    { "type", "MultiLineString" },
+    { "coordinates", coordinates } };
 }
 
 bool QgsMultiCurve::addGeometry( QgsAbstractGeometry *g )
@@ -211,7 +209,7 @@ bool QgsMultiCurve::insertGeometry( QgsAbstractGeometry *g, int index )
 
 QgsMultiCurve *QgsMultiCurve::simplifyByDistance( double tolerance ) const
 {
-  std::unique_ptr< QgsMultiCurve > res = std::make_unique< QgsMultiCurve >();
+  std::unique_ptr<QgsMultiCurve> res = std::make_unique<QgsMultiCurve>();
   res->reserve( mGeometries.size() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
@@ -236,7 +234,7 @@ QgsMultiCurve *QgsMultiCurve::reversed() const
 
 QgsAbstractGeometry *QgsMultiCurve::boundary() const
 {
-  std::unique_ptr< QgsMultiPoint > multiPoint( new QgsMultiPoint() );
+  std::unique_ptr<QgsMultiPoint> multiPoint( new QgsMultiPoint() );
   multiPoint->reserve( mGeometries.size() * 2 );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {

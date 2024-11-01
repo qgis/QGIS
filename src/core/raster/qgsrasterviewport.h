@@ -34,42 +34,42 @@
 struct CORE_EXPORT QgsRasterViewPort
 {
 #ifdef SIP_RUN
-  % TypeHeaderCode
+    % TypeHeaderCode
 #include <qgsrasterviewport.h>
-  % End
+      % End
 #endif
 
-  /**
+        /**
    * \brief Coordinate (in output device coordinate system) of top left corner
    * of the part of the raster that is to be rendered.
   */
-  QgsPointXY mTopLeftPoint;
+        QgsPointXY mTopLeftPoint;
 
-  /**
+    /**
    * \brief Coordinate (in output device coordinate system) of bottom right corner
    * of the part of the raster that is to be rendered.
   */
-  QgsPointXY mBottomRightPoint;
+    QgsPointXY mBottomRightPoint;
 
-  //! \brief Width, number of columns to be rendered
-  qgssize mWidth;
+    //! \brief Width, number of columns to be rendered
+    qgssize mWidth;
 
-  //! \brief Height, number of rows to be rendered
-  qgssize mHeight;
+    //! \brief Height, number of rows to be rendered
+    qgssize mHeight;
 
-  //! \brief Intersection of current map extent and layer extent
-  QgsRectangle mDrawnExtent;
+    //! \brief Intersection of current map extent and layer extent
+    QgsRectangle mDrawnExtent;
 
-  //! \brief Source coordinate system
-  QgsCoordinateReferenceSystem mSrcCRS;
+    //! \brief Source coordinate system
+    QgsCoordinateReferenceSystem mSrcCRS;
 
-  //! \brief Target coordinate system
-  QgsCoordinateReferenceSystem mDestCRS;
+    //! \brief Target coordinate system
+    QgsCoordinateReferenceSystem mDestCRS;
 
-  /**
+    /**
    * Coordinate transform context
    */
-  QgsCoordinateTransformContext mTransformContext;
+    QgsCoordinateTransformContext mTransformContext;
 };
 
 #endif //QGSRASTERVIEWPORT_H

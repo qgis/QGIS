@@ -47,7 +47,7 @@ class CORE_EXPORT QgsStacItemCollection
      *  \param numberMatched The total number of items in the parent catalog, collection or total matching results from a STAC API endpoint
      *  \note ownership of \a items is transferred. Items will be deleted when object is destroyed.
      */
-    QgsStacItemCollection( const QVector< QgsStacItem * > items, const QVector< QgsStacLink > links, int numberMatched = -1 );
+    QgsStacItemCollection( const QVector<QgsStacItem *> items, const QVector<QgsStacLink> links, int numberMatched = -1 );
 
     //! Destructor
     ~QgsStacItemCollection();
@@ -56,13 +56,13 @@ class CORE_EXPORT QgsStacItemCollection
      * Returns the items in the collection
      * Ownership is not transferred
      */
-    QVector< QgsStacItem * > items() const;
+    QVector<QgsStacItem *> items() const;
 
     /**
      * Returns the items in the collection
      * Caller takes ownership of the returned items
      */
-    QVector< QgsStacItem * > takeItems();
+    QVector<QgsStacItem *> takeItems();
 
     /**
      * Returns the url of the item collection's "self" link
@@ -99,9 +99,9 @@ class CORE_EXPORT QgsStacItemCollection
     int numberMatched() const;
 
   private:
-    QVector< QgsStacItem * > mItems;
-    const QVector< QgsStacLink > mLinks;
-    QMap< QString, QString > mUrls;
+    QVector<QgsStacItem *> mItems;
+    const QVector<QgsStacLink> mLinks;
+    QMap<QString, QString> mUrls;
     int mNumberMatched = -1;
 };
 

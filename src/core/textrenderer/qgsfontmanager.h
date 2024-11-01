@@ -36,7 +36,6 @@
 class CORE_EXPORT QgsFontDownloadDetails
 {
   public:
-
     /**
      * Constructor for an invalid QgsFontDownloadDetails.
      */
@@ -84,7 +83,6 @@ class CORE_EXPORT QgsFontDownloadDetails
     QString licenseUrl() const { return mLicenseUrl; }
 
   private:
-
     QString mFamily;
     QString mStandardizedFamily;
     QStringList mFontUrls;
@@ -98,27 +96,25 @@ class CORE_EXPORT QgsFontDownloadTask : public QgsTask
     Q_OBJECT
 
   public:
-
     QgsFontDownloadTask( const QString &description, const QgsFontDownloadDetails &details );
 
     bool run() override;
     void cancel() override;
     QString errorMessage() const { return mErrorMessage; }
     QString failedUrl() const { return mFailedUrl; }
-    QList< QByteArray > fontData() const { return mFontData; }
+    QList<QByteArray> fontData() const { return mFontData; }
     QByteArray licenseData() const { return mLicenseData; }
     QStringList contentDispositionFilenames() const { return mContentDispositionFilenames; }
-  private:
 
+  private:
     QgsFontDownloadDetails mDetails;
-    std::unique_ptr< QgsFeedback > mFeedback;
+    std::unique_ptr<QgsFeedback> mFeedback;
     bool mResult = false;
     QString mErrorMessage;
     QString mFailedUrl;
-    QList< QByteArray > mFontData;
+    QList<QByteArray> mFontData;
     QStringList mContentDispositionFilenames;
     QByteArray mLicenseData;
-
 };
 ///@endcond PRIVATE
 #endif
@@ -138,7 +134,6 @@ class CORE_EXPORT QgsFontManager : public QObject
     Q_OBJECT
 
   public:
-
 #ifndef SIP_RUN
     //! Settings entry for font family replacements
     static const QgsSettingsEntryStringList *settingsFontFamilyReplacements;
@@ -169,7 +164,7 @@ class CORE_EXPORT QgsFontManager : public QObject
      * \see addFontFamilyReplacement()
      * \see setFontFamilyReplacements()
      */
-    QMap< QString, QString > fontFamilyReplacements() const;
+    QMap<QString, QString> fontFamilyReplacements() const;
 
     /**
      * Adds a new font replacement from the \a original font family to a \a replacement font family.
@@ -207,7 +202,7 @@ class CORE_EXPORT QgsFontManager : public QObject
      * \see fontFamilyReplacements()
      * \see addFontFamilyReplacement()
      */
-    void setFontFamilyReplacements( const QMap< QString, QString> &replacements );
+    void setFontFamilyReplacements( const QMap<QString, QString> &replacements );
 
     /**
      * Processes a font family \a name, applying any matching fontFamilyReplacements()
@@ -350,7 +345,7 @@ class CORE_EXPORT QgsFontManager : public QObject
      *
      * The map keys are the file names, the values are a list of families provided by the file.
      */
-    QMap< QString, QStringList > userFontToFamilyMap() const;
+    QMap<QString, QStringList> userFontToFamilyMap() const;
 
     /**
      * Removes the user font at the specified \a path.
@@ -380,17 +375,16 @@ class CORE_EXPORT QgsFontManager : public QObject
     void fontDownloadErrorOccurred( const QUrl &url, const QString &identifier, const QString &error );
 
   private:
-
-    QMap< QString, QString > mFamilyReplacements;
-    QMap< QString, QString > mLowerCaseFamilyReplacements;
-    QMap< QString, QStringList > mUserFontToFamilyMap;
-    QMap< QString, int > mUserFontToIdMap;
+    QMap<QString, QString> mFamilyReplacements;
+    QMap<QString, QString> mLowerCaseFamilyReplacements;
+    QMap<QString, QStringList> mUserFontToFamilyMap;
+    QMap<QString, int> mUserFontToIdMap;
     mutable QReadWriteLock mReplacementLock;
     QStringList mUserFontDirectories;
 
     bool mEnableFontDownloads = false;
-    QMap< QString, QString > mPendingFontDownloads;
-    QMap< QString, QgsFontDownloadDetails > mDeferredFontDownloads;
+    QMap<QString, QString> mPendingFontDownloads;
+    QMap<QString, QgsFontDownloadDetails> mDeferredFontDownloads;
 
     void storeFamilyReplacements();
     void installFontsFromDirectory( const QString &dir );

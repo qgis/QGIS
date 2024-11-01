@@ -41,18 +41,17 @@ class QgsExternalStorageFetchedContent;
 #include <qgsexternalresourcewidget.h>
 
 #include <qgsexternalstoragefilewidget.h>
-% End
+  % End
 #endif
 
 
-/**
+  /**
  * \ingroup gui
  * \brief Widget to display file path with a push button for an "open file" dialog
  * It can also be used to display a picture or a web page.
  */
-class GUI_EXPORT QgsExternalResourceWidget : public QWidget
+  class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsExternalResourceWidget *>( sipCpp ) )

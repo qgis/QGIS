@@ -40,21 +40,19 @@ class QgsPointCloudStatistics;
  *
  * \since QGIS 3.18
  */
-class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
+class CORE_EXPORT QgsPointCloudDataProvider : public QgsDataProvider
 {
     Q_OBJECT
   public:
-
     /**
      * Capabilities that providers may implement.
      */
-    enum Capability SIP_ENUM_BASETYPE( IntFlag )
-    {
-      NoCapabilities = 0,       //!< Provider has no capabilities
-      ReadLayerMetadata = 1 << 0, //!< Provider can read layer metadata from data store.
+    enum Capability SIP_ENUM_BASETYPE( IntFlag ) {
+      NoCapabilities = 0,          //!< Provider has no capabilities
+      ReadLayerMetadata = 1 << 0,  //!< Provider can read layer metadata from data store.
       WriteLayerMetadata = 1 << 1, //!< Provider can write layer metadata to the data store. See QgsDataProvider::writeLayerMetadata()
-      CreateRenderer = 1 << 2, //!< Provider can create 2D renderers using backend-specific formatting information. See QgsPointCloudDataProvider::createRenderer().
-      ContainSubIndexes = 1 << 3, //!< Provider can contain multiple indexes. Virtual point cloud files for example \since QGIS 3.32
+      CreateRenderer = 1 << 2,     //!< Provider can create 2D renderers using backend-specific formatting information. See QgsPointCloudDataProvider::createRenderer().
+      ContainSubIndexes = 1 << 3,  //!< Provider can contain multiple indexes. Virtual point cloud files for example \since QGIS 3.32
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -62,11 +60,10 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     /**
      * Point cloud index state
      */
-    enum PointCloudIndexGenerationState SIP_ENUM_BASETYPE( IntFlag )
-    {
-      NotIndexed = 0, //!< Provider has no index available
+    enum PointCloudIndexGenerationState SIP_ENUM_BASETYPE( IntFlag ) {
+      NotIndexed = 0,    //!< Provider has no index available
       Indexing = 1 << 0, //!< Provider try to index the source data
-      Indexed = 1 << 1 //!< The index is ready to be used
+      Indexed = 1 << 1   //!< The index is ready to be used
     };
 
     //! Ctor
@@ -135,7 +132,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * \see index()
      */
-    virtual void loadIndex( ) = 0;
+    virtual void loadIndex() = 0;
 
     /**
      * Triggers generation of the point cloud index
@@ -144,13 +141,13 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * \see index()
      */
-    virtual void generateIndex( ) = 0;
+    virtual void generateIndex() = 0;
 
 
     /**
      * Gets the current index generation state
      */
-    virtual PointCloudIndexGenerationState indexingState( ) = 0;
+    virtual PointCloudIndexGenerationState indexingState() = 0;
 
     /**
      * Returns the point cloud index associated with the provider.
@@ -159,7 +156,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * \note Not available in Python bindings
      */
-    virtual QgsPointCloudIndex *index() const SIP_SKIP {return nullptr;}
+    virtual QgsPointCloudIndex *index() const SIP_SKIP { return nullptr; }
 
     /**
      * Returns a list of sub indexes available if the provider supports multiple indexes, empty list otherwise.
@@ -179,7 +176,11 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * \note Not available in Python bindings
      * \since QGIS 3.32
      */
-    virtual void loadSubIndex( int n ) SIP_SKIP { Q_UNUSED( n ) return; }
+    virtual void loadSubIndex( int n ) SIP_SKIP
+    {
+      Q_UNUSED( n )
+      return;
+    }
 
     /**
      * Returns whether provider has index which is valid
@@ -350,7 +351,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * \see translatedLasClassificationCodes()
      */
-    static QMap< int, QString > lasClassificationCodes();
+    static QMap<int, QString> lasClassificationCodes();
 
     /**
      * Returns the map of LAS classification code to translated string value, corresponding to the ASPRS Standard
@@ -358,21 +359,21 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * \see lasClassificationCodes()
      */
-    static QMap< int, QString > translatedLasClassificationCodes();
+    static QMap<int, QString> translatedLasClassificationCodes();
 
     /**
      * Returns the map of LAS data format ID to untranslated string value.
      *
      * \see translatedDataFormatIds()
      */
-    static QMap< int, QString > dataFormatIds();
+    static QMap<int, QString> dataFormatIds();
 
     /**
      * Returns the map of LAS data format ID to translated string value.
      *
      * \see dataFormatIds()
      */
-    static QMap< int, QString > translatedDataFormatIds();
+    static QMap<int, QString> translatedDataFormatIds();
 
   signals:
 
@@ -386,11 +387,10 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     QString mSubsetString;
 
     //! Identify in a specific index (used for sub-indexes)
-    QVector<QVariantMap> identify( QgsPointCloudIndex *index, double maxError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange, int pointsLimit ) SIP_SKIP ;
+    QVector<QVariantMap> identify( QgsPointCloudIndex *index, double maxError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange, int pointsLimit ) SIP_SKIP;
 
   private:
     QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
-
 };
 
 #endif // QGSMESHDATAPROVIDER_H

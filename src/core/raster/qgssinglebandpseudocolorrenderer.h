@@ -31,11 +31,9 @@ class QgsRasterShader;
  * \ingroup core
   * \brief Raster renderer pipe for single band pseudocolor.
   */
-class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
+class CORE_EXPORT QgsSingleBandPseudoColorRenderer : public QgsRasterRenderer
 {
-
   public:
-
     //! Note: takes ownership of QgsRasterShader
     QgsSingleBandPseudoColorRenderer( QgsRasterInterface *input, int band = -1, QgsRasterShader *shader SIP_TRANSFER = nullptr );
 
@@ -59,7 +57,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     //! \note available in Python as constShader
     const QgsRasterShader *shader() const SIP_PYNAME( constShader ) { return mShader.get(); }
 
-    bool canCreateRasterAttributeTable( ) const override;
+    bool canCreateRasterAttributeTable() const override;
 
     /**
      * Creates a color ramp shader
@@ -78,7 +76,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
                        const QgsRectangle &extent = QgsRectangle() );
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
-    QList< QPair< QString, QColor > > legendSymbologyItems() const override;
+    QList<QPair<QString, QColor>> legendSymbologyItems() const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
     QList<int> usesBands() const override;
     void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
@@ -113,14 +111,13 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     const QgsSingleBandPseudoColorRenderer &operator=( const QgsSingleBandPseudoColorRenderer & );
 #endif
 
-    std::unique_ptr< QgsRasterShader > mShader;
+    std::unique_ptr<QgsRasterShader> mShader;
     int mBand;
 
     // Minimum and maximum values used for automatic classification, these
     // values are not used by renderer in rendering process
     double mClassificationMin;
     double mClassificationMax;
-
 };
 
 #endif // QGSSINGLEBANDPSEUDOCOLORRENDERER_H

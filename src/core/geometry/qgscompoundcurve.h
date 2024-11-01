@@ -27,7 +27,7 @@
  * \class QgsCompoundCurve
  * \brief Compound curve geometry type
  */
-class CORE_EXPORT QgsCompoundCurve: public QgsCurve
+class CORE_EXPORT QgsCompoundCurve : public QgsCurve
 {
   public:
     QgsCompoundCurve();
@@ -39,7 +39,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
   private:
     bool fuzzyHelper( const QgsAbstractGeometry &other, double epsilon, bool useDistance ) const
     {
-      const QgsCompoundCurve *otherCurve = qgsgeometry_cast< const QgsCompoundCurve * >( &other );
+      const QgsCompoundCurve *otherCurve = qgsgeometry_cast<const QgsCompoundCurve *>( &other );
       if ( !otherCurve )
         return false;
 
@@ -57,7 +57,6 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
           {
             return false;
           }
-
         }
         else
         {
@@ -65,7 +64,6 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
           {
             return false;
           }
-
         }
       }
 
@@ -178,7 +176,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     bool toggleCircularAtVertex( QgsVertexId position );
 
     void draw( QPainter &p ) const override;
-    void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) override  SIP_THROW( QgsCsException );
+    void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) override SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
     void addToPainterPath( QPainterPath &path ) const override;
     void drawAsPolygon( QPainter &p ) const override;
@@ -215,9 +213,9 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     void scroll( int firstVertexIndex ) final;
 
 #ifndef SIP_RUN
-    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
-    void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
-    std::tuple< std::unique_ptr< QgsCurve >, std::unique_ptr< QgsCurve > > splitCurveAtVertex( int index ) const final;
+    void filterVertices( const std::function<bool( const QgsPoint & )> &filter ) override;
+    void transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform ) override;
+    std::tuple<std::unique_ptr<QgsCurve>, std::unique_ptr<QgsCurve>> splitCurveAtVertex( int index ) const final;
 
     /**
      * Cast the \a geom to a QgsCompoundCurve.
@@ -238,7 +236,8 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString wkt = sipCpp->asWkt();
+        QString wkt
+      = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
       wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
     QString str = QStringLiteral( "<QgsCompoundCurve: %1>" ).arg( wkt );
@@ -246,20 +245,20 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     % End
 #endif
 
-  protected:
+      protected :
 
-    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
+      int
+      compareToSameClass( const QgsAbstractGeometry *other ) const final;
     QgsBox3D calculateBoundingBox3D() const override;
 
   private:
-    QVector< QgsCurve * > mCurves;
+    QVector<QgsCurve *> mCurves;
 
     /**
      * Turns a vertex id for the compound curve into one or more ids for the subcurves
      * \returns the index of the subcurve or -1 in case of error
     */
-    QVector< QPair<int, QgsVertexId> > curveVertexId( QgsVertexId id ) const;
-
+    QVector<QPair<int, QgsVertexId>> curveVertexId( QgsVertexId id ) const;
 };
 
 // clazy:excludeall=qstring-allocations

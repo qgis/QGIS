@@ -44,7 +44,6 @@ class GUI_EXPORT QgsHistoryEntryModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsHistoryEntryModel, with the specified \a parent object.
      *
@@ -83,23 +82,19 @@ class GUI_EXPORT QgsHistoryEntryModel : public QAbstractItemModel
     void historyCleared( Qgis::HistoryProviderBackend backend, const QString &providerId );
 
   private:
-
     //! Returns index for a given node
     QModelIndex node2index( QgsHistoryEntryNode *node ) const;
     QModelIndex indexOfParentNode( QgsHistoryEntryNode *parentNode ) const;
 
     QgsHistoryWidgetContext mContext;
 
-    std::unique_ptr< QgsHistoryEntryRootNode > mRootNode;
+    std::unique_ptr<QgsHistoryEntryRootNode> mRootNode;
     QgsHistoryProviderRegistry *mRegistry = nullptr;
     QString mProviderId;
     Qgis::HistoryProviderBackends mBackends;
-    QHash< long long, QgsHistoryEntryNode * > mIdToNodeHash;
+    QHash<long long, QgsHistoryEntryNode *> mIdToNodeHash;
 
     friend class QgsHistoryEntryRootNode;
 };
 
 #endif // QGSHISTORYENTRYMODEL_H
-
-
-

@@ -24,7 +24,7 @@
 
 QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
-  , mFeedback( std::make_unique< QgsFeedback >() )
+  , mFeedback( std::make_unique<QgsFeedback>() )
   , mLayerOpacity( layer->opacity() )
   , mLayerBlendMode( layer->blendMode() )
 {
@@ -43,7 +43,7 @@ QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *laye
   // extent. This will ONLY apply to items which have a non-scale-dependent bounding box though.
 
   const QStringList itemsList = layer->queryIndex( context.extent() );
-  QSet< QString > items( itemsList.begin(), itemsList.end() );
+  QSet<QString> items( itemsList.begin(), itemsList.end() );
 
   // we also have NO choice but to clone ALL non-indexed items (i.e. those with a scale-dependent bounding box)
   // since these won't be in the layer's spatial index, and it's too expensive to determine their actual bounding box
@@ -54,15 +54,11 @@ QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *laye
 
   mItems.reserve( items.size() );
   std::transform( items.begin(), items.end(), std::back_inserter( mItems ),
-                  [layer]( const QString & id ) ->std::pair< QString, std::unique_ptr< QgsAnnotationItem > >
-  {
-    return std::make_pair( id, std::unique_ptr< QgsAnnotationItem >( layer->item( id )->clone() ) );
-  } );
+                  [layer]( const QString &id ) -> std::pair<QString, std::unique_ptr<QgsAnnotationItem>> {
+                    return std::make_pair( id, std::unique_ptr<QgsAnnotationItem>( layer->item( id )->clone() ) );
+                  } );
 
-  std::sort( mItems.begin(), mItems.end(), [](
-               const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &a,
-               const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &b )
-  { return a.second->zIndex() < b.second->zIndex(); } );
+  std::sort( mItems.begin(), mItems.end(), []( const std::pair<QString, std::unique_ptr<QgsAnnotationItem>> &a, const std::pair<QString, std::unique_ptr<QgsAnnotationItem>> &b ) { return a.second->zIndex() < b.second->zIndex(); } );
 
   if ( layer->paintEffect() && layer->paintEffect()->enabled() )
   {
@@ -87,7 +83,7 @@ bool QgsAnnotationLayerRenderer::render()
   }
 
   bool canceled = false;
-  for ( const std::pair< QString, std::unique_ptr< QgsAnnotationItem > > &item : std::as_const( mItems ) )
+  for ( const std::pair<QString, std::unique_ptr<QgsAnnotationItem>> &item : std::as_const( mItems ) )
   {
     if ( mFeedback->isCanceled() )
     {
@@ -98,7 +94,7 @@ bool QgsAnnotationLayerRenderer::render()
     if ( !item.second->enabled() )
       continue;
 
-    std::optional< QgsScopedRenderContextReferenceScaleOverride > referenceScaleOverride;
+    std::optional<QgsScopedRenderContextReferenceScaleOverride> referenceScaleOverride;
     if ( item.second->useSymbologyReferenceScale() && item.second->flags() & Qgis::AnnotationItemFlag::SupportsReferenceScale )
     {
       referenceScaleOverride.emplace( QgsScopedRenderContextReferenceScaleOverride( context, item.second->symbologyReferenceScale() ) );
@@ -108,7 +104,7 @@ bool QgsAnnotationLayerRenderer::render()
     if ( bounds.intersects( context.extent() ) )
     {
       item.second->render( context, mFeedback.get() );
-      std::unique_ptr< QgsRenderedAnnotationItemDetails > details = std::make_unique< QgsRenderedAnnotationItemDetails >( mLayerID, item.first );
+      std::unique_ptr<QgsRenderedAnnotationItemDetails> details = std::make_unique<QgsRenderedAnnotationItemDetails>( mLayerID, item.first );
       details->setBoundingBox( bounds );
       appendRenderedItemDetails( details.release() );
     }

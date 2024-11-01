@@ -120,7 +120,7 @@ class QgsTiledSceneLayerChunkedEntity : public QgsChunkedEntity
     Q_OBJECT
   public:
     explicit QgsTiledSceneLayerChunkedEntity( Qgs3DMapSettings *map, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, double maximumScreenError, bool showBoundingBoxes,
-        double zValueScale, double zValueOffset );
+                                              double zValueScale, double zValueOffset );
 
     ~QgsTiledSceneLayerChunkedEntity();
 

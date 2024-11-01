@@ -34,7 +34,6 @@ class QgsShadowRenderingSettingsWidget : public QWidget, private Ui::ShadowRende
     QgsShadowSettings toShadowSettings();
   public slots:
     void onDirectionalLightsCountChanged( int newCount );
-
 };
 
 #endif // SHADOWRENDERINGSETTINGSWIDGET_H

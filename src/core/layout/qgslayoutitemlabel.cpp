@@ -59,8 +59,7 @@ QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   mFormat.setSize( 10 );
   mFormat.setSizeUnit( Qgis::RenderUnit::Points );
 
-  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this]
-  {
+  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this] {
     updateBoundingRect();
   } );
 
@@ -268,10 +267,7 @@ void QgsLayoutItemLabel::replaceDateText( QString &text ) const
     QString formatText;
     const int openingBracketPos = text.indexOf( '(', currentDatePos );
     const int closingBracketPos = text.indexOf( ')', openingBracketPos + 1 );
-    if ( openingBracketPos != -1 &&
-         closingBracketPos != -1 &&
-         ( closingBracketPos - openingBracketPos ) > 1 &&
-         openingBracketPos == currentDatePos + constant.size() )
+    if ( openingBracketPos != -1 && closingBracketPos != -1 && ( closingBracketPos - openingBracketPos ) > 1 && openingBracketPos == currentDatePos + constant.size() )
     {
       formatText = text.mid( openingBracketPos + 1, closingBracketPos - openingBracketPos - 1 );
       text.replace( currentDatePos, closingBracketPos - currentDatePos + 1, QDate::currentDate().toString( formatText ) );
@@ -358,7 +354,7 @@ QFont QgsLayoutItemLabel::font() const
 
 bool QgsLayoutItemLabel::writePropertiesToElement( QDomElement &layoutLabelElem, QDomDocument &doc, const QgsReadWriteContext &rwContext ) const
 {
-  layoutLabelElem.setAttribute( QStringLiteral( "htmlState" ), static_cast< int >( mMode ) );
+  layoutLabelElem.setAttribute( QStringLiteral( "htmlState" ), static_cast<int>( mMode ) );
 
   layoutLabelElem.setAttribute( QStringLiteral( "labelText" ), mText );
   layoutLabelElem.setAttribute( QStringLiteral( "marginX" ), QString::number( mMarginX ) );
@@ -380,7 +376,7 @@ bool QgsLayoutItemLabel::readPropertiesFromElement( const QDomElement &itemElem,
   mText = itemElem.attribute( QStringLiteral( "labelText" ) );
 
   //html state
-  mMode = static_cast< Mode >( itemElem.attribute( QStringLiteral( "htmlState" ) ).toInt() );
+  mMode = static_cast<Mode>( itemElem.attribute( QStringLiteral( "htmlState" ) ).toInt() );
 
   //margin
   bool marginXOk = false;
@@ -396,10 +392,10 @@ bool QgsLayoutItemLabel::readPropertiesFromElement( const QDomElement &itemElem,
   }
 
   //Horizontal alignment
-  mHAlignment = static_cast< Qt::AlignmentFlag >( itemElem.attribute( QStringLiteral( "halign" ) ).toInt() );
+  mHAlignment = static_cast<Qt::AlignmentFlag>( itemElem.attribute( QStringLiteral( "halign" ) ).toInt() );
 
   //Vertical alignment
-  mVAlignment = static_cast< Qt::AlignmentFlag >( itemElem.attribute( QStringLiteral( "valign" ) ).toInt() );
+  mVAlignment = static_cast<Qt::AlignmentFlag>( itemElem.attribute( QStringLiteral( "valign" ) ).toInt() );
 
   //font
   QDomNodeList textFormatNodeList = itemElem.elementsByTagName( QStringLiteral( "text-style" ) );
@@ -463,7 +459,6 @@ QString QgsLayoutItemLabel::displayName() const
 
     case ModeFont:
     {
-
       //if no id, default to portion of label text
       const QString text = mText;
       if ( text.isEmpty() )
@@ -529,11 +524,11 @@ void QgsLayoutItemLabel::itemShiftAdjustSize( double newWidth, double newHeight,
   {
     if ( mHAlignment == Qt::AlignHCenter )
     {
-      xShift = - ( newWidth - currentWidth ) / 2.0;
+      xShift = -( newWidth - currentWidth ) / 2.0;
     }
     else if ( mHAlignment == Qt::AlignRight )
     {
-      xShift = - ( newWidth - currentWidth );
+      xShift = -( newWidth - currentWidth );
     }
     if ( mVAlignment == Qt::AlignVCenter )
     {
@@ -541,18 +536,18 @@ void QgsLayoutItemLabel::itemShiftAdjustSize( double newWidth, double newHeight,
     }
     else if ( mVAlignment == Qt::AlignBottom )
     {
-      yShift = - ( newHeight - currentHeight );
+      yShift = -( newHeight - currentHeight );
     }
   }
   if ( r >= 90 && r < 180 )
   {
     if ( mHAlignment == Qt::AlignHCenter )
     {
-      yShift = -( newHeight  - currentHeight ) / 2.0;
+      yShift = -( newHeight - currentHeight ) / 2.0;
     }
     else if ( mHAlignment == Qt::AlignRight )
     {
-      yShift = -( newHeight  - currentHeight );
+      yShift = -( newHeight - currentHeight );
     }
     if ( mVAlignment == Qt::AlignTop )
     {
@@ -586,11 +581,11 @@ void QgsLayoutItemLabel::itemShiftAdjustSize( double newWidth, double newHeight,
   {
     if ( mHAlignment == Qt::AlignHCenter )
     {
-      yShift = -( newHeight  - currentHeight ) / 2.0;
+      yShift = -( newHeight - currentHeight ) / 2.0;
     }
     else if ( mHAlignment == Qt::AlignLeft )
     {
-      yShift = -( newHeight  - currentHeight );
+      yShift = -( newHeight - currentHeight );
     }
     if ( mVAlignment == Qt::AlignBottom )
     {
@@ -646,7 +641,9 @@ QString QgsLayoutItemLabel::createStylesheet() const
 
   stylesheet += QStringLiteral( "body { margin: %1 %2;" ).arg( std::max( mMarginY * mHtmlUnitsToLayoutUnits, 0.0 ) ).arg( std::max( mMarginX * mHtmlUnitsToLayoutUnits, 0.0 ) );
   stylesheet += mFormat.asCSS( 0.352778 * mHtmlUnitsToLayoutUnits );
-  stylesheet += QStringLiteral( "text-align: %1; }" ).arg( mHAlignment == Qt::AlignLeft ? QStringLiteral( "left" ) : mHAlignment == Qt::AlignRight ? QStringLiteral( "right" ) : mHAlignment == Qt::AlignHCenter ? QStringLiteral( "center" ) : QStringLiteral( "justify" ) );
+  stylesheet += QStringLiteral( "text-align: %1; }" ).arg( mHAlignment == Qt::AlignLeft ? QStringLiteral( "left" ) : mHAlignment == Qt::AlignRight   ? QStringLiteral( "right" )
+                                                                                                                   : mHAlignment == Qt::AlignHCenter ? QStringLiteral( "center" )
+                                                                                                                                                     : QStringLiteral( "justify" ) );
 
   return stylesheet;
 }

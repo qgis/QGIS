@@ -95,8 +95,7 @@ void QgsMeshRendererActiveDatasetWidget::updateMetadata()
 {
   QString msg;
 
-  if ( !mMeshLayer ||
-       !mMeshLayer->dataProvider() )
+  if ( !mMeshLayer || !mMeshLayer->dataProvider() )
   {
     msg += tr( "Invalid mesh layer selected" );
   }
@@ -143,7 +142,6 @@ void QgsMeshRendererActiveDatasetWidget::updateMetadata()
 
 QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datasetIndex )
 {
-
   QString msg;
   msg += QLatin1String( "<table>" );
 
@@ -168,8 +166,8 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
     definedOnMesh = tr( "invalid mesh" );
   }
   msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
-         .arg( tr( "Mesh type" ) )
-         .arg( definedOnMesh );
+           .arg( tr( "Mesh type" ) )
+           .arg( definedOnMesh );
 
   const QgsMeshDatasetGroupMetadata gmeta = mMeshLayer->datasetGroupMetadata( datasetIndex );
   QString definedOn;
@@ -189,12 +187,12 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
       break;
   }
   msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
-         .arg( tr( "Data type" ) )
-         .arg( definedOn );
+           .arg( tr( "Data type" ) )
+           .arg( definedOn );
 
   msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
-         .arg( tr( "Is vector" ) )
-         .arg( gmeta.isVector() ? tr( "Yes" ) : tr( "No" ) );
+           .arg( tr( "Is vector" ) )
+           .arg( gmeta.isVector() ? tr( "Yes" ) : tr( "No" ) );
 
   const auto options = gmeta.extraOptions();
   for ( auto it = options.constBegin(); it != options.constEnd(); ++it )

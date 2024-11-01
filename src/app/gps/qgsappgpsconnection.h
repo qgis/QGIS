@@ -41,7 +41,6 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
     Q_OBJECT
 
   public:
-
     QgsAppGpsConnection( QObject *parent );
 
     ~QgsAppGpsConnection() override;
@@ -146,15 +145,14 @@ class APP_EXPORT QgsAppGpsConnection : public QObject
     void setConnectionPrivate( QgsGpsConnection *connection );
 
   private:
-
     void showStatusBarMessage( const QString &msg );
 
     void showGpsConnectFailureWarning( const QString &message );
     void showMessage( Qgis::MessageLevel level, const QString &message );
 
-    QPointer< QgsGpsDetector > mDetector;
+    QPointer<QgsGpsDetector> mDetector;
     QgsGpsConnection *mConnection = nullptr;
-    QPointer< QgsMessageBarItem > mConnectionMessageItem;
+    QPointer<QgsMessageBarItem> mConnectionMessageItem;
 };
 
 

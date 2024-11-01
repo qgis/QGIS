@@ -30,14 +30,13 @@ email                : loic dot bartoletti at oslandia dot com
 class CORE_EXPORT QgsGeometryUtilsBase
 {
   public:
-
     /**
      * Returns the squared 3D distance between (\a x1, \a y1, \a z1) and (\a x2, \a y2, \a z2).
      *
      * \warning No check is done if z contains NaN value. This is the caller's responsibility.
      * \since QGIS 3.36
      */
-    static double sqrDistance3D( double x1, double y1, double z1, double x2, double y2, double z2 ) SIP_HOLDGIL {return ( x1 - x2 ) * ( x1 - x2 ) + ( y1 - y2 ) * ( y1 - y2 ) + ( z1 - z2 ) * ( z1 - z2 ); }
+    static double sqrDistance3D( double x1, double y1, double z1, double x2, double y2, double z2 ) SIP_HOLDGIL { return ( x1 - x2 ) * ( x1 - x2 ) + ( y1 - y2 ) * ( y1 - y2 ) + ( z1 - z2 ) * ( z1 - z2 ); }
 
     /**
      * Returns the 3D distance between (\a x1, \a y1, \a z1) and (\a x2, \a y2, \a z2).
@@ -45,17 +44,17 @@ class CORE_EXPORT QgsGeometryUtilsBase
      * \warning No check is done if z contains NaN value. This is the caller's responsibility.
      * \since QGIS 3.36
      */
-    static double distance3D( double x1, double y1, double z1, double x2, double y2, double z2 ) SIP_HOLDGIL {return std::sqrt( sqrDistance3D( x1, y1, z1, x2, y2, z2 ) ); }
+    static double distance3D( double x1, double y1, double z1, double x2, double y2, double z2 ) SIP_HOLDGIL { return std::sqrt( sqrDistance3D( x1, y1, z1, x2, y2, z2 ) ); }
 
     /**
      * Returns the squared 2D distance between (\a x1, \a y1) and (\a x2, \a y2).
      */
-    static double sqrDistance2D( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL {return ( x1 - x2 ) * ( x1 - x2 ) + ( y1 - y2 ) * ( y1 - y2 ); }
+    static double sqrDistance2D( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL { return ( x1 - x2 ) * ( x1 - x2 ) + ( y1 - y2 ) * ( y1 - y2 ); }
 
     /**
      * Returns the 2D distance between (\a x1, \a y1) and (\a x2, \a y2).
      */
-    static double distance2D( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL {return std::sqrt( sqrDistance2D( x1, y1, x2, y2 ) ); }
+    static double distance2D( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL { return std::sqrt( sqrDistance2D( x1, y1, x2, y2 ) ); }
 
     /**
      * Returns the squared distance between a point and a line.
@@ -256,8 +255,7 @@ class CORE_EXPORT QgsGeometryUtilsBase
                                             double segmentPoint2x, double segmentPoint2y,
                                             double &perpendicularSegmentPoint1x SIP_OUT, double &perpendicularSegmentPoint1y SIP_OUT,
                                             double &perpendicularSegmentPoint2x SIP_OUT, double &perpendicularSegmentPoint2y SIP_OUT,
-                                            double segmentLength = 0
-                                          ) SIP_HOLDGIL;
+                                            double segmentLength = 0 ) SIP_HOLDGIL;
 
     /**
      * An algorithm to calculate the shortest distance between two skew lines.
@@ -503,12 +501,12 @@ class CORE_EXPORT QgsGeometryUtilsBase
      * \since QGIS 3.36
      */
     template<typename T, typename... Args>
-    static bool fuzzyEqual( T epsilon, const Args &... args ) noexcept
+    static bool fuzzyEqual( T epsilon, const Args &...args ) noexcept
     {
       static_assert( ( sizeof...( args ) % 2 == 0 || sizeof...( args ) != 0 ), "The number of arguments must be greater than 0 and even" );
       constexpr size_t numArgs = sizeof...( args );
       bool result = true;
-      T values[] = {static_cast<T>( args )...};
+      T values[] = { static_cast<T>( args )... };
 
       for ( size_t i = 0; i < numArgs / 2; ++i )
       {
@@ -539,14 +537,14 @@ class CORE_EXPORT QgsGeometryUtilsBase
      * \since QGIS 3.36
      */
     template<typename T, typename... Args>
-    static bool fuzzyDistanceEqual( T epsilon, const Args &... args ) noexcept
+    static bool fuzzyDistanceEqual( T epsilon, const Args &...args ) noexcept
     {
       static_assert( ( sizeof...( args ) % 2 == 0 || sizeof...( args ) >= 4 ), "The number of arguments must be greater than 4 and even" );
       constexpr size_t numArgs = sizeof...( args );
       const T squaredEpsilon = epsilon * epsilon;
       T sum = 0;
 
-      T values[] = {static_cast<T>( args )...};
+      T values[] = { static_cast<T>( args )... };
 
       for ( size_t i = 0; i < numArgs / 2; ++i )
       {
@@ -557,5 +555,4 @@ class CORE_EXPORT QgsGeometryUtilsBase
       return sum < squaredEpsilon;
     }
 #endif
-
 };

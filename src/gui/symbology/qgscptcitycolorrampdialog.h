@@ -44,7 +44,6 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
     Q_PROPERTY( QgsCptCityColorRamp ramp READ ramp WRITE setRamp )
 
   public:
-
     /**
      * Constructor for QgsCptCityColorRampDialog.
      * \param ramp initial ramp to show in dialog
@@ -105,11 +104,10 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
     /* void refresh(); */
 
   private:
-
     void updateUi();
     void updatePreview( bool clear = false );
     void clearCopyingInfo();
-    void updateCopyingInfo( const QMap< QString, QString > &copyingMap );
+    void updateCopyingInfo( const QMap<QString, QString> &copyingMap );
     void updateTreeView( QgsCptCityDataItem *item, bool resetRamp = true );
     void updateListWidget( QgsCptCityDataItem *item );
 
@@ -127,7 +125,6 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
     QgsCptCityBrowserModel *mSelectionsModel = nullptr;
     TreeFilterProxyModel *mTreeFilter = nullptr;
     QVector<QgsCptCityColorRampItem *> mListRamps;
-
 };
 
 #ifndef SIP_RUN

@@ -35,8 +35,8 @@
 #include <geos_c.h>
 #include <ogr_api.h>
 
-#define xstr(x) str(x)
-#define str(x) #x
+#define xstr( x ) str( x )
+#define str( x ) #x
 
 // Version constants
 //
@@ -188,7 +188,7 @@ bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
 
 bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs )
 {
-  return ! qgsVariantLessThan( lhs, rhs );
+  return !qgsVariantLessThan( lhs, rhs );
 }
 
 QString qgsVsiPrefix( const QString &path )
@@ -234,7 +234,7 @@ uint qHash( const QVariant &variant )
     case QMetaType::Type::QUrl:
     case QMetaType::Type::QLocale:
     case QMetaType::Type::QRegularExpression:
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     case QMetaType::Type::QRegExp:
 #endif
       return qHash( variant.toString() );
@@ -286,10 +286,10 @@ QString Qgis::geosVersion()
 int Qgis::geosVersionInt()
 {
   static const int version = QStringLiteral( "%1%2%3" )
-                             .arg( GEOS_VERSION_MAJOR, 2, 10, QChar( '0' ) )
-                             .arg( GEOS_VERSION_MINOR, 2, 10, QChar( '0' ) )
-                             .arg( geosVersionPatch(), 2, 10, QChar( '0' ) ).toInt()
-                             ;
+                               .arg( GEOS_VERSION_MAJOR, 2, 10, QChar( '0' ) )
+                               .arg( GEOS_VERSION_MINOR, 2, 10, QChar( '0' ) )
+                               .arg( geosVersionPatch(), 2, 10, QChar( '0' ) )
+                               .toInt();
   return version;
 }
 
@@ -309,7 +309,7 @@ int Qgis::geosVersionPatch()
   return version;
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 template<>
 bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList &key2 )
 {
@@ -318,4 +318,3 @@ bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList
   return qgsVariantGreaterThan( key1, key2 ) && key1 != key2;
 }
 #endif
-

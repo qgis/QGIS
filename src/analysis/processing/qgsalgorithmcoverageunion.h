@@ -43,7 +43,6 @@ class QgsCoverageUnionAlgorithm : public QgsProcessingAlgorithm
     QgsCoverageUnionAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
@@ -52,5 +51,3 @@ class QgsCoverageUnionAlgorithm : public QgsProcessingAlgorithm
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMCOVERAGEUNION_H
-
-

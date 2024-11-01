@@ -63,7 +63,7 @@ class QgsRelationPrivate : public QSharedData
      * are supported for composite foreign keys.
      * The first field is on the referencing layer, the second on the referenced
     */
-    QList< QgsRelation::FieldPair > mFieldPairs;
+    QList<QgsRelation::FieldPair> mFieldPairs;
 
     bool mValid = false;
     QString mValidationError;

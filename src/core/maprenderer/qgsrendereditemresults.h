@@ -42,7 +42,6 @@ class QgsRenderedItemResultsSpatialIndex;
 class CORE_EXPORT QgsRenderedItemResults
 {
   public:
-
     /**
      * Constructor for QgsRenderedItemResults.
      *
@@ -58,7 +57,7 @@ class CORE_EXPORT QgsRenderedItemResults
     /**
      * Returns a list of all rendered items.
      */
-    QList< QgsRenderedItemDetails * > renderedItems() const;
+    QList<QgsRenderedItemDetails *> renderedItems() const;
 
     /**
      * Returns a list with details of the rendered annotation items within the specified \a bounds.
@@ -75,7 +74,7 @@ class CORE_EXPORT QgsRenderedItemResults
      * The render \a context argument is used to specify the render context used to render the items. It will be used
      * to transform the details to the destination map CRS.
      */
-    void appendResults( const QList< QgsRenderedItemDetails * > &results SIP_TRANSFER, const QgsRenderContext &context );
+    void appendResults( const QList<QgsRenderedItemDetails *> &results SIP_TRANSFER, const QgsRenderContext &context );
 
     /**
      * Transfers all results from an \a other QgsRenderedItemResults object where the items
@@ -108,9 +107,8 @@ class CORE_EXPORT QgsRenderedItemResults
 
     QgsRectangle mExtent;
 
-    std::unordered_map< QString, std::vector< std::unique_ptr< QgsRenderedItemDetails > > > mDetails;
-    std::unique_ptr< QgsRenderedItemResultsSpatialIndex > mAnnotationItemsIndex;
-
+    std::unordered_map<QString, std::vector<std::unique_ptr<QgsRenderedItemDetails>>> mDetails;
+    std::unique_ptr<QgsRenderedItemResultsSpatialIndex> mAnnotationItemsIndex;
 };
 
 #endif // QGSRENDEREDITEMRESULTS_H

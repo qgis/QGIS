@@ -32,7 +32,7 @@ class QDomElement;
  *  \brief Interface to GRASS modules.
  *
  */
-class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
+class QgsGrassModule : public QWidget, private Ui::QgsGrassModuleBase
 {
     Q_OBJECT
 
@@ -44,7 +44,8 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
         // supported by GRASS Direct
         bool direct = true;
         Description() = default;
-        Description( QString lab, bool dir = false ): label( lab ), direct( dir ) { }
+        Description( QString lab, bool dir = false )
+          : label( lab ), direct( dir ) {}
     };
 
     //! Constructor
@@ -128,7 +129,6 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     //void mapsetChanged();
 
   private:
-
     /**
      * Set progress bar or busy indicator if percent is 100
      * \param percent progress to show in %

@@ -23,7 +23,6 @@ class QgsVectorRenderingOptionsWidget : public QgsOptionsPageWidget, private Ui:
     Q_OBJECT
 
   public:
-
     QgsVectorRenderingOptionsWidget( QWidget *parent );
     QString helpKey() const override;
     void apply() override;
@@ -35,13 +34,11 @@ class QgsVectorRenderingOptionsFactory : public QgsOptionsWidgetFactory
     Q_OBJECT
 
   public:
-
     QgsVectorRenderingOptionsFactory();
 
     QIcon icon() const override;
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
     QStringList path() const override;
-
 };
 
 

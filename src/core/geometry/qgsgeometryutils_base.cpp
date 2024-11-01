@@ -102,13 +102,13 @@ void QgsGeometryUtilsBase::perpendicularOffsetPointAlongSegment( double x1, doub
   const double pX = x1 - x2;
   const double pY = y1 - y2;
   double normalX = -pY;
-  double normalY = pX;  //#spellok
-  const double normalLength = sqrt( ( normalX * normalX ) + ( normalY * normalY ) );  //#spellok
+  double normalY = pX;                                                               //#spellok
+  const double normalLength = sqrt( ( normalX * normalX ) + ( normalY * normalY ) ); //#spellok
   normalX /= normalLength;
-  normalY /= normalLength;  //#spellok
+  normalY /= normalLength; //#spellok
 
   *x = mX + offset * normalX;
-  *y = mY + offset * normalY;  //#spellok
+  *y = mY + offset * normalY; //#spellok
 }
 
 double QgsGeometryUtilsBase::ccwAngle( double dy, double dx )
@@ -209,9 +209,9 @@ void QgsGeometryUtilsBase::circleCenterRadius( double x1, double y1, double x2, 
 
 double QgsGeometryUtilsBase::circleLength( double x1, double y1, double x2, double y2, double x3, double y3 )
 {
-  double centerX{0.0};
-  double centerY{0.0};
-  double radius{0.0};
+  double centerX { 0.0 };
+  double centerY { 0.0 };
+  double radius { 0.0 };
   circleCenterRadius( x1, y1, x2, y2, x3, y3, radius, centerX, centerY );
   double length = M_PI / 180.0 * radius * sweepAngle( centerX, centerY, x1, y1, x2, y2, x3, y3 );
   if ( length < 0 )
@@ -235,7 +235,7 @@ double QgsGeometryUtilsBase::sweepAngle( double centerX, double centerY, double 
     }
     else
     {
-      return ( - ( p1Angle + ( 360 - p3Angle ) ) );
+      return ( -( p1Angle + ( 360 - p3Angle ) ) );
     }
   }
   else
@@ -364,7 +364,7 @@ int QgsGeometryUtilsBase::closestSideOfRectangle( double right, double bottom, d
 
 void QgsGeometryUtilsBase::perpendicularCenterSegment( double pointx, double pointy, double segmentPoint1x, double segmentPoint1y, double segmentPoint2x, double segmentPoint2y, double &perpendicularSegmentPoint1x, double &perpendicularSegmentPoint1y, double &perpendicularSegmentPoint2x, double &perpendicularSegmentPoint2y, double desiredSegmentLength )
 {
-  QgsVector segmentVector =  QgsVector( segmentPoint2x - segmentPoint1x, segmentPoint2y - segmentPoint1y );
+  QgsVector segmentVector = QgsVector( segmentPoint2x - segmentPoint1x, segmentPoint2y - segmentPoint1y );
   QgsVector perpendicularVector = segmentVector.perpVector();
   if ( desiredSegmentLength != 0 )
   {
@@ -434,20 +434,21 @@ double QgsGeometryUtilsBase::averageAngle( double a1, double a2 )
 }
 
 double QgsGeometryUtilsBase::skewLinesDistance( const QgsVector3D &P1, const QgsVector3D &P12,
-    const QgsVector3D &P2, const QgsVector3D &P22 )
+                                                const QgsVector3D &P2, const QgsVector3D &P22 )
 {
   const QgsVector3D u1 = P12 - P1;
   const QgsVector3D u2 = P22 - P2;
   QgsVector3D u3 = QgsVector3D::crossProduct( u1, u2 );
-  if ( u3.length() == 0 ) return 1;
+  if ( u3.length() == 0 )
+    return 1;
   u3.normalize();
   const QgsVector3D dir = P1 - P2;
   return std::fabs( ( QgsVector3D::dotProduct( dir, u3 ) ) ); // u3 is already normalized
 }
 
 bool QgsGeometryUtilsBase::skewLinesProjection( const QgsVector3D &P1, const QgsVector3D &P12,
-    const QgsVector3D &P2, const QgsVector3D &P22,
-    QgsVector3D &X1, double epsilon )
+                                                const QgsVector3D &P2, const QgsVector3D &P22,
+                                                QgsVector3D &X1, double epsilon )
 {
   const QgsVector3D d = P2 - P1;
   QgsVector3D u1 = P12 - P1;
@@ -456,9 +457,7 @@ bool QgsGeometryUtilsBase::skewLinesProjection( const QgsVector3D &P1, const Qgs
   u2.normalize();
   const QgsVector3D u3 = QgsVector3D::crossProduct( u1, u2 );
 
-  if ( std::fabs( u3.x() ) <= epsilon &&
-       std::fabs( u3.y() ) <= epsilon &&
-       std::fabs( u3.z() ) <= epsilon )
+  if ( std::fabs( u3.x() ) <= epsilon && std::fabs( u3.y() ) <= epsilon && std::fabs( u3.z() ) <= epsilon )
   {
     // The rays are almost parallel.
     return false;
@@ -556,28 +555,25 @@ bool QgsGeometryUtilsBase::segmentIntersection( double p1x, double p1y, double p
       // intersectionPoint = q1
       qgsDoubleNear( sqrDistToLine( q1x, q1y, p1x, p1y, p2x, p2y, x, y, tolerance ), 0.0, tolerance ) ||
       // intersectionPoint = q2
-      qgsDoubleNear( sqrDistToLine( q2x, q2y, p1x, p1y, p2x, p2y, x, y, tolerance ), 0.0, tolerance )
-    )
+      qgsDoubleNear( sqrDistToLine( q2x, q2y, p1x, p1y, p2x, p2y, x, y, tolerance ), 0.0, tolerance ) )
     {
       return true;
     }
   }
 
-  const double lambdav = QgsVector( intersectionPointX - p1x, intersectionPointY - p1y ) *  v;
+  const double lambdav = QgsVector( intersectionPointX - p1x, intersectionPointY - p1y ) * v;
   if ( lambdav < 0. + tolerance || lambdav > vl - tolerance )
     return false;
 
   const double lambdaw = QgsVector( intersectionPointX - q1x, intersectionPointY - q1y ) * w;
   return !( lambdaw < 0. + tolerance || lambdaw >= wl - tolerance );
-
 }
 
 
 bool QgsGeometryUtilsBase::linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2,
-    const QgsVector3D &Lb1, const QgsVector3D &Lb2,
-    QgsVector3D &intersection )
+                                                const QgsVector3D &Lb1, const QgsVector3D &Lb2,
+                                                QgsVector3D &intersection )
 {
-
   // if all Vector are on the same plane (have the same Z), use the 2D intersection
   // else return a false result
   if ( qgsDoubleNear( La1.z(), La2.z() ) && qgsDoubleNear( La1.z(), Lb1.z() ) && qgsDoubleNear( La1.z(), Lb2.z() ) )
@@ -659,7 +655,7 @@ double QgsGeometryUtilsBase::pointFractionAlongLine( double x1, double y1, doubl
 }
 
 void QgsGeometryUtilsBase::weightedPointInTriangle( const double aX, const double aY, const double bX, const double bY, const double cX, const double cY,
-    double weightB, double weightC, double &pointX, double &pointY )
+                                                    double weightB, double weightC, double &pointX, double &pointY )
 {
   // if point will be outside of the triangle, invert weights
   if ( weightB + weightC > 1 )
@@ -690,7 +686,7 @@ double QgsGeometryUtilsBase::azimuth( double x1, double y1, double x2, double y2
 }
 
 bool QgsGeometryUtilsBase::angleBisector( double aX, double aY, double bX, double bY, double cX, double cY, double dX, double dY,
-    double &pointX, double &pointY, double &angle )
+                                          double &pointX, double &pointY, double &angle )
 {
   angle = ( azimuth( aX, aY, bX, bY ) + azimuth( cX, cY, dX, dY ) ) / 2.0;
 

@@ -34,11 +34,9 @@
  */
 class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSettingsWidget
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * \brief The WarningType enum is used to determine the text
      * of the message shown to the user about the destination of
@@ -229,14 +227,12 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
     void passwordTextChanged( const QString &text );
 
   private:
-
     // Mainly for tests
     QString mDataprovider;
 
     void updateConvertBtnState();
 
     void updateSelectedTab();
-
 };
 
 #endif // QGSAUTHSETTINGSWIDGET_H

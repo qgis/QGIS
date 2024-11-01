@@ -64,8 +64,7 @@ void QgsZipItem::init()
   setCapabilities( capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
 
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]
-  {
+  std::call_once( initialized, [=] {
     sProviderNames << QStringLiteral( "files" );
   } );
 }
@@ -179,15 +178,14 @@ QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &fileP
   if ( !QgsGdalUtils::isVsiArchivePrefix( vsiPrefix ) )
     return nullptr;
 
-  std::unique_ptr< QgsZipItem > zipItem = std::make_unique< QgsZipItem >( parent, name, filePath, path );
+  std::unique_ptr<QgsZipItem> zipItem = std::make_unique<QgsZipItem>( parent, name, filePath, path );
   // force populate zipItem if it has less than 10 items and is not a .tgz or .tar.gz file (slow loading)
   // for other items populating will be delayed until item is opened
   // this might be polluting the tree with empty items but is necessary for performance reasons
   // could also accept all files smaller than a certain size and add options for file count and/or size
 
   // first get list of files inside .zip or .tar files
-  if ( path.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) ||
-       path.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) )
+  if ( path.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) || path.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) )
   {
     zipFileList = zipItem->getZipFileList();
   }
@@ -215,7 +213,7 @@ QgsDataItem *QgsZipItem::itemFromPath( QgsDataItem *parent, const QString &fileP
 
 QStringList QgsZipItem::getZipFileList()
 {
-  if ( ! mZipFileList.isEmpty() )
+  if ( !mZipFileList.isEmpty() )
     return mZipFileList;
 
   QString tmpPath;
@@ -252,5 +250,3 @@ QStringList QgsZipItem::getZipFileList()
 
   return mZipFileList;
 }
-
-

@@ -38,7 +38,6 @@
 class CORE_EXPORT QgsRemappingSinkDefinition
 {
   public:
-
     /**
      * Returns the field mapping, which defines how to map the values from incoming features to destination
      * field values.
@@ -49,7 +48,7 @@ class CORE_EXPORT QgsRemappingSinkDefinition
      * \see setFieldMap()
      * \see addMappedField()
      */
-    QMap< QString, QgsProperty > fieldMap() const { return mFieldMap; }
+    QMap<QString, QgsProperty> fieldMap() const { return mFieldMap; }
 
     /**
      * Sets the field mapping, which defines how to map the values from incoming features to destination
@@ -61,7 +60,7 @@ class CORE_EXPORT QgsRemappingSinkDefinition
      * \see fieldMap()
      * \see addMappedField()
      */
-    void setFieldMap( const QMap< QString, QgsProperty > &map ) { mFieldMap = map; }
+    void setFieldMap( const QMap<QString, QgsProperty> &map ) { mFieldMap = map; }
 
     /**
      * Adds a mapping for a destination field.
@@ -149,8 +148,7 @@ class CORE_EXPORT QgsRemappingSinkDefinition
     bool operator!=( const QgsRemappingSinkDefinition &other ) const;
 
   private:
-
-    QMap< QString, QgsProperty > mFieldMap;
+    QMap<QString, QgsProperty> mFieldMap;
 
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mDestinationCrs;
@@ -158,11 +156,9 @@ class CORE_EXPORT QgsRemappingSinkDefinition
     Qgis::WkbType mDestinationWkbType = Qgis::WkbType::Unknown;
 
     QgsFields mDestinationFields;
-
 };
 
 Q_DECLARE_METATYPE( QgsRemappingSinkDefinition )
-
 
 
 /**
@@ -180,7 +176,6 @@ Q_DECLARE_METATYPE( QgsRemappingSinkDefinition )
 class CORE_EXPORT QgsRemappingProxyFeatureSink : public QgsFeatureSink
 {
   public:
-
 #ifndef SIP_RUN
 
     /**
@@ -229,7 +224,6 @@ class CORE_EXPORT QgsRemappingProxyFeatureSink : public QgsFeatureSink
     QgsFeatureSink *destinationSink() { return mSink; }
 
   private:
-
     QgsRemappingSinkDefinition mDefinition;
     QgsCoordinateTransform mTransform;
     QgsFeatureSink *mSink = nullptr;
@@ -238,7 +232,3 @@ class CORE_EXPORT QgsRemappingProxyFeatureSink : public QgsFeatureSink
 };
 
 #endif // QGSREMAPPINGPROXYFEATURESINK_H
-
-
-
-

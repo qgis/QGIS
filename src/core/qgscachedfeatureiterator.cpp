@@ -64,12 +64,12 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
     case Qgis::FeatureRequestFilterType::Fids:
     {
       const QgsFeatureIds filterFids = featureRequest.filterFids();
-      mFeatureIds = QList< QgsFeatureId >( filterFids.begin(), filterFids.end() );
+      mFeatureIds = QList<QgsFeatureId>( filterFids.begin(), filterFids.end() );
       break;
     }
 
     case Qgis::FeatureRequestFilterType::Fid:
-      mFeatureIds = QList< QgsFeatureId >() << featureRequest.filterFid();
+      mFeatureIds = QList<QgsFeatureId>() << featureRequest.filterFid();
       break;
 
     case Qgis::FeatureRequestFilterType::Expression:
@@ -170,7 +170,7 @@ bool QgsCachedFeatureWriterIterator::fetchFeature( QgsFeature &f )
   if ( mFeatIt.nextFeature( f ) )
   {
     // As long as features can be fetched from the provider: Write them to cache
-    mVectorLayerCache->cacheFeature( f, ! mRequest.flags().testFlag( Qgis::FeatureRequestFlag::SubsetOfAttributes ) );
+    mVectorLayerCache->cacheFeature( f, !mRequest.flags().testFlag( Qgis::FeatureRequestFlag::SubsetOfAttributes ) );
     mFids.insert( f.id() );
     geometryToDestinationCrs( f, mTransform );
     return true;

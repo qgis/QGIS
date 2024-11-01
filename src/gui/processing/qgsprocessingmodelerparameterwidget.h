@@ -63,7 +63,6 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingModelerParameterWidget, for the specified
      * \a parameter definition within the given \a model.
@@ -114,7 +113,7 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      */
     void populateSources( const QStringList &compatibleParameterTypes,
                           const QStringList &compatibleOutputTypes,
-                          const QList< int > &compatibleDataTypes );
+                          const QList<int> &compatibleDataTypes );
 
     /**
      * Set the expected expression format \a text, which is shown in the expression builder dialog for the widget
@@ -148,7 +147,7 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      * \see value()
      * \since QGIS 3.14
      */
-    void setWidgetValue( const QList< QgsProcessingModelChildParameterSource > &values );
+    void setWidgetValue( const QList<QgsProcessingModelChildParameterSource> &values );
 
     /**
      * Sets the widget to a model output, for destination parameters only.
@@ -206,7 +205,6 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     void sourceMenuActionTriggered( QAction *action );
 
   private:
-
     // IMPORTANT - must match order of widgets in the stacked widget!
     enum SourceType
     {
@@ -237,13 +235,13 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     QStackedWidget *mStackedWidget = nullptr;
 
     bool mHasStaticWrapper = false;
-    std::unique_ptr< QgsAbstractProcessingParameterWidgetWrapper > mStaticWidgetWrapper;
+    std::unique_ptr<QgsAbstractProcessingParameterWidgetWrapper> mStaticWidgetWrapper;
     QgsExpressionLineEdit *mExpressionWidget = nullptr;
     QComboBox *mModelInputCombo = nullptr;
     QComboBox *mChildOutputCombo = nullptr;
     QgsFilterLineEdit *mModelOutputName = nullptr;
 
-    QList< Qgis::ProcessingModelChildParameterSource > mLimitedSources;
+    QList<Qgis::ProcessingModelChildParameterSource> mLimitedSources;
 
     friend class TestProcessingGui;
 };

@@ -158,7 +158,6 @@ class GRASS_LIB_EXPORT QgsGrassCopy : public QgsGrassImport
 
   private:
     QgsGrassObject mSrcObject;
-
 };
 
 // Creates link to GDAL data source with r.external
@@ -173,7 +172,6 @@ class GRASS_LIB_EXPORT QgsGrassExternal : public QgsGrassImport
 
   private:
     QString mSource;
-
 };
 
 #endif // QGSGRASSIMPORT_H

@@ -50,6 +50,7 @@ class QgsPointCloudStatsCalculationTask : public QgsTask
     void cancel() override;
 
     QgsPointCloudStatistics calculationResults() const;
+
   private:
     QgsPointCloudStatsCalculator mCalculator;
     QVector<QgsPointCloudAttribute> mAttributes;

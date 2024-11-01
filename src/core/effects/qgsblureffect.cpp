@@ -78,20 +78,20 @@ QVariantMap QgsBlurEffect::properties() const
 {
   QVariantMap props;
   props.insert( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  props.insert( QStringLiteral( "draw_mode" ), QString::number( static_cast< int >( mDrawMode ) ) );
-  props.insert( QStringLiteral( "blend_mode" ), QString::number( static_cast< int >( mBlendMode ) ) );
+  props.insert( QStringLiteral( "draw_mode" ), QString::number( static_cast<int>( mDrawMode ) ) );
+  props.insert( QStringLiteral( "blend_mode" ), QString::number( static_cast<int>( mBlendMode ) ) );
   props.insert( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
   props.insert( QStringLiteral( "blur_level" ), QString::number( mBlurLevel ) );
   props.insert( QStringLiteral( "blur_unit" ), QgsUnitTypes::encodeUnit( mBlurUnit ) );
   props.insert( QStringLiteral( "blur_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mBlurMapUnitScale ) );
-  props.insert( QStringLiteral( "blur_method" ), QString::number( static_cast< int >( mBlurMethod ) ) );
+  props.insert( QStringLiteral( "blur_method" ), QString::number( static_cast<int>( mBlurMethod ) ) );
   return props;
 }
 
 void QgsBlurEffect::readProperties( const QVariantMap &props )
 {
   bool ok;
-  const QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
+  const QPainter::CompositionMode mode = static_cast<QPainter::CompositionMode>( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
   if ( ok )
   {
     mBlendMode = mode;
@@ -114,7 +114,7 @@ void QgsBlurEffect::readProperties( const QVariantMap &props )
   }
 
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
-  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
+  mDrawMode = static_cast<QgsPaintEffect::DrawMode>( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
   const double level = props.value( QStringLiteral( "blur_level" ) ).toDouble( &ok );
   if ( ok )
   {
@@ -127,7 +127,7 @@ void QgsBlurEffect::readProperties( const QVariantMap &props )
   }
   mBlurUnit = QgsUnitTypes::decodeRenderUnit( props.value( QStringLiteral( "blur_unit" ) ).toString() );
   mBlurMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( props.value( QStringLiteral( "blur_unit_scale" ) ).toString() );
-  const QgsBlurEffect::BlurMethod method = static_cast< QgsBlurEffect::BlurMethod >( props.value( QStringLiteral( "blur_method" ) ).toInt( &ok ) );
+  const QgsBlurEffect::BlurMethod method = static_cast<QgsBlurEffect::BlurMethod>( props.value( QStringLiteral( "blur_method" ) ).toInt( &ok ) );
   if ( ok )
   {
     mBlurMethod = method;

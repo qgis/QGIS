@@ -38,17 +38,17 @@ class CORE_EXPORT QgsStacObject
     //! Available types of stac objects
     enum Type
     {
-      Unknown, //!< Type is not known
-      Catalog, //!< STAC catalog
+      Unknown,    //!< Type is not known
+      Catalog,    //!< STAC catalog
       Collection, //!< STAC collection
-      Item, //!< STAC item
+      Item,       //!< STAC item
     };
 
     //! Default constructor is used for creating invalid objects
     QgsStacObject() = delete;
 
     //! Constructor for valid objects
-    QgsStacObject( const QString &id, const QString &version, const QVector< QgsStacLink > &links );
+    QgsStacObject( const QString &id, const QString &version, const QVector<QgsStacLink> &links );
 
     //! Destructor
     virtual ~QgsStacObject() = default;
@@ -78,10 +78,10 @@ class CORE_EXPORT QgsStacObject
     void setId( const QString &id );
 
     //! Returns the STAC links included in the object
-    QVector< QgsStacLink > links() const;
+    QVector<QgsStacLink> links() const;
 
     //! Sets the STAC links included in the object
-    void setLinks( const QVector< QgsStacLink > &links );
+    void setLinks( const QVector<QgsStacLink> &links );
 
     //! Return the url stored in the object's "self" link
     QString url() const;
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsStacObject
     QString mId;
     QString mStacVersion;
     QStringList mStacExtensions;
-    QVector< QgsStacLink > mLinks;
+    QVector<QgsStacLink> mLinks;
 };
 
 #endif // QGSSTACOBJECT_H

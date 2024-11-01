@@ -32,7 +32,6 @@ class CORE_EXPORT QgsFieldDomainsItem : public QgsDataItem
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsFieldDomainsItem, with the specified \a parent item.
      *
@@ -52,12 +51,14 @@ class CORE_EXPORT QgsFieldDomainsItem : public QgsDataItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsFieldDomainsItem: %1>" ).arg( sipCpp->path() );
+        QString str
+      = QStringLiteral( "<QgsFieldDomainsItem: %1>" ).arg( sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    QVector<QgsDataItem *> createChildren() override;
+        QVector<QgsDataItem *>
+      createChildren() override;
 
     QIcon icon() override;
 
@@ -67,10 +68,8 @@ class CORE_EXPORT QgsFieldDomainsItem : public QgsDataItem
     QString connectionUri() const;
 
   private:
-
     QString mConnectionUri;
     QStringList mFieldDomainNames;
-
 };
 
 
@@ -83,7 +82,6 @@ class CORE_EXPORT QgsFieldDomainItem : public QgsDataItem
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsFieldDomainItem, with the specified \a parent item and \a domain.
      *
@@ -99,12 +97,14 @@ class CORE_EXPORT QgsFieldDomainItem : public QgsDataItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsFieldDomainItem: %1>" ).arg( sipCpp->name() );
+        QString str
+      = QStringLiteral( "<QgsFieldDomainItem: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    QIcon icon() override;
+        QIcon
+      icon() override;
 
     /**
      * Returns the associated field domain.
@@ -112,11 +112,7 @@ class CORE_EXPORT QgsFieldDomainItem : public QgsDataItem
     const QgsFieldDomain *fieldDomain();
 
   private:
-
-    std::unique_ptr< QgsFieldDomain > mDomain;
-
+    std::unique_ptr<QgsFieldDomain> mDomain;
 };
 
 #endif // QGSFIELDDOMAINSITEM_H
-
-

@@ -53,4 +53,3 @@ QSize QgsElevationProfileImageExportDialog::imageSize() const
 {
   return QSize( mWidthSpinBox->value(), mHeightSpinBox->value() );
 }
-

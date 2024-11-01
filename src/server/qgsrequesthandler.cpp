@@ -187,14 +187,11 @@ void QgsRequestHandler::setupParameters()
       mFormat = formatString;
     }
   }
-
 }
 
 void QgsRequestHandler::parseInput()
 {
-  if ( mRequest.method() == QgsServerRequest::PostMethod ||
-       mRequest.method() == QgsServerRequest::PutMethod ||
-       mRequest.method() == QgsServerRequest::PatchMethod )
+  if ( mRequest.method() == QgsServerRequest::PostMethod || mRequest.method() == QgsServerRequest::PutMethod || mRequest.method() == QgsServerRequest::PatchMethod )
   {
     if ( mRequest.header( QStringLiteral( "Content-Type" ) ).contains( QStringLiteral( "json" ) ) )
     {
@@ -211,7 +208,9 @@ void QgsRequestHandler::parseInput()
       {
         // Output Warning about POST without XML content
         QgsMessageLog::logMessage( QStringLiteral( "Error parsing post data as XML: at line %1, column %2: %3. Assuming urlencoded query string sent in the post body." )
-                                   .arg( line ).arg( column ).arg( errorMsg ),
+                                     .arg( line )
+                                     .arg( column )
+                                     .arg( errorMsg ),
                                    QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
 
         // Process input string as a simple query text
@@ -237,7 +236,7 @@ void QgsRequestHandler::parseInput()
         // loop through the attributes which are the parameters
         // excepting the attributes started by xmlns or xsi
         const QDomNamedNodeMap map = docElem.attributes();
-        for ( int i = 0 ; i < map.length() ; ++i )
+        for ( int i = 0; i < map.length(); ++i )
         {
           if ( map.item( i ).isNull() )
             continue;

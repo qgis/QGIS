@@ -60,14 +60,13 @@ class CORE_EXPORT QgsTileXYZ
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    const QString str = QStringLiteral( "<QgsTileXYZ: %1, %2, %3>" ).arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
+    % MethodCode const QString str = QStringLiteral( "<QgsTileXYZ: %1, %2, %3>" ).arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-  private:
-    int mColumn = -1;
+      private : int mColumn
+      = -1;
     int mRow = -1;
     int mZoomLevel = -1;
 };
@@ -81,9 +80,9 @@ CORE_EXPORT inline uint qHash( QgsTileXYZ id ) SIP_SKIP
 {
   return id.column() + id.row() + id.zoomLevel();
 
-  const uint h1 = qHash( static_cast< quint64 >( id.column( ) ) );
-  const uint h2 = qHash( static_cast< quint64 >( id.row() ) );
-  const uint h3 = qHash( static_cast< quint64 >( id.zoomLevel() ) );
+  const uint h1 = qHash( static_cast<quint64>( id.column() ) );
+  const uint h2 = qHash( static_cast<quint64>( id.row() ) );
+  const uint h3 = qHash( static_cast<quint64>( id.zoomLevel() ) );
   return h1 ^ ( h2 << 1 ) ^ ( h3 );
 }
 
@@ -135,7 +134,6 @@ class CORE_EXPORT QgsTileRange
 class CORE_EXPORT QgsTileMatrix
 {
   public:
-
     //! Returns a tile matrix for the usual web mercator
     static QgsTileMatrix fromWebMercator( int zoomLevel );
 
@@ -164,7 +162,7 @@ class CORE_EXPORT QgsTileMatrix
      * \see crs()
      * \since QGIS 3.22.6
      */
-    void setCrs( const QgsCoordinateReferenceSystem &crs ) { mCrs = crs;}
+    void setCrs( const QgsCoordinateReferenceSystem &crs ) { mCrs = crs; }
 
     /**
      * Returns the zoom level of the tile matrix.
@@ -250,9 +248,7 @@ class CORE_EXPORT QgsTileMatrix
  */
 class CORE_EXPORT QgsTileMatrixSet
 {
-
   public:
-
     QgsTileMatrixSet();
 
     virtual ~QgsTileMatrixSet() = default;
@@ -366,8 +362,7 @@ class CORE_EXPORT QgsTileMatrixSet
                                      const QgsCoordinateReferenceSystem &mapCrs,
                                      const QgsRectangle &mapExtent,
                                      const QSize mapSize,
-                                     const double mapDpi
-                                   ) const;
+                                     const double mapDpi ) const;
 
     /**
      * Reads the set from an XML \a element.
@@ -403,12 +398,12 @@ class CORE_EXPORT QgsTileMatrixSet
     QVector<QgsTileXYZ> tilesInRange( QgsTileRange range, int zoomLevel ) const;
 
   protected:
-    std::function< Qgis::TileAvailability( QgsTileXYZ id ) > mTileAvailabilityFunction;
-    std::function< Qgis::TileAvailability( QgsTileXYZ id, QgsTileXYZ &replacement ) > mTileReplacementFunction;
+    std::function<Qgis::TileAvailability( QgsTileXYZ id )> mTileAvailabilityFunction;
+    std::function<Qgis::TileAvailability( QgsTileXYZ id, QgsTileXYZ &replacement )> mTileReplacementFunction;
 
     // Usually corresponds to zoom level 0, even if that zoom level is NOT present in the actual tile matrices for this set
     QgsTileMatrix mRootMatrix;
-    QMap< int, QgsTileMatrix > mTileMatrices;
+    QMap<int, QgsTileMatrix> mTileMatrices;
     Qgis::ScaleToTileZoomLevelMethod mScaleToTileZoomMethod = Qgis::ScaleToTileZoomLevelMethod::MapBox;
 };
 

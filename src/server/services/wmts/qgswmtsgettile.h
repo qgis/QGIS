@@ -22,7 +22,7 @@ namespace QgsWmts
    * Output GetTile response
    */
   void writeGetTile( QgsServerInterface *serverIface, const QgsProject *project,
-                     const QString &version,  const QgsServerRequest &request,
+                     const QString &version, const QgsServerRequest &request,
                      QgsServerResponse &response );
 
 } // namespace QgsWmts

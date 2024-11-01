@@ -37,7 +37,6 @@ class CORE_EXPORT QgsRelationManager : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRelationManager.
      * \param project associated project (used to notify project of changes)

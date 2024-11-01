@@ -39,7 +39,6 @@ class QgsPointCloudAttributeStatisticsModel : public QAbstractTableModel
     Q_OBJECT
 
   public:
-
     enum Columns
     {
       Name,
@@ -55,8 +54,8 @@ class QgsPointCloudAttributeStatisticsModel : public QAbstractTableModel
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     QVariant headerData( int section, Qt::Orientation orientation,
                          int role = Qt::DisplayRole ) const override;
-  private:
 
+  private:
     QgsPointCloudLayer *mLayer = nullptr;
     QgsPointCloudAttributeCollection mAttributes;
 };
@@ -66,7 +65,6 @@ class QgsPointCloudClassificationStatisticsModel : public QAbstractTableModel
     Q_OBJECT
 
   public:
-
     enum Columns
     {
       Value,
@@ -81,8 +79,8 @@ class QgsPointCloudClassificationStatisticsModel : public QAbstractTableModel
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     QVariant headerData( int section, Qt::Orientation orientation,
                          int role = Qt::DisplayRole ) const override;
-  private:
 
+  private:
     QgsPointCloudLayer *mLayer = nullptr;
     QString mAttribute;
     QList<int> mClassifications;
@@ -115,7 +113,6 @@ class APP_EXPORT QgsPointCloudLayerProperties : public QgsLayerPropertiesDialog,
     QgsMetadataWidget *mMetadataWidget = nullptr;
 
     QgsCoordinateReferenceSystem mBackupCrs;
-
 };
 
 #endif // QGSPOINTCLOUDLAYERPROPERTIES_H

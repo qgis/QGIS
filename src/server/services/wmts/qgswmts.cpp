@@ -21,8 +21,8 @@
 #include "qgswmtsgettile.h"
 #include "qgswmtsgetfeatureinfo.h"
 
-#define QSTR_COMPARE( str, lit )\
-  (str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0)
+#define QSTR_COMPARE( str, lit ) \
+  ( str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0 )
 
 namespace QgsWmts
 {
@@ -33,10 +33,9 @@ namespace QgsWmts
    * \brief OGC web service specialized for WMTS
    * \since QGIS 3.4
    */
-  class Service: public QgsService
+  class Service : public QgsService
   {
     public:
-
       /**
        * Constructor for WMTS service.
        * \param serverIface Interface for plugins.
@@ -45,7 +44,7 @@ namespace QgsWmts
         : mServerIface( serverIface )
       {}
 
-      QString name()    const override { return QStringLiteral( "WMTS" ); }
+      QString name() const override { return QStringLiteral( "WMTS" ); }
       QString version() const override { return implementationVersion(); }
 
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
@@ -103,13 +102,13 @@ namespace QgsWmts
  * \brief Service module specialized for WMTS
  * \since QGIS 3.4
  */
-class QgsWmtsModule: public QgsServiceModule
+class QgsWmtsModule : public QgsServiceModule
 {
   public:
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
       QgsDebugMsgLevel( QStringLiteral( "WMTSModule::registerSelf called" ), 2 );
-      registry.registerService( new  QgsWmts::Service( serverIface ) );
+      registry.registerService( new QgsWmts::Service( serverIface ) );
     }
 };
 

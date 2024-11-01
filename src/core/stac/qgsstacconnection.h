@@ -42,9 +42,7 @@ class QgsSettingsEntryVariantMap;
  */
 class CORE_EXPORT QgsStacConnection : public QgsAbstractProviderConnection
 {
-
   public:
-
 #ifndef SIP_RUN
 
     ///@cond PRIVATE
@@ -75,16 +73,16 @@ class CORE_EXPORT QgsStacConnection : public QgsAbstractProviderConnection
     //! Represents decoded data of a connection
     struct Data
     {
-      //! Catalog URL
-      QString url;
-      //! Authentication configuration id
-      QString authCfg;
-      //! HTTP Basic username
-      QString username;
-      //! HTTP Basic password
-      QString password;
-      //! HTTP headers
-      QgsHttpHeaders httpHeaders;
+        //! Catalog URL
+        QString url;
+        //! Authentication configuration id
+        QString authCfg;
+        //! HTTP Basic username
+        QString username;
+        //! HTTP Basic password
+        QString password;
+        //! HTTP headers
+        QgsHttpHeaders httpHeaders;
     };
 
     //! Returns connection data encoded as a string

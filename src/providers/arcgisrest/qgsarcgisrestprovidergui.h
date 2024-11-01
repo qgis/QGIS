@@ -17,7 +17,7 @@
 #include "qgssourceselectprovider.h"
 #include "qgsafsprovider.h"
 
-class QgsArcGisRestProviderGuiMetadata: public QgsProviderGuiMetadata
+class QgsArcGisRestProviderGuiMetadata : public QgsProviderGuiMetadata
 {
   public:
     QgsArcGisRestProviderGuiMetadata();

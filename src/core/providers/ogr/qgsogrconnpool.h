@@ -28,9 +28,9 @@
 
 struct QgsOgrConn
 {
-  QString path;
-  GDALDatasetH ds;
-  bool valid;
+    QString path;
+    GDALDatasetH ds;
+    bool valid;
 };
 
 inline QString qgsConnectionPool_ConnectionToName( QgsOgrConn *c )
@@ -81,7 +81,7 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
 
   public:
     explicit QgsOgrConnPoolGroup( const QString &name )
-      : QgsConnectionPoolGroup<QgsOgrConn*>( name )
+      : QgsConnectionPoolGroup<QgsOgrConn *>( name )
     {
       initTimer( this );
     }
@@ -103,14 +103,12 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
 
   private:
     int mRefCount = 0;
-
 };
 
 //! Ogr connection pool - singleton
 class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn *, QgsOgrConnPoolGroup>
 {
   public:
-
     // NOTE: first call to this function initializes the
     //       singleton.
     // WARNING: concurrent call from multiple threads may result

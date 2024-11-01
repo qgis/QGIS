@@ -178,7 +178,7 @@ bool QgsHeatmapRenderer::renderFeature( const QgsFeature &feature, QgsRenderCont
         {
           mCalculatedMaxValue = value;
         }
-        mValues[ index ] = value;
+        mValues[index] = value;
       }
     }
   }
@@ -204,22 +204,22 @@ double QgsHeatmapRenderer::uniformKernel( const double distance, const int bandw
 
 double QgsHeatmapRenderer::quarticKernel( const double distance, const int bandwidth ) const
 {
-  return std::pow( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ), 2 );
+  return std::pow( 1. - std::pow( distance / static_cast<double>( bandwidth ), 2 ), 2 );
 }
 
 double QgsHeatmapRenderer::triweightKernel( const double distance, const int bandwidth ) const
 {
-  return std::pow( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ), 3 );
+  return std::pow( 1. - std::pow( distance / static_cast<double>( bandwidth ), 2 ), 3 );
 }
 
 double QgsHeatmapRenderer::epanechnikovKernel( const double distance, const int bandwidth ) const
 {
-  return ( 1. - std::pow( distance / static_cast< double >( bandwidth ), 2 ) );
+  return ( 1. - std::pow( distance / static_cast<double>( bandwidth ), 2 ) );
 }
 
 double QgsHeatmapRenderer::triangularKernel( const double distance, const int bandwidth ) const
 {
-  return ( 1. - ( distance / static_cast< double >( bandwidth ) ) );
+  return ( 1. - ( distance / static_cast<double>( bandwidth ) ) );
 }
 
 void QgsHeatmapRenderer::stopRender( QgsRenderContext &context )
@@ -252,7 +252,7 @@ void QgsHeatmapRenderer::renderImage( QgsRenderContext &context )
     if ( context.renderingStopped() )
       break;
 
-    QRgb *scanLine = reinterpret_cast< QRgb * >( image.scanLine( heightIndex ) );
+    QRgb *scanLine = reinterpret_cast<QRgb *>( image.scanLine( heightIndex ) );
     for ( int widthIndex = 0; widthIndex < image.width(); ++widthIndex )
     {
       //scale result to fit in the range [0, 1]
@@ -318,7 +318,7 @@ QgsFeatureRenderer *QgsHeatmapRenderer::create( QDomElement &element, const QgsR
   Q_UNUSED( context )
   QgsHeatmapRenderer *r = new QgsHeatmapRenderer();
   r->setRadius( element.attribute( QStringLiteral( "radius" ), QStringLiteral( "50.0" ) ).toFloat() );
-  r->setRadiusUnit( static_cast< Qgis::RenderUnit >( element.attribute( QStringLiteral( "radius_unit" ), QStringLiteral( "0" ) ).toInt() ) );
+  r->setRadiusUnit( static_cast<Qgis::RenderUnit>( element.attribute( QStringLiteral( "radius_unit" ), QStringLiteral( "0" ) ).toInt() ) );
   r->setRadiusMapUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( element.attribute( QStringLiteral( "radius_map_unit_scale" ), QString() ) ) );
   r->setMaximumValue( element.attribute( QStringLiteral( "max_value" ), QStringLiteral( "0.0" ) ).toFloat() );
   r->setRenderQuality( element.attribute( QStringLiteral( "quality" ), QStringLiteral( "0" ) ).toInt() );
@@ -342,7 +342,7 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument &doc, const QgsReadWriteConte
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "heatmapRenderer" ) );
   rendererElem.setAttribute( QStringLiteral( "radius" ), QString::number( mRadius ) );
-  rendererElem.setAttribute( QStringLiteral( "radius_unit" ), QString::number( static_cast< int >( mRadiusUnit ) ) );
+  rendererElem.setAttribute( QStringLiteral( "radius_unit" ), QString::number( static_cast<int>( mRadiusUnit ) ) );
   rendererElem.setAttribute( QStringLiteral( "radius_map_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mRadiusMapUnitScale ) );
   rendererElem.setAttribute( QStringLiteral( "max_value" ), QString::number( mExplicitMax ) );
   rendererElem.setAttribute( QStringLiteral( "quality" ), QString::number( mRenderQuality ) );
@@ -396,7 +396,7 @@ QgsHeatmapRenderer *QgsHeatmapRenderer::convertFromRenderer( const QgsFeatureRen
   }
   else
   {
-    std::unique_ptr< QgsHeatmapRenderer > res = std::make_unique< QgsHeatmapRenderer >();
+    std::unique_ptr<QgsHeatmapRenderer> res = std::make_unique<QgsHeatmapRenderer>();
     renderer->copyRendererData( res.get() );
     return res.release();
   }
@@ -415,14 +415,12 @@ bool QgsHeatmapRenderer::accept( QgsStyleEntityVisitorInterface *visitor ) const
 
 QList<QgsLayerTreeModelLegendNode *> QgsHeatmapRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer ) const
 {
-  return
-  {
+  return {
     new QgsColorRampLegendNode( nodeLayer,
                                 mGradientRamp->clone(),
                                 mLegendSettings,
                                 0,
-                                1 )
-  };
+                                1 ) };
 }
 
 void QgsHeatmapRenderer::setColorRamp( QgsColorRamp *ramp )

@@ -31,10 +31,9 @@ QgsTextShadowSettings::QgsTextShadowSettings()
 QgsTextShadowSettings::QgsTextShadowSettings( const QgsTextShadowSettings &other ) //NOLINT
   : d( other.d )
 {
-
 }
 
-QgsTextShadowSettings &QgsTextShadowSettings::operator=( const QgsTextShadowSettings &other )  //NOLINT
+QgsTextShadowSettings &QgsTextShadowSettings::operator=( const QgsTextShadowSettings &other ) //NOLINT
 {
   d = other.d;
   return *this;
@@ -42,7 +41,6 @@ QgsTextShadowSettings &QgsTextShadowSettings::operator=( const QgsTextShadowSett
 
 QgsTextShadowSettings::~QgsTextShadowSettings() //NOLINT
 {
-
 }
 
 bool QgsTextShadowSettings::operator==( const QgsTextShadowSettings &other ) const
@@ -225,7 +223,7 @@ void QgsTextShadowSettings::setBlendMode( QPainter::CompositionMode mode )
 void QgsTextShadowSettings::readFromLayer( QgsVectorLayer *layer )
 {
   d->enabled = layer->customProperty( QStringLiteral( "labeling/shadowDraw" ), QVariant( false ) ).toBool();
-  d->shadowUnder = static_cast< ShadowPlacement >( layer->customProperty( QStringLiteral( "labeling/shadowUnder" ), QVariant( ShadowLowest ) ).toUInt() );//ShadowLowest;
+  d->shadowUnder = static_cast<ShadowPlacement>( layer->customProperty( QStringLiteral( "labeling/shadowUnder" ), QVariant( ShadowLowest ) ).toUInt() ); //ShadowLowest;
   d->offsetAngle = layer->customProperty( QStringLiteral( "labeling/shadowOffsetAngle" ), QVariant( 135 ) ).toInt();
   d->offsetDist = layer->customProperty( QStringLiteral( "labeling/shadowOffsetDist" ), QVariant( 1.0 ) ).toDouble();
 
@@ -285,14 +283,14 @@ void QgsTextShadowSettings::readFromLayer( QgsVectorLayer *layer )
   d->scale = layer->customProperty( QStringLiteral( "labeling/shadowScale" ), QVariant( 100 ) ).toInt();
   d->color = QgsTextRendererUtils::readColor( layer, QStringLiteral( "labeling/shadowColor" ), Qt::black, false );
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( layer->customProperty( QStringLiteral( "labeling/shadowBlendMode" ), QVariant( static_cast< int >( Qgis::BlendMode::Multiply ) ) ).toUInt() ) );
+    static_cast<Qgis::BlendMode>( layer->customProperty( QStringLiteral( "labeling/shadowBlendMode" ), QVariant( static_cast<int>( Qgis::BlendMode::Multiply ) ) ).toUInt() ) );
 }
 
 void QgsTextShadowSettings::readXml( const QDomElement &elem )
 {
   const QDomElement shadowElem = elem.firstChildElement( QStringLiteral( "shadow" ) );
   d->enabled = shadowElem.attribute( QStringLiteral( "shadowDraw" ), QStringLiteral( "0" ) ).toInt();
-  d->shadowUnder = static_cast< ShadowPlacement >( shadowElem.attribute( QStringLiteral( "shadowUnder" ), QString::number( ShadowLowest ) ).toUInt() );//ShadowLowest;
+  d->shadowUnder = static_cast<ShadowPlacement>( shadowElem.attribute( QStringLiteral( "shadowUnder" ), QString::number( ShadowLowest ) ).toUInt() ); //ShadowLowest;
   d->offsetAngle = shadowElem.attribute( QStringLiteral( "shadowOffsetAngle" ), QStringLiteral( "135" ) ).toInt();
   d->offsetDist = shadowElem.attribute( QStringLiteral( "shadowOffsetDist" ), QStringLiteral( "1" ) ).toDouble();
 
@@ -353,14 +351,14 @@ void QgsTextShadowSettings::readXml( const QDomElement &elem )
   d->scale = shadowElem.attribute( QStringLiteral( "shadowScale" ), QStringLiteral( "100" ) ).toInt();
   d->color = QgsColorUtils::colorFromString( shadowElem.attribute( QStringLiteral( "shadowColor" ), QgsColorUtils::colorToString( Qt::black ) ) );
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( shadowElem.attribute( QStringLiteral( "shadowBlendMode" ), QString::number( static_cast<int>( Qgis::BlendMode::Multiply ) ) ).toUInt() ) );
+    static_cast<Qgis::BlendMode>( shadowElem.attribute( QStringLiteral( "shadowBlendMode" ), QString::number( static_cast<int>( Qgis::BlendMode::Multiply ) ) ).toUInt() ) );
 }
 
 QDomElement QgsTextShadowSettings::writeXml( QDomDocument &doc ) const
 {
   QDomElement shadowElem = doc.createElement( QStringLiteral( "shadow" ) );
   shadowElem.setAttribute( QStringLiteral( "shadowDraw" ), d->enabled );
-  shadowElem.setAttribute( QStringLiteral( "shadowUnder" ), static_cast< unsigned int >( d->shadowUnder ) );
+  shadowElem.setAttribute( QStringLiteral( "shadowUnder" ), static_cast<unsigned int>( d->shadowUnder ) );
   shadowElem.setAttribute( QStringLiteral( "shadowOffsetAngle" ), d->offsetAngle );
   shadowElem.setAttribute( QStringLiteral( "shadowOffsetDist" ), d->offsetDist );
   shadowElem.setAttribute( QStringLiteral( "shadowOffsetUnit" ), QgsUnitTypes::encodeUnit( d->offsetUnits ) );
@@ -373,7 +371,7 @@ QDomElement QgsTextShadowSettings::writeXml( QDomDocument &doc ) const
   shadowElem.setAttribute( QStringLiteral( "shadowOpacity" ), d->opacity );
   shadowElem.setAttribute( QStringLiteral( "shadowScale" ), d->scale );
   shadowElem.setAttribute( QStringLiteral( "shadowColor" ), QgsColorUtils::colorToString( d->color ) );
-  shadowElem.setAttribute( QStringLiteral( "shadowBlendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( d->blendMode ) ) );
+  shadowElem.setAttribute( QStringLiteral( "shadowBlendMode" ), static_cast<int>( QgsPainting::getBlendModeEnum( d->blendMode ) ) );
   return shadowElem;
 }
 
@@ -472,5 +470,5 @@ void QgsTextShadowSettings::updateDataDefinedProperties( QgsRenderContext &conte
 
 QSet<QString> QgsTextShadowSettings::referencedFields( const QgsRenderContext & ) const
 {
-  return QSet< QString >(); // nothing for now
+  return QSet<QString>(); // nothing for now
 }

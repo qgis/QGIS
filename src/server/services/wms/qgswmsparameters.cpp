@@ -295,8 +295,8 @@ namespace QgsWms
     save( pHighlightGeom );
 
     const QgsWmsParameter pShowFeatureCount( QgsWmsParameter::SHOWFEATURECOUNT,
-        QMetaType::Type::Bool,
-        QVariant( false ) );
+                                             QMetaType::Type::Bool,
+                                             QVariant( false ) );
     save( pShowFeatureCount );
 
     const QgsWmsParameter pHighlightSymbol( QgsWmsParameter::HIGHLIGHT_SYMBOL );
@@ -320,8 +320,8 @@ namespace QgsWms
     save( pHighlightFont );
 
     const QgsWmsParameter pHighlightBufferColor( QgsWmsParameter::HIGHLIGHT_LABELBUFFERCOLOR,
-        QMetaType::Type::QString,
-        QVariant( "black" ) );
+                                                 QMetaType::Type::QString,
+                                                 QVariant( "black" ) );
     save( pHighlightBufferColor );
 
     const QgsWmsParameter pHighlightBufferSize( QgsWmsParameter::HIGHLIGHT_LABELBUFFERSIZE );
@@ -606,7 +606,7 @@ namespace QgsWms
     const thread_local QRegularExpression composerParamRegExp( QStringLiteral( "^MAP\\d+:" ), QRegularExpression::CaseInsensitiveOption );
     if ( key.contains( composerParamRegExp ) )
     {
-      const int mapId = QStringView {key} .mid( 3, key.indexOf( ':' ) - 3 ).toInt();
+      const int mapId = QStringView { key }.mid( 3, key.indexOf( ':' ) - 3 ).toInt();
       const QString theKey = key.mid( key.indexOf( ':' ) + 1 );
       const QgsWmsParameter::Name name = QgsWmsParameter::name( theKey );
 
@@ -616,7 +616,7 @@ namespace QgsWms
         param.mValue = value;
         param.mMapId = mapId;
 
-        if ( ! param.isValid() )
+        if ( !param.isValid() )
         {
           param.raiseError();
         }
@@ -666,7 +666,7 @@ namespace QgsWms
     {
       const QString value = it->toString();
 
-      if ( ! value.isEmpty() )
+      if ( !value.isEmpty() )
       {
         QString name = QgsWmsParameter::name( it.key() );
 
@@ -803,7 +803,7 @@ namespace QgsWms
     }
     else if ( version.isEmpty() )
     {
-      if ( ! wmtver().isEmpty() )
+      if ( !wmtver().isEmpty() )
       {
         version = wmtver();
       }
@@ -869,8 +869,7 @@ namespace QgsWms
     const QString fStr = formatAsString();
 
     Format f = Format::NONE;
-    if ( fStr.compare( QLatin1String( "image/png" ), Qt::CaseInsensitive ) == 0 ||
-         fStr.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 )
+    if ( fStr.compare( QLatin1String( "image/png" ), Qt::CaseInsensitive ) == 0 || fStr.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 )
     {
       f = Format::PNG;
     }
@@ -880,19 +879,15 @@ namespace QgsWms
     {
       f = Format::JPG;
     }
-    else if ( fStr.compare( QLatin1String( "image/svg" ), Qt::CaseInsensitive ) == 0 ||
-              fStr.compare( QLatin1String( "image/svg+xml" ), Qt::CaseInsensitive ) == 0 ||
-              fStr.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
+    else if ( fStr.compare( QLatin1String( "image/svg" ), Qt::CaseInsensitive ) == 0 || fStr.compare( QLatin1String( "image/svg+xml" ), Qt::CaseInsensitive ) == 0 || fStr.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
     {
       f = Format::SVG;
     }
-    else if ( fStr.compare( QLatin1String( "application/pdf" ), Qt::CaseInsensitive ) == 0 ||
-              fStr.compare( QLatin1String( "pdf" ), Qt::CaseInsensitive ) == 0 )
+    else if ( fStr.compare( QLatin1String( "application/pdf" ), Qt::CaseInsensitive ) == 0 || fStr.compare( QLatin1String( "pdf" ), Qt::CaseInsensitive ) == 0 )
     {
       f = Format::PDF;
     }
-    else if ( fStr.compare( QLatin1String( "application/json" ), Qt::CaseInsensitive ) == 0 ||
-              fStr.compare( QLatin1String( "json" ), Qt::CaseInsensitive ) == 0 )
+    else if ( fStr.compare( QLatin1String( "application/json" ), Qt::CaseInsensitive ) == 0 || fStr.compare( QLatin1String( "json" ), Qt::CaseInsensitive ) == 0 )
     {
       f = Format::JSON;
     }
@@ -1268,7 +1263,7 @@ namespace QgsWms
     font.setBold( layerFontBoldAsBool() );
     font.setItalic( layerFontItalicAsBool() );
 
-    if ( ! layerFontSize().isEmpty() )
+    if ( !layerFontSize().isEmpty() )
       font.setPointSizeF( layerFontSizeAsDouble() );
 
     if ( !layerFontFamily().isEmpty() )
@@ -1285,7 +1280,7 @@ namespace QgsWms
     font.setBold( itemFontBoldAsBool() );
     font.setItalic( itemFontItalicAsBool() );
 
-    if ( ! itemFontSize().isEmpty() )
+    if ( !itemFontSize().isEmpty() )
       font.setPointSizeF( itemFontSizeAsDouble() );
 
     if ( !itemFontFamily().isEmpty() )
@@ -1499,13 +1494,13 @@ namespace QgsWms
     // LAYER
     QList<QgsWmsParameter> cLayer { mWmsParameters.values( QgsWmsParameter::LAYER ) };
     // Sort by map id
-    std::sort( cLayer.begin(), cLayer.end(), []( const QgsWmsParameter & a, const QgsWmsParameter & b ) -> bool { return a.mMapId < b.mMapId; } );
+    std::sort( cLayer.begin(), cLayer.end(), []( const QgsWmsParameter &a, const QgsWmsParameter &b ) -> bool { return a.mMapId < b.mMapId; } );
     for ( const QgsWmsParameter &param : std::as_const( cLayer ) )
     {
       const QStringList layersList { param.toStringList() };
       for ( const QString &layerName : std::as_const( layersList ) )
       {
-        if ( ! result.contains( layerName ) )
+        if ( !result.contains( layerName ) )
           result.append( layerName );
       }
     }
@@ -1513,13 +1508,13 @@ namespace QgsWms
     // LAYERS
     QList<QgsWmsParameter> cLayers { mWmsParameters.values( QgsWmsParameter::LAYERS ) };
     // Sort by map id
-    std::sort( cLayers.begin(), cLayers.end(), []( const QgsWmsParameter & a, const QgsWmsParameter & b ) -> bool { return a.mMapId < b.mMapId; } );
+    std::sort( cLayers.begin(), cLayers.end(), []( const QgsWmsParameter &a, const QgsWmsParameter &b ) -> bool { return a.mMapId < b.mMapId; } );
     for ( const QgsWmsParameter &param : std::as_const( cLayers ) )
     {
       const QStringList layersList { param.toStringList() };
       for ( const QString &layerName : std::as_const( layersList ) )
       {
-        if ( ! result.contains( layerName ) )
+        if ( !result.contains( layerName ) )
           result.append( layerName );
       }
     }
@@ -1548,16 +1543,16 @@ namespace QgsWms
     for ( int i = 0; i < rawFilters.size(); i++ )
     {
       const QString f = rawFilters[i];
-      if ( f.startsWith( QLatin1Char( '<' ) ) \
-           && f.endsWith( QLatin1String( "Filter>" ) ) \
-           &&  i < layers.size() )
+      if ( f.startsWith( QLatin1Char( '<' ) )
+           && f.endsWith( QLatin1String( "Filter>" ) )
+           && i < layers.size() )
       {
         QgsWmsParametersFilter filter;
         filter.mFilter = f;
         filter.mType = QgsWmsParametersFilter::OGC_FE;
         filter.mVersion = QgsOgcUtils::FILTER_OGC_1_0;
 
-        if ( filter.mFilter.contains( nsWfs2 ) \
+        if ( filter.mFilter.contains( nsWfs2 )
              || filter.mFilter.contains( prefixWfs2 ) )
         {
           filter.mVersion = QgsOgcUtils::FILTER_FES_2_0;
@@ -1600,7 +1595,7 @@ namespace QgsWms
 
     if ( options.contains( DxfFormatOption::FORCE_2D ) )
     {
-      force2D = QVariant( options[ DxfFormatOption::FORCE_2D ] ).toBool();
+      force2D = QVariant( options[DxfFormatOption::FORCE_2D] ).toBool();
     }
 
     return force2D;
@@ -1613,7 +1608,7 @@ namespace QgsWms
 
     if ( options.contains( DxfFormatOption::EXPORT_LINES_WITH_ZERO_WIDTH ) )
     {
-      zeroWidth = QVariant( options[ DxfFormatOption::EXPORT_LINES_WITH_ZERO_WIDTH ] ).toBool();
+      zeroWidth = QVariant( options[DxfFormatOption::EXPORT_LINES_WITH_ZERO_WIDTH] ).toBool();
     }
 
     return zeroWidth;
@@ -1626,7 +1621,7 @@ namespace QgsWms
 
     if ( options.contains( DxfFormatOption::NO_MTEXT ) )
     {
-      noMText = QVariant( options[ DxfFormatOption::NO_MTEXT ] ).toBool();
+      noMText = QVariant( options[DxfFormatOption::NO_MTEXT] ).toBool();
     }
 
     return noMText;
@@ -1746,7 +1741,7 @@ namespace QgsWms
         param.mWeight = weights[i];
 
       if ( i < fonts.count() )
-        param.mFont = fonts[ i ];
+        param.mFont = fonts[i];
 
       if ( i < bufferColors.count() )
         param.mBufferColor = bufferColors[i];
@@ -1767,7 +1762,6 @@ namespace QgsWms
         param.mVali = vali[i];
 
 
-
       params.append( param );
     }
 
@@ -1776,7 +1770,7 @@ namespace QgsWms
 
   QList<QgsWmsParametersExternalLayer> QgsWmsParameters::externalLayersParameters() const
   {
-    auto notExternalLayer = []( const QString & name ) { return ! QgsWmsParameters::isExternalLayer( name ); };
+    auto notExternalLayer = []( const QString &name ) { return !QgsWmsParameters::isExternalLayer( name ); };
 
     QList<QgsWmsParametersExternalLayer> externalLayers;
 
@@ -2019,7 +2013,7 @@ namespace QgsWms
         hParam.mWeight = weights[i];
 
       if ( i < fonts.count() )
-        hParam.mFont = fonts[ i ];
+        hParam.mFont = fonts[i];
 
       if ( i < bufferColors.count() )
         hParam.mBufferColor = bufferColors[i];
@@ -2048,7 +2042,6 @@ namespace QgsWms
 
   QString QgsWmsParameters::externalWMSUri( const QString &layerId ) const
   {
-
     // Param names may be uppercased.
     QString id { layerId };
 
@@ -2067,7 +2060,7 @@ namespace QgsWms
     }
 
     QgsDataSourceUri wmsUri;
-    const QMap<QString, QString> &paramMap = mExternalWMSParameters[ id ];
+    const QMap<QString, QString> &paramMap = mExternalWMSParameters[id];
     QMap<QString, QString>::const_iterator paramIt = paramMap.constBegin();
     for ( ; paramIt != paramMap.constEnd(); ++paramIt )
     {
@@ -2136,10 +2129,7 @@ namespace QgsWms
   {
     const QString mStr = withMapTipAsString();
 
-    if ( mStr.startsWith( QLatin1String( "true" ), Qt::CaseInsensitive ) ||
-         mStr.startsWith( QLatin1String( "on" ), Qt::CaseInsensitive ) ||
-         mStr.startsWith( QLatin1String( "yes" ), Qt::CaseInsensitive ) ||
-         mStr.startsWith( QLatin1Char( '1' ) ) )
+    if ( mStr.startsWith( QLatin1String( "true" ), Qt::CaseInsensitive ) || mStr.startsWith( QLatin1String( "on" ), Qt::CaseInsensitive ) || mStr.startsWith( QLatin1String( "yes" ), Qt::CaseInsensitive ) || mStr.startsWith( QLatin1Char( '1' ) ) )
       return true;
     else
       return false;
@@ -2213,7 +2203,7 @@ namespace QgsWms
 
     if ( options.contains( DxfFormatOption::LAYERATTRIBUTES ) )
     {
-      attributes = options[ DxfFormatOption::LAYERATTRIBUTES ].split( ',' );
+      attributes = options[DxfFormatOption::LAYERATTRIBUTES].split( ',' );
     }
 
     return attributes;
@@ -2226,7 +2216,7 @@ namespace QgsWms
 
     if ( options.contains( DxfFormatOption::USE_TITLE_AS_LAYERNAME ) )
     {
-      use = QVariant( options[ DxfFormatOption::USE_TITLE_AS_LAYERNAME ] ).toBool();
+      use = QVariant( options[DxfFormatOption::USE_TITLE_AS_LAYERNAME] ).toBool();
     }
 
     return use;
@@ -2239,7 +2229,7 @@ namespace QgsWms
     double scale = -1;
     if ( options.contains( DxfFormatOption::SCALE ) )
     {
-      scale = options[ DxfFormatOption::SCALE ].toDouble();
+      scale = options[DxfFormatOption::SCALE].toDouble();
     }
 
     return scale;
@@ -2251,12 +2241,12 @@ namespace QgsWms
 
     Qgis::FeatureSymbologyExport symbol = Qgis::FeatureSymbologyExport::NoSymbology;
 
-    if ( ! options.contains( DxfFormatOption::MODE ) )
+    if ( !options.contains( DxfFormatOption::MODE ) )
     {
       return symbol;
     }
 
-    const QString mode = options[ DxfFormatOption::MODE ];
+    const QString mode = options[DxfFormatOption::MODE];
     if ( mode.compare( QLatin1String( "SymbolLayerSymbology" ), Qt::CaseInsensitive ) == 0 )
     {
       symbol = Qgis::FeatureSymbologyExport::PerSymbolLayer;
@@ -2275,7 +2265,7 @@ namespace QgsWms
 
     if ( formatOptions<QgsWmsParameters::DxfFormatOption>().contains( DxfFormatOption::CODEC ) )
     {
-      codec = formatOptions<QgsWmsParameters::DxfFormatOption>()[ DxfFormatOption::CODEC ];
+      codec = formatOptions<QgsWmsParameters::DxfFormatOption>()[DxfFormatOption::CODEC];
     }
 
     return codec;
@@ -2447,4 +2437,4 @@ namespace QgsWms
     }
     return dimValues;
   }
-}
+} // namespace QgsWms

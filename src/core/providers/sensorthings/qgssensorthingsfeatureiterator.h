@@ -25,7 +25,6 @@
 
 class QgsSensorThingsFeatureSource : public QgsAbstractFeatureSource
 {
-
   public:
     QgsSensorThingsFeatureSource( const std::shared_ptr<QgsSensorThingsSharedData> &sharedData );
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
@@ -53,12 +52,12 @@ class QgsSensorThingsFeatureIterator : public QgsAbstractFeatureIteratorFromSour
   private:
     QgsFeatureId mFeatureIterator = 0;
 
-    QList< QgsFeatureId > mRequestFeatureIdList;
+    QList<QgsFeatureId> mRequestFeatureIdList;
 
     // Feature IDs from current page to fetch
-    QList< QgsFeatureId > mCurrentPageFeatureIdList;
+    QList<QgsFeatureId> mCurrentPageFeatureIdList;
     // Remaining feature IDs which haven't yet been fetched
-    QList< QgsFeatureId > mRemainingFeatureIds;
+    QList<QgsFeatureId> mRemainingFeatureIds;
 
     QgsFeatureIds mAlreadyFetchedIds;
 
@@ -66,7 +65,7 @@ class QgsSensorThingsFeatureIterator : public QgsAbstractFeatureIteratorFromSour
     QgsRectangle mFilterRect;
     QgsRectangle mGeometryTestFilterRect;
     QgsGeometry mDistanceWithinGeom;
-    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
+    std::unique_ptr<QgsGeometryEngine> mDistanceWithinEngine;
 
     QgsFeedback *mInterruptionChecker = nullptr;
     bool mDeferredFeaturesInFilterRectCheck = false;

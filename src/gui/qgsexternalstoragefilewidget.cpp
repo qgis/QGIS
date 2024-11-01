@@ -82,7 +82,7 @@ void QgsExternalStorageFileWidget::setReadOnly( bool readOnly )
 
 void QgsExternalStorageFileWidget::updateAcceptDrops()
 {
-  setAcceptDrops( !mReadOnly &&  mExternalStorage );
+  setAcceptDrops( !mReadOnly && mExternalStorage );
 }
 
 QString QgsExternalStorageFileWidget::storageType() const
@@ -141,8 +141,8 @@ QgsExpressionContextScope *QgsExternalStorageFileWidget::createFileWidgetScope()
 {
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "FileWidget" ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable(
-                        QStringLiteral( FILEPATH_VARIABLE ),
-                        QString(), true, false, tr( "User selected absolute filepath" ) ) );
+    QStringLiteral( FILEPATH_VARIABLE ),
+    QString(), true, false, tr( "User selected absolute filepath" ) ) );
   return scope;
 }
 
@@ -178,9 +178,7 @@ void QgsExternalStorageFileWidget::updateLayout()
   mFileWidgetButton->setEnabled( !mReadOnly );
   mLineEdit->setEnabled( !mReadOnly );
 
-  mLinkEditButton->setIcon( linkVisible && !mReadOnly ?
-                            QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) :
-                            QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveEdits.svg" ) ) );
+  mLinkEditButton->setIcon( linkVisible && !mReadOnly ? QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) : QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveEdits.svg" ) ) );
 }
 
 void QgsExternalStorageFileWidget::setSelectedFileNames( QStringList fileNames )
@@ -245,8 +243,7 @@ void QgsExternalStorageFileWidget::storeExternalFiles( QStringList fileNames, QS
   connect( storedContent, &QgsExternalStorageStoredContent::progressChanged, mProgressBar, &QProgressBar::setValue );
   connect( mCancelButton, &QToolButton::clicked, storedContent, &QgsExternalStorageStoredContent::cancel );
 
-  auto onStoreFinished = [ = ]
-  {
+  auto onStoreFinished = [=] {
     mStoreInProgress = false;
     updateLayout();
     storedContent->deleteLater();

@@ -34,7 +34,6 @@ bool QgsMapLayerElevationProperties::hasElevation() const
 
 void QgsMapLayerElevationProperties::setDefaultsFromLayer( QgsMapLayer * )
 {
-
 }
 
 QString QgsMapLayerElevationProperties::htmlSummary() const
@@ -124,8 +123,7 @@ void QgsMapLayerElevationProperties::setDataDefinedProperties( const QgsProperty
 QgsPropertiesDefinition QgsMapLayerElevationProperties::propertyDefinitions()
 {
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]( )
-  {
+  std::call_once( initialized, [=]() {
     initPropertyDefinitions();
   } );
   return sPropertyDefinitions;
@@ -135,11 +133,10 @@ void QgsMapLayerElevationProperties::initPropertyDefinitions()
 {
   const QString origin = QStringLiteral( "elevation" );
 
-  sPropertyDefinitions = QgsPropertiesDefinition
-  {
-    { static_cast< int >( QgsMapLayerElevationProperties::Property::ZOffset ), QgsPropertyDefinition( "ZOffset", QObject::tr( "Offset" ), QgsPropertyDefinition::Double, origin ) },
-    { static_cast< int >( QgsMapLayerElevationProperties::Property::ExtrusionHeight ), QgsPropertyDefinition( "ExtrusionHeight", QObject::tr( "Extrusion height" ), QgsPropertyDefinition::DoublePositive, origin ) },
-    { static_cast< int >( QgsMapLayerElevationProperties::Property::RasterPerBandLowerElevation ), QgsPropertyDefinition( "RasterPerBandLowerElevation", QObject::tr( "Lower elevation for band" ), QgsPropertyDefinition::Double, origin ) },
-    { static_cast< int >( QgsMapLayerElevationProperties::Property::RasterPerBandUpperElevation ), QgsPropertyDefinition( "RasterPerBandUpperElevation", QObject::tr( "Upper elevation for band" ), QgsPropertyDefinition::Double, origin ) },
+  sPropertyDefinitions = QgsPropertiesDefinition {
+    { static_cast<int>( QgsMapLayerElevationProperties::Property::ZOffset ), QgsPropertyDefinition( "ZOffset", QObject::tr( "Offset" ), QgsPropertyDefinition::Double, origin ) },
+    { static_cast<int>( QgsMapLayerElevationProperties::Property::ExtrusionHeight ), QgsPropertyDefinition( "ExtrusionHeight", QObject::tr( "Extrusion height" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { static_cast<int>( QgsMapLayerElevationProperties::Property::RasterPerBandLowerElevation ), QgsPropertyDefinition( "RasterPerBandLowerElevation", QObject::tr( "Lower elevation for band" ), QgsPropertyDefinition::Double, origin ) },
+    { static_cast<int>( QgsMapLayerElevationProperties::Property::RasterPerBandUpperElevation ), QgsPropertyDefinition( "RasterPerBandUpperElevation", QObject::tr( "Upper elevation for band" ), QgsPropertyDefinition::Double, origin ) },
   };
 }

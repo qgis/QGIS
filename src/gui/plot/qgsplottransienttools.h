@@ -31,11 +31,9 @@
  */
 class GUI_EXPORT QgsPlotToolTemporaryKeyPan : public QgsPlotTool
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsPlotToolTemporaryKeyPan.
      */
@@ -46,10 +44,8 @@ class GUI_EXPORT QgsPlotToolTemporaryKeyPan : public QgsPlotTool
     void activate() override;
 
   private:
-
     QPoint mLastMousePos;
-    QPointer< QgsPlotTool > mPreviousTool;
-
+    QPointer<QgsPlotTool> mPreviousTool;
 };
 
 /**
@@ -59,11 +55,9 @@ class GUI_EXPORT QgsPlotToolTemporaryKeyPan : public QgsPlotTool
  */
 class GUI_EXPORT QgsPlotToolTemporaryMousePan : public QgsPlotTool
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsPlotToolTemporaryMousePan.
      */
@@ -74,10 +68,8 @@ class GUI_EXPORT QgsPlotToolTemporaryMousePan : public QgsPlotTool
     void activate() override;
 
   private:
-
     QPoint mLastMousePos;
-    QPointer< QgsPlotTool > mPreviousTool;
-
+    QPointer<QgsPlotTool> mPreviousTool;
 };
 
 /**
@@ -87,11 +79,9 @@ class GUI_EXPORT QgsPlotToolTemporaryMousePan : public QgsPlotTool
  */
 class GUI_EXPORT QgsPlotToolTemporaryKeyZoom : public QgsPlotToolZoom
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsPlotToolTemporaryKeyZoom.
      */
@@ -103,8 +93,7 @@ class GUI_EXPORT QgsPlotToolTemporaryKeyZoom : public QgsPlotToolZoom
     void activate() override;
 
   private:
-
-    QPointer< QgsPlotTool > mPreviousViewTool;
+    QPointer<QgsPlotTool> mPreviousViewTool;
 
     bool mDeactivateOnMouseRelease = false;
 

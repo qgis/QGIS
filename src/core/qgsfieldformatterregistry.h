@@ -41,7 +41,6 @@ class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * You should not normally need to create your own field formatter registry.
      *

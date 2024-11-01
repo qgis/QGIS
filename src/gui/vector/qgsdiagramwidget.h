@@ -58,7 +58,6 @@ class GUI_EXPORT QgsDiagramWidget : public QgsMapLayerConfigWidget, private Ui::
     void showEngineConfigDialog();
 
   private:
-
     enum Mode
     {
       ModeNone,

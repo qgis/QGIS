@@ -20,8 +20,7 @@
 #include <QMessageBox>
 
 QgsFileDownloaderDialog::QgsFileDownloaderDialog( const QUrl &url, const QString &outputFileName, const QString &authcfg )
-  : mOutputFileName( outputFileName ),
-    mDownloader( new QgsFileDownloader( url, outputFileName, authcfg, true ) )
+  : mOutputFileName( outputFileName ), mDownloader( new QgsFileDownloader( url, outputFileName, authcfg, true ) )
 {
   setWindowTitle( tr( "Download" ) );
   setLabelText( tr( "Downloading %1." ).arg( outputFileName ) );
@@ -51,4 +50,3 @@ void QgsFileDownloaderDialog::onDownloadProgress( qint64 bytesReceived, qint64 b
   setValue( bytesReceived );
   setLabelText( tr( "Downloading %1 of %2 %3." ).arg( QgsFileUtils::representFileSize( bytesReceived ), QgsFileUtils::representFileSize( bytesTotal ), mOutputFileName ) );
 }
-

@@ -30,12 +30,11 @@
  *
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsHighlightableLineEdit: public QgsFilterLineEdit
+class GUI_EXPORT QgsHighlightableLineEdit : public QgsFilterLineEdit
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsHighlightableLineEdit, with the specified \a parent widget.
      */
@@ -57,7 +56,6 @@ class GUI_EXPORT QgsHighlightableLineEdit: public QgsFilterLineEdit
     void paintEvent( QPaintEvent *e ) override;
 
   private:
-
     bool mHighlight = false;
 };
 

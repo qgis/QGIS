@@ -15,7 +15,7 @@
 
 #include "qgsthreadingutils.h"
 
-#if defined(QGISDEBUG)
-QSet< QString > QgsThreadingUtils::sEmittedWarnings;
+#if defined( QGISDEBUG )
+QSet<QString> QgsThreadingUtils::sEmittedWarnings;
 QMutex QgsThreadingUtils::sEmittedWarningMutex;
 #endif

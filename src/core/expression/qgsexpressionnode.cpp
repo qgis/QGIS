@@ -71,7 +71,6 @@ QgsExpressionNode::QgsExpressionNode( const QgsExpressionNode &other )
   , mCachedStaticValue( other.mCachedStaticValue )
   , mCompiledSimplifiedNode( other.mCompiledSimplifiedNode ? other.mCompiledSimplifiedNode->clone() : nullptr )
 {
-
 }
 
 QgsExpressionNode &QgsExpressionNode::operator=( const QgsExpressionNode &other )
@@ -97,4 +96,3 @@ void QgsExpressionNode::cloneTo( QgsExpressionNode *target ) const
   target->parserFirstColumn = parserFirstColumn;
   target->parserFirstLine = parserFirstLine;
 }
-

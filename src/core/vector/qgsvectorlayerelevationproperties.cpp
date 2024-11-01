@@ -97,7 +97,7 @@ bool QgsVectorLayerElevationProperties::readXml( const QDomElement &element, con
   if ( elevationElement.hasAttribute( QStringLiteral( "elevationLimit" ) ) )
     mElevationLimit = elevationElement.attribute( QStringLiteral( "elevationLimit" ) ).toDouble();
   else
-    mElevationLimit = std::numeric_limits< double >::quiet_NaN();
+    mElevationLimit = std::numeric_limits<double>::quiet_NaN();
 
   mShowMarkerSymbolInSurfacePlots = elevationElement.attribute( QStringLiteral( "showMarkerSymbolInSurfacePlots" ), QStringLiteral( "0" ) ).toInt();
 
@@ -106,17 +106,17 @@ bool QgsVectorLayerElevationProperties::readXml( const QDomElement &element, con
   const QColor color = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
 
   const QDomElement profileLineSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileLineSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-  mProfileLineSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( profileLineSymbolElement, context ) );
+  mProfileLineSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( profileLineSymbolElement, context ) );
   if ( !mProfileLineSymbol )
     setDefaultProfileLineSymbol( color );
 
   const QDomElement profileFillSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileFillSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-  mProfileFillSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( profileFillSymbolElement, context ) );
+  mProfileFillSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( profileFillSymbolElement, context ) );
   if ( !mProfileFillSymbol )
     setDefaultProfileFillSymbol( color );
 
   const QDomElement profileMarkerSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileMarkerSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-  mProfileMarkerSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( profileMarkerSymbolElement, context ) );
+  mProfileMarkerSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( profileMarkerSymbolElement, context ) );
   if ( !mProfileMarkerSymbol )
     setDefaultProfileMarkerSymbol( color );
 
@@ -125,7 +125,7 @@ bool QgsVectorLayerElevationProperties::readXml( const QDomElement &element, con
 
 void QgsVectorLayerElevationProperties::setDefaultsFromLayer( QgsMapLayer *layer )
 {
-  QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( layer );
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
     return;
 
@@ -151,7 +151,7 @@ void QgsVectorLayerElevationProperties::setDefaultsFromLayer( QgsMapLayer *layer
 
 QgsVectorLayerElevationProperties *QgsVectorLayerElevationProperties::clone() const
 {
-  std::unique_ptr< QgsVectorLayerElevationProperties > res = std::make_unique< QgsVectorLayerElevationProperties >( nullptr );
+  std::unique_ptr<QgsVectorLayerElevationProperties> res = std::make_unique<QgsVectorLayerElevationProperties>( nullptr );
   res->setClamping( mClamping );
   res->setBinding( mBinding );
   res->setType( mType );
@@ -388,23 +388,23 @@ void QgsVectorLayerElevationProperties::setShowMarkerSymbolInSurfacePlots( bool 
 
 void QgsVectorLayerElevationProperties::setDefaultProfileLineSymbol( const QColor &color )
 {
-  std::unique_ptr< QgsSimpleLineSymbolLayer > profileLineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( color, 0.6 );
-  mProfileLineSymbol = std::make_unique< QgsLineSymbol>( QgsSymbolLayerList( { profileLineLayer.release() } ) );
+  std::unique_ptr<QgsSimpleLineSymbolLayer> profileLineLayer = std::make_unique<QgsSimpleLineSymbolLayer>( color, 0.6 );
+  mProfileLineSymbol = std::make_unique<QgsLineSymbol>( QgsSymbolLayerList( { profileLineLayer.release() } ) );
 }
 
 void QgsVectorLayerElevationProperties::setDefaultProfileMarkerSymbol( const QColor &color )
 {
-  std::unique_ptr< QgsSimpleMarkerSymbolLayer > profileMarkerLayer = std::make_unique< QgsSimpleMarkerSymbolLayer >( Qgis::MarkerShape::Diamond, 3 );
+  std::unique_ptr<QgsSimpleMarkerSymbolLayer> profileMarkerLayer = std::make_unique<QgsSimpleMarkerSymbolLayer>( Qgis::MarkerShape::Diamond, 3 );
   profileMarkerLayer->setColor( color );
   profileMarkerLayer->setStrokeWidth( 0.2 );
   profileMarkerLayer->setStrokeColor( color.darker( 140 ) );
-  mProfileMarkerSymbol = std::make_unique< QgsMarkerSymbol>( QgsSymbolLayerList( { profileMarkerLayer.release() } ) );
+  mProfileMarkerSymbol = std::make_unique<QgsMarkerSymbol>( QgsSymbolLayerList( { profileMarkerLayer.release() } ) );
 }
 
 void QgsVectorLayerElevationProperties::setDefaultProfileFillSymbol( const QColor &color )
 {
-  std::unique_ptr< QgsSimpleFillSymbolLayer > profileFillLayer = std::make_unique< QgsSimpleFillSymbolLayer >( color );
+  std::unique_ptr<QgsSimpleFillSymbolLayer> profileFillLayer = std::make_unique<QgsSimpleFillSymbolLayer>( color );
   profileFillLayer->setStrokeWidth( 0.2 );
   profileFillLayer->setStrokeColor( color.darker( 140 ) );
-  mProfileFillSymbol = std::make_unique< QgsFillSymbol>( QgsSymbolLayerList( { profileFillLayer.release() } ) );
+  mProfileFillSymbol = std::make_unique<QgsFillSymbol>( QgsSymbolLayerList( { profileFillLayer.release() } ) );
 }

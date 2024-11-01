@@ -55,29 +55,29 @@ class QgsMeshLayerRendererFeedback : public QgsRasterBlockFeedback
  */
 struct CORE_NO_EXPORT QgsMeshLayerRendererCache
 {
-  int mDatasetGroupsCount = 0;
+    int mDatasetGroupsCount = 0;
 
-  // scalar dataset
-  QgsMeshDatasetIndex mActiveScalarDatasetIndex;
-  QVector<double> mScalarDatasetValues;
-  QgsMeshDataBlock mScalarActiveFaceFlagValues;
-  QgsMeshDatasetGroupMetadata::DataType mScalarDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
-  double mScalarDatasetMinimum = std::numeric_limits<double>::quiet_NaN();
-  double mScalarDatasetMaximum = std::numeric_limits<double>::quiet_NaN();
-  QgsMeshRendererScalarSettings::DataResamplingMethod mDataInterpolationMethod = QgsMeshRendererScalarSettings::NoResampling;
-  std::unique_ptr<QgsMesh3DAveragingMethod> mScalarAveragingMethod;
+    // scalar dataset
+    QgsMeshDatasetIndex mActiveScalarDatasetIndex;
+    QVector<double> mScalarDatasetValues;
+    QgsMeshDataBlock mScalarActiveFaceFlagValues;
+    QgsMeshDatasetGroupMetadata::DataType mScalarDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
+    double mScalarDatasetMinimum = std::numeric_limits<double>::quiet_NaN();
+    double mScalarDatasetMaximum = std::numeric_limits<double>::quiet_NaN();
+    QgsMeshRendererScalarSettings::DataResamplingMethod mDataInterpolationMethod = QgsMeshRendererScalarSettings::NoResampling;
+    std::unique_ptr<QgsMesh3DAveragingMethod> mScalarAveragingMethod;
 
-  // vector dataset
-  QgsMeshDatasetIndex mActiveVectorDatasetIndex;
-  QgsMeshDataBlock mVectorDatasetValues;
-  QgsMeshDataBlock mVectorActiveFaceFlagValues;
-  QVector<double> mVectorDatasetValuesMag;
-  double mVectorDatasetMagMinimum = std::numeric_limits<double>::quiet_NaN();
-  double mVectorDatasetMagMaximum = std::numeric_limits<double>::quiet_NaN();
-  double mVectorDatasetGroupMagMinimum = std::numeric_limits<double>::quiet_NaN();
-  double mVectorDatasetGroupMagMaximum = std::numeric_limits<double>::quiet_NaN();
-  QgsMeshDatasetGroupMetadata::DataType mVectorDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
-  std::unique_ptr<QgsMesh3DAveragingMethod> mVectorAveragingMethod;
+    // vector dataset
+    QgsMeshDatasetIndex mActiveVectorDatasetIndex;
+    QgsMeshDataBlock mVectorDatasetValues;
+    QgsMeshDataBlock mVectorActiveFaceFlagValues;
+    QVector<double> mVectorDatasetValuesMag;
+    double mVectorDatasetMagMinimum = std::numeric_limits<double>::quiet_NaN();
+    double mVectorDatasetMagMaximum = std::numeric_limits<double>::quiet_NaN();
+    double mVectorDatasetGroupMagMinimum = std::numeric_limits<double>::quiet_NaN();
+    double mVectorDatasetGroupMagMaximum = std::numeric_limits<double>::quiet_NaN();
+    QgsMeshDatasetGroupMetadata::DataType mVectorDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
+    std::unique_ptr<QgsMesh3DAveragingMethod> mVectorAveragingMethod;
 };
 
 
@@ -161,7 +161,7 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     // copy of rendering settings
     QgsMeshRendererSettings mRendererSettings;
 
-    QList< QgsMapClippingRegion > mClippingRegions;
+    QList<QgsMapClippingRegion> mClippingRegions;
 
     // output screen size
     QSize mOutputSize;
@@ -174,7 +174,6 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     quint64 mPreparationTime = 0;
 
   private:
-
     double mLayerOpacity = 1.0;
 };
 

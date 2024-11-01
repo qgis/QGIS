@@ -41,7 +41,6 @@
 class CORE_EXPORT QgsPointCloudRequest
 {
   public:
-
     QgsPointCloudRequest();
 
     bool operator==( const QgsPointCloudRequest &other ) const;
@@ -63,6 +62,7 @@ class CORE_EXPORT QgsPointCloudRequest
      * \since QGIS 3.30
      */
     void setFilterRect( QgsRectangle extent ) { mFilterRect = extent; }
+
   private:
     QgsPointCloudAttributeCollection mAttributes;
     QgsRectangle mFilterRect;

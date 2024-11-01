@@ -29,7 +29,7 @@
 class QgsCopcPointCloudIndex;
 class QgsRemoteCopcPointCloudIndex;
 
-class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
+class CORE_EXPORT QgsVirtualPointCloudProvider : public QgsPointCloudDataProvider
 {
     Q_OBJECT
   public:
@@ -51,9 +51,9 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
     QgsPointCloudIndex *index() const override;
     qint64 pointCount() const override;
     QVariantMap originalMetadata() const override;
-    void loadIndex( ) override;
-    void generateIndex( ) override;
-    PointCloudIndexGenerationState indexingState( ) override { return PointCloudIndexGenerationState::Indexed; }
+    void loadIndex() override;
+    void generateIndex() override;
+    PointCloudIndexGenerationState indexingState() override { return PointCloudIndexGenerationState::Indexed; }
     QgsGeometry polygonBounds() const override;
     QVector<QgsPointCloudSubIndex> subIndexes() override { return mSubLayers; }
     void loadSubIndex( int i ) override;
@@ -86,14 +86,14 @@ class QgsVirtualPointCloudProviderMetadata : public QgsProviderMetadata
     QIcon icon() const override;
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QgsVirtualPointCloudProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
+    QList<QgsProviderSublayerDetails> querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
     int priorityForUri( const QString &uri ) const override;
-    QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const override;
+    QList<Qgis::LayerType> validLayerTypesForUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString filters( Qgis::FileFilterType type ) override;
     ProviderCapabilities providerCapabilities() const override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 ///@endcond

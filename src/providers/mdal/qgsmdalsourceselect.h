@@ -43,7 +43,6 @@ class QgsMdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsM
 
   private:
     QString mMeshPath;
-
 };
 
 #endif // QGMDALSOURCESELECT_H

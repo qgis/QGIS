@@ -35,13 +35,13 @@ QgsAbstractReportSection::~QgsAbstractReportSection()
 
 QgsProject *QgsAbstractReportSection::project()
 {
-  if ( QgsReport *report = dynamic_cast< QgsReport * >( this ) )
+  if ( QgsReport *report = dynamic_cast<QgsReport *>( this ) )
     return report->layoutProject();
 
   QgsAbstractReportSection *current = this;
   while ( QgsAbstractReportSection *parent = current->parentSection() )
   {
-    if ( QgsReport *report = dynamic_cast< QgsReport * >( parent ) )
+    if ( QgsReport *report = dynamic_cast<QgsReport *>( parent ) )
       return report->layoutProject();
 
     current = parent;
@@ -51,8 +51,7 @@ QgsProject *QgsAbstractReportSection::project()
 
 void QgsAbstractReportSection::setContext( const QgsReportSectionContext &context )
 {
-  auto setReportContext = [&context]( QgsLayout * layout )
-  {
+  auto setReportContext = [&context]( QgsLayout *layout ) {
     if ( context.currentLayer )
     {
       layout->reportContext().blockSignals( true );
@@ -118,7 +117,7 @@ bool QgsAbstractReportSection::readXml( const QDomElement &element, const QDomDo
   if ( !headerElement.isNull() )
   {
     const QDomElement headerLayoutElem = headerElement.firstChild().toElement();
-    std::unique_ptr< QgsLayout > header = std::make_unique< QgsLayout >( project() );
+    std::unique_ptr<QgsLayout> header = std::make_unique<QgsLayout>( project() );
     header->readXml( headerLayoutElem, doc, context );
     mHeader = std::move( header );
   }
@@ -126,7 +125,7 @@ bool QgsAbstractReportSection::readXml( const QDomElement &element, const QDomDo
   if ( !footerElement.isNull() )
   {
     const QDomElement footerLayoutElem = footerElement.firstChild().toElement();
-    std::unique_ptr< QgsLayout > footer = std::make_unique< QgsLayout >( project() );
+    std::unique_ptr<QgsLayout> footer = std::make_unique<QgsLayout>( project() );
     footer->readXml( footerLayoutElem, doc, context );
     mFooter = std::move( footer );
   }
@@ -141,21 +140,21 @@ bool QgsAbstractReportSection::readXml( const QDomElement &element, const QDomDo
     const QString sectionType = currentSectionElem.attribute( QStringLiteral( "type" ) );
 
     //TODO - eventually move this to a registry when there's enough subclasses to warrant it
-    std::unique_ptr< QgsAbstractReportSection > section;
+    std::unique_ptr<QgsAbstractReportSection> section;
     if ( sectionType == QLatin1String( "SectionFieldGroup" ) )
     {
-      section = std::make_unique< QgsReportSectionFieldGroup >();
+      section = std::make_unique<QgsReportSectionFieldGroup>();
     }
     else if ( sectionType == QLatin1String( "SectionLayout" ) )
     {
-      section = std::make_unique< QgsReportSectionLayout >();
+      section = std::make_unique<QgsReportSectionLayout>();
     }
 
     if ( section )
     {
       appendChild( section.get() );
       section->readXml( currentSectionElem, doc, context );
-      ( void )section.release(); //ownership was transferred already
+      ( void ) section.release(); //ownership was transferred already
     }
   }
 
@@ -320,8 +319,7 @@ bool QgsAbstractReportSection::next()
         mCurrentLayout = body;
         return true;
       }
-    }
-    while ( bodiesAvailable );
+    } while ( bodiesAvailable );
 
     // all children and bodies have spent their content, so move to the footer
     mNextSection = Footer;
@@ -470,4 +468,3 @@ bool QgsAbstractReportSection::readPropertiesFromElement( const QDomElement &, c
 }
 
 ///@endcond
-

@@ -32,7 +32,6 @@
 class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
 {
   public:
-
     /**
      * Constructor for QgsAnnotationMarkerItem, at the specified \a point.
      */
@@ -43,7 +42,7 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     Qgis::AnnotationItemFlags flags() const override;
-    QList< QgsAnnotationItemNode > nodesV2( const QgsAnnotationItemEditContext &context ) const override;
+    QList<QgsAnnotationItemNode> nodesV2( const QgsAnnotationItemEditContext &context ) const override;
     Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) override;
     QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) override SIP_FACTORY;
 
@@ -92,14 +91,12 @@ class CORE_EXPORT QgsAnnotationMarkerItem : public QgsAnnotationItem
     void setSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
 
   private:
-
     QgsPoint mPoint;
-    std::unique_ptr< QgsMarkerSymbol > mSymbol;
+    std::unique_ptr<QgsMarkerSymbol> mSymbol;
 
 #ifdef SIP_RUN
     QgsAnnotationMarkerItem( const QgsAnnotationMarkerItem &other );
 #endif
-
 };
 
 #endif // QGSANNOTATIONMARKERITEM_H

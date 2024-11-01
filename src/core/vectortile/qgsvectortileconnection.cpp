@@ -62,7 +62,7 @@ QString QgsVectorTileProviderConnection::encodedUri( const QgsVectorTileProvider
   if ( !conn.password.isEmpty() )
     uri.setPassword( conn.password );
   if ( !conn.styleUrl.isEmpty() )
-    uri.setParam( QStringLiteral( "styleUrl" ),  conn.styleUrl );
+    uri.setParam( QStringLiteral( "styleUrl" ), conn.styleUrl );
 
   uri.setHttpHeaders( conn.httpHeaders );
 
@@ -131,7 +131,7 @@ QString QgsVectorTileProviderConnection::encodedLayerUri( const QgsVectorTilePro
   if ( !conn.password.isEmpty() )
     uri.setPassword( conn.password );
   if ( !conn.styleUrl.isEmpty() )
-    uri.setParam( QStringLiteral( "styleUrl" ),  conn.styleUrl );
+    uri.setParam( QStringLiteral( "styleUrl" ), conn.styleUrl );
 
   uri.setHttpHeaders( conn.httpHeaders );
 
@@ -170,7 +170,7 @@ QgsVectorTileProviderConnection::Data QgsVectorTileProviderConnection::connectio
   if ( settingsHeaders->exists( name ) )
     conn.httpHeaders = QgsHttpHeaders( settingsHeaders->value( name ) );
 
-  if ( settingsServiceType->exists( name ) &&  settingsServiceType->value( name ) == QLatin1String( "arcgis" ) )
+  if ( settingsServiceType->exists( name ) && settingsServiceType->value( name ) == QLatin1String( "arcgis" ) )
     conn.serviceType = ArcgisVectorTileService;
 
   return conn;

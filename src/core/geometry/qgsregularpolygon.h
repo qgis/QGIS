@@ -40,14 +40,13 @@
 class CORE_EXPORT QgsRegularPolygon
 {
   public:
-
     /**
      * A regular polygon can be constructed inscribed in a circle or circumscribed about a circle.
      *
      */
     enum ConstructionOption
     {
-      InscribedCircle, //!< Inscribed in a circle (the radius is the distance between the center and vertices)
+      InscribedCircle,    //!< Inscribed in a circle (the radius is the distance between the center and vertices)
       CircumscribedCircle //!< Circumscribed about a circle (the radius is the distance from the center to the midpoints of the sides)
     };
 
@@ -83,8 +82,8 @@ class CORE_EXPORT QgsRegularPolygon
      */
     QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, unsigned int numberSides ) SIP_HOLDGIL;
 
-    bool operator ==( const QgsRegularPolygon &rp ) const SIP_HOLDGIL;
-    bool operator !=( const QgsRegularPolygon &rp ) const SIP_HOLDGIL;
+    bool operator==( const QgsRegularPolygon &rp ) const SIP_HOLDGIL;
+    bool operator!=( const QgsRegularPolygon &rp ) const SIP_HOLDGIL;
 
     //! A regular polygon is empty if radius equal to 0 or number of sides < 3
     bool isEmpty() const SIP_HOLDGIL;
@@ -241,7 +240,6 @@ class CORE_EXPORT QgsRegularPolygon
      * Convenient method for centralAngle used by constructors.
      */
     double centralAngle( unsigned int nbSides ) const;
-
 };
 
 #endif // QGSREGULARPOLYGON_H

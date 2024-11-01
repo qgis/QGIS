@@ -27,18 +27,17 @@
  * \ingroup core
  * \brief A renderer that automatically displaces points with the same geographic location.
 */
-class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
+class CORE_EXPORT QgsPointDisplacementRenderer : public QgsPointDistanceRenderer
 {
   public:
-
     /**
      * Placement methods for dispersing points
      */
     enum Placement
     {
-      Ring, //!< Place points in a single ring around group
+      Ring,            //!< Place points in a single ring around group
       ConcentricRings, //!< Place points in concentric rings around group
-      Grid //!< Place points in a grid around group
+      Grid             //!< Place points in a grid around group
     };
 
     /**
@@ -155,7 +154,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
 #endif
 
     //! Center symbol for a displacement group
-    std::unique_ptr< QgsMarkerSymbol > mCenterSymbol;
+    std::unique_ptr<QgsMarkerSymbol> mCenterSymbol;
 
     //! Displacement placement mode
     Placement mPlacement = Ring;

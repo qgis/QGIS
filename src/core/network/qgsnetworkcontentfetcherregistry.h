@@ -45,10 +45,10 @@ class CORE_EXPORT QgsFetchedContent : public QObject
     //! Status of fetched content
     enum ContentStatus
     {
-      NotStarted, //!< No download started for such URL
+      NotStarted,  //!< No download started for such URL
       Downloading, //!< Currently downloading
-      Finished, //!< Download finished and successful
-      Failed //!< Download failed
+      Finished,    //!< Download finished and successful
+      Failed       //!< Download failed
     };
 
     //! Constructs a FetchedContent with pointer to the downloaded file and status of the download
@@ -70,22 +70,22 @@ class CORE_EXPORT QgsFetchedContent : public QObject
 
 #ifndef SIP_RUN
     //! Returns a pointer to the local file, or NULLPTR if the file is not accessible yet.
-    QFile *file() const {return mFile;}
+    QFile *file() const { return mFile; }
 #endif
 
     //! Returns the path to the local file, an empty string if the file is not accessible yet.
-    const QString filePath() const {return mFilePath;}
+    const QString filePath() const { return mFilePath; }
 
     //! Returns the status of the download
-    ContentStatus status() const {return mStatus;}
+    ContentStatus status() const { return mStatus; }
 
     //! Returns the potential error of the download
-    QNetworkReply::NetworkError error() const {return mError;}
+    QNetworkReply::NetworkError error() const { return mError; }
 
     /**
      * Returns the authentication configuration id use for this fetched content
      */
-    QString authConfig() const {return mAuthConfig;}
+    QString authConfig() const { return mAuthConfig; }
 
   public slots:
 
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsFetchedContent : public QObject
     QString mUrl;
     QTemporaryFile *mFile = nullptr;
     QString mFilePath;
-    QPointer< QgsNetworkContentFetcherTask > mFetchingTask;
+    QPointer<QgsNetworkContentFetcherTask> mFetchingTask;
     ContentStatus mStatus = NotStarted;
     QNetworkReply::NetworkError mError = QNetworkReply::NoError;
     QString mAuthConfig;
@@ -141,7 +141,6 @@ class CORE_EXPORT QgsNetworkContentFetcherRegistry : public QObject
 {
     Q_OBJECT
   public:
-
     //! Create the registry for temporary downloaded files
     explicit QgsNetworkContentFetcherRegistry() = default;
 
@@ -173,7 +172,6 @@ class CORE_EXPORT QgsNetworkContentFetcherRegistry : public QObject
 
   private:
     QMap<QString, QgsFetchedContent *> mFileRegistry;
-
 };
 
 #endif // QGSNETWORKCONTENTFETCHERREGISTRY_H

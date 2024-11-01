@@ -65,7 +65,7 @@ class QgsPointCloudExpressionPrivate
     //! Whether prepare() has been called before evaluate()
     bool mIsPrepared = false;
 
-    QgsPointCloudExpressionPrivate &operator= ( const QgsPointCloudExpressionPrivate & ) = delete;
+    QgsPointCloudExpressionPrivate &operator=( const QgsPointCloudExpressionPrivate & ) = delete;
 };
 
 ///@endcond

@@ -66,9 +66,9 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
     bool hasCharacterFormat( int partId ) const;
 
     //! Gets data-defined values
-    const QMap< QgsPalLayerSettings::Property, QVariant > &dataDefinedValues() const { return mDataDefinedValues; }
+    const QMap<QgsPalLayerSettings::Property, QVariant> &dataDefinedValues() const { return mDataDefinedValues; }
     //! Sets data-defined values
-    void setDataDefinedValues( const QMap< QgsPalLayerSettings::Property, QVariant > &values ) { mDataDefinedValues = values; }
+    void setDataDefinedValues( const QMap<QgsPalLayerSettings::Property, QVariant> &values ) { mDataDefinedValues = values; }
 
     //! Sets font to be used for rendering
     void setDefinedFont( const QFont &f ) { mDefinedFont = f; }
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
      * \since QGIS 3.20
      */
     static QgsPrecalculatedTextMetrics calculateTextMetrics( const QgsMapToPixel *xform, const QgsRenderContext &context, const QFont &baseFont, const QFontMetricsF &fontMetrics, double letterSpacing,
-        double wordSpacing, const QString &text = QString(), QgsTextDocument *document = nullptr, QgsTextDocumentMetrics *metrics = nullptr );
+                                                             double wordSpacing, const QString &text = QString(), QgsTextDocument *document = nullptr, QgsTextDocumentMetrics *metrics = nullptr );
 
     /**
      * Returns the document for the label.
@@ -157,12 +157,11 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
     double maximumCharacterAngleOutside() const { return mMaximumCharacterAngleOutside; }
 
   protected:
-
     //! Font for rendering
     QFont mDefinedFont;
 
     //! Stores attribute values for data defined properties
-    QMap< QgsPalLayerSettings::Property, QVariant > mDataDefinedValues;
+    QMap<QgsPalLayerSettings::Property, QVariant> mDataDefinedValues;
 
     QgsTextDocument mDocument;
     QgsTextDocumentMetrics mDocumentMetrics;
@@ -170,8 +169,7 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
     double mMaximumCharacterAngleInside = 0;
     double mMaximumCharacterAngleOutside = 0;
 
-    std::optional< QgsPrecalculatedTextMetrics > mTextMetrics;
-
+    std::optional<QgsPrecalculatedTextMetrics> mTextMetrics;
 };
 
 #endif //QGSTEXTLABELFEATURE_H

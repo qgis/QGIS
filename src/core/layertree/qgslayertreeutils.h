@@ -39,7 +39,6 @@ class QgsProject;
 class CORE_EXPORT QgsLayerTreeUtils
 {
   public:
-
     //! Try to load layer tree from \verbatim <legend> \endverbatim tag from project files from QGIS 2.2 and below
     static bool readOldLegend( QgsLayerTreeGroup *root, const QDomElement &legendElem );
     //! Try to load custom layer order from \verbatim <legend> \endverbatim tag from project files from QGIS 2.2 and below

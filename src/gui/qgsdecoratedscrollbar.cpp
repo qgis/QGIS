@@ -82,10 +82,10 @@ void QgsScrollBarHighlightOverlay::paintEvent( QPaintEvent *paintEvent )
                                        gRect.y(),
                                        gRect.width() + marginH,
                                        hRect.y() - gRect.y() );
-  const QRect handleRect      = QRect( gRect.x() + marginX,
-                                       hRect.y(),
-                                       gRect.width() + marginH,
-                                       hRect.height() );
+  const QRect handleRect = QRect( gRect.x() + marginX,
+                                  hRect.y(),
+                                  gRect.width() + marginH,
+                                  hRect.height() );
   const QRect belowHandleRect = QRect( gRect.x() + marginX,
                                        hRect.y() + hRect.height(),
                                        gRect.width() + marginH,
@@ -100,7 +100,8 @@ void QgsScrollBarHighlightOverlay::paintEvent( QPaintEvent *paintEvent )
   const int scrollBarBackgroundHeight = aboveHandleRect.height() + belowHandleRect.height();
   const int sizeDocInvisible = sizeDocAbove + sizeDocBelow;
   const double backgroundRatio = sizeDocInvisible
-                                 ? ( ( double )scrollBarBackgroundHeight / sizeDocInvisible ) : 0;
+                                   ? ( ( double ) scrollBarBackgroundHeight / sizeDocInvisible )
+                                   : 0;
 
 
   if ( aboveValue )
@@ -119,7 +120,7 @@ void QgsScrollBarHighlightOverlay::paintEvent( QPaintEvent *paintEvent )
     // be stretched using the background ratio.
     const double handleVirtualHeight = sizeDocVisible * backgroundRatio;
     // Skip the doc above and visible part.
-    const int offset = static_cast< int >( std::round( aboveHandleRect.height() + handleVirtualHeight ) );
+    const int offset = static_cast<int>( std::round( aboveHandleRect.height() + handleVirtualHeight ) );
 
     drawHighlights( &painter,
                     sizeDocAbove + sizeDocVisible,
@@ -130,7 +131,8 @@ void QgsScrollBarHighlightOverlay::paintEvent( QPaintEvent *paintEvent )
   }
 
   const double handleRatio = sizeDocVisible
-                             ? ( ( double )handleRect.height() / sizeDocVisible ) : 0;
+                               ? ( ( double ) handleRect.height() / sizeDocVisible )
+                               : 0;
 
   // This is the hypothetical handle position if the background would
   // be stretched using the handle ratio.
@@ -141,7 +143,7 @@ void QgsScrollBarHighlightOverlay::paintEvent( QPaintEvent *paintEvent )
   // The correction between handle position (int) and accurate position (double)
   const double correction = aboveHandleRect.height() - accurateHandlePos;
   // Skip the doc above and apply correction
-  const int offset = static_cast< int >( std::round( aboveVirtualHeight + correction ) );
+  const int offset = static_cast<int>( std::round( aboveVirtualHeight + correction ) );
 
   drawHighlights( &painter,
                   sizeDocAbove,
@@ -152,11 +154,11 @@ void QgsScrollBarHighlightOverlay::paintEvent( QPaintEvent *paintEvent )
 }
 
 void QgsScrollBarHighlightOverlay::drawHighlights( QPainter *painter,
-    int docStart,
-    int docSize,
-    double docSizeToHandleSizeRatio,
-    int handleOffset,
-    const QRect &viewport )
+                                                   int docStart,
+                                                   int docSize,
+                                                   double docSizeToHandleSizeRatio,
+                                                   int handleOffset,
+                                                   const QRect &viewport )
 {
   if ( docSize <= 0 )
     return;
@@ -190,8 +192,8 @@ void QgsScrollBarHighlightOverlay::drawHighlights( QPainter *painter,
         if ( posStart > docStart + docSize )
           break;
 
-        const int height = std::max( static_cast< int >( std::round( ( posEnd - posStart ) * docSizeToHandleSizeRatio ) ), 1 );
-        const int top = static_cast< int >( std::round( posStart * docSizeToHandleSizeRatio ) - handleOffset + viewport.y() );
+        const int height = std::max( static_cast<int>( std::round( ( posEnd - posStart ) * docSizeToHandleSizeRatio ) ), 1 );
+        const int top = static_cast<int>( std::round( posStart * docSizeToHandleSizeRatio ) - handleOffset + viewport.y() );
 
         const QRect rect( viewport.left(), top, viewport.width(), height );
         painter->fillRect( rect, color );
@@ -311,7 +313,7 @@ QRect QgsScrollBarHighlightOverlay::handleRect() const
 //
 
 QgsScrollBarHighlight::QgsScrollBarHighlight( int category, int position,
-    const QColor &color, QgsScrollBarHighlight::Priority priority )
+                                              const QColor &color, QgsScrollBarHighlight::Priority priority )
   : category( category )
   , position( position )
   , color( color )

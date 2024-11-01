@@ -40,7 +40,6 @@ class QFontMetricsF;
 class CORE_EXPORT QgsTextRenderer
 {
   public:
-
     /**
      * Converts a Qt horizontal \a alignment flag to a Qgis::TextHorizontalAlignment value.
      *
@@ -347,49 +346,48 @@ class CORE_EXPORT QgsTextRenderer
     static constexpr double SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR = 2.0 / 3.0;
 
   private:
-
     struct Component
     {
-      //! Block to render
-      QgsTextBlock block;
+        //! Block to render
+        QgsTextBlock block;
 
-      //! Index of block
-      int blockIndex = 0;
+        //! Index of block
+        int blockIndex = 0;
 
-      //! Index of first fragment in block
-      int firstFragmentIndex = 0;
+        //! Index of first fragment in block
+        int firstFragmentIndex = 0;
 
-      //! Current origin point for painting (generally current painter rotation point)
-      QPointF origin;
-      //! Whether to translate the painter to supplied origin
-      bool useOrigin = false;
-      //! Any rotation to be applied to painter (in radians)
-      double rotation = 0.0;
-      //! Any rotation to be applied to painter (in radians) after initial rotation
-      double rotationOffset = 0.0;
-      //! Current center point of label component, after rotation
-      QPointF center;
-      //! Width and height of label component, transformed and ready for painting
-      QSizeF size;
-      //! Any translation offsets to be applied before painting, transformed and ready for painting
-      QPointF offset;
-      //! A stored QPicture of painting for the component
-      QPicture picture;
+        //! Current origin point for painting (generally current painter rotation point)
+        QPointF origin;
+        //! Whether to translate the painter to supplied origin
+        bool useOrigin = false;
+        //! Any rotation to be applied to painter (in radians)
+        double rotation = 0.0;
+        //! Any rotation to be applied to painter (in radians) after initial rotation
+        double rotationOffset = 0.0;
+        //! Current center point of label component, after rotation
+        QPointF center;
+        //! Width and height of label component, transformed and ready for painting
+        QSizeF size;
+        //! Any translation offsets to be applied before painting, transformed and ready for painting
+        QPointF offset;
+        //! A stored QPicture of painting for the component
+        QPicture picture;
 
-      /**
+        /**
        * Buffer for component to accommodate graphic items ignored by QPicture,
        * e.g. half-width of an applied QPen, which would extend beyond boundingRect() of QPicture
        */
-      double pictureBuffer = 0.0;
-      //! A ratio of native painter dpi and that of rendering context's painter
-      double dpiRatio = 1.0;
-      //! Horizontal alignment
-      Qgis::TextHorizontalAlignment hAlign = Qgis::TextHorizontalAlignment::Left;
+        double pictureBuffer = 0.0;
+        //! A ratio of native painter dpi and that of rendering context's painter
+        double dpiRatio = 1.0;
+        //! Horizontal alignment
+        Qgis::TextHorizontalAlignment hAlign = Qgis::TextHorizontalAlignment::Left;
 
-      //! Any additional word spacing to apply while rendering component
-      double extraWordSpacing = 0;
-      //! Any additional letter spacing to apply while rendering component
-      double extraLetterSpacing = 0;
+        //! Any additional word spacing to apply while rendering component
+        double extraWordSpacing = 0;
+        //! Any additional letter spacing to apply while rendering component
+        double extraLetterSpacing = 0;
     };
 
     static double textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QgsTextDocument &document );

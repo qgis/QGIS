@@ -38,24 +38,24 @@ class CORE_EXPORT QgsValueRelationFieldFormatter : public QgsFieldFormatter
   public:
     struct ValueRelationItem
     {
-      //! Constructor for ValueRelationItem
-      ValueRelationItem( const QVariant &key, const QString &value, const QString &description = QString(), const QVariant group = QVariant() )
-        : key( key )
-        , value( value )
-        , description( description )
-        , group( group )
-      {}
+        //! Constructor for ValueRelationItem
+        ValueRelationItem( const QVariant &key, const QString &value, const QString &description = QString(), const QVariant group = QVariant() )
+          : key( key )
+          , value( value )
+          , description( description )
+          , group( group )
+        {}
 
-      ValueRelationItem() = default;
+        ValueRelationItem() = default;
 
-      QVariant key;
-      QString value;
-      QString description;
-      //! Value used to regroup items during sorting (since QGIS 3.38)
-      QVariant group;
+        QVariant key;
+        QString value;
+        QString description;
+        //! Value used to regroup items during sorting (since QGIS 3.38)
+        QVariant group;
     };
 
-    typedef QVector < QgsValueRelationFieldFormatter::ValueRelationItem > ValueRelationCache;
+    typedef QVector<QgsValueRelationFieldFormatter::ValueRelationItem> ValueRelationCache;
 
     /**
      * Constructor for QgsValueRelationFieldFormatter.

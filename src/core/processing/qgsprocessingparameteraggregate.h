@@ -60,7 +60,6 @@ class CORE_EXPORT QgsProcessingParameterAggregate : public QgsProcessingParamete
 
   private:
     QString mParentLayerParameterName;
-
 };
 
 #ifndef SIP_RUN

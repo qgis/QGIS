@@ -41,9 +41,7 @@ class QgsServerInterface;
  */
 class SERVER_EXPORT QgsServerCacheFilter
 {
-
   public:
-
     /**
      * Constructor
      * QgsServerInterface passed to plugins constructors
@@ -122,7 +120,6 @@ class SERVER_EXPORT QgsServerCacheFilter
      * \returns TRUE if the images have been deleted
      */
     virtual bool deleteCachedImages( const QgsProject *project ) const;
-
 };
 
 //! The registry definition

@@ -33,7 +33,6 @@
 class CORE_EXPORT QgsProcessingParameterType
 {
   public:
-
     /**
      * Creates a new parameter of this type.
      */

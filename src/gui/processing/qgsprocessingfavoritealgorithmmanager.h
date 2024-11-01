@@ -40,7 +40,6 @@ class GUI_EXPORT QgsProcessingFavoriteAlgorithmManager : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingFavoriteAlgorithmManager, with the specified
      * \a parent object.
@@ -93,9 +92,7 @@ class GUI_EXPORT QgsProcessingFavoriteAlgorithmManager : public QObject
     void changed();
 
   private:
-
     QStringList mFavoriteAlgorithmIds;
-
 };
 
 ///@endcond

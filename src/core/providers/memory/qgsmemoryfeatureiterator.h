@@ -32,7 +32,7 @@ typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 class QgsSpatialIndex;
 
 
-class QgsMemoryFeatureSource final: public QgsAbstractFeatureSource
+class QgsMemoryFeatureSource final : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsMemoryFeatureSource( const QgsMemoryProvider *p );
@@ -44,16 +44,16 @@ class QgsMemoryFeatureSource final: public QgsAbstractFeatureSource
   private:
     QgsFields mFields;
     QgsFeatureMap mFeatures;
-    std::unique_ptr< QgsSpatialIndex > mSpatialIndex;
+    std::unique_ptr<QgsSpatialIndex> mSpatialIndex;
     QString mSubsetString;
-    std::unique_ptr< QgsExpressionContext > mExpressionContext;
+    std::unique_ptr<QgsExpressionContext> mExpressionContext;
     QgsCoordinateReferenceSystem mCrs;
 
     friend class QgsMemoryFeatureIterator;
 };
 
 
-class QgsMemoryFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsMemoryFeatureSource>
+class QgsMemoryFeatureIterator final : public QgsAbstractFeatureIteratorFromSource<QgsMemoryFeatureSource>
 {
   public:
     QgsMemoryFeatureIterator( QgsMemoryFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
@@ -64,7 +64,6 @@ class QgsMemoryFeatureIterator final: public QgsAbstractFeatureIteratorFromSourc
     bool close() override;
 
   protected:
-
     bool fetchFeature( QgsFeature &feature ) override;
 
   private:
@@ -72,17 +71,16 @@ class QgsMemoryFeatureIterator final: public QgsAbstractFeatureIteratorFromSourc
     bool nextFeatureTraverseAll( QgsFeature &feature );
 
     QgsGeometry mSelectRectGeom;
-    std::unique_ptr< QgsGeometryEngine > mSelectRectEngine;
+    std::unique_ptr<QgsGeometryEngine> mSelectRectEngine;
     QgsGeometry mDistanceWithinGeom;
-    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
+    std::unique_ptr<QgsGeometryEngine> mDistanceWithinEngine;
     QgsRectangle mFilterRect;
     QgsFeatureMap::const_iterator mSelectIterator;
     bool mUsingFeatureIdList = false;
     QList<QgsFeatureId> mFeatureIdList;
     QList<QgsFeatureId>::const_iterator mFeatureIdListIterator;
-    std::unique_ptr< QgsExpression > mSubsetExpression;
+    std::unique_ptr<QgsExpression> mSubsetExpression;
     QgsCoordinateTransform mTransform;
-
 };
 
 ///@endcond PRIVATE

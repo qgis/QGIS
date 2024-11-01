@@ -20,7 +20,6 @@
 QgsMapViewsManager::QgsMapViewsManager( QgsProject *project )
   : QObject( project )
 {
-
 }
 
 bool QgsMapViewsManager::readXml( const QDomElement &element, const QDomDocument &doc )
@@ -91,8 +90,8 @@ void QgsMapViewsManager::rename3DView( const QString &oldTitle, const QString &n
 {
   QDomElement elem = m3DMapViewsDom.value( oldTitle );
   m3DMapViewsDom.remove( oldTitle );
-  m3DMapViewsDom[ newTitle ] = elem;
-  m3DMapViewsDom[ newTitle ].setAttribute( QStringLiteral( "name" ), newTitle );
+  m3DMapViewsDom[newTitle] = elem;
+  m3DMapViewsDom[newTitle].setAttribute( QStringLiteral( "name" ), newTitle );
   emit views3DListChanged();
 }
 
@@ -100,7 +99,7 @@ void QgsMapViewsManager::set3DViewInitiallyVisible( const QString &name, bool vi
 {
   if ( m3DMapViewsDom.contains( name ) )
   {
-    m3DMapViewsDom[ name ].setAttribute( QStringLiteral( "isOpen" ), visible );
+    m3DMapViewsDom[name].setAttribute( QStringLiteral( "isOpen" ), visible );
   }
 }
 

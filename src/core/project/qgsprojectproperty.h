@@ -101,7 +101,8 @@ class CORE_EXPORT QgsProjectProperty
      */
     virtual bool writeXml( const QString &nodeName,
                            QDomElement &element,
-                           QDomDocument &document ) = 0;
+                           QDomDocument &document )
+      = 0;
 
     /**
      * Returns the node's value.
@@ -114,7 +115,6 @@ class CORE_EXPORT QgsProjectProperty
      *
      */
     virtual QVariant value() const = 0;
-
 };
 
 
@@ -126,7 +126,6 @@ class CORE_EXPORT QgsProjectProperty
 class CORE_EXPORT QgsProjectPropertyValue : public QgsProjectProperty
 {
   public:
-
     QgsProjectPropertyValue() = default;
 
     /**
@@ -150,10 +149,8 @@ class CORE_EXPORT QgsProjectPropertyValue : public QgsProjectProperty
                    QDomDocument &document ) override;
 
   private:
-
     // We use QVariant as it's very handy to keep multiple types and provides type conversions
     QVariant mValue;
-
 };
 
 
@@ -181,7 +178,6 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     Q_DECLARE_TR_FUNCTIONS( QgsProjectPropertyKey )
 
   public:
-
     /**
      * Create a new QgsProjectPropertyKey with the specified identifier.
      */
@@ -314,13 +310,11 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     }
 
   private:
-
     //! Name of the key
     QString mName;
 
     //! Sub-keys
-    QHash < QString, QgsProjectProperty * > mProperties;
-
+    QHash<QString, QgsProjectProperty *> mProperties;
 };
 
 #endif

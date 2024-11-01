@@ -26,7 +26,6 @@ class QgsTiledSceneDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
 {
     Q_OBJECT
   public:
-
     QString name() override { return QStringLiteral( "Tiled Scene" ); }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
@@ -38,7 +37,6 @@ class QgsTiledSceneDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
     static void newConnection( QgsDataItem *item, QString provider );
     static void saveConnections();
     static void loadConnections( QgsDataItem *item );
-
 };
 
 ///@endcond

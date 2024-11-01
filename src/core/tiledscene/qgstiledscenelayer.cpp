@@ -96,7 +96,7 @@ QString QgsTiledSceneLayer::loadDefaultMetadata( bool &resultFlag )
   if ( !mDataProvider || !mDataProvider->isValid() )
     return QString();
 
-  if ( qgis::down_cast< QgsTiledSceneDataProvider * >( mDataProvider.get() )->capabilities() & Qgis::TiledSceneProviderCapability::ReadLayerMetadata )
+  if ( qgis::down_cast<QgsTiledSceneDataProvider *>( mDataProvider.get() )->capabilities() & Qgis::TiledSceneProviderCapability::ReadLayerMetadata )
   {
     setMetadata( mDataProvider->layerMetadata() );
   }
@@ -208,7 +208,7 @@ bool QgsTiledSceneLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
   mapLayerNode.setAttribute( QStringLiteral( "type" ), QgsMapLayerFactory::typeToString( Qgis::LayerType::TiledScene ) );
 
   {
-    QDomElement provider  = doc.createElement( QStringLiteral( "provider" ) );
+    QDomElement provider = doc.createElement( QStringLiteral( "provider" ) );
     const QDomText providerText = doc.createTextNode( providerType() );
     provider.appendChild( providerText );
     layerNode.appendChild( provider );
@@ -249,13 +249,13 @@ bool QgsTiledSceneLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
     if ( !blendModeNode.isNull() )
     {
       const QDomElement e = blendModeNode.toElement();
-      setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( e.text().toInt() ) ) );
+      setBlendMode( QgsPainting::getCompositionMode( static_cast<Qgis::BlendMode>( e.text().toInt() ) ) );
     }
 
     QDomElement rendererElement = node.firstChildElement( QStringLiteral( "renderer" ) );
     if ( !rendererElement.isNull() )
     {
-      std::unique_ptr< QgsTiledSceneRenderer > r( QgsTiledSceneRenderer::load( rendererElement, context ) );
+      std::unique_ptr<QgsTiledSceneRenderer> r( QgsTiledSceneRenderer::load( rendererElement, context ) );
       if ( r )
       {
         setRenderer( r.release() );
@@ -300,7 +300,7 @@ bool QgsTiledSceneLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
 }
 
 bool QgsTiledSceneLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-    const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
+                                         const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -309,7 +309,7 @@ bool QgsTiledSceneLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   QDomElement elem = node.toElement();
   writeCommonStyle( elem, doc, context, categories );
 
-  ( void )writeStyle( node, doc, errorMessage, context, categories );
+  ( void ) writeStyle( node, doc, errorMessage, context, categories );
 
   return true;
 }
@@ -329,8 +329,8 @@ bool QgsTiledSceneLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
   if ( categories.testFlag( Symbology ) )
   {
     // add the blend mode field
-    QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
-    const QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
+    QDomElement blendModeElem = doc.createElement( QStringLiteral( "blendMode" ) );
+    const QDomText blendModeText = doc.createTextNode( QString::number( static_cast<int>( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
 
@@ -366,7 +366,7 @@ void QgsTiledSceneLayer::setTransformContext( const QgsCoordinateTransformContex
 }
 
 void QgsTiledSceneLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
-    const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
+                                               const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -376,13 +376,13 @@ void QgsTiledSceneLayer::setDataSourcePrivate( const QString &dataSource, const 
 
   if ( mPreloadedProvider )
   {
-    mDataProvider.reset( qobject_cast< QgsTiledSceneDataProvider * >( mPreloadedProvider.release() ) );
+    mDataProvider.reset( qobject_cast<QgsTiledSceneDataProvider *>( mPreloadedProvider.release() ) );
   }
   else
   {
-    std::unique_ptr< QgsScopedRuntimeProfile > profile;
+    std::unique_ptr<QgsScopedRuntimeProfile> profile;
     if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
+      profile = std::make_unique<QgsScopedRuntimeProfile>( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
     mDataProvider.reset( qobject_cast<QgsTiledSceneDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) ) );
   }
 
@@ -419,9 +419,9 @@ void QgsTiledSceneLayer::setDataSourcePrivate( const QString &dataSource, const 
 
   if ( !mRenderer || loadDefaultStyleFlag )
   {
-    std::unique_ptr< QgsScopedRuntimeProfile > profile;
+    std::unique_ptr<QgsScopedRuntimeProfile> profile;
     if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
+      profile = std::make_unique<QgsScopedRuntimeProfile>( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
 
     bool defaultLoadedFlag = false;
 
@@ -485,7 +485,7 @@ QString QgsTiledSceneLayer::htmlMetadata() const
 
   // identification section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Identification" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += htmlFormatter.identificationSectionHtml( );
+  myMetadata += htmlFormatter.identificationSectionHtml();
   myMetadata += QLatin1String( "<br><br>\n" );
 
   // extent section
@@ -495,22 +495,22 @@ QString QgsTiledSceneLayer::htmlMetadata() const
 
   // Start the Access section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Access" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += htmlFormatter.accessSectionHtml( );
+  myMetadata += htmlFormatter.accessSectionHtml();
   myMetadata += QLatin1String( "<br><br>\n" );
 
   // Start the contacts section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Contacts" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += htmlFormatter.contactsSectionHtml( );
+  myMetadata += htmlFormatter.contactsSectionHtml();
   myMetadata += QLatin1String( "<br><br>\n" );
 
   // Start the links section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Links" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += htmlFormatter.linksSectionHtml( );
+  myMetadata += htmlFormatter.linksSectionHtml();
   myMetadata += QLatin1String( "<br><br>\n" );
 
   // Start the history section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "History" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += htmlFormatter.historySectionHtml( );
+  myMetadata += htmlFormatter.historySectionHtml();
   myMetadata += QLatin1String( "<br><br>\n" );
 
   myMetadata += customPropertyHtmlMetadata();

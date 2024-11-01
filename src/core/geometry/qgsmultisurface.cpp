@@ -32,12 +32,12 @@ QgsMultiSurface::QgsMultiSurface()
 
 QgsSurface *QgsMultiSurface::surfaceN( int index )
 {
-  return qgsgeometry_cast< QgsSurface * >( geometryN( index ) );
+  return qgsgeometry_cast<QgsSurface *>( geometryN( index ) );
 }
 
 const QgsSurface *QgsMultiSurface::surfaceN( int index ) const
 {
-  return qgsgeometry_cast< const QgsSurface * >( geometryN( index ) );
+  return qgsgeometry_cast<const QgsSurface *>( geometryN( index ) );
 }
 
 QString QgsMultiSurface::geometryType() const
@@ -53,7 +53,7 @@ void QgsMultiSurface::clear()
 
 QgsMultiSurface *QgsMultiSurface::createEmptyWithSameType() const
 {
-  auto result = std::make_unique< QgsMultiSurface >();
+  auto result = std::make_unique<QgsMultiSurface>();
   result->mWkbType = mWkbType;
   return result.release();
 }
@@ -87,7 +87,7 @@ QDomElement QgsMultiSurface::asGml2( QDomDocument &doc, int precision, const QSt
   {
     if ( qgsgeometry_cast<const QgsCurvePolygon *>( geom ) )
     {
-      std::unique_ptr< QgsPolygon > polygon( static_cast<const QgsCurvePolygon *>( geom )->surfaceToPolygon() );
+      std::unique_ptr<QgsPolygon> polygon( static_cast<const QgsCurvePolygon *>( geom )->surfaceToPolygon() );
 
       QDomElement elemPolygonMember = doc.createElementNS( ns, QStringLiteral( "polygonMember" ) );
       elemPolygonMember.appendChild( polygon->asGml2( doc, precision, ns, axisOrder ) );
@@ -121,19 +121,19 @@ QDomElement QgsMultiSurface::asGml3( QDomDocument &doc, int precision, const QSt
 
 json QgsMultiSurface::asJsonObject( int precision ) const
 {
-  json polygons( json::array( ) );
+  json polygons( json::array() );
   for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     if ( qgsgeometry_cast<const QgsCurvePolygon *>( geom ) )
     {
-      json coordinates( json::array( ) );
-      std::unique_ptr< QgsPolygon >polygon( static_cast<const QgsCurvePolygon *>( geom )->surfaceToPolygon() );
-      std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
+      json coordinates( json::array() );
+      std::unique_ptr<QgsPolygon> polygon( static_cast<const QgsCurvePolygon *>( geom )->surfaceToPolygon() );
+      std::unique_ptr<QgsLineString> exteriorLineString( polygon->exteriorRing()->curveToLine() );
       QgsPointSequence exteriorPts;
       exteriorLineString->points( exteriorPts );
       coordinates.push_back( QgsGeometryUtils::pointsToJson( exteriorPts, precision ) );
 
-      std::unique_ptr< QgsLineString > interiorLineString;
+      std::unique_ptr<QgsLineString> interiorLineString;
       for ( int i = 0, n = polygon->numInteriorRings(); i < n; ++i )
       {
         interiorLineString.reset( polygon->interiorRing( i )->curveToLine() );
@@ -144,11 +144,9 @@ json QgsMultiSurface::asJsonObject( int precision ) const
       polygons.push_back( coordinates );
     }
   }
-  return
-  {
-    {  "type",  "MultiPolygon" },
-    {  "coordinates", polygons }
-  };
+  return {
+    { "type", "MultiPolygon" },
+    { "coordinates", polygons } };
 }
 
 bool QgsMultiSurface::addGeometry( QgsAbstractGeometry *g )
@@ -210,7 +208,7 @@ bool QgsMultiSurface::addGeometries( const QVector<QgsAbstractGeometry *> &geome
 
 bool QgsMultiSurface::insertGeometry( QgsAbstractGeometry *g, int index )
 {
-  if ( !g || !qgsgeometry_cast< QgsSurface * >( g ) )
+  if ( !g || !qgsgeometry_cast<QgsSurface *>( g ) )
   {
     delete g;
     return false;
@@ -221,7 +219,7 @@ bool QgsMultiSurface::insertGeometry( QgsAbstractGeometry *g, int index )
 
 QgsAbstractGeometry *QgsMultiSurface::boundary() const
 {
-  std::unique_ptr< QgsMultiCurve > multiCurve( new QgsMultiCurve() );
+  std::unique_ptr<QgsMultiCurve> multiCurve( new QgsMultiCurve() );
   multiCurve->reserve( mGeometries.size() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
@@ -239,7 +237,7 @@ QgsAbstractGeometry *QgsMultiSurface::boundary() const
 
 QgsMultiSurface *QgsMultiSurface::simplifyByDistance( double tolerance ) const
 {
-  std::unique_ptr< QgsMultiSurface > res = std::make_unique< QgsMultiSurface >();
+  std::unique_ptr<QgsMultiSurface> res = std::make_unique<QgsMultiSurface>();
   res->reserve( mGeometries.size() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {

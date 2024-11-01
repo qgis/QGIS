@@ -44,7 +44,6 @@ class GUI_EXPORT QgsMeshLayerProperties : public QgsLayerPropertiesDialog, priva
     Q_OBJECT
 
   public:
-
     /**
      * \brief Constructor
      * \param lyr Mesh map layer for which properties will be displayed

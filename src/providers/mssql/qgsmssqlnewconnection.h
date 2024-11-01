@@ -26,7 +26,7 @@
 class QgsMssqlDatabase;
 
 //! Class that reprents a model to display available schemas on a database and choose which will be displayed in QGIS
-class SchemaModel: public QAbstractListModel
+class SchemaModel : public QAbstractListModel
 {
     Q_OBJECT
   public:
@@ -59,7 +59,6 @@ class SchemaModel: public QAbstractListModel
     QString mDataBaseName;
     QStringList mSchemas;
     QStringList mExcludedSchemas;
-
 };
 
 /**
@@ -96,7 +95,6 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
     void onPrimaryKeyFromGeometryToggled( bool checked );
 
   private:
-
     QString mOriginalConnName; //store initial name to delete entry in case of rename
     void showHelp();
 

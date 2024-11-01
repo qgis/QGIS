@@ -33,12 +33,12 @@ class QgsGeorefTransform;
  *
  * The container does NOT own the points -- they have to be manually deleted elsewhere!!
  */
-class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint * >
+class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint *>
 {
   public:
     QgsGCPList() = default;
     QgsGCPList( const QgsGCPList &list ) = delete;
-    QgsGCPList &operator =( const QgsGCPList &list ) = delete;
+    QgsGCPList &operator=( const QgsGCPList &list ) = delete;
 
     /**
      * Creates vectors of source and destination points, where the destination points are all transformed to the
@@ -67,7 +67,7 @@ class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint * >
     /**
      * Returns the container as a list of GCP points.
      */
-    QList< QgsGcpPoint > asPoints() const;
+    QList<QgsGcpPoint> asPoints() const;
 
     /**
      * Saves the GCPs to a text file.
@@ -93,11 +93,10 @@ class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint * >
      *
      * \returns TRUE on success
      */
-    static QList< QgsGcpPoint > loadGcps( const QString &filePath,
-                                          const QgsCoordinateReferenceSystem &defaultDestinationCrs,
-                                          QgsCoordinateReferenceSystem &actualDestinationCrs,
-                                          QString &error );
-
+    static QList<QgsGcpPoint> loadGcps( const QString &filePath,
+                                        const QgsCoordinateReferenceSystem &defaultDestinationCrs,
+                                        QgsCoordinateReferenceSystem &actualDestinationCrs,
+                                        QString &error );
 };
 
 #endif

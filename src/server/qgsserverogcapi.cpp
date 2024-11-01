@@ -24,37 +24,29 @@
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
 
-QMap<QgsServerOgcApi::ContentType, QStringList> QgsServerOgcApi::sContentTypeMime = [ ]() -> QMap<QgsServerOgcApi::ContentType, QStringList>
-{
+QMap<QgsServerOgcApi::ContentType, QStringList> QgsServerOgcApi::sContentTypeMime = []() -> QMap<QgsServerOgcApi::ContentType, QStringList> {
   QMap<QgsServerOgcApi::ContentType, QStringList> map;
   map[QgsServerOgcApi::ContentType::JSON] = QStringList { QStringLiteral( "application/json" ) };
   map[QgsServerOgcApi::ContentType::GEOJSON] = QStringList {
     QStringLiteral( "application/geo+json" ),
     QStringLiteral( "application/vnd.geo+json" ),
-    QStringLiteral( "application/geojson" )
-  };
+    QStringLiteral( "application/geojson" ) };
   map[QgsServerOgcApi::ContentType::HTML] = QStringList { QStringLiteral( "text/html" ) };
   map[QgsServerOgcApi::ContentType::OPENAPI3] = QStringList { QStringLiteral( "application/vnd.oai.openapi+json;version=3.0" ) };
   map[QgsServerOgcApi::ContentType::XML] = QStringList { QStringLiteral( "application/xml" ) };
   return map;
 }();
 
-QHash<QgsServerOgcApi::ContentType, QList<QgsServerOgcApi::ContentType>> QgsServerOgcApi::sContentTypeAliases = [ ]() -> QHash<ContentType, QList<ContentType>>
-{
+QHash<QgsServerOgcApi::ContentType, QList<QgsServerOgcApi::ContentType>> QgsServerOgcApi::sContentTypeAliases = []() -> QHash<ContentType, QList<ContentType>> {
   QHash<QgsServerOgcApi::ContentType, QList<QgsServerOgcApi::ContentType>> map;
   map[ContentType::JSON] = { QgsServerOgcApi::ContentType::GEOJSON, QgsServerOgcApi::ContentType::OPENAPI3 };
   return map;
 }();
 
 
-QgsServerOgcApi::QgsServerOgcApi( QgsServerInterface *serverIface, const QString &rootPath, const QString &name, const QString &description, const QString &version ):
-  QgsServerApi( serverIface ),
-  mRootPath( rootPath ),
-  mName( name ),
-  mDescription( description ),
-  mVersion( version )
+QgsServerOgcApi::QgsServerOgcApi( QgsServerInterface *serverIface, const QString &rootPath, const QString &name, const QString &description, const QString &version )
+  : QgsServerApi( serverIface ), mRootPath( rootPath ), mName( name ), mDescription( description ), mVersion( version )
 {
-
 }
 
 QgsServerOgcApi::~QgsServerOgcApi()
@@ -87,7 +79,7 @@ QUrl QgsServerOgcApi::sanitizeUrl( const QUrl &url )
 void QgsServerOgcApi::executeRequest( const QgsServerApiContext &context ) const
 {
   // Get url
-  const auto path { sanitizeUrl( context.handlerPath( ) ).path() };
+  const auto path { sanitizeUrl( context.handlerPath() ).path() };
   // Find matching handler
   auto hasMatch { false };
   for ( const auto &handler : mHandlers )
@@ -111,7 +103,7 @@ void QgsServerOgcApi::executeRequest( const QgsServerApiContext &context ) const
     }
   }
   // Throw
-  if ( ! hasMatch )
+  if ( !hasMatch )
   {
     throw QgsServerApiBadRequestException( QStringLiteral( "Requested URI does not match any registered API handler" ) );
   }
@@ -122,7 +114,7 @@ const QMap<QgsServerOgcApi::ContentType, QStringList> QgsServerOgcApi::contentTy
   return sContentTypeMime;
 }
 
-const QHash<QgsServerOgcApi::ContentType, QList<QgsServerOgcApi::ContentType> > QgsServerOgcApi::contentTypeAliases()
+const QHash<QgsServerOgcApi::ContentType, QList<QgsServerOgcApi::ContentType>> QgsServerOgcApi::contentTypeAliases()
 {
   return sContentTypeAliases;
 }
@@ -179,16 +171,14 @@ QgsServerOgcApi::ContentType QgsServerOgcApi::contentTypeFromExtension( const st
 
 std::string QgsServerOgcApi::mimeType( const QgsServerOgcApi::ContentType &contentType )
 {
-  if ( ! sContentTypeMime.contains( contentType ) )
+  if ( !sContentTypeMime.contains( contentType ) )
   {
     return "";
   }
   return sContentTypeMime.value( contentType ).first().toStdString();
 }
 
-const std::vector<std::shared_ptr<QgsServerOgcApiHandler> > QgsServerOgcApi::handlers() const
+const std::vector<std::shared_ptr<QgsServerOgcApiHandler>> QgsServerOgcApi::handlers() const
 {
   return mHandlers;
 }
-
-

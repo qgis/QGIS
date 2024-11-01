@@ -39,14 +39,13 @@ class QgsExpressionNode;
 class CORE_EXPORT QgsSqlExpressionCompiler
 {
   public:
-
     //! Possible results from expression compilation
     enum Result
     {
-      None, //!< No expression
+      None,     //!< No expression
       Complete, //!< Expression was successfully compiled and can be completely delegated to provider
-      Partial, //!< Expression was partially compiled, but provider will return extra records and results must be double-checked using QGIS' expression engine
-      Fail //!< Provider cannot handle expression
+      Partial,  //!< Expression was partially compiled, but provider will return extra records and results must be double-checked using QGIS' expression engine
+      Fail      //!< Provider cannot handle expression
     };
 
     /**
@@ -54,10 +53,10 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      */
     enum Flag
     {
-      CaseInsensitiveStringMatch = 1,  //!< Provider performs case-insensitive string matching for all strings
-      LikeIsCaseInsensitive = 1 << 1, //!< Provider treats LIKE as case-insensitive
-      NoNullInBooleanLogic = 1 << 2, //!< Provider does not support using NULL with boolean logic, e.g., "(...) OR NULL"
-      NoUnaryMinus = 1 << 3, //!< Provider does not unary minus, e.g., " -( 100 * 2 ) = ..."
+      CaseInsensitiveStringMatch = 1,           //!< Provider performs case-insensitive string matching for all strings
+      LikeIsCaseInsensitive = 1 << 1,           //!< Provider treats LIKE as case-insensitive
+      NoNullInBooleanLogic = 1 << 2,            //!< Provider does not support using NULL with boolean logic, e.g., "(...) OR NULL"
+      NoUnaryMinus = 1 << 3,                    //!< Provider does not unary minus, e.g., " -( 100 * 2 ) = ..."
       IntegerDivisionResultsInInteger = 1 << 4, //!< Dividing int by int results in int on provider. Subclass must implement the castToReal() function to allow compilation of division.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -100,7 +99,6 @@ class CORE_EXPORT QgsSqlExpressionCompiler
     bool opIsStringComparison( QgsExpressionNodeBinaryOperator::BinaryOperator op );
 
   protected:
-
     /**
      * Returns a quoted column identifier, in the format expected by the provider.
      * Derived classes should override this if special handling of column identifiers
@@ -184,13 +182,11 @@ class CORE_EXPORT QgsSqlExpressionCompiler
     QgsFields mFields;
 
   private:
-
     Flags mFlags;
 
     bool mIgnoreStaticNodes = false;
 
     bool nodeIsNullLiteral( const QgsExpressionNode *node ) const;
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSqlExpressionCompiler::Flags )

@@ -32,7 +32,7 @@ QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas *canvas )
   if ( mCanvas->project() )
   {
     connect( mCanvas->project(), &QgsProject::layersAdded, this, &QgsMapToolEdit::connectLayers );
-    connectLayers( mCanvas->project()->mapLayers().values() );  // Connect existing layers
+    connectLayers( mCanvas->project()->mapLayers().values() ); // Connect existing layers
   }
 }
 

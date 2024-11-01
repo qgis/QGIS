@@ -56,12 +56,11 @@ class QDomDocument;
  */
 class CORE_EXPORT QgsAbstractMetadataBase
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast< QgsLayerMetadata * >( sipCpp ) != NULL )
+    if ( dynamic_cast<QgsLayerMetadata *>( sipCpp ) != NULL )
       sipType = sipType_QgsLayerMetadata;
-    else if ( dynamic_cast< QgsProjectMetadata * >( sipCpp ) != NULL )
+    else if ( dynamic_cast<QgsProjectMetadata *>( sipCpp ) != NULL )
       sipType = sipType_QgsProjectMetadata;
     else
       sipType = NULL;
@@ -69,14 +68,13 @@ class CORE_EXPORT QgsAbstractMetadataBase
 #endif
 
   public:
-
     // NOTE - these really belong in a separate namespace, but SIP says no, I want to make you waste more time
     // TODO: dump sip
 
     /**
      * Map of vocabulary string to keyword list.
      */
-    typedef QMap< QString, QStringList > KeywordMap;
+    typedef QMap<QString, QStringList> KeywordMap;
 
     /**
      * \brief Metadata address structure.
@@ -85,51 +83,50 @@ class CORE_EXPORT QgsAbstractMetadataBase
      */
     struct CORE_EXPORT Address
     {
-
-      /**
+        /**
        * Constructor for Address.
        */
-      Address( const QString &type = QString(), const QString &address = QString(), const QString &city = QString(), const QString &administrativeArea = QString(), const QString &postalCode = QString(), const QString &country = QString() )
-        : type( type )
-        , address( address )
-        , city( city )
-        , administrativeArea( administrativeArea )
-        , postalCode( postalCode )
-        , country( country )
-      {}
+        Address( const QString &type = QString(), const QString &address = QString(), const QString &city = QString(), const QString &administrativeArea = QString(), const QString &postalCode = QString(), const QString &country = QString() )
+          : type( type )
+          , address( address )
+          , city( city )
+          , administrativeArea( administrativeArea )
+          , postalCode( postalCode )
+          , country( country )
+        {}
 
-      /**
+        /**
        * Type of address, e.g. 'postal'.
        */
-      QString type;
+        QString type;
 
-      /**
+        /**
        * Free-form physical address component, e.g. '221B Baker St' or 'P.O. Box 196'.
        */
-      QString address;
+        QString address;
 
-      /**
+        /**
        * City or locality name.
        */
-      QString city;
+        QString city;
 
-      /**
+        /**
        * Administrative area (state, province/territory, etc.).
        */
-      QString administrativeArea;
+        QString administrativeArea;
 
-      /**
+        /**
        * Postal (or ZIP) code.
        */
-      QString postalCode;
+        QString postalCode;
 
-      /**
+        /**
        * Free-form country string.
        */
-      QString country;
+        QString country;
 
-      // TODO c++20 - replace with = default
-      bool operator==( const QgsAbstractMetadataBase::Address &other ) const;
+        // TODO c++20 - replace with = default
+        bool operator==( const QgsAbstractMetadataBase::Address &other ) const;
     };
 
     /**
@@ -139,59 +136,58 @@ class CORE_EXPORT QgsAbstractMetadataBase
      */
     struct CORE_EXPORT Contact
     {
-
-      /**
+        /**
        * Constructor for Contact.
        */
-      Contact( const QString &name = QString() )
-        : name( name )
-      {}
+        Contact( const QString &name = QString() )
+          : name( name )
+        {}
 
-      /**
+        /**
        * Name of contact.
        */
-      QString name;
+        QString name;
 
-      /**
+        /**
        * Organization contact belongs to/represents.
        */
-      QString organization;
+        QString organization;
 
-      /**
+        /**
        * Position/title of contact.
        */
-      QString position;
+        QString position;
 
-      /**
+        /**
        * List of addresses associated with this contact.
        */
-      QList< QgsAbstractMetadataBase::Address > addresses;
+        QList<QgsAbstractMetadataBase::Address> addresses;
 
-      /**
+        /**
        * Voice telephone.
        */
-      QString voice;
+        QString voice;
 
-      /**
+        /**
        * Facsimile telephone.
        */
-      QString fax;
+        QString fax;
 
-      /**
+        /**
        * Electronic mail address.
        * \note Do not include mailto: protocol as part of the email address.
        */
-      QString email;
+        QString email;
 
-      /**
+        /**
        * Role of contact. Acceptable values are those from the ISO 19115 CI_RoleCode specifications
        * (see http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml).
        * E.g. 'custodian', 'owner', 'distributor', etc.
        */
-      QString role;
+        QString role;
 
-      // TODO c++20 - replace with = default
-      bool operator==( const QgsAbstractMetadataBase::Contact &other ) const;
+        // TODO c++20 - replace with = default
+        bool operator==( const QgsAbstractMetadataBase::Contact &other ) const;
     };
 
     /**
@@ -199,7 +195,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * \ingroup core
      * \since QGIS 3.2
      */
-    typedef QList< QgsAbstractMetadataBase::Contact > ContactList;
+    typedef QList<QgsAbstractMetadataBase::Contact> ContactList;
 
 
     /**
@@ -209,54 +205,53 @@ class CORE_EXPORT QgsAbstractMetadataBase
      */
     struct CORE_EXPORT Link
     {
-
-      /**
+        /**
        * Constructor for Link.
        */
-      Link( const QString &name = QString(), const QString &type = QString(), const QString &url = QString() )
-        : name( name )
-        , type( type )
-        , url( url )
-      {}
+        Link( const QString &name = QString(), const QString &type = QString(), const QString &url = QString() )
+          : name( name )
+          , type( type )
+          , url( url )
+        {}
 
-      /**
+        /**
        * Short link name. E.g. WMS layer name.
        */
-      QString name;
+        QString name;
 
-      /**
+        /**
        * Link type. It is strongly suggested to use values from the 'identifier'
        * column in https://github.com/OSGeo/Cat-Interop/blob/master/LinkPropertyLookupTable.csv
        */
-      QString type;
+        QString type;
 
-      /**
+        /**
        * Abstract text about link.
        */
-      QString description;
+        QString description;
 
-      /**
+        /**
        * Link url.  If the URL is an OWS server, specify the *base* URL only without parameters like service=xxx....
        */
-      QString url;
+        QString url;
 
-      /**
+        /**
        * Format specification of online resource. It is strongly suggested to use GDAL/OGR format values.
        */
-      QString format;
+        QString format;
 
-      /**
+        /**
        * MIME type representative of the online resource response (image/png, application/json, etc.)
        */
-      QString mimeType;
+        QString mimeType;
 
-      /**
+        /**
        * Estimated size (in bytes) of the online resource response.
        */
-      QString size;
+        QString size;
 
-      // TODO c++20 - replace with = default
-      bool operator==( const QgsAbstractMetadataBase::Link &other ) const;
+        // TODO c++20 - replace with = default
+        bool operator==( const QgsAbstractMetadataBase::Link &other ) const;
     };
 
     /**
@@ -264,7 +259,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * \ingroup core
      * \since QGIS 3.2
      */
-    typedef QList< QgsAbstractMetadataBase::Link > LinkList;
+    typedef QList<QgsAbstractMetadataBase::Link> LinkList;
 
     virtual ~QgsAbstractMetadataBase() = default;
 
@@ -554,7 +549,6 @@ class CORE_EXPORT QgsAbstractMetadataBase
     virtual void combine( const QgsAbstractMetadataBase *other );
 
   protected:
-
     /**
      * Constructor for QgsAbstractMetadataBase.
      *
@@ -590,7 +584,7 @@ class CORE_EXPORT QgsAbstractMetadataBase
     QgsAbstractMetadataBase::LinkList mLinks;
 
     //! Metadata dates
-    QMap< Qgis::MetadataDateType, QDateTime > mDates;
+    QMap<Qgis::MetadataDateType, QDateTime> mDates;
 
     /*
      * IMPORTANT!!!!!!
@@ -610,7 +604,6 @@ class CORE_EXPORT QgsAbstractMetadataBase
      * \since QGIS 3.2
      */
     bool equals( const QgsAbstractMetadataBase &other ) const;
-
 };
 
 Q_DECLARE_METATYPE( QgsAbstractMetadataBase::KeywordMap )

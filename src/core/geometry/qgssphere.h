@@ -39,9 +39,7 @@ class QgsVector3D;
  */
 class CORE_EXPORT QgsSphere
 {
-
   public:
-
     /**
      * Constructor for an invalid QgsSphere.
      */
@@ -128,7 +126,12 @@ class CORE_EXPORT QgsSphere
      * Sets the center point of the sphere to (\a x, \a y, \a z).
      * \see center()
      */
-    void setCenter( double x, double y, double z ) SIP_HOLDGIL { mCenterX = x; mCenterY = y; mCenterZ = z; }
+    void setCenter( double x, double y, double z ) SIP_HOLDGIL
+    {
+      mCenterX = x;
+      mCenterY = y;
+      mCenterZ = z;
+    }
 
     /**
      * Returns the radius of the sphere.
@@ -143,7 +146,7 @@ class CORE_EXPORT QgsSphere
      *
      * \see radius()
      */
-    void setRadius( double radius ) SIP_HOLDGIL{ mRadius = radius; }
+    void setRadius( double radius ) SIP_HOLDGIL { mRadius = radius; }
 
     /**
      * Returns the diameter of the sphere.
@@ -175,7 +178,7 @@ class CORE_EXPORT QgsSphere
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str;
+        QString str;
     if ( sipCpp->isNull() )
     {
       str = QStringLiteral( "<QgsSphere: null>" ).arg( sipCpp->centerX() ).arg( sipCpp->centerY() ).arg( sipCpp->centerZ() ).arg( sipCpp->radius() );
@@ -188,12 +191,11 @@ class CORE_EXPORT QgsSphere
     % End
 #endif
 
-  private:
-    double mCenterX = std::numeric_limits< double >::quiet_NaN();
-    double mCenterY = std::numeric_limits< double >::quiet_NaN();
-    double mCenterZ = std::numeric_limits< double >::quiet_NaN();
+      private : double mCenterX
+      = std::numeric_limits<double>::quiet_NaN();
+    double mCenterY = std::numeric_limits<double>::quiet_NaN();
+    double mCenterZ = std::numeric_limits<double>::quiet_NaN();
     double mRadius = 0;
-
 };
 
 #endif // QGSSPHERE_H

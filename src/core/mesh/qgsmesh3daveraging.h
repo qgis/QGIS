@@ -40,7 +40,6 @@ class QgsFeedback;
  */
 class CORE_EXPORT QgsMesh3DAveragingMethod SIP_ABSTRACT
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     QgsMesh3DAveragingMethod *averagingMethod = dynamic_cast<QgsMesh3DAveragingMethod *>( sipCpp );
@@ -132,8 +131,7 @@ class CORE_EXPORT QgsMesh3DAveragingMethod SIP_ABSTRACT
       bool isVector,
       const QVector<double> &verticalLevelsForFace,
       const QVector<double> &volumeValues,
-      QVector<double> &valuesFaces
-    ) const;
+      QVector<double> &valuesFaces ) const;
 
     /**
      * For one face, calculates absolute vertical levels between which we need to average
@@ -157,7 +155,7 @@ class CORE_EXPORT QgsMesh3DAveragingMethod SIP_ABSTRACT
  *
  * \since QGIS 3.12
  */
-class CORE_EXPORT QgsMeshMultiLevelsAveragingMethod: public QgsMesh3DAveragingMethod
+class CORE_EXPORT QgsMeshMultiLevelsAveragingMethod : public QgsMesh3DAveragingMethod
 {
   public:
     //! Constructs single level averaging method for 1st (top) vertical level
@@ -238,7 +236,7 @@ class CORE_EXPORT QgsMeshMultiLevelsAveragingMethod: public QgsMesh3DAveragingMe
  *
  * \since QGIS 3.12
  */
-class CORE_EXPORT QgsMeshSigmaAveragingMethod: public QgsMesh3DAveragingMethod
+class CORE_EXPORT QgsMeshSigmaAveragingMethod : public QgsMesh3DAveragingMethod
 {
   public:
     //! Constructs the sigma method for whole value range 0-1
@@ -301,10 +299,9 @@ class CORE_EXPORT QgsMeshSigmaAveragingMethod: public QgsMesh3DAveragingMethod
  *
  * \since QGIS 3.12
  */
-class CORE_EXPORT QgsMeshRelativeHeightAveragingMethod: public QgsMesh3DAveragingMethod
+class CORE_EXPORT QgsMeshRelativeHeightAveragingMethod : public QgsMesh3DAveragingMethod
 {
   public:
-
     //! Constructs default depth averaging method
     QgsMeshRelativeHeightAveragingMethod();
 
@@ -365,10 +362,9 @@ class CORE_EXPORT QgsMeshRelativeHeightAveragingMethod: public QgsMesh3DAveragin
  *
  * \since QGIS 3.12
  */
-class CORE_EXPORT QgsMeshElevationAveragingMethod: public QgsMesh3DAveragingMethod
+class CORE_EXPORT QgsMeshElevationAveragingMethod : public QgsMesh3DAveragingMethod
 {
   public:
-
     QgsMeshElevationAveragingMethod();
 
     /**

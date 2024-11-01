@@ -39,7 +39,6 @@ class CORE_EXPORT QgsCachedPointCloudBlockRequest : public QgsPointCloudBlockReq
 {
     Q_OBJECT
   public:
-
     /**
      * QgsCachedPointCloudBlockRequest constructor using an existing \a block
      * Note: Ownership of \a block is transferred

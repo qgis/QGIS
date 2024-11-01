@@ -22,7 +22,6 @@
 CloughTocherInterpolator::CloughTocherInterpolator( NormVecDecorator *tin )
   : mTIN( tin )
 {
-
 }
 
 void CloughTocherInterpolator::setTriangulation( NormVecDecorator *tin )
@@ -58,10 +57,10 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, QgsPoint &result
   if ( !result.isEmpty() )
   {
     init( x, y );
-    QgsPoint barycoord( 0, 0, 0 );//barycentric coordinates of (x,y) with respect to the triangle
-    QgsPoint endpointUXY( 0, 0, 0 );//endpoint of the derivative in u-direction (in xy-coordinates)
-    const QgsPoint endpointV( 0, 0, 0 );//endpoint of the derivative in v-direction (in barycentric coordinates)
-    QgsPoint endpointVXY( 0, 0, 0 );//endpoint of the derivative in v-direction (in xy-coordinates)
+    QgsPoint barycoord( 0, 0, 0 );       //barycentric coordinates of (x,y) with respect to the triangle
+    QgsPoint endpointUXY( 0, 0, 0 );     //endpoint of the derivative in u-direction (in xy-coordinates)
+    const QgsPoint endpointV( 0, 0, 0 ); //endpoint of the derivative in v-direction (in barycentric coordinates)
+    QgsPoint endpointVXY( 0, 0, 0 );     //endpoint of the derivative in v-direction (in xy-coordinates)
 
     //find out, in which subtriangle the point (x,y) is
     //is the point in the first subtriangle (point1,point2,cp10)?
@@ -77,9 +76,9 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, QgsPoint &result
       endpointVXY.setZ( 3 * ( zv - zw ) );
       const Vector3D v1( endpointUXY.x() - x, endpointUXY.y() - y, endpointUXY.z() );
       const Vector3D v2( endpointVXY.x() - x, endpointVXY.y() - y, endpointVXY.z() );
-      result.setX( v1.getY()*v2.getZ() - v1.getZ()*v2.getY() );
-      result.setY( v1.getZ()*v2.getX() - v1.getX()*v2.getZ() );
-      result.setZ( v1.getX()*v2.getY() - v1.getY()*v2.getX() );
+      result.setX( v1.getY() * v2.getZ() - v1.getZ() * v2.getY() );
+      result.setY( v1.getZ() * v2.getX() - v1.getX() * v2.getZ() );
+      result.setZ( v1.getX() * v2.getY() - v1.getY() * v2.getX() );
       normalize( result );
       return true;
     }
@@ -96,12 +95,11 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, QgsPoint &result
       endpointVXY.setZ( 3 * ( zv - zw ) );
       const Vector3D v1( endpointUXY.x() - x, endpointUXY.y() - y, endpointUXY.z() );
       const Vector3D v2( endpointVXY.x() - x, endpointVXY.y() - y, endpointVXY.z() );
-      result.setX( v1.getY()*v2.getZ() - v1.getZ()*v2.getY() );
-      result.setY( v1.getZ()*v2.getX() - v1.getX()*v2.getZ() );
-      result.setZ( v1.getX()*v2.getY() - v1.getY()*v2.getX() );
+      result.setX( v1.getY() * v2.getZ() - v1.getZ() * v2.getY() );
+      result.setY( v1.getZ() * v2.getX() - v1.getX() * v2.getZ() );
+      result.setZ( v1.getX() * v2.getY() - v1.getY() * v2.getX() );
       normalize( result );
       return true;
-
     }
     //is the point in the third subtriangle (point3,point1,cp10)?
     MathUtils::calcBarycentricCoordinates( x, y, &point3, &point1, &cp10, &barycoord );
@@ -116,9 +114,9 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, QgsPoint &result
       endpointVXY.setZ( 3 * ( zv - zw ) );
       const Vector3D v1( endpointUXY.x() - x, endpointUXY.y() - y, endpointUXY.z() );
       const Vector3D v2( endpointVXY.x() - x, endpointVXY.y() - y, endpointVXY.z() );
-      result.setX( v1.getY()*v2.getZ() - v1.getZ()*v2.getY() );
-      result.setY( v1.getZ()*v2.getX() - v1.getX()*v2.getZ() );
-      result.setZ( v1.getX()*v2.getY() - v1.getY()*v2.getX() );
+      result.setX( v1.getY() * v2.getZ() - v1.getZ() * v2.getY() );
+      result.setY( v1.getZ() * v2.getX() - v1.getX() * v2.getZ() );
+      result.setZ( v1.getX() * v2.getY() - v1.getY() * v2.getX() );
       normalize( result );
       return true;
     }
@@ -128,29 +126,31 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, QgsPoint &result
     {
       result.setX( -der1X );
       result.setY( -der1Y );
-      result.setZ( 1 ); normalize( result );
+      result.setZ( 1 );
+      normalize( result );
       return true;
     }
     else if ( x == point2.x() && y == point2.y() )
     {
       result.setX( -der2X );
       result.setY( -der2Y );
-      result.setZ( 1 ); normalize( result );
+      result.setZ( 1 );
+      normalize( result );
       return true;
     }
     else if ( x == point3.x() && y == point3.y() )
     {
       result.setX( -der3X );
       result.setY( -der3Y );
-      result.setZ( 1 ); normalize( result );
+      result.setZ( 1 );
+      normalize( result );
       return true;
     }
 
-    result.setX( 0 );//return a vertical normal if failed
+    result.setX( 0 ); //return a vertical normal if failed
     result.setY( 0 );
     result.setZ( 1 );
     return false;
-
   }
   else
   {
@@ -227,17 +227,17 @@ bool CloughTocherInterpolator::calcPoint( double x, double y, QgsPoint &result )
   return false;
 }
 
-void CloughTocherInterpolator::init( double x, double y )//version, which has the unintended breaklines within the macrotriangles
+void CloughTocherInterpolator::init( double x, double y ) //version, which has the unintended breaklines within the macrotriangles
 {
-  Vector3D v1, v2, v3;//normals at the three data points
-  int ptn1, ptn2, ptn3;//numbers of the vertex points
-  NormVecDecorator::PointState state1, state2, state3;//states of the vertex points (Normal, BreakLine, EndPoint possible)
+  Vector3D v1, v2, v3;                                 //normals at the three data points
+  int ptn1, ptn2, ptn3;                                //numbers of the vertex points
+  NormVecDecorator::PointState state1, state2, state3; //states of the vertex points (Normal, BreakLine, EndPoint possible)
 
   if ( mTIN )
   {
     mTIN->getTriangle( x, y, point1, ptn1, &v1, &state1, point2, ptn2, &v2, &state2, point3, ptn3, &v3, &state3 );
 
-    if ( point1 == lpoint1 && point2 == lpoint2 && point3 == lpoint3 )//if we are in the same triangle as at the last run, we can leave 'init'
+    if ( point1 == lpoint1 && point2 == lpoint2 && point3 == lpoint3 ) //if we are in the same triangle as at the last run, we can leave 'init'
     {
       return;
     }
@@ -253,27 +253,27 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
     //calculate the control points
     cp1.setX( point1.x() + ( point2.x() - point1.x() ) / 3 );
     cp1.setY( point1.y() + ( point2.y() - point1.y() ) / 3 );
-    cp1.setZ( point1.z() + ( cp1.x() - point1.x() )*der1X + ( cp1.y() - point1.y() )*der1Y );
+    cp1.setZ( point1.z() + ( cp1.x() - point1.x() ) * der1X + ( cp1.y() - point1.y() ) * der1Y );
 
     cp2.setX( point2.x() + ( point1.x() - point2.x() ) / 3 );
     cp2.setY( point2.y() + ( point1.y() - point2.y() ) / 3 );
-    cp2.setZ( point2.z() + ( cp2.x() - point2.x() )*der2X + ( cp2.y() - point2.y() )*der2Y );
+    cp2.setZ( point2.z() + ( cp2.x() - point2.x() ) * der2X + ( cp2.y() - point2.y() ) * der2Y );
 
     cp9.setX( point2.x() + ( point3.x() - point2.x() ) / 3 );
     cp9.setY( point2.y() + ( point3.y() - point2.y() ) / 3 );
-    cp9.setZ( point2.z() + ( cp9.x() - point2.x() )*der2X + ( cp9.y() - point2.y() )*der2Y );
+    cp9.setZ( point2.z() + ( cp9.x() - point2.x() ) * der2X + ( cp9.y() - point2.y() ) * der2Y );
 
     cp16.setX( point3.x() + ( point2.x() - point3.x() ) / 3 );
     cp16.setY( point3.y() + ( point2.y() - point3.y() ) / 3 );
-    cp16.setZ( point3.z() + ( cp16.x() - point3.x() )*der3X + ( cp16.y() - point3.y() )*der3Y );
+    cp16.setZ( point3.z() + ( cp16.x() - point3.x() ) * der3X + ( cp16.y() - point3.y() ) * der3Y );
 
     cp14.setX( point3.x() + ( point1.x() - point3.x() ) / 3 );
     cp14.setY( point3.y() + ( point1.y() - point3.y() ) / 3 );
-    cp14.setZ( point3.z() + ( cp14.x() - point3.x() )*der3X + ( cp14.y() - point3.y() )*der3Y );
+    cp14.setZ( point3.z() + ( cp14.x() - point3.x() ) * der3X + ( cp14.y() - point3.y() ) * der3Y );
 
     cp6.setX( point1.x() + ( point3.x() - point1.x() ) / 3 );
     cp6.setY( point1.y() + ( point3.y() - point1.y() ) / 3 );
-    cp6.setZ( point1.z() + ( cp6.x() - point1.x() )*der1X + ( cp6.y() - point1.y() )*der1Y );
+    cp6.setZ( point1.z() + ( cp6.x() - point1.x() ) * der1X + ( cp6.y() - point1.y() ) * der1Y );
 
     //set x- and y-coordinates of the central point
     cp10.setX( ( point1.x() + point2.x() + point3.x() ) / 3 );
@@ -291,12 +291,12 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
         if ( state2 == NormVecDecorator::Normal )
         {
           //recalculate cp1
-          cp1.setZ( point1.z() + ( cp1.x() - point1.x() )*der1X + ( cp1.y() - point1.y() )*der1Y );
+          cp1.setZ( point1.z() + ( cp1.x() - point1.x() ) * der1X + ( cp1.y() - point1.y() ) * der1Y );
         }
         if ( state3 == NormVecDecorator::Normal )
         {
           //recalculate cp6
-          cp6.setZ( point1.z() + ( cp6.x() - point1.x() )*der1X + ( cp6.y() - point1.y() )*der1Y );
+          cp6.setZ( point1.z() + ( cp6.x() - point1.x() ) * der1X + ( cp6.y() - point1.y() ) * der1Y );
         }
       }
     }
@@ -312,12 +312,12 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
         if ( state1 == NormVecDecorator::Normal )
         {
           //recalculate cp2
-          cp2.setZ( point2.z() + ( cp2.x() - point2.x() )*der2X + ( cp2.y() - point2.y() )*der2Y );
+          cp2.setZ( point2.z() + ( cp2.x() - point2.x() ) * der2X + ( cp2.y() - point2.y() ) * der2Y );
         }
         if ( state3 == NormVecDecorator::Normal )
         {
           //recalculate cp9
-          cp9.setZ( point2.z() + ( cp9.x() - point2.x() )*der2X + ( cp9.y() - point2.y() )*der2Y );
+          cp9.setZ( point2.z() + ( cp9.x() - point2.x() ) * der2X + ( cp9.y() - point2.y() ) * der2Y );
         }
       }
     }
@@ -333,12 +333,12 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
         if ( state1 == NormVecDecorator::Normal )
         {
           //recalculate cp14
-          cp14.setZ( point3.z() + ( cp14.x() - point3.x() )*der3X + ( cp14.y() - point3.y() )*der3Y );
+          cp14.setZ( point3.z() + ( cp14.x() - point3.x() ) * der3X + ( cp14.y() - point3.y() ) * der3Y );
         }
         if ( state2 == NormVecDecorator::Normal )
         {
           //recalculate cp16
-          cp16.setZ( point3.z() + ( cp16.x() - point3.x() )*der3X + ( cp16.y() - point3.y() )*der3Y );
+          cp16.setZ( point3.z() + ( cp16.x() - point3.x() ) * der3X + ( cp16.y() - point3.y() ) * der3Y );
         }
       }
     }
@@ -346,15 +346,15 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
 
     cp3.setX( point1.x() + ( cp10.x() - point1.x() ) / 3 );
     cp3.setY( point1.y() + ( cp10.y() - point1.y() ) / 3 );
-    cp3.setZ( point1.z() + ( cp3.x() - point1.x() )*der1X + ( cp3.y() - point1.y() )*der1Y );
+    cp3.setZ( point1.z() + ( cp3.x() - point1.x() ) * der1X + ( cp3.y() - point1.y() ) * der1Y );
 
     cp5.setX( point2.x() + ( cp10.x() - point2.x() ) / 3 );
     cp5.setY( point2.y() + ( cp10.y() - point2.y() ) / 3 );
-    cp5.setZ( point2.z() + ( cp5.x() - point2.x() )*der2X + ( cp5.y() - point2.y() )*der2Y );
+    cp5.setZ( point2.z() + ( cp5.x() - point2.x() ) * der2X + ( cp5.y() - point2.y() ) * der2Y );
 
     cp15.setX( point3.x() + ( cp10.x() - point3.x() ) / 3 );
     cp15.setY( point3.y() + ( cp10.y() - point3.y() ) / 3 );
-    cp15.setZ( point3.z() + ( cp15.x() - point3.x() )*der3X + ( cp15.y() - point3.y() )*der3Y );
+    cp15.setZ( point3.z() + ( cp15.x() - point3.x() ) * der3X + ( cp15.y() - point3.y() ) * der3Y );
 
 
     cp4.setX( ( point1.x() + cp10.x() + point2.x() ) / 3 );
@@ -362,7 +362,7 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
 
     const QgsPoint midpoint3( ( cp1.x() + cp2.x() ) / 2, ( cp1.y() + cp2.y() ) / 2, ( cp1.z() + cp2.z() ) / 2 );
     const Vector3D cp1cp2( cp2.x() - cp1.x(), cp2.y() - cp1.y(), cp2.z() - cp1.z() );
-    Vector3D odir3( 0, 0, 0 );//direction orthogonal to the line from point1 to point2
+    Vector3D odir3( 0, 0, 0 );              //direction orthogonal to the line from point1 to point2
     if ( ( point2.y() - point1.y() ) != 0 ) //avoid division through zero
     {
       odir3.setX( 1 );
@@ -384,7 +384,7 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
     //find the point in the middle of the bezier curve between point2 and point3
     const QgsPoint midpoint1( ( cp9.x() + cp16.x() ) / 2, ( cp9.y() + cp16.y() ) / 2, ( cp9.z() + cp16.z() ) / 2 );
     const Vector3D cp9cp16( cp16.x() - cp9.x(), cp16.y() - cp9.y(), cp16.z() - cp9.z() );
-    Vector3D odir1( 0, 0, 0 );//direction orthogonal to the line from point2 to point3
+    Vector3D odir1( 0, 0, 0 );              //direction orthogonal to the line from point2 to point3
     if ( ( point3.y() - point2.y() ) != 0 ) //avoid division through zero
     {
       odir1.setX( 1 );
@@ -407,7 +407,7 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
     //find the point in the middle of the bezier curve between point3 and point2
     const QgsPoint midpoint2( ( cp14.x() + cp6.x() ) / 2, ( cp14.y() + cp6.y() ) / 2, ( cp14.z() + cp6.z() ) / 2 );
     const Vector3D cp14cp6( cp6.x() - cp14.x(), cp6.y() - cp14.y(), cp6.z() - cp14.z() );
-    Vector3D odir2( 0, 0, 0 );//direction orthogonal to the line from point 1 to point3
+    Vector3D odir2( 0, 0, 0 );              //direction orthogonal to the line from point 1 to point3
     if ( ( point3.y() - point1.y() ) != 0 ) //avoid division through zero
     {
       odir2.setX( 1 );
@@ -462,8 +462,6 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
     lpoint1 = point1;
     lpoint2 = point2;
     lpoint3 = point3;
-
-
   }
   else
   {
@@ -740,5 +738,3 @@ void CloughTocherInterpolator::init( double x, double y )//version which has uni
   }
 }
 #endif
-
-

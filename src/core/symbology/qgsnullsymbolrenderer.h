@@ -32,7 +32,6 @@ class QgsSymbol;
 class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
 {
   public:
-
     QgsNullSymbolRenderer();
     ~QgsNullSymbolRenderer();
 
@@ -66,10 +65,8 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
     static QgsNullSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
   private:
-
     //! Symbol to use for rendering selected features
     std::unique_ptr<QgsSymbol> mSymbol;
-
 };
 
 #endif // QGSNULLSYMBOLRENDERER_H

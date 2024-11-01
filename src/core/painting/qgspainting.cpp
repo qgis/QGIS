@@ -189,8 +189,7 @@ QTransform QgsPainting::triangleToTriangleTransform( double inX1, double inY1, d
   const QTransform V(
     outX1, outY1, 1,
     outX2, outY2, 1,
-    outX3, outY3, 1
-  );
+    outX3, outY3, 1 );
 
   return ( U.inverted( &ok ) ) * V;
 }
@@ -199,14 +198,13 @@ bool QgsPainting::drawTriangleUsingTexture( QPainter *painter, const QPolygonF &
 {
   bool ok = false;
   const QTransform brushTransform = triangleToTriangleTransform(
-                                      textureX1 * ( textureImage.width() - 1 ), textureY1 * ( textureImage.height() - 1 ),
-                                      textureX2 * ( textureImage.width() - 1 ), textureY2 * ( textureImage.height() - 1 ),
-                                      textureX3 * ( textureImage.width() - 1 ), textureY3 * ( textureImage.height() - 1 ),
-                                      triangle.at( 0 ).x(), triangle.at( 0 ).y(),
-                                      triangle.at( 1 ).x(), triangle.at( 1 ).y(),
-                                      triangle.at( 2 ).x(), triangle.at( 2 ).y(),
-                                      ok
-                                    );
+    textureX1 * ( textureImage.width() - 1 ), textureY1 * ( textureImage.height() - 1 ),
+    textureX2 * ( textureImage.width() - 1 ), textureY2 * ( textureImage.height() - 1 ),
+    textureX3 * ( textureImage.width() - 1 ), textureY3 * ( textureImage.height() - 1 ),
+    triangle.at( 0 ).x(), triangle.at( 0 ).y(),
+    triangle.at( 1 ).x(), triangle.at( 1 ).y(),
+    triangle.at( 2 ).x(), triangle.at( 2 ).y(),
+    ok );
   if ( !ok )
     return false;
 
@@ -239,8 +237,8 @@ void QgsPainting::applyScaleFixForQPictureDpi( QPainter *painter )
   // Then when being drawn, it scales the painter. The following call
   // negates the effect. There is no way of setting QPicture's DPI.
   // See QTBUG-20361
-  painter->scale( static_cast< double >( QgsPainting::qtDefaultDpiX() ) / painter->device()->logicalDpiX(),
-                  static_cast< double >( QgsPainting::qtDefaultDpiY() ) / painter->device()->logicalDpiY() );
+  painter->scale( static_cast<double>( QgsPainting::qtDefaultDpiX() ) / painter->device()->logicalDpiX(),
+                  static_cast<double>( QgsPainting::qtDefaultDpiY() ) / painter->device()->logicalDpiY() );
 }
 
 void QgsPainting::drawPicture( QPainter *painter, const QPointF &point, const QPicture &picture )
@@ -249,8 +247,8 @@ void QgsPainting::drawPicture( QPainter *painter, const QPointF &point, const QP
   // Then when being drawn, it scales the painter. The following call
   // negates the effect. There is no way of setting QPicture's DPI.
   // See QTBUG-20361
-  const double xScale = static_cast< double >( QgsPainting::qtDefaultDpiX() ) / painter->device()->logicalDpiX();
-  const double yScale = static_cast< double >( QgsPainting::qtDefaultDpiY() ) / painter->device()->logicalDpiY();
+  const double xScale = static_cast<double>( QgsPainting::qtDefaultDpiX() ) / painter->device()->logicalDpiX();
+  const double yScale = static_cast<double>( QgsPainting::qtDefaultDpiY() ) / painter->device()->logicalDpiY();
   painter->scale( xScale, yScale );
   painter->drawPicture( QPointF( point.x() / xScale, point.y() / yScale ), picture );
   painter->scale( 1 / xScale, 1 / yScale );

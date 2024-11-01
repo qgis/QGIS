@@ -32,89 +32,89 @@ constexpr double SUBSCRIPT_VERTICAL_BASELINE_ADJUSTMENT_FACTOR = 1.0 / 6.0;
 
 struct DocumentMetrics
 {
-  double tabStopDistancePainterUnits = 0;
-  double width = 0;
-  double heightLabelMode = 0;
-  double heightPointRectMode = 0;
-  double heightCapHeightMode = 0;
-  double heightAscentMode = 0;
-  int blockSize = 0;
-  double currentLabelBaseline = 0;
-  double currentPointBaseline = 0;
-  double currentRectBaseline = 0;
-  double currentCapHeightBasedBaseline = 0;
-  double currentAscentBasedBaseline = 0;
-  double lastLineLeading = 0;
+    double tabStopDistancePainterUnits = 0;
+    double width = 0;
+    double heightLabelMode = 0;
+    double heightPointRectMode = 0;
+    double heightCapHeightMode = 0;
+    double heightAscentMode = 0;
+    int blockSize = 0;
+    double currentLabelBaseline = 0;
+    double currentPointBaseline = 0;
+    double currentRectBaseline = 0;
+    double currentCapHeightBasedBaseline = 0;
+    double currentAscentBasedBaseline = 0;
+    double lastLineLeading = 0;
 
-  double heightVerticalOrientation = 0;
+    double heightVerticalOrientation = 0;
 
-  QVector < double > blockVerticalLineSpacing;
+    QVector<double> blockVerticalLineSpacing;
 
-  double outerXMin = 0;
-  double outerXMax = 0;
-  double outerYMinLabel = 0;
-  double outerYMaxLabel = 0;
+    double outerXMin = 0;
+    double outerXMax = 0;
+    double outerYMinLabel = 0;
+    double outerYMaxLabel = 0;
 };
 
 struct BlockMetrics
 {
-  bool isFirstBlock = false;
-  bool isLastBlock = false;
-  double maxLineSpacing = 0;
-  double blockWidth = 0;
-  double blockXMax = 0;
-  double blockYMaxAdjustLabel = 0;
-  double blockHeightUsingAscentAccountingForVerticalOffset = 0;
-  double blockHeightVerticalOrientation = 0;
-  double blockHeightUsingAscentDescent = 0;
-  double blockHeightUsingLineSpacing = 0;
-  double maxBlockFixedItemHeight = 0;
-  double maxBlockAscentForTextFragments = 0;
-  double maxBlockCapHeight = 0;
-  double maxBlockAscent = 0;
-  double maxBlockDescent = 0;
-  double maxBlockMaxWidth = 0;
-  double maxBlockLeading = 0;
+    bool isFirstBlock = false;
+    bool isLastBlock = false;
+    double maxLineSpacing = 0;
+    double blockWidth = 0;
+    double blockXMax = 0;
+    double blockYMaxAdjustLabel = 0;
+    double blockHeightUsingAscentAccountingForVerticalOffset = 0;
+    double blockHeightVerticalOrientation = 0;
+    double blockHeightUsingAscentDescent = 0;
+    double blockHeightUsingLineSpacing = 0;
+    double maxBlockFixedItemHeight = 0;
+    double maxBlockAscentForTextFragments = 0;
+    double maxBlockCapHeight = 0;
+    double maxBlockAscent = 0;
+    double maxBlockDescent = 0;
+    double maxBlockMaxWidth = 0;
+    double maxBlockLeading = 0;
 
-  QList< QFont > fragmentFonts;
-  QList< double > fragmentVerticalOffsets;
-  QList< double > fragmentFixedHeights;
-  QList< double > fragmentHorizontalAdvance;
+    QList<QFont> fragmentFonts;
+    QList<double> fragmentVerticalOffsets;
+    QList<double> fragmentFixedHeights;
+    QList<double> fragmentHorizontalAdvance;
 
-  QFont previousNonSuperSubScriptFont;
-  bool isFirstNonTabFragment = true;
+    QFont previousNonSuperSubScriptFont;
+    bool isFirstNonTabFragment = true;
 
-  // non calculated properties
-  double lineHeightPainterUnits = 0;
-  double lineHeightPercentage = 0;
+    // non calculated properties
+    double lineHeightPainterUnits = 0;
+    double lineHeightPercentage = 0;
 
-  void resetCalculatedStats()
-  {
-    isFirstBlock = false;
-    isLastBlock = false;
-    maxLineSpacing = 0;
-    blockWidth = 0;
-    blockXMax = 0;
-    blockYMaxAdjustLabel = 0;
-    blockHeightUsingAscentAccountingForVerticalOffset = 0;
-    blockHeightVerticalOrientation = 0;
-    blockHeightUsingAscentDescent = 0;
-    blockHeightUsingLineSpacing = 0;
-    maxBlockFixedItemHeight = 0;
-    maxBlockAscentForTextFragments = 0;
-    maxBlockCapHeight = 0;
-    maxBlockAscent = 0;
-    maxBlockDescent = 0;
-    maxBlockMaxWidth = 0;
-    maxBlockLeading = 0;
+    void resetCalculatedStats()
+    {
+      isFirstBlock = false;
+      isLastBlock = false;
+      maxLineSpacing = 0;
+      blockWidth = 0;
+      blockXMax = 0;
+      blockYMaxAdjustLabel = 0;
+      blockHeightUsingAscentAccountingForVerticalOffset = 0;
+      blockHeightVerticalOrientation = 0;
+      blockHeightUsingAscentDescent = 0;
+      blockHeightUsingLineSpacing = 0;
+      maxBlockFixedItemHeight = 0;
+      maxBlockAscentForTextFragments = 0;
+      maxBlockCapHeight = 0;
+      maxBlockAscent = 0;
+      maxBlockDescent = 0;
+      maxBlockMaxWidth = 0;
+      maxBlockLeading = 0;
 
-    fragmentFonts.clear();
-    fragmentVerticalOffsets.clear();
-    fragmentFixedHeights.clear();
-    fragmentHorizontalAdvance.clear();
-    previousNonSuperSubScriptFont = QFont();
-    isFirstNonTabFragment = true;
-  }
+      fragmentFonts.clear();
+      fragmentVerticalOffsets.clear();
+      fragmentFixedHeights.clear();
+      fragmentHorizontalAdvance.clear();
+      previousNonSuperSubScriptFont = QFont();
+      isFirstNonTabFragment = true;
+    }
 };
 
 
@@ -269,7 +269,7 @@ void QgsTextDocumentMetrics::processFragment( QgsTextDocumentMetrics &res, const
             // the superscript in a smaller font size. BUT if the fragment format HAS a non -1 font size then it indicates
             // that the document has an explicit font size for the super/subscript element, eg "my text<sup style="font-size: 6pt">2</sup>"
             // which we should respect
-            updatedFont.setPixelSize( static_cast< int >( std::round( updatedFont.pixelSize() * QgsTextRenderer::SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
+            updatedFont.setPixelSize( static_cast<int>( std::round( updatedFont.pixelSize() * QgsTextRenderer::SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
             fm = QFontMetricsF( updatedFont );
           }
 
@@ -289,7 +289,7 @@ void QgsTextDocumentMetrics::processFragment( QgsTextDocumentMetrics &res, const
           if ( fragmentFormat.fontPointSize() < 0 )
           {
             // see above!!
-            updatedFont.setPixelSize( static_cast< int>( std::round( updatedFont.pixelSize() * QgsTextRenderer::SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
+            updatedFont.setPixelSize( static_cast<int>( std::round( updatedFont.pixelSize() * QgsTextRenderer::SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
             fm = QFontMetricsF( updatedFont );
           }
 
@@ -306,13 +306,12 @@ void QgsTextDocumentMetrics::processFragment( QgsTextDocumentMetrics &res, const
       thisBlockMetrics.previousNonSuperSubScriptFont = updatedFont;
     }
 
-    auto updateCommonBlockMetrics = [ &fragmentVerticalOffset,
-                                      &fragmentYMaxAdjust,
-                                      &fragmentHeightForVerticallyOffsetText,
-                                      &updatedFont,
-                                      &fm,
-                                      scaleFactor]( BlockMetrics & thisBlockMetrics, double fragmentWidth, const QgsTextFragment & fragment )
-    {
+    auto updateCommonBlockMetrics = [&fragmentVerticalOffset,
+                                     &fragmentYMaxAdjust,
+                                     &fragmentHeightForVerticallyOffsetText,
+                                     &updatedFont,
+                                     &fm,
+                                     scaleFactor]( BlockMetrics &thisBlockMetrics, double fragmentWidth, const QgsTextFragment &fragment ) {
       thisBlockMetrics.fragmentVerticalOffsets << fragmentVerticalOffset;
       thisBlockMetrics.blockYMaxAdjustLabel = std::max( thisBlockMetrics.blockYMaxAdjustLabel, fragmentYMaxAdjust );
       thisBlockMetrics.blockHeightUsingAscentAccountingForVerticalOffset = std::max( std::max( thisBlockMetrics.maxBlockAscent, fragmentHeightForVerticallyOffsetText ), thisBlockMetrics.blockHeightUsingAscentAccountingForVerticalOffset );
@@ -325,7 +324,7 @@ void QgsTextDocumentMetrics::processFragment( QgsTextDocumentMetrics &res, const
       thisBlockMetrics.fragmentFonts << updatedFont;
 
       const double verticalOrientationFragmentHeight = thisBlockMetrics.isFirstNonTabFragment ? ( fm.ascent() / scaleFactor * fragment.text().size() + ( fragment.text().size() - 1 ) * updatedFont.letterSpacing() / scaleFactor )
-          : ( fragment.text().size() * ( fm.ascent() / scaleFactor + updatedFont.letterSpacing() / scaleFactor ) );
+                                                                                              : ( fragment.text().size() * ( fm.ascent() / scaleFactor + updatedFont.letterSpacing() / scaleFactor ) );
       thisBlockMetrics.blockHeightVerticalOrientation += verticalOrientationFragmentHeight;
 
       thisBlockMetrics.isFirstNonTabFragment = false;
@@ -401,9 +400,7 @@ void QgsTextDocumentMetrics::processFragment( QgsTextDocumentMetrics &res, const
                                    &fm,
                                    scaleFactor,
                                    &currentOutputBlock,
-                                   &updateCommonBlockMetrics
-                                  ]( BlockMetrics & thisBlockMetrics, const QgsTextFragment & fragment, double fragmentWidth )
-      {
+                                   &updateCommonBlockMetrics]( BlockMetrics &thisBlockMetrics, const QgsTextFragment &fragment, double fragmentWidth ) {
         thisBlockMetrics.blockHeightUsingAscentDescent = std::max( thisBlockMetrics.blockHeightUsingAscentDescent, fragmentHeightUsingAscentDescent );
 
         thisBlockMetrics.blockHeightUsingLineSpacing = std::max( thisBlockMetrics.blockHeightUsingLineSpacing, fragmentHeightUsingLineSpacing );
@@ -535,8 +532,8 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
   const double documentLineHeightPainterUnits = context.convertToPainterUnits( format.lineHeight(), format.lineHeightUnit() );
 
   documentMetrics.tabStopDistancePainterUnits = format.tabStopDistanceUnit() == Qgis::RenderUnit::Percentage
-      ? format.tabStopDistance() * font.pixelSize() / scaleFactor
-      : context.convertToPainterUnits( format.tabStopDistance(), format.tabStopDistanceUnit(), format.tabStopDistanceMapUnitScale() );
+                                                  ? format.tabStopDistance() * font.pixelSize() / scaleFactor
+                                                  : context.convertToPainterUnits( format.tabStopDistance(), format.tabStopDistanceUnit(), format.tabStopDistanceMapUnitScale() );
 
   documentMetrics.blockSize = document.size();
   res.mDocument.reserve( documentMetrics.blockSize );
@@ -606,15 +603,15 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
 
   if ( !res.mBlockMaxCharacterWidth.isEmpty() )
   {
-    QList< double > adjustedRightToLeftXOffsets;
+    QList<double> adjustedRightToLeftXOffsets;
     double currentOffset = 0;
     const int size = res.mBlockMaxCharacterWidth.size();
 
     double widthVerticalOrientation = 0;
     for ( int i = 0; i < size; ++i )
     {
-      const double rightToLeftBlockMaxCharacterWidth = res.mBlockMaxCharacterWidth[size - 1 - i ];
-      const double rightToLeftLineSpacing = documentMetrics.blockVerticalLineSpacing[ size - 1 - i ];
+      const double rightToLeftBlockMaxCharacterWidth = res.mBlockMaxCharacterWidth[size - 1 - i];
+      const double rightToLeftLineSpacing = documentMetrics.blockVerticalLineSpacing[size - 1 - i];
 
       adjustedRightToLeftXOffsets << currentOffset;
       currentOffset += rightToLeftLineSpacing;
@@ -772,4 +769,3 @@ QFont QgsTextDocumentMetrics::fragmentFont( int blockIndex, int fragmentIndex ) 
 {
   return mFragmentFonts.value( blockIndex ).value( fragmentIndex );
 }
-

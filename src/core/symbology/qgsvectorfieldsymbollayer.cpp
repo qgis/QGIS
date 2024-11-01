@@ -84,15 +84,15 @@ QgsSymbolLayer *QgsVectorFieldSymbolLayer::create( const QVariantMap &properties
   }
   if ( properties.contains( QStringLiteral( "vector_field_type" ) ) )
   {
-    symbolLayer->setVectorFieldType( static_cast< VectorFieldType >( properties[QStringLiteral( "vector_field_type" )].toInt() ) );
+    symbolLayer->setVectorFieldType( static_cast<VectorFieldType>( properties[QStringLiteral( "vector_field_type" )].toInt() ) );
   }
   if ( properties.contains( QStringLiteral( "angle_orientation" ) ) )
   {
-    symbolLayer->setAngleOrientation( static_cast< AngleOrientation >( properties[QStringLiteral( "angle_orientation" )].toInt() ) );
+    symbolLayer->setAngleOrientation( static_cast<AngleOrientation>( properties[QStringLiteral( "angle_orientation" )].toInt() ) );
   }
   if ( properties.contains( QStringLiteral( "angle_units" ) ) )
   {
-    symbolLayer->setAngleUnits( static_cast< AngleUnits >( properties[QStringLiteral( "angle_units" )].toInt() ) );
+    symbolLayer->setAngleUnits( static_cast<AngleUnits>( properties[QStringLiteral( "angle_units" )].toInt() ) );
   }
   if ( properties.contains( QStringLiteral( "size" ) ) )
   {
@@ -255,7 +255,7 @@ QgsVectorFieldSymbolLayer *QgsVectorFieldSymbolLayer::clone() const
   {
     clonedLayer->setSubSymbol( mLineSymbol->clone() );
   }
-  return static_cast< QgsVectorFieldSymbolLayer * >( clonedLayer );
+  return static_cast<QgsVectorFieldSymbolLayer *>( clonedLayer );
 }
 
 QVariantMap QgsVectorFieldSymbolLayer::properties() const
@@ -368,5 +368,3 @@ QColor QgsVectorFieldSymbolLayer::color() const
 {
   return mLineSymbol ? mLineSymbol->color() : mColor;
 }
-
-

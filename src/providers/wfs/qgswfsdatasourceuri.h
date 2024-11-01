@@ -32,7 +32,6 @@
 class QgsWFSDataSourceURI
 {
   public:
-
     //! Http method for DCP URIs
     enum Method
     {
@@ -164,7 +163,7 @@ class QgsWFSDataSourceURI
     QgsWFSDataSourceURI &operator=( const QgsWFSDataSourceURI &other );
 
   private:
-    QgsDataSourceUri    mURI;
+    QgsDataSourceUri mURI;
     QgsAuthorizationSettings mAuth;
     QgsStringMap mGetEndpoints;
     QgsStringMap mPostEndpoints;

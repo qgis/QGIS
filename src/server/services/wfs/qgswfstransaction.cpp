@@ -94,7 +94,7 @@ namespace QgsWfs
     // Create the response document
     QDomDocument resp;
     //wfs:TransactionRespone element
-    QDomElement respElem = resp.createElement( QStringLiteral( "TransactionResponse" )/*wfs:TransactionResponse*/ );
+    QDomElement respElem = resp.createElement( QStringLiteral( "TransactionResponse" ) /*wfs:TransactionResponse*/ );
     respElem.setAttribute( QStringLiteral( "xmlns" ), WFS_NAMESPACE );
     respElem.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
     respElem.setAttribute( QStringLiteral( "xsi:schemaLocation" ), WFS_NAMESPACE + " http://schemas.opengis.net/wfs/1.1.0/wfs.xsd" );
@@ -219,7 +219,7 @@ namespace QgsWfs
   void performTransaction( transactionRequest &aRequest, QgsServerInterface *serverIface, const QgsProject *project )
   {
 #ifndef HAVE_SERVER_PYTHON_PLUGINS
-    ( void )serverIface;
+    ( void ) serverIface;
 #endif
     // store typeName
     QStringList typeNameList;
@@ -253,7 +253,7 @@ namespace QgsWfs
 
     //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
     //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
-    std::unique_ptr< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer() );
+    std::unique_ptr<QgsOWSServerFilterRestorer> filterRestorer( new QgsOWSServerFilterRestorer() );
 
     // get layers
     QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
@@ -418,7 +418,7 @@ namespace QgsWfs
           break;
         }
 #endif
-        QMap< QString, QString >::const_iterator it = propertyMap.constBegin();
+        QMap<QString, QString>::const_iterator it = propertyMap.constBegin();
         for ( ; it != propertyMap.constEnd(); ++it )
         {
           fieldName = it.key();
@@ -439,7 +439,7 @@ namespace QgsWfs
               break;
             }
           }
-          else  // Not NULL
+          else // Not NULL
           {
             if ( field.type() == QMetaType::Type::Int )
             {
@@ -539,7 +539,6 @@ namespace QgsWfs
       // all the changes are OK!
       action.totalUpdated = totalUpdated;
       action.error = false;
-
     }
 
     // perform deletes
@@ -755,7 +754,7 @@ namespace QgsWfs
       {
         action.error = true;
         action.errorMsg = QStringLiteral( "Insert features failed on layer '%1'" ).arg( typeName );
-        if ( provider ->hasErrors() )
+        if ( provider->hasErrors() )
         {
           provider->clearErrors();
         }
@@ -875,8 +874,7 @@ namespace QgsWfs
          || ( parameters.contains( QStringLiteral( "FILTER" ) )
               && ( parameters.contains( QStringLiteral( "FEATUREID" ) ) || parameters.contains( QStringLiteral( "BBOX" ) ) ) )
          || ( parameters.contains( QStringLiteral( "BBOX" ) )
-              && ( parameters.contains( QStringLiteral( "FEATUREID" ) ) || parameters.contains( QStringLiteral( "FILTER" ) ) ) )
-       )
+              && ( parameters.contains( QStringLiteral( "FEATUREID" ) ) || parameters.contains( QStringLiteral( "FILTER" ) ) ) ) )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "FEATUREID FILTER and BBOX parameters are mutually exclusive" ) );
     }
@@ -1304,6 +1302,6 @@ namespace QgsWfs
       }
     }
 
-  }
+  } // namespace
 
 } // namespace QgsWfs

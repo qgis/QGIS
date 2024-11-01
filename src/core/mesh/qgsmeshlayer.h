@@ -101,33 +101,31 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
 {
     Q_OBJECT
   public:
-
     /**
      * Setting options for loading mesh layers.
      */
     struct LayerOptions
     {
-
-      /**
+        /**
        * Constructor for LayerOptions with optional \a transformContext.
        * \note transformContext argument was added in QGIS 3.8
        */
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) )
-        : transformContext( transformContext )
-      {}
+        explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() )
+          : transformContext( transformContext )
+        {}
 
-      /**
+        /**
        * Coordinate transform context
        */
-      QgsCoordinateTransformContext transformContext;
+        QgsCoordinateTransformContext transformContext;
 
-      /**
+        /**
        * Set to TRUE if the default layer style should be loaded.
        * \since QGIS 3.22
        */
-      bool loadDefaultStyle = true;
+        bool loadDefaultStyle = true;
 
-      /**
+        /**
        * Controls whether the layer is allowed to have an invalid/unknown CRS.
        *
        * If TRUE, then no validation will be performed on the layer's CRS and the layer
@@ -140,7 +138,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
        *
        * \since QGIS 3.10
        */
-      bool skipCrsValidation = false;
+        bool skipCrsValidation = false;
     };
 
     /**
@@ -167,12 +165,14 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsMeshLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+        QString str
+      = QStringLiteral( "<QgsMeshLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    QgsMeshDataProvider *dataProvider() override;
+        QgsMeshDataProvider *
+      dataProvider() override;
     const QgsMeshDataProvider *dataProvider() const override SIP_SKIP;
     QgsMeshLayer *clone() const override SIP_FACTORY;
     QgsRectangle extent() const override;
@@ -973,11 +973,10 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     void reloaded();
 
   private: // Private methods
-
     /**
      * Returns TRUE if the provider is in read-only mode
      */
-    bool isReadOnly() const override {return true;}
+    bool isReadOnly() const override { return true; }
 
     /**
      * Binds layer to a specific data provider

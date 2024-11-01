@@ -181,7 +181,5 @@ void QgsPlotToolTemporaryKeyZoom::activate()
 
 void QgsPlotToolTemporaryKeyZoom::updateCursor( Qt::KeyboardModifiers modifiers )
 {
-  canvas()->viewport()->setCursor( ( modifiers & Qt::AltModifier ) ?
-                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) :
-                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
+  canvas()->viewport()->setCursor( ( modifiers & Qt::AltModifier ) ? QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) : QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
 }

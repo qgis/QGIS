@@ -69,7 +69,7 @@ bool QgsArchive::zip( const QString &filename )
   QFile tmpFile( tempPath + QDir::separator() + uuid );
 
   // zip content
-  if ( ! QgsZipUtils::zip( tmpFile.fileName(), mFiles ) )
+  if ( !QgsZipUtils::zip( tmpFile.fileName(), mFiles ) )
   {
     const QString err = QObject::tr( "Unable to zip content" );
     QgsMessageLog::logMessage( err, QStringLiteral( "QgsArchive" ) );
@@ -85,16 +85,16 @@ bool QgsArchive::zip( const QString &filename )
   DWORD dwAttrs;
 #ifdef UNICODE
   dwAttrs = GetFileAttributes( qUtf16Printable( tmpFile.fileName() ) );
-  SetFileAttributes( qUtf16Printable( tmpFile.fileName() ), dwAttrs & ~ FILE_ATTRIBUTE_TEMPORARY );
+  SetFileAttributes( qUtf16Printable( tmpFile.fileName() ), dwAttrs & ~FILE_ATTRIBUTE_TEMPORARY );
 #else
-  dwAttrs = GetFileAttributes( tmpFile.fileName().toLocal8Bit( ).data( ) );
-  SetFileAttributes( tmpFile.fileName().toLocal8Bit( ).data( ), dwAttrs & ~ FILE_ATTRIBUTE_TEMPORARY );
+  dwAttrs = GetFileAttributes( tmpFile.fileName().toLocal8Bit().data() );
+  SetFileAttributes( tmpFile.fileName().toLocal8Bit().data(), dwAttrs & ~FILE_ATTRIBUTE_TEMPORARY );
 #endif
 
 #endif // Q_OS_WIN
 
   // save zip archive
-  if ( ! tmpFile.rename( filename ) )
+  if ( !tmpFile.rename( filename ) )
   {
     const QString err = QObject::tr( "Unable to save zip file '%1'" ).arg( filename );
     QgsMessageLog::logMessage( err, QStringLiteral( "QgsArchive" ) );
@@ -153,7 +153,7 @@ QString QgsProjectArchive::projectFile() const
 bool QgsProjectArchive::unzip( const QString &filename )
 {
   if ( QgsArchive::unzip( filename ) )
-    return ! projectFile().isEmpty();
+    return !projectFile().isEmpty();
   else
     return false;
 }

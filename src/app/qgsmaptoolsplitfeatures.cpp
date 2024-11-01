@@ -134,20 +134,14 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     switch ( returnCode )
     {
       case Qgis::GeometryOperationResult::Success:
-        if ( topologicalEditing == true &&
-             ! topologyTestPoints.isEmpty() )
+        if ( topologicalEditing == true && !topologyTestPoints.isEmpty() )
         {
           //check if we need to add topological points to other layers
           const auto layers = canvas()->layers( true );
           for ( QgsMapLayer *layer : layers )
           {
             QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
-            if ( vectorLayer &&
-                 vectorLayer->isEditable() &&
-                 vectorLayer->isSpatial() &&
-                 vectorLayer != vlayer &&
-                 ( vectorLayer->geometryType() == Qgis::GeometryType::Line ||
-                   vectorLayer->geometryType() == Qgis::GeometryType::Polygon ) )
+            if ( vectorLayer && vectorLayer->isEditable() && vectorLayer->isSpatial() && vectorLayer != vlayer && ( vectorLayer->geometryType() == Qgis::GeometryType::Line || vectorLayer->geometryType() == Qgis::GeometryType::Polygon ) )
             {
               vectorLayer->beginEditCommand( tr( "Topological points from Features split" ) );
               const int returnValue = vectorLayer->addTopologicalPoints( topologyTestPoints );

@@ -43,12 +43,11 @@ class QgsSettingsEntryString;
  */
 class CORE_EXPORT QgsSettingsTreeNode
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast< QgsSettingsTreeNamedListNode * >( sipCpp ) )
+    if ( dynamic_cast<QgsSettingsTreeNamedListNode *>( sipCpp ) )
       sipType = sipType_QgsSettingsTreeNamedListNode;
-    else if ( dynamic_cast< QgsSettingsTreeNode * >( sipCpp ) )
+    else if ( dynamic_cast<QgsSettingsTreeNode *>( sipCpp ) )
       sipType = sipType_QgsSettingsTreeNode;
     else
       sipType = NULL;
@@ -58,7 +57,6 @@ class CORE_EXPORT QgsSettingsTreeNode
     Q_GADGET
 
   public:
-
     virtual ~QgsSettingsTreeNode();
 
     /**
@@ -82,7 +80,7 @@ class CORE_EXPORT QgsSettingsTreeNode
 
 
     //! Returns the type of node
-    Qgis::SettingsTreeNodeType type() const {return mType;}
+    Qgis::SettingsTreeNodeType type() const { return mType; }
 
     /**
      * Registers a child setting
@@ -106,47 +104,46 @@ class CORE_EXPORT QgsSettingsTreeNode
     void unregisterChildNode( QgsSettingsTreeNode *node );
 
     //! Returns the children nodes
-    QList<QgsSettingsTreeNode *> childrenNodes() const {return mChildrenNodes;}
+    QList<QgsSettingsTreeNode *> childrenNodes() const { return mChildrenNodes; }
 
     //! Returns the existing child node if it exists at the given \a key
     QgsSettingsTreeNode *childNode( const QString &key ) const;
 
     //! Returns the children settings
-    QList<const QgsSettingsEntryBase *> childrenSettings() const {return mChildrenSettings;}
+    QList<const QgsSettingsEntryBase *> childrenSettings() const { return mChildrenSettings; }
 
     //! Returns the existing child settings if it exists at the given \a key
     const QgsSettingsEntryBase *childSetting( const QString &key ) const;
 
     //! Returns the parent of the node or nullptr if it does not exists
-    QgsSettingsTreeNode *parent() const {return mParent;}
+    QgsSettingsTreeNode *parent() const { return mParent; }
 
     //! Returns the key of the node (without its parents)
-    QString key() const {return mKey;}
+    QString key() const { return mKey; }
 
     //! Returns the complete key of the node (including its parents)
-    QString completeKey() const {return mCompleteKey;}
+    QString completeKey() const { return mCompleteKey; }
 
     //! Returns the number of named nodes in the complete key
-    int namedNodesCount() const {return mNamedNodesCount;}
+    int namedNodesCount() const { return mNamedNodesCount; }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    const QMetaEnum metaEnum = QMetaEnum::fromType<Qgis::SettingsTreeNodeType>();
+    % MethodCode const QMetaEnum metaEnum = QMetaEnum::fromType<Qgis::SettingsTreeNodeType>();
 
     QString str = QStringLiteral( "<QgsSettingsTreeNode (%1): %2>" ).arg( metaEnum.valueToKey( static_cast<int>( sipCpp->type() ) ), sipCpp->key() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-  protected:
-    //! Registers a child nodes
-    void registerChildNode( QgsSettingsTreeNode *node );
+      protected :
+      //! Registers a child nodes
+      void
+      registerChildNode( QgsSettingsTreeNode *node );
 
     Qgis::SettingsTreeNodeType mType = Qgis::SettingsTreeNodeType::Root;
 
   private:
-
     /**
      * \note This is not available in Python bindings. Use method createNode on an existing tree node.
      * \see QgsSettingsTree.createPluginTreeNode
@@ -171,7 +168,6 @@ class CORE_EXPORT QgsSettingsTreeNode
     QString mCompleteKey;
     int mNamedNodesCount = 0;
 };
-
 
 
 /**
@@ -240,7 +236,7 @@ class CORE_EXPORT QgsSettingsTreeNamedListNode : public QgsSettingsTreeNode
     void deleteAllItems( const QStringList &parentsNamedItems = QStringList() ) SIP_THROW( QgsSettingsException );
 
     //! Returns the setting used to store the selected item
-    const QgsSettingsEntryString *selectedItemSetting() const {return mSelectedItemSetting;}
+    const QgsSettingsEntryString *selectedItemSetting() const { return mSelectedItemSetting; }
 
   protected:
     //! Init the nodes with the specific \a options
@@ -265,4 +261,4 @@ class CORE_EXPORT QgsSettingsTreeNamedListNode : public QgsSettingsTreeNode
     QString mItemsCompleteKey;
 };
 
-#endif  // QGSSETTINGSTREENODE_H
+#endif // QGSSETTINGSTREENODE_H

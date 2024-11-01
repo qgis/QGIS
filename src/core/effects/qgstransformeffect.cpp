@@ -65,7 +65,7 @@ QVariantMap QgsTransformEffect::properties() const
 void QgsTransformEffect::readProperties( const QVariantMap &props )
 {
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
-  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
+  mDrawMode = static_cast<QgsPaintEffect::DrawMode>( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
   mReflectX = props.value( QStringLiteral( "reflect_x" ), QStringLiteral( "0" ) ).toInt();
   mReflectY = props.value( QStringLiteral( "reflect_y" ), QStringLiteral( "0" ) ).toInt();
   mScaleX = props.value( QStringLiteral( "scale_x" ), QStringLiteral( "1.0" ) ).toDouble();

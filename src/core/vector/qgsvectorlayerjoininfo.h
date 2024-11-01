@@ -33,7 +33,6 @@
 class CORE_EXPORT QgsVectorLayerJoinInfo
 {
   public:
-
     QgsVectorLayerJoinInfo() = default;
 
     //! Sets weak reference to the joined layer
@@ -191,12 +190,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
 
     bool operator==( const QgsVectorLayerJoinInfo &other ) const
     {
-      return mTargetFieldName == other.mTargetFieldName &&
-             mJoinLayerRef.layerId == other.mJoinLayerRef.layerId &&
-             mJoinFieldName == other.mJoinFieldName &&
-             mJoinFieldsSubset == other.mJoinFieldsSubset &&
-             mMemoryCache == other.mMemoryCache &&
-             mPrefix == other.mPrefix;
+      return mTargetFieldName == other.mTargetFieldName && mJoinLayerRef.layerId == other.mJoinLayerRef.layerId && mJoinFieldName == other.mJoinFieldName && mJoinFieldsSubset == other.mJoinFieldsSubset && mMemoryCache == other.mMemoryCache && mPrefix == other.mPrefix;
     }
 
     /**
@@ -256,8 +250,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     QStringList mBlockList;
 
     //! Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
-    QHash< QString, QgsAttributes> cachedAttributes;
-
+    QHash<QString, QgsAttributes> cachedAttributes;
 };
 
 

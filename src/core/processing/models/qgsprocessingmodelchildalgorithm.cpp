@@ -42,7 +42,7 @@ QgsProcessingModelChildAlgorithm::QgsProcessingModelChildAlgorithm( const QgsPro
 
 QgsProcessingModelChildAlgorithm &QgsProcessingModelChildAlgorithm::operator=( const QgsProcessingModelChildAlgorithm &other )
 {
-  QgsProcessingModelComponent::operator =( other );
+  QgsProcessingModelComponent::operator=( other );
   mId = other.mId;
   mConfiguration = other.mConfiguration;
   setAlgorithmId( other.algorithmId() );
@@ -136,7 +136,7 @@ QVariant QgsProcessingModelChildAlgorithm::toVariant() const
   saveCommonProperties( map );
 
   QVariantMap paramMap;
-  QMap< QString, QgsProcessingModelChildParameterSources >::const_iterator paramIt = mParams.constBegin();
+  QMap<QString, QgsProcessingModelChildParameterSources>::const_iterator paramIt = mParams.constBegin();
   for ( ; paramIt != mParams.constEnd(); ++paramIt )
   {
     QVariantList sources;
@@ -150,7 +150,7 @@ QVariant QgsProcessingModelChildAlgorithm::toVariant() const
   map.insert( QStringLiteral( "params" ), paramMap );
 
   QVariantMap outputMap;
-  QMap< QString, QgsProcessingModelOutput >::const_iterator outputIt = mModelOutputs.constBegin();
+  QMap<QString, QgsProcessingModelOutput>::const_iterator outputIt = mModelOutputs.constBegin();
   for ( ; outputIt != mModelOutputs.constEnd(); ++outputIt )
   {
     outputMap.insert( outputIt.key(), outputIt.value().toVariant() );
@@ -234,7 +234,7 @@ bool QgsProcessingModelChildAlgorithm::loadVariant( const QVariant &child )
 }
 
 QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing::PythonOutputType outputType, const QgsStringMap &extraParameters,
-    int currentIndent, int indentSize, const QMap<QString, QString> &friendlyChildNames, const QMap<QString, QString> &friendlyOutputNames ) const
+                                                            int currentIndent, int indentSize, const QMap<QString, QString> &friendlyChildNames, const QMap<QString, QString> &friendlyOutputNames ) const
 {
   QStringList lines;
   const QString baseIndent = QString( ' ' ).repeated( currentIndent );
@@ -304,7 +304,7 @@ QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing:
   }
   if ( lines.constLast().endsWith( ',' ) )
   {
-    lines[ lines.count() - 1 ].truncate( lines.constLast().length() - 1 );
+    lines[lines.count() - 1].truncate( lines.constLast().length() - 1 );
   }
   lines << baseIndent + QStringLiteral( "}" );
 
@@ -349,12 +349,12 @@ bool QgsProcessingModelChildAlgorithm::setAlgorithmId( const QString &algorithmI
 {
   mAlgorithmId = algorithmId;
   mAlgorithm.reset( QgsApplication::processingRegistry()->createAlgorithmById( mAlgorithmId, mConfiguration ) );
-  return static_cast< bool >( mAlgorithm.get() );
+  return static_cast<bool>( mAlgorithm.get() );
 }
 
 bool QgsProcessingModelChildAlgorithm::reattach() const
 {
-  return const_cast< QgsProcessingModelChildAlgorithm * >( this )->setAlgorithmId( mAlgorithmId );
+  return const_cast<QgsProcessingModelChildAlgorithm *>( this )->setAlgorithmId( mAlgorithmId );
 }
 
 ///@endcond

@@ -29,9 +29,9 @@
 
 class QgsAuthConfigSslServer;
 
-#define SSL_ISSUER_INFO( var, prop ) var.issuerInfo( prop ).value(0)
+#define SSL_ISSUER_INFO( var, prop ) var.issuerInfo( prop ).value( 0 )
 
-#define SSL_SUBJECT_INFO( var, prop ) var.subjectInfo( prop ).value(0)
+#define SSL_SUBJECT_INFO( var, prop ) var.subjectInfo( prop ).value( 0 )
 
 /**
  * \ingroup core
@@ -92,7 +92,7 @@ class CORE_EXPORT QgsAuthCertUtils
      * Map certificates to their oraganization.
      * \note not available in Python bindings
      */
-    static QMap< QString, QList<QSslCertificate> > certsGroupedByOrg( const QList<QSslCertificate> &certs ) SIP_SKIP;
+    static QMap<QString, QList<QSslCertificate>> certsGroupedByOrg( const QList<QSslCertificate> &certs ) SIP_SKIP;
 
     /**
      * Map SSL custom configs' certificate sha1 to custom config as simple cache
@@ -103,7 +103,7 @@ class CORE_EXPORT QgsAuthCertUtils
      * Map SSL custom configs' certificates to their oraganization.
      * \note not available in Python bindings
      */
-    static QMap< QString, QList<QgsAuthConfigSslServer> > sslConfigsGroupedByOrg( const QList<QgsAuthConfigSslServer> &configs ) SIP_SKIP;
+    static QMap<QString, QList<QgsAuthConfigSslServer>> sslConfigsGroupedByOrg( const QList<QgsAuthConfigSslServer> &configs ) SIP_SKIP;
 
     /**
      * Returns data from a local file via a read-only operation
@@ -208,7 +208,7 @@ class CORE_EXPORT QgsAuthCertUtils
      * \returns list of certificate
      */
     static QList<QSslCertificate> pkcs12BundleCas( const QString &bundlepath,
-        const QString &bundlepass = QString() );
+                                                   const QString &bundlepass = QString() );
 
 
     /**
@@ -244,8 +244,8 @@ class CORE_EXPORT QgsAuthCertUtils
      * \note not available in Python bindings
      */
     static QString getCertDistinguishedName( const QSslCertificate &qcert,
-        const QCA::Certificate &acert = QCA::Certificate(),
-        bool issuer = false ) SIP_SKIP;
+                                             const QCA::Certificate &acert = QCA::Certificate(),
+                                             bool issuer = false ) SIP_SKIP;
 
     //! Gets the general name for certificate trust
     static QString getCertTrustName( QgsAuthCertUtils::CertTrustPolicy trust );
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsAuthCertUtils
      * Gets short strings describing SSL errors.
      * \note not available in Python bindings
      */
-    static QList<QPair<QSslError::SslError, QString> > sslErrorEnumStrings() SIP_SKIP;
+    static QList<QPair<QSslError::SslError, QString>> sslErrorEnumStrings() SIP_SKIP;
 
     /**
      * \brief certIsCurrent checks if \a cert is viable for its not before and not after dates
@@ -357,8 +357,8 @@ class CORE_EXPORT QgsAuthCertUtils
      * \return list of QSslError, if the list is empty then the cert chain is valid
      */
     static QList<QSslError> validateCertChain( const QList<QSslCertificate> &certificateChain,
-        const QString &hostName = QString(),
-        bool trustRootCa = false ) ;
+                                               const QString &hostName = QString(),
+                                               bool trustRootCa = false );
 
     /**
      * \brief validatePKIBundle validate the PKI bundle by checking the certificate chain, the

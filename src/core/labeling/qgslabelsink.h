@@ -114,5 +114,4 @@ class QgsRuleBasedLabelSinkProvider : public QgsRuleBasedLabelProvider
 };
 
 
-
 #endif // QGSLABELSINK_H

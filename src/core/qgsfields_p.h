@@ -41,7 +41,6 @@
 class QgsFieldsPrivate : public QSharedData
 {
   public:
-
     QgsFieldsPrivate()
     {
     }
@@ -62,7 +61,7 @@ class QgsFieldsPrivate : public QSharedData
     QHash<QString, int> nameToIndex;
 
   private:
-    QgsFieldsPrivate &operator= ( const QgsFieldsPrivate & ) = delete;
+    QgsFieldsPrivate &operator=( const QgsFieldsPrivate & ) = delete;
 };
 
 /// @endcond

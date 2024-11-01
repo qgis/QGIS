@@ -45,22 +45,11 @@ bool QgsMapLayerProxyModel::layerMatchesFilters( const QgsMapLayer *layer, const
     return true;
 
   // layer type
-  if ( ( filters.testFlag( Qgis::LayerFilter::RasterLayer ) && layer->type() == Qgis::LayerType::Raster ) ||
-       ( filters.testFlag( Qgis::LayerFilter::VectorLayer ) && layer->type() == Qgis::LayerType::Vector ) ||
-       ( filters.testFlag( Qgis::LayerFilter::MeshLayer ) && layer->type() == Qgis::LayerType::Mesh ) ||
-       ( filters.testFlag( Qgis::LayerFilter::VectorTileLayer ) && layer->type() == Qgis::LayerType::VectorTile ) ||
-       ( filters.testFlag( Qgis::LayerFilter::PointCloudLayer ) && layer->type() == Qgis::LayerType::PointCloud ) ||
-       ( filters.testFlag( Qgis::LayerFilter::AnnotationLayer ) && layer->type() == Qgis::LayerType::Annotation ) ||
-       ( filters.testFlag( Qgis::LayerFilter::TiledSceneLayer ) && layer->type() == Qgis::LayerType::TiledScene ) ||
-       ( filters.testFlag( Qgis::LayerFilter::PluginLayer ) && layer->type() == Qgis::LayerType::Plugin ) )
+  if ( ( filters.testFlag( Qgis::LayerFilter::RasterLayer ) && layer->type() == Qgis::LayerType::Raster ) || ( filters.testFlag( Qgis::LayerFilter::VectorLayer ) && layer->type() == Qgis::LayerType::Vector ) || ( filters.testFlag( Qgis::LayerFilter::MeshLayer ) && layer->type() == Qgis::LayerType::Mesh ) || ( filters.testFlag( Qgis::LayerFilter::VectorTileLayer ) && layer->type() == Qgis::LayerType::VectorTile ) || ( filters.testFlag( Qgis::LayerFilter::PointCloudLayer ) && layer->type() == Qgis::LayerType::PointCloud ) || ( filters.testFlag( Qgis::LayerFilter::AnnotationLayer ) && layer->type() == Qgis::LayerType::Annotation ) || ( filters.testFlag( Qgis::LayerFilter::TiledSceneLayer ) && layer->type() == Qgis::LayerType::TiledScene ) || ( filters.testFlag( Qgis::LayerFilter::PluginLayer ) && layer->type() == Qgis::LayerType::Plugin ) )
     return true;
 
   // geometry type
-  const bool detectGeometry = filters.testFlag( Qgis::LayerFilter::NoGeometry ) ||
-                              filters.testFlag( Qgis::LayerFilter::PointLayer ) ||
-                              filters.testFlag( Qgis::LayerFilter::LineLayer ) ||
-                              filters.testFlag( Qgis::LayerFilter::PolygonLayer ) ||
-                              filters.testFlag( Qgis::LayerFilter::HasGeometry );
+  const bool detectGeometry = filters.testFlag( Qgis::LayerFilter::NoGeometry ) || filters.testFlag( Qgis::LayerFilter::PointLayer ) || filters.testFlag( Qgis::LayerFilter::LineLayer ) || filters.testFlag( Qgis::LayerFilter::PolygonLayer ) || filters.testFlag( Qgis::LayerFilter::HasGeometry );
   if ( detectGeometry && layer->type() == Qgis::LayerType::Vector )
   {
     if ( const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer ) )
@@ -104,7 +93,7 @@ void QgsMapLayerProxyModel::setExceptedLayerList( const QList<QgsMapLayer *> &ex
   invalidateFilter();
 }
 
-void  QgsMapLayerProxyModel::setProject( QgsProject *project )
+void QgsMapLayerProxyModel::setProject( QgsProject *project )
 {
   mModel->setProject( project );
 }
@@ -176,8 +165,8 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
 
   const QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
 
-  if ( sourceModel()->data( index, static_cast< int >( QgsMapLayerModel::CustomRole::Empty ) ).toBool()
-       || sourceModel()->data( index, static_cast< int >( QgsMapLayerModel::CustomRole::Additional ) ).toBool() )
+  if ( sourceModel()->data( index, static_cast<int>( QgsMapLayerModel::CustomRole::Empty ) ).toBool()
+       || sourceModel()->data( index, static_cast<int>( QgsMapLayerModel::CustomRole::Additional ) ).toBool() )
     return true;
 
   return acceptsLayer( static_cast<QgsMapLayer *>( index.internalPointer() ) );
@@ -186,14 +175,14 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
 bool QgsMapLayerProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
   // empty row is always first
-  if ( sourceModel()->data( left, static_cast< int >( QgsMapLayerModel::CustomRole::Empty ) ).toBool() )
+  if ( sourceModel()->data( left, static_cast<int>( QgsMapLayerModel::CustomRole::Empty ) ).toBool() )
     return true;
-  else if ( sourceModel()->data( right, static_cast< int >( QgsMapLayerModel::CustomRole::Empty ) ).toBool() )
+  else if ( sourceModel()->data( right, static_cast<int>( QgsMapLayerModel::CustomRole::Empty ) ).toBool() )
     return false;
 
   // additional rows are always last
-  const bool leftAdditional = sourceModel()->data( left, static_cast< int >( QgsMapLayerModel::CustomRole::Additional ) ).toBool();
-  const bool rightAdditional = sourceModel()->data( right, static_cast< int >( QgsMapLayerModel::CustomRole::Additional ) ).toBool();
+  const bool leftAdditional = sourceModel()->data( left, static_cast<int>( QgsMapLayerModel::CustomRole::Additional ) ).toBool();
+  const bool rightAdditional = sourceModel()->data( right, static_cast<int>( QgsMapLayerModel::CustomRole::Additional ) ).toBool();
 
   if ( leftAdditional && !rightAdditional )
     return false;

@@ -124,19 +124,13 @@ QgsSphere QgsCesiumUtils::transformSphere( const QgsSphere &sphere, const QgsMat
     // see https://github.com/CesiumGS/cesium-native/blob/fd20f5e272850dde6b58c74059e6de767fe25df6/Cesium3DTilesSelection/src/BoundingVolume.cpp#L33
     const QgsVector3D center = transform.map( sphere.centerVector() );
     const double uniformScale = std::max(
-                                  std::max(
-                                    std::sqrt(
-                                      transform.constData()[0] * transform.constData()[0] +
-                                      transform.constData()[1] * transform.constData()[1] +
-                                      transform.constData()[2] * transform.constData()[2] ),
-                                    std::sqrt(
-                                      transform.constData()[4] * transform.constData()[4] +
-                                      transform.constData()[5] * transform.constData()[5] +
-                                      transform.constData()[6] * transform.constData()[6] ) ),
-                                  std::sqrt(
-                                    transform.constData()[8] * transform.constData()[8] +
-                                    transform.constData()[9] * transform.constData()[9] +
-                                    transform.constData()[10] * transform.constData()[10] ) );
+      std::max(
+        std::sqrt(
+          transform.constData()[0] * transform.constData()[0] + transform.constData()[1] * transform.constData()[1] + transform.constData()[2] * transform.constData()[2] ),
+        std::sqrt(
+          transform.constData()[4] * transform.constData()[4] + transform.constData()[5] * transform.constData()[5] + transform.constData()[6] * transform.constData()[6] ) ),
+      std::sqrt(
+        transform.constData()[8] * transform.constData()[8] + transform.constData()[9] * transform.constData()[9] + transform.constData()[10] * transform.constData()[10] ) );
 
     return QgsSphere( center.x(), center.y(), center.z(), sphere.radius() * uniformScale );
   }
@@ -147,13 +141,13 @@ QgsCesiumUtils::B3DMContents QgsCesiumUtils::extractGltfFromB3dm( const QByteArr
 {
   struct b3dmHeader
   {
-    unsigned char magic[4];
-    quint32 version;
-    quint32 byteLength;
-    quint32 featureTableJsonByteLength;
-    quint32 featureTableBinaryByteLength;
-    quint32 batchTableJsonByteLength;
-    quint32 batchTableBinaryByteLength;
+      unsigned char magic[4];
+      quint32 version;
+      quint32 byteLength;
+      quint32 featureTableJsonByteLength;
+      quint32 featureTableBinaryByteLength;
+      quint32 batchTableJsonByteLength;
+      quint32 batchTableBinaryByteLength;
   };
 
   QgsCesiumUtils::B3DMContents res;
@@ -171,7 +165,7 @@ QgsCesiumUtils::B3DMContents QgsCesiumUtils::extractGltfFromB3dm( const QByteArr
       const json featureTable = json::parse( featureTableJson.toStdString() );
       if ( featureTable.contains( "RTC_CENTER" ) )
       {
-        const auto &rtcCenterJson = featureTable[ "RTC_CENTER" ];
+        const auto &rtcCenterJson = featureTable["RTC_CENTER"];
         if ( rtcCenterJson.is_array() && rtcCenterJson.size() == 3 )
         {
           res.rtcCenter.setX( rtcCenterJson[0].get<double>() );
@@ -190,9 +184,7 @@ QgsCesiumUtils::B3DMContents QgsCesiumUtils::extractGltfFromB3dm( const QByteArr
     }
   }
 
-  res.gltf = tileContent.mid( sizeof( b3dmHeader ) +
-                              hdr.featureTableJsonByteLength + hdr.featureTableBinaryByteLength +
-                              hdr.batchTableJsonByteLength + hdr.batchTableBinaryByteLength );
+  res.gltf = tileContent.mid( sizeof( b3dmHeader ) + hdr.featureTableJsonByteLength + hdr.featureTableBinaryByteLength + hdr.batchTableJsonByteLength + hdr.batchTableBinaryByteLength );
   return res;
 }
 

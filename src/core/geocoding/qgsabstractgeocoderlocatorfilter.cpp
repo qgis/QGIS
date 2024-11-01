@@ -25,7 +25,6 @@ QgsAbstractGeocoderLocatorFilter::QgsAbstractGeocoderLocatorFilter( const QStrin
   , mGeocoder( geocoder )
   , mBoundingBox( boundingBox )
 {
-
 }
 
 QString QgsAbstractGeocoderLocatorFilter::name() const
@@ -49,7 +48,7 @@ void QgsAbstractGeocoderLocatorFilter::fetchResults( const QString &string, cons
   geocodeContext.setAreaOfInterest( QgsGeometry::fromRect( context.targetExtent ) );
   geocodeContext.setAreaOfInterestCrs( context.targetExtentCrs );
 
-  const QList< QgsGeocoderResult > results = mGeocoder->geocodeString( string, geocodeContext, feedback );
+  const QList<QgsGeocoderResult> results = mGeocoder->geocodeString( string, geocodeContext, feedback );
   for ( const QgsGeocoderResult &result : results )
   {
     if ( result.isValid() )
@@ -75,10 +74,10 @@ QgsGeocoderResult QgsAbstractGeocoderLocatorFilter::locatorResultToGeocoderResul
 {
   const QVariantMap attrs = result.userData().toMap();
   QgsGeocoderResult geocodeResult( attrs.value( QStringLiteral( "identifier" ) ).toString(),
-                                   attrs.value( QStringLiteral( "geom" ) ).value< QgsGeometry >(),
-                                   attrs.value( QStringLiteral( "crs" ) ).value< QgsCoordinateReferenceSystem >() );
+                                   attrs.value( QStringLiteral( "geom" ) ).value<QgsGeometry>(),
+                                   attrs.value( QStringLiteral( "crs" ) ).value<QgsCoordinateReferenceSystem>() );
   geocodeResult.setAdditionalAttributes( attrs.value( QStringLiteral( "attributes" ) ).toMap() );
-  geocodeResult.setViewport( attrs.value( QStringLiteral( "viewport" ) ).value< QgsRectangle >() );
+  geocodeResult.setViewport( attrs.value( QStringLiteral( "viewport" ) ).value<QgsRectangle>() );
   geocodeResult.setDescription( result.description );
   geocodeResult.setGroup( result.group );
   return geocodeResult;

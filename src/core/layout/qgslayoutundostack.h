@@ -37,7 +37,6 @@ class CORE_EXPORT QgsLayoutUndoStack : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutUndoStack, for the specified parent \a layout.
      */
@@ -136,21 +135,20 @@ class CORE_EXPORT QgsLayoutUndoStack : public QObject
      * Emitted when an undo or redo action has occurred, which affected a
      * set of layout \a itemUuids.
      */
-    void undoRedoOccurredForItems( QSet< QString > itemUuids );
+    void undoRedoOccurredForItems( QSet<QString> itemUuids );
 
   private slots:
 
     void indexChanged();
 
   private:
-
     QgsLayout *mLayout = nullptr;
 
-    std::unique_ptr< QUndoStack > mUndoStack;
+    std::unique_ptr<QUndoStack> mUndoStack;
 
-    std::vector< std::unique_ptr< QgsAbstractLayoutUndoCommand > > mActiveCommands;
+    std::vector<std::unique_ptr<QgsAbstractLayoutUndoCommand>> mActiveCommands;
 
-    QSet< QString > mUndoRedoOccurredItemUuids;
+    QSet<QString> mUndoRedoOccurredItemUuids;
 
     int mBlockedCommands = 0;
 

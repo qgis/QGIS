@@ -50,7 +50,7 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
 
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
   mesh->setGeometry( mTileGeometry ); // takes ownership if the component has no parent
-  entity->addComponent( mesh ); // takes ownership if the component has no parent
+  entity->addComponent( mesh );       // takes ownership if the component has no parent
 
   // create material
 

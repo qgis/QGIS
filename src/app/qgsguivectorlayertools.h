@@ -28,7 +28,6 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsGuiVectorLayerTools.
      */
@@ -97,7 +96,6 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools
   private:
     void commitError( QgsVectorLayer *vlayer ) const;
     bool avoidIntersection( QgsVectorLayer *layer, QgsFeatureRequest &request, QString *errorMsg = nullptr ) const;
-
 };
 
 #endif // QGSGUIVECTORLAYERTOOLS_H

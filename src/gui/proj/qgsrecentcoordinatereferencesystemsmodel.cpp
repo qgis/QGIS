@@ -63,10 +63,10 @@ QVariant QgsRecentCoordinateReferenceSystemsModel::data( const QModelIndex &inde
       case Qt::ToolTipRole:
         return crs.userFriendlyIdentifier();
 
-      case static_cast< int >( CustomRole::Crs ):
+      case static_cast<int>( CustomRole::Crs ):
         return crs;
 
-      case static_cast< int >( CustomRole::AuthId ):
+      case static_cast<int>( CustomRole::AuthId ):
         return crs.authid();
 
       default:
@@ -148,7 +148,6 @@ void QgsRecentCoordinateReferenceSystemsModel::recentCrsCleared()
   mCrs.clear();
   endResetModel();
 }
-
 
 
 //

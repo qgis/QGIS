@@ -44,7 +44,7 @@ QgsExpressionContext QgsEditorConfigWidget::createExpressionContext() const
 void QgsEditorConfigWidget::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsWidgetWrapper::Property key )
 {
   button->blockSignals( true );
-  button->init( static_cast< int >( key ), mPropertyCollection, QgsWidgetWrapper::propertyDefinitions(), mLayer );
+  button->init( static_cast<int>( key ), mPropertyCollection, QgsWidgetWrapper::propertyDefinitions(), mLayer );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsEditorConfigWidget::updateProperty );
   button->registerExpressionContextGenerator( this );
   button->blockSignals( false );
@@ -52,7 +52,7 @@ void QgsEditorConfigWidget::initializeDataDefinedButton( QgsPropertyOverrideButt
 
 void QgsEditorConfigWidget::updateDataDefinedButtons()
 {
-  const auto propertyOverrideButtons { findChildren< QgsPropertyOverrideButton * >() };
+  const auto propertyOverrideButtons { findChildren<QgsPropertyOverrideButton *>() };
   for ( QgsPropertyOverrideButton *button : propertyOverrideButtons )
   {
     updateDataDefinedButton( button );
@@ -67,15 +67,14 @@ void QgsEditorConfigWidget::updateDataDefinedButton( QgsPropertyOverrideButton *
   if ( button->propertyKey() < 0 )
     return;
 
-  const QgsWidgetWrapper::Property key = static_cast< QgsWidgetWrapper::Property >( button->propertyKey() );
+  const QgsWidgetWrapper::Property key = static_cast<QgsWidgetWrapper::Property>( button->propertyKey() );
   whileBlocking( button )->setToProperty( mPropertyCollection.property( key ) );
 }
 
 void QgsEditorConfigWidget::updateProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  const QgsWidgetWrapper::Property key = static_cast<  QgsWidgetWrapper::Property >( button->propertyKey() );
+  const QgsWidgetWrapper::Property key = static_cast<QgsWidgetWrapper::Property>( button->propertyKey() );
   mPropertyCollection.setProperty( key, button->toProperty() );
   emit changed();
 }
-

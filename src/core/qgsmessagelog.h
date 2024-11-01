@@ -41,7 +41,6 @@ class CORE_EXPORT QgsMessageLog : public QObject
     Q_OBJECT
 
   public:
-
     QgsMessageLog() = default;
 
     /**
@@ -76,13 +75,11 @@ class CORE_EXPORT QgsMessageLog : public QObject
     void messageReceived( bool received );
 
   private:
-
     void emitMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, bool notifyUser = true );
 
     int mAdviseBlockCount = 0;
 
     friend class QgsMessageLogNotifyBlocker;
-
 };
 
 /**
@@ -101,7 +98,6 @@ class CORE_EXPORT QgsMessageLog : public QObject
 class CORE_EXPORT QgsMessageLogNotifyBlocker
 {
   public:
-
     /**
      * Constructor for QgsMessageLogNotifyBlocker.
      *
@@ -115,7 +111,6 @@ class CORE_EXPORT QgsMessageLogNotifyBlocker
     ~QgsMessageLogNotifyBlocker();
 
   private:
-
 #ifdef SIP_RUN
     QgsMessageLogNotifyBlocker( const QgsMessageLogNotifyBlocker &other );
 #endif
@@ -133,14 +128,12 @@ class CORE_EXPORT QgsMessageLogConsole : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsMessageLogConsole.
      */
     QgsMessageLogConsole();
 
   protected:
-
     /**
      * Formats a log message. Used by child classes.
      *

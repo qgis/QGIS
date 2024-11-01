@@ -31,7 +31,6 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
     Q_OBJECT
 
   public:
-
     /**
      * Construct a combo box for defining certificate trust policy
      * \param parent Parent widget

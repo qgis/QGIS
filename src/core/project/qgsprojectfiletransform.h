@@ -87,7 +87,6 @@ class CORE_EXPORT QgsProjectFileTransform
     Q_DECL_DEPRECATED static void fixOldSymbolLayerReferences( const QMap<QString, QgsMapLayer *> &mapLayers );
 
   private:
-
     QDomDocument mDom;
     QgsProjectVersion mCurrentVersion;
 };

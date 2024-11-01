@@ -52,7 +52,7 @@ QgsLayoutItemHtml::QgsLayoutItemHtml( QgsLayout *layout )
   // only possible on the main thread!
   if ( QThread::currentThread() == QApplication::instance()->thread() )
   {
-    mWebPage = std::make_unique< QgsWebPage >();
+    mWebPage = std::make_unique<QgsWebPage>();
   }
   else
   {
@@ -172,7 +172,6 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
   {
     case QgsLayoutItemHtml::Url:
     {
-
       QString currentUrl = mUrl.toString();
 
       //data defined url set?
@@ -213,22 +212,20 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
   bool loaded = false;
 
   QEventLoop loop;
-  connect( mWebPage.get(), &QWebPage::loadFinished, &loop, [&loaded, &loop ] { loaded = true; loop.quit(); } );
-  connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, [&loaded, &loop ] { loaded = true; loop.quit(); } );
+  connect( mWebPage.get(), &QWebPage::loadFinished, &loop, [&loaded, &loop] { loaded = true; loop.quit(); } );
+  connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, [&loaded, &loop] { loaded = true; loop.quit(); } );
 
   //reset page size. otherwise viewport size increases but never decreases again
   mWebPage->setViewportSize( QSize( maxFrameWidth() * mHtmlUnitsToLayoutUnits, 0 ) );
 
   //set html, using the specified url as base if in Url mode or the project file if in manual mode
-  const QUrl baseUrl = mContentMode == QgsLayoutItemHtml::Url ?
-                       QUrl( mActualFetchedUrl ) :
-                       QUrl::fromLocalFile( mLayout->project()->absoluteFilePath() );
+  const QUrl baseUrl = mContentMode == QgsLayoutItemHtml::Url ? QUrl( mActualFetchedUrl ) : QUrl::fromLocalFile( mLayout->project()->absoluteFilePath() );
 
   mWebPage->mainFrame()->setHtml( loadedHtml, baseUrl );
 
   //set user stylesheet
   QWebSettings *settings = mWebPage->settings();
-  if ( mEnableUserStylesheet && ! mUserStylesheet.isEmpty() )
+  if ( mEnableUserStylesheet && !mUserStylesheet.isEmpty() )
   {
     QByteArray ba;
     ba.append( mUserStylesheet.toUtf8() );
@@ -266,7 +263,7 @@ double QgsLayoutItemHtml::maxFrameWidth() const
   double maxWidth = 0;
   for ( QgsLayoutFrame *frame : mFrameItems )
   {
-    maxWidth = std::max( maxWidth, static_cast< double >( frame->boundingRect().width() ) );
+    maxWidth = std::max( maxWidth, static_cast<double>( frame->boundingRect().width() ) );
   }
 
   return maxWidth;
@@ -321,7 +318,7 @@ QString QgsLayoutItemHtml::fetchHtml( const QUrl &url )
   //pause until HTML fetch
   bool loaded = false;
   QEventLoop loop;
-  connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, [&loaded, &loop ] { loaded = true; loop.quit(); } );
+  connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, [&loaded, &loop] { loaded = true; loop.quit(); } );
   mFetcher->fetchContent( url );
 
   if ( !loaded )
@@ -362,8 +359,7 @@ void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRect
       const QRectF painterRect = QRectF( currentFrame->rect().left() * context.renderContext().scaleFactor(),
                                          currentFrame->rect().top() * context.renderContext().scaleFactor(),
                                          currentFrame->rect().width() * context.renderContext().scaleFactor(),
-                                         currentFrame->rect().height() * context.renderContext().scaleFactor()
-                                       );
+                                         currentFrame->rect().height() * context.renderContext().scaleFactor() );
 
       painter->setBrush( QBrush( QColor( 255, 125, 125, 125 ) ) );
       painter->setPen( Qt::NoPen );
@@ -373,9 +369,7 @@ void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRect
       painter->setPen( QColor( 200, 0, 0, 255 ) );
       QTextDocument td;
       td.setTextWidth( painterRect.width() );
-      td.setHtml( QStringLiteral( "<span style=\"color: rgb(200,0,0);\"><b>%1</b><br>%2</span>" ).arg(
-                    tr( "WebKit not available!" ),
-                    tr( "The item cannot be rendered because this QGIS install was built without WebKit support." ) ) );
+      td.setHtml( QStringLiteral( "<span style=\"color: rgb(200,0,0);\"><b>%1</b><br>%2</span>" ).arg( tr( "WebKit not available!" ), tr( "The item cannot be rendered because this QGIS install was built without WebKit support." ) ) );
       painter->setClipRect( painterRect );
       QAbstractTextDocumentLayout::PaintContext ctx;
       td.documentLayout()->draw( painter, ctx );
@@ -431,7 +425,7 @@ double QgsLayoutItemHtml::findNearbyPageBreak( double yPos )
   bool currentPixelTransparent = false;
   bool previousPixelTransparent = false;
   QRgb pixelColor;
-  QList< QPair<int, int> > candidates;
+  QList<QPair<int, int>> candidates;
   const int minRow = std::max( idealPos - maxSearchDistance, 0 );
   for ( int candidateRow = idealPos; candidateRow >= minRow; --candidateRow )
   {
@@ -469,7 +463,7 @@ double QgsLayoutItemHtml::findNearbyPageBreak( double yPos )
   int minCandidateRow = maxCandidateRow + 1;
   const int minCandidateChanges = candidates[0].second;
 
-  QList< QPair<int, int> >::iterator it;
+  QList<QPair<int, int>>::iterator it;
   for ( it = candidates.begin(); it != candidates.end(); ++it )
   {
     if ( ( *it ).second != minCandidateChanges || ( *it ).first != minCandidateRow - 1 )
@@ -527,7 +521,7 @@ QString QgsLayoutItemHtml::displayName() const
 
 bool QgsLayoutItemHtml::writePropertiesToElement( QDomElement &htmlElem, QDomDocument &, const QgsReadWriteContext & ) const
 {
-  htmlElem.setAttribute( QStringLiteral( "contentMode" ), QString::number( static_cast< int >( mContentMode ) ) );
+  htmlElem.setAttribute( QStringLiteral( "contentMode" ), QString::number( static_cast<int>( mContentMode ) ) );
   htmlElem.setAttribute( QStringLiteral( "url" ), mUrl.toString() );
   htmlElem.setAttribute( QStringLiteral( "html" ), mHtml );
   htmlElem.setAttribute( QStringLiteral( "evaluateExpressions" ), mEvaluateExpressions ? "true" : "false" );
@@ -541,7 +535,7 @@ bool QgsLayoutItemHtml::writePropertiesToElement( QDomElement &htmlElem, QDomDoc
 bool QgsLayoutItemHtml::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &, const QgsReadWriteContext & )
 {
   bool contentModeOK;
-  mContentMode = static_cast< QgsLayoutItemHtml::ContentMode >( itemElem.attribute( QStringLiteral( "contentMode" ) ).toInt( &contentModeOK ) );
+  mContentMode = static_cast<QgsLayoutItemHtml::ContentMode>( itemElem.attribute( QStringLiteral( "contentMode" ) ).toInt( &contentModeOK ) );
   if ( !contentModeOK )
   {
     mContentMode = QgsLayoutItemHtml::Url;

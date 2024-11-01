@@ -77,7 +77,7 @@ bool QgsGrassUtils::itemExists( QString element, QString item )
 
 QString QgsGrassUtils::htmlBrowserPath()
 {
-  return QgsApplication::libexecPath() + "grass/bin/qgis.g.browser"  + QString::number( QgsGrass::versionMajor() );
+  return QgsApplication::libexecPath() + "grass/bin/qgis.g.browser" + QString::number( QgsGrass::versionMajor() );
 }
 
 QgsGrassElementDialog::QgsGrassElementDialog( QWidget *parent )
@@ -147,7 +147,6 @@ QString QgsGrassElementDialog::getItem( QString element,
 
 void QgsGrassElementDialog::textChanged()
 {
-
   QString text = mLineEdit->text().trimmed();
 
   mErrorLabel->setText( QStringLiteral( "   " ) );

@@ -29,7 +29,7 @@ QgsMbTiles::QgsMbTiles( const QString &filename )
 bool QgsMbTiles::open()
 {
   if ( mDatabase )
-    return true;  // already opened
+    return true; // already opened
 
   if ( mFilename.isEmpty() )
     return false;
@@ -65,9 +65,8 @@ bool QgsMbTiles::create()
     return false;
   }
 
-  const QString sql = \
-                      "CREATE TABLE metadata (name text, value text);" \
-                      "CREATE TABLE tiles (zoom_level integer, tile_column integer, tile_row integer, tile_data blob);" \
+  const QString sql = "CREATE TABLE metadata (name text, value text);"
+                      "CREATE TABLE tiles (zoom_level integer, tile_column integer, tile_row integer, tile_data blob);"
                       "CREATE UNIQUE INDEX tile_index on tiles (zoom_level, tile_column, tile_row);";
   QString errorMessage;
   result = mDatabase.exec( sql, errorMessage );

@@ -61,17 +61,17 @@ QgsFeaturePickerWidget::QgsFeaturePickerWidget( QWidget *parent )
   connect( mModel, &QgsFeaturePickerModel::fetchLimitChanged, this, &QgsFeaturePickerWidget::fetchLimitChanged );
   connect( mModel, &QgsFeaturePickerModel::extraIdentifierValueIndexChanged, mComboBox, &QComboBox::setCurrentIndex );
   connect( mModel, &QgsFeaturePickerModel::featureChanged, this, &QgsFeaturePickerWidget::featureChanged );
-  connect( mCompleter, static_cast<void( QCompleter::* )( const QModelIndex & )>( &QCompleter::highlighted ), this, &QgsFeaturePickerWidget::onItemSelected );
-  connect( mCompleter, static_cast<void( QCompleter::* )( const QModelIndex & )>( &QCompleter::activated ), this, &QgsFeaturePickerWidget::onActivated );
+  connect( mCompleter, static_cast<void ( QCompleter::* )( const QModelIndex & )>( &QCompleter::highlighted ), this, &QgsFeaturePickerWidget::onItemSelected );
+  connect( mCompleter, static_cast<void ( QCompleter::* )( const QModelIndex & )>( &QCompleter::activated ), this, &QgsFeaturePickerWidget::onActivated );
   connect( mModel, &QgsFeaturePickerModel::beginUpdate, this, &QgsFeaturePickerWidget::storeLineEditState );
   connect( mModel, &QgsFeaturePickerModel::endUpdate, this, &QgsFeaturePickerWidget::restoreLineEditState );
   connect( mModel, &QgsFeaturePickerModel::endUpdate, this, &QgsFeaturePickerWidget::modelUpdated );
   connect( mModel, &QgsFeaturePickerModel::dataChanged, this, &QgsFeaturePickerWidget::onDataChanged );
 
-  connect( mComboBox, static_cast<void( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsFeaturePickerWidget::onCurrentIndexChanged );
+  connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsFeaturePickerWidget::onCurrentIndexChanged );
 
-  connect( mPreviousButton, &QToolButton::clicked, this, [ = ]() {browseFeatures( -1 );} );
-  connect( mNextButton, &QToolButton::clicked, this, [ = ]() {browseFeatures( 1 );} );
+  connect( mPreviousButton, &QToolButton::clicked, this, [=]() { browseFeatures( -1 ); } );
+  connect( mNextButton, &QToolButton::clicked, this, [=]() { browseFeatures( 1 ); } );
 
   mLineEdit = new QgsFilterLineEdit( nullptr, QgsApplication::nullRepresentation() );
   mLineEdit->setSelectOnFocus( true );
@@ -151,8 +151,8 @@ void QgsFeaturePickerWidget::onCurrentIndexChanged( int i )
     return;
 
   const QModelIndex modelIndex = mModel->index( i, 0, QModelIndex() );
-  mModel->setFeature( mModel->data( modelIndex, static_cast< int >( QgsFeaturePickerModel::CustomRole::FeatureId ) ).value<QgsFeatureId>() );
-  mLineEdit->setText( mModel->data( modelIndex, static_cast< int >( QgsFeaturePickerModel::CustomRole::Value ) ).toString() );
+  mModel->setFeature( mModel->data( modelIndex, static_cast<int>( QgsFeaturePickerModel::CustomRole::FeatureId ) ).value<QgsFeatureId>() );
+  mLineEdit->setText( mModel->data( modelIndex, static_cast<int>( QgsFeaturePickerModel::CustomRole::Value ) ).toString() );
   mLineEdit->setFont( mModel->data( modelIndex, Qt::FontRole ).value<QFont>() );
   QPalette palette = mLineEdit->palette();
   palette.setBrush( mLineEdit->foregroundRole(), mModel->data( modelIndex, Qt::ForegroundRole ).value<QBrush>() );
@@ -161,15 +161,15 @@ void QgsFeaturePickerWidget::onCurrentIndexChanged( int i )
 
 void QgsFeaturePickerWidget::onActivated( QModelIndex modelIndex )
 {
-  setFeature( mModel->data( modelIndex, static_cast< int >( QgsFeaturePickerModel::CustomRole::FeatureId ) ).value<QgsFeatureId>() );
-  mLineEdit->setText( mModel->data( modelIndex, static_cast< int >( QgsFeaturePickerModel::CustomRole::Value ) ).toString() );
+  setFeature( mModel->data( modelIndex, static_cast<int>( QgsFeaturePickerModel::CustomRole::FeatureId ) ).value<QgsFeatureId>() );
+  mLineEdit->setText( mModel->data( modelIndex, static_cast<int>( QgsFeaturePickerModel::CustomRole::Value ) ).toString() );
 }
 
 void QgsFeaturePickerWidget::storeLineEditState()
 {
   if ( mIsCurrentlyEdited )
   {
-    mLineEdit->storeState( );
+    mLineEdit->storeState();
   }
 }
 
@@ -177,7 +177,7 @@ void QgsFeaturePickerWidget::restoreLineEditState()
 {
   if ( mIsCurrentlyEdited )
   {
-    mLineEdit->restoreState( );
+    mLineEdit->restoreState();
   }
 }
 
@@ -187,7 +187,7 @@ int QgsFeaturePickerWidget::nullIndex() const
 
   if ( allowNull() )
   {
-    index = mComboBox->findText( QgsApplication::nullRepresentation( ) );
+    index = mComboBox->findText( QgsApplication::nullRepresentation() );
   }
 
   return index;
@@ -202,7 +202,7 @@ void QgsFeaturePickerWidget::onDataChanged( const QModelIndex &topLeft, const QM
     if ( currentIndex >= topLeft.row() && currentIndex <= bottomRight.row() )
     {
       const QModelIndex modelIndex = mModel->index( currentIndex, 0, QModelIndex() );
-      mLineEdit->setText( mModel->data( modelIndex, static_cast< int >( QgsFeaturePickerModel::CustomRole::Value ) ).toString() );
+      mLineEdit->setText( mModel->data( modelIndex, static_cast<int>( QgsFeaturePickerModel::CustomRole::Value ) ).toString() );
     }
   }
 }
@@ -222,14 +222,14 @@ void QgsFeaturePickerWidget::focusOutEvent( QFocusEvent *event )
 {
   Q_UNUSED( event )
   QWidget::focusOutEvent( event );
-  mLineEdit->setText( mModel->data( currentModelIndex(), static_cast< int >( QgsFeaturePickerModel::CustomRole::Value ) ).toString() );
+  mLineEdit->setText( mModel->data( currentModelIndex(), static_cast<int>( QgsFeaturePickerModel::CustomRole::Value ) ).toString() );
 }
 
 void QgsFeaturePickerWidget::keyPressEvent( QKeyEvent *event )
 {
   if ( event->key() == Qt::Key_Escape )
   {
-    mLineEdit->setText( mModel->data( currentModelIndex(), static_cast< int >( QgsFeaturePickerModel::CustomRole::Value ) ).toString() );
+    mLineEdit->setText( mModel->data( currentModelIndex(), static_cast<int>( QgsFeaturePickerModel::CustomRole::Value ) ).toString() );
   }
   QWidget::keyReleaseEvent( event );
 }

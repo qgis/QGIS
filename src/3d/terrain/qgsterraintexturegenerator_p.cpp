@@ -194,8 +194,8 @@ QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
   }
   layers.erase( std::remove_if( layers.begin(),
                                 layers.end(),
-  []( const QgsMapLayer * layer ) { return layer->renderer3D(); } ),
-  layers.end() );
+                                []( const QgsMapLayer *layer ) { return layer->renderer3D(); } ),
+                layers.end() );
   mapSettings.setLayers( layers );
 
   return mapSettings;

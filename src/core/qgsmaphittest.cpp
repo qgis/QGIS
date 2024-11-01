@@ -44,7 +44,6 @@ QgsMapHitTest::QgsMapHitTest( const QgsMapSettings &settings, const LayerFilterE
 QgsMapHitTest::QgsMapHitTest( const QgsLayerTreeFilterSettings &settings )
   : mSettings( settings )
 {
-
 }
 
 void QgsMapHitTest::run()
@@ -53,14 +52,14 @@ void QgsMapHitTest::run()
 
   // TODO: do we need this temp image?
   QImage tmpImage( mapSettings.outputSize(), mapSettings.outputImageFormat() );
-  tmpImage.setDotsPerMeterX( static_cast< int >( std::round( mapSettings.outputDpi() * 25.4 ) ) );
-  tmpImage.setDotsPerMeterY( static_cast< int >( std::round( mapSettings.outputDpi() * 25.4 ) ) );
+  tmpImage.setDotsPerMeterX( static_cast<int>( std::round( mapSettings.outputDpi() * 25.4 ) ) );
+  tmpImage.setDotsPerMeterY( static_cast<int>( std::round( mapSettings.outputDpi() * 25.4 ) ) );
   QPainter painter( &tmpImage );
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
   context.setPainter( &painter ); // we are not going to draw anything, but we still need a working painter
 
-  const QList< QgsMapLayer * > layers = mSettings.layers();
+  const QList<QgsMapLayer *> layers = mSettings.layers();
   for ( QgsMapLayer *layer : layers )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
@@ -89,7 +88,7 @@ void QgsMapHitTest::run()
     if ( mapSettings.layerStyleOverrides().contains( vl->id() ) )
       styleOverride.setOverrideStyle( mapSettings.layerStyleOverrides().value( vl->id() ) );
 
-    std::unique_ptr< QgsVectorLayerFeatureSource > source = std::make_unique< QgsVectorLayerFeatureSource >( vl );
+    std::unique_ptr<QgsVectorLayerFeatureSource> source = std::make_unique<QgsVectorLayerFeatureSource>( vl );
     runHitTestFeatureSource( source.get(),
                              vl->id(), vl->fields(), vl->renderer(),
                              usedSymbols, usedSymbolsRuleKey, context,
@@ -99,15 +98,15 @@ void QgsMapHitTest::run()
   painter.end();
 }
 
-QMap<QString, QSet<QString> > QgsMapHitTest::results() const
+QMap<QString, QSet<QString>> QgsMapHitTest::results() const
 {
   return mHitTestRuleKey;
 }
 
 ///@cond PRIVATE
-QMap<QString, QList<QString> > QgsMapHitTest::resultsPy() const
+QMap<QString, QList<QString>> QgsMapHitTest::resultsPy() const
 {
-  QMap<QString, QList<QString> > res;
+  QMap<QString, QList<QString>> res;
   for ( auto it = mHitTestRuleKey.begin(); it != mHitTestRuleKey.end(); ++it )
   {
     res.insert( it.key(), qgis::setToList( it.value() ) );
@@ -141,16 +140,16 @@ bool QgsMapHitTest::legendKeyVisible( const QString &ruleKey, QgsVectorLayer *la
 }
 
 void QgsMapHitTest::runHitTestFeatureSource( QgsAbstractFeatureSource *source,
-    const QString &layerId,
-    const QgsFields &fields,
-    const QgsFeatureRenderer *renderer,
-    SymbolSet &usedSymbols,
-    SymbolSet &usedSymbolsRuleKey,
-    QgsRenderContext &context,
-    QgsFeedback *feedback,
-    const QgsGeometry &visibleExtent )
+                                             const QString &layerId,
+                                             const QgsFields &fields,
+                                             const QgsFeatureRenderer *renderer,
+                                             SymbolSet &usedSymbols,
+                                             SymbolSet &usedSymbolsRuleKey,
+                                             QgsRenderContext &context,
+                                             QgsFeedback *feedback,
+                                             const QgsGeometry &visibleExtent )
 {
-  std::unique_ptr< QgsFeatureRenderer > r( renderer->clone() );
+  std::unique_ptr<QgsFeatureRenderer> r( renderer->clone() );
   const bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature;
   r->startRender( context, fields );
 
@@ -162,7 +161,7 @@ void QgsMapHitTest::runHitTestFeatureSource( QgsAbstractFeatureSource *source,
   }
 
   // if there's no legend items for this layer, shortcut out early
-  QSet< QString > remainingKeysToFind = r->legendKeys();
+  QSet<QString> remainingKeysToFind = r->legendKeys();
   if ( remainingKeysToFind.empty() )
   {
     r->stopRender( context );
@@ -208,7 +207,7 @@ void QgsMapHitTest::runHitTestFeatureSource( QgsAbstractFeatureSource *source,
 
   request.setSubsetOfAttributes( requiredAttributes, fields );
 
-  std::unique_ptr< QgsGeometryEngine > polygonEngine;
+  std::unique_ptr<QgsGeometryEngine> polygonEngine;
   if ( !( mSettings.flags() & Qgis::LayerTreeFilterFlag::SkipVisibilityCheck ) )
   {
     if ( transformedPolygon.isNull() )
@@ -254,7 +253,7 @@ void QgsMapHitTest::runHitTestFeatureSource( QgsAbstractFeatureSource *source,
 
     //make sure we store string representation of symbol, not pointer
     //otherwise layer style override changes will delete original symbols and leave hanging pointers
-    const QSet< QString > legendKeysForFeature = r->legendKeysForFeature( f, context );
+    const QSet<QString> legendKeysForFeature = r->legendKeysForFeature( f, context );
     for ( const QString &legendKey : legendKeysForFeature )
     {
       usedSymbolsRuleKey.insert( legendKey );
@@ -298,15 +297,15 @@ QgsMapHitTestTask::QgsMapHitTestTask( const QgsLayerTreeFilterSettings &settings
   prepare();
 }
 
-QMap<QString, QSet<QString> > QgsMapHitTestTask::results() const
+QMap<QString, QSet<QString>> QgsMapHitTestTask::results() const
 {
   return mResults;
 }
 
 ///@cond PRIVATE
-QMap<QString, QList<QString> > QgsMapHitTestTask::resultsPy() const
+QMap<QString, QList<QString>> QgsMapHitTestTask::resultsPy() const
 {
-  QMap<QString, QList<QString> > res;
+  QMap<QString, QList<QString>> res;
   for ( auto it = mResults.begin(); it != mResults.end(); ++it )
   {
     res.insert( it.key(), qgis::setToList( it.value() ) );
@@ -319,7 +318,7 @@ void QgsMapHitTestTask::prepare()
 {
   const QgsMapSettings &mapSettings = mSettings.mapSettings();
 
-  const QList< QgsMapLayer * > layers = mSettings.layers();
+  const QList<QgsMapLayer *> layers = mSettings.layers();
   for ( QgsMapLayer *layer : layers )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
@@ -342,7 +341,7 @@ void QgsMapHitTestTask::prepare()
     }
 
     PreparedLayerData layerData;
-    layerData.source = std::make_unique< QgsVectorLayerFeatureSource >( vl );
+    layerData.source = std::make_unique<QgsVectorLayerFeatureSource>( vl );
     layerData.layerId = vl->id();
     layerData.fields = vl->fields();
     layerData.renderer.reset( vl->renderer()->clone() );
@@ -364,17 +363,17 @@ void QgsMapHitTestTask::cancel()
 
 bool QgsMapHitTestTask::run()
 {
-  mFeedback = std::make_unique< QgsFeedback >();
+  mFeedback = std::make_unique<QgsFeedback>();
   connect( mFeedback.get(), &QgsFeedback::progressChanged, this, &QgsTask::progressChanged );
 
-  std::unique_ptr< QgsMapHitTest > hitTest = std::make_unique< QgsMapHitTest >( mSettings );
+  std::unique_ptr<QgsMapHitTest> hitTest = std::make_unique<QgsMapHitTest>( mSettings );
 
   // TODO: do we need this temp image?
   const QgsMapSettings &mapSettings = mSettings.mapSettings();
 
   QImage tmpImage( mapSettings.outputSize(), mapSettings.outputImageFormat() );
-  tmpImage.setDotsPerMeterX( static_cast< int >( std::round( mapSettings.outputDpi() * 25.4 ) ) );
-  tmpImage.setDotsPerMeterY( static_cast< int >( std::round( mapSettings.outputDpi() * 25.4 ) ) );
+  tmpImage.setDotsPerMeterX( static_cast<int>( std::round( mapSettings.outputDpi() * 25.4 ) ) );
+  tmpImage.setDotsPerMeterY( static_cast<int>( std::round( mapSettings.outputDpi() * 25.4 ) ) );
   QPainter painter( &tmpImage );
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
@@ -385,7 +384,7 @@ bool QgsMapHitTestTask::run()
   const std::size_t totalCount = mPreparedData.size();
   for ( auto &layerData : mPreparedData )
   {
-    mFeedback->setProgress( static_cast< double >( layerIdx ) / static_cast< double >( totalCount ) * 100.0 );
+    mFeedback->setProgress( static_cast<double>( layerIdx ) / static_cast<double>( totalCount ) * 100.0 );
     if ( mFeedback->isCanceled() )
       break;
 
@@ -416,4 +415,3 @@ bool QgsMapHitTestTask::run()
 
   return true;
 }
-

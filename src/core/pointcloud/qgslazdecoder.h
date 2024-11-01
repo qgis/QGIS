@@ -33,7 +33,7 @@ class QgsPointCloudExpression;
 class QgsLazInfo;
 class QgsRectangle;
 
-template <typename T>
+template<typename T>
 bool lazStoreToStream_( char *s, size_t position, QgsPointCloudAttribute::DataType type, T value );
 bool lazSerialize_( char *data, size_t outputPosition, QgsPointCloudAttribute::DataType outputType,
                     const char *input, QgsPointCloudAttribute::DataType inputType, int inputSize, size_t inputPosition );
@@ -41,7 +41,6 @@ bool lazSerialize_( char *data, size_t outputPosition, QgsPointCloudAttribute::D
 class QgsLazDecoder
 {
   public:
-
     enum class LazAttribute
     {
       X,
@@ -72,24 +71,24 @@ class QgsLazDecoder
 
     struct RequestedAttributeDetails
     {
-      RequestedAttributeDetails( LazAttribute attribute, QgsPointCloudAttribute::DataType type, int size, int offset = -1 )
-        : attribute( attribute )
-        , type( type )
-        , size( size )
-        , offset( offset )
-      {}
+        RequestedAttributeDetails( LazAttribute attribute, QgsPointCloudAttribute::DataType type, int size, int offset = -1 )
+          : attribute( attribute )
+          , type( type )
+          , size( size )
+          , offset( offset )
+        {}
 
-      LazAttribute attribute;
-      QgsPointCloudAttribute::DataType type;
-      int size;
-      int offset; // Used in case the attribute is an extra byte attribute
+        LazAttribute attribute;
+        QgsPointCloudAttribute::DataType type;
+        int size;
+        int offset; // Used in case the attribute is an extra byte attribute
     };
 
     static std::unique_ptr<QgsPointCloudBlock> decompressLaz( const QString &filename, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect );
     static std::unique_ptr<QgsPointCloudBlock> decompressLaz( const QByteArray &data, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect );
     static std::unique_ptr<QgsPointCloudBlock> decompressCopc( const QByteArray &data, QgsLazInfo &lazInfo, int32_t pointCount, const QgsPointCloudAttributeCollection &requestedAttributes, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect );
 
-#if defined(_MSC_VER)
+#if defined( _MSC_VER )
 
     /**
      * Converts Unicode path to MSVC's wide string (file streams in MSVC c++ library
@@ -101,7 +100,6 @@ class QgsLazDecoder
     //! Converts Unicode path to UTF-8 encoded string
     static std::string toNativePath( const QString &filename );
 #endif
-
 };
 
 ///@endcond

@@ -24,7 +24,6 @@
 QgsLayoutItemTextTable::QgsLayoutItemTextTable( QgsLayout *layout )
   : QgsLayoutTable( layout )
 {
-
 }
 
 int QgsLayoutItemTextTable::type() const

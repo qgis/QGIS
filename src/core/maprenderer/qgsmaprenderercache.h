@@ -47,7 +47,6 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
 {
     Q_OBJECT
   public:
-
     QgsMapRendererCache();
 
     /**
@@ -86,7 +85,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      * \see setCacheImageWithParameters()
      * \see cacheImage()
      */
-    void setCacheImage( const QString &cacheKey, const QImage &image, const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
+    void setCacheImage( const QString &cacheKey, const QImage &image, const QList<QgsMapLayer *> &dependentLayers = QList<QgsMapLayer *>() );
 
     /**
      * Set the cached \a image for a particular \a cacheKey, using a specific \a extent and \a mapToPixel
@@ -105,7 +104,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
                                       const QImage &image,
                                       const QgsRectangle &extent,
                                       const QgsMapToPixel &mapToPixel,
-                                      const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
+                                      const QList<QgsMapLayer *> &dependentLayers = QList<QgsMapLayer *>() );
 
     /**
      * Returns TRUE if the cache contains an image with the specified \a cacheKey
@@ -156,7 +155,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     /**
      * Returns a list of map layers on which an image in the cache depends.
      */
-    QList< QgsMapLayer * > dependentLayers( const QString &cacheKey ) const;
+    QList<QgsMapLayer *> dependentLayers( const QString &cacheKey ) const;
 
     /**
      * Removes an image from the cache with matching \a cacheKey.
@@ -176,13 +175,12 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     void layerRequestedRepaint();
 
   private:
-
     struct CacheParameters
     {
-      QImage cachedImage;
-      QgsWeakMapLayerPointerList dependentLayers;
-      QgsRectangle cachedExtent;
-      QgsMapToPixel cachedMtp;
+        QImage cachedImage;
+        QgsWeakMapLayerPointerList dependentLayers;
+        QgsRectangle cachedExtent;
+        QgsMapToPixel cachedMtp;
     };
 
     //! Invalidate cache contents (without locking)
@@ -191,7 +189,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     //! Disconnects from layers we no longer care about
     void dropUnusedConnections();
 
-    QSet< QgsWeakMapLayerPointer > dependentLayers() const;
+    QSet<QgsWeakMapLayerPointer> dependentLayers() const;
 
     mutable QMutex mMutex;
     QgsRectangle mExtent;
@@ -202,7 +200,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
     //! Map of cache key to cache parameters
     QMap<QString, CacheParameters> mCachedImages;
     //! List of all layers on which this cache is currently connected
-    QSet< QgsWeakMapLayerPointer > mConnectedLayers;
+    QSet<QgsWeakMapLayerPointer> mConnectedLayers;
 };
 
 

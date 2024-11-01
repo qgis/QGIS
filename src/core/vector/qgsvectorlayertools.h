@@ -180,11 +180,8 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
     QgsProject *project() const { return mProject; }
 
   private:
-
     QgsProject *mProject = nullptr;
     bool mForceSuppressFormPopup { false };
-
-
 };
 
 #endif // QGSVECTORLAYERTOOLS_H

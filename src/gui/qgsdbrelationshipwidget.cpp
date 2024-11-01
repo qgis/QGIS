@@ -41,8 +41,7 @@ QgsDbRelationWidget::QgsDbRelationWidget( QgsAbstractDatabaseProviderConnection 
           Qgis::RelationshipCardinality::OneToMany,
           Qgis::RelationshipCardinality::ManyToOne,
           Qgis::RelationshipCardinality::OneToOne,
-          Qgis::RelationshipCardinality::ManyToMany
-        } )
+          Qgis::RelationshipCardinality::ManyToMany } )
   {
     if ( cardinalities.contains( cardinality ) )
       mCardinalityCombo->addItem( QgsRelation::cardinalityToDisplayString( cardinality ), QVariant::fromValue( cardinality ) );
@@ -52,8 +51,7 @@ QgsDbRelationWidget::QgsDbRelationWidget( QgsAbstractDatabaseProviderConnection 
   for ( Qgis::RelationshipStrength strength :
         {
           Qgis::RelationshipStrength::Association,
-          Qgis::RelationshipStrength::Composition
-        } )
+          Qgis::RelationshipStrength::Composition } )
   {
     if ( strengths.contains( strength ) )
       mStrengthCombo->addItem( QgsRelation::strengthToDisplayString( strength ), QVariant::fromValue( strength ) );
@@ -85,17 +83,14 @@ QgsDbRelationWidget::QgsDbRelationWidget( QgsAbstractDatabaseProviderConnection 
   mLeftTableCombo->setModel( mProxyModel );
   mRightTableCombo->setModel( mProxyModel );
 
-  connect( mNameEdit, &QLineEdit::textChanged, this, [ = ]
-  {
+  connect( mNameEdit, &QLineEdit::textChanged, this, [=] {
     emit validityChanged( isValid() );
   } );
-  connect( mLeftTableCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
-  {
+  connect( mLeftTableCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
     mLeftFieldsCombo->setFields( mConnection->fields( QString(), mLeftTableCombo->currentText() ) );
     emit validityChanged( isValid() );
   } );
-  connect( mRightTableCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
-  {
+  connect( mRightTableCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
     mRightFieldsCombo->setFields( mConnection->fields( QString(), mRightTableCombo->currentText() ) );
     emit validityChanged( isValid() );
   } );
@@ -103,14 +98,12 @@ QgsDbRelationWidget::QgsDbRelationWidget( QgsAbstractDatabaseProviderConnection 
   for ( QComboBox *combo :
         {
           mCardinalityCombo,
-          qobject_cast< QComboBox *>( mLeftFieldsCombo ),
-          qobject_cast< QComboBox *>( mRightFieldsCombo ),
+          qobject_cast<QComboBox *>( mLeftFieldsCombo ),
+          qobject_cast<QComboBox *>( mRightFieldsCombo ),
           mStrengthCombo,
-          mRelatedTableTypeCombo
-        } )
+          mRelatedTableTypeCombo } )
   {
-    connect( combo, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
-    {
+    connect( combo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
       emit validityChanged( isValid() );
     } );
   }
@@ -143,7 +136,7 @@ QgsWeakRelation QgsDbRelationWidget::relationship() const
 {
   QgsWeakRelation result( mRelation.id().isEmpty() ? mNameEdit->text() : mRelation.id(),
                           mRelation.name().isEmpty() ? mNameEdit->text() : mRelation.name(),
-                          mStrengthCombo->currentData().value< Qgis::RelationshipStrength >(),
+                          mStrengthCombo->currentData().value<Qgis::RelationshipStrength>(),
                           QString(),
                           QString(),
                           mConnection->tableUri( QString(), mRightTableCombo->currentText() ),
@@ -151,9 +144,8 @@ QgsWeakRelation QgsDbRelationWidget::relationship() const
                           QString(),
                           QString(),
                           mConnection->tableUri( QString(), mLeftTableCombo->currentText() ),
-                          mConnection->providerKey()
-                        );
-  result.setCardinality( mCardinalityCombo->currentData().value< Qgis::RelationshipCardinality >() );
+                          mConnection->providerKey() );
+  result.setCardinality( mCardinalityCombo->currentData().value<Qgis::RelationshipCardinality>() );
   result.setReferencedLayerFields( { mLeftFieldsCombo->currentText() } );
   result.setReferencingLayerFields( { mRightFieldsCombo->currentText() } );
   result.setForwardPathLabel( mForwardLabelLineEdit->text() );

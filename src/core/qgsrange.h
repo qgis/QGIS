@@ -41,11 +41,10 @@
  * \see QgsIntRange
  * \note not available in Python bindings (but class provided for template-based inheritance)
  */
-template <typename T>
+template<typename T>
 class QgsRange
 {
   public:
-
     /**
      * Constructor for QgsRange. The \a lower and \a upper bounds are specified,
      * and optionally whether or not these bounds are included in the range.
@@ -176,11 +175,11 @@ class QgsRange
     bool overlaps( const QgsRange<T> &other ) const
     {
       if ( ( ( mIncludeLower && mLower <= other.mLower ) || ( !mIncludeLower && mLower < other.mLower ) )
-           && ( ( mIncludeUpper  && mUpper >= other.mUpper ) || ( !mIncludeUpper && mUpper > other.mUpper ) ) )
+           && ( ( mIncludeUpper && mUpper >= other.mUpper ) || ( !mIncludeUpper && mUpper > other.mUpper ) ) )
         return true;
 
       if ( ( ( mIncludeLower && mLower <= other.mLower ) || ( !mIncludeLower && mLower < other.mLower ) )
-           && ( ( mIncludeUpper  && mUpper >= other.mLower ) || ( !mIncludeUpper && mUpper > other.mLower ) ) )
+           && ( ( mIncludeUpper && mUpper >= other.mLower ) || ( !mIncludeUpper && mUpper > other.mLower ) ) )
         return true;
 
       if ( ( ( mIncludeLower && mLower <= other.mUpper ) || ( !mIncludeLower && mLower < other.mUpper ) )
@@ -199,24 +198,19 @@ class QgsRange
 
     bool operator==( const QgsRange<T> &other ) const
     {
-      return mLower == other.mLower &&
-             mUpper == other.mUpper &&
-             mIncludeLower == other.includeLower() &&
-             mIncludeUpper == other.includeUpper();
+      return mLower == other.mLower && mUpper == other.mUpper && mIncludeLower == other.includeLower() && mIncludeUpper == other.includeUpper();
     }
 
     bool operator!=( const QgsRange<T> &other ) const
     {
-      return ( ! operator==( other ) );
+      return ( !operator==( other ) );
     }
 
   protected:
-
     T mLower;
     T mUpper;
     bool mIncludeLower = true;
     bool mIncludeUpper = true;
-
 };
 
 
@@ -227,10 +221,9 @@ class QgsRange
  * \see QgsDateRange
  * \see QgsDateTimeRange
  */
-class CORE_EXPORT QgsDoubleRange : public QgsRange< double >
+class CORE_EXPORT QgsDoubleRange : public QgsRange<double>
 {
   public:
-
     /**
      * Constructor for QgsDoubleRange. The \a lower and \a upper bounds are specified,
      * and whether or not these bounds are included in the range.
@@ -251,8 +244,8 @@ class CORE_EXPORT QgsDoubleRange : public QgsRange< double >
      *
      * \since QGIS 3.18
      */
-    QgsDoubleRange( double lower = std::numeric_limits< double >::lowest(),
-                    double upper = std::numeric_limits< double >::max(),
+    QgsDoubleRange( double lower = std::numeric_limits<double>::lowest(),
+                    double upper = std::numeric_limits<double>::max(),
                     bool includeLower = true, bool includeUpper = true )
       : QgsRange( lower, upper, includeLower, includeUpper )
     {}
@@ -274,7 +267,7 @@ class CORE_EXPORT QgsDoubleRange : public QgsRange< double >
      * \since QGIS 3.18
      */
     QgsDoubleRange()
-      : QgsRange( std::numeric_limits< double >::lowest(), std::numeric_limits< double >::max(), true, true )
+      : QgsRange( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), true, true )
     {}
 #endif
 
@@ -284,33 +277,28 @@ class CORE_EXPORT QgsDoubleRange : public QgsRange< double >
      */
     bool isInfinite() const
     {
-      return lower() == std::numeric_limits< double >::lowest() && upper() == std::numeric_limits< double >::max();
+      return lower() == std::numeric_limits<double>::lowest() && upper() == std::numeric_limits<double>::max();
     }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsDoubleRange: %1%2, %3%4>" ).arg( sipCpp->includeLower() ? QStringLiteral( "[" ) : QStringLiteral( "(" ) )
-                  .arg( sipCpp->lower() )
-                  .arg( sipCpp->upper() )
-                  .arg( sipCpp->includeUpper() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
+        QString str
+      = QStringLiteral( "<QgsDoubleRange: %1%2, %3%4>" ).arg( sipCpp->includeLower() ? QStringLiteral( "[" ) : QStringLiteral( "(" ) ).arg( sipCpp->lower() ).arg( sipCpp->upper() ).arg( sipCpp->includeUpper() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    bool operator==( const QgsDoubleRange &other ) const
+      bool
+      operator==( const QgsDoubleRange &other ) const
     {
-      return qgsDoubleNear( mLower, other.mLower ) &&
-             qgsDoubleNear( mUpper, other.mUpper ) &&
-             mIncludeLower == other.includeLower() &&
-             mIncludeUpper == other.includeUpper();
+      return qgsDoubleNear( mLower, other.mLower ) && qgsDoubleNear( mUpper, other.mUpper ) && mIncludeLower == other.includeLower() && mIncludeUpper == other.includeUpper();
     }
 
     bool operator!=( const QgsDoubleRange &other ) const
     {
-      return ( ! operator==( other ) );
+      return ( !operator==( other ) );
     }
-
 };
 
 Q_DECLARE_METATYPE( QgsDoubleRange )
@@ -323,10 +311,9 @@ Q_DECLARE_METATYPE( QgsDoubleRange )
  * \see QgsDateRange
  * \see QgsDateTimeRange
  */
-class CORE_EXPORT QgsIntRange : public QgsRange< int >
+class CORE_EXPORT QgsIntRange : public QgsRange<int>
 {
   public:
-
     /**
      * Constructor for QgsIntRange. The \a lower and \a upper bounds are specified,
      * and whether or not these bounds are included in the range.
@@ -347,8 +334,8 @@ class CORE_EXPORT QgsIntRange : public QgsRange< int >
      *
      * \since QGIS 3.18
      */
-    QgsIntRange( int lower = std::numeric_limits< int >::lowest(),
-                 int upper = std::numeric_limits< int >::max(),
+    QgsIntRange( int lower = std::numeric_limits<int>::lowest(),
+                 int upper = std::numeric_limits<int>::max(),
                  bool includeLower = true, bool includeUpper = true )
       : QgsRange( lower, upper, includeLower, includeUpper )
     {}
@@ -370,7 +357,7 @@ class CORE_EXPORT QgsIntRange : public QgsRange< int >
      * \since QGIS 3.18
      */
     QgsIntRange()
-      : QgsRange( std::numeric_limits< int >::lowest(), std::numeric_limits< int >::max(), true, true )
+      : QgsRange( std::numeric_limits<int>::lowest(), std::numeric_limits<int>::max(), true, true )
     {}
 #endif
 
@@ -380,20 +367,17 @@ class CORE_EXPORT QgsIntRange : public QgsRange< int >
      */
     bool isInfinite() const
     {
-      return lower() == std::numeric_limits< int >::lowest() && upper() == std::numeric_limits< int >::max();
+      return lower() == std::numeric_limits<int>::lowest() && upper() == std::numeric_limits<int>::max();
     }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsIntRange: %1%2, %3%4>" ).arg( sipCpp->includeLower() ? QStringLiteral( "[" ) : QStringLiteral( "(" ) )
-                  .arg( sipCpp->lower() )
-                  .arg( sipCpp->upper() )
-                  .arg( sipCpp->includeUpper() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
+        QString str
+      = QStringLiteral( "<QgsIntRange: %1%2, %3%4>" ).arg( sipCpp->includeLower() ? QStringLiteral( "[" ) : QStringLiteral( "(" ) ).arg( sipCpp->lower() ).arg( sipCpp->upper() ).arg( sipCpp->includeUpper() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
-
 };
 
 Q_DECLARE_METATYPE( QgsIntRange )
@@ -414,11 +398,10 @@ Q_DECLARE_METATYPE( QgsIntRange )
  * \see QgsDateRange
  * \note not available in Python bindings (but class provided for template-based inheritance)
  */
-template <typename T>
+template<typename T>
 class QgsTemporalRange
 {
   public:
-
     /**
      * Constructor for QgsTemporalRange. The \a begin and \a end are specified,
      * and optionally whether or not these bounds are included in the range.
@@ -572,11 +555,11 @@ class QgsTemporalRange
         return true;
 
       if ( ( ( mIncludeLower && mLower <= other.mLower ) || ( !mIncludeLower && mLower < other.mLower ) )
-           && ( ( mIncludeUpper  && mUpper >= other.mUpper ) || ( !mIncludeUpper && mUpper > other.mUpper ) ) )
+           && ( ( mIncludeUpper && mUpper >= other.mUpper ) || ( !mIncludeUpper && mUpper > other.mUpper ) ) )
         return true;
 
       if ( ( ( mIncludeLower && mLower <= other.mLower ) || ( !mIncludeLower && mLower < other.mLower ) )
-           && ( ( mIncludeUpper  && mUpper >= other.mLower ) || ( !mIncludeUpper && mUpper > other.mLower ) ) )
+           && ( ( mIncludeUpper && mUpper >= other.mLower ) || ( !mIncludeUpper && mUpper > other.mLower ) ) )
         return true;
 
       if ( ( ( mIncludeLower && mLower <= other.mUpper ) || ( !mIncludeLower && mLower < other.mUpper ) )
@@ -620,28 +603,28 @@ class QgsTemporalRange
       bool changed { false };
 
       // Lower
-      if ( ! other.begin().isValid()
+      if ( !other.begin().isValid()
            || ( begin().isValid() && other.begin() < mLower ) )
       {
         mLower = other.begin();
         mIncludeLower = other.includeBeginning();
         changed = true;
       }
-      else if ( other.begin() == mLower && other.includeBeginning() && ! mIncludeLower )
+      else if ( other.begin() == mLower && other.includeBeginning() && !mIncludeLower )
       {
         mIncludeLower = true;
         changed = true;
       }
 
       // Upper
-      if ( ! other.end().isValid()
+      if ( !other.end().isValid()
            || ( end().isValid() && other.end() > mUpper ) )
       {
         mUpper = other.end();
         mIncludeUpper = other.includeEnd();
         changed = true;
       }
-      else if ( other.end() == mUpper && other.includeEnd() && ! mIncludeUpper )
+      else if ( other.end() == mUpper && other.includeEnd() && !mIncludeUpper )
       {
         mIncludeUpper = true;
         changed = true;
@@ -664,15 +647,15 @@ class QgsTemporalRange
      *
      * \since QGIS 3.20
      */
-    static QList< QgsTemporalRange<T> > mergeRanges( const QList< QgsTemporalRange<T> > &ranges )
+    static QList<QgsTemporalRange<T>> mergeRanges( const QList<QgsTemporalRange<T>> &ranges )
     {
       if ( ranges.empty() )
         return {};
 
-      QList< QgsTemporalRange<T > > sortedRanges = ranges;
+      QList<QgsTemporalRange<T>> sortedRanges = ranges;
       // cppcheck-suppress mismatchingContainerExpression
-      std::sort( sortedRanges.begin(), sortedRanges.end(), []( const QgsTemporalRange< T > &a, const QgsTemporalRange< T > &b ) -> bool { return a.begin() < b.begin(); } );
-      QList< QgsTemporalRange<T>> res;
+      std::sort( sortedRanges.begin(), sortedRanges.end(), []( const QgsTemporalRange<T> &a, const QgsTemporalRange<T> &b ) -> bool { return a.begin() < b.begin(); } );
+      QList<QgsTemporalRange<T>> res;
       res.reserve( sortedRanges.size() );
 
       QgsTemporalRange<T> prevRange;
@@ -697,19 +680,15 @@ class QgsTemporalRange
 
     bool operator==( const QgsTemporalRange<T> &other ) const
     {
-      return mLower == other.mLower &&
-             mUpper == other.mUpper &&
-             mIncludeLower == other.includeBeginning() &&
-             mIncludeUpper == other.includeEnd();
+      return mLower == other.mLower && mUpper == other.mUpper && mIncludeLower == other.includeBeginning() && mIncludeUpper == other.includeEnd();
     }
 
     bool operator!=( const QgsTemporalRange<T> &other ) const
     {
-      return ( ! operator==( other ) );
+      return ( !operator==( other ) );
     }
 
   private:
-
     T mLower;
     T mUpper;
     bool mIncludeLower = true;
@@ -726,7 +705,7 @@ class QgsTemporalRange
  * QgsDateRange(QDate(2017,1,1),QDate()) is treated as a range containing all dates after 2017-1-1.
  * \see QgsDateTimeRange
  */
-typedef QgsTemporalRange< QDate > QgsDateRange SIP_DOC_TEMPLATE;
+typedef QgsTemporalRange<QDate> QgsDateRange SIP_DOC_TEMPLATE;
 
 Q_DECLARE_METATYPE( QgsDateRange )
 
@@ -739,7 +718,7 @@ Q_DECLARE_METATYPE( QgsDateRange )
  * QgsDateTimeRange(QDateTime(2017,1,1),QDateTime()) is treated as a range containing all dates after 2017-1-1.
  * \see QgsDateRange
  */
-typedef QgsTemporalRange< QDateTime > QgsDateTimeRange SIP_DOC_TEMPLATE;
+typedef QgsTemporalRange<QDateTime> QgsDateTimeRange SIP_DOC_TEMPLATE;
 
 Q_DECLARE_METATYPE( QgsDateTimeRange )
 

@@ -40,7 +40,6 @@ class CORE_EXPORT QgsDataItemProviderRegistry : public QObject
 {
     Q_OBJECT
   public:
-
     QgsDataItemProviderRegistry();
 
     ~QgsDataItemProviderRegistry();
@@ -103,7 +102,6 @@ class CORE_EXPORT QgsDataItemProviderRegistry : public QObject
 
     //! Keeps track of data item provider <-> data provider association
     QMap<QString, QString> mDataItemProviderOrigin;
-
 };
 
 #endif // QGSDATAITEMPROVIDERREGISTRY_H

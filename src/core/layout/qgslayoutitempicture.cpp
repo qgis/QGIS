@@ -237,8 +237,7 @@ QSizeF QgsLayoutItemPicture::applyItemSizeConstraint( const QSizeF targetSize )
 
       //if height has changed more than width, then fix width and set height correspondingly
       //else, do the opposite
-      if ( std::fabs( rect().width() - targetSize.width() ) <
-           std::fabs( rect().height() - targetSize.height() ) )
+      if ( std::fabs( rect().width() - targetSize.width() ) < std::fabs( rect().height() - targetSize.height() ) )
       {
         newSize.setHeight( targetImageSize.height() * newSize.width() / targetImageSize.width() );
       }
@@ -261,7 +260,7 @@ QSizeF QgsLayoutItemPicture::applyItemSizeConstraint( const QSizeF targetSize )
     if ( mResizeMode == Zoom || mResizeMode == ZoomResizeFrame )
     {
       const QRectF rotatedImageRect = QgsLayoutUtils::largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ),
-                                      QRectF( 0, 0, newSize.width(), newSize.height() ), mPictureRotation );
+                                                                                      QRectF( 0, 0, newSize.width(), newSize.height() ), mPictureRotation );
       mPictureWidth = rotatedImageRect.width();
       mPictureHeight = rotatedImageRect.height();
     }
@@ -436,7 +435,7 @@ void QgsLayoutItemPicture::loadLocalPicture( const QString &path )
       const QgsStringMap evaluatedParameters = QgsSymbolLayerUtils::evaluatePropertiesMap( svgDynamicParameters(), context );
 
       const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, rect().width(), fillColor, strokeColor, strokeWidth,
-                                     1.0, 0, false, evaluatedParameters );
+                                                                             1.0, 0, false, evaluatedParameters );
       mSVG.load( svgContent );
       if ( mSVG.isValid() )
       {
@@ -517,7 +516,7 @@ void QgsLayoutItemPicture::loadPictureUsingCache( const QString &path )
 
       bool isMissingImage = false;
       const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, rect().width(), fillColor, strokeColor, strokeWidth,
-                                     1.0, 0, false, evaluatedParameters, &isMissingImage );
+                                                                             1.0, 0, false, evaluatedParameters, &isMissingImage );
       mSVG.load( svgContent );
       if ( mSVG.isValid() && !isMissingImage )
       {
@@ -560,7 +559,7 @@ void QgsLayoutItemPicture::loadPicture( const QVariant &data )
       mMode = Qgis::PictureFormat::Raster;
     }
   }
-  else if ( mMode == Qgis::PictureFormat::Unknown  && mEvaluatedPath.startsWith( QLatin1String( "http" ) ) )
+  else if ( mMode == Qgis::PictureFormat::Unknown && mEvaluatedPath.startsWith( QLatin1String( "http" ) ) )
   {
     //remote location (unsafe way, uses QEventLoop) - for old API/project compatibility only!!
     loadRemotePicture( mEvaluatedPath );
@@ -758,12 +757,12 @@ bool QgsLayoutItemPicture::writePropertiesToElement( QDomElement &elem, QDomDocu
   elem.setAttribute( QStringLiteral( "file" ), imagePath );
   elem.setAttribute( QStringLiteral( "pictureWidth" ), QString::number( mPictureWidth ) );
   elem.setAttribute( QStringLiteral( "pictureHeight" ), QString::number( mPictureHeight ) );
-  elem.setAttribute( QStringLiteral( "resizeMode" ), QString::number( static_cast< int >( mResizeMode ) ) );
-  elem.setAttribute( QStringLiteral( "anchorPoint" ), QString::number( static_cast< int >( mPictureAnchor ) ) );
+  elem.setAttribute( QStringLiteral( "resizeMode" ), QString::number( static_cast<int>( mResizeMode ) ) );
+  elem.setAttribute( QStringLiteral( "anchorPoint" ), QString::number( static_cast<int>( mPictureAnchor ) ) );
   elem.setAttribute( QStringLiteral( "svgFillColor" ), QgsColorUtils::colorToString( mSvgFillColor ) );
   elem.setAttribute( QStringLiteral( "svgBorderColor" ), QgsColorUtils::colorToString( mSvgStrokeColor ) );
   elem.setAttribute( QStringLiteral( "svgBorderWidth" ), QString::number( mSvgStrokeWidth ) );
-  elem.setAttribute( QStringLiteral( "mode" ), static_cast< int >( mOriginalMode ) );
+  elem.setAttribute( QStringLiteral( "mode" ), static_cast<int>( mOriginalMode ) );
 
   //rotation
   elem.setAttribute( QStringLiteral( "pictureRotation" ), QString::number( mPictureRotation ) );
@@ -786,12 +785,12 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
   mPictureHeight = itemElem.attribute( QStringLiteral( "pictureHeight" ), QStringLiteral( "10" ) ).toDouble();
   mResizeMode = QgsLayoutItemPicture::ResizeMode( itemElem.attribute( QStringLiteral( "resizeMode" ), QStringLiteral( "0" ) ).toInt() );
   //when loading from xml, default to anchor point of middle to match pre 2.4 behavior
-  mPictureAnchor = static_cast< QgsLayoutItem::ReferencePoint >( itemElem.attribute( QStringLiteral( "anchorPoint" ), QString::number( QgsLayoutItem::Middle ) ).toInt() );
+  mPictureAnchor = static_cast<QgsLayoutItem::ReferencePoint>( itemElem.attribute( QStringLiteral( "anchorPoint" ), QString::number( QgsLayoutItem::Middle ) ).toInt() );
 
   mSvgFillColor = QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "svgFillColor" ), QgsColorUtils::colorToString( QColor( 255, 255, 255 ) ) ) );
   mSvgStrokeColor = QgsColorUtils::colorFromString( itemElem.attribute( QStringLiteral( "svgBorderColor" ), QgsColorUtils::colorToString( QColor( 0, 0, 0 ) ) ) );
   mSvgStrokeWidth = itemElem.attribute( QStringLiteral( "svgBorderWidth" ), QStringLiteral( "0.2" ) ).toDouble();
-  mOriginalMode = static_cast< Qgis::PictureFormat >( itemElem.attribute( QStringLiteral( "mode" ), QString::number( static_cast< int >( Qgis::PictureFormat::Unknown ) ) ).toInt() );
+  mOriginalMode = static_cast<Qgis::PictureFormat>( itemElem.attribute( QStringLiteral( "mode" ), QString::number( static_cast<int>( Qgis::PictureFormat::Unknown ) ) ).toInt() );
   mMode = mOriginalMode;
 
   const QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
@@ -837,7 +836,7 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
   }
 
   //rotation map
-  mNorthArrowHandler->setNorthMode( static_cast< QgsLayoutNorthArrowHandler::NorthMode >( itemElem.attribute( QStringLiteral( "northMode" ), QStringLiteral( "0" ) ).toInt() ) );
+  mNorthArrowHandler->setNorthMode( static_cast<QgsLayoutNorthArrowHandler::NorthMode>( itemElem.attribute( QStringLiteral( "northMode" ), QStringLiteral( "0" ) ).toInt() ) );
   mNorthArrowHandler->setNorthOffset( itemElem.attribute( QStringLiteral( "northOffset" ), QStringLiteral( "0" ) ).toDouble() );
 
   mNorthArrowHandler->setLinkedMap( nullptr );
@@ -853,12 +852,12 @@ QgsLayoutItemMap *QgsLayoutItemPicture::linkedMap() const
 
 QgsLayoutItemPicture::NorthMode QgsLayoutItemPicture::northMode() const
 {
-  return static_cast< QgsLayoutItemPicture::NorthMode >( mNorthArrowHandler->northMode() );
+  return static_cast<QgsLayoutItemPicture::NorthMode>( mNorthArrowHandler->northMode() );
 }
 
 void QgsLayoutItemPicture::setNorthMode( QgsLayoutItemPicture::NorthMode mode )
 {
-  mNorthArrowHandler->setNorthMode( static_cast< QgsLayoutNorthArrowHandler::NorthMode >( mode ) );
+  mNorthArrowHandler->setNorthMode( static_cast<QgsLayoutNorthArrowHandler::NorthMode>( mode ) );
 }
 
 double QgsLayoutItemPicture::northOffset() const
@@ -913,7 +912,7 @@ void QgsLayoutItemPicture::finalizeRestoreFromXml()
   }
   else
   {
-    mNorthArrowHandler->setLinkedMap( qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mRotationMapUuid, true ) ) );
+    mNorthArrowHandler->setLinkedMap( qobject_cast<QgsLayoutItemMap *>( mLayout->itemByUuid( mRotationMapUuid, true ) ) );
   }
 
   refreshPicture();

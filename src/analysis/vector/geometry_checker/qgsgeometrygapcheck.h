@@ -31,7 +31,6 @@
 class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
 {
   public:
-
     /**
      * Create a new gap check error produced by \a check on the layer \a layerId.
      * The \a geometry of the gap needs to be in map coordinates.
@@ -69,7 +68,7 @@ class ANALYSIS_EXPORT QgsGeometryGapCheckError : public QgsGeometryCheckError
 
     QgsRectangle affectedAreaBBox() const override;
 
-    QMap<QString, QgsFeatureIds > involvedFeatures() const override;
+    QMap<QString, QgsFeatureIds> involvedFeatures() const override;
 
     QIcon icon() const override;
 
@@ -96,7 +95,7 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     enum ResolutionMethod
     {
       MergeLongestEdge, //!< Merge the gap with the polygon with the longest shared edge.
-      NoChange, //!< Do not handle the error.
+      NoChange,         //!< Do not handle the error.
       AddToAllowedGaps, //!< Add gap geometry to allowed gaps layer
       CreateNewFeature, //!< Create a new feature with the gap geometry
       MergeLargestArea, //!< Merge with neighbouring polygon with largest area
@@ -125,14 +124,14 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     QgsGeometryCheck::Flags flags() const override;
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
 
-///@cond private
+    ///@cond private
     static QString factoryDescription() SIP_SKIP;
     static QString factoryId() SIP_SKIP;
     static QgsGeometryCheck::Flags factoryFlags() SIP_SKIP;
     static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP;
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP;
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
-///@endcond private
+    ///@endcond private
 
   private:
     enum Condition
@@ -148,7 +147,6 @@ class ANALYSIS_EXPORT QgsGeometryGapCheck : public QgsGeometryCheck
     QgsWeakMapLayerPointer mAllowedGapsLayer;
     std::unique_ptr<QgsVectorLayerFeatureSource> mAllowedGapsSource;
     double mAllowedGapsBuffer = 0;
-
 };
 
 #endif // QGS_GEOMETRY_GAP_CHECK_H

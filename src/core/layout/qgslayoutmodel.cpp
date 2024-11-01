@@ -34,7 +34,6 @@ QgsLayoutModel::QgsLayoutModel( QgsLayout *layout, QObject *parent )
   : QAbstractItemModel( parent )
   , mLayout( layout )
 {
-
 }
 
 QgsLayoutItem *QgsLayoutModel::itemFromIndex( const QModelIndex &index ) const
@@ -76,7 +75,7 @@ void QgsLayoutModel::refreshItemsInScene()
 {
   mItemsInScene.clear();
 
-  const QList< QGraphicsItem * > items = mLayout->items();
+  const QList<QGraphicsItem *> items = mLayout->items();
   //filter paper items from list
   //TODO - correctly handle grouped item z order placement
   for ( QgsLayoutItem *item : std::as_const( mItemZList ) )
@@ -169,7 +168,7 @@ QVariant QgsLayoutModel::data( const QModelIndex &index, int role ) const
     case Qt::UserRole:
       //store item uuid in userrole so we can later get the QModelIndex for a specific item
       return item->uuid();
-    case Qt::UserRole+1:
+    case Qt::UserRole + 1:
       //user role stores reference in column object
       return QVariant::fromValue( qobject_cast<QObject *>( item ) );
 
@@ -261,7 +260,6 @@ QVariant QgsLayoutModel::headerData( int section, Qt::Orientation orientation, i
     default:
       return QAbstractItemModel::headerData( section, orientation, role );
   }
-
 }
 
 Qt::DropActions QgsLayoutModel::supportedDropActions() const
@@ -469,7 +467,7 @@ void QgsLayoutModel::rebuildSceneItemList()
   //step through the z list and rebuild the items in scene list,
   //emitting signals as required
   int row = 0;
-  const QList< QGraphicsItem * > items = mLayout->items();
+  const QList<QGraphicsItem *> items = mLayout->items();
   for ( QgsLayoutItem *item : std::as_const( mItemZList ) )
   {
     if ( item->type() == QgsLayoutItemRegistry::LayoutPage || !items.contains( item ) )
@@ -482,7 +480,6 @@ void QgsLayoutModel::rebuildSceneItemList()
     if ( sceneListPos == row )
     {
       //already in list in correct position, nothing to do
-
     }
     else if ( sceneListPos != -1 )
     {
@@ -666,13 +663,13 @@ bool QgsLayoutModel::reorderItemUp( QgsLayoutItem *item )
 
   //move item in z list
   QMutableListIterator<QgsLayoutItem *> it( mItemZList );
-  if ( ! it.findNext( item ) )
+  if ( !it.findNext( item ) )
   {
     //can't find item in z list, nothing to do
     return false;
   }
 
-  const QList< QGraphicsItem * > sceneItems = mLayout->items();
+  const QList<QGraphicsItem *> sceneItems = mLayout->items();
 
   it.remove();
   while ( it.hasPrevious() )
@@ -716,13 +713,13 @@ bool QgsLayoutModel::reorderItemDown( QgsLayoutItem *item )
 
   //move item in z list
   QMutableListIterator<QgsLayoutItem *> it( mItemZList );
-  if ( ! it.findNext( item ) )
+  if ( !it.findNext( item ) )
   {
     //can't find item in z list, nothing to do
     return false;
   }
 
-  const QList< QGraphicsItem * > sceneItems = mLayout->items();
+  const QList<QGraphicsItem *> sceneItems = mLayout->items();
   it.remove();
   while ( it.hasNext() )
   {
@@ -875,7 +872,7 @@ Qt::ItemFlags QgsLayoutModel::flags( const QModelIndex &index ) const
 {
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
-  if ( ! index.isValid() )
+  if ( !index.isValid() )
   {
     return flags | Qt::ItemIsDropEnabled;
   }
@@ -1016,7 +1013,7 @@ void QgsLayoutProxyModel::setFilterType( QgsLayoutItemRegistry::ItemType filter 
   invalidate();
 }
 
-void QgsLayoutProxyModel::setExceptedItemList( const QList< QgsLayoutItem *> &items )
+void QgsLayoutProxyModel::setExceptedItemList( const QList<QgsLayoutItem *> &items )
 {
   if ( mExceptedList == items )
     return;

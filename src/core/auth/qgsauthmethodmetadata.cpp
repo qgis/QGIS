@@ -19,8 +19,6 @@
 #include "qgsauthmethodmetadata.h"
 
 
-
-
 QString QgsAuthMethodMetadata::key() const
 {
   return mKey;
@@ -40,5 +38,3 @@ QgsAuthMethod *QgsAuthMethodMetadata::createAuthMethod() const
 {
   return nullptr;
 }
-
-

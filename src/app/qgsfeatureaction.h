@@ -63,7 +63,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
      */
     AddFeatureResult addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(),
                                  bool showModal = true,
-                                 std::unique_ptr<QgsExpressionContextScope >scope = std::unique_ptr< QgsExpressionContextScope >(),
+                                 std::unique_ptr<QgsExpressionContextScope> scope = std::unique_ptr<QgsExpressionContextScope>(),
                                  bool hideParent = false,
                                  std::unique_ptr<QgsHighlight> highlight = std::unique_ptr<QgsHighlight>() );
 
@@ -111,7 +111,6 @@ class APP_EXPORT QgsFeatureAction : public QAction
     bool mFeatureSaved;
 
     bool mForceSuppressFormPopup = false;
-
 };
 
 #endif

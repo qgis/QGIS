@@ -29,7 +29,7 @@ class QgsMarkerSymbol;
  * \brief A class that allows interactive manipulation the value of the rotation field(s) for point layers.
  */
 
-class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolPointSymbol
+class APP_EXPORT QgsMapToolRotatePointSymbols : public QgsMapToolPointSymbol
 {
     Q_OBJECT
 
@@ -48,13 +48,11 @@ class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolPointSymbol
     static bool layerIsRotatable( QgsMapLayer *ml );
 
   protected:
-
     void canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint ) override;
     bool checkSymbolCompatibility( QgsMarkerSymbol *markerSymbol, QgsRenderContext &context ) override;
     void noCompatibleSymbols() override;
 
   private:
-
     //! Last azimut between mouse and edited point
     double mCurrentMouseAzimut;
     //! Last feature rotation
@@ -66,7 +64,7 @@ class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolPointSymbol
     //! True if ctrl was pressed during the last mouse move event
     bool mCtrlPressed;
     //! Clone of first found marker symbol for feature with rotation attribute set
-    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
+    std::unique_ptr<QgsMarkerSymbol> mMarkerSymbol;
 
     void drawArrow( double azimut ) const;
     //! Calculates the azimut between mousePos and mSnappedPoint
@@ -77,7 +75,6 @@ class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolPointSymbol
     void setPixmapItemRotation( double rotation );
     //! Rounds value to 15 degree integer (used if ctrl pressed)
     static int roundTo15Degrees( double n );
-
 };
 
 #endif // QGSMAPTOOLROTATEPOINTSYMBOLS_H

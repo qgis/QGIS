@@ -21,7 +21,6 @@
 QgsProfileRenderContext::QgsProfileRenderContext( QgsRenderContext &context )
   : mRenderContext( context )
 {
-
 }
 
 const QTransform &QgsProfileRenderContext::worldTransform() const
@@ -59,7 +58,7 @@ QgsAbstractProfileGenerator::~QgsAbstractProfileGenerator() = default;
 
 QgsAbstractProfileResults::~QgsAbstractProfileResults() = default;
 
-QVector< QgsAbstractProfileResults::Feature > QgsAbstractProfileResults::asFeatures( Qgis::ProfileExportType, QgsFeedback * ) const
+QVector<QgsAbstractProfileResults::Feature> QgsAbstractProfileResults::asFeatures( Qgis::ProfileExportType, QgsFeedback * ) const
 {
   return {};
 }
@@ -81,7 +80,6 @@ QVector<QgsProfileIdentifyResults> QgsAbstractProfileResults::identify( const Qg
 
 void QgsAbstractProfileResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator * )
 {
-
 }
 
 //
@@ -152,5 +150,4 @@ QgsProfileIdentifyResults::QgsProfileIdentifyResults( QgsMapLayer *layer, const 
   : mLayer( layer )
   , mResults( results )
 {
-
 }

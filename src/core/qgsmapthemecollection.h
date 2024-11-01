@@ -48,7 +48,6 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     Q_PROPERTY( QgsProject *project READ project WRITE setProject NOTIFY projectChanged )
 
   public:
-
     /**
      * \ingroup core
      * \brief Individual record of a visible layer in a map theme record.
@@ -57,15 +56,13 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     {
       public:
         //! Initialize layer record with a map layer - it will be stored as a weak pointer
-        MapThemeLayerRecord( QgsMapLayer *l = nullptr ): mLayer( l ) {}
+        MapThemeLayerRecord( QgsMapLayer *l = nullptr )
+          : mLayer( l ) {}
 
         // TODO c++20 - replace with = default
         bool operator==( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const
         {
-          return mLayer == other.mLayer && isVisible == other.isVisible &&
-                 usingCurrentStyle == other.usingCurrentStyle && currentStyle == other.currentStyle &&
-                 usingLegendItems == other.usingLegendItems && checkedLegendItems == other.checkedLegendItems &&
-                 expandedLegendItems == other.expandedLegendItems && expandedLayerNode == other.expandedLayerNode;
+          return mLayer == other.mLayer && isVisible == other.isVisible && usingCurrentStyle == other.usingCurrentStyle && currentStyle == other.currentStyle && usingLegendItems == other.usingLegendItems && checkedLegendItems == other.checkedLegendItems && expandedLegendItems == other.expandedLegendItems && expandedLayerNode == other.expandedLayerNode;
         }
         bool operator!=( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const
         {
@@ -105,6 +102,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
          * \since QGIS 3.2
          */
         bool expandedLayerNode = false;
+
       private:
         //! Weak pointer to the layer
         QgsWeakMapLayerPointer mLayer;
@@ -118,12 +116,9 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     class CORE_EXPORT MapThemeRecord
     {
       public:
-
         bool operator==( const QgsMapThemeCollection::MapThemeRecord &other ) const
         {
-          return validLayerRecords() == other.validLayerRecords() &&
-                 mHasExpandedStateInfo == other.mHasExpandedStateInfo &&
-                 mExpandedGroupNodes == other.mExpandedGroupNodes && mCheckedGroupNodes == other.mCheckedGroupNodes;
+          return validLayerRecords() == other.validLayerRecords() && mHasExpandedStateInfo == other.mHasExpandedStateInfo && mExpandedGroupNodes == other.mExpandedGroupNodes && mCheckedGroupNodes == other.mCheckedGroupNodes;
         }
         bool operator!=( const QgsMapThemeCollection::MapThemeRecord &other ) const
         {
@@ -344,7 +339,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * All map themes will maintain the same layer order as the master layer order.
      * \see masterVisibleLayers()
      */
-    QList< QgsMapLayer * > masterLayerOrder() const;
+    QList<QgsMapLayer *> masterLayerOrder() const;
 
     /**
      * Returns the master list of visible layers. The order of returned layers will always match those
@@ -352,7 +347,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * in the project's layer tree.
      * \see masterLayerOrder()
      */
-    QList< QgsMapLayer * > masterVisibleLayers() const;
+    QList<QgsMapLayer *> masterVisibleLayers() const;
 
   signals:
 
@@ -391,7 +386,6 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     void layerStyleRenamed( const QString &oldName, const QString &newName );
 
   private:
-
     /**
      * Apply check states of legend nodes of a given layer as defined in the map theme.
      */

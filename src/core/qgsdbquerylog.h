@@ -31,7 +31,6 @@
 class CORE_EXPORT QgsDatabaseQueryLogEntry
 {
   public:
-
     /**
      * Constructor for QgsDatabaseQueryLogEntry.
      */
@@ -96,7 +95,6 @@ class CORE_EXPORT QgsDatabaseQueryLogEntry
     bool canceled = false;
 
   private:
-
     static QAtomicInt sQueryId;
 };
 
@@ -121,12 +119,11 @@ Q_DECLARE_METATYPE( QgsDatabaseQueryLogEntry );
  *
  * \since QGIS 3.24
  */
-class CORE_EXPORT QgsDatabaseQueryLog: public QObject
+class CORE_EXPORT QgsDatabaseQueryLog : public QObject
 {
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new query log.
      *
@@ -200,9 +197,7 @@ class CORE_EXPORT QgsDatabaseQueryLog: public QObject
     void queryFinished( const QgsDatabaseQueryLogEntry &query ) SIP_SKIP;
 
   private:
-
     static bool sEnabled;
-
 };
 
 #ifndef SIP_RUN
@@ -213,9 +208,7 @@ class CORE_EXPORT QgsDatabaseQueryLog: public QObject
  */
 class QgsDatabaseQueryLogWrapper
 {
-
   public:
-
     QgsDatabaseQueryLogWrapper( const QString &query, const QString &uri, const QString &provider, const QString &initiatorClass, const QString &origin )
       : mEntry( query )
     {
@@ -226,7 +219,7 @@ class QgsDatabaseQueryLogWrapper
       QgsDatabaseQueryLog::log( mEntry );
     }
 
-    ~QgsDatabaseQueryLogWrapper( )
+    ~QgsDatabaseQueryLogWrapper()
     {
       QgsDatabaseQueryLog::finished( mEntry );
     }
@@ -246,15 +239,13 @@ class QgsDatabaseQueryLogWrapper
       mEntry.error = error;
     }
 
-    void setCanceled( )
+    void setCanceled()
     {
       mEntry.canceled = true;
     }
 
   private:
-
     QgsDatabaseQueryLogEntry mEntry;
-
 };
 
 ///@endcond

@@ -125,7 +125,6 @@ namespace QgsMapToolSelectUtils
   {
       Q_OBJECT
     public:
-
       /**
       * Constructor
       * \param canvas The map canvas where where are the selected features
@@ -178,15 +177,15 @@ namespace QgsMapToolSelectUtils
 
       struct DataForSearchingJob
       {
-        bool isCanceled;
-        std::unique_ptr<QgsVectorLayerFeatureSource> source;
-        QgsGeometry selectGeometry;
-        QgsCoordinateTransform ct;
-        QgsRenderContext context;
-        std::unique_ptr<QgsFeatureRenderer> featureRenderer;
-        QString filterString;
-        Qgis::SelectBehavior selectBehavior;
-        QgsFeatureIds existingSelection;
+          bool isCanceled;
+          std::unique_ptr<QgsVectorLayerFeatureSource> source;
+          QgsGeometry selectGeometry;
+          QgsCoordinateTransform ct;
+          QgsRenderContext context;
+          std::unique_ptr<QgsFeatureRenderer> featureRenderer;
+          QString filterString;
+          Qgis::SelectBehavior selectBehavior;
+          QgsFeatureIds existingSelection;
       };
 
       std::shared_ptr<DataForSearchingJob> mJobData;
@@ -196,6 +195,6 @@ namespace QgsMapToolSelectUtils
       void chooseOneCandidateFeature( QgsFeatureId id );
       void highlightOneFeature( QgsFeatureId id );
   };
-}
+} // namespace QgsMapToolSelectUtils
 
 #endif

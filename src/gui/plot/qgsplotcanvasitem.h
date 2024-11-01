@@ -27,17 +27,16 @@ class QgsPlotCanvas;
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include "qgsplotcanvasitem.h"
-% End
+  % End
 #endif
 
-/**
+  /**
  * \ingroup gui
  * \brief An abstract class for items that can be placed on a QgsPlotCanvas.
  * \since QGIS 3.26
  */
-class GUI_EXPORT QgsPlotCanvasItem : public QGraphicsItem
+  class GUI_EXPORT QgsPlotCanvasItem : public QGraphicsItem
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsPlotCanvasItem *>( sipCpp ) != nullptr )
@@ -48,7 +47,6 @@ class GUI_EXPORT QgsPlotCanvasItem : public QGraphicsItem
 #endif
 
   protected:
-
     /**
      * Constructor for QgsPlotCanvasItem for the specified \a canvas.
      */
@@ -66,10 +64,8 @@ class GUI_EXPORT QgsPlotCanvasItem : public QGraphicsItem
                 QWidget *widget = nullptr ) override;
 
   protected:
-
     //! Associated canvas
     QgsPlotCanvas *mCanvas = nullptr;
-
 };
 
 

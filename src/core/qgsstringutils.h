@@ -36,9 +36,7 @@
 
 class CORE_EXPORT QgsStringReplacement
 {
-
   public:
-
     /**
      * Constructor for QgsStringReplacement.
      * \param match string to match
@@ -91,7 +89,6 @@ class CORE_EXPORT QgsStringReplacement
     static QgsStringReplacement fromProperties( const QgsStringMap &properties );
 
   private:
-
     QString mMatch;
 
     QString mReplacement;
@@ -112,14 +109,12 @@ class CORE_EXPORT QgsStringReplacement
 
 class CORE_EXPORT QgsStringReplacementCollection
 {
-
   public:
-
     /**
      * Constructor for QgsStringReplacementCollection
      * \param replacements initial list of string replacements
      */
-    QgsStringReplacementCollection( const QList< QgsStringReplacement > &replacements = QList< QgsStringReplacement >() )
+    QgsStringReplacementCollection( const QList<QgsStringReplacement> &replacements = QList<QgsStringReplacement>() )
       : mReplacements( replacements )
     {}
 
@@ -127,7 +122,7 @@ class CORE_EXPORT QgsStringReplacementCollection
      * Returns the list of string replacements in this collection.
      * \see setReplacements()
      */
-    QList< QgsStringReplacement > replacements() const { return mReplacements; }
+    QList<QgsStringReplacement> replacements() const { return mReplacements; }
 
     /**
      * Sets the list of string replacements in this collection.
@@ -135,7 +130,7 @@ class CORE_EXPORT QgsStringReplacementCollection
      * order they are specified here.
      * \see replacements()
      */
-    void setReplacements( const QList< QgsStringReplacement > &replacements )
+    void setReplacements( const QList<QgsStringReplacement> &replacements )
     {
       mReplacements = replacements;
     }
@@ -165,10 +160,7 @@ class CORE_EXPORT QgsStringReplacementCollection
     void readXml( const QDomElement &elem );
 
   private:
-
-    QList< QgsStringReplacement > mReplacements;
-
-
+    QList<QgsStringReplacement> mReplacements;
 };
 
 /**
@@ -180,7 +172,6 @@ class CORE_EXPORT QgsStringReplacementCollection
 class CORE_EXPORT QgsStringUtils
 {
   public:
-
     /**
      * Converts a string by applying capitalization rules to the string.
      * \param string input string
@@ -316,7 +307,6 @@ class CORE_EXPORT QgsStringUtils
      * \since QGIS 3.22
      */
     static QString truncateMiddleOfString( const QString &string, int maxLength );
-
 };
 
 #endif //QGSSTRINGUTILS_H

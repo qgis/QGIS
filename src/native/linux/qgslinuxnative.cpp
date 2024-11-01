@@ -32,9 +32,9 @@ QgsNative::Capabilities QgsLinuxNative::capabilities() const
 }
 
 void QgsLinuxNative::initializeMainWindow( QWindow *,
-    const QString &,
-    const QString &,
-    const QString & )
+                                           const QString &,
+                                           const QString &,
+                                           const QString & )
 {
   // Hardcoded desktop file value matching our official .deb packages
   mDesktopFile = QStringLiteral( "org.qgis.qgis.desktop" );
@@ -82,61 +82,54 @@ void QgsLinuxNative::showFileProperties( const QString &path )
 
 void QgsLinuxNative::showUndefinedApplicationProgress()
 {
-  const QVariantMap properties
-  {
+  const QVariantMap properties {
     { QStringLiteral( "progress-visible" ), true },
-    { QStringLiteral( "progress" ), 0.0 }
-  };
+    { QStringLiteral( "progress" ), 0.0 } };
 
   QDBusMessage message = QDBusMessage::createSignal( QStringLiteral( "/org/qgis/UnityLauncher" ),
-                         QStringLiteral( "com.canonical.Unity.LauncherEntry" ),
-                         QStringLiteral( "Update" ) );
-  message.setArguments( {mDesktopFile, properties} );
+                                                     QStringLiteral( "com.canonical.Unity.LauncherEntry" ),
+                                                     QStringLiteral( "Update" ) );
+  message.setArguments( { mDesktopFile, properties } );
   QDBusConnection::sessionBus().send( message );
 }
 
 void QgsLinuxNative::setApplicationProgress( double progress )
 {
-  const QVariantMap properties
-  {
+  const QVariantMap properties {
     { QStringLiteral( "progress-visible" ), true },
-    { QStringLiteral( "progress" ), progress / 100.0 }
-  };
+    { QStringLiteral( "progress" ), progress / 100.0 } };
 
   QDBusMessage message = QDBusMessage::createSignal( QStringLiteral( "/org/qgis/UnityLauncher" ),
-                         QStringLiteral( "com.canonical.Unity.LauncherEntry" ),
-                         QStringLiteral( "Update" ) );
-  message.setArguments( {mDesktopFile, properties} );
+                                                     QStringLiteral( "com.canonical.Unity.LauncherEntry" ),
+                                                     QStringLiteral( "Update" ) );
+  message.setArguments( { mDesktopFile, properties } );
   QDBusConnection::sessionBus().send( message );
 }
 
 void QgsLinuxNative::hideApplicationProgress()
 {
-  const QVariantMap properties
-  {
+  const QVariantMap properties {
     { QStringLiteral( "progress-visible" ), false },
   };
 
   QDBusMessage message = QDBusMessage::createSignal( QStringLiteral( "/org/qgis/UnityLauncher" ),
-                         QStringLiteral( "com.canonical.Unity.LauncherEntry" ),
-                         QStringLiteral( "Update" ) );
-  message.setArguments( {mDesktopFile, properties} );
+                                                     QStringLiteral( "com.canonical.Unity.LauncherEntry" ),
+                                                     QStringLiteral( "Update" ) );
+  message.setArguments( { mDesktopFile, properties } );
   QDBusConnection::sessionBus().send( message );
 }
 
 void QgsLinuxNative::setApplicationBadgeCount( int count )
 {
   // the badge will only be shown when the count is greater than one
-  const QVariantMap properties
-  {
+  const QVariantMap properties {
     { QStringLiteral( "count-visible" ), count > 1 },
-    { QStringLiteral( "count" ), static_cast< long long >( count ) }
-  };
+    { QStringLiteral( "count" ), static_cast<long long>( count ) } };
 
   QDBusMessage message = QDBusMessage::createSignal( QStringLiteral( "/org/qgis/UnityLauncher" ),
-                         QStringLiteral( "com.canonical.Unity.LauncherEntry" ),
-                         QStringLiteral( "Update" ) );
-  message.setArguments( {mDesktopFile, properties} );
+                                                     QStringLiteral( "com.canonical.Unity.LauncherEntry" ),
+                                                     QStringLiteral( "Update" ) );
+  message.setArguments( { mDesktopFile, properties } );
   QDBusConnection::sessionBus().send( message );
 }
 
@@ -153,15 +146,11 @@ bool QgsLinuxNative::openTerminalAtPath( const QString &path )
   {
     term = QStringLiteral( "x-terminal-emulator" );
   }
-  else if ( desktopSession.contains( QLatin1String( "gnome" ), Qt::CaseInsensitive ) ||
-            currentDesktop.contains( QLatin1String( "gnome" ), Qt::CaseInsensitive ) ||
-            currentDesktop.contains( QLatin1String( "unity" ), Qt::CaseInsensitive ) )
+  else if ( desktopSession.contains( QLatin1String( "gnome" ), Qt::CaseInsensitive ) || currentDesktop.contains( QLatin1String( "gnome" ), Qt::CaseInsensitive ) || currentDesktop.contains( QLatin1String( "unity" ), Qt::CaseInsensitive ) )
   {
     term = QStringLiteral( "gnome-terminal" );
   }
-  else if ( desktopSession.contains( QLatin1String( "kde" ), Qt::CaseInsensitive ) ||
-            currentDesktop.contains( QLatin1String( "kde" ), Qt::CaseInsensitive ) ||
-            gdmSession.contains( QLatin1String( "kde" ), Qt::CaseInsensitive ) )
+  else if ( desktopSession.contains( QLatin1String( "kde" ), Qt::CaseInsensitive ) || currentDesktop.contains( QLatin1String( "kde" ), Qt::CaseInsensitive ) || gdmSession.contains( QLatin1String( "kde" ), Qt::CaseInsensitive ) )
   {
     term = QStringLiteral( "konsole" );
   }
@@ -260,19 +249,19 @@ QgsNative::NotificationResult QgsLinuxNative::showDesktopNotification( const QSt
   argumentList << "qgis"; //app_name
   // replace_id
   if ( settings.messageId.isValid() )
-    argumentList << static_cast< uint >( settings.messageId.toInt() );
+    argumentList << static_cast<uint>( settings.messageId.toInt() );
   else
-    argumentList << static_cast< uint >( 0 );
+    argumentList << static_cast<uint>( 0 );
   // app_icon
   if ( !settings.svgAppIconPath.isEmpty() )
     argumentList << settings.svgAppIconPath;
   else
     argumentList << "";
-  argumentList << summary; // summary
-  argumentList << body; // body
-  argumentList << QStringList();  // actions
-  argumentList << hints;  // hints
-  argumentList << -1; // timeout in ms "If -1, the notification's expiration time is dependent on the notification server's settings, and may vary for the type of notification."
+  argumentList << summary;       // summary
+  argumentList << body;          // body
+  argumentList << QStringList(); // actions
+  argumentList << hints;         // hints
+  argumentList << -1;            // timeout in ms "If -1, the notification's expiration time is dependent on the notification server's settings, and may vary for the type of notification."
 
   const QDBusMessage reply = iface.callWithArgumentList( QDBus::AutoDetect, QStringLiteral( "Notify" ), argumentList );
   if ( reply.type() == QDBusMessage::ErrorMessage )

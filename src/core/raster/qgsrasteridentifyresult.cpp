@@ -33,4 +33,3 @@ QgsRasterIdentifyResult::QgsRasterIdentifyResult( const QgsError &error )
   : mError( error )
 {
 }
-

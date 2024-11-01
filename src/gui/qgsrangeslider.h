@@ -33,7 +33,6 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRangeSlider, with the specified \a parent widget.
      */
@@ -290,7 +289,6 @@ class GUI_EXPORT QgsRangeSlider : public QWidget
     void fixedRangeSizeChanged( int size );
 
   private:
-
     int pick( const QPoint &pt ) const;
     int pixelPosToRangeValue( int pos ) const;
     bool updateHoverControl( const QPoint &pos );

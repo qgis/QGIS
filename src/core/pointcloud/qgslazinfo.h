@@ -40,17 +40,17 @@ class CORE_EXPORT QgsLazInfo
   public:
     struct LazVlr
     {
-      QString userId;
-      int recordId;
-      QByteArray data;
+        QString userId;
+        int recordId;
+        QByteArray data;
     };
 
     struct ExtraBytesAttributeDetails
     {
-      QString attribute;
-      QgsPointCloudAttribute::DataType type;
-      int size;
-      int offset;
+        QString attribute;
+        QgsPointCloudAttribute::DataType type;
+        int size;
+        int offset;
     };
 
     //! Constructor for an empty laz info parser
@@ -140,6 +140,7 @@ class CORE_EXPORT QgsLazInfo
     void parseCrs();
     void parseLazAttributes();
     void parseExtrabyteAttributes();
+
   private:
     bool mIsValid = false;
     QString mError;

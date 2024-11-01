@@ -33,7 +33,6 @@ class QgsReadWriteContext;
 class CORE_EXPORT QgsLegendPatchShape
 {
   public:
-
     /**
      * Constructor for a null QgsLegendPatchShape.
      *
@@ -158,7 +157,7 @@ class CORE_EXPORT QgsLegendPatchShape
      * how the patch should be drawn for a symbol of the given \a type at the specified \a size (as
      * geometry parts and rings).
      */
-    QList< QList< QPolygonF > > toQPolygonF( Qgis::SymbolType type, QSizeF size ) const;
+    QList<QList<QPolygonF>> toQPolygonF( Qgis::SymbolType type, QSizeF size ) const;
 
     /**
      * Read settings from a DOM \a element.
@@ -177,7 +176,6 @@ class CORE_EXPORT QgsLegendPatchShape
     QgsGeometry mGeometry;
     bool mPreserveAspectRatio = true;
     bool mScaleToTargetSize = true;
-
 };
 
 #endif // QGSLEGENDPATCHSHAPE_H

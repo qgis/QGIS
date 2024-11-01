@@ -53,7 +53,7 @@ class GUI_EXPORT QgsResamplingUtils : public QObject
 
     //! Setup widgets (initialize combobox, etc.)
     void initWidgets( QgsRasterLayer *rasterLayer,
-                      QComboBox  *zoomedInResamplingComboBox,
+                      QComboBox *zoomedInResamplingComboBox,
                       QComboBox *zoomedOutResamplingComboBox,
                       QDoubleSpinBox *maximumOversamplingSpinBox,
                       QCheckBox *cbEarlyResampling );
@@ -65,10 +65,8 @@ class GUI_EXPORT QgsResamplingUtils : public QObject
     void refreshLayerFromWidgets();
 
   private:
-
     void addExtraEarlyResamplingMethodsToCombos();
     void removeExtraEarlyResamplingMethodsFromCombos();
-
 };
 
 ///@endcond PRIVATE

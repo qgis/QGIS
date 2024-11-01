@@ -27,10 +27,10 @@
 #include <proj.h>
 #include <proj_experimental.h>
 
-#if defined(USE_THREAD_LOCAL) && !defined(Q_OS_WIN)
+#if defined( USE_THREAD_LOCAL ) && !defined( Q_OS_WIN )
 thread_local QgsProjContext QgsProjContext::sProjContext;
 #else
-QThreadStorage< QgsProjContext * > QgsProjContext::sProjContext;
+QThreadStorage<QgsProjContext *> QgsProjContext::sProjContext;
 #endif
 
 QgsProjContext::QgsProjContext()
@@ -49,7 +49,7 @@ QgsProjContext::~QgsProjContext()
 
 PJ_CONTEXT *QgsProjContext::get()
 {
-#if defined(USE_THREAD_LOCAL) && !defined(Q_OS_WIN)
+#if defined( USE_THREAD_LOCAL ) && !defined( Q_OS_WIN )
   return sProjContext.mContext;
 #else
   PJ_CONTEXT *pContext = nullptr;
@@ -139,8 +139,7 @@ bool QgsProjUtils::axisOrderIsSwapped( const PJ *crs )
                            nullptr,
                            nullptr,
                            nullptr,
-                           nullptr
-                         );
+                           nullptr );
     return QString( outDirection ).compare( QLatin1String( "north" ), Qt::CaseInsensitive ) == 0;
   }
   return false;
@@ -161,8 +160,7 @@ bool QgsProjUtils::isDynamic( const PJ *crs )
   if ( datum )
   {
     const PJ_TYPE type = proj_get_type( datum.get() );
-    isDynamic = type == PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME ||
-                type == PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME;
+    isDynamic = type == PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME || type == PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME;
     if ( !isDynamic )
     {
       const QString authName( proj_get_id_auth_name( datum.get(), 0 ) );
@@ -182,8 +180,7 @@ bool QgsProjUtils::isDynamic( const PJ *crs )
       if ( member )
       {
         const PJ_TYPE type = proj_get_type( member.get() );
-        isDynamic = type == PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME ||
-                    type == PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME;
+        isDynamic = type == PJ_TYPE_DYNAMIC_GEODETIC_REFERENCE_FRAME || type == PJ_TYPE_DYNAMIC_VERTICAL_REFERENCE_FRAME;
       }
     }
   }
@@ -213,13 +210,13 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToHorizontalCrs( const PJ *crs
     case PJ_TYPE_VERTICAL_CRS:
       return nullptr;
 
-    // maybe other types to handle??
+      // maybe other types to handle??
 
     default:
       return unboundCrs( crs );
   }
 
-#ifndef _MSC_VER  // unreachable
+#ifndef _MSC_VER // unreachable
   return nullptr;
 #endif
 }
@@ -247,7 +244,7 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToVerticalCrs( const PJ *crs )
     case PJ_TYPE_VERTICAL_CRS:
       return QgsProjUtils::proj_pj_unique_ptr( proj_clone( context, crs ) );
 
-    // maybe other types to handle??
+      // maybe other types to handle??
 
     default:
       return nullptr;
@@ -279,7 +276,7 @@ bool QgsProjUtils::hasVerticalAxis( const PJ *crs )
       return false;
     }
 
-    // maybe other types to handle like this??
+      // maybe other types to handle like this??
 
     default:
       break;
@@ -300,8 +297,7 @@ bool QgsProjUtils::hasVerticalAxis( const PJ *crs )
                            nullptr,
                            nullptr,
                            nullptr,
-                           nullptr
-                         );
+                           nullptr );
     const QString outDirectionString = QString( outDirection );
     if ( outDirectionString.compare( QLatin1String( "geocentricZ" ), Qt::CaseInsensitive ) == 0
          || outDirectionString.compare( QLatin1String( "up" ), Qt::CaseInsensitive ) == 0
@@ -324,13 +320,13 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::unboundCrs( const PJ *crs )
     case PJ_TYPE_BOUND_CRS:
       return QgsProjUtils::proj_pj_unique_ptr( proj_get_source_crs( context, crs ) );
 
-    // maybe other types to handle??
+      // maybe other types to handle??
 
     default:
       return QgsProjUtils::proj_pj_unique_ptr( proj_clone( context, crs ) );
   }
 
-#ifndef _MSC_VER  // unreachable
+#ifndef _MSC_VER // unreachable
   return nullptr;
 #endif
 }
@@ -340,7 +336,7 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToDatumEnsemble( const PJ *crs
   if ( !crs )
     return nullptr;
 
-#if PROJ_VERSION_MAJOR>=8
+#if PROJ_VERSION_MAJOR >= 8
   PJ_CONTEXT *context = QgsProjContext::get();
   QgsProjUtils::proj_pj_unique_ptr candidate = crsToHorizontalCrs( crs );
   if ( !candidate ) // purely vertical CRS
@@ -357,7 +353,7 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToDatumEnsemble( const PJ *crs
 
 void QgsProjUtils::proj_collecting_logger( void *user_data, int /*level*/, const char *message )
 {
-  QStringList *dest = reinterpret_cast< QStringList * >( user_data );
+  QStringList *dest = reinterpret_cast<QStringList *>( user_data );
   QString messageString( message );
   messageString.replace( QLatin1String( "internal_proj_create: " ), QString() );
   dest->append( messageString );
@@ -384,8 +380,8 @@ void QgsProjUtils::proj_logger( void *, int level, const char *message )
     QgsDebugMsgLevel( QString( message ), 3 );
   }
 #else
-  ( void )level;
-  ( void )message;
+  ( void ) level;
+  ( void ) message;
 #endif
 }
 
@@ -401,9 +397,9 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::createCompoundCrs( const PJ *hori
 
   // const cast here is for compatibility with proj < 9.5
   QgsProjUtils::proj_pj_unique_ptr compoundCrs( proj_create_compound_crs( context,
-      nullptr,
-      const_cast< PJ *>( horizontalCrs ),
-      const_cast< PJ * >( verticalCrs ) ) );
+                                                                          nullptr,
+                                                                          const_cast<PJ *>( horizontalCrs ),
+                                                                          const_cast<PJ *>( verticalCrs ) ) );
 
   if ( errors )
     *errors = projLogger.errors();
@@ -475,14 +471,14 @@ bool QgsProjUtils::coordinateOperationIsAvailable( const QString &projDef )
   if ( !coordinateOperation )
     return false;
 
-  return static_cast< bool >( proj_coordoperation_is_instantiable( context, coordinateOperation.get() ) );
+  return static_cast<bool>( proj_coordoperation_is_instantiable( context, coordinateOperation.get() ) );
 }
 
 QList<QgsDatumTransform::GridDetails> QgsProjUtils::gridsUsed( const QString &proj )
 {
   const thread_local QRegularExpression regex( QStringLiteral( "\\+(?:nad)?grids=(.*?)\\s" ) );
 
-  QList< QgsDatumTransform::GridDetails > grids;
+  QList<QgsDatumTransform::GridDetails> grids;
   QRegularExpressionMatchIterator matches = regex.globalMatch( proj );
   while ( matches.hasNext() )
   {

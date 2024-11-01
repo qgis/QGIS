@@ -27,7 +27,6 @@ QgsSingleBandColorDataRenderer::QgsSingleBandColorDataRenderer( QgsRasterInterfa
   : QgsRasterRenderer( input, QStringLiteral( "singlebandcolordata" ) )
   , mBand( band )
 {
-
 }
 
 QgsSingleBandColorDataRenderer *QgsSingleBandColorDataRenderer::clone() const
@@ -55,17 +54,17 @@ QgsRasterRenderer *QgsSingleBandColorDataRenderer::create( const QDomElement &el
   return r;
 }
 
-QgsRasterBlock *QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
+QgsRasterBlock *QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo )
 
-  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
+  std::unique_ptr<QgsRasterBlock> outputBlock( new QgsRasterBlock() );
   if ( !mInput )
   {
     return outputBlock.release();
   }
 
-  std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( mBand, extent, width, height, feedback ) );
+  std::unique_ptr<QgsRasterBlock> inputBlock( mInput->block( mBand, extent, width, height, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugError( QStringLiteral( "No raster data!" ) );
@@ -88,9 +87,9 @@ QgsRasterBlock *QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
   // make sure input is also premultiplied!
   inputBlock->convert( Qgis::DataType::ARGB32_Premultiplied );
 
-  QRgb *inputBits = ( QRgb * )inputBlock->bits();
-  QRgb *outputBits = ( QRgb * )outputBlock->bits();
-  for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
+  QRgb *inputBits = ( QRgb * ) inputBlock->bits();
+  QRgb *outputBits = ( QRgb * ) outputBlock->bits();
+  for ( qgssize i = 0; i < ( qgssize ) width * height; i++ )
   {
     const QRgb c = inputBits[i];
     outputBits[i] = qRgba( mOpacity * qRed( c ), mOpacity * qGreen( c ), mOpacity * qBlue( c ), mOpacity * qAlpha( c ) );
@@ -123,7 +122,8 @@ QList<int> QgsSingleBandColorDataRenderer::usesBands() const
 bool QgsSingleBandColorDataRenderer::setInput( QgsRasterInterface *input )
 {
   // Renderer can only work with numerical values in at least 1 band
-  if ( !input ) return false;
+  if ( !input )
+    return false;
 
   if ( !mOn )
   {
@@ -132,8 +132,7 @@ bool QgsSingleBandColorDataRenderer::setInput( QgsRasterInterface *input )
     return true;
   }
 
-  if ( input->dataType( 1 ) == Qgis::DataType::ARGB32 ||
-       input->dataType( 1 ) == Qgis::DataType::ARGB32_Premultiplied )
+  if ( input->dataType( 1 ) == Qgis::DataType::ARGB32 || input->dataType( 1 ) == Qgis::DataType::ARGB32_Premultiplied )
   {
     mInput = input;
     return true;

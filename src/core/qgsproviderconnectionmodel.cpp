@@ -97,7 +97,7 @@ QVariant QgsProviderConnectionModel::data( const QModelIndex &index, int role ) 
 
   if ( index.row() == 0 && mAllowEmpty )
   {
-    if ( role == static_cast< int >( CustomRole::Empty ) )
+    if ( role == static_cast<int>( CustomRole::Empty ) )
       return true;
 
     return QVariant();
@@ -106,18 +106,18 @@ QVariant QgsProviderConnectionModel::data( const QModelIndex &index, int role ) 
   const QString connectionName = mConnections.value( index.row() - ( mAllowEmpty ? 1 : 0 ) );
   switch ( role )
   {
-    case static_cast< int >( CustomRole::Empty ):
+    case static_cast<int>( CustomRole::Empty ):
       return false;
 
     case Qt::DisplayRole:
     case Qt::EditRole:
-    case static_cast< int >( CustomRole::ConnectionName ):
+    case static_cast<int>( CustomRole::ConnectionName ):
     {
       return connectionName;
     }
 
     case Qt::DecorationRole:
-      if ( const QgsAbstractProviderConnection *connection =  mMetadata->findConnection( connectionName ) )
+      if ( const QgsAbstractProviderConnection *connection = mMetadata->findConnection( connectionName ) )
       {
         return connection->icon();
       }
@@ -127,9 +127,9 @@ QVariant QgsProviderConnectionModel::data( const QModelIndex &index, int role ) 
       }
 
     case Qt::ToolTipRole:
-    case static_cast< int >( CustomRole::Uri ):
+    case static_cast<int>( CustomRole::Uri ):
     {
-      if ( const QgsAbstractProviderConnection *connection =  mMetadata->findConnection( connectionName ) )
+      if ( const QgsAbstractProviderConnection *connection = mMetadata->findConnection( connectionName ) )
       {
         return connection->uri();
       }
@@ -139,9 +139,9 @@ QVariant QgsProviderConnectionModel::data( const QModelIndex &index, int role ) 
       }
     }
 
-    case static_cast< int >( CustomRole::Configuration ):
+    case static_cast<int>( CustomRole::Configuration ):
     {
-      if ( const QgsAbstractProviderConnection *connection =  mMetadata->findConnection( connectionName ) )
+      if ( const QgsAbstractProviderConnection *connection = mMetadata->findConnection( connectionName ) )
       {
         return connection->configuration();
       }

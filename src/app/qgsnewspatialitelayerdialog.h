@@ -24,14 +24,13 @@
 
 #include "qgis.h"
 
-extern "C"
-{
+extern "C" {
 #include <sqlite3.h>
 #include <spatialite.h>
 #include "qgis_app.h"
 }
 
-class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNewSpatialiteLayerDialogBase
+class APP_EXPORT QgsNewSpatialiteLayerDialog : public QDialog, private Ui::QgsNewSpatialiteLayerDialogBase
 {
     Q_OBJECT
 

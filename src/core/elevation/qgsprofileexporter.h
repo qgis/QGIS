@@ -35,16 +35,14 @@ class QgsAbstractProfileGenerator;
  */
 class CORE_EXPORT QgsProfileExporter
 {
-
   public:
-
     /**
      * Constructor for QgsProfileExporter, using the provided list of profile \a sources to generate the
      * results.
      *
      * After construction, call run() to initiate the profile generation.
      */
-    QgsProfileExporter( const QList< QgsAbstractProfileSource * > &sources,
+    QgsProfileExporter( const QList<QgsAbstractProfileSource *> &sources,
                         const QgsProfileRequest &request,
                         Qgis::ProfileExportType type );
 
@@ -69,19 +67,17 @@ class CORE_EXPORT QgsProfileExporter
      *
      * Ownership of the returned layers is transferred to the caller.
      */
-    QList< QgsVectorLayer * > toLayers() SIP_FACTORY;
+    QList<QgsVectorLayer *> toLayers() SIP_FACTORY;
 
   private:
-
 #ifdef SIP_RUN
     QgsProfileExporter( const QgsProfileExporter &other );
 #endif
 
     Qgis::ProfileExportType mType = Qgis::ProfileExportType::Features3D;
     QgsProfileRequest mRequest;
-    std::vector< std::unique_ptr< QgsAbstractProfileGenerator > > mGenerators;
-    QVector< QgsAbstractProfileResults::Feature > mFeatures;
-
+    std::vector<std::unique_ptr<QgsAbstractProfileGenerator>> mGenerators;
+    QVector<QgsAbstractProfileResults::Feature> mFeatures;
 };
 
 /**
@@ -95,18 +91,17 @@ class CORE_EXPORT QgsProfileExporterTask : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Results of exporting the profile.
      */
     enum class ExportResult
     {
-      Success, //!< Successful export
-      Empty, //!< Results were empty
-      DeviceError, //!< Could not open output file device
-      DxfExportFailed, //!< Generic error when outputting to DXF
+      Success,           //!< Successful export
+      Empty,             //!< Results were empty
+      DeviceError,       //!< Could not open output file device
+      DxfExportFailed,   //!< Generic error when outputting to DXF
       LayerExportFailed, //!< Generic error when outputting to files
-      Canceled, //!< Export was canceled
+      Canceled,          //!< Export was canceled
     };
     Q_ENUM( ExportResult );
 
@@ -116,7 +111,7 @@ class CORE_EXPORT QgsProfileExporterTask : public QgsTask
      * If \a destination is an empty string then the profile results will be generated only and can
      * be retrieved by calling takeLayers().
      */
-    QgsProfileExporterTask( const QList< QgsAbstractProfileSource * > &sources,
+    QgsProfileExporterTask( const QList<QgsAbstractProfileSource *> &sources,
                             const QgsProfileRequest &request,
                             Qgis::ProfileExportType type,
                             const QString &destination,
@@ -133,7 +128,7 @@ class CORE_EXPORT QgsProfileExporterTask : public QgsTask
      *
      * Ownership of the returned layers is transferred to the caller.
      */
-    QList< QgsVectorLayer * > takeLayers() SIP_FACTORY;
+    QList<QgsVectorLayer *> takeLayers() SIP_FACTORY;
 
     /**
      * Returns the result of the export operation.
@@ -153,11 +148,10 @@ class CORE_EXPORT QgsProfileExporterTask : public QgsTask
     QString error() const { return mError; }
 
   private:
+    std::unique_ptr<QgsProfileExporter> mExporter;
+    QList<QgsVectorLayer *> mLayers;
 
-    std::unique_ptr< QgsProfileExporter > mExporter;
-    QList< QgsVectorLayer * > mLayers;
-
-    std::unique_ptr< QgsFeedback > mFeedback;
+    std::unique_ptr<QgsFeedback> mFeedback;
     QString mDestination;
     QgsCoordinateTransformContext mTransformContext;
     ExportResult mResult = ExportResult::Success;

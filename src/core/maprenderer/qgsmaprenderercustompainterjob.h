@@ -32,7 +32,6 @@ class CORE_EXPORT QgsMapRendererAbstractCustomPainterJob : public QgsMapRenderer
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsMapRendererAbstractCustomPainterJob, using the given
      * map \a settings.
@@ -40,14 +39,12 @@ class CORE_EXPORT QgsMapRendererAbstractCustomPainterJob : public QgsMapRenderer
     QgsMapRendererAbstractCustomPainterJob( const QgsMapSettings &settings );
 
   protected:
-
     /**
      * Prepares the given \a painter ready for a map render.
      *
      * The \a backgroundColor argument specifies the color to use for the map's background.
      */
     void preparePainter( QPainter *painter, const QColor &backgroundColor = Qt::transparent );
-
 };
 
 /**
@@ -74,7 +71,8 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererAbstract
     QgsLabelingResults *takeLabelingResults() SIP_TRANSFER override;
 
     //! \note not available in Python bindings
-    const std::vector< LayerRenderJob > &jobs() const { return mLayerJobs; } SIP_SKIP
+    const std::vector<LayerRenderJob> &jobs() const { return mLayerJobs; }
+    SIP_SKIP
 
     /**
      * Wait for the job to be finished - and keep the thread's event loop running while waiting.
@@ -141,16 +139,16 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererAbstract
     QPainter *mPainter = nullptr;
     QFuture<void> mFuture;
     QFutureWatcher<void> mFutureWatcher;
-    std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;
+    std::unique_ptr<QgsLabelingEngine> mLabelingEngineV2;
 
     bool mActive;
-    std::vector< LayerRenderJob > mLayerJobs;
+    std::vector<LayerRenderJob> mLayerJobs;
     LabelRenderJob mLabelJob;
     bool mRenderSynchronously = false;
     bool mPrepared = false;
     bool mPrepareOnly = false;
 
-    std::vector< LayerRenderJob > mSecondPassLayerJobs;
+    std::vector<LayerRenderJob> mSecondPassLayerJobs;
 };
 
 

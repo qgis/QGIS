@@ -135,4 +135,3 @@ int QgsSearchWidgetWrapper::fieldIndex() const
 {
   return mFieldIdx;
 }
-

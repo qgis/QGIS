@@ -41,7 +41,6 @@ class QgsRenderContext;
 class CORE_EXPORT QgsTextBlockFormat
 {
   public:
-
     QgsTextBlockFormat() = default;
 
     /**
@@ -52,8 +51,8 @@ class CORE_EXPORT QgsTextBlockFormat
     //! Status values for boolean format properties
     enum class BooleanValue
     {
-      NotSet, //!< Property is not set
-      SetTrue, //!< Property is set and TRUE
+      NotSet,   //!< Property is not set
+      SetTrue,  //!< Property is set and TRUE
       SetFalse, //!< Property is set and FALSE
     };
 
@@ -176,13 +175,11 @@ class CORE_EXPORT QgsTextBlockFormat
     void updateFontForFormat( QFont &font, const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 
   private:
-
-    double mLineHeight = std::numeric_limits< double >::quiet_NaN();
-    double mLineHeightPercentage = std::numeric_limits< double >::quiet_NaN();
+    double mLineHeight = std::numeric_limits<double>::quiet_NaN();
+    double mLineHeightPercentage = std::numeric_limits<double>::quiet_NaN();
 
     bool mHasHorizontalAlignSet = false;
     Qgis::TextHorizontalAlignment mHorizontalAlign = Qgis::TextHorizontalAlignment::Left;
-
 };
 
 #endif // QGSTEXTBLOCKFORMAT_H

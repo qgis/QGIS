@@ -36,7 +36,6 @@ class QgsClassificationRange;
 class CORE_EXPORT QgsRendererRange
 {
   public:
-
     QgsRendererRange() = default;
     ~QgsRendererRange();
 
@@ -165,16 +164,15 @@ class CORE_EXPORT QgsRendererRange
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    const QString str = sipCpp->label().isEmpty()
-                        ? QStringLiteral( "<QgsRendererRange: %1 - %2>" ).arg( sipCpp->lowerValue() ).arg( sipCpp->upperValue() )
-                        : QStringLiteral( "<QgsRendererRange: %1 - %2 (%3)>" ).arg( sipCpp->lowerValue() ).arg( sipCpp->upperValue() ).arg( sipCpp->label() );
+    % MethodCode const QString str = sipCpp->label().isEmpty()
+                                       ? QStringLiteral( "<QgsRendererRange: %1 - %2>" ).arg( sipCpp->lowerValue() ).arg( sipCpp->upperValue() )
+                                       : QStringLiteral( "<QgsRendererRange: %1 - %2 (%3)>" ).arg( sipCpp->lowerValue() ).arg( sipCpp->upperValue() ).arg( sipCpp->label() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 
-    SIP_PYOBJECT __getitem__( int );
-    % MethodCode
-    if ( a0 == 0 )
+        SIP_PYOBJECT
+      __getitem__( int );
+    % MethodCode if ( a0 == 0 )
     {
       sipRes = Py_BuildValue( "d", sipCpp->lowerValue() );
     }
@@ -190,8 +188,9 @@ class CORE_EXPORT QgsRendererRange
     % End
 #endif
 
-  protected:
-    double mLowerValue = 0, mUpperValue = 0;
+      protected : double mLowerValue
+      = 0,
+      mUpperValue = 0;
     std::unique_ptr<QgsSymbol> mSymbol;
     QString mLabel;
     bool mRender = true;

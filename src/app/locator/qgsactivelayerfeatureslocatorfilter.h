@@ -40,7 +40,7 @@ class APP_EXPORT QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
     void triggerResultFromAction( const QgsLocatorResult &result, const int actionId ) override;
-    bool hasConfigWidget() const override {return true;}
+    bool hasConfigWidget() const override { return true; }
     void openConfigWidget( QWidget *parent ) override;
 
     enum class ResultType

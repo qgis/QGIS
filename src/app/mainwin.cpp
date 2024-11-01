@@ -28,8 +28,7 @@ void showError( std::string message, std::string title )
     NULL,
     newmessage.c_str(),
     title.c_str(),
-    MB_ICONERROR | MB_OK
-  );
+    MB_ICONERROR | MB_OK );
   std::cerr << message << std::endl;
 }
 
@@ -89,7 +88,7 @@ int CALLBACK WinMain( HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPST
         std::ofstream file;
         file.open( envfile, std::ifstream::out );
 
-        for ( std::list<std::string>::const_iterator it = vars.begin();  it != vars.end(); ++it )
+        for ( std::list<std::string>::const_iterator it = vars.begin(); it != vars.end(); ++it )
         {
           if ( getenv( it->c_str() ) )
             file << *it << "=" << getenv( it->c_str() ) << std::endl;
@@ -133,8 +132,10 @@ int CALLBACK WinMain( HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPST
 #pragma GCC diagnostic ignored "-Wcast-function-type"
 #endif
   HINSTANCE hKernelDLL = LoadLibrary( "kernel32.dll" );
-  BOOL ( *SetDefaultDllDirectories )( DWORD ) = hKernelDLL ? reinterpret_cast<BOOL( * )( DWORD )>( GetProcAddress( hKernelDLL, "SetDefaultDllDirectories" ) ) : 0;
-  DLL_DIRECTORY_COOKIE( *AddDllDirectory )( PCWSTR ) = hKernelDLL ? reinterpret_cast<DLL_DIRECTORY_COOKIE( * )( PCWSTR )>( GetProcAddress( hKernelDLL, "AddDllDirectory" ) ) : 0;
+  BOOL( *SetDefaultDllDirectories )
+  ( DWORD ) = hKernelDLL ? reinterpret_cast<BOOL ( * )( DWORD )>( GetProcAddress( hKernelDLL, "SetDefaultDllDirectories" ) ) : 0;
+  DLL_DIRECTORY_COOKIE( *AddDllDirectory )
+  ( PCWSTR ) = hKernelDLL ? reinterpret_cast<DLL_DIRECTORY_COOKIE ( * )( PCWSTR )>( GetProcAddress( hKernelDLL, "AddDllDirectory" ) ) : 0;
 #ifndef _MSC_VER // MinGW
 #pragma GCC diagnostic pop
 #endif
@@ -170,7 +171,7 @@ int CALLBACK WinMain( HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPST
 #ifdef _MSC_VER
   HINSTANCE hGetProcIDDLL = LoadLibrary( "qgis_app.dll" );
 #else
-// MinGW
+  // MinGW
   HINSTANCE hGetProcIDDLL = LoadLibrary( "libqgis_app.dll" );
 #endif
 
@@ -184,7 +185,7 @@ int CALLBACK WinMain( HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, LPST
       NULL,
       error,
       MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
-      ( LPTSTR )&errorText,
+      ( LPTSTR ) &errorText,
       0,
       NULL );
 

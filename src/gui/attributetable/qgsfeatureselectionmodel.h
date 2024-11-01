@@ -87,14 +87,22 @@ class GUI_EXPORT QgsFeatureSelectionModel : public QItemSelectionModel
      *
      * \see selectFeatures( const QItemSelection&, SelectionFlags )
      */
-    void select( const QModelIndex &index, QItemSelectionModel::SelectionFlags command ) override { Q_UNUSED( index ) Q_UNUSED( command ); }
+    void select( const QModelIndex &index, QItemSelectionModel::SelectionFlags command ) override
+    {
+      Q_UNUSED( index )
+      Q_UNUSED( command );
+    }
 
     /**
      * Overwritten to do NOTHING (we handle selection ourselves)
      *
      * \see selectFeatures( const QItemSelection&, SelectionFlags )
      */
-    void select( const QItemSelection &selection, QItemSelectionModel::SelectionFlags command ) override { Q_UNUSED( selection ) Q_UNUSED( command ); }
+    void select( const QItemSelection &selection, QItemSelectionModel::SelectionFlags command ) override
+    {
+      Q_UNUSED( selection )
+      Q_UNUSED( command );
+    }
 
     /**
      * Select features on this table. Is to be used in favor of the stock select methods.

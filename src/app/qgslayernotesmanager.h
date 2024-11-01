@@ -26,7 +26,6 @@ class QgsRichTextEditor;
 class QgsLayerNotesManager
 {
   public:
-
     /**
      * Shows a dialog allowing users to edit the notes for the specified \a layer.
      */
@@ -38,7 +37,6 @@ class QgsLayerNotesDialog : public QDialog
     Q_OBJECT
 
   public:
-
     QgsLayerNotesDialog( QWidget *parent );
 
     void setNotes( const QString &notes );

@@ -48,7 +48,7 @@ QgsVtpkTiles::~QgsVtpkTiles()
 bool QgsVtpkTiles::open()
 {
   if ( mZip )
-    return true;  // already opened
+    return true; // already opened
 
   const QByteArray fileNamePtr = mFilename.toUtf8();
   int rc = 0;
@@ -82,7 +82,7 @@ bool QgsVtpkTiles::open()
 
 bool QgsVtpkTiles::isOpen() const
 {
-  return static_cast< bool >( mZip );
+  return static_cast<bool>( mZip );
 }
 
 QVariantMap QgsVtpkTiles::metadata() const
@@ -99,14 +99,14 @@ QVariantMap QgsVtpkTiles::metadata() const
   zip_stat( mZip, name, 0, &stat );
 
   const size_t len = stat.size;
-  const std::unique_ptr< char[] > buf( new char[len + 1] );
+  const std::unique_ptr<char[]> buf( new char[len + 1] );
 
   //Read the compressed file
   zip_file *file = zip_fopen( mZip, name, 0 );
   if ( zip_fread( file, buf.get(), len ) != -1 )
   {
-    buf[ len ] = '\0';
-    std::string jsonString( buf.get( ) );
+    buf[len] = '\0';
+    std::string jsonString( buf.get() );
     mMetadata = QgsJsonUtils::parseJson( jsonString ).toMap();
     zip_fclose( file );
     file = nullptr;
@@ -135,15 +135,15 @@ QVariantMap QgsVtpkTiles::styleDefinition() const
   zip_stat( mZip, name, 0, &stat );
 
   const size_t len = stat.size;
-  const std::unique_ptr< char[] > buf( new char[len + 1] );
+  const std::unique_ptr<char[]> buf( new char[len + 1] );
 
   QVariantMap style;
   //Read the compressed file
   zip_file *file = zip_fopen( mZip, name, 0 );
   if ( zip_fread( file, buf.get(), len ) != -1 )
   {
-    buf[ len ] = '\0';
-    std::string jsonString( buf.get( ) );
+    buf[len] = '\0';
+    std::string jsonString( buf.get() );
     style = QgsJsonUtils::parseJson( jsonString ).toMap();
     zip_fclose( file );
     file = nullptr;
@@ -176,15 +176,15 @@ QVariantMap QgsVtpkTiles::spriteDefinition() const
       continue;
 
     const size_t len = stat.size;
-    const std::unique_ptr< char[] > buf( new char[len + 1] );
+    const std::unique_ptr<char[]> buf( new char[len + 1] );
 
     QVariantMap definition;
     //Read the compressed file
     zip_file *file = zip_fopen( mZip, name, 0 );
     if ( zip_fread( file, buf.get(), len ) != -1 )
     {
-      buf[ len ] = '\0';
-      std::string jsonString( buf.get( ) );
+      buf[len] = '\0';
+      std::string jsonString( buf.get() );
       definition = QgsJsonUtils::parseJson( jsonString ).toMap();
       zip_fclose( file );
       file = nullptr;
@@ -220,14 +220,14 @@ QImage QgsVtpkTiles::spriteImage() const
       continue;
 
     const size_t len = stat.size;
-    const std::unique_ptr< char[] > buf( new char[len + 1] );
+    const std::unique_ptr<char[]> buf( new char[len + 1] );
 
     QImage result;
     //Read the compressed file
     zip_file *file = zip_fopen( mZip, name, 0 );
     if ( zip_fread( file, buf.get(), len ) != -1 )
     {
-      buf[ len ] = '\0';
+      buf[len] = '\0';
 
       result = QImage::fromData( reinterpret_cast<const uchar *>( buf.get() ), len );
 
@@ -340,7 +340,7 @@ QgsLayerMetadata QgsVtpkTiles::layerMetadata() const
 QVariantMap QgsVtpkTiles::rootTileMap() const
 {
   // make sure metadata has been read already
-  ( void )metadata();
+  ( void ) metadata();
 
   if ( mHasReadTileMap || mTileMapPath.isEmpty() )
     return mRootTileMap;
@@ -354,7 +354,7 @@ QVariantMap QgsVtpkTiles::rootTileMap() const
   zip_stat( mZip, tileMapPath.toLocal8Bit().constData(), 0, &stat );
 
   const size_t len = stat.size;
-  const std::unique_ptr< char[] > buf( new char[len + 1] );
+  const std::unique_ptr<char[]> buf( new char[len + 1] );
 
   //Read the compressed file
   zip_file *file = zip_fopen( mZip, tileMapPath.toLocal8Bit().constData(), 0 );
@@ -367,8 +367,8 @@ QVariantMap QgsVtpkTiles::rootTileMap() const
 
   if ( zip_fread( file, buf.get(), len ) != -1 )
   {
-    buf[ len ] = '\0';
-    std::string jsonString( buf.get( ) );
+    buf[len] = '\0';
+    std::string jsonString( buf.get() );
     mRootTileMap = QgsJsonUtils::parseJson( jsonString ).toMap();
     zip_fclose( file );
     file = nullptr;
@@ -410,8 +410,7 @@ QgsRectangle QgsVtpkTiles::extent( const QgsCoordinateTransformContext &context 
       fullExtent.value( QStringLiteral( "xmin" ) ).toDouble(),
       fullExtent.value( QStringLiteral( "ymin" ) ).toDouble(),
       fullExtent.value( QStringLiteral( "xmax" ) ).toDouble(),
-      fullExtent.value( QStringLiteral( "ymax" ) ).toDouble()
-    );
+      fullExtent.value( QStringLiteral( "ymax" ) ).toDouble() );
 
     const QgsCoordinateReferenceSystem fullExtentCrs = QgsArcGisRestUtils::convertSpatialReference( fullExtent.value( QStringLiteral( "spatialReference" ) ).toMap() );
     const QgsCoordinateTransform extentTransform( fullExtentCrs, crs(), context );
@@ -438,15 +437,16 @@ QByteArray QgsVtpkTiles::tileData( int z, int x, int y )
   if ( mPacketSize < 0 )
     mPacketSize = metadata().value( QStringLiteral( "resourceInfo" ) ).toMap().value( QStringLiteral( "cacheInfo" ) ).toMap().value( QStringLiteral( "storageInfo" ) ).toMap().value( QStringLiteral( "packetSize" ) ).toInt();
 
-  const int fileRow = mPacketSize * static_cast< int >( std::floor( y / static_cast< double>( mPacketSize ) ) );
-  const int fileCol = mPacketSize * static_cast< int >( std::floor( x / static_cast< double>( mPacketSize ) ) );
+  const int fileRow = mPacketSize * static_cast<int>( std::floor( y / static_cast<double>( mPacketSize ) ) );
+  const int fileCol = mPacketSize * static_cast<int>( std::floor( x / static_cast<double>( mPacketSize ) ) );
 
   const QString tileName = QStringLiteral( "R%1C%2" )
-                           .arg( fileRow, 4, 16, QLatin1Char( '0' ) )
-                           .arg( fileCol, 4, 16, QLatin1Char( '0' ) );
+                             .arg( fileRow, 4, 16, QLatin1Char( '0' ) )
+                             .arg( fileCol, 4, 16, QLatin1Char( '0' ) );
 
   const QString fileName = QStringLiteral( "p12/tile/L%1/%2.bundle" )
-                           .arg( z, 2, 10, QLatin1Char( '0' ) ).arg( tileName );
+                             .arg( z, 2, 10, QLatin1Char( '0' ) )
+                             .arg( tileName );
   struct zip_stat stat;
   zip_stat_init( &stat );
   zip_stat( mZip, fileName.toLocal8Bit().constData(), 0, &stat );
@@ -462,7 +462,7 @@ QByteArray QgsVtpkTiles::tileData( int z, int x, int y )
   }
   else
   {
-    const std::unique_ptr< char[] > buf( new char[len] );
+    const std::unique_ptr<char[]> buf( new char[len] );
 
     //Read the compressed file
     zip_file *file = zip_fopen( mZip, fileName.toLocal8Bit().constData(), 0 );
@@ -472,7 +472,7 @@ QByteArray QgsVtpkTiles::tileData( int z, int x, int y )
       memcpy( &indexValue, buf.get() + tileIndexOffset, 8 );
 
       const std::size_t tileOffset = indexValue % ( 2ULL << 39 );
-      const std::size_t tileSize = static_cast< std::size_t>( std::floor( indexValue / ( 2ULL << 39 ) ) );
+      const std::size_t tileSize = static_cast<std::size_t>( std::floor( indexValue / ( 2ULL << 39 ) ) );
       // bundle is a gzip file;
       if ( tileSize == 0 )
       {
@@ -495,4 +495,3 @@ QByteArray QgsVtpkTiles::tileData( int z, int x, int y )
 
   return res;
 }
-

@@ -38,7 +38,6 @@ QgsLayerTreeFilterSettings::QgsLayerTreeFilterSettings( const QgsLayerTreeFilter
   , mLayers( other.mLayers )
   , mLayerExtents( other.mLayerExtents )
 {
-
 }
 
 QgsLayerTreeFilterSettings &QgsLayerTreeFilterSettings::operator=( const QgsLayerTreeFilterSettings &other )
@@ -115,7 +114,7 @@ void QgsLayerTreeFilterSettings::addVisibleExtentForLayer( QgsMapLayer *layer, c
   {
     QgsGeometry transformedPoly = polygon;
     transformedPoly.transform( polygonToLayerTransform );
-    mLayerExtents[ layer->id() ].append( transformedPoly );
+    mLayerExtents[layer->id()].append( transformedPoly );
   }
   catch ( QgsCsException & )
   {
@@ -127,7 +126,7 @@ void QgsLayerTreeFilterSettings::addVisibleExtentForLayer( QgsMapLayer *layer, c
 
 QgsGeometry QgsLayerTreeFilterSettings::combinedVisibleExtentForLayer( const QgsMapLayer *layer )
 {
-  QVector< QgsGeometry > parts;
+  QVector<QgsGeometry> parts;
 
   if ( mMapSettings->layerIds( true ).contains( layer->id() ) )
   {

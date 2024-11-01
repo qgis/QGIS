@@ -38,7 +38,6 @@ class QgsAnimatedIcon;
  */
 class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsFilterLineEdit *>( sipCpp ) )
@@ -58,12 +57,11 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     Q_PROPERTY( bool showSpinner READ showSpinner WRITE setShowSpinner NOTIFY showSpinnerChanged )
 
   public:
-
     //! Behavior when clearing value of widget
     enum ClearMode
     {
       ClearToNull = 0, //!< Reset value to null
-      ClearToDefault, //!< Reset value to default value (see defaultValue() )
+      ClearToDefault,  //!< Reset value to default value (see defaultValue() )
     };
     Q_ENUM( ClearMode )
 
@@ -128,7 +126,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * Returns if a search icon shall be shown on the left of the image
      * when no text is entered
      */
-    bool showSearchIcon() const { return static_cast< bool >( mSearchAction ); }
+    bool showSearchIcon() const { return static_cast<bool>( mSearchAction ); }
 
     /**
      * Sets the default value for the widget. The default value is a value
@@ -213,7 +211,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * Returns if a state is already saved
      * \since QGIS 3.14
      */
-    bool hasStateStored() const {return mLineEditState.hasStateStored;}
+    bool hasStateStored() const { return mLineEditState.hasStateStored; }
 
   public slots:
 
@@ -276,11 +274,11 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
   private:
     struct LineEditState
     {
-      bool hasStateStored = false;
-      QString text;
-      int selectionStart;
-      int selectionLength;
-      int cursorPosition;
+        bool hasStateStored = false;
+        QString text;
+        int selectionStart;
+        int selectionLength;
+        int cursorPosition;
     };
 
     QIcon mClearIcon;
@@ -322,7 +320,6 @@ class SIP_SKIP QgsSpinBoxLineEdit : public QgsFilterLineEdit
     Q_OBJECT
 
   public:
-
     QgsSpinBoxLineEdit( QWidget *parent = nullptr )
       : QgsFilterLineEdit( parent )
     {}

@@ -203,8 +203,8 @@ void QgsJsonEditWidget::codeEditorJsonIndicatorClicked( int line, int index, Qt:
 
   const int position = mCodeEditorJson->positionFromLineIndex( line, index );
   const int clickableLinkListIndex = mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_INDICATORVALUEAT,
-                                     SCINTILLA_UNDERLINE_INDICATOR_INDEX,
-                                     position );
+                                                                     SCINTILLA_UNDERLINE_INDICATOR_INDEX,
+                                                                     position );
   if ( clickableLinkListIndex <= 0 )
     return;
 
@@ -217,8 +217,8 @@ void QgsJsonEditWidget::codeEditorJsonDwellStart( int position, int x, int y )
   Q_UNUSED( y )
 
   const int clickableLinkListIndex = mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_INDICATORVALUEAT,
-                                     SCINTILLA_UNDERLINE_INDICATOR_INDEX,
-                                     position );
+                                                                     SCINTILLA_UNDERLINE_INDICATOR_INDEX,
+                                                                     position );
   if ( clickableLinkListIndex <= 0 )
     return;
 
@@ -278,7 +278,7 @@ void QgsJsonEditWidget::refreshTreeView( const QJsonDocument &jsonDocument )
     // performs very poorly.
     if ( arraySize > MAX_ELTS )
       mEnableUrlHighlighting = false;
-    for ( auto index = decltype( arraySize ) {0}; index < arraySize; index++ )
+    for ( auto index = decltype( arraySize ) { 0 }; index < arraySize; index++ )
     {
       QTreeWidgetItem *treeWidgetItem = new QTreeWidgetItem( mTreeWidget, QStringList() << QString::number( index ) );
       treeWidgetItem->setFont( 0, monospaceFont() );
@@ -339,7 +339,7 @@ void QgsJsonEditWidget::refreshTreeViewItem( QTreeWidgetItem *treeWidgetItem, co
         mTreeWidget->setItemWidget( treeWidgetItem, static_cast<int>( TreeWidgetColumn::Value ), label );
 
         mClickableLinkList.append( jsonValueString );
-        mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_SETINDICATORVALUE, static_cast< int >( mClickableLinkList.size() ) );
+        mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_SETINDICATORVALUE, static_cast<int>( mClickableLinkList.size() ) );
         mCodeEditorJson->SendScintilla( QsciScintillaBase::SCI_INDICATORFILLRANGE,
                                         mCodeEditorJson->text().indexOf( jsonValueString ),
                                         jsonValueString.size() );
@@ -358,7 +358,7 @@ void QgsJsonEditWidget::refreshTreeViewItem( QTreeWidgetItem *treeWidgetItem, co
       // performs very poorly.
       if ( arraySize > MAX_ELTS )
         mEnableUrlHighlighting = false;
-      for ( auto index = decltype( arraySize ) {0}; index < arraySize; index++ )
+      for ( auto index = decltype( arraySize ) { 0 }; index < arraySize; index++ )
       {
         QTreeWidgetItem *treeWidgetItemChild = new QTreeWidgetItem( treeWidgetItem, QStringList() << QString::number( index ) );
         treeWidgetItemChild->setFont( 0, monospaceFont() );

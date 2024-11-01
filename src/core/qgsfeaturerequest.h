@@ -83,7 +83,6 @@
 class CORE_EXPORT QgsFeatureRequest
 {
   public:
-
     /**
      * \ingroup core
      * \brief The OrderByClause class represents an order by clause for a QgsFeatureRequest.
@@ -109,7 +108,6 @@ class CORE_EXPORT QgsFeatureRequest
     class CORE_EXPORT OrderByClause
     {
       public:
-
         /**
          * Creates a new OrderByClause for a QgsFeatureRequest
          *
@@ -193,9 +191,7 @@ class CORE_EXPORT QgsFeatureRequest
 
         bool operator==( const OrderByClause &v ) const
         {
-          return mExpression == v.mExpression &&
-                 mAscending == v.mAscending &&
-                 mNullsFirst == v.mNullsFirst;
+          return mExpression == v.mExpression && mAscending == v.mAscending && mNullsFirst == v.mNullsFirst;
         }
 
         bool operator!=( const OrderByClause &v ) const
@@ -219,7 +215,6 @@ class CORE_EXPORT QgsFeatureRequest
     class OrderBy : public QList<QgsFeatureRequest::OrderByClause>
     {
       public:
-
         /**
          * Create a new empty order by
          */
@@ -413,7 +408,7 @@ class CORE_EXPORT QgsFeatureRequest
      * \see referenceGeometry()
      * \since QGIS 3.22
      */
-    std::shared_ptr< QgsGeometryEngine > referenceGeometryEngine() const SIP_SKIP { return mReferenceGeometryEngine; }
+    std::shared_ptr<QgsGeometryEngine> referenceGeometryEngine() const SIP_SKIP { return mReferenceGeometryEngine; }
 
     /**
      * Returns the maximum distance from the referenceGeometry() of fetched
@@ -485,23 +480,22 @@ class CORE_EXPORT QgsFeatureRequest
      * \see invalidGeometryCallback()
      */
 #ifndef SIP_RUN
-    QgsFeatureRequest &setInvalidGeometryCallback( const std::function< void( const QgsFeature & )> &callback );
+    QgsFeatureRequest &setInvalidGeometryCallback( const std::function<void( const QgsFeature & )> &callback );
 #else
     QgsFeatureRequest &setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
-    Py_BEGIN_ALLOW_THREADS
+        Py_BEGIN_ALLOW_THREADS
 
-    sipCpp->setInvalidGeometryCallback( [a0]( const QgsFeature &arg )
-    {
-      SIP_BLOCK_THREADS
-      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
-      SIP_UNBLOCK_THREADS
-    } );
+          sipCpp->setInvalidGeometryCallback( [a0]( const QgsFeature &arg ) {
+            SIP_BLOCK_THREADS
+            Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+            SIP_UNBLOCK_THREADS
+          } );
 
     sipRes = sipCpp;
 
     Py_END_ALLOW_THREADS
-    % End
+      % End
 #endif
 
     /**
@@ -510,7 +504,8 @@ class CORE_EXPORT QgsFeatureRequest
      * \note not available in Python bindings
      * \see setInvalidGeometryCallback()
      */
-    std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; } SIP_SKIP
+    std::function<void( const QgsFeature & )> invalidGeometryCallback() const { return mInvalidGeometryCallback; }
+    SIP_SKIP
 
     /**
      * Set the filter \a expression. {\see QgsExpression}
@@ -564,7 +559,12 @@ class CORE_EXPORT QgsFeatureRequest
      * \returns The object the method is called on for chaining
      *
      */
-    QgsFeatureRequest &disableFilter() { mFilter = Qgis::FeatureRequestFilterType::NoFilter; mFilterExpression.reset(); return *this; }
+    QgsFeatureRequest &disableFilter()
+    {
+      mFilter = Qgis::FeatureRequestFilterType::NoFilter;
+      mFilterExpression.reset();
+      return *this;
+    }
 
     /**
      * Adds a new OrderByClause, appending it as the least important one.
@@ -612,7 +612,10 @@ class CORE_EXPORT QgsFeatureRequest
      * \see setLimit
      */
 #ifndef SIP_RUN
-    long long limit() const { return mLimit; }
+    long long limit() const
+    {
+      return mLimit;
+    }
 #else
     long long limit() const;
 #endif
@@ -837,23 +840,22 @@ class CORE_EXPORT QgsFeatureRequest
      * \see setDestinationCrs()
      */
 #ifndef SIP_RUN
-    QgsFeatureRequest &setTransformErrorCallback( const std::function< void( const QgsFeature & )> &callback );
+    QgsFeatureRequest &setTransformErrorCallback( const std::function<void( const QgsFeature & )> &callback );
 #else
     QgsFeatureRequest &setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
-    Py_BEGIN_ALLOW_THREADS
+        Py_BEGIN_ALLOW_THREADS
 
-    sipCpp->setTransformErrorCallback( [a0]( const QgsFeature &arg )
-    {
-      SIP_BLOCK_THREADS
-      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
-      SIP_UNBLOCK_THREADS
-    } );
+          sipCpp->setTransformErrorCallback( [a0]( const QgsFeature &arg ) {
+            SIP_BLOCK_THREADS
+            Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+            SIP_UNBLOCK_THREADS
+          } );
 
     sipRes = sipCpp;
 
     Py_END_ALLOW_THREADS
-    % End
+      % End
 #endif
 
     /**
@@ -863,7 +865,8 @@ class CORE_EXPORT QgsFeatureRequest
      * \see setTransformErrorCallback()
      * \see destinationCrs()
      */
-    std::function< void( const QgsFeature & ) > transformErrorCallback() const { return mTransformErrorCallback; } SIP_SKIP
+    std::function<void( const QgsFeature & )> transformErrorCallback() const { return mTransformErrorCallback; }
+    SIP_SKIP
 
 
     /**
@@ -972,7 +975,6 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeedback *feedback() const;
 
   protected:
-
     /**
      * Attribute/ID filter type.
      */
@@ -998,7 +1000,7 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Prepared geometry engine for mReferenceGeometry.
      */
-    std::shared_ptr< QgsGeometryEngine > mReferenceGeometryEngine;
+    std::shared_ptr<QgsGeometryEngine> mReferenceGeometryEngine;
 
     /**
      * Maximum distance from reference geometry.
@@ -1007,7 +1009,7 @@ class CORE_EXPORT QgsFeatureRequest
 
     QgsFeatureId mFilterFid = -1;
     QgsFeatureIds mFilterFids;
-    std::unique_ptr< QgsExpression > mFilterExpression;
+    std::unique_ptr<QgsExpression> mFilterExpression;
     QgsExpressionContext mExpressionContext;
     Qgis::FeatureRequestFlags mFlags;
     QgsAttributeList mAttrs;
@@ -1015,8 +1017,8 @@ class CORE_EXPORT QgsFeatureRequest
     long long mLimit = -1;
     OrderBy mOrderBy;
     Qgis::InvalidGeometryCheck mInvalidGeometryFilter = Qgis::InvalidGeometryCheck::NoCheck;
-    std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
-    std::function< void( const QgsFeature & ) > mTransformErrorCallback;
+    std::function<void( const QgsFeature & )> mInvalidGeometryCallback;
+    std::function<void( const QgsFeature & )> mTransformErrorCallback;
     QgsCoordinateTransform mTransform;
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
@@ -1056,7 +1058,7 @@ class CORE_EXPORT QgsAbstractFeatureSource
     void iteratorOpened( QgsAbstractFeatureIterator *it );
     void iteratorClosed( QgsAbstractFeatureIterator *it );
 
-    QSet< QgsAbstractFeatureIterator * > mActiveIterators;
+    QSet<QgsAbstractFeatureIterator *> mActiveIterators;
 
     template<typename> friend class QgsAbstractFeatureIteratorFromSource;
 };

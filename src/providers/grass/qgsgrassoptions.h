@@ -37,7 +37,6 @@ class GRASS_LIB_EXPORT QgsGrassOptions : public QgsOptionsDialogBase, private Ui
     void saveOptions();
 
   private:
-
     QString mImportSettingsPath;
     QString mModulesSettingsPath;
 };

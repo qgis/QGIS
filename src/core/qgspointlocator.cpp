@@ -38,7 +38,6 @@
 using namespace SpatialIndex;
 
 
-
 static SpatialIndex::Point point2point( const QgsPointXY &point )
 {
   double plow[2] = { point.x(), point.y() };
@@ -74,12 +73,16 @@ class QgsPointLocator_Stream : public IDataStream
     explicit QgsPointLocator_Stream( const QLinkedList<RTree::Data *> &dataList )
       : mDataList( dataList )
       , mIt( mDataList )
-    { }
+    {}
 
     IData *getNext() override { return mIt.next(); }
     bool hasNext() override { return mIt.hasNext(); }
 
-    uint32_t size() override { Q_ASSERT( false && "not available" ); return 0; }
+    uint32_t size() override
+    {
+      Q_ASSERT( false && "not available" );
+      return 0;
+    }
     void rewind() override { Q_ASSERT( false && "not available" ); }
 
   private:
@@ -120,7 +123,7 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
 
       const QgsPointXY pt = geom->closestVertex( mSrcPoint, vertexIndex, beforeVertex, afterVertex, sqrDist );
       if ( sqrDist < 0 )
-        return;  // probably empty geometry
+        return; // probably empty geometry
 
       const QgsPointLocator::Match m( QgsPointLocator::Vertex, mLocator->mLayer, id, std::sqrt( sqrDist ), pt, vertexIndex );
       // in range queries the filter may reject some matches
@@ -139,7 +142,6 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
 };
 
 
-
 /**
  * \ingroup core
  * \brief Helper class used when traversing the index looking for centroid - builds a list of matches.
@@ -149,7 +151,6 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
 class QgsPointLocator_VisitorNearestCentroid : public IVisitor
 {
   public:
-
     /**
      * \ingroup core
      * \brief Helper class used when traversing the index looking for centroid - builds a list of matches.
@@ -182,7 +183,6 @@ class QgsPointLocator_VisitorNearestCentroid : public IVisitor
 
       if ( !mBest.isValid() || m.distance() < mBest.distance() )
         mBest = m;
-
     }
 
   private:
@@ -200,10 +200,9 @@ class QgsPointLocator_VisitorNearestCentroid : public IVisitor
  * \note not available in Python bindings
  * \since QGIS 3.12
 */
-class QgsPointLocator_VisitorNearestMiddleOfSegment: public IVisitor
+class QgsPointLocator_VisitorNearestMiddleOfSegment : public IVisitor
 {
   public:
-
     /**
      * \ingroup core
      * \brief Helper class used when traversing the index looking for middle segment - builds a list of matches.
@@ -245,7 +244,6 @@ class QgsPointLocator_VisitorNearestMiddleOfSegment: public IVisitor
 
       if ( !mBest.isValid() || m.distance() < mBest.distance() )
         mBest = m;
-
     }
 
   private:
@@ -266,7 +264,6 @@ class QgsPointLocator_VisitorNearestMiddleOfSegment: public IVisitor
 class QgsPointLocator_VisitorNearestLineEndpoint : public IVisitor
 {
   public:
-
     /**
      * \ingroup core
      * \brief Helper class used when traversing the index looking for line endpoints (start or end vertex) - builds a list of matches.
@@ -290,8 +287,7 @@ class QgsPointLocator_VisitorNearestLineEndpoint : public IVisitor
 
       QgsPointXY bestPoint;
       int bestVertexNumber = -1;
-      auto replaceIfBetter = [this, &bestPoint, &bestVertexNumber]( const QgsPoint & candidate, int vertexNumber )
-      {
+      auto replaceIfBetter = [this, &bestPoint, &bestVertexNumber]( const QgsPoint &candidate, int vertexNumber ) {
         if ( bestPoint.isEmpty() || candidate.distanceSquared( mSrcPoint.x(), mSrcPoint.y() ) < bestPoint.sqrDist( mSrcPoint ) )
         {
           bestPoint = QgsPointXY( candidate );
@@ -311,7 +307,7 @@ class QgsPointLocator_VisitorNearestLineEndpoint : public IVisitor
           int partStartVertexNum = 0;
           for ( auto partIt = geom->const_parts_begin(); partIt != geom->const_parts_end(); ++partIt )
           {
-            if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( *partIt ) )
+            if ( const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( *partIt ) )
             {
               replaceIfBetter( curve->startPoint(), partStartVertexNum );
               replaceIfBetter( curve->endPoint(), partStartVertexNum + curve->numPoints() - 1 );
@@ -326,7 +322,7 @@ class QgsPointLocator_VisitorNearestLineEndpoint : public IVisitor
           int partStartVertexNum = 0;
           for ( auto partIt = geom->const_parts_begin(); partIt != geom->const_parts_end(); ++partIt )
           {
-            if ( const QgsCurvePolygon *polygon = qgsgeometry_cast< const QgsCurvePolygon * >( *partIt ) )
+            if ( const QgsCurvePolygon *polygon = qgsgeometry_cast<const QgsCurvePolygon *>( *partIt ) )
             {
               if ( polygon->exteriorRing() )
               {
@@ -452,6 +448,7 @@ class QgsPointLocator_VisitorArea : public IVisitor
         mList << m;
       }
     }
+
   private:
     QgsPointLocator *mLocator = nullptr;
     QgsPointLocator::MatchList &mList;
@@ -466,108 +463,109 @@ class QgsPointLocator_VisitorArea : public IVisitor
 // http://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm
 struct _CohenSutherland
 {
-  explicit _CohenSutherland( const QgsRectangle &rect ) : mRect( rect ) {}
+    explicit _CohenSutherland( const QgsRectangle &rect )
+      : mRect( rect ) {}
 
-  typedef int OutCode;
+    typedef int OutCode;
 
-  static const int INSIDE = 0; // 0000
-  static const int LEFT = 1;   // 0001
-  static const int RIGHT = 2;  // 0010
-  static const int BOTTOM = 4; // 0100
-  static const int TOP = 8;    // 1000
+    static const int INSIDE = 0; // 0000
+    static const int LEFT = 1;   // 0001
+    static const int RIGHT = 2;  // 0010
+    static const int BOTTOM = 4; // 0100
+    static const int TOP = 8;    // 1000
 
-  QgsRectangle mRect;
+    QgsRectangle mRect;
 
-  OutCode computeOutCode( double x, double y )
-  {
-    OutCode code = INSIDE;  // initialized as being inside of clip window
-    if ( x < mRect.xMinimum() )         // to the left of clip window
-      code |= LEFT;
-    else if ( x > mRect.xMaximum() )    // to the right of clip window
-      code |= RIGHT;
-    if ( y < mRect.yMinimum() )         // below the clip window
-      code |= BOTTOM;
-    else if ( y > mRect.yMaximum() )    // above the clip window
-      code |= TOP;
-    return code;
-  }
-
-  bool isSegmentInRect( double x0, double y0, double x1, double y1 )
-  {
-    // compute outcodes for P0, P1, and whatever point lies outside the clip rectangle
-    OutCode outcode0 = computeOutCode( x0, y0 );
-    OutCode outcode1 = computeOutCode( x1, y1 );
-    bool accept = false;
-
-    while ( true )
+    OutCode computeOutCode( double x, double y )
     {
-      if ( !( outcode0 | outcode1 ) )
-      {
-        // Bitwise OR is 0. Trivially accept and get out of loop
-        accept = true;
-        break;
-      }
-      else if ( outcode0 & outcode1 )
-      {
-        // Bitwise AND is not 0. Trivially reject and get out of loop
-        break;
-      }
-      else
-      {
-        // failed both tests, so calculate the line segment to clip
-        // from an outside point to an intersection with clip edge
-        double x, y;
-
-        // At least one endpoint is outside the clip rectangle; pick it.
-        const OutCode outcodeOut = outcode0 ? outcode0 : outcode1;
-
-        // Now find the intersection point;
-        // use formulas y = y0 + slope * (x - x0), x = x0 + (1 / slope) * (y - y0)
-        if ( outcodeOut & TOP )
-        {
-          // point is above the clip rectangle
-          x = x0 + ( x1 - x0 ) * ( mRect.yMaximum() - y0 ) / ( y1 - y0 );
-          y = mRect.yMaximum();
-        }
-        else if ( outcodeOut & BOTTOM )
-        {
-          // point is below the clip rectangle
-          x = x0 + ( x1 - x0 ) * ( mRect.yMinimum() - y0 ) / ( y1 - y0 );
-          y = mRect.yMinimum();
-        }
-        else if ( outcodeOut & RIGHT )
-        {
-          // point is to the right of clip rectangle
-          y = y0 + ( y1 - y0 ) * ( mRect.xMaximum() - x0 ) / ( x1 - x0 );
-          x = mRect.xMaximum();
-        }
-        else if ( outcodeOut & LEFT )
-        {
-          // point is to the left of clip rectangle
-          y = y0 + ( y1 - y0 ) * ( mRect.xMinimum() - x0 ) / ( x1 - x0 );
-          x = mRect.xMinimum();
-        }
-        else
-          break;
-
-        // Now we move outside point to intersection point to clip
-        // and get ready for next pass.
-        if ( outcodeOut == outcode0 )
-        {
-          x0 = x;
-          y0 = y;
-          outcode0 = computeOutCode( x0, y0 );
-        }
-        else
-        {
-          x1 = x;
-          y1 = y;
-          outcode1 = computeOutCode( x1, y1 );
-        }
-      }
+      OutCode code = INSIDE;      // initialized as being inside of clip window
+      if ( x < mRect.xMinimum() ) // to the left of clip window
+        code |= LEFT;
+      else if ( x > mRect.xMaximum() ) // to the right of clip window
+        code |= RIGHT;
+      if ( y < mRect.yMinimum() ) // below the clip window
+        code |= BOTTOM;
+      else if ( y > mRect.yMaximum() ) // above the clip window
+        code |= TOP;
+      return code;
     }
-    return accept;
-  }
+
+    bool isSegmentInRect( double x0, double y0, double x1, double y1 )
+    {
+      // compute outcodes for P0, P1, and whatever point lies outside the clip rectangle
+      OutCode outcode0 = computeOutCode( x0, y0 );
+      OutCode outcode1 = computeOutCode( x1, y1 );
+      bool accept = false;
+
+      while ( true )
+      {
+        if ( !( outcode0 | outcode1 ) )
+        {
+          // Bitwise OR is 0. Trivially accept and get out of loop
+          accept = true;
+          break;
+        }
+        else if ( outcode0 & outcode1 )
+        {
+          // Bitwise AND is not 0. Trivially reject and get out of loop
+          break;
+        }
+        else
+        {
+          // failed both tests, so calculate the line segment to clip
+          // from an outside point to an intersection with clip edge
+          double x, y;
+
+          // At least one endpoint is outside the clip rectangle; pick it.
+          const OutCode outcodeOut = outcode0 ? outcode0 : outcode1;
+
+          // Now find the intersection point;
+          // use formulas y = y0 + slope * (x - x0), x = x0 + (1 / slope) * (y - y0)
+          if ( outcodeOut & TOP )
+          {
+            // point is above the clip rectangle
+            x = x0 + ( x1 - x0 ) * ( mRect.yMaximum() - y0 ) / ( y1 - y0 );
+            y = mRect.yMaximum();
+          }
+          else if ( outcodeOut & BOTTOM )
+          {
+            // point is below the clip rectangle
+            x = x0 + ( x1 - x0 ) * ( mRect.yMinimum() - y0 ) / ( y1 - y0 );
+            y = mRect.yMinimum();
+          }
+          else if ( outcodeOut & RIGHT )
+          {
+            // point is to the right of clip rectangle
+            y = y0 + ( y1 - y0 ) * ( mRect.xMaximum() - x0 ) / ( x1 - x0 );
+            x = mRect.xMaximum();
+          }
+          else if ( outcodeOut & LEFT )
+          {
+            // point is to the left of clip rectangle
+            y = y0 + ( y1 - y0 ) * ( mRect.xMinimum() - x0 ) / ( x1 - x0 );
+            x = mRect.xMinimum();
+          }
+          else
+            break;
+
+          // Now we move outside point to intersection point to clip
+          // and get ready for next pass.
+          if ( outcodeOut == outcode0 )
+          {
+            x0 = x;
+            y0 = y;
+            outcode0 = computeOutCode( x0, y0 );
+          }
+          else
+          {
+            x1 = x;
+            y1 = y;
+            outcode1 = computeOutCode( x1, y1 );
+          }
+        }
+      }
+      return accept;
+    }
 };
 
 
@@ -618,7 +616,6 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
       prevPoint = QgsPointXY( *it );
       it++;
       pointIndex += 1;
-
     }
   }
   return lst;
@@ -649,7 +646,7 @@ class QgsPointLocator_VisitorEdgesInRect : public IVisitor
       if ( !geom )
         return; // should not happen, but be safe
 
-      const auto segmentsInRect {_geometrySegmentsInRect( geom, mSrcRect, mLocator->mLayer, id )};
+      const auto segmentsInRect { _geometrySegmentsInRect( geom, mSrcRect, mLocator->mLayer, id ) };
       for ( const QgsPointLocator::Match &m : segmentsInRect )
       {
         // in range queries the filter may reject some matches
@@ -790,7 +787,7 @@ class QgsPointLocator_VisitorMiddlesInRect : public IVisitor
       if ( !geom )
         return; // should not happen, but be safe
 
-      for ( QgsAbstractGeometry::const_part_iterator itPart = geom->const_parts_begin() ; itPart != geom->const_parts_end() ; ++itPart )
+      for ( QgsAbstractGeometry::const_part_iterator itPart = geom->const_parts_begin(); itPart != geom->const_parts_end(); ++itPart )
       {
         QgsAbstractGeometry::vertex_iterator it = ( *itPart )->vertices_begin();
         QgsAbstractGeometry::vertex_iterator itPrevious = ( *itPart )->vertices_begin();
@@ -833,7 +830,6 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
     QStack<id_type> ids;
 
   public:
-
     void getNextEntry( const IEntry &entry, id_type &nextEntry, bool &hasNext ) override
     {
       const INode *n = dynamic_cast<const INode *>( &entry );
@@ -859,7 +855,7 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
         }
       }
 
-      if ( ! ids.empty() )
+      if ( !ids.empty() )
       {
         nextEntry = ids.back();
         ids.pop();
@@ -935,7 +931,6 @@ void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
     mContext = std::unique_ptr<QgsRenderContext>( new QgsRenderContext( *context ) );
     connect( mLayer, &QgsVectorLayer::styleChanged, this, &QgsPointLocator::destroyIndex );
   }
-
 }
 
 void QgsPointLocator::onInitTaskFinished()
@@ -1007,7 +1002,6 @@ bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
 
 void QgsPointLocator::waitForIndexingFinished()
 {
-
   disconnect( mInitTask, &QgsPointLocatorInitTask::taskTerminated, this, &QgsPointLocator::onInitTaskFinished );
   disconnect( mInitTask, &QgsPointLocatorInitTask::taskCompleted, this, &QgsPointLocator::onInitTaskFinished );
   mInitTask->waitForFinished();
@@ -1168,7 +1162,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 
   QgsPointLocator_Stream stream( dataList );
   mRTree.reset( RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, stream, *mStorage, fillFactor, indexCapacity,
-                leafCapacity, dimension, variant, indexId ) );
+                                                  leafCapacity, dimension, variant, indexId ) );
 
   if ( ctx && mRenderer )
   {
@@ -1220,7 +1214,7 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
 
     if ( mContext )
     {
-      std::unique_ptr< QgsFeatureRenderer > renderer( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr );
+      std::unique_ptr<QgsFeatureRenderer> renderer( mLayer->renderer() ? mLayer->renderer()->clone() : nullptr );
       QgsRenderContext *ctx = nullptr;
 
       mContext->expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
@@ -1305,7 +1299,6 @@ void QgsPointLocator::onFeatureDeleted( QgsFeatureId fid )
     delete *it;
     mGeoms.erase( it );
   }
-
 }
 
 void QgsPointLocator::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom )

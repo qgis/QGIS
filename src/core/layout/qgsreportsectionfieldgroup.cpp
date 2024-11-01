@@ -22,7 +22,6 @@
 QgsReportSectionFieldGroup::QgsReportSectionFieldGroup( QgsAbstractReportSection *parent )
   : QgsAbstractReportSection( parent )
 {
-
 }
 
 QString QgsReportSectionFieldGroup::description() const
@@ -40,7 +39,7 @@ QIcon QgsReportSectionFieldGroup::icon() const
 
 QgsReportSectionFieldGroup *QgsReportSectionFieldGroup::clone() const
 {
-  std::unique_ptr< QgsReportSectionFieldGroup > copy = std::make_unique< QgsReportSectionFieldGroup >( nullptr );
+  std::unique_ptr<QgsReportSectionFieldGroup> copy = std::make_unique<QgsReportSectionFieldGroup>( nullptr );
   copyCommonProperties( copy.get() );
 
   if ( mBody )
@@ -179,8 +178,8 @@ void QgsReportSectionFieldGroup::reloadSettings()
 
 bool QgsReportSectionFieldGroup::writePropertiesToElement( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "headerVisibility" ), static_cast< int >( mHeaderVisibility ) );
-  element.setAttribute( QStringLiteral( "footerVisibility" ), static_cast< int >( mFooterVisibility ) );
+  element.setAttribute( QStringLiteral( "headerVisibility" ), static_cast<int>( mHeaderVisibility ) );
+  element.setAttribute( QStringLiteral( "footerVisibility" ), static_cast<int>( mFooterVisibility ) );
   element.setAttribute( QStringLiteral( "field" ), mField );
   element.setAttribute( QStringLiteral( "ascending" ), mSortAscending ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   element.setAttribute( QStringLiteral( "bodyEnabled" ), mBodyEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
@@ -203,8 +202,8 @@ bool QgsReportSectionFieldGroup::writePropertiesToElement( QDomElement &element,
 
 bool QgsReportSectionFieldGroup::readPropertiesFromElement( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  mHeaderVisibility = static_cast< SectionVisibility >( element.attribute( QStringLiteral( "headerVisibility" ) ).toInt() );
-  mFooterVisibility = static_cast< SectionVisibility >( element.attribute( QStringLiteral( "footerVisibility" ) ).toInt() );
+  mHeaderVisibility = static_cast<SectionVisibility>( element.attribute( QStringLiteral( "headerVisibility" ) ).toInt() );
+  mFooterVisibility = static_cast<SectionVisibility>( element.attribute( QStringLiteral( "footerVisibility" ) ).toInt() );
   mField = element.attribute( QStringLiteral( "field" ) );
   mSortAscending = element.attribute( QStringLiteral( "ascending" ) ).toInt();
   mBodyEnabled = element.attribute( QStringLiteral( "bodyEnabled" ) ).toInt();
@@ -219,7 +218,7 @@ bool QgsReportSectionFieldGroup::readPropertiesFromElement( const QDomElement &e
   if ( !bodyElement.isNull() )
   {
     const QDomElement bodyLayoutElem = bodyElement.firstChild().toElement();
-    std::unique_ptr< QgsLayout > body = std::make_unique< QgsLayout >( project() );
+    std::unique_ptr<QgsLayout> body = std::make_unique<QgsLayout>( project() );
     body->readXml( bodyLayoutElem, doc, context );
     mBody = std::move( body );
   }
@@ -293,7 +292,7 @@ void QgsReportSectionFieldGroup::updateChildContexts( const QgsFeature &feature 
   currentFilter.insert( mField, feature.attribute( mFieldIndex ) );
   c.fieldFilters = currentFilter;
 
-  const QList< QgsAbstractReportSection * > sections = childSections();
+  const QList<QgsAbstractReportSection *> sections = childSections();
   for ( QgsAbstractReportSection *section : std::as_const( sections ) )
   {
     section->setContext( c );
@@ -301,4 +300,3 @@ void QgsReportSectionFieldGroup::updateChildContexts( const QgsFeature &feature 
 }
 
 ///@endcond
-

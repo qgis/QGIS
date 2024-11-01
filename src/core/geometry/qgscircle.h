@@ -174,10 +174,10 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \endcode
      */
     static QVector<QgsCircle> from3TangentsMulti( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1,
-        const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2,
-        const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3,
-        double epsilon = 1E-8,
-        const QgsPoint &pos = QgsPoint() ) SIP_HOLDGIL;
+                                                  const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2,
+                                                  const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3,
+                                                  double epsilon = 1E-8,
+                                                  const QgsPoint &pos = QgsPoint() ) SIP_HOLDGIL;
 
     /**
      * Constructs a circle by an extent (aka bounding box / QgsRectangle).
@@ -307,7 +307,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
     void setSemiMinorAxis( double semiMinorAxis ) override SIP_HOLDGIL;
 
     //! Returns the radius of the circle
-    double radius() const SIP_HOLDGIL {return mSemiMajorAxis;}
+    double radius() const SIP_HOLDGIL { return mSemiMajorAxis; }
     //! Sets the radius of the circle
     void setRadius( double radius ) SIP_HOLDGIL
     {
@@ -369,7 +369,8 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsCircle: %1>" ).arg( sipCpp->toString() );
+        QString str
+      = QStringLiteral( "<QgsCircle: %1>" ).arg( sipCpp->toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

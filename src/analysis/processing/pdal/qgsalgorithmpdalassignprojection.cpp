@@ -82,8 +82,7 @@ QStringList QgsPdalAssignProjectionAlgorithm::createArgumentLists( const QVarian
   QStringList args = { QStringLiteral( "translate" ),
                        QStringLiteral( "--input=%1" ).arg( layer->source() ),
                        QStringLiteral( "--output=%1" ).arg( outputFile ),
-                       QStringLiteral( "--assign-crs=%1" ).arg( crs.authid() )
-                     };
+                       QStringLiteral( "--assign-crs=%1" ).arg( crs.authid() ) };
 
   applyThreadsParameter( args, context );
   return args;

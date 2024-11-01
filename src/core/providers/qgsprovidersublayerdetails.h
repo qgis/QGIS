@@ -45,7 +45,6 @@
 class CORE_EXPORT QgsProviderSublayerDetails
 {
   public:
-
     /**
      * Returns the associated data provider key.
      *
@@ -93,21 +92,20 @@ class CORE_EXPORT QgsProviderSublayerDetails
      */
     struct LayerOptions
     {
-
-      /**
+        /**
        * Constructor for LayerOptions with \a transformContext.
        */
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext )
-        : transformContext( transformContext )
-      {}
+        explicit LayerOptions( const QgsCoordinateTransformContext &transformContext )
+          : transformContext( transformContext )
+        {}
 
-      //! Coordinate transform context
-      QgsCoordinateTransformContext transformContext;
+        //! Coordinate transform context
+        QgsCoordinateTransformContext transformContext;
 
-      //! Set to TRUE if the default layer style should be loaded
-      bool loadDefaultStyle = true;
+        //! Set to TRUE if the default layer style should be loaded
+        bool loadDefaultStyle = true;
 
-      /**
+        /**
        * Controls whether the stored styles will be all loaded.
        *
        * If TRUE and the layer's provider supports style stored in the
@@ -119,7 +117,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
        *
        * \since QGIS 3.30
        */
-      bool loadAllStoredStyle = false;
+        bool loadAllStoredStyle = false;
     };
 
     /**
@@ -260,17 +258,22 @@ class CORE_EXPORT QgsProviderSublayerDetails
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsProviderSublayerDetails: %1 - %2>" ).arg( sipCpp->providerKey(), sipCpp->name() );
+        QString str
+      = QStringLiteral( "<QgsProviderSublayerDetails: %1 - %2>" ).arg( sipCpp->providerKey(), sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    /**
+      /**
      * Returns the associated layer number, for providers which order sublayers.
      *
      * \see setLayerNumber()
      */
-    int layerNumber() const { return mLayerNumber; }
+      int
+      layerNumber() const
+    {
+      return mLayerNumber;
+    }
 
     /**
      * Sets the associated layer \a number, for providers which order sublayers.
@@ -307,24 +310,19 @@ class CORE_EXPORT QgsProviderSublayerDetails
     bool operator!=( const QgsProviderSublayerDetails &other ) const;
 
   private:
-
     QString mProviderKey;
     Qgis::LayerType mType = Qgis::LayerType::Vector;
     QString mUri;
     int mLayerNumber = 0;
     QString mName;
     QString mDescription;
-    long long mFeatureCount = static_cast< long >( Qgis::FeatureCountState::UnknownCount );
+    long long mFeatureCount = static_cast<long>( Qgis::FeatureCountState::UnknownCount );
     QString mGeometryColumnName;
     QStringList mPath;
     Qgis::WkbType mWkbType = Qgis::WkbType::Unknown;
     QString mDriverName;
     bool mSkippedContainerScan = false;
     Qgis::SublayerFlags mFlags = Qgis::SublayerFlags();
-
 };
 
 #endif //QGSPROVIDERSUBLAYERDETAILS_H
-
-
-

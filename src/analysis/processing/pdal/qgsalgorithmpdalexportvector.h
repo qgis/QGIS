@@ -30,9 +30,7 @@
  */
 class QgsPdalExportVectorAlgorithm : public QgsPdalAlgorithmBase
 {
-
   public:
-
     QgsPdalExportVectorAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;

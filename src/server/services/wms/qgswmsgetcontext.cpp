@@ -52,7 +52,7 @@ namespace QgsWms
     void appendOwsGeneralAndResourceList( QDomDocument &doc, QDomElement &parentElement,
                                           QgsServerInterface *serverIface, const QgsProject *project,
                                           const QgsWmsRequest &request );
-  }
+  } // namespace
 
   void writeGetContext( QgsServerInterface *serverIface, const QgsProject *project,
                         const QgsWmsRequest &request,
@@ -96,7 +96,7 @@ namespace QgsWms
   {
     QDomDocument doc;
     const QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( QStringLiteral( "xml" ),
-        QStringLiteral( "version=\"1.0\" encoding=\"utf-8\"" ) );
+                                                                                      QStringLiteral( "version=\"1.0\" encoding=\"utf-8\"" ) );
 
     doc.appendChild( xmlDeclaration );
 
@@ -204,11 +204,11 @@ namespace QgsWms
         mapRect.invert();
       }
       QDomElement lowerCornerElem = doc.createElement( QStringLiteral( "ows:LowerCorner" ) );
-      const QDomText lowerCornerText = doc.createTextNode( QString::number( mapRect.xMinimum() ) + " " +  QString::number( mapRect.yMinimum() ) );
+      const QDomText lowerCornerText = doc.createTextNode( QString::number( mapRect.xMinimum() ) + " " + QString::number( mapRect.yMinimum() ) );
       lowerCornerElem.appendChild( lowerCornerText );
       bboxElem.appendChild( lowerCornerElem );
       QDomElement upperCornerElem = doc.createElement( QStringLiteral( "ows:UpperCorner" ) );
-      const QDomText upperCornerText = doc.createTextNode( QString::number( mapRect.xMaximum() ) + " " +  QString::number( mapRect.yMaximum() ) );
+      const QDomText upperCornerText = doc.createTextNode( QString::number( mapRect.xMaximum() ) + " " + QString::number( mapRect.yMaximum() ) );
       upperCornerElem.appendChild( upperCornerText );
       bboxElem.appendChild( upperCornerElem );
       generalElem.appendChild( bboxElem );
@@ -225,7 +225,7 @@ namespace QgsWms
     {
       const QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
 
-      const QList< QgsLayerTreeNode * > layerTreeGroupChildren = layerTreeGroup->children();
+      const QList<QgsLayerTreeNode *> layerTreeGroupChildren = layerTreeGroup->children();
       for ( int i = 0; i < layerTreeGroupChildren.size(); ++i )
       {
         QgsLayerTreeNode *treeNode = layerTreeGroupChildren.at( i );
@@ -452,8 +452,8 @@ namespace QgsWms
           {
             parentLayer.appendChild( layerElem );
           }
-        }// end of treeNode type
-      }// end of for
+        } // end of treeNode type
+      }   // end of for
     }
 
     void appendOwsLayerStyles( QDomDocument &doc, QDomElement &layerElem, QgsMapLayer *currentLayer )
@@ -476,6 +476,6 @@ namespace QgsWms
         layerElem.appendChild( styleListElem );
       }
     }
-  }
+  } // namespace
 
 } // namespace QgsWms

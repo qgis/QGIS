@@ -24,9 +24,9 @@
 #include "qgsabstractdatabaseproviderconnection.h"
 
 QgsRelationshipsItem::QgsRelationshipsItem( QgsDataItem *parent,
-    const QString &path,
-    const QString &connectionUri,
-    const QString &providerKey, const QString &schema, const QString &tableName )
+                                            const QString &path,
+                                            const QString &connectionUri,
+                                            const QString &providerKey, const QString &schema, const QString &tableName )
   : QgsDataItem( Qgis::BrowserItemType::Custom, parent, tr( "Relationships" ), path, providerKey )
   , mConnectionUri( connectionUri )
   , mSchema( schema )
@@ -49,7 +49,7 @@ QVector<QgsDataItem *> QgsRelationshipsItem::createChildren()
       if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RetrieveRelationships ) )
       {
         QString relationError;
-        QList< QgsWeakRelation > relations;
+        QList<QgsWeakRelation> relations;
         try
         {
           relations = conn->relationships( mSchema, mTableName );
@@ -121,4 +121,3 @@ const QgsWeakRelation &QgsRelationshipItem::relation() const
 }
 
 QgsRelationshipItem::~QgsRelationshipItem() = default;
-

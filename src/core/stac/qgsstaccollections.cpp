@@ -15,16 +15,13 @@
 
 #include "qgsstaccollections.h"
 
-QgsStacCollections::QgsStacCollections( const QVector< QgsStacCollection * > collections, const QVector< QgsStacLink > links, int numberMatched )
+QgsStacCollections::QgsStacCollections( const QVector<QgsStacCollection *> collections, const QVector<QgsStacLink> links, int numberMatched )
   : mCollections( collections )
   , mNumberMatched( numberMatched )
 {
   for ( const QgsStacLink &link : links )
   {
-    if ( link.relation() == QLatin1String( "self" ) ||
-         link.relation() == QLatin1String( "root" ) ||
-         link.relation() == QLatin1String( "next" ) ||
-         link.relation() == QLatin1String( "prev" ) )
+    if ( link.relation() == QLatin1String( "self" ) || link.relation() == QLatin1String( "root" ) || link.relation() == QLatin1String( "next" ) || link.relation() == QLatin1String( "prev" ) )
       mUrls.insert( link.relation(), link.href() );
   }
 }
@@ -42,7 +39,7 @@ QVector<QgsStacCollection *> QgsStacCollections::collections() const
 
 QVector<QgsStacCollection *> QgsStacCollections::takeCollections()
 {
-  QVector< QgsStacCollection * > cols = mCollections;
+  QVector<QgsStacCollection *> cols = mCollections;
   mCollections.clear(); // detach
   return cols;
 }

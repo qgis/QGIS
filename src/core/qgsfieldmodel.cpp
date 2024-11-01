@@ -280,7 +280,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
 
   switch ( role )
   {
-    case static_cast< int >( QgsFieldModel::CustomRole::FieldName ):
+    case static_cast<int>( QgsFieldModel::CustomRole::FieldName ):
     {
       if ( isEmpty || exprIdx >= 0 )
       {
@@ -290,7 +290,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       return field.name();
     }
 
-    case static_cast< int >( QgsFieldModel::CustomRole::Expression ):
+    case static_cast<int>( QgsFieldModel::CustomRole::Expression ):
     {
       if ( exprIdx >= 0 )
       {
@@ -307,7 +307,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       }
     }
 
-    case static_cast< int >( QgsFieldModel::CustomRole::FieldIndex ):
+    case static_cast<int>( QgsFieldModel::CustomRole::FieldIndex ):
     {
       if ( isEmpty || exprIdx >= 0 )
       {
@@ -316,12 +316,12 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       return index.row() - fieldOffset;
     }
 
-    case static_cast< int >( QgsFieldModel::CustomRole::IsExpression ):
+    case static_cast<int>( QgsFieldModel::CustomRole::IsExpression ):
     {
       return exprIdx >= 0;
     }
 
-    case static_cast< int >( QgsFieldModel::CustomRole::ExpressionValidity ):
+    case static_cast<int>( QgsFieldModel::CustomRole::ExpressionValidity ):
     {
       if ( exprIdx >= 0 )
       {
@@ -336,31 +336,31 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       return true;
     }
 
-    case static_cast< int >( QgsFieldModel::CustomRole::FieldType ):
+    case static_cast<int>( QgsFieldModel::CustomRole::FieldType ):
     {
       if ( exprIdx < 0 && !isEmpty )
       {
         const QgsField field = mFields.at( index.row() - fieldOffset );
-        return static_cast< int >( field.type() );
+        return static_cast<int>( field.type() );
       }
       return QVariant();
     }
 
-    case static_cast< int >( QgsFieldModel::CustomRole::FieldOrigin ):
+    case static_cast<int>( QgsFieldModel::CustomRole::FieldOrigin ):
     {
       if ( exprIdx < 0 && !isEmpty )
       {
-        return static_cast< int >( mFields.fieldOrigin( index.row() - fieldOffset ) );
+        return static_cast<int>( mFields.fieldOrigin( index.row() - fieldOffset ) );
       }
       return QVariant();
     }
 
-    case static_cast< int >( QgsFieldModel::CustomRole::IsEmpty ):
+    case static_cast<int>( QgsFieldModel::CustomRole::IsEmpty ):
     {
       return isEmpty;
     }
 
-    case static_cast< int >( QgsFieldModel::CustomRole::EditorWidgetType ):
+    case static_cast<int>( QgsFieldModel::CustomRole::EditorWidgetType ):
     {
       if ( exprIdx < 0 && !isEmpty )
       {
@@ -369,7 +369,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       return QVariant();
     }
 
-    case static_cast< int >( QgsFieldModel::CustomRole::JoinedFieldIsEditable ):
+    case static_cast<int>( QgsFieldModel::CustomRole::JoinedFieldIsEditable ):
     {
       if ( exprIdx < 0 && !isEmpty )
       {
@@ -387,7 +387,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       return QVariant();
     }
 
-    case static_cast< int >( QgsFieldModel::CustomRole::FieldIsWidgetEditable ):
+    case static_cast<int>( QgsFieldModel::CustomRole::FieldIsWidgetEditable ):
     {
       return !( mLayer->editFormConfig().readOnly( index.row() - fieldOffset ) );
     }
@@ -486,7 +486,7 @@ QString QgsFieldModel::fieldToolTip( const QgsField &field )
 
   const QString comment = field.comment();
 
-  if ( ! comment.isEmpty() )
+  if ( !comment.isEmpty() )
   {
     toolTip += QStringLiteral( "<br><em>%1</em>" ).arg( comment );
   }
@@ -504,8 +504,8 @@ QString QgsFieldModel::fieldToolTipExtended( const QgsField &field, const QgsVec
     return QString();
 
   const QString expressionString = fields.fieldOrigin( fieldIdx ) == Qgis::FieldOrigin::Expression
-                                   ? layer->expressionField( fieldIdx )
-                                   : QString();
+                                     ? layer->expressionField( fieldIdx )
+                                     : QString();
 
   if ( !expressionString.isEmpty() )
   {

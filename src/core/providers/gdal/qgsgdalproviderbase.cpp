@@ -18,7 +18,7 @@
 #include "qgsgdalproviderbase.h"
 ///@cond PRIVATE
 
-#define CPL_SUPRESS_CPLUSPLUS  //#spellok
+#define CPL_SUPRESS_CPLUSPLUS //#spellok
 #include <cpl_conv.h>
 #include <cpl_string.h>
 
@@ -34,7 +34,6 @@
 
 QgsGdalProviderBase::QgsGdalProviderBase()
 {
-
   // first get the GDAL driver manager
   QgsGdalProviderBase::registerGdalDrivers();
 }
@@ -44,7 +43,7 @@ QgsGdalProviderBase::QgsGdalProviderBase()
  * \param list a pointer the object that will hold the color table
  * \return TRUE of a color table was able to be read, FALSE otherwise
  */
-QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDatasetH gdalDataset, int bandNumber )const
+QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDatasetH gdalDataset, int bandNumber ) const
 {
   QList<QgsColorRampShader::ColorRampItem> ct;
 
@@ -56,7 +55,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   }
 
   GDALRasterBandH myGdalBand = GDALGetRasterBand( gdalDataset, bandNumber );
-  if ( ! myGdalBand )
+  if ( !myGdalBand )
   {
     QgsDebugError( QStringLiteral( "Could not get raster band %1" ).arg( bandNumber ) );
     return ct;
@@ -83,9 +82,9 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
 
     const int myEntryCount = GDALGetColorEntryCount( myGdalColorTable );
     const GDALColorInterp myColorInterpretation = GDALGetRasterColorInterpretation( myGdalBand );
-    QgsDebugMsgLevel( "Color Interpretation: " + QString::number( static_cast< int >( myColorInterpretation ) ), 2 );
-    const GDALPaletteInterp myPaletteInterpretation  = GDALGetPaletteInterpretation( myGdalColorTable );
-    QgsDebugMsgLevel( "Palette Interpretation: " + QString::number( static_cast< int >( myPaletteInterpretation ) ), 2 );
+    QgsDebugMsgLevel( "Color Interpretation: " + QString::number( static_cast<int>( myColorInterpretation ) ), 2 );
+    const GDALPaletteInterp myPaletteInterpretation = GDALGetPaletteInterpretation( myGdalColorTable );
+    QgsDebugMsgLevel( "Palette Interpretation: " + QString::number( static_cast<int>( myPaletteInterpretation ) ), 2 );
 
     const GDALColorEntry *myColorEntry = nullptr;
     for ( int myIterator = 0; myIterator < myEntryCount; myIterator++ )
@@ -107,7 +106,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
         if ( myColorInterpretation == GCI_GrayIndex )
         {
           QgsColorRampShader::ColorRampItem myColorRampItem;
-          myColorRampItem.value = static_cast< double >( myIterator );
+          myColorRampItem.value = static_cast<double>( myIterator );
           myColorRampItem.label = label;
           myColorRampItem.color = QColor::fromRgb( myColorEntry->c1, myColorEntry->c1, myColorEntry->c1, myColorEntry->c4 );
           ct.append( myColorRampItem );
@@ -115,18 +114,18 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
         else if ( myColorInterpretation == GCI_PaletteIndex )
         {
           QgsColorRampShader::ColorRampItem myColorRampItem;
-          myColorRampItem.value = static_cast< double >( myIterator );
+          myColorRampItem.value = static_cast<double>( myIterator );
           myColorRampItem.label = label;
           //Branch on palette interpretation
-          if ( myPaletteInterpretation  == GPI_RGB )
+          if ( myPaletteInterpretation == GPI_RGB )
           {
             myColorRampItem.color = QColor::fromRgb( myColorEntry->c1, myColorEntry->c2, myColorEntry->c3, myColorEntry->c4 );
           }
-          else if ( myPaletteInterpretation  == GPI_CMYK )
+          else if ( myPaletteInterpretation == GPI_CMYK )
           {
             myColorRampItem.color = QColor::fromCmyk( myColorEntry->c1, myColorEntry->c2, myColorEntry->c3, myColorEntry->c4 );
           }
-          else if ( myPaletteInterpretation  == GPI_HLS )
+          else if ( myPaletteInterpretation == GPI_HLS )
           {
             myColorRampItem.color = QColor::fromHsv( myColorEntry->c1, myColorEntry->c3, myColorEntry->c2, myColorEntry->c4 );
           }
@@ -158,7 +157,7 @@ Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType gdalDat
 {
   switch ( gdalDataType )
   {
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 7, 0 )
     case GDT_Int8:
       return Qgis::DataType::Int8;
 #endif
@@ -184,7 +183,7 @@ Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType gdalDat
       return Qgis::DataType::CFloat32;
     case GDT_CFloat64:
       return Qgis::DataType::CFloat64;
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,5,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 5, 0 )
     case GDT_Int64:
     case GDT_UInt64:
       // Lossy conversion
@@ -199,48 +198,49 @@ Qgis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType gdalDat
   return Qgis::DataType::UnknownDataType;
 }
 
-#define MAP_GCI_TO_QGIS(x) \
-  case GCI_##x: return Qgis::RasterColorInterpretation::x;
+#define MAP_GCI_TO_QGIS( x ) \
+  case GCI_##x:              \
+    return Qgis::RasterColorInterpretation::x;
 
 Qgis::RasterColorInterpretation QgsGdalProviderBase::colorInterpretationFromGdal( const GDALColorInterp gdalColorInterpretation ) const
 {
   switch ( gdalColorInterpretation )
   {
-      MAP_GCI_TO_QGIS( Undefined )
-      MAP_GCI_TO_QGIS( GrayIndex )
-      MAP_GCI_TO_QGIS( PaletteIndex )
-      MAP_GCI_TO_QGIS( RedBand )
-      MAP_GCI_TO_QGIS( GreenBand )
-      MAP_GCI_TO_QGIS( BlueBand )
-      MAP_GCI_TO_QGIS( AlphaBand )
-      MAP_GCI_TO_QGIS( HueBand )
-      MAP_GCI_TO_QGIS( SaturationBand )
-      MAP_GCI_TO_QGIS( LightnessBand )
-      MAP_GCI_TO_QGIS( CyanBand )
-      MAP_GCI_TO_QGIS( MagentaBand )
-      MAP_GCI_TO_QGIS( YellowBand )
-      MAP_GCI_TO_QGIS( BlackBand )
-      MAP_GCI_TO_QGIS( YCbCr_YBand )
-      MAP_GCI_TO_QGIS( YCbCr_CbBand )
-      MAP_GCI_TO_QGIS( YCbCr_CrBand )
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,10,0)
-      MAP_GCI_TO_QGIS( PanBand )
-      MAP_GCI_TO_QGIS( CoastalBand )
-      MAP_GCI_TO_QGIS( RedEdgeBand )
-      MAP_GCI_TO_QGIS( NIRBand )
-      MAP_GCI_TO_QGIS( SWIRBand )
-      MAP_GCI_TO_QGIS( MWIRBand )
-      MAP_GCI_TO_QGIS( LWIRBand )
-      MAP_GCI_TO_QGIS( TIRBand )
-      MAP_GCI_TO_QGIS( OtherIRBand )
-      MAP_GCI_TO_QGIS( SAR_Ka_Band )
-      MAP_GCI_TO_QGIS( SAR_K_Band )
-      MAP_GCI_TO_QGIS( SAR_Ku_Band )
-      MAP_GCI_TO_QGIS( SAR_X_Band )
-      MAP_GCI_TO_QGIS( SAR_C_Band )
-      MAP_GCI_TO_QGIS( SAR_S_Band )
-      MAP_GCI_TO_QGIS( SAR_L_Band )
-      MAP_GCI_TO_QGIS( SAR_P_Band )
+    MAP_GCI_TO_QGIS( Undefined )
+    MAP_GCI_TO_QGIS( GrayIndex )
+    MAP_GCI_TO_QGIS( PaletteIndex )
+    MAP_GCI_TO_QGIS( RedBand )
+    MAP_GCI_TO_QGIS( GreenBand )
+    MAP_GCI_TO_QGIS( BlueBand )
+    MAP_GCI_TO_QGIS( AlphaBand )
+    MAP_GCI_TO_QGIS( HueBand )
+    MAP_GCI_TO_QGIS( SaturationBand )
+    MAP_GCI_TO_QGIS( LightnessBand )
+    MAP_GCI_TO_QGIS( CyanBand )
+    MAP_GCI_TO_QGIS( MagentaBand )
+    MAP_GCI_TO_QGIS( YellowBand )
+    MAP_GCI_TO_QGIS( BlackBand )
+    MAP_GCI_TO_QGIS( YCbCr_YBand )
+    MAP_GCI_TO_QGIS( YCbCr_CbBand )
+    MAP_GCI_TO_QGIS( YCbCr_CrBand )
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 10, 0 )
+    MAP_GCI_TO_QGIS( PanBand )
+    MAP_GCI_TO_QGIS( CoastalBand )
+    MAP_GCI_TO_QGIS( RedEdgeBand )
+    MAP_GCI_TO_QGIS( NIRBand )
+    MAP_GCI_TO_QGIS( SWIRBand )
+    MAP_GCI_TO_QGIS( MWIRBand )
+    MAP_GCI_TO_QGIS( LWIRBand )
+    MAP_GCI_TO_QGIS( TIRBand )
+    MAP_GCI_TO_QGIS( OtherIRBand )
+    MAP_GCI_TO_QGIS( SAR_Ka_Band )
+    MAP_GCI_TO_QGIS( SAR_K_Band )
+    MAP_GCI_TO_QGIS( SAR_Ku_Band )
+    MAP_GCI_TO_QGIS( SAR_X_Band )
+    MAP_GCI_TO_QGIS( SAR_C_Band )
+    MAP_GCI_TO_QGIS( SAR_S_Band )
+    MAP_GCI_TO_QGIS( SAR_L_Band )
+    MAP_GCI_TO_QGIS( SAR_P_Band )
     case GCI_IR_Reserved_1:
     case GCI_IR_Reserved_2:
     case GCI_IR_Reserved_3:
@@ -260,7 +260,7 @@ void QgsGdalProviderBase::registerGdalDrivers()
   std::call_once( initialized, QgsApplication::registerGdalDriversFromSettings );
 }
 
-QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
+QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset ) const
 {
   double myGeoTransform[6];
 
@@ -278,12 +278,8 @@ QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
 
   // Use the affine transform to get geo coordinates for
   // the corners of the raster
-  const double myXMax = myGeoTransform[0] +
-                        GDALGetRasterXSize( gdalDataset ) * myGeoTransform[1] +
-                        GDALGetRasterYSize( gdalDataset ) * myGeoTransform[2];
-  const double myYMin = myGeoTransform[3] +
-                        GDALGetRasterXSize( gdalDataset ) * myGeoTransform[4] +
-                        GDALGetRasterYSize( gdalDataset ) * myGeoTransform[5];
+  const double myXMax = myGeoTransform[0] + GDALGetRasterXSize( gdalDataset ) * myGeoTransform[1] + GDALGetRasterYSize( gdalDataset ) * myGeoTransform[2];
+  const double myYMin = myGeoTransform[3] + GDALGetRasterXSize( gdalDataset ) * myGeoTransform[4] + GDALGetRasterYSize( gdalDataset ) * myGeoTransform[5];
 
   const QgsRectangle extent( myGeoTransform[0], myYMin, myXMax, myGeoTransform[3] );
   return extent;
@@ -333,7 +329,7 @@ GDALDatasetH QgsGdalProviderBase::gdalOpen( const QString &uri, unsigned int nOp
       // in the case that a direct path to a vsi supported archive was specified BUT
       // no file suffix was given, see if there's only one valid file we could read anyway and
       // passthrough directly to this
-      char **papszSiblingFiles = VSIReadDirRecursive( gdalUri.toUtf8().constData( ) );
+      char **papszSiblingFiles = VSIReadDirRecursive( gdalUri.toUtf8().constData() );
       if ( papszSiblingFiles )
       {
         bool foundMultipleCandidates = false;
@@ -389,7 +385,7 @@ CPLErr QgsGdalProviderBase::gdalRasterIO( GDALRasterBandH hBand, GDALRWFlag eRWF
 {
   GDALRasterIOExtraArg extra;
   INIT_RASTERIO_EXTRA_ARG( extra );
-  if ( false && feedback )  // disabled!
+  if ( false && feedback ) // disabled!
   {
     // Currently the cancellation is disabled... When RasterIO call is canceled,
     // GDAL returns CE_Failure with error code = 0 (CPLE_None), however one would
@@ -457,7 +453,7 @@ QVariantMap QgsGdalProviderBase::decodeGdalUri( const QString &uri )
         layerName = parts[parts.length() - 1];
         parts.removeLast();
       }
-      path  = parts.join( ':' );
+      path = parts.join( ':' );
     }
   }
 

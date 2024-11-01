@@ -32,7 +32,6 @@ class QgsSLLayerItem : public QgsLayerItem
 };
 
 
-
 class QgsSLConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
@@ -76,7 +75,7 @@ namespace SpatiaLiteUtils
 {
   bool createDb( const QString &dbPath, QString &errCause );
   bool deleteLayer( const QString &dbPath, const QString &tableName, QString &errCause );
-}
+} // namespace SpatiaLiteUtils
 
 //! Provider for SpatiaLite root data item
 class QgsSpatiaLiteDataItemProvider : public QgsDataItemProvider

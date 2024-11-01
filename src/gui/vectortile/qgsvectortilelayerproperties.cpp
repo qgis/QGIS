@@ -201,8 +201,7 @@ void QgsVectorTileLayerProperties::syncToLayer()
         mSourceGroupBox->setTitle( mSourceWidget->groupTitle() );
       mSourceGroupBox->show();
 
-      connect( mSourceWidget, &QgsProviderSourceWidget::validChanged, this, [ = ]( bool isValid )
-      {
+      connect( mSourceWidget, &QgsProviderSourceWidget::validChanged, this, [=]( bool isValid ) {
         buttonBox->button( QDialogButtonBox::Apply )->setEnabled( isValid );
         buttonBox->button( QDialogButtonBox::Ok )->setEnabled( isValid );
       } );
@@ -242,9 +241,7 @@ void QgsVectorTileLayerProperties::syncToLayer()
   mLayerDataUrlLineEdit->setText( mLayer->serverProperties()->dataUrl() );
   mLayerDataUrlFormatComboBox->setCurrentIndex(
     mLayerDataUrlFormatComboBox->findText(
-      mLayer->serverProperties()->dataUrlFormat()
-    )
-  );
+      mLayer->serverProperties()->dataUrlFormat() ) );
   //layer attribution
   mLayerAttributionLineEdit->setText( mLayer->serverProperties()->attribution() );
   mLayerAttributionUrlLineEdit->setText( mLayer->serverProperties()->attributionUrl() );
@@ -253,9 +250,7 @@ void QgsVectorTileLayerProperties::syncToLayer()
   mLayerLegendUrlLineEdit->setText( mLayer->legendUrl() );
   mLayerLegendUrlFormatComboBox->setCurrentIndex(
     mLayerLegendUrlFormatComboBox->findText(
-      mLayer->legendUrlFormat()
-    )
-  );
+      mLayer->legendUrlFormat() ) );
 }
 
 void QgsVectorTileLayerProperties::saveDefaultStyle()
@@ -265,7 +260,7 @@ void QgsVectorTileLayerProperties::saveDefaultStyle()
 
 void QgsVectorTileLayerProperties::loadStyle()
 {
-  const QgsSettings settings;  // where we keep last used filter in persistent state
+  const QgsSettings settings; // where we keep last used filter in persistent state
 
   QgsMapLayerLoadStyleDialog dlg( mLayer );
 
@@ -302,7 +297,7 @@ void QgsVectorTileLayerProperties::loadStyle()
       else
       {
         QTextStream in( &file );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
         in.setCodec( "UTF-8" );
 #endif
         const QString content = in.readAll();
@@ -379,4 +374,3 @@ void QgsVectorTileLayerProperties::crsChanged( const QgsCoordinateReferenceSyste
   mLayer->setCrs( crs );
   mMetadataWidget->crsChanged();
 }
-

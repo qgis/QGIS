@@ -56,10 +56,9 @@ class QgsPointCloudSubIndex;
  *
  * \since QGIS 3.18
  */
-class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
+class CORE_EXPORT QgsPointCloudLayerRenderer : public QgsMapLayerRenderer
 {
   public:
-
     //! Ctor
     explicit QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context );
     ~QgsPointCloudLayerRenderer();
@@ -82,8 +81,8 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     QgsPointCloudLayer *mLayer = nullptr;
     QString mLayerName;
 
-    std::unique_ptr< QgsPointCloudRenderer > mRenderer;
-    std::unique_ptr< QgsPointCloudExtentRenderer > mSubIndexExtentRenderer;
+    std::unique_ptr<QgsPointCloudRenderer> mRenderer;
+    std::unique_ptr<QgsPointCloudExtentRenderer> mSubIndexExtentRenderer;
 
     QgsVector3D mScale;
     QgsVector3D mOffset;
@@ -93,8 +92,8 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     QgsPointCloudAttributeCollection mLayerAttributes;
     QgsPointCloudAttributeCollection mAttributes;
     QgsGeometry mCloudExtent;
-    QList< QgsMapClippingRegion > mClippingRegions;
-    const QVector< QgsPointCloudSubIndex > mSubIndexes;
+    QList<QgsMapClippingRegion> mClippingRegions;
+    const QVector<QgsPointCloudSubIndex> mSubIndexes;
 
     int mRenderTimeHint = 0;
     bool mBlockRenderUpdates = false;

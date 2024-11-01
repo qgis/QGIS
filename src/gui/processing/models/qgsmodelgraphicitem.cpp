@@ -38,7 +38,7 @@ QgsModelDesignerFlatButtonGraphicItem::QgsModelDesignerFlatButtonGraphicItem( QG
 
 void QgsModelDesignerFlatButtonGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
 {
-  if ( QgsModelGraphicsScene *modelScene = qobject_cast< QgsModelGraphicsScene * >( scene() ) )
+  if ( QgsModelGraphicsScene *modelScene = qobject_cast<QgsModelGraphicsScene *>( scene() ) )
   {
     if ( modelScene->flags() & QgsModelGraphicsScene::FlagHideControls )
       return;
@@ -125,7 +125,7 @@ void QgsModelDesignerFlatButtonGraphicItem::setPosition( const QPointF &position
 
 QgsModelGraphicsView *QgsModelDesignerFlatButtonGraphicItem::view()
 {
-  return qobject_cast< QgsModelGraphicsView * >( scene()->views().first() );
+  return qobject_cast<QgsModelGraphicsView *>( scene()->views().first() );
 }
 
 void QgsModelDesignerFlatButtonGraphicItem::setPicture( const QPicture &picture )
@@ -172,4 +172,3 @@ void QgsModelDesignerFoldButtonGraphicItem::modelPressEvent( QgsModelViewMouseEv
 }
 
 ///@endcond
-

@@ -54,7 +54,6 @@ class CORE_EXPORT QgsProcessingUtils
     Q_GADGET
 
   public:
-
     /**
      * Returns a list of raster layers from a \a project which are compatible with the processing
      * framework.
@@ -70,7 +69,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatibleTiledSceneLayers()
      * \see compatibleLayers()
      */
-    static QList< QgsRasterLayer * > compatibleRasterLayers( QgsProject *project, bool sort = true );
+    static QList<QgsRasterLayer *> compatibleRasterLayers( QgsProject *project, bool sort = true );
 
     /**
      * Returns a list of vector layers from a \a project which are compatible with the processing
@@ -92,9 +91,9 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatibleTiledSceneLayers()
      * \see compatibleLayers()
      */
-    static QList< QgsVectorLayer * > compatibleVectorLayers( QgsProject *project,
-        const QList< int > &sourceTypes = QList< int >(),
-        bool sort = true );
+    static QList<QgsVectorLayer *> compatibleVectorLayers( QgsProject *project,
+                                                           const QList<int> &sourceTypes = QList<int>(),
+                                                           bool sort = true );
 
     /**
      * Returns a list of mesh layers from a \a project which are compatible with the processing
@@ -225,7 +224,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatibleRasterLayers()
      * \see compatibleVectorLayers()
      */
-    static QList< QgsMapLayer * > compatibleLayers( QgsProject *project, bool sort = true );
+    static QList<QgsMapLayer *> compatibleLayers( QgsProject *project, bool sort = true );
 
     /**
      * Encodes a provider key and layer \a uri to a single string, for use with
@@ -255,13 +254,13 @@ class CORE_EXPORT QgsProcessingUtils
     enum class LayerHint SIP_MONKEYPATCH_SCOPEENUM : int
     {
       UnknownType, //!< Unknown layer type
-      Vector, //!< Vector layer type
-      Raster, //!< Raster layer type
-      Mesh, //!< Mesh layer type, since QGIS 3.6
-      PointCloud, //!< Point cloud layer type, since QGIS 3.22
-      Annotation, //!< Annotation layer type, since QGIS 3.22
-      VectorTile, //!< Vector tile layer type, since QGIS 3.32
-      TiledScene, //!< Tiled scene layer type, since QGIS 3.34
+      Vector,      //!< Vector layer type
+      Raster,      //!< Raster layer type
+      Mesh,        //!< Mesh layer type, since QGIS 3.6
+      PointCloud,  //!< Point cloud layer type, since QGIS 3.22
+      Annotation,  //!< Annotation layer type, since QGIS 3.22
+      VectorTile,  //!< Vector tile layer type, since QGIS 3.32
+      TiledScene,  //!< Tiled scene layer type, since QGIS 3.34
     };
     Q_ENUM( LayerHint )
 
@@ -351,15 +350,15 @@ class CORE_EXPORT QgsProcessingUtils
      */
 #ifndef SIP_RUN
     static QgsFeatureSink *createFeatureSink( QString &destination,
-        QgsProcessingContext &context,
-        const QgsFields &fields,
-        Qgis::WkbType geometryType,
-        const QgsCoordinateReferenceSystem &crs,
-        const QVariantMap &createOptions = QVariantMap(),
-        const QStringList &datasourceOptions = QStringList(),
-        const QStringList &layerOptions = QStringList(),
-        QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
-        QgsRemappingSinkDefinition *remappingDefinition = nullptr ) SIP_FACTORY;
+                                              QgsProcessingContext &context,
+                                              const QgsFields &fields,
+                                              Qgis::WkbType geometryType,
+                                              const QgsCoordinateReferenceSystem &crs,
+                                              const QVariantMap &createOptions = QVariantMap(),
+                                              const QStringList &datasourceOptions = QStringList(),
+                                              const QStringList &layerOptions = QStringList(),
+                                              QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(),
+                                              QgsRemappingSinkDefinition *remappingDefinition = nullptr ) SIP_FACTORY;
 #endif
 
     /**
@@ -450,14 +449,14 @@ class CORE_EXPORT QgsProcessingUtils
      * \see convertToCompatibleFormatAndLayerName()
      */
     static QString convertToCompatibleFormat( const QgsVectorLayer *layer,
-        bool selectedFeaturesOnly,
-        const QString &baseName,
-        const QStringList &compatibleFormats,
-        const QString &preferredFormat,
-        QgsProcessingContext &context,
-        QgsProcessingFeedback *feedback,
-        long long featureLimit = -1,
-        const QString &filterExpression = QString() );
+                                              bool selectedFeaturesOnly,
+                                              const QString &baseName,
+                                              const QStringList &compatibleFormats,
+                                              const QString &preferredFormat,
+                                              QgsProcessingContext &context,
+                                              QgsProcessingFeedback *feedback,
+                                              long long featureLimit = -1,
+                                              const QString &filterExpression = QString() );
 
     /**
      * Converts a source vector \a layer to a file path and layer name of a vector layer of compatible format.
@@ -494,15 +493,15 @@ class CORE_EXPORT QgsProcessingUtils
      * \since QGIS 3.10
      */
     static QString convertToCompatibleFormatAndLayerName( const QgsVectorLayer *layer,
-        bool selectedFeaturesOnly,
-        const QString &baseName,
-        const QStringList &compatibleFormats,
-        const QString &preferredFormat,
-        QgsProcessingContext &context,
-        QgsProcessingFeedback *feedback,
-        QString &layerName SIP_OUT,
-        long long featureLimit = -1,
-        const QString &filterExpression = QString() );
+                                                          bool selectedFeaturesOnly,
+                                                          const QString &baseName,
+                                                          const QStringList &compatibleFormats,
+                                                          const QString &preferredFormat,
+                                                          QgsProcessingContext &context,
+                                                          QgsProcessingFeedback *feedback,
+                                                          QString &layerName SIP_OUT,
+                                                          long long featureLimit = -1,
+                                                          const QString &filterExpression = QString() );
 
     /**
      * Combines two field lists, avoiding duplicate field names (in a case-insensitive manner).
@@ -619,7 +618,7 @@ class CORE_EXPORT QgsProcessingUtils
     static bool canUseLayer( const QgsAnnotationLayer *layer );
     static bool canUseLayer( const QgsTiledSceneLayer *layer );
     static bool canUseLayer( const QgsVectorLayer *layer,
-                             const QList< int > &sourceTypes = QList< int >() );
+                             const QList<int> &sourceTypes = QList<int>() );
 
     /**
      * Returns a list of map layers with the given layer type from a \a project which are compatible
@@ -633,7 +632,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatiblePluginLayers()
      * \since QGIS 3.22
      */
-    template< typename T> static QList< T * > compatibleMapLayers( QgsProject *project, bool sort = true );
+    template<typename T> static QList<T *> compatibleMapLayers( QgsProject *project, bool sort = true );
 
     /**
      * Interprets a \a string as a map layer from a store.
@@ -667,13 +666,12 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \deprecated QGIS 3.40. Use mapLayerFromString() that takes QgsCoordinateTransformContext as an argument instead.
      */
-    Q_DECL_DEPRECATED static QgsMapLayer *loadMapLayerFromString( const QString &string, LayerHint typeHint = LayerHint::UnknownType ) SIP_DEPRECATED ;
+    Q_DECL_DEPRECATED static QgsMapLayer *loadMapLayerFromString( const QString &string, LayerHint typeHint = LayerHint::UnknownType ) SIP_DEPRECATED;
 
     static void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter, QString &extension );
 
     friend class TestQgsProcessing;
     friend class QgsProcessingProvider;
-
 };
 
 /**
@@ -685,7 +683,6 @@ class CORE_EXPORT QgsProcessingUtils
 class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
 {
   public:
-
     /**
      * Constructor for QgsProcessingFeatureSource, accepting an original feature source \a originalSource
      * and processing \a context.
@@ -747,7 +744,6 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     Qgis::InvalidGeometryCheck invalidGeometryCheck() const;
 
   private:
-
     QgsFeatureSource *mSource = nullptr;
     bool mOwnsSource = false;
     QgsCoordinateReferenceSystem mSourceCrs;
@@ -758,15 +754,14 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     Qgis::SpatialIndexPresence mSourceSpatialIndexPresence = Qgis::SpatialIndexPresence::Unknown;
 
     Qgis::InvalidGeometryCheck mInvalidGeometryCheck = Qgis::InvalidGeometryCheck::NoCheck;
-    std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
-    std::function< void( const QgsFeature & ) > mTransformErrorCallback;
+    std::function<void( const QgsFeature & )> mInvalidGeometryCallback;
+    std::function<void( const QgsFeature & )> mTransformErrorCallback;
 
-    std::function< void( const QgsFeature & ) > mInvalidGeometryCallbackSkip;
-    std::function< void( const QgsFeature & ) > mInvalidGeometryCallbackAbort;
+    std::function<void( const QgsFeature & )> mInvalidGeometryCallbackSkip;
+    std::function<void( const QgsFeature & )> mInvalidGeometryCallbackAbort;
 
     long long mFeatureLimit = -1;
     QString mFilterExpression;
-
 };
 
 #ifndef SIP_RUN
@@ -780,8 +775,6 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
 class CORE_EXPORT QgsProcessingFeatureSink : public QgsProxyFeatureSink
 {
   public:
-
-
     /**
      * Constructor for QgsProcessingFeatureSink, accepting an original feature sink \a originalSink
      * and processing \a context. Any added features are added to the \a originalSink, with feature
@@ -802,14 +795,10 @@ class CORE_EXPORT QgsProcessingFeatureSink : public QgsProxyFeatureSink
     bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
   private:
-
     QgsProcessingContext &mContext;
     QString mSinkName;
     bool mOwnsSink = false;
-
 };
 #endif
 
 #endif // QGSPROCESSINGUTILS_H
-
-

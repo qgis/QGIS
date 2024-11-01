@@ -35,7 +35,7 @@
 
 QgsPointCloudLayerProfileResults::QgsPointCloudLayerProfileResults()
 {
-  mPointIndex = GEOSSTRtree_create_r( QgsGeosContext::get(), ( size_t )10 );
+  mPointIndex = GEOSSTRtree_create_r( QgsGeosContext::get(), ( size_t ) 10 );
 }
 
 QgsPointCloudLayerProfileResults::~QgsPointCloudLayerProfileResults()
@@ -70,7 +70,7 @@ QString QgsPointCloudLayerProfileResults::type() const
 QMap<double, double> QgsPointCloudLayerProfileResults::distanceToHeightMap() const
 {
   // TODO -- cache?
-  QMap< double, double > res;
+  QMap<double, double> res;
   for ( const PointResult &point : results )
   {
     res.insert( point.distanceAlongCurve, point.z );
@@ -93,7 +93,7 @@ QgsPointSequence QgsPointCloudLayerProfileResults::sampledPoints() const
 QVector<QgsGeometry> QgsPointCloudLayerProfileResults::asGeometries() const
 {
   // TODO -- cache?
-  QVector< QgsGeometry > res;
+  QVector<QgsGeometry> res;
   res.reserve( results.size() );
   for ( const PointResult &point : results )
   {
@@ -104,8 +104,8 @@ QVector<QgsGeometry> QgsPointCloudLayerProfileResults::asGeometries() const
 
 QVector<QgsAbstractProfileResults::Feature> QgsPointCloudLayerProfileResults::asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback ) const
 {
-  QVector<  QgsAbstractProfileResults::Feature > res;
-  res.reserve( static_cast< int >( results.size() ) );
+  QVector<QgsAbstractProfileResults::Feature> res;
+  res.reserve( static_cast<int>( results.size() ) );
   switch ( type )
   {
     case Qgis::ProfileExportType::Features3D:
@@ -116,7 +116,7 @@ QVector<QgsAbstractProfileResults::Feature> QgsPointCloudLayerProfileResults::as
           break;
         QgsAbstractProfileResults::Feature f;
         f.layerIdentifier = mLayerId;
-        f.geometry = QgsGeometry( std::make_unique< QgsPoint >( point.x, point.y, point.z ) );
+        f.geometry = QgsGeometry( std::make_unique<QgsPoint>( point.x, point.y, point.z ) );
         res.append( f );
       }
       break;
@@ -130,7 +130,7 @@ QVector<QgsAbstractProfileResults::Feature> QgsPointCloudLayerProfileResults::as
           break;
         QgsAbstractProfileResults::Feature f;
         f.layerIdentifier = mLayerId;
-        f.geometry = QgsGeometry( std::make_unique< QgsPoint >( point.distanceAlongCurve, point.z ) );
+        f.geometry = QgsGeometry( std::make_unique<QgsPoint>( point.distanceAlongCurve, point.z ) );
         res.append( f );
       }
       break;
@@ -145,12 +145,10 @@ QVector<QgsAbstractProfileResults::Feature> QgsPointCloudLayerProfileResults::as
 
         QgsAbstractProfileResults::Feature f;
         f.layerIdentifier = mLayerId;
-        f.attributes =
-        {
-          { QStringLiteral( "distance" ),  point.distanceAlongCurve },
-          { QStringLiteral( "elevation" ),  point.z }
-        };
-        f.geometry = QgsGeometry( std::make_unique< QgsPoint >( point.x, point.y, point.z ) );
+        f.attributes = {
+          { QStringLiteral( "distance" ), point.distanceAlongCurve },
+          { QStringLiteral( "elevation" ), point.z } };
+        f.geometry = QgsGeometry( std::make_unique<QgsPoint>( point.x, point.y, point.z ) );
         res << f;
       }
       break;
@@ -211,7 +209,8 @@ void QgsPointCloudLayerProfileResults::renderResults( QgsProfileRenderContext &c
       case Qgis::PointCloudSymbol::Square:
         painter->fillRect( QRectF( p.x() - penWidth * 0.5,
                                    p.y() - penWidth * 0.5,
-                                   penWidth, penWidth ), color );
+                                   penWidth, penWidth ),
+                           color );
         break;
 
       case Qgis::PointCloudSymbol::Circle:
@@ -227,7 +226,7 @@ void QgsPointCloudLayerProfileResults::renderResults( QgsProfileRenderContext &c
 
 struct _GEOSQueryCallbackData
 {
-  QList< const QgsPointCloudLayerProfileResults::PointResult * > *list;
+    QList<const QgsPointCloudLayerProfileResults::PointResult *> *list;
 };
 void _GEOSQueryCallback( void *item, void *userdata )
 {
@@ -257,7 +256,7 @@ QgsProfileSnapResult QgsPointCloudLayerProfileResults::snapPoint( const QgsProfi
   if ( items.empty() )
     return result;
 
-  double bestMatchDistance = std::numeric_limits< double >::max();
+  double bestMatchDistance = std::numeric_limits<double>::max();
   const PointResult *bestMatch = nullptr;
   for ( const PointResult *candidate : std::as_const( items ) )
   {
@@ -287,9 +286,9 @@ QVector<QgsProfileIdentifyResults> QgsPointCloudLayerProfileResults::identify( c
   if ( !mLayer )
     return {};
 
-  std::unique_ptr< QgsCurve > substring( mProfileCurve->curveSubstring( distanceRange.lower(), distanceRange.upper() ) );
+  std::unique_ptr<QgsCurve> substring( mProfileCurve->curveSubstring( distanceRange.lower(), distanceRange.upper() ) );
   QgsGeos substringGeos( substring.get() );
-  std::unique_ptr< QgsAbstractGeometry > searchGeometry( substringGeos.buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
+  std::unique_ptr<QgsAbstractGeometry> searchGeometry( substringGeos.buffer( mTolerance, 8, Qgis::EndCapStyle::Flat, Qgis::JoinStyle::Round, 2 ) );
   if ( !searchGeometry )
     return {};
 
@@ -311,18 +310,18 @@ QVector<QgsProfileIdentifyResults> QgsPointCloudLayerProfileResults::identify( c
   if ( pointAttributes.empty() )
     return {};
 
-  return { QgsProfileIdentifyResults( mLayer, pointAttributes )};
+  return { QgsProfileIdentifyResults( mLayer, pointAttributes ) };
 }
 
 void QgsPointCloudLayerProfileResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator )
 {
-  const QgsPointCloudLayerProfileGenerator *pcGenerator = qgis::down_cast< const QgsPointCloudLayerProfileGenerator *>( generator );
+  const QgsPointCloudLayerProfileGenerator *pcGenerator = qgis::down_cast<const QgsPointCloudLayerProfileGenerator *>( generator );
   tolerance = pcGenerator->mTolerance;
   pointSize = pcGenerator->mPointSize;
   pointSizeUnit = pcGenerator->mPointSizeUnit;
   pointSymbol = pcGenerator->mPointSymbol;
   pointColor = pcGenerator->mPointColor;
-  respectLayerColors = static_cast< bool >( pcGenerator->mRenderer );
+  respectLayerColors = static_cast<bool>( pcGenerator->mRenderer );
   opacityByDistanceEffect = pcGenerator->mOpacityByDistanceEffect;
 
   mLayer = pcGenerator->mLayer;
@@ -342,16 +341,16 @@ void QgsPointCloudLayerProfileResults::copyPropertiesFromGenerator( const QgsAbs
 QgsPointCloudLayerProfileGenerator::QgsPointCloudLayerProfileGenerator( QgsPointCloudLayer *layer, const QgsProfileRequest &request )
   : mLayer( layer )
   , mLayerAttributes( layer->attributes() )
-  , mRenderer( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->respectLayerColors() && mLayer->renderer() ? mLayer->renderer()->clone() : nullptr )
-  , mMaximumScreenError( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->maximumScreenError() )
-  , mMaximumScreenErrorUnit( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->maximumScreenErrorUnit() )
-  , mPointSize( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->pointSize() )
-  , mPointSizeUnit( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->pointSizeUnit() )
-  , mPointSymbol( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->pointSymbol() )
-  , mPointColor( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->pointColor() )
-  , mOpacityByDistanceEffect( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->applyOpacityByDistanceEffect() )
+  , mRenderer( qgis::down_cast<QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() )->respectLayerColors() && mLayer->renderer() ? mLayer->renderer()->clone() : nullptr )
+  , mMaximumScreenError( qgis::down_cast<QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() )->maximumScreenError() )
+  , mMaximumScreenErrorUnit( qgis::down_cast<QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() )->maximumScreenErrorUnit() )
+  , mPointSize( qgis::down_cast<QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() )->pointSize() )
+  , mPointSizeUnit( qgis::down_cast<QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() )->pointSizeUnit() )
+  , mPointSymbol( qgis::down_cast<QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() )->pointSymbol() )
+  , mPointColor( qgis::down_cast<QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() )->pointColor() )
+  , mOpacityByDistanceEffect( qgis::down_cast<QgsPointCloudLayerElevationProperties *>( layer->elevationProperties() )->applyOpacityByDistanceEffect() )
   , mId( layer->id() )
-  , mFeedback( std::make_unique< QgsFeedback >() )
+  , mFeedback( std::make_unique<QgsFeedback>() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mTolerance( request.tolerance() )
   , mSourceCrs( layer->crs3D() )
@@ -409,7 +408,7 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
   const double startDistanceOffset = std::max( !context.distanceRange().isInfinite() ? context.distanceRange().lower() : 0, 0.0 );
   const double endDistance = context.distanceRange().upper();
 
-  std::unique_ptr< QgsCurve > trimmedCurve;
+  std::unique_ptr<QgsCurve> trimmedCurve;
   QgsCurve *sourceCurve = nullptr;
   if ( startDistanceOffset > 0 || endDistance < mProfileCurve->length() )
   {
@@ -440,7 +439,7 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
   if ( mFeedback->isCanceled() )
     return false;
 
-  mSearchGeometryInLayerCrsGeometryEngine = std::make_unique< QgsGeos >( mSearchGeometryInLayerCrs.get() );
+  mSearchGeometryInLayerCrsGeometryEngine = std::make_unique<QgsGeos>( mSearchGeometryInLayerCrs.get() );
   mSearchGeometryInLayerCrsGeometryEngine->prepareGeometry();
   mMaxSearchExtentInLayerCrs = mSearchGeometryInLayerCrs->boundingBox();
 
@@ -470,7 +469,7 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
     mPreparedRendererData = mRenderer->prepare();
     if ( mPreparedRendererData )
     {
-      const QSet< QString > rendererAttributes = mPreparedRendererData->usedAttributes();
+      const QSet<QString> rendererAttributes = mPreparedRendererData->usedAttributes();
       for ( const QString &attribute : std::as_const( rendererAttributes ) )
       {
         if ( attributes.indexOf( attribute ) >= 0 )
@@ -494,7 +493,7 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
 
   request.setAttributes( attributes );
 
-  mResults = std::make_unique< QgsPointCloudLayerProfileResults >();
+  mResults = std::make_unique<QgsPointCloudLayerProfileResults>();
   mResults->copyPropertiesFromGenerator( this );
   mResults->mMaxErrorInLayerCoordinates = 0;
 
@@ -537,8 +536,8 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
     const double maxErrorInMapCoordinates = maximumErrorPixels * mapUnitsPerPixel;
 
     mResults->mMaxErrorInLayerCoordinates = std::max(
-        mResults->mMaxErrorInLayerCoordinates,
-        maxErrorInMapCoordinates * rootErrorInLayerCoordinates / rootErrorInMapCoordinates );
+      mResults->mMaxErrorInLayerCoordinates,
+      maxErrorInMapCoordinates * rootErrorInLayerCoordinates / rootErrorInMapCoordinates );
 
     switch ( pc->accessType() )
     {
@@ -675,32 +674,31 @@ int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<IndexedPo
     QgsPointCloudBlockRequest *blockRequest = pc->asyncNodeData( n, request );
     blockRequests.append( blockRequest );
     QObject::connect( blockRequest, &QgsPointCloudBlockRequest::finished, &loop,
-                      [ this, &nodesDrawn, &loop, &blockRequests, &zRange, nStr, blockRequest ]()
-    {
-      blockRequests.removeOne( blockRequest );
+                      [this, &nodesDrawn, &loop, &blockRequests, &zRange, nStr, blockRequest]() {
+                        blockRequests.removeOne( blockRequest );
 
-      // If all blocks are loaded, exit the event loop
-      if ( blockRequests.isEmpty() )
-        loop.exit();
+                        // If all blocks are loaded, exit the event loop
+                        if ( blockRequests.isEmpty() )
+                          loop.exit();
 
-      std::unique_ptr<QgsPointCloudBlock> block = blockRequest->takeBlock();
+                        std::unique_ptr<QgsPointCloudBlock> block = blockRequest->takeBlock();
 
-      blockRequest->deleteLater();
+                        blockRequest->deleteLater();
 
-      if ( mFeedback->isCanceled() )
-      {
-        return;
-      }
+                        if ( mFeedback->isCanceled() )
+                        {
+                          return;
+                        }
 
-      if ( !block )
-      {
-        QgsDebugError( QStringLiteral( "Unable to load node %1, error: %2" ).arg( nStr, blockRequest->errorStr() ) );
-        return;
-      }
+                        if ( !block )
+                        {
+                          QgsDebugError( QStringLiteral( "Unable to load node %1, error: %2" ).arg( nStr, blockRequest->errorStr() ) );
+                          return;
+                        }
 
-      visitBlock( block.get(), zRange );
-      ++nodesDrawn;
-    } );
+                        visitBlock( block.get(), zRange );
+                        ++nodesDrawn;
+                      } );
   }
 
   // Wait for all point cloud nodes to finish loading
@@ -786,5 +784,3 @@ void QgsPointCloudLayerProfileGenerator::visitBlock( const QgsPointCloudBlock *b
     }
   }
 }
-
-

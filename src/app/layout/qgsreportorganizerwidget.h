@@ -24,10 +24,10 @@
 class QgsReportSectionModel;
 class QgsReport;
 class QgsMessageBar;
-class QgsLayoutDesignerDialog ;
+class QgsLayoutDesignerDialog;
 class QgsAbstractReportSection;
 
-class QgsReportOrganizerWidget: public QgsPanelWidget, private Ui::QgsReportOrganizerBase
+class QgsReportOrganizerWidget : public QgsPanelWidget, private Ui::QgsReportOrganizerBase
 {
     Q_OBJECT
   public:
@@ -44,15 +44,12 @@ class QgsReportOrganizerWidget: public QgsPanelWidget, private Ui::QgsReportOrga
     void selectionChanged( const QModelIndex &current, const QModelIndex &previous );
 
   private:
-
     QgsReport *mReport = nullptr;
     QgsReportSectionModel *mSectionModel = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
     QgsLayoutDesignerDialog *mDesigner = nullptr;
     QWidget *mConfigWidget = nullptr;
-
 };
-
 
 
 #endif // QGSREPORTORGANIZERWIDGET_H

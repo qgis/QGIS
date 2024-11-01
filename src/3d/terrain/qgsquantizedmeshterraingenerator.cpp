@@ -78,8 +78,7 @@ QgsQuantizedMeshTerrainChunkLoader::QgsQuantizedMeshTerrainChunkLoader( QgsTerra
   QgsVector3D mapOrigin = map->origin();
   bool shadingEnabled = map->isTerrainShadingEnabled();
 
-  QThreadPool::globalInstance()->start( [ this, node, tileId, index, tileCrsToMapCrs, vertScale, mapOrigin, shadingEnabled ]()
-  {
+  QThreadPool::globalInstance()->start( [this, node, tileId, index, tileCrsToMapCrs, vertScale, mapOrigin, shadingEnabled]() {
     if ( tileId == QgsQuantizedMeshIndex::ROOT_TILE_ID )
     {
       // Nothing to load for imaginary root tile
@@ -101,7 +100,7 @@ QgsQuantizedMeshTerrainChunkLoader::QgsQuantizedMeshTerrainChunkLoader( QgsTerra
     entityTransform.tileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
     entityTransform.sceneOriginTargetCrs = mapOrigin;
     entityTransform.ecefToTargetCrs = &tileCrsToMapCrs;
-    entityTransform.gltfUpAxis = static_cast< Qgis::Axis >( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Y ) ).toInt() );
+    entityTransform.gltfUpAxis = static_cast<Qgis::Axis>( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast<int>( Qgis::Axis::Y ) ).toInt() );
 
     try
     {
@@ -203,11 +202,10 @@ void QgsQuantizedMeshTerrainChunkLoader::onTextureLoaded()
 void QgsQuantizedMeshTerrainGenerator::setTerrain( QgsTerrainEntity *t )
 {
   mTerrain = t;
-  mTileCrsToMapCrs =
-    QgsCoordinateTransform(
-      mMetadata->mCrs,
-      mTerrain->mapSettings()->crs(),
-      mTerrain->mapSettings()->transformContext() );
+  mTileCrsToMapCrs = QgsCoordinateTransform(
+    mMetadata->mCrs,
+    mTerrain->mapSettings()->crs(),
+    mTerrain->mapSettings()->transformContext() );
 }
 
 QgsTerrainGenerator *QgsQuantizedMeshTerrainGenerator::clone() const
@@ -306,22 +304,21 @@ QgsChunkLoader *QgsQuantizedMeshTerrainGenerator::createChunkLoader( QgsChunkNod
 QgsChunkNode *QgsQuantizedMeshTerrainGenerator::createRootNode() const
 {
   return new QgsChunkNode(
-  {0, 0, 0},
-  mRootBox3D, // Given to us by setupQuadtree()
-  mMetadata->geometricErrorAtZoom( -1 ) );
+    { 0, 0, 0 },
+    mRootBox3D, // Given to us by setupQuadtree()
+    mMetadata->geometricErrorAtZoom( -1 ) );
 }
 
 QVector<QgsChunkNode *> QgsQuantizedMeshTerrainGenerator::createChildren( QgsChunkNode *node ) const
 {
   QVector<QgsChunkNode *> children;
 
-  for ( auto offset : std::vector<std::pair<int, int>> {{0, 0}, {0, 1}, {1, 0}, {1, 1}} )
+  for ( auto offset : std::vector<std::pair<int, int>> { { 0, 0 }, { 0, 1 }, { 1, 0 }, { 1, 1 } } )
   {
     QgsChunkNodeId childId(
       node->tileId().d + 1,
       node->tileId().x * 2 + offset.first,
-      node->tileId().y * 2 + offset.second
-    );
+      node->tileId().y * 2 + offset.second );
     QgsTileXYZ tile = nodeIdToTile( childId );
     if ( !mMetadata->containsTile( tile ) )
       continue;
@@ -385,12 +382,11 @@ QgsTileXYZ QgsQuantizedMeshTerrainGenerator::nodeIdToTile( QgsChunkNodeId nodeId
   // nodeId zoom=0 is tile zoom=-1 to get unique root tile
   if ( nodeId.d == 0 )
     return { 0, 0, -1 };
-  return
-  {
+  return {
     nodeId.x,
     mMetadata->mTileScheme == QStringLiteral( "tms" )
-    ? ( 1 << ( nodeId.d - 1 ) ) - nodeId.y - 1
-    : nodeId.y,
+      ? ( 1 << ( nodeId.d - 1 ) ) - nodeId.y - 1
+      : nodeId.y,
     nodeId.d - 1 };
 }
 

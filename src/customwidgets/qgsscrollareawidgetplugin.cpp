@@ -105,5 +105,5 @@ QString QgsScrollAreaWidgetPlugin::domXml() const
                   "  </widget>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

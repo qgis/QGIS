@@ -21,7 +21,6 @@
 QgsLayerTreeViewOfflineIndicatorProvider::QgsLayerTreeViewOfflineIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
 {
-
 }
 
 void QgsLayerTreeViewOfflineIndicatorProvider::connectSignals( QgsMapLayer *layer )
@@ -56,4 +55,3 @@ QString QgsLayerTreeViewOfflineIndicatorProvider::tooltipText( QgsMapLayer *laye
   Q_UNUSED( layer )
   return tr( "<b>Offline layer</b>" );
 }
-

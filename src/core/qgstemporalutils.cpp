@@ -38,20 +38,20 @@ QgsDateTimeRange QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject 
       continue;
     const QgsDateTimeRange layerRange = currentLayer->temporalProperties()->calculateTemporalExtent( currentLayer );
 
-    if ( layerRange.begin().isValid() && ( !minDate.isValid() ||  layerRange.begin() < minDate ) )
+    if ( layerRange.begin().isValid() && ( !minDate.isValid() || layerRange.begin() < minDate ) )
       minDate = layerRange.begin();
-    if ( layerRange.end().isValid() && ( !maxDate.isValid() ||  layerRange.end() > maxDate ) )
+    if ( layerRange.end().isValid() && ( !maxDate.isValid() || layerRange.end() > maxDate ) )
       maxDate = layerRange.end();
   }
 
   return QgsDateTimeRange( minDate, maxDate );
 }
 
-QList< QgsDateTimeRange > QgsTemporalUtils::usedTemporalRangesForProject( QgsProject *project )
+QList<QgsDateTimeRange> QgsTemporalUtils::usedTemporalRangesForProject( QgsProject *project )
 {
   const QMap<QString, QgsMapLayer *> mapLayers = project->mapLayers();
 
-  QList< QgsDateTimeRange > ranges;
+  QList<QgsDateTimeRange> ranges;
   for ( auto it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
   {
     QgsMapLayer *currentLayer = it.value();
@@ -164,7 +164,6 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
 
 QDateTime QgsTemporalUtils::calculateFrameTime( const QDateTime &start, const long long frame, const QgsInterval &interval )
 {
-
   double unused;
   const bool isFractional = !qgsDoubleNear( fabs( modf( interval.originalDuration(), &unused ) ), 0.0 );
 

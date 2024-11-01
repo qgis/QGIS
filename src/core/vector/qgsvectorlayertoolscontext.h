@@ -31,7 +31,6 @@
 class CORE_EXPORT QgsVectorLayerToolsContext
 {
   public:
-
     QgsVectorLayerToolsContext() = default;
 
     QgsVectorLayerToolsContext( const QgsVectorLayerToolsContext &other );
@@ -97,9 +96,8 @@ class CORE_EXPORT QgsVectorLayerToolsContext
     void setHideParent( bool hide ) { mHideParent = hide; }
 
   private:
-
-    std::unique_ptr< QgsExpressionContext > mExpressionContext;
-    std::unique_ptr< QgsExpressionContextScope > mAdditionalExpressionContextScope;
+    std::unique_ptr<QgsExpressionContext> mExpressionContext;
+    std::unique_ptr<QgsExpressionContextScope> mAdditionalExpressionContextScope;
 
     QWidget *mParentWidget = nullptr;
     bool mShowModal = true;

@@ -35,7 +35,6 @@
 class CORE_EXPORT QgsBabelGpsDeviceFormat : public QgsAbstractBabelFormat
 {
   public:
-
     QgsBabelGpsDeviceFormat() = default;
 
     /**
@@ -61,7 +60,6 @@ class CORE_EXPORT QgsBabelGpsDeviceFormat : public QgsAbstractBabelFormat
                                Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const override;
 
   private:
-
     QStringList mWaypointDownloadCommand;
     QStringList mWaypointUploadCommand;
     QStringList mRouteDownloadCommand;

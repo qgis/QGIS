@@ -50,14 +50,13 @@ class APP_EXPORT QgsClipboard : public QObject
 {
     Q_OBJECT
   public:
-
     //! Available formats for copying features as text
     enum CopyFormat
     {
-      AttributesOnly, //!< Tab delimited text, attributes only
+      AttributesOnly,    //!< Tab delimited text, attributes only
       AttributesWithWKT, //!< Tab delimited text, with geometry in WKT format
       AttributesWithWKB, //!< Tab delimited text, with geometry in WKB format
-      GeoJSON, //!< GeoJSON FeatureCollection format
+      GeoJSON,           //!< GeoJSON FeatureCollection format
     };
     Q_ENUM( CopyFormat )
 
@@ -153,7 +152,6 @@ class APP_EXPORT QgsClipboard : public QObject
     void changed();
 
   private:
-
     /**
      * Set system clipboard from previously set features.
      */
@@ -197,7 +195,6 @@ class APP_EXPORT QgsClipboard : public QObject
     bool mUseSystemClipboard = false;
 
     friend class TestQgisAppClipboard;
-
 };
 
 #endif

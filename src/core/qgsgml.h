@@ -54,7 +54,6 @@ class QTextCodec;
 class CORE_EXPORT QgsGmlStreamingParser
 {
   public:
-
     typedef QPair<QgsFeature *, QString> QgsGmlFeaturePtrGmlIdPair;
 
     /**
@@ -64,7 +63,6 @@ class CORE_EXPORT QgsGmlStreamingParser
     class LayerProperties
     {
       public:
-
         LayerProperties() = default;
 
         //! Layer name
@@ -94,7 +92,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     //! Constructor for a join layer, or dealing with renamed fields
     QgsGmlStreamingParser( const QList<LayerProperties> &layerProperties,
                            const QgsFields &fields,
-                           const QMap< QString, QPair<QString, QString> > &fieldNameToSrcLayerNameFieldNameMap,
+                           const QMap<QString, QPair<QString, QString>> &fieldNameToSrcLayerNameFieldNameMap,
                            AxisOrientationLogic axisOrientationLogic = Honour_EPSG_if_urn,
                            bool invertAxisOrientation = false );
     ~QgsGmlStreamingParser();
@@ -159,7 +157,6 @@ class CORE_EXPORT QgsGmlStreamingParser
     bool isTruncatedResponse() const { return mTruncatedResponse; }
 
   private:
-
     enum ParseMode
     {
       None,
@@ -168,7 +165,7 @@ class CORE_EXPORT QgsGmlStreamingParser
       Envelope,
       LowerCorner,
       UpperCorner,
-      Feature,  // feature element containing attrs and geo (inside gml:featureMember)
+      Feature, // feature element containing attrs and geo (inside gml:featureMember)
       Attribute,
       Tuple, // wfs:Tuple of a join layer
       FeatureTuple,
@@ -278,7 +275,7 @@ class CORE_EXPORT QgsGmlStreamingParser
 
     //! Describe the various feature types of a join layer
     QList<LayerProperties> mLayerProperties;
-    QMap< QString, LayerProperties > mMapTypeNameToProperties;
+    QMap<QString, LayerProperties> mMapTypeNameToProperties;
 
     //! Typename without namespace prefix
     QString mTypeName;
@@ -297,7 +294,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     size_t mGeometryAttributeUTF8Len;
 
     QgsFields mFields;
-    QMap<QString, QPair<int, QgsField> > mThematicAttributes;
+    QMap<QString, QPair<int, QgsField>> mThematicAttributes;
     QMap<QString, QPair<QString, bool>> mMapXPathToFieldNameAndIsNestedContent;
     QMap<QString, QString> mMapNamespaceURIToNamespacePrefix;
 
@@ -328,12 +325,12 @@ class CORE_EXPORT QgsGmlStreamingParser
      * polygons, only one nested list is used. For multipolygons, both nested lists
      * are used
     */
-    QList< QList<QgsWkbPtr> > mCurrentWKBFragments;
+    QList<QList<QgsWkbPtr>> mCurrentWKBFragments;
     QString mAttributeName;
     int mAttributeDepth = -1;
     bool mAttributeValIsNested = false;
     //! Map from field name to JSON content.
-    QMap< QString, QString > mMapFieldNameToJSONContent;
+    QMap<QString, QString> mMapFieldNameToJSONContent;
     nlohmann::json mAttributeJson;
     QStack<nlohmann::json *> mAttributeJsonCurrentStack;
     char mEndian;
@@ -420,10 +417,10 @@ class CORE_EXPORT QgsGml : public QObject
     int getFeatures( const QByteArray &data, Qgis::WkbType *wkbType, QgsRectangle *extent = nullptr );
 
     //! Gets parsed features for given type name
-    QMap<QgsFeatureId, QgsFeature * > featuresMap() const { return mFeatures; }
+    QMap<QgsFeatureId, QgsFeature *> featuresMap() const { return mFeatures; }
 
     //! Gets feature ids map
-    QMap<QgsFeatureId, QString > idsMap() const { return mIdMap; }
+    QMap<QgsFeatureId, QString> idsMap() const { return mIdMap; }
 
     /**
      * Returns the spatial reference system for features.
@@ -462,7 +459,6 @@ class CORE_EXPORT QgsGml : public QObject
     void handleProgressEvent( qint64 progress, qint64 totalSteps );
 
   private:
-
     /**
      * This function evaluates the layer bounding box from the features and
      * sets it to mExtent.  Less efficient compared to reading the bbox from
@@ -483,12 +479,12 @@ class CORE_EXPORT QgsGml : public QObject
 
     //! The features of the layer, map of feature maps for each feature type
     //QMap<QgsFeatureId, QgsFeature* > &mFeatures;
-    QMap<QgsFeatureId, QgsFeature * > mFeatures;
+    QMap<QgsFeatureId, QgsFeature *> mFeatures;
     //QMap<QString, QMap<QgsFeatureId, QgsFeature* > > mFeatures;
 
     //! Stores the relation between provider ids and WFS server ids
     //QMap<QgsFeatureId, QString > &mIdMap;
-    QMap<QgsFeatureId, QString > mIdMap;
+    QMap<QgsFeatureId, QString> mIdMap;
     //QMap<QString, QMap<QgsFeatureId, QString > > mIdMap;
 
     //! Bounding box of the layer

@@ -21,7 +21,6 @@
 QgsCacheIndexFeatureId::QgsCacheIndexFeatureId( QgsVectorLayerCache *cachedVectorLayer )
   : C( cachedVectorLayer )
 {
-
 }
 
 void QgsCacheIndexFeatureId::flushFeature( const QgsFeatureId fid )
@@ -75,4 +74,3 @@ bool QgsCacheIndexFeatureId::getCacheIterator( QgsFeatureIterator &featureIterat
 
   return false;
 }
-

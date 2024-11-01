@@ -64,7 +64,7 @@ class QgsPolymorphicRelationPrivate : public QSharedData
      * are supported for composite foreign keys.
      * The first field is on the referencing layer, the second on the referenced
     */
-    QList< QgsRelation::FieldPair > mFieldPairs;
+    QList<QgsRelation::FieldPair> mFieldPairs;
 
     //! A map of the layerIds and the respective layers
     QMap<QString, QgsVectorLayer *> mReferencedLayersMap;

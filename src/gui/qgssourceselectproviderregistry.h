@@ -41,7 +41,6 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry : public QObject
     Q_OBJECT
 
   public:
-
     QgsSourceSelectProviderRegistry();
     ~QgsSourceSelectProviderRegistry();
 
@@ -49,7 +48,7 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry : public QObject
     QgsSourceSelectProviderRegistry &operator=( const QgsSourceSelectProviderRegistry &rh ) = delete;
 
     //! Gets list of available providers
-    QList< QgsSourceSelectProvider *> providers();
+    QList<QgsSourceSelectProvider *> providers();
 
     //! Add a \a provider implementation. Takes ownership of the object.
     void addProvider( QgsSourceSelectProvider *provider SIP_TRANSFER );
@@ -84,8 +83,7 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry : public QObject
       const QString &name,
       QWidget *parent,
       Qt::WindowFlags fl,
-      QgsProviderRegistry::WidgetMode widgetMode
-    );
+      QgsProviderRegistry::WidgetMode widgetMode );
 
   signals:
 
@@ -110,7 +108,6 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry : public QObject
 
     //! available providers. this class owns the pointers
     QList<QgsSourceSelectProvider *> mProviders;
-
 };
 
 #endif // QGSSOURCESELECTPROVIDERREGISTRY_H

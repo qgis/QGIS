@@ -41,7 +41,6 @@ class QgsReadWriteContext;
 class CORE_EXPORT QgsAnnotationItemAbstractMetadata
 {
   public:
-
     /**
      * Constructor for QgsAnnotationItemAbstractMetadata with the specified class \a type
      * and \a visibleName.
@@ -78,7 +77,6 @@ class CORE_EXPORT QgsAnnotationItemAbstractMetadata
     virtual QgsAnnotationItem *createItem() = 0 SIP_FACTORY;
 
   private:
-
     QString mType;
     QString mVisibleName;
     QString mVisibleNamePlural;
@@ -98,7 +96,6 @@ typedef std::function<QgsAnnotationItem *()> QgsAnnotationItemCreateFunc SIP_SKI
 class CORE_EXPORT QgsAnnotationItemMetadata : public QgsAnnotationItemAbstractMetadata
 {
   public:
-
     /**
      * Constructor for QgsAnnotationItemMetadata with the specified class \a type
      * and \a visibleName, and function pointers for the various item creation functions.
@@ -120,7 +117,6 @@ class CORE_EXPORT QgsAnnotationItemMetadata : public QgsAnnotationItemAbstractMe
 
   protected:
     QgsAnnotationItemCreateFunc mCreateFunc = nullptr;
-
 };
 
 #endif
@@ -144,7 +140,6 @@ class CORE_EXPORT QgsAnnotationItemRegistry : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new empty item registry.
      *
@@ -185,7 +180,7 @@ class CORE_EXPORT QgsAnnotationItemRegistry : public QObject
     /**
      * Returns a map of available item types to translated name.
      */
-    QMap< QString, QString> itemTypes() const;
+    QMap<QString, QString> itemTypes() const;
 
   signals:
 
@@ -201,10 +196,6 @@ class CORE_EXPORT QgsAnnotationItemRegistry : public QObject
 #endif
 
     QMap<QString, QgsAnnotationItemAbstractMetadata *> mMetadata;
-
 };
 
 #endif //QGSANNOTATIONITEMREGISTRY_H
-
-
-

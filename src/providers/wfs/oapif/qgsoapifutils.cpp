@@ -27,9 +27,7 @@ std::vector<QgsOAPIFJson::Link> QgsOAPIFJson::parseLinks( const json &jParent )
     {
       for ( const auto &jLink : jLinks )
       {
-        if ( jLink.is_object() &&
-             jLink.contains( "href" ) &&
-             jLink.contains( "rel" ) )
+        if ( jLink.is_object() && jLink.contains( "href" ) && jLink.contains( "rel" ) )
         {
           const auto href = jLink["href"];
           const auto rel = jLink["rel"];

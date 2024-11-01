@@ -23,7 +23,7 @@
 
 #include "qgsdelimitedtextprovider.h"
 
-class QgsDelimitedTextFeatureSource final: public QgsAbstractFeatureSource
+class QgsDelimitedTextFeatureSource final : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider *p );
@@ -32,16 +32,16 @@ class QgsDelimitedTextFeatureSource final: public QgsAbstractFeatureSource
 
   private:
     QgsDelimitedTextProvider::GeomRepresentationType mGeomRep;
-    std::unique_ptr< QgsExpression > mSubsetExpression;
+    std::unique_ptr<QgsExpression> mSubsetExpression;
     QgsExpressionContext mExpressionContext;
     QgsBox3D mExtent;
     bool mUseSpatialIndex;
-    std::unique_ptr< QgsSpatialIndex > mSpatialIndex;
+    std::unique_ptr<QgsSpatialIndex> mSpatialIndex;
     bool mUseSubsetIndex;
     QList<quintptr> mSubsetIndex;
-    std::unique_ptr< QgsDelimitedTextFile > mFile;
+    std::unique_ptr<QgsDelimitedTextFile> mFile;
     QgsFields mFields;
-    int mFieldCount;  // Note: this includes field count for wkt field
+    int mFieldCount; // Note: this includes field count for wkt field
     int mXFieldIndex;
     int mYFieldIndex;
     int mZFieldIndex;
@@ -59,7 +59,7 @@ class QgsDelimitedTextFeatureSource final: public QgsAbstractFeatureSource
 };
 
 
-class QgsDelimitedTextFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>
+class QgsDelimitedTextFeatureIterator final : public QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>
 {
     enum IteratorMode
     {
@@ -67,6 +67,7 @@ class QgsDelimitedTextFeatureIterator final: public QgsAbstractFeatureIteratorFr
       SubsetIndex,
       FeatureIds
     };
+
   public:
     QgsDelimitedTextFeatureIterator( QgsDelimitedTextFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
@@ -91,7 +92,6 @@ class QgsDelimitedTextFeatureIterator final: public QgsAbstractFeatureIteratorFr
     bool fetchFeature( QgsFeature &feature ) override;
 
   private:
-
     bool setNextFeatureId( qint64 fid );
 
     bool nextFeatureInternal( QgsFeature &feature );
@@ -110,7 +110,7 @@ class QgsDelimitedTextFeatureIterator final: public QgsAbstractFeatureIteratorFr
     QgsCoordinateTransform mTransform;
 
     QgsGeometry mDistanceWithinGeom;
-    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
+    std::unique_ptr<QgsGeometryEngine> mDistanceWithinEngine;
 };
 
 

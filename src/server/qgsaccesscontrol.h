@@ -59,7 +59,7 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
       delete mPluginsAccessControls;
     }
 
-    QgsAccessControl &operator= ( const QgsAccessControl &other )
+    QgsAccessControl &operator=( const QgsAccessControl &other )
     {
       if ( this != &other )
       {
@@ -172,7 +172,6 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
 
     QMap<QString, QString> mFilterFeaturesExpressions;
     bool mResolved;
-
 };
 
 #endif

@@ -41,10 +41,10 @@ bool QgsSettings::setGlobalSettingsPath( const QString &path )
 
 void QgsSettings::init()
 {
-  if ( ! sGlobalSettingsPath()->isEmpty() )
+  if ( !sGlobalSettingsPath()->isEmpty() )
   {
     mGlobalSettings = new QSettings( *sGlobalSettingsPath(), QSettings::IniFormat );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     mGlobalSettings->setIniCodec( "UTF-8" );
 #endif
   }
@@ -120,7 +120,7 @@ QStringList QgsSettings::allKeys() const
   if ( mGlobalSettings )
   {
     const QStringList constAllKeys = mGlobalSettings->allKeys();
-    std::copy_if( constAllKeys.constBegin(), constAllKeys.constEnd(), std::back_inserter( keys ), [&keys]( const QString & key ) {return !keys.contains( key );} );
+    std::copy_if( constAllKeys.constBegin(), constAllKeys.constEnd(), std::back_inserter( keys ), [&keys]( const QString &key ) { return !keys.contains( key ); } );
   }
   return keys;
 }
@@ -132,7 +132,7 @@ QStringList QgsSettings::childKeys() const
   if ( mGlobalSettings )
   {
     const QStringList constChildKeys = mGlobalSettings->childKeys();
-    std::copy_if( constChildKeys.constBegin(), constChildKeys.constEnd(), std::back_inserter( keys ), [&keys]( const QString & key ) {return !keys.contains( key );} );
+    std::copy_if( constChildKeys.constBegin(), constChildKeys.constEnd(), std::back_inserter( keys ), [&keys]( const QString &key ) { return !keys.contains( key ); } );
   }
   return keys;
 }
@@ -147,7 +147,7 @@ QStringList QgsSettings::childGroups( Qgis::SettingsOrigin origin ) const
       if ( mGlobalSettings )
       {
         const QStringList constChildGroups = mGlobalSettings->childGroups();
-        std::copy_if( constChildGroups.constBegin(), constChildGroups.constEnd(), std::back_inserter( keys ), [&keys]( const QString & key ) {return !keys.contains( key );} );
+        std::copy_if( constChildGroups.constBegin(), constChildGroups.constEnd(), std::back_inserter( keys ), [&keys]( const QString &key ) { return !keys.contains( key ); } );
       }
       return keys;
     }
@@ -156,7 +156,7 @@ QStringList QgsSettings::childGroups( Qgis::SettingsOrigin origin ) const
       return mUserSettings->childGroups();
 
     case Qgis::SettingsOrigin::Global:
-      return  mGlobalSettings ? mGlobalSettings->childGroups() : QStringList();
+      return mGlobalSettings ? mGlobalSettings->childGroups() : QStringList();
   }
 
   BUILTIN_UNREACHABLE
@@ -189,8 +189,7 @@ QVariant QgsSettings::value( const QString &key, const QVariant &defaultValue, c
 bool QgsSettings::contains( const QString &key, const QgsSettings::Section section ) const
 {
   const QString pKey = prefixedKey( key, section );
-  return mUserSettings->contains( pKey ) ||
-         ( mGlobalSettings && mGlobalSettings->contains( pKey ) );
+  return mUserSettings->contains( pKey ) || ( mGlobalSettings && mGlobalSettings->contains( pKey ) );
 }
 
 QString QgsSettings::fileName() const
@@ -247,7 +246,7 @@ QString QgsSettings::prefixedKey( const QString &key, const Section section ) co
     case Section::NoSection:
       return sanitizeKey( key );
   }
-  return prefix  + "/" + sanitizeKey( key );
+  return prefix + "/" + sanitizeKey( key );
 }
 
 

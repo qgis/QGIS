@@ -29,7 +29,7 @@ class QDomElement;
  * \ingroup core
   * \brief Renderer for multiband images with the color components
 */
-class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
+class CORE_EXPORT QgsMultiBandColorRenderer : public QgsRasterRenderer
 {
   public:
     QgsMultiBandColorRenderer( QgsRasterInterface *input, int redBand, int greenBand, int blueBand,
@@ -136,7 +136,6 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     QgsContrastEnhancement *mRedContrastEnhancement = nullptr;
     QgsContrastEnhancement *mGreenContrastEnhancement = nullptr;
     QgsContrastEnhancement *mBlueContrastEnhancement = nullptr;
-
 };
 
 #endif // QGSMULTIBANDCOLORRENDERER_H

@@ -31,7 +31,6 @@ class QDomElement;
 class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
 {
   public:
-
     // Available modes for converting a raster to grayscale
     enum GrayscaleMode
     {
@@ -104,7 +103,6 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
     QColor mColorizeColor;
     int mColorizeH = 0, mColorizeS = 50;
     int mColorizeStrength = 100;
-
 };
 
 #endif // QGSHUESATURATIONFILTER_H

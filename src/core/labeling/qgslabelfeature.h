@@ -55,7 +55,6 @@ class QgsGeometry;
 class CORE_EXPORT QgsLabelFeature
 {
   public:
-
     /**
      * Constructor for QgsLabelFeature.
      *
@@ -351,14 +350,14 @@ class CORE_EXPORT QgsLabelFeature
      * is only used for OrderedPositionsAroundPoint placements.
      * \see setPredefinedPositionOrder()
      */
-    QVector< Qgis::LabelPredefinedPointPosition > predefinedPositionOrder() const { return mPredefinedPositionOrder; }
+    QVector<Qgis::LabelPredefinedPointPosition> predefinedPositionOrder() const { return mPredefinedPositionOrder; }
 
     /**
      * Sets the priority ordered list of predefined positions for label candidates. This property
      * is only used for OrderedPositionsAroundPoint placements.
      * \see predefinedPositionOrder()
      */
-    void setPredefinedPositionOrder( const QVector< Qgis::LabelPredefinedPointPosition > &order ) { mPredefinedPositionOrder = order; }
+    void setPredefinedPositionOrder( const QVector<Qgis::LabelPredefinedPointPosition> &order ) { mPredefinedPositionOrder = order; }
 
     /**
      * Applies only to linestring features - after what distance (in map units)
@@ -737,7 +736,7 @@ class CORE_EXPORT QgsLabelFeature
     //! Offset type for certain placement modes
     Qgis::LabelOffsetType mOffsetType = Qgis::LabelOffsetType::FromPoint;
     //! Ordered list of predefined positions for label (only for OrderedPositionsAroundPoint placement)
-    QVector< Qgis::LabelPredefinedPointPosition > mPredefinedPositionOrder;
+    QVector<Qgis::LabelPredefinedPointPosition> mPredefinedPositionOrder;
     //! distance after which label should be repeated (only for linestrings)
     double mRepeatDistance = 0;
     //! whether to always show label - even in case of collisions
@@ -754,7 +753,6 @@ class CORE_EXPORT QgsLabelFeature
     Qgis::LabelPolygonPlacementFlags mPolygonPlacementFlags = Qgis::LabelPolygonPlacementFlag::AllowPlacementInsideOfPolygon;
 
   private:
-
     //! GEOS geometry on which mPermissibleZoneGeosPrepared is based on
     geos::unique_ptr mPermissibleZoneGeos;
 
@@ -767,7 +765,7 @@ class CORE_EXPORT QgsLabelFeature
 
     bool mLabelAllParts = false;
 
-    QgsLabelObstacleSettings mObstacleSettings{};
+    QgsLabelObstacleSettings mObstacleSettings {};
 
     QgsPointXY mAnchorPosition;
 
@@ -782,7 +780,6 @@ class CORE_EXPORT QgsLabelFeature
     QgsCoordinateReferenceSystem mOriginalFeatureCrs;
 
     double mMinimumSize = 0.0;
-
 };
 
 #endif // QGSLABELFEATURE_H

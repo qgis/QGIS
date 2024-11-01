@@ -191,10 +191,7 @@ QgsPointClusterRenderer *QgsPointClusterRenderer::convertFromRenderer( const Qgs
   {
     return dynamic_cast<QgsPointClusterRenderer *>( renderer->clone() );
   }
-  else if ( renderer->type() == QLatin1String( "singleSymbol" ) ||
-            renderer->type() == QLatin1String( "categorizedSymbol" ) ||
-            renderer->type() == QLatin1String( "graduatedSymbol" ) ||
-            renderer->type() == QLatin1String( "RuleRenderer" ) )
+  else if ( renderer->type() == QLatin1String( "singleSymbol" ) || renderer->type() == QLatin1String( "categorizedSymbol" ) || renderer->type() == QLatin1String( "graduatedSymbol" ) || renderer->type() == QLatin1String( "RuleRenderer" ) )
   {
     QgsPointClusterRenderer *pointRenderer = new QgsPointClusterRenderer();
     pointRenderer->setEmbeddedRenderer( renderer->clone() );
@@ -204,7 +201,7 @@ QgsPointClusterRenderer *QgsPointClusterRenderer::convertFromRenderer( const Qgs
   else if ( renderer->type() == QLatin1String( "pointDisplacement" ) )
   {
     QgsPointClusterRenderer *pointRenderer = new QgsPointClusterRenderer();
-    const QgsPointDisplacementRenderer *displacementRenderer = static_cast< const QgsPointDisplacementRenderer * >( renderer );
+    const QgsPointDisplacementRenderer *displacementRenderer = static_cast<const QgsPointDisplacementRenderer *>( renderer );
     if ( displacementRenderer->embeddedRenderer() )
       pointRenderer->setEmbeddedRenderer( displacementRenderer->embeddedRenderer()->clone() );
     pointRenderer->setTolerance( displacementRenderer->tolerance() );

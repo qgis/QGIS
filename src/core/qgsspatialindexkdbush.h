@@ -54,7 +54,6 @@ class QgsFeature;
 class CORE_EXPORT QgsSpatialIndexKDBush
 {
   public:
-
     /**
      * Constructor - creates KDBush index and bulk loads it with features from the iterator.
      *
@@ -96,7 +95,7 @@ class CORE_EXPORT QgsSpatialIndexKDBush
      * \note Not available in Python bindings
      * \since QGIS 3.22
      */
-    explicit QgsSpatialIndexKDBush( QgsFeatureIterator &fi, const std::function< bool( const QgsFeature & ) > &callback, QgsFeedback *feedback = nullptr );
+    explicit QgsSpatialIndexKDBush( QgsFeatureIterator &fi, const std::function<bool( const QgsFeature & )> &callback, QgsFeedback *feedback = nullptr );
 #endif
 
     QgsSpatialIndexKDBush( const QgsSpatialIndexKDBush &other );
@@ -136,7 +135,6 @@ class CORE_EXPORT QgsSpatialIndexKDBush
     qgssize size() const;
 
   private:
-
     //! Implicitly shared data pointer
     QgsSpatialIndexKDBushPrivate *d = nullptr;
 

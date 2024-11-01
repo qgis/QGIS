@@ -34,7 +34,6 @@ class QgsLineSymbol;
 class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
 {
   public:
-
     /**
      * Constructor for QgsTiledSceneWireframeRenderer.
      */
@@ -118,11 +117,9 @@ class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
     void setUseTextureColors( bool enabled );
 
   private:
-
-    std::unique_ptr< QgsFillSymbol> mFillSymbol;
-    std::unique_ptr< QgsLineSymbol> mLineSymbol;
+    std::unique_ptr<QgsFillSymbol> mFillSymbol;
+    std::unique_ptr<QgsLineSymbol> mLineSymbol;
     bool mUseTextureColors = false;
-
 };
 
 #endif // QGSTILEDSCENEWIREFRAMERENDERER_H

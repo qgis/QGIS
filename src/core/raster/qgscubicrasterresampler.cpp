@@ -46,4 +46,3 @@ int QgsCubicRasterResampler::tileBufferPixels() const
 {
   return 2;
 }
-

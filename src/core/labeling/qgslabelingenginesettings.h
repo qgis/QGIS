@@ -33,7 +33,6 @@ class QgsReadWriteContext;
 class CORE_EXPORT QgsLabelingEngineSettings
 {
   public:
-
     // TODO QGIS 4 - remove
 
     /**
@@ -65,7 +64,13 @@ class CORE_EXPORT QgsLabelingEngineSettings
     //! Test whether a particular flag is enabled
     bool testFlag( Qgis::LabelingFlag f ) const { return mFlags.testFlag( f ); }
     //! Sets whether a particual flag is enabled
-    void setFlag( Qgis::LabelingFlag f, bool enabled = true ) { if ( enabled ) mFlags |= f; else mFlags &= ~static_cast< int >( f ); }
+    void setFlag( Qgis::LabelingFlag f, bool enabled = true )
+    {
+      if ( enabled )
+        mFlags |= f;
+      else
+        mFlags &= ~static_cast<int>( f );
+    }
 
     /**
      * Returns the maximum number of line label candidate positions per centimeter.
@@ -250,7 +255,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
      * \see setRules()
      * \since QGIS 3.40
      */
-    QList< QgsAbstractLabelingEngineRule * > rules();
+    QList<QgsAbstractLabelingEngineRule *> rules();
 
     /**
      * Returns a list of labeling engine rules which must be satifisfied
@@ -260,7 +265,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
      * \see setRules()
      * \since QGIS 3.40
      */
-    QList< const QgsAbstractLabelingEngineRule * > rules() const SIP_SKIP;
+    QList<const QgsAbstractLabelingEngineRule *> rules() const SIP_SKIP;
 
     /**
      * Adds a labeling engine \a rule which must be satifisfied
@@ -284,7 +289,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
      * \see rules()
      * \since QGIS 3.40
      */
-    void setRules( const QList< QgsAbstractLabelingEngineRule * > &rules SIP_TRANSFER );
+    void setRules( const QList<QgsAbstractLabelingEngineRule *> &rules SIP_TRANSFER );
 
   private:
     //! Flags
@@ -302,8 +307,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
 
     Qgis::TextRenderFormat mDefaultTextRenderFormat = Qgis::TextRenderFormat::AlwaysOutlines;
 
-    std::vector< std::unique_ptr< QgsAbstractLabelingEngineRule > > mEngineRules;
-
+    std::vector<std::unique_ptr<QgsAbstractLabelingEngineRule>> mEngineRules;
 };
 
 #endif // QGSLABELINGENGINESETTINGS_H

@@ -78,6 +78,3 @@ QLinkedList<const GEOSGeometry *> *pal::Util::unmulti( const GEOSGeometry *the_g
 
   return final_queue;
 }
-
-
-

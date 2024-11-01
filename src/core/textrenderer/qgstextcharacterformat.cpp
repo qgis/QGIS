@@ -47,8 +47,8 @@ QgsTextCharacterFormat::QgsTextCharacterFormat( const QTextCharFormat &format )
   , mFontWeight( format.hasProperty( QTextFormat::FontWeight ) ? format.fontWeight() : -1 )
   , mStyleName( format.font().styleName() )
   , mItalic( format.hasProperty( QTextFormat::FontItalic ) ? ( format.fontItalic() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
-  , mFontPointSize( format.hasProperty( QTextFormat::FontPointSize ) ? format.fontPointSize() : - 1 )
-  , mWordSpacing( format.hasProperty( QTextFormat::FontWordSpacing ) ? format.fontWordSpacing() : std::numeric_limits< double >::quiet_NaN() )
+  , mFontPointSize( format.hasProperty( QTextFormat::FontPointSize ) ? format.fontPointSize() : -1 )
+  , mWordSpacing( format.hasProperty( QTextFormat::FontWordSpacing ) ? format.fontWordSpacing() : std::numeric_limits<double>::quiet_NaN() )
   , mStrikethrough( format.hasProperty( QTextFormat::FontStrikeOut ) ? ( format.fontStrikeOut() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mUnderline( format.hasProperty( QTextFormat::FontUnderline ) ? ( format.fontUnderline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mOverline( format.hasProperty( QTextFormat::FontOverline ) ? ( format.fontOverline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
@@ -95,7 +95,7 @@ void QgsTextCharacterFormat::overrideWith( const QgsTextCharacterFormat &other )
     mItalic = other.mItalic;
   if ( mFontWeight == -1 && other.mFontWeight != -1 )
     mFontWeight = other.mFontWeight;
-  if ( mStyleName.isEmpty() && ! other.mStyleName.isEmpty() )
+  if ( mStyleName.isEmpty() && !other.mStyleName.isEmpty() )
     mStyleName = other.mStyleName;
   if ( mHasVerticalAlignSet && other.hasVerticalAlignmentSet() )
   {
@@ -209,9 +209,9 @@ void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderCo
   if ( mItalic != QgsTextCharacterFormat::BooleanValue::NotSet )
     font.setItalic( mItalic == QgsTextCharacterFormat::BooleanValue::SetTrue );
 
-  if ( mFontWeight != - 1 )
+  if ( mFontWeight != -1 )
   {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     font.setWeight( mFontWeight );
 #else
     if ( mFontWeight <= 150 )

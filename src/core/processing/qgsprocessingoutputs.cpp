@@ -217,7 +217,6 @@ QgsProcessingOutputConditionalBranch::QgsProcessingOutputConditionalBranch( cons
 QgsProcessingOutputVariant::QgsProcessingOutputVariant( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {
-
 }
 
 QString QgsProcessingOutputVariant::type() const

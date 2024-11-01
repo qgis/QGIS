@@ -83,7 +83,6 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
     void validateIdentity();
 
 
-
     void clearValidation();
     void writeValidation( const QString &msg,
                           QgsAuthImportIdentityDialog::Validity valid,
@@ -112,7 +111,7 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
 
     QPushButton *okButton();
 
-    QgsAuthImportIdentityDialog::IdentityType  mIdentityType;
+    QgsAuthImportIdentityDialog::IdentityType mIdentityType;
     QPair<QSslCertificate, QSslKey> mCertBundle;
     QgsPkiBundle mPkiBundle;
 

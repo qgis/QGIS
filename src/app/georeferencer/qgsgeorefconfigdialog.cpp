@@ -138,6 +138,4 @@ void QgsGeorefConfigDialog::writeSettings()
 
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/WidthPDFMap" ), mPaperSizeComboBox->currentData().toSizeF().width() );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/HeightPDFMap" ), mPaperSizeComboBox->currentData().toSizeF().height() );
-
 }
-

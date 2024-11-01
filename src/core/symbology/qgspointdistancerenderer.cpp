@@ -97,7 +97,7 @@ bool QgsPointDistanceRenderer::renderFeature( const QgsFeature &feature, QgsRend
   const QgsGeometry transformedGeometry = transformedFeature.geometry();
   for ( auto partIt = transformedGeometry.const_parts_begin(); partIt != transformedGeometry.const_parts_end(); ++partIt )
   {
-    const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( *partIt );
+    const QgsPoint *point = qgsgeometry_cast<const QgsPoint *>( *partIt );
     // create a new feature which is JUST this point, no other parts from the multi-point
     QgsFeature pointFeature = transformedFeature;
     pointFeature.setGeometry( QgsGeometry( point->clone() ) );
@@ -129,13 +129,13 @@ bool QgsPointDistanceRenderer::renderFeature( const QgsFeature &feature, QgsRend
         }
       }
 
-      const int groupIdx = mGroupIndex[ minDistFeatureId ];
+      const int groupIdx = mGroupIndex[minDistFeatureId];
       ClusteredGroup &group = mClusteredGroups[groupIdx];
 
       // calculate new centroid of group
       const QgsPointXY oldCenter = mGroupLocations.value( minDistFeatureId );
-      mGroupLocations[ minDistFeatureId ] = QgsPointXY( ( oldCenter.x() * group.size() + point->x() ) / ( group.size() + 1.0 ),
-                                            ( oldCenter.y() * group.size() + point->y() ) / ( group.size() + 1.0 ) );
+      mGroupLocations[minDistFeatureId] = QgsPointXY( ( oldCenter.x() * group.size() + point->x() ) / ( group.size() + 1.0 ),
+                                                      ( oldCenter.y() * group.size() + point->y() ) / ( group.size() + 1.0 ) );
 
       // add to a group
       group << GroupedFeature( pointFeature, symbol->clone(), selected, label );
@@ -293,10 +293,10 @@ QgsSymbolList QgsPointDistanceRenderer::originalSymbolsForFeature( const QgsFeat
   return mRenderer->originalSymbolsForFeature( feature, context );
 }
 
-QSet< QString > QgsPointDistanceRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
+QSet<QString> QgsPointDistanceRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   if ( !mRenderer )
-    return QSet< QString >() << QString();
+    return QSet<QString>() << QString();
   return mRenderer->legendKeysForFeature( feature, context );
 }
 
@@ -429,7 +429,7 @@ void QgsPointDistanceRenderer::drawLabels( QPointF centerPoint, QgsSymbolRenderC
   QFont pixelSizeFont = mLabelFont;
 
   const double fontSizeInPixels = context.renderContext().convertToPainterUnits( mLabelFont.pointSizeF(), Qgis::RenderUnit::Points );
-  pixelSizeFont.setPixelSize( static_cast< int >( std::round( fontSizeInPixels ) ) );
+  pixelSizeFont.setPixelSize( static_cast<int>( std::round( fontSizeInPixels ) ) );
   QFont scaledFont = pixelSizeFont;
   scaledFont.setPixelSize( pixelSizeFont.pixelSize() );
   p->setFont( scaledFont );
@@ -519,7 +519,7 @@ QgsMarkerSymbol *QgsPointDistanceRenderer::firstSymbolForFeature( const QgsFeatu
     return nullptr;
   }
 
-  return dynamic_cast< QgsMarkerSymbol * >( symbolList.at( 0 ) );
+  return dynamic_cast<QgsMarkerSymbol *>( symbolList.at( 0 ) );
 }
 
 QgsPointDistanceRenderer::GroupedFeature::GroupedFeature( const QgsFeature &feature, QgsMarkerSymbol *symbol, bool isSelected, const QString &label )

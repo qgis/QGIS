@@ -33,12 +33,11 @@ class QAction;
 class QToolButton;
 
 
-class APP_EXPORT QgsStreamDigitizingSettingsAction: public QWidgetAction
+class APP_EXPORT QgsStreamDigitizingSettingsAction : public QWidgetAction
 {
     Q_OBJECT
 
   public:
-
     QgsStreamDigitizingSettingsAction( QWidget *parent = nullptr );
     ~QgsStreamDigitizingSettingsAction() override;
 
@@ -80,12 +79,10 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
     QHash<QString, QAction *> mShapeActions;
     QMap<QgsMapToolShapeAbstract::ShapeCategory, QToolButton *> mShapeCategoryButtons;
 
-    QSet< QgsMapTool * > mInitializedTools;
+    QSet<QgsMapTool *> mInitializedTools;
 
     QToolButton *mDigitizeModeToolButton = nullptr;
     QgsStreamDigitizingSettingsAction *mStreamDigitizingSettingsAction = nullptr;
-
-
 };
 
 #endif // QGSMAPTOOLSDIGITIZINGTECHNIQUEMANAGER_H

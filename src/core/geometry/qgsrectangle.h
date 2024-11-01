@@ -41,7 +41,6 @@ class QgsBox3D;
 class CORE_EXPORT QgsRectangle
 {
   public:
-
     //! Constructor for a null rectangle
     QgsRectangle() = default; // optimised constructor for null rectangle - no need to call normalize here
 
@@ -52,10 +51,10 @@ class CORE_EXPORT QgsRectangle
      * the normalization step will not be applied automatically.
      */
     explicit QgsRectangle( double xMin, double yMin = 0, double xMax = 0, double yMax = 0, bool normalize = true ) SIP_HOLDGIL
-  : mXmin( xMin )
-    , mYmin( yMin )
-    , mXmax( xMax )
-    , mYmax( yMax )
+      : mXmin( xMin ),
+        mYmin( yMin ),
+        mXmax( xMax ),
+        mYmax( yMax )
     {
       if ( normalize )
         QgsRectangle::normalize();
@@ -396,8 +395,7 @@ class CORE_EXPORT QgsRectangle
      */
     bool contains( const QgsPointXY &p ) const SIP_HOLDGIL
     {
-      return mXmin <= p.x() && p.x() <= mXmax &&
-             mYmin <= p.y() && p.y() <= mYmax;
+      return mXmin <= p.x() && p.x() <= mXmax && mYmin <= p.y() && p.y() <= mYmax;
     }
 
     /**
@@ -407,8 +405,7 @@ class CORE_EXPORT QgsRectangle
      */
     bool contains( double x, double y ) const SIP_HOLDGIL
     {
-      return mXmin <= x && x <= mXmax &&
-             mYmin <= y && y <= mYmax;
+      return mXmin <= x && x <= mXmax && mYmin <= y && y <= mYmax;
     }
 
     /**
@@ -510,9 +507,7 @@ class CORE_EXPORT QgsRectangle
     {
       // rectangle created QgsRectangle() or with rect.setNull() or
       // otherwise having NaN ordinates
-      return ( std::isnan( mXmin )  && std::isnan( mXmax ) && std::isnan( mYmin ) && std::isnan( mYmax ) ) ||
-             ( qgsDoubleNear( mXmin, std::numeric_limits<double>::max() ) && qgsDoubleNear( mYmin, std::numeric_limits<double>::max() ) &&
-               qgsDoubleNear( mXmax, -std::numeric_limits<double>::max() ) && qgsDoubleNear( mYmax, -std::numeric_limits<double>::max() ) );
+      return ( std::isnan( mXmin ) && std::isnan( mXmax ) && std::isnan( mYmin ) && std::isnan( mYmax ) ) || ( qgsDoubleNear( mXmin, std::numeric_limits<double>::max() ) && qgsDoubleNear( mYmin, std::numeric_limits<double>::max() ) && qgsDoubleNear( mXmax, -std::numeric_limits<double>::max() ) && qgsDoubleNear( mYmax, -std::numeric_limits<double>::max() ) );
     }
 
     /**
@@ -530,7 +525,7 @@ class CORE_EXPORT QgsRectangle
      */
     QRectF toRectF() const
     {
-      return QRectF( static_cast< qreal >( mXmin ), static_cast< qreal >( mYmin ), static_cast< qreal >( mXmax - mXmin ), static_cast< qreal >( mYmax - mYmin ) );
+      return QRectF( static_cast<qreal>( mXmin ), static_cast<qreal>( mYmin ), static_cast<qreal>( mXmax - mXmin ), static_cast<qreal>( mYmax - mYmin ) );
     }
 
     /**
@@ -547,17 +542,15 @@ class CORE_EXPORT QgsRectangle
 
     bool operator==( const QgsRectangle &r1 ) const
     {
-      if ( isNull() ) return r1.isNull();
+      if ( isNull() )
+        return r1.isNull();
 
-      return qgsDoubleNear( r1.xMaximum(), xMaximum() ) &&
-             qgsDoubleNear( r1.xMinimum(), xMinimum() ) &&
-             qgsDoubleNear( r1.yMaximum(), yMaximum() ) &&
-             qgsDoubleNear( r1.yMinimum(), yMinimum() );
+      return qgsDoubleNear( r1.xMaximum(), xMaximum() ) && qgsDoubleNear( r1.xMinimum(), xMinimum() ) && qgsDoubleNear( r1.yMaximum(), yMaximum() ) && qgsDoubleNear( r1.yMinimum(), yMinimum() );
     }
 
     bool operator!=( const QgsRectangle &r1 ) const
     {
-      return ( ! operator==( r1 ) );
+      return ( !operator==( r1 ) );
     }
 
     QgsRectangle &operator=( const QgsRectangle &r1 )
@@ -622,7 +615,7 @@ class CORE_EXPORT QgsRectangle
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str;
+        QString str;
     if ( sipCpp->isNull() )
       str = QStringLiteral( "<QgsRectangle()>" );
     else
@@ -631,13 +624,13 @@ class CORE_EXPORT QgsRectangle
     % End
 #endif
 
-  private:
+      private :
 
-    double mXmin = std::numeric_limits<double>::max();
+      double mXmin
+      = std::numeric_limits<double>::max();
     double mYmin = std::numeric_limits<double>::max();
     double mXmax = -std::numeric_limits<double>::max();
     double mYmax = -std::numeric_limits<double>::max();
-
 };
 
 Q_DECLARE_METATYPE( QgsRectangle )
@@ -654,7 +647,7 @@ CORE_EXPORT QDataStream &operator<<( QDataStream &out, const QgsRectangle &recta
  */
 CORE_EXPORT QDataStream &operator>>( QDataStream &in, QgsRectangle &rectangle );
 
-inline std::ostream &operator << ( std::ostream &os, const QgsRectangle &r )
+inline std::ostream &operator<<( std::ostream &os, const QgsRectangle &r )
 {
   return os << r.toString().toLocal8Bit().data();
 }

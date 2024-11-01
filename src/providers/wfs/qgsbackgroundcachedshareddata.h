@@ -189,7 +189,6 @@ class QgsBackgroundCachedSharedData
     virtual void pushError( const QString &errorMsg ) const = 0;
 
   protected:
-
     //////////// Input members. Implementations should define them to meaningful values
 
     //! Attribute fields of the layer
@@ -237,7 +236,6 @@ class QgsBackgroundCachedSharedData
     virtual bool detectPotentialServerAxisOrderIssueFromSingleFeatureExtent() const { return false; }
 
   private:
-
     //! Cache directory manager
     QgsCacheDirectoryManager &mCacheDirectoryManager;
 
@@ -269,7 +267,7 @@ class QgsBackgroundCachedSharedData
     QgsSpatialIndex mCachedRegions;
 
     //! Requested cached regions
-    QVector< QgsFeature > mRegions;
+    QVector<QgsFeature> mRegions;
 
     //! Limit of retrieved number of features for the current request
     int mRequestLimit = 0;

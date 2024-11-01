@@ -59,7 +59,6 @@ typedef QMap<int, QgsField> QgsFieldMap;
 class QgsAttributes : public QVector<QVariant>
 {
   public:
-
     QgsAttributes() = default;
 
     /**
@@ -147,11 +146,11 @@ typedef QVector<QVariant> QgsAttributes;
 {
   % TypeHeaderCode
 #include "qgsfeature.h"
-  % End
+    % End
 
-  % ConvertFromTypeCode
-  // Create the list.
-  PyObject *l;
+    % ConvertFromTypeCode
+      // Create the list.
+      PyObject *l;
 
   if ( ( l = PyList_New( sipCpp->size() ) ) == NULL )
     return NULL;
@@ -176,9 +175,9 @@ typedef QVector<QVariant> QgsAttributes;
   return l;
   % End
 
-  % ConvertToTypeCode
-  // Check the type if that is all that is required.
-  if ( sipIsErr == NULL )
+    % ConvertToTypeCode
+    // Check the type if that is all that is required.
+    if ( sipIsErr == NULL )
   {
     if ( !PyList_Check( sipPy ) )
       return 0;

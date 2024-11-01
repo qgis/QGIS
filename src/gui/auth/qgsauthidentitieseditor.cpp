@@ -89,8 +89,8 @@ void QgsAuthIdentitiesEditor::setupIdentitiesTree()
   treeIdentities->setColumnCount( 3 );
   treeIdentities->setHeaderLabels(
     QStringList() << tr( "Common Name" )
-    << tr( "Serial #" )
-    << tr( "Expiry Date" ) );
+                  << tr( "Serial #" )
+                  << tr( "Expiry Date" ) );
   treeIdentities->setColumnWidth( 0, 300 );
   treeIdentities->setColumnWidth( 1, 75 );
 
@@ -129,7 +129,7 @@ void QgsAuthIdentitiesEditor::refreshIdentitiesView()
 }
 
 void QgsAuthIdentitiesEditor::populateIdentitiesSection( QTreeWidgetItem *item, const QList<QSslCertificate> &certs,
-    QgsAuthIdentitiesEditor::IdentityType identype )
+                                                         QgsAuthIdentitiesEditor::IdentityType identype )
 {
   if ( btnGroupByOrg->isChecked() )
   {
@@ -142,8 +142,8 @@ void QgsAuthIdentitiesEditor::populateIdentitiesSection( QTreeWidgetItem *item, 
 }
 
 void QgsAuthIdentitiesEditor::appendIdentitiesToGroup( const QList<QSslCertificate> &certs,
-    QgsAuthIdentitiesEditor::IdentityType identype,
-    QTreeWidgetItem *parent )
+                                                       QgsAuthIdentitiesEditor::IdentityType identype,
+                                                       QTreeWidgetItem *parent )
 {
   if ( certs.empty() )
     return;
@@ -154,15 +154,15 @@ void QgsAuthIdentitiesEditor::appendIdentitiesToGroup( const QList<QSslCertifica
   }
 
   // TODO: find all organizational name, sort and make subsections
-  const QMap< QString, QList<QSslCertificate> > orgcerts(
+  const QMap<QString, QList<QSslCertificate>> orgcerts(
     QgsAuthCertUtils::certsGroupedByOrg( certs ) );
 
-  QMap< QString, QList<QSslCertificate> >::const_iterator it = orgcerts.constBegin();
+  QMap<QString, QList<QSslCertificate>>::const_iterator it = orgcerts.constBegin();
   for ( ; it != orgcerts.constEnd(); ++it )
   {
     QTreeWidgetItem *grpitem( new QTreeWidgetItem( parent,
-                              QStringList() << it.key(),
-                              static_cast<int>( QgsAuthIdentitiesEditor::OrgName ) ) );
+                                                   QStringList() << it.key(),
+                                                   static_cast<int>( QgsAuthIdentitiesEditor::OrgName ) ) );
     grpitem->setFirstColumnSpanned( true );
     grpitem->setFlags( Qt::ItemIsEnabled );
     grpitem->setExpanded( true );
@@ -181,8 +181,8 @@ void QgsAuthIdentitiesEditor::appendIdentitiesToGroup( const QList<QSslCertifica
 }
 
 void QgsAuthIdentitiesEditor::appendIdentitiesToItem( const QList<QSslCertificate> &certs,
-    QgsAuthIdentitiesEditor::IdentityType identype,
-    QTreeWidgetItem *parent )
+                                                      QgsAuthIdentitiesEditor::IdentityType identype,
+                                                      QTreeWidgetItem *parent )
 {
   if ( certs.empty() )
     return;
@@ -256,7 +256,7 @@ void QgsAuthIdentitiesEditor::checkSelection()
   {
     QTreeWidgetItem *item( treeIdentities->currentItem() );
 
-    switch ( ( QgsAuthIdentitiesEditor::IdentityType )item->type() )
+    switch ( ( QgsAuthIdentitiesEditor::IdentityType ) item->type() )
     {
       case QgsAuthIdentitiesEditor::CertIdentity:
         iscert = true;
@@ -275,7 +275,7 @@ void QgsAuthIdentitiesEditor::handleDoubleClick( QTreeWidgetItem *item, int col 
   Q_UNUSED( col )
   bool iscert = true;
 
-  switch ( ( QgsAuthIdentitiesEditor::IdentityType )item->type() )
+  switch ( ( QgsAuthIdentitiesEditor::IdentityType ) item->type() )
   {
     case QgsAuthIdentitiesEditor::Section:
       iscert = false;
@@ -346,7 +346,8 @@ void QgsAuthIdentitiesEditor::btnRemoveIdentity_clicked()
              "certificate identity from the database?\n\n"
              "Operation can NOT be undone!" ),
          QMessageBox::Ok | QMessageBox::Cancel,
-         QMessageBox::Cancel ) == QMessageBox::Cancel )
+         QMessageBox::Cancel )
+       == QMessageBox::Cancel )
   {
     return;
   }

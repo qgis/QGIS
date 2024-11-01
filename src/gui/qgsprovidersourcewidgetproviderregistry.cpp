@@ -69,7 +69,7 @@ void QgsProviderSourceWidgetProviderRegistry::initializeFromProviderGuiRegistry(
 QgsProviderSourceWidgetProvider *QgsProviderSourceWidgetProviderRegistry::providerByName( const QString &name )
 {
   const QList<QgsProviderSourceWidgetProvider *> providerList = providers();
-  for ( QgsProviderSourceWidgetProvider *provider :  providerList )
+  for ( QgsProviderSourceWidgetProvider *provider : providerList )
   {
     if ( provider->name() == name )
     {

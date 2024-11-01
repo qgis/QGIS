@@ -29,8 +29,8 @@ int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
   bool &matched )
 {
   matched = true;
-  const QgsRasterLayerElevationProperties *elevationProperties = qobject_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() );
-  const QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast< QgsRasterLayerTemporalProperties *>( layer->temporalProperties() );
+  const QgsRasterLayerElevationProperties *elevationProperties = qobject_cast<QgsRasterLayerElevationProperties *>( layer->elevationProperties() );
+  const QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast<QgsRasterLayerTemporalProperties *>( layer->temporalProperties() );
 
   // neither active
   if ( ( !temporalProperties->isActive() || temporalRange.isInfinite() )
@@ -58,7 +58,7 @@ int QgsRasterLayerUtils::renderedBandForElevationAndTemporalRange(
   // both elevation and temporal properties enabled
 
   // first find bands matching the temporal range
-  QList< int > temporalBands;
+  QList<int> temporalBands;
   switch ( temporalProperties->mode() )
   {
     case Qgis::RasterTemporalMode::RedrawLayerOnly:

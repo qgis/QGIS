@@ -43,9 +43,12 @@ typedef QgsMessageOutput *( *MESSAGE_OUTPUT_CREATOR )() SIP_SKIP;
 class CORE_EXPORT QgsMessageOutput
 {
   public:
-
     //! message can be in plain text or in html format
-    enum MessageType { MessageText, MessageHtml };
+    enum MessageType
+    {
+      MessageText,
+      MessageHtml
+    };
 
     virtual ~QgsMessageOutput() = default;
 
@@ -81,7 +84,6 @@ class CORE_EXPORT QgsMessageOutput
     static QgsMessageOutput *createMessageOutput();
 
   private:
-
     //! Pointer to the function which creates the class for output
     static MESSAGE_OUTPUT_CREATOR mMessageOutputCreator;
 };
@@ -99,7 +101,6 @@ class CORE_EXPORT QgsMessageOutputConsole : public QObject, public QgsMessageOut
     Q_OBJECT
 
   public:
-
     QgsMessageOutputConsole() = default;
 
     void setMessage( const QString &message, MessageType msgType ) override;
@@ -117,7 +118,6 @@ class CORE_EXPORT QgsMessageOutputConsole : public QObject, public QgsMessageOut
     void destroyed();
 
   private:
-
     //! stores current message
     QString mMessage;
 

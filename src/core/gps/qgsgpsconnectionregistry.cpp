@@ -33,7 +33,7 @@ void QgsGpsConnectionRegistry::unregisterConnection( QgsGpsConnection *c )
   mConnections.remove( c );
 }
 
-QList< QgsGpsConnection * > QgsGpsConnectionRegistry::connectionList() const
+QList<QgsGpsConnection *> QgsGpsConnectionRegistry::connectionList() const
 {
-  return QList< QgsGpsConnection * >( mConnections.begin(), mConnections.end() );
+  return QList<QgsGpsConnection *>( mConnections.begin(), mConnections.end() );
 }

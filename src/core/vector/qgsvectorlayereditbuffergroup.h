@@ -42,7 +42,6 @@ class CORE_EXPORT QgsVectorLayerEditBufferGroup : public QObject
     Q_OBJECT
 
   public:
-
     //! Constructor for QgsEditBufferGroup
     explicit QgsVectorLayerEditBufferGroup( QObject *parent = nullptr );
 
@@ -117,7 +116,6 @@ class CORE_EXPORT QgsVectorLayerEditBufferGroup : public QObject
     bool isEditing() const;
 
   private:
-
     QList<QgsVectorLayer *> orderLayersParentsToChildren( QSet<QgsVectorLayer *> layers );
     void editingFinished( bool stopEditing );
 

@@ -25,10 +25,10 @@
 
 QgsGroupLayerRenderer::QgsGroupLayerRenderer( QgsGroupLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
-  , mFeedback( std::make_unique< QgsFeedback >() )
+  , mFeedback( std::make_unique<QgsFeedback>() )
   , mLayerOpacity( layer->opacity() )
 {
-  const QList< QgsMapLayer * > layers = layer->childLayers();
+  const QList<QgsMapLayer *> layers = layer->childLayers();
   const QgsCoordinateReferenceSystem destinationCrs = context.coordinateTransform().destinationCrs();
   for ( QgsMapLayer *childLayer : layers )
   {
@@ -79,7 +79,7 @@ bool QgsGroupLayerRenderer::render()
   const QgsCoordinateReferenceSystem destinationCrs = context.coordinateTransform().destinationCrs();
   bool canceled = false;
   int i = 0;
-  for ( const std::unique_ptr< QgsMapLayerRenderer > &renderer : std::as_const( mChildRenderers ) )
+  for ( const std::unique_ptr<QgsMapLayerRenderer> &renderer : std::as_const( mChildRenderers ) )
   {
     if ( mFeedback->isCanceled() )
     {
@@ -98,13 +98,13 @@ bool QgsGroupLayerRenderer::render()
       context.painter()->setCompositionMode( mRendererCompositionModes[i] );
 
     QPainter *prevPainter = context.painter();
-    std::unique_ptr< QPainter > imagePainter;
+    std::unique_ptr<QPainter> imagePainter;
     if ( renderer->forceRasterRender() )
     {
       image = QImage( context.deviceOutputSize(), context.imageFormat() );
       image.setDevicePixelRatio( static_cast<qreal>( context.devicePixelRatio() ) );
       image.fill( 0 );
-      imagePainter = std::make_unique< QPainter >( &image );
+      imagePainter = std::make_unique<QPainter>( &image );
 
       context.setPainterFlagsUsingContext( imagePainter.get() );
       context.setPainter( imagePainter.get() );

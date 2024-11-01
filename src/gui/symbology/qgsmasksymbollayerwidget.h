@@ -29,12 +29,11 @@ class QgsSymbolLayerSelectionWidget;
  * \brief Symbol layer widget for the handling of QgsMaskMarkerSymbolLayer.
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsMaskMarkerSymbolLayerWidget: public QgsSymbolLayerWidget, private Ui::QgsMaskSymbolLayerWidgetBase
+class GUI_EXPORT QgsMaskMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::QgsMaskSymbolLayerWidgetBase
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      * \param layer the layer where this symbol layer is applied

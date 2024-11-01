@@ -22,20 +22,20 @@
 % ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgsmapcanvasannotationitem.h>
-% End
+  % End
 #endif
 
 #include "qgsmapcanvasitem.h"
 #include "qgis_gui.h"
 
-class QgsAnnotation;
+  class QgsAnnotation;
 
 /**
  * \class QgsMapCanvasAnnotationItem
  * \ingroup gui
  * \brief An interactive map canvas item which displays a QgsAnnotation.
  */
-class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvasItem
+class GUI_EXPORT QgsMapCanvasAnnotationItem : public QObject, public QgsMapCanvasItem
 {
     Q_OBJECT
 
@@ -52,19 +52,18 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvas
 #endif
 
   public:
-
     //! Mouse actions for interacting with item
     enum MouseMoveAction
     {
-      NoAction, //!< No action
-      MoveMapPosition, //!< Moving annotation map position
-      MoveFramePosition, //!< Moving position of frame relative to annotation
-      ResizeFrameUp, //!< Resize frame up
-      ResizeFrameDown, //!< Resize frame down
-      ResizeFrameLeft, //!< Resize frame left
-      ResizeFrameRight, //!< Resize frame right
-      ResizeFrameLeftUp, //!< Resize frame left up
-      ResizeFrameRightUp, //!< Resize frame right up
+      NoAction,            //!< No action
+      MoveMapPosition,     //!< Moving annotation map position
+      MoveFramePosition,   //!< Moving position of frame relative to annotation
+      ResizeFrameUp,       //!< Resize frame up
+      ResizeFrameDown,     //!< Resize frame down
+      ResizeFrameLeft,     //!< Resize frame left
+      ResizeFrameRight,    //!< Resize frame right
+      ResizeFrameLeftUp,   //!< Resize frame left up
+      ResizeFrameRightUp,  //!< Resize frame right up
       ResizeFrameLeftDown, //!< Resize frame left down
       ResizeFrameRightDown //!< Resize frame right down
     };
@@ -78,7 +77,8 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvas
      * Returns the item's annotation.
      * \note not available in Python bindings
      */
-    const QgsAnnotation *annotation() const { return mAnnotation; } SIP_SKIP
+    const QgsAnnotation *annotation() const { return mAnnotation; }
+    SIP_SKIP
 
     /**
      * Returns the item's annotation.
@@ -113,7 +113,6 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvas
     void annotationDeleted();
 
   private:
-
     //! Draws selection handles around the item
     void drawSelectionBoxes( QPainter *p ) const;
 
@@ -124,7 +123,6 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvas
 
     //! Bounding rect (including item frame and balloon)
     QRectF mBoundingRect;
-
 };
 
 #endif // QGSMAPCANVASANNOTATIONITEM_H

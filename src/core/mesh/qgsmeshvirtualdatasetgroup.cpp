@@ -22,8 +22,8 @@ QgsMeshVirtualDatasetGroup::QgsMeshVirtualDatasetGroup(
   const QString &formulaString,
   QgsMeshLayer *layer,
   qint64 relativeStartTime,
-  qint64 relativeEndTime ):
-  QgsMeshDatasetGroup( name )
+  qint64 relativeEndTime )
+  : QgsMeshDatasetGroup( name )
   , mFormula( formulaString )
   , mLayer( layer )
   , mStartTime( relativeStartTime )
@@ -42,7 +42,7 @@ void QgsMeshVirtualDatasetGroup::initialize()
   mDatasetGroupNameUsed = mCalcNode->notAggregatedUsedDatasetGroupNames();
   mDatasetGroupNameUsedForAggregate = mCalcNode->aggregatedUsedDatasetGroupNames();
   setDataType( QgsMeshCalcUtils::determineResultDataType( mLayer,
-               mDatasetGroupNameUsed + mDatasetGroupNameUsedForAggregate ) );
+                                                          mDatasetGroupNameUsed + mDatasetGroupNameUsedForAggregate ) );
 
   //populate used group indexes
   QMap<QString, int> usedDatasetGroupindexes;
@@ -164,7 +164,7 @@ bool QgsMeshVirtualDatasetGroup::calculateDataset() const
     return false;
 
   //open output dataset
-  std::unique_ptr<QgsMeshMemoryDatasetGroup> outputGroup = std::make_unique<QgsMeshMemoryDatasetGroup> ( QString(), dsu.outputType() );
+  std::unique_ptr<QgsMeshMemoryDatasetGroup> outputGroup = std::make_unique<QgsMeshMemoryDatasetGroup>( QString(), dsu.outputType() );
   mCalcNode->calculate( dsu, *outputGroup );
 
   if ( outputGroup->memoryDatasets.isEmpty() )

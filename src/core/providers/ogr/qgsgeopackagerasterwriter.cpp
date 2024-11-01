@@ -23,11 +23,9 @@
 #include "qgsgeopackagerasterwriter.h"
 #include "qgscplerrorhandler_p.h"
 
-QgsGeoPackageRasterWriter::QgsGeoPackageRasterWriter( const QgsMimeDataUtils::Uri &sourceUri, const QString &outputUrl ):
-  mSourceUri( sourceUri ),
-  mOutputUrl( outputUrl )
+QgsGeoPackageRasterWriter::QgsGeoPackageRasterWriter( const QgsMimeDataUtils::Uri &sourceUri, const QString &outputUrl )
+  : mSourceUri( sourceUri ), mOutputUrl( outputUrl )
 {
-
 }
 
 QgsGeoPackageRasterWriter::WriterError QgsGeoPackageRasterWriter::writeRaster( QgsFeedback *feedback, QString *errorMessage )
@@ -35,18 +33,19 @@ QgsGeoPackageRasterWriter::WriterError QgsGeoPackageRasterWriter::writeRaster( Q
   const char *args[] = { "-of", "gpkg", "-co", QStringLiteral( "RASTER_TABLE=%1" ).arg( mSourceUri.name ).toUtf8().constData(), "-co", "APPEND_SUBDATASET=YES", nullptr };
   // This sends OGR/GDAL errors to the message log
   const QgsCPLErrorHandler handler( QObject::tr( "GDAL" ) );
-  GDALTranslateOptions *psOptions = GDALTranslateOptionsNew( ( char ** )args, nullptr );
+  GDALTranslateOptions *psOptions = GDALTranslateOptionsNew( ( char ** ) args, nullptr );
 
-  GDALTranslateOptionsSetProgress( psOptions, [ ]( double dfComplete, const char *pszMessage,  void *pProgressData ) -> int
-  {
-    Q_UNUSED( pszMessage )
-    QgsFeedback *feedback = static_cast< QgsFeedback * >( pProgressData );
-    feedback->setProgress( dfComplete * 100 );
-    return ! feedback->isCanceled();
-  }, feedback );
+  GDALTranslateOptionsSetProgress(
+    psOptions, []( double dfComplete, const char *pszMessage, void *pProgressData ) -> int {
+      Q_UNUSED( pszMessage )
+      QgsFeedback *feedback = static_cast<QgsFeedback *>( pProgressData );
+      feedback->setProgress( dfComplete * 100 );
+      return !feedback->isCanceled();
+    },
+    feedback );
 
   const gdal::dataset_unique_ptr hSrcDS( GDALOpen( mSourceUri.uri.toUtf8().constData(), GA_ReadOnly ) );
-  if ( ! hSrcDS )
+  if ( !hSrcDS )
   {
     *errorMessage = QObject::tr( "Failed to open source layer %1! See the OGR panel in the message logs for details.\n\n" ).arg( mSourceUri.name );
     mHasError = true;
@@ -55,7 +54,7 @@ QgsGeoPackageRasterWriter::WriterError QgsGeoPackageRasterWriter::writeRaster( Q
   {
     CPLErrorReset();
     const gdal::dataset_unique_ptr hOutDS( GDALTranslate( mOutputUrl.toUtf8().constData(), hSrcDS.get(), psOptions, nullptr ) );
-    if ( ! hOutDS )
+    if ( !hOutDS )
     {
       *errorMessage = QObject::tr( "Failed to import layer %1! See the OGR panel in the message logs for details.\n\n" ).arg( mSourceUri.name );
       mHasError = true;

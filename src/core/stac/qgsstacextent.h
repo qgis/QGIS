@@ -66,10 +66,10 @@ class CORE_EXPORT QgsStacExtent
     QgsDateTimeRange temporalExtent() const;
 
     //! Returns all detailed spatial sub extents defined
-    QVector< QgsBox3D > detailedSpatialExtents() const;
+    QVector<QgsBox3D> detailedSpatialExtents() const;
 
     //! Returns all detailed temporal sub extents defined
-    QVector< QgsDateTimeRange > detailedTemporalExtents() const;
+    QVector<QgsDateTimeRange> detailedTemporalExtents() const;
 
     //! Returns TRUE if there are detailed spatial sub extents defined
     bool hasDetailedSpatialExtents() const;
@@ -80,8 +80,8 @@ class CORE_EXPORT QgsStacExtent
   private:
     QgsBox3D mSpatialExtent;
     QgsDateTimeRange mTemporalExtent;
-    QVector< QgsBox3D > mDetailedSpatialExtents;
-    QVector< QgsDateTimeRange > mDetailedTemporalExtents;
+    QVector<QgsBox3D> mDetailedSpatialExtents;
+    QVector<QgsDateTimeRange> mDetailedTemporalExtents;
 };
 
 #endif // QGSSTACEXTENT_H

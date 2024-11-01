@@ -63,6 +63,3 @@ void Qgs3DAlgorithms::loadAlgorithms()
 
 
 ///@endcond
-
-
-

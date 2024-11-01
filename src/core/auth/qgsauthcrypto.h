@@ -31,7 +31,6 @@
  */
 class CORE_EXPORT QgsAuthCrypto
 {
-
   public:
     //! Whether QCA has the qca-ossl plugin, which a base run-time requirement
     static bool isDisabled();
@@ -61,4 +60,4 @@ class CORE_EXPORT QgsAuthCrypto
                                    bool encrypt );
 };
 
-#endif  // QGSAUTHCRYPTO_H
+#endif // QGSAUTHCRYPTO_H

@@ -30,7 +30,6 @@
 class CORE_EXPORT QgsProjectionFactors
 {
   public:
-
     /**
      * Returns TRUE if the factors are valid, or FALSE if they could not be calculated.
      */
@@ -61,21 +60,21 @@ class CORE_EXPORT QgsProjectionFactors
     double tissotSemiminor() const { return mTissotSemiminor; }
 
     //! Partial derivative ∂x/∂λ of coordinate (λ,ϕ).
-    double dxDlam() const  { return mDxDlam; }
+    double dxDlam() const { return mDxDlam; }
 
     //! Partial derivative ∂x/∂ϕ of coordinate (λ,ϕ).
-    double dxDphi() const  { return mDxDphi; }
+    double dxDphi() const { return mDxDphi; }
 
     //! Partial derivative ∂y/∂λ of coordinate (λ,ϕ).
-    double dyDlam() const  { return mDyDlam; }
+    double dyDlam() const { return mDyDlam; }
 
     //!Partial derivative ∂y/∂ϕ of coordinate (λ,ϕ).
-    double dyDphi() const  { return mDyDphi; }
+    double dyDphi() const { return mDyDphi; }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str;
+        QString str;
     if ( !sipCpp->isValid() )
     {
       str = QStringLiteral( "<QgsProjectionFactors: invalid>" );
@@ -88,9 +87,10 @@ class CORE_EXPORT QgsProjectionFactors
     % End
 #endif
 
-  private:
+      private :
 
-    bool mIsValid = false;
+      bool mIsValid
+      = false;
     double mMeridionalScale = 0;
     double mParallelScale = 0;
     double mArealScale = 0;

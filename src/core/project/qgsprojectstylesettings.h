@@ -47,7 +47,6 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProjectStyleSettings for the specified \a project.
      *
@@ -237,7 +236,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
      *
      * \see styleDatabasePaths()
      */
-    QList< QgsStyle * > styles() const;
+    QList<QgsStyle *> styles() const;
 
     /**
      * Returns a reference to the style database associated with the project with matching file \a path.
@@ -330,13 +329,12 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
 
 #endif
   private:
-
     QgsProject *mProject = nullptr;
 
-    std::unique_ptr< QgsSymbol > mDefaultMarkerSymbol;
-    std::unique_ptr< QgsSymbol > mDefaultLineSymbol;
-    std::unique_ptr< QgsSymbol > mDefaultFillSymbol;
-    std::unique_ptr< QgsColorRamp > mDefaultColorRamp;
+    std::unique_ptr<QgsSymbol> mDefaultMarkerSymbol;
+    std::unique_ptr<QgsSymbol> mDefaultLineSymbol;
+    std::unique_ptr<QgsSymbol> mDefaultFillSymbol;
+    std::unique_ptr<QgsColorRamp> mDefaultColorRamp;
     QgsTextFormat mDefaultTextFormat;
 
     bool mRandomizeDefaultSymbolColor = true;
@@ -344,7 +342,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
 
     QgsStyle *mProjectStyle = nullptr;
     QStringList mStyleDatabases;
-    QList< QPointer< QgsStyle > > mStyles;
+    QList<QPointer<QgsStyle>> mStyles;
 
     QgsCombinedStyleModel *mCombinedStyleModel = nullptr;
     Qgis::ColorModel mColorModel = Qgis::ColorModel::Rgb;
@@ -373,7 +371,6 @@ class CORE_EXPORT QgsProjectStyleDatabaseModel : public QAbstractListModel
     Q_OBJECT
 
   public:
-
     // *INDENT-OFF*
 
     /**
@@ -382,10 +379,9 @@ class CORE_EXPORT QgsProjectStyleDatabaseModel : public QAbstractListModel
      * \note Prior to QGIS 3.36 this was available as QgsProjectStyleDatabaseModel::Role
      * \since QGIS 3.36
      */
-    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProjectStyleDatabaseModel, Role ) : int
-    {
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProjectStyleDatabaseModel, Role ) : int {
       Style SIP_MONKEYPATCH_COMPAT_NAME( StyleRole ) = Qt::UserRole + 1, //!< Style object
-      Path SIP_MONKEYPATCH_COMPAT_NAME(PathRole) //!< Style path
+      Path SIP_MONKEYPATCH_COMPAT_NAME( PathRole )                       //!< Style path
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -438,7 +434,7 @@ class CORE_EXPORT QgsProjectStyleDatabaseModel : public QAbstractListModel
   private:
     QgsProjectStyleSettings *mSettings = nullptr;
     bool mShowDefault = false;
-    QPointer< QgsStyle > mProjectStyle;
+    QPointer<QgsStyle> mProjectStyle;
 };
 
 /**
@@ -454,10 +450,8 @@ class CORE_EXPORT QgsProjectStyleDatabaseProxyModel : public QSortFilterProxyMod
     Q_OBJECT
 
   public:
-
     //! Available filter flags for filtering the model
-    enum class Filter : int SIP_ENUM_BASETYPE( IntFlag )
-    {
+    enum class Filter : int SIP_ENUM_BASETYPE( IntFlag ) {
       FilterHideReadOnly = 1 << 0, //!< Hide read-only style databases
     };
     Q_ENUM( Filter )
@@ -487,9 +481,7 @@ class CORE_EXPORT QgsProjectStyleDatabaseProxyModel : public QSortFilterProxyMod
     void setFilters( QgsProjectStyleDatabaseProxyModel::Filters filters );
 
   private:
-
     QgsProjectStyleDatabaseProxyModel::Filters mFilters;
-
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProjectStyleDatabaseProxyModel::Filters )
 

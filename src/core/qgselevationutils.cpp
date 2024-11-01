@@ -37,27 +37,27 @@ QgsDoubleRange QgsElevationUtils::calculateZRangeForProject( QgsProject *project
     if ( layerRange.isInfinite() )
       continue;
 
-    if ( layerRange.lower() > std::numeric_limits< double >::lowest() )
+    if ( layerRange.lower() > std::numeric_limits<double>::lowest() )
     {
       if ( std::isnan( min ) || layerRange.lower() < min )
         min = layerRange.lower();
     }
 
-    if ( layerRange.upper() < std::numeric_limits< double >::max() )
+    if ( layerRange.upper() < std::numeric_limits<double>::max() )
     {
       if ( std::isnan( max ) || layerRange.upper() > max )
         max = layerRange.upper();
     }
   }
 
-  return QgsDoubleRange( std::isnan( min ) ? std::numeric_limits< double >::lowest() : min,
-                         std::isnan( max ) ? std::numeric_limits< double >::max() : max );
+  return QgsDoubleRange( std::isnan( min ) ? std::numeric_limits<double>::lowest() : min,
+                         std::isnan( max ) ? std::numeric_limits<double>::max() : max );
 }
 
 QList<double> QgsElevationUtils::significantZValuesForProject( QgsProject *project )
 {
   const QMap<QString, QgsMapLayer *> &mapLayers = project->mapLayers();
-  QList< QgsMapLayer * > layers;
+  QList<QgsMapLayer *> layers;
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
   {
     if ( it.value() )
@@ -69,28 +69,28 @@ QList<double> QgsElevationUtils::significantZValuesForProject( QgsProject *proje
 
 QList<double> QgsElevationUtils::significantZValuesForLayers( const QList<QgsMapLayer *> &layers )
 {
-  QSet< double > values;
+  QSet<double> values;
 
-  for ( QgsMapLayer *currentLayer  : layers )
+  for ( QgsMapLayer *currentLayer : layers )
   {
     if ( !currentLayer->elevationProperties() || !currentLayer->elevationProperties()->hasElevation() )
       continue;
 
-    const QList< double > layerValues = currentLayer->elevationProperties()->significantZValues( currentLayer );
+    const QList<double> layerValues = currentLayer->elevationProperties()->significantZValues( currentLayer );
     for ( double value : layerValues )
     {
       values.insert( value );
     }
   }
 
-  QList< double > res = qgis::setToList( values );
+  QList<double> res = qgis::setToList( values );
   std::sort( res.begin(), res.end() );
   return res;
 }
 
 bool QgsElevationUtils::canEnableElevationForLayer( QgsMapLayer *layer )
 {
-  return static_cast< bool >( layer->elevationProperties() );
+  return static_cast<bool>( layer->elevationProperties() );
 }
 
 bool QgsElevationUtils::enableElevationForLayer( QgsMapLayer *layer )
@@ -99,7 +99,7 @@ bool QgsElevationUtils::enableElevationForLayer( QgsMapLayer *layer )
   {
     case Qgis::LayerType::Raster:
     {
-      if ( QgsRasterLayerElevationProperties *properties = qobject_cast<QgsRasterLayerElevationProperties * >( layer->elevationProperties() ) )
+      if ( QgsRasterLayerElevationProperties *properties = qobject_cast<QgsRasterLayerElevationProperties *>( layer->elevationProperties() ) )
       {
         properties->setEnabled( true );
         properties->setMode( Qgis::RasterElevationMode::RepresentsElevationSurface );
@@ -123,4 +123,3 @@ bool QgsElevationUtils::enableElevationForLayer( QgsMapLayer *layer )
   }
   return false;
 }
-

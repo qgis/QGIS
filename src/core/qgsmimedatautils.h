@@ -37,51 +37,50 @@ class QgsMapLayer;
 class CORE_EXPORT QgsMimeDataUtils
 {
   public:
-
     struct CORE_EXPORT Uri
     {
-      //! Constructs invalid URI
-      Uri() = default;
-      //! Constructs URI from encoded data
-      explicit Uri( const QString &encData );
+        //! Constructs invalid URI
+        Uri() = default;
+        //! Constructs URI from encoded data
+        explicit Uri( const QString &encData );
 
-      /**
+        /**
        * Constructs a URI corresponding to the specified \a layer.
        *
        * \since QGIS 3.8
        */
-      explicit Uri( QgsMapLayer *layer );
+        explicit Uri( QgsMapLayer *layer );
 
-      /**
+        /**
        * Returns whether the object contains valid data
        */
-      bool isValid() const { return !layerType.isEmpty(); }
+        bool isValid() const { return !layerType.isEmpty(); }
 
-      //! Returns encoded representation of the object
-      QString data() const;
+        //! Returns encoded representation of the object
+        QString data() const;
 
-      /**
+        /**
        * Gets vector layer from uri if possible, otherwise returns NULLPTR and error is set
        * \param owner set to TRUE if caller becomes owner
        * \param error set to error message if cannot get vector
        */
-      QgsVectorLayer *vectorLayer( bool &owner, QString &error ) const;
+        QgsVectorLayer *vectorLayer( bool &owner, QString &error ) const;
 
-      /**
+        /**
        * Gets raster layer from uri if possible, otherwise returns NULLPTR and error is set
        * \param owner set to TRUE if caller becomes owner
        * \param error set to error message if cannot get raster
        */
-      QgsRasterLayer *rasterLayer( bool &owner, QString &error ) const;
+        QgsRasterLayer *rasterLayer( bool &owner, QString &error ) const;
 
-      /**
+        /**
        * Gets mesh layer from uri if possible, otherwise returns NULLPTR and error is set
        * \param owner set to TRUE if caller becomes owner
        * \param error set to error message if cannot get raster
        */
-      QgsMeshLayer *meshLayer( bool &owner, QString &error ) const;
+        QgsMeshLayer *meshLayer( bool &owner, QString &error ) const;
 
-      /**
+        /**
        * Returns the layer from the active project corresponding to this uri (if possible),
        * otherwise returns NULLPTR.
        *
@@ -90,9 +89,9 @@ class CORE_EXPORT QgsMimeDataUtils
        *
        * \since QGIS 3.8
        */
-      QgsMapLayer *mapLayer() const;
+        QgsMapLayer *mapLayer() const;
 
-      /**
+        /**
        * Type of URI.
        *
        * Recognized types include
@@ -110,56 +109,57 @@ class CORE_EXPORT QgsMimeDataUtils
        *
        * Mime data from plugins may use additional custom layer types.
        */
-      QString layerType;
+        QString layerType;
 
-      /**
+        /**
        * For "vector" / "raster" type: provider id.
        * For "plugin" type: plugin layer type name.
        * For "custom" type: key of its QgsCustomDropHandler
        * For "project" and "directory" types: unused
        */
-      QString providerKey;
+        QString providerKey;
 
-      //! Human readable name to be used e.g. in layer tree
-      QString name;
-      //! Identifier of the data source recognized by its providerKey
-      QString uri;
-      QStringList supportedCrs;
-      QStringList supportedFormats;
+        //! Human readable name to be used e.g. in layer tree
+        QString name;
+        //! Identifier of the data source recognized by its providerKey
+        QString uri;
+        QStringList supportedCrs;
+        QStringList supportedFormats;
 
-      /**
+        /**
        * Layer ID, if uri is associated with a layer from a QgsProject.
        * \since QGIS 3.8
        */
-      QString layerId;
+        QString layerId;
 
-      /**
+        /**
        * Unique ID associated with application instance. Can be used to identify
        * if mime data was created inside the current application instance or not.
        * \since QGIS 3.8
        */
-      QString pId;
+        QString pId;
 
-      /**
+        /**
        * WKB type, if associated with a vector layer, or QgsWkbTypes::Unknown if not
        * yet known.
        *
        * \since QGIS 3.8
        */
-      Qgis::WkbType wkbType = Qgis::WkbType::Unknown;
+        Qgis::WkbType wkbType = Qgis::WkbType::Unknown;
 
-      /**
+        /**
        * Path to file, if uri is associated with a file.
        * \since QGIS 3.22
        */
-      QString filePath;
+        QString filePath;
 
 #ifdef SIP_RUN
-      SIP_PYOBJECT __repr__();
-      % MethodCode
-      QString str = QStringLiteral( "<QgsMimeDataUtils::Uri (%1): %2>" ).arg( sipCpp->providerKey, sipCpp->uri );
-      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-      % End
+        SIP_PYOBJECT __repr__();
+        % MethodCode
+            QString str
+          = QStringLiteral( "<QgsMimeDataUtils::Uri (%1): %2>" ).arg( sipCpp->providerKey, sipCpp->uri );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
 #endif
     };
     typedef QList<QgsMimeDataUtils::Uri> UriList;
@@ -193,10 +193,8 @@ class CORE_EXPORT QgsMimeDataUtils
 
 
     friend class TestQgsMimeDataUtils;
-
 };
 
 Q_DECLARE_METATYPE( QgsMimeDataUtils::UriList )
 
 #endif // QGSMIMEDATAUTILS_H
-

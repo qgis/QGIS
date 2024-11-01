@@ -91,8 +91,7 @@ bool QgsBrightnessContrastFilter::setInput( QgsRasterInterface *input )
     return false;
   }
 
-  if ( input->dataType( 1 ) != Qgis::DataType::ARGB32_Premultiplied &&
-       input->dataType( 1 ) != Qgis::DataType::ARGB32 )
+  if ( input->dataType( 1 ) != Qgis::DataType::ARGB32_Premultiplied && input->dataType( 1 ) != Qgis::DataType::ARGB32 )
   {
     QgsDebugError( QStringLiteral( "Unknown input data type" ) );
     return false;
@@ -103,12 +102,12 @@ bool QgsBrightnessContrastFilter::setInput( QgsRasterInterface *input )
   return true;
 }
 
-QgsRasterBlock *QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
+QgsRasterBlock *QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo )
   QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
 
-  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
+  std::unique_ptr<QgsRasterBlock> outputBlock( new QgsRasterBlock() );
   if ( !mInput )
   {
     return outputBlock.release();
@@ -116,7 +115,7 @@ QgsRasterBlock *QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  co
 
   // At this moment we know that we read rendered image
   int bandNumber = 1;
-  std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( bandNumber, extent, width, height, feedback ) );
+  std::unique_ptr<QgsRasterBlock> inputBlock( mInput->block( bandNumber, extent, width, height, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugError( QStringLiteral( "No raster data!" ) );
@@ -142,7 +141,7 @@ QgsRasterBlock *QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  co
   double f = std::pow( ( mContrast + 100 ) / 100.0, 2 );
   double gammaCorrection = 1.0 / mGamma;
 
-  for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
+  for ( qgssize i = 0; i < ( qgssize ) width * height; i++ )
   {
     if ( inputBlock->color( i ) == myNoDataColor )
     {
@@ -183,7 +182,7 @@ int QgsBrightnessContrastFilter::adjustColorComponent( int colorComponent, int a
   if ( alpha == 255 )
   {
     // Opaque pixel, do simpler math
-    return std::clamp( ( int )( 255 * std::pow( ( ( ( ( ( ( colorComponent / 255.0 ) - 0.5 ) * contrastFactor ) + 0.5 ) * 255 ) + brightness ) / 255.0, gammaCorrection ) ), 0, 255 );
+    return std::clamp( ( int ) ( 255 * std::pow( ( ( ( ( ( ( colorComponent / 255.0 ) - 0.5 ) * contrastFactor ) + 0.5 ) * 255 ) + brightness ) / 255.0, gammaCorrection ) ), 0, 255 );
   }
   else if ( alpha == 0 )
   {

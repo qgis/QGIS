@@ -32,7 +32,7 @@
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutPolygonWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPolygonWidgetBase
+class GUI_EXPORT QgsLayoutPolygonWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPolygonWidgetBase
 {
     Q_OBJECT
   public:
@@ -41,11 +41,10 @@ class GUI_EXPORT QgsLayoutPolygonWidget: public QgsLayoutItemBaseWidget, private
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
   protected:
-
     bool setNewItem( QgsLayoutItem *item ) override;
 
   private:
-    QPointer< QgsLayoutItemPolygon > mPolygon;
+    QPointer<QgsLayoutItemPolygon> mPolygon;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
     //! Sets the GUI elements to the currentValues of mComposerShape

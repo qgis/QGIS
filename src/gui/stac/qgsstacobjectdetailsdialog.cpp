@@ -21,8 +21,8 @@
 
 ///@cond PRIVATE
 
-QgsStacObjectDetailsDialog::QgsStacObjectDetailsDialog( QWidget *parent ) :
-  QDialog( parent )
+QgsStacObjectDetailsDialog::QgsStacObjectDetailsDialog( QWidget *parent )
+  : QDialog( parent )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
@@ -30,7 +30,7 @@ QgsStacObjectDetailsDialog::QgsStacObjectDetailsDialog( QWidget *parent ) :
 
 void QgsStacObjectDetailsDialog::setStacObject( QgsStacObject *stacObject )
 {
-  if ( ! stacObject )
+  if ( !stacObject )
     return;
 
   QStringList thumbnails;

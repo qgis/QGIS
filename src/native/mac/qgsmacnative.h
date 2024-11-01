@@ -43,7 +43,6 @@ class NATIVE_EXPORT QgsMacNative : public QgsNative
   private:
     class QgsUserNotificationCenter;
     QgsUserNotificationCenter *mQgsUserNotificationCenter = nullptr;
-
 };
 
 

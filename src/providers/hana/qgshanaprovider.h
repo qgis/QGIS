@@ -62,7 +62,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     QgsFields fields() const override;
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
-    QSet< QVariant > uniqueValues( int index, int limit = -1 ) const override;
+    QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
     QString subsetString() const override;
     bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
     bool supportsSubsetString() const override;
@@ -101,8 +101,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *options = nullptr
-    );
+      const QMap<QString, QVariant> *options = nullptr );
 
     Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
 
@@ -206,7 +205,7 @@ class QgsHanaProviderMetadata : public QgsProviderMetadata
     // Data source URI API
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 #endif // QGSHANAPROVIDER_H

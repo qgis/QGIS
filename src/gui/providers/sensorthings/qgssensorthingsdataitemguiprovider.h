@@ -26,7 +26,6 @@ class QgsSensorThingsDataItemGuiProvider : public QObject, public QgsDataItemGui
 {
     Q_OBJECT
   public:
-
     QString name() override { return QStringLiteral( "SensorThings" ); }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
@@ -38,7 +37,6 @@ class QgsSensorThingsDataItemGuiProvider : public QObject, public QgsDataItemGui
     static void newConnection( QgsDataItem *item );
     static void saveConnections();
     static void loadConnections( QgsDataItem *item );
-
 };
 
 ///@endcond

@@ -196,7 +196,7 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
 
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
 
-  QgsBlockingNetworkRequest networkRequest;
+    QgsBlockingNetworkRequest networkRequest;
   switch ( networkRequest.get( request ) )
   {
     case QgsBlockingNetworkRequest::NoError:
@@ -242,7 +242,7 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
 
       QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLayer" ) )
 
-      QgsBlockingNetworkRequest networkRequest;
+        QgsBlockingNetworkRequest networkRequest;
       switch ( networkRequest.get( request ) )
       {
         case QgsBlockingNetworkRequest::NoError:
@@ -289,7 +289,7 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
     QNetworkRequest tileMapRequest = QNetworkRequest( tilemapUrl );
     QgsSetRequestInitiatorClass( tileMapRequest, QStringLiteral( "QgsVectorTileLayer" ) )
 
-    QgsBlockingNetworkRequest tileMapNetworkRequest;
+      QgsBlockingNetworkRequest tileMapNetworkRequest;
     switch ( tileMapNetworkRequest.get( tileMapRequest ) )
     {
       case QgsBlockingNetworkRequest::NoError:
@@ -337,8 +337,7 @@ bool QgsArcGisVectorTileServiceDataProvider::setupArcgisVectorTileServiceConnect
       fullExtent.value( QStringLiteral( "xmin" ) ).toDouble(),
       fullExtent.value( QStringLiteral( "ymin" ) ).toDouble(),
       fullExtent.value( QStringLiteral( "xmax" ) ).toDouble(),
-      fullExtent.value( QStringLiteral( "ymax" ) ).toDouble()
-    );
+      fullExtent.value( QStringLiteral( "ymax" ) ).toDouble() );
 
     const QgsCoordinateReferenceSystem fullExtentCrs = QgsArcGisRestUtils::convertSpatialReference( fullExtent.value( QStringLiteral( "spatialReference" ) ).toMap() );
     const QgsCoordinateTransform extentTransform( fullExtentCrs, mCrs, transformContext() );
@@ -429,17 +428,17 @@ QString QgsArcGisVectorTileServiceDataProviderMetadata::encodeUri( const QVarian
   dsUri.setParam( QStringLiteral( "url" ), parts.value( QStringLiteral( "url" ) ).toString() );
 
   if ( parts.contains( QStringLiteral( "zmin" ) ) )
-    dsUri.setParam( QStringLiteral( "zmin" ), parts[ QStringLiteral( "zmin" ) ].toString() );
+    dsUri.setParam( QStringLiteral( "zmin" ), parts[QStringLiteral( "zmin" )].toString() );
   if ( parts.contains( QStringLiteral( "zmax" ) ) )
-    dsUri.setParam( QStringLiteral( "zmax" ), parts[ QStringLiteral( "zmax" ) ].toString() );
+    dsUri.setParam( QStringLiteral( "zmax" ), parts[QStringLiteral( "zmax" )].toString() );
 
   dsUri.httpHeaders().setFromMap( parts );
 
   if ( parts.contains( QStringLiteral( "styleUrl" ) ) )
-    dsUri.setParam( QStringLiteral( "styleUrl" ), parts[ QStringLiteral( "styleUrl" ) ].toString() );
+    dsUri.setParam( QStringLiteral( "styleUrl" ), parts[QStringLiteral( "styleUrl" )].toString() );
 
   if ( parts.contains( QStringLiteral( "authcfg" ) ) )
-    dsUri.setAuthConfigId( parts[ QStringLiteral( "authcfg" ) ].toString() );
+    dsUri.setAuthConfigId( parts[QStringLiteral( "authcfg" )].toString() );
 
   return dsUri.encodedUri();
 }
@@ -464,5 +463,3 @@ QList<Qgis::LayerType> QgsArcGisVectorTileServiceDataProviderMetadata::supported
 }
 
 ///@endcond
-
-

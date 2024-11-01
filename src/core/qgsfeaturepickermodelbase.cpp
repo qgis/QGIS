@@ -147,7 +147,6 @@ int QgsFeaturePickerModelBase::rowCount( const QModelIndex &parent ) const
 }
 
 
-
 QVariant QgsFeaturePickerModelBase::data( const QModelIndex &index, int role ) const
 {
   if ( !index.isValid() )
@@ -157,22 +156,22 @@ QVariant QgsFeaturePickerModelBase::data( const QModelIndex &index, int role ) c
   {
     case Qt::DisplayRole:
     case Qt::EditRole:
-    case static_cast< int >( CustomRole::Value ):
+    case static_cast<int>( CustomRole::Value ):
       return mEntries.value( index.row() ).value;
 
-    case static_cast< int >( CustomRole::FeatureId ):
+    case static_cast<int>( CustomRole::FeatureId ):
       return mEntries.value( index.row() ).featureId;
 
-    case static_cast< int >( CustomRole::Feature ):
+    case static_cast<int>( CustomRole::Feature ):
       return mEntries.value( index.row() ).feature;
 
-    case static_cast< int >( CustomRole::IdentifierValue ):
+    case static_cast<int>( CustomRole::IdentifierValue ):
     {
       const QVariantList values = mEntries.value( index.row() ).identifierFields;
       return values.value( 0 );
     }
 
-    case static_cast< int >( CustomRole::IdentifierValues ):
+    case static_cast<int>( CustomRole::IdentifierValues ):
       return mEntries.value( index.row() ).identifierFields;
 
     case Qt::BackgroundRole:
@@ -266,7 +265,7 @@ void QgsFeaturePickerModelBase::updateCompleter()
   else
   {
     // We got strings for a filter selection
-    std::sort( entries.begin(), entries.end(), []( const QgsFeatureExpressionValuesGatherer::Entry & a, const QgsFeatureExpressionValuesGatherer::Entry & b ) { return a.value.localeAwareCompare( b.value ) < 0; } );
+    std::sort( entries.begin(), entries.end(), []( const QgsFeatureExpressionValuesGatherer::Entry &a, const QgsFeatureExpressionValuesGatherer::Entry &b ) { return a.value.localeAwareCompare( b.value ) < 0; } );
 
     if ( mAllowNull && mSourceLayer )
     {
@@ -527,14 +526,14 @@ QgsConditionalStyle QgsFeaturePickerModelBase::featureStyle( const QgsFeature &f
   const QgsFeatureId fid = feature.id();
   mExpressionContext.setFeature( feature );
 
-  auto styles = QgsConditionalStyle::matchingConditionalStyles( layer->conditionalStyles()->rowStyles(), QVariant(),  mExpressionContext );
+  auto styles = QgsConditionalStyle::matchingConditionalStyles( layer->conditionalStyles()->rowStyles(), QVariant(), mExpressionContext );
 
   if ( mDisplayExpression.referencedColumns().count() == 1 )
   {
     // Style specific for this field
     const QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
     const auto allStyles = layer->conditionalStyles()->fieldStyles( fieldName );
-    const auto matchingFieldStyles = QgsConditionalStyle::matchingConditionalStyles( allStyles, feature.attribute( fieldName ),  mExpressionContext );
+    const auto matchingFieldStyles = QgsConditionalStyle::matchingConditionalStyles( allStyles, feature.attribute( fieldName ), mExpressionContext );
 
     styles += matchingFieldStyles;
   }
@@ -641,4 +640,3 @@ void QgsFeaturePickerModelBase::setExtraIdentifierValue( const QVariant &extraId
 
   emit extraIdentifierValueChanged();
 }
-

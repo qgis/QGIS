@@ -31,7 +31,7 @@ namespace SpatialIndex SIP_SKIP
   {
     class IBuffer;
   }
-}
+} // namespace SIP_SKIP
 
 class QgsFeedback;
 class QgsFeature;
@@ -66,14 +66,11 @@ class QgsFeatureSource;
  */
 class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
 {
-
   public:
-
     /* creation of spatial index */
 
     //! Flags controlling index behavior
-    enum Flag SIP_ENUM_BASETYPE( IntFlag )
-    {
+    enum Flag SIP_ENUM_BASETYPE( IntFlag ) {
       FlagStoreFeatureGeometries = 1 << 0, //!< Indicates that the spatial index should also store feature geometries. This requires more memory, but can speed up operations by avoiding additional requests to data providers to fetch matching feature geometries. Additionally, it is required for non-bounding box nearest neighbor searches.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -107,7 +104,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      *
      * \note Not available in Python bindings
      */
-    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, const std::function< bool( const QgsFeature & ) > &callback, QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags() );
+    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, const std::function<bool( const QgsFeature & )> &callback, QgsSpatialIndex::Flags flags = QgsSpatialIndex::Flags() );
 #endif
 
     /**
@@ -254,7 +251,9 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      */
     SIP_PYOBJECT geometry( QgsFeatureId id ) const SIP_TYPEHINT( QgsGeometry );
     % MethodCode
-    std::unique_ptr< QgsGeometry > g = std::make_unique< QgsGeometry >( sipCpp->geometry( a0 ) );
+        std::unique_ptr<QgsGeometry>
+          g
+      = std::make_unique<QgsGeometry>( sipCpp->geometry( a0 ) );
     if ( g->isNull() )
     {
       PyErr_SetString( PyExc_KeyError, QStringLiteral( "No geometry with feature id %1 exists in the index." ).arg( a0 ).toUtf8().constData() );
@@ -273,7 +272,6 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
     QAtomicInt SIP_PYALTERNATIVETYPE( int ) refs() const;
 
   private:
-
     /**
      * Calculates feature info to insert into index.
     * \param f input feature
@@ -297,9 +295,7 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
     friend class QgsFeatureIteratorDataStream; // for access to featureInfo()
 
   private:
-
     QSharedDataPointer<QgsSpatialIndexData> d;
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSpatialIndex::Flags )

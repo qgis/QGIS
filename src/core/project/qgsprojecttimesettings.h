@@ -38,7 +38,6 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProjectTimeSettings with the specified \a parent object.
      */
@@ -188,7 +187,6 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
     void temporalRangeChanged();
 
   private:
-
     QgsDateTimeRange mRange;
     Qgis::TemporalUnit mTimeStepUnit = Qgis::TemporalUnit::Hours;
     double mTimeStep = 1;

@@ -23,7 +23,6 @@
 QgsVersionInfo::QgsVersionInfo( QObject *parent )
   : QObject( parent )
 {
-
 }
 
 void QgsVersionInfo::checkVersion()

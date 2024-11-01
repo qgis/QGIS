@@ -35,7 +35,6 @@
 class CORE_EXPORT QgsTiledSceneTile
 {
   public:
-
     /**
      * Constructor for an invalid tile.
      *
@@ -180,12 +179,11 @@ class CORE_EXPORT QgsTiledSceneTile
     long long mId = -1;
     Qgis::TileRefinementProcess mRefinementProcess = Qgis::TileRefinementProcess::Replacement;
     QgsTiledSceneBoundingVolume mBoundingVolume;
-    std::unique_ptr< QgsMatrix4x4 > mTransform;
+    std::unique_ptr<QgsMatrix4x4> mTransform;
     QVariantMap mResources;
     double mGeometricError = 0;
     QUrl mBaseUrl;
     QVariantMap mMetadata;
-
 };
 
 #endif // QGSTILEDSCENETILE_H

@@ -34,7 +34,6 @@ class QgsCurve;
 class CORE_EXPORT QgsAnnotationLineTextItem : public QgsAnnotationItem
 {
   public:
-
     /**
      * Constructor for QgsAnnotationLineTextItem, with the specified \a curve and \a text.
      */
@@ -45,7 +44,7 @@ class CORE_EXPORT QgsAnnotationLineTextItem : public QgsAnnotationItem
     QString type() const override;
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
-    QList< QgsAnnotationItemNode > nodesV2( const QgsAnnotationItemEditContext &context ) const override;
+    QList<QgsAnnotationItemNode> nodesV2( const QgsAnnotationItemEditContext &context ) const override;
     Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) override;
     QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) override SIP_FACTORY;
 
@@ -157,9 +156,8 @@ class CORE_EXPORT QgsAnnotationLineTextItem : public QgsAnnotationItem
     const QgsMapUnitScale &offsetFromLineMapUnitScale() const { return mOffsetFromLineScale; }
 
   private:
-
     QString mText;
-    std::unique_ptr< QgsCurve > mCurve;
+    std::unique_ptr<QgsCurve> mCurve;
     QgsTextFormat mTextFormat;
 
     double mOffsetFromLineDistance = 0;
@@ -169,7 +167,6 @@ class CORE_EXPORT QgsAnnotationLineTextItem : public QgsAnnotationItem
 #ifdef SIP_RUN
     QgsAnnotationLineTextItem( const QgsAnnotationLineTextItem &other );
 #endif
-
 };
 
 #endif // QGSANNOTATIONLINETEXTITEM_H

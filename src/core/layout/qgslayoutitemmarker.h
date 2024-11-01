@@ -35,7 +35,6 @@ class CORE_EXPORT QgsLayoutItemMarker : public QgsLayoutItem
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutItemMarker, with the specified parent \a layout.
      */
@@ -128,7 +127,6 @@ class CORE_EXPORT QgsLayoutItemMarker : public QgsLayoutItem
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
   protected:
-
     void draw( QgsLayoutItemRenderContext &context ) override;
 
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
@@ -149,8 +147,7 @@ class CORE_EXPORT QgsLayoutItemMarker : public QgsLayoutItem
     void northArrowRotationChanged( double rotation );
 
   private:
-
-    std::unique_ptr< QgsMarkerSymbol > mShapeStyleSymbol;
+    std::unique_ptr<QgsMarkerSymbol> mShapeStyleSymbol;
 
     QPointF mPoint;
     QRectF mCurrentRectangle;

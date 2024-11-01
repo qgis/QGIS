@@ -41,7 +41,6 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     Q_OBJECT
 
   public:
-
     /**
      * Construct a widget for editing an SSL server certificate configuration
      * \param parent Parent widget
@@ -193,7 +192,6 @@ class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Construct wrapper dialog for the SSL config widget
      * \param parent Parent widget

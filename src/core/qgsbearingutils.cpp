@@ -23,7 +23,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsexception.h"
 
-double QgsBearingUtils::bearingTrueNorth( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext  &transformContext, const QgsPointXY &point )
+double QgsBearingUtils::bearingTrueNorth( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext, const QgsPointXY &point )
 {
   // step 1 - transform point into WGS84 geographic crs
   const QgsCoordinateTransform transform( crs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), transformContext );

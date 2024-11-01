@@ -50,9 +50,9 @@ QgsVirtualPointCloudProvider::QgsVirtualPointCloudProvider(
   Qgis::DataProviderReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
 {
-  std::unique_ptr< QgsScopedRuntimeProfile > profile;
+  std::unique_ptr<QgsScopedRuntimeProfile> profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
+    profile = std::make_unique<QgsScopedRuntimeProfile>( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
   mPolygonBounds.reset( new QgsGeometry( new QgsMultiPolygon() ) );
 
@@ -131,8 +131,7 @@ qint64 QgsVirtualPointCloudProvider::pointCount() const
   return static_cast<qint64>( mPointCount );
 }
 
-void QgsVirtualPointCloudProvider::loadIndex()
-{
+void QgsVirtualPointCloudProvider::loadIndex() {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   //no-op, there is no index
@@ -171,8 +170,7 @@ void QgsVirtualPointCloudProvider::parseFile()
     }
   }
 
-  if ( data["type"] != "FeatureCollection" ||
-       !data.contains( "features" ) )
+  if ( data["type"] != "FeatureCollection" || !data.contains( "features" ) )
   {
     appendError( QgsErrorMessage( QStringLiteral( "Invalid VPC file" ) ) );
     return;
@@ -182,11 +180,7 @@ void QgsVirtualPointCloudProvider::parseFile()
 
   for ( const auto &f : data["features"] )
   {
-    if ( !f.contains( "type" ) || f["type"] != "Feature" ||
-         !f.contains( "stac_version" ) ||
-         !f.contains( "assets" ) || !f["assets"].is_object() ||
-         !f.contains( "properties" ) || !f["properties"].is_object() ||
-         !f.contains( "geometry" ) || !f["geometry"].is_object() )
+    if ( !f.contains( "type" ) || f["type"] != "Feature" || !f.contains( "stac_version" ) || !f.contains( "assets" ) || !f["assets"].is_object() || !f.contains( "properties" ) || !f["properties"].is_object() || !f.contains( "geometry" ) || !f["geometry"].is_object() )
     {
       QgsDebugError( QStringLiteral( "Malformed STAC item: %1" ).arg( QString::fromStdString( f ) ) );
       continue;
@@ -214,8 +208,7 @@ void QgsVirtualPointCloudProvider::parseFile()
     }
 
     // Only COPC and EPT formats are currently supported. Other files will only have their bounds rendered
-    if ( !uri.endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) &&
-         !uri.endsWith( QStringLiteral( "copc.laz" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    if ( !uri.endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) && !uri.endsWith( QStringLiteral( "copc.laz" ), Qt::CaseSensitivity::CaseInsensitive ) )
     {
       QgsDebugError( QStringLiteral( "Unsupported point cloud uri: %1" ).arg( uri ) );
     }
@@ -387,7 +380,7 @@ void QgsVirtualPointCloudProvider::loadSubIndex( int i )
   if ( i >= mSubLayers.size() || i < 0 )
     return;
 
-  QgsPointCloudSubIndex &sl = mSubLayers[ i ];
+  QgsPointCloudSubIndex &sl = mSubLayers[i];
   // Index already loaded -> no need to load
   if ( sl.index() )
     return;
@@ -445,17 +438,13 @@ void QgsVirtualPointCloudProvider::populateAttributeCollection( QSet<QString> na
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "PointSourceId" ), QgsPointCloudAttribute::UShort ) );
   if ( names.contains( QLatin1String( "ScannerChannel" ) ) )
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "ScannerChannel" ), QgsPointCloudAttribute::Char ) );
-  if ( names.contains( QLatin1String( "Synthetic" ) ) ||
-       names.contains( QLatin1String( "ClassFlags" ) ) )
+  if ( names.contains( QLatin1String( "Synthetic" ) ) || names.contains( QLatin1String( "ClassFlags" ) ) )
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Synthetic" ), QgsPointCloudAttribute::UChar ) );
-  if ( names.contains( QLatin1String( "KeyPoint" ) ) ||
-       names.contains( QLatin1String( "ClassFlags" ) ) )
+  if ( names.contains( QLatin1String( "KeyPoint" ) ) || names.contains( QLatin1String( "ClassFlags" ) ) )
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "KeyPoint" ), QgsPointCloudAttribute::UChar ) );
-  if ( names.contains( QLatin1String( "Withheld" ) ) ||
-       names.contains( QLatin1String( "ClassFlags" ) ) )
+  if ( names.contains( QLatin1String( "Withheld" ) ) || names.contains( QLatin1String( "ClassFlags" ) ) )
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Withheld" ), QgsPointCloudAttribute::UChar ) );
-  if ( names.contains( QLatin1String( "Overlap" ) ) ||
-       names.contains( QLatin1String( "ClassFlags" ) ) )
+  if ( names.contains( QLatin1String( "Overlap" ) ) || names.contains( QLatin1String( "ClassFlags" ) ) )
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Overlap" ), QgsPointCloudAttribute::UChar ) );
   if ( names.contains( QLatin1String( "GpsTime" ) ) )
     mAttributes.push_back( QgsPointCloudAttribute( QStringLiteral( "GpsTime" ), QgsPointCloudAttribute::Double ) );
@@ -527,8 +516,8 @@ QgsPointCloudRenderer *QgsVirtualPointCloudProvider::createRenderer( const QVari
   return new QgsPointCloudExtentRenderer();
 }
 
-QgsVirtualPointCloudProviderMetadata::QgsVirtualPointCloudProviderMetadata():
-  QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
+QgsVirtualPointCloudProviderMetadata::QgsVirtualPointCloudProviderMetadata()
+  : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {
 }
 
@@ -552,7 +541,7 @@ QList<QgsProviderSublayerDetails> QgsVirtualPointCloudProviderMetadata::querySub
     details.setProviderKey( QStringLiteral( "vpc" ) );
     details.setType( Qgis::LayerType::PointCloud );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
-    return {details};
+    return { details };
   }
   else
   {
@@ -573,9 +562,9 @@ QList<Qgis::LayerType> QgsVirtualPointCloudProviderMetadata::validLayerTypesForU
 {
   const QVariantMap parts = decodeUri( uri );
   if ( parts.value( QStringLiteral( "file-name" ) ).toString().endsWith( ".vpc", Qt::CaseSensitivity::CaseInsensitive ) )
-    return QList< Qgis::LayerType>() << Qgis::LayerType::PointCloud;
+    return QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud;
 
-  return QList< Qgis::LayerType>();
+  return QList<Qgis::LayerType>();
 }
 
 QVariantMap QgsVirtualPointCloudProviderMetadata::decodeUri( const QString &uri ) const
@@ -628,4 +617,3 @@ QgsProviderMetadata::ProviderMetadataCapabilities QgsVirtualPointCloudProviderMe
          | ProviderMetadataCapability::QuerySublayers;
 }
 ///@endcond
-

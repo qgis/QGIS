@@ -231,23 +231,21 @@ void QgsFontManager::enableFontDownloadsForSession()
 QgsFontDownloadDetails GoogleFontDetails( const QString &family, const QStringList &downloadPaths, const QString &licensePath = QString() )
 {
   QStringList fontUrls;
-  fontUrls.reserve( downloadPaths.size( ) );
+  fontUrls.reserve( downloadPaths.size() );
   for ( const QString &path : downloadPaths )
   {
     fontUrls.append( QStringLiteral( "https://github.com/google/fonts/raw/main/%1" ).arg( path ) );
   }
   return QgsFontDownloadDetails(
-           family,
-           fontUrls,
-           !licensePath.isEmpty() ? QStringLiteral( "https://github.com/google/fonts/raw/main/%1" ).arg( licensePath ) : QString()
-         );
+    family,
+    fontUrls,
+    !licensePath.isEmpty() ? QStringLiteral( "https://github.com/google/fonts/raw/main/%1" ).arg( licensePath ) : QString() );
 }
 
 QgsFontDownloadDetails QgsFontManager::detailsForFontDownload( const QString &family, QString &matchedFamily ) const
 {
   // this list is built using scripts/process_google_fonts.py
-  const thread_local std::vector< QgsFontDownloadDetails > sGoogleFonts
-  {
+  const thread_local std::vector<QgsFontDownloadDetails> sGoogleFonts {
     GoogleFontDetails( QStringLiteral( "ABeeZee" ), { QStringLiteral( "ofl/abeezee/ABeeZee-Regular.ttf" ), QStringLiteral( "ofl/abeezee/ABeeZee-Italic.ttf" ) }, QStringLiteral( "ofl/abeezee/OFL.txt" ) ),
     GoogleFontDetails( QStringLiteral( "ADLaM Display" ), { QStringLiteral( "ofl/adlamdisplay/ADLaMDisplay-Regular.ttf" ) }, QStringLiteral( "ofl/adlamdisplay/OFL.txt" ) ),
     GoogleFontDetails( QStringLiteral( "Abel" ), { QStringLiteral( "ofl/abel/Abel-Regular.ttf" ) }, QStringLiteral( "ofl/abel/OFL.txt" ) ),
@@ -1835,8 +1833,7 @@ void QgsFontManager::downloadAndInstallFont( const QgsFontDownloadDetails &detai
   }
 
   QgsFontDownloadTask *task = new QgsFontDownloadTask( description, details );
-  connect( task, &QgsFontDownloadTask::taskTerminated, this, [this, task, identifier]
-  {
+  connect( task, &QgsFontDownloadTask::taskTerminated, this, [this, task, identifier] {
     QgsReadWriteLocker locker( mReplacementLock, QgsReadWriteLocker::Write );
     mPendingFontDownloads.remove( identifier );
     locker.unlock();
@@ -1844,9 +1841,8 @@ void QgsFontManager::downloadAndInstallFont( const QgsFontDownloadDetails &detai
     emit fontDownloadErrorOccurred( QUrl( task->failedUrl() ), identifier, task->errorMessage() );
   } );
 
-  connect( task, &QgsFontDownloadTask::taskCompleted, this, [this, task, details, identifier]
-  {
-    const QList<QByteArray > allFontData = task->fontData();
+  connect( task, &QgsFontDownloadTask::taskCompleted, this, [this, task, details, identifier] {
+    const QList<QByteArray> allFontData = task->fontData();
     QStringList allFamilies;
     QStringList allLicenseDetails;
 
@@ -1854,7 +1850,7 @@ void QgsFontManager::downloadAndInstallFont( const QgsFontDownloadDetails &detai
     for ( int i = 0; i < allFontData.size(); ++i )
     {
       QStringList thisUrlFamilies;
-      const QByteArray fontData  = allFontData[i];
+      const QByteArray fontData = allFontData[i];
       const QString contentDispositionFilename = task->contentDispositionFilenames().at( i );
       QString extension;
       if ( contentDispositionFilename.isEmpty() )
@@ -1897,8 +1893,7 @@ void QgsFontManager::downloadAndInstallFont( const QgsFontDownloadDetails &detai
     locker.unlock();
 
     emit fontDownloaded( allFamilies, allLicenseDetails.isEmpty() ? QString() : allLicenseDetails.join( "\n\n" ) );
-  }
-         );
+  } );
 
   QgsApplication::taskManager()->addTask( task );
 }
@@ -2003,8 +1998,7 @@ bool QgsFontManager::installFontsFromData( const QByteArray &data, QString &erro
             licenseDetails.append( license );
           }
         }
-        else if ( fi.suffix().compare( QLatin1String( "ttf" ), Qt::CaseInsensitive ) == 0 ||
-                  fi.suffix().compare( QLatin1String( "otf" ), Qt::CaseInsensitive ) == 0 )
+        else if ( fi.suffix().compare( QLatin1String( "ttf" ), Qt::CaseInsensitive ) == 0 || fi.suffix().compare( QLatin1String( "otf" ), Qt::CaseInsensitive ) == 0 )
         {
           sourcePath = file;
           id = QFontDatabase::addApplicationFont( sourcePath );
@@ -2087,14 +2081,13 @@ bool QgsFontManager::removeUserFont( const QString &path )
 
 QgsFontDownloadTask::QgsFontDownloadTask( const QString &description, const QgsFontDownloadDetails &details )
   : QgsTask( description, QgsTask::CanCancel )
-  ,  mDetails( details )
+  , mDetails( details )
 {
-
 }
 
 bool QgsFontDownloadTask::run()
 {
-  mFeedback = std::make_unique< QgsFeedback >();
+  mFeedback = std::make_unique<QgsFeedback>();
   mResult = true;
 
   for ( const QString &url : mDetails.fontUrls() )

@@ -35,7 +35,6 @@ class QgsTiledSceneTile;
 class QgsTiledSceneNode
 {
   public:
-
     /**
      * Constructor for QgsTiledSceneNode, for the specified \a tile.
      *
@@ -69,19 +68,17 @@ class QgsTiledSceneNode
     /**
      * Returns this node's children.
      */
-    QList< QgsTiledSceneNode * > children() const { return mChildren; }
+    QList<QgsTiledSceneNode *> children() const { return mChildren; }
 
   private:
-
 #ifdef SIP_RUN
     QgsTiledSceneNode( const QgsTiledSceneNode &other );
 #endif
 
-    std::unique_ptr< QgsTiledSceneTile > mTile;
+    std::unique_ptr<QgsTiledSceneTile> mTile;
 
     QgsTiledSceneNode *mParent = nullptr;
-    QList< QgsTiledSceneNode * > mChildren;
-
+    QList<QgsTiledSceneNode *> mChildren;
 };
 
 #endif // QGSTILEDSCENENODE_H

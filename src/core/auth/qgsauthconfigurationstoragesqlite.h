@@ -36,19 +36,16 @@ class QgsAuthConfigurationStorageSqlite : public QgsAuthConfigurationStorageDb
 
     //  QgsAuthConfigurationStorageDb interface
   public:
-
     QgsAuthConfigurationStorageSqlite( const QString &databasePath );
 
     bool initialize() override;
     QList<QgsAuthConfigurationStorage::SettingParameter> settingsParameters() const override;
     QString description() const override;
-    QString type( ) const override;
+    QString type() const override;
 
   private:
-
     bool tableExists( const QString &table ) const override;
     void checkCapabilities() override;
-
 };
 /// @endcond
 

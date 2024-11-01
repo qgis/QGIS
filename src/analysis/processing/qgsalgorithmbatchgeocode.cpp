@@ -25,7 +25,6 @@ QgsBatchGeocodeAlgorithm::QgsBatchGeocodeAlgorithm( QgsGeocoderInterface *geocod
   : QgsProcessingFeatureBasedAlgorithm()
   , mGeocoder( geocoder )
 {
-
 }
 
 QStringList QgsBatchGeocodeAlgorithm::tags() const
@@ -59,12 +58,12 @@ void QgsBatchGeocodeAlgorithm::initParameters( const QVariantMap &configuration 
 
 QList<int> QgsBatchGeocodeAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector );
 }
 
 bool QgsBatchGeocodeAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
-  if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
+  if ( const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer ) )
   {
     return vl->geometryType() == Qgis::GeometryType::Point;
   }
@@ -130,7 +129,7 @@ QgsFeatureList QgsBatchGeocodeAlgorithm::processFeature( const QgsFeature &featu
   }
 
   const QgsGeocoderContext geocodeContext( context.transformContext() );
-  const QList< QgsGeocoderResult > results = mGeocoder->geocodeString( address, geocodeContext, feedback );
+  const QList<QgsGeocoderResult> results = mGeocoder->geocodeString( address, geocodeContext, feedback );
   if ( results.empty() )
   {
     f.padAttributes( mAdditionalFields.count() );

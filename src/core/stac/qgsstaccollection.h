@@ -50,7 +50,7 @@ class CORE_EXPORT QgsStacCollection : public QgsStacCatalog
     QgsStacCollection( const QString &id,
                        const QString &version,
                        const QString &description,
-                       const QVector< QgsStacLink > &links,
+                       const QVector<QgsStacLink> &links,
                        const QString &license,
                        const QgsStacExtent &extent );
 
@@ -102,10 +102,10 @@ class CORE_EXPORT QgsStacCollection : public QgsStacCatalog
   private:
     QStringList mKeywords;
     QString mLicense;
-    QVector< QgsStacProvider > mProviders;
+    QVector<QgsStacProvider> mProviders;
     QgsStacExtent mExtent;
     QVariantMap mSummaries;
-    QMap< QString, QgsStacAsset > mAssets;
+    QMap<QString, QgsStacAsset> mAssets;
 };
 
 #endif // QGSSTACCOLLECTION_H

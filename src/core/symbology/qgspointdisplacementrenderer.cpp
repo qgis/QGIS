@@ -71,7 +71,6 @@ QgsPointDisplacementRenderer *QgsPointDisplacementRenderer::clone() const
 
 void QgsPointDisplacementRenderer::drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group ) const
 {
-
   //calculate max diagonal size from all symbols in group
   double diagonal = 0;
   QVector<double> diagonals( group.size() );
@@ -85,7 +84,6 @@ void QgsPointDisplacementRenderer::drawGroup( QPointF centerPoint, QgsRenderCont
       currentDiagonal = M_SQRT2 * symbol->size( context );
       diagonals[groupPosition] = currentDiagonal;
       diagonal = std::max( diagonal, currentDiagonal );
-
     }
     else
     {
@@ -173,7 +171,7 @@ QgsFeatureRenderer *QgsPointDisplacementRenderer::create( QDomElement &symbology
     labelFont.fromString( symbologyElem.attribute( QStringLiteral( "labelFont" ), QString() ) );
   }
   r->setLabelFont( labelFont );
-  r->setPlacement( static_cast< Placement >( symbologyElem.attribute( QStringLiteral( "placement" ), QStringLiteral( "0" ) ).toInt() ) );
+  r->setPlacement( static_cast<Placement>( symbologyElem.attribute( QStringLiteral( "placement" ), QStringLiteral( "0" ) ).toInt() ) );
   r->setCircleWidth( symbologyElem.attribute( QStringLiteral( "circleWidth" ), QStringLiteral( "0.4" ) ).toDouble() );
   r->setCircleColor( QgsColorUtils::colorFromString( symbologyElem.attribute( QStringLiteral( "circleColor" ), QString() ) ) );
   r->setLabelColor( QgsColorUtils::colorFromString( symbologyElem.attribute( QStringLiteral( "labelColor" ), QString() ) ) );
@@ -216,7 +214,7 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument &doc, const QgsRead
   rendererElement.setAttribute( QStringLiteral( "labelColor" ), QgsColorUtils::colorToString( mLabelColor ) );
   rendererElement.setAttribute( QStringLiteral( "circleRadiusAddition" ), QString::number( mCircleRadiusAddition ) );
   rendererElement.setAttribute( QStringLiteral( "labelDistanceFactor" ), QString::number( mLabelDistanceFactor ) );
-  rendererElement.setAttribute( QStringLiteral( "placement" ), static_cast< int >( mPlacement ) );
+  rendererElement.setAttribute( QStringLiteral( "placement" ), static_cast<int>( mPlacement ) );
   rendererElement.setAttribute( QStringLiteral( "maxLabelScaleDenominator" ), QString::number( mMinLabelScale ) );
   rendererElement.setAttribute( QStringLiteral( "tolerance" ), QString::number( mTolerance ) );
   rendererElement.setAttribute( QStringLiteral( "toleranceUnit" ), QgsUnitTypes::encodeUnit( mToleranceUnit ) );
@@ -267,8 +265,8 @@ void QgsPointDisplacementRenderer::setCenterSymbol( QgsMarkerSymbol *symbol )
 }
 
 void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRenderContext &symbolContext, QPointF centerPoint, int nPosition,
-    double symbolDiagonal, QList<QPointF> &symbolPositions, QList<QPointF> &labelShifts, double &circleRadius, double &gridRadius,
-    int &gridSize, QVector<double> &diagonals ) const
+                                                                     double symbolDiagonal, QList<QPointF> &symbolPositions, QList<QPointF> &labelShifts, double &circleRadius, double &gridRadius,
+                                                                     int &gridSize, QVector<double> &diagonals ) const
 {
   symbolPositions.clear();
   labelShifts.clear();
@@ -351,7 +349,7 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( QgsSymbolRe
       if ( pointsRemaining - std::pow( gridSize - 1, 2 ) < gridSize )
         gridSize -= 1;
       const double originalPointRadius = ( ( centerDiagonal / 2.0 + symbolDiagonal / 2.0 ) + symbolDiagonal ) / 2;
-      const double userPointRadius =  originalPointRadius + circleAdditionPainterUnits;
+      const double userPointRadius = originalPointRadius + circleAdditionPainterUnits;
 
       int yIndex = 0;
       while ( pointsRemaining > 0 )
@@ -412,7 +410,7 @@ void QgsPointDisplacementRenderer::centralizeGrid( QList<QPointF> &pointSymbolPo
 }
 
 void QgsPointDisplacementRenderer::drawGrid( int gridSizeUnits, QgsSymbolRenderContext &context,
-    QList<QPointF> pointSymbolPositions, int nSymbols ) const
+                                             QList<QPointF> pointSymbolPositions, int nSymbols ) const
 {
   QPainter *p = context.renderContext().painter();
   if ( nSymbols < 2 || !p ) //draw grid only if multiple features
@@ -468,7 +466,7 @@ void QgsPointDisplacementRenderer::drawSymbols( const ClusteredGroup &group, Qgs
     if ( context.hasRenderedFeatureHandlers() )
     {
       const QgsGeometry bounds( QgsGeometry::fromRect( QgsRectangle( groupIt->symbol()->bounds( *symbolPosIt, context, groupIt->feature ) ) ) );
-      const QList< QgsRenderedFeatureHandlerInterface * > handlers = context.renderedFeatureHandlers();
+      const QList<QgsRenderedFeatureHandlerInterface *> handlers = context.renderedFeatureHandlers();
       const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext featureContext( context );
       for ( QgsRenderedFeatureHandlerInterface *handler : handlers )
         handler->handleRenderedFeature( groupIt->feature, bounds, featureContext );
@@ -483,10 +481,7 @@ QgsPointDisplacementRenderer *QgsPointDisplacementRenderer::convertFromRenderer(
   {
     return dynamic_cast<QgsPointDisplacementRenderer *>( renderer->clone() );
   }
-  else if ( renderer->type() == QLatin1String( "singleSymbol" ) ||
-            renderer->type() == QLatin1String( "categorizedSymbol" ) ||
-            renderer->type() == QLatin1String( "graduatedSymbol" ) ||
-            renderer->type() == QLatin1String( "RuleRenderer" ) )
+  else if ( renderer->type() == QLatin1String( "singleSymbol" ) || renderer->type() == QLatin1String( "categorizedSymbol" ) || renderer->type() == QLatin1String( "graduatedSymbol" ) || renderer->type() == QLatin1String( "RuleRenderer" ) )
   {
     QgsPointDisplacementRenderer *pointRenderer = new QgsPointDisplacementRenderer();
     pointRenderer->setEmbeddedRenderer( renderer->clone() );
@@ -496,7 +491,7 @@ QgsPointDisplacementRenderer *QgsPointDisplacementRenderer::convertFromRenderer(
   else if ( renderer->type() == QLatin1String( "pointCluster" ) )
   {
     QgsPointDisplacementRenderer *pointRenderer = new QgsPointDisplacementRenderer();
-    const QgsPointClusterRenderer *clusterRenderer = static_cast< const QgsPointClusterRenderer * >( renderer );
+    const QgsPointClusterRenderer *clusterRenderer = static_cast<const QgsPointClusterRenderer *>( renderer );
     if ( clusterRenderer->embeddedRenderer() )
       pointRenderer->setEmbeddedRenderer( clusterRenderer->embeddedRenderer()->clone() );
     pointRenderer->setTolerance( clusterRenderer->tolerance() );

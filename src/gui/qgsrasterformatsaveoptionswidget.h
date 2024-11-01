@@ -28,18 +28,17 @@ class QgsRasterLayer;
  * \ingroup gui
  * \brief A widget to select format-specific raster saving options
  */
-class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget, private Ui::QgsRasterFormatSaveOptionsWidgetBase
+class GUI_EXPORT QgsRasterFormatSaveOptionsWidget : public QWidget, private Ui::QgsRasterFormatSaveOptionsWidgetBase
 {
     Q_OBJECT
 
   public:
-
     enum Type
     {
-      Default, // everything except profile buttons (save as dlg)
-      Full, // everything (options dlg)
-      Table, // just table
-      LineEdit, // just the line edit
+      Default,        // everything except profile buttons (save as dlg)
+      Full,           // everything (options dlg)
+      Table,          // just table
+      LineEdit,       // just the line edit
       ProfileLineEdit // Profile + LineEdit
     };
 
@@ -63,12 +62,20 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget, private Ui::Q
     /**
      * Set output raster layer
      */
-    void setRasterLayer( QgsRasterLayer *rasterLayer ) { mRasterLayer = rasterLayer; mRasterFileName = QString(); }
+    void setRasterLayer( QgsRasterLayer *rasterLayer )
+    {
+      mRasterLayer = rasterLayer;
+      mRasterFileName = QString();
+    }
 
     /**
      * Set output raster file name
      */
-    void setRasterFileName( const QString &file ) { mRasterLayer = nullptr; mRasterFileName = file; }
+    void setRasterFileName( const QString &file )
+    {
+      mRasterLayer = nullptr;
+      mRasterFileName = file;
+    }
 
     /**
      * Returns list of selected options
@@ -142,13 +149,12 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget, private Ui::Q
     void optionsChanged();
 
   private:
-
     QString mFormat;
     QString mProvider;
     QgsRasterLayer *mRasterLayer = nullptr;
     QString mRasterFileName;
-    QMap< QString, QString> mOptionsMap;
-    static QMap< QString, QStringList > sBuiltinProfiles;
+    QMap<QString, QString> mOptionsMap;
+    static QMap<QString, QStringList> sBuiltinProfiles;
     bool mPyramids = false;
     Qgis::RasterPyramidFormat mPyramidsFormat = Qgis::RasterPyramidFormat::GeoTiff;
     int mBlockOptionUpdates = 0;
@@ -163,7 +169,6 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget, private Ui::Q
     QStringList profiles() const SIP_FORCE;
     bool eventFilter( QObject *obj, QEvent *event ) override SIP_FORCE;
     QString pseudoFormat() const SIP_FORCE;
-
 };
 
 // clazy:excludeall=qstring-allocations

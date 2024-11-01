@@ -290,7 +290,7 @@ void QgsMapRendererParallelJob::renderingFinished()
     mLabelJob.maskImage->save( QString( "/tmp/labels_mask.png" ) );
   }
 #endif
-  if ( ! mSecondPassLayerJobs.empty() )
+  if ( !mSecondPassLayerJobs.empty() )
   {
     initSecondPassJobs( mSecondPassLayerJobs, mLabelJob );
 
@@ -371,7 +371,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
 
   QElapsedTimer t;
   t.start();
-  QgsDebugMsgLevel( QStringLiteral( "job %1 start (layer %2)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.layerId ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "job %1 start (layer %2)" ).arg( reinterpret_cast<quint64>( &job ), 0, 16 ).arg( job.layerId ), 2 );
   try
   {
 #ifdef SIMULATE_SLOW_RENDERER
@@ -396,7 +396,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
 
   job.errors = job.renderer->errors();
   job.renderingTime += t.elapsed();
-  QgsDebugMsgLevel( QStringLiteral( "job %1 end [%2 ms] (layer %3)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.renderingTime ).arg( job.layerId ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "job %1 end [%2 ms] (layer %3)" ).arg( reinterpret_cast<quint64>( &job ), 0, 16 ).arg( job.renderingTime ).arg( job.layerId ), 2 );
 }
 
 

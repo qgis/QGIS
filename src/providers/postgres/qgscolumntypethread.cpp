@@ -60,8 +60,8 @@ void QgsGeomColumnTypeThread::run()
   if ( !mConn->supportedLayers( layerProperties,
                                 QgsPostgresConn::geometryColumnsOnly( mName ),
                                 QgsPostgresConn::publicSchemaOnly( mName ),
-                                mAllowGeometrylessTables ) ||
-       layerProperties.isEmpty() )
+                                mAllowGeometrylessTables )
+       || layerProperties.isEmpty() )
   {
     QgsPostgresConnPool::instance()->releaseConnection( mConn );
     mConn = nullptr;
@@ -77,9 +77,7 @@ void QgsGeomColumnTypeThread::run()
 
   for ( auto &layerProperty : layerProperties )
   {
-    if ( !layerProperty.geometryColName.isNull() &&
-         ( layerProperty.types.value( 0, Qgis::WkbType::Unknown ) == Qgis::WkbType::Unknown ||
-           layerProperty.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) )
+    if ( !layerProperty.geometryColName.isNull() && ( layerProperty.types.value( 0, Qgis::WkbType::Unknown ) == Qgis::WkbType::Unknown || layerProperty.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) )
     {
       unrestrictedLayers << &layerProperty;
     }
@@ -94,7 +92,7 @@ void QgsGeomColumnTypeThread::run()
     return;
   }
 
-  if ( ! dontResolveType )
+  if ( !dontResolveType )
   {
     mConn->retrieveLayerTypes( unrestrictedLayers, mUseEstimatedMetadata );
   }

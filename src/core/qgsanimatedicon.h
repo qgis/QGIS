@@ -31,7 +31,6 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * Create a new animated icon. Optionally, the \a iconPath can already be specified.
      */
@@ -66,7 +65,7 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
      * \note Available in Python bindings as
      *       bool connectFrameChanged( const QObject *receiver, const char *method );.
      */
-    template <typename Func1>
+    template<typename Func1>
     bool connectFrameChanged( const typename QtPrivate::FunctionPointer<Func1>::Object *receiver, Func1 slot )
     {
       if ( connect( this, &QgsAnimatedIcon::frameChanged, receiver, slot ) )
@@ -84,7 +83,7 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
      * \note Available in Python bindings as
      *       bool disconnectFrameChanged( const QObject *receiver, const char *method );.
      */
-    template <typename Func1>
+    template<typename Func1>
     bool disconnectFrameChanged( const typename QtPrivate::FunctionPointer<Func1>::Object *receiver, Func1 slot )
     {
       return disconnect( this, &QgsAnimatedIcon::frameChanged, receiver, slot );

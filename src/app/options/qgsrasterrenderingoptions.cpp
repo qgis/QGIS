@@ -167,7 +167,6 @@ void QgsRasterRenderingOptionsWidget::saveMinMaxLimits( QComboBox *cbox, const Q
 QgsRasterRenderingOptionsFactory::QgsRasterRenderingOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "Raster" ), QIcon(), QStringLiteral( "raster" ) )
 {
-
 }
 
 QIcon QgsRasterRenderingOptionsFactory::icon() const
@@ -182,5 +181,5 @@ QgsOptionsPageWidget *QgsRasterRenderingOptionsFactory::createWidget( QWidget *p
 
 QStringList QgsRasterRenderingOptionsFactory::path() const
 {
-  return {QStringLiteral( "rendering" ) };
+  return { QStringLiteral( "rendering" ) };
 }

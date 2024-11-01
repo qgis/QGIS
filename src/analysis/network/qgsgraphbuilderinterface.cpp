@@ -18,7 +18,7 @@
 #include "qgsproject.h"
 
 QgsGraphBuilderInterface::QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem &crs, bool ctfEnabled,
-    double topologyTolerance, const QString &ellipsoidID )
+                                                    double topologyTolerance, const QString &ellipsoidID )
   : mCrs( crs )
   , mCtfEnabled( ctfEnabled )
   , mTopologyTolerance( topologyTolerance )

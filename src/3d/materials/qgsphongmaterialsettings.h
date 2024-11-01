@@ -36,7 +36,6 @@ class QDomElement;
 class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
 {
   public:
-
     QgsPhongMaterialSettings() = default;
 
     QString type() const override;
@@ -160,7 +159,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
 
     QByteArray dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const override;
     int dataDefinedByteStride() const override;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     void applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;
 #else
     void applyDataDefinedToGeometry( Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;
@@ -170,20 +169,13 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     // TODO c++20 - replace with = default
     bool operator==( const QgsPhongMaterialSettings &other ) const
     {
-      return mAmbient == other.mAmbient &&
-             mDiffuse == other.mDiffuse &&
-             mOpacity == other.mOpacity &&
-             mSpecular == other.mSpecular &&
-             mShininess == other.mShininess &&
-             mAmbientCoefficient == other.mAmbientCoefficient &&
-             mDiffuseCoefficient == other.mDiffuseCoefficient &&
-             mSpecularCoefficient == other.mSpecularCoefficient;
+      return mAmbient == other.mAmbient && mDiffuse == other.mDiffuse && mOpacity == other.mOpacity && mSpecular == other.mSpecular && mShininess == other.mShininess && mAmbientCoefficient == other.mAmbientCoefficient && mDiffuseCoefficient == other.mDiffuseCoefficient && mSpecularCoefficient == other.mSpecularCoefficient;
     }
 
   private:
-    QColor mAmbient{ QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) };
-    QColor mDiffuse{ QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) };
-    QColor mSpecular{ QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
+    QColor mAmbient { QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) };
+    QColor mDiffuse { QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) };
+    QColor mSpecular { QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
     double mShininess = 0.0;
 
     double mAmbientCoefficient = 1.0;

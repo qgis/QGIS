@@ -40,7 +40,7 @@ class CORE_EXPORT QgsAbstractSensor : public QObject
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( QgsAbstractSensor *item = qobject_cast< QgsAbstractSensor * >( sipCpp ) )
+    if ( QgsAbstractSensor *item = qobject_cast<QgsAbstractSensor *>( sipCpp ) )
     {
       if ( item->type() == QLatin1String( "tcp_socket" ) && dynamic_cast<QgsTcpSocketSensor *>( item ) != NULL )
       {
@@ -71,21 +71,19 @@ class CORE_EXPORT QgsAbstractSensor : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Contains details of a sensor data capture
      */
     struct CORE_EXPORT SensorData
     {
-
-      /**
+        /**
        * Last captured sensor value stored as a QVariant.
        * \note The member can store multiple values if the sensor passes on a QVariantMap.
        */
-      QVariant lastValue;
+        QVariant lastValue;
 
-      //! Timestamp of last captured sensor value
-      QDateTime lastTimestamp;
+        //! Timestamp of last captured sensor value
+        QDateTime lastTimestamp;
     };
 
     /**
@@ -193,7 +191,6 @@ class CORE_EXPORT QgsAbstractSensor : public QObject
     void errorOccurred( const QString &errorString );
 
   protected:
-
     /**
      * Handles the connection to the sensor.
      * \note Triggered by calling connectSensor()
@@ -210,11 +207,9 @@ class CORE_EXPORT QgsAbstractSensor : public QObject
     QString mErrorString;
 
   private:
-
     QString mId;
     QString mName;
     Qgis::DeviceConnectionStatus mStatus = Qgis::DeviceConnectionStatus::Disconnected;
-
 };
 
 Q_DECLARE_METATYPE( QgsAbstractSensor * )

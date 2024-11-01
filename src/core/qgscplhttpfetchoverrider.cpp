@@ -35,12 +35,12 @@ QgsCPLHTTPFetchOverrider::~QgsCPLHTTPFetchOverrider()
 
 
 CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
-    CSLConstList papszOptions,
-    GDALProgressFunc /* pfnProgress */,
-    void * /*pProgressArg */,
-    CPLHTTPFetchWriteFunc pfnWrite,
-    void *pWriteArg,
-    void *pUserData )
+                                                   CSLConstList papszOptions,
+                                                   GDALProgressFunc /* pfnProgress */,
+                                                   void * /*pProgressArg */,
+                                                   CPLHTTPFetchWriteFunc pfnWrite,
+                                                   void *pWriteArg,
+                                                   void *pUserData )
 {
   QgsCPLHTTPFetchOverrider *pThis = static_cast<QgsCPLHTTPFetchOverrider *>( pUserData );
 
@@ -162,9 +162,9 @@ CPLHTTPResult *QgsCPLHTTPFetchOverrider::callback( const char *pszURL,
       psResult->pszContentType = CPLStrdup( pair.second.toStdString().c_str() );
     }
     psResult->papszHeaders = CSLAddNameValue(
-                               psResult->papszHeaders,
-                               pair.first.toStdString().c_str(),
-                               pair.second.toStdString().c_str() );
+      psResult->papszHeaders,
+      pair.first.toStdString().c_str(),
+      pair.second.toStdString().c_str() );
   }
 
   // Process content

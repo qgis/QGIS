@@ -43,7 +43,6 @@ class GUI_EXPORT QgsCreateAnnotationItemMapToolHandler : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCreateAnnotationItemMapToolHandler, with the specified \a parent object.
      */
@@ -81,10 +80,8 @@ class GUI_EXPORT QgsCreateAnnotationItemMapToolHandler : public QObject
     void itemCreated();
 
   private:
-
     QgsMapCanvas *mMapCanvas = nullptr;
-    std::unique_ptr< QgsAnnotationItem > mCreatedItem;
-
+    std::unique_ptr<QgsAnnotationItem> mCreatedItem;
 };
 
 /**
@@ -102,7 +99,6 @@ class GUI_EXPORT QgsCreateAnnotationItemMapToolHandler : public QObject
 class GUI_EXPORT QgsCreateAnnotationItemMapToolInterface
 {
   public:
-
 #ifndef SIP_RUN
     static inline QgsSettingsTreeNode *sTreeAnnotationTools = QgsSettingsTree::sTreeGui->createChildNode( QStringLiteral( "annotation-items" ) );
 #endif

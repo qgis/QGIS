@@ -36,7 +36,7 @@ class QgsTiledSceneProviderMetadata : public QgsProviderMetadata
   public:
     QgsTiledSceneProviderMetadata();
     QIcon icon() const override;
-    QList< QgsDataItemProvider * > dataItemProviders() const override;
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
 
     // handling of stored connections
 

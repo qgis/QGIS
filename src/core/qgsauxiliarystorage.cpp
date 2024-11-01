@@ -35,39 +35,8 @@
 typedef QVector<int> PalPropertyList;
 typedef QVector<int> SymbolPropertyList;
 
-Q_GLOBAL_STATIC_WITH_ARGS( PalPropertyList, palHiddenProperties, (
-{
-  static_cast< int >( QgsPalLayerSettings::Property::PositionX ),
-  static_cast< int >( QgsPalLayerSettings::Property::PositionY ),
-  static_cast< int >( QgsPalLayerSettings::Property::Show ),
-  static_cast< int >( QgsPalLayerSettings::Property::LabelRotation ),
-  static_cast< int >( QgsPalLayerSettings::Property::Family ),
-  static_cast< int >( QgsPalLayerSettings::Property::FontStyle ),
-  static_cast< int >( QgsPalLayerSettings::Property::Size ),
-  static_cast< int >( QgsPalLayerSettings::Property::Bold ),
-  static_cast< int >( QgsPalLayerSettings::Property::Italic ),
-  static_cast< int >( QgsPalLayerSettings::Property::Underline ),
-  static_cast< int >( QgsPalLayerSettings::Property::Color ),
-  static_cast< int >( QgsPalLayerSettings::Property::Strikeout ),
-  static_cast< int >( QgsPalLayerSettings::Property::MultiLineAlignment ),
-  static_cast< int >( QgsPalLayerSettings::Property::BufferSize ),
-  static_cast< int >( QgsPalLayerSettings::Property::BufferDraw ),
-  static_cast< int >( QgsPalLayerSettings::Property::BufferColor ),
-  static_cast< int >( QgsPalLayerSettings::Property::LabelDistance ),
-  static_cast< int >( QgsPalLayerSettings::Property::Hali ),
-  static_cast< int >( QgsPalLayerSettings::Property::Vali ),
-  static_cast< int >( QgsPalLayerSettings::Property::ScaleVisibility ),
-  static_cast< int >( QgsPalLayerSettings::Property::MinScale ),
-  static_cast< int >( QgsPalLayerSettings::Property::MaxScale ),
-  static_cast< int >( QgsPalLayerSettings::Property::AlwaysShow ),
-  static_cast< int >( QgsPalLayerSettings::Property::CalloutDraw ),
-  static_cast< int >( QgsPalLayerSettings::Property::LabelAllParts )
-} ) )
-Q_GLOBAL_STATIC_WITH_ARGS( SymbolPropertyList, symbolHiddenProperties, (
-{
-  static_cast< int >( QgsSymbolLayer::Property::Angle ),
-  static_cast< int >( QgsSymbolLayer::Property::Offset )
-} ) )
+Q_GLOBAL_STATIC_WITH_ARGS( PalPropertyList, palHiddenProperties, ( { static_cast<int>( QgsPalLayerSettings::Property::PositionX ), static_cast<int>( QgsPalLayerSettings::Property::PositionY ), static_cast<int>( QgsPalLayerSettings::Property::Show ), static_cast<int>( QgsPalLayerSettings::Property::LabelRotation ), static_cast<int>( QgsPalLayerSettings::Property::Family ), static_cast<int>( QgsPalLayerSettings::Property::FontStyle ), static_cast<int>( QgsPalLayerSettings::Property::Size ), static_cast<int>( QgsPalLayerSettings::Property::Bold ), static_cast<int>( QgsPalLayerSettings::Property::Italic ), static_cast<int>( QgsPalLayerSettings::Property::Underline ), static_cast<int>( QgsPalLayerSettings::Property::Color ), static_cast<int>( QgsPalLayerSettings::Property::Strikeout ), static_cast<int>( QgsPalLayerSettings::Property::MultiLineAlignment ), static_cast<int>( QgsPalLayerSettings::Property::BufferSize ), static_cast<int>( QgsPalLayerSettings::Property::BufferDraw ), static_cast<int>( QgsPalLayerSettings::Property::BufferColor ), static_cast<int>( QgsPalLayerSettings::Property::LabelDistance ), static_cast<int>( QgsPalLayerSettings::Property::Hali ), static_cast<int>( QgsPalLayerSettings::Property::Vali ), static_cast<int>( QgsPalLayerSettings::Property::ScaleVisibility ), static_cast<int>( QgsPalLayerSettings::Property::MinScale ), static_cast<int>( QgsPalLayerSettings::Property::MaxScale ), static_cast<int>( QgsPalLayerSettings::Property::AlwaysShow ), static_cast<int>( QgsPalLayerSettings::Property::CalloutDraw ), static_cast<int>( QgsPalLayerSettings::Property::LabelAllParts ) } ) )
+Q_GLOBAL_STATIC_WITH_ARGS( SymbolPropertyList, symbolHiddenProperties, ( { static_cast<int>( QgsSymbolLayer::Property::Angle ), static_cast<int>( QgsSymbolLayer::Property::Offset ) } ) )
 
 //
 // QgsAuxiliaryLayer
@@ -237,7 +206,7 @@ int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, Q
   if ( layer && layer->labeling() && layer->auxiliaryLayer() )
   {
     // property definition are identical whatever the provider id
-    const QgsPropertyDefinition def = QgsPalLayerSettings::propertyDefinitions()[static_cast< int >( property )];
+    const QgsPropertyDefinition def = QgsPalLayerSettings::propertyDefinitions()[static_cast<int>( property )];
     const QString fieldName = nameFromProperty( def, true );
 
     layer->auxiliaryLayer()->addAuxiliaryField( def );
@@ -264,8 +233,7 @@ int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, Q
         else
         {
           // build a new smart expression as coalesce("new aux field", 'the' || 'old' || 'expression')
-          const QgsProperty prop = QgsProperty::fromExpression( QStringLiteral( "coalesce(%1,%2)" ).arg( QgsExpression::quotedColumnRef( fieldName ),
-                                   existingProperty.asExpression() ) );
+          const QgsProperty prop = QgsProperty::fromExpression( QStringLiteral( "coalesce(%1,%2)" ).arg( QgsExpression::quotedColumnRef( fieldName ), existingProperty.asExpression() ) );
           c.setProperty( property, prop );
         }
         settings->setDataDefinedProperties( c );
@@ -305,8 +273,7 @@ int QgsAuxiliaryLayer::createProperty( QgsDiagramLayerSettings::Property propert
       else
       {
         // build a new smart expression as coalesce("new aux field", 'the' || 'old' || 'expression')
-        const QgsProperty prop = QgsProperty::fromExpression( QStringLiteral( "coalesce(%1,%2)" ).arg( QgsExpression::quotedColumnRef( fieldName ),
-                                 existingProperty.asExpression() ) );
+        const QgsProperty prop = QgsProperty::fromExpression( QStringLiteral( "coalesce(%1,%2)" ).arg( QgsExpression::quotedColumnRef( fieldName ), existingProperty.asExpression() ) );
         c.setProperty( property, prop );
       }
       settings.setDataDefinedProperties( c );
@@ -326,7 +293,7 @@ int QgsAuxiliaryLayer::createProperty( QgsCallout::Property property, QgsVectorL
   if ( layer && layer->labeling() && layer->labeling()->settings().callout() && layer->auxiliaryLayer() )
   {
     // property definition are identical whatever the provider id
-    const QgsPropertyDefinition def = QgsCallout::propertyDefinitions()[static_cast< int >( property )];
+    const QgsPropertyDefinition def = QgsCallout::propertyDefinitions()[static_cast<int>( property )];
     const QString fieldName = nameFromProperty( def, true );
 
     layer->auxiliaryLayer()->addAuxiliaryField( def );
@@ -350,8 +317,7 @@ int QgsAuxiliaryLayer::createProperty( QgsCallout::Property property, QgsVectorL
           else
           {
             // build a new smart expression as coalesce("new aux field", 'the' || 'old' || 'expression')
-            const QgsProperty prop = QgsProperty::fromExpression( QStringLiteral( "coalesce(%1,%2)" ).arg( QgsExpression::quotedColumnRef( fieldName ),
-                                     existingProperty.asExpression() ) );
+            const QgsProperty prop = QgsProperty::fromExpression( QStringLiteral( "coalesce(%1,%2)" ).arg( QgsExpression::quotedColumnRef( fieldName ), existingProperty.asExpression() ) );
             c.setProperty( property, prop );
           }
           settings->callout()->setDataDefinedProperties( c );
@@ -376,7 +342,7 @@ bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
     const PalPropertyList &palProps = *palHiddenProperties();
     for ( const int p : palProps )
     {
-      const QString propName = QgsPalLayerSettings::propertyDefinitions()[ p ].name();
+      const QString propName = QgsPalLayerSettings::propertyDefinitions()[p].name();
       if ( propName.compare( def.name() ) == 0 )
       {
         hidden = true;
@@ -389,7 +355,7 @@ bool QgsAuxiliaryLayer::isHiddenProperty( int index ) const
     const SymbolPropertyList &symbolProps = *symbolHiddenProperties();
     for ( int p : symbolProps )
     {
-      const QString propName = QgsSymbolLayer::propertyDefinitions()[ p ].name();
+      const QString propName = QgsSymbolLayer::propertyDefinitions()[p].name();
       if ( propName.compare( def.name() ) == 0 )
       {
         hidden = true;
@@ -464,7 +430,7 @@ QString QgsAuxiliaryLayer::nameFromProperty( const QgsPropertyDefinition &def, b
   QString fieldName = def.origin();
 
   if ( !def.name().isEmpty() )
-    fieldName =  QStringLiteral( "%1_%2" ).arg( fieldName, def.name().toLower() );
+    fieldName = QStringLiteral( "%1_%2" ).arg( fieldName, def.name().toLower() );
 
   if ( !def.comment().isEmpty() )
     fieldName = QStringLiteral( "%1_%2" ).arg( fieldName, def.comment() );

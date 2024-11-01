@@ -33,9 +33,9 @@ QgsWeakRelation::QgsWeakRelation( const QString &relationId, const QString &rela
 {
 }
 
-QList< QgsRelation > QgsWeakRelation::resolvedRelations( const QgsProject *project, QgsVectorLayerRef::MatchType matchType ) const
+QList<QgsRelation> QgsWeakRelation::resolvedRelations( const QgsProject *project, QgsVectorLayerRef::MatchType matchType ) const
 {
-  QList< QgsRelation > res;
+  QList<QgsRelation> res;
 
   switch ( mCardinality )
   {
@@ -43,7 +43,6 @@ QList< QgsRelation > QgsWeakRelation::resolvedRelations( const QgsProject *proje
     case Qgis::RelationshipCardinality::OneToMany:
     case Qgis::RelationshipCardinality::ManyToOne:
     {
-
       QgsRelation relation;
       relation.setId( mRelationId );
       relation.setName( mRelationName );
@@ -61,7 +60,7 @@ QList< QgsRelation > QgsWeakRelation::resolvedRelations( const QgsProject *proje
         relation.setReferencingLayer( referencingLayer->id() );
       }
 
-      for ( int i = 0 ; i < std::min( mReferencingLayerFields.size(), mReferencedLayerFields.size() ); ++i )
+      for ( int i = 0; i < std::min( mReferencingLayerFields.size(), mReferencedLayerFields.size() ); ++i )
       {
         relation.addFieldPair( mReferencingLayerFields.at( i ), mReferencedLayerFields.at( i ) );
       }
@@ -91,7 +90,7 @@ QList< QgsRelation > QgsWeakRelation::resolvedRelations( const QgsProject *proje
         relationLeft.setReferencingLayer( mappingLayer->id() );
       }
 
-      for ( int i = 0 ; i < std::min( mMappingReferencedLayerFields.size(), mReferencedLayerFields.size() ); ++i )
+      for ( int i = 0; i < std::min( mMappingReferencedLayerFields.size(), mReferencedLayerFields.size() ); ++i )
       {
         relationLeft.addFieldPair( mMappingReferencedLayerFields.at( i ), mReferencedLayerFields.at( i ) );
       }
@@ -114,7 +113,7 @@ QList< QgsRelation > QgsWeakRelation::resolvedRelations( const QgsProject *proje
         relationRight.setReferencingLayer( mappingLayer->id() );
       }
 
-      for ( int i = 0 ; i < std::min( mMappingReferencingLayerFields.size(), mReferencingLayerFields.size() ); ++i )
+      for ( int i = 0; i < std::min( mMappingReferencingLayerFields.size(), mReferencingLayerFields.size() ); ++i )
       {
         relationRight.addFieldPair( mMappingReferencingLayerFields.at( i ), mReferencingLayerFields.at( i ) );
       }
@@ -227,7 +226,7 @@ Qgis::RelationshipStrength QgsWeakRelation::strength() const
   return mStrength;
 }
 
-QgsWeakRelation QgsWeakRelation::readXml( const QgsVectorLayer *layer, WeakRelationType type, const QDomNode &node,  const QgsPathResolver resolver )
+QgsWeakRelation QgsWeakRelation::readXml( const QgsVectorLayer *layer, WeakRelationType type, const QDomNode &node, const QgsPathResolver resolver )
 {
   QDomElement relationElement = node.toElement();
 
@@ -250,20 +249,19 @@ QgsWeakRelation QgsWeakRelation::readXml( const QgsVectorLayer *layer, WeakRelat
   {
     case Referencing:
     {
-      QgsWeakRelation rel{ relationElement.attribute( QStringLiteral( "id" ) ),
-                           relationElement.attribute( QStringLiteral( "name" ) ),
-                           static_cast<Qgis::RelationshipStrength>( relationElement.attribute( QStringLiteral( "strength" ) ).toInt() ),
-                           // Referencing
-                           layer->id(),
-                           layer->name(),
-                           resolver.writePath( layer->publicSource() ),
-                           layer->providerType(),
-                           // Referenced
-                           relationElement.attribute( QStringLiteral( "layerId" ) ),
-                           relationElement.attribute( QStringLiteral( "layerName" ) ),
-                           relationElement.attribute( QStringLiteral( "dataSource" ) ),
-                           relationElement.attribute( QStringLiteral( "providerKey" ) )
-                         };
+      QgsWeakRelation rel { relationElement.attribute( QStringLiteral( "id" ) ),
+                            relationElement.attribute( QStringLiteral( "name" ) ),
+                            static_cast<Qgis::RelationshipStrength>( relationElement.attribute( QStringLiteral( "strength" ) ).toInt() ),
+                            // Referencing
+                            layer->id(),
+                            layer->name(),
+                            resolver.writePath( layer->publicSource() ),
+                            layer->providerType(),
+                            // Referenced
+                            relationElement.attribute( QStringLiteral( "layerId" ) ),
+                            relationElement.attribute( QStringLiteral( "layerName" ) ),
+                            relationElement.attribute( QStringLiteral( "dataSource" ) ),
+                            relationElement.attribute( QStringLiteral( "providerKey" ) ) };
       rel.setReferencedLayerFields( referencedFields );
       rel.setReferencingLayerFields( referencingFields );
       return rel;
@@ -271,20 +269,19 @@ QgsWeakRelation QgsWeakRelation::readXml( const QgsVectorLayer *layer, WeakRelat
 
     case Referenced:
     {
-      QgsWeakRelation rel{ relationElement.attribute( QStringLiteral( "id" ) ),
-                           relationElement.attribute( QStringLiteral( "name" ) ),
-                           static_cast<Qgis::RelationshipStrength>( relationElement.attribute( QStringLiteral( "strength" ) ).toInt() ),
-                           // Referencing
-                           relationElement.attribute( QStringLiteral( "layerId" ) ),
-                           relationElement.attribute( QStringLiteral( "layerName" ) ),
-                           relationElement.attribute( QStringLiteral( "dataSource" ) ),
-                           relationElement.attribute( QStringLiteral( "providerKey" ) ),
-                           // Referenced
-                           layer->id(),
-                           layer->name(),
-                           resolver.writePath( layer->publicSource() ),
-                           layer->providerType()
-                         };
+      QgsWeakRelation rel { relationElement.attribute( QStringLiteral( "id" ) ),
+                            relationElement.attribute( QStringLiteral( "name" ) ),
+                            static_cast<Qgis::RelationshipStrength>( relationElement.attribute( QStringLiteral( "strength" ) ).toInt() ),
+                            // Referencing
+                            relationElement.attribute( QStringLiteral( "layerId" ) ),
+                            relationElement.attribute( QStringLiteral( "layerName" ) ),
+                            relationElement.attribute( QStringLiteral( "dataSource" ) ),
+                            relationElement.attribute( QStringLiteral( "providerKey" ) ),
+                            // Referenced
+                            layer->id(),
+                            layer->name(),
+                            resolver.writePath( layer->publicSource() ),
+                            layer->providerType() };
       rel.setReferencedLayerFields( referencedFields );
       rel.setReferencingLayerFields( referencingFields );
       return rel;

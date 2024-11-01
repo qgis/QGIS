@@ -35,7 +35,6 @@ class CORE_DEPRECATED_EXPORT QgsDatabaseFilterProxyModel : public QSortFilterPro
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsDatabaseFilterProxyModel.
      */

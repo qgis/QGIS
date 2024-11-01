@@ -42,7 +42,6 @@ class QgsElevationMap;
 class CORE_EXPORT QgsPointCloudRenderContext
 {
   public:
-
     /**
      * Constructor for QgsPointCloudRenderContext.
      *
@@ -70,7 +69,8 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * Returns a reference to the context's render context.
      * \note Not available in Python bindings.
      */
-    const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
+    const QgsRenderContext &renderContext() const { return mRenderContext; }
+    SIP_SKIP
 
     /**
      * Returns the scale of the layer's int32 coordinates compared to CRS coords.
@@ -177,52 +177,52 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * Retrieves the attribute \a value from \a data at the specified \a offset, where
      * \a type indicates the original data type for the attribute.
      */
-    template <typename T>
+    template<typename T>
     static void getAttribute( const char *data, std::size_t offset, QgsPointCloudAttribute::DataType type, T &value )
     {
       switch ( type )
       {
         case QgsPointCloudAttribute::UChar:
-          value = *reinterpret_cast< const unsigned char * >( data + offset );
+          value = *reinterpret_cast<const unsigned char *>( data + offset );
           return;
         case QgsPointCloudAttribute::Char:
           value = *( data + offset );
           return;
 
         case QgsPointCloudAttribute::UInt32:
-          value = *reinterpret_cast< const quint32 * >( data + offset );
+          value = *reinterpret_cast<const quint32 *>( data + offset );
           return;
         case QgsPointCloudAttribute::Int32:
-          value = *reinterpret_cast< const qint32 * >( data + offset );
+          value = *reinterpret_cast<const qint32 *>( data + offset );
           return;
 
         case QgsPointCloudAttribute::UInt64:
-          value = *reinterpret_cast< const quint64 * >( data + offset );
+          value = *reinterpret_cast<const quint64 *>( data + offset );
           return;
         case QgsPointCloudAttribute::Int64:
-          value = *reinterpret_cast< const qint64 * >( data + offset );
+          value = *reinterpret_cast<const qint64 *>( data + offset );
           return;
 
         case QgsPointCloudAttribute::Short:
-          value = *reinterpret_cast< const short * >( data + offset );
+          value = *reinterpret_cast<const short *>( data + offset );
           return;
 
         case QgsPointCloudAttribute::UShort:
-          value = *reinterpret_cast< const unsigned short * >( data + offset );
+          value = *reinterpret_cast<const unsigned short *>( data + offset );
           return;
 
         case QgsPointCloudAttribute::Float:
-          value = *reinterpret_cast< const float * >( data + offset );
+          value = *reinterpret_cast<const float *>( data + offset );
           return;
 
         case QgsPointCloudAttribute::Double:
-          value = *reinterpret_cast< const double * >( data + offset );
+          value = *reinterpret_cast<const double *>( data + offset );
           return;
       }
     }
 #endif
 
-#ifndef SIP_RUN    // this is only meant for low-level rendering in C++ code
+#ifndef SIP_RUN // this is only meant for low-level rendering in C++ code
 
     /**
      * Helper data structure used when rendering points as triangulated surface.
@@ -232,9 +232,9 @@ class CORE_EXPORT QgsPointCloudRenderContext
      */
     struct TriangulationData
     {
-      std::vector<double> points;     //!< X,Y for each point - kept in this structure so that we can use it without further conversions in Delaunator-cpp
-      std::vector<QRgb> colors;       //!< RGB color for each point
-      std::vector<float> elevations;  //!< Z value for each point (only used when global map shading is enabled)
+        std::vector<double> points;    //!< X,Y for each point - kept in this structure so that we can use it without further conversions in Delaunator-cpp
+        std::vector<QRgb> colors;      //!< RGB color for each point
+        std::vector<float> elevations; //!< Z value for each point (only used when global map shading is enabled)
     };
 
     /**
@@ -280,13 +280,12 @@ class CORE_EXPORT QgsPointCloudRenderContext
 class CORE_EXPORT QgsPreparedPointCloudRendererData
 {
   public:
-
     virtual ~QgsPreparedPointCloudRendererData();
 
     /**
      * Returns the set of attributes used by the prepared point cloud renderer.
      */
-    virtual QSet< QString > usedAttributes() const = 0;
+    virtual QSet<QString> usedAttributes() const = 0;
 
     /**
      * Prepares the renderer for using the specified \a block.
@@ -303,7 +302,6 @@ class CORE_EXPORT QgsPreparedPointCloudRendererData
      * \since QGIS 3.26
      */
     virtual QColor pointColor( const QgsPointCloudBlock *block, int i, double z ) = 0;
-
 };
 
 #endif
@@ -319,7 +317,6 @@ class CORE_EXPORT QgsPreparedPointCloudRendererData
  */
 class CORE_EXPORT QgsPointCloudRenderer
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
 
@@ -339,7 +336,6 @@ class CORE_EXPORT QgsPointCloudRenderer
 #endif
 
   public:
-
     QgsPointCloudRenderer() = default;
 
     virtual ~QgsPointCloudRenderer() = default;
@@ -410,7 +406,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \note the "X" and "Y" attributes will always be fetched and do not need to be explicitly
      * returned here.
      */
-    virtual QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const;
+    virtual QSet<QString> usedAttributes( const QgsPointCloudRenderContext &context ) const;
 
     /**
      * Returns prepared data container for bulk point color retrieval.
@@ -418,7 +414,7 @@ class CORE_EXPORT QgsPointCloudRenderer
      * \note Not available in Python bindings.
      * \since QGIS 3.26
      */
-    virtual std::unique_ptr< QgsPreparedPointCloudRendererData > prepare() SIP_SKIP;
+    virtual std::unique_ptr<QgsPreparedPointCloudRendererData> prepare() SIP_SKIP;
 
     /**
      * Must be called when a new render cycle is started. A call to startRender() must always
@@ -676,7 +672,6 @@ class CORE_EXPORT QgsPointCloudRenderer
     virtual QStringList legendRuleKeys() const;
 
   protected:
-
     /**
      * Retrieves the x and y coordinate for the point at index \a i.
      */
@@ -684,8 +679,8 @@ class CORE_EXPORT QgsPointCloudRenderer
     {
       // be wary when copying this code!! In the renderer we explicitly request x/y/z as qint32 values, but in other
       // situations these may be floats or doubles!
-      const qint32 ix = *reinterpret_cast< const qint32 * >( ptr + i * context.pointRecordSize() + context.xOffset() );
-      const qint32 iy = *reinterpret_cast< const qint32 * >( ptr + i * context.pointRecordSize() + context.yOffset() );
+      const qint32 ix = *reinterpret_cast<const qint32 *>( ptr + i * context.pointRecordSize() + context.xOffset() );
+      const qint32 iy = *reinterpret_cast<const qint32 *>( ptr + i * context.pointRecordSize() + context.yOffset() );
       x = context.offset().x() + context.scale().x() * ix;
       y = context.offset().y() + context.scale().y() * iy;
     }
@@ -697,7 +692,7 @@ class CORE_EXPORT QgsPointCloudRenderer
     {
       // be wary when copying this code!! In the renderer we explicitly request x/y/z as qint32 values, but in other
       // situations these may be floats or doubles!
-      const qint32 iz = *reinterpret_cast<const qint32 * >( ptr + i * context.pointRecordSize() + context.zOffset() );
+      const qint32 iz = *reinterpret_cast<const qint32 *>( ptr + i * context.pointRecordSize() + context.zOffset() );
       return ( context.offset().z() + context.scale().z() * iz ) * context.zValueScale() + context.zValueFixedOffset();
     }
 
@@ -724,7 +719,8 @@ class CORE_EXPORT QgsPointCloudRenderer
         case Qgis::PointCloudSymbol::Square:
           painter->fillRect( QRectF( x - width * 0.5,
                                      y - width * 0.5,
-                                     width, width ), color );
+                                     width, width ),
+                             color );
           break;
 
         case Qgis::PointCloudSymbol::Circle:
@@ -737,7 +733,7 @@ class CORE_EXPORT QgsPointCloudRenderer
       };
     }
 
-#ifndef SIP_RUN   // intentionally left out from SIP to avoid API breaks in future when we move elevation post-processing elsewhere
+#ifndef SIP_RUN // intentionally left out from SIP to avoid API breaks in future when we move elevation post-processing elsewhere
 
     /**
      * Draws a point at the elevation \a z using at the specified \a x and \a y (in map coordinates) on the elevation map.

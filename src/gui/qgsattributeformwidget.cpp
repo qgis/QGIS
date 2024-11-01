@@ -181,8 +181,7 @@ void QgsAttributeFormWidget::searchWidgetFlagsChanged( QgsSearchWidgetWrapper::F
 
   if ( mSearchWidgets.count() >= 2 )
   {
-    mSearchWidgets.at( 1 )->widget()->setVisible( flags & QgsSearchWidgetWrapper::Between ||
-        flags & QgsSearchWidgetWrapper::IsNotBetween );
+    mSearchWidgets.at( 1 )->widget()->setVisible( flags & QgsSearchWidgetWrapper::Between || flags & QgsSearchWidgetWrapper::IsNotBetween );
   }
 }
 

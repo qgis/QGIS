@@ -44,7 +44,6 @@ class CORE_EXPORT QgsTracer : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsTracer.
      */
@@ -119,7 +118,7 @@ class CORE_EXPORT QgsTracer : public QObject
     bool init();
 
     //! Whether the internal data structures have been initialized
-    bool isInitialized() const { return static_cast< bool >( mGraph ); }
+    bool isInitialized() const { return static_cast<bool>( mGraph ); }
 
     /**
      * Whether there was an error during graph creation due to noding exception,
@@ -130,11 +129,11 @@ class CORE_EXPORT QgsTracer : public QObject
     //! Possible errors that may happen when calling findShortestPath()
     enum PathError
     {
-      ErrNone,               //!< No error
-      ErrTooManyFeatures,    //!< Max feature count threshold was reached while reading features
-      ErrPoint1,             //!< Start point cannot be joined to the graph
-      ErrPoint2,             //!< End point cannot be joined to the graph
-      ErrNoPath,             //!< Points are not connected in the graph
+      ErrNone,            //!< No error
+      ErrTooManyFeatures, //!< Max feature count threshold was reached while reading features
+      ErrPoint1,          //!< Start point cannot be joined to the graph
+      ErrPoint2,          //!< End point cannot be joined to the graph
+      ErrNoPath,          //!< Points are not connected in the graph
     };
 
     /**
@@ -160,8 +159,8 @@ class CORE_EXPORT QgsTracer : public QObject
      * \since QGIS 3.40
      */
     bool addPointsOnIntersectionsEnabled() const { return mAddPointsOnIntersections; }
-  protected:
 
+  protected:
     /**
      * Allows derived classes to setup the settings just before the tracer is initialized.
      * This allows the configuration to be set in a lazy way only when it is really necessary.
@@ -181,13 +180,13 @@ class CORE_EXPORT QgsTracer : public QObject
     void onFeatureDeleted( QgsFeatureId fid );
     void onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
     void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
-    void onDataChanged( );
-    void onStyleChanged( );
+    void onDataChanged();
+    void onStyleChanged();
     void onLayerDestroyed( QObject *obj );
 
   private:
     //! Graph data structure for path searching
-    std::unique_ptr< QgsTracerGraph > mGraph;
+    std::unique_ptr<QgsTracerGraph> mGraph;
     //! Input layers for the graph building
     QList<QgsVectorLayer *> mLayers;
     //! Destination CRS in which graph is built and tracing done

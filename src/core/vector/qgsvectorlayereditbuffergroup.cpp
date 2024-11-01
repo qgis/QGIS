@@ -27,7 +27,6 @@
 QgsVectorLayerEditBufferGroup::QgsVectorLayerEditBufferGroup( QObject *parent )
   : QObject( parent )
 {
-
 }
 
 void QgsVectorLayerEditBufferGroup::addLayer( QgsVectorLayer *layer )
@@ -102,10 +101,10 @@ bool QgsVectorLayerEditBufferGroup::startEditing()
     emit layer->editingStarted();
   }
 
-  if ( ! editingStarted )
+  if ( !editingStarted )
   {
     QStringList rollbackErrors;
-    if ( ! rollBack( rollbackErrors, true ) )
+    if ( !rollBack( rollbackErrors, true ) )
       QgsLogger::debug( tr( "Can't rollback after start editing failure. Roll back detailed errors: %1" ).arg( rollbackErrors.join( " / " ) ) );
   }
 
@@ -125,13 +124,13 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
     return success;
   }
 
-  QMap<QString, QSet<QgsVectorLayer *> > connectionStringsLayers;
+  QMap<QString, QSet<QgsVectorLayer *>> connectionStringsLayers;
   for ( QgsVectorLayer *modifiedLayer : constModifiedLayers )
     if ( QgsTransaction::supportsTransaction( modifiedLayer ) )
       connectionStringsLayers[QgsTransaction::connectionString( modifiedLayer->source() )].insert( modifiedLayer );
 
   QList<QgsVectorLayer *> transactionLayers;
-  QList<std::shared_ptr<QgsTransaction> > openTransactions;
+  QList<std::shared_ptr<QgsTransaction>> openTransactions;
   const QStringList connectionStrings = connectionStringsLayers.keys();
   for ( const QString &connectionString : connectionStrings )
   {
@@ -147,7 +146,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
     }
 
     QString errorMsg;
-    if ( ! transaction->begin( errorMsg ) )
+    if ( !transaction->begin( errorMsg ) )
     {
       commitErrors << tr( "ERROR: could not start a transaction on data provider '%1', detailed error: '%2'." ).arg( providerKey, errorMsg );
       success = false;
@@ -157,7 +156,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
     const auto constLayers = connectionStringsLayers.value( connectionString );
     for ( QgsVectorLayer *layer : constLayers )
     {
-      if ( ! transaction->addLayer( layer, true ) )
+      if ( !transaction->addLayer( layer, true ) )
       {
         commitErrors << tr( "ERROR: could not add layer '%1' to transaction on data provider '%2'." ).arg( layer->name(), providerKey );
         success = false;
@@ -190,7 +189,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
       }
 
       success = ( *orderedLayersIterator )->editBuffer()->commitChangesCheckGeometryTypeCompatibility( commitErrors );
-      if ( ! success )
+      if ( !success )
         break;
     }
   }
@@ -206,26 +205,26 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
 
       bool attributesDeleted = false;
       success = ( *orderedLayersIterator )->editBuffer()->commitChangesDeleteAttributes( attributesDeleted, commitErrors );
-      if ( ! success )
+      if ( !success )
         break;
 
       bool attributesRenamed = false;
       success = ( *orderedLayersIterator )->editBuffer()->commitChangesRenameAttributes( attributesRenamed, commitErrors );
-      if ( ! success )
+      if ( !success )
         break;
 
       bool attributesAdded = false;
       success = ( *orderedLayersIterator )->editBuffer()->commitChangesAddAttributes( attributesAdded, commitErrors );
-      if ( ! success )
+      if ( !success )
         break;
 
       if ( attributesDeleted || attributesRenamed || attributesAdded )
       {
-        if ( ! transactionLayers.contains( ( *orderedLayersIterator ) ) )
+        if ( !transactionLayers.contains( ( *orderedLayersIterator ) ) )
           modifiedLayersOnProviderSide.insert( ( *orderedLayersIterator ) );
 
         success = ( *orderedLayersIterator )->editBuffer()->commitChangesCheckAttributesModifications( oldFields, commitErrors );
-        if ( ! success )
+        if ( !success )
           break;
       }
     }
@@ -240,7 +239,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
       --orderedLayersIterator;
       bool featuresDeleted;
       success = ( *orderedLayersIterator )->editBuffer()->commitChangesDeleteFeatures( featuresDeleted, commitErrors );
-      if ( ! success )
+      if ( !success )
         break;
 
       if ( featuresDeleted && transactionLayers.contains( ( *orderedLayersIterator ) ) )
@@ -255,7 +254,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
     {
       bool featuresAdded;
       ( *orderedLayersIterator )->editBuffer()->commitChangesAddFeatures( featuresAdded, commitErrors );
-      if ( ! success )
+      if ( !success )
         break;
 
       if ( featuresAdded && transactionLayers.contains( ( *orderedLayersIterator ) ) )
@@ -273,7 +272,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
 
       bool attributesChanged;
       success = ( *orderedLayersIterator )->editBuffer()->commitChangesChangeAttributes( attributesChanged, commitErrors );
-      if ( ! success )
+      if ( !success )
         break;
 
       if ( attributesChanged && transactionLayers.contains( ( *orderedLayersIterator ) ) )
@@ -284,7 +283,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
   // if everything went well, commit
   if ( success )
   {
-    QList<std::shared_ptr<QgsTransaction> >::iterator openTransactionsIterator = openTransactions.begin();
+    QList<std::shared_ptr<QgsTransaction>>::iterator openTransactionsIterator = openTransactions.begin();
     while ( openTransactionsIterator != openTransactions.end() )
     {
       QString errorMsg;
@@ -304,7 +303,7 @@ bool QgsVectorLayerEditBufferGroup::commitChanges( QStringList &commitErrors, bo
   if ( !success )
   {
     // Append additional information about layer which can't be rollbacked
-    if ( ! modifiedLayersOnProviderSide.isEmpty() )
+    if ( !modifiedLayersOnProviderSide.isEmpty() )
     {
       if ( modifiedLayersOnProviderSide.size() == 1 )
         commitErrors << tr( "WARNING: changes to layer '%1' were already sent to data provider and cannot be rolled back." ).arg( ( *modifiedLayersOnProviderSide.begin() )->name() );
@@ -335,7 +334,7 @@ bool QgsVectorLayerEditBufferGroup::rollBack( QStringList &rollbackErrors, bool 
 {
   for ( QgsVectorLayer *layer : std::as_const( mLayers ) )
   {
-    if ( ! layer->editBuffer() )
+    if ( !layer->editBuffer() )
       continue;
 
     if ( !layer->dataProvider() )
@@ -344,9 +343,7 @@ bool QgsVectorLayerEditBufferGroup::rollBack( QStringList &rollbackErrors, bool 
       return false;
     }
 
-    bool rollbackExtent = !layer->editBuffer()->deletedFeatureIds().isEmpty() ||
-                          !layer->editBuffer()->addedFeatures().isEmpty() ||
-                          !layer->editBuffer()->changedGeometries().isEmpty();
+    bool rollbackExtent = !layer->editBuffer()->deletedFeatureIds().isEmpty() || !layer->editBuffer()->addedFeatures().isEmpty() || !layer->editBuffer()->changedGeometries().isEmpty();
 
     emit layer->beforeRollBack();
 
@@ -379,7 +376,7 @@ bool QgsVectorLayerEditBufferGroup::rollBack( QStringList &rollbackErrors, bool 
     layer->triggerRepaint();
   }
 
-  mIsEditing = ! stopEditing;
+  mIsEditing = !stopEditing;
   return true;
 }
 
@@ -394,7 +391,7 @@ QList<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::orderLayersParentsToChild
   QSet<QgsVectorLayer *> unorderedLayers = layers;
 
   bool layerOrdered = true;
-  while ( ! unorderedLayers.isEmpty() && layerOrdered )
+  while ( !unorderedLayers.isEmpty() && layerOrdered )
   {
     layerOrdered = false;
     QSet<QgsVectorLayer *>::iterator unorderedLayerIterator = unorderedLayers.begin();
@@ -426,7 +423,7 @@ QList<QgsVectorLayer *> QgsVectorLayerEditBufferGroup::orderLayersParentsToChild
     }
   }
 
-  if ( ! unorderedLayers.isEmpty() )
+  if ( !unorderedLayers.isEmpty() )
   {
     QgsLogger::warning( tr( "Circular relation between some layers. Correct saving order of layers can't be guaranteed" ) );
     orderedLayers.append( unorderedLayers.values() );

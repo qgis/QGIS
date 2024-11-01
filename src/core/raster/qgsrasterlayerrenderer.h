@@ -50,10 +50,11 @@ class CORE_EXPORT QgsRasterLayerRendererFeedback : public QgsRasterBlockFeedback
 
     //! when notified of new data in data provider it launches a preview draw of the raster
     void onNewData() override;
+
   private:
-    QgsRasterLayerRenderer *mR = nullptr;   //!< Parent renderer instance
-    int mMinimalPreviewInterval;  //!< In milliseconds
-    QTime mLastPreview;           //!< When last preview has been generated
+    QgsRasterLayerRenderer *mR = nullptr; //!< Parent renderer instance
+    int mMinimalPreviewInterval;          //!< In milliseconds
+    QTime mLastPreview;                   //!< When last preview has been generated
 };
 
 ///@endcond
@@ -75,7 +76,6 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
     bool forceRasterRender() const override;
 
   private:
-
     QString mLayerName;
     QgsRasterViewPort *mRasterViewPort = nullptr;
 
@@ -88,7 +88,7 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
     //! feedback class for cancellation and preview generation
     QgsRasterLayerRendererFeedback *mFeedback = nullptr;
 
-    QList< QgsMapClippingRegion > mClippingRegions;
+    QList<QgsMapClippingRegion> mClippingRegions;
 
     double mElevationScale = 1.0;
     double mElevationOffset = 0.0;

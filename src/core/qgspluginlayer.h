@@ -39,16 +39,18 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsPluginLayer: '%1'>" ).arg( sipCpp->name() );
+        QString str
+      = QStringLiteral( "<QgsPluginLayer: '%1'>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    /**
+        /**
      * Returns a new instance equivalent to this one.
      * \returns a new layer instance
      */
-    QgsPluginLayer *clone() const override = 0;
+        QgsPluginLayer *
+      clone() const override = 0;
 
     //! Returns plugin layer type (the same as used in QgsPluginLayerRegistry)
     QString pluginLayerType();

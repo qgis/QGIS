@@ -58,7 +58,6 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     Q_OBJECT
 
   public:
-
     /**
      * Create a transaction for the specified connection string \a connString
      * and provider with \a providerKey.
@@ -154,17 +153,17 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     /**
      * returns savepoints
      */
-    QList< QString > savePoints() const { return QList< QString >::fromVector( mSavepoints ); }
+    QList<QString> savePoints() const { return QList<QString>::fromVector( mSavepoints ); }
 
     /**
      * returns the last created savepoint
      */
     bool lastSavePointIsDirty() const { return mLastSavePointIsDirty; }
 
-///@cond PRIVATE
+    ///@cond PRIVATE
     // For internal use only, or by QgsTransactionGroup
     static QString connectionString( const QString &layerUri ) SIP_SKIP;
-///@endcond
+    ///@endcond
 
   signals:
 
@@ -183,14 +182,13 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
 
     QString mConnString;
     bool mTransactionActive;
-    QStack< QString > mSavepoints;
+    QStack<QString> mSavepoints;
     bool mLastSavePointIsDirty;
 
   private slots:
     void onLayerDeleted();
 
   private:
-
     QSet<QgsVectorLayer *> mLayers;
 
     void setLayerTransactionIds( QgsTransaction *transaction );

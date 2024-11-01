@@ -101,7 +101,7 @@ QString QgsServerFeatureId::getExpressionFromServerFid( const QString &serverFid
       expressionString.append( QStringLiteral( " AND " ) );
     }
 
-    QString fieldName = fields[ pkAttributes.at( i ) ].name();
+    QString fieldName = fields[pkAttributes.at( i )].name();
     expressionString.append( QgsExpression::createFieldEqualityExpression( fieldName, QVariant( pkValues.at( i ) ) ) );
   }
 

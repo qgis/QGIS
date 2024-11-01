@@ -38,7 +38,6 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     Q_OBJECT
 
   public:
-
     /**
      * Create a new order by dialog. This helps building order by structures.
      *
@@ -58,7 +57,6 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     QgsFeatureRequest::OrderBy orderBy();
 
   protected:
-
     bool eventFilter( QObject *obj, QEvent *e ) override;
 
   private slots:
@@ -66,14 +64,12 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     void showHelp();
 
   private:
-
     /**
      * Initialize a row with the given information
      */
     void setRow( int row, const QgsFeatureRequest::OrderByClause &orderByClause );
 
     QgsVectorLayer *mLayer = nullptr;
-
 };
 
 #endif // QGSORDERBYDIALOG_H

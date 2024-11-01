@@ -31,7 +31,6 @@
 class CORE_EXPORT QgsAnnotationPictureItem : public QgsAnnotationRectItem
 {
   public:
-
     /**
      * Constructor for QgsAnnotationPictureItem, rendering the specified image \a path
      * within the specified \a bounds geometry.
@@ -84,11 +83,9 @@ class CORE_EXPORT QgsAnnotationPictureItem : public QgsAnnotationRectItem
     void setLockAspectRatio( bool locked );
 
   protected:
-
     void renderInBounds( QgsRenderContext &context, const QRectF &painterBounds, QgsFeedback *feedback ) override;
 
   private:
-
     QString mPath;
     Qgis::PictureFormat mFormat = Qgis::PictureFormat::Unknown;
     bool mLockAspectRatio = true;
@@ -96,6 +93,5 @@ class CORE_EXPORT QgsAnnotationPictureItem : public QgsAnnotationRectItem
 #ifdef SIP_RUN
     QgsAnnotationPictureItem( const QgsAnnotationPictureItem &other );
 #endif
-
 };
 #endif // QGSANNOTATIONPICTUREITEM_H

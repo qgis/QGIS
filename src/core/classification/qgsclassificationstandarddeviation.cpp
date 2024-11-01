@@ -25,7 +25,6 @@ const QString QgsClassificationStandardDeviation::METHOD_ID = QStringLiteral( "S
 QgsClassificationStandardDeviation::QgsClassificationStandardDeviation()
   : QgsClassificationMethod( SymmetricModeAvailable )
 {
-
 }
 
 QString QgsClassificationStandardDeviation::name() const
@@ -53,7 +52,7 @@ QIcon QgsClassificationStandardDeviation::icon() const
 
 
 QList<double> QgsClassificationStandardDeviation::calculateBreaks( double &minimum, double &maximum,
-    const QList<double> &values, int nclasses, QString &error )
+                                                                   const QList<double> &values, int nclasses, QString &error )
 {
   Q_UNUSED( error )
   // C++ implementation of the standard deviation class interval algorithm
@@ -75,7 +74,7 @@ QList<double> QgsClassificationStandardDeviation::calculateBreaks( double &minim
   {
     mean += values[i];
   }
-  mean = mean / static_cast< double >( n );
+  mean = mean / static_cast<double>( n );
 
   double sd = 0.0;
   for ( int i = 0; i < n; i++ )

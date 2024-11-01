@@ -25,7 +25,7 @@ email                : marco.hugentobler at sourcepole dot com
  * \class QgsMultiCurve
  * \brief Multi curve geometry collection.
  */
-class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
+class CORE_EXPORT QgsMultiCurve : public QgsGeometryCollection
 {
   public:
     QgsMultiCurve();
@@ -49,8 +49,7 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
      * \since QGIS 3.16
      */
     SIP_PYOBJECT curveN( int index ) SIP_TYPEHINT( QgsCurve );
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -83,7 +82,7 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     json asJsonObject( int precision = 17 ) const override SIP_SKIP;
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
-    bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries SIP_TRANSFER ) override;
+    bool addGeometries( const QVector<QgsAbstractGeometry *> &geometries SIP_TRANSFER ) override;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
     QgsMultiCurve *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
 
@@ -120,14 +119,14 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString wkt = sipCpp->asWkt();
+        QString wkt
+      = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
       wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
     QString str = QStringLiteral( "<QgsMultiCurve: %1>" ).arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
-
 };
 
 // clazy:excludeall=qstring-allocations

@@ -32,7 +32,6 @@ class CORE_EXPORT QgsRelationshipsItem : public QgsDataItem
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRelationshipsItem, with the specified \a parent item.
      *
@@ -57,12 +56,14 @@ class CORE_EXPORT QgsRelationshipsItem : public QgsDataItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsRelationshipsItem: %1>" ).arg( sipCpp->path() );
+        QString str
+      = QStringLiteral( "<QgsRelationshipsItem: %1>" ).arg( sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    QVector<QgsDataItem *> createChildren() override;
+        QVector<QgsDataItem *>
+      createChildren() override;
 
     QIcon icon() override;
 
@@ -83,15 +84,13 @@ class CORE_EXPORT QgsRelationshipsItem : public QgsDataItem
      *
      * \see schema()
      */
-    QString tableName() const {return mTableName;}
+    QString tableName() const { return mTableName; }
 
   private:
-
     QString mConnectionUri;
     QString mSchema;
     QString mTableName;
     QStringList mRelationshipNames;
-
 };
 
 
@@ -104,7 +103,6 @@ class CORE_EXPORT QgsRelationshipItem : public QgsDataItem
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsRelationshipItem, with the specified \a parent item and \a relation.
      *
@@ -118,12 +116,14 @@ class CORE_EXPORT QgsRelationshipItem : public QgsDataItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsRelationshipItem: %1>" ).arg( sipCpp->name() );
+        QString str
+      = QStringLiteral( "<QgsRelationshipItem: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    QIcon icon() override;
+        QIcon
+      icon() override;
 
     /**
      * Returns the associated relationship.
@@ -131,11 +131,7 @@ class CORE_EXPORT QgsRelationshipItem : public QgsDataItem
     const QgsWeakRelation &relation() const;
 
   private:
-
     QgsWeakRelation mRelation;
-
 };
 
 #endif // QGSRELATIONSHIPSITEM_H
-
-

@@ -34,7 +34,6 @@ class QgsRasterBandFixedTemporalRangeModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     QgsRasterBandFixedTemporalRangeModel( QObject *parent );
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -45,14 +44,13 @@ class QgsRasterBandFixedTemporalRangeModel : public QAbstractItemModel
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
-    void setLayerData( QgsRasterLayer *layer, const QMap<int, QgsDateTimeRange > &ranges );
-    QMap<int, QgsDateTimeRange > rangeData() const { return mRanges; }
+    void setLayerData( QgsRasterLayer *layer, const QMap<int, QgsDateTimeRange> &ranges );
+    QMap<int, QgsDateTimeRange> rangeData() const { return mRanges; }
 
   private:
-
     int mBandCount = 0;
-    QMap<int, QString > mBandNames;
-    QMap<int, QgsDateTimeRange > mRanges;
+    QMap<int, QString> mBandNames;
+    QMap<int, QgsDateTimeRange> mRanges;
 };
 
 class QgsFixedTemporalRangeDelegate : public QStyledItemDelegate
@@ -60,13 +58,11 @@ class QgsFixedTemporalRangeDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
-
     QgsFixedTemporalRangeDelegate( QObject *parent );
 
   protected:
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
-
 };
 ///@endcond PRIVATE
 #endif
@@ -83,7 +79,6 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsRasterLayerTemporalPropertiesWidget.
      */
@@ -120,7 +115,7 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
     QgsRasterLayer *mLayer = nullptr;
     QVBoxLayout *mExtraWidgetLayout = nullptr;
 
-    QList< QgsMapLayerConfigWidget * > mExtraWidgets;
+    QList<QgsMapLayerConfigWidget *> mExtraWidgets;
 
     QgsRasterBandFixedTemporalRangeModel *mFixedRangePerBandModel = nullptr;
     QString mFixedRangeLowerExpression;

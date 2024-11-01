@@ -33,22 +33,20 @@ class CORE_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
-
     //! Field type filters
-    enum Filter SIP_ENUM_BASETYPE( IntFlag )
-    {
-      String = 1 << 0, //!< String fields
-      Int = 1 << 1, //!< Integer fields
-      LongLong = 1 << 2, //!< Longlong fields
-      Double = 1 << 3, //!< Double fields
-      Numeric = Int | LongLong | Double, //!< All numeric fields
-      Date = 1 << 4, //!< Date or datetime fields
-      Time = 1 << 5, //!< Time fields
-      HideReadOnly = 1 << 6,  //!< Hide read-only fields
-      DateTime = 1 << 7, //!< Datetime fields
-      Binary = 1 << 8, //!< Binary fields, since QGIS 3.34
-      Boolean = 1 << 9, //!< Boolean fields, since QGIS 3.34
-      OriginProvider = 1 << 10, //!< Fields with a provider origin, since QGIS 3.38
+    enum Filter SIP_ENUM_BASETYPE( IntFlag ) {
+      String = 1 << 0,                                                         //!< String fields
+      Int = 1 << 1,                                                            //!< Integer fields
+      LongLong = 1 << 2,                                                       //!< Longlong fields
+      Double = 1 << 3,                                                         //!< Double fields
+      Numeric = Int | LongLong | Double,                                       //!< All numeric fields
+      Date = 1 << 4,                                                           //!< Date or datetime fields
+      Time = 1 << 5,                                                           //!< Time fields
+      HideReadOnly = 1 << 6,                                                   //!< Hide read-only fields
+      DateTime = 1 << 7,                                                       //!< Datetime fields
+      Binary = 1 << 8,                                                         //!< Binary fields, since QGIS 3.34
+      Boolean = 1 << 9,                                                        //!< Boolean fields, since QGIS 3.34
+      OriginProvider = 1 << 10,                                                //!< Fields with a provider origin, since QGIS 3.38
       AllTypes = Numeric | Date | String | Time | DateTime | Binary | Boolean, //!< All field types
     };
     Q_DECLARE_FLAGS( Filters, Filter )

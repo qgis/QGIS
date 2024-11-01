@@ -63,9 +63,7 @@ namespace pal
    */
   class CORE_EXPORT FeaturePart : public PointSet
   {
-
     public:
-
       //! Path offset variances used in curved placement.
       enum PathOffset
       {
@@ -121,7 +119,7 @@ namespace pal
       /**
        * Generates a list of candidate positions for labels for this feature.
        */
-      std::vector<std::unique_ptr<LabelPosition> > createCandidates( Pal *pal );
+      std::vector<std::unique_ptr<LabelPosition>> createCandidates( Pal *pal );
 
       /**
        * Generate candidates for point feature, located around a specified point.
@@ -131,7 +129,7 @@ namespace pal
        * \param angle orientation of the label
        * \returns the number of generated candidates
        */
-      std::size_t createCandidatesAroundPoint( double x, double y, std::vector<std::unique_ptr<LabelPosition> > &lPos, double angle );
+      std::size_t createCandidatesAroundPoint( double x, double y, std::vector<std::unique_ptr<LabelPosition>> &lPos, double angle );
 
       /**
        * Generate one candidate over or offset the specified point.
@@ -141,7 +139,7 @@ namespace pal
        * \param angle orientation of the label
        * \returns the number of generated candidates (always 1)
        */
-      std::size_t createCandidatesOverPoint( double x, double y, std::vector<std::unique_ptr<LabelPosition> > &lPos, double angle );
+      std::size_t createCandidatesOverPoint( double x, double y, std::vector<std::unique_ptr<LabelPosition>> &lPos, double angle );
 
       /**
        * Generate one candidate centered over the specified point.
@@ -151,7 +149,7 @@ namespace pal
        * \param angle orientation of the label
        * \returns the number of generated candidates (always 1)
        */
-      std::size_t createCandidateCenteredOverPoint( double x, double y, std::vector<std::unique_ptr<LabelPosition> > &lPos, double angle );
+      std::size_t createCandidateCenteredOverPoint( double x, double y, std::vector<std::unique_ptr<LabelPosition>> &lPos, double angle );
 
       /**
        * Creates a single candidate using the "point on sruface" algorithm.
@@ -159,7 +157,7 @@ namespace pal
        * \note Unlike the other create candidates methods, this method
        * bypasses the usual candidate filtering steps and ALWAYS returns a single candidate.
        */
-      std::unique_ptr< LabelPosition > createCandidatePointOnSurface( PointSet *mapShape );
+      std::unique_ptr<LabelPosition> createCandidatePointOnSurface( PointSet *mapShape );
 
       /**
        * Generates candidates following a prioritized list of predefined positions around a point.
@@ -169,7 +167,7 @@ namespace pal
        * \param angle orientation of the label
        * \returns the number of generated candidates
        */
-      std::size_t createCandidatesAtOrderedPositionsOverPoint( double x, double y, std::vector<std::unique_ptr<LabelPosition> > &lPos, double angle );
+      std::size_t createCandidatesAtOrderedPositionsOverPoint( double x, double y, std::vector<std::unique_ptr<LabelPosition>> &lPos, double angle );
 
       /**
        * Generate candidates for line feature.
@@ -179,7 +177,7 @@ namespace pal
        * \param pal point to pal settings object, for cancellation support
        * \returns the number of generated candidates
        */
-      std::size_t createCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, bool allowOverrun, Pal *pal );
+      std::size_t createCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition>> &lPos, PointSet *mapShape, bool allowOverrun, Pal *pal );
 
       /**
        * Generate horizontal candidates for line feature.
@@ -188,7 +186,7 @@ namespace pal
        * \param pal point to pal settings object, for cancellation support
        * \returns the number of generated candidates
        */
-      std::size_t createHorizontalCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, Pal *pal );
+      std::size_t createHorizontalCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition>> &lPos, PointSet *mapShape, Pal *pal );
 
       /**
        * Generate candidates for line feature, by trying to place candidates towards the middle of the longest
@@ -198,7 +196,7 @@ namespace pal
        * \param pal point to pal settings object, for cancellation support
        * \returns the number of generated candidates
        */
-      std::size_t createCandidatesAlongLineNearStraightSegments( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, Pal *pal );
+      std::size_t createCandidatesAlongLineNearStraightSegments( std::vector<std::unique_ptr<LabelPosition>> &lPos, PointSet *mapShape, Pal *pal );
 
       /**
        * Generate candidates for line feature, by trying to place candidates as close as possible to the line's midpoint.
@@ -210,7 +208,7 @@ namespace pal
        * \param pal point to pal settings object, for cancellation support
        * \returns the number of generated candidates
        */
-      std::size_t createCandidatesAlongLineNearMidpoint( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, double initialCost = 0.0, Pal *pal = nullptr );
+      std::size_t createCandidatesAlongLineNearMidpoint( std::vector<std::unique_ptr<LabelPosition>> &lPos, PointSet *mapShape, double initialCost = 0.0, Pal *pal = nullptr );
 
       /**
        * Returns the label position for a curved label at a specific offset along a path.
@@ -223,9 +221,9 @@ namespace pal
        * \param flags curved text behavior flags
        * \returns calculated label position
        */
-      std::unique_ptr< LabelPosition > curvedPlacementAtOffset( PointSet *mapShape, const std::vector<double> &pathDistances,
-          QgsTextRendererUtils::LabelLineDirection direction, double distance, bool &labeledLineSegmentIsRightToLeft, bool applyAngleConstraints,
-          QgsTextRendererUtils::CurvedTextFlags flags );
+      std::unique_ptr<LabelPosition> curvedPlacementAtOffset( PointSet *mapShape, const std::vector<double> &pathDistances,
+                                                              QgsTextRendererUtils::LabelLineDirection direction, double distance, bool &labeledLineSegmentIsRightToLeft, bool applyAngleConstraints,
+                                                              QgsTextRendererUtils::CurvedTextFlags flags );
 
       /**
        * Generate curved candidates for line features.
@@ -235,7 +233,7 @@ namespace pal
        * \param pal point to pal settings object, for cancellation support
        * \returns the number of generated candidates
        */
-      std::size_t createCurvedCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, bool allowOverrun, Pal *pal );
+      std::size_t createCurvedCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition>> &lPos, PointSet *mapShape, bool allowOverrun, Pal *pal );
 
       /**
        * Generate candidates for polygon features.
@@ -244,7 +242,7 @@ namespace pal
        * \param pal point to pal settings object, for cancellation support
        * \returns the number of generated candidates
        */
-      std::size_t createCandidatesForPolygon( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, Pal *pal );
+      std::size_t createCandidatesForPolygon( std::vector<std::unique_ptr<LabelPosition>> &lPos, PointSet *mapShape, Pal *pal );
 
       /**
        * Generate candidates outside of polygon features.
@@ -252,7 +250,7 @@ namespace pal
        * \param pal point to pal settings object, for cancellation support
        * \returns the number of generated candidates
        */
-      std::size_t createCandidatesOutsidePolygon( std::vector<std::unique_ptr<LabelPosition> > &lPos, Pal *pal );
+      std::size_t createCandidatesOutsidePolygon( std::vector<std::unique_ptr<LabelPosition>> &lPos, Pal *pal );
 
       /**
        * Tests whether this feature part belongs to the same QgsLabelFeature as another
@@ -320,7 +318,7 @@ namespace pal
        *
        * E.g. small lines or polygons get higher cost so that larger features are more likely to be labeled.
        */
-      void addSizePenalty( std::vector<std::unique_ptr<LabelPosition> > &lPos, double bbx[4], double bby[4] ) const;
+      void addSizePenalty( std::vector<std::unique_ptr<LabelPosition>> &lPos, double bbx[4], double bby[4] ) const;
 
       /**
        * Calculates the priority for the feature. This will be the feature's priority if set,
@@ -344,7 +342,6 @@ namespace pal
       void setTotalRepeats( int repeats );
 
     protected:
-
       QgsLabelFeature *mLF = nullptr;
       QList<FeaturePart *> mHoles;
 
@@ -352,7 +349,6 @@ namespace pal
       void extractCoords( const GEOSGeometry *geom );
 
     private:
-
       Qgis::LabelQuadrantPosition quadrantFromOffset() const;
 
       int mTotalRepeats = 0;
@@ -360,7 +356,7 @@ namespace pal
       mutable std::size_t mCachedMaxLineCandidates = 0;
       mutable std::size_t mCachedMaxPolygonCandidates = 0;
 
-      FeaturePart &operator= ( const FeaturePart & ) = delete;
+      FeaturePart &operator=( const FeaturePart & ) = delete;
   };
 
 } // end namespace pal

@@ -46,7 +46,7 @@ QString QgsPolygon::geometryType() const
 
 QgsPolygon *QgsPolygon::createEmptyWithSameType() const
 {
-  auto result = std::make_unique< QgsPolygon >();
+  auto result = std::make_unique<QgsPolygon>();
   result->mWkbType = mWkbType;
   return result.release();
 }
@@ -101,7 +101,7 @@ bool QgsPolygon::fromWkb( QgsConstWkbPtr &wkbPtr )
   wkbPtr >> nRings;
   for ( int i = 0; i < nRings; ++i )
   {
-    std::unique_ptr< QgsLineString > line( new QgsLineString() );
+    std::unique_ptr<QgsLineString> line( new QgsLineString() );
     line->fromWkbPoints( ringType, wkbPtr );
     /*if ( !line->isRing() )
     {
@@ -209,7 +209,7 @@ QString QgsPolygon::asWkt( int precision ) const
       if ( !curve->isEmpty() )
       {
         QString childWkt;
-        if ( ! qgsgeometry_cast<QgsLineString *>( curve ) )
+        if ( !qgsgeometry_cast<QgsLineString *>( curve ) )
         {
           std::unique_ptr<QgsLineString> line( curve->curveToLine() );
           childWkt = line->asWkt( precision );
@@ -245,7 +245,7 @@ void QgsPolygon::addInteriorRing( QgsCurve *ring )
     ring = segmented;
   }
 
-  QgsLineString *lineString = qgsgeometry_cast< QgsLineString *>( ring );
+  QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( ring );
   if ( lineString && !lineString->isClosed() )
   {
     lineString->close();
@@ -278,7 +278,7 @@ void QgsPolygon::setExteriorRing( QgsCurve *ring )
     ring = line;
   }
 
-  QgsLineString *lineString = qgsgeometry_cast< QgsLineString *>( ring );
+  QgsLineString *lineString = qgsgeometry_cast<QgsLineString *>( ring );
   if ( lineString && !lineString->isClosed() )
   {
     lineString->close();
@@ -324,7 +324,7 @@ QgsAbstractGeometry *QgsPolygon::boundary() const
 double QgsPolygon::pointDistanceToBoundary( double x, double y ) const
 {
   if ( !mExteriorRing )
-    return std::numeric_limits< double >::quiet_NaN();
+    return std::numeric_limits<double>::quiet_NaN();
 
   bool inside = false;
   double minimumDistance = std::numeric_limits<double>::max();
@@ -334,7 +334,7 @@ double QgsPolygon::pointDistanceToBoundary( double x, double y ) const
   int numRings = mInteriorRings.size() + 1;
   for ( int ringIndex = 0; ringIndex < numRings; ++ringIndex )
   {
-    const QgsLineString *ring = static_cast< const QgsLineString * >( ringIndex == 0 ? mExteriorRing.get() : mInteriorRings.at( ringIndex - 1 ) );
+    const QgsLineString *ring = static_cast<const QgsLineString *>( ringIndex == 0 ? mExteriorRing.get() : mInteriorRings.at( ringIndex - 1 ) );
 
     int len = ring->numPoints() - 1; //assume closed
     for ( int i = 0, j = len - 1; i < len; j = i++ )
@@ -344,8 +344,7 @@ double QgsPolygon::pointDistanceToBoundary( double x, double y ) const
       double bX = ring->xAt( j );
       double bY = ring->yAt( j );
 
-      if ( ( ( aY > y ) != ( bY > y ) ) &&
-           ( x < ( bX - aX ) * ( y - aY ) / ( bY - aY ) + aX ) )
+      if ( ( ( aY > y ) != ( bY > y ) ) && ( x < ( bX - aX ) * ( y - aY ) / ( bY - aY ) + aX ) )
         inside = !inside;
 
       minimumDistance = std::min( minimumDistance, QgsGeometryUtilsBase::sqrDistToLine( x, y, aX, aY, bX, bY, minDistX, minDistY, 4 * std::numeric_limits<double>::epsilon() ) );

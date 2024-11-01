@@ -40,7 +40,7 @@
 #define HOME_PREFIX "home:"
 
 /// @cond PRIVATE
-class QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem *> >
+class QgsBrowserWatcher : public QFutureWatcher<QVector<QgsDataItem *>>
 {
     Q_OBJECT
 
@@ -54,7 +54,7 @@ class QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem *> >
     QgsDataItem *item() const { return mItem; }
 
   signals:
-    void finished( QgsDataItem *item, const QVector <QgsDataItem *> &items );
+    void finished( QgsDataItem *item, const QVector<QgsDataItem *> &items );
 
   private:
     QgsDataItem *mItem = nullptr;
@@ -115,8 +115,8 @@ void QgsBrowserModel::addRootItems()
 
   // give the home directory a prominent third place
   QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, tr( "Home" ), QDir::homePath(),
-      QStringLiteral( HOME_PREFIX ) + QDir::homePath(),
-      QStringLiteral( "special:Home" ) );
+                                                 QStringLiteral( HOME_PREFIX ) + QDir::homePath(),
+                                                 QStringLiteral( "special:Home" ) );
   item->setSortKey( QStringLiteral( " 2" ) );
   setupItemConnections( item );
   mRootItems << item;
@@ -219,7 +219,7 @@ void QgsBrowserModel::dataItemProviderWillBeRemoved( QgsDataItemProvider *provid
     if ( item->providerKey() == provider->name() )
     {
       removeRootItem( item );
-      break;  // assuming there is max. 1 root item per provider
+      break; // assuming there is max. 1 root item per provider
     }
   }
 }
@@ -232,7 +232,7 @@ void QgsBrowserModel::onConnectionsChanged( const QString &providerKey )
     if ( item->providerKey() == providerKey )
     {
       item->refresh();
-      break;  // assuming there is max. 1 root item per provider
+      break; // assuming there is max. 1 root item per provider
     }
   }
 
@@ -247,7 +247,7 @@ QMap<QString, QgsDirectoryItem *> QgsBrowserModel::driveItems() const
 
 void QgsBrowserModel::initialize()
 {
-  if ( ! mInitialized )
+  if ( !mInitialized )
   {
     connect( QgsProject::instance(), &QgsProject::homePathChanged, this, &QgsBrowserModel::updateProjectHome ); // skip-keyword-check
     addRootItems();
@@ -299,7 +299,7 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   {
     return item->name();
   }
-  else if ( role == static_cast< int >( QgsBrowserModel::CustomRole::Sort ) )
+  else if ( role == static_cast<int>( QgsBrowserModel::CustomRole::Sort ) )
   {
     return item->sortKey();
   }
@@ -311,11 +311,11 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   {
     return item->icon();
   }
-  else if ( role == static_cast< int >( QgsBrowserModel::CustomRole::Path ) )
+  else if ( role == static_cast<int>( QgsBrowserModel::CustomRole::Path ) )
   {
     return item->path();
   }
-  else if ( role == static_cast< int >( QgsBrowserModel::CustomRole::Comment ) )
+  else if ( role == static_cast<int>( QgsBrowserModel::CustomRole::Comment ) )
   {
     if ( item->type() == Qgis::BrowserItemType::Layer )
     {
@@ -324,7 +324,7 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
     }
     return QVariant();
   }
-  else if ( role == static_cast< int >( QgsBrowserModel::CustomRole::LayerMetadata ) )
+  else if ( role == static_cast<int>( QgsBrowserModel::CustomRole::LayerMetadata ) )
   {
     if ( item->type() == Qgis::BrowserItemType::Layer )
     {
@@ -333,7 +333,7 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
     }
     return QVariant();
   }
-  else if ( role == static_cast< int >( QgsBrowserModel::CustomRole::ProviderKey ) )
+  else if ( role == static_cast<int>( QgsBrowserModel::CustomRole::ProviderKey ) )
   {
     return item->providerKey();
   }
@@ -437,7 +437,7 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString 
     {
       QModelIndex idx = model->index( i, 0, index );
 
-      QString itemPath = model->data( idx, static_cast< int >( QgsBrowserModel::CustomRole::Path ) ).toString();
+      QString itemPath = model->data( idx, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString();
       if ( itemPath == path )
       {
         QgsDebugMsgLevel( "Arrived " + itemPath, 4 );
@@ -501,7 +501,7 @@ void QgsBrowserModel::reload()
 
 void QgsBrowserModel::refreshDrives()
 {
-  const QList< QFileInfo > drives = QDir::drives();
+  const QList<QFileInfo> drives = QDir::drives();
   // remove any removed drives
   const QStringList existingDrives = mDriveItems.keys();
   for ( const QString &drivePath : existingDrives )
@@ -629,7 +629,7 @@ void QgsBrowserModel::itemStateChanged( QgsDataItem *item, Qgis::BrowserItemStat
   QModelIndex idx = findItem( item );
   if ( !idx.isValid() )
     return;
-  QgsDebugMsgLevel( QStringLiteral( "item %1 state changed %2 -> %3" ).arg( item->path() ).arg( qgsEnumValueToKey< Qgis::BrowserItemState >( oldState ) ).arg( qgsEnumValueToKey< Qgis::BrowserItemState >( item->state() ) ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "item %1 state changed %2 -> %3" ).arg( item->path() ).arg( qgsEnumValueToKey<Qgis::BrowserItemState>( oldState ) ).arg( qgsEnumValueToKey<Qgis::BrowserItemState>( item->state() ) ), 4 );
   emit stateChanged( idx, oldState );
 }
 
@@ -671,7 +671,7 @@ QMimeData *QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
   {
     if ( index.isValid() )
     {
-      QgsDataItem *ptr = reinterpret_cast< QgsDataItem * >( index.internalPointer() );
+      QgsDataItem *ptr = reinterpret_cast<QgsDataItem *>( index.internalPointer() );
       QgsMimeDataUtils::UriList uris = ptr->mimeUris();
       if ( uris.isEmpty() )
       {
@@ -784,7 +784,8 @@ void QgsBrowserModel::hidePath( QgsDataItem *item )
 {
   QgsSettings settings;
   QStringList hiddenItems = settings.value( QStringLiteral( "browser/hiddenPaths" ),
-                            QStringList() ).toStringList();
+                                            QStringList() )
+                              .toStringList();
   int idx = hiddenItems.indexOf( item->path() );
   if ( idx != -1 )
   {
@@ -811,7 +812,7 @@ void QgsBrowserModel::removeRootItem( QgsDataItem *item )
   int i = mRootItems.indexOf( item );
   beginRemoveRows( QModelIndex(), i, i );
   mRootItems.remove( i );
-  QgsDirectoryItem *dirItem = qobject_cast< QgsDirectoryItem * >( item );
+  QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( item );
   if ( !mDriveItems.key( dirItem ).isEmpty() )
   {
     mDriveItems.remove( mDriveItems.key( dirItem ) );
@@ -829,7 +830,7 @@ QgsDataItem *QgsBrowserModel::addProviderRootItem( QgsDataItemProvider *pr )
     return nullptr;
   }
 
-  QgsDataItem *item = pr->createDataItem( QString(), nullptr );  // empty path -> top level
+  QgsDataItem *item = pr->createDataItem( QString(), nullptr ); // empty path -> top level
   if ( item )
   {
     // make sure the top level key is always set

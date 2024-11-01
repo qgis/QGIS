@@ -83,17 +83,15 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
 #endif
 
   public:
-
     // *INDENT-OFF*
 
     /**
      * Data definable properties.
      * \since QGIS 3.26
      */
-    enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayerElevationProperties, Property ) : int
-      {
-      ZOffset, //!< Z offset
-      ExtrusionHeight, //!< Extrusion height
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayerElevationProperties, Property ) : int {
+      ZOffset,                     //!< Z offset
+      ExtrusionHeight,             //!< Extrusion height
       RasterPerBandLowerElevation, //!< Lower elevation for each raster band \since QGIS 3.38
       RasterPerBandUpperElevation, //!< Upper elevation for each raster band \since QGIS 3.38
     };
@@ -102,9 +100,8 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
     /**
      * Flags attached to the elevation property.
      */
-    enum Flag SIP_ENUM_BASETYPE( IntFlag )
-    {
-      FlagDontInvalidateCachedRendersWhenRangeChanges = 1  //!< Any cached rendering will not be invalidated when z range context is modified.
+    enum Flag SIP_ENUM_BASETYPE( IntFlag ) {
+      FlagDontInvalidateCachedRendersWhenRangeChanges = 1 //!< Any cached rendering will not be invalidated when z range context is modified.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -181,7 +178,7 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
      *
      * \since QGIS 3.38
      */
-    virtual QList< double > significantZValues( QgsMapLayer *layer ) const;
+    virtual QList<double> significantZValues( QgsMapLayer *layer ) const;
 
     /**
      * Returns TRUE if the layer should be visible by default in newly created elevation
@@ -353,12 +350,10 @@ class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
     void copyCommonProperties( const QgsMapLayerElevationProperties *other );
 
   private:
-
     /**
      * Initializes property definitions.
      */
     static void initPropertyDefinitions();
-
 };
 
 #endif // QGSMAPLAYERELEVATIONPROPERTIES_H

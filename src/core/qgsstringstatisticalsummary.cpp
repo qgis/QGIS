@@ -77,7 +77,7 @@ void QgsStringStatisticalSummary::addValue( const QVariant &value )
 
 void QgsStringStatisticalSummary::finalize()
 {
-  mMeanLength = mSumLengths / static_cast< double >( mCount );
+  mMeanLength = mSumLengths / static_cast<double>( mCount );
 
   if ( mStatistics & Qgis::StringStatistic::Minority || mStatistics & Qgis::StringStatistic::Majority )
   {
@@ -181,7 +181,7 @@ QVariant QgsStringStatisticalSummary::statistic( Qgis::StringStatistic stat ) co
 
 QSet<QString> QgsStringStatisticalSummary::distinctValues() const
 {
-  QSet< QString > res;
+  QSet<QString> res;
   res.reserve( mValues.size() );
   for ( auto it = mValues.begin(); it != mValues.end(); ++it )
   {
@@ -219,4 +219,3 @@ QString QgsStringStatisticalSummary::displayName( Qgis::StringStatistic statisti
   }
   return QString();
 }
-

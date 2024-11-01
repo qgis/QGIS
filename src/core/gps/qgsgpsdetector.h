@@ -48,7 +48,6 @@ class CORE_EXPORT QgsGpsDetector : public QObject
 {
     Q_OBJECT
   public:
-
     // TODO QGIS 4.0 -- remove useUnsafeSignals option
 
     /**
@@ -88,7 +87,7 @@ class CORE_EXPORT QgsGpsDetector : public QObject
      */
     QgsGpsConnection *takeConnection() SIP_TRANSFERBACK;
 
-    static QList< QPair<QString, QString> > availablePorts();
+    static QList<QPair<QString, QString>> availablePorts();
 
   public slots:
     void advance();
@@ -127,10 +126,10 @@ class CORE_EXPORT QgsGpsDetector : public QObject
     bool mUseUnsafeSignals = true;
     int mPortIndex = 0;
     int mBaudIndex = -1;
-    QList< QPair< QString, QString > > mPortList;
+    QList<QPair<QString, QString>> mPortList;
     QList<qint32> mBaudList;
 
-    std::unique_ptr< QgsGpsConnection > mConn;
+    std::unique_ptr<QgsGpsConnection> mConn;
     QTimer *mTimeoutTimer = nullptr;
 };
 

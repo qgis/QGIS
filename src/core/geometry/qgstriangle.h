@@ -32,7 +32,6 @@
 class CORE_EXPORT QgsTriangle : public QgsPolygon
 {
   public:
-
     /**
      * Constructor for an empty triangle geometry.
      */
@@ -88,7 +87,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      * Inherited method not used. You cannot add an interior ring into a triangle.
      * \note not available in Python bindings
      */
-    void setInteriorRings( const QVector< QgsCurve *> &rings ) = delete; // cppcheck-suppress duplInheritedMember
+    void setInteriorRings( const QVector<QgsCurve *> &rings ) = delete; // cppcheck-suppress duplInheritedMember
     //! Inherited method not used. You cannot delete or insert a vertex directly. Returns always FALSE.
     bool deleteVertex( QgsVertexId position ) override;
     //! Inherited method not used. You cannot delete or insert a vertex directly. Returns always FALSE.
@@ -461,7 +460,5 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
 #endif
 
     QgsTriangle *createEmptyWithSameType() const override SIP_FACTORY;
-
-
 };
 #endif // QGSTRIANGLE_H

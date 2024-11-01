@@ -39,7 +39,6 @@
 class CORE_EXPORT QgsRuntimeProfilerNode
 {
   public:
-
     // *INDENT-OFF*
 
     /**
@@ -48,13 +47,12 @@ class CORE_EXPORT QgsRuntimeProfilerNode
      * \note Prior to QGIS 3.36 this was available as QgsRuntimeProfilerNode::Roles
      * \since QGIS 3.36
      */
-    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRuntimeProfilerNode, Roles ) : int
-    {
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRuntimeProfilerNode, Roles ) : int {
       Name = Qt::UserRole + 1, //!< Profile item name
-      Group, //!< Node group
-      Elapsed, //!< Node elapsed time
-      ParentElapsed, //!< Total elapsed time for node's parent
-      Id, //!< Internal node ID \since QGIS 3.34
+      Group,                   //!< Node group
+      Elapsed,                 //!< Node elapsed time
+      ParentElapsed,           //!< Total elapsed time for node's parent
+      Id,                      //!< Internal node ID \since QGIS 3.34
     };
     // *INDENT-ON*
 
@@ -97,7 +95,7 @@ class CORE_EXPORT QgsRuntimeProfilerNode
     /**
      * Adds a \a child node to this node.
      */
-    void addChild( std::unique_ptr< QgsRuntimeProfilerNode > child );
+    void addChild( std::unique_ptr<QgsRuntimeProfilerNode> child );
 
     /**
      * Returns the index of the specified \a child node.
@@ -157,7 +155,7 @@ class CORE_EXPORT QgsRuntimeProfilerNode
     double totalElapsedTimeForChildren( const QString &group ) const;
 
   private:
-    std::deque< std::unique_ptr< QgsRuntimeProfilerNode > > mChildren;
+    std::deque<std::unique_ptr<QgsRuntimeProfilerNode>> mChildren;
     QgsRuntimeProfilerNode *mParent = nullptr;
     QElapsedTimer mProfileTime;
     double mElapsed = 0;
@@ -165,7 +163,6 @@ class CORE_EXPORT QgsRuntimeProfilerNode
     QString mId;
     QString mName;
     QString mGroup;
-
 };
 #endif
 
@@ -187,7 +184,6 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor to create a new runtime profiler.
      *
@@ -264,7 +260,7 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
     /**
      * Returns the set of known groups.
      */
-    QSet< QString > groups() const { return mGroups; }
+    QSet<QString> groups() const { return mGroups; }
 
     /**
      * Returns TRUE if the specified \a group is currently being logged,
@@ -315,7 +311,6 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
     void otherProfilerEnded( const QString &group, const QStringList &path, const QString &name, const QString &id, double elapsed );
 
   private:
-
     static QgsRuntimeProfiler *threadLocalInstance();
     static QgsRuntimeProfiler *sMainProfiler;
     bool mInitialized = false;
@@ -332,10 +327,10 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
      */
     QgsRuntimeProfilerNode *index2node( const QModelIndex &index ) const;
 
-    QMap< QString, QStack< QgsRuntimeProfilerNode * > > mCurrentStack;
-    std::unique_ptr< QgsRuntimeProfilerNode > mRootNode;
+    QMap<QString, QStack<QgsRuntimeProfilerNode *>> mCurrentStack;
+    std::unique_ptr<QgsRuntimeProfilerNode> mRootNode;
 
-    QSet< QString > mGroups;
+    QSet<QString> mGroups;
 
     friend class QgsApplication;
 };
@@ -360,7 +355,6 @@ class CORE_EXPORT QgsRuntimeProfiler : public QAbstractItemModel
 class CORE_EXPORT QgsScopedRuntimeProfile
 {
   public:
-
     /**
      * Constructor for QgsScopedRuntimeProfile.
      *
@@ -388,9 +382,7 @@ class CORE_EXPORT QgsScopedRuntimeProfile
     void switchTask( const QString &name ); // cppcheck-suppress functionConst
 
   private:
-
     QString mGroup;
-
 };
 
 

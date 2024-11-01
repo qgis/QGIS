@@ -27,7 +27,7 @@
 ///@cond PRIVATE
 
 //! Chunk loader for mesh terrain implementation
-class QgsMeshTerrainTileLoader: public QgsTerrainTileLoader
+class QgsMeshTerrainTileLoader : public QgsTerrainTileLoader
 {
     Q_OBJECT
   public:
@@ -42,7 +42,7 @@ class QgsMeshTerrainTileLoader: public QgsTerrainTileLoader
 
   private:
     QgsTriangularMesh mTriangularMesh;
-    std::unique_ptr< QgsMesh3DSymbol > mSymbol;
+    std::unique_ptr<QgsMesh3DSymbol> mSymbol;
 };
 
 ///@endcond

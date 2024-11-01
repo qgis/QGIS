@@ -38,15 +38,15 @@ class IndexedPointCloudNode;
  */
 struct CORE_EXPORT QgsPointCloudAttributeStatistics
 {
-  double minimum = std::numeric_limits<double>::max();
-  double maximum = std::numeric_limits<double>::lowest();
-  double mean = 0;
-  double stDev = 0;
-  int count = 0;
+    double minimum = std::numeric_limits<double>::max();
+    double maximum = std::numeric_limits<double>::lowest();
+    double mean = 0;
+    double stDev = 0;
+    int count = 0;
 #ifndef SIP_RUN
-  QMap<int, int> classCount;
-  //! Updates the current point cloud statistics to hold the cumulation of the current statistics and \a stats
-  void cumulateStatistics( const QgsPointCloudAttributeStatistics &stats );
+    QMap<int, int> classCount;
+    //! Updates the current point cloud statistics to hold the cumulation of the current statistics and \a stats
+    void cumulateStatistics( const QgsPointCloudAttributeStatistics &stats );
 #endif
 };
 

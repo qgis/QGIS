@@ -30,7 +30,6 @@ SIP_NO_FILE
 class GUI_EXPORT QgsRangeWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
-
     /**
      * Constructor for QgsRangeWidgetFactory, where \a name is a human-readable
      * name for the factory.

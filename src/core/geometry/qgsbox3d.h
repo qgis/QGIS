@@ -44,7 +44,6 @@ class CORE_EXPORT QgsBox3D
     Q_GADGET
 
   public:
-
     /**
     * Constructor for QgsBox3D which accepts the ranges of x/y/z coordinates. If \a normalize is FALSE then
     * the normalization step will not be applied automatically.
@@ -78,9 +77,8 @@ class CORE_EXPORT QgsBox3D
               bool normalize = true );
 
 #else
-    QgsBox3D( SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QgsVector3D, QgsRectangle, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[QgsPoint, QgsVector3D, float] ) = Py_None, SIP_PYOBJECT z SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT x2 SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT y2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT z2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT n SIP_TYPEHINT( Optional[bool] ) = Py_None ) [( double x = 0.0, double y = 0.0, double z = 0.0, double x2 = 0.0, double y2 = 0.0, double z2 = 0.0, bool n = true )];
-    % MethodCode
-    if ( sipCanConvertToType( a0, sipType_QgsRectangle, SIP_NOT_NONE ) && a4 == Py_None && a5 == Py_None && a6 == Py_None )
+    QgsBox3D( SIP_PYOBJECT x SIP_TYPEHINT( Optional[Union[QgsPoint, QgsVector3D, QgsRectangle, float]] ) = Py_None, SIP_PYOBJECT y SIP_TYPEHINT( Optional[QgsPoint, QgsVector3D, float] ) = Py_None, SIP_PYOBJECT z SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT x2 SIP_TYPEHINT( Optional[Union[bool, float]] ) = Py_None, SIP_PYOBJECT y2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT z2 SIP_TYPEHINT( Optional[float] ) = Py_None, SIP_PYOBJECT n SIP_TYPEHINT( Optional[bool] ) = Py_None )[( double x = 0.0, double y = 0.0, double z = 0.0, double x2 = 0.0, double y2 = 0.0, double z2 = 0.0, bool n = true )];
+    % MethodCode if ( sipCanConvertToType( a0, sipType_QgsRectangle, SIP_NOT_NONE ) && a4 == Py_None && a5 == Py_None && a6 == Py_None )
     {
       int state;
       sipIsErr = 0;
@@ -148,13 +146,7 @@ class CORE_EXPORT QgsBox3D
       }
     }
     else if (
-      ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) &&
-      ( a1 == Py_None || PyFloat_AsDouble( a1 ) != -1.0 || !PyErr_Occurred() ) &&
-      ( a2 == Py_None || PyFloat_AsDouble( a2 ) != -1.0 || !PyErr_Occurred() ) &&
-      ( a3 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) &&
-      ( a4 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) &&
-      ( a5 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) &&
-      ( a6 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) )
+      ( a0 == Py_None || PyFloat_AsDouble( a0 ) != -1.0 || !PyErr_Occurred() ) && ( a1 == Py_None || PyFloat_AsDouble( a1 ) != -1.0 || !PyErr_Occurred() ) && ( a2 == Py_None || PyFloat_AsDouble( a2 ) != -1.0 || !PyErr_Occurred() ) && ( a3 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) && ( a4 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) && ( a5 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) && ( a6 == Py_None || PyFloat_AsDouble( a3 ) != -1.0 || !PyErr_Occurred() ) )
     {
       double x1 = a0 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a0 );
       double y1 = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
@@ -399,7 +391,7 @@ class CORE_EXPORT QgsBox3D
      *
      * \since QGIS 3.18
      */
-    double distanceTo( const  QVector3D &point ) const SIP_HOLDGIL;
+    double distanceTo( const QVector3D &point ) const SIP_HOLDGIL;
 
     bool operator==( const QgsBox3D &other ) const SIP_HOLDGIL;
 
@@ -458,7 +450,7 @@ class CORE_EXPORT QgsBox3D
     /**
      * Returns an array of all box corners as 3D vectors.
      */
-    QVector< QgsVector3D > corners() const SIP_HOLDGIL;
+    QVector<QgsVector3D> corners() const SIP_HOLDGIL;
 
     /**
      * Returns a box offset from this one in the direction of the reversed vector.
@@ -488,23 +480,23 @@ class CORE_EXPORT QgsBox3D
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsBox3D(%1, %2, %3, %4, %5, %6)>" )
-                  .arg( sipCpp->xMinimum() )
-                  .arg( sipCpp->yMinimum() )
-                  .arg( sipCpp->zMinimum() )
-                  .arg( sipCpp->xMaximum() )
-                  .arg( sipCpp->yMaximum() )
-                  .arg( sipCpp->zMaximum() );
+        QString str
+      = QStringLiteral( "<QgsBox3D(%1, %2, %3, %4, %5, %6)>" )
+          .arg( sipCpp->xMinimum() )
+          .arg( sipCpp->yMinimum() )
+          .arg( sipCpp->zMinimum() )
+          .arg( sipCpp->xMaximum() )
+          .arg( sipCpp->yMaximum() )
+          .arg( sipCpp->zMaximum() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-  private:
+      private :
 
-    QgsRectangle mBounds2d;
+      QgsRectangle mBounds2d;
     double mZmin = std::numeric_limits<double>::quiet_NaN();
     double mZmax = std::numeric_limits<double>::quiet_NaN();
-
 };
 
 #endif // QGSBOX3D_H

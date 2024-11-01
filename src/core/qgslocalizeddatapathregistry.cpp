@@ -48,7 +48,6 @@ QString QgsLocalizedDataPathRegistry::localizedPath( const QString &fullPath ) c
       return basePath.relativeFilePath( fullPath );
 
   return QString();
-
 }
 
 QStringList QgsLocalizedDataPathRegistry::paths() const

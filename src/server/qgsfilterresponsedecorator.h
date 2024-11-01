@@ -31,10 +31,9 @@
  * \class QgsFilterResponseDecorator
  * \brief Class defining decorator for calling filter's hooks
  */
-class QgsFilterResponseDecorator: public QgsServerResponse
+class QgsFilterResponseDecorator : public QgsServerResponse
 {
   public:
-
     /**
      * Constructor for QgsFilterResponseDecorator.
      * \param filters Map of filters to apply before terminating the response
@@ -55,7 +54,7 @@ class QgsFilterResponseDecorator: public QgsServerResponse
 
     // QgsServerResponse overrides
 
-    void setHeader( const QString &key, const QString &value ) override {  mResponse.setHeader( key, value ); }
+    void setHeader( const QString &key, const QString &value ) override { mResponse.setHeader( key, value ); }
 
     void removeHeader( const QString &key ) override { mResponse.removeHeader( key ); }
 
@@ -69,7 +68,7 @@ class QgsFilterResponseDecorator: public QgsServerResponse
 
     int statusCode() const override { return mResponse.statusCode(); }
 
-    void sendError( int code,  const QString &message ) override { mResponse.sendError( code, message ); }
+    void sendError( int code, const QString &message ) override { mResponse.sendError( code, message ); }
 
     QIODevice *io() override { return mResponse.io(); }
 
@@ -86,8 +85,8 @@ class QgsFilterResponseDecorator: public QgsServerResponse
     QgsFeedback *feedback() const override { return mResponse.feedback(); }
 
   private:
-    QgsServerFiltersMap  mFilters;
-    QgsServerResponse   &mResponse;
+    QgsServerFiltersMap mFilters;
+    QgsServerResponse &mResponse;
 };
 
 #endif

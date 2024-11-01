@@ -29,7 +29,7 @@ class QDomElement;
 class QDomDocument;
 
 //! Definition of available properties
-typedef QMap< int, QgsPropertyDefinition > QgsPropertiesDefinition;
+typedef QMap<int, QgsPropertyDefinition> QgsPropertiesDefinition;
 
 /**
  * \ingroup core
@@ -39,7 +39,6 @@ typedef QMap< int, QgsPropertyDefinition > QgsPropertiesDefinition;
 
 class CORE_EXPORT QgsAbstractPropertyCollection
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsPropertyCollection *>( sipCpp ) )
@@ -52,7 +51,6 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 #endif
 
   public:
-
     /**
      * Constructor for QgsAbstractPropertyCollection. The name
      * parameter should be set to a descriptive name for the collection.
@@ -235,7 +233,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      *                      in context's fields() will be reported - this is useful e.g. with vector tiles
      *                      where the actual available field names may not be known beforehand.
      */
-    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const = 0;
+    virtual QSet<QString> referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const = 0;
 
     /**
      * Returns TRUE if the collection contains an active property with the specified key.
@@ -293,32 +291,31 @@ class CORE_EXPORT QgsAbstractPropertyCollection
     ///@cond PRIVATE
     template<class T> QDateTime valueAsDateTime( const T &key, const QgsExpressionContext &context, const QDateTime &defaultDateTime = QDateTime(), bool *ok = nullptr ) const SIP_SKIP
     {
-      return valueAsDateTime( static_cast< int >( key ), context, defaultDateTime, ok );
+      return valueAsDateTime( static_cast<int>( key ), context, defaultDateTime, ok );
     }
     template<class T> QString valueAsString( const T &key, const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok = nullptr ) const SIP_SKIP
     {
-      return valueAsString( static_cast< int >( key ), context, defaultString, ok );
+      return valueAsString( static_cast<int>( key ), context, defaultString, ok );
     }
     template<class T> QColor valueAsColor( const T &key, const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok = nullptr ) const SIP_SKIP
     {
-      return valueAsColor( static_cast< int >( key ), context, defaultColor, ok );
+      return valueAsColor( static_cast<int>( key ), context, defaultColor, ok );
     }
     template<class T> double valueAsDouble( const T &key, const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok = nullptr ) const SIP_SKIP
     {
-      return valueAsDouble( static_cast< int >( key ), context, defaultValue, ok );
+      return valueAsDouble( static_cast<int>( key ), context, defaultValue, ok );
     }
     template<class T> int valueAsInt( const T &key, const QgsExpressionContext &context, int defaultValue = 0, bool *ok = nullptr ) const SIP_SKIP
     {
-      return valueAsInt( static_cast< int >( key ), context, defaultValue, ok );
+      return valueAsInt( static_cast<int>( key ), context, defaultValue, ok );
     }
     template<class T> bool valueAsBool( const T &key, const QgsExpressionContext &context, bool defaultValue = false, bool *ok = nullptr ) const SIP_SKIP
     {
-      return valueAsBool( static_cast< int >( key ), context, defaultValue, ok );
+      return valueAsBool( static_cast<int>( key ), context, defaultValue, ok );
     }
     ///@endcond PRIVATE
 
   private:
-
     QString mName;
 };
 
@@ -343,7 +340,6 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
 {
   public:
-
     /**
      * Constructor for QgsPropertyCollection
      * \param name collection name
@@ -371,7 +367,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      * \see property()
      * \since QGIS 3.36
      */
-    template< class T> bool hasProperty( T key ) const SIP_SKIP { return hasProperty( static_cast< int >( key ) ); }
+    template<class T> bool hasProperty( T key ) const SIP_SKIP { return hasProperty( static_cast<int>( key ) ); }
 
     QgsProperty property( int key ) const final SIP_SKIP;
 
@@ -379,7 +375,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      * Returns the property with the specified \a key.
      * \since QGIS 3.36
      */
-    template< class T> QgsProperty property( T key ) const SIP_SKIP { return property( static_cast< int >( key ) ); }
+    template<class T> QgsProperty property( T key ) const SIP_SKIP { return property( static_cast<int>( key ) ); }
 
     /**
      * Returns a reference to a matching property from the collection, if one exists.
@@ -391,7 +387,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
     virtual QgsProperty &property( int key );
 
     ///@cond PRIVATE
-    template< class T> QgsProperty &property( T key ) SIP_SKIP { return property( static_cast< int >( key ) ); }
+    template<class T> QgsProperty &property( T key ) SIP_SKIP { return property( static_cast<int>( key ) ); }
     ///@endcond
 
     QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const final;
@@ -400,10 +396,10 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      * Returns the value of the property with the specified \a key.
      * \since QGIS 3.36
      */
-    template< class T> QVariant value( T key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const SIP_SKIP { return value( static_cast< int >( key ), context, defaultValue ); }
+    template<class T> QVariant value( T key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const SIP_SKIP { return value( static_cast<int>( key ), context, defaultValue ); }
 
     bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const final;
-    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const final;
+    QSet<QString> referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const final;
     bool isActive( int key ) const final;
 
     /**
@@ -411,7 +407,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      * \see property()
      * \since QGIS 3.36
      */
-    template< class T> bool isActive( T key ) const SIP_SKIP { return isActive( static_cast< int >( key ) ); }
+    template<class T> bool isActive( T key ) const SIP_SKIP { return isActive( static_cast<int>( key ) ); }
 
     bool hasActiveProperties() const final;
     bool hasDynamicProperties() const final;
@@ -439,7 +435,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      *
      * \since QGIS 3.36
      */
-    template< class T> void setProperty( T key, const QgsProperty &property ) SIP_SKIP { setProperty( static_cast< int >( key ), property ); }
+    template<class T> void setProperty( T key, const QgsProperty &property ) SIP_SKIP { setProperty( static_cast<int>( key ), property ); }
 
     /**
      * Convenience method, creates a QgsStaticProperty and stores it within the collection.
@@ -459,10 +455,9 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
      *
      * \since QGIS 3.36
      */
-    template< class T> void setProperty( T key,  const QVariant &value ) SIP_SKIP { setProperty( static_cast< int >( key ), value ); }
+    template<class T> void setProperty( T key, const QVariant &value ) SIP_SKIP { setProperty( static_cast<int>( key ), value ); }
 
   private:
-
     QHash<int, QgsProperty> mProperties;
 
     mutable bool mDirty = false;
@@ -485,7 +480,6 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
 class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollection
 {
   public:
-
     QgsPropertyCollectionStack() = default;
 
     ~QgsPropertyCollectionStack() override;
@@ -583,7 +577,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      *                      in context's fields() will be reported - this is useful e.g. with vector tiles
      *                      where the actual available field names may not be known beforehand.
      */
-    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const override;
+    QSet<QString> referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const override;
     bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
 
     QSet<int> propertyKeys() const override;
@@ -594,9 +588,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
     bool loadVariant( const QVariant &collection, const QgsPropertiesDefinition &definitions ) override;
 
   private:
-
-    QList< QgsPropertyCollection * > mStack;
-
+    QList<QgsPropertyCollection *> mStack;
 };
 
 #endif // QGSPROPERTYCOLLECTION_H

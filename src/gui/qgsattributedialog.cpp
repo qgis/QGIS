@@ -191,4 +191,3 @@ QgsMapLayerActionContext QgsAttributeDialog::createActionContext()
   context.setMessageBar( mMessageBar );
   return context;
 }
-

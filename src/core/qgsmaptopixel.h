@@ -36,7 +36,6 @@ class QPoint;
 class CORE_EXPORT QgsMapToPixel
 {
   public:
-
     /**
      * Constructor for an invalid QgsMapToPixel.
      *
@@ -124,7 +123,7 @@ class CORE_EXPORT QgsMapToPixel
     void transformInPlace( double &x, double &y ) const
     {
       qreal mx, my;
-      mMatrix.map( static_cast< qreal >( x ), static_cast< qreal >( y ), &mx, &my );
+      mMatrix.map( static_cast<qreal>( x ), static_cast<qreal>( y ), &mx, &my );
       x = mx;
       y = my;
     }
@@ -184,8 +183,7 @@ class CORE_EXPORT QgsMapToPixel
      * transform.
      * \note not available in Python bindings
      */
-    template <class T> SIP_SKIP
-    void transformInPlace( QVector<T> &x, QVector<T> &y ) const
+    template<class T> SIP_SKIP void transformInPlace( QVector<T> &x, QVector<T> &y ) const
     {
       assert( x.size() == y.size() );
       T *xData = x.data();
@@ -213,7 +211,7 @@ class CORE_EXPORT QgsMapToPixel
       const QTransform matrix = mMatrix.inverted( &invertible );
       assert( invertible );
       qreal mx, my;
-      matrix.map( static_cast< qreal >( x ), static_cast< qreal >( y ), &mx, &my );
+      matrix.map( static_cast<qreal>( x ), static_cast<qreal>( y ), &mx, &my );
       return QgsPointXY( mx, my );
     }
 

@@ -81,14 +81,12 @@ void QgsAbstractGeometry::setZMTypeFromSubGeometry( const QgsAbstractGeometry *s
   }
 
   //special handling for 25d types:
-  if ( baseGeomType == Qgis::WkbType::LineString &&
-       ( subgeom->wkbType() == Qgis::WkbType::Point25D || subgeom->wkbType() == Qgis::WkbType::LineString25D ) )
+  if ( baseGeomType == Qgis::WkbType::LineString && ( subgeom->wkbType() == Qgis::WkbType::Point25D || subgeom->wkbType() == Qgis::WkbType::LineString25D ) )
   {
     mWkbType = Qgis::WkbType::LineString25D;
     return;
   }
-  else if ( baseGeomType == Qgis::WkbType::Polygon &&
-            ( subgeom->wkbType() == Qgis::WkbType::Point25D || subgeom->wkbType() == Qgis::WkbType::LineString25D ) )
+  else if ( baseGeomType == Qgis::WkbType::Polygon && ( subgeom->wkbType() == Qgis::WkbType::Point25D || subgeom->wkbType() == Qgis::WkbType::LineString25D ) )
   {
     mWkbType = Qgis::WkbType::Polygon25D;
     return;
@@ -231,7 +229,8 @@ QString QgsAbstractGeometry::asJson( int precision )
 
 json QgsAbstractGeometry::asJsonObject( int precision ) const
 {
-  Q_UNUSED( precision ) return nullptr;
+  Q_UNUSED( precision )
+  return nullptr;
 }
 
 QgsPoint QgsAbstractGeometry::centroid() const
@@ -325,7 +324,7 @@ const QgsAbstractGeometry *QgsAbstractGeometry::simplifiedTypeRef() const
   return this;
 }
 
-void QgsAbstractGeometry::filterVertices( const std::function<bool ( const QgsPoint & )> & )
+void QgsAbstractGeometry::filterVertices( const std::function<bool( const QgsPoint & )> & )
 {
   // Ideally this would be pure virtual, but SIP has issues with that
 }
@@ -337,7 +336,7 @@ void QgsAbstractGeometry::transformVertices( const std::function<QgsPoint( const
 
 QgsAbstractGeometry::part_iterator QgsAbstractGeometry::parts_end()
 {
-  const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( this );
+  const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( this );
   return part_iterator( this, collection ? collection->partCount() : 1 );
 }
 
@@ -353,7 +352,7 @@ QgsGeometryConstPartIterator QgsAbstractGeometry::parts() const
 
 QgsAbstractGeometry::const_part_iterator QgsAbstractGeometry::const_parts_end() const
 {
-  const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( this );
+  const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( this );
   return const_part_iterator( this, collection ? collection->partCount() : 1 );
 }
 
@@ -448,15 +447,15 @@ QgsAbstractGeometry::vertex_iterator::vertex_iterator( const QgsAbstractGeometry
   levels[0].g = g;
   levels[0].index = index;
 
-  digDown();  // go to the leaf level of the first vertex
+  digDown(); // go to the leaf level of the first vertex
 }
 
 QgsAbstractGeometry::vertex_iterator &QgsAbstractGeometry::vertex_iterator::operator++()
 {
   if ( depth == 0 && levels[0].index >= levels[0].g->childCount() )
-    return *this;  // end of geometry - nowhere else to go
+    return *this; // end of geometry - nowhere else to go
 
-  Q_ASSERT( !levels[depth].g->hasChildGeometries() );  // we should be at a leaf level
+  Q_ASSERT( !levels[depth].g->hasChildGeometries() ); // we should be at a leaf level
 
   ++levels[depth].index;
 
@@ -467,7 +466,7 @@ QgsAbstractGeometry::vertex_iterator &QgsAbstractGeometry::vertex_iterator::oper
     ++levels[depth].index;
   }
 
-  digDown();  // go to the leaf level again
+  digDown(); // go to the leaf level again
 
   return *this;
 }
@@ -531,13 +530,13 @@ bool QgsAbstractGeometry::vertex_iterator::operator==( const QgsAbstractGeometry
 void QgsAbstractGeometry::vertex_iterator::digDown()
 {
   if ( levels[depth].g->hasChildGeometries() && levels[depth].index >= levels[depth].g->childCount() )
-    return;  // first check we are not already at the end
+    return; // first check we are not already at the end
 
   // while not "final" depth for the geom: go one level down.
   while ( levels[depth].g->hasChildGeometries() )
   {
     ++depth;
-    Q_ASSERT( depth < 3 );  // that's capacity of the levels array
+    Q_ASSERT( depth < 3 ); // that's capacity of the levels array
     levels[depth].index = 0;
     levels[depth].g = levels[depth - 1].g->childGeometry( levels[depth - 1].index );
   }
@@ -557,7 +556,7 @@ QgsAbstractGeometry::part_iterator::part_iterator( QgsAbstractGeometry *g, int i
 
 QgsAbstractGeometry::part_iterator &QgsAbstractGeometry::part_iterator::operator++()
 {
-  const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( mGeometry );
+  const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( mGeometry );
   if ( !collection )
   {
     mIndex = 1;
@@ -580,7 +579,7 @@ QgsAbstractGeometry::part_iterator QgsAbstractGeometry::part_iterator::operator+
 
 QgsAbstractGeometry *QgsAbstractGeometry::part_iterator::operator*() const
 {
-  QgsGeometryCollection *collection = qgsgeometry_cast< QgsGeometryCollection * >( mGeometry );
+  QgsGeometryCollection *collection = qgsgeometry_cast<QgsGeometryCollection *>( mGeometry );
   if ( !collection )
   {
     return mGeometry;
@@ -606,7 +605,6 @@ QgsAbstractGeometry *QgsGeometryPartIterator::next()
 }
 
 
-
 QgsAbstractGeometry::const_part_iterator::const_part_iterator( const QgsAbstractGeometry *g, int index )
   : mIndex( index )
   , mGeometry( g )
@@ -615,7 +613,7 @@ QgsAbstractGeometry::const_part_iterator::const_part_iterator( const QgsAbstract
 
 QgsAbstractGeometry::const_part_iterator &QgsAbstractGeometry::const_part_iterator::operator++()
 {
-  const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( mGeometry );
+  const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( mGeometry );
   if ( !collection )
   {
     mIndex = 1;
@@ -638,7 +636,7 @@ QgsAbstractGeometry::const_part_iterator QgsAbstractGeometry::const_part_iterato
 
 const QgsAbstractGeometry *QgsAbstractGeometry::const_part_iterator::operator*() const
 {
-  const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( mGeometry );
+  const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( mGeometry );
   if ( !collection )
   {
     return mGeometry;

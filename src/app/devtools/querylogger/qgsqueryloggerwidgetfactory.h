@@ -19,15 +19,13 @@
 
 class QgsAppQueryLogger;
 
-class QgsDatabaseQueryLoggerWidgetFactory: public QgsDevToolWidgetFactory
+class QgsDatabaseQueryLoggerWidgetFactory : public QgsDevToolWidgetFactory
 {
   public:
-
     QgsDatabaseQueryLoggerWidgetFactory( QgsAppQueryLogger *logger );
     QgsDevToolWidget *createWidget( QWidget *parent = nullptr ) const override;
 
   private:
-
     QgsAppQueryLogger *mLogger = nullptr;
 };
 

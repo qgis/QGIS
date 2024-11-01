@@ -41,7 +41,6 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
     Q_OBJECT
 
   public:
-
     /**
      * Construct a new QgsPointCloudLayerSaveAsDialog
      */
@@ -166,7 +165,6 @@ class GUI_EXPORT QgsPointCloudLayerSaveAsDialog : public QDialog, private Ui::Qg
     void mDeselectAllAttributes_clicked();
 
   private:
-
     void setup();
 
     /**

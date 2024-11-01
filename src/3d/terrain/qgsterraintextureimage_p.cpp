@@ -25,7 +25,6 @@
 class TerrainTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGenerator
 {
   public:
-
     static QImage placeholderImage()
     {
       // simple placeholder image
@@ -47,11 +46,10 @@ class TerrainTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGen
       return dataPtr;
     }
 
-    bool operator ==( const QTextureImageDataGenerator &other ) const override
+    bool operator==( const QTextureImageDataGenerator &other ) const override
     {
       const TerrainTextureImageDataGenerator *otherFunctor = functor_cast<TerrainTextureImageDataGenerator>( &other );
-      return otherFunctor && otherFunctor->mVersion == mVersion &&
-             mExtent == otherFunctor->mExtent;
+      return otherFunctor && otherFunctor->mVersion == mVersion && mExtent == otherFunctor->mExtent;
     }
 
     // marked as deprecated in 5.15, but undeprecated for Qt 6.0. TODO -- remove when we require 6.0
@@ -65,7 +63,6 @@ class TerrainTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGen
     QImage mImage;
     int mVersion;
 };
-
 
 
 ////////

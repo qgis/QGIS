@@ -52,7 +52,6 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
 {
     Q_OBJECT
   public:
-
     QgsFlatTerrainGenerator() = default;
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
@@ -71,13 +70,10 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
     QgsCoordinateReferenceSystem crs() const override { return mCrs; }
 
   private:
-
     void updateTilingScheme();
 
     QgsCoordinateReferenceSystem mCrs;
 };
-
-
 
 
 #endif // QGSFLATTERRAINGENERATOR_H

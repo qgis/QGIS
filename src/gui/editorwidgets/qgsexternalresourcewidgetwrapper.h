@@ -28,7 +28,6 @@ class QLineEdit;
 SIP_NO_FILE
 
 
-
 /**
  * \ingroup gui
  * \brief Wraps a file name widget. Will offer a file browser to choose files.
@@ -42,7 +41,6 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsExternalResourceWidgetWrapper.
      *
@@ -99,7 +97,6 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
     QgsMessageBar *mMessageBar = nullptr;
 
     friend class TestQgsExternalResourceWidgetWrapper;
-
 };
 
 #endif // QGSEXTERNALRESOURCEWIDGETWRAPPER_H

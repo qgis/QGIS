@@ -25,16 +25,15 @@ class QgsTransaction;
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include <qgsvectorlayereditpassthrough.h>
-% End
+  % End
 #endif
 
-/**
+  /**
  * \ingroup core
  * \class QgsVectorLayerEditPassthrough
  */
-class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffer
+  class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffer
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsVectorLayerEditPassthrough *>( sipCpp ) )
@@ -84,7 +83,6 @@ class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffe
 
     // utility function to avoid cpy/paste
     bool modify( QgsVectorLayerUndoPassthroughCommand *cmd );
-
 };
 
 #endif // QGSVECTORLAYEREDITPASSTHROUGH_H

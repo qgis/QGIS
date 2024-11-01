@@ -37,7 +37,6 @@ class QgsCoordinateReferenceSystem;
 class CORE_EXPORT QgsArcGisRestQueryUtils
 {
   public:
-
     /**
      * Service types
      */
@@ -45,7 +44,7 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
     {
       AllTypes, //!< All types
       Vector,   //!< Vector type
-      Raster   //!< Raster type
+      Raster    //!< Raster type
     };
 
     /**
@@ -84,7 +83,7 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
      * Gets a list of object IDs which fall within the specified extent.
      */
     static QList<quint32> getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr,
-        const QString &whereClause = QString(), const QString &urlPrefix = QString() );
+                                                const QString &whereClause = QString(), const QString &urlPrefix = QString() );
 
     /**
      * Performs a blocking request to a URL and returns the retrieved data.
@@ -99,17 +98,17 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
     /**
      * Calls the specified \a visitor function on all folder items found within the given service data.
      */
-    static void visitFolderItems( const std::function<void ( const QString &folderName, const QString &url )> &visitor, const QVariantMap &serviceData, const QString &baseUrl );
+    static void visitFolderItems( const std::function<void( const QString &folderName, const QString &url )> &visitor, const QVariantMap &serviceData, const QString &baseUrl );
 
     /**
      * Calls the specified \a visitor function on all service items found within the given service data.
      */
-    static void visitServiceItems( const std::function<void ( const QString &serviceName, const QString &url, Qgis::ArcGisRestServiceType serviceType )> &visitor, const QVariantMap &serviceData, const QString &baseUrl );
+    static void visitServiceItems( const std::function<void( const QString &serviceName, const QString &url, Qgis::ArcGisRestServiceType serviceType )> &visitor, const QVariantMap &serviceData, const QString &baseUrl );
 
     /**
      * Calls the specified \a visitor function on all layer items found within the given service data.
      */
-    static void addLayerItems( const std::function<void ( const QString &parentLayerId, ServiceTypeFilter serviceType, Qgis::GeometryType geometryType, const QString &layerId, const QString &name, const QString &description, const QString &url, bool isParentLayer, const QgsCoordinateReferenceSystem &crs, const QString &format )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const QString &parentSupportedFormats, const ServiceTypeFilter filter = ServiceTypeFilter::AllTypes );
+    static void addLayerItems( const std::function<void( const QString &parentLayerId, ServiceTypeFilter serviceType, Qgis::GeometryType geometryType, const QString &layerId, const QString &name, const QString &description, const QString &url, bool isParentLayer, const QgsCoordinateReferenceSystem &crs, const QString &format )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const QString &parentSupportedFormats, const ServiceTypeFilter filter = ServiceTypeFilter::AllTypes );
 
     /**
      * Parses and processes a \a url.
@@ -117,7 +116,6 @@ class CORE_EXPORT QgsArcGisRestQueryUtils
     static QUrl parseUrl( const QUrl &url, bool *isTestEndpoint = nullptr );
 
   private:
-
     static void adjustBaseUrl( QString &baseUrl, const QString &name );
 
     friend class TestQgsArcGisRestUtils;

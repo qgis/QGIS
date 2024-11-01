@@ -452,10 +452,10 @@ void QgsQuickElevationProfileCanvas::refineResults()
     // for similar reasons we round the minimum distance off to multiples of the maximum error in map units
     const double distanceMin = std::floor( ( mPlotItem->xMinimum() - plotDistanceRange * 0.05 ) / context.maximumErrorMapUnits() ) * context.maximumErrorMapUnits();
     context.setDistanceRange( QgsDoubleRange( std::max( 0.0, distanceMin ),
-                              mPlotItem->xMaximum() + plotDistanceRange * 0.05 ) );
+                                              mPlotItem->xMaximum() + plotDistanceRange * 0.05 ) );
 
     context.setElevationRange( QgsDoubleRange( mPlotItem->yMinimum() - plotElevationRange * 0.05,
-                               mPlotItem->yMaximum() + plotElevationRange * 0.05 ) );
+                                               mPlotItem->yMaximum() + plotElevationRange * 0.05 ) );
     mCurrentJob->setContext( context );
   }
   scheduleDeferredRegeneration();
@@ -519,21 +519,18 @@ void QgsQuickElevationProfileCanvas::populateLayersFromProject()
   // e.g. vector features should be drawn above raster DEMS, or the DEM line may completely obscure
   // the vector feature
   QList<QgsMapLayer *> sortedLayers = QgsMapLayerUtils::sortLayersByType( projectLayers,
-  {
-    Qgis::LayerType::Raster,
-    Qgis::LayerType::Mesh,
-    Qgis::LayerType::Vector,
-    Qgis::LayerType::PointCloud
-  } );
+                                                                          { Qgis::LayerType::Raster,
+                                                                            Qgis::LayerType::Mesh,
+                                                                            Qgis::LayerType::Vector,
+                                                                            Qgis::LayerType::PointCloud } );
 
   // filter list, removing null layers and invalid layers
   auto filteredList = sortedLayers;
   filteredList.erase( std::remove_if( filteredList.begin(), filteredList.end(),
-                                      []( QgsMapLayer * layer )
-  {
-    return !layer || !layer->isValid() || !layer->elevationProperties() || !layer->elevationProperties()->showByDefaultInElevationProfilePlots();
-  } ),
-  filteredList.end() );
+                                      []( QgsMapLayer *layer ) {
+                                        return !layer || !layer->isValid() || !layer->elevationProperties() || !layer->elevationProperties()->showByDefaultInElevationProfilePlots();
+                                      } ),
+                      filteredList.end() );
 
   mLayers = _qgis_listRawToQPointer( filteredList );
   for ( QgsMapLayer *layer : std::as_const( mLayers ) )

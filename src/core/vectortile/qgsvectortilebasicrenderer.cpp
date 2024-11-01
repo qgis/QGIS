@@ -113,7 +113,7 @@ QgsVectorTileBasicRenderer *QgsVectorTileBasicRenderer::clone() const
 {
   QgsVectorTileBasicRenderer *r = new QgsVectorTileBasicRenderer;
   r->mStyles = mStyles;
-  r->mStyles.detach();  // make a deep copy to make sure symbols get cloned
+  r->mStyles.detach(); // make a deep copy to make sure symbols get cloned
   return r;
 }
 
@@ -139,14 +139,14 @@ void QgsVectorTileBasicRenderer::startRender( QgsRenderContext &context, int til
   }
 }
 
-QMap<QString, QSet<QString> > QgsVectorTileBasicRenderer::usedAttributes( const QgsRenderContext & )
+QMap<QString, QSet<QString>> QgsVectorTileBasicRenderer::usedAttributes( const QgsRenderContext & )
 {
   return mRequiredFields;
 }
 
 QSet<QString> QgsVectorTileBasicRenderer::requiredLayers( QgsRenderContext &, int tileZoom ) const
 {
-  QSet< QString > res;
+  QSet<QString> res;
   for ( const QgsVectorTileBasicRendererStyle &layerStyle : std::as_const( mStyles ) )
   {
     if ( layerStyle.isActive( tileZoom ) )

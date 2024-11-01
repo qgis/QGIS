@@ -32,10 +32,9 @@
 #include <QDomElement>
 
 ///@cond PRIVATE
-class QgsGeospatialPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerInterface
+class QgsGeospatialPdfRenderedFeatureHandler : public QgsRenderedFeatureHandlerInterface
 {
   public:
-
     QgsGeospatialPdfRenderedFeatureHandler( QgsLayoutItemMap *map, QgsLayoutGeospatialPdfExporter *exporter, const QStringList &layerIds )
       : mExporter( exporter )
       , mMap( map )
@@ -61,8 +60,7 @@ class QgsGeospatialPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerIn
       QTransform::quadToQuad( mapRectPoly, mapRectInLayout, mMapToLayoutTransform );
 
       // and a transform to PDF coordinate space
-      mLayoutToPdfTransform = QTransform::fromTranslate( 0, pageHeightPdfUnits ).scale( pageWidthPdfUnits / pageSizeLayoutUnits.width(),
-                              -pageHeightPdfUnits / pageSizeLayoutUnits.height() );
+      mLayoutToPdfTransform = QTransform::fromTranslate( 0, pageHeightPdfUnits ).scale( pageWidthPdfUnits / pageSizeLayoutUnits.width(), -pageHeightPdfUnits / pageSizeLayoutUnits.height() );
     }
 
     void handleRenderedFeature( const QgsFeature &feature, const QgsGeometry &renderedBounds, const QgsRenderedFeatureHandlerInterface::RenderedFeatureContext &context ) override
@@ -93,7 +91,7 @@ class QgsGeospatialPdfRenderedFeatureHandler: public QgsRenderedFeatureHandlerIn
 
     QSet<QString> usedAttributes( QgsVectorLayer *, const QgsRenderContext & ) const override
     {
-      return QSet< QString >() << QgsFeatureRequest::ALL_ATTRIBUTES;
+      return QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES;
     }
 
   private:
@@ -110,7 +108,7 @@ QgsLayoutGeospatialPdfExporter::QgsLayoutGeospatialPdfExporter( QgsLayout *layou
 {
   // build a list of exportable feature layers in advance
   QStringList exportableLayerIds;
-  const QMap< QString, QgsMapLayer * > layers = mLayout->project()->mapLayers( true );
+  const QMap<QString, QgsMapLayer *> layers = mLayout->project()->mapLayers( true );
   for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
     if ( QgsMapLayer *ml = it.value() )
@@ -133,7 +131,7 @@ QgsLayoutGeospatialPdfExporter::QgsLayoutGeospatialPdfExporter( QgsLayout *layou
   }
 
   // on construction, we install a rendered feature handler on layout item maps
-  QList< QgsLayoutItemMap * > maps;
+  QList<QgsLayoutItemMap *> maps;
   mLayout->layoutItems( maps );
   for ( QgsLayoutItemMap *map : std::as_const( maps ) )
   {
@@ -150,7 +148,7 @@ QgsLayoutGeospatialPdfExporter::QgsLayoutGeospatialPdfExporter( QgsLayout *layou
   if ( !presetLayerOrder.isEmpty() )
     geospatialPdfLayerOrder = presetLayerOrder.split( QStringLiteral( "~~~" ) );
 
-  QList< QgsMapLayer * > layerOrder = mLayout->project()->layerTreeRoot()->layerOrder();
+  QList<QgsMapLayer *> layerOrder = mLayout->project()->layerTreeRoot()->layerOrder();
   for ( auto it = geospatialPdfLayerOrder.rbegin(); it != geospatialPdfLayerOrder.rend(); ++it )
   {
     for ( int i = 0; i < layerOrder.size(); ++i )
@@ -184,10 +182,9 @@ QgsAbstractGeospatialPdfExporter::VectorComponentDetail QgsLayoutGeospatialPdfEx
   const QgsMapLayer *layer = project->mapLayer( layerId );
   detail.name = layer ? layer->name() : layerId;
   detail.mapLayerId = layerId;
-  if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
+  if ( const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer ) )
   {
     detail.displayAttribute = vl->displayField();
   }
   return detail;
 }
-

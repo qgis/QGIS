@@ -37,7 +37,6 @@ class QgsFeedback;
 class CORE_EXPORT QgsArcGisPortalUtils
 {
   public:
-
     /**
      * Retrieves JSON user info for the specified user name.
      *
@@ -74,7 +73,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \returns JSON user info
      * \deprecated QGIS 3.24. Use the version with QgsHttpHeaders instead.
      */
-    Q_DECL_DEPRECATED static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = nullptr, const QString &urlPrefix = QString() ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED static QVariantMap retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap<QString, QVariant> &requestHeaders, QgsFeedback *feedback = nullptr, const QString &urlPrefix = QString() ) SIP_DEPRECATED;
 
     /**
      * Retrieves JSON definitions for all groups which the specified user name is a member of.
@@ -112,7 +111,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \returns a list of JSON group info
      * \deprecated QGIS 3.24. Use the version with QgsHttpHeaders instead.
      */
-    Q_DECL_DEPRECATED static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = nullptr, const QString &urlPrefix = QString() ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED static QVariantList retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap<QString, QVariant> &requestHeaders, QgsFeedback *feedback = nullptr, const QString &urlPrefix = QString() ) SIP_DEPRECATED;
 
     /**
      * Retrieves JSON definitions for all items which belong the the specified \a groupId.
@@ -130,7 +129,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \returns a list of JSON item info for all items within the group
      * \since QGIS 3.24
      */
-    static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(),  QgsFeedback *feedback = nullptr, int pageSize = 100, const QString &urlPrefix = QString() );
+    static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr, int pageSize = 100, const QString &urlPrefix = QString() );
 
     /**
      * Retrieves JSON definitions for all items which belong the the specified \a groupId. Only to avoid API break.
@@ -148,7 +147,7 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \returns a list of JSON item info for all items within the group
      * \deprecated QGIS 3.24. Use the version with QgsHttpHeaders instead.
      */
-    Q_DECL_DEPRECATED static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = nullptr, int pageSize = 100, const QString &urlPrefix = QString() ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED static QVariantList retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap<QString, QVariant> &requestHeaders, QgsFeedback *feedback = nullptr, int pageSize = 100, const QString &urlPrefix = QString() ) SIP_DEPRECATED;
 
     /**
      * Retrieves JSON definitions for all items which belong the the specified \a groupId.
@@ -168,8 +167,8 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \since QGIS 3.24
      */
     static QVariantList retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg,
-        const QList< int > &itemTypes,
-        QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr, int pageSize = 100, const QString &urlPrefix = QString() );
+                                                  const QList<int> &itemTypes,
+                                                  QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QgsHttpHeaders &requestHeaders = QgsHttpHeaders(), QgsFeedback *feedback = nullptr, int pageSize = 100, const QString &urlPrefix = QString() );
 
     /**
      * Retrieves JSON definitions for all items which belong the the specified \a groupId. Only to avoid API break.
@@ -189,13 +188,11 @@ class CORE_EXPORT QgsArcGisPortalUtils
      * \deprecated QGIS 3.24. Use the version with QgsHttpHeaders instead.
      */
     Q_DECL_DEPRECATED static QVariantList retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg,
-        const QList< int > &itemTypes,
-        QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback = nullptr, int pageSize = 100, const QString &urlPrefix = QString() ) SIP_DEPRECATED;
+                                                                    const QList<int> &itemTypes,
+                                                                    QString &errorTitle SIP_OUT, QString &errorText SIP_OUT, const QMap<QString, QVariant> &requestHeaders, QgsFeedback *feedback = nullptr, int pageSize = 100, const QString &urlPrefix = QString() ) SIP_DEPRECATED;
 
   private:
-
     static QString typeToString( Qgis::ArcGisRestServiceType type );
-
 };
 
 #endif // QGSARCGISPORTALUTILS_H

@@ -30,9 +30,7 @@
  */
 class QgsPdalBoundaryAlgorithm : public QgsPdalAlgorithmBase
 {
-
   public:
-
     QgsPdalBoundaryAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;

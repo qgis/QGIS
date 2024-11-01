@@ -175,12 +175,12 @@ class CORE_EXPORT QgsVectorTileBasicRenderer : public QgsVectorTileRenderer
     QString type() const override;
     QgsVectorTileBasicRenderer *clone() const override SIP_FACTORY;
     void startRender( QgsRenderContext &context, int tileZoom, const QgsTileRange &tileRange ) override;
-    QMap<QString, QSet<QString> > usedAttributes( const QgsRenderContext & ) override SIP_SKIP;
-    QSet< QString > requiredLayers( QgsRenderContext &context, int tileZoom ) const override;
+    QMap<QString, QSet<QString>> usedAttributes( const QgsRenderContext & ) override SIP_SKIP;
+    QSet<QString> requiredLayers( QgsRenderContext &context, int tileZoom ) const override;
     void stopRender( QgsRenderContext &context ) override;
     void renderBackground( QgsRenderContext &context ) override;
     void renderTile( const QgsVectorTileRendererData &tile, QgsRenderContext &context ) override;
-    void renderSelectedFeatures( const QList< QgsFeature > &selection, QgsRenderContext &context ) override;
+    void renderSelectedFeatures( const QList<QgsFeature> &selection, QgsRenderContext &context ) override;
     bool willRenderFeature( const QgsFeature &feature, int tileZoom, const QString &layerName, QgsRenderContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
@@ -213,8 +213,7 @@ class CORE_EXPORT QgsVectorTileBasicRenderer : public QgsVectorTileRenderer
     // temporary bits
 
     //! Names of required fields for each sub-layer (only valid between startRender/stopRender calls)
-    QMap<QString, QSet<QString> > mRequiredFields;
-
+    QMap<QString, QSet<QString>> mRequiredFields;
 };
 
 #endif // QGSVECTORTILEBASICRENDERER_H

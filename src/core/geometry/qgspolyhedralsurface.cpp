@@ -63,7 +63,7 @@ QgsPolyhedralSurface::~QgsPolyhedralSurface()
 
 QgsPolyhedralSurface *QgsPolyhedralSurface::createEmptyWithSameType() const
 {
-  auto result = std::make_unique< QgsPolyhedralSurface >();
+  auto result = std::make_unique<QgsPolyhedralSurface>();
   result->mWkbType = mWkbType;
   return result.release();
 }
@@ -143,7 +143,7 @@ bool QgsPolyhedralSurface::fromWkb( QgsConstWkbPtr &wkbPtr )
 
   int nPatches;
   wkbPtr >> nPatches;
-  std::unique_ptr< QgsPolygon > currentPatch;
+  std::unique_ptr<QgsPolygon> currentPatch;
   for ( int i = 0; i < nPatches; ++i )
   {
     Qgis::WkbType polygonType = wkbPtr.readHeader();
@@ -157,7 +157,7 @@ bool QgsPolyhedralSurface::fromWkb( QgsConstWkbPtr &wkbPtr )
     {
       return false;
     }
-    currentPatch->fromWkb( wkbPtr );  // also updates wkbPtr
+    currentPatch->fromWkb( wkbPtr ); // also updates wkbPtr
     mPatches.append( currentPatch.release() );
   }
 
@@ -177,8 +177,7 @@ bool QgsPolyhedralSurface::fromWkt( const QString &wkt )
 
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
-  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
-       secondWithoutParentheses.isEmpty() )
+  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) || secondWithoutParentheses.isEmpty() )
     return true;
 
   QString defaultChildWkbType = QStringLiteral( "Polygon%1%2" ).arg( is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
@@ -337,8 +336,7 @@ void QgsPolyhedralSurface::normalize()
       }
 
       // sort rings
-      std::sort( interiorRings.begin(), interiorRings.end(), []( const QgsCurve * a, const QgsCurve * b )
-      {
+      std::sort( interiorRings.begin(), interiorRings.end(), []( const QgsCurve *a, const QgsCurve *b ) {
         return a->compareTo( b ) > 0;
       } );
 
@@ -375,16 +373,16 @@ double QgsPolyhedralSurface::perimeter() const
 
 QgsAbstractGeometry *QgsPolyhedralSurface::boundary() const
 {
-  std::unique_ptr< QgsMultiLineString > multiLine( new QgsMultiLineString() );
+  std::unique_ptr<QgsMultiLineString> multiLine( new QgsMultiLineString() );
   multiLine->reserve( mPatches.size() );
   for ( QgsPolygon *polygon : mPatches )
   {
     std::unique_ptr<QgsAbstractGeometry> polygonBoundary( polygon->boundary() );
-    if ( QgsLineString *lineStringBoundary = qgsgeometry_cast< QgsLineString * >( polygonBoundary.get() ) )
+    if ( QgsLineString *lineStringBoundary = qgsgeometry_cast<QgsLineString *>( polygonBoundary.get() ) )
     {
       multiLine->addGeometry( lineStringBoundary->clone() );
     }
-    else if ( QgsMultiLineString *multiLineStringBoundary = qgsgeometry_cast< QgsMultiLineString * >( polygonBoundary.get() ) )
+    else if ( QgsMultiLineString *multiLineStringBoundary = qgsgeometry_cast<QgsMultiLineString *>( polygonBoundary.get() ) )
     {
       for ( int j = 0; j < multiLineStringBoundary->numGeometries(); ++j )
       {
@@ -402,12 +400,12 @@ QgsAbstractGeometry *QgsPolyhedralSurface::boundary() const
 
 QgsPolyhedralSurface *QgsPolyhedralSurface::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing, bool removeRedundantPoints ) const
 {
-  std::unique_ptr< QgsPolyhedralSurface > surface( createEmptyWithSameType() );
+  std::unique_ptr<QgsPolyhedralSurface> surface( createEmptyWithSameType() );
 
   for ( QgsPolygon *patch : mPatches )
   {
     // exterior ring
-    std::unique_ptr<QgsCurve> exteriorRing( static_cast< QgsCurve *>( patch->exteriorRing()->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, removeRedundantPoints ) ) );
+    std::unique_ptr<QgsCurve> exteriorRing( static_cast<QgsCurve *>( patch->exteriorRing()->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, removeRedundantPoints ) ) );
     if ( !exteriorRing )
     {
       return nullptr;
@@ -423,7 +421,7 @@ QgsPolyhedralSurface *QgsPolyhedralSurface::snappedToGrid( double hSpacing, doub
       if ( !interiorRing )
         continue;
 
-      std::unique_ptr<QgsCurve> gridifiedInterior( static_cast< QgsCurve * >( interiorRing->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, removeRedundantPoints ) ) );
+      std::unique_ptr<QgsCurve> gridifiedInterior( static_cast<QgsCurve *>( interiorRing->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, removeRedundantPoints ) ) );
       if ( gridifiedInterior )
         gridifiedPatch->addInteriorRing( gridifiedInterior.release() );
     }
@@ -439,7 +437,7 @@ QgsPolyhedralSurface *QgsPolyhedralSurface::simplifyByDistance( double tolerance
   if ( isEmpty() )
     return nullptr;
 
-  std::unique_ptr< QgsPolyhedralSurface > simplifiedGeom = std::make_unique< QgsPolyhedralSurface >();
+  std::unique_ptr<QgsPolyhedralSurface> simplifiedGeom = std::make_unique<QgsPolyhedralSurface>();
   for ( QgsPolygon *polygon : mPatches )
   {
     std::unique_ptr<QgsCurvePolygon> polygonSimplified( polygon->simplifyByDistance( tolerance ) );
@@ -642,7 +640,7 @@ bool QgsPolyhedralSurface::isEmpty() const
 double QgsPolyhedralSurface::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt, QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
   QVector<QgsPolygon *> segmentList = mPatches;
-  return QgsGeometryUtils::closestSegmentFromComponents( segmentList, QgsGeometryUtils::Part, pt, segmentPt,  vertexAfter, leftOf, epsilon );
+  return QgsGeometryUtils::closestSegmentFromComponents( segmentList, QgsGeometryUtils::Part, pt, segmentPt, vertexAfter, leftOf, epsilon );
 }
 
 bool QgsPolyhedralSurface::nextVertex( QgsVertexId &vId, QgsPoint &vertex ) const
@@ -896,7 +894,7 @@ void QgsPolyhedralSurface::swapXy()
 
 QgsMultiSurface *QgsPolyhedralSurface::toCurveType() const
 {
-  std::unique_ptr<QgsMultiSurface> multiSurface = std::make_unique< QgsMultiSurface >();
+  std::unique_ptr<QgsMultiSurface> multiSurface = std::make_unique<QgsMultiSurface>();
   multiSurface->reserve( mPatches.size() );
   for ( const QgsPolygon *polygon : std::as_const( mPatches ) )
   {
@@ -928,7 +926,7 @@ bool QgsPolyhedralSurface::transform( QgsAbstractGeometryTransformer *transforme
 
 QgsMultiPolygon *QgsPolyhedralSurface::toMultiPolygon() const
 {
-  std::unique_ptr<QgsMultiPolygon> multiPolygon = std::make_unique< QgsMultiPolygon >();
+  std::unique_ptr<QgsMultiPolygon> multiPolygon = std::make_unique<QgsMultiPolygon>();
   multiPolygon->reserve( mPatches.size() );
   for ( const QgsPolygon *polygon : std::as_const( mPatches ) )
   {
@@ -937,7 +935,7 @@ QgsMultiPolygon *QgsPolyhedralSurface::toMultiPolygon() const
   return multiPolygon.release();
 }
 
-void QgsPolyhedralSurface::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )
+void QgsPolyhedralSurface::filterVertices( const std::function<bool( const QgsPoint & )> &filter )
 {
   for ( QgsPolygon *patch : std::as_const( mPatches ) )
   {

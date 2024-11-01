@@ -36,7 +36,6 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
 {
     Q_OBJECT
   public:
-
     /**
       * A stack widget to manage panels in the interface. Handles the open and close events
       * for added panels.
@@ -125,7 +124,6 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
     void closePanel( QgsPanelWidget *panel );
 
   protected:
-
     void mouseReleaseEvent( QMouseEvent *e ) override;
     void keyPressEvent( QKeyEvent *e ) override;
 

@@ -38,7 +38,6 @@ class QgsAbstractLabelingEngineRule;
 class CORE_EXPORT QgsLabelingEngineRuleRegistry
 {
   public:
-
     /**
      * Constructor for QgsLabelingEngineRuleRegistry, containing a set of
      * default rules.
@@ -97,13 +96,11 @@ class CORE_EXPORT QgsLabelingEngineRuleRegistry
     void removeRule( const QString &id );
 
   private:
-
 #ifdef SIP_RUN
     QgsLabelingEngineRuleRegistry( const QgsLabelingEngineRuleRegistry &other );
 #endif
 
-    std::map< QString, std::unique_ptr< QgsAbstractLabelingEngineRule > > mRules;
-
+    std::map<QString, std::unique_ptr<QgsAbstractLabelingEngineRule>> mRules;
 };
 
 #endif // QGSLABELINGENGINERULEREGISTRY_H

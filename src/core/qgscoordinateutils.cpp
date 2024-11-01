@@ -43,9 +43,7 @@ int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, c
 
   if ( automatic )
   {
-    const bool formatGeographic = project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::MapGeographic ||
-                                  ( project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::CustomCrs &&
-                                    project->displaySettings()->coordinateCustomCrs().isGeographic() );
+    const bool formatGeographic = project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::MapGeographic || ( project->displaySettings()->coordinateType() == Qgis::CoordinateDisplayType::CustomCrs && project->displaySettings()->coordinateCustomCrs().isGeographic() );
 
     // we can only calculate an automatic precision if one of these is true:
     // - both map CRS and format are geographic
@@ -169,7 +167,7 @@ void QgsCoordinateUtils::formatCoordinatePartsForProject( QgsProject *project, c
 
   QgsPointXY p = point;
   const bool isGeographic = crs.isGeographic();
-  if ( destCrs  != crs )
+  if ( destCrs != crs )
   {
     const QgsCoordinateTransform ct( destCrs, crs, project );
     try
@@ -184,7 +182,7 @@ void QgsCoordinateUtils::formatCoordinatePartsForProject( QgsProject *project, c
 
   if ( isGeographic )
   {
-    std::unique_ptr< QgsGeographicCoordinateNumericFormat > format( project->displaySettings()->geographicCoordinateFormat()->clone() );
+    std::unique_ptr<QgsGeographicCoordinateNumericFormat> format( project->displaySettings()->geographicCoordinateFormat()->clone() );
     format->setNumberDecimalPlaces( precision );
 
     QgsNumericFormatContext context;
@@ -205,8 +203,7 @@ QString QgsCoordinateUtils::formatExtentForProject( QgsProject *project, const Q
 {
   const QgsPointXY p1( extent.xMinimum(), extent.yMinimum() );
   const QgsPointXY p2( extent.xMaximum(), extent.yMaximum() );
-  return QStringLiteral( "%1 : %2" ).arg( QgsCoordinateUtils::formatCoordinateForProject( project, p1, destCrs, precision ),
-                                          QgsCoordinateUtils::formatCoordinateForProject( project, p2, destCrs, precision ) );
+  return QStringLiteral( "%1 : %2" ).arg( QgsCoordinateUtils::formatCoordinateForProject( project, p1, destCrs, precision ), QgsCoordinateUtils::formatCoordinateForProject( project, p2, destCrs, precision ) );
 }
 
 double QgsCoordinateUtils::degreeToDecimal( const QString &string, bool *ok, bool *isEasting )
@@ -227,7 +224,7 @@ double QgsCoordinateUtils::degreeToDecimal( const QString &string, bool *ok, boo
 
   const QLocale locale;
   QRegularExpression degreeWithSuffix( QStringLiteral( "^\\s*([-]?\\d{1,3}(?:[\\.\\%1]\\d+)?)\\s*([NSEWnsew])\\s*$" )
-                                       .arg( locale.decimalPoint() ) );
+                                         .arg( locale.decimalPoint() ) );
   QRegularExpressionMatch match = degreeWithSuffix.match( string );
   if ( match.hasMatch() )
   {
@@ -267,7 +264,8 @@ double QgsCoordinateUtils::dmsToDecimal( const QString &string, bool *ok, bool *
 
   const QLocale locale;
   const QRegularExpression dms( QStringLiteral( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:[\\.\\%1]\\d+)?)[^0-9.,]*?([-+nsew])?\\s*$" )
-                                .arg( locale.decimalPoint() ), QRegularExpression::CaseInsensitiveOption );
+                                  .arg( locale.decimalPoint() ),
+                                QRegularExpression::CaseInsensitiveOption );
   const QRegularExpressionMatch match = dms.match( string.trimmed() );
   if ( match.hasMatch() )
   {

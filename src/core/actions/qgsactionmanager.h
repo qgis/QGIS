@@ -48,7 +48,7 @@ class QgsFeature;
  * based on attributes of a given feature.
  */
 
-class CORE_EXPORT QgsActionManager: public QObject
+class CORE_EXPORT QgsActionManager : public QObject
 {
     Q_OBJECT
 

@@ -21,7 +21,7 @@
 
 #include "qgsproviderguimetadata.h"
 
-class QgsPdalProviderGuiMetadata: public QgsProviderGuiMetadata
+class QgsPdalProviderGuiMetadata : public QgsProviderGuiMetadata
 {
   public:
     QgsPdalProviderGuiMetadata();

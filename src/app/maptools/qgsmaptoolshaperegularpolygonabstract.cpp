@@ -52,14 +52,13 @@ void QgsMapToolShapeRegularPolygonAbstract::addRegularPolygonToParentTool()
   {
     return;
   }
-  mParentTool->clearCurve( );
+  mParentTool->clearCurve();
 
   // keep z value from the first snapped point
   std::unique_ptr<QgsLineString> ls( mRegularPolygon.toLineString() );
   for ( const QgsPoint &point : std::as_const( mPoints ) )
   {
-    if ( QgsWkbTypes::hasZ( point.wkbType() ) &&
-         point.z() != mParentTool->defaultZValue() )
+    if ( QgsWkbTypes::hasZ( point.wkbType() ) && point.z() != mParentTool->defaultZValue() )
     {
       ls->dropZValue();
       ls->addZValue( point.z() );

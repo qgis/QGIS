@@ -28,7 +28,6 @@
 class CORE_EXPORT QgsSldExportContext
 {
   public:
-
     /**
      * Constructs a default SLD export context
      */
@@ -78,11 +77,9 @@ class CORE_EXPORT QgsSldExportContext
     void setExportFilePath( const QString &exportFilePath );
 
   private:
-
     Qgis::SldExportOptions mExportOptions = Qgis::SldExportOption::NoOptions;
     Qgis::SldExportVendorExtension mVendorExtensions = Qgis::SldExportVendorExtension::NoVendorExtension;
     QString mExportFilePath;
-
 };
 
 Q_DECLARE_METATYPE( QgsSldExportContext );

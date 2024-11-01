@@ -53,7 +53,7 @@ void QgsChunkList::insertEntry( QgsChunkListEntry *entry, QgsChunkListEntry *nex
       next->prev = entry;
     }
     if ( next == mHead )
-      mHead = entry;   // update head if "entry" we was head before
+      mHead = entry; // update head if "entry" we was head before
   }
   ++mCount;
 }

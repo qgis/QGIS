@@ -29,19 +29,19 @@
 namespace
 {
 
-// Build a key entry from name and version
+  // Build a key entry from name and version
   QString makeServiceKey( const QString &name, const QString &version )
   {
     return QString( "%1_%2" ).arg( name, version );
   }
 
-// Compare two version strings:
-// The strings are split into dot separated segment
-// Each segment are compared up to the shortest number of segment of the
-// lists. Remaining segments are dropped.
-// If both segments can be interpreted as numbers the are compared as numbers, otherwise
-// They are compared lexicographically.
-// Return true if v1 is greater than v2
+  // Compare two version strings:
+  // The strings are split into dot separated segment
+  // Each segment are compared up to the shortest number of segment of the
+  // lists. Remaining segments are dropped.
+  // If both segments can be interpreted as numbers the are compared as numbers, otherwise
+  // They are compared lexicographically.
+  // Return true if v1 is greater than v2
   bool isVersionGreater( const QString &v1, const QString &v2 )
   {
     QStringList l1 = v1.split( '.' );
@@ -76,7 +76,7 @@ namespace
     return false;
   }
 
-// Check that two versions are c
+  // Check that two versions are c
 
 
 } // namespace
@@ -119,7 +119,7 @@ QgsService *QgsServiceRegistry::getService( const QString &name, const QString &
 
 void QgsServiceRegistry::registerService( QgsService *service )
 {
-  const QString name    = service->name();
+  const QString name = service->name();
   const QString version = service->version();
 
   // Test if service is already registered
@@ -160,12 +160,10 @@ void QgsServiceRegistry::registerService( QgsService *service )
     // Insert the service as the default one
     mVersions.insert( name, VersionTable::mapped_type( version, key ) );
   }*/
-
 }
 
 int QgsServiceRegistry::unregisterApi( const QString &name, const QString &version )
 {
-
   // Check that we have an API of that name
   int removed = 0;
   const VersionTable::const_iterator v = mApiVersions.constFind( name );
@@ -207,13 +205,11 @@ int QgsServiceRegistry::unregisterApi( const QString &name, const QString &versi
         // but with different version
         //
         QString maxVer;
-        const std::function < void ( const ApiTable::mapped_type & ) >
-        findGreaterVersion = [name, &maxVer]( const ApiTable::mapped_type & api )
-        {
-          if ( api->name() == name &&
-               ( maxVer.isEmpty() || isVersionGreater( api->version(), maxVer ) ) )
-            maxVer = api->version();
-        };
+        const std::function<void( const ApiTable::mapped_type & )>
+          findGreaterVersion = [name, &maxVer]( const ApiTable::mapped_type &api ) {
+            if ( api->name() == name && ( maxVer.isEmpty() || isVersionGreater( api->version(), maxVer ) ) )
+              maxVer = api->version();
+          };
 
         mApiVersions.remove( name );
 
@@ -321,13 +317,11 @@ int QgsServiceRegistry::unregisterService( const QString &name, const QString &v
         // but with different version
         //
         QString maxVer;
-        const std::function < void ( const ServiceTable::mapped_type & ) >
-        findGreaterVersion = [name, &maxVer]( const ServiceTable::mapped_type & service )
-        {
-          if ( service->name() == name &&
-               ( maxVer.isEmpty() || isVersionGreater( service->version(), maxVer ) ) )
-            maxVer = service->version();
-        };
+        const std::function<void( const ServiceTable::mapped_type & )>
+          findGreaterVersion = [name, &maxVer]( const ServiceTable::mapped_type &service ) {
+            if ( service->name() == name && ( maxVer.isEmpty() || isVersionGreater( service->version(), maxVer ) ) )
+              maxVer = service->version();
+          };
 
         mServiceVersions.remove( name );
 
@@ -360,7 +354,6 @@ void QgsServiceRegistry::cleanUp()
 
 bool QgsServiceRegistry::registerApi( QgsServerApi *api )
 {
-
   const QString name = api->name();
   const QString version = api->version();
 

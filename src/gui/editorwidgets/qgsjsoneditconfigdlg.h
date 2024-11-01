@@ -34,7 +34,6 @@ class GUI_EXPORT QgsJsonEditConfigDlg : public QgsEditorConfigWidget, private Ui
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsJsonEditWidget.
      *

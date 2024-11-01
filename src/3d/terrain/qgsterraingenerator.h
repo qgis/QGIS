@@ -50,15 +50,14 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
 {
     Q_OBJECT
   public:
-
     //! Enumeration of the available terrain generators
     enum Type
     {
-      Flat,           //!< The whole terrain is flat area
-      Dem,            //!< Terrain is built from raster layer with digital elevation model
-      Online,         //!< Terrain is built from downloaded tiles with digital elevation model
-      Mesh,           //!< Terrain is built from mesh layer with z value on vertices
-      QuantizedMesh,  //!< Terrain is built from quantized mesh tiles
+      Flat,          //!< The whole terrain is flat area
+      Dem,           //!< Terrain is built from raster layer with digital elevation model
+      Online,        //!< Terrain is built from downloaded tiles with digital elevation model
+      Mesh,          //!< Terrain is built from mesh layer with z value on vertices
+      QuantizedMesh, //!< Terrain is built from quantized mesh tiles
     };
 
     //! Sets terrain entity for the generator (does not transfer ownership)
@@ -118,13 +117,11 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
     void terrainChanged();
 
   protected:
-
-    QgsTilingScheme mTerrainTilingScheme;   //!< Tiling scheme of the terrain
+    QgsTilingScheme mTerrainTilingScheme; //!< Tiling scheme of the terrain
     QgsTerrainEntity *mTerrain = nullptr;
     QgsRectangle mExtent;
 
     bool mIsValid = true;
-
 };
 
 

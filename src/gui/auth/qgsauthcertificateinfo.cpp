@@ -134,7 +134,7 @@ void QgsAuthCertInfo::updateCurrentCert( QTreeWidgetItem *item )
 
 bool QgsAuthCertInfo::populateQcaCertCollection()
 {
-  const QList<QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > &certpairs( mCaCertsCache.values() );
+  const QList<QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate>> &certpairs( mCaCertsCache.values() );
   for ( int i = 0; i < certpairs.size(); ++i )
   {
     QCA::ConvertResult res;
@@ -187,7 +187,8 @@ bool QgsAuthCertInfo::populateCertChain()
   {
     // invalid CAs are skipped to allow an incomplete chain
     setupError( tr( "Invalid population of QCA certificate chain.<br><br>"
-                    "Validity message: %1" ).arg( QgsAuthCertUtils::qcaValidityMessage( valid ) ) );
+                    "Validity message: %1" )
+                  .arg( QgsAuthCertUtils::qcaValidityMessage( valid ) ) );
     return false;
   }
 
@@ -240,13 +241,13 @@ void QgsAuthCertInfo::setCertHierarchy()
       const QString sha = QgsAuthCertUtils::shaHexForCert( cert );
       if ( mCaCertsCache.contains( sha ) )
       {
-        const QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate > &certpair( mCaCertsCache.value( sha ) );
+        const QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> &certpair( mCaCertsCache.value( sha ) );
         cert_source += QStringLiteral( " (%1)" ).arg( QgsAuthCertUtils::getCaSourceName( certpair.first, true ) );
       }
       else if ( mConnectionCAs.contains( cert ) )
       {
         cert_source += QStringLiteral( " (%1)" )
-                       .arg( QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::Connection, true ) );
+                         .arg( QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::Connection, true ) );
       }
     }
 
@@ -443,7 +444,6 @@ void QgsAuthCertInfo::addFieldItem( QTreeWidgetItem *parent, const QString &fiel
     }
     item->treeWidget()->setItemWidget( item, 1, pte );
   }
-
 }
 
 void QgsAuthCertInfo::populateInfoGeneralSection()
@@ -487,8 +487,8 @@ void QgsAuthCertInfo::populateInfoGeneralSection()
   if ( ( isissuer || isca ) && isselfsigned )
   {
     certype = QStringLiteral( "%1 %2" )
-              .arg( tr( "Root" ),
-                    QgsAuthCertUtils::certificateUsageTypeString( QgsAuthCertUtils::CertAuthorityUsage ) );
+                .arg( tr( "Root" ),
+                      QgsAuthCertUtils::certificateUsageTypeString( QgsAuthCertUtils::CertAuthorityUsage ) );
   }
   if ( isselfsigned )
   {
@@ -860,8 +860,8 @@ void QgsAuthCertInfo::currentPolicyIndexChanged( int indx )
 }
 
 void QgsAuthCertInfo::decorateCertTreeItem( const QSslCertificate &cert,
-    QgsAuthCertUtils::CertTrustPolicy trustpolicy,
-    QTreeWidgetItem *item )
+                                            QgsAuthCertUtils::CertTrustPolicy trustpolicy,
+                                            QTreeWidgetItem *item )
 {
   if ( !item )
   {
@@ -910,9 +910,9 @@ void QgsAuthCertInfo::decorateCertTreeItem( const QSslCertificate &cert,
 //////////////// Embed in dialog ///////////////////
 
 QgsAuthCertInfoDialog::QgsAuthCertInfoDialog( const QSslCertificate &cert,
-    bool manageCertTrust,
-    QWidget *parent,
-    const QList<QSslCertificate> &connectionCAs )
+                                              bool manageCertTrust,
+                                              QWidget *parent,
+                                              const QList<QSslCertificate> &connectionCAs )
   : QDialog( parent )
 
 {
@@ -924,11 +924,10 @@ QgsAuthCertInfoDialog::QgsAuthCertInfoDialog( const QSslCertificate &cert,
   layout->addWidget( mCertInfoWdgt );
 
   QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Close,
-      Qt::Horizontal, this );
+                                                      Qt::Horizontal, this );
   buttonBox->button( QDialogButtonBox::Close )->setDefault( true );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
   layout->addWidget( buttonBox );
 
   setLayout( layout );
 }
-

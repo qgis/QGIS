@@ -24,8 +24,8 @@
 
 ///@cond PRIVATE
 
-QgsStacDownloadAssetsDialog::QgsStacDownloadAssetsDialog( QWidget *parent ) :
-  QDialog( parent )
+QgsStacDownloadAssetsDialog::QgsStacDownloadAssetsDialog( QWidget *parent )
+  : QDialog( parent )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
@@ -44,10 +44,10 @@ QgsStacDownloadAssetsDialog::QgsStacDownloadAssetsDialog( QWidget *parent ) :
 
 void QgsStacDownloadAssetsDialog::setStacItem( QgsStacItem *stacItem )
 {
-  if ( ! stacItem )
+  if ( !stacItem )
     return;
 
-  const QMap< QString, QgsStacAsset > assets = stacItem->assets();
+  const QMap<QString, QgsStacAsset> assets = stacItem->assets();
   for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
   {
     QTreeWidgetItem *item = new QTreeWidgetItem();

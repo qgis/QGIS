@@ -30,9 +30,7 @@
  */
 class QgsPdalFilterAlgorithm : public QgsPdalAlgorithmBase
 {
-
   public:
-
     QgsPdalFilterAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;

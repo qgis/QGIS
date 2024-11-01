@@ -31,7 +31,6 @@
 class CORE_EXPORT QgsIdentifyContext
 {
   public:
-
     QgsIdentifyContext() = default;
 
     /**
@@ -75,10 +74,8 @@ class CORE_EXPORT QgsIdentifyContext
     void setZRange( const QgsDoubleRange &range );
 
   private:
-
     QgsDateTimeRange mTemporalRange;
     QgsDoubleRange mZRange;
-
 };
 
 #endif // QGSEXPRESSIONCONTEXT_H

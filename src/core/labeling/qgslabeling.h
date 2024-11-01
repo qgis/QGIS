@@ -31,8 +31,6 @@
 class CORE_EXPORT QgsLabeling
 {
   public:
-
-
 };
 
 

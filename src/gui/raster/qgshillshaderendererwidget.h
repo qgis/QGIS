@@ -30,11 +30,10 @@
  * \brief Renderer widget for the hill shade renderer.
  * \ingroup gui
  */
-class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, private Ui::QgsHillShadeWidget
+class GUI_EXPORT QgsHillshadeRendererWidget : public QgsRasterRendererWidget, private Ui::QgsHillShadeWidget
 {
     Q_OBJECT
   public:
-
     /**
      * \brief Renderer widget for the hill shade renderer.
      * \param layer The layer attached for this widget.
@@ -65,13 +64,13 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
      * Returns the angle of the light source over the raster.
      * \see setAltitude()
      */
-    double altitude()  const;
+    double altitude() const;
 
     /**
      * Returns the Z scaling factor.
      * \see setZFactor()
      */
-    double zFactor()  const;
+    double zFactor() const;
 
     /**
      * Returns TRUE if the renderer should use the multi-directional hillshade algorithm.
@@ -115,5 +114,3 @@ class GUI_EXPORT QgsHillshadeRendererWidget: public QgsRasterRendererWidget, pri
 };
 
 #endif // QGSSINGLEBANDGRAYRENDERERWIDGET_H
-
-

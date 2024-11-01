@@ -29,8 +29,7 @@ QgsProcessingContext::QgsProcessingContext()
   : mPreferredVectorFormat( QgsProcessingUtils::defaultVectorExtension() )
   , mPreferredRasterFormat( QgsProcessingUtils::defaultRasterExtension() )
 {
-  auto callback = [this]( const QgsFeature & feature )
-  {
+  auto callback = [this]( const QgsFeature &feature ) {
     if ( mFeedback )
       mFeedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( feature.id() ) );
   };
@@ -78,7 +77,7 @@ void QgsProcessingContext::setInvalidGeometryCheck( Qgis::InvalidGeometryCheck c
   mInvalidGeometryCallback = defaultInvalidGeometryCallbackForCheck( check );
 }
 
-std::function<void ( const QgsFeature & )> QgsProcessingContext::invalidGeometryCallback( QgsFeatureSource *source ) const
+std::function<void( const QgsFeature & )> QgsProcessingContext::invalidGeometryCallback( QgsFeatureSource *source ) const
 {
   if ( mUseDefaultInvalidGeometryCallback )
     return defaultInvalidGeometryCallbackForCheck( mInvalidGeometryCheck, source );
@@ -86,15 +85,14 @@ std::function<void ( const QgsFeature & )> QgsProcessingContext::invalidGeometry
     return mInvalidGeometryCallback;
 }
 
-std::function<void ( const QgsFeature & )> QgsProcessingContext::defaultInvalidGeometryCallbackForCheck( Qgis::InvalidGeometryCheck check, QgsFeatureSource *source ) const
+std::function<void( const QgsFeature & )> QgsProcessingContext::defaultInvalidGeometryCallbackForCheck( Qgis::InvalidGeometryCheck check, QgsFeatureSource *source ) const
 {
   const QString sourceName = source ? source->sourceName() : QString();
   switch ( check )
   {
     case Qgis::InvalidGeometryCheck::AbortOnInvalid:
     {
-      auto callback = [sourceName]( const QgsFeature & feature )
-      {
+      auto callback = [sourceName]( const QgsFeature &feature ) {
         if ( !sourceName.isEmpty() )
           throw QgsProcessingException( QObject::tr( "Feature (%1) from “%2” has invalid geometry. Please fix the geometry or change the “Invalid features filtering” option for this input or globally in Processing settings." ).arg( feature.id() ).arg( sourceName ) );
         else
@@ -105,8 +103,7 @@ std::function<void ( const QgsFeature & )> QgsProcessingContext::defaultInvalidG
 
     case Qgis::InvalidGeometryCheck::SkipInvalid:
     {
-      auto callback = [this, sourceName]( const QgsFeature & feature )
-      {
+      auto callback = [this, sourceName]( const QgsFeature &feature ) {
         if ( mFeedback )
         {
           if ( !sourceName.isEmpty() )
@@ -189,8 +186,7 @@ QVariantMap QgsProcessingContext::exportToMap() const
 
 QStringList QgsProcessingContext::asQgisProcessArguments( QgsProcessingContext::ProcessArgumentFlags flags ) const
 {
-  auto escapeIfNeeded = []( const QString & input ) -> QString
-  {
+  auto escapeIfNeeded = []( const QString &input ) -> QString {
     // play it safe and escape everything UNLESS it's purely alphanumeric characters (and a very select scattering of other common characters!)
     const thread_local QRegularExpression nonAlphaNumericRx( QStringLiteral( "[^a-zA-Z0-9.\\-/_]" ) );
     if ( nonAlphaNumericRx.match( input ).hasMatch() )
@@ -316,12 +312,12 @@ QgsProcessingModelInitialRunConfig *QgsProcessingContext::modelInitialRunConfig(
   return mModelConfig.get();
 }
 
-void QgsProcessingContext::setModelInitialRunConfig( std::unique_ptr< QgsProcessingModelInitialRunConfig > config )
+void QgsProcessingContext::setModelInitialRunConfig( std::unique_ptr<QgsProcessingModelInitialRunConfig> config )
 {
   mModelConfig = std::move( config );
 }
 
-std::unique_ptr< QgsProcessingModelInitialRunConfig > QgsProcessingContext::takeModelInitialRunConfig()
+std::unique_ptr<QgsProcessingModelInitialRunConfig> QgsProcessingContext::takeModelInitialRunConfig()
 {
   return std::move( mModelConfig );
 }

@@ -40,7 +40,6 @@ class QgsMeshLayer;
 class CORE_EXPORT QgsMeshLayerLabelProvider : public QgsAbstractLabelProvider
 {
   public:
-
     //! Convenience constructor to initialize the provider from given mesh layer
     explicit QgsMeshLayerLabelProvider( QgsMeshLayer *layer,
                                         const QString &providerId,
@@ -80,7 +79,7 @@ class CORE_EXPORT QgsMeshLayerLabelProvider : public QgsAbstractLabelProvider
      * \returns a list of the newly generated label features. Ownership of these label features is not transferred
      * (it has already been assigned to the label provider).
      */
-    virtual QList< QgsLabelFeature * > registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry(), const QgsSymbol *symbol = nullptr );
+    virtual QList<QgsLabelFeature *> registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry(), const QgsSymbol *symbol = nullptr );
 
     /**
      * Returns the layer's settings.

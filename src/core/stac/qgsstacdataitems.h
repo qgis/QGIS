@@ -39,7 +39,6 @@ class CORE_EXPORT QgsStacFetchMoreItem : public QgsDataItem
 
     bool handleDoubleClick() override;
     QVariant sortKey() const override { return QStringLiteral( "3" ); }
-
 };
 
 //! Item for STAC Items within a catalog or collection
@@ -68,7 +67,7 @@ class CORE_EXPORT QgsStacItemItem : public QgsDataItem
     void itemRequestFinished( int requestId, QString error );
 
   private:
-    std::unique_ptr< QgsStacItem > mStacItem;
+    std::unique_ptr<QgsStacItem> mStacItem;
     QString mUri;
     QString mConnName;
 };
@@ -108,14 +107,14 @@ class CORE_EXPORT QgsStacCatalogItem : public QgsDataCollectionItem
 
   private:
     //! takes ownership
-    QVector< QgsDataItem * > createItems( const QVector<QgsStacItem *> items );
-    QVector< QgsDataItem * > createCollections( const QVector<QgsStacCollection *> collections );
+    QVector<QgsDataItem *> createItems( const QVector<QgsStacItem *> items );
+    QVector<QgsDataItem *> createCollections( const QVector<QgsStacCollection *> collections );
 
     //! The URI
     QString mUri;
     QString mConnName;
     bool mIsCollection = false;
-    std::unique_ptr< QgsStacCatalog > mStacCatalog;
+    std::unique_ptr<QgsStacCatalog> mStacCatalog;
     QUrl mFetchMoreUrl;
 };
 

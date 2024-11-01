@@ -25,11 +25,10 @@
  * \ingroup core
  * \brief Evaluates NMEA sentences coming from a GPS device
  */
-class CORE_EXPORT QgsNmeaConnection: public QgsGpsConnection
+class CORE_EXPORT QgsNmeaConnection : public QgsGpsConnection
 {
     Q_OBJECT
   public:
-
     /**
      * Constructs a QgsNmeaConnection with given \a device.
      *

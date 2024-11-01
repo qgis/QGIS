@@ -34,7 +34,6 @@ class QgsRectangle;
 class CORE_EXPORT QgsScaleCalculator
 {
   public:
-
     /**
      * Constructor
      * \param dpi Monitor resolution in dots per inch
@@ -99,7 +98,6 @@ class CORE_EXPORT QgsScaleCalculator
     double calculateGeographicDistance( const QgsRectangle &mapExtent ) const;
 
   private:
-
     //! Calculate the \a delta and \a conversionFactor values based on the provided \a mapExtent.
     void calculateMetrics( const QgsRectangle &mapExtent, double &delta, double &conversionFactor ) const;
 

@@ -52,4 +52,3 @@ QString QgsAttributeEditorHtmlElement::typeIdentifier() const
 {
   return QStringLiteral( "attributeEditorHtmlElement" );
 }
-

@@ -42,11 +42,10 @@ class QgsDataItem;
  *
  * \since QGIS 3.22
  */
-class CORE_EXPORT QgsProviderSublayerItem final: public QgsLayerItem
+class CORE_EXPORT QgsProviderSublayerItem final : public QgsLayerItem
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsProviderSublayerItem.
      * \param parent parent item
@@ -67,11 +66,9 @@ class CORE_EXPORT QgsProviderSublayerItem final: public QgsLayerItem
     QgsProviderSublayerDetails sublayerDetails() const;
 
   private:
-
     static Qgis::BrowserLayerType layerTypeFromSublayer( const QgsProviderSublayerDetails &sublayer );
 
     QgsProviderSublayerDetails mDetails;
-
 };
 
 
@@ -81,11 +78,10 @@ class CORE_EXPORT QgsProviderSublayerItem final: public QgsLayerItem
  *
  * \since QGIS 3.28
  */
-class CORE_EXPORT QgsFileDataCollectionGroupItem final: public QgsDataCollectionItem
+class CORE_EXPORT QgsFileDataCollectionGroupItem final : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsFileDataCollectionGroupItem.
      * \param parent parent item
@@ -103,8 +99,7 @@ class CORE_EXPORT QgsFileDataCollectionGroupItem final: public QgsDataCollection
     QgsMimeDataUtils::UriList mimeUris() const override;
 
   private:
-
-    QList< QgsProviderSublayerDetails > mSublayers;
+    QList<QgsProviderSublayerDetails> mSublayers;
 };
 
 /**
@@ -116,11 +111,10 @@ class CORE_EXPORT QgsFileDataCollectionGroupItem final: public QgsDataCollection
  *
  * \since QGIS 3.22
  */
-class CORE_EXPORT QgsFileDataCollectionItem final: public QgsDataCollectionItem
+class CORE_EXPORT QgsFileDataCollectionItem final : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsFileDataCollectionItem.
      * \param parent parent item
@@ -134,7 +128,7 @@ class CORE_EXPORT QgsFileDataCollectionItem final: public QgsDataCollectionItem
     QgsFileDataCollectionItem( QgsDataItem *parent,
                                const QString &name,
                                const QString &path,
-                               const QList< QgsProviderSublayerDetails> &sublayers,
+                               const QList<QgsProviderSublayerDetails> &sublayers,
                                const QVariantMap &extraUriParts = QVariantMap() );
 
     QVector<QgsDataItem *> createChildren() override;
@@ -183,8 +177,7 @@ class CORE_EXPORT QgsFileDataCollectionItem final: public QgsDataCollectionItem
     QList<QgsProviderSublayerDetails> sublayers() const;
 
   private:
-
-    QList< QgsProviderSublayerDetails> mSublayers;
+    QList<QgsProviderSublayerDetails> mSublayers;
     QVariantMap mExtraUriParts;
     mutable bool mHasCachedCapabilities = false;
     mutable QgsAbstractDatabaseProviderConnection::Capabilities mCachedCapabilities;
@@ -206,7 +199,6 @@ class CORE_EXPORT QgsFileDataCollectionItem final: public QgsDataCollectionItem
 class CORE_EXPORT QgsFileBasedDataItemProvider : public QgsDataItemProvider
 {
   public:
-
     QString name() override;
     Qgis::DataItemProviderCapabilities capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override SIP_FACTORY;
@@ -225,16 +217,15 @@ class CORE_EXPORT QgsFileBasedDataItemProvider : public QgsDataItemProvider
      * \since QGIS 3.40
      */
     static QgsDataItem *createLayerItemForPath( const QString &path, QgsDataItem *parentItem, const QStringList &providers,
-        const QVariantMap &extraUriParts,
-        Qgis::SublayerQueryFlags queryFlags );
+                                                const QVariantMap &extraUriParts,
+                                                Qgis::SublayerQueryFlags queryFlags );
 
     bool handlesDirectoryPath( const QString &path ) override;
 
   private:
-
     static QgsDataItem *createDataItemForPathPrivate( const QString &path, QgsDataItem *parentItem, const QStringList *allowedProviders,
-        Qgis::SublayerQueryFlags queryFlags,
-        const QVariantMap &extraUriParts );
+                                                      Qgis::SublayerQueryFlags queryFlags,
+                                                      const QVariantMap &extraUriParts );
 };
 
 #endif // QGSFILEBASEDDATAITEMPROVIDER_H

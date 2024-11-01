@@ -90,8 +90,8 @@ void QgsAuthServersEditor::setupSslConfigsTree()
   treeServerConfigs->setColumnCount( 3 );
   treeServerConfigs->setHeaderLabels(
     QStringList() << tr( "Common Name" )
-    << tr( "Host" )
-    << tr( "Expiry Date" ) );
+                  << tr( "Host" )
+                  << tr( "Expiry Date" ) );
   treeServerConfigs->setColumnWidth( 0, 275 );
   treeServerConfigs->setColumnWidth( 1, 200 );
 
@@ -130,8 +130,8 @@ void QgsAuthServersEditor::refreshSslConfigsView()
 }
 
 void QgsAuthServersEditor::populateSslConfigsSection( QTreeWidgetItem *item,
-    const QList<QgsAuthConfigSslServer> &configs,
-    QgsAuthServersEditor::ConfigType conftype )
+                                                      const QList<QgsAuthConfigSslServer> &configs,
+                                                      QgsAuthServersEditor::ConfigType conftype )
 {
   if ( btnGroupByOrg->isChecked() )
   {
@@ -144,8 +144,8 @@ void QgsAuthServersEditor::populateSslConfigsSection( QTreeWidgetItem *item,
 }
 
 void QgsAuthServersEditor::appendSslConfigsToGroup( const QList<QgsAuthConfigSslServer> &configs,
-    QgsAuthServersEditor::ConfigType conftype,
-    QTreeWidgetItem *parent )
+                                                    QgsAuthServersEditor::ConfigType conftype,
+                                                    QTreeWidgetItem *parent )
 {
   if ( configs.empty() )
     return;
@@ -156,15 +156,15 @@ void QgsAuthServersEditor::appendSslConfigsToGroup( const QList<QgsAuthConfigSsl
   }
 
   // TODO: find all organizational name, sort and make subsections
-  const QMap< QString, QList<QgsAuthConfigSslServer> > orgconfigs(
+  const QMap<QString, QList<QgsAuthConfigSslServer>> orgconfigs(
     QgsAuthCertUtils::sslConfigsGroupedByOrg( configs ) );
 
-  QMap< QString, QList<QgsAuthConfigSslServer> >::const_iterator it = orgconfigs.constBegin();
+  QMap<QString, QList<QgsAuthConfigSslServer>>::const_iterator it = orgconfigs.constBegin();
   for ( ; it != orgconfigs.constEnd(); ++it )
   {
     QTreeWidgetItem *grpitem( new QTreeWidgetItem( parent,
-                              QStringList() << it.key(),
-                              static_cast<int>( QgsAuthServersEditor::OrgName ) ) );
+                                                   QStringList() << it.key(),
+                                                   static_cast<int>( QgsAuthServersEditor::OrgName ) ) );
     grpitem->setFirstColumnSpanned( true );
     grpitem->setFlags( Qt::ItemIsEnabled );
     grpitem->setExpanded( true );
@@ -183,8 +183,8 @@ void QgsAuthServersEditor::appendSslConfigsToGroup( const QList<QgsAuthConfigSsl
 }
 
 void QgsAuthServersEditor::appendSslConfigsToItem( const QList<QgsAuthConfigSslServer> &configs,
-    QgsAuthServersEditor::ConfigType conftype,
-    QTreeWidgetItem *parent )
+                                                   QgsAuthServersEditor::ConfigType conftype,
+                                                   QTreeWidgetItem *parent )
 {
   if ( configs.empty() )
     return;
@@ -237,9 +237,9 @@ void QgsAuthServersEditor::checkSelection()
   {
     QTreeWidgetItem *item( treeServerConfigs->currentItem() );
 
-    switch ( ( QgsAuthServersEditor::ConfigType )item->type() )
+    switch ( ( QgsAuthServersEditor::ConfigType ) item->type() )
     {
-      case QgsAuthServersEditor::ServerConfig :
+      case QgsAuthServersEditor::ServerConfig:
         isconfig = true;
         break;
       default:
@@ -256,7 +256,7 @@ void QgsAuthServersEditor::handleDoubleClick( QTreeWidgetItem *item, int col )
   Q_UNUSED( col )
   bool isconfig = true;
 
-  switch ( ( QgsAuthServersEditor::ConfigType )item->type() )
+  switch ( ( QgsAuthServersEditor::ConfigType ) item->type() )
   {
     case QgsAuthServersEditor::Section:
       isconfig = false;
@@ -315,7 +315,7 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
   if ( !QgsApplication::authManager()->existsSslCertCustomConfig( digest, hostport ) )
   {
     QgsDebugError( QStringLiteral( "SSL custom config does not exist in database for host:port, id %1:" )
-                   .arg( hostport, digest ) );
+                     .arg( hostport, digest ) );
     return;
   }
 
@@ -325,7 +325,8 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
              "SSL custom configuration from the database?\n\n"
              "Operation can NOT be undone!" ),
          QMessageBox::Ok | QMessageBox::Cancel,
-         QMessageBox::Cancel ) == QMessageBox::Cancel )
+         QMessageBox::Cancel )
+       == QMessageBox::Cancel )
   {
     return;
   }
@@ -333,7 +334,7 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
   if ( !QgsApplication::authManager()->removeSslCertCustomConfig( digest, hostport ) )
   {
     messageBar()->pushMessage( tr( "ERROR removing SSL custom config from authentication database for host:port, id %1:" )
-                               .arg( hostport, digest ),
+                                 .arg( hostport, digest ),
                                Qgis::MessageLevel::Critical );
     return;
   }

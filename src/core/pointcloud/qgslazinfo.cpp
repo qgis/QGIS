@@ -26,7 +26,7 @@
 
 // QgsLazInfo
 
-QgsLazInfo::QgsLazInfo() { }
+QgsLazInfo::QgsLazInfo() {}
 
 uint32_t QgsLazInfo::firstVariableLengthRecord() const
 {
@@ -58,7 +58,7 @@ void QgsLazInfo::parseRawVlrEntries( char *data, uint64_t length )
   if ( !mIsValid )
     return;
   uint64_t currentOffset = 0;
-  for ( uint64_t i = 0; i < ( uint64_t )mVlrCount && currentOffset < length; ++i )
+  for ( uint64_t i = 0; i < ( uint64_t ) mVlrCount && currentOffset < length; ++i )
   {
     lazperf::vlr_header vlrHeader;
     vlrHeader.fill( data + currentOffset, 54 );
@@ -123,20 +123,20 @@ void QgsLazInfo::parseCrs()
 QVariantMap QgsLazInfo::toMetadata() const
 {
   QVariantMap metadata;
-  metadata[ QStringLiteral( "creation_year" ) ] = mHeader.creation.year;
-  metadata[ QStringLiteral( "creation_day" ) ] = mHeader.creation.day;
-  metadata[ QStringLiteral( "major_version" ) ] = mHeader.version.major;
-  metadata[ QStringLiteral( "minor_version" ) ] = mHeader.version.minor;
-  metadata[ QStringLiteral( "dataformat_id" ) ] = mHeader.pointFormat();
-  metadata[ QStringLiteral( "scale_x" ) ] = mScale.x();
-  metadata[ QStringLiteral( "scale_y" ) ] = mScale.y();
-  metadata[ QStringLiteral( "scale_z" ) ] = mScale.z();
-  metadata[ QStringLiteral( "offset_x" ) ] = mOffset.x();
-  metadata[ QStringLiteral( "offset_y" ) ] = mOffset.y();
-  metadata[ QStringLiteral( "offset_z" ) ] = mOffset.z();
-  metadata[ QStringLiteral( "project_id" ) ] = QString( QByteArray( mHeader.guid, 16 ).toHex() );
-  metadata[ QStringLiteral( "system_id" ) ] = QString::fromLocal8Bit( mHeader.system_identifier, 32 );
-  metadata[ QStringLiteral( "software_id" ) ] = QString::fromLocal8Bit( mHeader.generating_software, 32 );
+  metadata[QStringLiteral( "creation_year" )] = mHeader.creation.year;
+  metadata[QStringLiteral( "creation_day" )] = mHeader.creation.day;
+  metadata[QStringLiteral( "major_version" )] = mHeader.version.major;
+  metadata[QStringLiteral( "minor_version" )] = mHeader.version.minor;
+  metadata[QStringLiteral( "dataformat_id" )] = mHeader.pointFormat();
+  metadata[QStringLiteral( "scale_x" )] = mScale.x();
+  metadata[QStringLiteral( "scale_y" )] = mScale.y();
+  metadata[QStringLiteral( "scale_z" )] = mScale.z();
+  metadata[QStringLiteral( "offset_x" )] = mOffset.x();
+  metadata[QStringLiteral( "offset_y" )] = mOffset.y();
+  metadata[QStringLiteral( "offset_z" )] = mOffset.z();
+  metadata[QStringLiteral( "project_id" )] = QString( QByteArray( mHeader.guid, 16 ).toHex() );
+  metadata[QStringLiteral( "system_id" )] = QString::fromLocal8Bit( mHeader.system_identifier, 32 );
+  metadata[QStringLiteral( "software_id" )] = QString::fromLocal8Bit( mHeader.generating_software, 32 );
   return metadata;
 }
 
@@ -280,13 +280,13 @@ QgsLazInfo QgsLazInfo::fromFile( std::ifstream &file )
 {
   QgsLazInfo lazInfo;
 
-  char headerRawData[ 375 ];
+  char headerRawData[375];
   file.seekg( 0 );
   file.read( headerRawData, 375 );
   lazInfo.parseRawHeader( headerRawData, 375 );
 
   int vlrDataSize = lazInfo.firstPointRecordOffset() - lazInfo.firstVariableLengthRecord();
-  std::unique_ptr<char[]> vlrEntriesRawData( new char[ vlrDataSize ] );
+  std::unique_ptr<char[]> vlrEntriesRawData( new char[vlrDataSize] );
   file.seekg( lazInfo.firstVariableLengthRecord() );
   file.read( vlrEntriesRawData.get(), vlrDataSize );
   lazInfo.parseRawVlrEntries( vlrEntriesRawData.get(), vlrDataSize );
@@ -344,8 +344,7 @@ QgsLazInfo QgsLazInfo::fromUrl( QUrl &url )
     {
       QgsDebugError( QStringLiteral( "Request failed: " ) + url.toString() );
 
-      lazInfo.mError = QStringLiteral( "Range query %1-%2 to \"%3\" failed: \"%4\"" ).arg( firstVlrOffset ).arg( lazInfo.firstPointRecordOffset() - 1 )
-                       .arg( url.toString() ).arg( req.errorMessage() );
+      lazInfo.mError = QStringLiteral( "Range query %1-%2 to \"%3\" failed: \"%4\"" ).arg( firstVlrOffset ).arg( lazInfo.firstPointRecordOffset() - 1 ).arg( url.toString() ).arg( req.errorMessage() );
       return lazInfo;
     }
     QByteArray vlrDataRaw = req.reply().content();

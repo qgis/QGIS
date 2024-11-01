@@ -30,9 +30,7 @@
  */
 class QgsPdalExportRasterTinAlgorithm : public QgsPdalAlgorithmBase
 {
-
   public:
-
     QgsPdalExportRasterTinAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;

@@ -31,7 +31,6 @@
 class CORE_EXPORT QgsCelestialBody
 {
   public:
-
     /**
      * Returns TRUE if the body is a valid object, or FALSE if it is a null/invalid
      * object.
@@ -51,7 +50,7 @@ class CORE_EXPORT QgsCelestialBody
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str;
+        QString str;
     if ( !sipCpp->isValid() )
     {
       str = QStringLiteral( "<QgsCelestialBody: invalid>" );
@@ -69,9 +68,10 @@ class CORE_EXPORT QgsCelestialBody
     % End
 #endif
 
-  private:
+      private :
 
-    bool mValid = false;
+      bool mValid
+      = false;
     QString mName;
     QString mAuthority;
 

@@ -37,7 +37,6 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * QgsPointCloudBlockRequest constructor
      * Note: It is the responsablitiy of the caller to delete the block if it was loaded correctly

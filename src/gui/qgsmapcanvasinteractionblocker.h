@@ -30,12 +30,10 @@
 class GUI_EXPORT QgsMapCanvasInteractionBlocker
 {
   public:
-
     /**
      * Available interactions to block.
      */
-    enum class Interaction : int SIP_ENUM_BASETYPE( IntFlag )
-    {
+    enum class Interaction : int SIP_ENUM_BASETYPE( IntFlag ) {
       MapPanOnSingleClick = 1 << 0, //!< A map pan interaction caused by a single click and release on the map canvas
     };
 
@@ -45,7 +43,6 @@ class GUI_EXPORT QgsMapCanvasInteractionBlocker
      * Returns TRUE if the specified \a interaction should be blocked.
      */
     virtual bool blockCanvasInteraction( Interaction interaction ) const = 0;
-
 };
 
 #endif // QGSMAPCANVASINTERACTIONBLOCKER_H

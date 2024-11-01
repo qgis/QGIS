@@ -41,7 +41,6 @@ class CORE_EXPORT QgsAbstractGeocoderLocatorFilter : public QgsLocatorFilter SIP
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAbstractGeocoderLocatorFilter.
      *
@@ -97,7 +96,6 @@ class CORE_EXPORT QgsAbstractGeocoderLocatorFilter : public QgsLocatorFilter SIP
     QgsLocatorResult geocoderResultToLocatorResult( const QgsGeocoderResult &result );
 
   private:
-
     /**
      * Called when a geocode \a result was triggered by the filter.
      */
@@ -108,7 +106,6 @@ class CORE_EXPORT QgsAbstractGeocoderLocatorFilter : public QgsLocatorFilter SIP
     QString mPrefix;
     QgsGeocoderInterface *mGeocoder = nullptr;
     QgsRectangle mBoundingBox;
-
 };
 
 #endif // QGSABSTRACTGEOCODERLOCATORFILTER_H

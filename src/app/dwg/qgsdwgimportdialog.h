@@ -48,7 +48,6 @@ class APP_EXPORT QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBa
     void useCurvesClicked();
 
   private:
-
     enum class ColumnIndex : int
     {
       Name = 0,

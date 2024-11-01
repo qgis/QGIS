@@ -39,7 +39,6 @@ class _3D_EXPORT QgsMaterial : public Qt3DRender::QMaterial
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsMaterial, with the specified \a parent node.
      */
@@ -64,7 +63,6 @@ class _3D_EXPORT QgsMaterial : public Qt3DRender::QMaterial
     void disableClipping();
 
   private:
-
     //! The name of the QParameter which contains the plane equations
     static const QString CLIP_PLANE_ARRAY_PARAMETER_NAME;
     //! The name of the QParameter which contains the number of planes
@@ -73,7 +71,6 @@ class _3D_EXPORT QgsMaterial : public Qt3DRender::QMaterial
     static const QString CLIP_PLANE_DEFINE;
 
     bool mClippingEnabled = false;
-
 };
 
 #endif // QGSMATERIAL_H

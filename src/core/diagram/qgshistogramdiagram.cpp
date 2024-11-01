@@ -214,7 +214,7 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCon
   p->setPen( mPen );
 
   QList<double>::const_iterator valIt = values.constBegin();
-  QList< QColor >::const_iterator colIt = s.categoryColors.constBegin();
+  QList<QColor>::const_iterator colIt = s.categoryColors.constBegin();
   for ( ; valIt != values.constEnd(); ++valIt, ++colIt )
   {
     double length = sizePainterUnits( *valIt * mScaleFactor, s, c );

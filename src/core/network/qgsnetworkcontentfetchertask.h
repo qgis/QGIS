@@ -49,7 +49,6 @@ class CORE_EXPORT QgsNetworkContentFetcherTask : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for a QgsNetworkContentFetcherTask which fetches
      * the specified \a url.
@@ -124,7 +123,6 @@ class CORE_EXPORT QgsNetworkContentFetcherTask : public QgsTask
     void errorOccurred( QNetworkReply::NetworkError code, const QString &errorMsg );
 
   private:
-
     QNetworkRequest mRequest;
     QString mAuthcfg;
     QgsNetworkContentFetcher *mFetcher = nullptr;

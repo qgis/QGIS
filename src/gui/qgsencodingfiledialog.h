@@ -27,11 +27,10 @@ class QPushButton;
  * \ingroup gui
  * \brief A file dialog which lets the user select the preferred encoding type for a data provider.
  */
-class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
+class GUI_EXPORT QgsEncodingFileDialog : public QFileDialog
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsEncodingFileDialog
      */
@@ -65,12 +64,11 @@ class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
  * \ingroup gui
  * \brief A dialog which presents the user with a choice of file encodings.
  */
-class GUI_EXPORT QgsEncodingSelectionDialog: public QDialog
+class GUI_EXPORT QgsEncodingSelectionDialog : public QDialog
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsEncodingSelectionDialog.
      *
@@ -95,9 +93,7 @@ class GUI_EXPORT QgsEncodingSelectionDialog: public QDialog
     void setEncoding( const QString &encoding );
 
   private:
-
     QComboBox *mEncodingComboBox = nullptr;
-
 };
 
 

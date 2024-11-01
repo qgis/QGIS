@@ -34,7 +34,6 @@ class QgsSpatialIndex;
 class CORE_EXPORT QgsAbstractLabelingEngineRuleDistanceFromFeature : public QgsAbstractLabelingEngineRule
 {
   public:
-
     QgsAbstractLabelingEngineRuleDistanceFromFeature();
     ~QgsAbstractLabelingEngineRuleDistanceFromFeature() override;
     bool prepare( QgsRenderContext &context ) override;
@@ -148,7 +147,6 @@ class CORE_EXPORT QgsAbstractLabelingEngineRuleDistanceFromFeature : public QgsA
     void setCost( double cost ) { mCost = cost; }
 
   protected:
-
     void copyCommonProperties( QgsAbstractLabelingEngineRule *other ) const override;
 
     //! TRUE if labels must be distant from features, FALSE if they must be close
@@ -179,8 +177,8 @@ class CORE_EXPORT QgsAbstractLabelingEngineRuleDistanceFromFeature : public QgsA
 
     // cached variables
     double mDistanceMapUnits = 0;
-    std::unique_ptr< QgsAbstractFeatureSource > mTargetLayerSource;
-    std::unique_ptr< QgsSpatialIndex > mIndex;
+    std::unique_ptr<QgsAbstractFeatureSource> mTargetLayerSource;
+    std::unique_ptr<QgsSpatialIndex> mIndex;
     bool mInitialized = false;
 };
 
@@ -194,7 +192,6 @@ class CORE_EXPORT QgsAbstractLabelingEngineRuleDistanceFromFeature : public QgsA
 class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToFeature : public QgsAbstractLabelingEngineRuleDistanceFromFeature
 {
   public:
-
     QgsLabelingEngineRuleMinimumDistanceLabelToFeature();
     ~QgsLabelingEngineRuleMinimumDistanceLabelToFeature() override;
     QgsLabelingEngineRuleMinimumDistanceLabelToFeature *clone() const override SIP_FACTORY;
@@ -203,15 +200,14 @@ class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToFeature : public Qg
     QString description() const override;
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    const QString str = QStringLiteral( "<QgsLabelingEngineRuleMinimumDistanceLabelToFeature: %1>" ).arg( sipCpp->name() );
+    % MethodCode const QString str = QStringLiteral( "<QgsLabelingEngineRuleMinimumDistanceLabelToFeature: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-  private:
+      private :
 #ifdef SIP_RUN
-    QgsLabelingEngineRuleMinimumDistanceLabelToFeature( const QgsLabelingEngineRuleMinimumDistanceLabelToFeature & );
+      QgsLabelingEngineRuleMinimumDistanceLabelToFeature( const QgsLabelingEngineRuleMinimumDistanceLabelToFeature & );
 #endif
 };
 
@@ -234,17 +230,15 @@ class CORE_EXPORT QgsLabelingEngineRuleMaximumDistanceLabelToFeature : public Qg
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    const QString str = QStringLiteral( "<QgsLabelingEngineRuleMaximumDistanceLabelToFeature: %1>" ).arg( sipCpp->name() );
+    % MethodCode const QString str = QStringLiteral( "<QgsLabelingEngineRuleMaximumDistanceLabelToFeature: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-  private:
+      private :
 #ifdef SIP_RUN
-    QgsLabelingEngineRuleMaximumDistanceLabelToFeature( const QgsLabelingEngineRuleMaximumDistanceLabelToFeature & );
+      QgsLabelingEngineRuleMaximumDistanceLabelToFeature( const QgsLabelingEngineRuleMaximumDistanceLabelToFeature & );
 #endif
-
 };
 
 /**
@@ -273,18 +267,18 @@ class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToLabel : public QgsA
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    const QString str = QStringLiteral( "<QgsLabelingEngineRuleMinimumDistanceLabelToLabel: %1>" ).arg( sipCpp->name() );
+    % MethodCode const QString str = QStringLiteral( "<QgsLabelingEngineRuleMinimumDistanceLabelToLabel: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    /**
+        /**
      * Returns the layer providing the labels.
      *
      * \see setLabeledLayer()
      */
-    QgsMapLayer *labeledLayer() const;
+        QgsMapLayer *
+      labeledLayer() const;
 
     /**
      * Sets the \a layer providing the labels.
@@ -386,7 +380,6 @@ class CORE_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToLabel : public QgsA
 class CORE_EXPORT QgsLabelingEngineRuleAvoidLabelOverlapWithFeature : public QgsAbstractLabelingEngineRule
 {
   public:
-
     QgsLabelingEngineRuleAvoidLabelOverlapWithFeature();
     ~QgsLabelingEngineRuleAvoidLabelOverlapWithFeature() override;
     QgsLabelingEngineRuleAvoidLabelOverlapWithFeature *clone() const override SIP_FACTORY;
@@ -401,18 +394,18 @@ class CORE_EXPORT QgsLabelingEngineRuleAvoidLabelOverlapWithFeature : public Qgs
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    const QString str = QStringLiteral( "<QgsLabelingEngineRuleAvoidLabelOverlapWithFeature: %1>" ).arg( sipCpp->name() );
+    % MethodCode const QString str = QStringLiteral( "<QgsLabelingEngineRuleAvoidLabelOverlapWithFeature: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    /**
+        /**
      * Returns the layer providing the labels.
      *
      * \see setLabeledLayer()
      */
-    QgsMapLayer *labeledLayer() const;
+        QgsMapLayer *
+      labeledLayer() const;
 
     /**
      * Sets the \a layer providing the labels.
@@ -445,8 +438,8 @@ class CORE_EXPORT QgsLabelingEngineRuleAvoidLabelOverlapWithFeature : public Qgs
     QgsVectorLayerRef mTargetLayer;
 
     // cached variables
-    std::unique_ptr< QgsAbstractFeatureSource > mTargetLayerSource;
-    std::unique_ptr< QgsSpatialIndex > mIndex;
+    std::unique_ptr<QgsAbstractFeatureSource> mTargetLayerSource;
+    std::unique_ptr<QgsSpatialIndex> mIndex;
     bool mInitialized = false;
 };
 

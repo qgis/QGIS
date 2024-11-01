@@ -49,80 +49,80 @@ class QgsExpressionFunction;
 ///@cond PRIVATE
 struct HelpArg
 {
-  HelpArg( const QString &arg, const QString &desc, bool descOnly = false, bool syntaxOnly = false,
-           bool optional = false, const QString &defaultVal = QString() )
-    : mArg( arg )
-    , mDescription( desc )
-    , mDescOnly( descOnly )
-    , mSyntaxOnly( syntaxOnly )
-    , mOptional( optional )
-    , mDefaultVal( defaultVal )
-  {}
+    HelpArg( const QString &arg, const QString &desc, bool descOnly = false, bool syntaxOnly = false,
+             bool optional = false, const QString &defaultVal = QString() )
+      : mArg( arg )
+      , mDescription( desc )
+      , mDescOnly( descOnly )
+      , mSyntaxOnly( syntaxOnly )
+      , mOptional( optional )
+      , mDefaultVal( defaultVal )
+    {}
 
-  QString mArg;
-  QString mDescription;
-  bool mDescOnly;
-  bool mSyntaxOnly;
-  bool mOptional;
-  QString mDefaultVal;
+    QString mArg;
+    QString mDescription;
+    bool mDescOnly;
+    bool mSyntaxOnly;
+    bool mOptional;
+    QString mDefaultVal;
 };
 
 struct HelpExample
 {
-  HelpExample( const QString &expression, const QString &returns, const QString &note = QString() )
-    : mExpression( expression )
-    , mReturns( returns )
-    , mNote( note )
-  {}
+    HelpExample( const QString &expression, const QString &returns, const QString &note = QString() )
+      : mExpression( expression )
+      , mReturns( returns )
+      , mNote( note )
+    {}
 
-  QString mExpression;
-  QString mReturns;
-  QString mNote;
+    QString mExpression;
+    QString mReturns;
+    QString mNote;
 };
 
 
 struct HelpVariant
 {
-  HelpVariant( const QString &name, const QString &description,
-               const QList<HelpArg> &arguments = QList<HelpArg>(),
-               bool variableLenArguments = false,
-               const QList<HelpExample> &examples = QList<HelpExample>(),
-               const QString &notes = QString(),
-               const QStringList &tags = QStringList() )
-    : mName( name )
-    , mDescription( description )
-    , mArguments( arguments )
-    , mVariableLenArguments( variableLenArguments )
-    , mExamples( examples )
-    , mNotes( notes )
-    , mTags( tags )
-  {}
+    HelpVariant( const QString &name, const QString &description,
+                 const QList<HelpArg> &arguments = QList<HelpArg>(),
+                 bool variableLenArguments = false,
+                 const QList<HelpExample> &examples = QList<HelpExample>(),
+                 const QString &notes = QString(),
+                 const QStringList &tags = QStringList() )
+      : mName( name )
+      , mDescription( description )
+      , mArguments( arguments )
+      , mVariableLenArguments( variableLenArguments )
+      , mExamples( examples )
+      , mNotes( notes )
+      , mTags( tags )
+    {}
 
-  QString mName;
-  QString mDescription;
-  QList<HelpArg> mArguments;
-  bool mVariableLenArguments;
-  QList<HelpExample> mExamples;
-  QString mNotes;
-  QStringList mTags;
+    QString mName;
+    QString mDescription;
+    QList<HelpArg> mArguments;
+    bool mVariableLenArguments;
+    QList<HelpExample> mExamples;
+    QString mNotes;
+    QStringList mTags;
 };
 
 
 struct Help
 {
-  Help() = default;
+    Help() = default;
 
-  Help( const QString &name, const QString &type, const QString &description, const QList<HelpVariant> &variants )
-    : mName( name )
-    , mType( type )
-    , mDescription( description )
-    , mVariants( variants )
-  {}
+    Help( const QString &name, const QString &type, const QString &description, const QList<HelpVariant> &variants )
+      : mName( name )
+      , mType( type )
+      , mDescription( description )
+      , mVariants( variants )
+    {}
 
-  QString mName;
-  QString mType;
-  QString mDescription;
-  QList<HelpVariant> mVariants;
+    QString mName;
+    QString mType;
+    QString mDescription;
+    QList<HelpVariant> mVariants;
 };
 
 typedef QHash<QString, Help> HelpTextHash;
@@ -189,52 +189,51 @@ class CORE_EXPORT QgsExpression
 {
     Q_DECLARE_TR_FUNCTIONS( QgsExpression )
   public:
-
     /**
      * Details about any parser errors that were found when parsing the expression.
      */
     struct CORE_EXPORT ParserError
     {
-      enum ParserErrorType
-      {
-        Unknown = 0,  //!< Unknown error type.
-        FunctionUnknown = 1, //!< Function was unknown.
-        FunctionWrongArgs = 2, //!< Function was called with the wrong number of args.
-        FunctionInvalidParams = 3, //!< Function was called with invalid args.
-        FunctionNamedArgsError = 4 //!< Non named function arg used after named arg.
-      };
+        enum ParserErrorType
+        {
+          Unknown = 0,               //!< Unknown error type.
+          FunctionUnknown = 1,       //!< Function was unknown.
+          FunctionWrongArgs = 2,     //!< Function was called with the wrong number of args.
+          FunctionInvalidParams = 3, //!< Function was called with invalid args.
+          FunctionNamedArgsError = 4 //!< Non named function arg used after named arg.
+        };
 
-      /**
+        /**
        * The type of parser error that was found.
        */
-      ParserErrorType errorType = ParserErrorType::Unknown;
+        ParserErrorType errorType = ParserErrorType::Unknown;
 
-      /**
+        /**
        * The message for the error at this location.
        */
-      QString errorMsg;
+        QString errorMsg;
 
-      /**
+        /**
        * The first line that contained the error in the parser.
        * Depending on the error sometimes this doesn't mean anything.
        */
-      int firstLine = 0;
+        int firstLine = 0;
 
-      /**
+        /**
        * The first column that contained the error in the parser.
        * Depending on the error sometimes this doesn't mean anything.
        */
-      int firstColumn = 0;
+        int firstColumn = 0;
 
-      /**
+        /**
        * The last line that contained the error in the parser.
        */
-      int lastLine = 0;
+        int lastLine = 0;
 
-      /**
+        /**
        * The last column that contained the error in the parser.
        */
-      int lastColumn = 0;
+        int lastColumn = 0;
     };
 
     /**
@@ -360,7 +359,7 @@ class CORE_EXPORT QgsExpression
      * \note not available in Python bindings
      * \since QGIS 3.2
      */
-    QList<const QgsExpressionNode *> nodes( ) const;
+    QList<const QgsExpressionNode *> nodes() const;
 
     /**
      * Returns a list of all nodes of the given class which are used in this expression
@@ -368,8 +367,8 @@ class CORE_EXPORT QgsExpression
      * \note not available in Python bindings
      * \since QGIS 3.2
      */
-    template <class T>
-    QList<const T *> findNodes( ) const
+    template<class T>
+    QList<const T *> findNodes() const
     {
       QList<const T *> lst;
       const QList<const QgsExpressionNode *> allNodes( nodes() );
@@ -797,13 +796,14 @@ class CORE_EXPORT QgsExpression
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsExpression: '%1'>" ).arg( sipCpp->expression() );
+        QString str
+      = QStringLiteral( "<QgsExpression: '%1'>" ).arg( sipCpp->expression() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-  private:
-    void initGeomCalculator( const QgsExpressionContext *context );
+      private : void
+                initGeomCalculator( const QgsExpressionContext *context );
 
     /**
      * Helper for implicit sharing. When called will create
@@ -824,7 +824,7 @@ class CORE_EXPORT QgsExpression
 
     friend class QgsExpressionNodeFunction;
     static QRecursiveMutex sFunctionsMutex;
-    static QMap< QString, int> sFunctionIndexMap;
+    static QMap<QString, int> sFunctionIndexMap;
 
     friend class QgsOgcUtils;
 };

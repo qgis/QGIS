@@ -38,7 +38,7 @@ class QgsElevationProfileCanvas;
  * \note This class is not a part of public API
  * \since QGIS 3.30
  */
-class GUI_EXPORT QgsLayoutElevationProfileWidget: public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutElevationProfileWidgetBase
+class GUI_EXPORT QgsLayoutElevationProfileWidget : public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutElevationProfileWidgetBase
 {
     Q_OBJECT
   public:
@@ -55,10 +55,9 @@ class GUI_EXPORT QgsLayoutElevationProfileWidget: public QgsLayoutItemBaseWidget
      */
     void copySettingsFromProfileCanvas( QgsElevationProfileCanvas *canvas );
 
-    static std::function< void( QgsLayoutElevationProfileWidget *, QMenu * ) > sBuildCopyMenuFunction;
+    static std::function<void( QgsLayoutElevationProfileWidget *, QMenu * )> sBuildCopyMenuFunction;
 
   protected:
-
     bool setNewItem( QgsLayoutItem *item ) override;
 
   private slots:
@@ -69,16 +68,15 @@ class GUI_EXPORT QgsLayoutElevationProfileWidget: public QgsLayoutItemBaseWidget
     void atlasLayerChanged( QgsVectorLayer *layer );
 
   private:
-
     int mBlockChanges = 0;
 
     QgsLayoutDesignerInterface *mInterface = nullptr;
 
-    QPointer< QgsLayoutItemElevationProfile > mProfile = nullptr;
+    QPointer<QgsLayoutItemElevationProfile> mProfile = nullptr;
 
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
-    std::unique_ptr< QgsLayerTree > mLayerTree;
+    std::unique_ptr<QgsLayerTree> mLayerTree;
     QgsLayerTreeRegistryBridge *mLayerTreeBridge = nullptr;
     QgsElevationProfileLayerTreeView *mLayerTreeView = nullptr;
     QMenu *mCopyFromDockMenu = nullptr;

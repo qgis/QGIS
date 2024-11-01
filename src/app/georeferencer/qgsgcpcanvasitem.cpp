@@ -198,7 +198,6 @@ void QgsGCPCanvasItem::drawResidualArrow( QPainter *p, const QgsRenderContext &c
   const double rf = residualToScreenFactor();
   p->setPen( mResidualPen );
   p->drawLine( QPointF( 0, 0 ), QPointF( residual.rx() * rf, residual.ry() * rf ) );
-
 }
 
 double QgsGCPCanvasItem::residualToScreenFactor() const
@@ -242,4 +241,3 @@ double QgsGCPCanvasItem::fontSizePainterUnits( double points, const QgsRenderCon
 {
   return points * 0.3527 * c.scaleFactor();
 }
-

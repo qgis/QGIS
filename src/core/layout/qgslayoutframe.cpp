@@ -25,15 +25,13 @@ QgsLayoutFrame::QgsLayoutFrame( QgsLayout *layout, QgsLayoutMultiFrame *multiFra
   , mMultiFrame( multiFrame )
   , mMultiFrameUuid( multiFrame ? multiFrame->uuid() : QString() )
 {
-
   //default to no background
   setBackgroundEnabled( false );
 
   if ( multiFrame )
   {
     //repaint frame when multiframe content changes
-    connect( multiFrame, &QgsLayoutMultiFrame::contentsChanged, this, [this]
-    {
+    connect( multiFrame, &QgsLayoutMultiFrame::contentsChanged, this, [this] {
       update();
     } );
 
@@ -63,7 +61,7 @@ QgsLayoutSize QgsLayoutFrame::minimumSize() const
     return QgsLayoutSize();
 
   //calculate index of frame
-  const int frameIndex = mMultiFrame->frameIndex( const_cast< QgsLayoutFrame * >( this ) );
+  const int frameIndex = mMultiFrame->frameIndex( const_cast<QgsLayoutFrame *>( this ) );
   //check minimum size
   return QgsLayoutSize( mMultiFrame->minFrameSize( frameIndex ), Qgis::LayoutUnit::Millimeters );
 }
@@ -74,7 +72,7 @@ QgsLayoutSize QgsLayoutFrame::fixedSize() const
     return QgsLayoutSize();
 
   //calculate index of frame
-  const int frameIndex = mMultiFrame->frameIndex( const_cast< QgsLayoutFrame * >( this ) );
+  const int frameIndex = mMultiFrame->frameIndex( const_cast<QgsLayoutFrame *>( this ) );
   //check fixed size
   return QgsLayoutSize( mMultiFrame->fixedFrameSize( frameIndex ), Qgis::LayoutUnit::Millimeters );
 }
@@ -123,7 +121,6 @@ bool QgsLayoutFrame::isEmpty() const
   }
 
   return false;
-
 }
 
 QgsExpressionContext QgsLayoutFrame::createExpressionContext() const
@@ -220,7 +217,7 @@ bool QgsLayoutFrame::readPropertiesFromElement( const QDomElement &itemElem, con
   mHideBackgroundIfEmpty = itemElem.attribute( QStringLiteral( "hideBackgroundIfEmpty" ), QStringLiteral( "0" ) ).toInt();
 
   mMultiFrameUuid = itemElem.attribute( QStringLiteral( "multiFrame" ) );
-  if ( mMultiFrameUuid.isEmpty( ) )
+  if ( mMultiFrameUuid.isEmpty() )
   {
     mMultiFrameUuid = itemElem.attribute( QStringLiteral( "multiFrameTemplateUuid" ) );
   }

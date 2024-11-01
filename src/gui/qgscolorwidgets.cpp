@@ -24,7 +24,7 @@
 
 #include <QResizeEvent>
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <QStyleOptionFrameV3>
 #else
 #include <QStyleOptionFrame>
@@ -45,7 +45,7 @@
 
 
 // TODO QGIS 4 remove typedef, QColor was qreal (double) and is now float
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 typedef qreal float_type;
 #else
 typedef float float_type;
@@ -535,7 +535,7 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   const double vx = -std::cos( hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
   const double vy = std::sin( hueRadians + ( M_PI / 3.0 ) ) * triangleRadius;
   const double mx = ( sx + vx ) / 2.0;
-  const double  my = ( sy + vy ) / 2.0;
+  const double my = ( sy + vy ) / 2.0;
 
   const double a = ( 1 - 2.0 * std::fabs( lightness - 0.5 ) ) * mCurrentColor.hslSaturationF();
   const double x = sx + ( vx - sx ) * lightness + ( hx - mx ) * a;
@@ -592,8 +592,7 @@ void QgsColorWheel::resizeEvent( QResizeEvent *event )
   {
     QSize newSize(
       std::min( event->size().width(), parentWidget()->size().width() - 2 ),
-      std::min( event->size().height(), parentWidget()->size().height() - 2 )
-    );
+      std::min( event->size().height(), parentWidget()->size().height() - 2 ) );
     resize( newSize );
     createImages( newSize );
   }
@@ -745,7 +744,7 @@ void QgsColorWheel::createWheel()
     return;
   }
 
-  const int maxSize = std::min( mWheelImage.width(),  mWheelImage.height() );
+  const int maxSize = std::min( mWheelImage.width(), mWheelImage.height() );
   const double wheelRadius = maxSize / 2.0;
 
   mWheelImage.fill( Qt::transparent );
@@ -764,7 +763,7 @@ void QgsColorWheel::createWheel()
   p.drawEllipse( QPointF( 0,
                           0 ),
                  wheelRadius - mWheelThickness * devicePixelRatioF(),
-                 wheelRadius  - mWheelThickness * devicePixelRatioF() );
+                 wheelRadius - mWheelThickness * devicePixelRatioF() );
   p.end();
 
   mWheelDirty = false;
@@ -846,7 +845,6 @@ void QgsColorWheel::createTriangle()
 }
 
 
-
 //
 // QgsColorBox
 //
@@ -878,7 +876,7 @@ void QgsColorBox::paintEvent( QPaintEvent *event )
 
   QStyleOptionFrame option;
   option.initFrom( this );
-  option.state = hasFocus() ? QStyle::State_Active :  QStyle::State_None;
+  option.state = hasFocus() ? QStyle::State_Active : QStyle::State_None;
   style()->drawPrimitive( QStyle::PE_Frame, &option, &painter );
 
   if ( mDirty )
@@ -921,18 +919,7 @@ void QgsColorBox::setComponent( const QgsColorWidget::ColorComponent component )
 void QgsColorBox::setColor( const QColor &color, const bool emitSignals )
 {
   //check if we need to redraw the box image
-  mDirty |= (
-              ( mComponent == QgsColorWidget::Red && !qgsDoubleNear( mCurrentColor.redF(), color.redF() ) ) ||
-              ( mComponent == QgsColorWidget::Green && !qgsDoubleNear( mCurrentColor.greenF(), color.greenF() ) ) ||
-              ( mComponent == QgsColorWidget::Blue && !qgsDoubleNear( mCurrentColor.blueF(), color.blueF() ) ) ||
-              ( mComponent == QgsColorWidget::Hue && color.hsvHueF() >= 0 && !qgsDoubleNear( hueF(), color.hsvHueF() ) ) ||
-              ( mComponent == QgsColorWidget::Saturation && !qgsDoubleNear( mCurrentColor.hsvSaturationF(), color.hsvSaturationF() ) ) ||
-              ( mComponent == QgsColorWidget::Value && !qgsDoubleNear( mCurrentColor.valueF(), color.valueF() ) ) ||
-              ( mComponent == QgsColorWidget::Cyan && !qgsDoubleNear( mCurrentColor.cyanF(), color.cyanF() ) ) ||
-              ( mComponent == QgsColorWidget::Magenta && !qgsDoubleNear( mCurrentColor.magentaF(), color.magentaF() ) ) ||
-              ( mComponent == QgsColorWidget::Yellow && !qgsDoubleNear( mCurrentColor.yellowF(), color.yellowF() ) ) ||
-              ( mComponent == QgsColorWidget::Black && !qgsDoubleNear( mCurrentColor.blackF(), color.blackF() ) )
-            );
+  mDirty |= ( ( mComponent == QgsColorWidget::Red && !qgsDoubleNear( mCurrentColor.redF(), color.redF() ) ) || ( mComponent == QgsColorWidget::Green && !qgsDoubleNear( mCurrentColor.greenF(), color.greenF() ) ) || ( mComponent == QgsColorWidget::Blue && !qgsDoubleNear( mCurrentColor.blueF(), color.blueF() ) ) || ( mComponent == QgsColorWidget::Hue && color.hsvHueF() >= 0 && !qgsDoubleNear( hueF(), color.hsvHueF() ) ) || ( mComponent == QgsColorWidget::Saturation && !qgsDoubleNear( mCurrentColor.hsvSaturationF(), color.hsvSaturationF() ) ) || ( mComponent == QgsColorWidget::Value && !qgsDoubleNear( mCurrentColor.valueF(), color.valueF() ) ) || ( mComponent == QgsColorWidget::Cyan && !qgsDoubleNear( mCurrentColor.cyanF(), color.cyanF() ) ) || ( mComponent == QgsColorWidget::Magenta && !qgsDoubleNear( mCurrentColor.magentaF(), color.magentaF() ) ) || ( mComponent == QgsColorWidget::Yellow && !qgsDoubleNear( mCurrentColor.yellowF(), color.yellowF() ) ) || ( mComponent == QgsColorWidget::Black && !qgsDoubleNear( mCurrentColor.blackF(), color.blackF() ) ) );
 
   QgsColorWidget::setColor( color, emitSignals );
 }
@@ -990,7 +977,7 @@ void QgsColorBox::createBox()
 
   for ( int y = 0; y < maxValueY; ++y )
   {
-    QRgb *scanLine = ( QRgb * )mBoxImage->scanLine( y );
+    QRgb *scanLine = ( QRgb * ) mBoxImage->scanLine( y );
 
     colorComponentValue = 1.f - static_cast<float>( y ) / static_cast<float>( maxValueY );
     alterColorF( currentColor, yComponent(), colorComponentValue );
@@ -1018,7 +1005,7 @@ QgsColorWidget::ColorComponent QgsColorBox::yComponent() const
 {
   switch ( mComponent )
   {
-    case  QgsColorWidget::Red:
+    case QgsColorWidget::Red:
       return QgsColorWidget::Green;
     case QgsColorWidget::Green:
     case QgsColorWidget::Blue:
@@ -1030,7 +1017,7 @@ QgsColorWidget::ColorComponent QgsColorBox::yComponent() const
     case QgsColorWidget::Value:
       return QgsColorWidget::Hue;
 
-    case  QgsColorWidget::Magenta:
+    case QgsColorWidget::Magenta:
       return QgsColorWidget::Yellow;
     case QgsColorWidget::Yellow:
     case QgsColorWidget::Cyan:
@@ -1302,7 +1289,7 @@ void QgsColorRampWidget::setShowFrame( const bool showFrame )
 void QgsColorRampWidget::setMarkerSize( const int markerSize )
 {
   //create triangle polygons
-  mTopTriangle << QPoint( -markerSize, 0 ) <<  QPoint( markerSize, 0 ) << QPoint( 0, markerSize );
+  mTopTriangle << QPoint( -markerSize, 0 ) << QPoint( markerSize, 0 ) << QPoint( 0, markerSize );
   mBottomTriangle << QPoint( -markerSize, 0 ) << QPoint( markerSize, 0 ) << QPoint( 0, -markerSize );
   update();
 }
@@ -1478,7 +1465,7 @@ QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponen
 
   connect( mRampWidget, &QgsColorRampWidget::valueChangedF, this, &QgsColorSliderWidget::rampChanged );
   connect( mRampWidget, &QgsColorWidget::colorChanged, this, &QgsColorSliderWidget::rampColorChanged );
-  connect( mSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsColorSliderWidget::spinChanged );
+  connect( mSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsColorSliderWidget::spinChanged );
 }
 
 void QgsColorSliderWidget::setComponent( const QgsColorWidget::ColorComponent component )
@@ -1602,7 +1589,7 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
 
   const int frameWidth = mLineEdit->style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
   mLineEdit->setStyleSheet( QStringLiteral( "QLineEdit { padding-right: %1px; } " )
-                            .arg( mMenuButton->sizeHint().width() + frameWidth + 1 ) );
+                              .arg( mMenuButton->sizeHint().width() + frameWidth + 1 ) );
 
   connect( mLineEdit, &QLineEdit::editingFinished, this, &QgsColorTextWidget::textChanged );
   connect( mMenuButton, &QAbstractButton::clicked, this, &QgsColorTextWidget::showMenu );
@@ -1734,7 +1721,6 @@ QgsColorPreviewWidget::QgsColorPreviewWidget( QWidget *parent )
   : QgsColorWidget( parent )
   , mColor2( QColor() )
 {
-
 }
 
 void QgsColorPreviewWidget::drawColor( const QColor &color, QRect rect, QPainter &painter )
@@ -1834,7 +1820,6 @@ void QgsColorPreviewWidget::mouseReleaseEvent( QMouseEvent *e )
     }
   }
   emit colorChanged( clickedColor );
-
 }
 
 void QgsColorPreviewWidget::mouseMoveEvent( QMouseEvent *e )

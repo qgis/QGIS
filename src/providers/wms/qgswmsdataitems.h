@@ -125,7 +125,6 @@ class QgsWMSLayerItem : public QgsLayerItem, public QgsWMSItemBase
                      const QgsWmsLayerProperty &layerProperty );
 
     bool equal( const QgsDataItem *other ) override;
-
 };
 
 class QgsWMTSLayerItem : public QgsLayerItem
@@ -204,7 +203,6 @@ class QgsXyzTileRootItem : public QgsConnectionsRootItem
     QVector<QgsDataItem *> createChildren() override;
 
     QVariant sortKey() const override { return 8; }
-
 };
 
 //! Item implementation for XYZ tile layers
@@ -213,7 +211,6 @@ class QgsXyzLayerItem : public QgsLayerItem
     Q_OBJECT
   public:
     QgsXyzLayerItem( QgsDataItem *parent, QString name, QString path, const QString &encodedUri );
-
 };
 
 

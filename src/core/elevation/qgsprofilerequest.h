@@ -36,9 +36,7 @@ class QgsAbstractTerrainProvider;
  */
 class CORE_EXPORT QgsProfileRequest
 {
-
   public:
-
     /**
      * Constructor for QgsProfileRequest.
      *
@@ -199,8 +197,7 @@ class CORE_EXPORT QgsProfileRequest
     QgsProfileRequest &setExpressionContext( const QgsExpressionContext &context );
 
   private:
-
-    std::unique_ptr< QgsCurve> mCurve;
+    std::unique_ptr<QgsCurve> mCurve;
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
 
@@ -208,9 +205,8 @@ class CORE_EXPORT QgsProfileRequest
 
     double mStepDistance = std::numeric_limits<float>::quiet_NaN();
 
-    std::unique_ptr< QgsAbstractTerrainProvider > mTerrainProvider;
+    std::unique_ptr<QgsAbstractTerrainProvider> mTerrainProvider;
     QgsExpressionContext mExpressionContext;
-
 };
 
 #endif // QGSPROFILEREQUEST_H

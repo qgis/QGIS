@@ -66,8 +66,7 @@ int QgsLocatorModel::columnCount( const QModelIndex & ) const
 
 QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() || index.row() < 0 || index.column() < 0 ||
-       index.row() >= rowCount( QModelIndex() ) || index.column() >= columnCount( QModelIndex() ) )
+  if ( !index.isValid() || index.row() < 0 || index.column() < 0 || index.row() >= rowCount( QModelIndex() ) || index.column() >= columnCount( QModelIndex() ) )
     return QVariant();
 
   const Entry &entry = mResults.at( index.row() );
@@ -145,34 +144,34 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
       }
       break;
 
-    case static_cast< int >( CustomRole::ResultData ):
+    case static_cast<int>( CustomRole::ResultData ):
       if ( entry.type == EntryType::Result )
         return QVariant::fromValue( entry.result );
       else
         return QVariant();
 
-    case static_cast< int >( CustomRole::ResultType ):
+    case static_cast<int>( CustomRole::ResultType ):
       return static_cast<int>( entry.type );
 
-    case static_cast< int >( CustomRole::ResultScore ):
+    case static_cast<int>( CustomRole::ResultScore ):
       if ( entry.filter )
         return 0;
       else
         return ( entry.result.score );
 
-    case static_cast< int >( CustomRole::ResultFilterPriority ):
+    case static_cast<int>( CustomRole::ResultFilterPriority ):
       return entry.filter->priority();
 
-    case static_cast< int >( CustomRole::ResultFilterName ):
+    case static_cast<int>( CustomRole::ResultFilterName ):
       return entry.filterTitle;
 
-    case static_cast< int >( CustomRole::ResultFilterGroupTitle ):
+    case static_cast<int>( CustomRole::ResultFilterGroupTitle ):
       return entry.groupTitle;
 
-    case static_cast< int >( CustomRole::ResultFilterGroupScore ):
+    case static_cast<int>( CustomRole::ResultFilterGroupScore ):
       return entry.groupScore;
 
-    case static_cast< int >( CustomRole::ResultActions ):
+    case static_cast<int>( CustomRole::ResultActions ):
       return QVariant::fromValue( entry.result.actions );
   }
 
@@ -181,8 +180,7 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
 
 Qt::ItemFlags QgsLocatorModel::flags( const QModelIndex &index ) const
 {
-  if ( !index.isValid() || index.row() < 0 || index.column() < 0 ||
-       index.row() >= rowCount( QModelIndex() ) || index.column() >= columnCount( QModelIndex() ) )
+  if ( !index.isValid() || index.row() < 0 || index.column() < 0 || index.row() >= rowCount( QModelIndex() ) || index.column() >= columnCount( QModelIndex() ) )
     return QAbstractTableModel::flags( index );
 
   Qt::ItemFlags flags = QAbstractTableModel::flags( index );
@@ -196,15 +194,15 @@ Qt::ItemFlags QgsLocatorModel::flags( const QModelIndex &index ) const
 QHash<int, QByteArray> QgsLocatorModel::roleNames() const
 {
   QHash<int, QByteArray> roles;
-  roles[static_cast< int >( CustomRole::ResultData )] = "ResultData";
-  roles[static_cast< int >( CustomRole::ResultType )] = "ResultType";
-  roles[static_cast< int >( CustomRole::ResultFilterPriority )] = "ResultFilterPriority";
-  roles[static_cast< int >( CustomRole::ResultScore )] = "ResultScore";
-  roles[static_cast< int >( CustomRole::ResultFilterName )] = "ResultFilterName";
-  roles[static_cast< int >( CustomRole::ResultFilterGroupSorting )] = "ResultFilterGroupSorting"; // Deprecated
-  roles[static_cast< int >( CustomRole::ResultFilterGroupTitle )] = "ResultFilterGroupTitle";
-  roles[static_cast< int >( CustomRole::ResultFilterGroupScore )] = "ResultFilterGroupScore";
-  roles[static_cast< int >( CustomRole::ResultActions )] = "ResultContextMenuActions";
+  roles[static_cast<int>( CustomRole::ResultData )] = "ResultData";
+  roles[static_cast<int>( CustomRole::ResultType )] = "ResultType";
+  roles[static_cast<int>( CustomRole::ResultFilterPriority )] = "ResultFilterPriority";
+  roles[static_cast<int>( CustomRole::ResultScore )] = "ResultScore";
+  roles[static_cast<int>( CustomRole::ResultFilterName )] = "ResultFilterName";
+  roles[static_cast<int>( CustomRole::ResultFilterGroupSorting )] = "ResultFilterGroupSorting"; // Deprecated
+  roles[static_cast<int>( CustomRole::ResultFilterGroupTitle )] = "ResultFilterGroupTitle";
+  roles[static_cast<int>( CustomRole::ResultFilterGroupScore )] = "ResultFilterGroupScore";
+  roles[static_cast<int>( CustomRole::ResultActions )] = "ResultContextMenuActions";
   roles[Qt::DisplayRole] = "Text";
   return roles;
 }
@@ -223,8 +221,7 @@ void QgsLocatorModel::addResult( const QgsLocatorResult &result )
   if ( addingFilter )
     mFoundResultsFromFilterNames << result.filter->name();
 
-  const bool addingGroup = !result.group.isEmpty() && ( !mFoundResultsFilterGroups.contains( result.filter )
-                           || !mFoundResultsFilterGroups.value( result.filter ).contains( std::pair( result.group, result.groupScore ) ) );
+  const bool addingGroup = !result.group.isEmpty() && ( !mFoundResultsFilterGroups.contains( result.filter ) || !mFoundResultsFilterGroups.value( result.filter ).contains( std::pair( result.group, result.groupScore ) ) );
   if ( addingGroup )
   {
     if ( !mFoundResultsFilterGroups.contains( result.filter ) )
@@ -335,9 +332,6 @@ void QgsLocatorAutomaticModel::searchFinished()
 }
 
 
-
-
-
 //
 // QgsLocatorProxyModel
 //
@@ -357,32 +351,32 @@ bool QgsLocatorProxyModel::lessThan( const QModelIndex &left, const QModelIndex 
 
   // sort by filter priority
   const QAbstractItemModel *lSourceModel = sourceModel();
-  const int leftFilterPriority = lSourceModel->data( left, static_cast< int >( CustomRole::ResultFilterPriority ) ).toInt();
-  const int rightFilterPriority  = lSourceModel->data( right, static_cast< int >( CustomRole::ResultFilterPriority ) ).toInt();
+  const int leftFilterPriority = lSourceModel->data( left, static_cast<int>( CustomRole::ResultFilterPriority ) ).toInt();
+  const int rightFilterPriority = lSourceModel->data( right, static_cast<int>( CustomRole::ResultFilterPriority ) ).toInt();
   if ( leftFilterPriority != rightFilterPriority )
     return leftFilterPriority < rightFilterPriority;
 
   // sort by filter name
-  QString leftFilter = lSourceModel->data( left, static_cast< int >( CustomRole::ResultFilterName ) ).toString();
-  QString rightFilter = lSourceModel->data( right, static_cast< int >( CustomRole::ResultFilterName ) ).toString();
+  QString leftFilter = lSourceModel->data( left, static_cast<int>( CustomRole::ResultFilterName ) ).toString();
+  QString rightFilter = lSourceModel->data( right, static_cast<int>( CustomRole::ResultFilterName ) ).toString();
   if ( leftFilter != rightFilter )
     return QString::localeAwareCompare( leftFilter, rightFilter ) < 0;
 
   // make sure filter title appears before
-  const int leftTypeRole = lSourceModel->data( left, static_cast< int >( CustomRole::ResultType ) ).toInt();
-  const int rightTypeRole = lSourceModel->data( right, static_cast< int >( CustomRole::ResultType ) ).toInt();
+  const int leftTypeRole = lSourceModel->data( left, static_cast<int>( CustomRole::ResultType ) ).toInt();
+  const int rightTypeRole = lSourceModel->data( right, static_cast<int>( CustomRole::ResultType ) ).toInt();
   if ( leftTypeRole != rightTypeRole && ( leftTypeRole == 0 || rightTypeRole == 0 ) )
     return leftTypeRole < rightTypeRole;
 
   // sort by group score
-  const double leftGroupScoreRole = lSourceModel->data( left, static_cast< double >( CustomRole::ResultFilterGroupScore ) ).toDouble();
-  const double rightGroupScoreRole = lSourceModel->data( right, static_cast< double >( CustomRole::ResultFilterGroupScore ) ).toDouble();
+  const double leftGroupScoreRole = lSourceModel->data( left, static_cast<double>( CustomRole::ResultFilterGroupScore ) ).toDouble();
+  const double rightGroupScoreRole = lSourceModel->data( right, static_cast<double>( CustomRole::ResultFilterGroupScore ) ).toDouble();
   if ( leftGroupScoreRole != rightGroupScoreRole )
     return leftGroupScoreRole > rightGroupScoreRole;
 
   // sort by group name alphabetically
-  QString leftGroupTitle = lSourceModel->data( left, static_cast< int >( CustomRole::ResultFilterGroupTitle ) ).toString();
-  QString rightGroupTitle = lSourceModel->data( right, static_cast< int >( CustomRole::ResultFilterGroupTitle ) ).toString();
+  QString leftGroupTitle = lSourceModel->data( left, static_cast<int>( CustomRole::ResultFilterGroupTitle ) ).toString();
+  QString rightGroupTitle = lSourceModel->data( right, static_cast<int>( CustomRole::ResultFilterGroupTitle ) ).toString();
   if ( leftGroupTitle != rightGroupTitle )
     return QString::localeAwareCompare( leftGroupTitle, rightGroupTitle ) < 0;
 
@@ -391,8 +385,8 @@ bool QgsLocatorProxyModel::lessThan( const QModelIndex &left, const QModelIndex 
     return leftTypeRole < rightTypeRole;
 
   // sort results by score
-  const double leftScore = lSourceModel->data( left, static_cast< int >( CustomRole::ResultScore ) ).toDouble();
-  const double rightScore = lSourceModel->data( right, static_cast< int >( CustomRole::ResultScore ) ).toDouble();
+  const double leftScore = lSourceModel->data( left, static_cast<int>( CustomRole::ResultScore ) ).toDouble();
+  const double rightScore = lSourceModel->data( right, static_cast<int>( CustomRole::ResultScore ) ).toDouble();
   if ( !qgsDoubleNear( leftScore, rightScore ) )
     return leftScore > rightScore;
 
@@ -401,4 +395,3 @@ bool QgsLocatorProxyModel::lessThan( const QModelIndex &left, const QModelIndex 
   rightFilter = lSourceModel->data( right, Qt::DisplayRole ).toString();
   return QString::localeAwareCompare( leftFilter, rightFilter ) < 0;
 }
-

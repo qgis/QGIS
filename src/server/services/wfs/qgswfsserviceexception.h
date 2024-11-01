@@ -33,7 +33,6 @@ namespace QgsWfs
   class QgsServiceException : public QgsOgcServiceException
   {
     public:
-
       /**
        * Constructor for QgsServiceException.
        * \param code Error code name
@@ -56,7 +55,6 @@ namespace QgsWfs
                            int responseCode = 200 )
         : QgsOgcServiceException( code, message, locator, responseCode, QStringLiteral( "1.2.0" ) )
       {}
-
   };
 
   /**
@@ -64,10 +62,9 @@ namespace QgsWfs
    * \class  QgsWfs::QgsSecurityAccessException
    * \brief Exception thrown when data access violates access controls
    */
-  class QgsSecurityAccessException: public QgsServiceException
+  class QgsSecurityAccessException : public QgsServiceException
   {
     public:
-
       /**
        * Constructor for QgsSecurityAccessException (HTTP error code 403 with
        * Security code name).
@@ -84,10 +81,9 @@ namespace QgsWfs
    * \class  QgsWfs::QgsRequestNotWellFormedException
    * \brief Exception thrown in case of malformed request
    */
-  class QgsRequestNotWellFormedException: public QgsServiceException
+  class QgsRequestNotWellFormedException : public QgsServiceException
   {
     public:
-
       /**
        * Constructor for QgsRequestNotWellFormedException (HTTP error code 400
        * with RequestNotWellFormed code name).
@@ -104,10 +100,9 @@ namespace QgsWfs
    * \class  QgsWfs::QgsBadRequestException
    * \brief Exception thrown in case of malformed request
    */
-  class QgsBadRequestException: public QgsServiceException
+  class QgsBadRequestException : public QgsServiceException
   {
     public:
-
       /**
        * Constructor for QgsBadRequestException (HTTP error code 400).
        * \param code Error code name
@@ -121,4 +116,3 @@ namespace QgsWfs
 } // namespace QgsWfs
 
 #endif
-

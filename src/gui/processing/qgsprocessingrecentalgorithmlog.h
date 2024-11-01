@@ -38,7 +38,6 @@ class GUI_EXPORT QgsProcessingRecentAlgorithmLog : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingRecentAlgorithmLog, with the specified
      * \a parent object.
@@ -69,9 +68,7 @@ class GUI_EXPORT QgsProcessingRecentAlgorithmLog : public QObject
     void changed();
 
   private:
-
     QStringList mRecentAlgorithmIds;
-
 };
 
 ///@endcond

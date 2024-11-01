@@ -25,7 +25,6 @@ class QgsWmsDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT
   public:
-
     QString name() override { return QStringLiteral( "WMS" ); }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
@@ -40,7 +39,6 @@ class QgsWmsDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     static void newConnection( QgsDataItem *item );
     static void saveConnections();
     static void loadConnections( QgsDataItem *item );
-
 };
 
 
@@ -48,7 +46,6 @@ class QgsXyzDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT
   public:
-
     QString name() override { return QStringLiteral( "XYZ Tiles" ); }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
@@ -62,7 +59,6 @@ class QgsXyzDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     static void newConnection( QgsDataItem *item );
     static void saveXyzTilesServers();
     static void loadXyzTilesServers( QgsDataItem *item );
-
 };
 
 

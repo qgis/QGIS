@@ -105,7 +105,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Returns the destination QPainter for the render operation.
      * \see setPainter()
     */
-    QPainter *painter() {return mPainter;}
+    QPainter *painter() { return mPainter; }
 
 #ifndef SIP_RUN
 
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see setPreviewRenderPainter()
      * \since QGIS 3.34
     */
-    QPainter *previewRenderPainter() {return mPreviewRenderPainter;}
+    QPainter *previewRenderPainter() { return mPreviewRenderPainter; }
 
 #ifndef SIP_RUN
 
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      *
      * \see setCoordinateTransform()
      */
-    QgsCoordinateTransform coordinateTransform() const {return mCoordTransform;}
+    QgsCoordinateTransform coordinateTransform() const { return mCoordTransform; }
 
     /**
      * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
@@ -306,7 +306,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      *
      * \see setMapToPixel()
      */
-    const QgsMapToPixel &mapToPixel() const {return mMapToPixel;}
+    const QgsMapToPixel &mapToPixel() const { return mMapToPixel; }
 
     /**
      * Returns the scaling factor for the render to convert painter units
@@ -314,7 +314,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * per millimeter.
      * \see setScaleFactor()
      */
-    double scaleFactor() const {return mScaleFactor;}
+    double scaleFactor() const { return mScaleFactor; }
 
     /**
      * Returns the targeted DPI for rendering.
@@ -322,7 +322,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see setDpiTarget()
      * \since QGIS 3.20
      */
-    double dpiTarget() const {return mDpiTarget;}
+    double dpiTarget() const { return mDpiTarget; }
 
     /**
      * Returns TRUE if the rendering operation has been stopped and any ongoing
@@ -333,7 +333,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see setRenderingStopped()
      * \see feedback()
      */
-    bool renderingStopped() const {return mRenderingStopped;}
+    bool renderingStopped() const { return mRenderingStopped; }
 
     /**
      * Attach a \a feedback object that can be queried regularly during rendering to check
@@ -392,7 +392,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * for the rendered map, eg 1000.0 for a 1:1000 map render.
      * \see setRendererScale()
      */
-    double rendererScale() const {return mRendererScale;}
+    double rendererScale() const { return mRendererScale; }
 
 
     /**
@@ -416,14 +416,16 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Gets access to new labeling engine (may be NULLPTR).
      * \note Not available in Python bindings.
      */
-    QgsLabelingEngine *labelingEngine() const { return mLabelingEngine; } SIP_SKIP
+    QgsLabelingEngine *labelingEngine() const { return mLabelingEngine; }
+    SIP_SKIP
 
     /**
      * Returns the associated label sink, or NULLPTR if not set.
      * \note Not available in Python bindings.
      * \since QGIS 3.24
      */
-    QgsLabelSink *labelSink() const { return mLabelSink; } SIP_SKIP
+    QgsLabelSink *labelSink() const { return mLabelSink; }
+    SIP_SKIP
 
     /**
      * Returns the color to use when rendering selected features.
@@ -460,7 +462,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      *
      * \see mapToPixel()
      */
-    void setMapToPixel( const QgsMapToPixel &mtp ) {mMapToPixel = mtp;}
+    void setMapToPixel( const QgsMapToPixel &mtp ) { mMapToPixel = mtp; }
 
     /**
      * When rendering a map layer, calling this method sets the "clipping"
@@ -474,7 +476,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see setExtent()
      * \see setMapExtent()
      */
-    void setExtent( const QgsRectangle &extent ) {mExtent = extent;}
+    void setExtent( const QgsRectangle &extent ) { mExtent = extent; }
 
     /**
      * Sets the original \a extent of the map being rendered.
@@ -505,13 +507,13 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see feedback()
      * \see setFeedback()
      */
-    void setRenderingStopped( bool stopped ) {mRenderingStopped = stopped;}
+    void setRenderingStopped( bool stopped ) { mRenderingStopped = stopped; }
 
     /**
      * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
      * Will be used to convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
      */
-    void setDistanceArea( const QgsDistanceArea &distanceArea ) {mDistanceArea = distanceArea ;}
+    void setDistanceArea( const QgsDistanceArea &distanceArea ) { mDistanceArea = distanceArea; }
 
     /**
      * Sets the scaling factor for the render to convert painter units
@@ -519,7 +521,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * per millimeter.
      * \see scaleFactor()
      */
-    void setScaleFactor( double factor ) {mScaleFactor = factor;}
+    void setScaleFactor( double factor ) { mScaleFactor = factor; }
 
     /**
      * Sets the targeted \a dpi for rendering.
@@ -527,14 +529,14 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see dpiTarget()
      * \since QGIS 3.20
      */
-    void setDpiTarget( double dpi ) {mDpiTarget = dpi;}
+    void setDpiTarget( double dpi ) { mDpiTarget = dpi; }
 
     /**
      * Sets the renderer map scale. This should match the desired scale denominator
      * for the rendered map, eg 1000.0 for a 1:1000 map render.
      * \see rendererScale()
      */
-    void setRendererScale( double scale ) {mRendererScale = scale;}
+    void setRendererScale( double scale ) { mRendererScale = scale; }
 
     /**
      * Sets the symbology reference \a scale.
@@ -559,7 +561,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * of any rendering operations.
      * \see painter()
      */
-    void setPainter( QPainter *p ) {mPainter = p;}
+    void setPainter( QPainter *p ) { mPainter = p; }
 
     /**
      * Sets the destination \a painter for temporary in-progress preview renders.
@@ -594,7 +596,8 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Assigns the labeling engine
      * \note Not available in Python bindings.
      */
-    void setLabelingEngine( QgsLabelingEngine *engine ) { mLabelingEngine = engine; } SIP_SKIP
+    void setLabelingEngine( QgsLabelingEngine *engine ) { mLabelingEngine = engine; }
+    SIP_SKIP
 
     /**
      * Assigns the label sink which will take over responsibility for handling labels.
@@ -602,7 +605,8 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \note Not available in Python bindings.
      * \since QGIS 3.24
      */
-    void setLabelSink( QgsLabelSink *sink ) { mLabelSink = sink; } SIP_SKIP
+    void setLabelSink( QgsLabelSink *sink ) { mLabelSink = sink; }
+    SIP_SKIP
 
     /**
      * Sets the \a color to use when rendering selected features.
@@ -686,7 +690,8 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see setExpressionContext()
      * \note not available in Python bindings
      */
-    const QgsExpressionContext &expressionContext() const { return mExpressionContext; } SIP_SKIP
+    const QgsExpressionContext &expressionContext() const { return mExpressionContext; }
+    SIP_SKIP
 
     //! Returns pointer to the unsegmentized geometry
     const QgsAbstractGeometry *geometry() const { return mGeometry; }
@@ -929,7 +934,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      *
      * \since QGIS 3.16
      */
-    QList< QgsMapClippingRegion > clippingRegions() const;
+    QList<QgsMapClippingRegion> clippingRegions() const;
 
     /**
      * Returns the geometry to use to clip features at render time.
@@ -1135,7 +1140,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     * \see setRendererUsage()
     * \since QGIS 3.24
     */
-    Qgis::RendererUsage rendererUsage() const {return mRendererUsage;}
+    Qgis::RendererUsage rendererUsage() const { return mRendererUsage; }
 
     /**
     * Sets the renderer usage
@@ -1146,7 +1151,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     * \see rendererUsage()
     * \since QGIS 3.24
     */
-    void setRendererUsage( Qgis::RendererUsage usage ) {mRendererUsage = usage;}
+    void setRendererUsage( Qgis::RendererUsage usage ) { mRendererUsage = usage; }
 
     /**
      * Returns the frame rate of the map, for maps which are part of an animation.
@@ -1208,7 +1213,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     void setElevationMap( QgsElevationMap *map );
 
   private:
-
     Qgis::RenderContextFlags mFlags;
 
     //! Painter for rendering operations
@@ -1294,7 +1298,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     const QgsAbstractGeometry *mGeometry = nullptr;
 
     //! The feature filter provider
-    std::unique_ptr< QgsFeatureFilterProvider > mFeatureFilterProvider;
+    std::unique_ptr<QgsFeatureFilterProvider> mFeatureFilterProvider;
 
     double mSegmentationTolerance = M_PI_2 / 90;
 
@@ -1305,13 +1309,13 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     QgsPathResolver mPathResolver;
 
     Qgis::TextRenderFormat mTextRenderFormat = Qgis::TextRenderFormat::AlwaysOutlines;
-    QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
+    QList<QgsRenderedFeatureHandlerInterface *> mRenderedFeatureHandlers;
     bool mHasRenderedFeatureHandlers = false;
     QVariantMap mCustomProperties;
 
     QSet<QString> mDisabledSymbolLayers;
 
-    QList< QgsMapClippingRegion > mClippingRegions;
+    QList<QgsMapClippingRegion> mClippingRegions;
     QgsGeometry mFeatureClipGeometry;
 
     QPointF mTextureOrigin;
@@ -1328,7 +1332,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     long long mCurrentFrame = -1;
 
     //! Clip geometries to be applied to the symbol layer before rendering
-    QMap< QString, QVector<QgsGeometry> > mSymbolLayerClippingGeometries;
+    QMap<QString, QVector<QgsGeometry>> mSymbolLayerClippingGeometries;
 
     QgsMaskRenderSettings mMaskRenderSettings;
 
@@ -1355,7 +1359,6 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 class QgsScopedRenderContextPainterSwap
 {
   public:
-
     /**
      * Constructor for QgsScopedRenderContextPainterSwap.
      *
@@ -1390,7 +1393,6 @@ class QgsScopedRenderContextPainterSwap
     }
 
   private:
-
     QgsRenderContext &mContext;
     QPainter *mPreviousPainter = nullptr;
     bool mReleased = false;
@@ -1411,7 +1413,6 @@ class QgsScopedRenderContextPainterSwap
 class QgsScopedRenderContextScaleToMm
 {
   public:
-
     /**
      * Constructor for QgsScopedRenderContextScaleToMm.
      *
@@ -1436,7 +1437,6 @@ class QgsScopedRenderContextScaleToMm
     }
 
   private:
-
     QgsRenderContext &mContext;
 };
 
@@ -1455,7 +1455,6 @@ class QgsScopedRenderContextScaleToMm
 class QgsScopedRenderContextScaleToPixels
 {
   public:
-
     /**
      * Constructor for QgsScopedRenderContextScaleToPixels.
      *
@@ -1480,7 +1479,6 @@ class QgsScopedRenderContextScaleToPixels
     }
 
   private:
-
     QgsRenderContext &mContext;
 };
 
@@ -1499,7 +1497,6 @@ class QgsScopedRenderContextScaleToPixels
 class QgsScopedQPainterState
 {
   public:
-
     /**
      * Constructor for QgsScopedQPainterState.
      *
@@ -1520,7 +1517,6 @@ class QgsScopedQPainterState
     }
 
   private:
-
     QPainter *mPainter = nullptr;
 };
 
@@ -1538,7 +1534,6 @@ class QgsScopedQPainterState
 class QgsScopedRenderContextReferenceScaleOverride
 {
   public:
-
     /**
      * Constructor for QgsScopedRenderContextReferenceScaleOverride.
      *
@@ -1571,7 +1566,6 @@ class QgsScopedRenderContextReferenceScaleOverride
     }
 
   private:
-
     QgsRenderContext *mContext = nullptr;
     double mOriginalScale = 0;
 };

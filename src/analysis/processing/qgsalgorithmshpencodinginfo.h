@@ -30,9 +30,7 @@
  */
 class QgsShapefileEncodingInfoAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsShapefileEncodingInfoAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -52,7 +50,6 @@ class QgsShapefileEncodingInfoAlgorithm : public QgsProcessingAlgorithm
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     QString mCpgEncoding;
     QString mLdidEncoding;
 };

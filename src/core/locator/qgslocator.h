@@ -62,7 +62,6 @@ class CORE_EXPORT QgsLocator : public QObject
     Q_OBJECT
 
   public:
-
     //! List of core filters (i.e. not plugin filters)
     static const QList<QString> CORE_FILTERS;
 
@@ -101,7 +100,7 @@ class CORE_EXPORT QgsLocator : public QObject
      * \param prefix If prefix is not empty, the list returned corresponds to the filter with the given active prefix
      * \see prefixedFilters()
      */
-    QList< QgsLocatorFilter *> filters( const QString &prefix = QString() );
+    QList<QgsLocatorFilter *> filters( const QString &prefix = QString() );
 
     /**
      * Returns a map of prefix to filter, for all registered filters
@@ -153,7 +152,7 @@ class CORE_EXPORT QgsLocator : public QObject
      * This list is updated when preparing the search
      * \since QGIS 3.16
      */
-    QStringList completionList() const {return mAutocompletionList;}
+    QStringList completionList() const { return mAutocompletionList; }
 
 #ifndef SIP_RUN
     static inline QgsSettingsTreeNamedListNode *sTreeLocatorFilters = QgsSettingsTree::treeRoot()->createNamedListNode( QStringLiteral( "locator-filters" ) );
@@ -192,19 +191,15 @@ class CORE_EXPORT QgsLocator : public QObject
     void filterSentResult( QgsLocatorResult result );
 
   private:
-
     QgsFeedback *mFeedback = nullptr;
-    std::unique_ptr< QgsFeedback > mOwnedFeedback;
+    std::unique_ptr<QgsFeedback> mOwnedFeedback;
 
-    QList< QgsLocatorFilter * > mFilters;
-    QList< QThread * > mActiveThreads;
+    QList<QgsLocatorFilter *> mFilters;
+    QList<QThread *> mActiveThreads;
 
     QStringList mAutocompletionList;
 
     void cancelRunningQuery();
-
 };
 
 #endif // QGSLOCATOR_H
-
-

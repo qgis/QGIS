@@ -44,7 +44,6 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
     Q_PROPERTY( QgsVectorLayer *layer READ layer WRITE setLayer )
 
   public:
-
     // *INDENT-OFF*
 
     /**
@@ -53,19 +52,18 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
      * \note Prior to QGIS 3.36 this was available as QgsFieldModel::FieldRoles
      * \since QGIS 3.36
      */
-    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFieldModel, FieldRoles ) : int
-    {
-      FieldName SIP_MONKEYPATCH_COMPAT_NAME(FieldNameRole) = Qt::UserRole + 1,  //!< Return field name if index corresponds to a field
-      FieldIndex SIP_MONKEYPATCH_COMPAT_NAME(FieldIndexRole) = Qt::UserRole + 2, //!< Return field index if index corresponds to a field
-      Expression SIP_MONKEYPATCH_COMPAT_NAME(ExpressionRole) = Qt::UserRole + 3, //!< Return field name or expression
-      IsExpression SIP_MONKEYPATCH_COMPAT_NAME(IsExpressionRole) = Qt::UserRole + 4, //!< Return if index corresponds to an expression
-      ExpressionValidity SIP_MONKEYPATCH_COMPAT_NAME(ExpressionValidityRole) = Qt::UserRole + 5, //!< Return if expression is valid or not
-      FieldType SIP_MONKEYPATCH_COMPAT_NAME(FieldTypeRole) = Qt::UserRole + 6, //!< Return the field type (if a field, return QVariant if expression)
-      FieldOrigin SIP_MONKEYPATCH_COMPAT_NAME(FieldOriginRole) = Qt::UserRole + 7, //!< Return the field origin (if a field, returns QVariant if expression)
-      IsEmpty SIP_MONKEYPATCH_COMPAT_NAME(IsEmptyRole) = Qt::UserRole + 8, //!< Return if the index corresponds to the empty value
-      EditorWidgetType = Qt::UserRole + 9, //!< Editor widget type
-      JoinedFieldIsEditable = Qt::UserRole + 10, //!< TRUE if a joined field is editable (returns QVariant if not a joined field)
-      FieldIsWidgetEditable = Qt::UserRole + 11, //!< TRUE if a is editable from the widget
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsFieldModel, FieldRoles ) : int {
+      FieldName SIP_MONKEYPATCH_COMPAT_NAME( FieldNameRole ) = Qt::UserRole + 1,                   //!< Return field name if index corresponds to a field
+      FieldIndex SIP_MONKEYPATCH_COMPAT_NAME( FieldIndexRole ) = Qt::UserRole + 2,                 //!< Return field index if index corresponds to a field
+      Expression SIP_MONKEYPATCH_COMPAT_NAME( ExpressionRole ) = Qt::UserRole + 3,                 //!< Return field name or expression
+      IsExpression SIP_MONKEYPATCH_COMPAT_NAME( IsExpressionRole ) = Qt::UserRole + 4,             //!< Return if index corresponds to an expression
+      ExpressionValidity SIP_MONKEYPATCH_COMPAT_NAME( ExpressionValidityRole ) = Qt::UserRole + 5, //!< Return if expression is valid or not
+      FieldType SIP_MONKEYPATCH_COMPAT_NAME( FieldTypeRole ) = Qt::UserRole + 6,                   //!< Return the field type (if a field, return QVariant if expression)
+      FieldOrigin SIP_MONKEYPATCH_COMPAT_NAME( FieldOriginRole ) = Qt::UserRole + 7,               //!< Return the field origin (if a field, returns QVariant if expression)
+      IsEmpty SIP_MONKEYPATCH_COMPAT_NAME( IsEmptyRole ) = Qt::UserRole + 8,                       //!< Return if the index corresponds to the empty value
+      EditorWidgetType = Qt::UserRole + 9,                                                         //!< Editor widget type
+      JoinedFieldIsEditable = Qt::UserRole + 10,                                                   //!< TRUE if a joined field is editable (returns QVariant if not a joined field)
+      FieldIsWidgetEditable = Qt::UserRole + 11,                                                   //!< TRUE if a is editable from the widget
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*

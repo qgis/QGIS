@@ -41,12 +41,10 @@ template<class T> class QgsSettingsEntryEnumFlag;
  */
 class CORE_EXPORT QgsSensorThingsProviderConnection : public QgsAbstractProviderConnection
 {
-
   public:
-
     ///@cond PRIVATE
     static inline QgsSettingsTreeNamedListNode *sTreeSensorThingsConnections = QgsSettingsTree::sTreeConnections->createNamedListNode(
-          QStringLiteral( "sensorthings" ), Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+      QStringLiteral( "sensorthings" ), Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryVariantMap *settingsHeaders;
@@ -78,16 +76,16 @@ class CORE_EXPORT QgsSensorThingsProviderConnection : public QgsAbstractProvider
     */
     struct Data
     {
-      //! Source URI
-      QString url;
-      //! Authentication configuration id
-      QString authCfg;
-      //! HTTP Basic username
-      QString username;
-      //! HTTP Basic password
-      QString password;
-      //! HTTP headers
-      QgsHttpHeaders httpHeaders;
+        //! Source URI
+        QString url;
+        //! Authentication configuration id
+        QString authCfg;
+        //! HTTP Basic username
+        QString username;
+        //! HTTP Basic password
+        QString password;
+        //! HTTP headers
+        QgsHttpHeaders httpHeaders;
     };
 
     /**

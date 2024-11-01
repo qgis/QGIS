@@ -65,8 +65,8 @@ void QgsPageSizeRegistry::add( const QgsPageSize &size )
 
 QList<QgsPageSize> QgsPageSizeRegistry::entries() const
 {
-  QList< QgsPageSize > result;
-  QList< QgsPageSize >::const_iterator it = mPageSizes.constBegin();
+  QList<QgsPageSize> result;
+  QList<QgsPageSize>::const_iterator it = mPageSizes.constBegin();
   for ( ; it != mPageSizes.constEnd(); ++it )
   {
     result.push_back( *it );
@@ -76,8 +76,8 @@ QList<QgsPageSize> QgsPageSizeRegistry::entries() const
 
 QList<QgsPageSize> QgsPageSizeRegistry::find( const QString &name ) const
 {
-  QList< QgsPageSize > result;
-  QList< QgsPageSize >::const_iterator it = mPageSizes.constBegin();
+  QList<QgsPageSize> result;
+  QList<QgsPageSize>::const_iterator it = mPageSizes.constBegin();
   for ( ; it != mPageSizes.constEnd(); ++it )
   {
     if ( ( *it ).name.compare( name, Qt::CaseInsensitive ) == 0 )
@@ -110,7 +110,7 @@ QString QgsPageSizeRegistry::find( const QgsLayoutSize &size ) const
 
 bool QgsPageSizeRegistry::decodePageSize( const QString &pageSizeName, QgsPageSize &pageSize ) const
 {
-  const QList< QgsPageSize > matches = find( pageSizeName.trimmed() );
+  const QList<QgsPageSize> matches = find( pageSizeName.trimmed() );
   if ( matches.length() > 0 )
   {
     pageSize = matches.at( 0 );
@@ -136,9 +136,8 @@ QgsPageSize::QgsPageSize( const QString &pageName, const QgsLayoutSize &pageSize
 }
 
 QgsPageSize::QgsPageSize( const QgsLayoutSize &pageSize )
-  :  size( pageSize )
+  : size( pageSize )
 {
-
 }
 
 bool QgsPageSize::operator==( const QgsPageSize &other ) const
@@ -148,5 +147,5 @@ bool QgsPageSize::operator==( const QgsPageSize &other ) const
 
 bool QgsPageSize::operator!=( const QgsPageSize &other ) const
 {
-  return ( ! operator==( other ) );
+  return ( !operator==( other ) );
 }

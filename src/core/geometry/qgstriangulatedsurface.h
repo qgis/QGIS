@@ -34,7 +34,7 @@ class QgsTriangle;
  *
  * \since QGIS 3.40
  */
-class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
+class CORE_EXPORT QgsTriangulatedSurface : public QgsPolyhedralSurface
 {
   public:
     QgsTriangulatedSurface();
@@ -45,7 +45,7 @@ class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
   private:
     bool fuzzyHelper( const QgsAbstractGeometry &other, double epsilon, bool useDistance ) const
     {
-      const QgsTriangulatedSurface *otherTriangulatedSurface = qgsgeometry_cast< const QgsTriangulatedSurface * >( &other );
+      const QgsTriangulatedSurface *otherTriangulatedSurface = qgsgeometry_cast<const QgsTriangulatedSurface *>( &other );
       if ( !otherTriangulatedSurface )
         return false;
 
@@ -58,20 +58,17 @@ class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
 
       for ( int i = 0; i < mPatches.count(); ++i )
       {
-        if ( ( !mPatches.at( i ) && otherTriangulatedSurface->mPatches.at( i ) ) ||
-             ( mPatches.at( i ) && !otherTriangulatedSurface->mPatches.at( i ) ) )
+        if ( ( !mPatches.at( i ) && otherTriangulatedSurface->mPatches.at( i ) ) || ( mPatches.at( i ) && !otherTriangulatedSurface->mPatches.at( i ) ) )
           return false;
 
         if ( useDistance )
         {
-          if ( mPatches.at( i ) && otherTriangulatedSurface->mPatches.at( i ) &&
-               !( *mPatches.at( i ) ).fuzzyDistanceEqual( *otherTriangulatedSurface->mPatches.at( i ), epsilon ) )
+          if ( mPatches.at( i ) && otherTriangulatedSurface->mPatches.at( i ) && !( *mPatches.at( i ) ).fuzzyDistanceEqual( *otherTriangulatedSurface->mPatches.at( i ), epsilon ) )
             return false;
         }
         else
         {
-          if ( mPatches.at( i ) && otherTriangulatedSurface->mPatches.at( i ) &&
-               !( *mPatches.at( i ) ).fuzzyEqual( *otherTriangulatedSurface->mPatches.at( i ), epsilon ) )
+          if ( mPatches.at( i ) && otherTriangulatedSurface->mPatches.at( i ) && !( *mPatches.at( i ) ).fuzzyEqual( *otherTriangulatedSurface->mPatches.at( i ), epsilon ) )
             return false;
         }
       }
@@ -149,8 +146,7 @@ class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
      * \throws IndexError if no polygon with the specified index exists.
      */
     SIP_PYOBJECT triangleN( int index ) SIP_TYPEHINT( QgsPolygon );
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numPatches() )
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->numPatches() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -194,7 +190,8 @@ class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString wkt = sipCpp->asWkt();
+        QString wkt
+      = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
       wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
     QString str = QStringLiteral( "<QgsTriangulatedSurface: %1>" ).arg( wkt );
@@ -202,9 +199,10 @@ class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
     % End
 #endif
 
-  protected:
+      protected :
 
-    int compareToSameClass( const QgsAbstractGeometry *other ) const final;
+      int
+      compareToSameClass( const QgsAbstractGeometry *other ) const final;
 };
 
 // clazy:excludeall=qstring-allocations

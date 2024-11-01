@@ -94,7 +94,7 @@ void QgsLegendPatchShapeWidget::saveShape()
   {
     const int res = QMessageBox::warning( this, tr( "Save Legend Patch Shape" ),
                                           tr( "A legend patch shape with the name '%1' already exists. Overwrite?" )
-                                          .arg( saveDlg.name() ),
+                                            .arg( saveDlg.name() ),
                                           QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
     {

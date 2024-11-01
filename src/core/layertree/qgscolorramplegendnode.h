@@ -35,7 +35,6 @@ class CORE_EXPORT QgsColorRampLegendNode : public QgsLayerTreeModelLegendNode
 
 
   public:
-
     /**
      * Constructor for QgsColorRampLegendNode.
      * \param nodeLayer layer node
@@ -111,7 +110,7 @@ class CORE_EXPORT QgsColorRampLegendNode : public QgsLayerTreeModelLegendNode
     QString labelForMinimum() const;
     QString labelForMaximum() const;
 
-    std::unique_ptr< QgsColorRamp > mRamp;
+    std::unique_ptr<QgsColorRamp> mRamp;
 
     mutable QPixmap mPixmap; // cached symbol preview
     QSize mIconSize;
@@ -122,7 +121,6 @@ class CORE_EXPORT QgsColorRampLegendNode : public QgsLayerTreeModelLegendNode
     QString mKey;
     QString mParentKey;
 };
-
 
 
 #endif // QGSCOLORRAMPLEGENDNODE_H

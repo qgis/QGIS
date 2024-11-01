@@ -41,7 +41,6 @@
  */
 class CORE_EXPORT QgsAbstractProviderConnection
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsAbstractDatabaseProviderConnection *>( sipCpp ) != NULL )
@@ -60,7 +59,6 @@ class CORE_EXPORT QgsAbstractProviderConnection
 #endif
 
   public:
-
     /**
      * Creates a new connection with \a name by reading its configuration from the settings.
      * If a connection with this name cannot be found, an empty connection will be returned.
@@ -113,10 +111,8 @@ class CORE_EXPORT QgsAbstractProviderConnection
     void setConfiguration( const QVariantMap &configuration );
 
   private:
-
     QString mUri;
     QVariantMap mConfiguration;
-
 };
 
 #endif // QGSABSTRACTPROVIDERCONNECTION_H

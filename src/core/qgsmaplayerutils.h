@@ -17,7 +17,7 @@
 #ifndef QGSMAPLAYERUTILS_H
 #define QGSMAPLAYERUTILS_H
 
-#define MAXIMUM_OPENSTREETMAP_TILES_FETCH  5000
+#define MAXIMUM_OPENSTREETMAP_TILES_FETCH 5000
 
 #include "qgis_sip.h"
 #include "qgis_core.h"
@@ -36,9 +36,7 @@ class QgsAbstractDatabaseProviderConnection;
 */
 class CORE_EXPORT QgsMapLayerUtils
 {
-
   public:
-
     /**
      * Returns the combined extent of a list of \a layers.
      *
@@ -80,7 +78,7 @@ class CORE_EXPORT QgsMapLayerUtils
      *
      * \since QGIS 3.26
      */
-    static QList< QgsMapLayer * > sortLayersByType( const QList< QgsMapLayer * > &layers, const QList< Qgis::LayerType > &order );
+    static QList<QgsMapLayer *> sortLayersByType( const QList<QgsMapLayer *> &layers, const QList<Qgis::LayerType> &order );
 
     /**
      * Launders a layer's name, converting it into a format which is general suitable for
@@ -102,9 +100,6 @@ class CORE_EXPORT QgsMapLayerUtils
      * \since QGIS 3.40
      */
     static bool isOpenStreetMapLayer( QgsMapLayer *layer );
-
 };
 
 #endif // QGSMAPLAYERUTILS_H
-
-

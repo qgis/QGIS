@@ -78,11 +78,10 @@ QString QgsTransaction::cleanupConnectionString( const QString &str )
 {
   QString res( str );
 
-  static const QStringList toRemove
-  {
-    { QStringLiteral( "|layername=" )},
-    { QStringLiteral( "|layerid=" )},
-    { QStringLiteral( "|subset=" )},
+  static const QStringList toRemove {
+    { QStringLiteral( "|layername=" ) },
+    { QStringLiteral( "|layerid=" ) },
+    { QStringLiteral( "|subset=" ) },
   };
 
   for ( const auto &strToRm : std::as_const( toRemove ) )
@@ -124,7 +123,7 @@ bool QgsTransaction::addLayer( QgsVectorLayer *layer, bool addLayersInEditMode )
   if ( !layer )
     return false;
 
-  if ( ! addLayersInEditMode
+  if ( !addLayersInEditMode
        && layer->isEditable() )
     return false;
 
@@ -139,8 +138,7 @@ bool QgsTransaction::addLayer( QgsVectorLayer *layer, bool addLayersInEditMode )
 
   if ( connectionString( layer->source() ) != mConnString )
   {
-    QgsDebugError( QStringLiteral( "Couldn't start transaction because connection string for layer %1 : '%2' does not match '%3'" ).arg(
-                     layer->id(), connectionString( layer->source() ), mConnString ) );
+    QgsDebugError( QStringLiteral( "Couldn't start transaction because connection string for layer %1 : '%2' does not match '%3'" ).arg( layer->id(), connectionString( layer->source() ), mConnString ) );
     return false;
   }
 

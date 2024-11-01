@@ -36,7 +36,6 @@ class QgsRenderContext;
 class CORE_EXPORT QgsMapUnitScale
 {
   public:
-
     /**
      * Constructor for QgsMapUnitScale
      * \param minScale minimum allowed scale, or 0.0 if no minimum scale set
@@ -95,6 +94,3 @@ class CORE_EXPORT QgsMapUnitScale
 
 
 #endif // QGSMAPUNITSCALE_H
-
-
-

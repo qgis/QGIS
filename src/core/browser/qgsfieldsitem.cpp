@@ -58,7 +58,6 @@ QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
 
 QgsFieldsItem::~QgsFieldsItem()
 {
-
 }
 
 QVector<QgsDataItem *> QgsFieldsItem::createChildren()
@@ -171,9 +170,7 @@ QIcon QgsFieldItem::icon()
 {
   // Check if this is a geometry column and show the right icon
   QgsFieldsItem *parentFields { static_cast<QgsFieldsItem *>( parent() ) };
-  if ( parentFields && parentFields->tableProperty() &&
-       parentFields->tableProperty()->geometryColumn() == mName &&
-       !parentFields->tableProperty()->geometryColumnTypes().isEmpty() )
+  if ( parentFields && parentFields->tableProperty() && parentFields->tableProperty()->geometryColumn() == mName && !parentFields->tableProperty()->geometryColumnTypes().isEmpty() )
   {
     if ( mField.typeName() == QLatin1String( "raster" ) )
     {
@@ -216,4 +213,3 @@ bool QgsFieldItem::equal( const QgsDataItem *other )
 
   return ( mPath == o->mPath && mName == o->mName && mField == o->mField && mField.comment() == o->mField.comment() );
 }
-

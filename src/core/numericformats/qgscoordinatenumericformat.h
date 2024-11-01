@@ -30,15 +30,14 @@ class CORE_EXPORT QgsGeographicCoordinateNumericFormat : public QgsBasicNumericF
     Q_GADGET
 
   public:
-
     /**
      * Angle format options.
      */
     enum class AngleFormat
     {
       DegreesMinutesSeconds, //!< Degrees, minutes and seconds, eg 30 degrees 45'30
-      DegreesMinutes, //!< Degrees and decimal minutes, eg 30 degrees 45.55'
-      DecimalDegrees, //!< Decimal degrees, eg 30.7555 degrees
+      DegreesMinutes,        //!< Degrees and decimal minutes, eg 30 degrees 45.55'
+      DecimalDegrees,        //!< Decimal degrees, eg 30.7555 degrees
     };
     Q_ENUM( AngleFormat )
 
@@ -117,7 +116,6 @@ class CORE_EXPORT QgsGeographicCoordinateNumericFormat : public QgsBasicNumericF
     void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context ) override;
 
   private:
-
     AngleFormat mAngleFormat = AngleFormat::DecimalDegrees;
     bool mShowLeadingZeros = false;
     bool mShowLeadingDegreeZeros = false;
@@ -136,7 +134,6 @@ class CORE_EXPORT QgsGeographicCoordinateNumericFormat : public QgsBasicNumericF
     QString formatLongitudeAsDegrees( double val, std::basic_stringstream<wchar_t> &ss, const QgsNumericFormatContext &context ) const;
 
     void trimTrailingZeros( QString &input, const QgsNumericFormatContext &context ) const;
-
 };
 
 #endif // QGSCOORDINATENUMERICFORMAT_H

@@ -234,7 +234,7 @@ void QgsVectorLayerJoinBuffer::updateFields( QgsFields &fields )
 {
   QString prefix;
 
-  QList< QgsVectorLayerJoinInfo>::const_iterator joinIt = mVectorJoins.constBegin();
+  QList<QgsVectorLayerJoinInfo>::const_iterator joinIt = mVectorJoins.constBegin();
   for ( int joinIdx = 0; joinIt != mVectorJoins.constEnd(); ++joinIt, ++joinIdx )
   {
     QgsVectorLayer *joinLayer = joinIt->joinLayer();
@@ -283,7 +283,7 @@ void QgsVectorLayerJoinBuffer::updateFields( QgsFields &fields )
 void QgsVectorLayerJoinBuffer::createJoinCaches()
 {
   QMutexLocker locker( &mMutex );
-  QList< QgsVectorLayerJoinInfo >::iterator joinIt = mVectorJoins.begin();
+  QList<QgsVectorLayerJoinInfo>::iterator joinIt = mVectorJoins.begin();
   for ( ; joinIt != mVectorJoins.end(); ++joinIt )
   {
     if ( joinIt->isUsingMemoryCache() && joinIt->cacheDirty )
@@ -296,7 +296,7 @@ void QgsVectorLayerJoinBuffer::writeXml( QDomNode &layer_node, QDomDocument &doc
 {
   QDomElement vectorJoinsElem = document.createElement( QStringLiteral( "vectorjoins" ) );
   layer_node.appendChild( vectorJoinsElem );
-  QList< QgsVectorLayerJoinInfo >::const_iterator joinIt = mVectorJoins.constBegin();
+  QList<QgsVectorLayerJoinInfo>::const_iterator joinIt = mVectorJoins.constBegin();
   for ( ; joinIt != mVectorJoins.constEnd(); ++joinIt )
   {
     if ( isAuxiliaryJoin( *joinIt ) )
@@ -389,7 +389,7 @@ void QgsVectorLayerJoinBuffer::resolveReferences( QgsProject *project )
   for ( QgsVectorJoinList::iterator it = mVectorJoins.begin(); it != mVectorJoins.end(); ++it )
   {
     if ( it->joinLayer() )
-      continue;  // already resolved
+      continue; // already resolved
 
     if ( QgsVectorLayer *joinedLayer = qobject_cast<QgsVectorLayer *>( project->mapLayer( it->joinLayerId() ) ) )
     {

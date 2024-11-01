@@ -34,7 +34,6 @@ class CORE_EXPORT QgsExifTools
     Q_GADGET
 
   public:
-
     /**
      * Returns a map object containing all exif tags stored in the image at \a imagePath.
      * \since QGIS 3.22
@@ -74,9 +73,8 @@ class CORE_EXPORT QgsExifTools
     class GeoTagDetails
     {
       public:
-
         GeoTagDetails()
-          : elevation( std::numeric_limits< double >::quiet_NaN() )
+          : elevation( std::numeric_limits<double>::quiet_NaN() )
         {
         }
 
@@ -108,7 +106,6 @@ class CORE_EXPORT QgsExifTools
      * \since QGIS 3.30
      */
     static bool tagImage( const QString &imagePath, const QString &tag, const QVariant &value );
-
 };
 
 #endif // QGSEXIFTOOLS_H

@@ -44,7 +44,6 @@ class CORE_EXPORT QgsDatabaseSchemaModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     // *INDENT-OFF*
 
     /**
@@ -53,9 +52,8 @@ class CORE_EXPORT QgsDatabaseSchemaModel : public QAbstractItemModel
      * \note Prior to QGIS 3.36 this was available as QgsDatabaseSchemaModel::Role
      * \since QGIS 3.36
      */
-    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDatabaseSchemaModel, Role ) : int
-    {
-      Empty SIP_MONKEYPATCH_COMPAT_NAME(RoleEmpty) = Qt::UserRole, //!< Entry is an empty entry
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDatabaseSchemaModel, Role ) : int {
+      Empty SIP_MONKEYPATCH_COMPAT_NAME( RoleEmpty ) = Qt::UserRole, //!< Entry is an empty entry
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -103,7 +101,7 @@ class CORE_EXPORT QgsDatabaseSchemaModel : public QAbstractItemModel
 
   private:
     void init();
-    std::unique_ptr< QgsAbstractDatabaseProviderConnection > mConnection;
+    std::unique_ptr<QgsAbstractDatabaseProviderConnection> mConnection;
     QStringList mSchemas;
     bool mAllowEmpty = false;
 };

@@ -153,7 +153,7 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
     {
       try
       {
-        mRotationInt = QgsBearingUtils:: bearingTrueNorth( mapSettings.destinationCrs(), mapSettings.transformContext(), context.extent().center() );
+        mRotationInt = QgsBearingUtils::bearingTrueNorth( mapSettings.destinationCrs(), mapSettings.transformContext(), context.extent().center() );
       }
       catch ( QgsException & )
       {
@@ -164,13 +164,11 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
 
     const double radiansDouble = mRotationInt * M_PI / 180.0;
     const int xShift = static_cast<int>( (
-                                           ( centerXDouble * std::cos( radiansDouble ) ) +
-                                           ( centerYDouble * std::sin( radiansDouble ) )
-                                         ) - centerXDouble );
+                                           ( centerXDouble * std::cos( radiansDouble ) ) + ( centerYDouble * std::sin( radiansDouble ) ) )
+                                         - centerXDouble );
     const int yShift = static_cast<int>( (
-                                           ( -centerXDouble * std::sin( radiansDouble ) ) +
-                                           ( centerYDouble * std::cos( radiansDouble ) )
-                                         ) - centerYDouble );
+                                           ( -centerXDouble * std::sin( radiansDouble ) ) + ( centerYDouble * std::cos( radiansDouble ) ) )
+                                         - centerYDouble );
     // need width/height of paint device
     QPaintDevice *device = context.painter()->device();
     const float deviceHeight = static_cast<float>( device->height() ) / context.devicePixelRatio();

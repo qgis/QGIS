@@ -47,12 +47,11 @@ class QgsSettingsEntryInteger;
 class CORE_EXPORT QgsNetworkRequestParameters
 {
   public:
-
     //! Custom request attributes
     enum RequestAttributes
     {
       AttributeInitiatorClass = QNetworkRequest::User + 3000, //!< Class name of original object which created the request
-      AttributeInitiatorRequestId, //!< Internal ID used by originator object to identify requests
+      AttributeInitiatorRequestId,                            //!< Internal ID used by originator object to identify requests
     };
 
     QgsNetworkRequestParameters() = default;
@@ -117,7 +116,6 @@ class CORE_EXPORT QgsNetworkRequestParameters
     QVariant initiatorRequestId() const { return mInitiatorRequestId; }
 
   private:
-
     QNetworkAccessManager::Operation mOperation;
     QNetworkRequest mRequest;
     QString mOriginatingThreadId;
@@ -161,9 +159,7 @@ class QgsNetworkAccessManager;
  */
 class CORE_EXPORT QgsSslErrorHandler
 {
-
   public:
-
     virtual ~QgsSslErrorHandler() = default;
 
     /**
@@ -177,7 +173,6 @@ class CORE_EXPORT QgsSslErrorHandler
      * to SSL errors, which is to abort the network request on any errors.
      */
     virtual void handleSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
-
 };
 
 /**
@@ -205,9 +200,7 @@ class CORE_EXPORT QgsSslErrorHandler
  */
 class CORE_EXPORT QgsNetworkAuthenticationHandler
 {
-
   public:
-
     virtual ~QgsNetworkAuthenticationHandler() = default;
 
     /**
@@ -233,7 +226,6 @@ class CORE_EXPORT QgsNetworkAuthenticationHandler
      * \since QGIS 3.20
      */
     virtual void handleAuthRequestCloseBrowser();
-
 };
 #endif
 
@@ -258,7 +250,6 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     Q_OBJECT
 
   public:
-
     /**
      * Returns a pointer to the active QgsNetworkAccessManager
      * for the current thread.
@@ -299,7 +290,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * \note Not available in Python bindings.
      * \since QGIS 3.6
      */
-    void setSslErrorHandler( std::unique_ptr< QgsSslErrorHandler > handler );
+    void setSslErrorHandler( std::unique_ptr<QgsSslErrorHandler> handler );
 
     /**
      * Sets the application network authentication \a handler, which is used to respond to network
@@ -317,7 +308,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * \note Not available in Python bindings.
      * \since QGIS 3.6
      */
-    void setAuthHandler( std::unique_ptr< QgsNetworkAuthenticationHandler > handler );
+    void setAuthHandler( std::unique_ptr<QgsNetworkAuthenticationHandler> handler );
 #endif
 
     /**
@@ -516,33 +507,35 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * \since QGIS 3.22
      */
 #ifndef SIP_RUN
-    static QString setRequestPreprocessor( const std::function< void( QNetworkRequest *request )> &processor );
+    static QString setRequestPreprocessor( const std::function<void( QNetworkRequest *request )> &processor );
 #else
     static QString setRequestPreprocessor( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
-    PyObject *s = 0;
+        PyObject *s
+      = 0;
     QString id;
     Py_XINCREF( a0 );
     Py_BEGIN_ALLOW_THREADS
-    id = QgsNetworkAccessManager::setRequestPreprocessor( [a0]( QNetworkRequest *arg )->QString
-    {
-      QString res;
-      SIP_BLOCK_THREADS
-      PyObject *s = sipCallMethod( NULL, a0, "D", arg, sipType_QNetworkRequest, NULL );
-      int state;
-      int sipIsError = 0;
-      QString *t1 = reinterpret_cast<QString *>( sipConvertToType( s, sipType_QString, 0, SIP_NOT_NONE, &state, &sipIsError ) );
-      if ( sipIsError == 0 )
-      {
-        res = QString( *t1 );
-      }
-      sipReleaseType( t1, sipType_QString, state );
-      SIP_UNBLOCK_THREADS
-      return res;
-    } );
+      id
+      = QgsNetworkAccessManager::setRequestPreprocessor( [a0]( QNetworkRequest *arg ) -> QString {
+          QString res;
+          SIP_BLOCK_THREADS
+          PyObject *s = sipCallMethod( NULL, a0, "D", arg, sipType_QNetworkRequest, NULL );
+          int state;
+          int sipIsError = 0;
+          QString *t1 = reinterpret_cast<QString *>( sipConvertToType( s, sipType_QString, 0, SIP_NOT_NONE, &state, &sipIsError ) );
+          if ( sipIsError == 0 )
+          {
+            res = QString( *t1 );
+          }
+          sipReleaseType( t1, sipType_QString, state );
+          SIP_UNBLOCK_THREADS
+          return res;
+        } );
     Py_END_ALLOW_THREADS
 
-    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+      s
+      = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     return s;
     % End
 #endif
@@ -560,9 +553,9 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 #ifndef SIP_RUN
     static bool removeRequestPreprocessor( const QString &id );
 #else
-    static void removeRequestPreprocessor( const QString &id );
-    % MethodCode
-    if ( !QgsNetworkAccessManager::removeRequestPreprocessor( *a0 ) )
+      static void
+      removeRequestPreprocessor( const QString &id );
+    % MethodCode if ( !QgsNetworkAccessManager::removeRequestPreprocessor( *a0 ) )
     {
       PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
@@ -582,23 +575,25 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      * \since QGIS 3.26
      */
 #ifndef SIP_RUN
-    static QString setReplyPreprocessor( const std::function<void ( const QNetworkRequest &, QNetworkReply * )> &processor );
+    static QString setReplyPreprocessor( const std::function<void( const QNetworkRequest &, QNetworkReply * )> &processor );
 #else
-    static QString setReplyPreprocessor( SIP_PYCALLABLE / AllowNone / );
+      static QString setReplyPreprocessor( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
-    PyObject *s = 0;
+        PyObject *s
+      = 0;
     QString id;
     Py_XINCREF( a0 );
     Py_BEGIN_ALLOW_THREADS
-    id = QgsNetworkAccessManager::setReplyPreprocessor( [a0]( const QNetworkRequest &request, QNetworkReply *reply )
-    {
-      SIP_BLOCK_THREADS
-      Py_XDECREF( sipCallMethod( NULL, a0, "ND", new QNetworkRequest( request ), sipType_QNetworkRequest, NULL, reply, sipType_QNetworkReply, NULL ) );
-      SIP_UNBLOCK_THREADS
-    } );
+      id
+      = QgsNetworkAccessManager::setReplyPreprocessor( [a0]( const QNetworkRequest &request, QNetworkReply *reply ) {
+          SIP_BLOCK_THREADS
+          Py_XDECREF( sipCallMethod( NULL, a0, "ND", new QNetworkRequest( request ), sipType_QNetworkRequest, NULL, reply, sipType_QNetworkReply, NULL ) );
+          SIP_UNBLOCK_THREADS
+        } );
 
     Py_END_ALLOW_THREADS
-    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+      s
+      = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
     return s;
     % End
 #endif
@@ -616,9 +611,9 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 #ifndef SIP_RUN
     static bool removeReplyPreprocessor( const QString &id );
 #else
-    static void removeReplyPreprocessor( const QString &id );
-    % MethodCode
-    if ( !QgsNetworkAccessManager::removeReplyPreprocessor( *a0 ) )
+      static void
+      removeReplyPreprocessor( const QString &id );
+    % MethodCode if ( !QgsNetworkAccessManager::removeReplyPreprocessor( *a0 ) )
     {
       PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
@@ -796,7 +791,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     void requestEncounteredSslErrors( int requestId, const QList<QSslError> &errors );
 
 #ifndef SIP_RUN
-///@cond PRIVATE
+    ///@cond PRIVATE
     // these signals are for internal use only - it's not safe to connect by external code
     void sslErrorsOccurred( QNetworkReply *, const QList<QSslError> &errors );
     void sslErrorsHandled( QNetworkReply *reply );
@@ -816,7 +811,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     void requestTimedOut( QNetworkReply *reply );
 
 #ifndef SIP_RUN
-///@cond PRIVATE
+    ///@cond PRIVATE
     // these signals are for internal use only - it's not safe to connect by external code
     void authRequestOccurred( QNetworkReply *, QAuthenticator *auth );
     void authRequestHandled( QNetworkReply *reply );
@@ -877,12 +872,12 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     bool mCacheDisabled = false;
     static QgsNetworkAccessManager *sMainNAM;
     // ssl error handler, will be set for main thread ONLY
-    std::unique_ptr< QgsSslErrorHandler > mSslErrorHandler;
+    std::unique_ptr<QgsSslErrorHandler> mSslErrorHandler;
     // Used by worker threads to wait for ssl error handler run in main thread
     QSemaphore mSslErrorHandlerSemaphore;
 
     // auth request handler, will be set for main thread ONLY
-    std::unique_ptr< QgsNetworkAuthenticationHandler > mAuthHandler;
+    std::unique_ptr<QgsNetworkAuthenticationHandler> mAuthHandler;
     // Used by worker threads to wait for authentication handler run in main thread
     QSemaphore mAuthRequestHandlerSemaphore;
 

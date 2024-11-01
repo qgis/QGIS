@@ -28,12 +28,11 @@
  *
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsSingleItemModel: public QAbstractItemModel
+class CORE_EXPORT QgsSingleItemModel : public QAbstractItemModel
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSingleItemModel with the specified \a parent object and display \a text.
      *
@@ -43,7 +42,7 @@ class CORE_EXPORT QgsSingleItemModel: public QAbstractItemModel
      * Custom \a flags can also be specified for the item.
      */
     explicit QgsSingleItemModel( QObject *parent SIP_TRANSFERTHIS = nullptr, const QString &text = QString(),
-                                 const QMap< int, QVariant > &data = QMap< int, QVariant >(), Qt::ItemFlags flags = Qt::NoItemFlags );
+                                 const QMap<int, QVariant> &data = QMap<int, QVariant>(), Qt::ItemFlags flags = Qt::NoItemFlags );
 
     /**
      * Constructor for a multi-column QgsSingleItemModel with the specified \a parent object.
@@ -54,7 +53,7 @@ class CORE_EXPORT QgsSingleItemModel: public QAbstractItemModel
      * Custom \a flags can also be specified for the item.
      */
     explicit QgsSingleItemModel( QObject *parent SIP_TRANSFERTHIS,
-                                 const QList< QMap< int, QVariant > > &columnData,
+                                 const QList<QMap<int, QVariant>> &columnData,
                                  Qt::ItemFlags flags = Qt::NoItemFlags );
 
     QVariant data( const QModelIndex &index, int role ) const override;
@@ -66,10 +65,9 @@ class CORE_EXPORT QgsSingleItemModel: public QAbstractItemModel
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
   private:
-
     QString mText;
-    QMap< int, QVariant > mData;
-    QList< QMap< int, QVariant > > mColumnData;
+    QMap<int, QVariant> mData;
+    QList<QMap<int, QVariant>> mColumnData;
     Qt::ItemFlags mFlags = Qt::NoItemFlags;
 };
 

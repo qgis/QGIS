@@ -162,7 +162,7 @@ void QgsNewNameDialog::nameChanged()
   if ( !conflicts.isEmpty() )
   {
     const QString warning = !mConflictingNameWarning.isEmpty() ? mConflictingNameWarning
-                            : tr( "%n Name(s) %1 exists", nullptr, conflicts.size() ).arg( conflicts.join( QLatin1String( ", " ) ) );
+                                                               : tr( "%n Name(s) %1 exists", nullptr, conflicts.size() ).arg( conflicts.join( QLatin1String( ", " ) ) );
     mErrorLabel->setText( highlightText( warning ) );
     if ( mOverwriteEnabled )
     {
@@ -188,7 +188,6 @@ QStringList QgsNewNameDialog::fullNames( const QString &name, const QStringList 
   for ( const QString &ext : constExtensions )
   {
     list << name + ext;
-
   }
   if ( list.isEmpty() )
   {

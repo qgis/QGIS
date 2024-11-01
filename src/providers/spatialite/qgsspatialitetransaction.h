@@ -46,7 +46,6 @@ class QgsSpatiaLiteTransaction : public QgsTransaction
     sqlite3 *sqliteHandle() const;
 
   private:
-
     QgsSqliteHandle *mSharedHandle = nullptr;
     int mSavepointId;
 

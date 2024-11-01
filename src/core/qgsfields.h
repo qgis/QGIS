@@ -51,28 +51,27 @@ class CORE_EXPORT QgsFields
     Q_PROPERTY( QStringList names READ names )
 
   public:
-
 #ifndef SIP_RUN
 
     typedef struct Field
     {
-      Field()
-      {}
+        Field()
+        {}
 
-      Field( const QgsField &f, Qgis::FieldOrigin o, int oi )
-        : field( f )
-        , origin( o )
-        , originIndex( oi )
-      {}
+        Field( const QgsField &f, Qgis::FieldOrigin o, int oi )
+          : field( f )
+          , origin( o )
+          , originIndex( oi )
+        {}
 
-      // TODO c++20 - replace with = default
+        // TODO c++20 - replace with = default
 
-      bool operator==( const Field &other ) const { return field == other.field && origin == other.origin && originIndex == other.originIndex; }
-      bool operator!=( const Field &other ) const { return !( *this == other ); }
+        bool operator==( const Field &other ) const { return field == other.field && origin == other.origin && originIndex == other.originIndex; }
+        bool operator!=( const Field &other ) const { return !( *this == other ); }
 
-      QgsField field;      //!< Field
-      Qgis::FieldOrigin origin = Qgis::FieldOrigin::Unknown ;  //!< Origin of the field
-      int originIndex = -1 ;     //!< Index specific to the origin
+        QgsField field;                                        //!< Field
+        Qgis::FieldOrigin origin = Qgis::FieldOrigin::Unknown; //!< Origin of the field
+        int originIndex = -1;                                  //!< Index specific to the origin
     } Field;
 
 #endif
@@ -83,14 +82,14 @@ class CORE_EXPORT QgsFields
     QgsFields() SIP_HOLDGIL;
 
     QgsFields( const QgsFields &other ) SIP_HOLDGIL;
-    QgsFields &operator =( const QgsFields &other ) SIP_SKIP;
+    QgsFields &operator=( const QgsFields &other ) SIP_SKIP;
 
     /**
      * Construct QgsFields from a list of \a fields.
      *
      * \since QGIS 3.40
      */
-    QgsFields( const QList< QgsField > &fields ) SIP_HOLDGIL;
+    QgsFields( const QList<QgsField> &fields ) SIP_HOLDGIL;
 
     virtual ~QgsFields();
 
@@ -117,7 +116,7 @@ class CORE_EXPORT QgsFields
      *
      * \since QGIS 3.40
      */
-    bool append( const QList< QgsField > &fields, Qgis::FieldOrigin origin = Qgis::FieldOrigin::Provider ) SIP_HOLDGIL;
+    bool append( const QList<QgsField> &fields, Qgis::FieldOrigin origin = Qgis::FieldOrigin::Provider ) SIP_HOLDGIL;
 
     /**
      * Appends another set of \a fields to these fields.
@@ -151,8 +150,7 @@ class CORE_EXPORT QgsFields
      * \throws KeyError if no field with the specified index exists
      */
     void remove( int fieldIdx ) SIP_HOLDGIL;
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->count() )
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->count() )
     {
       PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -176,18 +174,22 @@ class CORE_EXPORT QgsFields
 #ifdef SIP_RUN
     int __len__() const SIP_HOLDGIL;
     % MethodCode
-    sipRes = sipCpp->count();
+        sipRes
+      = sipCpp->count();
     % End
 
-    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
-    int __bool__() const SIP_HOLDGIL;
+      //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
+      int
+      __bool__() const SIP_HOLDGIL;
     % MethodCode
-    sipRes = true;
+        sipRes
+      = true;
     % End
 #endif
 
-    //! Returns number of items
-    int size() const SIP_HOLDGIL;
+      //! Returns number of items
+      int
+      size() const SIP_HOLDGIL;
 
     /**
      * Returns a list with field names
@@ -210,7 +212,8 @@ class CORE_EXPORT QgsFields
     QgsField &operator[]( int i ) SIP_HOLDGIL SIP_FACTORY;
 #ifdef SIP_RUN
     % MethodCode
-    SIP_SSIZE_T idx = sipConvertFromSequenceIndex( a0, sipCpp->count() );
+        SIP_SSIZE_T idx
+      = sipConvertFromSequenceIndex( a0, sipCpp->count() );
     if ( idx < 0 )
       sipIsErr = 1;
     else
@@ -219,9 +222,9 @@ class CORE_EXPORT QgsFields
 #endif
 
 #ifdef SIP_RUN
-    SIP_PYOBJECT __getitem__( const QString &name ) const SIP_HOLDGIL SIP_TYPEHINT( QgsField );
-    % MethodCode
-    const int fieldIdx = sipCpp->lookupField( *a0 );
+        SIP_PYOBJECT
+      __getitem__( const QString &name ) const SIP_HOLDGIL SIP_TYPEHINT( QgsField );
+    % MethodCode const int fieldIdx = sipCpp->lookupField( *a0 );
     if ( fieldIdx == -1 )
     {
       PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
@@ -236,10 +239,11 @@ class CORE_EXPORT QgsFields
 
 #ifndef SIP_RUN
 
-    /**
+        /**
      * Returns the field at particular index (must be in range 0..N-1).
      */
-    QgsField at( int i ) const SIP_FACTORY;
+        QgsField
+      at( int i ) const SIP_FACTORY;
 #else
 
     /**
@@ -247,8 +251,7 @@ class CORE_EXPORT QgsFields
      * \throws KeyError if no field exists at the specified index
      */
     QgsField at( int i ) const SIP_HOLDGIL SIP_FACTORY;
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->count() )
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->count() )
     {
       PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -268,13 +271,13 @@ class CORE_EXPORT QgsFields
     QgsField field( int fieldIdx ) const SIP_FACTORY;
 #else
 
-    /**
+        /**
      * Returns the field at particular index (must be in range 0..N-1).
      * \throws KeyError if no field exists at the specified index
      */
-    QgsField field( int fieldIdx ) const SIP_HOLDGIL SIP_FACTORY;
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->count() )
+        QgsField
+      field( int fieldIdx ) const SIP_HOLDGIL SIP_FACTORY;
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->count() )
     {
       PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -294,13 +297,13 @@ class CORE_EXPORT QgsFields
     QgsField field( const QString &name ) const SIP_FACTORY;
 #else
 
-    /**
+        /**
      * Returns the field with matching name.
      * \throws KeyError if no matching field was found.
      */
-    QgsField field( const QString &name ) const SIP_HOLDGIL SIP_FACTORY;
-    % MethodCode
-    int fieldIdx = sipCpp->indexFromName( *a0 );
+        QgsField
+      field( const QString &name ) const SIP_HOLDGIL SIP_FACTORY;
+    % MethodCode int fieldIdx = sipCpp->indexFromName( *a0 );
     if ( fieldIdx == -1 )
     {
       PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
@@ -321,14 +324,14 @@ class CORE_EXPORT QgsFields
     Qgis::FieldOrigin fieldOrigin( int fieldIdx ) const;
 #else
 
-    /**
+        /**
      * Returns the field's origin (value from an enumeration).
      *
      * \throws KeyError if no field exists at the specified index
      */
-    Qgis::FieldOrigin fieldOrigin( int fieldIdx ) const SIP_HOLDGIL;
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->count() )
+        Qgis::FieldOrigin
+      fieldOrigin( int fieldIdx ) const SIP_HOLDGIL;
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->count() )
     {
       PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -352,7 +355,7 @@ class CORE_EXPORT QgsFields
     int fieldOriginIndex( int fieldIdx ) const;
 #else
 
-    /**
+      /**
      * Returns the field's origin index (its meaning is specific to each type of origin).
      *
      * - Qgis::FieldOrigin::Provider: The field's originIndex is the index in provider's fields.
@@ -361,9 +364,9 @@ class CORE_EXPORT QgsFields
      *
      * \throws KeyError if no field exists at the specified index
      */
-    int fieldOriginIndex( int fieldIdx ) const SIP_HOLDGIL;
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->count() )
+      int
+      fieldOriginIndex( int fieldIdx ) const SIP_HOLDGIL;
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->count() )
     {
       PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -416,7 +419,7 @@ class CORE_EXPORT QgsFields
      * \returns The field index if found or -1 in case it cannot be found.
      * \see indexFromName For a more performant and precise but less tolerant alternative.
      */
-    Q_INVOKABLE  int lookupField( const QString &fieldName ) const SIP_HOLDGIL;
+    Q_INVOKABLE int lookupField( const QString &fieldName ) const SIP_HOLDGIL;
 
     /**
      * Utility function to get list of attribute indexes
@@ -427,7 +430,7 @@ class CORE_EXPORT QgsFields
     QList<QgsField> toList() const SIP_HOLDGIL;
 
     bool operator==( const QgsFields &other ) const SIP_HOLDGIL;
-    bool operator!=( const QgsFields &other ) const  SIP_HOLDGIL { return !( *this == other ); }
+    bool operator!=( const QgsFields &other ) const SIP_HOLDGIL { return !( *this == other ); }
 
 #ifndef SIP_RUN
 
@@ -446,8 +449,7 @@ class CORE_EXPORT QgsFields
      * \throws KeyError if no field exists at the specified index
      */
     QIcon iconForField( int fieldIdx, bool considerOrigin = false ) const SIP_FACTORY;
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->count() )
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->count() )
     {
       PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -489,8 +491,7 @@ class CORE_EXPORT QgsFields
 #ifdef SIP_RUN
 
     void __setitem__( int key, const QgsField &field ) SIP_HOLDGIL;
-    % MethodCode
-    int idx = ( int )sipConvertFromSequenceIndex( a0, sipCpp->count() );
+    % MethodCode int idx = ( int ) sipConvertFromSequenceIndex( a0, sipCpp->count() );
     if ( idx < 0 )
       sipIsErr = 1;
     else
@@ -501,15 +502,15 @@ class CORE_EXPORT QgsFields
 
 #ifndef SIP_RUN
 
-    ///@cond PRIVATE
+      ///@cond PRIVATE
 
-    class const_iterator;
+      class const_iterator;
 
     class iterator
     {
       public:
         QgsFields::Field *d = nullptr;
-        typedef std::random_access_iterator_tag  iterator_category;
+        typedef std::random_access_iterator_tag iterator_category;
         typedef qptrdiff difference_type;
 
         inline iterator()
@@ -522,19 +523,45 @@ class CORE_EXPORT QgsFields
         inline QgsField &operator*() const { return d->field; }
         inline QgsField *operator->() const { return &d->field; }
         inline QgsField &operator[]( difference_type j ) const { return d[j].field; }
-        inline bool operator==( const iterator &o ) const noexcept { return d == o.d; } // clazy:exclude=function-args-by-value
-        inline bool operator!=( const iterator &o ) const noexcept { return d != o.d; } // clazy:exclude=function-args-by-value
-        inline bool operator<( const iterator &other ) const noexcept { return d < other.d; } // clazy:exclude=function-args-by-value
+        inline bool operator==( const iterator &o ) const noexcept { return d == o.d; }         // clazy:exclude=function-args-by-value
+        inline bool operator!=( const iterator &o ) const noexcept { return d != o.d; }         // clazy:exclude=function-args-by-value
+        inline bool operator<( const iterator &other ) const noexcept { return d < other.d; }   // clazy:exclude=function-args-by-value
         inline bool operator<=( const iterator &other ) const noexcept { return d <= other.d; } // clazy:exclude=function-args-by-value
-        inline bool operator>( const iterator &other ) const noexcept { return d > other.d; } // clazy:exclude=function-args-by-value
+        inline bool operator>( const iterator &other ) const noexcept { return d > other.d; }   // clazy:exclude=function-args-by-value
         inline bool operator>=( const iterator &other ) const noexcept { return d >= other.d; } // clazy:exclude=function-args-by-value
 
-        inline iterator &operator++() { ++d; return *this; }
-        inline iterator operator++( int ) { QgsFields::Field *n = d; ++d; return n; }
-        inline iterator &operator--() { d--; return *this; }
-        inline iterator operator--( int ) { QgsFields::Field *n = d; d--; return n; }
-        inline iterator &operator+=( difference_type j ) { d += j; return *this; }
-        inline iterator &operator-=( difference_type j ) { d -= j; return *this; }
+        inline iterator &operator++()
+        {
+          ++d;
+          return *this;
+        }
+        inline iterator operator++( int )
+        {
+          QgsFields::Field *n = d;
+          ++d;
+          return n;
+        }
+        inline iterator &operator--()
+        {
+          d--;
+          return *this;
+        }
+        inline iterator operator--( int )
+        {
+          QgsFields::Field *n = d;
+          d--;
+          return n;
+        }
+        inline iterator &operator+=( difference_type j )
+        {
+          d += j;
+          return *this;
+        }
+        inline iterator &operator-=( difference_type j )
+        {
+          d -= j;
+          return *this;
+        }
         inline iterator operator+( difference_type j ) const { return iterator( d + j ); }
         inline iterator operator-( difference_type j ) const { return iterator( d - j ); }
         inline int operator-( iterator j ) const { return int( d - j.d ); }
@@ -546,7 +573,7 @@ class CORE_EXPORT QgsFields
       public:
         const QgsFields::Field *d = nullptr;
 
-        typedef std::random_access_iterator_tag  iterator_category;
+        typedef std::random_access_iterator_tag iterator_category;
         typedef qptrdiff difference_type;
 
         inline const_iterator()
@@ -557,7 +584,8 @@ class CORE_EXPORT QgsFields
         inline const_iterator( const const_iterator &o )
           : d( o.d ) {}
         inline explicit const_iterator( const iterator &o ) // clazy:exclude=function-args-by-value
-          : d( o.d ) {}
+          : d( o.d )
+        {}
         inline const QgsField &operator*() const { return d->field; }
         inline const QgsField *operator->() const { return &d->field; }
         inline const QgsField &operator[]( difference_type j ) const noexcept { return d[j].field; }
@@ -567,17 +595,43 @@ class CORE_EXPORT QgsFields
         inline bool operator<=( const const_iterator &other ) const noexcept { return d <= other.d; }
         inline bool operator>( const const_iterator &other ) const noexcept { return d > other.d; }
         inline bool operator>=( const const_iterator &other ) const noexcept { return d >= other.d; }
-        inline const_iterator &operator++() { ++d; return *this; }
-        inline const_iterator operator++( int ) { const QgsFields::Field *n = d; ++d; return n; }
-        inline const_iterator &operator--() { d--; return *this; }
-        inline const_iterator operator--( int ) { const QgsFields::Field *n = d; --d; return n; }
-        inline const_iterator &operator+=( difference_type j ) { d += j; return *this; }
-        inline const_iterator &operator-=( difference_type j ) { d -= j; return *this; }
+        inline const_iterator &operator++()
+        {
+          ++d;
+          return *this;
+        }
+        inline const_iterator operator++( int )
+        {
+          const QgsFields::Field *n = d;
+          ++d;
+          return n;
+        }
+        inline const_iterator &operator--()
+        {
+          d--;
+          return *this;
+        }
+        inline const_iterator operator--( int )
+        {
+          const QgsFields::Field *n = d;
+          --d;
+          return n;
+        }
+        inline const_iterator &operator+=( difference_type j )
+        {
+          d += j;
+          return *this;
+        }
+        inline const_iterator &operator-=( difference_type j )
+        {
+          d -= j;
+          return *this;
+        }
         inline const_iterator operator+( difference_type j ) const { return const_iterator( d + j ); }
         inline const_iterator operator-( difference_type j ) const { return const_iterator( d - j ); }
         inline int operator-( const_iterator j ) const { return int( d - j.d ); } // clazy:exclude=function-args-by-ref
       private:
-        const_iterator &operator= ( const const_iterator & ) = delete;
+        const_iterator &operator=( const const_iterator & ) = delete;
     };
     friend class const_iterator;
     ///@endcond
@@ -629,9 +683,7 @@ class CORE_EXPORT QgsFields
 #endif
 
   private:
-
     QSharedDataPointer<QgsFieldsPrivate> d;
-
 };
 
 Q_DECLARE_METATYPE( QgsFields )

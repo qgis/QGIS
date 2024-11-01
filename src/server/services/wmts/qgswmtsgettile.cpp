@@ -81,7 +81,3 @@ namespace QgsWmts
   }
 
 } // namespace QgsWmts
-
-
-
-

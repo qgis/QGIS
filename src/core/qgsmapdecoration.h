@@ -32,9 +32,7 @@ class QgsRenderContext;
  */
 class CORE_EXPORT QgsMapDecoration
 {
-
   public:
-
     QgsMapDecoration() = default;
 
     virtual ~QgsMapDecoration() = default;
@@ -58,7 +56,6 @@ class CORE_EXPORT QgsMapDecoration
     virtual bool hasFixedMapPosition() const { return false; }
 
   protected:
-
     /**
      * Sets the map decoration display \a name.
      * \since QGIS 3.14
@@ -66,9 +63,7 @@ class CORE_EXPORT QgsMapDecoration
     void setDisplayName( const QString &name ) { mDisplayName = name; }
 
   private:
-
     QString mDisplayName;
-
 };
 
 #endif //QGSMAPDECORATION_H

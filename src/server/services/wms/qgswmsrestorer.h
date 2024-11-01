@@ -36,7 +36,6 @@ class QgsAbstractVectorLayerLabeling;
 class QgsLayerRestorer
 {
   public:
-
     /**
      * Constructor for QgsLayerRestorer.
      * \param layers List of layers to restore in their initial states
@@ -51,15 +50,14 @@ class QgsLayerRestorer
     ~QgsLayerRestorer();
 
   private:
-
     struct QgsLayerSettings
     {
-      QString name;
-      double mOpacity;
-      std::unique_ptr<QgsAbstractVectorLayerLabeling> mLabeling;
-      QString mNamedStyle;
-      QString mFilter;
-      QgsFeatureIds mSelectedFeatureIds;
+        QString name;
+        double mOpacity;
+        std::unique_ptr<QgsAbstractVectorLayerLabeling> mLabeling;
+        QString mNamedStyle;
+        QString mFilter;
+        QgsFeatureIds mSelectedFeatureIds;
     };
 
     std::map<QgsMapLayer *, QgsLayerSettings> mLayerSettings;
@@ -76,7 +74,6 @@ namespace QgsWms
   class QgsWmsRestorer
   {
     public:
-
       /**
        * Constructor for QgsWmsRestorer.
        * \param context The rendering context to restore in its initial state
@@ -86,9 +83,8 @@ namespace QgsWms
       ~QgsWmsRestorer() = default;
 
     private:
-
       QgsLayerRestorer mLayerRestorer;
   };
-};
+}; // namespace QgsWms
 
 #endif

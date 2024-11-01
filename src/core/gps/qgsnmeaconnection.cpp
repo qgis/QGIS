@@ -49,7 +49,7 @@ void QgsNmeaConnection::parseData()
 
   //print out the data as a test
   qint64 numBytes = 0;
-  if ( ! mSource->isSequential() ) //necessary because of a bug in QExtSerialPort   //SLM - bytesAvailable() works on Windows, so I reversed the logic (added ! ); this is what QIODevice docs say to do; the orig impl of win_qextserialport had an (unsigned int)-1 return on error - it should be (qint64)-1, which was fixed by ?
+  if ( !mSource->isSequential() ) //necessary because of a bug in QExtSerialPort   //SLM - bytesAvailable() works on Windows, so I reversed the logic (added ! ); this is what QIODevice docs say to do; the orig impl of win_qextserialport had an (unsigned int)-1 return on error - it should be (qint64)-1, which was fixed by ?
   {
     numBytes = mSource->size();
   }
@@ -175,7 +175,7 @@ void QgsNmeaConnection::processStringBuffer()
           mLastGPSInformation.satInfoComplete = true;
           QgsDebugMsgLevel( QStringLiteral( "unknown nmea sentence: %1" ).arg( substring ), 2 );
         }
-        emit nmeaSentenceReceived( substring );  // added to be able to save raw data
+        emit nmeaSentenceReceived( substring ); // added to be able to save raw data
       }
     }
     mStringBuffer.remove( 0, endSentenceIndex + 2 );
@@ -292,7 +292,7 @@ void QgsNmeaConnection::processRmcSentence( const char *data, int len )
     mLastGPSInformation.speed = KNOTS_TO_KMH * result.speed;
     if ( !std::isnan( result.direction ) )
       mLastGPSInformation.direction = result.direction;
-    mLastGPSInformation.status = result.status;  // A,V
+    mLastGPSInformation.status = result.status; // A,V
 
     const QDate date( result.utc.year + 1900, result.utc.mon + 1, result.utc.day );
     const QTime time( result.utc.hour, result.utc.min, result.utc.sec, result.utc.msec );
@@ -456,7 +456,6 @@ void QgsNmeaConnection::processGsvSentence( const char *data, int len )
         mLastGPSInformation.satellitesInView.append( satelliteInfo );
       }
     }
-
   }
 }
 
@@ -495,9 +494,9 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
     bool mixedConstellation = false;
     for ( int i = 0; i < NMEA_MAXSAT; i++ )
     {
-      if ( result.sat_prn[ i ] > 0 )
+      if ( result.sat_prn[i] > 0 )
       {
-        mLastGPSInformation.satPrn.append( result.sat_prn[ i ] );
+        mLastGPSInformation.satPrn.append( result.sat_prn[i] );
         mLastGPSInformation.satellitesUsed += 1;
 
         Qgis::GnssConstellation constellation = Qgis::GnssConstellation::Unknown;
@@ -530,15 +529,15 @@ void QgsNmeaConnection::processGsaSentence( const char *data, int len )
     switch ( result.fix_type )
     {
       case 1:
-        mLastGPSInformation.mConstellationFixStatus[ commonConstellation ] = Qgis::GpsFixStatus::NoFix;
+        mLastGPSInformation.mConstellationFixStatus[commonConstellation] = Qgis::GpsFixStatus::NoFix;
         break;
 
       case 2:
-        mLastGPSInformation.mConstellationFixStatus[ commonConstellation ] = Qgis::GpsFixStatus::Fix2D;
+        mLastGPSInformation.mConstellationFixStatus[commonConstellation] = Qgis::GpsFixStatus::Fix2D;
         break;
 
       case 3:
-        mLastGPSInformation.mConstellationFixStatus[ commonConstellation ] = Qgis::GpsFixStatus::Fix3D;
+        mLastGPSInformation.mConstellationFixStatus[commonConstellation] = Qgis::GpsFixStatus::Fix3D;
         break;
     }
   }

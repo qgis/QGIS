@@ -34,7 +34,6 @@
 class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessingParameterDefinition
 {
   public:
-
     /**
      * Constructor
      * \param name name of the parameter
@@ -44,10 +43,10 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetGroups : public QgsProcessing
      * \param optional whether the parameter is optional
      */
     QgsProcessingParameterMeshDatasetGroups( const QString &name,
-        const QString &description = QString(),
-        const QString &meshLayerParameterName = QString(),
-        QSet<int> supportedDataType = QSet<int>(),
-        bool optional = false );
+                                             const QString &description = QString(),
+                                             const QString &meshLayerParameterName = QString(),
+                                             QSet<int> supportedDataType = QSet<int>(),
+                                             bool optional = false );
 
     QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
     QString type() const override;
@@ -145,7 +144,6 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetGroups : public QgsProces
 class CORE_EXPORT QgsProcessingParameterMeshDatasetTime : public QgsProcessingParameterDefinition
 {
   public:
-
     /**
      * Constructor
      * \param name name of the parameter
@@ -218,7 +216,7 @@ class CORE_EXPORT QgsProcessingParameterMeshDatasetTime : public QgsProcessingPa
  * \ingroup core
  * \since QGIS 3.18
  */
-class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetTime: public QgsProcessingParameterType
+class CORE_EXPORT QgsProcessingParameterTypeMeshDatasetTime : public QgsProcessingParameterType
 {
   public:
     QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY

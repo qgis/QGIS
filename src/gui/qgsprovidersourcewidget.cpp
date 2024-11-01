@@ -22,5 +22,4 @@
 QgsProviderSourceWidget::QgsProviderSourceWidget( QWidget *parent )
   : QWidget( parent )
 {
-
 }

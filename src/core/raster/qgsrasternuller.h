@@ -36,8 +36,8 @@ class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
 
     struct NoData
     {
-      double min;
-      double max;
+        double min;
+        double max;
     };
 
     QgsRasterNuller *clone() const override SIP_FACTORY;
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
 
   private:
     // no data indexed from 0
-    QVector< QgsRasterRangeList > mNoData;
+    QVector<QgsRasterRangeList> mNoData;
     // no data to be set in output, indexed from 0
     QVector<double> mOutputNoData;
     QVector<bool> mHasOutputNoData;

@@ -33,7 +33,6 @@ class QgsSnappingUtils;
 class CORE_EXPORT QgsCadUtils
 {
   public:
-
     /**
      * \brief Structure with details of one constraint
      * \ingroup core
@@ -41,7 +40,6 @@ class CORE_EXPORT QgsCadUtils
     class AlignMapPointConstraint
     {
       public:
-
         /**
          * Constructor for AlignMapPointConstraint.
          */
@@ -151,7 +149,7 @@ class CORE_EXPORT QgsCadUtils
          * \see setCadPoints()
          * \since QGIS 3.22
          */
-        QList< QgsPoint > cadPoints() const { return mCadPointList; } ;
+        QList<QgsPoint> cadPoints() const { return mCadPointList; };
 
         /**
          * Sets the list of recent CAD \a points (in map coordinates).
@@ -159,7 +157,7 @@ class CORE_EXPORT QgsCadUtils
          * \see cadPoints()
          * \since QGIS 3.22
          */
-        void setCadPoints( const QList< QgsPoint > &points ) { mCadPointList = points; };
+        void setCadPoints( const QList<QgsPoint> &points ) { mCadPointList = points; };
 
         /**
          * Sets the recent CAD point at the specified \a index to \a point (in map coordinates).
@@ -185,7 +183,8 @@ class CORE_EXPORT QgsCadUtils
          * \see lockedSnapVertices()
          * \since QGIS 3.26
          */
-        void setLockedSnapVertices( const QQueue< QgsPointLocator::Match > &lockedSnapVertices ) { mLockedSnapVertices = lockedSnapVertices; } SIP_SKIP;
+        void setLockedSnapVertices( const QQueue<QgsPointLocator::Match> &lockedSnapVertices ) { mLockedSnapVertices = lockedSnapVertices; }
+        SIP_SKIP;
 
         /**
          * Returns the queue of point locator matches that contain the locked vertices.
@@ -193,26 +192,40 @@ class CORE_EXPORT QgsCadUtils
          * \see setLockedSnapVertices()
          * \since QGIS 3.26
          */
-        QQueue< QgsPointLocator::Match > lockedSnapVertices() const { return mLockedSnapVertices; } SIP_SKIP;
+        QQueue<QgsPointLocator::Match> lockedSnapVertices() const { return mLockedSnapVertices; }
+        SIP_SKIP;
 
 #ifdef SIP_RUN
         SIP_PROPERTY( name = cadPointList, get = _cadPointList, set = _setCadPointList )
 #endif
         ///@cond PRIVATE
-        void _setCadPointList( const QList< QgsPointXY > &list ) { mCadPointList.clear(); for ( const auto &pointxy : list ) { mCadPointList.append( QgsPoint( pointxy ) );} }
-        QList< QgsPointXY > _cadPointList() const { QList< QgsPointXY> list; for ( const auto &point : mCadPointList ) { list.append( QgsPointXY( point.x(), point.y() ) ); }; return list; }
+        void _setCadPointList( const QList<QgsPointXY> &list )
+        {
+          mCadPointList.clear();
+          for ( const auto &pointxy : list )
+          {
+            mCadPointList.append( QgsPoint( pointxy ) );
+          }
+        }
+        QList<QgsPointXY> _cadPointList() const
+        {
+          QList<QgsPointXY> list;
+          for ( const auto &point : mCadPointList )
+          {
+            list.append( QgsPointXY( point.x(), point.y() ) );
+          };
+          return list;
+        }
         ///@endcond PRIVATE
 
       private:
-
         /**
          * List of recent CAD points in map coordinates. These are used to turn relative constraints to absolute.
          * First point is the most recent point. Currently using only "previous" point (index 1) and "penultimate"
          * point (index 2) for alignment purposes.
          */
         QList<QgsPoint> mCadPointList;
-        QQueue< QgsPointLocator::Match > mLockedSnapVertices;
-
+        QQueue<QgsPointLocator::Match> mLockedSnapVertices;
     };
 
     /**
@@ -221,7 +234,6 @@ class CORE_EXPORT QgsCadUtils
      * some extra information.
      */
     static QgsCadUtils::AlignMapPointOutput alignMapPoint( const QgsPointXY &originalMapPoint, const QgsCadUtils::AlignMapPointContext &ctx );
-
 };
 
 #endif // QGSCADUTILS_H

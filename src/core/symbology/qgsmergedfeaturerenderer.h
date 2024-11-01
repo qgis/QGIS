@@ -40,7 +40,6 @@
 class CORE_EXPORT QgsMergedFeatureRenderer : public QgsFeatureRenderer
 {
   public:
-
     /**
      * Constructor for QgsMergedFeatureRenderer.
      * \param embeddedRenderer optional embeddedRenderer. Ownership will be transferred.
@@ -86,7 +85,7 @@ class CORE_EXPORT QgsMergedFeatureRenderer : public QgsFeatureRenderer
     QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QgsSymbolList originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
-    QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QSet<QString> legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const override;
     QgsLegendSymbolList legendSymbolItems() const override;
     bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
@@ -106,7 +105,6 @@ class CORE_EXPORT QgsMergedFeatureRenderer : public QgsFeatureRenderer
     static QgsMergedFeatureRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
   protected:
-
     /**
      * Constructor for QgsMergedFeatureRenderer.
      * \param type renderer ID string
@@ -119,8 +117,8 @@ class CORE_EXPORT QgsMergedFeatureRenderer : public QgsFeatureRenderer
      */
     enum GeometryOperation
     {
-      Merge, //!< Merge features (union/dissolve)
-      InvertOnly, //!< Invert features only (polygons only)
+      Merge,          //!< Merge features (union/dissolve)
+      InvertOnly,     //!< Invert features only (polygons only)
       MergeAndInvert, //!< Merge and invert features (polygons only)
     };
 
@@ -131,12 +129,11 @@ class CORE_EXPORT QgsMergedFeatureRenderer : public QgsFeatureRenderer
     std::unique_ptr<QgsFeatureRenderer> mSubRenderer;
 
   private:
-
     //! Structure where the reversed geometry is built during renderFeature
     struct CombinedFeature
     {
-      QVector<QgsGeometry> geometries; //< list of geometries
-      QgsFeature feature;             //< one feature (for attriute-based rendering)
+        QVector<QgsGeometry> geometries; //< list of geometries
+        QgsFeature feature;              //< one feature (for attriute-based rendering)
     };
     typedef QVector<CombinedFeature> FeatureCategoryVector;
     //! Where features are stored, based on the index of their symbol category \see mSymbolCategories
@@ -160,19 +157,18 @@ class CORE_EXPORT QgsMergedFeatureRenderer : public QgsFeatureRenderer
      */
     struct FeatureDecoration
     {
-      QgsFeature feature;
-      bool selected;
-      bool drawMarkers;
-      int layer;
-      FeatureDecoration( const QgsFeature &a_feature, bool a_selected, bool a_drawMarkers, int a_layer )
-        : feature( a_feature )
-        , selected( a_selected )
-        , drawMarkers( a_drawMarkers )
-        , layer( a_layer )
-      {}
+        QgsFeature feature;
+        bool selected;
+        bool drawMarkers;
+        int layer;
+        FeatureDecoration( const QgsFeature &a_feature, bool a_selected, bool a_drawMarkers, int a_layer )
+          : feature( a_feature )
+          , selected( a_selected )
+          , drawMarkers( a_drawMarkers )
+          , layer( a_layer )
+        {}
     };
     QList<FeatureDecoration> mFeatureDecorations;
-
 };
 
 

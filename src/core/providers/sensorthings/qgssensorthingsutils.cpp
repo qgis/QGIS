@@ -39,7 +39,6 @@ QgsSensorThingsExpansionDefinition::QgsSensorThingsExpansionDefinition( Qgis::Se
   , mLimit( limit )
   , mFilter( filter )
 {
-
 }
 
 QgsSensorThingsExpansionDefinition QgsSensorThingsExpansionDefinition::defaultDefinitionForEntity( Qgis::SensorThingsEntity entity )
@@ -56,24 +55,21 @@ QgsSensorThingsExpansionDefinition QgsSensorThingsExpansionDefinition::defaultDe
     case Qgis::SensorThingsEntity::FeatureOfInterest:
       // no special defaults for these entities
       return QgsSensorThingsExpansionDefinition(
-               entity
-             );
+        entity );
 
     case Qgis::SensorThingsEntity::Observation:
       // default to descending sort by phenomenonTime
       return QgsSensorThingsExpansionDefinition(
-               Qgis::SensorThingsEntity::Observation,
-               QStringLiteral( "phenomenonTime" ), Qt::SortOrder::DescendingOrder
-             );
+        Qgis::SensorThingsEntity::Observation,
+        QStringLiteral( "phenomenonTime" ), Qt::SortOrder::DescendingOrder );
 
     case Qgis::SensorThingsEntity::Datastream:
     case Qgis::SensorThingsEntity::MultiDatastream:
     case Qgis::SensorThingsEntity::ObservedProperty:
       // use smaller limit by default
       return QgsSensorThingsExpansionDefinition(
-               entity,
-               QString(), Qt::SortOrder::AscendingOrder, 10
-             );
+        entity,
+        QString(), Qt::SortOrder::AscendingOrder, 10 );
   }
   BUILTIN_UNREACHABLE
 }
@@ -383,96 +379,105 @@ QStringList QgsSensorThingsUtils::propertiesForEntityType( Qgis::SensorThingsEnt
 
     case Qgis::SensorThingsEntity::Thing:
       // https://docs.ogc.org/is/18-088/18-088.html#thing
-      return { QStringLiteral( "id" ),
-               QStringLiteral( "selfLink" ),
-               QStringLiteral( "name" ),
-               QStringLiteral( "description" ),
-               QStringLiteral( "properties" ),
-           };
+      return {
+        QStringLiteral( "id" ),
+        QStringLiteral( "selfLink" ),
+        QStringLiteral( "name" ),
+        QStringLiteral( "description" ),
+        QStringLiteral( "properties" ),
+      };
 
     case Qgis::SensorThingsEntity::Location:
       // https://docs.ogc.org/is/18-088/18-088.html#location
-      return { QStringLiteral( "id" ),
-               QStringLiteral( "selfLink" ),
-               QStringLiteral( "name" ),
-               QStringLiteral( "description" ),
-               QStringLiteral( "properties" ),
-           };
+      return {
+        QStringLiteral( "id" ),
+        QStringLiteral( "selfLink" ),
+        QStringLiteral( "name" ),
+        QStringLiteral( "description" ),
+        QStringLiteral( "properties" ),
+      };
 
     case Qgis::SensorThingsEntity::HistoricalLocation:
       // https://docs.ogc.org/is/18-088/18-088.html#historicallocation
-      return { QStringLiteral( "id" ),
-               QStringLiteral( "selfLink" ),
-               QStringLiteral( "time" ),
-           };
+      return {
+        QStringLiteral( "id" ),
+        QStringLiteral( "selfLink" ),
+        QStringLiteral( "time" ),
+      };
 
     case Qgis::SensorThingsEntity::Datastream:
       // https://docs.ogc.org/is/18-088/18-088.html#datastream
-      return { QStringLiteral( "id" ),
-               QStringLiteral( "selfLink" ),
-               QStringLiteral( "name" ),
-               QStringLiteral( "description" ),
-               QStringLiteral( "unitOfMeasurement" ),
-               QStringLiteral( "observationType" ),
-               QStringLiteral( "properties" ),
-               QStringLiteral( "phenomenonTime" ),
-               QStringLiteral( "resultTime" ),
-           };
+      return {
+        QStringLiteral( "id" ),
+        QStringLiteral( "selfLink" ),
+        QStringLiteral( "name" ),
+        QStringLiteral( "description" ),
+        QStringLiteral( "unitOfMeasurement" ),
+        QStringLiteral( "observationType" ),
+        QStringLiteral( "properties" ),
+        QStringLiteral( "phenomenonTime" ),
+        QStringLiteral( "resultTime" ),
+      };
 
     case Qgis::SensorThingsEntity::Sensor:
       // https://docs.ogc.org/is/18-088/18-088.html#sensor
-      return { QStringLiteral( "id" ),
-               QStringLiteral( "selfLink" ),
-               QStringLiteral( "name" ),
-               QStringLiteral( "description" ),
-               QStringLiteral( "metadata" ),
-               QStringLiteral( "properties" ),
-           };
+      return {
+        QStringLiteral( "id" ),
+        QStringLiteral( "selfLink" ),
+        QStringLiteral( "name" ),
+        QStringLiteral( "description" ),
+        QStringLiteral( "metadata" ),
+        QStringLiteral( "properties" ),
+      };
 
     case Qgis::SensorThingsEntity::ObservedProperty:
       // https://docs.ogc.org/is/18-088/18-088.html#observedproperty
-      return { QStringLiteral( "id" ),
-               QStringLiteral( "selfLink" ),
-               QStringLiteral( "name" ),
-               QStringLiteral( "definition" ),
-               QStringLiteral( "description" ),
-               QStringLiteral( "properties" ),
-           };
+      return {
+        QStringLiteral( "id" ),
+        QStringLiteral( "selfLink" ),
+        QStringLiteral( "name" ),
+        QStringLiteral( "definition" ),
+        QStringLiteral( "description" ),
+        QStringLiteral( "properties" ),
+      };
 
     case Qgis::SensorThingsEntity::Observation:
       // https://docs.ogc.org/is/18-088/18-088.html#observation
-      return { QStringLiteral( "id" ),
-               QStringLiteral( "selfLink" ),
-               QStringLiteral( "phenomenonTime" ),
-               QStringLiteral( "result" ),
-               QStringLiteral( "resultTime" ),
-               QStringLiteral( "resultQuality" ),
-               QStringLiteral( "validTime" ),
-               QStringLiteral( "parameters" ),
-           };
+      return {
+        QStringLiteral( "id" ),
+        QStringLiteral( "selfLink" ),
+        QStringLiteral( "phenomenonTime" ),
+        QStringLiteral( "result" ),
+        QStringLiteral( "resultTime" ),
+        QStringLiteral( "resultQuality" ),
+        QStringLiteral( "validTime" ),
+        QStringLiteral( "parameters" ),
+      };
 
     case Qgis::SensorThingsEntity::FeatureOfInterest:
       // https://docs.ogc.org/is/18-088/18-088.html#featureofinterest
-      return { QStringLiteral( "id" ),
-               QStringLiteral( "selfLink" ),
-               QStringLiteral( "name" ),
-               QStringLiteral( "description" ),
-               QStringLiteral( "properties" ),
-           };
+      return {
+        QStringLiteral( "id" ),
+        QStringLiteral( "selfLink" ),
+        QStringLiteral( "name" ),
+        QStringLiteral( "description" ),
+        QStringLiteral( "properties" ),
+      };
 
     case Qgis::SensorThingsEntity::MultiDatastream:
       // https://docs.ogc.org/is/18-088/18-088.html#multidatastream-extension
-      return { QStringLiteral( "id" ),
-               QStringLiteral( "selfLink" ),
-               QStringLiteral( "name" ),
-               QStringLiteral( "description" ),
-               QStringLiteral( "unitOfMeasurements" ),
-               QStringLiteral( "observationType" ),
-               QStringLiteral( "multiObservationDataTypes" ),
-               QStringLiteral( "properties" ),
-               QStringLiteral( "phenomenonTime" ),
-               QStringLiteral( "resultTime" ),
-           };
+      return {
+        QStringLiteral( "id" ),
+        QStringLiteral( "selfLink" ),
+        QStringLiteral( "name" ),
+        QStringLiteral( "description" ),
+        QStringLiteral( "unitOfMeasurements" ),
+        QStringLiteral( "observationType" ),
+        QStringLiteral( "multiObservationDataTypes" ),
+        QStringLiteral( "properties" ),
+        QStringLiteral( "phenomenonTime" ),
+        QStringLiteral( "resultTime" ),
+      };
   }
 
   return {};
@@ -700,8 +705,8 @@ QString QgsSensorThingsUtils::filterForExtent( const QString &geometryField, con
 {
   // TODO -- confirm using 'geography' is always correct here
   return ( extent.isNull() || geometryField.isEmpty() )
-         ? QString()
-         : QStringLiteral( "geo.intersects(%1, geography'%2')" ).arg( geometryField, extent.asWktPolygon() );
+           ? QString()
+           : QStringLiteral( "geo.intersects(%1, geography'%2')" ).arg( geometryField, extent.asWktPolygon() );
 }
 
 QString QgsSensorThingsUtils::combineFilters( const QStringList &filters )
@@ -725,7 +730,7 @@ QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QS
   QNetworkRequest request = QNetworkRequest( QUrl( uri ) );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsSensorThingsUtils" ) )
 
-  QgsBlockingNetworkRequest networkRequest;
+    QgsBlockingNetworkRequest networkRequest;
   networkRequest.setAuthCfg( authCfg );
 
   switch ( networkRequest.get( request ) )
@@ -783,8 +788,7 @@ QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QS
     return {};
   }
 
-  auto getCountForType = [entityBaseUri, type, authCfg, feedback]( Qgis::GeometryType geometryType ) -> long long
-  {
+  auto getCountForType = [entityBaseUri, type, authCfg, feedback]( Qgis::GeometryType geometryType ) -> long long {
     // return no features, just the total count
     QString countUri = QStringLiteral( "%1?$top=0&$count=true" ).arg( entityBaseUri );
     Qgis::WkbType wkbType = geometryType == Qgis::GeometryType::Polygon ? Qgis::WkbType::Polygon : ( geometryType == Qgis::GeometryType::Line ? Qgis::WkbType::LineString : Qgis::WkbType::Point );
@@ -837,8 +841,7 @@ QList<Qgis::GeometryType> QgsSensorThingsUtils::availableGeometryTypes( const QS
         {
           Qgis::GeometryType::Point,
           Qgis::GeometryType::Line,
-          Qgis::GeometryType::Polygon
-        } )
+          Qgis::GeometryType::Polygon } )
   {
     const long long matchCount = getCountForType( geometryType );
     if ( matchCount < 0 )
@@ -860,66 +863,49 @@ QList<Qgis::SensorThingsEntity> QgsSensorThingsUtils::expandableTargets( Qgis::S
       return {};
 
     case Qgis::SensorThingsEntity::Thing:
-      return
-      {
+      return {
         Qgis::SensorThingsEntity::HistoricalLocation,
-        Qgis::SensorThingsEntity::Datastream
-      };
+        Qgis::SensorThingsEntity::Datastream };
 
     case Qgis::SensorThingsEntity::Location:
-      return
-      {
+      return {
         Qgis::SensorThingsEntity::Thing,
         Qgis::SensorThingsEntity::HistoricalLocation,
       };
 
     case Qgis::SensorThingsEntity::HistoricalLocation:
-      return
-      {
-        Qgis::SensorThingsEntity::Thing
-      };
+      return {
+        Qgis::SensorThingsEntity::Thing };
 
     case Qgis::SensorThingsEntity::Datastream:
-      return
-      {
+      return {
         Qgis::SensorThingsEntity::Thing,
         Qgis::SensorThingsEntity::Sensor,
         Qgis::SensorThingsEntity::ObservedProperty,
-        Qgis::SensorThingsEntity::Observation
-      };
+        Qgis::SensorThingsEntity::Observation };
 
     case Qgis::SensorThingsEntity::Sensor:
-      return
-      {
-        Qgis::SensorThingsEntity::Datastream
-      };
+      return {
+        Qgis::SensorThingsEntity::Datastream };
 
     case Qgis::SensorThingsEntity::ObservedProperty:
-      return
-      {
-        Qgis::SensorThingsEntity::Datastream
-      };
+      return {
+        Qgis::SensorThingsEntity::Datastream };
 
     case Qgis::SensorThingsEntity::Observation:
-      return
-      {
-        Qgis::SensorThingsEntity::Datastream
-      };
+      return {
+        Qgis::SensorThingsEntity::Datastream };
 
     case Qgis::SensorThingsEntity::FeatureOfInterest:
-      return
-      {
-        Qgis::SensorThingsEntity::Observation
-      };
+      return {
+        Qgis::SensorThingsEntity::Observation };
 
     case Qgis::SensorThingsEntity::MultiDatastream:
-      return
-      {
+      return {
         Qgis::SensorThingsEntity::Thing,
         Qgis::SensorThingsEntity::Sensor,
         Qgis::SensorThingsEntity::ObservedProperty,
-        Qgis::SensorThingsEntity::Observation
-      };
+        Qgis::SensorThingsEntity::Observation };
   }
   // NOLINTEND(bugprone-branch-clone)
 
@@ -1150,7 +1136,7 @@ Qgis::RelationshipCardinality QgsSensorThingsUtils::relationshipCardinality( Qgi
 QString QgsSensorThingsUtils::asQueryString( Qgis::SensorThingsEntity baseType, const QList<QgsSensorThingsExpansionDefinition> &expansions )
 {
   QString res;
-  for ( int i = expansions.size() - 1; i >= 0 ; i-- )
+  for ( int i = expansions.size() - 1; i >= 0; i-- )
   {
     const QgsSensorThingsExpansionDefinition &expansion = expansions.at( i );
     if ( !expansion.isValid() )
@@ -1158,7 +1144,7 @@ QString QgsSensorThingsUtils::asQueryString( Qgis::SensorThingsEntity baseType, 
 
     const Qgis::SensorThingsEntity parentType = i > 0 ? expansions.at( i - 1 ).childEntity() : baseType;
 
-    res = expansion.asQueryString( parentType, res.isEmpty() ? QStringList() : QStringList{ res } );
+    res = expansion.asQueryString( parentType, res.isEmpty() ? QStringList() : QStringList { res } );
   }
 
   return res;

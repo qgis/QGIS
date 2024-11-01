@@ -35,7 +35,6 @@ class SERVER_EXPORT QgsServerLogger : public QgsMessageLogConsole
 {
     Q_OBJECT
   public:
-
     /**
      * Gets the singleton instance
      */

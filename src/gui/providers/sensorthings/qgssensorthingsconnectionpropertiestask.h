@@ -22,7 +22,7 @@
 #include "qgstaskmanager.h"
 #include "qgis.h"
 
-class QgsSensorThingsConnectionPropertiesTask: public QgsTask
+class QgsSensorThingsConnectionPropertiesTask : public QgsTask
 {
     Q_OBJECT
   public:
@@ -32,16 +32,16 @@ class QgsSensorThingsConnectionPropertiesTask: public QgsTask
     /**
      * Returns the retrieved available geometry types.
      */
-    QList< Qgis::GeometryType > geometryTypes() const { return mGeometryTypes; };
+    QList<Qgis::GeometryType> geometryTypes() const { return mGeometryTypes; };
 
   protected:
     bool run() final;
-  private:
 
+  private:
     QString mUri;
     Qgis::SensorThingsEntity mEntity = Qgis::SensorThingsEntity::Invalid;
-    std::unique_ptr< QgsFeedback > mFeedback;
-    QList< Qgis::GeometryType > mGeometryTypes;
+    std::unique_ptr<QgsFeedback> mFeedback;
+    QList<Qgis::GeometryType> mGeometryTypes;
 };
 
 ///@endcond PRIVATE

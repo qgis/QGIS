@@ -50,18 +50,17 @@ class QgsFeedback;
 class CORE_EXPORT QgsMeshCalculator
 {
   public:
-
     //! Result of the calculation
     enum Result
     {
-      Success = 0, //!< Calculation successful
-      Canceled, //!< Calculation canceled
+      Success = 0,       //!< Calculation successful
+      Canceled,          //!< Calculation canceled
       CreateOutputError, //!< Error creating output data file
-      InputLayerError, //!< Error reading input layer
-      ParserError, //!< Error parsing formula
-      InvalidDatasets, //!< Datasets with different time outputs or not part of the mesh
-      EvaluateError, //!< Error during evaluation
-      MemoryError, //!< Error allocating memory for result
+      InputLayerError,   //!< Error reading input layer
+      ParserError,       //!< Error parsing formula
+      InvalidDatasets,   //!< Datasets with different time outputs or not part of the mesh
+      EvaluateError,     //!< Error during evaluation
+      MemoryError,       //!< Error allocating memory for result
     };
 
     /**
@@ -202,7 +201,7 @@ class CORE_EXPORT QgsMeshCalculator
      * \deprecated QGIS 3.12. Use expressionIsValid.
      */
     Q_DECL_DEPRECATED static Result expression_valid( const QString &formulaString,
-        QgsMeshLayer *layer ) SIP_DEPRECATED;
+                                                      QgsMeshLayer *layer ) SIP_DEPRECATED;
 
     /**
      * Returns whether formula is valid for particular mesh layer

@@ -29,9 +29,9 @@
 void QgsJoinByLocationAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
-                QObject::tr( "Join to features in" ), QList< int > () << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+                                                         QObject::tr( "Join to features in" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
-  std::unique_ptr< QgsProcessingParameterEnum > predicateParam = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "PREDICATE" ), QObject::tr( "Features they (geometric predicate)" ), translatedPredicates(), true, 0 );
+  std::unique_ptr<QgsProcessingParameterEnum> predicateParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "PREDICATE" ), QObject::tr( "Features they (geometric predicate)" ), translatedPredicates(), true, 0 );
   QVariantMap predicateMetadata;
   QVariantMap widgetMetadata;
   widgetMetadata.insert( QStringLiteral( "useCheckBoxes" ), true );
@@ -40,23 +40,23 @@ void QgsJoinByLocationAlgorithm::initAlgorithm( const QVariantMap & )
   predicateParam->setMetadata( predicateMetadata );
   addParameter( predicateParam.release() );
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "JOIN" ),
-                QObject::tr( "By comparing to" ), QList< int > () << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+                                                         QObject::tr( "By comparing to" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "JOIN_FIELDS" ),
-                QObject::tr( "Fields to add (leave empty to use all fields)" ),
-                QVariant(), QStringLiteral( "JOIN" ), Qgis::ProcessingFieldParameterDataType::Any, true, true ) );
+                                                 QObject::tr( "Fields to add (leave empty to use all fields)" ),
+                                                 QVariant(), QStringLiteral( "JOIN" ), Qgis::ProcessingFieldParameterDataType::Any, true, true ) );
 
   QStringList joinMethods;
   joinMethods << QObject::tr( "Create separate feature for each matching feature (one-to-many)" )
               << QObject::tr( "Take attributes of the first matching feature only (one-to-one)" )
               << QObject::tr( "Take attributes of the feature with largest overlap only (one-to-one)" );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ),
-                QObject::tr( "Join type" ),
-                joinMethods, false, static_cast< int >( OneToMany ) ) );
+                                                QObject::tr( "Join type" ),
+                                                joinMethods, false, static_cast<int>( OneToMany ) ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DISCARD_NONMATCHING" ),
-                QObject::tr( "Discard records which could not be joined" ),
-                false ) );
+                                                   QObject::tr( "Discard records which could not be joined" ),
+                                                   false ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "PREFIX" ),
-                QObject::tr( "Joined field prefix" ), QVariant(), false, true ) );
+                                                  QObject::tr( "Joined field prefix" ), QVariant(), false, true ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Joined layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, true ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "NON_MATCHING" ), QObject::tr( "Unjoinable features from first layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "JOINED_COUNT" ), QObject::tr( "Number of joined features from input table" ) ) );
@@ -132,7 +132,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   if ( !mJoinSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "JOIN" ) ) );
 
-  mJoinMethod = static_cast< JoinMethod >( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
+  mJoinMethod = static_cast<JoinMethod>( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
 
   const QStringList joinedFieldNames = parameterAsStrings( parameters, QStringLiteral( "JOIN_FIELDS" ), context );
 
@@ -165,7 +165,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   {
     for ( int i = 0; i < joinFields.count(); ++i )
     {
-      joinFields.rename( i, prefix + joinFields[ i ].name() );
+      joinFields.rename( i, prefix + joinFields[i].name() );
     }
   }
 
@@ -182,7 +182,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
 
   QString nonMatchingSinkId;
   mUnjoinedFeatures.reset( parameterAsSink( parameters, QStringLiteral( "NON_MATCHING" ), context, nonMatchingSinkId, mBaseSource->fields(),
-                           mBaseSource->wkbType(), mBaseSource->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+                                            mBaseSource->wkbType(), mBaseSource->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( parameters.value( QStringLiteral( "NON_MATCHING" ) ).isValid() && !mUnjoinedFeatures )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "NON_MATCHING" ) ) );
 
@@ -228,7 +228,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   mJoinedFeatures.reset();
   mUnjoinedFeatures.reset();
 
-  outputs.insert( QStringLiteral( "JOINED_COUNT" ), static_cast< long long >( mJoinedCount ) );
+  outputs.insert( QStringLiteral( "JOINED_COUNT" ), static_cast<long long>( mJoinedCount ) );
   return outputs;
 }
 
@@ -386,7 +386,7 @@ void QgsJoinByLocationAlgorithm::processAlgorithmByIteratingOverInputSource( Qgs
 
   const double step = mBaseSource->featureCount() > 0 ? 100.0 / mBaseSource->featureCount() : 1;
   long i = 0;
-  while ( it .nextFeature( f ) )
+  while ( it.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )
       break;
@@ -405,8 +405,7 @@ void QgsJoinByLocationAlgorithm::sortPredicates( QList<int> &predicates )
   // are testing multiple predicates, make sure the optimised ones are always tested first just in case we can shortcut
   // these slower ones
 
-  std::sort( predicates.begin(), predicates.end(), []( int a, int b ) -> bool
-  {
+  std::sort( predicates.begin(), predicates.end(), []( int a, int b ) -> bool {
     // return true if predicate a is faster than b
 
     if ( a == 0 ) // intersects is fastest
@@ -430,7 +429,7 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromJoinSource( QgsFeature &joinF
     return false;
 
   const QgsGeometry featGeom = joinFeature.geometry();
-  std::unique_ptr< QgsGeometryEngine > engine;
+  std::unique_ptr<QgsGeometryEngine> engine;
   QgsFeatureRequest req = QgsFeatureRequest().setFilterRect( featGeom.boundingBox() );
   QgsFeatureIterator it = mBaseSource->getFeatures( req );
   QgsFeature baseFeature;
@@ -517,14 +516,14 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
   }
 
   const QgsGeometry featGeom = baseFeature.geometry();
-  std::unique_ptr< QgsGeometryEngine > engine;
+  std::unique_ptr<QgsGeometryEngine> engine;
   QgsFeatureRequest req = QgsFeatureRequest().setDestinationCrs( mBaseSource->sourceCrs(), context.transformContext() ).setFilterRect( featGeom.boundingBox() ).setSubsetOfAttributes( mJoinedFieldIndices );
 
   QgsFeatureIterator it = mJoinSource->getFeatures( req );
   QgsFeature joinFeature;
   bool ok = false;
 
-  double largestOverlap  = std::numeric_limits< double >::lowest();
+  double largestOverlap = std::numeric_limits<double>::lowest();
   QgsFeature bestMatch;
 
   while ( it.nextFeature( joinFeature ) )
@@ -563,7 +562,7 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
         case JoinToLargestOverlap:
         {
           // calculate area of overlap
-          std::unique_ptr< QgsAbstractGeometry > intersection( engine->intersection( joinFeature.geometry().constGet() ) );
+          std::unique_ptr<QgsAbstractGeometry> intersection( engine->intersection( joinFeature.geometry().constGet() ) );
           double overlap = 0;
           switch ( QgsWkbTypes::geometryType( intersection->wkbType() ) )
           {
@@ -583,7 +582,7 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
 
           if ( overlap > largestOverlap )
           {
-            largestOverlap  = overlap;
+            largestOverlap = overlap;
             bestMatch = joinFeature;
           }
           break;
@@ -663,6 +662,3 @@ bool QgsJoinByLocationAlgorithm::processFeatureFromInputSource( QgsFeature &base
 
 
 ///@endcond
-
-
-

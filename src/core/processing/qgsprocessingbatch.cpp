@@ -19,9 +19,8 @@
 #include "moc_qgsprocessingbatch.cpp"
 
 QgsProcessingBatchFeedback::QgsProcessingBatchFeedback( int tasks, QgsProcessingFeedback *feedback )
-  :  QgsProcessingMultiStepFeedback( tasks, feedback )
+  : QgsProcessingMultiStepFeedback( tasks, feedback )
 {
-
 }
 
 void QgsProcessingBatchFeedback::reportError( const QString &error, bool fatalError )

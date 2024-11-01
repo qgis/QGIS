@@ -54,7 +54,6 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsBrowserModel, with the specified \a parent object.
      *
@@ -74,13 +73,12 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      * \note Prior to QGIS 3.36 this was available as QgsBrowserModel::ItemDataRole
      * \since QGIS 3.36
      */
-    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsBrowserModel, ItemDataRole ): int
-      {
-      Path SIP_MONKEYPATCH_COMPAT_NAME( PathRole ) = Qt::UserRole, //!< Item path used to access path in the tree, see QgsDataItem::mPath
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsBrowserModel, ItemDataRole ) : int {
+      Path SIP_MONKEYPATCH_COMPAT_NAME( PathRole ) = Qt::UserRole,           //!< Item path used to access path in the tree, see QgsDataItem::mPath
       Comment SIP_MONKEYPATCH_COMPAT_NAME( CommentRole ) = Qt::UserRole + 1, //!< Item comment
-      Sort SIP_MONKEYPATCH_COMPAT_NAME( SortRole ), //!< Custom sort role, see QgsDataItem::sortKey()
-      ProviderKey SIP_MONKEYPATCH_COMPAT_NAME( ProviderKeyRole ), //!< Data item provider key that created the item, see QgsDataItem::providerKey() \since QGIS 3.12
-      LayerMetadata SIP_MONKEYPATCH_COMPAT_NAME( LayerMetadataRole ), //! Data item layer metadata for layer items
+      Sort SIP_MONKEYPATCH_COMPAT_NAME( SortRole ),                          //!< Custom sort role, see QgsDataItem::sortKey()
+      ProviderKey SIP_MONKEYPATCH_COMPAT_NAME( ProviderKeyRole ),            //!< Data item provider key that created the item, see QgsDataItem::providerKey() \since QGIS 3.12
+      LayerMetadata SIP_MONKEYPATCH_COMPAT_NAME( LayerMetadataRole ),        //! Data item layer metadata for layer items
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -158,7 +156,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      *
      * \see initialize()
      */
-    bool initialized() const { return mInitialized;  }
+    bool initialized() const { return mInitialized; }
 
     /**
      * Returns a map of the root drive items shown in the browser.
@@ -263,7 +261,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
   private:
     bool mInitialized = false;
-    QMap< QString, QgsDirectoryItem * > mDriveItems;
+    QMap<QString, QgsDirectoryItem *> mDriveItems;
 
     void setupItemConnections( QgsDataItem *item );
 

@@ -31,7 +31,6 @@
 class CORE_EXPORT QgsSensorAbstractMetadata
 {
   public:
-
     /**
      * Constructor for QgsSensorAbstractMetadata with the specified class \a type.
      */
@@ -73,7 +72,6 @@ class CORE_EXPORT QgsSensorAbstractMetadata
     virtual QgsAbstractSensor *createSensor( QObject *parent ) = 0 SIP_TRANSFERBACK;
 
   private:
-
     QString mType;
     QString mVisibleName;
 };
@@ -91,7 +89,6 @@ typedef std::function<QgsAbstractSensor *( QObject *parent )> QgsSensorCreateFun
 class CORE_EXPORT QgsSensorMetadata : public QgsSensorAbstractMetadata
 {
   public:
-
     /**
      * Constructor for QgsSensorMetadata with the specified class \a type.
      */
@@ -110,7 +107,6 @@ class CORE_EXPORT QgsSensorMetadata : public QgsSensorAbstractMetadata
 
   protected:
     QgsSensorCreateFunc mCreateFunc = nullptr;
-
 };
 
 #endif
@@ -133,7 +129,6 @@ class CORE_EXPORT QgsSensorRegistry : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new empty item registry.
      *
@@ -205,16 +200,11 @@ class CORE_EXPORT QgsSensorRegistry : public QObject
     void sensorAdded( const QString &type, const QString &name );
 
   private:
-
 #ifdef SIP_RUN
     QgsSensorRegistry( const QgsSensorRegistry &rh );
 #endif
 
     QMap<QString, QgsSensorAbstractMetadata *> mMetadata;
-
 };
 
 #endif //QGSSENSORREGISTRY_H
-
-
-

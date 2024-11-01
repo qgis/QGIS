@@ -28,8 +28,7 @@ QgsDiscoverRelationsDialog::QgsDiscoverRelationsDialog( const QList<QgsRelation>
 
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   mButtonBox->addButton( QDialogButtonBox::Help );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [ = ]
-  {
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [=] {
     QgsHelp::openHelp( QStringLiteral( "working_with_vector/attribute_table.html#defining-1-n-relation" ) );
   } );
   connect( mRelationsTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDiscoverRelationsDialog::onSelectionChanged );
@@ -47,9 +46,9 @@ void QgsDiscoverRelationsDialog::addRelation( const QgsRelation &rel )
   for ( int i = 0; i < rel.fieldPairs().count(); i++ )
   {
     referencingFields.append( QStringLiteral( "%1%2" ).arg( ( referencingFields.isEmpty() ? "" : ", " ),
-                              rel.fieldPairs().at( i ).referencingField() ) );
+                                                            rel.fieldPairs().at( i ).referencingField() ) );
     referencedFields.append( QStringLiteral( "%1%2" ).arg( ( referencedFields.isEmpty() ? "" : ", " ),
-                             rel.fieldPairs().at( i ).referencedField() ) );
+                                                           rel.fieldPairs().at( i ).referencedField() ) );
   }
 
   const int row = mRelationsTable->rowCount();

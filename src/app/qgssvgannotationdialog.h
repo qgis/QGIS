@@ -24,7 +24,7 @@
 class QgsMapCanvasAnnotationItem;
 class QgsAnnotationWidget;
 
-class APP_EXPORT QgsSvgAnnotationDialog: public QDialog, private Ui::QgsFormAnnotationDialogBase
+class APP_EXPORT QgsSvgAnnotationDialog : public QDialog, private Ui::QgsFormAnnotationDialogBase
 {
     Q_OBJECT
   public:

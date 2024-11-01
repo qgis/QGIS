@@ -38,7 +38,6 @@ class GUI_EXPORT QgsCreateRasterAttributeTableDialog : public QDialog, private U
 {
     Q_OBJECT
   public:
-
     /**
      * Creates a new QgsCreateRasterAttributeTableDialog.
      * \param rasterLayer the raster layer, must be suitable for creating a new raster attribute table
@@ -49,17 +48,17 @@ class GUI_EXPORT QgsCreateRasterAttributeTableDialog : public QDialog, private U
     /**
      * Returns the file path in case of VAT.DBF save option.
      */
-    QString filePath( ) const;
+    QString filePath() const;
 
     /**
      * Returns TRUE if the option to save to a file is selected.
      */
-    bool saveToFile( ) const;
+    bool saveToFile() const;
 
     /**
      * Returns TRUE if the option to open the newly created attribute table is checked.
      */
-    bool openWhenDone( ) const;
+    bool openWhenDone() const;
 
     /**
      * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages
@@ -84,10 +83,8 @@ class GUI_EXPORT QgsCreateRasterAttributeTableDialog : public QDialog, private U
     void notify( const QString &title, const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 
   private:
-
     QgsRasterLayer *mRasterLayer = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
-
 };
 
 #endif // QGSCREATERASTERATTRIBUTETABLEDIALOG_H

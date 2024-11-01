@@ -21,8 +21,7 @@
 #include "qgslogger.h"
 
 QgsHanaExpressionCompiler::QgsHanaExpressionCompiler( QgsHanaFeatureSource *source, bool ignoreStaticNodes )
-  : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger |
-                              QgsSqlExpressionCompiler::NoNullInBooleanLogic, ignoreStaticNodes )
+  : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger | QgsSqlExpressionCompiler::NoNullInBooleanLogic, ignoreStaticNodes )
   , mGeometryColumn( source->mGeometryColumn )
 {
 }
@@ -38,8 +37,7 @@ QString QgsHanaExpressionCompiler::quotedValue( const QVariant &value, bool &ok 
   return QgsHanaUtils::quotedValue( value );
 }
 
-static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP
-{
+static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP {
   // mathematical functions
   { "sqrt", "SQRT" },
   { "sign", "SIGN" },
@@ -69,8 +67,7 @@ static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP
   { "make_date", "" },
   { "make_time", "" },
   // other helper functions
-  { "coalesce", "COALESCE" }
-};
+  { "coalesce", "COALESCE" } };
 
 QString QgsHanaExpressionCompiler::sqlFunctionFromFunctionName( const QString &fnName ) const
 {
@@ -83,24 +80,15 @@ QStringList QgsHanaExpressionCompiler::sqlArgumentsFromFunctionName( const QStri
   QStringList args( fnArgs );
   if ( fnName == QLatin1String( "make_datetime" ) )
   {
-    args = QStringList( QStringLiteral( "TO_TIMESTAMP('%1-%2-%3 %4:%5:%6', 'YYYY-MM-DD HH24:MI:SS')" ).arg( args[0].rightJustified( 4, '0' ) )
-                        .arg( args[1].rightJustified( 2, '0' ) )
-                        .arg( args[2].rightJustified( 2, '0' ) )
-                        .arg( args[3].rightJustified( 2, '0' ) )
-                        .arg( args[4].rightJustified( 2, '0' ) )
-                        .arg( args[5].rightJustified( 2, '0' ) ) );
+    args = QStringList( QStringLiteral( "TO_TIMESTAMP('%1-%2-%3 %4:%5:%6', 'YYYY-MM-DD HH24:MI:SS')" ).arg( args[0].rightJustified( 4, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ).arg( args[3].rightJustified( 2, '0' ) ).arg( args[4].rightJustified( 2, '0' ) ).arg( args[5].rightJustified( 2, '0' ) ) );
   }
   else if ( fnName == QLatin1String( "make_date" ) )
   {
-    args = QStringList( QStringLiteral( "TO_DATE('%1-%2-%3', 'YYYY-MM-DD')" ).arg( args[0].rightJustified( 4, '0' ) )
-                        .arg( args[1].rightJustified( 2, '0' ) )
-                        .arg( args[2].rightJustified( 2, '0' ) ) );
+    args = QStringList( QStringLiteral( "TO_DATE('%1-%2-%3', 'YYYY-MM-DD')" ).arg( args[0].rightJustified( 4, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ) );
   }
   else if ( fnName == QLatin1String( "make_time" ) )
   {
-    args = QStringList( QStringLiteral( "TO_TIME('%1:%2:%3', 'HH24:MI:SS') " ).arg( args[0].rightJustified( 2, '0' ) )
-                        .arg( args[1].rightJustified( 2, '0' ) )
-                        .arg( args[2].rightJustified( 2, '0' ) ) );
+    args = QStringList( QStringLiteral( "TO_TIME('%1:%2:%3', 'HH24:MI:SS') " ).arg( args[0].rightJustified( 2, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ) );
   }
   return args;
 }
@@ -208,8 +196,7 @@ QgsSqlExpressionCompiler::Result QgsHanaExpressionCompiler::compileNode(
         return Fail;
 
       // NULL can only be on the right for IS and IS NOT
-      if ( QLatin1String( "NULL" ) == opRight.toUpper() &&
-           ( binOp->op() != QgsExpressionNodeBinaryOperator::boIs && binOp->op() != QgsExpressionNodeBinaryOperator::boIsNot ) )
+      if ( QLatin1String( "NULL" ) == opRight.toUpper() && ( binOp->op() != QgsExpressionNodeBinaryOperator::boIs && binOp->op() != QgsExpressionNodeBinaryOperator::boIsNot ) )
         return Fail;
 
       switch ( binOp->op() )

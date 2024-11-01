@@ -68,8 +68,7 @@ bool QgsFontUtils::fontFamilyHasStyle( const QString &family, const QString &sty
 
 QString QgsFontUtils::resolveFontStyleName( const QFont &font )
 {
-  auto styleNameIsMatch = [&font]( const QString & candidate ) -> bool
-  {
+  auto styleNameIsMatch = [&font]( const QString &candidate ) -> bool {
     // confirm that style name matches bold/italic flags
     QFont testFont( font.family() );
     testFont.setStyleName( candidate );
@@ -275,7 +274,7 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
     }
 
     const QString fontFamily = !f.key().startsWith( QLatin1String( "Deja" ) ) ? standardTestFontFamily() : QStringLiteral( "QGIS DejaVu Sans" );
-    const QString fontstyle  = !f.key().startsWith( QLatin1String( "Deja" ) ) ?  f.key() : f.key().mid( 5 );
+    const QString fontstyle = !f.key().startsWith( QLatin1String( "Deja" ) ) ? f.key() : f.key().mid( 5 );
 
     if ( fontFamilyHasStyle( fontFamily, fontstyle ) )
     {
@@ -295,7 +294,8 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
         loaded = ( fontID != -1 );
         fontsLoaded = ( fontsLoaded || loaded );
         QgsDebugMsgLevel( QStringLiteral( "Test font '%1 %2' %3 from filesystem [%4]" )
-                          .arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load", fontPath ), 2 );
+                            .arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load", fontPath ),
+                          2 );
         QgsDebugMsgLevel( QStringLiteral( "font families in %1: %2" ).arg( fontID ).arg( QFontDatabase().applicationFontFamilies( fontID ).join( "," ) ), 2 );
       }
       else
@@ -308,7 +308,8 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
           fontsLoaded = ( fontsLoaded || loaded );
         }
         QgsDebugMsgLevel( QStringLiteral( "Test font '%1' (%2) %3 from testdata.qrc" )
-                          .arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load" ), 2 );
+                            .arg( fontFamily, fontstyle, loaded ? "loaded" : "FAILED to load" ),
+                          2 );
       }
     }
   }
@@ -319,9 +320,9 @@ bool QgsFontUtils::loadStandardTestFonts( const QStringList &loadstyles )
 QFont QgsFontUtils::getStandardTestFont( const QString &style, int pointsize )
 {
   const QString fontFamily = !style.startsWith( QLatin1String( "Deja" ) ) ? standardTestFontFamily() : QStringLiteral( "QGIS DejaVu Sans" );
-  const QString fontStyle  = !style.startsWith( QLatin1String( "Deja" ) ) ?  style : style.mid( 5 );
+  const QString fontStyle = !style.startsWith( QLatin1String( "Deja" ) ) ? style : style.mid( 5 );
 
-  if ( ! fontFamilyHasStyle( fontFamily, fontStyle ) )
+  if ( !fontFamilyHasStyle( fontFamily, fontStyle ) )
   {
     loadStandardTestFonts( QStringList() << style );
   }
@@ -396,7 +397,7 @@ bool QgsFontUtils::setFromXmlElement( QFont &font, const QDomElement &element )
 
   if ( element.hasAttribute( QStringLiteral( "style" ) ) )
   {
-    ( void )updateFontViaStyle( font, translateNamedStyle( element.attribute( QStringLiteral( "style" ) ) ) );
+    ( void ) updateFontViaStyle( font, translateNamedStyle( element.attribute( QStringLiteral( "style" ) ) ) );
   }
 
   return true;
@@ -423,7 +424,7 @@ bool QgsFontUtils::setFromXmlChildNode( QFont &font, const QDomElement &element,
 
 QMimeData *QgsFontUtils::toMimeData( const QFont &font )
 {
-  std::unique_ptr< QMimeData >mimeData( new QMimeData );
+  std::unique_ptr<QMimeData> mimeData( new QMimeData );
 
   QDomDocument fontDoc;
   const QDomElement fontElem = toXmlElement( font, fontDoc, QStringLiteral( "font" ) );

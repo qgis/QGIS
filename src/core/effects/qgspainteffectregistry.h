@@ -39,7 +39,6 @@ class QgsPaintEffectWidget SIP_EXTERNAL;
 class CORE_EXPORT QgsPaintEffectAbstractMetadata
 {
   public:
-
     /**
      * Construct a new QgsPaintEffectAbstractMetadata
      * \param name unique string representing paint effect class
@@ -80,7 +79,6 @@ class CORE_EXPORT QgsPaintEffectAbstractMetadata
   protected:
     QString mName;
     QString mVisibleName;
-
 };
 
 typedef QgsPaintEffect *( *QgsPaintEffectCreateFunc )( const QVariantMap & ) SIP_SKIP;
@@ -95,9 +93,7 @@ typedef QgsPaintEffectWidget *( *QgsPaintEffectWidgetFunc )() SIP_SKIP;
  */
 class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata SIP_SKIP
 {
-
   public:
-
     /**
      * Create effect metadata from static functions
      * \param name unique string representing paint effect class
@@ -109,9 +105,9 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
     QgsPaintEffectMetadata( const QString &name, const QString &visibleName,
                             QgsPaintEffectCreateFunc pfCreate,
                             QgsPaintEffectWidgetFunc pfWidget = nullptr ) SIP_SKIP
-  : QgsPaintEffectAbstractMetadata( name, visibleName )
-    , mCreateFunc( pfCreate )
-    , mWidgetFunc( pfWidget )
+      : QgsPaintEffectAbstractMetadata( name, visibleName ),
+        mCreateFunc( pfCreate ),
+        mWidgetFunc( pfWidget )
     {}
 
     /**
@@ -119,7 +115,8 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
      * \returns creation function
      * \note not available in Python bindings
      */
-    QgsPaintEffectCreateFunc createFunction() const { return mCreateFunc; } SIP_SKIP
+    QgsPaintEffectCreateFunc createFunction() const { return mCreateFunc; }
+    SIP_SKIP
 
     /**
      * Returns the paint effect properties widget creation function for the paint effect class
@@ -127,7 +124,8 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
      * \note not available in Python bindings
      * \see setWidgetFunction
      */
-    QgsPaintEffectWidgetFunc widgetFunction() const { return mWidgetFunc; } SIP_SKIP
+    QgsPaintEffectWidgetFunc widgetFunction() const { return mWidgetFunc; }
+    SIP_SKIP
 
     /**
      * Sets the paint effect properties widget creation function for the paint effect class
@@ -135,7 +133,8 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
      * \note not available in Python bindings
      * \see widgetFunction
      */
-    void setWidgetFunction( QgsPaintEffectWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
+    void setWidgetFunction( QgsPaintEffectWidgetFunc f ) { mWidgetFunc = f; }
+    SIP_SKIP
 
     /**
      * Creates a new paint effect of the metadata's effect class
@@ -144,7 +143,8 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
      * \note not available in Python bindings
      * \see createWidget
      */
-    QgsPaintEffect *createPaintEffect( const QVariantMap &map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; } SIP_SKIP
+    QgsPaintEffect *createPaintEffect( const QVariantMap &map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
+    SIP_SKIP
 
     /**
      * Creates a new paint effect properties widget for the metadata's effect class
@@ -152,7 +152,8 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
      * \note not available in Python bindings
      * \see createWidget
      */
-    QgsPaintEffectWidget *createWidget() override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc() : nullptr; } SIP_SKIP
+    QgsPaintEffectWidget *createWidget() override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc() : nullptr; }
+    SIP_SKIP
 
   protected:
     QgsPaintEffectCreateFunc mCreateFunc;
@@ -172,7 +173,6 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
 class CORE_EXPORT QgsPaintEffectRegistry
 {
   public:
-
     QgsPaintEffectRegistry();
     ~QgsPaintEffectRegistry();
 

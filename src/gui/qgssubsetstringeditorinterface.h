@@ -30,7 +30,7 @@
  *
  * \since QGIS 3.18
  */
-class GUI_EXPORT QgsSubsetStringEditorInterface: public QDialog
+class GUI_EXPORT QgsSubsetStringEditorInterface : public QDialog
 {
     Q_OBJECT
 

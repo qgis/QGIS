@@ -60,26 +60,25 @@ bool QgsProjectUtils::layerIsContainedInGroupLayer( QgsProject *project, QgsMapL
   // two situations we need to catch here -- one is a group layer which isn't present in the layer
   // tree, the other is a group layer associated with the project's layer tree which contains
   // UNCHECKED child layers
-  const QVector< QgsGroupLayer * > groupLayers = project->layers< QgsGroupLayer * >();
+  const QVector<QgsGroupLayer *> groupLayers = project->layers<QgsGroupLayer *>();
   for ( QgsGroupLayer *groupLayer : groupLayers )
   {
     if ( groupLayer->childLayers().contains( layer ) )
       return true;
   }
 
-  std::function< bool( QgsLayerTreeGroup *group ) > traverseTree;
-  traverseTree = [ &traverseTree, layer ]( QgsLayerTreeGroup * group ) -> bool
-  {
+  std::function<bool( QgsLayerTreeGroup * group )> traverseTree;
+  traverseTree = [&traverseTree, layer]( QgsLayerTreeGroup *group ) -> bool {
     // is the group a layer group containing our target layer?
     if ( group->groupLayer() && group->findLayer( layer ) )
     {
       return true;
     }
 
-    const QList< QgsLayerTreeNode * > children = group->children();
+    const QList<QgsLayerTreeNode *> children = group->children();
     for ( QgsLayerTreeNode *node : children )
     {
-      if ( QgsLayerTreeGroup *childGroup = qobject_cast< QgsLayerTreeGroup * >( node ) )
+      if ( QgsLayerTreeGroup *childGroup = qobject_cast<QgsLayerTreeGroup *>( node ) )
       {
         if ( traverseTree( childGroup ) )
           return true;

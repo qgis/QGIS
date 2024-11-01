@@ -31,7 +31,6 @@
 class CORE_EXPORT QgsFileUtils
 {
   public:
-
     /**
      * Returns the human size from bytes
      */
@@ -152,7 +151,7 @@ class CORE_EXPORT QgsFileUtils
      *
      * \since QGIS 3.22
      */
-    static QSet< QString > sidecarFilesForPath( const QString &path );
+    static QSet<QString> sidecarFilesForPath( const QString &path );
 
     /**
      * Renames the dataset at \a oldPath to \a newPath, renaming both the file at \a oldPath and
@@ -235,7 +234,6 @@ class CORE_EXPORT QgsFileUtils
      * \since QGIS 3.30
      */
     static QString uniquePath( const QString &path );
-
 };
 
 #endif // QGSFILEUTILS_H

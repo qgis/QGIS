@@ -68,7 +68,8 @@ QgsAttributeEditorElement *QgsAttributeEditorElement::create( const QDomElement 
   if ( element.tagName() == QLatin1String( "attributeEditorContainer" ) )
   {
     newElement = new QgsAttributeEditorContainer( context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:formcontainers" ).arg( layerId ),
-        name ), parent );
+                                                                                          name ),
+                                                  parent );
   }
   else if ( element.tagName() == QLatin1String( "attributeEditorField" ) )
   {
@@ -128,9 +129,8 @@ void QgsAttributeEditorElement::LabelStyle::readXml( const QDomNode &node )
 {
   QDomElement element { node.firstChildElement( QStringLiteral( "labelStyle" ) ) };
 
-  if ( ! element.isNull() )
+  if ( !element.isNull() )
   {
-
     // Label font and color
     if ( element.hasAttribute( QStringLiteral( "labelColor" ) ) )
     {
@@ -156,7 +156,7 @@ void QgsAttributeEditorElement::LabelStyle::readXml( const QDomNode &node )
 
 QDomElement QgsAttributeEditorElement::LabelStyle::writeXml( QDomDocument &document ) const
 {
-  QDomElement elem {  document.createElement( QStringLiteral( "labelStyle" ) ) };
+  QDomElement elem { document.createElement( QStringLiteral( "labelStyle" ) ) };
   elem.setAttribute( QStringLiteral( "labelColor" ), QgsColorUtils::colorToString( color ) );
   elem.appendChild( QgsFontUtils::toXmlElement( font, document, QStringLiteral( "labelFont" ) ) );
   elem.setAttribute( QStringLiteral( "overrideLabelColor" ), overrideColor ? QChar( '1' ) : QChar( '0' ) );

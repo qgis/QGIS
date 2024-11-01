@@ -46,7 +46,6 @@ class PdfDocumentContainer;
 class CORE_EXPORT QgsPdfRenderer
 {
   public:
-
     /**
      * Constructs a PDF renderer for the file at the specified \a path.
      */
@@ -86,7 +85,6 @@ class CORE_EXPORT QgsPdfRenderer
     bool render( QPainter *painter, const QRectF &painterRect, int pageIndex ) SIP_THROW( QgsNotSupportedException );
 
   private:
-
 #ifdef SIP_RUN
     QgsPdfRenderer( const QgsPdfRenderer &other );
 #endif
@@ -94,7 +92,7 @@ class CORE_EXPORT QgsPdfRenderer
     QString mPath;
 
 #ifdef HAVE_PDF4QT
-    std::unique_ptr< PdfDocumentContainer> mDocumentContainer;
+    std::unique_ptr<PdfDocumentContainer> mDocumentContainer;
 #endif
 };
 

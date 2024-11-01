@@ -19,13 +19,11 @@
 QgsOptionalExpression::QgsOptionalExpression( const QgsExpression &expression )
   : QgsOptional<QgsExpression>( expression )
 {
-
 }
 
 QgsOptionalExpression::QgsOptionalExpression( const QgsExpression &expression, bool enabled )
   : QgsOptional<QgsExpression>( expression, enabled )
 {
-
 }
 
 void QgsOptionalExpression::writeXml( QDomElement &element ) const

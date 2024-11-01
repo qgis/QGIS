@@ -38,7 +38,6 @@ class QgsPlotCanvas;
  */
 class GUI_EXPORT QgsPlotMouseEvent : public QMouseEvent
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsPlotMouseEvent *>( sipCpp ) )
@@ -49,7 +48,6 @@ class GUI_EXPORT QgsPlotMouseEvent : public QMouseEvent
 #endif
 
   public:
-
     /**
      * Creates a new QgsPlotMouseEvent.
      *
@@ -91,7 +89,6 @@ class GUI_EXPORT QgsPlotMouseEvent : public QMouseEvent
     bool isSnapped();
 
   private:
-
     //! The canvas on which the event was triggered.
     QgsPlotCanvas *mCanvas = nullptr;
 
@@ -103,7 +100,6 @@ class GUI_EXPORT QgsPlotMouseEvent : public QMouseEvent
     bool mIsSnapped = false;
 
     void snapPoint();
-
 };
 
 #endif // QGSPLOTMOUSEEVENT_H

@@ -69,7 +69,7 @@ QString QgsSplitGeometryAtAntimeridianAlgorithm::shortHelpString() const
 
 QList<int> QgsSplitGeometryAtAntimeridianAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine );
 }
 
 Qgis::ProcessingSourceType QgsSplitGeometryAtAntimeridianAlgorithm::outputLayerType() const
@@ -121,6 +121,3 @@ QgsFeatureList QgsSplitGeometryAtAntimeridianAlgorithm::processFeature( const Qg
 
 
 ///@endcond
-
-
-

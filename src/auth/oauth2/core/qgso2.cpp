@@ -141,10 +141,10 @@ void QgsO2::setVerificationResponseContent()
   if ( verhtml.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
     setReplyContent( QString::fromUtf8( verhtml.readAll() )
-                     .replace( QStringLiteral( "{{ H2_TITLE }}" ), tr( "QGIS OAuth2 verification has finished" ) )
-                     .replace( QStringLiteral( "{{ H3_TITLE }}" ), tr( "If you have not been returned to QGIS, bring the application to the forefront." ) )
-                     .replace( QStringLiteral( "{{ CLOSE_WINDOW }}" ), tr( "Close window" ) ).toUtf8()
-                   );
+                       .replace( QStringLiteral( "{{ H2_TITLE }}" ), tr( "QGIS OAuth2 verification has finished" ) )
+                       .replace( QStringLiteral( "{{ H3_TITLE }}" ), tr( "If you have not been returned to QGIS, bring the application to the forefront." ) )
+                       .replace( QStringLiteral( "{{ CLOSE_WINDOW }}" ), tr( "Close window" ) )
+                       .toUtf8() );
   }
 }
 
@@ -199,19 +199,15 @@ void QgsO2::link()
       redirectUri_ = localhostPolicy_.arg( replyServer_->serverPort() );
     }
     // Assemble initial authentication URL
-    QList<QPair<QString, QString> > parameters;
-    parameters.append( qMakePair( QString( O2_OAUTH2_RESPONSE_TYPE ), ( grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowPkce ) ?
-                                  QString( O2_OAUTH2_GRANT_TYPE_CODE ) :
-                                  QString( O2_OAUTH2_GRANT_TYPE_TOKEN ) ) );
+    QList<QPair<QString, QString>> parameters;
+    parameters.append( qMakePair( QString( O2_OAUTH2_RESPONSE_TYPE ), ( grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowPkce ) ? QString( O2_OAUTH2_GRANT_TYPE_CODE ) : QString( O2_OAUTH2_GRANT_TYPE_TOKEN ) ) );
     parameters.append( qMakePair( QString( O2_OAUTH2_CLIENT_ID ), clientId_ ) );
     parameters.append( qMakePair( QString( O2_OAUTH2_REDIRECT_URI ), redirectUri_ ) );
 
     if ( grantFlow_ == GrantFlowPkce )
     {
-      pkceCodeVerifier_ = ( QUuid::createUuid().toString( QUuid::WithoutBraces ) +
-                            QUuid::createUuid().toString( QUuid::WithoutBraces ) ).toLatin1();
-      pkceCodeChallenge_ = QCryptographicHash::hash( pkceCodeVerifier_, QCryptographicHash::Sha256 ).toBase64(
-                             QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals );
+      pkceCodeVerifier_ = ( QUuid::createUuid().toString( QUuid::WithoutBraces ) + QUuid::createUuid().toString( QUuid::WithoutBraces ) ).toLatin1();
+      pkceCodeChallenge_ = QCryptographicHash::hash( pkceCodeVerifier_, QCryptographicHash::Sha256 ).toBase64( QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals );
       parameters.append( qMakePair( QString( O2_OAUTH2_PKCE_CODE_CHALLENGE_PARAM ), pkceCodeChallenge_ ) );
       parameters.append( qMakePair( QString( O2_OAUTH2_PKCE_CODE_CHALLENGE_METHOD_PARAM ), QString( O2_OAUTH2_PKCE_CODE_CHALLENGE_METHOD_S256 ) ) );
     }
@@ -301,7 +297,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
       {
         if ( response.value( QStringLiteral( "state" ), QStringLiteral( "ignore" ) ) != state_ )
         {
-          QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived: Verification failed: (Response returned wrong state)" ), 3 ) ;
+          QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived: Verification failed: (Response returned wrong state)" ), 3 );
           emit linkingFailed();
           return;
         }
@@ -319,7 +315,6 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
 
   if ( grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowPkce )
   {
-
     // Exchange access code for access/refresh tokens
     QString query;
     if ( !apiKey_.isEmpty() )

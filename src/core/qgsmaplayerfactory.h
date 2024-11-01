@@ -36,7 +36,6 @@ class QgsMapLayer;
 class CORE_EXPORT QgsMapLayerFactory
 {
   public:
-
     /**
      * Returns the map layer type corresponding a \a string value.
      *
@@ -63,21 +62,20 @@ class CORE_EXPORT QgsMapLayerFactory
      */
     struct LayerOptions
     {
-
-      /**
+        /**
        * Constructor for LayerOptions with \a transformContext.
        */
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext )
-        : transformContext( transformContext )
-      {}
+        explicit LayerOptions( const QgsCoordinateTransformContext &transformContext )
+          : transformContext( transformContext )
+        {}
 
-      //! Transform context
-      QgsCoordinateTransformContext transformContext;
+        //! Transform context
+        QgsCoordinateTransformContext transformContext;
 
-      //! Set to TRUE if the default layer style should be loaded
-      bool loadDefaultStyle = true;
+        //! Set to TRUE if the default layer style should be loaded
+        bool loadDefaultStyle = true;
 
-      /**
+        /**
        * Controls whether the stored styles will be all loaded.
        *
        * If TRUE and the layer's provider supports style stored in the
@@ -89,7 +87,7 @@ class CORE_EXPORT QgsMapLayerFactory
        *
        * \since QGIS 3.30
        */
-      bool loadAllStoredStyles = false;
+        bool loadAllStoredStyles = false;
     };
 
     /**
@@ -101,7 +99,6 @@ class CORE_EXPORT QgsMapLayerFactory
      */
     static QgsMapLayer *createLayer( const QString &uri, const QString &name, Qgis::LayerType type, const LayerOptions &options,
                                      const QString &provider = QString() ) SIP_FACTORY;
-
 };
 
 #endif // QGSMAPLAYERFACTORY_H

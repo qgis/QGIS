@@ -53,11 +53,11 @@ void QgsLayerPropertiesDialog::loadMetadataFromFile()
   if ( !mLayer || !mMetadataWidget )
     return;
 
-  QgsSettings settings;  // where we keep last used filter in persistent state
+  QgsSettings settings; // where we keep last used filter in persistent state
   const QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Layer Metadata" ), lastUsedDir,
-                           tr( "QGIS Layer Metadata File" ) + " (*.qmd)" );
+                                                         tr( "QGIS Layer Metadata File" ) + " (*.qmd)" );
   if ( fileName.isNull() )
   {
     return;
@@ -87,11 +87,11 @@ void QgsLayerPropertiesDialog::saveMetadataToFile()
   if ( !mLayer || !mMetadataWidget )
     return;
 
-  QgsSettings settings;  // where we keep last used filter in persistent state
+  QgsSettings settings; // where we keep last used filter in persistent state
   const QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString outputFileName = QFileDialog::getSaveFileName( this, tr( "Save Layer Metadata as QMD" ),
-                           lastUsedDir, tr( "QMD File" ) + " (*.qmd)" );
+                                                         lastUsedDir, tr( "QMD File" ) + " (*.qmd)" );
   // return dialog focus on Mac
   activateWindow();
   raise();
@@ -167,10 +167,10 @@ void QgsLayerPropertiesDialog::loadStyleFromFile()
   const QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString fileName = QFileDialog::getOpenFileName(
-                       this,
-                       tr( "Load layer properties from style file" ),
-                       lastUsedDir,
-                       tr( "QGIS Layer Style File" ) + " (*.qml)" );
+    this,
+    tr( "Load layer properties from style file" ),
+    lastUsedDir,
+    tr( "QGIS Layer Style File" ) + " (*.qml)" );
   if ( fileName.isEmpty() )
     return;
 
@@ -203,10 +203,10 @@ void QgsLayerPropertiesDialog::saveStyleToFile()
   const QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   QString outputFileName = QFileDialog::getSaveFileName(
-                             this,
-                             tr( "Save layer properties as style file" ),
-                             lastUsedDir,
-                             tr( "QGIS Layer Style File" ) + " (*.qml)" );
+    this,
+    tr( "Save layer properties as style file" ),
+    lastUsedDir,
+    tr( "QGIS Layer Style File" ) + " (*.qml)" );
   // return dialog focus on Mac
   activateWindow();
   raise();
@@ -254,8 +254,7 @@ void QgsLayerPropertiesDialog::saveStyleAsDefault()
     // let the user know what went wrong
     QMessageBox::information( this,
                               tr( "Default Style" ),
-                              message
-                            );
+                              message );
     refocusDialog();
   }
 }
@@ -377,7 +376,8 @@ void QgsLayerPropertiesDialog::saveDefaultStyle()
         {
           if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
                                       QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ),
-                                      QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+                                      QMessageBox::Yes | QMessageBox::No )
+               == QMessageBox::No )
           {
             return;
           }
@@ -455,7 +455,8 @@ void QgsLayerPropertiesDialog::saveStyleAs()
         {
           if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
                                       QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ),
-                                      QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+                                      QMessageBox::Yes | QMessageBox::No )
+               == QMessageBox::No )
           {
             return;
           }
@@ -562,7 +563,7 @@ void QgsLayerPropertiesDialog::loadStyle()
         {
           QMessageBox::warning( this, tr( "Load Styles from Database" ),
                                 tr( "The retrieved style is not a valid named style. Error message: %1" )
-                                .arg( errorMsg ) );
+                                  .arg( errorMsg ) );
         }
         break;
       }
@@ -625,7 +626,7 @@ void QgsLayerPropertiesDialog::optionsStackedWidget_CurrentChanged( int index )
   if ( mMetadataPage && mBtnStyle && mBtnMetadata )
   {
     const bool isMetadataPanel = ( index == mOptStackedWidget->indexOf( mMetadataPage ) );
-    mBtnStyle->setVisible( ! isMetadataPanel );
+    mBtnStyle->setVisible( !isMetadataPanel );
     mBtnMetadata->setVisible( isMetadataPanel );
   }
 }

@@ -54,12 +54,12 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
      */
     struct FeatureToRender
     {
-      FeatureToRender( const QgsFeature &_f, int _flags )
-        : feat( _f )
-        , flags( _flags )
-      {}
-      QgsFeature feat;
-      int flags; // selected and/or draw markers
+        FeatureToRender( const QgsFeature &_f, int _flags )
+          : feat( _f )
+          , flags( _flags )
+        {}
+        QgsFeature feat;
+        int flags; // selected and/or draw markers
     };
 
     /**
@@ -68,7 +68,6 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
      */
     struct RenderJob
     {
-
         /**
          * Constructor for a render job, with the specified feature to render and symbol.
          *
@@ -97,37 +96,36 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
      */
     struct RenderLevel
     {
-      explicit RenderLevel( int z )
-        : zIndex( z )
-      {}
+        explicit RenderLevel( int z )
+          : zIndex( z )
+        {}
 
-      ~RenderLevel() { qDeleteAll( jobs ); }
-      int zIndex;
+        ~RenderLevel() { qDeleteAll( jobs ); }
+        int zIndex;
 
-      //! List of jobs to render, owned by this object.
-      QList<QgsRuleBasedRenderer::RenderJob *> jobs;
+        //! List of jobs to render, owned by this object.
+        QList<QgsRuleBasedRenderer::RenderJob *> jobs;
 
-      QgsRuleBasedRenderer::RenderLevel &operator=( const QgsRuleBasedRenderer::RenderLevel &rh )
-      {
-        zIndex = rh.zIndex;
-        qDeleteAll( jobs );
-        jobs.clear();
-        for ( auto it = rh.jobs.constBegin(); it != rh.jobs.constEnd(); ++it )
+        QgsRuleBasedRenderer::RenderLevel &operator=( const QgsRuleBasedRenderer::RenderLevel &rh )
         {
-          jobs << new RenderJob( *( *it ) );
+          zIndex = rh.zIndex;
+          qDeleteAll( jobs );
+          jobs.clear();
+          for ( auto it = rh.jobs.constBegin(); it != rh.jobs.constEnd(); ++it )
+          {
+            jobs << new RenderJob( *( *it ) );
+          }
+          return *this;
         }
-        return *this;
-      }
 
-      RenderLevel( const QgsRuleBasedRenderer::RenderLevel &other )
-        : zIndex( other.zIndex ), jobs()
-      {
-        for ( auto it = other.jobs.constBegin(); it != other.jobs.constEnd(); ++it )
+        RenderLevel( const QgsRuleBasedRenderer::RenderLevel &other )
+          : zIndex( other.zIndex ), jobs()
         {
-          jobs << new RenderJob( * ( *it ) );
+          for ( auto it = other.jobs.constBegin(); it != other.jobs.constEnd(); ++it )
+          {
+            jobs << new RenderJob( *( *it ) );
+          }
         }
-      }
-
     };
 
     //! Rendering queue: a list of rendering levels
@@ -360,7 +358,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         /**
          * Returns which legend keys match the feature
          */
-        QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext *context = nullptr );
+        QSet<QString> legendKeysForFeature( const QgsFeature &feature, QgsRenderContext *context = nullptr );
 
         /**
          * Returns the list of rules used to render the feature in a specific
@@ -468,7 +466,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 #endif
 
         Rule *mParent = nullptr; // parent rule (nullptr only for root rule)
-        std::unique_ptr< QgsSymbol > mSymbol;
+        std::unique_ptr<QgsSymbol> mSymbol;
         double mMaximumScale = 0;
         double mMinimumScale = 0;
         QString mFilterExp, mLabel, mDescription;
@@ -480,7 +478,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QString mRuleKey; // string used for unique identification of rule within renderer
 
         // temporary
-        std::unique_ptr< QgsExpression > mFilter;
+        std::unique_ptr<QgsExpression> mFilter;
         // temporary while rendering
         QSet<int> mSymbolNormZLevels;
         RuleList mActiveChildren;

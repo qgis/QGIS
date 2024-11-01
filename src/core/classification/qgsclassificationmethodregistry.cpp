@@ -74,4 +74,3 @@ QIcon QgsClassificationMethodRegistry::icon( const QString &id ) const
   else
     return QIcon();
 }
-

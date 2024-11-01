@@ -58,17 +58,17 @@ QWidget *QgsHanaSourceSelectDelegate::createEditor(
     QComboBox *cb = new QComboBox( parent );
     for ( const Qgis::WkbType type :
           QList<Qgis::WkbType>()
-          << Qgis::WkbType::Point
-          << Qgis::WkbType::LineString
-          << Qgis::WkbType::Polygon
-          << Qgis::WkbType::MultiPoint
-          << Qgis::WkbType::MultiLineString
-          << Qgis::WkbType::MultiPolygon
-          << Qgis::WkbType::CircularString
-          << Qgis::WkbType::GeometryCollection
-          << Qgis::WkbType::NoGeometry )
+            << Qgis::WkbType::Point
+            << Qgis::WkbType::LineString
+            << Qgis::WkbType::Polygon
+            << Qgis::WkbType::MultiPoint
+            << Qgis::WkbType::MultiLineString
+            << Qgis::WkbType::MultiPolygon
+            << Qgis::WkbType::CircularString
+            << Qgis::WkbType::GeometryCollection
+            << Qgis::WkbType::NoGeometry )
     {
-      cb->addItem( QgsHanaTableModel::iconForWkbType( type ), QgsWkbTypes::displayString( type ), static_cast< quint32>( type ) );
+      cb->addItem( QgsHanaTableModel::iconForWkbType( type ), QgsWkbTypes::displayString( type ), static_cast<quint32>( type ) );
     }
     return cb;
   }
@@ -122,7 +122,7 @@ void QgsHanaSourceSelectDelegate::setModelData(
 
       model->setData( index, QgsHanaTableModel::iconForWkbType( type ), Qt::DecorationRole );
       model->setData( index, type != Qgis::WkbType::Unknown ? QgsWkbTypes::displayString( type ) : tr( "Select…" ) );
-      model->setData( index, static_cast< quint32>( type ), Qt::UserRole + 2 );
+      model->setData( index, static_cast<quint32>( type ), Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsHanaTableModel::DbtmPkCol )
     {
@@ -162,8 +162,7 @@ void QgsHanaSourceSelectDelegate::setEditorData( QWidget *editor, const QModelIn
     if ( index.column() == QgsHanaTableModel::DbtmGeomType )
       cb->setCurrentIndex( cb->findData( index.data( Qt::UserRole + 2 ).toInt() ) );
 
-    if ( index.column() == QgsHanaTableModel::DbtmPkCol &&
-         !index.data( Qt::UserRole + 2 ).toStringList().isEmpty() )
+    if ( index.column() == QgsHanaTableModel::DbtmPkCol && !index.data( Qt::UserRole + 2 ).toStringList().isEmpty() )
     {
       const QStringList columns = index.data( Qt::UserRole + 2 ).toStringList();
       for ( const QString &colName : columns )
@@ -186,7 +185,7 @@ void QgsHanaSourceSelectDelegate::setEditorData( QWidget *editor, const QModelIn
   if ( le )
   {
     bool ok;
-    ( void )value.toInt( &ok );
+    ( void ) value.toInt( &ok );
     if ( index.column() == QgsHanaTableModel::DbtmSrid && !ok )
       value.clear();
 
@@ -228,8 +227,7 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
            this, &QgsHanaSourceSelect::treeWidgetSelectionChanged );
 
   const QgsSettings settings;
-  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addHanaDC" ), false ).toBool() ?
-                                     QAbstractItemView::ExtendedSelection : QAbstractItemView::MultiSelection );
+  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addHanaDC" ), false ).toBool() ? QAbstractItemView::ExtendedSelection : QAbstractItemView::MultiSelection );
 
   restoreGeometry( settings.value( QStringLiteral( "Windows/HanaSourceSelect/geometry" ) ).toByteArray() );
   mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/HanaSourceSelect/HoldDialogOpen" ), false ).toBool() );
@@ -237,7 +235,9 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
     mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "Windows/HanaSourceSelect/columnWidths/%1" )
-                                     .arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
+                                                          .arg( i ),
+                                                        mTablesTreeView->columnWidth( i ) )
+                                          .toInt() );
   }
 
   cbxAllowGeometrylessTables->setDisabled( true );
@@ -258,7 +258,7 @@ void QgsHanaSourceSelect::btnNew_clicked()
 void QgsHanaSourceSelect::btnDelete_clicked()
 {
   const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                      .arg( cmbConnections->currentText() );
+                        .arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -282,7 +282,7 @@ void QgsHanaSourceSelect::btnSave_clicked()
 void QgsHanaSourceSelect::btnLoad_clicked()
 {
   const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ),
-                           QDir::homePath(), tr( "XML files (*.xml *XML)" ) );
+                                                         QDir::homePath(), tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -354,7 +354,8 @@ QgsHanaSourceSelect::~QgsHanaSourceSelect()
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
     settings.setValue( QStringLiteral( "Windows/HanaSourceSelect/columnWidths/%1" )
-                       .arg( i ), mTablesTreeView->columnWidth( i ) );
+                         .arg( i ),
+                       mTablesTreeView->columnWidth( i ) );
   }
 }
 
@@ -457,10 +458,9 @@ void QgsHanaSourceSelect::btnConnect_clicked()
   connect( mColumnTypeThread.get(), &QThread::finished,
            this, &QgsHanaSourceSelect::columnThreadFinished );
   connect( mColumnTypeThread.get(), &QgsHanaColumnTypeThread::progress,
-           mColumnTypeTask.get(), [&]( int i, int n )
-  {
-    mColumnTypeTask->setProxyProgress( 100.0 * static_cast<double>( i ) / n );
-  } );
+           mColumnTypeTask.get(), [&]( int i, int n ) {
+             mColumnTypeTask->setProxyProgress( 100.0 * static_cast<double>( i ) / n );
+           } );
   connect( mColumnTypeThread.get(), &QgsHanaColumnTypeThread::progressMessage,
            this, &QgsHanaSourceSelect::progressMessage );
 

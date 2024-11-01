@@ -30,7 +30,6 @@
 class QgsArcGisRestSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-
     QString providerKey() const override { return QgsAfsProvider::AFS_PROVIDER_KEY; }
     QString text() const override { return QObject::tr( "ArcGIS REST Server" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 150; }
@@ -44,7 +43,8 @@ class QgsArcGisRestSourceSelectProvider : public QgsSourceSelectProvider
 class QgsArcGisRestSourceWidgetProvider : public QgsProviderSourceWidgetProvider
 {
   public:
-    QgsArcGisRestSourceWidgetProvider() : QgsProviderSourceWidgetProvider() {}
+    QgsArcGisRestSourceWidgetProvider()
+      : QgsProviderSourceWidgetProvider() {}
     QString providerKey() const override
     {
       return QgsAfsProvider::AFS_PROVIDER_KEY;

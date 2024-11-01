@@ -28,7 +28,7 @@ QgsLayoutItemGroupUndoCommand::QgsLayoutItemGroupUndoCommand( State s, QgsLayout
   , mLayout( layout )
   , mState( s )
 {
-  const QList< QgsLayoutItem * > items = group->items();
+  const QList<QgsLayoutItem *> items = group->items();
   for ( QgsLayoutItem *i : items )
   {
     mItemUuids.insert( i->uuid() );
@@ -60,7 +60,7 @@ void QgsLayoutItemGroupUndoCommand::switchState()
   if ( mState == Grouped )
   {
     // ungroup
-    QgsLayoutItemGroup *group = dynamic_cast< QgsLayoutItemGroup * >( mLayout->itemByUuid( mGroupUuid ) );
+    QgsLayoutItemGroup *group = dynamic_cast<QgsLayoutItemGroup *>( mLayout->itemByUuid( mGroupUuid ) );
     Q_ASSERT_X( group, "QgsLayoutItemGroupUndoCommand::switchState", "Could not find group" );
     group->removeItems();
     mLayout->removeLayoutItemPrivate( group );
@@ -69,7 +69,7 @@ void QgsLayoutItemGroupUndoCommand::switchState()
   else //Ungrouped
   {
     // find group by uuid...
-    QgsLayoutItemGroup *group = dynamic_cast< QgsLayoutItemGroup * >( mLayout->itemByUuid( mGroupUuid ) );
+    QgsLayoutItemGroup *group = dynamic_cast<QgsLayoutItemGroup *>( mLayout->itemByUuid( mGroupUuid ) );
     if ( !group )
     {
       group = new QgsLayoutItemGroup( mLayout );

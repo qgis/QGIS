@@ -57,8 +57,8 @@ class QgsSymbol;
 class CORE_EXPORT QgsFeature
 {
 #ifdef SIP_RUN
-#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01)
-#define sipType_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#if ( SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01 )
+#define sipType_QVariant ( ( sipWrapperType * ) sipTypeAsPyTypeObject( sipType_QVariant ) )
 #endif
 #endif
     Q_GADGET
@@ -69,11 +69,11 @@ class CORE_EXPORT QgsFeature
     Q_PROPERTY( QgsGeometry geometry READ geometry WRITE setGeometry )
 
   public:
-
 #ifdef SIP_RUN
     SIP_PYOBJECT __iter__() SIP_HOLDGIL;
     % MethodCode
-    QgsAttributes attributes = sipCpp->attributes();
+        QgsAttributes attributes
+      = sipCpp->attributes();
     PyObject *attrs = sipConvertFromType( &attributes, sipType_QgsAttributes, Py_None );
     sipRes = PyObject_GetIter( attrs );
     % End
@@ -81,9 +81,9 @@ class CORE_EXPORT QgsFeature
 
 #ifdef SIP_PYQT5_RUN
 #ifdef SIP_RUN
-    SIP_PYOBJECT __getitem__( int key ) SIP_HOLDGIL;
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->attributeCount() )
+        SIP_PYOBJECT
+      __getitem__( int key ) SIP_HOLDGIL;
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->attributeCount() )
     {
       PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsFeature
         PyObject *vartype = sipConvertFromEnum( v.type(), sipType_QVariant_Type );
         PyObject *args = PyTuple_Pack( 1, vartype );
         PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
-        sipRes = PyObject_Call( ( PyObject * )typeObj, args, nullptr );
+        sipRes = PyObject_Call( ( PyObject * ) typeObj, args, nullptr );
         Py_DECREF( args );
         Py_DECREF( vartype );
       }
@@ -152,9 +152,9 @@ class CORE_EXPORT QgsFeature
     }
     % End
 
-    SIP_PYOBJECT __getitem__( const QString &name ) SIP_HOLDGIL;
-    % MethodCode
-    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+        SIP_PYOBJECT
+      __getitem__( const QString &name ) SIP_HOLDGIL;
+    % MethodCode int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
       PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
@@ -174,7 +174,7 @@ class CORE_EXPORT QgsFeature
         PyObject *vartype = sipConvertFromEnum( v.type(), sipType_QVariant_Type );
         PyObject *args = PyTuple_Pack( 1, vartype );
         PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
-        sipRes = PyObject_Call( ( PyObject * )typeObj, args, nullptr );
+        sipRes = PyObject_Call( ( PyObject * ) typeObj, args, nullptr );
         Py_DECREF( args );
         Py_DECREF( vartype );
       }
@@ -228,9 +228,9 @@ class CORE_EXPORT QgsFeature
 
 #ifdef SIP_PYQT6_RUN
 #ifdef SIP_RUN
-    SIP_PYOBJECT __getitem__( int key ) SIP_HOLDGIL;
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->attributeCount() )
+        SIP_PYOBJECT
+      __getitem__( int key ) SIP_HOLDGIL;
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->attributeCount() )
     {
       PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -290,9 +290,9 @@ class CORE_EXPORT QgsFeature
     }
     % End
 
-    SIP_PYOBJECT __getitem__( const QString &name ) SIP_HOLDGIL;
-    % MethodCode
-    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+        SIP_PYOBJECT
+      __getitem__( const QString &name ) SIP_HOLDGIL;
+    % MethodCode int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
       PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
@@ -356,9 +356,9 @@ class CORE_EXPORT QgsFeature
 #endif
 
 #ifdef SIP_RUN
-    void __setitem__( int key, SIP_PYOBJECT value SIP_TYPEHINT( Optional[Union[bool, int, float, str, QVariant]] ) ) SIP_HOLDGIL;
-    % MethodCode
-    bool rv;
+      void
+      __setitem__( int key, SIP_PYOBJECT value SIP_TYPEHINT( Optional[Union[bool, int, float, str, QVariant]] ) ) SIP_HOLDGIL;
+    % MethodCode bool rv;
 
     if ( a1 == Py_None )
     {
@@ -406,9 +406,9 @@ class CORE_EXPORT QgsFeature
     }
     % End
 
-    void __setitem__( const QString &key, SIP_PYOBJECT value SIP_TYPEHINT( Optional[Union[bool, int, float, str, QVariant]] ) ) SIP_HOLDGIL;
-    % MethodCode
-    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+      void
+      __setitem__( const QString &key, SIP_PYOBJECT value SIP_TYPEHINT( Optional[Union[bool, int, float, str, QVariant]] ) ) SIP_HOLDGIL;
+    % MethodCode int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
       PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
@@ -453,10 +453,10 @@ class CORE_EXPORT QgsFeature
     }
     % End
 
-    void __delitem__( int key ) SIP_HOLDGIL;
-    % MethodCode
-    if ( a0 >= 0 && a0 < sipCpp->attributeCount() )
-      sipCpp->deleteAttribute( a0 );
+      void
+      __delitem__( int key ) SIP_HOLDGIL;
+    % MethodCode if ( a0 >= 0 && a0 < sipCpp->attributeCount() )
+        sipCpp->deleteAttribute( a0 );
     else
     {
       PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
@@ -464,9 +464,9 @@ class CORE_EXPORT QgsFeature
     }
     % End
 
-    void __delitem__( const QString &name ) SIP_HOLDGIL;
-    % MethodCode
-    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+      void
+      __delitem__( const QString &name ) SIP_HOLDGIL;
+    % MethodCode int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
       PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
@@ -476,9 +476,11 @@ class CORE_EXPORT QgsFeature
       sipCpp->deleteAttribute( fieldIdx );
     % End
 
-    long __hash__() const SIP_HOLDGIL;
+      long
+      __hash__() const SIP_HOLDGIL;
     % MethodCode
-    sipRes = qHash( *sipCpp );
+        sipRes
+      = qHash( *sipCpp );
     % End
 #endif
 
@@ -487,7 +489,7 @@ class CORE_EXPORT QgsFeature
      * \param id unique feature ID
      */
 #ifndef SIP_RUN
-    QgsFeature( QgsFeatureId id = FID_NULL );
+      QgsFeature( QgsFeatureId id = FID_NULL );
 #else
     QgsFeature( qint64 id = FID_NULL ) SIP_HOLDGIL;
 #endif
@@ -570,8 +572,7 @@ class CORE_EXPORT QgsFeature
      * \since QGIS 3.22.2
      */
     SIP_PYOBJECT attributeMap() const SIP_HOLDGIL SIP_TYPEHINT( Dict[str, Optional[object]] );
-    % MethodCode
-    const int fieldSize = sipCpp->fields().size();
+    % MethodCode const int fieldSize = sipCpp->fields().size();
     const int attributeSize = sipCpp->attributeCount();
     if ( fieldSize == 0 && attributeSize != 0 )
     {
@@ -656,8 +657,7 @@ class CORE_EXPORT QgsFeature
      * \see setAttributes()
      */
     bool setAttribute( int field, SIP_PYOBJECT attr SIP_TYPEHINT( Optional[Union[bool, int, float, str, QVariant]] ) ) SIP_HOLDGIL;
-    % MethodCode
-    bool rv;
+    % MethodCode bool rv;
 
     if ( a1 == Py_None )
     {
@@ -779,9 +779,8 @@ class CORE_EXPORT QgsFeature
      * \see setAttribute()
      */
     void deleteAttribute( int field ) SIP_HOLDGIL;
-    % MethodCode
-    if ( a0 >= 0 && a0 < sipCpp->attributeCount() )
-      sipCpp->deleteAttribute( a0 );
+    % MethodCode if ( a0 >= 0 && a0 < sipCpp->attributeCount() )
+        sipCpp->deleteAttribute( a0 );
     else
     {
       PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
@@ -865,11 +864,11 @@ class CORE_EXPORT QgsFeature
      * \since QGIS 3.6
      */
 #ifndef SIP_RUN
-    void setGeometry( std::unique_ptr< QgsAbstractGeometry > geometry );
+    void setGeometry( std::unique_ptr<QgsAbstractGeometry> geometry );
 #else
     void setGeometry( QgsAbstractGeometry *geometry SIP_TRANSFER ) SIP_HOLDGIL;
     % MethodCode
-    sipCpp->setGeometry( std::unique_ptr< QgsAbstractGeometry>( a0 ) );
+        sipCpp->setGeometry( std::unique_ptr<QgsAbstractGeometry>( a0 ) );
     % End
 #endif
 
@@ -940,8 +939,7 @@ class CORE_EXPORT QgsFeature
      * \see setFields()
      */
     void setAttribute( const QString &name, SIP_PYOBJECT value SIP_TYPEHINT( Optional[Union[bool, int, float, str, QVariant]] ) ) SIP_HOLDGIL;
-    % MethodCode
-    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+    % MethodCode int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
       PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
@@ -1001,7 +999,7 @@ class CORE_EXPORT QgsFeature
     bool deleteAttribute( const QString &name );
 #else
 
-    /**
+      /**
      * Clear's an attribute's value by its field \a name.
      *
      * Field map must be associated using setFields() before this method can be used.
@@ -1030,9 +1028,9 @@ class CORE_EXPORT QgsFeature
      * \throws KeyError if attribute name could not be matched.
      * \see setFields()
      */
-    bool deleteAttribute( const QString &name ) SIP_HOLDGIL;
-    % MethodCode
-    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+      bool
+      deleteAttribute( const QString &name ) SIP_HOLDGIL;
+    % MethodCode int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
       PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
@@ -1061,7 +1059,7 @@ class CORE_EXPORT QgsFeature
     Q_INVOKABLE QVariant attribute( const QString &name ) const;
 #else
 
-    /**
+        /**
      * Lookup attribute value by attribute \a name.
      *
      * Field map must be associated using setFields() before this method can be used.
@@ -1086,9 +1084,9 @@ class CORE_EXPORT QgsFeature
      * \throws KeyError if the field is not found
      * \see setFields
      */
-    Q_INVOKABLE SIP_PYOBJECT attribute( const QString &name ) const SIP_HOLDGIL;
-    % MethodCode
-    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+        Q_INVOKABLE SIP_PYOBJECT
+      attribute( const QString &name ) const SIP_HOLDGIL;
+    % MethodCode int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
       PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
@@ -1114,7 +1112,7 @@ class CORE_EXPORT QgsFeature
     QVariant attribute( int fieldIdx ) const;
 #else
 
-    /**
+        /**
      * Lookup attribute value from its index.
      *
      * Alternatively, in Python it is possible to directly retrieve a field's value via its index:
@@ -1138,7 +1136,8 @@ class CORE_EXPORT QgsFeature
      * \throws KeyError if the field is not found
      * \see setFields()
      */
-    SIP_PYOBJECT attribute( int fieldIdx ) const SIP_HOLDGIL;
+        SIP_PYOBJECT
+      attribute( int fieldIdx ) const SIP_HOLDGIL;
     % MethodCode
     {
       if ( a0 < 0 || a0 >= sipCpp->attributeCount() )
@@ -1167,14 +1166,15 @@ class CORE_EXPORT QgsFeature
     bool isUnsetValue( int fieldIdx ) const;
 #else
 
-    /**
+      /**
      * Returns TRUE if the attribute at the specified index is an unset value.
      *
      * \throws KeyError if the field is not found
      * \see QgsUnsetAttributeValue
      * \since QGIS 3.28
      */
-    bool isUnsetValue( int fieldIdx ) const SIP_HOLDGIL;
+      bool
+      isUnsetValue( int fieldIdx ) const SIP_HOLDGIL;
     % MethodCode
     {
       if ( a0 < 0 || a0 >= sipCpp->attributeCount() )
@@ -1235,21 +1235,20 @@ class CORE_EXPORT QgsFeature
     }
 
   private:
-
     QExplicitlySharedDataPointer<QgsFeaturePrivate> d;
 
 }; // class QgsFeature
 
 //! Writes the feature to stream out. QGIS version compatibility is not guaranteed.
-CORE_EXPORT QDataStream &operator<<( QDataStream &out, const QgsFeature &feature )  SIP_SKIP;
+CORE_EXPORT QDataStream &operator<<( QDataStream &out, const QgsFeature &feature ) SIP_SKIP;
 //! Reads a feature from stream in into feature. QGIS version compatibility is not guaranteed.
-CORE_EXPORT QDataStream &operator>>( QDataStream &in, QgsFeature &feature )  SIP_SKIP;
+CORE_EXPORT QDataStream &operator>>( QDataStream &in, QgsFeature &feature ) SIP_SKIP;
 
 // key = feature id, value = changed attributes
 #ifndef SIP_RUN
 typedef QMap<QgsFeatureId, QgsAttributeMap> QgsChangedAttributesMap;
 #else
-typedef QMap<qint64, QMap<int, QVariant> > QgsChangedAttributesMap;
+typedef QMap<qint64, QMap<int, QVariant>> QgsChangedAttributesMap;
 #endif
 
 #include "qgsgeometry.h"
@@ -1263,7 +1262,7 @@ typedef QMap<qint64, QgsGeometry> QgsGeometryMap;
 
 typedef QList<QgsFeature> QgsFeatureList;
 
-CORE_EXPORT uint qHash( const QgsFeature &key, uint seed = 0 )  SIP_SKIP;
+CORE_EXPORT uint qHash( const QgsFeature &key, uint seed = 0 ) SIP_SKIP;
 
 Q_DECLARE_METATYPE( QgsFeature )
 Q_DECLARE_METATYPE( QgsFeatureList )

@@ -31,7 +31,6 @@ class QTransform;
 class CORE_EXPORT QgsPainting
 {
   public:
-
     /**
      * Returns a QPainter::CompositionMode corresponding to a Qgis::BlendMode.
      *
@@ -95,8 +94,7 @@ class CORE_EXPORT QgsPainting
       const QImage &textureImage,
       float textureX1, float textureY1,
       float textureX2, float textureY2,
-      float textureX3, float textureY3
-    );
+      float textureX3, float textureY3 );
 
     /**
      * Returns the default Qt horizontal DPI.

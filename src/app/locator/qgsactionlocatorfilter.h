@@ -22,9 +22,7 @@
 #include "qgslocatorfilter.h"
 
 
-
 class QAction;
-
 
 
 class APP_EXPORT QgsActionLocatorFilter : public QgsLocatorFilter
@@ -32,7 +30,6 @@ class APP_EXPORT QgsActionLocatorFilter : public QgsLocatorFilter
     Q_OBJECT
 
   public:
-
     QgsActionLocatorFilter( const QList<QWidget *> &parentObjectsForActions, QObject *parent = nullptr );
     QgsActionLocatorFilter *clone() const override;
     QString name() const override { return QStringLiteral( "actions" ); }
@@ -43,12 +40,11 @@ class APP_EXPORT QgsActionLocatorFilter : public QgsLocatorFilter
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
+
   private:
+    QList<QWidget *> mActionParents;
 
-    QList< QWidget * > mActionParents;
-
-    void searchActions( const QString &string, QWidget *parent, QList< QAction *> &found );
-
+    void searchActions( const QString &string, QWidget *parent, QList<QAction *> &found );
 };
 
 

@@ -71,8 +71,8 @@ bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer *layer ) const
     if ( !layer->supportsEditing() )
     {
       QgisApp::instance()->messageBar()->pushMessage( tr( "Start editing failed" ),
-          tr( "Provider cannot be opened for editing" ),
-          Qgis::MessageLevel::Info );
+                                                      tr( "Provider cannot be opened for editing" ),
+                                                      Qgis::MessageLevel::Info );
       return false;
     }
 
@@ -142,8 +142,8 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer *layer, bool allowCance
         if ( !layer->rollBack() )
         {
           QgisApp::instance()->messageBar()->pushMessage( tr( "Error" ),
-              tr( "Problems during roll back" ),
-              Qgis::MessageLevel::Critical );
+                                                          tr( "Problems during roll back" ),
+                                                          Qgis::MessageLevel::Critical );
           res = false;
         }
         QgisApp::instance()->freezeCanvases( false );
@@ -186,7 +186,7 @@ bool QgsGuiVectorLayerTools::avoidIntersection( QgsVectorLayer *layer, QgsFeatur
   QgsFeatureIterator fi = layer->getFeatures( request );
   QgsFeature f;
 
-  const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures {{ layer, request.filterFids() }};
+  const QHash<QgsVectorLayer *, QSet<QgsFeatureId>> ignoreFeatures { { layer, request.filterFids() } };
 
   while ( fi.nextFeature( f ) )
   {
@@ -199,9 +199,7 @@ bool QgsGuiVectorLayerTools::avoidIntersection( QgsVectorLayer *layer, QgsFeatur
     {
       if ( errorMsg )
       {
-        *errorMsg = ( geom.isEmpty() ) ?
-                    tr( "The feature cannot be moved because 1 or more resulting geometries would be empty" ) :
-                    tr( "An error was reported during intersection removal" );
+        *errorMsg = ( geom.isEmpty() ) ? tr( "The feature cannot be moved because 1 or more resulting geometries would be empty" ) : tr( "An error was reported during intersection removal" );
       }
 
       return false;
@@ -218,8 +216,7 @@ void QgsGuiVectorLayerTools::commitError( QgsVectorLayer *vlayer ) const
   mv->setWindowTitle( tr( "Commit Errors" ) );
   mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1" ).arg( vlayer->name() )
                              + "\n\n"
-                             + tr( "Errors: %1\n" ).arg( vlayer->commitErrors().join( QLatin1String( "\n  " ) ) )
-                           );
+                             + tr( "Errors: %1\n" ).arg( vlayer->commitErrors().join( QLatin1String( "\n  " ) ) ) );
 
   QToolButton *showMore = new QToolButton();
   // store pointer to vlayer in data of QAction
@@ -243,5 +240,4 @@ void QgsGuiVectorLayerTools::commitError( QgsVectorLayer *vlayer ) const
     0,
     QgisApp::instance()->messageBar() );
   QgisApp::instance()->messageBar()->pushItem( errorMsg );
-
 }

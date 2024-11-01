@@ -46,7 +46,6 @@ namespace pal
 class CORE_EXPORT QgsLabelSearchTree
 {
   public:
-
     QgsLabelSearchTree();
     ~QgsLabelSearchTree();
 
@@ -74,7 +73,7 @@ class CORE_EXPORT QgsLabelSearchTree
      *
      * \since QGIS 3.20
      */
-    QList< QgsLabelPosition > allLabels() const;
+    QList<QgsLabelPosition> allLabels() const;
 
     /**
      * Returns label position(s) in given rectangle. QgsLabelSearchTree keeps ownership, don't delete the LabelPositions
@@ -126,12 +125,12 @@ class CORE_EXPORT QgsLabelSearchTree
     void setMapSettings( const QgsMapSettings &settings );
 
   private:
-    QgsGenericSpatialIndex< QgsLabelPosition > mSpatialIndex;
+    QgsGenericSpatialIndex<QgsLabelPosition> mSpatialIndex;
     long long mNextFeatureId = 1;
-    QHash< long long, QList< QgsLabelPosition * > > mLinkedLabelHash;
-    std::vector< std::unique_ptr< QgsLabelPosition > > mOwnedPositions;
-    QgsGenericSpatialIndex< QgsCalloutPosition > mCalloutIndex;
-    std::vector< std::unique_ptr< QgsCalloutPosition > > mOwnedCalloutPositions;
+    QHash<long long, QList<QgsLabelPosition *>> mLinkedLabelHash;
+    std::vector<std::unique_ptr<QgsLabelPosition>> mOwnedPositions;
+    QgsGenericSpatialIndex<QgsCalloutPosition> mCalloutIndex;
+    std::vector<std::unique_ptr<QgsCalloutPosition>> mOwnedCalloutPositions;
     QgsMapSettings mMapSettings;
     QTransform mTransform;
 

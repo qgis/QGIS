@@ -123,7 +123,6 @@ namespace QgsWfs
       Q_GADGET
 
     public:
-
       //! Output format for the response
       enum Format
       {
@@ -291,6 +290,6 @@ namespace QgsWfs
       QList<QgsProjectVersion> mVersions;
       QMap<QgsWfsParameter::Name, QgsWfsParameter> mWfsParameters;
   };
-}
+} // namespace QgsWfs
 
 #endif

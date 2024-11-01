@@ -39,7 +39,6 @@ class GUI_EXPORT QgsPointCloudAttributeComboBox : public QComboBox
     Q_PROPERTY( bool allowEmptyAttributeName READ allowEmptyAttributeName WRITE setAllowEmptyAttributeName )
 
   public:
-
     /**
      * \brief QgsPointCloudAttributeComboBox creates a combo box to display the fields of a layer.
      * The layer can be either manually given or dynamically set by connecting the signal QgsMapLayerComboBox::layerChanged to the slot setLayer.

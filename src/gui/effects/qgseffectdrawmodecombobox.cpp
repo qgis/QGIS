@@ -23,7 +23,7 @@
 QgsEffectDrawModeComboBox::QgsEffectDrawModeComboBox( QWidget *parent )
   : QComboBox( parent )
 {
-  QList < QPair<QgsPaintEffect::DrawMode, QString> > modes;
+  QList<QPair<QgsPaintEffect::DrawMode, QString>> modes;
   modes << qMakePair( QgsPaintEffect::Render, tr( "Render only" ) )
         << qMakePair( QgsPaintEffect::Modifier, tr( "Modifier only" ) )
         << qMakePair( QgsPaintEffect::ModifyAndRender, tr( "Render and modify" ) );

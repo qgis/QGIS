@@ -30,26 +30,20 @@ extern QgsSQLStatement::Node *parse( const QString &str, QString &parserErrorMsg
 ///////////////////////////////////////////////
 // operators
 
-const char *QgsSQLStatement::BINARY_OPERATOR_TEXT[] =
-{
+const char *QgsSQLStatement::BINARY_OPERATOR_TEXT[] = {
   // this must correspond (number and order of element) to the declaration of the enum BinaryOperator
   "OR", "AND",
   "=", "<>", "<=", ">=", "<", ">", "LIKE", "NOT LIKE", "ILIKE", "NOT ILIKE", "IS", "IS NOT",
   "+", "-", "*", "/", "//", "%", "^",
-  "||"
-};
+  "||" };
 
-const char *QgsSQLStatement::UNARY_OPERATOR_TEXT[] =
-{
+const char *QgsSQLStatement::UNARY_OPERATOR_TEXT[] = {
   // this must correspond (number and order of element) to the declaration of the enum UnaryOperator
-  "NOT", "-"
-};
+  "NOT", "-" };
 
-const char *QgsSQLStatement::JOIN_TYPE_TEXT[] =
-{
+const char *QgsSQLStatement::JOIN_TYPE_TEXT[] = {
   // this must correspond (number and order of element) to the declaration of the enum JoinType
-  "", "LEFT", "LEFT OUTER", "RIGHT", "RIGHT OUTER", "CROSS", "INNER", "FULL"
-};
+  "", "LEFT", "LEFT OUTER", "RIGHT", "RIGHT OUTER", "CROSS", "INNER", "FULL" };
 
 //////
 
@@ -77,13 +71,11 @@ QString QgsSQLStatement::quotedIdentifier( QString name )
 QString QgsSQLStatement::quotedIdentifierIfNeeded( const QString &name )
 {
   // This might not be complete, but it must be at least what we recognize
-  static const char *const RESERVED_KEYWORDS[] =
-  {
+  static const char *const RESERVED_KEYWORDS[] = {
     "AND", "OR", "NOT", "LIKE", "IN", "IS", "BETWEEN", "NULL", "SELECT", "ALL", "DISTINCT", "CAST", "AS",
     "FROM", "JOIN", "ON", "USING", "WHERE", "ORDER", "BY", "ASC", "DESC",
     "LEFT", "RIGHT", "INNER", "OUTER", "CROSS", "FULL", "NATURAL", "UNION",
-    "OFFSET", "LIMIT", "GROUP", "HAVING"
-  };
+    "OFFSET", "LIMIT", "GROUP", "HAVING" };
 
   for ( size_t i = 0; i < sizeof( RESERVED_KEYWORDS ) / sizeof( RESERVED_KEYWORDS[0] ); ++i )
   {
@@ -220,7 +212,7 @@ void QgsSQLStatement::RecursiveVisitor::visit( const QgsSQLStatement::NodeJoin &
  * \brief Internal use.
  * \note not available in Python bindings
  */
-class QgsSQLStatementCollectTableNames: public QgsSQLStatement::RecursiveVisitor
+class QgsSQLStatementCollectTableNames : public QgsSQLStatement::RecursiveVisitor
 {
   public:
     typedef QPair<QString, QString> TableColumnPair;
@@ -304,8 +296,10 @@ QString QgsSQLStatement::NodeList::dump() const
   const auto constMList = mList;
   for ( Node *n : constMList )
   {
-    if ( !first ) msg += QLatin1String( ", " );
-    else first = false;
+    if ( !first )
+      msg += QLatin1String( ", " );
+    else
+      first = false;
     msg += n->dump();
   }
   return msg;
@@ -775,5 +769,4 @@ QgsSQLStatement::Node *QgsSQLStatement::NodeCast::clone() const
 QgsSQLStatementFragment::QgsSQLStatementFragment( const QString &fragment )
   : QgsSQLStatement( fragment, true )
 {
-
 }

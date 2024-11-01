@@ -30,4 +30,3 @@ QgsSymbolWidgetContext QgsTiledSceneRendererWidget::context() const
 {
   return mContext;
 }
-

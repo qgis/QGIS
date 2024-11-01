@@ -40,7 +40,6 @@ class QgsMapDecoration;
 class CORE_EXPORT QgsTimeDuration
 {
   public:
-
     //! Years
     int years = 0;
     //! Months
@@ -61,16 +60,13 @@ class CORE_EXPORT QgsTimeDuration
      */
     bool isNull() const
     {
-      return !years && !months && !days &&
-             !hours && !minutes && !seconds;
+      return !years && !months && !days && !hours && !minutes && !seconds;
     }
 
     // TODO c++20 - replace with = default
     bool operator==( const QgsTimeDuration &other ) const
     {
-      return years == other.years && months == other.months && weeks == other.weeks &&
-             days == other.days && hours == other.hours &&
-             minutes == other.minutes && seconds == other.seconds;
+      return years == other.years && months == other.months && weeks == other.weeks && days == other.days && hours == other.hours && minutes == other.minutes && seconds == other.seconds;
     }
 
     bool operator!=( const QgsTimeDuration &other ) const
@@ -105,7 +101,6 @@ class CORE_EXPORT QgsTimeDuration
      * Creates a QgsTimeDuration from a \a string value.
      */
     static QgsTimeDuration fromString( const QString &string, bool &ok );
-
 };
 #endif
 
@@ -121,7 +116,6 @@ class CORE_EXPORT QgsTimeDuration
 class CORE_EXPORT QgsTemporalUtils
 {
   public:
-
     /**
      * Calculates the temporal range for a \a project.
      *
@@ -141,33 +135,33 @@ class CORE_EXPORT QgsTemporalUtils
      *
      * \since QGIS 3.20
      */
-    static QList< QgsDateTimeRange > usedTemporalRangesForProject( QgsProject *project );
+    static QList<QgsDateTimeRange> usedTemporalRangesForProject( QgsProject *project );
 
     //! Contains settings relating to exporting animations
     struct AnimationExportSettings
     {
-      //! Dictates the overall temporal range of the animation.
-      QgsDateTimeRange animationRange;
+        //! Dictates the overall temporal range of the animation.
+        QgsDateTimeRange animationRange;
 
-      //! Duration of individual export frames
-      QgsInterval frameDuration;
+        //! Duration of individual export frames
+        QgsInterval frameDuration;
 
-      //! Destination directory for created image files.
-      QString outputDirectory;
+        //! Destination directory for created image files.
+        QString outputDirectory;
 
-      /**
+        /**
        * The filename template for exporting the frames.
        *
        * This must be in format ``prefix####.format``, where number of
        * \a ``#`` characters represents how many 0's should be left-padded to the frame number
        * e.g. ``my###.jpg`` will create frames ``my001.jpg``, ``my002.jpg``, etc
        */
-      QString fileNameTemplate;
+        QString fileNameTemplate;
 
-      //! List of decorations to draw onto exported frames.
-      QList<QgsMapDecoration *> decorations;
+        //! List of decorations to draw onto exported frames.
+        QList<QgsMapDecoration *> decorations;
 
-      /**
+        /**
        * Contains the list of all available temporal ranges which have data available.
        *
        * The list can be a list of non-contiguous ranges (i.e. containing gaps)
@@ -178,15 +172,14 @@ class CORE_EXPORT QgsTemporalUtils
        *
        * \since QGIS 3.30
        */
-      QList<QgsDateTimeRange> availableTemporalRanges;
+        QList<QgsDateTimeRange> availableTemporalRanges;
 
-      /**
+        /**
        * Target animation frame rate in frames per second.
        *
        * \since QGIS 3.26
        */
-      double frameRate = 30;
-
+        double frameRate = 30;
     };
 
     /**
@@ -242,7 +235,7 @@ class CORE_EXPORT QgsTemporalUtils
      * \returns calculated list of date times
      * \since QGIS 3.20
      */
-    static QList< QDateTime > calculateDateTimesUsingDuration( const QDateTime &start, const QDateTime &end, const QString &duration, bool &ok SIP_OUT, bool &maxValuesExceeded SIP_OUT, int maxValues = -1 );
+    static QList<QDateTime> calculateDateTimesUsingDuration( const QDateTime &start, const QDateTime &end, const QString &duration, bool &ok SIP_OUT, bool &maxValuesExceeded SIP_OUT, int maxValues = -1 );
 
 #ifndef SIP_RUN
 
@@ -257,7 +250,7 @@ class CORE_EXPORT QgsTemporalUtils
      * \note Not available in Python bindings
      * \since QGIS 3.20
      */
-    static QList< QDateTime > calculateDateTimesUsingDuration( const QDateTime &start, const QDateTime &end, const QgsTimeDuration &duration, bool &maxValuesExceeded SIP_OUT, int maxValues = -1 );
+    static QList<QDateTime> calculateDateTimesUsingDuration( const QDateTime &start, const QDateTime &end, const QgsTimeDuration &duration, bool &maxValuesExceeded SIP_OUT, int maxValues = -1 );
 #endif
 
     /**
@@ -269,8 +262,7 @@ class CORE_EXPORT QgsTemporalUtils
      * \returns calculated list of date times
      * \since QGIS 3.20
      */
-    static QList< QDateTime > calculateDateTimesFromISO8601( const QString &string, bool &ok SIP_OUT, bool &maxValuesExceeded SIP_OUT, int maxValues = -1 );
-
+    static QList<QDateTime> calculateDateTimesFromISO8601( const QString &string, bool &ok SIP_OUT, bool &maxValuesExceeded SIP_OUT, int maxValues = -1 );
 };
 
 

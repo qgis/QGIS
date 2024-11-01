@@ -30,7 +30,6 @@ class GUI_EXPORT QgsQsciLexerBash : public QsciLexer
 {
     Q_OBJECT
   public:
-
     enum Styles
     {
       Default = 0, // whitespace
@@ -38,15 +37,15 @@ class GUI_EXPORT QgsQsciLexerBash : public QsciLexer
       LineComment = 2,
       Number = 3, // numeric literal
       Keyword = 4,
-      String = 5, // string literal
+      String = 5,             // string literal
       SingleQuotedString = 6, // string literal
       Operator = 7,
       Identifier = 8,
-      ScalarVariable = 9, // identifier
-      Parameter = 10, // identifier
+      ScalarVariable = 9,         // identifier
+      Parameter = 10,             // identifier
       BacktickQuotedCommand = 11, // string literal
-      HeredocDelimiter = 12, // operator
-      HeredocQuotedString = 13 // string literal
+      HeredocDelimiter = 12,      // operator
+      HeredocQuotedString = 13    // string literal
     };
 
     QgsQsciLexerBash( QObject *parent = nullptr );
@@ -55,23 +54,20 @@ class GUI_EXPORT QgsQsciLexerBash : public QsciLexer
     int lexerId() const override;
     QString description( int style ) const override;
     const char *keywords( int set ) const override;
-
-
 };
 
 class GUI_EXPORT QgsQsciLexerBatch : public QsciLexer
 {
     Q_OBJECT
   public:
-
     enum Styles
     {
-      Default = 0, // whitespace
-      Comment = 1, // "Fake label"
-      Word = 2, // keyword
-      Label = 3, // "real label"
-      Hide = 4, // hide command -- @echo off/on
-      Command = 5, // external command/program
+      Default = 0,    // whitespace
+      Comment = 1,    // "Fake label"
+      Word = 2,       // keyword
+      Label = 3,      // "real label"
+      Hide = 4,       // hide command -- @echo off/on
+      Command = 5,    // external command/program
       Identifier = 6, // argument / variable
       Operator = 7,
     };
@@ -82,8 +78,6 @@ class GUI_EXPORT QgsQsciLexerBatch : public QsciLexer
     int lexerId() const override;
     QString description( int style ) const override;
     const char *keywords( int set ) const override;
-
-
 };
 ///@endcond
 #endif
@@ -104,7 +98,6 @@ class GUI_EXPORT QgsCodeEditorShell : public QgsCodeEditor
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCodeEditorShell.
      *
@@ -119,9 +112,7 @@ class GUI_EXPORT QgsCodeEditorShell : public QgsCodeEditor
     void initializeLexer() override;
 
   private:
-
     Qgis::ScriptLanguage mLanguage = Qgis::ScriptLanguage::Unknown;
-
 };
 
 #endif // QGSCODEEDITORSHELL_H

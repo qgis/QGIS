@@ -34,9 +34,7 @@ class QgsRenderContext;
  */
 class CORE_EXPORT QgsScreenProperties
 {
-
   public:
-
     /**
      * Constructor for invalid properties.
      */
@@ -120,7 +118,6 @@ class CORE_EXPORT QgsScreenProperties
     void updateRenderContextForScreen( QgsRenderContext &context ) const;
 
   private:
-
     bool mValid = false;
     double mDevicePixelRatio = 1;
     double mPhysicalDpi = 96;

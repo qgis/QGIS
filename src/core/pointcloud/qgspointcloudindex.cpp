@@ -30,18 +30,12 @@
 #include "qgspointcloudstatistics.h"
 #include "qgslogger.h"
 
-IndexedPointCloudNode::IndexedPointCloudNode():
-  mD( -1 ),
-  mX( 0 ),
-  mY( 0 ),
-  mZ( 0 )
+IndexedPointCloudNode::IndexedPointCloudNode()
+  : mD( -1 ), mX( 0 ), mY( 0 ), mZ( 0 )
 {}
 
-IndexedPointCloudNode::IndexedPointCloudNode( int _d, int _x, int _y, int _z ):
-  mD( _d ),
-  mX( _x ),
-  mY( _y ),
-  mZ( _z )
+IndexedPointCloudNode::IndexedPointCloudNode( int _d, int _x, int _y, int _z )
+  : mD( _d ), mX( _x ), mY( _y ), mZ( _z )
 {}
 
 IndexedPointCloudNode IndexedPointCloudNode::parentNode() const
@@ -103,10 +97,7 @@ QgsPointCloudCacheKey::QgsPointCloudCacheKey( const IndexedPointCloudNode &n, co
 
 bool QgsPointCloudCacheKey::operator==( const QgsPointCloudCacheKey &other ) const
 {
-  return mNode == other.mNode &&
-         mUri == other.mUri &&
-         mRequest == other.mRequest &&
-         mFilterExpression == other.mFilterExpression;
+  return mNode == other.mNode && mUri == other.mUri && mRequest == other.mRequest && mFilterExpression == other.mFilterExpression;
 }
 
 uint qHash( const QgsPointCloudCacheKey &key )
@@ -128,7 +119,6 @@ QgsPointCloudDataBounds::QgsPointCloudDataBounds( qint64 xmin, qint64 ymin, qint
   , mYMax( ymax )
   , mZMax( zmax )
 {
-
 }
 
 qint64 QgsPointCloudDataBounds::xMin() const
@@ -164,9 +154,8 @@ qint64 QgsPointCloudDataBounds::zMax() const
 QgsRectangle QgsPointCloudDataBounds::mapExtent( const QgsVector3D &offset, const QgsVector3D &scale ) const
 {
   return QgsRectangle(
-           mXMin * scale.x() + offset.x(), mYMin * scale.y() + offset.y(),
-           mXMax * scale.x() + offset.x(), mYMax * scale.y() + offset.y()
-         );
+    mXMin * scale.x() + offset.x(), mYMin * scale.y() + offset.y(),
+    mXMax * scale.x() + offset.x(), mYMax * scale.y() + offset.y() );
 }
 
 QgsDoubleRange QgsPointCloudDataBounds::zRange( const QgsVector3D &offset, const QgsVector3D &scale ) const
@@ -229,7 +218,7 @@ QgsPointCloudDataBounds QgsPointCloudIndex::nodeBounds( const IndexedPointCloudN
   qint64 xMin, yMin, zMin, xMax, yMax, zMax;
 
   const qint64 d = mRootBounds.xMax() - mRootBounds.xMin();
-  const double dLevel = ( double )d / pow( 2, n.d() );
+  const double dLevel = ( double ) d / pow( 2, n.d() );
 
   xMin = round( mRootBounds.xMin() + dLevel * n.x() );
   xMax = round( mRootBounds.xMin() + dLevel * ( n.x() + 1 ) );
@@ -371,9 +360,9 @@ QgsPointCloudStatistics QgsPointCloudIndex::metadataStatistics() const
     QVariantList classes = metadataClasses( name );
     for ( QVariant c : classes )
     {
-      s.classCount[ c.toInt() ] = metadataClassStatistic( name, c, Qgis::Statistic::Count ).toInt();
+      s.classCount[c.toInt()] = metadataClassStatistic( name, c, Qgis::Statistic::Count ).toInt();
     }
-    statsMap[ name ] = s;
+    statsMap[name] = s;
   }
   return QgsPointCloudStatistics( pointCount(), statsMap );
 }

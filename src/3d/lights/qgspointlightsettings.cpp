@@ -40,8 +40,8 @@ Qt3DCore::QEntity *QgsPointLightSettings::createEntity( const Qgs3DMapSettings &
   Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity();
   Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
   lightTransform->setTranslation( QVector3D( position().x(),
-                                  position().y(),
-                                  position().z() ) );
+                                             position().y(),
+                                             position().z() ) );
 
   Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight;
   light->setColor( color() );
@@ -113,7 +113,5 @@ void QgsPointLightSettings::readXml( const QDomElement &elem, const QgsReadWrite
 
 bool QgsPointLightSettings::operator==( const QgsPointLightSettings &other )
 {
-  return mPosition == other.mPosition && mColor == other.mColor && mIntensity == other.mIntensity &&
-         mConstantAttenuation == other.mConstantAttenuation && mLinearAttenuation == other.mLinearAttenuation &&
-         mQuadraticAttenuation == other.mQuadraticAttenuation;
+  return mPosition == other.mPosition && mColor == other.mColor && mIntensity == other.mIntensity && mConstantAttenuation == other.mConstantAttenuation && mLinearAttenuation == other.mLinearAttenuation && mQuadraticAttenuation == other.mQuadraticAttenuation;
 }

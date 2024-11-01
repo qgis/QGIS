@@ -27,7 +27,6 @@ QgsSphere::QgsSphere( double x, double y, double z, double radius )
   , mCenterZ( z )
   , mRadius( radius )
 {
-
 }
 
 bool QgsSphere::isNull() const
@@ -83,4 +82,3 @@ QgsBox3D QgsSphere::boundingBox() const
   return QgsBox3D( mCenterX - mRadius, mCenterY - mRadius, mCenterZ - mRadius,
                    mCenterX + mRadius, mCenterY + mRadius, mCenterZ + mRadius );
 }
-

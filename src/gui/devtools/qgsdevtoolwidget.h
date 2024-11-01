@@ -29,12 +29,10 @@ class GUI_EXPORT QgsDevToolWidget : public QgsPanelWidget
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsDevToolWidget, with the specified \a parent widget.
      */
     QgsDevToolWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
-
 };
 
 #endif // QGSDEVTOOLWIDGET_H

@@ -20,7 +20,7 @@
 QgsStacCollection::QgsStacCollection( const QString &id,
                                       const QString &version,
                                       const QString &description,
-                                      const QVector< QgsStacLink > &links,
+                                      const QVector<QgsStacLink> &links,
                                       const QString &license,
                                       const QgsStacExtent &extent )
   : QgsStacCatalog( id, version, description, links )
@@ -61,7 +61,7 @@ QString QgsStacCollection::toHtml() const
     html += QStringLiteral( "</ul>\n" );
   }
 
-  if ( ! mConformanceClasses.isEmpty() )
+  if ( !mConformanceClasses.isEmpty() )
   {
     html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QStringLiteral( "Conformance Classes" ) );
     html += QStringLiteral( "<ul>\n" );
@@ -72,7 +72,7 @@ QString QgsStacCollection::toHtml() const
     html += QStringLiteral( "</ul>\n" );
   }
 
-  if ( ! mProviders.isEmpty() )
+  if ( !mProviders.isEmpty() )
   {
     html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QStringLiteral( "Providers" ) );
     QTextDocument descr;
@@ -94,20 +94,20 @@ QString QgsStacCollection::toHtml() const
   if ( mExtent.spatialExtent().is3D() )
     extentString = mExtent.spatialExtent().toString();
   else
-    extentString =  mExtent.spatialExtent().toRectangle().toString();
+    extentString = mExtent.spatialExtent().toRectangle().toString();
   html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "overall" ), extentString );
 
 
   if ( mExtent.hasDetailedSpatialExtents() )
   {
-    const QVector< QgsBox3D > extents = mExtent.detailedSpatialExtents();
+    const QVector<QgsBox3D> extents = mExtent.detailedSpatialExtents();
     for ( const QgsBox3D &extent : extents )
     {
       QString extentString;
       if ( extent.is3D() )
         extentString = extent.toString();
       else
-        extentString =  extent.toRectangle().toString();
+        extentString = extent.toRectangle().toString();
       html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "detailed" ), extentString );
     }
   }
@@ -123,7 +123,7 @@ QString QgsStacCollection::toHtml() const
   if ( mExtent.hasDetailedTemporalExtents() )
   {
     html += QStringLiteral( "Detailed extents:\n" );
-    const QVector< QgsDateTimeRange > extents = mExtent.detailedTemporalExtents();
+    const QVector<QgsDateTimeRange> extents = mExtent.detailedTemporalExtents();
     for ( const QgsDateTimeRange &extent : extents )
     {
       html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QStringLiteral( "Temporal Extent" ) );
@@ -134,7 +134,7 @@ QString QgsStacCollection::toHtml() const
     }
   }
 
-  if ( ! mSummaries.isEmpty() )
+  if ( !mSummaries.isEmpty() )
   {
     html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QStringLiteral( "Summaries" ) );
     html += QStringLiteral( "<table class=\"list-view\">\n" );
@@ -156,7 +156,7 @@ QString QgsStacCollection::toHtml() const
     html += QStringLiteral( "</table><br/>\n" );
   }
 
-  if ( ! mAssets.isEmpty() )
+  if ( !mAssets.isEmpty() )
   {
     QTextDocument descr;
     html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QStringLiteral( "Assets" ) );

@@ -36,7 +36,7 @@
 QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayerName( layer->name() )
-  , mDataProvider( qgis::down_cast< const QgsVectorTileDataProvider* >( layer->dataProvider() )->clone() )
+  , mDataProvider( qgis::down_cast<const QgsVectorTileDataProvider *>( layer->dataProvider() )->clone() )
   , mRenderer( layer->renderer()->clone() )
   , mLayerBlendMode( layer->blendMode() )
   , mDrawTileBoundaries( layer->isTileBorderRenderingEnabled() )
@@ -73,10 +73,10 @@ QgsVectorTileLayerRenderer::~QgsVectorTileLayerRenderer() = default;
 
 bool QgsVectorTileLayerRenderer::render()
 {
-  std::unique_ptr< QgsScopedRuntimeProfile > profile;
+  std::unique_ptr<QgsScopedRuntimeProfile> profile;
   if ( mEnableProfile )
   {
-    profile = std::make_unique< QgsScopedRuntimeProfile >( mLayerName, QStringLiteral( "rendering" ), layerId() );
+    profile = std::make_unique<QgsScopedRuntimeProfile>( mLayerName, QStringLiteral( "rendering" ), layerId() );
     if ( mPreparationTime > 0 )
       QgsApplication::profiler()->record( QObject::tr( "Create renderer" ), mPreparationTime / 1000.0, QStringLiteral( "rendering" ) );
   }
@@ -86,10 +86,10 @@ bool QgsVectorTileLayerRenderer::render()
   if ( ctx.renderingStopped() )
     return false;
 
-  std::unique_ptr< QgsScopedRuntimeProfile > preparingProfile;
+  std::unique_ptr<QgsScopedRuntimeProfile> preparingProfile;
   if ( mEnableProfile )
   {
-    preparingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Preparing render" ), QStringLiteral( "rendering" ) );
+    preparingProfile = std::make_unique<QgsScopedRuntimeProfile>( QObject::tr( "Preparing render" ), QStringLiteral( "rendering" ) );
   }
 
   mDataProvider->moveToThread( QThread::currentThread() );
@@ -120,8 +120,11 @@ bool QgsVectorTileLayerRenderer::render()
 
   mTileRange = mTileMatrix.tileRangeFromExtent( ctx.extent() );
   QgsDebugMsgLevel( QStringLiteral( "Vector tiles range X: %1 - %2  Y: %3 - %4" )
-                    .arg( mTileRange.startColumn() ).arg( mTileRange.endColumn() )
-                    .arg( mTileRange.startRow() ).arg( mTileRange.endRow() ), 2 );
+                      .arg( mTileRange.startColumn() )
+                      .arg( mTileRange.endColumn() )
+                      .arg( mTileRange.startRow() )
+                      .arg( mTileRange.endRow() ),
+                    2 );
 
   // view center is used to sort the order of tiles for fetching and rendering
   const QPointF viewCenter = mTileMatrix.mapToTileCoordinates( ctx.extent().center() );
@@ -129,14 +132,14 @@ bool QgsVectorTileLayerRenderer::render()
   if ( !mTileRange.isValid() )
   {
     QgsDebugMsgLevel( QStringLiteral( "Vector tiles - outside of range" ), 2 );
-    return true;   // nothing to do
+    return true; // nothing to do
   }
 
   preparingProfile.reset();
-  std::unique_ptr< QgsScopedRuntimeProfile > renderingProfile;
+  std::unique_ptr<QgsScopedRuntimeProfile> renderingProfile;
   if ( mEnableProfile )
   {
-    renderingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering" ), QStringLiteral( "rendering" ) );
+    renderingProfile = std::make_unique<QgsScopedRuntimeProfile>( QObject::tr( "Rendering" ), QStringLiteral( "rendering" ) );
   }
 
   std::unique_ptr<QgsVectorTileLoader> asyncLoader;
@@ -152,8 +155,7 @@ bool QgsVectorTileLayerRenderer::render()
   else
   {
     asyncLoader.reset( new QgsVectorTileLoader( mDataProvider.get(), mTileMatrixSet, mTileRange, mTileZoomToFetch, viewCenter, mFeedback.get(), renderContext()->rendererUsage() ) );
-    QObject::connect( asyncLoader.get(), &QgsVectorTileLoader::tileRequestFinished, asyncLoader.get(), [this]( const QgsVectorTileRawData & rawTile )
-    {
+    QObject::connect( asyncLoader.get(), &QgsVectorTileLoader::tileRequestFinished, asyncLoader.get(), [this]( const QgsVectorTileRawData &rawTile ) {
       QgsDebugMsgLevel( QStringLiteral( "Got tile asynchronously: " ) + rawTile.id.toString(), 2 );
       if ( !rawTile.data.isEmpty() )
         decodeAndDrawTile( rawTile );
@@ -174,11 +176,11 @@ bool QgsVectorTileLayerRenderer::render()
   // Draw background style if present
   mRenderer->renderBackground( ctx );
 
-  QMap<QString, QSet<QString> > requiredFields = mRenderer->usedAttributes( ctx );
+  QMap<QString, QSet<QString>> requiredFields = mRenderer->usedAttributes( ctx );
 
   if ( mLabelProvider )
   {
-    const QMap<QString, QSet<QString> > requiredFieldsLabeling = mLabelProvider->usedAttributes( ctx, mTileZoomToRender );
+    const QMap<QString, QSet<QString>> requiredFieldsLabeling = mLabelProvider->usedAttributes( ctx, mTileZoomToRender );
     for ( auto it = requiredFieldsLabeling.begin(); it != requiredFieldsLabeling.end(); ++it )
     {
       requiredFields[it.key()].unite( it.value() );
@@ -193,7 +195,7 @@ bool QgsVectorTileLayerRenderer::render()
   if ( mLabelProvider )
   {
     mLabelProvider->setFields( mPerLayerFields );
-    QSet<QString> attributeNames;  // we don't need this - already got referenced columns in provider constructor
+    QSet<QString> attributeNames; // we don't need this - already got referenced columns in provider constructor
     if ( !mLabelProvider->prepare( ctx, attributeNames ) )
     {
       ctx.labelingEngine()->removeProvider( mLabelProvider );

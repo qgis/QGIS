@@ -27,7 +27,7 @@
 #include <QLabel>
 
 QgsModelGroupBoxDefinitionDialog::QgsModelGroupBoxDefinitionDialog( const QgsProcessingModelGroupBox &box,
-    QWidget *parent )
+                                                                    QWidget *parent )
   : QDialog( parent )
   , mBox( box )
 {
@@ -75,4 +75,3 @@ QgsProcessingModelGroupBox QgsModelGroupBoxDefinitionDialog::groupBox() const
   box.setDescription( mCommentEdit->toPlainText() );
   return box;
 }
-

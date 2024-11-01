@@ -36,15 +36,13 @@
 #include <QAction>
 #include <QMenu>
 
-const QMap<QString, QString> QgsCodeEditorPython::sCompletionPairs
-{
-  {"(", ")"},
-  {"[", "]"},
-  {"{", "}"},
-  {"'", "'"},
-  {"\"", "\""}
-};
-const QStringList QgsCodeEditorPython::sCompletionSingleCharacters{"`", "*"};
+const QMap<QString, QString> QgsCodeEditorPython::sCompletionPairs {
+  { "(", ")" },
+  { "[", "]" },
+  { "{", "}" },
+  { "'", "'" },
+  { "\"", "\"" } };
+const QStringList QgsCodeEditorPython::sCompletionSingleCharacters { "`", "*" };
 ///@cond PRIVATE
 const QgsSettingsEntryString *QgsCodeEditorPython::settingCodeFormatter = new QgsSettingsEntryString( QStringLiteral( "formatter" ), sTreePythonCodeEditor, QStringLiteral( "autopep8" ), QStringLiteral( "Python code autoformatter" ) );
 const QgsSettingsEntryInteger *QgsCodeEditorPython::settingMaxLineLength = new QgsSettingsEntryInteger( QStringLiteral( "max-line-length" ), sTreePythonCodeEditor, 80, QStringLiteral( "Maximum line length" ) );
@@ -138,7 +136,7 @@ void QgsCodeEditorPython::initializeLexer()
   pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::TripleSingleQuote ), QsciLexerPython::TripleSingleQuotedString );
   pyLexer->setColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::TripleDoubleQuote ), QsciLexerPython::TripleDoubleQuotedString );
 
-  std::unique_ptr< QsciAPIs > apis = std::make_unique< QsciAPIs >( pyLexer );
+  std::unique_ptr<QsciAPIs> apis = std::make_unique<QsciAPIs>( pyLexer );
 
   QgsSettings settings;
   if ( mAPISFilesList.isEmpty() )
@@ -255,15 +253,13 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
       if ( startLine != endLine && ( eText == "\"" || eText == "'" ) )
       {
         replaceSelectedText(
-          QString( "%1%1%1%2%3%3%3" ).arg( eText, selectedText(), sCompletionPairs[eText] )
-        );
+          QString( "%1%1%1%2%3%3%3" ).arg( eText, selectedText(), sCompletionPairs[eText] ) );
         setSelection( startLine, startPos + 3, endLine, endPos + 3 );
       }
       else
       {
         replaceSelectedText(
-          QString( "%1%2%3" ).arg( eText, selectedText(), sCompletionPairs[eText] )
-        );
+          QString( "%1%2%3" ).arg( eText, selectedText(), sCompletionPairs[eText] ) );
         setSelection( startLine, startPos + 1, endLine, endPos + 1 );
       }
       event->accept();
@@ -274,8 +270,7 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
       int startLine, startPos, endLine, endPos;
       getSelection( &startLine, &startPos, &endLine, &endPos );
       replaceSelectedText(
-        QString( "%1%2%1" ).arg( eText, selectedText() )
-      );
+        QString( "%1%2%1" ).arg( eText, selectedText() ) );
       setSelection( startLine, startPos + 1, endLine, endPos + 1 );
       event->accept();
       return;
@@ -323,7 +318,7 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
       }
 
       // When closing character is entered inside an opening/closing pair, shift the cursor
-      else if ( sCompletionPairs.key( eText ) != ""  && nextChar == eText )
+      else if ( sCompletionPairs.key( eText ) != "" && nextChar == eText )
       {
         setCursorPosition( line, column + 1 );
         event->accept();
@@ -338,8 +333,7 @@ void QgsCodeEditorPython::keyPressEvent( QKeyEvent *event )
       // character is a space, a colon, or a closing character
       else if ( !isCursorInsideStringLiteralOrComment()
                 && sCompletionPairs.contains( eText )
-                && ( nextChar.isEmpty() || nextChar.at( 0 ).isSpace() || nextChar == ":" || sCompletionPairs.key( nextChar ) != "" )
-              )
+                && ( nextChar.isEmpty() || nextChar.at( 0 ).isSpace() || nextChar == ":" || sCompletionPairs.key( nextChar ) != "" ) )
       {
         // Check if user is not entering triple quotes
         if ( !( ( eText == "\"" || eText == "'" ) && prevChar == eText ) )
@@ -381,8 +375,8 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
                                         "    return '_ImportError'\n"
                                         "  options={'line_length': %1, 'profile': '%2', 'known_first_party': ['qgis', 'console', 'processing', 'plugins']}\n"
                                         "  return isort.code(script, **options)\n" )
-                                      .arg( maxLineLength )
-                                      .arg( formatter == QLatin1String( "black" ) ? QStringLiteral( "black" ) : QString() );
+                                        .arg( maxLineLength )
+                                        .arg( formatter == QLatin1String( "black" ) ? QStringLiteral( "black" ) : QString() );
 
     if ( !QgsPythonRunner::run( defineSortImports ) )
     {
@@ -422,8 +416,8 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
                                      "    return '_ImportError'\n"
                                      "  options={'aggressive': %1, 'max_line_length': %2}\n"
                                      "  return autopep8.fix_code(script, options=options)\n" )
-                                   .arg( level )
-                                   .arg( maxLineLength );
+                                     .arg( level )
+                                     .arg( maxLineLength );
 
     if ( !QgsPythonRunner::run( defineReformat ) )
     {
@@ -468,8 +462,8 @@ QString QgsCodeEditorPython::reformatCodeString( const QString &string )
                                      "    return '_ImportError'\n"
                                      "  options={'string_normalization': %1, 'line_length': %2}\n"
                                      "  return black.format_str(script, mode=black.Mode(**options))\n" )
-                                   .arg( QgsProcessingUtils::variantToPythonLiteral( normalize ) )
-                                   .arg( maxLineLength );
+                                     .arg( QgsProcessingUtils::variantToPythonLiteral( normalize ) )
+                                     .arg( maxLineLength );
 
     if ( !QgsPythonRunner::run( defineReformat ) )
     {
@@ -566,7 +560,7 @@ bool QgsCodeEditorPython::loadScript( const QString &script )
   }
 
   QTextStream in( &file );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
   in.setCodec( "UTF-8" );
 #endif
 
@@ -659,16 +653,16 @@ bool QgsCodeEditorPython::checkSyntax()
   const QString originalText = text();
 
   const QString defineCheckSyntax = QStringLiteral(
-                                      "def __check_syntax(script):\n"
-                                      "  try:\n"
-                                      "    compile(script.encode('utf-8'), '', 'exec')\n"
-                                      "  except SyntaxError as detail:\n"
-                                      "    eline = detail.lineno or 1\n"
-                                      "    eline -= 1\n"
-                                      "    ecolumn = detail.offset or 1\n"
-                                      "    edescr = detail.msg\n"
-                                      "    return '!!!!'.join([str(eline), str(ecolumn), edescr])\n"
-                                      "  return ''" );
+    "def __check_syntax(script):\n"
+    "  try:\n"
+    "    compile(script.encode('utf-8'), '', 'exec')\n"
+    "  except SyntaxError as detail:\n"
+    "    eline = detail.lineno or 1\n"
+    "    eline -= 1\n"
+    "    ecolumn = detail.offset or 1\n"
+    "    edescr = detail.msg\n"
+    "    return '!!!!'.join([str(eline), str(ecolumn), edescr])\n"
+    "  return ''" );
 
   if ( !QgsPythonRunner::run( defineCheckSyntax ) )
   {
@@ -811,7 +805,6 @@ void QgsCodeEditorPython::toggleComment()
 QgsQsciLexerPython::QgsQsciLexerPython( QObject *parent )
   : QsciLexerPython( parent )
 {
-
 }
 
 const char *QgsQsciLexerPython::keywords( int set ) const

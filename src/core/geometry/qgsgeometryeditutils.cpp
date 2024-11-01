@@ -31,9 +31,9 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry
     return Qgis::GeometryOperationResult::InvalidInputGeometryType;
   }
 
-  QVector< QgsCurvePolygon * > polygonList;
-  QgsCurvePolygon *curvePoly = qgsgeometry_cast< QgsCurvePolygon * >( geom );
-  QgsGeometryCollection *multiGeom = qgsgeometry_cast< QgsGeometryCollection * >( geom );
+  QVector<QgsCurvePolygon *> polygonList;
+  QgsCurvePolygon *curvePoly = qgsgeometry_cast<QgsCurvePolygon *>( geom );
+  QgsGeometryCollection *multiGeom = qgsgeometry_cast<QgsGeometryCollection *>( geom );
   if ( curvePoly )
   {
     polygonList.append( curvePoly );
@@ -43,7 +43,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry
     polygonList.reserve( multiGeom->numGeometries() );
     for ( int i = 0; i < multiGeom->numGeometries(); ++i )
     {
-      polygonList.append( qgsgeometry_cast< QgsCurvePolygon * >( multiGeom->geometryN( i ) ) );
+      polygonList.append( qgsgeometry_cast<QgsCurvePolygon *>( multiGeom->geometryN( i ) ) );
     }
   }
   else
@@ -65,7 +65,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry
   ringGeom->prepareGeometry();
 
   //for each polygon, test if inside outer ring and no intersection with other interior ring
-  QVector< QgsCurvePolygon * >::const_iterator polyIter = polygonList.constBegin();
+  QVector<QgsCurvePolygon *>::const_iterator polyIter = polygonList.constBegin();
   for ( ; polyIter != polygonList.constEnd(); ++polyIter )
   {
     if ( ringGeom->within( *polyIter ) )
@@ -123,11 +123,11 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
       std::unique_ptr<QgsCurvePolygon> poly;
       if ( QgsWkbTypes::flatType( curve->wkbType() ) == Qgis::WkbType::LineString )
       {
-        poly = std::make_unique< QgsPolygon >();
+        poly = std::make_unique<QgsPolygon>();
       }
       else
       {
-        poly = std::make_unique< QgsCurvePolygon >();
+        poly = std::make_unique<QgsCurvePolygon>();
       }
       poly->setExteriorRing( qgsgeometry_cast<QgsCurve *>( part.release() ) );
       added = geomCollection->addGeometry( poly.release() );
@@ -136,12 +136,12 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
               || QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::Triangle
               || QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::CurvePolygon )
     {
-      if ( const QgsCurvePolygon *curvePolygon = qgsgeometry_cast< const QgsCurvePolygon *>( part.get() ) )
+      if ( const QgsCurvePolygon *curvePolygon = qgsgeometry_cast<const QgsCurvePolygon *>( part.get() ) )
       {
         if ( QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiPolygon && curvePolygon->hasCurvedSegments() )
         {
           //need to segmentize part as multipolygon does not support curves
-          std::unique_ptr< QgsCurvePolygon > polygon( curvePolygon->toPolygon() );
+          std::unique_ptr<QgsCurvePolygon> polygon( curvePolygon->toPolygon() );
           part = std::move( polygon );
         }
         added = geomCollection->addGeometry( qgsgeometry_cast<QgsCurvePolygon *>( part.release() ) );
@@ -152,7 +152,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
       }
     }
     else if ( QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::MultiPolygon
-              ||  QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::MultiSurface )
+              || QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::MultiSurface )
     {
       std::unique_ptr<QgsGeometryCollection> parts( static_cast<QgsGeometryCollection *>( part.release() ) );
 
@@ -181,7 +181,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
             || QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiCurve )
   {
     if ( QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::MultiLineString
-         ||  QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::MultiCurve )
+         || QgsWkbTypes::flatType( part->wkbType() ) == Qgis::WkbType::MultiCurve )
     {
       std::unique_ptr<QgsGeometryCollection> parts( qgsgeometry_cast<QgsGeometryCollection *>( part.release() ) );
 
@@ -208,7 +208,7 @@ Qgis::GeometryOperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry
         if ( QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiLineString && curve->hasCurvedSegments() )
         {
           //need to segmentize part as multilinestring does not support curves
-          std::unique_ptr< QgsCurve > line( curve->segmentize() );
+          std::unique_ptr<QgsCurve> line( curve->segmentize() );
           part = std::move( line );
         }
         added = geomCollection->addGeometry( qgsgeometry_cast<QgsCurve *>( part.release() ) );
@@ -276,12 +276,10 @@ bool QgsGeometryEditUtils::deletePart( QgsAbstractGeometry *geom, int partNum )
 }
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( const QgsAbstractGeometry &geom,
-    const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
-    bool &haveInvalidGeometry,
-    const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures
-                                                                             )
+                                                                               const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
+                                                                               bool &haveInvalidGeometry,
+                                                                               const QHash<QgsVectorLayer *, QSet<QgsFeatureId>> &ignoreFeatures )
 {
-
   haveInvalidGeometry = false;
   std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( &geom ) );
   if ( !geomEngine )
@@ -300,19 +298,19 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
   if ( avoidIntersectionsLayers.isEmpty() )
     return nullptr; //no intersections stored in project does not mean error
 
-  QVector< QgsGeometry > nearGeometries;
+  QVector<QgsGeometry> nearGeometries;
 
   //go through list, convert each layer to vector layer and call QgsVectorLayer::removePolygonIntersections for each
   for ( QgsVectorLayer *currentLayer : avoidIntersectionsLayers )
   {
     QgsFeatureIds ignoreIds;
-    const QHash<QgsVectorLayer *, QSet<qint64> >::const_iterator ignoreIt = ignoreFeatures.constFind( currentLayer );
+    const QHash<QgsVectorLayer *, QSet<qint64>>::const_iterator ignoreIt = ignoreFeatures.constFind( currentLayer );
     if ( ignoreIt != ignoreFeatures.constEnd() )
       ignoreIds = ignoreIt.value();
 
     QgsFeatureIterator fi = currentLayer->getFeatures( QgsFeatureRequest( geom.boundingBox() )
-                            .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
-                            .setNoAttributes() );
+                                                         .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
+                                                         .setNoAttributes() );
     QgsFeature f;
     while ( fi.nextFeature( f ) )
     {
@@ -334,13 +332,13 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
     return nullptr;
   }
 
-  const std::unique_ptr< QgsAbstractGeometry > combinedGeometries( geomEngine->combine( nearGeometries ) );
+  const std::unique_ptr<QgsAbstractGeometry> combinedGeometries( geomEngine->combine( nearGeometries ) );
   if ( !combinedGeometries )
   {
     return nullptr;
   }
 
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geomEngine->difference( combinedGeometries.get() ) );
+  std::unique_ptr<QgsAbstractGeometry> diffGeom( geomEngine->difference( combinedGeometries.get() ) );
   if ( !diffGeom || geomEngine->isEqual( diffGeom.get() ) )
   {
     return nullptr;

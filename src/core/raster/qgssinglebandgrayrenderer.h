@@ -32,7 +32,7 @@ class QDomElement;
  * \ingroup core
   * \brief Raster renderer pipe for single band gray.
   */
-class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
+class CORE_EXPORT QgsSingleBandGrayRenderer : public QgsRasterRenderer
 {
   public:
     enum Gradient
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
-    QList< QPair< QString, QColor > > legendSymbologyItems() const override;
+    QList<QPair<QString, QColor>> legendSymbologyItems() const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
 
     QList<int> usesBands() const override;
@@ -110,8 +110,8 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
     int mGrayBand;
     Gradient mGradient;
-    std::unique_ptr< QgsContrastEnhancement > mContrastEnhancement;
-    std::unique_ptr< QgsColorRampLegendNodeSettings > mLegendSettings;
+    std::unique_ptr<QgsContrastEnhancement> mContrastEnhancement;
+    std::unique_ptr<QgsColorRampLegendNodeSettings> mLegendSettings;
 };
 
 #endif // QGSSINGLEBANDGRAYRENDERER_H

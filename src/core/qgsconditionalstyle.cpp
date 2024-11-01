@@ -292,7 +292,7 @@ QList<QgsConditionalStyle> QgsConditionalStyle::matchingConditionalStyles( const
   return matchingstyles;
 }
 
-QgsConditionalStyle QgsConditionalStyle::matchingConditionalStyle( const QList<QgsConditionalStyle> &styles, const QVariant &value,  QgsExpressionContext &context )
+QgsConditionalStyle QgsConditionalStyle::matchingConditionalStyle( const QList<QgsConditionalStyle> &styles, const QVariant &value, QgsExpressionContext &context )
 {
   const auto constStyles = styles;
   for ( const QgsConditionalStyle &style : constStyles )
@@ -356,8 +356,8 @@ bool QgsConditionalStyle::operator==( const QgsConditionalStyle &other ) const
          && mFont == other.mFont
          && mBackColor == other.mBackColor
          && mTextColor == other.mTextColor
-         && static_cast< bool >( mSymbol ) == static_cast< bool >( other.mSymbol )
-         && ( ! mSymbol || QgsSymbolLayerUtils::symbolProperties( mSymbol.get() ) == QgsSymbolLayerUtils::symbolProperties( other.mSymbol.get() ) );
+         && static_cast<bool>( mSymbol ) == static_cast<bool>( other.mSymbol )
+         && ( !mSymbol || QgsSymbolLayerUtils::symbolProperties( mSymbol.get() ) == QgsSymbolLayerUtils::symbolProperties( other.mSymbol.get() ) );
 }
 
 bool QgsConditionalStyle::operator!=( const QgsConditionalStyle &other ) const
@@ -411,4 +411,3 @@ bool QgsConditionalStyle::readXml( const QDomNode &node, const QgsReadWriteConte
   }
   return true;
 }
-

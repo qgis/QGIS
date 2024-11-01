@@ -27,11 +27,10 @@ class QgsDatabaseQueryLoggerProxyModel;
  * \class QgsDatabaseQueryLoggerTreeView
  * \brief A custom QTreeView subclass for showing logged database queries.
  */
-class QgsDatabaseQueryLoggerTreeView: public QTreeView
+class QgsDatabaseQueryLoggerTreeView : public QTreeView
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsDatabaseQueryLoggerTreeView, attached to the specified \a logger.
      */
@@ -49,7 +48,6 @@ class QgsDatabaseQueryLoggerTreeView: public QTreeView
     void contextMenu( QPoint point );
 
   private:
-
     void expandChildren( const QModelIndex &index );
     QMenu *mMenu = nullptr;
     QgsAppQueryLogger *mLogger = nullptr;
@@ -68,14 +66,13 @@ class QgsDatabaseQueryLoggerPanelWidget : public QgsDevToolWidget, private Ui::Q
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsDatabaseQueryLoggerPanelWidget, linked with the specified \a logger.
      */
     QgsDatabaseQueryLoggerPanelWidget( QgsAppQueryLogger *logger, QWidget *parent );
     ~QgsDatabaseQueryLoggerPanelWidget() override;
-  private:
 
+  private:
     QgsDatabaseQueryLoggerTreeView *mTreeView = nullptr;
     QgsAppQueryLogger *mLogger = nullptr;
 };

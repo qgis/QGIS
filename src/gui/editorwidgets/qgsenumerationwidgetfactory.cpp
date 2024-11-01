@@ -21,7 +21,7 @@
 #include "qgsvectordataprovider.h"
 
 QgsEnumerationWidgetFactory::QgsEnumerationWidgetFactory( const QString &name )
-  :  QgsEditorWidgetFactory( name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 

@@ -58,7 +58,7 @@ QString QgsProjectPointCartesianAlgorithm::shortHelpString() const
 
 QList<int> QgsProjectPointCartesianAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint );
 }
 
 Qgis::ProcessingSourceType QgsProjectPointCartesianAlgorithm::outputLayerType() const
@@ -73,13 +73,13 @@ QgsProjectPointCartesianAlgorithm *QgsProjectPointCartesianAlgorithm::createInst
 
 void QgsProjectPointCartesianAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterNumber > bearing = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "BEARING" ), QObject::tr( "Bearing (degrees from North)" ), Qgis::ProcessingNumberParameterType::Double, 0, false );
+  std::unique_ptr<QgsProcessingParameterNumber> bearing = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "BEARING" ), QObject::tr( "Bearing (degrees from North)" ), Qgis::ProcessingNumberParameterType::Double, 0, false );
   bearing->setIsDynamic( true );
   bearing->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Bearing" ), QObject::tr( "Bearing (degrees from North)" ), QgsPropertyDefinition::Double ) );
   bearing->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( bearing.release() );
 
-  std::unique_ptr< QgsProcessingParameterDistance > distance = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), 1, QStringLiteral( "INPUT" ), false );
+  std::unique_ptr<QgsProcessingParameterDistance> distance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), 1, QStringLiteral( "INPUT" ), false );
   distance->setIsDynamic( true );
   distance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Distance" ), QObject::tr( "Projection distance" ), QgsPropertyDefinition::Double ) );
   distance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -96,12 +96,12 @@ bool QgsProjectPointCartesianAlgorithm::prepareAlgorithm( const QVariantMap &par
   mBearing = parameterAsDouble( parameters, QStringLiteral( "BEARING" ), context );
   mDynamicBearing = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "BEARING" ) );
   if ( mDynamicBearing )
-    mBearingProperty = parameters.value( QStringLiteral( "BEARING" ) ).value< QgsProperty >();
+    mBearingProperty = parameters.value( QStringLiteral( "BEARING" ) ).value<QgsProperty>();
 
   mDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
   mDynamicDistance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
   if ( mDynamicDistance )
-    mDistanceProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >();
+    mDistanceProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value<QgsProperty>();
 
   return true;
 }
@@ -121,8 +121,8 @@ QgsFeatureList QgsProjectPointCartesianAlgorithm::processFeature( const QgsFeatu
     const QgsGeometry g = f.geometry();
     if ( QgsWkbTypes::isMultiType( g.wkbType() ) )
     {
-      const QgsMultiPoint *mp = static_cast< const QgsMultiPoint * >( g.constGet() );
-      std::unique_ptr< QgsMultiPoint > result = std::make_unique< QgsMultiPoint >();
+      const QgsMultiPoint *mp = static_cast<const QgsMultiPoint *>( g.constGet() );
+      std::unique_ptr<QgsMultiPoint> result = std::make_unique<QgsMultiPoint>();
       result->reserve( mp->numGeometries() );
       for ( int i = 0; i < mp->numGeometries(); ++i )
       {
@@ -133,7 +133,7 @@ QgsFeatureList QgsProjectPointCartesianAlgorithm::processFeature( const QgsFeatu
     }
     else
     {
-      const QgsPoint *p = static_cast< const QgsPoint * >( g.constGet() );
+      const QgsPoint *p = static_cast<const QgsPoint *>( g.constGet() );
       const QgsPoint result = p->project( distance, bearing );
       f.setGeometry( QgsGeometry( result.clone() ) );
     }
@@ -143,4 +143,3 @@ QgsFeatureList QgsProjectPointCartesianAlgorithm::processFeature( const QgsFeatu
 }
 
 ///@endcond
-

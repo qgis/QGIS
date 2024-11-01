@@ -30,7 +30,7 @@ class QgsLayerTreeViewLowAccuracyIndicatorProvider : public QgsLayerTreeViewIndi
     explicit QgsLayerTreeViewLowAccuracyIndicatorProvider( QgsLayerTreeView *view );
 
   protected:
-    void connectSignals( QgsMapLayer *layer ) override ;
+    void connectSignals( QgsMapLayer *layer ) override;
     void disconnectSignals( QgsMapLayer *layer ) override;
 
   protected slots:
@@ -40,7 +40,6 @@ class QgsLayerTreeViewLowAccuracyIndicatorProvider : public QgsLayerTreeViewIndi
     QString iconName( QgsMapLayer *layer ) override;
     QString tooltipText( QgsMapLayer *layer ) override;
     bool acceptLayer( QgsMapLayer *layer ) override;
-
 };
 
 #endif // QGSLAYERTREEVIEWLOWACCURACYINDICATOR_H

@@ -29,7 +29,7 @@ namespace QgsWcs
    * Create describe coverage document
    */
   QDomDocument createDescribeCoverageDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-      const QgsServerRequest &request );
+                                               const QgsServerRequest &request );
 
   /**
    * Output WCS DescribeCoverage response

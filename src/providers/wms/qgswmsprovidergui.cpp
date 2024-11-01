@@ -31,7 +31,6 @@
 class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-
     QString providerKey() const override { return QStringLiteral( "wms" ); }
     QString text() const override { return QStringLiteral( "WMS/WMTS" ); } // untranslatable string as acronym for this particular case. Use QObject::tr() otherwise
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 10; }
@@ -45,7 +44,6 @@ class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider
 class QgsXyzSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-
     QString providerKey() const override { return QStringLiteral( "xyz" ); }
     QString text() const override { return QStringLiteral( "XYZ" ); } // untranslatable string as acronym for this particular case. Use QObject::tr() otherwise
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 40; }
@@ -59,7 +57,8 @@ class QgsXyzSourceSelectProvider : public QgsSourceSelectProvider
 class QgsXyzSourceWidgetProvider : public QgsProviderSourceWidgetProvider
 {
   public:
-    QgsXyzSourceWidgetProvider() : QgsProviderSourceWidgetProvider() {}
+    QgsXyzSourceWidgetProvider()
+      : QgsProviderSourceWidgetProvider() {}
     QString providerKey() const override
     {
       return QStringLiteral( "xyz" );
@@ -92,7 +91,7 @@ class QgsXyzSourceWidgetProvider : public QgsProviderSourceWidgetProvider
 QgsWmsProviderGuiMetadata::QgsWmsProviderGuiMetadata()
   : QgsProviderGuiMetadata( QgsWmsProvider::WMS_KEY )
 {
-  mWmstConfigWidgetFactory = std::make_unique< QgsWmstSettingsConfigWidgetFactory > () ;
+  mWmstConfigWidgetFactory = std::make_unique<QgsWmstSettingsConfigWidgetFactory>();
 }
 
 QList<QgsSourceSelectProvider *> QgsWmsProviderGuiMetadata::sourceSelectProviders()

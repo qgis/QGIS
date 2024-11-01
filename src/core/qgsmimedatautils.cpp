@@ -59,9 +59,10 @@ QgsMimeDataUtils::Uri::Uri( const QString &encData )
     filePath = decoded.at( 9 );
 
   QgsDebugMsgLevel( QStringLiteral( "type:%1 key:%2 name:%3 uri:%4 supportedCRS:%5 supportedFormats:%6" )
-                    .arg( layerType, providerKey, name, uri,
-                          supportedCrs.join( ',' ),
-                          supportedFormats.join( ',' ) ), 2 );
+                      .arg( layerType, providerKey, name, uri,
+                            supportedCrs.join( ',' ),
+                            supportedFormats.join( ',' ) ),
+                    2 );
 }
 
 QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
@@ -76,7 +77,7 @@ QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
     case Qgis::LayerType::Vector:
     {
       layerType = QStringLiteral( "vector" );
-      wkbType = qobject_cast< QgsVectorLayer *>( layer )->wkbType();
+      wkbType = qobject_cast<QgsVectorLayer *>( layer )->wkbType();
       break;
     }
     case Qgis::LayerType::Raster:
@@ -127,8 +128,7 @@ QString QgsMimeDataUtils::Uri::data() const
                    layerId,
                    pId,
                    QgsWkbTypes::displayString( wkbType ),
-                   filePath
-                 } );
+                   filePath } );
 }
 
 QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error ) const

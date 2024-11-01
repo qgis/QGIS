@@ -30,9 +30,7 @@
  */
 class QgsPdalMergeAlgorithm : public QgsPdalAlgorithmBase
 {
-
   public:
-
     QgsPdalMergeAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;

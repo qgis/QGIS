@@ -21,12 +21,11 @@ QgsCodeEditorDockWidget::QgsCodeEditorDockWidget( const QString &windowGeometryS
   : QWidget( nullptr )
 {
   mDockableWidgetHelper = new QgsDockableWidgetHelper( true, tr( "Code Editor" ),
-      this, QgsDockableWidgetHelper::sOwnerWindow, Qt::BottomDockWidgetArea, QStringList(), true, windowGeometrySettingsKey, usePersistentWidget );
+                                                       this, QgsDockableWidgetHelper::sOwnerWindow, Qt::BottomDockWidgetArea, QStringList(), true, windowGeometrySettingsKey, usePersistentWidget );
 
   mDockToggleButton = mDockableWidgetHelper->createDockUndockToolButton();
   mDockToggleButton->setToolTip( tr( "Dock Code Editor" ) );
-  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [ = ]()
-  {
+  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [=]() {
     close();
   } );
 

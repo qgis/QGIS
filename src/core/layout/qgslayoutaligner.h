@@ -34,41 +34,39 @@ class QgsLayout;
  */
 class CORE_EXPORT QgsLayoutAligner
 {
-
   public:
-
     //! Alignment options
     enum Alignment
     {
-      AlignLeft, //!< Align left edges
+      AlignLeft,    //!< Align left edges
       AlignHCenter, //!< Align horizontal centers
-      AlignRight, //!< Align right edges
-      AlignTop, //!< Align top edges
+      AlignRight,   //!< Align right edges
+      AlignTop,     //!< Align top edges
       AlignVCenter, //!< Align vertical centers
-      AlignBottom, //!< Align bottom edges
+      AlignBottom,  //!< Align bottom edges
     };
 
     //! Distribution options
     enum Distribution
     {
-      DistributeLeft, //!< Distribute left edges
+      DistributeLeft,    //!< Distribute left edges
       DistributeHCenter, //!< Distribute horizontal centers
-      DistributeHSpace, //!< Distribute horizontal equispaced
-      DistributeRight, //!< Distribute right edges
-      DistributeTop, //!< Distribute top edges
+      DistributeHSpace,  //!< Distribute horizontal equispaced
+      DistributeRight,   //!< Distribute right edges
+      DistributeTop,     //!< Distribute top edges
       DistributeVCenter, //!< Distribute vertical centers
-      DistributeVSpace, //!< Distribute vertical equispaced
-      DistributeBottom, //!< Distribute bottom edges
+      DistributeVSpace,  //!< Distribute vertical equispaced
+      DistributeBottom,  //!< Distribute bottom edges
     };
 
     //! Resize options
     enum Resize
     {
       ResizeNarrowest, //!< Resize width to match narrowest width
-      ResizeWidest, //!< Resize width to match widest width
-      ResizeShortest, //!< Resize height to match shortest height
-      ResizeTallest, //!< Resize height to match tallest height
-      ResizeToSquare, //!< Resize items to square
+      ResizeWidest,    //!< Resize width to match widest width
+      ResizeShortest,  //!< Resize height to match shortest height
+      ResizeTallest,   //!< Resize height to match tallest height
+      ResizeToSquare,  //!< Resize items to square
     };
 
     /**
@@ -76,29 +74,28 @@ class CORE_EXPORT QgsLayoutAligner
      *
      * The \a alignment argument specifies the method to use when aligning the items.
      */
-    static void alignItems( QgsLayout *layout, const QList< QgsLayoutItem * > &items, Alignment alignment );
+    static void alignItems( QgsLayout *layout, const QList<QgsLayoutItem *> &items, Alignment alignment );
 
     /**
      * Distributes a set of \a items from a \a layout in place.
      *
      * The \a distribution argument specifies the method to use when distributing the items.
      */
-    static void distributeItems( QgsLayout *layout, const QList< QgsLayoutItem * > &items, Distribution distribution );
+    static void distributeItems( QgsLayout *layout, const QList<QgsLayoutItem *> &items, Distribution distribution );
 
     /**
      * Resizes a set of \a items from a \a layout in place.
      *
      * The \a resize argument specifies the method to use when resizing the items.
      */
-    static void resizeItems( QgsLayout *layout, const QList< QgsLayoutItem * > &items, Resize resize );
+    static void resizeItems( QgsLayout *layout, const QList<QgsLayoutItem *> &items, Resize resize );
 
   private:
-
     /**
      * Returns the bounding rectangle of the selected items in
      * scene coordinates.
     */
-    static QRectF boundingRectOfItems( const QList< QgsLayoutItem * > &items );
+    static QRectF boundingRectOfItems( const QList<QgsLayoutItem *> &items );
 
     static QString undoText( Alignment alignment );
     static QString undoText( Distribution distribution );
@@ -111,8 +108,6 @@ class CORE_EXPORT QgsLayoutAligner
      * The \a distribution argument specifies the method to use when distributing the items.
      */
     static void distributeEquispacedItems( QgsLayout *layout, const QList<QgsLayoutItem *> &items, QgsLayoutAligner::Distribution distribution );
-
-
 };
 
 #endif //QGSLAYOUTALIGNER_H

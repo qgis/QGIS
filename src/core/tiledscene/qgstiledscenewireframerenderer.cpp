@@ -35,7 +35,7 @@ QString QgsTiledSceneWireframeRenderer::type() const
 
 QgsTiledSceneRenderer *QgsTiledSceneWireframeRenderer::clone() const
 {
-  std::unique_ptr< QgsTiledSceneWireframeRenderer > res = std::make_unique< QgsTiledSceneWireframeRenderer >();
+  std::unique_ptr<QgsTiledSceneWireframeRenderer> res = std::make_unique<QgsTiledSceneWireframeRenderer>();
 
   res->setFillSymbol( mFillSymbol->clone() );
   res->setLineSymbol( mLineSymbol->clone() );
@@ -48,13 +48,13 @@ QgsTiledSceneRenderer *QgsTiledSceneWireframeRenderer::clone() const
 
 QgsTiledSceneRenderer *QgsTiledSceneWireframeRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsTiledSceneWireframeRenderer > r = std::make_unique< QgsTiledSceneWireframeRenderer >();
+  std::unique_ptr<QgsTiledSceneWireframeRenderer> r = std::make_unique<QgsTiledSceneWireframeRenderer>();
   {
     const QDomElement fillSymbolElem = element.firstChildElement( QStringLiteral( "fillSymbol" ) );
     if ( !fillSymbolElem.isNull() )
     {
       const QDomElement symbolElem = fillSymbolElem.firstChildElement( QStringLiteral( "symbol" ) );
-      std::unique_ptr< QgsFillSymbol > fillSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context ) );
+      std::unique_ptr<QgsFillSymbol> fillSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context ) );
       if ( fillSymbol )
         r->mFillSymbol = std::move( fillSymbol );
     }
@@ -64,7 +64,7 @@ QgsTiledSceneRenderer *QgsTiledSceneWireframeRenderer::create( QDomElement &elem
     if ( !lineSymbolElem.isNull() )
     {
       const QDomElement symbolElem = lineSymbolElem.firstChildElement( QStringLiteral( "symbol" ) );
-      std::unique_ptr< QgsLineSymbol > lineSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem, context ) );
+      std::unique_ptr<QgsLineSymbol> lineSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem, context ) );
       if ( lineSymbol )
         r->mLineSymbol = std::move( lineSymbol );
     }
@@ -137,18 +137,18 @@ QDomElement QgsTiledSceneWireframeRenderer::save( QDomDocument &doc, const QgsRe
   {
     QDomElement fillSymbolElem = doc.createElement( QStringLiteral( "fillSymbol" ) );
     const QDomElement symbolElement = QgsSymbolLayerUtils::saveSymbol( QString(),
-                                      mFillSymbol.get(),
-                                      doc,
-                                      context );
+                                                                       mFillSymbol.get(),
+                                                                       doc,
+                                                                       context );
     fillSymbolElem.appendChild( symbolElement );
     rendererElem.appendChild( fillSymbolElem );
   }
   {
     QDomElement lineSymbolElem = doc.createElement( QStringLiteral( "lineSymbol" ) );
     const QDomElement symbolElement = QgsSymbolLayerUtils::saveSymbol( QString(),
-                                      mLineSymbol.get(),
-                                      doc,
-                                      context );
+                                                                       mLineSymbol.get(),
+                                                                       doc,
+                                                                       context );
     lineSymbolElem.appendChild( symbolElement );
     rendererElem.appendChild( lineSymbolElem );
   }
@@ -161,7 +161,7 @@ void QgsTiledSceneWireframeRenderer::renderTriangle( QgsTiledSceneRenderContext 
 {
   if ( mUseTextureColors )
   {
-    std::unique_ptr< QgsFillSymbol > s( mFillSymbol->clone() );
+    std::unique_ptr<QgsFillSymbol> s( mFillSymbol->clone() );
     const QImage textureImage = context.textureImage();
     if ( !textureImage.isNull() )
     {
@@ -174,9 +174,8 @@ void QgsTiledSceneWireframeRenderer::renderTriangle( QgsTiledSceneRenderContext 
       context.textureCoordinates( textureX1, textureY1, textureX2, textureY2, textureX3, textureY3 );
 
       const QColor centerColor( textureImage.pixelColor(
-                                  static_cast<int>( ( ( textureX1 + textureX2 + textureX3 ) / 3 ) * ( textureImage.width() - 1 ) ),
-                                  static_cast< int >( ( ( textureY1 + textureY2 + textureY3 ) / 3 ) * ( textureImage.height() - 1 ) ) )
-                              );
+        static_cast<int>( ( ( textureX1 + textureX2 + textureX3 ) / 3 ) * ( textureImage.width() - 1 ) ),
+        static_cast<int>( ( ( textureY1 + textureY2 + textureY3 ) / 3 ) * ( textureImage.height() - 1 ) ) ) );
       s->setColor( centerColor );
     }
     s->startRender( context.renderContext() );
@@ -216,8 +215,7 @@ void QgsTiledSceneWireframeRenderer::stopRender( QgsTiledSceneRenderContext &con
 
 Qgis::TiledSceneRendererFlags QgsTiledSceneWireframeRenderer::flags() const
 {
-  Qgis::TiledSceneRendererFlags flags = Qgis::TiledSceneRendererFlag::RendersTriangles |
-                                        Qgis::TiledSceneRendererFlag::RendersLines;
+  Qgis::TiledSceneRendererFlags flags = Qgis::TiledSceneRendererFlag::RendersTriangles | Qgis::TiledSceneRendererFlag::RendersLines;
 
   if ( mUseTextureColors )
     flags |= Qgis::TiledSceneRendererFlag::RequiresTextures;

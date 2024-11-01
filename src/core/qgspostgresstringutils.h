@@ -23,19 +23,17 @@
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include "qgspostgresstringutils.h"
-% End
+  % End
 #endif
 
-/**
+  /**
  * \ingroup core
  * \brief The QgsPostgresStringUtils provides functions to handle postgres array like formatted lists in strings.
  * \since QGIS 3.8
  */
-class CORE_EXPORT QgsPostgresStringUtils
+  class CORE_EXPORT QgsPostgresStringUtils
 {
-
   public:
-
     /**
      * Returns a QVariantList created out of a string containing an array in postgres array format {1,2,3} or {"a","b","c"}
      * \param string The formatted list in a string
@@ -51,7 +49,6 @@ class CORE_EXPORT QgsPostgresStringUtils
     static QString buildArray( const QVariantList &list );
 
   private:
-
     /**
      * get the string until the separator
      * \param txt the input text

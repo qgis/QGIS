@@ -33,27 +33,26 @@ class QgsRasterAttributeTable;
  * \ingroup core
  * \brief Renderer for paletted raster images.
 */
-class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
+class CORE_EXPORT QgsPalettedRasterRenderer : public QgsRasterRenderer
 {
   public:
-
     //! Properties of a single value class
     struct CORE_EXPORT Class
     {
-      //! Constructor for Class
-      Class( double value, const QColor &color = QColor(), const QString &label = QString() )
-        : value( value )
-        , color( color )
-        , label( label )
-      {}
+        //! Constructor for Class
+        Class( double value, const QColor &color = QColor(), const QString &label = QString() )
+          : value( value )
+          , color( color )
+          , label( label )
+        {}
 
-      //! Value
-      double value;
+        //! Value
+        double value;
 
-      //! Color to render value
-      QColor color;
-      //! Label for value
-      QString label;
+        //! Color to render value
+        QColor color;
+        //! Label for value
+        QString label;
     };
 
     /**
@@ -63,14 +62,12 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      */
     class CORE_EXPORT MultiValueClass
     {
-
       public:
-
         //! Constructor for MultiValueClass from a list of values
-        MultiValueClass( const QVector< QVariant > &values, const QColor &color = QColor(), const QString &label = QString() );
+        MultiValueClass( const QVector<QVariant> &values, const QColor &color = QColor(), const QString &label = QString() );
 
         //! Values
-        QVector< QVariant > values;
+        QVector<QVariant> values;
 
         //! Color to render values
         QColor color;
@@ -81,10 +78,10 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
 
     //! Map of value to class properties
-    typedef QList< QgsPalettedRasterRenderer::Class > ClassData;
+    typedef QList<QgsPalettedRasterRenderer::Class> ClassData;
 
     //! Map of multi value to class properties
-    typedef QList< QgsPalettedRasterRenderer::MultiValueClass > MultiValueClassData;
+    typedef QList<QgsPalettedRasterRenderer::MultiValueClass> MultiValueClassData;
 
     /**
      * Constructor for QgsPalettedRasterRenderer.
@@ -121,9 +118,9 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      * Returns a map of multi value to classes (colors) used by the renderer.
      * \since QGIS 3.30
      */
-    MultiValueClassData multiValueClasses( ) const;
+    MultiValueClassData multiValueClasses() const;
 
-    bool canCreateRasterAttributeTable( ) const override;
+    bool canCreateRasterAttributeTable() const override;
 
     /**
      * Sets the multi value classes to \a setMultiValueClasses.
@@ -152,7 +149,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     bool setInputBand( int band ) override;
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
-    QList< QPair< QString, QColor > > legendSymbologyItems() const override;
+    QList<QPair<QString, QColor>> legendSymbologyItems() const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
     QList<int> usesBands() const override;
     void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
@@ -210,7 +207,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      * color \a ramp can be specified to automatically assign colors from the ramp.
      */
     static QgsPalettedRasterRenderer::ClassData classDataFromRaster( QgsRasterInterface *raster, int bandNumber, QgsColorRamp *ramp = nullptr,
-        QgsRasterBlockFeedback *feedback = nullptr );
+                                                                     QgsRasterBlockFeedback *feedback = nullptr );
 
 
   private:
@@ -229,7 +226,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     std::unique_ptr<QgsColorRamp> mSourceColorRamp;
 
     //! Premultiplied color map
-    QMap< double, QRgb > mColors;
+    QMap<double, QRgb> mColors;
     void updateArrays();
 
     // Maximum number of allowed classes for float rasters

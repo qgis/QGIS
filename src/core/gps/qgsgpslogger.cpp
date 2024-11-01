@@ -59,7 +59,6 @@ QgsGpsLogger::QgsGpsLogger( QgsGpsConnection *connection, QObject *parent )
 
 QgsGpsLogger::~QgsGpsLogger()
 {
-
 }
 
 QgsGpsConnection *QgsGpsLogger::connection()
@@ -113,7 +112,7 @@ QVector<QgsPoint> QgsGpsLogger::currentTrack() const
 QgsGeometry QgsGpsLogger::currentGeometry( Qgis::WkbType type, QString &error ) const
 {
   const Qgis::GeometryType geometryType = QgsWkbTypes::geometryType( type );
-  const QVector< QgsPoint > captureListWgs84 = currentTrack();
+  const QVector<QgsPoint> captureListWgs84 = currentTrack();
   if ( geometryType == Qgis::GeometryType::Line && captureListWgs84.size() < 2 )
   {
     error = tr( "Creating a line feature requires a track with at least two vertices." );
@@ -221,13 +220,13 @@ void QgsGpsLogger::updateGpsSettings()
   int acquisitionInterval = 0;
   if ( QgsGpsConnection::settingsGpsTimeStampSpecification->exists() )
   {
-    acquisitionInterval = static_cast< int >( QgsGpsConnection::settingGpsAcquisitionInterval->value() );
+    acquisitionInterval = static_cast<int>( QgsGpsConnection::settingGpsAcquisitionInterval->value() );
     mDistanceThreshold = QgsGpsConnection::settingGpsDistanceThreshold->value();
     mApplyLeapSettings = QgsGpsConnection::settingGpsApplyLeapSecondsCorrection->value();
-    mLeapSeconds = static_cast< int >( QgsGpsConnection::settingGpsLeapSeconds->value() );
+    mLeapSeconds = static_cast<int>( QgsGpsConnection::settingGpsLeapSeconds->value() );
     mTimeStampSpec = QgsGpsConnection::settingsGpsTimeStampSpecification->value();
     mTimeZone = QgsGpsConnection::settingsGpsTimeStampTimeZone->value();
-    mOffsetFromUtc = static_cast< int >( QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc->value() );
+    mOffsetFromUtc = static_cast<int>( QgsGpsConnection::settingsGpsTimeStampOffsetFromUtc->value() );
 
     mStoreAttributeInMValues = settingsGpsStoreAttributeInMValues->value();
     mMValueComponent = settingsGpsMValueComponent->value();
@@ -287,7 +286,7 @@ double QgsGpsLogger::trackDistanceFromStart() const
 
   try
   {
-    return mDistanceCalculator.measureLine( { QgsPointXY( mCaptureListWgs84.constFirst() ), QgsPointXY( mCaptureListWgs84.constLast() )} );
+    return mDistanceCalculator.measureLine( { QgsPointXY( mCaptureListWgs84.constFirst() ), QgsPointXY( mCaptureListWgs84.constLast() ) } );
   }
   catch ( QgsCsException & )
   {
@@ -344,7 +343,7 @@ QVariant QgsGpsLogger::componentValue( Qgis::GpsInformationComponent component )
       }
 
     case Qgis::GpsInformationComponent::TrackTimeSinceLastPoint:
-      return mPreviousTrackPointTime.isValid() ? static_cast< double >( mPreviousTrackPointTime.msecsTo( lastTimestamp() ) ) / 1000 : QVariant();
+      return mPreviousTrackPointTime.isValid() ? static_cast<double>( mPreviousTrackPointTime.msecsTo( lastTimestamp() ) ) / 1000 : QVariant();
   }
   BUILTIN_UNREACHABLE
 }
@@ -400,12 +399,12 @@ void QgsGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
       case Qgis::GpsInformationComponent::EllipsoidAltitude:
       {
         const QVariant value = info.componentValue( mMValueComponent );
-        mLastMValue = value.isValid() ? info.componentValue( mMValueComponent ).toDouble() : std::numeric_limits< double >::quiet_NaN();
+        mLastMValue = value.isValid() ? info.componentValue( mMValueComponent ).toDouble() : std::numeric_limits<double>::quiet_NaN();
         break;
       }
 
       case Qgis::GpsInformationComponent::Timestamp:
-        mLastMValue = static_cast< double >( info.utcDateTime.toMSecsSinceEpoch() );
+        mLastMValue = static_cast<double>( info.utcDateTime.toMSecsSinceEpoch() );
         break;
 
       case Qgis::GpsInformationComponent::Location:
@@ -429,7 +428,6 @@ void QgsGpsLogger::gpsStateChanged( const QgsGpsInformation &info )
   {
     // do not update position if update is disabled by timer or distance is under threshold
     newLocationWgs84 = mLastGpsPositionWgs84;
-
   }
   if ( validFlag && mAcquisitionEnabled )
   {

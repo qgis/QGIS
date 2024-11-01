@@ -27,7 +27,6 @@ QgsAbstractProviderConnection::QgsAbstractProviderConnection( const QString &uri
   : mUri( uri )
   , mConfiguration( configuration )
 {
-
 }
 
 QIcon QgsAbstractProviderConnection::icon() const

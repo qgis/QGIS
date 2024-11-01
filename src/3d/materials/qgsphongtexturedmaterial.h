@@ -49,7 +49,6 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
     Q_PROPERTY( float opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
 
   public:
-
     /**
      * Constructor for QgsPhongTexturedMaterial, with the specified \a parent node.
      */

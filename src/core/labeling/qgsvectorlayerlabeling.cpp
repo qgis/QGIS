@@ -80,7 +80,6 @@ QgsVectorLayerLabelProvider *QgsVectorLayerSimpleLabeling::provider( QgsVectorLa
 QgsVectorLayerSimpleLabeling::QgsVectorLayerSimpleLabeling( const QgsPalLayerSettings &settings )
   : mSettings( new QgsPalLayerSettings( settings ) )
 {
-
 }
 
 QString QgsVectorLayerSimpleLabeling::type() const
@@ -213,7 +212,7 @@ std::unique_ptr<QgsMarkerSymbolLayer> backgroundToMarkerLayer( const QgsTextBack
       // just grab the first layer and hope for the best
       if ( settings.markerSymbol() && settings.markerSymbol()->symbolLayerCount() > 0 )
       {
-        layer.reset( static_cast< QgsMarkerSymbolLayer * >( settings.markerSymbol()->symbolLayer( 0 )->clone() ) );
+        layer.reset( static_cast<QgsMarkerSymbolLayer *>( settings.markerSymbol()->symbolLayer( 0 )->clone() ) );
         break;
       }
       [[fallthrough]]; // not set, just go with the default
@@ -297,7 +296,7 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
   {
     Qgis::Capitalization capitalization = format.capitalization();
     if ( capitalization == Qgis::Capitalization::MixedCase && font.capitalization() != QFont::MixedCase )
-      capitalization = static_cast< Qgis::Capitalization >( font.capitalization() );
+      capitalization = static_cast<Qgis::Capitalization>( font.capitalization() );
     if ( capitalization == Qgis::Capitalization::AllUppercase )
     {
       appendSimpleFunction( doc, labelElement, QStringLiteral( "strToUpperCase" ), settings.fieldName );
@@ -350,7 +349,7 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
       // displacement
       if ( settings.xOffset != 0 || settings.yOffset != 0 )
       {
-        const Qgis::RenderUnit offsetUnit =  settings.offsetUnits;
+        const Qgis::RenderUnit offsetUnit = settings.offsetUnits;
         const double dx = QgsSymbolLayerUtils::rescaleUom( settings.xOffset, offsetUnit, props );
         const double dy = QgsSymbolLayerUtils::rescaleUom( settings.yOffset, offsetUnit, props );
         QgsSymbolLayerUtils::createDisplacementElement( doc, pointPlacement, QPointF( dx, dy ) );
@@ -376,7 +375,7 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
       const Qgis::RenderUnit distUnit = settings.distUnits;
       const double radius = QgsSymbolLayerUtils::rescaleUom( settings.dist, distUnit, props );
       const double offset = std::sqrt( radius * radius / 2 ); // make it start top/right
-      maxDisplacement = radius + 1; // lock the distance
+      maxDisplacement = radius + 1;                           // lock the distance
       QgsSymbolLayerUtils::createDisplacementElement( doc, pointPlacement, QPointF( offset, offset ) );
     }
     break;
@@ -492,13 +491,13 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
   }
   if ( font.strikeOut() )
   {
-    const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "strikethroughText" ), QStringLiteral( "true" ) );
+    const QDomElement vo = QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "strikethroughText" ), QStringLiteral( "true" ) );
     textSymbolizerElement.appendChild( vo );
   }
   // vendor options for text positioning
   if ( maxDisplacement > 0 )
   {
-    const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "maxDisplacement" ), qgsDoubleToString( maxDisplacement, 2 ) );
+    const QDomElement vo = QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "maxDisplacement" ), qgsDoubleToString( maxDisplacement, 2 ) );
     textSymbolizerElement.appendChild( vo );
   }
 
@@ -507,13 +506,13 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
     case Qgis::LabelPlacement::Curved:
     case Qgis::LabelPlacement::PerimeterCurved:
     {
-      const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "followLine" ), QStringLiteral( "true" ) );
+      const QDomElement vo = QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "followLine" ), QStringLiteral( "true" ) );
       textSymbolizerElement.appendChild( vo );
       if ( settings.maxCurvedCharAngleIn > 0 || settings.maxCurvedCharAngleOut > 0 )
       {
         // SLD has no notion for this, the GeoTools ecosystem can only do a single angle
         const double angle = std::min( std::fabs( settings.maxCurvedCharAngleIn ), std::fabs( settings.maxCurvedCharAngleOut ) );
-        const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "maxAngleDelta" ), qgsDoubleToString( angle ) );
+        const QDomElement vo = QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "maxAngleDelta" ), qgsDoubleToString( angle ) );
         textSymbolizerElement.appendChild( vo );
       }
       break;
@@ -531,7 +530,7 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
 
   if ( repeatDistance > 0 )
   {
-    const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "repeat" ), qgsDoubleToString( repeatDistance, 2 ) );
+    const QDomElement vo = QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "repeat" ), qgsDoubleToString( repeatDistance, 2 ) );
     textSymbolizerElement.appendChild( vo );
   }
   // miscellaneous options
@@ -541,22 +540,22 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
       break;
     case Qgis::LabelOverlapHandling::AllowOverlapIfRequired:
     case Qgis::LabelOverlapHandling::AllowOverlapAtNoCost:
-      const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "conflictResolution" ), QStringLiteral( "false" ) );
+      const QDomElement vo = QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "conflictResolution" ), QStringLiteral( "false" ) );
       textSymbolizerElement.appendChild( vo );
       break;
   }
   if ( settings.upsidedownLabels == Qgis::UpsideDownLabelHandling::AlwaysAllowUpsideDown )
   {
-    const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "forceLeftToRight" ), QStringLiteral( "false" ) );
+    const QDomElement vo = QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "forceLeftToRight" ), QStringLiteral( "false" ) );
     textSymbolizerElement.appendChild( vo );
   }
   if ( settings.lineSettings().mergeLines() )
   {
-    const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "group" ), QStringLiteral( "yes" ) );
+    const QDomElement vo = QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "group" ), QStringLiteral( "yes" ) );
     textSymbolizerElement.appendChild( vo );
     if ( settings.labelPerPart )
     {
-      const QDomElement vo =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "labelAllGroup" ), QStringLiteral( "true" ) );
+      const QDomElement vo = QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "labelAllGroup" ), QStringLiteral( "true" ) );
       textSymbolizerElement.appendChild( vo );
     }
   }
@@ -577,7 +576,7 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
         {
           resizeType = QStringLiteral( "proportional" );
         }
-        const QDomElement voResize =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "graphic-resize" ), resizeType );
+        const QDomElement voResize = QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "graphic-resize" ), resizeType );
         textSymbolizerElement.appendChild( voResize );
 
         // now hadle margin
@@ -594,7 +593,7 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
             y += fontSize;
           }
           const QString resizeSpec = QString( "%1 %2" ).arg( qgsDoubleToString( x, 2 ), qgsDoubleToString( y, 2 ) );
-          const QDomElement voMargin =  QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "graphic-margin" ), resizeSpec );
+          const QDomElement voMargin = QgsSymbolLayerUtils::createVendorOptionElement( doc, QStringLiteral( "graphic-margin" ), resizeSpec );
           textSymbolizerElement.appendChild( voMargin );
         }
         break;
@@ -610,7 +609,6 @@ void QgsAbstractVectorLayerLabeling::writeTextSymbolizer( QDomNode &parent, QgsP
 
 void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QVariantMap &props ) const
 {
-
   if ( mSettings->drawLabels )
   {
     QDomDocument doc = parent.ownerDocument();
@@ -631,7 +629,6 @@ void QgsVectorLayerSimpleLabeling::toSld( QDomNode &parent, const QVariantMap &p
 
     writeTextSymbolizer( ruleElement, *mSettings, props );
   }
-
 }
 
 void QgsVectorLayerSimpleLabeling::multiplyOpacity( double opacityFactor )

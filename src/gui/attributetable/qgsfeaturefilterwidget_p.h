@@ -51,7 +51,6 @@ class GUI_EXPORT QgsFeatureFilterWidget : public QWidget, private Ui::QgsFeature
     Q_OBJECT
 
   public:
-
     //! Constructor for QgsFeatureFilterWidget
     explicit QgsFeatureFilterWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -114,12 +113,11 @@ class GUI_EXPORT QgsFeatureFilterWidget : public QWidget, private Ui::QgsFeature
      * Updates the bookmark button and it's actions regarding the stored filter
      * expressions according to the values
      */
-    void updateCurrentStoredFilterExpression( );
+    void updateCurrentStoredFilterExpression();
 
     void filterColumnChanged( QAction *filterAction );
 
   private:
-
     /* replace the search widget with a new one */
     void replaceSearchWidget( QWidget *oldw, QWidget *neww );
 

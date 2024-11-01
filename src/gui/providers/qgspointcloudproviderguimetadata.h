@@ -35,7 +35,7 @@
  *
  * \since QGIS 3.18
  */
-class QgsPointCloudProviderGuiMetadata: public QgsProviderGuiMetadata
+class QgsPointCloudProviderGuiMetadata : public QgsProviderGuiMetadata
 {
   public:
     QgsPointCloudProviderGuiMetadata();

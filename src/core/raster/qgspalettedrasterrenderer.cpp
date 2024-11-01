@@ -41,7 +41,6 @@ QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface *input,
   : QgsRasterRenderer( input, QStringLiteral( "paletted" ) )
   , mBand( bandNumber )
 {
-
   QHash<QString, QHash<QColor, QVector<QVariant>>> classData;
   // Prepare for the worst case, where we have to store all the values for each class
   classData.reserve( classes.size() );
@@ -64,7 +63,7 @@ QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface *input,
   {
     for ( auto colorIt = classData[*labelIt].constBegin(); colorIt != classData[*labelIt].constEnd(); ++colorIt )
     {
-      mMultiValueClassData.push_back( MultiValueClass{ colorIt.value(), colorIt.key(), *labelIt } );
+      mMultiValueClassData.push_back( MultiValueClass { colorIt.value(), colorIt.key(), *labelIt } );
     }
   }
 
@@ -81,8 +80,7 @@ QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface *input,
 
 QgsPalettedRasterRenderer *QgsPalettedRasterRenderer::clone() const
 {
-
-  std::unique_ptr< QgsPalettedRasterRenderer > renderer = std::make_unique< QgsPalettedRasterRenderer >( nullptr, mBand, mMultiValueClassData );
+  std::unique_ptr<QgsPalettedRasterRenderer> renderer = std::make_unique<QgsPalettedRasterRenderer>( nullptr, mBand, mMultiValueClassData );
 
   if ( mSourceColorRamp )
     renderer->setSourceColorRamp( mSourceColorRamp->clone() );
@@ -160,7 +158,7 @@ void QgsPalettedRasterRenderer::setMultiValueClasses( const MultiValueClassData 
 
 QString QgsPalettedRasterRenderer::label( double idx ) const
 {
-  if ( ! mMultiValueClassData.isEmpty() )
+  if ( !mMultiValueClassData.isEmpty() )
   {
     const auto constMClassData = mMultiValueClassData;
     for ( const MultiValueClass &c : std::as_const( constMClassData ) )
@@ -206,15 +204,15 @@ bool QgsPalettedRasterRenderer::setInputBand( int band )
   return false;
 }
 
-QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
+QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
-  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
+  std::unique_ptr<QgsRasterBlock> outputBlock( new QgsRasterBlock() );
   if ( !mInput || mMultiValueClassData.isEmpty() )
   {
     return outputBlock.release();
   }
 
-  const std::shared_ptr< QgsRasterBlock > inputBlock( mInput->block( mBand, extent, width, height, feedback ) );
+  const std::shared_ptr<QgsRasterBlock> inputBlock( mInput->block( mBand, extent, width, height, feedback ) );
 
   if ( !inputBlock || inputBlock->isEmpty() )
   {
@@ -225,7 +223,7 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle  const &exte
   //rendering is faster without considering user-defined transparency
   const bool hasTransparency = usesTransparency();
 
-  std::shared_ptr< QgsRasterBlock > alphaBlock;
+  std::shared_ptr<QgsRasterBlock> alphaBlock;
 
   if ( mAlphaBand > 0 && mAlphaBand != mBand )
   {
@@ -250,9 +248,9 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle  const &exte
   //use direct data access instead of QgsRasterBlock::setValue
   //because of performance
   Q_ASSERT( outputBlock ); // to make cppcheck happy
-  unsigned int *outputData = ( unsigned int * )( outputBlock->bits() );
+  unsigned int *outputData = ( unsigned int * ) ( outputBlock->bits() );
 
-  const qgssize rasterSize = ( qgssize )width * height;
+  const qgssize rasterSize = ( qgssize ) width * height;
   bool isNoData = false;
   for ( qgssize i = 0; i < rasterSize; ++i )
   {
@@ -382,7 +380,7 @@ void QgsPalettedRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   // e.g. <ColorMapEntry color="#EEBE2F" quantity="-300" label="label" opacity="0"/>
   const QList<QgsPalettedRasterRenderer::Class> classes = this->classes();
   QList<QgsPalettedRasterRenderer::Class>::const_iterator classDataIt = classes.constBegin();
-  for ( ; classDataIt != classes.constEnd();  ++classDataIt )
+  for ( ; classDataIt != classes.constEnd(); ++classDataIt )
   {
     QDomElement colorMapEntryElem = doc.createElement( QStringLiteral( "sld:ColorMapEntry" ) );
     colorMapElem.appendChild( colorMapEntryElem );
@@ -410,9 +408,9 @@ bool QgsPalettedRasterRenderer::accept( QgsStyleEntityVisitorInterface *visitor 
   return true;
 }
 
-QList< QPair< QString, QColor > > QgsPalettedRasterRenderer::legendSymbologyItems() const
+QList<QPair<QString, QColor>> QgsPalettedRasterRenderer::legendSymbologyItems() const
 {
-  QList< QPair< QString, QColor > > symbolItems;
+  QList<QPair<QString, QColor>> symbolItems;
   for ( const QgsPalettedRasterRenderer::MultiValueClass &classData : mMultiValueClassData )
   {
     QString lab { classData.label };
@@ -451,9 +449,9 @@ QList<QgsLayerTreeModelLegendNode *> QgsPalettedRasterRenderer::createLegendNode
     res << new QgsSimpleLegendNode( nodeLayer, name );
   }
 
-  const QList< QPair< QString, QColor > > items = legendSymbologyItems();
+  const QList<QPair<QString, QColor>> items = legendSymbologyItems();
   res.reserve( res.size() + items.size() );
-  for ( const QPair< QString, QColor > &item : items )
+  for ( const QPair<QString, QColor> &item : items )
   {
     res << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
   }
@@ -495,7 +493,7 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::colorTableToClas
 
 QgsPalettedRasterRenderer::MultiValueClassData QgsPalettedRasterRenderer::rasterAttributeTableToClassData( const QgsRasterAttributeTable *attributeTable, const int classificationColumn, QgsColorRamp *ramp )
 {
-  if ( ! attributeTable || ! attributeTable->isValid() )
+  if ( !attributeTable || !attributeTable->isValid() )
   {
     return QgsPalettedRasterRenderer::MultiValueClassData();
   }
@@ -513,10 +511,10 @@ QgsPalettedRasterRenderer::MultiValueClassData QgsPalettedRasterRenderer::raster
     {
       values.push_back( QVariant( val ) );
     }
-    classData.push_back( { values, minMaxClass.color, minMaxClass.name  } );
+    classData.push_back( { values, minMaxClass.color, minMaxClass.name } );
   }
 
-  int numClasses { static_cast<int>( classData.count( ) ) };
+  int numClasses { static_cast<int>( classData.count() ) };
 
   // assign colors from ramp
   if ( ramp && numClasses > 0 )
@@ -618,7 +616,6 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromStr
         break;
       }
     }
-
   }
   return classes;
 }
@@ -641,16 +638,14 @@ QString QgsPalettedRasterRenderer::classDataToString( const QgsPalettedRasterRen
   QStringList out;
   // must be sorted
   QgsPalettedRasterRenderer::ClassData cd = classes;
-  std::sort( cd.begin(), cd.end(), []( const Class & a, const Class & b ) -> bool
-  {
+  std::sort( cd.begin(), cd.end(), []( const Class &a, const Class &b ) -> bool {
     return a.value < b.value;
   } );
 
   const auto constCd = cd;
   for ( const Class &c : constCd )
   {
-    out << QStringLiteral( "%1 %2 %3 %4 %5 %6" ).arg( c.value ).arg( c.color.red() )
-        .arg( c.color.green() ).arg( c.color.blue() ).arg( c.color.alpha() ).arg( c.label );
+    out << QStringLiteral( "%1 %2 %3 %4 %5 %6" ).arg( c.value ).arg( c.color.red() ).arg( c.color.green() ).arg( c.color.blue() ).arg( c.color.alpha() ).arg( c.label );
   }
   return out.join( '\n' );
 }
@@ -672,7 +667,6 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
     // Collect unique values for float rasters
     if ( raster->dataType( bandNumber ) == Qgis::DataType::Float32 || raster->dataType( bandNumber ) == Qgis::DataType::Float64 )
     {
-
       if ( feedback && feedback->isCanceled() )
       {
         return data;
@@ -686,15 +680,15 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
       QgsRasterIterator iter( raster );
       iter.startRasterRead( bandNumber, raster->xSize(), raster->ySize(), raster->extent(), feedback );
 
-      const int nbBlocksWidth = static_cast< int >( std::ceil( 1.0 * raster->xSize() / maxWidth ) );
-      const int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * raster->ySize() / maxHeight ) );
+      const int nbBlocksWidth = static_cast<int>( std::ceil( 1.0 * raster->xSize() / maxWidth ) );
+      const int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * raster->ySize() / maxHeight ) );
       const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
 
       int iterLeft = 0;
       int iterTop = 0;
       int iterCols = 0;
       int iterRows = 0;
-      std::unique_ptr< QgsRasterBlock > rasterBlock;
+      std::unique_ptr<QgsRasterBlock> rasterBlock;
       QgsRectangle blockExtent;
       bool isNoData = false;
       while ( iter.readNextRasterPart( bandNumber, iterCols, iterRows, rasterBlock, iterLeft, iterTop, &blockExtent ) )
@@ -731,8 +725,7 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
         }
       }
       // must be sorted
-      std::sort( data.begin(), data.end(), []( const Class & a, const Class & b ) -> bool
-      {
+      std::sort( data.begin(), data.end(), []( const Class &a, const Class &b ) -> bool {
         return a.value < b.value;
       } );
     }
@@ -774,7 +767,6 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classDataFromRas
       {
         data << Class( histogram.maximum, QColor(), QLocale().toString( histogram.maximum ) );
       }
-
     }
 
     // assign colors from ramp
@@ -816,7 +808,7 @@ QgsPalettedRasterRenderer::ClassData QgsPalettedRasterRenderer::classData() cons
     for ( const QVariant &entry : std::as_const( klass.values ) )
     {
       bool ok;
-      const double value { entry.toDouble( &ok )};
+      const double value { entry.toDouble( &ok ) };
       if ( ok )
       {
         data.push_back( { value, klass.color, klass.label } );
@@ -840,7 +832,7 @@ void QgsPalettedRasterRenderer::updateArrays()
     for ( const QVariant &entry : std::as_const( it->values ) )
     {
       bool ok;
-      const double value { entry.toDouble( &ok )};
+      const double value { entry.toDouble( &ok ) };
       if ( ok )
       {
         mColors[value] = qPremultiply( it->color.rgba() );
@@ -853,12 +845,12 @@ void QgsPalettedRasterRenderer::updateArrays()
   }
 }
 
-bool QgsPalettedRasterRenderer::canCreateRasterAttributeTable( ) const
+bool QgsPalettedRasterRenderer::canCreateRasterAttributeTable() const
 {
   return true;
 }
 
-QgsPalettedRasterRenderer::MultiValueClass::MultiValueClass( const QVector< QVariant > &values, const QColor &color, const QString &label )
+QgsPalettedRasterRenderer::MultiValueClass::MultiValueClass( const QVector<QVariant> &values, const QColor &color, const QString &label )
   : values( values )
   , color( color )
   , label( label )

@@ -46,7 +46,6 @@ class CORE_EXPORT QgsAbstractStyleEntityIconGenerator : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAbstractStyleEntityIconGenerator, with the specified \a parent
      * object.
@@ -64,14 +63,14 @@ class CORE_EXPORT QgsAbstractStyleEntityIconGenerator : public QObject
      *
      * \see iconSizes()
      */
-    void setIconSizes( const QList< QSize > &sizes );
+    void setIconSizes( const QList<QSize> &sizes );
 
     /**
      * Returns the list of icon sizes to generate.
      *
      * \see setIconSizes()
      */
-    QList< QSize > iconSizes() const;
+    QList<QSize> iconSizes() const;
 
     /**
      * Sets the target screen \a properties to use when generating icons.
@@ -82,7 +81,7 @@ class CORE_EXPORT QgsAbstractStyleEntityIconGenerator : public QObject
      * \see targetScreenProperties()
      * \since QGIS 3.32
      */
-    void setTargetScreenProperties( const QSet< QgsScreenProperties > &properties );
+    void setTargetScreenProperties( const QSet<QgsScreenProperties> &properties );
 
     /**
      * Returns the target screen properties to use when generating icons.
@@ -93,7 +92,7 @@ class CORE_EXPORT QgsAbstractStyleEntityIconGenerator : public QObject
      * \see setTargetScreenProperties()
      * \since QGIS 3.32
      */
-    QSet< QgsScreenProperties > targetScreenProperties() const;
+    QSet<QgsScreenProperties> targetScreenProperties() const;
 
   signals:
 
@@ -104,10 +103,8 @@ class CORE_EXPORT QgsAbstractStyleEntityIconGenerator : public QObject
     void iconGenerated( QgsStyle::StyleEntity type, const QString &name, const QIcon &icon );
 
   private:
-
-    QList< QSize > mIconSizes;
-    QSet< QgsScreenProperties > mTargetScreenProperties;
-
+    QList<QSize> mIconSizes;
+    QSet<QgsScreenProperties> mTargetScreenProperties;
 };
 
 #endif
@@ -127,17 +124,16 @@ class CORE_EXPORT QgsAbstractStyleEntityIconGenerator : public QObject
  *
  * \since QGIS 3.4
  */
-class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
+class CORE_EXPORT QgsStyleModel : public QAbstractItemModel
 {
     Q_OBJECT
 
   public:
-
     //! Model columns
     enum Column
     {
       Name = 0, //!< Name column
-      Tags, //!< Tags column
+      Tags,     //!< Tags column
     };
 
     // *INDENT-OFF*
@@ -148,18 +144,17 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
      * \note Prior to QGIS 3.36 this was available as QgsStyleModel::Role
      * \since QGIS 3.36
      */
-    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsStyleModel, Role ) : int
-    {
-      Type SIP_MONKEYPATCH_COMPAT_NAME(TypeRole) = Qt::UserRole + 1, //!< Style entity type, see QgsStyle::StyleEntity
-      Tag SIP_MONKEYPATCH_COMPAT_NAME(TagRole), //!< String list of tags
-      EntityName, //!< Entity name \since QGIS 3.26
-      SymbolType SIP_MONKEYPATCH_COMPAT_NAME(SymbolTypeRole), //!< Symbol type (for symbol or legend patch shape entities)
-      IsFavorite SIP_MONKEYPATCH_COMPAT_NAME(IsFavoriteRole), //!< Whether entity is flagged as a favorite
-      LayerType SIP_MONKEYPATCH_COMPAT_NAME(LayerTypeRole), //!< Layer type (for label settings entities)
-      CompatibleGeometryTypes SIP_MONKEYPATCH_COMPAT_NAME(CompatibleGeometryTypesRole), //!< Compatible layer geometry types (for 3D symbols)
-      StyleName, //!< Name of associated QgsStyle (QgsStyle::name()) \since QGIS 3.26
-      StyleFileName, //!< File name of associated QgsStyle (QgsStyle::fileName()) \since QGIS 3.26
-      IsTitle SIP_MONKEYPATCH_COMPAT_NAME(IsTitleRole), //!< True if the index corresponds to a title item \since QGIS 3.26
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsStyleModel, Role ) : int {
+      Type SIP_MONKEYPATCH_COMPAT_NAME( TypeRole ) = Qt::UserRole + 1,                    //!< Style entity type, see QgsStyle::StyleEntity
+      Tag SIP_MONKEYPATCH_COMPAT_NAME( TagRole ),                                         //!< String list of tags
+      EntityName,                                                                         //!< Entity name \since QGIS 3.26
+      SymbolType SIP_MONKEYPATCH_COMPAT_NAME( SymbolTypeRole ),                           //!< Symbol type (for symbol or legend patch shape entities)
+      IsFavorite SIP_MONKEYPATCH_COMPAT_NAME( IsFavoriteRole ),                           //!< Whether entity is flagged as a favorite
+      LayerType SIP_MONKEYPATCH_COMPAT_NAME( LayerTypeRole ),                             //!< Layer type (for label settings entities)
+      CompatibleGeometryTypes SIP_MONKEYPATCH_COMPAT_NAME( CompatibleGeometryTypesRole ), //!< Compatible layer geometry types (for 3D symbols)
+      StyleName,                                                                          //!< Name of associated QgsStyle (QgsStyle::name()) \since QGIS 3.26
+      StyleFileName,                                                                      //!< File name of associated QgsStyle (QgsStyle::fileName()) \since QGIS 3.26
+      IsTitle SIP_MONKEYPATCH_COMPAT_NAME( IsTitleRole ),                                 //!< True if the index corresponds to a title item \since QGIS 3.26
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -229,22 +224,21 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
     void iconGenerated( QgsStyle::StyleEntity type, const QString &name, const QIcon &icon );
 
   private:
-
     void initStyleModel();
 
     QgsStyle *mStyle = nullptr;
 
-    QHash< QgsStyle::StyleEntity, QStringList > mEntityNames;
+    QHash<QgsStyle::StyleEntity, QStringList> mEntityNames;
 
-    QSet< QgsScreenProperties > mTargetScreenProperties;
+    QSet<QgsScreenProperties> mTargetScreenProperties;
 
-    QList< QSize > mAdditionalSizes;
-    mutable std::unique_ptr< QgsExpressionContext > mExpressionContext;
+    QList<QSize> mAdditionalSizes;
+    mutable std::unique_ptr<QgsExpressionContext> mExpressionContext;
 
-    mutable QHash< QgsStyle::StyleEntity, QHash< QString, QIcon > > mIconCache;
+    mutable QHash<QgsStyle::StyleEntity, QHash<QString, QIcon>> mIconCache;
 
     static QgsAbstractStyleEntityIconGenerator *sIconGenerator;
-    mutable QSet< QString > mPending3dSymbolIcons;
+    mutable QSet<QString> mPending3dSymbolIcons;
 
     QgsStyle::StyleEntity entityTypeFromRow( int row ) const;
 
@@ -265,12 +259,11 @@ class CORE_EXPORT QgsStyleModel: public QAbstractItemModel
  *
  * \since QGIS 3.4
  */
-class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
+class CORE_EXPORT QgsStyleProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsStyleProxyModel, for the specified \a style and \a parent object.
      *
@@ -520,7 +513,6 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     void setFilterString( const QString &filter );
 
   private:
-
     void initialize();
 
     QgsStyleModel *mModel = nullptr;
@@ -540,13 +532,12 @@ class CORE_EXPORT QgsStyleProxyModel: public QSortFilterProxyModel
     bool mFavoritesOnly = false;
 
     bool mEntityFilterEnabled = false;
-    QList< QgsStyle::StyleEntity > mEntityFilters = QList< QgsStyle::StyleEntity >() << QgsStyle::SymbolEntity;
+    QList<QgsStyle::StyleEntity> mEntityFilters = QList<QgsStyle::StyleEntity>() << QgsStyle::SymbolEntity;
 
     bool mSymbolTypeFilterEnabled = false;
     Qgis::SymbolType mSymbolType = Qgis::SymbolType::Marker;
 
     Qgis::GeometryType mLayerType = Qgis::GeometryType::Unknown;
-
 };
 
 #endif //QGSSTYLEMODEL_H

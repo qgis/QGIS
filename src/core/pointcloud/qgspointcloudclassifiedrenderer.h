@@ -32,7 +32,6 @@
 class CORE_EXPORT QgsPointCloudCategory
 {
   public:
-
     QgsPointCloudCategory() = default;
 
     /**
@@ -140,16 +139,15 @@ typedef QList<QgsPointCloudCategory> QgsPointCloudCategoryList;
  *
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsPointCloudClassifiedRendererPreparedData: public QgsPreparedPointCloudRendererData
+class CORE_EXPORT QgsPointCloudClassifiedRendererPreparedData : public QgsPreparedPointCloudRendererData
 {
   public:
-
-    QSet< QString > usedAttributes() const override;
+    QSet<QString> usedAttributes() const override;
     bool prepareBlock( const QgsPointCloudBlock *block ) override;
     QColor pointColor( const QgsPointCloudBlock *block, int i, double z ) override SIP_SKIP;
 
     QgsPointCloudAttribute::DataType attributeType;
-    QHash< int, QColor > colors;
+    QHash<int, QColor> colors;
     QString attributeName;
     int attributeOffset = 0;
 };
@@ -164,7 +162,6 @@ class CORE_EXPORT QgsPointCloudClassifiedRendererPreparedData: public QgsPrepare
 class CORE_EXPORT QgsPointCloudClassifiedRenderer : public QgsPointCloudRenderer
 {
   public:
-
     /**
      * Constructor for QgsPointCloudClassifiedRenderer.
      */
@@ -175,12 +172,12 @@ class CORE_EXPORT QgsPointCloudClassifiedRenderer : public QgsPointCloudRenderer
     void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) override;
     bool willRenderPoint( const QVariantMap &pointAttributes ) override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-    QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const override;
+    QSet<QString> usedAttributes( const QgsPointCloudRenderContext &context ) const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) override SIP_FACTORY;
     QStringList legendRuleKeys() const override;
     bool legendItemChecked( const QString &key ) override;
     void checkLegendItem( const QString &key, bool state = true ) override;
-    std::unique_ptr< QgsPreparedPointCloudRendererData > prepare() override SIP_SKIP;
+    std::unique_ptr<QgsPreparedPointCloudRendererData> prepare() override SIP_SKIP;
 
     /**
      * Creates an RGB renderer from an XML \a element.
@@ -228,7 +225,6 @@ class CORE_EXPORT QgsPointCloudClassifiedRenderer : public QgsPointCloudRenderer
     void addCategory( const QgsPointCloudCategory &category );
 
   private:
-
     QString mAttribute = QStringLiteral( "Classification" );
 
     QgsPointCloudCategoryList mCategories;

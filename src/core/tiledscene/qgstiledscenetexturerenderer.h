@@ -33,7 +33,6 @@ class QgsFillSymbol;
 class CORE_EXPORT QgsTiledSceneTextureRenderer : public QgsTiledSceneRenderer
 {
   public:
-
     /**
      * Constructor for QgsTiledSceneTextureRenderer.
      */
@@ -78,7 +77,7 @@ class CORE_EXPORT QgsTiledSceneTextureRenderer : public QgsTiledSceneRenderer
     void setFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
   private:
-    std::unique_ptr< QgsFillSymbol> mFillSymbol;
+    std::unique_ptr<QgsFillSymbol> mFillSymbol;
 };
 
 #endif // QGSTILEDSCENETEXTURERENDERER_H

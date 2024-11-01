@@ -30,10 +30,10 @@ class QgsSymbolLayerId;
 
 struct QgsMaskedLayer
 {
-  bool hasEffects = false;
+    bool hasEffects = false;
 
-  // masked symbol layers
-  QSet<QString> symbolLayerIds;
+    // masked symbol layers
+    QSet<QString> symbolLayerIds;
 };
 
 //! masked layers where key is the layer id
@@ -51,7 +51,6 @@ typedef QHash<QString, QgsMaskedLayer> QgsMaskedLayers;
 class CORE_EXPORT QgsVectorLayerUtils
 {
   public:
-
     /**
      * \ingroup core
      * \class QgsDuplicateFeatureContext
@@ -61,7 +60,6 @@ class CORE_EXPORT QgsVectorLayerUtils
     class CORE_EXPORT QgsDuplicateFeatureContext
     {
       public:
-
         QgsDuplicateFeatureContext() = default;
 
         /**
@@ -95,7 +93,6 @@ class CORE_EXPORT QgsVectorLayerUtils
     class CORE_EXPORT QgsFeatureData
     {
       public:
-
         /**
          * Constructs a new QgsFeatureData with given \a geometry and \a attributes
          */
@@ -136,7 +133,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \returns list of fetched values
      * \see getDoubleValues
      */
-    static QList< QVariant > getValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = nullptr );
+    static QList<QVariant> getValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = nullptr );
 
     /**
      * Fetches all double values from a specified field name or expression. Null values or
@@ -150,7 +147,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \returns list of fetched values
      * \see getValues
      */
-    static QList< double > getDoubleValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = nullptr, QgsFeedback *feedback = nullptr );
+    static QList<double> getDoubleValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = nullptr, QgsFeedback *feedback = nullptr );
 
     /**
      * Returns TRUE if the specified value already exists within a field. This method can be used to test for uniqueness
@@ -373,8 +370,7 @@ class CORE_EXPORT QgsVectorLayerUtils
      *
      * \since QGIS 3.4
      */
-    enum CascadedFeatureFlag SIP_ENUM_BASETYPE( IntFlag )
-    {
+    enum CascadedFeatureFlag SIP_ENUM_BASETYPE( IntFlag ) {
       IgnoreAuxiliaryLayers = 1 << 1, //!< Ignore auxiliary layers
     };
     Q_DECLARE_FLAGS( CascadedFeatureFlags, CascadedFeatureFlag )
@@ -451,7 +447,6 @@ class CORE_EXPORT QgsVectorLayerUtils
      */
     static QString guessFriendlyIdentifierField( const QgsFields &fields );
 #endif
-
 };
 
 

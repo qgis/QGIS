@@ -44,11 +44,10 @@ class QgsCoordinateReferenceSystem;
 class QgsTileDownloadManager;
 class QgsCopcPointCloudBlockRequest;
 
-class CORE_EXPORT QgsRemoteCopcPointCloudIndex: public QgsCopcPointCloudIndex
+class CORE_EXPORT QgsRemoteCopcPointCloudIndex : public QgsCopcPointCloudIndex
 {
     Q_OBJECT
   public:
-
     explicit QgsRemoteCopcPointCloudIndex();
     ~QgsRemoteCopcPointCloudIndex();
 

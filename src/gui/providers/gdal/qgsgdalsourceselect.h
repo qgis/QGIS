@@ -57,7 +57,6 @@ class QgsGdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsG
     void credentialOptionsChanged();
 
   private:
-
     void computeDataSources();
     void clearOpenOptions();
     void fillOpenOptions();
@@ -69,7 +68,6 @@ class QgsGdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsG
     QStringList mDataSources;
     bool mIsOgcApi = false;
     QVariantMap mCredentialOptions;
-
 };
 
 ///@endcond

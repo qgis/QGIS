@@ -26,7 +26,6 @@ class QgsGeometryValidationModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     enum Roles
     {
       FeatureExtentRole = Qt::UserRole,
@@ -63,23 +62,23 @@ class QgsGeometryValidationModel : public QAbstractItemModel
 
   private slots:
     void onSingleGeometryCheckCleared( QgsVectorLayer *layer );
-    void onGeometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<std::shared_ptr<QgsSingleGeometryCheckError> > &errors );
+    void onGeometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<std::shared_ptr<QgsSingleGeometryCheckError>> &errors );
     void onGeometryCheckStarted( QgsVectorLayer *layer, QgsFeatureId fid );
-    void onTopologyChecksUpdated( QgsVectorLayer *layer, const QList<std::shared_ptr<QgsGeometryCheckError> > &errors );
+    void onTopologyChecksUpdated( QgsVectorLayer *layer, const QList<std::shared_ptr<QgsGeometryCheckError>> &errors );
     void onTopologyChecksCleared( QgsVectorLayer *layer );
     void onTopologyErrorUpdated( QgsVectorLayer *layer, QgsGeometryCheckError *error );
 
   private:
     struct FeatureErrors
     {
-      FeatureErrors() = default;
+        FeatureErrors() = default;
 
-      FeatureErrors( QgsFeatureId fid )
-        : fid( fid )
-      {}
+        FeatureErrors( QgsFeatureId fid )
+          : fid( fid )
+        {}
 
-      QgsFeatureId fid = FID_NULL;
-      QList<std::shared_ptr<QgsSingleGeometryCheckError>> errors;
+        QgsFeatureId fid = FID_NULL;
+        QList<std::shared_ptr<QgsSingleGeometryCheckError>> errors;
     };
 
     int errorsForFeature( QgsVectorLayer *layer, QgsFeatureId fid );
@@ -92,8 +91,8 @@ class QgsGeometryValidationModel : public QAbstractItemModel
     mutable QStringList mRequiredAttributes;
     mutable QgsExpressionContext mExpressionContext;
 
-    QMap<QgsVectorLayer *, QList< FeatureErrors > > mErrorStorage;
-    QMap<QgsVectorLayer *, QList< std::shared_ptr< QgsGeometryCheckError > > > mTopologyErrorStorage;
+    QMap<QgsVectorLayer *, QList<FeatureErrors>> mErrorStorage;
+    QMap<QgsVectorLayer *, QList<std::shared_ptr<QgsGeometryCheckError>>> mTopologyErrorStorage;
     mutable QgsFeature mCachedFeature;
 };
 

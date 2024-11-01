@@ -34,7 +34,6 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
     Q_OBJECT
 
   public:
-
     //! Construct a QgsAuthOAuth2Edit instance
     explicit QgsAuthOAuth2Edit( QWidget *parent = nullptr );
 
@@ -126,7 +125,6 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
     void networkError( QNetworkReply::NetworkError error );
 
   private:
-
     void initGui();
     void parseSoftwareStatement( const QString &path );
 

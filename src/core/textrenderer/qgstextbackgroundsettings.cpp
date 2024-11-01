@@ -46,10 +46,9 @@ QgsTextBackgroundSettings::QgsTextBackgroundSettings()
 QgsTextBackgroundSettings::QgsTextBackgroundSettings( const QgsTextBackgroundSettings &other ) //NOLINT
   : d( other.d )
 {
-
 }
 
-QgsTextBackgroundSettings &QgsTextBackgroundSettings::operator=( const QgsTextBackgroundSettings &other )  //NOLINT
+QgsTextBackgroundSettings &QgsTextBackgroundSettings::operator=( const QgsTextBackgroundSettings &other ) //NOLINT
 {
   d = other.d;
   return *this;
@@ -57,7 +56,6 @@ QgsTextBackgroundSettings &QgsTextBackgroundSettings::operator=( const QgsTextBa
 
 QgsTextBackgroundSettings::~QgsTextBackgroundSettings() //NOLINT
 {
-
 }
 
 bool QgsTextBackgroundSettings::operator==( const QgsTextBackgroundSettings &other ) const
@@ -87,15 +85,15 @@ bool QgsTextBackgroundSettings::operator==( const QgsTextBackgroundSettings &oth
        || d->joinStyle != other.joinStyle() )
     return false;
 
-  if ( static_cast< bool >( d->paintEffect ) != static_cast< bool >( other.paintEffect() )
+  if ( static_cast<bool>( d->paintEffect ) != static_cast<bool>( other.paintEffect() )
        || ( d->paintEffect && d->paintEffect->properties() != other.paintEffect()->properties() ) )
     return false;
 
-  if ( static_cast< bool >( d->markerSymbol ) != static_cast< bool >( other.markerSymbol() )
+  if ( static_cast<bool>( d->markerSymbol ) != static_cast<bool>( other.markerSymbol() )
        || ( d->markerSymbol && QgsSymbolLayerUtils::symbolProperties( d->markerSymbol.get() ) != QgsSymbolLayerUtils::symbolProperties( other.markerSymbol() ) ) )
     return false;
 
-  if ( static_cast< bool >( d->fillSymbol ) != static_cast< bool >( other.fillSymbol() )
+  if ( static_cast<bool>( d->fillSymbol ) != static_cast<bool>( other.fillSymbol() )
        || ( d->fillSymbol && QgsSymbolLayerUtils::symbolProperties( d->fillSymbol.get() ) != QgsSymbolLayerUtils::symbolProperties( other.fillSymbol() ) ) )
     return false;
 
@@ -323,7 +321,7 @@ QColor QgsTextBackgroundSettings::strokeColor() const
 {
   if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
   {
-    return qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->strokeColor();
+    return qgis::down_cast<QgsSimpleFillSymbolLayer *>( d->fillSymbol->symbolLayers().at( 0 ) )->strokeColor();
   }
   return d->strokeColor;
 }
@@ -333,7 +331,7 @@ void QgsTextBackgroundSettings::setStrokeColor( const QColor &color )
   d->strokeColor = color;
   if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
   {
-    qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setStrokeColor( color );
+    qgis::down_cast<QgsSimpleFillSymbolLayer *>( d->fillSymbol->symbolLayers().at( 0 ) )->setStrokeColor( color );
   }
 }
 
@@ -341,7 +339,7 @@ double QgsTextBackgroundSettings::strokeWidth() const
 {
   if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
   {
-    return qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->strokeWidth();
+    return qgis::down_cast<QgsSimpleFillSymbolLayer *>( d->fillSymbol->symbolLayers().at( 0 ) )->strokeWidth();
   }
   return d->strokeWidth;
 }
@@ -351,7 +349,7 @@ void QgsTextBackgroundSettings::setStrokeWidth( double width )
   d->strokeWidth = width;
   if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
   {
-    QgsSimpleFillSymbolLayer *fill = qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) );
+    QgsSimpleFillSymbolLayer *fill = qgis::down_cast<QgsSimpleFillSymbolLayer *>( d->fillSymbol->symbolLayers().at( 0 ) );
     fill->setStrokeWidth( width );
     fill->setStrokeStyle( !qgsDoubleNear( width, 0.0 ) ? Qt::SolidLine : Qt::NoPen );
   }
@@ -361,7 +359,7 @@ Qgis::RenderUnit QgsTextBackgroundSettings::strokeWidthUnit() const
 {
   if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
   {
-    return qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->strokeWidthUnit();
+    return qgis::down_cast<QgsSimpleFillSymbolLayer *>( d->fillSymbol->symbolLayers().at( 0 ) )->strokeWidthUnit();
   }
   return d->strokeWidthUnits;
 }
@@ -371,7 +369,7 @@ void QgsTextBackgroundSettings::setStrokeWidthUnit( Qgis::RenderUnit units )
   d->strokeWidthUnits = units;
   if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
   {
-    qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setStrokeWidthUnit( units );
+    qgis::down_cast<QgsSimpleFillSymbolLayer *>( d->fillSymbol->symbolLayers().at( 0 ) )->setStrokeWidthUnit( units );
   }
 }
 
@@ -379,7 +377,7 @@ QgsMapUnitScale QgsTextBackgroundSettings::strokeWidthMapUnitScale() const
 {
   if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
   {
-    return qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->strokeWidthMapUnitScale();
+    return qgis::down_cast<QgsSimpleFillSymbolLayer *>( d->fillSymbol->symbolLayers().at( 0 ) )->strokeWidthMapUnitScale();
   }
   return d->strokeWidthMapUnitScale;
 }
@@ -389,7 +387,7 @@ void QgsTextBackgroundSettings::setStrokeWidthMapUnitScale( const QgsMapUnitScal
   d->strokeWidthMapUnitScale = scale;
   if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
   {
-    qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setStrokeWidthMapUnitScale( scale );
+    qgis::down_cast<QgsSimpleFillSymbolLayer *>( d->fillSymbol->symbolLayers().at( 0 ) )->setStrokeWidthMapUnitScale( scale );
   }
 }
 
@@ -397,7 +395,7 @@ Qt::PenJoinStyle QgsTextBackgroundSettings::joinStyle() const
 {
   if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
   {
-    return qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->penJoinStyle();
+    return qgis::down_cast<QgsSimpleFillSymbolLayer *>( d->fillSymbol->symbolLayers().at( 0 ) )->penJoinStyle();
   }
   return d->joinStyle;
 }
@@ -407,7 +405,7 @@ void QgsTextBackgroundSettings::setJoinStyle( Qt::PenJoinStyle style )
   d->joinStyle = style;
   if ( d->fillSymbol && d->fillSymbol->symbolLayers().at( 0 )->layerType() == QLatin1String( "SimpleFill" ) )
   {
-    qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) )->setPenJoinStyle( style );
+    qgis::down_cast<QgsSimpleFillSymbolLayer *>( d->fillSymbol->symbolLayers().at( 0 ) )->setPenJoinStyle( style );
   }
 }
 
@@ -424,9 +422,9 @@ void QgsTextBackgroundSettings::setPaintEffect( QgsPaintEffect *effect )
 void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer *layer )
 {
   d->enabled = layer->customProperty( QStringLiteral( "labeling/shapeDraw" ), QVariant( false ) ).toBool();
-  d->type = static_cast< ShapeType >( layer->customProperty( QStringLiteral( "labeling/shapeType" ), QVariant( ShapeRectangle ) ).toUInt() );
+  d->type = static_cast<ShapeType>( layer->customProperty( QStringLiteral( "labeling/shapeType" ), QVariant( ShapeRectangle ) ).toUInt() );
   d->svgFile = layer->customProperty( QStringLiteral( "labeling/shapeSVGFile" ), QVariant( "" ) ).toString();
-  d->sizeType = static_cast< SizeType >( layer->customProperty( QStringLiteral( "labeling/shapeSizeType" ), QVariant( SizeBuffer ) ).toUInt() );
+  d->sizeType = static_cast<SizeType>( layer->customProperty( QStringLiteral( "labeling/shapeSizeType" ), QVariant( SizeBuffer ) ).toUInt() );
   d->size = QSizeF( layer->customProperty( QStringLiteral( "labeling/shapeSizeX" ), QVariant( 0.0 ) ).toDouble(),
                     layer->customProperty( QStringLiteral( "labeling/shapeSizeY" ), QVariant( 0.0 ) ).toDouble() );
 
@@ -451,7 +449,7 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer *layer )
   {
     d->sizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/shapeSizeMapUnitScale" ) ).toString() );
   }
-  d->rotationType = static_cast< RotationType >( layer->customProperty( QStringLiteral( "labeling/shapeRotationType" ), QVariant( RotationSync ) ).toUInt() );
+  d->rotationType = static_cast<RotationType>( layer->customProperty( QStringLiteral( "labeling/shapeRotationType" ), QVariant( RotationSync ) ).toUInt() );
   d->rotation = layer->customProperty( QStringLiteral( "labeling/shapeRotation" ), QVariant( 0.0 ) ).toDouble();
   d->offset = QPointF( layer->customProperty( QStringLiteral( "labeling/shapeOffsetX" ), QVariant( 0.0 ) ).toDouble(),
                        layer->customProperty( QStringLiteral( "labeling/shapeOffsetY" ), QVariant( 0.0 ) ).toDouble() );
@@ -525,7 +523,7 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer *layer )
   {
     d->strokeWidthMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( layer->customProperty( QStringLiteral( "labeling/shapeBorderWidthMapUnitScale" ) ).toString() );
   }
-  d->joinStyle = static_cast< Qt::PenJoinStyle >( layer->customProperty( QStringLiteral( "labeling/shapeJoinStyle" ), QVariant( Qt::BevelJoin ) ).toUInt() );
+  d->joinStyle = static_cast<Qt::PenJoinStyle>( layer->customProperty( QStringLiteral( "labeling/shapeJoinStyle" ), QVariant( Qt::BevelJoin ) ).toUInt() );
 
   if ( layer->customProperty( QStringLiteral( "labeling/shapeOpacity" ) ).toString().isEmpty() )
   {
@@ -536,7 +534,7 @@ void QgsTextBackgroundSettings::readFromLayer( QgsVectorLayer *layer )
     d->opacity = ( layer->customProperty( QStringLiteral( "labeling/shapeOpacity" ) ).toDouble() );
   }
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( layer->customProperty( QStringLiteral( "labeling/shapeBlendMode" ), QVariant( static_cast< int>( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
+    static_cast<Qgis::BlendMode>( layer->customProperty( QStringLiteral( "labeling/shapeBlendMode" ), QVariant( static_cast<int>( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
 
   if ( layer->customProperty( QStringLiteral( "labeling/shapeEffect" ) ).isValid() )
   {
@@ -553,9 +551,9 @@ void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadW
 {
   const QDomElement backgroundElem = elem.firstChildElement( QStringLiteral( "background" ) );
   d->enabled = backgroundElem.attribute( QStringLiteral( "shapeDraw" ), QStringLiteral( "0" ) ).toInt();
-  d->type = static_cast< ShapeType >( backgroundElem.attribute( QStringLiteral( "shapeType" ), QString::number( ShapeRectangle ) ).toUInt() );
+  d->type = static_cast<ShapeType>( backgroundElem.attribute( QStringLiteral( "shapeType" ), QString::number( ShapeRectangle ) ).toUInt() );
   d->svgFile = QgsSymbolLayerUtils::svgSymbolNameToPath( backgroundElem.attribute( QStringLiteral( "shapeSVGFile" ) ), context.pathResolver() );
-  d->sizeType = static_cast< SizeType >( backgroundElem.attribute( QStringLiteral( "shapeSizeType" ), QString::number( SizeBuffer ) ).toUInt() );
+  d->sizeType = static_cast<SizeType>( backgroundElem.attribute( QStringLiteral( "shapeSizeType" ), QString::number( SizeBuffer ) ).toUInt() );
   d->size = QSizeF( backgroundElem.attribute( QStringLiteral( "shapeSizeX" ), QStringLiteral( "0" ) ).toDouble(),
                     backgroundElem.attribute( QStringLiteral( "shapeSizeY" ), QStringLiteral( "0" ) ).toDouble() );
 
@@ -580,7 +578,7 @@ void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadW
   {
     d->sizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( backgroundElem.attribute( QStringLiteral( "shapeSizeMapUnitScale" ) ) );
   }
-  d->rotationType = static_cast< RotationType >( backgroundElem.attribute( QStringLiteral( "shapeRotationType" ), QString::number( RotationSync ) ).toUInt() );
+  d->rotationType = static_cast<RotationType>( backgroundElem.attribute( QStringLiteral( "shapeRotationType" ), QString::number( RotationSync ) ).toUInt() );
   d->rotation = backgroundElem.attribute( QStringLiteral( "shapeRotation" ), QStringLiteral( "0" ) ).toDouble();
   d->offset = QPointF( backgroundElem.attribute( QStringLiteral( "shapeOffsetX" ), QStringLiteral( "0" ) ).toDouble(),
                        backgroundElem.attribute( QStringLiteral( "shapeOffsetY" ), QStringLiteral( "0" ) ).toDouble() );
@@ -653,7 +651,7 @@ void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadW
   {
     d->strokeWidthMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( backgroundElem.attribute( QStringLiteral( "shapeBorderWidthMapUnitScale" ) ) );
   }
-  d->joinStyle = static_cast< Qt::PenJoinStyle >( backgroundElem.attribute( QStringLiteral( "shapeJoinStyle" ), QString::number( Qt::BevelJoin ) ).toUInt() );
+  d->joinStyle = static_cast<Qt::PenJoinStyle>( backgroundElem.attribute( QStringLiteral( "shapeJoinStyle" ), QString::number( Qt::BevelJoin ) ).toUInt() );
 
   if ( !backgroundElem.hasAttribute( QStringLiteral( "shapeOpacity" ) ) )
   {
@@ -665,7 +663,7 @@ void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadW
   }
 
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( backgroundElem.attribute( QStringLiteral( "shapeBlendMode" ), QString::number( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
+    static_cast<Qgis::BlendMode>( backgroundElem.attribute( QStringLiteral( "shapeBlendMode" ), QString::number( static_cast<int>( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
 
   const QDomElement effectElem = backgroundElem.firstChildElement( QStringLiteral( "effect" ) );
   if ( !effectElem.isNull() )
@@ -684,11 +682,11 @@ void QgsTextBackgroundSettings::readXml( const QDomElement &elem, const QgsReadW
       const QString symbolElementName = symbolElement.attribute( QStringLiteral( "name" ) );
       if ( symbolElementName == QLatin1String( "markerSymbol" ) )
       {
-        setMarkerSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElement, context ) );
+        setMarkerSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElement, context ) );
       }
       else if ( symbolElementName == QLatin1String( "fillSymbol" ) )
       {
-        setFillSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElement, context ) );
+        setFillSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElement, context ) );
       }
     }
   }
@@ -712,14 +710,14 @@ QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument &doc, const QgsRea
 {
   QDomElement backgroundElem = doc.createElement( QStringLiteral( "background" ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeDraw" ), d->enabled );
-  backgroundElem.setAttribute( QStringLiteral( "shapeType" ), static_cast< unsigned int >( d->type ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeType" ), static_cast<unsigned int>( d->type ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeSVGFile" ), QgsSymbolLayerUtils::svgSymbolPathToName( d->svgFile, context.pathResolver() ) );
-  backgroundElem.setAttribute( QStringLiteral( "shapeSizeType" ), static_cast< unsigned int >( d->sizeType ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeSizeType" ), static_cast<unsigned int>( d->sizeType ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeSizeX" ), d->size.width() );
   backgroundElem.setAttribute( QStringLiteral( "shapeSizeY" ), d->size.height() );
   backgroundElem.setAttribute( QStringLiteral( "shapeSizeUnit" ), QgsUnitTypes::encodeUnit( d->sizeUnits ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeSizeMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
-  backgroundElem.setAttribute( QStringLiteral( "shapeRotationType" ), static_cast< unsigned int >( d->rotationType ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeRotationType" ), static_cast<unsigned int>( d->rotationType ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeRotation" ), d->rotation );
   backgroundElem.setAttribute( QStringLiteral( "shapeOffsetX" ), d->offset.x() );
   backgroundElem.setAttribute( QStringLiteral( "shapeOffsetY" ), d->offset.y() );
@@ -734,9 +732,9 @@ QDomElement QgsTextBackgroundSettings::writeXml( QDomDocument &doc, const QgsRea
   backgroundElem.setAttribute( QStringLiteral( "shapeBorderWidth" ), d->strokeWidth );
   backgroundElem.setAttribute( QStringLiteral( "shapeBorderWidthUnit" ), QgsUnitTypes::encodeUnit( d->strokeWidthUnits ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeBorderWidthMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->strokeWidthMapUnitScale ) );
-  backgroundElem.setAttribute( QStringLiteral( "shapeJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeJoinStyle" ), static_cast<unsigned int>( d->joinStyle ) );
   backgroundElem.setAttribute( QStringLiteral( "shapeOpacity" ), d->opacity );
-  backgroundElem.setAttribute( QStringLiteral( "shapeBlendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( d->blendMode ) ) );
+  backgroundElem.setAttribute( QStringLiteral( "shapeBlendMode" ), static_cast<int>( QgsPainting::getBlendModeEnum( d->blendMode ) ) );
   if ( d->paintEffect && !QgsPaintEffectRegistry::isDefaultStack( d->paintEffect.get() ) )
     d->paintEffect->saveProperties( doc, backgroundElem );
 
@@ -753,33 +751,29 @@ void QgsTextBackgroundSettings::upgradeDataDefinedProperties( QgsPropertyCollect
 {
   if ( !d->fillSymbol || d->fillSymbol->symbolLayers().at( 0 )->layerType() != QLatin1String( "SimpleFill" ) )
     return;
-  QgsSimpleFillSymbolLayer *fill = qgis::down_cast< QgsSimpleFillSymbolLayer * >( d->fillSymbol->symbolLayers().at( 0 ) );
+  QgsSimpleFillSymbolLayer *fill = qgis::down_cast<QgsSimpleFillSymbolLayer *>( d->fillSymbol->symbolLayers().at( 0 ) );
 
   if ( d->type != QgsTextBackgroundSettings::ShapeSVG )
   {
-    if ( properties.hasProperty( QgsPalLayerSettings::Property::ShapeFillColor ) &&
-         !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::Property::FillColor ) )
+    if ( properties.hasProperty( QgsPalLayerSettings::Property::ShapeFillColor ) && !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::Property::FillColor ) )
     {
       fill->dataDefinedProperties().setProperty( QgsSymbolLayer::Property::FillColor, properties.property( QgsPalLayerSettings::Property::ShapeFillColor ) );
       properties.setProperty( QgsPalLayerSettings::Property::ShapeFillColor, QgsProperty() );
     }
 
-    if ( properties.hasProperty( QgsPalLayerSettings::Property::ShapeStrokeColor ) &&
-         !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::Property::StrokeColor ) )
+    if ( properties.hasProperty( QgsPalLayerSettings::Property::ShapeStrokeColor ) && !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::Property::StrokeColor ) )
     {
       fill->dataDefinedProperties().setProperty( QgsSymbolLayer::Property::StrokeColor, properties.property( QgsPalLayerSettings::Property::ShapeStrokeColor ) );
       properties.setProperty( QgsPalLayerSettings::Property::ShapeStrokeColor, QgsProperty() );
     }
 
-    if ( properties.hasProperty( QgsPalLayerSettings::Property::ShapeStrokeWidth ) &&
-         !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::Property::StrokeWidth ) )
+    if ( properties.hasProperty( QgsPalLayerSettings::Property::ShapeStrokeWidth ) && !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::Property::StrokeWidth ) )
     {
       fill->dataDefinedProperties().setProperty( QgsSymbolLayer::Property::StrokeWidth, properties.property( QgsPalLayerSettings::Property::ShapeStrokeWidth ) );
       properties.setProperty( QgsPalLayerSettings::Property::ShapeStrokeWidth, QgsProperty() );
     }
 
-    if ( properties.hasProperty( QgsPalLayerSettings::Property::ShapeJoinStyle ) &&
-         !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::Property::JoinStyle ) )
+    if ( properties.hasProperty( QgsPalLayerSettings::Property::ShapeJoinStyle ) && !fill->dataDefinedProperties().hasProperty( QgsSymbolLayer::Property::JoinStyle ) )
     {
       fill->dataDefinedProperties().setProperty( QgsSymbolLayer::Property::JoinStyle, properties.property( QgsPalLayerSettings::Property::ShapeJoinStyle ) );
       properties.setProperty( QgsPalLayerSettings::Property::ShapeJoinStyle, QgsProperty() );
@@ -971,7 +965,7 @@ void QgsTextBackgroundSettings::updateDataDefinedProperties( QgsRenderContext &c
 
 QSet<QString> QgsTextBackgroundSettings::referencedFields( const QgsRenderContext &context ) const
 {
-  QSet< QString > fields;
+  QSet<QString> fields;
   if ( d->markerSymbol )
   {
     fields.unite( d->markerSymbol->usedAttributes( context ) );

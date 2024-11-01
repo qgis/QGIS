@@ -28,12 +28,11 @@
  * \brief A layout table subclass that displays manually entered (and formatted) content.
  * \since QGIS 3.12
 */
-class CORE_EXPORT QgsLayoutItemManualTable: public QgsLayoutTable
+class CORE_EXPORT QgsLayoutItemManualTable : public QgsLayoutTable
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutItemManualTable, attached to the specified \a layout.
      *
@@ -76,7 +75,7 @@ class CORE_EXPORT QgsLayoutItemManualTable: public QgsLayoutTable
      * \see setRowHeights()
      * \see columnWidths()
      */
-    QList< double > rowHeights() const { return mRowHeights; }
+    QList<double> rowHeights() const { return mRowHeights; }
 
     /**
      * Sets the list of row \a heights (in millimeters) to use when rendering the table.
@@ -86,7 +85,7 @@ class CORE_EXPORT QgsLayoutItemManualTable: public QgsLayoutTable
      * \see rowHeights()
      * \see setColumnWidths()
      */
-    void setRowHeights( const QList< double > &heights );
+    void setRowHeights( const QList<double> &heights );
 
     /**
      * Returns the list of column widths (in millimeters) to use when rendering the table.
@@ -96,7 +95,7 @@ class CORE_EXPORT QgsLayoutItemManualTable: public QgsLayoutTable
      * \see setColumnWidths()
      * \see rowHeights()
      */
-    QList< double > columnWidths() const { return mColumnWidths; }
+    QList<double> columnWidths() const { return mColumnWidths; }
 
     /**
      * Sets the list of column \a widths (in millimeters) to use when rendering the table.
@@ -106,7 +105,7 @@ class CORE_EXPORT QgsLayoutItemManualTable: public QgsLayoutTable
      * \see columnWidths()
      * \see setColumnWidths()
      */
-    void setColumnWidths( const QList< double > &widths );
+    void setColumnWidths( const QList<double> &widths );
 
     /**
      * Returns TRUE if the table includes a header row.
@@ -135,7 +134,6 @@ class CORE_EXPORT QgsLayoutItemManualTable: public QgsLayoutTable
     void setHeaders( const QgsLayoutTableColumns &headers );
 
   protected:
-
     bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
     bool calculateMaxRowHeights() override;
@@ -147,16 +145,14 @@ class CORE_EXPORT QgsLayoutItemManualTable: public QgsLayoutTable
     int columnSpan( int row, int column ) const override;
 
   private:
-
     QgsTableContents mContents;
     QgsLayoutTableColumns mHeaders;
 
-    QList< double > mRowHeights;
-    QList< double > mColumnWidths;
+    QList<double> mRowHeights;
+    QList<double> mColumnWidths;
     bool mIncludeHeader = false;
 
     void refreshColumns();
-
 };
 
 #endif // QGSLAYOUTITEMMANUALTABLE_H

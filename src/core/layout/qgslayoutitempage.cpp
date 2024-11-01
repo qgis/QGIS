@@ -37,8 +37,7 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   setFlag( QGraphicsItem::ItemIsMovable, false );
   setZValue( QgsLayout::ZPage );
 
-  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this]
-  {
+  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this] {
     prepareGeometryChange();
     mBoundingRect = QRectF();
   } );
@@ -107,7 +106,7 @@ bool QgsLayoutItemPage::setPageSize( const QString &size, Orientation orientatio
 QPageLayout QgsLayoutItemPage::pageLayout() const
 {
   QPageLayout pageLayout;
-  pageLayout.setMargins( {0, 0, 0, 0} );
+  pageLayout.setMargins( { 0, 0, 0, 0 } );
   pageLayout.setMode( QPageLayout::FullPageMode );
   const QSizeF size = layout()->renderContext().measurementConverter().convert( pageSize(), Qgis::LayoutUnit::Millimeters ).toQSizeF();
 
@@ -196,12 +195,10 @@ void QgsLayoutItemPage::createDefaultPageStyleSymbol()
 }
 
 
-
 ///@cond PRIVATE
-class QgsLayoutItemPageUndoCommand: public QgsLayoutItemUndoCommand
+class QgsLayoutItemPageUndoCommand : public QgsLayoutItemUndoCommand
 {
   public:
-
     QgsLayoutItemPageUndoCommand( QgsLayoutItemPage *page, const QString &text, int id = 0, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr )
       : QgsLayoutItemUndoCommand( page, text, id, parent )
     {}
@@ -213,7 +210,6 @@ class QgsLayoutItemPageUndoCommand: public QgsLayoutItemUndoCommand
     }
 
   protected:
-
     QgsLayoutItem *recreateItem( int, QgsLayout *layout ) override
     {
       QgsLayoutItemPage *page = new QgsLayoutItemPage( layout );
@@ -287,7 +283,7 @@ void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
 
   if ( mPageStyleSymbol )
   {
-    std::unique_ptr< QgsFillSymbol > symbol( mPageStyleSymbol->clone() );
+    std::unique_ptr<QgsFillSymbol> symbol( mPageStyleSymbol->clone() );
     symbol->startRender( context.renderContext() );
 
     //get max bleed from symbol
@@ -303,7 +299,7 @@ void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
 
     // round up
     const QPolygonF pagePolygon = QPolygonF( QRectF( maxBleedPixels, maxBleedPixels,
-                                  std::ceil( rect().width() * scale ) - 2 * maxBleedPixels, std::ceil( rect().height() * scale ) - 2 * maxBleedPixels ) );
+                                                     std::ceil( rect().width() * scale ) - 2 * maxBleedPixels, std::ceil( rect().height() * scale ) - 2 * maxBleedPixels ) );
     const QVector<QPolygonF> rings; //empty list
 
     symbol->renderPolygon( pagePolygon, &rings, nullptr, context.renderContext() );
@@ -376,8 +372,8 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
 
   const QPointF gridOffset = mLayout->convertToLayoutUnits( grid.offset() );
   const double gridResolution = mLayout->convertToLayoutUnits( grid.resolution() );
-  const int gridMultiplyX = static_cast< int >( gridOffset.x() / gridResolution );
-  const int gridMultiplyY = static_cast< int >( gridOffset.y() / gridResolution );
+  const int gridMultiplyX = static_cast<int>( gridOffset.x() / gridResolution );
+  const int gridMultiplyY = static_cast<int>( gridOffset.y() / gridResolution );
   double currentXCoord = gridOffset.x() - gridMultiplyX * gridResolution;
   double currentYCoord;
   const double minYCoord = gridOffset.y() - gridMultiplyY * gridResolution;

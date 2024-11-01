@@ -91,7 +91,10 @@ class QgsGrassLocationItem : public QgsDirectoryItem, public QgsGrassObjectItemB
 
     QVector<QgsDataItem *> createChildren() override;
 #ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override { return mActions->actions( parent ); }
+    QList<QAction *> actions( QWidget *parent ) override
+    {
+      return mActions->actions( parent );
+    }
 #endif
 
   private:
@@ -113,7 +116,10 @@ class QgsGrassMapsetItem : public QgsDirectoryItem, public QgsGrassObjectItemBas
 
     QVector<QgsDataItem *> createChildren() override;
 #ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override { return mActions->actions( parent ); }
+    QList<QAction *> actions( QWidget *parent ) override
+    {
+      return mActions->actions( parent );
+    }
 #endif
     bool acceptDrop() override;
     bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
@@ -145,7 +151,10 @@ class QgsGrassObjectItem : public QgsLayerItem, public QgsGrassObjectItemBase
                         Qgis::BrowserLayerType layerType, const QString &providerKey );
 
 #ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override { return mActions->actions( parent ); }
+    QList<QAction *> actions( QWidget *parent ) override
+    {
+      return mActions->actions( parent );
+    }
 #endif
     bool equal( const QgsDataItem *other ) override;
 
@@ -166,7 +175,10 @@ class QgsGrassVectorItem : public QgsDataCollectionItem, public QgsGrassObjectIt
     ~QgsGrassVectorItem() override;
 
 #ifdef HAVE_GUI
-    QList<QAction *> actions( QWidget *parent ) override { return mActions->actions( parent ); }
+    QList<QAction *> actions( QWidget *parent ) override
+    {
+      return mActions->actions( parent );
+    }
 #endif
     bool equal( const QgsDataItem *other ) override;
 
@@ -179,7 +191,7 @@ class QgsGrassVectorItem : public QgsDataCollectionItem, public QgsGrassObjectIt
     QFileSystemWatcher *mWatcher = nullptr;
 
     QgsGrassVectorItem( const QgsGrassVectorItem & ) = delete;
-    QgsGrassVectorItem &operator= ( const QgsGrassVectorItem & ) = delete;
+    QgsGrassVectorItem &operator=( const QgsGrassVectorItem & ) = delete;
 };
 
 class QgsGrassVectorLayerItem : public QgsGrassObjectItem
@@ -221,7 +233,6 @@ class QgsGrassGroupItem : public QgsGrassObjectItem
                        const QString &path, const QString &uril );
 
     QIcon icon() override;
-
 };
 
 #ifdef HAVE_GUI
@@ -275,7 +286,7 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
 };
 
 
-class QgsGrassProviderMetadata: public QgsProviderMetadata
+class QgsGrassProviderMetadata : public QgsProviderMetadata
 {
     Q_OBJECT
 
@@ -283,9 +294,9 @@ class QgsGrassProviderMetadata: public QgsProviderMetadata
     QgsGrassProviderMetadata();
     QIcon icon() const override;
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QList< QgsDataItemProvider * > dataItemProviders() const override;
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
     void initProvider() override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 #endif // QGSGRASSPROVIDERMODULE_H

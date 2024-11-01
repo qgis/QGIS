@@ -30,9 +30,7 @@
  */
 class QgsPixelCentroidsFromPolygonsAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsPixelCentroidsFromPolygonsAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -45,7 +43,6 @@ class QgsPixelCentroidsFromPolygonsAlgorithm : public QgsProcessingAlgorithm
     QgsPixelCentroidsFromPolygonsAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };

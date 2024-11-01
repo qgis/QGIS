@@ -28,9 +28,7 @@ class QgsLayout;
  */
 class CORE_EXPORT QgsAbstractLayoutIterator
 {
-
   public:
-
     virtual ~QgsAbstractLayoutIterator() = default;
 
     /**
@@ -65,10 +63,6 @@ class CORE_EXPORT QgsAbstractLayoutIterator
      * specified base file path and extension.
      */
     virtual QString filePath( const QString &baseFilePath, const QString &extension ) = 0;
-
 };
 
 #endif //QGSABSTRACTLAYOUTITERATOR_H
-
-
-

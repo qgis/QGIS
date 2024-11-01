@@ -18,7 +18,7 @@
 #include "qgsvectordataprovidertemporalcapabilities.h"
 
 QgsVectorDataProviderTemporalCapabilities::QgsVectorDataProviderTemporalCapabilities( bool enabled )
-  :  QgsDataProviderTemporalCapabilities( enabled )
+  : QgsDataProviderTemporalCapabilities( enabled )
 {
 }
 

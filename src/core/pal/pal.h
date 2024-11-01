@@ -63,11 +63,11 @@ namespace pal
   //! Search method to use
   enum SearchMethod
   {
-    CHAIN = 0, //!< Is the worst but fastest method
+    CHAIN = 0,               //!< Is the worst but fastest method
     POPMUSIC_TABU_CHAIN = 1, //!< Is the best but slowest
-    POPMUSIC_TABU = 2, //!< Is a little bit better than CHAIN but slower
-    POPMUSIC_CHAIN = 3, //!< Is slower and best than TABU, worse and faster than TABU_CHAIN
-    FALP = 4 //!< Only initial solution
+    POPMUSIC_TABU = 2,       //!< Is a little bit better than CHAIN but slower
+    POPMUSIC_CHAIN = 3,      //!< Is slower and best than TABU, worse and faster than TABU_CHAIN
+    FALP = 4                 //!< Only initial solution
   };
 
   /**
@@ -145,7 +145,7 @@ namespace pal
        * - calculates overlaps/conflicts
        * - eliminates hard conflicts (forbidden placement)
        */
-      std::unique_ptr< Problem > extractProblem( const QgsRectangle &extent, const QgsGeometry &mapBoundary, QgsRenderContext &context );
+      std::unique_ptr<Problem> extractProblem( const QgsRectangle &extent, const QgsGeometry &mapBoundary, QgsRenderContext &context );
 
       /**
        * Solves the labeling problem, selecting the best candidate locations for all labels and returns a list of these
@@ -267,7 +267,7 @@ namespace pal
        * \see rules()
        * \since QGIS 3.40
        */
-      void setRules( const QList< QgsAbstractLabelingEngineRule * > &rules );
+      void setRules( const QList<QgsAbstractLabelingEngineRule *> &rules );
 
       /**
        * Returns the rules which the labeling solution must satisify.
@@ -275,13 +275,12 @@ namespace pal
        * \see setRules()
        * \since QGIS 3.40
        */
-      QList< QgsAbstractLabelingEngineRule * > rules() const { return mRules; }
+      QList<QgsAbstractLabelingEngineRule *> rules() const { return mRules; }
 
     private:
+      std::unordered_map<QgsAbstractLabelProvider *, std::unique_ptr<Layer>> mLayers;
 
-      std::unordered_map< QgsAbstractLabelProvider *, std::unique_ptr< Layer > > mLayers;
-
-      QList< QgsAbstractLabelingEngineRule * > mRules;
+      QList<QgsAbstractLabelingEngineRule *> mRules;
 
       QMutex mMutex;
 
@@ -298,7 +297,7 @@ namespace pal
       double mCandListSize = 0.2;
 
       unsigned int mNextCandidateId = 1;
-      mutable QHash< QPair< unsigned int, unsigned int >, bool > mCandidateConflicts;
+      mutable QHash<QPair<unsigned int, unsigned int>, bool> mCandidateConflicts;
 
       /**
        * \brief show partial labels (cut-off by the map canvas) or not
@@ -367,7 +366,6 @@ namespace pal
        * \see getMinIt()
        */
       int getMaxIt() const;
-
   };
 
 } // end namespace pal

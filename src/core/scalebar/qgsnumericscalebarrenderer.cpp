@@ -82,7 +82,7 @@ void QgsNumericScaleBarRenderer::draw( QgsRenderContext &context, const QgsScale
 }
 
 QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const QgsScaleBarSettings &settings,
-    const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
+                                                     const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
 {
   const double painterToMm = 1.0 / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
 

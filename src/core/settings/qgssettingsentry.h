@@ -43,26 +43,25 @@ static const inline QMetaEnum sSettingsTypeMetaEnum = QMetaEnum::fromType<Qgis::
  */
 class CORE_EXPORT QgsSettingsEntryBase
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast< QgsSettingsEntryVariant * >( sipCpp ) )
+    if ( dynamic_cast<QgsSettingsEntryVariant *>( sipCpp ) )
       sipType = sipType_QgsSettingsEntryVariant;
-    else if ( dynamic_cast< QgsSettingsEntryString * >( sipCpp ) )
+    else if ( dynamic_cast<QgsSettingsEntryString *>( sipCpp ) )
       sipType = sipType_QgsSettingsEntryString;
-    else if ( dynamic_cast< QgsSettingsEntryStringList * >( sipCpp ) )
+    else if ( dynamic_cast<QgsSettingsEntryStringList *>( sipCpp ) )
       sipType = sipType_QgsSettingsEntryStringList;
-    else if ( dynamic_cast< QgsSettingsEntryVariantMap * >( sipCpp ) )
+    else if ( dynamic_cast<QgsSettingsEntryVariantMap *>( sipCpp ) )
       sipType = sipType_QgsSettingsEntryVariantMap;
-    else if ( dynamic_cast< QgsSettingsEntryBool * >( sipCpp ) )
+    else if ( dynamic_cast<QgsSettingsEntryBool *>( sipCpp ) )
       sipType = sipType_QgsSettingsEntryBool;
-    else if ( dynamic_cast< QgsSettingsEntryInteger * >( sipCpp ) )
+    else if ( dynamic_cast<QgsSettingsEntryInteger *>( sipCpp ) )
       sipType = sipType_QgsSettingsEntryInteger;
-    else if ( dynamic_cast< QgsSettingsEntryDouble * >( sipCpp ) )
+    else if ( dynamic_cast<QgsSettingsEntryDouble *>( sipCpp ) )
       sipType = sipType_QgsSettingsEntryDouble;
-    else if ( dynamic_cast< QgsSettingsEntryColor * >( sipCpp ) )
+    else if ( dynamic_cast<QgsSettingsEntryColor *>( sipCpp ) )
       sipType = sipType_QgsSettingsEntryColor;
-    else if ( dynamic_cast< QgsSettingsEntryBase * >( sipCpp ) )
+    else if ( dynamic_cast<QgsSettingsEntryBase *>( sipCpp ) )
       sipType = sipType_QgsSettingsEntryBase;
     else
       sipType = NULL;
@@ -70,7 +69,6 @@ class CORE_EXPORT QgsSettingsEntryBase
 #endif
 
   public:
-
     /**
      * Transforms a dynamic key part string to list
      * \since QGIS 3.26
@@ -129,7 +127,7 @@ class CORE_EXPORT QgsSettingsEntryBase
      * Returns the name of the settings
      * \since QGIS 3.30
      */
-    QString name() const {return mName;}
+    QString name() const { return mName; }
 
     /**
      * Returns settings entry key.
@@ -172,7 +170,7 @@ class CORE_EXPORT QgsSettingsEntryBase
      * Returns the settings options
      * \since QGIS 3.26
      */
-    Qgis::SettingsOptions options() const {return mOptions;}
+    Qgis::SettingsOptions options() const { return mOptions; }
 
     /**
      * Returns TRUE if the settings is contained in the underlying QSettings.
@@ -273,7 +271,7 @@ class CORE_EXPORT QgsSettingsEntryBase
     /**
      * Returns the settings entry type.
      */
-    virtual Qgis::SettingsType settingsType() const {return Qgis::SettingsType::Custom;}
+    virtual Qgis::SettingsType settingsType() const { return Qgis::SettingsType::Custom; }
     // This cannot be pure virtual otherwise SIP is failing
 
     /**
@@ -302,7 +300,7 @@ class CORE_EXPORT QgsSettingsEntryBase
      * \returns TRUE if the key exists and the setting value could be copied.
      * \since QGIS 3.30
      */
-    bool copyValueFromKey( const QString &key, bool removeSettingAtKey = false ) const {return copyValueFromKey( key, {}, removeSettingAtKey );}
+    bool copyValueFromKey( const QString &key, bool removeSettingAtKey = false ) const { return copyValueFromKey( key, {}, removeSettingAtKey ); }
 
     /**
      * Copies the value from a given key if it exists.
@@ -336,7 +334,7 @@ class CORE_EXPORT QgsSettingsEntryBase
     * Returns the parent tree element
     * \since QGIS 3.30
     */
-    QgsSettingsTreeNode *parent() const {return mParentTreeElement;}
+    QgsSettingsTreeNode *parent() const { return mParentTreeElement; }
 
     //! Returns TRUE if the given \a value is valid towards the setting definition
     virtual bool checkValueVariant( const QVariant &value ) const
@@ -379,7 +377,6 @@ template<class T>
 class QgsSettingsEntryBaseTemplate : public QgsSettingsEntryBase
 {
   public:
-
     /**
      * Constructor for QgsSettingsEntryByReference.
      *
@@ -425,14 +422,14 @@ class QgsSettingsEntryBaseTemplate : public QgsSettingsEntryBase
      *
      * \param dynamicKeyPart specifies the dynamic part of the settings key.
      */
-    T value( const QString &dynamicKeyPart = QString() ) const { return this->convertFromVariant( valueAsVariant( dynamicKeyPart ) );}
+    T value( const QString &dynamicKeyPart = QString() ) const { return this->convertFromVariant( valueAsVariant( dynamicKeyPart ) ); }
 
     /**
      * Returns settings value.
      *
      * \param dynamicKeyPartList specifies the list of dynamic parts of the settings key.
      */
-    T value( const QStringList &dynamicKeyPartList )  const { return this->convertFromVariant( valueAsVariant( dynamicKeyPartList ) );}
+    T value( const QStringList &dynamicKeyPartList ) const { return this->convertFromVariant( valueAsVariant( dynamicKeyPartList ) ); }
 
 
     //! Returns the settings value with a \a defaultValueOverride and with an optional \a dynamicKeyPart
@@ -470,19 +467,19 @@ class QgsSettingsEntryBaseTemplate : public QgsSettingsEntryBase
     }
 
     //! Returns settings default value.
-    T defaultValue() const {return convertFromVariant( defaultValueAsVariant() );}
+    T defaultValue() const { return convertFromVariant( defaultValueAsVariant() ); }
 
     /**
      * Returns the former value.
      * Returns the current value (or default) if there is no former value.
      */
-    T formerValue( const QString &dynamicKeyPart = QString() ) const {return convertFromVariant( formerValueAsVariant( dynamicKeyPart ) );}
+    T formerValue( const QString &dynamicKeyPart = QString() ) const { return convertFromVariant( formerValueAsVariant( dynamicKeyPart ) ); }
 
     /**
      * Returns the former value
      * Returns the current value (or default) if there is no former value.
      */
-    T formerValue( const QStringList &dynamicKeyPartList ) const {return convertFromVariant( formerValueAsVariant( dynamicKeyPartList ) );}
+    T formerValue( const QStringList &dynamicKeyPartList ) const { return convertFromVariant( formerValueAsVariant( dynamicKeyPartList ) ); }
 
     bool checkValueVariant( const QVariant &value ) const override
     {
@@ -515,8 +512,6 @@ class QgsSettingsEntryBaseTemplate : public QgsSettingsEntryBase
       return true;
     }
 };
-
-
 
 
 #endif // QGSSETTINGSENTRY_H

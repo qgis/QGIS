@@ -21,13 +21,11 @@
 QgsGcpGeometryTransformer::QgsGcpGeometryTransformer( QgsGcpTransformerInterface *gcpTransformer )
   : mGcpTransformer( gcpTransformer )
 {
-
 }
 
 QgsGcpGeometryTransformer::QgsGcpGeometryTransformer( QgsGcpTransformerInterface::TransformMethod method, const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates )
   : mGcpTransformer( QgsGcpTransformerInterface::createFromParameters( method, sourceCoordinates, destinationCoordinates ) )
 {
-
 }
 
 QgsGcpGeometryTransformer::~QgsGcpGeometryTransformer() = default;
@@ -49,7 +47,7 @@ QgsGeometry QgsGcpGeometryTransformer::transform( const QgsGeometry &geometry, b
     return QgsGeometry();
   }
 
-  std::unique_ptr< QgsAbstractGeometry > res( geometry.constGet()->clone() );
+  std::unique_ptr<QgsAbstractGeometry> res( geometry.constGet()->clone() );
 
   ok = res->transform( this, feedback );
 

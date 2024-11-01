@@ -19,7 +19,7 @@ email                : sherman at mrcc.com
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
-#include "qgsfield_p.h" // for approximateMemoryUsage()
+#include "qgsfield_p.h"  // for approximateMemoryUsage()
 #include "qgsfields_p.h" // for approximateMemoryUsage()
 
 #include "qgsmessagelog.h"
@@ -54,13 +54,13 @@ QgsFeature::QgsFeature( const QgsFeature &rhs ) //NOLINT
 {
 }
 
-QgsFeature &QgsFeature::operator=( const QgsFeature &rhs )   //NOLINT
+QgsFeature &QgsFeature::operator=( const QgsFeature &rhs ) //NOLINT
 {
   d = rhs.d;
   return *this;
 }
 
-bool QgsFeature::operator ==( const QgsFeature &other ) const
+bool QgsFeature::operator==( const QgsFeature &other ) const
 {
   if ( d == other.d )
     return true;
@@ -399,7 +399,7 @@ int QgsFeature::approximateMemoryUsage() const
   // Fields
   s += sizeof( QgsFieldsPrivate );
   // TODO potentially: take into account the length of the name, comment, default value, etc...
-  s += d->fields.size() * ( sizeof( QgsField )  + sizeof( QgsFieldPrivate ) );
+  s += d->fields.size() * ( sizeof( QgsField ) + sizeof( QgsFieldPrivate ) );
 
   return static_cast<int>( s );
 }
@@ -456,4 +456,3 @@ uint qHash( const QgsFeature &key, uint seed )
 
   return hash;
 }
-

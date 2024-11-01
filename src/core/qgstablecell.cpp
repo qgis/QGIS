@@ -81,8 +81,8 @@ QVariantMap QgsTableCell::properties( const QgsReadWriteContext &context ) const
     res.insert( QStringLiteral( "text_format" ), textDoc.toString() );
   }
 
-  res.insert( QStringLiteral( "halign" ), static_cast< int >( mHAlign ) );
-  res.insert( QStringLiteral( "valign" ), static_cast< int >( mVAlign ) );
+  res.insert( QStringLiteral( "halign" ), static_cast<int>( mHAlign ) );
+  res.insert( QStringLiteral( "valign" ), static_cast<int>( mVAlign ) );
   if ( mRowSpan > 1 )
     res.insert( QStringLiteral( "row_span" ), mRowSpan );
   if ( mColumnSpan > 1 )
@@ -94,8 +94,8 @@ QVariantMap QgsTableCell::properties( const QgsReadWriteContext &context ) const
 void QgsTableCell::setProperties( const QVariantMap &properties, const QgsReadWriteContext &context )
 {
   mContent = properties.value( QStringLiteral( "content" ) );
-  mBackgroundColor = properties.value( QStringLiteral( "background" ) ).value< QColor >();
-  mForegroundColor = properties.value( QStringLiteral( "foreground" ) ).value< QColor >();
+  mBackgroundColor = properties.value( QStringLiteral( "background" ) ).value<QColor>();
+  mForegroundColor = properties.value( QStringLiteral( "foreground" ) ).value<QColor>();
 
   QDomDocument doc;
   QDomElement elem;
@@ -113,18 +113,17 @@ void QgsTableCell::setProperties( const QVariantMap &properties, const QgsReadWr
 
   if ( properties.contains( QStringLiteral( "format_type" ) ) )
   {
-
     mFormat.reset( QgsApplication::numericFormatRegistry()->create( properties.value( QStringLiteral( "format_type" ) ).toString(),
-                   properties.value( QStringLiteral( "format" ) ).toMap(),
-                   context ) );
+                                                                    properties.value( QStringLiteral( "format" ) ).toMap(),
+                                                                    context ) );
   }
   else
   {
     mFormat.reset();
   }
 
-  mHAlign = static_cast< Qt::Alignment >( properties.value( QStringLiteral( "halign" ), Qt::AlignLeft ).toInt() );
-  mVAlign = static_cast< Qt::Alignment >( properties.value( QStringLiteral( "valign" ), Qt::AlignVCenter ).toInt() );
+  mHAlign = static_cast<Qt::Alignment>( properties.value( QStringLiteral( "halign" ), Qt::AlignLeft ).toInt() );
+  mVAlign = static_cast<Qt::Alignment>( properties.value( QStringLiteral( "valign" ), Qt::AlignVCenter ).toInt() );
 
   mRowSpan = properties.value( QStringLiteral( "row_span" ), 1 ).toInt();
   mColumnSpan = properties.value( QStringLiteral( "column_span" ), 1 ).toInt();

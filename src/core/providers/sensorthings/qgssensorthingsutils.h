@@ -32,17 +32,18 @@ class QgsSensorThingsExpansionDefinition;
  */
 class CORE_EXPORT QgsSensorThingsUtils
 {
-
   public:
-
     //! Default page size
-    static constexpr int DEFAULT_PAGE_SIZE = 200; SIP_SKIP
+    static constexpr int DEFAULT_PAGE_SIZE = 200;
+    SIP_SKIP
 
     //! Default limit on number of features fetched
-    static constexpr int DEFAULT_FEATURE_LIMIT = 10000; SIP_SKIP
+    static constexpr int DEFAULT_FEATURE_LIMIT = 10000;
+    SIP_SKIP
 
     //! Default limit on number of expanded features fetched
-    static constexpr int DEFAULT_EXPANSION_LIMIT = 100; SIP_SKIP
+    static constexpr int DEFAULT_EXPANSION_LIMIT = 100;
+    SIP_SKIP
 
     /**
      * Converts a string value to a Qgis::SensorThingsEntity type.
@@ -90,7 +91,7 @@ class CORE_EXPORT QgsSensorThingsUtils
      *
      * \since QGIS 3.38
      */
-    static QgsFields fieldsForExpandedEntityType( Qgis::SensorThingsEntity baseType, const QList< Qgis::SensorThingsEntity > &expandedTypes );
+    static QgsFields fieldsForExpandedEntityType( Qgis::SensorThingsEntity baseType, const QList<Qgis::SensorThingsEntity> &expandedTypes );
 
     /**
      * Returns the geometry field for a specified entity \a type.
@@ -142,14 +143,14 @@ class CORE_EXPORT QgsSensorThingsUtils
      *
      * This method will block while network requests are made to the server.
      */
-    static QList< Qgis::GeometryType > availableGeometryTypes( const QString &uri, Qgis::SensorThingsEntity type, QgsFeedback *feedback = nullptr, const QString &authCfg = QString() );
+    static QList<Qgis::GeometryType> availableGeometryTypes( const QString &uri, Qgis::SensorThingsEntity type, QgsFeedback *feedback = nullptr, const QString &authCfg = QString() );
 
     /**
      * Returns a list of permissible expand targets for a given base entity \a type.
      *
      * \since QGIS 3.38
      */
-    static QList< Qgis::SensorThingsEntity > expandableTargets( Qgis::SensorThingsEntity type );
+    static QList<Qgis::SensorThingsEntity> expandableTargets( Qgis::SensorThingsEntity type );
 
     /**
      * Returns the cardinality of the relationship between a base entity type and a related entity type.
@@ -171,8 +172,7 @@ class CORE_EXPORT QgsSensorThingsUtils
      *
      * \since QGIS 3.38
      */
-    static QString asQueryString( Qgis::SensorThingsEntity baseType, const QList< QgsSensorThingsExpansionDefinition > &expansions );
-
+    static QString asQueryString( Qgis::SensorThingsEntity baseType, const QList<QgsSensorThingsExpansionDefinition> &expansions );
 };
 
 
@@ -185,7 +185,6 @@ class CORE_EXPORT QgsSensorThingsUtils
 class CORE_EXPORT QgsSensorThingsExpansionDefinition
 {
   public:
-
     /**
      * Constructor for QgsSensorThingsExpansionDefinition, targeting the specified child entity type.
      */
@@ -312,8 +311,7 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    if ( !sipCpp->isValid() )
+    % MethodCode if ( !sipCpp->isValid() )
     {
       sipRes = PyUnicode_FromString( "<QgsSensorThingsExpansionDefinition: invalid>" );
     }
@@ -345,14 +343,14 @@ class CORE_EXPORT QgsSensorThingsExpansionDefinition
     % End
 #endif
 
-  private:
+      private :
 
-    Qgis::SensorThingsEntity mChildEntity = Qgis::SensorThingsEntity::Invalid;
+      Qgis::SensorThingsEntity mChildEntity
+      = Qgis::SensorThingsEntity::Invalid;
     QString mOrderBy;
     Qt::SortOrder mSortOrder = Qt::SortOrder::AscendingOrder;
     int mLimit = QgsSensorThingsUtils::DEFAULT_EXPANSION_LIMIT;
     QString mFilter;
-
 };
 Q_DECLARE_METATYPE( QgsSensorThingsExpansionDefinition )
 

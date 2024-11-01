@@ -15,18 +15,14 @@
 
 #include "qgsstacitemcollection.h"
 
-QgsStacItemCollection::QgsStacItemCollection( const QVector< QgsStacItem * > items, const QVector< QgsStacLink > links, int numberMatched )
+QgsStacItemCollection::QgsStacItemCollection( const QVector<QgsStacItem *> items, const QVector<QgsStacLink> links, int numberMatched )
   : mItems( items )
   , mLinks( links )
   , mNumberMatched( numberMatched )
 {
   for ( const QgsStacLink &link : mLinks )
   {
-    if ( link.relation() == QLatin1String( "self" ) ||
-         link.relation() == QLatin1String( "root" ) ||
-         link.relation() == QLatin1String( "parent" ) ||
-         link.relation() == QLatin1String( "collection" ) ||
-         link.relation() == QLatin1String( "next" ) )
+    if ( link.relation() == QLatin1String( "self" ) || link.relation() == QLatin1String( "root" ) || link.relation() == QLatin1String( "parent" ) || link.relation() == QLatin1String( "collection" ) || link.relation() == QLatin1String( "next" ) )
       mUrls.insert( link.relation(), link.href() );
   }
 }
@@ -36,14 +32,14 @@ QgsStacItemCollection::~QgsStacItemCollection()
   qDeleteAll( mItems );
 }
 
-QVector< QgsStacItem * > QgsStacItemCollection::items() const
+QVector<QgsStacItem *> QgsStacItemCollection::items() const
 {
   return mItems;
 }
 
-QVector< QgsStacItem * > QgsStacItemCollection::takeItems()
+QVector<QgsStacItem *> QgsStacItemCollection::takeItems()
 {
-  QVector< QgsStacItem * > items = mItems;
+  QVector<QgsStacItem *> items = mItems;
   mItems.clear(); // detach
   return items;
 }

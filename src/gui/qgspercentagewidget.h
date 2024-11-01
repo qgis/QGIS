@@ -35,7 +35,6 @@ class GUI_EXPORT QgsPercentageWidget : public QWidget
     Q_PROPERTY( double value READ value WRITE setValue NOTIFY valueChanged )
 
   public:
-
     /**
      * Constructor for QgsPercentageWidget.
      */
@@ -73,10 +72,8 @@ class GUI_EXPORT QgsPercentageWidget : public QWidget
     void spinChanged( double value );
 
   private:
-
     QgsDoubleSpinBox *mSpinBox = nullptr;
     QSlider *mSlider = nullptr;
-
 };
 
 #endif // QGSPERCENTAGEWIDGET_H

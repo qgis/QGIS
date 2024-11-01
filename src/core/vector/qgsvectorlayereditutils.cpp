@@ -134,10 +134,8 @@ Qgis::VectorEditResult QgsVectorLayerEditUtils::deleteVertex( QgsFeatureId featu
 }
 
 
-static
-Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_ptr< QgsCurve > &ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureIds *modifiedFeatureIds, bool firstOne = true )
+static Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_ptr<QgsCurve> &ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureIds *modifiedFeatureIds, bool firstOne = true )
 {
-
   if ( !layer || !layer->isSpatial() )
   {
     return Qgis::GeometryOperationResult::AddRingNotInExistingFeature;
@@ -186,11 +184,11 @@ Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_
 
     if ( ring->orientation() != g.polygonOrientation() )
     {
-      addRingReturnCode = g.addRing( static_cast< QgsCurve * >( ring->clone() ) );
+      addRingReturnCode = g.addRing( static_cast<QgsCurve *>( ring->clone() ) );
     }
     else
     {
-      addRingReturnCode = g.addRing( static_cast< QgsCurve * >( ring->reversed() ) );
+      addRingReturnCode = g.addRing( static_cast<QgsCurve *>( ring->reversed() ) );
     }
     if ( addRingReturnCode == Qgis::GeometryOperationResult::Success )
     {
@@ -204,7 +202,6 @@ Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_
           break;
         }
       }
-
     }
   }
 
@@ -216,15 +213,15 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRing( const QVector<Qg
   QgsPointSequence l;
   for ( QVector<QgsPointXY>::const_iterator it = ring.constBegin(); it != ring.constEnd(); ++it )
   {
-    l <<  QgsPoint( *it );
+    l << QgsPoint( *it );
   }
-  return addRing( l, targetFeatureIds,  modifiedFeatureId );
+  return addRing( l, targetFeatureIds, modifiedFeatureId );
 }
 
 Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRing( const QgsPointSequence &ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureId *modifiedFeatureId )
 {
   QgsLineString *ringLine = new QgsLineString( ring );
-  return addRing( ringLine, targetFeatureIds,  modifiedFeatureId );
+  return addRing( ringLine, targetFeatureIds, modifiedFeatureId );
 }
 
 Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureId *modifiedFeatureId )
@@ -242,11 +239,9 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRing( QgsCurve *ring, 
 
 Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRingV2( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureIds *modifiedFeatureIds )
 {
-
   std::unique_ptr<QgsCurve> uniquePtrRing( ring );
   return staticAddRing( mLayer, uniquePtrRing, targetFeatureIds, modifiedFeatureIds, false );
 }
-
 
 
 Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( const QVector<QgsPointXY> &points, QgsFeatureId featureId )
@@ -254,7 +249,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( const QVector<Qg
   QgsPointSequence l;
   for ( QVector<QgsPointXY>::const_iterator it = points.constBegin(); it != points.constEnd(); ++it )
   {
-    l <<  QgsPoint( *it );
+    l << QgsPoint( *it );
   }
   return addPart( l, featureId );
 }
@@ -280,7 +275,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( const QgsPointSe
     geometry = f.geometry();
   }
 
-  Qgis::GeometryOperationResult errorCode = geometry.addPartV2( points,  mLayer->wkbType() );
+  Qgis::GeometryOperationResult errorCode = geometry.addPartV2( points, mLayer->wkbType() );
   if ( errorCode == Qgis::GeometryOperationResult::Success )
   {
     if ( firstPart && QgsWkbTypes::isSingleType( mLayer->wkbType() )
@@ -296,7 +291,6 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( const QgsPointSe
 
 Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( QgsCurve *ring, QgsFeatureId featureId )
 {
-
   if ( !mLayer->isSpatial() )
     return Qgis::GeometryOperationResult::AddPartSelectedGeometryNotFound;
 
@@ -356,11 +350,10 @@ int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx
 
 Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing )
 {
-
   QgsPointSequence l;
   for ( QVector<QgsPointXY>::const_iterator it = splitLine.constBegin(); it != splitLine.constEnd(); ++it )
   {
-    l <<  QgsPoint( *it );
+    l << QgsPoint( *it );
   }
   return splitFeatures( l, topologicalEditing );
 }
@@ -395,7 +388,6 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsC
   }
   else //else consider all the feature that intersect the bounding box of the split line
   {
-
     bBox = curve->boundingBox();
 
     if ( bBox.isEmpty() )
@@ -624,7 +616,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitParts( const QVector
   QgsPointSequence l;
   for ( QVector<QgsPointXY>::const_iterator it = splitLine.constBegin(); it != splitLine.constEnd(); ++it )
   {
-    l <<  QgsPoint( *it );
+    l << QgsPoint( *it );
   }
   return splitParts( l, topologicalEditing );
 }
@@ -715,8 +707,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitParts( const QgsPoin
       }
       // Note: For multilinestring layers, when the split line does not intersect the feature part,
       // QgsGeometry::splitGeometry returns InvalidBaseGeometry instead of NothingHappened
-      else if ( splitFunctionReturn == Qgis::GeometryOperationResult::NothingHappened ||
-                splitFunctionReturn == Qgis::GeometryOperationResult::InvalidBaseGeometry )
+      else if ( splitFunctionReturn == Qgis::GeometryOperationResult::NothingHappened || splitFunctionReturn == Qgis::GeometryOperationResult::InvalidBaseGeometry )
       {
         // Add part as is
         resultCollection.append( part );
@@ -728,7 +719,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitParts( const QgsPoin
     }
 
     QgsGeometry newGeom = QgsGeometry::collectGeometry( resultCollection );
-    mLayer->changeGeometry( feat.id(), newGeom ) ;
+    mLayer->changeGeometry( feat.id(), newGeom );
 
     if ( topologicalEditing )
     {
@@ -738,7 +729,6 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitParts( const QgsPoin
         addTopologicalPoints( *topol_it );
       }
     }
-
   }
   if ( numberOfSplitParts == 0 && mLayer->selectedFeatureCount() > 0 )
   {
@@ -805,9 +795,9 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )
 
   QgsFeature f;
   QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest()
-                           .setFilterRect( searchRect )
-                           .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
-                           .setNoAttributes() );
+                                                  .setFilterRect( searchRect )
+                                                  .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
+                                                  .setNoAttributes() );
 
   bool pointsAdded = false;
   while ( fit.nextFeature( f ) )
@@ -868,9 +858,7 @@ bool QgsVectorLayerEditUtils::mergeFeatures( const QgsFeatureId &targetFeatureId
   {
     QVariant val = mergeAttributes.at( i );
 
-    bool isDefaultValue = mLayer->fields().fieldOrigin( i ) == Qgis::FieldOrigin::Provider &&
-                          mLayer->dataProvider() &&
-                          mLayer->dataProvider()->defaultValueClause( mLayer->fields().fieldOriginIndex( i ) ) == val;
+    bool isDefaultValue = mLayer->fields().fieldOrigin( i ) == Qgis::FieldOrigin::Provider && mLayer->dataProvider() && mLayer->dataProvider()->defaultValueClause( mLayer->fields().fieldOriginIndex( i ) ) == val;
 
     // convert to destination data type
     QString errorMessageConvertCompatible;
@@ -879,7 +867,7 @@ bool QgsVectorLayerEditUtils::mergeFeatures( const QgsFeatureId &targetFeatureId
       if ( errorMessage.isEmpty() )
         errorMessage = QObject::tr( "Could not store value '%1' in field of type %2: %3" ).arg( mergeAttributes.at( i ).toString(), mLayer->fields().at( i ).typeName(), errorMessageConvertCompatible );
     }
-    newAttributes[ i ] = val;
+    newAttributes[i] = val;
   }
 
   mLayer->beginEditCommand( QObject::tr( "Merged features" ) );

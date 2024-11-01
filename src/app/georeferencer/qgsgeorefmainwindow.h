@@ -210,7 +210,7 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     // utils
     bool validate();
     QgsRectangle transformViewportBoundingBox( const QgsRectangle &canvasExtent, QgsGeorefTransform &t,
-        bool rasterToWorld = true, uint numSamples = 4 );
+                                               bool rasterToWorld = true, uint numSamples = 4 );
     QString convertResamplingEnumToString( QgsImageWarper::ResamplingMethod resampling );
     int polynomialOrder( QgsGeorefTransform::TransformMethod transform );
     QString guessWorldFileName( const QString &sourceFileName );
@@ -261,7 +261,7 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     QString mPdfOutputFile;
     QString mPdfOutputMapFile;
     bool mSaveGcp = false;
-    double  mUserResX, mUserResY;  // User specified target scale
+    double mUserResX, mUserResY; // User specified target scale
 
     QgsGcpTransformerInterface::TransformMethod mTransformMethod = QgsGcpTransformerInterface::TransformMethod::InvalidTransform;
     QgsImageWarper::ResamplingMethod mResamplingMethod;
@@ -270,10 +270,10 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     bool mCreateWorldFileOnly = false;
 
     QgsGCPList mPoints;
-    QList< QgsGcpPoint > mSavedPoints;
+    QList<QgsGcpPoint> mSavedPoints;
 
     QgsMapCanvas *mCanvas = nullptr;
-    std::unique_ptr< QgsMapLayer > mLayer;
+    std::unique_ptr<QgsMapLayer> mLayer;
 
     QgsMapTool *mToolZoomIn = nullptr;
     QgsMapTool *mToolZoomOut = nullptr;

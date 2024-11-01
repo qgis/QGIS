@@ -48,7 +48,7 @@ struct StatsProcessor
     {
     }
 
-    StatsProcessor &operator =( const StatsProcessor &rhs )
+    StatsProcessor &operator=( const StatsProcessor &rhs )
     {
       mIndex.reset( rhs.mIndex->clone().release() );
       mRequest = rhs.mRequest;
@@ -106,7 +106,7 @@ struct StatsProcessor
         summary.mean = 0;
         summary.stDev = std::numeric_limits<double>::quiet_NaN();
         summary.classCount.clear();
-        statsMap[ attribute.name() ] = summary;
+        statsMap[attribute.name()] = summary;
       }
 
       QVector<int> attributeOffsetVector;
@@ -116,17 +116,7 @@ struct StatsProcessor
         int attributeOffset = 0;
         attributesCollection.find( attribute.name(), attributeOffset );
         attributeOffsetVector.push_back( attributeOffset );
-        if ( attribute.name() == QLatin1String( "ScannerChannel" ) ||
-             attribute.name() == QLatin1String( "ReturnNumber" ) ||
-             attribute.name() == QLatin1String( "NumberOfReturns" ) ||
-             attribute.name() == QLatin1String( "ScanDirectionFlag" ) ||
-             attribute.name() == QLatin1String( "Classification" ) ||
-             attribute.name() == QLatin1String( "EdgeOfFlightLine" ) ||
-             attribute.name() == QLatin1String( "PointSourceId" ) ||
-             attribute.name() == QLatin1String( "Synthetic" ) ||
-             attribute.name() == QLatin1String( "KeyPoint" ) ||
-             attribute.name() == QLatin1String( "Withheld" ) ||
-             attribute.name() == QLatin1String( "Overlap" ) )
+        if ( attribute.name() == QLatin1String( "ScannerChannel" ) || attribute.name() == QLatin1String( "ReturnNumber" ) || attribute.name() == QLatin1String( "NumberOfReturns" ) || attribute.name() == QLatin1String( "ScanDirectionFlag" ) || attribute.name() == QLatin1String( "Classification" ) || attribute.name() == QLatin1String( "EdgeOfFlightLine" ) || attribute.name() == QLatin1String( "PointSourceId" ) || attribute.name() == QLatin1String( "Synthetic" ) || attribute.name() == QLatin1String( "KeyPoint" ) || attribute.name() == QLatin1String( "Withheld" ) || attribute.name() == QLatin1String( "Overlap" ) )
         {
           classifiableAttributesOffsetSet.insert( attributeOffset );
         }
@@ -144,9 +134,9 @@ struct StatsProcessor
           QgsPointCloudAttribute::DataType attributeType = attributes.at( j ).type();
 
           double attributeValue = 0;
-          int attributeOffset = attributeOffsetVector[ j ];
+          int attributeOffset = attributeOffsetVector[j];
 
-          QgsPointCloudAttributeStatistics &stats = statsMap[ attributeName ];
+          QgsPointCloudAttributeStatistics &stats = statsMap[attributeName];
           QgsPointCloudRenderContext::getAttribute( ptr, i * recordSize + attributeOffset, attributeType, attributeValue );
           stats.minimum = std::min( stats.minimum, attributeValue );
           stats.maximum = std::max( stats.maximum, attributeValue );
@@ -155,13 +145,14 @@ struct StatsProcessor
           stats.count++;
           if ( classifiableAttributesOffsetSet.contains( attributeOffset ) )
           {
-            stats.classCount[( int )attributeValue ]++;
+            stats.classCount[( int ) attributeValue]++;
           }
         }
       }
       updateFeedback();
       return QgsPointCloudStatistics( count, statsMap );
     }
+
   private:
     std::unique_ptr<QgsPointCloudIndex> mIndex = nullptr;
     QgsPointCloudRequest mRequest;
@@ -180,7 +171,6 @@ QMutex StatsProcessor::sStatsProcessorFeedbackMutex;
 QgsPointCloudStatsCalculator::QgsPointCloudStatsCalculator( QgsPointCloudIndex *index )
   : mIndex( index->clone() )
 {
-
 }
 
 bool QgsPointCloudStatsCalculator::calculateStats( QgsFeedback *feedback, const QVector<QgsPointCloudAttribute> &attributes, qint64 pointsLimit )
@@ -217,7 +207,7 @@ bool QgsPointCloudStatsCalculator::calculateStats( QgsFeedback *feedback, const 
 
   feedback->setProgress( 0 );
 
-  QVector<QgsPointCloudStatistics> list = QtConcurrent::blockingMapped( nodes, StatsProcessor( mIndex.get(), mRequest, feedback, 100.0 / ( double )nodes.size() ) );
+  QVector<QgsPointCloudStatistics> list = QtConcurrent::blockingMapped( nodes, StatsProcessor( mIndex.get(), mRequest, feedback, 100.0 / ( double ) nodes.size() ) );
 
   for ( QgsPointCloudStatistics &s : list )
   {

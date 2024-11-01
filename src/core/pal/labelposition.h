@@ -58,7 +58,6 @@ namespace pal
       friend class PolygonCostCalculator;
 
     public:
-
       /**
        * \brief Label directions in relation to line or polygon ring directions
        */
@@ -214,7 +213,8 @@ namespace pal
       {
         probFeat = probFid;
         id = lpId;
-        if ( mNextPart ) mNextPart->setProblemIds( probFid, lpId );
+        if ( mNextPart )
+          mNextPart->setProblemIds( probFid, lpId );
       }
 
       /**
@@ -307,7 +307,7 @@ namespace pal
        *
        * \see nextPart()
        */
-      void setNextPart( std::unique_ptr< LabelPosition > next ) { mNextPart = std::move( next ); }
+      void setNextPart( std::unique_ptr<LabelPosition> next ) { mNextPart = std::move( next ); }
 
       // -1 if not multi-part
       int getPartId() const { return partId; }
@@ -318,7 +318,7 @@ namespace pal
        *
        * \see upsideDownCharCount()
        */
-      void setUpsideDownCharCount( int count ) { mUpsideDownCharCount = count ; }
+      void setUpsideDownCharCount( int count ) { mUpsideDownCharCount = count; }
 
       /**
        * Returns the number of upside down characters for this label position.
@@ -382,7 +382,6 @@ namespace pal
       double angleDifferential();
 
     protected:
-
       int id;
 
       FeaturePart *feature = nullptr;
@@ -404,16 +403,15 @@ namespace pal
       bool upsideDown;
 
     private:
-
       Qgis::LabelQuadrantPosition mQuadrant = Qgis::LabelQuadrantPosition::AboveLeft;
 
       LabelDirectionToLine mDirectionToLine = LabelDirectionToLine::SameDirection;
 
       unsigned int mGlobalId = 0;
-      std::unique_ptr< LabelPosition > mNextPart;
+      std::unique_ptr<LabelPosition> mNextPart;
 
-      std::vector< double > mOuterBoundsX;
-      std::vector< double > mOuterBoundsY;
+      std::vector<double> mOuterBoundsX;
+      std::vector<double> mOuterBoundsY;
 
       double mOuterBoundsXMin = std::numeric_limits<double>::max();
       double mOuterBoundsXMax = std::numeric_limits<double>::lowest();
@@ -451,6 +449,6 @@ namespace pal
       LabelPosition &operator=( const LabelPosition & ) = delete;
   };
 
-} // end namespace
+} // namespace pal
 
 #endif

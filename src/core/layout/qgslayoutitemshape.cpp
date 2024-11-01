@@ -42,8 +42,7 @@ QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
   mShapeStyleSymbol.reset( QgsFillSymbol::createSimple( properties ) );
   refreshSymbol( false );
 
-  connect( this, &QgsLayoutItemShape::sizePositionChanged, this, [this]
-  {
+  connect( this, &QgsLayoutItemShape::sizePositionChanged, this, [this] {
     updateBoundingRect();
     update();
     emit clipPathChanged();
@@ -278,7 +277,7 @@ bool QgsLayoutItemShape::writePropertiesToElement( QDomElement &element, QDomDoc
 
 bool QgsLayoutItemShape::readPropertiesFromElement( const QDomElement &element, const QDomDocument &, const QgsReadWriteContext &context )
 {
-  mShape = static_cast< Shape >( element.attribute( QStringLiteral( "shapeType" ), QStringLiteral( "0" ) ).toInt() );
+  mShape = static_cast<Shape>( element.attribute( QStringLiteral( "shapeType" ), QStringLiteral( "0" ) ).toInt() );
   if ( element.hasAttribute( QStringLiteral( "cornerRadiusMeasure" ) ) )
     mCornerRadius = QgsLayoutMeasurement::decodeMeasurement( element.attribute( QStringLiteral( "cornerRadiusMeasure" ), QStringLiteral( "0" ) ) );
   else

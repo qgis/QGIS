@@ -40,7 +40,6 @@ class QgsDataProviderTemporalCapabilities;
  */
 class CORE_EXPORT QgsDataProvider : public QObject
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsVectorDataProvider *>( sipCpp ) )
@@ -68,7 +67,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Properties are used to pass custom configuration options into data providers.
      * This enum defines a list of custom properties which can be used on different
@@ -78,8 +76,8 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     enum ProviderProperty
     {
-      EvaluateDefaultValues,       //!< Evaluate default values on provider side when calling QgsVectorDataProvider::defaultValue( int index ) rather than on commit.
-      CustomData   = 3000          //!< Custom properties for 3rd party providers or very provider-specific properties which are not expected to be of interest for other providers can be added starting from this value up.
+      EvaluateDefaultValues, //!< Evaluate default values on provider side when calling QgsVectorDataProvider::defaultValue( int index ) rather than on commit.
+      CustomData = 3000      //!< Custom properties for 3rd party providers or very provider-specific properties which are not expected to be of interest for other providers can be added starting from this value up.
     };
 
     /**
@@ -91,12 +89,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     struct ProviderOptions
     {
-
-      /**
+        /**
        * Coordinate transform context
        */
-      QgsCoordinateTransformContext transformContext;
-
+        QgsCoordinateTransformContext transformContext;
     };
 
     /**
@@ -352,7 +348,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual QStringList subLayers() const
     {
-      return QStringList();  // Empty
+      return QStringList(); // Empty
     }
 
     /**
@@ -364,7 +360,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual QStringList subLayerStyles() const
     {
-      return QStringList();  // Empty
+      return QStringList(); // Empty
     }
 
 
@@ -574,11 +570,11 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     struct PreviewContext
     {
-      //! Previous rendering time for the layer, in ms
-      double lastRenderingTimeMs = -1;
+        //! Previous rendering time for the layer, in ms
+        double lastRenderingTimeMs = -1;
 
-      //! Default maximum allowable render time, in ms
-      double maxRenderingTimeMs = MAXIMUM_LAYER_PREVIEW_TIME_MS;
+        //! Default maximum allowable render time, in ms
+        double maxRenderingTimeMs = MAXIMUM_LAYER_PREVIEW_TIME_MS;
     };
 #endif
 
@@ -611,7 +607,11 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Returns TRUE if metadata was successfully written to the data provider.
      * \see layerMetadata()
     */
-    virtual bool writeLayerMetadata( const QgsLayerMetadata &metadata ) { Q_UNUSED( metadata ) return false; }
+    virtual bool writeLayerMetadata( const QgsLayerMetadata &metadata )
+    {
+      Q_UNUSED( metadata )
+      return false;
+    }
 
     /**
      * Returns data provider coordinate transform context
@@ -683,7 +683,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
   protected:
-
     /**
      * Timestamp of data in the moment when the data were loaded by provider.
      */
@@ -696,13 +695,12 @@ class CORE_EXPORT QgsDataProvider : public QObject
     void appendError( const QgsErrorMessage &message ) { mError.append( message ); }
 
     //! Sets error message
-    void setError( const QgsError &error ) { mError = error;}
+    void setError( const QgsError &error ) { mError = error; }
 
     //! Read flags. It's up to the subclass to respect these when needed
     Qgis::DataProviderReadFlags mReadFlags;
 
   private:
-
     /**
      * Universal Resource Identifier for source data.
      * This could be a file, database, or server address.
@@ -711,7 +709,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
     QgsDataProvider::ProviderOptions mOptions;
 
-    QMap< int, QVariant > mProviderProperties;
+    QMap<int, QVariant> mProviderProperties;
 
     /**
      * Protects options from being accessed concurrently

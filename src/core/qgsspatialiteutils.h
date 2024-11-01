@@ -32,16 +32,15 @@
  */
 struct CORE_EXPORT QgsSpatialiteCloser
 {
-
-  /**
+    /**
    * Closes an spatialite \a database.
    */
-  void operator()( sqlite3 *database );
+    void operator()( sqlite3 *database );
 
-  /**
+    /**
    * Keep track of the spatialite context. Set in open(_v2)
    */
-  void *mSpatialiteContext = nullptr;
+    void *mSpatialiteContext = nullptr;
 };
 
 /**
@@ -51,10 +50,9 @@ struct CORE_EXPORT QgsSpatialiteCloser
  * the database when the pointer goes out of scope or is reset.
  *
  */
-class CORE_EXPORT spatialite_database_unique_ptr : public std::unique_ptr< sqlite3, QgsSpatialiteCloser>
+class CORE_EXPORT spatialite_database_unique_ptr : public std::unique_ptr<sqlite3, QgsSpatialiteCloser>
 {
   public:
-
     /**
      * Opens the database at the specified file \a path.
      *

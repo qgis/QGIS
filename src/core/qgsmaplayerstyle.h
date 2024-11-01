@@ -80,7 +80,6 @@ class CORE_EXPORT QgsMapLayerStyle
 class CORE_EXPORT QgsMapLayerStyleOverride
 {
   public:
-
     /**
      * Construct a style override object associated with a map layer.
      * The overridden style will be restored upon object destruction.
@@ -99,7 +98,6 @@ class CORE_EXPORT QgsMapLayerStyleOverride
     void setOverrideStyle( const QString &style );
 
   private:
-
     QgsMapLayer *mLayer = nullptr;
     bool mStyleOverridden = false;
 };

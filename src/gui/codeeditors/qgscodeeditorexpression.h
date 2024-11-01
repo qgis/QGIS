@@ -56,7 +56,6 @@ class GUI_EXPORT QgsCodeEditorExpression : public QgsCodeEditor
     void setFields( const QgsFields &fields );
 
   protected:
-
     void initializeLexer() override;
 
   private:

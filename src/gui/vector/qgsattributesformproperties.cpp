@@ -85,8 +85,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   connect( pbnSelectEditForm, &QToolButton::clicked, this, &QgsAttributesFormProperties::pbnSelectEditForm_clicked );
   connect( mTbInitCode, &QPushButton::clicked, this, &QgsAttributesFormProperties::mTbInitCode_clicked );
 
-  connect( mLayer, &QgsVectorLayer::updatedFields, this, [this]
-  {
+  connect( mLayer, &QgsVectorLayer::updatedFields, this, [this] {
     if ( !mBlockUpdates )
       updatedFields();
   } );
@@ -157,13 +156,11 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   catItemData = DnDTreeItemData( DnDTreeItemData::WidgetType, QStringLiteral( "Actions" ), tr( "Actions" ) );
   catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
 
-  const QList<QgsAction> actions { mLayer->actions()->actions( ) };
+  const QList<QgsAction> actions { mLayer->actions()->actions() };
 
   for ( const auto &action : std::as_const( actions ) )
   {
-    if ( action.isValid() && action.runable() &&
-         ( action.actionScopes().contains( QStringLiteral( "Feature" ) ) ||
-           action.actionScopes().contains( QStringLiteral( "Layer" ) ) ) )
+    if ( action.isValid() && action.runable() && ( action.actionScopes().contains( QStringLiteral( "Feature" ) ) || action.actionScopes().contains( QStringLiteral( "Layer" ) ) ) )
     {
       const QString actionTitle { action.shortTitle().isEmpty() ? action.name() : action.shortTitle() };
       DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Action, action.id().toString(), actionTitle );
@@ -192,7 +189,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   itemDataSpacer.setShowLabel( false );
   mAvailableWidgetsTree->addItem( catitem, itemDataSpacer );
 
-  catitem ->setExpanded( true );
+  catitem->setExpanded( true );
 }
 
 void QgsAttributesFormProperties::initFormLayoutTree()
@@ -373,12 +370,9 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
 
   constraints.setConstraintExpression( mAttributeTypeDialog->constraintExpression(), mAttributeTypeDialog->constraintExpressionDescription() );
 
-  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintNotNull, mAttributeTypeDialog->notNullEnforced() ?
-                                     QgsFieldConstraints::ConstraintStrengthHard : QgsFieldConstraints::ConstraintStrengthSoft );
-  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintUnique, mAttributeTypeDialog->uniqueEnforced() ?
-                                     QgsFieldConstraints::ConstraintStrengthHard : QgsFieldConstraints::ConstraintStrengthSoft );
-  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintExpression, mAttributeTypeDialog->constraintExpressionEnforced() ?
-                                     QgsFieldConstraints::ConstraintStrengthHard : QgsFieldConstraints::ConstraintStrengthSoft );
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintNotNull, mAttributeTypeDialog->notNullEnforced() ? QgsFieldConstraints::ConstraintStrengthHard : QgsFieldConstraints::ConstraintStrengthSoft );
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintUnique, mAttributeTypeDialog->uniqueEnforced() ? QgsFieldConstraints::ConstraintStrengthHard : QgsFieldConstraints::ConstraintStrengthSoft );
+  constraints.setConstraintStrength( QgsFieldConstraints::ConstraintExpression, mAttributeTypeDialog->constraintExpressionEnforced() ? QgsFieldConstraints::ConstraintStrengthHard : QgsFieldConstraints::ConstraintStrengthSoft );
 
   // The call to mLayer->setDefaultValueDefinition will possibly emit updatedFields
   // which will set mAttributeTypeDialog to nullptr so we need to store any value before calling it
@@ -446,13 +440,11 @@ void QgsAttributesFormProperties::loadAttributeContainerEdit()
   mAttributeContainerEdit->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributeTypeFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributeTypeFrame->layout()->addWidget( mAttributeContainerEdit );
-
 }
 
 QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent, QgsAttributesDnDTree *tree )
 {
-  auto setCommonProperties = [widgetDef]( DnDTreeItemData & itemData )
-  {
+  auto setCommonProperties = [widgetDef]( DnDTreeItemData &itemData ) {
     itemData.setShowLabel( widgetDef->showLabel() );
     itemData.setLabelStyle( widgetDef->labelStyle() );
     itemData.setHorizontalStretch( widgetDef->horizontalStretch() );
@@ -494,7 +486,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       setCommonProperties( itemData );
 
       RelationEditorConfiguration relEdConfig;
-//      relEdConfig.buttons = relationEditor->visibleButtons();
+      //      relEdConfig.buttons = relationEditor->visibleButtons();
       relEdConfig.mRelationWidgetType = relationEditor->relationWidgetTypeId();
       relEdConfig.mRelationWidgetConfig = relationEditor->relationEditorConfiguration();
       relEdConfig.nmRelationId = relationEditor->nmRelationId();
@@ -658,7 +650,7 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( QgsAttributesDnDT
       case DnDTreeItemData::Action:
       {
         receiver->selectFirstMatchingItem( itemData );
-        const QgsAction action {mLayer->actions()->action( itemData.name() )};
+        const QgsAction action { mLayer->actions()->action( itemData.name() ) };
         loadInfoWidget( action.html() );
         break;
       }
@@ -722,7 +714,7 @@ void QgsAttributesFormProperties::onInvertSelectionButtonClicked( bool checked )
   const auto rootItem { mFormLayoutTree->invisibleRootItem() };
   for ( int i = 0; i < rootItem->childCount(); ++i )
   {
-    rootItem->child( i )->setSelected( ! selectedItemList.contains( rootItem->child( i ) ) );
+    rootItem->child( i )->setSelected( !selectedItemList.contains( rootItem->child( i ) ) );
   }
 }
 
@@ -764,7 +756,6 @@ void QgsAttributesFormProperties::removeTabOrGroupButton()
 
     delete items.at( 0 );
   }
-
 }
 
 QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWidget( QTreeWidgetItem *item, QgsAttributeEditorElement *parent, bool isTopLevel )
@@ -785,7 +776,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
 
     case DnDTreeItemData::Action:
     {
-      const QgsAction action { mLayer->actions()->action( itemData.name() )};
+      const QgsAction action { mLayer->actions()->action( itemData.name() ) };
       widgetDef = new QgsAttributeEditorAction( action, parent );
       break;
     }
@@ -819,7 +810,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
       container->setCollapsed( itemData.collapsed() );
       container->setCollapsedExpression( itemData.collapsedExpression() );
       container->setVisibilityExpression( itemData.visibilityExpression() );
-      container->setBackgroundColor( itemData.backgroundColor( ) );
+      container->setBackgroundColor( itemData.backgroundColor() );
 
       for ( int t = 0; t < item->childCount(); t++ )
       {
@@ -866,7 +857,6 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
 
     case DnDTreeItemData::WidgetType:
       break;
-
   }
 
   if ( widgetDef )
@@ -928,14 +918,13 @@ void QgsAttributesFormProperties::mTbInitCode_clicked()
   mInitCode = attributesFormInitCode.initCode();
   mInitFilePath = attributesFormInitCode.initFilePath();
   mInitFunction = attributesFormInitCode.initFunction();
-
 }
 
 void QgsAttributesFormProperties::pbnSelectEditForm_clicked()
 {
   QgsSettings myQSettings;
   const QString lastUsedDir = myQSettings.value( QStringLiteral( "style/lastUIDir" ), QDir::homePath() ).toString();
-  const QString uifilename = QFileDialog::getOpenFileName( this, tr( "Select edit form" ), lastUsedDir, tr( "UI file" )  + " (*.ui)" );
+  const QString uifilename = QFileDialog::getOpenFileName( this, tr( "Select edit form" ), lastUsedDir, tr( "UI file" ) + " (*.ui)" );
 
   if ( uifilename.isNull() )
     return;
@@ -1030,14 +1019,14 @@ void QgsAttributesFormProperties::apply()
 
   editFormConfig.setUiForm( mEditFormLineEdit->text() );
 
-  editFormConfig.setLayout( mEditorLayoutComboBox->currentData().value< Qgis::AttributeFormLayout >() );
+  editFormConfig.setLayout( mEditorLayoutComboBox->currentData().value<Qgis::AttributeFormLayout>() );
 
   editFormConfig.setInitCodeSource( mInitCodeSource );
   editFormConfig.setInitFunction( mInitFunction );
   editFormConfig.setInitFilePath( mInitFilePath );
   editFormConfig.setInitCode( mInitCode );
 
-  editFormConfig.setSuppress( mFormSuppressCmbBx->currentData().value< Qgis::AttributeFormSuppression >() );
+  editFormConfig.setSuppress( mFormSuppressCmbBx->currentData().value<Qgis::AttributeFormSuppression>() );
 
   // write the legacy config of relation widgets to support settings read by the API
   QTreeWidgetItem *relationContainer = mAvailableWidgetsTree->invisibleRootItem()->child( 1 );
@@ -1274,7 +1263,7 @@ QStringList QgsAttributesDnDTree::mimeTypes() const
   return QStringList() << QStringLiteral( "application/x-qgsattributetabledesignerelement" );
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 QMimeData *QgsAttributesDnDTree::mimeData( const QList<QTreeWidgetItem *> items ) const
 #else
 QMimeData *QgsAttributesDnDTree::mimeData( const QList<QTreeWidgetItem *> &items ) const
@@ -1361,8 +1350,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       mLayer->getFeatures().nextFeature( previewFeature );
 
       //update preview on text change
-      connect( qmlCode, &QsciScintilla::textChanged, this, [ = ]
-      {
+      connect( qmlCode, &QsciScintilla::textChanged, this, [=] {
         qmlWrapper->setQmlCode( qmlCode->text() );
         qmlWrapper->reinitWidget();
         qmlWrapper->setFeature( previewFeature );
@@ -1374,8 +1362,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       qmlObjectTemplate->addItem( tr( "Rectangle" ) );
       qmlObjectTemplate->addItem( tr( "Pie Chart" ) );
       qmlObjectTemplate->addItem( tr( "Bar Chart" ) );
-      connect( qmlObjectTemplate, qOverload<int>( &QComboBox::activated ), qmlCode, [ = ]( int index )
-      {
+      connect( qmlObjectTemplate, qOverload<int>( &QComboBox::activated ), qmlCode, [=]( int index ) {
         qmlCode->clear();
         switch ( index )
         {
@@ -1458,15 +1445,13 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       editExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
       editExpressionButton->setToolTip( tr( "Insert/Edit Expression" ) );
 
-      connect( addFieldButton, &QAbstractButton::clicked, this, [ = ]
-      {
+      connect( addFieldButton, &QAbstractButton::clicked, this, [=] {
         QString expression = expressionWidget->expression().trimmed().replace( '"', QLatin1String( "\\\"" ) );
         if ( !expression.isEmpty() )
           qmlCode->insertText( QStringLiteral( "expression.evaluate(\"%1\")" ).arg( expression ) );
       } );
 
-      connect( editExpressionButton, &QAbstractButton::clicked, this, [ = ]
-      {
+      connect( editExpressionButton, &QAbstractButton::clicked, this, [=] {
         QString expression = QgsExpressionFinder::findAndSelectActiveExpression( qmlCode, QStringLiteral( "expression\\.evaluate\\(\\s*\"(.*?)\\s*\"\\s*\\)" ) );
         expression.replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) );
         QgsExpressionContext context = createExpressionContext();
@@ -1543,7 +1528,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       QLineEdit *title = new QLineEdit( itemData.name() );
 
       //htmlCode
-      QgsCodeEditorHTML *htmlCode = new QgsCodeEditorHTML( );
+      QgsCodeEditorHTML *htmlCode = new QgsCodeEditorHTML();
       htmlCode->setSizePolicy( QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding );
       htmlCode->setText( itemData.htmlElementEditorConfiguration().htmlCode );
 
@@ -1552,9 +1537,8 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       mLayer->getFeatures().nextFeature( previewFeature );
 
       //update preview on text change
-      connect( htmlCode, &QgsCodeEditorHTML::textChanged, this, [ = ]
-      {
-        htmlWrapper->setHtmlCode( htmlCode->text( ) );
+      connect( htmlCode, &QgsCodeEditorHTML::textChanged, this, [=] {
+        htmlWrapper->setHtmlCode( htmlCode->text() );
         htmlWrapper->reinitWidget();
         htmlWrapper->setFeature( previewFeature );
       } );
@@ -1570,15 +1554,13 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       editExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
       editExpressionButton->setToolTip( tr( "Insert/Edit Expression" ) );
 
-      connect( addFieldButton, &QAbstractButton::clicked, this, [ = ]
-      {
+      connect( addFieldButton, &QAbstractButton::clicked, this, [=] {
         QString expression = expressionWidget->expression().trimmed().replace( '"', QLatin1String( "\\\"" ) );
         if ( !expression.isEmpty() )
           htmlCode->insertText( QStringLiteral( "<script>document.write(expression.evaluate(\"%1\"));</script>" ).arg( expression ) );
       } );
 
-      connect( editExpressionButton, &QAbstractButton::clicked, this, [ = ]
-      {
+      connect( editExpressionButton, &QAbstractButton::clicked, this, [=] {
         QString expression = QgsExpressionFinder::findAndSelectActiveExpression( htmlCode, QStringLiteral( "<script>\\s*document\\.write\\(\\s*expression\\.evaluate\\(\\s*\"(.*?)\\s*\"\\s*\\)\\s*\\)\\s*;?\\s*</script>" ) );
         expression.replace( QLatin1String( "\\\"" ), QLatin1String( "\"" ) );
         QgsExpressionContext context = createExpressionContext();
@@ -1648,7 +1630,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
 
       QLineEdit *title = new QLineEdit( itemData.name() );
 
-      QgsCodeEditorHTML *text = new QgsCodeEditorHTML( );
+      QgsCodeEditorHTML *text = new QgsCodeEditorHTML();
       text->setSizePolicy( QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding );
       text->setText( itemData.textElementEditorConfiguration().text );
 
@@ -1657,9 +1639,8 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       mLayer->getFeatures().nextFeature( previewFeature );
 
       //update preview on text change
-      connect( text, &QgsCodeEditorExpression::textChanged, this, [ = ]
-      {
-        textWrapper->setText( text->text( ) );
+      connect( text, &QgsCodeEditorExpression::textChanged, this, [=] {
+        textWrapper->setText( text->text() );
         textWrapper->reinitWidget();
         textWrapper->setFeature( previewFeature );
       } );
@@ -1675,14 +1656,12 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       editExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
       editExpressionButton->setToolTip( tr( "Insert/Edit Expression" ) );
 
-      connect( addFieldButton, &QAbstractButton::clicked, this, [ = ]
-      {
+      connect( addFieldButton, &QAbstractButton::clicked, this, [=] {
         QString expression = expressionWidget->expression().trimmed();
         if ( !expression.isEmpty() )
           text->insertText( QStringLiteral( "[%%1%]" ).arg( expression ) );
       } );
-      connect( editExpressionButton, &QAbstractButton::clicked, this, [ = ]
-      {
+      connect( editExpressionButton, &QAbstractButton::clicked, this, [=] {
         QString expression = QgsExpressionFinder::findAndSelectActiveExpression( text );
 
         QgsExpressionContext context = createExpressionContext();
@@ -1747,7 +1726,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       QLineEdit *title = new QLineEdit( itemData.name() );
       mainLayout->addWidget( title );
 
-      QHBoxLayout *cbLayout = new QHBoxLayout( );
+      QHBoxLayout *cbLayout = new QHBoxLayout();
       mainLayout->addLayout( cbLayout );
       dlg.setLayout( mainLayout );
       QCheckBox *cb = new QCheckBox { &dlg };
@@ -1788,7 +1767,7 @@ QgsExpressionContext QgsAttributesDnDTree::createExpressionContext() const
   if ( mLayer )
     expContext << QgsExpressionContextUtils::layerScope( mLayer );
 
-  expContext.appendScope( QgsExpressionContextUtils::formScope( ) );
+  expContext.appendScope( QgsExpressionContextUtils::formScope() );
   return expContext;
 }
 

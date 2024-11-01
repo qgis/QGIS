@@ -36,7 +36,6 @@ class CORE_EXPORT QgsProcessingAlgRunnerTask : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingAlgRunnerTask. Takes an \a algorithm, algorithm \a parameters
      * and processing \a context.
@@ -68,21 +67,16 @@ class CORE_EXPORT QgsProcessingAlgRunnerTask : public QgsTask
     void executed( bool successful, const QVariantMap &results );
 
   protected:
-
     bool run() override;
     void finished( bool result ) override;
 
   private:
-
     QVariantMap mParameters;
     QVariantMap mResults;
     QgsProcessingContext &mContext;
     QgsProcessingFeedback *mFeedback = nullptr;
-    std::unique_ptr< QgsProcessingFeedback > mOwnedFeedback;
-    std::unique_ptr< QgsProcessingAlgorithm > mAlgorithm;
-
+    std::unique_ptr<QgsProcessingFeedback> mOwnedFeedback;
+    std::unique_ptr<QgsProcessingAlgorithm> mAlgorithm;
 };
 
 #endif // QGSPROCESSINGALGRUNNERTASK_H
-
-

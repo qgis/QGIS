@@ -45,10 +45,8 @@ class QgsRaiseExceptionAlgorithm : public QgsProcessingAlgorithm
     QgsRaiseExceptionAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback * ) override;
-
 };
 
 /**
@@ -70,10 +68,8 @@ class QgsRaiseWarningAlgorithm : public QgsProcessingAlgorithm
     QgsRaiseWarningAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback * ) override;
-
 };
 
 /**
@@ -95,10 +91,8 @@ class QgsRaiseMessageAlgorithm : public QgsProcessingAlgorithm
     QgsRaiseMessageAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback * ) override;
-
 };
 
 ///@endcond PRIVATE

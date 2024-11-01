@@ -45,7 +45,6 @@ QgsLayoutItemRenderContext::QgsLayoutItemRenderContext( QgsRenderContext &contex
 }
 
 
-
 QgsLayoutItem::QgsLayoutItem( QgsLayout *layout, bool manageZValue )
   : QgsLayoutObject( layout )
   , QGraphicsRectItem( nullptr )
@@ -170,7 +169,7 @@ void QgsLayoutItem::setVisibility( const bool visible )
     return;
   }
 
-  std::unique_ptr< QgsAbstractLayoutUndoCommand > command;
+  std::unique_ptr<QgsAbstractLayoutUndoCommand> command;
   if ( !shouldBlockUndoCommands() )
   {
     command.reset( createCommand( visible ? tr( "Show Item" ) : tr( "Hide Item" ), 0 ) );
@@ -219,7 +218,7 @@ void QgsLayoutItem::setLocked( const bool locked )
 
 bool QgsLayoutItem::isGroupMember() const
 {
-  return !mParentGroupUuid.isEmpty() && mLayout && static_cast< bool >( mLayout->itemByUuid( mParentGroupUuid ) );
+  return !mParentGroupUuid.isEmpty() && mLayout && static_cast<bool>( mLayout->itemByUuid( mParentGroupUuid ) );
 }
 
 QgsLayoutItemGroup *QgsLayoutItem::parentGroup() const
@@ -227,7 +226,7 @@ QgsLayoutItemGroup *QgsLayoutItem::parentGroup() const
   if ( !mLayout || mParentGroupUuid.isEmpty() )
     return nullptr;
 
-  return qobject_cast< QgsLayoutItemGroup * >( mLayout->itemByUuid( mParentGroupUuid ) );
+  return qobject_cast<QgsLayoutItemGroup *>( mLayout->itemByUuid( mParentGroupUuid ) );
 }
 
 void QgsLayoutItem::setParentGroup( QgsLayoutItemGroup *group )
@@ -236,7 +235,7 @@ void QgsLayoutItem::setParentGroup( QgsLayoutItemGroup *group )
     mParentGroupUuid.clear();
   else
     mParentGroupUuid = group->uuid();
-  setFlag( QGraphicsItem::ItemIsSelectable, !static_cast< bool>( group ) ); //item in groups cannot be selected
+  setFlag( QGraphicsItem::ItemIsSelectable, !static_cast<bool>( group ) ); //item in groups cannot be selected
 }
 
 QgsLayoutItem::ExportLayerBehavior QgsLayoutItem::exportLayerBehavior() const
@@ -251,12 +250,10 @@ int QgsLayoutItem::numberExportLayers() const
 
 void QgsLayoutItem::startLayeredExport()
 {
-
 }
 
 void QgsLayoutItem::stopLayeredExport()
 {
-
 }
 
 bool QgsLayoutItem::nextExportPart()
@@ -628,7 +625,7 @@ bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, con
   element.setAttribute( QStringLiteral( "uuid" ), mUuid );
   element.setAttribute( QStringLiteral( "templateUuid" ), mUuid );
   element.setAttribute( QStringLiteral( "id" ), mId );
-  element.setAttribute( QStringLiteral( "referencePoint" ), QString::number( static_cast< int >( mReferencePoint ) ) );
+  element.setAttribute( QStringLiteral( "referencePoint" ), QString::number( static_cast<int>( mReferencePoint ) ) );
   element.setAttribute( QStringLiteral( "position" ), mItemPosition.encodePoint() );
   element.setAttribute( QStringLiteral( "positionOnPage" ), pagePositionWithUnits().encodePoint() );
   element.setAttribute( QStringLiteral( "size" ), mItemSize.encodeSize() );
@@ -686,7 +683,7 @@ bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, con
   element.appendChild( bgColorElem );
 
   //blend mode
-  element.setAttribute( QStringLiteral( "blendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( mBlendMode ) ) );
+  element.setAttribute( QStringLiteral( "blendMode" ), static_cast<int>( QgsPainting::getBlendModeEnum( mBlendMode ) ) );
 
   //opacity
   element.setAttribute( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
@@ -713,7 +710,7 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
   mBlockUndoCommands = true;
   mUuid = element.attribute( QStringLiteral( "uuid" ), QUuid::createUuid().toString() );
   setId( element.attribute( QStringLiteral( "id" ) ) );
-  mReferencePoint = static_cast< ReferencePoint >( element.attribute( QStringLiteral( "referencePoint" ) ).toInt() );
+  mReferencePoint = static_cast<ReferencePoint>( element.attribute( QStringLiteral( "referencePoint" ) ).toInt() );
   setItemRotation( element.attribute( QStringLiteral( "itemRotation" ), QStringLiteral( "0" ) ).toDouble() );
   attemptMove( QgsLayoutPoint::decodePoint( element.attribute( QStringLiteral( "position" ) ) ) );
   attemptResize( QgsLayoutSize::decodeSize( element.attribute( QStringLiteral( "size" ) ) ) );
@@ -810,7 +807,7 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
   }
 
   //blend mode
-  setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( element.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) ) );
+  setBlendMode( QgsPainting::getCompositionMode( static_cast<Qgis::BlendMode>( element.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) ) );
 
   //opacity
   if ( element.hasAttribute( QStringLiteral( "opacity" ) ) )
@@ -943,8 +940,7 @@ bool QgsLayoutItem::containsAdvancedEffects() const
 
 bool QgsLayoutItem::requiresRasterization() const
 {
-  return ( itemFlags() & Flag::FlagOverridesPaint && itemOpacity() < 1.0 ) ||
-         blendMode() != QPainter::CompositionMode_SourceOver;
+  return ( itemFlags() & Flag::FlagOverridesPaint && itemOpacity() < 1.0 ) || blendMode() != QPainter::CompositionMode_SourceOver;
 }
 
 double QgsLayoutItem::estimatedFrameBleed() const
@@ -965,17 +961,14 @@ QRectF QgsLayoutItem::rectWithFrame() const
 
 void QgsLayoutItem::moveContent( double, double )
 {
-
 }
 
 void QgsLayoutItem::setMoveContentPreviewOffset( double, double )
 {
-
 }
 
 void QgsLayoutItem::zoomContent( double, QPointF )
 {
-
 }
 
 void QgsLayoutItem::beginCommand( const QString &commandText, UndoCommand command )
@@ -1049,10 +1042,7 @@ QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
     return size;
   }
 
-  if ( !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PresetPaperSize ) &&
-       !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ItemWidth ) &&
-       !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ItemHeight ) &&
-       !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PaperOrientation ) )
+  if ( !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PresetPaperSize ) && !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ItemWidth ) && !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::ItemHeight ) && !mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::PaperOrientation ) )
     return size;
 
 
@@ -1115,13 +1105,11 @@ void QgsLayoutItem::refreshDataDefinedProperty( const QgsLayoutObject::DataDefin
   //update data defined properties and update item to match
 
   //evaluate width and height first, since they may affect position if non-top-left reference point set
-  if ( property == QgsLayoutObject::DataDefinedProperty::ItemWidth || property == QgsLayoutObject::DataDefinedProperty::ItemHeight ||
-       property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::ItemWidth || property == QgsLayoutObject::DataDefinedProperty::ItemHeight || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     refreshItemSize();
   }
-  if ( property == QgsLayoutObject::DataDefinedProperty::PositionX || property == QgsLayoutObject::DataDefinedProperty::PositionY ||
-       property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::PositionX || property == QgsLayoutObject::DataDefinedProperty::PositionY || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     refreshItemPosition();
   }
@@ -1163,7 +1151,7 @@ void QgsLayoutItem::setItemRotation( double angle, const bool adjustPosition )
   }
 
   const QPointF point = adjustPosition ? positionAtReferencePoint( QgsLayoutItem::Middle )
-                        : pos();
+                                       : pos();
   const double rotationRequired = angle - rotation();
   rotateItem( rotationRequired, point );
 
@@ -1378,7 +1366,6 @@ bool QgsLayoutItem::writePropertiesToElement( QDomElement &, QDomDocument &, con
 
 bool QgsLayoutItem::readPropertiesFromElement( const QDomElement &, const QDomDocument &, const QgsReadWriteContext & )
 {
-
   return true;
 }
 
@@ -1386,7 +1373,6 @@ void QgsLayoutItem::initConnectionsToLayout()
 {
   if ( !mLayout )
     return;
-
 }
 
 void QgsLayoutItem::preparePainter( QPainter *painter )
@@ -1587,4 +1573,3 @@ void QgsLayoutItem::refreshBlendMode()
 
   update();
 }
-

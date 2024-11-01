@@ -43,7 +43,6 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     Q_PROPERTY( QStringList additionalItems READ additionalItems WRITE setAdditionalItems )
 
   public:
-
     // *INDENT-OFF*
 
     /**
@@ -52,12 +51,11 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * \note Prior to QGIS 3.36 this was available as QgsMapLayerModel::ItemDataRole
      * \since QGIS 3.36
      */
-    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayerModel, ItemDataRole ) : int
-    {
-      LayerId SIP_MONKEYPATCH_COMPAT_NAME(LayerIdRole) = Qt::UserRole + 1, //!< Stores the map layer ID
-      Layer SIP_MONKEYPATCH_COMPAT_NAME(LayerRole), //!< Stores pointer to the map layer itself
-      Empty SIP_MONKEYPATCH_COMPAT_NAME(EmptyRole), //!< True if index corresponds to the empty (not set) value
-      Additional SIP_MONKEYPATCH_COMPAT_NAME(AdditionalRole), //!< True if index corresponds to an additional (non map layer) item
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayerModel, ItemDataRole ) : int {
+      LayerId SIP_MONKEYPATCH_COMPAT_NAME( LayerIdRole ) = Qt::UserRole + 1, //!< Stores the map layer ID
+      Layer SIP_MONKEYPATCH_COMPAT_NAME( LayerRole ),                        //!< Stores pointer to the map layer itself
+      Empty SIP_MONKEYPATCH_COMPAT_NAME( EmptyRole ),                        //!< True if index corresponds to the empty (not set) value
+      Additional SIP_MONKEYPATCH_COMPAT_NAME( AdditionalRole ),              //!< True if index corresponds to an additional (non map layer) item
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -146,7 +144,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     /**
      * Sets which layers are checked in the model.
      */
-    void setLayersChecked( const QList< QgsMapLayer * > &layers );
+    void setLayersChecked( const QList<QgsMapLayer *> &layers );
 
     //! returns if the items can be checked or not
     bool itemsCheckable() const { return mItemCheckable; }
@@ -194,7 +192,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      * \see setAdditionalLayers()
      * \since QGIS 3.22
      */
-    QList< QgsMapLayer * > additionalLayers() const;
+    QList<QgsMapLayer *> additionalLayers() const;
 
     // QAbstractItemModel interface
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
@@ -230,7 +228,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
 
   protected:
     QList<QgsMapLayer *> mLayers;
-    QList< QPointer<QgsMapLayer> > mAdditionalLayers;
+    QList<QPointer<QgsMapLayer>> mAdditionalLayers;
     QMap<QString, Qt::CheckState> mLayersChecked;
     bool mItemCheckable = false;
     bool mCanReorder = false;
@@ -238,7 +236,6 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     QgsProject *mProject = nullptr;
 
   private:
-
     bool mAllowEmpty = false;
     QString mEmptyText;
     QIcon mEmptyIcon;

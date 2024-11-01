@@ -51,13 +51,13 @@ class QgsGeometryValidationService : public QObject
   public:
     struct FeatureError
     {
-      FeatureError() = default;
-      FeatureError( QgsFeatureId fid, QgsGeometry::Error error )
-        : featureId( fid )
-        , error( error )
-      {}
-      QgsFeatureId featureId = std::numeric_limits<QgsFeatureId>::min();
-      QgsGeometry::Error error;
+        FeatureError() = default;
+        FeatureError( QgsFeatureId fid, QgsGeometry::Error error )
+          : featureId( fid )
+          , error( error )
+        {}
+        QgsFeatureId featureId = std::numeric_limits<QgsFeatureId>::min();
+        QgsGeometry::Error error;
     };
 
     typedef QList<FeatureError> FeatureErrors;
@@ -80,7 +80,7 @@ class QgsGeometryValidationService : public QObject
 
     void geometryCheckStarted( QgsVectorLayer *layer, QgsFeatureId fid );
     void geometryCheckCompleted( QgsVectorLayer *layer, QgsFeatureId fid, const QList<std::shared_ptr<QgsSingleGeometryCheckError>> &errors );
-    void topologyChecksUpdated( QgsVectorLayer *layer, const QList<std::shared_ptr<QgsGeometryCheckError> > &errors );
+    void topologyChecksUpdated( QgsVectorLayer *layer, const QList<std::shared_ptr<QgsGeometryCheckError>> &errors );
     void topologyChecksCleared( QgsVectorLayer *layer );
     void topologyErrorUpdated( QgsVectorLayer *layer, QgsGeometryCheckError *error );
 
@@ -112,15 +112,15 @@ class QgsGeometryValidationService : public QObject
 
     struct VectorLayerCheckInformation
     {
-      QList< QgsSingleGeometryCheck * > singleFeatureChecks;
-      QMap<QgsFeatureId, QList< std::shared_ptr<QgsSingleGeometryCheckError > > > singleFeatureCheckErrors;
-      QList< QgsGeometryCheck *> topologyChecks;
-      QFutureWatcher<void> *topologyCheckFutureWatcher = nullptr;
-      QList<QgsFeedback *> topologyCheckFeedbacks; // will be deleted when topologyCheckFutureWatcher is delteed
-      QList<std::shared_ptr<QgsGeometryCheckError>> topologyCheckErrors;
-      QList<QMetaObject::Connection> connections;
-      std::shared_ptr<QgsGeometryCheckContext> context;
-      bool commitPending = false;
+        QList<QgsSingleGeometryCheck *> singleFeatureChecks;
+        QMap<QgsFeatureId, QList<std::shared_ptr<QgsSingleGeometryCheckError>>> singleFeatureCheckErrors;
+        QList<QgsGeometryCheck *> topologyChecks;
+        QFutureWatcher<void> *topologyCheckFutureWatcher = nullptr;
+        QList<QgsFeedback *> topologyCheckFeedbacks; // will be deleted when topologyCheckFutureWatcher is delteed
+        QList<std::shared_ptr<QgsGeometryCheckError>> topologyCheckErrors;
+        QList<QMetaObject::Connection> connections;
+        std::shared_ptr<QgsGeometryCheckContext> context;
+        bool commitPending = false;
     };
 
     QReadWriteLock mTopologyCheckLock;
@@ -132,7 +132,6 @@ class QgsGeometryValidationService : public QObject
     // when checks do complete successfully and changes need to be saved
     // this variable is used to indicate that it's safe to bypass the checks
     bool mBypassChecks = false;
-
 };
 
 #endif // QGSGEOMETRYVALIDATIONSERVICE_H

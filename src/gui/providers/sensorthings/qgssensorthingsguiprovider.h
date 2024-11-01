@@ -29,7 +29,6 @@
 class QgsSensorThingsSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-
     QString providerKey() const final;
     QString text() const final;
     QIcon icon() const final;
@@ -46,7 +45,7 @@ class QgsSensorThingsSourceWidgetProvider : public QgsProviderSourceWidgetProvid
     QgsProviderSourceWidget *createWidget( QgsMapLayer *layer, QWidget *parent = nullptr ) override;
 };
 
-class QgsSensorThingsProviderGuiMetadata: public QgsProviderGuiMetadata
+class QgsSensorThingsProviderGuiMetadata : public QgsProviderGuiMetadata
 {
   public:
     QgsSensorThingsProviderGuiMetadata();
@@ -54,7 +53,6 @@ class QgsSensorThingsProviderGuiMetadata: public QgsProviderGuiMetadata
     QList<QgsProviderSourceWidgetProvider *> sourceWidgetProviders() override;
     QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
     QList<QgsSubsetStringEditorProvider *> subsetStringEditorProviders() override;
-
 };
 
 ///@endcond

@@ -316,7 +316,7 @@ class CORE_EXPORT QgsLinearReferencingSymbolLayer : public QgsLineSymbolLayer
     double mSkipMultiplesOf = 0;
     bool mRotateLabels = true;
 
-    QPointF mLabelOffset{ 1, 0 };
+    QPointF mLabelOffset { 1, 0 };
     Qgis::RenderUnit mLabelOffsetUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mLabelOffsetMapUnitScale;
 
@@ -331,7 +331,6 @@ class CORE_EXPORT QgsLinearReferencingSymbolLayer : public QgsLineSymbolLayer
     QgsMapUnitScale mAverageAngleLengthMapUnitScale;
 
     QString mLabelProviderId;
-
 };
 
 #endif // QGSLINEARREFERENCINGSYMBOLLAYER_H

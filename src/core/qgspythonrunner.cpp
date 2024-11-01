@@ -57,4 +57,3 @@ void QgsPythonRunner::setInstance( QgsPythonRunner *runner )
   delete sInstance;
   sInstance = runner;
 }
-

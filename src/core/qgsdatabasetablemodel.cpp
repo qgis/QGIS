@@ -76,7 +76,7 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
 
   if ( index.row() == 0 && mAllowEmpty )
   {
-    if ( role == static_cast< int >( CustomRole::Empty ) )
+    if ( role == static_cast<int>( CustomRole::Empty ) )
       return true;
 
     return QVariant();
@@ -85,10 +85,10 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
   if ( index.row() - ( mAllowEmpty ? 1 : 0 ) >= mTables.count() )
     return QVariant();
 
-  const QgsAbstractDatabaseProviderConnection::TableProperty &table = mTables[ index.row() - ( mAllowEmpty ? 1 : 0 ) ];
+  const QgsAbstractDatabaseProviderConnection::TableProperty &table = mTables[index.row() - ( mAllowEmpty ? 1 : 0 )];
   switch ( role )
   {
-    case static_cast< int >( CustomRole::Empty ):
+    case static_cast<int>( CustomRole::Empty ):
       return false;
 
     case Qt::DisplayRole:
@@ -98,14 +98,14 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
       return mSchema.isEmpty() && !table.schema().isEmpty() ? QStringLiteral( "%1.%2" ).arg( table.schema(), table.tableName() ) : table.tableName();
     }
 
-    case static_cast< int >( CustomRole::TableName ):
+    case static_cast<int>( CustomRole::TableName ):
     {
       return table.tableName();
     }
 
     case Qt::DecorationRole:
-    case static_cast< int >( CustomRole::WkbType ):
-    case static_cast< int >( CustomRole::Crs ):
+    case static_cast<int>( CustomRole::WkbType ):
+    case static_cast<int>( CustomRole::Crs ):
     {
       if ( table.geometryColumnTypes().empty() )
       {
@@ -142,26 +142,25 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
 
         return QgsIconUtils::iconTable();
       }
-      else if ( role == static_cast< int >( CustomRole::WkbType ) )
-        return static_cast< quint32>( table.geometryColumnTypes().at( 0 ).wkbType );
-      else if ( role == static_cast< int >( CustomRole::Crs ) )
+      else if ( role == static_cast<int>( CustomRole::WkbType ) )
+        return static_cast<quint32>( table.geometryColumnTypes().at( 0 ).wkbType );
+      else if ( role == static_cast<int>( CustomRole::Crs ) )
         return table.geometryColumnTypes().at( 0 ).crs;
 
       return QVariant();
     }
 
-    case static_cast< int >( CustomRole::Schema ):
+    case static_cast<int>( CustomRole::Schema ):
       return table.schema();
 
-    case static_cast< int >( CustomRole::TableFlags ):
-      return static_cast< int >( table.flags() );
+    case static_cast<int>( CustomRole::TableFlags ):
+      return static_cast<int>( table.flags() );
 
-    case static_cast< int >( CustomRole::Comment ):
+    case static_cast<int>( CustomRole::Comment ):
       return table.comment();
 
-    case static_cast< int >( CustomRole::CustomInfo ):
+    case static_cast<int>( CustomRole::CustomInfo ):
       return table.info();
-
   }
 
   return QVariant();
@@ -198,8 +197,8 @@ void QgsDatabaseTableModel::setAllowEmptyTable( bool allowEmpty )
 
 void QgsDatabaseTableModel::refresh()
 {
-  const QList< QgsAbstractDatabaseProviderConnection::TableProperty > newTables = mConnection->tables( mSchema );
-  const QList< QgsAbstractDatabaseProviderConnection::TableProperty > oldTables = mTables;
+  const QList<QgsAbstractDatabaseProviderConnection::TableProperty> newTables = mConnection->tables( mSchema );
+  const QList<QgsAbstractDatabaseProviderConnection::TableProperty> oldTables = mTables;
 
   for ( const QgsAbstractDatabaseProviderConnection::TableProperty &oldTable : oldTables )
   {
@@ -212,7 +211,7 @@ void QgsDatabaseTableModel::refresh()
     }
   }
 
-  for ( const  QgsAbstractDatabaseProviderConnection::TableProperty &newTable : newTables )
+  for ( const QgsAbstractDatabaseProviderConnection::TableProperty &newTable : newTables )
   {
     if ( !mTables.contains( newTable ) )
     {

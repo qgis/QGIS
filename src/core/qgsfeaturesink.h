@@ -32,14 +32,12 @@
 class CORE_EXPORT QgsFeatureSink
 {
   public:
-
     /**
      * Flags that can be set on a QgsFeatureSink. Not all sinks may implement all flags.
      *
      * \since QGIS 3.4
      */
-    enum SinkFlag SIP_ENUM_BASETYPE( IntFlag )
-    {
+    enum SinkFlag SIP_ENUM_BASETYPE( IntFlag ) {
 
       /**
        * This flag indicates, that a primary key field cannot be guaranteed to be unique and
@@ -56,8 +54,7 @@ class CORE_EXPORT QgsFeatureSink
     Q_DECLARE_FLAGS( SinkFlags, SinkFlag )
 
     //! Flags controlling how features are added to a sink.
-    enum Flag SIP_ENUM_BASETYPE( IntFlag )
-    {
+    enum Flag SIP_ENUM_BASETYPE( IntFlag ) {
 
       /**
         * Use faster inserts, at the cost of updating the passed features to reflect changes made at the provider.

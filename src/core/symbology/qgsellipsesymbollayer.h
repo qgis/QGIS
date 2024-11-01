@@ -15,7 +15,7 @@
 #ifndef QGSELLIPSESYMBOLLAYER_H
 #define QGSELLIPSESYMBOLLAYER_H
 
-#define DEFAULT_ELLIPSE_JOINSTYLE    Qt::MiterJoin
+#define DEFAULT_ELLIPSE_JOINSTYLE Qt::MiterJoin
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -28,33 +28,32 @@ class QgsExpression;
  * \ingroup core
  * \brief A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle, etc).
 */
-class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
+class CORE_EXPORT QgsEllipseSymbolLayer : public QgsMarkerSymbolLayer
 {
   public:
-
     //! Marker symbol shapes
     enum Shape
     {
-      Circle, //!< Circle
-      Rectangle, //!< Rectangle
-      Diamond, //!< Diamond
-      Cross, //!< Stroke-only cross
-      Arrow, //!< Stroke-only arrow \since QGIS 3.20
-      HalfArc, //!< Stroke-only half arc \since QGIS 3.20
-      Triangle, //!< Triangle
+      Circle,            //!< Circle
+      Rectangle,         //!< Rectangle
+      Diamond,           //!< Diamond
+      Cross,             //!< Stroke-only cross
+      Arrow,             //!< Stroke-only arrow \since QGIS 3.20
+      HalfArc,           //!< Stroke-only half arc \since QGIS 3.20
+      Triangle,          //!< Triangle
       RightHalfTriangle, //!< Right half of a triangle
-      LeftHalfTriangle, //!< Left half of a triangle
-      SemiCircle, //!< Semi circle
-      ThirdCircle, //!< Third Circle \since QGIS 3.28
-      QuarterCircle, //!< Quarter Circle \since QGIS 3.28
-      Pentagon, //!< Pentagon \since QGIS 3.28
-      Hexagon, //!< Hexagon \since QGIS 3.28
-      Octagon, //!< Octagon \since QGIS 3.28
-      Star, //!< Star \since QGIS 3.28
+      LeftHalfTriangle,  //!< Left half of a triangle
+      SemiCircle,        //!< Semi circle
+      ThirdCircle,       //!< Third Circle \since QGIS 3.28
+      QuarterCircle,     //!< Quarter Circle \since QGIS 3.28
+      Pentagon,          //!< Pentagon \since QGIS 3.28
+      Hexagon,           //!< Hexagon \since QGIS 3.28
+      Octagon,           //!< Octagon \since QGIS 3.28
+      Star,              //!< Star \since QGIS 3.28
     };
 
     //! Returns a list of all available shape types.
-    static QList< QgsEllipseSymbolLayer::Shape > availableShapes();
+    static QList<QgsEllipseSymbolLayer::Shape> availableShapes();
 
     /**
      * Returns TRUE if a \a shape has a fill.
@@ -286,5 +285,3 @@ class CORE_EXPORT QgsEllipseSymbolLayer: public QgsMarkerSymbolLayer
 // clazy:excludeall=qstring-allocations
 
 #endif // QGSELLIPSESYMBOLLAYER_H
-
-

@@ -80,7 +80,7 @@ class CORE_EXPORT QgsTileDownloadManagerReply : public QObject
   private:
     QgsTileDownloadManagerReply( QgsTileDownloadManager *manager, const QNetworkRequest &request );
 
-    friend class QgsTileDownloadManager;  // allows creation of new instances from the manager
+    friend class QgsTileDownloadManager; // allows creation of new instances from the manager
 
   private:
     //! "parent" download manager of this reply
@@ -159,7 +159,6 @@ class QgsTileDownloadManagerWorker : public QObject
 /// @endcond
 
 
-
 /**
  * \ingroup core
  *
@@ -201,7 +200,6 @@ class QgsTileDownloadManagerWorker : public QObject
  */
 class CORE_EXPORT QgsTileDownloadManager
 {
-
     //! An entry in the queue of requests to be handled by this class
     class QueueEntry
     {
@@ -217,7 +215,6 @@ class CORE_EXPORT QgsTileDownloadManager
     };
 
   public:
-
     /**
      * \ingroup core
      * \brief Encapsulates any statistics we would like to keep about requests
@@ -285,7 +282,6 @@ class CORE_EXPORT QgsTileDownloadManager
     friend class QgsTileDownloadManagerReplyWorkerObject;
 
   private:
-
     // these can be only used with mutex locked!
     QueueEntry findEntryForRequest( const QNetworkRequest &request );
     void addEntry( const QueueEntry &entry );
@@ -299,11 +295,10 @@ class CORE_EXPORT QgsTileDownloadManager
     bool isCachedRangeRequest( const QNetworkRequest &request );
 
   private:
-
     std::vector<QueueEntry> mQueue;
 
     bool mStageQueueRemovals = false;
-    std::vector< QNetworkRequest > mStagedQueueRemovals;
+    std::vector<QNetworkRequest> mStagedQueueRemovals;
 
     bool mShuttingDown = false;
     mutable QRecursiveMutex mMutex;

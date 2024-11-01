@@ -26,7 +26,6 @@
 #include <QThread>
 
 
-
 QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer )
   : mFeatureCache( CACHE_SIZE )
   , mLayer( layer )

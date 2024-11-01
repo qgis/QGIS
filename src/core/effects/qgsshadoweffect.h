@@ -34,9 +34,7 @@
 
 class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 {
-
   public:
-
     QgsShadowEffect();
 
     QVariantMap properties() const override;
@@ -219,7 +217,6 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
     QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
   protected:
-
     QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
     void draw( QgsRenderContext &context ) override;
 
@@ -241,7 +238,6 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
     double mOpacity = 1.0;
     QColor mColor;
     QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_Multiply;
-
 };
 
 
@@ -253,9 +249,7 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
  */
 class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect SIP_NODEFAULTCTORS
 {
-
   public:
-
     /**
      * Creates a new QgsDropShadowEffect effect from a properties string map.
      * \param map encoded properties string map
@@ -269,9 +263,7 @@ class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect SIP_NODEFAULTCTOR
     QgsDropShadowEffect *clone() const override SIP_FACTORY;
 
   protected:
-
     bool exteriorShadow() const override;
-
 };
 
 /**
@@ -283,9 +275,7 @@ class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect SIP_NODEFAULTCTOR
  */
 class CORE_EXPORT QgsInnerShadowEffect : public QgsShadowEffect SIP_NODEFAULTCTORS
 {
-
   public:
-
     /**
      * Creates a new QgsInnerShadowEffect effect from a properties string map.
      * \param map encoded properties string map
@@ -299,10 +289,7 @@ class CORE_EXPORT QgsInnerShadowEffect : public QgsShadowEffect SIP_NODEFAULTCTO
     QgsInnerShadowEffect *clone() const override SIP_FACTORY;
 
   protected:
-
     bool exteriorShadow() const override;
-
 };
 
 #endif // QGSSHADOWEFFECT_H
-

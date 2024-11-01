@@ -35,7 +35,7 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, c
   builder->setLayer( layer );
   builder->setExpressionText( startText );
   builder->expressionTree()->loadRecent( mRecentKey );
-  builder->expressionTree()->loadUserExpressions( );
+  builder->expressionTree()->loadUserExpressions();
 
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsExpressionBuilderDialog::showHelp );
@@ -89,10 +89,8 @@ void QgsExpressionBuilderDialog::accept()
 
 void QgsExpressionBuilderDialog::reject()
 {
-
   if ( builder->expressionText() != mInitialText )
   {
-
     QgsSettings settings;
     const bool askToDiscardEditedExpression = settings.value( QStringLiteral( "askToDiscardEditedExpression" ), true, QgsSettings::Gui ).toBool();
 

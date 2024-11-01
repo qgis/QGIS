@@ -33,14 +33,13 @@ class QgsFields;
  * \ingroup analysis
  * \brief Interpolation in a triangular irregular network
 */
-class ANALYSIS_EXPORT QgsTinInterpolator: public QgsInterpolator
+class ANALYSIS_EXPORT QgsTinInterpolator : public QgsInterpolator
 {
   public:
-
     //! Indicates the type of interpolation to be performed
     enum TinInterpolation
     {
-      Linear, //!< Linear interpolation
+      Linear,       //!< Linear interpolation
       CloughTocher, //!< Clough-Tocher interpolation
     };
 

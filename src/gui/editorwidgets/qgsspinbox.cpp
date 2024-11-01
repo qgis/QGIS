@@ -49,7 +49,7 @@ QgsSpinBox::QgsSpinBox( QWidget *parent )
                   std::max( msz.height(), CLEAR_ICON_SIZE + frameWidth() * 2 + 2 ) );
 
   connect( mLineEdit, &QgsFilterLineEdit::cleared, this, &QgsSpinBox::clear );
-  connect( this, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsSpinBox::changed );
+  connect( this, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsSpinBox::changed );
 }
 
 void QgsSpinBox::setShowClearButton( const bool showClearButton )

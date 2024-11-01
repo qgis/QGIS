@@ -35,27 +35,26 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
 {
     Q_OBJECT
   public:
-
     //! Dialog transformation entry info
     struct TransformInfo
     {
-      //! Source coordinate reference system
-      QgsCoordinateReferenceSystem sourceCrs;
+        //! Source coordinate reference system
+        QgsCoordinateReferenceSystem sourceCrs;
 
-      //! Source transform ID
-      int sourceTransformId = -1;
+        //! Source transform ID
+        int sourceTransformId = -1;
 
-      //! Destination coordinate reference system
-      QgsCoordinateReferenceSystem destinationCrs;
+        //! Destination coordinate reference system
+        QgsCoordinateReferenceSystem destinationCrs;
 
-      //! Destination transform ID
-      int destinationTransformId = -1;
+        //! Destination transform ID
+        int destinationTransformId = -1;
 
-      //! Proj coordinate operation description, for Proj >= 6.0 builds only
-      QString proj;
+        //! Proj coordinate operation description, for Proj >= 6.0 builds only
+        QString proj;
 
-      //! TRUE if fallback transforms can be used
-      bool allowFallback = true;
+        //! TRUE if fallback transforms can be used
+        bool allowFallback = true;
     };
 
     /**
@@ -110,7 +109,6 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     void setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs );
 
   private:
-
     enum Roles
     {
       TransformIdRole = Qt::UserRole + 1,
@@ -144,7 +142,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
      */
     void applyDefaultTransform();
 
-    std::unique_ptr< QgsTemporaryCursorRestoreOverride > mPreviousCursorOverride;
+    std::unique_ptr<QgsTemporaryCursorRestoreOverride> mPreviousCursorOverride;
 
     friend class TestQgsDatumTransformDialog;
 };

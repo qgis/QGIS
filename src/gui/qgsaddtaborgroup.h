@@ -76,7 +76,7 @@ class GUI_EXPORT QgsAddAttributeFormContainerDialog : public QDialog, private Ui
 
   protected:
     QgsVectorLayer *mLayer = nullptr;
-    QList< ContainerPair > mExistingContainers;
+    QList<ContainerPair> mExistingContainers;
 };
 
 #endif

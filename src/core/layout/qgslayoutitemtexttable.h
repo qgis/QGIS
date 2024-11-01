@@ -28,11 +28,9 @@
 */
 class CORE_EXPORT QgsLayoutItemTextTable : public QgsLayoutTable
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutItemTextTable, for the specified \a layout.
      *
@@ -63,13 +61,13 @@ class CORE_EXPORT QgsLayoutItemTextTable : public QgsLayoutTable
      * \param contents list of table rows
      * \see addRow
      */
-    void setContents( const QVector< QStringList > &contents );
+    void setContents( const QVector<QStringList> &contents );
 
     bool getTableContents( QgsLayoutTableContents &contents ) override;
 
   private:
     //! One stringlist per row
-    QVector< QStringList > mRowText;
+    QVector<QStringList> mRowText;
 };
 
 #endif // QGSLAYOUTTEXTTABLE_H

@@ -56,18 +56,17 @@ class QDomElement;
 class CORE_EXPORT QgsCoordinateTransformContext
 {
   public:
-
     /**
      * Constructor for QgsCoordinateTransformContext.
      */
     QgsCoordinateTransformContext();
 
-    ~QgsCoordinateTransformContext() ;
+    ~QgsCoordinateTransformContext();
 
     QgsCoordinateTransformContext( const QgsCoordinateTransformContext &rhs );
     QgsCoordinateTransformContext &operator=( const QgsCoordinateTransformContext &rhs ) SIP_SKIP;
 
-    bool operator==( const QgsCoordinateTransformContext &rhs ) const ;
+    bool operator==( const QgsCoordinateTransformContext &rhs ) const;
 
     /**
      * Clears all stored transform information from the context.
@@ -89,7 +88,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      *
      * \deprecated QGIS 3.40. Has no effect on builds based on Proj 6.0 or later, use coordinateOperations() instead.
      */
-    Q_DECL_DEPRECATED QMap< QPair< QString, QString>, QgsDatumTransform::TransformPair > sourceDestinationDatumTransforms() const SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QMap<QPair<QString, QString>, QgsDatumTransform::TransformPair> sourceDestinationDatumTransforms() const SIP_DEPRECATED;
 
     /**
      * Returns the stored mapping for source to destination CRS pairs to associated coordinate operation to use
@@ -106,7 +105,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      *
      * \since QGIS 3.8
      */
-    QMap< QPair< QString, QString>, QString > coordinateOperations() const;
+    QMap<QPair<QString, QString>, QString> coordinateOperations() const;
 
     /**
      * Adds a new \a sourceTransform and \a destinationTransform to use when projecting coordinates
@@ -164,7 +163,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      *
      * \deprecated QGIS 3.40. Use removeCoordinateOperation() instead.
      */
-    Q_DECL_DEPRECATED void removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs ) SIP_DEPRECATED ;
+    Q_DECL_DEPRECATED void removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs ) SIP_DEPRECATED;
 
     /**
      * Removes the coordinate operation for the specified \a sourceCrs and \a destinationCrs.
@@ -266,15 +265,9 @@ class CORE_EXPORT QgsCoordinateTransformContext
 
 
   private:
-
     QExplicitlySharedDataPointer<QgsCoordinateTransformContextPrivate> d;
-
 };
 
 Q_DECLARE_METATYPE( QgsCoordinateTransformContext )
 
 #endif // QGSCOORDINATETRANSFORMCONTEXT_H
-
-
-
-

@@ -64,7 +64,7 @@ const QgsFillSymbol *QgsLayoutPageCollection::pageStyleSymbol() const
 void QgsLayoutPageCollection::beginPageSizeChange()
 {
   mPreviousItemPositions.clear();
-  QList< QgsLayoutItem * > items;
+  QList<QgsLayoutItem *> items;
   mLayout->layoutItems( items );
 
   for ( QgsLayoutItem *item : std::as_const( items ) )
@@ -218,12 +218,12 @@ int QgsLayoutPageCollection::predictPageNumberForPoint( QPointF point ) const
 
 QgsLayoutItemPage *QgsLayoutPageCollection::pageAtPoint( QPointF point ) const
 {
-  const QList< QGraphicsItem * > items = mLayout->items( point );
+  const QList<QGraphicsItem *> items = mLayout->items( point );
   for ( QGraphicsItem *item : items )
   {
     if ( item->type() == QgsLayoutItemRegistry::LayoutPage )
     {
-      QgsLayoutItemPage *page = static_cast< QgsLayoutItemPage * >( item );
+      QgsLayoutItemPage *page = static_cast<QgsLayoutItemPage *>( item );
       if ( page->mapToScene( page->rect() ).boundingRect().contains( point ) )
         return page;
     }
@@ -309,7 +309,7 @@ void QgsLayoutPageCollection::resizeToContents( const QgsMargins &margins, Qgis:
 
   if ( mPages.empty() )
   {
-    std::unique_ptr< QgsLayoutItemPage > page = std::make_unique< QgsLayoutItemPage >( mLayout );
+    std::unique_ptr<QgsLayoutItemPage> page = std::make_unique<QgsLayoutItemPage>( mLayout );
     addPage( page.release() );
   }
 
@@ -349,12 +349,12 @@ void QgsLayoutPageCollection::resizeToContents( const QgsMargins &margins, Qgis:
 
   //also move guides
   mLayout->undoStack()->beginCommand( &mLayout->guides(), tr( "Move Guides" ) );
-  const QList< QgsLayoutGuide * > verticalGuides = mLayout->guides().guides( Qt::Vertical );
+  const QList<QgsLayoutGuide *> verticalGuides = mLayout->guides().guides( Qt::Vertical );
   for ( QgsLayoutGuide *guide : verticalGuides )
   {
     guide->setLayoutPosition( guide->layoutPosition() + diffX );
   }
-  const QList< QgsLayoutGuide * > horizontalGuides = mLayout->guides().guides( Qt::Horizontal );
+  const QList<QgsLayoutGuide *> horizontalGuides = mLayout->guides().guides( Qt::Horizontal );
   for ( QgsLayoutGuide *guide : horizontalGuides )
   {
     guide->setLayoutPosition( guide->layoutPosition() + diffY );
@@ -418,7 +418,7 @@ bool QgsLayoutPageCollection::readXml( const QDomElement &e, const QDomDocument 
   for ( int i = 0; i < pageList.size(); ++i )
   {
     QDomElement pageElement = pageList.at( i ).toElement();
-    std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( mLayout ) );
+    std::unique_ptr<QgsLayoutItemPage> page( new QgsLayoutItemPage( mLayout ) );
     if ( mPageStyleSymbol )
       page->setPageStyleSymbol( mPageStyleSymbol->clone() );
     page->readXml( pageElement, document, context );
@@ -524,7 +524,7 @@ QList<QgsLayoutItemPage *> QgsLayoutPageCollection::visiblePages( const QRectF &
 
 QList<int> QgsLayoutPageCollection::visiblePageNumbers( const QRectF &region ) const
 {
-  QList< int > pages;
+  QList<int> pages;
   int p = 0;
   const auto constMPages = mPages;
   for ( QgsLayoutItemPage *page : constMPages )
@@ -614,7 +614,7 @@ QgsLayoutItemPage *QgsLayoutPageCollection::extendByNewPage()
     return nullptr;
 
   QgsLayoutItemPage *lastPage = mPages.at( mPages.count() - 1 );
-  std::unique_ptr< QgsLayoutItemPage > newPage = std::make_unique< QgsLayoutItemPage >( mLayout );
+  std::unique_ptr<QgsLayoutItemPage> newPage = std::make_unique<QgsLayoutItemPage>( mLayout );
   newPage->attemptResize( lastPage->sizeWithUnits() );
   addPage( newPage.release() );
   return mPages.at( mPages.count() - 1 );
@@ -653,7 +653,7 @@ void QgsLayoutPageCollection::insertPage( QgsLayoutItemPage *page, int beforePag
   }
 
   endPageSizeChange();
-  if ( ! mBlockUndoCommands )
+  if ( !mBlockUndoCommands )
   {
     mLayout->undoStack()->endCommand();
     mLayout->undoStack()->endMacro();
@@ -687,7 +687,7 @@ void QgsLayoutPageCollection::deletePage( int pageNumber )
   }
 
   endPageSizeChange();
-  if ( ! mBlockUndoCommands )
+  if ( !mBlockUndoCommands )
   {
     mLayout->undoStack()->endCommand();
     mLayout->undoStack()->endMacro();
@@ -738,7 +738,7 @@ void QgsLayoutPageCollection::clear()
     mLayout->undoStack()->beginMacro( tr( "Remove Pages" ) );
     mLayout->undoStack()->beginCommand( this, tr( "Remove Pages" ) );
   }
-  for ( int i = mPages.count() - 1;  i >= 0; --i )
+  for ( int i = mPages.count() - 1; i >= 0; --i )
   {
     emit pageAboutToBeRemoved( i );
     mPages.takeAt( i )->deleteLater();
@@ -766,4 +766,3 @@ void QgsLayoutPageCollection::createDefaultPageStyleSymbol()
   properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
   mPageStyleSymbol.reset( QgsFillSymbol::createSimple( properties ) );
 }
-

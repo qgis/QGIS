@@ -55,7 +55,6 @@ class QgsGeospatialPdfRenderedFeatureHandler;
 class CORE_EXPORT QgsAbstractGeospatialPdfExporter
 {
   public:
-
     /**
      * Returns TRUE if the current QGIS build is capable of Geospatial PDF support.
      *
@@ -81,26 +80,25 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
      */
     struct RenderedFeature
     {
+        RenderedFeature() = default;
 
-      RenderedFeature() = default;
-
-      /**
+        /**
        * Constructor for RenderedFeature.
        */
-      RenderedFeature( const QgsFeature &feature, const QgsGeometry &renderedBounds )
-        : feature( feature )
-        , renderedBounds( renderedBounds )
-      {}
+        RenderedFeature( const QgsFeature &feature, const QgsGeometry &renderedBounds )
+          : feature( feature )
+          , renderedBounds( renderedBounds )
+        {}
 
-      /**
+        /**
        * Rendered feature.
        */
-      QgsFeature feature;
+        QgsFeature feature;
 
-      /**
+        /**
        * Bounds, in PDF units, of rendered feature. (Multi)LineString or Polygon types only.
        */
-      QgsGeometry renderedBounds;
+        QgsGeometry renderedBounds;
     };
 
     /**
@@ -110,25 +108,23 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
      */
     struct CORE_EXPORT ComponentLayerDetail
     {
+        //! User-friendly name for the generated PDF layer
+        QString name;
 
-      //! User-friendly name for the generated PDF layer
-      QString name;
+        //! Associated map layer ID, or an empty string if this component layer is not associated with a map layer
+        QString mapLayerId;
 
-      //! Associated map layer ID, or an empty string if this component layer is not associated with a map layer
-      QString mapLayerId;
+        //! Optional group name, for arranging layers in top-level groups
+        QString group;
 
-      //! Optional group name, for arranging layers in top-level groups
-      QString group;
+        //! File path to the (already created) PDF to use as the source for this component layer
+        QString sourcePdfPath;
 
-      //! File path to the (already created) PDF to use as the source for this component layer
-      QString sourcePdfPath;
+        //! Component composition mode
+        QPainter::CompositionMode compositionMode = QPainter::CompositionMode_SourceOver;
 
-      //! Component composition mode
-      QPainter::CompositionMode compositionMode = QPainter::CompositionMode_SourceOver;
-
-      //! Component opacity
-      double opacity = 1.0;
-
+        //! Component opacity
+        double opacity = 1.0;
     };
 
     /**
@@ -138,46 +134,43 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
      */
     struct ControlPoint
     {
-
-      /**
+        /**
        * Constructor for ControlPoint, at the specified \a pagePoint (in millimeters)
        * and \a geoPoint (in CRS units).
        */
-      ControlPoint( const QgsPointXY &pagePoint, const QgsPointXY &geoPoint )
-        : pagePoint( pagePoint )
-        , geoPoint( geoPoint )
-      {}
+        ControlPoint( const QgsPointXY &pagePoint, const QgsPointXY &geoPoint )
+          : pagePoint( pagePoint )
+          , geoPoint( geoPoint )
+        {}
 
-      //! Coordinate on the page of the control point, in millimeters
-      QgsPointXY pagePoint;
+        //! Coordinate on the page of the control point, in millimeters
+        QgsPointXY pagePoint;
 
-      //! Georeferenced coordinate of the control point, in CRS units
-      QgsPointXY geoPoint;
+        //! Georeferenced coordinate of the control point, in CRS units
+        QgsPointXY geoPoint;
     };
 
     struct GeoReferencedSection
     {
-
-      /**
+        /**
        * Bounds of the georeferenced section on the page, in millimeters.
        *
        * \note if pageBoundsPolygon is specified then this setting is ignored.
        */
-      QgsRectangle pageBoundsMm;
+        QgsRectangle pageBoundsMm;
 
-      /**
+        /**
        * Bounds of the georeferenced section on the page, in millimeters, as a free-form polygon.
        *
        * If specified, this will be used instead of pageBoundsMm.
        */
-      QgsPolygon pageBoundsPolygon;
+        QgsPolygon pageBoundsPolygon;
 
-      //! Coordinate reference system for georeferenced section
-      QgsCoordinateReferenceSystem crs;
+        //! Coordinate reference system for georeferenced section
+        QgsCoordinateReferenceSystem crs;
 
-      //! List of control points corresponding to this georeferenced section
-      QList< QgsAbstractGeospatialPdfExporter::ControlPoint > controlPoints;
-
+        //! List of control points corresponding to this georeferenced section
+        QList<QgsAbstractGeospatialPdfExporter::ControlPoint> controlPoints;
     };
 
     /**
@@ -191,60 +184,60 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
 
     struct ExportDetails
     {
-      //! Page size, in millimeters
-      QSizeF pageSizeMm;
+        //! Page size, in millimeters
+        QSizeF pageSizeMm;
 
-      //! Output DPI
-      double dpi = 300;
+        //! Output DPI
+        double dpi = 300;
 
-      //! List of georeferenced sections
-      QList< QgsAbstractGeospatialPdfExporter::GeoReferencedSection > georeferencedSections;
+        //! List of georeferenced sections
+        QList<QgsAbstractGeospatialPdfExporter::GeoReferencedSection> georeferencedSections;
 
-      //! Metadata author tag
-      QString author;
+        //! Metadata author tag
+        QString author;
 
-      //! Metadata producer tag
-      QString producer;
+        //! Metadata producer tag
+        QString producer;
 
-      //! Metadata creator tag
-      QString creator;
+        //! Metadata creator tag
+        QString creator;
 
-      //! Metadata creation datetime
-      QDateTime creationDateTime;
+        //! Metadata creation datetime
+        QDateTime creationDateTime;
 
-      //! Metadata subject tag
-      QString subject;
+        //! Metadata subject tag
+        QString subject;
 
-      //! Metadata title tag
-      QString title;
+        //! Metadata title tag
+        QString title;
 
-      //! Metadata keyword map
-      QgsAbstractMetadataBase::KeywordMap keywords;
+        //! Metadata keyword map
+        QgsAbstractMetadataBase::KeywordMap keywords;
 
-      /**
+        /**
        * TRUE if ISO32000 extension format georeferencing should be used.
        *
        * This is a recommended setting which results in Geospatial PDF files
        * that use PDF 2.0 Geospatial Features (ISO 32000-2:2017).
        * Compatible with the built-in Acrobat geospatial tools
        */
-      bool useIso32000ExtensionFormatGeoreferencing = true;
+        bool useIso32000ExtensionFormatGeoreferencing = true;
 
-      /**
+        /**
        * TRUE if OGC "best practice" format georeferencing should be used.
        *
        * \warning This results in Geospatial PDF files compatible with a unnamed suite of tools starting with Terra and ending with Go, but
        * can break compatibility with the built-in Acrobat geospatial tools (yes, Geospatial PDF
        * format is a mess!).
       */
-      bool useOgcBestPracticeFormatGeoreferencing = false;
+        bool useOgcBestPracticeFormatGeoreferencing = false;
 
-      /**
+        /**
        * TRUE if feature vector information (such as attributes) should be exported.
        */
-      bool includeFeatures = true;
+        bool includeFeatures = true;
 
-      /**
+        /**
        * Optional map of map layer ID to custom logical layer tree group in created PDF file.
        *
        * E.g. if the map contains "layer1": "Environment", "layer2": "Environment", "layer3": "Transport"
@@ -256,24 +249,24 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
        *
        * \see layerTreeGroupOrder
        */
-      QMap< QString, QString > customLayerTreeGroups;
+        QMap<QString, QString> customLayerTreeGroups;
 
-      /**
+        /**
        * Optional map of map layer ID to custom layer tree name to show in the created PDF file.
        *
        * \since QGIS 3.14
        */
-      QMap< QString, QString > layerIdToPdfLayerTreeNameMap;
+        QMap<QString, QString> layerIdToPdfLayerTreeNameMap;
 
-      /**
+        /**
        * Optional map of map layer ID to initial visibility state. If a layer ID is not present in this,
        * it will default to being initially visible when opening the PDF.
        *
        * \since QGIS 3.14
        */
-      QMap< QString, bool > initialLayerVisibility;
+        QMap<QString, bool> initialLayerVisibility;
 
-      /**
+        /**
        * Optional list of layer IDs, in the order desired to appear in the generated Geospatial PDF file.
        *
        * Layers appearing earlier in the list will show earlier in the Geospatial PDF layer tree list.
@@ -282,9 +275,9 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
        *
        * \since QGIS 3.14
        */
-      QStringList layerOrder;
+        QStringList layerOrder;
 
-      /**
+        /**
        * Specifies the ordering of layer tree groups in the generated Geospatial PDF file.
        *
        * Groups appearing earlier in the list will show earlier in the Geospatial PDF layer tree list.
@@ -294,15 +287,14 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
        *
        * \since QGIS 3.38
        */
-      QStringList layerTreeGroupOrder;
+        QStringList layerTreeGroupOrder;
 
-      /**
+        /**
        * Contains a list of group names which should be considered as mutually exclusive.
        *
        * \since QGIS 3.40
        */
-      QSet< QString > mutuallyExclusiveGroups;
-
+        QSet<QString> mutuallyExclusiveGroups;
     };
 
     /**
@@ -318,7 +310,7 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
      * Returns TRUE if the operation was successful, or FALSE if an error occurred. If an error occurred, it
      * can be retrieved by calling errorMessage().
      */
-    bool finalize( const QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > &components, const QString &destinationFile, const ExportDetails &details );
+    bool finalize( const QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail> &components, const QString &destinationFile, const ExportDetails &details );
 
     /**
      * Returns the last error message encountered during the export.
@@ -339,43 +331,40 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
     static bool compositionModeSupported( QPainter::CompositionMode mode );
 
   protected:
-
     /**
      * Contains information relating to a single PDF layer in the Geospatial PDF export.
      */
     struct VectorComponentDetail
     {
-      //! User-friendly name for the generated PDF layer
-      QString name;
+        //! User-friendly name for the generated PDF layer
+        QString name;
 
-      //! Associated map layer ID
-      QString mapLayerId;
+        //! Associated map layer ID
+        QString mapLayerId;
 
-      //! Optional layer group name
-      QString group;
+        //! Optional layer group name
+        QString group;
 
-      //! Field name for display
-      QString displayAttribute;
+        //! Field name for display
+        QString displayAttribute;
 
-      //! File path to the (already created) vector dataset to use as the source for this component layer
-      QString sourceVectorPath;
+        //! File path to the (already created) vector dataset to use as the source for this component layer
+        QString sourceVectorPath;
 
-      //! Layer name in vector dataset to use as the source
-      QString sourceVectorLayer;
-
+        //! Layer name in vector dataset to use as the source
+        QString sourceVectorLayer;
     };
 
   private:
-
     QMutex mMutex;
-    QMap< QString, QMap< QString, QgsFeatureList > > mCollatedFeatures;
+    QMap<QString, QMap<QString, QgsFeatureList>> mCollatedFeatures;
 
     /**
      * Returns the PDF output component details for the layer with given \a layerId.
      */
     virtual VectorComponentDetail componentDetailForLayerId( const QString &layerId ) = 0;
 
-    QList< VectorComponentDetail > mVectorComponents;
+    QList<VectorComponentDetail> mVectorComponents;
 
     QString mErrorMessage;
     QTemporaryDir mTemporaryDir;
@@ -383,7 +372,7 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
 
     bool saveTemporaryLayers();
 
-    QString createCompositionXml( const QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > &components, const ExportDetails &details );
+    QString createCompositionXml( const QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail> &components, const ExportDetails &details );
 
     /**
      * Returns the GDAL string representation of the specified QPainter composition \a mode.
@@ -395,6 +384,3 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
 };
 
 #endif //QGSABSTRACTGEOPDFEXPORTER_H
-
-
-

@@ -59,7 +59,7 @@ QgsImageCacheEntry::QgsImageCacheEntry( const QString &path, QSize size, const b
 
 bool QgsImageCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) const
 {
-  const QgsImageCacheEntry *otherImage = dynamic_cast< const QgsImageCacheEntry * >( other );
+  const QgsImageCacheEntry *otherImage = dynamic_cast<const QgsImageCacheEntry *>( other );
   // cheapest checks first!
   if ( !otherImage
        || otherImage->keepAspectRatio != keepAspectRatio
@@ -91,7 +91,7 @@ void QgsImageCacheEntry::dump() const
 ///@endcond
 
 QgsImageCache::QgsImageCache( QObject *parent )
-  : QgsAbstractContentCache< QgsImageCacheEntry >( parent, QObject::tr( "Image" ) )
+  : QgsAbstractContentCache<QgsImageCacheEntry>( parent, QObject::tr( "Image" ) )
 {
   mTemporaryDir.reset( new QTemporaryDir() );
 
@@ -267,7 +267,7 @@ int QgsImageCache::totalFrameCount( const QString &path, bool blocking )
   int nextFrameDelayMs = 0;
   bool fitsInCache = false;
   bool isMissing = false;
-  ( void )pathAsImagePrivate( file, QSize(), true, 1.0, fitsInCache, blocking, 96, 0, &isMissing, res, nextFrameDelayMs );
+  ( void ) pathAsImagePrivate( file, QSize(), true, 1.0, fitsInCache, blocking, 96, 0, &isMissing, res, nextFrameDelayMs );
 
   return res;
 }
@@ -303,8 +303,8 @@ void QgsImageCache::prepareAnimation( const QString &path )
     return; // already prepared
 
   QString filePath;
-  std::unique_ptr< QImageReader > reader;
-  std::unique_ptr< QBuffer > buffer;
+  std::unique_ptr<QImageReader> reader;
+  std::unique_ptr<QBuffer> buffer;
 
   if ( !isBase64Data( path ) && QFile::exists( path ) )
   {
@@ -314,7 +314,7 @@ void QgsImageCache::prepareAnimation( const QString &path )
     while ( QFile::exists( filePath ) )
       filePath = mTemporaryDir->filePath( QStringLiteral( "%1_%2" ).arg( basePart ).arg( ++id ) );
 
-    reader = std::make_unique< QImageReader >( path );
+    reader = std::make_unique<QImageReader>( path );
   }
   else
   {
@@ -328,9 +328,9 @@ void QgsImageCache::prepareAnimation( const QString &path )
       const QString path = QUuid::createUuid().toString( QUuid::WithoutBraces );
       filePath = mTemporaryDir->filePath( path );
 
-      buffer = std::make_unique< QBuffer >( &ba );
+      buffer = std::make_unique<QBuffer>( &ba );
       buffer->open( QIODevice::ReadOnly );
-      reader = std::make_unique< QImageReader> ( buffer.get() );
+      reader = std::make_unique<QImageReader>( buffer.get() );
     }
   }
 
@@ -348,7 +348,7 @@ void QgsImageCache::prepareAnimation( const QString &path )
     if ( frame.isNull() )
       break;
 
-    mImageDelays[ path ].append( reader->nextImageDelay() );
+    mImageDelays[path].append( reader->nextImageDelay() );
 
     const QString framePath = frameDirectory.filePath( QStringLiteral( "frame_%1.png" ).arg( frameNumber++ ) );
     frame.save( framePath, "PNG" );
@@ -491,10 +491,10 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
   }
 
   if ( !im.hasAlphaChannel()
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
        && im.format() != QImage::Format_CMYK8888
 #endif
-     )
+  )
     im = im.convertToFormat( QImage::Format_ARGB32 );
 
   if ( opacity < 1.0 )

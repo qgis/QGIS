@@ -31,7 +31,7 @@ class QgsPolygon;
  * \class QgsCurvePolygon
  * \brief Curve polygon geometry type
  */
-class CORE_EXPORT QgsCurvePolygon: public QgsSurface
+class CORE_EXPORT QgsCurvePolygon : public QgsSurface
 {
   public:
     QgsCurvePolygon();
@@ -42,7 +42,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
   private:
     bool fuzzyHelper( const QgsAbstractGeometry &other, double epsilon, bool useDistance ) const
     {
-      const QgsCurvePolygon *otherPolygon = qgsgeometry_cast< const QgsCurvePolygon * >( &other );
+      const QgsCurvePolygon *otherPolygon = qgsgeometry_cast<const QgsCurvePolygon *>( &other );
       if ( !otherPolygon )
         return false;
 
@@ -73,20 +73,17 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
       for ( int i = 0; i < mInteriorRings.count(); ++i )
       {
-        if ( ( !mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) ) ||
-             ( mInteriorRings.at( i ) && !otherPolygon->mInteriorRings.at( i ) ) )
+        if ( ( !mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) ) || ( mInteriorRings.at( i ) && !otherPolygon->mInteriorRings.at( i ) ) )
           return false;
 
         if ( useDistance )
         {
-          if ( mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) &&
-               !( *mInteriorRings.at( i ) ).fuzzyDistanceEqual( *otherPolygon->mInteriorRings.at( i ), epsilon ) )
+          if ( mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) && !( *mInteriorRings.at( i ) ).fuzzyDistanceEqual( *otherPolygon->mInteriorRings.at( i ), epsilon ) )
             return false;
         }
         else
         {
-          if ( mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) &&
-               !( *mInteriorRings.at( i ) ).fuzzyEqual( *otherPolygon->mInteriorRings.at( i ), epsilon ) )
+          if ( mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) && !( *mInteriorRings.at( i ) ).fuzzyEqual( *otherPolygon->mInteriorRings.at( i ), epsilon ) )
             return false;
         }
       }
@@ -233,15 +230,14 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * \see exteriorRing()
      */
     SIP_PYOBJECT interiorRing( int i ) SIP_HOLDGIL SIP_TYPEHINT( QgsCurve );
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numInteriorRings() )
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->numInteriorRings() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
     else
     {
-      return sipConvertFromType( const_cast< QgsCurve * >( sipCpp->interiorRing( a0 ) ), sipType_QgsCurve, NULL );
+      return sipConvertFromType( const_cast<QgsCurve *>( sipCpp->interiorRing( a0 ) ), sipType_QgsCurve, NULL );
     }
     % End
 #endif
@@ -290,8 +286,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * \see removeInteriorRings()
      */
     bool removeInteriorRing( int i );
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numInteriorRings() )
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->numInteriorRings() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -404,8 +399,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
 
 #ifndef SIP_RUN
-    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
-    void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
+    void filterVertices( const std::function<bool( const QgsPoint & )> &filter ) override;
+    void transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform ) override;
 
     /**
      * Cast the \a geom to a QgsCurvePolygon.
@@ -432,7 +427,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString wkt = sipCpp->asWkt();
+        QString wkt
+      = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
       wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
     QString str = QStringLiteral( "<QgsCurvePolygon: %1>" ).arg( wkt );
@@ -440,15 +436,15 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     % End
 #endif
 
-  protected:
+      protected :
 
-    int childCount() const override;
+      int
+      childCount() const override;
     QgsAbstractGeometry *childGeometry( int index ) const override;
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
 
   protected:
-
-    std::unique_ptr< QgsCurve > mExteriorRing;
+    std::unique_ptr<QgsCurve> mExteriorRing;
     QVector<QgsCurve *> mInteriorRings;
 
     QgsBox3D calculateBoundingBox3D() const override;

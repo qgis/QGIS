@@ -35,7 +35,7 @@ QgsProfileExporter::QgsProfileExporter( const QList<QgsAbstractProfileSource *> 
   {
     if ( source )
     {
-      if ( std::unique_ptr< QgsAbstractProfileGenerator > generator{ source->createProfileGenerator( mRequest ) } )
+      if ( std::unique_ptr<QgsAbstractProfileGenerator> generator { source->createProfileGenerator( mRequest ) } )
         mGenerators.emplace_back( std::move( generator ) );
     }
   }
@@ -55,20 +55,20 @@ void QgsProfileExporter::run( QgsFeedback *feedback )
   mFeatures = renderer.asFeatures( mType, feedback );
 }
 
-QList< QgsVectorLayer *> QgsProfileExporter::toLayers()
+QList<QgsVectorLayer *> QgsProfileExporter::toLayers()
 {
   if ( mFeatures.empty() )
     return {};
 
   // collect all features with the same geometry types together
-  QHash< quint32, QVector< QgsAbstractProfileResults::Feature > > featuresByGeometryType;
+  QHash<quint32, QVector<QgsAbstractProfileResults::Feature>> featuresByGeometryType;
   for ( const QgsAbstractProfileResults::Feature &feature : std::as_const( mFeatures ) )
   {
-    featuresByGeometryType[static_cast< quint32 >( feature.geometry.wkbType() )].append( feature );
+    featuresByGeometryType[static_cast<quint32>( feature.geometry.wkbType() )].append( feature );
   }
 
   // generate a new memory provider layer for each geometry type
-  QList< QgsVectorLayer * > res;
+  QList<QgsVectorLayer *> res;
   for ( auto wkbTypeIt = featuresByGeometryType.constBegin(); wkbTypeIt != featuresByGeometryType.constEnd(); ++wkbTypeIt )
   {
     // first collate a master list of fields for this geometry type
@@ -89,21 +89,21 @@ QList< QgsVectorLayer *> QgsProfileExporter::toLayers()
           if ( outputFields.at( existingFieldIndex ).type() != QMetaType::Type::QString && outputFields.at( existingFieldIndex ).type() != attributeIt.value().userType() )
           {
             // attribute type mismatch across fields, just promote to string types to be flexible
-            outputFields[ existingFieldIndex ].setType( QMetaType::Type::QString );
+            outputFields[existingFieldIndex].setType( QMetaType::Type::QString );
           }
         }
       }
     }
 
     // note -- 2d profiles have no CRS associated, the coordinate values are not location based!
-    std::unique_ptr< QgsVectorLayer > outputLayer( QgsMemoryProviderUtils::createMemoryLayer(
-          QStringLiteral( "profile" ),
-          outputFields,
-          static_cast< Qgis::WkbType >( wkbTypeIt.key() ),
-          mType == Qgis::ProfileExportType::Profile2D ? QgsCoordinateReferenceSystem() : mRequest.crs(),
-          false ) );
+    std::unique_ptr<QgsVectorLayer> outputLayer( QgsMemoryProviderUtils::createMemoryLayer(
+      QStringLiteral( "profile" ),
+      outputFields,
+      static_cast<Qgis::WkbType>( wkbTypeIt.key() ),
+      mType == Qgis::ProfileExportType::Profile2D ? QgsCoordinateReferenceSystem() : mRequest.crs(),
+      false ) );
 
-    QList< QgsFeature > featuresToAdd;
+    QList<QgsFeature> featuresToAdd;
     featuresToAdd.reserve( wkbTypeIt.value().size() );
     for ( const QgsAbstractProfileResults::Feature &feature : std::as_const( wkbTypeIt.value() ) )
     {
@@ -132,21 +132,20 @@ QList< QgsVectorLayer *> QgsProfileExporter::toLayers()
 //
 
 QgsProfileExporterTask::QgsProfileExporterTask( const QList<QgsAbstractProfileSource *> &sources,
-    const QgsProfileRequest &request,
-    Qgis::ProfileExportType type,
-    const QString &destination,
-    const QgsCoordinateTransformContext &transformContext
-                                              )
+                                                const QgsProfileRequest &request,
+                                                Qgis::ProfileExportType type,
+                                                const QString &destination,
+                                                const QgsCoordinateTransformContext &transformContext )
   : QgsTask( tr( "Exporting elevation profile" ), QgsTask::CanCancel )
   , mDestination( destination )
   , mTransformContext( transformContext )
 {
-  mExporter = std::make_unique< QgsProfileExporter >( sources, request, type );
+  mExporter = std::make_unique<QgsProfileExporter>( sources, request, type );
 }
 
 bool QgsProfileExporterTask::run()
 {
-  mFeedback = std::make_unique< QgsFeedback >();
+  mFeedback = std::make_unique<QgsFeedback>();
 
   mExporter->run( mFeedback.get() );
 
@@ -168,7 +167,7 @@ bool QgsProfileExporterTask::run()
     {
       // DXF gets special handling -- we use the inbuilt QgsDxfExport class
       QgsDxfExport dxf;
-      QList< QgsDxfExport::DxfLayer > dxfLayers;
+      QList<QgsDxfExport::DxfLayer> dxfLayers;
       for ( QgsVectorLayer *layer : std::as_const( mLayers ) )
       {
         QgsDxfExport::DxfLayer dxfLayer( layer );
@@ -209,7 +208,7 @@ bool QgsProfileExporterTask::run()
         {
           thisLayerFilename = mDestination;
           options.actionOnExistingFile = layerCount == 1 ? QgsVectorFileWriter::ActionOnExistingFile::CreateOrOverwriteFile
-                                         : QgsVectorFileWriter::ActionOnExistingFile::CreateOrOverwriteLayer;
+                                                         : QgsVectorFileWriter::ActionOnExistingFile::CreateOrOverwriteLayer;
           if ( mLayers.size() > 1 )
             options.layerName = QStringLiteral( "profile_%1" ).arg( layerCount );
         }
@@ -230,13 +229,12 @@ bool QgsProfileExporterTask::run()
         options.fileEncoding = QStringLiteral( "UTF-8" );
         QString newFileName;
         QgsVectorFileWriter::WriterError result = QgsVectorFileWriter::writeAsVectorFormatV3(
-              layer,
-              thisLayerFilename,
-              mTransformContext,
-              options,
-              &mError,
-              &newFileName
-            );
+          layer,
+          thisLayerFilename,
+          mTransformContext,
+          options,
+          &mError,
+          &newFileName );
         switch ( result )
         {
           case QgsVectorFileWriter::NoError:

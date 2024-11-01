@@ -31,8 +31,8 @@ QgsDmsAndDdDelegate::QgsDmsAndDdDelegate( QWidget *parent )
 {
 }
 
-QWidget *QgsDmsAndDdDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &/*option*/,
-    const QModelIndex &/*index*/ ) const
+QWidget *QgsDmsAndDdDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/,
+                                            const QModelIndex & /*index*/ ) const
 {
   QLineEdit *editor = new QLineEdit( parent );
   QgsDMSAndDDValidator *validator = new QgsDMSAndDDValidator( editor );
@@ -64,7 +64,7 @@ void QgsDmsAndDdDelegate::setModelData( QWidget *editor, QAbstractItemModel *mod
 }
 
 void QgsDmsAndDdDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option,
-    const QModelIndex &/*index*/ ) const
+                                                const QModelIndex & /*index*/ ) const
 {
   editor->setGeometry( option.rect );
 }
@@ -92,8 +92,8 @@ QgsCoordDelegate::QgsCoordDelegate( QWidget *parent )
 {
 }
 
-QWidget *QgsCoordDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &/*option*/,
-    const QModelIndex &/*index*/ ) const
+QWidget *QgsCoordDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/,
+                                         const QModelIndex & /*index*/ ) const
 {
   QLineEdit *editor = new QLineEdit( parent );
   const thread_local QRegularExpression re( QStringLiteral( "-?\\d*(\\.\\d+)?" ) );

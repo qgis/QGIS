@@ -40,18 +40,16 @@ class GUI_EXPORT QgsActionMenu : public QMenu
     Q_OBJECT
 
   public:
-
     struct GUI_EXPORT ActionData
     {
+        ActionData() = default;
+        ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
+        ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
 
-      ActionData() = default;
-      ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
-      ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
-
-      Qgis::ActionType actionType = Qgis::ActionType::Invalid;
-      QVariant actionData;
-      QgsFeatureId featureId = 0;
-      QgsMapLayer *mapLayer = nullptr;
+        Qgis::ActionType actionType = Qgis::ActionType::Invalid;
+        QVariant actionData;
+        QgsFeatureId featureId = 0;
+        QgsMapLayer *mapLayer = nullptr;
     };
 
     /**

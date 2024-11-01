@@ -58,7 +58,6 @@ class CORE_EXPORT QgsArcGisVectorTileServiceDataProvider : public QgsXyzVectorTi
     static QString ARCGIS_VT_SERVICE_DATA_PROVIDER_DESCRIPTION;
 
   private:
-
     bool setupArcgisVectorTileServiceConnection();
 
     bool mIsValid = false;
@@ -89,7 +88,7 @@ class QgsArcGisVectorTileServiceDataProviderMetadata : public QgsProviderMetadat
     QString encodeUri( const QVariantMap &parts ) const override;
     QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 ///@endcond

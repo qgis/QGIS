@@ -244,7 +244,7 @@ void QgsVectorLayerLegendWidget::labelsFromExpression()
   QgsExpression expr( dlgExpression.expressionText() );
   expr.prepare( &context.expressionContext() );
 
-  std::unique_ptr< QgsFeatureRenderer > r( mLayer->renderer()->clone() );
+  std::unique_ptr<QgsFeatureRenderer> r( mLayer->renderer()->clone() );
 
   QgsFeature f;
   QgsFeatureRequest request;
@@ -281,7 +281,7 @@ void QgsVectorLayerLegendWidget::applyLabelLegend()
 
   QgsAbstractVectorLayerLabeling *labeling = layerLabeling->clone();
   const QStringList ids = labeling->subProviders();
-  const int nIterations = std::min< int >( ids.size(), mLabelLegendTreeWidget->topLevelItemCount() );
+  const int nIterations = std::min<int>( ids.size(), mLabelLegendTreeWidget->topLevelItemCount() );
 
   for ( int i = 0; i < nIterations; ++i )
   {

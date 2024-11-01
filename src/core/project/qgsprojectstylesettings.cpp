@@ -393,7 +393,7 @@ QDomElement QgsProjectStyleSettings::writeXml( QDomDocument &doc, const QgsReadW
 
 QList<QgsStyle *> QgsProjectStyleSettings::styles() const
 {
-  QList< QgsStyle * > res;
+  QList<QgsStyle *> res;
   res.reserve( mStyles.size() );
   for ( QgsStyle *style : mStyles )
   {
@@ -517,7 +517,7 @@ void QgsProjectStyleSettings::setColorModel( Qgis::ColorModel colorModel )
 
   makeDirty();
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
   if ( mColorSpace.isValid() && QgsColorUtils::toColorModel( mColorSpace.colorModel() ) != colorModel )
   {
     setColorSpace( QColorSpace() );
@@ -541,8 +541,7 @@ void QgsProjectStyleSettings::setColorSpace( const QColorSpace &colorSpace )
     return;
   }
 
-  auto clearIccProfile = [this]()
-  {
+  auto clearIccProfile = [this]() {
     mProject->removeAttachedFile( mIccProfileFilePath );
     mIccProfileFilePath.clear();
     mColorSpace = QColorSpace();
@@ -551,7 +550,7 @@ void QgsProjectStyleSettings::setColorSpace( const QColorSpace &colorSpace )
   if ( !mIccProfileFilePath.isEmpty() )
     clearIccProfile();
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
   bool ok;
   Qgis::ColorModel colorModel = QgsColorUtils::toColorModel( colorSpace.colorModel(), &ok );
   mColorSpace = ok ? colorSpace : QColorSpace();
@@ -564,7 +563,7 @@ void QgsProjectStyleSettings::setColorSpace( const QColorSpace &colorSpace )
   if ( !mColorSpace.isValid() )
     return;
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
   if ( colorModel != mColorModel )
     mColorModel = colorModel;
 #endif
@@ -638,7 +637,7 @@ QVariant QgsProjectStyleDatabaseModel::data( const QModelIndex &index, int role 
       else
         return mSettings ? QDir::toNativeSeparators( mSettings->styles().at( styleRow )->fileName() ) : QVariant();
 
-    case static_cast< int >( CustomRole::Style ):
+    case static_cast<int>( CustomRole::Style ):
     {
       if ( isDefault )
         return QVariant::fromValue( QgsStyle::defaultStyle() );
@@ -650,7 +649,7 @@ QVariant QgsProjectStyleDatabaseModel::data( const QModelIndex &index, int role 
         return QVariant();
     }
 
-    case static_cast< int >( CustomRole::Path ):
+    case static_cast<int>( CustomRole::Path ):
       if ( isDefault )
         return QgsStyle::defaultStyle()->fileName();
       else if ( isProjectStyle )
@@ -669,7 +668,7 @@ QgsStyle *QgsProjectStyleDatabaseModel::styleFromIndex( const QModelIndex &index
     return mProjectStyle;
   else if ( mShowDefault && ( ( index.row() == 0 && !mProjectStyle ) || ( index.row() == 1 && mProjectStyle ) ) )
     return QgsStyle::defaultStyle();
-  else if ( QgsStyle *style = qobject_cast< QgsStyle * >( qvariant_cast<QObject *>( data( index, static_cast< int >( CustomRole::Style ) ) ) ) )
+  else if ( QgsStyle *style = qobject_cast<QgsStyle *>( qvariant_cast<QObject *>( data( index, static_cast<int>( CustomRole::Style ) ) ) ) )
     return style;
   else
     return nullptr;
@@ -799,7 +798,7 @@ bool QgsProjectStyleDatabaseProxyModel::filterAcceptsRow( int sourceRow, const Q
 {
   if ( mFilters & Filter::FilterHideReadOnly )
   {
-    if ( const QgsStyle *style = qobject_cast< QgsStyle * >( sourceModel()->data( sourceModel()->index( sourceRow, 0, sourceParent ), static_cast< int >( QgsProjectStyleDatabaseModel::CustomRole::Style ) ).value< QObject * >() ) )
+    if ( const QgsStyle *style = qobject_cast<QgsStyle *>( sourceModel()->data( sourceModel()->index( sourceRow, 0, sourceParent ), static_cast<int>( QgsProjectStyleDatabaseModel::CustomRole::Style ) ).value<QObject *>() ) )
     {
       if ( style->isReadOnly() )
         return false;

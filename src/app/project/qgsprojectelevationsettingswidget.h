@@ -28,7 +28,6 @@ class QgsProjectElevationSettingsWidget : public QgsOptionsPageWidget, private U
 {
     Q_OBJECT
   public:
-
     QgsProjectElevationSettingsWidget( QWidget *parent = nullptr );
 
   public slots:
@@ -43,7 +42,6 @@ class QgsProjectElevationSettingsWidget : public QgsOptionsPageWidget, private U
   private:
     QgsElevationShadingRendererSettingsWidget *mElevationShadingSettingsWidget = nullptr;
     QgsProjectionSelectionWidget *mVerticalCrsWidget = nullptr;
-
 };
 
 
@@ -55,7 +53,6 @@ class QgsProjectElevationSettingsWidgetFactory : public QgsOptionsWidgetFactory
 
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
 };
-
 
 
 #endif // QGSPROJECTELEVATIONSETTINGSWIDGET_H

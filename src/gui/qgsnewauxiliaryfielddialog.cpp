@@ -52,7 +52,7 @@ void QgsNewAuxiliaryFieldDialog::accept()
 
   if ( !mNameOnly )
   {
-    def.setDataType( static_cast< QgsPropertyDefinition::DataType >( mType->currentData().toInt() ) );
+    def.setDataType( static_cast<QgsPropertyDefinition::DataType>( mType->currentData().toInt() ) );
 
     def.setOrigin( "user" );
     def.setName( "custom" );

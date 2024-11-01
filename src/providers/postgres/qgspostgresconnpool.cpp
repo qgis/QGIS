@@ -33,7 +33,8 @@ void QgsPostgresConnPool::cleanupInstance()
   sInstance = nullptr;
 }
 
-QgsPostgresConnPool::QgsPostgresConnPool() : QgsConnectionPool<QgsPostgresConn *, QgsPostgresConnPoolGroup>()
+QgsPostgresConnPool::QgsPostgresConnPool()
+  : QgsConnectionPool<QgsPostgresConn *, QgsPostgresConnPoolGroup>()
 {
   QgsDebugCall;
 }
@@ -42,4 +43,3 @@ QgsPostgresConnPool::~QgsPostgresConnPool()
 {
   QgsDebugCall;
 }
-

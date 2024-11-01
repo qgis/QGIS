@@ -40,7 +40,6 @@ class CORE_EXPORT QgsVectorLayerSelectionProperties : public QgsMapLayerSelectio
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsVectorLayerSelectionProperties, with the specified \a parent object.
      */
@@ -105,10 +104,9 @@ class CORE_EXPORT QgsVectorLayerSelectionProperties : public QgsMapLayerSelectio
     void setSelectionSymbol( QgsSymbol *symbol SIP_TRANSFER );
 
   private:
-
     Qgis::SelectionRenderingMode mSelectionRenderingMode = Qgis::SelectionRenderingMode::Default;
     QColor mSelectionColor;
-    std::unique_ptr< QgsSymbol > mSelectionSymbol;
+    std::unique_ptr<QgsSymbol> mSelectionSymbol;
 };
 
 #endif // QGSVECTORLAYERSELECTIONPROPERTIES_H

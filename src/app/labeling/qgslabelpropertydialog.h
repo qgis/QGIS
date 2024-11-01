@@ -26,7 +26,7 @@
 
 
 //! A dialog to enter data defined label attributes
-class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialogBase
+class APP_EXPORT QgsLabelPropertyDialog : public QDialog, private Ui::QgsLabelPropertyDialogBase
 {
     Q_OBJECT
   public:
@@ -113,7 +113,7 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
 
     QgsAttributeMap mChangedProperties;
     QgsPropertyCollection mDataDefinedProperties;
-    QMap< int, int > mPropertyToFieldMap;
+    QMap<int, int> mPropertyToFieldMap;
     QFont mLabelFont;
 
     QFontDatabase mFontDB;

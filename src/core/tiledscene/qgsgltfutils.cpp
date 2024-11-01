@@ -25,7 +25,7 @@
 #include <QMatrix4x4>
 #include <QRegularExpression>
 
-#define TINYGLTF_IMPLEMENTATION       // should be defined just in one CPP file
+#define TINYGLTF_IMPLEMENTATION // should be defined just in one CPP file
 
 // decompression of meshes with Draco is optional, but recommended
 // because some 3D Tiles datasets use it (KHR_draco_mesh_compression is an optional extension of GLTF)
@@ -33,8 +33,8 @@
 #define TINYGLTF_ENABLE_DRACO
 #endif
 
-#define TINYGLTF_NO_STB_IMAGE         // we use QImage-based reading of images
-#define TINYGLTF_NO_STB_IMAGE_WRITE   // we don't need writing of images
+#define TINYGLTF_NO_STB_IMAGE       // we use QImage-based reading of images
+#define TINYGLTF_NO_STB_IMAGE_WRITE // we don't need writing of images
 //#define TINYGLTF_NO_FS
 
 //#include <fstream>
@@ -141,7 +141,7 @@ bool QgsGltfUtils::extractTextureCoordinates( const tinygltf::Model &model, int 
 
   for ( std::size_t i = 0; i < accessor.count; i++ )
   {
-    const float *fptr = reinterpret_cast< const float * >( ptr );
+    const float *fptr = reinterpret_cast<const float *>( ptr );
 
     *xOut++ = fptr[0];
     *yOut++ = fptr[1];
@@ -193,22 +193,22 @@ std::unique_ptr<QMatrix4x4> QgsGltfUtils::parseNodeTransform( const tinygltf::No
     matrix.reset( new QMatrix4x4 );
     float *mdata = matrix->data();
     for ( int i = 0; i < 16; ++i )
-      mdata[i] = static_cast< float >( node.matrix[i] );
+      mdata[i] = static_cast<float>( node.matrix[i] );
   }
   else if ( node.translation.size() || node.rotation.size() || node.scale.size() )
   {
     matrix.reset( new QMatrix4x4 );
     if ( node.scale.size() )
     {
-      matrix->scale( static_cast< float >( node.scale[0] ), static_cast< float >( node.scale[1] ), static_cast< float >( node.scale[2] ) );
+      matrix->scale( static_cast<float>( node.scale[0] ), static_cast<float>( node.scale[1] ), static_cast<float>( node.scale[2] ) );
     }
     if ( node.rotation.size() )
     {
-      matrix->rotate( QQuaternion( static_cast< float >( node.rotation[3] ), static_cast< float >( node.rotation[0] ), static_cast< float >( node.rotation[1] ), static_cast< float >( node.rotation[2] ) ) );
+      matrix->rotate( QQuaternion( static_cast<float>( node.rotation[3] ), static_cast<float>( node.rotation[0] ), static_cast<float>( node.rotation[1] ), static_cast<float>( node.rotation[2] ) ) );
     }
     if ( node.translation.size() )
     {
-      matrix->translate( static_cast< float >( node.translation[0] ), static_cast< float >( node.translation[1] ), static_cast< float >( node.translation[2] ) );
+      matrix->translate( static_cast<float>( node.translation[0] ), static_cast<float>( node.translation[1] ), static_cast<float>( node.translation[2] ) );
     }
   }
   return matrix;
@@ -286,7 +286,6 @@ bool QgsGltfUtils::loadImageDataWithQImage(
   std::string *warn, int req_width, int req_height,
   const unsigned char *bytes, int size, void *user_data )
 {
-
   if ( req_width != 0 || req_height != 0 )
   {
     if ( err )
@@ -296,17 +295,15 @@ bool QgsGltfUtils::loadImageDataWithQImage(
     return false;
   }
 
-  ( void )warn;
-  ( void )user_data;
+  ( void ) warn;
+  ( void ) user_data;
 
   QImage img;
   if ( !img.loadFromData( bytes, size ) )
   {
     if ( err )
     {
-      ( *err ) +=
-        "Unknown image format. QImage cannot decode image data for image[" +
-        std::to_string( image_idx ) + "] name = \"" + image->name + "\".\n";
+      ( *err ) += "Unknown image format. QImage cannot decode image data for image[" + std::to_string( image_idx ) + "] name = \"" + image->name + "\".\n";
     }
     return false;
   }
@@ -324,7 +321,7 @@ bool QgsGltfUtils::loadImageDataWithQImage(
   image->pixel_type = TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE;
 
   image->image.resize( static_cast<size_t>( image->width * image->height * image->component ) * size_t( image->bits / 8 ) );
-  std::copy( img.constBits(), img.constBits() + static_cast< std::size_t >( image->width ) * image->height * image->component * ( image->bits / 8 ), image->image.begin() );
+  std::copy( img.constBits(), img.constBits() + static_cast<std::size_t>( image->width ) * image->height * image->component * ( image->bits / 8 ), image->image.begin() );
 
   return true;
 }
@@ -341,11 +338,11 @@ bool QgsGltfUtils::loadGltfModel( const QByteArray &data, tinygltf::Model &model
   // (and there's a lot of non-compliant GLTF out there!)
   loader.SetParseStrictness( tinygltf::ParseStrictness::Permissive );
 
-  std::string baseDir;  // TODO: may be useful to set it from baseUri
+  std::string baseDir; // TODO: may be useful to set it from baseUri
   std::string err, warn;
 
   bool res;
-  if ( data.startsWith( "glTF" ) )   // 4-byte magic value in binary GLTF
+  if ( data.startsWith( "glTF" ) ) // 4-byte magic value in binary GLTF
   {
     if ( data.at( 4 ) == 1 )
     {
@@ -353,7 +350,7 @@ bool QgsGltfUtils::loadGltfModel( const QByteArray &data, tinygltf::Model &model
       return false;
     }
     res = loader.LoadBinaryFromMemory( &model, &err, &warn,
-                                       ( const unsigned char * )data.constData(), data.size(), baseDir );
+                                       ( const unsigned char * ) data.constData(), data.size(), baseDir );
   }
   else
   {
@@ -387,7 +384,7 @@ std::size_t QgsGltfUtils::sourceSceneForModel( const tinygltf::Model &model, boo
 
   ok = true;
   int index = model.defaultScene;
-  if ( index >= 0 && static_cast< std::size_t>( index ) < model.scenes.size() )
+  if ( index >= 0 && static_cast<std::size_t>( index ) < model.scenes.size() )
   {
     return index;
   }

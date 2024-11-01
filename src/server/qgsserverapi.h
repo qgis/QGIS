@@ -18,7 +18,6 @@
  ***************************************************************************/
 
 
-
 #ifndef QGSSERVERAPI_H
 #define QGSSERVERAPI_H
 
@@ -79,9 +78,7 @@ class QgsServerInterface;
  */
 class SERVER_EXPORT QgsServerApi
 {
-
   public:
-
     /**
      * Creates a QgsServerApi object
      */
@@ -126,11 +123,8 @@ class SERVER_EXPORT QgsServerApi
     QgsServerInterface *serverIface() const;
 
   private:
-
     QgsServerInterface *mServerIface = nullptr;
 };
 
 
 #endif // QGSSERVERAPI_H
-
-

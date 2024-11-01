@@ -29,17 +29,15 @@ QgsDevToolsPanelWidget::QgsDevToolsPanelWidget( const QList<QgsDevToolWidgetFact
   setupUi( this );
 
   mOptionsListWidget->setIconSize( QgisApp::instance()->iconSize( false ) );
-  mOptionsListWidget->setMaximumWidth( static_cast< int >( mOptionsListWidget->iconSize().width() * 1.18 ) );
+  mOptionsListWidget->setMaximumWidth( static_cast<int>( mOptionsListWidget->iconSize().width() * 1.18 ) );
 
   for ( QgsDevToolWidgetFactory *factory : factories )
     addToolFactory( factory );
 
-  connect( mOptionsListWidget, &QListWidget::currentRowChanged, this, [ = ]( int row )
-  {
+  connect( mOptionsListWidget, &QListWidget::currentRowChanged, this, [=]( int row ) {
     setCurrentTool( row );
     settingLastActiveTab->setValue( mOptionsListWidget->currentItem()->data( Qt::UserRole ).toString() );
   } );
-
 }
 
 QgsDevToolsPanelWidget::~QgsDevToolsPanelWidget() = default;

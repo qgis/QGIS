@@ -40,15 +40,15 @@ class QgsChunkNode;
  */
 struct QgsChunkListEntry
 {
-  //! Constructs entry for a particular node
-  QgsChunkListEntry( QgsChunkNode *node )
-    : chunk( node )
-  {
-  }
+    //! Constructs entry for a particular node
+    QgsChunkListEntry( QgsChunkNode *node )
+      : chunk( node )
+    {
+    }
 
-  QgsChunkListEntry *prev = nullptr;
-  QgsChunkListEntry *next = nullptr;
-  QgsChunkNode *chunk;   //!< TODO: shared pointer
+    QgsChunkListEntry *prev = nullptr;
+    QgsChunkListEntry *next = nullptr;
+    QgsChunkNode *chunk; //!< TODO: shared pointer
 };
 
 

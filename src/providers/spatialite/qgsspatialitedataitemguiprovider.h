@@ -25,7 +25,6 @@ class QgsSpatiaLiteDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
 {
     Q_OBJECT
   public:
-
     QString name() override { return QStringLiteral( "spatialite" ); }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu,

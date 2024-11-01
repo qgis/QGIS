@@ -34,7 +34,7 @@
 
 QgsLayoutItemMapOverview::QgsLayoutItemMapOverview( const QString &name, QgsLayoutItemMap *map )
   : QgsLayoutItemMapItem( name, map )
-  , mExtentLayer( std::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=EPSG:4326" ), tr( "Overview" ), QStringLiteral( "memory" ), QgsVectorLayer::LayerOptions( map && map->layout() && map->layout()->project() ? map->layout()->project()->transformContext() : QgsCoordinateTransformContext() ) ) )
+  , mExtentLayer( std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=EPSG:4326" ), tr( "Overview" ), QStringLiteral( "memory" ), QgsVectorLayer::LayerOptions( map && map->layout() && map->layout()->project() ? map->layout()->project()->transformContext() : QgsCoordinateTransformContext() ) ) )
 {
   createDefaultFrameSymbol();
 }
@@ -71,8 +71,7 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
 
   //get polygon for other overview frame map's extent (use visibleExtentPolygon as it accounts for map rotation)
   QPolygonF otherExtent = overviewFrameMap->visibleExtentPolygon();
-  if ( overviewFrameMap->crs() !=
-       mMap->crs() )
+  if ( overviewFrameMap->crs() != mMap->crs() )
   {
     QgsGeometry g = QgsGeometry::fromQPolygonF( otherExtent );
 
@@ -163,8 +162,8 @@ bool QgsLayoutItemMapOverview::writeXml( QDomElement &elem, QDomDocument &doc, c
   //overview map frame
   QDomElement overviewFrameElem = doc.createElement( QStringLiteral( "ComposerMapOverview" ) );
 
-  overviewFrameElem.setAttribute( QStringLiteral( "frameMap" ), mFrameMap ? mFrameMap ->uuid() : QString() );
-  overviewFrameElem.setAttribute( QStringLiteral( "blendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( mBlendMode ) ) );
+  overviewFrameElem.setAttribute( QStringLiteral( "frameMap" ), mFrameMap ? mFrameMap->uuid() : QString() );
+  overviewFrameElem.setAttribute( QStringLiteral( "blendMode" ), static_cast<int>( QgsPainting::getBlendModeEnum( mBlendMode ) ) );
   overviewFrameElem.setAttribute( QStringLiteral( "inverted" ), mInverted );
   overviewFrameElem.setAttribute( QStringLiteral( "centered" ), mCentered );
 
@@ -189,7 +188,7 @@ bool QgsLayoutItemMapOverview::readXml( const QDomElement &itemElem, const QDomD
   mFrameMapUuid = itemElem.attribute( QStringLiteral( "frameMap" ) );
   setLinkedMap( nullptr );
 
-  mBlendMode = QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( itemElem.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) );
+  mBlendMode = QgsPainting::getCompositionMode( static_cast<Qgis::BlendMode>( itemElem.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) );
   mInverted = ( itemElem.attribute( QStringLiteral( "inverted" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
   mCentered = ( itemElem.attribute( QStringLiteral( "centered" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
 
@@ -205,7 +204,7 @@ void QgsLayoutItemMapOverview::finalizeRestoreFromXml()
 {
   if ( !mFrameMapUuid.isEmpty() )
   {
-    setLinkedMap( qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mFrameMapUuid, true ) ) );
+    setLinkedMap( qobject_cast<QgsLayoutItemMap *>( mLayout->itemByUuid( mFrameMapUuid, true ) ) );
   }
 }
 
@@ -293,7 +292,7 @@ QgsVectorLayer *QgsLayoutItemMapOverview::asMapLayer()
 
   mExtentLayer->setBlendMode( mBlendMode );
 
-  static_cast< QgsSingleSymbolRenderer * >( mExtentLayer->renderer() )->setSymbol( mFrameSymbol->clone() );
+  static_cast<QgsSingleSymbolRenderer *>( mExtentLayer->renderer() )->setSymbol( mFrameSymbol->clone() );
   mExtentLayer->dataProvider()->truncate();
   mExtentLayer->setCrs( mMap->crs() );
 
@@ -390,7 +389,6 @@ void QgsLayoutItemMapOverview::overviewExtentChanged()
 QgsLayoutItemMapOverviewStack::QgsLayoutItemMapOverviewStack( QgsLayoutItemMap *map )
   : QgsLayoutItemMapItemStack( map )
 {
-
 }
 
 void QgsLayoutItemMapOverviewStack::addOverview( QgsLayoutItemMapOverview *overview )
@@ -434,8 +432,8 @@ QgsLayoutItemMapOverview &QgsLayoutItemMapOverviewStack::operator[]( int idx ) /
 
 QList<QgsLayoutItemMapOverview *> QgsLayoutItemMapOverviewStack::asList() const // cppcheck-suppress duplInheritedMember
 {
-  QList< QgsLayoutItemMapOverview * > list;
-  QList< QgsLayoutItemMapItem * >::const_iterator it = mItems.begin();
+  QList<QgsLayoutItemMapOverview *> list;
+  QList<QgsLayoutItemMapItem *>::const_iterator it = mItems.begin();
   for ( ; it != mItems.end(); ++it )
   {
     QgsLayoutItemMapOverview *overview = qobject_cast<QgsLayoutItemMapOverview *>( *it );
@@ -468,12 +466,12 @@ QList<QgsMapLayer *> QgsLayoutItemMapOverviewStack::modifyMapLayerList( const QL
 {
   QList<QgsMapLayer *> res = layers;
   res.reserve( layers.count() + mItems.count() );
-  for ( QgsLayoutItemMapItem  *item : std::as_const( mItems ) )
+  for ( QgsLayoutItemMapItem *item : std::as_const( mItems ) )
   {
     if ( !item )
       continue;
 
-    QgsVectorLayer *l = static_cast< QgsLayoutItemMapOverview * >( item )->asMapLayer();
+    QgsVectorLayer *l = static_cast<QgsLayoutItemMapOverview *>( item )->asMapLayer();
     if ( !l )
       continue;
 

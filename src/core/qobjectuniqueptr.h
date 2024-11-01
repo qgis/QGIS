@@ -39,7 +39,7 @@ class QVariant;
  * \ingroup core
  * \since QGIS 3.8
  */
-template <class T>
+template<class T>
 class QObjectUniquePtr
 {
     Q_STATIC_ASSERT_X( !std::is_pointer<T>::value, "QObjectUniquePtr's template type must not be a pointer type" );
@@ -47,28 +47,29 @@ class QObjectUniquePtr
     template<typename U>
     struct TypeSelector
     {
-      typedef QObject Type;
+        typedef QObject Type;
     };
     template<typename U>
     struct TypeSelector<const U>
     {
-      typedef const QObject Type;
+        typedef const QObject Type;
     };
     typedef typename TypeSelector<T>::Type QObjectType;
     QPointer<QObjectType> mPtr;
-  public:
 
+  public:
     /**
      * Creates a new empty QObjectUniquePtr.
      */
     inline QObjectUniquePtr()
-    { }
+    {}
 
     /**
      * Takes a new QObjectUniquePtr and assigned \a p to it.
      */
-    inline QObjectUniquePtr( T *p ) : mPtr( p )
-    { }
+    inline QObjectUniquePtr( T *p )
+      : mPtr( p )
+    {}
     // compiler-generated copy/move ctor/assignment operators are fine!
 
     /**
@@ -182,9 +183,9 @@ class QObjectUniquePtr
       mPtr = p;
     }
 };
-template <class T> Q_DECLARE_TYPEINFO_BODY( QObjectUniquePtr<T>, Q_MOVABLE_TYPE );
+template<class T> Q_DECLARE_TYPEINFO_BODY( QObjectUniquePtr<T>, Q_MOVABLE_TYPE );
 
-template <class T>
+template<class T>
 inline bool operator==( const T *o, const QObjectUniquePtr<T> &p )
 {
   return o == p.operator->();
@@ -196,7 +197,7 @@ inline bool operator==( const QObjectUniquePtr<T> &p, const T *o )
   return p.operator->() == o;
 }
 
-template <class T>
+template<class T>
 inline bool operator==( T *o, const QObjectUniquePtr<T> &p )
 {
   return o == p.operator->();
@@ -214,44 +215,42 @@ inline bool operator==( const QObjectUniquePtr<T> &p1, const QObjectUniquePtr<T>
   return p1.operator->() == p2.operator->();
 }
 
-template <class T>
+template<class T>
 inline bool operator!=( const T *o, const QObjectUniquePtr<T> &p )
 {
   return o != p.operator->();
 }
 
 template<class T>
-inline bool operator!= ( const QObjectUniquePtr<T> &p, const T *o )
+inline bool operator!=( const QObjectUniquePtr<T> &p, const T *o )
 {
   return p.operator->() != o;
 }
 
-template <class T>
+template<class T>
 inline bool operator!=( T *o, const QObjectUniquePtr<T> &p )
 {
   return o != p.operator->();
 }
 
 template<class T>
-inline bool operator!= ( const QObjectUniquePtr<T> &p, T *o )
+inline bool operator!=( const QObjectUniquePtr<T> &p, T *o )
 {
   return p.operator->() != o;
 }
 
 template<class T>
-inline bool operator!= ( const QObjectUniquePtr<T> &p1, const QObjectUniquePtr<T> &p2 )
+inline bool operator!=( const QObjectUniquePtr<T> &p1, const QObjectUniquePtr<T> &p2 )
 {
-  return p1.operator->() != p2.operator->() ;
+  return p1.operator->() != p2.operator->();
 }
 
 template<typename T>
 QObjectUniquePtr<T>
-QObjectUniquePtrFromVariant( const QVariant &variant )
+  QObjectUniquePtrFromVariant( const QVariant &variant )
 {
   return QObjectUniquePtr<T>( qobject_cast<T *>( QtSharedPointer::weakPointerFromVariant_internal( variant ).toStrongRef().data() ) );
 }
-
-
 
 
 /**
@@ -265,7 +264,7 @@ QObjectUniquePtrFromVariant( const QVariant &variant )
  * \ingroup core
  * \since QGIS 3.26
  */
-template <class T>
+template<class T>
 class QObjectParentUniquePtr
 {
     Q_STATIC_ASSERT_X( !std::is_pointer<T>::value, "QObjectParentUniquePtr's template object type must not be a pointer type" );
@@ -276,12 +275,11 @@ class QObjectParentUniquePtr
     QMetaObject::Connection mParentDestroyedConnection;
 
   public:
-
     /**
      * Creates a new empty QObjectParentUniquePtr.
      */
     inline QObjectParentUniquePtr()
-    { }
+    {}
 
     /**
      * Takes a new QObjectParentUniquePtr and assign a \a child to it.
@@ -323,8 +321,7 @@ class QObjectParentUniquePtr
       {
         QObject::disconnect( mParentDestroyedConnection );
       }
-      mParentDestroyedConnection = QObject::connect( parent, &QObject::destroyed, parent, [ = ]()
-      {
+      mParentDestroyedConnection = QObject::connect( parent, &QObject::destroyed, parent, [=]() {
         mParent = nullptr;
         // parent is being deleted BEFORE child, so it is responsible for deleting the child -- we don't need to delete it here!
         mChild = nullptr;
@@ -406,7 +403,7 @@ class QObjectParentUniquePtr
      */
     explicit inline operator bool() const
     {
-      return static_cast< bool >( mChild );
+      return static_cast<bool>( mChild );
     }
 
     /**
@@ -449,7 +446,7 @@ class QObjectParentUniquePtr
     }
 };
 
-template <class T>
+template<class T>
 inline bool operator==( const T *o, const QObjectParentUniquePtr<T> &p )
 {
   return o == p.operator->();
@@ -461,7 +458,7 @@ inline bool operator==( const QObjectParentUniquePtr<T> &p, const T *o )
   return p.operator->() == o;
 }
 
-template <class T>
+template<class T>
 inline bool operator==( T *o, const QObjectParentUniquePtr<T> &p )
 {
   return o == p.operator->();
@@ -479,34 +476,34 @@ inline bool operator==( const QObjectParentUniquePtr<T> &p1, const QObjectParent
   return p1.operator->() == p2.operator->();
 }
 
-template <class T>
+template<class T>
 inline bool operator!=( const T *o, const QObjectParentUniquePtr<T> &p )
 {
   return o != p.operator->();
 }
 
 template<class T>
-inline bool operator!= ( const QObjectParentUniquePtr<T> &p, const T *o )
+inline bool operator!=( const QObjectParentUniquePtr<T> &p, const T *o )
 {
   return p.operator->() != o;
 }
 
-template <class T>
+template<class T>
 inline bool operator!=( T *o, const QObjectParentUniquePtr<T> &p )
 {
   return o != p.operator->();
 }
 
 template<class T>
-inline bool operator!= ( const QObjectParentUniquePtr<T> &p, T *o )
+inline bool operator!=( const QObjectParentUniquePtr<T> &p, T *o )
 {
   return p.operator->() != o;
 }
 
 template<class T>
-inline bool operator!= ( const QObjectParentUniquePtr<T> &p1, const QObjectParentUniquePtr<T> &p2 )
+inline bool operator!=( const QObjectParentUniquePtr<T> &p1, const QObjectParentUniquePtr<T> &p2 )
 {
-  return p1.operator->() != p2.operator->() ;
+  return p1.operator->() != p2.operator->();
 }
 
 

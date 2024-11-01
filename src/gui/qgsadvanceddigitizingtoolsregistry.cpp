@@ -35,12 +35,11 @@ QgsAdvancedDigitizingToolsRegistry::~QgsAdvancedDigitizingToolsRegistry()
 void QgsAdvancedDigitizingToolsRegistry::addDefaultTools()
 {
   addTool( new QgsAdvancedDigitizingToolMetadata( QStringLiteral( "circlesintersection" ),
-           QObject::tr( "2-Circle Point Intersection" ),
-           QgsApplication::getThemeIcon( QStringLiteral( "/cadtools/circlesintersection.svg" ) ),
-           [ = ]( QgsMapCanvas * canvas, QgsAdvancedDigitizingDockWidget * cadDockWidget )->QgsAdvancedDigitizingTool *
-  {
-    return new QgsAdvancedDigitizingCirclesIntersectionTool( canvas, cadDockWidget );
-  } ) );
+                                                  QObject::tr( "2-Circle Point Intersection" ),
+                                                  QgsApplication::getThemeIcon( QStringLiteral( "/cadtools/circlesintersection.svg" ) ),
+                                                  [=]( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget ) -> QgsAdvancedDigitizingTool * {
+                                                    return new QgsAdvancedDigitizingCirclesIntersectionTool( canvas, cadDockWidget );
+                                                  } ) );
 }
 
 bool QgsAdvancedDigitizingToolsRegistry::addTool( QgsAdvancedDigitizingToolAbstractMetadata *toolMetaData )

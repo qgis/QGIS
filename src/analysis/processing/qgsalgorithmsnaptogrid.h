@@ -30,9 +30,7 @@
  */
 class QgsSnapToGridAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsSnapToGridAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -46,7 +44,7 @@ class QgsSnapToGridAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   protected:
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
 
   private:
@@ -65,11 +63,8 @@ class QgsSnapToGridAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     double mIntervalM = 0.0;
     bool mDynamicIntervalM = false;
     QgsProperty mIntervalMProperty;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMSNAPTOGRID_H
-
-

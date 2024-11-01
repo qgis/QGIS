@@ -34,7 +34,6 @@ class CORE_EXPORT QgsLayerMetadataFormatter
     Q_DECLARE_TR_FUNCTIONS( "QgsLayerMetadataFormatter" )
 
   public:
-
     /**
      * Constructor for QgsLayerMetadataFormatter
      */

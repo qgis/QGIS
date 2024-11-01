@@ -38,7 +38,7 @@
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 #include <qt6keychain/keychain.h>
 #else
 #include <qt5keychain/keychain.h>
@@ -72,7 +72,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
     Q_OBJECT
 
   public:
-
     //! Message log level (mirrors that of QgsMessageLog, so it can also output there)
     enum MessageLevel
     {
@@ -91,7 +90,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \see QgsApplication::qgisAuthDatabaseFilePath
      * \deprecated QGIS 3.36. Use setup() or ensureInitialized() instead.
      */
-    Q_DECL_DEPRECATED bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED bool init( const QString &pluginPath = QString(), const QString &authDatabasePath = QString() ) SIP_DEPRECATED;
 
     /**
      * Sets up the authentication manager configuration.
@@ -103,7 +102,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \param authDatabasePath the authentication DB URI (or just the file path for SQLite)
      * \see ensureInitialized()
      */
-    void setup( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
+    void setup( const QString &pluginPath = QString(), const QString &authDatabasePath = QString() );
 
     /**
      * Performs lazy initialization of the authentication framework, if it has
@@ -240,7 +239,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Whether there is a scheduled opitonal erase of authentication database.
      * \note not available in Python bindings
      */
-    bool scheduledAuthDatabaseErase() { return mScheduledDbErase; } SIP_SKIP
+    bool scheduledAuthDatabaseErase() { return mScheduledDbErase; }
+    SIP_SKIP
 
     /**
      * Schedule an optional erase of authentication database, starting when mutex is lockable.
@@ -349,7 +349,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     static bool hasConfigId( const QString &txt );
 
     //! Returns the regular expression for authcfg=.{7} key/value token for authentication ids
-    QString configIdRegex() const { return AUTH_CFG_REGEX;}
+    QString configIdRegex() const { return AUTH_CFG_REGEX; }
 
     //! Gets list of authentication ids from database
     QStringList configIds() const;
@@ -573,7 +573,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \return hash keyed with cert/connection's sha:host:port.
      * \note not available in Python bindings
      */
-    QHash<QString, QSet<QSslError::SslError> > ignoredSslErrorCache() { return mIgnoredSslErrorsCache; } SIP_SKIP
+    QHash<QString, QSet<QSslError::SslError>> ignoredSslErrorCache() { return mIgnoredSslErrorsCache; }
+    SIP_SKIP
 
     //! Utility function to dump the cache for debug purposes
     void dumpIgnoredSslErrorsCache_();
@@ -638,7 +639,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \return map of sha1 <source, certificates>
      * \note not available in Python bindings
      */
-    const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > caCertsCache() SIP_SKIP
+    const QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate>> caCertsCache() SIP_SKIP
     {
       return mCaCertsCache;
     }
@@ -679,7 +680,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \brief certTrustCache get cache of certificate sha1s, per trust policy
      * \return trust-policy-mapped certificate sha1s
      */
-    const QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > certTrustCache() { return mCertTrustCache; }
+    const QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList> certTrustCache() { return mCertTrustCache; }
 
     //! Rebuild certificate authority cache
     bool rebuildCertTrustCache();
@@ -718,7 +719,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Error message getter
      * \note not available in Python bindings
      */
-    const QString passwordHelperErrorMessage() { return mPasswordHelperErrorMessage; } SIP_SKIP
+    const QString passwordHelperErrorMessage() { return mPasswordHelperErrorMessage; }
+    SIP_SKIP
 
     /**
      * Delete master password from wallet
@@ -851,7 +853,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
     void tryToStartDbErase();
 
   protected:
-
     /**
      * Enforce singleton pattern
      * \note To set up the manager instance and initialize everything use QgsAuthManager::instance()->init()
@@ -868,7 +869,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
 #endif
 
   private:
-
     bool initPrivate( const QString &pluginPath );
 
     //////////////////////////////////////////////////////////////////////////////
@@ -962,7 +962,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     QString mAuthDisabledMessage;
     QTimer *mScheduledDbEraseTimer = nullptr;
     bool mScheduledDbErase = false;
-    int mScheduledDbEraseRequestWait = 3 ; // in seconds
+    int mScheduledDbEraseRequestWait = 3; // in seconds
     bool mScheduledDbEraseRequestEmitted = false;
     int mScheduledDbEraseRequestCount = 0;
 
@@ -971,17 +971,17 @@ class CORE_EXPORT QgsAuthManager : public QObject
 #ifndef QT_NO_SSL
     // mapping of sha1 digest and cert source and cert
     // appending removes duplicates
-    QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > mCaCertsCache;
+    QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate>> mCaCertsCache;
     // list of sha1 digests per policy
-    QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > mCertTrustCache;
+    QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList> mCertTrustCache;
     // cache of certs ready to be utilized in network connections
     QList<QSslCertificate> mTrustedCaCertsCache;
     // cache of SSL errors to be ignored in network connections, per sha-hostport
-    QHash<QString, QSet<QSslError::SslError> > mIgnoredSslErrorsCache;
+    QHash<QString, QSet<QSslError::SslError>> mIgnoredSslErrorsCache;
 
     bool mHasCustomConfigByHost = false;
     bool mHasCheckedIfCustomConfigByHostExists = false;
-    QMap< QString, QgsAuthConfigSslServer > mCustomConfigByHostCache;
+    QMap<QString, QgsAuthConfigSslServer> mCustomConfigByHostCache;
 #endif
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1011,7 +1011,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
     mutable QMap<QThread *, QMetaObject::Connection> mConnectedThreads;
 
     friend class QgsApplication;
-
 };
 
 #endif // QGSAUTHMANAGER_H

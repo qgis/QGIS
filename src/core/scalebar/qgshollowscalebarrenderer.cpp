@@ -36,16 +36,7 @@ QString QgsHollowScaleBarRenderer::visibleName() const
 
 QgsScaleBarRenderer::Flags QgsHollowScaleBarRenderer::flags() const
 {
-  return Flag::FlagUsesLineSymbol |
-         Flag::FlagUsesFillSymbol |
-         Flag::FlagUsesAlternateFillSymbol |
-         Flag::FlagRespectsUnits |
-         Flag::FlagRespectsMapUnitsPerScaleBarUnit |
-         Flag::FlagUsesUnitLabel |
-         Flag::FlagUsesSegments |
-         Flag::FlagUsesLabelBarSpace |
-         Flag::FlagUsesLabelVerticalPlacement |
-         Flag::FlagUsesLabelHorizontalPlacement;
+  return Flag::FlagUsesLineSymbol | Flag::FlagUsesFillSymbol | Flag::FlagUsesAlternateFillSymbol | Flag::FlagRespectsUnits | Flag::FlagRespectsMapUnitsPerScaleBarUnit | Flag::FlagUsesUnitLabel | Flag::FlagUsesSegments | Flag::FlagUsesLabelBarSpace | Flag::FlagUsesLabelVerticalPlacement | Flag::FlagUsesLabelHorizontalPlacement;
 }
 
 int QgsHollowScaleBarRenderer::sortKey() const
@@ -75,13 +66,13 @@ void QgsHollowScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleB
   painter->save();
   context.setPainterFlagsUsingContext( painter );
 
-  std::unique_ptr< QgsLineSymbol > lineSymbol( settings.lineSymbol()->clone() );
+  std::unique_ptr<QgsLineSymbol> lineSymbol( settings.lineSymbol()->clone() );
   lineSymbol->startRender( context );
 
-  std::unique_ptr< QgsFillSymbol > fillSymbol1( settings.fillSymbol()->clone() );
+  std::unique_ptr<QgsFillSymbol> fillSymbol1( settings.fillSymbol()->clone() );
   fillSymbol1->startRender( context );
 
-  std::unique_ptr< QgsFillSymbol > fillSymbol2( settings.alternateFillSymbol()->clone() );
+  std::unique_ptr<QgsFillSymbol> fillSymbol2( settings.alternateFillSymbol()->clone() );
   fillSymbol2->startRender( context );
 
   painter->setPen( Qt::NoPen );
@@ -118,11 +109,12 @@ void QgsHollowScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleB
 
     const QRectF segmentRect( thisX, barTopPosition, thisWidth, barHeight );
     currentSymbol->renderPolygon( QPolygonF()
-                                  << segmentRect.topLeft()
-                                  << segmentRect.topRight()
-                                  << segmentRect.bottomRight()
-                                  << segmentRect.bottomLeft()
-                                  << segmentRect.topLeft(), nullptr, nullptr, context );
+                                    << segmentRect.topLeft()
+                                    << segmentRect.topRight()
+                                    << segmentRect.bottomRight()
+                                    << segmentRect.bottomLeft()
+                                    << segmentRect.topLeft(),
+                                  nullptr, nullptr, context );
     useColor = !useColor;
   }
 
@@ -141,8 +133,8 @@ void QgsHollowScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleB
       const double lineX = context.convertToPainterUnits( positions.at( i ), Qgis::RenderUnit::Millimeters ) + xOffset;
       const double lineLength = context.convertToPainterUnits( widths.at( i ), Qgis::RenderUnit::Millimeters );
       lineSymbol->renderPolyline( QPolygonF()
-                                  << QPointF( lineX, barTopPosition + barHeight / 2.0 )
-                                  << QPointF( lineX + lineLength, barTopPosition + barHeight / 2.0 ),
+                                    << QPointF( lineX, barTopPosition + barHeight / 2.0 )
+                                    << QPointF( lineX + lineLength, barTopPosition + barHeight / 2.0 ),
                                   nullptr, context, layer );
     }
 
@@ -151,18 +143,18 @@ void QgsHollowScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleB
     {
       const double lineX = context.convertToPainterUnits( positions.at( i ), Qgis::RenderUnit::Millimeters ) + xOffset;
       lineSymbol->renderPolyline( QPolygonF()
-                                  << QPointF( lineX, barTopPosition )
-                                  << QPointF( lineX, barTopPosition + barHeight ),
+                                    << QPointF( lineX, barTopPosition )
+                                    << QPointF( lineX, barTopPosition + barHeight ),
                                   nullptr, context, layer );
     }
 
     // outside line
     lineSymbol->renderPolyline( QPolygonF()
-                                << QPointF( minX, barTopPosition )
-                                << QPointF( maxX, barTopPosition )
-                                << QPointF( maxX, barTopPosition + barHeight )
-                                << QPointF( minX, barTopPosition + barHeight )
-                                << QPointF( minX, barTopPosition ),
+                                  << QPointF( minX, barTopPosition )
+                                  << QPointF( maxX, barTopPosition )
+                                  << QPointF( maxX, barTopPosition + barHeight )
+                                  << QPointF( minX, barTopPosition + barHeight )
+                                  << QPointF( minX, barTopPosition ),
                                 nullptr, context, layer );
   }
 
@@ -178,21 +170,18 @@ void QgsHollowScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleB
 bool QgsHollowScaleBarRenderer::applyDefaultSettings( QgsScaleBarSettings &settings ) const
 {
   // null the fill symbols by default
-  std::unique_ptr< QgsFillSymbol > fillSymbol = std::make_unique< QgsFillSymbol >();
-  std::unique_ptr< QgsSimpleFillSymbolLayer > fillSymbolLayer = std::make_unique< QgsSimpleFillSymbolLayer >();
+  std::unique_ptr<QgsFillSymbol> fillSymbol = std::make_unique<QgsFillSymbol>();
+  std::unique_ptr<QgsSimpleFillSymbolLayer> fillSymbolLayer = std::make_unique<QgsSimpleFillSymbolLayer>();
   fillSymbolLayer->setColor( QColor( 0, 0, 0 ) );
   fillSymbolLayer->setBrushStyle( Qt::NoBrush );
   fillSymbolLayer->setStrokeStyle( Qt::NoPen );
   fillSymbol->changeSymbolLayer( 0, fillSymbolLayer->clone() );
   settings.setFillSymbol( fillSymbol.release() );
 
-  fillSymbol = std::make_unique< QgsFillSymbol >();
+  fillSymbol = std::make_unique<QgsFillSymbol>();
   fillSymbolLayer->setColor( QColor( 255, 255, 255 ) );
   fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
   settings.setAlternateFillSymbol( fillSymbol.release() );
 
   return true;
 }
-
-
-

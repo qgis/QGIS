@@ -30,9 +30,7 @@
  */
 class QgsPdalClipAlgorithm : public QgsPdalAlgorithmBase
 {
-
   public:
-
     QgsPdalClipAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;

@@ -41,7 +41,6 @@ class GUI_EXPORT QgsInputControllerManager : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsInputControllerManager, with the specified \a parent object.
      *
@@ -144,10 +143,8 @@ class GUI_EXPORT QgsInputControllerManager : public QObject
     bool register3DMapController( QgsAbstract3DMapController *controller SIP_TRANSFER );
 
   private:
-
-    QMap< QString, QgsAbstract2DMapController * > m2DMapControllers;
-    QMap< QString, QgsAbstract3DMapController * > m3DMapControllers;
-
+    QMap<QString, QgsAbstract2DMapController *> m2DMapControllers;
+    QMap<QString, QgsAbstract3DMapController *> m3DMapControllers;
 };
 
 #endif // QGSINPUTCONTROLLER_H

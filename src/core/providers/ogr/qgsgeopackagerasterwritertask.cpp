@@ -25,7 +25,6 @@ QgsGeoPackageRasterWriterTask::QgsGeoPackageRasterWriterTask( const QgsMimeDataU
   , mWriter( sourceUri, destinationPath )
   , mFeedback( new QgsFeedback() )
 {
-
 }
 
 void QgsGeoPackageRasterWriterTask::cancel()

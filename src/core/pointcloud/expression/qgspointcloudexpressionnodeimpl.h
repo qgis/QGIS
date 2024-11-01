@@ -22,7 +22,11 @@
 #include "qgspointcloudblock.h"
 #include "qgsexpressionnodeimpl.h"
 
-#define ENSURE_NO_EVAL_ERROR   {  if ( parent->hasEvalError() ) return std::numeric_limits<double>::quiet_NaN(); }
+#define ENSURE_NO_EVAL_ERROR                           \
+  {                                                    \
+    if ( parent->hasEvalError() )                      \
+      return std::numeric_limits<double>::quiet_NaN(); \
+  }
 
 /**
  * \ingroup core
@@ -33,7 +37,6 @@
 class CORE_EXPORT QgsPointCloudExpressionNodeUnaryOperator : public QgsPointCloudExpressionNode
 {
   public:
-
     /**
      * \brief list of unary operators
      * \note if any change is made here, the definition of QgsPointCloudExpression::UnaryOperatorText[] must be adapted.
@@ -105,7 +108,6 @@ class CORE_EXPORT QgsPointCloudExpressionNodeUnaryOperator : public QgsPointClou
 class CORE_EXPORT QgsPointCloudExpressionNodeBinaryOperator : public QgsPointCloudExpressionNode
 {
   public:
-
     /**
      * \brief list of binary operators
      * \note if any change is made here, the definition of QgsPointCloudExpression::BinaryOperatorText[] must be adapted.
@@ -117,12 +119,12 @@ class CORE_EXPORT QgsPointCloudExpressionNodeBinaryOperator : public QgsPointClo
       boAnd,
 
       // comparison
-      boEQ,  //!< =
-      boNE,  //!< <>
-      boLE,  //!< <=
-      boGE,  //!< >=
-      boLT,  //!< <
-      boGT,  //!< >
+      boEQ, //!< =
+      boNE, //!< <>
+      boLE, //!< <=
+      boGE, //!< >=
+      boLT, //!< <
+      boGT, //!< >
 
       // math
       boPlus,
@@ -142,7 +144,11 @@ class CORE_EXPORT QgsPointCloudExpressionNodeBinaryOperator : public QgsPointClo
       , mOpLeft( opLeft )
       , mOpRight( opRight )
     {}
-    ~QgsPointCloudExpressionNodeBinaryOperator() override { delete mOpLeft; delete mOpRight; }
+    ~QgsPointCloudExpressionNodeBinaryOperator() override
+    {
+      delete mOpLeft;
+      delete mOpRight;
+    }
 
     /**
      * Returns the binary operator.
@@ -174,7 +180,7 @@ class CORE_EXPORT QgsPointCloudExpressionNodeBinaryOperator : public QgsPointClo
     QString toPdal() const override;
 
     QSet<QString> referencedAttributes() const override;
-    QList<const QgsPointCloudExpressionNode *> nodes( ) const override;
+    QList<const QgsPointCloudExpressionNode *> nodes() const override;
 
     QgsPointCloudExpressionNode *clone() const override;
     bool isStatic( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) const override;
@@ -216,7 +222,6 @@ class CORE_EXPORT QgsPointCloudExpressionNodeBinaryOperator : public QgsPointClo
 class CORE_EXPORT QgsPointCloudExpressionNodeInOperator : public QgsPointCloudExpressionNode
 {
   public:
-
     /**
      * This node tests if the result of \a node is in the result of \a list. Optionally it can be inverted with \a notin which by default is FALSE.
      */
@@ -274,7 +279,6 @@ class CORE_EXPORT QgsPointCloudExpressionNodeInOperator : public QgsPointCloudEx
 class CORE_EXPORT QgsPointCloudExpressionNodeLiteral : public QgsPointCloudExpressionNode
 {
   public:
-
     /**
      * Constructor for QgsPointCloudExpressionNodeLiteral, with the specified literal \a value.
      */
@@ -321,7 +325,6 @@ class CORE_EXPORT QgsPointCloudExpressionNodeLiteral : public QgsPointCloudExpre
 class CORE_EXPORT QgsPointCloudExpressionNodeAttributeRef : public QgsPointCloudExpressionNode
 {
   public:
-
     /**
      * Constructor for QgsPointCloudExpressionNodeColumnRef, referencing the column
      * with the specified \a name.
@@ -346,7 +349,7 @@ class CORE_EXPORT QgsPointCloudExpressionNodeAttributeRef : public QgsPointCloud
     QString toPdal() const override;
 
     QSet<QString> referencedAttributes() const override;
-    QList<const QgsPointCloudExpressionNode *> nodes( ) const override;
+    QList<const QgsPointCloudExpressionNode *> nodes() const override;
 
     QgsPointCloudExpressionNode *clone() const override;
     bool isStatic( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block ) const override;

@@ -29,8 +29,7 @@ Qgis::GpsFixStatus QgsGpsInformation::bestFixStatus( Qgis::GnssConstellation &co
   {
     if ( it.value() == Qgis::GpsFixStatus::Fix3D
          || ( it.value() == Qgis::GpsFixStatus::Fix2D && bestStatus != Qgis::GpsFixStatus::Fix3D )
-         || ( it.value() == Qgis::GpsFixStatus::NoFix && bestStatus == Qgis::GpsFixStatus::NoData )
-       )
+         || ( it.value() == Qgis::GpsFixStatus::NoFix && bestStatus == Qgis::GpsFixStatus::NoData ) )
     {
       bestStatus = it.value();
       constellation = it.key();
@@ -172,4 +171,3 @@ QVariant QgsGpsInformation::componentValue( Qgis::GpsInformationComponent compon
   }
   BUILTIN_UNREACHABLE
 }
-

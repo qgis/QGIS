@@ -35,7 +35,7 @@ class QgsReadWriteContext;
  * \ingroup core
  * \brief A base class for objects which belong to a layout.
  */
-class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGenerator
+class CORE_EXPORT QgsLayoutObject : public QObject, public QgsExpressionContextGenerator
 {
 #ifdef SIP_RUN
 #include <qgslayoutitem.h>
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( QgsLayoutItem *item = qobject_cast< QgsLayoutItem * >( sipCpp ) )
+    if ( QgsLayoutItem *item = qobject_cast<QgsLayoutItem *>( sipCpp ) )
     {
       // the conversions have to be static, because they're using multiple inheritance
       // (seen in PyQt4 .sip files for some QGraphicsItem classes)
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
           *sipCppRet = static_cast<QgsLayoutItemElevationProfile *>( sipCpp );
           break;
 
-        // did you read that comment above? NO? Go read it now. You're about to break stuff.
+          // did you read that comment above? NO? Go read it now. You're about to break stuff.
 
         default:
           sipType = sipType_QgsLayoutItem;
@@ -134,110 +134,108 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
 
     Q_OBJECT
   public:
-
     // *INDENT-OFF*
 
     /**
      * Data defined properties for different item types
      */
-    enum class DataDefinedProperty SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutObject, DataDefinedProperty ) : int
-      {
+    enum class DataDefinedProperty SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutObject, DataDefinedProperty ) : int {
       NoProperty = 0, //!< No property
-      AllProperties, //!< All properties for item
-      TestProperty, //!< Dummy property with no effect on item
+      AllProperties,  //!< All properties for item
+      TestProperty,   //!< Dummy property with no effect on item
       //composer page properties
-      PresetPaperSize, //!< Preset paper size for composition
-      PaperWidth, //!< Paper width (deprecated)
-      PaperHeight, //!< Paper height (deprecated)
-      NumPages, //!< Number of pages in composition (deprecated)
+      PresetPaperSize,  //!< Preset paper size for composition
+      PaperWidth,       //!< Paper width (deprecated)
+      PaperHeight,      //!< Paper height (deprecated)
+      NumPages,         //!< Number of pages in composition (deprecated)
       PaperOrientation, //!< Paper orientation
       //general composer item properties
-      PageNumber, //!< Page number for item placement
-      PositionX, //!< X position on page
-      PositionY, //!< Y position on page
-      ItemWidth, //!< Width of item
-      ItemHeight, //!< Height of item
-      ItemRotation, //!< Rotation of item
-      Transparency, //!< Item transparency (deprecated)
-      Opacity, //!< Item opacity
-      BlendMode, //!< Item blend mode
+      PageNumber,         //!< Page number for item placement
+      PositionX,          //!< X position on page
+      PositionY,          //!< Y position on page
+      ItemWidth,          //!< Width of item
+      ItemHeight,         //!< Height of item
+      ItemRotation,       //!< Rotation of item
+      Transparency,       //!< Item transparency (deprecated)
+      Opacity,            //!< Item opacity
+      BlendMode,          //!< Item blend mode
       ExcludeFromExports, //!< Exclude item from exports
-      FrameColor, //!< Item frame color
-      BackgroundColor, //!< Item background color
-      MarginLeft, //!< Left margin \since QGIS 3.30
-      MarginTop, //!< Top margin \since QGIS 3.30
-      MarginRight, //!< Right margin \since QGIS 3.30
-      MarginBottom, //!< Bottom margin \since QGIS 3.30
+      FrameColor,         //!< Item frame color
+      BackgroundColor,    //!< Item background color
+      MarginLeft,         //!< Left margin \since QGIS 3.30
+      MarginTop,          //!< Top margin \since QGIS 3.30
+      MarginRight,        //!< Right margin \since QGIS 3.30
+      MarginBottom,       //!< Bottom margin \since QGIS 3.30
       //composer map
-      MapRotation, //!< Map rotation
-      MapScale, //!< Map scale
-      MapXMin, //!< Map extent x minimum
-      MapYMin, //!< Map extent y minimum
-      MapXMax, //!< Map extent x maximum
-      MapYMax, //!< Map extent y maximum
-      MapAtlasMargin, //!< Map atlas margin
-      MapLayers, //!< Map layer set
-      MapStylePreset, //!< Layer and style map theme
-      MapLabelMargin, //!< Map label margin
-      MapGridEnabled, //!< Map grid enabled
-      MapGridIntervalX, //!< Map grid interval X
-      MapGridIntervalY, //!< Map grid interval Y
-      MapGridOffsetX, //!< Map grid offset X
-      MapGridOffsetY, //!< Map grid offset Y
-      MapGridFrameSize, //!< Map grid frame size
-      MapGridFrameMargin, //!< Map grid frame margin
-      MapGridLabelDistance, //!< Map grid label distance
-      MapGridCrossSize, //!< Map grid cross size
-      MapGridFrameLineThickness, //!< Map grid frame line thickness
-      MapGridAnnotationDisplayLeft, //!< Map annotation display left
-      MapGridAnnotationDisplayRight, //!< Map annotation display right
-      MapGridAnnotationDisplayTop, //!< Map annotation display top
+      MapRotation,                    //!< Map rotation
+      MapScale,                       //!< Map scale
+      MapXMin,                        //!< Map extent x minimum
+      MapYMin,                        //!< Map extent y minimum
+      MapXMax,                        //!< Map extent x maximum
+      MapYMax,                        //!< Map extent y maximum
+      MapAtlasMargin,                 //!< Map atlas margin
+      MapLayers,                      //!< Map layer set
+      MapStylePreset,                 //!< Layer and style map theme
+      MapLabelMargin,                 //!< Map label margin
+      MapGridEnabled,                 //!< Map grid enabled
+      MapGridIntervalX,               //!< Map grid interval X
+      MapGridIntervalY,               //!< Map grid interval Y
+      MapGridOffsetX,                 //!< Map grid offset X
+      MapGridOffsetY,                 //!< Map grid offset Y
+      MapGridFrameSize,               //!< Map grid frame size
+      MapGridFrameMargin,             //!< Map grid frame margin
+      MapGridLabelDistance,           //!< Map grid label distance
+      MapGridCrossSize,               //!< Map grid cross size
+      MapGridFrameLineThickness,      //!< Map grid frame line thickness
+      MapGridAnnotationDisplayLeft,   //!< Map annotation display left
+      MapGridAnnotationDisplayRight,  //!< Map annotation display right
+      MapGridAnnotationDisplayTop,    //!< Map annotation display top
       MapGridAnnotationDisplayBottom, //!< Map annotation display bottom
-      MapGridFrameDivisionsLeft, //!< Map frame division display left
-      MapGridFrameDivisionsRight, //!< Map frame division display right
-      MapGridFrameDivisionsTop, //!< Map frame division display top
-      MapGridFrameDivisionsBottom, //!< Map frame division display bottom
-      MapCrs, //!< Map CRS
-      StartDateTime, //!< Temporal range's start DateTime
-      EndDateTime, //!< Temporal range's end DateTime
-      MapZRangeLower, //!< Map frame Z-range lower value \since QGIS 3.38
-      MapZRangeUpper, //!< Map frame Z-range lower value \since QGIS 3.38
+      MapGridFrameDivisionsLeft,      //!< Map frame division display left
+      MapGridFrameDivisionsRight,     //!< Map frame division display right
+      MapGridFrameDivisionsTop,       //!< Map frame division display top
+      MapGridFrameDivisionsBottom,    //!< Map frame division display bottom
+      MapCrs,                         //!< Map CRS
+      StartDateTime,                  //!< Temporal range's start DateTime
+      EndDateTime,                    //!< Temporal range's end DateTime
+      MapZRangeLower,                 //!< Map frame Z-range lower value \since QGIS 3.38
+      MapZRangeUpper,                 //!< Map frame Z-range lower value \since QGIS 3.38
       //composer picture
-      PictureSource, //!< Picture source url
+      PictureSource,             //!< Picture source url
       PictureSvgBackgroundColor, //!< SVG background color
-      PictureSvgStrokeColor, //!< SVG stroke color
-      PictureSvgStrokeWidth, //!< SVG stroke width
+      PictureSvgStrokeColor,     //!< SVG stroke color
+      PictureSvgStrokeWidth,     //!< SVG stroke width
       //html item
       SourceUrl, //!< Html source url
       //legend item
-      LegendTitle, //!< Legend title
+      LegendTitle,       //!< Legend title
       LegendColumnCount, //!< Legend column count
       //scalebar item
-      ScalebarLeftSegments, //!< Number of segments on the left of 0 \since QGIS 3.26
-      ScalebarRightSegments, //!< Number of segments on the right of 0 \since QGIS 3.26
-      ScalebarSegmentWidth, //!< Scalebar width in map units of a single segment \since QGIS 3.26
-      ScalebarMinimumWidth, //!< Scalebar segment minimum width \since QGIS 3.26
-      ScalebarMaximumWidth, //!< Scalebar segment maximum width \since QGIS 3.26
-      ScalebarHeight, //!< Scalebar height \since QGIS 3.26
+      ScalebarLeftSegments,             //!< Number of segments on the left of 0 \since QGIS 3.26
+      ScalebarRightSegments,            //!< Number of segments on the right of 0 \since QGIS 3.26
+      ScalebarSegmentWidth,             //!< Scalebar width in map units of a single segment \since QGIS 3.26
+      ScalebarMinimumWidth,             //!< Scalebar segment minimum width \since QGIS 3.26
+      ScalebarMaximumWidth,             //!< Scalebar segment maximum width \since QGIS 3.26
+      ScalebarHeight,                   //!< Scalebar height \since QGIS 3.26
       ScalebarRightSegmentSubdivisions, //!< Number of subdivisions per segment on right of 0 \since QGIS 3.26
-      ScalebarSubdivisionHeight, //!< Scalebar subdivision height \since QGIS 3.26
-      ScalebarFillColor, //!< Scalebar fill color (deprecated, use data defined properties on scalebar fill symbol 1 instead)
-      ScalebarFillColor2, //!< Scalebar secondary fill color (deprecated, use data defined properties on scalebar fill symbol 2 instead)
-      ScalebarLineColor, //!< Scalebar line color (deprecated, use data defined properties on scalebar line symbol instead)
-      ScalebarLineWidth, //!< Scalebar line width (deprecated, use data defined properties on scalebar line symbol instead)
+      ScalebarSubdivisionHeight,        //!< Scalebar subdivision height \since QGIS 3.26
+      ScalebarFillColor,                //!< Scalebar fill color (deprecated, use data defined properties on scalebar fill symbol 1 instead)
+      ScalebarFillColor2,               //!< Scalebar secondary fill color (deprecated, use data defined properties on scalebar fill symbol 2 instead)
+      ScalebarLineColor,                //!< Scalebar line color (deprecated, use data defined properties on scalebar line symbol instead)
+      ScalebarLineWidth,                //!< Scalebar line width (deprecated, use data defined properties on scalebar line symbol instead)
       //table item
-      AttributeTableSourceLayer, //!< Attribute table source layer
-      ElevationProfileTolerance, //!< Tolerance distance for elevation profiles \since QGIS 3.30
-      ElevationProfileDistanceMajorInterval, //!< Major grid line interval for elevation profile distance axis \since QGIS 3.30
-      ElevationProfileDistanceMinorInterval, //!< Minor grid line interval for elevation profile distance axis \since QGIS 3.30
-      ElevationProfileDistanceLabelInterval, //!< Label interval for elevation profile distance axis \since QGIS 3.30
+      AttributeTableSourceLayer,              //!< Attribute table source layer
+      ElevationProfileTolerance,              //!< Tolerance distance for elevation profiles \since QGIS 3.30
+      ElevationProfileDistanceMajorInterval,  //!< Major grid line interval for elevation profile distance axis \since QGIS 3.30
+      ElevationProfileDistanceMinorInterval,  //!< Minor grid line interval for elevation profile distance axis \since QGIS 3.30
+      ElevationProfileDistanceLabelInterval,  //!< Label interval for elevation profile distance axis \since QGIS 3.30
       ElevationProfileElevationMajorInterval, //!< Major grid line interval for elevation profile elevation axis \since QGIS 3.30
       ElevationProfileElevationMinorInterval, //!< Minor grid line interval for elevation profile elevation axis \since QGIS 3.30
       ElevationProfileElevationLabelInterval, //!< Label interval for elevation profile elevation axis \since QGIS 3.30
-      ElevationProfileMinimumDistance, //!< Minimum distance value for elevation profile \since QGIS 3.30
-      ElevationProfileMaximumDistance, //!< Maximum distance value for elevation profile \since QGIS 3.30
-      ElevationProfileMinimumElevation, //!< Minimum elevation value for elevation profile \since QGIS 3.30
-      ElevationProfileMaximumElevation, //!< Maximum elevation value for elevation profile \since QGIS 3.30
+      ElevationProfileMinimumDistance,        //!< Minimum distance value for elevation profile \since QGIS 3.30
+      ElevationProfileMaximumDistance,        //!< Maximum distance value for elevation profile \since QGIS 3.30
+      ElevationProfileMinimumElevation,       //!< Minimum elevation value for elevation profile \since QGIS 3.30
+      ElevationProfileMaximumElevation,       //!< Maximum elevation value for elevation profile \since QGIS 3.30
     };
 
     // *INDENT-ON*
@@ -250,7 +248,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     enum PropertyValueType
     {
       EvaluatedValue = 0, //!< Return the current evaluated value for the property
-      OriginalValue //!< Return the original, user set value
+      OriginalValue       //!< Return the original, user set value
     };
 
     /**
@@ -299,7 +297,8 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      * \see setDataDefinedProperties()
      * \see DataDefinedProperty
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
+    SIP_SKIP
 
     /**
      * Sets the objects's property collection, used for data defined overrides.
@@ -369,7 +368,6 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     void changed();
 
   protected:
-
     /**
      * Stores object properties within an XML DOM element.
      * \param parentElement is the parent DOM element to store the object's properties in
@@ -390,7 +388,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      */
     bool readObjectPropertiesFromElement( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
-    QPointer< QgsLayout > mLayout;
+    QPointer<QgsLayout> mLayout;
 
     QgsPropertyCollection mDataDefinedProperties;
 
@@ -398,7 +396,6 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     QgsObjectCustomProperties mCustomProperties;
 
   private:
-
     //! Property definitions
     static QgsPropertiesDefinition sPropertyDefinitions;
 

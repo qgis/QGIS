@@ -24,7 +24,7 @@ QgsWFSDescribeFeatureType::QgsWFSDescribeFeatureType( QgsWFSDataSourceURI &uri )
 }
 
 bool QgsWFSDescribeFeatureType::requestFeatureType( const QString &WFSVersion,
-    const QString &typeName, const QgsWfsCapabilities::Capabilities &caps )
+                                                    const QString &typeName, const QgsWfsCapabilities::Capabilities &caps )
 {
   QUrl url( mUri.requestUrl( QStringLiteral( "DescribeFeatureType" ) ) );
   QUrlQuery query( url );

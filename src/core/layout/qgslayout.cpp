@@ -77,7 +77,7 @@ QgsLayout::~QgsLayout()
     deleted = false;
     for ( QGraphicsItem *item : std::as_const( itemList ) )
     {
-      if ( dynamic_cast< QgsLayoutItem * >( item ) && !dynamic_cast< QgsLayoutItemPage *>( item ) )
+      if ( dynamic_cast<QgsLayoutItem *>( item ) && !dynamic_cast<QgsLayoutItemPage *>( item ) )
       {
         delete item;
         deleted = true;
@@ -98,7 +98,7 @@ QgsLayout *QgsLayout::clone() const
   QDomElement elem = writeXml( currentDoc, context );
   currentDoc.appendChild( elem );
 
-  std::unique_ptr< QgsLayout > newLayout = std::make_unique< QgsLayout >( mProject );
+  std::unique_ptr<QgsLayout> newLayout = std::make_unique<QgsLayout>( mProject );
   bool ok = false;
   newLayout->loadFromTemplate( currentDoc, context, true, &ok );
   if ( !ok )
@@ -327,10 +327,10 @@ QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const QgsLayoutItem *b
     {
       // If we are not checking for a an item below a specified item, or if we've
       // already found that item, then we've found our target
-      if ( ( ! belowItem || foundBelowItem ) && ( !ignoreLocked || !layoutItem->isLocked() ) )
+      if ( ( !belowItem || foundBelowItem ) && ( !ignoreLocked || !layoutItem->isLocked() ) )
       {
         // If ignoreLocked and item is part of a locked group, return the next item below
-        if ( ignoreLocked && layoutItem->parentGroup() &&  layoutItem->parentGroup()->isLocked() )
+        if ( ignoreLocked && layoutItem->parentGroup() && layoutItem->parentGroup()->isLocked() )
         {
           return layoutItemAt( position, layoutItem, ignoreLocked, searchTolerance );
         }
@@ -454,11 +454,11 @@ QStringList QgsLayout::customProperties() const
 QgsLayoutItemMap *QgsLayout::referenceMap() const
 {
   // prefer explicitly set reference map
-  if ( QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( itemByUuid( mWorldFileMapId ) ) )
+  if ( QgsLayoutItemMap *map = qobject_cast<QgsLayoutItemMap *>( itemByUuid( mWorldFileMapId ) ) )
     return map;
 
   // else try to find largest map
-  QList< QgsLayoutItemMap * > maps;
+  QList<QgsLayoutItemMap *> maps;
   layoutItems( maps );
   QgsLayoutItemMap *largestMap = nullptr;
   double largestMapArea = 0;
@@ -532,7 +532,6 @@ QRectF QgsLayout::layoutBounds( bool ignorePages, double margin ) const
   }
 
   return bounds;
-
 }
 
 QRectF QgsLayout::pageItemBounds( int page, bool visibleOnly ) const
@@ -579,7 +578,7 @@ void QgsLayout::addLayoutItem( QgsLayoutItem *item )
 
 void QgsLayout::removeLayoutItem( QgsLayoutItem *item )
 {
-  std::unique_ptr< QgsLayoutItemDeleteUndoCommand > deleteCommand;
+  std::unique_ptr<QgsLayoutItemDeleteUndoCommand> deleteCommand;
   if ( !mUndoStack->isBlocked() )
   {
     mUndoStack->beginMacro( tr( "Delete Items" ) );
@@ -630,12 +629,12 @@ bool QgsLayout::saveAsTemplate( const QString &path, const QgsReadWriteContext &
   return true;
 }
 
-QList< QgsLayoutItem * > QgsLayout::loadFromTemplate( const QDomDocument &document, const QgsReadWriteContext &context, bool clearExisting, bool *ok )
+QList<QgsLayoutItem *> QgsLayout::loadFromTemplate( const QDomDocument &document, const QgsReadWriteContext &context, bool clearExisting, bool *ok )
 {
   if ( ok )
     *ok = false;
 
-  QList< QgsLayoutItem * > result;
+  QList<QgsLayoutItem *> result;
 
   if ( clearExisting )
   {
@@ -718,17 +717,15 @@ const QgsLayoutUndoStack *QgsLayout::undoStack() const
 }
 
 ///@cond PRIVATE
-class QgsLayoutUndoCommand: public QgsAbstractLayoutUndoCommand
+class QgsLayoutUndoCommand : public QgsAbstractLayoutUndoCommand
 {
   public:
-
     QgsLayoutUndoCommand( QgsLayout *layout, const QString &text, int id, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr )
       : QgsAbstractLayoutUndoCommand( text, id, parent )
       , mLayout( layout )
     {}
 
   protected:
-
     void saveState( QDomDocument &stateDoc ) const override
     {
       stateDoc.clear();
@@ -749,7 +746,6 @@ class QgsLayoutUndoCommand: public QgsAbstractLayoutUndoCommand
     }
 
   private:
-
     QgsLayout *mLayout = nullptr;
 };
 ///@endcond
@@ -768,7 +764,7 @@ QgsLayoutItemGroup *QgsLayout::groupItems( const QList<QgsLayoutItem *> &items )
   }
 
   mUndoStack->beginMacro( tr( "Group Items" ) );
-  std::unique_ptr< QgsLayoutItemGroup > itemGroup( new QgsLayoutItemGroup( this ) );
+  std::unique_ptr<QgsLayoutItemGroup> itemGroup( new QgsLayoutItemGroup( this ) );
   for ( QgsLayoutItem *item : items )
   {
     itemGroup->addItem( item );
@@ -776,7 +772,7 @@ QgsLayoutItemGroup *QgsLayout::groupItems( const QList<QgsLayoutItem *> &items )
   QgsLayoutItemGroup *returnGroup = itemGroup.get();
   addLayoutItem( itemGroup.release() );
 
-  std::unique_ptr< QgsLayoutItemGroupUndoCommand > c( new QgsLayoutItemGroupUndoCommand( QgsLayoutItemGroupUndoCommand::Grouped, returnGroup, this, tr( "Group Items" ) ) );
+  std::unique_ptr<QgsLayoutItemGroupUndoCommand> c( new QgsLayoutItemGroupUndoCommand( QgsLayoutItemGroupUndoCommand::Grouped, returnGroup, this, tr( "Group Items" ) ) );
   mUndoStack->push( c.release() );
   mProject->setDirty( true );
 
@@ -797,7 +793,7 @@ QList<QgsLayoutItem *> QgsLayout::ungroupItems( QgsLayoutItemGroup *group )
   mUndoStack->beginMacro( tr( "Ungroup Items" ) );
   // Call this before removing group items so it can keep note
   // of contents
-  std::unique_ptr< QgsLayoutItemGroupUndoCommand > c( new QgsLayoutItemGroupUndoCommand( QgsLayoutItemGroupUndoCommand::Ungrouped, group, this, tr( "Ungroup Items" ) ) );
+  std::unique_ptr<QgsLayoutItemGroupUndoCommand> c( new QgsLayoutItemGroupUndoCommand( QgsLayoutItemGroupUndoCommand::Ungrouped, group, this, tr( "Ungroup Items" ) ) );
   mUndoStack->push( c.release() );
 
   mProject->setDirty( true );
@@ -813,7 +809,7 @@ QList<QgsLayoutItem *> QgsLayout::ungroupItems( QgsLayoutItemGroup *group )
 
 bool QgsLayout::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
-  const QList< QGraphicsItem * > constItems = items();
+  const QList<QGraphicsItem *> constItems = items();
   for ( const QGraphicsItem *item : constItems )
   {
     const QgsLayoutItem *layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
@@ -848,8 +844,7 @@ void QgsLayout::writeXmlLayoutSettings( QDomElement &element, QDomDocument &docu
 QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   QDomElement element = document.createElement( QStringLiteral( "Layout" ) );
-  auto save = [&]( const QgsLayoutSerializableObject * object )->bool
-  {
+  auto save = [&]( const QgsLayoutSerializableObject *object ) -> bool {
     return object->writeXml( element, document, context );
   };
   save( &mSnapper );
@@ -860,7 +855,7 @@ QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteConte
   const QList<QGraphicsItem *> itemList = items();
   for ( const QGraphicsItem *graphicsItem : itemList )
   {
-    if ( const QgsLayoutItem *item = dynamic_cast< const QgsLayoutItem *>( graphicsItem ) )
+    if ( const QgsLayoutItem *item = dynamic_cast<const QgsLayoutItem *>( graphicsItem ) )
     {
       if ( item->type() == QgsLayoutItemRegistry::LayoutPage )
         continue;
@@ -979,14 +974,13 @@ bool QgsLayout::readXml( const QDomElement &layoutElement, const QDomDocument &d
     return false;
   }
 
-  auto restore = [&]( QgsLayoutSerializableObject * object )->bool
-  {
+  auto restore = [&]( QgsLayoutSerializableObject *object ) -> bool {
     return object->readXml( layoutElement, document, context );
   };
 
-  std::unique_ptr< QgsScopedRuntimeProfile > profile;
+  std::unique_ptr<QgsScopedRuntimeProfile> profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Read layout settings" ), QStringLiteral( "projectload" ) );
+    profile = std::make_unique<QgsScopedRuntimeProfile>( tr( "Read layout settings" ), QStringLiteral( "projectload" ) );
 
   blockSignals( true ); // defer changed signal to end
   readXmlLayoutSettings( layoutElement, document, context );
@@ -1011,10 +1005,10 @@ bool QgsLayout::readXml( const QDomElement &layoutElement, const QDomDocument &d
   return true;
 }
 
-QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext &context, QPointF *position, bool pasteInPlace )
+QList<QgsLayoutItem *> QgsLayout::addItemsFromXml( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext &context, QPointF *position, bool pasteInPlace )
 {
-  QList< QgsLayoutItem * > newItems;
-  QList< QgsLayoutMultiFrame * > newMultiFrames;
+  QList<QgsLayoutItem *> newItems;
+  QList<QgsLayoutMultiFrame *> newMultiFrames;
 
   //if we are adding items to a layout which already contains items, we need to make sure
   //these items are placed at the top of the layout and that zValues are not duplicated
@@ -1038,9 +1032,9 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
     }
   }
 
-  std::unique_ptr< QgsScopedRuntimeProfile > profile;
+  std::unique_ptr<QgsScopedRuntimeProfile> profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Read items" ), QStringLiteral( "projectload" ) );
+    profile = std::make_unique<QgsScopedRuntimeProfile>( tr( "Read items" ), QStringLiteral( "projectload" ) );
 
   // multiframes
 
@@ -1059,7 +1053,7 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
       }
     }
 
-    std::unique_ptr< QgsLayoutMultiFrame > mf( QgsApplication::layoutItemRegistry()->createMultiFrame( itemType, this ) );
+    std::unique_ptr<QgsLayoutMultiFrame> mf( QgsApplication::layoutItemRegistry()->createMultiFrame( itemType, this ) );
     if ( !mf )
     {
       // e.g. plugin based item which is no longer available
@@ -1103,7 +1097,7 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
       }
     }
 
-    std::unique_ptr< QgsLayoutItem > item( QgsApplication::layoutItemRegistry()->createItem( itemType, this ) );
+    std::unique_ptr<QgsLayoutItem> item( QgsApplication::layoutItemRegistry()->createItem( itemType, this ) );
     if ( !item )
     {
       // e.g. plugin based item which is no longer available
@@ -1168,7 +1162,7 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
   // to other items in the layout, which may not have existed at the time the
   // item's state was restored. E.g. a scalebar may have been restored before the map
   // it is linked to
-  std::unique_ptr< QgsScopedRuntimeProfile > itemProfile;
+  std::unique_ptr<QgsScopedRuntimeProfile> itemProfile;
   if ( profile )
   {
     profile->switchTask( tr( "Finalize restore" ) );
@@ -1176,7 +1170,7 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
   for ( QgsLayoutItem *item : std::as_const( newItems ) )
   {
     if ( profile )
-      itemProfile = std::make_unique< QgsScopedRuntimeProfile >( item->displayName(), QStringLiteral( "projectload" ) );
+      itemProfile = std::make_unique<QgsScopedRuntimeProfile>( item->displayName(), QStringLiteral( "projectload" ) );
     item->finalizeRestoreFromXml();
     if ( itemProfile )
       itemProfile.reset();
@@ -1184,7 +1178,7 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
   for ( QgsLayoutMultiFrame *mf : std::as_const( newMultiFrames ) )
   {
     if ( profile )
-      itemProfile = std::make_unique< QgsScopedRuntimeProfile >( mf->displayName(), QStringLiteral( "projectload" ) );
+      itemProfile = std::make_unique<QgsScopedRuntimeProfile>( mf->displayName(), QStringLiteral( "projectload" ) );
     mf->finalizeRestoreFromXml();
     if ( itemProfile )
       itemProfile.reset();

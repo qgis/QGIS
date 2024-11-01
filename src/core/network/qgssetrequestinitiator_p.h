@@ -22,8 +22,10 @@
 
 constexpr int sFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
 
-#define QgsSetRequestInitiatorClass(request, _class) ( request ).setAttribute( static_cast< QNetworkRequest::Attribute >( QgsNetworkRequestParameters::AttributeInitiatorClass ), _class ); ( request ).setAttribute( static_cast< QNetworkRequest::Attribute >( QgsNetworkRequestParameters::AttributeInitiatorRequestId ), QString(QString( __FILE__ ).mid( sFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + ( __FUNCTION__ ) + ")") );
-#define QgsSetRequestInitiatorId(request, str) ( request ).setAttribute( static_cast< QNetworkRequest::Attribute >( QgsNetworkRequestParameters::AttributeInitiatorRequestId ), QString(QString( __FILE__ ).mid( sFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + ( __FUNCTION__ ) + "): " + ( str ) ) );
+#define QgsSetRequestInitiatorClass( request, _class )                                                                                 \
+  ( request ).setAttribute( static_cast<QNetworkRequest::Attribute>( QgsNetworkRequestParameters::AttributeInitiatorClass ), _class ); \
+  ( request ).setAttribute( static_cast<QNetworkRequest::Attribute>( QgsNetworkRequestParameters::AttributeInitiatorRequestId ), QString( QString( __FILE__ ).mid( sFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + ( __FUNCTION__ ) + ")" ) );
+#define QgsSetRequestInitiatorId( request, str ) ( request ).setAttribute( static_cast<QNetworkRequest::Attribute>( QgsNetworkRequestParameters::AttributeInitiatorRequestId ), QString( QString( __FILE__ ).mid( sFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + ( __FUNCTION__ ) + "): " + ( str ) ) );
 
-#define QgsSetCPLHTTPFetchOverriderInitiatorClass(overrider, _class) QgsSetRequestInitiatorClass((overrider), _class)
+#define QgsSetCPLHTTPFetchOverriderInitiatorClass( overrider, _class ) QgsSetRequestInitiatorClass( ( overrider ), _class )
 #endif // QGSSETREQUESTINITIATOR_P_H

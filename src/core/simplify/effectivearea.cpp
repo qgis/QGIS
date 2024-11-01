@@ -28,7 +28,7 @@
 static MINHEAP initiate_minheap( int npoints )
 {
   MINHEAP tree;
-  tree.key_array = ( areanode ** )lwalloc( npoints * sizeof( void * ) );
+  tree.key_array = ( areanode ** ) lwalloc( npoints * sizeof( void * ) );
   tree.maxSize = npoints;
   tree.usedSize = 0;
   return tree;
@@ -75,15 +75,15 @@ static double triarea3d( const QgsPoint &P1, const QgsPoint &P2, const QgsPoint 
  */
 static int cmpfunc( const void *a, const void *b )
 {
-  const double v1 = ( *( areanode ** )a )->area;
-  const double v2 = ( *( areanode ** )b )->area;
+  const double v1 = ( *( areanode ** ) a )->area;
+  const double v2 = ( *( areanode ** ) b )->area;
 
   /* qsort gives unpredictable results when comparing identical values.
    * If two values are the same we force returning the last point in the point array.
    * That way we get the same ordering on different machines and platforms
    */
   if ( v1 == v2 )
-    return ( *( areanode ** )a ) - ( *( areanode ** )b );
+    return ( *( areanode ** ) a ) - ( *( areanode ** ) b );
   else
     return ( v1 > v2 ) ? 1 : -1;
 }
@@ -101,17 +101,19 @@ static void down( MINHEAP *tree, areanode *arealist, int parent )
   int swap = parent;
   double leftarea = 0;
   double rightarea = 0;
-  const double parentarea = ( ( areanode * )treearray[parent] )->area;
+  const double parentarea = ( ( areanode * ) treearray[parent] )->area;
 
   if ( left < tree->usedSize )
   {
-    leftarea = ( ( areanode * )treearray[left] )->area;
-    if ( parentarea > leftarea ) swap = left;
+    leftarea = ( ( areanode * ) treearray[left] )->area;
+    if ( parentarea > leftarea )
+      swap = left;
   }
   if ( right < tree->usedSize )
   {
-    rightarea = ( ( areanode * )treearray[right] )->area;
-    if ( rightarea < parentarea && rightarea < leftarea ) swap = right;
+    rightarea = ( ( areanode * ) treearray[right] )->area;
+    if ( rightarea < parentarea && rightarea < leftarea )
+      swap = right;
   }
   if ( swap > parent )
   {
@@ -119,11 +121,12 @@ static void down( MINHEAP *tree, areanode *arealist, int parent )
     tmp = treearray[parent];
     treearray[parent] = treearray[swap];
     // Update reference
-    ( ( areanode * )treearray[parent] )->treeindex = parent;
+    ( ( areanode * ) treearray[parent] )->treeindex = parent;
     treearray[swap] = tmp;
     // Update reference
-    ( ( areanode * )treearray[swap] )->treeindex = swap;
-    if ( swap < tree->usedSize ) down( tree, arealist, swap );
+    ( ( areanode * ) treearray[swap] )->treeindex = swap;
+    if ( swap < tree->usedSize )
+      down( tree, arealist, swap );
   }
 }
 
@@ -140,16 +143,16 @@ static void up( MINHEAP *tree, areanode *arealist, int c )
   areanode **treearray = tree->key_array;
   int parent = ( c - 1 ) / 2;
 
-  while ( ( ( areanode * )treearray[c] )->area < ( ( areanode * )treearray[parent] )->area )
+  while ( ( ( areanode * ) treearray[c] )->area < ( ( areanode * ) treearray[parent] )->area )
   {
     // OK, we have to swap
     tmp = treearray[parent];
     treearray[parent] = treearray[c];
     // Update reference
-    ( ( areanode * )treearray[parent] )->treeindex = parent;
+    ( ( areanode * ) treearray[parent] )->treeindex = parent;
     treearray[c] = tmp;
     // Update reference
-    ( ( areanode * )treearray[c] )->treeindex = c;
+    ( ( areanode * ) treearray[c] )->treeindex = c;
     c = parent;
     parent = ( c - 1 ) / 2;
   }
@@ -165,7 +168,7 @@ static areanode *minheap_pop( MINHEAP *tree, areanode *arealist )
 
   // put last value first
   tree->key_array[0] = tree->key_array[( tree->usedSize ) - 1];
-  ( ( areanode * )tree->key_array[0] )->treeindex = 0;
+  ( ( areanode * ) tree->key_array[0] )->treeindex = 0;
 
   tree->usedSize--;
   down( tree, arealist, 0 );
@@ -180,7 +183,7 @@ static void minheap_update( MINHEAP *tree, areanode *arealist, int idx )
   areanode **treearray = tree->key_array;
   const int parent = ( idx - 1 ) / 2;
 
-  if ( ( ( areanode * )treearray[idx] )->area < ( ( areanode * )treearray[parent] )->area )
+  if ( ( ( areanode * ) treearray[idx] )->area < ( ( areanode * ) treearray[parent] )->area )
     up( tree, arealist, idx );
   else
     down( tree, arealist, idx );
@@ -219,7 +222,7 @@ static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
   // We have to put references to our tree in our point-list
   for ( i = 0; i < npoints; i++ )
   {
-    ( ( areanode * )tree.key_array[i] )->treeindex = i;
+    ( ( areanode * ) tree.key_array[i] )->treeindex = i;
     //LWDEBUGF( 4, "Check ordering qsort gives, area=%lf and belong to point %d", (( areanode* )tree.key_array[i] )->area, tree.key_array[i] - ea->initial_arealist );
   }
 
@@ -245,7 +248,7 @@ static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
 
     // Find point before and after
     before_current = ea->initial_arealist[current].prev;
-    after_current  = ea->initial_arealist[current].next;
+    after_current = ea->initial_arealist[current].next;
 
     P2 = ea->inpts.at( before_current );
     P3 = ea->inpts.at( after_current );
@@ -280,7 +283,7 @@ static void tune_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, do
 
     // rearrange the nodes so the eliminated point will be ignored on the next run
     ea->initial_arealist[before_current].next = ea->initial_arealist[current].next;
-    ea->initial_arealist[after_current ].prev = ea->initial_arealist[current].prev;
+    ea->initial_arealist[after_current].prev = ea->initial_arealist[current].prev;
 
     // Check if we are finished
     if ( ( !set_area && ea->res_arealist[current] > trshld ) || ( ea->initial_arealist[0].next == ( npoints - 1 ) ) )
@@ -314,7 +317,7 @@ void ptarray_calc_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, d
   ea->initial_arealist[0].next = 1;
   ea->initial_arealist[0].prev = 0;
 
-  for ( i = 1; i < ( npoints ) - 1; i++ )
+  for ( i = 1; i < ( npoints ) -1; i++ )
   {
     ea->initial_arealist[i].next = i + 1;
     ea->initial_arealist[i].prev = i - 1;
@@ -333,7 +336,7 @@ void ptarray_calc_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, d
   ea->initial_arealist[npoints - 1].next = npoints - 1;
   ea->initial_arealist[npoints - 1].prev = npoints - 2;
 
-  for ( i = 1; i < ( npoints ) - 1; i++ )
+  for ( i = 1; i < ( npoints ) -1; i++ )
   {
     ea->res_arealist[i] = FLT_MAX;
   }

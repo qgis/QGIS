@@ -37,7 +37,6 @@ class QgsRasterIterator;
 class CORE_EXPORT QgsRasterDrawer
 {
   public:
-
     /**
      * The QgsRasterDrawer constructor.
      * \param iterator the raster iterator to fetch data from
@@ -71,7 +70,6 @@ class CORE_EXPORT QgsRasterDrawer
     void draw( QgsRenderContext &context, QgsRasterViewPort *viewPort, QgsRasterBlockFeedback *feedback = nullptr );
 
   protected:
-
     /**
      * Draws raster part
      * \param p the painter to draw to

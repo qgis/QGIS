@@ -33,7 +33,6 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     Q_OBJECT
 
   public:
-
     /**
      * Check whether the node is a valid group node
      *
@@ -79,7 +78,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      */
     static inline const QgsLayerTreeLayer *toLayer( const QgsLayerTreeNode *node ) SIP_SKIP
     {
-      return qobject_cast< const QgsLayerTreeLayer *>( node );
+      return qobject_cast<const QgsLayerTreeLayer *>( node );
     }
 
     /**
@@ -90,13 +89,14 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    // override parent QgsLayerTreeGroup __repr__ and resort back to default repr for QgsLayerTree -- there's no extra useful context we can show
-    QString str = QStringLiteral( "<qgis._core.QgsLayerTree object at 0x%1>" ).arg( reinterpret_cast<quintptr>( sipCpp ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) );
+        // override parent QgsLayerTreeGroup __repr__ and resort back to default repr for QgsLayerTree -- there's no extra useful context we can show
+        QString str
+      = QStringLiteral( "<qgis._core.QgsLayerTree object at 0x%1>" ).arg( reinterpret_cast<quintptr>( sipCpp ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    /**
+        /**
      * The order in which layers will be rendered on the canvas.
      * Will only be used if the property hasCustomLayerOrder is TRUE.
      * If you need the current layer order that is active, prefer using layerOrder().
@@ -106,7 +106,8 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      * \see hasCustomLayerOrder
      *
      */
-    QList<QgsMapLayer *> customLayerOrder() const;
+        QList<QgsMapLayer *>
+      customLayerOrder() const;
 
     /**
      * The order in which layers will be rendered on the canvas.
@@ -222,7 +223,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
     QgsWeakMapLayerPointerList mCustomLayerOrder;
     bool mHasCustomLayerOrder = false;
 
-    QgsLayerTree &operator= ( const QgsLayerTree & ) = delete;
+    QgsLayerTree &operator=( const QgsLayerTree & ) = delete;
 };
 
 #endif // QGSLAYERTREE_H

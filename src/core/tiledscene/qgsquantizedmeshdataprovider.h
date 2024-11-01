@@ -38,7 +38,6 @@
 class CORE_EXPORT QgsQuantizedMeshMetadata
 {
   public:
-
     /**
      * \warning Check \p error, object is incomplete if non-empty!
      */
@@ -75,9 +74,9 @@ class CORE_EXPORT QgsQuantizedMeshIndex : public QgsAbstractTiledSceneIndex
       : mMetadata( metadata ), mWgs84ToCrs( wgs84ToCrs ) {}
     QgsTiledSceneTile rootTile() const override;
     long long parentTileId( long long id ) const override;
-    QVector< long long > childTileIds( long long id ) const override;
+    QVector<long long> childTileIds( long long id ) const override;
     QgsTiledSceneTile getTile( long long id ) override;
-    QVector< long long > getTiles( const QgsTiledSceneRequest &request ) override;
+    QVector<long long> getTiles( const QgsTiledSceneRequest &request ) override;
     Qgis::TileChildrenAvailability childAvailability( long long id ) const override;
     bool fetchHierarchy( long long id, QgsFeedback *feedback = nullptr ) override;
 
@@ -95,7 +94,7 @@ class CORE_EXPORT QgsQuantizedMeshIndex : public QgsAbstractTiledSceneIndex
     QgsCoordinateTransform mWgs84ToCrs;
 };
 
-class CORE_EXPORT QgsQuantizedMeshDataProvider: public QgsTiledSceneDataProvider
+class CORE_EXPORT QgsQuantizedMeshDataProvider : public QgsTiledSceneDataProvider
 {
     Q_OBJECT
   public:
@@ -123,7 +122,7 @@ class CORE_EXPORT QgsQuantizedMeshDataProvider: public QgsTiledSceneDataProvider
     QString uriFromIon( const QString &uri );
 
   private:
-    QString mUri; // For clone()
+    QString mUri;                                      // For clone()
     QgsDataProvider::ProviderOptions mProviderOptions; // For clone()
     bool mIsValid = false;
     std::optional<QgsQuantizedMeshMetadata> mMetadata; // Initialized in constructor

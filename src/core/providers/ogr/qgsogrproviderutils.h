@@ -40,24 +40,23 @@ class QgsProviderSublayerDetails;
  */
 struct QgsOgrLayerReleaser
 {
-
-  /**
+    /**
    * Releases a QgsOgrLayer \a layer.
    */
-  void operator()( QgsOgrLayer *layer ) const;
+    void operator()( QgsOgrLayer *layer ) const;
 };
 
 /**
  * Scoped QgsOgrLayer.
  */
-using QgsOgrLayerUniquePtr = std::unique_ptr< QgsOgrLayer, QgsOgrLayerReleaser>;
+using QgsOgrLayerUniquePtr = std::unique_ptr<QgsOgrLayer, QgsOgrLayerReleaser>;
 
 class QgsOgrDataset;
 
 /**
  * Scoped QgsOgrDataset.
  */
-using QgsOgrDatasetSharedPtr = std::shared_ptr< QgsOgrDataset>;
+using QgsOgrDatasetSharedPtr = std::shared_ptr<QgsOgrDataset>;
 
 /**
  * \class QgsOgrProviderUtils
@@ -75,11 +74,11 @@ class CORE_EXPORT QgsOgrProviderUtils
 
       public:
         QString dsName;
-        bool    updateMode = false;
+        bool updateMode = false;
         QStringList options;
         DatasetIdentification() = default;
 
-        bool operator< ( const DatasetIdentification &other ) const;
+        bool operator<( const DatasetIdentification &other ) const;
     };
 
     //! GDAL dataset objects and layers in use in it
@@ -88,17 +87,17 @@ class CORE_EXPORT QgsOgrProviderUtils
       public:
         QRecursiveMutex mutex;
 
-        GDALDatasetH    hDS = nullptr;
-        QMap<QString, QgsOgrLayer *>  setLayers;
-        int            refCount = 0;
-        bool           canBeShared = true;
+        GDALDatasetH hDS = nullptr;
+        QMap<QString, QgsOgrLayer *> setLayers;
+        int refCount = 0;
+        bool canBeShared = true;
 
         DatasetWithLayers()
         {}
     };
 
     //! Map dataset identification to a list of corresponding DatasetWithLayers*
-    static QMap< DatasetIdentification, QList<DatasetWithLayers *> > sMapSharedDS;
+    static QMap<DatasetIdentification, QList<DatasetWithLayers *>> sMapSharedDS;
 
     static bool canUseOpenedDatasets( const QString &dsName );
 
@@ -114,8 +113,8 @@ class CORE_EXPORT QgsOgrProviderUtils
       const DatasetIdentification &ident,
       QgsOgrLayerUniquePtr &layer,
       QString &errCause );
-  public:
 
+  public:
     static QString fileVectorFilters();
     static QString databaseDrivers();
     static QString protocolDrivers();
@@ -140,7 +139,7 @@ class CORE_EXPORT QgsOgrProviderUtils
                                        const QString &format,
                                        const QString &encoding,
                                        Qgis::WkbType vectortype,
-                                       const QList< QPair<QString, QString> > &attributes,
+                                       const QList<QPair<QString, QString>> &attributes,
                                        const QgsCoordinateReferenceSystem &srs,
                                        QString &errorMessage );
 
@@ -258,11 +257,11 @@ class CORE_EXPORT QgsOgrProviderUtils
 
     //! Whether a driver can share the same dataset handle among different layers
     static bool canDriverShareSameDatasetAmongLayers( const QString &driverName,
-        bool updateMode,
-        const QString &dsName );
+                                                      bool updateMode,
+                                                      const QString &dsName );
 
     static QList<QgsProviderSublayerDetails> querySubLayerList( int i, QgsOgrLayer *layer, GDALDatasetH hDS, const QString &driverName, Qgis::SublayerQueryFlags flags,
-        const QString &baseUri, bool hasSingleLayerOnly, QgsFeedback *feedback = nullptr );
+                                                                const QString &baseUri, bool hasSingleLayerOnly, QgsFeedback *feedback = nullptr );
 
     /**
      * Utility function to create and store a new DB connection
@@ -319,7 +318,6 @@ class QgsOgrDataset
     ~QgsOgrDataset() = default;
 
   public:
-
     static QgsOgrDatasetSharedPtr create( const QgsOgrProviderUtils::DatasetIdentification &ident,
                                           QgsOgrProviderUtils::DatasetWithLayers *ds );
     QRecursiveMutex &mutex() { return mDs->mutex; }
@@ -351,7 +349,6 @@ class QgsOgrFeatureDefn
     QRecursiveMutex &mutex();
 
   public:
-
     //! Wrapper of OGR_FD_GetFieldCount
     int GetFieldCount();
 
@@ -410,7 +407,6 @@ class QgsOgrLayer
     QRecursiveMutex &mutex() { return ds->mutex; }
 
   public:
-
     //! Returns GDALDriverH object for current dataset
     GDALDriverH driver();
 
@@ -477,7 +473,7 @@ class QgsOgrLayer
     //! Wrapper of OGR_L_GetLayerCount
     OGRErr SetFeature( OGRFeatureH hFeature );
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 7, 0 )
     //! Wrapper of OGR_L_UpdateFeature
     OGRErr UpdateFeature( OGRFeatureH hFeature, int nUpdatedFieldsCount, const int *panUpdatedFieldsIdx, int nUpdatedGeomFieldsCount, const int *panUpdatedGeomFieldsIdx, bool bUpdateStyleString );
 #endif

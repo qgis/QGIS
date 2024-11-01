@@ -38,7 +38,6 @@ QgsMapThemes *QgsMapThemes::sInstance;
 QgsMapThemes::QgsMapThemes()
   : mMenu( new QMenu )
 {
-
   mMenu->addAction( QgisApp::instance()->actionShowAllLayers() );
   mMenu->addAction( QgisApp::instance()->actionHideAllLayers() );
   mMenu->addAction( QgisApp::instance()->actionShowSelectedLayers() );
@@ -51,7 +50,7 @@ QgsMapThemes::QgsMapThemes()
   mReplaceMenu = new QMenu( tr( "Replace Theme" ) );
   mMenu->addMenu( mReplaceMenu );
   mActionRenameCurrentPreset = mMenu->addAction( tr( "Rename Current Theme…" ), this, &QgsMapThemes::renameCurrentPreset );
-  mActionAddPreset = mMenu->addAction( tr( "Add Theme…" ), this, [ = ] { addPreset(); } );
+  mActionAddPreset = mMenu->addAction( tr( "Add Theme…" ), this, [=] { addPreset(); } );
   mMenuSeparator = mMenu->addSeparator();
 
   mActionRemoveCurrentPreset = mMenu->addAction( tr( "Remove Current Theme" ), this, &QgsMapThemes::removeCurrentPreset );
@@ -156,7 +155,7 @@ void QgsMapThemes::renameCurrentPreset()
       QgsNewNameDialog dlg(
         tr( "theme" ),
         tr( "%1" ).arg( actionPreset->text() ),
-        QStringList(), existingNames,  Qt::CaseInsensitive, mMenu );
+        QStringList(), existingNames, Qt::CaseInsensitive, mMenu );
 
       dlg.setWindowTitle( tr( "Rename Map Theme" ) );
       dlg.setHintString( tr( "Enter the new name of the map theme" ) );

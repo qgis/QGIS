@@ -37,13 +37,12 @@ namespace
 
     return escaped;
   }
-}
+} // namespace
 
 QString QgsHanaUtils::connectionInfo( const QgsDataSourceUri &uri )
 {
   QStringList connectionItems;
-  auto addItem = [&connectionItems]( const char *key, const QString & value, bool quoted = true )
-  {
+  auto addItem = [&connectionItems]( const char *key, const QString &value, bool quoted = true ) {
     if ( quoted )
       connectionItems << QStringLiteral( "%1='%2'" ).arg( key, value );
     else
@@ -460,7 +459,7 @@ constexpr int PLANAR_SRID_OFFSET = 1000000000;
 
 int QgsHanaUtils::toPlanarSRID( int srid )
 {
-  return srid  < PLANAR_SRID_OFFSET ? PLANAR_SRID_OFFSET + srid : srid;
+  return srid < PLANAR_SRID_OFFSET ? PLANAR_SRID_OFFSET + srid : srid;
 }
 
 bool QgsHanaUtils::convertField( QgsField &field )

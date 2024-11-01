@@ -30,7 +30,6 @@ class DockModel : public QAbstractTableModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      * \param parent parent object
@@ -101,7 +100,6 @@ class DockFilterModel : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      * \param parent parent object
@@ -123,9 +121,7 @@ class DockFilterModel : public QSortFilterProxyModel
     void reload( const QModelIndex &index1, const QModelIndex &index2 );
 
   private:
-
     DockModel *mDockModel = nullptr;
-
 };
 
 #endif

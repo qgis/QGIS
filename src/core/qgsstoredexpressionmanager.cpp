@@ -65,14 +65,14 @@ void QgsStoredExpressionManager::updateStoredExpression( const QString &id, cons
   }
 }
 
-void QgsStoredExpressionManager::addStoredExpressions( const QList< QgsStoredExpression > &storedExpressions )
+void QgsStoredExpressionManager::addStoredExpressions( const QList<QgsStoredExpression> &storedExpressions )
 {
   mStoredExpressions.append( storedExpressions );
 }
 
-QList< QgsStoredExpression > QgsStoredExpressionManager::storedExpressions( const QgsStoredExpression::Category &tag )
+QList<QgsStoredExpression> QgsStoredExpressionManager::storedExpressions( const QgsStoredExpression::Category &tag )
 {
-  QList< QgsStoredExpression > storedExpressions;
+  QList<QgsStoredExpression> storedExpressions;
 
   for ( const QgsStoredExpression &storedExpression : std::as_const( mStoredExpressions ) )
   {

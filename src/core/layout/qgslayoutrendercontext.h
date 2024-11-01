@@ -35,26 +35,23 @@ class QgsFeatureFilterProvider;
  */
 class CORE_EXPORT QgsLayoutRenderContext : public QObject
 {
-
     Q_OBJECT
 
   public:
-
     //! Flags for controlling how a layout is rendered
-    enum Flag SIP_ENUM_BASETYPE( IntFlag )
-    {
-      FlagDebug = 1 << 1,  //!< Debug/testing mode, items are drawn as solid rectangles.
-      FlagOutlineOnly = 1 << 2, //!< Render items as outlines only.
-      FlagAntialiasing = 1 << 3, //!< Use antialiasing when drawing items.
-      FlagUseAdvancedEffects = 1 << 4, //!< Enable advanced effects such as blend modes.
-      FlagForceVectorOutput = 1 << 5, //!< Force output in vector format where possible, even if items require rasterization to keep their correct appearance.
-      FlagHideCoverageLayer = 1 << 6, //!< Hide coverage layer in outputs
-      FlagDrawSelection = 1 << 7, //!< Draw selection
+    enum Flag SIP_ENUM_BASETYPE( IntFlag ) {
+      FlagDebug = 1 << 1,                          //!< Debug/testing mode, items are drawn as solid rectangles.
+      FlagOutlineOnly = 1 << 2,                    //!< Render items as outlines only.
+      FlagAntialiasing = 1 << 3,                   //!< Use antialiasing when drawing items.
+      FlagUseAdvancedEffects = 1 << 4,             //!< Enable advanced effects such as blend modes.
+      FlagForceVectorOutput = 1 << 5,              //!< Force output in vector format where possible, even if items require rasterization to keep their correct appearance.
+      FlagHideCoverageLayer = 1 << 6,              //!< Hide coverage layer in outputs
+      FlagDrawSelection = 1 << 7,                  //!< Draw selection
       FlagDisableTiledRasterLayerRenders = 1 << 8, //!< If set, then raster layers will not be drawn as separate tiles. This may improve the appearance in exported files, at the cost of much higher memory usage during exports.
-      FlagRenderLabelsByMapLayer = 1 << 9, //!< When rendering map items to multi-layered exports, render labels belonging to different layers into separate export layers
-      FlagLosslessImageRendering = 1 << 10, //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF).
-      FlagSynchronousLegendGraphics = 1 << 11, //!< Query legend graphics synchronously.
-      FlagAlwaysUseGlobalMasks = 1 << 12, //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex layout exports in all current Qt versions. This flag only applies to vector layout exports. \since QGIS 3.38
+      FlagRenderLabelsByMapLayer = 1 << 9,         //!< When rendering map items to multi-layered exports, render labels belonging to different layers into separate export layers
+      FlagLosslessImageRendering = 1 << 10,        //!< Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF).
+      FlagSynchronousLegendGraphics = 1 << 11,     //!< Query legend graphics synchronously.
+      FlagAlwaysUseGlobalMasks = 1 << 12,          //!< When applying clipping paths for selective masking, always use global ("entire map") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex layout exports in all current Qt versions. This flag only applies to vector layout exports. \since QGIS 3.38
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -209,7 +206,7 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
      * \see setCurrentExportLayer()
      * \deprecated QGIS 3.40. Items should now handle this themselves, via QgsLayoutItem::exportLayerBehavior() and returning QgsLayoutItem::nextExportPart().
      */
-    Q_DECL_DEPRECATED int currentExportLayer() const SIP_DEPRECATED  { return mCurrentExportLayer; }
+    Q_DECL_DEPRECATED int currentExportLayer() const SIP_DEPRECATED { return mCurrentExportLayer; }
 
     /**
      * Returns the text render format, which dictates how text is rendered (e.g. as paths or real text objects).
@@ -371,7 +368,6 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     void predefinedScalesChanged();
 
   private:
-
     Flags mFlags = Flags();
 
     QgsLayout *mLayout = nullptr;
@@ -404,12 +400,8 @@ class CORE_EXPORT QgsLayoutRenderContext : public QObject
     friend class LayoutContextPreviewSettingRestorer;
     friend class TestQgsLayoutMap;
     friend class TestQgsLayoutLabel;
-
 };
 
 Q_DECLARE_METATYPE( QgsLayoutRenderContext::Flags )
 
 #endif //QGSLAYOUTRENDERCONTEXT_H
-
-
-

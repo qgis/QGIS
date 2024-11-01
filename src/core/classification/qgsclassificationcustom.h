@@ -34,7 +34,7 @@ class CORE_EXPORT QgsClassificationCustom : public QgsClassificationMethod
     QString name() const override;
     QString id() const override;
 
-    bool valuesRequired() const override {return false;}
+    bool valuesRequired() const override { return false; }
 
     static const QString METHOD_ID;
 

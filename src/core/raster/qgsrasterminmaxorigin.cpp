@@ -33,14 +33,9 @@ QgsRasterMinMaxOrigin::QgsRasterMinMaxOrigin()
   mStdDevFactor = mySettings.value( QStringLiteral( "Raster/defaultStandardDeviation" ), DEFAULT_STDDEV_FACTOR ).toDouble();
 }
 
-bool QgsRasterMinMaxOrigin::operator ==( const QgsRasterMinMaxOrigin &other ) const
+bool QgsRasterMinMaxOrigin::operator==( const QgsRasterMinMaxOrigin &other ) const
 {
-  return mLimits == other.mLimits &&
-         mExtent == other.mExtent &&
-         mAccuracy == other.mAccuracy &&
-         std::fabs( mCumulativeCutLower - other.mCumulativeCutLower ) < 1e-5 &&
-         std::fabs( mCumulativeCutUpper - other.mCumulativeCutUpper ) < 1e-5 &&
-         std::fabs( mStdDevFactor - other.mStdDevFactor ) < 1e-5;
+  return mLimits == other.mLimits && mExtent == other.mExtent && mAccuracy == other.mAccuracy && std::fabs( mCumulativeCutLower - other.mCumulativeCutLower ) < 1e-5 && std::fabs( mCumulativeCutUpper - other.mCumulativeCutUpper ) < 1e-5 && std::fabs( mStdDevFactor - other.mStdDevFactor ) < 1e-5;
 }
 
 QString QgsRasterMinMaxOrigin::limitsString( Limits limits )

@@ -21,7 +21,7 @@
 #include "qgsquadrilateral.h"
 #include "qgis_app.h"
 
-class APP_EXPORT QgsMapToolShapeRectangleAbstract: public QgsMapToolShapeAbstract
+class APP_EXPORT QgsMapToolShapeRectangleAbstract : public QgsMapToolShapeAbstract
 {
     Q_OBJECT
 

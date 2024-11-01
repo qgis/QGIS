@@ -155,7 +155,7 @@ bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
       painter->setCompositionMode( QPainter::CompositionMode_SourceOver );
 
       // render just the current layer's labels
-      static_cast< QgsStagedRenderLabelingEngine * >( mLabelingEngineV2.get() )->renderLabelsForLayer( mLabelJob.context, *mLabelLayerIt );
+      static_cast<QgsStagedRenderLabelingEngine *>( mLabelingEngineV2.get() )->renderLabelsForLayer( mLabelJob.context, *mLabelLayerIt );
 
       mLabelJob.context.setPainter( nullptr );
     }
@@ -196,7 +196,7 @@ bool QgsMapRendererStagedRenderJob::nextPart()
         if ( mLabelLayerIt == mLabelingLayers.end() )
         {
           // no label layers to render!
-          static_cast< QgsStagedRenderLabelingEngine * >( mLabelingEngineV2.get() )->finalize();
+          static_cast<QgsStagedRenderLabelingEngine *>( mLabelingEngineV2.get() )->finalize();
           return false;
         }
         return true;

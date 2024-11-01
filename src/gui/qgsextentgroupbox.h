@@ -49,17 +49,16 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
     Q_PROPERTY( QString titleBase READ titleBase WRITE setTitleBase )
 
   public:
-
     // TODO QGIS 4.0 -- use QgsExtentWidget enum instead
 
     //! Available states for the current extent selection in the widget
     enum ExtentState
     {
-      OriginalExtent,  //!< Layer's extent
-      CurrentExtent,   //!< Map canvas extent
-      UserExtent,      //!< Extent manually entered/modified by the user
+      OriginalExtent,     //!< Layer's extent
+      CurrentExtent,      //!< Map canvas extent
+      UserExtent,         //!< Extent manually entered/modified by the user
       ProjectLayerExtent, //!< Extent taken from a layer within the project
-      DrawOnCanvas, //!< Extent taken from a rectangled drawn onto the map canvas
+      DrawOnCanvas,       //!< Extent taken from a rectangled drawn onto the map canvas
     };
 
     /**
@@ -217,7 +216,6 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
 
     //! Base part of the title used for the extent
     QString mTitleBase;
-
 };
 
 #endif // QGSEXTENTGROUPBOX_H

@@ -45,15 +45,12 @@ class QgsProfileSnapContext;
  */
 class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileSurfaceResults
 {
-
   public:
-
     QString type() const override;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
 
   private:
-
-    QPointer< QgsMeshLayer > mLayer;
+    QPointer<QgsMeshLayer> mLayer;
 
     friend class QgsMeshLayerProfileGenerator;
 };
@@ -68,9 +65,7 @@ class CORE_EXPORT QgsMeshLayerProfileResults : public QgsAbstractProfileSurfaceR
  */
 class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileSurfaceGenerator
 {
-
   public:
-
     /**
      * Constructor for QgsMeshLayerProfileGenerator.
      */
@@ -84,13 +79,12 @@ class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileSurfac
     QgsFeedback *feedback() const override;
 
   private:
-
     double heightAt( double x, double y );
 
     QString mId;
     std::unique_ptr<QgsFeedback> mFeedback = nullptr;
 
-    std::unique_ptr< QgsCurve > mProfileCurve;
+    std::unique_ptr<QgsCurve> mProfileCurve;
 
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mTargetCrs;
@@ -98,7 +92,7 @@ class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileSurfac
 
     double mOffset = 0;
     double mScale = 1;
-    QPointer< QgsMeshLayer > mLayer;
+    QPointer<QgsMeshLayer> mLayer;
 
     double mStepDistance = std::numeric_limits<double>::quiet_NaN();
 
@@ -106,11 +100,9 @@ class CORE_EXPORT QgsMeshLayerProfileGenerator : public QgsAbstractProfileSurfac
 
     QgsCoordinateTransform mLayerToTargetTransform;
 
-    std::unique_ptr< QgsMeshLayerProfileResults > mResults;
+    std::unique_ptr<QgsMeshLayerProfileResults> mResults;
 
     friend class QgsMeshLayerProfileResults;
-
-
 };
 
 #endif // QGSMESHLAYERPROFILEGENERATOR_H

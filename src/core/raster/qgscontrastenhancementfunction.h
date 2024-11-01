@@ -31,7 +31,6 @@ email                : ersts@amnh.org
  */
 class CORE_EXPORT QgsContrastEnhancementFunction
 {
-
   public:
     QgsContrastEnhancementFunction( Qgis::DataType, double, double );
     QgsContrastEnhancementFunction( const QgsContrastEnhancementFunction &f );
@@ -91,8 +90,8 @@ class CORE_EXPORT QgsContrastEnhancementFunction
     //! \brief Data type of the band
     Qgis::DataType mQgsRasterDataType;
 
-    double mMaximumValuePossible = std::numeric_limits< double >::max() SIP_SKIP;
-    double mMinimumValuePossible = std::numeric_limits< double >::lowest() SIP_SKIP;
+    double mMaximumValuePossible = std::numeric_limits<double>::max() SIP_SKIP;
+    double mMinimumValuePossible = std::numeric_limits<double>::lowest() SIP_SKIP;
 
   private:
 #ifdef SIP_RUN

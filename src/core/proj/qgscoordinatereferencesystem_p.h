@@ -44,7 +44,6 @@ typedef void *OGRSpatialReferenceH;
 class QgsCoordinateReferenceSystemPrivate : public QSharedData
 {
   public:
-
     explicit QgsCoordinateReferenceSystemPrivate()
     {
     }
@@ -68,7 +67,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       , mWktPreferred( other.mWktPreferred )
       , mAxisInvertedDirty( other.mAxisInvertedDirty )
       , mAxisInverted( other.mAxisInverted )
-      , mProjLock{}
+      , mProjLock {}
       , mProjObjects()
     {
     }
@@ -113,7 +112,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     bool mIsValid = false;
 
     //! Coordinate epoch
-    double mCoordinateEpoch = std::numeric_limits< double >::quiet_NaN();
+    double mCoordinateEpoch = std::numeric_limits<double>::quiet_NaN();
 
     // this is the "master" proj object, to be used as a template for new proj objects created on different threads ONLY.
     // Always use threadLocalProjObject() instead of this.
@@ -124,7 +123,6 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 
     void cleanPjObjects()
     {
-
       // During destruction of PJ* objects, the errno is set in the underlying
       // context. Consequently the context attached to the PJ* must still exist !
       // Which is not necessarily the case currently unfortunately. So
@@ -146,7 +144,6 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     }
 
   public:
-
     void setPj( QgsProjUtils::proj_pj_unique_ptr obj )
     {
       const QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
@@ -168,7 +165,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     bool hasPj() const
     {
       const QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
-      return static_cast< bool >( mPj );
+      return static_cast<bool>( mPj );
     }
 
     mutable QString mProj4;
@@ -182,11 +179,10 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     mutable bool mAxisInverted = false;
 
   private:
-    mutable QReadWriteLock mProjLock{};
-    mutable QMap < PJ_CONTEXT *, PJ * > mProjObjects{};
+    mutable QReadWriteLock mProjLock {};
+    mutable QMap<PJ_CONTEXT *, PJ *> mProjObjects {};
 
   public:
-
     PJ *threadLocalProjObject() const
     {
       QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
@@ -194,7 +190,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
         return nullptr;
 
       PJ_CONTEXT *context = QgsProjContext::get();
-      const QMap < PJ_CONTEXT *, PJ * >::const_iterator it = mProjObjects.constFind( context );
+      const QMap<PJ_CONTEXT *, PJ *>::const_iterator it = mProjObjects.constFind( context );
 
       if ( it != mProjObjects.constEnd() )
       {
@@ -214,7 +210,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     {
       const QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
 
-      const QMap < PJ_CONTEXT *, PJ * >::iterator it = mProjObjects.find( pj_context );
+      const QMap<PJ_CONTEXT *, PJ *>::iterator it = mProjObjects.find( pj_context );
       if ( it != mProjObjects.end() )
       {
         proj_destroy( it.value() );
@@ -231,8 +227,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     }
 
   private:
-    QgsCoordinateReferenceSystemPrivate &operator= ( const QgsCoordinateReferenceSystemPrivate & ) = delete;
-
+    QgsCoordinateReferenceSystemPrivate &operator=( const QgsCoordinateReferenceSystemPrivate & ) = delete;
 };
 
 /// @endcond

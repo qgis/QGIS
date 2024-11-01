@@ -34,13 +34,12 @@ class APP_EXPORT QgsScaleMagnetWidget : public QWidget
     Q_OBJECT
 
   public:
-
     explicit QgsScaleMagnetWidget( const QString &label = QString(), QWidget *parent = nullptr );
 
     void setScale( double scale );
     double scale() const;
 
-    QgsDoubleSpinBox *editor() const {return mScaleSpinBox;}
+    QgsDoubleSpinBox *editor() const { return mScaleSpinBox; }
 
   signals:
     void scaleChanged( double scale );
@@ -63,7 +62,7 @@ class APP_EXPORT QgsScaleMagnetWidget : public QWidget
 
 
 //! Map tool to scale features
-class APP_EXPORT QgsMapToolScaleFeature: public QgsMapToolAdvancedDigitizing
+class APP_EXPORT QgsMapToolScaleFeature : public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
   public:
@@ -89,7 +88,6 @@ class APP_EXPORT QgsMapToolScaleFeature: public QgsMapToolAdvancedDigitizing
     void cancel();
 
   private:
-
     QgsGeometry scaleGeometry( QgsGeometry geom, QgsPointXY point, double scale );
     QgsPointXY scalePoint( QgsPointXY point, double scale );
     void deleteRubberband();
@@ -103,7 +101,7 @@ class APP_EXPORT QgsMapToolScaleFeature: public QgsMapToolAdvancedDigitizing
 
     //! Id of scaled feature
     QgsFeatureIds mScaledFeatures;
-    QVector< QgsGeometry > mOriginalGeometries;
+    QVector<QgsGeometry> mOriginalGeometries;
 
     //! Snapping indicators
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;

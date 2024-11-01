@@ -38,7 +38,7 @@ Q_GLOBAL_STATIC( QgsStringMap, sGroups )
 
 HelpTextHash QgsExpression::sFunctionHelpTexts;
 QRecursiveMutex QgsExpression::sFunctionsMutex;
-QMap< QString, int> QgsExpression::sFunctionIndexMap;
+QMap<QString, int> QgsExpression::sFunctionIndexMap;
 
 ///@cond PRIVATE
 HelpTextHash &QgsExpression::functionHelpTexts()
@@ -123,7 +123,6 @@ QString QgsExpression::quotedValue( const QVariant &value, QMetaType::Type type 
     case QMetaType::Type::QString:
       return quotedString( value.toString() );
   }
-
 }
 
 QString QgsExpression::quotedValue( const QVariant &value, QVariant::Type type )
@@ -304,7 +303,7 @@ bool QgsExpression::needsGeometry() const
 void QgsExpression::initGeomCalculator( const QgsExpressionContext *context )
 {
   // Set the geometry calculator from the context if it has not been set by setGeomCalculator()
-  if ( context && ! d->mCalc )
+  if ( context && !d->mCalc )
   {
     // actually don't do it right away, cos it's expensive to create and only a very small number of expression
     // functions actually require it. Let's lazily construct it when needed
@@ -317,7 +316,7 @@ void QgsExpression::initGeomCalculator( const QgsExpressionContext *context )
   if ( context && distanceUnits() == Qgis::DistanceUnit::Unknown )
   {
     QString distanceUnitsStr = context->variable( QStringLiteral( "project_distance_units" ) ).toString();
-    if ( ! distanceUnitsStr.isEmpty() )
+    if ( !distanceUnitsStr.isEmpty() )
       setDistanceUnits( QgsUnitTypes::stringToDistanceUnit( distanceUnitsStr ) );
   }
 
@@ -325,7 +324,7 @@ void QgsExpression::initGeomCalculator( const QgsExpressionContext *context )
   if ( context && areaUnits() == Qgis::AreaUnit::Unknown )
   {
     QString areaUnitsStr = context->variable( QStringLiteral( "project_area_units" ) ).toString();
-    if ( ! areaUnitsStr.isEmpty() )
+    if ( !areaUnitsStr.isEmpty() )
       setAreaUnits( QgsUnitTypes::stringToAreaUnit( areaUnitsStr ) );
   }
 }
@@ -336,7 +335,7 @@ void QgsExpression::detach()
 
   if ( d->ref > 1 )
   {
-    ( void )d->ref.deref();
+    ( void ) d->ref.deref();
 
     d = new QgsExpressionPrivate( *d );
   }
@@ -395,7 +394,7 @@ QVariant QgsExpression::evaluate( const QgsExpressionContext *context )
     return QVariant();
   }
 
-  if ( ! d->mIsPrepared )
+  if ( !d->mIsPrepared )
   {
     prepare( context );
   }
@@ -465,7 +464,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
   int index = 0;
   while ( index < action.size() )
   {
-    static const QRegularExpression sRegEx{ QStringLiteral( "\\[%(.*?)%\\]" ),  QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
+    static const QRegularExpression sRegEx { QStringLiteral( "\\[%(.*?)%\\]" ), QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
 
     const QRegularExpressionMatch match = sRegEx.match( action, index );
     if ( !match.hasMatch() )
@@ -481,7 +480,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     if ( exp.hasParserError() )
     {
       QgsDebugError( "Expression parser error: " + exp.parserErrorString() );
-      expr_action += QStringView {action} .mid( start, index - start );
+      expr_action += QStringView { action }.mid( start, index - start );
       continue;
     }
 
@@ -496,7 +495,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     if ( exp.hasEvalError() )
     {
       QgsDebugError( "Expression parser eval error: " + exp.evalErrorString() );
-      expr_action += QStringView {action} .mid( start, index - start );
+      expr_action += QStringView { action }.mid( start, index - start );
       continue;
     }
 
@@ -509,7 +508,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
     expr_action += action.mid( start, pos - start ) + resultString;
   }
 
-  expr_action += QStringView {action} .mid( index ).toString();
+  expr_action += QStringView { action }.mid( index ).toString();
   return expr_action;
 }
 
@@ -569,7 +568,7 @@ QString QgsExpression::helpText( QString name )
   if ( !sFunctionHelpTexts.contains( name ) )
     return tr( "function help for %1 missing" ).arg( name );
 
-  const Help &f = sFunctionHelpTexts[ name ];
+  const Help &f = sFunctionHelpTexts[name];
 
   name = f.mName;
   if ( f.mType == tr( "group" ) )
@@ -581,8 +580,8 @@ QString QgsExpression::helpText( QString name )
   name = name.toHtmlEscaped();
 
   QString helpContents( QStringLiteral( "<h3>%1</h3>\n<div class=\"description\"><p>%2</p></div>" )
-                        .arg( tr( "%1 %2" ).arg( f.mType, name ),
-                              f.mDescription ) );
+                          .arg( tr( "%1 %2" ).arg( f.mType, name ),
+                                f.mDescription ) );
 
   for ( const HelpVariant &v : std::as_const( f.mVariants ) )
   {
@@ -599,12 +598,12 @@ QString QgsExpression::helpText( QString name )
       if ( v.mArguments.size() == 1 )
       {
         helpContents += QStringLiteral( "<code><span class=\"functionname\">%1</span> <span class=\"argument\">%2</span></code>" )
-                        .arg( name, v.mArguments[0].mArg );
+                          .arg( name, v.mArguments[0].mArg );
       }
       else if ( v.mArguments.size() == 2 )
       {
         helpContents += QStringLiteral( "<code><span class=\"argument\">%1</span> <span class=\"functionname\">%2</span> <span class=\"argument\">%3</span></code>" )
-                        .arg( v.mArguments[0].mArg, name, v.mArguments[1].mArg );
+                          .arg( v.mArguments[0].mArg, name, v.mArguments[1].mArg );
       }
     }
     else if ( f.mType != tr( "group" ) && f.mType != tr( "expression" ) )
@@ -629,10 +628,7 @@ QString QgsExpression::helpText( QString name )
             }
 
             helpContents += delim;
-            helpContents += QStringLiteral( "<span class=\"argument\">%2%3</span>" ).arg(
-                              a.mArg,
-                              a.mDefaultVal.isEmpty() ? QString() : ":=" + a.mDefaultVal
-                            );
+            helpContents += QStringLiteral( "<span class=\"argument\">%2%3</span>" ).arg( a.mArg, a.mDefaultVal.isEmpty() ? QString() : ":=" + a.mDefaultVal );
 
             if ( a.mOptional )
               helpContents += QLatin1Char( ']' );
@@ -705,7 +701,7 @@ QStringList QgsExpression::tags( const QString &name )
 
   if ( sFunctionHelpTexts.contains( name ) )
   {
-    const Help &f = sFunctionHelpTexts[ name ];
+    const Help &f = sFunctionHelpTexts[name];
 
     for ( const HelpVariant &v : std::as_const( f.mVariants ) )
     {
@@ -872,15 +868,15 @@ void QgsExpression::initVariableHelp()
 
   // map tool capture variables
   sVariableHelpTexts()->insert( QStringLiteral( "snapping_results" ), QCoreApplication::translate( "variable_help",
-                                "<p>An array with an item for each snapped point.</p>"
-                                "<p>Each item is a map with the following keys:</p>"
-                                "<dl>"
-                                "<dt>valid</dt><dd>Boolean that indicates if the snapping result is valid</dd>"
-                                "<dt>layer</dt><dd>The layer on which the snapped feature is</dd>"
-                                "<dt>feature_id</dt><dd>The feature id of the snapped feature</dd>"
-                                "<dt>vertex_index</dt><dd>The index of the snapped vertex</dd>"
-                                "<dt>distance</dt><dd>The distance between the mouse cursor and the snapped point at the time of snapping</dd>"
-                                "</dl>" ) );
+                                                                                                   "<p>An array with an item for each snapped point.</p>"
+                                                                                                   "<p>Each item is a map with the following keys:</p>"
+                                                                                                   "<dl>"
+                                                                                                   "<dt>valid</dt><dd>Boolean that indicates if the snapping result is valid</dd>"
+                                                                                                   "<dt>layer</dt><dd>The layer on which the snapped feature is</dd>"
+                                                                                                   "<dt>feature_id</dt><dd>The feature id of the snapped feature</dd>"
+                                                                                                   "<dt>vertex_index</dt><dd>The index of the snapped vertex</dd>"
+                                                                                                   "<dt>distance</dt><dd>The distance between the mouse cursor and the snapped point at the time of snapping</dd>"
+                                                                                                   "</dl>" ) );
 
 
   //symbol variables
@@ -926,19 +922,19 @@ void QgsExpression::initVariableHelp()
 
   //parent form context variable
   sVariableHelpTexts()->insert( QStringLiteral( "current_parent_geometry" ), QCoreApplication::translate( "current_parent_geometry",
-                                "Only usable in an embedded form context, "
-                                "represents the geometry of the feature currently being edited in the parent form.\n"
-                                "Can be used in a form/row context to filter the related features using a value "
-                                "from the feature currently edited in the parent form, to make sure that the filter "
-                                "still works with standalone forms it is recommended to wrap this variable in a "
-                                "'coalesce()'." ) );
+                                                                                                          "Only usable in an embedded form context, "
+                                                                                                          "represents the geometry of the feature currently being edited in the parent form.\n"
+                                                                                                          "Can be used in a form/row context to filter the related features using a value "
+                                                                                                          "from the feature currently edited in the parent form, to make sure that the filter "
+                                                                                                          "still works with standalone forms it is recommended to wrap this variable in a "
+                                                                                                          "'coalesce()'." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "current_parent_feature" ), QCoreApplication::translate( "current_parent_feature",
-                                "Only usable in an embedded form context, "
-                                "represents the feature currently being edited in the parent form.\n"
-                                "Can be used in a form/row context to filter the related features using a value "
-                                "from the feature currently edited in the parent form, to make sure that the filter "
-                                "still works with standalone forms it is recommended to wrap this variable in a "
-                                "'coalesce()'." ) );
+                                                                                                         "Only usable in an embedded form context, "
+                                                                                                         "represents the feature currently being edited in the parent form.\n"
+                                                                                                         "Can be used in a form/row context to filter the related features using a value "
+                                                                                                         "from the feature currently edited in the parent form, to make sure that the filter "
+                                                                                                         "still works with standalone forms it is recommended to wrap this variable in a "
+                                                                                                         "'coalesce()'." ) );
 
   //form variable
   sVariableHelpTexts()->insert( QStringLiteral( "form_mode" ), QCoreApplication::translate( "form_mode", "What the form is used for, like AddFeatureMode, SingleEditMode, MultiEditMode, SearchMode, AggregateSearchMode or IdentifyMode as string." ) );
@@ -1032,7 +1028,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
       return startToken + tr( "geometry: %1" ).arg( QgsWkbTypes::displayString( geom.constGet()->wkbType() ) )
              + endToken;
   }
-  else if ( value.value< QgsWeakMapLayerPointer >().data() )
+  else if ( value.value<QgsWeakMapLayerPointer>().data() )
   {
     return startToken + tr( "map layer" ) + endToken;
   }
@@ -1040,13 +1036,13 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
   {
     return htmlOutput ? tr( "<i>NULL</i>" ) : QString();
   }
-  else if ( value.userType() == qMetaTypeId< QgsFeature>() )
+  else if ( value.userType() == qMetaTypeId<QgsFeature>() )
   {
     //result is a feature
     QgsFeature feat = value.value<QgsFeature>();
     return startToken + tr( "feature: %1" ).arg( feat.id() ) + endToken;
   }
-  else if ( value.userType() == qMetaTypeId< QgsInterval>() )
+  else if ( value.userType() == qMetaTypeId<QgsInterval>() )
   {
     QgsInterval interval = value.value<QgsInterval>();
     if ( interval.days() > 1 )
@@ -1066,7 +1062,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
       return startToken + tr( "interval: %1 seconds" ).arg( interval.seconds() ) + endToken;
     }
   }
-  else if ( value.userType() == qMetaTypeId< QgsGradientColorRamp>() )
+  else if ( value.userType() == qMetaTypeId<QgsGradientColorRamp>() )
   {
     return startToken + tr( "gradient ramp" ) + endToken;
   }
@@ -1157,25 +1153,33 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
     {
       case QColor::Spec::Cmyk:
         return QStringLiteral( "CMYKA: %1,%2,%3,%4,%5" )
-               .arg( color.cyanF(), 0, 'f', 2 ).arg( color.magentaF(), 0, 'f', 2 )
-               .arg( color.yellowF(), 0, 'f', 2 ).arg( color.blackF(), 0, 'f', 2 )
-               .arg( color.alphaF(), 0, 'f', 2 );
+          .arg( color.cyanF(), 0, 'f', 2 )
+          .arg( color.magentaF(), 0, 'f', 2 )
+          .arg( color.yellowF(), 0, 'f', 2 )
+          .arg( color.blackF(), 0, 'f', 2 )
+          .arg( color.alphaF(), 0, 'f', 2 );
 
       case QColor::Spec::Hsv:
         return QStringLiteral( "HSVA: %1,%2,%3,%4" )
-               .arg( color.hsvHueF(), 0, 'f', 2 ).arg( color.hsvSaturationF(), 0, 'f', 2 )
-               .arg( color.valueF(), 0, 'f', 2 ).arg( color.alphaF(), 0, 'f', 2 );
+          .arg( color.hsvHueF(), 0, 'f', 2 )
+          .arg( color.hsvSaturationF(), 0, 'f', 2 )
+          .arg( color.valueF(), 0, 'f', 2 )
+          .arg( color.alphaF(), 0, 'f', 2 );
 
       case QColor::Spec::Hsl:
         return QStringLiteral( "HSLA: %1,%2,%3,%4" )
-               .arg( color.hslHueF(), 0, 'f', 2 ).arg( color.hslSaturationF(), 0, 'f', 2 )
-               .arg( color.lightnessF(), 0, 'f', 2 ).arg( color.alphaF(), 0, 'f', 2 );
+          .arg( color.hslHueF(), 0, 'f', 2 )
+          .arg( color.hslSaturationF(), 0, 'f', 2 )
+          .arg( color.lightnessF(), 0, 'f', 2 )
+          .arg( color.alphaF(), 0, 'f', 2 );
 
       case QColor::Spec::Rgb:
       case QColor::Spec::ExtendedRgb:
         return QStringLiteral( "RGBA: %1,%2,%3,%4" )
-               .arg( color.redF(), 0, 'f', 2 ).arg( color.greenF(), 0, 'f', 2 )
-               .arg( color.blueF(), 0, 'f', 2 ).arg( color.alphaF(), 0, 'f', 2 );
+          .arg( color.redF(), 0, 'f', 2 )
+          .arg( color.greenF(), 0, 'f', 2 )
+          .arg( color.blueF(), 0, 'f', 2 )
+          .arg( color.alphaF(), 0, 'f', 2 );
 
       case QColor::Spec::Invalid:
         return tr( "<i>Invalid</i>" );
@@ -1183,11 +1187,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value, const bool ht
     QgsDebugError( QStringLiteral( "Unknown color format: %1" ).arg( color.spec() ) );
     return tr( "<i>Unknown color format: %1</i>" ).arg( color.spec() );
   }
-  else if ( value.userType() == QMetaType::Type::Int ||
-            value.userType() == QMetaType::Type::UInt ||
-            value.userType() == QMetaType::Type::LongLong ||
-            value.userType() == QMetaType::Type::ULongLong ||
-            value.userType() == QMetaType::Type::Double ||
+  else if ( value.userType() == QMetaType::Type::Int || value.userType() == QMetaType::Type::UInt || value.userType() == QMetaType::Type::LongLong || value.userType() == QMetaType::Type::ULongLong || value.userType() == QMetaType::Type::Double ||
             // Qt madness with QMetaType::Float :/
             value.userType() == static_cast<QMetaType::Type>( QMetaType::Float ) )
   {
@@ -1315,14 +1315,12 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
       // Collect ORs
       else if ( const QgsExpressionNodeBinaryOperator *orOp = dynamic_cast<const QgsExpressionNodeBinaryOperator *>( e.rootNode() ) )
       {
-
         // OR Collector function: returns a possibly empty list of the left and right operands of an OR expression
-        std::function<QStringList( QgsExpressionNode *, QgsExpressionNode * )> collectOrs = [ &collectOrs ]( QgsExpressionNode * opLeft,  QgsExpressionNode * opRight ) -> QStringList
-        {
+        std::function<QStringList( QgsExpressionNode *, QgsExpressionNode * )> collectOrs = [&collectOrs]( QgsExpressionNode *opLeft, QgsExpressionNode *opRight ) -> QStringList {
           QStringList orParts;
           if ( const QgsExpressionNodeBinaryOperator *leftOrOp = dynamic_cast<const QgsExpressionNodeBinaryOperator *>( opLeft ) )
           {
-            if ( leftOrOp->op( ) == QgsExpressionNodeBinaryOperator::BinaryOperator::boOr )
+            if ( leftOrOp->op() == QgsExpressionNodeBinaryOperator::BinaryOperator::boOr )
             {
               orParts.append( collectOrs( leftOrOp->opLeft(), leftOrOp->opRight() ) );
             }
@@ -1342,7 +1340,7 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
 
           if ( const QgsExpressionNodeBinaryOperator *rightOrOp = dynamic_cast<const QgsExpressionNodeBinaryOperator *>( opRight ) )
           {
-            if ( rightOrOp->op( ) == QgsExpressionNodeBinaryOperator::BinaryOperator::boOr )
+            if ( rightOrOp->op() == QgsExpressionNodeBinaryOperator::BinaryOperator::boOr )
             {
               orParts.append( collectOrs( rightOrOp->opLeft(), rightOrOp->opRight() ) );
             }
@@ -1363,7 +1361,7 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
           return orParts;
         };
 
-        if ( orOp->op( ) == QgsExpressionNodeBinaryOperator::BinaryOperator::boOr )
+        if ( orOp->op() == QgsExpressionNodeBinaryOperator::BinaryOperator::boOr )
         {
           // Try to collect all OR conditions
           const QStringList orParts = collectOrs( orOp->opLeft(), orOp->opRight() );
@@ -1378,7 +1376,7 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
             {
               // Need to check if the IN field is correct,
               QgsExpression inExp { orPartsResult };
-              if ( ! inExp.rootNode() )
+              if ( !inExp.rootNode() )
               {
                 return false;
               }
@@ -1410,7 +1408,6 @@ bool QgsExpression::attemptReduceToInClause( const QStringList &expressions, QSt
                     values.append( innerInValueNode->dump() );
                   }
                 }
-
               }
               else
               {
@@ -1462,7 +1459,7 @@ int QgsExpression::expressionToLayerFieldIndex( const QString &expression, const
   QgsExpression candidate( expression );
   if ( candidate.isField() )
   {
-    const QString fieldName =  qgis::down_cast<const QgsExpressionNodeColumnRef *>( candidate.rootNode() )->name();
+    const QString fieldName = qgis::down_cast<const QgsExpressionNodeColumnRef *>( candidate.rootNode() )->name();
     return layer->fields().lookupField( fieldName );
   }
   return -1;

@@ -26,30 +26,29 @@ QgsPaintEffectAbstractMetadata::QgsPaintEffectAbstractMetadata( const QString &n
   : mName( name )
   , mVisibleName( visibleName )
 {
-
 }
 
 QgsPaintEffectRegistry::QgsPaintEffectRegistry()
 {
   //init registry with known effects
   addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "blur" ), QObject::tr( "Blur" ),
-                 QgsBlurEffect::create, nullptr ) );
+                                             QgsBlurEffect::create, nullptr ) );
   addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "dropShadow" ), QObject::tr( "Drop Shadow" ),
-                 QgsDropShadowEffect::create, nullptr ) );
+                                             QgsDropShadowEffect::create, nullptr ) );
   addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "innerShadow" ), QObject::tr( "Inner Shadow" ),
-                 QgsInnerShadowEffect::create, nullptr ) );
+                                             QgsInnerShadowEffect::create, nullptr ) );
   addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "effectStack" ), QObject::tr( "Stack" ),
-                 QgsEffectStack::create, nullptr ) );
+                                             QgsEffectStack::create, nullptr ) );
   addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "outerGlow" ), QObject::tr( "Outer Glow" ),
-                 QgsOuterGlowEffect::create, nullptr ) );
+                                             QgsOuterGlowEffect::create, nullptr ) );
   addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "innerGlow" ), QObject::tr( "Inner Glow" ),
-                 QgsInnerGlowEffect::create, nullptr ) );
+                                             QgsInnerGlowEffect::create, nullptr ) );
   addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "drawSource" ), QObject::tr( "Source" ),
-                 QgsDrawSourceEffect::create, nullptr ) );
+                                             QgsDrawSourceEffect::create, nullptr ) );
   addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "transform" ), QObject::tr( "Transform" ),
-                 QgsTransformEffect::create, nullptr ) );
+                                             QgsTransformEffect::create, nullptr ) );
   addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "color" ), QObject::tr( "Colorise" ),
-                 QgsColorEffect::create, nullptr ) );
+                                             QgsColorEffect::create, nullptr ) );
 }
 
 QgsPaintEffectRegistry::~QgsPaintEffectRegistry()
@@ -133,7 +132,7 @@ QgsPaintEffect *QgsPaintEffectRegistry::defaultStack()
 
 bool QgsPaintEffectRegistry::isDefaultStack( QgsPaintEffect *effect )
 {
-  QgsEffectStack *effectStack = dynamic_cast< QgsEffectStack * >( effect );
+  QgsEffectStack *effectStack = dynamic_cast<QgsEffectStack *>( effect );
   if ( !effectStack )
     return false;
 
@@ -147,18 +146,18 @@ bool QgsPaintEffectRegistry::isDefaultStack( QgsPaintEffect *effect )
       return false;
   }
 
-  if ( !dynamic_cast< QgsDropShadowEffect * >( effectStack->effect( 0 ) ) )
+  if ( !dynamic_cast<QgsDropShadowEffect *>( effectStack->effect( 0 ) ) )
     return false;
-  if ( !dynamic_cast< QgsOuterGlowEffect * >( effectStack->effect( 1 ) ) )
+  if ( !dynamic_cast<QgsOuterGlowEffect *>( effectStack->effect( 1 ) ) )
     return false;
-  if ( !dynamic_cast< QgsDrawSourceEffect * >( effectStack->effect( 2 ) ) )
+  if ( !dynamic_cast<QgsDrawSourceEffect *>( effectStack->effect( 2 ) ) )
     return false;
-  if ( !dynamic_cast< QgsInnerShadowEffect * >( effectStack->effect( 3 ) ) )
+  if ( !dynamic_cast<QgsInnerShadowEffect *>( effectStack->effect( 3 ) ) )
     return false;
-  if ( !dynamic_cast< QgsInnerGlowEffect * >( effectStack->effect( 4 ) ) )
+  if ( !dynamic_cast<QgsInnerGlowEffect *>( effectStack->effect( 4 ) ) )
     return false;
 
-  QgsDrawSourceEffect *sourceEffect = static_cast< QgsDrawSourceEffect * >( effectStack->effect( 2 ) );
+  QgsDrawSourceEffect *sourceEffect = static_cast<QgsDrawSourceEffect *>( effectStack->effect( 2 ) );
   if ( !qgsDoubleNear( sourceEffect->opacity(), 1.0 ) )
     return false;
   if ( sourceEffect->blendMode() != QPainter::CompositionMode_SourceOver )

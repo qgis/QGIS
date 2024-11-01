@@ -69,7 +69,7 @@ class CORE_EXPORT QgsMatrix4x4
     //! Returns pointer to the matrix data (stored in column-major order)
     double *data() SIP_SKIP { return *m; }
     //! Returns matrix data (in column-major order)
-    QList< double > dataList() const SIP_PYNAME( data ) SIP_HOLDGIL;
+    QList<double> dataList() const SIP_PYNAME( data ) SIP_HOLDGIL;
 
     /**
      * Multiplies this matrix by another that translates coordinates by the components of a \a vector.
@@ -90,29 +90,31 @@ class CORE_EXPORT QgsMatrix4x4
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsMatrix4x4(%1, %2, %3, %4, %5, %6, %7, %8, %9, %10, %11, %12, %13, %14, %15, %16)>" )
-                  .arg( sipCpp->data()[0] )
-                  .arg( sipCpp->data()[4] )
-                  .arg( sipCpp->data()[8] )
-                  .arg( sipCpp->data()[12] )
-                  .arg( sipCpp->data()[1] )
-                  .arg( sipCpp->data()[5] )
-                  .arg( sipCpp->data()[9] )
-                  .arg( sipCpp->data()[13] )
-                  .arg( sipCpp->data()[2] )
-                  .arg( sipCpp->data()[6] )
-                  .arg( sipCpp->data()[10] )
-                  .arg( sipCpp->data()[14] )
-                  .arg( sipCpp->data()[3] )
-                  .arg( sipCpp->data()[7] )
-                  .arg( sipCpp->data()[11] )
-                  .arg( sipCpp->data()[15] );
+        QString str
+      = QStringLiteral( "<QgsMatrix4x4(%1, %2, %3, %4, %5, %6, %7, %8, %9, %10, %11, %12, %13, %14, %15, %16)>" )
+          .arg( sipCpp->data()[0] )
+          .arg( sipCpp->data()[4] )
+          .arg( sipCpp->data()[8] )
+          .arg( sipCpp->data()[12] )
+          .arg( sipCpp->data()[1] )
+          .arg( sipCpp->data()[5] )
+          .arg( sipCpp->data()[9] )
+          .arg( sipCpp->data()[13] )
+          .arg( sipCpp->data()[2] )
+          .arg( sipCpp->data()[6] )
+          .arg( sipCpp->data()[10] )
+          .arg( sipCpp->data()[14] )
+          .arg( sipCpp->data()[3] )
+          .arg( sipCpp->data()[7] )
+          .arg( sipCpp->data()[11] )
+          .arg( sipCpp->data()[15] );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
 #ifndef SIP_RUN
-    friend CORE_EXPORT QgsMatrix4x4 operator*( const QgsMatrix4x4 &m1, const QgsMatrix4x4 &m2 );
+      friend CORE_EXPORT QgsMatrix4x4
+      operator*( const QgsMatrix4x4 &m1, const QgsMatrix4x4 &m2 );
     friend CORE_EXPORT QgsVector3D operator*( const QgsMatrix4x4 &matrix, const QgsVector3D &vector );
 #endif
 
@@ -121,7 +123,7 @@ class CORE_EXPORT QgsMatrix4x4
     double m[4][4];
 
     //! Construct without initializing identity matrix.
-    explicit QgsMatrix4x4( int ) { }   // cppcheck-suppress uninitMemberVarPrivate
+    explicit QgsMatrix4x4( int ) {} // cppcheck-suppress uninitMemberVarPrivate
 };
 
 //! Matrix-matrix multiplication (useful to concatenate transforms)

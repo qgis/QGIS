@@ -31,7 +31,6 @@
 class CORE_EXPORT QgsVariantUtils
 {
   public:
-
     /**
      * Returns a user-friendly translated string representing a QVariant \a type.
      *
@@ -92,7 +91,6 @@ class CORE_EXPORT QgsVariantUtils
      * Returns the created QVariant
      */
     static QVariant createNullVariant( QMetaType::Type metaType ) SIP_SKIP;
-
 };
 
 #endif // QGSVARIANTUTILS_H

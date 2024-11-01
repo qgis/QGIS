@@ -27,7 +27,6 @@
 class ANALYSIS_EXPORT QgsGeometryTypeCheckError : public QgsSingleGeometryCheckError
 {
   public:
-
     /**
      * Constructor for QgsGeometryTypeCheckError.
      * \param check associated geometry check
@@ -72,14 +71,19 @@ class ANALYSIS_EXPORT QgsGeometryTypeCheck : public QgsSingleGeometryCheck
     QString id() const override;
     QgsGeometryCheck::CheckType checkType() const override;
 
-    static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP {return {Qgis::GeometryType::Point, Qgis::GeometryType::Line, Qgis::GeometryType::Polygon}; }
+    static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP { return { Qgis::GeometryType::Point, Qgis::GeometryType::Line, Qgis::GeometryType::Polygon }; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     static QString factoryDescription() SIP_SKIP;
     static QString factoryId() SIP_SKIP;
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 
   private:
-    enum ResolutionMethod { Convert, Delete, NoChange };
+    enum ResolutionMethod
+    {
+      Convert,
+      Delete,
+      NoChange
+    };
     int mAllowedTypes;
 };
 

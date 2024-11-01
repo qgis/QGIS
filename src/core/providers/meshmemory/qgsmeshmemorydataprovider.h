@@ -35,12 +35,11 @@
  * \brief Provides data stored in-memory for QgsMeshLayer. Useful for plugins or tests.
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
+class CORE_EXPORT QgsMeshMemoryDataProvider final : public QgsMeshDataProvider
 {
     Q_OBJECT
 
   public:
-
     /**
      * Construct a mesh in-memory data provider from data string
      *
@@ -144,16 +143,14 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
                               const QgsMeshDatasetGroupMetadata &meta,
                               const QVector<QgsMeshDataBlock> &datasetValues,
                               const QVector<QgsMeshDataBlock> &datasetActive,
-                              const QVector<double> &times
-                            ) override;
+                              const QVector<double> &times ) override;
 
     virtual bool persistDatasetGroup( const QString &outputFilePath,
                                       const QString &outputDriver,
                                       QgsMeshDatasetSourceInterface *source,
-                                      int datasetGroupIndex
-                                    ) override;
+                                      int datasetGroupIndex ) override;
 
-    bool saveMeshFrame( const QgsMesh & ) override {return false;}
+    bool saveMeshFrame( const QgsMesh & ) override { return false; }
 
     void close() override;
 
@@ -163,7 +160,7 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
     static QString providerDescription();
 
   private:
-    QgsRectangle calculateExtent( ) const;
+    QgsRectangle calculateExtent() const;
 
     bool splitMeshSections( const QString &uri );
     bool addMeshVertices( const QString &def );
@@ -187,7 +184,7 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
     QStringList mExtraDatasetUris;
 };
 
-class QgsMeshMemoryProviderMetadata final: public QgsProviderMetadata
+class QgsMeshMemoryProviderMetadata final : public QgsProviderMetadata
 {
     Q_OBJECT
 
@@ -195,7 +192,7 @@ class QgsMeshMemoryProviderMetadata final: public QgsProviderMetadata
     QgsMeshMemoryProviderMetadata();
     QIcon icon() const override;
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 ///@endcond

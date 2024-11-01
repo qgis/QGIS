@@ -29,7 +29,6 @@ email                : ersts@amnh.org
  */
 class CORE_EXPORT QgsLinearMinMaxEnhancementWithClip : public QgsContrastEnhancementFunction
 {
-
   public:
     QgsLinearMinMaxEnhancementWithClip( Qgis::DataType, double, double );
 

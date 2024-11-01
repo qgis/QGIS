@@ -38,11 +38,9 @@ class QgsMargins;
  */
 class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSerializableObject
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutItemPage, with the specified parent \a layout.
      */
@@ -58,7 +56,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * \see page()
      * \see pageCount()
      */
-    QList< QgsLayoutItemPage * > pages();
+    QList<QgsLayoutItemPage *> pages();
 
     /**
      * Returns the number of pages in the collection.
@@ -96,14 +94,14 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * \a region (in layout coordinates).
      * \see visiblePageNumbers()
      */
-    QList< QgsLayoutItemPage * > visiblePages( const QRectF &region ) const;
+    QList<QgsLayoutItemPage *> visiblePages( const QRectF &region ) const;
 
     /**
      * Returns a list of the page numbers which are visible within the specified
      * \a region (in layout coordinates).
      * \see visiblePages()
      */
-    QList< int > visiblePageNumbers( const QRectF &region ) const;
+    QList<int> visiblePageNumbers( const QRectF &region ) const;
 
     /**
      * Returns whether a given \a page index is empty, ie, it contains no items except for the background
@@ -115,7 +113,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     /**
      * Returns a list of layout items on the specified \a page index.
      */
-    QList< QgsLayoutItem *> itemsOnPage( int page ) const;
+    QList<QgsLayoutItem *> itemsOnPage( int page ) const;
 
     /**
      * Returns layout items of a specific type on a specified \a page.
@@ -418,19 +416,18 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     void pageAboutToBeRemoved( int pageNumber );
 
   private:
-
     QgsLayout *mLayout = nullptr;
 
-    std::unique_ptr< QgsLayoutGuideCollection > mGuideCollection;
+    std::unique_ptr<QgsLayoutGuideCollection> mGuideCollection;
 
     //! Symbol for drawing pages
-    std::unique_ptr< QgsFillSymbol > mPageStyleSymbol;
+    std::unique_ptr<QgsFillSymbol> mPageStyleSymbol;
 
-    QList< QgsLayoutItemPage * > mPages;
+    QList<QgsLayoutItemPage *> mPages;
 
     bool mBlockUndoCommands = false;
 
-    QMap< QString, QPair< int, QgsLayoutPoint > > mPreviousItemPositions;
+    QMap<QString, QPair<int, QgsLayoutPoint>> mPreviousItemPositions;
 
     void createDefaultPageStyleSymbol();
 

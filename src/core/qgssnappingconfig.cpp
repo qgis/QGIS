@@ -71,14 +71,12 @@ Qgis::SnappingTypes QgsSnappingConfig::IndividualLayerSettings::typeFlag() const
 
 QgsSnappingConfig::SnappingType QgsSnappingConfig::IndividualLayerSettings::type() const
 {
-
   if ( ( mType & QgsSnappingConfig::SnappingType::Segment ) && ( mType & QgsSnappingConfig::SnappingType::Vertex ) )
     return QgsSnappingConfig::SnappingType::VertexAndSegment;
   else if ( mType & QgsSnappingConfig::SnappingType::Segment )
     return QgsSnappingConfig::SnappingType::Segment;
   else
     return QgsSnappingConfig::SnappingType::Vertex;
-
 }
 
 void QgsSnappingConfig::IndividualLayerSettings::setType( QgsSnappingConfig::SnappingType type )
@@ -144,7 +142,7 @@ void QgsSnappingConfig::IndividualLayerSettings::setMaximumScale( double maxScal
   mMaximumScale = maxScale;
 }
 
-bool QgsSnappingConfig::IndividualLayerSettings::operator !=( const QgsSnappingConfig::IndividualLayerSettings &other ) const
+bool QgsSnappingConfig::IndividualLayerSettings::operator!=( const QgsSnappingConfig::IndividualLayerSettings &other ) const
 {
   return mValid != other.mValid
          || mEnabled != other.mEnabled
@@ -155,7 +153,7 @@ bool QgsSnappingConfig::IndividualLayerSettings::operator !=( const QgsSnappingC
          || mMaximumScale != other.mMaximumScale;
 }
 
-bool QgsSnappingConfig::IndividualLayerSettings::operator ==( const QgsSnappingConfig::IndividualLayerSettings &other ) const
+bool QgsSnappingConfig::IndividualLayerSettings::operator==( const QgsSnappingConfig::IndividualLayerSettings &other ) const
 {
   return mValid == other.mValid
          && mEnabled == other.mEnabled
@@ -453,7 +451,7 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
     mEnabled = snapSettingsElem.attribute( QStringLiteral( "enabled" ) ) == QLatin1String( "1" );
 
   if ( snapSettingsElem.hasAttribute( QStringLiteral( "mode" ) ) )
-    mMode = static_cast< Qgis::SnappingMode >( snapSettingsElem.attribute( QStringLiteral( "mode" ) ).toInt() );
+    mMode = static_cast<Qgis::SnappingMode>( snapSettingsElem.attribute( QStringLiteral( "mode" ) ).toInt() );
 
   if ( snapSettingsElem.hasAttribute( QStringLiteral( "type" ) ) )
   {
@@ -511,7 +509,7 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
     mMaximumScale = snapSettingsElem.attribute( QStringLiteral( "maxScale" ) ).toDouble();
 
   if ( snapSettingsElem.hasAttribute( QStringLiteral( "unit" ) ) )
-    mUnits = static_cast< Qgis::MapToolUnit >( snapSettingsElem.attribute( QStringLiteral( "unit" ) ).toInt() );
+    mUnits = static_cast<Qgis::MapToolUnit>( snapSettingsElem.attribute( QStringLiteral( "unit" ) ).toInt() );
 
   if ( snapSettingsElem.hasAttribute( QStringLiteral( "intersection-snapping" ) ) )
     mIntersectionSnapping = snapSettingsElem.attribute( QStringLiteral( "intersection-snapping" ) ) == QLatin1String( "1" );
@@ -539,7 +537,7 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
       const bool enabled = settingElement.attribute( QStringLiteral( "enabled" ) ) == QLatin1String( "1" );
       const Qgis::SnappingTypes type = static_cast<Qgis::SnappingTypes>( settingElement.attribute( QStringLiteral( "type" ) ).toInt() );
       const double tolerance = settingElement.attribute( QStringLiteral( "tolerance" ) ).toDouble();
-      const Qgis::MapToolUnit units = static_cast< Qgis::MapToolUnit >( settingElement.attribute( QStringLiteral( "units" ) ).toInt() );
+      const Qgis::MapToolUnit units = static_cast<Qgis::MapToolUnit>( settingElement.attribute( QStringLiteral( "units" ) ).toInt() );
       const double minScale = settingElement.attribute( QStringLiteral( "minScale" ) ).toDouble();
       const double maxScale = settingElement.attribute( QStringLiteral( "maxScale" ) ).toDouble();
 
@@ -635,7 +633,7 @@ void QgsSnappingConfig::readLegacySettings()
   const QString snapMode = mProject->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/SnappingMode" ) );
 
   mTolerance = mProject->readDoubleEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapTolerance" ), 0 );
-  mUnits = static_cast< Qgis::MapToolUnit >( mProject->readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapToleranceUnit" ), static_cast<int>( Qgis::MapToolUnit::Project ) ) );
+  mUnits = static_cast<Qgis::MapToolUnit>( mProject->readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapToleranceUnit" ), static_cast<int>( Qgis::MapToolUnit::Project ) ) );
 
   mIntersectionSnapping = mProject->readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/IntersectionSnapping" ), 0 );
 
@@ -647,10 +645,7 @@ void QgsSnappingConfig::readLegacySettings()
   const QStringList snapToList = mProject->readListEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/LayerSnapToList" ), QStringList() );
 
   // lists must have the same size, otherwise something is wrong
-  if ( layerIdList.size() != enabledList.size() ||
-       layerIdList.size() != toleranceList.size() ||
-       layerIdList.size() != toleranceUnitList.size() ||
-       layerIdList.size() != snapToList.size() )
+  if ( layerIdList.size() != enabledList.size() || layerIdList.size() != toleranceList.size() || layerIdList.size() != toleranceUnitList.size() || layerIdList.size() != snapToList.size() )
     return;
 
   // Use snapping information from the project
@@ -658,7 +653,7 @@ void QgsSnappingConfig::readLegacySettings()
     mMode = Qgis::SnappingMode::ActiveLayer;
   else if ( snapMode == QLatin1String( "all_layers" ) )
     mMode = Qgis::SnappingMode::AllLayers;
-  else   // either "advanced" or empty (for background compatibility)
+  else // either "advanced" or empty (for background compatibility)
     mMode = Qgis::SnappingMode::AdvancedConfiguration;
 
   // load layers, tolerances, snap type
@@ -673,11 +668,7 @@ void QgsSnappingConfig::readLegacySettings()
     if ( !vlayer || !vlayer->isSpatial() )
       continue;
 
-    const Qgis::SnappingTypes t( *snapIt == QLatin1String( "to_vertex" ) ? Qgis::SnappingType::Vertex :
-                                 ( *snapIt == QLatin1String( "to_segment" ) ? Qgis::SnappingType::Segment :
-                                   static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment )
-                                 )
-                               );
+    const Qgis::SnappingTypes t( *snapIt == QLatin1String( "to_vertex" ) ? Qgis::SnappingType::Vertex : ( *snapIt == QLatin1String( "to_segment" ) ? Qgis::SnappingType::Segment : static_cast<Qgis::SnappingTypes>( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment ) ) );
 
     mIndividualLayerSettings.insert( vlayer, IndividualLayerSettings( *enabledIt == QLatin1String( "enabled" ), t, tolIt->toDouble(), static_cast<Qgis::MapToolUnit>( tolUnitIt->toInt() ), 0.0, 0.0 ) );
   }
@@ -740,8 +731,3 @@ QgsSnappingConfig::ScaleDependencyMode QgsSnappingConfig::scaleDependencyMode() 
 {
   return mScaleDependencyMode;
 }
-
-
-
-
-

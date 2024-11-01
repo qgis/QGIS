@@ -30,7 +30,6 @@ class QgsAuthMapTilerHmacSha256Method : public QgsAuthMethod
     Q_OBJECT
 
   public:
-
     static const QString AUTH_METHOD_KEY;
     static const QString AUTH_METHOD_DESCRIPTION;
     static const QString AUTH_METHOD_DISPLAY_DESCRIPTION;
@@ -51,7 +50,7 @@ class QgsAuthMapTilerHmacSha256Method : public QgsAuthMethod
     void updateMethodConfig( QgsAuthMethodConfig &mconfig ) override;
 
 #ifdef HAVE_GUI
-    QWidget *editWidget( QWidget *parent )const override;
+    QWidget *editWidget( QWidget *parent ) const override;
 #endif
 
   private:
@@ -64,7 +63,6 @@ class QgsAuthMapTilerHmacSha256Method : public QgsAuthMethod
     QByteArray calculateSignature( const QString &token, const QString &keyedUrl );
 
     static QMap<QString, QgsAuthMethodConfig> sAuthConfigCache;
-
 };
 
 
@@ -74,7 +72,7 @@ class QgsAuthMapTilerHmacSha256MethodMetadata : public QgsAuthMethodMetadata
     QgsAuthMapTilerHmacSha256MethodMetadata()
       : QgsAuthMethodMetadata( QgsAuthMapTilerHmacSha256Method::AUTH_METHOD_KEY, QgsAuthMapTilerHmacSha256Method::AUTH_METHOD_DESCRIPTION )
     {}
-    QgsAuthMapTilerHmacSha256Method *createAuthMethod() const override {return new QgsAuthMapTilerHmacSha256Method;}
+    QgsAuthMapTilerHmacSha256Method *createAuthMethod() const override { return new QgsAuthMapTilerHmacSha256Method; }
 };
 
 #endif // QGSAUTHHMACSHA256METHOD_H

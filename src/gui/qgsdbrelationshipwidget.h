@@ -39,7 +39,6 @@ class GUI_EXPORT QgsDbRelationWidget : public QWidget, private Ui_QgsDbRelations
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsDbRelationWidget with the specified \a parent widget, for the specified \a connection.
      *
@@ -78,14 +77,11 @@ class GUI_EXPORT QgsDbRelationWidget : public QWidget, private Ui_QgsDbRelations
     void validityChanged( bool isValid );
 
   private:
-
     QgsAbstractDatabaseProviderConnection *mConnection = nullptr;
     QgsDatabaseTableModel *mTableModel = nullptr;
     QSortFilterProxyModel *mProxyModel = nullptr;
     QgsWeakRelation mRelation;
-
 };
-
 
 
 /**
@@ -94,12 +90,11 @@ class GUI_EXPORT QgsDbRelationWidget : public QWidget, private Ui_QgsDbRelations
  *
  * \since QGIS 3.30
  */
-class GUI_EXPORT QgsDbRelationDialog: public QDialog
+class GUI_EXPORT QgsDbRelationDialog : public QDialog
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsDbRelationDialog, with the specified \a parent widget and window \a flags, for the specified \a connection.
      *

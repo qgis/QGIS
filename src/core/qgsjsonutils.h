@@ -44,7 +44,6 @@ class QTextCodec;
 class CORE_EXPORT QgsJsonExporter
 {
   public:
-
     /**
      * Constructor for QgsJsonExporter.
      * \param vectorLayer associated vector layer (required for related attribute export)
@@ -273,7 +272,6 @@ class CORE_EXPORT QgsJsonExporter
     void setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs );
 
   private:
-
     //! Maximum number of decimal places for geometry coordinates
     int mPrecision;
 
@@ -296,7 +294,7 @@ class CORE_EXPORT QgsJsonExporter
     bool mIncludeRelatedAttributes = false;
 
     //! Associated vector layer. Required for related attribute export.
-    QPointer< QgsVectorLayer > mLayer;
+    QPointer<QgsVectorLayer> mLayer;
 
     QgsCoordinateReferenceSystem mCrs;
 
@@ -322,7 +320,6 @@ class CORE_EXPORT QgsJsonUtils
     Q_GADGET
 
   public:
-
     /**
      * Attempts to parse a GeoJSON \a string to a collection of features.
      * It is possible to specify \a fields to parse specific fields, if not provided, no fields will be included.
@@ -373,7 +370,7 @@ class CORE_EXPORT QgsJsonUtils
      * \since QGIS 3.8
      */
     static json exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer = nullptr,
-        const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>(), bool useFieldFormatters = true ) SIP_SKIP;
+                                              const QVector<QVariant> &attributeWidgetCaches = QVector<QVariant>(), bool useFieldFormatters = true ) SIP_SKIP;
 
     /**
      * Parse a simple array (depth=1)
@@ -460,7 +457,6 @@ class CORE_EXPORT QgsJsonUtils
      * adds this information in the JSON output
      */
     static void addCrsInfo( json &value, const QgsCoordinateReferenceSystem &crs ) SIP_SKIP;
-
 };
 
 #endif // QGSJSONUTILS_H

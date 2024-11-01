@@ -23,8 +23,7 @@ QgsPointCloudRequest::QgsPointCloudRequest() = default;
 
 bool QgsPointCloudRequest::operator==( const QgsPointCloudRequest &other ) const
 {
-  return mFilterRect == other.filterRect() &&
-         mAttributes.toFields() == other.attributes().toFields();
+  return mFilterRect == other.filterRect() && mAttributes.toFields() == other.attributes().toFields();
 }
 
 QgsPointCloudAttributeCollection QgsPointCloudRequest::attributes() const

@@ -16,19 +16,15 @@
 #include "qgspointcloudexpressionnodeimpl.h"
 #include "qgspointcloudexpression.h"
 
-const char *QgsPointCloudExpressionNodeBinaryOperator::BINARY_OPERATOR_TEXT[] =
-{
+const char *QgsPointCloudExpressionNodeBinaryOperator::BINARY_OPERATOR_TEXT[] = {
   // this must correspond (number and order of element) to the declaration of the enum BinaryOperator
   "OR", "AND",
   "=", "<>", "<=", ">=", "<", ">",
-  "+", "-", "*", "/", "//", "%", "^"
-};
+  "+", "-", "*", "/", "//", "%", "^" };
 
-const char *QgsPointCloudExpressionNodeUnaryOperator::UNARY_OPERATOR_TEXT[] =
-{
+const char *QgsPointCloudExpressionNodeUnaryOperator::UNARY_OPERATOR_TEXT[] = {
   // this must correspond (number and order of element) to the declaration of the enum UnaryOperator
-  "NOT", "-"
-};
+  "NOT", "-" };
 
 QgsPointCloudExpressionNode::NodeList::~NodeList()
 {
@@ -53,8 +49,10 @@ QString QgsPointCloudExpressionNode::NodeList::dump() const
   bool first = true;
   for ( QgsPointCloudExpressionNode *n : mList )
   {
-    if ( !first ) msg += QLatin1String( ", " );
-    else first = false;
+    if ( !first )
+      msg += QLatin1String( ", " );
+    else
+      first = false;
     msg += n->dump();
   }
   return msg;
@@ -99,7 +97,7 @@ QString QgsPointCloudExpressionNodeUnaryOperator::dump() const
 QSet<QString> QgsPointCloudExpressionNodeUnaryOperator::referencedAttributes() const
 {
   if ( hasCachedStaticValue() )
-    return QSet< QString >();
+    return QSet<QString>();
 
   return mOperand->referencedAttributes();
 }
@@ -161,9 +159,9 @@ double QgsPointCloudExpressionNodeBinaryOperator::evalNode( QgsPointCloudExpress
   if ( mOp == boAnd || mOp == boOr )
   {
     if ( mOp == boAnd && vL == 0. )
-      return 0.;  // shortcut -- no need to evaluate right-hand side
+      return 0.; // shortcut -- no need to evaluate right-hand side
     if ( mOp == boOr && vL != 0. )
-      return 1.;  // shortcut -- no need to evaluate right-hand side
+      return 1.; // shortcut -- no need to evaluate right-hand side
   }
 
   double vR = mOpRight->eval( parent, pointIndex );
@@ -331,7 +329,7 @@ QString QgsPointCloudExpressionNodeBinaryOperator::dump() const
 QSet<QString> QgsPointCloudExpressionNodeBinaryOperator::referencedAttributes() const
 {
   if ( hasCachedStaticValue() )
-    return QSet< QString >();
+    return QSet<QString>();
 
   return mOpLeft->referencedAttributes() + mOpRight->referencedAttributes();
 }
@@ -571,7 +569,7 @@ double QgsPointCloudExpressionNodeInOperator::evalNode( QgsPointCloudExpression 
   double v1 = mNode->eval( parent, pointIndex );
   ENSURE_NO_EVAL_ERROR
 
-  const QList< QgsPointCloudExpressionNode * > nodeList = mList->list();
+  const QList<QgsPointCloudExpressionNode *> nodeList = mList->list();
   for ( QgsPointCloudExpressionNode *n : nodeList )
   {
     double v2 = n->eval( parent, pointIndex );
@@ -600,7 +598,7 @@ QgsPointCloudExpressionNode::NodeType QgsPointCloudExpressionNodeInOperator::nod
 bool QgsPointCloudExpressionNodeInOperator::prepareNode( QgsPointCloudExpression *parent, const QgsPointCloudBlock *block )
 {
   bool res = mNode->prepare( parent, block );
-  const QList< QgsPointCloudExpressionNode * > nodeList = mList->list();
+  const QList<QgsPointCloudExpressionNode *> nodeList = mList->list();
   for ( QgsPointCloudExpressionNode *n : nodeList )
   {
     res = res && n->prepare( parent, block );
@@ -611,10 +609,10 @@ bool QgsPointCloudExpressionNodeInOperator::prepareNode( QgsPointCloudExpression
 QSet<QString> QgsPointCloudExpressionNodeInOperator::referencedAttributes() const
 {
   if ( hasCachedStaticValue() )
-    return QSet< QString >();
+    return QSet<QString>();
 
   QSet<QString> lst( mNode->referencedAttributes() );
-  const QList< QgsPointCloudExpressionNode * > nodeList = mList->list();
+  const QList<QgsPointCloudExpressionNode *> nodeList = mList->list();
   for ( const QgsPointCloudExpressionNode *n : nodeList )
     lst.unite( n->referencedAttributes() );
   return lst;
@@ -624,7 +622,7 @@ QList<const QgsPointCloudExpressionNode *> QgsPointCloudExpressionNodeInOperator
 {
   QList<const QgsPointCloudExpressionNode *> lst;
   lst << this;
-  const QList< QgsPointCloudExpressionNode * > nodeList = mList->list();
+  const QList<QgsPointCloudExpressionNode *> nodeList = mList->list();
   for ( const QgsPointCloudExpressionNode *n : nodeList )
     lst += n->nodes();
   return lst;
@@ -647,7 +645,7 @@ bool QgsPointCloudExpressionNodeInOperator::isStatic( QgsPointCloudExpression *p
   if ( !mNode->isStatic( parent, block ) )
     return false;
 
-  const QList< QgsPointCloudExpressionNode * > nodeList = mList->list();
+  const QList<QgsPointCloudExpressionNode *> nodeList = mList->list();
   for ( QgsPointCloudExpressionNode *n : nodeList )
   {
     if ( !n->isStatic( parent, block ) )

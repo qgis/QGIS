@@ -30,4 +30,3 @@ QgsSymbolWidgetContext QgsPointCloudRendererWidget::context() const
 {
   return mContext;
 }
-

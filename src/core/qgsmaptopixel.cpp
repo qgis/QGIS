@@ -196,16 +196,15 @@ QTransform QgsMapToPixel::transform() const
   {
     //no rotation, return a simplified matrix
     return QTransform::fromScale( 1.0 / mMapUnitsPerPixel, -1.0 / mMapUnitsPerPixel )
-           .translate( -mXMin, - ( mYMin + mHeight * mMapUnitsPerPixel ) );
+      .translate( -mXMin, -( mYMin + mHeight * mMapUnitsPerPixel ) );
   }
   else
   {
     const double cy = mapHeight() / 2.0;
     const double cx = mapWidth() / 2.0;
     return QTransform::fromTranslate( cx, cy )
-           .rotate( rotation )
-           .scale( 1 / mMapUnitsPerPixel, -1 / mMapUnitsPerPixel )
-           .translate( -mXCenter, -mYCenter );
+      .rotate( rotation )
+      .scale( 1 / mMapUnitsPerPixel, -1 / mMapUnitsPerPixel )
+      .translate( -mXCenter, -mYCenter );
   }
 }
-

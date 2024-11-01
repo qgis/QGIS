@@ -41,7 +41,6 @@ email                : nyall dot dawson at gmail dot com
 class QgsFeaturePrivate : public QSharedData
 {
   public:
-
     explicit QgsFeaturePrivate( QgsFeatureId id )
       : fid( id )
       , valid( false )
@@ -78,11 +77,10 @@ class QgsFeaturePrivate : public QSharedData
     //! Optional field map for name-based attribute lookups
     QgsFields fields;
 
-    std::unique_ptr< QgsSymbol > symbol;
+    std::unique_ptr<QgsSymbol> symbol;
 
   private:
     QgsFeaturePrivate &operator=( const QgsFeaturePrivate & ) = delete;
-
 };
 
 /// @endcond

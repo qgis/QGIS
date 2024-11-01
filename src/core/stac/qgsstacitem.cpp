@@ -20,14 +20,14 @@ QgsStacItem::QgsStacItem( const QString &id,
                           const QString &version,
                           const QgsGeometry &geometry,
                           const QVariantMap &properties,
-                          const QVector< QgsStacLink > &links,
-                          const QMap< QString, QgsStacAsset > &assets,
+                          const QVector<QgsStacLink> &links,
+                          const QMap<QString, QgsStacAsset> &assets,
                           const QgsBox3D &bbox )
   : QgsStacObject( id, version, links )
-  ,  mGeometry( geometry )
-  ,  mBbox( bbox )
-  ,  mProperties( properties )
-  ,  mAssets( assets )
+  , mGeometry( geometry )
+  , mBbox( bbox )
+  , mProperties( properties )
+  , mAssets( assets )
 {
 }
 
@@ -68,7 +68,7 @@ QString QgsStacItem::toHtml() const
   html += QStringLiteral( "<li>%1</li>\n" ).arg( mBbox.is2d() ? mBbox.toRectangle().toString() : mBbox.toString() );
   html += QStringLiteral( "</ul>\n" );
 
-  if ( ! mProperties.isEmpty() )
+  if ( !mProperties.isEmpty() )
   {
     html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QStringLiteral( "Properties" ) );
     html += QStringLiteral( "<table class=\"list-view\">\n" );
@@ -90,7 +90,7 @@ QString QgsStacItem::toHtml() const
     html += QStringLiteral( "</table><br/>\n" );
   }
 
-  if ( ! mAssets.isEmpty() )
+  if ( !mAssets.isEmpty() )
   {
     html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QStringLiteral( "Assets" ) );
     for ( auto it = mAssets.constBegin(); it != mAssets.constEnd(); ++it )
@@ -140,12 +140,12 @@ void QgsStacItem::setProperties( const QVariantMap &properties )
   mProperties = properties;
 }
 
-QMap< QString, QgsStacAsset > QgsStacItem::assets() const
+QMap<QString, QgsStacAsset> QgsStacItem::assets() const
 {
   return mAssets;
 }
 
-void QgsStacItem::setAssets( const QMap< QString, QgsStacAsset > &assets )
+void QgsStacItem::setAssets( const QMap<QString, QgsStacAsset> &assets )
 {
   mAssets = assets;
 }
@@ -167,8 +167,7 @@ QDateTime QgsStacItem::dateTime() const
 
 bool QgsStacItem::hasDateTimeRange() const
 {
-  return mProperties.contains( QStringLiteral( "start_datetime" ) ) &&
-         mProperties.contains( QStringLiteral( "end_datetime" ) );
+  return mProperties.contains( QStringLiteral( "start_datetime" ) ) && mProperties.contains( QStringLiteral( "end_datetime" ) );
 }
 
 QgsDateTimeRange QgsStacItem::dateTimeRange() const

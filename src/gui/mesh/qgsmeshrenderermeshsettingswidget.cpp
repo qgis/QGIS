@@ -29,12 +29,10 @@ QgsMeshRendererMeshSettingsWidget::QgsMeshRendererMeshSettingsWidget( QWidget *p
   setupUi( this );
 
   mLineUnitsComboBox->setUnits(
-  {
-    Qgis::RenderUnit::Millimeters,
-    Qgis::RenderUnit::MetersInMapUnits,
-    Qgis::RenderUnit::Pixels,
-    Qgis::RenderUnit::Points
-  } );
+    { Qgis::RenderUnit::Millimeters,
+      Qgis::RenderUnit::MetersInMapUnits,
+      Qgis::RenderUnit::Pixels,
+      Qgis::RenderUnit::Points } );
 
 
   connect( mColorWidget, &QgsColorButton::colorChanged, this, &QgsMeshRendererMeshSettingsWidget::widgetChanged );
@@ -59,7 +57,7 @@ QgsMeshRendererMeshSettings QgsMeshRendererMeshSettingsWidget::settings() const
   return settings;
 }
 
-void QgsMeshRendererMeshSettingsWidget::syncToLayer( )
+void QgsMeshRendererMeshSettingsWidget::syncToLayer()
 {
   if ( !mMeshLayer )
     return;

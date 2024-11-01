@@ -25,8 +25,7 @@ class QgsPointXY;
 class QgsProjectionSelectionTreeWidget;
 class QgsExtentWidget;
 
-extern "C"
-{
+extern "C" {
 #include <grass/gis.h>
 }
 
@@ -41,7 +40,6 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     Q_OBJECT
 
   public:
-
     enum Page
     {
       Database,
@@ -170,6 +168,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
 
     //! Sets error line
     void setError( QLabel *line, const QString &err = QString() );
+
   private:
     //! Gets current gisdbase
     QString gisdbase() const;

@@ -74,7 +74,7 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
 {
   QString sourceCrs;
   QString destinationCrs;
-  const QPair< QString, QString> crses = mTransformContext.coordinateOperations().keys().at( index.row() );
+  const QPair<QString, QString> crses = mTransformContext.coordinateOperations().keys().at( index.row() );
   sourceCrs = crses.first;
   destinationCrs = crses.second;
   const QString proj = mTransformContext.coordinateOperations().value( crses );
@@ -135,7 +135,7 @@ QVariant QgsDatumTransformTableModel::headerData( int section, Qt::Orientation o
     case Qt::ToolTipRole:
       switch ( section )
       {
-        case SourceCrsColumn :
+        case SourceCrsColumn:
           return tr( "Source CRS" );
         case DestinationCrsColumn:
           return tr( "Destination CRS" );
@@ -175,8 +175,7 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
 
   connect( mAddButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::addDatumTransform );
   connect( mRemoveButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::removeDatumTransform );
-  connect( mEditButton, &QToolButton::clicked, this, [ = ]
-  {
+  connect( mEditButton, &QToolButton::clicked, this, [=] {
     const QModelIndexList selectedIndexes = mTableView->selectionModel()->selectedIndexes();
     if ( selectedIndexes.count() > 0 )
     {
@@ -186,8 +185,7 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
 
   connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDatumTransformTableWidget::selectionChanged );
 
-  connect( mTableView, &QTableView::doubleClicked, this, [ = ]( const QModelIndex & index )
-  {
+  connect( mTableView, &QTableView::doubleClicked, this, [=]( const QModelIndex &index ) {
     editDatumTransform( index );
   } );
   mEditButton->setEnabled( false );
@@ -201,7 +199,7 @@ QgsDatumTransformTableWidget::~QgsDatumTransformTableWidget()
 
 void QgsDatumTransformTableWidget::addDatumTransform()
 {
-  QgsDatumTransformDialog dlg( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem(), true, false, false, QPair< int, int >(), nullptr, Qt::WindowFlags(), QString(), QgisApp::instance()->mapCanvas() );
+  QgsDatumTransformDialog dlg( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem(), true, false, false, QPair<int, int>(), nullptr, Qt::WindowFlags(), QString(), QgisApp::instance()->mapCanvas() );
   if ( dlg.exec() )
   {
     const QgsDatumTransformDialog::TransformInfo dt = dlg.selectedDatumTransform();

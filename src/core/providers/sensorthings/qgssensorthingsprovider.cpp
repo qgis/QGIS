@@ -37,13 +37,13 @@
 QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )
 {
-  mSharedData = std::make_shared< QgsSensorThingsSharedData >( uri );
+  mSharedData = std::make_shared<QgsSensorThingsSharedData>( uri );
 
   const QUrl url( QgsSensorThingsSharedData::parseUrl( mSharedData->mRootUri ) );
 
   QNetworkRequest request = QNetworkRequest( url );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsSensorThingsProvider" ) )
-  mSharedData->mHeaders.updateNetworkRequest( request );
+    mSharedData->mHeaders.updateNetworkRequest( request );
 
   QgsBlockingNetworkRequest networkRequest;
   networkRequest.setAuthCfg( mSharedData->mAuthCfg );
@@ -102,7 +102,6 @@ QgsSensorThingsProvider::QgsSensorThingsProvider( const QString &uri, const Prov
     {
       switch ( mSharedData->mEntityType )
       {
-
         case Qgis::SensorThingsEntity::Invalid:
         case Qgis::SensorThingsEntity::Thing:
         case Qgis::SensorThingsEntity::Location:
@@ -168,7 +167,7 @@ long long QgsSensorThingsProvider::featureCount() const
 
   if ( ( mReadFlags & Qgis::DataProviderReadFlag::SkipFeatureCount ) != 0 )
   {
-    return static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
+    return static_cast<long long>( Qgis::FeatureCountState::UnknownCount );
   }
 
   const long long count = mSharedData->featureCount();
@@ -275,7 +274,7 @@ void QgsSensorThingsProvider::setDataSourceUri( const QString &uri )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  mSharedData = std::make_shared< QgsSensorThingsSharedData >( uri );
+  mSharedData = std::make_shared<QgsSensorThingsSharedData>( uri );
   QgsDataProvider::setDataSourceUri( uri );
 }
 
@@ -331,8 +330,8 @@ void QgsSensorThingsProvider::reloadProviderData()
 // QgsSensorThingsProviderMetadata
 //
 
-QgsSensorThingsProviderMetadata::QgsSensorThingsProviderMetadata():
-  QgsProviderMetadata( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_DESCRIPTION )
+QgsSensorThingsProviderMetadata::QgsSensorThingsProviderMetadata()
+  : QgsProviderMetadata( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY, QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_DESCRIPTION )
 {
 }
 
@@ -485,7 +484,7 @@ QString QgsSensorThingsProviderMetadata::encodeUri( const QVariantMap &parts ) c
   }
 
   Qgis::SensorThingsEntity entity = QgsSensorThingsUtils::entitySetStringToEntity(
-                                      parts.value( QStringLiteral( "entity" ) ).toString() );
+    parts.value( QStringLiteral( "entity" ) ).toString() );
   if ( entity == Qgis::SensorThingsEntity::Invalid )
     entity = QgsSensorThingsUtils::stringToEntity( parts.value( QStringLiteral( "entity" ) ).toString() );
 
@@ -501,7 +500,7 @@ QString QgsSensorThingsProviderMetadata::encodeUri( const QVariantMap &parts ) c
     QStringList expandToStringList;
     for ( const QVariant &expansion : expandToParam )
     {
-      const QgsSensorThingsExpansionDefinition expansionDefinition = expansion.value< QgsSensorThingsExpansionDefinition >();
+      const QgsSensorThingsExpansionDefinition expansionDefinition = expansion.value<QgsSensorThingsExpansionDefinition>();
       if ( !expansionDefinition.isValid() )
         continue;
 
@@ -547,7 +546,7 @@ QString QgsSensorThingsProviderMetadata::encodeUri( const QVariantMap &parts ) c
 
   if ( parts.contains( QStringLiteral( "bounds" ) ) && parts.value( QStringLiteral( "bounds" ) ).userType() == qMetaTypeId<QgsRectangle>() )
   {
-    const QgsRectangle bBox = parts.value( QStringLiteral( "bounds" ) ).value< QgsRectangle >();
+    const QgsRectangle bBox = parts.value( QStringLiteral( "bounds" ) ).value<QgsRectangle>();
     dsUri.setParam( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( bBox.xMinimum() ).arg( bBox.yMinimum() ).arg( bBox.xMaximum() ).arg( bBox.yMaximum() ) );
   }
 

@@ -25,7 +25,6 @@ class QgsMssqlDataItemGuiProvider : public QObject, public QgsDataItemGuiProvide
 {
     Q_OBJECT
   public:
-
     QString name() override { return QStringLiteral( "MSSQL" ); }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu,

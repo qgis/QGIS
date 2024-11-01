@@ -42,7 +42,6 @@ class CORE_EXPORT QgsProcessing
     Q_GADGET
 
   public:
-
     //! Available Python output types
     enum class PythonOutputType SIP_MONKEYPATCH_SCOPEENUM
     {
@@ -55,8 +54,7 @@ class CORE_EXPORT QgsProcessing
      *
      * \since QGIS 3.32
      */
-    enum class LayerOptionsFlag : int SIP_ENUM_BASETYPE( IntFlag )
-    {
+    enum class LayerOptionsFlag : int SIP_ENUM_BASETYPE( IntFlag ) {
       SkipIndexGeneration = 1 << 0, //!< Do not generate index when creating a layer. Makes sense only for point cloud layers
     };
     Q_ENUM( LayerOptionsFlag )

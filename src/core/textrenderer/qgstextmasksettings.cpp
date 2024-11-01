@@ -33,7 +33,7 @@ QgsTextMaskSettings::QgsTextMaskSettings( const QgsTextMaskSettings &other ) //N
 {
 }
 
-QgsTextMaskSettings &QgsTextMaskSettings::operator=( const QgsTextMaskSettings &other )  //NOLINT
+QgsTextMaskSettings &QgsTextMaskSettings::operator=( const QgsTextMaskSettings &other ) //NOLINT
 {
   d = other.d;
   return *this;
@@ -51,7 +51,7 @@ bool QgsTextMaskSettings::operator==( const QgsTextMaskSettings &other ) const
        || d->maskedSymbolLayers != other.maskedSymbolLayers() )
     return false;
 
-  if ( static_cast< bool >( d->paintEffect ) != static_cast< bool >( other.paintEffect() )
+  if ( static_cast<bool>( d->paintEffect ) != static_cast<bool>( other.paintEffect() )
        || ( d->paintEffect && d->paintEffect->properties() != other.paintEffect()->properties() ) )
     return false;
 
@@ -197,7 +197,7 @@ void QgsTextMaskSettings::updateDataDefinedProperties( QgsRenderContext &context
 
 QSet<QString> QgsTextMaskSettings::referencedFields( const QgsRenderContext & ) const
 {
-  return QSet< QString >(); // nothing for now
+  return QSet<QString>(); // nothing for now
 }
 
 void QgsTextMaskSettings::readXml( const QDomElement &elem )
@@ -223,7 +223,7 @@ void QgsTextMaskSettings::readXml( const QDomElement &elem )
   }
   d->sizeUnit = QgsUnitTypes::decodeRenderUnit( textMaskElem.attribute( QStringLiteral( "maskSizeUnits" ) ) );
   d->sizeMapUnitScale = QgsSymbolLayerUtils::decodeMapUnitScale( textMaskElem.attribute( QStringLiteral( "maskSizeMapUnitScale" ) ) );
-  d->joinStyle = static_cast< Qt::PenJoinStyle >( textMaskElem.attribute( QStringLiteral( "maskJoinStyle" ), QString::number( Qt::RoundJoin ) ).toUInt() );
+  d->joinStyle = static_cast<Qt::PenJoinStyle>( textMaskElem.attribute( QStringLiteral( "maskJoinStyle" ), QString::number( Qt::RoundJoin ) ).toUInt() );
   d->opacity = textMaskElem.attribute( QStringLiteral( "maskOpacity" ), QStringLiteral( "1.0" ) ).toDouble();
   const QDomElement effectElem = textMaskElem.firstChildElement( QStringLiteral( "effect" ) );
   if ( !effectElem.isNull() )
@@ -243,7 +243,7 @@ QDomElement QgsTextMaskSettings::writeXml( QDomDocument &doc ) const
   textMaskElem.setAttribute( QStringLiteral( "maskSize2" ), d->size );
   textMaskElem.setAttribute( QStringLiteral( "maskSizeUnits" ), QgsUnitTypes::encodeUnit( d->sizeUnit ) );
   textMaskElem.setAttribute( QStringLiteral( "maskSizeMapUnitScale" ), QgsSymbolLayerUtils::encodeMapUnitScale( d->sizeMapUnitScale ) );
-  textMaskElem.setAttribute( QStringLiteral( "maskJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
+  textMaskElem.setAttribute( QStringLiteral( "maskJoinStyle" ), static_cast<unsigned int>( d->joinStyle ) );
   textMaskElem.setAttribute( QStringLiteral( "maskOpacity" ), d->opacity );
   if ( d->paintEffect && !QgsPaintEffectRegistry::isDefaultStack( d->paintEffect.get() ) )
     d->paintEffect->saveProperties( doc, textMaskElem );

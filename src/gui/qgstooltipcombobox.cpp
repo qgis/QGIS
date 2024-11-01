@@ -36,7 +36,7 @@ bool QgsToolTipComboBox::event( QEvent *event )
     const QString description = currentData( Qt::ToolTipRole ).toString();
     if ( !description.isEmpty() )
     {
-      QHelpEvent *helpEvent = static_cast< QHelpEvent *>( event );
+      QHelpEvent *helpEvent = static_cast<QHelpEvent *>( event );
       QPoint pos = mapToGlobal( helpEvent->pos() );
       QToolTip::showText( pos, description );
     }

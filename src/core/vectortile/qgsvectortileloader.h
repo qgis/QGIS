@@ -74,7 +74,6 @@ class CORE_EXPORT QgsVectorTileLoader : public QObject
 {
     Q_OBJECT
   public:
-
     //! Returns raw tile data for the specified range of tiles. Blocks the caller until all tiles are fetched.
     static QList<QgsVectorTileRawData> blockingFetchTileRawData(
       const QgsVectorTileDataProvider *provider,

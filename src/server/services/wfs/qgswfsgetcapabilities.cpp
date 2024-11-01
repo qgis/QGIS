@@ -71,14 +71,14 @@ namespace QgsWfs
 
 
   QDomDocument createGetCapabilitiesDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-      const QgsServerRequest &request )
+                                              const QgsServerRequest &request )
   {
     Q_UNUSED( version )
 
     QDomDocument doc;
 
     //wfs:WFS_Capabilities element
-    QDomElement wfsCapabilitiesElement = doc.createElement( QStringLiteral( "WFS_Capabilities" )/*wms:WFS_Capabilities*/ );
+    QDomElement wfsCapabilitiesElement = doc.createElement( QStringLiteral( "WFS_Capabilities" ) /*wms:WFS_Capabilities*/ );
     wfsCapabilitiesElement.setAttribute( QStringLiteral( "xmlns" ), WFS_NAMESPACE );
     wfsCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
     wfsCapabilitiesElement.setAttribute( QStringLiteral( "xsi:schemaLocation" ), WFS_NAMESPACE + " http://schemas.opengis.net/wfs/1.1.0/wfs.xsd" );
@@ -106,9 +106,9 @@ namespace QgsWfs
      * Adding ogc:Filter_Capabilities in wfsCapabilitiesElement
      */
     //ogc:Filter_Capabilities element
-    QDomElement filterCapabilitiesElement = doc.createElement( QStringLiteral( "ogc:Filter_Capabilities" )/*ogc:Filter_Capabilities*/ );
+    QDomElement filterCapabilitiesElement = doc.createElement( QStringLiteral( "ogc:Filter_Capabilities" ) /*ogc:Filter_Capabilities*/ );
     wfsCapabilitiesElement.appendChild( filterCapabilitiesElement );
-    QDomElement spatialCapabilitiesElement = doc.createElement( QStringLiteral( "ogc:Spatial_Capabilities" )/*ogc:Spatial_Capabilities*/ );
+    QDomElement spatialCapabilitiesElement = doc.createElement( QStringLiteral( "ogc:Spatial_Capabilities" ) /*ogc:Spatial_Capabilities*/ );
     filterCapabilitiesElement.appendChild( spatialCapabilitiesElement );
     //GeometryOperands
     QStringList geometryOperands;
@@ -136,7 +136,7 @@ namespace QgsWfs
       spatialOperatorsElem.appendChild( spatialOperatorElem );
     }
     spatialCapabilitiesElement.appendChild( spatialOperatorsElem );
-    QDomElement scalarCapabilitiesElement = doc.createElement( QStringLiteral( "ogc:Scalar_Capabilities" )/*ogc:Scalar_Capabilities*/ );
+    QDomElement scalarCapabilitiesElement = doc.createElement( QStringLiteral( "ogc:Scalar_Capabilities" ) /*ogc:Scalar_Capabilities*/ );
     filterCapabilitiesElement.appendChild( scalarCapabilitiesElement );
     const QDomElement logicalOperatorsElement = doc.createElement( QStringLiteral( "ogc:LogicalOperators" ) );
     scalarCapabilitiesElement.appendChild( logicalOperatorsElement );
@@ -161,7 +161,6 @@ namespace QgsWfs
     filterCapabilitiesElement.appendChild( idCapabilitiesElement );
 
     return doc;
-
   }
 
   QDomElement getServiceIdentificationElement( QDomDocument &doc, const QgsProject *project )
@@ -234,7 +233,6 @@ namespace QgsWfs
     serviceElem.appendChild( accessConstraintsElem );
 
     return serviceElem;
-
   }
 
   QDomElement getServiceProviderElement( QDomDocument &doc, const QgsProject *project )
@@ -254,8 +252,7 @@ namespace QgsWfs
 
     const QString contactPerson = QgsServerProjectUtils::owsServiceContactPerson( *project );
     const QString contactPosition = QgsServerProjectUtils::owsServiceContactPosition( *project );
-    if ( !contactPerson.isEmpty() ||
-         !contactPosition.isEmpty() )
+    if ( !contactPerson.isEmpty() || !contactPosition.isEmpty() )
     {
       //Contact information
       QDomElement serviceContactElem = doc.createElement( QStringLiteral( "ows:ServiceContact" ) );
@@ -279,9 +276,7 @@ namespace QgsWfs
       const QString contactMail = QgsServerProjectUtils::owsServiceContactMail( *project );
       const QString contactPhone = QgsServerProjectUtils::owsServiceContactPhone( *project );
       const QString onlineResource = QgsServerProjectUtils::owsServiceOnlineResource( *project );
-      if ( !contactMail.isEmpty() ||
-           !contactPhone.isEmpty() ||
-           !onlineResource.isEmpty() )
+      if ( !contactMail.isEmpty() || !contactPhone.isEmpty() || !onlineResource.isEmpty() )
       {
         //Contact information
         QDomElement contactInfoElem = doc.createElement( QStringLiteral( "ows:ContactInfo" ) );
@@ -323,7 +318,6 @@ namespace QgsWfs
     }
 
     return serviceElem;
-
   }
 
   QDomElement getParameterElement( QDomDocument &doc, const QString &name, const QStringList &values )
@@ -368,15 +362,15 @@ namespace QgsWfs
     getCapabilitiesElement.setAttribute( QStringLiteral( "name" ), QStringLiteral( "GetCapabilities" ) );
     // GetCapabilities service
     const QDomElement serviceParameterElement = getParameterElement( doc, QStringLiteral( "service" ),
-        QStringList() << QStringLiteral( "WFS" ) );
+                                                                     QStringList() << QStringLiteral( "WFS" ) );
     getCapabilitiesElement.appendChild( serviceParameterElement );
     // GetCapabilities AcceptVersions
     const QDomElement acceptVersionsParameterElement = getParameterElement( doc, QStringLiteral( "AcceptVersions" ),
-        QStringList() << QStringLiteral( "1.1.0" ) << QStringLiteral( "1.0.0" ) );
+                                                                            QStringList() << QStringLiteral( "1.1.0" ) << QStringLiteral( "1.0.0" ) );
     getCapabilitiesElement.appendChild( acceptVersionsParameterElement );
     // GetCapabilities AcceptFormats
     const QDomElement acceptFormatsParameterElement = getParameterElement( doc, QStringLiteral( "AcceptFormats" ),
-        QStringList() << QStringLiteral( "text/xml" ) );
+                                                                           QStringList() << QStringLiteral( "text/xml" ) );
     getCapabilitiesElement.appendChild( acceptFormatsParameterElement );
     // Add
     oprationsElement.appendChild( getCapabilitiesElement );
@@ -386,9 +380,9 @@ namespace QgsWfs
     describeFeatureTypeElement.setAttribute( QStringLiteral( "name" ), QStringLiteral( "DescribeFeatureType" ) );
     // DescribeFeatureType outputFormat
     const QDomElement dftOutputFormatParameterElement = getParameterElement( doc, QStringLiteral( "outputFormat" ),
-        QStringList() << QStringLiteral( "XMLSCHEMA" )
-        << QStringLiteral( "text/xml; subtype=gml/2.1.2" )
-        << QStringLiteral( "text/xml; subtype=gml/3.1.1" ) );
+                                                                             QStringList() << QStringLiteral( "XMLSCHEMA" )
+                                                                                           << QStringLiteral( "text/xml; subtype=gml/2.1.2" )
+                                                                                           << QStringLiteral( "text/xml; subtype=gml/3.1.1" ) );
     describeFeatureTypeElement.appendChild( dftOutputFormatParameterElement );
     // Add
     oprationsElement.appendChild( describeFeatureTypeElement );
@@ -398,13 +392,13 @@ namespace QgsWfs
     getFeatureElement.setAttribute( QStringLiteral( "name" ), QStringLiteral( "GetFeature" ) );
     // GetFeature outputFormat
     const QDomElement gfOutputFormatParameterElement = getParameterElement( doc, QStringLiteral( "outputFormat" ),
-        QStringList() << QStringLiteral( "text/xml; subtype=gml/2.1.2" )
-        << QStringLiteral( "text/xml; subtype=gml/3.1.1" )
-        << QStringLiteral( "application/vnd.geo+json" ) );
+                                                                            QStringList() << QStringLiteral( "text/xml; subtype=gml/2.1.2" )
+                                                                                          << QStringLiteral( "text/xml; subtype=gml/3.1.1" )
+                                                                                          << QStringLiteral( "application/vnd.geo+json" ) );
     getFeatureElement.appendChild( gfOutputFormatParameterElement );
     // GetFeature resultType
     const QDomElement resultTypeParameterElement = getParameterElement( doc, QStringLiteral( "resultType" ),
-        QStringList() << QStringLiteral( "results" ) << QStringLiteral( "hits" ) );
+                                                                        QStringList() << QStringLiteral( "results" ) << QStringLiteral( "hits" ) );
     getFeatureElement.appendChild( resultTypeParameterElement );
     // Add
     oprationsElement.appendChild( getFeatureElement );
@@ -414,15 +408,14 @@ namespace QgsWfs
     transactionElement.setAttribute( QStringLiteral( "name" ), QStringLiteral( "Transaction" ) );
     // GetFeature inputFormat
     const QDomElement inputFormatParameterElement = getParameterElement( doc, QStringLiteral( "inputFormat" ),
-        QStringList() << QStringLiteral( "text/xml; subtype=gml/2.1.2" )
-        << QStringLiteral( "text/xml; subtype=gml/3.1.1" )
-        << QStringLiteral( "application/vnd.geo+json" ) );
+                                                                         QStringList() << QStringLiteral( "text/xml; subtype=gml/2.1.2" )
+                                                                                       << QStringLiteral( "text/xml; subtype=gml/3.1.1" )
+                                                                                       << QStringLiteral( "application/vnd.geo+json" ) );
     transactionElement.appendChild( inputFormatParameterElement );
     // Add
     oprationsElement.appendChild( transactionElement );
 
     return oprationsElement;
-
   }
 
   QDomElement getFeatureTypeListElement( QDomDocument &doc, QgsServerInterface *serverIface, const QgsProject *project )
@@ -430,13 +423,13 @@ namespace QgsWfs
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
 #else
-    ( void )serverIface;
+    ( void ) serverIface;
 #endif
 
     //wfs:FeatureTypeList element
-    QDomElement featureTypeListElement = doc.createElement( QStringLiteral( "FeatureTypeList" )/*wfs:FeatureTypeList*/ );
+    QDomElement featureTypeListElement = doc.createElement( QStringLiteral( "FeatureTypeList" ) /*wfs:FeatureTypeList*/ );
     //wfs:Operations element
-    QDomElement operationsElement = doc.createElement( QStringLiteral( "Operations" )/*wfs:Operations*/ );
+    QDomElement operationsElement = doc.createElement( QStringLiteral( "Operations" ) /*wfs:Operations*/ );
     featureTypeListElement.appendChild( operationsElement );
     //wfs:Query element
     QDomElement operationElement = doc.createElement( QStringLiteral( "Operation" ) );
@@ -532,16 +525,14 @@ namespace QgsWfs
       }
 
       //wfs:Operations element
-      QDomElement operationsElement = doc.createElement( QStringLiteral( "Operations" )/*wfs:Operations*/ );
+      QDomElement operationsElement = doc.createElement( QStringLiteral( "Operations" ) /*wfs:Operations*/ );
       //wfs:Query element
       QDomElement operationElement = doc.createElement( QStringLiteral( "Operation" ) );
       const QDomText queryText = doc.createTextNode( QStringLiteral( "Query" ) );
       operationElement.appendChild( queryText );
       operationsElement.appendChild( operationElement );
 
-      if ( wfstUpdateLayersId.contains( layer->id() ) ||
-           wfstInsertLayersId.contains( layer->id() ) ||
-           wfstDeleteLayersId.contains( layer->id() ) )
+      if ( wfstUpdateLayersId.contains( layer->id() ) || wfstInsertLayersId.contains( layer->id() ) || wfstDeleteLayersId.contains( layer->id() ) )
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
         QgsVectorDataProvider *provider = vlayer->dataProvider();
@@ -549,18 +540,16 @@ namespace QgsWfs
         {
           //wfs:Insert element
           QDomElement operationElement = doc.createElement( QStringLiteral( "Operation" ) );
-          const QDomText insertText = doc.createTextNode( QStringLiteral( "Insert" )/*wfs:Insert*/ );
+          const QDomText insertText = doc.createTextNode( QStringLiteral( "Insert" ) /*wfs:Insert*/ );
           operationElement.appendChild( insertText );
           operationsElement.appendChild( operationElement );
         }
 
-        if ( ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues ) &&
-             ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeGeometries ) &&
-             wfstUpdateLayersId.contains( layer->id() ) )
+        if ( ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues ) && ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeGeometries ) && wfstUpdateLayersId.contains( layer->id() ) )
         {
           //wfs:Update element
           QDomElement operationElement = doc.createElement( QStringLiteral( "Operation" ) );
-          const QDomText updateText = doc.createTextNode( QStringLiteral( "Update" )/*wfs:Update*/ );
+          const QDomText updateText = doc.createTextNode( QStringLiteral( "Update" ) /*wfs:Update*/ );
           operationElement.appendChild( updateText );
           operationsElement.appendChild( operationElement );
         }
@@ -569,7 +558,7 @@ namespace QgsWfs
         {
           //wfs:Delete element
           QDomElement operationElement = doc.createElement( QStringLiteral( "Operation" ) );
-          const QDomText deleteText = doc.createTextNode( QStringLiteral( "Delete" )/*wfs:Delete*/ );
+          const QDomText deleteText = doc.createTextNode( QStringLiteral( "Delete" ) /*wfs:Delete*/ );
           operationElement.appendChild( deleteText );
           operationsElement.appendChild( operationElement );
         }

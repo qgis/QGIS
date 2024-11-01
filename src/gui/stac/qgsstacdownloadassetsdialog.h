@@ -39,7 +39,6 @@ class QgsStacDownloadAssetsDialog : public QDialog, private Ui::QgsStacDownloadA
   private:
     void selectAll();
     void deselectAll();
-
 };
 
 ///@endcond

@@ -43,7 +43,6 @@ class QgsGeometryCheckContext;
 class ANALYSIS_EXPORT QgsGeometryCheckFactory SIP_ABSTRACT
 {
   public:
-
     /**
      * Destructor
      *

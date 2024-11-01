@@ -34,7 +34,6 @@ class QgsVectorLayerCache;
 class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
 {
   public:
-
     /**
      * This constructor creates a feature iterator, that delivers all cached features. No request is made to the backend.
      *
@@ -61,7 +60,6 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
 
     // QgsAbstractFeatureIterator interface
   protected:
-
     /**
      * Implementation for fetching a feature.
      *
@@ -83,14 +81,14 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
     QgsCachedFeatureIterator( const QgsCachedFeatureIterator &other );
 #endif
 
-    QList< QgsFeatureId > mFeatureIds;
-    QPointer< QgsVectorLayerCache > mVectorLayerCache = nullptr;
-    QList< QgsFeatureId >::ConstIterator mFeatureIdIterator;
+    QList<QgsFeatureId> mFeatureIds;
+    QPointer<QgsVectorLayerCache> mVectorLayerCache = nullptr;
+    QList<QgsFeatureId>::ConstIterator mFeatureIdIterator;
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
 
     QgsGeometry mDistanceWithinGeom;
-    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
+    std::unique_ptr<QgsGeometryEngine> mDistanceWithinEngine;
     double mDistanceWithin = 0;
 };
 
@@ -103,7 +101,6 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
 class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIterator
 {
   public:
-
     /**
      * This constructor creates a feature iterator, which queries the backend and caches retrieved features.
      *
@@ -127,7 +124,6 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
     bool close() override;
 
   protected:
-
     /**
      * Implementation for fetching a feature.
      *
@@ -138,10 +134,9 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
 
   private:
     QgsFeatureIterator mFeatIt;
-    QPointer< QgsVectorLayerCache > mVectorLayerCache;
+    QPointer<QgsVectorLayerCache> mVectorLayerCache;
     QgsFeatureIds mFids;
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
-
 };
 #endif // QGSCACHEDFEATUREITERATOR_H

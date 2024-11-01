@@ -202,7 +202,7 @@ bool QgsPointCloudLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const
   }
   if ( mDataProvider )
   {
-    QDomElement provider  = doc.createElement( QStringLiteral( "provider" ) );
+    QDomElement provider = doc.createElement( QStringLiteral( "provider" ) );
     const QDomText providerText = doc.createTextNode( providerType() );
     provider.appendChild( providerText );
     layerNode.appendChild( provider );
@@ -249,7 +249,7 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
     QDomElement rendererElement = node.firstChildElement( QStringLiteral( "renderer" ) );
     if ( !rendererElement.isNull() )
     {
-      std::unique_ptr< QgsPointCloudRenderer > r( QgsPointCloudRenderer::load( rendererElement, context ) );
+      std::unique_ptr<QgsPointCloudRenderer> r( QgsPointCloudRenderer::load( rendererElement, context ) );
       if ( r )
       {
         setRenderer( r.release() );
@@ -273,7 +273,7 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
     if ( !blendModeNode.isNull() )
     {
       const QDomElement e = blendModeNode.toElement();
-      setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( e.text().toInt() ) ) );
+      setBlendMode( QgsPainting::getCompositionMode( static_cast<Qgis::BlendMode>( e.text().toInt() ) ) );
     }
   }
 
@@ -305,7 +305,7 @@ bool QgsPointCloudLayer::readStyle( const QDomNode &node, QString &, QgsReadWrit
 }
 
 bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
-    const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
+                                         const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -314,7 +314,7 @@ bool QgsPointCloudLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   QDomElement elem = node.toElement();
   writeCommonStyle( elem, doc, context, categories );
 
-  ( void )writeStyle( node, doc, errorMessage, context, categories );
+  ( void ) writeStyle( node, doc, errorMessage, context, categories );
 
   return true;
 }
@@ -348,8 +348,8 @@ bool QgsPointCloudLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString 
   if ( categories.testFlag( Symbology ) )
   {
     // add the blend mode field
-    QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
-    const QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
+    QDomElement blendModeElem = doc.createElement( QStringLiteral( "blendMode" ) );
+    const QDomText blendModeText = doc.createTextNode( QString::number( static_cast<int>( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
   }
@@ -379,7 +379,7 @@ void QgsPointCloudLayer::setTransformContext( const QgsCoordinateTransformContex
 }
 
 void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
-    const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
+                                               const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -395,13 +395,13 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
 
   if ( mPreloadedProvider )
   {
-    mDataProvider.reset( qobject_cast< QgsPointCloudDataProvider * >( mPreloadedProvider.release() ) );
+    mDataProvider.reset( qobject_cast<QgsPointCloudDataProvider *>( mPreloadedProvider.release() ) );
   }
   else
   {
-    std::unique_ptr< QgsScopedRuntimeProfile > profile;
+    std::unique_ptr<QgsScopedRuntimeProfile> profile;
     if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
+      profile = std::make_unique<QgsScopedRuntimeProfile>( tr( "Create %1 provider" ).arg( provider ), QStringLiteral( "projectload" ) );
     mDataProvider.reset( qobject_cast<QgsPointCloudDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, dataSource, options, flags ) ) );
   }
 
@@ -439,19 +439,12 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
     loadDefaultStyleFlag = true;
   }
 
-  if ( !mLayerOptions.skipIndexGeneration &&
-       mDataProvider &&
-       mDataProvider->indexingState() != QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed &&
-       mDataProvider->pointCount() > 0 )
+  if ( !mLayerOptions.skipIndexGeneration && mDataProvider && mDataProvider->indexingState() != QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed && mDataProvider->pointCount() > 0 )
   {
     mDataProvider->generateIndex();
   }
 
-  if ( !mLayerOptions.skipStatisticsCalculation &&
-       mDataProvider &&
-       !mDataProvider->hasStatisticsMetadata() &&
-       mDataProvider->indexingState() == QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed &&
-       mDataProvider->pointCount() > 0 )
+  if ( !mLayerOptions.skipStatisticsCalculation && mDataProvider && !mDataProvider->hasStatisticsMetadata() && mDataProvider->indexingState() == QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed && mDataProvider->pointCount() > 0 )
   {
     calculateStatistics();
   }
@@ -465,16 +458,16 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
 
   if ( !mRenderer || loadDefaultStyleFlag )
   {
-    std::unique_ptr< QgsScopedRuntimeProfile > profile;
+    std::unique_ptr<QgsScopedRuntimeProfile> profile;
     if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-      profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
+      profile = std::make_unique<QgsScopedRuntimeProfile>( tr( "Load layer style" ), QStringLiteral( "projectload" ) );
 
     bool defaultLoadedFlag = false;
 
     if ( loadDefaultStyleFlag && isSpatial() && mDataProvider->capabilities() & QgsPointCloudDataProvider::CreateRenderer )
     {
       // first try to create a renderer directly from the data provider
-      std::unique_ptr< QgsPointCloudRenderer > defaultRenderer( mDataProvider->createRenderer() );
+      std::unique_ptr<QgsPointCloudRenderer> defaultRenderer( mDataProvider->createRenderer() );
       if ( defaultRenderer )
       {
         defaultLoadedFlag = true;
@@ -543,7 +536,7 @@ QString QgsPointCloudLayer::loadDefaultStyle( bool &resultFlag )
   if ( mDataProvider->capabilities() & QgsPointCloudDataProvider::CreateRenderer )
   {
     // first try to create a renderer directly from the data provider
-    std::unique_ptr< QgsPointCloudRenderer > defaultRenderer( mDataProvider->createRenderer() );
+    std::unique_ptr<QgsPointCloudRenderer> defaultRenderer( mDataProvider->createRenderer() );
     if ( defaultRenderer )
     {
       resultFlag = true;
@@ -609,7 +602,7 @@ QString QgsPointCloudLayer::htmlMetadata() const
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
                   + tr( "Version" ) + QStringLiteral( "</td><td>" )
                   + QStringLiteral( "%1.%2" ).arg( originalMetadata.value( QStringLiteral( "major_version" ) ).toString(),
-                      originalMetadata.value( QStringLiteral( "minor_version" ) ).toString() )
+                                                   originalMetadata.value( QStringLiteral( "minor_version" ) ).toString() )
                   + QStringLiteral( "</td></tr>\n" );
   }
 
@@ -617,8 +610,7 @@ QString QgsPointCloudLayer::htmlMetadata() const
   {
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" )
                   + tr( "Data format" ) + QStringLiteral( "</td><td>" )
-                  + QStringLiteral( "%1 (%2)" ).arg( QgsPointCloudDataProvider::translatedDataFormatIds().value( originalMetadata.value( QStringLiteral( "dataformat_id" ) ).toInt() ),
-                      originalMetadata.value( QStringLiteral( "dataformat_id" ) ).toString() ).trimmed()
+                  + QStringLiteral( "%1 (%2)" ).arg( QgsPointCloudDataProvider::translatedDataFormatIds().value( originalMetadata.value( QStringLiteral( "dataformat_id" ) ).toInt() ), originalMetadata.value( QStringLiteral( "dataformat_id" ) ).toString() ).trimmed()
                   + QStringLiteral( "</td></tr>\n" );
   }
 
@@ -677,7 +669,7 @@ QString QgsPointCloudLayer::htmlMetadata() const
 
   // identification section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Identification" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += htmlFormatter.identificationSectionHtml( );
+  myMetadata += htmlFormatter.identificationSectionHtml();
   myMetadata += QLatin1String( "<br><br>\n" );
 
   // extent section
@@ -687,7 +679,7 @@ QString QgsPointCloudLayer::htmlMetadata() const
 
   // Start the Access section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Access" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += htmlFormatter.accessSectionHtml( );
+  myMetadata += htmlFormatter.accessSectionHtml();
   myMetadata += QLatin1String( "<br><br>\n" );
 
   // Attributes section
@@ -716,17 +708,17 @@ QString QgsPointCloudLayer::htmlMetadata() const
 
   // Start the contacts section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Contacts" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += htmlFormatter.contactsSectionHtml( );
+  myMetadata += htmlFormatter.contactsSectionHtml();
   myMetadata += QLatin1String( "<br><br>\n" );
 
   // Start the links section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Links" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += htmlFormatter.linksSectionHtml( );
+  myMetadata += htmlFormatter.linksSectionHtml();
   myMetadata += QLatin1String( "<br><br>\n" );
 
   // Start the history section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "History" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += htmlFormatter.historySectionHtml( );
+  myMetadata += htmlFormatter.historySectionHtml();
   myMetadata += QLatin1String( "<br><br>\n" );
 
   myMetadata += customPropertyHtmlMetadata();
@@ -893,8 +885,7 @@ void QgsPointCloudLayer::calculateStatistics()
   }
 
   QgsPointCloudStatsCalculationTask *task = new QgsPointCloudStatsCalculationTask( mDataProvider->index(), attributes, 1000000 );
-  connect( task, &QgsTask::taskCompleted, this, [this, task]()
-  {
+  connect( task, &QgsTask::taskCompleted, this, [this, task]() {
     mStatistics = task->calculationResults();
 
     // fetch X, Y & Z stats directly from the index
@@ -920,9 +911,9 @@ void QgsPointCloudLayer::calculateStatistics()
       QVariantList classes = index->metadataClasses( attribute );
       for ( const QVariant &c : classes )
       {
-        s.classCount[ c.toInt() ] = index->metadataClassStatistic( attribute, c, Qgis::Statistic::Count ).toInt();
+        s.classCount[c.toInt()] = index->metadataClassStatistic( attribute, c, Qgis::Statistic::Count ).toInt();
       }
-      statsMap[ attribute ] = s;
+      statsMap[attribute] = s;
     }
     mStatistics = QgsPointCloudStatistics( mStatistics.sampledPointsCount(), statsMap );
     //
@@ -943,8 +934,7 @@ void QgsPointCloudLayer::calculateStatistics()
   } );
 
   // In case the statistics calculation fails, QgsTask::taskTerminated will be called
-  connect( task, &QgsTask::taskTerminated, this, [this]()
-  {
+  connect( task, &QgsTask::taskTerminated, this, [this]() {
     if ( mStatsCalculationTask )
     {
       QgsMessageLog::logMessage( QObject::tr( "Failed to calculate statistics of the point cloud %1" ).arg( this->name() ) );
@@ -997,8 +987,7 @@ void QgsPointCloudLayer::loadIndexesForRenderContext( QgsRenderContext &renderer
       if ( subIndex.at( i ).index() )
         continue;
 
-      if ( subIndex.at( i ).extent().intersects( renderExtent ) &&
-           renderExtent.width() < subIndex.at( i ).extent().width() )
+      if ( subIndex.at( i ).extent().intersects( renderExtent ) && renderExtent.width() < subIndex.at( i ).extent().width() )
       {
         mDataProvider->loadSubIndex( i );
       }

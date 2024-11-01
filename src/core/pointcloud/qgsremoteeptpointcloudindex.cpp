@@ -44,7 +44,8 @@
 
 ///@cond PRIVATE
 
-QgsRemoteEptPointCloudIndex::QgsRemoteEptPointCloudIndex() : QgsEptPointCloudIndex()
+QgsRemoteEptPointCloudIndex::QgsRemoteEptPointCloudIndex()
+  : QgsEptPointCloudIndex()
 {
   mHierarchyNodes.insert( IndexedPointCloudNode( 0, 0, 0, 0 ) );
 }
@@ -136,8 +137,8 @@ QgsPointCloudBlockRequest *QgsRemoteEptPointCloudIndex::asyncNodeData( const Ind
 {
   if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
   {
-    return new QgsCachedPointCloudBlockRequest( cached,  n, mUri, attributes(), request.attributes(),
-           scale(), offset(), mFilterExpression, request.filterRect() );
+    return new QgsCachedPointCloudBlockRequest( cached, n, mUri, attributes(), request.attributes(),
+                                                scale(), offset(), mFilterExpression, request.filterRect() );
   }
 
   if ( !loadNodeHierarchy( n ) )
@@ -190,8 +191,7 @@ bool QgsRemoteEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode
     {
       nodePathToRoot.push_back( currentNode );
       currentNode = currentNode.parentNode();
-    }
-    while ( currentNode.d() >= 0 );
+    } while ( currentNode.d() >= 0 );
   }
 
   for ( int i = nodePathToRoot.size() - 1; i >= 0 && !mHierarchy.contains( nodeId ); --i )

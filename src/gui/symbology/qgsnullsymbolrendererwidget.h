@@ -34,7 +34,6 @@ class GUI_EXPORT QgsNullSymbolRendererWidget : public QgsRendererWidget
     Q_OBJECT
 
   public:
-
     //! Creates a new QgsNullSymbolRendererWidget object
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
@@ -46,10 +45,8 @@ class GUI_EXPORT QgsNullSymbolRendererWidget : public QgsRendererWidget
     QgsFeatureRenderer *renderer() override;
 
   protected:
-
     //! Renderer being configured by the widget
-    std::unique_ptr< QgsNullSymbolRenderer > mRenderer;
-
+    std::unique_ptr<QgsNullSymbolRenderer> mRenderer;
 };
 
 

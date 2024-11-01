@@ -38,7 +38,6 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsShortcutsManager.
      * \param parent parent object

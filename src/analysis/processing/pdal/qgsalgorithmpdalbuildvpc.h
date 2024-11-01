@@ -30,9 +30,7 @@
  */
 class QgsPdalBuildVpcAlgorithm : public QgsPdalAlgorithmBase
 {
-
   public:
-
     QgsPdalBuildVpcAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;

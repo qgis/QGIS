@@ -57,7 +57,6 @@ class CORE_EXPORT QgsClassificationMethodRegistry
     QIcon icon( const QString &id ) const;
 
   private:
-
     QMap<QString, QgsClassificationMethod *> mMethods;
 };
 

@@ -186,7 +186,7 @@ QgsWCSRootItem::QgsWCSRootItem( QgsDataItem *parent, QString name, QString path 
   populate();
 }
 
-QVector<QgsDataItem *>QgsWCSRootItem::createChildren()
+QVector<QgsDataItem *> QgsWCSRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
   const QStringList list = QgsOwsConnection::connectionList( "WCS" );

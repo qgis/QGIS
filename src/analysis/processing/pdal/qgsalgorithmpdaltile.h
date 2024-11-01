@@ -30,9 +30,7 @@
  */
 class QgsPdalTileAlgorithm : public QgsPdalAlgorithmBase
 {
-
   public:
-
     QgsPdalTileAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;

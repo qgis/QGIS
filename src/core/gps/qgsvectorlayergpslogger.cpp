@@ -66,7 +66,7 @@ void QgsVectorLayerGpsLogger::setDestinationField( Qgis::GpsInformationComponent
   if ( field.isEmpty() )
     mDestinationFields.remove( component );
   else
-    mDestinationFields[ component ] = field;
+    mDestinationFields[component] = field;
 }
 
 QString QgsVectorLayerGpsLogger::destinationField( Qgis::GpsInformationComponent component ) const
@@ -90,7 +90,7 @@ void QgsVectorLayerGpsLogger::setTransformContext( const QgsCoordinateTransformC
 
 void QgsVectorLayerGpsLogger::endCurrentTrack()
 {
-  const QVector< QgsPoint > track = currentTrack();
+  const QVector<QgsPoint> track = currentTrack();
   if ( track.isEmpty() )
     return;
 
@@ -308,4 +308,3 @@ QVariant QgsVectorLayerGpsLogger::timestamp( QgsVectorLayer *vlayer, int idx, co
   }
   return value;
 }
-

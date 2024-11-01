@@ -208,7 +208,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void removeStyleDatabase();
     void newStyleDatabase();
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
 
     /**
      * Called whenever user select the add ICC profile button
@@ -238,7 +238,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 #endif
 
   private:
-
     /**
       * Called when the user sets a CRS for the project.
       */
@@ -265,20 +264,20 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     // List for all ellispods, also None and Custom
     struct EllipsoidDefs
     {
-      QString acronym;
-      QString description;
-      double semiMajor;
-      double semiMinor;
+        QString acronym;
+        QString description;
+        double semiMajor;
+        double semiMinor;
     };
     QList<EllipsoidDefs> mEllipsoidList;
     int mEllipsoidIndex;
     bool mBlockCrsUpdates = false;
     QColorSpace mColorSpace;
 
-    QList< QgsOptionsPageWidget * > mAdditionalProjectPropertiesWidgets;
+    QList<QgsOptionsPageWidget *> mAdditionalProjectPropertiesWidgets;
 
-    std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
-    std::unique_ptr< QgsGeographicCoordinateNumericFormat > mGeographicCoordinateFormat;
+    std::unique_ptr<QgsBearingNumericFormat> mBearingFormat;
+    std::unique_ptr<QgsGeographicCoordinateNumericFormat> mGeographicCoordinateFormat;
 
     //! populate WMTS tree
     void populateWmtsTree( const QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem );

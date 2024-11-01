@@ -30,7 +30,7 @@ QgsTextAnnotation::QgsTextAnnotation( QObject *parent )
 
 QgsTextAnnotation *QgsTextAnnotation::clone() const
 {
-  std::unique_ptr< QgsTextAnnotation > c( new QgsTextAnnotation() );
+  std::unique_ptr<QgsTextAnnotation> c( new QgsTextAnnotation() );
   copyCommonProperties( c.get() );
   c->setDocument( mDocument.get() );
   return c.release();
@@ -53,7 +53,7 @@ void QgsTextAnnotation::setDocument( const QTextDocument *doc )
 void QgsTextAnnotation::renderAnnotation( QgsRenderContext &context, QSizeF size ) const
 {
   QPainter *painter = context.painter();
-  if ( !mDocument || ! painter || ( context.feedback() && context.feedback()->isCanceled() ) )
+  if ( !mDocument || !painter || ( context.feedback() && context.feedback()->isCanceled() ) )
   {
     return;
   }

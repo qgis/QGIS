@@ -45,7 +45,6 @@
 class CORE_EXPORT QgsCredentials
 {
   public:
-
     virtual ~QgsCredentials() = default;
 
     /**
@@ -99,7 +98,6 @@ class CORE_EXPORT QgsCredentials
     QMutex *mutex() { return &mAuthMutex; }
 
   protected:
-
     QgsCredentials() = default;
 
     //! request a password
@@ -119,7 +117,7 @@ class CORE_EXPORT QgsCredentials
 #endif
 
     //! cache for already requested credentials in this session
-    QMap< QString, QPair<QString, QString> > mCredentialCache;
+    QMap<QString, QPair<QString, QString>> mCredentialCache;
 
     //! Pointer to the credential instance
     static QgsCredentials *sInstance;

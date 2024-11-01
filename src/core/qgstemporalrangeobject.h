@@ -33,7 +33,6 @@
 class CORE_EXPORT QgsTemporalRangeObject
 {
   public:
-
     /**
      * Constructor QgsTemporalRangeObject.
      *
@@ -82,13 +81,11 @@ class CORE_EXPORT QgsTemporalRangeObject
     const QgsDateTimeRange &temporalRange() const;
 
   private:
-
     //! Temporal state
     bool mTemporal = false;
 
     //! Represents datetime range member.
     QgsDateTimeRange mDateTimeRange;
-
 };
 
 #endif // QGSTEMPORALRANGEOBJECT_H

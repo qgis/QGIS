@@ -27,7 +27,7 @@
 % ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgssnaptogridcanvasitem.h>
-% End
+  % End
 #endif
 
 /**
@@ -38,7 +38,8 @@
  * \since QGIS 3.4
  */
 #ifndef SIP_RUN
-class GUI_EXPORT QgsSnapToGridCanvasItem : public QObject, public QgsMapCanvasItem
+  class GUI_EXPORT QgsSnapToGridCanvasItem : public QObject,
+  public QgsMapCanvasItem
 {
 #else
 class GUI_EXPORT QgsSnapToGridCanvasItem : public QgsMapCanvasItem
@@ -63,7 +64,6 @@ class GUI_EXPORT QgsSnapToGridCanvasItem : public QgsMapCanvasItem
 #endif
 
   public:
-
     /**
      * Will automatically be added to the \a mapCanvas.
      */

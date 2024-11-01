@@ -42,4 +42,3 @@ QgsMimeDataUtils::UriList QgsProjectItem::mimeUris() const
 
   return { u };
 }
-

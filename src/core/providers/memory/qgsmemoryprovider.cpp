@@ -76,7 +76,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
 
   mNextFeatureId = 1;
 
-  setNativeTypes( QList< NativeType >()
+  setNativeTypes( QList<NativeType>()
                   << QgsVectorDataProvider::NativeType( tr( "Whole Number (integer)" ), QStringLiteral( "integer" ), QMetaType::Type::Int, 0, 10 )
                   // Decimal number from OGR/Shapefile/dbf may come with length up to 32 and
                   // precision up to length-2 = 30 (default, if width is not specified in dbf is length = 24 precision = 15)
@@ -120,19 +120,18 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
 
                   // complex types
                   << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantMap ), QStringLiteral( "map" ), QMetaType::Type::QVariantMap, -1, -1, -1, -1 )
-                  << QgsVectorDataProvider::NativeType( tr( "Geometry" ), QStringLiteral( "geometry" ), QMetaType::Type::User )
-                );
+                  << QgsVectorDataProvider::NativeType( tr( "Geometry" ), QStringLiteral( "geometry" ), QMetaType::Type::User ) );
 
   if ( query.hasQueryItem( QStringLiteral( "field" ) ) )
   {
     QList<QgsField> attributes;
     const thread_local QRegularExpression reFieldDef( "\\:"
-        "([\\w\\s]+)"                // type
-        "(?:\\((\\-?\\d+)"           // length
-        "(?:\\,(\\-?\\d+))?"         // precision
-        "\\))?(\\[\\])?"             // array
-        "$",
-        QRegularExpression::CaseInsensitiveOption );
+                                                      "([\\w\\s]+)"        // type
+                                                      "(?:\\((\\-?\\d+)"   // length
+                                                      "(?:\\,(\\-?\\d+))?" // precision
+                                                      "\\))?(\\[\\])?"     // array
+                                                      "$",
+                                                      QRegularExpression::CaseInsensitiveOption );
     const QStringList fields = query.allQueryItemValues( QStringLiteral( "field" ) );
     for ( int i = 0; i < fields.size(); i++ )
     {
@@ -229,7 +228,6 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
   {
     createSpatialIndex();
   }
-
 }
 
 QgsMemoryProvider::~QgsMemoryProvider()
@@ -320,7 +318,6 @@ QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
   uri.setQuery( query );
 
   return QString( uri.toEncoded() );
-
 }
 
 QString QgsMemoryProvider::storageType() const
@@ -379,7 +376,7 @@ long long QgsMemoryProvider::featureCount() const
     return mFeatures.count();
 
   // subset string set, no alternative but testing each feature
-  QgsFeatureIterator fit = QgsFeatureIterator( new QgsMemoryFeatureIterator( new QgsMemoryFeatureSource( this ), true,  QgsFeatureRequest().setNoAttributes() ) );
+  QgsFeatureIterator fit = QgsFeatureIterator( new QgsMemoryFeatureIterator( new QgsMemoryFeatureSource( this ), true, QgsFeatureRequest().setNoAttributes() ) );
   long long count = 0;
   QgsFeature feature;
   while ( fit.nextFeature( feature ) )
@@ -407,7 +404,7 @@ QgsCoordinateReferenceSystem QgsMemoryProvider::crs() const
 
 void QgsMemoryProvider::handlePostCloneOperations( QgsVectorDataProvider *source )
 {
-  if ( QgsMemoryProvider *other = qobject_cast< QgsMemoryProvider * >( source ) )
+  if ( QgsMemoryProvider *other = qobject_cast<QgsMemoryProvider *>( source ) )
   {
     // these properties aren't copied when cloning a memory provider by uri, so we need to do it manually
     mFeatures = other->mFeatures;
@@ -428,9 +425,9 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   // For rollback
   const auto oldExtent { mExtent };
   const auto oldNextFeatureId { mNextFeatureId };
-  QgsFeatureIds addedFids ;
+  QgsFeatureIds addedFids;
 
-  for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end() && result ; ++it )
+  for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end() && result; ++it )
   {
     it->setId( mNextFeatureId );
     it->setValid( true );
@@ -459,11 +456,9 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     {
       it->clearGeometry();
     }
-    else if ( it->hasGeometry() && QgsWkbTypes::geometryType( it->geometry().wkbType() ) !=
-              QgsWkbTypes::geometryType( mWkbType ) )
+    else if ( it->hasGeometry() && QgsWkbTypes::geometryType( it->geometry().wkbType() ) != QgsWkbTypes::geometryType( mWkbType ) )
     {
-      pushError( tr( "Could not add feature with geometry type %1 to layer of type %2" ).arg( QgsWkbTypes::displayString( it->geometry().wkbType() ),
-                 QgsWkbTypes::displayString( mWkbType ) ) );
+      pushError( tr( "Could not add feature with geometry type %1 to layer of type %2" ).arg( QgsWkbTypes::displayString( it->geometry().wkbType() ), QgsWkbTypes::displayString( mWkbType ) ) );
       result = false;
       continue;
     }
@@ -475,13 +470,13 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     {
       const QVariant originalValue = it->attribute( i );
       QVariant attrValue = originalValue;
-      if ( ! QgsVariantUtils::isNull( attrValue ) && ! mFields.at( i ).convertCompatible( attrValue, &errorMessage ) )
+      if ( !QgsVariantUtils::isNull( attrValue ) && !mFields.at( i ).convertCompatible( attrValue, &errorMessage ) )
       {
         // Push first conversion error only
         if ( result )
         {
           pushError( tr( "Could not store attribute \"%1\": %2" )
-                     .arg( mFields.at( i ).name(), errorMessage ) );
+                       .arg( mFields.at( i ).name(), errorMessage ) );
         }
         result = false;
         conversionError = true;
@@ -521,7 +516,7 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   }
 
   // Roll back
-  if ( ! result && flags.testFlag( QgsFeatureSink::Flag::RollBackOnErrors ) )
+  if ( !result && flags.testFlag( QgsFeatureSink::Flag::RollBackOnErrors ) )
   {
     for ( const QgsFeatureId &addedFid : addedFids )
     {
@@ -683,16 +678,17 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &at
 
       QVariant attrValue = it2.value();
       // Check attribute conversion
-      const bool conversionError { ! QgsVariantUtils::isNull( attrValue )
-                                   && ! mFields.at( it2.key() ).convertCompatible( attrValue, &errorMessage ) };
+      const bool conversionError { !QgsVariantUtils::isNull( attrValue )
+                                   && !mFields.at( it2.key() ).convertCompatible( attrValue, &errorMessage ) };
       if ( conversionError )
       {
         // Push first conversion error only
         if ( result )
         {
           pushError( tr( "Could not change attribute %1 having type %2 for feature %4: %3" )
-                     .arg( mFields.at( it2.key() ).name(), it2.value( ).typeName(),
-                           errorMessage ).arg( it.key() ) );
+                       .arg( mFields.at( it2.key() ).name(), it2.value().typeName(),
+                             errorMessage )
+                       .arg( it.key() ) );
         }
         result = false;
         break;
@@ -704,7 +700,7 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap &at
   }
 
   // Roll back
-  if ( ! result )
+  if ( !result )
   {
     changeAttributeValues( rollBackMap );
   }
@@ -804,9 +800,7 @@ Qgis::SpatialIndexPresence QgsMemoryProvider::hasSpatialIndex() const
 
 Qgis::VectorProviderCapabilities QgsMemoryProvider::capabilities() const
 {
-  return Qgis::VectorProviderCapability::AddFeatures | Qgis::VectorProviderCapability::DeleteFeatures | Qgis::VectorProviderCapability::ChangeGeometries |
-         Qgis::VectorProviderCapability::ChangeAttributeValues | Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::DeleteAttributes | Qgis::VectorProviderCapability::RenameAttributes | Qgis::VectorProviderCapability::CreateSpatialIndex |
-         Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::CircularGeometries | Qgis::VectorProviderCapability::FastTruncate;
+  return Qgis::VectorProviderCapability::AddFeatures | Qgis::VectorProviderCapability::DeleteFeatures | Qgis::VectorProviderCapability::ChangeGeometries | Qgis::VectorProviderCapability::ChangeAttributeValues | Qgis::VectorProviderCapability::AddAttributes | Qgis::VectorProviderCapability::DeleteAttributes | Qgis::VectorProviderCapability::RenameAttributes | Qgis::VectorProviderCapability::CreateSpatialIndex | Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::CircularGeometries | Qgis::VectorProviderCapability::FastTruncate;
 }
 
 bool QgsMemoryProvider::truncate()

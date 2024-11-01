@@ -48,7 +48,7 @@ QgsProviderSublayerTask::~QgsProviderSublayerTask() = default;
 
 bool QgsProviderSublayerTask::run()
 {
-  mFeedback = std::make_unique< QgsFeedback >();
+  mFeedback = std::make_unique<QgsFeedback>();
 
   Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlag::ResolveGeometryType | Qgis::SublayerQueryFlag::CountFeatures;
   if ( mIncludeSystemTables )

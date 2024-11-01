@@ -113,7 +113,7 @@ void QgsTiledSceneRendererPropertiesWidget::setContext( const QgsSymbolWidgetCon
 
 void QgsTiledSceneRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 {
-  mLayer = qobject_cast< QgsTiledSceneLayer * >( layer );
+  mLayer = qobject_cast<QgsTiledSceneLayer *>( layer );
 
   mBlockChangedSignal = true;
   mOpacityWidget->setOpacity( mLayer->opacity() );
@@ -173,8 +173,8 @@ void QgsTiledSceneRendererPropertiesWidget::rendererChanged()
   const QString rendererName = cboRenderers->currentData().toString();
 
   //Retrieve the previous renderer: from the old active widget if possible, otherwise from the layer
-  std::unique_ptr< QgsTiledSceneRenderer > oldRenderer;
-  std::unique_ptr< QgsTiledSceneRenderer > newRenderer;
+  std::unique_ptr<QgsTiledSceneRenderer> oldRenderer;
+  std::unique_ptr<QgsTiledSceneRenderer> newRenderer;
   if ( mActiveWidget )
     newRenderer.reset( mActiveWidget->renderer() );
 
@@ -234,4 +234,3 @@ void QgsTiledSceneRendererPropertiesWidget::emitWidgetChanged()
   if ( !mBlockChangedSignal )
     emit widgetChanged();
 }
-

@@ -33,12 +33,11 @@ class QItemSelectionModel;
  * \ingroup gui
  * \class QgsAttributeTableFilterModel
  */
-class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, public QgsFeatureModel
+class GUI_EXPORT QgsAttributeTableFilterModel : public QSortFilterProxyModel, public QgsFeatureModel
 {
     Q_OBJECT
 
   public:
-
     /**
      * The filter mode defines how the rows should be filtered.
      */
@@ -72,9 +71,8 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * \note Prior to QGIS 3.36 this was available as QgsAttributeTableFilterModel::Role
      * \since QGIS 3.36
      */
-    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAttributeTableFilterModel, Role ) : int
-    {
-      Type SIP_MONKEYPATCH_COMPAT_NAME(TypeRole) = static_cast< int >( QgsAttributeTableModel::CustomRole::User ) //!< The type of a given column
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAttributeTableFilterModel, Role ) : int {
+      Type SIP_MONKEYPATCH_COMPAT_NAME( TypeRole ) = static_cast<int>( QgsAttributeTableModel::CustomRole::User ) //!< The type of a given column
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -289,7 +287,6 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     void filterError( const QString &errorMessage );
 
   protected:
-
     /**
      * Returns TRUE if the source row will be accepted
      *

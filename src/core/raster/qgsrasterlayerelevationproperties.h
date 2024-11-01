@@ -35,11 +35,9 @@ class QgsRasterLayer;
  */
 class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevationProperties
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRasterLayerElevationProperties, with the specified \a parent object.
      */
@@ -53,7 +51,7 @@ class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevatio
     QString htmlSummary() const override;
     bool isVisibleInZRange( const QgsDoubleRange &range, QgsMapLayer *layer = nullptr ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
-    QList< double > significantZValues( QgsMapLayer *layer ) const override;
+    QList<double> significantZValues( QgsMapLayer *layer ) const override;
     bool showByDefaultInElevationProfilePlots() const override;
     QgsMapLayerElevationProperties::Flags flags() const override;
 
@@ -260,7 +258,6 @@ class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevatio
     static bool layerLooksLikeDem( QgsRasterLayer *layer );
 
   private:
-
     void setDefaultProfileLineSymbol( const QColor &color );
     void setDefaultProfileFillSymbol( const QColor &color );
 
@@ -268,14 +265,14 @@ class CORE_EXPORT QgsRasterLayerElevationProperties : public QgsMapLayerElevatio
 
     Qgis::RasterElevationMode mMode = Qgis::RasterElevationMode::RepresentsElevationSurface;
 
-    std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
-    std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;
+    std::unique_ptr<QgsLineSymbol> mProfileLineSymbol;
+    std::unique_ptr<QgsFillSymbol> mProfileFillSymbol;
     Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::Line;
-    double mElevationLimit = std::numeric_limits< double >::quiet_NaN();
+    double mElevationLimit = std::numeric_limits<double>::quiet_NaN();
     int mBandNumber = 1;
 
     QgsDoubleRange mFixedRange;
-    QMap< int, QgsDoubleRange > mRangePerBand;
+    QMap<int, QgsDoubleRange> mRangePerBand;
 };
 
 #endif // QGSRASTERLAYERELEVATIONPROPERTIES_H

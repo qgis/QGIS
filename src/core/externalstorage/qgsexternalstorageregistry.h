@@ -36,7 +36,6 @@ class QgsExternalStorage;
 class CORE_EXPORT QgsExternalStorageRegistry
 {
   public:
-
     /**
      * Constructor - creates a registry of external storage backends
      */
@@ -66,7 +65,7 @@ class CORE_EXPORT QgsExternalStorageRegistry
     void unregisterExternalStorage( QgsExternalStorage *storage );
 
   private:
-    QList< QgsExternalStorage * > mBackends;
+    QList<QgsExternalStorage *> mBackends;
 };
 
 #endif // QGSEXTERNALSTORAGEREGISTRY_H

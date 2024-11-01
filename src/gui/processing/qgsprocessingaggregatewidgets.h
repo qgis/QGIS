@@ -38,25 +38,23 @@ class QTableView;
  *
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsAggregateMappingModel: public QAbstractTableModel
+class GUI_EXPORT QgsAggregateMappingModel : public QAbstractTableModel
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * The ColumnDataIndex enum represents the column index for the view
      */
     enum class ColumnDataIndex : int
     {
-      SourceExpression,       //!< Expression
-      Aggregate,              //!< Aggregate name
-      Delimiter,              //!< Delimiter
-      DestinationName,        //!< Destination field name
-      DestinationType,        //!< Destination field type string
-      DestinationLength,      //!< Destination field length
-      DestinationPrecision,   //!< Destination field precision
+      SourceExpression,     //!< Expression
+      Aggregate,            //!< Aggregate name
+      Delimiter,            //!< Delimiter
+      DestinationName,      //!< Destination field name
+      DestinationType,      //!< Destination field type string
+      DestinationLength,    //!< Destination field length
+      DestinationPrecision, //!< Destination field precision
     };
 
     Q_ENUM( ColumnDataIndex );
@@ -66,18 +64,17 @@ class GUI_EXPORT QgsAggregateMappingModel: public QAbstractTableModel
      */
     struct Aggregate
     {
-      //! The source expression used as the input for the aggregate calculation
-      QString source;
+        //! The source expression used as the input for the aggregate calculation
+        QString source;
 
-      //! Aggregate name
-      QString aggregate;
+        //! Aggregate name
+        QString aggregate;
 
-      //! Delimiter string
-      QString delimiter;
+        //! Delimiter string
+        QString delimiter;
 
-      //! The field in its current status (it might have been renamed)
-      QgsField field;
-
+        //! The field in its current status (it might have been renamed)
+        QgsField field;
     };
 
     /**
@@ -131,13 +128,11 @@ class GUI_EXPORT QgsAggregateMappingModel: public QAbstractTableModel
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
   private:
-
     bool moveUpOrDown( const QModelIndex &index, bool up = true );
 
     QList<Aggregate> mMapping;
     QgsFields mSourceFields;
-    std::unique_ptr< QgsFieldMappingModel::ExpressionContextGenerator> mExpressionContextGenerator;
-
+    std::unique_ptr<QgsFieldMappingModel::ExpressionContextGenerator> mExpressionContextGenerator;
 };
 
 /**
@@ -151,7 +146,6 @@ class GUI_EXPORT QgsAggregateMappingWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructs a QgsAggregateMappingWidget from a set of \a sourceFields. A \a parent object
      * can also be specified.
@@ -216,34 +210,32 @@ class GUI_EXPORT QgsAggregateMappingWidget : public QgsPanelWidget
     void appendField( const QgsField &field, const QString &source = QString(), const QString &aggregate = QString() );
 
     //! Removes the currently selected field from the model
-    bool removeSelectedFields( );
+    bool removeSelectedFields();
 
     //! Moves up currently selected field
-    bool moveSelectedFieldsUp( );
+    bool moveSelectedFieldsUp();
 
     //! Moves down currently selected field
-    bool moveSelectedFieldsDown( );
+    bool moveSelectedFieldsDown();
 
   private:
-
     QTableView *mTableView = nullptr;
     QAbstractTableModel *mModel = nullptr;
-    QPointer< QgsVectorLayer > mSourceLayer;
+    QPointer<QgsVectorLayer> mSourceLayer;
     void updateColumns();
     //! Returns selected row indexes in ascending order
-    std::list<int> selectedRows( );
+    std::list<int> selectedRows();
 };
 
 /// @cond PRIVATE
 
 #ifndef SIP_RUN
 
-class QgsAggregateMappingDelegate: public QStyledItemDelegate
+class QgsAggregateMappingDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
   public:
-
     QgsAggregateMappingDelegate( QObject *parent = nullptr );
 
     // QAbstractItemDelegate interface

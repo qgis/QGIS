@@ -55,7 +55,7 @@ class QImage;
 class QPixmap;
 class QSlider;
 
-typedef QList < QPair< QString, QColor > > QgsLegendColorList;
+typedef QList<QPair<QString, QColor>> QgsLegendColorList;
 
 /**
  * \ingroup core
@@ -79,7 +79,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     Q_OBJECT
 
   public:
-
     static const QgsSettingsEntryBool *settingsRasterDefaultEarlyResampling SIP_SKIP;
     static const QgsSettingsEntryDouble *settingsRasterDefaultOversampling SIP_SKIP;
 
@@ -112,26 +111,25 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      */
     struct LayerOptions
     {
-
-      /**
+        /**
        * Constructor for LayerOptions.
        */
-      explicit LayerOptions( bool loadDefaultStyle = true,
-                             const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() )
-        : loadDefaultStyle( loadDefaultStyle )
-        , transformContext( transformContext )
-      {}
+        explicit LayerOptions( bool loadDefaultStyle = true,
+                               const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() )
+          : loadDefaultStyle( loadDefaultStyle )
+          , transformContext( transformContext )
+        {}
 
-      //! Sets to TRUE if the default layer style should be loaded
-      bool loadDefaultStyle = true;
+        //! Sets to TRUE if the default layer style should be loaded
+        bool loadDefaultStyle = true;
 
-      /**
+        /**
        * Coordinate transform context
        * \since QGIS 3.8
        */
-      QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext();
+        QgsCoordinateTransformContext transformContext = QgsCoordinateTransformContext();
 
-      /**
+        /**
        * Controls whether the layer is allowed to have an invalid/unknown CRS.
        *
        * If TRUE, then no validation will be performed on the layer's CRS and the layer
@@ -144,8 +142,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
        *
        * \since QGIS 3.10
        */
-      bool skipCrsValidation = false;
-
+        bool skipCrsValidation = false;
     };
 
     /**
@@ -170,17 +167,19 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsRasterLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+        QString str
+      = QStringLiteral( "<QgsRasterLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    /**
+        /**
      * Returns a new instance equivalent to this one. A new provider is
      *  created for the same data source and renderer is cloned too.
      * \returns a new layer instance
      */
-    QgsRasterLayer *clone() const override SIP_FACTORY;
+        QgsRasterLayer *
+      clone() const override SIP_FACTORY;
 
     QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
 
@@ -196,7 +195,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     static bool isValidRasterFileName( const QString &fileNameQString );
 
     //! Returns time stamp for given file name
-    static QDateTime lastModified( const QString   &name );
+    static QDateTime lastModified( const QString &name );
 
     /**
      * Set the data provider.
@@ -310,13 +309,13 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      * Returns the number of attribute tables for the raster by counting the number of bands that have an associated attribute table.
      * \since QGIS 3.30
      */
-    int attributeTableCount( ) const;
+    int attributeTableCount() const;
 
     /**
      * Returns TRUE if the raster renderer is suitable for creation of a raster attribute table. The supported renderers are QgsPalettedRasterRenderer and QgsSingleBandPseudoColorRenderer.
      * \since QGIS 3.30
      */
-    bool canCreateRasterAttributeTable( );
+    bool canCreateRasterAttributeTable();
 
     /**
      * Returns the source data provider.
@@ -502,7 +501,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
                      const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const override;
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
-    QString decodedSource( const QString &source, const QString &provider,  const QgsReadWriteContext &context ) const override;
+    QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const override;
 
   private:
     //! \brief Initialize default values
@@ -583,14 +582,13 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
 
     Qgis::RasterLayerType mRasterType = Qgis::RasterLayerType::GrayOrUndefined;
 
-    std::unique_ptr< QgsRasterPipe > mPipe;
+    std::unique_ptr<QgsRasterPipe> mPipe;
 
     //! To save computations and possible infinite cycle of notifications
     QgsRectangle mLastRectangleUsedByRefreshContrastEnhancementIfNeeded;
 
     QDomDocument mOriginalStyleDocument;
     QDomElement mOriginalStyleElement;
-
 };
 
 // clazy:excludeall=qstring-allocations

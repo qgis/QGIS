@@ -121,16 +121,16 @@ const QgsTextFragment &QgsTextBlock::at( int index ) const
 
 QgsTextFragment &QgsTextBlock::operator[]( int index )
 {
-  return mFragments[ index ];
+  return mFragments[index];
 }
 
 ///@cond PRIVATE
-QVector< QgsTextFragment >::const_iterator QgsTextBlock::begin() const
+QVector<QgsTextFragment>::const_iterator QgsTextBlock::begin() const
 {
   return mFragments.begin();
 }
 
-QVector< QgsTextFragment >::const_iterator QgsTextBlock::end() const
+QVector<QgsTextFragment>::const_iterator QgsTextBlock::end() const
 {
   return mFragments.end();
 }

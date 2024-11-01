@@ -26,7 +26,7 @@
 
 QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSettings &mapSettings, EffectsCheckFlags flags )
 {
-  QSet< QString > layers;
+  QSet<QString> layers;
 
   QgsTextFormat layerFormat;
   const auto constLayers = mapSettings.layers();
@@ -107,7 +107,7 @@ void QgsMapSettingsUtils::worldFileParameters( const QgsMapSettings &mapSettings
   r[2] = xCenter * ( 1 - std::cos( alpha ) ) + yCenter * std::sin( alpha );
   r[3] = std::sin( alpha );
   r[4] = std::cos( alpha );
-  r[5] = - xCenter * std::sin( alpha ) + yCenter * ( 1 - std::cos( alpha ) );
+  r[5] = -xCenter * std::sin( alpha ) + yCenter * ( 1 - std::cos( alpha ) );
 
   // result = rotation x scaling = rotation(scaling(X))
   a = r[0] * s[0] + r[1] * s[3];

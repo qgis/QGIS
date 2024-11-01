@@ -129,7 +129,6 @@ void QgsColorSwatchGrid::updateTooltip( const int colorIdx )
     info += QgsColorTooltip::htmlDescription( color, this );
 
     setToolTip( info );
-
   }
   else
   {
@@ -151,7 +150,7 @@ void QgsColorSwatchGrid::mousePressEvent( QMouseEvent *event )
 
 void QgsColorSwatchGrid::mouseReleaseEvent( QMouseEvent *event )
 {
-  if ( ! mPressedOnWidget )
+  if ( !mPressedOnWidget )
   {
     return;
   }
@@ -176,11 +175,11 @@ void QgsColorSwatchGrid::keyPressEvent( QKeyEvent *event )
   //handle keyboard navigation
   if ( event->key() == Qt::Key_Right )
   {
-    mCurrentFocusBox = std::min< int >( mCurrentFocusBox + 1, mColors.length() - 1 );
+    mCurrentFocusBox = std::min<int>( mCurrentFocusBox + 1, mColors.length() - 1 );
   }
   else if ( event->key() == Qt::Key_Left )
   {
-    mCurrentFocusBox = std::max< int >( mCurrentFocusBox - 1, 0 );
+    mCurrentFocusBox = std::max<int>( mCurrentFocusBox - 1, 0 );
   }
   else if ( event->key() == Qt::Key_Up )
   {

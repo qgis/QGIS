@@ -157,17 +157,17 @@ void QgsLayoutUtils::relativeResizeRect( QRectF &rectToResize, const QRectF &bou
 {
   //linearly scale rectToResize relative to the scaling from boundsBefore to boundsAfter
   const double left = !qgsDoubleNear( boundsBefore.left(), boundsBefore.right() )
-                      ? relativePosition( rectToResize.left(), boundsBefore.left(), boundsBefore.right(), boundsAfter.left(), boundsAfter.right() )
-                      : boundsAfter.left();
+                        ? relativePosition( rectToResize.left(), boundsBefore.left(), boundsBefore.right(), boundsAfter.left(), boundsAfter.right() )
+                        : boundsAfter.left();
   const double right = !qgsDoubleNear( boundsBefore.left(), boundsBefore.right() )
-                       ? relativePosition( rectToResize.right(), boundsBefore.left(), boundsBefore.right(), boundsAfter.left(), boundsAfter.right() )
-                       : boundsAfter.right();
+                         ? relativePosition( rectToResize.right(), boundsBefore.left(), boundsBefore.right(), boundsAfter.left(), boundsAfter.right() )
+                         : boundsAfter.right();
   const double top = !qgsDoubleNear( boundsBefore.top(), boundsBefore.bottom() )
-                     ? relativePosition( rectToResize.top(), boundsBefore.top(), boundsBefore.bottom(), boundsAfter.top(), boundsAfter.bottom() )
-                     : boundsAfter.top();
+                       ? relativePosition( rectToResize.top(), boundsBefore.top(), boundsBefore.bottom(), boundsAfter.top(), boundsAfter.bottom() )
+                       : boundsAfter.top();
   const double bottom = !qgsDoubleNear( boundsBefore.top(), boundsBefore.bottom() )
-                        ? relativePosition( rectToResize.bottom(), boundsBefore.top(), boundsBefore.bottom(), boundsAfter.top(), boundsAfter.bottom() )
-                        : boundsAfter.bottom();
+                          ? relativePosition( rectToResize.bottom(), boundsBefore.top(), boundsBefore.bottom(), boundsAfter.top(), boundsAfter.bottom() )
+                          : boundsAfter.bottom();
 
   rectToResize.setRect( left, top, right - left, bottom - top );
 }
@@ -207,7 +207,6 @@ double QgsLayoutUtils::fontDescentMM( const QFont &font )
   QFont metricsFont = scaledFontPixelSize( font );
   QFontMetricsF fontMetrics( metricsFont );
   return ( fontMetrics.descent() / FONT_WORKAROUND_SCALE );
-
 }
 
 double QgsLayoutUtils::fontHeightMM( const QFont &font )
@@ -217,7 +216,6 @@ double QgsLayoutUtils::fontHeightMM( const QFont &font )
   QFont metricsFont = scaledFontPixelSize( font );
   QFontMetricsF fontMetrics( metricsFont );
   return ( fontMetrics.height() / FONT_WORKAROUND_SCALE );
-
 }
 
 double QgsLayoutUtils::fontHeightCharacterMM( const QFont &font, QChar character )
@@ -257,7 +255,7 @@ double QgsLayoutUtils::textHeightMM( const QFont &font, const QString &text, dou
   QFontMetricsF fontMetrics( metricsFont );
 
   double fontHeight = fontMetrics.ascent() + fontMetrics.descent(); // ignore +1 for baseline
-  double textHeight = fontMetrics.ascent() + static_cast< double >( ( lines - 1 ) * fontHeight * multiLineHeight );
+  double textHeight = fontMetrics.ascent() + static_cast<double>( ( lines - 1 ) * fontHeight * multiLineHeight );
 
   return textHeight / FONT_WORKAROUND_SCALE;
 }
@@ -408,7 +406,7 @@ QgsLayoutItemPage::Orientation QgsLayoutUtils::decodePaperOrientation( const QSt
 
 double QgsLayoutUtils::scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style )
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
   // workaround Qt bug 66185
 
   // Refs #18027 - if a QGraphicsItem is rotated by 90 or 270 degrees, then the item
@@ -499,7 +497,7 @@ bool QgsLayoutUtils::itemIsAClippingSource( const QgsLayoutItem *item )
     return false; // not a clipping provider, so shortcut out
 
   // current only maps can be clipped
-  QList< QgsLayoutItemMap * > maps;
+  QList<QgsLayoutItemMap *> maps;
   item->layout()->layoutItems( maps );
   for ( QgsLayoutItemMap *map : std::as_const( maps ) )
   {
@@ -521,10 +519,10 @@ double QgsLayoutUtils::mmToPoints( const double mmSize )
   return ( mmSize / 0.3527 );
 }
 
-QVector< double > QgsLayoutUtils::predefinedScales( const QgsLayout *layout )
+QVector<double> QgsLayoutUtils::predefinedScales( const QgsLayout *layout )
 {
   QgsProject *lProject = layout ? layout->project() : nullptr;
-  QVector< double > mapScales;
+  QVector<double> mapScales;
   if ( lProject )
     mapScales = lProject->viewSettings()->mapScales();
 

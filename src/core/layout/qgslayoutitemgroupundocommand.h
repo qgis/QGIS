@@ -29,12 +29,11 @@
  * \ingroup core
  * \brief A layout undo command class for grouping / ungrouping layout items.
  */
-class CORE_EXPORT QgsLayoutItemGroupUndoCommand: public QObject, public QUndoCommand
+class CORE_EXPORT QgsLayoutItemGroupUndoCommand : public QObject, public QUndoCommand
 {
     Q_OBJECT
 
   public:
-
     //! Command kind, and state
     enum State
     {

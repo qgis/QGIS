@@ -54,7 +54,7 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
   // create label info!
   const double mapScale = xform->mapUnitsPerPixel();
   QStringList graphemes;
-  QVector< QgsTextCharacterFormat > graphemeFormats;
+  QVector<QgsTextCharacterFormat> graphemeFormats;
 
   if ( document )
   {
@@ -77,9 +77,9 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
     graphemes = QgsPalLabeling::splitToGraphemes( text );
   }
 
-  QVector< double > characterWidths( graphemes.count() );
-  QVector< double > characterHeights( graphemes.count() );
-  QVector< double > characterDescents( graphemes.count() );
+  QVector<double> characterWidths( graphemes.count() );
+  QVector<double> characterHeights( graphemes.count() );
+  QVector<double> characterDescents( graphemes.count() );
 
   QFont previousNonSuperSubScriptFont;
 
@@ -119,7 +119,7 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
               // the superscript in a smaller font size. BUT if the fragment format HAS a non -1 font size then it indicates
               // that the document has an explicit font size for the super/subscript element, eg "my text<sup style="font-size: 6pt">2</sup>"
               // which we should respect
-              graphemeFont.setPixelSize( static_cast< int >( std::round( graphemeFont.pixelSize() * QgsTextRenderer::SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
+              graphemeFont.setPixelSize( static_cast<int>( std::round( graphemeFont.pixelSize() * QgsTextRenderer::SUPERSCRIPT_SUBSCRIPT_FONT_SIZE_SCALING_FACTOR ) ) );
             }
             break;
           }
@@ -156,8 +156,7 @@ QgsPrecalculatedTextMetrics QgsTextLabelFeature::calculateTextMetrics( const Qgs
 
     // this workaround only works for clusters with a single character. Not sure how it should be handled
     // with multi-character clusters.
-    if ( graphemes[i].length() == 1 &&
-         !qgsDoubleNear( graphemeFirstCharHorizontalAdvance, graphemeFirstCharHorizontalAdvanceWithLetterSpacing ) )
+    if ( graphemes[i].length() == 1 && !qgsDoubleNear( graphemeFirstCharHorizontalAdvance, graphemeFirstCharHorizontalAdvanceWithLetterSpacing ) )
     {
       // word spacing applied when it shouldn't be
       wordSpaceFix -= wordSpacing;

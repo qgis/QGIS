@@ -34,7 +34,6 @@
 class SERVER_EXPORT QgsServerParameterDefinition
 {
   public:
-
     /**
      * Constructor for QgsServerParameterDefinition.
      * \param type The type of the parameter
@@ -51,7 +50,7 @@ class SERVER_EXPORT QgsServerParameterDefinition
      * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
     Q_DECL_DEPRECATED QgsServerParameterDefinition( const QVariant::Type type,
-        const QVariant defaultValue = QVariant( "" ) ) SIP_DEPRECATED;
+                                                    const QVariant defaultValue = QVariant( "" ) ) SIP_DEPRECATED;
 
     virtual ~QgsServerParameterDefinition() = default;
 
@@ -262,7 +261,6 @@ class SERVER_EXPORT QgsServerParameters
     Q_GADGET
 
   public:
-
     /**
      * Constructor.
      */
@@ -358,7 +356,6 @@ class SERVER_EXPORT QgsServerParameters
     virtual QString version() const;
 
   protected:
-
     /**
      * Loads a parameter with a specific value. This method should be
      * implemented in subclasses.

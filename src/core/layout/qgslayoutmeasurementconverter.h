@@ -41,7 +41,6 @@
 class CORE_EXPORT QgsLayoutMeasurementConverter
 {
   public:
-
     QgsLayoutMeasurementConverter() = default;
 
     /**
@@ -83,7 +82,6 @@ class CORE_EXPORT QgsLayoutMeasurementConverter
     QgsLayoutPoint convert( const QgsLayoutPoint &point, Qgis::LayoutUnit targetUnits ) const;
 
   private:
-
     double mDpi = 300.0;
 
     double convertToMillimeters( QgsLayoutMeasurement measurement ) const;
@@ -94,7 +92,6 @@ class CORE_EXPORT QgsLayoutMeasurementConverter
     double convertToPoints( QgsLayoutMeasurement measurement ) const;
     double convertToPicas( QgsLayoutMeasurement measurement ) const;
     double convertToPixels( QgsLayoutMeasurement measurement ) const;
-
 };
 
 #endif // QGSLAYOUTMEASUREMENTCONVERTER_H

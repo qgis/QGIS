@@ -131,8 +131,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
     std::unique_ptr<FeaturePart> fpart = std::make_unique<FeaturePart>( lf, geom );
 
     // ignore invalid geometries
-    if ( ( type == GEOS_LINESTRING && fpart->nbPoints < 2 ) ||
-         ( type == GEOS_POLYGON && fpart->nbPoints < 3 ) )
+    if ( ( type == GEOS_LINESTRING && fpart->nbPoints < 2 ) || ( type == GEOS_POLYGON && fpart->nbPoints < 3 ) )
     {
       continue;
     }
@@ -221,8 +220,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       std::unique_ptr<FeaturePart> fpart = std::make_unique<FeaturePart>( lf, geom.get() );
 
       // ignore invalid geometries
-      if ( ( type == GEOS_LINESTRING && fpart->nbPoints < 2 ) ||
-           ( type == GEOS_POLYGON && fpart->nbPoints < 3 ) )
+      if ( ( type == GEOS_LINESTRING && fpart->nbPoints < 2 ) || ( type == GEOS_POLYGON && fpart->nbPoints < 3 ) )
       {
         continue;
       }
@@ -264,7 +262,7 @@ void Layer::addFeaturePart( std::unique_ptr<FeaturePart> fpart, const QString &l
   // add to hashtable with equally named feature parts
   if ( mMergeLines && !labelText.isEmpty() )
   {
-    mConnectedHashtable[ labelText ].append( fpart.get() );
+    mConnectedHashtable[labelText].append( fpart.get() );
   }
 
   // add to list of layer's feature parts
@@ -304,8 +302,7 @@ void Layer::joinConnectedFeatures()
 
     // need to start with biggest parts first, to avoid merging in side branches before we've
     // merged the whole of the longest parts of the joined network
-    std::sort( partsToMerge.begin(), partsToMerge.end(), []( FeaturePart * a, FeaturePart * b )
-    {
+    std::sort( partsToMerge.begin(), partsToMerge.end(), []( FeaturePart *a, FeaturePart *b ) {
       return a->length() > b->length();
     } );
 
@@ -319,7 +316,7 @@ void Layer::joinConnectedFeatures()
       mConnectedFeaturesIds.insert( partToJoinTo->featureId(), connectedFeaturesId );
 
       // loop through all other parts
-      QVector< FeaturePart *> partsLeftToTryThisRound = partsToMerge;
+      QVector<FeaturePart *> partsLeftToTryThisRound = partsToMerge;
       while ( !partsLeftToTryThisRound.empty() )
       {
         if ( FeaturePart *otherPart = _findConnectedPart( partToJoinTo, partsLeftToTryThisRound ) )
@@ -331,7 +328,7 @@ void Layer::joinConnectedFeatures()
 
             // otherPart was merged into partToJoinTo, so now we completely delete the redundant feature part which was merged in
             partsToMerge.removeAll( otherPart );
-            const auto matchingPartIt = std::find_if( mFeatureParts.begin(), mFeatureParts.end(), [otherPart]( const std::unique_ptr< FeaturePart> &part ) { return part.get() == otherPart; } );
+            const auto matchingPartIt = std::find_if( mFeatureParts.begin(), mFeatureParts.end(), [otherPart]( const std::unique_ptr<FeaturePart> &part ) { return part.get() == otherPart; } );
             Q_ASSERT( matchingPartIt != mFeatureParts.end() );
             mFeatureParts.erase( matchingPartIt );
           }
@@ -347,14 +344,14 @@ void Layer::joinConnectedFeatures()
   mConnectedHashtable.clear();
 
   // Expunge feature parts that are smaller than the minimum size required
-  mFeatureParts.erase( std::remove_if( mFeatureParts.begin(), mFeatureParts.end(), []( const std::unique_ptr< FeaturePart > &part )
-  {
-    if ( part->feature()->minimumSize() != 0.0 && part->length() < part->feature()->minimumSize() )
-    {
-      return true;
-    }
-    return false;
-  } ), mFeatureParts.end() );
+  mFeatureParts.erase( std::remove_if( mFeatureParts.begin(), mFeatureParts.end(), []( const std::unique_ptr<FeaturePart> &part ) {
+                         if ( part->feature()->minimumSize() != 0.0 && part->length() < part->feature()->minimumSize() )
+                         {
+                           return true;
+                         }
+                         return false;
+                       } ),
+                       mFeatureParts.end() );
 }
 
 int Layer::connectedFeatureId( QgsFeatureId featureId ) const
@@ -365,10 +362,10 @@ int Layer::connectedFeatureId( QgsFeatureId featureId ) const
 void Layer::chopFeaturesAtRepeatDistance()
 {
   GEOSContextHandle_t geosctxt = QgsGeosContext::get();
-  std::deque< std::unique_ptr< FeaturePart > > newFeatureParts;
+  std::deque<std::unique_ptr<FeaturePart>> newFeatureParts;
   while ( !mFeatureParts.empty() )
   {
-    std::unique_ptr< FeaturePart > fpart = std::move( mFeatureParts.front() );
+    std::unique_ptr<FeaturePart> fpart = std::move( mFeatureParts.front() );
     mFeatureParts.pop_front();
 
     const GEOSGeometry *geom = fpart->geos();
@@ -393,7 +390,7 @@ void Layer::chopFeaturesAtRepeatDistance()
       chopInterval *= std::ceil( fpart->getLabelWidth() / fpart->repeatDistance() );
 
       // now work out how many full segments we could chop this line into
-      possibleSegments = static_cast< int >( std::floor( featureLen / chopInterval ) );
+      possibleSegments = static_cast<int>( std::floor( featureLen / chopInterval ) );
 
       // ... and use this to work out the actual chop distance for this line. Otherwise, we risk the
       // situation of:
@@ -452,13 +449,13 @@ void Layer::chopFeaturesAtRepeatDistance()
         if ( cur >= n )
         {
           // Create final part
-          GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, static_cast< unsigned int >( part.size() ), 2 );
+          GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, static_cast<unsigned int>( part.size() ), 2 );
           for ( unsigned int i = 0; i < part.size(); ++i )
           {
             GEOSCoordSeq_setXY_r( geosctxt, cooSeq, i, part[i].x, part[i].y );
           }
           GEOSGeometry *newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );
-          std::unique_ptr< FeaturePart > newfpart = std::make_unique< FeaturePart >( fpart->feature(), newgeom );
+          std::unique_ptr<FeaturePart> newfpart = std::make_unique<FeaturePart>( fpart->feature(), newgeom );
           repeatParts.push_back( newfpart.get() );
           newFeatureParts.emplace_back( std::move( newfpart ) );
           break;
@@ -468,14 +465,14 @@ void Layer::chopFeaturesAtRepeatDistance()
         p.x = points[cur - 1].x + c * ( points[cur].x - points[cur - 1].x );
         p.y = points[cur - 1].y + c * ( points[cur].y - points[cur - 1].y );
         part.push_back( p );
-        GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, static_cast< unsigned int >( part.size() ), 2 );
+        GEOSCoordSequence *cooSeq = GEOSCoordSeq_create_r( geosctxt, static_cast<unsigned int>( part.size() ), 2 );
         for ( std::size_t i = 0; i < part.size(); ++i )
         {
           GEOSCoordSeq_setXY_r( geosctxt, cooSeq, i, part[i].x, part[i].y );
         }
 
         GEOSGeometry *newgeom = GEOSGeom_createLineString_r( geosctxt, cooSeq );
-        std::unique_ptr< FeaturePart > newfpart = std::make_unique< FeaturePart >( fpart->feature(), newgeom );
+        std::unique_ptr<FeaturePart> newfpart = std::make_unique<FeaturePart>( fpart->feature(), newgeom );
         repeatParts.push_back( newfpart.get() );
         newFeatureParts.emplace_back( std::move( newfpart ) );
         part.clear();

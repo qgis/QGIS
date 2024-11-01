@@ -34,7 +34,8 @@ class ExpirableNetworkDiskCache : public QNetworkDiskCache
     Q_OBJECT
 
   public:
-    explicit ExpirableNetworkDiskCache( QObject *parent = nullptr ) : QNetworkDiskCache( parent ) {}
+    explicit ExpirableNetworkDiskCache( QObject *parent = nullptr )
+      : QNetworkDiskCache( parent ) {}
     qint64 runExpire() { return QNetworkDiskCache::expire(); }
 };
 
@@ -52,7 +53,6 @@ class CORE_EXPORT QgsNetworkDiskCache : public QNetworkDiskCache
     Q_OBJECT
 
   public:
-
     //! \see QNetworkDiskCache::cacheDirectory
     QString cacheDirectory() const;
 

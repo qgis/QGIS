@@ -67,7 +67,6 @@ class CORE_EXPORT QgsField
     Q_PROPERTY( bool isReadOnly READ isReadOnly WRITE setReadOnly )
 
   public:
-
     /**
      * Constructor. Constructs a new QgsField object.
      * \param name Field name
@@ -117,7 +116,7 @@ class CORE_EXPORT QgsField
                                 QVariant::Type subType = QVariant::Invalid ) SIP_HOLDGIL SIP_DEPRECATED;
 
     QgsField( const QgsField &other ) SIP_HOLDGIL;
-    QgsField &operator =( const QgsField &other ) SIP_SKIP;
+    QgsField &operator=( const QgsField &other ) SIP_SKIP;
 
     virtual ~QgsField();
 
@@ -219,7 +218,7 @@ class CORE_EXPORT QgsField
      * \see setMetadata()
      * \since QGIS 3.32
      */
-    QMap< int, QVariant > metadata() const SIP_HOLDGIL;
+    QMap<int, QVariant> metadata() const SIP_HOLDGIL;
 
     /**
      * Returns a specific metadata \a property.
@@ -245,7 +244,7 @@ class CORE_EXPORT QgsField
      * \see metadata()
      * \since QGIS 3.32
      */
-    void setMetadata( const QMap< int, QVariant > metadata ) SIP_HOLDGIL;
+    void setMetadata( const QMap<int, QVariant> metadata ) SIP_HOLDGIL;
 
     /**
      * Sets a metadata \a property to \a value.
@@ -306,7 +305,7 @@ class CORE_EXPORT QgsField
      * QVariant::Invalid.
      * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
-    Q_DECL_DEPRECATED void setSubType( QVariant::Type subType ) SIP_HOLDGIL  SIP_DEPRECATED;
+    Q_DECL_DEPRECATED void setSubType( QVariant::Type subType ) SIP_HOLDGIL SIP_DEPRECATED;
 
     /**
      * Set the field type.
@@ -418,7 +417,8 @@ class CORE_EXPORT QgsField
      */
     bool convertCompatible( QVariant &v ) const;
     % MethodCode
-    PyObject *sipParseErr = NULL;
+        PyObject *sipParseErr
+      = NULL;
 
     {
       QVariant *a0;
@@ -439,14 +439,14 @@ class CORE_EXPORT QgsField
         {
           Py_BLOCK_THREADS
 
-          sipReleaseType( a0, sipType_QVariant, a0State );
+            sipReleaseType( a0, sipType_QVariant, a0State );
           sipRaiseUnknownException();
           return NULL;
         }
 
         Py_END_ALLOW_THREADS
 
-        if ( !sipRes )
+          if ( !sipRes )
         {
           PyErr_SetString( PyExc_ValueError,
                            QString( "Value could not be converted to field type %1: %2" ).arg( QMetaType::typeName( sipCpp->type() ), errorMessage ).toUtf8().constData() );
@@ -548,17 +548,18 @@ class CORE_EXPORT QgsField
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsField: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->typeName() );
+        QString str
+      = QStringLiteral( "<QgsField: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->typeName() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
 #ifndef SIP_RUN
-    static constexpr int MAX_WKT_LENGTH = 999;
+      static constexpr int MAX_WKT_LENGTH
+      = 999;
 #endif
 
   private:
-
     QSharedDataPointer<QgsFieldPrivate> d;
 
 

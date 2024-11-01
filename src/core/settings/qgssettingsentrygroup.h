@@ -42,24 +42,25 @@ class CORE_DEPRECATED_EXPORT QgsSettingsEntryGroup SIP_DEPRECATED
     QgsSettingsEntryGroup( QList<const QgsSettingsEntryBase *> settings );
 #ifdef SIP_RUN
     % MethodCode
-    sipCpp = new QgsSettingsEntryGroup( *a0, false );
+        sipCpp
+      = new QgsSettingsEntryGroup( *a0, false );
     sipIsErr = sipCpp->isValid() ? 0 : 1;
     if ( sipIsErr )
       PyErr_SetString( PyExc_ValueError, QStringLiteral( "Settings do not share the same base definition key for this group. This will lead to unpredictable results." ).toUtf8().constData() );
     % End
 #endif
 
-    //! Constructor
-    QgsSettingsEntryGroup( QList<const QgsSettingsEntryBase *> settings, bool fatalErrorIfInvalid ) SIP_SKIP;
+      //! Constructor
+      QgsSettingsEntryGroup( QList<const QgsSettingsEntryBase *> settings, bool fatalErrorIfInvalid ) SIP_SKIP;
 
     //! Returns if the group is valid (if settings share the same base key)
-    bool isValid() const {return mIsValid;}
+    bool isValid() const { return mIsValid; }
 
     //! Returns the base key for the given \a dynamicKeyPartList
     QString baseKey( const QStringList &dynamicKeyPartList = QStringList() ) const;
 
     //! Returns all the settings
-    const QList<const QgsSettingsEntryBase *> settings() const {return mSettings;}
+    const QList<const QgsSettingsEntryBase *> settings() const { return mSettings; }
 
     /**
      * Removes all the settings at the base key for the given \a dynamicKeyPartList

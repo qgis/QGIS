@@ -53,6 +53,7 @@ class QgsGeometryCheckFactoryRegistry
     {
       return instance()->mFactories;
     }
+
   private:
     QList<const QgsGeometryCheckFactory *> mFactories;
     QgsGeometryCheckFactoryRegistry() = default;
@@ -65,13 +66,17 @@ class QgsGeometryCheckFactoryRegistry
     }
 };
 
-#define QGSGEOMETRYCHECKFACTORY_CONCAT(X, Y) X##Y
-#define QGSGEOMETRYCHECKFACTORY_UNIQUEVAR_(X, Y) QGSGEOMETRYCHECKFACTORY_CONCAT(X, Y)
-#if (__GNUC__ > 2) || (__GNUC__ == 2 && __GNUC_MINOR__ > 4)
-# define QGSGEOMETRYCHECKFACTORY_UNUSED __attribute__((__unused__))
+#define QGSGEOMETRYCHECKFACTORY_CONCAT( X, Y ) X##Y
+#define QGSGEOMETRYCHECKFACTORY_UNIQUEVAR_( X, Y ) QGSGEOMETRYCHECKFACTORY_CONCAT( X, Y )
+#if ( __GNUC__ > 2 ) || ( __GNUC__ == 2 && __GNUC_MINOR__ > 4 )
+#define QGSGEOMETRYCHECKFACTORY_UNUSED __attribute__( ( __unused__ ) )
 #else
-# define QGSGEOMETRYCHECKFACTORY_UNUSED
+#define QGSGEOMETRYCHECKFACTORY_UNUSED
 #endif
-#define REGISTER_QGS_GEOMETRY_CHECK_FACTORY(CheckFactory) namespace { static QGSGEOMETRYCHECKFACTORY_UNUSED bool QGSGEOMETRYCHECKFACTORY_UNIQUEVAR_(b, __LINE__) = QgsGeometryCheckFactoryRegistry::registerCheckFactory(new CheckFactory()); }
+#define REGISTER_QGS_GEOMETRY_CHECK_FACTORY( CheckFactory )                                                                                                                     \
+  namespace                                                                                                                                                                     \
+  {                                                                                                                                                                             \
+    static QGSGEOMETRYCHECKFACTORY_UNUSED bool QGSGEOMETRYCHECKFACTORY_UNIQUEVAR_( b, __LINE__ ) = QgsGeometryCheckFactoryRegistry::registerCheckFactory( new CheckFactory() ); \
+  }
 
 #endif // QGS_GEOMETRY_CHECK_FACTORY_H

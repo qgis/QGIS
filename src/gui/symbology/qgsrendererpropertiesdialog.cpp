@@ -148,7 +148,7 @@ void QgsRendererPropertiesDialog::connectValueChanged( const QList<QWidget *> &w
     }
     else if ( QgsFieldExpressionWidget *w = qobject_cast<QgsFieldExpressionWidget *>( widget ) )
     {
-      connect( w, qOverload< const QString & >( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsRendererPropertiesDialog::widgetChanged );
+      connect( w, qOverload<const QString &>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsRendererPropertiesDialog::widgetChanged );
     }
     else if ( QgsOpacityWidget *w = qobject_cast<QgsOpacityWidget *>( widget ) )
     {
@@ -156,15 +156,15 @@ void QgsRendererPropertiesDialog::connectValueChanged( const QList<QWidget *> &w
     }
     else if ( QComboBox *w = qobject_cast<QComboBox *>( widget ) )
     {
-      connect( w, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsRendererPropertiesDialog::widgetChanged );
+      connect( w, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsRendererPropertiesDialog::widgetChanged );
     }
     else if ( QSpinBox *w = qobject_cast<QSpinBox *>( widget ) )
     {
-      connect( w, qOverload< int >( &QSpinBox::valueChanged ), this, &QgsRendererPropertiesDialog::widgetChanged );
+      connect( w, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsRendererPropertiesDialog::widgetChanged );
     }
     else if ( QDoubleSpinBox *w = qobject_cast<QDoubleSpinBox *>( widget ) )
     {
-      connect( w, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsRendererPropertiesDialog::widgetChanged );
+      connect( w, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsRendererPropertiesDialog::widgetChanged );
     }
     else if ( QgsColorButton *w = qobject_cast<QgsColorButton *>( widget ) )
     {
@@ -373,8 +373,7 @@ void QgsRendererPropertiesDialog::syncToLayer()
 
   // setup slot rendererChanged()
   //setup order by
-  if ( mLayer->renderer() &&
-       mLayer->renderer()->orderByEnabled() )
+  if ( mLayer->renderer() && mLayer->renderer()->orderByEnabled() )
   {
     checkboxEnableOrderBy->setChecked( true );
   }
@@ -395,7 +394,6 @@ void QgsRendererPropertiesDialog::syncToLayer()
     // no renderer found... this mustn't happen
     Q_ASSERT( rendererIdx != -1 && "there must be a renderer!" );
   }
-
 }
 
 void QgsRendererPropertiesDialog::showOrderByDialog()

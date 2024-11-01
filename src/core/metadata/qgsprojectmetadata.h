@@ -53,7 +53,6 @@
 class CORE_EXPORT QgsProjectMetadata : public QgsAbstractMetadataBase
 {
   public:
-
     QgsProjectMetadata() = default;
 
     QgsProjectMetadata *clone() const override SIP_FACTORY;
@@ -89,7 +88,6 @@ class CORE_EXPORT QgsProjectMetadata : public QgsAbstractMetadataBase
     bool operator==( const QgsProjectMetadata &metadataOther ) const;
 
   private:
-
     /*
      * IMPORTANT!!!!!!
      *
@@ -107,7 +105,6 @@ class CORE_EXPORT QgsProjectMetadata : public QgsAbstractMetadataBase
      * definition located at resources/qgis-resource-metadata.xsd
      *
      */
-
 };
 
 

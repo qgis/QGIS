@@ -45,7 +45,6 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutManager. The project will become the parent object for this
      * manager.
@@ -83,12 +82,12 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     /**
      * Returns a list of all layouts contained in the manager.
      */
-    QList< QgsMasterLayoutInterface * > layouts() const;
+    QList<QgsMasterLayoutInterface *> layouts() const;
 
     /**
      * Returns a list of all print layouts contained in the manager.
      */
-    QList< QgsPrintLayout * > printLayouts() const;
+    QList<QgsPrintLayout *> printLayouts() const;
 
     /**
      * Returns the layout with a matching name, or NULLPTR if no matching layouts
@@ -151,11 +150,9 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     void layoutRenamed( QgsMasterLayoutInterface *layout, const QString &newName );
 
   private:
-
     QgsProject *mProject = nullptr;
 
-    QList< QgsMasterLayoutInterface * > mLayouts;
-
+    QList<QgsMasterLayoutInterface *> mLayouts;
 };
 
 
@@ -173,7 +170,6 @@ class CORE_EXPORT QgsLayoutManagerModel : public QAbstractListModel
     Q_OBJECT
 
   public:
-
     // *INDENT-OFF*
 
     /**
@@ -182,9 +178,8 @@ class CORE_EXPORT QgsLayoutManagerModel : public QAbstractListModel
      * \note Prior to QGIS 3.36 this was available as QgsLayoutManagerModel::Role
      * \since QGIS 3.36
      */
-    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutManagerModel, Role ) : int
-    {
-      Layout SIP_MONKEYPATCH_COMPAT_NAME(LayoutRole) = Qt::UserRole + 1, //!< Layout object
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutManagerModel, Role ) : int {
+      Layout SIP_MONKEYPATCH_COMPAT_NAME( LayoutRole ) = Qt::UserRole + 1, //!< Layout object
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -229,6 +224,7 @@ class CORE_EXPORT QgsLayoutManagerModel : public QAbstractListModel
     void layoutAdded( const QString &name );
     void layoutRemoved( const QString &name );
     void layoutRenamed( QgsMasterLayoutInterface *layout, const QString &newName );
+
   private:
     QgsLayoutManager *mLayoutManager = nullptr;
     bool mAllowEmpty = false;
@@ -248,12 +244,10 @@ class CORE_EXPORT QgsLayoutManagerProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
-
     //! Available filter flags for filtering the model
-    enum Filter SIP_ENUM_BASETYPE( IntFlag )
-    {
+    enum Filter SIP_ENUM_BASETYPE( IntFlag ) {
       FilterPrintLayouts = 1 << 1, //!< Includes print layouts
-      FilterReports = 1 << 2, //!< Includes reports
+      FilterReports = 1 << 2,      //!< Includes reports
     };
     Q_DECLARE_FLAGS( Filters, Filter )
     Q_FLAG( Filters )
@@ -299,7 +293,6 @@ class CORE_EXPORT QgsLayoutManagerProxyModel : public QSortFilterProxyModel
     void setFilterString( const QString &filter );
 
   private:
-
     Filters mFilters = Filters( FilterPrintLayouts | FilterReports );
 
     QString mFilterString;

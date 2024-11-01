@@ -94,8 +94,7 @@ Qgis::ZonalStatisticResult QgsZonalStatistics::calculateStatistics( QgsFeedback 
           Qgis::ZonalStatistic::Minority,
           Qgis::ZonalStatistic::Majority,
           Qgis::ZonalStatistic::Variety,
-          Qgis::ZonalStatistic::Variance
-        } )
+          Qgis::ZonalStatistic::Variance } )
   {
     if ( mStatistics & stat )
     {
@@ -130,7 +129,7 @@ Qgis::ZonalStatisticResult QgsZonalStatistics::calculateStatistics( QgsFeedback 
 
     if ( feedback )
     {
-      feedback->setProgress( 100.0 * static_cast< double >( featureCounter ) / featureCount );
+      feedback->setProgress( 100.0 * static_cast<double>( featureCounter ) / featureCount );
     }
 
     QgsGeometry featureGeometry = feature.geometry();
@@ -294,7 +293,7 @@ QMap<int, QVariant> QgsZonalStatistics::calculateStatisticsInt( QgsRasterInterfa
   QMap<int, QVariant> pyResult;
   for ( auto it = result.constBegin(); it != result.constEnd(); ++it )
   {
-    pyResult.insert( static_cast< int >( it.key() ), it.value() );
+    pyResult.insert( static_cast<int>( it.key() ), it.value() );
   }
   return pyResult;
 }
@@ -314,11 +313,8 @@ QMap<Qgis::ZonalStatistic, QVariant> QgsZonalStatistics::calculateStatistics( Qg
   if ( featureRect.isEmpty() )
     return results;
 
-  bool statsStoreValues = ( statistics & Qgis::ZonalStatistic::Median ) ||
-                          ( statistics & Qgis::ZonalStatistic::StDev ) ||
-                          ( statistics & Qgis::ZonalStatistic::Variance );
-  bool statsStoreValueCount = ( statistics & Qgis::ZonalStatistic::Minority ) ||
-                              ( statistics & Qgis::ZonalStatistic::Majority );
+  bool statsStoreValues = ( statistics & Qgis::ZonalStatistic::Median ) || ( statistics & Qgis::ZonalStatistic::StDev ) || ( statistics & Qgis::ZonalStatistic::Variance );
+  bool statsStoreValueCount = ( statistics & Qgis::ZonalStatistic::Minority ) || ( statistics & Qgis::ZonalStatistic::Majority );
 
   FeatureStats featureStats( statsStoreValues, statsStoreValueCount );
 
@@ -330,13 +326,13 @@ QMap<Qgis::ZonalStatistic, QVariant> QgsZonalStatistics::calculateStatistics( Qg
   QgsRasterAnalysisUtils::cellInfoForBBox( rasterBBox, featureRect, cellSizeX, cellSizeY, nCellsX, nCellsY, nCellsXProvider, nCellsYProvider, rasterBlockExtent );
 
   featureStats.reset();
-  QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( rasterInterface, rasterBand, geometry, nCellsX, nCellsY, cellSizeX, cellSizeY, rasterBlockExtent, [ &featureStats ]( double value ) { featureStats.addValue( value ); } );
+  QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( rasterInterface, rasterBand, geometry, nCellsX, nCellsY, cellSizeX, cellSizeY, rasterBlockExtent, [&featureStats]( double value ) { featureStats.addValue( value ); } );
 
   if ( featureStats.count <= 1 )
   {
     //the cell resolution is probably larger than the polygon area. We switch to precise pixel - polygon intersection in this case
     featureStats.reset();
-    QgsRasterAnalysisUtils::statisticsFromPreciseIntersection( rasterInterface, rasterBand, geometry, nCellsX, nCellsY, cellSizeX, cellSizeY, rasterBlockExtent, [ &featureStats ]( double value, double weight ) { featureStats.addValue( value, weight ); } );
+    QgsRasterAnalysisUtils::statisticsFromPreciseIntersection( rasterInterface, rasterBand, geometry, nCellsX, nCellsY, cellSizeX, cellSizeY, rasterBlockExtent, [&featureStats]( double value, double weight ) { featureStats.addValue( value, weight ); } );
   }
 
   // calculate the statistics

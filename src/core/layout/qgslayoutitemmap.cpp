@@ -60,26 +60,22 @@ QgsLayoutItemMap::QgsLayoutItemMap( QgsLayout *layout )
 
   setCacheMode( QGraphicsItem::NoCache );
 
-  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this]
-  {
+  connect( this, &QgsLayoutItem::sizePositionChanged, this, [this] {
     shapeChanged();
   } );
 
-  mGridStack = std::make_unique< QgsLayoutItemMapGridStack >( this );
-  mOverviewStack = std::make_unique< QgsLayoutItemMapOverviewStack >( this );
+  mGridStack = std::make_unique<QgsLayoutItemMapGridStack>( this );
+  mOverviewStack = std::make_unique<QgsLayoutItemMapOverviewStack>( this );
 
-  connect( mAtlasClippingSettings, &QgsLayoutItemMapAtlasClippingSettings::changed, this, [this]
-  {
+  connect( mAtlasClippingSettings, &QgsLayoutItemMapAtlasClippingSettings::changed, this, [this] {
     refresh();
   } );
 
-  connect( mItemClippingSettings, &QgsLayoutItemMapItemClipPathSettings::changed, this, [this]
-  {
+  connect( mItemClippingSettings, &QgsLayoutItemMapItemClipPathSettings::changed, this, [this] {
     refresh();
   } );
 
-  connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [this]
-  {
+  connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [this] {
     QgsCoordinateReferenceSystem crs = mCrs;
     crs.updateDefinition();
     if ( mCrs != crs )
@@ -180,7 +176,7 @@ double QgsLayoutItemMap::scale() const
 
   QgsScaleCalculator calculator;
   calculator.setMapUnits( crs().mapUnits() );
-  calculator.setDpi( 25.4 );  //Using mm
+  calculator.setDpi( 25.4 ); //Using mm
   double widthInMm = mLayout->convertFromLayoutUnits( rect().width(), Qgis::LayoutUnit::Millimeters ).length();
   return calculator.calculate( extent(), widthInMm );
 }
@@ -204,7 +200,7 @@ void QgsLayoutItemMap::setScale( double scaleDenominator, bool forceUpdate )
     //we can't use the scaleRatio calculated earlier, as the scale can vary depending on extent for geographic coordinate systems
     QgsScaleCalculator calculator;
     calculator.setMapUnits( crs().mapUnits() );
-    calculator.setDpi( 25.4 );  //QGraphicsView units are mm
+    calculator.setDpi( 25.4 ); //QGraphicsView units are mm
     scaleRatio = scaleDenominator / calculator.calculate( mExtent, rect().width() );
     mExtent.scale( scaleRatio );
   }
@@ -234,7 +230,7 @@ void QgsLayoutItemMap::setExtent( const QgsRectangle &extent )
   {
     const QRectF currentRect = rect();
     const double newHeight = mExtent.width() == 0 ? 0
-                             : currentRect.width() * mExtent.height() / mExtent.width();
+                                                  : currentRect.width() * mExtent.height() / mExtent.width();
     attemptSetSceneRect( QRectF( pos().x(), pos().y(), currentRect.width(), newHeight ) );
   }
   update();
@@ -252,7 +248,7 @@ void QgsLayoutItemMap::zoomToExtent( const QgsRectangle &extent )
   else
     currentWidthHeightRatio = rect().width() / rect().height();
 
-  if ( currentWidthHeightRatio != 0 && ! std::isnan( currentWidthHeightRatio ) && !newExtent.isEmpty() )
+  if ( currentWidthHeightRatio != 0 && !std::isnan( currentWidthHeightRatio ) && !newExtent.isEmpty() )
   {
     double newWidthHeightRatio = newExtent.width() / newExtent.height();
 
@@ -352,15 +348,15 @@ void QgsLayoutItemMap::setLayers( const QList<QgsMapLayer *> &layers )
     if ( const QgsGroupLayer *groupLayer = qobject_cast<QgsGroupLayer *>( *it ) )
     {
       auto existingIt = mGroupLayers.find( groupLayer->id() );
-      if ( existingIt != mGroupLayers.end( ) )
+      if ( existingIt != mGroupLayers.end() )
       {
         *it = ( *existingIt ).second.get();
       }
       else
       {
         std::unique_ptr<QgsGroupLayer> groupLayerClone { groupLayer->clone() };
-        mGroupLayers[ groupLayer->id() ] = std::move( groupLayerClone );
-        *it = mGroupLayers[ groupLayer->id() ].get();
+        mGroupLayers[groupLayer->id()] = std::move( groupLayerClone );
+        *it = mGroupLayers[groupLayer->id()].get();
       }
     }
   }
@@ -373,8 +369,7 @@ void QgsLayoutItemMap::setLayerStyleOverrides( const QMap<QString, QString> &ove
     return;
 
   mLayerStyleOverrides = overrides;
-  emit layerStyleOverridesChanged();  // associated legends may listen to this
-
+  emit layerStyleOverridesChanged(); // associated legends may listen to this
 }
 
 void QgsLayoutItemMap::storeCurrentLayerStyles()
@@ -475,7 +470,7 @@ void QgsLayoutItemMap::zoomContent( double factor, QPointF point )
     //we can't use the scaleRatio calculated earlier, as the scale can vary depending on extent for geographic coordinate systems
     QgsScaleCalculator calculator;
     calculator.setMapUnits( crs().mapUnits() );
-    calculator.setDpi( 25.4 );  //QGraphicsView units are mm
+    calculator.setDpi( 25.4 ); //QGraphicsView units are mm
     double scaleRatio = scale() / calculator.calculate( mExtent, rect().width() );
     mExtent.scale( scaleRatio );
   }
@@ -490,7 +485,7 @@ void QgsLayoutItemMap::zoomContent( double factor, QPointF point )
 
 bool QgsLayoutItemMap::containsWmsLayer() const
 {
-  const QList< QgsMapLayer * > layers = layersToRender();
+  const QList<QgsMapLayer *> layers = layersToRender();
   for ( QgsMapLayer *layer : layers )
   {
     if ( layer->dataProvider() && layer->providerType() == QLatin1String( "wms" ) )
@@ -522,8 +517,7 @@ bool QgsLayoutItemMap::requiresRasterization() const
 
   // SO this logic is a COPY of containsAdvancedEffects, without the opacity check
 
-  auto containsAdvancedEffectsIgnoreItemOpacity = [this]()-> bool
-  {
+  auto containsAdvancedEffectsIgnoreItemOpacity = [this]() -> bool {
     if ( QgsLayoutItem::containsAdvancedEffects() )
       return true;
 
@@ -741,8 +735,7 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &mapElem, QDomDocum
       continue;
     QDomElement layerElem = doc.createElement( QStringLiteral( "Layer" ) );
     QString layerId;
-    const auto it = std::find_if( mGroupLayers.cbegin(), mGroupLayers.cend(), [ &layerRef ]( const std::pair<const QString, std::unique_ptr<QgsGroupLayer>> &groupLayer )  -> bool
-    {
+    const auto it = std::find_if( mGroupLayers.cbegin(), mGroupLayers.cend(), [&layerRef]( const std::pair<const QString, std::unique_ptr<QgsGroupLayer>> &groupLayer ) -> bool {
       return groupLayer.second.get() == layerRef.get();
     } );
 
@@ -815,7 +808,7 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &mapElem, QDomDocum
   mapElem.appendChild( atlasElem );
 
   mapElem.setAttribute( QStringLiteral( "labelMargin" ), mLabelMargin.encodeMeasurement() );
-  mapElem.setAttribute( QStringLiteral( "mapFlags" ), static_cast< int>( mMapFlags ) );
+  mapElem.setAttribute( QStringLiteral( "mapFlags" ), static_cast<int>( mMapFlags ) );
 
   QDomElement labelBlockingItemsElem = doc.createElement( QStringLiteral( "labelBlockingItems" ) );
   for ( const auto &item : std::as_const( mBlockingLabelItems ) )
@@ -838,9 +831,9 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &mapElem, QDomDocum
   }
 
   mapElem.setAttribute( QStringLiteral( "enableZRange" ), mZRangeEnabled ? 1 : 0 );
-  if ( mZRange.lower() != std::numeric_limits< double >::lowest() )
+  if ( mZRange.lower() != std::numeric_limits<double>::lowest() )
     mapElem.setAttribute( QStringLiteral( "zRangeLower" ), qgsDoubleToString( mZRange.lower() ) );
-  if ( mZRange.upper() != std::numeric_limits< double >::max() )
+  if ( mZRange.upper() != std::numeric_limits<double>::max() )
     mapElem.setAttribute( QStringLiteral( "zRangeUpper" ), qgsDoubleToString( mZRange.upper() ) );
 
   mAtlasClippingSettings->writeXml( mapElem, doc, context );
@@ -950,7 +943,7 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
         {
           const QDomElement childElement = children.at( i ).toElement();
           const QString id = childElement.attribute( QStringLiteral( "layerid" ) );
-          QgsMapLayerRef layerRef{ id };
+          QgsMapLayerRef layerRef { id };
           if ( layerRef.resolveWeakly( mLayout->project() ) )
           {
             childSet.push_back( layerRef );
@@ -1014,7 +1007,7 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
 
   setLabelMargin( QgsLayoutMeasurement::decodeMeasurement( itemElem.attribute( QStringLiteral( "labelMargin" ), QStringLiteral( "0" ) ) ) );
 
-  mMapFlags = static_cast< MapItemFlags>( itemElem.attribute( QStringLiteral( "mapFlags" ), nullptr ).toInt() );
+  mMapFlags = static_cast<MapItemFlags>( itemElem.attribute( QStringLiteral( "mapFlags" ), nullptr ).toInt() );
 
   // label blocking items
   mBlockingLabelItems.clear();
@@ -1051,12 +1044,12 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
   double zLower = itemElem.attribute( QStringLiteral( "zRangeLower" ) ).toDouble( &ok );
   if ( !ok )
   {
-    zLower = std::numeric_limits< double >::lowest();
+    zLower = std::numeric_limits<double>::lowest();
   }
   double zUpper = itemElem.attribute( QStringLiteral( "zRangeUpper" ) ).toDouble( &ok );
   if ( !ok )
   {
-    zUpper = std::numeric_limits< double >::max();
+    zUpper = std::numeric_limits<double>::max();
   }
   mZRange = QgsDoubleRange( zLower, zUpper );
 
@@ -1183,21 +1176,21 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       // rasterize
       double destinationDpi = QgsLayoutUtils::scaleFactorFromItemStyle( style, painter ) * 25.4;
       double layoutUnitsInInches = mLayout ? mLayout->convertFromLayoutUnits( 1, Qgis::LayoutUnit::Inches ).length() : 1;
-      int widthInPixels = static_cast< int >( std::round( boundingRect().width() * layoutUnitsInInches * destinationDpi ) );
-      int heightInPixels = static_cast< int >( std::round( boundingRect().height() * layoutUnitsInInches * destinationDpi ) );
+      int widthInPixels = static_cast<int>( std::round( boundingRect().width() * layoutUnitsInInches * destinationDpi ) );
+      int heightInPixels = static_cast<int>( std::round( boundingRect().height() * layoutUnitsInInches * destinationDpi ) );
       QImage image = QImage( widthInPixels, heightInPixels, QImage::Format_ARGB32 );
 
       image.fill( Qt::transparent );
-      image.setDotsPerMeterX( static_cast< int >( std::round( 1000 * destinationDpi / 25.4 ) ) );
-      image.setDotsPerMeterY( static_cast< int >( std::round( 1000 * destinationDpi / 25.4 ) ) );
+      image.setDotsPerMeterX( static_cast<int>( std::round( 1000 * destinationDpi / 25.4 ) ) );
+      image.setDotsPerMeterY( static_cast<int>( std::round( 1000 * destinationDpi / 25.4 ) ) );
       double dotsPerMM = destinationDpi / 25.4;
       QPainter p( &image );
 
       QPointF tl = -boundingRect().topLeft();
-      QRect imagePaintRect( static_cast< int >( std::round( tl.x() * dotsPerMM ) ),
-                            static_cast< int >( std::round( tl.y() * dotsPerMM ) ),
-                            static_cast< int >( std::round( thisPaintRect.width() * dotsPerMM ) ),
-                            static_cast< int >( std::round( thisPaintRect.height() * dotsPerMM ) ) );
+      QRect imagePaintRect( static_cast<int>( std::round( tl.x() * dotsPerMM ) ),
+                            static_cast<int>( std::round( tl.y() * dotsPerMM ) ),
+                            static_cast<int>( std::round( thisPaintRect.width() * dotsPerMM ) ),
+                            static_cast<int>( std::round( thisPaintRect.height() * dotsPerMM ) ) );
       p.setClipRect( imagePaintRect );
 
       p.translate( imagePaintRect.topLeft() );
@@ -1231,7 +1224,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       QgsScopedQPainterState painterState( painter );
       painter->setCompositionMode( blendModeForRender() );
       painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
-      painter->drawImage( QPointF( -tl.x()* dotsPerMM, -tl.y() * dotsPerMM ), image );
+      painter->drawImage( QPointF( -tl.x() * dotsPerMM, -tl.y() * dotsPerMM ), image );
       painter->scale( dotsPerMM, dotsPerMM );
     }
     else
@@ -1251,7 +1244,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
         painter->translate( mXOffset, mYOffset );
 
         double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
-        size *= dotsPerMM; // output size will be in dots (pixels)
+        size *= dotsPerMM;                              // output size will be in dots (pixels)
         painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
 
         if ( mCurrentExportPart != NotLayered )
@@ -1449,7 +1442,7 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails() const
             {
               // might be an item based layer
               const QList<QgsLayoutItemMapOverview *> res = mOverviewStack->asList();
-              for ( QgsLayoutItemMapOverview  *item : res )
+              for ( QgsLayoutItemMapOverview *item : res )
               {
                 if ( !item || !item->enabled() || item->stackingPosition() == QgsLayoutItemMapItem::StackAboveMapLabels )
                   continue;
@@ -1468,7 +1461,7 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails() const
           }
 
           case QgsMapRendererStagedRenderJob::Labels:
-            detail.mapLayerId  = mStagedRendererJob->currentLayerId();
+            detail.mapLayerId = mStagedRendererJob->currentLayerId();
             if ( const QgsMapLayer *layer = mLayout->project()->mapLayer( detail.mapLayerId ) )
             {
               if ( !detail.mapTheme.isEmpty() )
@@ -1492,7 +1485,7 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails() const
       else
       {
         // we must be on the first layer, not having had a chance to create the render job yet
-        const QList< QgsMapLayer * > layers = layersToRender();
+        const QList<QgsMapLayer *> layers = layersToRender();
         if ( !layers.isEmpty() )
         {
           const QgsMapLayer *layer = layers.constLast();
@@ -1510,7 +1503,7 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails() const
       return detail;
 
     case OverviewMapExtent:
-      detail.name =  tr( "%1: Overviews" ).arg( displayName() );
+      detail.name = tr( "%1: Overviews" ).arg( displayName() );
       return detail;
 
     case Frame:
@@ -1574,8 +1567,7 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
     QgsMapRendererCustomPainterJob *oldJob = mPainterJob.release();
     QPainter *oldPainter = mPainter.release();
     QImage *oldImage = mCacheRenderingImage.release();
-    connect( oldJob, &QgsMapRendererCustomPainterJob::finished, this, [oldPainter, oldJob, oldImage]
-    {
+    connect( oldJob, &QgsMapRendererCustomPainterJob::finished, this, [oldPainter, oldJob, oldImage] {
       oldJob->deleteLater();
       delete oldPainter;
       delete oldImage;
@@ -1596,8 +1588,8 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   double widthLayoutUnits = ext.width() * mapUnitsToLayoutUnits();
   double heightLayoutUnits = ext.height() * mapUnitsToLayoutUnits();
 
-  int w = static_cast< int >( std::round( widthLayoutUnits * mPreviewScaleFactor ) );
-  int h = static_cast< int >( std::round( heightLayoutUnits * mPreviewScaleFactor ) );
+  int w = static_cast<int>( std::round( widthLayoutUnits * mPreviewScaleFactor ) );
+  int h = static_cast<int>( std::round( heightLayoutUnits * mPreviewScaleFactor ) );
 
   // limit size of image for better performance
   if ( w > 5000 || h > 5000 )
@@ -1605,12 +1597,12 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
     if ( w > h )
     {
       w = 5000;
-      h = static_cast< int>( std::round( w * heightLayoutUnits / widthLayoutUnits ) );
+      h = static_cast<int>( std::round( w * heightLayoutUnits / widthLayoutUnits ) );
     }
     else
     {
       h = 5000;
-      w = static_cast< int >( std::round( h * widthLayoutUnits / heightLayoutUnits ) );
+      w = static_cast<int>( std::round( h * widthLayoutUnits / heightLayoutUnits ) );
     }
   }
 
@@ -1620,8 +1612,8 @@ void QgsLayoutItemMap::recreateCachedImageInBackground()
   mCacheRenderingImage.reset( new QImage( w * mPreviewDevicePixelRatio, h * mPreviewDevicePixelRatio, QImage::Format_ARGB32 ) );
 
   // set DPI of the image
-  mCacheRenderingImage->setDotsPerMeterX( static_cast< int >( std::round( 1000 * w / widthLayoutUnits ) ) );
-  mCacheRenderingImage->setDotsPerMeterY( static_cast< int >( std::round( 1000 * h / heightLayoutUnits ) ) );
+  mCacheRenderingImage->setDotsPerMeterX( static_cast<int>( std::round( 1000 * w / widthLayoutUnits ) ) );
+  mCacheRenderingImage->setDotsPerMeterY( static_cast<int>( std::round( 1000 * h / heightLayoutUnits ) ) );
   mCacheRenderingImage->setDevicePixelRatio( mPreviewDevicePixelRatio );
 
   //start with empty fill to avoid artifacts
@@ -2135,11 +2127,7 @@ void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDe
     }
   }
   //updates data defined properties and redraws item to match
-  if ( property == QgsLayoutObject::DataDefinedProperty::MapRotation || property == QgsLayoutObject::DataDefinedProperty::MapScale ||
-       property == QgsLayoutObject::DataDefinedProperty::MapXMin || property == QgsLayoutObject::DataDefinedProperty::MapYMin ||
-       property == QgsLayoutObject::DataDefinedProperty::MapXMax || property == QgsLayoutObject::DataDefinedProperty::MapYMax ||
-       property == QgsLayoutObject::DataDefinedProperty::MapAtlasMargin ||
-       property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::MapRotation || property == QgsLayoutObject::DataDefinedProperty::MapScale || property == QgsLayoutObject::DataDefinedProperty::MapXMin || property == QgsLayoutObject::DataDefinedProperty::MapYMin || property == QgsLayoutObject::DataDefinedProperty::MapXMax || property == QgsLayoutObject::DataDefinedProperty::MapYMax || property == QgsLayoutObject::DataDefinedProperty::MapAtlasMargin || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     QgsRectangle beforeExtent = mExtent;
     refreshMapExtents( &context );
@@ -2195,7 +2183,6 @@ void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDe
 
 void QgsLayoutItemMap::layersAboutToBeRemoved( const QList<QgsMapLayer *> &layers )
 {
-
   if ( !mLayers.isEmpty() || mLayerStyleOverrides.isEmpty() )
   {
     for ( QgsMapLayer *layer : layers )
@@ -2283,11 +2270,10 @@ void QgsLayoutItemMap::connectUpdateSlot()
   if ( project )
   {
     // handles updating the stored layer state BEFORE the layers are removed
-    connect( project, static_cast < void ( QgsProject::* )( const QList<QgsMapLayer *>& layers ) > ( &QgsProject::layersWillBeRemoved ),
+    connect( project, static_cast<void ( QgsProject::* )( const QList<QgsMapLayer *> &layers )>( &QgsProject::layersWillBeRemoved ),
              this, &QgsLayoutItemMap::layersAboutToBeRemoved );
     // redraws the map AFTER layers are removed
-    connect( project->layerTreeRoot(), &QgsLayerTree::layerOrderChanged, this, [this]
-    {
+    connect( project->layerTreeRoot(), &QgsLayerTree::layerOrderChanged, this, [this] {
       if ( layers().isEmpty() )
       {
         //using project layers, and layer order has changed
@@ -2295,8 +2281,7 @@ void QgsLayoutItemMap::connectUpdateSlot()
       }
     } );
 
-    connect( project, &QgsProject::crsChanged, this, [this]
-    {
+    connect( project, &QgsProject::crsChanged, this, [this] {
       if ( !mCrs.isValid() )
       {
         //using project CRS, which just changed....
@@ -2306,8 +2291,7 @@ void QgsLayoutItemMap::connectUpdateSlot()
     } );
 
     // If project colors change, we need to redraw the map, as layer symbols may rely on project colors
-    connect( project, &QgsProject::projectColorsChanged, this, [this]
-    {
+    connect( project, &QgsProject::projectColorsChanged, this, [this] {
       invalidateCache();
     } );
 
@@ -2315,8 +2299,7 @@ void QgsLayoutItemMap::connectUpdateSlot()
     connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsLayoutItemMap::currentMapThemeRenamed );
   }
   connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutItemMap::invalidateCache );
-  connect( &mLayout->renderContext(), &QgsLayoutRenderContext::predefinedScalesChanged, this, [this]
-  {
+  connect( &mLayout->renderContext(), &QgsLayoutRenderContext::predefinedScalesChanged, this, [this] {
     if ( mAtlasScalingMode == Predefined )
       updateAtlasFeature();
   } );
@@ -2361,7 +2344,7 @@ void QgsLayoutItemMap::setZRange( const QgsDoubleRange &range )
 QList<QgsLabelBlockingRegion> QgsLayoutItemMap::createLabelBlockingRegions( const QgsMapSettings & ) const
 {
   const QTransform mapTransform = layoutToMapCoordsTransform();
-  QList< QgsLabelBlockingRegion > blockers;
+  QList<QgsLabelBlockingRegion> blockers;
   blockers.reserve( mBlockingLabelItems.count() );
   for ( const auto &item : std::as_const( mBlockingLabelItems ) )
   {
@@ -2431,7 +2414,7 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
   {
     if ( mLayout->project()->mapThemeCollection()->hasMapTheme( presetName ) )
       renderLayers = mLayout->project()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
-    else  // fallback to using map canvas layers
+    else // fallback to using map canvas layers
       renderLayers = mLayout->project()->mapThemeCollection()->masterVisibleLayers();
   }
   else if ( !layers().isEmpty() )
@@ -2453,7 +2436,7 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
     //need to convert layer names to layer ids
     for ( const QString &name : layerNames )
     {
-      const QList< QgsMapLayer * > matchingLayers = mLayout->project()->mapLayersByName( name );
+      const QList<QgsMapLayer *> matchingLayers = mLayout->project()->mapLayersByName( name );
       for ( QgsMapLayer *layer : matchingLayers )
       {
         renderLayers << layer;
@@ -2473,10 +2456,10 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
   }
 
   // remove any invalid layers
-  renderLayers.erase( std::remove_if( renderLayers.begin(), renderLayers.end(), []( QgsMapLayer * layer )
-  {
-    return !layer || !layer->isValid();
-  } ), renderLayers.end() );
+  renderLayers.erase( std::remove_if( renderLayers.begin(), renderLayers.end(), []( QgsMapLayer *layer ) {
+                        return !layer || !layer->isValid();
+                      } ),
+                      renderLayers.end() );
 
   return renderLayers;
 }
@@ -2587,7 +2570,7 @@ void QgsLayoutItemMap::transformShift( double &xShift, double &yShift ) const
 {
   double mmToMapUnits = 1.0 / mapUnitsToLayoutUnits();
   double dxScaled = xShift * mmToMapUnits;
-  double dyScaled = - yShift * mmToMapUnits;
+  double dyScaled = -yShift * mmToMapUnits;
 
   QgsLayoutUtils::rotate( mEvaluatedMapRotation, dxScaled, dyScaled );
 
@@ -2602,14 +2585,14 @@ void QgsLayoutItemMap::drawAnnotations( QPainter *painter )
     return;
   }
 
-  const QList< QgsAnnotation * > annotations = mLayout->project()->annotationManager()->annotations();
+  const QList<QgsAnnotation *> annotations = mLayout->project()->annotationManager()->annotations();
   if ( annotations.isEmpty() )
     return;
 
   QgsRenderContext rc = QgsLayoutUtils::createRenderContextForMap( this, painter );
   rc.setForceVectorOutput( true );
   rc.setExpressionContext( createExpressionContext() );
-  QList< QgsMapLayer * > layers = layersToRender( &rc.expressionContext() );
+  QList<QgsMapLayer *> layers = layersToRender( &rc.expressionContext() );
 
   for ( QgsAnnotation *annotation : annotations )
   {
@@ -3047,13 +3030,12 @@ void QgsLayoutItemMap::createStagedRenderJob( const QgsRectangle &extent, const 
   QgsMapSettings settings = mapSettings( extent, size, dpi, true );
   settings.setLayers( mOverviewStack->modifyMapLayerList( settings.layers() ) );
 
-  mStagedRendererJob = std::make_unique< QgsMapRendererStagedRenderJob >( settings,
-                       mLayout && mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagRenderLabelsByMapLayer
-                       ? QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer
-                       : QgsMapRendererStagedRenderJob::Flags() );
+  mStagedRendererJob = std::make_unique<QgsMapRendererStagedRenderJob>( settings,
+                                                                        mLayout && mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagRenderLabelsByMapLayer
+                                                                          ? QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer
+                                                                          : QgsMapRendererStagedRenderJob::Flags() );
   mStagedRendererJob->start();
 }
-
 
 
 //
@@ -3066,7 +3048,7 @@ QgsLayoutItemMapAtlasClippingSettings::QgsLayoutItemMapAtlasClippingSettings( Qg
 {
   if ( mMap->layout() && mMap->layout()->project() )
   {
-    connect( mMap->layout()->project(), static_cast < void ( QgsProject::* )( const QList<QgsMapLayer *>& layers ) > ( &QgsProject::layersWillBeRemoved ),
+    connect( mMap->layout()->project(), static_cast<void ( QgsProject::* )( const QList<QgsMapLayer *> &layers )>( &QgsProject::layersWillBeRemoved ),
              this, &QgsLayoutItemMapAtlasClippingSettings::layersAboutToBeRemoved );
   }
 }
@@ -3132,7 +3114,7 @@ QList<QgsMapLayer *> QgsLayoutItemMapAtlasClippingSettings::layersToClip() const
   return _qgis_listRefToRaw( mLayersToClip );
 }
 
-void QgsLayoutItemMapAtlasClippingSettings::setLayersToClip( const QList< QgsMapLayer * > &layersToClip )
+void QgsLayoutItemMapAtlasClippingSettings::setLayersToClip( const QList<QgsMapLayer *> &layersToClip )
 {
   mLayersToClip = _qgis_listRawToRef( layersToClip );
   emit changed();
@@ -3174,7 +3156,7 @@ bool QgsLayoutItemMapAtlasClippingSettings::readXml( const QDomElement &element,
 
   mClipToAtlasFeature = settingsElem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
   mForceLabelsInsideFeature = settingsElem.attribute( QStringLiteral( "forceLabelsInside" ), QStringLiteral( "0" ) ).toInt();
-  mFeatureClippingType = static_cast< QgsMapClippingRegion::FeatureClippingType >( settingsElem.attribute( QStringLiteral( "clippingType" ), QStringLiteral( "0" ) ).toInt() );
+  mFeatureClippingType = static_cast<QgsMapClippingRegion::FeatureClippingType>( settingsElem.attribute( QStringLiteral( "clippingType" ), QStringLiteral( "0" ) ).toInt() );
   mRestrictToLayers = settingsElem.attribute( QStringLiteral( "restrictLayers" ), QStringLiteral( "0" ) ).toInt();
 
   mLayersToClip.clear();
@@ -3364,7 +3346,7 @@ bool QgsLayoutItemMapItemClipPathSettings::readXml( const QDomElement &element, 
 
   mEnabled = settingsElem.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt();
   mForceLabelsInsideClipPath = settingsElem.attribute( QStringLiteral( "forceLabelsInside" ), QStringLiteral( "0" ) ).toInt();
-  mFeatureClippingType = static_cast< QgsMapClippingRegion::FeatureClippingType >( settingsElem.attribute( QStringLiteral( "clippingType" ), QStringLiteral( "0" ) ).toInt() );
+  mFeatureClippingType = static_cast<QgsMapClippingRegion::FeatureClippingType>( settingsElem.attribute( QStringLiteral( "clippingType" ), QStringLiteral( "0" ) ).toInt() );
   mClipPathUuid = settingsElem.attribute( QStringLiteral( "clipSource" ) );
 
   return true;

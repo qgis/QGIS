@@ -26,7 +26,6 @@ QgsAmbientOcclusionSettings::QgsAmbientOcclusionSettings( const QgsAmbientOcclus
   , mRadius( other.mRadius )
   , mThreshold( other.mThreshold )
 {
-
 }
 
 QgsAmbientOcclusionSettings &QgsAmbientOcclusionSettings::operator=( QgsAmbientOcclusionSettings const &rhs )

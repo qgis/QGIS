@@ -35,18 +35,13 @@
 class QgsAnnotationLayerSpatialIndex : public RTree<QString, float, 2, float>
 {
   public:
-
     void insert( const QString &uuid, const QgsRectangle &bounds )
     {
-      std::array< float, 4 > scaledBounds = scaleBounds( bounds );
+      std::array<float, 4> scaledBounds = scaleBounds( bounds );
       this->Insert(
-      {
-        scaledBounds[0], scaledBounds[ 1]
-      },
-      {
-        scaledBounds[2], scaledBounds[3]
-      },
-      uuid );
+        { scaledBounds[0], scaledBounds[1] },
+        { scaledBounds[2], scaledBounds[3] },
+        uuid );
     }
 
     /**
@@ -57,15 +52,11 @@ class QgsAnnotationLayerSpatialIndex : public RTree<QString, float, 2, float>
      */
     void remove( const QString &uuid, const QgsRectangle &bounds )
     {
-      std::array< float, 4 > scaledBounds = scaleBounds( bounds );
+      std::array<float, 4> scaledBounds = scaleBounds( bounds );
       this->Remove(
-      {
-        scaledBounds[0], scaledBounds[ 1]
-      },
-      {
-        scaledBounds[2], scaledBounds[3]
-      },
-      uuid );
+        { scaledBounds[0], scaledBounds[1] },
+        { scaledBounds[2], scaledBounds[3] },
+        uuid );
     }
 
     /**
@@ -73,30 +64,24 @@ class QgsAnnotationLayerSpatialIndex : public RTree<QString, float, 2, float>
      *
      * The \a callback function will be called once for each matching data object encountered.
      */
-    bool intersects( const QgsRectangle &bounds, const std::function< bool( const QString &uuid )> &callback ) const
+    bool intersects( const QgsRectangle &bounds, const std::function<bool( const QString &uuid )> &callback ) const
     {
-      std::array< float, 4 > scaledBounds = scaleBounds( bounds );
+      std::array<float, 4> scaledBounds = scaleBounds( bounds );
       this->Search(
-      {
-        scaledBounds[0], scaledBounds[ 1]
-      },
-      {
-        scaledBounds[2], scaledBounds[3]
-      },
-      callback );
+        { scaledBounds[0], scaledBounds[1] },
+        { scaledBounds[2], scaledBounds[3] },
+        callback );
       return true;
     }
 
   private:
     std::array<float, 4> scaleBounds( const QgsRectangle &bounds ) const
     {
-      return
-      {
-        static_cast< float >( bounds.xMinimum() ),
-        static_cast< float >( bounds.yMinimum() ),
-        static_cast< float >( bounds.xMaximum() ),
-        static_cast< float >( bounds.yMaximum() )
-      };
+      return {
+        static_cast<float>( bounds.xMinimum() ),
+        static_cast<float>( bounds.yMinimum() ),
+        static_cast<float>( bounds.xMaximum() ),
+        static_cast<float>( bounds.yMaximum() ) };
     }
 };
 ///@endcond
@@ -104,7 +89,7 @@ class QgsAnnotationLayerSpatialIndex : public RTree<QString, float, 2, float>
 QgsAnnotationLayer::QgsAnnotationLayer( const QString &name, const LayerOptions &options )
   : QgsMapLayer( Qgis::LayerType::Annotation, name )
   , mTransformContext( options.transformContext )
-  , mSpatialIndex( std::make_unique< QgsAnnotationLayerSpatialIndex >() )
+  , mSpatialIndex( std::make_unique<QgsAnnotationLayerSpatialIndex>() )
 {
   mShouldValidateCrs = false;
   mValid = true;
@@ -157,7 +142,7 @@ void QgsAnnotationLayer::replaceItem( const QString &id, QgsAnnotationItem *item
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  std::unique_ptr< QgsAnnotationItem> prevItem( mItems.take( id ) );
+  std::unique_ptr<QgsAnnotationItem> prevItem( mItems.take( id ) );
 
   if ( prevItem )
   {
@@ -188,7 +173,7 @@ bool QgsAnnotationLayer::removeItem( const QString &id )
   if ( !mItems.contains( id ) )
     return false;
 
-  std::unique_ptr< QgsAnnotationItem> item( mItems.take( id ) );
+  std::unique_ptr<QgsAnnotationItem> item( mItems.take( id ) );
 
   auto it = mNonIndexedItems.find( id );
   if ( it == mNonIndexedItems.end() )
@@ -213,7 +198,7 @@ void QgsAnnotationLayer::clear()
 
   qDeleteAll( mItems );
   mItems.clear();
-  mSpatialIndex = std::make_unique< QgsAnnotationLayerSpatialIndex >();
+  mSpatialIndex = std::make_unique<QgsAnnotationLayerSpatialIndex>();
   mNonIndexedItems.clear();
 
   triggerRepaint();
@@ -239,8 +224,7 @@ QStringList QgsAnnotationLayer::queryIndex( const QgsRectangle &bounds, QgsFeedb
 
   QStringList res;
 
-  mSpatialIndex->intersects( bounds, [&res, feedback]( const QString & uuid )->bool
-  {
+  mSpatialIndex->intersects( bounds, [&res, feedback]( const QString &uuid ) -> bool {
     res << uuid;
     return !feedback || !feedback->isCanceled();
   } );
@@ -320,7 +304,7 @@ QgsAnnotationLayer *QgsAnnotationLayer::clone() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   const QgsAnnotationLayer::LayerOptions options( mTransformContext );
-  std::unique_ptr< QgsAnnotationLayer > layer = std::make_unique< QgsAnnotationLayer >( name(), options );
+  std::unique_ptr<QgsAnnotationLayer> layer = std::make_unique<QgsAnnotationLayer>( name(), options );
   QgsMapLayer::clone( layer.get() );
 
   for ( auto it = mItems.constBegin(); it != mItems.constEnd(); ++it )
@@ -443,7 +427,7 @@ bool QgsAnnotationLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   // add the layer opacity
   if ( categories.testFlag( Rendering ) )
   {
-    QDomElement layerOpacityElem  = doc.createElement( QStringLiteral( "layerOpacity" ) );
+    QDomElement layerOpacityElem = doc.createElement( QStringLiteral( "layerOpacity" ) );
     const QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
     layerOpacityElem.appendChild( layerOpacityText );
     node.appendChild( layerOpacityElem );
@@ -452,12 +436,12 @@ bool QgsAnnotationLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
   if ( categories.testFlag( Symbology ) )
   {
     // add the blend mode field
-    QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
-    const QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
+    QDomElement blendModeElem = doc.createElement( QStringLiteral( "blendMode" ) );
+    const QDomText blendModeText = doc.createTextNode( QString::number( static_cast<int>( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
 
-    QDomElement paintEffectElem  = doc.createElement( QStringLiteral( "paintEffect" ) );
+    QDomElement paintEffectElem = doc.createElement( QStringLiteral( "paintEffect" ) );
     if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect.get() ) )
       mPaintEffect->saveProperties( doc, paintEffectElem );
     node.appendChild( paintEffectElem );
@@ -490,7 +474,7 @@ bool QgsAnnotationLayer::readSymbology( const QDomNode &node, QString &, QgsRead
     if ( !blendModeNode.isNull() )
     {
       const QDomElement e = blendModeNode.toElement();
-      setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( e.text().toInt() ) ) );
+      setBlendMode( QgsPainting::getCompositionMode( static_cast<Qgis::BlendMode>( e.text().toInt() ) ) );
     }
 
     //restore layer effect
@@ -533,7 +517,7 @@ bool QgsAnnotationLayer::readItems( const QDomNode &node, QString &, QgsReadWrit
 
   qDeleteAll( mItems );
   mItems.clear();
-  mSpatialIndex = std::make_unique< QgsAnnotationLayerSpatialIndex >();
+  mSpatialIndex = std::make_unique<QgsAnnotationLayerSpatialIndex>();
   mNonIndexedItems.clear();
 
   const QDomNodeList itemsElements = node.toElement().elementsByTagName( QStringLiteral( "items" ) );
@@ -546,7 +530,7 @@ bool QgsAnnotationLayer::readItems( const QDomNode &node, QString &, QgsReadWrit
     const QDomElement itemElement = items.at( i ).toElement();
     const QString id = itemElement.attribute( QStringLiteral( "id" ) );
     const QString type = itemElement.attribute( QStringLiteral( "type" ) );
-    std::unique_ptr< QgsAnnotationItem > item( QgsApplication::annotationItemRegistry()->createItem( type ) );
+    std::unique_ptr<QgsAnnotationItem> item( QgsApplication::annotationItemRegistry()->createItem( type ) );
     if ( item )
     {
       item->readXml( itemElement, context );
@@ -638,10 +622,10 @@ QString QgsAnnotationLayer::htmlMetadata() const
   metadata += QLatin1String( "<table width=\"100%\" class=\"tabular-view\">\n" );
   metadata += QLatin1String( "<tr><th>" ) + tr( "Type" ) + QLatin1String( "</th><th>" ) + tr( "Count" ) + QLatin1String( "</th></tr>\n" );
 
-  QMap< QString, int > itemCounts;
+  QMap<QString, int> itemCounts;
   for ( auto it = mItems.constBegin(); it != mItems.constEnd(); ++it )
   {
-    itemCounts[ it.value()->type() ]++;
+    itemCounts[it.value()->type()]++;
   }
 
   const QMap<QString, QString> itemTypes = QgsApplication::annotationItemRegistry()->itemTypes();

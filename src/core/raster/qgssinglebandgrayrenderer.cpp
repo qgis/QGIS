@@ -34,7 +34,7 @@ QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface *input,
   , mGrayBand( grayBand )
   , mGradient( BlackToWhite )
   , mContrastEnhancement( nullptr )
-  , mLegendSettings( std::make_unique< QgsColorRampLegendNodeSettings >() )
+  , mLegendSettings( std::make_unique<QgsColorRampLegendNodeSettings>() )
 {
 }
 
@@ -70,19 +70,19 @@ QgsRasterRenderer *QgsSingleBandGrayRenderer::create( const QDomElement &elem, Q
 
   if ( elem.attribute( QStringLiteral( "gradient" ) ) == QLatin1String( "WhiteToBlack" ) )
   {
-    r->setGradient( WhiteToBlack );  // BlackToWhite is default
+    r->setGradient( WhiteToBlack ); // BlackToWhite is default
   }
 
   const QDomElement contrastEnhancementElem = elem.firstChildElement( QStringLiteral( "contrastEnhancement" ) );
   if ( !contrastEnhancementElem.isNull() )
   {
     QgsContrastEnhancement *ce = new QgsContrastEnhancement( ( Qgis::DataType )(
-          input->dataType( grayBand ) ) );
+      input->dataType( grayBand ) ) );
     ce->readXml( contrastEnhancementElem );
     r->setContrastEnhancement( ce );
   }
 
-  std::unique_ptr< QgsColorRampLegendNodeSettings > legendSettings = std::make_unique< QgsColorRampLegendNodeSettings >();
+  std::unique_ptr<QgsColorRampLegendNodeSettings> legendSettings = std::make_unique<QgsColorRampLegendNodeSettings>();
   legendSettings->readXml( elem, QgsReadWriteContext() );
   r->setLegendSettings( legendSettings.release() );
 
@@ -99,20 +99,20 @@ QgsRasterBlock *QgsSingleBandGrayRenderer::block( int bandNo, const QgsRectangle
   Q_UNUSED( bandNo )
   QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2" ).arg( width ).arg( height ), 4 );
 
-  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
+  std::unique_ptr<QgsRasterBlock> outputBlock( new QgsRasterBlock() );
   if ( !mInput )
   {
     return outputBlock.release();
   }
 
-  const std::shared_ptr< QgsRasterBlock > inputBlock( mInput->block( mGrayBand, extent, width, height, feedback ) );
+  const std::shared_ptr<QgsRasterBlock> inputBlock( mInput->block( mGrayBand, extent, width, height, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugError( QStringLiteral( "No raster data!" ) );
     return outputBlock.release();
   }
 
-  std::shared_ptr< QgsRasterBlock > alphaBlock;
+  std::shared_ptr<QgsRasterBlock> alphaBlock;
 
   if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
   {
@@ -135,7 +135,7 @@ QgsRasterBlock *QgsSingleBandGrayRenderer::block( int bandNo, const QgsRectangle
 
   const QRgb myDefaultColor = renderColorForNodataPixel();
   bool isNoData = false;
-  for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
+  for ( qgssize i = 0; i < ( qgssize ) width * height; i++ )
   {
     double grayVal = inputBlock->valueAndNoData( i, isNoData );
 
@@ -253,9 +253,9 @@ void QgsSingleBandGrayRenderer::writeXml( QDomDocument &doc, QDomElement &parent
   parentElem.appendChild( rasterRendererElem );
 }
 
-QList<QPair<QString, QColor> > QgsSingleBandGrayRenderer::legendSymbologyItems() const
+QList<QPair<QString, QColor>> QgsSingleBandGrayRenderer::legendSymbologyItems() const
 {
-  QList<QPair<QString, QColor> >  symbolItems;
+  QList<QPair<QString, QColor>> symbolItems;
   if ( mContrastEnhancement && mContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
   {
     const QColor minColor = ( mGradient == BlackToWhite ) ? Qt::black : Qt::white;
@@ -390,7 +390,7 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
 
   // for each color set a ColorMapEntry tag nested into "sld:ColorMap" tag
   // e.g. <ColorMapEntry color="#EEBE2F" quantity="-300" label="label" opacity="0"/>
-  QList< QPair< QString, QColor > > classes = legendSymbologyItems();
+  QList<QPair<QString, QColor>> classes = legendSymbologyItems();
 
   // add ColorMap tag
   QDomElement colorMapElem = doc.createElement( QStringLiteral( "sld:ColorMap" ) );
@@ -403,7 +403,7 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   // each ContrastEnhancementAlgorithm need a specific management.
   // set type of ColorMap ramp [ramp, intervals, values]
   // basing on interpolation algorithm of the raster shader
-  QList< QPair< QString, QColor > > colorMapping( classes );
+  QList<QPair<QString, QColor>> colorMapping( classes );
   switch ( contrastEnhancement()->contrastEnhancementAlgorithm() )
   {
     case ( QgsContrastEnhancement::StretchAndClipToMinimumMaximum ):
@@ -416,8 +416,8 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
       QColor highColor = classes[1].second;
       highColor.setAlpha( 0 );
 
-      colorMapping.prepend( QPair< QString, QColor >( lowValue, lowColor ) );
-      colorMapping.append( QPair< QString, QColor >( highValue, highColor ) );
+      colorMapping.prepend( QPair<QString, QColor>( lowValue, lowColor ) );
+      colorMapping.append( QPair<QString, QColor>( highValue, highColor ) );
       break;
     }
     case ( QgsContrastEnhancement::StretchToMinimumMaximum ):
@@ -433,7 +433,7 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
   }
 
   // create tags
-  for ( auto it = colorMapping.constBegin(); it != colorMapping.constEnd() ; ++it )
+  for ( auto it = colorMapping.constBegin(); it != colorMapping.constEnd(); ++it )
   {
     // set low level color mapping
     QDomElement lowColorMapEntryElem = doc.createElement( QStringLiteral( "sld:ColorMapEntry" ) );

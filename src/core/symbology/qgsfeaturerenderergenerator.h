@@ -31,7 +31,6 @@ class QgsFeatureRenderer;
 class CORE_EXPORT QgsFeatureRendererGenerator
 {
   public:
-
     virtual ~QgsFeatureRendererGenerator() = default;
 
     /**

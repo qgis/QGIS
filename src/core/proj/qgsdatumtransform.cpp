@@ -25,7 +25,7 @@
 
 QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, bool includeSuperseded )
 {
-  QList< QgsDatumTransform::TransformDetails > res;
+  QList<QgsDatumTransform::TransformDetails> res;
   if ( !source.projObject() || !destination.projObject() )
     return res;
 
@@ -37,7 +37,7 @@ QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const 
   proj_operation_factory_context_set_grid_availability_use( pjContext, operationContext, PROJ_GRID_AVAILABILITY_IGNORED );
 
   // See https://lists.osgeo.org/pipermail/proj/2019-May/008604.html
-  proj_operation_factory_context_set_spatial_criterion( pjContext, operationContext,  PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION );
+  proj_operation_factory_context_set_spatial_criterion( pjContext, operationContext, PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION );
 
   if ( includeSuperseded )
     proj_operation_factory_context_set_discard_superseded( pjContext, operationContext, false );
@@ -54,7 +54,6 @@ QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const 
       QgsDatumTransform::TransformDetails details = transformDetailsFromPj( op.get() );
       if ( !details.proj.isEmpty() )
         res.push_back( details );
-
     }
     proj_list_destroy( ops );
   }
@@ -62,9 +61,9 @@ QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const 
   return res;
 }
 
-QList< QgsDatumTransform::TransformPair > QgsDatumTransform::datumTransformations( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS )
+QList<QgsDatumTransform::TransformPair> QgsDatumTransform::datumTransformations( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS )
 {
-  QList< QgsDatumTransform::TransformPair > transformations;
+  QList<QgsDatumTransform::TransformPair> transformations;
 
   QString srcGeoId = srcCRS.geographicCrsAuthId();
   QString destGeoId = destCRS.geographicCrsAuthId();
@@ -126,7 +125,7 @@ QList< QgsDatumTransform::TransformPair > QgsDatumTransform::datumTransformation
   return transformations;
 }
 
-void QgsDatumTransform::searchDatumTransform( const QString &sql, QList< int > &transforms )
+void QgsDatumTransform::searchDatumTransform( const QString &sql, QList<int> &transforms )
 {
   sqlite3_database_unique_ptr database;
   int openResult = database.open_v2( QgsApplication::srsDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );

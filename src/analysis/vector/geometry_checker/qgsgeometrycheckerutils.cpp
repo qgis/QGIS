@@ -30,9 +30,9 @@
 #include <qmath.h>
 
 QgsGeometryCheckerUtils::LayerFeature::LayerFeature( const QgsFeaturePool *pool,
-    const QgsFeature &feature,
-    const QgsGeometryCheckContext *context,
-    bool useMapCrs )
+                                                     const QgsFeature &feature,
+                                                     const QgsGeometryCheckContext *context,
+                                                     bool useMapCrs )
   : mFeaturePool( pool )
   , mFeature( feature )
   , mGeometry( feature.geometry() )
@@ -213,11 +213,11 @@ bool QgsGeometryCheckerUtils::LayerFeatures::iterator::nextFeature( bool begin )
 /////////////////////////////////////////////////////////////////////////////
 
 QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
-    const QMap<QString, QgsFeatureIds> &featureIds,
-    const QList<Qgis::GeometryType> &geometryTypes,
-    QgsFeedback *feedback,
-    const QgsGeometryCheckContext *context,
-    bool useMapCrs )
+                                                       const QMap<QString, QgsFeatureIds> &featureIds,
+                                                       const QList<Qgis::GeometryType> &geometryTypes,
+                                                       QgsFeedback *feedback,
+                                                       const QgsGeometryCheckContext *context,
+                                                       bool useMapCrs )
   : mFeaturePools( featurePools )
   , mFeatureIds( featureIds )
   , mLayerIds( featurePools.keys() )
@@ -228,9 +228,9 @@ QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, QgsFe
 {}
 
 QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, QgsFeaturePool *> &featurePools,
-    const QList<QString> &layerIds, const QgsRectangle &extent,
-    const QList<Qgis::GeometryType> &geometryTypes,
-    const QgsGeometryCheckContext *context )
+                                                       const QList<QString> &layerIds, const QgsRectangle &extent,
+                                                       const QList<Qgis::GeometryType> &geometryTypes,
+                                                       const QgsGeometryCheckContext *context )
   : mFeaturePools( featurePools )
   , mLayerIds( layerIds )
   , mExtent( extent )

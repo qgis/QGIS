@@ -40,7 +40,6 @@ class QgsPaintEffect;
 class CORE_EXPORT QgsAnnotationLayerRenderer : public QgsMapLayerRenderer
 {
   public:
-
     /**
      * Constructor for a QgsAnnotationLayerRenderer, for the specified \a layer.
      */
@@ -51,12 +50,11 @@ class CORE_EXPORT QgsAnnotationLayerRenderer : public QgsMapLayerRenderer
     bool forceRasterRender() const override;
 
   private:
-    std::vector < std::pair< QString, std::unique_ptr< QgsAnnotationItem > > > mItems;
-    std::unique_ptr< QgsFeedback > mFeedback;
+    std::vector<std::pair<QString, std::unique_ptr<QgsAnnotationItem>>> mItems;
+    std::unique_ptr<QgsFeedback> mFeedback;
     double mLayerOpacity = 1.0;
     QPainter::CompositionMode mLayerBlendMode = QPainter::CompositionMode::CompositionMode_SourceOver;
-    std::unique_ptr< QgsPaintEffect > mPaintEffect;
-
+    std::unique_ptr<QgsPaintEffect> mPaintEffect;
 };
 
 #endif // QGSANNOTATIONLAYERRENDERER_H

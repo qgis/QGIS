@@ -42,13 +42,13 @@ QgsRectangle QgsWmsLayerInfos::transformExtent(
   return transformer.transformBoundingBox( extent );
 }
 
-QMap< QString, QgsRectangle > QgsWmsLayerInfos::transformExtentToCrsList(
+QMap<QString, QgsRectangle> QgsWmsLayerInfos::transformExtentToCrsList(
   const QgsRectangle &extent,
   const QgsCoordinateReferenceSystem &source,
   const QList<QgsCoordinateReferenceSystem> &destinations,
   const QgsCoordinateTransformContext &context )
 {
-  QMap< QString, QgsRectangle > crsExtents;
+  QMap<QString, QgsRectangle> crsExtents;
   if ( extent.isEmpty() )
   {
     return crsExtents;
@@ -57,7 +57,7 @@ QMap< QString, QgsRectangle > QgsWmsLayerInfos::transformExtentToCrsList(
   {
     // Transform extent and do not catch exception
     QgsCoordinateTransform crsTransform { source, destination, context };
-    crsExtents[ destination.authid() ] = crsTransform.transformBoundingBox( extent );
+    crsExtents[destination.authid()] = crsTransform.transformBoundingBox( extent );
   }
   return crsExtents;
 }
@@ -118,8 +118,7 @@ bool setBoundingRect(
   try
   {
     pLayer.crsExtents = QgsWmsLayerInfos::transformExtentToCrsList(
-                          layerExtent, ml->crs(), outputCrsList, project->transformContext()
-                        );
+      layerExtent, ml->crs(), outputCrsList, project->transformContext() );
   }
   catch ( QgsCsException &cse )
   {
@@ -133,16 +132,16 @@ bool setBoundingRect(
 // ===================================
 // Get wms layer infos
 // ===================================
-QMap< QString, QgsWmsLayerInfos > QgsWmsLayerInfos::buildWmsLayerInfos(
+QMap<QString, QgsWmsLayerInfos> QgsWmsLayerInfos::buildWmsLayerInfos(
   QgsServerInterface *serverIface,
   const QgsProject *project,
   const QList<QgsCoordinateReferenceSystem> &outputCrsList )
 {
-  QMap< QString, QgsWmsLayerInfos > wmsLayers;
+  QMap<QString, QgsWmsLayerInfos> wmsLayers;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   QgsAccessControl *accessControl = serverIface->accessControls();
 #else
-  ( void )serverIface;
+  ( void ) serverIface;
 #endif
 
   bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
@@ -237,4 +236,3 @@ QMap< QString, QgsWmsLayerInfos > QgsWmsLayerInfos::buildWmsLayerInfos(
 
   return wmsLayers;
 }
-

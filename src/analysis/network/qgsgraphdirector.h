@@ -31,21 +31,20 @@ class QgsPoint;
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include <qgsvectorlayerdirector.h>
-% End
+  % End
 #endif
 
-/**
+  /**
  * \ingroup analysis
  * \class QgsGraphDirector
  * \brief Determine making the graph. QgsGraphBuilder and QgsGraphDirector implemented
  * using "builder" design patter.
  */
-class ANALYSIS_EXPORT QgsGraphDirector : public QObject
+  class ANALYSIS_EXPORT QgsGraphDirector : public QObject
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast< QgsVectorLayerDirector * >( sipCpp ) != NULL )
+    if ( dynamic_cast<QgsVectorLayerDirector *>( sipCpp ) != NULL )
       sipType = sipType_QgsVectorLayerDirector;
     else
       sipType = NULL;
@@ -55,7 +54,6 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
     Q_OBJECT
 
   public:
-
     ~QgsGraphDirector() override
     {
       qDeleteAll( mStrategies );
@@ -71,8 +69,8 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
      * \note if snappedPoints[i] == QgsPointXY(0.0,0.0) then snapping failed.
      */
     virtual void makeGraph( QgsGraphBuilderInterface *builder,
-                            const QVector< QgsPointXY > &additionalPoints,
-                            QVector< QgsPointXY > &snappedPoints SIP_OUT,
+                            const QVector<QgsPointXY> &additionalPoints,
+                            QVector<QgsPointXY> &snappedPoints SIP_OUT,
                             QgsFeedback *feedback = nullptr ) const
     {
       Q_UNUSED( builder )

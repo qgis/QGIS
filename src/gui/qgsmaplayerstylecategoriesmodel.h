@@ -34,7 +34,6 @@ class GUI_EXPORT QgsMapLayerStyleCategoriesModel : public QAbstractListModel
     Q_OBJECT
 
   public:
-
     //! Custom model roles
     enum class Role : int
     {

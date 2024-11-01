@@ -86,7 +86,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
     QDomNode layersNode = doc.elementsByTagName( QStringLiteral( "maplayers" ) ).at( 0 );
     // replace old children with new ones
     QDomNode childNode = layersNode.firstChild();
-    for ( int i = 0; ! childNode.isNull(); i++ )
+    for ( int i = 0; !childNode.isNull(); i++ )
     {
       layersNode.replaceChild( clonedSorted.at( i ), childNode );
       childNode = childNode.nextSibling();
@@ -109,7 +109,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
     // Replace IDs for map layers
     const QDomNodeList ids = doc.elementsByTagName( QStringLiteral( "id" ) );
     QDomNode idnode = ids.at( 0 );
-    for ( int j = 0; ! idnode.isNull() ; ++j )
+    for ( int j = 0; !idnode.isNull(); ++j )
     {
       idnode = ids.at( j );
       const QDomElement idElem = idnode.toElement();
@@ -224,7 +224,7 @@ bool QgsLayerDefinition::exportLayerDefinition( const QString &path, const QList
 
 bool QgsLayerDefinition::exportLayerDefinition( const QString &p, const QList<QgsLayerTreeNode *> &selectedTreeNodes, Qgis::FilePathType pathType, QString &errorMessage )
 {
-  const QString path = QgsFileUtils::ensureFileNameHasExtension( p, { QStringLiteral( "qlr" )} );
+  const QString path = QgsFileUtils::ensureFileNameHasExtension( p, { QStringLiteral( "qlr" ) } );
 
   QFile file( path );
   if ( !file.open( QFile::WriteOnly | QFile::Truncate ) )
@@ -273,9 +273,9 @@ bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<Qg
   const auto constLayers = layers;
   for ( QgsLayerTreeLayer *layer : constLayers )
   {
-    if ( ! layer->layer() )
+    if ( !layer->layer() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Not a valid map layer: skipping %1" ).arg( layer->name( ) ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "Not a valid map layer: skipping %1" ).arg( layer->name() ), 4 );
       continue;
     }
     QDomElement layerelm = doc.createElement( QStringLiteral( "maplayer" ) );
@@ -319,7 +319,7 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayersInternal( QDom
     layerElem = document.documentElement().firstChildElement( QStringLiteral( "maplayers" ) ).firstChildElement( QStringLiteral( "maplayer" ) );
   }
 
-  while ( ! layerElem.isNull() )
+  while ( !layerElem.isNull() )
   {
     const QString type = layerElem.attribute( QStringLiteral( "type" ) );
     QgsMapLayer *layer = nullptr;
@@ -411,9 +411,9 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( const QStrin
 void QgsLayerDefinition::DependencySorter::init( const QDomDocument &doc )
 {
   // Determine a loading order of layers based on a graph of dependencies
-  QMap< QString, QVector< QString > > dependencies;
+  QMap<QString, QVector<QString>> dependencies;
   QStringList sortedLayers;
-  QList< QPair<QString, QDomNode> > layersToSort;
+  QList<QPair<QString, QDomNode>> layersToSort;
   QStringList layerIds;
 
   QDomElement layerElem = doc.documentElement().firstChildElement( QStringLiteral( "projectlayers" ) ).firstChildElement( QStringLiteral( "maplayer" ) );
@@ -462,12 +462,12 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument &doc )
       layersToSort << qMakePair( id, layerElem );
       mDependentLayerIds.insert( id );
     }
-    layerElem = layerElem.nextSiblingElement( );
+    layerElem = layerElem.nextSiblingElement();
   }
 
   // check that all dependencies are present
   const auto constDependencies = dependencies;
-  for ( const QVector< QString > &ids : constDependencies )
+  for ( const QVector<QString> &ids : constDependencies )
   {
     const auto constIds = ids;
     for ( const QString &depId : constIds )
@@ -477,10 +477,10 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument &doc )
         // some dependencies are not satisfied
         mHasMissingDependency = true;
         layerElem = firstElement;
-        while ( ! layerElem.isNull() )
+        while ( !layerElem.isNull() )
         {
           mSortedLayerNodes << layerElem;
-          layerElem = layerElem.nextSiblingElement( );
+          layerElem = layerElem.nextSiblingElement();
         }
         mSortedLayerIds = layerIds;
         return;
@@ -494,7 +494,7 @@ void QgsLayerDefinition::DependencySorter::init( const QDomDocument &doc )
 
   while ( !layersToSort.empty() && !mHasCycle )
   {
-    QList< QPair<QString, QDomNode> >::iterator it = layersToSort.begin();
+    QList<QPair<QString, QDomNode>>::iterator it = layersToSort.begin();
     while ( it != layersToSort.end() )
     {
       const QString idToSort = it->first;
@@ -547,8 +547,8 @@ QgsLayerDefinition::DependencySorter::DependencySorter( const QString &fileName 
 
   QDomDocument doc;
   QFile pFile( qgsProjectFile );
-  ( void )pFile.open( QIODevice::ReadOnly );
-  ( void )doc.setContent( &pFile );
+  ( void ) pFile.open( QIODevice::ReadOnly );
+  ( void ) doc.setContent( &pFile );
   init( doc );
 }
 
@@ -556,5 +556,3 @@ bool QgsLayerDefinition::DependencySorter::isLayerDependent( const QString &laye
 {
   return mDependentLayerIds.contains( layerId );
 }
-
-

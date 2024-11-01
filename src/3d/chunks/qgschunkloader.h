@@ -45,7 +45,8 @@ class QgsChunkLoader : public QgsChunkQueueJob
     Q_OBJECT
   public:
     //! Construct chunk loader for a node
-    QgsChunkLoader( QgsChunkNode *node ) : QgsChunkQueueJob( node ) { }
+    QgsChunkLoader( QgsChunkNode *node )
+      : QgsChunkQueueJob( node ) {}
 
     /**
      * Run in main thread to use loaded data.
@@ -59,7 +60,7 @@ class QgsChunkLoader : public QgsChunkQueueJob
  * \ingroup 3d
  * \brief Factory for chunk loaders for a particular type of entity
  */
-class QgsChunkLoaderFactory  : public QObject
+class QgsChunkLoaderFactory : public QObject
 {
     Q_OBJECT
   public:
@@ -91,7 +92,11 @@ class QgsChunkLoaderFactory  : public QObject
      * \see prepareChildren()
      * \see createChildren()
      */
-    virtual bool canCreateChildren( QgsChunkNode *node ) { Q_UNUSED( node ); return true; }
+    virtual bool canCreateChildren( QgsChunkNode *node )
+    {
+      Q_UNUSED( node );
+      return true;
+    }
 
     /**
      * Requests that node has enough hierarchy information to create children in createChildren().
@@ -137,7 +142,6 @@ class _3D_EXPORT QgsQuadtreeChunkLoaderFactory : public QgsChunkLoaderFactory
     float mRootError = 0;
     //! maximum allowed depth of quad tree
     int mMaxLevel = 0;
-
 };
 
 /// @endcond

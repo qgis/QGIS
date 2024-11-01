@@ -37,11 +37,10 @@ class QTemporaryDir;
 class CORE_EXPORT QgsSourceCacheEntry : public QgsAbstractContentCacheEntry
 {
   public:
-
     /**
      * Constructor for QgsSourceCacheEntry, corresponding to the specified \a path.
      */
-    QgsSourceCacheEntry( const QString &path ) ;
+    QgsSourceCacheEntry( const QString &path );
 
     //! The local file path of the source string
     QString filePath;
@@ -49,7 +48,6 @@ class CORE_EXPORT QgsSourceCacheEntry : public QgsAbstractContentCacheEntry
     int dataSize() const override;
     void dump() const override;
     bool isEqual( const QgsAbstractContentCacheEntry *other ) const override;
-
 };
 
 ///@endcond
@@ -69,13 +67,12 @@ class CORE_EXPORT QgsSourceCacheEntry : public QgsAbstractContentCacheEntry
 class CORE_EXPORT QgsSourceCache : public QgsAbstractContentCacheBase // for sip we skip to the base class and avoid the template difficulty
 {
 #else
-class CORE_EXPORT QgsSourceCache : public QgsAbstractContentCache< QgsSourceCacheEntry >
+class CORE_EXPORT QgsSourceCache : public QgsAbstractContentCache<QgsSourceCacheEntry>
 {
 #endif
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSourceCache, with the specified \a parent object.
      */
@@ -96,10 +93,9 @@ class CORE_EXPORT QgsSourceCache : public QgsAbstractContentCache< QgsSourceCach
     void remoteSourceFetched( const QString &url );
 
   private:
-
     QString fetchSource( const QString &path, bool &isBroken, bool blocking = false ) const;
 
-    std::unique_ptr< QTemporaryDir > temporaryDir;
+    std::unique_ptr<QTemporaryDir> temporaryDir;
 };
 
 #endif // QGSSOURCECACHE_H

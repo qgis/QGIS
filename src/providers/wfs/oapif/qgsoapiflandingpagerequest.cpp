@@ -24,9 +24,8 @@ using namespace nlohmann;
 
 #include <QTextCodec>
 
-QgsOapifLandingPageRequest::QgsOapifLandingPageRequest( const QgsDataSourceUri &uri ):
-  QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), uri.authConfigId() ), "OAPIF" ),
-  mUri( uri )
+QgsOapifLandingPageRequest::QgsOapifLandingPageRequest( const QgsDataSourceUri &uri )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), uri.authConfigId() ), "OAPIF" ), mUri( uri )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main
@@ -88,9 +87,9 @@ void QgsOapifLandingPageRequest::processReply()
 
     const auto links = QgsOAPIFJson::parseLinks( j );
     QStringList apiTypes;
-    apiTypes <<  QStringLiteral( "application/vnd.oai.openapi+json;version=3.0" );
+    apiTypes << QStringLiteral( "application/vnd.oai.openapi+json;version=3.0" );
 #ifndef REMOVE_SUPPORT_DRAFT_VERSIONS
-    apiTypes <<  QStringLiteral( "application/openapi+json;version=3.0" );
+    apiTypes << QStringLiteral( "application/openapi+json;version=3.0" );
 #endif
     mApiUrl = QgsOAPIFJson::findLink( links,
                                       QStringLiteral( "service-desc" ),
@@ -115,14 +114,14 @@ void QgsOapifLandingPageRequest::processReply()
     QStringList collectionsTypes;
     collectionsTypes << QStringLiteral( "application/json" );
     mCollectionsUrl = QgsOAPIFJson::findLink( links,
-                      QStringLiteral( "data" ),
-                      collectionsTypes );
+                                              QStringLiteral( "data" ),
+                                              collectionsTypes );
 #ifndef REMOVE_SUPPORT_DRAFT_VERSIONS
     if ( mCollectionsUrl.isEmpty() )
     {
       mCollectionsUrl = QgsOAPIFJson::findLink( links,
-                        QStringLiteral( "collections" ),
-                        apiTypes );
+                                                QStringLiteral( "collections" ),
+                                                apiTypes );
     }
 #endif
 

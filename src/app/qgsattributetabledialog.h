@@ -41,7 +41,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      * \param layer layer pointer
@@ -216,7 +215,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void saveEdits( QgsMapLayer *layer );
 
   protected:
-
     /*
      * Handle KeyPress event of the window
      * \param event
@@ -239,12 +237,12 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     QDialog *mDialog = nullptr;
 
-    QPointer< QgsVectorLayer > mLayer = nullptr;
+    QPointer<QgsVectorLayer> mLayer = nullptr;
     void updateMultiEditButtonState();
     void deleteFeature( QgsFeatureId fid );
     void toggleShortcuts( bool enable );
 
-    QList< QPointer< QgsVectorLayer> > mReferencingLayers;
+    QList<QPointer<QgsVectorLayer>> mReferencingLayers;
 
     QAction *mActionDockUndock = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;

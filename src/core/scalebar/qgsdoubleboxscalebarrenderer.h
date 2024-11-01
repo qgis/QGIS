@@ -26,10 +26,9 @@
  * \ingroup core
  * \brief Double box with alternating colors.
  */
-class CORE_EXPORT QgsDoubleBoxScaleBarRenderer: public QgsScaleBarRenderer
+class CORE_EXPORT QgsDoubleBoxScaleBarRenderer : public QgsScaleBarRenderer
 {
   public:
-
     QgsDoubleBoxScaleBarRenderer() = default;
 
     QString id() const override;
@@ -41,7 +40,6 @@ class CORE_EXPORT QgsDoubleBoxScaleBarRenderer: public QgsScaleBarRenderer
     void draw( QgsRenderContext &context,
                const QgsScaleBarSettings &settings,
                const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
-
 };
 
 #endif // QGSDOUBLEBOXSCALEBARRENDERER_H

@@ -34,7 +34,6 @@ class GUI_EXPORT QgsLegendPatchShapeWidget : public QgsPanelWidget, private Ui::
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLegendPatchShapeWidget, with the specified \a parent widget.
      */
@@ -66,9 +65,7 @@ class GUI_EXPORT QgsLegendPatchShapeWidget : public QgsPanelWidget, private Ui::
     void saveShape();
 
   private:
-
     Qgis::SymbolType mType = Qgis::SymbolType::Fill;
-
 };
 
 /**
@@ -81,7 +78,6 @@ class GUI_EXPORT QgsLegendPatchShapeDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLegendPatchShapeDialog, initially showing the specified \a shape.
      */
@@ -98,10 +94,8 @@ class GUI_EXPORT QgsLegendPatchShapeDialog : public QDialog
     QDialogButtonBox *buttonBox() const;
 
   private:
-
     QgsLegendPatchShapeWidget *mWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
-
 };
 
 #endif // QGSLEGENDPATCHSHAPEWIDGET_H

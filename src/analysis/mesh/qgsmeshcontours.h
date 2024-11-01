@@ -50,7 +50,6 @@ class QgsFeedback;
 class ANALYSIS_EXPORT QgsMeshContours
 {
   public:
-
     /**
      * Constructs the mesh contours exporter.
      * Caches the native and triangular mesh from data provider

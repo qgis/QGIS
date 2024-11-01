@@ -33,7 +33,6 @@ namespace QgsWcs
   class QgsServiceException : public QgsOgcServiceException
   {
     public:
-
       /**
        * Constructor for QgsServiceException (empty locator attribute).
        * \param code Error code name
@@ -56,7 +55,6 @@ namespace QgsWcs
                            int responseCode = 200 )
         : QgsOgcServiceException( code, message, locator, responseCode, QStringLiteral( "1.2.0" ) )
       {}
-
   };
 
   /**
@@ -64,10 +62,9 @@ namespace QgsWcs
    * \class  QgsWcs::QgsSecurityAccessException
    * \brief Exception thrown when data access violates access controls
    */
-  class QgsSecurityAccessException: public QgsServiceException
+  class QgsSecurityAccessException : public QgsServiceException
   {
     public:
-
       /**
        * Constructor for QgsSecurityAccessException (Security code name).
        * \param message Exception message to return to the client
@@ -83,10 +80,9 @@ namespace QgsWcs
    * \class  QgsWcs::QgsRequestNotWellFormedException
    * \brief Exception thrown in case of malformed request
    */
-  class QgsRequestNotWellFormedException: public QgsServiceException
+  class QgsRequestNotWellFormedException : public QgsServiceException
   {
     public:
-
       /**
        * Constructor for QgsRequestNotWellFormedException (RequestNotWellFormed code name).
        * \param message Exception message to return to the client
@@ -99,4 +95,3 @@ namespace QgsWcs
 } // namespace QgsWcs
 
 #endif
-

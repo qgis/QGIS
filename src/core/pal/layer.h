@@ -69,7 +69,6 @@ namespace pal
       friend class LabelPosition;
 
     public:
-
       /**
        * \brief Create a new layer
        *
@@ -100,15 +99,15 @@ namespace pal
         // to avoid the engine processing endlessly...
         const int size = mHashtable.size();
         if ( size > 1000 )
-          return static_cast< std::size_t >( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 4 ) : 4 );
+          return static_cast<std::size_t>( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 4 ) : 4 );
         else if ( size > 500 )
-          return static_cast< std::size_t >( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 6 ) : 6 );
+          return static_cast<std::size_t>( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 6 ) : 6 );
         else if ( size > 200 )
-          return static_cast< std::size_t >( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 8 ) : 8 );
+          return static_cast<std::size_t>( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 8 ) : 8 );
         else if ( size > 100 )
-          return static_cast< std::size_t >( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 12 ) : 12 );
+          return static_cast<std::size_t>( mPal->globalCandidatesLimitPoint() > 0 ? std::min( mPal->globalCandidatesLimitPoint(), 12 ) : 12 );
         else
-          return static_cast< std::size_t >( std::max( mPal->globalCandidatesLimitPoint(), 0 ) );
+          return static_cast<std::size_t>( std::max( mPal->globalCandidatesLimitPoint(), 0 ) );
       }
 
       /**
@@ -121,15 +120,15 @@ namespace pal
         // to avoid the engine processing endlessly...
         const int size = mHashtable.size();
         if ( size > 1000 )
-          return static_cast< std::size_t >( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 5 ) : 5 );
+          return static_cast<std::size_t>( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 5 ) : 5 );
         else if ( size > 500 )
-          return static_cast< std::size_t >( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 10 ) : 10 );
+          return static_cast<std::size_t>( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 10 ) : 10 );
         else if ( size > 200 )
-          return static_cast< std::size_t >( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 20 ) : 20 );
+          return static_cast<std::size_t>( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 20 ) : 20 );
         else if ( size > 100 )
-          return static_cast< std::size_t >( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 40 ) : 40 );
+          return static_cast<std::size_t>( mPal->globalCandidatesLimitLine() > 0 ? std::min( mPal->globalCandidatesLimitLine(), 40 ) : 40 );
         else
-          return static_cast< std::size_t >( std::max( mPal->globalCandidatesLimitLine(), 0 ) );
+          return static_cast<std::size_t>( std::max( mPal->globalCandidatesLimitLine(), 0 ) );
       }
 
       /**
@@ -142,15 +141,15 @@ namespace pal
         // to avoid the engine processing endlessly...
         const int size = mHashtable.size();
         if ( size > 1000 )
-          return static_cast< std::size_t >( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 5 ) : 5 );
+          return static_cast<std::size_t>( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 5 ) : 5 );
         else if ( size > 500 )
-          return static_cast< std::size_t >( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 15 ) : 15 );
+          return static_cast<std::size_t>( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 15 ) : 15 );
         else if ( size > 200 )
-          return static_cast< std::size_t >( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 20 ) : 20 );
+          return static_cast<std::size_t>( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 20 ) : 20 );
         else if ( size > 100 )
-          return static_cast< std::size_t >( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 25 ) : 25 );
+          return static_cast<std::size_t>( mPal->globalCandidatesLimitPolygon() > 0 ? std::min( mPal->globalCandidatesLimitPolygon(), 25 ) : 25 );
         else
-          return static_cast< std::size_t >( std::max( mPal->globalCandidatesLimitPolygon(), 0 ) );
+          return static_cast<std::size_t>( std::max( mPal->globalCandidatesLimitPolygon(), 0 ) );
       }
 
       //! Returns pointer to the associated provider
@@ -313,12 +312,12 @@ namespace pal
       QString mName;
 
       //! List of feature parts
-      std::deque< std::unique_ptr< FeaturePart > > mFeatureParts;
+      std::deque<std::unique_ptr<FeaturePart>> mFeatureParts;
 
       //! List of obstacle parts
       QList<FeaturePart *> mObstacleParts;
 
-      std::vector< geos::unique_ptr > mGeosObstacleGeometries;
+      std::vector<geos::unique_ptr> mGeosObstacleGeometries;
 
       Pal *mPal = nullptr;
 
@@ -337,19 +336,18 @@ namespace pal
       Qgis::UpsideDownLabelHandling mUpsidedownLabels = Qgis::UpsideDownLabelHandling::FlipUpsideDownLabels;
 
       //! Lookup table of label features (owned by the label feature provider that created them)
-      QHash< QgsFeatureId, QgsLabelFeature *> mHashtable;
+      QHash<QgsFeatureId, QgsLabelFeature *> mHashtable;
 
-      QHash< QString, QVector<FeaturePart *> > mConnectedHashtable;
-      QHash< QgsFeatureId, int > mConnectedFeaturesIds;
+      QHash<QString, QVector<FeaturePart *>> mConnectedHashtable;
+      QHash<QgsFeatureId, int> mConnectedFeaturesIds;
 
       QMutex mMutex;
 
       //! Add newly created feature part into r tree and to the list
-      void addFeaturePart( std::unique_ptr< FeaturePart > fpart, const QString &labelText = QString() );
+      void addFeaturePart( std::unique_ptr<FeaturePart> fpart, const QString &labelText = QString() );
 
       //! Add newly created obstacle part into r tree and to the list
       void addObstaclePart( FeaturePart *fpart );
-
   };
 
 } // end namespace pal

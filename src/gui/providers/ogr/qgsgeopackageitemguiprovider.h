@@ -33,7 +33,6 @@ class QgsGeoPackageItemGuiProvider : public QObject, public QgsDataItemGuiProvid
     Q_OBJECT
 
   public:
-
     QgsGeoPackageItemGuiProvider() = default;
 
     QString name() override { return QStringLiteral( "geopackage_items" ); }
@@ -49,16 +48,17 @@ class QgsGeoPackageItemGuiProvider : public QObject, public QgsDataItemGuiProvid
     bool handleDrop( QgsDataItem *item, QgsDataItemGuiContext context,
                      const QMimeData *data,
                      Qt::DropAction action ) override;
+
   private:
     bool handleDropGeopackage( QgsGeoPackageCollectionItem *item, const QMimeData *data, QgsDataItemGuiContext context );
     //! Compacts (VACUUM) a geopackage database
     void vacuumGeoPackageDbAction( const QString &path, const QString &name, QgsDataItemGuiContext context );
-    void createDatabase( const QPointer< QgsGeoPackageRootItem > &item );
-    void createDatabaseAndLayer( const QPointer< QgsGeoPackageRootItem > &item );
+    void createDatabase( const QPointer<QgsGeoPackageRootItem> &item );
+    void createDatabaseAndLayer( const QPointer<QgsGeoPackageRootItem> &item );
 
   protected slots:
     void renameVectorLayer( const QString &uri, const QString &key, const QStringList &tableNames,
-                            const QPointer< QgsDataItem > &item, QgsDataItemGuiContext context );
+                            const QPointer<QgsDataItem> &item, QgsDataItemGuiContext context );
 };
 
 ///@endcond

@@ -39,4 +39,3 @@ QgsDialog::QgsDialog( QWidget *parent, Qt::WindowFlags fl,
   layout->addWidget( mButtonBox );
   setLayout( layout );
 }
-

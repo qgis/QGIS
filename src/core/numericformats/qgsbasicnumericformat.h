@@ -31,13 +31,12 @@
 class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
 {
   public:
-
     /**
      * Sets rounding type and behavior of the numberDecimalPlaces() setting.
      */
     enum RoundingType
     {
-      DecimalPlaces, //!< Maximum number of decimal places
+      DecimalPlaces,      //!< Maximum number of decimal places
       SignificantFigures, //!< Maximum number of significant figures
     };
 
@@ -159,7 +158,6 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
     void setDecimalSeparator( QChar character );
 
   protected:
-
     /**
      * Sets the format's \a configuration.
      */
@@ -168,7 +166,6 @@ class CORE_EXPORT QgsBasicNumericFormat : public QgsNumericFormat
     bool mUseScientific = false;
 
   private:
-
     int mNumberDecimalPlaces = 6;
     bool mShowThousandsSeparator = true;
     bool mShowPlusSign = false;

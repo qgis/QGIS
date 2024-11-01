@@ -33,7 +33,6 @@ class QgsExpressionContextScope;
 class CORE_EXPORT QgsSymbolRenderContext
 {
   public:
-
     //TODO QGIS 4.0 - remove mapUnitScale and renderunit
 
     /**
@@ -62,7 +61,8 @@ class CORE_EXPORT QgsSymbolRenderContext
      * Returns a reference to the context's render context.
      * \note Not available in Python bindings.
      */
-    const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
+    const QgsRenderContext &renderContext() const { return mRenderContext; }
+    SIP_SKIP
 
     /**
      * Sets the original value variable value for data defined symbology
@@ -242,13 +242,12 @@ class CORE_EXPORT QgsSymbolRenderContext
     void setPatchShape( const QgsLegendPatchShape &shape );
 
   private:
-
 #ifdef SIP_RUN
     QgsSymbolRenderContext( const QgsSymbolRenderContext &rh ) SIP_FORCE;
 #endif
 
     QgsRenderContext &mRenderContext;
-    std::unique_ptr< QgsExpressionContextScope > mExpressionContextScope;
+    std::unique_ptr<QgsExpressionContextScope> mExpressionContextScope;
     Qgis::RenderUnit mOutputUnit;
     QgsMapUnitScale mMapUnitScale;
     qreal mOpacity = 1.0;
@@ -259,9 +258,8 @@ class CORE_EXPORT QgsSymbolRenderContext
     int mGeometryPartCount;
     int mGeometryPartNum;
     Qgis::GeometryType mOriginalGeometryType = Qgis::GeometryType::Unknown;
-    std::unique_ptr< QgsLegendPatchShape > mPatchShape;
+    std::unique_ptr<QgsLegendPatchShape> mPatchShape;
 };
 
 
 #endif // QGSSYMBOLRENDERCONTEXT_H
-

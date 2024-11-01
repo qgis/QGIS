@@ -48,10 +48,10 @@ namespace QgsWms
       throw QgsServiceException( QStringLiteral( "MissingParameterValue" ),
                                  QStringLiteral( "SLD_VERSION is mandatory for DescribeLayer operation" ), 400 );
     }
-    if ( parameters[ QStringLiteral( "SLD_VERSION" )] != QLatin1String( "1.1.0" ) )
+    if ( parameters[QStringLiteral( "SLD_VERSION" )] != QLatin1String( "1.1.0" ) )
     {
       throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ),
-                                 QStringLiteral( "SLD_VERSION = %1 is not supported" ).arg( parameters[ QStringLiteral( "SLD_VERSION" )] ), 400 );
+                                 QStringLiteral( "SLD_VERSION = %1 is not supported" ).arg( parameters[QStringLiteral( "SLD_VERSION" )] ), 400 );
     }
 
     if ( !parameters.contains( QStringLiteral( "LAYERS" ) ) && !parameters.contains( QStringLiteral( "LAYER" ) ) )
@@ -64,11 +64,11 @@ namespace QgsWms
 
     if ( parameters.contains( QStringLiteral( "LAYERS" ) ) )
     {
-      layersList = parameters[ QStringLiteral( "LAYERS" )].split( ',', Qt::SkipEmptyParts );
+      layersList = parameters[QStringLiteral( "LAYERS" )].split( ',', Qt::SkipEmptyParts );
     }
     else
     {
-      layersList = parameters[ QStringLiteral( "LAYER" )].split( ',', Qt::SkipEmptyParts );
+      layersList = parameters[QStringLiteral( "LAYER" )].split( ',', Qt::SkipEmptyParts );
     }
     if ( layersList.isEmpty() )
     {
@@ -117,7 +117,7 @@ namespace QgsWms
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
 #else
-    ( void )serverIface;
+    ( void ) serverIface;
 #endif
     // Use layer ids
     const bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );

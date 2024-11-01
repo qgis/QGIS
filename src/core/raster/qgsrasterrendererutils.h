@@ -30,7 +30,6 @@
 class CORE_EXPORT QgsRasterRendererUtils
 {
   public:
-
     /**
      * Parses an exported color map file at the specified \a path and extracts the stored color ramp \a items
      * and ramp shader \a type.

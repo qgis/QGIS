@@ -34,7 +34,7 @@
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutLabelWidget: public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutLabelWidgetBase
+class GUI_EXPORT QgsLayoutLabelWidget : public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutLabelWidgetBase
 {
     Q_OBJECT
   public:
@@ -57,10 +57,9 @@ class GUI_EXPORT QgsLayoutLabelWidget: public QgsLayoutItemBaseWidget, public Qg
      *
      * \since QGIS 3.18
      */
-    static void buildInsertDynamicTextMenu( QgsLayout *layout, QMenu *menu, const std::function< void( const QString &expression ) > &callback );
+    static void buildInsertDynamicTextMenu( QgsLayout *layout, QMenu *menu, const std::function<void( const QString &expression )> &callback );
 
   protected:
-
     bool setNewItem( QgsLayoutItem *item ) override;
 
   private slots:
@@ -75,7 +74,7 @@ class GUI_EXPORT QgsLayoutLabelWidget: public QgsLayoutItemBaseWidget, public Qg
     void fontChanged();
 
   private:
-    QPointer< QgsLayoutItemLabel > mLabel = nullptr;
+    QPointer<QgsLayoutItemLabel> mLabel = nullptr;
 
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 

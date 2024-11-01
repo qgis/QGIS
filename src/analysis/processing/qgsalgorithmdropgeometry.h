@@ -30,9 +30,7 @@
  */
 class QgsDropGeometryAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsDropGeometryAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -45,7 +43,6 @@ class QgsDropGeometryAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
-
     QString outputName() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
     QgsFeatureRequest request() const override;
@@ -56,5 +53,3 @@ class QgsDropGeometryAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMDROPGEOMETRY_H
-
-

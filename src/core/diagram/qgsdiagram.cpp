@@ -18,7 +18,8 @@
 
 #include <QPainter>
 
-QgsDiagram::QgsDiagram( const QgsDiagram & ): mExpressions{}
+QgsDiagram::QgsDiagram( const QgsDiagram & )
+  : mExpressions {}
 {
   // do not copy the cached expression map - the expressions need to be created and prepared with getExpression(...) call
 }

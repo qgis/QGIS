@@ -40,9 +40,6 @@ class CORE_EXPORT QgsFileFilterGenerator
      * and return a file filter.
      */
     virtual QString createFileFilter() const = 0;
-
 };
 
 #endif // QGSPROCESSINGUTILS_H
-
-

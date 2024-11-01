@@ -39,7 +39,7 @@ class QgsSymbol;
 % ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgsrubberband.h>
-% End
+  % End
 #endif
 
 /**
@@ -50,7 +50,8 @@ class QgsSymbol;
  * for tracking the mouse while drawing polylines or polygons.
  */
 #ifndef SIP_RUN
-class GUI_EXPORT QgsRubberBand : public QObject, public QgsMapCanvasItem
+  class GUI_EXPORT QgsRubberBand : public QObject,
+  public QgsMapCanvasItem
 {
 #else
 class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
@@ -73,7 +74,6 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     SIP_END
 #endif
   public:
-
     Q_PROPERTY( QColor fillColor READ fillColor WRITE setFillColor )
     Q_PROPERTY( QColor strokeColor READ strokeColor WRITE setStrokeColor )
     Q_PROPERTY( int iconSize READ iconSize WRITE setIconSize )
@@ -419,7 +419,6 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     void setSymbol( QgsSymbol *symbol SIP_TRANSFER );
 
   protected:
-
     /**
      * Paints the rubber band in response to an update event.
      *  \param p The QPainter object
@@ -456,18 +455,17 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     std::unique_ptr<QSvgRenderer> mSvgRenderer;
     QPoint mSvgOffset;
 
-    std::unique_ptr< QgsSymbol > mSymbol;
+    std::unique_ptr<QgsSymbol> mSymbol;
 
     /**
      * Nested lists used for multitypes
      */
-    QVector< QVector< QVector <QgsPointXY> > > mPoints;
+    QVector<QVector<QVector<QgsPointXY>>> mPoints;
     Qgis::GeometryType mGeometryType = Qgis::GeometryType::Polygon;
     double mTranslationOffsetX = 0.0;
     double mTranslationOffsetY = 0.0;
 
     QgsRubberBand();
-
 };
 
 #endif

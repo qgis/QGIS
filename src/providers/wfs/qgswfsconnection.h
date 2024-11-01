@@ -23,7 +23,6 @@ class QgsWfsConnection : public QgsOwsConnection
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      * \param connName connection name

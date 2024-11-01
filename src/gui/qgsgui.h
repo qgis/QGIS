@@ -65,7 +65,6 @@ class GUI_EXPORT QgsGui : public QObject
     Q_OBJECT
 
   public:
-
     static inline QgsSettingsTreeNode *sTtreeWidgetLastUsedValues = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "widget-last-used-values" ) ) SIP_SKIP;
 
     /**
@@ -74,7 +73,7 @@ class GUI_EXPORT QgsGui : public QObject
     enum ProjectCrsBehavior
     {
       UseCrsOfFirstLayerAdded = 1, //!< Set the project CRS to the CRS of the first layer added to a new project
-      UsePresetCrs = 2, //!< Always set new projects to use a preset default CRS
+      UsePresetCrs = 2,            //!< Always set new projects to use a preset default CRS
     };
     Q_ENUM( ProjectCrsBehavior )
 
@@ -265,10 +264,9 @@ class GUI_EXPORT QgsGui : public QObject
      * HIG flags, which indicate the Human Interface Guidelines for the current platform.
      * \since QGIS 3.4
     */
-    enum HigFlag SIP_ENUM_BASETYPE( IntFlag )
-    {
-      HigMenuTextIsTitleCase = 1 << 0,       //!< Menu action texts should be title case
-      HigDialogTitleIsTitleCase = 1 << 1     //!< Dialog titles should be title case
+    enum HigFlag SIP_ENUM_BASETYPE( IntFlag ) {
+      HigMenuTextIsTitleCase = 1 << 0,   //!< Menu action texts should be title case
+      HigDialogTitleIsTitleCase = 1 << 1 //!< Dialog titles should be title case
     };
     Q_DECLARE_FLAGS( HigFlags, HigFlag )
 
@@ -337,7 +335,6 @@ class GUI_EXPORT QgsGui : public QObject
     void optionsChanged();
 
   private:
-
     QgsGui();
 
     QgsSettingsRegistryGui *mSettingsRegistryGui = nullptr;
@@ -367,12 +364,11 @@ class GUI_EXPORT QgsGui : public QObject
     QgsSensorGuiRegistry *mSensorGuiRegistry = nullptr;
     QgsSettingsEditorWidgetRegistry *mSettingsEditorRegistry = nullptr;
     QgsInputControllerManager *mInputControllerManager = nullptr;
-    std::unique_ptr< QgsWindowManagerInterface > mWindowManager;
+    std::unique_ptr<QgsWindowManagerInterface> mWindowManager;
 
 #ifdef SIP_RUN
     QgsGui( const QgsGui &other );
 #endif
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsGui::HigFlags )

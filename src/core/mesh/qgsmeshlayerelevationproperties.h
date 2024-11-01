@@ -37,11 +37,9 @@ class QgsFillSymbol;
  */
 class CORE_EXPORT QgsMeshLayerElevationProperties : public QgsMapLayerElevationProperties
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsMeshLayerElevationProperties, with the specified \a parent object.
      */
@@ -55,7 +53,7 @@ class CORE_EXPORT QgsMeshLayerElevationProperties : public QgsMapLayerElevationP
     QgsMeshLayerElevationProperties *clone() const override SIP_FACTORY;
     bool isVisibleInZRange( const QgsDoubleRange &range, QgsMapLayer *layer = nullptr ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
-    QList< double > significantZValues( QgsMapLayer *layer ) const override;
+    QList<double> significantZValues( QgsMapLayer *layer ) const override;
     bool showByDefaultInElevationProfilePlots() const override;
     QgsMapLayerElevationProperties::Flags flags() const override;
 
@@ -194,20 +192,19 @@ class CORE_EXPORT QgsMeshLayerElevationProperties : public QgsMapLayerElevationP
     void setElevationLimit( double limit );
 
   private:
-
     void setDefaultProfileLineSymbol( const QColor &color );
     void setDefaultProfileFillSymbol( const QColor &color );
 
     Qgis::MeshElevationMode mMode = Qgis::MeshElevationMode::FromVertices;
 
-    std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
-    std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;
+    std::unique_ptr<QgsLineSymbol> mProfileLineSymbol;
+    std::unique_ptr<QgsFillSymbol> mProfileFillSymbol;
     Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::Line;
-    double mElevationLimit = std::numeric_limits< double >::quiet_NaN();
+    double mElevationLimit = std::numeric_limits<double>::quiet_NaN();
 
     QgsDoubleRange mFixedRange;
 
-    QMap< int, QgsDoubleRange > mRangePerGroup;
+    QMap<int, QgsDoubleRange> mRangePerGroup;
 };
 
 #endif // QGSMESHLAYERELEVATIONPROPERTIES_H

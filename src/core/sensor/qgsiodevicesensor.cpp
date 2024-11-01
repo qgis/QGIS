@@ -187,8 +187,7 @@ QgsUdpSocketSensor::QgsUdpSocketSensor( QObject *parent )
 #endif
 
   connect( mUdpSocket.get(), &QAbstractSocket::stateChanged, this, &QgsUdpSocketSensor::socketStateChanged );
-  connect( mUdpSocket.get(), &QUdpSocket::readyRead, this, [this]()
-  {
+  connect( mUdpSocket.get(), &QUdpSocket::readyRead, this, [this]() {
     QByteArray datagram;
     while ( mUdpSocket->hasPendingDatagrams() )
     {
@@ -476,7 +475,7 @@ bool QgsSerialPortSensor::writePropertiesToElement( QDomElement &element, QDomDo
 bool QgsSerialPortSensor::readPropertiesFromElement( const QDomElement &element, const QDomDocument & )
 {
   mPortName = element.attribute( QStringLiteral( "portName" ) );
-  mBaudRate = static_cast< QSerialPort::BaudRate >( element.attribute( QStringLiteral( "baudRate" ) ).toInt() );
+  mBaudRate = static_cast<QSerialPort::BaudRate>( element.attribute( QStringLiteral( "baudRate" ) ).toInt() );
   mDelimiter = element.attribute( QStringLiteral( "delimiter" ) ).toLocal8Bit();
   return true;
 }

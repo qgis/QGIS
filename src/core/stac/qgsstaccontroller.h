@@ -171,8 +171,8 @@ class CORE_EXPORT QgsStacController : public QObject
 
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
-    QMap< int, QgsStacObject *> mFetchedStacObjects;
-    QMap< int, QgsStacItemCollection *> mFetchedItemCollections;
+    QMap<int, QgsStacObject *> mFetchedStacObjects;
+    QMap<int, QgsStacItemCollection *> mFetchedItemCollections;
     QVector<QNetworkReply *> mReplies;
     QString mError;
 };

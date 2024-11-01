@@ -48,7 +48,7 @@ namespace tinygltf
   class Model;
   class Node;
   class TinyGLTF;
-}
+} // namespace tinygltf
 
 
 /**
@@ -61,7 +61,6 @@ namespace tinygltf
 class CORE_EXPORT QgsGltfUtils
 {
   public:
-
     /**
      * Reads model's accessor given by \a accessorIndex and applies a couple of transforms
      * to convert the raw coordinates to map coordinates (assuming this is a GLTF to be used
@@ -91,7 +90,7 @@ class CORE_EXPORT QgsGltfUtils
     enum class ResourceType
     {
       Embedded, //!< Embedded resource
-      Linked, //!< Linked (external) resource
+      Linked,   //!< Linked (external) resource
     };
 
     /**

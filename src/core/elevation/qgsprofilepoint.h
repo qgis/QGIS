@@ -30,7 +30,6 @@
 class CORE_EXPORT QgsProfilePoint
 {
   public:
-
     /**
      * Constructor for an empty point.
      */
@@ -40,9 +39,9 @@ class CORE_EXPORT QgsProfilePoint
      * Create a point at the specified distance and elevation coordinates
      */
     QgsProfilePoint( double distance, double elevation ) SIP_HOLDGIL
-  : mDistance( distance )
-    , mElevation( elevation )
-    , mIsEmpty( false )
+      : mDistance( distance ),
+        mElevation( elevation ),
+        mIsEmpty( false )
     {}
 
     /**
@@ -100,7 +99,7 @@ class CORE_EXPORT QgsProfilePoint
         return true;
       if ( isEmpty() && !other.isEmpty() )
         return false;
-      if ( ! isEmpty() && other.isEmpty() )
+      if ( !isEmpty() && other.isEmpty() )
         return false;
 
       bool equal = true;
@@ -116,7 +115,7 @@ class CORE_EXPORT QgsProfilePoint
         return false;
       if ( isEmpty() && !other.isEmpty() )
         return true;
-      if ( ! isEmpty() && other.isEmpty() )
+      if ( !isEmpty() && other.isEmpty() )
         return true;
 
       bool equal = true;
@@ -128,21 +127,22 @@ class CORE_EXPORT QgsProfilePoint
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    const QString str = sipCpp->isEmpty()
-                        ? QStringLiteral( "<QgsProfilePoint: EMPTY>" )
-                        : QStringLiteral( "<QgsProfilePoint: %1, %2>" ).arg( sipCpp->distance() ).arg( sipCpp->elevation() );
+    % MethodCode const QString str = sipCpp->isEmpty()
+                                       ? QStringLiteral( "<QgsProfilePoint: EMPTY>" )
+                                       : QStringLiteral( "<QgsProfilePoint: %1, %2>" ).arg( sipCpp->distance() ).arg( sipCpp->elevation() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 
-    int __len__();
+      int
+      __len__();
     % MethodCode
-    sipRes = 2;
+        sipRes
+      = 2;
     % End
 
-    SIP_PYOBJECT __getitem__( int );
-    % MethodCode
-    if ( a0 == 0 )
+        SIP_PYOBJECT
+      __getitem__( int );
+    % MethodCode if ( a0 == 0 )
     {
       sipRes = Py_BuildValue( "d", sipCpp->distance() );
     }
@@ -159,9 +159,10 @@ class CORE_EXPORT QgsProfilePoint
 
 #endif
 
-  private:
+      private :
 
-    double mDistance = 0;
+      double mDistance
+      = 0;
     double mElevation = 0;
     bool mIsEmpty = true;
 };

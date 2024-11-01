@@ -74,7 +74,7 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
     void updateSubDiagram( const QModelIndex &index, QgsDiagramRenderer *dr );
 
     //! Returns the list of diagram renderers from the model. Does not transfer ownership.
-    QList< QgsDiagramRenderer *> subRenderers() const;
+    QList<QgsDiagramRenderer *> subRenderers() const;
 
     //! Returns the diagram layer settings from the model
     QgsDiagramLayerSettings diagramLayerSettings() const;
@@ -85,7 +85,7 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
     void updateDiagramLayerSettings( QgsDiagramLayerSettings dls );
 
   protected:
-    QList< QgsDiagramRenderer *> mRenderers;
+    QList<QgsDiagramRenderer *> mRenderers;
     QgsDiagramLayerSettings mDiagramLayerSettings;
 };
 
@@ -174,7 +174,6 @@ class GUI_EXPORT QgsStackedDiagramPropertiesDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsStackedDiagramPropertiesDialog
      * \param layer source vector layer
@@ -229,7 +228,7 @@ class GUI_EXPORT QgsStackedDiagramPropertiesDialog : public QDialog
 
   private:
     QgsDiagramProperties *mPropsWidget = nullptr;
-    std::unique_ptr< QgsDiagramRenderer > mRenderer;
+    std::unique_ptr<QgsDiagramRenderer> mRenderer;
     QgsDiagramLayerSettings mDiagramLayerSettings;
     QDialogButtonBox *buttonBox = nullptr;
 };

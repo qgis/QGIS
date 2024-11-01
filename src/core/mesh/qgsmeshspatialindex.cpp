@@ -94,7 +94,9 @@ class QgisMeshVisitor : public SpatialIndex::IVisitor
       : mList( list ) {}
 
     void visitNode( const INode &n ) override
-    { Q_UNUSED( n ) }
+    {
+      Q_UNUSED( n )
+    }
 
     void visitData( const IData &d ) override
     {
@@ -102,7 +104,9 @@ class QgisMeshVisitor : public SpatialIndex::IVisitor
     }
 
     void visitData( std::vector<const IData *> &v ) override
-    { Q_UNUSED( v ) }
+    {
+      Q_UNUSED( v )
+    }
 
   private:
     QList<int> &mList;
@@ -121,7 +125,9 @@ class QgsMeshSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
       : mNewIndex( newIndex ) {}
 
     void visitNode( const INode &n ) override
-    { Q_UNUSED( n ) }
+    {
+      Q_UNUSED( n )
+    }
 
     void visitData( const IData &d ) override
     {
@@ -132,7 +138,9 @@ class QgsMeshSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
     }
 
     void visitData( std::vector<const IData *> &v ) override
-    { Q_UNUSED( v ) }
+    {
+      Q_UNUSED( v )
+    }
 
   private:
     SpatialIndex::ISpatialIndex *mNewIndex = nullptr;
@@ -280,7 +288,7 @@ class QgsMeshSpatialIndexData : public QSharedData
       initTree();
 
       // copy R-tree data one by one (is there a faster way??)
-      double low[]  = { std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest() };
+      double low[] = { std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest() };
       double high[] = { std::numeric_limits<double>::max(), std::numeric_limits<double>::max() };
       const SpatialIndex::Region query( low, high, 2 );
       QgsMeshSpatialIndexCopyVisitor visitor( mRTree.get() );
@@ -316,8 +324,7 @@ class QgsMeshSpatialIndexData : public QSharedData
             leafCapacity,
             dimension,
             variant,
-            indexId )
-        );
+            indexId ) );
       else
         mRTree.reset(
           RTree::createNewRTree(
@@ -327,8 +334,7 @@ class QgsMeshSpatialIndexData : public QSharedData
             leafCapacity,
             dimension,
             variant,
-            indexId )
-        );
+            indexId ) );
     }
 
     //! Storage manager
@@ -359,7 +365,7 @@ QgsMeshSpatialIndex::QgsMeshSpatialIndex( const QgsMeshSpatialIndex &other ) //N
 {
 }
 
-QgsMeshSpatialIndex:: ~QgsMeshSpatialIndex() = default; //NOLINT
+QgsMeshSpatialIndex::~QgsMeshSpatialIndex() = default; //NOLINT
 
 QgsMeshSpatialIndex &QgsMeshSpatialIndex::operator=( const QgsMeshSpatialIndex &other )
 {

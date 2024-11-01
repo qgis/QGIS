@@ -38,10 +38,9 @@ SIP_NO_FILE
  * the item deletion command.
  *
 */
-class CORE_EXPORT QgsLayoutItemUndoCommand: public QgsAbstractLayoutUndoCommand
+class CORE_EXPORT QgsLayoutItemUndoCommand : public QgsAbstractLayoutUndoCommand
 {
   public:
-
     /**
      * Constructor for QgsLayoutItemUndoCommand.
      * \param item associated layout item
@@ -65,18 +64,15 @@ class CORE_EXPORT QgsLayoutItemUndoCommand: public QgsAbstractLayoutUndoCommand
     QString itemUuid() const;
 
   protected:
-
     void saveState( QDomDocument &stateDoc ) const override;
     void restoreState( QDomDocument &stateDoc ) override;
 
     virtual QgsLayoutItem *recreateItem( int itemType, QgsLayout *layout );
 
   private:
-
     QString mItemUuid;
     QgsLayout *mLayout = nullptr;
     int mItemType = 0;
-
 };
 
 /**
@@ -88,10 +84,9 @@ class CORE_EXPORT QgsLayoutItemUndoCommand: public QgsAbstractLayoutUndoCommand
  * the associated layout item is deleted and removed from the layout.
  *
 */
-class CORE_EXPORT QgsLayoutItemDeleteUndoCommand: public QgsLayoutItemUndoCommand
+class CORE_EXPORT QgsLayoutItemDeleteUndoCommand : public QgsLayoutItemUndoCommand
 {
   public:
-
     /**
      * Constructor for QgsLayoutItemDeleteUndoCommand.
      * \param item associated layout item
@@ -102,7 +97,6 @@ class CORE_EXPORT QgsLayoutItemDeleteUndoCommand: public QgsLayoutItemUndoComman
     QgsLayoutItemDeleteUndoCommand( QgsLayoutItem *item, const QString &text, int id = 0, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr );
     bool mergeWith( const QUndoCommand *command ) override;
     void redo() override;
-
 };
 
 
@@ -115,10 +109,9 @@ class CORE_EXPORT QgsLayoutItemDeleteUndoCommand: public QgsLayoutItemUndoComman
  * the associated layout item is recreated and added to the layout.
  *
 */
-class CORE_EXPORT QgsLayoutItemAddItemCommand: public QgsLayoutItemUndoCommand
+class CORE_EXPORT QgsLayoutItemAddItemCommand : public QgsLayoutItemUndoCommand
 {
   public:
-
     /**
      * Constructor for QgsLayoutItemAddItemCommand.
      * \param item associated layout item
@@ -130,7 +123,6 @@ class CORE_EXPORT QgsLayoutItemAddItemCommand: public QgsLayoutItemUndoCommand
     bool containsChange() const override;
     bool mergeWith( const QUndoCommand *command ) override;
     void undo() override;
-
 };
 
 ///@endcond

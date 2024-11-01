@@ -34,163 +34,161 @@
 template<typename TYPE>
 struct _LayerRef
 {
-
-  /**
+    /**
    * Flag for match type in weak resolution
    * \since QGIS 3.12
    */
-  enum MatchType
-  {
-    Name = 1 << 2, //!< Match layer name
-    Provider = 1 << 3, //!< Match layer provider name
-    Source = 1 << 4, //!< Match layer source
-    All = Provider | Source //!< Match all
-  };
+    enum MatchType
+    {
+      Name = 1 << 2,          //!< Match layer name
+      Provider = 1 << 3,      //!< Match layer provider name
+      Source = 1 << 4,        //!< Match layer source
+      All = Provider | Source //!< Match all
+    };
 
 
-  /**
+    /**
    * Constructor for a layer reference from an existing map layer.
    * The layerId, source, name and provider members will automatically
    * be populated from this layer.
    */
-  _LayerRef( TYPE *l = nullptr )
-    : layer( l )
-    , layerId( l ? l->id() : QString() )
-    , source( l ? l->publicSource() : QString() )
-    , name( l ? l->name() : QString() )
-    , provider( l && l->dataProvider() ? l->dataProvider()->name() : QString() )
-  {}
+    _LayerRef( TYPE *l = nullptr )
+      : layer( l )
+      , layerId( l ? l->id() : QString() )
+      , source( l ? l->publicSource() : QString() )
+      , name( l ? l->name() : QString() )
+      , provider( l && l->dataProvider() ? l->dataProvider()->name() : QString() )
+    {}
 
-  /**
+    /**
    * Constructor for a weak layer reference, using a combination of layer ID,
    * \a name, public \a source and \a provider key.
    */
-  _LayerRef( const QString &id, const QString &name = QString(), const QString &source = QString(), const QString &provider = QString() )
-    : layer()
-    , layerId( id )
-    , source( source )
-    , name( name )
-    , provider( provider )
-  {}
+    _LayerRef( const QString &id, const QString &name = QString(), const QString &source = QString(), const QString &provider = QString() )
+      : layer()
+      , layerId( id )
+      , source( source )
+      , name( name )
+      , provider( provider )
+    {}
 
-  /**
+    /**
    * Sets the reference to point to a specified layer.
    */
-  void setLayer( TYPE *l )
-  {
-    layer = l;
-    layerId = l ? l->id() : QString();
-    source = l ? l->publicSource() : QString();
-    name = l ? l->name() : QString();
-    provider = l && l->dataProvider() ? l->dataProvider()->name() : QString();
-  }
+    void setLayer( TYPE *l )
+    {
+      layer = l;
+      layerId = l ? l->id() : QString();
+      source = l ? l->publicSource() : QString();
+      name = l ? l->name() : QString();
+      provider = l && l->dataProvider() ? l->dataProvider()->name() : QString();
+    }
 
-  /**
+    /**
    * Equality operator is deleted to avoid confusion as there are multiple ways two _LayerRef objects can be considered equal.
    */
-  bool operator==( const _LayerRef &other ) = delete;
+    bool operator==( const _LayerRef &other ) = delete;
 
-  /**
+    /**
    * Returns TRUE if the layer reference is resolved and contains a reference to an existing
    * map layer.
    */
-  explicit operator bool() const
-  {
-    return static_cast< bool >( layer.data() );
-  }
+    explicit operator bool() const
+    {
+      return static_cast<bool>( layer.data() );
+    }
 
-  /**
+    /**
    * Forwards the to map layer.
    */
-  TYPE *operator->() const
-  {
-    return layer.data();
-  }
+    TYPE *operator->() const
+    {
+      return layer.data();
+    }
 
-  /**
+    /**
    * Returns a pointer to the layer, or NULLPTR if the reference has not yet been matched
    * to a layer.
    */
-  TYPE *get() const
-  {
-    return layer.data();
-  }
+    TYPE *get() const
+    {
+      return layer.data();
+    }
 
-  //! Weak pointer to map layer
-  QPointer<TYPE> layer;
+    //! Weak pointer to map layer
+    QPointer<TYPE> layer;
 
-  //! Original layer ID
-  QString layerId;
+    //! Original layer ID
+    QString layerId;
 
-  //! Weak reference to layer public source
-  QString source;
-  //! Weak reference to layer name
-  QString name;
-  //! Weak reference to layer provider
-  QString provider;
+    //! Weak reference to layer public source
+    QString source;
+    //! Weak reference to layer name
+    QString name;
+    //! Weak reference to layer provider
+    QString provider;
 
-  /**
+    /**
    * Returns TRUE if a layer matches the weak references to layer public source,
    * layer name and data provider contained in this layer reference.
    * \see resolveWeakly()
    */
-  bool layerMatchesSource( QgsMapLayer *layer ) const
-  {
-    if ( layer->publicSource() != source ||
-         layer->name() != name )
-      return false;
+    bool layerMatchesSource( QgsMapLayer *layer ) const
+    {
+      if ( layer->publicSource() != source || layer->name() != name )
+        return false;
 
-    if ( layer->providerType() != provider )
-      return false;
+      if ( layer->providerType() != provider )
+        return false;
 
-    return true;
-  }
+      return true;
+    }
 
-  /**
+    /**
    * Resolves the map layer by attempting to find a layer with matching ID
    * within a \a project. If found, this reference will be updated to match
    * the found layer and the layer will be returned. If no matching layer is
    * found, NULLPTR is returned.
    * \see resolveWeakly()
    */
-  TYPE *resolve( const QgsProject *project )
-  {
-    if ( project && !layerId.isEmpty() )
+    TYPE *resolve( const QgsProject *project )
     {
-      if ( TYPE *l = qobject_cast<TYPE *>( project->mapLayer( layerId ) ) )
+      if ( project && !layerId.isEmpty() )
       {
-        setLayer( l );
-        return l;
+        if ( TYPE *l = qobject_cast<TYPE *>( project->mapLayer( layerId ) ) )
+        {
+          setLayer( l );
+          return l;
+        }
       }
+      return nullptr;
     }
-    return nullptr;
-  }
 
-  bool layerMatchesWeakly( QgsMapLayer *layer, MatchType matchType = MatchType::All ) const
-  {
-    // First match the name
-    if ( matchType & MatchType::Name && ( layer->name().isEmpty() || layer->name() != name ) )
+    bool layerMatchesWeakly( QgsMapLayer *layer, MatchType matchType = MatchType::All ) const
     {
-      return false;
-    }
-    else
-    {
-      // We have found a match by name, now check the other
-      // criteria
-      if ( matchType & MatchType::Provider && layer->providerType() != provider )
+      // First match the name
+      if ( matchType & MatchType::Name && ( layer->name().isEmpty() || layer->name() != name ) )
       {
         return false;
       }
-      if ( matchType & MatchType::Source && layer->publicSource() != source )
+      else
       {
-        return false;
+        // We have found a match by name, now check the other
+        // criteria
+        if ( matchType & MatchType::Provider && layer->providerType() != provider )
+        {
+          return false;
+        }
+        if ( matchType & MatchType::Source && layer->publicSource() != source )
+        {
+          return false;
+        }
+        // All tests passed
+        return true;
       }
-      // All tests passed
-      return true;
     }
-  }
 
-  /**
+    /**
    * Resolves the map layer by attempting to find a matching layer
    * in a \a project using a weak match.
    *
@@ -214,44 +212,44 @@ struct _LayerRef
    * \see layerMatchesWeakly()
    * \see resolveByIdOrNameOnly()
    */
-  TYPE *resolveWeakly( const QgsProject *project, MatchType matchType = MatchType::All )
-  {
-    // first try matching by layer ID
-    if ( resolve( project ) )
-      return layer;
-
-    if ( project )
+    TYPE *resolveWeakly( const QgsProject *project, MatchType matchType = MatchType::All )
     {
-      QList<QgsMapLayer *> layers;
-      // If matching by name ...
-      if ( matchType & MatchType::Name )
+      // first try matching by layer ID
+      if ( resolve( project ) )
+        return layer;
+
+      if ( project )
       {
-        if ( name.isEmpty() )
+        QList<QgsMapLayer *> layers;
+        // If matching by name ...
+        if ( matchType & MatchType::Name )
         {
-          return nullptr;
-        }
-        layers = project->mapLayersByName( name );
-      }
-      else // ... we need all layers
-      {
-        layers = project->mapLayers().values();
-      }
-      for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
-      {
-        if ( TYPE *tl = qobject_cast< TYPE *>( *it ) )
-        {
-          if ( layerMatchesWeakly( tl, matchType ) )
+          if ( name.isEmpty() )
           {
-            setLayer( tl );
-            return tl;
+            return nullptr;
+          }
+          layers = project->mapLayersByName( name );
+        }
+        else // ... we need all layers
+        {
+          layers = project->mapLayers().values();
+        }
+        for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
+        {
+          if ( TYPE *tl = qobject_cast<TYPE *>( *it ) )
+          {
+            if ( layerMatchesWeakly( tl, matchType ) )
+            {
+              setLayer( tl );
+              return tl;
+            }
           }
         }
       }
+      return nullptr;
     }
-    return nullptr;
-  }
 
-  /**
+    /**
    * Resolves the map layer by attempting to find a matching layer
    * in a \a project using a weak match.
    *
@@ -273,61 +271,60 @@ struct _LayerRef
    * \see resolveWeakly()
    * \since QGIS 3.8
    */
-  TYPE *resolveByIdOrNameOnly( const QgsProject *project )
-  {
-    // first try by matching by layer ID, or weakly by source, name and provider
-    if ( resolveWeakly( project ) )
-      return layer;
-
-    // fallback to checking by name only
-    if ( project && !name.isEmpty() )
+    TYPE *resolveByIdOrNameOnly( const QgsProject *project )
     {
-      const QList<QgsMapLayer *> layers = project->mapLayersByName( name );
-      for ( QgsMapLayer *l : layers )
+      // first try by matching by layer ID, or weakly by source, name and provider
+      if ( resolveWeakly( project ) )
+        return layer;
+
+      // fallback to checking by name only
+      if ( project && !name.isEmpty() )
       {
-        if ( TYPE *tl = qobject_cast< TYPE *>( l ) )
+        const QList<QgsMapLayer *> layers = project->mapLayersByName( name );
+        for ( QgsMapLayer *l : layers )
         {
-          setLayer( tl );
-          return tl;
+          if ( TYPE *tl = qobject_cast<TYPE *>( l ) )
+          {
+            setLayer( tl );
+            return tl;
+          }
         }
       }
+      return nullptr;
     }
-    return nullptr;
-  }
 
-  /**
+    /**
    * Reads the layer's properties from an XML \a element.
    *
    * \see writeXml()
    * \since QGIS 3.30
    */
-  bool readXml( const QDomElement &element, const QgsReadWriteContext &context )
-  {
-    Q_UNUSED( context )
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context )
+    {
+      Q_UNUSED( context )
 
-    layerId = element.attribute( QStringLiteral( "id" ) );
-    name = element.attribute( QStringLiteral( "name" ) );
-    source = element.attribute( QStringLiteral( "source" ) );
-    provider = element.attribute( QStringLiteral( "provider" ) );
-    return true;
-  }
+      layerId = element.attribute( QStringLiteral( "id" ) );
+      name = element.attribute( QStringLiteral( "name" ) );
+      source = element.attribute( QStringLiteral( "source" ) );
+      provider = element.attribute( QStringLiteral( "provider" ) );
+      return true;
+    }
 
-  /**
+    /**
    * Writes the layer's properties to a XML \a element.
    *
    * \see readXml()
    * \since QGIS 3.30
    */
-  void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
-  {
-    Q_UNUSED( context )
+    void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
+    {
+      Q_UNUSED( context )
 
-    element.setAttribute( QStringLiteral( "id" ), layerId );
-    element.setAttribute( QStringLiteral( "name" ), name );
-    element.setAttribute( QStringLiteral( "source" ), source );
-    element.setAttribute( QStringLiteral( "provider" ), provider );
-  }
-
+      element.setAttribute( QStringLiteral( "id" ), layerId );
+      element.setAttribute( QStringLiteral( "name" ), name );
+      element.setAttribute( QStringLiteral( "source" ), source );
+      element.setAttribute( QStringLiteral( "provider" ), provider );
+    }
 };
 
 typedef _LayerRef<QgsMapLayer> QgsMapLayerRef;

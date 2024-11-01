@@ -26,9 +26,7 @@
 
 bool QgsServerMetadataUrlProperties::MetadataUrl::operator==( const QgsServerMetadataUrlProperties::MetadataUrl &other ) const
 {
-  return url == other.url &&
-         type == other.type &&
-         format == other.format;
+  return url == other.url && type == other.type && format == other.format;
 }
 
 void QgsServerMetadataUrlProperties::copyTo( QgsServerMetadataUrlProperties *properties ) const
@@ -115,7 +113,7 @@ bool QgsServerWmsDimensionProperties::removeWmsDimension( const QString &wmsDimN
 {
   for ( int i = 0; i < mWmsDimensions.size(); ++i )
   {
-    if ( mWmsDimensions[ i ].name == wmsDimName )
+    if ( mWmsDimensions[i].name == wmsDimName )
     {
       mWmsDimensions.removeAt( i );
       return true;
@@ -124,7 +122,7 @@ bool QgsServerWmsDimensionProperties::removeWmsDimension( const QString &wmsDimN
   return false;
 }
 
-const QList< QgsServerWmsDimensionProperties::WmsDimensionInfo > QgsServerWmsDimensionProperties::wmsDimensions() const
+const QList<QgsServerWmsDimensionProperties::WmsDimensionInfo> QgsServerWmsDimensionProperties::wmsDimensions() const
 {
   return mWmsDimensions;
 }
@@ -173,10 +171,10 @@ void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
       }
     }
     QgsServerWmsDimensionProperties::WmsDimensionInfo dim( dimName, dimFieldName,
-        dimElem.attribute( QStringLiteral( "endFieldName" ) ),
-        dimElem.attribute( QStringLiteral( "units" ) ),
-        dimElem.attribute( QStringLiteral( "unitSymbol" ) ),
-        dimDefaultDisplayType, dimRefValue );
+                                                           dimElem.attribute( QStringLiteral( "endFieldName" ) ),
+                                                           dimElem.attribute( QStringLiteral( "units" ) ),
+                                                           dimElem.attribute( QStringLiteral( "unitSymbol" ) ),
+                                                           dimDefaultDisplayType, dimRefValue );
     //XXX This add O(n^2) complexity !!!!
     // addWmsDimension( dim );
     // Better to trust the XML:
@@ -187,7 +185,7 @@ void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
 void QgsServerWmsDimensionProperties::writeXml( QDomNode &layer_node, QDomDocument &document ) const
 {
   // save QGIS Server WMS Dimension definitions
-  if ( ! mWmsDimensions.isEmpty() )
+  if ( !mWmsDimensions.isEmpty() )
   {
     QDomElement wmsDimsElem = document.createElement( QStringLiteral( "wmsDimensions" ) );
     for ( const QgsServerWmsDimensionProperties::WmsDimensionInfo &dim : mWmsDimensions )
@@ -300,4 +298,3 @@ void QgsMapLayerServerProperties::writeXml( QDomNode &layer_node, QDomDocument &
   // only called for SOME map layer subclasses!
   // Accordingly that logic is currently left in QgsMapLayer::writeLayerXml
 }
-

@@ -25,9 +25,8 @@
 QgsAnnotationMarkerItem::QgsAnnotationMarkerItem( const QgsPoint &point )
   : QgsAnnotationItem()
   , mPoint( point )
-  , mSymbol( std::make_unique< QgsMarkerSymbol >() )
+  , mSymbol( std::make_unique<QgsMarkerSymbol>() )
 {
-
 }
 
 QgsAnnotationMarkerItem::~QgsAnnotationMarkerItem() = default;
@@ -78,7 +77,7 @@ Qgis::AnnotationItemFlags QgsAnnotationMarkerItem::flags() const
 
 QList<QgsAnnotationItemNode> QgsAnnotationMarkerItem::nodesV2( const QgsAnnotationItemEditContext & ) const
 {
-  return { QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), mPoint, Qgis::AnnotationItemNodeType::VertexHandle )};
+  return { QgsAnnotationItemNode( QgsVertexId( 0, 0, 0 ), mPoint, Qgis::AnnotationItemNodeType::VertexHandle ) };
 }
 
 Qgis::AnnotationItemEditOperationResult QgsAnnotationMarkerItem::applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext & )
@@ -87,7 +86,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationMarkerItem::applyEditV2( Qg
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = qgis::down_cast<QgsAnnotationItemEditOperationMoveNode *>( operation );
       mPoint = QgsPoint( moveOperation->after() );
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
@@ -99,7 +98,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationMarkerItem::applyEditV2( Qg
 
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
-      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast<QgsAnnotationItemEditOperationTranslateItem *>( operation );
       mPoint.setX( mPoint.x() + moveOperation->translationX() );
       mPoint.setY( mPoint.y() + moveOperation->translationY() );
       return Qgis::AnnotationItemEditOperationResult::Success;
@@ -118,13 +117,13 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationMarkerItem::transie
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast<QgsAnnotationItemEditOperationMoveNode *>( operation );
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( moveOperation->after().clone() ) );
     }
 
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
-      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast<QgsAnnotationItemEditOperationTranslateItem *>( operation );
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( new QgsPoint( mPoint.x() + moveOperation->translationX(), mPoint.y() + moveOperation->translationY() ) ) );
     }
 
@@ -148,7 +147,7 @@ bool QgsAnnotationMarkerItem::readXml( const QDomElement &element, const QgsRead
 
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
-    setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context ) );
+    setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem, context ) );
 
   readCommonProperties( element, context );
   return true;
@@ -156,7 +155,7 @@ bool QgsAnnotationMarkerItem::readXml( const QDomElement &element, const QgsRead
 
 QgsAnnotationMarkerItem *QgsAnnotationMarkerItem::clone() const
 {
-  std::unique_ptr< QgsAnnotationMarkerItem > item = std::make_unique< QgsAnnotationMarkerItem >( mPoint );
+  std::unique_ptr<QgsAnnotationMarkerItem> item = std::make_unique<QgsAnnotationMarkerItem>( mPoint );
   item->setSymbol( mSymbol->clone() );
   item->copyCommonProperties( this );
   return item.release();

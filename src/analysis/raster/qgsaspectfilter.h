@@ -27,7 +27,7 @@
  *
  * Direction is clockwise starting from north.
 */
-class ANALYSIS_EXPORT QgsAspectFilter: public QgsDerivativeFilter
+class ANALYSIS_EXPORT QgsAspectFilter : public QgsDerivativeFilter
 {
   public:
     QgsAspectFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
@@ -39,13 +39,11 @@ class ANALYSIS_EXPORT QgsAspectFilter: public QgsDerivativeFilter
 
 #ifdef HAVE_OPENCL
   private:
-
     const QString openClProgramBaseName() const override
     {
       return QStringLiteral( "aspect" );
     }
 #endif
-
 };
 
 #endif // QGSASPECTFILTER_H

@@ -26,7 +26,7 @@ QgsNewsFeedModel::QgsNewsFeedModel( QgsNewsFeedParser *parser, QObject *parent )
   , mParser( parser )
 {
   Q_ASSERT( mParser );
-  const QList< QgsNewsFeedParser::Entry > initialEntries = mParser->entries();
+  const QList<QgsNewsFeedParser::Entry> initialEntries = mParser->entries();
   for ( const QgsNewsFeedParser::Entry &e : initialEntries )
     onEntryAdded( e );
 
@@ -46,26 +46,26 @@ QVariant QgsNewsFeedModel::data( const QModelIndex &index, int role ) const
   switch ( role )
   {
     case Qt::DisplayRole:
-    case static_cast< int >( CustomRole::Content ):
+    case static_cast<int>( CustomRole::Content ):
       return entry.content;
 
     case Qt::ToolTipRole:
-    case static_cast< int >( CustomRole::Title ):
+    case static_cast<int>( CustomRole::Title ):
       return entry.title;
 
-    case static_cast< int >( CustomRole::Key ):
+    case static_cast<int>( CustomRole::Key ):
       return entry.key;
 
-    case static_cast< int >( CustomRole::ImageUrl ):
+    case static_cast<int>( CustomRole::ImageUrl ):
       return entry.imageUrl;
 
-    case static_cast< int >( CustomRole::Image ):
+    case static_cast<int>( CustomRole::Image ):
       return entry.image;
 
-    case static_cast< int >( CustomRole::Link ):
+    case static_cast<int>( CustomRole::Link ):
       return entry.link;
 
-    case static_cast< int >( CustomRole::Sticky ):
+    case static_cast<int>( CustomRole::Sticky ):
       return entry.sticky;
 
     case Qt::DecorationRole:
@@ -128,7 +128,7 @@ void QgsNewsFeedModel::onEntryUpdated( const QgsNewsFeedParser::Entry &entry )
   {
     if ( mEntries.at( idx ).key == entry.key )
     {
-      mEntries[ idx ] = entry;
+      mEntries[idx] = entry;
       emit dataChanged( index( idx, 0 ), index( idx, 0 ) );
       break;
     }
@@ -138,14 +138,13 @@ void QgsNewsFeedModel::onEntryUpdated( const QgsNewsFeedParser::Entry &entry )
 void QgsNewsFeedModel::onEntryRemoved( const QgsNewsFeedParser::Entry &entry )
 {
   // find index of entry
-  const auto findIter = std::find_if( mEntries.begin(), mEntries.end(), [entry]( const QgsNewsFeedParser::Entry & candidate )
-  {
+  const auto findIter = std::find_if( mEntries.begin(), mEntries.end(), [entry]( const QgsNewsFeedParser::Entry &candidate ) {
     return candidate.key == entry.key;
   } );
   if ( findIter == mEntries.end() )
     return;
 
-  const int entryIndex = static_cast< int >( std::distance( mEntries.begin(), findIter ) );
+  const int entryIndex = static_cast<int>( std::distance( mEntries.begin(), findIter ) );
   beginRemoveRows( QModelIndex(), entryIndex, entryIndex );
   mEntries.removeAt( entryIndex );
   endRemoveRows();
@@ -154,15 +153,14 @@ void QgsNewsFeedModel::onEntryRemoved( const QgsNewsFeedParser::Entry &entry )
 void QgsNewsFeedModel::onImageFetched( const int key, const QPixmap &pixmap )
 {
   // find index of entry
-  const auto findIter = std::find_if( mEntries.begin(), mEntries.end(), [key]( const QgsNewsFeedParser::Entry & candidate )
-  {
+  const auto findIter = std::find_if( mEntries.begin(), mEntries.end(), [key]( const QgsNewsFeedParser::Entry &candidate ) {
     return candidate.key == key;
   } );
   if ( findIter == mEntries.end() )
     return;
 
-  const int entryIndex = static_cast< int >( std::distance( mEntries.begin(), findIter ) );
-  mEntries[ entryIndex ].image = pixmap;
+  const int entryIndex = static_cast<int>( std::distance( mEntries.begin(), findIter ) );
+  mEntries[entryIndex].image = pixmap;
   emit dataChanged( index( entryIndex, 0, QModelIndex() ), index( entryIndex, 0, QModelIndex() ) );
 }
 
@@ -183,8 +181,8 @@ QgsNewsFeedProxyModel::QgsNewsFeedProxyModel( QgsNewsFeedParser *parser, QObject
 
 bool QgsNewsFeedProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
-  const bool leftSticky = sourceModel()->data( left, static_cast< int >( QgsNewsFeedModel::CustomRole::Sticky ) ).toBool();
-  const bool rightSticky = sourceModel()->data( right, static_cast< int >( QgsNewsFeedModel::CustomRole::Sticky ) ).toBool();
+  const bool leftSticky = sourceModel()->data( left, static_cast<int>( QgsNewsFeedModel::CustomRole::Sticky ) ).toBool();
+  const bool rightSticky = sourceModel()->data( right, static_cast<int>( QgsNewsFeedModel::CustomRole::Sticky ) ).toBool();
 
   // sticky items come first
   if ( leftSticky && !rightSticky )
@@ -193,7 +191,7 @@ bool QgsNewsFeedProxyModel::lessThan( const QModelIndex &left, const QModelIndex
     return false;
 
   // else sort by descending key
-  const int leftKey = sourceModel()->data( left, static_cast< int >( QgsNewsFeedModel::CustomRole::Key ) ).toInt();
-  const int rightKey = sourceModel()->data( right, static_cast< int >( QgsNewsFeedModel::CustomRole::Key ) ).toInt();
+  const int leftKey = sourceModel()->data( left, static_cast<int>( QgsNewsFeedModel::CustomRole::Key ) ).toInt();
+  const int rightKey = sourceModel()->data( right, static_cast<int>( QgsNewsFeedModel::CustomRole::Key ) ).toInt();
   return rightKey < leftKey;
 }

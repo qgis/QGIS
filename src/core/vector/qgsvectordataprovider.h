@@ -63,9 +63,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     friend class QgsVectorLayerEditBuffer;
 
   public:
-
     //! Bitmask of all provider's editing capabilities
-    static const int EditingCapabilities = static_cast< int >( Qgis::VectorProviderCapability::EditingCapabilities );
+    static const int EditingCapabilities = static_cast<int>( Qgis::VectorProviderCapability::EditingCapabilities );
 
     /**
      * Constructor for a vector data provider.
@@ -202,7 +201,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \returns list of unique strings containing substring
      */
     virtual QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
-        QgsFeedback *feedback = nullptr ) const;
+                                               QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Calculates an aggregated value from the layer's features. The base implementation does nothing,
@@ -228,7 +227,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \param index the index of the attribute
      * \param enumList reference to the list to fill
      */
-    virtual void enumValues( int index, QStringList &enumList SIP_OUT ) const { Q_UNUSED( index ) enumList.clear(); }
+    virtual void enumValues( int index, QStringList &enumList SIP_OUT ) const
+    {
+      Q_UNUSED( index )
+      enumList.clear();
+    }
 
     bool addFeatures( QgsFeatureList &flist SIP_INOUT, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     QString lastError() const override;
@@ -438,43 +441,43 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     struct NativeType
     {
-      NativeType( const QString &typeDesc, const QString &typeName, QMetaType::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QMetaType::Type subType = QMetaType::Type::UnknownType )
-        : mTypeDesc( typeDesc )
-        , mTypeName( typeName )
-        , mType( type )
-        , mMinLen( minLen )
-        , mMaxLen( maxLen )
-        , mMinPrec( minPrec )
-        , mMaxPrec( maxPrec )
-        , mSubType( subType )
-      {}
+        NativeType( const QString &typeDesc, const QString &typeName, QMetaType::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QMetaType::Type subType = QMetaType::Type::UnknownType )
+          : mTypeDesc( typeDesc )
+          , mTypeName( typeName )
+          , mType( type )
+          , mMinLen( minLen )
+          , mMaxLen( maxLen )
+          , mMinPrec( minPrec )
+          , mMaxPrec( maxPrec )
+          , mSubType( subType )
+        {}
 
-      Q_DECL_DEPRECATED NativeType( const QString &typeDesc, const QString &typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QVariant::Type subType = QVariant::Type::Invalid )
-        : mTypeDesc( typeDesc )
-        , mTypeName( typeName )
-        , mType( QgsVariantUtils::variantTypeToMetaType( type ) )
-        , mMinLen( minLen )
-        , mMaxLen( maxLen )
-        , mMinPrec( minPrec )
-        , mMaxPrec( maxPrec )
-        , mSubType( QgsVariantUtils::variantTypeToMetaType( subType ) ) SIP_DEPRECATED
-          {}
+        Q_DECL_DEPRECATED NativeType( const QString &typeDesc, const QString &typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0, QVariant::Type subType = QVariant::Type::Invalid )
+          : mTypeDesc( typeDesc )
+          , mTypeName( typeName )
+          , mType( QgsVariantUtils::variantTypeToMetaType( type ) )
+          , mMinLen( minLen )
+          , mMaxLen( maxLen )
+          , mMinPrec( minPrec )
+          , mMaxPrec( maxPrec )
+          , mSubType( QgsVariantUtils::variantTypeToMetaType( subType ) ) SIP_DEPRECATED
+        {}
 
 
-          QString mTypeDesc;
-      QString mTypeName;
-      QMetaType::Type mType;
-      int mMinLen;
-      int mMaxLen;
-      int mMinPrec;
-      int mMaxPrec;
-      QMetaType::Type mSubType;
+        QString mTypeDesc;
+        QString mTypeName;
+        QMetaType::Type mType;
+        int mMinLen;
+        int mMaxLen;
+        int mMinPrec;
+        int mMaxPrec;
+        QMetaType::Type mSubType;
     };
 
     /**
      * Returns the names of the supported types
      */
-    QList< QgsVectorDataProvider::NativeType > nativeTypes() const;
+    QList<QgsVectorDataProvider::NativeType> nativeTypes() const;
 
     /**
      * Returns TRUE if the provider is strict about the type of inserted features
@@ -588,7 +591,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \param value The metadata value
      * \returns The translated metadata value
      */
-    virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const { Q_UNUSED( mdKey ) return value.toString(); }
+    virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const
+    {
+      Q_UNUSED( mdKey )
+      return value.toString();
+    }
 
     /**
      * Returns TRUE if the data source has metadata, FALSE otherwise.
@@ -621,7 +628,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     void raiseError( const QString &msg ) const;
 
   protected:
-
     /**
      * Invalidates the min/max cache. This will force the provider to recalculate the
      * cache the next time it is requested.
@@ -671,7 +677,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \returns the converted geometry or NULLPTR if no conversion was necessary or possible
      * \since QGIS 3.34
      */
-    static QgsGeometry convertToProviderType( const QgsGeometry &geometry,  Qgis::WkbType providerGeometryType );
+    static QgsGeometry convertToProviderType( const QgsGeometry &geometry, Qgis::WkbType providerGeometryType );
 
 
   private:
@@ -685,13 +691,13 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     QgsAttributeList mAttributesToFetch;
 
     //! The names of the providers native types
-    QList< NativeType > mNativeTypes;
+    QList<NativeType> mNativeTypes;
 
     //! List of errors
     mutable QStringList mErrors;
 
-    std::unique_ptr< QgsVectorDataProviderTemporalCapabilities > mTemporalCapabilities;
-    std::unique_ptr< QgsDataProviderElevationProperties > mElevationProperties;
+    std::unique_ptr<QgsVectorDataProviderTemporalCapabilities> mTemporalCapabilities;
+    std::unique_ptr<QgsDataProviderElevationProperties> mElevationProperties;
 
     static QStringList sEncodings;
 

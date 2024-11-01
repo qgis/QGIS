@@ -70,12 +70,11 @@ const QLatin1String QgsAuthManager::AUTH_PASSWORD_HELPER_KEY_NAME_BASE( "QGIS-Ma
 const QLatin1String QgsAuthManager::AUTH_PASSWORD_HELPER_FOLDER_NAME( "QGIS" );
 
 
-
-#if defined(Q_OS_MAC)
+#if defined( Q_OS_MAC )
 const QString QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME( "Keychain" );
-#elif defined(Q_OS_WIN)
+#elif defined( Q_OS_WIN )
 const QString QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME( "Password Manager" );
-#elif defined(Q_OS_LINUX)
+#elif defined( Q_OS_LINUX )
 const QString QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME( QStringLiteral( "Wallet/KeyRing" ) );
 #else
 const QString QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME( "Password Manager" );
@@ -87,7 +86,7 @@ QgsAuthManager *QgsAuthManager::instance()
   QMutexLocker locker( &sMutex );
   if ( !sInstance )
   {
-    sInstance = new QgsAuthManager( );
+    sInstance = new QgsAuthManager();
   }
   return sInstance;
 }
@@ -125,7 +124,7 @@ QSqlDatabase QgsAuthManager::authDatabaseConnection() const
 
 const QString QgsAuthManager::methodConfigTableName() const
 {
-  if ( ! isDisabled() )
+  if ( !isDisabled() )
   {
     ensureInitialized();
 
@@ -193,7 +192,7 @@ bool QgsAuthManager::ensureInitialized() const
     return mLazyInitResult;
   }
 
-  mLazyInitResult = const_cast< QgsAuthManager * >( this )->initPrivate( mPluginPath );
+  mLazyInitResult = const_cast<QgsAuthManager *>( this )->initPrivate( mPluginPath );
   sInitialized = true;
   sInitializationMutex.unlock();
 
@@ -269,11 +268,11 @@ bool QgsAuthManager::initPrivate( const QString &pluginPath )
 
   // Add the default configuration storage
   const QString sqliteDbPath { sqliteDatabasePath() };
-  if ( ! sqliteDbPath.isEmpty() )
+  if ( !sqliteDbPath.isEmpty() )
   {
     authConfigurationStorageRegistry()->addStorage( new QgsAuthConfigurationStorageSqlite( sqliteDbPath ) );
   }
-  else if ( ! mAuthDatabaseConnectionUri.isEmpty() )
+  else if ( !mAuthDatabaseConnectionUri.isEmpty() )
   {
     // For safety reasons we don't allow writing on potentially shared storages by default, plugins may override
     // this behavior by registering their own storage subclass or by explicitly setting read-only to false.
@@ -289,7 +288,7 @@ bool QgsAuthManager::initPrivate( const QString &pluginPath )
   const QList<QgsAuthConfigurationStorage *> storages { authConfigurationStorageRegistry()->storages() };
   for ( QgsAuthConfigurationStorage *storage : std::as_const( storages ) )
   {
-    if ( ! storage->isEnabled() )
+    if ( !storage->isEnabled() )
     {
       QgsDebugMsgLevel( QStringLiteral( "Storage %1 is disabled" ).arg( storage->name() ), 2 );
       continue;
@@ -583,7 +582,7 @@ bool QgsAuthManager::masterPasswordSame( const QString &pass ) const
 }
 
 bool QgsAuthManager::resetMasterPassword( const QString &newpass, const QString &oldpass,
-    bool keepbackup, QString *backuppath )
+                                          bool keepbackup, QString *backuppath )
 {
   ensureInitialized();
 
@@ -880,7 +879,6 @@ QgsAuthMethodConfigsMap QgsAuthManager::availableAuthMethodConfigs( const QStrin
   }
 
   return baseConfigs;
-
 }
 
 void QgsAuthManager::updateConfigAuthMethods()
@@ -895,7 +893,7 @@ void QgsAuthManager::updateConfigAuthMethods()
     const QgsAuthMethodConfigsMap configs = storage->authMethodConfigs();
     for ( const QgsAuthMethodConfig &config : std::as_const( configs ) )
     {
-      if ( ! configIds.contains( config.id() ) )
+      if ( !configIds.contains( config.id() ) )
       {
         mConfigAuthMethods.insert( config.id(), config.method() );
         QgsDebugMsgLevel( QStringLiteral( "Stored auth config/methods:\n%1 %2" ).arg( config.id(), config.method() ), 2 );
@@ -1058,7 +1056,7 @@ bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &config, boo
       return false;
     }
     locker.unlock();
-    if ( ! removeAuthenticationConfig( uid ) )
+    if ( !removeAuthenticationConfig( uid ) )
     {
       const char *err = QT_TR_NOOP( "Store config: FAILED because pre-defined config ID %1 could not be removed" );
       QgsDebugError( err );
@@ -1144,7 +1142,7 @@ bool QgsAuthManager::updateAuthenticationConfig( const QgsAuthMethodConfig &conf
     {
       if ( !storage->capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::UpdateConfiguration ) )
       {
-        emit messageLog( tr( "Update config: FAILED because storage %1 does not support updating" ).arg( storage->name( ) ), authManTag(), Qgis::MessageLevel::Warning );
+        emit messageLog( tr( "Update config: FAILED because storage %1 does not support updating" ).arg( storage->name() ), authManTag(), Qgis::MessageLevel::Warning );
         return false;
       }
       if ( storage->isEncrypted() )
@@ -1198,7 +1196,7 @@ bool QgsAuthManager::loadAuthenticationConfig( const QString &authcfg, QgsAuthMe
       QString payload;
       config = storage->loadMethodConfig( authcfg, payload, full );
 
-      if ( ! config.isValid( true ) || ( full && payload.isEmpty() ) )
+      if ( !config.isValid( true ) || ( full && payload.isEmpty() ) )
       {
         emit messageLog( tr( "Load config: FAILED to load config %1 from default storage: %2" ).arg( authcfg, storage->lastError() ), authManTag(), Qgis::MessageLevel::Critical );
         return false;
@@ -1285,7 +1283,6 @@ bool QgsAuthManager::removeAuthenticationConfig( const QString &authcfg )
   }
 
   return false;
-
 }
 
 bool QgsAuthManager::exportAuthenticationConfigsToXml( const QString &filename, const QStringList &authcfgs, const QString &password )
@@ -1325,7 +1322,7 @@ bool QgsAuthManager::exportAuthenticationConfigsToXml( const QString &filename, 
   {
     QString configurationsString;
     QTextStream ts( &configurationsString );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     ts.setCodec( "UTF-8" );
 #endif
     configurations.save( ts, 2 );
@@ -1341,7 +1338,7 @@ bool QgsAuthManager::exportAuthenticationConfigsToXml( const QString &filename, 
     return false;
 
   QTextStream ts( &file );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
   ts.setCodec( "UTF-8" );
 #endif
   document.save( ts, 2 );
@@ -1532,7 +1529,7 @@ bool QgsAuthManager::eraseAuthenticationDatabase( bool backup, QString *backuppa
 }
 
 bool QgsAuthManager::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
-    const QString &dataprovider )
+                                           const QString &dataprovider )
 {
   ensureInitialized();
 
@@ -1559,7 +1556,7 @@ bool QgsAuthManager::updateNetworkRequest( QNetworkRequest &request, const QStri
 }
 
 bool QgsAuthManager::updateNetworkReply( QNetworkReply *reply, const QString &authcfg,
-    const QString &dataprovider )
+                                         const QString &dataprovider )
 {
   ensureInitialized();
 
@@ -1587,7 +1584,7 @@ bool QgsAuthManager::updateNetworkReply( QNetworkReply *reply, const QString &au
 }
 
 bool QgsAuthManager::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
-    const QString &dataprovider )
+                                               const QString &dataprovider )
 {
   ensureInitialized();
 
@@ -1663,7 +1660,7 @@ bool QgsAuthManager::storeAuthSetting( const QString &key, const QVariant &value
     }
   }
 
-  if ( existsAuthSetting( key ) && ! removeAuthSetting( key ) )
+  if ( existsAuthSetting( key ) && !removeAuthSetting( key ) )
   {
     emit messageLog( tr( "Store setting: FAILED to remove pre-existing setting %1" ).arg( key ), authManTag(), Qgis::MessageLevel::Warning );
     return false;
@@ -1738,10 +1735,10 @@ bool QgsAuthManager::existsAuthSetting( const QString &key )
 
   for ( QgsAuthConfigurationStorage *storage : std::as_const( storages ) )
   {
-
     if ( storage->authSettingExists( key ) )
-    { return true; }
-
+    {
+      return true;
+    }
   }
 
   if ( storages.empty() )
@@ -1835,7 +1832,7 @@ bool QgsAuthManager::storeCertIdentity( const QSslCertificate &cert, const QSslK
   QString id( QgsAuthCertUtils::shaHexForCert( cert ) );
 
 
-  if ( existsCertIdentity( id ) && ! removeCertIdentity( id ) )
+  if ( existsCertIdentity( id ) && !removeCertIdentity( id ) )
   {
     QgsDebugError( QStringLiteral( "Store certificate identity: FAILED to remove pre-existing certificate identity %1" ).arg( id ) );
     return false;
@@ -2078,7 +2075,6 @@ bool QgsAuthManager::removeCertIdentity( const QString &id )
   }
 
   return false;
-
 }
 
 bool QgsAuthManager::storeSslCertCustomConfig( const QgsAuthConfigSslServer &config )
@@ -2160,7 +2156,6 @@ const QgsAuthConfigSslServer QgsAuthManager::sslCertCustomConfig( const QString 
   }
 
   return config;
-
 }
 
 const QgsAuthConfigSslServer QgsAuthManager::sslCertCustomConfigByHost( const QString &hostport )
@@ -2188,7 +2183,6 @@ const QgsAuthConfigSslServer QgsAuthManager::sslCertCustomConfigByHost( const QS
     {
       mCustomConfigByHostCache.insert( hostport, config );
     }
-
   }
 
   if ( storages.empty() )
@@ -2220,7 +2214,7 @@ const QList<QgsAuthConfigSslServer> QgsAuthManager::sslCertCustomConfigs()
       const QString id( QgsAuthCertUtils::shaHexForCert( config.sslCertificate() ) );
       const QString hostPort = config.sslHostPort();
       const QString shaHostPort( QStringLiteral( "%1:%2" ).arg( id, hostPort ) );
-      if ( ! ids.contains( shaHostPort ) )
+      if ( !ids.contains( shaHostPort ) )
       {
         ids.append( shaHostPort );
         configs.append( config );
@@ -2322,7 +2316,7 @@ void QgsAuthManager::dumpIgnoredSslErrorsCache_()
   if ( !mIgnoredSslErrorsCache.isEmpty() )
   {
     QgsDebugMsgLevel( QStringLiteral( "Ignored SSL errors cache items:" ), 1 );
-    QHash<QString, QSet<QSslError::SslError> >::const_iterator i = mIgnoredSslErrorsCache.constBegin();
+    QHash<QString, QSet<QSslError::SslError>>::const_iterator i = mIgnoredSslErrorsCache.constBegin();
     while ( i != mIgnoredSslErrorsCache.constEnd() )
     {
       QStringList errs;
@@ -2352,8 +2346,8 @@ bool QgsAuthManager::updateIgnoredSslErrorsCacheFromConfig( const QgsAuthConfigS
   }
 
   QString shahostport( QStringLiteral( "%1:%2" )
-                       .arg( QgsAuthCertUtils::shaHexForCert( config.sslCertificate() ).trimmed(),
-                             config.sslHostPort().trimmed() ) );
+                         .arg( QgsAuthCertUtils::shaHexForCert( config.sslCertificate() ).trimmed(),
+                               config.sslHostPort().trimmed() ) );
   if ( mIgnoredSslErrorsCache.contains( shahostport ) )
   {
     mIgnoredSslErrorsCache.remove( shahostport );
@@ -2422,8 +2416,8 @@ bool QgsAuthManager::rebuildIgnoredSslErrorCache()
   ensureInitialized();
 
   QMutexLocker locker( mMutex.get() );
-  QHash<QString, QSet<QSslError::SslError> > prevcache( mIgnoredSslErrorsCache );
-  QHash<QString, QSet<QSslError::SslError> > nextcache;
+  QHash<QString, QSet<QSslError::SslError>> prevcache( mIgnoredSslErrorsCache );
+  QHash<QString, QSet<QSslError::SslError>> nextcache;
 
   // Loop through all storages with capability ReadSslCertificateCustomConfig
   const QList<QgsAuthConfigurationStorage *> storages { authConfigurationStorageRegistry()->readyStoragesWithCapability( Qgis::AuthConfigurationStorageCapability::ReadSslCertificateCustomConfig ) };
@@ -2436,7 +2430,7 @@ bool QgsAuthManager::rebuildIgnoredSslErrorCache()
     for ( const auto &config : std::as_const( customConfigs ) )
     {
       const QString shaHostPort( QStringLiteral( "%1:%2" ).arg( QgsAuthCertUtils::shaHexForCert( config.sslCertificate() ), config.sslHostPort() ) );
-      if ( ! ids.contains( shaHostPort ) )
+      if ( !ids.contains( shaHostPort ) )
       {
         ids.append( shaHostPort );
         if ( !config.sslIgnoredErrorEnums().isEmpty() )
@@ -2458,7 +2452,7 @@ bool QgsAuthManager::rebuildIgnoredSslErrorCache()
   if ( !prevcache.isEmpty() )
   {
     // preserve any existing per-session ignored errors for hosts
-    QHash<QString, QSet<QSslError::SslError> >::const_iterator i = prevcache.constBegin();
+    QHash<QString, QSet<QSslError::SslError>>::const_iterator i = prevcache.constBegin();
     while ( i != prevcache.constEnd() )
     {
       nextcache.insert( i.key(), i.value() );
@@ -2610,7 +2604,6 @@ bool QgsAuthManager::removeCertAuthority( const QSslCertificate &cert )
   {
     if ( storage->certAuthorityExists( cert ) )
     {
-
       if ( !storage->capabilities().testFlag( Qgis::AuthConfigurationStorageCapability::DeleteCertificateAuthority ) )
       {
         emit messageLog( tr( "Remove certificate: FAILED to remove setting from storage %1: storage is read only" ).arg( storage->name() ), authManTag(), Qgis::MessageLevel::Warning );
@@ -2662,10 +2655,7 @@ const QList<QSslCertificate> QgsAuthManager::extraFileCAs()
   // only CAs or certs capable of signing other certs are allowed
   for ( const auto &cert : std::as_const( filecerts ) )
   {
-    if ( !allowinvalid.toBool() && ( cert.isBlacklisted()
-                                     || cert.isNull()
-                                     || cert.expiryDate() <= QDateTime::currentDateTime()
-                                     || cert.effectiveDate() > QDateTime::currentDateTime() ) )
+    if ( !allowinvalid.toBool() && ( cert.isBlacklisted() || cert.isNull() || cert.expiryDate() <= QDateTime::currentDateTime() || cert.effectiveDate() > QDateTime::currentDateTime() ) )
     {
       continue;
     }
@@ -2755,7 +2745,7 @@ bool QgsAuthManager::storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthC
     return true;
   }
 
-  if ( certificateTrustPolicy( cert ) != QgsAuthCertUtils::DefaultTrust && ! removeCertTrustPolicy( cert ) )
+  if ( certificateTrustPolicy( cert ) != QgsAuthCertUtils::DefaultTrust && !removeCertTrustPolicy( cert ) )
   {
     emit messageLog( tr( "Could not delete pre-existing certificate trust policy." ), authManTag(), Qgis::MessageLevel::Warning );
     return false;
@@ -2898,7 +2888,7 @@ bool QgsAuthManager::setDefaultCertTrustPolicy( QgsAuthCertUtils::CertTrustPolic
     // set default trust policy to Trusted by removing setting
     return removeAuthSetting( QStringLiteral( "certdefaulttrust" ) );
   }
-  return storeAuthSetting( QStringLiteral( "certdefaulttrust" ), static_cast< int >( policy ) );
+  return storeAuthSetting( QStringLiteral( "certdefaulttrust" ), static_cast<int>( policy ) );
 }
 
 QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::defaultCertTrustPolicy()
@@ -2911,7 +2901,7 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::defaultCertTrustPolicy()
   {
     return QgsAuthCertUtils::Trusted;
   }
-  return static_cast< QgsAuthCertUtils::CertTrustPolicy >( policy.toInt() );
+  return static_cast<QgsAuthCertUtils::CertTrustPolicy>( policy.toInt() );
 }
 
 bool QgsAuthManager::rebuildCertTrustCache()
@@ -2928,12 +2918,11 @@ bool QgsAuthManager::rebuildCertTrustCache()
 
   for ( QgsAuthConfigurationStorage *storage : std::as_const( storages ) )
   {
-
     const auto trustedCerts { storage->caCertsPolicy() };
     for ( auto it = trustedCerts.cbegin(); it != trustedCerts.cend(); ++it )
     {
-      const QString id { it.key( )};
-      if ( ! ids.contains( id ) )
+      const QString id { it.key() };
+      if ( !ids.contains( id ) )
       {
         ids.append( id );
         const QgsAuthCertUtils::CertTrustPolicy policy( it.value() );
@@ -2954,7 +2943,7 @@ bool QgsAuthManager::rebuildCertTrustCache()
     }
   }
 
-  if ( ! storages.empty() )
+  if ( !storages.empty() )
   {
     QgsDebugMsgLevel( QStringLiteral( "Rebuild of cert trust policy cache SUCCEEDED" ), 2 );
     return true;
@@ -2974,7 +2963,7 @@ const QList<QSslCertificate> QgsAuthManager::trustedCaCerts( bool includeinvalid
   QgsAuthCertUtils::CertTrustPolicy defaultpolicy( defaultCertTrustPolicy() );
   QStringList trustedids = mCertTrustCache.value( QgsAuthCertUtils::Trusted );
   QStringList untrustedids = mCertTrustCache.value( QgsAuthCertUtils::Untrusted );
-  const QList<QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > &certpairs( mCaCertsCache.values() );
+  const QList<QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate>> &certpairs( mCaCertsCache.values() );
 
   QList<QSslCertificate> trustedcerts;
   for ( int i = 0; i < certpairs.size(); ++i )
@@ -3016,7 +3005,7 @@ const QList<QSslCertificate> QgsAuthManager::untrustedCaCerts( QList<QSslCertifi
     trustedCAs = trustedCaCertsCache();
   }
 
-  const QList<QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > &certpairs( mCaCertsCache.values() );
+  const QList<QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate>> &certpairs( mCaCertsCache.values() );
 
   QList<QSslCertificate> untrustedCAs;
   for ( int i = 0; i < certpairs.size(); ++i )
@@ -3140,7 +3129,9 @@ void QgsAuthManager::tryToStartDbErase()
   else
   {
     QgsDebugMsgLevel( QStringLiteral( "authDatabaseEraseRequest attempt (%1 of %2)" )
-                      .arg( mScheduledDbEraseRequestCount ).arg( trycutoff ), 2 );
+                        .arg( mScheduledDbEraseRequestCount )
+                        .arg( trycutoff ),
+                      2 );
   }
 
   if ( scheduledAuthDatabaseErase() && !mScheduledDbEraseRequestEmitted && mMutex->tryLock() )
@@ -3193,7 +3184,7 @@ QgsAuthManager::~QgsAuthManager()
 QgsAuthConfigurationStorageRegistry *QgsAuthManager::authConfigurationStorageRegistry() const
 {
   QMutexLocker locker( mMutex.get() );
-  if ( ! mAuthConfigurationStorageRegistry )
+  if ( !mAuthConfigurationStorageRegistry )
   {
     mAuthConfigurationStorageRegistry = std::make_unique<QgsAuthConfigurationStorageRegistry>();
   }
@@ -3340,11 +3331,11 @@ bool QgsAuthManager::passwordHelperEnabled()
 void QgsAuthManager::setPasswordHelperEnabled( const bool enabled )
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "use_password_helper" ),  enabled, QgsSettings::Section::Auth );
+  settings.setValue( QStringLiteral( "use_password_helper" ), enabled, QgsSettings::Section::Auth );
   emit messageLog( enabled ? tr( "Your %1 will be <b>used from now</b> on to store and retrieve the master password." )
-                   .arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ) :
-                   tr( "Your %1 will <b>not be used anymore</b> to store and retrieve the master password." )
-                   .arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
+                               .arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME )
+                           : tr( "Your %1 will <b>not be used anymore</b> to store and retrieve the master password." )
+                               .arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
 }
 
 bool QgsAuthManager::passwordHelperLoggingEnabled()
@@ -3357,7 +3348,7 @@ bool QgsAuthManager::passwordHelperLoggingEnabled()
 void QgsAuthManager::setPasswordHelperLoggingEnabled( const bool enabled )
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "password_helper_logging" ),  enabled, QgsSettings::Section::Auth );
+  settings.setValue( QStringLiteral( "password_helper_logging" ), enabled, QgsSettings::Section::Auth );
 }
 
 void QgsAuthManager::passwordHelperClearErrors()
@@ -3370,10 +3361,7 @@ void QgsAuthManager::passwordHelperProcessError()
 {
   ensureInitialized();
 
-  if ( mPasswordHelperErrorCode == QKeychain::AccessDenied ||
-       mPasswordHelperErrorCode == QKeychain::AccessDeniedByUser ||
-       mPasswordHelperErrorCode == QKeychain::NoBackendAvailable ||
-       mPasswordHelperErrorCode == QKeychain::NotImplemented )
+  if ( mPasswordHelperErrorCode == QKeychain::AccessDenied || mPasswordHelperErrorCode == QKeychain::AccessDeniedByUser || mPasswordHelperErrorCode == QKeychain::NoBackendAvailable || mPasswordHelperErrorCode == QKeychain::NotImplemented )
   {
     // If the error is permanent or the user denied access to the wallet
     // we also want to disable the wallet system to prevent annoying
@@ -3382,7 +3370,7 @@ void QgsAuthManager::passwordHelperProcessError()
     mPasswordHelperErrorMessage = tr( "There was an error and integration with your %1 system has been disabled. "
                                       "You can re-enable it at any time through the \"Utilities\" menu "
                                       "in the Authentication pane of the options dialog. %2" )
-                                  .arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME, mPasswordHelperErrorMessage );
+                                    .arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME, mPasswordHelperErrorMessage );
   }
   if ( mPasswordHelperErrorCode != QKeychain::NoError )
   {
@@ -3409,7 +3397,7 @@ bool QgsAuthManager::masterPasswordInput()
   if ( passwordHelperEnabled() )
   {
     pass = passwordHelperRead();
-    if ( ! pass.isEmpty() && ( mPasswordHelperErrorCode == QKeychain::NoError ) )
+    if ( !pass.isEmpty() && ( mPasswordHelperErrorCode == QKeychain::NoError ) )
     {
       // Let's check the password!
       if ( verifyMasterPassword( pass ) )
@@ -3425,7 +3413,7 @@ bool QgsAuthManager::masterPasswordInput()
     }
   }
 
-  if ( ! ok )
+  if ( !ok )
   {
     pass.clear();
     ok = QgsCredentials::instance()->getMasterPassword( pass, masterPasswordHashInDatabase() );
@@ -3434,7 +3422,7 @@ bool QgsAuthManager::masterPasswordInput()
   if ( ok && !pass.isEmpty() && mMasterPass != pass )
   {
     mMasterPass = pass;
-    if ( passwordHelperEnabled() && ! storedPasswordIsValid )
+    if ( passwordHelperEnabled() && !storedPasswordIsValid )
     {
       if ( passwordHelperWrite( pass ) )
       {
@@ -3468,7 +3456,7 @@ bool QgsAuthManager::masterPasswordRowsInDb( int *rows ) const
   {
     try
     {
-      *rows += storage->masterPasswords( ).count();
+      *rows += storage->masterPasswords().count();
     }
     catch ( const QgsNotSupportedException &e )
     {
@@ -3483,7 +3471,6 @@ bool QgsAuthManager::masterPasswordRowsInDb( int *rows ) const
   }
 
   return rows != 0;
-
 }
 
 bool QgsAuthManager::masterPasswordHashInDatabase() const
@@ -3517,7 +3504,7 @@ bool QgsAuthManager::masterPasswordCheckAgainstDb( const QString &compare ) cons
   {
     try
     {
-      const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> passwords { defaultStorage->masterPasswords( ) };
+      const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> passwords { defaultStorage->masterPasswords() };
       if ( passwords.size() == 0 )
       {
         emit messageLog( tr( "Master password: FAILED to access database" ), authManTag(), Qgis::MessageLevel::Critical );
@@ -3532,7 +3519,6 @@ bool QgsAuthManager::masterPasswordCheckAgainstDb( const QString &compare ) cons
       emit messageLog( e.what(), authManTag(), Qgis::MessageLevel::Critical );
       return false;
     }
-
   }
   else
   {
@@ -3581,7 +3567,6 @@ bool QgsAuthManager::masterPasswordClearDb()
 
   if ( QgsAuthConfigurationStorage *defaultStorage = firstStorageWithCapability( Qgis::AuthConfigurationStorageCapability::DeleteMasterPassword ) )
   {
-
     try
     {
       return defaultStorage->clearMasterPasswords();
@@ -3592,7 +3577,6 @@ bool QgsAuthManager::masterPasswordClearDb()
       emit messageLog( e.what(), authManTag(), Qgis::MessageLevel::Critical );
       return false;
     }
-
   }
   else
   {
@@ -3612,11 +3596,11 @@ const QString QgsAuthManager::masterPasswordCiv() const
   {
     try
     {
-      const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> passwords { defaultStorage->masterPasswords( ) };
+      const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> passwords { defaultStorage->masterPasswords() };
       if ( passwords.size() == 0 )
       {
         emit messageLog( tr( "Master password: FAILED to access database" ), authManTag(), Qgis::MessageLevel::Critical );
-        return  QString();
+        return QString();
       }
       return passwords.first().civ;
     }
@@ -3688,8 +3672,7 @@ bool QgsAuthManager::verifyPasswordCanDecryptConfigs() const
 
   for ( const QgsAuthConfigurationStorage *storage : std::as_const( storages ) )
   {
-
-    if ( ! storage->isEncrypted() )
+    if ( !storage->isEncrypted() )
     {
       continue;
     }
@@ -3703,7 +3686,7 @@ bool QgsAuthManager::verifyPasswordCanDecryptConfigs() const
         if ( configstring.isEmpty() )
         {
           QgsDebugError( QStringLiteral( "Verify password can decrypt configs FAILED, could not decrypt a config (id: %1) from storage %2" )
-                         .arg( it.key(), storage->name() ) );
+                           .arg( it.key(), storage->name() ) );
           return false;
         }
       }
@@ -3714,7 +3697,6 @@ bool QgsAuthManager::verifyPasswordCanDecryptConfigs() const
       emit messageLog( e.what(), authManTag(), Qgis::MessageLevel::Critical );
       return false;
     }
-
   }
 
   if ( storages.empty() )
@@ -3760,14 +3742,14 @@ bool QgsAuthManager::reencryptAuthenticationConfig( const QString &authcfg, cons
     {
       if ( storage->methodConfigExists( authcfg ) )
       {
-        if ( ! storage->isEncrypted() )
+        if ( !storage->isEncrypted() )
         {
           return true;
         }
 
         QString payload;
         const QgsAuthMethodConfig config = storage->loadMethodConfig( authcfg, payload, true );
-        if ( payload.isEmpty() || ! config.isValid( true ) )
+        if ( payload.isEmpty() || !config.isValid( true ) )
         {
           QgsDebugError( QStringLiteral( "Reencrypt FAILED, could not find config (id: %1)" ).arg( authcfg ) );
           return false;
@@ -3932,13 +3914,11 @@ bool QgsAuthManager::reencryptAuthenticationIdentity(
 
   for ( QgsAuthConfigurationStorage *storage : std::as_const( storages ) )
   {
-
     try
     {
-
       if ( storage->certIdentityExists( identid ) )
       {
-        if ( ! storage->isEncrypted() )
+        if ( !storage->isEncrypted() )
         {
           return true;
         }
@@ -4011,7 +3991,7 @@ QString QgsAuthManager::authPasswordHelperKeyName() const
 QgsAuthConfigurationStorageDb *QgsAuthManager::defaultDbStorage() const
 {
   QgsAuthConfigurationStorageRegistry *storageRegistry = authConfigurationStorageRegistry();
-  const auto storages = storageRegistry->readyStorages( );
+  const auto storages = storageRegistry->readyStorages();
   for ( QgsAuthConfigurationStorage *storage : std::as_const( storages ) )
   {
     if ( qobject_cast<QgsAuthConfigurationStorageDb *>( storage ) )
@@ -4027,4 +4007,3 @@ QgsAuthConfigurationStorage *QgsAuthManager::firstStorageWithCapability( Qgis::A
   QgsAuthConfigurationStorageRegistry *storageRegistry = authConfigurationStorageRegistry();
   return storageRegistry->firstReadyStorageWithCapability( capability );
 }
-

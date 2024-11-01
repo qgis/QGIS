@@ -54,7 +54,7 @@ void QgsSubstitutionListWidget::setSubstitutions( const QgsStringReplacementColl
 
 QgsStringReplacementCollection QgsSubstitutionListWidget::substitutions() const
 {
-  QList< QgsStringReplacement > result;
+  QList<QgsStringReplacement> result;
   for ( int i = 0; i < mTableSubstitutions->rowCount(); ++i )
   {
     if ( !mTableSubstitutions->item( i, 0 ) )
@@ -97,7 +97,7 @@ void QgsSubstitutionListWidget::tableChanged()
 void QgsSubstitutionListWidget::mButtonExport_clicked()
 {
   QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Substitutions" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+                                                   tr( "XML files (*.xml *.XML)" ) );
   // return dialog focus on Mac
   activateWindow();
   raise();
@@ -136,7 +136,7 @@ void QgsSubstitutionListWidget::mButtonExport_clicked()
 void QgsSubstitutionListWidget::mButtonImport_clicked()
 {
   const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Substitutions" ), QDir::homePath(),
-                           tr( "XML files (*.xml *.XML)" ) );
+                                                         tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -161,9 +161,9 @@ void QgsSubstitutionListWidget::mButtonImport_clicked()
   {
     QMessageBox::warning( nullptr, tr( "Import substitutions" ),
                           tr( "Parse error at line %1, column %2:\n%3" )
-                          .arg( errorLine )
-                          .arg( errorColumn )
-                          .arg( errorStr ),
+                            .arg( errorLine )
+                            .arg( errorColumn )
+                            .arg( errorStr ),
                           QMessageBox::Ok,
                           QMessageBox::Ok );
     return;

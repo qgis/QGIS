@@ -28,10 +28,9 @@
  * alternating segments. AKA "South African" style.
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsHollowScaleBarRenderer: public QgsScaleBarRenderer
+class CORE_EXPORT QgsHollowScaleBarRenderer : public QgsScaleBarRenderer
 {
   public:
-
     QgsHollowScaleBarRenderer() = default;
 
     QString id() const override;
@@ -44,7 +43,6 @@ class CORE_EXPORT QgsHollowScaleBarRenderer: public QgsScaleBarRenderer
                const QgsScaleBarSettings &settings,
                const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
     bool applyDefaultSettings( QgsScaleBarSettings &settings ) const override;
-
 };
 
 #endif // QGSHOLLOWSCALEBARRENDERER_H

@@ -21,7 +21,6 @@
 
 QgsPointCloudRgbRenderer::QgsPointCloudRgbRenderer()
 {
-
 }
 
 QString QgsPointCloudRgbRenderer::type() const
@@ -31,7 +30,7 @@ QString QgsPointCloudRgbRenderer::type() const
 
 QgsPointCloudRenderer *QgsPointCloudRgbRenderer::clone() const
 {
-  std::unique_ptr< QgsPointCloudRgbRenderer > res = std::make_unique< QgsPointCloudRgbRenderer >();
+  std::unique_ptr<QgsPointCloudRgbRenderer> res = std::make_unique<QgsPointCloudRgbRenderer>();
   res->mRedAttribute = mRedAttribute;
   res->mGreenAttribute = mGreenAttribute;
   res->mBlueAttribute = mBlueAttribute;
@@ -186,7 +185,7 @@ void QgsPointCloudRgbRenderer::renderBlock( const QgsPointCloudBlock *block, Qgs
 
 QgsPointCloudRenderer *QgsPointCloudRgbRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsPointCloudRgbRenderer > r = std::make_unique< QgsPointCloudRgbRenderer >();
+  std::unique_ptr<QgsPointCloudRgbRenderer> r = std::make_unique<QgsPointCloudRgbRenderer>();
 
   r->setRedAttribute( element.attribute( QStringLiteral( "red" ), QStringLiteral( "Red" ) ) );
   r->setGreenAttribute( element.attribute( QStringLiteral( "green" ), QStringLiteral( "Green" ) ) );
@@ -269,7 +268,7 @@ QSet<QString> QgsPointCloudRgbRenderer::usedAttributes( const QgsPointCloudRende
 
 std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudRgbRenderer::prepare()
 {
-  std::unique_ptr< QgsPointCloudRgbRendererPreparedData > data = std::make_unique< QgsPointCloudRgbRendererPreparedData >();
+  std::unique_ptr<QgsPointCloudRgbRendererPreparedData> data = std::make_unique<QgsPointCloudRgbRendererPreparedData>();
   data->redAttribute = mRedAttribute;
   if ( mRedContrastEnhancement )
     data->redContrastEnhancement.reset( new QgsContrastEnhancement( *mRedContrastEnhancement ) );

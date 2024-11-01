@@ -30,9 +30,7 @@
 */
 class CORE_EXPORT QgsGeocoderContext
 {
-
   public:
-
     /**
      * Constructor for QgsGeocoderContext, with the specified \a transformContext.
      */
@@ -105,7 +103,6 @@ class CORE_EXPORT QgsGeocoderContext
     void setAreaOfInterestCrs( const QgsCoordinateReferenceSystem &crs ) { mAreaOfInterestCrs = crs; }
 
   private:
-
     QgsCoordinateTransformContext mTransformContext;
     QgsGeometry mAreaOfInterest;
     QgsCoordinateReferenceSystem mAreaOfInterestCrs;

@@ -34,7 +34,6 @@ class QgsMessageBar;
 class GUI_EXPORT QgsAuthGuiUtils
 {
   public:
-
     //! Green color representing valid, trusted, etc. certificate
     static QColor greenColor();
 
@@ -107,7 +106,6 @@ class GUI_EXPORT QgsAuthGuiUtils
 
     //! Sets password helper logging enabled (enable/disable)
     static void passwordHelperLoggingEnable( bool enabled, QgsMessageBar *msgbar, int timeout = 0 );
-
 };
 
 // clazy:excludeall=qstring-allocations

@@ -23,7 +23,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsgui.h"
 
-QgsActionMenu::QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget  *parent )
+QgsActionMenu::QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget *parent )
   : QMenu( parent )
   , mLayer( layer )
   , mFeature( feature )
@@ -33,7 +33,7 @@ QgsActionMenu::QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, 
   init();
 }
 
-QgsActionMenu::QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, const QString &actionScope, QWidget  *parent )
+QgsActionMenu::QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, const QString &actionScope, QWidget *parent )
   : QMenu( parent )
   , mLayer( layer )
   , mFeatureId( fid )
@@ -205,7 +205,7 @@ void QgsActionMenu::layerWillBeDeleted()
 
 QgsActionMenu::ActionData::ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer )
   : actionType( Qgis::ActionType::MapLayerAction )
-  , actionData( QVariant::fromValue<QgsMapLayerAction*>( action ) )
+  , actionData( QVariant::fromValue<QgsMapLayerAction *>( action ) )
   , featureId( featureId )
   , mapLayer( mapLayer )
 {}

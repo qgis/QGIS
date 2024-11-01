@@ -23,7 +23,6 @@
 #include "qgis_customwidgets.h"
 
 
-
 class CUSTOMWIDGETS_EXPORT QgsFileWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface
 {
     Q_OBJECT

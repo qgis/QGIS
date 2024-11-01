@@ -28,7 +28,6 @@ QgsAuthOAuth2Config::QgsAuthOAuth2Config( QObject *parent )
   : QObject( parent )
   , mQueryPairs( QVariantMap() )
 {
-
   // internal signal bounces
   connect( this, &QgsAuthOAuth2Config::idChanged, this, &QgsAuthOAuth2Config::configChanged );
   connect( this, &QgsAuthOAuth2Config::versionChanged, this, &QgsAuthOAuth2Config::configChanged );
@@ -301,7 +300,7 @@ bool QgsAuthOAuth2Config::operator==( const QgsAuthOAuth2Config &other ) const
 
 bool QgsAuthOAuth2Config::operator!=( const QgsAuthOAuth2Config &other ) const
 {
-  return  !( *this == other );
+  return !( *this == other );
 }
 
 bool QgsAuthOAuth2Config::isValid() const
@@ -329,7 +328,7 @@ void QgsAuthOAuth2Config::validateConfigId( bool needsId )
                && redirectPort() > 0
                && ( needsId ? !id().isEmpty() : true ) );
   }
-  else if ( mGrantFlow == Pkce )  // No client secret for PKCE
+  else if ( mGrantFlow == Pkce ) // No client secret for PKCE
   {
     mValid = ( !requestUrl().isEmpty()
                && !tokenUrl().isEmpty()
@@ -600,12 +599,14 @@ QList<QgsAuthOAuth2Config *> QgsAuthOAuth2Config::loadOAuth2Configs(
   if ( configfiles.size() > 0 )
   {
     QgsDebugMsgLevel( QStringLiteral( "Config files found in: %1...\n%2" )
-                      .arg( configdir.path(), configfiles.join( QLatin1String( ", " ) ) ), 2 );
+                        .arg( configdir.path(), configfiles.join( QLatin1String( ", " ) ) ),
+                      2 );
   }
   else
   {
     QgsDebugMsgLevel( QStringLiteral( "No config files found in: %1" ).arg( configdir.path() ), 2 );
-    if ( ok ) *ok = res;
+    if ( ok )
+      *ok = res;
     return configs;
   }
 
@@ -644,7 +645,8 @@ QList<QgsAuthOAuth2Config *> QgsAuthOAuth2Config::loadOAuth2Configs(
     configs << config;
   }
 
-  if ( ok ) *ok = true;
+  if ( ok )
+    *ok = true;
   return configs;
 }
 
@@ -678,7 +680,8 @@ QgsStringMap QgsAuthOAuth2Config::mapOAuth2Configs(
   if ( configfiles.size() > 0 )
   {
     QgsDebugMsgLevel( QStringLiteral( "Config files found in: %1...\n%2" )
-                      .arg( configdir.path(), configfiles.join( QLatin1String( ", " ) ) ), 2 );
+                        .arg( configdir.path(), configfiles.join( QLatin1String( ", " ) ) ),
+                      2 );
   }
   else
   {
@@ -714,7 +717,7 @@ QgsStringMap QgsAuthOAuth2Config::mapOAuth2Configs(
     }
 
     // validate the config before caching it
-    std::unique_ptr<QgsAuthOAuth2Config, std::function<void( QgsAuthOAuth2Config * )> > config( new QgsAuthOAuth2Config( parent ), []( QgsAuthOAuth2Config * cfg ) { cfg->deleteLater( );} );
+    std::unique_ptr<QgsAuthOAuth2Config, std::function<void( QgsAuthOAuth2Config * )>> config( new QgsAuthOAuth2Config( parent ), []( QgsAuthOAuth2Config *cfg ) { cfg->deleteLater(); } );
     if ( !config->loadConfigTxt( configtxt, format ) )
     {
       QgsDebugError( QStringLiteral( "FAILED to load config: %1" ).arg( configfile ) );
@@ -763,7 +766,7 @@ QgsStringMap QgsAuthOAuth2Config::mappedOAuth2ConfigsCache( QObject *parent, con
       continue;
     }
     const QgsStringMap newconfigs = QgsAuthOAuth2Config::mapOAuth2Configs(
-                                      configdirinfo.canonicalFilePath(), parent, QgsAuthOAuth2Config::JSON, &ok );
+      configdirinfo.canonicalFilePath(), parent, QgsAuthOAuth2Config::JSON, &ok );
     if ( ok )
     {
       QgsStringMap::const_iterator i = newconfigs.constBegin();
@@ -838,7 +841,7 @@ QString QgsAuthOAuth2Config::accessMethodString( QgsAuthOAuth2Config::AccessMeth
 QString QgsAuthOAuth2Config::tokenCacheDirectory( bool temporary )
 {
   const QDir setdir( QgsApplication::qgisSettingsDirPath() );
-  return  QStringLiteral( "%1/oauth2-cache" ).arg( temporary ? QDir::tempPath() : setdir.canonicalPath() );
+  return QStringLiteral( "%1/oauth2-cache" ).arg( temporary ? QDir::tempPath() : setdir.canonicalPath() );
 }
 
 // static

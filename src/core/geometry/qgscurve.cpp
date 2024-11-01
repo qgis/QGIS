@@ -26,7 +26,7 @@
 
 bool QgsCurve::operator==( const QgsAbstractGeometry &other ) const
 {
-  const QgsCurve *otherCurve = qgsgeometry_cast< const QgsCurve * >( &other );
+  const QgsCurve *otherCurve = qgsgeometry_cast<const QgsCurve *>( &other );
   if ( !otherCurve )
     return false;
 
@@ -47,8 +47,7 @@ bool QgsCurve::isClosed2D() const
   const QgsPoint start = startPoint();
   const QgsPoint end = endPoint();
 
-  return qgsDoubleNear( start.x(), end.x() ) &&
-         qgsDoubleNear( start.y(), end.y() );
+  return qgsDoubleNear( start.x(), end.x() ) && qgsDoubleNear( start.y(), end.y() );
 }
 bool QgsCurve::isClosed() const
 {
@@ -265,7 +264,7 @@ bool QgsCurve::isValid( QString &error, Qgis::GeometryValidityFlags flags ) cons
 
 QPolygonF QgsCurve::asQPolygonF() const
 {
-  std::unique_ptr< QgsLineString > segmentized( curveToLine() );
+  std::unique_ptr<QgsLineString> segmentized( curveToLine() );
   return segmentized->asQPolygonF();
 }
 
@@ -378,15 +377,16 @@ bool QgsCurve::snapToGridPrivate( double hSpacing, double vSpacing, double dSpac
       if ( removeRedundantPoints && outSize > 1 && !hasZ && !hasM )
       {
         previousPointRedundant = QgsGeometryUtilsBase::leftOfLine( outX.at( outSize - 1 ),
-                                 outY.at( outSize - 1 ),
-                                 outX.at( outSize - 2 ),
-                                 outY.at( outSize - 2 ),
-                                 roundedX, roundedY ) == 0;
+                                                                   outY.at( outSize - 1 ),
+                                                                   outX.at( outSize - 2 ),
+                                                                   outY.at( outSize - 2 ),
+                                                                   roundedX, roundedY )
+                                 == 0;
       }
       if ( previousPointRedundant )
       {
-        outX[ outSize - 1 ] = roundedX;
-        outY[ outSize - 1 ] = roundedY;
+        outX[outSize - 1] = roundedX;
+        outY[outSize - 1] = roundedY;
       }
       else
       {
@@ -410,16 +410,17 @@ bool QgsCurve::snapToGridPrivate( double hSpacing, double vSpacing, double dSpac
   {
     // maybe first/last vertex is redundant, let's try to remove that too
     const bool firstVertexIsRedundant = QgsGeometryUtilsBase::leftOfLine( outX.at( 0 ),
-                                        outY.at( 0 ),
-                                        outX.at( outSize - 2 ),
-                                        outY.at( outSize - 2 ),
-                                        outX.at( 1 ), outY.at( 1 ) ) == 0;
+                                                                          outY.at( 0 ),
+                                                                          outX.at( outSize - 2 ),
+                                                                          outY.at( outSize - 2 ),
+                                                                          outX.at( 1 ), outY.at( 1 ) )
+                                        == 0;
     if ( firstVertexIsRedundant )
     {
       outX.removeAt( 0 );
       outY.removeAt( 0 );
-      outX[ outSize - 2 ] = outX.at( 0 );
-      outY[ outSize - 2 ] = outY.at( 0 );
+      outX[outSize - 2] = outX.at( 0 );
+      outY[outSize - 2] = outY.at( 0 );
     }
   }
 

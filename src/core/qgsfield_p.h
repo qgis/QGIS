@@ -48,7 +48,6 @@
 class QgsFieldPrivate : public QSharedData
 {
   public:
-
     QgsFieldPrivate( const QString &name = QString(),
                      QMetaType::Type type = QMetaType::Type::UnknownType,
                      QMetaType::Type subType = QMetaType::Type::UnknownType,
@@ -56,7 +55,7 @@ class QgsFieldPrivate : public QSharedData
                      int len = 0,
                      int prec = 0,
                      const QString &comment = QString(),
-                     const QMap< int, QVariant > &metadata = QMap< int, QVariant >() )
+                     const QMap<int, QVariant> &metadata = QMap<int, QVariant>() )
       : name( name )
       , type( type )
       , subType( subType )
@@ -98,7 +97,7 @@ class QgsFieldPrivate : public QSharedData
                && ( length == other.length ) && ( precision == other.precision )
                && ( metadata == other.metadata )
                && ( alias == other.alias ) && ( defaultValueDefinition == other.defaultValueDefinition )
-               && ( constraints == other.constraints )  && ( flags == other.flags )
+               && ( constraints == other.constraints ) && ( flags == other.flags )
                && ( splitPolicy == other.splitPolicy )
                && ( duplicatePolicy == other.duplicatePolicy )
                && ( isReadOnly == other.isReadOnly )
@@ -127,7 +126,7 @@ class QgsFieldPrivate : public QSharedData
     QString comment;
 
     //! Field metadata. Keys should match Qgis::FieldMetadataProperty values, or custom values extended from Qgis::FieldMetadataProperty::CustomProperty
-    QMap< int, QVariant > metadata;
+    QMap<int, QVariant> metadata;
 
     //! Alias for field name (friendly name shown to users)
     QString alias;

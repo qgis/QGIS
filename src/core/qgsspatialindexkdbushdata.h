@@ -32,7 +32,6 @@
 class CORE_EXPORT QgsSpatialIndexKDBushData
 {
   public:
-
     /**
      * Constructor for QgsSpatialIndexKDBushData, for a feature with the
      * given \a id and \a x, \a y coordinate.

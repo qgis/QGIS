@@ -42,7 +42,6 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
     Q_OBJECT
 
   public:
-
     Q_PROPERTY( Qgis::CoordinateDisplayType coordinateType READ coordinateType WRITE setCoordinateType NOTIFY coordinateTypeChanged )
     Q_PROPERTY( Qgis::CoordinateOrder coordinateAxisOrder READ coordinateAxisOrder WRITE setCoordinateAxisOrder NOTIFY coordinateAxisOrderChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem coordinateCustomCrs READ coordinateCustomCrs WRITE setCoordinateCustomCrs NOTIFY coordinateCustomCrsChanged )
@@ -219,14 +218,13 @@ class CORE_EXPORT QgsProjectDisplaySettings : public QObject
   private:
     void updateCoordinateCrs();
 
-    std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
-    std::unique_ptr< QgsGeographicCoordinateNumericFormat > mGeographicCoordinateFormat;
+    std::unique_ptr<QgsBearingNumericFormat> mBearingFormat;
+    std::unique_ptr<QgsGeographicCoordinateNumericFormat> mGeographicCoordinateFormat;
 
     Qgis::CoordinateDisplayType mCoordinateType = Qgis::CoordinateDisplayType::MapCrs;
     QgsCoordinateReferenceSystem mCoordinateCustomCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
     QgsCoordinateReferenceSystem mCoordinateCrs;
     Qgis::CoordinateOrder mCoordinateAxisOrder = Qgis::CoordinateOrder::Default;
-
 };
 
 #endif // QGSPROJECTDISPLAYSETTINGS_H

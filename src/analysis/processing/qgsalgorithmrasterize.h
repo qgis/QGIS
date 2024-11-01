@@ -49,7 +49,6 @@ class QgsRasterizeAlgorithm : public QgsProcessingAlgorithm
     QgsRasterizeAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
@@ -58,10 +57,8 @@ class QgsRasterizeAlgorithm : public QgsProcessingAlgorithm
     void checkLayersUsagePolicy( QgsProcessingFeedback *feedback );
 
   private:
-
     QMap<QString, QString> mMapThemeStyleOverrides;
     std::vector<std::unique_ptr<QgsMapLayer>> mMapLayers;
-
 };
 
 ///@endcond PRIVATE

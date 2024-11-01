@@ -69,20 +69,19 @@ class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheck : public QgsSingleGeometr
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
     QString description() const override { return factoryDescription(); }
     QString id() const override { return factoryId(); }
-    QgsGeometryCheck::Flags flags() const override {return factoryFlags(); }
+    QgsGeometryCheck::Flags flags() const override { return factoryFlags(); }
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
 
     QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const override;
 
-///@cond private
+    ///@cond private
     static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP;
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP;
     static QString factoryDescription() SIP_SKIP;
     static QgsGeometryCheck::Flags factoryFlags() SIP_SKIP;
     static QString factoryId() SIP_SKIP;
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
-///@endcond private
-
+    ///@endcond private
 };
 
 #endif // QGS_GEOMETRY_SELFINTERSECTION_CHECK_H

@@ -35,7 +35,6 @@ class CORE_EXPORT QgsSensorThingsProvider final : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-
     static const inline QString SENSORTHINGS_PROVIDER_KEY = QStringLiteral( "sensorthings" );
     static const inline QString SENSORTHINGS_PROVIDER_DESCRIPTION = QStringLiteral( "OGC SensorThings API data provider" );
 
@@ -79,7 +78,7 @@ class CORE_EXPORT QgsSensorThingsProvider final : public QgsVectorDataProvider
     void reloadProviderData() final;
 };
 
-class QgsSensorThingsProviderMetadata final: public QgsProviderMetadata
+class QgsSensorThingsProviderMetadata final : public QgsProviderMetadata
 {
     Q_OBJECT
 
@@ -90,7 +89,7 @@ class QgsSensorThingsProviderMetadata final: public QgsProviderMetadata
     QVariantMap decodeUri( const QString &uri ) const final;
     QString encodeUri( const QVariantMap &parts ) const final;
     QgsSensorThingsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) final;
-    QList< Qgis::LayerType > supportedLayerTypes() const final;
+    QList<Qgis::LayerType> supportedLayerTypes() const final;
 
     // handling of stored connections
 
@@ -98,7 +97,6 @@ class QgsSensorThingsProviderMetadata final: public QgsProviderMetadata
     QgsAbstractProviderConnection *createConnection( const QString &name ) final;
     void deleteConnection( const QString &name ) final;
     void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) final;
-
 };
 
 ///@endcond PRIVATE

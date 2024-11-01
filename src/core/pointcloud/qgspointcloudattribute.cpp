@@ -200,13 +200,13 @@ QgsFields QgsPointCloudAttributeCollection::toFields() const
   return fields;
 }
 
-template <typename T>
+template<typename T>
 void _attribute( const char *data, std::size_t offset, QgsPointCloudAttribute::DataType type, T &value )
 {
   switch ( type )
   {
     case QgsPointCloudAttribute::UChar:
-      value = *reinterpret_cast< const unsigned char * >( data + offset );
+      value = *reinterpret_cast<const unsigned char *>( data + offset );
       return;
 
     case QgsPointCloudAttribute::Char:
@@ -214,35 +214,35 @@ void _attribute( const char *data, std::size_t offset, QgsPointCloudAttribute::D
       return;
 
     case QgsPointCloudAttribute::UInt32:
-      value = *reinterpret_cast< const quint32 * >( data + offset );
+      value = *reinterpret_cast<const quint32 *>( data + offset );
       return;
 
     case QgsPointCloudAttribute::Int32:
-      value = *reinterpret_cast< const qint32 * >( data + offset );
+      value = *reinterpret_cast<const qint32 *>( data + offset );
       return;
 
     case QgsPointCloudAttribute::UInt64:
-      value = *reinterpret_cast< const quint64 * >( data + offset );
+      value = *reinterpret_cast<const quint64 *>( data + offset );
       return;
 
     case QgsPointCloudAttribute::Int64:
-      value = *reinterpret_cast< const qint64 * >( data + offset );
+      value = *reinterpret_cast<const qint64 *>( data + offset );
       return;
 
     case QgsPointCloudAttribute::Short:
-      value = *reinterpret_cast< const short * >( data + offset );
+      value = *reinterpret_cast<const short *>( data + offset );
       return;
 
     case QgsPointCloudAttribute::UShort:
-      value = *reinterpret_cast< const unsigned short * >( data + offset );
+      value = *reinterpret_cast<const unsigned short *>( data + offset );
       return;
 
     case QgsPointCloudAttribute::Float:
-      value = static_cast< T >( *reinterpret_cast< const float * >( data + offset ) );
+      value = static_cast<T>( *reinterpret_cast<const float *>( data + offset ) );
       return;
 
     case QgsPointCloudAttribute::Double:
-      value = *reinterpret_cast< const double * >( data + offset );
+      value = *reinterpret_cast<const double *>( data + offset );
       return;
   }
   BUILTIN_UNREACHABLE
@@ -256,9 +256,9 @@ double QgsPointCloudAttribute::convertValueToDouble( const char *ptr ) const
 }
 
 void QgsPointCloudAttribute::getPointXYZ( const char *ptr, int i, std::size_t pointRecordSize, int xOffset, QgsPointCloudAttribute::DataType xType,
-    int yOffset, QgsPointCloudAttribute::DataType yType,
-    int zOffset, QgsPointCloudAttribute::DataType zType,
-    const QgsVector3D &indexScale, const QgsVector3D &indexOffset, double &x, double &y, double &z )
+                                          int yOffset, QgsPointCloudAttribute::DataType yType,
+                                          int zOffset, QgsPointCloudAttribute::DataType zType,
+                                          const QgsVector3D &indexScale, const QgsVector3D &indexOffset, double &x, double &y, double &z )
 {
   _attribute( ptr, i * pointRecordSize + xOffset, xType, x );
   x = indexOffset.x() + indexScale.x() * x;
@@ -283,69 +283,69 @@ QVariantMap QgsPointCloudAttribute::getAttributeMap( const char *data, std::size
     {
       case QgsPointCloudAttribute::UChar:
       {
-        const unsigned char value = *reinterpret_cast< const unsigned char * >( data + recordOffset + attributeOffset );
-        map[ attributeName ] = value;
+        const unsigned char value = *reinterpret_cast<const unsigned char *>( data + recordOffset + attributeOffset );
+        map[attributeName] = value;
       }
       break;
 
       case QgsPointCloudAttribute::Char:
       {
         const char value = *( data + recordOffset + attributeOffset );
-        map[ attributeName ] = value;
+        map[attributeName] = value;
       }
       break;
 
       case QgsPointCloudAttribute::UInt32:
       {
-        const quint32 value = *reinterpret_cast< const quint32 * >( data + recordOffset + attributeOffset );
-        map[ attributeName ] = value;
+        const quint32 value = *reinterpret_cast<const quint32 *>( data + recordOffset + attributeOffset );
+        map[attributeName] = value;
       }
       break;
       case QgsPointCloudAttribute::Int32:
       {
-        const qint32 value = *reinterpret_cast< const qint32 * >( data + recordOffset + attributeOffset );
-        map[ attributeName ] = value;
+        const qint32 value = *reinterpret_cast<const qint32 *>( data + recordOffset + attributeOffset );
+        map[attributeName] = value;
       }
       break;
 
       case QgsPointCloudAttribute::UInt64:
       {
-        const quint64 value = *reinterpret_cast< const quint64 * >( data + recordOffset + attributeOffset );
-        map[ attributeName ] = value;
+        const quint64 value = *reinterpret_cast<const quint64 *>( data + recordOffset + attributeOffset );
+        map[attributeName] = value;
       }
       break;
       case QgsPointCloudAttribute::Int64:
       {
-        const qint64 value = *reinterpret_cast< const qint64 * >( data + recordOffset + attributeOffset );
-        map[ attributeName ] = value;
+        const qint64 value = *reinterpret_cast<const qint64 *>( data + recordOffset + attributeOffset );
+        map[attributeName] = value;
       }
       break;
 
       case QgsPointCloudAttribute::Short:
       {
-        const short value = *reinterpret_cast< const short * >( data + recordOffset + attributeOffset );
-        map[ attributeName ] = value;
+        const short value = *reinterpret_cast<const short *>( data + recordOffset + attributeOffset );
+        map[attributeName] = value;
       }
       break;
 
       case QgsPointCloudAttribute::UShort:
       {
-        const unsigned short value = *reinterpret_cast< const unsigned short * >( data + recordOffset + attributeOffset );
-        map[ attributeName ] = value;
+        const unsigned short value = *reinterpret_cast<const unsigned short *>( data + recordOffset + attributeOffset );
+        map[attributeName] = value;
       }
       break;
 
       case QgsPointCloudAttribute::Float:
       {
-        const float value = *reinterpret_cast< const float * >( data + recordOffset + attributeOffset );
-        map[ attributeName ] = value;
+        const float value = *reinterpret_cast<const float *>( data + recordOffset + attributeOffset );
+        map[attributeName] = value;
       }
       break;
 
       case QgsPointCloudAttribute::Double:
       {
-        const double value = *reinterpret_cast< const double * >( data + recordOffset + attributeOffset );
-        map[ attributeName ] = value;
+        const double value = *reinterpret_cast<const double *>( data + recordOffset + attributeOffset );
+        map[attributeName] = value;
       }
       break;
     }

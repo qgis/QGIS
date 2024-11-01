@@ -41,8 +41,8 @@ QgsProcessingAlgorithm::~QgsProcessingAlgorithm()
 
 QgsProcessingAlgorithm *QgsProcessingAlgorithm::create( const QVariantMap &configuration ) const
 {
-  std::unique_ptr< QgsProcessingAlgorithm > creation( createInstance() );
-  if ( ! creation )
+  std::unique_ptr<QgsProcessingAlgorithm> creation( createInstance() );
+  if ( !creation )
     throw QgsProcessingException( QObject::tr( "Error creating algorithm from createInstance()" ) );
   creation->setProvider( provider() );
   creation->initAlgorithm( configuration );
@@ -150,8 +150,8 @@ void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
     {
       if ( definition->isDestination() )
       {
-        const QgsProcessingDestinationParameter *destParam = static_cast< const QgsProcessingDestinationParameter *>( definition );
-        const_cast< QgsProcessingDestinationParameter *>( destParam )->setSupportsNonFileBasedOutput( false );
+        const QgsProcessingDestinationParameter *destParam = static_cast<const QgsProcessingDestinationParameter *>( definition );
+        const_cast<QgsProcessingDestinationParameter *>( destParam )->setSupportsNonFileBasedOutput( false );
       }
     }
   }
@@ -163,7 +163,7 @@ QWidget *QgsProcessingAlgorithm::createCustomParametersWidget( QWidget * ) const
 }
 
 QgsExpressionContext QgsProcessingAlgorithm::createExpressionContext( const QVariantMap &parameters,
-    QgsProcessingContext &context, QgsProcessingFeatureSource *source ) const
+                                                                      QgsProcessingContext &context, QgsProcessingFeatureSource *source ) const
 {
   // start with context's expression context
   QgsExpressionContext c = context.expressionContext();
@@ -216,7 +216,7 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
     }
     else if ( def->type() == QgsProcessingParameterFeatureSource::typeName() )
     {
-      std::unique_ptr< QgsFeatureSource  > source( QgsProcessingParameters::parameterAsSource( def, parameters, context ) );
+      std::unique_ptr<QgsFeatureSource> source( QgsProcessingParameters::parameterAsSource( def, parameters, context ) );
       if ( source )
       {
         if ( foundCrs && source->sourceCrs().isValid() && crs != source->sourceCrs() )
@@ -232,7 +232,7 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
     }
     else if ( def->type() == QgsProcessingParameterMultipleLayers::typeName() )
     {
-      QList< QgsMapLayer *> layers = QgsProcessingParameters::parameterAsLayerList( def, parameters, context );
+      QList<QgsMapLayer *> layers = QgsProcessingParameters::parameterAsLayerList( def, parameters, context );
       const auto constLayers = layers;
       for ( QgsMapLayer *layer : constLayers )
       {
@@ -289,7 +289,6 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
         crs = geomCrs;
       }
     }
-
   }
   return true;
 }
@@ -329,8 +328,7 @@ QString QgsProcessingAlgorithm::asQgisProcessCommand( const QVariantMap &paramet
 
   parts.append( context.asQgisProcessArguments( argumentFlags ) );
 
-  auto escapeIfNeeded = []( const QString & input ) -> QString
-  {
+  auto escapeIfNeeded = []( const QString &input ) -> QString {
     // play it safe and escape everything UNLESS it's purely alphanumeric characters (and a very select scattering of other common characters!)
     const thread_local QRegularExpression nonAlphaNumericRx( QStringLiteral( "[^a-zA-Z0-9.\\-/_]" ) );
     if ( nonAlphaNumericRx.match( input ).hasMatch() )
@@ -406,7 +404,7 @@ bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *def
 
   if ( definition->isDestination() && mProvider )
   {
-    QgsProcessingDestinationParameter *destParam = static_cast< QgsProcessingDestinationParameter *>( definition );
+    QgsProcessingDestinationParameter *destParam = static_cast<QgsProcessingDestinationParameter *>( definition );
     if ( !mProvider->supportsNonFileBasedOutput() )
       destParam->setSupportsNonFileBasedOutput( false );
   }
@@ -532,7 +530,7 @@ QgsProcessingAlgorithm::VectorProperties QgsProcessingAlgorithm::sinkProperties(
 
 QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok, const QVariantMap &configuration, bool catchExceptions ) const
 {
-  std::unique_ptr< QgsProcessingAlgorithm > alg( create( configuration ) );
+  std::unique_ptr<QgsProcessingAlgorithm> alg( create( configuration ) );
   if ( ok )
     *ok = false;
 
@@ -618,10 +616,10 @@ QVariantMap QgsProcessingAlgorithm::runPrepared( const QVariantMap &parameters, 
     runContext = mLocalContext.get();
   }
 
-  std::unique_ptr< QgsProcessingModelInitialRunConfig > modelConfig = context.takeModelInitialRunConfig();
+  std::unique_ptr<QgsProcessingModelInitialRunConfig> modelConfig = context.takeModelInitialRunConfig();
   if ( modelConfig )
   {
-    std::unique_ptr< QgsMapLayerStore > modelPreviousLayerStore = modelConfig->takePreviousLayerStore();
+    std::unique_ptr<QgsMapLayerStore> modelPreviousLayerStore = modelConfig->takePreviousLayerStore();
     if ( modelPreviousLayerStore )
     {
       // move layers from previous layer store to context's temporary layer store, in a thread-safe way
@@ -942,7 +940,7 @@ QString QgsProcessingAlgorithm::invalidSourceError( const QVariantMap &parameter
     }
     if ( var.userType() == qMetaTypeId<QgsProperty>() )
     {
-      QgsProperty p = var.value< QgsProperty >();
+      QgsProperty p = var.value<QgsProperty>();
       if ( p.propertyType() == Qgis::PropertyType::Static )
       {
         var = p.staticValue();
@@ -964,7 +962,7 @@ QString QgsProcessingAlgorithm::invalidRasterError( const QVariantMap &parameter
     QVariant var = parameters.value( name );
     if ( var.userType() == qMetaTypeId<QgsProperty>() )
     {
-      QgsProperty p = var.value< QgsProperty >();
+      QgsProperty p = var.value<QgsProperty>();
       if ( p.propertyType() == Qgis::PropertyType::Static )
       {
         var = p.staticValue();
@@ -991,7 +989,7 @@ QString QgsProcessingAlgorithm::invalidSinkError( const QVariantMap &parameters,
     }
     if ( var.userType() == qMetaTypeId<QgsProperty>() )
     {
-      QgsProperty p = var.value< QgsProperty >();
+      QgsProperty p = var.value<QgsProperty>();
       if ( p.propertyType() == Qgis::PropertyType::Static )
       {
         var = p.staticValue();
@@ -1013,7 +1011,7 @@ QString QgsProcessingAlgorithm::invalidPointCloudError( const QVariantMap &param
     QVariant var = parameters.value( name );
     if ( var.userType() == qMetaTypeId<QgsProperty>() )
     {
-      QgsProperty p = var.value< QgsProperty >();
+      QgsProperty p = var.value<QgsProperty>();
       if ( p.propertyType() == Qgis::PropertyType::Static )
       {
         var = p.staticValue();
@@ -1048,7 +1046,7 @@ bool QgsProcessingAlgorithm::createAutoOutputForParameter( QgsProcessingParamete
   if ( !parameter->isDestination() )
     return true; // nothing created, but nothing went wrong - so return true
 
-  QgsProcessingDestinationParameter *dest = static_cast< QgsProcessingDestinationParameter * >( parameter );
+  QgsProcessingDestinationParameter *dest = static_cast<QgsProcessingDestinationParameter *>( parameter );
   QgsProcessingOutputDefinition *output( dest->toOutputDefinition() );
   if ( !output )
     return true; // nothing created - but nothing went wrong - so return true
@@ -1145,11 +1143,11 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
 {
   prepareSource( parameters, context );
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest,
-                                          outputFields( mSource->fields() ),
-                                          outputWkbType( mSource->wkbType() ),
-                                          outputCrs( mSource->sourceCrs() ),
-                                          sinkFlags() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest,
+                                                         outputFields( mSource->fields() ),
+                                                         outputWkbType( mSource->wkbType() ),
+                                                         outputCrs( mSource->sourceCrs() ),
+                                                         sinkFlags() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -1200,17 +1198,12 @@ QgsFeatureRequest QgsProcessingFeatureBasedAlgorithm::request() const
 
 bool QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );
   if ( !layer )
     return false;
 
   Qgis::GeometryType inPlaceGeometryType = layer->geometryType();
-  if ( !inputLayerTypes().empty() &&
-       !inputLayerTypes().contains( static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) &&
-       !inputLayerTypes().contains( static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) &&
-       ( ( inPlaceGeometryType == Qgis::GeometryType::Polygon && !inputLayerTypes().contains( static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) ) ) ||
-         ( inPlaceGeometryType == Qgis::GeometryType::Line && !inputLayerTypes().contains( static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) ) ) ||
-         ( inPlaceGeometryType == Qgis::GeometryType::Point && !inputLayerTypes().contains( static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) ) ) ) )
+  if ( !inputLayerTypes().empty() && !inputLayerTypes().contains( static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) && !inputLayerTypes().contains( static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) && ( ( inPlaceGeometryType == Qgis::GeometryType::Polygon && !inputLayerTypes().contains( static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) ) || ( inPlaceGeometryType == Qgis::GeometryType::Line && !inputLayerTypes().contains( static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) ) ) || ( inPlaceGeometryType == Qgis::GeometryType::Point && !inputLayerTypes().contains( static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) ) ) )
     return false;
 
   Qgis::WkbType type = Qgis::WkbType::Unknown;
@@ -1229,7 +1222,7 @@ bool QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( const QgsMapLayer *
 
 void QgsProcessingFeatureBasedAlgorithm::prepareSource( const QVariantMap &parameters, QgsProcessingContext &context )
 {
-  if ( ! mSource )
+  if ( !mSource )
   {
     mSource.reset( parameterAsSource( parameters, inputParameterName(), context ) );
     if ( !mSource )
@@ -1254,7 +1247,7 @@ QgsProcessingAlgorithm::VectorProperties QgsProcessingFeatureBasedAlgorithm::sin
     }
     else
     {
-      std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+      std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
       if ( source )
       {
         result.fields = outputFields( source->fields() );
@@ -1267,4 +1260,3 @@ QgsProcessingAlgorithm::VectorProperties QgsProcessingFeatureBasedAlgorithm::sin
   }
   return result;
 }
-

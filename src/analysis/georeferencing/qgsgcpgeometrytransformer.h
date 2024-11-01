@@ -36,7 +36,6 @@ class QgsGeometry;
 class ANALYSIS_EXPORT QgsGcpGeometryTransformer : public QgsAbstractGeometryTransformer
 {
   public:
-
     /**
      * Constructor for QgsGcpGeometryTransformer, which uses the specified \a gcpTransformer to
      * modify geometries.
@@ -91,8 +90,7 @@ class ANALYSIS_EXPORT QgsGcpGeometryTransformer : public QgsAbstractGeometryTran
     QgsGcpGeometryTransformer( const QgsGcpGeometryTransformer &other );
 #endif
 
-    std::unique_ptr< QgsGcpTransformerInterface > mGcpTransformer;
-
+    std::unique_ptr<QgsGcpTransformerInterface> mGcpTransformer;
 };
 
 #endif // QGSGCPGEOMETRYTRANSFORMER_H

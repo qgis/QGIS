@@ -24,7 +24,6 @@
 QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( QgsFeatureIterator &fi, QgsFeedback *feedback )
   : d( new QgsSpatialIndexKDBushPrivate( fi, feedback ) )
 {
-
 }
 
 QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( const QgsFeatureSource &source, QgsFeedback *feedback )
@@ -33,13 +32,14 @@ QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( const QgsFeatureSource &source, Qg
 }
 
 ///@cond PRIVATE (avoid doxygen error)
-QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( QgsFeatureIterator &fi, const std::function<bool ( const QgsFeature & )> &callback, QgsFeedback *feedback )
+QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( QgsFeatureIterator &fi, const std::function<bool( const QgsFeature & )> &callback, QgsFeedback *feedback )
   : d( new QgsSpatialIndexKDBushPrivate( fi, callback, feedback ) )
 {
 }
 ///@endcond
 
-QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( const QgsSpatialIndexKDBush &other ): d( other.d )
+QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( const QgsSpatialIndexKDBush &other )
+  : d( other.d )
 {
   d->ref.ref();
 }
@@ -68,7 +68,7 @@ QgsSpatialIndexKDBush::~QgsSpatialIndexKDBush()
 QList<QgsSpatialIndexKDBushData> QgsSpatialIndexKDBush::within( const QgsPointXY &point, double radius ) const
 {
   QList<QgsSpatialIndexKDBushData> result;
-  d->index->within( point.x(), point.y(), radius, [&result]( const QgsSpatialIndexKDBushData & p ) { result << p; } );
+  d->index->within( point.x(), point.y(), radius, [&result]( const QgsSpatialIndexKDBushData &p ) { result << p; } );
   return result;
 }
 
@@ -88,7 +88,7 @@ QList<QgsSpatialIndexKDBushData> QgsSpatialIndexKDBush::intersects( const QgsRec
   d->index->range( rectangle.xMinimum(),
                    rectangle.yMinimum(),
                    rectangle.xMaximum(),
-  rectangle.yMaximum(), [&result]( const QgsSpatialIndexKDBushData & p ) { result << p; } );
+                   rectangle.yMaximum(), [&result]( const QgsSpatialIndexKDBushData &p ) { result << p; } );
   return result;
 }
 

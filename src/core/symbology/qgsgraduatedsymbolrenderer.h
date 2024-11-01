@@ -36,7 +36,6 @@ class QgsExpression;
 class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 {
   public:
-
     QgsGraduatedSymbolRenderer( const QString &attrName = QString(), const QgsRangeList &ranges = QgsRangeList() );
 
     ~QgsGraduatedSymbolRenderer() override;
@@ -164,7 +163,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \since QGIS 3.4
      * \deprecated QGIS 3.10. Use classficationMethod instead.
      */
-    Q_DECL_DEPRECATED  void setUseSymmetricMode( bool useSymmetricMode ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED void setUseSymmetricMode( bool useSymmetricMode ) SIP_DEPRECATED;
 
     /**
      * Returns the pivot value for symmetric classification
@@ -281,16 +280,16 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \deprecated QGIS 3.10
      */
     Q_DECL_DEPRECATED static QgsGraduatedSymbolRenderer *createRenderer( QgsVectorLayer *vlayer,
-        const QString &attrName,
-        int classes,
-        Mode mode,
-        QgsSymbol *symbol SIP_TRANSFER,
-        QgsColorRamp *ramp SIP_TRANSFER,
-        const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat(),
-        bool useSymmetricMode = false,
-        double symmetryPoint = 0.0,
-        const QStringList &listForCboPrettyBreaks = QStringList(),
-        bool astride = false ) SIP_DEPRECATED;
+                                                                         const QString &attrName,
+                                                                         int classes,
+                                                                         Mode mode,
+                                                                         QgsSymbol *symbol SIP_TRANSFER,
+                                                                         QgsColorRamp *ramp SIP_TRANSFER,
+                                                                         const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat(),
+                                                                         bool useSymmetricMode = false,
+                                                                         double symmetryPoint = 0.0,
+                                                                         const QStringList &listForCboPrettyBreaks = QStringList(),
+                                                                         bool astride = false ) SIP_DEPRECATED;
     Q_NOWARN_DEPRECATED_POP;
 
     //! create renderer from XML element
@@ -298,7 +297,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     QgsLegendSymbolList legendSymbolItems() const override;
-    QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QSet<QString> legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const override;
 
     /**
@@ -467,7 +466,6 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     std::shared_ptr<QgsClassificationMethod> mClassificationMethod;
 
   private:
-
     /**
      * Returns calculated value used for classifying a feature.
      */
@@ -488,7 +486,6 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 #endif
 
     friend class TestQgsGraduatedSymbolRenderer;
-
 };
 
 #endif // QGSGRADUATEDSYMBOLRENDERER_H

@@ -38,13 +38,12 @@ class NATIVE_EXPORT QgsNative : public QObject
     Q_OBJECT
 
   public:
-
     //! Native interface capabilities
     enum Capability
     {
       NativeDesktopNotifications = 1 << 1, //!< Native desktop notifications are supported. See showDesktopNotification().
       NativeFilePropertiesDialog = 1 << 2, //!< Platform can show a native "file" (or folder) properties dialog.
-      NativeOpenTerminalAtPath = 1 << 3, //!< Platform can open a terminal (command line) at a specific path
+      NativeOpenTerminalAtPath = 1 << 3,   //!< Platform can open a terminal (command line) at a specific path
     };
     Q_DECLARE_FLAGS( Capabilities, Capability )
 
@@ -166,22 +165,22 @@ class NATIVE_EXPORT QgsNative : public QObject
      */
     struct NotificationSettings
     {
-      NotificationSettings() {}
+        NotificationSettings() {}
 
-      //! Optional image to show in notification
-      QImage image;
+        //! Optional image to show in notification
+        QImage image;
 
-      //! Whether the notification should be transient (the meaning varies depending on platform)
-      bool transient = true;
+        //! Whether the notification should be transient (the meaning varies depending on platform)
+        bool transient = true;
 
-      //! Path to application icon in SVG format
-      QString svgAppIconPath;
+        //! Path to application icon in SVG format
+        QString svgAppIconPath;
 
-      //! Path to application icon in png format
-      QString pngAppIconPath;
+        //! Path to application icon in png format
+        QString pngAppIconPath;
 
-      //! Message ID, used to replace existing messages
-      QVariant messageId;
+        //! Message ID, used to replace existing messages
+        QVariant messageId;
     };
 
     /**
@@ -189,13 +188,13 @@ class NATIVE_EXPORT QgsNative : public QObject
      */
     struct NotificationResult
     {
-      NotificationResult() {}
+        NotificationResult() {}
 
-      //! True if notification was successfully sent.
-      bool successful = false;
+        //! True if notification was successfully sent.
+        bool successful = false;
 
-      //! Unique notification message ID, used by some platforms to identify the notification
-      QVariant messageId;
+        //! Unique notification message ID, used by some platforms to identify the notification
+        QVariant messageId;
     };
 
     /**
@@ -220,17 +219,17 @@ class NATIVE_EXPORT QgsNative : public QObject
      */
     struct RecentProjectProperties
     {
-      //! Project name (will be project title if set, otherwise project filename)
-      QString name;
+        //! Project name (will be project title if set, otherwise project filename)
+        QString name;
 
-      //! Project title, if set
-      QString title;
+        //! Project title, if set
+        QString title;
 
-      //! Project filename
-      QString fileName;
+        //! Project filename
+        QString fileName;
 
-      //! Full project path
-      QString path;
+        //! Full project path
+        QString path;
     };
 
     /**
@@ -243,7 +242,7 @@ class NATIVE_EXPORT QgsNative : public QObject
      *
      * \since QGIS 3.4
      */
-    virtual void onRecentProjectsChanged( const std::vector< RecentProjectProperties > &recentProjects );
+    virtual void onRecentProjectsChanged( const std::vector<RecentProjectProperties> &recentProjects );
 
   signals:
 
@@ -258,7 +257,6 @@ class NATIVE_EXPORT QgsNative : public QObject
      * \since QGIS 3.4
      */
     void usbStorageNotification( const QString &path, bool inserted );
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsNative::Capabilities )

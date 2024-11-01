@@ -35,12 +35,11 @@ class APP_EXPORT QgsOffsetUserWidget : public QWidget, private Ui::QgsOffsetUser
     Q_OBJECT
 
   public:
-
     explicit QgsOffsetUserWidget( QWidget *parent = nullptr );
 
     void setOffset( double offset );
     double offset();
-    QDoubleSpinBox *editor() const {return mOffsetSpinBox;}
+    QDoubleSpinBox *editor() const { return mOffsetSpinBox; }
 
     void setPolygonMode( bool polygon );
 
@@ -54,7 +53,7 @@ class APP_EXPORT QgsOffsetUserWidget : public QWidget, private Ui::QgsOffsetUser
     bool eventFilter( QObject *obj, QEvent *ev ) override;
 };
 
-class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
+class APP_EXPORT QgsMapToolOffsetCurve : public QgsMapToolEdit
 {
     Q_OBJECT
   public:

@@ -30,9 +30,7 @@
  */
 class QgsTessellateAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsTessellateAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -49,12 +47,9 @@ class QgsTessellateAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
 
     QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
 };
 
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMTESSELLATE_H
-
-

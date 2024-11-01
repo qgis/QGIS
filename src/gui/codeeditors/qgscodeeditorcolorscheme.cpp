@@ -19,7 +19,6 @@ QgsCodeEditorColorScheme::QgsCodeEditorColorScheme( const QString &id, const QSt
   : mId( id )
   , mThemeName( name )
 {
-
 }
 
 QColor QgsCodeEditorColorScheme::color( QgsCodeEditorColorScheme::ColorRole role ) const

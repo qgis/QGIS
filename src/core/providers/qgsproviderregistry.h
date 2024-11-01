@@ -56,9 +56,7 @@ class QgsFeedback;
 */
 class CORE_EXPORT QgsProviderRegistry
 {
-
   public:
-
     // TODO QGIS 4 - either move to QgsAbstractDataSourceWidget or remove altogether
 
     /**
@@ -182,7 +180,7 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \since QGIS 3.10
      */
-    QList<QPair<QString, QString> > pyramidResamplingMethods( const QString &providerKey );
+    QList<QPair<QString, QString>> pyramidResamplingMethods( const QString &providerKey );
 
     /**
      * Breaks a provider data source URI into its component paths (e.g. file path, layer name).
@@ -244,7 +242,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \note Ownership of created data item providers is passed to the caller.
      * \since QGIS 3.10
      */
-    QList< QgsDataItemProvider * > dataItemProviders( const QString &providerKey ) const SIP_FACTORY;
+    QList<QgsDataItemProvider *> dataItemProviders( const QString &providerKey ) const SIP_FACTORY;
 
     /**
      * Lists stored layer styles in the provider defined by \a providerKey and \a uri
@@ -292,7 +290,7 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \since QGIS 3.10
      */
-    bool saveStyle( const QString &providerKey,  const QString &uri, const QString &qmlStyle, const QString &sldStyle,
+    bool saveStyle( const QString &providerKey, const QString &uri, const QString &qmlStyle, const QString &sldStyle,
                     const QString &styleName, const QString &styleDescription,
                     const QString &uiFileContent, bool useAsDefault, QString &errCause );
 
@@ -378,7 +376,7 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \since QGIS 3.26
      */
-    QSet< QString > providersForLayerType( Qgis::LayerType type ) const;
+    QSet<QString> providersForLayerType( Qgis::LayerType type ) const;
 
     /**
      * \ingroup core
@@ -389,13 +387,11 @@ class CORE_EXPORT QgsProviderRegistry
      */
     class CORE_EXPORT ProviderCandidateDetails
     {
-
       public:
-
         /**
          * Constructor for ProviderCandidateDetails, with the specified provider \a metadata and valid candidate \a layerTypes.
          */
-        ProviderCandidateDetails( QgsProviderMetadata *metadata, const QList< Qgis::LayerType > &layerTypes )
+        ProviderCandidateDetails( QgsProviderMetadata *metadata, const QList<Qgis::LayerType> &layerTypes )
           : mMetadata( metadata )
           , mLayerTypes( layerTypes )
         {}
@@ -414,16 +410,16 @@ class CORE_EXPORT QgsProviderRegistry
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsProviderRegistry.ProviderCandidateDetails: %1>" ).arg( sipCpp->metadata()->key() );
+            QString str
+          = QStringLiteral( "<QgsProviderRegistry.ProviderCandidateDetails: %1>" ).arg( sipCpp->metadata()->key() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
 #endif
 
-      private:
-        QgsProviderMetadata *mMetadata = nullptr;
+          private : QgsProviderMetadata *mMetadata
+          = nullptr;
 
-        QList< Qgis::LayerType > mLayerTypes;
-
+        QList<Qgis::LayerType> mLayerTypes;
     };
 
     /**
@@ -442,7 +438,7 @@ class CORE_EXPORT QgsProviderRegistry
      * \see shouldDeferUriForOtherProviders()
      * \since QGIS 3.18
      */
-    QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProvidersForUri( const QString &uri ) const;
+    QList<QgsProviderRegistry::ProviderCandidateDetails> preferredProvidersForUri( const QString &uri ) const;
 
     /**
      * \ingroup core
@@ -458,14 +454,13 @@ class CORE_EXPORT QgsProviderRegistry
     class CORE_EXPORT UnusableUriDetails
     {
       public:
-
         /**
          * Constructor for UnusableUriDetails for the given \a uri, with the specified user-friendly, translated \a warning.
          *
          * The optional \a layerTypes argument can be used to specify layer types which are usually valid
          * options for opening the URI.
          */
-        UnusableUriDetails( const QString &uri = QString(), const QString &warning = QString(), const QList< Qgis::LayerType > &layerTypes = QList< Qgis::LayerType >() )
+        UnusableUriDetails( const QString &uri = QString(), const QString &warning = QString(), const QList<Qgis::LayerType> &layerTypes = QList<Qgis::LayerType>() )
           : uri( uri )
           , warning( warning )
           , layerTypes( layerTypes )
@@ -495,11 +490,11 @@ class CORE_EXPORT QgsProviderRegistry
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsProviderRegistry.UnusableUriDetails: %1>" ).arg( sipCpp->warning );
+            QString str
+          = QStringLiteral( "<QgsProviderRegistry.UnusableUriDetails: %1>" ).arg( sipCpp->warning );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
 #endif
-
     };
 
     /**
@@ -516,9 +511,7 @@ class CORE_EXPORT QgsProviderRegistry
      */
     class CORE_EXPORT UnusableUriHandlerInterface
     {
-
       public:
-
         virtual ~UnusableUriHandlerInterface() = default;
 
         /**
@@ -530,7 +523,6 @@ class CORE_EXPORT QgsProviderRegistry
          * Returns the details for advising the user why the \a uri is not usable.
          */
         virtual UnusableUriDetails details( const QString &uri ) const = 0;
-
     };
 
     /**
@@ -614,7 +606,7 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * \since QGIS 3.22
     */
-    QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const;
+    QList<QgsProviderSublayerDetails> querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Returns a file filter string for supported vector files.
@@ -829,7 +821,7 @@ class CORE_EXPORT QgsProviderRegistry
      */
     QString mProtocolDrivers;
 
-    QList< UnusableUriHandlerInterface * > mUnusableUriHandlers;
+    QList<UnusableUriHandlerInterface *> mUnusableUriHandlers;
 
     /**
      * Returns TRUE if registry instance exists.

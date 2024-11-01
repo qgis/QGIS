@@ -23,7 +23,7 @@
 #include "qgsmeshdataset.h"
 #include "qgis.h"
 
-#define  INVALID_MESHLAYER_TIME -99999
+#define INVALID_MESHLAYER_TIME -99999
 
 /**
  * \class QgsMeshDataProviderTemporalCapabilities
@@ -32,17 +32,16 @@
  *
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProviderTemporalCapabilities
+class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities : public QgsDataProviderTemporalCapabilities
 {
   public:
-
     /**
      * Method for selection of temporal mesh dataset from a range time.
      */
     enum MatchingTemporalDatasetMethod
     {
       FindClosestDatasetBeforeStartRangeTime, //! Finds the closest dataset which have its time before the requested start range time
-      FindClosestDatasetFromStartRangeTime //! Finds the closest dataset before or after the requested start range time
+      FindClosestDatasetFromStartRangeTime    //! Finds the closest dataset before or after the requested start range time
     };
 
     /**
@@ -89,7 +88,7 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
      * \note must be used only by the mesh data provider,
      * all dataset need to be added one after one
      */
-    void addDatasetTime( int group, double  time ) SIP_SKIP;
+    void addDatasetTime( int group, double time ) SIP_SKIP;
 
     /**
      * Returns whether the reference time is set
@@ -143,7 +142,6 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
     qint64 firstTimeStepDuration( int group ) const;
 
   private:
-
     //! Holds the global reference date/time value if exists (min of all groups), otherwise it is invalid
     QDateTime mGlobalReferenceDateTime;
 

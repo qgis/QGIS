@@ -39,7 +39,6 @@ class CORE_EXPORT QgsEptPointCloudBlockRequest : public QgsPointCloudBlockReques
 {
     Q_OBJECT
   public:
-
     /**
      * QgsPointCloudBlockRequest constructor
      * Requests the block data of size \a blockSize at offset blockOffset
@@ -50,6 +49,7 @@ class CORE_EXPORT QgsEptPointCloudBlockRequest : public QgsPointCloudBlockReques
                                   const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect );
 
     ~QgsEptPointCloudBlockRequest() = default;
+
   private:
     QString mDataType;
   private slots:

@@ -300,7 +300,7 @@ QList<QgsProviderSublayerDetails> QgsMbTilesVectorTileDataProviderMetadata::quer
       details.setType( Qgis::LayerType::VectorTile );
       details.setSkippedContainerScan( true );
       details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( fileName ) );
-      return {details};
+      return { details };
     }
     else
     {
@@ -315,7 +315,7 @@ QList<QgsProviderSublayerDetails> QgsMbTilesVectorTileDataProviderMetadata::quer
           details.setProviderKey( key() );
           details.setType( Qgis::LayerType::VectorTile );
           details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( fileName ) );
-          return {details};
+          return { details };
         }
       }
     }
@@ -393,5 +393,3 @@ QList<Qgis::LayerType> QgsMbTilesVectorTileDataProviderMetadata::supportedLayerT
 
 
 ///@endcond
-
-

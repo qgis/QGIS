@@ -30,7 +30,6 @@ class QgsGdalCloudDataItemGuiProvider : public QObject, public QgsDataItemGuiPro
 {
     Q_OBJECT
   public:
-
     QString name() override { return QStringLiteral( "GDAL Cloud" ); }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
@@ -42,7 +41,6 @@ class QgsGdalCloudDataItemGuiProvider : public QObject, public QgsDataItemGuiPro
     static void newConnection( QgsDataItem *item, const QgsGdalUtils::VsiNetworkFileSystemDetails &driver );
     static void saveConnections();
     static void loadConnections( QgsGdalCloudRootItem *item );
-
 };
 
 ///@endcond

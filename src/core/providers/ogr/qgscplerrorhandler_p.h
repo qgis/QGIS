@@ -29,7 +29,7 @@ class QgsCPLErrorHandler
     {
       if ( errClass != CE_None )
       {
-        const QString *sourceName = static_cast< QString * >( CPLGetErrorHandlerUserData() );
+        const QString *sourceName = static_cast<QString *>( CPLGetErrorHandlerUserData() );
         const QString identifier = sourceName ? *sourceName : QObject::tr( "OGR" );
         QgsMessageLog::logMessage( QObject::tr( "%1[%2] error %3: %4" ).arg( identifier ).arg( errClass ).arg( errNo ).arg( msg ), identifier );
       }
@@ -51,9 +51,7 @@ class QgsCPLErrorHandler
     QgsCPLErrorHandler &operator=( const QgsCPLErrorHandler &other ) = delete;
 
   private:
-
     QString mSourceName;
-
 };
 
 /**
@@ -70,7 +68,7 @@ class QgsCPLErrorCollectorHandler
     {
       if ( errClass != CE_None )
       {
-        QStringList *errors = static_cast< QStringList * >( CPLGetErrorHandlerUserData() );
+        QStringList *errors = static_cast<QStringList *>( CPLGetErrorHandlerUserData() );
         if ( errors )
         {
           errors->append( QString( msg ) );
@@ -103,11 +101,8 @@ class QgsCPLErrorCollectorHandler
     QgsCPLErrorCollectorHandler &operator=( const QgsCPLErrorCollectorHandler &other ) = delete;
 
   private:
-
     QStringList mErrors;
-
 };
-
 
 
 #endif // QGSCPLERRORHANDLER_H

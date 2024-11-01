@@ -48,7 +48,7 @@ QgsPolymorphicRelation &QgsPolymorphicRelation::operator=( const QgsPolymorphicR
   return *this;
 }
 
-QgsPolymorphicRelation QgsPolymorphicRelation::createFromXml( const QDomNode &node, QgsReadWriteContext &context,  const QgsRelationContext &relationContext )
+QgsPolymorphicRelation QgsPolymorphicRelation::createFromXml( const QDomNode &node, QgsReadWriteContext &context, const QgsRelationContext &relationContext )
 {
   Q_UNUSED( context );
   QDomElement elem = node.toElement();
@@ -108,7 +108,7 @@ void QgsPolymorphicRelation::writeXml( QDomNode &node, QDomDocument &doc ) const
 
   // note that a layer id can store a comma in theory. Luckyly, this is not easy to achieve, e.g. you need to modify the .qgs file manually
   for ( const QString &layerId : std::as_const( d->mReferencedLayerIds ) )
-    Q_ASSERT( ! layerId.contains( "," ) );
+    Q_ASSERT( !layerId.contains( "," ) );
 
   for ( const QgsRelation::FieldPair &pair : std::as_const( d->mFieldPairs ) )
   {
@@ -162,10 +162,10 @@ QString QgsPolymorphicRelation::id() const
 void QgsPolymorphicRelation::generateId()
 {
   d->mRelationId = QStringLiteral( "%1_%2_%3_%4" )
-                   .arg( referencingLayerId(),
-                         d->mFieldPairs.at( 0 ).referencingField(),
-                         referencedLayerField(),
-                         d->mFieldPairs.at( 0 ).referencedField() );
+                     .arg( referencingLayerId(),
+                           d->mFieldPairs.at( 0 ).referencingField(),
+                           referencedLayerField(),
+                           d->mFieldPairs.at( 0 ).referencedField() );
   updateRelationStatus();
 }
 
@@ -213,7 +213,6 @@ QgsAttributeList QgsPolymorphicRelation::referencingFields() const
     attrs << d->mReferencingLayer->fields().lookupField( pair.first );
   }
   return attrs;
-
 }
 
 bool QgsPolymorphicRelation::isValid() const
@@ -235,8 +234,8 @@ void QgsPolymorphicRelation::updateRelationStatus()
 
   d->mValid = true;
   d->mReferencingLayer = mapLayers.contains( d->mReferencingLayerId )
-                         ? qobject_cast<QgsVectorLayer *>( mapLayers[d->mReferencingLayerId] )
-                         : nullptr;
+                           ? qobject_cast<QgsVectorLayer *>( mapLayers[d->mReferencingLayerId] )
+                           : nullptr;
   d->mReferencedLayersMap.clear();
 
   if ( d->mRelationId.isEmpty() )

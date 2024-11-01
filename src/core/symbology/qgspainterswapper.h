@@ -34,7 +34,6 @@ class QPainter;
 class QgsPainterSwapper
 {
   public:
-
     /**
      * QgsPainterSwapper constructor
      *

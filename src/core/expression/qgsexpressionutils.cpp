@@ -24,18 +24,16 @@
 
 ///@cond PRIVATE
 
-QgsExpressionUtils::TVL QgsExpressionUtils::AND[3][3] =
-{
+QgsExpressionUtils::TVL QgsExpressionUtils::AND[3][3] = {
   // false  true    unknown
-  { False, False,   False },   // false
-  { False, True,    Unknown }, // true
-  { False, Unknown, Unknown }  // unknown
+  { False, False, False },    // false
+  { False, True, Unknown },   // true
+  { False, Unknown, Unknown } // unknown
 };
-QgsExpressionUtils::TVL QgsExpressionUtils::OR[3][3] =
-{
-  { False,   True, Unknown },  // false
-  { True,    True, True },     // true
-  { Unknown, True, Unknown }   // unknown
+QgsExpressionUtils::TVL QgsExpressionUtils::OR[3][3] = {
+  { False, True, Unknown },  // false
+  { True, True, True },      // true
+  { Unknown, True, Unknown } // unknown
 };
 
 QgsExpressionUtils::TVL QgsExpressionUtils::NOT[3] = { True, False, Unknown };
@@ -45,10 +43,10 @@ QColor QgsExpressionUtils::getColorValue( const QVariant &value, QgsExpression *
 {
   isQColor = value.userType() == QMetaType::Type::QColor;
   QColor color = isQColor ? value.value<QColor>() : QgsSymbolLayerUtils::decodeColor( value.toString() );
-  if ( ! color.isValid() )
+  if ( !color.isValid() )
   {
     parent->setEvalErrorString( isQColor ? QObject::tr( "Input color is invalid" )
-                                : QObject::tr( "Cannot convert '%1' to color" ).arg( value.toString() ) );
+                                         : QObject::tr( "Cannot convert '%1' to color" ).arg( value.toString() ) );
   }
 
   return color;
@@ -74,16 +72,16 @@ QgsMapLayer *QgsExpressionUtils::getMapLayer( const QVariant &value, const QgsEx
 QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, const QgsExpressionContext *context, QgsExpression * )
 {
   // First check if we already received a layer pointer
-  QPointer< QgsMapLayer > ml = value.value< QgsWeakMapLayerPointer >().data();
+  QPointer<QgsMapLayer> ml = value.value<QgsWeakMapLayerPointer>().data();
 
   // clang analyzer gets this function absolutely 100% wrong
 #ifdef __clang_analyzer__
-  ( void )context;
+  ( void ) context;
 #else
 
   if ( !ml )
   {
-    ml = value.value< QgsMapLayer * >();
+    ml = value.value<QgsMapLayer *>();
 #ifdef QGISDEBUG
     if ( ml )
     {
@@ -99,13 +97,11 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
   // check through layer stores from context
   if ( context )
   {
-    const QList< QgsMapLayerStore * > stores = context->layerStores();
+    const QList<QgsMapLayerStore *> stores = context->layerStores();
     for ( QgsMapLayerStore *store : stores )
     {
-
-      QPointer< QgsMapLayerStore > storePointer( store );
-      auto findLayerInStoreFunction = [ storePointer, &ml, identifier ]
-      {
+      QPointer<QgsMapLayerStore> storePointer( store );
+      auto findLayerInStoreFunction = [storePointer, &ml, identifier] {
         if ( QgsMapLayerStore *store = storePointer.data() )
         {
           // look for matching layer by id
@@ -131,8 +127,7 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
   }
 
   // last resort - QgsProject instance. This is bad, we need to remove this!
-  auto getMapLayerFromProjectInstance = [ &ml, identifier ]
-  {
+  auto getMapLayerFromProjectInstance = [&ml, identifier] {
     QgsProject *project = QgsProject::instance(); // skip-keyword-check
 
     // No pointer yet, maybe it's a layer id?
@@ -153,7 +148,7 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
   return ml;
 }
 
-void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<void ( QgsMapLayer * )> &function, bool &foundLayer )
+void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<void( QgsMapLayer * )> &function, bool &foundLayer )
 {
   foundLayer = false;
 
@@ -161,10 +156,10 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
 #ifndef __clang_analyzer__
 
   // First check if we already received a layer pointer
-  QPointer< QgsMapLayer > ml = value.value< QgsWeakMapLayerPointer >().data();
+  QPointer<QgsMapLayer> ml = value.value<QgsWeakMapLayerPointer>().data();
   if ( !ml )
   {
-    ml = value.value< QgsMapLayer * >();
+    ml = value.value<QgsMapLayer *>();
 #ifdef QGISDEBUG
     if ( ml )
     {
@@ -174,9 +169,8 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
   }
   if ( ml )
   {
-    QPointer< QgsMapLayer > layerPointer( ml );
-    auto runFunction = [ layerPointer, &function, &foundLayer ]
-    {
+    QPointer<QgsMapLayer> layerPointer( ml );
+    auto runFunction = [layerPointer, &function, &foundLayer] {
       if ( QgsMapLayer *layer = layerPointer.data() )
       {
         foundLayer = true;
@@ -198,8 +192,7 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
   if ( !context || context->layerStores().empty() )
   {
     // if no layer stores, then this is only for layers in project and therefore associated with the main thread
-    auto runFunction = [ value, context, expression, &function, &foundLayer ]
-    {
+    auto runFunction = [value, context, expression, &function, &foundLayer] {
       if ( QgsMapLayer *layer = getMapLayerPrivate( value, context, expression ) )
       {
         foundLayer = true;
@@ -226,13 +219,12 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
     const QString identifier = value.toString();
 
     // check through layer stores from context
-    const QList< QgsMapLayerStore * > stores = context->layerStores();
+    const QList<QgsMapLayerStore *> stores = context->layerStores();
 
     for ( QgsMapLayerStore *store : stores )
     {
-      QPointer< QgsMapLayerStore > storePointer( store );
-      auto findLayerInStoreFunction = [ storePointer, identifier, function, &foundLayer ]
-      {
+      QPointer<QgsMapLayerStore> storePointer( store );
+      auto findLayerInStoreFunction = [storePointer, identifier, function, &foundLayer] {
         QgsMapLayer *ml = nullptr;
         if ( QgsMapLayerStore *store = storePointer.data() )
         {
@@ -264,8 +256,7 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
     }
 
     // last resort - QgsProject instance. This is bad, we need to remove this!
-    auto getMapLayerFromProjectInstance = [ value, identifier, &function, &foundLayer ]
-    {
+    auto getMapLayerFromProjectInstance = [value, identifier, &function, &foundLayer] {
       QgsProject *project = QgsProject::instance(); // skip-keyword-check
 
       // maybe it's a layer id?
@@ -297,11 +288,12 @@ QVariant QgsExpressionUtils::runMapLayerFunctionThreadSafe( const QVariant &valu
   QVariant res;
   foundLayer = false;
 
-  executeLambdaForMapLayer( value, context, expression, [&res, function]( QgsMapLayer * layer )
-  {
-    if ( layer )
-      res = function( layer );
-  }, foundLayer );
+  executeLambdaForMapLayer(
+    value, context, expression, [&res, function]( QgsMapLayer *layer ) {
+      if ( layer )
+        res = function( layer );
+    },
+    foundLayer );
 
   return res;
 }
@@ -310,13 +302,14 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsExpressionUtils::getFeatureSourc
 {
   std::unique_ptr<QgsVectorLayerFeatureSource> featureSource;
 
-  executeLambdaForMapLayer( value, context, e, [&featureSource]( QgsMapLayer * layer )
-  {
-    if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( layer ) )
-    {
-      featureSource.reset( new QgsVectorLayerFeatureSource( vl ) );
-    }
-  }, foundLayer );
+  executeLambdaForMapLayer(
+    value, context, e, [&featureSource]( QgsMapLayer *layer ) {
+      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+      {
+        featureSource.reset( new QgsVectorLayerFeatureSource( vl ) );
+      }
+    },
+    foundLayer );
 
   return featureSource;
 }
@@ -353,9 +346,7 @@ QString QgsExpressionUtils::getFilePathValue( const QVariant &value, const QgsEx
 std::tuple<QMetaType::Type, int> QgsExpressionUtils::determineResultType( const QString &expression, const QgsVectorLayer *layer, QgsFeatureRequest request, QgsExpressionContext context, bool *foundFeatures )
 {
   QgsExpression exp( expression );
-  request.setFlags( ( exp.needsGeometry() ) ?
-                    Qgis::FeatureRequestFlag::NoFlags :
-                    Qgis::FeatureRequestFlag::NoGeometry );
+  request.setFlags( ( exp.needsGeometry() ) ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry );
   request.setLimit( 10 );
   request.setExpressionContext( context );
 

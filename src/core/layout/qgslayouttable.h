@@ -34,7 +34,7 @@ class QgsLayoutTableColumn;
  * \brief List of QVariants, representing a the contents of a single row in
  * a QgsLayoutTable
 */
-typedef QVector< QVariant > QgsLayoutTableRow;
+typedef QVector<QVariant> QgsLayoutTableRow;
 
 /**
  * \ingroup core
@@ -42,9 +42,9 @@ typedef QVector< QVariant > QgsLayoutTableRow;
  * for a QgsLayoutTable
 */
 #ifndef SIP_RUN
-typedef QVector< QgsLayoutTableRow > QgsLayoutTableContents;
+typedef QVector<QgsLayoutTableRow> QgsLayoutTableContents;
 #else
-typedef QVector< QVector< QVariant > > QgsLayoutTableContents;
+typedef QVector<QVector<QVariant>> QgsLayoutTableContents;
 #endif
 
 
@@ -62,7 +62,6 @@ typedef QVector<QgsLayoutTableColumn> QgsLayoutTableColumns;
 typedef QVector<QgsLayoutTableColumn> QgsLayoutTableSortColumns;
 
 
-
 /**
  * \ingroup core
  *  \class QgsLayoutTableStyle
@@ -72,7 +71,6 @@ typedef QVector<QgsLayoutTableColumn> QgsLayoutTableSortColumns;
 class CORE_EXPORT QgsLayoutTableStyle
 {
   public:
-
     QgsLayoutTableStyle() = default;
 
     //! Whether the styling option is enabled
@@ -95,7 +93,6 @@ class CORE_EXPORT QgsLayoutTableStyle
      * \see writeXml
      */
     bool readXml( const QDomElement &styleElem );
-
 };
 
 /**
@@ -103,21 +100,20 @@ class CORE_EXPORT QgsLayoutTableStyle
  * the table to span over multiple frames
  * \ingroup core
  */
-class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
+class CORE_EXPORT QgsLayoutTable : public QgsLayoutMultiFrame
 {
     Q_OBJECT
 
   public:
-
     /**
      * Controls how headers are horizontally aligned in a table
      */
     enum HeaderHAlignment
     {
       FollowColumn, //!< Header uses the same alignment as the column
-      HeaderLeft, //!< Align headers left
+      HeaderLeft,   //!< Align headers left
       HeaderCenter, //!< Align headers to center
-      HeaderRight //!< Align headers right
+      HeaderRight   //!< Align headers right
     };
 
     /**
@@ -126,8 +122,8 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     enum HeaderMode
     {
       FirstFrame = 0, //!< Header shown on first frame only
-      AllFrames, //!< Headers shown on all frames
-      NoHeaders //!< No headers shown for table
+      AllFrames,      //!< Headers shown on all frames
+      NoHeaders       //!< No headers shown for table
     };
 
     /**
@@ -136,8 +132,8 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     enum EmptyTableMode
     {
       HeadersOnly = 0, //!< Show header rows only
-      HideTable, //!< Hides entire table if empty
-      ShowMessage //!< Shows preset message instead of table contents
+      HideTable,       //!< Hides entire table if empty
+      ShowMessage      //!< Shows preset message instead of table contents
     };
 
     /**
@@ -146,7 +142,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     enum WrapBehavior
     {
       TruncateText = 0, //!< Text which doesn't fit inside the cell is truncated
-      WrapText //!< Text which doesn't fit inside the cell is wrapped. Note that this only applies to text in columns with a fixed width.
+      WrapText          //!< Text which doesn't fit inside the cell is wrapped. Note that this only applies to text in columns with a fixed width.
     };
 
     /**
@@ -154,15 +150,15 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      */
     enum CellStyleGroup
     {
-      OddColumns, //!< Style odd numbered columns
+      OddColumns,  //!< Style odd numbered columns
       EvenColumns, //!< Style even numbered columns
-      OddRows, //!< Style odd numbered rows
-      EvenRows, //!< Style even numbered rows
+      OddRows,     //!< Style odd numbered rows
+      EvenRows,    //!< Style even numbered rows
       FirstColumn, //!< Style first column only
-      LastColumn, //!< Style last column only
-      HeaderRow, //!< Style header row
-      FirstRow, //!< Style first row only
-      LastRow //!< Style last row only
+      LastColumn,  //!< Style last column only
+      HeaderRow,   //!< Style header row
+      FirstRow,    //!< Style first row only
+      LastRow      //!< Style last row only
     };
 
     /**
@@ -649,7 +645,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
 
     WrapBehavior mWrapBehavior = TruncateText;
 
-    QMap< CellStyleGroup, QgsLayoutTableStyle * > mCellStyles;
+    QMap<CellStyleGroup, QgsLayoutTableStyle *> mCellStyles;
 
     /**
      * Calculates the maximum width of text shown in columns.
@@ -784,8 +780,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     virtual Qt::Alignment verticalAlignmentForCell( int row, int column ) const;
 
   private:
-
-    QMap< CellStyleGroup, QString > mCellStyleNames;
+    QMap<CellStyleGroup, QString> mCellStyleNames;
 
     //! Initializes cell style map
     void initStyles();

@@ -75,7 +75,8 @@ QgsVtpkVectorTileDataProvider::QgsVtpkVectorTileDataProvider( const QgsVtpkVecto
   : QgsVectorTileDataProvider( other )
 {
   mIsValid = other.mIsValid;
-  mCrs = other.mCrs;;
+  mCrs = other.mCrs;
+  ;
   mExtent = other.mExtent;
   mMatrixSet = other.mMatrixSet;
   mLayerMetadata = other.mLayerMetadata;
@@ -207,10 +208,10 @@ QList<QgsVectorTileRawData> QgsVtpkVectorTileDataProvider::readTiles( const QgsT
   dsUri.setEncodedUri( dataSourceUri() );
 
   // defer actual creation of reader until we need it -- maybe everything is already present in the cache!
-  std::unique_ptr< QgsVtpkTiles > reader;
+  std::unique_ptr<QgsVtpkTiles> reader;
 
   QList<QgsVectorTileRawData> rawTiles;
-  QSet< QgsTileXYZ > fetchedTiles;
+  QSet<QgsTileXYZ> fetchedTiles;
   rawTiles.reserve( tiles.size() );
   fetchedTiles.reserve( tiles.size() );
   for ( QgsTileXYZ id : std::as_const( tiles ) )
@@ -231,7 +232,7 @@ QList<QgsVectorTileRawData> QgsVtpkVectorTileDataProvider::readTiles( const QgsT
     {
       if ( !reader )
       {
-        reader = std::make_unique< QgsVtpkTiles >( dsUri.param( QStringLiteral( "url" ) ) );
+        reader = std::make_unique<QgsVtpkTiles>( dsUri.param( QStringLiteral( "url" ) ) );
         reader->open();
       }
       const QgsVectorTileRawData rawData = loadFromVtpk( *reader, id, feedback );
@@ -366,7 +367,7 @@ QList<QgsProviderSublayerDetails> QgsVtpkVectorTileDataProviderMetadata::querySu
     details.setProviderKey( key() );
     details.setType( Qgis::LayerType::VectorTile );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( fileName ) );
-    return {details};
+    return { details };
   }
   else
   {
@@ -444,5 +445,3 @@ QList<Qgis::LayerType> QgsVtpkVectorTileDataProviderMetadata::supportedLayerType
 
 
 ///@endcond
-
-

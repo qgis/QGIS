@@ -52,9 +52,9 @@ QgsIdentifyMenu::~QgsIdentifyMenu()
 QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::findFeaturesOnCanvas( QgsMapMouseEvent *event, QgsMapCanvas *canvas, const QList<Qgis::GeometryType> &geometryTypes )
 {
   QList<QgsMapToolIdentify::IdentifyResult> results;
-  const QMap< QString, QString > derivedAttributes;
+  const QMap<QString, QString> derivedAttributes;
 
-  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->toMapCoordinates( event->pos() ) ;
+  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->toMapCoordinates( event->pos() );
   const double x = mapPoint.x();
   const double y = mapPoint.y();
   const double sr = QgsMapTool::searchRadiusMU( canvas );
@@ -91,8 +91,8 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::findFeaturesOnCanvas(
         }
 
         QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest()
-                                 .setFilterRect( rect )
-                                 .setFlags( Qgis::FeatureRequestFlag::ExactIntersect ) );
+                                                             .setFilterRect( rect )
+                                                             .setFlags( Qgis::FeatureRequestFlag::ExactIntersect ) );
         QgsFeature f;
         while ( fit.nextFeature( f ) )
         {
@@ -160,7 +160,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
   // add results to the menu
   const bool singleLayer = mLayerIdResults.count() == 1;
   int count = 0;
-  QMapIterator< QgsMapLayer *, QList<QgsMapToolIdentify::IdentifyResult> > it( mLayerIdResults );
+  QMapIterator<QgsMapLayer *, QList<QgsMapToolIdentify::IdentifyResult>> it( mLayerIdResults );
   while ( it.hasNext() )
   {
     if ( mMaxLayerDisplay != 0 && count > mMaxLayerDisplay )
@@ -342,7 +342,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     {
       QgsActionMenu *featureActionMenu = new QgsActionMenu( layer, results[0].mFeature, QStringLiteral( "Feature" ), this );
       featureActionMenu->setMode( QgsAttributeEditorContext::IdentifyMode );
-      createMenu  = !featureActionMenu->actions().isEmpty();
+      createMenu = !featureActionMenu->actions().isEmpty();
       delete featureActionMenu;
     }
   }
@@ -629,7 +629,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::results( QAction *act
   if ( actData.mAllResults )
   {
     // this means "All" action was triggered
-    QMapIterator< QgsMapLayer *, QList<QgsMapToolIdentify::IdentifyResult> > it( mLayerIdResults );
+    QMapIterator<QgsMapLayer *, QList<QgsMapToolIdentify::IdentifyResult>> it( mLayerIdResults );
     while ( it.hasNext() )
     {
       it.next();
@@ -651,7 +651,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::results( QAction *act
 
   if ( actData.mLevel == FeatureLevel )
   {
-    const auto results {mLayerIdResults[actData.mLayer]};
+    const auto results { mLayerIdResults[actData.mLayer] };
     for ( const QgsMapToolIdentify::IdentifyResult &res : results )
     {
       if ( res.mFeature.id() == actData.mFeatureId )
@@ -727,7 +727,6 @@ void QgsIdentifyMenu::layerDestroyed()
 void QgsIdentifyMenu::removeCustomActions()
 {
   mCustomActionRegistry.clear();
-
 }
 
 void QgsIdentifyMenu::setExpressionContextScope( const QgsExpressionContextScope &scope )

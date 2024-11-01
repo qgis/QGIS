@@ -57,7 +57,7 @@ void QgsElevationProfileToolIdentify::plotPressEvent( QgsPlotMouseEvent *event )
   }
 
   // don't allow the band to be dragged outside of the plot area
-  const QRectF plotArea = qgis::down_cast< QgsElevationProfileCanvas * >( mCanvas )->plotArea();
+  const QRectF plotArea = qgis::down_cast<QgsElevationProfileCanvas *>( mCanvas )->plotArea();
   if ( !plotArea.contains( event->pos() ) )
   {
     mMousePressStartPos = constrainPointToRect( event->pos(), plotArea );
@@ -93,7 +93,7 @@ void QgsElevationProfileToolIdentify::plotReleaseEvent( QgsPlotMouseEvent *event
   if ( !clickOnly )
   {
     // don't allow the band to be dragged outside of the plot area
-    const QRectF plotArea = qgis::down_cast< QgsElevationProfileCanvas * >( mCanvas )->plotArea();
+    const QRectF plotArea = qgis::down_cast<QgsElevationProfileCanvas *>( mCanvas )->plotArea();
     QPointF end;
     if ( !plotArea.contains( event->pos() ) )
     {
@@ -104,11 +104,11 @@ void QgsElevationProfileToolIdentify::plotReleaseEvent( QgsPlotMouseEvent *event
       end = event->snappedPoint().toQPointF();
     }
 
-    results = qgis::down_cast< QgsElevationProfileCanvas * >( mCanvas )->identify( QRectF( mSnappedMousePressStartPos.toQPointF(), end ) );
+    results = qgis::down_cast<QgsElevationProfileCanvas *>( mCanvas )->identify( QRectF( mSnappedMousePressStartPos.toQPointF(), end ) );
   }
   else
   {
-    results = qgis::down_cast< QgsElevationProfileCanvas * >( mCanvas )->identify( mSnappedMousePressStartPos.toQPointF() );
+    results = qgis::down_cast<QgsElevationProfileCanvas *>( mCanvas )->identify( mSnappedMousePressStartPos.toQPointF() );
   }
 
   if ( results.empty() )
@@ -135,7 +135,7 @@ void QgsElevationProfileToolIdentify::plotMoveEvent( QgsPlotMouseEvent *event )
   }
 
   // don't allow the band to be dragged outside of the plot area
-  const QRectF plotArea = qgis::down_cast< QgsElevationProfileCanvas * >( mCanvas )->plotArea();
+  const QRectF plotArea = qgis::down_cast<QgsElevationProfileCanvas *>( mCanvas )->plotArea();
   QPointF movePoint;
   if ( !plotArea.contains( event->pos() ) )
   {
@@ -148,4 +148,3 @@ void QgsElevationProfileToolIdentify::plotMoveEvent( QgsPlotMouseEvent *event )
 
   mRubberBand->update( movePoint, Qt::KeyboardModifiers() );
 }
-

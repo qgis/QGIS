@@ -61,7 +61,7 @@ QString QgsRenameTableFieldAlgorithm::outputName() const
 
 QList<int> QgsRenameTableFieldAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector );
 }
 
 Qgis::ProcessingFeatureSourceFlags QgsRenameTableFieldAlgorithm::sourceFlags() const

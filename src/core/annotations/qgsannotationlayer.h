@@ -49,26 +49,23 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     Q_OBJECT
 
   public:
-
     /**
      * Setting options for loading annotation layers.
      * \since QGIS 3.16
      */
     struct LayerOptions
     {
-
-      /**
+        /**
        * Constructor for LayerOptions.
        */
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext )
-        : transformContext( transformContext )
-      {}
+        explicit LayerOptions( const QgsCoordinateTransformContext &transformContext )
+          : transformContext( transformContext )
+        {}
 
-      /**
+        /**
        * Coordinate transform context
        */
-      QgsCoordinateTransformContext transformContext;
-
+        QgsCoordinateTransformContext transformContext;
     };
 
 
@@ -83,15 +80,17 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsAnnotationLayer: '%1'>" ).arg( sipCpp->name() );
+        QString str
+      = QStringLiteral( "<QgsAnnotationLayer: '%1'>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    /**
+      /**
      * Resets the annotation layer to a default state, and clears all items from it.
      */
-    void reset();
+      void
+      reset();
 
     /**
      * Adds an \a item to the layer.
@@ -223,7 +222,6 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     void setLinkedVisibilityLayer( QgsMapLayer *layer );
 
   private:
-
     QStringList queryIndex( const QgsRectangle &bounds, QgsFeedback *feedback = nullptr ) const;
     bool writeItems( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const;
     bool readItems( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
@@ -231,17 +229,16 @@ class CORE_EXPORT QgsAnnotationLayer : public QgsMapLayer
     QMap<QString, QgsAnnotationItem *> mItems;
     QgsCoordinateTransformContext mTransformContext;
 
-    std::unique_ptr< QgsAnnotationLayerSpatialIndex > mSpatialIndex;
-    QSet< QString > mNonIndexedItems;
+    std::unique_ptr<QgsAnnotationLayerSpatialIndex> mSpatialIndex;
+    QSet<QString> mNonIndexedItems;
 
     QgsDataProvider *mDataProvider = nullptr;
 
-    std::unique_ptr< QgsPaintEffect > mPaintEffect;
+    std::unique_ptr<QgsPaintEffect> mPaintEffect;
 
     QgsMapLayerRef mLinkedLayer;
 
     friend class QgsAnnotationLayerRenderer;
-
 };
 
 #ifndef SIP_RUN
@@ -264,7 +261,6 @@ class QgsAnnotationLayerDataProvider : public QgsDataProvider
     QString description() const override;
     QgsRectangle extent() const override;
     bool isValid() const override;
-
 };
 ///@endcond
 #endif

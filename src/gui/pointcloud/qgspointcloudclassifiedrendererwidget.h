@@ -65,14 +65,14 @@ class GUI_EXPORT QgsPointCloudClassifiedRendererModel : public QAbstractItemMode
     void setCategoryColor( int row, const QColor &color );
     void setCategoryPointSize( int row, double size );
     //! Updates the model with percentage of points per category
-    void updateCategoriesPercentages( const QMap< int, float > &percentages ) { mPercentages = percentages; };
+    void updateCategoriesPercentages( const QMap<int, float> &percentages ) { mPercentages = percentages; };
 
   signals:
     void categoriesChanged();
 
   private:
     QgsPointCloudCategoryList mCategories;
-    QMap< int, float > mPercentages;
+    QMap<int, float> mPercentages;
     QString mMimeFormat;
 };
 
@@ -80,7 +80,7 @@ class GUI_EXPORT QgsPointCloudClassifiedRendererModel : public QAbstractItemMode
  * \ingroup gui
  * \brief View style which shows drop indicator line between items
  */
-class QgsPointCloudClassifiedRendererViewStyle: public QgsProxyStyle
+class QgsPointCloudClassifiedRendererViewStyle : public QgsProxyStyle
 {
     Q_OBJECT
 
@@ -91,7 +91,7 @@ class QgsPointCloudClassifiedRendererViewStyle: public QgsProxyStyle
 };
 
 
-class GUI_EXPORT QgsPointCloudClassifiedRendererWidget: public QgsPointCloudRendererWidget, private Ui::QgsPointCloudClassifiedRendererWidgetBase
+class GUI_EXPORT QgsPointCloudClassifiedRendererWidget : public QgsPointCloudRendererWidget, private Ui::QgsPointCloudClassifiedRendererWidgetBase
 {
     Q_OBJECT
 
@@ -126,6 +126,7 @@ class GUI_EXPORT QgsPointCloudClassifiedRendererWidget: public QgsPointCloudRend
     void changeCategoryColor();
     void changeCategoryOpacity();
     void changeCategoryPointSize();
+
   private:
     //! Sets default category and available classes
     void initialize();

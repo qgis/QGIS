@@ -40,7 +40,6 @@ class QgsVectorLayer;
 class GUI_EXPORT QgsSubsetStringEditorProviderRegistry
 {
   public:
-
     QgsSubsetStringEditorProviderRegistry();
     ~QgsSubsetStringEditorProviderRegistry();
 
@@ -48,7 +47,7 @@ class GUI_EXPORT QgsSubsetStringEditorProviderRegistry
     QgsSubsetStringEditorProviderRegistry &operator=( const QgsSubsetStringEditorProviderRegistry &rh ) = delete;
 
     //! Gets list of available providers
-    QList< QgsSubsetStringEditorProvider *> providers();
+    QList<QgsSubsetStringEditorProvider *> providers();
 
     //! Add a \a provider implementation. Takes ownership of the object.
     void addProvider( QgsSubsetStringEditorProvider *provider SIP_TRANSFER );

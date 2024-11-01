@@ -22,4 +22,3 @@
 
 //! Constructor
 QgsService::QgsService() = default;
-

@@ -18,5 +18,4 @@
 QgsDevToolWidget::QgsDevToolWidget( QWidget *parent )
   : QgsPanelWidget( parent )
 {
-
 }

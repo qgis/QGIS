@@ -59,7 +59,6 @@ class QgsSensorThingsConnectionWidget : public QWidget, private Ui::QgsSensorThi
     void validate();
 
   private:
-
     QVariantMap mSourceParts;
     bool mIsValid = false;
 };

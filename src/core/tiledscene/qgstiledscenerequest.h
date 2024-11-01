@@ -37,7 +37,6 @@ class QgsFeedback;
 class CORE_EXPORT QgsTiledSceneRequest
 {
   public:
-
     QgsTiledSceneRequest();
 
     /**
@@ -130,7 +129,6 @@ class CORE_EXPORT QgsTiledSceneRequest
     void setParentTileId( long long id ) { mParentTileId = id; }
 
   private:
-
     Qgis::TiledSceneRequestFlags mFlags;
     QgsOrientedBox3D mFilterBox;
 

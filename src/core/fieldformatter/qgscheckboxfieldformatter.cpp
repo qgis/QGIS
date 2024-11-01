@@ -51,7 +51,7 @@ QString QgsCheckBoxFieldFormatter::representValue( QgsVectorLayer *layer, int fi
   const QMetaType::Type fieldType = layer->fields().at( fieldIndex ).type();
   if ( fieldType == QMetaType::Type::Bool )
   {
-    if ( ! isNull )
+    if ( !isNull )
     {
       boolValue = value.toBool();
       textValue = boolValue ? QObject::tr( "true" ) : QObject::tr( "false" );
@@ -67,11 +67,11 @@ QString QgsCheckBoxFieldFormatter::representValue( QgsVectorLayer *layer, int fi
     else
     {
       textValue = value.toString();
-      if ( config.contains( QStringLiteral( "CheckedState" ) ) && textValue == config[ QStringLiteral( "CheckedState" ) ].toString() )
+      if ( config.contains( QStringLiteral( "CheckedState" ) ) && textValue == config[QStringLiteral( "CheckedState" )].toString() )
       {
         boolValue = true;
       }
-      else if ( config.contains( QStringLiteral( "UncheckedState" ) ) && textValue == config[ QStringLiteral( "UncheckedState" ) ].toString() )
+      else if ( config.contains( QStringLiteral( "UncheckedState" ) ) && textValue == config[QStringLiteral( "UncheckedState" )].toString() )
       {
         boolValue = false;
       }
@@ -88,7 +88,7 @@ QString QgsCheckBoxFieldFormatter::representValue( QgsVectorLayer *layer, int fi
     return textValue;
   }
 
-  const TextDisplayMethod displayMethod = static_cast< TextDisplayMethod >( config.value( QStringLiteral( "TextDisplayMethod" ), QStringLiteral( "0" ) ).toInt() );
+  const TextDisplayMethod displayMethod = static_cast<TextDisplayMethod>( config.value( QStringLiteral( "TextDisplayMethod" ), QStringLiteral( "0" ) ).toInt() );
   switch ( displayMethod )
   {
     case QgsCheckBoxFieldFormatter::ShowTrueFalse:

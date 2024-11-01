@@ -41,7 +41,7 @@ QgsCodeEditorSQL::~QgsCodeEditorSQL()
 {
   if ( mApis )
   {
-    mApis->cancelPreparation( );
+    mApis->cancelPreparation();
   }
 }
 
@@ -82,7 +82,6 @@ void QgsCodeEditorSQL::initializeLexer()
 
 void QgsCodeEditorSQL::setFields( const QgsFields &fields )
 {
-
   QStringList fieldNames;
 
   for ( const QgsField &field : std::as_const( fields ) )
@@ -91,7 +90,6 @@ void QgsCodeEditorSQL::setFields( const QgsFields &fields )
   }
 
   setFieldNames( fieldNames );
-
 }
 
 void QgsCodeEditorSQL::updateApis()
@@ -133,5 +131,3 @@ void QgsCodeEditorSQL::setFieldNames( const QStringList &fieldNames )
   mFieldNames = qgis::listToSet( fieldNames );
   updateApis();
 }
-
-

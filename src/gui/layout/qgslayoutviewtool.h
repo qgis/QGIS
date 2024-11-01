@@ -33,18 +33,17 @@ class QgsLayoutItem;
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include <qgslayoutviewtooladditem.h>
-% End
+  % End
 #endif
 
-/**
+  /**
  * \ingroup gui
  * \brief Abstract base class for all layout view tools.
  * Layout view tools are user interactive tools for manipulating and adding items
  * to QgsLayoutView widgets.
  */
-class GUI_EXPORT QgsLayoutViewTool : public QObject
+  class GUI_EXPORT QgsLayoutViewTool : public QObject
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsLayoutViewToolAddItem *>( sipCpp ) != NULL )
@@ -57,11 +56,9 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
     Q_OBJECT
 
   public:
-
     //! Flags for controlling how a tool behaves
-    enum Flag SIP_ENUM_BASETYPE( IntFlag )
-    {
-      FlagSnaps = 1 << 1,  //!< Tool utilizes snapped coordinates.
+    enum Flag SIP_ENUM_BASETYPE( IntFlag ) {
+      FlagSnaps = 1 << 1, //!< Tool utilizes snapped coordinates.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -169,7 +166,7 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
      * Returns a list of items which should be ignored while snapping events
      * for this tool.
      */
-    virtual QList< QgsLayoutItem * > ignoredSnapItems() const;
+    virtual QList<QgsLayoutItem *> ignoredSnapItems() const;
 
   signals:
 
@@ -190,7 +187,6 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
     void itemFocused( QgsLayoutItem *item );
 
   protected:
-
     /**
      * Sets the combination of \a flags that will be used for the tool.
      * \see flags()
@@ -212,7 +208,6 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
     bool isClickAndDrag( QPoint startViewPoint, QPoint endViewPoint ) const;
 
   private:
-
     //! Pointer to layout view.
     QgsLayoutView *mView = nullptr;
 
@@ -222,13 +217,12 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
     QCursor mCursor = Qt::ArrowCursor;
 
     //! Optional action associated with tool
-    QPointer< QAction > mAction;
+    QPointer<QAction> mAction;
 
     //! Translated name of the map tool
     QString mToolName;
 
     friend class TestQgsLayoutView;
-
 };
 
 #endif // QGSLAYOUTVIEWTOOL_H

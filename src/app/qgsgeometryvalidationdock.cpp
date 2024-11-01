@@ -182,8 +182,7 @@ void QgsGeometryValidationDock::showErrorContextMenu( const QPoint &pos )
         QAction *action = new QAction( resolutionMethod.name(), mGeometryErrorContextMenu );
         action->setToolTip( resolutionMethod.description() );
         const int fixId = resolutionMethod.id();
-        connect( action, &QAction::triggered, this, [ fixId, error, this ]()
-        {
+        connect( action, &QAction::triggered, this, [fixId, error, this]() {
           mGeometryValidationService->fixError( error, fixId );
         } );
         mGeometryErrorContextMenu->addAction( action );
@@ -266,8 +265,7 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
         resolveLabel->setWordWrap( true );
         layout->addWidget( resolveLabel, resolutionIndex, 1 );
         const int fixId = resolutionMethod.id();
-        connect( resolveBtn, &QToolButton::clicked, this, [fixId, error, this]()
-        {
+        connect( resolveBtn, &QToolButton::clicked, this, [fixId, error, this]() {
           mGeometryValidationService->fixError( error, fixId );
         } );
         resolutionIndex++;
@@ -289,7 +287,7 @@ void QgsGeometryValidationDock::updateMapCanvasExtent()
   {
     switch ( mLastZoomToAction )
     {
-      case  ZoomToProblem:
+      case ZoomToProblem:
         zoomToProblem();
         break;
 
@@ -358,8 +356,7 @@ void QgsGeometryValidationDock::showHighlight( const QModelIndex &current )
     QPropertyAnimation *featureAnimation = new QPropertyAnimation( mFeatureRubberband, "fillColor" );
     featureAnimation->setEasingCurve( QEasingCurve::OutQuad );
     connect( featureAnimation, &QPropertyAnimation::finished, featureAnimation, &QPropertyAnimation::deleteLater );
-    connect( featureAnimation, &QPropertyAnimation::valueChanged, this, [this]
-    {
+    connect( featureAnimation, &QPropertyAnimation::valueChanged, this, [this] {
       mFeatureRubberband->update();
     } );
 
@@ -374,8 +371,7 @@ void QgsGeometryValidationDock::showHighlight( const QModelIndex &current )
     QPropertyAnimation *errorAnimation = new QPropertyAnimation( mErrorRubberband, "fillColor" );
     errorAnimation->setEasingCurve( QEasingCurve::OutQuad );
     connect( errorAnimation, &QPropertyAnimation::finished, errorAnimation, &QPropertyAnimation::deleteLater );
-    connect( errorAnimation, &QPropertyAnimation::valueChanged, this, [this]
-    {
+    connect( errorAnimation, &QPropertyAnimation::valueChanged, this, [this] {
       mErrorRubberband->update();
     } );
 
@@ -388,4 +384,3 @@ void QgsGeometryValidationDock::showHighlight( const QModelIndex &current )
     mErrorLocationRubberband->setToGeometry( QgsGeometry( std::make_unique<QgsPoint>( locationGeometry ) ) );
   }
 }
-

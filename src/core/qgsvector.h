@@ -28,9 +28,7 @@
 
 class CORE_EXPORT QgsVector
 {
-
   public:
-
     /**
      * Default constructor for QgsVector. Creates a vector with length of 0.0.
      */
@@ -230,15 +228,15 @@ class CORE_EXPORT QgsVector
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsVector: %1>" ).arg( sipCpp->toString() );
+        QString str
+      = QStringLiteral( "<QgsVector: %1>" ).arg( sipCpp->toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-  private:
-    double mX = 0.0;
+      private : double mX
+      = 0.0;
     double mY = 0.0;
-
 };
 
 Q_DECLARE_TYPEINFO( QgsVector, Q_MOVABLE_TYPE );

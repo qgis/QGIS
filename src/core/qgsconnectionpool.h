@@ -32,8 +32,8 @@
 #include <QThread>
 #include <QElapsedTimer>
 
-#define CONN_POOL_EXPIRATION_TIME           60    // in seconds
-#define CONN_POOL_SPARE_CONNECTIONS          2    // number of spare connections in case all the base connections are used but we have a nested request with the risk of a deadlock
+#define CONN_POOL_EXPIRATION_TIME 60  // in seconds
+#define CONN_POOL_SPARE_CONNECTIONS 2 // number of spare connections in case all the base connections are used but we have a nested request with the risk of a deadlock
 
 
 /**
@@ -59,15 +59,14 @@
  * For an example on how to use the template class, have a look at the implementation in Postgres/SpatiaLite providers.
  * \note not available in Python bindings
  */
-template <typename T>
+template<typename T>
 class QgsConnectionPoolGroup
 {
   public:
-
     struct Item
     {
-      T c;
-      QTime lastUsedTime;
+        T c;
+        QTime lastUsedTime;
     };
 
     /**
@@ -199,7 +198,6 @@ class QgsConnectionPoolGroup
     }
 
   protected:
-
     void initTimer( QObject *parent )
     {
       expirationTimer = new QTimer( parent );
@@ -240,14 +238,12 @@ class QgsConnectionPoolGroup
     }
 
   protected:
-
     QString connInfo;
     QStack<Item> conns;
     QList<T> acquiredConns;
     QMutex connMutex;
     QSemaphore sem;
     QTimer *expirationTimer = nullptr;
-
 };
 
 
@@ -268,11 +264,10 @@ class QgsConnectionPoolGroup
  * to save resources.
  * \note not available in Python bindings
  */
-template <typename T, typename T_Group>
+template<typename T, typename T_Group>
 class QgsConnectionPool
 {
   public:
-
     typedef QMap<QString, T_Group *> T_Groups;
 
     virtual ~QgsConnectionPool()

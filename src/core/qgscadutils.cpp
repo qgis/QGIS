@@ -33,7 +33,7 @@ static const double SOFT_CONSTRAINT_TOLERANCE_DEGREES = 10;
 /// @cond PRIVATE
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 {
-  bool acceptMatch( const QgsPointLocator::Match &m ) override { return m.hasEdge(); }
+    bool acceptMatch( const QgsPointLocator::Match &m ) override { return m.hasEdge(); }
 };
 /// @endcond
 
@@ -65,10 +65,14 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
   }
 
   int numberOfHardLock = 0;
-  if ( ctx.xConstraint.locked ) ++numberOfHardLock;
-  if ( ctx.yConstraint.locked ) ++numberOfHardLock;
-  if ( ctx.angleConstraint.locked ) ++numberOfHardLock;
-  if ( ctx.distanceConstraint.locked ) ++numberOfHardLock;
+  if ( ctx.xConstraint.locked )
+    ++numberOfHardLock;
+  if ( ctx.yConstraint.locked )
+    ++numberOfHardLock;
+  if ( ctx.angleConstraint.locked )
+    ++numberOfHardLock;
+  if ( ctx.distanceConstraint.locked )
+    ++numberOfHardLock;
 
   QgsPointXY previousPt, penultimatePt;
   if ( ctx.cadPoints().count() >= 2 )
@@ -166,8 +170,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
   // ---- Common Angle constraint
   if ( numberOfHardLock < 2 && !ctx.angleConstraint.locked && ctx.cadPoints().count() >= 2 && ctx.commonAngleConstraint.locked && ctx.commonAngleConstraint.value != 0
        // Skip common angle constraint if the snapping to features has priority
-       && ( ! snapMatch.isValid() || ! ctx.snappingToFeaturesOverridesCommonAngle )
-     )
+       && ( !snapMatch.isValid() || !ctx.snappingToFeaturesOverridesCommonAngle ) )
   {
     const double commonAngle = ctx.commonAngleConstraint.value * M_PI / 180;
     // see if soft common angle constraint should be performed
@@ -313,15 +316,14 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
 
     if ( snap.layer() && !extensionPoint.isEmpty() )
     {
-      auto checkLineExtension = [&]( QgsPoint vertex )
-      {
+      auto checkLineExtension = [&]( QgsPoint vertex ) {
         if ( vertex.isEmpty() )
         {
           return false;
         }
 
         const double distance = QgsGeometryUtils::distToInfiniteLine(
-                                  QgsPoint( point ), QgsPoint( extensionPoint ), vertex );
+          QgsPoint( point ), QgsPoint( extensionPoint ), vertex );
 
         if ( distance / ctx.mapUnitsPerPixel < SOFT_CONSTRAINT_TOLERANCE_PIXEL )
         {
@@ -329,10 +331,9 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
           {
             QgsPoint intersection;
             const bool intersect = QgsGeometryUtils::lineIntersection(
-                                     QgsPoint( point ), QgsVector( 0, 1 ),
-                                     QgsPoint( extensionPoint ), QgsPoint( extensionPoint ) - vertex,
-                                     intersection
-                                   );
+              QgsPoint( point ), QgsVector( 0, 1 ),
+              QgsPoint( extensionPoint ), QgsPoint( extensionPoint ) - vertex,
+              intersection );
             if ( intersect )
             {
               point = QgsPointXY( intersection );
@@ -342,10 +343,9 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
           {
             QgsPoint intersection;
             const bool intersect = QgsGeometryUtils::lineIntersection(
-                                     QgsPoint( point ), QgsVector( 1, 0 ),
-                                     QgsPoint( extensionPoint ), QgsPoint( extensionPoint ) - vertex,
-                                     intersection
-                                   );
+              QgsPoint( point ), QgsVector( 1, 0 ),
+              QgsPoint( extensionPoint ), QgsPoint( extensionPoint ) - vertex,
+              intersection );
             if ( intersect )
             {
               point = QgsPointXY( intersection );
@@ -361,8 +361,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
             QgsGeometryUtils::lineIntersection(
               QgsPoint( previousPt ), QgsVector( cosa, sina ),
               QgsPoint( extensionPoint ), QgsPoint( extensionPoint ) - vertex,
-              intersection
-            );
+              intersection );
             point = QgsPointXY( intersection );
           }
           else

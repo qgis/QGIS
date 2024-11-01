@@ -21,8 +21,8 @@
 #include "qgsproject.h"
 #include "qgsprojecttimesettings.h"
 
-QgsMeshLayerTemporalProperties::QgsMeshLayerTemporalProperties( QObject *parent, bool enabled ):
-  QgsMapLayerTemporalProperties( parent, enabled )
+QgsMeshLayerTemporalProperties::QgsMeshLayerTemporalProperties( QObject *parent, bool enabled )
+  : QgsMapLayerTemporalProperties( parent, enabled )
 {}
 
 QDomElement QgsMeshLayerTemporalProperties::writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context )
@@ -62,7 +62,7 @@ bool QgsMeshLayerTemporalProperties::readXml( const QDomElement &element, const 
   }
 
   mMatchingMethod = static_cast<QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod>(
-                      temporalElement.attribute( QStringLiteral( "matching-method" ) ).toInt() );
+    temporalElement.attribute( QStringLiteral( "matching-method" ) ).toInt() );
 
   mIsValid = true;
   return true;
@@ -70,8 +70,7 @@ bool QgsMeshLayerTemporalProperties::readXml( const QDomElement &element, const 
 
 void QgsMeshLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities )
 {
-  const QgsMeshDataProviderTemporalCapabilities *temporalCapabilities =
-    static_cast<const QgsMeshDataProviderTemporalCapabilities *>( capabilities );
+  const QgsMeshDataProviderTemporalCapabilities *temporalCapabilities = static_cast<const QgsMeshDataProviderTemporalCapabilities *>( capabilities );
 
   setIsActive( temporalCapabilities->hasTemporalCapabilities() );
   mReferenceTime = temporalCapabilities->referenceTime();

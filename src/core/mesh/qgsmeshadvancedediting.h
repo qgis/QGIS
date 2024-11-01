@@ -38,7 +38,6 @@ class QgsExpressionContext;
 class CORE_EXPORT QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes SIP_ABSTRACT
 {
   public:
-
     QgsMeshAdvancedEditing();
     virtual ~QgsMeshAdvancedEditing();
 
@@ -74,7 +73,8 @@ class CORE_EXPORT QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes
      *
      * The method has to be implemented in the derived class to provide the changes of the advanced editing
      */
-    virtual QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) = 0; SIP_SKIP
+    virtual QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) = 0;
+    SIP_SKIP
 
     friend class QgsMeshEditor;
 };
@@ -97,7 +97,6 @@ class CORE_EXPORT QgsMeshAdvancedEditing : protected QgsTopologicalMesh::Changes
 class CORE_EXPORT QgsMeshEditRefineFaces : public QgsMeshAdvancedEditing
 {
   public:
-
     QgsMeshEditRefineFaces();
 
     QString text() const override;
@@ -107,20 +106,20 @@ class CORE_EXPORT QgsMeshEditRefineFaces : public QgsMeshAdvancedEditing
 
     struct FaceRefinement
     {
-      QList<int> newVerticesLocalIndex; // new vertices in the same order of the vertex index (ccw)
-      QList<bool> refinedFaceNeighbor;
-      QList<bool> borderFaceNeighbor;
-      int newCenterVertexIndex;
-      QList<int> newFacesChangesIndex;
+        QList<int> newVerticesLocalIndex; // new vertices in the same order of the vertex index (ccw)
+        QList<bool> refinedFaceNeighbor;
+        QList<bool> borderFaceNeighbor;
+        int newCenterVertexIndex;
+        QList<int> newFacesChangesIndex;
     };
 
     struct BorderFace
     {
-      QList<bool> refinedFacesNeighbor;
-      QList<bool> borderFacesNeighbor;
-      QList<bool> unchangeFacesNeighbor;
-      QList<int> newVerticesLocalIndex;
-      QList<int> edgeFace; //global index of the dirst face exposed on edge
+        QList<bool> refinedFacesNeighbor;
+        QList<bool> borderFacesNeighbor;
+        QList<bool> unchangeFacesNeighbor;
+        QList<int> newVerticesLocalIndex;
+        QList<int> edgeFace; //global index of the dirst face exposed on edge
     };
 
     //! Create new vertices of the refinement and populate helper containers
@@ -162,7 +161,6 @@ class CORE_EXPORT QgsMeshEditRefineFaces : public QgsMeshAdvancedEditing
 class CORE_EXPORT QgsMeshTransformVerticesByExpression : public QgsMeshAdvancedEditing
 {
   public:
-
     QgsMeshTransformVerticesByExpression() = default;
 
     QString text() const override;

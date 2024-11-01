@@ -22,17 +22,16 @@
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include "qgshstoreutils.h"
-% End
+  % End
 #endif
 
-/**
+  /**
  * \ingroup core
  * \brief The QgsHstoreUtils namespace provides functions to handle hstore-formatted strings.
  * \since QGIS 3.4
  */
-namespace QgsHstoreUtils
+  namespace QgsHstoreUtils
 {
-
   /**
    * Returns a QVariantMap object containing the key and values from a hstore-formatted string.
    * \param string The hstored-formatted string
@@ -46,7 +45,6 @@ namespace QgsHstoreUtils
    * \since QGIS 3.4
    */
   CORE_EXPORT QString build( const QVariantMap &map );
-
 };
 
 #endif //QGSHSTOREUTILS_H

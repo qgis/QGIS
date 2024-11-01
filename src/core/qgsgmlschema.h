@@ -40,11 +40,10 @@ class QgsFeature;
 class CORE_EXPORT QgsGmlFeatureClass
 {
   public:
-
     QgsGmlFeatureClass() = default;
     QgsGmlFeatureClass( const QString &name, const QString &path );
 
-    QList<QgsField> &fields() { return  mFields; }
+    QList<QgsField> &fields() { return mFields; }
 
     int fieldIndex( const QString &name );
 
@@ -53,7 +52,6 @@ class CORE_EXPORT QgsGmlFeatureClass
     QStringList &geometryAttributes() { return mGeometryAttributes; }
 
   private:
-
     /**
      * Feature class name:
      *
@@ -111,14 +109,13 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     QgsError error() const { return mError; }
 
   private:
-
     enum ParseMode
     {
       None,
       BoundingBox,
       FeatureMembers, // gml:featureMembers
-      FeatureMember, // gml:featureMember
-      Feature,  // feature element containing attrs and geo (inside gml:featureMember)
+      FeatureMember,  // gml:featureMember
+      Feature,        // feature element containing attrs and geo (inside gml:featureMember)
       Attribute,
       Geometry
     };

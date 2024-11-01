@@ -29,7 +29,6 @@
 class CORE_EXPORT QgsCheckBoxFieldFormatter : public QgsFieldFormatter
 {
   public:
-
     /**
      * Method to use when displaying the checkbox values as plain text.
      *
@@ -37,7 +36,7 @@ class CORE_EXPORT QgsCheckBoxFieldFormatter : public QgsFieldFormatter
      */
     enum TextDisplayMethod
     {
-      ShowTrueFalse, //!< Shows "True" or "False" strings
+      ShowTrueFalse,    //!< Shows "True" or "False" strings
       ShowStoredValues, //!< Shows actual stored field value
     };
 

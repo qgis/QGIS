@@ -40,33 +40,33 @@ void QgsBlendModeComboBox::updateModes()
   // This list is designed to emulate GIMP's layer modes, where
   // blending modes are grouped by their effect (lightening, darkening, etc)
 
-  addItem( tr( "Normal" ), static_cast< int >( Qgis::BlendMode::Normal ) );
+  addItem( tr( "Normal" ), static_cast<int>( Qgis::BlendMode::Normal ) );
   insertSeparator( count() );
-  addItem( tr( "Lighten" ), static_cast< int >( Qgis::BlendMode::Lighten ) );
-  addItem( tr( "Screen" ), static_cast< int >( Qgis::BlendMode::Screen ) );
-  addItem( tr( "Dodge" ), static_cast< int >( Qgis::BlendMode::Dodge ) );
-  addItem( tr( "Addition" ), static_cast< int >( Qgis::BlendMode::Addition ) );
+  addItem( tr( "Lighten" ), static_cast<int>( Qgis::BlendMode::Lighten ) );
+  addItem( tr( "Screen" ), static_cast<int>( Qgis::BlendMode::Screen ) );
+  addItem( tr( "Dodge" ), static_cast<int>( Qgis::BlendMode::Dodge ) );
+  addItem( tr( "Addition" ), static_cast<int>( Qgis::BlendMode::Addition ) );
   insertSeparator( count() );
-  addItem( tr( "Darken" ), static_cast< int >( Qgis::BlendMode::Darken ) );
-  addItem( tr( "Multiply" ), static_cast< int >( Qgis::BlendMode::Multiply ) );
-  addItem( tr( "Burn" ), static_cast< int >( Qgis::BlendMode::Burn ) );
+  addItem( tr( "Darken" ), static_cast<int>( Qgis::BlendMode::Darken ) );
+  addItem( tr( "Multiply" ), static_cast<int>( Qgis::BlendMode::Multiply ) );
+  addItem( tr( "Burn" ), static_cast<int>( Qgis::BlendMode::Burn ) );
   insertSeparator( count() );
-  addItem( tr( "Overlay" ), static_cast< int >( Qgis::BlendMode::Overlay ) );
-  addItem( tr( "Soft Light" ), static_cast< int >( Qgis::BlendMode::SoftLight ) );
-  addItem( tr( "Hard Light" ), static_cast< int >( Qgis::BlendMode::HardLight ) );
+  addItem( tr( "Overlay" ), static_cast<int>( Qgis::BlendMode::Overlay ) );
+  addItem( tr( "Soft Light" ), static_cast<int>( Qgis::BlendMode::SoftLight ) );
+  addItem( tr( "Hard Light" ), static_cast<int>( Qgis::BlendMode::HardLight ) );
   insertSeparator( count() );
-  addItem( tr( "Difference" ), static_cast< int >( Qgis::BlendMode::Difference ) );
-  addItem( tr( "Subtract" ), static_cast< int >( Qgis::BlendMode::Subtract ) );
+  addItem( tr( "Difference" ), static_cast<int>( Qgis::BlendMode::Difference ) );
+  addItem( tr( "Subtract" ), static_cast<int>( Qgis::BlendMode::Subtract ) );
 
   if ( mShowClipModes )
   {
     insertSeparator( count() );
-    addItem( tr( "Masked By Below" ), static_cast< int >( Qgis::BlendMode::SourceIn ) );
-    addItem( tr( "Mask Below" ), static_cast< int >( Qgis::BlendMode::DestinationIn ) );
-    addItem( tr( "Inverse Masked By Below" ), static_cast< int >( Qgis::BlendMode::SourceOut ) );
-    addItem( tr( "Inverse Mask Below" ), static_cast< int >( Qgis::BlendMode::DestinationOut ) );
-    addItem( tr( "Paint Inside Below" ), static_cast< int >( Qgis::BlendMode::SourceAtop ) );
-    addItem( tr( "Paint Below Inside" ), static_cast< int >( Qgis::BlendMode::DestinationAtop ) );
+    addItem( tr( "Masked By Below" ), static_cast<int>( Qgis::BlendMode::SourceIn ) );
+    addItem( tr( "Mask Below" ), static_cast<int>( Qgis::BlendMode::DestinationIn ) );
+    addItem( tr( "Inverse Masked By Below" ), static_cast<int>( Qgis::BlendMode::SourceOut ) );
+    addItem( tr( "Inverse Mask Below" ), static_cast<int>( Qgis::BlendMode::DestinationOut ) );
+    addItem( tr( "Paint Inside Below" ), static_cast<int>( Qgis::BlendMode::SourceAtop ) );
+    addItem( tr( "Paint Below Inside" ), static_cast<int>( Qgis::BlendMode::DestinationAtop ) );
   }
 
   blockSignals( false );
@@ -74,12 +74,12 @@ void QgsBlendModeComboBox::updateModes()
 
 QPainter::CompositionMode QgsBlendModeComboBox::blendMode()
 {
-  return QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( currentData().toInt() ) );
+  return QgsPainting::getCompositionMode( static_cast<Qgis::BlendMode>( currentData().toInt() ) );
 }
 
 void QgsBlendModeComboBox::setBlendMode( QPainter::CompositionMode blendMode )
 {
-  setCurrentIndex( findData( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode ) ) ) );
+  setCurrentIndex( findData( static_cast<int>( QgsPainting::getBlendModeEnum( blendMode ) ) ) );
 }
 
 void QgsBlendModeComboBox::setShowClippingModes( bool show )
@@ -95,4 +95,3 @@ bool QgsBlendModeComboBox::showClippingModes() const
 {
   return mShowClipModes;
 }
-

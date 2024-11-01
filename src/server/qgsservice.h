@@ -43,7 +43,6 @@ class SERVER_EXPORT QgsService
 #endif
 
   public:
-
     QgsService();
     virtual ~QgsService() = default;
 
@@ -62,8 +61,8 @@ class SERVER_EXPORT QgsService
      */
     virtual void executeRequest( const QgsServerRequest &request,
                                  QgsServerResponse &response,
-                                 const QgsProject *project ) = 0;
+                                 const QgsProject *project )
+      = 0;
 };
 
 #endif
-

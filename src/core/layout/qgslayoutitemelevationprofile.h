@@ -31,12 +31,11 @@ class QgsProfilePlotRenderer;
  * \brief A layout item subclass for elevation profile plots.
  * \since QGIS 3.30
  */
-class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
+class CORE_EXPORT QgsLayoutItemElevationProfile : public QgsLayoutItem
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutItemElevationProfile, with the specified parent \a layout.
      */
@@ -75,14 +74,14 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
      *
      * \see setLayers()
      */
-    QList< QgsMapLayer * > layers() const;
+    QList<QgsMapLayer *> layers() const;
 
     /**
      * Sets the list of map \a layers participating in the elevation profile.
      *
      * \see layers()
      */
-    void setLayers( const QList< QgsMapLayer * > &layers );
+    void setLayers( const QList<QgsMapLayer *> &layers );
 
     /**
      * Sets the cross section profile \a curve, which represents the line along which the profile should be generated.
@@ -208,15 +207,15 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
 
     void recreateCachedImageInBackground();
     void profileGenerationFinished();
+
   private:
+    std::unique_ptr<QgsLayoutItemElevationProfilePlot> mPlot;
 
-    std::unique_ptr< QgsLayoutItemElevationProfilePlot > mPlot;
-
-    QList< QgsMapLayerRef > mLayers;
+    QList<QgsMapLayerRef> mLayers;
 
     QgsCoordinateReferenceSystem mCrs;
     Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;
-    std::unique_ptr< QgsCurve> mCurve;
+    std::unique_ptr<QgsCurve> mCurve;
     bool mAtlasDriven = false;
 
     double mTolerance = 0;
@@ -224,18 +223,16 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
     // render job handling
 
     // see note in QgsLayoutItemMap about these!
-    std::unique_ptr< QImage > mCacheFinalImage;
-    std::unique_ptr< QImage > mCacheRenderingImage;
+    std::unique_ptr<QImage> mCacheFinalImage;
+    std::unique_ptr<QImage> mCacheRenderingImage;
     bool mUpdatesEnabled = true;
     bool mCacheInvalidated = true;
     bool mDrawing = false;
     bool mDrawingPreview = false;
     QTimer *mBackgroundUpdateTimer = nullptr;
     double mPreviewScaleFactor = 0;
-    std::unique_ptr< QPainter > mPainter;
-    std::unique_ptr< QgsProfilePlotRenderer > mRenderJob;
-
-
+    std::unique_ptr<QPainter> mPainter;
+    std::unique_ptr<QgsProfilePlotRenderer> mRenderJob;
 };
 
 #endif //QGSLAYOUTITEMELEVATIONPROFILE_H

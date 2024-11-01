@@ -35,20 +35,19 @@
  *
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsPointCloudRgbRendererPreparedData: public QgsPreparedPointCloudRendererData
+class CORE_EXPORT QgsPointCloudRgbRendererPreparedData : public QgsPreparedPointCloudRendererData
 {
   public:
-
-    QSet< QString > usedAttributes() const override;
+    QSet<QString> usedAttributes() const override;
     bool prepareBlock( const QgsPointCloudBlock *block ) override;
     QColor pointColor( const QgsPointCloudBlock *block, int i, double z ) override;
 
     QString redAttribute = QStringLiteral( "Red" );
     QString greenAttribute = QStringLiteral( "Green" );
     QString blueAttribute = QStringLiteral( "Blue" );
-    std::unique_ptr< QgsContrastEnhancement > redContrastEnhancement;
-    std::unique_ptr< QgsContrastEnhancement > greenContrastEnhancement;
-    std::unique_ptr< QgsContrastEnhancement > blueContrastEnhancement;
+    std::unique_ptr<QgsContrastEnhancement> redContrastEnhancement;
+    std::unique_ptr<QgsContrastEnhancement> greenContrastEnhancement;
+    std::unique_ptr<QgsContrastEnhancement> blueContrastEnhancement;
 
     int redOffset = 0;
     QgsPointCloudAttribute::DataType redType;
@@ -71,7 +70,6 @@ class CORE_EXPORT QgsPointCloudRgbRendererPreparedData: public QgsPreparedPointC
 class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
 {
   public:
-
     /**
      * Constructor for QgsPointCloudRgbRenderer.
      */
@@ -81,8 +79,8 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
     QgsPointCloudRenderer *clone() const override;
     void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-    QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const override;
-    std::unique_ptr< QgsPreparedPointCloudRendererData > prepare() override SIP_SKIP;
+    QSet<QString> usedAttributes( const QgsPointCloudRenderContext &context ) const override;
+    std::unique_ptr<QgsPreparedPointCloudRendererData> prepare() override SIP_SKIP;
 
     /**
      * Creates an RGB renderer from an XML \a element.
@@ -204,15 +202,13 @@ class CORE_EXPORT QgsPointCloudRgbRenderer : public QgsPointCloudRenderer
     void setBlueContrastEnhancement( QgsContrastEnhancement *enhancement SIP_TRANSFER );
 
   private:
-
     QString mRedAttribute = QStringLiteral( "Red" );
     QString mGreenAttribute = QStringLiteral( "Green" );
     QString mBlueAttribute = QStringLiteral( "Blue" );
 
-    std::unique_ptr< QgsContrastEnhancement > mRedContrastEnhancement;
-    std::unique_ptr< QgsContrastEnhancement > mGreenContrastEnhancement;
-    std::unique_ptr< QgsContrastEnhancement > mBlueContrastEnhancement;
-
+    std::unique_ptr<QgsContrastEnhancement> mRedContrastEnhancement;
+    std::unique_ptr<QgsContrastEnhancement> mGreenContrastEnhancement;
+    std::unique_ptr<QgsContrastEnhancement> mBlueContrastEnhancement;
 };
 
 #endif // QGSPOINTCLOUDRGBRENDERER_H

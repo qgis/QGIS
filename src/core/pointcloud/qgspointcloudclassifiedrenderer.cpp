@@ -34,11 +34,7 @@ QgsPointCloudCategory::QgsPointCloudCategory( const int value, const QColor &col
 
 bool QgsPointCloudCategory::operator==( const QgsPointCloudCategory &other ) const
 {
-  return mValue == other.value() &&
-         mColor == other.color() &&
-         mPointSize == other.pointSize() &&
-         mLabel == other.label() &&
-         mRender == other.renderState();
+  return mValue == other.value() && mColor == other.color() && mPointSize == other.pointSize() && mLabel == other.label() && mRender == other.renderState();
 }
 
 //
@@ -58,7 +54,7 @@ QString QgsPointCloudClassifiedRenderer::type() const
 
 QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::clone() const
 {
-  std::unique_ptr< QgsPointCloudClassifiedRenderer > res = std::make_unique< QgsPointCloudClassifiedRenderer >();
+  std::unique_ptr<QgsPointCloudClassifiedRenderer> res = std::make_unique<QgsPointCloudClassifiedRenderer>();
   res->mAttribute = mAttribute;
   res->mCategories = mCategories;
 
@@ -99,8 +95,8 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
   const QgsCoordinateTransform ct = context.renderContext().coordinateTransform();
   const bool reproject = ct.isValid();
 
-  QHash< int, QColor > colors;
-  QHash< int, int > pointSizes;
+  QHash<int, QColor> colors;
+  QHash<int, int> pointSizes;
   for ( const QgsPointCloudCategory &category : std::as_const( mCategories ) )
   {
     if ( !category.renderState() )
@@ -173,7 +169,7 @@ bool QgsPointCloudClassifiedRenderer::willRenderPoint( const QVariantMap &pointA
   if ( !pointAttributes.contains( mAttribute ) )
     return false;
   bool parsedCorrectly;
-  int attributeInt = pointAttributes[ mAttribute ].toInt( &parsedCorrectly );
+  int attributeInt = pointAttributes[mAttribute].toInt( &parsedCorrectly );
   if ( !parsedCorrectly )
     return false;
   for ( const QgsPointCloudCategory &category : std::as_const( mCategories ) )
@@ -186,7 +182,7 @@ bool QgsPointCloudClassifiedRenderer::willRenderPoint( const QVariantMap &pointA
 
 QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsPointCloudClassifiedRenderer > r = std::make_unique< QgsPointCloudClassifiedRenderer >();
+  std::unique_ptr<QgsPointCloudClassifiedRenderer> r = std::make_unique<QgsPointCloudClassifiedRenderer>();
 
   r->setAttribute( element.attribute( QStringLiteral( "attribute" ), QStringLiteral( "Classification" ) ) );
 
@@ -219,24 +215,24 @@ QgsPointCloudRenderer *QgsPointCloudClassifiedRenderer::create( QDomElement &ele
 QgsPointCloudCategoryList QgsPointCloudClassifiedRenderer::defaultCategories()
 {
   return QgsPointCloudCategoryList() << QgsPointCloudCategory( 0, QColor( "#BABABA" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 0 ) )
-         << QgsPointCloudCategory( 1, QColor( "#AAAAAA" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 1 ) )
-         << QgsPointCloudCategory( 2, QColor( "#AA5500" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 2 ) )
-         << QgsPointCloudCategory( 3, QColor( "#00AAAA" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 3 ) )
-         << QgsPointCloudCategory( 4, QColor( "#55FF55" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 4 ) )
-         << QgsPointCloudCategory( 5, QColor( "#00AA00" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 5 ) )
-         << QgsPointCloudCategory( 6, QColor( "#FF5555" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 6 ) )
-         << QgsPointCloudCategory( 7, QColor( "#AA0000" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 7 ) )
-         << QgsPointCloudCategory( 8, QColor( "#555555" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 8 ) )
-         << QgsPointCloudCategory( 9, QColor( "#55FFFF" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 9 ) )
-         << QgsPointCloudCategory( 10, QColor( "#AA00AA" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 10 ) )
-         << QgsPointCloudCategory( 11, QColor( "#000000" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 11 ) )
-         << QgsPointCloudCategory( 12, QColor( "#555555" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 12 ) )
-         << QgsPointCloudCategory( 13, QColor( "#FFFF55" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 13 ) )
-         << QgsPointCloudCategory( 14, QColor( "#FFFF55" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 14 ) )
-         << QgsPointCloudCategory( 15, QColor( "#FF55FF" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 15 ) )
-         << QgsPointCloudCategory( 16, QColor( "#FFFF55" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 16 ) )
-         << QgsPointCloudCategory( 17, QColor( "#5555FF" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 17 ) )
-         << QgsPointCloudCategory( 18, QColor( "#646464" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 18 ) );
+                                     << QgsPointCloudCategory( 1, QColor( "#AAAAAA" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 1 ) )
+                                     << QgsPointCloudCategory( 2, QColor( "#AA5500" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 2 ) )
+                                     << QgsPointCloudCategory( 3, QColor( "#00AAAA" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 3 ) )
+                                     << QgsPointCloudCategory( 4, QColor( "#55FF55" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 4 ) )
+                                     << QgsPointCloudCategory( 5, QColor( "#00AA00" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 5 ) )
+                                     << QgsPointCloudCategory( 6, QColor( "#FF5555" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 6 ) )
+                                     << QgsPointCloudCategory( 7, QColor( "#AA0000" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 7 ) )
+                                     << QgsPointCloudCategory( 8, QColor( "#555555" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 8 ) )
+                                     << QgsPointCloudCategory( 9, QColor( "#55FFFF" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 9 ) )
+                                     << QgsPointCloudCategory( 10, QColor( "#AA00AA" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 10 ) )
+                                     << QgsPointCloudCategory( 11, QColor( "#000000" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 11 ) )
+                                     << QgsPointCloudCategory( 12, QColor( "#555555" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 12 ) )
+                                     << QgsPointCloudCategory( 13, QColor( "#FFFF55" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 13 ) )
+                                     << QgsPointCloudCategory( 14, QColor( "#FFFF55" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 14 ) )
+                                     << QgsPointCloudCategory( 15, QColor( "#FF55FF" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 15 ) )
+                                     << QgsPointCloudCategory( 16, QColor( "#FFFF55" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 16 ) )
+                                     << QgsPointCloudCategory( 17, QColor( "#5555FF" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 17 ) )
+                                     << QgsPointCloudCategory( 18, QColor( "#646464" ), QgsPointCloudDataProvider::translatedLasClassificationCodes().value( 18 ) );
 }
 
 QDomElement QgsPointCloudClassifiedRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -353,7 +349,7 @@ void QgsPointCloudClassifiedRenderer::addCategory( const QgsPointCloudCategory &
 
 std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudClassifiedRenderer::prepare()
 {
-  std::unique_ptr< QgsPointCloudClassifiedRendererPreparedData > data = std::make_unique< QgsPointCloudClassifiedRendererPreparedData >();
+  std::unique_ptr<QgsPointCloudClassifiedRendererPreparedData> data = std::make_unique<QgsPointCloudClassifiedRendererPreparedData>();
   data->attributeName = mAttribute;
 
   for ( const QgsPointCloudCategory &category : std::as_const( mCategories ) )
@@ -389,5 +385,3 @@ QColor QgsPointCloudClassifiedRendererPreparedData::pointColor( const QgsPointCl
   QgsPointCloudRenderContext::getAttribute( block->data(), i * block->pointRecordSize() + attributeOffset, attributeType, attributeValue );
   return colors.value( attributeValue );
 }
-
-

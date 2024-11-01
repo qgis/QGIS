@@ -40,7 +40,6 @@ class CORE_EXPORT QgsRasterFileWriterTask : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRasterFileWriterTask. Takes a source \a writer,
      * \a columns, \a rows, \a outputExtent and destination \a crs.
@@ -49,9 +48,9 @@ class CORE_EXPORT QgsRasterFileWriterTask : public QgsTask
      * \deprecated QGIS 3.8. Use version with transformContext instead.
      */
     Q_DECL_DEPRECATED QgsRasterFileWriterTask( const QgsRasterFileWriter &writer, QgsRasterPipe *pipe SIP_TRANSFER,
-        int columns, int rows,
-        const QgsRectangle &outputExtent,
-        const QgsCoordinateReferenceSystem &crs ) SIP_DEPRECATED;
+                                               int columns, int rows,
+                                               const QgsRectangle &outputExtent,
+                                               const QgsCoordinateReferenceSystem &crs ) SIP_DEPRECATED;
 
 
     /**
@@ -65,8 +64,7 @@ class CORE_EXPORT QgsRasterFileWriterTask : public QgsTask
                              int columns, int rows,
                              const QgsRectangle &outputExtent,
                              const QgsCoordinateReferenceSystem &crs,
-                             const QgsCoordinateTransformContext &transformContext
-                           );
+                             const QgsCoordinateTransformContext &transformContext );
 
     ~QgsRasterFileWriterTask() override;
 
@@ -96,22 +94,20 @@ class CORE_EXPORT QgsRasterFileWriterTask : public QgsTask
     void errorOccurred( int error, const QString &errorMessage );
 
   protected:
-
     bool run() override;
     void finished( bool result ) override;
 
   private:
-
     QgsRasterFileWriter mWriter;
     int mRows = 0;
     int mColumns = 0;
     QgsRectangle mExtent;
     QgsCoordinateReferenceSystem mCrs;
-    std::unique_ptr< QgsRasterPipe > mPipe;
+    std::unique_ptr<QgsRasterPipe> mPipe;
 
     QString mDestFileName;
 
-    std::unique_ptr< QgsRasterBlockFeedback > mFeedback;
+    std::unique_ptr<QgsRasterBlockFeedback> mFeedback;
 
     Qgis::RasterFileWriterResult mError = Qgis::RasterFileWriterResult::Success;
 

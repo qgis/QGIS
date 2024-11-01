@@ -16,7 +16,7 @@
 #include "qgspreviewquad.h"
 #include "moc_qgspreviewquad.cpp"
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QGeometry>
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
@@ -48,7 +48,7 @@ QgsPreviewQuad::QgsPreviewQuad( Qt3DRender::QAbstractTexture *texture,
   setObjectName( "Preview Quad" );
   Qt3DQGeometry *geom = new Qt3DQGeometry;
   Qt3DQAttribute *positionAttribute = new Qt3DQAttribute;
-  const QVector<float> vert = { -1.0f, -1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ -1.0f,  1.0f, 1.0f, /**/ -1.0f,  1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ 1.0f,  1.0f, 1.0f };
+  const QVector<float> vert = { -1.0f, -1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ -1.0f, 1.0f, 1.0f, /**/ -1.0f, 1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ 1.0f, 1.0f, 1.0f };
 
   const QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
   Qt3DQBuffer *vertexBuffer = nullptr;
@@ -93,7 +93,8 @@ QgsPreviewQuadMaterial::QgsPreviewQuadMaterial( Qt3DRender::QAbstractTexture *te
   addParameter( mTextureParameter );
   addParameter( mCenterTextureCoords );
   addParameter( mSizeTextureCoords );
-  for ( Qt3DRender::QParameter *parameter : additionalShaderParameters ) addParameter( parameter );
+  for ( Qt3DRender::QParameter *parameter : additionalShaderParameters )
+    addParameter( parameter );
 
   mEffect = new Qt3DRender::QEffect;
 

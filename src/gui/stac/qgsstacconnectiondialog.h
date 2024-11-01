@@ -39,7 +39,6 @@ class QgsStacConnectionDialog : public QDialog, public Ui::QgsStacConnectionDial
 
   private slots:
     void updateOkButtonState();
-
 };
 
 ///@endcond

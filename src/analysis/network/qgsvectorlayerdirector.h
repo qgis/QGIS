@@ -34,7 +34,6 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
     Q_OBJECT
 
   public:
-
     /**
      * Edge direction
      * Edge can be one-way with direct flow (one can move only from the start
@@ -44,9 +43,9 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
      */
     enum Direction
     {
-      DirectionForward,     //!< One-way direct
-      DirectionBackward,    //!< One-way reversed
-      DirectionBoth,        //!< Two-way
+      DirectionForward,  //!< One-way direct
+      DirectionBackward, //!< One-way reversed
+      DirectionBoth,     //!< Two-way
     };
 
     /**
@@ -64,15 +63,14 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
                             const QString &directDirectionValue,
                             const QString &reverseDirectionValue,
                             const QString &bothDirectionValue,
-                            Direction defaultDirection
-                          );
+                            Direction defaultDirection );
 
     /*
      * MANDATORY DIRECTOR PROPERTY DECLARATION
      */
     void makeGraph( QgsGraphBuilderInterface *builder,
-                    const QVector< QgsPointXY > &additionalPoints,
-                    QVector< QgsPointXY> &snappedPoints SIP_OUT,
+                    const QVector<QgsPointXY> &additionalPoints,
+                    QVector<QgsPointXY> &snappedPoints SIP_OUT,
                     QgsFeedback *feedback = nullptr ) const override;
 
     QString name() const override;

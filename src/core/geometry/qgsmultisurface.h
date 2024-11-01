@@ -28,10 +28,9 @@ class QgsSurface;
  * \class QgsMultiSurface
  * \brief Multi surface geometry collection.
  */
-class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
+class CORE_EXPORT QgsMultiSurface : public QgsGeometryCollection
 {
   public:
-
     /**
      * Constructor for an empty multisurface geometry.
      */
@@ -55,8 +54,7 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
      * \since QGIS 3.16
      */
     SIP_PYOBJECT surfaceN( int index ) SIP_TYPEHINT( QgsSurface );
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -89,7 +87,7 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     json asJsonObject( int precision = 17 ) const override SIP_SKIP;
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
-    bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries SIP_TRANSFER ) override;
+    bool addGeometries( const QVector<QgsAbstractGeometry *> &geometries SIP_TRANSFER ) override;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     QgsMultiSurface *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
@@ -117,7 +115,6 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 #endif
 
     QgsMultiSurface *createEmptyWithSameType() const override SIP_FACTORY;
-
 };
 
 // clazy:excludeall=qstring-allocations

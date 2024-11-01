@@ -72,7 +72,6 @@ void QgsMapToolReverseLine::canvasPressEvent( QgsMapMouseEvent *e )
     mRubberBand->setToGeometry( geomPart, vlayer );
     mRubberBand->show();
   }
-
 }
 
 void QgsMapToolReverseLine::canvasReleaseEvent( QgsMapMouseEvent *e )
@@ -95,20 +94,17 @@ void QgsMapToolReverseLine::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     if ( f.geometry().isMultipart() )
     {
-      std::unique_ptr<QgsMultiCurve> line_reversed( static_cast<QgsMultiCurve * >( f.geometry().constGet()->clone() ) );
+      std::unique_ptr<QgsMultiCurve> line_reversed( static_cast<QgsMultiCurve *>( f.geometry().constGet()->clone() ) );
       std::unique_ptr<QgsCurve> line_part( line_reversed->curveN( mPressedPartNum )->clone() );
       std::unique_ptr<QgsCurve> line_part_reversed( line_part->reversed() );
       line_reversed->removeGeometry( mPressedPartNum );
       line_reversed->insertGeometry( line_part_reversed.release(), mPressedPartNum );
 
       geom = QgsGeometry( line_reversed.release() );
-
     }
     else
     {
-
-      geom = QgsGeometry( static_cast< const QgsCurve * >( f.geometry().constGet() )->reversed() );
-
+      geom = QgsGeometry( static_cast<const QgsCurve *>( f.geometry().constGet() )->reversed() );
     }
 
     if ( !geom.isNull() )
@@ -176,4 +172,3 @@ void QgsMapToolReverseLine::deactivate()
 {
   QgsMapTool::deactivate();
 }
-

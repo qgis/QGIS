@@ -28,7 +28,6 @@
 class CORE_EXPORT QgsNetworkReplyContent
 {
   public:
-
     /**
      * Default constructor for an empty reply.
      */
@@ -63,7 +62,7 @@ class CORE_EXPORT QgsNetworkReplyContent
      * \see attribute()
      * \note Not available in Python bindings
      */
-    QMap< QNetworkRequest::Attribute, QVariant > attributes() const { return mAttributes; }
+    QMap<QNetworkRequest::Attribute, QVariant> attributes() const { return mAttributes; }
 #endif
 
     /**
@@ -172,11 +171,10 @@ class CORE_EXPORT QgsNetworkReplyContent
     static QString extractFileNameFromContentDispositionHeader( const QString &header );
 
   private:
-
     QNetworkReply::NetworkError mError = QNetworkReply::NoError;
     QString mErrorString;
     QList<RawHeaderPair> mRawHeaderPairs;
-    QMap< QNetworkRequest::Attribute, QVariant > mAttributes;
+    QMap<QNetworkRequest::Attribute, QVariant> mAttributes;
     int mRequestId = -1;
     QNetworkRequest mRequest;
     QByteArray mContent;

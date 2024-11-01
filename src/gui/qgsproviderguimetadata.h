@@ -40,7 +40,6 @@ class QgsMapLayerConfigWidgetFactory;
 class GUI_EXPORT QgsProviderGuiMetadata
 {
   public:
-
     /**
      * Constructor for provider gui metadata
      */
@@ -103,4 +102,3 @@ class GUI_EXPORT QgsProviderGuiMetadata
 };
 
 #endif //QGSPROVIDERGUIMETADATA_H
-

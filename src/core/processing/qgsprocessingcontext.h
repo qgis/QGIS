@@ -44,10 +44,8 @@ class QgsProcessingLayerPostProcessorInterface;
 class CORE_EXPORT QgsProcessingContext
 {
   public:
-
     //! Flags that affect how processing algorithms are run
-    enum Flag SIP_ENUM_BASETYPE( IntFlag )
-    {
+    enum Flag SIP_ENUM_BASETYPE( IntFlag ) {
       // For future API flexibility only and to avoid sip issues, remove when real entries are added to flags.
       Unused = 1 << 0, //!< Temporary unused entry
     };
@@ -247,7 +245,6 @@ class CORE_EXPORT QgsProcessingContext
     class CORE_EXPORT LayerDetails
     {
       public:
-
         /**
          * Constructor for LayerDetails.
          */
@@ -331,10 +328,8 @@ class CORE_EXPORT QgsProcessingContext
         QgsProject *project = nullptr;
 
       private:
-
         // Ideally a unique_ptr, but cannot be due to use within QMap. Is cleaned up by QgsProcessingContext.
         QgsProcessingLayerPostProcessorInterface *mPostProcessor = nullptr;
-
     };
 
     /**
@@ -344,7 +339,7 @@ class CORE_EXPORT QgsProcessingContext
      * \see willLoadLayerOnCompletion()
      * \see layerToLoadOnCompletionDetails()
      */
-    QMap< QString, QgsProcessingContext::LayerDetails > layersToLoadOnCompletion() const SIP_HOLDGIL
+    QMap<QString, QgsProcessingContext::LayerDetails> layersToLoadOnCompletion() const SIP_HOLDGIL
     {
       return mLayersToLoadOnCompletion;
     }
@@ -370,7 +365,7 @@ class CORE_EXPORT QgsProcessingContext
      * \see willLoadLayerOnCompletion()
      * \see layerToLoadOnCompletionDetails()
      */
-    void setLayersToLoadOnCompletion( const QMap< QString, QgsProcessingContext::LayerDetails > &layers ) SIP_HOLDGIL;
+    void setLayersToLoadOnCompletion( const QMap<QString, QgsProcessingContext::LayerDetails> &layers ) SIP_HOLDGIL;
 
     /**
      * Adds a \a layer to load (by ID or datasource) into the canvas upon completion of the algorithm or model.
@@ -397,7 +392,7 @@ class CORE_EXPORT QgsProcessingContext
      */
     QgsProcessingContext::LayerDetails &layerToLoadOnCompletionDetails( const QString &layer ) SIP_HOLDGIL
     {
-      return mLayersToLoadOnCompletion[ layer ];
+      return mLayersToLoadOnCompletion[layer];
     }
 
     /**
@@ -421,21 +416,24 @@ class CORE_EXPORT QgsProcessingContext
      * \see invalidGeometryCallback()
      */
 #ifndef SIP_RUN
-    void setInvalidGeometryCallback( const std::function< void( const QgsFeature & ) > &callback ) { mInvalidGeometryCallback = callback; mUseDefaultInvalidGeometryCallback = false; }
+    void setInvalidGeometryCallback( const std::function<void( const QgsFeature & )> &callback )
+    {
+      mInvalidGeometryCallback = callback;
+      mUseDefaultInvalidGeometryCallback = false;
+    }
 #else
     void setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
-    Py_BEGIN_ALLOW_THREADS
+        Py_BEGIN_ALLOW_THREADS
 
-    sipCpp->setInvalidGeometryCallback( [a0]( const QgsFeature &arg )
-    {
-      SIP_BLOCK_THREADS
-      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
-      SIP_UNBLOCK_THREADS
-    } );
+          sipCpp->setInvalidGeometryCallback( [a0]( const QgsFeature &arg ) {
+            SIP_BLOCK_THREADS
+            Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+            SIP_UNBLOCK_THREADS
+          } );
 
     Py_END_ALLOW_THREADS
-    % End
+      % End
 #endif
 
     /**
@@ -444,14 +442,14 @@ class CORE_EXPORT QgsProcessingContext
      * \note not available in Python bindings
      * \see setInvalidGeometryCallback()
      */
-    SIP_SKIP std::function< void( const QgsFeature & ) > invalidGeometryCallback( QgsFeatureSource *source = nullptr ) const;
+    SIP_SKIP std::function<void( const QgsFeature & )> invalidGeometryCallback( QgsFeatureSource *source = nullptr ) const;
 
     /**
      * Returns the default callback function to use for a particular invalid geometry \a check
      * \note not available in Python bindings
      * \since QGIS 3.14
      */
-    SIP_SKIP std::function< void( const QgsFeature & ) > defaultInvalidGeometryCallbackForCheck( Qgis::InvalidGeometryCheck check, QgsFeatureSource *source = nullptr ) const;
+    SIP_SKIP std::function<void( const QgsFeature & )> defaultInvalidGeometryCallbackForCheck( Qgis::InvalidGeometryCheck check, QgsFeatureSource *source = nullptr ) const;
 
     /**
      * Sets a callback function to use when encountering a transform error when iterating
@@ -460,21 +458,23 @@ class CORE_EXPORT QgsProcessingContext
      * \see transformErrorCallback()
      */
 #ifndef SIP_RUN
-    void setTransformErrorCallback( const std::function< void( const QgsFeature & ) > &callback ) { mTransformErrorCallback = callback; }
+    void setTransformErrorCallback( const std::function<void( const QgsFeature & )> &callback )
+    {
+      mTransformErrorCallback = callback;
+    }
 #else
     void setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
-    Py_BEGIN_ALLOW_THREADS
+        Py_BEGIN_ALLOW_THREADS
 
-    sipCpp->setTransformErrorCallback( [a0]( const QgsFeature &arg )
-    {
-      SIP_BLOCK_THREADS
-      Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
-      SIP_UNBLOCK_THREADS
-    } );
+          sipCpp->setTransformErrorCallback( [a0]( const QgsFeature &arg ) {
+            SIP_BLOCK_THREADS
+            Py_XDECREF( sipCallMethod( NULL, a0, "D", &arg, sipType_QgsFeature, NULL ) );
+            SIP_UNBLOCK_THREADS
+          } );
 
     Py_END_ALLOW_THREADS
-    % End
+      % End
 #endif
 
     /**
@@ -483,7 +483,8 @@ class CORE_EXPORT QgsProcessingContext
      * \note not available in Python bindings
      * \see setTransformErrorCallback()
      */
-    std::function< void( const QgsFeature & ) > transformErrorCallback() const { return mTransformErrorCallback; } SIP_SKIP
+    std::function<void( const QgsFeature & )> transformErrorCallback() const { return mTransformErrorCallback; }
+    SIP_SKIP
 
     /**
      * Returns the default encoding to use for newly created files.
@@ -717,8 +718,7 @@ class CORE_EXPORT QgsProcessingContext
      *
      * \since QGIS 3.24
      */
-    enum class ProcessArgumentFlag : int SIP_ENUM_BASETYPE( IntFlag )
-    {
+    enum class ProcessArgumentFlag : int SIP_ENUM_BASETYPE( IntFlag ) {
       IncludeProjectPath = 1 << 0, //!< Include the associated project path argument
     };
     Q_DECLARE_FLAGS( ProcessArgumentFlags, ProcessArgumentFlag )
@@ -760,7 +760,7 @@ class CORE_EXPORT QgsProcessingContext
      *
      * \since QGIS 3.38
      */
-    std::unique_ptr< QgsProcessingModelInitialRunConfig > takeModelInitialRunConfig() SIP_SKIP;
+    std::unique_ptr<QgsProcessingModelInitialRunConfig> takeModelInitialRunConfig() SIP_SKIP;
 
     /**
      * Sets the model initial run configuration, used to run a model algorithm.
@@ -775,7 +775,7 @@ class CORE_EXPORT QgsProcessingContext
      *
      * \since QGIS 3.38
      */
-    void setModelInitialRunConfig( std::unique_ptr< QgsProcessingModelInitialRunConfig > config ) SIP_SKIP;
+    void setModelInitialRunConfig( std::unique_ptr<QgsProcessingModelInitialRunConfig> config ) SIP_SKIP;
 
     /**
      * Returns the model results, populated when the context is used to run a model algorithm.
@@ -795,9 +795,8 @@ class CORE_EXPORT QgsProcessingContext
     QgsProcessingModelResult &modelResult() SIP_SKIP { return mModelResult; }
 
   private:
-
     QgsProcessingContext::Flags mFlags = QgsProcessingContext::Flags();
-    QPointer< QgsProject > mProject;
+    QPointer<QgsProject> mProject;
     QgsCoordinateTransformContext mTransformContext;
 
     QString mEllipsoid;
@@ -812,13 +811,13 @@ class CORE_EXPORT QgsProcessingContext
 
     Qgis::InvalidGeometryCheck mInvalidGeometryCheck = Qgis::InvalidGeometryCheck::NoCheck;
     bool mUseDefaultInvalidGeometryCallback = true;
-    std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
+    std::function<void( const QgsFeature & )> mInvalidGeometryCallback;
 
-    std::function< void( const QgsFeature & ) > mTransformErrorCallback;
+    std::function<void( const QgsFeature & )> mTransformErrorCallback;
     QString mDefaultEncoding;
-    QMap< QString, LayerDetails > mLayersToLoadOnCompletion;
+    QMap<QString, LayerDetails> mLayersToLoadOnCompletion;
 
-    QPointer< QgsProcessingFeedback > mFeedback;
+    QPointer<QgsProcessingFeedback> mFeedback;
 
     QString mPreferredVectorFormat;
     QString mPreferredRasterFormat;
@@ -828,7 +827,7 @@ class CORE_EXPORT QgsProcessingContext
     QString mTemporaryFolderOverride;
     int mMaximumThreads = QThread::idealThreadCount();
 
-    std::unique_ptr< QgsProcessingModelInitialRunConfig > mModelConfig;
+    std::unique_ptr<QgsProcessingModelInitialRunConfig> mModelConfig;
     QgsProcessingModelResult mModelResult;
 
 #ifdef SIP_RUN
@@ -855,7 +854,6 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingContext::ProcessArgumentFlags )
 class CORE_EXPORT QgsProcessingLayerPostProcessorInterface
 {
   public:
-
     virtual ~QgsProcessingLayerPostProcessorInterface() = default;
 
     /**
@@ -873,12 +871,7 @@ class CORE_EXPORT QgsProcessingLayerPostProcessorInterface
       * on algorithm completion. See QgsProcessingContext::layersToLoadOnCompletion().
       */
     virtual void postProcessLayer( QgsMapLayer *layer, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
-
 };
 
 
 #endif // QGSPROCESSINGPARAMETERS_H
-
-
-
-

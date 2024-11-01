@@ -40,12 +40,12 @@ namespace QgsWms
   enum class ImageOutputFormat
   {
     Unknown, //!< Unknown/invalid format
-    PNG, //!< PNG format
-    PNG8, //!< PNG8 format
-    PNG16, //!< PNG16 format
-    PNG1, //!< PNG1 format
-    JPEG, //!< JPEG format
-    WEBP, //!< WEBP format
+    PNG,     //!< PNG format
+    PNG8,    //!< PNG8 format
+    PNG16,   //!< PNG16 format
+    PNG1,    //!< PNG1 format
+    JPEG,    //!< JPEG format
+    WEBP,    //!< WEBP format
   };
 
   /**

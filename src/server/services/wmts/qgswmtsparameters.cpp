@@ -94,18 +94,18 @@ namespace QgsWmts
     save( pFormat );
 
     const QgsWmtsParameter pTileMatrix = QgsWmtsParameter( QgsWmtsParameter::TILEMATRIX,
-                                         QMetaType::Type::Int,
-                                         QVariant( -1 ) );
+                                                           QMetaType::Type::Int,
+                                                           QVariant( -1 ) );
     save( pTileMatrix );
 
     const QgsWmtsParameter pTileRow = QgsWmtsParameter( QgsWmtsParameter::TILEROW,
-                                      QMetaType::Type::Int,
-                                      QVariant( -1 ) );
+                                                        QMetaType::Type::Int,
+                                                        QVariant( -1 ) );
     save( pTileRow );
 
     const QgsWmtsParameter pTileCol = QgsWmtsParameter( QgsWmtsParameter::TILECOL,
-                                      QMetaType::Type::Int,
-                                      QVariant( -1 ) );
+                                                        QMetaType::Type::Int,
+                                                        QVariant( -1 ) );
     save( pTileCol );
 
     const QgsWmtsParameter pInfoFormat( QgsWmtsParameter::INFOFORMAT );
@@ -136,7 +136,7 @@ namespace QgsWmts
     if ( name >= 0 )
     {
       mWmtsParameters[name].mValue = value;
-      if ( ! mWmtsParameters[name].isValid() )
+      if ( !mWmtsParameters[name].isValid() )
       {
         mWmtsParameters[name].raiseError();
       }
@@ -149,7 +149,7 @@ namespace QgsWmts
 
   void QgsWmtsParameters::save( const QgsWmtsParameter &parameter )
   {
-    mWmtsParameters[ parameter.mName ] = parameter;
+    mWmtsParameters[parameter.mName] = parameter;
   }
 
   void QgsWmtsParameters::dump() const
@@ -160,7 +160,7 @@ namespace QgsWmts
     {
       const QString value = parameter.second.toString();
 
-      if ( ! value.isEmpty() )
+      if ( !value.isEmpty() )
       {
         const QString name = QgsWmtsParameter::name( parameter.first );
         log( QStringLiteral( " - %1 : %2" ).arg( name, value ) );
@@ -173,12 +173,12 @@ namespace QgsWmts
 
   QString QgsWmtsParameters::layer() const
   {
-    return mWmtsParameters[ QgsWmtsParameter::LAYER ].toString();
+    return mWmtsParameters[QgsWmtsParameter::LAYER].toString();
   }
 
   QString QgsWmtsParameters::formatAsString() const
   {
-    return mWmtsParameters[ QgsWmtsParameter::FORMAT ].toString();
+    return mWmtsParameters[QgsWmtsParameter::FORMAT].toString();
   }
 
   QgsWmtsParameters::Format QgsWmtsParameters::format() const
@@ -199,42 +199,42 @@ namespace QgsWmts
 
   QString QgsWmtsParameters::tileMatrixSet() const
   {
-    return mWmtsParameters[ QgsWmtsParameter::TILEMATRIXSET ].toString();
+    return mWmtsParameters[QgsWmtsParameter::TILEMATRIXSET].toString();
   }
 
   QString QgsWmtsParameters::tileMatrix() const
   {
-    return mWmtsParameters[ QgsWmtsParameter::TILEMATRIX ].toString();
+    return mWmtsParameters[QgsWmtsParameter::TILEMATRIX].toString();
   }
 
   int QgsWmtsParameters::tileMatrixAsInt() const
   {
-    return mWmtsParameters[ QgsWmtsParameter::TILEMATRIX ].toInt();
+    return mWmtsParameters[QgsWmtsParameter::TILEMATRIX].toInt();
   }
 
   QString QgsWmtsParameters::tileRow() const
   {
-    return mWmtsParameters[ QgsWmtsParameter::TILEROW ].toString();
+    return mWmtsParameters[QgsWmtsParameter::TILEROW].toString();
   }
 
   int QgsWmtsParameters::tileRowAsInt() const
   {
-    return mWmtsParameters[ QgsWmtsParameter::TILEROW ].toInt();
+    return mWmtsParameters[QgsWmtsParameter::TILEROW].toInt();
   }
 
   QString QgsWmtsParameters::tileCol() const
   {
-    return mWmtsParameters[ QgsWmtsParameter::TILECOL ].toString();
+    return mWmtsParameters[QgsWmtsParameter::TILECOL].toString();
   }
 
   int QgsWmtsParameters::tileColAsInt() const
   {
-    return mWmtsParameters[ QgsWmtsParameter::TILECOL ].toInt();
+    return mWmtsParameters[QgsWmtsParameter::TILECOL].toInt();
   }
 
   QString QgsWmtsParameters::infoFormatAsString() const
   {
-    return mWmtsParameters[ QgsWmtsParameter::INFOFORMAT ].toString();
+    return mWmtsParameters[QgsWmtsParameter::INFOFORMAT].toString();
   }
 
   QgsWmtsParameters::Format QgsWmtsParameters::infoFormat() const
@@ -273,22 +273,22 @@ namespace QgsWmts
 
   QString QgsWmtsParameters::i() const
   {
-    return mWmtsParameters[ QgsWmtsParameter::I ].toString();
+    return mWmtsParameters[QgsWmtsParameter::I].toString();
   }
 
   QString QgsWmtsParameters::j() const
   {
-    return mWmtsParameters[ QgsWmtsParameter::J ].toString();
+    return mWmtsParameters[QgsWmtsParameter::J].toString();
   }
 
   int QgsWmtsParameters::iAsInt() const
   {
-    return mWmtsParameters[ QgsWmtsParameter::I ].toInt();
+    return mWmtsParameters[QgsWmtsParameter::I].toInt();
   }
 
   int QgsWmtsParameters::jAsInt() const
   {
-    return mWmtsParameters[ QgsWmtsParameter::J ].toInt();
+    return mWmtsParameters[QgsWmtsParameter::J].toInt();
   }
 
   QgsProjectVersion QgsWmtsParameters::versionAsNumber() const
@@ -308,4 +308,4 @@ namespace QgsWmts
   {
     QgsMessageLog::logMessage( msg, "Server", Qgis::MessageLevel::Info );
   }
-}
+} // namespace QgsWmts

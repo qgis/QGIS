@@ -79,4 +79,3 @@ void QgsMessageOutputConsole::setTitle( const QString &title )
 {
   mTitle = title;
 }
-

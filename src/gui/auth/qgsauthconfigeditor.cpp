@@ -54,7 +54,7 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
     const QSqlDatabase connection { QgsApplication::authManager()->authDatabaseConnection() };
     Q_NOWARN_DEPRECATED_POP
 
-    mIsReadOnly = ! QgsApplication::authManager()->defaultDbStorage() || QgsApplication::authManager()->defaultDbStorage()->isReadOnly();
+    mIsReadOnly = !QgsApplication::authManager()->defaultDbStorage() || QgsApplication::authManager()->defaultDbStorage()->isReadOnly();
     if ( mIsReadOnly )
     {
       mConfigModel = new QSqlTableModel( this, connection );
@@ -80,10 +80,10 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
 
     tableViewConfigs->setModel( mConfigModel );
     tableViewConfigs->resizeColumnsToContents();
-//    tableViewConfigs->resizeColumnToContents( 0 );
-//    tableViewConfigs->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
-//    tableViewConfigs->horizontalHeader()->setResizeMode(2, QHeaderView::Interactive);
-//    tableViewConfigs->resizeColumnToContents( 3 );
+    //    tableViewConfigs->resizeColumnToContents( 0 );
+    //    tableViewConfigs->horizontalHeader()->setResizeMode(1, QHeaderView::Stretch);
+    //    tableViewConfigs->horizontalHeader()->setResizeMode(2, QHeaderView::Interactive);
+    //    tableViewConfigs->resizeColumnToContents( 3 );
     tableViewConfigs->hideColumn( 4 );
     tableViewConfigs->hideColumn( 5 );
 
@@ -120,7 +120,7 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
     connect( mActionClearCachedMasterPassword, &QAction::triggered, this, &QgsAuthConfigEditor::clearCachedMasterPassword );
     connect( mActionClearCachedAuthConfigs, &QAction::triggered, this, &QgsAuthConfigEditor::clearCachedAuthenticationConfigs );
 
-    if ( ! mIsReadOnly )
+    if ( !mIsReadOnly )
     {
       connect( tableViewConfigs, &QAbstractItemView::doubleClicked, this, &QgsAuthConfigEditor::btnEditConfig_clicked );
 
@@ -142,7 +142,7 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
 
     mAuthUtilitiesMenu = new QMenu( this );
 
-    if ( ! mIsReadOnly )
+    if ( !mIsReadOnly )
     {
       mAuthUtilitiesMenu->addAction( mActionSetMasterPassword );
       mAuthUtilitiesMenu->addAction( mActionClearCachedMasterPassword );
@@ -152,18 +152,18 @@ QgsAuthConfigEditor::QgsAuthConfigEditor( QWidget *parent, bool showUtilities, b
 
     mAuthUtilitiesMenu->addAction( mActionClearCachedAuthConfigs );
 
-    if ( ! mIsReadOnly )
+    if ( !mIsReadOnly )
       mAuthUtilitiesMenu->addAction( mActionRemoveAuthConfigs );
 
     mAuthUtilitiesMenu->addSeparator();
 
-    if ( ! mIsReadOnly )
+    if ( !mIsReadOnly )
       mAuthUtilitiesMenu->addAction( mActionImportAuthenticationConfigs );
 
     mAuthUtilitiesMenu->addAction( mActionExportSelectedAuthenticationConfigs );
     mAuthUtilitiesMenu->addSeparator();
 
-    if ( ! mIsReadOnly )
+    if ( !mIsReadOnly )
       mAuthUtilitiesMenu->addAction( mActionEraseAuthDatabase );
 
     btnAuthUtilities->setMenu( mAuthUtilitiesMenu );
@@ -336,9 +336,11 @@ void QgsAuthConfigEditor::btnRemoveConfig_clicked()
 
     if ( QMessageBox::warning( this, tr( "Remove Configuration" ),
                                tr( "Are you sure you want to remove '%1'?\n\n"
-                                   "Operation can NOT be undone!" ).arg( name ),
+                                   "Operation can NOT be undone!" )
+                                 .arg( name ),
                                QMessageBox::Ok | QMessageBox::Cancel,
-                               QMessageBox::Cancel ) == QMessageBox::Ok )
+                               QMessageBox::Cancel )
+         == QMessageBox::Ok )
     {
       mConfigModel->removeRow( index.row() );
     }

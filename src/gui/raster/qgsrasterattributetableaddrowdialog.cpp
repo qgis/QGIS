@@ -22,7 +22,6 @@ QgsRasterAttributeTableAddRowDialog::QgsRasterAttributeTableAddRowDialog( QWidge
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
-
 }
 
 bool QgsRasterAttributeTableAddRowDialog::insertAfter() const

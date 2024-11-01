@@ -92,7 +92,6 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
 {
     Q_OBJECT
   public:
-
     enum Page
     {
       Symbology = 1,
@@ -102,7 +101,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
       History,
       Symbology3D,
       RasterAttributeTables, //!< Raster attribute tables, since QGIS 3.30
-      VectorDiagram, //!< Vector diagram, since QGIS 3.40
+      VectorDiagram,         //!< Vector diagram, since QGIS 3.40
     };
 
     QgsLayerStylingWidget( QgsMapCanvas *canvas, QgsMessageBar *messageBar, const QList<const QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent = nullptr );
@@ -159,7 +158,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
 
   private:
     void pushUndoItem( const QString &name, bool triggerRepaint = true );
-    void emitLayerStyleChanged( const QString &currentStyleName ) {emit layerStyleChanged( currentStyleName );};
+    void emitLayerStyleChanged( const QString &currentStyleName ) { emit layerStyleChanged( currentStyleName ); };
     void emitLayerStyleRenamed();
     int mNotSupportedPage;
     int mLayerPage;

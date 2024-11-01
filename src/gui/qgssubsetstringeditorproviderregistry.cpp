@@ -70,7 +70,7 @@ void QgsSubsetStringEditorProviderRegistry::initializeFromProviderGuiRegistry( Q
 QgsSubsetStringEditorProvider *QgsSubsetStringEditorProviderRegistry::providerByName( const QString &name )
 {
   const QList<QgsSubsetStringEditorProvider *> providerList = providers();
-  for ( const auto provider :  providerList )
+  for ( const auto provider : providerList )
   {
     if ( provider->name() == name )
     {

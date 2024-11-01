@@ -19,15 +19,13 @@
 
 class QgsNetworkLogger;
 
-class QgsNetworkLoggerWidgetFactory: public QgsDevToolWidgetFactory
+class QgsNetworkLoggerWidgetFactory : public QgsDevToolWidgetFactory
 {
   public:
-
     QgsNetworkLoggerWidgetFactory( QgsNetworkLogger *logger );
     QgsDevToolWidget *createWidget( QWidget *parent = nullptr ) const override;
 
   private:
-
     QgsNetworkLogger *mLogger = nullptr;
 };
 

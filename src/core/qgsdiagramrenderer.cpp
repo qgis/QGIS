@@ -45,20 +45,19 @@ void QgsDiagramLayerSettings::initPropertyDefinitions()
 
   const QString origin = QStringLiteral( "diagram" );
 
-  sPropertyDefinitions = QgsPropertiesDefinition
-  {
-    { static_cast< int >( QgsDiagramLayerSettings::Property::BackgroundColor ), QgsPropertyDefinition( "backgroundColor", QObject::tr( "Background color" ), QgsPropertyDefinition::ColorWithAlpha, origin ) },
-    { static_cast< int >( QgsDiagramLayerSettings::Property::StrokeColor ), QgsPropertyDefinition( "strokeColor", QObject::tr( "Stroke color" ), QgsPropertyDefinition::ColorWithAlpha, origin ) },
-    { static_cast< int >( QgsDiagramLayerSettings::Property::StrokeWidth ), QgsPropertyDefinition( "strokeWidth", QObject::tr( "Stroke width" ), QgsPropertyDefinition::StrokeWidth, origin ) },
-    { static_cast< int >( QgsDiagramLayerSettings::Property::PositionX ), QgsPropertyDefinition( "positionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double, origin ) },
-    { static_cast< int >( QgsDiagramLayerSettings::Property::PositionY ), QgsPropertyDefinition( "positionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double, origin ) },
-    { static_cast< int >( QgsDiagramLayerSettings::Property::Distance ), QgsPropertyDefinition( "distance", QObject::tr( "Placement distance" ), QgsPropertyDefinition::DoublePositive, origin ) },
-    { static_cast< int >( QgsDiagramLayerSettings::Property::Priority ), QgsPropertyDefinition( "priority", QObject::tr( "Placement priority" ), QgsPropertyDefinition::DoublePositive, origin ) },
-    { static_cast< int >( QgsDiagramLayerSettings::Property::ZIndex ), QgsPropertyDefinition( "zIndex", QObject::tr( "Placement z-index" ), QgsPropertyDefinition::Double, origin ) },
-    { static_cast< int >( QgsDiagramLayerSettings::Property::IsObstacle ), QgsPropertyDefinition( "isObstacle", QObject::tr( "Diagram is an obstacle" ), QgsPropertyDefinition::Boolean, origin ) },
-    { static_cast< int >( QgsDiagramLayerSettings::Property::Show ), QgsPropertyDefinition( "show", QObject::tr( "Show diagram" ), QgsPropertyDefinition::Boolean, origin ) },
-    { static_cast< int >( QgsDiagramLayerSettings::Property::AlwaysShow ), QgsPropertyDefinition( "alwaysShow", QObject::tr( "Always show diagram" ), QgsPropertyDefinition::Boolean, origin ) },
-    { static_cast< int >( QgsDiagramLayerSettings::Property::StartAngle ), QgsPropertyDefinition( "startAngle", QObject::tr( "Pie chart start angle" ), QgsPropertyDefinition::Rotation, origin ) },
+  sPropertyDefinitions = QgsPropertiesDefinition {
+    { static_cast<int>( QgsDiagramLayerSettings::Property::BackgroundColor ), QgsPropertyDefinition( "backgroundColor", QObject::tr( "Background color" ), QgsPropertyDefinition::ColorWithAlpha, origin ) },
+    { static_cast<int>( QgsDiagramLayerSettings::Property::StrokeColor ), QgsPropertyDefinition( "strokeColor", QObject::tr( "Stroke color" ), QgsPropertyDefinition::ColorWithAlpha, origin ) },
+    { static_cast<int>( QgsDiagramLayerSettings::Property::StrokeWidth ), QgsPropertyDefinition( "strokeWidth", QObject::tr( "Stroke width" ), QgsPropertyDefinition::StrokeWidth, origin ) },
+    { static_cast<int>( QgsDiagramLayerSettings::Property::PositionX ), QgsPropertyDefinition( "positionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double, origin ) },
+    { static_cast<int>( QgsDiagramLayerSettings::Property::PositionY ), QgsPropertyDefinition( "positionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double, origin ) },
+    { static_cast<int>( QgsDiagramLayerSettings::Property::Distance ), QgsPropertyDefinition( "distance", QObject::tr( "Placement distance" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { static_cast<int>( QgsDiagramLayerSettings::Property::Priority ), QgsPropertyDefinition( "priority", QObject::tr( "Placement priority" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { static_cast<int>( QgsDiagramLayerSettings::Property::ZIndex ), QgsPropertyDefinition( "zIndex", QObject::tr( "Placement z-index" ), QgsPropertyDefinition::Double, origin ) },
+    { static_cast<int>( QgsDiagramLayerSettings::Property::IsObstacle ), QgsPropertyDefinition( "isObstacle", QObject::tr( "Diagram is an obstacle" ), QgsPropertyDefinition::Boolean, origin ) },
+    { static_cast<int>( QgsDiagramLayerSettings::Property::Show ), QgsPropertyDefinition( "show", QObject::tr( "Show diagram" ), QgsPropertyDefinition::Boolean, origin ) },
+    { static_cast<int>( QgsDiagramLayerSettings::Property::AlwaysShow ), QgsPropertyDefinition( "alwaysShow", QObject::tr( "Always show diagram" ), QgsPropertyDefinition::Boolean, origin ) },
+    { static_cast<int>( QgsDiagramLayerSettings::Property::StartAngle ), QgsPropertyDefinition( "startAngle", QObject::tr( "Pie chart start angle" ), QgsPropertyDefinition::Rotation, origin ) },
   };
 }
 
@@ -127,15 +126,15 @@ void QgsDiagramLayerSettings::readXml( const QDomElement &elem )
   const QDomNodeList propertyElems = elem.elementsByTagName( QStringLiteral( "properties" ) );
   if ( !propertyElems.isEmpty() )
   {
-    ( void )mDataDefinedProperties.readXml( propertyElems.at( 0 ).toElement(), sPropertyDefinitions );
+    ( void ) mDataDefinedProperties.readXml( propertyElems.at( 0 ).toElement(), sPropertyDefinitions );
   }
   else
   {
     mDataDefinedProperties.clear();
   }
 
-  mPlacement = static_cast< Placement >( elem.attribute( QStringLiteral( "placement" ) ).toInt() );
-  mPlacementFlags = static_cast< LinePlacementFlag >( elem.attribute( QStringLiteral( "linePlacementFlags" ) ).toInt() );
+  mPlacement = static_cast<Placement>( elem.attribute( QStringLiteral( "placement" ) ).toInt() );
+  mPlacementFlags = static_cast<LinePlacementFlag>( elem.attribute( QStringLiteral( "linePlacementFlags" ) ).toInt() );
   mPriority = elem.attribute( QStringLiteral( "priority" ) ).toInt();
   mZIndex = elem.attribute( QStringLiteral( "zIndex" ) ).toDouble();
   mObstacle = elem.attribute( QStringLiteral( "obstacle" ) ).toInt();
@@ -147,7 +146,7 @@ void QgsDiagramLayerSettings::writeXml( QDomElement &layerElem, QDomDocument &do
 {
   QDomElement diagramLayerElem = doc.createElement( QStringLiteral( "DiagramLayerSettings" ) );
   QDomElement propertiesElem = doc.createElement( QStringLiteral( "properties" ) );
-  ( void )mDataDefinedProperties.writeXml( propertiesElem, sPropertyDefinitions );
+  ( void ) mDataDefinedProperties.writeXml( propertiesElem, sPropertyDefinitions );
   diagramLayerElem.appendChild( propertiesElem );
   diagramLayerElem.setAttribute( QStringLiteral( "placement" ), mPlacement );
   diagramLayerElem.setAttribute( QStringLiteral( "linePlacementFlags" ), mPlacementFlags );
@@ -166,7 +165,7 @@ bool QgsDiagramLayerSettings::prepare( const QgsExpressionContext &context ) con
 
 QSet<QString> QgsDiagramLayerSettings::referencedFields( const QgsExpressionContext &context ) const
 {
-  QSet< QString > referenced;
+  QSet<QString> referenced;
   if ( mRenderer )
     referenced = mRenderer->referencedFields( context );
 
@@ -201,7 +200,7 @@ void QgsDiagramSettings::readXml( const QDomElement &elem, const QgsReadWriteCon
   penColor.setAlpha( penAlpha );
   penWidth = elem.attribute( QStringLiteral( "penWidth" ) ).toDouble();
 
-  mDirection = static_cast< Direction >( elem.attribute( QStringLiteral( "direction" ), QStringLiteral( "1" ) ).toInt() );
+  mDirection = static_cast<Direction>( elem.attribute( QStringLiteral( "direction" ), QStringLiteral( "1" ) ).toInt() );
 
   maximumScale = elem.attribute( QStringLiteral( "minScaleDenominator" ), QStringLiteral( "-1" ) ).toDouble();
   minimumScale = elem.attribute( QStringLiteral( "maxScaleDenominator" ), QStringLiteral( "-1" ) ).toDouble();
@@ -303,7 +302,7 @@ void QgsDiagramSettings::readXml( const QDomElement &elem, const QgsReadWriteCon
   }
   else
   {
-    mAxisLineSymbol = std::make_unique< QgsLineSymbol >();
+    mAxisLineSymbol = std::make_unique<QgsLineSymbol>();
   }
 
   mShowAxis = elem.attribute( QStringLiteral( "showAxis" ), QStringLiteral( "0" ) ).toInt();
@@ -517,10 +516,10 @@ void QgsDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRenderCont
   }
 
   QgsPaintEffect *effect = s.paintEffect();
-  std::unique_ptr< QgsEffectPainter > effectPainter;
+  std::unique_ptr<QgsEffectPainter> effectPainter;
   if ( effect && effect->enabled() )
   {
-    effectPainter = std::make_unique< QgsEffectPainter >( c, effect );
+    effectPainter = std::make_unique<QgsEffectPainter>( c, effect );
   }
 
   mDiagram->renderDiagram( feature, c, s, pos );
@@ -566,7 +565,7 @@ QSizeF QgsDiagramRenderer::sizeMapUnits( const QgsFeature &feature, const QgsRen
 
 QSet<QString> QgsDiagramRenderer::referencedFields( const QgsExpressionContext &context ) const
 {
-  QSet< QString > referenced;
+  QSet<QString> referenced;
 
   if ( !mDiagram )
     return referenced;
@@ -759,7 +758,7 @@ QList<QString> QgsLinearlyInterpolatedDiagramRenderer::diagramAttributes() const
 
 QSet<QString> QgsLinearlyInterpolatedDiagramRenderer::referencedFields( const QgsExpressionContext &context ) const
 {
-  QSet< QString > referenced = QgsDiagramRenderer::referencedFields( context );
+  QSet<QString> referenced = QgsDiagramRenderer::referencedFields( context );
   if ( mInterpolationSettings.classificationAttributeIsExpression )
   {
     QgsExpression *expression = mDiagram->getExpression( mInterpolationSettings.classificationAttributeExpression, context );
@@ -903,7 +902,7 @@ QgsStackedDiagramRenderer *QgsStackedDiagramRenderer::clone() const
 QSizeF QgsStackedDiagramRenderer::sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const
 {
   QSizeF stackedSize( 0, 0 );
-  int enabledDiagramCount = 0;  // We'll add spacing only for enabled subDiagrams
+  int enabledDiagramCount = 0; // We'll add spacing only for enabled subDiagrams
 
   // Iterate renderers. For each renderer, get the diagram
   // size for the feature and add it to the total size
@@ -958,7 +957,7 @@ void QgsStackedDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRen
   QPointF newPos = pos; // Each subdiagram will have its own newPos
 
   // Get subrenderers sorted by mode (vertical diagrams are returned backwards)
-  const QList< QgsDiagramRenderer * > stackedRenderers = renderers( true );
+  const QList<QgsDiagramRenderer *> stackedRenderers = renderers( true );
 
   for ( const QgsDiagramRenderer *stackedRenderer : stackedRenderers )
   {
@@ -1013,14 +1012,14 @@ void QgsStackedDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRen
     }
 
     QgsPaintEffect *effect = s.paintEffect();
-    std::unique_ptr< QgsEffectPainter > effectPainter;
+    std::unique_ptr<QgsEffectPainter> effectPainter;
     if ( effect && effect->enabled() )
     {
-      effectPainter = std::make_unique< QgsEffectPainter >( c, effect );
+      effectPainter = std::make_unique<QgsEffectPainter>( c, effect );
     }
 
     stackedRenderer->diagram()->renderDiagram( feature, c, s, newPos );
-    QgsStackedDiagram *stackedDiagram = dynamic_cast< QgsStackedDiagram *>( mDiagram.get() );
+    QgsStackedDiagram *stackedDiagram = dynamic_cast<QgsStackedDiagram *>( mDiagram.get() );
     stackedDiagram->subDiagramPosition( newPos, c, mSettings, s );
   }
 }
@@ -1052,9 +1051,9 @@ QList<QString> QgsStackedDiagramRenderer::diagramAttributes() const
   return mSettings.categoryAttributes;
 }
 
-QList< QgsLayerTreeModelLegendNode * > QgsStackedDiagramRenderer::legendItems( QgsLayerTreeLayer *nodeLayer ) const
+QList<QgsLayerTreeModelLegendNode *> QgsStackedDiagramRenderer::legendItems( QgsLayerTreeLayer *nodeLayer ) const
 {
-  QList< QgsLayerTreeModelLegendNode * > nodes;
+  QList<QgsLayerTreeModelLegendNode *> nodes;
   for ( const QgsDiagramRenderer *renderer : std::as_const( mDiagramRenderers ) )
   {
     nodes << renderer->legendItems( nodeLayer );
@@ -1063,9 +1062,9 @@ QList< QgsLayerTreeModelLegendNode * > QgsStackedDiagramRenderer::legendItems( Q
   return nodes;
 }
 
-QList< QgsDiagramRenderer * > QgsStackedDiagramRenderer::renderers( bool sortByDiagramMode ) const
+QList<QgsDiagramRenderer *> QgsStackedDiagramRenderer::renderers( bool sortByDiagramMode ) const
 {
-  QList< QgsDiagramRenderer * > renderers = mDiagramRenderers;
+  QList<QgsDiagramRenderer *> renderers = mDiagramRenderers;
 
   if ( sortByDiagramMode && mSettings.stackedDiagramMode == QgsDiagramSettings::Vertical )
   {
@@ -1124,19 +1123,19 @@ void QgsStackedDiagramRenderer::_readXmlSubRenderers( const QDomElement &elem, c
 
       if ( subRendererElem.nodeName() == QStringLiteral( "SingleCategoryDiagramRenderer" ) )
       {
-        std::unique_ptr< QgsSingleCategoryDiagramRenderer > singleCatDiagramRenderer = std::make_unique< QgsSingleCategoryDiagramRenderer >();
+        std::unique_ptr<QgsSingleCategoryDiagramRenderer> singleCatDiagramRenderer = std::make_unique<QgsSingleCategoryDiagramRenderer>();
         singleCatDiagramRenderer->readXml( subRendererElem, context );
         addRenderer( singleCatDiagramRenderer.release() );
       }
       else if ( subRendererElem.nodeName() == QStringLiteral( "LinearlyInterpolatedDiagramRenderer" ) )
       {
-        std::unique_ptr< QgsLinearlyInterpolatedDiagramRenderer > linearDiagramRenderer = std::make_unique< QgsLinearlyInterpolatedDiagramRenderer >();
+        std::unique_ptr<QgsLinearlyInterpolatedDiagramRenderer> linearDiagramRenderer = std::make_unique<QgsLinearlyInterpolatedDiagramRenderer>();
         linearDiagramRenderer->readXml( subRendererElem, context );
         addRenderer( linearDiagramRenderer.release() );
       }
       else if ( subRendererElem.nodeName() == QStringLiteral( "StackedDiagramRenderer" ) )
       {
-        std::unique_ptr< QgsStackedDiagramRenderer > stackedDiagramRenderer = std::make_unique< QgsStackedDiagramRenderer >();
+        std::unique_ptr<QgsStackedDiagramRenderer> stackedDiagramRenderer = std::make_unique<QgsStackedDiagramRenderer>();
         stackedDiagramRenderer->readXml( subRendererElem, context );
         addRenderer( stackedDiagramRenderer.release() );
       }
@@ -1165,9 +1164,9 @@ void QgsStackedDiagramRenderer::_writeXmlSubRenderers( QDomElement &rendererElem
   rendererElem.appendChild( renderersElem );
 }
 
-QList< QgsLayerTreeModelLegendNode * > QgsDiagramSettings::legendItems( QgsLayerTreeLayer *nodeLayer ) const
+QList<QgsLayerTreeModelLegendNode *> QgsDiagramSettings::legendItems( QgsLayerTreeLayer *nodeLayer ) const
 {
-  QList< QgsLayerTreeModelLegendNode * > list;
+  QList<QgsLayerTreeModelLegendNode *> list;
   list.reserve( categoryLabels.size() );
   for ( int i = 0; i < categoryLabels.size(); ++i )
   {
@@ -1211,7 +1210,7 @@ void QgsDiagramSettings::setPaintEffect( QgsPaintEffect *effect )
 }
 
 QgsDiagramSettings::QgsDiagramSettings()
-  : mAxisLineSymbol( std::make_unique< QgsLineSymbol >() )
+  : mAxisLineSymbol( std::make_unique<QgsLineSymbol>() )
 {
 }
 
@@ -1253,7 +1252,6 @@ QgsDiagramSettings::QgsDiagramSettings( const QgsDiagramSettings &other )
   , mAxisLineSymbol( other.mAxisLineSymbol ? other.mAxisLineSymbol->clone() : nullptr )
   , mPaintEffect( other.mPaintEffect ? other.mPaintEffect->clone() : nullptr )
 {
-
 }
 
 QgsDiagramSettings &QgsDiagramSettings::operator=( const QgsDiagramSettings &other )
@@ -1305,23 +1303,23 @@ void QgsDiagramSettings::setDirection( Direction direction )
   mDirection = direction;
 }
 
-QList< QgsLayerTreeModelLegendNode * > QgsDiagramRenderer::legendItems( QgsLayerTreeLayer * ) const
+QList<QgsLayerTreeModelLegendNode *> QgsDiagramRenderer::legendItems( QgsLayerTreeLayer * ) const
 {
-  return QList< QgsLayerTreeModelLegendNode * >();
+  return QList<QgsLayerTreeModelLegendNode *>();
 }
 
-QList< QgsLayerTreeModelLegendNode * > QgsSingleCategoryDiagramRenderer::legendItems( QgsLayerTreeLayer *nodeLayer ) const
+QList<QgsLayerTreeModelLegendNode *> QgsSingleCategoryDiagramRenderer::legendItems( QgsLayerTreeLayer *nodeLayer ) const
 {
-  QList< QgsLayerTreeModelLegendNode * > nodes;
+  QList<QgsLayerTreeModelLegendNode *> nodes;
   if ( mShowAttributeLegend && mSettings.enabled )
     nodes = mSettings.legendItems( nodeLayer );
 
   return nodes;
 }
 
-QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::legendItems( QgsLayerTreeLayer *nodeLayer ) const
+QList<QgsLayerTreeModelLegendNode *> QgsLinearlyInterpolatedDiagramRenderer::legendItems( QgsLayerTreeLayer *nodeLayer ) const
 {
-  QList< QgsLayerTreeModelLegendNode * > nodes;
+  QList<QgsLayerTreeModelLegendNode *> nodes;
   if ( !mSettings.enabled )
   {
     return nodes;
@@ -1338,7 +1336,7 @@ QList< QgsLayerTreeModelLegendNode * > QgsLinearlyInterpolatedDiagramRenderer::l
     legendSymbol->setSizeMapUnitScale( mSettings.sizeScale );
 
     QgsDataDefinedSizeLegend ddSizeLegend( *mDataDefinedSizeLegend );
-    ddSizeLegend.setSymbol( legendSymbol );  // transfers ownership
+    ddSizeLegend.setSymbol( legendSymbol ); // transfers ownership
 
     QList<QgsDataDefinedSizeLegend::SizeClass> sizeClasses;
     if ( ddSizeLegend.classes().isEmpty() )

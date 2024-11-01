@@ -35,11 +35,9 @@ class QgsLineString;
  * \brief A paint engine which converts everything renderer to a QgsGeometry representation of the rendered shapes.
  * \since QGIS 3.38
  */
-class QgsGeometryPaintEngine: public QPaintEngine
+class QgsGeometryPaintEngine : public QPaintEngine
 {
-
   public:
-
     /**
      * Constructor for QgsGeometryPaintEngine.
      *
@@ -100,7 +98,6 @@ class QgsGeometryPaintEngine: public QPaintEngine
     const QgsAbstractGeometry &geometry() const { return mGeometry; }
 
   private:
-
     void addSubpathGeometries( const QPainterPath &path, const QTransform &matrix );
     void addStrokedLine( const QgsLineString *line, double penWidth, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, const QTransform *matrix );
     static Qgis::EndCapStyle penStyleToCapStyle( Qt::PenCapStyle style );
@@ -121,11 +118,9 @@ class QgsGeometryPaintEngine: public QPaintEngine
  * \brief A paint device which converts everything renderer to a QgsGeometry representation of the rendered shapes.
  * \since QGIS 3.38
  */
-class CORE_EXPORT QgsGeometryPaintDevice: public QPaintDevice
+class CORE_EXPORT QgsGeometryPaintDevice : public QPaintDevice
 {
-
   public:
-
     /**
      * Constructor for QgsGeometryPaintDevice.
      *
@@ -167,11 +162,9 @@ class CORE_EXPORT QgsGeometryPaintDevice: public QPaintDevice
     static QgsGeometry painterPathToGeometry( const QPainterPath &path );
 
   private:
-
     std::unique_ptr<QgsGeometryPaintEngine> mPaintEngine;
 
     QSize mSize;
-
 };
 
 

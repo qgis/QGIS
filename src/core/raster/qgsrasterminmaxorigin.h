@@ -31,9 +31,7 @@
  */
 class CORE_EXPORT QgsRasterMinMaxOrigin
 {
-
   public:
-
     //! \brief Default cumulative cut lower limit
     static constexpr double CUMULATIVE_CUT_LOWER = 0.02;
 
@@ -48,17 +46,17 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
     enum Limits
     {
       None SIP_PYNAME( None_ ), //!< User defined.
-      MinMax, //!< Real min-max values
-      StdDev, //!< Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]
-      CumulativeCut //!< Range is [ min + cumulativeCutLower() * (max - min), min + cumulativeCutUpper() * (max - min) ]
+      MinMax,                   //!< Real min-max values
+      StdDev,                   //!< Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]
+      CumulativeCut             //!< Range is [ min + cumulativeCutLower() * (max - min), min + cumulativeCutUpper() * (max - min) ]
     };
 #else
     //! \brief This enumerator describes the limits used to compute min/max values
     enum Limits
     {
-      None, //!< User defined.
-      MinMax, //!< Real min-max values
-      StdDev, //!< Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]
+      None,         //!< User defined.
+      MinMax,       //!< Real min-max values
+      StdDev,       //!< Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]
       CumulativeCut //!< Range is [ min + cumulativeCutLower() * (max - min), min + cumulativeCutUpper() * (max - min) ]
     };
 #endif
@@ -85,7 +83,7 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
 
     QgsRasterMinMaxOrigin();
 
-    bool operator ==( const QgsRasterMinMaxOrigin &other ) const;
+    bool operator==( const QgsRasterMinMaxOrigin &other ) const;
 
     //////// Getter methods /////////////////////
 
@@ -156,7 +154,6 @@ class CORE_EXPORT QgsRasterMinMaxOrigin
     static QgsRasterMinMaxOrigin::StatAccuracy statAccuracyFromString( const QString &accuracy );
 
   private:
-
     Limits mLimits = None;
     Extent mExtent = WholeRaster;
     StatAccuracy mAccuracy = Estimated;

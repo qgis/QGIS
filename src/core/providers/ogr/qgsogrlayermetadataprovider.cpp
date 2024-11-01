@@ -28,14 +28,13 @@ QString QgsOgrLayerMetadataProvider::id() const
 QgsLayerMetadataSearchResults QgsOgrLayerMetadataProvider::search( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
 {
   QgsLayerMetadataSearchResults results;
-  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( id( ) ) };
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( id() ) };
 
-  if ( md && ( ! feedback || ! feedback->isCanceled( ) ) )
+  if ( md && ( !feedback || !feedback->isCanceled() ) )
   {
-    const QMap<QString, QgsAbstractProviderConnection *> cConnections { md->connections( ) };
+    const QMap<QString, QgsAbstractProviderConnection *> cConnections { md->connections() };
     for ( const QgsAbstractProviderConnection *conn : std::as_const( cConnections ) )
     {
-
       if ( feedback && feedback->isCanceled() )
       {
         break;

@@ -57,10 +57,10 @@ class CORE_EXPORT QgsCptCityArchive
     QString copyingFileName( const QString &dirName ) const;
     QString descFileName( const QString &dirName ) const;
     static QString findFileName( const QString &target, const QString &startDir, const QString &baseDir );
-    static QMap< QString, QString > copyingInfo( const QString &fileName );
-    static QMap< QString, QString > description( const QString &fileName );
+    static QMap<QString, QString> copyingInfo( const QString &fileName );
+    static QMap<QString, QString> description( const QString &fileName );
     //! \note not available in Python bindings
-    static QMap< double, QPair<QColor, QColor> > gradientColorMap( const QString &fileName ) SIP_SKIP;
+    static QMap<double, QPair<QColor, QColor>> gradientColorMap( const QString &fileName ) SIP_SKIP;
 
     // archive management
     //! Returns TRUE if archive is empty
@@ -71,25 +71,23 @@ class CORE_EXPORT QgsCptCityArchive
     static void initDefaultArchive();
     static void clearArchives();
     static QgsCptCityArchive *defaultArchive();
-    static QMap< QString, QgsCptCityArchive * > archiveRegistry();
+    static QMap<QString, QgsCptCityArchive *> archiveRegistry();
 
     // items
-    QVector< QgsCptCityDataItem * > rootItems() const { return mRootItems; }
-    QVector< QgsCptCityDataItem * > selectionItems() const { return mSelectionItems; }
+    QVector<QgsCptCityDataItem *> rootItems() const { return mRootItems; }
+    QVector<QgsCptCityDataItem *> selectionItems() const { return mSelectionItems; }
 
   private:
-
     QString mArchiveName;
     QString mBaseDir;
     // root items, namely directories at root of archive
-    QVector< QgsCptCityDataItem * > mRootItems;
+    QVector<QgsCptCityDataItem *> mRootItems;
     QVector<QgsCptCityDataItem *> mSelectionItems;
 
   private:
 #ifdef SIP_RUN
     QgsCptCityArchive( const QgsCptCityArchive &rh );
 #endif
-
 };
 
 /**
@@ -181,7 +179,12 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
      *
      * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 4.0.
      */
-    Q_DECL_DEPRECATED virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) SIP_DEPRECATED { Q_UNUSED( data ); Q_UNUSED( action ); return false; }
+    Q_DECL_DEPRECATED virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) SIP_DEPRECATED
+    {
+      Q_UNUSED( data );
+      Q_UNUSED( action );
+      return false;
+    }
 
     // static methods
 
@@ -197,7 +200,11 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     void setParent( QgsCptCityDataItem *parent ) { mParent = parent; }
     QVector<QgsCptCityDataItem *> children() const { return mChildren; }
     virtual QIcon icon() { return mIcon; }
-    virtual QIcon icon( QSize size ) { Q_UNUSED( size ) return icon(); }
+    virtual QIcon icon( QSize size )
+    {
+      Q_UNUSED( size )
+      return icon();
+    }
     QString name() const { return mName; }
     QString path() const { return mPath; }
     QString info() const { return mInfo; }
@@ -211,7 +218,6 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     bool isValid() { return mValid; }
 
   protected:
-
     Type mType;
     QgsCptCityDataItem *mParent = nullptr;
     QVector<QgsCptCityDataItem *> mChildren; // easier to have it always
@@ -300,10 +306,9 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
     void init();
 
   protected:
-
     bool mInitialized;
     QgsCptCityColorRamp mRamp;
-    QList< QIcon > mIcons;
+    QList<QIcon> mIcons;
 };
 
 
@@ -346,9 +351,9 @@ class CORE_EXPORT QgsCptCityDirectoryItem : public QgsCptCityCollectionItem
                                          const QString &name, const QString &path );
 
   protected:
-    QMap< QString, QStringList > rampsMap();
+    QMap<QString, QStringList> rampsMap();
     QStringList dirEntries() const;
-    QMap< QString, QStringList > mRampsMap;
+    QMap<QString, QStringList> mRampsMap;
 };
 
 /**
@@ -400,7 +405,6 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     enum ViewType
     {
       Authors = 0,
@@ -457,7 +461,6 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
     void endRemoveItems();
 
   protected:
-
     // populates the model
     void addRootItems();
     void removeRootItems();

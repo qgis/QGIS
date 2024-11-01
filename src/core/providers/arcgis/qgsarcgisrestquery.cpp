@@ -62,8 +62,10 @@ QVariantMap QgsArcGisRestQueryUtils::getObjectIds( const QString &layerurl, cons
   if ( !bbox.isNull() )
   {
     query.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "%1,%2,%3,%4" )
-                        .arg( bbox.xMinimum(), 0, 'f', -1 ).arg( bbox.yMinimum(), 0, 'f', -1 )
-                        .arg( bbox.xMaximum(), 0, 'f', -1 ).arg( bbox.yMaximum(), 0, 'f', -1 ) );
+                                                        .arg( bbox.xMinimum(), 0, 'f', -1 )
+                                                        .arg( bbox.yMinimum(), 0, 'f', -1 )
+                                                        .arg( bbox.xMaximum(), 0, 'f', -1 )
+                                                        .arg( bbox.yMaximum(), 0, 'f', -1 ) );
     query.addQueryItem( QStringLiteral( "geometryType" ), QStringLiteral( "esriGeometryEnvelope" ) );
     query.addQueryItem( QStringLiteral( "spatialRel" ), QStringLiteral( "esriSpatialRelEnvelopeIntersects" ) );
   }
@@ -93,10 +95,10 @@ QgsRectangle QgsArcGisRestQueryUtils::getExtent( const QString &layerurl, const 
 }
 
 QVariantMap QgsArcGisRestQueryUtils::getObjects( const QString &layerurl, const QString &authcfg, const QList<quint32> &objectIds, const QString &crs,
-    bool fetchGeometry, const QStringList &fetchAttributes,
-    bool fetchM, bool fetchZ,
-    const QgsRectangle &filterRect,
-    QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, const QString &urlPrefix )
+                                                 bool fetchGeometry, const QStringList &fetchAttributes,
+                                                 bool fetchM, bool fetchZ,
+                                                 const QgsRectangle &filterRect,
+                                                 QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, const QString &urlPrefix )
 {
   QStringList ids;
   for ( const int id : objectIds )
@@ -125,13 +127,15 @@ QVariantMap QgsArcGisRestQueryUtils::getObjects( const QString &layerurl, const 
   if ( !filterRect.isNull() )
   {
     query.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "%1,%2,%3,%4" )
-                        .arg( filterRect.xMinimum(), 0, 'f', -1 ).arg( filterRect.yMinimum(), 0, 'f', -1 )
-                        .arg( filterRect.xMaximum(), 0, 'f', -1 ).arg( filterRect.yMaximum(), 0, 'f', -1 ) );
+                                                        .arg( filterRect.xMinimum(), 0, 'f', -1 )
+                                                        .arg( filterRect.yMinimum(), 0, 'f', -1 )
+                                                        .arg( filterRect.xMaximum(), 0, 'f', -1 )
+                                                        .arg( filterRect.yMaximum(), 0, 'f', -1 ) );
     query.addQueryItem( QStringLiteral( "geometryType" ), QStringLiteral( "esriGeometryEnvelope" ) );
     query.addQueryItem( QStringLiteral( "spatialRel" ), QStringLiteral( "esriSpatialRelEnvelopeIntersects" ) );
   }
   queryUrl.setQuery( query );
-  return queryServiceJSON( queryUrl,  authcfg, errorTitle, errorText, requestHeaders, feedback, urlPrefix );
+  return queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders, feedback, urlPrefix );
 }
 
 QList<quint32> QgsArcGisRestQueryUtils::getObjectIdsByExtent( const QString &layerurl, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, const QString &authcfg, const QgsHttpHeaders &requestHeaders, QgsFeedback *feedback, const QString &whereClause, const QString &urlPrefix )
@@ -142,8 +146,10 @@ QList<quint32> QgsArcGisRestQueryUtils::getObjectIdsByExtent( const QString &lay
   query.addQueryItem( QStringLiteral( "where" ), whereClause.isEmpty() ? QStringLiteral( "1=1" ) : whereClause );
   query.addQueryItem( QStringLiteral( "returnIdsOnly" ), QStringLiteral( "true" ) );
   query.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "%1,%2,%3,%4" )
-                      .arg( filterRect.xMinimum(), 0, 'f', -1 ).arg( filterRect.yMinimum(), 0, 'f', -1 )
-                      .arg( filterRect.xMaximum(), 0, 'f', -1 ).arg( filterRect.yMaximum(), 0, 'f', -1 ) );
+                                                      .arg( filterRect.xMinimum(), 0, 'f', -1 )
+                                                      .arg( filterRect.yMinimum(), 0, 'f', -1 )
+                                                      .arg( filterRect.xMaximum(), 0, 'f', -1 )
+                                                      .arg( filterRect.yMaximum(), 0, 'f', -1 ) );
   query.addQueryItem( QStringLiteral( "geometryType" ), QStringLiteral( "esriGeometryEnvelope" ) );
   query.addQueryItem( QStringLiteral( "spatialRel" ), QStringLiteral( "esriSpatialRelEnvelopeIntersects" ) );
   queryUrl.setQuery( query );
@@ -312,7 +318,7 @@ void QgsArcGisRestQueryUtils::adjustBaseUrl( QString &baseUrl, const QString &na
   }
 }
 
-void QgsArcGisRestQueryUtils::visitFolderItems( const std::function< void( const QString &, const QString & ) > &visitor, const QVariantMap &serviceData, const QString &baseUrl )
+void QgsArcGisRestQueryUtils::visitFolderItems( const std::function<void( const QString &, const QString & )> &visitor, const QVariantMap &serviceData, const QString &baseUrl )
 {
   QString base( baseUrl );
   bool baseChecked = false;
@@ -331,7 +337,7 @@ void QgsArcGisRestQueryUtils::visitFolderItems( const std::function< void( const
   }
 }
 
-void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void ( const QString &, const QString &, Qgis::ArcGisRestServiceType )> &visitor, const QVariantMap &serviceData, const QString &baseUrl )
+void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void( const QString &, const QString &, Qgis::ArcGisRestServiceType )> &visitor, const QVariantMap &serviceData, const QString &baseUrl )
 {
   QString base( baseUrl );
   bool baseChecked = false;
@@ -373,7 +379,7 @@ void QgsArcGisRestQueryUtils::visitServiceItems( const std::function<void ( cons
   }
 }
 
-void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QString &, ServiceTypeFilter, Qgis::GeometryType, const QString &, const QString &, const QString &, const QString &, bool, const QgsCoordinateReferenceSystem &, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const QString &parentSupportedFormats, const ServiceTypeFilter filter )
+void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void( const QString &, ServiceTypeFilter, Qgis::GeometryType, const QString &, const QString &, const QString &, const QString &, bool, const QgsCoordinateReferenceSystem &, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl, const QString &parentSupportedFormats, const ServiceTypeFilter filter )
 {
   const QgsCoordinateReferenceSystem crs = QgsArcGisRestUtils::convertSpatialReference( serviceData.value( QStringLiteral( "spatialReference" ) ).toMap() );
 
@@ -398,11 +404,9 @@ void QgsArcGisRestQueryUtils::addLayerItems( const std::function<void ( const QS
   const QStringList capabilities = serviceData.value( QStringLiteral( "capabilities" ) ).toString().split( ',' );
 
   // If the requested layer type is vector, do not show raster-only layers (i.e. non query-able layers)
-  const bool serviceMayHaveQueryCapability = capabilities.contains( QStringLiteral( "Query" ) ) ||
-      serviceData.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) );
+  const bool serviceMayHaveQueryCapability = capabilities.contains( QStringLiteral( "Query" ) ) || serviceData.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) );
 
-  const bool serviceMayRenderMaps = capabilities.contains( QStringLiteral( "Map" ) ) ||
-                                    serviceData.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) );
+  const bool serviceMayRenderMaps = capabilities.contains( QStringLiteral( "Map" ) ) || serviceData.value( QStringLiteral( "serviceDataType" ) ).toString().startsWith( QLatin1String( "esriImageService" ) );
 
   const QVariantList layerInfoList = serviceData.value( QStringLiteral( "layers" ) ).toList();
   for ( const QVariant &layerInfo : layerInfoList )
@@ -527,7 +531,7 @@ void QgsArcGisAsyncQuery::start( const QUrl &url, const QString &authCfg, QByteA
 
   headers.updateNetworkRequest( request );
 
-  if ( !authCfg.isEmpty() &&  !QgsApplication::authManager()->updateNetworkRequest( request, authCfg ) )
+  if ( !authCfg.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, authCfg ) )
   {
     const QString error = tr( "network request update failed for authentication config" );
     emit failed( QStringLiteral( "Network" ), error );

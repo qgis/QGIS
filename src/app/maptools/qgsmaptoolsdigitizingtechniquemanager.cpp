@@ -54,7 +54,7 @@ QgsMapToolsDigitizingTechniqueManager::QgsMapToolsDigitizingTechniqueManager( QO
 
 void QgsMapToolsDigitizingTechniqueManager::setupCanvasTools()
 {
-  const QList< QgsMapToolCapture * > captureTools = QgisApp::instance()->captureTools();
+  const QList<QgsMapToolCapture *> captureTools = QgisApp::instance()->captureTools();
   for ( QgsMapToolCapture *tool : captureTools )
   {
     setupTool( tool );
@@ -68,14 +68,13 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
   QActionGroup *actionGroup = new QActionGroup( digitizeMenu );
 
   QMap<Qgis::CaptureTechnique, QAction *>::const_iterator it = mTechniqueActions.constBegin();
-  for ( ; it != mTechniqueActions.constEnd(); ++ it )
+  for ( ; it != mTechniqueActions.constEnd(); ++it )
   {
     digitizeMenu->addAction( it.value() );
     actionGroup->addAction( it.value() );
   }
   QgisApp::instance()->mActionStreamDigitize->setShortcut( tr( "R", "Keyboard shortcut: toggle stream digitizing" ) );
-  connect( digitizeMenu, &QMenu::triggered, this, [ = ]( QAction * action )
-  {
+  connect( digitizeMenu, &QMenu::triggered, this, [=]( QAction *action ) {
     Qgis::CaptureTechnique technique = mTechniqueActions.key( action, Qgis::CaptureTechnique::StraightSegments );
     if ( mDigitizeModeToolButton->defaultAction() != action )
     {
@@ -107,10 +106,10 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
     {
       shapeButton = new QToolButton( QgisApp::instance()->mShapeDigitizeToolBar );
       shapeButton->setPopupMode( QToolButton::MenuButtonPopup );
-      shapeButton->setMenu( new QMenu( ) );
+      shapeButton->setMenu( new QMenu() );
 
       QgisApp::instance()->mShapeDigitizeToolBar->addWidget( shapeButton );
-      QObject::connect( shapeButton, &QToolButton::triggered, this, [ = ]( QAction * action ) {setShapeTool( action->data().toString() );} );
+      QObject::connect( shapeButton, &QToolButton::triggered, this, [=]( QAction *action ) { setShapeTool( action->data().toString() ); } );
 
       mShapeCategoryButtons.insert( metadata->category(), shapeButton );
     }
@@ -158,7 +157,6 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
 
 QgsMapToolsDigitizingTechniqueManager::~QgsMapToolsDigitizingTechniqueManager()
 {
-
 }
 
 void QgsMapToolsDigitizingTechniqueManager::setCaptureTechnique( Qgis::CaptureTechnique technique, bool alsoSetShapeTool )
@@ -170,7 +168,7 @@ void QgsMapToolsDigitizingTechniqueManager::setCaptureTechnique( Qgis::CaptureTe
   updateDigitizeModeButton( technique );
 
   // QgisApp::captureTools returns all registered capture tools + the eventual current capture tool
-  const QList< QgsMapToolCapture * > tools = QgisApp::instance()->captureTools();
+  const QList<QgsMapToolCapture *> tools = QgisApp::instance()->captureTools();
   for ( QgsMapToolCapture *tool : tools )
   {
     if ( tool->supportsTechnique( technique ) )
@@ -187,7 +185,7 @@ void QgsMapToolsDigitizingTechniqueManager::setCaptureTechnique( Qgis::CaptureTe
   {
     // uncheck all the shape tools
     QHash<QString, QAction *>::iterator sit = mShapeActions.begin();
-    for ( ; sit != mShapeActions.end(); ++ sit )
+    for ( ; sit != mShapeActions.end(); ++sit )
       sit.value()->setChecked( false );
   }
 }
@@ -207,13 +205,13 @@ void QgsMapToolsDigitizingTechniqueManager::setShapeTool( const QString &shapeTo
       bt->setDefaultAction( action );
   }
   QHash<QString, QAction *>::iterator sit = mShapeActions.begin();
-  for ( ; sit != mShapeActions.end(); ++ sit )
+  for ( ; sit != mShapeActions.end(); ++sit )
     sit.value()->setChecked( sit.value() == action );
 
   setCaptureTechnique( Qgis::CaptureTechnique::Shape, false );
 
   // QgisApp::captureTools returns all registered capture tools + the eventual current capture tool
-  const QList< QgsMapToolCapture * > tools = QgisApp::instance()->captureTools();
+  const QList<QgsMapToolCapture *> tools = QgisApp::instance()->captureTools();
   for ( QgsMapToolCapture *tool : tools )
   {
     if ( tool->supportsTechnique( Qgis::CaptureTechnique::Shape ) )
@@ -225,7 +223,7 @@ void QgsMapToolsDigitizingTechniqueManager::setShapeTool( const QString &shapeTo
 
 void QgsMapToolsDigitizingTechniqueManager::mapToolSet( QgsMapTool *newTool, QgsMapTool * )
 {
-  if ( QgsMapToolCapture *captureTool = qobject_cast< QgsMapToolCapture *>( newTool ) )
+  if ( QgsMapToolCapture *captureTool = qobject_cast<QgsMapToolCapture *>( newTool ) )
   {
     if ( mInitializedTools.contains( captureTool ) )
       return;
@@ -243,12 +241,11 @@ void QgsMapToolsDigitizingTechniqueManager::setupTool( QgsMapToolCapture *tool )
 {
   if ( tool->action() )
   {
-    connect( tool->action(), &QAction::toggled, this, [this, tool]( bool checked ) {  enableDigitizingTechniqueActions( checked, tool->action() ); } );
+    connect( tool->action(), &QAction::toggled, this, [this, tool]( bool checked ) { enableDigitizingTechniqueActions( checked, tool->action() ); } );
   }
 
   mInitializedTools.insert( tool );
-  connect( tool, &QObject::destroyed, this, [ = ]
-  {
+  connect( tool, &QObject::destroyed, this, [=] {
     mInitializedTools.remove( tool );
   } );
 }
@@ -277,12 +274,12 @@ void QgsMapToolsDigitizingTechniqueManager::enableDigitizingTechniqueActions( bo
   QgsSettings settings;
 
   // QgisApp::captureTools returns all registered capture tools + the eventual current capture tool
-  const QList< QgsMapToolCapture * > tools = QgisApp::instance()->captureTools();
+  const QList<QgsMapToolCapture *> tools = QgisApp::instance()->captureTools();
 
   const Qgis::CaptureTechnique settingsCurrentTechnique = settingsDigitizingTechnique->value();
   const QString currentShapeToolId = settingMapToolShapeCurrent->value();
 
-  QSet< Qgis::CaptureTechnique > supportedTechniques;
+  QSet<Qgis::CaptureTechnique> supportedTechniques;
 
   QgsMapToolCapture *currentTool = nullptr;
 
@@ -315,14 +312,14 @@ void QgsMapToolsDigitizingTechniqueManager::enableDigitizingTechniqueActions( bo
   updateDigitizeModeButton( actualCurrentTechnique );
 
   QMap<Qgis::CaptureTechnique, QAction *>::const_iterator cit = mTechniqueActions.constBegin();
-  for ( ; cit != mTechniqueActions.constEnd(); ++ cit )
+  for ( ; cit != mTechniqueActions.constEnd(); ++cit )
   {
     cit.value()->setEnabled( enabled && supportedTechniques.contains( cit.key() ) );
     cit.value()->setChecked( cit.value()->isEnabled() && actualCurrentTechnique == cit.key() );
   }
 
   QHash<QString, QAction *>::const_iterator sit = mShapeActions.constBegin();
-  for ( ; sit != mShapeActions.constEnd(); ++ sit )
+  for ( ; sit != mShapeActions.constEnd(); ++sit )
   {
     sit.value()->setEnabled( enabled && supportedTechniques.contains( Qgis::CaptureTechnique::Shape ) );
     sit.value()->setChecked( actualCurrentTechnique == Qgis::CaptureTechnique::Shape && sit.value()->isEnabled() && sit.key() == currentShapeToolId );
@@ -364,8 +361,7 @@ QgsStreamDigitizingSettingsAction::QgsStreamDigitizingSettingsAction( QWidget *p
   QLabel *label = new QLabel( tr( "Streaming Tolerance" ) );
   gLayout->addWidget( label, 1, 0 );
   gLayout->addWidget( mStreamToleranceSpinBox, 1, 1 );
-  connect( mStreamToleranceSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, [ = ]( int value )
-  {
+  connect( mStreamToleranceSpinBox, qOverload<int>( &QgsSpinBox::valueChanged ), this, [=]( int value ) {
     QgsSettingsRegistryCore::settingsDigitizingStreamTolerance->setValue( value );
   } );
 

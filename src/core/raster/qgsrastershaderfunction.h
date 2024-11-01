@@ -121,7 +121,7 @@ class CORE_EXPORT QgsRasterShaderFunction
     /**
      * Returns legend symbology items if provided by renderer.
      */
-    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const { Q_UNUSED( symbolItems ) }
+    virtual void legendSymbologyItems( QList<QPair<QString, QColor>> &symbolItems SIP_OUT ) const { Q_UNUSED( symbolItems ) }
 
     /**
      * Returns label precision
@@ -147,6 +147,5 @@ class CORE_EXPORT QgsRasterShaderFunction
 
     //! \brief Label precision
     int mLabelPrecision = 6;
-
 };
 #endif

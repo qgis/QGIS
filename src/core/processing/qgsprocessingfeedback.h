@@ -39,7 +39,6 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingFeedback.
      *
@@ -165,14 +164,12 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     virtual QString textLog() const;
 
   private:
-
     void log( const QString &htmlMessage, const QString &textMessage );
 
     bool mLogFeedback = true;
     QString mHtmlLog;
     QString mTextLog;
     int mMessageLoggedCount = 0;
-
 };
 
 
@@ -192,7 +189,6 @@ class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingMultiStepFeedback, for a process with the specified
      * number of \a steps. This feedback object will proxy calls
@@ -222,13 +218,9 @@ class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
     void updateOverallProgress( double progress );
 
   private:
-
     int mChildSteps = 0;
     int mCurrentStep = 0;
     QgsProcessingFeedback *mFeedback = nullptr;
-
 };
 
 #endif // QGSPROCESSINGFEEDBACK_H
-
-

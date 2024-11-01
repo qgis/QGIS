@@ -46,9 +46,11 @@ class RemoveRecentCrsDelegate : public QStyledItemDelegate SIP_SKIP
   public:
     RemoveRecentCrsDelegate( QObject *parent );
     bool eventFilter( QObject *obj, QEvent *event ) override;
+
   protected:
     void paint( QPainter *painter,
                 const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+
   private:
     void setHoveredIndex( const QModelIndex &index );
 
@@ -76,7 +78,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProjectionSelectionTreeWidget, with the specified \a parent widget.
      *
@@ -223,7 +224,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     void hasValidSelectionChanged( bool isValid );
 
   protected:
-
     // Used to manage column sizes
     void resizeEvent( QResizeEvent *event ) override;
 
@@ -231,7 +231,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     bool eventFilter( QObject *obj, QEvent *ev ) override;
 
   private:
-
     void loadUnknownCrs( const QgsCoordinateReferenceSystem &crs );
 
     void selectCrsByAuthId( const QString &authid );
@@ -246,7 +245,12 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     QgsCoordinateReferenceSystemProxyModel *mCrsModel = nullptr;
     QgsRecentCoordinateReferenceSystemTableModel *mRecentCrsModel = nullptr;
 
-    enum Columns { NameColumn, AuthidColumn, ClearColumn };
+    enum Columns
+    {
+      NameColumn,
+      AuthidColumn,
+      ClearColumn
+    };
 
     bool mShowMap = true;
 

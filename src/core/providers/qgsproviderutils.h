@@ -33,12 +33,10 @@ class QgsProviderSublayerDetails;
 class CORE_EXPORT QgsProviderUtils
 {
   public:
-
     /**
      * Flags which control how QgsProviderUtils::sublayerDetailsAreIncomplete() tests for completeness.
      */
-    enum class SublayerCompletenessFlag : int SIP_ENUM_BASETYPE( IntFlag )
-    {
+    enum class SublayerCompletenessFlag : int SIP_ENUM_BASETYPE( IntFlag ) {
       IgnoreUnknownFeatureCount = 1 << 0, //!< Indicates that an unknown feature count should not be considered as incomplete
       IgnoreUnknownGeometryType = 1 << 1, //!< Indicates that an unknown geometry type should not be considered as incomplete
     };
@@ -53,7 +51,7 @@ class CORE_EXPORT QgsProviderUtils
      *
      * The \a flags argument can be used to control the level of completeness required during the test.
      */
-    static bool sublayerDetailsAreIncomplete( const QList< QgsProviderSublayerDetails > &details, QgsProviderUtils::SublayerCompletenessFlags flags = QgsProviderUtils::SublayerCompletenessFlags() );
+    static bool sublayerDetailsAreIncomplete( const QList<QgsProviderSublayerDetails> &details, QgsProviderUtils::SublayerCompletenessFlags flags = QgsProviderUtils::SublayerCompletenessFlags() );
 
     /**
      * Suggests a suitable layer name given only a file \a path.
@@ -65,12 +63,8 @@ class CORE_EXPORT QgsProviderUtils
      * a path of "c:/my data/water/rivers/hdr.adf").
      */
     static QString suggestLayerNameFromFilePath( const QString &path );
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProviderUtils::SublayerCompletenessFlags )
 
 #endif //QGSPROVIDERUTILS_H
-
-
-

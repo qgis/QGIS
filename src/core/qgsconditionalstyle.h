@@ -44,7 +44,6 @@ class CORE_EXPORT QgsConditionalLayerStyles : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsConditionalLayerStyles, with the specified \a parent object.
      */
@@ -159,32 +158,52 @@ class CORE_EXPORT QgsConditionalStyle
      * \brief Set the name of the style.  Names are optional but handy for display
      * \param value The name given to the style
      */
-    void setName( const QString &value ) { mName = value; mValid = true; }
+    void setName( const QString &value )
+    {
+      mName = value;
+      mValid = true;
+    }
 
     /**
      * \brief Set the rule for the style.  Rules should be of QgsExpression syntax.
      * Special value of \@value is replaced at run time with the check value
      * \param value The QgsExpression style rule to use for this style
      */
-    void setRule( const QString &value ) { mRule = value; mValid = true; }
+    void setRule( const QString &value )
+    {
+      mRule = value;
+      mValid = true;
+    }
 
     /**
      * \brief Set the background color for the style
      * \param value QColor for background color
      */
-    void setBackgroundColor( const QColor &value ) { mBackColor = value; mValid = true; }
+    void setBackgroundColor( const QColor &value )
+    {
+      mBackColor = value;
+      mValid = true;
+    }
 
     /**
      * \brief Set the text color for the style
      * \param value QColor for text color
      */
-    void setTextColor( const QColor &value ) { mTextColor = value; mValid = true; }
+    void setTextColor( const QColor &value )
+    {
+      mTextColor = value;
+      mValid = true;
+    }
 
     /**
      * \brief Set the font for the style
      * \param value QFont to be used for text
      */
-    void setFont( const QFont &value ) { mFont = value; mValid = true; }
+    void setFont( const QFont &value )
+    {
+      mFont = value;
+      mValid = true;
+    }
 
     /**
      * \brief Set the icon for the style. Icons are generated from symbols
@@ -304,7 +323,7 @@ class CORE_EXPORT QgsConditionalStyle
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str;
+        QString str;
     if ( !sipCpp->name().isEmpty() )
       str = QStringLiteral( "<QgsConditionalStyle: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->rule() );
     else
@@ -313,9 +332,10 @@ class CORE_EXPORT QgsConditionalStyle
     % End
 #endif
 
-  private:
+      private :
 
-    bool mValid = false;
+      bool mValid
+      = false;
     QString mName;
     QString mRule;
     std::unique_ptr<QgsSymbol> mSymbol;

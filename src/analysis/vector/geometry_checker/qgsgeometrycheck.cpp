@@ -25,8 +25,6 @@
 #include "qgsthreadingutils.h"
 
 
-
-
 QgsGeometryCheck::QgsGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : mContext( context )
   , mConfiguration( configuration )
@@ -91,13 +89,13 @@ QMap<QString, QgsFeatureIds> QgsGeometryCheck::allLayerFeatureIds( const QMap<QS
 }
 
 void QgsGeometryCheck::replaceFeatureGeometryPart( const QMap<QString, QgsFeaturePool *> &featurePools,
-    const QString &layerId, QgsFeature &feature,
-    int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const
+                                                   const QString &layerId, QgsFeature &feature,
+                                                   int partIdx, QgsAbstractGeometry *newPartGeom, Changes &changes ) const
 {
   QgsFeaturePool *featurePool = featurePools[layerId];
   QgsGeometry featureGeom = feature.geometry();
   QgsAbstractGeometry *geom = featureGeom.get();
-  if ( QgsGeometryCollection *geomCollection = dynamic_cast< QgsGeometryCollection *>( geom ) )
+  if ( QgsGeometryCollection *geomCollection = dynamic_cast<QgsGeometryCollection *>( geom ) )
   {
     geomCollection->removeGeometry( partIdx );
     geomCollection->addGeometry( newPartGeom );
@@ -141,8 +139,8 @@ void QgsGeometryCheck::deleteFeatureGeometryPart( const QMap<QString, QgsFeature
 }
 
 void QgsGeometryCheck::deleteFeatureGeometryRing( const QMap<QString, QgsFeaturePool *> &featurePools,
-    const QString &layerId, QgsFeature &feature,
-    int partIdx, int ringIdx, Changes &changes ) const
+                                                  const QString &layerId, QgsFeature &feature,
+                                                  int partIdx, int ringIdx, Changes &changes ) const
 {
   QgsFeaturePool *featurePool = featurePools[layerId];
   QgsGeometry featureGeom = feature.geometry();
@@ -181,5 +179,3 @@ double QgsGeometryCheck::scaleFactor( const QPointer<QgsVectorLayer> &layer ) co
   }
   return scaleFactor;
 }
-
-

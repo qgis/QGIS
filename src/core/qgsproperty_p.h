@@ -36,7 +36,6 @@
 class QgsPropertyPrivate : public QSharedData
 {
   public:
-
     QgsPropertyPrivate() = default;
 
     QgsPropertyPrivate( const QgsPropertyPrivate &other )
@@ -80,7 +79,7 @@ class QgsPropertyPrivate : public QSharedData
     mutable bool expressionIsInvalid = false;
     mutable QgsExpression expression;
     //! Cached set of referenced columns
-    mutable QSet< QString > expressionReferencedCols;
+    mutable QSet<QString> expressionReferencedCols;
 
   private:
     QgsPropertyPrivate &operator=( const QgsPropertyPrivate & ) = delete;

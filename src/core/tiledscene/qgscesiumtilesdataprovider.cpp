@@ -82,7 +82,6 @@ static QString appendQueryFromBaseUrl( const QString &contentUri, const QUrl &ba
 class QgsCesiumTiledSceneIndex final : public QgsAbstractTiledSceneIndex
 {
   public:
-
     QgsCesiumTiledSceneIndex(
       const json &tileset,
       const QUrl &rootUrl,
@@ -90,24 +89,22 @@ class QgsCesiumTiledSceneIndex final : public QgsAbstractTiledSceneIndex
       const QgsHttpHeaders &headers,
       const QgsCoordinateTransformContext &transformContext );
 
-    std::unique_ptr< QgsTiledSceneTile > tileFromJson( const json &node, const QUrl &baseUrl, const QgsTiledSceneTile *parent, Qgis::Axis gltfUpAxis );
+    std::unique_ptr<QgsTiledSceneTile> tileFromJson( const json &node, const QUrl &baseUrl, const QgsTiledSceneTile *parent, Qgis::Axis gltfUpAxis );
     QgsTiledSceneNode *nodeFromJson( const json &node, const QUrl &baseUrl, QgsTiledSceneNode *parent, Qgis::Axis gltfUpAxis );
     void refineNodeFromJson( QgsTiledSceneNode *node, const QUrl &baseUrl, const json &json );
 
     QgsTiledSceneTile rootTile() const final;
     QgsTiledSceneTile getTile( long long id ) final;
     long long parentTileId( long long id ) const final;
-    QVector< long long > childTileIds( long long id ) const final;
-    QVector< long long > getTiles( const QgsTiledSceneRequest &request ) final;
+    QVector<long long> childTileIds( long long id ) const final;
+    QVector<long long> getTiles( const QgsTiledSceneRequest &request ) final;
     Qgis::TileChildrenAvailability childAvailability( long long id ) const final;
     bool fetchHierarchy( long long id, QgsFeedback *feedback = nullptr ) final;
 
   protected:
-
     QByteArray fetchContent( const QString &uri, QgsFeedback *feedback = nullptr ) final;
 
   private:
-
     enum class TileContentFormat
     {
       Json,
@@ -116,13 +113,12 @@ class QgsCesiumTiledSceneIndex final : public QgsAbstractTiledSceneIndex
 
     mutable QRecursiveMutex mLock;
     QgsCoordinateTransformContext mTransformContext;
-    std::unique_ptr< QgsTiledSceneNode > mRootNode;
-    QMap< long long, QgsTiledSceneNode * > mNodeMap;
-    QMap< long long, TileContentFormat > mTileContentFormats;
+    std::unique_ptr<QgsTiledSceneNode> mRootNode;
+    QMap<long long, QgsTiledSceneNode *> mNodeMap;
+    QMap<long long, TileContentFormat> mTileContentFormats;
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
     long long mNextTileId = 0;
-
 };
 
 class QgsCesiumTilesDataProviderSharedData
@@ -148,7 +144,6 @@ class QgsCesiumTilesDataProviderSharedData
     QgsLayerMetadata mLayerMetadata;
     QString mError;
     QReadWriteLock mReadWriteLock;
-
 };
 
 
@@ -190,19 +185,19 @@ QgsCesiumTiledSceneIndex::QgsCesiumTiledSceneIndex( const json &tileset, const Q
     }
   }
 
-  mRootNode.reset( nodeFromJson( tileset[ "root" ], rootUrl, nullptr, gltfUpAxis ) );
+  mRootNode.reset( nodeFromJson( tileset["root"], rootUrl, nullptr, gltfUpAxis ) );
 }
 
-std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( const json &json, const QUrl &baseUrl, const QgsTiledSceneTile *parent, Qgis::Axis gltfUpAxis )
+std::unique_ptr<QgsTiledSceneTile> QgsCesiumTiledSceneIndex::tileFromJson( const json &json, const QUrl &baseUrl, const QgsTiledSceneTile *parent, Qgis::Axis gltfUpAxis )
 {
-  std::unique_ptr< QgsTiledSceneTile > tile = std::make_unique< QgsTiledSceneTile >( mNextTileId++ );
+  std::unique_ptr<QgsTiledSceneTile> tile = std::make_unique<QgsTiledSceneTile>( mNextTileId++ );
 
   tile->setBaseUrl( baseUrl );
   tile->setMetadata(
-  {
-    { QStringLiteral( "gltfUpAxis" ), static_cast< int >( gltfUpAxis ) },
-    { QStringLiteral( "contentFormat" ), QStringLiteral( "cesiumtiles" ) },
-  } );
+    {
+      { QStringLiteral( "gltfUpAxis" ), static_cast<int>( gltfUpAxis ) },
+      { QStringLiteral( "contentFormat" ), QStringLiteral( "cesiumtiles" ) },
+    } );
 
   QgsMatrix4x4 transform;
   if ( json.contains( "transform" ) && !json["transform"].is_null() )
@@ -224,11 +219,11 @@ std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( con
   if ( !transform.isIdentity() )
     tile->setTransform( transform );
 
-  const auto &boundingVolume = json[ "boundingVolume" ];
+  const auto &boundingVolume = json["boundingVolume"];
   QgsTiledSceneBoundingVolume volume;
   if ( boundingVolume.contains( "region" ) )
   {
-    QgsBox3D rootRegion = QgsCesiumUtils::parseRegion( boundingVolume[ "region" ] );
+    QgsBox3D rootRegion = QgsCesiumUtils::parseRegion( boundingVolume["region"] );
     if ( !rootRegion.isNull() )
     {
       if ( rootRegion.width() > 20 || rootRegion.height() > 20 )
@@ -238,13 +233,13 @@ std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( con
       else
       {
         // we need to transform regions from EPSG:4979 to EPSG:4978
-        QVector< QgsVector3D > corners = rootRegion.corners();
+        QVector<QgsVector3D> corners = rootRegion.corners();
 
-        QVector< double > x;
+        QVector<double> x;
         x.reserve( 8 );
-        QVector< double > y;
+        QVector<double> y;
         y.reserve( 8 );
-        QVector< double > z;
+        QVector<double> z;
         z.reserve( 8 );
         for ( int i = 0; i < 8; ++i )
         {
@@ -253,7 +248,7 @@ std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( con
           y.append( corner.y() );
           z.append( corner.z() );
         }
-        QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) ),  QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) ), mTransformContext );
+        QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4979" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4978" ) ), mTransformContext );
         ct.setBallparkTransformsAreAppropriate( true );
         try
         {
@@ -300,7 +295,7 @@ std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( con
   tile->setBoundingVolume( volume );
 
   if ( json.contains( "geometricError" ) )
-    tile->setGeometricError( json["geometricError"].get< double >() );
+    tile->setGeometricError( json["geometricError"].get<double>() );
   if ( json.contains( "refine" ) )
   {
     if ( json["refine"] == "ADD" )
@@ -338,7 +333,7 @@ std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( con
     }
     if ( !contentUri.isEmpty() )
     {
-      tile->setResources( {{ QStringLiteral( "content" ), contentUri } } );
+      tile->setResources( { { QStringLiteral( "content" ), contentUri } } );
     }
   }
 
@@ -347,8 +342,8 @@ std::unique_ptr< QgsTiledSceneTile > QgsCesiumTiledSceneIndex::tileFromJson( con
 
 QgsTiledSceneNode *QgsCesiumTiledSceneIndex::nodeFromJson( const json &json, const QUrl &baseUrl, QgsTiledSceneNode *parent, Qgis::Axis gltfUpAxis )
 {
-  std::unique_ptr< QgsTiledSceneTile > tile = tileFromJson( json, baseUrl, parent ? parent->tile() : nullptr, gltfUpAxis );
-  std::unique_ptr< QgsTiledSceneNode > newNode = std::make_unique< QgsTiledSceneNode >( tile.release() );
+  std::unique_ptr<QgsTiledSceneTile> tile = tileFromJson( json, baseUrl, parent ? parent->tile() : nullptr, gltfUpAxis );
+  std::unique_ptr<QgsTiledSceneNode> newNode = std::make_unique<QgsTiledSceneNode>( tile.release() );
   mNodeMap.insert( newNode->tile()->id(), newNode.get() );
 
   if ( parent )
@@ -379,7 +374,7 @@ void QgsCesiumTiledSceneIndex::refineNodeFromJson( QgsTiledSceneNode *node, cons
     }
   }
 
-  std::unique_ptr< QgsTiledSceneTile > newTile = tileFromJson( rootTileJson, baseUrl, node->tile(), gltfUpAxis );
+  std::unique_ptr<QgsTiledSceneTile> newTile = tileFromJson( rootTileJson, baseUrl, node->tile(), gltfUpAxis );
   // copy just the resources from the retrieved tileset to the refined node. We assume all the rest of the tile content
   // should be the same between the node being refined and the root node of the fetched sub dataset!
   // (Ie the bounding volume, geometric error, etc).
@@ -434,14 +429,14 @@ long long QgsCesiumTiledSceneIndex::parentTileId( long long id ) const
   return -1;
 }
 
-QVector< long long > QgsCesiumTiledSceneIndex::childTileIds( long long id ) const
+QVector<long long> QgsCesiumTiledSceneIndex::childTileIds( long long id ) const
 {
   QMutexLocker locker( &mLock );
   auto it = mNodeMap.constFind( id );
   if ( it != mNodeMap.constEnd() )
   {
-    QVector< long long > childIds;
-    const QList< QgsTiledSceneNode * > children = it.value()->children();
+    QVector<long long> childIds;
+    const QList<QgsTiledSceneNode *> children = it.value()->children();
     childIds.reserve( children.size() );
     for ( QgsTiledSceneNode *child : children )
     {
@@ -453,13 +448,12 @@ QVector< long long > QgsCesiumTiledSceneIndex::childTileIds( long long id ) cons
   return {};
 }
 
-QVector< long long > QgsCesiumTiledSceneIndex::getTiles( const QgsTiledSceneRequest &request )
+QVector<long long> QgsCesiumTiledSceneIndex::getTiles( const QgsTiledSceneRequest &request )
 {
-  QVector< long long > results;
+  QVector<long long> results;
 
-  std::function< void( QgsTiledSceneNode * )> traverseNode;
-  traverseNode = [&request, &traverseNode, &results, this]( QgsTiledSceneNode * node )
-  {
+  std::function<void( QgsTiledSceneNode * )> traverseNode;
+  traverseNode = [&request, &traverseNode, &results, this]( QgsTiledSceneNode *node ) {
     QgsTiledSceneTile *tile = node->tile();
 
     // check filter box first -- if the node doesn't intersect, then don't include the node and don't traverse
@@ -474,7 +468,7 @@ QVector< long long > QgsCesiumTiledSceneIndex::getTiles( const QgsTiledSceneRequ
       // haven't traversed deep enough down this node, we need to explore children
 
       // are children available?
-      QList< QgsTiledSceneNode * > children = node->children();
+      QList<QgsTiledSceneNode *> children = node->children();
       if ( children.empty() )
       {
         switch ( childAvailability( tile->id() ) )
@@ -523,7 +517,6 @@ QVector< long long > QgsCesiumTiledSceneIndex::getTiles( const QgsTiledSceneRequ
     {
       results << tile->id();
     }
-
   };
 
   QMutexLocker locker( &mLock );
@@ -675,7 +668,7 @@ QByteArray QgsCesiumTiledSceneIndex::fetchContent( const QString &uri, QgsFeedba
     {
       // running on main thread, use a blocking get to handle authcfg and SSL errors ok.
       const QgsNetworkReplyContent reply = QgsNetworkAccessManager::instance()->blockingGet(
-                                             networkRequest, mAuthCfg, false, feedback );
+        networkRequest, mAuthCfg, false, feedback );
       return reply.content();
     }
     else
@@ -686,7 +679,7 @@ QByteArray QgsCesiumTiledSceneIndex::fetchContent( const QString &uri, QgsFeedba
         // TODO -- report error
         return QByteArray();
       }
-      std::unique_ptr< QgsTileDownloadManagerReply > reply( QgsApplication::tileDownloadManager()->get( networkRequest ) );
+      std::unique_ptr<QgsTileDownloadManagerReply> reply( QgsApplication::tileDownloadManager()->get( networkRequest ) );
 
       QEventLoop loop;
       if ( feedback )
@@ -717,7 +710,6 @@ QByteArray QgsCesiumTiledSceneIndex::fetchContent( const QString &uri, QgsFeedba
 QgsCesiumTilesDataProviderSharedData::QgsCesiumTilesDataProviderSharedData()
   : mIndex( QgsTiledSceneIndex( nullptr ) )
 {
-
 }
 
 void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, const QUrl &rootUrl, const QgsCoordinateTransformContext &transformContext, const QString &authCfg, const QgsHttpHeaders &headers )
@@ -733,7 +725,7 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
 
   if ( mTileset.contains( "asset" ) )
   {
-    const auto &asset = mTileset[ "asset" ];
+    const auto &asset = mTileset["asset"];
     if ( asset.contains( "tilesetVersion" ) )
     {
       try
@@ -749,18 +741,16 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
   }
 
   mIndex = QgsTiledSceneIndex(
-             new QgsCesiumTiledSceneIndex(
-               mTileset,
-               rootUrl,
-               authCfg,
-               headers,
-               transformContext
-             )
-           );
+    new QgsCesiumTiledSceneIndex(
+      mTileset,
+      rootUrl,
+      authCfg,
+      headers,
+      transformContext ) );
 
   // parse root
   {
-    const auto &root = mTileset[ "root" ];
+    const auto &root = mTileset["root"];
     // parse root bounding volume
 
     // TODO -- read crs from metadata tags. Need to find real world examples of this. And can metadata crs override
@@ -772,7 +762,7 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
 
       QgsLayerMetadata::SpatialExtent spatialExtent;
 
-      const auto &rootBoundingVolume = root[ "boundingVolume" ];
+      const auto &rootBoundingVolume = root["boundingVolume"];
 
       QgsMatrix4x4 rootTransform;
       if ( root.contains( "transform" ) && !root["transform"].is_null() )
@@ -785,7 +775,7 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
 
       if ( rootBoundingVolume.contains( "region" ) )
       {
-        const QgsBox3D rootRegion = QgsCesiumUtils::parseRegion( rootBoundingVolume[ "region" ] );
+        const QgsBox3D rootRegion = QgsCesiumUtils::parseRegion( rootBoundingVolume["region"] );
         if ( !rootRegion.isNull() )
         {
           mBoundingVolume = QgsTiledSceneBoundingVolume( QgsOrientedBox3D::fromBox3D( rootRegion ) );
@@ -830,7 +820,7 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
               mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
             }
 
-            std::unique_ptr< QgsAbstractGeometry > extent2D( mBoundingVolume.as2DGeometry( ct ) );
+            std::unique_ptr<QgsAbstractGeometry> extent2D( mBoundingVolume.as2DGeometry( ct ) );
             mExtent = extent2D->boundingBox();
           }
           catch ( QgsCsException & )
@@ -869,7 +859,7 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
               mZRange = QgsDoubleRange( rootRegion.zMinimum(), rootRegion.zMaximum() );
             }
 
-            std::unique_ptr< QgsAbstractGeometry > extent2D( mBoundingVolume.as2DGeometry( ct ) );
+            std::unique_ptr<QgsAbstractGeometry> extent2D( mBoundingVolume.as2DGeometry( ct ) );
             mExtent = extent2D->boundingBox();
           }
           catch ( QgsCsException & )
@@ -888,7 +878,7 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
       }
 
       QgsLayerMetadata::Extent layerExtent;
-      layerExtent.setSpatialExtents( {spatialExtent } );
+      layerExtent.setSpatialExtents( { spatialExtent } );
       mLayerMetadata.setExtent( layerExtent );
     }
   }
@@ -901,7 +891,7 @@ void QgsCesiumTilesDataProviderSharedData::initialize( const QString &tileset, c
 
 QgsCesiumTilesDataProvider::QgsCesiumTilesDataProvider( const QString &uri, const ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags )
   : QgsTiledSceneDataProvider( uri, providerOptions, flags )
-  , mShared( std::make_shared< QgsCesiumTilesDataProviderSharedData >() )
+  , mShared( std::make_shared<QgsCesiumTilesDataProviderSharedData>() )
 {
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( uri );
@@ -959,7 +949,7 @@ bool QgsCesiumTilesDataProvider::init()
       const QString assetInfoEndpoint = CESIUM_ION_URL + QStringLiteral( "v1/assets/%1" ).arg( assetId );
       QNetworkRequest request = QNetworkRequest( assetInfoEndpoint );
       QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsCesiumTilesDataProvider" ) )
-      mHeaders.updateNetworkRequest( request );
+        mHeaders.updateNetworkRequest( request );
       if ( !accessToken.isEmpty() )
         request.setRawHeader( "Authorization", QStringLiteral( "Bearer %1" ).arg( accessToken ).toLocal8Bit() );
 
@@ -980,7 +970,7 @@ bool QgsCesiumTilesDataProvider::init()
       }
 
       const QgsNetworkReplyContent content = networkRequest.reply();
-      const json assetInfoJson  = json::parse( content.content().toStdString() );
+      const json assetInfoJson = json::parse( content.content().toStdString() );
       if ( assetInfoJson["type"] != "3DTILES" )
       {
         appendError( QgsErrorMessage( tr( "Only ion 3D Tiles content can be accessed, not %1" ).arg( QString::fromStdString( assetInfoJson["type"].get<std::string>() ) ) ) );
@@ -1001,7 +991,7 @@ bool QgsCesiumTilesDataProvider::init()
       const QString tileAccessEndpoint = CESIUM_ION_URL + QStringLiteral( "v1/assets/%1/endpoint" ).arg( assetId );
       QNetworkRequest request = QNetworkRequest( tileAccessEndpoint );
       QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsCesiumTilesDataProvider" ) )
-      mHeaders.updateNetworkRequest( request );
+        mHeaders.updateNetworkRequest( request );
       if ( !accessToken.isEmpty() )
         request.setRawHeader( "Authorization", QStringLiteral( "Bearer %1" ).arg( accessToken ).toLocal8Bit() );
 
@@ -1060,7 +1050,7 @@ bool QgsCesiumTilesDataProvider::init()
 
     QNetworkRequest request = QNetworkRequest( url );
     QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsCesiumTilesDataProvider" ) )
-    mHeaders.updateNetworkRequest( request );
+      mHeaders.updateNetworkRequest( request );
 
     QgsBlockingNetworkRequest networkRequest;
     networkRequest.setAuthCfg( mAuthCfg );
@@ -1089,7 +1079,7 @@ bool QgsCesiumTilesDataProvider::init()
     const QFileInfo fi( dataSourceUri() );
     if ( fi.exists() )
     {
-      QFile file( dataSourceUri( ) );
+      QFile file( dataSourceUri() );
       if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
       {
         const QByteArray raw = file.readAll();
@@ -1160,7 +1150,7 @@ QString QgsCesiumTilesDataProvider::htmlMetadata() const
   QgsReadWriteLocker locker( mShared->mReadWriteLock, QgsReadWriteLocker::Read );
   if ( mShared->mTileset.contains( "asset" ) )
   {
-    const auto &asset = mShared->mTileset[ "asset" ];
+    const auto &asset = mShared->mTileset["asset"];
     if ( asset.contains( "version" ) )
     {
       const QString version = QString::fromStdString( asset["version"].get<std::string>() );
@@ -1236,7 +1226,7 @@ const QgsCoordinateReferenceSystem QgsCesiumTilesDataProvider::sceneCrs() const
     return QgsCoordinateReferenceSystem();
 
   QgsReadWriteLocker locker( mShared->mReadWriteLock, QgsReadWriteLocker::Read );
-  return mShared->mSceneCrs ;
+  return mShared->mSceneCrs;
 }
 
 const QgsTiledSceneBoundingVolume &QgsCesiumTilesDataProvider::boundingVolume() const
@@ -1275,8 +1265,8 @@ QgsDoubleRange QgsCesiumTilesDataProvider::zRange() const
 // QgsCesiumTilesProviderMetadata
 //
 
-QgsCesiumTilesProviderMetadata::QgsCesiumTilesProviderMetadata():
-  QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
+QgsCesiumTilesProviderMetadata::QgsCesiumTilesProviderMetadata()
+  : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {
 }
 
@@ -1300,7 +1290,7 @@ QList<QgsProviderSublayerDetails> QgsCesiumTilesProviderMetadata::querySublayers
     details.setProviderKey( PROVIDER_KEY );
     details.setType( Qgis::LayerType::TiledScene );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
-    return {details};
+    return { details };
   }
   else
   {
@@ -1321,9 +1311,9 @@ QList<Qgis::LayerType> QgsCesiumTilesProviderMetadata::validLayerTypesForUri( co
 {
   const QVariantMap parts = decodeUri( uri );
   if ( parts.value( QStringLiteral( "file-name" ) ).toString().compare( QLatin1String( "tileset.json" ), Qt::CaseInsensitive ) == 0 )
-    return QList< Qgis::LayerType>() << Qgis::LayerType::TiledScene;
+    return QList<Qgis::LayerType>() << Qgis::LayerType::TiledScene;
 
-  return QList< Qgis::LayerType>();
+  return QList<Qgis::LayerType>();
 }
 
 QVariantMap QgsCesiumTilesProviderMetadata::decodeUri( const QString &uri ) const

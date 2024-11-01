@@ -44,15 +44,12 @@ class QgsProfileSnapContext;
  */
 class CORE_EXPORT QgsRasterLayerProfileResults : public QgsAbstractProfileSurfaceResults
 {
-
   public:
-
     QString type() const override;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
 
   private:
-
-    QPointer< QgsRasterLayer > mLayer;
+    QPointer<QgsRasterLayer> mLayer;
 
     friend class QgsRasterLayerProfileGenerator;
 };
@@ -66,9 +63,7 @@ class CORE_EXPORT QgsRasterLayerProfileResults : public QgsAbstractProfileSurfac
  */
 class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileSurfaceGenerator
 {
-
   public:
-
     /**
      * Constructor for QgsRasterLayerProfileGenerator.
      */
@@ -86,7 +81,7 @@ class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileSurf
     QString mId;
     std::unique_ptr<QgsRasterBlockFeedback> mFeedback;
 
-    std::unique_ptr< QgsCurve > mProfileCurve;
+    std::unique_ptr<QgsCurve> mProfileCurve;
 
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mTargetCrs;
@@ -95,10 +90,10 @@ class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileSurf
     double mOffset = 0;
     double mScale = 1;
 
-    QPointer< QgsRasterLayer > mLayer;
-    std::unique_ptr< QgsRasterDataProvider > mRasterProvider;
+    QPointer<QgsRasterLayer> mLayer;
+    std::unique_ptr<QgsRasterDataProvider> mRasterProvider;
 
-    std::unique_ptr< QgsRasterLayerProfileResults > mResults;
+    std::unique_ptr<QgsRasterLayerProfileResults> mResults;
 
     int mBand = 1;
     double mRasterUnitsPerPixelX = 1;
@@ -107,7 +102,6 @@ class CORE_EXPORT QgsRasterLayerProfileGenerator : public QgsAbstractProfileSurf
     double mStepDistance = std::numeric_limits<double>::quiet_NaN();
 
     friend class QgsRasterLayerProfileResults;
-
 };
 
 #endif // QGSRASTERLAYERPROFILEGENERATOR_H

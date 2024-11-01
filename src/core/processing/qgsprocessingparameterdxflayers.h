@@ -112,14 +112,14 @@ class CORE_EXPORT QgsProcessingParameterTypeDxfLayers : public QgsProcessingPara
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "list[dict]: list of input layers as dictionaries, see QgsProcessingParameterDxfLayers docs" )
-             << QObject::tr( "list[str]: list of layer IDs" )
-             << QObject::tr( "list[str]: list of layer names" )
-             << QObject::tr( "list[str]: list of layer sources" )
-             << QObject::tr( "str: layer ID" )
-             << QObject::tr( "str: layer name" )
-             << QObject::tr( "str: layer source" )
-             << QStringLiteral( "list[QgsMapLayer]" )
-             << QStringLiteral( "QgsVectorLayer" );
+                           << QObject::tr( "list[str]: list of layer IDs" )
+                           << QObject::tr( "list[str]: list of layer names" )
+                           << QObject::tr( "list[str]: list of layer sources" )
+                           << QObject::tr( "str: layer ID" )
+                           << QObject::tr( "str: layer name" )
+                           << QObject::tr( "str: layer source" )
+                           << QStringLiteral( "list[QgsMapLayer]" )
+                           << QStringLiteral( "QgsVectorLayer" );
     }
 };
 

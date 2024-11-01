@@ -23,7 +23,7 @@ QgsRecentStyleHandler::~QgsRecentStyleHandler() = default;
 
 void QgsRecentStyleHandler::pushRecentSymbol( const QString &identifier, QgsSymbol *symbol )
 {
-  mRecentSymbols[ identifier ] = std::unique_ptr< QgsSymbol >( symbol );
+  mRecentSymbols[identifier] = std::unique_ptr<QgsSymbol>( symbol );
 }
 
 QgsSymbol *QgsRecentStyleHandler::recentSymbol( const QString &identifier ) const

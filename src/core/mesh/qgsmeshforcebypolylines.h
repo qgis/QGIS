@@ -39,7 +39,6 @@
 class CORE_EXPORT QgsMeshEditForceByLine : public QgsMeshAdvancedEditing
 {
   public:
-
     QgsMeshEditForceByLine() = default;
 
     //! Sets the input forcing line in rendering coordinates
@@ -76,10 +75,10 @@ class CORE_EXPORT QgsMeshEditForceByLine : public QgsMeshAdvancedEditing
     //members and method used for the calculation
     QgsMeshEditor *mEditor = nullptr;
     QList<int> mRemovedFaces;
-    QList<int> mHoleOnLeft; // contains the border vertices of hole to fill on the right of the line (line go up)
-    QList<int> mNeighborOnLeft; //contains the neighbor face on the right of the line (line go up)
-    QList<int> mHoleOnRight; // contains the border vertices of hole to fill on the right of the line (line go up)
-    QList<int> mNeighborOnRight; // contains the neighbor face on the right of the line (line go up)
+    QList<int> mHoleOnLeft;               // contains the border vertices of hole to fill on the right of the line (line go up)
+    QList<int> mNeighborOnLeft;           //contains the neighbor face on the right of the line (line go up)
+    QList<int> mHoleOnRight;              // contains the border vertices of hole to fill on the right of the line (line go up)
+    QList<int> mNeighborOnRight;          // contains the neighbor face on the right of the line (line go up)
     QList<int> mNewVerticesIndexesOnLine; //the new vertices intersecting edges except
     bool mEndOnPoint2 = false;
     int mPoint2VertexIndex = -1;
@@ -116,7 +115,7 @@ class CORE_EXPORT QgsMeshEditForceByLine : public QgsMeshAdvancedEditing
     bool triangulateHoles( const QList<int> &holeOnLeft,
                            const QList<int> &neighborOnLeft,
                            bool isLeftHole,
-                           QList<std::array<int, 2> > &newFacesOnLine,
+                           QList<std::array<int, 2>> &newFacesOnLine,
                            std::array<int, 2> &extremeFaces );
 
     bool finishForcingLine();
@@ -124,7 +123,6 @@ class CORE_EXPORT QgsMeshEditForceByLine : public QgsMeshAdvancedEditing
     friend class TestQgsMeshEditor;
     friend class QgsMeshEditForceByPolylines;
 };
-
 
 
 /**
@@ -143,7 +141,6 @@ class CORE_EXPORT QgsMeshEditForceByLine : public QgsMeshAdvancedEditing
 class CORE_EXPORT QgsMeshEditForceByPolylines : public QgsMeshEditForceByLine
 {
   public:
-
     QgsMeshEditForceByPolylines() = default;
 
     QString text() const override;
@@ -174,7 +171,6 @@ class CORE_EXPORT QgsMeshEditForceByPolylines : public QgsMeshEditForceByLine
 
     using QgsMeshEditForceByLine::setInputLine;
     QgsTopologicalMesh::Changes apply( QgsMeshEditor *meshEditor ) override;
-
 };
 
 #endif // QGSMESHFORCEBYPOLYLINES_H

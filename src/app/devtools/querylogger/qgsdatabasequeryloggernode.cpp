@@ -34,7 +34,6 @@
 QgsDatabaseQueryLoggerRootNode::QgsDatabaseQueryLoggerRootNode()
   : QgsDevToolsModelGroup( QString() )
 {
-
 }
 
 QVariant QgsDatabaseQueryLoggerRootNode::data( int ) const
@@ -50,7 +49,7 @@ void QgsDatabaseQueryLoggerRootNode::removeRow( int row )
 QVariant QgsDatabaseQueryLoggerRootNode::toVariant() const
 {
   QVariantList res;
-  for ( const std::unique_ptr< QgsDevToolsModelNode > &child : mChildren )
+  for ( const std::unique_ptr<QgsDevToolsModelNode> &child : mChildren )
     res << child->toVariant();
   return res;
 }
@@ -80,7 +79,6 @@ QgsDatabaseQueryLoggerQueryGroup::QgsDatabaseQueryLoggerQueryGroup( const QgsDat
   addKeyValueNode( QObject::tr( "Initiator" ), query.initiatorClass.isEmpty() ? QObject::tr( "unknown" ) : query.initiatorClass );
   if ( !query.origin.isEmpty() )
     addKeyValueNode( QObject::tr( "Location" ), query.origin );
-
 }
 
 QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
@@ -122,7 +120,7 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
     }
 
     case RoleStatus:
-      return static_cast< int >( mStatus );
+      return static_cast<int>( mStatus );
 
     case RoleId:
       return mQueryId;
@@ -161,27 +159,24 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
     default:
       break;
   }
-  return QVariant( );
+  return QVariant();
 }
 
 QList<QAction *> QgsDatabaseQueryLoggerQueryGroup::actions( QObject *parent )
 {
-  QList< QAction * > res;
+  QList<QAction *> res;
 
   QAction *copyUrlAction = new QAction( QObject::tr( "Copy SQL" ), parent );
-  QObject::connect( copyUrlAction, &QAction::triggered, copyUrlAction, [ = ]
-  {
+  QObject::connect( copyUrlAction, &QAction::triggered, copyUrlAction, [=] {
     QApplication::clipboard()->setText( mSql );
   } );
   res << copyUrlAction;
 
   QAction *copyJsonAction = new QAction( QObject::tr( "Copy as JSON" ), parent );
-  QObject::connect( copyJsonAction, &QAction::triggered, copyJsonAction, [ = ]
-  {
+  QObject::connect( copyJsonAction, &QAction::triggered, copyJsonAction, [=] {
     const QVariant value = toVariant();
     const QString json = QString::fromStdString( QgsJsonUtils::jsonFromVariant( value ).dump( 2 ) );
     QApplication::clipboard()->setText( json );
-
   } );
   res << copyJsonAction;
 
@@ -195,7 +190,7 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::toVariant() const
 
   for ( const auto &child : std::as_const( mChildren ) )
   {
-    if ( const QgsDevToolsModelValueNode *valueNode = dynamic_cast< const QgsDevToolsModelValueNode *>( child.get() ) )
+    if ( const QgsDevToolsModelValueNode *valueNode = dynamic_cast<const QgsDevToolsModelValueNode *>( child.get() ) )
     {
       res.insert( valueNode->key(), valueNode->value() );
     }
@@ -254,5 +249,3 @@ const QString &QgsDatabaseQueryLoggerQueryGroup::sql() const
 {
   return mSql;
 }
-
-

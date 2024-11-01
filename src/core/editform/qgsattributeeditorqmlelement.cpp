@@ -53,4 +53,3 @@ QString QgsAttributeEditorQmlElement::typeIdentifier() const
 {
   return QStringLiteral( "attributeEditorQmlElement" );
 }
-

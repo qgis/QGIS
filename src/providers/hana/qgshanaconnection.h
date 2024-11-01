@@ -28,21 +28,21 @@
 
 struct AttributeField
 {
-  QString schemaName;
-  QString tableName;
-  QString name;
-  QgsHanaDataType type = QgsHanaDataType::Unknown;
-  int srid = -1;
-  QString typeName;
-  int size = 0;
-  int precision = 0;
-  bool isAutoIncrement = false;
-  bool isNullable = false;
-  bool isSigned = false;
-  bool isUnique = false;
-  QString comment;
+    QString schemaName;
+    QString tableName;
+    QString name;
+    QgsHanaDataType type = QgsHanaDataType::Unknown;
+    int srid = -1;
+    QString typeName;
+    int size = 0;
+    int precision = 0;
+    bool isAutoIncrement = false;
+    bool isNullable = false;
+    bool isSigned = false;
+    bool isUnique = false;
+    QString comment;
 
-  QgsField toQgsField() const;
+    QgsField toQgsField() const;
 };
 
 using AttributeFields = QVector<AttributeField>;
@@ -118,4 +118,4 @@ class QgsHanaConnection : public QObject
     QString mUserName;
 };
 
-#endif  // QGSHANACONNECTION_H
+#endif // QGSHANACONNECTION_H

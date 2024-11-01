@@ -31,9 +31,7 @@
  */
 class QgsSplitWithLinesAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsSplitWithLinesAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -46,15 +44,12 @@ class QgsSplitWithLinesAlgorithm : public QgsProcessingAlgorithm
     QgsSplitWithLinesAlgorithm *createInstance() const override SIP_FACTORY;
     Qgis::ProcessingAlgorithmFlags flags() const override;
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
-  protected:
 
+  protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMSPLITWITHLINES_H
-
-

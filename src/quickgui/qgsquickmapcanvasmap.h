@@ -188,7 +188,6 @@ class QUICK_EXPORT QgsQuickMapCanvasMap : public QQuickItem
     void onzRangeChanged();
 
   private:
-
     enum class CacheInvalidationType
     {
       Temporal = 1 << 0,

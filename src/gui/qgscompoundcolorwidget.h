@@ -33,16 +33,14 @@ class QgsScreenHelper;
 
 class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::QgsCompoundColorWidgetBase
 {
-
     Q_OBJECT
 
   public:
-
     //! Widget layout
     enum Layout
     {
       LayoutDefault = 0, //!< Use the default (rectangular) layout
-      LayoutVertical, //!< Use a narrower, vertically stacked layout
+      LayoutVertical,    //!< Use a narrower, vertically stacked layout
     };
 
     /**
@@ -142,7 +140,6 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     void setPreviousColor( const QColor &color );
 
   protected:
-
     void hideEvent( QHideEvent *e ) override;
 
     void mousePressEvent( QMouseEvent *e ) override;
@@ -180,7 +177,6 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     void _setColor( const QColor &color );
 
   private:
-
     static QScreen *findScreenAt( QPoint pos );
 
     /**

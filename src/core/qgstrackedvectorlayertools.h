@@ -28,7 +28,6 @@ class CORE_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
 {
     Q_OBJECT
   public:
-
     QgsTrackedVectorLayerTools() = default;
 
     /**
@@ -46,7 +45,7 @@ class CORE_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
     bool startEditing( QgsVectorLayer *layer ) const override;
     bool stopEditing( QgsVectorLayer *layer, bool allowCancel ) const override;
     bool saveEdits( QgsVectorLayer *layer ) const override;
-    bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double  dx = 0, double dy = 0, QString *errorMsg = nullptr, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = nullptr, QString *childrenInfoMsg = nullptr ) const override;
+    bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request, double dx = 0, double dy = 0, QString *errorMsg = nullptr, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = nullptr, QString *childrenInfoMsg = nullptr ) const override;
 
     /**
      * Set the vector layer tools that will be used to interact with the data
@@ -59,7 +58,6 @@ class CORE_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
     void rollback();
 
   private:
-
     const QgsVectorLayerTools *mBackend = nullptr;
     // TODO QGIS3: remove mutable once methods are no longer const
     mutable QMap<QgsVectorLayer *, QgsFeatureIds> mAddedFeatures;

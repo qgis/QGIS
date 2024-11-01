@@ -61,12 +61,11 @@ class QgsCoordinateTransform;
  * to provide access to spatial data residing in a GDAL layers.
  *
 */
-class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
+class QgsGdalProvider final : public QgsRasterDataProvider, QgsGdalProviderBase
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for the provider.
      *
@@ -156,16 +155,16 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     bool readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
-    bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    bool readBlock( int bandNo, QgsRectangle const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     double bandScale( int bandNo ) const override;
     double bandOffset( int bandNo ) const override;
-    QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
+    QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo ) const override;
     QString htmlMetadata() const override;
     QString bandDescription( int bandNumber ) override;
     QStringList subLayers() const override;
 
-    static QList< QgsProviderSublayerDetails > sublayerDetails( GDALDatasetH dataset, const QString &baseUri );
+    static QList<QgsProviderSublayerDetails> sublayerDetails( GDALDatasetH dataset, const QString &baseUri );
 
     bool hasStatistics( int bandNo,
                         Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All,
@@ -215,10 +214,26 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 
     QgsPoint transformCoordinates( const QgsPoint &point, TransformType type ) override;
 
-    bool enableProviderResampling( bool enable ) override { mProviderResamplingEnabled = enable; return true; }
-    bool setZoomedInResamplingMethod( ResamplingMethod method ) override { mZoomedInResamplingMethod = method; return true; }
-    bool setZoomedOutResamplingMethod( ResamplingMethod method ) override { mZoomedOutResamplingMethod = method; return true; }
-    bool setMaxOversampling( double factor ) override { mMaxOversampling = factor; return true; }
+    bool enableProviderResampling( bool enable ) override
+    {
+      mProviderResamplingEnabled = enable;
+      return true;
+    }
+    bool setZoomedInResamplingMethod( ResamplingMethod method ) override
+    {
+      mZoomedInResamplingMethod = method;
+      return true;
+    }
+    bool setZoomedOutResamplingMethod( ResamplingMethod method ) override
+    {
+      mZoomedOutResamplingMethod = method;
+      return true;
+    }
+    bool setMaxOversampling( double factor ) override
+    {
+      mMaxOversampling = factor;
+      return true;
+    }
 
     Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
 
@@ -235,7 +250,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     //! Load attribute tables
     bool readNativeAttributeTable( QString *errorMessage = nullptr ) override;
 
-    bool writeNativeAttributeTable( QString *errorMessage = nullptr ) override;  //#spellok
+    bool writeNativeAttributeTable( QString *errorMessage = nullptr ) override; //#spellok
 
     // There are 2 cloning mechanisms.
     // * Either the cloned provider use the same GDAL handles as the main provider
@@ -309,7 +324,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     QList<QgsRasterPyramid> mPyramidList;
 
     //! \brief sublayers list saved for subsequent access
-    QList< QgsProviderSublayerDetails > mSubLayers;
+    QList<QgsProviderSublayerDetails> mSubLayers;
 
     //! Whether a per-dataset mask band is exposed as an alpha band for the point of view of the rest of the application.
     bool mMaskBandExposedAsAlpha = false;
@@ -330,12 +345,12 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
     //! Pair of GDAL base dataset and "real" dataset handles.
     struct DatasetPair
     {
-      GDALDatasetH mGdalBaseDataset;
-      GDALDatasetH mGdalDataset;
+        GDALDatasetH mGdalBaseDataset;
+        GDALDatasetH mGdalDataset;
     };
 
     // Dataset cache
-    static QHash< QgsGdalProvider *, QVector<DatasetPair> > mgDatasetCache;
+    static QHash<QgsGdalProvider *, QVector<DatasetPair>> mgDatasetCache;
 
     // Number of cached datasets in mgDatasetCache ( == sum(iter.value().size() )
     static int mgDatasetCacheSize;
@@ -380,7 +395,7 @@ class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 /**
  * Metadata of the GDAL data provider
  */
-class QgsGdalProviderMetadata final: public QgsProviderMetadata
+class QgsGdalProviderMetadata final : public QgsProviderMetadata
 {
     Q_OBJECT
   public:
@@ -403,14 +418,14 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
       const QgsCoordinateReferenceSystem &crs,
       const QStringList &createOptions ) override;
     QString filters( Qgis::FileFilterType type ) override;
-    QList<QPair<QString, QString> > pyramidResamplingMethods() override;
+    QList<QPair<QString, QString>> pyramidResamplingMethods() override;
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     ProviderCapabilities providerCapabilities() const override;
-    QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
+    QList<QgsProviderSublayerDetails> querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
     QStringList sidecarFilesForUri( const QString &uri ) const override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QList<Qgis::LayerType> supportedLayerTypes() const override;
 
-    QList< QgsDataItemProvider * > dataItemProviders() const override;
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
     int listStyles( const QString &uri, QStringList &ids, QStringList &names,
                     QStringList &descriptions, QString &errCause ) override;
     bool styleExists( const QString &uri, const QString &styleId, QString &errCause SIP_OUT ) override;
@@ -421,6 +436,7 @@ class QgsGdalProviderMetadata final: public QgsProviderMetadata
                     const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;
     QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
+
   private:
     //! Get layer name from gdal url
     static QString getLayerNameForStyle( const QString &uri, gdal::dataset_unique_ptr &ds );

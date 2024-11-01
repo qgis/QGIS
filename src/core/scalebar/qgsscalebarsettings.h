@@ -38,7 +38,6 @@ class QgsFillSymbol;
 class CORE_EXPORT QgsScaleBarSettings
 {
   public:
-
     QgsScaleBarSettings();
 
     ~QgsScaleBarSettings();
@@ -621,7 +620,6 @@ class CORE_EXPORT QgsScaleBarSettings
     void setNumericFormat( QgsNumericFormat *format SIP_TRANSFER );
 
   private:
-
     //! Number of segments on right side
     int mNumSegments = 2;
     //! Number of segments on left side
@@ -650,11 +648,11 @@ class CORE_EXPORT QgsScaleBarSettings
     //! Height of bars/lines
     double mHeight = 3.0;
 
-    std::unique_ptr< QgsLineSymbol > mLineSymbol;
-    std::unique_ptr< QgsLineSymbol > mDivisionLineSymbol;
-    std::unique_ptr< QgsLineSymbol > mSubdivisionLineSymbol;
-    std::unique_ptr< QgsFillSymbol > mFillSymbol;
-    std::unique_ptr< QgsFillSymbol > mAlternateFillSymbol;
+    std::unique_ptr<QgsLineSymbol> mLineSymbol;
+    std::unique_ptr<QgsLineSymbol> mDivisionLineSymbol;
+    std::unique_ptr<QgsLineSymbol> mSubdivisionLineSymbol;
+    std::unique_ptr<QgsFillSymbol> mFillSymbol;
+    std::unique_ptr<QgsFillSymbol> mAlternateFillSymbol;
 
     //! Space between bar and Text labels
     double mLabelBarSpace = 3.0;
@@ -670,9 +668,7 @@ class CORE_EXPORT QgsScaleBarSettings
 
     Qgis::DistanceUnit mUnits = Qgis::DistanceUnit::Meters;
 
-    std::unique_ptr< QgsNumericFormat > mNumericFormat;
-
+    std::unique_ptr<QgsNumericFormat> mNumericFormat;
 };
 
 #endif // QGSSCALEBARSETTINGS_H
-

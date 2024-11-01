@@ -34,7 +34,6 @@
 class CORE_EXPORT QgsPrecalculatedTextMetrics
 {
   public:
-
     /**
      * Constructor for QgsPrecalculatedTextMetrics
      * \param graphemes list of graphemes contained in the text
@@ -43,9 +42,9 @@ class CORE_EXPORT QgsPrecalculatedTextMetrics
      * \param characterDescents descent of characters
      */
     QgsPrecalculatedTextMetrics( const QStringList &graphemes,
-                                 const QVector< double > &characterWidths,
-                                 const QVector< double > &characterHeights,
-                                 const QVector< double > &characterDescents )
+                                 const QVector<double> &characterWidths,
+                                 const QVector<double> &characterHeights,
+                                 const QVector<double> &characterDescents )
       : mGraphemes( graphemes )
       , mCharacterHeights( characterHeights )
       , mCharacterWidths( characterWidths )
@@ -64,7 +63,7 @@ class CORE_EXPORT QgsPrecalculatedTextMetrics
     /**
      * Returns the total number of characters.
      */
-    int count() const { return static_cast< int >( mCharacterWidths.size() ); }
+    int count() const { return static_cast<int>( mCharacterWidths.size() ); }
 
     /**
      * Returns the width of the character at the specified position.
@@ -112,7 +111,7 @@ class CORE_EXPORT QgsPrecalculatedTextMetrics
     /**
      * Sets the character \a formats associated with the text graphemes().
      */
-    void setGraphemeFormats( const QVector< QgsTextCharacterFormat > &formats ) { mGraphemeFormats = formats; }
+    void setGraphemeFormats( const QVector<QgsTextCharacterFormat> &formats ) { mGraphemeFormats = formats; }
 
     /**
      * Returns the number of grapheme formats available.
@@ -125,15 +124,13 @@ class CORE_EXPORT QgsPrecalculatedTextMetrics
     QgsTextCharacterFormat graphemeFormat( int index ) const { return mGraphemeFormats.value( index ); }
 
   private:
-
     QStringList mGraphemes;
-    QVector< QgsTextCharacterFormat > mGraphemeFormats;
-    QVector< double > mCharacterHeights;
-    QVector< double > mCharacterWidths;
-    QVector< double > mCharacterDescents;
+    QVector<QgsTextCharacterFormat> mGraphemeFormats;
+    QVector<double> mCharacterHeights;
+    QVector<double> mCharacterWidths;
+    QVector<double> mCharacterDescents;
     double mMaximumCharacterHeight = 0;
     double mMaximumCharacterDescent = 0;
-
 };
 
 

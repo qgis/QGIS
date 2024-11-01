@@ -48,7 +48,6 @@ class QgsMeshLayer;
 class CORE_EXPORT QgsMeshLayerUtils
 {
   public:
-
     /**
      * Returns (maximum) number of values that can be extracted from the mesh by type
      *
@@ -138,8 +137,7 @@ class CORE_EXPORT QgsMeshLayerUtils
     static QgsRectangle boundingBoxToScreenRectangle(
       const QgsMapToPixel &mtp,
       const QgsRectangle &bbox,
-      double devicePixelRatio = 1.0
-    );
+      double devicePixelRatio = 1.0 );
 
     /**
      * Calculates barycentric coordinates of point \a pP in a triangle given by
@@ -156,8 +154,7 @@ class CORE_EXPORT QgsMeshLayerUtils
       const QgsPointXY &pP,
       double &lam1,
       double &lam2,
-      double &lam3
-    );
+      double &lam3 );
 
     /**
     * Interpolates value based on known values on the vertices of a edge
@@ -167,8 +164,7 @@ class CORE_EXPORT QgsMeshLayerUtils
     */
     static double interpolateFromVerticesData(
       double fraction,
-      double val1, double val2
-    );
+      double val1, double val2 );
 
     /**
     * Interpolates value based on known values on the vertices of a edge
@@ -177,8 +173,7 @@ class CORE_EXPORT QgsMeshLayerUtils
     * \since QGIS 3.14
     */
     static QgsMeshDatasetValue interpolateFromVerticesData( double fraction,
-        const QgsMeshDatasetValue &val1, const QgsMeshDatasetValue &val2
-                                                          );
+                                                            const QgsMeshDatasetValue &val1, const QgsMeshDatasetValue &val2 );
 
     /**
     * Interpolates value based on known values on the vertices of a triangle
@@ -193,8 +188,7 @@ class CORE_EXPORT QgsMeshLayerUtils
     */
     static double interpolateFromVerticesData(
       const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
-      double val1, double val2, double val3, const QgsPointXY &pt
-    );
+      double val1, double val2, double val3, const QgsPointXY &pt );
 
     /**
      * Interpolates the z value for a \a mesh at the specified point (\a x, \a y).
@@ -220,8 +214,7 @@ class CORE_EXPORT QgsMeshLayerUtils
     */
     static QgsVector interpolateVectorFromVerticesData(
       const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
-      QgsVector vect1, QgsVector vect2, QgsVector vect3, const QgsPointXY &pt
-    );
+      QgsVector vect1, QgsVector vect2, QgsVector vect3, const QgsPointXY &pt );
 
     /**
     * Interpolate value based on known value on the face of a triangle
@@ -261,8 +254,7 @@ class CORE_EXPORT QgsMeshLayerUtils
       const QgsMesh *nativeMesh,
       const QgsTriangularMesh *triangularMesh,
       QgsMeshDataBlock *active,
-      QgsMeshRendererScalarSettings::DataResamplingMethod method
-    );
+      QgsMeshRendererScalarSettings::DataResamplingMethod method );
 
     /**
     * Interpolate values on vertices from values on faces
@@ -273,8 +265,7 @@ class CORE_EXPORT QgsMeshLayerUtils
       const QVector<double> &valuesOnFaces,
       const QgsMesh &nativeMesh,
       QgsMeshDataBlock *active,
-      QgsMeshRendererScalarSettings::DataResamplingMethod method
-    );
+      QgsMeshRendererScalarSettings::DataResamplingMethod method );
 
     /**
     * Interpolate values on vertices from values on faces
@@ -285,8 +276,7 @@ class CORE_EXPORT QgsMeshLayerUtils
       const QVector<double> &valuesOnFaces,
       const QgsMesh &nativeMesh,
       const QgsMeshDataBlock &active,
-      QgsMeshRendererScalarSettings::DataResamplingMethod method
-    );
+      QgsMeshRendererScalarSettings::DataResamplingMethod method );
 
     /**
     * Resamples values on vertices to values on faces
@@ -298,8 +288,7 @@ class CORE_EXPORT QgsMeshLayerUtils
       const QgsMesh *nativeMesh,
       const QgsTriangularMesh *triangularMesh,
       const QgsMeshDataBlock *active,
-      QgsMeshRendererScalarSettings::DataResamplingMethod method
-    );
+      QgsMeshRendererScalarSettings::DataResamplingMethod method );
 
     /**
      * Calculates magnitude values ont vertices from the given QgsMeshDataBlock.
@@ -335,7 +324,6 @@ class CORE_EXPORT QgsMeshLayerUtils
       const QgsMeshDataBlock &datasetValues,
       const QgsMeshDataBlock &activeFaceFlagValues,
       const QgsMeshRendererScalarSettings::DataResamplingMethod method = QgsMeshRendererScalarSettings::NeighbourAverage );
-
 
 
     /**
@@ -376,7 +364,6 @@ class CORE_EXPORT QgsMeshLayerUtils
      * \since QGIS 3.38
      */
     static bool haveSameParentQuantity( const QgsMeshLayer *layer, const QgsMeshDatasetIndex &index1, const QgsMeshDatasetIndex &index2 );
-
 };
 
 ///@endcond

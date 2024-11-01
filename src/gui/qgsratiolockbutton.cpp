@@ -141,8 +141,7 @@ void QgsRatioLockButton::drawButton()
   const QString imageSource = mLocked ? QStringLiteral( ":/images/themes/default/lockedGray.svg" ) : QStringLiteral( ":/images/themes/default/unlockedGray.svg" );
   bool fitsInCache = false;
   QImage image = QgsApplication::svgCache()->svgAsImage(
-                   imageSource, 16 * pixelRatio, QColor(), QColor(), 0, 1, fitsInCache
-                 );
+    imageSource, 16 * pixelRatio, QColor(), QColor(), 0, 1, fitsInCache );
   image.setDevicePixelRatio( pixelRatio );
   painter.drawImage( QRectF(
                        currentIconSize.width() / 2 - 8,

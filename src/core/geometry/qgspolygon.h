@@ -29,11 +29,9 @@ class QgsLineString;
  * \class QgsPolygon
  * \brief Polygon geometry type.
  */
-class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
+class CORE_EXPORT QgsPolygon : public QgsCurvePolygon
 {
   public:
-
-
     /**
      * Constructor for an empty polygon geometry.
      */
@@ -46,7 +44,7 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
      *
      * \since QGIS 3.14
      */
-    QgsPolygon( QgsLineString *exterior SIP_TRANSFER, const QList< QgsLineString * > &rings SIP_TRANSFER = QList< QgsLineString * >() ) SIP_HOLDGIL;
+    QgsPolygon( QgsLineString *exterior SIP_TRANSFER, const QList<QgsLineString *> &rings SIP_TRANSFER = QList<QgsLineString *>() ) SIP_HOLDGIL;
 
     QString geometryType() const override SIP_HOLDGIL;
     QgsPolygon *clone() const override SIP_FACTORY;
@@ -103,7 +101,8 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString wkt = sipCpp->asWkt();
+        QString wkt
+      = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
       wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
     QString str = QStringLiteral( "<QgsPolygon: %1>" ).arg( wkt );
@@ -111,9 +110,8 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
     % End
 #endif
 
-  protected:
+      protected :
 
-    friend class QgsCurvePolygon;
-
+      friend class QgsCurvePolygon;
 };
 #endif // QGSPOLYGON_H

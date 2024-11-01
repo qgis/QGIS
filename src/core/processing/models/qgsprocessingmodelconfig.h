@@ -37,7 +37,6 @@ class QgsMapLayerStore;
 class CORE_EXPORT QgsProcessingModelInitialRunConfig
 {
   public:
-
     QgsProcessingModelInitialRunConfig();
     ~QgsProcessingModelInitialRunConfig();
 
@@ -101,7 +100,7 @@ class CORE_EXPORT QgsProcessingModelInitialRunConfig
      *
      * \see setPreviouslyExecutedChildAlgorithms()
      */
-    QSet< QString > previouslyExecutedChildAlgorithms() const { return mPreviouslyExecutedChildren; }
+    QSet<QString> previouslyExecutedChildAlgorithms() const { return mPreviouslyExecutedChildren; }
 
     /**
      * Sets the previously executed child algorithm IDs to use as the initial state
@@ -109,7 +108,7 @@ class CORE_EXPORT QgsProcessingModelInitialRunConfig
      *
      * \see previouslyExecutedChildAlgorithms()
      */
-    void setPreviouslyExecutedChildAlgorithms( const QSet< QString > &children ) { mPreviouslyExecutedChildren = children; }
+    void setPreviouslyExecutedChildAlgorithms( const QSet<QString> &children ) { mPreviouslyExecutedChildren = children; }
 
     /**
      * Returns a reference to a map store containing copies of temporary layers generated
@@ -131,7 +130,7 @@ class CORE_EXPORT QgsProcessingModelInitialRunConfig
      * \see previousLayerStore()
      * \see setPreviousLayerStore()
      */
-    std::unique_ptr< QgsMapLayerStore > takePreviousLayerStore();
+    std::unique_ptr<QgsMapLayerStore> takePreviousLayerStore();
 
     /**
      * Sets the map store containing copies of temporary layers generated
@@ -143,18 +142,15 @@ class CORE_EXPORT QgsProcessingModelInitialRunConfig
      * \see previousLayerStore()
      * \see takePreviousLayerStore()
      */
-    void setPreviousLayerStore( std::unique_ptr< QgsMapLayerStore > store );
+    void setPreviousLayerStore( std::unique_ptr<QgsMapLayerStore> store );
 
   private:
-
     QSet<QString> mChildAlgorithmSubset;
     QVariantMap mInitialChildInputs;
     QVariantMap mInitialChildOutputs;
-    QSet< QString > mPreviouslyExecutedChildren;
+    QSet<QString> mPreviouslyExecutedChildren;
 
-    std::unique_ptr< QgsMapLayerStore > mModelInitialLayerStore;
-
-
+    std::unique_ptr<QgsMapLayerStore> mModelInitialLayerStore;
 };
 
 #endif // QGSPROCESSINGMODELCONFIG_H

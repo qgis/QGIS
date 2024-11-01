@@ -45,7 +45,11 @@ class QgsPaintEffect;
 class QgsDataDefinedSizeLegend;
 class QgsLineSymbol;
 
-namespace pal { class Layer; } SIP_SKIP
+namespace pal
+{
+  class Layer;
+}
+SIP_SKIP
 
 /**
  * \ingroup core
@@ -59,22 +63,20 @@ namespace pal { class Layer; } SIP_SKIP
 class CORE_EXPORT QgsDiagramLayerSettings
 {
   public:
-
     //avoid inclusion of QgsPalLabeling
     enum Placement
     {
       AroundPoint = 0, // Point / Polygon
-      OverPoint, // Point / Polygon
-      Line, // Line / Polygon
-      Curved, // Line
-      Horizontal, // Polygon
-      Free // Polygon
+      OverPoint,       // Point / Polygon
+      Line,            // Line / Polygon
+      Curved,          // Line
+      Horizontal,      // Polygon
+      Free             // Polygon
     };
 
     //! Line placement flags for controlling line based placements
-    enum LinePlacementFlag SIP_ENUM_BASETYPE( IntFlag )
-    {
-      OnLine    = 1,
+    enum LinePlacementFlag SIP_ENUM_BASETYPE( IntFlag ) {
+      OnLine = 1,
       AboveLine = 1 << 1,
       BelowLine = 1 << 2,
       MapOrientation = 1 << 4,
@@ -86,20 +88,19 @@ class CORE_EXPORT QgsDiagramLayerSettings
     /**
      * Data definable properties.
      */
-    enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDiagramLayerSettings, Property ) : int
-      {
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDiagramLayerSettings, Property ) : int {
       BackgroundColor, //!< Diagram background color
-      StrokeColor, //!< Stroke color
-      StrokeWidth, //!< Stroke width
-      PositionX, //!< X-coordinate data defined diagram position
-      PositionY, //!< Y-coordinate data defined diagram position
-      Distance, //!< Distance to diagram from feature
-      Priority, //!< Diagram priority (between 0 and 10)
-      ZIndex, //!< Z-index for diagram ordering
-      IsObstacle, //!< Whether diagram features act as obstacles for other diagrams/labels
-      Show, //!< Whether to show the diagram
-      AlwaysShow, //!< Whether the diagram should always be shown, even if it overlaps other diagrams/labels
-      StartAngle, //!< Angle offset for pie diagram
+      StrokeColor,     //!< Stroke color
+      StrokeWidth,     //!< Stroke width
+      PositionX,       //!< X-coordinate data defined diagram position
+      PositionY,       //!< Y-coordinate data defined diagram position
+      Distance,        //!< Distance to diagram from feature
+      Priority,        //!< Diagram priority (between 0 and 10)
+      ZIndex,          //!< Z-index for diagram ordering
+      IsObstacle,      //!< Whether diagram features act as obstacles for other diagrams/labels
+      Show,            //!< Whether to show the diagram
+      AlwaysShow,      //!< Whether the diagram should always be shown, even if it overlaps other diagrams/labels
+      StartAngle,      //!< Angle offset for pie diagram
     };
     // *INDENT-ON*
 
@@ -224,7 +225,8 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * \see setRenderer()
      * \note not available in Python bindings
      */
-    const QgsDiagramRenderer *renderer() const { return mRenderer; } SIP_SKIP
+    const QgsDiagramRenderer *renderer() const { return mRenderer; }
+    SIP_SKIP
 
     /**
      * Sets the diagram renderer associated with the layer.
@@ -283,7 +285,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * Returns the set of any fields referenced by the layer's diagrams.
      * \param context expression context the diagrams will be drawn using
      */
-    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
+    QSet<QString> referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
     /**
      * Returns a reference to the diagram's property collection, used for data defined overrides.
@@ -297,7 +299,8 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * \see Property
      * \note not available in Python bindings
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
+    SIP_SKIP
 
     /**
      * Sets the diagram's property collection, used for data defined overrides.
@@ -308,7 +311,6 @@ class CORE_EXPORT QgsDiagramLayerSettings
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
   private:
-
     //! Associated coordinate transform, or invalid transform for no transformation
     QgsCoordinateTransform mCt;
 
@@ -347,7 +349,6 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     //! Property definitions
     static QgsPropertiesDefinition sPropertyDefinitions;
-
 };
 
 /**
@@ -362,7 +363,6 @@ class CORE_EXPORT QgsDiagramLayerSettings
 class CORE_EXPORT QgsDiagramSettings
 {
   public:
-
     enum LabelPlacementMethod
     {
       Height,
@@ -384,7 +384,7 @@ class CORE_EXPORT QgsDiagramSettings
      */
     enum Direction
     {
-      Clockwise, //!< Clockwise orientation
+      Clockwise,        //!< Clockwise orientation
       Counterclockwise, //!< Counter-clockwise orientation
     };
 
@@ -406,9 +406,9 @@ class CORE_EXPORT QgsDiagramSettings
 
     bool enabled = true;
     QFont font;
-    QList< QColor > categoryColors;
-    QList< QString > categoryAttributes;
-    QList< QString > categoryLabels;
+    QList<QColor> categoryColors;
+    QList<QString> categoryAttributes;
+    QList<QString> categoryLabels;
     QSizeF size; //size
 
     /**
@@ -626,7 +626,7 @@ class CORE_EXPORT QgsDiagramSettings
      * Returns list of legend nodes for the diagram
      * \note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
      */
-    QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const SIP_FACTORY;
+    QList<QgsLayerTreeModelLegendNode *> legendItems( QgsLayerTreeLayer *nodeLayer ) const SIP_FACTORY;
 
     /**
      * Returns the line symbol to use for rendering axis in diagrams.
@@ -691,7 +691,6 @@ class CORE_EXPORT QgsDiagramSettings
     void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
 
   private:
-
     double mSpacing = 0;
     Qgis::RenderUnit mSpacingUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mSpacingMapUnitScale;
@@ -703,9 +702,8 @@ class CORE_EXPORT QgsDiagramSettings
     Direction mDirection = Counterclockwise;
 
     bool mShowAxis = false;
-    std::unique_ptr< QgsLineSymbol > mAxisLineSymbol;
-    std::unique_ptr< QgsPaintEffect > mPaintEffect;
-
+    std::unique_ptr<QgsLineSymbol> mAxisLineSymbol;
+    std::unique_ptr<QgsPaintEffect> mPaintEffect;
 };
 
 /**
@@ -737,7 +735,6 @@ class CORE_EXPORT QgsDiagramInterpolationSettings
 
 class CORE_EXPORT QgsDiagramRenderer
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->rendererName() == QLatin1String( "SingleCategory" ) )
@@ -752,7 +749,6 @@ class CORE_EXPORT QgsDiagramRenderer
 #endif
 
   public:
-
     QgsDiagramRenderer() = default;
     virtual ~QgsDiagramRenderer() = default;
 
@@ -773,7 +769,7 @@ class CORE_EXPORT QgsDiagramRenderer
      * Returns the set of any fields required for diagram rendering
      * \param context expression context the diagrams will be drawn using
      */
-    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
+    virtual QSet<QString> referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
     /**
      * Renders the diagram for a specified feature at a specific position in the passed render context.
@@ -804,7 +800,7 @@ class CORE_EXPORT QgsDiagramRenderer
      * Returns list of legend nodes for the diagram
      * \note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
      */
-    virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const SIP_FACTORY;
+    virtual QList<QgsLayerTreeModelLegendNode *> legendItems( QgsLayerTreeLayer *nodeLayer ) const SIP_FACTORY;
 
     /**
      * Returns TRUE if renderer will show legend items for diagram attributes.
@@ -859,7 +855,7 @@ class CORE_EXPORT QgsDiagramRenderer
     void _writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     //! Reference to the object that does the real diagram rendering
-    std::unique_ptr< QgsDiagram > mDiagram;
+    std::unique_ptr<QgsDiagram> mDiagram;
 
     //! Whether to show an attribute legend for the diagrams
     bool mShowAttributeLegend = true;
@@ -891,7 +887,7 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
-    QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const override SIP_FACTORY;
+    QList<QgsLayerTreeModelLegendNode *> legendItems( QgsLayerTreeLayer *nodeLayer ) const override SIP_FACTORY;
 
   protected:
     bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const override;
@@ -927,7 +923,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     QList<QString> diagramAttributes() const override;
 
-    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
+    QSet<QString> referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
 
     QString rendererName() const override { return QgsLinearlyInterpolatedDiagramRenderer::DIAGRAM_RENDERER_NAME_LINEARLY_INTERPOLATED; }
 
@@ -964,7 +960,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
-    QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const override SIP_FACTORY;
+    QList<QgsLayerTreeModelLegendNode *> legendItems( QgsLayerTreeLayer *nodeLayer ) const override SIP_FACTORY;
 
     /**
      * Configures appearance of legend. Takes ownership of the passed settings objects.
@@ -1045,7 +1041,7 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
      */
     void _writeXmlSubRenderers( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
-    QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const override SIP_FACTORY;
+    QList<QgsLayerTreeModelLegendNode *> legendItems( QgsLayerTreeLayer *nodeLayer ) const override SIP_FACTORY;
 
     /**
      * Returns an ordered list with the renderers of the stacked renderer object.
@@ -1053,7 +1049,7 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
      *
      * \param sortByDiagramMode If true, the list is returned backwards for vertical orientation.
      */
-    QList< QgsDiagramRenderer * > renderers( bool sortByDiagramMode = false ) const;
+    QList<QgsDiagramRenderer *> renderers( bool sortByDiagramMode = false ) const;
 
     /**
      * Adds a renderer to the stacked renderer object. Takes ownership.
@@ -1081,7 +1077,7 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
 
   private:
     QgsDiagramSettings mSettings;
-    QList< QgsDiagramRenderer * > mDiagramRenderers;
+    QList<QgsDiagramRenderer *> mDiagramRenderers;
 };
 
 

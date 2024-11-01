@@ -23,18 +23,18 @@
 
 struct formatter : std::numpunct<wchar_t>
 {
-  formatter( QChar thousands, bool showThousands, QChar decimal )
-    : mThousands( thousands.unicode() )
-    , mDecimal( decimal.unicode() )
-    , mShowThousands( showThousands )
-  {}
-  wchar_t do_decimal_point() const override { return mDecimal; }
-  wchar_t do_thousands_sep() const override { return mThousands; }
-  std::string do_grouping() const override { return mShowThousands ? "\3" : "\0"; }
+    formatter( QChar thousands, bool showThousands, QChar decimal )
+      : mThousands( thousands.unicode() )
+      , mDecimal( decimal.unicode() )
+      , mShowThousands( showThousands )
+    {}
+    wchar_t do_decimal_point() const override { return mDecimal; }
+    wchar_t do_thousands_sep() const override { return mThousands; }
+    std::string do_grouping() const override { return mShowThousands ? "\3" : "\0"; }
 
-  wchar_t mThousands;
-  wchar_t mDecimal;
-  bool mShowThousands = true;
+    wchar_t mThousands;
+    wchar_t mDecimal;
+    bool mShowThousands = true;
 };
 
 QgsBasicNumericFormat::QgsBasicNumericFormat()
@@ -61,8 +61,8 @@ QString QgsBasicNumericFormat::formatDouble( double value, const QgsNumericForma
   const QChar decimal = mDecimalSeparator.isNull() ? context.decimalSeparator() : mDecimalSeparator;
   std::basic_stringstream<wchar_t> os;
   os.imbue( std::locale( os.getloc(), new formatter( mThousandsSeparator.isNull() ? context.thousandsSeparator() : mThousandsSeparator,
-                         mShowThousandsSeparator,
-                         decimal ) ) );
+                                                     mShowThousandsSeparator,
+                                                     decimal ) ) );
 
   if ( !mUseScientific )
   {
@@ -142,7 +142,7 @@ QgsNumericFormat *QgsBasicNumericFormat::clone() const
 
 QgsNumericFormat *QgsBasicNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
-  std::unique_ptr< QgsBasicNumericFormat > res = std::make_unique< QgsBasicNumericFormat >();
+  std::unique_ptr<QgsBasicNumericFormat> res = std::make_unique<QgsBasicNumericFormat>();
   res->setConfiguration( configuration, context );
   return res.release();
 }
@@ -154,7 +154,7 @@ QVariantMap QgsBasicNumericFormat::configuration( const QgsReadWriteContext & ) 
   res.insert( QStringLiteral( "show_thousand_separator" ), mShowThousandsSeparator );
   res.insert( QStringLiteral( "show_plus" ), mShowPlusSign );
   res.insert( QStringLiteral( "show_trailing_zeros" ), mShowTrailingZeros );
-  res.insert( QStringLiteral( "rounding_type" ), static_cast< int >( mRoundingType ) );
+  res.insert( QStringLiteral( "rounding_type" ), static_cast<int>( mRoundingType ) );
   res.insert( QStringLiteral( "thousand_separator" ), mThousandsSeparator.isNull() ? QVariant() : QVariant::fromValue( mThousandsSeparator ) );
   res.insert( QStringLiteral( "decimal_separator" ), mDecimalSeparator.isNull() ? QVariant() : QVariant::fromValue( mDecimalSeparator ) );
   return res;
@@ -166,7 +166,7 @@ void QgsBasicNumericFormat::setConfiguration( const QVariantMap &configuration, 
   mShowThousandsSeparator = configuration.value( QStringLiteral( "show_thousand_separator" ), true ).toBool();
   mShowPlusSign = configuration.value( QStringLiteral( "show_plus" ), false ).toBool();
   mShowTrailingZeros = configuration.value( QStringLiteral( "show_trailing_zeros" ), false ).toBool();
-  mRoundingType = static_cast< RoundingType >( configuration.value( QStringLiteral( "rounding_type" ), static_cast< int >( DecimalPlaces ) ).toInt() );
+  mRoundingType = static_cast<RoundingType>( configuration.value( QStringLiteral( "rounding_type" ), static_cast<int>( DecimalPlaces ) ).toInt() );
   mThousandsSeparator = configuration.value( QStringLiteral( "thousand_separator" ), QChar() ).toChar();
   mDecimalSeparator = configuration.value( QStringLiteral( "decimal_separator" ), QChar() ).toChar();
 }

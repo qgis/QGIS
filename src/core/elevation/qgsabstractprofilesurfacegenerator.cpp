@@ -57,12 +57,12 @@ QVector<QgsGeometry> QgsAbstractProfileSurfaceResults::asGeometries() const
 
 QVector<QgsAbstractProfileResults::Feature> QgsAbstractProfileSurfaceResults::asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback ) const
 {
-  QVector< QgsAbstractProfileResults::Feature > res;
+  QVector<QgsAbstractProfileResults::Feature> res;
   res.reserve( 1 );
 
-  QVector< double > currentLineX;
-  QVector< double > currentLineY;
-  QVector< double > currentLineZ;
+  QVector<double> currentLineX;
+  QVector<double> currentLineY;
+  QVector<double> currentLineZ;
 
   switch ( type )
   {
@@ -80,7 +80,7 @@ QVector<QgsAbstractProfileResults::Feature> QgsAbstractProfileSurfaceResults::as
           {
             QgsAbstractProfileResults::Feature f;
             f.layerIdentifier = mId;
-            f.geometry = QgsGeometry( std::make_unique< QgsLineString >( currentLineX, currentLineY, currentLineZ ) );
+            f.geometry = QgsGeometry( std::make_unique<QgsLineString>( currentLineX, currentLineY, currentLineZ ) );
             res << f;
           }
           currentLineX.clear();
@@ -89,7 +89,7 @@ QVector<QgsAbstractProfileResults::Feature> QgsAbstractProfileSurfaceResults::as
           continue;
         }
 
-        std::unique_ptr< QgsPoint > curvePoint( mProfileCurve->interpolatePoint( pointIt.key() ) );
+        std::unique_ptr<QgsPoint> curvePoint( mProfileCurve->interpolatePoint( pointIt.key() ) );
         currentLineX << curvePoint->x();
         currentLineY << curvePoint->y();
         currentLineZ << pointIt.value();
@@ -99,7 +99,7 @@ QVector<QgsAbstractProfileResults::Feature> QgsAbstractProfileSurfaceResults::as
       {
         QgsAbstractProfileResults::Feature f;
         f.layerIdentifier = mId;
-        f.geometry = QgsGeometry( std::make_unique< QgsLineString >( currentLineX, currentLineY, currentLineZ ) );
+        f.geometry = QgsGeometry( std::make_unique<QgsLineString>( currentLineX, currentLineY, currentLineZ ) );
         res << f;
       }
       break;
@@ -118,7 +118,7 @@ QVector<QgsAbstractProfileResults::Feature> QgsAbstractProfileSurfaceResults::as
           {
             QgsAbstractProfileResults::Feature f;
             f.layerIdentifier = mId;
-            f.geometry = QgsGeometry( std::make_unique< QgsLineString >( currentLineX, currentLineY ) );
+            f.geometry = QgsGeometry( std::make_unique<QgsLineString>( currentLineX, currentLineY ) );
             res << f;
           }
           currentLineX.clear();
@@ -133,7 +133,7 @@ QVector<QgsAbstractProfileResults::Feature> QgsAbstractProfileSurfaceResults::as
       {
         QgsAbstractProfileResults::Feature f;
         f.layerIdentifier = mId;
-        f.geometry = QgsGeometry( std::make_unique< QgsLineString >( currentLineX, currentLineY ) );
+        f.geometry = QgsGeometry( std::make_unique<QgsLineString>( currentLineX, currentLineY ) );
         res << f;
       }
       break;
@@ -149,12 +149,10 @@ QVector<QgsAbstractProfileResults::Feature> QgsAbstractProfileSurfaceResults::as
 
         QgsAbstractProfileResults::Feature f;
         f.layerIdentifier = mId;
-        f.attributes =
-        {
-          { QStringLiteral( "distance" ),  pointIt.key() },
-          { QStringLiteral( "elevation" ),  pointIt.value() }
-        };
-        std::unique_ptr< QgsPoint>  point( mProfileCurve->interpolatePoint( pointIt.key() ) );
+        f.attributes = {
+          { QStringLiteral( "distance" ), pointIt.key() },
+          { QStringLiteral( "elevation" ), pointIt.value() } };
+        std::unique_ptr<QgsPoint> point( mProfileCurve->interpolatePoint( pointIt.key() ) );
         if ( point->is3D() )
           point->setZ( pointIt.value() );
         else
@@ -174,7 +172,7 @@ QgsProfileSnapResult QgsAbstractProfileSurfaceResults::snapPoint( const QgsProfi
   // TODO -- consider an index if performance is an issue
   QgsProfileSnapResult result;
 
-  double prevDistance = std::numeric_limits< double >::max();
+  double prevDistance = std::numeric_limits<double>::max();
   double prevElevation = 0;
   for ( auto it = mDistanceToHeightMap.constBegin(); it != mDistanceToHeightMap.constEnd(); ++it )
   {
@@ -201,9 +199,9 @@ QgsProfileSnapResult QgsAbstractProfileSurfaceResults::snapPoint( const QgsProfi
 QVector<QgsProfileIdentifyResults> QgsAbstractProfileSurfaceResults::identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context )
 {
   // TODO -- consider an index if performance is an issue
-  std::optional< QgsProfileIdentifyResults > result;
+  std::optional<QgsProfileIdentifyResults> result;
 
-  double prevDistance = std::numeric_limits< double >::max();
+  double prevDistance = std::numeric_limits<double>::max();
   double prevElevation = 0;
   for ( auto it = mDistanceToHeightMap.constBegin(); it != mDistanceToHeightMap.constEnd(); ++it )
   {
@@ -218,13 +216,9 @@ QVector<QgsProfileIdentifyResults> QgsAbstractProfileSurfaceResults::identify( c
         return {};
 
       result = QgsProfileIdentifyResults( nullptr,
-      {
-        QVariantMap(
-        {
-          {QStringLiteral( "distance" ),  point.distance() },
-          {QStringLiteral( "elevation" ), snappedZ }
-        } )
-      } );
+                                          { QVariantMap(
+                                            { { QStringLiteral( "distance" ), point.distance() },
+                                              { QStringLiteral( "elevation" ), snappedZ } } ) } );
       break;
     }
 
@@ -232,7 +226,7 @@ QVector<QgsProfileIdentifyResults> QgsAbstractProfileSurfaceResults::identify( c
     prevElevation = it.value();
   }
   if ( result.has_value() )
-    return {result.value()};
+    return { result.value() };
   else
     return {};
 }
@@ -267,7 +261,7 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
       mFillSymbol->startRender( context.renderContext() );
       if ( !std::isnan( mElevationLimit ) )
       {
-        double dataLimit = std::numeric_limits< double >::max();
+        double dataLimit = std::numeric_limits<double>::max();
         for ( auto pointIt = mDistanceToHeightMap.constBegin(); pointIt != mDistanceToHeightMap.constEnd(); ++pointIt )
         {
           if ( !std::isnan( pointIt.value() ) )
@@ -283,7 +277,7 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
       mFillSymbol->startRender( context.renderContext() );
       if ( !std::isnan( mElevationLimit ) )
       {
-        double dataLimit = std::numeric_limits< double >::lowest();
+        double dataLimit = std::numeric_limits<double>::lowest();
         for ( auto pointIt = mDistanceToHeightMap.constBegin(); pointIt != mDistanceToHeightMap.constEnd(); ++pointIt )
         {
           if ( !std::isnan( pointIt.value() ) )
@@ -297,9 +291,8 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
       break;
   }
 
-  auto checkLine = [this]( QPolygonF & currentLine, QgsProfileRenderContext & context, double minZ, double maxZ,
-                           double prevDistance, double currentPartStartDistance )
-  {
+  auto checkLine = [this]( QPolygonF &currentLine, QgsProfileRenderContext &context, double minZ, double maxZ,
+                           double prevDistance, double currentPartStartDistance ) {
     if ( currentLine.length() > 1 )
     {
       switch ( symbology )
@@ -324,7 +317,7 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
   };
 
   QPolygonF currentLine;
-  double prevDistance = std::numeric_limits< double >::quiet_NaN();
+  double prevDistance = std::numeric_limits<double>::quiet_NaN();
   double currentPartStartDistance = 0;
   for ( auto pointIt = mDistanceToHeightMap.constBegin(); pointIt != mDistanceToHeightMap.constEnd(); ++pointIt )
   {
@@ -364,7 +357,7 @@ void QgsAbstractProfileSurfaceResults::renderResults( QgsProfileRenderContext &c
 
 void QgsAbstractProfileSurfaceResults::copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator )
 {
-  const QgsAbstractProfileSurfaceGenerator *surfaceGenerator = qgis::down_cast<  const QgsAbstractProfileSurfaceGenerator * >( generator );
+  const QgsAbstractProfileSurfaceGenerator *surfaceGenerator = qgis::down_cast<const QgsAbstractProfileSurfaceGenerator *>( generator );
 
   mLineSymbol.reset( surfaceGenerator->lineSymbol()->clone() );
   mFillSymbol.reset( surfaceGenerator->fillSymbol()->clone() );
@@ -381,7 +374,6 @@ void QgsAbstractProfileSurfaceResults::copyPropertiesFromGenerator( const QgsAbs
 QgsAbstractProfileSurfaceGenerator::QgsAbstractProfileSurfaceGenerator( const QgsProfileRequest &request )
   : mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
 {
-
 }
 
 QgsAbstractProfileSurfaceGenerator::~QgsAbstractProfileSurfaceGenerator() = default;

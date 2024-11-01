@@ -158,9 +158,7 @@ void QgsExpressionSelectionDialog::mButtonZoomToFeatures_clicked()
 
   const QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
-  const QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( mExpressionBuilder->expressionText() )
-                                    .setExpressionContext( context )
-                                    .setNoAttributes();
+  const QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( mExpressionBuilder->expressionText() ).setExpressionContext( context ).setNoAttributes();
 
   QgsFeatureIterator features = mLayer->getFeatures( request );
 

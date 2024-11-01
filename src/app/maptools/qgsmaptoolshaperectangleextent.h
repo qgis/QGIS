@@ -37,7 +37,7 @@ class APP_EXPORT QgsMapToolShapeRectangleExtentMetadata : public QgsMapToolShape
     QgsMapToolShapeAbstract *factory( QgsMapToolCapture *parentTool ) const override;
 };
 
-class APP_EXPORT QgsMapToolShapeRectangleExtent: public QgsMapToolShapeRectangleAbstract
+class APP_EXPORT QgsMapToolShapeRectangleExtent : public QgsMapToolShapeRectangleAbstract
 {
     Q_OBJECT
 

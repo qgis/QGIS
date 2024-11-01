@@ -93,7 +93,6 @@ class CORE_EXPORT QgsMeshRendererMeshSettings
 class CORE_EXPORT QgsMeshRendererScalarSettings
 {
   public:
-
     /**
      * Resampling of value from dataset
      *
@@ -204,7 +203,6 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
 class CORE_EXPORT QgsMeshRendererVectorArrowSettings
 {
   public:
-
     //! Algorithm how to transform vector magnitude to length of arrow on the device in pixels
     enum ArrowScalingMethod
     {
@@ -304,7 +302,7 @@ class CORE_EXPORT QgsMeshRendererVectorArrowSettings
   private:
     QgsMeshRendererVectorArrowSettings::ArrowScalingMethod mShaftLengthMethod = QgsMeshRendererVectorArrowSettings::ArrowScalingMethod::MinMax;
     double mMinShaftLength = 0.8; //in millimeters
-    double mMaxShaftLength = 10; //in millimeters
+    double mMaxShaftLength = 10;  //in millimeters
     double mScaleFactor = 10;
     double mFixedShaftLength = 20; //in millimeters
     double mArrowHeadWidthRatio = 0.15;
@@ -352,7 +350,6 @@ class CORE_EXPORT QgsMeshRendererVectorStreamlineSettings
     QDomElement writeXml( QDomDocument &doc ) const;
 
   private:
-
     QgsMeshRendererVectorStreamlineSettings::SeedingStartPointsMethod mSeedingMethod = MeshGridded;
     double mSeedingDensity = 0.15;
 };
@@ -369,7 +366,6 @@ class CORE_EXPORT QgsMeshRendererVectorStreamlineSettings
 class CORE_EXPORT QgsMeshRendererVectorTracesSettings
 {
   public:
-
     //! Returns the maximum tail length
     double maximumTailLength() const;
     //! Sets the maximums tail length
@@ -392,7 +388,6 @@ class CORE_EXPORT QgsMeshRendererVectorTracesSettings
     int mParticlesCount = 1000;
     double mMaximumTailLength = 100;
     Qgis::RenderUnit mMaximumTailLengthUnit = Qgis::RenderUnit::Millimeters;
-
 };
 
 /**
@@ -411,11 +406,11 @@ class CORE_EXPORT QgsMeshRendererVectorWindBarbSettings
     enum class WindSpeedUnit
     {
       MetersPerSecond = 0, //!< Meters per second
-      KilometersPerHour, //!< Kilometers per hour
-      Knots, //!< Knots (Nautical miles per hour)
-      MilesPerHour, //!< Miles per hour
-      FeetPerSecond, //!< Feet per second
-      OtherUnit //!< Other unit
+      KilometersPerHour,   //!< Kilometers per hour
+      Knots,               //!< Knots (Nautical miles per hour)
+      MilesPerHour,        //!< Miles per hour
+      FeetPerSecond,       //!< Feet per second
+      OtherUnit            //!< Other unit
     };
 
     /**
@@ -487,7 +482,6 @@ class CORE_EXPORT QgsMeshRendererVectorWindBarbSettings
 class CORE_EXPORT QgsMeshRendererVectorSettings
 {
   public:
-
     /**
      * Defines the symbology of vector rendering
      * \since QGIS 3.12
@@ -651,16 +645,15 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
 
   private:
-
     Symbology mDisplayingMethod = Arrows;
 
     double mLineWidth = DEFAULT_LINE_WIDTH; //in millimeters
     QgsColorRampShader mColorRampShader;
     QColor mColor = Qt::black;
     QgsInterpolatedLineColor::ColoringMethod mColoringMethod = QgsInterpolatedLineColor::SingleColor;
-    double mFilterMin = -1; //disabled
-    double mFilterMax = -1; //disabled
-    int mUserGridCellWidth = 10; // in pixels
+    double mFilterMin = -1;       //disabled
+    double mFilterMax = -1;       //disabled
+    int mUserGridCellWidth = 10;  // in pixels
     int mUserGridCellHeight = 10; // in pixels
     bool mOnUserDefinedGrid = false;
 
@@ -682,7 +675,6 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
 class CORE_EXPORT QgsMeshRendererSettings
 {
   public:
-
     /**
      * Constructs renderer with default single layer averaging method
      */
@@ -721,13 +713,13 @@ class CORE_EXPORT QgsMeshRendererSettings
      * Returns whether \a groupIndex has existing scalar settings
      * \since QGIS 3.30.2
      */
-    bool hasScalarSettings( int groupIndex ) const {return mRendererScalarSettings.contains( groupIndex );}
+    bool hasScalarSettings( int groupIndex ) const { return mRendererScalarSettings.contains( groupIndex ); }
 
     /**
      * Removes scalar settings with \a groupIndex
      * \since QGIS 3.30.2
      */
-    bool removeScalarSettings( int groupIndex )  {return mRendererScalarSettings.remove( groupIndex );}
+    bool removeScalarSettings( int groupIndex ) { return mRendererScalarSettings.remove( groupIndex ); }
 
     //! Returns renderer settings
     QgsMeshRendererVectorSettings vectorSettings( int groupIndex ) const { return mRendererVectorSettings.value( groupIndex ); }
@@ -738,13 +730,13 @@ class CORE_EXPORT QgsMeshRendererSettings
      * Returns whether \a groupIndex has existing vector settings
      * \since QGIS 3.30.2
      */
-    bool hasVectorSettings( int groupIndex ) const {return mRendererVectorSettings.contains( groupIndex );}
+    bool hasVectorSettings( int groupIndex ) const { return mRendererVectorSettings.contains( groupIndex ); }
 
     /**
      * Removes vector settings for \a groupIndex
      * \since QGIS 3.30.2
      */
-    bool removeVectorSettings( int groupIndex )  {return mRendererVectorSettings.remove( groupIndex );}
+    bool removeVectorSettings( int groupIndex ) { return mRendererVectorSettings.remove( groupIndex ); }
 
     /**
      * Returns averaging method for conversion of 3d stacked mesh data to 2d data
@@ -801,8 +793,8 @@ class CORE_EXPORT QgsMeshRendererSettings
     QgsMeshRendererMeshSettings mRendererTriangularMeshSettings;
     QgsMeshRendererMeshSettings mRendererEdgeMeshSettings;
 
-    QHash<int, QgsMeshRendererScalarSettings> mRendererScalarSettings;  //!< Per-group scalar settings
-    QHash<int, QgsMeshRendererVectorSettings> mRendererVectorSettings;  //!< Per-group vector settings
+    QHash<int, QgsMeshRendererScalarSettings> mRendererScalarSettings; //!< Per-group scalar settings
+    QHash<int, QgsMeshRendererVectorSettings> mRendererVectorSettings; //!< Per-group vector settings
 
     //! index of active scalar dataset group
     int mActiveScalarDatasetGroup = -1;

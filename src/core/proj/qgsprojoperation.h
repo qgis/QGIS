@@ -30,7 +30,6 @@
 class CORE_EXPORT QgsProjOperation
 {
   public:
-
     /**
      * Returns TRUE if the body is a valid object, or FALSE if it is a null/invalid
      * object.
@@ -55,7 +54,7 @@ class CORE_EXPORT QgsProjOperation
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str;
+        QString str;
     if ( !sipCpp->isValid() )
     {
       str = QStringLiteral( "<QgsProjOperation: invalid>" );
@@ -68,9 +67,10 @@ class CORE_EXPORT QgsProjOperation
     % End
 #endif
 
-  private:
+      private :
 
-    bool mValid = false;
+      bool mValid
+      = false;
     QString mId;
     QString mDescription;
     QString mDetails;

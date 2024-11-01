@@ -223,7 +223,7 @@ int QgsAttributeTableConfig::columnWidth( int column ) const
 
 void QgsAttributeTableConfig::setColumnWidth( int column, int width )
 {
-  mColumns[ column ].width = width;
+  mColumns[column].width = width;
 }
 
 bool QgsAttributeTableConfig::columnHidden( int column ) const
@@ -233,7 +233,7 @@ bool QgsAttributeTableConfig::columnHidden( int column ) const
 
 void QgsAttributeTableConfig::setColumnHidden( int column, bool hidden )
 {
-  mColumns[ column ].hidden = hidden;
+  mColumns[column].hidden = hidden;
 }
 
 bool QgsAttributeTableConfig::operator!=( const QgsAttributeTableConfig &other ) const
@@ -261,14 +261,14 @@ void QgsAttributeTableConfig::writeXml( QDomNode &node ) const
 {
   QDomDocument doc( node.ownerDocument() );
 
-  QDomElement configElement  = doc.createElement( QStringLiteral( "attributetableconfig" ) );
+  QDomElement configElement = doc.createElement( QStringLiteral( "attributetableconfig" ) );
   configElement.setAttribute( QStringLiteral( "actionWidgetStyle" ), mActionWidgetStyle == ButtonList ? "buttonList" : "dropDown" );
 
   configElement.setAttribute( QStringLiteral( "sortExpression" ), mSortExpression );
 
   configElement.setAttribute( QStringLiteral( "sortOrder" ), mSortOrder );
 
-  QDomElement columnsElement  = doc.createElement( QStringLiteral( "columns" ) );
+  QDomElement columnsElement = doc.createElement( QStringLiteral( "columns" ) );
 
   const auto constMColumns = mColumns;
   for ( const ColumnConfig &column : constMColumns )
@@ -302,9 +302,7 @@ bool QgsAttributeTableConfig::hasSameColumns( const QgsAttributeTableConfig &oth
   {
     for ( int i = 0; i < columns().size(); i++ )
     {
-      if ( columns().at( i ).name != other.columns().at( i ).name ||
-           columns().at( i ).type != other.columns().at( i ).type ||
-           columns().at( i ).hidden != other.columns().at( i ).hidden )
+      if ( columns().at( i ).name != other.columns().at( i ).name || columns().at( i ).type != other.columns().at( i ).type || columns().at( i ).hidden != other.columns().at( i ).hidden )
       {
         return false;
       }
@@ -315,7 +313,7 @@ bool QgsAttributeTableConfig::hasSameColumns( const QgsAttributeTableConfig &oth
   return false;
 }
 
-bool QgsAttributeTableConfig::ColumnConfig::operator== ( const ColumnConfig &other ) const
+bool QgsAttributeTableConfig::ColumnConfig::operator==( const ColumnConfig &other ) const
 {
   return type == other.type && name == other.name && hidden == other.hidden && width == other.width;
 }

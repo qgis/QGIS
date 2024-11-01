@@ -190,7 +190,7 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
 
   // spatial extent
   const QDomNodeList spatialList = mnl.toElement().elementsByTagName( QStringLiteral( "spatial" ) );
-  QList< QgsLayerMetadata::SpatialExtent > metadataSpatialExtents;
+  QList<QgsLayerMetadata::SpatialExtent> metadataSpatialExtents;
   for ( int i = 0; i < spatialList.size(); i++ )
   {
     mnl = spatialList.at( i );
@@ -293,7 +293,7 @@ bool QgsLayerMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocum
   QDomElement extentElement = document.createElement( QStringLiteral( "extent" ) );
 
   // spatial extents
-  const QList< QgsLayerMetadata::SpatialExtent > sExtents = extent().spatialExtents();
+  const QList<QgsLayerMetadata::SpatialExtent> sExtents = extent().spatialExtents();
   for ( const QgsLayerMetadata::SpatialExtent &spatialExtent : sExtents )
   {
     QDomElement spatialElement = document.createElement( QStringLiteral( "spatial" ) );
@@ -310,7 +310,7 @@ bool QgsLayerMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocum
   }
 
   // temporal extents
-  const QList< QgsDateTimeRange > tExtents = extent().temporalExtents();
+  const QList<QgsDateTimeRange> tExtents = extent().temporalExtents();
   for ( const QgsDateTimeRange &temporalExtent : tExtents )
   {
     QDomElement temporalElement = document.createElement( QStringLiteral( "temporal" ) );
@@ -346,7 +346,7 @@ void QgsLayerMetadata::combine( const QgsAbstractMetadataBase *other )
 {
   QgsAbstractMetadataBase::combine( other );
 
-  if ( const QgsLayerMetadata *otherLayerMetadata = dynamic_cast< const QgsLayerMetadata * >( other ) )
+  if ( const QgsLayerMetadata *otherLayerMetadata = dynamic_cast<const QgsLayerMetadata *>( other ) )
   {
     if ( !otherLayerMetadata->fees().isEmpty() )
       mFees = otherLayerMetadata->fees();
@@ -414,29 +414,19 @@ bool QgsLayerMetadata::Extent::operator==( const QgsLayerMetadata::Extent &other
   return mSpatialExtents == other.mSpatialExtents && mTemporalExtents == other.mTemporalExtents;
 }
 
-bool QgsLayerMetadata::operator==( const QgsLayerMetadata &other )  const
+bool QgsLayerMetadata::operator==( const QgsLayerMetadata &other ) const
 {
-  return equals( other ) &&
-         mFees == other.mFees &&
-         mConstraints == other.mConstraints &&
-         mRights == other.mRights &&
-         mLicenses == other.mLicenses &&
-         mEncoding == other.mEncoding &&
-         mCrs == other.mCrs &&
-         mExtent == other.mExtent;
+  return equals( other ) && mFees == other.mFees && mConstraints == other.mConstraints && mRights == other.mRights && mLicenses == other.mLicenses && mEncoding == other.mEncoding && mCrs == other.mCrs && mExtent == other.mExtent;
 }
 
 bool QgsLayerMetadata::contains( const QString &searchString ) const
 {
-
   if ( searchString.trimmed().isEmpty() )
   {
     return false;
   }
 
-  if ( title().contains( searchString, Qt::CaseInsensitive ) ||
-       identifier().contains( searchString, Qt::CaseInsensitive ) ||
-       abstract().contains( searchString, Qt::CaseInsensitive ) )
+  if ( title().contains( searchString, Qt::CaseInsensitive ) || identifier().contains( searchString, Qt::CaseInsensitive ) || abstract().contains( searchString, Qt::CaseInsensitive ) )
   {
     return true;
   }
@@ -469,9 +459,7 @@ bool QgsLayerMetadata::matches( const QVector<QRegularExpression> &searchReList 
 {
   for ( const QRegularExpression &re : std::as_const( searchReList ) )
   {
-    if ( re.match( title() ).hasMatch() ||
-         re.match( identifier() ).hasMatch() ||
-         re.match( abstract() ).hasMatch() )
+    if ( re.match( title() ).hasMatch() || re.match( identifier() ).hasMatch() || re.match( abstract() ).hasMatch() )
     {
       return true;
     }
@@ -496,7 +484,6 @@ bool QgsLayerMetadata::matches( const QVector<QRegularExpression> &searchReList 
         return true;
       }
     }
-
   }
 
   return false;
@@ -504,8 +491,7 @@ bool QgsLayerMetadata::matches( const QVector<QRegularExpression> &searchReList 
 
 bool QgsLayerMetadata::SpatialExtent::operator==( const QgsLayerMetadata::SpatialExtent &other ) const
 {
-  return extentCrs == other.extentCrs &&
-         bounds == other.bounds;
+  return extentCrs == other.extentCrs && bounds == other.bounds;
 }
 
 bool QgsLayerMetadata::Constraint::operator==( const QgsLayerMetadata::Constraint &other ) const

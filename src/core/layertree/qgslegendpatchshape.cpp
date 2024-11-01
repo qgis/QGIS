@@ -23,7 +23,6 @@ QgsLegendPatchShape::QgsLegendPatchShape( Qgis::SymbolType type, const QgsGeomet
   , mGeometry( geometry )
   , mPreserveAspectRatio( preserveAspectRatio )
 {
-
 }
 
 bool QgsLegendPatchShape::isNull() const
@@ -83,9 +82,9 @@ QgsGeometry QgsLegendPatchShape::scaledGeometry( QSizeF size ) const
 
     // important -- the transform needs to flip from north-up to painter style "increasing y down" coordinates
     const QPolygonF targetRectPoly = QPolygonF() << QPointF( dx, dy + size.height() )
-                                     << QPointF( dx + size.width(), dy + size.height() )
-                                     << QPointF( dx + size.width(), dy )
-                                     << QPointF( dx, dy );
+                                                 << QPointF( dx + size.width(), dy + size.height() )
+                                                 << QPointF( dx + size.width(), dy )
+                                                 << QPointF( dx, dy );
     QTransform t;
 
     if ( bounds.width() > 0 && bounds.height() > 0 )
@@ -110,7 +109,7 @@ QgsGeometry QgsLegendPatchShape::scaledGeometry( QSizeF size ) const
   return geom;
 }
 
-QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( Qgis::SymbolType type, QSizeF size ) const
+QList<QList<QPolygonF>> QgsLegendPatchShape::toQPolygonF( Qgis::SymbolType type, QSizeF size ) const
 {
   if ( isNull() || type != mSymbolType )
     return QgsStyle::defaultStyle()->defaultPatchAsQPolygonF( type, size );
@@ -120,7 +119,7 @@ QList<QList<QPolygonF> > QgsLegendPatchShape::toQPolygonF( Qgis::SymbolType type
   {
     QPolygonF points;
     points << QPointF( size.width() / 2, size.height() / 2 );
-    return QList< QList<QPolygonF> >() << ( QList< QPolygonF >() << points );
+    return QList<QList<QPolygonF>>() << ( QList<QPolygonF>() << points );
   }
 
   return QgsSymbolLayerUtils::toQPolygonF( geom, type );
@@ -130,14 +129,14 @@ void QgsLegendPatchShape::readXml( const QDomElement &element, const QgsReadWrit
 {
   mGeometry = QgsGeometry::fromWkt( element.attribute( QStringLiteral( "wkt" ) ) );
   mPreserveAspectRatio = element.attribute( QStringLiteral( "preserveAspect" ) ).toInt();
-  mSymbolType = static_cast< Qgis::SymbolType >( element.attribute( QStringLiteral( "type" ) ).toInt() );
+  mSymbolType = static_cast<Qgis::SymbolType>( element.attribute( QStringLiteral( "type" ) ).toInt() );
 }
 
 void QgsLegendPatchShape::writeXml( QDomElement &element, QDomDocument &, const QgsReadWriteContext & ) const
 {
-  element.setAttribute( QStringLiteral( "wkt" ), mGeometry.isNull() ? QString() : mGeometry.asWkt( ) );
+  element.setAttribute( QStringLiteral( "wkt" ), mGeometry.isNull() ? QString() : mGeometry.asWkt() );
   element.setAttribute( QStringLiteral( "preserveAspect" ), mPreserveAspectRatio ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  element.setAttribute( QStringLiteral( "type" ), QString::number( static_cast< int >( mSymbolType ) ) );
+  element.setAttribute( QStringLiteral( "type" ), QString::number( static_cast<int>( mSymbolType ) ) );
 }
 
 Qgis::SymbolType QgsLegendPatchShape::symbolType() const

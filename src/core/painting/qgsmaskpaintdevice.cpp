@@ -76,16 +76,16 @@ int QgsMaskPaintDevice::metric( PaintDeviceMetric m ) const
   switch ( m )
   {
     case PdmWidth:
-      val = static_cast< int >( mPaintEngine->maskPainterPath().boundingRect().width() );
+      val = static_cast<int>( mPaintEngine->maskPainterPath().boundingRect().width() );
       break;
     case PdmHeight:
-      val = static_cast< int >( mPaintEngine->maskPainterPath().boundingRect().height() );
+      val = static_cast<int>( mPaintEngine->maskPainterPath().boundingRect().height() );
       break;
     case PdmWidthMM:
-      val = static_cast< int >( 25.4 / QgsPainting::qtDefaultDpiX() * mPaintEngine->maskPainterPath().boundingRect().width() );
+      val = static_cast<int>( 25.4 / QgsPainting::qtDefaultDpiX() * mPaintEngine->maskPainterPath().boundingRect().width() );
       break;
     case PdmHeightMM:
-      val = static_cast< int >( 25.4 / QgsPainting::qtDefaultDpiY() * mPaintEngine->maskPainterPath().boundingRect().height() );
+      val = static_cast<int>( 25.4 / QgsPainting::qtDefaultDpiY() * mPaintEngine->maskPainterPath().boundingRect().height() );
       break;
     case PdmDpiX:
     case PdmPhysicalDpiX:
@@ -105,7 +105,7 @@ int QgsMaskPaintDevice::metric( PaintDeviceMetric m ) const
       val = 1;
       break;
     case PdmDevicePixelRatioScaled:
-      val = static_cast< int >( 1 * QPaintDevice::devicePixelRatioFScale() );
+      val = static_cast<int>( 1 * QPaintDevice::devicePixelRatioFScale() );
       break;
     default:
       val = 0;

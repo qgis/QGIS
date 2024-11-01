@@ -186,7 +186,6 @@ Qt::Orientation QgsLayoutGuide::orientation() const
 }
 
 
-
 //
 // QgsLayoutGuideCollection
 //
@@ -245,19 +244,19 @@ QVariant QgsLayoutGuideCollection::data( const QModelIndex &index, int role ) co
         return QgsUnitTypes::toAbbreviatedString( guide->position().units() );
     }
 
-    case static_cast< int >( CustomRole::Orientation ):
+    case static_cast<int>( CustomRole::Orientation ):
       return QVariant::fromValue( guide->orientation() );
 
-    case static_cast< int >( CustomRole::Position ):
+    case static_cast<int>( CustomRole::Position ):
       return guide->position().length();
 
-    case static_cast< int >( CustomRole::Units ):
-      return static_cast< int >( guide->position().units() );
+    case static_cast<int>( CustomRole::Units ):
+      return static_cast<int>( guide->position().units() );
 
-    case static_cast< int >( CustomRole::Page ):
+    case static_cast<int>( CustomRole::Page ):
       return mPageCollection->pageNumber( guide->page() );
 
-    case static_cast< int >( CustomRole::LayoutPosition ):
+    case static_cast<int>( CustomRole::LayoutPosition ):
       return guide->layoutPosition();
 
     default:
@@ -277,7 +276,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
 
   switch ( role )
   {
-    case  Qt::EditRole:
+    case Qt::EditRole:
     {
       bool ok = false;
       double newPos = value.toDouble( &ok );
@@ -293,7 +292,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
       emit dataChanged( index, index, QVector<int>() << role );
       return true;
     }
-    case static_cast< int >( CustomRole::Position ):
+    case static_cast<int>( CustomRole::Position ):
     {
       bool ok = false;
       double newPos = value.toDouble( &ok );
@@ -313,7 +312,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
       return true;
     }
 
-    case static_cast< int >( CustomRole::LayoutPosition ):
+    case static_cast<int>( CustomRole::LayoutPosition ):
     {
       bool ok = false;
       double newPos = value.toDouble( &ok );
@@ -327,7 +326,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
       return true;
     }
 
-    case static_cast< int >( CustomRole::Units ):
+    case static_cast<int>( CustomRole::Units ):
     {
       bool ok = false;
       int units = value.toInt( &ok );
@@ -335,7 +334,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
         return false;
 
       QgsLayoutMeasurement m = guide->position();
-      m.setUnits( static_cast< Qgis::LayoutUnit >( units ) );
+      m.setUnits( static_cast<Qgis::LayoutUnit>( units ) );
       mLayout->undoStack()->beginCommand( mPageCollection, tr( "Move Guide" ), Move + index.row() );
       whileBlocking( guide )->setPosition( m );
       guide->update();
@@ -377,7 +376,7 @@ bool QgsLayoutGuideCollection::removeRows( int row, int count, const QModelIndex
   if ( !mBlockUndoCommands )
     mLayout->undoStack()->beginCommand( mPageCollection, tr( "Remove Guide(s)" ), Remove + row );
   beginRemoveRows( parent, row, row + count - 1 );
-  for ( int i = 0; i < count; ++ i )
+  for ( int i = 0; i < count; ++i )
   {
     delete mGuides.takeAt( row );
   }
@@ -401,8 +400,7 @@ void QgsLayoutGuideCollection::addGuide( QgsLayoutGuide *guide )
     mLayout->undoStack()->endCommand();
 
   QModelIndex index = createIndex( mGuides.length() - 1, 0 );
-  connect( guide, &QgsLayoutGuide::positionChanged, this, [ this, index ]
-  {
+  connect( guide, &QgsLayoutGuide::positionChanged, this, [this, index] {
     emit dataChanged( index, index );
   } );
 }
@@ -422,7 +420,7 @@ void QgsLayoutGuideCollection::setGuideLayoutPosition( QgsLayoutGuide *guide, do
   if ( row < 0 )
     return;
 
-  setData( index( row, 0 ), position, static_cast< int >( CustomRole::LayoutPosition ) );
+  setData( index( row, 0 ), position, static_cast<int>( CustomRole::LayoutPosition ) );
 }
 
 void QgsLayoutGuideCollection::clear()
@@ -457,7 +455,7 @@ void QgsLayoutGuideCollection::applyGuidesToAllOtherPages( int sourcePage )
       if ( p == sourcePage )
         continue;
 
-      std::unique_ptr< QgsLayoutGuide> newGuide( new QgsLayoutGuide( guide->orientation(), guide->position(), mPageCollection->page( p ) ) );
+      std::unique_ptr<QgsLayoutGuide> newGuide( new QgsLayoutGuide( guide->orientation(), guide->position(), mPageCollection->page( p ) ) );
       newGuide->setLayout( mLayout );
       if ( newGuide->item()->isVisible() )
       {
@@ -490,8 +488,7 @@ QList<QgsLayoutGuide *> QgsLayoutGuideCollection::guides( Qt::Orientation orient
   const auto constMGuides = mGuides;
   for ( QgsLayoutGuide *guide : constMGuides )
   {
-    if ( guide->orientation() == orientation && guide->item()->isVisible() &&
-         ( page < 0 || mPageCollection->page( page ) == guide->page() ) )
+    if ( guide->orientation() == orientation && guide->item()->isVisible() && ( page < 0 || mPageCollection->page( page ) == guide->page() ) )
       res << guide;
   }
   return res;
@@ -575,11 +572,11 @@ bool QgsLayoutGuideCollection::readXml( const QDomElement &e, const QDomDocument
   for ( int i = 0; i < guideNodeList.size(); ++i )
   {
     QDomElement element = guideNodeList.at( i ).toElement();
-    Qt::Orientation orientation = static_cast< Qt::Orientation >( element.attribute( QStringLiteral( "orientation" ), QStringLiteral( "1" ) ).toInt() );
+    Qt::Orientation orientation = static_cast<Qt::Orientation>( element.attribute( QStringLiteral( "orientation" ), QStringLiteral( "1" ) ).toInt() );
     double pos = element.attribute( QStringLiteral( "position" ), QStringLiteral( "0" ) ).toDouble();
     Qgis::LayoutUnit unit = QgsUnitTypes::decodeLayoutUnit( element.attribute( QStringLiteral( "units" ) ) );
     int page = element.attribute( QStringLiteral( "page" ), QStringLiteral( "0" ) ).toInt();
-    std::unique_ptr< QgsLayoutGuide > guide( new QgsLayoutGuide( orientation, QgsLayoutMeasurement( pos, unit ), mPageCollection->page( page ) ) );
+    std::unique_ptr<QgsLayoutGuide> guide( new QgsLayoutGuide( orientation, QgsLayoutMeasurement( pos, unit ), mPageCollection->page( page ) ) );
     guide->update();
     addGuide( guide.release() );
   }
@@ -611,17 +608,17 @@ void QgsLayoutGuideProxyModel::setPage( int page )
 bool QgsLayoutGuideProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
-  const Qt::Orientation orientation = static_cast< Qt::Orientation>( sourceModel()->data( index, static_cast< int >( QgsLayoutGuideCollection::CustomRole::Orientation ) ).value< Qt::Orientation >() );
+  const Qt::Orientation orientation = static_cast<Qt::Orientation>( sourceModel()->data( index, static_cast<int>( QgsLayoutGuideCollection::CustomRole::Orientation ) ).value<Qt::Orientation>() );
   if ( orientation != mOrientation )
     return false;
 
-  int page = sourceModel()->data( index, static_cast< int >( QgsLayoutGuideCollection::CustomRole::Page ) ).toInt();
+  int page = sourceModel()->data( index, static_cast<int>( QgsLayoutGuideCollection::CustomRole::Page ) ).toInt();
   return page == mPage;
 }
 
 bool QgsLayoutGuideProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
-  double leftPos = sourceModel()->data( left, static_cast< int >( QgsLayoutGuideCollection::CustomRole::LayoutPosition ) ).toDouble();
-  double rightPos = sourceModel()->data( right, static_cast< int >( QgsLayoutGuideCollection::CustomRole::LayoutPosition ) ).toDouble();
+  double leftPos = sourceModel()->data( left, static_cast<int>( QgsLayoutGuideCollection::CustomRole::LayoutPosition ) ).toDouble();
+  double rightPos = sourceModel()->data( right, static_cast<int>( QgsLayoutGuideCollection::CustomRole::LayoutPosition ) ).toDouble();
   return leftPos < rightPos;
 }

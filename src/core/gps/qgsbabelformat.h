@@ -33,7 +33,6 @@ class QString;
 class CORE_EXPORT QgsAbstractBabelFormat
 {
   public:
-
     virtual ~QgsAbstractBabelFormat() = default;
 
     /**
@@ -81,7 +80,6 @@ class CORE_EXPORT QgsAbstractBabelFormat
                                        Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const;
 
   protected:
-
     /**
      * Constructor for QgsAbstractBabelFormat, with the specified \a name.
      */
@@ -109,7 +107,6 @@ class CORE_EXPORT QgsAbstractBabelFormat
 class CORE_EXPORT QgsBabelSimpleImportFormat : public QgsAbstractBabelFormat
 {
   public:
-
     /**
      * Constructor for QgsBabelSimpleImportFormat.
      *
@@ -141,6 +138,7 @@ class CORE_EXPORT QgsBabelSimpleImportFormat : public QgsAbstractBabelFormat
                                const QString &input,
                                const QString &output,
                                Qgis::BabelCommandFlags flags = Qgis::BabelCommandFlags() ) const override;
+
   private:
     QString mDescription;
     QStringList mExtensions;

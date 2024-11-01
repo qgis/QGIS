@@ -25,7 +25,6 @@
 #include <QClipboard>
 
 
-
 QgsExpressionCalculatorLocatorFilter::QgsExpressionCalculatorLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )
 {

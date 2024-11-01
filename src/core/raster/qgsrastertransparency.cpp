@@ -63,7 +63,7 @@ void QgsRasterTransparency::setTransparentThreeValuePixelList( const QVector<Qgs
 
 int QgsRasterTransparency::alphaValue( double value, int globalTransparency ) const
 {
-  return static_cast< int >( opacityForValue( value ) * globalTransparency );
+  return static_cast<int>( opacityForValue( value ) * globalTransparency );
 }
 
 double QgsRasterTransparency::opacityForValue( double value ) const
@@ -75,8 +75,7 @@ double QgsRasterTransparency::opacityForValue( double value ) const
   }
 
   //Search through the transparency list looking for a match
-  auto it = std::find_if( mTransparentSingleValuePixelList.constBegin(), mTransparentSingleValuePixelList.constEnd(), [value]( const TransparentSingleValuePixel & p )
-  {
+  auto it = std::find_if( mTransparentSingleValuePixelList.constBegin(), mTransparentSingleValuePixelList.constEnd(), [value]( const TransparentSingleValuePixel &p ) {
     return ( value > p.min && value < p.max )
            || ( p.includeMinimum && qgsDoubleNear( value, p.min ) )
            || ( p.includeMaximum && qgsDoubleNear( value, p.max ) );
@@ -92,7 +91,7 @@ double QgsRasterTransparency::opacityForValue( double value ) const
 
 int QgsRasterTransparency::alphaValue( double redValue, double greenValue, double blueValue, int globalTransparency ) const
 {
-  return static_cast< int >( opacityForRgbValues( redValue, greenValue, blueValue ) * globalTransparency );
+  return static_cast<int>( opacityForRgbValues( redValue, greenValue, blueValue ) * globalTransparency );
 }
 
 double QgsRasterTransparency::opacityForRgbValues( double redValue, double greenValue, double blueValue ) const
@@ -104,8 +103,7 @@ double QgsRasterTransparency::opacityForRgbValues( double redValue, double green
   }
 
   //Search through the transparency list looking for a match
-  auto it = std::find_if( mTransparentThreeValuePixelList.constBegin(), mTransparentThreeValuePixelList.constEnd(), [redValue, greenValue, blueValue]( const TransparentThreeValuePixel & p )
-  {
+  auto it = std::find_if( mTransparentThreeValuePixelList.constBegin(), mTransparentThreeValuePixelList.constEnd(), [redValue, greenValue, blueValue]( const TransparentThreeValuePixel &p ) {
     return qgsDoubleNear( p.red, redValue, p.fuzzyToleranceRed )
            && qgsDoubleNear( p.green, greenValue, p.fuzzyToleranceGreen )
            && qgsDoubleNear( p.blue, blueValue, p.fuzzyToleranceBlue );
@@ -140,7 +138,6 @@ void QgsRasterTransparency::writeXml( QDomDocument &doc, QDomElement &parentElem
       singleValuePixelListElement.appendChild( pixelListElement );
     }
     rasterTransparencyElem.appendChild( singleValuePixelListElement );
-
   }
   if ( !mTransparentThreeValuePixelList.isEmpty() )
   {
@@ -218,9 +215,9 @@ void QgsRasterTransparency::readXml( const QDomElement &elem )
       bool blueOk = false;
       const double toleranceBlue = currentEntryElem.attribute( QStringLiteral( "toleranceBlue" ) ).toDouble( &blueOk );
       mTransparentThreeValuePixelList.append( TransparentThreeValuePixel( red, green, blue, opacity,
-                                              redOk ? toleranceRed : 4 * std::numeric_limits<double>::epsilon(),
-                                              greenOk ? toleranceGreen : 4 * std::numeric_limits<double>::epsilon(),
-                                              blueOk ? toleranceBlue : 4 * std::numeric_limits<double>::epsilon() ) );
+                                                                          redOk ? toleranceRed : 4 * std::numeric_limits<double>::epsilon(),
+                                                                          greenOk ? toleranceGreen : 4 * std::numeric_limits<double>::epsilon(),
+                                                                          blueOk ? toleranceBlue : 4 * std::numeric_limits<double>::epsilon() ) );
     }
   }
 }

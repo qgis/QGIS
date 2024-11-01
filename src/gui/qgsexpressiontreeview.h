@@ -30,7 +30,6 @@
 class QgsVectorLayer;
 
 
-
 /**
  * \ingroup gui
  * \brief An expression item that can be used in the QgsExpressionBuilderWidget tree.
@@ -131,11 +130,9 @@ class GUI_EXPORT QgsExpressionItemSearchProxy : public QSortFilterProxyModel
     void setFilterString( const QString &string );
 
   protected:
-
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
   private:
-
     QString mFilterString;
 };
 
@@ -151,7 +148,6 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
 {
     Q_OBJECT
   public:
-
     /**
      * \ingroup gui
      * \class MenuProvider
@@ -162,12 +158,15 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
     class MenuProvider
     {
       public:
-
         explicit MenuProvider() = default;
         virtual ~MenuProvider() = default;
 
         //! Returns a newly created menu instance
-        virtual QMenu *createContextMenu( QgsExpressionItem *item ) SIP_FACTORY {Q_UNUSED( item ) return nullptr;}
+        virtual QMenu *createContextMenu( QgsExpressionItem *item ) SIP_FACTORY
+        {
+          Q_UNUSED( item )
+          return nullptr;
+        }
     };
 
     //! Constructor
@@ -261,7 +260,7 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
      * Loads the user expressions.
      * This is done on request since it can be very slow if there are thousands of user expressions
      */
-    void loadUserExpressions( );
+    void loadUserExpressions();
 
     /**
      * Returns the list of expression items matching a \a label.
@@ -371,7 +370,7 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
     MenuProvider *mMenuProvider = nullptr;
 
     QgsVectorLayer *mLayer = nullptr;
-    QPointer< QgsProject > mProject;
+    QPointer<QgsProject> mProject;
     QgsExpressionContext mExpressionContext;
     QString mRecentKey;
 

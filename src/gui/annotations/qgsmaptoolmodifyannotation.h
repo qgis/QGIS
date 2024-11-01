@@ -45,7 +45,6 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsMapToolModifyAnnotation
      */
@@ -105,10 +104,10 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
     QObjectUniquePtr<QgsRubberBand> mHoverRubberBand;
-    std::vector< QObjectUniquePtr<QgsRubberBand> > mHoveredItemNodeRubberBands;
+    std::vector<QObjectUniquePtr<QgsRubberBand>> mHoveredItemNodeRubberBands;
 
     // nodes from the current hovered item, reprojected onto the map canvas' CRS
-    QList< QgsAnnotationItemNode >  mHoveredItemNodes;
+    QList<QgsAnnotationItemNode> mHoveredItemNodes;
 
     QObjectUniquePtr<QgsRubberBand> mHoveredNodeRubberBand;
 
@@ -124,7 +123,7 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
     QString mSelectedItemLayerId;
     QgsRectangle mSelectedItemBounds;
 
-    std::unique_ptr< QgsAnnotationItemNodesSpatialIndex > mHoveredItemNodesSpatialIndex;
+    std::unique_ptr<QgsAnnotationItemNodesSpatialIndex> mHoveredItemNodesSpatialIndex;
 
     QgsPointXY mMoveStartPointCanvasCrs;
     QgsPointXY mMoveStartPointLayerCrs;
@@ -133,7 +132,6 @@ class GUI_EXPORT QgsMapToolModifyAnnotation : public QgsMapToolAdvancedDigitizin
     bool mRefreshSelectedItemAfterRedraw = false;
 
     QgsAnnotationItemNode mTargetNode;
-
 };
 
 #endif // QGSMAPTOOLMODIFYANNOTATION_H

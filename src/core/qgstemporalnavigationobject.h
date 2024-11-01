@@ -41,7 +41,6 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     Q_OBJECT
 
   public:
-
     /**
       * Constructor for QgsTemporalNavigationObject, with the specified \a parent object.
       */
@@ -102,7 +101,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
      * \see availableTemporalRanges()
      * \since QGIS 3.20
      */
-    void setAvailableTemporalRanges( const QList< QgsDateTimeRange > &ranges );
+    void setAvailableTemporalRanges( const QList<QgsDateTimeRange> &ranges );
 
     /**
      * Returns the list of all available temporal ranges which have data available.
@@ -113,7 +112,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
      * \see setAvailableTemporalRanges()
      * \since QGIS 3.20
      */
-    QList< QgsDateTimeRange > availableTemporalRanges() const;
+    QList<QgsDateTimeRange> availableTemporalRanges() const;
 
     /**
      * Sets the current animation \a frame number.
@@ -335,12 +334,11 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     void timerTimeout();
 
   private:
-
     //! The controller temporal navigation extent range.
     QgsDateTimeRange mTemporalExtents;
 
     //! Complete list of time ranges with data available
-    QList< QgsDateTimeRange > mAllRanges;
+    QList<QgsDateTimeRange> mAllRanges;
 
     Qgis::TemporalNavigationMode mNavigationMode = Qgis::TemporalNavigationMode::Disabled;
 
@@ -369,7 +367,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController, pu
     long long mTotalMovieFrames = 100;
 
     QgsTemporalNavigationObject( const QgsTemporalNavigationObject & ) = delete;
-    QgsTemporalNavigationObject &operator= ( const QgsTemporalNavigationObject & ) = delete;
+    QgsTemporalNavigationObject &operator=( const QgsTemporalNavigationObject & ) = delete;
 };
 
 #endif // QGSTEMPORALNAVIGATIONOBJECT_H

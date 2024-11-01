@@ -51,7 +51,6 @@ class GUI_EXPORT QgsProcessingDxfLayersPanelWidget : public QgsProcessingMultipl
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingDxfLayersPanelWidget.
      */
@@ -78,7 +77,6 @@ class GUI_EXPORT QgsProcessingDxfLayersWidget : public QWidget
     Q_OBJECT
 
   public:
-
     QgsProcessingDxfLayersWidget( QWidget *parent = nullptr );
 
     QVariant value() const { return mValue; }
@@ -95,7 +93,6 @@ class GUI_EXPORT QgsProcessingDxfLayersWidget : public QWidget
     void showDialog();
 
   private:
-
     void updateSummaryText();
 
     QLineEdit *mLineEdit = nullptr;
@@ -114,7 +111,6 @@ class GUI_EXPORT QgsProcessingDxfLayersWidgetWrapper : public QgsAbstractProcess
     Q_OBJECT
 
   public:
-
     QgsProcessingDxfLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
                                          QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
 
@@ -127,7 +123,6 @@ class GUI_EXPORT QgsProcessingDxfLayersWidgetWrapper : public QgsAbstractProcess
     void setWidgetContext( const QgsProcessingParameterWidgetContext &context ) override;
 
   protected:
-
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
@@ -135,7 +130,6 @@ class GUI_EXPORT QgsProcessingDxfLayersWidgetWrapper : public QgsAbstractProcess
     QStringList compatibleOutputTypes() const override;
 
   private:
-
     QgsProcessingDxfLayersWidget *mPanel = nullptr;
 
     friend class TestProcessingGui;

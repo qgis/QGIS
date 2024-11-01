@@ -36,7 +36,6 @@ class QgsAbstractProfileSource;
 class CORE_EXPORT QgsProfileSourceRegistry
 {
   public:
-
     /**
      * Constructor - creates a registry of profile sources
      */
@@ -47,7 +46,7 @@ class CORE_EXPORT QgsProfileSourceRegistry
     /**
      * Returns a list of registered profile sources
      */
-    QList< QgsAbstractProfileSource * > profileSources() const;
+    QList<QgsAbstractProfileSource *> profileSources() const;
 
     /**
      * Registers a profile \a source and takes ownership of it
@@ -60,7 +59,7 @@ class CORE_EXPORT QgsProfileSourceRegistry
     void unregisterProfileSource( QgsAbstractProfileSource *source );
 
   private:
-    QList< QgsAbstractProfileSource * > mSources;
+    QList<QgsAbstractProfileSource *> mSources;
 };
 
 #endif // QGSPROFILESOURCEREGISTRY_H

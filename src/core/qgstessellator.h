@@ -74,7 +74,7 @@ class CORE_EXPORT QgsTessellator
     /**
      * Returns the triangulation as a multipolygon geometry.
      */
-    std::unique_ptr< QgsMultiPolygon > asMultiPolygon() const SIP_SKIP;
+    std::unique_ptr<QgsMultiPolygon> asMultiPolygon() const SIP_SKIP;
 
     /**
      * Returns minimal Z value of the data (in world coordinates)

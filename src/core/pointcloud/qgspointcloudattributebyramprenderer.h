@@ -33,11 +33,10 @@
  *
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsPointCloudAttributeByRampRendererPreparedData: public QgsPreparedPointCloudRendererData
+class CORE_EXPORT QgsPointCloudAttributeByRampRendererPreparedData : public QgsPreparedPointCloudRendererData
 {
   public:
-
-    QSet< QString > usedAttributes() const override;
+    QSet<QString> usedAttributes() const override;
     bool prepareBlock( const QgsPointCloudBlock *block ) override;
     QColor pointColor( const QgsPointCloudBlock *block, int i, double z ) override SIP_SKIP;
 
@@ -61,7 +60,6 @@ class CORE_EXPORT QgsPointCloudAttributeByRampRendererPreparedData: public QgsPr
 class CORE_EXPORT QgsPointCloudAttributeByRampRenderer : public QgsPointCloudRenderer
 {
   public:
-
     /**
      * Constructor for QgsPointCloudAttributeByRampRenderer.
      */
@@ -71,9 +69,9 @@ class CORE_EXPORT QgsPointCloudAttributeByRampRenderer : public QgsPointCloudRen
     QgsPointCloudRenderer *clone() const override;
     void renderBlock( const QgsPointCloudBlock *block, QgsPointCloudRenderContext &context ) override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-    QSet< QString > usedAttributes( const QgsPointCloudRenderContext &context ) const override;
+    QSet<QString> usedAttributes( const QgsPointCloudRenderContext &context ) const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) override SIP_FACTORY;
-    std::unique_ptr< QgsPreparedPointCloudRendererData > prepare() override SIP_SKIP;
+    std::unique_ptr<QgsPreparedPointCloudRendererData> prepare() override SIP_SKIP;
 
     /**
      * Creates an RGB renderer from an XML \a element.
@@ -141,13 +139,11 @@ class CORE_EXPORT QgsPointCloudAttributeByRampRenderer : public QgsPointCloudRen
     void setMaximum( double maximum );
 
   private:
-
     double mMin = 0;
     double mMax = 100;
 
     QString mAttribute = QStringLiteral( "Intensity" );
     QgsColorRampShader mColorRampShader;
-
 };
 
 #endif // QGSPOINTCLOUDATTRIBUTEBYRAMPRENDERER_H

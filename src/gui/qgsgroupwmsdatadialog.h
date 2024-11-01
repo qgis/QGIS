@@ -25,7 +25,7 @@
  * \ingroup gui
  * \class QgsGroupWmsDataDialog
  */
-class GUI_EXPORT QgsGroupWmsDataDialog: public QDialog, private Ui::QgsGroupWMSDataDialogBase
+class GUI_EXPORT QgsGroupWmsDataDialog : public QDialog, private Ui::QgsGroupWMSDataDialogBase
 {
     Q_OBJECT
 
@@ -56,10 +56,8 @@ class GUI_EXPORT QgsGroupWmsDataDialog: public QDialog, private Ui::QgsGroupWMSD
 
 
   private:
-
     QString mGroupTitle;
     QString mGroupShortName;
-
 };
 
 #endif // QGSGROUPWMSDATADIALOG_H

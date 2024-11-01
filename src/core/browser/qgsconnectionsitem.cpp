@@ -22,4 +22,3 @@ QgsConnectionsRootItem::QgsConnectionsRootItem( QgsDataItem *parent, const QStri
   : QgsDataCollectionItem( parent, name, path, providerKey )
 {
 }
-

@@ -61,8 +61,8 @@ const QgsDataProvider *QgsPluginLayer::dataProvider() const
 //
 ///@cond PRIVATE
 QgsPluginLayerDataProvider::QgsPluginLayerDataProvider( const QString &layerType,
-    const ProviderOptions &options,
-    Qgis::DataProviderReadFlags flags )
+                                                        const ProviderOptions &options,
+                                                        Qgis::DataProviderReadFlags flags )
   : QgsDataProvider( QString(), options, flags )
   , mName( layerType )
 {}

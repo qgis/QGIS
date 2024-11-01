@@ -23,8 +23,7 @@
 
 QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions,
                                   Qgis::DataProviderReadFlags flags )
-  : mDataSourceURI( uri ),
-    mOptions( providerOptions )
+  : mDataSourceURI( uri ), mOptions( providerOptions )
 {
   mReadFlags = flags;
 }

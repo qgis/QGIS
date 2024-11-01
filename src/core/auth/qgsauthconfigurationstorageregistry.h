@@ -38,11 +38,10 @@ class QgsAuthConfigurationStorage;
  *
  * \since QGIS 3.40
  */
-class CORE_EXPORT QgsAuthConfigurationStorageRegistry: public QObject
+class CORE_EXPORT QgsAuthConfigurationStorageRegistry : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * Creates a new QgsAuthConfigurationStorageRegistry instance.
      */
@@ -126,7 +125,6 @@ class CORE_EXPORT QgsAuthConfigurationStorageRegistry: public QObject
     void storageRemoved( const QString &id );
 
   private:
-
     mutable QMutex mMutex;
 
     std::vector<std::unique_ptr<QgsAuthConfigurationStorage>> mStorages;

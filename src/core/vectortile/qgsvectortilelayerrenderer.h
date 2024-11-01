@@ -58,7 +58,7 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
 
     QString mLayerName;
 
-    std::unique_ptr< QgsVectorTileDataProvider > mDataProvider;
+    std::unique_ptr<QgsVectorTileDataProvider> mDataProvider;
 
     //! Tile renderer object to do rendering of individual tiles
     std::unique_ptr<QgsVectorTileRenderer> mRenderer;
@@ -94,24 +94,23 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     QMap<QString, QgsFields> mPerLayerFields;
 
     //! Cached list of layers required for renderer and labeling
-    QSet< QString > mRequiredLayers;
+    QSet<QString> mRequiredLayers;
 
     //! Selected features, to draw on top in a selected style
-    QList< QgsFeature > mSelectedFeatures;
+    QList<QgsFeature> mSelectedFeatures;
 
     //! Counter of total elapsed time to decode tiles (ms)
     int mTotalDecodeTime = 0;
     //! Counter of total elapsed time to render tiles (ms)
     int mTotalDrawTime = 0;
 
-    QList< QgsMapClippingRegion > mClippingRegions;
+    QList<QgsMapClippingRegion> mClippingRegions;
     double mLayerOpacity = 1.0;
 
     QgsVectorTileMatrixSet mTileMatrixSet;
 
     bool mEnableProfile = false;
     quint64 mPreparationTime = 0;
-
 };
 
 

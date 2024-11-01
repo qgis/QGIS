@@ -42,9 +42,7 @@ typedef PJ *ProjData;
 
 class QgsCoordinateTransformPrivate : public QSharedData
 {
-
   public:
-
     explicit QgsCoordinateTransformPrivate();
 
     QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source,
@@ -111,16 +109,16 @@ class QgsCoordinateTransformPrivate : public QSharedData
 
     bool mSourceIsDynamic = false;
     bool mDestIsDynamic = false;
-    double mSourceCoordinateEpoch = std::numeric_limits< double >::quiet_NaN();
-    double mDestCoordinateEpoch = std::numeric_limits< double >::quiet_NaN();
-    double mDefaultTime = std::numeric_limits< double >::quiet_NaN();
+    double mSourceCoordinateEpoch = std::numeric_limits<double>::quiet_NaN();
+    double mDestCoordinateEpoch = std::numeric_limits<double>::quiet_NaN();
+    double mDefaultTime = std::numeric_limits<double>::quiet_NaN();
 
     //! True if the proj transform corresponds to the reverse direction, and must be flipped when transforming...
     bool mIsReversed = false;
 
     QReadWriteLock mProjLock;
-    QMap < uintptr_t, ProjData > mProjProjections;
-    QMap < uintptr_t, ProjData > mProjFallbackProjections;
+    QMap<uintptr_t, ProjData> mProjProjections;
+    QMap<uintptr_t, ProjData> mProjFallbackProjections;
 
     /**
      * Sets a custom handler to use when a coordinate transform is created between \a sourceCrs and
@@ -129,9 +127,9 @@ class QgsCoordinateTransformPrivate : public QSharedData
      *
      * \since QGIS 3.8
      */
-    static void setCustomMissingRequiredGridHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        const QgsDatumTransform::GridDetails &grid )> &handler );
+    static void setCustomMissingRequiredGridHandler( const std::function<void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                                                               const QgsCoordinateReferenceSystem &destinationCrs,
+                                                                               const QgsDatumTransform::GridDetails &grid )> &handler );
 
     /**
      * Sets a custom handler to use when a coordinate transform is created between \a sourceCrs and
@@ -144,10 +142,10 @@ class QgsCoordinateTransformPrivate : public QSharedData
      *
      * \since QGIS 3.8
      */
-    static void setCustomMissingPreferredGridHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        const QgsDatumTransform::TransformDetails &preferredOperation,
-        const QgsDatumTransform::TransformDetails &availableOperation )> &handler );
+    static void setCustomMissingPreferredGridHandler( const std::function<void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                                                                const QgsCoordinateReferenceSystem &destinationCrs,
+                                                                                const QgsDatumTransform::TransformDetails &preferredOperation,
+                                                                                const QgsDatumTransform::TransformDetails &availableOperation )> &handler );
 
     /**
      * Sets a custom handler to use when a coordinate transform was required between \a sourceCrs and
@@ -156,9 +154,9 @@ class QgsCoordinateTransformPrivate : public QSharedData
      *
      * \since QGIS 3.8
      */
-    static void setCustomCoordinateOperationCreationErrorHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        const QString &error )> &handler );
+    static void setCustomCoordinateOperationCreationErrorHandler( const std::function<void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                                                                            const QgsCoordinateReferenceSystem &destinationCrs,
+                                                                                            const QString &error )> &handler );
 
     /**
      * Sets a custom handler to use when a coordinate operation was specified for use between \a sourceCrs and
@@ -167,9 +165,9 @@ class QgsCoordinateTransformPrivate : public QSharedData
      *
      * \since QGIS 3.8
      */
-    static void setCustomMissingGridUsedByContextHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        const QgsDatumTransform::TransformDetails &desiredOperation )> &handler );
+    static void setCustomMissingGridUsedByContextHandler( const std::function<void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                                                                    const QgsCoordinateReferenceSystem &destinationCrs,
+                                                                                    const QgsDatumTransform::TransformDetails &desiredOperation )> &handler );
 
     /**
      * Sets a custom \a handler to use when the desired coordinate operation for use between \a sourceCrs and
@@ -177,34 +175,38 @@ class QgsCoordinateTransformPrivate : public QSharedData
      *
      * \since QGIS 3.20
      */
-    static void setDynamicCrsToDynamicCrsWarningHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs )> &handler );
+    static void setDynamicCrsToDynamicCrsWarningHandler( const std::function<void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                                                                   const QgsCoordinateReferenceSystem &destinationCrs )> &handler );
 
   private:
-
     void freeProj();
 
-    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-                                const QgsCoordinateReferenceSystem &destinationCrs,
-                                const QgsDatumTransform::GridDetails &grid )> sMissingRequiredGridHandler;
+    static std::function<void( const QgsCoordinateReferenceSystem &sourceCrs,
+                               const QgsCoordinateReferenceSystem &destinationCrs,
+                               const QgsDatumTransform::GridDetails &grid )>
+      sMissingRequiredGridHandler;
 
-    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-                                const QgsCoordinateReferenceSystem &destinationCrs,
-                                const QgsDatumTransform::TransformDetails &preferredOperation,
-                                const QgsDatumTransform::TransformDetails &availableOperation )> sMissingPreferredGridHandler;
+    static std::function<void( const QgsCoordinateReferenceSystem &sourceCrs,
+                               const QgsCoordinateReferenceSystem &destinationCrs,
+                               const QgsDatumTransform::TransformDetails &preferredOperation,
+                               const QgsDatumTransform::TransformDetails &availableOperation )>
+      sMissingPreferredGridHandler;
 
-    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-                                const QgsCoordinateReferenceSystem &destinationCrs,
-                                const QString &error )> sCoordinateOperationCreationErrorHandler;
+    static std::function<void( const QgsCoordinateReferenceSystem &sourceCrs,
+                               const QgsCoordinateReferenceSystem &destinationCrs,
+                               const QString &error )>
+      sCoordinateOperationCreationErrorHandler;
 
-    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-                                const QgsCoordinateReferenceSystem &destinationCrs,
-                                const QgsDatumTransform::TransformDetails &desiredOperation )> sMissingGridUsedByContextHandler;
+    static std::function<void( const QgsCoordinateReferenceSystem &sourceCrs,
+                               const QgsCoordinateReferenceSystem &destinationCrs,
+                               const QgsDatumTransform::TransformDetails &desiredOperation )>
+      sMissingGridUsedByContextHandler;
 
-    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-                                const QgsCoordinateReferenceSystem &destinationCrs )> sDynamicCrsToDynamicCrsWarningHandler;
+    static std::function<void( const QgsCoordinateReferenceSystem &sourceCrs,
+                               const QgsCoordinateReferenceSystem &destinationCrs )>
+      sDynamicCrsToDynamicCrsWarningHandler;
 
-    QgsCoordinateTransformPrivate &operator= ( const QgsCoordinateTransformPrivate & ) = delete;
+    QgsCoordinateTransformPrivate &operator=( const QgsCoordinateTransformPrivate & ) = delete;
 };
 
 /// @endcond

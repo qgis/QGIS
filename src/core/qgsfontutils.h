@@ -33,7 +33,6 @@ class QMimeData;
 class CORE_EXPORT QgsFontUtils
 {
   public:
-
     /**
      * Check whether exact font is on system
      * \param f The font to test for match

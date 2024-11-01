@@ -33,7 +33,6 @@ class GUI_EXPORT QgsActionWidgetWrapper : public QgsWidgetWrapper
     Q_OBJECT
 
   public:
-
     /**
      * Create an action widget wrapper
      *
@@ -44,7 +43,6 @@ class GUI_EXPORT QgsActionWidgetWrapper : public QgsWidgetWrapper
     QgsActionWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent );
 
   public:
-
     /**
      * Sets the \a action.
      */
@@ -61,11 +59,9 @@ class GUI_EXPORT QgsActionWidgetWrapper : public QgsWidgetWrapper
     void setEnabled( bool enabled ) override;
 
   private:
-
     QPushButton *mActionButton = nullptr;
     QgsAction mAction;
     QgsFeature mFeature;
-
 };
 
 #endif // QGSACTIONWIDGETWRAPPER_H

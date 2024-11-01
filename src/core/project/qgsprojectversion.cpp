@@ -50,16 +50,12 @@ QgsProjectVersion::QgsProjectVersion( const QString &string )
 
 bool QgsProjectVersion::operator==( const QgsProjectVersion &other ) const
 {
-  return ( ( mMajor == other.mMajor ) &&
-           ( mMinor == other.mMinor ) &&
-           ( mSub == other.mSub ) );
+  return ( ( mMajor == other.mMajor ) && ( mMinor == other.mMinor ) && ( mSub == other.mSub ) );
 }
 
 bool QgsProjectVersion::operator!=( const QgsProjectVersion &other ) const
 {
-  return ( ( mMajor != other.mMajor ) ||
-           ( mMinor != other.mMinor ) ||
-           ( mSub != other.mSub ) );
+  return ( ( mMajor != other.mMajor ) || ( mMinor != other.mMinor ) || ( mSub != other.mSub ) );
 }
 
 bool QgsProjectVersion::operator>=( const QgsProjectVersion &other ) const
@@ -69,9 +65,7 @@ bool QgsProjectVersion::operator>=( const QgsProjectVersion &other ) const
 
 bool QgsProjectVersion::operator>( const QgsProjectVersion &other ) const
 {
-  return ( ( mMajor > other.mMajor ) ||
-           ( ( mMajor == other.mMajor ) && ( mMinor > other.mMinor ) ) ||
-           ( ( mMajor == other.mMajor ) && ( mMinor == other.mMinor ) && ( mSub > other.mSub ) ) );
+  return ( ( mMajor > other.mMajor ) || ( ( mMajor == other.mMajor ) && ( mMinor > other.mMinor ) ) || ( ( mMajor == other.mMajor ) && ( mMinor == other.mMinor ) && ( mSub > other.mSub ) ) );
 }
 
 bool QgsProjectVersion::operator<( const QgsProjectVersion &other ) const

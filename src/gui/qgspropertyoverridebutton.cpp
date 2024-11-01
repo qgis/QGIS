@@ -36,7 +36,7 @@
 #include <QRegularExpression>
 
 QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
-    const QgsVectorLayer *layer )
+                                                      const QgsVectorLayer *layer )
   : QToolButton( parent )
   , mVectorLayer( layer )
 
@@ -52,7 +52,7 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
   int iconSize = QgsGuiUtils::scaleIconSize( 24 );
 
   // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
-  setFixedSize( 2 * static_cast< int >( 1.25 * iconSize / 2.0 ), 2 * static_cast< int >( iconSize * 1.1 / 2.0 ) );
+  setFixedSize( 2 * static_cast<int>( 1.25 * iconSize / 2.0 ), 2 * static_cast<int>( iconSize * 1.1 / 2.0 ) );
 
   setIconSize( QSize( iconSize, iconSize ) );
   setPopupMode( QToolButton::InstantPopup );
@@ -228,7 +228,7 @@ void QgsPropertyOverrideButton::registerEnabledWidget( QWidget *widget, bool nat
     if ( widget == sw.mWidgetPointer.data() && sw.mSiblingType == SiblingEnableState )
       return;
   }
-  mSiblingWidgets.append( SiblingWidget( QPointer<QWidget>( widget ), SiblingEnableState,  natural ) );
+  mSiblingWidgets.append( SiblingWidget( QPointer<QWidget>( widget ), SiblingEnableState, natural ) );
   updateSiblingWidgets( isActive() );
 }
 
@@ -389,7 +389,6 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
 
     if ( !mFieldNameList.isEmpty() )
     {
-
       for ( int j = 0; j < mFieldNameList.count(); ++j )
       {
         QString fldname = mFieldNameList.at( j );
@@ -613,7 +612,7 @@ void QgsPropertyOverrideButton::menuActionTriggered( QAction *action )
   {
     emit createAuxiliaryField();
   }
-  else if ( mFieldsMenu->actions().contains( action ) )  // a field name clicked
+  else if ( mFieldsMenu->actions().contains( action ) ) // a field name clicked
   {
     if ( action->isEnabled() )
     {
@@ -629,7 +628,7 @@ void QgsPropertyOverrideButton::menuActionTriggered( QAction *action )
       emit changed();
     }
   }
-  else if ( mVariablesMenu->actions().contains( action ) )  // a variable name clicked
+  else if ( mVariablesMenu->actions().contains( action ) ) // a variable name clicked
   {
     if ( mExpressionString != action->text().prepend( "@" ) )
     {
@@ -642,7 +641,7 @@ void QgsPropertyOverrideButton::menuActionTriggered( QAction *action )
     updateGui();
     emit changed();
   }
-  else if ( mColorsMenu->actions().contains( action ) )  // a color name clicked
+  else if ( mColorsMenu->actions().contains( action ) ) // a color name clicked
   {
     if ( getColor() != action->text() )
     {
@@ -673,7 +672,7 @@ void QgsPropertyOverrideButton::showExpressionDialog()
 
   // build sensible initial expression text - see https://github.com/qgis/QGIS/issues/26526
   QString currentExpression = ( mProperty.propertyType() == Qgis::PropertyType::Static && !mProperty.staticValue().isValid() ) ? QString()
-                              : mProperty.asExpression();
+                                                                                                                               : mProperty.asExpression();
 
   QgsExpressionBuilderDialog d( const_cast<QgsVectorLayer *>( mVectorLayer ), currentExpression, this, QStringLiteral( "generic" ), context );
   d.setExpectedOutputFormat( mInputDescription );
@@ -699,7 +698,7 @@ void QgsPropertyOverrideButton::showAssistant()
   //already exist
   if ( !mProperty.transformer() )
   {
-    ( void )mProperty.convertToTransformer();
+    ( void ) mProperty.convertToTransformer();
   }
 
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
@@ -709,8 +708,7 @@ void QgsPropertyOverrideButton::showAssistant()
 
   if ( panel && panel->dockMode() )
   {
-    connect( widget, &QgsPropertyAssistantWidget::widgetChanged, this, [this, widget]
-    {
+    connect( widget, &QgsPropertyAssistantWidget::widgetChanged, this, [this, widget] {
       widget->updateProperty( this->mProperty );
       mExpressionString = this->mProperty.asExpression();
       mFieldName = this->mProperty.field();
@@ -722,7 +720,7 @@ void QgsPropertyOverrideButton::showAssistant()
     if ( mVectorLayer )
       connect( mVectorLayer, &QObject::destroyed, widget, &QgsPanelWidget::acceptPanel );
 
-    connect( widget, &QgsPropertyAssistantWidget::panelAccepted, this, [ = ] { updateGui(); } );
+    connect( widget, &QgsPropertyAssistantWidget::panelAccepted, this, [=] { updateGui(); } );
 
     panel->openPanel( widget );
     return;
@@ -843,7 +841,6 @@ void QgsPropertyOverrideButton::updateGui()
   mFullDescription += tr( "<b>Current definition (%1):</b><br>%2" ).arg( deftype, deftip );
 
   setToolTip( mFullDescription );
-
 }
 
 void QgsPropertyOverrideButton::setActivePrivate( bool active )
@@ -862,20 +859,19 @@ void QgsPropertyOverrideButton::updateSiblingWidgets( bool state )
   {
     switch ( sw.mSiblingType )
     {
-
       case SiblingCheckState:
       {
         // don't uncheck, only set to checked
         if ( state )
         {
-          QAbstractButton *btn = qobject_cast< QAbstractButton * >( sw.mWidgetPointer.data() );
+          QAbstractButton *btn = qobject_cast<QAbstractButton *>( sw.mWidgetPointer.data() );
           if ( btn && btn->isCheckable() )
           {
             btn->setChecked( sw.mNatural ? state : !state );
           }
           else
           {
-            QGroupBox *grpbx = qobject_cast< QGroupBox * >( sw.mWidgetPointer.data() );
+            QGroupBox *grpbx = qobject_cast<QGroupBox *>( sw.mWidgetPointer.data() );
             if ( grpbx && grpbx->isCheckable() )
             {
               grpbx->setChecked( sw.mNatural ? state : !state );
@@ -887,7 +883,7 @@ void QgsPropertyOverrideButton::updateSiblingWidgets( bool state )
 
       case SiblingEnableState:
       {
-        QLineEdit *le = qobject_cast< QLineEdit * >( sw.mWidgetPointer.data() );
+        QLineEdit *le = qobject_cast<QLineEdit *>( sw.mWidgetPointer.data() );
         if ( le )
           le->setReadOnly( sw.mNatural ? !state : state );
         else
@@ -921,7 +917,7 @@ void QgsPropertyOverrideButton::updateSiblingWidgets( bool state )
 
       case SiblingLinkedWidget:
       {
-        if ( QgsColorButton *cb = qobject_cast< QgsColorButton * >( sw.mWidgetPointer.data() ) )
+        if ( QgsColorButton *cb = qobject_cast<QgsColorButton *>( sw.mWidgetPointer.data() ) )
         {
           if ( state && mProperty.isProjectColor() )
           {
@@ -941,7 +937,6 @@ void QgsPropertyOverrideButton::updateSiblingWidgets( bool state )
     }
   }
 }
-
 
 
 void QgsPropertyOverrideButton::setActive( bool active )
@@ -969,10 +964,9 @@ void QgsPropertyOverrideButton::registerLinkedWidget( QWidget *widget )
   }
   mSiblingWidgets.append( SiblingWidget( QPointer<QWidget>( widget ), SiblingLinkedWidget ) );
 
-  if ( QgsColorButton *cb = qobject_cast< QgsColorButton * >( widget ) )
+  if ( QgsColorButton *cb = qobject_cast<QgsColorButton *>( widget ) )
   {
-    connect( cb, &QgsColorButton::unlinked, this, [ = ]
-    {
+    connect( cb, &QgsColorButton::unlinked, this, [=] {
       setActive( false );
       updateGui();
     } );

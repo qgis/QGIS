@@ -129,8 +129,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionEffects = nullptr;
     QAction *mActionSetSceneExtent = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
-    QObjectUniquePtr< QgsRubberBand > mViewFrustumHighlight;
-    QObjectUniquePtr< QgsRubberBand > mViewExtentHighlight;
+    QObjectUniquePtr<QgsRubberBand> mViewFrustumHighlight;
+    QObjectUniquePtr<QgsRubberBand> mViewExtentHighlight;
     QPointer<QDialog> mConfigureDialog;
     QgsMessageBar *mMessageBar = nullptr;
     bool mGpuMemoryLimitReachedReported = false;
@@ -139,7 +139,6 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QWidget *mContainer = nullptr;
     //! On-Screen Navigation widget.
     Qgs3DNavigationWidget *mNavigationWidget = nullptr;
-
 };
 
 #endif // QGS3DMAPCANVASWIDGET_H

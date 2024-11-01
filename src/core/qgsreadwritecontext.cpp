@@ -35,7 +35,6 @@ Q_GLOBAL_STATIC( DefaultTranslator, sDefaultTranslator )
 QgsReadWriteContext::QgsReadWriteContext()
   : mProjectTranslator( sDefaultTranslator() )
 {
-
 }
 
 QgsReadWriteContext::~QgsReadWriteContext()
@@ -90,9 +89,9 @@ void QgsReadWriteContext::setProjectTranslator( QgsProjectTranslator *projectTra
 }
 
 
-QList<QgsReadWriteContext::ReadWriteMessage > QgsReadWriteContext::takeMessages()
+QList<QgsReadWriteContext::ReadWriteMessage> QgsReadWriteContext::takeMessages()
 {
-  QList<QgsReadWriteContext::ReadWriteMessage > messages = mMessages;
+  QList<QgsReadWriteContext::ReadWriteMessage> messages = mMessages;
   mMessages.clear();
   return messages;
 }

@@ -23,14 +23,12 @@ QgsAbstractTerrainProvider::~QgsAbstractTerrainProvider() = default;
 
 void QgsAbstractTerrainProvider::resolveReferences( const QgsProject * )
 {
-
 }
 
 QgsAbstractTerrainProvider::QgsAbstractTerrainProvider( const QgsAbstractTerrainProvider &other )
   : mScale( other.mScale )
   , mOffset( other.mOffset )
 {
-
 }
 
 void QgsAbstractTerrainProvider::writeCommonProperties( QDomElement &element, const QgsReadWriteContext & ) const
@@ -89,7 +87,6 @@ QgsFlatTerrainProvider *QgsFlatTerrainProvider::clone() const
 void QgsFlatTerrainProvider::prepare()
 {
   Q_ASSERT_X( QThread::currentThread() == QCoreApplication::instance()->thread(), "QgsFlatTerrainProvider::prepare", "prepare() must be called from the main thread" );
-
 }
 
 bool QgsFlatTerrainProvider::equals( const QgsAbstractTerrainProvider *other ) const
@@ -97,7 +94,7 @@ bool QgsFlatTerrainProvider::equals( const QgsAbstractTerrainProvider *other ) c
   if ( other->type() != type() )
     return false;
 
-  const QgsFlatTerrainProvider *otherTerrain = qgis::down_cast< const QgsFlatTerrainProvider * >( other );
+  const QgsFlatTerrainProvider *otherTerrain = qgis::down_cast<const QgsFlatTerrainProvider *>( other );
 
   return qgsDoubleNear( otherTerrain->offset(), mOffset );
 }
@@ -115,7 +112,7 @@ QString QgsRasterDemTerrainProvider::type() const
 void QgsRasterDemTerrainProvider::resolveReferences( const QgsProject *project )
 {
   if ( mRasterLayer )
-    return;  // already assigned
+    return; // already assigned
 
   mRasterLayer.resolve( project );
 }
@@ -154,7 +151,7 @@ QDomElement QgsRasterDemTerrainProvider::writeXml( QDomDocument &document, const
 QgsCoordinateReferenceSystem QgsRasterDemTerrainProvider::crs() const
 {
   return mRasterProvider ? mRasterProvider->crs()
-         : ( mRasterLayer ? mRasterLayer->crs() : QgsCoordinateReferenceSystem() );
+                         : ( mRasterLayer ? mRasterLayer->crs() : QgsCoordinateReferenceSystem() );
 }
 
 double QgsRasterDemTerrainProvider::heightAt( double x, double y ) const
@@ -188,7 +185,7 @@ bool QgsRasterDemTerrainProvider::equals( const QgsAbstractTerrainProvider *othe
   if ( other->type() != type() )
     return false;
 
-  const QgsRasterDemTerrainProvider *otherTerrain = qgis::down_cast< const QgsRasterDemTerrainProvider * >( other );
+  const QgsRasterDemTerrainProvider *otherTerrain = qgis::down_cast<const QgsRasterDemTerrainProvider *>( other );
   if ( !qgsDoubleNear( otherTerrain->offset(), mOffset )
        || !qgsDoubleNear( otherTerrain->scale(), mScale )
        || mRasterLayer.get() != otherTerrain->layer() )
@@ -235,7 +232,7 @@ QString QgsMeshTerrainProvider::type() const
 void QgsMeshTerrainProvider::resolveReferences( const QgsProject *project )
 {
   if ( mMeshLayer )
-    return;  // already assigned
+    return; // already assigned
 
   mMeshLayer.resolve( project );
 }
@@ -279,7 +276,7 @@ QgsCoordinateReferenceSystem QgsMeshTerrainProvider::crs() const
 double QgsMeshTerrainProvider::heightAt( double x, double y ) const
 {
   if ( mTriangularMesh.vertices().empty() && mMeshLayer && QThread::currentThread() == QCoreApplication::instance()->thread() )
-    const_cast< QgsMeshTerrainProvider * >( this )->prepare(); // auto prepare if we are on main thread and haven't already!
+    const_cast<QgsMeshTerrainProvider *>( this )->prepare(); // auto prepare if we are on main thread and haven't already!
 
   return QgsMeshLayerUtils::interpolateZForPoint( mTriangularMesh, x, y ) * mScale + mOffset;
 }
@@ -294,7 +291,7 @@ bool QgsMeshTerrainProvider::equals( const QgsAbstractTerrainProvider *other ) c
   if ( other->type() != type() )
     return false;
 
-  const QgsMeshTerrainProvider *otherTerrain = qgis::down_cast< const QgsMeshTerrainProvider * >( other );
+  const QgsMeshTerrainProvider *otherTerrain = qgis::down_cast<const QgsMeshTerrainProvider *>( other );
   if ( !qgsDoubleNear( otherTerrain->offset(), mOffset )
        || !qgsDoubleNear( otherTerrain->scale(), mScale )
        || mMeshLayer.get() != otherTerrain->layer() )
@@ -328,5 +325,4 @@ QgsMeshTerrainProvider::QgsMeshTerrainProvider( const QgsMeshTerrainProvider &ot
   , mMeshLayer( other.mMeshLayer )
   , mTriangularMesh( QgsTriangularMesh() )
 {
-
 }

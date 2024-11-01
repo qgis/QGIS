@@ -41,7 +41,6 @@ QgsRecentProjectsMenuEventFilter::QgsRecentProjectsMenuEventFilter( QgsWelcomePa
 
 bool QgsRecentProjectsMenuEventFilter::eventFilter( QObject *obj, QEvent *event )
 {
-
   if ( event->type() != QEvent::MouseButtonPress )
     return QObject::eventFilter( obj, event );
 
@@ -89,8 +88,7 @@ bool QgsRecentProjectsMenuEventFilter::eventFilter( QObject *obj, QEvent *event 
   if ( !path.isEmpty() )
   {
     QAction *openFolderAction = subMenu.addAction( tr( "Open Directory…" ) );
-    connect( openFolderAction, &QAction::triggered, this, [path]
-    {
+    connect( openFolderAction, &QAction::triggered, this, [path] {
       const QgsFocusKeeper focusKeeper;
       QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( path );
     } );

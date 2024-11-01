@@ -30,9 +30,7 @@
  */
 class QgsLayoutMapExtentToLayerAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsLayoutMapExtentToLayerAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     Qgis::ProcessingAlgorithmFlags flags() const override;
@@ -58,11 +56,8 @@ class QgsLayoutMapExtentToLayerAlgorithm : public QgsProcessingAlgorithm
     double mScale = 0;
     double mRotation = 0;
     QgsCoordinateReferenceSystem mCrs;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMEXTRACTLAYOUTMAPEXTENT_H
-
-

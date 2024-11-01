@@ -61,7 +61,7 @@ class CORE_EXPORT QgsFeedback : public QObject
     void setProgress( double progress )
     {
       // avoid flooding with too many events
-      if ( static_cast< int >( mProgress * 10 ) != static_cast< int >( progress * 10 ) )
+      if ( static_cast<int>( mProgress * 10 ) != static_cast<int>( progress * 10 ) )
         emit progressChanged( progress );
 
       mProgress = progress;
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsFeedback : public QObject
     void cancel()
     {
       if ( mCanceled )
-        return;  // only emit the signal once
+        return; // only emit the signal once
       mCanceled = true;
       emit canceled();
     }

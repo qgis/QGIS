@@ -32,7 +32,6 @@ class GUI_EXPORT QgsProcessingHistoryProvider : public QgsAbstractHistoryProvide
     Q_OBJECT
 
   public:
-
     QgsProcessingHistoryProvider();
 
     QString id() const override;
@@ -64,7 +63,6 @@ class GUI_EXPORT QgsProcessingHistoryProvider : public QgsAbstractHistoryProvide
     void createTest( const QString &command );
 
   private:
-
     //! Executes some python commands
     void emitExecute( const QString &commands );
 
@@ -74,10 +72,6 @@ class GUI_EXPORT QgsProcessingHistoryProvider : public QgsAbstractHistoryProvide
     QString oldLogPath() const;
 
     friend class ProcessingHistoryBaseNode;
-
 };
 
 #endif //QGSHISTORYPROVIDER_H
-
-
-

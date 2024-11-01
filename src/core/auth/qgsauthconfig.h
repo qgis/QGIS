@@ -41,7 +41,6 @@
 class CORE_EXPORT QgsAuthMethodConfig
 {
   public:
-
     /**
      * Construct a configuration for an authentication method
      * \param method Textual key of the authentication method
@@ -207,7 +206,6 @@ typedef QHash<QString, QgsAuthMethodConfig> QgsAuthMethodConfigsMap;
 class CORE_EXPORT QgsPkiBundle
 {
   public:
-
     /**
      * Construct a bundle from existing PKI components
      * \param clientCert Certificate to store in bundle
@@ -236,7 +234,7 @@ class CORE_EXPORT QgsPkiBundle
      * \param bundlepass Optional bundle passphrase
      */
     static const QgsPkiBundle fromPkcs12Paths( const QString &bundlepath,
-        const QString &bundlepass = QString() );
+                                               const QString &bundlepass = QString() );
 
     //! Whether the bundle, either its certificate or private key, is null
     bool isNull() const;
@@ -276,7 +274,6 @@ class CORE_EXPORT QgsPkiBundle
 class CORE_EXPORT QgsPkiConfigBundle
 {
   public:
-
     /**
      * Construct a bundle from existing PKI components and authentication method configuration
      * \param config Authentication method configuration
@@ -287,7 +284,7 @@ class CORE_EXPORT QgsPkiConfigBundle
     QgsPkiConfigBundle( const QgsAuthMethodConfig &config,
                         const QSslCertificate &cert,
                         const QSslKey &certkey,
-                        const QList<QSslCertificate> &cachain = QList<QSslCertificate>( ) );
+                        const QList<QSslCertificate> &cachain = QList<QSslCertificate>() );
 
     //! Whether the bundle is valid
     bool isValid();
@@ -330,17 +327,16 @@ class CORE_EXPORT QgsPkiConfigBundle
 };
 
 
-
 #ifdef SIP_RUN
 % MappedType QList<QSslError::SslError>
 {
   % TypeHeaderCode
 #include <QList>
-  % End
+    % End
 
-  % ConvertFromTypeCode
-  // Create the list.
-  PyObject *l;
+    % ConvertFromTypeCode
+      // Create the list.
+      PyObject *l;
 
   if ( ( l = PyList_New( sipCpp->size() ) ) == NULL )
     return NULL;
@@ -362,16 +358,15 @@ class CORE_EXPORT QgsPkiConfigBundle
   return l;
   % End
 
-  % ConvertToTypeCode
-  // Check the type if that is all that is required.
-  if ( sipIsErr == NULL )
-    return PyList_Check( sipPy );
+    % ConvertToTypeCode
+    // Check the type if that is all that is required.
+    if ( sipIsErr == NULL ) return PyList_Check( sipPy );
 
   QList<QSslError::SslError> *qlist = new QList<QSslError::SslError>;
 
   for ( int i = 0; i < PyList_GET_SIZE( sipPy ); ++i )
   {
-    *qlist << ( QSslError::SslError )SIPLong_AsLong( PyList_GET_ITEM( sipPy, i ) );
+    *qlist << ( QSslError::SslError ) SIPLong_AsLong( PyList_GET_ITEM( sipPy, i ) );
   }
 
   *sipCppPtr = qlist;
@@ -379,7 +374,6 @@ class CORE_EXPORT QgsPkiConfigBundle
   % End
 };
 #endif
-
 
 
 /**
@@ -398,7 +392,7 @@ class CORE_EXPORT QgsAuthConfigSslServer
     void setSslCertificate( const QSslCertificate &cert ) { mSslCert = cert; }
 
     //! Server host:port string
-    const QString sslHostPort() const  { return mSslHostPort; }
+    const QString sslHostPort() const { return mSslHostPort; }
     //! Sets server host:port string
     void setSslHostPort( const QString &hostport ) { mSslHostPort = hostport; }
 
@@ -450,7 +444,6 @@ class CORE_EXPORT QgsAuthConfigSslServer
     bool isNull() const;
 
   private:
-
     QString mSslHostPort;
     QSslCertificate mSslCert;
 

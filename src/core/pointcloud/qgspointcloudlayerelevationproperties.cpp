@@ -27,10 +27,9 @@ QgsPointCloudLayerElevationProperties::QgsPointCloudLayerElevationProperties( QO
 {
   mPointColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
 
-  if ( QgsPointCloudLayer *pcLayer = qobject_cast< QgsPointCloudLayer * >( parent ) )
+  if ( QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( parent ) )
   {
-    connect( pcLayer, &QgsPointCloudLayer::rendererChanged, this, [this]
-    {
+    connect( pcLayer, &QgsPointCloudLayer::rendererChanged, this, [this] {
       if ( mRespectLayerColors )
         emit profileGenerationPropertyChanged();
     } );
@@ -92,7 +91,7 @@ bool QgsPointCloudLayerElevationProperties::readXml( const QDomElement &element,
 
 QgsPointCloudLayerElevationProperties *QgsPointCloudLayerElevationProperties::clone() const
 {
-  std::unique_ptr< QgsPointCloudLayerElevationProperties > res = std::make_unique< QgsPointCloudLayerElevationProperties >( nullptr );
+  std::unique_ptr<QgsPointCloudLayerElevationProperties> res = std::make_unique<QgsPointCloudLayerElevationProperties>( nullptr );
   res->copyCommonProperties( this );
 
   res->mMaximumScreenError = mMaximumScreenError;
@@ -123,7 +122,7 @@ bool QgsPointCloudLayerElevationProperties::isVisibleInZRange( const QgsDoubleRa
 
 QgsDoubleRange QgsPointCloudLayerElevationProperties::calculateZRange( QgsMapLayer *layer ) const
 {
-  if ( QgsPointCloudLayer *pcLayer = qobject_cast< QgsPointCloudLayer * >( layer ) )
+  if ( QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( layer ) )
   {
     if ( pcLayer->dataProvider() )
     {
@@ -146,9 +145,9 @@ QList<double> QgsPointCloudLayerElevationProperties::significantZValues( QgsMapL
 {
   const QgsDoubleRange range = calculateZRange( layer );
   if ( !range.isInfinite() && range.lower() != range.upper() )
-    return {range.lower(), range.upper() };
+    return { range.lower(), range.upper() };
   else if ( !range.isInfinite() )
-    return {range.lower() };
+    return { range.lower() };
   else
     return {};
 }

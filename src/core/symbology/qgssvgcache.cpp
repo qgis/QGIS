@@ -60,7 +60,7 @@ QgsSvgCacheEntry::QgsSvgCacheEntry( const QString &path, double size, double str
 
 bool QgsSvgCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) const
 {
-  const QgsSvgCacheEntry *otherSvg = dynamic_cast< const QgsSvgCacheEntry * >( other );
+  const QgsSvgCacheEntry *otherSvg = dynamic_cast<const QgsSvgCacheEntry *>( other );
   // cheapest checks first!
   if ( !otherSvg
        || !qgsDoubleNear( otherSvg->fixedAspectRatio, fixedAspectRatio )
@@ -102,7 +102,7 @@ void QgsSvgCacheEntry::dump() const
 //
 
 QgsSvgCache::QgsSvgCache( QObject *parent )
-  : QgsAbstractContentCache< QgsSvgCacheEntry >( parent, QObject::tr( "SVG" ) )
+  : QgsAbstractContentCache<QgsSvgCacheEntry>( parent, QObject::tr( "SVG" ) )
 {
   mMissingSvg = QStringLiteral( "<svg width='10' height='10'><text x='5' y='10' font-size='10' text-anchor='middle'>?</text></svg>" ).toLatin1();
 
@@ -154,7 +154,7 @@ QImage QgsSvgCache::svgAsImage( const QString &file, double size, const QColor &
     }
     long cachedDataSize = 0;
     cachedDataSize += currentEntry->svgContent.size();
-    cachedDataSize += static_cast< int >( currentEntry->size * currentEntry->size * hwRatio * 32 );
+    cachedDataSize += static_cast<int>( currentEntry->size * currentEntry->size * hwRatio * 32 );
     if ( cachedDataSize > mMaxCacheSize / 2 )
     {
       fitsInCache = false;
@@ -294,7 +294,7 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry, bool blocki
     return;
   }
 
-  const QByteArray content = getContent( entry->path, mMissingSvg, mFetchingSvg, blocking ) ;
+  const QByteArray content = getContent( entry->path, mMissingSvg, mFetchingSvg, blocking );
   entry->isMissingImage = content == mMissingSvg;
   QDomDocument svgDoc;
   if ( !svgDoc.setContent( content ) )
@@ -433,7 +433,7 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry *entry )
   const QSize imageSize = sizeForImage( *entry, viewBoxSize, scaledSize );
 
   // cast double image sizes to int for QImage
-  std::unique_ptr< QImage > image = std::make_unique< QImage >( imageSize, QImage::Format_ARGB32_Premultiplied );
+  std::unique_ptr<QImage> image = std::make_unique<QImage>( imageSize, QImage::Format_ARGB32_Premultiplied );
   image->fill( 0 ); // transparent background
 
   const bool isFixedAR = entry->fixedAspectRatio > 0;
@@ -469,7 +469,7 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
   const bool isFixedAR = entry->fixedAspectRatio > 0;
 
   //correct QPictures dpi correction
-  std::unique_ptr< QPicture > picture = std::make_unique< QPicture >();
+  std::unique_ptr<QPicture> picture = std::make_unique<QPicture>();
   QRectF rect;
   QSvgRenderer r( entry->svgContent );
   double hwRatio = 1.0;
@@ -499,7 +499,7 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput 
 }
 
 QgsSvgCacheEntry *QgsSvgCache::cacheEntry( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-    double widthScaleFactor, double fixedAspectRatio, const QMap<QString, QString> &parameters, bool blocking, bool *isMissingImage )
+                                           double widthScaleFactor, double fixedAspectRatio, const QMap<QString, QString> &parameters, bool blocking, bool *isMissingImage )
 {
   QgsSvgCacheEntry *currentEntry = findExistingEntry( new QgsSvgCacheEntry( path, size, strokeWidth, widthScaleFactor, fill, stroke, fixedAspectRatio, parameters ) );
 
@@ -831,13 +831,13 @@ QSize QgsSvgCache::sizeForImage( const QgsSvgCacheEntry &entry, QSizeF &viewBoxS
 
   // cast double image sizes to int for QImage
   scaledSize.setWidth( entry.size );
-  int wImgSize = static_cast< int >( scaledSize.width() );
+  int wImgSize = static_cast<int>( scaledSize.width() );
   if ( wImgSize < 1 )
   {
     wImgSize = 1;
   }
   scaledSize.setHeight( scaledSize.width() * hwRatio );
-  int hImgSize = static_cast< int >( scaledSize.height() );
+  int hImgSize = static_cast<int>( scaledSize.height() );
   if ( hImgSize < 1 )
   {
     hImgSize = 1;

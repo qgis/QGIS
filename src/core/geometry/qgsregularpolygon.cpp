@@ -44,9 +44,7 @@ QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const double radiu
         break;
       }
     }
-
   }
-
 }
 
 QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const QgsPoint &pt1, const unsigned int numSides, const ConstructionOption circle )
@@ -73,9 +71,7 @@ QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const QgsPoint &pt
         break;
       }
     }
-
   }
-
 }
 
 QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, const unsigned int numSides )
@@ -98,26 +94,19 @@ QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, 
   }
 }
 
-bool QgsRegularPolygon::operator ==( const QgsRegularPolygon &rp ) const
+bool QgsRegularPolygon::operator==( const QgsRegularPolygon &rp ) const
 {
-  return ( ( mCenter == rp.mCenter ) &&
-           ( mFirstVertex == rp.mFirstVertex ) &&
-           ( mNumberSides == rp.mNumberSides )
-         );
+  return ( ( mCenter == rp.mCenter ) && ( mFirstVertex == rp.mFirstVertex ) && ( mNumberSides == rp.mNumberSides ) );
 }
 
-bool QgsRegularPolygon::operator !=( const QgsRegularPolygon &rp ) const
+bool QgsRegularPolygon::operator!=( const QgsRegularPolygon &rp ) const
 {
   return !operator==( rp );
 }
 
 bool QgsRegularPolygon::isEmpty() const
 {
-  return ( ( mNumberSides < 3 ) ||
-           ( mCenter.isEmpty() ) ||
-           ( mFirstVertex.isEmpty() ) ||
-           ( mCenter == mFirstVertex )
-         );
+  return ( ( mNumberSides < 3 ) || ( mCenter.isEmpty() ) || ( mFirstVertex.isEmpty() ) || ( mCenter == mFirstVertex ) );
 }
 
 void QgsRegularPolygon::setCenter( const QgsPoint &center )
@@ -264,10 +253,10 @@ QString QgsRegularPolygon::toString( int pointPrecision, int radiusPrecision, in
     rep = QStringLiteral( "Empty" );
   else
     rep = QStringLiteral( "RegularPolygon (Center: %1, First Vertex: %2, Radius: %3, Azimuth: %4)" )
-          .arg( mCenter.asWkt( pointPrecision ), 0, 's' )
-          .arg( mFirstVertex.asWkt( pointPrecision ), 0, 's' )
-          .arg( qgsDoubleToString( mRadius, radiusPrecision ), 0, 'f' )
-          .arg( qgsDoubleToString( mCenter.azimuth( mFirstVertex ), anglePrecision ), 0, 'f' );
+            .arg( mCenter.asWkt( pointPrecision ), 0, 's' )
+            .arg( mFirstVertex.asWkt( pointPrecision ), 0, 's' )
+            .arg( qgsDoubleToString( mRadius, radiusPrecision ), 0, 'f' )
+            .arg( qgsDoubleToString( mCenter.azimuth( mFirstVertex ), anglePrecision ), 0, 'f' );
   // TODO: inclination
   // .arg( qgsDoubleToString( mCenter.inclination(mFirstVertex), anglePrecision ), 0, 'f' );
 

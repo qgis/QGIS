@@ -62,9 +62,9 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
 
   protected:
     //! Resampler used if screen resolution is higher than raster resolution (zoomed in). 0 means no resampling (nearest neighbour)
-    std::unique_ptr< QgsRasterResampler > mZoomedInResampler;
+    std::unique_ptr<QgsRasterResampler> mZoomedInResampler;
     //! Resampler used if raster resolution is higher than raster resolution (zoomed out). 0 mean no resampling (nearest neighbour)
-    std::unique_ptr< QgsRasterResampler > mZoomedOutResampler;
+    std::unique_ptr<QgsRasterResampler> mZoomedOutResampler;
 
     //! Maximum boundary for oversampling (to avoid too much data traffic). Default: 2.0
     double mMaxOversampling = 2.0;

@@ -33,11 +33,9 @@ class QgsMapCanvas;
 */
 class GUI_EXPORT QgsGeocoderLocatorFilter : public QgsAbstractGeocoderLocatorFilter
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsGeocoderLocatorFilter.
      *
@@ -69,7 +67,6 @@ class GUI_EXPORT QgsGeocoderLocatorFilter : public QgsAbstractGeocoderLocatorFil
     void handleGeocodeResult( const QgsGeocoderResult &result ) override;
 
     QgsMapCanvas *mCanvas = nullptr;
-
 };
 
 #endif // QGSGEOCODERLOCATORFILTER_H

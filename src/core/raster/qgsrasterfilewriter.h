@@ -40,12 +40,10 @@ class QgsRasterInterface;
 class CORE_EXPORT QgsRasterFileWriter
 {
   public:
-
     /**
      * Options for sorting and filtering raster formats.
      */
-    enum RasterFormatOption SIP_ENUM_BASETYPE( IntFlag )
-    {
+    enum RasterFormatOption SIP_ENUM_BASETYPE( IntFlag ) {
       SortRecommended = 1 << 1, //!< Use recommended sort order, with extremely commonly used formats listed first
     };
     Q_DECLARE_FLAGS( RasterFormatOptions, RasterFormatOption )
@@ -63,9 +61,9 @@ class CORE_EXPORT QgsRasterFileWriter
      * \note Does not work with tiled mode enabled.
      */
     QgsRasterDataProvider *createOneBandRaster( Qgis::DataType dataType,
-        int width, int height,
-        const QgsRectangle &extent,
-        const QgsCoordinateReferenceSystem &crs ) SIP_FACTORY;
+                                                int width, int height,
+                                                const QgsRectangle &extent,
+                                                const QgsCoordinateReferenceSystem &crs ) SIP_FACTORY;
 
     /**
      * Create a raster file with given number of bands without initializing the pixel data.
@@ -75,10 +73,10 @@ class CORE_EXPORT QgsRasterFileWriter
      * \note Does not work with tiled mode enabled.
      */
     QgsRasterDataProvider *createMultiBandRaster( Qgis::DataType dataType,
-        int width, int height,
-        const QgsRectangle &extent,
-        const QgsCoordinateReferenceSystem &crs,
-        int nBands ) SIP_FACTORY;
+                                                  int width, int height,
+                                                  const QgsRectangle &extent,
+                                                  const QgsCoordinateReferenceSystem &crs,
+                                                  int nBands ) SIP_FACTORY;
 
 
     /**
@@ -92,7 +90,7 @@ class CORE_EXPORT QgsRasterFileWriter
      * \deprecated QGIS 3.8. Use version with transformContext instead.
     */
     Q_DECL_DEPRECATED Qgis::RasterFileWriterResult writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
-        const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = nullptr ) SIP_DEPRECATED;
+                                                                const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = nullptr ) SIP_DEPRECATED;
 
     /**
      * Write raster file
@@ -106,9 +104,9 @@ class CORE_EXPORT QgsRasterFileWriter
      * \since QGIS 3.8
     */
     Qgis::RasterFileWriterResult writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
-        const QgsCoordinateReferenceSystem &crs,
-        const QgsCoordinateTransformContext &transformContext,
-        QgsRasterBlockFeedback *feedback = nullptr );
+                                              const QgsCoordinateReferenceSystem &crs,
+                                              const QgsCoordinateTransformContext &transformContext,
+                                              QgsRasterBlockFeedback *feedback = nullptr );
 
     /**
      * Returns the output URL (filename) for the raster.
@@ -203,14 +201,14 @@ class CORE_EXPORT QgsRasterFileWriter
      *
      * \see setPyramidsList()
      */
-    QList< int > pyramidsList() const { return mPyramidsList; }
+    QList<int> pyramidsList() const { return mPyramidsList; }
 
     /**
      * Sets the \a list of pyramids which will be created for the output file.
      *
      * \see pyramidsList()
      */
-    void setPyramidsList( const QList< int > &list ) { mPyramidsList = list; }
+    void setPyramidsList( const QList<int> &list ) { mPyramidsList = list; }
 
     QString pyramidsResampling() const { return mPyramidsResampling; }
     void setPyramidsResampling( const QString &str ) { mPyramidsResampling = str; }
@@ -287,11 +285,11 @@ class CORE_EXPORT QgsRasterFileWriter
      */
     struct FilterFormatDetails
     {
-      //! Unique driver name
-      QString driverName;
+        //! Unique driver name
+        QString driverName;
 
-      //! Filter string for file picker dialogs
-      QString filterString;
+        //! Filter string for file picker dialogs
+        QString filterString;
     };
 
     /**
@@ -303,7 +301,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *
      * \see supportedFormatExtensions()
      */
-    static QList< QgsRasterFileWriter::FilterFormatDetails > supportedFiltersAndFormats( RasterFormatOptions options = SortRecommended );
+    static QList<QgsRasterFileWriter::FilterFormatDetails> supportedFiltersAndFormats( RasterFormatOptions options = SortRecommended );
 
     /**
      * Returns a list of file extensions for supported formats.
@@ -341,24 +339,24 @@ class CORE_EXPORT QgsRasterFileWriter
   private:
     QgsRasterFileWriter(); //forbidden
     Qgis::RasterFileWriterResult writeDataRaster( const QgsRasterPipe *pipe, QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
-        const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext,
-        QgsRasterBlockFeedback *feedback = nullptr );
+                                                  const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext,
+                                                  QgsRasterBlockFeedback *feedback = nullptr );
 
     // Helper method used by previous one
     Qgis::RasterFileWriterResult writeDataRaster( const QgsRasterPipe *pipe,
-        QgsRasterIterator *iter,
-        int nCols, int nRows,
-        const QgsRectangle &outputExtent,
-        const QgsCoordinateReferenceSystem &crs,
-        Qgis::DataType destDataType,
-        const QList<bool> &destHasNoDataValueList,
-        const QList<double> &destNoDataValueList,
-        QgsRasterDataProvider *destProvider,
-        QgsRasterBlockFeedback *feedback = nullptr );
+                                                  QgsRasterIterator *iter,
+                                                  int nCols, int nRows,
+                                                  const QgsRectangle &outputExtent,
+                                                  const QgsCoordinateReferenceSystem &crs,
+                                                  Qgis::DataType destDataType,
+                                                  const QList<bool> &destHasNoDataValueList,
+                                                  const QList<double> &destNoDataValueList,
+                                                  QgsRasterDataProvider *destProvider,
+                                                  QgsRasterBlockFeedback *feedback = nullptr );
 
     Qgis::RasterFileWriterResult writeImageRaster( QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
-        const QgsCoordinateReferenceSystem &crs,
-        QgsRasterBlockFeedback *feedback = nullptr );
+                                                   const QgsCoordinateReferenceSystem &crs,
+                                                   QgsRasterBlockFeedback *feedback = nullptr );
 
     /**
      * \brief Initialize vrt member variables
@@ -379,9 +377,9 @@ class CORE_EXPORT QgsRasterFileWriter
 
     //! Create provider and datasource for a part image (vrt mode)
     QgsRasterDataProvider *createPartProvider( const QgsRectangle &extent, int nCols, int iterCols, int iterRows,
-        int iterLeft, int iterTop,
-        const QString &outputUrl, int fileIndex, int nBands, Qgis::DataType type,
-        const QgsCoordinateReferenceSystem &crs );
+                                               int iterLeft, int iterTop,
+                                               const QString &outputUrl, int fileIndex, int nBands, Qgis::DataType type,
+                                               const QgsCoordinateReferenceSystem &crs );
 
     /**
      * \brief Init VRT (for tiled mode) or create global output provider (single-file mode)
@@ -417,7 +415,7 @@ class CORE_EXPORT QgsRasterFileWriter
     int mMaxTileWidth = 500;
     int mMaxTileHeight = 500;
 
-    QList< int > mPyramidsList;
+    QList<int> mPyramidsList;
     QString mPyramidsResampling = QStringLiteral( "AVERAGE" );
     Qgis::RasterBuildPyramidOption mBuildPyramidsFlag = Qgis::RasterBuildPyramidOption::No;
     Qgis::RasterPyramidFormat mPyramidsFormat = Qgis::RasterPyramidFormat::GeoTiff;

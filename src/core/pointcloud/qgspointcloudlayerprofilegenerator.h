@@ -56,20 +56,18 @@ class QgsPreparedPointCloudRendererData;
  */
 class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileResults
 {
-
   public:
-
     QgsPointCloudLayerProfileResults();
     ~QgsPointCloudLayerProfileResults() override;
 
     struct PointResult
     {
-      double x = 0;
-      double y = 0;
-      double z = 0;
-      double distanceAlongCurve = 0;
-      double distanceFromCurve = 0; // only used when the opacity by distance effect is enabled
-      QRgb color;
+        double x = 0;
+        double y = 0;
+        double z = 0;
+        double distanceAlongCurve = 0;
+        double distanceFromCurve = 0; // only used when the opacity by distance effect is enabled
+        QRgb color;
     };
 
     /**
@@ -77,11 +75,11 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
      */
     void finalize( QgsFeedback *feedback );
 
-    std::vector< PointResult > results;
+    std::vector<PointResult> results;
     double tolerance = 0;
 
-    double minZ = std::numeric_limits< double >::max();
-    double maxZ = std::numeric_limits< double >::lowest();
+    double minZ = std::numeric_limits<double>::max();
+    double maxZ = std::numeric_limits<double>::lowest();
 
     double pointSize = 1;
     Qgis::RenderUnit pointSizeUnit = Qgis::RenderUnit::Millimeters;
@@ -91,11 +89,11 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
     bool opacityByDistanceEffect = false;
 
     QString type() const override;
-    QMap< double, double > distanceToHeightMap() const override;
+    QMap<double, double> distanceToHeightMap() const override;
     QgsDoubleRange zRange() const override;
     QgsPointSequence sampledPoints() const override;
-    QVector< QgsGeometry > asGeometries() const override;
-    QVector<  QgsAbstractProfileResults::Feature > asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr ) const override;
+    QVector<QgsGeometry> asGeometries() const override;
+    QVector<QgsAbstractProfileResults::Feature> asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback = nullptr ) const override;
     void renderResults( QgsProfileRenderContext &context ) override;
     QgsProfileSnapResult snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context ) override;
     QVector<QgsProfileIdentifyResults> identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context ) override;
@@ -103,11 +101,10 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
     void copyPropertiesFromGenerator( const QgsAbstractProfileGenerator *generator ) override;
 
   private:
-
     GEOSSTRtree *mPointIndex = nullptr;
-    QPointer< QgsPointCloudLayer > mLayer;
+    QPointer<QgsPointCloudLayer> mLayer;
     QgsCoordinateReferenceSystem mCurveCrs;
-    std::unique_ptr< QgsCurve > mProfileCurve;
+    std::unique_ptr<QgsCurve> mProfileCurve;
     double mTolerance = 0;
     double mZOffset = 0;
     double mZScale = 1.0;
@@ -127,9 +124,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
  */
 class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsAbstractProfileGenerator
 {
-
   public:
-
     /**
      * Constructor for QgsPointCloudLayerProfileGenerator.
      */
@@ -146,12 +141,12 @@ class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsAbstractProfile
   private:
     QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange );
     int visitNodesSync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
-    int visitNodesAsync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc,  QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
+    int visitNodesAsync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
     void visitBlock( const QgsPointCloudBlock *block, const QgsDoubleRange &zRange );
 
-    QPointer< QgsPointCloudLayer > mLayer;
+    QPointer<QgsPointCloudLayer> mLayer;
     QgsPointCloudAttributeCollection mLayerAttributes;
-    std::unique_ptr< QgsPointCloudRenderer > mRenderer;
+    std::unique_ptr<QgsPointCloudRenderer> mRenderer;
     double mMaximumScreenError = 0.3;
     Qgis::RenderUnit mMaximumScreenErrorUnit = Qgis::RenderUnit::Millimeters;
 
@@ -164,7 +159,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsAbstractProfile
     QString mId;
     std::unique_ptr<QgsFeedback> mFeedback = nullptr;
 
-    std::unique_ptr< QgsCurve > mProfileCurve;
+    std::unique_ptr<QgsCurve> mProfileCurve;
 
     double mTolerance = 0;
 
@@ -181,17 +176,16 @@ class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsAbstractProfile
 
     QgsCoordinateTransform mLayerToTargetTransform;
 
-    std::unique_ptr< QgsAbstractGeometry > mSearchGeometryInLayerCrs;
-    std::unique_ptr< QgsGeos > mSearchGeometryInLayerCrsGeometryEngine;
+    std::unique_ptr<QgsAbstractGeometry> mSearchGeometryInLayerCrs;
+    std::unique_ptr<QgsGeos> mSearchGeometryInLayerCrsGeometryEngine;
     QgsRectangle mMaxSearchExtentInLayerCrs;
 
-    std::unique_ptr< QgsPreparedPointCloudRendererData > mPreparedRendererData;
+    std::unique_ptr<QgsPreparedPointCloudRendererData> mPreparedRendererData;
 
-    std::unique_ptr< QgsPointCloudLayerProfileResults > mResults;
-    QVector< QgsPointCloudLayerProfileResults::PointResult > mGatheredPoints;
+    std::unique_ptr<QgsPointCloudLayerProfileResults> mResults;
+    QVector<QgsPointCloudLayerProfileResults::PointResult> mGatheredPoints;
 
     friend class QgsPointCloudLayerProfileResults;
-
 };
 
 #endif // QGSPOINTCLOUDLAYERPROFILEGENERATOR_H

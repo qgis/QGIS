@@ -47,11 +47,11 @@ class QgsSensorThingsSubsetEditor : public QgsSubsetStringEditorInterface, prote
     void accept() override;
     void reset();
     void lstFieldsDoubleClicked( const QModelIndex &index );
-  private:
 
+  private:
     QgsCodeEditor *mSubsetEditor = nullptr;
 
-    QPointer< QgsVectorLayer > mLayer;
+    QPointer<QgsVectorLayer> mLayer;
     QgsFields mFields;
 
     QgsFieldProxyModel *mModelFields = nullptr;

@@ -167,8 +167,8 @@ void QgsAnnotation::render( QgsRenderContext &context ) const
                      context.convertToPainterUnits( mFrameSize.height(), Qgis::RenderUnit::Millimeters ) - context.convertToPainterUnits( mContentsMargins.top() + mContentsMargins.bottom(), Qgis::RenderUnit::Millimeters ) );
 
   // scale back from painter dpi to 96 dpi --
-// double dotsPerMM = context.painter()->device()->logicalDpiX() / ( 25.4 * 3.78 );
-// context.painter()->scale( dotsPerMM, dotsPerMM );
+  // double dotsPerMM = context.painter()->device()->logicalDpiX() / ( 25.4 * 3.78 );
+  // context.painter()->scale( dotsPerMM, dotsPerMM );
 
   renderAnnotation( context, size );
 }
@@ -226,8 +226,7 @@ void QgsAnnotation::drawFrame( QgsRenderContext &context ) const
   if ( !mFillSymbol )
     return;
 
-  auto scaleSize = [&context]( double size )->double
-  {
+  auto scaleSize = [&context]( double size ) -> double {
     return context.convertToPainterUnits( size, Qgis::RenderUnit::Millimeters );
   };
 
@@ -422,4 +421,3 @@ void QgsAnnotation::copyCommonProperties( QgsAnnotation *target ) const
   target->mMapLayer = mMapLayer;
   target->mFeature = mFeature;
 }
-

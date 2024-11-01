@@ -53,7 +53,6 @@ class CORE_EXPORT QgsRelation
     Q_PROPERTY( QgsPolymorphicRelation polymorphicRelation READ polymorphicRelation )
 
   public:
-
 #ifndef SIP_RUN
 
     /**
@@ -65,7 +64,7 @@ class CORE_EXPORT QgsRelation
      * of the referenced (parent) table as the second element.
      * \note not available in Python bindings
      */
-    class FieldPair : public QPair< QString, QString >
+    class FieldPair : public QPair<QString, QString>
     {
       public:
         //! Default constructor: NULL strings
@@ -73,7 +72,7 @@ class CORE_EXPORT QgsRelation
 
         //! Constructor which takes two fields
         FieldPair( const QString &referencingField, const QString &referencedField )
-          : QPair< QString, QString >( referencingField, referencedField ) {}
+          : QPair<QString, QString>( referencingField, referencedField ) {}
 
         //! Gets the name of the referencing (child) field
         QString referencingField() const { return first; }
@@ -303,12 +302,11 @@ class CORE_EXPORT QgsRelation
      * \returns The fields forming the relation
      */
 #ifndef SIP_RUN
-    QList< QgsRelation::FieldPair > fieldPairs() const;
+    QList<QgsRelation::FieldPair> fieldPairs() const;
 #else
-    QMap< QString, QString > fieldPairs() const;
-    % MethodCode
-    const QList< QgsRelation::FieldPair > &pairs = sipCpp->fieldPairs();
-    sipRes = new QMap< QString, QString >();
+    QMap<QString, QString> fieldPairs() const;
+    % MethodCode const QList<QgsRelation::FieldPair> &pairs = sipCpp->fieldPairs();
+    sipRes = new QMap<QString, QString>();
     for ( const QgsRelation::FieldPair &pair : pairs )
     {
       sipRes->insert( pair.first, pair.second );
@@ -425,7 +423,6 @@ class CORE_EXPORT QgsRelation
     static QString strengthToDisplayString( Qgis::RelationshipStrength strength );
 
   private:
-
     mutable QExplicitlySharedDataPointer<QgsRelationPrivate> d;
 
     QgsRelationContext mContext;

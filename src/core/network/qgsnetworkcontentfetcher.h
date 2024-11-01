@@ -41,7 +41,6 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
     Q_OBJECT
 
   public:
-
     QgsNetworkContentFetcher() = default;
 
     ~QgsNetworkContentFetcher() override;
@@ -117,7 +116,6 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
     void errorOccurred( QNetworkReply::NetworkError code, const QString &errorMsg );
 
   private:
-
     QString mAuthCfg;
     QNetworkReply *mReply = nullptr;
 
@@ -139,7 +137,6 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
      * result is a redirect then the redirect is fetched automatically.
      */
     void contentLoaded( bool ok = true );
-
 };
 
 #endif

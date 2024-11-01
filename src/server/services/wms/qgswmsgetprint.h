@@ -30,7 +30,3 @@ namespace QgsWms
                       QgsServerResponse &response );
 
 } // namespace QgsWms
-
-
-
-

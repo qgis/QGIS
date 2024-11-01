@@ -39,24 +39,22 @@
 class CORE_EXPORT QgsCoordinateFormatter
 {
   public:
-
     /**
      * Available formats for displaying coordinates.
      */
     enum Format
     {
-      FormatPair, //!< Formats coordinates as an "x,y" pair
+      FormatPair,                  //!< Formats coordinates as an "x,y" pair
       FormatDegreesMinutesSeconds, //!< Degrees, minutes and seconds, eg 30 degrees 45'30"
-      FormatDegreesMinutes, //!< Degrees and decimal minutes, eg 30degrees 45.55'
-      FormatDecimalDegrees, //!< Decimal degrees, eg 30.7555 degrees
+      FormatDegreesMinutes,        //!< Degrees and decimal minutes, eg 30degrees 45.55'
+      FormatDecimalDegrees,        //!< Decimal degrees, eg 30.7555 degrees
     };
 
     /**
      * Flags for controlling formatting of coordinates.
      */
-    enum FormatFlag SIP_ENUM_BASETYPE( IntFlag )
-    {
-      FlagDegreesUseStringSuffix = 1 << 1, //!< Include a direction suffix (eg 'N', 'E', 'S' or 'W'), otherwise a "-" prefix is used for west and south coordinates
+    enum FormatFlag SIP_ENUM_BASETYPE( IntFlag ) {
+      FlagDegreesUseStringSuffix = 1 << 1,   //!< Include a direction suffix (eg 'N', 'E', 'S' or 'W'), otherwise a "-" prefix is used for west and south coordinates
       FlagDegreesPadMinutesSeconds = 1 << 2, //!< Pad minute and second values with leading zeros, eg '05' instead of '5'
     };
     Q_DECLARE_FLAGS( FormatFlags, FormatFlag )
@@ -98,7 +96,7 @@ class CORE_EXPORT QgsCoordinateFormatter
      *
      * Since QGIS 3.26 the optional \a order argument can be used to control the order of the coordinates.
      */
-    static QString format( const QgsPointXY &point, Format format, int precision = 12,  FormatFlags flags = FlagDegreesUseStringSuffix, Qgis::CoordinateOrder order = Qgis::CoordinateOrder::XY );
+    static QString format( const QgsPointXY &point, Format format, int precision = 12, FormatFlags flags = FlagDegreesUseStringSuffix, Qgis::CoordinateOrder order = Qgis::CoordinateOrder::XY );
 
     /**
      * Formats coordinates as an "\a x,\a y" pair, with optional decimal \a precision (number
@@ -113,10 +111,9 @@ class CORE_EXPORT QgsCoordinateFormatter
      * `,` as decimal separator, it is a space otherwise.
      * \since QGIS 3.20
      */
-    static QChar separator( );
+    static QChar separator();
 
   private:
-
     static QString formatAsPair( double val, int precision );
 
     static QString formatXAsDegreesMinutesSeconds( double val, int precision, FormatFlags flags );

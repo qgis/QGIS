@@ -36,7 +36,6 @@ class QgsReadWriteContext;
 class CORE_EXPORT QgsSymbolLayerAbstractMetadata
 {
   public:
-
     /**
      * Constructor for QgsSymbolLayerAbstractMetadata.
      * \param name internal symbol layer name (unique identifier)
@@ -117,25 +116,30 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
                             QgsSymbolLayerPathResolverFunc pfPathResolver = nullptr,
                             QgsSymbolLayerWidgetFunc pfWidget = nullptr,
                             QgsSymbolLayerFontResolverFunc pfFontResolver = nullptr ) SIP_SKIP
-  : QgsSymbolLayerAbstractMetadata( name, visibleName, type )
-    , mCreateFunc( pfCreate )
-    , mWidgetFunc( pfWidget )
-    , mCreateFromSldFunc( pfCreateFromSld )
-    , mPathResolverFunc( pfPathResolver )
-    , mFontResolverFunc( pfFontResolver )
+      : QgsSymbolLayerAbstractMetadata( name, visibleName, type ),
+        mCreateFunc( pfCreate ),
+        mWidgetFunc( pfWidget ),
+        mCreateFromSldFunc( pfCreateFromSld ),
+        mPathResolverFunc( pfPathResolver ),
+        mFontResolverFunc( pfFontResolver )
     {}
 
     //! \note not available in Python bindings
-    QgsSymbolLayerCreateFunc createFunction() const { return mCreateFunc; } SIP_SKIP
+    QgsSymbolLayerCreateFunc createFunction() const { return mCreateFunc; }
+    SIP_SKIP
     //! \note not available in Python bindings
-    QgsSymbolLayerWidgetFunc widgetFunction() const { return mWidgetFunc; } SIP_SKIP
+    QgsSymbolLayerWidgetFunc widgetFunction() const { return mWidgetFunc; }
+    SIP_SKIP
     //! \note not available in Python bindings
-    QgsSymbolLayerCreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; } SIP_SKIP
+    QgsSymbolLayerCreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; }
+    SIP_SKIP
     //! \note not available in Python bindings
-    QgsSymbolLayerPathResolverFunc pathResolverFunction() const { return mPathResolverFunc; } SIP_SKIP
+    QgsSymbolLayerPathResolverFunc pathResolverFunction() const { return mPathResolverFunc; }
+    SIP_SKIP
 
     //! \note not available in Python bindings
-    void setWidgetFunction( QgsSymbolLayerWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
+    void setWidgetFunction( QgsSymbolLayerWidgetFunc f ) { mWidgetFunc = f; }
+    SIP_SKIP
 
     QgsSymbolLayer *createSymbolLayer( const QVariantMap &map ) override SIP_FACTORY { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
     QgsSymbolLayerWidget *createSymbolLayerWidget( QgsVectorLayer *vl ) override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; }
@@ -182,7 +186,6 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
 class CORE_EXPORT QgsSymbolLayerRegistry
 {
   public:
-
     QgsSymbolLayerRegistry();
     ~QgsSymbolLayerRegistry();
 

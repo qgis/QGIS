@@ -30,7 +30,7 @@ class QgsSpatialIndex;
 
 class QgsMemoryFeatureIterator;
 
-class QgsMemoryProvider final: public QgsVectorDataProvider
+class QgsMemoryProvider final : public QgsVectorDataProvider
 {
     Q_OBJECT
 
@@ -104,7 +104,7 @@ class QgsMemoryProvider final: public QgsVectorDataProvider
 };
 
 
-class QgsMemoryProviderMetadata final: public QgsProviderMetadata
+class QgsMemoryProviderMetadata final : public QgsProviderMetadata
 {
     Q_OBJECT
 
@@ -112,7 +112,7 @@ class QgsMemoryProviderMetadata final: public QgsProviderMetadata
     QgsMemoryProviderMetadata();
     QIcon icon() const override;
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 ///@endcond

@@ -46,7 +46,6 @@ class QgsAuthMethodMetadata;
 */
 class CORE_EXPORT QgsAuthMethodRegistry
 {
-
   public:
     //! Means of accessing canonical single instance
     static QgsAuthMethodRegistry *instance( const QString &pluginPath = QString() );
@@ -101,7 +100,6 @@ class CORE_EXPORT QgsAuthMethodRegistry
     typedef std::map<QString, QgsAuthMethodMetadata *> AuthMethods;
 
   private:
-
     //! Ctor private since instance() creates it
     QgsAuthMethodRegistry( const QString &pluginPath );
 

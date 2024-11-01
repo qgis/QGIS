@@ -116,7 +116,7 @@ void QgsSettingsTreeWidgetOld::refresh()
   QMap<QString, QStringList>::const_iterator it = mSettingsMap.constBegin();
   while ( it != mSettingsMap.constEnd() )
   {
-    if ( ! mSettings.contains( it.key() ) )
+    if ( !mSettings.contains( it.key() ) )
     {
       mSettings.setValue( it.key(), it.value().at( 3 ) );
     }
@@ -162,7 +162,7 @@ void QgsSettingsTreeWidgetOld::showContextMenu( QPoint pos )
   if ( !item )
     return;
 
-  const Type itemType = item->data( ColumnSettings, TypeRole ).value< Type >();
+  const Type itemType = item->data( ColumnSettings, TypeRole ).value<Type>();
   const QString itemText = item->data( ColumnSettings, Qt::DisplayRole ).toString();
   const QString itemPath = item->data( ColumnSettings, PathRole ).toString();
   mContextMenu->clear();
@@ -172,17 +172,16 @@ void QgsSettingsTreeWidgetOld::showContextMenu( QPoint pos )
     case Group:
     {
       QAction *deleteAction = new QAction( tr( "Delete Group…" ), mContextMenu );
-      connect( deleteAction, &QAction::triggered, this, [ = ]
-      {
+      connect( deleteAction, &QAction::triggered, this, [=] {
         if ( QMessageBox::question( nullptr, tr( "Delete Group" ),
                                     tr( "Are you sure you want to delete the %1 group?" ).arg( itemText ),
-                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+             != QMessageBox::Yes )
           return;
 
 
         mSettings.remove( itemPath );
         refresh();
-
       } );
       mContextMenu->addAction( deleteAction );
       break;
@@ -191,11 +190,11 @@ void QgsSettingsTreeWidgetOld::showContextMenu( QPoint pos )
     case Setting:
     {
       QAction *deleteSetting = new QAction( tr( "Delete Setting…" ), mContextMenu );
-      connect( deleteSetting, &QAction::triggered, this, [ = ]
-      {
+      connect( deleteSetting, &QAction::triggered, this, [=] {
         if ( QMessageBox::question( nullptr, tr( "Delete Setting" ),
                                     tr( "Are you sure you want to delete the %1 setting?" ).arg( itemPath ),
-                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+             != QMessageBox::Yes )
           return;
 
         mSettings.remove( itemPath );
@@ -205,7 +204,6 @@ void QgsSettingsTreeWidgetOld::showContextMenu( QPoint pos )
       mContextMenu->addAction( deleteSetting );
       break;
     }
-
   }
 
   mContextMenu->exec( mapToGlobal( pos ) );
@@ -285,7 +283,7 @@ void QgsSettingsTreeWidgetOld::updateChildItems( QTreeWidgetItem *parent )
 }
 
 QTreeWidgetItem *QgsSettingsTreeWidgetOld::createItem( const QString &text,
-    QTreeWidgetItem *parent, int index, const bool isGroup )
+                                                       QTreeWidgetItem *parent, int index, const bool isGroup )
 {
   QTreeWidgetItem *after = nullptr;
   if ( index != 0 )
@@ -311,7 +309,7 @@ QTreeWidgetItem *QgsSettingsTreeWidgetOld::createItem( const QString &text,
   if ( mSettingsMap.contains( key ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "contains!!!!" ), 4 );
-    const QStringList values = mSettingsMap[ key ];
+    const QStringList values = mSettingsMap[key];
     item->setText( ColumnDescription, values.at( 0 ) );
     item->setToolTip( ColumnDescription, values.at( 0 ) );
     item->setToolTip( ColumnSettings, values.at( 1 ) );
@@ -323,7 +321,7 @@ QTreeWidgetItem *QgsSettingsTreeWidgetOld::createItem( const QString &text,
 
 QString QgsSettingsTreeWidgetOld::itemKey( QTreeWidgetItem *item )
 {
-  if ( ! item )
+  if ( !item )
     return QString();
 
   QString key = item->text( ColumnSettings );
@@ -354,7 +352,7 @@ int QgsSettingsTreeWidgetOld::childCount( QTreeWidgetItem *parent )
 }
 
 int QgsSettingsTreeWidgetOld::findChild( QTreeWidgetItem *parent, const QString &text,
-    int startIndex )
+                                         int startIndex )
 {
   for ( int i = startIndex; i < childCount( parent ); ++i )
   {
@@ -365,7 +363,7 @@ int QgsSettingsTreeWidgetOld::findChild( QTreeWidgetItem *parent, const QString 
 }
 
 void QgsSettingsTreeWidgetOld::moveItemForward( QTreeWidgetItem *parent, int oldIndex,
-    int newIndex )
+                                                int newIndex )
 {
   for ( int i = 0; i < oldIndex - newIndex; ++i )
     delete childAt( parent, newIndex );

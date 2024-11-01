@@ -29,12 +29,11 @@
  * \brief A dialog to create a new auxiliary field
  *
  */
-class GUI_EXPORT QgsNewAuxiliaryFieldDialog: public QDialog, private Ui::QgsNewAuxiliaryFieldDialogBase
+class GUI_EXPORT QgsNewAuxiliaryFieldDialog : public QDialog, private Ui::QgsNewAuxiliaryFieldDialogBase
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor.
      *

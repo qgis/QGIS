@@ -34,7 +34,6 @@ class QgsRasterShaderFunction;
  */
 class CORE_EXPORT QgsRasterShader
 {
-
   public:
     QgsRasterShader( double minimumValue = 0.0, double maximumValue = 255.0 );
 
@@ -62,7 +61,8 @@ class CORE_EXPORT QgsRasterShader
     double minimumValue() const { return mMinimumValue; }
 
     QgsRasterShaderFunction *rasterShaderFunction() { return mRasterShaderFunction.get(); }
-    const QgsRasterShaderFunction *rasterShaderFunction() const { return mRasterShaderFunction.get(); } SIP_SKIP
+    const QgsRasterShaderFunction *rasterShaderFunction() const { return mRasterShaderFunction.get(); }
+    SIP_SKIP
 
     /*
      *
@@ -149,7 +149,6 @@ class CORE_EXPORT QgsRasterShader
     double mMaximumValue;
 
     //! \brief Pointer to the shader function
-    std::unique_ptr< QgsRasterShaderFunction > mRasterShaderFunction;
-
+    std::unique_ptr<QgsRasterShaderFunction> mRasterShaderFunction;
 };
 #endif

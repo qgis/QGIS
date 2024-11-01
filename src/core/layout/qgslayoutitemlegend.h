@@ -48,7 +48,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
     QgsLegendModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = nullptr, QgsLayoutItemLegend *layout = nullptr );
 
     //! Alternative constructor.
-    QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *layout );
+    QgsLegendModel( QgsLayerTree *rootNode, QgsLayoutItemLegend *layout );
 
     QVariant data( const QModelIndex &index, int role ) const override;
 
@@ -87,7 +87,6 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
     void forceRefresh();
 
   private:
-
     /**
      * Pointer to the QgsLayoutItemLegend class that made the model.
      * \since QGIS 3.10
@@ -99,9 +98,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
      * \since QGIS 3.14
      */
     QString evaluateLayerExpressions( QgsLayerTreeLayer *nodeLayer ) const;
-
 };
-
 
 
 /**
@@ -113,7 +110,6 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutItemLegend, with the specified parent \a layout.
      */
@@ -553,7 +549,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      *
      * \since QGIS 3.32
      */
-    void setFilterByMapItems( const QList< QgsLayoutItemMap * > &maps );
+    void setFilterByMapItems( const QList<QgsLayoutItemMap *> &maps );
 
     /**
      * Returns the maps to use when filtering legend content by map extents.
@@ -563,7 +559,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      *
      * \since QGIS 3.32
      */
-    QList< QgsLayoutItemMap * > filterByMapItems() const;
+    QList<QgsLayoutItemMap *> filterByMapItems() const;
 
     /**
      * Returns the name of the theme currently linked to the legend.
@@ -645,8 +641,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     QgsLegendRenderer createRenderer() const;
 
-    std::unique_ptr< QgsLegendModel > mLegendModel;
-    std::unique_ptr< QgsLayerTree > mCustomLayerTree;
+    std::unique_ptr<QgsLegendModel> mLegendModel;
+    std::unique_ptr<QgsLayerTree> mCustomLayerTree;
     bool mDeferLegendModelInitialization = true;
 
     QgsLegendSettings mSettings;
@@ -657,8 +653,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     QString mMapUuid;
     QgsLayoutItemMap *mMap = nullptr;
 
-    QList< QString > mFilterByMapUuids;
-    QList< QPointer< QgsLayoutItemMap >> mFilterByMapItems;
+    QList<QString> mFilterByMapUuids;
+    QList<QPointer<QgsLayoutItemMap>> mFilterByMapItems;
 
     bool mLegendFilterByMap = false;
     bool mLegendFilterByExpression = false;
@@ -686,8 +682,6 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     QString mThemeName;
 
     friend class QgsCompositionConverter;
-
 };
 
 #endif // QGSLAYOUTITEMLEGEND_H
-

@@ -167,7 +167,8 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
     switch ( mLayer->fields().fieldOrigin( idx ) )
     {
       case Qgis::FieldOrigin::Expression:
-        if ( i == 7 ) continue;
+        if ( i == 7 )
+          continue;
         mFieldsList->item( row, i )->setBackground( expressionColor );
         break;
 
@@ -397,15 +398,11 @@ void QgsSourceFieldsProperties::attributesListCellChanged( int row, int column )
 
     QTableWidgetItem *nameItem = mFieldsList->item( row, column );
     //avoiding that something will be changed, just because this is triggered by simple re-sorting
-    if ( !nameItem ||
-         nameItem->text().isEmpty() ||
-         !mLayer->fields().exists( idx ) ||
-         mLayer->fields().at( idx ).name() == nameItem->text()
-       )
+    if ( !nameItem || nameItem->text().isEmpty() || !mLayer->fields().exists( idx ) || mLayer->fields().at( idx ).name() == nameItem->text() )
       return;
 
     mLayer->beginEditCommand( tr( "Rename attribute" ) );
-    if ( mLayer->renameAttribute( idx,  nameItem->text() ) )
+    if ( mLayer->renameAttribute( idx, nameItem->text() ) )
     {
       mLayer->endEditCommand();
     }

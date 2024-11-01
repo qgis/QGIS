@@ -36,7 +36,6 @@ class APP_EXPORT QgsSelectByFormDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSelectByFormDialog
      * \param layer vector layer to select from
@@ -71,12 +70,10 @@ class APP_EXPORT QgsSelectByFormDialog : public QDialog
     void showFilteredFeaturesAttributeTable( const QString &filter );
 
   private:
-
     QgsAttributeForm *mForm = nullptr;
     QgsVectorLayer *mLayer = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
-
 };
 
 

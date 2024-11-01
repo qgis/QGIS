@@ -68,7 +68,7 @@ QStringList QgsPdalMergeAlgorithm::createArgumentLists( const QVariantMap &param
 {
   Q_UNUSED( feedback );
 
-  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( layers.empty() )
   {
     feedback->reportError( QObject::tr( "No layers selected" ), true );
@@ -106,7 +106,7 @@ QStringList QgsPdalMergeAlgorithm::createArgumentLists( const QVariantMap &param
   }
 
   QTextStream out( &listFile );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
   out.setCodec( "UTF-8" );
 #endif
   for ( const QgsMapLayer *layer : std::as_const( layers ) )

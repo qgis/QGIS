@@ -40,7 +40,6 @@ class QUrl;
 class CORE_EXPORT QgsTileCache
 {
   public:
-
     //! Add a tile image with given URL to the cache
     static void insertTile( const QUrl &url, const QImage &image );
 

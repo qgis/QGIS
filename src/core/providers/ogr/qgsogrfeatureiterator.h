@@ -36,9 +36,9 @@ class QgsOgrProvider;
 class QgsOgrDataset;
 class QgsCPLHTTPFetchOverrider;
 
-using QgsOgrDatasetSharedPtr = std::shared_ptr< QgsOgrDataset>;
+using QgsOgrDatasetSharedPtr = std::shared_ptr<QgsOgrDataset>;
 
-class QgsOgrFeatureSource final: public QgsAbstractFeatureSource
+class QgsOgrFeatureSource final : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsOgrFeatureSource( const QgsOgrProvider *p );
@@ -69,7 +69,7 @@ class QgsOgrFeatureSource final: public QgsAbstractFeatureSource
     friend class QgsOgrExpressionCompiler;
 };
 
-class QgsOgrFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>
+class QgsOgrFeatureIterator final : public QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>
 {
   public:
     QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool ownSource, const QgsFeatureRequest &request, QgsTransaction *transaction );
@@ -82,21 +82,20 @@ class QgsOgrFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<Q
     void setInterruptionChecker( QgsFeedback *interruptionChecker ) override;
 
   protected:
-    bool checkFeature( gdal::ogr_feature_unique_ptr &fet, QgsFeature &feature ) ;
+    bool checkFeature( gdal::ogr_feature_unique_ptr &fet, QgsFeature &feature );
     bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
     bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
   private:
-
     bool readFeature( const gdal::ogr_feature_unique_ptr &fet, QgsFeature &feature ) const;
 
     //! Gets an attribute associated with a feature
     QVariant getFeatureAttribute( OGRFeatureH ogrFet, int attindex ) const;
 
     QgsOgrConn *mConn = nullptr;
-    OGRLayerH mOgrLayer = nullptr; // when mOgrLayerUnfiltered != null and mOgrLayer != mOgrLayerUnfiltered, this is a SQL layer
+    OGRLayerH mOgrLayer = nullptr;    // when mOgrLayerUnfiltered != null and mOgrLayer != mOgrLayerUnfiltered, this is a SQL layer
     OGRLayerH mOgrLayerOri = nullptr; // only set when there's a mSubsetString. In which case this a regular OGR layer. Potentially == mOgrLayer
 
     //! Sets to true, if geometry is in the requested columns
@@ -126,16 +125,15 @@ class QgsOgrFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<Q
     bool mAllowResetReading = true;
 
     QgsGeometry mDistanceWithinGeom;
-    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
+    std::unique_ptr<QgsGeometryEngine> mDistanceWithinEngine;
 
-    std::unique_ptr< QgsCPLHTTPFetchOverrider > mCplHttpFetchOverrider;
+    std::unique_ptr<QgsCPLHTTPFetchOverrider> mCplHttpFetchOverrider;
 
-    QVector< int > mRequestAttributes;
+    QVector<int> mRequestAttributes;
 
     bool fetchFeatureWithId( QgsFeatureId id, QgsFeature &feature ) const;
 
     void resetReading();
-
 };
 
 ///@endcond

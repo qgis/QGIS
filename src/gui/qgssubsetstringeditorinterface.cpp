@@ -18,6 +18,6 @@
 #include "moc_qgssubsetstringeditorinterface.cpp"
 
 QgsSubsetStringEditorInterface::QgsSubsetStringEditorInterface( QWidget *parent,
-    Qt::WindowFlags fl )
+                                                                Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {}

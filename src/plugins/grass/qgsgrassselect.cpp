@@ -24,8 +24,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
-extern "C"
-{
+extern "C" {
 #include <grass/vector.h>
 }
 
@@ -261,7 +260,6 @@ void QgsGrassSelect::setMaps()
         sel = idx;
       idx++;
     }
-
   }
   else if ( type == Raster )
   {
@@ -344,9 +342,9 @@ void QgsGrassSelect::setLayers()
   QStringList layers;
   try
   {
-    layers  = QgsGrass::vectorLayers( egisdbase->text(),
-                                      elocation->currentText(), emapset->currentText(),
-                                      emap->currentText().toUtf8() );
+    layers = QgsGrass::vectorLayers( egisdbase->text(),
+                                     elocation->currentText(), emapset->currentText(),
+                                     emap->currentText().toUtf8() );
   }
   catch ( QgsGrass::Exception &e )
   {
@@ -400,7 +398,7 @@ void QgsGrassSelect::setLayers()
 void QgsGrassSelect::GisdbaseBrowse_clicked()
 {
   QString Gisdbase = QFileDialog::getExistingDirectory( this,
-                     tr( "Choose existing GISDBASE" ), egisdbase->text() );
+                                                        tr( "Choose existing GISDBASE" ), egisdbase->text() );
 
   if ( !Gisdbase.isNull() )
   {

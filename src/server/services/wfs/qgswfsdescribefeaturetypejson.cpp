@@ -35,7 +35,7 @@ QgsWfsDescribeFeatureTypeJson::QgsWfsDescribeFeatureTypeJson( const QgsWfsParame
 {}
 
 void QgsWfsDescribeFeatureTypeJson::writeDescribeFeatureType( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-    const QgsServerRequest &request, QgsServerResponse &response ) const
+                                                              const QgsServerRequest &request, QgsServerResponse &response ) const
 {
   const QJsonDocument doc( createDescribeFeatureTypeDocument( serverIface, project, version, request ) );
 
@@ -45,7 +45,7 @@ void QgsWfsDescribeFeatureTypeJson::writeDescribeFeatureType( QgsServerInterface
 
 
 QJsonObject QgsWfsDescribeFeatureTypeJson::createDescribeFeatureTypeDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-    const QgsServerRequest &request ) const
+                                                                              const QgsServerRequest &request ) const
 {
   Q_UNUSED( version )
 
@@ -53,7 +53,7 @@ QJsonObject QgsWfsDescribeFeatureTypeJson::createDescribeFeatureTypeDocument( Qg
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   QgsAccessControl *accessControl = serverIface->accessControls();
 #else
-  ( void )serverIface;
+  ( void ) serverIface;
 #endif
 
   QJsonObject json;
@@ -222,4 +222,3 @@ void QgsWfsDescribeFeatureTypeJson::getGeometryType( const QgsVectorLayer *layer
       geomType = QStringLiteral( "gml:GeometryPropertyType" );
   }
 }
-

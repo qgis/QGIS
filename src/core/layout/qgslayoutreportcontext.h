@@ -30,11 +30,9 @@
  */
 class CORE_EXPORT QgsLayoutReportContext : public QObject
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutReportContext.
      */
@@ -115,11 +113,10 @@ class CORE_EXPORT QgsLayoutReportContext : public QObject
     void changed();
 
   private:
-
     QgsLayout *mLayout = nullptr;
 
     QgsFeature mFeature;
-    QPointer< QgsVectorLayer > mLayer;
+    QPointer<QgsVectorLayer> mLayer;
 
     // projected geometry cache
     mutable QMap<long, QgsGeometry> mGeometryCache;
@@ -129,10 +126,6 @@ class CORE_EXPORT QgsLayoutReportContext : public QObject
 
     friend class QgsLayoutExporter;
     friend class TestQgsLayout;
-
 };
 
 #endif //QGSLAYOUTREPORTCONTEXT_H
-
-
-

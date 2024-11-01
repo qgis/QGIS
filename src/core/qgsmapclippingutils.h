@@ -39,11 +39,10 @@ class QgsMapClippingRegion;
 class CORE_EXPORT QgsMapClippingUtils
 {
   public:
-
     /**
      * Collects the list of map clipping regions from a \a context which apply to a map \a layer.
      */
-    static QList< QgsMapClippingRegion > collectClippingRegionsForLayer( const QgsRenderContext &context, const QgsMapLayer *layer );
+    static QList<QgsMapClippingRegion> collectClippingRegionsForLayer( const QgsRenderContext &context, const QgsMapLayer *layer );
 
     /**
      * Returns the geometry representing the intersection of clipping \a regions from \a context.
@@ -57,7 +56,7 @@ class CORE_EXPORT QgsMapClippingUtils
      *
      * \returns combined clipping region for use when filtering features to render
      */
-    static QgsGeometry calculateFeatureRequestGeometry( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, bool &shouldFilter );
+    static QgsGeometry calculateFeatureRequestGeometry( const QList<QgsMapClippingRegion> &regions, const QgsRenderContext &context, bool &shouldFilter );
 
     /**
      * Returns the geometry representing the intersection of clipping \a regions from \a context which should be used to clip individual
@@ -71,7 +70,7 @@ class CORE_EXPORT QgsMapClippingUtils
      *
      * \returns combined clipping region for use when rendering features
      */
-    static QgsGeometry calculateFeatureIntersectionGeometry( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, bool &shouldClip );
+    static QgsGeometry calculateFeatureIntersectionGeometry( const QList<QgsMapClippingRegion> &regions, const QgsRenderContext &context, bool &shouldClip );
 
     /**
      * Returns a QPainterPath representing the intersection of clipping \a regions from \a context which should be used to clip the painter
@@ -86,7 +85,7 @@ class CORE_EXPORT QgsMapClippingUtils
      *
      * \returns combined painter clipping region for use when rendering maps
      */
-    static QPainterPath calculatePainterClipRegion( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, Qgis::LayerType layerType, bool &shouldClip );
+    static QPainterPath calculatePainterClipRegion( const QList<QgsMapClippingRegion> &regions, const QgsRenderContext &context, Qgis::LayerType layerType, bool &shouldClip );
 
     /**
      * Returns the geometry representing the intersection of clipping \a regions from \a context which should be used to clip individual
@@ -100,7 +99,7 @@ class CORE_EXPORT QgsMapClippingUtils
      *
      * \returns combined clipping region for use when labeling features
      */
-    static QgsGeometry calculateLabelIntersectionGeometry( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, bool &shouldClip );
+    static QgsGeometry calculateLabelIntersectionGeometry( const QList<QgsMapClippingRegion> &regions, const QgsRenderContext &context, bool &shouldClip );
 };
 
 #endif // QGSMAPCLIPPINGUTILS_H

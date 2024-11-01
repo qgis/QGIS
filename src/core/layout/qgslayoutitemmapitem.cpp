@@ -28,7 +28,6 @@ QgsLayoutItemMapItem::QgsLayoutItemMapItem( const QString &name, QgsLayoutItemMa
   , mUuid( QUuid::createUuid().toString() )
   , mEnabled( true )
 {
-
 }
 
 bool QgsLayoutItemMapItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
@@ -40,7 +39,7 @@ bool QgsLayoutItemMapItem::writeXml( QDomElement &element, QDomDocument &documen
   element.setAttribute( QStringLiteral( "uuid" ), mUuid );
   element.setAttribute( QStringLiteral( "name" ), mName );
   element.setAttribute( QStringLiteral( "show" ), mEnabled );
-  element.setAttribute( QStringLiteral( "position" ), static_cast< int >( mStackingPosition ) );
+  element.setAttribute( QStringLiteral( "position" ), static_cast<int>( mStackingPosition ) );
 
   if ( mStackingLayer )
   {
@@ -60,7 +59,7 @@ bool QgsLayoutItemMapItem::readXml( const QDomElement &itemElem, const QDomDocum
   mUuid = itemElem.attribute( QStringLiteral( "uuid" ) );
   mName = itemElem.attribute( QStringLiteral( "name" ) );
   mEnabled = ( itemElem.attribute( QStringLiteral( "show" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
-  mStackingPosition = static_cast< StackingPosition >( itemElem.attribute( QStringLiteral( "position" ), QString::number( QgsLayoutItemMapItem::StackBelowMapLabels ) ).toInt() );
+  mStackingPosition = static_cast<StackingPosition>( itemElem.attribute( QStringLiteral( "position" ), QString::number( QgsLayoutItemMapItem::StackBelowMapLabels ) ).toInt() );
 
   const QString layerId = itemElem.attribute( QStringLiteral( "stackingLayer" ) );
   const QString layerName = itemElem.attribute( QStringLiteral( "stackingLayerName" ) );
@@ -147,7 +146,6 @@ QgsMapLayer *QgsLayoutItemMapItem::mapLayer()
 QgsLayoutItemMapItemStack::QgsLayoutItemMapItemStack( QgsLayoutItemMap *map )
   : mMap( map )
 {
-
 }
 
 QgsLayoutItemMapItemStack::~QgsLayoutItemMapItemStack()
@@ -234,7 +232,7 @@ QgsLayoutItemMapItem &QgsLayoutItemMapItemStack::operator[]( int idx )
 
 QList<QgsLayoutItemMapItem *> QgsLayoutItemMapItemStack::asList() const
 {
-  QList< QgsLayoutItemMapItem * > list;
+  QList<QgsLayoutItemMapItem *> list;
   list.reserve( mItems.size() );
   for ( QgsLayoutItemMapItem *item : mItems )
   {
@@ -284,7 +282,6 @@ void QgsLayoutItemMapItemStack::drawItems( QPainter *painter, bool ignoreStackin
       case QgsLayoutItemMapItem::StackAboveMapLabels:
         item->draw( painter );
         break;
-
     }
   }
 }
@@ -318,6 +315,3 @@ void QgsLayoutItemMapItemStack::removeItems()
   qDeleteAll( mItems );
   mItems.clear();
 }
-
-
-

@@ -34,7 +34,7 @@ QgsExpressionAddFunctionFileDialog::QgsExpressionAddFunctionFileDialog( bool ena
   }
 
   connect( cboFileOptions, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsExpressionAddFunctionFileDialog::cboFileOptions_currentIndexChanged );
-  connect( txtNewFileName, &QLineEdit::textChanged, this, [ = ]( const QString & ) { updateOkButtonStatus(); } );
+  connect( txtNewFileName, &QLineEdit::textChanged, this, [=]( const QString & ) { updateOkButtonStatus(); } );
 
   updateOkButtonStatus();
 }

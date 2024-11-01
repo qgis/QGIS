@@ -66,7 +66,7 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
 
   // initialize resampling methods
   cboResamplingMethod->clear();
-  const auto methods {QgsRasterDataProvider::pyramidResamplingMethods( mProvider )};
+  const auto methods { QgsRasterDataProvider::pyramidResamplingMethods( mProvider ) };
   for ( const QPair<QString, QString> &method : methods )
   {
     cboResamplingMethod->addItem( method.second, method.first );
@@ -90,10 +90,10 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
     const auto constOverviewList = overviewList;
     for ( const int i : constOverviewList )
     {
-      mOverviewCheckBoxes[ i ] = new QCheckBox( QString::number( i ), this );
-      connect( mOverviewCheckBoxes[ i ], &QCheckBox::toggled,
+      mOverviewCheckBoxes[i] = new QCheckBox( QString::number( i ), this );
+      connect( mOverviewCheckBoxes[i], &QCheckBox::toggled,
                this, &QgsRasterPyramidsOptionsWidget::setOverviewList );
-      layoutPyramidsLevels->addWidget( mOverviewCheckBoxes[ i ] );
+      layoutPyramidsLevels->addWidget( mOverviewCheckBoxes[i] );
     }
   }
   else
@@ -106,7 +106,7 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
   for ( const QString &lev : constSplit )
   {
     if ( mOverviewCheckBoxes.contains( lev.toInt() ) )
-      mOverviewCheckBoxes[ lev.toInt()]->setChecked( true );
+      mOverviewCheckBoxes[lev.toInt()]->setChecked( true );
   }
   setOverviewList();
 
@@ -133,7 +133,7 @@ void QgsRasterPyramidsOptionsWidget::apply()
 
   // mySettings.setValue( prefix + "internal", cbxPyramidsInternal->isChecked() );
 
-  const Qgis::RasterPyramidFormat format = cbxPyramidsFormat->currentData().value< Qgis::RasterPyramidFormat >();
+  const Qgis::RasterPyramidFormat format = cbxPyramidsFormat->currentData().value<Qgis::RasterPyramidFormat>();
   switch ( format )
   {
     case Qgis::RasterPyramidFormat::GeoTiff:
@@ -173,20 +173,19 @@ void QgsRasterPyramidsOptionsWidget::cbxPyramidsLevelsCustom_toggled( bool toggl
   // if toggled, disable checkboxes and enable line edit
   lePyramidsLevels->setEnabled( toggled );
   for ( auto it = mOverviewCheckBoxes.constBegin(); it != mOverviewCheckBoxes.constEnd(); ++it )
-    it.value()->setEnabled( ! toggled );
+    it.value()->setEnabled( !toggled );
   setOverviewList();
 }
 
 void QgsRasterPyramidsOptionsWidget::cbxPyramidsFormat_currentIndexChanged( int )
 {
-  const Qgis::RasterPyramidFormat format = cbxPyramidsFormat->currentData().value< Qgis::RasterPyramidFormat >();
+  const Qgis::RasterPyramidFormat format = cbxPyramidsFormat->currentData().value<Qgis::RasterPyramidFormat>();
   mSaveOptionsWidget->setEnabled( format != Qgis::RasterPyramidFormat::Erdas );
   mSaveOptionsWidget->setPyramidsFormat( format );
 }
 
 void QgsRasterPyramidsOptionsWidget::setOverviewList()
 {
-
   mOverviewList.clear();
 
   // if custom levels is toggled, get selection from line edit

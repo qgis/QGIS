@@ -76,9 +76,9 @@ class GUI_EXPORT QgsLabelEngineConfigDialog : public QDialog
     QgsLabelEngineConfigDialog( QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
     void accept() override;
+
   private:
     QgsLabelEngineConfigWidget *mWidget = nullptr;
-
 };
 
 #endif // QGSLABELENGINECONFIGDIALOG_H

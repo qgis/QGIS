@@ -55,59 +55,58 @@ class QgsProject;
 class CORE_EXPORT QgsCompositionConverter
 {
   public:
-
     /**
      * Composition data defined properties for different item types
      */
     enum class DataDefinedProperty
     {
       NoProperty = 0, //!< No property
-      AllProperties, //!< All properties for item
-      TestProperty, //!< Dummy property with no effect on item
+      AllProperties,  //!< All properties for item
+      TestProperty,   //!< Dummy property with no effect on item
       //composer page properties
-      PresetPaperSize, //!< Preset paper size for composition
-      PaperWidth, //!< Paper width
-      PaperHeight, //!< Paper height
-      NumPages, //!< Number of pages in composition
+      PresetPaperSize,  //!< Preset paper size for composition
+      PaperWidth,       //!< Paper width
+      PaperHeight,      //!< Paper height
+      NumPages,         //!< Number of pages in composition
       PaperOrientation, //!< Paper orientation
       //general composer item properties
-      PageNumber, //!< Page number for item placement
-      PositionX, //!< X position on page
-      PositionY, //!< Y position on page
-      ItemWidth, //!< Width of item
-      ItemHeight, //!< Height of item
-      ItemRotation, //!< Rotation of item
-      Transparency, //!< Item transparency (deprecated)
-      Opacity, //!< Item opacity
-      BlendMode, //!< Item blend mode
+      PageNumber,         //!< Page number for item placement
+      PositionX,          //!< X position on page
+      PositionY,          //!< Y position on page
+      ItemWidth,          //!< Width of item
+      ItemHeight,         //!< Height of item
+      ItemRotation,       //!< Rotation of item
+      Transparency,       //!< Item transparency (deprecated)
+      Opacity,            //!< Item opacity
+      BlendMode,          //!< Item blend mode
       ExcludeFromExports, //!< Exclude item from exports
-      FrameColor, //!< Item frame color
-      BackgroundColor, //!< Item background color
+      FrameColor,         //!< Item frame color
+      BackgroundColor,    //!< Item background color
       //composer map
-      MapRotation, //!< Map rotation
-      MapScale, //!< Map scale
-      MapXMin, //!< Map extent x minimum
-      MapYMin, //!< Map extent y minimum
-      MapXMax, //!< Map extent x maximum
-      MapYMax, //!< Map extent y maximum
+      MapRotation,    //!< Map rotation
+      MapScale,       //!< Map scale
+      MapXMin,        //!< Map extent x minimum
+      MapYMin,        //!< Map extent y minimum
+      MapXMax,        //!< Map extent x maximum
+      MapYMax,        //!< Map extent y maximum
       MapAtlasMargin, //!< Map atlas margin
-      MapLayers, //!< Map layer set
+      MapLayers,      //!< Map layer set
       MapStylePreset, //!< Layer and style map theme
       //composer picture
-      PictureSource, //!< Picture source url
+      PictureSource,             //!< Picture source url
       PictureSvgBackgroundColor, //!< SVG background color
-      PictureSvgStrokeColor, //!< SVG stroke color
-      PictureSvgStrokeWidth, //!< SVG stroke width
+      PictureSvgStrokeColor,     //!< SVG stroke color
+      PictureSvgStrokeWidth,     //!< SVG stroke width
       //html item
       SourceUrl, //!< Html source url
       //legend item
-      LegendTitle, //!< Legend title
+      LegendTitle,       //!< Legend title
       LegendColumnCount, //!< Legend column count
       //scalebar item
-      ScalebarFillColor, //!< Scalebar fill color
+      ScalebarFillColor,  //!< Scalebar fill color
       ScalebarFillColor2, //!< Scalebar secondary fill color
-      ScalebarLineColor, //!< Scalebar line color
-      ScalebarLineWidth, //!< Scalebar line width
+      ScalebarLineColor,  //!< Scalebar line color
+      ScalebarLineWidth,  //!< Scalebar line width
     };
 
     /**
@@ -127,7 +126,7 @@ class CORE_EXPORT QgsCompositionConverter
      * \return a QgsPrintLayout instance
      */
     static std::unique_ptr<QgsPrintLayout> createLayoutFromCompositionXml( const QDomElement &composerElement,
-        QgsProject *project );
+                                                                           QgsProject *project );
 
 
     /**
@@ -140,9 +139,9 @@ class CORE_EXPORT QgsCompositionConverter
      * \return list of layout object items that have been added to the layout
      */
     static QList<QgsLayoutObject *> addItemsFromCompositionXml( QgsPrintLayout *layout,
-        const QDomElement &parentElement,
-        QPointF *position = nullptr,
-        bool pasteInPlace = false );
+                                                                const QDomElement &parentElement,
+                                                                QPointF *position = nullptr,
+                                                                bool pasteInPlace = false );
 
     /**
      * Check if the given \a document is a composition template
@@ -157,12 +156,11 @@ class CORE_EXPORT QgsCompositionConverter
      * \return dom document with the converted template
      */
     static QDomDocument convertCompositionTemplate( const QDomDocument
-        &document, QgsProject *project );
+                                                      &document,
+                                                    QgsProject *project );
 
 
   private:
-
-
     //! Property definitions
     static QgsPropertiesDefinition sPropertyDefinitions;
 
@@ -181,9 +179,9 @@ class CORE_EXPORT QgsCompositionConverter
                                 const QgsStringMap &mapId2Uuid );
 
     //! For both polylines and polygons
-    template <class T, class T2> static bool readPolyXml( T *layoutItem,
-        const QDomElement &itemElem,
-        const QgsProject *project );
+    template<class T, class T2> static bool readPolyXml( T *layoutItem,
+                                                         const QDomElement &itemElem,
+                                                         const QgsProject *project );
 
     static bool readArrowXml( QgsLayoutItemPolyline *layoutItem,
                               const QDomElement &itemElem,
@@ -224,7 +222,7 @@ class CORE_EXPORT QgsCompositionConverter
     static bool readOldComposerObjectXml( QgsLayoutObject *layoutItem, const QDomElement &itemElem );
 
     static void readOldDataDefinedPropertyMap( const QDomElement &itemElem,
-        QgsPropertyCollection &dataDefinedProperties );
+                                               QgsPropertyCollection &dataDefinedProperties );
 
     static QgsProperty readOldDataDefinedProperty( DataDefinedProperty property, const QDomElement &ddElem );
 
@@ -246,7 +244,6 @@ class CORE_EXPORT QgsCompositionConverter
 
     //! Calculates the item minimum position from an xml string
     static QPointF minPointFromXml( const QDomElement &elem );
-
 };
 
 #endif // QGSCOMPOSITIONCONVERTER_H

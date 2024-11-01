@@ -68,7 +68,7 @@ void QgsVectorTileLoader::downloadBlocking()
     return; // nothing to do
   }
 
-  int repliesCount = std::accumulate( mReplies.constBegin(), mReplies.constEnd(), 0, []( int count, QList<QgsTileDownloadManagerReply *> replies ) {return count + replies.count();} );
+  int repliesCount = std::accumulate( mReplies.constBegin(), mReplies.constEnd(), 0, []( int count, QList<QgsTileDownloadManagerReply *> replies ) { return count + replies.count(); } );
   Q_UNUSED( repliesCount )
   QgsDebugMsgLevel( QStringLiteral( "Starting event loop with %1 requests" ).arg( repliesCount ), 2 );
 
@@ -148,7 +148,7 @@ void QgsVectorTileLoader::tileReplyFinished()
 
 void QgsVectorTileLoader::canceled()
 {
-  int repliesCount = std::accumulate( mReplies.constBegin(), mReplies.constEnd(), 0, []( int count, QList<QgsTileDownloadManagerReply *> replies ) {return count + replies.count();} );
+  int repliesCount = std::accumulate( mReplies.constBegin(), mReplies.constEnd(), 0, []( int count, QList<QgsTileDownloadManagerReply *> replies ) { return count + replies.count(); } );
   Q_UNUSED( repliesCount )
   QgsDebugMsgLevel( QStringLiteral( "Canceling %1 pending requests" ).arg( repliesCount ), 2 );
   QHash<QgsTileXYZ, QList<QgsTileDownloadManagerReply *>>::iterator it = mReplies.begin();
@@ -158,7 +158,6 @@ void QgsVectorTileLoader::canceled()
 
   // stop blocking download
   mEventLoop->quit();
-
 }
 
 QString QgsVectorTileLoader::error() const

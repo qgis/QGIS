@@ -49,8 +49,8 @@ QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *lay
   connect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, mAtlasSortExpressionWidget, &QgsFieldExpressionWidget::setLayer );
   connect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, mPageNameWidget, &QgsFieldExpressionWidget::setLayer );
   connect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsLayoutAtlasWidget::changeCoverageLayer );
-  connect( mAtlasSortExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString &, bool ) > ( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsLayoutAtlasWidget::changesSortFeatureExpression );
-  connect( mPageNameWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString &, bool ) > ( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsLayoutAtlasWidget::pageNameExpressionChanged );
+  connect( mAtlasSortExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString &, bool )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsLayoutAtlasWidget::changesSortFeatureExpression );
+  connect( mPageNameWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString &, bool )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsLayoutAtlasWidget::pageNameExpressionChanged );
 
   // Sort direction
   mAtlasSortFeatureDirectionButton->setEnabled( false );
@@ -66,7 +66,7 @@ QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *lay
   {
     mAtlasFileFormat->addItem( QString( formats.at( i ) ) );
   }
-  connect( mAtlasFileFormat, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int ) { changeFileFormat(); } );
+  connect( mAtlasFileFormat, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) { changeFileFormat(); } );
 
   updateGuiElements();
 }
@@ -140,8 +140,8 @@ void QgsLayoutAtlasWidget::mAtlasFilenamePatternEdit_editingFinished()
     //expression could not be set
     mMessageBar->pushWarning( tr( "Atlas" ),
                               tr( "Could not set filename expression to '%1'.\nParser error:\n%2" )
-                              .arg( mAtlasFilenamePatternEdit->text(),
-                                    error ) );
+                                .arg( mAtlasFilenamePatternEdit->text(),
+                                      error ) );
   }
   mLayout->undoStack()->endCommand();
   mBlockUpdates = false;
@@ -172,8 +172,8 @@ void QgsLayoutAtlasWidget::mAtlasFilenameExpressionButton_clicked()
       {
         //expression could not be set
         mMessageBar->pushWarning( tr( "Atlas" ), tr( "Could not set filename expression to '%1'.\nParser error:\n%2" )
-                                  .arg( expression,
-                                        error ) );
+                                                   .arg( expression,
+                                                         error ) );
       }
       mBlockUpdates = false;
       mLayout->undoStack()->endCommand();
@@ -316,8 +316,8 @@ void QgsLayoutAtlasWidget::mAtlasFeatureFilterEdit_editingFinished()
   {
     //expression could not be set
     mMessageBar->pushWarning( tr( "Atlas" ), tr( "Could not set filter expression to '%1'.\nParser error:\n%2" )
-                              .arg( mAtlasFeatureFilterEdit->text(),
-                                    error ) );
+                                               .arg( mAtlasFeatureFilterEdit->text(),
+                                                     error ) );
   }
   mBlockUpdates = false;
   mLayout->undoStack()->endCommand();
@@ -354,9 +354,8 @@ void QgsLayoutAtlasWidget::mAtlasFeatureFilterButton_clicked()
         //expression could not be set
         mMessageBar->pushWarning( tr( "Atlas" ),
                                   tr( "Could not set filter expression to '%1'.\nParser error:\n%2" )
-                                  .arg( mAtlasFeatureFilterEdit->text(),
-                                        error )
-                                );
+                                    .arg( mAtlasFeatureFilterEdit->text(),
+                                          error ) );
       }
       mBlockUpdates = false;
       mLayout->undoStack()->endCommand();

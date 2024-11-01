@@ -51,8 +51,7 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
-  const auto addGeomItem = [this]( Qgis::WkbType type, const QString & sqlType )
-  {
+  const auto addGeomItem = [this]( Qgis::WkbType type, const QString &sqlType ) {
     mGeometryTypeBox->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), sqlType );
   };
 
@@ -162,8 +161,7 @@ QString QgsNewSpatialiteLayerDialog::selectedZM() const
 
 void QgsNewSpatialiteLayerDialog::checkOk()
 {
-  const bool created  = !leLayerName->text().isEmpty() && mGeometryTypeBox->currentIndex() != -1 &&
-                        ( checkBoxPrimaryKey->isChecked() || mAttributeView->topLevelItemCount() > 0 );
+  const bool created = !leLayerName->text().isEmpty() && mGeometryTypeBox->currentIndex() != -1 && ( checkBoxPrimaryKey->isChecked() || mAttributeView->topLevelItemCount() > 0 );
   mOkButton->setEnabled( created );
 }
 
@@ -256,7 +254,7 @@ void QgsNewSpatialiteLayerDialog::pbnFindSRID_clicked()
 
 void QgsNewSpatialiteLayerDialog::nameChanged( const QString &name )
 {
-  mAddAttributeButton->setDisabled( name.isEmpty() || ! mAttributeView->findItems( name, Qt::MatchExactly ).isEmpty() );
+  mAddAttributeButton->setDisabled( name.isEmpty() || !mAttributeView->findItems( name, Qt::MatchExactly ).isEmpty() );
 }
 
 void QgsNewSpatialiteLayerDialog::selectionChanged()
@@ -269,14 +267,14 @@ void QgsNewSpatialiteLayerDialog::selectionChanged()
 bool QgsNewSpatialiteLayerDialog::createDb()
 {
   QString dbPath = QFileDialog::getSaveFileName( this, tr( "New SpatiaLite Database File" ),
-                   QDir::homePath(),
-                   tr( "SpatiaLite" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db)", nullptr, QFileDialog::DontConfirmOverwrite );
+                                                 QDir::homePath(),
+                                                 tr( "SpatiaLite" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db)", nullptr, QFileDialog::DontConfirmOverwrite );
 
   if ( dbPath.isEmpty() )
     return false;
 
   dbPath = QgsFileUtils::ensureFileNameHasExtension( dbPath, QStringList() << QStringLiteral( "sqlite" ) << QStringLiteral( "db" ) << QStringLiteral( "sqlite3" )
-           << QStringLiteral( "db3" ) << QStringLiteral( "s3db" ) );
+                                                                           << QStringLiteral( "db3" ) << QStringLiteral( "s3db" ) );
   QFile newDb( dbPath );
   if ( newDb.exists() )
   {
@@ -365,7 +363,8 @@ bool QgsNewSpatialiteLayerDialog::apply()
     {
       if ( QMessageBox::question( this, windowTitle(),
                                   tr( "The field “%1” has not been added to the fields list. Are you sure you want to proceed and discard this field?" ).arg( currentFieldName ),
-                                  QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
+                                  QMessageBox::Ok | QMessageBox::Cancel )
+           != QMessageBox::Ok )
       {
         return false;
       }
@@ -425,11 +424,11 @@ bool QgsNewSpatialiteLayerDialog::apply()
   if ( mGeometryTypeBox->currentIndex() != 0 )
   {
     const QString sqlAddGeom = QStringLiteral( "select AddGeometryColumn(%1,%2,%3,%4,%5)" )
-                               .arg( QgsSqliteUtils::quotedString( leLayerName->text() ),
-                                     QgsSqliteUtils::quotedString( leGeometryColumn->text() ) )
-                               .arg( mCrsId.split( ':' ).value( 1, QStringLiteral( "0" ) ).toInt() )
-                               .arg( QgsSqliteUtils::quotedString( selectedType() ) )
-                               .arg( QgsSqliteUtils::quotedString( selectedZM() ) );
+                                 .arg( QgsSqliteUtils::quotedString( leLayerName->text() ),
+                                       QgsSqliteUtils::quotedString( leGeometryColumn->text() ) )
+                                 .arg( mCrsId.split( ':' ).value( 1, QStringLiteral( "0" ) ).toInt() )
+                                 .arg( QgsSqliteUtils::quotedString( selectedType() ) )
+                                 .arg( QgsSqliteUtils::quotedString( selectedZM() ) );
     QgsDebugMsgLevel( sqlAddGeom, 2 );
 
     rc = sqlite3_exec( database.get(), sqlAddGeom.toUtf8(), nullptr, nullptr, &errmsg );
@@ -443,8 +442,8 @@ bool QgsNewSpatialiteLayerDialog::apply()
     }
 
     const QString sqlCreateIndex = QStringLiteral( "select CreateSpatialIndex(%1,%2)" )
-                                   .arg( QgsSqliteUtils::quotedString( leLayerName->text() ),
-                                         QgsSqliteUtils::quotedString( leGeometryColumn->text() ) );
+                                     .arg( QgsSqliteUtils::quotedString( leLayerName->text() ),
+                                           QgsSqliteUtils::quotedString( leGeometryColumn->text() ) );
     QgsDebugMsgLevel( sqlCreateIndex, 2 );
 
     rc = sqlite3_exec( database.get(), sqlCreateIndex.toUtf8(), nullptr, nullptr, &errmsg );
@@ -460,10 +459,10 @@ bool QgsNewSpatialiteLayerDialog::apply()
 
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "%1 table='%2'%3 sql=" )
-      .arg( mDatabaseComboBox->currentConnectionUri(),
-            leLayerName->text(),
-            mGeometryTypeBox->currentIndex() != 0 ? QStringLiteral( "(%1)" ).arg( leGeometryColumn->text() ) : QString() ),
-      leLayerName->text(), QStringLiteral( "spatialite" ), options );
+                                                .arg( mDatabaseComboBox->currentConnectionUri(),
+                                                      leLayerName->text(),
+                                                      mGeometryTypeBox->currentIndex() != 0 ? QStringLiteral( "(%1)" ).arg( leGeometryColumn->text() ) : QString() ),
+                                              leLayerName->text(), QStringLiteral( "spatialite" ), options );
   if ( layer->isValid() )
   {
     // Reload connections to refresh browser panel

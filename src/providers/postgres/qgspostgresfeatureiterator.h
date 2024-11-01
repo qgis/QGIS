@@ -27,7 +27,7 @@ class QgsPostgresResult;
 class QgsPostgresTransaction;
 
 
-class QgsPostgresFeatureSource final: public QgsAbstractFeatureSource
+class QgsPostgresFeatureSource final : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsPostgresFeatureSource( const QgsPostgresProvider *p );
@@ -36,7 +36,6 @@ class QgsPostgresFeatureSource final: public QgsAbstractFeatureSource
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
-
     QString mConnInfo;
 
     QString mGeometryColumn;
@@ -72,7 +71,7 @@ class QgsPostgresFeatureSource final: public QgsAbstractFeatureSource
 
 class QgsPostgresConn;
 
-class QgsPostgresFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>
+class QgsPostgresFeatureIterator final : public QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>
 {
   public:
     QgsPostgresFeatureIterator( QgsPostgresFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
@@ -88,7 +87,6 @@ class QgsPostgresFeatureIterator final: public QgsAbstractFeatureIteratorFromSou
     bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod ) override;
 
   private:
-
     QgsPostgresConn *mConn = nullptr;
 
 
@@ -131,8 +129,7 @@ class QgsPostgresFeatureIterator final: public QgsAbstractFeatureIteratorFromSou
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
     QgsGeometry mDistanceWithinGeom;
-    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
-
+    std::unique_ptr<QgsGeometryEngine> mDistanceWithinEngine;
 };
 
 #endif // QGSPOSTGRESFEATUREITERATOR_H

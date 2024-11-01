@@ -55,7 +55,7 @@ QList<QgsLayerTreeNode *> QgsLayerTreeNode::abandonChildren()
   mChildren.clear();
   for ( auto orphan : std::as_const( orphans ) )
   {
-    orphan->makeOrphan( );
+    orphan->makeOrphan();
   }
   return orphans;
 }
@@ -164,7 +164,7 @@ void fetchCheckedLayers( const QgsLayerTreeNode *node, QList<QgsMapLayer *> &lay
   const auto constChildren = node->children();
   for ( QgsLayerTreeNode *child : constChildren )
   {
-    if ( QgsLayerTreeGroup *group = qobject_cast< QgsLayerTreeGroup * >( child ) )
+    if ( QgsLayerTreeGroup *group = qobject_cast<QgsLayerTreeGroup *>( child ) )
     {
       if ( QgsGroupLayer *groupLayer = group->groupLayer() )
       {
@@ -280,7 +280,7 @@ void QgsLayerTreeNode::insertChildrenPrivate( int index, const QList<QgsLayerTre
     connect( node, &QgsLayerTreeNode::nameChanged, this, &QgsLayerTreeNode::nameChanged );
 
     // Now add children
-    if ( ! orphans.isEmpty() )
+    if ( !orphans.isEmpty() )
     {
       node->insertChildrenPrivate( -1, orphans );
     }
@@ -303,13 +303,13 @@ void QgsLayerTreeNode::removeChildrenPrivate( int from, int count, bool destroy 
   while ( --count >= 0 )
   {
     const int last { from + count };
-    Q_ASSERT( last >= 0 && last < mChildren.count( ) );
+    Q_ASSERT( last >= 0 && last < mChildren.count() );
     QgsLayerTreeNode *node = mChildren.at( last );
 
     // Remove children first
-    if ( ! node->children().isEmpty() )
+    if ( !node->children().isEmpty() )
     {
-      node->removeChildrenPrivate( 0, node->children().count( ), destroy );
+      node->removeChildrenPrivate( 0, node->children().count(), destroy );
     }
 
     emit willRemoveChildren( this, last, last );

@@ -30,7 +30,6 @@
 class CORE_EXPORT QgsFractionNumericFormat : public QgsNumericFormat
 {
   public:
-
     /**
       * Default constructor
       */
@@ -148,12 +147,11 @@ class CORE_EXPORT QgsFractionNumericFormat : public QgsNumericFormat
         c = numerator;
         d = denominator;
         g = 1.0 / ( g - s );
-        if ( qgsDoubleNear( static_cast< double >( sign )*static_cast< double >( numerator ) / denominator, value, tolerance ) )
+        if ( qgsDoubleNear( static_cast<double>( sign ) * static_cast<double>( numerator ) / denominator, value, tolerance ) )
         {
           return true;
         }
-      }
-      while ( iteration++ < 100 ); // limit to 100 iterations, should be sufficient for realistic purposes
+      } while ( iteration++ < 100 ); // limit to 100 iterations, should be sufficient for realistic purposes
       return false;
     }
 
@@ -170,14 +168,12 @@ class CORE_EXPORT QgsFractionNumericFormat : public QgsNumericFormat
     static QString toUnicodeSubscript( const QString &input );
 
   protected:
-
     /**
      * Sets the format's \a configuration.
      */
     virtual void setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context );
 
   private:
-
     bool mUseDedicatedUnicode = false;
     bool mUseUnicodeSuperSubscript = true;
     bool mShowThousandsSeparator = true;

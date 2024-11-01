@@ -18,9 +18,7 @@
 
 QgsMssqlExpressionCompiler::QgsMssqlExpressionCompiler( QgsMssqlFeatureSource *source, bool ignoreStaticNodes )
   : QgsSqlExpressionCompiler( source->mFields,
-                              QgsSqlExpressionCompiler::LikeIsCaseInsensitive |
-                              QgsSqlExpressionCompiler::CaseInsensitiveStringMatch |
-                              QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger, ignoreStaticNodes )
+                              QgsSqlExpressionCompiler::LikeIsCaseInsensitive | QgsSqlExpressionCompiler::CaseInsensitiveStringMatch | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger, ignoreStaticNodes )
 {
 }
 
@@ -143,34 +141,34 @@ QString QgsMssqlExpressionCompiler::castToInt( const QString &value ) const
 static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP
 {
   { "sqrt", "sqrt" },
-  { "abs", "abs" },
-  { "cos", "cos" },
-  { "sin", "sin" },
-  { "tan", "tan" },
-  { "radians", "radians" },
-  { "degrees", "degrees" },
-  { "acos", "acos" },
-  { "asin", "asin" },
-  { "atan", "atan" },
-  { "atan2", "atn2" },
-  { "exp", "exp" },
-  { "ln", "ln" },
-  { "log", "log" },
-  { "log10", "log10" },
-  { "pi", "pi" },
-  { "round", "round" },
-  { "floor", "floor" },
-  { "ceil", "ceiling" },
-  { "char", "char" },
+    { "abs", "abs" },
+    { "cos", "cos" },
+    { "sin", "sin" },
+    { "tan", "tan" },
+    { "radians", "radians" },
+    { "degrees", "degrees" },
+    { "acos", "acos" },
+    { "asin", "asin" },
+    { "atan", "atan" },
+    { "atan2", "atn2" },
+    { "exp", "exp" },
+    { "ln", "ln" },
+    { "log", "log" },
+    { "log10", "log10" },
+    { "pi", "pi" },
+    { "round", "round" },
+    { "floor", "floor" },
+    { "ceil", "ceiling" },
+    { "char", "char" },
 #if 0 // should be possible if/when mssql compiler handles case sensitive string matches
   { "coalesce", "coalesce" },
 #endif
-  { "trim", "trim" },
-  { "lower", "lower" },
-  { "upper", "upper" },
-  { "make_datetime", "" },
-  { "make_date", "" },
-  { "make_time", "" },
+    { "trim", "trim" },
+    { "lower", "lower" },
+    { "upper", "upper" },
+    { "make_datetime", "" },
+    { "make_date", "" },
+    { "make_time", "" },
 };
 
 QString QgsMssqlExpressionCompiler::sqlFunctionFromFunctionName( const QString &fnName ) const
@@ -183,24 +181,15 @@ QStringList QgsMssqlExpressionCompiler::sqlArgumentsFromFunctionName( const QStr
   QStringList args( fnArgs );
   if ( fnName == QLatin1String( "make_datetime" ) )
   {
-    args = QStringList( QStringLiteral( "'%1-%2-%3T%4:%5:%6Z'" ).arg( args[0].rightJustified( 4, '0' ) )
-                        .arg( args[1].rightJustified( 2, '0' ) )
-                        .arg( args[2].rightJustified( 2, '0' ) )
-                        .arg( args[3].rightJustified( 2, '0' ) )
-                        .arg( args[4].rightJustified( 2, '0' ) )
-                        .arg( args[5].rightJustified( 2, '0' ) ) );
+    args = QStringList( QStringLiteral( "'%1-%2-%3T%4:%5:%6Z'" ).arg( args[0].rightJustified( 4, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ).arg( args[3].rightJustified( 2, '0' ) ).arg( args[4].rightJustified( 2, '0' ) ).arg( args[5].rightJustified( 2, '0' ) ) );
   }
   else if ( fnName == QLatin1String( "make_date" ) )
   {
-    args = QStringList( QStringLiteral( "'%1-%2-%3'" ).arg( args[0].rightJustified( 4, '0' ) )
-                        .arg( args[1].rightJustified( 2, '0' ) )
-                        .arg( args[2].rightJustified( 2, '0' ) ) );
+    args = QStringList( QStringLiteral( "'%1-%2-%3'" ).arg( args[0].rightJustified( 4, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ) );
   }
   else if ( fnName == QLatin1String( "make_time" ) )
   {
-    args = QStringList( QStringLiteral( "'%1:%2:%3'" ).arg( args[0].rightJustified( 2, '0' ) )
-                        .arg( args[1].rightJustified( 2, '0' ) )
-                        .arg( args[2].rightJustified( 2, '0' ) ) );
+    args = QStringList( QStringLiteral( "'%1:%2:%3'" ).arg( args[0].rightJustified( 2, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ) );
   }
   return args;
 }

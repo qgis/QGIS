@@ -36,7 +36,6 @@ const int PLUGIN_UPDATE_DATE = Qt::UserRole + 12;      // for sorting
 const int SPACER_ROLE = Qt::UserRole + 20;             // for sorting
 
 
-
 /**
  * \brief Proxy model for filtering and sorting items in Plugin Manager
 */

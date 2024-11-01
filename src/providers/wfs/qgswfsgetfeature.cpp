@@ -61,7 +61,7 @@ bool QgsWFSGetFeature::request( bool synchronous, const QString &WFSVersion,
   }
 
   url.setQuery( query );
-  return sendGET( url, QString(), synchronous, /*forceRefresh=*/ true, /* cache=*/ false );
+  return sendGET( url, QString(), synchronous, /*forceRefresh=*/true, /* cache=*/false );
 }
 
 QString QgsWFSGetFeature::errorMessageWithReason( const QString &reason )

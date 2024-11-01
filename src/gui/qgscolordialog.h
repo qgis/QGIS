@@ -34,11 +34,9 @@ class QColor;
 
 class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Create a new color picker dialog
      * \param parent parent widget
@@ -95,7 +93,6 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
     void setColor( const QColor &color );
 
   protected:
-
     void closeEvent( QCloseEvent *e ) override;
 
   private slots:
@@ -107,11 +104,9 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
     void showHelp();
 
   private:
-
     QColor mPreviousColor;
 
     bool mAllowOpacity = true;
-
 };
 
 #endif // #ifndef QGSCOLORDIALOG_H

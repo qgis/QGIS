@@ -66,7 +66,6 @@ class QgsHanaSourceSelect : public QgsAbstractDbSourceSelect
     Q_OBJECT
 
   public:
-
     //! static function to delete a connection
     static void deleteConnection( const QString &key );
 

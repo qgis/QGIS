@@ -36,7 +36,6 @@ class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsVectorFileWriterTask. Takes a source \a layer, destination \a fileName
      * and save \a options.
@@ -73,15 +72,13 @@ class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
     void errorOccurred( int error, const QString &errorMessage );
 
   protected:
-
     bool run() override;
     void finished( bool result ) override;
 
   private:
-
     QString mDestFileName;
 
-    std::unique_ptr< QgsFeedback > mOwnedFeedback;
+    std::unique_ptr<QgsFeedback> mOwnedFeedback;
     QgsFeatureSink::SinkFlags mSinkFlags;
     QgsVectorFileWriter::WriterError mError = QgsVectorFileWriter::NoError;
 
@@ -91,7 +88,7 @@ class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
 
     QgsVectorFileWriter::SaveVectorOptions mOptions;
     QgsVectorFileWriter::PreparedWriterDetails mWriterDetails;
-    std::unique_ptr< QgsVectorFileWriter::FieldValueConverter > mFieldValueConverter;
+    std::unique_ptr<QgsVectorFileWriter::FieldValueConverter> mFieldValueConverter;
 
     QgsCoordinateTransformContext mTransformContext;
 };

@@ -81,7 +81,7 @@ QString QgsColorRampLegendNode::labelForMinimum() const
     return mSettings.prefix() + mSettings.minimumLabel() + mSettings.suffix();
 
   const QgsNumericFormatContext numericContext;
-  return mSettings.prefix() + mSettings.numericFormat()->formatDouble( mMinimumValue, numericContext )  + mSettings.suffix();
+  return mSettings.prefix() + mSettings.numericFormat()->formatDouble( mMinimumValue, numericContext ) + mSettings.suffix();
 }
 
 QString QgsColorRampLegendNode::labelForMaximum() const
@@ -107,7 +107,7 @@ QVariant QgsColorRampLegendNode::data( int role ) const
   {
     if ( mPixmap.isNull() || mPixmap.size() != mIconSize )
     {
-      const QFont font = data( Qt::FontRole ).value< QFont >();
+      const QFont font = data( Qt::FontRole ).value<QFont>();
 
       const QString minLabel = labelForMinimum();
       const QString maxLabel = labelForMaximum();
@@ -133,8 +133,7 @@ QVariant QgsColorRampLegendNode::data( int role ) const
           break;
 
         case Qt::Horizontal:
-          labelRect = QRect( 0, mIconSize.height() + labelGapFromRamp, std::max( mIconSize.width(), minLabelWidth + maxLabelWidth + labelGapFromRamp ), std::max( minBoundingRect.height(),
-                             maxBoundingRect.height() ) + extraAllowance );
+          labelRect = QRect( 0, mIconSize.height() + labelGapFromRamp, std::max( mIconSize.width(), minLabelWidth + maxLabelWidth + labelGapFromRamp ), std::max( minBoundingRect.height(), maxBoundingRect.height() ) + extraAllowance );
           mPixmap = QPixmap( std::max( mIconSize.width(), minLabelWidth + maxLabelWidth + labelGapFromRamp ), mIconSize.height() + maxTextWidth + labelGapFromRamp + extraAllowance );
           rampSize = QSize( labelRect.width(), mIconSize.height() );
           break;
@@ -147,9 +146,9 @@ QVariant QgsColorRampLegendNode::data( int role ) const
       if ( mRamp )
       {
         pix = QgsSymbolLayerUtils::colorRampPreviewPixmap( mRamp.get(), rampSize, 0, mSettings.orientation(),
-              mSettings.orientation() == Qt::Vertical ? mSettings.direction() != QgsColorRampLegendNodeSettings::MaximumToMinimum
-              : mSettings.direction() != QgsColorRampLegendNodeSettings::MinimumToMaximum,
-              false );
+                                                           mSettings.orientation() == Qt::Vertical ? mSettings.direction() != QgsColorRampLegendNodeSettings::MaximumToMinimum
+                                                                                                   : mSettings.direction() != QgsColorRampLegendNodeSettings::MinimumToMaximum,
+                                                           false );
       }
       else
       {
@@ -179,13 +178,13 @@ QVariant QgsColorRampLegendNode::data( int role ) const
     }
     return mPixmap;
   }
-  else if ( role == static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) )
+  else if ( role == static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) )
   {
     return QgsLayerTreeModelLegendNode::ColorRampLegend;
   }
-  else if ( role == static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) )
+  else if ( role == static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) )
     return mKey;
-  else if ( role == static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::ParentRuleKey ) )
+  else if ( role == static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::ParentRuleKey ) )
     return mParentKey;
   return QVariant();
 }
@@ -199,12 +198,12 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
 
   // setup temporary render context
   QgsRenderContext *context = nullptr;
-  std::unique_ptr< QgsRenderContext > tempRenderContext;
+  std::unique_ptr<QgsRenderContext> tempRenderContext;
   if ( ctx && ctx->context )
     context = ctx->context;
   else
   {
-    tempRenderContext = std::make_unique< QgsRenderContext >();
+    tempRenderContext = std::make_unique<QgsRenderContext>();
     // QGIS 4.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
     Q_NOWARN_DEPRECATED_PUSH
     tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );
@@ -244,8 +243,7 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
 
     case Qt::Horizontal:
       // horizontal bar, min width is text width of the min and max labels
-      minWidthMm = ( QgsTextRenderer::textWidth( *context, format, QStringList() << minLabel ) +
-                     QgsTextRenderer::textWidth( *context, format, QStringList() << maxLabel ) ) / context->scaleFactor();
+      minWidthMm = ( QgsTextRenderer::textWidth( *context, format, QStringList() << minLabel ) + QgsTextRenderer::textWidth( *context, format, QStringList() << maxLabel ) ) / context->scaleFactor();
       rampHeight = patchHeight;
       rampWidth = std::max( minWidthMm, patchWidth );
       break;
@@ -354,7 +352,8 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
       const double labelYMin = currentYCoord + rampHeight + settings.style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Right )
                                + settings.style( QgsLegendStyle::SymbolLabel ).margin( QgsLegendStyle::Left );
       const double labelHeight = std::max( QgsTextRenderer::textHeight( *context, format, QStringList() << minLabel ),
-                                           QgsTextRenderer::textHeight( *context, format, QStringList() << maxLabel ) ) / dotsPerMM;
+                                           QgsTextRenderer::textHeight( *context, format, QStringList() << maxLabel ) )
+                                 / dotsPerMM;
       switch ( settings.symbolAlignment() )
       {
         case Qt::AlignLeft:
@@ -381,7 +380,8 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
     {
       // we only need this when we are calculating the size of the node, not at render time
       labelHeight = std::max( QgsTextRenderer::textHeight( *context, format, QStringList() << minLabel ),
-                              QgsTextRenderer::textHeight( *context, format, QStringList() << maxLabel ) ) / context->scaleFactor()
+                              QgsTextRenderer::textHeight( *context, format, QStringList() << maxLabel ) )
+                      / context->scaleFactor()
                     + settings.style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Right )
                     + settings.style( QgsLegendStyle::SymbolLabel ).margin( QgsLegendStyle::Left );
     }
@@ -399,12 +399,12 @@ QSizeF QgsColorRampLegendNode::drawSymbolText( const QgsLegendSettings &settings
 
   // setup temporary render context
   QgsRenderContext *context = nullptr;
-  std::unique_ptr< QgsRenderContext > tempRenderContext;
+  std::unique_ptr<QgsRenderContext> tempRenderContext;
   if ( ctx && ctx->context )
     context = ctx->context;
   else
   {
-    tempRenderContext = std::make_unique< QgsRenderContext >();
+    tempRenderContext = std::make_unique<QgsRenderContext>();
     // QGIS 4.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
     Q_NOWARN_DEPRECATED_PUSH
     tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );
@@ -495,18 +495,18 @@ QJsonObject QgsColorRampLegendNode::exportSymbolToJson( const QgsLegendSettings 
 
   const QPixmap icon = data( Qt::DecorationRole ).value<QPixmap>();
 
-  if ( ! icon.isNull() )
+  if ( !icon.isNull() )
   {
     const QImage image( icon.toImage() );
     QByteArray byteArray;
     QBuffer buffer( &byteArray );
     image.save( &buffer, "PNG" );
     const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
-    json[ QStringLiteral( "icon" ) ] = base64;
+    json[QStringLiteral( "icon" )] = base64;
   }
 
-  json [ QStringLiteral( "min" ) ] = mMinimumValue;
-  json [ QStringLiteral( "max" ) ] = mMaximumValue;
+  json[QStringLiteral( "min" )] = mMinimumValue;
+  json[QStringLiteral( "max" )] = mMaximumValue;
 
   return json;
 }

@@ -34,7 +34,6 @@ class QgsExpressionContext;
 class CORE_EXPORT QgsLabelPlacementSettings
 {
   public:
-
     /**
      * Returns the technique used to handle overlapping labels.
      * \see setOverlapHandling()
@@ -94,12 +93,10 @@ class CORE_EXPORT QgsLabelPlacementSettings
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 
   private:
-
     Qgis::LabelOverlapHandling mOverlapHandling = Qgis::LabelOverlapHandling::PreventOverlap;
     Qgis::LabelPrioritization mPrioritization = Qgis::LabelPrioritization::PreferCloser;
 
     bool mAllowDegradedPlacement = false;
-
 };
 
 #endif // QGSLABELPLACEMENTSETTINGS_H

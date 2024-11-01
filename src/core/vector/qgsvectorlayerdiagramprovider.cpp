@@ -49,7 +49,7 @@ void QgsVectorLayerDiagramProvider::init()
 {
   mName = mLayerId;
   mPriority = 1 - mSettings.priority() / 10.0; // convert 0..10 --> 1..0
-  mPlacement = static_cast< Qgis::LabelPlacement >( mSettings.placement() );
+  mPlacement = static_cast<Qgis::LabelPlacement>( mSettings.placement() );
 }
 
 
@@ -351,4 +351,3 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( const QgsFeatur
   lf->setDistLabel( dist );
   return lf;
 }
-

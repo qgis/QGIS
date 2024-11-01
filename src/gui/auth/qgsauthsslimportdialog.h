@@ -83,7 +83,6 @@ class GUI_EXPORT QgsAuthSslImportDialog : public QDialog, private Ui::QgsAuthSsl
 {
     Q_OBJECT
   public:
-
     /**
      * Construct dialog for importing certificates
      * \param parent

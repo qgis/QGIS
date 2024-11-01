@@ -24,7 +24,7 @@ Qgis::CoordinateOrder QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderF
   if ( !horizontalCrs.isValid() )
     return Qgis::CoordinateOrder::XY;
 
-  const QList< Qgis::CrsAxisDirection > axisList = horizontalCrs.axisOrdering();
+  const QList<Qgis::CrsAxisDirection> axisList = horizontalCrs.axisOrdering();
   if ( axisList.size() < 2 )
     return Qgis::CoordinateOrder::XY;
 

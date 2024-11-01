@@ -24,21 +24,21 @@
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
 
-QgsProfilePlotRenderer::QgsProfilePlotRenderer( const QList< QgsAbstractProfileSource * > &sources,
-    const QgsProfileRequest &request )
+QgsProfilePlotRenderer::QgsProfilePlotRenderer( const QList<QgsAbstractProfileSource *> &sources,
+                                                const QgsProfileRequest &request )
   : mRequest( request )
 {
   for ( QgsAbstractProfileSource *source : sources )
   {
     if ( source )
     {
-      if ( std::unique_ptr< QgsAbstractProfileGenerator > generator{ source->createProfileGenerator( mRequest ) } )
+      if ( std::unique_ptr<QgsAbstractProfileGenerator> generator { source->createProfileGenerator( mRequest ) } )
         mGenerators.emplace_back( std::move( generator ) );
     }
   }
 }
 
-QgsProfilePlotRenderer::QgsProfilePlotRenderer( std::vector<std::unique_ptr<QgsAbstractProfileGenerator> > generators, const QgsProfileRequest &request )
+QgsProfilePlotRenderer::QgsProfilePlotRenderer( std::vector<std::unique_ptr<QgsAbstractProfileGenerator>> generators, const QgsProfileRequest &request )
   : mGenerators( std::move( generators ) )
   , mRequest( request )
 {
@@ -75,7 +75,7 @@ void QgsProfilePlotRenderer::startGeneration()
   mJobs.reserve( mGenerators.size() );
   for ( const auto &it : mGenerators )
   {
-    std::unique_ptr< ProfileJob > job = std::make_unique< ProfileJob >();
+    std::unique_ptr<ProfileJob> job = std::make_unique<ProfileJob>();
     job->generator = it.get();
     job->context = mContext;
     mJobs.emplace_back( std::move( job ) );
@@ -99,7 +99,7 @@ void QgsProfilePlotRenderer::generateSynchronously()
 
   for ( const auto &it : mGenerators )
   {
-    std::unique_ptr< ProfileJob > job = std::make_unique< ProfileJob >();
+    std::unique_ptr<ProfileJob> job = std::make_unique<ProfileJob>();
     job->generator = it.get();
     job->context = mContext;
     it.get()->generateProfile( job->context );
@@ -233,7 +233,7 @@ bool QgsProfilePlotRenderer::replaceSourceInternal( QgsAbstractProfileSource *so
   if ( !source )
     return false;
 
-  std::unique_ptr< QgsAbstractProfileGenerator > generator{ source->createProfileGenerator( mRequest ) };
+  std::unique_ptr<QgsAbstractProfileGenerator> generator { source->createProfileGenerator( mRequest ) };
   if ( !generator )
     return false;
 
@@ -285,8 +285,8 @@ void QgsProfilePlotRenderer::regenerateInvalidatedResults()
 
 QgsDoubleRange QgsProfilePlotRenderer::zRange() const
 {
-  double min = std::numeric_limits< double >::max();
-  double max = std::numeric_limits< double >::lowest();
+  double min = std::numeric_limits<double>::max();
+  double max = std::numeric_limits<double>::lowest();
   for ( const auto &job : mJobs )
   {
     if ( job->complete && job->results )
@@ -363,7 +363,7 @@ QgsProfileSnapResult QgsProfilePlotRenderer::snapPoint( const QgsProfilePoint &p
   if ( !mRequest.profileCurve() )
     return bestSnapResult;
 
-  double bestSnapDistance = std::numeric_limits< double >::max();
+  double bestSnapDistance = std::numeric_limits<double>::max();
 
   for ( const auto &job : mJobs )
   {
@@ -429,7 +429,7 @@ QVector<QgsProfileIdentifyResults> QgsProfilePlotRenderer::identify( const QgsDo
 
 QVector<QgsAbstractProfileResults::Feature> QgsProfilePlotRenderer::asFeatures( Qgis::ProfileExportType type, QgsFeedback *feedback )
 {
-  QVector<QgsAbstractProfileResults::Feature > res;
+  QVector<QgsAbstractProfileResults::Feature> res;
   for ( const auto &job : mJobs )
   {
     if ( feedback && feedback->isCanceled() )
@@ -451,7 +451,7 @@ void QgsProfilePlotRenderer::onGeneratingFinished()
   emit generationFinished();
 }
 
-void QgsProfilePlotRenderer::generateProfileStatic( std::unique_ptr< ProfileJob > &job )
+void QgsProfilePlotRenderer::generateProfileStatic( std::unique_ptr<ProfileJob> &job )
 {
   if ( job->results )
     return;
@@ -465,4 +465,3 @@ void QgsProfilePlotRenderer::generateProfileStatic( std::unique_ptr< ProfileJob 
   job->invalidatedResults.reset();
   job->mutex.unlock();
 }
-

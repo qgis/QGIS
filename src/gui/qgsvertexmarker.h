@@ -26,16 +26,15 @@ class QPainter;
 % ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgsvertexmarker.h>
-% End
+  % End
 #endif
 
-/**
+  /**
  * \ingroup gui
  * \brief A class for marking vertices of features using e.g. circles or 'x'.
  */
-class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
+  class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsVertexMarker *>( sipCpp ) )
@@ -45,7 +44,6 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
     SIP_END
 #endif
   public:
-
     //! Icons
     enum IconType
     {
@@ -54,9 +52,9 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
       ICON_X,
       ICON_BOX,
       ICON_CIRCLE,
-      ICON_DOUBLE_TRIANGLE,    //!< Added in QGIS 3.0
-      ICON_TRIANGLE,  //!< Added in QGIS 3.12
-      ICON_RHOMBUS,  //!< Added in QGIS 3.12
+      ICON_DOUBLE_TRIANGLE,   //!< Added in QGIS 3.0
+      ICON_TRIANGLE,          //!< Added in QGIS 3.12
+      ICON_RHOMBUS,           //!< Added in QGIS 3.12
       ICON_INVERTED_TRIANGLE, //!< Added in QGIS 3.20
     };
 
@@ -120,7 +118,6 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
     void updatePosition() override;
 
   private:
-
     void updatePath();
 
     //! icon to be shown
@@ -142,7 +139,6 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
 
     //! Fill color
     QColor mFillColor = QColor( 0, 0, 0, 0 );
-
 };
 
 #endif

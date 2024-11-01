@@ -34,13 +34,12 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
     Q_OBJECT
 
   public:
-
     //! Item stacking position, specifies where the in the map's stack the item should be rendered
     enum StackingPosition
     {
-      StackBelowMap, //!< Render below all map layers
-      StackBelowMapLayer, //!< Render below a specific map layer (see stackingLayer())
-      StackAboveMapLayer, //!< Render above a specific map layer (see stackingLayer())
+      StackBelowMap,       //!< Render below all map layers
+      StackBelowMapLayer,  //!< Render below a specific map layer (see stackingLayer())
+      StackAboveMapLayer,  //!< Render above a specific map layer (see stackingLayer())
       StackBelowMapLabels, //!< Render above all map layers, but below map labels
       StackAboveMapLabels, //!< Render above all map layers and labels
     };
@@ -198,7 +197,6 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
     QgsExpressionContext createExpressionContext() const override;
 
   protected:
-
     //! Friendly display name
     QString mName;
 
@@ -214,7 +212,6 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
     StackingPosition mStackingPosition = StackBelowMapLabels;
 
     QgsMapLayerRef mStackingLayer;
-
 };
 
 /**
@@ -228,7 +225,6 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
 class CORE_EXPORT QgsLayoutItemMapItemStack
 {
   public:
-
     /**
      * Constructor for QgsLayoutItemMapItemStack, attached to the
      * specified \a map.
@@ -294,7 +290,6 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
     QgsLayoutItemMapItem *item( int index ) const;
 
   protected:
-
     /**
      * Adds a new map item to the stack and takes ownership of the item.
      * The item will be added to the end of the stack, and rendered
@@ -344,11 +339,10 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
     /**
      * Returns a list of QgsLayoutItemMapItems contained by the stack.
      */
-    QList< QgsLayoutItemMapItem * > asList() const;
+    QList<QgsLayoutItemMapItem *> asList() const;
 
   protected:
-
-    QList< QgsLayoutItemMapItem * > mItems;
+    QList<QgsLayoutItemMapItem *> mItems;
 
     QgsLayoutItemMap *mMap = nullptr;
 
@@ -360,4 +354,3 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
 };
 
 #endif //QGSLAYOUTITEMMAPITEM_H
-

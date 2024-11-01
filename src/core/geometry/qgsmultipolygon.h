@@ -27,10 +27,9 @@ class QgsPolygon;
  * \class QgsMultiPolygon
  * \brief Multi polygon geometry collection.
  */
-class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
+class CORE_EXPORT QgsMultiPolygon : public QgsMultiSurface
 {
   public:
-
     /**
      * Constructor for an empty multipolygon geometry.
      */
@@ -43,7 +42,7 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
      *
      * \since QGIS 3.38
      */
-    QgsMultiPolygon( const QList< QgsPolygon > &polygons ) SIP_HOLDGIL;
+    QgsMultiPolygon( const QList<QgsPolygon> &polygons ) SIP_HOLDGIL;
 
     /**
      * Constructor for a multipolygon containing the specified \a polygons.
@@ -52,7 +51,7 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
      *
      * \since QGIS 3.38
      */
-    QgsMultiPolygon( const QList< QgsPolygon * > &polygons SIP_TRANSFER ) SIP_HOLDGIL;
+    QgsMultiPolygon( const QList<QgsPolygon *> &polygons SIP_TRANSFER ) SIP_HOLDGIL;
 
 #ifndef SIP_RUN
 
@@ -72,8 +71,7 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
      * \since QGIS 3.16
      */
     SIP_PYOBJECT polygonN( int index ) SIP_TYPEHINT( QgsPolygon );
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -103,9 +101,9 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
     bool fromWkt( const QString &wkt ) override;
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
-    json asJsonObject( int precision  = 17 ) const override SIP_SKIP;
+    json asJsonObject( int precision = 17 ) const override SIP_SKIP;
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
-    bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries SIP_TRANSFER ) final;
+    bool addGeometries( const QVector<QgsAbstractGeometry *> &geometries SIP_TRANSFER ) final;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
     QgsMultiPolygon *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
 
@@ -137,7 +135,8 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString wkt = sipCpp->asWkt();
+        QString wkt
+      = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
       wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
     QString str = QStringLiteral( "<QgsMultiPolygon: %1>" ).arg( wkt );
@@ -145,9 +144,10 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
     % End
 #endif
 
-  protected:
+      protected :
 
-    bool wktOmitChildType() const override;
+      bool
+      wktOmitChildType() const override;
 };
 
 // clazy:excludeall=qstring-allocations

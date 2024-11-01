@@ -41,9 +41,7 @@ class QgsSettingsEntryVariantMap;
  */
 class CORE_EXPORT QgsTiledSceneProviderConnection : public QgsAbstractProviderConnection
 {
-
   public:
-
 #ifndef SIP_RUN
 
     ///@cond PRIVATE
@@ -87,24 +85,23 @@ class CORE_EXPORT QgsTiledSceneProviderConnection : public QgsAbstractProviderCo
     */
     struct Data
     {
-      //! Provider key
-      QString provider;
+        //! Provider key
+        QString provider;
 
-      //! Source URI
-      QString url;
+        //! Source URI
+        QString url;
 
-      //! Authentication configuration ID
-      QString authCfg;
+        //! Authentication configuration ID
+        QString authCfg;
 
-      //! HTTP Basic username
-      QString username;
+        //! HTTP Basic username
+        QString username;
 
-      //! HTTP Basic password
-      QString password;
+        //! HTTP Basic password
+        QString password;
 
-      //! HTTP headers
-      QgsHttpHeaders httpHeaders;
-
+        //! HTTP headers
+        QgsHttpHeaders httpHeaders;
     };
 
     /**
@@ -161,7 +158,6 @@ class CORE_EXPORT QgsTiledSceneProviderConnection : public QgsAbstractProviderCo
     static void setSelectedConnection( const QString &name );
 
   private:
-
     QString mProvider;
 };
 

@@ -33,11 +33,10 @@
 
 class QgsOapifSharedData;
 
-class QgsOapifProvider final: public QgsVectorDataProvider
+class QgsOapifProvider final : public QgsVectorDataProvider
 {
     Q_OBJECT
   public:
-
     static const QString OAPIF_PROVIDER_KEY;
     static const QString OAPIF_PROVIDER_DESCRIPTION;
 
@@ -141,18 +140,18 @@ class QgsOapifProvider final: public QgsVectorDataProvider
     void computeCapabilities( const QgsOapifItemsRequest &itemsRequest );
 };
 
-class QgsOapifProviderMetadata final: public QgsProviderMetadata
+class QgsOapifProviderMetadata final : public QgsProviderMetadata
 {
     Q_OBJECT
   public:
     QgsOapifProviderMetadata();
     QIcon icon() const override;
     QgsOapifProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 //! Class shared between provider and feature source
-class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedSharedData
+class QgsOapifSharedData final : public QObject, public QgsBackgroundCachedSharedData
 {
     Q_OBJECT
   public:
@@ -240,11 +239,10 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
     QString appendExtraQueryParameters( const QString &url ) const;
 
   private:
-
     // Translate part of an expression to a server-side filter using Part1 features only
     QString compileExpressionNodeUsingPart1( const QgsExpressionNode *node,
-        QgsOapifProvider::FilterTranslationState &translationState,
-        QString &untranslatedPart ) const;
+                                             QgsOapifProvider::FilterTranslationState &translationState,
+                                             QString &untranslatedPart ) const;
 
     // Translate part of an expression to a server-side filter using Part1 or Part3
     bool computeFilter( const QgsExpression &expr,
@@ -273,7 +271,7 @@ class QgsOapifSharedData final: public QObject, public QgsBackgroundCachedShared
 };
 
 
-class QgsOapifFeatureDownloaderImpl final: public QObject, public QgsFeatureDownloaderImpl
+class QgsOapifFeatureDownloaderImpl final : public QObject, public QgsFeatureDownloaderImpl
 {
     Q_OBJECT
 
@@ -296,7 +294,6 @@ class QgsOapifFeatureDownloaderImpl final: public QObject, public QgsFeatureDown
     void createProgressTask();
 
   private:
-
     //! Mutable data shared between provider, feature sources and downloader.
     QgsOapifSharedData *mShared = nullptr;
 

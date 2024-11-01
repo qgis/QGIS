@@ -37,10 +37,10 @@ const double QgsClipper::MIN_Y = -16000;
 
 const double QgsClipper::SMALL_NUM = 1e-12;
 
-void QgsClipper::clipped3dLine( const QVector< double > &xIn, const QVector< double > &yIn, const QVector<double> &zIn, QVector<double> &x, QVector<double> &y, QVector<double> &z, const QgsBox3D &clipExtent )
+void QgsClipper::clipped3dLine( const QVector<double> &xIn, const QVector<double> &yIn, const QVector<double> &zIn, QVector<double> &x, QVector<double> &y, QVector<double> &z, const QgsBox3D &clipExtent )
 {
-  double p0x, p0y, p0z, p1x = 0.0, p1y = 0.0, p1z = 0.0; //original coordinates
-  double p1x_c, p1y_c, p1z_c; //clipped end coordinates
+  double p0x, p0y, p0z, p1x = 0.0, p1y = 0.0, p1z = 0.0;    //original coordinates
+  double p1x_c, p1y_c, p1z_c;                               //clipped end coordinates
   double lastClipX = 0.0, lastClipY = 0.0, lastClipZ = 0.0; // last successfully clipped coordinates
 
   const int nPoints = xIn.size();
@@ -78,9 +78,7 @@ void QgsClipper::clipped3dLine( const QVector< double > &xIn, const QVector< dou
       // TODO: should be in 3D
       if ( clipLineSegment( clipExtent, p0x, p0y, p0z, p1x_c, p1y_c, p1z_c ) )
       {
-        bool newLine = !x.isEmpty() && ( !qgsDoubleNear( p0x, lastClipX )
-                                         || !qgsDoubleNear( p0y, lastClipY )
-                                         || !qgsDoubleNear( p0z, lastClipZ ) );
+        bool newLine = !x.isEmpty() && ( !qgsDoubleNear( p0x, lastClipX ) || !qgsDoubleNear( p0y, lastClipY ) || !qgsDoubleNear( p0z, lastClipZ ) );
         if ( newLine )
         {
           //add edge points to connect old and new line
@@ -116,8 +114,8 @@ QPolygonF QgsClipper::clippedLine( const QPolygonF &curve, const QgsRectangle &c
 {
   const int nPoints = curve.size();
 
-  double p0x, p0y, p1x = 0.0, p1y = 0.0; //original coordinates
-  double p1x_c, p1y_c; //clipped end coordinates
+  double p0x, p0y, p1x = 0.0, p1y = 0.0;   //original coordinates
+  double p1x_c, p1y_c;                     //clipped end coordinates
   double lastClipX = 0.0, lastClipY = 0.0; //last successfully clipped coords
 
   QPolygonF line;
@@ -160,7 +158,7 @@ QPolygonF QgsClipper::clippedLine( const QPolygonF &curve, const QgsRectangle &c
         //add second point
         lastClipX = p1x_c;
         lastClipY = p1y_c;
-        line << QPointF( p1x_c,  p1y_c );
+        line << QPointF( p1x_c, p1y_c );
       }
     }
     curveData++;
@@ -267,7 +265,7 @@ void QgsClipper::connectSeparatedLines( double x0, double y0, double x1, double 
 }
 
 void QgsClipper::connectSeparatedLines( double x0, double y0, double z0, double x1, double y1, double z1,
-                                        const QgsBox3D &clipRect, QVector< double > &ptsX, QVector< double > &ptsY, QVector<double> &ptsZ )
+                                        const QgsBox3D &clipRect, QVector<double> &ptsX, QVector<double> &ptsY, QVector<double> &ptsZ )
 {
   // TODO: really relevant and sufficient?
   double meanZ = ( z0 + z1 ) / 2.0;
@@ -398,4 +396,3 @@ void QgsClipper::connectSeparatedLines( double x0, double y0, double z0, double 
     }
   }
 }
-

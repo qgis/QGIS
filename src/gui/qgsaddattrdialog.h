@@ -36,7 +36,7 @@ class QgsField;
  * \note This class is not a part of public API
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsAddAttrDialog: public QDialog, private Ui::QgsAddAttrDialogBase
+class GUI_EXPORT QgsAddAttrDialog : public QDialog, private Ui::QgsAddAttrDialogBase
 {
     Q_OBJECT
   public:
@@ -53,7 +53,7 @@ class GUI_EXPORT QgsAddAttrDialog: public QDialog, private Ui::QgsAddAttrDialogB
      *
      * \since QGIS 3.30
      */
-    void setIllegalFieldNames( const QSet< QString> &names );
+    void setIllegalFieldNames( const QSet<QString> &names );
 
     //! Returns a field for the configured attribute
     QgsField field() const;
@@ -65,7 +65,7 @@ class GUI_EXPORT QgsAddAttrDialog: public QDialog, private Ui::QgsAddAttrDialogB
 
   private:
     bool mIsShapeFile = false;
-    QSet< QString > mIllegalFieldNames;
+    QSet<QString> mIllegalFieldNames;
 
     void setPrecisionMinMax();
 };

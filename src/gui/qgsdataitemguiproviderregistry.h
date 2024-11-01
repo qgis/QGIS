@@ -74,7 +74,6 @@ class GUI_EXPORT QgsDataItemGuiProviderRegistry
 
     //! Available providers, owned by this class
     QList<QgsDataItemGuiProvider *> mProviders;
-
 };
 
 #endif // QGSDATAITEMGUIPROVIDERREGISTRY_H

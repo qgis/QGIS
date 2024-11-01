@@ -158,7 +158,7 @@ std::unique_ptr<QgsMesh3DAveragingMethod> QgsMeshRenderer3DAveragingWidget::aver
   return averaging;
 }
 
-void QgsMeshRenderer3DAveragingWidget::syncToLayer( )
+void QgsMeshRenderer3DAveragingWidget::syncToLayer()
 {
   if ( !mMeshLayer )
     return;

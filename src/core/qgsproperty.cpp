@@ -104,8 +104,8 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
     case BlendMode:
       mTypes = DataTypeString;
       mHelpText = trString() + QStringLiteral( "[<b>Normal</b>|<b>Lighten</b>|<b>Screen</b>|<b>Dodge</b>|<br>"
-                  "<b>Addition</b>|<b>Darken</b>|<b>Multiply</b>|<b>Burn</b>|<b>Overlay</b>|<br>"
-                  "<b>SoftLight</b>|<b>HardLight</b>|<b>Difference</b>|<b>Subtract</b>]" );
+                                               "<b>Addition</b>|<b>Darken</b>|<b>Multiply</b>|<b>Burn</b>|<b>Overlay</b>|<br>"
+                                               "<b>SoftLight</b>|<b>HardLight</b>|<b>Difference</b>|<b>Subtract</b>]" );
       break;
 
     case Point:
@@ -136,8 +136,8 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
     case FillStyle:
       mTypes = DataTypeString;
       mHelpText = trString() + QStringLiteral( "[<b>solid</b>|<b>horizontal</b>|<b>vertical</b>|<b>cross</b>|<b>b_diagonal</b>|<b>f_diagonal"
-                  "</b>|<b>diagonal_x</b>|<b>dense1</b>|<b>dense2</b>|<b>dense3</b>|<b>dense4</b>|<b>dense5"
-                  "</b>|<b>dense6</b>|<b>dense7</b>|<b>no]" );
+                                               "</b>|<b>diagonal_x</b>|<b>dense1</b>|<b>dense2</b>|<b>dense3</b>|<b>dense4</b>|<b>dense5"
+                                               "</b>|<b>dense6</b>|<b>dense7</b>|<b>no]" );
       break;
 
     case CapStyle:
@@ -158,8 +158,8 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
     case SvgPath:
       mTypes = DataTypeString;
       mHelpText = trString() + QStringLiteral( "[<b>filepath</b>] as<br>"
-                  "<b>''</b>=empty|absolute|search-paths-relative|<br>"
-                  "project-relative|URL" );
+                                               "<b>''</b>=empty|absolute|search-paths-relative|<br>"
+                                               "project-relative|URL" );
       break;
 
     case Offset:
@@ -259,7 +259,7 @@ QgsProperty::QgsProperty( const QgsProperty &other ) //NOLINT
   : d( other.d )
 {}
 
-QgsProperty &QgsProperty::operator=( const QgsProperty &other )  //NOLINT
+QgsProperty &QgsProperty::operator=( const QgsProperty &other ) //NOLINT
 {
   d = other.d;
   return *this;
@@ -454,7 +454,6 @@ bool QgsProperty::prepare( const QgsExpressionContext &context ) const
 
     case Qgis::PropertyType::Invalid:
       return true;
-
   }
 
   return false;
@@ -473,7 +472,7 @@ QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context
 
     case Qgis::PropertyType::Field:
     {
-      QSet< QString > fields;
+      QSet<QString> fields;
       if ( !d->fieldName.isEmpty() )
         fields.insert( d->fieldName );
       return fields;
@@ -487,18 +486,17 @@ QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context
       }
 
       if ( d->expressionIsInvalid )
-        return QSet< QString >();
+        return QSet<QString>();
 
       d.detach();
       if ( !d->expressionPrepared && !prepare( context ) )
       {
         d->expressionIsInvalid = true;
-        return QSet< QString >();
+        return QSet<QString>();
       }
 
       return d->expressionReferencedCols;
     }
-
   }
   return QSet<QString>();
 }
@@ -572,7 +570,6 @@ QVariant QgsProperty::propertyValue( const QgsExpressionContext &context, const 
 
     case Qgis::PropertyType::Invalid:
       return defaultValue;
-
   }
 
   return QVariant();
@@ -764,7 +761,7 @@ QVariant QgsProperty::toVariant() const
   QVariantMap propertyMap;
 
   propertyMap.insert( QStringLiteral( "active" ), d->active );
-  propertyMap.insert( QStringLiteral( "type" ), static_cast< int >( d->type ) );
+  propertyMap.insert( QStringLiteral( "type" ), static_cast<int>( d->type ) );
 
   switch ( d->type )
   {
@@ -803,7 +800,7 @@ bool QgsProperty::loadVariant( const QVariant &property )
 
   d.detach();
   d->active = propertyMap.value( QStringLiteral( "active" ) ).toBool();
-  d->type = static_cast< Qgis::PropertyType >( propertyMap.value( QStringLiteral( "type" ), static_cast< int >( Qgis::PropertyType::Invalid ) ).toInt() );
+  d->type = static_cast<Qgis::PropertyType>( propertyMap.value( QStringLiteral( "type" ), static_cast<int>( Qgis::PropertyType::Invalid ) ).toInt() );
 
   switch ( d->type )
   {
@@ -831,7 +828,6 @@ bool QgsProperty::loadVariant( const QVariant &property )
 
     case Qgis::PropertyType::Invalid:
       break;
-
   }
 
   //restore transformer if present
@@ -845,8 +841,8 @@ bool QgsProperty::loadVariant( const QVariant &property )
   {
     const QVariantMap transformerMap = transform.toMap();
 
-    const QgsPropertyTransformer::Type type = static_cast< QgsPropertyTransformer::Type >( transformerMap.value( QStringLiteral( "t" ), QgsPropertyTransformer::GenericNumericTransformer ).toInt() );
-    std::unique_ptr< QgsPropertyTransformer > transformer( QgsPropertyTransformer::create( type ) );
+    const QgsPropertyTransformer::Type type = static_cast<QgsPropertyTransformer::Type>( transformerMap.value( QStringLiteral( "t" ), QgsPropertyTransformer::GenericNumericTransformer ).toInt() );
+    std::unique_ptr<QgsPropertyTransformer> transformer( QgsPropertyTransformer::create( type ) );
 
     if ( transformer )
     {
@@ -880,7 +876,7 @@ bool QgsProperty::convertToTransformer()
 
   QString baseExpression;
   QString fieldName;
-  std::unique_ptr< QgsPropertyTransformer > transformer( QgsPropertyTransformer::fromExpression( d->expressionString, baseExpression, fieldName ) );
+  std::unique_ptr<QgsPropertyTransformer> transformer( QgsPropertyTransformer::fromExpression( d->expressionString, baseExpression, fieldName ) );
   if ( !transformer )
     return false;
 

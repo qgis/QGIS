@@ -64,8 +64,8 @@ static bool _projectsTableExists( const QString &database )
   if ( status != SQLITE_OK )
   {
     errCause = QObject::tr( "There was an error opening the database <b>%1</b>: %2" )
-               .arg( database,
-                     QString::fromUtf8( sqlite3_errmsg( db.get() ) ) );
+                 .arg( database,
+                       QString::fromUtf8( sqlite3_errmsg( db.get() ) ) );
   }
   else
   {
@@ -74,24 +74,22 @@ static bool _projectsTableExists( const QString &database )
     {
       if ( sqlite3_step( statement.get() ) == SQLITE_ROW )
       {
-        ok = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) ) == '1';
+        ok = QString::fromUtf8( reinterpret_cast<const char *>( sqlite3_column_text( statement.get(), 0 ) ) ) == '1';
       }
       else
       {
         errCause = QObject::tr( "There was an error querying the database <b>%1</b>: %2" )
-                   .arg( database,
-                         QString::fromUtf8( sqlite3_errmsg( db.get() ) ) );
-
+                     .arg( database,
+                           QString::fromUtf8( sqlite3_errmsg( db.get() ) ) );
       }
     }
     else
     {
       errCause = QObject::tr( "There was an error querying the database <b>%1</b>: %2" )
-                 .arg( database,
-                       QString::fromUtf8( sqlite3_errmsg( db.get() ) ) );
-
+                   .arg( database,
+                         QString::fromUtf8( sqlite3_errmsg( db.get() ) ) );
     }
-    if ( ! errCause.isEmpty() )
+    if ( !errCause.isEmpty() )
       QgsMessageLog::logMessage( errCause, QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   }
   return ok;
@@ -109,7 +107,7 @@ QStringList QgsGeoPackageProjectStorage::listProjects( const QString &uri )
   QString errCause;
 
   const QgsGeoPackageProjectUri projectUri = decodeUri( uri );
-  if ( !projectUri.valid || ! _projectsTableExists( projectUri.database ) )
+  if ( !projectUri.valid || !_projectsTableExists( projectUri.database ) )
     return lst;
 
   sqlite3_database_unique_ptr database;
@@ -119,8 +117,8 @@ QStringList QgsGeoPackageProjectStorage::listProjects( const QString &uri )
   if ( status != SQLITE_OK )
   {
     errCause = QObject::tr( "There was an error opening the database <b>%1</b>: %2" )
-               .arg( projectUri.database,
-                     QString::fromUtf8( sqlite3_errmsg( database.get() ) ) );
+                 .arg( projectUri.database,
+                       QString::fromUtf8( sqlite3_errmsg( database.get() ) ) );
   }
   else
   {
@@ -129,17 +127,17 @@ QStringList QgsGeoPackageProjectStorage::listProjects( const QString &uri )
     {
       while ( sqlite3_step( statement.get() ) == SQLITE_ROW )
       {
-        lst << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
+        lst << QString::fromUtf8( reinterpret_cast<const char *>( sqlite3_column_text( statement.get(), 0 ) ) );
       }
     }
     else
     {
       errCause = QObject::tr( "There was an error querying the database <b>%1</b>: %2" )
-                 .arg( projectUri.database,
-                       QString::fromUtf8( sqlite3_errmsg( database.get() ) ) );
+                   .arg( projectUri.database,
+                         QString::fromUtf8( sqlite3_errmsg( database.get() ) ) );
     }
   }
-  if ( ! errCause.isEmpty() )
+  if ( !errCause.isEmpty() )
     QgsMessageLog::logMessage( errCause, QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
   return lst;
 }
@@ -168,12 +166,13 @@ bool QgsGeoPackageProjectStorage::readProject( const QString &uri, QIODevice *de
   else
   {
     statement = database.prepare( QStringLiteral( "SELECT content FROM qgis_projects WHERE name = %1" )
-                                  .arg( QgsSqliteUtils::quotedValue( projectUri.projectName ) ), status );
+                                    .arg( QgsSqliteUtils::quotedValue( projectUri.projectName ) ),
+                                  status );
     if ( status == SQLITE_OK )
     {
       if ( sqlite3_step( statement.get() ) == SQLITE_ROW )
       {
-        xml = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
+        xml = QString::fromUtf8( reinterpret_cast<const char *>( sqlite3_column_text( statement.get(), 0 ) ) );
         const QString hexEncodedContent( xml );
         const QByteArray binaryContent( QByteArray::fromHex( hexEncodedContent.toUtf8() ) );
         device->write( binaryContent );
@@ -183,24 +182,22 @@ bool QgsGeoPackageProjectStorage::readProject( const QString &uri, QIODevice *de
       else
       {
         errCause = QObject::tr( "There was an error querying the database <b>%1</b>: %2" )
-                   .arg( projectUri.database,
-                         QString::fromUtf8( sqlite3_errmsg( database.get() ) ) );
-
+                     .arg( projectUri.database,
+                           QString::fromUtf8( sqlite3_errmsg( database.get() ) ) );
       }
     }
     else
     {
       errCause = QObject::tr( "There was an error querying the database <b>%1</b>: %2" )
-                 .arg( projectUri.database,
-                       QString::fromUtf8( sqlite3_errmsg( database.get() ) ) );
+                   .arg( projectUri.database,
+                         QString::fromUtf8( sqlite3_errmsg( database.get() ) ) );
     }
   }
   // TODO: do not log if table does not exists
-  if ( ! errCause.isEmpty() )
+  if ( !errCause.isEmpty() )
     QgsMessageLog::logMessage( errCause, QStringLiteral( "OGR" ), Qgis::MessageLevel::Info );
 
   return ok;
-
 }
 
 bool QgsGeoPackageProjectStorage::writeProject( const QString &uri, QIODevice *device, QgsReadWriteContext &context )
@@ -232,8 +229,8 @@ bool QgsGeoPackageProjectStorage::writeProject( const QString &uri, QIODevice *d
   if ( !errCause.isEmpty() )
   {
     errCause = QObject::tr( "Unable to save project. It's not possible to create the destination table on the database. <b>%1</b>: %2" )
-               .arg( projectUri.database,
-                     errCause );
+                 .arg( projectUri.database,
+                       errCause );
 
     context.pushMessage( errCause, Qgis::MessageLevel::Critical );
     return false;
@@ -241,10 +238,7 @@ bool QgsGeoPackageProjectStorage::writeProject( const QString &uri, QIODevice *d
 
   // read from device and write to the table
   const QByteArray content = device->readAll();
-  const QString metadataExpr = QStringLiteral( "{\"last_modified_time\": \"%1\", \"last_modified_user\": \"%2\" }" ).arg(
-                                 QDateTime::currentDateTime().toString( Qt::DateFormat::ISODate ),
-                                 QgsApplication::userLoginName()
-                               );
+  const QString metadataExpr = QStringLiteral( "{\"last_modified_time\": \"%1\", \"last_modified_user\": \"%2\" }" ).arg( QDateTime::currentDateTime().toString( Qt::DateFormat::ISODate ), QgsApplication::userLoginName() );
   QString sql;
   if ( listProjects( uri ).contains( projectUri.projectName ) )
   {
@@ -256,15 +250,14 @@ bool QgsGeoPackageProjectStorage::writeProject( const QString &uri, QIODevice *d
   }
   sql = sql.arg( QgsSqliteUtils::quotedIdentifier( projectUri.projectName ),
                  QgsSqliteUtils::quotedValue( metadataExpr ),
-                 QgsSqliteUtils::quotedValue( QString::fromLatin1( content.toHex() ) )
-               );
+                 QgsSqliteUtils::quotedValue( QString::fromLatin1( content.toHex() ) ) );
 
   errCause = _executeSql( projectUri.database, sql );
   if ( !errCause.isEmpty() )
   {
     errCause = QObject::tr( "Unable to insert or update project (project=%1) in the destination table on the database: %2" )
-               .arg( uri,
-                     errCause );
+                 .arg( uri,
+                       errCause );
 
     context.pushMessage( errCause, Qgis::MessageLevel::Critical );
     return false;
@@ -300,17 +293,14 @@ QgsGeoPackageProjectUri QgsGeoPackageProjectStorage::decodeUri( const QString &u
 {
   const QUrl url = QUrl::fromEncoded( uri.toUtf8() );
   const QUrlQuery urlQuery( url.query() );
-  const QString urlAsString( url.toString( ) );
+  const QString urlAsString( url.toString() );
 
   QgsGeoPackageProjectUri gpkgUri;
 
   // Check for windows paths: github issue #33057
   const thread_local QRegularExpression winLocalPath { R"(^[A-Za-z]:)" };
   // Check for windows network shares: github issue #31310
-  const QString path { ( winLocalPath.match( urlAsString ).hasMatch() ||
-                         urlAsString.startsWith( QLatin1String( "//" ) ) ) ?
-                       urlAsString :
-                       url.path() };
+  const QString path { ( winLocalPath.match( urlAsString ).hasMatch() || urlAsString.startsWith( QLatin1String( "//" ) ) ) ? urlAsString : url.path() };
 
   gpkgUri.valid = QFile::exists( path );
   gpkgUri.database = path;
@@ -328,7 +318,6 @@ QString QgsGeoPackageProjectStorage::filePath( const QString &uri )
 
 QString QgsGeoPackageProjectStorage::_executeSql( const QString &uri, const QString &sql )
 {
-
   const QgsGeoPackageProjectUri projectUri = decodeUri( uri );
   if ( !projectUri.valid )
   {
@@ -346,12 +335,12 @@ QString QgsGeoPackageProjectStorage::_executeSql( const QString &uri, const QStr
 
   QString errCause;
   char *errmsg = nullptr;
-  ( void )sqlite3_exec(
-    db.get(),                            /* An open database */
-    sql.toUtf8(),                        /* SQL to be evaluated */
-    nullptr,                             /* Callback function */
-    nullptr,                             /* 1st argument to callback */
-    &errmsg                              /* Error msg written here */
+  ( void ) sqlite3_exec(
+    db.get(),     /* An open database */
+    sql.toUtf8(), /* SQL to be evaluated */
+    nullptr,      /* Callback function */
+    nullptr,      /* 1st argument to callback */
+    &errmsg       /* Error msg written here */
   );
   if ( status != SQLITE_OK || errmsg )
   {
@@ -364,7 +353,7 @@ bool QgsGeoPackageProjectStorage::removeProject( const QString &uri )
 {
   const QgsGeoPackageProjectUri projectUri = decodeUri( uri );
   QString errCause = _executeSql( projectUri.database, QStringLiteral( "DELETE FROM qgis_projects WHERE name = %1" ).arg( QgsSqliteUtils::quotedValue( projectUri.projectName ) ) );
-  if ( ! errCause.isEmpty() )
+  if ( !errCause.isEmpty() )
   {
     errCause = QObject::tr( "Could not remove project %1: %2" ).arg( uri, errCause );
     QgsMessageLog::logMessage( errCause, QStringLiteral( "OGR" ), Qgis::MessageLevel::Warning );
@@ -382,14 +371,14 @@ bool QgsGeoPackageProjectStorage::renameProject( const QString &uri, const QStri
   const QgsGeoPackageProjectUri projectNewUri = decodeUri( uriNew );
   const QgsGeoPackageProjectUri projectUri = decodeUri( uri );
   QString errCause = _executeSql( projectUri.database, QStringLiteral( "UPDATE qgis_projects SET name = %1 WHERE name = %1" )
-                                  .arg( QgsSqliteUtils::quotedValue( projectUri.projectName ) )
-                                  .arg( QgsSqliteUtils::quotedValue( projectNewUri.projectName ) ) );
-  if ( ! errCause.isEmpty() )
+                                                         .arg( QgsSqliteUtils::quotedValue( projectUri.projectName ) )
+                                                         .arg( QgsSqliteUtils::quotedValue( projectNewUri.projectName ) ) );
+  if ( !errCause.isEmpty() )
   {
     errCause = QObject::tr( "Could not rename project %1: %2" ).arg( uri, errCause );
     QgsMessageLog::logMessage( errCause, QStringLiteral( "OGR" ), Qgis::MessageLevel::Warning );
   }
-  return  errCause.isEmpty();
+  return errCause.isEmpty();
 }
 
 bool QgsGeoPackageProjectStorage::readProjectStorageMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata )
@@ -411,13 +400,14 @@ bool QgsGeoPackageProjectStorage::readProjectStorageMetadata( const QString &uri
   else
   {
     statement = database.prepare( QStringLiteral( "SELECT metadata FROM qgis_projects WHERE name = %1" )
-                                  .arg( QgsSqliteUtils::quotedValue( projectUri.projectName ) ), status );
+                                    .arg( QgsSqliteUtils::quotedValue( projectUri.projectName ) ),
+                                  status );
 
     if ( status == SQLITE_OK )
     {
       if ( sqlite3_step( statement.get() ) == SQLITE_ROW )
       {
-        const QString metadataStr = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
+        const QString metadataStr = QString::fromUtf8( reinterpret_cast<const char *>( sqlite3_column_text( statement.get(), 0 ) ) );
         metadata.name = projectUri.projectName;
         const QJsonDocument doc( QJsonDocument::fromJson( metadataStr.toUtf8() ) );
         ok = _parseMetadataDocument( doc, metadata );

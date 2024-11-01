@@ -267,4 +267,3 @@ void QgsLegendSettings::setJsonRenderFlags( const Qgis::LegendJsonRenderFlags &j
 {
   mJsonRenderFlags = jsonRenderFlags;
 }
-

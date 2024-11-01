@@ -26,7 +26,6 @@ QgsFieldDomain::QgsFieldDomain( const QString &name, const QString &description,
   , mDescription( description )
   , mFieldType( fieldType )
 {
-
 }
 
 QgsFieldDomain::QgsFieldDomain( const QString &name,
@@ -64,13 +63,11 @@ QgsCodedFieldDomain::QgsCodedFieldDomain( const QString &name, const QString &de
   : QgsFieldDomain( name, description, fieldType )
   , mValues( values )
 {
-
 }
 
 QgsCodedFieldDomain::QgsCodedFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType, const QList<QgsCodedValue> &values )
   : QgsCodedFieldDomain( name, description, QgsVariantUtils::variantTypeToMetaType( fieldType ), values )
 {
-
 }
 
 Qgis::FieldDomainType QgsCodedFieldDomain::type() const
@@ -85,7 +82,7 @@ QString QgsCodedFieldDomain::typeName() const
 
 QgsCodedFieldDomain *QgsCodedFieldDomain::clone() const
 {
-  std::unique_ptr< QgsCodedFieldDomain > res = std::make_unique< QgsCodedFieldDomain >( mName, mDescription, mFieldType, mValues );
+  std::unique_ptr<QgsCodedFieldDomain> res = std::make_unique<QgsCodedFieldDomain>( mName, mDescription, mFieldType, mValues );
   res->mSplitPolicy = mSplitPolicy;
   res->mMergePolicy = mMergePolicy;
   return res.release();
@@ -102,7 +99,6 @@ QgsRangeFieldDomain::QgsRangeFieldDomain( const QString &name, const QString &de
   , mMinIsInclusive( minimumIsInclusive )
   , mMaxIsInclusive( maximumIsInclusive )
 {
-
 }
 
 QgsRangeFieldDomain::QgsRangeFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType, const QVariant &minimum, bool minimumIsInclusive, const QVariant &maximum, bool maximumIsInclusive )
@@ -122,7 +118,7 @@ QString QgsRangeFieldDomain::typeName() const
 
 QgsRangeFieldDomain *QgsRangeFieldDomain::clone() const
 {
-  std::unique_ptr< QgsRangeFieldDomain > res = std::make_unique< QgsRangeFieldDomain >( mName, mDescription, mFieldType, mMin, mMinIsInclusive, mMax, mMaxIsInclusive );
+  std::unique_ptr<QgsRangeFieldDomain> res = std::make_unique<QgsRangeFieldDomain>( mName, mDescription, mFieldType, mMin, mMinIsInclusive, mMax, mMaxIsInclusive );
   res->mSplitPolicy = mSplitPolicy;
   res->mMergePolicy = mMergePolicy;
   return res.release();
@@ -137,7 +133,6 @@ QgsGlobFieldDomain::QgsGlobFieldDomain( const QString &name, const QString &desc
   : QgsFieldDomain( name, description, fieldType )
   , mGlob( glob )
 {
-
 }
 
 QgsGlobFieldDomain::QgsGlobFieldDomain( const QString &name, const QString &description, QVariant::Type fieldType, const QString &glob )
@@ -157,7 +152,7 @@ QString QgsGlobFieldDomain::typeName() const
 
 QgsGlobFieldDomain *QgsGlobFieldDomain::clone() const
 {
-  std::unique_ptr< QgsGlobFieldDomain > res = std::make_unique< QgsGlobFieldDomain >( mName, mDescription, mFieldType, mGlob );
+  std::unique_ptr<QgsGlobFieldDomain> res = std::make_unique<QgsGlobFieldDomain>( mName, mDescription, mFieldType, mGlob );
   res->mSplitPolicy = mSplitPolicy;
   res->mMergePolicy = mMergePolicy;
   return res.release();

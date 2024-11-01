@@ -54,7 +54,6 @@ QVector<QgsProfileIdentifyResults> QgsRasterLayerProfileResults::identify( const
 }
 
 
-
 //
 // QgsRasterLayerProfileGenerator
 //
@@ -62,7 +61,7 @@ QVector<QgsProfileIdentifyResults> QgsRasterLayerProfileResults::identify( const
 QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *layer, const QgsProfileRequest &request )
   : QgsAbstractProfileSurfaceGenerator( request )
   , mId( layer->id() )
-  , mFeedback( std::make_unique< QgsRasterBlockFeedback >() )
+  , mFeedback( std::make_unique<QgsRasterBlockFeedback>() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mSourceCrs( layer->crs() )
   , mTargetCrs( request.crs() )
@@ -70,7 +69,7 @@ QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *
   , mOffset( layer->elevationProperties()->zOffset() )
   , mScale( layer->elevationProperties()->zScale() )
   , mLayer( layer )
-  , mBand( qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->bandNumber() )
+  , mBand( qgis::down_cast<QgsRasterLayerElevationProperties *>( layer->elevationProperties() )->bandNumber() )
   , mRasterUnitsPerPixelX( layer->rasterUnitsPerPixelX() )
   , mRasterUnitsPerPixelY( layer->rasterUnitsPerPixelY() )
   , mStepDistance( request.stepDistance() )
@@ -78,10 +77,10 @@ QgsRasterLayerProfileGenerator::QgsRasterLayerProfileGenerator( QgsRasterLayer *
   mRasterProvider.reset( layer->dataProvider()->clone() );
   mRasterProvider->moveToThread( nullptr );
 
-  mSymbology = qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->profileSymbology();
-  mElevationLimit = qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->elevationLimit();
-  mLineSymbol.reset( qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->profileLineSymbol()->clone() );
-  mFillSymbol.reset( qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() )->profileFillSymbol()->clone() );
+  mSymbology = qgis::down_cast<QgsRasterLayerElevationProperties *>( layer->elevationProperties() )->profileSymbology();
+  mElevationLimit = qgis::down_cast<QgsRasterLayerElevationProperties *>( layer->elevationProperties() )->elevationLimit();
+  mLineSymbol.reset( qgis::down_cast<QgsRasterLayerElevationProperties *>( layer->elevationProperties() )->profileLineSymbol()->clone() );
+  mFillSymbol.reset( qgis::down_cast<QgsRasterLayerElevationProperties *>( layer->elevationProperties() )->profileFillSymbol()->clone() );
 }
 
 QString QgsRasterLayerProfileGenerator::sourceId() const
@@ -106,7 +105,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   const double startDistanceOffset = std::max( !context.distanceRange().isInfinite() ? context.distanceRange().lower() : 0, 0.0 );
   const double endDistance = context.distanceRange().upper();
 
-  std::unique_ptr< QgsCurve > trimmedCurve;
+  std::unique_ptr<QgsCurve> trimmedCurve;
   QgsCurve *sourceCurve = nullptr;
   if ( startDistanceOffset > 0 || endDistance < mProfileCurve->length() )
   {
@@ -119,7 +118,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   }
 
   // we need to transform the profile curve to the raster's CRS
-  std::unique_ptr< QgsCurve > transformedCurve( sourceCurve->clone() );
+  std::unique_ptr<QgsCurve> transformedCurve( sourceCurve->clone() );
   const QgsCoordinateTransform rasterToTargetTransform( mSourceCrs, mTargetCrs, mTransformContext );
   try
   {
@@ -141,12 +140,12 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   if ( mFeedback->isCanceled() )
     return false;
 
-  mResults = std::make_unique< QgsRasterLayerProfileResults >();
+  mResults = std::make_unique<QgsRasterLayerProfileResults>();
   mResults->mLayer = mLayer;
   mResults->mId = mId;
   mResults->copyPropertiesFromGenerator( this );
 
-  std::unique_ptr< QgsGeometryEngine > curveEngine( QgsGeometry::createGeometryEngine( transformedCurve.get() ) );
+  std::unique_ptr<QgsGeometryEngine> curveEngine( QgsGeometry::createGeometryEngine( transformedCurve.get() ) );
   curveEngine->prepareGeometry();
 
   if ( mFeedback->isCanceled() )
@@ -163,7 +162,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
     }
   }
 
-  QSet< QgsPointXY > profilePoints;
+  QSet<QgsPointXY> profilePoints;
   if ( !std::isnan( stepDistance ) )
   {
     // if specific step distance specified, use this to generate points along the curve
@@ -185,8 +184,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   int subRegionHeight = 0;
   int subRegionLeft = 0;
   int subRegionTop = 0;
-  QgsRectangle rasterSubRegion = mRasterProvider->xSize() > 0 && mRasterProvider->ySize() > 0 ?
-                                 QgsRasterIterator::subRegion(
+  QgsRectangle rasterSubRegion = mRasterProvider->xSize() > 0 && mRasterProvider->ySize() > 0 ? QgsRasterIterator::subRegion(
                                    mRasterProvider->extent(),
                                    mRasterProvider->xSize(),
                                    mRasterProvider->ySize(),
@@ -194,7 +192,8 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
                                    subRegionWidth,
                                    subRegionHeight,
                                    subRegionLeft,
-                                   subRegionTop ) : transformedCurve->boundingBox();
+                                   subRegionTop )
+                                                                                              : transformedCurve->boundingBox();
 
   const bool zeroXYSize = mRasterProvider->xSize() == 0 || mRasterProvider->ySize() == 0;
   if ( zeroXYSize )
@@ -245,7 +244,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
     if ( !curveEngine->intersects( blockExtentGeom.constGet() ) )
       continue;
 
-    std::unique_ptr< QgsRasterBlock > block( mRasterProvider->block( mBand, blockExtent, blockColumns, blockRows, mFeedback.get() ) );
+    std::unique_ptr<QgsRasterBlock> block( mRasterProvider->block( mBand, blockExtent, blockColumns, blockRows, mFeedback.get() ) );
     if ( mFeedback->isCanceled() )
       return false;
 
@@ -270,13 +269,13 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
           int row, col;
           if ( zeroXYSize )
           {
-            row = std::clamp( static_cast< int >( std::round( ( blockExtent.yMaximum() - it->y() ) * blockRows / blockExtent.height() ) ), 0, blockRows - 1 );
-            col = std::clamp( static_cast< int >( std::round( ( it->x() - blockExtent.xMinimum() ) * blockColumns / blockExtent.width() ) ), 0, blockColumns - 1 );
+            row = std::clamp( static_cast<int>( std::round( ( blockExtent.yMaximum() - it->y() ) * blockRows / blockExtent.height() ) ), 0, blockRows - 1 );
+            col = std::clamp( static_cast<int>( std::round( ( it->x() - blockExtent.xMinimum() ) * blockColumns / blockExtent.width() ) ), 0, blockColumns - 1 );
           }
           else
           {
-            row = std::clamp( static_cast< int >( std::round( ( blockExtent.yMaximum() - it->y() ) / mRasterUnitsPerPixelY ) ), 0, blockRows - 1 );
-            col = std::clamp( static_cast< int >( std::round( ( it->x() - blockExtent.xMinimum() ) / mRasterUnitsPerPixelX ) ),  0, blockColumns - 1 );
+            row = std::clamp( static_cast<int>( std::round( ( blockExtent.yMaximum() - it->y() ) / mRasterUnitsPerPixelY ) ), 0, blockRows - 1 );
+            col = std::clamp( static_cast<int>( std::round( ( it->x() - blockExtent.xMinimum() ) / mRasterUnitsPerPixelX ) ), 0, blockColumns - 1 );
           }
           double val = block->valueAndNoData( row, col, isNoData );
           if ( !isNoData )
@@ -325,9 +324,9 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
 
           // does pixel intersect curve?
           QgsGeometry pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - halfPixelSizeX,
-                                          currentY - halfPixelSizeY,
-                                          currentX + halfPixelSizeX,
-                                          currentY + halfPixelSizeY ) );
+                                                                               currentY - halfPixelSizeY,
+                                                                               currentX + halfPixelSizeX,
+                                                                               currentY + halfPixelSizeY ) );
           if ( !curveEngine->intersects( pixelRectGeometry.constGet() ) )
             continue;
 

@@ -105,10 +105,7 @@ void QgsModelViewToolZoom::keyPressEvent( QKeyEvent *event )
   //respond to changes in the alt key status and update cursor accordingly
   if ( !event->isAutoRepeat() )
   {
-
-    view()->viewport()->setCursor( ( event->modifiers() & Qt::AltModifier ) ?
-                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) :
-                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
+    view()->viewport()->setCursor( ( event->modifiers() & Qt::AltModifier ) ? QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) : QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
   }
   event->ignore();
 }
@@ -118,10 +115,7 @@ void QgsModelViewToolZoom::keyReleaseEvent( QKeyEvent *event )
   //respond to changes in the alt key status and update cursor accordingly
   if ( !event->isAutoRepeat() )
   {
-
-    view()->viewport()->setCursor( ( event->modifiers() & Qt::AltModifier ) ?
-                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) :
-                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
+    view()->viewport()->setCursor( ( event->modifiers() & Qt::AltModifier ) ? QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) : QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
   }
   event->ignore();
 }

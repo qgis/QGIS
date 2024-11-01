@@ -39,10 +39,10 @@
 #include <grass/raster.h>
 #include <grass/display.h>
 
-#if defined(_MSC_VER) && _MSC_VER < 1900
+#if defined( _MSC_VER ) && _MSC_VER < 1900
 #include <float.h>
-#define INFINITY (DBL_MAX+DBL_MAX)
-#define NAN (INFINITY-INFINITY)
+#define INFINITY ( DBL_MAX + DBL_MAX )
+#define NAN ( INFINITY - INFINITY )
 #endif
 
 int display( char *name, char *mapset, RASTER_MAP_TYPE data_type, char *format );
@@ -149,7 +149,7 @@ static int cell_draw( char *name,
   size_t raster_size;
 #ifdef NAN
   double dnul = NAN;
-  float fnul = ( float )( NAN );
+  float fnul = ( float ) ( NAN );
 #else
   double dnul = strtod( "NAN", 0 );
   float fnul = strtof( "NAN", 0 );
@@ -160,7 +160,7 @@ static int cell_draw( char *name,
   assert( dnul != dnul );
   assert( fnul != fnul );
 
-  big_endian = !( *( ( char * )( &one ) ) );
+  big_endian = !( *( ( char * ) ( &one ) ) );
 
   ncols = Rast_window_cols();
   nrows = Rast_window_rows();

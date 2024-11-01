@@ -50,7 +50,7 @@ class QgsMapCanvas;
 #ifndef SIP_RUN
 /// @cond PRIVATE
 
-class DataDefinedRestorer: public QObject
+class DataDefinedRestorer : public QObject
 {
     Q_OBJECT
   public:
@@ -85,14 +85,13 @@ class QgsSymbolSelectorDialog;
  * \ingroup gui
  * \brief Symbol selector widget that can be used to select and build a symbol
  */
-class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::QgsSymbolSelectorDialogBase
+class GUI_EXPORT QgsSymbolSelectorWidget : public QgsPanelWidget, private Ui::QgsSymbolSelectorDialogBase
 {
     Q_OBJECT
     /// To allow for non API break access from the dialog.
     friend class QgsSymbolSelectorDialog;
 
   public:
-
     // TODO QGIS 4.0 - transfer ownership of symbol to widget!
 
     /**
@@ -113,7 +112,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
      *
      * \note Not available in Python bindings.
     */
-    static QgsSymbolSelectorWidget *createWidgetWithSymbolOwnership( std::unique_ptr< QgsSymbol > symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr ) SIP_SKIP;
+    static QgsSymbolSelectorWidget *createWidgetWithSymbolOwnership( std::unique_ptr<QgsSymbol> symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr ) SIP_SKIP;
 
     //! Returns menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu *advancedMenu();
@@ -226,7 +225,6 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     void layersAboutToBeRemoved( const QList<QgsMapLayer *> &layers );
 
   private:
-
     /**
      * Reload the current symbol in the view.
      */
@@ -266,11 +264,11 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
 
     QgsStyle *mStyle = nullptr;
     QgsSymbol *mSymbol = nullptr;
-    std::unique_ptr< QgsSymbol > mOwnedSymbol;
+    std::unique_ptr<QgsSymbol> mOwnedSymbol;
     QMenu *mAdvancedMenu = nullptr;
     QAction *mLockColorAction = nullptr;
     QAction *mLockSelectionColorAction = nullptr;
-    QPointer< QgsVectorLayer > mVectorLayer;
+    QPointer<QgsVectorLayer> mVectorLayer;
 
     QStandardItemModel *mSymbolLayersModel = nullptr;
     QWidget *mPresentWidget = nullptr;
@@ -280,7 +278,6 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
     QgsFeature mPreviewFeature;
     QgsExpressionContext mPreviewExpressionContext;
     bool mBlockModified = false;
-
 };
 
 /**
@@ -293,7 +290,6 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSymbolSelectorDialog.
      *
@@ -371,7 +367,6 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     void changeLayer( QgsSymbolLayer *layer );
 
   protected:
-
     // Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent *e ) override;
 
@@ -387,7 +382,6 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     void symbolModified();
 
   private:
-
     void reloadSymbol();
 
     void updateUi();
@@ -405,7 +399,6 @@ class GUI_EXPORT QgsSymbolSelectorDialog : public QDialog
     QgsSymbolSelectorWidget *mSelectorWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
     QgsSymbolWidgetContext mContext;
-
 };
 
 #endif

@@ -47,11 +47,9 @@ class QgsLayerTreeViewIndicatorProvider : public QObject
 {
     Q_OBJECT
   public:
-
     explicit QgsLayerTreeViewIndicatorProvider( QgsLayerTreeView *view );
 
   protected:
-
     // Subclasses MAY override:
     //! Connect signals, default implementation connects layers to dataSourceChanged()
     virtual void connectSignals( QgsMapLayer *layer );
@@ -78,7 +76,6 @@ class QgsLayerTreeViewIndicatorProvider : public QObject
     void onLayerChanged();
 
   private:
-
     // Subclasses MUST override:
     //! Layer filter: layers that pass the test will get the indicator
     virtual bool acceptLayer( QgsMapLayer *layer ) = 0;
@@ -89,7 +86,7 @@ class QgsLayerTreeViewIndicatorProvider : public QObject
     // End MUST overrides
 
     //! Indicator factory
-    std::unique_ptr< QgsLayerTreeViewIndicator > newIndicator( QgsMapLayer *layer );
+    std::unique_ptr<QgsLayerTreeViewIndicator> newIndicator( QgsMapLayer *layer );
     //! Add or remove the indicator to the given node
     void addOrRemoveIndicator( QgsLayerTreeNode *node, QgsMapLayer *layer );
 

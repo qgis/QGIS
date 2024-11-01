@@ -23,16 +23,16 @@
 
 // Deprecated!
 QgsRasterFileWriterTask::QgsRasterFileWriterTask( const QgsRasterFileWriter &writer, QgsRasterPipe *pipe, int columns, int rows,
-    const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs )
+                                                  const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &crs )
   : QgsRasterFileWriterTask( writer, pipe, columns, rows, outputExtent, crs,
                              ( pipe && pipe->provider() ) ? pipe->provider()->transformContext() : QgsCoordinateTransformContext() )
 {
 }
 
 QgsRasterFileWriterTask::QgsRasterFileWriterTask( const QgsRasterFileWriter &writer, QgsRasterPipe *pipe, int columns, int rows,
-    const QgsRectangle &outputExtent,
-    const QgsCoordinateReferenceSystem &crs,
-    const QgsCoordinateTransformContext &transformContext )
+                                                  const QgsRectangle &outputExtent,
+                                                  const QgsCoordinateReferenceSystem &crs,
+                                                  const QgsCoordinateTransformContext &transformContext )
   : QgsTask( tr( "Saving %1" ).arg( writer.outputUrl() ), QgsTask::CanCancel )
   , mWriter( writer )
   , mRows( rows )
@@ -74,12 +74,10 @@ void QgsRasterFileWriterTask::finished( bool result )
     emit writeComplete( mWriter.outputUrl() );
   else
   {
-    emit errorOccurred( static_cast< int >( mError ) );
+    emit errorOccurred( static_cast<int>( mError ) );
     QString errorMsg;
     if ( !mFeedback->errors().isEmpty() )
       errorMsg = mFeedback->errors().front();
-    emit errorOccurred( static_cast< int >( mError ), errorMsg );
+    emit errorOccurred( static_cast<int>( mError ), errorMsg );
   }
 }
-
-

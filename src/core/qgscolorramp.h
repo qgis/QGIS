@@ -27,7 +27,6 @@
  */
 class CORE_EXPORT QgsColorRamp
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->type() == QgsGradientColorRamp::typeString() )
@@ -47,7 +46,6 @@ class CORE_EXPORT QgsColorRamp
     SIP_END
 #endif
   public:
-
     virtual ~QgsColorRamp();
 
     /**
@@ -97,7 +95,7 @@ class CORE_EXPORT QgsColorRamp
      *
      * \since QGIS 3.16
      */
-    static QList< QPair< QString, QString > > rampTypes();
+    static QList<QPair<QString, QString>> rampTypes();
 };
 
 #endif

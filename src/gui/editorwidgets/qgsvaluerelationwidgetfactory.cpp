@@ -25,7 +25,7 @@
 #include <QSettings>
 
 QgsValueRelationWidgetFactory::QgsValueRelationWidgetFactory( const QString &name )
-  :  QgsEditorWidgetFactory( name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 

@@ -149,7 +149,6 @@ void QgsLayoutItemPolyline::drawStartMarker( QPainter *painter )
       break;
     }
   }
-
 }
 
 void QgsLayoutItemPolyline::drawEndMarker( QPainter *painter )
@@ -256,7 +255,7 @@ void QgsLayoutItemPolyline::drawSvgMarker( QPainter *p, QPointF point, double an
 
   QSvgRenderer r;
   const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( markerPath, mArrowHeadWidth, mArrowHeadFillColor, mArrowHeadStrokeColor, mArrowHeadStrokeWidth,
-                                 1.0 );
+                                                                         1.0 );
   r.load( svgContent );
 
   const QgsScopedQPainterState painterState( p );
@@ -430,9 +429,9 @@ bool QgsLayoutItemPolyline::accept( QgsStyleEntityVisitorInterface *visitor ) co
 void QgsLayoutItemPolyline::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt, const QgsReadWriteContext &context ) const
 {
   const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(),
-                         mPolylineStyleSymbol.get(),
-                         doc,
-                         context );
+                                                          mPolylineStyleSymbol.get(),
+                                                          doc,
+                                                          context );
   elmt.appendChild( pe );
 }
 
@@ -467,8 +466,8 @@ bool QgsLayoutItemPolyline::readPropertiesFromElement( const QDomElement &elmt, 
   const QString endMarkerPath = elmt.attribute( QStringLiteral( "endMarkerFile" ), QString() );
   setStartSvgMarkerPath( QgsSymbolLayerUtils::svgSymbolNameToPath( startMarkerPath, context.pathResolver() ) );
   setEndSvgMarkerPath( QgsSymbolLayerUtils::svgSymbolNameToPath( endMarkerPath, context.pathResolver() ) );
-  mEndMarker = static_cast< QgsLayoutItemPolyline::MarkerMode >( elmt.attribute( QStringLiteral( "markerMode" ), QStringLiteral( "0" ) ).toInt() );
-  mStartMarker = static_cast< QgsLayoutItemPolyline::MarkerMode >( elmt.attribute( QStringLiteral( "startMarkerMode" ), QStringLiteral( "0" ) ).toInt() );
+  mEndMarker = static_cast<QgsLayoutItemPolyline::MarkerMode>( elmt.attribute( QStringLiteral( "markerMode" ), QStringLiteral( "0" ) ).toInt() );
+  mStartMarker = static_cast<QgsLayoutItemPolyline::MarkerMode>( elmt.attribute( QStringLiteral( "startMarkerMode" ), QStringLiteral( "0" ) ).toInt() );
 
   QgsLayoutNodesItem::readPropertiesFromElement( elmt, doc, context );
 

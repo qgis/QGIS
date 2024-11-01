@@ -36,7 +36,6 @@ class QgsExpressionContextScope;
 class CORE_EXPORT QgsAction
 {
   public:
-
     QgsAction() = default;
 
     /**
@@ -230,7 +229,7 @@ class CORE_EXPORT QgsAction
      *
      * \since QGIS 3.24
      */
-    QString html( ) const;
+    QString html() const;
 
     /**
      * Sets the action \a command.
@@ -239,7 +238,6 @@ class CORE_EXPORT QgsAction
     void setCommand( const QString &newCommand );
 
   private:
-
     void handleFormSubmitAction( const QString &expandedAction ) const;
     Qgis::AttributeActionType mType = Qgis::AttributeActionType::Generic;
     QString mDescription;

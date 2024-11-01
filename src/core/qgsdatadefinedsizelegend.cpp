@@ -30,8 +30,8 @@
 
 QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend()
 {
-  std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 0, 0, 0 ), 0.2 );
-  mLineSymbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList() << lineSymbolLayer.release() );
+  std::unique_ptr<QgsSimpleLineSymbolLayer> lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>( QColor( 0, 0, 0 ), 0.2 );
+  mLineSymbol = std::make_unique<QgsLineSymbol>( QgsSymbolLayerList() << lineSymbolLayer.release() );
 }
 
 QgsDataDefinedSizeLegend::~QgsDataDefinedSizeLegend() = default;
@@ -102,9 +102,9 @@ QgsSizeScaleTransformer *QgsDataDefinedSizeLegend::sizeScaleTransformer() const
 void QgsDataDefinedSizeLegend::updateFromSymbolAndProperty( const QgsMarkerSymbol *symbol, const QgsProperty &ddSize )
 {
   mSymbol.reset( symbol->clone() );
-  mSymbol->setDataDefinedSize( QgsProperty() );  // original symbol may have had data-defined size associated
+  mSymbol->setDataDefinedSize( QgsProperty() ); // original symbol may have had data-defined size associated
 
-  const QgsSizeScaleTransformer *sizeTransformer = dynamic_cast< const QgsSizeScaleTransformer * >( ddSize.transformer() );
+  const QgsSizeScaleTransformer *sizeTransformer = dynamic_cast<const QgsSizeScaleTransformer *>( ddSize.transformer() );
   mSizeScaleTransformer.reset( sizeTransformer ? sizeTransformer->clone() : nullptr );
 
   if ( mTitleLabel.isEmpty() )
@@ -182,8 +182,8 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   }
 
   // parameters that could be configurable
-  double hLengthLineMM = 2;       // extra horizontal space to be occupied by callout line
-  double hSpaceLineTextMM = 1;    // horizontal space between end of the line and start of the text
+  double hLengthLineMM = 2;    // extra horizontal space to be occupied by callout line
+  double hSpaceLineTextMM = 1; // horizontal space between end of the line and start of the text
 
   std::unique_ptr<QgsMarkerSymbol> s( mSymbol->clone() );
 
@@ -197,11 +197,11 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
   }
 
   // make sure we draw bigger symbols first
-  std::sort( classes.begin(), classes.end(), []( const SizeClass & a, const SizeClass & b ) { return a.size > b.size; } );
+  std::sort( classes.begin(), classes.end(), []( const SizeClass &a, const SizeClass &b ) { return a.size > b.size; } );
 
   double hLengthLine = context.convertToPainterUnits( hLengthLineMM, Qgis::RenderUnit::Millimeters );
   double hSpaceLineText = context.convertToPainterUnits( hSpaceLineTextMM, Qgis::RenderUnit::Millimeters );
-  int dpm = std::round( context.scaleFactor() * 1000 );  // scale factor = dots per millimeter
+  int dpm = std::round( context.scaleFactor() * 1000 ); // scale factor = dots per millimeter
 
   // get font metrics - we need a temporary image just to get the metrics right for the given DPI
   QImage tmpImg( QSize( 1, 1 ), QImage::Format_ARGB32_Premultiplied );
@@ -240,7 +240,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
         symbolTopY << outputLargestSize / 2 - outputSymbolSize / 2;
         break;
       case AlignBottom:
-        symbolTopY <<  outputLargestSize - outputSymbolSize;
+        symbolTopY << outputLargestSize - outputSymbolSize;
         break;
     }
   }
@@ -273,7 +273,7 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
     *labelXOffset = outputLargestSize + hLengthLine + hSpaceLineText;
 
   if ( !context.painter() )
-    return;  // only layout
+    return; // only layout
 
   //
   // drawing
@@ -319,7 +319,8 @@ void QgsDataDefinedSizeLegend::drawCollapsedLegend( QgsRenderContext &context, Q
     if ( mLineSymbol )
     {
       mLineSymbol->renderPolyline( QPolygonF() << QPointF( outputLargestSize / 2, symbolTopY[i] )
-                                   << QPointF( outputLargestSize + hLengthLine, textCenterY[i] ), nullptr, context );
+                                               << QPointF( outputLargestSize + hLengthLine, textCenterY[i] ),
+                                   nullptr, context );
     }
 
     // draw label
@@ -346,7 +347,7 @@ QImage QgsDataDefinedSizeLegend::collapsedLegendImage( QgsRenderContext &context
   drawCollapsedLegend( context, &contentSize );
 
   double padding = context.convertToPainterUnits( paddingMM, Qgis::RenderUnit::Millimeters );
-  int dpm = std::round( context.scaleFactor() * 1000 );  // scale factor = dots per millimeter
+  int dpm = std::round( context.scaleFactor() * 1000 ); // scale factor = dots per millimeter
 
   QImage img( contentSize.width() + padding * 2, contentSize.height() + padding * 2, QImage::Format_ARGB32_Premultiplied );
   img.setDotsPerMeterX( dpm );
@@ -405,7 +406,7 @@ QgsDataDefinedSizeLegend *QgsDataDefinedSizeLegend::readXml( const QDomElement &
     if ( !elemFont.isNull() )
     {
       ddsLegend->setFont( QgsFontUtils::createFont( elemFont.attribute( QStringLiteral( "family" ) ), elemFont.attribute( QStringLiteral( "size" ) ).toInt(),
-                          elemFont.attribute( QStringLiteral( "weight" ) ).toInt(), elemFont.attribute( QStringLiteral( "italic" ) ).toInt() ) );
+                                                    elemFont.attribute( QStringLiteral( "weight" ) ).toInt(), elemFont.attribute( QStringLiteral( "italic" ) ).toInt() ) );
     }
     ddsLegend->setTextColor( QgsColorUtils::colorFromString( elemTextStyle.attribute( QStringLiteral( "color" ) ) ) );
     ddsLegend->setTextAlignment( static_cast<Qt::AlignmentFlag>( elemTextStyle.attribute( QStringLiteral( "align" ) ).toInt() ) );

@@ -44,18 +44,17 @@ class QgsGeos;
 class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
 {
   public:
-
     /**
      * Supported export formats for point clouds
      */
     enum class ExportFormat : int
     {
       Memory = 0, //!< Memory layer
-      Las = 1, //!< LAS/LAZ point cloud
-      Gpkg = 2, //!< Geopackage
-      Shp = 3, //!< ESRI ShapeFile
-      Dxf = 4, //!< AutoCAD dxf
-      Csv = 5, //!< Comma separated values
+      Las = 1,    //!< LAS/LAZ point cloud
+      Gpkg = 2,   //!< Geopackage
+      Shp = 3,    //!< ESRI ShapeFile
+      Dxf = 4,    //!< AutoCAD dxf
+      Csv = 5,    //!< Comma separated values
     };
 
     /**
@@ -63,9 +62,9 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
      *
      * \see setFormat()
      */
-    static QList< ExportFormat > supportedFormats() SIP_SKIP
+    static QList<ExportFormat> supportedFormats() SIP_SKIP
     {
-      QList< ExportFormat > formats;
+      QList<ExportFormat> formats;
       formats << ExportFormat::Memory
 #ifdef HAVE_PDAL_QGIS
               << ExportFormat::Las
@@ -186,7 +185,11 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
      * Sets the \a crs for the exported file, and the transform \a context that will be used
      * for reprojection if different from the point cloud layer's CRS.
      */
-    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() ) { mTargetCrs = crs; mTransformContext = context; }
+    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext() )
+    {
+      mTargetCrs = crs;
+      mTransformContext = context;
+    }
 
     /**
      * Gets the \a crs for the exported file.
@@ -209,7 +212,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
      * Sets the maximum number of points to be exported. Default value is 0.
      * \note Any \a limit value <= 0 means no limit.
      */
-    void setPointsLimit( qint64 limit ) { mPointsLimit = std::max< qint64 >( limit, 0 ); }
+    void setPointsLimit( qint64 limit ) { mPointsLimit = std::max<qint64>( limit, 0 ); }
 
     /**
      * Gets the maximum number of points to be exported. 0 means no limit.
@@ -247,7 +250,6 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
     QString lastError() const { return mLastError; }
 
   private:
-
     void exportToSink( QgsFeatureSink * );
 
     QgsFields outputFields();
@@ -266,7 +268,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
                                          std::numeric_limits<double>::infinity(),
                                          std::numeric_limits<double>::infinity(),
                                          false );
-    std::unique_ptr< QgsGeos > mFilterGeometryEngine;
+    std::unique_ptr<QgsGeos> mFilterGeometryEngine;
     QgsDoubleRange mZRange;
     QgsFeedback *mFeedback = nullptr;
     qint64 mPointsLimit = 0;
@@ -288,6 +290,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
         ExporterBase() = default;
         virtual ~ExporterBase() = default;
         void run();
+
       protected:
         virtual void handlePoint( double x, double y, double z, const QVariantMap &map, const qint64 pointNumber ) = 0;
         virtual void handleNode() = 0;
@@ -337,9 +340,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
         pdal::PointViewPtr mView;
     };
 #endif
-
 };
-
 
 
 /**
@@ -355,7 +356,6 @@ class CORE_EXPORT QgsPointCloudLayerExporterTask : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsPointCloudLayerExporterTask. Takes ownership of \a exporter.
     */
@@ -371,14 +371,12 @@ class CORE_EXPORT QgsPointCloudLayerExporterTask : public QgsTask
     void exportComplete();
 
   protected:
-
     bool run() override;
     void finished( bool result ) override;
 
   private:
     QgsPointCloudLayerExporter *mExp = nullptr;
 
-    std::unique_ptr< QgsFeedback > mOwnedFeedback;
-
+    std::unique_ptr<QgsFeedback> mOwnedFeedback;
 };
 #endif // QGSPOINTCLOUDLAYEREXPORTER_H

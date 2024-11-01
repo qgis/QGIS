@@ -30,9 +30,7 @@
  */
 class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsTransformAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -43,17 +41,15 @@ class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsTransformAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QgsCoordinateReferenceSystem outputCrs( const QgsCoordinateReferenceSystem & ) const override;
     QString outputName() const override;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     bool mCreatedTransform = false;
     QgsCoordinateReferenceSystem mDestCrs;
     QgsCoordinateTransform mTransform;
@@ -61,12 +57,9 @@ class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     bool mConvertCurveToSegments = false;
     QString mCoordOp;
     bool mWarnedAboutFallbackTransform = false;
-
 };
 
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMTRANSFORM_H
-
-

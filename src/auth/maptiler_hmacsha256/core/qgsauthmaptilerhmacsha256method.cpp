@@ -44,7 +44,6 @@ QgsAuthMapTilerHmacSha256Method::QgsAuthMapTilerHmacSha256Method()
                     << QStringLiteral( "wms" )
                     << QStringLiteral( "vectortile" )
                     << QStringLiteral( "xyzvectortiles" ) );
-
 }
 
 QString QgsAuthMapTilerHmacSha256Method::key() const
@@ -63,7 +62,7 @@ QString QgsAuthMapTilerHmacSha256Method::displayDescription() const
 }
 
 bool QgsAuthMapTilerHmacSha256Method::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
-    const QString &dataprovider )
+                                                            const QString &dataprovider )
 {
   Q_UNUSED( dataprovider )
   const QgsAuthMethodConfig config = getMethodConfig( authcfg );
@@ -89,9 +88,9 @@ bool QgsAuthMapTilerHmacSha256Method::updateNetworkRequest( QNetworkRequest &req
   QUrlQuery query( url.query() );
   query.removeQueryItem( QStringLiteral( "key" ) );
 
-  QList<QPair<QString, QString> > queryItems = query.queryItems();
+  QList<QPair<QString, QString>> queryItems = query.queryItems();
 
-  queryItems.append( {QStringLiteral( "key" ), key} );
+  queryItems.append( { QStringLiteral( "key" ), key } );
 
   query.setQueryItems( queryItems );
   url.setQuery( query );

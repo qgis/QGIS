@@ -68,6 +68,7 @@ class CORE_EXPORT QgsRangeRequestCache
     QString error() const { return mError; }
 
     friend class TestQgsCopcProvider;
+
   private:
     QString mError;
     QString mCacheDir;

@@ -65,8 +65,8 @@ QgsProviderMetadata::ProviderMetadataCapabilities QgsWfsProviderMetadata::capabi
 }
 
 QString QgsWFSProvider::buildFilterByGeometryType( const QgsWfsCapabilities::Capabilities &caps,
-    const QString &geometryElement,
-    const QString &function )
+                                                   const QString &geometryElement,
+                                                   const QString &function )
 {
   /* Generate something like:
   <fes:Filter xmlns="http://www.opengis.net/fes/2.0">
@@ -87,10 +87,7 @@ QString QgsWFSProvider::buildFilterByGeometryType( const QgsWfsCapabilities::Cap
   */
 
   QDomDocument doc;
-  QDomElement filterElem =
-    ( caps.version.startsWith( QLatin1String( "2.0" ) ) ) ?
-    doc.createElementNS( QStringLiteral( "http://www.opengis.net/fes/2.0" ), QStringLiteral( "fes:Filter" ) ) :
-    doc.createElementNS( QStringLiteral( "http://www.opengis.net/ogc" ), QStringLiteral( "ogc:Filter" ) ) ;
+  QDomElement filterElem = ( caps.version.startsWith( QLatin1String( "2.0" ) ) ) ? doc.createElementNS( QStringLiteral( "http://www.opengis.net/fes/2.0" ), QStringLiteral( "fes:Filter" ) ) : doc.createElementNS( QStringLiteral( "http://www.opengis.net/ogc" ), QStringLiteral( "ogc:Filter" ) );
   doc.appendChild( filterElem );
   QString filterPrefix( caps.version.startsWith( "2.0" ) ? QStringLiteral( "fes" ) : QStringLiteral( "ogc" ) );
 
@@ -103,7 +100,7 @@ QString QgsWFSProvider::buildFilterByGeometryType( const QgsWfsCapabilities::Cap
       QDomElement propertyIsNullElem = doc.createElement( filterPrefix + QStringLiteral( ":PropertyIsNull" ) );
       notElem.appendChild( propertyIsNullElem );
       QDomElement valueReferenceElem = doc.createElement(
-                                         ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + QStringLiteral( ":ValueReference" ) : filterPrefix + QStringLiteral( ":PropertyName" ) );
+        ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + QStringLiteral( ":ValueReference" ) : filterPrefix + QStringLiteral( ":PropertyName" ) );
       propertyIsNullElem.appendChild( valueReferenceElem );
       valueReferenceElem.appendChild( doc.createTextNode( geometryElement ) );
     }
@@ -121,7 +118,7 @@ QString QgsWFSProvider::buildFilterByGeometryType( const QgsWfsCapabilities::Cap
       }
       {
         QDomElement valueReferenceElem = doc.createElement(
-                                           ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + QStringLiteral( ":ValueReference" ) : filterPrefix + QStringLiteral( ":PropertyName" ) );
+          ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + QStringLiteral( ":ValueReference" ) : filterPrefix + QStringLiteral( ":PropertyName" ) );
         functionElem.appendChild( valueReferenceElem );
         valueReferenceElem.appendChild( doc.createTextNode( geometryElement ) );
       }
@@ -137,7 +134,7 @@ QString QgsWFSProvider::buildFilterByGeometryType( const QgsWfsCapabilities::Cap
 }
 
 QString QgsWFSProvider::buildIsNullGeometryFilter( const QgsWfsCapabilities::Capabilities &caps,
-    const QString &geometryElement )
+                                                   const QString &geometryElement )
 {
   /* Generate something like:
    <fes:Filter xmlns="http://www.opengis.net/fes/2.0">
@@ -148,16 +145,13 @@ QString QgsWFSProvider::buildIsNullGeometryFilter( const QgsWfsCapabilities::Cap
   */
 
   QDomDocument doc;
-  QDomElement filterElem =
-    ( caps.version.startsWith( QLatin1String( "2.0" ) ) ) ?
-    doc.createElementNS( QStringLiteral( "http://www.opengis.net/fes/2.0" ), QStringLiteral( "fes:Filter" ) ) :
-    doc.createElementNS( QStringLiteral( "http://www.opengis.net/ogc" ), QStringLiteral( "ogc:Filter" ) ) ;
+  QDomElement filterElem = ( caps.version.startsWith( QLatin1String( "2.0" ) ) ) ? doc.createElementNS( QStringLiteral( "http://www.opengis.net/fes/2.0" ), QStringLiteral( "fes:Filter" ) ) : doc.createElementNS( QStringLiteral( "http://www.opengis.net/ogc" ), QStringLiteral( "ogc:Filter" ) );
   doc.appendChild( filterElem );
   QString filterPrefix( caps.version.startsWith( "2.0" ) ? QStringLiteral( "fes" ) : QStringLiteral( "ogc" ) );
   QDomElement propertyIsNullElem = doc.createElement( filterPrefix + QStringLiteral( ":PropertyIsNull" ) );
   filterElem.appendChild( propertyIsNullElem );
   QDomElement valueReferenceElem = doc.createElement(
-                                     ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + QStringLiteral( ":ValueReference" ) : filterPrefix + QStringLiteral( ":PropertyName" ) );
+    ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + QStringLiteral( ":ValueReference" ) : filterPrefix + QStringLiteral( ":PropertyName" ) );
   propertyIsNullElem.appendChild( valueReferenceElem );
   valueReferenceElem.appendChild( doc.createTextNode( geometryElement ) );
 
@@ -165,13 +159,10 @@ QString QgsWFSProvider::buildIsNullGeometryFilter( const QgsWfsCapabilities::Cap
 }
 
 QString QgsWFSProvider::buildGeometryCollectionFilter( const QgsWfsCapabilities::Capabilities &caps,
-    const QString &geometryElement )
+                                                       const QString &geometryElement )
 {
   QDomDocument doc;
-  QDomElement filterElem =
-    ( caps.version.startsWith( QLatin1String( "2.0" ) ) ) ?
-    doc.createElementNS( QStringLiteral( "http://www.opengis.net/fes/2.0" ), QStringLiteral( "fes:Filter" ) ) :
-    doc.createElementNS( QStringLiteral( "http://www.opengis.net/ogc" ), QStringLiteral( "ogc:Filter" ) ) ;
+  QDomElement filterElem = ( caps.version.startsWith( QLatin1String( "2.0" ) ) ) ? doc.createElementNS( QStringLiteral( "http://www.opengis.net/fes/2.0" ), QStringLiteral( "fes:Filter" ) ) : doc.createElementNS( QStringLiteral( "http://www.opengis.net/ogc" ), QStringLiteral( "ogc:Filter" ) );
   doc.appendChild( filterElem );
   QString filterPrefix( caps.version.startsWith( "2.0" ) ? QStringLiteral( "fes" ) : QStringLiteral( "ogc" ) );
 
@@ -179,17 +170,15 @@ QString QgsWFSProvider::buildGeometryCollectionFilter( const QgsWfsCapabilities:
   filterElem.appendChild( andElem );
 
   {
-
     QDomElement notElem = doc.createElement( filterPrefix + QStringLiteral( ":Not" ) );
     andElem.appendChild( notElem );
 
     QDomElement propertyIsNullElem = doc.createElement( filterPrefix + QStringLiteral( ":PropertyIsNull" ) );
     notElem.appendChild( propertyIsNullElem );
     QDomElement valueReferenceElem = doc.createElement(
-                                       ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + QStringLiteral( ":ValueReference" ) : filterPrefix + QStringLiteral( ":PropertyName" ) );
+      ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + QStringLiteral( ":ValueReference" ) : filterPrefix + QStringLiteral( ":PropertyName" ) );
     propertyIsNullElem.appendChild( valueReferenceElem );
     valueReferenceElem.appendChild( doc.createTextNode( geometryElement ) );
-
   }
 
   for ( const QString &function : { QStringLiteral( "IsPoint" ), QStringLiteral( "IsCurve" ), QStringLiteral( "IsSurface" ) } )
@@ -202,7 +191,7 @@ QString QgsWFSProvider::buildGeometryCollectionFilter( const QgsWfsCapabilities:
     attrFunctionName.setValue( function );
     functionElem.setAttributeNode( attrFunctionName );
     QDomElement valueReferenceElem = doc.createElement(
-                                       ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + QStringLiteral( ":ValueReference" ) : filterPrefix + QStringLiteral( ":PropertyName" ) );
+      ( caps.version.startsWith( "2.0" ) ) ? filterPrefix + QStringLiteral( ":ValueReference" ) : filterPrefix + QStringLiteral( ":PropertyName" ) );
     functionElem.appendChild( valueReferenceElem );
     valueReferenceElem.appendChild( doc.createTextNode( geometryElement ) );
     QDomElement literalElem = doc.createElement( filterPrefix + QStringLiteral( ":Literal" ) );
@@ -248,8 +237,7 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
   details.setWkbType( provider.wkbType() );
   res << details;
 
-  if ( wfsUri.hasGeometryTypeFilter() ||
-       !caps.supportsGeometryTypeFilters() )
+  if ( wfsUri.hasGeometryTypeFilter() || !caps.supportsGeometryTypeFilters() )
   {
     if ( provider.wkbType() == Qgis::WkbType::Unknown )
       provider.issueInitialGetFeature();
@@ -257,10 +245,7 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
     return res;
   }
 
-  if ( ( provider.wkbType() == Qgis::WkbType::Unknown ||
-         ( provider.wkbType() != Qgis::WkbType::NoGeometry &&
-           provider.geometryMaybeMissing() ) ) &&
-       provider.sharedData()->layerProperties().size() == 1 )
+  if ( ( provider.wkbType() == Qgis::WkbType::Unknown || ( provider.wkbType() != Qgis::WkbType::NoGeometry && provider.geometryMaybeMissing() ) ) && provider.sharedData()->layerProperties().size() == 1 )
   {
     std::map<int, std::unique_ptr<QgsWFSGetFeature>> requests;
     std::set<QgsWFSGetFeature *> finishedRequests;
@@ -274,17 +259,15 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
                                       QString( "IsNull" ),
                                       QStringLiteral( "IsPoint" ),
                                       QStringLiteral( "IsCurve" ),
-                                      QStringLiteral( "IsSurface" )
-                                    };
+                                      QStringLiteral( "IsSurface" ) };
 
     constexpr int INDEX_GEOMETRYCOLLECTION = 5;
     std::vector<int64_t> featureCounts( INDEX_GEOMETRYCOLLECTION + 1, -1 );
 
-    const auto downloaderLambda = [ &, feedback]()
-    {
+    const auto downloaderLambda = [&, feedback]() {
       QEventLoop loop;
       QTimer timerForHits;
-      for ( int i = 0; i <= INDEX_SURFACE; ++ i )
+      for ( int i = 0; i <= INDEX_SURFACE; ++i )
       {
         if ( provider.wkbType() == Qgis::WkbType::MultiPoint )
         {
@@ -320,27 +303,26 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
         else if ( !function.isEmpty() )
         {
           filter = QgsWFSProvider::buildFilterByGeometryType( caps,
-                   provider.geometryAttribute(),
-                   function );
+                                                              provider.geometryAttribute(),
+                                                              function );
         }
 
         if ( !provider.sharedData()->WFSFilter().isEmpty() )
         {
-          filter = provider.sharedData()->combineWFSFilters( {filter, provider.sharedData()->WFSFilter()} );
+          filter = provider.sharedData()->combineWFSFilters( { filter, provider.sharedData()->WFSFilter() } );
         }
 
         requests[i] = std::make_unique<QgsWFSGetFeature>( wfsUri );
         QgsWFSGetFeature *thisRequest = requests[i].get();
 
         thisRequest->request( /* synchronous = */ false,
-            caps.version,
-            wfsUri.typeName(),
-            filter,
-            /* hitsOnly = */ true,
-            caps );
+                              caps.version,
+                              wfsUri.typeName(),
+                              filter,
+                              /* hitsOnly = */ true,
+                              caps );
 
-        const auto downloadFinishedLambda = [ &, thisRequest]()
-        {
+        const auto downloadFinishedLambda = [&, thisRequest]() {
           finishedRequests.insert( thisRequest );
           if ( finishedRequests.size() == requests.size() )
             loop.quit();
@@ -370,8 +352,7 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
       }
     };
 
-    std::unique_ptr<_DownloaderThread> downloaderThread =
-      std::make_unique<_DownloaderThread>( downloaderLambda );
+    std::unique_ptr<_DownloaderThread> downloaderThread = std::make_unique<_DownloaderThread>( downloaderLambda );
     downloaderThread->start();
     downloaderThread->wait();
 
@@ -387,8 +368,7 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
         QString errorMsg;
         if ( gmlParser.processData( data, true, errorMsg ) )
         {
-          featureCounts[i] = ( gmlParser.numberMatched() >= 0 ) ? gmlParser.numberMatched() :
-                             gmlParser.numberReturned();
+          featureCounts[i] = ( gmlParser.numberMatched() >= 0 ) ? gmlParser.numberMatched() : gmlParser.numberReturned();
         }
         countsAllValid &= featureCounts[i] >= 0;
       }
@@ -401,10 +381,7 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
       // features than the No filter request, consider that the geometry type
       // is unknown and try sampling one feature to guess the type
       // e.g with https://geodienste.komm.one/ows/services/org.273.561ba9e8-9b66-45a2-98db-17920e10c53d_wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=xplan:BP_Plan&FILTER=%3Cfes:Filter%20xmlns:fes%3D%22http://www.opengis.net/fes/2.0%22%3E%0A%20%3Cfes:PropertyIsEqualTo%3E%0A%20%20%3Cfes:Function%20name%3D%22IsCurve%22%3E%0A%20%20%20%3Cfes:ValueReference%3EraeumlicherGeltungsbereich%3C/fes:ValueReference%3E%0A%20%20%3C/fes:Function%3E%0A%20%20%3Cfes:Literal%3Etrue%3C/fes:Literal%3E%0A%20%3C/fes:PropertyIsEqualTo%3E%0A%3C/fes:Filter%3E%0A&RESULTTYPE=hits
-      if ( featureCounts[INDEX_ALL] > 0 &&
-           featureCounts[INDEX_POINT] == featureCounts[INDEX_ALL] &&
-           featureCounts[INDEX_CURVE] == featureCounts[INDEX_ALL] &&
-           featureCounts[INDEX_SURFACE] == featureCounts[INDEX_ALL] )
+      if ( featureCounts[INDEX_ALL] > 0 && featureCounts[INDEX_POINT] == featureCounts[INDEX_ALL] && featureCounts[INDEX_CURVE] == featureCounts[INDEX_ALL] && featureCounts[INDEX_SURFACE] == featureCounts[INDEX_ALL] )
       {
         QgsDebugMsgLevel( QString( "%1 declares geometry filters, but they are not working. Guessing the geometry type from one sample" ).arg( uri ), 2 );
         provider.issueInitialGetFeature();
@@ -414,16 +391,14 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
       }
 
       // Deduce numbers of geometry collections from other types
-      featureCounts[INDEX_GEOMETRYCOLLECTION] = featureCounts[INDEX_ALL] -
-          ( featureCounts[INDEX_NULL] + featureCounts[INDEX_POINT] + featureCounts[INDEX_CURVE] + featureCounts[INDEX_SURFACE] );
+      featureCounts[INDEX_GEOMETRYCOLLECTION] = featureCounts[INDEX_ALL] - ( featureCounts[INDEX_NULL] + featureCounts[INDEX_POINT] + featureCounts[INDEX_CURVE] + featureCounts[INDEX_SURFACE] );
     }
 
     const struct
     {
-      int index;
-      Qgis::WkbType wkbType;
-    } types[] =
-    {
+        int index;
+        Qgis::WkbType wkbType;
+    } types[] = {
       { INDEX_NULL, Qgis::WkbType::NoGeometry },
       { INDEX_POINT, Qgis::WkbType::MultiPoint },
       { INDEX_CURVE, Qgis::WkbType::MultiCurve },
@@ -442,8 +417,7 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
       if ( provider.wkbType() == Qgis::WkbType::MultiSurface && tuple.index != INDEX_NULL && tuple.index != INDEX_SURFACE )
         continue;
 
-      if ( !countsAllValid || featureCounts[tuple.index] > 0 ||
-           ( tuple.wkbType == Qgis::WkbType::NoGeometry && featureCounts[INDEX_ALL] == 0 ) )
+      if ( !countsAllValid || featureCounts[tuple.index] > 0 || ( tuple.wkbType == Qgis::WkbType::NoGeometry && featureCounts[INDEX_ALL] == 0 ) )
       {
         QgsProviderSublayerDetails details;
         details.setType( Qgis::LayerType::Vector );
@@ -456,13 +430,12 @@ QList<QgsProviderSublayerDetails> QgsWfsProviderMetadata::querySublayers( const 
         res << details;
       }
     }
-
   }
   return res;
 }
 
-QgsWfsProviderMetadata::QgsWfsProviderMetadata():
-  QgsProviderMetadata( QgsWFSProvider::WFS_PROVIDER_KEY, QgsWFSProvider::WFS_PROVIDER_DESCRIPTION ) {}
+QgsWfsProviderMetadata::QgsWfsProviderMetadata()
+  : QgsProviderMetadata( QgsWFSProvider::WFS_PROVIDER_KEY, QgsWFSProvider::WFS_PROVIDER_DESCRIPTION ) {}
 
 QIcon QgsWfsProviderMetadata::icon() const
 {

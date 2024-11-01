@@ -86,7 +86,6 @@ class CORE_EXPORT QgsPointCloudBlock
     void setPointCount( int size );
 
   private:
-
     int mPointCount = 0;
     QgsPointCloudAttributeCollection mAttributes;
     int mRecordSize = 0;

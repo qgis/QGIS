@@ -58,12 +58,12 @@ QgsMultiPolygon::QgsMultiPolygon( const QList<QgsPolygon *> &polygons )
 
 QgsPolygon *QgsMultiPolygon::polygonN( int index )
 {
-  return qgsgeometry_cast< QgsPolygon * >( geometryN( index ) );
+  return qgsgeometry_cast<QgsPolygon *>( geometryN( index ) );
 }
 
 const QgsPolygon *QgsMultiPolygon::polygonN( int index ) const
 {
-  return qgsgeometry_cast< const QgsPolygon * >( geometryN( index ) );
+  return qgsgeometry_cast<const QgsPolygon *>( geometryN( index ) );
 }
 
 QString QgsMultiPolygon::geometryType() const
@@ -79,7 +79,7 @@ void QgsMultiPolygon::clear()
 
 QgsMultiPolygon *QgsMultiPolygon::createEmptyWithSameType() const
 {
-  auto result = std::make_unique< QgsMultiPolygon >();
+  auto result = std::make_unique<QgsMultiPolygon>();
   result->mWkbType = mWkbType;
   return result.release();
 }
@@ -137,20 +137,20 @@ QDomElement QgsMultiPolygon::asGml3( QDomDocument &doc, int precision, const QSt
 
 json QgsMultiPolygon::asJsonObject( int precision ) const
 {
-  json polygons( json::array( ) );
+  json polygons( json::array() );
   for ( const QgsAbstractGeometry *geom : std::as_const( mGeometries ) )
   {
     if ( qgsgeometry_cast<const QgsPolygon *>( geom ) )
     {
-      json coordinates( json::array( ) );
+      json coordinates( json::array() );
       const QgsPolygon *polygon = static_cast<const QgsPolygon *>( geom );
 
-      std::unique_ptr< QgsLineString > exteriorLineString( polygon->exteriorRing()->curveToLine() );
+      std::unique_ptr<QgsLineString> exteriorLineString( polygon->exteriorRing()->curveToLine() );
       QgsPointSequence exteriorPts;
       exteriorLineString->points( exteriorPts );
       coordinates.push_back( QgsGeometryUtils::pointsToJson( exteriorPts, precision ) );
 
-      std::unique_ptr< QgsLineString > interiorLineString;
+      std::unique_ptr<QgsLineString> interiorLineString;
       for ( int i = 0, n = polygon->numInteriorRings(); i < n; ++i )
       {
         interiorLineString.reset( polygon->interiorRing( i )->curveToLine() );
@@ -161,11 +161,9 @@ json QgsMultiPolygon::asJsonObject( int precision ) const
       polygons.push_back( coordinates );
     }
   }
-  return
-  {
+  return {
     { "type", "MultiPolygon" },
-    { "coordinates", polygons }
-  };
+    { "coordinates", polygons } };
 }
 
 bool QgsMultiPolygon::addGeometry( QgsAbstractGeometry *g )
@@ -227,7 +225,7 @@ bool QgsMultiPolygon::addGeometries( const QVector<QgsAbstractGeometry *> &geome
 
 bool QgsMultiPolygon::insertGeometry( QgsAbstractGeometry *g, int index )
 {
-  if ( !g || !qgsgeometry_cast< QgsPolygon * >( g ) )
+  if ( !g || !qgsgeometry_cast<QgsPolygon *>( g ) )
   {
     delete g;
     return false;
@@ -238,7 +236,7 @@ bool QgsMultiPolygon::insertGeometry( QgsAbstractGeometry *g, int index )
 
 QgsMultiPolygon *QgsMultiPolygon::simplifyByDistance( double tolerance ) const
 {
-  std::unique_ptr< QgsMultiPolygon > res = std::make_unique< QgsMultiPolygon >();
+  std::unique_ptr<QgsMultiPolygon> res = std::make_unique<QgsMultiPolygon>();
   res->reserve( mGeometries.size() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
@@ -260,7 +258,7 @@ QgsMultiSurface *QgsMultiPolygon::toCurveType() const
 
 QgsAbstractGeometry *QgsMultiPolygon::boundary() const
 {
-  std::unique_ptr< QgsMultiLineString > multiLine( new QgsMultiLineString() );
+  std::unique_ptr<QgsMultiLineString> multiLine( new QgsMultiLineString() );
   multiLine->reserve( mGeometries.size() );
   for ( int i = 0; i < mGeometries.size(); ++i )
   {
@@ -268,11 +266,11 @@ QgsAbstractGeometry *QgsMultiPolygon::boundary() const
     {
       QgsAbstractGeometry *polygonBoundary = polygon->boundary();
 
-      if ( QgsLineString *lineStringBoundary = qgsgeometry_cast< QgsLineString * >( polygonBoundary ) )
+      if ( QgsLineString *lineStringBoundary = qgsgeometry_cast<QgsLineString *>( polygonBoundary ) )
       {
         multiLine->addGeometry( lineStringBoundary );
       }
-      else if ( QgsMultiLineString *multiLineStringBoundary = qgsgeometry_cast< QgsMultiLineString * >( polygonBoundary ) )
+      else if ( QgsMultiLineString *multiLineStringBoundary = qgsgeometry_cast<QgsMultiLineString *>( polygonBoundary ) )
       {
         for ( int j = 0; j < multiLineStringBoundary->numGeometries(); ++j )
         {

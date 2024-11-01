@@ -52,18 +52,22 @@ QgsRasterResampleFilter *QgsRasterResampleFilter::clone() const
 
 int QgsRasterResampleFilter::bandCount() const
 {
-  if ( mOn ) return 1;
+  if ( mOn )
+    return 1;
 
-  if ( mInput ) return mInput->bandCount();
+  if ( mInput )
+    return mInput->bandCount();
 
   return 0;
 }
 
 Qgis::DataType QgsRasterResampleFilter::dataType( int bandNo ) const
 {
-  if ( mOn ) return Qgis::DataType::ARGB32_Premultiplied;
+  if ( mOn )
+    return Qgis::DataType::ARGB32_Premultiplied;
 
-  if ( mInput ) return mInput->dataType( bandNo );
+  if ( mInput )
+    return mInput->dataType( bandNo );
 
   return Qgis::DataType::UnknownDataType;
 }
@@ -93,8 +97,7 @@ bool QgsRasterResampleFilter::setInput( QgsRasterInterface *input )
     return false;
   }
 
-  if ( input->dataType( 1 ) != Qgis::DataType::ARGB32_Premultiplied &&
-       input->dataType( 1 ) != Qgis::DataType::ARGB32 )
+  if ( input->dataType( 1 ) != Qgis::DataType::ARGB32_Premultiplied && input->dataType( 1 ) != Qgis::DataType::ARGB32 )
   {
     QgsDebugError( QStringLiteral( "Unknown input data type" ) );
     return false;
@@ -115,7 +118,7 @@ void QgsRasterResampleFilter::setZoomedOutResampler( QgsRasterResampler *r )
   mZoomedOutResampler.reset( r );
 }
 
-QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
+QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   if ( !mOn && mInput )
     return mInput->block( bandNo, extent, width, height, feedback );
@@ -123,7 +126,7 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
   const int bandNumber = 1;
 
   QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
-  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
+  std::unique_ptr<QgsRasterBlock> outputBlock( new QgsRasterBlock() );
   if ( !mInput )
     return outputBlock.release();
 
@@ -162,8 +165,8 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
   }
 
   //effective oversampling factors are different to global one because of rounding
-  const double oversamplingX = ( static_cast< double >( width ) * oversampling ) / width;
-  const double oversamplingY = ( static_cast< double >( height ) * oversampling ) / height;
+  const double oversamplingX = ( static_cast<double>( width ) * oversampling ) / width;
+  const double oversamplingY = ( static_cast<double>( height ) * oversampling ) / height;
 
   // we must also increase the extent to get correct result on borders of parts
   int tileBufferPixels = 0;
@@ -171,11 +174,11 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
   {
     if ( mZoomedInResampler && ( oversamplingX < 1.0 || qgsDoubleNear( oversampling, 1.0 ) ) )
     {
-      tileBufferPixels = static_cast< int >( std::ceil( mZoomedInResampler->tileBufferPixels() * oversampling ) );
+      tileBufferPixels = static_cast<int>( std::ceil( mZoomedInResampler->tileBufferPixels() * oversampling ) );
     }
     else if ( mZoomedOutResampler && oversamplingX > 1.0 )
     {
-      tileBufferPixels = static_cast< int >( std::ceil( mZoomedOutResampler->tileBufferPixels() * oversampling ) );
+      tileBufferPixels = static_cast<int>( std::ceil( mZoomedOutResampler->tileBufferPixels() * oversampling ) );
     }
   }
   const double sourceTileBufferSize = providerXRes * tileBufferPixels;
@@ -183,13 +186,12 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
   const QgsRectangle bufferedExtent( extent.xMinimum() - sourceTileBufferSize,
                                      extent.yMinimum() - sourceTileBufferSize,
                                      extent.xMaximum() + sourceTileBufferSize,
-                                     extent.yMaximum() + sourceTileBufferSize
-                                   );
+                                     extent.yMaximum() + sourceTileBufferSize );
 
-  const int resWidth = static_cast< int >( std::round( width * oversamplingX ) ) + 2 * tileBufferPixels;
-  const int resHeight = static_cast< int >( std::round( height * oversamplingY ) ) + 2 * tileBufferPixels;
+  const int resWidth = static_cast<int>( std::round( width * oversamplingX ) ) + 2 * tileBufferPixels;
+  const int resHeight = static_cast<int>( std::round( height * oversamplingY ) ) + 2 * tileBufferPixels;
 
-  std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( bandNumber, bufferedExtent, resWidth, resHeight, feedback ) );
+  std::unique_ptr<QgsRasterBlock> inputBlock( mInput->block( bandNumber, bufferedExtent, resWidth, resHeight, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugError( QStringLiteral( "No raster data!" ) );
@@ -204,15 +206,15 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
   //resample image
   const QImage img = inputBlock->image();
 
-  const int resampleWidth = static_cast< int >( std::round( width * ( bufferedExtent.width() / extent.width() ) ) );
-  const int resampleHeight = static_cast< int >( std::round( height * ( bufferedExtent.height() / extent.height() ) ) );
+  const int resampleWidth = static_cast<int>( std::round( width * ( bufferedExtent.width() / extent.width() ) ) );
+  const int resampleHeight = static_cast<int>( std::round( height * ( bufferedExtent.height() / extent.height() ) ) );
 
   QImage dstImg;
   if ( mZoomedInResampler && ( oversamplingX < 1.0 || qgsDoubleNear( oversampling, 1.0 ) ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "zoomed in resampling" ), 4 );
 
-    if ( QgsRasterResamplerV2 *resamplerV2 = dynamic_cast< QgsRasterResamplerV2 * >( mZoomedInResampler.get( ) ) )
+    if ( QgsRasterResamplerV2 *resamplerV2 = dynamic_cast<QgsRasterResamplerV2 *>( mZoomedInResampler.get() ) )
     {
       dstImg = resamplerV2->resampleV2( img, QSize( resampleWidth, resampleHeight ) );
     }
@@ -229,7 +231,7 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
   {
     QgsDebugMsgLevel( QStringLiteral( "zoomed out resampling" ), 4 );
 
-    if ( QgsRasterResamplerV2 *resamplerV2 = dynamic_cast< QgsRasterResamplerV2 * >( mZoomedOutResampler.get( ) ) )
+    if ( QgsRasterResamplerV2 *resamplerV2 = dynamic_cast<QgsRasterResamplerV2 *>( mZoomedOutResampler.get() ) )
     {
       dstImg = resamplerV2->resampleV2( img, QSize( resampleWidth, resampleHeight ) );
     }
@@ -251,7 +253,7 @@ QgsRasterBlock *QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const 
 
   // extract desired part of dstImage
   const QImage cropped = tileBufferPixels > 0 ? dstImg.copy( ( resampleWidth - width ) / 2, ( resampleHeight - height ) / 2, width, height )
-                         : dstImg; // otherwise implicit copy, nice and cheap
+                                              : dstImg; // otherwise implicit copy, nice and cheap
   outputBlock->setImage( &cropped );
 
   return outputBlock.release(); // No resampling

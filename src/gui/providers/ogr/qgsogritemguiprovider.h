@@ -30,7 +30,6 @@ class QgsOgrItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     Q_OBJECT
 
   public:
-
     QgsOgrItemGuiProvider() = default;
 
     QString name() override { return QStringLiteral( "ogr_items" ); }
@@ -42,7 +41,6 @@ class QgsOgrItemGuiProvider : public QObject, public QgsDataItemGuiProvider
   protected slots:
     void onDeleteLayer( QgsDataItemGuiContext context );
     void deleteCollection( QgsDataItemGuiContext context );
-
 };
 
 ///@endcond

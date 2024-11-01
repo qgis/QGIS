@@ -97,7 +97,7 @@ struct DxfLayerJob
     QgsFeatureIds selectedFeatureIds;
     QgsMapLayerStyleOverride styleOverride;
     QgsVectorLayerFeatureSource featureSource;
-    std::unique_ptr< QgsFeatureRenderer > renderer;
+    std::unique_ptr<QgsFeatureRenderer> renderer;
     std::unique_ptr<QgsAbstractVectorLayerLabeling> labeling;
     QgsDxfExport *dxfExport = nullptr;
     QgsCoordinateReferenceSystem crs;
@@ -105,7 +105,7 @@ struct DxfLayerJob
     QgsLabelSinkProvider *labelProvider = nullptr;
     QgsRuleBasedLabelSinkProvider *ruleBasedLabelProvider = nullptr;
     QString splitLayerAttribute;
-    QString layerDerivedName;  // Obtained from overridden name, title or layer name
+    QString layerDerivedName; // Obtained from overridden name, title or layer name
     QSet<QString> attributes;
 
   private:
@@ -114,8 +114,7 @@ struct DxfLayerJob
 };
 
 // dxf color palette
-static const int sDxfColors[][3] =
-{
+static const int sDxfColors[][3] = {
   { 255, 255, 255 },
   { 255, 0, 0 },
   { 255, 255, 0 },
@@ -374,8 +373,7 @@ static const int sDxfColors[][3] =
   { 255, 255, 255 },
 };
 
-static const char *DXF_ENCODINGS[][2] =
-{
+static const char *DXF_ENCODINGS[][2] = {
   { "ASCII", "" },
   { "8859_1", "ISO-8859-1" },
   { "8859_2", "ISO-8859-2" },
@@ -386,22 +384,22 @@ static const char *DXF_ENCODINGS[][2] =
   { "8859_7", "ISO-8859-7" },
   { "8859_8", "ISO-8859-8" },
   { "8859_9", "ISO-8859-9" },
-//  { "DOS437", "" },
+  //  { "DOS437", "" },
   { "DOS850", "CP850" },
-//  { "DOS852", "" },
-//  { "DOS855", "" },
-//  { "DOS857", "" },
-//  { "DOS860", "" },
-//  { "DOS861", "" },
-//  { "DOS863", "" },
-//  { "DOS864", "" },
-//  { "DOS865", "" },
-//  { "DOS869", "" },
-//  { "DOS932", "" },
+  //  { "DOS852", "" },
+  //  { "DOS855", "" },
+  //  { "DOS857", "" },
+  //  { "DOS860", "" },
+  //  { "DOS861", "" },
+  //  { "DOS863", "" },
+  //  { "DOS864", "" },
+  //  { "DOS865", "" },
+  //  { "DOS869", "" },
+  //  { "DOS932", "" },
   { "MACINTOSH", "MacRoman" },
   { "BIG5", "Big5" },
   { "KSC5601", "ksc5601.1987-0" },
-//   { "JOHAB", "" },
+  //   { "JOHAB", "" },
   { "DOS866", "CP866" },
   { "ANSI_1250", "CP1250" },
   { "ANSI_1251", "CP1251" },
@@ -418,8 +416,8 @@ static const char *DXF_ENCODINGS[][2] =
   { "ANSI_949", "CP949" },
   { "ANSI_949", "ms949" },
   { "ANSI_950", "CP950" },
-//  { "ANSI_1361", "" },
-//  { "ANSI_1200", "" },
+  //  { "ANSI_1361", "" },
+  //  { "ANSI_1200", "" },
   { "ANSI_1258", "CP1258" },
 };
 

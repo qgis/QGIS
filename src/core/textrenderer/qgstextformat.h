@@ -40,7 +40,6 @@ class QgsTextSettingsPrivate;
 class CORE_EXPORT QgsTextFormat
 {
   public:
-
     /**
      * Default constructor for QgsTextFormat. Creates a text format initially
      * set to an invalid state (see isValid()).
@@ -726,7 +725,6 @@ class CORE_EXPORT QgsTextFormat
     QString asCSS( double pointToPixelMultiplier = 1.0 ) const;
 
   private:
-
     QgsTextBufferSettings mBufferSettings;
     QgsTextBackgroundSettings mBackgroundSettings;
     QgsTextShadowSettings mShadowSettings;
@@ -736,7 +734,6 @@ class CORE_EXPORT QgsTextFormat
     bool mTextFontFound = true;
 
     QSharedDataPointer<QgsTextSettingsPrivate> d;
-
 };
 
 Q_DECLARE_METATYPE( QgsTextFormat )

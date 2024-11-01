@@ -29,16 +29,15 @@ class QgsLayoutItemMap;
  * \brief An object which handles north-arrow type behavior for layout items.
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsLayoutNorthArrowHandler: public QObject
+class CORE_EXPORT QgsLayoutNorthArrowHandler : public QObject
 {
     Q_OBJECT
   public:
-
     //! Method for syncing rotation to a map's North direction
     enum NorthMode
     {
       GridNorth = 0, //!< Align to grid north
-      TrueNorth, //!< Align to true north
+      TrueNorth,     //!< Align to true north
     };
 
     /**
@@ -99,13 +98,12 @@ class CORE_EXPORT QgsLayoutNorthArrowHandler: public QObject
     void arrowRotationChanged( double newRotation );
 
   private:
-
     //! Arrow rotation
     double mArrowRotation = 0;
 
     QString mRotationMapUuid;
     //! Map that sets the rotation (or NULLPTR if this picture uses map independent rotation)
-    QPointer< QgsLayoutItemMap > mRotationMap;
+    QPointer<QgsLayoutItemMap> mRotationMap;
 
     //! Mode used to align to North
     NorthMode mNorthMode = GridNorth;
@@ -117,8 +115,6 @@ class CORE_EXPORT QgsLayoutNorthArrowHandler: public QObject
   private slots:
 
     void updateMapRotation();
-
-
 };
 
 #endif // QGSLAYOUTNORTHARROWHANDLER_H

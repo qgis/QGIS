@@ -55,7 +55,6 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
     void renderingFinished();
 
   private:
-
     //! \note not available in Python bindings
     static void renderLayerStatic( LayerRenderJob &job ) SIP_SKIP;
     //! \note not available in Python bindings
@@ -66,23 +65,28 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
     QImage mFinalImage;
 
     //! \note not available in Python bindings
-    enum { Idle, RenderingLayers, RenderingSecondPass, RenderingLabels } mStatus SIP_SKIP;
+    enum
+    {
+      Idle,
+      RenderingLayers,
+      RenderingSecondPass,
+      RenderingLabels
+    } mStatus SIP_SKIP;
 
     QFuture<void> mFuture;
     QFutureWatcher<void> mFutureWatcher;
 
-    std::vector< LayerRenderJob > mLayerJobs;
+    std::vector<LayerRenderJob> mLayerJobs;
     LabelRenderJob mLabelJob;
 
-    std::vector< LayerRenderJob > mSecondPassLayerJobs;
+    std::vector<LayerRenderJob> mSecondPassLayerJobs;
     QFuture<void> mSecondPassFuture;
     QFutureWatcher<void> mSecondPassFutureWatcher;
 
     //! New labeling engine
-    std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;
+    std::unique_ptr<QgsLabelingEngine> mLabelingEngineV2;
     QFuture<void> mLabelingFuture;
     QFutureWatcher<void> mLabelingFutureWatcher;
-
 };
 
 

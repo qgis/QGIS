@@ -34,7 +34,6 @@ class GUI_EXPORT QgsLayoutQptDropHandler : public QgsLayoutCustomDropHandler
     Q_OBJECT
 
   public:
-
     //! constructor
     QgsLayoutQptDropHandler( QObject *parent = nullptr );
 

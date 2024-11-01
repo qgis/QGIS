@@ -55,7 +55,6 @@ class GUI_EXPORT QgsNumericFormatConfigurationWidgetFactory
 class GUI_EXPORT QgsNumericFormatGuiRegistry
 {
   public:
-
     /**
      * Constructor. Should never be called manually, is already
      * created by QgsGui.
@@ -83,8 +82,7 @@ class GUI_EXPORT QgsNumericFormatGuiRegistry
     QgsNumericFormatWidget *formatConfigurationWidget( const QgsNumericFormat *format ) const SIP_TRANSFERBACK;
 
   private:
-
-    QMap< QString, QgsNumericFormatConfigurationWidgetFactory *> mFormatConfigurationWidgetFactories;
+    QMap<QString, QgsNumericFormatConfigurationWidgetFactory *> mFormatConfigurationWidgetFactories;
 };
 
 #endif // QGSNUMERICFORMATGUIREGISTRY_H

@@ -21,7 +21,7 @@
 // Hack to workaround Qt #5114 by disabling PatternTransform
 void QgsPaintEngineHack::fixFlags()
 {
-#if defined(HAS_KDE_QT5_PDF_TRANSFORM_FIX) || QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+#if defined( HAS_KDE_QT5_PDF_TRANSFORM_FIX ) || QT_VERSION >= QT_VERSION_CHECK( 6, 3, 0 )
   // not required, fixed upstream
 #else
   gccaps = PaintEngineFeatures();
@@ -43,16 +43,15 @@ void QgsPaintEngineHack::fixFlags()
               | QPaintEngine::BlendModes
               // | QPaintEngine::ObjectBoundingModeGradients
               | QPaintEngine::RasterOpModes
-              | QPaintEngine::PaintOutsidePaintEvent
-            );
+              | QPaintEngine::PaintOutsidePaintEvent );
 #endif
 }
 
 void QgsPaintEngineHack::fixEngineFlags( QPaintEngine *engine )
 {
-#if defined(HAS_KDE_QT5_PDF_TRANSFORM_FIX) || QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+#if defined( HAS_KDE_QT5_PDF_TRANSFORM_FIX ) || QT_VERSION >= QT_VERSION_CHECK( 6, 3, 0 )
   // not required, fixed upstream
-  ( void )engine;
+  ( void ) engine;
 #else
   if ( !engine )
     return;

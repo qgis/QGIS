@@ -45,14 +45,13 @@ class QgsSymbol;
  * and layouts.
  */
 
-class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
+class GUI_EXPORT QgsPropertyOverrideButton : public QToolButton
 {
     Q_OBJECT
     Q_PROPERTY( QString usageInfo READ usageInfo WRITE setUsageInfo )
     Q_PROPERTY( bool active READ isActive WRITE setActive )
 
   public:
-
     /**
      * Constructor for QgsPropertyOverrideButton.
      * \param parent parent widget
@@ -148,7 +147,11 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      * Set the usage information for the property.
      * \see usageInfo()
      */
-    void setUsageInfo( const QString &info ) { mUsageInfo = info; updateGui(); }
+    void setUsageInfo( const QString &info )
+    {
+      mUsageInfo = info;
+      updateGui();
+    }
 
     /**
      * Sets the vector layer associated with the button. This controls which fields are
@@ -219,7 +222,8 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      * by the widget. If not specified, a default created symbol will be used instead.
      * \note not available in Python bindings
      */
-    void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; } SIP_SKIP
+    void setSymbol( std::shared_ptr<QgsSymbol> symbol ) { mSymbol = symbol; }
+    SIP_SKIP
 
   public slots:
 
@@ -252,7 +256,6 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     void mouseReleaseEvent( QMouseEvent *event ) override;
 
   private:
-
     void showDescriptionDialog();
     void showExpressionDialog();
     void showAssistant();
@@ -273,7 +276,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
 
     QStringList mFieldNameList;
     QStringList mFieldDisplayNameList;
-    QList< QIcon > mFieldIcons;
+    QList<QIcon> mFieldIcons;
 
     QString mExpressionString;
     QString mFieldName;
@@ -316,23 +319,23 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
     };
     struct SiblingWidget
     {
-      SiblingWidget( const QPointer<QWidget> &widgetPointer, SiblingType siblingType, bool natural = true )
-        : mWidgetPointer( widgetPointer )
-        , mSiblingType( siblingType )
-        , mNatural( natural )
-      {}
-      QPointer<QWidget> mWidgetPointer;
-      SiblingType mSiblingType;
-      bool mNatural;
+        SiblingWidget( const QPointer<QWidget> &widgetPointer, SiblingType siblingType, bool natural = true )
+          : mWidgetPointer( widgetPointer )
+          , mSiblingType( siblingType )
+          , mNatural( natural )
+        {}
+        QPointer<QWidget> mWidgetPointer;
+        SiblingType mSiblingType;
+        bool mNatural;
     };
-    QList< SiblingWidget > mSiblingWidgets;
+    QList<SiblingWidget> mSiblingWidgets;
 
     //! Internal property used for storing state of widget
     QgsProperty mProperty;
 
     bool mAuxiliaryStorageEnabled = false;
 
-    std::shared_ptr< QgsSymbol > mSymbol;
+    std::shared_ptr<QgsSymbol> mSymbol;
 
   private slots:
 

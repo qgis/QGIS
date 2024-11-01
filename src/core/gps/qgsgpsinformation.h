@@ -35,7 +35,6 @@
 class CORE_EXPORT QgsGpsInformation
 {
   public:
-
     /**
      * Latitude in decimal degrees, using the WGS84 datum. A positive value indicates the Northern Hemisphere, and
      * a negative value indicates the Southern Hemisphere.
@@ -76,7 +75,7 @@ class CORE_EXPORT QgsGpsInformation
     /**
      * The bearing measured in degrees clockwise from true north to the direction of travel.
      */
-    double direction = std::numeric_limits< double >::quiet_NaN();
+    double direction = std::numeric_limits<double>::quiet_NaN();
 #else
 
     /**
@@ -107,15 +106,15 @@ class CORE_EXPORT QgsGpsInformation
 
 #ifndef SIP_RUN
     //! Horizontal accuracy in meters
-    double hacc = std::numeric_limits< double >::quiet_NaN();
+    double hacc = std::numeric_limits<double>::quiet_NaN();
     //! Vertical accuracy in meters
-    double vacc = std::numeric_limits< double >::quiet_NaN();
+    double vacc = std::numeric_limits<double>::quiet_NaN();
 
     /**
      * 3D RMS
      * \since QGIS 3.18
      */
-    double hvacc = std::numeric_limits< double >::quiet_NaN();
+    double hvacc = std::numeric_limits<double>::quiet_NaN();
 #else
     //! Horizontal accuracy in meters
     double hacc;
@@ -157,7 +156,7 @@ class CORE_EXPORT QgsGpsInformation
      *
      * \since QGIS 3.30
      */
-    QMap< Qgis::GnssConstellation, Qgis::GpsFixStatus > constellationFixStatus() const { return mConstellationFixStatus; }
+    QMap<Qgis::GnssConstellation, Qgis::GpsFixStatus> constellationFixStatus() const { return mConstellationFixStatus; }
 
     /**
      * Returns the best fix status and corresponding constellation.
@@ -246,13 +245,11 @@ class CORE_EXPORT QgsGpsInformation
     QVariant componentValue( Qgis::GpsInformationComponent component ) const;
 
   private:
-
-    QMap< Qgis::GnssConstellation, Qgis::GpsFixStatus > mConstellationFixStatus;
+    QMap<Qgis::GnssConstellation, Qgis::GpsFixStatus> mConstellationFixStatus;
     Qgis::GpsNavigationStatus mNavigationStatus = Qgis::GpsNavigationStatus::NotValid;
 
     friend class QgsNmeaConnection;
     friend class QgsQtLocationConnection;
-
 };
 
 Q_DECLARE_METATYPE( QgsGpsInformation )

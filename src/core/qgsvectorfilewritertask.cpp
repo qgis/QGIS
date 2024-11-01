@@ -61,7 +61,7 @@ bool QgsVectorFileWriterTask::run()
 
 
   mError = QgsVectorFileWriter::writeAsVectorFormatV2(
-             mWriterDetails, mDestFileName, mTransformContext, mOptions, &mNewFilename, &mNewLayer, &mErrorMessage, mSinkFlags );
+    mWriterDetails, mDestFileName, mTransformContext, mOptions, &mNewFilename, &mNewLayer, &mErrorMessage, mSinkFlags );
   return mError == QgsVectorFileWriter::NoError;
 }
 

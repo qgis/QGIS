@@ -39,7 +39,6 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
     Q_OBJECT
 
   public:
-
     /**
      * Widget for viewing and editing certificate authorities directly in database
      * \param parent Parent widget
@@ -130,7 +129,7 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
     QTreeWidgetItem *mDbCaSecItem = nullptr;
 
     QgsAuthCertUtils::CertTrustPolicy mDefaultTrustPolicy = QgsAuthCertUtils::DefaultTrust;
-    QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > mCertTrustCache;
+    QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList> mCertTrustCache;
 
     QMenu *mUtilitiesMenu = nullptr;
     bool mDisabled = false;

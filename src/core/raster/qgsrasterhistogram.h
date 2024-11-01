@@ -43,14 +43,7 @@ class CORE_EXPORT QgsRasterHistogram
     //! Compares region, size etc. not histogram itself
     bool operator==( const QgsRasterHistogram &h ) const
     {
-      return ( h.bandNumber == bandNumber &&
-               h.binCount == binCount &&
-               h.includeOutOfRange == includeOutOfRange &&
-               qgsDoubleNear( h.maximum, maximum ) &&
-               qgsDoubleNear( h.minimum, minimum ) &&
-               h.extent == extent &&
-               h.width == width &&
-               h.height == height );
+      return ( h.bandNumber == bandNumber && h.binCount == binCount && h.includeOutOfRange == includeOutOfRange && qgsDoubleNear( h.maximum, maximum ) && qgsDoubleNear( h.minimum, minimum ) && h.extent == extent && h.width == width && h.height == height );
     }
 
     //! \brief The gdal band number (starts at 1)

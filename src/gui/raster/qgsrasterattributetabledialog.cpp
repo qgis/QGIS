@@ -28,7 +28,6 @@ QgsRasterAttributeTableDialog::QgsRasterAttributeTableDialog( QgsRasterLayer *ra
 
   connect( rasterLayer, &QgsRasterLayer::dataSourceChanged, this, &QgsRasterAttributeTableDialog::reject );
   connect( rasterLayer, &QgsRasterLayer::willBeDeleted, this, &QgsRasterAttributeTableDialog::reject );
-
 }
 
 void QgsRasterAttributeTableDialog::reject()

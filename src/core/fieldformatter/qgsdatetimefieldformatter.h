@@ -35,7 +35,7 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
     static const QString DATETIME_FORMAT; //! Date time format was localized by applyLocaleChange before QGIS 3.30
     static const QString QT_ISO_FORMAT;
     static const QString DISPLAY_FOR_ISO_FORMAT;
-    static QString DATE_DISPLAY_FORMAT; //! Date display format is localized by applyLocaleChange \see applyLocaleChange \since QGIS 3.30
+    static QString DATE_DISPLAY_FORMAT;     //! Date display format is localized by applyLocaleChange \see applyLocaleChange \since QGIS 3.30
     static QString DATETIME_DISPLAY_FORMAT; //! Date time display format is localized by applyLocaleChange \see applyLocaleChange \since QGIS 3.30
 
     QgsDateTimeFieldFormatter() = default;
@@ -97,7 +97,8 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
      *
      * \since QGIS 3.22.2
      */
-    static void applyLocaleChange(); SIP_SKIP;
+    static void applyLocaleChange();
+    SIP_SKIP;
 };
 
 #endif // QGSDATETIMEFIELDKIT_H

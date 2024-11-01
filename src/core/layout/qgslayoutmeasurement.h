@@ -32,7 +32,6 @@
 class CORE_EXPORT QgsLayoutMeasurement
 {
   public:
-
     /**
      * Constructor for QgsLayoutMeasurement.
      * \param length measurement length
@@ -123,16 +122,17 @@ class CORE_EXPORT QgsLayoutMeasurement
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsLayoutMeasurement: %1 %2 >" ).arg( sipCpp->length() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
+        QString str
+      = QStringLiteral( "<QgsLayoutMeasurement: %1 %2 >" ).arg( sipCpp->length() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-  private:
+      private :
 
-    double mLength = 0.0;
+      double mLength
+      = 0.0;
     Qgis::LayoutUnit mUnits = Qgis::LayoutUnit::Millimeters;
-
 };
 
 #endif // QGSLAYOUTMEASUREMENT_H

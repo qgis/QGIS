@@ -185,4 +185,3 @@ void QgsMapToolChangeLabelProperties::dialogPropertiesApplied()
 
   applyChanges( dlg->changedProperties() );
 }
-

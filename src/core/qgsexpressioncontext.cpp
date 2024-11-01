@@ -38,7 +38,6 @@ const QString QgsExpressionContext::EXPR_CLUSTER_COLOR( QStringLiteral( "cluster
 QgsExpressionContextScope::QgsExpressionContextScope( const QString &name )
   : mName( name )
 {
-
 }
 
 QgsExpressionContextScope::QgsExpressionContextScope( const QgsExpressionContextScope &other )
@@ -51,7 +50,7 @@ QgsExpressionContextScope::QgsExpressionContextScope( const QgsExpressionContext
   , mHiddenVariables( other.mHiddenVariables )
   , mLayerStores( other.mLayerStores )
 {
-  QHash<QString, QgsScopedExpressionFunction * >::const_iterator it = other.mFunctions.constBegin();
+  QHash<QString, QgsScopedExpressionFunction *>::const_iterator it = other.mFunctions.constBegin();
   for ( ; it != other.mFunctions.constEnd(); ++it )
   {
     mFunctions.insert( it.key(), it.value()->clone() );
@@ -71,7 +70,7 @@ QgsExpressionContextScope &QgsExpressionContextScope::operator=( const QgsExpres
 
   qDeleteAll( mFunctions );
   mFunctions.clear();
-  QHash<QString, QgsScopedExpressionFunction * >::const_iterator it = other.mFunctions.constBegin();
+  QHash<QString, QgsScopedExpressionFunction *>::const_iterator it = other.mFunctions.constBegin();
   for ( ; it != other.mFunctions.constEnd(); ++it )
   {
     mFunctions.insert( it.key(), it.value()->clone() );
@@ -106,7 +105,7 @@ void QgsExpressionContextScope::addVariable( const QgsExpressionContextScope::St
 
 bool QgsExpressionContextScope::removeVariable( const QString &name )
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
   return mVariables.remove( name );
 #else
   return mVariables.remove( name ) > 0;
@@ -182,7 +181,7 @@ class QgsExpressionContextVariableCompare
   public:
     explicit QgsExpressionContextVariableCompare( const QgsExpressionContextScope &scope )
       : mScope( scope )
-    {  }
+    {}
 
     bool operator()( const QString &a, const QString &b ) const
     {
@@ -271,7 +270,6 @@ void QgsExpressionContextScope::readXml( const QDomElement &element, const QgsRe
     }
     else
       addHiddenVariable( key );
-
   }
 }
 
@@ -302,16 +300,17 @@ bool QgsExpressionContextScope::writeXml( QDomElement &element, QDomDocument &do
 
 QgsExpressionContext::QgsExpressionContext()
 {
-  mLoadLayerFunction = std::make_unique< LoadLayerFunction >();
+  mLoadLayerFunction = std::make_unique<LoadLayerFunction>();
 }
 
 QgsExpressionContext::QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes )
   : mStack( scopes )
 {
-  mLoadLayerFunction = std::make_unique< LoadLayerFunction >();
+  mLoadLayerFunction = std::make_unique<LoadLayerFunction>();
 }
 
-QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext &other ) : mStack{}
+QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext &other )
+  : mStack {}
 {
   for ( const QgsExpressionContextScope *scope : std::as_const( other.mStack ) )
   {
@@ -322,7 +321,7 @@ QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext &other ) 
   mCachedValues = other.mCachedValues;
   mFeedback = other.mFeedback;
   mDestinationStore = other.mDestinationStore;
-  mLoadLayerFunction = std::make_unique< LoadLayerFunction >();
+  mLoadLayerFunction = std::make_unique<LoadLayerFunction>();
 }
 
 // cppcheck-suppress operatorEqVarError
@@ -427,7 +426,7 @@ void QgsExpressionContext::setHighlightedFunctions( const QStringList &names )
 const QgsExpressionContextScope *QgsExpressionContext::activeScopeForVariable( const QString &name ) const
 {
   //iterate through stack backwards, so that higher priority variables take precedence
-  QList< QgsExpressionContextScope * >::const_iterator it = mStack.constEnd();
+  QList<QgsExpressionContextScope *>::const_iterator it = mStack.constEnd();
   while ( it != mStack.constBegin() )
   {
     --it;
@@ -440,7 +439,7 @@ const QgsExpressionContextScope *QgsExpressionContext::activeScopeForVariable( c
 QgsExpressionContextScope *QgsExpressionContext::activeScopeForVariable( const QString &name )
 {
   //iterate through stack backwards, so that higher priority variables take precedence
-  QList< QgsExpressionContextScope * >::const_iterator it = mStack.constEnd();
+  QList<QgsExpressionContextScope *>::const_iterator it = mStack.constEnd();
   while ( it != mStack.constBegin() )
   {
     --it;
@@ -490,7 +489,7 @@ int QgsExpressionContext::indexOfScope( const QString &scopeName ) const
 
 QStringList QgsExpressionContext::variableNames() const
 {
-  QSet< QString> names;
+  QSet<QString> names;
   for ( const QgsExpressionContextScope *scope : mStack )
   {
     const QStringList variableNames = scope->variableNames();
@@ -512,13 +511,12 @@ QStringList QgsExpressionContext::filteredVariableNames() const
   {
     const QStringList scopeHiddenVariables = scope->hiddenVariables();
     for ( const QString &name : scopeHiddenVariables )
-      hiddenVariables << name ;
+      hiddenVariables << name;
   }
 
   for ( const QString &variable : constAllVariables )
   {
-    if ( variable.startsWith( '_' ) ||
-         hiddenVariables.contains( variable ) )
+    if ( variable.startsWith( '_' ) || hiddenVariables.contains( variable ) )
       continue;
 
     filtered << variable;
@@ -560,7 +558,7 @@ bool QgsExpressionContext::hasFunction( const QString &name ) const
 
 QStringList QgsExpressionContext::functionNames() const
 {
-  QSet< QString > result;
+  QSet<QString> result;
   for ( const QgsExpressionContextScope *scope : mStack )
   {
     const QStringList functionNames = scope->functionNames();
@@ -584,7 +582,7 @@ QgsExpressionFunction *QgsExpressionContext::function( const QString &name ) con
   }
 
   //iterate through stack backwards, so that higher priority variables take precedence
-  QList< QgsExpressionContextScope * >::const_iterator it = mStack.constEnd();
+  QList<QgsExpressionContextScope *>::const_iterator it = mStack.constEnd();
   while ( it != mStack.constBegin() )
   {
     --it;
@@ -651,7 +649,7 @@ bool QgsExpressionContext::hasFeature() const
 QgsFeature QgsExpressionContext::feature() const
 {
   //iterate through stack backwards, so that higher priority variables take precedence
-  QList< QgsExpressionContextScope * >::const_iterator it = mStack.constEnd();
+  QList<QgsExpressionContextScope *>::const_iterator it = mStack.constEnd();
   while ( it != mStack.constBegin() )
   {
     --it;
@@ -682,7 +680,7 @@ bool QgsExpressionContext::hasGeometry() const
 QgsGeometry QgsExpressionContext::geometry() const
 {
   //iterate through stack backwards, so that higher priority variables take precedence
-  QList< QgsExpressionContextScope * >::const_iterator it = mStack.constEnd();
+  QList<QgsExpressionContextScope *>::const_iterator it = mStack.constEnd();
   while ( it != mStack.constBegin() )
   {
     --it;
@@ -711,7 +709,7 @@ void QgsExpressionContext::setOriginalValueVariable( const QVariant &value )
     mStack.append( new QgsExpressionContextScope() );
 
   mStack.last()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_ORIGINAL_VALUE,
-                              value, true ) );
+                                                                         value, true ) );
 }
 
 void QgsExpressionContext::setCachedValue( const QString &key, const QVariant &value ) const
@@ -737,7 +735,7 @@ void QgsExpressionContext::clearCachedValues() const
 QList<QgsMapLayerStore *> QgsExpressionContext::layerStores() const
 {
   //iterate through stack backwards, so that higher priority layer stores take precedence
-  QList< QgsExpressionContextScope * >::const_iterator it = mStack.constEnd();
+  QList<QgsExpressionContextScope *>::const_iterator it = mStack.constEnd();
   QList<QgsMapLayerStore *> res;
   while ( it != mStack.constBegin() )
   {

@@ -23,19 +23,18 @@
 
 QList<QgsMapClippingRegion> QgsMapClippingUtils::collectClippingRegionsForLayer( const QgsRenderContext &context, const QgsMapLayer *layer )
 {
-  QList< QgsMapClippingRegion > res;
-  const QList< QgsMapClippingRegion > regions = context.clippingRegions();
+  QList<QgsMapClippingRegion> res;
+  const QList<QgsMapClippingRegion> regions = context.clippingRegions();
   res.reserve( regions.size() );
 
-  std::copy_if( regions.begin(), regions.end(), std::back_inserter( res ), [layer]( const QgsMapClippingRegion & region )
-  {
+  std::copy_if( regions.begin(), regions.end(), std::back_inserter( res ), [layer]( const QgsMapClippingRegion &region ) {
     return region.appliesToLayer( layer );
   } );
 
   return res;
 }
 
-QgsGeometry QgsMapClippingUtils::calculateFeatureRequestGeometry( const QList< QgsMapClippingRegion > &regions, const QgsRenderContext &context, bool &shouldFilter )
+QgsGeometry QgsMapClippingUtils::calculateFeatureRequestGeometry( const QList<QgsMapClippingRegion> &regions, const QgsRenderContext &context, bool &shouldFilter )
 {
   QgsGeometry result;
   bool first = true;
@@ -156,7 +155,6 @@ QPainterPath QgsMapClippingUtils::calculatePainterClipRegion( const QList<QgsMap
       case Qgis::LayerType::TiledScene:
         // for these layer types, we ignore the region's featureClip behavior.
         break;
-
     }
 
     shouldClip = true;
@@ -193,8 +191,7 @@ QgsGeometry QgsMapClippingUtils::calculateLabelIntersectionGeometry( const QList
     // for labeling, we clip using either painter clip regions or intersects type regions.
     // unlike feature rendering, we clip features to painter clip regions for labeling, because
     // we want the label to sit within the clip region if possible
-    if ( region.featureClip() != QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly &&
-         region.featureClip() != QgsMapClippingRegion::FeatureClippingType::ClipToIntersection )
+    if ( region.featureClip() != QgsMapClippingRegion::FeatureClippingType::ClipPainterOnly && region.featureClip() != QgsMapClippingRegion::FeatureClippingType::ClipToIntersection )
       continue;
 
     shouldClip = true;

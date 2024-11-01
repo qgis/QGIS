@@ -155,7 +155,7 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY 
 
   // find the closest points
   QgsPointXY minP;
-  double minSqrDist = 1e20;  // "infinity"
+  double minSqrDist = 1e20; // "infinity"
   const auto constNewPoints = newPoints;
   for ( const QgsPointXY &p : constNewPoints )
   {
@@ -207,7 +207,7 @@ static void _replaceIfBetter( QgsPointLocator::Match &bestMatch, const QgsPointL
   }
 
   // prefer vertex, centroid, middle matches over edge matches (even if they are closer)
-  if ( ( bestMatch.type() & QgsPointLocator::Centroid || bestMatch.type() & QgsPointLocator::MiddleOfSegment ) && ( candidateMatch.type() & QgsPointLocator::Edge  || candidateMatch.type() & QgsPointLocator::Area ) )
+  if ( ( bestMatch.type() & QgsPointLocator::Centroid || bestMatch.type() & QgsPointLocator::MiddleOfSegment ) && ( candidateMatch.type() & QgsPointLocator::Edge || candidateMatch.type() & QgsPointLocator::Area ) )
     return;
 
   // prefer middle matches over centroid matches (even if they are closer)
@@ -337,7 +337,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
       //If no per layer config is set use the global one, otherwise use the layer config
       if ( mSnappingConfig.scaleDependencyMode() == QgsSnappingConfig::Disabled
            || ( mSnappingConfig.scaleDependencyMode() == QgsSnappingConfig::Global && inRangeGlobal )
-           || ( mSnappingConfig.scaleDependencyMode() == QgsSnappingConfig::PerLayer  && inRangeLayer ) )
+           || ( mSnappingConfig.scaleDependencyMode() == QgsSnappingConfig::PerLayer && inRangeLayer ) )
       {
         double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
         layers << qMakePair( layerConfig.layer, _areaOfInterest( pointMap, tolerance ) );
@@ -531,9 +531,8 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
           // see if it's possible build index for this area
           loc->init( mHybridPerLayerFeatureLimit, relaxed );
         }
-
       }
-      else  // full index strategy
+      else // full index strategy
         loc->init( relaxed );
 
       if ( !relaxed )
@@ -649,8 +648,10 @@ QString QgsSnappingUtils::dump()
   {
     msg += QString( "layer : %1\n"
                     "config: %2   tolerance %3 %4\n" )
-           .arg( layer.layer->name() )
-           .arg( layer.type ).arg( layer.tolerance ).arg( static_cast<int>( layer.unit ) );
+             .arg( layer.layer->name() )
+             .arg( layer.type )
+             .arg( layer.tolerance )
+             .arg( static_cast<int>( layer.unit ) );
 
     if ( mStrategy == IndexAlwaysFull || mStrategy == IndexHybrid || mStrategy == IndexExtent )
     {

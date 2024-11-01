@@ -23,12 +23,11 @@
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include "qgsziputils.h"
-% End
+  % End
 #endif
 
-namespace QgsZipUtils
+  namespace QgsZipUtils
 {
-
   /**
    * Returns TRUE if the file name is a zipped file ( i.e with a '.qgz'
    *  extension, FALSE otherwise.
@@ -87,7 +86,6 @@ namespace QgsZipUtils
    * \since QGIS 3.30
    */
   CORE_EXPORT const QStringList files( const QString &zip );
-
 };
 
 #endif //QGSZIPUTILS_H

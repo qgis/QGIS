@@ -47,13 +47,12 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
 {
     Q_OBJECT
   public:
-
     //! Error codes
     enum ErrorCode
     {
-      NoError, //!< No error was encountered
-      NetworkError, //!< A network error occurred
-      TimeoutError, //!< Timeout was reached before a reply was received
+      NoError,              //!< No error was encountered
+      NetworkError,         //!< A network error occurred
+      TimeoutError,         //!< Timeout was reached before a reply was received
       ServerExceptionError, //!< An exception was raised by the server
     };
 
@@ -62,8 +61,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
      *
      * \since QGIS 3.40
      */
-    enum class RequestFlag : int SIP_ENUM_BASETYPE( IntFlag )
-    {
+    enum class RequestFlag : int SIP_ENUM_BASETYPE( IntFlag ) {
       EmptyResponseIsValid = 1 << 0, //!< Do not generate an error if getting an empty response (e.g. HTTP 204)
     };
     Q_ENUM( RequestFlag )
@@ -255,8 +253,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
     void replyFinished();
     void requestTimedOut( QNetworkReply *reply );
 
-  private :
-
+  private:
     enum Method
     {
       Get,
@@ -302,7 +299,7 @@ class CORE_EXPORT QgsBlockingNetworkRequest : public QObject
 
     int mExpirationSec = 30;
 
-    QPointer< QgsFeedback > mFeedback;
+    QPointer<QgsFeedback> mFeedback;
 
     ErrorCode doRequest( Method method, QNetworkRequest &request, bool forceRefresh, QgsFeedback *feedback = nullptr, RequestFlags requestFlags = RequestFlags() );
 

@@ -48,8 +48,6 @@ class QgsFields;
 class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
 {
   public:
-
-
     /**
      * Writes the contents of vector layer to a different datasource.
      * \param layer source layer
@@ -64,13 +62,13 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
      * \returns NoError for a successful export, or encountered error
      */
     static Qgis::VectorExportResult exportLayer( QgsVectorLayer *layer,
-        const QString &uri,
-        const QString &providerKey,
-        const QgsCoordinateReferenceSystem &destCRS,
-        bool onlySelected = false,
-        QString *errorMessage SIP_OUT = nullptr,
-        const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
-        QgsFeedback *feedback = nullptr );
+                                                 const QString &uri,
+                                                 const QString &providerKey,
+                                                 const QgsCoordinateReferenceSystem &destCRS,
+                                                 bool onlySelected = false,
+                                                 QString *errorMessage SIP_OUT = nullptr,
+                                                 const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
+                                                 QgsFeedback *feedback = nullptr );
 
     /**
      * Constructor for QgsVectorLayerExporter.
@@ -136,7 +134,6 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
     bool flushBuffer() override;
 
   private:
-
     //! Create index
     bool createSpatialIndex();
 
@@ -160,7 +157,6 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
 #ifdef SIP_RUN
     QgsVectorLayerExporter( const QgsVectorLayerExporter &rh );
 #endif
-
 };
 
 
@@ -178,7 +174,6 @@ class CORE_EXPORT QgsVectorLayerExporterTask : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsVectorLayerExporterTask. Takes a source \a layer, destination \a uri
      * and \a providerKey, and various export related parameters such as destination CRS
@@ -199,10 +194,10 @@ class CORE_EXPORT QgsVectorLayerExporterTask : public QgsTask
      * and export \a options must be specified.
     */
     static QgsVectorLayerExporterTask *withLayerOwnership( QgsVectorLayer *layer SIP_TRANSFER,
-        const QString &uri,
-        const QString &providerKey,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        const QMap<QString, QVariant> &options = QMap<QString, QVariant>() ) SIP_FACTORY;
+                                                           const QString &uri,
+                                                           const QString &providerKey,
+                                                           const QgsCoordinateReferenceSystem &destinationCrs,
+                                                           const QMap<QString, QVariant> &options = QMap<QString, QVariant>() ) SIP_FACTORY;
 
     void cancel() override;
 
@@ -220,13 +215,11 @@ class CORE_EXPORT QgsVectorLayerExporterTask : public QgsTask
     void errorOccurred( Qgis::VectorExportResult error, const QString &errorMessage );
 
   protected:
-
     bool run() override;
     void finished( bool result ) override;
 
   private:
-
-    QPointer< QgsVectorLayer > mLayer = nullptr;
+    QPointer<QgsVectorLayer> mLayer = nullptr;
     bool mOwnsLayer = false;
 
     QString mDestUri;
@@ -234,11 +227,10 @@ class CORE_EXPORT QgsVectorLayerExporterTask : public QgsTask
     QgsCoordinateReferenceSystem mDestCrs;
     QMap<QString, QVariant> mOptions;
 
-    std::unique_ptr< QgsFeedback > mOwnedFeedback;
+    std::unique_ptr<QgsFeedback> mOwnedFeedback;
 
     Qgis::VectorExportResult mError = Qgis::VectorExportResult::Success;
     QString mErrorMessage;
-
 };
 
 #endif // QGSVECTORLAYEREXPORTER_H

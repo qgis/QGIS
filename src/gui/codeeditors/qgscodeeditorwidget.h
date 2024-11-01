@@ -50,7 +50,6 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCodeEditorWidget, wrapping the specified \a editor widget.
      *
@@ -242,7 +241,6 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     void replaceAll();
 
   private:
-
     void clearSearchHighlights();
     void addSearchHighlights();
     int searchFlags() const;
@@ -271,7 +269,7 @@ class GUI_EXPORT QgsCodeEditorWidget : public QgsPanelWidget
     QToolButton *mReplaceAllButton = nullptr;
     int mBlockSearching = 0;
     QgsMessageBar *mMessageBar = nullptr;
-    std::unique_ptr< QgsScrollBarHighlightController > mHighlightController;
+    std::unique_ptr<QgsScrollBarHighlightController> mHighlightController;
     QString mFilePath;
     QDateTime mLastModified;
 };

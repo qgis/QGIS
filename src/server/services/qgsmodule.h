@@ -24,5 +24,3 @@
 #include "qgsserverinterface.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-
-

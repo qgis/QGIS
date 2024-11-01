@@ -30,9 +30,7 @@
  */
 class CORE_EXPORT QgsPageSize
 {
-
   public:
-
     QgsPageSize();
 
     /**
@@ -71,7 +69,6 @@ class CORE_EXPORT QgsPageSize
 class CORE_EXPORT QgsPageSizeRegistry
 {
   public:
-
     /**
      * Creates a registry and populates it with known sizes
      */
@@ -85,13 +82,13 @@ class CORE_EXPORT QgsPageSizeRegistry
     /**
      * Returns a list of page sizes in the registry.
      */
-    QList< QgsPageSize > entries() const;
+    QList<QgsPageSize> entries() const;
 
     /**
      * Finds matching page sizes from the registry, using a case insensitive match
      * on the page size \a name.
      */
-    QList< QgsPageSize > find( const QString &name ) const;
+    QList<QgsPageSize> find( const QString &name ) const;
 
     /**
      * Finds a matching page \a size from the registry. Returns the page size name,
@@ -110,8 +107,7 @@ class CORE_EXPORT QgsPageSizeRegistry
     bool decodePageSize( const QString &string, QgsPageSize &size ) const;
 
   private:
-
-    QList< QgsPageSize > mPageSizes;
+    QList<QgsPageSize> mPageSizes;
 };
 
 #endif //QGSPAGESIZEREGISTRY_H

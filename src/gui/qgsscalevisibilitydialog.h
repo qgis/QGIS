@@ -37,7 +37,6 @@ class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
     Q_PROPERTY( double maximumScale READ maximumScale WRITE setMaximumScale )
 
   public:
-
     /**
      * Constructor for QgsScaleVisibilityDialog, with specified dialog \a title. The \a mapCanvas argument
      * can be used to associate the dialog with a map canvas, allowing use of the current map scale
@@ -102,7 +101,6 @@ class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
   private:
     QGroupBox *mGroupBox = nullptr;
     QgsScaleRangeWidget *mScaleWidget = nullptr;
-
 };
 
 #endif // QGSSCALEVISIBILITYDIALOG_H

@@ -49,18 +49,16 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     Q_OBJECT
 
   public:
-
     //! Available item states
     enum State
     {
-      Normal, //!< Normal state
+      Normal,   //!< Normal state
       Selected, //!< Item is selected
-      Hover, //!< Cursor is hovering over an deselected item
+      Hover,    //!< Cursor is hovering over an deselected item
     };
 
     //! Available flags
-    enum Flag SIP_ENUM_BASETYPE( IntFlag )
-    {
+    enum Flag SIP_ENUM_BASETYPE( IntFlag ) {
       // For future API flexibility only and to avoid sip issues, remove when real entries are added to flags.
       Unused = 1 << 0, //!< Temporary unused entry
     };
@@ -300,7 +298,6 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     virtual void editComponent() {}
 
   protected:
-
     /**
      * Truncates a \a text string so that it fits nicely within the item's width,
      * accounting for margins and interactive buttons.
@@ -353,14 +350,13 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     void updateButtonPositions();
 
   private:
-
     QSizeF itemSize() const;
 
     void updateToolTip( const QPointF &pos );
 
     void fold( Qt::Edge edge, bool folded );
 
-    std::unique_ptr< QgsProcessingModelComponent > mComponent;
+    std::unique_ptr<QgsProcessingModelComponent> mComponent;
     QgsProcessingModelAlgorithm *mModel = nullptr;
 
     bool mInitialized = false;
@@ -386,7 +382,6 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
 
     bool mIsHovering = false;
     QSizeF mTempSize;
-
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsModelComponentGraphicItem::Flags )
 
@@ -401,7 +396,6 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelParameterGraphicItem for the specified \a parameter, with the specified \a parent item.
      *
@@ -418,7 +412,6 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
     bool canDeleteComponent() override;
 
   protected:
-
     QColor fillColor( State state ) const override;
     QColor strokeColor( State state ) const override;
     QColor textColor( State state ) const override;
@@ -431,7 +424,6 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
 
   private:
     QPicture mPicture;
-
 };
 
 /**
@@ -445,7 +437,6 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelChildAlgorithmGraphicItem for the specified \a child, with the specified \a parent item.
      *
@@ -496,7 +487,6 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     void showLog();
 
   protected:
-
     QColor fillColor( State state ) const override;
     QColor strokeColor( State state ) const override;
     QColor textColor( State state ) const override;
@@ -534,7 +524,6 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelOutputGraphicItem for the specified \a output, with the specified \a parent item.
      *
@@ -550,7 +539,6 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
     bool canDeleteComponent() override;
 
   protected:
-
     QColor fillColor( State state ) const override;
     QColor strokeColor( State state ) const override;
     QColor textColor( State state ) const override;
@@ -562,10 +550,8 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
     void deleteComponent() override;
 
   private:
-
     QPicture mPicture;
 };
-
 
 
 /**
@@ -579,7 +565,6 @@ class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicIte
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelCommentGraphicItem for the specified \a comment, with the specified \a parent item.
      *
@@ -602,7 +587,6 @@ class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicIte
     QgsModelComponentGraphicItem *parentComponentItem() const;
 
   protected:
-
     QColor fillColor( State state ) const override;
     QColor strokeColor( State state ) const override;
     QColor textColor( State state ) const override;
@@ -613,14 +597,12 @@ class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicIte
 
     void deleteComponent() override;
     void editComponent() override;
-  private:
 
+  private:
     QgsProcessingModelComment *modelComponent();
 
-    std::unique_ptr< QgsProcessingModelComponent > mParentComponent;
-    QPointer< QgsModelComponentGraphicItem > mParentItem;
-
-
+    std::unique_ptr<QgsProcessingModelComponent> mParentComponent;
+    QPointer<QgsModelComponentGraphicItem> mParentItem;
 };
 
 
@@ -635,7 +617,6 @@ class GUI_EXPORT QgsModelGroupBoxGraphicItem : public QgsModelComponentGraphicIt
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelGroupBoxGraphicItem for the specified group \a box, with the specified \a parent item.
      *
@@ -650,8 +631,8 @@ class GUI_EXPORT QgsModelGroupBoxGraphicItem : public QgsModelComponentGraphicIt
     ~QgsModelGroupBoxGraphicItem() override;
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
-  protected:
 
+  protected:
     QColor fillColor( State state ) const override;
     QColor strokeColor( State state ) const override;
     QColor textColor( State state ) const override;
@@ -663,9 +644,8 @@ class GUI_EXPORT QgsModelGroupBoxGraphicItem : public QgsModelComponentGraphicIt
 
     void deleteComponent() override;
     void editComponent() override;
+
   private:
-
-
 };
 
 ///@endcond

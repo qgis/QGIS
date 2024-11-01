@@ -49,4 +49,4 @@ class QgsHanaColumnTypeThread : public QThread
     QString mErrorMessage;
 };
 
-#endif  // QGSHANACOLUMNTYPETHREAD_H
+#endif // QGSHANACOLUMNTYPETHREAD_H

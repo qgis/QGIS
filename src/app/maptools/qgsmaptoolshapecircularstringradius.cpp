@@ -149,7 +149,7 @@ void QgsMapToolShapeCircularStringRadius::recalculateTempRubberBand( const QgsPo
     //recalculate midpoint on circle segment
     QgsPoint midPoint;
     if ( !QgsGeometryUtils::segmentMidPoint( mPoints.at( mPoints.size() - 2 ), mTemporaryEndPoint, midPoint, mRadius,
-         QgsPoint( mousePosition ) ) )
+                                             QgsPoint( mousePosition ) ) )
     {
       return;
     }
@@ -181,7 +181,7 @@ void QgsMapToolShapeCircularStringRadius::createRadiusSpinBox()
   mRadiusSpinBox->setPrefix( tr( "Radius: " ) );
   mRadiusSpinBox->setValue( mRadius );
   QgisApp::instance()->addUserInputWidget( mRadiusSpinBox );
-  connect( mRadiusSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolShapeCircularStringRadius::updateRadiusFromSpinBox );
+  connect( mRadiusSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolShapeCircularStringRadius::updateRadiusFromSpinBox );
   mRadiusSpinBox->setFocus( Qt::TabFocusReason );
 }
 

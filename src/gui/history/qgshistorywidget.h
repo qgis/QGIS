@@ -35,16 +35,13 @@ class GUI_EXPORT QgsHistoryEntryProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
   public:
-
     QgsHistoryEntryProxyModel( QObject *parent = nullptr );
 
     void setFilter( const QString &filter );
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
-
     QString mFilter;
-
 };
 ///@endcond PRIVATE
 #endif
@@ -59,7 +56,6 @@ class GUI_EXPORT QgsHistoryWidget : public QgsPanelWidget, private Ui::QgsHistor
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsHistoryWidget, with the specified \a parent widget.
      *
@@ -84,11 +80,9 @@ class GUI_EXPORT QgsHistoryWidget : public QgsPanelWidget, private Ui::QgsHistor
     void urlClicked( const QUrl &url );
 
   private:
-
     QgsHistoryEntryModel *mModel = nullptr;
     QgsHistoryEntryProxyModel *mProxyModel = nullptr;
     QgsHistoryWidgetContext mContext;
-
 };
 
 #endif // QGSHISTORYWIDGET_H

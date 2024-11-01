@@ -52,7 +52,6 @@
 QgsLayoutItemMapGridStack::QgsLayoutItemMapGridStack( QgsLayoutItemMap *map )
   : QgsLayoutItemMapItemStack( map )
 {
-
 }
 
 void QgsLayoutItemMapGridStack::addGrid( QgsLayoutItemMapGrid *grid )
@@ -89,7 +88,7 @@ QgsLayoutItemMapGrid *QgsLayoutItemMapGridStack::grid( const int index ) const
 
 QList<QgsLayoutItemMapGrid *> QgsLayoutItemMapGridStack::asList() const // cppcheck-suppress duplInheritedMember
 {
-  QList< QgsLayoutItemMapGrid * > list;
+  QList<QgsLayoutItemMapGrid *> list;
   for ( QgsLayoutItemMapItem *item : mItems )
   {
     if ( QgsLayoutItemMapGrid *grid = qobject_cast<QgsLayoutItemMapGrid *>( item ) )
@@ -188,8 +187,7 @@ QVector2D borderToNormal2D( QgsLayoutItemMapGrid::BorderSide border )
 
 QgsLayoutItemMapGrid::QgsLayoutItemMapGrid( const QString &name, QgsLayoutItemMap *map )
   : QgsLayoutItemMapItem( name, map )
-  , mGridFrameSides( QgsLayoutItemMapGrid::FrameLeft | QgsLayoutItemMapGrid::FrameRight |
-                     QgsLayoutItemMapGrid::FrameTop | QgsLayoutItemMapGrid::FrameBottom )
+  , mGridFrameSides( QgsLayoutItemMapGrid::FrameLeft | QgsLayoutItemMapGrid::FrameRight | QgsLayoutItemMapGrid::FrameTop | QgsLayoutItemMapGrid::FrameBottom )
 {
   //get default layout font from settings
   const QgsSettings settings;
@@ -206,8 +204,7 @@ QgsLayoutItemMapGrid::QgsLayoutItemMapGrid( const QString &name, QgsLayoutItemMa
 
   connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemMapGrid::refreshDataDefinedProperties );
   connect( mMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemMapGrid::refreshDataDefinedProperties );
-  connect( mMap, &QgsLayoutItemMap::crsChanged, this, [this]
-  {
+  connect( mMap, &QgsLayoutItemMap::crsChanged, this, [this] {
     if ( !mCRS.isValid() )
       emit crsChanged();
   } );
@@ -344,8 +341,8 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
   mGridOffsetX = itemElem.attribute( QStringLiteral( "offsetX" ), QStringLiteral( "0" ) ).toDouble();
   mGridOffsetY = itemElem.attribute( QStringLiteral( "offsetY" ), QStringLiteral( "0" ) ).toDouble();
   mCrossLength = itemElem.attribute( QStringLiteral( "crossLength" ), QStringLiteral( "3" ) ).toDouble();
-  mGridFrameStyle = static_cast< QgsLayoutItemMapGrid::FrameStyle >( itemElem.attribute( QStringLiteral( "gridFrameStyle" ), QStringLiteral( "0" ) ).toInt() );
-  mGridFrameSides = static_cast< QgsLayoutItemMapGrid::FrameSideFlags >( itemElem.attribute( QStringLiteral( "gridFrameSideFlags" ), QStringLiteral( "15" ) ).toInt() );
+  mGridFrameStyle = static_cast<QgsLayoutItemMapGrid::FrameStyle>( itemElem.attribute( QStringLiteral( "gridFrameStyle" ), QStringLiteral( "0" ) ).toInt() );
+  mGridFrameSides = static_cast<QgsLayoutItemMapGrid::FrameSideFlags>( itemElem.attribute( QStringLiteral( "gridFrameSideFlags" ), QStringLiteral( "15" ) ).toInt() );
   mGridFrameWidth = itemElem.attribute( QStringLiteral( "gridFrameWidth" ), QStringLiteral( "2.0" ) ).toDouble();
   mGridFrameMargin = itemElem.attribute( QStringLiteral( "gridFrameMargin" ), QStringLiteral( "0.0" ) ).toDouble();
   mGridFramePenThickness = itemElem.attribute( QStringLiteral( "gridFramePenThickness" ), QStringLiteral( "0.3" ) ).toDouble();
@@ -397,7 +394,7 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
   if ( !mCRS.readXml( itemElem ) )
     mCRS = QgsCoordinateReferenceSystem();
 
-  mBlendMode = static_cast< QPainter::CompositionMode >( itemElem.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() );
+  mBlendMode = static_cast<QPainter::CompositionMode>( itemElem.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() );
 
   //annotation
   mShowGridAnnotation = ( itemElem.attribute( QStringLiteral( "showAnnotation" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
@@ -438,7 +435,7 @@ bool QgsLayoutItemMapGrid::readXml( const QDomElement &itemElem, const QDomDocum
 
   mGridAnnotationPrecision = itemElem.attribute( QStringLiteral( "annotationPrecision" ), QStringLiteral( "3" ) ).toInt();
   const int gridUnitInt = itemElem.attribute( QStringLiteral( "unit" ), QString::number( MapUnit ) ).toInt();
-  mGridUnit = ( gridUnitInt <= static_cast< int >( DynamicPageSizeBased ) ) ? static_cast< GridUnit >( gridUnitInt ) : MapUnit;
+  mGridUnit = ( gridUnitInt <= static_cast<int>( DynamicPageSizeBased ) ) ? static_cast<GridUnit>( gridUnitInt ) : MapUnit;
   mMinimumIntervalWidth = itemElem.attribute( QStringLiteral( "minimumIntervalWidth" ), QStringLiteral( "50" ) ).toDouble();
   mMaximumIntervalWidth = itemElem.attribute( QStringLiteral( "maximumIntervalWidth" ), QStringLiteral( "100" ) ).toDouble();
 
@@ -492,7 +489,7 @@ void QgsLayoutItemMapGrid::drawGridCrsTransform( QgsRenderContext &context, doub
   {
     if ( mGridStyle == QgsLayoutItemMapGrid::Solid )
     {
-      QList< GridLine >::const_iterator gridIt = mGridLines.constBegin();
+      QList<GridLine>::const_iterator gridIt = mGridLines.constBegin();
       for ( ; gridIt != mGridLines.constEnd(); ++gridIt )
       {
         drawGridLine( scalePolygon( gridIt->line, dotsPerMM ), context );
@@ -503,7 +500,7 @@ void QgsLayoutItemMapGrid::drawGridCrsTransform( QgsRenderContext &context, doub
       const double maxX = mMap->rect().width();
       const double maxY = mMap->rect().height();
 
-      QList< QgsPointXY >::const_iterator intersectionIt = mTransformedIntersections.constBegin();
+      QList<QgsPointXY>::const_iterator intersectionIt = mTransformedIntersections.constBegin();
       for ( ; intersectionIt != mTransformedIntersections.constEnd(); ++intersectionIt )
       {
         const double x = intersectionIt->x();
@@ -550,12 +547,11 @@ void QgsLayoutItemMapGrid::calculateCrsTransformLines() const
     //cross or markers style - we also need to calculate intersections of lines
 
     //first convert lines to QgsGeometry
-    QList< QgsGeometry > xLines;
-    QList< QgsGeometry > yLines;
-    QList< GridLine >::const_iterator gridIt = mGridLines.constBegin();
+    QList<QgsGeometry> xLines;
+    QList<QgsGeometry> yLines;
+    QList<GridLine>::const_iterator gridIt = mGridLines.constBegin();
     for ( ; gridIt != mGridLines.constEnd(); ++gridIt )
     {
-
       QgsPolylineXY line;
       for ( int i = 0; i < gridIt->line.size(); ++i )
       {
@@ -569,10 +565,10 @@ void QgsLayoutItemMapGrid::calculateCrsTransformLines() const
 
     //now, loop through geometries and calculate intersection points
     mTransformedIntersections.clear();
-    QList< QgsGeometry >::const_iterator yLineIt = yLines.constBegin();
+    QList<QgsGeometry>::const_iterator yLineIt = yLines.constBegin();
     for ( ; yLineIt != yLines.constEnd(); ++yLineIt )
     {
-      QList< QgsGeometry >::const_iterator xLineIt = xLines.constBegin();
+      QList<QgsGeometry>::const_iterator xLineIt = xLines.constBegin();
       for ( ; xLineIt != xLines.constEnd(); ++xLineIt )
       {
         //look for intersections between lines
@@ -675,7 +671,7 @@ void QgsLayoutItemMapGrid::draw( QPainter *p )
 
 void QgsLayoutItemMapGrid::updateGridLinesAnnotationsPositions() const
 {
-  QList< GridLine >::iterator it = mGridLines.begin();
+  QList<GridLine>::iterator it = mGridLines.begin();
   for ( ; it != mGridLines.end(); ++it )
   {
     it->startAnnotation.border = borderForLineCoord( it->line.first(), it->coordinateType );
@@ -701,8 +697,8 @@ void QgsLayoutItemMapGrid::drawGridNoTransform( QgsRenderContext &context, doubl
   if ( calculateLinesOnly )
     return;
 
-  QList< GridLine >::const_iterator vIt = mGridLines.constBegin();
-  QList< GridLine >::const_iterator hIt = mGridLines.constBegin();
+  QList<GridLine>::const_iterator vIt = mGridLines.constBegin();
+  QList<GridLine>::const_iterator hIt = mGridLines.constBegin();
 
   //simple approach: draw vertical lines first, then horizontal ones
   if ( mGridStyle == QgsLayoutItemMapGrid::Solid )
@@ -751,12 +747,10 @@ void QgsLayoutItemMapGrid::drawGridNoTransform( QgsRenderContext &context, doubl
           if ( mGridStyle == QgsLayoutItemMapGrid::Cross )
           {
             //apply a threshold to avoid calculate point if the two points are very close together (can lead to artifacts)
-            crossEnd1 = ( ( intersectionPoint - l1.p1() ).manhattanLength() > 0.01 ) ?
-                        QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, l1.p1(), mEvaluatedCrossLength ) : intersectionPoint;
-            crossEnd2 = ( ( intersectionPoint - l1.p2() ).manhattanLength() > 0.01 ) ?
-                        QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, l1.p2(), mEvaluatedCrossLength ) : intersectionPoint;
+            crossEnd1 = ( ( intersectionPoint - l1.p1() ).manhattanLength() > 0.01 ) ? QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, l1.p1(), mEvaluatedCrossLength ) : intersectionPoint;
+            crossEnd2 = ( ( intersectionPoint - l1.p2() ).manhattanLength() > 0.01 ) ? QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, l1.p2(), mEvaluatedCrossLength ) : intersectionPoint;
             //draw line using coordinates scaled to dots
-            drawGridLine( QLineF( crossEnd1  * dotsPerMM, crossEnd2  * dotsPerMM ), context );
+            drawGridLine( QLineF( crossEnd1 * dotsPerMM, crossEnd2 * dotsPerMM ), context );
           }
           else if ( mGridStyle == QgsLayoutItemMapGrid::Markers )
           {
@@ -791,12 +785,10 @@ void QgsLayoutItemMapGrid::drawGridNoTransform( QgsRenderContext &context, doubl
         if ( l2.intersects( l1, &intersectionPoint ) == QLineF::BoundedIntersection )
         {
           //apply a threshold to avoid calculate point if the two points are very close together (can lead to artifacts)
-          crossEnd1 = ( ( intersectionPoint - l1.p1() ).manhattanLength() > 0.01 ) ?
-                      QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, l1.p1(), mEvaluatedCrossLength ) : intersectionPoint;
-          crossEnd2 = ( ( intersectionPoint - l1.p2() ).manhattanLength() > 0.01 )  ?
-                      QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, l1.p2(), mEvaluatedCrossLength ) : intersectionPoint;
+          crossEnd1 = ( ( intersectionPoint - l1.p1() ).manhattanLength() > 0.01 ) ? QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, l1.p1(), mEvaluatedCrossLength ) : intersectionPoint;
+          crossEnd2 = ( ( intersectionPoint - l1.p2() ).manhattanLength() > 0.01 ) ? QgsSymbolLayerUtils::pointOnLineWithDistance( intersectionPoint, l1.p2(), mEvaluatedCrossLength ) : intersectionPoint;
           //draw line using coordinates scaled to dots
-          drawGridLine( QLineF( crossEnd1  * dotsPerMM, crossEnd2  * dotsPerMM ), context );
+          drawGridLine( QLineF( crossEnd1 * dotsPerMM, crossEnd2 * dotsPerMM ), context );
         }
       }
     }
@@ -913,12 +905,12 @@ void QgsLayoutItemMapGrid::drawGridFrameZebraBorder( QPainter *p, BorderSide bor
   bool drawBLBox = false;
   bool drawBRBox = false;
 
-  QMap< double, double > pos = QMap< double, double >();
-  QList< GridLine >::const_iterator it = mGridLines.constBegin();
+  QMap<double, double> pos = QMap<double, double>();
+  QList<GridLine>::const_iterator it = mGridLines.constBegin();
   for ( ; it != mGridLines.constEnd(); ++it )
   {
     // for first and last point of the line
-    for ( int i = 0 ; i < 2 ; ++i )
+    for ( int i = 0; i < 2; ++i )
     {
       const GridLineAnnotation annot = ( i == 0 ) ? it->startAnnotation : it->endAnnotation;
 
@@ -926,7 +918,7 @@ void QgsLayoutItemMapGrid::drawGridFrameZebraBorder( QPainter *p, BorderSide bor
       if ( annot.border != border )
         continue;
 
-      if ( ! shouldShowDivisionForSide( it->coordinateType, annot.border ) )
+      if ( !shouldShowDivisionForSide( it->coordinateType, annot.border ) )
         continue;
 
       if ( border == QgsLayoutItemMapGrid::Left || border == QgsLayoutItemMapGrid::Right )
@@ -964,7 +956,7 @@ void QgsLayoutItemMapGrid::drawGridFrameZebraBorder( QPainter *p, BorderSide bor
   framePen.setJoinStyle( Qt::MiterJoin );
   p->setPen( framePen );
 
-  QMap< double, double >::const_iterator posIt = pos.constBegin();
+  QMap<double, double>::const_iterator posIt = pos.constBegin();
   for ( ; posIt != pos.constEnd(); ++posIt )
   {
     p->setBrush( QBrush( color1 ? mGridFrameFillColor1 : mGridFrameFillColor2 ) );
@@ -990,7 +982,7 @@ void QgsLayoutItemMapGrid::drawGridFrameZebraBorder( QPainter *p, BorderSide bor
   if ( mGridFrameStyle == ZebraNautical || qgsDoubleNear( mEvaluatedGridFrameMargin, 0.0 ) )
   {
     //draw corners
-    width = height = ( mEvaluatedGridFrameWidth + mEvaluatedGridFrameMargin ) ;
+    width = height = ( mEvaluatedGridFrameWidth + mEvaluatedGridFrameMargin );
     p->setBrush( QBrush( mGridFrameFillColor1 ) );
     if ( drawTLBox )
       p->drawRect( QRectF( -( mEvaluatedGridFrameWidth + mEvaluatedGridFrameMargin ), -( mEvaluatedGridFrameWidth + mEvaluatedGridFrameMargin ), width, height ) );
@@ -1020,15 +1012,15 @@ void QgsLayoutItemMapGrid::drawGridFrameTicks( QPainter *p, GridExtension *exten
     p->setPen( framePen );
   }
 
-  QList< GridLine >::iterator it = mGridLines.begin();
+  QList<GridLine>::iterator it = mGridLines.begin();
   for ( ; it != mGridLines.end(); ++it )
   {
     // for first and last point of the line
-    for ( int i = 0 ; i < 2 ; ++i )
+    for ( int i = 0; i < 2; ++i )
     {
       const GridLineAnnotation annot = ( i == 0 ) ? it->startAnnotation : it->endAnnotation;
 
-      if ( ! shouldShowDivisionForSide( it->coordinateType, annot.border ) )
+      if ( !shouldShowDivisionForSide( it->coordinateType, annot.border ) )
         continue;
 
       // If the angle is below the threshold, we don't draw the annotation
@@ -1054,23 +1046,19 @@ void QgsLayoutItemMapGrid::drawGridFrameTicks( QPainter *p, GridExtension *exten
         facingRight = ( annot.angle > 0 );
       }
 
-      if ( annot.border == BorderSide::Top && ( ( facingLeft && annot.position.x() < mRotatedTicksMarginToCorner ) ||
-           ( facingRight && annot.position.x() > mMap->rect().width() - mRotatedTicksMarginToCorner ) ) )
+      if ( annot.border == BorderSide::Top && ( ( facingLeft && annot.position.x() < mRotatedTicksMarginToCorner ) || ( facingRight && annot.position.x() > mMap->rect().width() - mRotatedTicksMarginToCorner ) ) )
         continue;
-      if ( annot.border == BorderSide::Bottom && ( ( facingLeft && annot.position.x() > mMap->rect().width() - mRotatedTicksMarginToCorner ) ||
-           ( facingRight && annot.position.x() < mRotatedTicksMarginToCorner ) ) )
+      if ( annot.border == BorderSide::Bottom && ( ( facingLeft && annot.position.x() > mMap->rect().width() - mRotatedTicksMarginToCorner ) || ( facingRight && annot.position.x() < mRotatedTicksMarginToCorner ) ) )
         continue;
-      if ( annot.border == BorderSide::Left && ( ( facingLeft && annot.position.y() > mMap->rect().height() - mRotatedTicksMarginToCorner ) ||
-           ( facingRight && annot.position.y() < mRotatedTicksMarginToCorner ) ) )
+      if ( annot.border == BorderSide::Left && ( ( facingLeft && annot.position.y() > mMap->rect().height() - mRotatedTicksMarginToCorner ) || ( facingRight && annot.position.y() < mRotatedTicksMarginToCorner ) ) )
         continue;
-      if ( annot.border == BorderSide::Right && ( ( facingLeft && annot.position.y() < mRotatedTicksMarginToCorner ) ||
-           ( facingRight && annot.position.y() > mMap->rect().height() - mRotatedTicksMarginToCorner ) ) )
+      if ( annot.border == BorderSide::Right && ( ( facingLeft && annot.position.y() < mRotatedTicksMarginToCorner ) || ( facingRight && annot.position.y() > mMap->rect().height() - mRotatedTicksMarginToCorner ) ) )
         continue;
 
       const QVector2D normalVector = borderToNormal2D( annot.border );
       const QVector2D vector = ( mRotatedTicksEnabled ) ? annot.vector : normalVector;
 
-      double fA = mEvaluatedGridFrameMargin; // point near to frame
+      double fA = mEvaluatedGridFrameMargin;                            // point near to frame
       double fB = mEvaluatedGridFrameMargin + mEvaluatedGridFrameWidth; // point far from frame
 
       if ( mRotatedTicksEnabled && mRotatedTicksLengthMode == OrthogonalTicks )
@@ -1105,7 +1093,6 @@ void QgsLayoutItemMapGrid::drawGridFrameTicks( QPainter *p, GridExtension *exten
         pB = annot.position + ( fB - 2.0 * mEvaluatedGridFrameMargin ) * vector;
       }
       p->drawLine( QLineF( pA.toPointF(), pB.toPointF() ) );
-
     }
   }
 }
@@ -1161,7 +1148,7 @@ void QgsLayoutItemMapGrid::drawGridFrameLine( QPainter *p, GridExtension *extens
       p->drawLine( QLineF( 0 - mEvaluatedGridFrameMargin, mMap->rect().height() + mEvaluatedGridFrameMargin, mMap->rect().width() + mEvaluatedGridFrameMargin, mMap->rect().height() + mEvaluatedGridFrameMargin ) );
   }
 
-  if ( ! extension && drawDiagonals )
+  if ( !extension && drawDiagonals )
   {
     if ( testFrameSideFlag( QgsLayoutItemMapGrid::FrameLeft ) || testFrameSideFlag( QgsLayoutItemMapGrid::FrameTop ) )
     {
@@ -1173,32 +1160,32 @@ void QgsLayoutItemMapGrid::drawGridFrameLine( QPainter *p, GridExtension *extens
     if ( testFrameSideFlag( QgsLayoutItemMapGrid::FrameRight ) || testFrameSideFlag( QgsLayoutItemMapGrid::FrameBottom ) )
     {
       //corner right-bottom
-      const double X1 = mMap->rect().width() + mEvaluatedGridFrameMargin - mEvaluatedGridFrameLineThickness / 2.0 ;
-      const double Y1 = mMap->rect().height() + mEvaluatedGridFrameMargin - mEvaluatedGridFrameLineThickness / 2.0 ;
+      const double X1 = mMap->rect().width() + mEvaluatedGridFrameMargin - mEvaluatedGridFrameLineThickness / 2.0;
+      const double Y1 = mMap->rect().height() + mEvaluatedGridFrameMargin - mEvaluatedGridFrameLineThickness / 2.0;
       p->drawLine( QLineF( mMap->rect().width(), mMap->rect().height(), X1, Y1 ) );
     }
     if ( testFrameSideFlag( QgsLayoutItemMapGrid::FrameRight ) || testFrameSideFlag( QgsLayoutItemMapGrid::FrameTop ) )
     {
       //corner right-top
-      const double X1 = mMap->rect().width() + mEvaluatedGridFrameMargin - mEvaluatedGridFrameLineThickness / 2.0 ;
-      const double Y1 = 0 - mEvaluatedGridFrameMargin + mEvaluatedGridFrameLineThickness / 2.0 ;
+      const double X1 = mMap->rect().width() + mEvaluatedGridFrameMargin - mEvaluatedGridFrameLineThickness / 2.0;
+      const double Y1 = 0 - mEvaluatedGridFrameMargin + mEvaluatedGridFrameLineThickness / 2.0;
       p->drawLine( QLineF( mMap->rect().width(), 0, X1, Y1 ) );
     }
     if ( testFrameSideFlag( QgsLayoutItemMapGrid::FrameLeft ) || testFrameSideFlag( QgsLayoutItemMapGrid::FrameBottom ) )
     {
       //corner left-bottom
-      const double X1 = 0 - mEvaluatedGridFrameMargin + mEvaluatedGridFrameLineThickness / 2.0 ;
-      const double Y1 = mMap->rect().height() + mEvaluatedGridFrameMargin - mEvaluatedGridFrameLineThickness / 2.0 ;
+      const double X1 = 0 - mEvaluatedGridFrameMargin + mEvaluatedGridFrameLineThickness / 2.0;
+      const double Y1 = mMap->rect().height() + mEvaluatedGridFrameMargin - mEvaluatedGridFrameLineThickness / 2.0;
       p->drawLine( QLineF( 0, mMap->rect().height(), X1, Y1 ) );
     }
   }
 }
 
 void QgsLayoutItemMapGrid::drawCoordinateAnnotations( QgsRenderContext &context, QgsExpressionContext &expressionContext,
-    GridExtension *extension ) const
+                                                      GridExtension *extension ) const
 {
   QString currentAnnotationString;
-  QList< GridLine >::const_iterator it = mGridLines.constBegin();
+  QList<GridLine>::const_iterator it = mGridLines.constBegin();
   for ( ; it != mGridLines.constEnd(); ++it )
   {
     currentAnnotationString = gridAnnotationString( it->coordinate, it->coordinateType, expressionContext );
@@ -1214,7 +1201,7 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
     return;
   }
 
-  if ( ! shouldShowAnnotationForSide( coordinateType, annot.border ) )
+  if ( !shouldShowAnnotationForSide( coordinateType, annot.border ) )
     return;
 
   const QgsLayoutItemMapGrid::BorderSide frameBorder = annot.border;
@@ -1224,7 +1211,8 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
 
   //relevant for annotations is the height of digits
   const double textHeight = ( extension ? ( QgsTextRenderer::textHeight( context, mAnnotationFormat, QChar(), true ) )
-                              : ( QgsTextRenderer::textHeight( context, mAnnotationFormat, '0', false ) ) ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
+                                        : ( QgsTextRenderer::textHeight( context, mAnnotationFormat, '0', false ) ) )
+                            / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
 
   double xpos = annot.position.x();
   double ypos = annot.position.y();
@@ -1246,8 +1234,8 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
 
   // Adapt distance to frame using the frame width and line thickness into account
   const bool isOverTick = ( anotDir == QgsLayoutItemMapGrid::AboveTick || anotDir == QgsLayoutItemMapGrid::OnTick || anotDir == QgsLayoutItemMapGrid::UnderTick );
-  const bool hasInteriorMargin = ! isOverTick && ( mGridFrameStyle == QgsLayoutItemMapGrid::InteriorTicks || mGridFrameStyle == QgsLayoutItemMapGrid::InteriorExteriorTicks );
-  const bool hasExteriorMargin = ! isOverTick && ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks || mGridFrameStyle == QgsLayoutItemMapGrid::InteriorExteriorTicks || mGridFrameStyle == QgsLayoutItemMapGrid::ZebraNautical );
+  const bool hasInteriorMargin = !isOverTick && ( mGridFrameStyle == QgsLayoutItemMapGrid::InteriorTicks || mGridFrameStyle == QgsLayoutItemMapGrid::InteriorExteriorTicks );
+  const bool hasExteriorMargin = !isOverTick && ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::ExteriorTicks || mGridFrameStyle == QgsLayoutItemMapGrid::InteriorExteriorTicks || mGridFrameStyle == QgsLayoutItemMapGrid::ZebraNautical );
   const bool hasBorderWidth = ( mGridFrameStyle == QgsLayoutItemMapGrid::Zebra || mGridFrameStyle == QgsLayoutItemMapGrid::ZebraNautical || mGridFrameStyle == QgsLayoutItemMapGrid::LineBorder || mGridFrameStyle == QgsLayoutItemMapGrid::LineBorderNautical );
   if ( ( anotPos == QgsLayoutItemMapGrid::InsideMapFrame && hasInteriorMargin ) || ( anotPos == QgsLayoutItemMapGrid::OutsideMapFrame && hasExteriorMargin ) )
     f += mEvaluatedGridFrameWidth;
@@ -1269,12 +1257,8 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
   const bool outside = ( anotPos == QgsLayoutItemMapGrid::OutsideMapFrame );
 
   if (
-    anotDir == QgsLayoutItemMapGrid::AboveTick ||
-    anotDir == QgsLayoutItemMapGrid::OnTick ||
-    anotDir == QgsLayoutItemMapGrid::UnderTick
-  )
+    anotDir == QgsLayoutItemMapGrid::AboveTick || anotDir == QgsLayoutItemMapGrid::OnTick || anotDir == QgsLayoutItemMapGrid::UnderTick )
   {
-
     rotation = atan2( vector.y(), vector.x() ) / M_PI * 180;
 
     if ( rotation <= -90 || rotation > 90 )
@@ -1291,14 +1275,13 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
       anchor.setY( 0.5 * textHeight ); // bottom
     else if ( anotDir == QgsLayoutItemMapGrid::UnderTick )
       anchor.setY( -1.5 * textHeight ); // top
-    else // OnTick
+    else                                // OnTick
       anchor.setY( -0.5 * textHeight ); // middle
-
   }
   else if ( anotDir == QgsLayoutItemMapGrid::Horizontal )
   {
     rotation = 0;
-    anchor.setX( 0.5 * textWidth ); // center
+    anchor.setX( 0.5 * textWidth );   // center
     anchor.setY( -0.5 * textHeight ); // middle
     if ( frameBorder == QgsLayoutItemMapGrid::Top )
       anchor.setY( outside ? 0 : -textHeight ); // bottom / top
@@ -1312,7 +1295,7 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
   else if ( anotDir == QgsLayoutItemMapGrid::Vertical )
   {
     rotation = -90;
-    anchor.setX( 0.5 * textWidth ); // center
+    anchor.setX( 0.5 * textWidth );   // center
     anchor.setY( -0.5 * textHeight ); // middle
     if ( frameBorder == QgsLayoutItemMapGrid::Top )
       anchor.setX( outside ? 0 : textWidth ); // left / right
@@ -1326,7 +1309,7 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
   else if ( anotDir == QgsLayoutItemMapGrid::VerticalDescending )
   {
     rotation = 90;
-    anchor.setX( 0.5 * textWidth ); // center
+    anchor.setX( 0.5 * textWidth );   // center
     anchor.setY( -0.5 * textHeight ); // middle
     if ( frameBorder == QgsLayoutItemMapGrid::Top )
       anchor.setX( outside ? textWidth : 0 ); // right / left
@@ -1367,17 +1350,13 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
     facingLeft = !facingLeft;
     facingRight = !facingRight;
   }
-  if ( annot.border == BorderSide::Top && ( ( facingLeft && annot.position.x() < mRotatedAnnotationsMarginToCorner ) ||
-       ( facingRight && annot.position.x() > mMap->rect().width() - mRotatedAnnotationsMarginToCorner ) ) )
+  if ( annot.border == BorderSide::Top && ( ( facingLeft && annot.position.x() < mRotatedAnnotationsMarginToCorner ) || ( facingRight && annot.position.x() > mMap->rect().width() - mRotatedAnnotationsMarginToCorner ) ) )
     return;
-  if ( annot.border == BorderSide::Bottom && ( ( facingLeft && annot.position.x() > mMap->rect().width() - mRotatedAnnotationsMarginToCorner ) ||
-       ( facingRight && annot.position.x() < mRotatedAnnotationsMarginToCorner ) ) )
+  if ( annot.border == BorderSide::Bottom && ( ( facingLeft && annot.position.x() > mMap->rect().width() - mRotatedAnnotationsMarginToCorner ) || ( facingRight && annot.position.x() < mRotatedAnnotationsMarginToCorner ) ) )
     return;
-  if ( annot.border == BorderSide::Left && ( ( facingLeft && annot.position.y() > mMap->rect().height() - mRotatedAnnotationsMarginToCorner ) ||
-       ( facingRight && annot.position.y() < mRotatedAnnotationsMarginToCorner ) ) )
+  if ( annot.border == BorderSide::Left && ( ( facingLeft && annot.position.y() > mMap->rect().height() - mRotatedAnnotationsMarginToCorner ) || ( facingRight && annot.position.y() < mRotatedAnnotationsMarginToCorner ) ) )
     return;
-  if ( annot.border == BorderSide::Right && ( ( facingLeft && annot.position.y() < mRotatedAnnotationsMarginToCorner ) ||
-       ( facingRight && annot.position.y() > mMap->rect().height() - mRotatedAnnotationsMarginToCorner ) ) )
+  if ( annot.border == BorderSide::Right && ( ( facingLeft && annot.position.y() < mRotatedAnnotationsMarginToCorner ) || ( facingRight && annot.position.y() > mMap->rect().height() - mRotatedAnnotationsMarginToCorner ) ) )
     return;
 
   const QgsScopedQPainterState painterState( context.painter() );
@@ -1401,8 +1380,7 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
     geographic = mMap->crs().isGeographic();
   }
 
-  if ( geographic && coord == QgsLayoutItemMapGrid::Longitude &&
-       ( mGridAnnotationFormat == QgsLayoutItemMapGrid::Decimal || mGridAnnotationFormat == QgsLayoutItemMapGrid::DecimalWithSuffix ) )
+  if ( geographic && coord == QgsLayoutItemMapGrid::Longitude && ( mGridAnnotationFormat == QgsLayoutItemMapGrid::Decimal || mGridAnnotationFormat == QgsLayoutItemMapGrid::DecimalWithSuffix ) )
   {
     // wrap around longitudes > 180 or < -180 degrees, so that, e.g., "190E" -> "170W"
     const double wrappedX = std::fmod( value, 360.0 );
@@ -1551,7 +1529,7 @@ int QgsLayoutItemMapGrid::xGridLines() const
 
   //consider to round up to the next step in case the left boundary is > 0
   const double roundCorrection = mapBoundingRect.top() > gridOffsetY ? 1.0 : 0.0;
-  double currentLevel = static_cast< int >( ( mapBoundingRect.top() - gridOffsetY ) / gridIntervalY + roundCorrection ) * gridIntervalY + gridOffsetY;
+  double currentLevel = static_cast<int>( ( mapBoundingRect.top() - gridOffsetY ) / gridIntervalY + roundCorrection ) * gridIntervalY + gridOffsetY;
 
   int gridLineCount = 0;
   if ( qgsDoubleNear( mMap->mapRotation(), 0.0 ) || ( mGridUnit != MapUnit && mGridUnit != DynamicPageSizeBased ) )
@@ -1652,7 +1630,7 @@ int QgsLayoutItemMapGrid::yGridLines() const
 
   //consider to round up to the next step in case the left boundary is > 0
   const double roundCorrection = mapBoundingRect.left() > gridOffsetX ? 1.0 : 0.0;
-  double currentLevel = static_cast< int >( ( mapBoundingRect.left() - gridOffsetX ) / gridIntervalX + roundCorrection ) * gridIntervalX + gridOffsetX;
+  double currentLevel = static_cast<int>( ( mapBoundingRect.left() - gridOffsetX ) / gridIntervalX + roundCorrection ) * gridIntervalX + gridOffsetX;
 
   int gridLineCount = 0;
   if ( qgsDoubleNear( mMap->mapRotation(), 0.0 ) || ( mGridUnit != MapUnit && mGridUnit != DynamicPageSizeBased ) )
@@ -1725,7 +1703,7 @@ int QgsLayoutItemMapGrid::xGridLinesCrsTransform( const QgsRectangle &bbox, cons
   }
 
   const double roundCorrection = bbox.yMaximum() > mEvaluatedOffsetY ? 1.0 : 0.0;
-  double currentLevel = static_cast< int >( ( bbox.yMaximum() - mEvaluatedOffsetY ) / mEvaluatedIntervalY + roundCorrection ) * mEvaluatedIntervalY + mEvaluatedOffsetY;
+  double currentLevel = static_cast<int>( ( bbox.yMaximum() - mEvaluatedOffsetY ) / mEvaluatedIntervalY + roundCorrection ) * mEvaluatedIntervalY + mEvaluatedOffsetY;
 
   const double minX = bbox.xMinimum();
   const double maxX = bbox.xMaximum();
@@ -1758,7 +1736,7 @@ int QgsLayoutItemMapGrid::xGridLinesCrsTransform( const QgsRectangle &bbox, cons
 
       try
       {
-        const QgsPointXY mapPoint = t.transform( currentX, currentLevel ); //transform back to map crs
+        const QgsPointXY mapPoint = t.transform( currentX, currentLevel );                 //transform back to map crs
         gridLine.append( mMap->mapToItemCoords( QPointF( mapPoint.x(), mapPoint.y() ) ) ); //transform back to composer coords
       }
       catch ( QgsCsException &cse )
@@ -1804,7 +1782,7 @@ int QgsLayoutItemMapGrid::yGridLinesCrsTransform( const QgsRectangle &bbox, cons
   }
 
   const double roundCorrection = bbox.xMinimum() > mEvaluatedOffsetX ? 1.0 : 0.0;
-  double currentLevel = static_cast< int >( ( bbox.xMinimum() - mEvaluatedOffsetX ) / mEvaluatedIntervalX + roundCorrection ) * mEvaluatedIntervalX + mEvaluatedOffsetX;
+  double currentLevel = static_cast<int>( ( bbox.xMinimum() - mEvaluatedOffsetX ) / mEvaluatedIntervalX + roundCorrection ) * mEvaluatedIntervalX + mEvaluatedOffsetX;
 
   const double minY = bbox.yMinimum();
   const double maxY = bbox.yMaximum();
@@ -2039,11 +2017,11 @@ QgsLayoutItemMapGrid::BorderSide QgsLayoutItemMapGrid::borderForLineCoord( QPoin
   const double tolerance = std::max( mMap->frameEnabled() ? mMap->pen().widthF() : 0.0, 1.0 );
 
   //check for corner coordinates
-  if ( ( p.y() <= tolerance && p.x() <= tolerance ) // top left
-       || ( p.y() <= tolerance && p.x() >= ( mMap->rect().width() - tolerance ) ) //top right
-       || ( p.y() >= ( mMap->rect().height() - tolerance ) && p.x() <= tolerance ) //bottom left
+  if ( ( p.y() <= tolerance && p.x() <= tolerance )                                                           // top left
+       || ( p.y() <= tolerance && p.x() >= ( mMap->rect().width() - tolerance ) )                             //top right
+       || ( p.y() >= ( mMap->rect().height() - tolerance ) && p.x() <= tolerance )                            //bottom left
        || ( p.y() >= ( mMap->rect().height() - tolerance ) && p.x() >= ( mMap->rect().width() - tolerance ) ) //bottom right
-     )
+  )
   {
     //coordinate is in corner - fall back to preferred side for coordinate type
     if ( coordinateType == QgsLayoutItemMapGrid::Latitude )
@@ -2071,7 +2049,7 @@ QgsLayoutItemMapGrid::BorderSide QgsLayoutItemMapGrid::borderForLineCoord( QPoin
   }
 
   //otherwise, guess side based on closest map side to point
-  QList< QPair<qreal, QgsLayoutItemMapGrid::BorderSide > > distanceToSide;
+  QList<QPair<qreal, QgsLayoutItemMapGrid::BorderSide>> distanceToSide;
   distanceToSide << qMakePair( p.x(), QgsLayoutItemMapGrid::Left );
   distanceToSide << qMakePair( mMap->rect().width() - p.x(), QgsLayoutItemMapGrid::Right );
   distanceToSide << qMakePair( p.y(), QgsLayoutItemMapGrid::Top );
@@ -2225,7 +2203,7 @@ void QgsLayoutItemMapGrid::calculateMaxExtension( double &top, double &right, do
         break;
       }
     }
-    [[fallthrough]];
+      [[fallthrough]];
     case CM:
     case MM:
       drawGridNoTransform( context, 0, true );

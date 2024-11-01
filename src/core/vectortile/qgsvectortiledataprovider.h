@@ -42,7 +42,6 @@ class QgsVectorTileMatrixSet;
 class QgsVectorTileDataProviderSharedData
 {
   public:
-
     QgsVectorTileDataProviderSharedData();
 
     /**
@@ -57,11 +56,10 @@ class QgsVectorTileDataProviderSharedData
      */
     void storeCachedTileData( const QgsVectorTileRawData &data );
 
-    QCache< QgsTileXYZ, QgsVectorTileRawData > mTileCache;
+    QCache<QgsTileXYZ, QgsVectorTileRawData> mTileCache;
 
     // cannot use a read/write lock here -- see https://bugreports.qt.io/browse/QTBUG-19794
     QMutex mMutex; //!< Access to all data members is guarded by the mutex
-
 };
 
 /**
@@ -77,7 +75,6 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
     Q_OBJECT
 
   public:
-
     //! Role to set column attribute in the request so it can be retrieved later
     static int DATA_COLUMN;
     //! Role to set row attribute in the request so it can be retrieved later
@@ -194,11 +191,8 @@ class CORE_EXPORT QgsVectorTileDataProvider : public QgsDataProvider
     virtual QImage spriteImage() const;
 
   protected:
-
-    std::shared_ptr<QgsVectorTileDataProviderSharedData> mShared;  //!< Mutable data shared between provider instances
-
+    std::shared_ptr<QgsVectorTileDataProviderSharedData> mShared; //!< Mutable data shared between provider instances
 };
-
 
 
 #endif // QGSVECTORTILEDATAPROVIDER_H

@@ -25,9 +25,7 @@
 
 bool QgsGeometrySelfIntersectionCheckError::isEqual( const QgsSingleGeometryCheckError *other ) const
 {
-  return QgsSingleGeometryCheckError::isEqual( other ) &&
-         static_cast<const QgsGeometrySelfIntersectionCheckError *>( other )->intersection().segment1 == intersection().segment1 &&
-         static_cast<const QgsGeometrySelfIntersectionCheckError *>( other )->intersection().segment2 == intersection().segment2;
+  return QgsSingleGeometryCheckError::isEqual( other ) && static_cast<const QgsGeometrySelfIntersectionCheckError *>( other )->intersection().segment1 == intersection().segment1 && static_cast<const QgsGeometrySelfIntersectionCheckError *>( other )->intersection().segment2 == intersection().segment2;
 }
 
 bool QgsGeometrySelfIntersectionCheckError::handleChanges( const QList<QgsGeometryCheck::Change> &changes )
@@ -37,10 +35,7 @@ bool QgsGeometrySelfIntersectionCheckError::handleChanges( const QList<QgsGeomet
 
   for ( const QgsGeometryCheck::Change &change : changes )
   {
-    if ( change.vidx.vertex == mIntersection.segment1 ||
-         change.vidx.vertex == mIntersection.segment1 + 1 ||
-         change.vidx.vertex == mIntersection.segment2 ||
-         change.vidx.vertex == mIntersection.segment2 + 1 )
+    if ( change.vidx.vertex == mIntersection.segment1 || change.vidx.vertex == mIntersection.segment1 + 1 || change.vidx.vertex == mIntersection.segment2 || change.vidx.vertex == mIntersection.segment2 + 1 )
     {
       return false;
     }
@@ -69,7 +64,7 @@ void QgsGeometrySelfIntersectionCheckError::update( const QgsSingleGeometryCheck
 
 void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
-  QgsFeaturePool *featurePool = featurePools[ error->layerId() ];
+  QgsFeaturePool *featurePool = featurePools[error->layerId()];
   QgsFeature feature;
   if ( !featurePool->getFeature( error->featureId(), feature ) )
   {
@@ -160,9 +155,9 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
       error->setFixFailed( tr( "Resulting geometry is degenerate" ) );
       return;
     }
-    std::unique_ptr< QgsLineString > ringGeom1 = std::make_unique< QgsLineString >();
+    std::unique_ptr<QgsLineString> ringGeom1 = std::make_unique<QgsLineString>();
     ringGeom1->setPoints( ring1 );
-    std::unique_ptr< QgsLineString >ringGeom2 = std::make_unique< QgsLineString >();
+    std::unique_ptr<QgsLineString> ringGeom2 = std::make_unique<QgsLineString>();
     ringGeom2->setPoints( ring2 );
 
     QgsAbstractGeometry *part = QgsGeometryCheckerUtils::getGeomPart( geom, vidx.part );
@@ -187,12 +182,12 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
         poly->setExteriorRing( ringGeom1.release() );
 
         // If original feature was a linear polygon, also create the new part as a linear polygon
-        std::unique_ptr< QgsCurvePolygon > poly2 = qgsgeometry_cast<QgsPolygon *>( part ) ? std::make_unique< QgsPolygon> () : std::make_unique< QgsCurvePolygon >();
+        std::unique_ptr<QgsCurvePolygon> poly2 = qgsgeometry_cast<QgsPolygon *>( part ) ? std::make_unique<QgsPolygon>() : std::make_unique<QgsCurvePolygon>();
         poly2->setExteriorRing( ringGeom2.release() );
 
         // Reassing interiors as necessary
-        std::unique_ptr< QgsGeometryEngine > geomEnginePoly1( QgsGeometry::createGeometryEngine( poly, mContext->tolerance ) );
-        std::unique_ptr< QgsGeometryEngine > geomEnginePoly2( QgsGeometry::createGeometryEngine( poly2.get(), mContext->tolerance ) );
+        std::unique_ptr<QgsGeometryEngine> geomEnginePoly1( QgsGeometry::createGeometryEngine( poly, mContext->tolerance ) );
+        std::unique_ptr<QgsGeometryEngine> geomEnginePoly2( QgsGeometry::createGeometryEngine( poly2.get(), mContext->tolerance ) );
         for ( int n = poly->numInteriorRings(), i = n - 1; i >= 0; --i )
         {
           if ( !geomEnginePoly1->contains( poly->interiorRing( i ) ) )
@@ -221,7 +216,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
           // Otherwise, create multipolygon
           else
           {
-            std::unique_ptr< QgsMultiPolygon > multiPoly = std::make_unique< QgsMultiPolygon >();
+            std::unique_ptr<QgsMultiPolygon> multiPoly = std::make_unique<QgsMultiPolygon>();
             multiPoly->addGeometry( poly->clone() );
             multiPoly->addGeometry( poly2.release() );
             feature.setGeometry( QgsGeometry( std::move( multiPoly ) ) );
@@ -259,7 +254,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( const QMap<QString, QgsFeatureP
         }
         else
         {
-          std::unique_ptr< QgsMultiCurve > multiCurve = std::make_unique< QgsMultiLineString >();
+          std::unique_ptr<QgsMultiCurve> multiCurve = std::make_unique<QgsMultiLineString>();
           multiCurve->addGeometry( ringGeom1.release() );
           multiCurve->addGeometry( ringGeom2.release() );
           feature.setGeometry( QgsGeometry( std::move( multiCurve ) ) );
@@ -328,7 +323,7 @@ QList<QgsSingleGeometryCheckError *> QgsGeometrySelfIntersectionCheck::processGe
 ///@cond private
 QList<Qgis::GeometryType> QgsGeometrySelfIntersectionCheck::factoryCompatibleGeometryTypes()
 {
-  return {Qgis::GeometryType::Line, Qgis::GeometryType::Polygon};
+  return { Qgis::GeometryType::Line, Qgis::GeometryType::Polygon };
 }
 
 bool QgsGeometrySelfIntersectionCheck::factoryIsCompatible( QgsVectorLayer *layer )

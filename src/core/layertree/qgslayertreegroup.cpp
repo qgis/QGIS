@@ -263,7 +263,7 @@ QList<QgsLayerTreeLayer *> QgsLayerTreeGroup::findLayers() const
 
 void QgsLayerTreeGroup::reorderGroupLayers( const QList<QgsMapLayer *> &order )
 {
-  const QList< QgsLayerTreeLayer * > childLayers = findLayers();
+  const QList<QgsLayerTreeLayer *> childLayers = findLayers();
   int targetIndex = 0;
   for ( QgsMapLayer *targetLayer : order )
   {
@@ -351,7 +351,7 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( QDomElement &element, const QgsRe
   if ( element.tagName() != QLatin1String( "layer-tree-group" ) )
     return nullptr;
 
-  QString name =  context.projectTranslator()->translate( QStringLiteral( "project:layergroups" ), element.attribute( QStringLiteral( "name" ) ) );
+  QString name = context.projectTranslator()->translate( QStringLiteral( "project:layergroups" ), element.attribute( QStringLiteral( "name" ) ) );
   bool isExpanded = ( element.attribute( QStringLiteral( "expanded" ), QStringLiteral( "1" ) ) == QLatin1String( "1" ) );
   bool checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( QStringLiteral( "checked" ) ) ) != Qt::Unchecked;
   bool isMutuallyExclusive = element.attribute( QStringLiteral( "mutually-exclusive" ), QStringLiteral( "0" ) ) == QLatin1String( "1" );
@@ -482,12 +482,12 @@ void QgsLayerTreeGroup::setIsMutuallyExclusive( bool enabled, int initialChildIn
 
 QgsGroupLayer *QgsLayerTreeGroup::groupLayer()
 {
-  return qobject_cast< QgsGroupLayer * >( mGroupLayer.layer );
+  return qobject_cast<QgsGroupLayer *>( mGroupLayer.layer );
 }
 
 void QgsLayerTreeGroup::setGroupLayer( QgsGroupLayer *layer )
 {
-  if ( QgsGroupLayer *groupLayer = qobject_cast< QgsGroupLayer * >( mGroupLayer.get() ) )
+  if ( QgsGroupLayer *groupLayer = qobject_cast<QgsGroupLayer *>( mGroupLayer.get() ) )
   {
     if ( !layer )
     {
@@ -503,7 +503,7 @@ QgsGroupLayer *QgsLayerTreeGroup::convertToGroupLayer( const QgsGroupLayer::Laye
   if ( !mGroupLayer.layerId.isEmpty() )
     return nullptr;
 
-  std::unique_ptr< QgsGroupLayer > res = std::make_unique< QgsGroupLayer >( name(), options );
+  std::unique_ptr<QgsGroupLayer> res = std::make_unique<QgsGroupLayer>( name(), options );
 
   mGroupLayer.setLayer( res.get() );
   updateGroupLayers();
@@ -513,14 +513,14 @@ QgsGroupLayer *QgsLayerTreeGroup::convertToGroupLayer( const QgsGroupLayer::Laye
 
 void QgsLayerTreeGroup::refreshParentGroupLayerMembers()
 {
-  QgsLayerTreeGroup *parentGroup = qobject_cast< QgsLayerTreeGroup * >( parent() );
+  QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( parent() );
   while ( parentGroup )
   {
-    if ( QgsLayerTree *layerTree = qobject_cast< QgsLayerTree * >( parentGroup ) )
+    if ( QgsLayerTree *layerTree = qobject_cast<QgsLayerTree *>( parentGroup ) )
       layerTree->emit layerOrderChanged();
 
     parentGroup->updateGroupLayers();
-    parentGroup = qobject_cast< QgsLayerTreeGroup * >( parentGroup->parent() );
+    parentGroup = qobject_cast<QgsLayerTreeGroup *>( parentGroup->parent() );
   }
 }
 
@@ -588,23 +588,22 @@ void QgsLayerTreeGroup::makeOrphan()
 
 void QgsLayerTreeGroup::updateGroupLayers()
 {
-  QgsGroupLayer *groupLayer = qobject_cast< QgsGroupLayer * >( mGroupLayer.get() );
+  QgsGroupLayer *groupLayer = qobject_cast<QgsGroupLayer *>( mGroupLayer.get() );
   if ( !groupLayer )
     return;
 
-  QList< QgsMapLayer * > layers;
+  QList<QgsMapLayer *> layers;
 
-  std::function< void( QgsLayerTreeGroup * ) > findGroupLayerChildren;
-  findGroupLayerChildren = [&layers, &findGroupLayerChildren]( QgsLayerTreeGroup * group )
-  {
+  std::function<void( QgsLayerTreeGroup * )> findGroupLayerChildren;
+  findGroupLayerChildren = [&layers, &findGroupLayerChildren]( QgsLayerTreeGroup *group ) {
     for ( auto it = group->mChildren.crbegin(); it != group->mChildren.crend(); ++it )
     {
-      if ( QgsLayerTreeLayer *layerTreeLayer = qobject_cast< QgsLayerTreeLayer * >( *it ) )
+      if ( QgsLayerTreeLayer *layerTreeLayer = qobject_cast<QgsLayerTreeLayer *>( *it ) )
       {
         if ( layerTreeLayer->layer() && layerTreeLayer->isVisible() )
           layers << layerTreeLayer->layer();
       }
-      else if ( QgsLayerTreeGroup *childGroup = qobject_cast< QgsLayerTreeGroup * >( *it ) )
+      else if ( QgsLayerTreeGroup *childGroup = qobject_cast<QgsLayerTreeGroup *>( *it ) )
       {
         if ( childGroup->isVisible() )
         {

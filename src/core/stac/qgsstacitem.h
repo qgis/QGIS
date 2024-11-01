@@ -53,8 +53,8 @@ class CORE_EXPORT QgsStacItem : public QgsStacObject
                  const QString &version,
                  const QgsGeometry &geometry,
                  const QVariantMap &properties,
-                 const QVector< QgsStacLink > &links,
-                 const QMap< QString, QgsStacAsset > &assets,
+                 const QVector<QgsStacLink> &links,
+                 const QMap<QString, QgsStacAsset> &assets,
                  const QgsBox3D &bbox );
 
     QgsStacObject::Type type() const override;
@@ -79,10 +79,10 @@ class CORE_EXPORT QgsStacItem : public QgsStacObject
     void setProperties( const QVariantMap &properties );
 
     //! Returns a dictionary of asset objects that can be downloaded, each with a unique key.
-    QMap< QString, QgsStacAsset > assets() const;
+    QMap<QString, QgsStacAsset> assets() const;
 
     //! Sets the \a asset objects that can be downloaded, each with a unique key.
-    void setAssets( const QMap< QString, QgsStacAsset > &assets );
+    void setAssets( const QMap<QString, QgsStacAsset> &assets );
 
     //! Returns the id of the STAC Collection this Item references to
     QString collection() const;
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsStacItem : public QgsStacObject
     QgsGeometry mGeometry;
     QgsBox3D mBbox;
     QVariantMap mProperties;
-    QMap< QString, QgsStacAsset > mAssets;
+    QMap<QString, QgsStacAsset> mAssets;
     QString mCollection;
 };
 

@@ -43,7 +43,6 @@ class CORE_EXPORT QgsRenderChecker
     Q_GADGET
 
   public:
-
     /**
      * Constructor for QgsRenderChecker.
      */
@@ -107,8 +106,7 @@ class CORE_EXPORT QgsRenderChecker
      */
     float matchPercent() const
     {
-      return static_cast<float>( mMismatchCount ) /
-             static_cast<float>( mMatchTarget ) * 100;
+      return static_cast<float>( mMismatchCount ) / static_cast<float>( mMatchTarget ) * 100;
     }
 
     /**
@@ -189,17 +187,20 @@ class CORE_EXPORT QgsRenderChecker
      * \param xTolerance x tolerance in pixels
      * \param yTolerance y tolerance in pixels
      */
-    void setSizeTolerance( int xTolerance, int yTolerance ) { mMaxSizeDifferenceX = xTolerance; mMaxSizeDifferenceY = yTolerance; }
+    void setSizeTolerance( int xTolerance, int yTolerance )
+    {
+      mMaxSizeDifferenceX = xTolerance;
+      mMaxSizeDifferenceY = yTolerance;
+    }
 
     /**
      * Render checker flags.
      *
      * \since QGIS 3.28
      */
-    enum class Flag : int SIP_ENUM_BASETYPE( IntFlag )
-    {
+    enum class Flag : int SIP_ENUM_BASETYPE( IntFlag ) {
       AvoidExportingRenderedImage = 1 << 0, //!< Avoids exporting rendered images to reports
-      Silent = 1 << 1, //!< Don't output non-critical messages to console \since QGIS 3.40
+      Silent = 1 << 1,                      //!< Don't output non-critical messages to console \since QGIS 3.40
     };
     Q_ENUM( Flag )
 

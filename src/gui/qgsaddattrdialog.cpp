@@ -38,18 +38,20 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
   const Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities = vlayer->dataProvider()->attributeEditCapabilities();
 
   //fill data types into the combo box
-  const QList< QgsVectorDataProvider::NativeType > &typelist = vlayer->dataProvider()->nativeTypes();
+  const QList<QgsVectorDataProvider::NativeType> &typelist = vlayer->dataProvider()->nativeTypes();
   for ( int i = 0; i < typelist.size(); i++ )
   {
     QgsDebugMsgLevel( QStringLiteral( "name:%1 type:%2 typeName:%3 length:%4-%5 prec:%6-%7" )
-                      .arg( typelist[i].mTypeDesc )
-                      .arg( typelist[i].mType )
-                      .arg( typelist[i].mTypeName )
-                      .arg( typelist[i].mMinLen ).arg( typelist[i].mMaxLen )
-                      .arg( typelist[i].mMinPrec ).arg( typelist[i].mMaxPrec ), 2 );
+                        .arg( typelist[i].mTypeDesc )
+                        .arg( typelist[i].mType )
+                        .arg( typelist[i].mTypeName )
+                        .arg( typelist[i].mMinLen )
+                        .arg( typelist[i].mMaxLen )
+                        .arg( typelist[i].mMinPrec )
+                        .arg( typelist[i].mMaxPrec ),
+                      2 );
 
-    whileBlocking( mTypeBox )->addItem( QgsFields::iconForFieldType( typelist[i].mType, typelist[i].mSubType, typelist[i].mTypeName ),
-                                        typelist[i].mTypeDesc );
+    whileBlocking( mTypeBox )->addItem( QgsFields::iconForFieldType( typelist[i].mType, typelist[i].mSubType, typelist[i].mTypeName ), typelist[i].mTypeDesc );
     mTypeBox->setItemData( i, static_cast<int>( typelist[i].mType ), Qt::UserRole );
     mTypeBox->setItemData( i, typelist[i].mTypeName, Qt::UserRole + 1 );
     mTypeBox->setItemData( i, typelist[i].mMinLen, Qt::UserRole + 2 );
@@ -160,25 +162,24 @@ void QgsAddAttrDialog::accept()
 
 QgsField QgsAddAttrDialog::field() const
 {
-
   QgsDebugMsgLevel( QStringLiteral( "idx:%1 name:%2 type:%3 typeName:%4 length:%5 prec:%6 comment:%7" )
-                    .arg( mTypeBox->currentIndex() )
-                    .arg( mNameEdit->text() )
-                    .arg( mTypeBox->currentData( Qt::UserRole ).toInt() )
-                    .arg( mTypeBox->currentData( Qt::UserRole + 1 ).toString() )
-                    .arg( mLength->value() )
-                    .arg( mPrec->value() )
-                    .arg( mCommentEdit->text() ), 2 );
+                      .arg( mTypeBox->currentIndex() )
+                      .arg( mNameEdit->text() )
+                      .arg( mTypeBox->currentData( Qt::UserRole ).toInt() )
+                      .arg( mTypeBox->currentData( Qt::UserRole + 1 ).toString() )
+                      .arg( mLength->value() )
+                      .arg( mPrec->value() )
+                      .arg( mCommentEdit->text() ),
+                    2 );
 
   QgsField res = QgsField(
-                   mNameEdit->text(),
-                   ( QMetaType::Type ) mTypeBox->currentData( Qt::UserRole ).toInt(),
-                   mTypeBox->currentData( Qt::UserRole + 1 ).toString(),
-                   mLength->value(),
-                   mPrec->isEnabled() ? mPrec->value() : 0,
-                   mCommentEdit->text(),
-                   static_cast<QMetaType::Type>( mTypeBox->currentData( Qt::UserRole ).toInt() ) == QMetaType::Type::QVariantMap ? QMetaType::Type::QString : QMetaType::Type::UnknownType
-                 );
+    mNameEdit->text(),
+    ( QMetaType::Type ) mTypeBox->currentData( Qt::UserRole ).toInt(),
+    mTypeBox->currentData( Qt::UserRole + 1 ).toString(),
+    mLength->value(),
+    mPrec->isEnabled() ? mPrec->value() : 0,
+    mCommentEdit->text(),
+    static_cast<QMetaType::Type>( mTypeBox->currentData( Qt::UserRole ).toInt() ) == QMetaType::Type::QVariantMap ? QMetaType::Type::QString : QMetaType::Type::UnknownType );
 
   if ( !mAliasEdit->text().isEmpty() )
     res.setAlias( mAliasEdit->text() );

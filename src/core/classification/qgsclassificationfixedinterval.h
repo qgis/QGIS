@@ -28,7 +28,6 @@
 class CORE_EXPORT QgsClassificationFixedInterval : public QgsClassificationMethod
 {
   public:
-
     QgsClassificationFixedInterval();
     QgsClassificationMethod *clone() const override;
     QString name() const override;
@@ -38,8 +37,6 @@ class CORE_EXPORT QgsClassificationFixedInterval : public QgsClassificationMetho
 
   private:
     QList<double> calculateBreaks( double &minimum, double &maximum, const QList<double> &values, int nclasses, QString &error ) override;
-
-
 };
 
 #endif // QGSCLASSIFICATIONFIXEDINTERVAL_H

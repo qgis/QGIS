@@ -29,13 +29,11 @@
 class CORE_EXPORT QgsCommandLineUtils
 {
   public:
-
     /**
      * Display all versions in the standard output stream
      * \since QGIS 3.22
      */
-    static QString allVersions( );
-
+    static QString allVersions();
 };
 
 #endif // QGSCOMMANDLINEUTILS_H

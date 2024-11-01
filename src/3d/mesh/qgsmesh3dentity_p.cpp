@@ -25,7 +25,6 @@
 #include "qgsmesh3dmaterial_p.h"
 
 
-
 QgsMesh3DEntity::QgsMesh3DEntity( const Qgs3DRenderContext &context,
                                   const QgsTriangularMesh &triangularMesh,
                                   const QgsMesh3DSymbol *symbol )
@@ -39,8 +38,7 @@ QgsMeshDataset3DEntity::QgsMeshDataset3DEntity(
   const QgsTriangularMesh &triangularMesh,
   QgsMeshLayer *meshLayer,
   const QgsMesh3DSymbol *symbol )
-  : QgsMesh3DEntity( context, triangularMesh, symbol ),
-    mLayerRef( meshLayer )
+  : QgsMesh3DEntity( context, triangularMesh, symbol ), mLayerRef( meshLayer )
 {}
 
 void QgsMesh3DEntity::build()
@@ -78,10 +76,10 @@ QgsMeshLayer *QgsMeshDataset3DEntity::layer() const
 }
 
 QgsMesh3DTerrainTileEntity::QgsMesh3DTerrainTileEntity( const Qgs3DRenderContext &context,
-    const QgsTriangularMesh &triangularMesh,
-    const QgsMesh3DSymbol *symbol,
-    QgsChunkNodeId nodeId,
-    Qt3DCore::QNode *parent )
+                                                        const QgsTriangularMesh &triangularMesh,
+                                                        const QgsMesh3DSymbol *symbol,
+                                                        QgsChunkNodeId nodeId,
+                                                        Qt3DCore::QNode *parent )
   : QgsTerrainTileEntity( nodeId, parent )
   , QgsMesh3DEntity( context, triangularMesh, symbol )
 {}

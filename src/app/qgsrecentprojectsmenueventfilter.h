@@ -25,7 +25,6 @@ class QgsRecentProjectsMenuEventFilter : public QObject
     Q_OBJECT
 
   public:
-
     QgsRecentProjectsMenuEventFilter( QgsWelcomePage *welcomePage = nullptr, QObject *parent = nullptr );
 
     bool eventFilter( QObject *obj, QEvent *event ) override;

@@ -52,7 +52,6 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     Q_GADGET
 
   public:
-
     /**
      * Precision defines if each pixel is reprojected or approximate reprojection based
      *  on an approximation matrix of reprojected points is used.
@@ -60,7 +59,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     enum Precision
     {
       Approximate = 0, //!< Approximate (default), fast but possibly inaccurate
-      Exact = 1,   //!< Exact, precise but slow
+      Exact = 1,       //!< Exact, precise but slow
     };
     Q_ENUM( Precision )
 
@@ -109,7 +108,6 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
                             QgsRectangle &destExtent SIP_OUT, int &destXSize SIP_OUT, int &destYSize SIP_OUT );
 
   private:
-
     //! Source CRS
     QgsCoordinateReferenceSystem mSrcCRS;
 
@@ -126,7 +124,6 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     Precision mPrecision = Approximate;
 
     QgsCoordinateTransformContext mTransformContext;
-
 };
 
 
@@ -160,7 +157,6 @@ class ProjectorData
     int srcCols() const { return mSrcCols; }
 
   private:
-
     //! Returns the destination point for _current_ destination position.
     void destPointOnCPMatrix( int row, int col, double *theX, double *theY );
 
@@ -267,11 +263,11 @@ class ProjectorData
     double mDestColsPerMatrixCol;
 
     //! Grid of source control points
-    QList< QList<QgsPointXY> > mCPMatrix;
+    QList<QList<QgsPointXY>> mCPMatrix;
 
     //! Grid of source control points transformation possible indicator
     /* Same size as mCPMatrix */
-    QList< QList<bool> > mCPLegalMatrix;
+    QList<QList<bool>> mCPLegalMatrix;
 
     //! Array of source points for each destination column on top of current CPMatrix grid row
     /* Warning: using QList is slow on access */
@@ -295,11 +291,9 @@ class ProjectorData
     //! Maximum source resolution
     double mMaxSrcXRes;
     double mMaxSrcYRes;
-
 };
 
 /// @endcond
 #endif
 
 #endif
-

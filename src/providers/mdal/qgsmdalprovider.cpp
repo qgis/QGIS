@@ -118,7 +118,7 @@ void QgsMdalProvider::populateMesh( QgsMesh *mesh ) const
   }
 }
 
-QVector<QgsMeshVertex> QgsMdalProvider::vertices( ) const
+QVector<QgsMeshVertex> QgsMdalProvider::vertices() const
 {
   const int bufferSize = std::min( vertexCount(), 1000 );
   QVector<QgsMeshVertex> ret( vertexCount() );
@@ -135,8 +135,7 @@ QVector<QgsMeshVertex> QgsMdalProvider::vertices( ) const
       QgsMeshVertex vertex(
         buffer[3 * i],
         buffer[3 * i + 1],
-        buffer[3 * i + 2]
-      );
+        buffer[3 * i + 2] );
       ret[vertexIndex + i] = vertex;
     }
     vertexIndex += verticesRead;
@@ -145,7 +144,7 @@ QVector<QgsMeshVertex> QgsMdalProvider::vertices( ) const
   return ret;
 }
 
-QVector<QgsMeshEdge> QgsMdalProvider::edges( ) const
+QVector<QgsMeshEdge> QgsMdalProvider::edges() const
 {
   const int edgesCount = edgeCount();
   const int bufferSize = std::min( edgesCount, 1000 );
@@ -163,8 +162,7 @@ QVector<QgsMeshEdge> QgsMdalProvider::edges( ) const
     {
       QgsMeshEdge edge(
         startBuffer[i],
-        endBuffer[i]
-      );
+        endBuffer[i] );
       ret[edgeIndex + i] = edge;
     }
     edgeIndex += edgesRead;
@@ -173,7 +171,7 @@ QVector<QgsMeshEdge> QgsMdalProvider::edges( ) const
   return ret;
 }
 
-QVector<QgsMeshFace> QgsMdalProvider::faces( ) const
+QVector<QgsMeshFace> QgsMdalProvider::faces() const
 {
   const int faceOffsetsBufferLen = std::min( faceCount(), 1000 );
   const int vertexIndicesBufferLen = faceOffsetsBufferLen * 4; // most usually we have quads
@@ -200,8 +198,8 @@ QVector<QgsMeshFace> QgsMdalProvider::faces( ) const
       QgsMeshFace face;
       int startIndex = 0;
       if ( i > 0 )
-        startIndex = faceOffsetsBuffer[ i - 1 ];
-      int endIndex = faceOffsetsBuffer[ i ];
+        startIndex = faceOffsetsBuffer[i - 1];
+      int endIndex = faceOffsetsBuffer[i];
 
       for ( int j = startIndex; j < endIndex; ++j )
       {
@@ -265,8 +263,7 @@ bool QgsMdalProvider::persistDatasetGroup(
   const QgsMeshDatasetGroupMetadata &meta,
   const QVector<QgsMeshDataBlock> &datasetValues,
   const QVector<QgsMeshDataBlock> &datasetActive,
-  const QVector<double> &times
-)
+  const QVector<double> &times )
 {
   if ( !mMeshH )
     return true;
@@ -314,13 +311,12 @@ bool QgsMdalProvider::persistDatasetGroup(
   }
 
   MDAL_DatasetGroupH g = MDAL_M_addDatasetGroup(
-                           mMeshH,
-                           meta.name().toStdString().c_str(),
-                           location,
-                           meta.isScalar(),
-                           driver,
-                           outputFilePath.toStdString().c_str()
-                         );
+    mMeshH,
+    meta.name().toStdString().c_str(),
+    location,
+    meta.isScalar(),
+    driver,
+    outputFilePath.toStdString().c_str() );
   if ( !g )
     return true;
 
@@ -345,8 +341,7 @@ bool QgsMdalProvider::persistDatasetGroup(
     MDAL_G_addDataset( g,
                        times.at( i ),
                        values.constData(),
-                       active.isEmpty() ? nullptr : active.constData()
-                     );
+                       active.isEmpty() ? nullptr : active.constData() );
   }
 
   MDAL_G_closeEditMode( g );
@@ -399,13 +394,12 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &outputFilePath, const 
   }
 
   MDAL_DatasetGroupH g = MDAL_M_addDatasetGroup(
-                           mMeshH,
-                           meta.name().toStdString().c_str(),
-                           location,
-                           meta.isScalar(),
-                           driver,
-                           outputFilePath.toStdString().c_str()
-                         );
+    mMeshH,
+    meta.name().toStdString().c_str(),
+    location,
+    meta.isScalar(),
+    driver,
+    outputFilePath.toStdString().c_str() );
   if ( !g )
     return true;
 
@@ -436,9 +430,7 @@ bool QgsMdalProvider::persistDatasetGroup( const QString &outputFilePath, const 
     MDAL_G_addDataset( g,
                        dsm.time(),
                        values.values().constData(),
-                       active.active().isEmpty() ? nullptr : active.active().constData()
-                     );
-
+                       active.active().isEmpty() ? nullptr : active.active().constData() );
   }
 
   if ( fail )
@@ -470,7 +462,6 @@ bool QgsMdalProvider::saveMeshFrame( const QgsMesh &mesh )
     return mdalProviderMetaData.createMeshData( mesh, uriComponent.value( QStringLiteral( "path" ) ).toString(), mDriverName, crs(), mMeshMetadata );
 
   return false;
-
 }
 
 void QgsMdalProvider::close()
@@ -527,7 +518,6 @@ void QgsMdalProvider::addGroupToTemporalCapabilities( int indexGroup )
         tempCap->addDatasetTime( indexGroup, dsMeta.time() );
     }
   }
-
 }
 
 void QgsMdalProvider::reloadProviderData()
@@ -613,15 +603,17 @@ void QgsMdalProvider::fileMeshFilters( QString &fileMeshFiltersString, QString &
   fileMeshDatasetFiltersString.prepend( QObject::tr( "All files" ) + " (*);;" );
 
   // cleanup
-  if ( fileMeshFiltersString.endsWith( QLatin1String( ";;" ) ) ) fileMeshFiltersString.chop( 2 );
-  if ( fileMeshDatasetFiltersString.endsWith( QLatin1String( ";;" ) ) ) fileMeshDatasetFiltersString.chop( 2 );
+  if ( fileMeshFiltersString.endsWith( QLatin1String( ";;" ) ) )
+    fileMeshFiltersString.chop( 2 );
+  if ( fileMeshDatasetFiltersString.endsWith( QLatin1String( ";;" ) ) )
+    fileMeshDatasetFiltersString.chop( 2 );
 
   QgsDebugMsgLevel( "Mesh filter list built: " + fileMeshFiltersString, 2 );
   QgsDebugMsgLevel( "Mesh dataset filter list built: " + fileMeshDatasetFiltersString, 2 );
 }
 
 void QgsMdalProvider::fileMeshExtensions( QStringList &fileMeshExtensions,
-    QStringList &fileMeshDatasetExtensions )
+                                          QStringList &fileMeshDatasetExtensions )
 {
   MDAL_DriverH mdalDriver;
 
@@ -766,7 +758,7 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
 
   QString referenceTimeString( MDAL_G_referenceTime( group ) );
   if ( !referenceTimeString.isEmpty() )
-    referenceTimeString.append( 'Z' );//For now provider doesn't support time zone and return always in local time, force UTC
+    referenceTimeString.append( 'Z' ); //For now provider doesn't support time zone and return always in local time, force UTC
   QDateTime referenceTime = QDateTime::fromString( referenceTimeString, Qt::ISODate );
 
   bool isTemporal = MDAL_G_isTemporal( group );
@@ -781,8 +773,7 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
     maximumVerticalLevels,
     referenceTime,
     isTemporal,
-    metadata
-  );
+    metadata );
 
   return meta;
 }
@@ -808,11 +799,9 @@ QgsMeshDatasetMetadata QgsMdalProvider::datasetMetadata( QgsMeshDatasetIndex ind
     isValid,
     min,
     max,
-    maxLevels
-  );
+    maxLevels );
 
   return meta;
-
 }
 
 QgsMeshDatasetValue QgsMdalProvider::datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const
@@ -910,7 +899,7 @@ QgsMesh3DDataBlock QgsMdalProvider::dataset3dValues( QgsMeshDatasetIndex index, 
   }
 
   {
-    QVector<double> values( isScalar ? nVolumes :  2 * nVolumes );
+    QVector<double> values( isScalar ? nVolumes : 2 * nVolumes );
     int valRead = MDAL_D_data( dataset,
                                firstVolumeIndex,
                                nVolumes,
@@ -985,11 +974,11 @@ static MDAL_MeshH createMDALMesh( const QgsMesh &mesh, const QString &driverName
   {
     int vertexCount = std::min( bufferSize, mesh.vertexCount() - vertexIndex );
     QVector<double> verticesCoordinates( vertexCount * 3 );
-    for ( int i = 0; i < vertexCount ; ++i )
+    for ( int i = 0; i < vertexCount; ++i )
     {
       int globalIndex = vertexIndex + i;
       const QgsMeshVertex &vert = mesh.vertex( globalIndex );
-      verticesCoordinates[i * 3  ] = vert.x();
+      verticesCoordinates[i * 3] = vert.x();
       verticesCoordinates[i * 3 + 1] = vert.y();
       verticesCoordinates[i * 3 + 2] = vert.z();
     }
@@ -1057,8 +1046,7 @@ bool QgsMdalProviderMetadata::createMeshData( const QgsMesh &mesh, const QString
     return false;
 
   MDAL_MeshH mdalMesh = createMDALMesh( mesh,
-                                        uriComponents.value( QStringLiteral( "driver" ) ).toString()
-                                        , crs );
+                                        uriComponents.value( QStringLiteral( "driver" ) ).toString(), crs );
 
   if ( !mdalMesh )
     return false;
@@ -1104,14 +1092,11 @@ QString QgsMdalProviderMetadata::encodeUri( const QVariantMap &parts ) const
 {
   if ( !parts.value( QStringLiteral( "layerName" ) ).toString().isEmpty() && !parts.value( QStringLiteral( "driver" ) ).toString().isEmpty() )
   {
-    return QStringLiteral( "%1:\"%2\":%3" ).arg( parts.value( QStringLiteral( "driver" ) ).toString(),
-           parts.value( QStringLiteral( "path" ) ).toString(),
-           parts.value( QStringLiteral( "layerName" ) ).toString() );
+    return QStringLiteral( "%1:\"%2\":%3" ).arg( parts.value( QStringLiteral( "driver" ) ).toString(), parts.value( QStringLiteral( "path" ) ).toString(), parts.value( QStringLiteral( "layerName" ) ).toString() );
   }
   else if ( !parts.value( QStringLiteral( "driver" ) ).toString().isEmpty() )
   {
-    return QStringLiteral( "%1:\"%2\"" ).arg( parts.value( QStringLiteral( "driver" ) ).toString(),
-           parts.value( QStringLiteral( "path" ) ).toString() );
+    return QStringLiteral( "%1:\"%2\"" ).arg( parts.value( QStringLiteral( "driver" ) ).toString(), parts.value( QStringLiteral( "path" ) ).toString() );
   }
   else
   {
@@ -1175,8 +1160,7 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
 
     static QStringList sExtensions;
     static std::once_flag initialized;
-    std::call_once( initialized, [ = ]( )
-    {
+    std::call_once( initialized, [=]() {
       QStringList datasetsExtensions;
       QgsMdalProvider::fileMeshExtensions( sExtensions, datasetsExtensions );
       Q_UNUSED( datasetsExtensions )
@@ -1205,7 +1189,7 @@ QList<QgsProviderSublayerDetails> QgsMdalProviderMetadata::querySublayers( const
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( path ) );
     // treat all mesh files as potentially being containers (is this correct?)
     details.setSkippedContainerScan( true );
-    return {details};
+    return { details };
   }
 
   const QStringList meshNames = QString( MDAL_MeshNames( path.toUtf8() ) ).split( QStringLiteral( ";;" ) );

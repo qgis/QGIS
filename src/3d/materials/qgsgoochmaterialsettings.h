@@ -37,7 +37,6 @@ class QDomElement;
 class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
 {
   public:
-
     QgsGoochMaterialSettings() = default;
 
     QString type() const override;
@@ -102,7 +101,7 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
 
     QByteArray dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const override;
     int dataDefinedByteStride() const override;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     void applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;
 #else
     void applyDataDefinedToGeometry( Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;
@@ -113,20 +112,14 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
     // TODO c++20 - replace with = default
     bool operator==( const QgsGoochMaterialSettings &other ) const
     {
-      return mDiffuse == other.mDiffuse &&
-             mSpecular == other.mSpecular &&
-             mWarm == other.mWarm &&
-             mCool == other.mCool &&
-             mShininess == other.mShininess &&
-             mAlpha == other.mAlpha &&
-             mBeta == other.mBeta;
+      return mDiffuse == other.mDiffuse && mSpecular == other.mSpecular && mWarm == other.mWarm && mCool == other.mCool && mShininess == other.mShininess && mAlpha == other.mAlpha && mBeta == other.mBeta;
     }
 
   private:
-    QColor mDiffuse{ QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) };
-    QColor mSpecular{ QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
-    QColor mWarm {QColor( 107, 0, 107 ) };
-    QColor mCool {QColor( 255, 130, 0 )};
+    QColor mDiffuse { QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) };
+    QColor mSpecular { QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
+    QColor mWarm { QColor( 107, 0, 107 ) };
+    QColor mCool { QColor( 255, 130, 0 ) };
     float mShininess = 100.0f;
     float mAlpha = 0.25f;
     float mBeta = 0.5f;

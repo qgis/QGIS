@@ -34,14 +34,12 @@ class QgsReadOnlyStyleModel : public QgsStyleProxyModel
 {
     Q_OBJECT
   public:
-
     explicit QgsReadOnlyStyleModel( QgsStyleModel *sourceModel, QObject *parent = nullptr );
     explicit QgsReadOnlyStyleModel( QgsStyle *style, QObject *parent = nullptr );
     explicit QgsReadOnlyStyleModel( QgsCombinedStyleModel *style, QObject *parent = nullptr );
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
-
 };
 
 /**
@@ -56,7 +54,6 @@ class QgsStyleModelDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsStyleModelDelegate, with the specified \a parent object.
      */
@@ -64,7 +61,6 @@ class QgsStyleModelDelegate : public QStyledItemDelegate
 
     QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-
 };
 
 #endif
@@ -81,7 +77,6 @@ class GUI_EXPORT QgsStyleItemsListWidget : public QWidget, private Ui::QgsStyleI
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsStyleItemsListWidget, with the specified \a parent widget.
      */
@@ -172,7 +167,6 @@ class GUI_EXPORT QgsStyleItemsListWidget : public QWidget, private Ui::QgsStyleI
     QgsStyle::StyleEntity currentEntityType() const;
 
   protected:
-
     void showEvent( QShowEvent *event ) override;
 
   signals:
@@ -218,6 +212,3 @@ class GUI_EXPORT QgsStyleItemsListWidget : public QWidget, private Ui::QgsStyleI
 };
 
 #endif //QGSSTYLEITEMSLISTWIDGET_H
-
-
-

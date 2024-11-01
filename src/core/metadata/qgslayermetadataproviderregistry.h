@@ -29,10 +29,10 @@ class QgsFeedback;
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include "qgsabstractlayermetadataprovider.h"
-% End
+  % End
 #endif
 
-/**
+  /**
  * \ingroup core
  * \brief Registry of layer metadata provider backends.
  *
@@ -41,12 +41,10 @@ class QgsFeedback;
  * \see QgsAbstractLayerMetadataProvider
  * \since QGIS 3.28
  */
-class CORE_EXPORT QgsLayerMetadataProviderRegistry : public QObject
+  class CORE_EXPORT QgsLayerMetadataProviderRegistry : public QObject
 {
-
     Q_OBJECT
   public:
-
     //! Creates the layer metadata provider registry, with an optional \a parent
     explicit QgsLayerMetadataProviderRegistry( QObject *parent = nullptr );
 
@@ -69,9 +67,7 @@ class CORE_EXPORT QgsLayerMetadataProviderRegistry : public QObject
     const QgsLayerMetadataSearchResults search( const QgsMetadataSearchContext &searchContext, const QString &searchString = QString(), const QgsRectangle &geographicExtent = QgsRectangle(), QgsFeedback *feedback = nullptr );
 
   private:
-
-    QHash<QString,  QgsAbstractLayerMetadataProvider *> mMetadataProviders;
-
+    QHash<QString, QgsAbstractLayerMetadataProvider *> mMetadataProviders;
 };
 
 #endif // QGSLAYERMETADATAPROVIDERREGISTRY_H

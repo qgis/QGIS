@@ -34,9 +34,7 @@ class QgsFields;
  */
 class CORE_EXPORT QgsMemoryProviderUtils
 {
-
   public:
-
     /**
      * Creates a new memory layer using the specified parameters. The caller takes responsibility
      * for deleting the newly created layer.
@@ -47,12 +45,10 @@ class CORE_EXPORT QgsMemoryProviderUtils
      * \param loadDefaultStyle optional load default style toggle
      */
     static QgsVectorLayer *createMemoryLayer( const QString &name,
-        const QgsFields &fields,
-        Qgis::WkbType geometryType = Qgis::WkbType::NoGeometry,
-        const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
-        bool loadDefaultStyle = true ) SIP_FACTORY;
+                                              const QgsFields &fields,
+                                              Qgis::WkbType geometryType = Qgis::WkbType::NoGeometry,
+                                              const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
+                                              bool loadDefaultStyle = true ) SIP_FACTORY;
 };
 
 #endif // QGSMEMORYPROVIDERUTILS_H
-
-

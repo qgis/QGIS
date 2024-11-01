@@ -38,7 +38,7 @@ QVariant QgsNetworkSpeedStrategy::cost( double distance, const QgsFeature &f ) c
 
 QSet<int> QgsNetworkSpeedStrategy::requiredAttributes() const
 {
-  QSet< int > l;
+  QSet<int> l;
   l.insert( mAttributeId );
   return l;
 }

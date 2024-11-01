@@ -51,7 +51,7 @@ class APP_EXPORT QgsRelationAddPolymorphicDialog : public QDialog, private Ui::Q
     /**
      * Returns field pairs
      */
-    QList< QPair< QString, QString > > fieldPairs() const;
+    QList<QPair<QString, QString>> fieldPairs() const;
 
     /**
      * Returns the polymorphic relation id
@@ -95,7 +95,6 @@ class APP_EXPORT QgsRelationAddPolymorphicDialog : public QDialog, private Ui::Q
     void updateFieldsMapping();
 
     bool mIsEditDialog = false;
-
 };
 
 #endif // QGSRELATIONADDPOLYMORPHICDIALOG_H

@@ -35,7 +35,6 @@ class QgsFeedback;
  */
 class QgsSensorThingsSharedData
 {
-
   public:
     QgsSensorThingsSharedData( const QString &uri );
 
@@ -62,14 +61,13 @@ class QgsSensorThingsSharedData
     void clearCache();
 
   private:
-
     bool processFeatureRequest( QString &nextPage, QgsFeedback *feedback,
-                                const std::function< void( const QgsFeature & ) > &fetchedFeatureCallback,
-                                const std::function< bool() > &continueFetchingCallback,
-                                const std::function< void() > &onNoMoreFeaturesCallback );
+                                const std::function<void( const QgsFeature & )> &fetchedFeatureCallback,
+                                const std::function<bool()> &continueFetchingCallback,
+                                const std::function<void()> &onNoMoreFeaturesCallback );
 
     friend class QgsSensorThingsProvider;
-    mutable QReadWriteLock mReadWriteLock{ QReadWriteLock::Recursive };
+    mutable QReadWriteLock mReadWriteLock { QReadWriteLock::Recursive };
 
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
@@ -82,7 +80,7 @@ class QgsSensorThingsSharedData
     QString mExpandQueryString;
 
     Qgis::SensorThingsEntity mEntityType = Qgis::SensorThingsEntity::Invalid;
-    QList< QgsSensorThingsExpansionDefinition > mExpansions;
+    QList<QgsSensorThingsExpansionDefinition> mExpansions;
 
     int mFeatureLimit = 0;
     Qgis::WkbType mGeometryType = Qgis::WkbType::Unknown;
@@ -96,7 +94,7 @@ class QgsSensorThingsSharedData
 
     QgsCoordinateReferenceSystem mSourceCRS;
 
-    mutable long long mFeatureCount = static_cast< long long >( Qgis::FeatureCountState::Uncounted );
+    mutable long long mFeatureCount = static_cast<long long>( Qgis::FeatureCountState::Uncounted );
     mutable long long mRetrievedBaseFeatureCount = 0;
 
     QHash<QString, QgsFeatureId> mIotIdToFeatureId;

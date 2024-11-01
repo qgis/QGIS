@@ -65,7 +65,7 @@ class CORE_EXPORT QgsLocatorModelBridge : public QObject
     bool isRunning() const;
 
     //! Triggers the result at given \a index and with optional \a actionId if an additional action was triggered
-    void triggerResult( const QModelIndex &index,  const int actionId = -1 );
+    void triggerResult( const QModelIndex &index, const int actionId = -1 );
 
     /**
      * Returns the coordinate transform context, which should be used whenever the

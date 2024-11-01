@@ -42,12 +42,10 @@ namespace gdal
    */
   struct OGRDataSourceDeleter
   {
-
-    /**
+      /**
      * Destroys an OGR data \a source, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( OGRDataSourceH source ) const;
-
+      void CORE_EXPORT operator()( OGRDataSourceH source ) const;
   };
 
   /**
@@ -55,12 +53,10 @@ namespace gdal
    */
   struct OGRGeometryDeleter
   {
-
-    /**
+      /**
      * Destroys an OGR \a geometry, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( OGRGeometryH geometry ) const;
-
+      void CORE_EXPORT operator()( OGRGeometryH geometry ) const;
   };
 
   /**
@@ -68,12 +64,10 @@ namespace gdal
    */
   struct OGRFldDeleter
   {
-
-    /**
+      /**
      * Destroys an OGR field \a definition, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( OGRFieldDefnH definition ) const;
-
+      void CORE_EXPORT operator()( OGRFieldDefnH definition ) const;
   };
 
   /**
@@ -81,12 +75,10 @@ namespace gdal
    */
   struct OGRFeatureDeleter
   {
-
-    /**
+      /**
      * Destroys an OGR \a feature, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( OGRFeatureH feature ) const;
-
+      void CORE_EXPORT operator()( OGRFeatureH feature ) const;
   };
 
   /**
@@ -94,12 +86,10 @@ namespace gdal
    */
   struct GDALDatasetCloser
   {
-
-    /**
+      /**
      * Destroys an gdal \a dataset, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( GDALDatasetH datasource ) const;
-
+      void CORE_EXPORT operator()( GDALDatasetH datasource ) const;
   };
 
   /**
@@ -107,54 +97,50 @@ namespace gdal
    */
   struct GDALWarpOptionsDeleter
   {
-
-    /**
+      /**
      * Destroys GDAL warp \a options, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( GDALWarpOptions *options ) const;
-
+      void CORE_EXPORT operator()( GDALWarpOptions *options ) const;
   };
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
 
   /**
    * Closes and cleanups GDAL relationship.
    */
   struct GDALRelationshipDeleter
   {
-
-    /**
+      /**
      * Destroys GDAL \a relationship, using the correct gdal calls.
      */
-    void CORE_EXPORT operator()( GDALRelationshipH relationship ) const;
-
+      void CORE_EXPORT operator()( GDALRelationshipH relationship ) const;
   };
 #endif
 
   /**
    * Scoped OGR data source.
    */
-  using ogr_datasource_unique_ptr = std::unique_ptr< std::remove_pointer<OGRDataSourceH>::type, OGRDataSourceDeleter >;
+  using ogr_datasource_unique_ptr = std::unique_ptr<std::remove_pointer<OGRDataSourceH>::type, OGRDataSourceDeleter>;
 
   /**
    * Scoped OGR geometry.
    */
-  using ogr_geometry_unique_ptr = std::unique_ptr< std::remove_pointer<OGRGeometryH>::type, OGRGeometryDeleter >;
+  using ogr_geometry_unique_ptr = std::unique_ptr<std::remove_pointer<OGRGeometryH>::type, OGRGeometryDeleter>;
 
   /**
    * Scoped OGR field definition.
    */
-  using ogr_field_def_unique_ptr = std::unique_ptr< std::remove_pointer<OGRFieldDefnH>::type, OGRFldDeleter >;
+  using ogr_field_def_unique_ptr = std::unique_ptr<std::remove_pointer<OGRFieldDefnH>::type, OGRFldDeleter>;
 
   /**
    * Scoped OGR feature.
    */
-  using ogr_feature_unique_ptr = std::unique_ptr< std::remove_pointer<OGRFeatureH>::type, OGRFeatureDeleter >;
+  using ogr_feature_unique_ptr = std::unique_ptr<std::remove_pointer<OGRFeatureH>::type, OGRFeatureDeleter>;
 
   /**
    * Scoped GDAL dataset.
    */
-  using dataset_unique_ptr = std::unique_ptr< std::remove_pointer<GDALDatasetH>::type, GDALDatasetCloser >;
+  using dataset_unique_ptr = std::unique_ptr<std::remove_pointer<GDALDatasetH>::type, GDALDatasetCloser>;
 
   /**
    * Performs a fast close of an unwanted GDAL dataset handle by deleting the underlying
@@ -169,16 +155,16 @@ namespace gdal
   /**
    * Scoped GDAL warp options.
    */
-  using warp_options_unique_ptr = std::unique_ptr< GDALWarpOptions, GDALWarpOptionsDeleter >;
+  using warp_options_unique_ptr = std::unique_ptr<GDALWarpOptions, GDALWarpOptionsDeleter>;
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
 
   /**
    * Scoped GDAL relationship.
    */
-  using relationship_unique_ptr = std::unique_ptr< std::remove_pointer<GDALRelationshipH>::type, GDALRelationshipDeleter >;
+  using relationship_unique_ptr = std::unique_ptr<std::remove_pointer<GDALRelationshipH>::type, GDALRelationshipDeleter>;
 #endif
-}
+} // namespace gdal
 
 /**
  * \ingroup core
@@ -191,7 +177,6 @@ namespace gdal
 class CORE_EXPORT QgsOgrUtils
 {
   public:
-
     /**
      * Converts an OGRField \a value of the specified \a type into a QVariant.
      * \since QGIS 3.20
@@ -394,7 +379,7 @@ class CORE_EXPORT QgsOgrUtils
      *
      * \since QGIS 3.20
      */
-    static std::unique_ptr< QgsSymbol > symbolFromStyleString( const QString &string, Qgis::SymbolType type ) SIP_FACTORY;
+    static std::unique_ptr<QgsSymbol> symbolFromStyleString( const QString &string, Qgis::SymbolType type ) SIP_FACTORY;
 
     /**
      * Converts an OGR field type and sub type to the best matching QVariant::Type equivalent.
@@ -438,7 +423,7 @@ class CORE_EXPORT QgsOgrUtils
     static QList<QgsVectorDataProvider::NativeType> nativeFieldTypesForDriver( GDALDriverH driver ) SIP_SKIP;
 
 #ifndef SIP_RUN
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,3,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 3, 0 )
 
     /**
      * Converts an OGR field domain definition to a QgsFieldDomain equivalent.
@@ -447,7 +432,7 @@ class CORE_EXPORT QgsOgrUtils
      * \note Not available in Python bindings
      * \since QGIS 3.26
      */
-    static std::unique_ptr< QgsFieldDomain > convertFieldDomain( OGRFieldDomainH domain );
+    static std::unique_ptr<QgsFieldDomain> convertFieldDomain( OGRFieldDomainH domain );
 
     /**
      * Converts a QGIS field domain definition to an OGR field domain equivalent.
@@ -461,7 +446,7 @@ class CORE_EXPORT QgsOgrUtils
 #endif
 
 #ifndef SIP_RUN
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
 
     /**
      * Converts an GDAL \a relationship definition to a QgsWeakRelation equivalent.
@@ -514,8 +499,7 @@ class CORE_EXPORT QgsOgrUtils
     static bool saveStyle( GDALDatasetH hDS, const QString &layerName,
                            const QString &geomColumn, const QString &qmlStyle, const QString &sldStyle,
                            const QString &styleName, const QString &styleDescription,
-                           const QString &uiFileContent, bool useAsDefault, QString &errCause
-                         );
+                           const QString &uiFileContent, bool useAsDefault, QString &errCause );
 
     /**
      * Helper function for deleting a style by id from ogr/gdal database datasources.

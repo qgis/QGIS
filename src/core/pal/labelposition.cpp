@@ -92,8 +92,7 @@ LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, 
   y[3] = y1 + dy2;
 
   // upside down ? (curved labels are always correct)
-  if ( !feature->layer()->isCurved() &&
-       this->alpha > M_PI_2 && this->alpha <= 3 * M_PI_2 )
+  if ( !feature->layer()->isCurved() && this->alpha > M_PI_2 && this->alpha <= 3 * M_PI_2 )
   {
     if ( feature->onlyShowUprightLabels() )
     {
@@ -154,7 +153,7 @@ LabelPosition::LabelPosition( const LabelPosition &other )
   h = other.h;
 
   if ( other.mNextPart )
-    mNextPart = std::make_unique< LabelPosition >( *other.mNextPart );
+    mNextPart = std::make_unique<LabelPosition>( *other.mNextPart );
 
   partId = other.partId;
   upsideDown = other.upsideDown;
@@ -234,11 +233,10 @@ bool LabelPosition::isInConflict( const LabelPosition *lp ) const
   // this method considers the label's outer bounds
 
   if ( this->probFeat == lp->probFeat ) // bugfix #1
-    return false; // always overlapping itself !
+    return false;                       // always overlapping itself !
 
   // if either this label doesn't cause collisions, or the other one doesn't, then we don't conflict!
-  if ( this->feature->feature()->overlapHandling() == Qgis::LabelOverlapHandling::AllowOverlapAtNoCost ||
-       lp->feature->feature()->overlapHandling() == Qgis::LabelOverlapHandling::AllowOverlapAtNoCost )
+  if ( this->feature->feature()->overlapHandling() == Qgis::LabelOverlapHandling::AllowOverlapAtNoCost || lp->feature->feature()->overlapHandling() == Qgis::LabelOverlapHandling::AllowOverlapAtNoCost )
     return false;
 
   if ( !nextPart() && !lp->nextPart() )
@@ -265,7 +263,8 @@ bool LabelPosition::isInConflict( const LabelPosition *lp ) const
       try
       {
         const bool result = ( GEOSPreparedIntersects_r( geosctxt, lp->preparedOuterBoundsGeom() ? lp->preparedOuterBoundsGeom() : lp->preparedGeom(),
-                              mOuterBoundsGeos ? mOuterBoundsGeos.get() : mGeos ) == 1 );
+                                                        mOuterBoundsGeos ? mOuterBoundsGeos.get() : mGeos )
+                              == 1 );
         return result;
       }
       catch ( GEOSException &e )
@@ -344,7 +343,7 @@ void LabelPosition::createOuterBoundsGeom()
   mOuterBoundsY[4] = mOuterBoundsY[0];
 
   GEOSCoordSequence *coord = nullptr;
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
   // use optimised method if we don't have to force close an open ring
   coord = GEOSCoordSeq_copyFromArrays_r( geosctxt, mOuterBoundsX.data(), mOuterBoundsY.data(), nullptr, nullptr, 5 );
 #else
@@ -399,7 +398,7 @@ void LabelPosition::validateCost()
 {
   if ( mCost >= 1 )
   {
-    mCost -= int ( mCost ); // label cost up to 1
+    mCost -= int( mCost ); // label cost up to 1
   }
 }
 
@@ -461,7 +460,7 @@ QgsRectangle LabelPosition::boundingBoxForCandidateConflicts( Pal *pal ) const
 {
   QgsRectangle bounds = outerBoundingBox();
   QgsRectangle bufferedBounds = bounds;
-  const QList< QgsAbstractLabelingEngineRule * > rules = pal->rules();
+  const QList<QgsAbstractLabelingEngineRule *> rules = pal->rules();
   for ( QgsAbstractLabelingEngineRule *rule : rules )
   {
     const QgsRectangle modifiedBounds = rule->modifyCandidateConflictSearchBoundingBox( bounds );
@@ -530,7 +529,7 @@ void LabelPosition::createMultiPartGeosGeom() const
 {
   GEOSContextHandle_t geosctxt = QgsGeosContext::get();
 
-  std::vector< const GEOSGeometry * > geometries;
+  std::vector<const GEOSGeometry *> geometries;
   const LabelPosition *tmp1 = this;
   while ( tmp1 )
   {
@@ -541,14 +540,14 @@ void LabelPosition::createMultiPartGeosGeom() const
   }
 
   const std::size_t partCount = geometries.size();
-  GEOSGeometry **geomarr = new GEOSGeometry*[ partCount ];
+  GEOSGeometry **geomarr = new GEOSGeometry *[partCount];
   for ( std::size_t i = 0; i < partCount; ++i )
   {
-    geomarr[i ] = GEOSGeom_clone_r( geosctxt, geometries[i] );
+    geomarr[i] = GEOSGeom_clone_r( geosctxt, geometries[i] );
   }
 
   mMultipartGeos = GEOSGeom_createCollection_r( geosctxt, GEOS_MULTIPOLYGON, geomarr, partCount );
-  delete [] geomarr;
+  delete[] geomarr;
 }
 
 const GEOSPreparedGeometry *LabelPosition::preparedMultiPartGeom() const
@@ -645,7 +644,7 @@ double LabelPosition::getDistanceToPoint( double xp, double yp, bool useOuterBou
           }
           else
           {
-            ( void )GEOSCoordSeq_getXY_r( geosctxt, nearestCoord.get(), 0, &nx, &ny );
+            ( void ) GEOSCoordSeq_getXY_r( geosctxt, nearestCoord.get(), 0, &nx, &ny );
             distance = QgsGeometryUtilsBase::sqrDistance2D( xp, yp, nx, ny );
           }
         }

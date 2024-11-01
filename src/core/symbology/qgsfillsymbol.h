@@ -29,7 +29,6 @@
 class CORE_EXPORT QgsFillSymbol : public QgsSymbol
 {
   public:
-
     /**
      * Create a fill symbol with one symbol layer: SimpleFill with specified properties.
      * This is a convenience method for easier creation of fill symbols.
@@ -64,7 +63,6 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
     QgsFillSymbol *clone() const override SIP_FACTORY;
 
   private:
-
     void renderPolygonUsingLayer( QgsSymbolLayer *layer, const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) const;
     //! Calculates the bounds of a polygon including rings
     QRectF polygonBounds( const QPolygonF &points, const QVector<QPolygonF> *rings ) const;
@@ -73,4 +71,3 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
 };
 
 #endif // QGSFILLSYMBOL_H
-

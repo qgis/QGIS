@@ -36,12 +36,11 @@ class QgsGeospatialPdfLayerFilteredTreeModel;
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::QgsPdfExportOptionsDialog
+class GUI_EXPORT QgsLayoutPdfExportOptionsDialog : public QDialog, private Ui::QgsPdfExportOptionsDialog
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutPdfExportOptionsDialog
      * \param parent parent widget
@@ -121,12 +120,10 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
     void showContextMenuForGeospatialPdfStructure( QPoint point, const QModelIndex &index );
 
   private:
-
     bool mGeospatialPdfAvailable = true;
     QgsGeospatialPdfLayerTreeModel *mGeospatialPdfStructureModel = nullptr;
     QgsGeospatialPdfLayerFilteredTreeModel *mGeospatialPdfStructureProxyModel = nullptr;
     QMenu *mGeospatialPdfStructureTreeMenu = nullptr;
-
 };
 
 #endif // QGSLAYOUTPDFEXPORTOPTIONSDIALOG_H

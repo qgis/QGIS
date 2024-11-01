@@ -24,7 +24,6 @@
 class QgsVectorTileSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-
     QString providerKey() const override { return QStringLiteral( "vectortile" ); }
     QString text() const override { return QObject::tr( "Vector Tile" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 50; }

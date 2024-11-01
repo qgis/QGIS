@@ -30,9 +30,7 @@
  */
 class QgsReverseLineDirectionAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsReverseLineDirectionAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -41,20 +39,16 @@ class QgsReverseLineDirectionAlgorithm : public QgsProcessingFeatureBasedAlgorit
     QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
-    QgsReverseLineDirectionAlgorithm  *createInstance() const override SIP_FACTORY;
+    QgsReverseLineDirectionAlgorithm *createInstance() const override SIP_FACTORY;
     Qgis::ProcessingSourceType outputLayerType() const override;
     QList<int> inputLayerTypes() const override;
 
   protected:
-
     QString outputName() const override;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMREVERSELINEDIRECTION_H
-
-

@@ -38,7 +38,6 @@
 class CORE_EXPORT QgsReferencedGeometryBase
 {
   public:
-
     /**
      * Constructor for QgsReferencedGeometryBase, with the specified \a crs.
      */
@@ -59,9 +58,7 @@ class CORE_EXPORT QgsReferencedGeometryBase
     void setCrs( const QgsCoordinateReferenceSystem &crs ) { mCrs = crs; }
 
   private:
-
     QgsCoordinateReferenceSystem mCrs;
-
 };
 
 /**
@@ -71,7 +68,6 @@ class CORE_EXPORT QgsReferencedGeometryBase
 class CORE_EXPORT QgsReferencedRectangle : public QgsRectangle, public QgsReferencedGeometryBase
 {
   public:
-
     /**
      * Constructor for QgsReferencedRectangle, with the specified initial \a rectangle
      * and \a crs.
@@ -92,11 +88,11 @@ class CORE_EXPORT QgsReferencedRectangle : public QgsRectangle, public QgsRefere
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsReferencedRectangle: %1 (%2)>" ).arg( sipCpp->asWktCoordinates(), sipCpp->crs().authid() );
+        QString str
+      = QStringLiteral( "<QgsReferencedRectangle: %1 (%2)>" ).arg( sipCpp->asWktCoordinates(), sipCpp->crs().authid() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
-
 };
 
 Q_DECLARE_METATYPE( QgsReferencedRectangle )
@@ -108,7 +104,6 @@ Q_DECLARE_METATYPE( QgsReferencedRectangle )
 class CORE_EXPORT QgsReferencedPointXY : public QgsPointXY, public QgsReferencedGeometryBase
 {
   public:
-
     /**
      * Constructor for QgsReferencedPointXY, with the specified initial \a point
      * and \a crs.
@@ -129,11 +124,11 @@ class CORE_EXPORT QgsReferencedPointXY : public QgsPointXY, public QgsReferenced
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsReferencedPointXY: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
+        QString str
+      = QStringLiteral( "<QgsReferencedPointXY: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
-
 };
 
 Q_DECLARE_METATYPE( QgsReferencedPointXY )
@@ -146,7 +141,6 @@ Q_DECLARE_METATYPE( QgsReferencedPointXY )
 class CORE_EXPORT QgsReferencedGeometry : public QgsGeometry, public QgsReferencedGeometryBase
 {
   public:
-
     /**
      * Constructor for QgsReferencedGeometry, with the specified initial \a geometry
      * and \a crs.
@@ -178,11 +172,11 @@ class CORE_EXPORT QgsReferencedGeometry : public QgsGeometry, public QgsReferenc
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsReferencedGeometry: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
+        QString str
+      = QStringLiteral( "<QgsReferencedGeometry: %1 (%2)>" ).arg( sipCpp->asWkt(), sipCpp->crs().authid() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
-
 };
 
 Q_DECLARE_METATYPE( QgsReferencedGeometry )

@@ -44,8 +44,8 @@ class GUI_EXPORT QgsExpressionHighlighter : public QSyntaxHighlighter
   private:
     struct HighlightingRule
     {
-      QRegularExpression pattern;
-      QTextCharFormat format;
+        QRegularExpression pattern;
+        QTextCharFormat format;
     };
     QVector<HighlightingRule> highlightingRules;
 

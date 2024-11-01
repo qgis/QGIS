@@ -27,7 +27,7 @@ class QgsReadWriteContext;
 class QgsProject;
 
 //! Features of a vector tile, grouped by sub-layer names (key of the map)
-typedef QMap<QString, QVector<QgsFeature> > QgsVectorTileFeatures SIP_SKIP;
+typedef QMap<QString, QVector<QgsFeature>> QgsVectorTileFeatures SIP_SKIP;
 
 /**
  * \ingroup core
@@ -121,7 +121,6 @@ class CORE_EXPORT QgsVectorTileRendererData
  */
 class CORE_EXPORT QgsVectorTileRenderer
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
 
@@ -147,7 +146,7 @@ class CORE_EXPORT QgsVectorTileRenderer
     virtual void startRender( QgsRenderContext &context, int tileZoom, const QgsTileRange &tileRange ) = 0;
 
     //! Returns field names of sub-layers that will be used for rendering. Must be called between startRender/stopRender.
-    virtual QMap<QString, QSet<QString> > usedAttributes( const QgsRenderContext & ) SIP_SKIP { return QMap<QString, QSet<QString> >(); }
+    virtual QMap<QString, QSet<QString>> usedAttributes( const QgsRenderContext & ) SIP_SKIP { return QMap<QString, QSet<QString>>(); }
 
     //TODO QGIS 4.0 -- make pure virtual
 
@@ -160,7 +159,12 @@ class CORE_EXPORT QgsVectorTileRenderer
      *
      * \since QGIS 3.16
      */
-    virtual QSet< QString > requiredLayers( QgsRenderContext &context, int tileZoom ) const { Q_UNUSED( context ); Q_UNUSED( tileZoom ); return QSet< QString >() << QString(); }
+    virtual QSet<QString> requiredLayers( QgsRenderContext &context, int tileZoom ) const
+    {
+      Q_UNUSED( context );
+      Q_UNUSED( tileZoom );
+      return QSet<QString>() << QString();
+    }
 
     //! Finishes rendering and cleans up any resources
     virtual void stopRender( QgsRenderContext &context ) = 0;
@@ -185,7 +189,7 @@ class CORE_EXPORT QgsVectorTileRenderer
      *
      * \since QGIS 3.28
      */
-    virtual void renderSelectedFeatures( const QList< QgsFeature > &selection, QgsRenderContext &context ) = 0;
+    virtual void renderSelectedFeatures( const QList<QgsFeature> &selection, QgsRenderContext &context ) = 0;
 
     //! Writes renderer's properties to given XML element
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const = 0;
@@ -193,7 +197,6 @@ class CORE_EXPORT QgsVectorTileRenderer
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) = 0;
     //! Resolves references to other objects - second phase of loading - after readXml()
     virtual void resolveReferences( const QgsProject &project ) { Q_UNUSED( project ) }
-
 };
 
 #endif // QGSVECTORTILERENDERER_H

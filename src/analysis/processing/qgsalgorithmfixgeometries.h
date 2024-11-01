@@ -30,9 +30,7 @@
  */
 class QgsFixGeometriesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsFixGeometriesAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -49,14 +47,12 @@ class QgsFixGeometriesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString outputName() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType type ) const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-  private:
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+  private:
     Qgis::MakeValidMethod mMethod = Qgis::MakeValidMethod::Linework;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMFIXGEOMETRIES_H
-
-

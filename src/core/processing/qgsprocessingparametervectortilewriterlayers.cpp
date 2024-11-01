@@ -54,11 +54,11 @@ bool QgsProcessingParameterVectorTileWriterLayers::checkValueIsAcceptable( const
 
     const QVariant inputItemLayer = inputItemMap["layer"];
 
-    if ( qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( inputItemLayer ) ) )
+    if ( qobject_cast<QgsVectorLayer *>( qvariant_cast<QObject *>( inputItemLayer ) ) )
       continue;
 
     if ( !context )
-      continue;  // when called without context, we will skip checking whether the layer can be resolved
+      continue; // when called without context, we will skip checking whether the layer can be resolved
 
     if ( !QgsProcessingUtils::mapLayerFromString( inputItemLayer.toString(), *context ) )
       return false;
@@ -97,7 +97,7 @@ QString QgsProcessingParameterVectorTileWriterLayers::asPythonString( QgsProcess
     case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
       QString code = QStringLiteral( "QgsProcessingParameterVectorTileWriterLayers('%1', %2)" )
-                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
+                       .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       return code;
     }
   }
@@ -121,11 +121,11 @@ QgsVectorTileWriter::Layer QgsProcessingParameterVectorTileWriterLayers::variant
   const QVariant layerVariant = layerVariantMap["layer"];
 
   QgsVectorLayer *inputLayer = nullptr;
-  if ( ( inputLayer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( layerVariant ) ) ) )
+  if ( ( inputLayer = qobject_cast<QgsVectorLayer *>( qvariant_cast<QObject *>( layerVariant ) ) ) )
   {
     // good
   }
-  else if ( ( inputLayer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerVariant.toString(), context ) ) ) )
+  else if ( ( inputLayer = qobject_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerVariant.toString(), context ) ) ) )
   {
     // good
   }

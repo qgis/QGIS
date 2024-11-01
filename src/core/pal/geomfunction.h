@@ -49,7 +49,6 @@ namespace pal
   class CORE_EXPORT GeomFunction
   {
     public:
-
       /*
        *           o(x2,y2)
        *          /
@@ -75,24 +74,24 @@ namespace pal
        * \param y y coordinates
        * \returns convexHull vertex ids
        */
-      static std::vector< int > convexHullId( std::vector<int> &id, const std::vector< double > &x, const std::vector< double > &y );
+      static std::vector<int> convexHullId( std::vector<int> &id, const std::vector<double> &x, const std::vector<double> &y );
 
       /**
        * Returns TRUE if the two segments intersect.
        */
-      static bool isSegIntersects( double x1, double y1, double x2, double y2,  // 1st segment
+      static bool isSegIntersects( double x1, double y1, double x2, double y2,   // 1st segment
                                    double x3, double y3, double x4, double y4 ); // 2nd segment
 
       /**
        * Compute the point where two lines intersect.
        * \returns TRUE if the lines intersect, or FALSE if the lines are parallel
        */
-      static bool computeLineIntersection( double x1, double y1, double x2, double y2,  // 1st line (segment)
-                                           double x3, double y3, double x4, double y4,  // 2nd line segment
+      static bool computeLineIntersection( double x1, double y1, double x2, double y2, // 1st line (segment)
+                                           double x3, double y3, double x4, double y4, // 2nd line segment
                                            double *x, double *y );
 
       //! Reorder points to have cross prod ((x,y)[i], (x,y)[i+1), point) > 0 when point is outside
-      static bool reorderPolygon( std::vector< double > &x, std::vector< double> &y );
+      static bool reorderPolygon( std::vector<double> &x, std::vector<double> &y );
 
       /**
        * Returns TRUE if a GEOS prepared geometry totally contains a label candidate.
@@ -105,8 +104,7 @@ namespace pal
        * \returns TRUE if candidate is totally contained
        */
       static bool containsCandidate( const GEOSPreparedGeometry *geom, double x, double y, double width, double height, double alpha );
-
   };
-} //namespace
+} // namespace pal
 
 #endif

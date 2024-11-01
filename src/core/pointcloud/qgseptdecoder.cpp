@@ -31,7 +31,7 @@
 
 std::unique_ptr<QgsPointCloudBlock> decompressBinary_( const QByteArray &dataUncompressed, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
 {
-  const std::size_t pointRecordSize = attributes.pointRecordSize( );
+  const std::size_t pointRecordSize = attributes.pointRecordSize();
   const std::size_t requestedPointRecordSize = requestedAttributes.pointRecordSize();
   const int count = dataUncompressed.size() / pointRecordSize;
   QByteArray data;
@@ -45,22 +45,22 @@ std::unique_ptr<QgsPointCloudBlock> decompressBinary_( const QByteArray &dataUnc
 
   struct AttributeData
   {
-    AttributeData( int inputOffset, int inputSize, QgsPointCloudAttribute::DataType inputType, int requestedSize, QgsPointCloudAttribute::DataType requestedType )
-      : inputOffset( inputOffset )
-      , inputSize( inputSize )
-      , inputType( inputType )
-      , requestedSize( requestedSize )
-      , requestedType( requestedType )
-    {}
+      AttributeData( int inputOffset, int inputSize, QgsPointCloudAttribute::DataType inputType, int requestedSize, QgsPointCloudAttribute::DataType requestedType )
+        : inputOffset( inputOffset )
+        , inputSize( inputSize )
+        , inputType( inputType )
+        , requestedSize( requestedSize )
+        , requestedType( requestedType )
+      {}
 
-    int inputOffset;
-    int inputSize;
-    QgsPointCloudAttribute::DataType inputType;
-    int requestedSize;
-    QgsPointCloudAttribute::DataType requestedType;
+      int inputOffset;
+      int inputSize;
+      QgsPointCloudAttribute::DataType inputType;
+      int requestedSize;
+      QgsPointCloudAttribute::DataType requestedType;
   };
 
-  std::vector< AttributeData > attributeData;
+  std::vector<AttributeData> attributeData;
   attributeData.reserve( requestedAttributesVector.size() );
   for ( const QgsPointCloudAttribute &requestedAttribute : requestedAttributesVector )
   {
@@ -71,15 +71,14 @@ std::unique_ptr<QgsPointCloudBlock> decompressBinary_( const QByteArray &dataUnc
       return nullptr;
     }
     attributeData.emplace_back( AttributeData( inputAttributeOffset, inputAttribute->size(), inputAttribute->type(),
-                                requestedAttribute.size(), requestedAttribute.type() ) );
+                                               requestedAttribute.size(), requestedAttribute.type() ) );
   }
 
   int skippedPoints = 0;
-  std::unique_ptr< QgsPointCloudBlock > block = std::make_unique< QgsPointCloudBlock >(
-        count,
-        requestedAttributes,
-        data, scale, offset
-      );
+  std::unique_ptr<QgsPointCloudBlock> block = std::make_unique<QgsPointCloudBlock>(
+    count,
+    requestedAttributes,
+    data, scale, offset );
 
   const bool filterIsValid = filterExpression.isValid();
   if ( !filterExpression.prepare( block.get() ) && filterIsValid )
@@ -145,7 +144,7 @@ std::unique_ptr<QgsPointCloudBlock> decompressBinary_( const QByteArray &dataUnc
 
 std::unique_ptr<QgsPointCloudBlock> QgsEptDecoder::decompressBinary( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
 {
-  if ( ! QFile::exists( filename ) )
+  if ( !QFile::exists( filename ) )
     return nullptr;
 
   QFile f( filename );
@@ -194,7 +193,7 @@ QByteArray decompressZtdStream( const QByteArray &dataCompressed )
 
 std::unique_ptr<QgsPointCloudBlock> QgsEptDecoder::decompressZStandard( const QString &filename, const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes, const QgsVector3D &scale, const QgsVector3D &offset, QgsPointCloudExpression &filterExpression, QgsRectangle &filterRect )
 {
-  if ( ! QFile::exists( filename ) )
+  if ( !QFile::exists( filename ) )
     return nullptr;
 
   QFile f( filename );

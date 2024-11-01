@@ -45,7 +45,6 @@ class QgsAmbientOcclusionRenderEntity : public QgsRenderPassQuad
     void setThreshold( float threshold );
 
   private:
-
     Qt3DRender::QParameter *mDepthTextureParameter = nullptr;
     Qt3DRender::QParameter *mAmbientOcclusionKernelParameter = nullptr;
 

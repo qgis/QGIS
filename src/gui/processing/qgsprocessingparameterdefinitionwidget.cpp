@@ -35,13 +35,12 @@
 #include <QTextEdit>
 
 QgsProcessingAbstractParameterDefinitionWidget::QgsProcessingAbstractParameterDefinitionWidget( QgsProcessingContext &,
-    const QgsProcessingParameterWidgetContext &context,
-    const QgsProcessingParameterDefinition *,
-    const QgsProcessingAlgorithm *, QWidget *parent )
+                                                                                                const QgsProcessingParameterWidgetContext &context,
+                                                                                                const QgsProcessingParameterDefinition *,
+                                                                                                const QgsProcessingAlgorithm *, QWidget *parent )
   : QWidget( parent )
   , mWidgetContext( context )
 {
-
 }
 
 void QgsProcessingAbstractParameterDefinitionWidget::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
@@ -69,10 +68,10 @@ QgsExpressionContext QgsProcessingAbstractParameterDefinitionWidget::createExpre
 //
 
 QgsProcessingParameterDefinitionWidget::QgsProcessingParameterDefinitionWidget( const QString &type,
-    QgsProcessingContext &context,
-    const QgsProcessingParameterWidgetContext &widgetContext,
-    const QgsProcessingParameterDefinition *definition,
-    const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+                                                                                QgsProcessingContext &context,
+                                                                                const QgsProcessingParameterWidgetContext &widgetContext,
+                                                                                const QgsProcessingParameterDefinition *definition,
+                                                                                const QgsProcessingAlgorithm *algorithm, QWidget *parent )
   : QWidget( parent )
   , mType( type )
 {
@@ -114,7 +113,7 @@ QgsProcessingParameterDefinitionWidget::QgsProcessingParameterDefinitionWidget( 
 
 QgsProcessingParameterDefinition *QgsProcessingParameterDefinitionWidget::createParameter( const QString &name ) const
 {
-  std::unique_ptr< QgsProcessingParameterDefinition > param;
+  std::unique_ptr<QgsProcessingParameterDefinition> param;
   Qgis::ProcessingParameterFlags flags;
 
   if ( !mRequiredCheckBox->isChecked() )
@@ -155,11 +154,11 @@ void QgsProcessingParameterDefinitionWidget::registerProcessingContextGenerator(
 //
 
 QgsProcessingParameterDefinitionDialog::QgsProcessingParameterDefinitionDialog( const QString &type,
-    QgsProcessingContext &context,
-    const QgsProcessingParameterWidgetContext &widgetContext,
-    const QgsProcessingParameterDefinition *definition,
-    const QgsProcessingAlgorithm *algorithm,
-    QWidget *parent )
+                                                                                QgsProcessingContext &context,
+                                                                                const QgsProcessingParameterWidgetContext &widgetContext,
+                                                                                const QgsProcessingParameterDefinition *definition,
+                                                                                const QgsProcessingAlgorithm *algorithm,
+                                                                                QWidget *parent )
   : QDialog( parent )
 {
   QVBoxLayout *vLayout = new QVBoxLayout();
@@ -198,9 +197,9 @@ QgsProcessingParameterDefinitionDialog::QgsProcessingParameterDefinitionDialog( 
 
   vLayout->addWidget( bbox );
   setLayout( vLayout );
-  setWindowTitle( definition ? tr( "%1 Parameter Definition" ).arg( definition->description() )
-                  : QgsApplication::processingRegistry()->parameterType( type ) ? tr( "%1 Parameter Definition" ).arg( QgsApplication::processingRegistry()->parameterType( type )->name() ) :
-                  tr( "Parameter Definition" ) );
+  setWindowTitle( definition                                                    ? tr( "%1 Parameter Definition" ).arg( definition->description() )
+                  : QgsApplication::processingRegistry()->parameterType( type ) ? tr( "%1 Parameter Definition" ).arg( QgsApplication::processingRegistry()->parameterType( type )->name() )
+                                                                                : tr( "Parameter Definition" ) );
   setObjectName( QStringLiteral( "QgsProcessingParameterDefinitionDialog" ) );
   QgsGui::enableAutoGeometryRestore( this );
 }

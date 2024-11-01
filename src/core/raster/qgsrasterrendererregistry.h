@@ -43,29 +43,28 @@ typedef QgsRasterRendererWidget *( *QgsRasterRendererWidgetCreateFunc )( QgsRast
   */
 struct CORE_EXPORT QgsRasterRendererRegistryEntry
 {
-
-  /**
+    /**
    * Constructor for QgsRasterRendererRegistryEntry.
    *
    * Since QGIS 3.38, the \a capabilities argument can be used to specify renderer capabilities.
    */
-  QgsRasterRendererRegistryEntry( const QString &name, const QString &visibleName, QgsRasterRendererCreateFunc rendererFunction,
-                                  QgsRasterRendererWidgetCreateFunc widgetFunction, Qgis::RasterRendererCapabilities capabilities = Qgis::RasterRendererCapabilities() );
+    QgsRasterRendererRegistryEntry( const QString &name, const QString &visibleName, QgsRasterRendererCreateFunc rendererFunction,
+                                    QgsRasterRendererWidgetCreateFunc widgetFunction, Qgis::RasterRendererCapabilities capabilities = Qgis::RasterRendererCapabilities() );
 
-  QgsRasterRendererRegistryEntry() = default;
-  QString name;
-  QString visibleName; //visible (and translatable) name
+    QgsRasterRendererRegistryEntry() = default;
+    QString name;
+    QString visibleName; //visible (and translatable) name
 
-  /**
+    /**
    * Renderer capabilities.
    *
    * \since QGIS 3.38
    */
-  Qgis::RasterRendererCapabilities capabilities;
+    Qgis::RasterRendererCapabilities capabilities;
 
-  QIcon icon();
-  QgsRasterRendererCreateFunc rendererCreateFunction = nullptr ; //pointer to create function
-  QgsRasterRendererWidgetCreateFunc widgetCreateFunction = nullptr ; //pointer to create function for renderer widget
+    QIcon icon();
+    QgsRasterRendererCreateFunc rendererCreateFunction = nullptr;     //pointer to create function
+    QgsRasterRendererWidgetCreateFunc widgetCreateFunction = nullptr; //pointer to create function for renderer widget
 };
 
 #endif
@@ -82,7 +81,6 @@ struct CORE_EXPORT QgsRasterRendererRegistryEntry
 class CORE_EXPORT QgsRasterRendererRegistry
 {
   public:
-
     /**
      * Constructor for QgsRasterRendererRegistry.
      *
@@ -124,7 +122,7 @@ class CORE_EXPORT QgsRasterRendererRegistry
      *
      * \note Not available in Python bindings
      */
-    QList< QgsRasterRendererRegistryEntry > entries() const SIP_SKIP;
+    QList<QgsRasterRendererRegistryEntry> entries() const SIP_SKIP;
 
     /**
      * Returns the capabilities for the renderer with the specified name.
@@ -140,7 +138,7 @@ class CORE_EXPORT QgsRasterRendererRegistry
     QgsRasterRenderer *defaultRendererForDrawingStyle( Qgis::RasterDrawingStyle drawingStyle, QgsRasterDataProvider *provider ) const SIP_FACTORY;
 
   private:
-    QHash< QString, QgsRasterRendererRegistryEntry > mEntries;
+    QHash<QString, QgsRasterRendererRegistryEntry> mEntries;
     QStringList mSortedEntries;
 
     //read min/max values from

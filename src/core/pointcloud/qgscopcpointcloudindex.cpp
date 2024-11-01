@@ -115,20 +115,19 @@ bool QgsCopcPointCloudIndex::loadSchema( QgsLazInfo &lazInfo )
   const double zmax = mCopcInfoVlr.center_z + mCopcInfoVlr.halfsize;
 
   mRootBounds = QgsPointCloudDataBounds(
-                  ( xmin - mOffset.x() ) / mScale.x(),
-                  ( ymin - mOffset.y() ) / mScale.y(),
-                  ( zmin - mOffset.z() ) / mScale.z(),
-                  ( xmax - mOffset.x() ) / mScale.x(),
-                  ( ymax - mOffset.y() ) / mScale.y(),
-                  ( zmax - mOffset.z() ) / mScale.z()
-                );
+    ( xmin - mOffset.x() ) / mScale.x(),
+    ( ymin - mOffset.y() ) / mScale.y(),
+    ( zmin - mOffset.z() ) / mScale.z(),
+    ( xmax - mOffset.x() ) / mScale.x(),
+    ( ymax - mOffset.y() ) / mScale.y(),
+    ( zmax - mOffset.z() ) / mScale.z() );
 
   double calculatedSpan = nodeMapExtent( root() ).width() / mCopcInfoVlr.spacing;
   mSpan = calculatedSpan;
 
 #ifdef QGIS_DEBUG
   double dx = xmax - xmin, dy = ymax - ymin, dz = zmax - zmin;
-  QgsDebugMsgLevel( QStringLiteral( "lvl0 node size in CRS units: %1 %2 %3" ).arg( dx ).arg( dy ).arg( dz ), 2 );    // all dims should be the same
+  QgsDebugMsgLevel( QStringLiteral( "lvl0 node size in CRS units: %1 %2 %3" ).arg( dx ).arg( dy ).arg( dz ), 2 ); // all dims should be the same
   QgsDebugMsgLevel( QStringLiteral( "res at lvl0 %1" ).arg( dx / mSpan ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "res at lvl1 %1" ).arg( dx / mSpan / 2 ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "res at lvl2 %1 with node size %2" ).arg( dx / mSpan / 4 ).arg( dx / 4 ), 2 );
@@ -299,7 +298,7 @@ bool QgsCopcPointCloudIndex::fetchNodeHierarchy( const IndexedPointCloudNode &n 
 void QgsCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const
 {
   mCopcFile.seekg( offset );
-  std::unique_ptr<char []> data( new char[ byteSize ] );
+  std::unique_ptr<char[]> data( new char[byteSize] );
   mCopcFile.read( data.get(), byteSize );
 
   populateHierarchy( data.get(), byteSize );
@@ -309,18 +308,18 @@ void QgsCopcPointCloudIndex::populateHierarchy( const char *hierarchyPageData, u
 {
   struct CopcVoxelKey
   {
-    int32_t level;
-    int32_t x;
-    int32_t y;
-    int32_t z;
+      int32_t level;
+      int32_t x;
+      int32_t y;
+      int32_t z;
   };
 
   struct CopcEntry
   {
-    CopcVoxelKey key;
-    uint64_t offset;
-    int32_t byteSize;
-    int32_t pointCount;
+      CopcVoxelKey key;
+      uint64_t offset;
+      int32_t byteSize;
+      int32_t pointCount;
   };
 
   QMutexLocker locker( &mHierarchyMutex );

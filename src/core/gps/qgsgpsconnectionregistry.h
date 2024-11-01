@@ -36,7 +36,6 @@ class QgsGpsConnection;
 class CORE_EXPORT QgsGpsConnectionRegistry
 {
   public:
-
     QgsGpsConnectionRegistry() = default;
     ~QgsGpsConnectionRegistry();
 
@@ -48,7 +47,7 @@ class CORE_EXPORT QgsGpsConnectionRegistry
     //! Unregisters connection. The registry does no longer own the connection
     void unregisterConnection( QgsGpsConnection *c );
 
-    QList< QgsGpsConnection *> connectionList() const;
+    QList<QgsGpsConnection *> connectionList() const;
 
   private:
 #ifdef SIP_RUN

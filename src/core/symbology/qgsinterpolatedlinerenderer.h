@@ -36,7 +36,6 @@ class QgsRenderContext;
 class CORE_EXPORT QgsInterpolatedLineColor
 {
   public:
-
     /**
      * Defines how the color is defined
      */
@@ -198,7 +197,6 @@ class CORE_EXPORT QgsInterpolatedLineWidth
 class CORE_EXPORT QgsInterpolatedLineRenderer
 {
   public:
-
     //! Sets the stroke width used to render
     void setInterpolatedWidth( const QgsInterpolatedLineWidth &strokeWidth );
 
@@ -262,7 +260,6 @@ class CORE_EXPORT QgsInterpolatedLineRenderer
     void setSelected( bool selected );
 
   private:
-
     QgsInterpolatedLineWidth mStrokeWidth;
     QgsInterpolatedLineColor mStrokeColoring;
     Qgis::RenderUnit mStrokeWidthUnit = Qgis::RenderUnit::Millimeters;
@@ -283,7 +280,6 @@ class CORE_EXPORT QgsInterpolatedLineRenderer
 class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
 {
   public:
-
     QgsInterpolatedLineSymbolLayer();
 
     //! Creates the symbol layer
@@ -396,10 +392,10 @@ class CORE_EXPORT QgsInterpolatedLineSymbolLayer : public QgsLineSymbolLayer
 
     QgsInterpolatedLineRenderer mLineRender;
 
-    QVector< QPolygonF > mLineParts;
+    QVector<QPolygonF> mLineParts;
     bool mRenderingFeature = false;
 
-    void render( const QVector< QPolygonF > &parts, QgsRenderContext &context );
+    void render( const QVector<QPolygonF> &parts, QgsRenderContext &context );
 
     QVariant colorRampShaderProperties() const;
     static QgsColorRampShader createColorRampShaderFromProperties( const QVariant &properties );

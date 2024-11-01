@@ -30,7 +30,6 @@ QgsTiledSceneRenderContext::QgsTiledSceneRenderContext( QgsRenderContext &contex
   : mRenderContext( context )
   , mFeedback( feedback )
 {
-
 }
 
 QImage QgsTiledSceneRenderContext::textureImage() const
@@ -84,7 +83,7 @@ QgsTiledSceneRenderer *QgsTiledSceneRenderer::load( QDomElement &element, const 
   if ( !m )
     return nullptr;
 
-  std::unique_ptr< QgsTiledSceneRenderer > r( m->createRenderer( element, context ) );
+  std::unique_ptr<QgsTiledSceneRenderer> r( m->createRenderer( element, context ) );
   return r.release();
 }
 

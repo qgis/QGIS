@@ -65,7 +65,7 @@ QgsAuthConfigSelect::QgsAuthConfigSelect( QWidget *parent, const QString &datapr
     btnConfigMsgClear->setText( QString() );
 
     leConfigMsg->setStyleSheet( QStringLiteral( "QLineEdit{background-color: %1}" )
-                                .arg( QgsAuthGuiUtils::yellowColor().name() ) );
+                                  .arg( QgsAuthGuiUtils::yellowColor().name() ) );
 
     clearConfig();
     clearMessage();
@@ -77,8 +77,7 @@ void QgsAuthConfigSelect::setConfigId( const QString &authcfg )
 {
   if ( mDisabled && mAuthNotify )
   {
-    mAuthNotify->setText( QgsApplication::authManager()->disabledMessage() + "\n\n" +
-                          tr( "Authentication config id not loaded: %1" ).arg( authcfg ) );
+    mAuthNotify->setText( QgsApplication::authManager()->disabledMessage() + "\n\n" + tr( "Authentication config id not loaded: %1" ).arg( authcfg ) );
   }
   else
   {
@@ -120,7 +119,8 @@ void QgsAuthConfigSelect::loadConfig()
       methoddesc = meta->description();
     }
     cmbConfigSelect->setToolTip( tr( "<ul><li><b>Method type:</b> %1</li>"
-                                     "<li><b>Configuration ID:</b> %2</li></ul>" ).arg( methoddesc, config.id( ) ) );
+                                     "<li><b>Configuration ID:</b> %2</li></ul>" )
+                                   .arg( methoddesc, config.id() ) );
     btnConfigEdit->setEnabled( true );
     btnConfigRemove->setEnabled( true );
   }
@@ -244,7 +244,8 @@ void QgsAuthConfigSelect::btnConfigRemove_clicked()
                              tr( "Are you sure that you want to permanently remove this configuration right now?\n\n"
                                  "Operation can NOT be undone!" ),
                              QMessageBox::Ok | QMessageBox::Cancel,
-                             QMessageBox::Cancel ) == QMessageBox::Cancel )
+                             QMessageBox::Cancel )
+       == QMessageBox::Cancel )
   {
     return;
   }
@@ -450,4 +451,3 @@ void QgsAuthConfigUriEdit::removeAuthCfgFromUri()
 
   mAuthCfg.clear();
 }
-

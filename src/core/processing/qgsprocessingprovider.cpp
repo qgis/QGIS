@@ -147,7 +147,7 @@ bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue,
   }
 
   if ( parameter->type() == QgsProcessingParameterVectorDestination::typeName()
-       ||  parameter->type() == QgsProcessingParameterFeatureSink::typeName() )
+       || parameter->type() == QgsProcessingParameterFeatureSink::typeName() )
   {
     if ( outputPath.startsWith( QLatin1String( "memory:" ) ) )
     {

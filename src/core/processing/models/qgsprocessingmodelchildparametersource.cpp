@@ -99,7 +99,7 @@ void QgsProcessingModelChildParameterSource::setSource( Qgis::ProcessingModelChi
 QVariant QgsProcessingModelChildParameterSource::toVariant() const
 {
   QVariantMap map;
-  map.insert( QStringLiteral( "source" ), static_cast< int >( mSource ) );
+  map.insert( QStringLiteral( "source" ), static_cast<int>( mSource ) );
   switch ( mSource )
   {
     case Qgis::ProcessingModelChildParameterSource::ModelParameter:
@@ -131,7 +131,7 @@ QVariant QgsProcessingModelChildParameterSource::toVariant() const
 
 bool QgsProcessingModelChildParameterSource::loadVariant( const QVariantMap &map )
 {
-  mSource = static_cast< Qgis::ProcessingModelChildParameterSource >( map.value( QStringLiteral( "source" ) ).toInt() );
+  mSource = static_cast<Qgis::ProcessingModelChildParameterSource>( map.value( QStringLiteral( "source" ) ).toInt() );
   switch ( mSource )
   {
     case Qgis::ProcessingModelChildParameterSource::ModelParameter:
@@ -161,7 +161,7 @@ bool QgsProcessingModelChildParameterSource::loadVariant( const QVariantMap &map
   return true;
 }
 
-QString QgsProcessingModelChildParameterSource::asPythonCode( const QgsProcessing::PythonOutputType, const QgsProcessingParameterDefinition *definition, const QMap< QString, QString > &friendlyChildNames ) const
+QString QgsProcessingModelChildParameterSource::asPythonCode( const QgsProcessing::PythonOutputType, const QgsProcessingParameterDefinition *definition, const QMap<QString, QString> &friendlyChildNames ) const
 {
   switch ( mSource )
   {
@@ -267,7 +267,7 @@ QString QgsProcessingModelChildParameterSource::friendlyIdentifier( QgsProcessin
 
 QDataStream &operator<<( QDataStream &out, const QgsProcessingModelChildParameterSource &source )
 {
-  out << static_cast< int >( source.source() );
+  out << static_cast<int>( source.source() );
   out << source.staticValue();
   out << source.parameterName();
   out << source.outputChildId();

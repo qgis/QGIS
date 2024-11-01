@@ -35,14 +35,13 @@ typedef QList<QgsRasterRange> QgsRasterRangeList;
 class CORE_EXPORT QgsRasterRange
 {
   public:
-
     //! Handling for min and max bounds
     enum BoundsType
     {
       IncludeMinAndMax = 0, //!< Min and max values are inclusive
-      IncludeMax, //!< Include the max value, but not the min value, e.g. min < value <= max
-      IncludeMin, //!< Include the min value, but not the max value, e.g. min <= value < max
-      Exclusive, //!< Don't include either the min or max value, e.g. min < value < max
+      IncludeMax,           //!< Include the max value, but not the min value, e.g. min < value <= max
+      IncludeMin,           //!< Include the min value, but not the max value, e.g. min <= value < max
+      Exclusive,            //!< Don't include either the min or max value, e.g. min < value < max
     };
 
     /**
@@ -116,10 +115,9 @@ class CORE_EXPORT QgsRasterRange
       return ( value > mMin
                || ( !std::isnan( mMin ) && qgsDoubleNear( value, mMin ) && ( mType == IncludeMinAndMax || mType == IncludeMin ) )
                || std::isnan( mMin ) )
-             &&
-             ( value < mMax
-               || ( !std::isnan( mMax ) && qgsDoubleNear( value, mMax ) && ( mType == IncludeMinAndMax || mType == IncludeMax ) )
-               || std::isnan( mMax ) );
+             && ( value < mMax
+                  || ( !std::isnan( mMax ) && qgsDoubleNear( value, mMax ) && ( mType == IncludeMinAndMax || mType == IncludeMax ) )
+                  || std::isnan( mMax ) );
     }
 
     /**
@@ -159,5 +157,3 @@ class CORE_EXPORT QgsRasterRange
 };
 
 #endif
-
-

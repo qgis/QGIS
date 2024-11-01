@@ -141,7 +141,7 @@ Qgis::BrowserLayerType QgsLayerItem::typeFromMapLayer( QgsMapLayer *layer )
   {
     case Qgis::LayerType::Vector:
     {
-      switch ( qobject_cast< QgsVectorLayer * >( layer )->geometryType() )
+      switch ( qobject_cast<QgsVectorLayer *>( layer )->geometryType() )
       {
         case Qgis::GeometryType::Point:
           return Qgis::BrowserLayerType::Point;
@@ -196,7 +196,7 @@ QString QgsLayerItem::iconName( Qgis::BrowserLayerType layerType )
       return QStringLiteral( "/mIconLineLayer.svg" );
     case Qgis::BrowserLayerType::Polygon:
       return QStringLiteral( "/mIconPolygonLayer.svg" );
-    case Qgis::BrowserLayerType::Vector :
+    case Qgis::BrowserLayerType::Vector:
       return QStringLiteral( "/mIconGeometryCollectionLayer.svg" );
     case Qgis::BrowserLayerType::TableLayer:
     case Qgis::BrowserLayerType::Table:

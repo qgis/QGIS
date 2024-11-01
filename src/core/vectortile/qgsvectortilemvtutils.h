@@ -30,7 +30,6 @@ class QgsLineString;
 class QgsVectorTileMVTUtils
 {
   public:
-
     /**
      * Returns whether this linear ring forms an exterior ring according to MVT spec
      * (depending on the orientation - clockwise or counter-clockwise)

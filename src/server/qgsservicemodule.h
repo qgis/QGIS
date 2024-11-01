@@ -39,9 +39,7 @@ class QgsServerInterface;
  */
 class SERVER_EXPORT QgsServiceModule
 {
-
   public:
-
     QgsServiceModule() = default;
     virtual ~QgsServiceModule() = default;
 
@@ -51,7 +49,8 @@ class SERVER_EXPORT QgsServiceModule
      * \param serverIface Interface for plugins
      */
     virtual void registerSelf( QgsServiceRegistry &registry,
-                               QgsServerInterface *serverIface = nullptr ) = 0;
+                               QgsServerInterface *serverIface = nullptr )
+      = 0;
 };
 
 #endif

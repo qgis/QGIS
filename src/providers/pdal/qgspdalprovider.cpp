@@ -51,12 +51,12 @@ QgsPdalProvider::QgsPdalProvider(
   : QgsPointCloudDataProvider( uri, options, flags )
   , mIndex( nullptr )
 {
-  std::unique_ptr< QgsScopedRuntimeProfile > profile;
+  std::unique_ptr<QgsScopedRuntimeProfile> profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
+    profile = std::make_unique<QgsScopedRuntimeProfile>( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
   mIsValid = load( uri );
-  loadIndex( );
+  loadIndex();
 }
 
 Qgis::DataProviderFlags QgsPdalProvider::flags() const
@@ -151,7 +151,7 @@ QgsPointCloudDataProvider::PointCloudIndexGenerationState QgsPdalProvider::index
     return PointCloudIndexGenerationState::NotIndexed;
 }
 
-void QgsPdalProvider::loadIndex( )
+void QgsPdalProvider::loadIndex()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -225,7 +225,7 @@ bool QgsPdalProvider::anyIndexingTaskExists()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  const QList< QgsTask * > tasks = QgsApplication::taskManager()->activeTasks();
+  const QList<QgsTask *> tasks = QgsApplication::taskManager()->activeTasks();
   for ( const QgsTask *task : tasks )
   {
     const QgsPdalIndexingTask *indexingTask = qobject_cast<const QgsPdalIndexingTask *>( task );
@@ -349,8 +349,8 @@ bool QgsPdalProvider::load( const QString &uri )
 QString QgsPdalProviderMetadata::sFilterString;
 QStringList QgsPdalProviderMetadata::sExtensions;
 
-QgsPdalProviderMetadata::QgsPdalProviderMetadata():
-  QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
+QgsPdalProviderMetadata::QgsPdalProviderMetadata()
+  : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {
 }
 
@@ -418,7 +418,7 @@ QList<QgsProviderSublayerDetails> QgsPdalProviderMetadata::querySublayers( const
     details.setProviderKey( QStringLiteral( "pdal" ) );
     details.setType( Qgis::LayerType::PointCloud );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
-    return {details};
+    return { details };
   }
   else
   {
@@ -466,8 +466,7 @@ void QgsPdalProviderMetadata::buildSupportedPointCloudFileFilterAndExtensions()
 {
   // get supported extensions
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]
-  {
+  std::call_once( initialized, [=] {
     const pdal::StageFactory f;
     pdal::PluginManager<pdal::Stage>::loadAll();
     const pdal::StringList stages = pdal::PluginManager<pdal::Stage>::names();
@@ -488,7 +487,7 @@ void QgsPdalProviderMetadata::buildSupportedPointCloudFileFilterAndExtensions()
     // drop action. The windows which want to handle the "readers.text" reader
     // need to explicitly call the provider.
     // see for example qgspointcloudsourceselect.cpp.
-    const QStringList specificReaders {QStringLiteral( "readers.text" ) };
+    const QStringList specificReaders { QStringLiteral( "readers.text" ) };
 
     const QStringList readers = allowedReaders + specificReaders;
     QStringList filterExtensions;

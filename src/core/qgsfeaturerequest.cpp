@@ -39,7 +39,6 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureIds &fids )
   : mFilter( Qgis::FeatureRequestFilterType::Fids )
   , mFilterFids( fids )
 {
-
 }
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle &rect )
@@ -105,25 +104,7 @@ bool QgsFeatureRequest::compare( const QgsFeatureRequest &rh ) const
   if ( &rh == this )
     return true;
 
-  return mFlags == rh.mFlags &&
-         mFilter == rh.mFilter &&
-         mSpatialFilter == rh.mSpatialFilter &&
-         mFilterRect == rh.mFilterRect &&
-         ( ( mReferenceGeometry.isNull() && rh.mReferenceGeometry.isNull() ) || mReferenceGeometry.equals( rh.mReferenceGeometry ) ) &&
-         mDistanceWithin == rh.mDistanceWithin &&
-         mFilterFid == rh.mFilterFid &&
-         mFilterFids == rh.mFilterFids &&
-         ( mFilterExpression ? rh.mFilterExpression && *mFilterExpression == *rh.mFilterExpression : !rh.mFilterExpression ) &&
-         mInvalidGeometryFilter == rh.mInvalidGeometryFilter &&
-         mAttrs == rh.mAttrs &&
-         mSimplifyMethod == rh.mSimplifyMethod &&
-         mLimit == rh.mLimit &&
-         mOrderBy == rh.mOrderBy &&
-         mTransform == rh.mTransform &&
-         mCrs == rh.mCrs &&
-         mTransformContext == rh.mTransformContext &&
-         mTimeout == rh.mTimeout &&
-         mRequestMayBeNested == rh.mRequestMayBeNested;
+  return mFlags == rh.mFlags && mFilter == rh.mFilter && mSpatialFilter == rh.mSpatialFilter && mFilterRect == rh.mFilterRect && ( ( mReferenceGeometry.isNull() && rh.mReferenceGeometry.isNull() ) || mReferenceGeometry.equals( rh.mReferenceGeometry ) ) && mDistanceWithin == rh.mDistanceWithin && mFilterFid == rh.mFilterFid && mFilterFids == rh.mFilterFids && ( mFilterExpression ? rh.mFilterExpression && *mFilterExpression == *rh.mFilterExpression : !rh.mFilterExpression ) && mInvalidGeometryFilter == rh.mInvalidGeometryFilter && mAttrs == rh.mAttrs && mSimplifyMethod == rh.mSimplifyMethod && mLimit == rh.mLimit && mOrderBy == rh.mOrderBy && mTransform == rh.mTransform && mCrs == rh.mCrs && mTransformContext == rh.mTransformContext && mTimeout == rh.mTimeout && mRequestMayBeNested == rh.mRequestMayBeNested;
 }
 
 
@@ -187,7 +168,7 @@ QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCheck( Qgis::InvalidGeom
   return *this;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCallback( const std::function<void ( const QgsFeature & )> &callback )
+QgsFeatureRequest &QgsFeatureRequest::setInvalidGeometryCallback( const std::function<void( const QgsFeature & )> &callback )
 {
   mInvalidGeometryCallback = callback;
   return *this;
@@ -357,7 +338,7 @@ QgsFeatureRequest &QgsFeatureRequest::setDestinationCrs( const QgsCoordinateRefe
   return *this;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setTransformErrorCallback( const std::function<void ( const QgsFeature & )> &callback )
+QgsFeatureRequest &QgsFeatureRequest::setTransformErrorCallback( const std::function<void( const QgsFeature & )> &callback )
 {
   mTransformErrorCallback = callback;
   return *this;
@@ -395,13 +376,7 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
       break;
 
     case Qgis::SpatialFilterType::BoundingBox:
-      if ( !feature.hasGeometry() ||
-           (
-             ( ( mFlags & Qgis::FeatureRequestFlag::ExactIntersect ) && !feature.geometry().intersects( mFilterRect ) )
-             ||
-             ( !( mFlags & Qgis::FeatureRequestFlag::ExactIntersect ) && !feature.geometry().boundingBoxIntersects( mFilterRect ) )
-           )
-         )
+      if ( !feature.hasGeometry() || ( ( ( mFlags & Qgis::FeatureRequestFlag::ExactIntersect ) && !feature.geometry().intersects( mFilterRect ) ) || ( !( mFlags & Qgis::FeatureRequestFlag::ExactIntersect ) && !feature.geometry().boundingBoxIntersects( mFilterRect ) ) ) )
         return false;
       break;
 
@@ -409,8 +384,7 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
       if ( !feature.hasGeometry()
            || !mReferenceGeometryEngine
            || !feature.geometry().boundingBoxIntersects( mFilterRect )
-           || !mReferenceGeometryEngine->distanceWithin( feature.geometry().constGet(), mDistanceWithin )
-         )
+           || !mReferenceGeometryEngine->distanceWithin( feature.geometry().constGet(), mDistanceWithin ) )
         return false;
       break;
   }
@@ -486,7 +460,6 @@ void QgsAbstractFeatureSource::iteratorClosed( QgsAbstractFeatureIterator *it )
 }
 
 
-
 QgsFeatureRequest::OrderByClause::OrderByClause( const QString &expression, bool ascending )
   : mExpression( expression )
   , mAscending( ascending )
@@ -515,7 +488,6 @@ QgsFeatureRequest::OrderByClause::OrderByClause( const QgsExpression &expression
   , mAscending( ascending )
   , mNullsFirst( nullsfirst )
 {
-
 }
 
 bool QgsFeatureRequest::OrderByClause::ascending() const
@@ -541,9 +513,9 @@ void QgsFeatureRequest::OrderByClause::setNullsFirst( bool nullsFirst )
 QString QgsFeatureRequest::OrderByClause::dump() const
 {
   return QStringLiteral( "%1 %2 %3" )
-         .arg( mExpression.expression(),
-               mAscending ? "ASC" : "DESC",
-               mNullsFirst ? "NULLS FIRST" : "NULLS LAST" );
+    .arg( mExpression.expression(),
+          mAscending ? "ASC" : "DESC",
+          mNullsFirst ? "NULLS FIRST" : "NULLS LAST" );
 }
 
 QgsExpression QgsFeatureRequest::OrderByClause::expression() const
@@ -567,7 +539,7 @@ QgsFeatureRequest::OrderBy::OrderBy( const QList<QgsFeatureRequest::OrderByClaus
   }
 }
 
-bool QgsFeatureRequest::OrderBy::operator== ( const QgsFeatureRequest::OrderBy &other ) const
+bool QgsFeatureRequest::OrderBy::operator==( const QgsFeatureRequest::OrderBy &other ) const
 {
   if ( this == &other )
     return true;
@@ -581,7 +553,7 @@ bool QgsFeatureRequest::OrderBy::operator== ( const QgsFeatureRequest::OrderBy &
   return true;
 }
 
-bool QgsFeatureRequest::OrderBy::operator!= ( const QgsFeatureRequest::OrderBy &other ) const
+bool QgsFeatureRequest::OrderBy::operator!=( const QgsFeatureRequest::OrderBy &other ) const
 {
   return !operator==( other );
 }
@@ -618,7 +590,7 @@ void QgsFeatureRequest::OrderBy::load( const QDomElement &elem )
     const QDomElement clauseElem = clauses.at( i ).toElement();
     const QString expression = clauseElem.text();
     const bool asc = clauseElem.attribute( QStringLiteral( "asc" ) ).toInt() != 0;
-    const bool nullsFirst  = clauseElem.attribute( QStringLiteral( "nullsFirst" ) ).toInt() != 0;
+    const bool nullsFirst = clauseElem.attribute( QStringLiteral( "nullsFirst" ) ).toInt() != 0;
 
     append( OrderByClause( expression, asc, nullsFirst ) );
   }

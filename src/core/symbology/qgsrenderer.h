@@ -45,12 +45,12 @@ class QgsLayerTreeLayer;
 typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 
 typedef QList<QgsSymbol *> QgsSymbolList;
-typedef QMap<QString, QgsSymbol * > QgsSymbolMap SIP_SKIP;
+typedef QMap<QString, QgsSymbol *> QgsSymbolMap SIP_SKIP;
 
 #include "qgslegendsymbolitem.h"
 
 
-#define RENDERER_TAG_NAME   "renderer-v2"
+#define RENDERER_TAG_NAME "renderer-v2"
 
 ////////
 // symbol levels
@@ -84,13 +84,13 @@ class CORE_EXPORT QgsSymbolLevelItem
 };
 
 // every level has list of items: symbol + symbol layer num
-typedef QList< QgsSymbolLevelItem > QgsSymbolLevel;
+typedef QList<QgsSymbolLevelItem> QgsSymbolLevel;
 
 // this is a list of levels
 #ifndef SIP_RUN
-typedef QList< QgsSymbolLevel > QgsSymbolLevelOrder;
+typedef QList<QgsSymbolLevel> QgsSymbolLevelOrder;
 #else
-typedef QList< QList< QgsSymbolLevelItem > > QgsSymbolLevelOrder;
+typedef QList<QList<QgsSymbolLevelItem>> QgsSymbolLevelOrder;
 #endif
 
 
@@ -104,7 +104,6 @@ typedef QList< QList< QgsSymbolLevelItem > > QgsSymbolLevelOrder;
  */
 class CORE_EXPORT QgsFeatureRenderer
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
 
@@ -138,7 +137,6 @@ class CORE_EXPORT QgsFeatureRenderer
 #endif
 
   public:
-
     /**
      * Data definable properties for renderers.
      *
@@ -146,7 +144,7 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     enum class Property : int
     {
-      HeatmapRadius, //!< Heatmap renderer radius
+      HeatmapRadius,  //!< Heatmap renderer radius
       HeatmapMaximum, //!< Heatmap maximum value
     };
 
@@ -183,7 +181,7 @@ class CORE_EXPORT QgsFeatureRenderer
     /**
      * Returns legend keys matching a specified feature.
      */
-    virtual QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
+    virtual QSet<QString> legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     /**
      * Must be called when a new render cycle is started. A call to startRender() must always
@@ -232,7 +230,11 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * \returns An expression used as where clause
      */
-    virtual QString filter( const QgsFields &fields = QgsFields() ) { Q_UNUSED( fields ) return QString(); }
+    virtual QString filter( const QgsFields &fields = QgsFields() )
+    {
+      Q_UNUSED( fields )
+      return QString();
+    }
 
     /**
      * Returns a list of attributes required by this renderer. Attributes not listed in here may
@@ -287,12 +289,11 @@ class CORE_EXPORT QgsFeatureRenderer
      * Used to specify details about a renderer.
      * Is returned from the capabilities() method.
      */
-    enum Capability SIP_ENUM_BASETYPE( IntFlag )
-    {
-      SymbolLevels          = 1,      //!< Rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
+    enum Capability SIP_ENUM_BASETYPE( IntFlag ) {
+      SymbolLevels = 1,               //!< Rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
       MoreSymbolsPerFeature = 1 << 2, //!< May use more than one symbol to render a feature: symbolsForFeature() will return them
-      Filter                = 1 << 3, //!< Features may be filtered, i.e. some features may not be rendered (categorized, rule based ...)
-      ScaleDependent        = 1 << 4  //!< Depends on scale if feature will be rendered (rule based )
+      Filter = 1 << 3,                //!< Features may be filtered, i.e. some features may not be rendered (categorized, rule based ...)
+      ScaleDependent = 1 << 4         //!< Depends on scale if feature will be rendered (rule based )
     };
 
     Q_DECLARE_FLAGS( Capabilities, Capability )
@@ -370,7 +371,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * \since QGIS 3.32
      */
-    QSet< QString > legendKeys() const;
+    QSet<QString> legendKeys() const;
 
     /**
      * Returns TRUE if symbology items in legend are checkable.
@@ -536,7 +537,8 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * \since QGIS 3.38
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; }
+    SIP_SKIP
 
     /**
     * Sets the renderer's property collection, used for data defined overrides.

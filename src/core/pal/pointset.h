@@ -58,13 +58,13 @@ namespace pal
    */
   struct OrientedConvexHullBoundingBox
   {
-    double x[4] = {0, 0, 0, 0};
-    double y[4] = {0, 0, 0, 0};
+      double x[4] = { 0, 0, 0, 0 };
+      double y[4] = { 0, 0, 0, 0 };
 
-    double alpha = 0;
+      double alpha = 0;
 
-    double width = 0;
-    double length = 0;
+      double width = 0;
+      double length = 0;
   };
 
   /**
@@ -89,12 +89,12 @@ namespace pal
       /**
        * Does... something completely inscrutable.
        */
-      std::unique_ptr< PointSet > extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
+      std::unique_ptr<PointSet> extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
 
       /**
        * Returns a copy of the point set.
        */
-      std::unique_ptr< PointSet > clone() const;
+      std::unique_ptr<PointSet> clone() const;
 
       /**
        * Tests whether point set contains a specified point.
@@ -224,17 +224,17 @@ namespace pal
       /**
        * Returns a vector of edge distances as well as its total length
        */
-      std::tuple< std::vector< double >, double > edgeDistances() const;
+      std::tuple<std::vector<double>, double> edgeDistances() const;
 
       int nbPoints;
-      std::vector< double > x;
-      std::vector< double > y;   // points order is counterclockwise
+      std::vector<double> x;
+      std::vector<double> y; // points order is counterclockwise
 
     protected:
       mutable GEOSGeometry *mGeos = nullptr;
       mutable bool mOwnsGeom = false;
 
-      std::vector< int > convexHull;
+      std::vector<int> convexHull;
 
       int type;
 
@@ -261,18 +261,15 @@ namespace pal
       double ymax = std::numeric_limits<double>::lowest();
 
     private:
-
       mutable const GEOSPreparedGeometry *mGeosPreparedBoundary = nullptr;
       mutable const GEOSPreparedGeometry *mPreparedGeom = nullptr;
 
       mutable GEOSGeometry *mMultipartGeos = nullptr;
       mutable const GEOSPreparedGeometry *mMultipartPreparedGeos = nullptr;
 
-      PointSet &operator= ( const PointSet & ) = delete;
-
+      PointSet &operator=( const PointSet & ) = delete;
   };
 
 } // namespace pal
 
 #endif
-

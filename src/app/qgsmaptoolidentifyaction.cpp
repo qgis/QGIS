@@ -74,8 +74,7 @@ QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
 
     connect( mResultsDialog.data(), static_cast<void ( QgsIdentifyResultsDialog::* )( QgsRasterLayer * )>( &QgsIdentifyResultsDialog::formatChanged ), this, &QgsMapToolIdentify::formatChanged );
     connect( mResultsDialog.data(), &QgsIdentifyResultsDialog::copyToClipboard, this, &QgsMapToolIdentifyAction::handleCopyToClipboard );
-    connect( mResultsDialog.data(), &QgsIdentifyResultsDialog::selectionModeChanged, this, [this]
-    {
+    connect( mResultsDialog.data(), &QgsIdentifyResultsDialog::selectionModeChanged, this, [this] {
       mSelectionHandler->setSelectionMode( mResultsDialog->selectionMode() );
     } );
   }
@@ -223,7 +222,7 @@ void QgsMapToolIdentifyAction::clearResults()
 void QgsMapToolIdentifyAction::showResultsForFeature( QgsVectorLayer *vlayer, QgsFeatureId fid, const QgsPoint &pt )
 {
   const QgsFeature feature = vlayer->getFeature( fid );
-  const QMap< QString, QString > derivedAttributes = derivedAttributesForPoint( pt );
+  const QMap<QString, QString> derivedAttributes = derivedAttributesForPoint( pt );
   // TODO: private in QgsMapToolIdentify
   //derivedAttributes.unite( featureDerivedAttributes( feature, vlayer, QgsPointXY( pt ) ) );
 

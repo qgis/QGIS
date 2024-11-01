@@ -33,7 +33,6 @@ class QgsCurve;
 class CORE_EXPORT QgsAnnotationLineItem : public QgsAnnotationItem
 {
   public:
-
     /**
      * Constructor for QgsAnnotationLineItem, with the specified \a curve.
      */
@@ -43,7 +42,7 @@ class CORE_EXPORT QgsAnnotationLineItem : public QgsAnnotationItem
     QString type() const override;
     void render( QgsRenderContext &context, QgsFeedback *feedback ) override;
     bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
-    QList< QgsAnnotationItemNode > nodesV2( const QgsAnnotationItemEditContext &context ) const override;
+    QList<QgsAnnotationItemNode> nodesV2( const QgsAnnotationItemEditContext &context ) const override;
     Qgis::AnnotationItemEditOperationResult applyEditV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) override;
     QgsAnnotationItemEditOperationTransientResults *transientEditResultsV2( QgsAbstractAnnotationItemEditOperation *operation, const QgsAnnotationItemEditContext &context ) override SIP_FACTORY;
     Qgis::AnnotationItemFlags flags() const override;
@@ -93,14 +92,12 @@ class CORE_EXPORT QgsAnnotationLineItem : public QgsAnnotationItem
     void setSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
   private:
-
-    std::unique_ptr< QgsCurve > mCurve;
-    std::unique_ptr< QgsLineSymbol > mSymbol;
+    std::unique_ptr<QgsCurve> mCurve;
+    std::unique_ptr<QgsLineSymbol> mSymbol;
 
 #ifdef SIP_RUN
     QgsAnnotationLineItem( const QgsAnnotationLineItem &other );
 #endif
-
 };
 
 #endif // QGSANNOTATIONLINEITEM_H

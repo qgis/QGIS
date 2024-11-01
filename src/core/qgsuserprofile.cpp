@@ -113,8 +113,7 @@ QgsError QgsUserProfile::setAlias( const QString &alias ) const
     return error;
   }
 
-  const QString sql = QStringLiteral( "INSERT OR REPLACE INTO tbl_config_variables VALUES ('ALIAS', %1);" ).arg(
-                        QgsSqliteUtils::quotedString( alias ) );
+  const QString sql = QStringLiteral( "INSERT OR REPLACE INTO tbl_config_variables VALUES ('ALIAS', %1);" ).arg( QgsSqliteUtils::quotedString( alias ) );
 
   sqlite3_statement_unique_ptr preparedStatement = database.prepare( sql, result );
   if ( result != SQLITE_OK || preparedStatement.step() != SQLITE_DONE )
@@ -127,7 +126,7 @@ QgsError QgsUserProfile::setAlias( const QString &alias ) const
 
 const QIcon QgsUserProfile::icon() const
 {
-  const QStringList extensions = {".svg", ".png", ".jpg", ".jpeg", ".gif", ".bmp"};
+  const QStringList extensions = { ".svg", ".png", ".jpg", ".jpeg", ".gif", ".bmp" };
   const QString basename = mProfileFolder + QDir::separator() + "icon";
 
   for ( const QString &extension : extensions )

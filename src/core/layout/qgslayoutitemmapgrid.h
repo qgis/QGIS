@@ -45,7 +45,6 @@ class QgsLineSymbol;
 class CORE_EXPORT QgsLayoutItemMapGridStack : public QgsLayoutItemMapItemStack
 {
   public:
-
     /**
      * Constructor for QgsLayoutItemMapGridStack, attached to the specified \a map.
      */
@@ -104,7 +103,7 @@ class CORE_EXPORT QgsLayoutItemMapGridStack : public QgsLayoutItemMapItemStack
     /**
      * Returns a list of QgsLayoutItemMapGrids contained by the stack.
      */
-    QList< QgsLayoutItemMapGrid * > asList() const; // cppcheck-suppress duplInheritedMember
+    QList<QgsLayoutItemMapGrid *> asList() const; // cppcheck-suppress duplInheritedMember
 
     bool readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
@@ -137,19 +136,17 @@ class CORE_EXPORT QgsLayoutItemMapGridStack : public QgsLayoutItemMapItemStack
  */
 class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Unit for grid values
      */
     enum GridUnit
     {
-      MapUnit, //!< Grid units follow map units
-      MM, //!< Grid units in millimeters
-      CM, //!< Grid units in centimeters
+      MapUnit,              //!< Grid units follow map units
+      MM,                   //!< Grid units in millimeters
+      CM,                   //!< Grid units in centimeters
       DynamicPageSizeBased, //!< Dynamically sized, based on a on-page size range
     };
 
@@ -159,8 +156,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     enum GridStyle
     {
       Solid = 0,
-      Cross, //!< Draw line crosses at intersections of grid lines
-      Markers, //!< Draw markers at intersections of grid lines
+      Cross,               //!< Draw line crosses at intersections of grid lines
+      Markers,             //!< Draw markers at intersections of grid lines
       FrameAnnotationsOnly //!< No grid lines over the map, only draw frame and annotations
     };
 
@@ -169,10 +166,10 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      */
     enum DisplayMode
     {
-      ShowAll = 0, //!< Show both latitude and longitude annotations/divisions
-      LatitudeOnly, //!< Show latitude/y annotations/divisions only
+      ShowAll = 0,   //!< Show both latitude and longitude annotations/divisions
+      LatitudeOnly,  //!< Show latitude/y annotations/divisions only
       LongitudeOnly, //!< Show longitude/x annotations/divisions only
-      HideAll //!< No annotations
+      HideAll        //!< No annotations
     };
 
     /**
@@ -181,7 +178,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     enum AnnotationPosition
     {
       InsideMapFrame = 0, //!< Draw annotations inside the map frame
-      OutsideMapFrame, //!< Draw annotations outside the map frame
+      OutsideMapFrame,    //!< Draw annotations outside the map frame
     };
 
     /**
@@ -189,13 +186,13 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      */
     enum AnnotationDirection
     {
-      Horizontal = 0, //!< Draw annotations horizontally
-      Vertical, //!< Draw annotations vertically, ascending
+      Horizontal = 0,     //!< Draw annotations horizontally
+      Vertical,           //!< Draw annotations vertically, ascending
       VerticalDescending, //!< Draw annotations vertically, descending
-      BoundaryDirection, //!< Annotations follow the boundary direction
-      AboveTick, //!< Draw annotations parallel to tick (above the line)
-      OnTick, //!< Draw annotations parallel to tick (on the line)
-      UnderTick, //!< Draw annotations parallel to tick (under the line)
+      BoundaryDirection,  //!< Annotations follow the boundary direction
+      AboveTick,          //!< Draw annotations parallel to tick (above the line)
+      OnTick,             //!< Draw annotations parallel to tick (on the line)
+      UnderTick,          //!< Draw annotations parallel to tick (under the line)
     };
 
     /**
@@ -203,15 +200,15 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      */
     enum AnnotationFormat
     {
-      Decimal = 0, //!< Decimal degrees, use - for S/W coordinates
-      DegreeMinute, //!< Degree/minutes, use NSEW suffix
-      DegreeMinuteSecond, //!< Degree/minutes/seconds, use NSEW suffix
-      DecimalWithSuffix, //!< Decimal degrees, use NSEW suffix
-      DegreeMinuteNoSuffix, //!< Degree/minutes, use - for S/W coordinates
-      DegreeMinutePadded, //!< Degree/minutes, with minutes using leading zeros where required
+      Decimal = 0,                //!< Decimal degrees, use - for S/W coordinates
+      DegreeMinute,               //!< Degree/minutes, use NSEW suffix
+      DegreeMinuteSecond,         //!< Degree/minutes/seconds, use NSEW suffix
+      DecimalWithSuffix,          //!< Decimal degrees, use NSEW suffix
+      DegreeMinuteNoSuffix,       //!< Degree/minutes, use - for S/W coordinates
+      DegreeMinutePadded,         //!< Degree/minutes, with minutes using leading zeros where required
       DegreeMinuteSecondNoSuffix, //!< Degree/minutes/seconds, use - for S/W coordinates
-      DegreeMinuteSecondPadded, //!< Degree/minutes/seconds, with minutes using leading zeros where required
-      CustomFormat //!< Custom expression-based format
+      DegreeMinuteSecondPadded,   //!< Degree/minutes/seconds, with minutes using leading zeros where required
+      CustomFormat                //!< Custom expression-based format
     };
 
     /**
@@ -219,10 +216,10 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      */
     enum BorderSide
     {
-      Left, //!< Left border
-      Right, //!< Right border
+      Left,   //!< Left border
+      Right,  //!< Right border
       Bottom, //!< Bottom border
-      Top, //!< Top border
+      Top,    //!< Top border
     };
 
     /**
@@ -230,14 +227,14 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      */
     enum FrameStyle
     {
-      NoFrame = 0, //!< Disable grid frame
-      Zebra, //!< Black/white pattern
-      InteriorTicks,  //!< Tick markers drawn inside map frame
-      ExteriorTicks,  //!< Tick markers drawn outside map frame
+      NoFrame = 0,           //!< Disable grid frame
+      Zebra,                 //!< Black/white pattern
+      InteriorTicks,         //!< Tick markers drawn inside map frame
+      ExteriorTicks,         //!< Tick markers drawn outside map frame
       InteriorExteriorTicks, //!< Tick markers drawn both inside and outside the map frame
-      LineBorder, //!< Simple solid line frame
-      LineBorderNautical, //!< Simple solid line frame, with nautical style diagonals on corners
-      ZebraNautical, //!< Black/white pattern, with nautical style diagonals on corners
+      LineBorder,            //!< Simple solid line frame
+      LineBorderNautical,    //!< Simple solid line frame, with nautical style diagonals on corners
+      ZebraNautical,         //!< Black/white pattern, with nautical style diagonals on corners
     };
 
     /**
@@ -246,17 +243,16 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     enum TickLengthMode
     {
       OrthogonalTicks = 0, //!< Align ticks orthogonaly
-      NormalizedTicks, //!< Constant tick lengths
+      NormalizedTicks,     //!< Constant tick lengths
     };
 
     /**
      * Flags for controlling which side of the map a frame is drawn on
      */
-    enum FrameSideFlag SIP_ENUM_BASETYPE( IntFlag )
-    {
-      FrameLeft = 0x01, //!< Left side of map
+    enum FrameSideFlag SIP_ENUM_BASETYPE( IntFlag ) {
+      FrameLeft = 0x01,  //!< Left side of map
       FrameRight = 0x02, //!< Right side of map
-      FrameTop = 0x04, //!< Top side of map
+      FrameTop = 0x04,   //!< Top side of map
       FrameBottom = 0x08 //!< Bottom side of map
     };
     Q_DECLARE_FLAGS( FrameSideFlags, FrameSideFlag )
@@ -267,7 +263,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     enum AnnotationCoordinate
     {
       Longitude = 0, //!< Coordinate is a longitude value
-      Latitude //!< Coordinate is a latitude value
+      Latitude       //!< Coordinate is a latitude value
     };
 
     /**
@@ -518,7 +514,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see style()
      * \note not available in Python bindings
      */
-    const QgsLineSymbol *lineSymbol() const; SIP_SKIP
+    const QgsLineSymbol *lineSymbol() const;
+    SIP_SKIP
 
     /**
      * Returns the line symbol used for drawing grid lines. This is only used for grids with
@@ -547,7 +544,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see style()
      * \note not available in Python bindings
      */
-    const QgsMarkerSymbol *markerSymbol() const; SIP_SKIP
+    const QgsMarkerSymbol *markerSymbol() const;
+    SIP_SKIP
 
     /**
      * Returns the marker symbol used for drawing grid points. This is only used for grids with a
@@ -967,7 +965,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      * \see frameFillColor1()
      * \see frameFillColor2()
      */
-    QColor framePenColor() const {return mGridFramePenColor;}
+    QColor framePenColor() const { return mGridFramePenColor; }
 
     /**
      * Sets the first fill \a color used for the grid frame.
@@ -1022,57 +1020,56 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     void crsChanged();
 
   private:
-
     QgsLayoutItemMapGrid() = delete;
 
     struct GridExtension
     {
-      GridExtension() = default;
-      double top = 0.0;
-      double right = 0.0;
-      double bottom = 0.0;
-      double left = 0.0;
+        GridExtension() = default;
+        double top = 0.0;
+        double right = 0.0;
+        double bottom = 0.0;
+        double left = 0.0;
 
-      /**
+        /**
        * Updates the specified border of the extension
        */
-      void UpdateBorder( BorderSide border, double value )
-      {
-        switch ( border )
+        void UpdateBorder( BorderSide border, double value )
         {
-          case QgsLayoutItemMapGrid::Left:
-            left = std::max( left, value );
-            break;
-          case QgsLayoutItemMapGrid::Right:
-            right = std::max( right, value );
-            break;
-          case QgsLayoutItemMapGrid::Top:
-            top = std::max( top, value );
-            break;
-          case QgsLayoutItemMapGrid::Bottom:
-            bottom = std::max( bottom, value );
-            break;
+          switch ( border )
+          {
+            case QgsLayoutItemMapGrid::Left:
+              left = std::max( left, value );
+              break;
+            case QgsLayoutItemMapGrid::Right:
+              right = std::max( right, value );
+              break;
+            case QgsLayoutItemMapGrid::Top:
+              top = std::max( top, value );
+              break;
+            case QgsLayoutItemMapGrid::Bottom:
+              bottom = std::max( bottom, value );
+              break;
+          }
         }
-      }
 
-      /**
+        /**
        * Updates all borders of the extension
        */
-      void UpdateAll( double value )
-      {
-        left = std::max( left, value );
-        right = std::max( right, value );
-        top = std::max( top, value );
-        bottom = std::max( bottom, value );
-      }
+        void UpdateAll( double value )
+        {
+          left = std::max( left, value );
+          right = std::max( right, value );
+          top = std::max( top, value );
+          bottom = std::max( bottom, value );
+        }
     };
 
     struct GridLineAnnotation
     {
-      BorderSide border = Left; // border on which the annotation is
-      QVector2D position; // position on the frame
-      QVector2D vector; // vector towards map center
-      double angle = 0; // the (acute) angle formed between the vector and the border
+        BorderSide border = Left; // border on which the annotation is
+        QVector2D position;       // position on the frame
+        QVector2D vector;         // vector towards map center
+        double angle = 0;         // the (acute) angle formed between the vector and the border
     };
 
     /**
@@ -1081,13 +1078,13 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      */
     struct GridLine
     {
-      QPolygonF line; // the actual line, can be straight with two points or curved if transformed
-      double coordinate; // the coordinate value
-      QgsLayoutItemMapGrid::AnnotationCoordinate coordinateType; // whether it's a latitude or longitude line
-      GridLineAnnotation startAnnotation; // the annotation on the start point
-      GridLineAnnotation endAnnotation; // the annotation on the end point
+        QPolygonF line;                                            // the actual line, can be straight with two points or curved if transformed
+        double coordinate;                                         // the coordinate value
+        QgsLayoutItemMapGrid::AnnotationCoordinate coordinateType; // whether it's a latitude or longitude line
+        GridLineAnnotation startAnnotation;                        // the annotation on the start point
+        GridLineAnnotation endAnnotation;                          // the annotation on the end point
     };
-    mutable QList< GridLine > mGridLines;
+    mutable QList<GridLine> mGridLines;
 
     //! True if a re-transformation of grid lines is required
     mutable bool mTransformDirty = true;
@@ -1143,7 +1140,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     AnnotationFormat mGridAnnotationFormat = QgsLayoutItemMapGrid::Decimal;
 
     QString mGridAnnotationExpressionString;
-    mutable std::unique_ptr< QgsExpression > mGridAnnotationExpression;
+    mutable std::unique_ptr<QgsExpression> mGridAnnotationExpression;
 
     FrameStyle mGridFrameStyle = QgsLayoutItemMapGrid::NoFrame;
 
@@ -1176,8 +1173,8 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
     //! Divisions for frame on bottom map side
     DisplayMode mBottomFrameDivisions = QgsLayoutItemMapGrid::ShowAll;
 
-    std::unique_ptr< QgsLineSymbol > mGridLineSymbol;
-    std::unique_ptr< QgsMarkerSymbol > mGridMarkerSymbol;
+    std::unique_ptr<QgsLineSymbol> mGridLineSymbol;
+    std::unique_ptr<QgsMarkerSymbol> mGridMarkerSymbol;
 
     QgsCoordinateReferenceSystem mCRS;
 
@@ -1185,9 +1182,9 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
 
     QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
 
-    mutable QList< QPair< double, QPolygonF > > mTransformedXLines;
-    mutable QList< QPair< double, QPolygonF > > mTransformedYLines;
-    mutable QList< QgsPointXY > mTransformedIntersections;
+    mutable QList<QPair<double, QPolygonF>> mTransformedXLines;
+    mutable QList<QPair<double, QPolygonF>> mTransformedYLines;
+    mutable QList<QgsPointXY> mTransformedIntersections;
     QRectF mPrevPaintRect;
     mutable QPolygonF mPrevMapPolygon;
 
@@ -1311,7 +1308,6 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
 
     // Needs access to evaluated properties to compute frame bleed
     friend class QgsLayoutItemMap;
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayoutItemMapGrid::FrameSideFlags )

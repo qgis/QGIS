@@ -30,9 +30,7 @@
  */
 class QgsRasterStatisticsAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsRasterStatisticsAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -44,7 +42,6 @@ class QgsRasterStatisticsAlgorithm : public QgsProcessingAlgorithm
     QgsRasterStatisticsAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };

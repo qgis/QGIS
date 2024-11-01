@@ -55,19 +55,19 @@ QVariant QgsBookmarkManagerModel::data( const QModelIndex &index, int role ) con
 
   switch ( role )
   {
-    case static_cast< int >( CustomRole::Extent ):
+    case static_cast<int>( CustomRole::Extent ):
       return b.extent();
 
-    case static_cast< int >( CustomRole::Rotation ):
+    case static_cast<int>( CustomRole::Rotation ):
       return b.rotation();
 
-    case static_cast< int >( CustomRole::Name ):
+    case static_cast<int>( CustomRole::Name ):
       return b.name();
 
-    case static_cast< int >( CustomRole::Id ):
+    case static_cast<int>( CustomRole::Id ):
       return b.id();
 
-    case static_cast< int >( CustomRole::Group ):
+    case static_cast<int>( CustomRole::Group ):
       return b.group();
 
     case Qt::DecorationRole:
@@ -240,8 +240,8 @@ bool QgsBookmarkManagerModel::insertRows( int, int count, const QModelIndex & )
 
 bool QgsBookmarkManagerModel::removeRows( int row, int count, const QModelIndex & )
 {
-  const QList< QgsBookmark > appBookmarks = mManager->bookmarks();
-  const QList< QgsBookmark > projectBookmarks = mProjectManager->bookmarks();
+  const QList<QgsBookmark> appBookmarks = mManager->bookmarks();
+  const QList<QgsBookmark> projectBookmarks = mProjectManager->bookmarks();
   for ( int r = row + count - 1; r >= row; --r )
   {
     if ( r >= appBookmarks.count() )
@@ -286,7 +286,7 @@ void QgsBookmarkManagerModel::bookmarkAboutToBeAdded( const QString & )
   if ( mBlocked )
     return;
 
-  if ( qobject_cast< QgsBookmarkManager * >( sender() ) == mManager )
+  if ( qobject_cast<QgsBookmarkManager *>( sender() ) == mManager )
     beginInsertRows( QModelIndex(), mManager->bookmarks().count(), mManager->bookmarks().count() );
   else
     beginInsertRows( QModelIndex(), mManager->bookmarks().count() + mProjectManager->bookmarks().count(),
@@ -306,9 +306,9 @@ void QgsBookmarkManagerModel::bookmarkAboutToBeRemoved( const QString &id )
   if ( mBlocked )
     return;
 
-  QgsBookmarkManager *manager = qobject_cast< QgsBookmarkManager * >( sender() );
+  QgsBookmarkManager *manager = qobject_cast<QgsBookmarkManager *>( sender() );
 
-  const QList< QgsBookmark > bookmarks = manager->bookmarks();
+  const QList<QgsBookmark> bookmarks = manager->bookmarks();
   bool found = false;
   int i = 0;
   for ( i = 0; i < bookmarks.count(); ++i )
@@ -342,8 +342,8 @@ void QgsBookmarkManagerModel::bookmarkChanged( const QString &id )
   if ( mBlocked )
     return;
 
-  QgsBookmarkManager *manager = qobject_cast< QgsBookmarkManager * >( sender() );
-  const QList< QgsBookmark > bookmarks = manager->bookmarks();
+  QgsBookmarkManager *manager = qobject_cast<QgsBookmarkManager *>( sender() );
+  const QList<QgsBookmark> bookmarks = manager->bookmarks();
   bool found = false;
   int i = 0;
   for ( i = 0; i < bookmarks.count(); ++i )

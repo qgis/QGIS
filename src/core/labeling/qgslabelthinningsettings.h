@@ -34,7 +34,6 @@ class QgsExpressionContext;
 class CORE_EXPORT QgsLabelThinningSettings
 {
   public:
-
     /**
      * Returns TRUE if the number of labels drawn for the layer should be limited.
      * \see maximumNumberLabels()
@@ -84,7 +83,6 @@ class CORE_EXPORT QgsLabelThinningSettings
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 
   private:
-
     bool mLimitNumLabels = false;
     int mMaxNumLabels = 2000;
     double mMinFeatureSize = 0;

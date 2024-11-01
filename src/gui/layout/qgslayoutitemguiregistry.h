@@ -45,11 +45,9 @@ class QgsLayoutItemBaseWidget;
 class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
 {
   public:
-
     //! Flags for controlling how a items behave in the GUI
-    enum Flag SIP_ENUM_BASETYPE( IntFlag )
-    {
-      FlagNoCreationTools = 1 << 1,  //!< Do not show item creation tools for the item type
+    enum Flag SIP_ENUM_BASETYPE( IntFlag ) {
+      FlagNoCreationTools = 1 << 1, //!< Do not show item creation tools for the item type
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -120,7 +118,11 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
     /**
      * Creates a configuration widget for an \a item of this type. Can return NULLPTR if no configuration GUI is required.
      */
-    virtual QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) SIP_TRANSFERBACK { Q_UNUSED( item ) return nullptr; }
+    virtual QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) SIP_TRANSFERBACK
+    {
+      Q_UNUSED( item )
+      return nullptr;
+    }
 
     /**
      * Creates a rubber band for use when creating layout items of this type. Can return NULLPTR if no rubber band
@@ -150,13 +152,11 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
     virtual void newItemAddedToLayout( QgsLayoutItem *item );
 
   private:
-
     int mType = -1;
     QString mGroupId;
     bool mIsNodeBased = false;
     QString mName;
     Flags mFlags;
-
 };
 
 //! Layout item configuration widget creation function
@@ -169,7 +169,7 @@ typedef std::function<QgsLayoutViewRubberBand *( QgsLayoutView * )> QgsLayoutIte
 typedef std::function<QAbstractGraphicsShapeItem *( QgsLayoutView * )> QgsLayoutNodeItemRubberBandFunc SIP_SKIP;
 
 //! Layout item added to layout callback
-typedef std::function<void ( QgsLayoutItem *, const QVariantMap & )> QgsLayoutItemAddedToLayoutFunc SIP_SKIP;
+typedef std::function<void( QgsLayoutItem *, const QVariantMap & )> QgsLayoutItemAddedToLayoutFunc SIP_SKIP;
 
 #ifndef SIP_RUN
 
@@ -181,7 +181,6 @@ typedef std::function<void ( QgsLayoutItem *, const QVariantMap & )> QgsLayoutIt
 class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetadata
 {
   public:
-
     /**
      * Constructor for QgsLayoutItemGuiMetadata with the specified class \a type
      * and \a creationIcon, and function pointers for the various
@@ -294,7 +293,6 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
     QgsLayoutNodeItemRubberBandFunc mNodeRubberBandFunc = nullptr;
     QgsLayoutItemCreateFunc mCreateFunc = nullptr;
     QgsLayoutItemAddedToLayoutFunc mAddedToLayoutFunc = nullptr;
-
 };
 
 #endif
@@ -313,7 +311,6 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
 class GUI_EXPORT QgsLayoutItemGuiGroup
 {
   public:
-
     /**
      * Constructor for QgsLayoutItemGuiGroup.
      */
@@ -337,7 +334,6 @@ class GUI_EXPORT QgsLayoutItemGuiGroup
      * Icon for group.
      */
     QIcon icon;
-
 };
 
 
@@ -358,7 +354,6 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new empty item GUI registry.
      *
@@ -481,7 +476,7 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     /**
      * Returns a list of available item metadata ids handled by the registry.
      */
-    QList< int > itemMetadataIds() const;
+    QList<int> itemMetadataIds() const;
 
   signals:
 
@@ -496,13 +491,9 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
     QgsLayoutItemGuiRegistry( const QgsLayoutItemGuiRegistry &rh );
 #endif
 
-    QMap< int, QgsLayoutItemAbstractGuiMetadata *> mMetadata;
+    QMap<int, QgsLayoutItemAbstractGuiMetadata *> mMetadata;
 
-    QMap< QString, QgsLayoutItemGuiGroup > mItemGroups;
-
+    QMap<QString, QgsLayoutItemGuiGroup> mItemGroups;
 };
 
 #endif //QGSLAYOUTITEMGUIREGISTRY_H
-
-
-

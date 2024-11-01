@@ -287,16 +287,16 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLa
     if ( !userLabel.isNull() )
       legendNode->setUserLabel( userLabel );
 
-    if ( QgsSymbolLegendNode *symbolNode = dynamic_cast< QgsSymbolLegendNode * >( legendNode ) )
+    if ( QgsSymbolLegendNode *symbolNode = dynamic_cast<QgsSymbolLegendNode *>( legendNode ) )
     {
       const QgsLegendPatchShape shape = QgsMapLayerLegendUtils::legendNodePatchShape( nodeLayer, i );
       symbolNode->setPatchShape( shape );
 
       symbolNode->setCustomSymbol( QgsMapLayerLegendUtils::legendNodeCustomSymbol( nodeLayer, i ) );
     }
-    else if ( QgsColorRampLegendNode *colorRampNode = dynamic_cast< QgsColorRampLegendNode * >( legendNode ) )
+    else if ( QgsColorRampLegendNode *colorRampNode = dynamic_cast<QgsColorRampLegendNode *>( legendNode ) )
     {
-      const std::unique_ptr< QgsColorRampLegendNodeSettings > settings( QgsMapLayerLegendUtils::legendNodeColorRampSettings( nodeLayer, i ) );
+      const std::unique_ptr<QgsColorRampLegendNodeSettings> settings( QgsMapLayerLegendUtils::legendNodeColorRampSettings( nodeLayer, i ) );
       if ( settings )
       {
         colorRampNode->setSettings( *settings );
@@ -344,7 +344,6 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLa
 
     nodes = newOrder;
   }
-
 }
 
 // -------------------------------------------------------------------------
@@ -388,9 +387,9 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
   const QList<QgsLayerTreeModelLegendNode *> rendererNodes = r->createLegendNodes( nodeLayer );
   for ( QgsLayerTreeModelLegendNode *node : rendererNodes )
   {
-    if ( QgsSymbolLegendNode *legendNode = qobject_cast< QgsSymbolLegendNode *>( node ) )
+    if ( QgsSymbolLegendNode *legendNode = qobject_cast<QgsSymbolLegendNode *>( node ) )
     {
-      const QString ruleKey = legendNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
+      const QString ruleKey = legendNode->data( static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
       if ( mTextOnSymbolEnabled && mTextOnSymbolContent.contains( ruleKey ) )
       {
         legendNode->setTextOnSymbolLabel( mTextOnSymbolContent.value( ruleKey ) );
@@ -400,7 +399,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
     nodes << node;
   }
 
-  if ( nodes.count() == 1 && nodes[0]->data( Qt::EditRole ).toString().isEmpty() && qobject_cast< QgsSymbolLegendNode * >( nodes[0] ) )
+  if ( nodes.count() == 1 && nodes[0]->data( Qt::EditRole ).toString().isEmpty() && qobject_cast<QgsSymbolLegendNode *>( nodes[0] ) )
     nodes[0]->setEmbeddedInParent( true );
 
   if ( mLayer->diagramsEnabled() )
@@ -585,12 +584,11 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
         // for all others we use itemised lists
         QgsLegendColorList items;
         settings.colorRampShader().legendSymbologyItems( items );
-        for ( const QPair< QString, QColor > &item : items )
+        for ( const QPair<QString, QColor> &item : items )
         {
           nodes << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first, nullptr, false,
                                                   QStringLiteral( "scalarLegend" ) + QUuid::createUuid().toString(),
-                                                  scalarNameKey
-                                                );
+                                                  scalarNameKey );
         }
         break;
       }
@@ -642,12 +640,11 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
             // for all others we use itemised lists
             QgsLegendColorList items;
             settings.colorRampShader().legendSymbologyItems( items );
-            for ( const QPair< QString, QColor > &item : items )
+            for ( const QPair<QString, QColor> &item : items )
             {
               nodes << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first, nullptr, false,
                                                       QStringLiteral( "vectorLegend" ) + QUuid::createUuid().toString(),
-                                                      vectorNameKey
-                                                    );
+                                                      vectorNameKey );
             }
             break;
           }

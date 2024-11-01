@@ -35,7 +35,7 @@ QgsSourceCacheEntry::QgsSourceCacheEntry( const QString &path )
 
 bool QgsSourceCacheEntry::isEqual( const QgsAbstractContentCacheEntry *other ) const
 {
-  const QgsSourceCacheEntry *otherSource = dynamic_cast< const QgsSourceCacheEntry * >( other );
+  const QgsSourceCacheEntry *otherSource = dynamic_cast<const QgsSourceCacheEntry *>( other );
   // cheapest checks first!
   if ( !otherSource || otherSource->filePath != filePath )
     return false;
@@ -56,7 +56,7 @@ void QgsSourceCacheEntry::dump() const
 ///@endcond
 
 QgsSourceCache::QgsSourceCache( QObject *parent )
-  : QgsAbstractContentCache< QgsSourceCacheEntry >( parent, QObject::tr( "Source" ) )
+  : QgsAbstractContentCache<QgsSourceCacheEntry>( parent, QObject::tr( "Source" ) )
 {
   temporaryDir.reset( new QTemporaryDir() );
 

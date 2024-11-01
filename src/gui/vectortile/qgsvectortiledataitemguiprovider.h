@@ -26,7 +26,6 @@ class QgsVectorTileDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
 {
     Q_OBJECT
   public:
-
     QString name() override { return QStringLiteral( "Vector Tiles" ); }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
@@ -39,7 +38,6 @@ class QgsVectorTileDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
     static void newArcGISConnection( QgsDataItem *item );
     static void saveXyzTilesServers();
     static void loadXyzTilesServers( QgsDataItem *item );
-
 };
 
 ///@endcond

@@ -33,16 +33,15 @@
  * \ingroup core
  * \since QGIS 3.16
  */
-class CORE_EXPORT QgsProcessingParameterTinInputLayers: public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterTinInputLayers : public QgsProcessingParameterDefinition
 {
   public:
-
     //! Used to store input layer Id and other associated parameters
     struct InputLayer
     {
-      QString source; //!The source of the input layer
-      Qgis::ProcessingTinInputLayerType type; //!The type of the input layer (see Type)
-      int attributeIndex; //! The attribute index used for Z value of vertices
+        QString source;                         //!The source of the input layer
+        Qgis::ProcessingTinInputLayerType type; //!The type of the input layer (see Type)
+        int attributeIndex;                     //! The attribute index used for Z value of vertices
     };
 
     //! Constructor

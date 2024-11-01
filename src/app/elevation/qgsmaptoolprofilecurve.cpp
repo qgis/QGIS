@@ -23,8 +23,7 @@
 QgsMapToolProfileCurve::QgsMapToolProfileCurve( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolCapture( canvas, cadDockWidget, CaptureMode::CaptureLine )
 {
-  connect( canvas, &QgsMapCanvas::mapToolSet, this, [ = ]( QgsMapTool * tool, QgsMapTool * )
-  {
+  connect( canvas, &QgsMapCanvas::mapToolSet, this, [=]( QgsMapTool *tool, QgsMapTool * ) {
     if ( tool != this )
       mPreviousTool = tool;
   } );

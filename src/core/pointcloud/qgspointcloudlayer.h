@@ -46,29 +46,27 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
 {
     Q_OBJECT
   public:
-
     /**
      * Setting options for loading point cloud layers.
      */
     struct LayerOptions
     {
-
-      /**
+        /**
        * Constructor for LayerOptions with optional \a transformContext.
        */
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) )
-        : transformContext( transformContext )
-      {}
+        explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() )
+          : transformContext( transformContext )
+        {}
 
-      /**
+        /**
        * Coordinate transform context
        */
-      QgsCoordinateTransformContext transformContext;
+        QgsCoordinateTransformContext transformContext;
 
-      //! Set to TRUE if the default layer style should be loaded
-      bool loadDefaultStyle = true;
+        //! Set to TRUE if the default layer style should be loaded
+        bool loadDefaultStyle = true;
 
-      /**
+        /**
        * Controls whether the layer is allowed to have an invalid/unknown CRS.
        *
        * If TRUE, then no validation will be performed on the layer's CRS and the layer
@@ -79,18 +77,18 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
        * which may cause a blocking, user-facing dialog asking users to manually select the correct CRS for the
        * layer.
        */
-      bool skipCrsValidation = false;
+        bool skipCrsValidation = false;
 
-      /**
+        /**
        * Set to TRUE if point cloud index generation should be skipped.
        */
-      bool skipIndexGeneration = false;
+        bool skipIndexGeneration = false;
 
-      /**
+        /**
        * Set to true if the statistics calculation for this point cloud is disabled
        * \since QGIS 3.26
        */
-      bool skipStatisticsCalculation = false;
+        bool skipStatisticsCalculation = false;
     };
 
 
@@ -98,11 +96,10 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      * Point cloud statistics calculation task
      * \since QGIS 3.26
      */
-    enum class PointCloudStatisticsCalculationState : int SIP_ENUM_BASETYPE( IntFlag )
-    {
-      NotStarted = 0, //!< The statistics calculation task has not been started
+    enum class PointCloudStatisticsCalculationState : int SIP_ENUM_BASETYPE( IntFlag ) {
+      NotStarted = 0,       //!< The statistics calculation task has not been started
       Calculating = 1 << 0, //!< The statistics calculation task is running
-      Calculated = 1 << 1 //!< The statistics calculation task is done and statistics are available
+      Calculated = 1 << 1   //!< The statistics calculation task is done and statistics are available
     };
     Q_ENUM( PointCloudStatisticsCalculationState )
 
@@ -122,12 +119,14 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsPointCloudLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+        QString str
+      = QStringLiteral( "<QgsPointCloudLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    QgsPointCloudLayer *clone() const override SIP_FACTORY;
+        QgsPointCloudLayer *
+      clone() const override SIP_FACTORY;
     QgsRectangle extent() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
     QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
@@ -270,8 +269,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags ) override;
 
   private:
-
-    bool isReadOnly() const override {return true;}
+    bool isReadOnly() const override { return true; }
 
     void calculateStatistics();
 

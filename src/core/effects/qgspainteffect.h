@@ -50,7 +50,6 @@ class QgsRenderContext;
 
 class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->type() == "drawSource" && dynamic_cast<QgsDrawSourceEffect *>( sipCpp ) != NULL )
@@ -93,7 +92,6 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
 #endif
 
   public:
-
     /**
      * Drawing modes for effects. These modes are used only when effects are
      * drawn as part of an effects stack
@@ -101,8 +99,8 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
      */
     enum DrawMode
     {
-      Modifier, //!< The result of the effect is not rendered, but is passed on to following effects in the stack
-      Render, //!< The result of the effect is rendered on the destination, but does not affect subsequent effects in the stack
+      Modifier,       //!< The result of the effect is not rendered, but is passed on to following effects in the stack
+      Render,         //!< The result of the effect is rendered on the destination, but does not affect subsequent effects in the stack
       ModifyAndRender //!< The result of the effect is both rendered and passed on to subsequent effects in the stack
     };
 
@@ -216,7 +214,6 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
     void setDrawMode( DrawMode drawMode );
 
   protected:
-
     bool mEnabled = true;
     DrawMode mDrawMode = ModifyAndRender;
     bool requiresQPainterDpiFix = true;
@@ -292,7 +289,6 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
     Q_DECL_DEPRECATED void fixQPictureDpi( QPainter *painter ) const SIP_DEPRECATED;
 
   private:
-
     const QPicture *mPicture = nullptr;
     QImage *mSourceImage = nullptr;
     bool mOwnsImage = false;
@@ -305,8 +301,7 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
 
     friend class QgsEffectStack;
 
-    QgsPaintEffect &operator= ( const QgsPaintEffect & ) = delete;
-
+    QgsPaintEffect &operator=( const QgsPaintEffect & ) = delete;
 };
 
 /**
@@ -324,7 +319,6 @@ class CORE_EXPORT QgsPaintEffect SIP_NODEFAULTCTORS
 class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 {
   public:
-
     QgsDrawSourceEffect() = default;
 
     /**
@@ -372,11 +366,9 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
     QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
   protected:
-
     void draw( QgsRenderContext &context ) override;
 
   private:
-
     double mOpacity = 1.0;
     QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
 };
@@ -390,7 +382,6 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
 class CORE_EXPORT QgsEffectPainter
 {
   public:
-
     /**
      * QgsEffectPainter constructor
      *
@@ -434,4 +425,3 @@ class CORE_EXPORT QgsEffectPainter
 };
 
 #endif // QGSPAINTEFFECT_H
-

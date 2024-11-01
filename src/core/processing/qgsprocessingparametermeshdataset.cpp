@@ -18,13 +18,11 @@
 /// @cond PRIVATE
 ///
 QgsProcessingParameterMeshDatasetGroups::QgsProcessingParameterMeshDatasetGroups( const QString &name,
-    const QString &description,
-    const QString &meshLayerParameterName,
-    const QSet<int> supportedDataType,
-    bool optional ):
-  QgsProcessingParameterDefinition( name, description, QVariantList(), optional, QString() ),
-  mMeshLayerParameterName( meshLayerParameterName ),
-  mSupportedDataType( supportedDataType )
+                                                                                  const QString &description,
+                                                                                  const QString &meshLayerParameterName,
+                                                                                  const QSet<int> supportedDataType,
+                                                                                  bool optional )
+  : QgsProcessingParameterDefinition( name, description, QVariantList(), optional, QString() ), mMeshLayerParameterName( meshLayerParameterName ), mSupportedDataType( supportedDataType )
 {
 }
 
@@ -62,7 +60,7 @@ QString QgsProcessingParameterMeshDatasetGroups::asPythonString( QgsProcessing::
     case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
       QString code = QStringLiteral( "QgsProcessingParameterMeshDatasetGroups('%1', %2" )
-                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
+                       .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       if ( !mMeshLayerParameterName.isEmpty() )
         code += QStringLiteral( ", meshLayerParameterName=%1" ).arg( QgsProcessingUtils::stringToPythonLiteral( mMeshLayerParameterName ) );
 
@@ -183,14 +181,13 @@ bool QgsProcessingParameterMeshDatasetGroups::valueIsAcceptable( const QVariant 
 }
 
 QgsProcessingParameterMeshDatasetTime::QgsProcessingParameterMeshDatasetTime( const QString &name,
-    const QString &description,
-    const QString &meshLayerParameterName,
-    const QString &datasetGroupParameterName )
+                                                                              const QString &description,
+                                                                              const QString &meshLayerParameterName,
+                                                                              const QString &datasetGroupParameterName )
   : QgsProcessingParameterDefinition( name, description, QVariant() )
   , mMeshLayerParameterName( meshLayerParameterName )
   , mDatasetGroupParameterName( datasetGroupParameterName )
 {
-
 }
 
 QgsProcessingParameterDefinition *QgsProcessingParameterMeshDatasetTime::clone() const
@@ -214,7 +211,7 @@ QString QgsProcessingParameterMeshDatasetTime::valueAsPythonString( const QVaria
   Q_UNUSED( context );
   QStringList parts;
   const QString type = QgsProcessingUtils::variantToPythonLiteral( valueAsTimeType( value ) );
-  parts << QStringLiteral( "'type': " ) +  type;
+  parts << QStringLiteral( "'type': " ) + type;
 
   if ( value.toDateTime().isValid() )
   {
@@ -246,7 +243,7 @@ QString QgsProcessingParameterMeshDatasetTime::asPythonString( QgsProcessing::Py
     case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
       QString code = QStringLiteral( "QgsProcessingParameterMeshDatasetTime('%1', '%2'" )
-                     .arg( name(), description() );
+                       .arg( name(), description() );
       if ( !mMeshLayerParameterName.isEmpty() )
         code += QStringLiteral( ", meshLayerParameterName=%1" ).arg( QgsProcessingUtils::stringToPythonLiteral( mMeshLayerParameterName ) );
 
@@ -351,7 +348,7 @@ bool QgsProcessingParameterMeshDatasetTime::valueIsAcceptable( const QVariant &i
   if ( map.isEmpty() )
     return allowEmpty;
 
-  if ( ! map.contains( QStringLiteral( "type" ) ) )
+  if ( !map.contains( QStringLiteral( "type" ) ) )
     return false;
 
   const QString type = map.value( QStringLiteral( "type" ) ).toString();

@@ -43,7 +43,6 @@ struct BlockMetrics;
 class CORE_EXPORT QgsTextDocumentRenderContext
 {
   public:
-
     /**
      * Returns associated text renderer flags.
      *
@@ -77,10 +76,8 @@ class CORE_EXPORT QgsTextDocumentRenderContext
     void setMaximumWidth( double width ) { mMaximumWidth = width; }
 
   private:
-
     Qgis::TextRendererFlags mFlags;
     double mMaximumWidth = 0;
-
 };
 
 /**
@@ -96,7 +93,6 @@ class CORE_EXPORT QgsTextDocumentRenderContext
 class CORE_EXPORT QgsTextDocumentMetrics
 {
   public:
-
     /**
      * Returns precalculated text metrics for a text \a document, when rendered using the
      * given base \a format and render \a context.
@@ -110,7 +106,7 @@ class CORE_EXPORT QgsTextDocumentMetrics
      * logistics of the calculated metrics.
      */
     static QgsTextDocumentMetrics calculateMetrics( const QgsTextDocument &document, const QgsTextFormat &format, const QgsRenderContext &context, double scaleFactor = 1.0,
-        const QgsTextDocumentRenderContext &documentContext = QgsTextDocumentRenderContext() );
+                                                    const QgsTextDocumentRenderContext &documentContext = QgsTextDocumentRenderContext() );
 
     /**
      * Returns TRUE if the metrics could not be calculated because the text format has a null font size.
@@ -215,7 +211,6 @@ class CORE_EXPORT QgsTextDocumentMetrics
     double ascentOffset() const { return mFirstLineAscentOffset; }
 
   private:
-
     QgsTextDocument mDocument;
 
     bool mIsNullSize = false;
@@ -228,25 +223,25 @@ class CORE_EXPORT QgsTextDocumentMetrics
 
     QRectF mOuterBoundsLabelMode;
 
-    QList < QList< QFont > > mFragmentFonts;
-    QList< double > mBlockWidths;
-    QList< double > mBlockHeights;
-    QList< double > mBaselineOffsetsLabelMode;
-    QList< double > mBaselineOffsetsPointMode;
-    QList< double > mBaselineOffsetsRectMode;
-    QList< double > mBaselineOffsetsCapHeightMode;
-    QList< double > mBaselineOffsetsAscentBased;
+    QList<QList<QFont>> mFragmentFonts;
+    QList<double> mBlockWidths;
+    QList<double> mBlockHeights;
+    QList<double> mBaselineOffsetsLabelMode;
+    QList<double> mBaselineOffsetsPointMode;
+    QList<double> mBaselineOffsetsRectMode;
+    QList<double> mBaselineOffsetsCapHeightMode;
+    QList<double> mBaselineOffsetsAscentBased;
 
-    QList< QList< double > > mFragmentHorizontalAdvance;
-    QList< QList< double > > mFragmentFixedHeights;
+    QList<QList<double>> mFragmentHorizontalAdvance;
+    QList<QList<double>> mFragmentFixedHeights;
 
-    QList< QList< double > > mFragmentVerticalOffsetsLabelMode;
-    QList< QList< double > > mFragmentVerticalOffsetsPointMode;
-    QList< QList< double > > mFragmentVerticalOffsetsRectMode;
+    QList<QList<double>> mFragmentVerticalOffsetsLabelMode;
+    QList<QList<double>> mFragmentVerticalOffsetsPointMode;
+    QList<QList<double>> mFragmentVerticalOffsetsRectMode;
 
-    QList< double > mVerticalOrientationXOffsets;
-    QList< double > mBlockMaxDescent;
-    QList< double > mBlockMaxCharacterWidth;
+    QList<double> mVerticalOrientationXOffsets;
+    QList<double> mBlockMaxDescent;
+    QList<double> mBlockMaxCharacterWidth;
     double mFirstLineAscentOffset = 0;
     double mLastLineAscentOffset = 0;
     double mFirstLineCapHeight = 0;

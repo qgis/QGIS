@@ -37,14 +37,13 @@
 class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
 {
   public:
-
     /**
      * Visibility modes for header and footer sections
      */
     enum SectionVisibility
     {
-      IncludeWhenFeaturesFound,      //!< The section will be included when features are found
-      AlwaysInclude                  //!< The section will always be included
+      IncludeWhenFeaturesFound, //!< The section will be included when features are found
+      AlwaysInclude             //!< The section will always be included
     };
 
     /**
@@ -163,12 +162,10 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
     void reloadSettings() override;
 
   protected:
-
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private:
-
     QgsVectorLayerRef mCoverageLayer;
     QString mField;
     bool mSortAscending = true;
@@ -180,16 +177,15 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
     SectionVisibility mFooterVisibility = IncludeWhenFeaturesFound;
     QgsFeature mHeaderFeature;
     QgsFeature mLastFeature;
-    QSet< QVariant > mEncounteredValues;
+    QSet<QVariant> mEncounteredValues;
 
     bool mBodyEnabled = false;
-    std::unique_ptr< QgsLayout > mBody;
+    std::unique_ptr<QgsLayout> mBody;
 
     QgsFeatureRequest buildFeatureRequest() const;
 
     QgsFeature getNextFeature();
     void updateChildContexts( const QgsFeature &feature );
-
 };
 
 

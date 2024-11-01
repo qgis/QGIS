@@ -38,7 +38,7 @@ void QgsWkbPtr::verifyBound( int size ) const
 
 QgsConstWkbPtr::QgsConstWkbPtr( const QByteArray &wkb )
 {
-  mP = reinterpret_cast< unsigned char * >( const_cast<char *>( wkb.constData() ) );
+  mP = reinterpret_cast<unsigned char *>( const_cast<char *>( wkb.constData() ) );
   mEnd = mP + wkb.length();
   mEndianSwap = false;
   mWkbType = Qgis::WkbType::Unknown;
@@ -46,7 +46,7 @@ QgsConstWkbPtr::QgsConstWkbPtr( const QByteArray &wkb )
 
 QgsConstWkbPtr::QgsConstWkbPtr( const unsigned char *p, int size )
 {
-  mP = const_cast< unsigned char * >( p );
+  mP = const_cast<unsigned char *>( p );
   mEnd = mP + size;
   mEndianSwap = false;
   mWkbType = Qgis::WkbType::Unknown;

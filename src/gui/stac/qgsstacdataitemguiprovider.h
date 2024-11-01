@@ -27,7 +27,6 @@ class GUI_EXPORT QgsStacDataItemGuiProvider : public QObject, public QgsDataItem
 {
     Q_OBJECT
   public:
-
     QgsStacDataItemGuiProvider() = default;
 
     QString name() override { return QStringLiteral( "STAC" ); }

@@ -34,7 +34,7 @@ QgsOgrDbConnection::QgsOgrDbConnection( const QString &connName, const QString &
   : mConnName( connName )
 {
   mSettingsKey = settingsKey;
-  mPath = settingsOgrConnectionPath->value( {settingsKey, mConnName} );
+  mPath = settingsOgrConnectionPath->value( { settingsKey, mConnName } );
 }
 
 QgsDataSourceUri QgsOgrDbConnection::uri()
@@ -49,9 +49,9 @@ void QgsOgrDbConnection::setPath( const QString &path )
   mPath = path;
 }
 
-void QgsOgrDbConnection::save( )
+void QgsOgrDbConnection::save()
 {
-  settingsOgrConnectionPath->setValue( mPath, {mSettingsKey, mConnName} );
+  settingsOgrConnectionPath->setValue( mPath, { mSettingsKey, mConnName } );
 }
 
 bool QgsOgrDbConnection::allowProjectsInDatabase()
@@ -73,7 +73,7 @@ QString QgsOgrDbConnection::selectedConnection( const QString &driverName )
 
 void QgsOgrDbConnection::setSelectedConnection( const QString &connName, const QString &driverName )
 {
-  settingsOgrConnectionSelected->setValue( connName, {driverName} );
+  settingsOgrConnectionSelected->setValue( connName, { driverName } );
 }
 
 void QgsOgrDbConnection::deleteConnection( const QString &connName )

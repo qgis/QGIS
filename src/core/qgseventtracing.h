@@ -85,11 +85,11 @@ class CORE_EXPORT QgsEventTracing
     //! Type of the event that is being stored
     enum EventType
     {
-      Begin,       //!< Marks start of a duration event - should be paired with "End" event type
-      End,         //!< Marks end of a durection event - should be paired with "Begin" event type
-      Instant,     //!< Marks an instant event (which does not have any duration)
-      AsyncBegin,  //!< Marks start of an async event - should be paired with "AsyncEnd" event type
-      AsyncEnd,    //!< Marks end of an async event - should be paired with "AsyncBegin" event type
+      Begin,      //!< Marks start of a duration event - should be paired with "End" event type
+      End,        //!< Marks end of a durection event - should be paired with "Begin" event type
+      Instant,    //!< Marks an instant event (which does not have any duration)
+      AsyncBegin, //!< Marks start of an async event - should be paired with "AsyncEnd" event type
+      AsyncEnd,   //!< Marks end of an async event - should be paired with "AsyncBegin" event type
     };
 
     /**
@@ -126,12 +126,13 @@ class CORE_EXPORT QgsEventTracing
     class ScopedEvent
     {
       public:
-        ScopedEvent( const QString &category, const QString &name ): mCat( category ), mName( name ) { addEvent( Begin, mCat, mName ); }
+        ScopedEvent( const QString &category, const QString &name )
+          : mCat( category ), mName( name ) { addEvent( Begin, mCat, mName ); }
         ~ScopedEvent() { addEvent( End, mCat, mName ); }
+
       private:
         QString mCat, mName;
     };
-
 };
 
 /// @endcond

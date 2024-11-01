@@ -37,14 +37,13 @@ class QDomElement;
 class CORE_EXPORT QgsColorRampLegendNodeSettings
 {
   public:
-
     /**
      * Ramp directions
      */
     enum Direction
     {
       MinimumToMaximum, //!< Minimum value on bottom, maximum value on top
-      MaximumToMinimum,//!< Maximum value on bottom, minimum value on top
+      MaximumToMinimum, //!< Maximum value on bottom, minimum value on top
     };
 
     QgsColorRampLegendNodeSettings();
@@ -227,7 +226,7 @@ class CORE_EXPORT QgsColorRampLegendNodeSettings
     QString mPrefix;
     QString mSuffix;
     Direction mDirection = MinimumToMaximum;
-    std::unique_ptr< QgsNumericFormat > mNumericFormat;
+    std::unique_ptr<QgsNumericFormat> mNumericFormat;
     QgsTextFormat mTextFormat;
     Qt::Orientation mOrientation = Qt::Vertical;
 };

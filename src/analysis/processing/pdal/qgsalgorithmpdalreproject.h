@@ -30,9 +30,7 @@
  */
 class QgsPdalReprojectAlgorithm : public QgsPdalAlgorithmBase
 {
-
   public:
-
     QgsPdalReprojectAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;

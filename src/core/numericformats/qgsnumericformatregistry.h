@@ -37,9 +37,7 @@ class QgsReadWriteContext;
  */
 class CORE_EXPORT QgsNumericFormatRegistry
 {
-
   public:
-
     /**
      * You should not normally need to create your own numeric format registry.
      *

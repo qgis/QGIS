@@ -31,11 +31,9 @@
  */
 class GUI_EXPORT QgsModelViewToolTemporaryKeyZoom : public QgsModelViewToolZoom
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelViewToolTemporaryKeyZoom.
      */
@@ -47,8 +45,7 @@ class GUI_EXPORT QgsModelViewToolTemporaryKeyZoom : public QgsModelViewToolZoom
     void activate() override;
 
   private:
-
-    QPointer< QgsModelViewTool > mPreviousViewTool;
+    QPointer<QgsModelViewTool> mPreviousViewTool;
 
     bool mDeactivateOnMouseRelease = false;
 

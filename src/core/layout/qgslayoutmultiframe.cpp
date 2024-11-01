@@ -62,8 +62,7 @@ void QgsLayoutMultiFrame::addFrame( QgsLayoutFrame *frame, bool recalcFrameSizes
   mFrameItems.push_back( frame );
   frame->mMultiFrame = this;
   connect( frame, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutMultiFrame::recalculateFrameSizes );
-  connect( frame, &QgsLayoutFrame::destroyed, this, [this, frame ]
-  {
+  connect( frame, &QgsLayoutFrame::destroyed, this, [this, frame] {
     handleFrameRemoval( frame );
   } );
   if ( mLayout && !frame->scene() )
@@ -167,7 +166,7 @@ void QgsLayoutMultiFrame::recalculateFrameSizes()
       else
       {
         //add new pages if required
-        for ( int p = mLayout->pageCollection()->pageCount() - 1 ; p < page; ++p )
+        for ( int p = mLayout->pageCollection()->pageCount() - 1; p < page; ++p )
         {
           mLayout->pageCollection()->extendByNewPage();
         }
@@ -186,7 +185,7 @@ void QgsLayoutMultiFrame::recalculateFrameSizes()
         }
         case ExtendToNextPage:
         {
-          frameHeight = ( currentY + currentPageHeight ) > totalHeight ?  totalHeight - currentY : currentPageHeight;
+          frameHeight = ( currentY + currentPageHeight ) > totalHeight ? totalHeight - currentY : currentPageHeight;
           break;
         }
 
@@ -202,8 +201,8 @@ void QgsLayoutMultiFrame::recalculateFrameSizes()
 
       //create new frame
       QgsLayoutFrame *newFrame = createNewFrame( currentItem,
-                                 QPointF( currentItem->pos().x(), newFrameY ),
-                                 QSizeF( currentItem->rect().width(), frameHeight ) );
+                                                 QPointF( currentItem->pos().x(), newFrameY ),
+                                                 QSizeF( currentItem->rect().width(), frameHeight ) );
 
       if ( mResizeMode == RepeatOnEveryPage )
       {
@@ -233,7 +232,7 @@ void QgsLayoutMultiFrame::recalculateFrameRects()
     return;
   }
 
-  const QList< QgsLayoutFrame * > frames = mFrameItems;
+  const QList<QgsLayoutFrame *> frames = mFrameItems;
   for ( QgsLayoutFrame *frame : frames )
   {
     frame->refreshItemSize();
@@ -242,7 +241,6 @@ void QgsLayoutMultiFrame::recalculateFrameRects()
 
 void QgsLayoutMultiFrame::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty )
 {
-
 }
 
 QgsLayoutFrame *QgsLayoutMultiFrame::createNewFrame( QgsLayoutFrame *currentFrame, QPointF pos, QSizeF size )
@@ -317,7 +315,7 @@ void QgsLayoutMultiFrame::finalizeRestoreFromXml()
     if ( !uuid.isEmpty() )
     {
       QgsLayoutItem *item = mLayout->itemByUuid( uuid, true );
-      frame = qobject_cast< QgsLayoutFrame * >( item );
+      frame = qobject_cast<QgsLayoutFrame *>( item );
     }
     if ( !frame )
     {
@@ -325,7 +323,7 @@ void QgsLayoutMultiFrame::finalizeRestoreFromXml()
       if ( !templateUuid.isEmpty() )
       {
         QgsLayoutItem *item = mLayout->itemByTemplateUuid( templateUuid );
-        frame = qobject_cast< QgsLayoutFrame * >( item );
+        frame = qobject_cast<QgsLayoutFrame *>( item );
       }
     }
 
@@ -403,7 +401,7 @@ void QgsLayoutMultiFrame::handlePageChange()
     for ( int i = lastItemPage + 1; i < mLayout->pageCollection()->pageCount(); ++i )
     {
       //copy last frame to current page
-      std::unique_ptr< QgsLayoutFrame > newFrame = std::make_unique< QgsLayoutFrame >( mLayout, this );
+      std::unique_ptr<QgsLayoutFrame> newFrame = std::make_unique<QgsLayoutFrame>( mLayout, this );
 
       newFrame->attemptSetSceneRect( QRectF( lastFrame->pos().x(),
                                              mLayout->pageCollection()->page( i )->pos().y() + lastFrame->pagePos().y(),
@@ -532,7 +530,7 @@ bool QgsLayoutMultiFrame::readXml( const QDomElement &element, const QDomDocumen
 
   mUuid = element.attribute( QStringLiteral( "uuid" ), QUuid::createUuid().toString() );
   mTemplateUuid = element.attribute( QStringLiteral( "templateUuid" ), QUuid::createUuid().toString() );
-  mResizeMode = static_cast< ResizeMode >( element.attribute( QStringLiteral( "resizeMode" ), QStringLiteral( "0" ) ).toInt() );
+  mResizeMode = static_cast<ResizeMode>( element.attribute( QStringLiteral( "resizeMode" ), QStringLiteral( "0" ) ).toInt() );
 
   deleteFrames();
   mFrameUuids.clear();
@@ -557,7 +555,7 @@ bool QgsLayoutMultiFrame::readXml( const QDomElement &element, const QDomDocumen
       if ( !frameNodes.isEmpty() )
       {
         QDomElement frameItemElement = frameNodes.at( 0 ).toElement();
-        std::unique_ptr< QgsLayoutFrame > newFrame = std::make_unique< QgsLayoutFrame >( mLayout, this );
+        std::unique_ptr<QgsLayoutFrame> newFrame = std::make_unique<QgsLayoutFrame>( mLayout, this );
         newFrame->readXml( frameItemElement, doc, context );
         addFrame( newFrame.release(), false );
       }
@@ -578,7 +576,5 @@ bool QgsLayoutMultiFrame::writePropertiesToElement( QDomElement &, QDomDocument 
 
 bool QgsLayoutMultiFrame::readPropertiesFromElement( const QDomElement &, const QDomDocument &, const QgsReadWriteContext & )
 {
-
   return true;
 }
-

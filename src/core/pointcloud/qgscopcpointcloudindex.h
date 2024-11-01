@@ -42,11 +42,10 @@
 
 class QgsCoordinateReferenceSystem;
 
-class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
+class CORE_EXPORT QgsCopcPointCloudIndex : public QgsPointCloudIndex
 {
     Q_OBJECT
   public:
-
     explicit QgsCopcPointCloudIndex();
     ~QgsCopcPointCloudIndex();
 
@@ -57,7 +56,7 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
     bool hasNode( const IndexedPointCloudNode &n ) const override;
     QList<IndexedPointCloudNode> nodeChildren( const IndexedPointCloudNode &n ) const override;
 
-    std::unique_ptr< QgsPointCloudBlock> nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
+    std::unique_ptr<QgsPointCloudBlock> nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
     QgsPointCloudBlockRequest *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
 
     QgsCoordinateReferenceSystem crs() const override;

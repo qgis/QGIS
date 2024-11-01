@@ -38,7 +38,7 @@ QgsEditFormConfig::QgsEditFormConfig()
 void QgsEditFormConfig::setDataDefinedFieldProperties( const QString &fieldName, const QgsPropertyCollection &properties )
 {
   d.detach();
-  d->mDataDefinedFieldProperties[ fieldName ] = properties;
+  d->mDataDefinedFieldProperties[fieldName] = properties;
 }
 
 QgsPropertyCollection QgsEditFormConfig::dataDefinedFieldProperties( const QString &fieldName ) const
@@ -82,7 +82,7 @@ void QgsEditFormConfig::onRelationsLoaded()
 
   for ( QgsAttributeEditorElement *relElem : relations )
   {
-    QgsAttributeEditorRelation *rel = dynamic_cast< QgsAttributeEditorRelation * >( relElem );
+    QgsAttributeEditorRelation *rel = dynamic_cast<QgsAttributeEditorRelation *>( relElem );
     if ( !rel )
       continue;
 
@@ -90,12 +90,12 @@ void QgsEditFormConfig::onRelationsLoaded()
   }
 }
 
-bool QgsEditFormConfig::legacyUpdateRelationWidgetInTabs( QgsAttributeEditorContainer *container,  const QString &widgetName, const QVariantMap &config )
+bool QgsEditFormConfig::legacyUpdateRelationWidgetInTabs( QgsAttributeEditorContainer *container, const QString &widgetName, const QVariantMap &config )
 {
   const QList<QgsAttributeEditorElement *> children = container->children();
   for ( QgsAttributeEditorElement *child : children )
   {
-    if ( child->type() ==  Qgis::AttributeEditorType::Container )
+    if ( child->type() == Qgis::AttributeEditorType::Container )
     {
       QgsAttributeEditorContainer *container = dynamic_cast<QgsAttributeEditorContainer *>( child );
       if ( legacyUpdateRelationWidgetInTabs( container, widgetName, config ) )
@@ -104,9 +104,9 @@ bool QgsEditFormConfig::legacyUpdateRelationWidgetInTabs( QgsAttributeEditorCont
         return true;
       }
     }
-    else if ( child->type() ==  Qgis::AttributeEditorType::Relation )
+    else if ( child->type() == Qgis::AttributeEditorType::Relation )
     {
-      QgsAttributeEditorRelation *relation = dynamic_cast< QgsAttributeEditorRelation * >( child );
+      QgsAttributeEditorRelation *relation = dynamic_cast<QgsAttributeEditorRelation *>( child );
       if ( relation )
       {
         if ( relation->relation().id() == widgetName )
@@ -161,7 +161,7 @@ QgsEditFormConfig::QgsEditFormConfig( const QgsEditFormConfig &o ) //NOLINT
 QgsEditFormConfig::~QgsEditFormConfig() //NOLINT
 {}
 
-QgsEditFormConfig &QgsEditFormConfig::operator=( const QgsEditFormConfig &o )  //NOLINT
+QgsEditFormConfig &QgsEditFormConfig::operator=( const QgsEditFormConfig &o ) //NOLINT
 {
   d = o.d;
   return *this;
@@ -260,7 +260,7 @@ void QgsEditFormConfig::setReadOnly( int idx, bool readOnly )
   if ( idx >= 0 && idx < d->mFields.count() )
   {
     d.detach();
-    d->mFieldEditables[ d->mFields.at( idx ).name()] = !readOnly;
+    d->mFieldEditables[d->mFields.at( idx ).name()] = !readOnly;
   }
 }
 
@@ -269,7 +269,7 @@ void QgsEditFormConfig::setLabelOnTop( int idx, bool onTop )
   if ( idx >= 0 && idx < d->mFields.count() )
   {
     d.detach();
-    d->mLabelOnTop[ d->mFields.at( idx ).name()] = onTop;
+    d->mLabelOnTop[d->mFields.at( idx ).name()] = onTop;
   }
 }
 
@@ -286,7 +286,7 @@ void QgsEditFormConfig::setReuseLastValue( int index, bool reuse )
   if ( index >= 0 && index < d->mFields.count() )
   {
     d.detach();
-    d->mReuseLastValue[ d->mFields.at( index ).name()] = reuse;
+    d->mReuseLastValue[d->mFields.at( index ).name()] = reuse;
   }
 }
 
@@ -384,7 +384,7 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
   const QDomNode editFormInitCodeSourceNode = node.namedItem( QStringLiteral( "editforminitcodesource" ) );
   if ( !editFormInitCodeSourceNode.isNull() && !editFormInitCodeSourceNode.toElement().text().isEmpty() )
   {
-    setInitCodeSource( static_cast< Qgis::AttributeFormPythonInitCodeSource >( editFormInitCodeSourceNode.toElement().text().toInt() ) );
+    setInitCodeSource( static_cast<Qgis::AttributeFormPythonInitCodeSource>( editFormInitCodeSourceNode.toElement().text().toInt() ) );
   }
 
   const QDomNode editFormInitCodeNode = node.namedItem( QStringLiteral( "editforminitcode" ) );
@@ -420,7 +420,7 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
   else
   {
     const QDomElement e = fFSuppNode.toElement();
-    d->mSuppressForm = static_cast< Qgis::AttributeFormSuppression >( e.text().toInt() );
+    d->mSuppressForm = static_cast<Qgis::AttributeFormSuppression>( e.text().toInt() );
   }
 
   // tab display
@@ -450,7 +450,7 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
   for ( int i = 0; i < editableNodeList.size(); ++i )
   {
     const QDomElement editableElement = editableNodeList.at( i ).toElement();
-    d->mFieldEditables.insert( editableElement.attribute( QStringLiteral( "name" ) ), static_cast< bool >( editableElement.attribute( QStringLiteral( "editable" ) ).toInt() ) );
+    d->mFieldEditables.insert( editableElement.attribute( QStringLiteral( "name" ) ), static_cast<bool>( editableElement.attribute( QStringLiteral( "editable" ) ).toInt() ) );
   }
 
   d->mLabelOnTop.clear();
@@ -458,7 +458,7 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
   for ( int i = 0; i < labelOnTopNodeList.size(); ++i )
   {
     const QDomElement labelOnTopElement = labelOnTopNodeList.at( i ).toElement();
-    d->mLabelOnTop.insert( labelOnTopElement.attribute( QStringLiteral( "name" ) ), static_cast< bool >( labelOnTopElement.attribute( QStringLiteral( "labelOnTop" ) ).toInt() ) );
+    d->mLabelOnTop.insert( labelOnTopElement.attribute( QStringLiteral( "name" ) ), static_cast<bool>( labelOnTopElement.attribute( QStringLiteral( "labelOnTop" ) ).toInt() ) );
   }
 
   d->mReuseLastValue.clear();
@@ -466,7 +466,7 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
   for ( int i = 0; i < reuseLastValueNodeList.size(); ++i )
   {
     const QDomElement reuseLastValueElement = reuseLastValueNodeList.at( i ).toElement();
-    d->mReuseLastValue.insert( reuseLastValueElement.attribute( QStringLiteral( "name" ) ), static_cast< bool >( reuseLastValueElement.attribute( QStringLiteral( "reuseLastValue" ) ).toInt() ) );
+    d->mReuseLastValue.insert( reuseLastValueElement.attribute( QStringLiteral( "name" ) ), static_cast<bool>( reuseLastValueElement.attribute( QStringLiteral( "reuseLastValue" ) ).toInt() ) );
   }
 
   // Read data defined field properties
@@ -549,36 +549,36 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
 {
   QDomDocument doc( node.ownerDocument() );
 
-  QDomElement efField  = doc.createElement( QStringLiteral( "editform" ) );
+  QDomElement efField = doc.createElement( QStringLiteral( "editform" ) );
   efField.setAttribute( QStringLiteral( "tolerant" ), QStringLiteral( "1" ) );
   const QDomText efText = doc.createTextNode( context.pathResolver().writePath( uiForm() ) );
   efField.appendChild( efText );
   node.appendChild( efField );
 
-  QDomElement efiField  = doc.createElement( QStringLiteral( "editforminit" ) );
+  QDomElement efiField = doc.createElement( QStringLiteral( "editforminit" ) );
   if ( !initFunction().isEmpty() )
     efiField.appendChild( doc.createTextNode( initFunction() ) );
   node.appendChild( efiField );
 
-  QDomElement eficsField  = doc.createElement( QStringLiteral( "editforminitcodesource" ) );
-  eficsField.appendChild( doc.createTextNode( QString::number( static_cast< int >( initCodeSource() ) ) ) );
+  QDomElement eficsField = doc.createElement( QStringLiteral( "editforminitcodesource" ) );
+  eficsField.appendChild( doc.createTextNode( QString::number( static_cast<int>( initCodeSource() ) ) ) );
   node.appendChild( eficsField );
 
-  QDomElement efifpField  = doc.createElement( QStringLiteral( "editforminitfilepath" ) );
+  QDomElement efifpField = doc.createElement( QStringLiteral( "editforminitfilepath" ) );
   efifpField.appendChild( doc.createTextNode( context.pathResolver().writePath( initFilePath() ) ) );
   node.appendChild( efifpField );
 
-  QDomElement eficField  = doc.createElement( QStringLiteral( "editforminitcode" ) );
+  QDomElement eficField = doc.createElement( QStringLiteral( "editforminitcode" ) );
   eficField.appendChild( doc.createCDATASection( initCode() ) );
   node.appendChild( eficField );
 
-  QDomElement fFSuppElem  = doc.createElement( QStringLiteral( "featformsuppress" ) );
-  const QDomText fFSuppText = doc.createTextNode( QString::number( static_cast< int >( suppress() ) ) );
+  QDomElement fFSuppElem = doc.createElement( QStringLiteral( "featformsuppress" ) );
+  const QDomText fFSuppText = doc.createTextNode( QString::number( static_cast<int>( suppress() ) ) );
   fFSuppElem.appendChild( fFSuppText );
   node.appendChild( fFSuppElem );
 
   // tab display
-  QDomElement editorLayoutElem  = doc.createElement( QStringLiteral( "editorlayout" ) );
+  QDomElement editorLayoutElem = doc.createElement( QStringLiteral( "editorlayout" ) );
   switch ( layout() )
   {
     case Qgis::AttributeFormLayout::UiFile:
@@ -653,7 +653,7 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
 
   QDomElement widgetsElem = doc.createElement( QStringLiteral( "widgets" ) );
 
-  QMap<QString, QVariantMap >::ConstIterator configIt( d->mWidgetConfigs.constBegin() );
+  QMap<QString, QVariantMap>::ConstIterator configIt( d->mWidgetConfigs.constBegin() );
 
   while ( configIt != d->mWidgetConfigs.constEnd() )
   {

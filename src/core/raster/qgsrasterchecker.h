@@ -32,7 +32,6 @@ class QImage;
 class CORE_EXPORT QgsRasterChecker
 {
   public:
-
     QgsRasterChecker();
 
     QString report() const { return mReport; }
@@ -46,6 +45,7 @@ class CORE_EXPORT QgsRasterChecker
      */
     bool runTest( const QString &verifiedKey, QString verifiedUri,
                   const QString &expectedKey, QString expectedUri );
+
   private:
     QString mReport;
     QString mExpectedUri;

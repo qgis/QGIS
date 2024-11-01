@@ -93,7 +93,7 @@ bool QgsMapToolShapeCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEven
       if ( !isIntersect )
       {
         QgisApp::instance()->messageBar()->pushMessage( tr( "Error" ), tr( "Segments are parallels" ),
-            Qgis::MessageLevel::Critical );
+                                                        Qgis::MessageLevel::Critical );
         clean();
       }
       else
@@ -157,9 +157,8 @@ void QgsMapToolShapeCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *
   }
 }
 
-void QgsMapToolShapeCircle2TangentsPoint::getPossibleCenter( )
+void QgsMapToolShapeCircle2TangentsPoint::getPossibleCenter()
 {
-
   mCenters.clear();
 
   if ( mPoints.size() == 4 )
@@ -174,12 +173,12 @@ void QgsMapToolShapeCircle2TangentsPoint::getPossibleCenter( )
 
     /* use magic default values (8, QgsGeometry::JoinStyleBevel, 5), is useless for segments */
     const QgsGeometry line1 = QgsGeometry( l1.release() );
-    const QgsGeometry line1m = line1.offsetCurve( - mRadius, 8, Qgis::JoinStyle::Bevel, 5 );
-    const QgsGeometry line1p = line1.offsetCurve( + mRadius, 8, Qgis::JoinStyle::Bevel, 5 );
+    const QgsGeometry line1m = line1.offsetCurve( -mRadius, 8, Qgis::JoinStyle::Bevel, 5 );
+    const QgsGeometry line1p = line1.offsetCurve( +mRadius, 8, Qgis::JoinStyle::Bevel, 5 );
 
     const QgsGeometry line2 = QgsGeometry( l2.release() );
-    const QgsGeometry line2m = line2.offsetCurve( - mRadius, 8, Qgis::JoinStyle::Bevel, 5 );
-    const QgsGeometry line2p = line2.offsetCurve( + mRadius, 8, Qgis::JoinStyle::Bevel, 5 );
+    const QgsGeometry line2m = line2.offsetCurve( -mRadius, 8, Qgis::JoinStyle::Bevel, 5 );
+    const QgsGeometry line2p = line2.offsetCurve( +mRadius, 8, Qgis::JoinStyle::Bevel, 5 );
 
     bool isIntersect = false;
     QgsPoint inter;
@@ -209,7 +208,7 @@ void QgsMapToolShapeCircle2TangentsPoint::createRadiusSpinBox()
   mRadiusSpinBox->setValue( mRadius );
   QgisApp::instance()->addUserInputWidget( mRadiusSpinBox );
   mRadiusSpinBox->setFocus( Qt::TabFocusReason );
-  QObject::connect( mRadiusSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolShapeCircle2TangentsPoint::radiusSpinBoxChanged );
+  QObject::connect( mRadiusSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolShapeCircle2TangentsPoint::radiusSpinBoxChanged );
 }
 
 void QgsMapToolShapeCircle2TangentsPoint::deleteRadiusSpinBox()
@@ -224,7 +223,7 @@ void QgsMapToolShapeCircle2TangentsPoint::deleteRadiusSpinBox()
 void QgsMapToolShapeCircle2TangentsPoint::radiusSpinBoxChanged( double radius )
 {
   mRadius = radius;
-  getPossibleCenter( );
+  getPossibleCenter();
 
   qDeleteAll( mRubberBands );
   mRubberBands.clear();

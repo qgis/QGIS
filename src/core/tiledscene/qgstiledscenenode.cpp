@@ -21,7 +21,6 @@
 QgsTiledSceneNode::QgsTiledSceneNode( QgsTiledSceneTile *tile )
   : mTile( tile )
 {
-
 }
 
 QgsTiledSceneNode::~QgsTiledSceneNode()

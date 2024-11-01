@@ -46,28 +46,28 @@ QgsCircularString::QgsCircularString( const QgsPoint &p1, const QgsPoint &p2, co
   mWkbType = Qgis::WkbType::CircularString;
 
   mX.resize( 3 );
-  mX[ 0 ] = p1.x();
-  mX[ 1 ] = p2.x();
-  mX[ 2 ] = p3.x();
+  mX[0] = p1.x();
+  mX[1] = p2.x();
+  mX[2] = p3.x();
   mY.resize( 3 );
-  mY[ 0 ] = p1.y();
-  mY[ 1 ] = p2.y();
-  mY[ 2 ] = p3.y();
+  mY[0] = p1.y();
+  mY[1] = p2.y();
+  mY[2] = p3.y();
   if ( hasZ )
   {
     mWkbType = QgsWkbTypes::addZ( mWkbType );
     mZ.resize( 3 );
-    mZ[ 0 ] = p1.z();
-    mZ[ 1 ] = p2.z();
-    mZ[ 2 ] = p3.z();
+    mZ[0] = p1.z();
+    mZ[1] = p2.z();
+    mZ[2] = p3.z();
   }
   if ( hasM )
   {
     mWkbType = QgsWkbTypes::addM( mWkbType );
     mM.resize( 3 );
-    mM[ 0 ] = p1.m();
-    mM[ 1 ] = p2.m();
-    mM[ 2 ] = p3.m();
+    mM[0] = p1.m();
+    mM[1] = p2.m();
+    mM[2] = p3.m();
   }
 }
 
@@ -125,7 +125,7 @@ QgsCircularString QgsCircularString::fromTwoPointsAndCenter( const QgsPoint &p1,
 
 QgsCircularString *QgsCircularString::createEmptyWithSameType() const
 {
-  auto result = std::make_unique< QgsCircularString >();
+  auto result = std::make_unique<QgsCircularString>();
   result->mWkbType = mWkbType;
   return result.release();
 }
@@ -245,7 +245,7 @@ QgsBox3D QgsCircularString::calculateBoundingBox3D() const
 {
   QgsBox3D bbox;
   int nPoints = numPoints();
-  for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
+  for ( int i = 0; i < ( nPoints - 2 ); i += 2 )
   {
     QgsRectangle box2d = segmentBoundingBox( QgsPoint( mX[i], mY[i] ), QgsPoint( mX[i + 1], mY[i + 1] ), QgsPoint( mX[i + 2], mY[i + 2] ) );
     double zMin = std::numeric_limits<double>::quiet_NaN();
@@ -272,15 +272,15 @@ QgsBox3D QgsCircularString::calculateBoundingBox3D() const
     {
       if ( is3D() )
       {
-        z = mZ[ 0 ];
+        z = mZ[0];
       }
-      bbox.combineWith( mX[ 0 ], mY[ 0 ], z );
+      bbox.combineWith( mX[0], mY[0], z );
     }
     if ( is3D() )
     {
-      z = mZ[ nPoints - 1 ];
+      z = mZ[nPoints - 1];
     }
-    bbox.combineWith( mX[ nPoints - 1 ], mY[ nPoints - 1 ], z );
+    bbox.combineWith( mX[nPoints - 1], mY[nPoints - 1], z );
   }
   return bbox;
 }
@@ -483,8 +483,7 @@ bool QgsCircularString::fromWkt( const QString &wkt )
   parts.second = parts.second.remove( '(' ).remove( ')' );
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.simplified().remove( ' ' );
-  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
-       secondWithoutParentheses.isEmpty() )
+  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) || secondWithoutParentheses.isEmpty() )
     return true;
 
   QgsPointSequence points = QgsGeometryUtils::pointsFromWKT( parts.second, is3D(), isMeasure() );
@@ -533,7 +532,7 @@ QString QgsCircularString::asWkt( int precision ) const
 QDomElement QgsCircularString::asGml2( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
   // GML2 does not support curves
-  std::unique_ptr< QgsLineString > line( curveToLine() );
+  std::unique_ptr<QgsLineString> line( curveToLine() );
   QDomElement gml = line->asGml2( doc, precision, ns, axisOrder );
   return gml;
 }
@@ -560,7 +559,7 @@ QDomElement QgsCircularString::asGml3( QDomDocument &doc, int precision, const Q
 json QgsCircularString::asJsonObject( int precision ) const
 {
   // GeoJSON does not support curves
-  std::unique_ptr< QgsLineString > line( curveToLine() );
+  std::unique_ptr<QgsLineString> line( curveToLine() );
   return line->asJsonObject( precision );
 }
 
@@ -584,7 +583,7 @@ double QgsCircularString::length() const
 {
   int nPoints = numPoints();
   double length = 0;
-  for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
+  for ( int i = 0; i < ( nPoints - 2 ); i += 2 )
   {
     length += QgsGeometryUtilsBase::circleLength( mX[i], mY[i], mX[i + 1], mY[i + 1], mX[i + 2], mY[i + 2] );
   }
@@ -615,7 +614,7 @@ QgsLineString *QgsCircularString::curveToLine( double tolerance, SegmentationTol
   QgsPointSequence points;
   int nPoints = numPoints();
 
-  for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
+  for ( int i = 0; i < ( nPoints - 2 ); i += 2 )
   {
     QgsGeometryUtils::segmentizeArc( pointN( i ), pointN( i + 1 ), pointN( i + 2 ), points, tolerance, toleranceType, is3D(), isMeasure() );
   }
@@ -640,7 +639,7 @@ QgsCircularString *QgsCircularString::snappedToGrid( double hSpacing, double vSp
 
 QgsAbstractGeometry *QgsCircularString::simplifyByDistance( double tolerance ) const
 {
-  std::unique_ptr< QgsLineString > line( curveToLine() );
+  std::unique_ptr<QgsLineString> line( curveToLine() );
   return line->simplifyByDistance( tolerance );
 }
 
@@ -665,11 +664,7 @@ bool QgsCircularString::removeDuplicateNodes( double epsilon, bool useZValues )
     double currentX = mX.at( i + 1 );
     double currentY = mY.at( i + 1 );
     double currentZ = useZ ? mZ.at( i + 1 ) : 0;
-    if ( qgsDoubleNear( currentCurveX, prevX, epsilon ) &&
-         qgsDoubleNear( currentCurveY, prevY, epsilon ) &&
-         qgsDoubleNear( currentX, prevX, epsilon ) &&
-         qgsDoubleNear( currentY, prevY, epsilon ) &&
-         ( !useZ || qgsDoubleNear( currentZ, prevZ, epsilon ) ) )
+    if ( qgsDoubleNear( currentCurveX, prevX, epsilon ) && qgsDoubleNear( currentCurveY, prevY, epsilon ) && qgsDoubleNear( currentX, prevX, epsilon ) && qgsDoubleNear( currentY, prevY, epsilon ) && ( !useZ || qgsDoubleNear( currentZ, prevZ, epsilon ) ) )
     {
       result = true;
       // remove point
@@ -853,14 +848,14 @@ bool QgsCircularString::transform( QgsAbstractGeometryTransformer *transformer, 
   return res;
 }
 
-void QgsCircularString::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )
+void QgsCircularString::filterVertices( const std::function<bool( const QgsPoint & )> &filter )
 {
   bool hasZ = is3D();
   bool hasM = isMeasure();
   int size = mX.size();
 
-  double *srcX = mX.data(); // clazy:exclude=detaching-member
-  double *srcY = mY.data(); // clazy:exclude=detaching-member
+  double *srcX = mX.data();                  // clazy:exclude=detaching-member
+  double *srcY = mY.data();                  // clazy:exclude=detaching-member
   double *srcM = hasM ? mM.data() : nullptr; // clazy:exclude=detaching-member
   double *srcZ = hasZ ? mZ.data() : nullptr; // clazy:exclude=detaching-member
 
@@ -927,22 +922,22 @@ void QgsCircularString::transformVertices( const std::function<QgsPoint( const Q
   clearCache();
 }
 
-std::tuple<std::unique_ptr<QgsCurve>, std::unique_ptr<QgsCurve> > QgsCircularString::splitCurveAtVertex( int index ) const
+std::tuple<std::unique_ptr<QgsCurve>, std::unique_ptr<QgsCurve>> QgsCircularString::splitCurveAtVertex( int index ) const
 {
   const bool useZ = is3D();
   const bool useM = isMeasure();
 
   const int size = mX.size();
   if ( size == 0 )
-    return std::make_tuple( std::make_unique< QgsCircularString >(), std::make_unique< QgsCircularString >() );
+    return std::make_tuple( std::make_unique<QgsCircularString>(), std::make_unique<QgsCircularString>() );
 
   index = std::clamp( index, 0, size - 1 );
 
   const int part1Size = index + 1;
-  QVector< double > x1( part1Size );
-  QVector< double > y1( part1Size );
-  QVector< double > z1( useZ ? part1Size : 0 );
-  QVector< double > m1( useM ? part1Size : 0 );
+  QVector<double> x1( part1Size );
+  QVector<double> y1( part1Size );
+  QVector<double> z1( useZ ? part1Size : 0 );
+  QVector<double> m1( useM ? part1Size : 0 );
 
   const double *sourceX = mX.constData();
   const double *sourceY = mY.constData();
@@ -963,12 +958,12 @@ std::tuple<std::unique_ptr<QgsCurve>, std::unique_ptr<QgsCurve> > QgsCircularStr
 
   const int part2Size = size - index;
   if ( part2Size < 2 )
-    return std::make_tuple( std::make_unique< QgsCircularString >( x1, y1, z1, m1 ), std::make_unique< QgsCircularString >() );
+    return std::make_tuple( std::make_unique<QgsCircularString>( x1, y1, z1, m1 ), std::make_unique<QgsCircularString>() );
 
-  QVector< double > x2( part2Size );
-  QVector< double > y2( part2Size );
-  QVector< double > z2( useZ ? part2Size : 0 );
-  QVector< double > m2( useM ? part2Size : 0 );
+  QVector<double> x2( part2Size );
+  QVector<double> y2( part2Size );
+  QVector<double> z2( useZ ? part2Size : 0 );
+  QVector<double> m2( useM ? part2Size : 0 );
   destX = x2.data();
   destY = y2.data();
   destZ = useZ ? z2.data() : nullptr;
@@ -981,9 +976,9 @@ std::tuple<std::unique_ptr<QgsCurve>, std::unique_ptr<QgsCurve> > QgsCircularStr
     std::copy( sourceM + index, sourceM + size, destM );
 
   if ( part1Size < 2 )
-    return std::make_tuple( std::make_unique< QgsCircularString >(), std::make_unique< QgsCircularString >( x2, y2, z2, m2 ) );
+    return std::make_tuple( std::make_unique<QgsCircularString>(), std::make_unique<QgsCircularString>( x2, y2, z2, m2 ) );
   else
-    return std::make_tuple( std::make_unique< QgsCircularString >( x1, y1, z1, m1 ), std::make_unique< QgsCircularString >( x2, y2, z2, m2 ) );
+    return std::make_tuple( std::make_unique<QgsCircularString>( x1, y1, z1, m1 ), std::make_unique<QgsCircularString>( x2, y2, z2, m2 ) );
 }
 
 void QgsCircularString::points( QgsPointSequence &pts ) const
@@ -1066,12 +1061,7 @@ void QgsCircularString::append( const QgsCircularString *line )
   }
 
   // do not store duplicate points
-  if ( numPoints() > 0 &&
-       line->numPoints() > 0 &&
-       qgsDoubleNear( endPoint().x(), line->startPoint().x() ) &&
-       qgsDoubleNear( endPoint().y(), line->startPoint().y() ) &&
-       ( !is3D() || !line->is3D() || qgsDoubleNear( endPoint().z(), line->startPoint().z() ) ) &&
-       ( !isMeasure() || !line->isMeasure() || qgsDoubleNear( endPoint().m(), line->startPoint().m() ) ) )
+  if ( numPoints() > 0 && line->numPoints() > 0 && qgsDoubleNear( endPoint().x(), line->startPoint().x() ) && qgsDoubleNear( endPoint().y(), line->startPoint().y() ) && ( !is3D() || !line->is3D() || qgsDoubleNear( endPoint().z(), line->startPoint().z() ) ) && ( !isMeasure() || !line->isMeasure() || qgsDoubleNear( endPoint().m(), line->startPoint().m() ) ) )
   {
     mX.pop_back();
     mY.pop_back();
@@ -1199,7 +1189,7 @@ void QgsCircularString::addToPainterPath( QPainterPath &path ) const
     path.moveTo( QPointF( mX[0], mY[0] ) );
   }
 
-  for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
+  for ( int i = 0; i < ( nPoints - 2 ); i += 2 )
   {
     arcTo( path, QPointF( mX[i], mY[i] ), QPointF( mX[i + 1], mY[i + 1] ), QPointF( mX[i + 2], mY[i + 2] ) );
   }
@@ -1207,7 +1197,7 @@ void QgsCircularString::addToPainterPath( QPainterPath &path ) const
   //if number of points is even, connect to last point with straight line (even though the circular string is not valid)
   if ( nPoints % 2 == 0 )
   {
-    path.lineTo( mX[ nPoints - 1 ], mY[ nPoints - 1 ] );
+    path.lineTo( mX[nPoints - 1], mY[nPoints - 1] );
   }
 }
 
@@ -1312,7 +1302,7 @@ void QgsCircularString::deleteVertex( int i )
   clearCache();
 }
 
-double QgsCircularString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
+double QgsCircularString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt, QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
   double minDist = std::numeric_limits<double>::max();
   QgsPoint minDistSegmentPoint;
@@ -1322,7 +1312,7 @@ double QgsCircularString::closestSegment( const QgsPoint &pt, QgsPoint &segmentP
   double currentDist = 0.0;
 
   int nPoints = numPoints();
-  for ( int i = 0; i < ( nPoints - 2 ) ; i += 2 )
+  for ( int i = 0; i < ( nPoints - 2 ); i += 2 )
   {
     currentDist = closestPointOnArc( mX[i], mY[i], mX[i + 1], mY[i + 1], mX[i + 2], mY[i + 2], pt, segmentPt, vertexAfter, leftOf, epsilon );
     if ( currentDist < minDist )
@@ -1438,7 +1428,7 @@ bool QgsCircularString::hasCurvedSegments() const
 }
 
 double QgsCircularString::closestPointOnArc( double x1, double y1, double x2, double y2, double x3, double y3,
-    const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon )
+                                             const QgsPoint &pt, QgsPoint &segmentPt, QgsVertexId &vertexAfter, int *leftOf, double epsilon )
 {
   double radius, centerX, centerY;
   QgsPoint pt1( x1, y1 );
@@ -1482,7 +1472,7 @@ double QgsCircularString::closestPointOnArc( double x1, double y1, double x2, do
   {
     double sqrDistancePointToCenter = pt.distanceSquared( centerX, centerY );
     *leftOf = clockwise ? ( sqrDistancePointToCenter > radius * radius ? -1 : 1 )
-              : ( sqrDistancePointToCenter < radius * radius ? -1 : 1 );
+                        : ( sqrDistancePointToCenter < radius * radius ? -1 : 1 );
   }
 
   return sqrDistance;
@@ -1535,7 +1525,7 @@ double QgsCircularString::vertexAngle( QgsVertexId vId ) const
     if ( vId.vertex >= 1 && vId.vertex < numPoints() - 1 )
     {
       return QgsGeometryUtils::circleTangentDirection( QgsPoint( mX[vertex], mY[vertex] ), QgsPoint( mX[before], mY[before] ),
-             QgsPoint( mX[vertex], mY[vertex] ), QgsPoint( mX[after], mY[after] ) );
+                                                       QgsPoint( mX[vertex], mY[vertex] ), QgsPoint( mX[after], mY[after] ) );
     }
   }
   else //a point vertex
@@ -1543,7 +1533,7 @@ double QgsCircularString::vertexAngle( QgsVertexId vId ) const
     if ( vId.vertex == 0 )
     {
       return QgsGeometryUtils::circleTangentDirection( QgsPoint( mX[0], mY[0] ), QgsPoint( mX[0], mY[0] ),
-             QgsPoint( mX[1], mY[1] ), QgsPoint( mX[2], mY[2] ) );
+                                                       QgsPoint( mX[1], mY[1] ), QgsPoint( mX[2], mY[2] ) );
     }
     if ( vId.vertex >= numPoints() - 1 )
     {
@@ -1551,7 +1541,7 @@ double QgsCircularString::vertexAngle( QgsVertexId vId ) const
       int b = numPoints() - 2;
       int c = numPoints() - 1;
       return QgsGeometryUtils::circleTangentDirection( QgsPoint( mX[c], mY[c] ), QgsPoint( mX[a], mY[a] ),
-             QgsPoint( mX[b], mY[b] ), QgsPoint( mX[c], mY[c] ) );
+                                                       QgsPoint( mX[b], mY[b] ), QgsPoint( mX[c], mY[c] ) );
     }
     else
     {
@@ -1564,11 +1554,11 @@ double QgsCircularString::vertexAngle( QgsVertexId vId ) const
       int vertex2 = vId.vertex - 1;
       int vertex3 = vId.vertex;
       double angle1 = QgsGeometryUtils::circleTangentDirection( QgsPoint( mX[vertex3], mY[vertex3] ),
-                      QgsPoint( mX[vertex1], mY[vertex1] ), QgsPoint( mX[vertex2], mY[vertex2] ), QgsPoint( mX[vertex3], mY[vertex3] ) );
+                                                                QgsPoint( mX[vertex1], mY[vertex1] ), QgsPoint( mX[vertex2], mY[vertex2] ), QgsPoint( mX[vertex3], mY[vertex3] ) );
       int vertex4 = vId.vertex + 1;
       int vertex5 = vId.vertex + 2;
       double angle2 = QgsGeometryUtils::circleTangentDirection( QgsPoint( mX[vertex3], mY[vertex3] ),
-                      QgsPoint( mX[vertex3], mY[vertex3] ), QgsPoint( mX[vertex4], mY[vertex4] ), QgsPoint( mX[vertex5], mY[vertex5] ) );
+                                                                QgsPoint( mX[vertex3], mY[vertex3] ), QgsPoint( mX[vertex4], mY[vertex4] ), QgsPoint( mX[vertex5], mY[vertex5] ) );
       return QgsGeometryUtilsBase::averageAngle( angle1, angle2 );
     }
   }
@@ -1641,7 +1631,7 @@ QgsPoint *QgsCircularString::interpolatePoint( const double distance ) const
     return new QgsPoint( pointType, prevX, prevY, prevZ, prevM );
   }
 
-  for ( int i = 0; i < ( totalPoints - 2 ) ; i += 2 )
+  for ( int i = 0; i < ( totalPoints - 2 ); i += 2 )
   {
     double x1 = prevX;
     double y1 = prevY;
@@ -1664,8 +1654,8 @@ QgsPoint *QgsCircularString::interpolatePoint( const double distance ) const
       // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
       const double distanceToPoint = std::min( distance - distanceTraversed, segmentLength );
       return new QgsPoint( QgsGeometryUtils::interpolatePointOnArc( QgsPoint( pointType, x1, y1, z1, m1 ),
-                           QgsPoint( pointType, x2, y2, z2, m2 ),
-                           QgsPoint( pointType, x3, y3, z3, m3 ), distanceToPoint ) );
+                                                                    QgsPoint( pointType, x2, y2, z2, m2 ),
+                                                                    QgsPoint( pointType, x3, y3, z3, m3 ), distanceToPoint ) );
     }
 
     distanceTraversed += segmentLength;
@@ -1690,7 +1680,7 @@ QgsCircularString *QgsCircularString::curveSubstring( double startDistance, doub
   if ( totalPoints == 0 )
     return clone();
 
-  QVector< QgsPoint > substringPoints;
+  QVector<QgsPoint> substringPoints;
   substringPoints.reserve( totalPoints );
 
   Qgis::WkbType pointType = Qgis::WkbType::Point;
@@ -1714,7 +1704,7 @@ QgsCircularString *QgsCircularString::curveSubstring( double startDistance, doub
   if ( startDistance < 0 )
     startDistance = 0;
 
-  for ( int i = 0; i < ( totalPoints - 2 ) ; i += 2 )
+  for ( int i = 0; i < ( totalPoints - 2 ); i += 2 )
   {
     double x1 = prevX;
     double y1 = prevY;
@@ -1738,8 +1728,8 @@ QgsCircularString *QgsCircularString::curveSubstring( double startDistance, doub
       // start point falls on this segment
       const double distanceToStart = startDistance - distanceTraversed;
       const QgsPoint startPoint = QgsGeometryUtils::interpolatePointOnArc( QgsPoint( pointType, x1, y1, z1, m1 ),
-                                  QgsPoint( pointType, x2, y2, z2, m2 ),
-                                  QgsPoint( pointType, x3, y3, z3, m3 ), distanceToStart );
+                                                                           QgsPoint( pointType, x2, y2, z2, m2 ),
+                                                                           QgsPoint( pointType, x3, y3, z3, m3 ), distanceToStart );
 
       // does end point also fall on this segment?
       const bool endPointOnSegment = distanceTraversed + segmentLength > endDistance;
@@ -1749,11 +1739,11 @@ QgsCircularString *QgsCircularString::curveSubstring( double startDistance, doub
         const double midPointDistance = ( distanceToEnd - distanceToStart ) * 0.5 + distanceToStart;
         substringPoints << startPoint
                         << QgsGeometryUtils::interpolatePointOnArc( QgsPoint( pointType, x1, y1, z1, m1 ),
-                            QgsPoint( pointType, x2, y2, z2, m2 ),
-                            QgsPoint( pointType, x3, y3, z3, m3 ), midPointDistance )
+                                                                    QgsPoint( pointType, x2, y2, z2, m2 ),
+                                                                    QgsPoint( pointType, x3, y3, z3, m3 ), midPointDistance )
                         << QgsGeometryUtils::interpolatePointOnArc( QgsPoint( pointType, x1, y1, z1, m1 ),
-                            QgsPoint( pointType, x2, y2, z2, m2 ),
-                            QgsPoint( pointType, x3, y3, z3, m3 ), distanceToEnd );
+                                                                    QgsPoint( pointType, x2, y2, z2, m2 ),
+                                                                    QgsPoint( pointType, x3, y3, z3, m3 ), distanceToEnd );
         addedSegmentEnd = true;
       }
       else
@@ -1761,8 +1751,8 @@ QgsCircularString *QgsCircularString::curveSubstring( double startDistance, doub
         const double midPointDistance = ( segmentLength - distanceToStart ) * 0.5 + distanceToStart;
         substringPoints << startPoint
                         << QgsGeometryUtils::interpolatePointOnArc( QgsPoint( pointType, x1, y1, z1, m1 ),
-                            QgsPoint( pointType, x2, y2, z2, m2 ),
-                            QgsPoint( pointType, x3, y3, z3, m3 ), midPointDistance )
+                                                                    QgsPoint( pointType, x2, y2, z2, m2 ),
+                                                                    QgsPoint( pointType, x3, y3, z3, m3 ), midPointDistance )
                         << QgsPoint( pointType, x3, y3, z3, m3 );
         addedSegmentEnd = true;
       }
@@ -1773,13 +1763,13 @@ QgsCircularString *QgsCircularString::curveSubstring( double startDistance, doub
       // end point falls on this segment
       const double distanceToEnd = endDistance - distanceTraversed;
       // add mid point, at half way along this arc, then add the interpolated end point
-      substringPoints <<  QgsGeometryUtils::interpolatePointOnArc( QgsPoint( pointType, x1, y1, z1, m1 ),
-                      QgsPoint( pointType, x2, y2, z2, m2 ),
-                      QgsPoint( pointType, x3, y3, z3, m3 ), distanceToEnd / 2.0 )
+      substringPoints << QgsGeometryUtils::interpolatePointOnArc( QgsPoint( pointType, x1, y1, z1, m1 ),
+                                                                  QgsPoint( pointType, x2, y2, z2, m2 ),
+                                                                  QgsPoint( pointType, x3, y3, z3, m3 ), distanceToEnd / 2.0 )
 
                       << QgsGeometryUtils::interpolatePointOnArc( QgsPoint( pointType, x1, y1, z1, m1 ),
-                          QgsPoint( pointType, x2, y2, z2, m2 ),
-                          QgsPoint( pointType, x3, y3, z3, m3 ), distanceToEnd );
+                                                                  QgsPoint( pointType, x2, y2, z2, m2 ),
+                                                                  QgsPoint( pointType, x3, y3, z3, m3 ), distanceToEnd );
     }
     else if ( !addedSegmentEnd && foundStart )
     {
@@ -1804,7 +1794,7 @@ QgsCircularString *QgsCircularString::curveSubstring( double startDistance, doub
                     << QgsPoint( pointType, prevX, prevY, prevZ, prevM );
   }
 
-  std::unique_ptr< QgsCircularString > result = std::make_unique< QgsCircularString >();
+  std::unique_ptr<QgsCircularString> result = std::make_unique<QgsCircularString>();
   result->setPoints( substringPoints );
   return result.release();
 }

@@ -29,7 +29,6 @@ QgsLayoutItemUndoCommand::QgsLayoutItemUndoCommand( QgsLayoutItem *item, const Q
   , mLayout( item->layout() )
   , mItemType( item->type() )
 {
-
 }
 
 bool QgsLayoutItemUndoCommand::mergeWith( const QUndoCommand *command )

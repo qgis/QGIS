@@ -22,8 +22,8 @@
 #include <QVariant>
 #include <QSettings>
 
-QgsKeyValueWidgetFactory::QgsKeyValueWidgetFactory( const QString &name ):
-  QgsEditorWidgetFactory( name )
+QgsKeyValueWidgetFactory::QgsKeyValueWidgetFactory( const QString &name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 
@@ -64,7 +64,7 @@ unsigned int QgsKeyValueWidgetFactory::fieldScore( const QgsVectorLayer *vl, int
       }
       // Get attribute value and check if it is a valid JSON object
       const QVariant value( f.attribute( fieldIdx ) );
-      if ( ! value.isNull() )
+      if ( !value.isNull() )
       {
         switch ( value.type() )
         {

@@ -38,23 +38,21 @@ class CORE_EXPORT QgsPointCloudAttributeModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     // *INDENT-OFF*
 
-     /**
+    /**
      * Custom model roles.
      *
      * \note Prior to QGIS 3.36 this was available as QgsPointCloudAttributeModel::FieldRoles
      * \since QGIS 3.36
      */
-    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPointCloudAttributeModel, FieldRoles ) : int
-    {
-      AttributeName SIP_MONKEYPATCH_COMPAT_NAME(AttributeNameRole)= Qt::UserRole + 1,  //!< Attribute name
-      AttributeIndex SIP_MONKEYPATCH_COMPAT_NAME(AttributeIndexRole), //!< Attribute index if index corresponds to an attribute
-      AttributeSize SIP_MONKEYPATCH_COMPAT_NAME(AttributeSizeRole), //!< Attribute size
-      AttributeType SIP_MONKEYPATCH_COMPAT_NAME(AttributeTypeRole), //!< Attribute type, see QgsPointCloudAttribute::DataType
-      IsEmpty SIP_MONKEYPATCH_COMPAT_NAME(IsEmptyRole), //!< TRUE if the index corresponds to the empty value
-      IsNumeric SIP_MONKEYPATCH_COMPAT_NAME(IsNumericRole), //!< TRUE if the index corresponds to a numeric attributre
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsPointCloudAttributeModel, FieldRoles ) : int {
+      AttributeName SIP_MONKEYPATCH_COMPAT_NAME( AttributeNameRole ) = Qt::UserRole + 1, //!< Attribute name
+      AttributeIndex SIP_MONKEYPATCH_COMPAT_NAME( AttributeIndexRole ),                  //!< Attribute index if index corresponds to an attribute
+      AttributeSize SIP_MONKEYPATCH_COMPAT_NAME( AttributeSizeRole ),                    //!< Attribute size
+      AttributeType SIP_MONKEYPATCH_COMPAT_NAME( AttributeTypeRole ),                    //!< Attribute type, see QgsPointCloudAttribute::DataType
+      IsEmpty SIP_MONKEYPATCH_COMPAT_NAME( IsEmptyRole ),                                //!< TRUE if the index corresponds to the empty value
+      IsNumeric SIP_MONKEYPATCH_COMPAT_NAME( IsNumericRole ),                            //!< TRUE if the index corresponds to a numeric attributre
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -129,10 +127,9 @@ class CORE_EXPORT QgsPointCloudAttributeModel : public QAbstractItemModel
     static QIcon iconForAttributeType( QgsPointCloudAttribute::DataType type );
 
   private:
-
     QgsPointCloudAttributeCollection mAttributes;
     bool mAllowEmpty = false;
-    QPointer< QgsPointCloudLayer > mLayer;
+    QPointer<QgsPointCloudLayer> mLayer;
 };
 
 
@@ -147,17 +144,15 @@ class CORE_EXPORT QgsPointCloudAttributeProxyModel : public QSortFilterProxyMode
 {
     Q_OBJECT
   public:
-
     //! Attribute type filters
-    enum Filter SIP_ENUM_BASETYPE( IntFlag )
-    {
-      Char = 1 << 0, //!< Character attributes
-      Short = 1 << 1, //!< Short attributes
-      Int32 = 1 << 2, //!< Int32 attributes
-      Float = 1 << 3, //!< Float attributes
-      Double = 1 << 4, //!< Double attributes
+    enum Filter SIP_ENUM_BASETYPE( IntFlag ) {
+      Char = 1 << 0,                            //!< Character attributes
+      Short = 1 << 1,                           //!< Short attributes
+      Int32 = 1 << 2,                           //!< Int32 attributes
+      Float = 1 << 3,                           //!< Float attributes
+      Double = 1 << 4,                          //!< Double attributes
       Numeric = Short | Int32 | Float | Double, //!< All numeric attributes
-      AllTypes = Numeric | Char, //!< All attribute types
+      AllTypes = Numeric | Char,                //!< All attribute types
     };
     Q_DECLARE_FLAGS( Filters, Filter )
     Q_FLAG( Filters )
@@ -186,7 +181,6 @@ class CORE_EXPORT QgsPointCloudAttributeProxyModel : public QSortFilterProxyMode
     Filters filters() const { return mFilters; }
 
   private:
-
     QgsPointCloudAttributeModel *mModel = nullptr;
     Filters mFilters = AllTypes;
 

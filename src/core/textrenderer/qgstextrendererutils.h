@@ -31,7 +31,6 @@
 class CORE_EXPORT QgsTextRendererUtils
 {
   public:
-
     /**
      * Decodes a string representation of a background shape type to a type.
      */
@@ -96,7 +95,6 @@ class CORE_EXPORT QgsTextRendererUtils
     class CurvedGraphemePlacement
     {
       public:
-
         //! X coordinate of start of grapheme
         double x = 0;
         //! Y coordinate of start of grapheme
@@ -121,9 +119,8 @@ class CORE_EXPORT QgsTextRendererUtils
     class CurvePlacementProperties
     {
       public:
-
         //! Placement information for all graphemes in text
-        QVector< QgsTextRendererUtils::CurvedGraphemePlacement > graphemePlacement;
+        QVector<QgsTextRendererUtils::CurvedGraphemePlacement> graphemePlacement;
         //! Total count of upside down characters
         int upsideDownCharCount = 0;
         //! TRUE if labeled section of line is calculated to be of right-to-left orientation
@@ -138,7 +135,7 @@ class CORE_EXPORT QgsTextRendererUtils
     enum LabelLineDirection
     {
       RespectPainterOrientation, //!< Curved text will be placed respecting the painter orientation, and the actual line direction will be ignored
-      FollowLineDirection //!< Curved text placement will respect the line direction and ignore painter orientation
+      FollowLineDirection        //!< Curved text placement will respect the line direction and ignore painter orientation
     };
 
     /**
@@ -149,8 +146,8 @@ class CORE_EXPORT QgsTextRendererUtils
     enum class CurvedTextFlag : int
     {
       TruncateStringWhenLineIsTooShort = 1 << 0, //!< When a string is too long for the line, truncate characters instead of aborting the placement
-      UseBaselinePlacement = 1 << 1, //!< Generate placement based on the character baselines instead of centers
-      UprightCharactersOnly = 1 << 2, //!< Permit upright characters only. If not present then upside down text placement is permitted.
+      UseBaselinePlacement = 1 << 1,             //!< Generate placement based on the character baselines instead of centers
+      UprightCharactersOnly = 1 << 2,            //!< Permit upright characters only. If not present then upside down text placement is permitted.
     };
 
     /**
@@ -174,7 +171,7 @@ class CORE_EXPORT QgsTextRendererUtils
      * \returns calculated placement properties, or NULLPTR if placement could not be calculated. Caller takes ownership of the returned placement.
      * \since QGIS 3.20
      */
-    static std::unique_ptr< CurvePlacementProperties > generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const QPolygonF &line, double offsetAlongLine, LabelLineDirection direction = RespectPainterOrientation, double maxConcaveAngle = -1, double maxConvexAngle = -1, CurvedTextFlags flags = CurvedTextFlags() ) SIP_SKIP;
+    static std::unique_ptr<CurvePlacementProperties> generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const QPolygonF &line, double offsetAlongLine, LabelLineDirection direction = RespectPainterOrientation, double maxConcaveAngle = -1, double maxConvexAngle = -1, CurvedTextFlags flags = CurvedTextFlags() ) SIP_SKIP;
 
     /**
      * Calculates curved text placement properties.
@@ -193,12 +190,11 @@ class CORE_EXPORT QgsTextRendererUtils
      * \returns calculated placement properties, or NULLPTR if placement could not be calculated. Caller takes ownership of the returned placement.
      * \since QGIS 3.20
      */
-    static std::unique_ptr< CurvePlacementProperties > generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector< double> &pathDistances, double offsetAlongLine, LabelLineDirection direction = RespectPainterOrientation, double maxConcaveAngle = -1, double maxConvexAngle = -1, CurvedTextFlags flags = CurvedTextFlags() ) SIP_SKIP;
+    static std::unique_ptr<CurvePlacementProperties> generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction = RespectPainterOrientation, double maxConcaveAngle = -1, double maxConvexAngle = -1, CurvedTextFlags flags = CurvedTextFlags() ) SIP_SKIP;
 #endif
 
   private:
-
-    static std::unique_ptr< CurvePlacementProperties > generateCurvedTextPlacementPrivate( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector< double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, CurvedTextFlags flags, double maxConcaveAngle = -1, double maxConvexAngle = -1, bool isSecondAttempt = false ) SIP_SKIP;
+    static std::unique_ptr<CurvePlacementProperties> generateCurvedTextPlacementPrivate( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, CurvedTextFlags flags, double maxConcaveAngle = -1, double maxConvexAngle = -1, bool isSecondAttempt = false ) SIP_SKIP;
 
     //! Returns TRUE if the next char position is found. The referenced parameters are updated.
     static bool nextCharPosition( double charWidth, double segmentLength, const double *x, const double *y, int numPoints, int &index, double &currentDistanceAlongSegment,

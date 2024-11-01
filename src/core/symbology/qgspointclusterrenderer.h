@@ -27,10 +27,9 @@
  * \ingroup core
  * \brief A renderer that automatically clusters points with the same geographic position.
 */
-class CORE_EXPORT QgsPointClusterRenderer: public QgsPointDistanceRenderer
+class CORE_EXPORT QgsPointClusterRenderer : public QgsPointDistanceRenderer
 {
   public:
-
     QgsPointClusterRenderer();
 
     Qgis::FeatureRendererFlags flags() const override;
@@ -70,10 +69,9 @@ class CORE_EXPORT QgsPointClusterRenderer: public QgsPointDistanceRenderer
 #endif
 
     //! Symbol for point clusters
-    std::unique_ptr< QgsMarkerSymbol > mClusterSymbol;
+    std::unique_ptr<QgsMarkerSymbol> mClusterSymbol;
 
     void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) const override SIP_FORCE;
-
 };
 
 #endif // QGSPOINTCLUSTERRENDERER_H

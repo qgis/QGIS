@@ -50,16 +50,18 @@
 class MissingFieldException : public std::exception
 {
   public:
-    MissingFieldException( const char *field ) : mField( field ) { }
+    MissingFieldException( const char *field )
+      : mField( field ) {}
     const char *what() const noexcept
     {
       return QString( "Missing field: %1" ).arg( mField ).toLocal8Bit().data();
     }
+
   private:
     const char *mField;
 };
 
-template <typename T>
+template<typename T>
 static T jsonGet( nlohmann::json &json, const char *idx )
 {
   auto &obj = json[idx];
@@ -95,7 +97,7 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
   {
     error.append(
       QObject::tr( "Failed to retrieve quantized mesh tiles metadata: %1" )
-      .arg( request.errorMessage().data() ) );
+        .arg( request.errorMessage().data() ) );
     return;
   }
   auto reply = request.reply().content();
@@ -108,7 +110,7 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
     if ( jsonGet<std::string>( replyJson, "format" ) != "quantized-mesh-1.0" )
     {
       error.append( QObject::tr( "Unexpected tile format: %1" )
-                    .arg( replyJson["format"].dump().c_str() ) );
+                      .arg( replyJson["format"].dump().c_str() ) );
       return;
     }
 
@@ -136,18 +138,18 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
     }
 
     auto zRange = dummyZRange;
-    mBoundingVolume =
-      QgsOrientedBox3D::fromBox3D(
-        QgsBox3D(
-          mExtent.xMinimum(), mExtent.yMinimum(), zRange.lower(),
-          mExtent.xMaximum(), mExtent.yMaximum(), zRange.upper() ) );
+    mBoundingVolume = QgsOrientedBox3D::fromBox3D(
+      QgsBox3D(
+        mExtent.xMinimum(), mExtent.yMinimum(), zRange.lower(),
+        mExtent.xMaximum(), mExtent.yMaximum(), zRange.upper() ) );
 
     // The TileJSON spec uses "scheme", but some real-world datasets use "schema"
     if ( replyJson.find( "scheme" ) != replyJson.end() )
       mTileScheme = QString::fromStdString( jsonGet<std::string>( replyJson, "scheme" ) );
     else if ( replyJson.find( "schema" ) != replyJson.end() )
       mTileScheme = QString::fromStdString( jsonGet<std::string>( replyJson, "schema" ) );
-    else throw MissingFieldException( "scheme/schema" );
+    else
+      throw MissingFieldException( "scheme/schema" );
 
     for ( auto &aabbs : replyJson.at( "available" ) )
     {
@@ -173,8 +175,7 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
       mMaxZoom = mAvailableTiles.size() - 1;
     }
 
-    QString versionStr =
-      QString::fromStdString( jsonGet<std::string>( replyJson, "version" ) );
+    QString versionStr = QString::fromStdString( jsonGet<std::string>( replyJson, "version" ) );
     for ( auto &urlStr : jsonGet<std::vector<std::string>>( replyJson, "tiles" ) )
     {
       QUrl url = metadataUrl.resolved( QString::fromStdString( urlStr ) );
@@ -190,9 +191,8 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
 
     QgsCoordinateReferenceSystem wgs84( QStringLiteral( "EPSG:4326" ) );
     // Bounds of tile schema in projected coordinates
-    auto crsBounds =
-      QgsCoordinateTransform( wgs84, mCrs, transformContext )
-      .transform( mCrs.bounds() );
+    auto crsBounds = QgsCoordinateTransform( wgs84, mCrs, transformContext )
+                       .transform( mCrs.bounds() );
     QgsPointXY topLeft( crsBounds.xMinimum(), crsBounds.yMaximum() );
     double z0TileSize = crsBounds.height();
 
@@ -208,21 +208,20 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
   }
 }
 
-const QgsDoubleRange QgsQuantizedMeshMetadata::dummyZRange = {-10000, 10000};
+const QgsDoubleRange QgsQuantizedMeshMetadata::dummyZRange = { -10000, 10000 };
 
 static QgsTileXYZ tileToTms( QgsTileXYZ &xyzTile )
 {
   // Flip Y axis for TMS schema
   Q_ASSERT( xyzTile.zoomLevel() >= 0 );
-  return {xyzTile.column(),
-          ( 1 << xyzTile.zoomLevel() ) - xyzTile.row() - 1,
-          xyzTile.zoomLevel()};
+  return { xyzTile.column(),
+           ( 1 << xyzTile.zoomLevel() ) - xyzTile.row() - 1,
+           xyzTile.zoomLevel() };
 }
 
 bool QgsQuantizedMeshMetadata::containsTile( QgsTileXYZ tile ) const
 {
-  if ( tile.zoomLevel() < mMinZoom || tile.zoomLevel() > mMaxZoom ||
-       tile.zoomLevel() >= mAvailableTiles.size() )
+  if ( tile.zoomLevel() < mMinZoom || tile.zoomLevel() > mMaxZoom || tile.zoomLevel() >= mAvailableTiles.size() )
     return false;
   // We operate with XYZ-style tile coordinates, but the availability array may
   // be given in TMS-style
@@ -230,8 +229,7 @@ bool QgsQuantizedMeshMetadata::containsTile( QgsTileXYZ tile ) const
     tile = tileToTms( tile );
   for ( auto &range : mAvailableTiles[tile.zoomLevel()] )
   {
-    if ( range.startColumn() <= tile.column() && range.endColumn() >= tile.column() &&
-         range.startRow() <= tile.row() && range.endRow() >= tile.row() )
+    if ( range.startColumn() <= tile.column() && range.endColumn() >= tile.column() && range.startRow() <= tile.row() && range.endRow() >= tile.row() )
       return true;
   }
   return false;
@@ -252,10 +250,8 @@ long long QgsQuantizedMeshIndex::encodeTileId( QgsTileXYZ tile )
     Q_ASSERT( tile.column() == 0 && tile.row() == 0 );
     return ROOT_TILE_ID;
   }
-  Q_ASSERT( tile.zoomLevel() < ( 2 << 4 ) && ( tile.column() < ( 2 << 27 ) ) &&
-            ( tile.row() < ( 2 << 27 ) ) );
-  return tile.row() | ( ( long long )tile.column() << 28 ) |
-         ( ( long long )tile.zoomLevel() << 56 ) | ( ( long long ) 1 << 61 );
+  Q_ASSERT( tile.zoomLevel() < ( 2 << 4 ) && ( tile.column() < ( 2 << 27 ) ) && ( tile.row() < ( 2 << 27 ) ) );
+  return tile.row() | ( ( long long ) tile.column() << 28 ) | ( ( long long ) tile.zoomLevel() << 56 ) | ( ( long long ) 1 << 61 );
 }
 
 QgsTileXYZ QgsQuantizedMeshIndex::decodeTileId( long long id )
@@ -265,9 +261,9 @@ QgsTileXYZ QgsQuantizedMeshIndex::decodeTileId( long long id )
 
   Q_ASSERT( id >> 61 == 1 ); // Check reserved bits
   return QgsTileXYZ(
-           ( int )( ( id >> 28 ) & ( ( 2 << 27 ) - 1 ) ),
-           ( int )( id & ( ( 2 << 27 ) - 1 ) ),
-           ( int )( ( id >> 56 ) & ( ( 2 << 4 ) - 1 ) ) );
+    ( int ) ( ( id >> 28 ) & ( ( 2 << 27 ) - 1 ) ),
+    ( int ) ( id & ( ( 2 << 27 ) - 1 ) ),
+    ( int ) ( ( id >> 56 ) & ( ( 2 << 4 ) - 1 ) ) );
 }
 
 QgsTiledSceneTile QgsQuantizedMeshIndex::rootTile() const
@@ -288,7 +284,7 @@ long long QgsQuantizedMeshIndex::parentTileId( long long id ) const
   auto tile = decodeTileId( id );
   if ( tile.zoomLevel() == 0 )
     return ROOT_TILE_ID;
-  return encodeTileId( {tile.zoomLevel() - 1, tile.column() / 2, tile.row() / 2} );
+  return encodeTileId( { tile.zoomLevel() - 1, tile.column() / 2, tile.row() / 2 } );
 }
 QVector<long long> QgsQuantizedMeshIndex::childTileIds( long long id ) const
 {
@@ -296,14 +292,14 @@ QVector<long long> QgsQuantizedMeshIndex::childTileIds( long long id ) const
   QVector<long long> children;
   auto x = tile.column(), y = tile.row(), zoom = tile.zoomLevel();
 
-  if ( mMetadata.containsTile( {x * 2, y * 2, zoom + 1} ) )
-    children.push_back( encodeTileId( {x * 2, y * 2, zoom + 1} ) );
-  if ( mMetadata.containsTile( {x * 2 + 1, y * 2, zoom + 1} ) )
-    children.push_back( encodeTileId( {x * 2 + 1, y * 2, zoom + 1} ) );
-  if ( mMetadata.containsTile( {x * 2, y * 2 + 1, zoom + 1} ) )
-    children.push_back( encodeTileId( {x * 2, y * 2 + 1, zoom + 1} ) );
-  if ( mMetadata.containsTile( {x * 2 + 1, y * 2 + 1, zoom + 1} ) )
-    children.push_back( encodeTileId( {x * 2 + 1, y * 2 + 1, zoom + 1} ) );
+  if ( mMetadata.containsTile( { x * 2, y * 2, zoom + 1 } ) )
+    children.push_back( encodeTileId( { x * 2, y * 2, zoom + 1 } ) );
+  if ( mMetadata.containsTile( { x * 2 + 1, y * 2, zoom + 1 } ) )
+    children.push_back( encodeTileId( { x * 2 + 1, y * 2, zoom + 1 } ) );
+  if ( mMetadata.containsTile( { x * 2, y * 2 + 1, zoom + 1 } ) )
+    children.push_back( encodeTileId( { x * 2, y * 2 + 1, zoom + 1 } ) );
+  if ( mMetadata.containsTile( { x * 2 + 1, y * 2 + 1, zoom + 1 } ) )
+    children.push_back( encodeTileId( { x * 2 + 1, y * 2 + 1, zoom + 1 } ) );
 
   return children;
 }
@@ -335,13 +331,13 @@ QgsTiledSceneTile QgsQuantizedMeshIndex::getTile( long long id )
   {
     // TODO: Intelligently choose from alternatives. Round robin?
     auto tileUri = QgsVectorTileUtils::formatXYZUrlTemplate(
-                     mMetadata.mTileUrls[0], xyzTile, zoomedMatrix );
-    sceneTile.setResources( {{"content", tileUri}} );
+      mMetadata.mTileUrls[0], xyzTile, zoomedMatrix );
+    sceneTile.setResources( { { "content", tileUri } } );
     sceneTile.setMetadata(
-    {
-      {QStringLiteral( "gltfUpAxis" ), static_cast<int>( Qgis::Axis::Z )},
-      {QStringLiteral( "contentFormat" ), QStringLiteral( "quantizedmesh" )},
-    } );
+      {
+        { QStringLiteral( "gltfUpAxis" ), static_cast<int>( Qgis::Axis::Z ) },
+        { QStringLiteral( "contentFormat" ), QStringLiteral( "quantizedmesh" ) },
+      } );
   }
 
   // Tile meshes have 0.0 -- 1.0 coordinates. Rescale them to the tile's real
@@ -356,13 +352,12 @@ QgsTiledSceneTile QgsQuantizedMeshIndex::getTile( long long id )
   return sceneTile;
 }
 QVector<long long>
-QgsQuantizedMeshIndex::getTiles( const QgsTiledSceneRequest &request )
+  QgsQuantizedMeshIndex::getTiles( const QgsTiledSceneRequest &request )
 {
   uint8_t zoomLevel = mMetadata.mMinZoom;
   if ( request.requiredGeometricError() != 0 )
   {
-    while ( zoomLevel < mMetadata.mMaxZoom &&
-            mMetadata.geometricErrorAtZoom( zoomLevel ) > request.requiredGeometricError() )
+    while ( zoomLevel < mMetadata.mMaxZoom && mMetadata.geometricErrorAtZoom( zoomLevel ) > request.requiredGeometricError() )
       zoomLevel++;
   }
   auto tileMatrix = QgsTileMatrix::fromTileMatrix( zoomLevel, mMetadata.mTileMatrix );
@@ -391,7 +386,7 @@ QgsQuantizedMeshIndex::getTiles( const QgsTiledSceneRequest &request )
   return ids;
 }
 Qgis::TileChildrenAvailability
-QgsQuantizedMeshIndex::childAvailability( long long id ) const
+  QgsQuantizedMeshIndex::childAvailability( long long id ) const
 {
   auto childIds = childTileIds( id );
   if ( childIds.count() == 0 )
@@ -410,7 +405,7 @@ bool QgsQuantizedMeshIndex::fetchHierarchy( long long id, QgsFeedback *feedback 
 }
 
 QByteArray QgsQuantizedMeshIndex::fetchContent( const QString &uri,
-    QgsFeedback *feedback )
+                                                QgsFeedback *feedback )
 {
   QNetworkRequest requestData( uri );
   requestData.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
@@ -440,8 +435,7 @@ QByteArray QgsQuantizedMeshIndex::fetchContent( const QString &uri,
 QgsQuantizedMeshDataProvider::QgsQuantizedMeshDataProvider(
   const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions,
   Qgis::DataProviderReadFlags flags )
-  : QgsTiledSceneDataProvider( uri, providerOptions, flags ), mUri( uri ),
-    mProviderOptions( providerOptions )
+  : QgsTiledSceneDataProvider( uri, providerOptions, flags ), mUri( uri ), mProviderOptions( providerOptions )
 {
   if ( uri.startsWith( QLatin1String( "ion://" ) ) )
   {
@@ -484,7 +478,7 @@ QString QgsQuantizedMeshDataProvider::uriFromIon( const QString &uri )
     const QString assetInfoEndpoint = CESIUM_ION_URL + QStringLiteral( "v1/assets/%1" ).arg( assetId );
     QNetworkRequest request = QNetworkRequest( assetInfoEndpoint );
     QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsQuantizedMeshDataProvider" ) )
-    headers.updateNetworkRequest( request );
+      headers.updateNetworkRequest( request );
     if ( !accessToken.isEmpty() )
       request.setRawHeader( "Authorization", QStringLiteral( "Bearer %1" ).arg( accessToken ).toLocal8Bit() );
 
@@ -505,7 +499,7 @@ QString QgsQuantizedMeshDataProvider::uriFromIon( const QString &uri )
     }
 
     const QgsNetworkReplyContent content = networkRequest.reply();
-    const json assetInfoJson  = json::parse( content.content().toStdString() );
+    const json assetInfoJson = json::parse( content.content().toStdString() );
     if ( assetInfoJson["type"] != "TERRAIN" )
     {
       appendError( QgsErrorMessage( tr( "Only ion TERRAIN content can be accessed, not %1" ).arg( QString::fromStdString( assetInfoJson["type"].get<std::string>() ) ) ) );
@@ -519,7 +513,7 @@ QString QgsQuantizedMeshDataProvider::uriFromIon( const QString &uri )
     const QString tileAccessEndpoint = CESIUM_ION_URL + QStringLiteral( "v1/assets/%1/endpoint" ).arg( assetId );
     QNetworkRequest request = QNetworkRequest( tileAccessEndpoint );
     QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsQuantizedMeshDataProvider" ) )
-    headers.updateNetworkRequest( request );
+      headers.updateNetworkRequest( request );
     if ( !accessToken.isEmpty() )
       request.setRawHeader( "Authorization", QStringLiteral( "Bearer %1" ).arg( accessToken ).toLocal8Bit() );
 
@@ -571,7 +565,7 @@ QString QgsQuantizedMeshDataProvider::uriFromIon( const QString &uri )
 }
 
 Qgis::TiledSceneProviderCapabilities
-QgsQuantizedMeshDataProvider::capabilities() const
+  QgsQuantizedMeshDataProvider::capabilities() const
 {
   return Qgis::TiledSceneProviderCapabilities();
 }
@@ -580,12 +574,12 @@ QgsTiledSceneDataProvider *QgsQuantizedMeshDataProvider::clone() const
   return new QgsQuantizedMeshDataProvider( mUri, mProviderOptions );
 }
 const QgsCoordinateReferenceSystem
-QgsQuantizedMeshDataProvider::sceneCrs() const
+  QgsQuantizedMeshDataProvider::sceneCrs() const
 {
   return mMetadata->mCrs;
 }
 const QgsTiledSceneBoundingVolume &
-QgsQuantizedMeshDataProvider::boundingVolume() const
+  QgsQuantizedMeshDataProvider::boundingVolume() const
 {
   return mMetadata->mBoundingVolume;
 }

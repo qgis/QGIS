@@ -41,7 +41,7 @@ class QgsAction;
  * \ingroup gui
  * \class QgsAttributeActionDialog
  */
-class GUI_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDialogBase
+class GUI_EXPORT QgsAttributeActionDialog : public QWidget, private Ui::QgsAttributeActionDialogBase
 {
     Q_OBJECT
   private:
@@ -61,7 +61,7 @@ class GUI_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttrib
     enum Role
     {
       ActionType = Qt::UserRole,
-      ActionId  = Qt::UserRole + 1
+      ActionId = Qt::UserRole + 1
     };
 
   public:

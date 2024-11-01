@@ -32,7 +32,6 @@
 class CORE_EXPORT QgsStacLink
 {
   public:
-
     /**
      * Constructor
      * \param href The actual link in the format of an URL.

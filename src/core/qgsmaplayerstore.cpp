@@ -93,7 +93,7 @@ QList<QgsMapLayer *> QgsMapLayerStore::addMapLayers( const QList<QgsMapLayer *> 
     QGIS_CHECK_QOBJECT_THREAD_EQUALITY( myLayer );
 
     // If the layer is already in the store but its validity has flipped to TRUE reset data source
-    if ( mMapLayers.contains( myLayer->id() ) && ! mMapLayers[myLayer->id()]->isValid() && myLayer->isValid() && myLayer->dataProvider() )
+    if ( mMapLayers.contains( myLayer->id() ) && !mMapLayers[myLayer->id()]->isValid() && myLayer->isValid() && myLayer->dataProvider() )
     {
       mMapLayers[myLayer->id()]->setDataSource( myLayer->dataProvider()->dataSourceUri(), myLayer->name(), myLayer->providerType(), QgsDataProvider::ProviderOptions() );
     }
@@ -118,7 +118,7 @@ QList<QgsMapLayer *> QgsMapLayerStore::addMapLayers( const QList<QgsMapLayer *> 
 }
 
 QgsMapLayer *
-QgsMapLayerStore::addMapLayer( QgsMapLayer *layer, bool takeOwnership )
+  QgsMapLayerStore::addMapLayer( QgsMapLayer *layer, bool takeOwnership )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 

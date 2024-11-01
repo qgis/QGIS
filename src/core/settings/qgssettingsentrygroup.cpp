@@ -25,7 +25,6 @@
 QgsSettingsEntryGroup::QgsSettingsEntryGroup( QList<const QgsSettingsEntryBase *> settings )
   : QgsSettingsEntryGroup( settings, true )
 {
-
 }
 
 QgsSettingsEntryGroup::QgsSettingsEntryGroup( QList<const QgsSettingsEntryBase *> settings, bool fatalErrorIfInvalid )

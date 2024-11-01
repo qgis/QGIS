@@ -53,7 +53,6 @@ class CORE_EXPORT QgsMeshLayerTemporalProperties : public QgsMapLayerTemporalPro
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsMeshLayerTemporalProperties
      *
@@ -63,7 +62,6 @@ class CORE_EXPORT QgsMeshLayerTemporalProperties : public QgsMapLayerTemporalPro
     QgsMeshLayerTemporalProperties( QObject *parent SIP_TRANSFERTHIS = nullptr, bool enabled = true );
 
   public:
-
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
     void setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities ) override;
@@ -135,8 +133,7 @@ class CORE_EXPORT QgsMeshLayerTemporalProperties : public QgsMapLayerTemporalPro
   private:
     QDateTime mReferenceTime;
     QgsDateTimeRange mTimeExtent;
-    QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod mMatchingMethod =
-      QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime;
+    QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod mMatchingMethod = QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime;
     bool mIsValid = false;
     bool mAlwaysLoadReferenceTimeFromSource = false;
 };

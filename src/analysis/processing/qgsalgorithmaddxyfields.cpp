@@ -62,7 +62,7 @@ QString QgsAddXYFieldsAlgorithm::outputName() const
 
 QList<int> QgsAddXYFieldsAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint );
 }
 
 QgsAddXYFieldsAlgorithm *QgsAddXYFieldsAlgorithm::createInstance() const
@@ -161,7 +161,7 @@ QgsFeatureList QgsAddXYFieldsAlgorithm::processFeature( const QgsFeature &featur
       feedback->reportError( QObject::tr( "Could not transform point to destination CRS" ) );
     }
   }
-  QgsFeature f =  feature;
+  QgsFeature f = feature;
   QgsAttributes attributes = f.attributes();
   if ( !mIsInPlace )
   {
@@ -178,7 +178,7 @@ QgsFeatureList QgsAddXYFieldsAlgorithm::processFeature( const QgsFeature &featur
 
 bool QgsAddXYFieldsAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
-  if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
+  if ( const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer ) )
   {
     return vl->geometryType() == Qgis::GeometryType::Point;
   }

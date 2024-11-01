@@ -53,8 +53,7 @@ void QgsDetailedItemDelegate::paint( QPainter *thepPainter,
   const QgsScopedQPainterState painterState( thepPainter );
   if ( index.data( Qt::UserRole ).userType() == qMetaTypeId<QgsDetailedItemData>() )
   {
-    const QgsDetailedItemData myData =
-      index.data( Qt::UserRole ).value<QgsDetailedItemData>();
+    const QgsDetailedItemData myData = index.data( Qt::UserRole ).value<QgsDetailedItemData>();
     if ( myData.isRenderedAsWidget() )
     {
       paintAsWidget( thepPainter, option, myData );
@@ -67,15 +66,13 @@ void QgsDetailedItemDelegate::paint( QPainter *thepPainter,
 }
 
 
-
 QSize QgsDetailedItemDelegate::sizeHint(
   const QStyleOptionViewItem &option,
   const QModelIndex &index ) const
 {
   if ( index.data( Qt::UserRole ).userType() == qMetaTypeId<QgsDetailedItemData>() )
   {
-    const QgsDetailedItemData myData =
-      index.data( Qt::UserRole ).value<QgsDetailedItemData>();
+    const QgsDetailedItemData myData = index.data( Qt::UserRole ).value<QgsDetailedItemData>();
     if ( myData.isRenderedAsWidget() )
     {
       return QSize( 378, mpWidget->height() );
@@ -94,8 +91,8 @@ QSize QgsDetailedItemDelegate::sizeHint(
 }
 
 void QgsDetailedItemDelegate::paintManually( QPainter *thepPainter,
-    const QStyleOptionViewItem &option,
-    const QgsDetailedItemData &data ) const
+                                             const QStyleOptionViewItem &option,
+                                             const QgsDetailedItemData &data ) const
 {
   //
   // Get the strings and checkbox properties
@@ -191,8 +188,7 @@ void QgsDetailedItemDelegate::paintManually( QPainter *thepPainter,
   {
     myTextStartY += myDetailMetrics.height() + verticalSpacing();
   }
-  const QStringList myList =
-    wordWrap( data.detail(), myDetailMetrics, option.rect.width() - myTextStartX );
+  const QStringList myList = wordWrap( data.detail(), myDetailMetrics, option.rect.width() - myTextStartX );
   QStringListIterator myLineWrapIterator( myList );
   while ( myLineWrapIterator.hasNext() )
   {
@@ -240,10 +236,9 @@ void QgsDetailedItemDelegate::paintManually( QPainter *thepPainter,
 
 
 void QgsDetailedItemDelegate::paintAsWidget( QPainter *thepPainter,
-    const QStyleOptionViewItem &option,
-    const QgsDetailedItemData &data ) const
+                                             const QStyleOptionViewItem &option,
+                                             const QgsDetailedItemData &data ) const
 {
-
   mpWidget->setChecked( data.isChecked() );
   mpWidget->setData( data );
   mpWidget->resize( option.rect.width(), mpWidget->height() );
@@ -258,11 +253,11 @@ void QgsDetailedItemDelegate::paintAsWidget( QPainter *thepPainter,
   thepPainter->drawPixmap( option.rect.x(),
                            option.rect.y(),
                            myPixmap );
-}//render as widget
+} //render as widget
 
 void QgsDetailedItemDelegate::drawHighlight( const QStyleOptionViewItem &option,
-    QPainter *thepPainter,
-    int height ) const
+                                             QPainter *thepPainter,
+                                             int height ) const
 {
   const QColor myColor1 = option.palette.highlight().color();
   QColor myColor2 = myColor1;
@@ -326,8 +321,8 @@ QFont QgsDetailedItemDelegate::titleFont( const QStyleOptionViewItem &option ) c
 
 
 QStringList QgsDetailedItemDelegate::wordWrap( const QString &string,
-    const QFontMetrics &metrics,
-    int width ) const
+                                               const QFontMetrics &metrics,
+                                               int width ) const
 {
   if ( string.isEmpty() )
     return QStringList();
@@ -359,7 +354,7 @@ QStringList QgsDetailedItemDelegate::wordWrap( const QString &string,
       myStringToPreviousSpace.clear();
       myCumulativeLine.clear();
     }
-  }//end of i loop
+  } //end of i loop
   //add whatever is left in the string to the list
   if ( !myCumulativeLine.trimmed().isEmpty() )
   {
@@ -370,9 +365,7 @@ QStringList QgsDetailedItemDelegate::wordWrap( const QString &string,
   //qDebug(theString);
   //qDebug(myList.join("\n").toLocal8Bit());
   return myList;
-
 }
-
 
 
 int QgsDetailedItemDelegate::verticalSpacing() const

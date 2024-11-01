@@ -27,7 +27,6 @@ class QgsAppMissingGridHandler : public QObject
 {
     Q_OBJECT
   public:
-
     QgsAppMissingGridHandler( QObject *parent );
 
   signals:
@@ -68,8 +67,8 @@ class QgsAppMissingGridHandler : public QObject
                                  const QgsDatumTransform::TransformDetails &availableOperation );
 
     void onCoordinateOperationCreationError( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        const QString &error );
+                                             const QgsCoordinateReferenceSystem &destinationCrs,
+                                             const QString &error );
 
     void onMissingGridUsedByContextHandler( const QgsCoordinateReferenceSystem &sourceCrs,
                                             const QgsCoordinateReferenceSystem &destinationCrs,
@@ -83,16 +82,15 @@ class QgsAppMissingGridHandler : public QObject
                                     const QgsCoordinateReferenceSystem &destinationCrs );
 
   private:
-
     bool shouldWarnAboutPair( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest );
     bool shouldWarnAboutPairForCurrentProject( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest );
     bool shouldWarnAboutBallparkPairForCurrentProject( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest );
     bool shouldWarnAboutDynamicCrsForCurrentProject( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest );
 
-    QList< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem > > mAlreadyWarnedPairs;
-    QList< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem > > mAlreadyWarnedPairsForProject;
-    QList< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem > > mAlreadyWarnedBallparkPairsForProject;
-    QList< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem > > mAlreadyWarnedDynamicCrsForProject;
+    QList<QPair<QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem>> mAlreadyWarnedPairs;
+    QList<QPair<QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem>> mAlreadyWarnedPairsForProject;
+    QList<QPair<QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem>> mAlreadyWarnedBallparkPairsForProject;
+    QList<QPair<QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem>> mAlreadyWarnedDynamicCrsForProject;
 };
 
 #endif // QGSAPPCOORDINATEOPERATIONHANDLERS_H

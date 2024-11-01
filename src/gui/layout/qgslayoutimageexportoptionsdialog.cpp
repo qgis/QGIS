@@ -32,9 +32,9 @@ QgsLayoutImageExportOptionsDialog::QgsLayoutImageExportOptionsDialog( QWidget *p
   , mFileExtension( fileExtension )
 {
   setupUi( this );
-  connect( mWidthSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mWidthSpinBox_valueChanged );
-  connect( mHeightSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mHeightSpinBox_valueChanged );
-  connect( mResolutionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mResolutionSpinBox_valueChanged );
+  connect( mWidthSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mWidthSpinBox_valueChanged );
+  connect( mHeightSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mHeightSpinBox_valueChanged );
+  connect( mResolutionSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mResolutionSpinBox_valueChanged );
 
   connect( mClipToContentGroupBox, &QGroupBox::toggled, this, &QgsLayoutImageExportOptionsDialog::clipToContentsToggled );
   connect( mHelpButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutImageExportOptionsDialog::showHelp );
@@ -45,7 +45,7 @@ QgsLayoutImageExportOptionsDialog::QgsLayoutImageExportOptionsDialog( QWidget *p
   mQualityLabel->setVisible( showQuality );
   mQualityLabel->setText( tr( "%1 quality", "Image format" ).arg( mFileExtension.toUpper() ) );
 
-  connect( mQualitySpinBox, qOverload< int >( &QSpinBox::valueChanged ), mQualitySlider, &QSlider::setValue );
+  connect( mQualitySpinBox, qOverload<int>( &QSpinBox::valueChanged ), mQualitySlider, &QSlider::setValue );
   connect( mQualitySlider, &QSlider::valueChanged, mQualitySpinBox, &QSpinBox::setValue );
 
   QgsGui::enableAutoGeometryRestore( this );

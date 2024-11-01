@@ -32,7 +32,7 @@ bool Qgs3DAxisSettings::operator==( Qgs3DAxisSettings const &rhs ) const
 
 bool Qgs3DAxisSettings::operator!=( Qgs3DAxisSettings const &rhs ) const
 {
-  return ! this->operator==( rhs );
+  return !this->operator==( rhs );
 }
 
 void Qgs3DAxisSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
@@ -132,7 +132,6 @@ void Qgs3DAxisSettings::writeXml( QDomElement &element, const QgsReadWriteContex
       break;
   }
   element.setAttribute( QStringLiteral( "vertical" ), str );
-
 }
 
 void Qgs3DAxisSettings::setMinViewportRatio( double ratio )

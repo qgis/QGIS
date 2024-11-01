@@ -41,11 +41,10 @@
  */
 class CORE_EXPORT QWebSettings : public QObject
 {
-/// @cond NOT_STABLE_API
+    /// @cond NOT_STABLE_API
     Q_OBJECT
 
   public:
-
     enum WebAttribute
     {
       AutoLoadImages,
@@ -92,7 +91,7 @@ class CORE_EXPORT QWebSettings : public QObject
     void setAttribute( WebAttribute, bool )
     {
     }
-/// @endcond
+    /// @endcond
 };
 
 /**
@@ -102,11 +101,10 @@ class CORE_EXPORT QWebSettings : public QObject
  */
 class CORE_EXPORT QWebPage : public QObject
 {
-/// @cond NOT_STABLE_API
+    /// @cond NOT_STABLE_API
     Q_OBJECT
 
   public:
-
     enum LinkDelegationPolicy
     {
       DontDelegateLinks,
@@ -197,13 +195,12 @@ class CORE_EXPORT QWebPage : public QObject
   public slots:
 
   protected:
-
     virtual void javaScriptConsoleMessage( const QString &, int, const QString & ) {}
 
   private:
     QWebSettings *mSettings = nullptr;
     QWebFrame *mFrame = nullptr;
-/// @endcond
+    /// @endcond
 };
 #endif
 
@@ -218,7 +215,6 @@ class CORE_EXPORT QgsWebPage : public QWebPage
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsWebPage.
      * \param parent parent object
@@ -244,7 +240,6 @@ class CORE_EXPORT QgsWebPage : public QWebPage
     QString identifier() const { return mIdentifier; }
 
   protected:
-
     void javaScriptConsoleMessage( const QString &message, int lineNumber, const QString & ) override
     {
       if ( mIdentifier.isEmpty() )
@@ -254,10 +249,7 @@ class CORE_EXPORT QgsWebPage : public QWebPage
     }
 
   private:
-
     QString mIdentifier;
-
 };
 
 #endif // QGSWEBPAGE_H
-

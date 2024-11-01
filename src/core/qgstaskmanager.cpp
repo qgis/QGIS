@@ -181,7 +181,7 @@ bool QgsTask::waitForFinished( int timeout )
   else
   {
     if ( timeout == 0 )
-      timeout = std::numeric_limits< int >::max();
+      timeout = std::numeric_limits<int>::max();
     if ( mNotFinishedMutex.tryLock( timeout ) )
     {
       mNotFinishedMutex.unlock();
@@ -196,14 +196,14 @@ bool QgsTask::waitForFinished( int timeout )
   return rv;
 }
 
-void QgsTask::setDependentLayers( const QList< QgsMapLayer * > &dependentLayers )
+void QgsTask::setDependentLayers( const QList<QgsMapLayer *> &dependentLayers )
 {
   mDependentLayers = _qgis_listRawToQPointer( dependentLayers );
 }
 
 void QgsTask::subTaskStatusChanged( int status )
 {
-  QgsTask *subTask = qobject_cast< QgsTask * >( sender() );
+  QgsTask *subTask = qobject_cast<QgsTask *>( sender() );
   if ( !subTask )
     return;
 
@@ -261,7 +261,7 @@ void QgsTask::setProgress( double progress )
   mTotalProgress = progress;
 
   // avoid spamming with too many progressChanged reports
-  if ( static_cast< int >( prevProgress * 10 ) != static_cast< int >( mTotalProgress * 10 ) )
+  if ( static_cast<int>( prevProgress * 10 ) != static_cast<int>( mTotalProgress * 10 ) )
     emit progressChanged( progress );
 }
 
@@ -363,7 +363,6 @@ void QgsTask::terminated()
 class QgsTaskRunnableWrapper : public QRunnable
 {
   public:
-
     explicit QgsTaskRunnableWrapper( QgsTask *task )
       : mTask( task )
     {
@@ -377,13 +376,10 @@ class QgsTaskRunnableWrapper : public QRunnable
     }
 
   private:
-
     QgsTask *mTask = nullptr;
-
 };
 
 ///@endcond
-
 
 
 //
@@ -395,7 +391,6 @@ QgsTaskManager::QgsTaskManager( QObject *parent )
   , mThreadPool( new QThreadPool( this ) )
   , mTaskMutex( new QRecursiveMutex() )
 {
-
 }
 
 QgsTaskManager::~QgsTaskManager()
@@ -405,10 +400,10 @@ QgsTaskManager::~QgsTaskManager()
 
   //then clean them up, including waiting for them to terminate
   mTaskMutex->lock();
-  QMap< long, TaskInfo > tasks = mTasks;
+  QMap<long, TaskInfo> tasks = mTasks;
   mTasks.detach();
   mTaskMutex->unlock();
-  QMap< long, TaskInfo >::const_iterator it = tasks.constBegin();
+  QMap<long, TaskInfo>::const_iterator it = tasks.constBegin();
   for ( ; it != tasks.constEnd(); ++it )
   {
     cleanupAndDeleteTask( it.value().task );
@@ -447,7 +442,7 @@ long QgsTaskManager::addTaskPrivate( QgsTask *task, QgsTaskList dependencies, bo
     mInitialized = true;
     // defer connection to project until we actually need it -- we don't want to connect to the project instance in the constructor,
     // cos that forces early creation of QgsProject
-    connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QList< QgsMapLayer * >& ) > ( &QgsProject::layersWillBeRemoved ), // skip-keyword-check
+    connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QList<QgsMapLayer *> & )>( &QgsProject::layersWillBeRemoved ), // skip-keyword-check
              this, &QgsTaskManager::layersWillBeRemoved );
   }
 
@@ -548,7 +543,7 @@ long QgsTaskManager::taskId( QgsTask *task ) const
 void QgsTaskManager::cancelAll()
 {
   mTaskMutex->lock();
-  QSet< QgsTask * > parents = mParentTasks;
+  QSet<QgsTask *> parents = mParentTasks;
   parents.detach();
   mTaskMutex->unlock();
 
@@ -562,7 +557,7 @@ void QgsTaskManager::cancelAll()
 bool QgsTaskManager::dependenciesSatisfied( long taskId ) const
 {
   mTaskMutex->lock();
-  QMap< long, QgsTaskList > dependencies = mTaskDependencies;
+  QMap<long, QgsTaskList> dependencies = mTaskDependencies;
   dependencies.detach();
   mTaskMutex->unlock();
 
@@ -591,7 +586,7 @@ QSet<long> QgsTaskManager::dependencies( long taskId ) const
 bool QgsTaskManager::resolveDependencies( long thisTaskId, QSet<long> &results ) const
 {
   mTaskMutex->lock();
-  QMap< long, QgsTaskList > dependencies = mTaskDependencies;
+  QMap<long, QgsTaskList> dependencies = mTaskDependencies;
   dependencies.detach();
   mTaskMutex->unlock();
 
@@ -636,7 +631,7 @@ bool QgsTaskManager::resolveDependencies( long thisTaskId, QSet<long> &results )
 
 bool QgsTaskManager::hasCircularDependencies( long taskId ) const
 {
-  QSet< long > d;
+  QSet<long> d;
   return !resolveDependencies( taskId, d );
 }
 
@@ -649,8 +644,8 @@ QList<QgsMapLayer *> QgsTaskManager::dependentLayers( long taskId ) const
 QList<QgsTask *> QgsTaskManager::tasksDependentOnLayer( QgsMapLayer *layer ) const
 {
   QMutexLocker ml( mTaskMutex );
-  QList< QgsTask * > tasks;
-  QMap< long, QgsWeakMapLayerPointerList >::const_iterator layerIt = mLayerDependencies.constBegin();
+  QList<QgsTask *> tasks;
+  QMap<long, QgsWeakMapLayerPointerList>::const_iterator layerIt = mLayerDependencies.constBegin();
   for ( ; layerIt != mLayerDependencies.constEnd(); ++layerIt )
   {
     if ( _qgis_listQPointerToRaw( layerIt.value() ).contains( layer ) )
@@ -666,7 +661,7 @@ QList<QgsTask *> QgsTaskManager::tasksDependentOnLayer( QgsMapLayer *layer ) con
 QList<QgsTask *> QgsTaskManager::activeTasks() const
 {
   QMutexLocker ml( mTaskMutex );
-  QSet< QgsTask * > activeTasks = mActiveTasks;
+  QSet<QgsTask *> activeTasks = mActiveTasks;
   activeTasks.intersect( mParentTasks );
   return QList<QgsTask *>( activeTasks.constBegin(), activeTasks.constEnd() );
 }
@@ -674,11 +669,11 @@ QList<QgsTask *> QgsTaskManager::activeTasks() const
 int QgsTaskManager::countActiveTasks( bool includeHidden ) const
 {
   QMutexLocker ml( mTaskMutex );
-  QSet< QgsTask * > tasks = mActiveTasks;
+  QSet<QgsTask *> tasks = mActiveTasks;
 
   if ( !includeHidden )
   {
-    QSet< QgsTask * > filteredTasks;
+    QSet<QgsTask *> filteredTasks;
     filteredTasks.reserve( tasks.size() );
     for ( QgsTask *task : tasks )
     {
@@ -699,7 +694,7 @@ void QgsTaskManager::triggerTask( QgsTask *task )
 
 void QgsTaskManager::taskProgressChanged( double progress )
 {
-  QgsTask *task = qobject_cast< QgsTask * >( sender() );
+  QgsTask *task = qobject_cast<QgsTask *>( sender() );
   if ( task && task->flags() & QgsTask::Hidden )
     return;
 
@@ -718,7 +713,7 @@ void QgsTaskManager::taskProgressChanged( double progress )
 
 void QgsTaskManager::taskStatusChanged( int status )
 {
-  QgsTask *task = qobject_cast< QgsTask * >( sender() );
+  QgsTask *task = qobject_cast<QgsTask *>( sender() );
   const bool isHidden = task && task->flags() & QgsTask::Hidden;
 
   //find ID of task
@@ -732,7 +727,7 @@ void QgsTaskManager::taskStatusChanged( int status )
   if ( runnable && mThreadPool->tryTake( runnable ) )
   {
     delete runnable;
-    mTasks[ id ].runnable = nullptr;
+    mTasks[id].runnable = nullptr;
   }
 
   if ( status == QgsTask::Terminated || status == QgsTask::Complete )
@@ -762,14 +757,13 @@ void QgsTaskManager::taskStatusChanged( int status )
   {
     cleanupAndDeleteTask( task );
   }
-
 }
 
-void QgsTaskManager::layersWillBeRemoved( const QList< QgsMapLayer * > &layers )
+void QgsTaskManager::layersWillBeRemoved( const QList<QgsMapLayer *> &layers )
 {
   mTaskMutex->lock();
   // scan through layers to be removed
-  QMap< long, QgsWeakMapLayerPointerList > layerDependencies = mLayerDependencies;
+  QMap<long, QgsWeakMapLayerPointerList> layerDependencies = mLayerDependencies;
   layerDependencies.detach();
   mTaskMutex->unlock();
 
@@ -777,7 +771,7 @@ void QgsTaskManager::layersWillBeRemoved( const QList< QgsMapLayer * > &layers )
   for ( QgsMapLayer *layer : constLayers )
   {
     // scan through tasks with layer dependencies
-    for ( QMap< long, QgsWeakMapLayerPointerList >::const_iterator it = layerDependencies.constBegin();
+    for ( QMap<long, QgsWeakMapLayerPointerList>::const_iterator it = layerDependencies.constBegin();
           it != layerDependencies.constEnd(); ++it )
     {
       if ( !( _qgis_listQPointerToRaw( it.value() ).contains( layer ) ) )
@@ -840,7 +834,7 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
     if ( runnable && mThreadPool->tryTake( runnable ) )
     {
       delete runnable;
-      mTasks[ id ].runnable = nullptr;
+      mTasks[id].runnable = nullptr;
     }
 
     if ( isParent )
@@ -851,7 +845,7 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
   }
 
   // at this stage (hopefully) dependent tasks have been canceled or queued
-  for ( QMap< long, QgsTaskList >::iterator it = mTaskDependencies.begin(); it != mTaskDependencies.end(); ++it )
+  for ( QMap<long, QgsTaskList>::iterator it = mTaskDependencies.begin(); it != mTaskDependencies.end(); ++it )
   {
     if ( it.value().contains( task ) )
     {
@@ -868,7 +862,7 @@ void QgsTaskManager::processQueue()
   int prevActiveCount = countActiveTasks( false );
   mTaskMutex->lock();
   mActiveTasks.clear();
-  for ( QMap< long, TaskInfo >::iterator it = mTasks.begin(); it != mTasks.end(); ++it )
+  for ( QMap<long, TaskInfo>::iterator it = mTasks.begin(); it != mTasks.end(); ++it )
   {
     QgsTask *task = it.value().task;
     if ( task && task->mStatus == QgsTask::Queued && dependenciesSatisfied( it.key() ) && it.value().added.testAndSetRelaxed( 0, 1 ) )
@@ -904,11 +898,11 @@ void QgsTaskManager::cancelDependentTasks( long taskId )
 
   //deep copy
   mTaskMutex->lock();
-  QMap< long, QgsTaskList > taskDependencies = mTaskDependencies;
+  QMap<long, QgsTaskList> taskDependencies = mTaskDependencies;
   taskDependencies.detach();
   mTaskMutex->unlock();
 
-  QMap< long, QgsTaskList >::const_iterator it = taskDependencies.constBegin();
+  QMap<long, QgsTaskList>::const_iterator it = taskDependencies.constBegin();
   for ( ; it != taskDependencies.constEnd(); ++it )
   {
     if ( it.value().contains( canceledTask ) )
@@ -958,11 +952,10 @@ bool QgsTaskWithSerialSubTasks::run()
     if ( mShouldTerminate )
       return false;
     connect( subTask, &QgsTask::progressChanged, this,
-             [this, i]( double subTaskProgress )
-    {
-      mProgress = 100.0 * ( double( i ) + subTaskProgress / 100.0 ) / double( mSubTasksSerial.size() );
-      setProgress( mProgress );
-    } );
+             [this, i]( double subTaskProgress ) {
+               mProgress = 100.0 * ( double( i ) + subTaskProgress / 100.0 ) / double( mSubTasksSerial.size() );
+               setProgress( mProgress );
+             } );
     if ( !subTask->run() )
       return false;
     subTask->completed();

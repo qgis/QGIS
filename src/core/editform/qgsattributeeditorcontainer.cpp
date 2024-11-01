@@ -152,7 +152,7 @@ void QgsAttributeEditorContainer::saveConfiguration( QDomElement &elem, QDomDocu
   elem.setAttribute( QStringLiteral( "visibilityExpressionEnabled" ), mVisibilityExpression.enabled() ? 1 : 0 );
   elem.setAttribute( QStringLiteral( "visibilityExpression" ), mVisibilityExpression->expression() );
   if ( mBackgroundColor.isValid() )
-    elem.setAttribute( QStringLiteral( "backgroundColor" ), mBackgroundColor.name( ) );
+    elem.setAttribute( QStringLiteral( "backgroundColor" ), mBackgroundColor.name() );
   const auto constMChildren = mChildren;
   for ( QgsAttributeEditorElement *child : constMChildren )
   {
@@ -224,4 +224,3 @@ QString QgsAttributeEditorContainer::typeIdentifier() const
 {
   return QStringLiteral( "attributeEditorContainer" );
 }
-

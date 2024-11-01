@@ -59,7 +59,7 @@ class QgsGdalSourceWidgetProvider : public QgsProviderSourceWidgetProvider
     QgsProviderSourceWidget *createWidget( QgsMapLayer *layer, QWidget *parent = nullptr ) override;
 };
 
-class QgsGdalGuiProviderMetadata: public QgsProviderGuiMetadata
+class QgsGdalGuiProviderMetadata : public QgsProviderGuiMetadata
 {
   public:
     QgsGdalGuiProviderMetadata();

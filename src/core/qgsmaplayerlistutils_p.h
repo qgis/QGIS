@@ -54,7 +54,7 @@ inline QgsWeakMapLayerPointerList _qgis_listRawToQPointer( const QList<QgsMapLay
   return lst;
 }
 
-inline QList<QgsMapLayer *> _qgis_listRefToRaw( const QList< QgsMapLayerRef > &layers )
+inline QList<QgsMapLayer *> _qgis_listRefToRaw( const QList<QgsMapLayerRef> &layers )
 {
   QList<QgsMapLayer *> lst;
   lst.reserve( layers.count() );
@@ -66,9 +66,9 @@ inline QList<QgsMapLayer *> _qgis_listRefToRaw( const QList< QgsMapLayerRef > &l
   return lst;
 }
 
-inline QList< QgsMapLayerRef > _qgis_listRawToRef( const QList<QgsMapLayer *> &layers )
+inline QList<QgsMapLayerRef> _qgis_listRawToRef( const QList<QgsMapLayer *> &layers )
 {
-  QList< QgsMapLayerRef > lst;
+  QList<QgsMapLayerRef> lst;
   lst.reserve( layers.count() );
   for ( QgsMapLayer *layer : layers )
   {
@@ -77,7 +77,7 @@ inline QList< QgsMapLayerRef > _qgis_listRawToRef( const QList<QgsMapLayer *> &l
   return lst;
 }
 
-inline void _qgis_removeLayers( QList< QgsMapLayerRef > &list, const QList< QgsMapLayer *> &layersToRemove )
+inline void _qgis_removeLayers( QList<QgsMapLayerRef> &list, const QList<QgsMapLayer *> &layersToRemove )
 {
   QMutableListIterator<QgsMapLayerRef> it( list );
   while ( it.hasNext() )
@@ -100,7 +100,7 @@ inline QStringList _qgis_listQPointerToIDs( const QgsWeakMapLayerPointerList &la
   return lst;
 }
 
-inline static QgsMapLayer *_qgis_findLayer( const QList< QgsMapLayer *> &layers, const QString &identifier )
+inline static QgsMapLayer *_qgis_findLayer( const QList<QgsMapLayer *> &layers, const QString &identifier )
 {
   QgsMapLayer *matchId = nullptr;
   QgsMapLayer *matchName = nullptr;

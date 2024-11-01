@@ -26,5 +26,5 @@ void QgsLabelThinningSettings::updateDataDefinedProperties( const QgsPropertyCol
 
   // temporarily avoid warnings
   const int unused = 1;
-  ( void )unused;
+  ( void ) unused;
 }

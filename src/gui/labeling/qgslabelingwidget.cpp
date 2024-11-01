@@ -126,7 +126,7 @@ void QgsLabelingWidget::adaptToLayer()
 
 void QgsLabelingWidget::writeSettingsToLayer()
 {
-  const Mode mode = static_cast< Mode >( mLabelModeComboBox->currentData().toInt() );
+  const Mode mode = static_cast<Mode>( mLabelModeComboBox->currentData().toInt() );
   switch ( mode )
   {
     case ModeRuleBased:
@@ -179,7 +179,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
   if ( index < 0 )
     return;
 
-  const Mode mode = static_cast< Mode >( mLabelModeComboBox->currentData().toInt() );
+  const Mode mode = static_cast<Mode>( mLabelModeComboBox->currentData().toInt() );
 
   switch ( mode )
   {
@@ -220,7 +220,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
 
       if ( !mSimpleSettings )
       {
-        mSimpleSettings = std::make_unique< QgsPalLayerSettings >( QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( mLayer ) );
+        mSimpleSettings = std::make_unique<QgsPalLayerSettings>( QgsAbstractVectorLayerLabeling::defaultSettingsForLayer( mLayer ) );
       }
 
       if ( mSimpleSettings->fieldName.isEmpty() )
@@ -258,8 +258,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
           mSimpleSettings->obstacleSettings().setIsObstacle( true );
           mSimpleSettings->drawLabels = false;
 
-          connect( obstacleWidget, &QgsLabelSettingsWidgetBase::changed, this, [ = ]
-          {
+          connect( obstacleWidget, &QgsLabelSettingsWidgetBase::changed, this, [=] {
             mSimpleSettings->setObstacleSettings( obstacleWidget->settings() );
             obstacleWidget->updateDataDefinedProperties( mSimpleSettings->dataDefinedProperties() );
             emit widgetChanged();
@@ -290,18 +289,17 @@ void QgsLabelingWidget::showLabelingEngineRules()
 {
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   const QgsLabelingEngineSettings &settings = QgsProject::instance()->labelingEngineSettings();
-  QList< QgsAbstractLabelingEngineRule * > rules;
+  QList<QgsAbstractLabelingEngineRule *> rules;
   for ( const QgsAbstractLabelingEngineRule *rule : settings.rules() )
   {
     // blame sip, it requires the widget setter to take non-const pointers?!
-    rules << const_cast<QgsAbstractLabelingEngineRule * >( rule );
+    rules << const_cast<QgsAbstractLabelingEngineRule *>( rule );
   }
   if ( panel && panel->dockMode() )
   {
     QgsLabelingEngineRulesWidget *widget = new QgsLabelingEngineRulesWidget();
     widget->setRules( rules );
-    connect( widget, &QgsLabelingEngineRulesWidget::changed, widget, [widget, this]
-    {
+    connect( widget, &QgsLabelingEngineRulesWidget::changed, widget, [widget, this] {
       QgsLabelingEngineSettings settings = QgsProject::instance()->labelingEngineSettings();
       settings.setRules( widget->rules() );
       QgsProject::instance()->setLabelingEngineSettings( settings );

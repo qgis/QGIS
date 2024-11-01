@@ -112,7 +112,6 @@ QgsVectorTileBasicLabelProvider::QgsVectorTileBasicLabelProvider( QgsVectorTileL
   : QgsVectorTileLabelProvider( layer )
   , mStyles( styles )
 {
-
   for ( int i = 0; i < mStyles.count(); ++i )
   {
     const QgsVectorTileBasicLabelingStyle &style = mStyles[i];
@@ -123,9 +122,9 @@ QgsVectorTileBasicLabelProvider::QgsVectorTileBasicLabelProvider( QgsVectorTileL
   }
 }
 
-QMap<QString, QSet<QString> > QgsVectorTileBasicLabelProvider::usedAttributes( const QgsRenderContext &context, int tileZoom ) const
+QMap<QString, QSet<QString>> QgsVectorTileBasicLabelProvider::usedAttributes( const QgsRenderContext &context, int tileZoom ) const
 {
-  QMap<QString, QSet<QString> > requiredFields;
+  QMap<QString, QSet<QString>> requiredFields;
   for ( const QgsVectorTileBasicLabelingStyle &layerStyle : std::as_const( mStyles ) )
   {
     if ( !layerStyle.isActive( tileZoom ) )
@@ -144,7 +143,7 @@ QMap<QString, QSet<QString> > QgsVectorTileBasicLabelProvider::usedAttributes( c
 
 QSet<QString> QgsVectorTileBasicLabelProvider::requiredLayers( QgsRenderContext &, int tileZoom ) const
 {
-  QSet< QString > res;
+  QSet<QString> res;
   for ( const QgsVectorTileBasicLabelingStyle &layerStyle : std::as_const( mStyles ) )
   {
     if ( layerStyle.isActive( tileZoom ) )
@@ -165,7 +164,7 @@ QList<QgsAbstractLabelProvider *> QgsVectorTileBasicLabelProvider::subProviders(
   QList<QgsAbstractLabelProvider *> lst;
   for ( QgsVectorLayerLabelProvider *subprovider : std::as_const( mSubProviders ) )
   {
-    if ( subprovider )  // sub-providers that failed to initialize are set to null
+    if ( subprovider ) // sub-providers that failed to initialize are set to null
       lst << subprovider;
   }
   return lst;
@@ -219,7 +218,7 @@ void QgsVectorTileBasicLabelProvider::registerTileFeatures( const QgsVectorTileR
 
     QgsVectorLayerLabelProvider *subProvider = mSubProviders[i];
     if ( !subProvider )
-      continue;  // sub-providers that failed to initialize are set to null
+      continue; // sub-providers that failed to initialize are set to null
 
     if ( layerStyle.layerName().isEmpty() )
     {

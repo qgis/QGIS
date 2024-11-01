@@ -44,7 +44,6 @@ class QgsRasterBlock;
 class CORE_EXPORT QgsElevationMap
 {
   public:
-
     QgsElevationMap() = default;
 
     //! Constructs an elevation map with the given width and height
@@ -146,15 +145,14 @@ class CORE_EXPORT QgsElevationMap
     static std::unique_ptr<QgsElevationMap> fromRasterBlock( QgsRasterBlock *block ) SIP_SKIP;
 
     //! Returns whether the encoded value is a no data value
-    inline bool isNoData( QRgb colorRaw ) const {return colorRaw == 0;}
+    inline bool isNoData( QRgb colorRaw ) const { return colorRaw == 0; }
 
     //! Returns the no data value for the elevation map
-    inline float noDataValue() const {return decodeElevation( 0 );}
+    inline float noDataValue() const { return decodeElevation( 0 ); }
 
     QgsElevationMap &operator=( const QgsElevationMap &other );
 
   private:
-
     mutable QImage mElevationImage;
     mutable std::unique_ptr<QPainter> mPainter;
 };

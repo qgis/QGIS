@@ -57,7 +57,6 @@ class CORE_EXPORT QgsGpsLogger : public QObject
     Q_OBJECT
 
   public:
-
     static const QgsSettingsEntryBool *settingsApplyLeapSeconds SIP_SKIP;
 
     static const QgsSettingsEntryString *settingsTimestampTimeZone SIP_SKIP;
@@ -255,7 +254,6 @@ class CORE_EXPORT QgsGpsLogger : public QObject
     void distanceAreaChanged();
 
   protected:
-
     //! WGS84 coordinate reference system
     QgsCoordinateReferenceSystem mWgs84CRS;
 
@@ -273,8 +271,7 @@ class CORE_EXPORT QgsGpsLogger : public QObject
     void gpsStateChanged( const QgsGpsInformation &info );
 
   private:
-
-    QPointer< QgsGpsConnection > mConnection;
+    QPointer<QgsGpsConnection> mConnection;
 
     QgsDistanceArea mDistanceCalculator;
 
@@ -310,7 +307,6 @@ class CORE_EXPORT QgsGpsLogger : public QObject
     double mLastMValue = std::numeric_limits<double>::quiet_NaN();
 
     friend class TestQgsGpsIntegration;
-
 };
 
 

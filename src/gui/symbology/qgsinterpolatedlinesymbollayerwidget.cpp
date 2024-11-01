@@ -41,24 +41,24 @@ QgsInterpolatedLineSymbolLayerWidget::QgsInterpolatedLineSymbolLayerWidget( QgsV
   mColorEndFieldExpression->setLayer( layer );
 
   mWidthUnitSelectionFixed->setUnits(
-  {
-    Qgis::RenderUnit::Inches,
-    Qgis::RenderUnit::MapUnits,
-    Qgis::RenderUnit::MetersInMapUnits,
-    Qgis::RenderUnit::Millimeters,
-    Qgis::RenderUnit::Pixels,
-    Qgis::RenderUnit::Points,
-  } );
+    {
+      Qgis::RenderUnit::Inches,
+      Qgis::RenderUnit::MapUnits,
+      Qgis::RenderUnit::MetersInMapUnits,
+      Qgis::RenderUnit::Millimeters,
+      Qgis::RenderUnit::Pixels,
+      Qgis::RenderUnit::Points,
+    } );
 
   mWidthUnitSelectionVarying->setUnits(
-  {
-    Qgis::RenderUnit::Inches,
-    Qgis::RenderUnit::MapUnits,
-    Qgis::RenderUnit::MetersInMapUnits,
-    Qgis::RenderUnit::Millimeters,
-    Qgis::RenderUnit::Pixels,
-    Qgis::RenderUnit::Points,
-  } );
+    {
+      Qgis::RenderUnit::Inches,
+      Qgis::RenderUnit::MapUnits,
+      Qgis::RenderUnit::MetersInMapUnits,
+      Qgis::RenderUnit::Millimeters,
+      Qgis::RenderUnit::Pixels,
+      Qgis::RenderUnit::Points,
+    } );
 
   connect( mWidthMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsInterpolatedLineSymbolLayerWidget::updateVisibleWidget );
@@ -70,10 +70,8 @@ QgsInterpolatedLineSymbolLayerWidget::QgsInterpolatedLineSymbolLayerWidget( QgsV
            this, &QgsInterpolatedLineSymbolLayerWidget::apply );
   connect( mDoubleSpinBoxWidth, qOverload<double>( &QDoubleSpinBox::valueChanged ),
            this, &QgsInterpolatedLineSymbolLayerWidget::apply );
-  connect( mWidthStartFieldExpression, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged )
-           , this, &QgsInterpolatedLineSymbolLayerWidget::reloadMinMaxWidthFromLayer );
-  connect( mWidthEndFieldExpression, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged )
-           , this, &QgsInterpolatedLineSymbolLayerWidget::reloadMinMaxWidthFromLayer );
+  connect( mWidthStartFieldExpression, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsInterpolatedLineSymbolLayerWidget::reloadMinMaxWidthFromLayer );
+  connect( mWidthEndFieldExpression, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsInterpolatedLineSymbolLayerWidget::reloadMinMaxWidthFromLayer );
   connect( mButtonLoadMinMaxValueWidth, &QPushButton::clicked, this, &QgsInterpolatedLineSymbolLayerWidget::onReloadMinMaxValueWidth );
   connect( mLineEditWidthMinValue, &QLineEdit::textChanged, this, &QgsInterpolatedLineSymbolLayerWidget::apply );
   connect( mLineEditWidthMaxValue, &QLineEdit::textChanged, this, &QgsInterpolatedLineSymbolLayerWidget::apply );
@@ -84,13 +82,11 @@ QgsInterpolatedLineSymbolLayerWidget::QgsInterpolatedLineSymbolLayerWidget( QgsV
   connect( mWidthUnitSelectionFixed, &QgsUnitSelectionWidget::changed, this, &QgsInterpolatedLineSymbolLayerWidget::apply );
   connect( mWidthUnitSelectionVarying, &QgsUnitSelectionWidget::changed, this, &QgsInterpolatedLineSymbolLayerWidget::apply );
 
-  connect( mWidthUnitSelectionVarying, &QgsUnitSelectionWidget::changed, this, [this]
-  {
+  connect( mWidthUnitSelectionVarying, &QgsUnitSelectionWidget::changed, this, [this] {
     whileBlocking( mWidthUnitSelectionFixed )->setUnit( mWidthUnitSelectionVarying->unit() );
   } );
 
-  connect( mWidthUnitSelectionFixed, &QgsUnitSelectionWidget::changed, this, [this]
-  {
+  connect( mWidthUnitSelectionFixed, &QgsUnitSelectionWidget::changed, this, [this] {
     whileBlocking( mWidthUnitSelectionVarying )->setUnit( mWidthUnitSelectionFixed->unit() );
   } );
 
@@ -100,13 +96,11 @@ QgsInterpolatedLineSymbolLayerWidget::QgsInterpolatedLineSymbolLayerWidget( QgsV
   // Color parameter
   connect( mColorMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
            this, &QgsInterpolatedLineSymbolLayerWidget::apply );
-  connect( mColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this,  &QgsInterpolatedLineSymbolLayerWidget::apply );
-  connect( mColorButton, &QgsColorButton::colorChanged, this,  &QgsInterpolatedLineSymbolLayerWidget::apply );
+  connect( mColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsInterpolatedLineSymbolLayerWidget::apply );
+  connect( mColorButton, &QgsColorButton::colorChanged, this, &QgsInterpolatedLineSymbolLayerWidget::apply );
 
-  connect( mColorStartFieldExpression, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged )
-           , this, &QgsInterpolatedLineSymbolLayerWidget::reloadMinMaxColorFromLayer );
-  connect( mColorEndFieldExpression, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged )
-           , this, &QgsInterpolatedLineSymbolLayerWidget::reloadMinMaxColorFromLayer );
+  connect( mColorStartFieldExpression, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsInterpolatedLineSymbolLayerWidget::reloadMinMaxColorFromLayer );
+  connect( mColorEndFieldExpression, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsInterpolatedLineSymbolLayerWidget::reloadMinMaxColorFromLayer );
 
   connect( mLineEditColorMinValue, &QLineEdit::textChanged, this, &QgsInterpolatedLineSymbolLayerWidget::onColorMinMaxLineTextChanged );
   connect( mLineEditColorMinValue, &QLineEdit::textEdited, this, &QgsInterpolatedLineSymbolLayerWidget::onColorMinMaxLineTextEdited );
@@ -114,7 +108,6 @@ QgsInterpolatedLineSymbolLayerWidget::QgsInterpolatedLineSymbolLayerWidget( QgsV
   connect( mLineEditColorMaxValue, &QLineEdit::textEdited, this, &QgsInterpolatedLineSymbolLayerWidget::onColorMinMaxLineTextEdited );
   connect( mButtonLoadMinMaxValueColor, &QPushButton::clicked, this, &QgsInterpolatedLineSymbolLayerWidget::onReloadMinMaxValueColor );
   connect( mColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsInterpolatedLineSymbolLayerWidget::apply );
-
 }
 
 void QgsInterpolatedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )

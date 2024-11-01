@@ -63,8 +63,7 @@ QString QgsShortestLineAlgorithm::shortHelpString() const
                       "This algorithm uses purely Cartesian calculations for distance, "
                       "and does not consider geodetic or ellipsoid properties when "
                       "determining feature proximity. The measurement and output coordinate "
-                      "system is based on the coordinate system of the source layer."
-                    );
+                      "system is based on the coordinate system of the source layer." );
 }
 
 QgsShortestLineAlgorithm *QgsShortestLineAlgorithm::createInstance() const
@@ -74,9 +73,11 @@ QgsShortestLineAlgorithm *QgsShortestLineAlgorithm::createInstance() const
 
 void QgsShortestLineAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "SOURCE" ), QObject::tr( "Source layer" ), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "DESTINATION" ), QObject::tr( "Destination layer" ), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << "Distance to Nearest Point on feature" << "Distance to Feature Centroid", false, 0 ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "SOURCE" ), QObject::tr( "Source layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "DESTINATION" ), QObject::tr( "Destination layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << "Distance to Nearest Point on feature"
+                                                                                                                   << "Distance to Feature Centroid",
+                                                false, 0 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NEIGHBORS" ), QObject::tr( "Maximum number of neighbors" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1 ) );
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "DISTANCE" ), QObject::tr( "Maximum distance" ), QVariant(), QString( "SOURCE" ), true ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Shortest lines" ), Qgis::ProcessingSourceType::VectorLine ) );
@@ -110,26 +111,27 @@ QVariantMap QgsShortestLineAlgorithm::processAlgorithm( const QVariantMap &param
   fields.append( QgsField( QStringLiteral( "distance" ), QMetaType::Type::Double ) );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::MultiLineString, mSource->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::MultiLineString, mSource->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   const QgsFeatureIterator destinationIterator = mDestination->getFeatures( QgsFeatureRequest().setDestinationCrs( mSource->sourceCrs(), context.transformContext() ) );
-  QHash< QgsFeatureId, QgsAttributes > destinationAttributeCache;
+  QHash<QgsFeatureId, QgsAttributes> destinationAttributeCache;
   double step = mDestination->featureCount() > 0 ? 50.0 / mDestination->featureCount() : 1;
   int i = 0;
-  const QgsSpatialIndex idx( destinationIterator, [&]( const QgsFeature & f )->bool
-  {
-    i++;
-    if ( feedback-> isCanceled() )
-      return false;
+  const QgsSpatialIndex idx(
+    destinationIterator, [&]( const QgsFeature &f ) -> bool {
+      i++;
+      if ( feedback->isCanceled() )
+        return false;
 
-    feedback->setProgress( i * step );
+      feedback->setProgress( i * step );
 
-    destinationAttributeCache.insert( f.id(), f.attributes() );
+      destinationAttributeCache.insert( f.id(), f.attributes() );
 
-    return true;
-  }, QgsSpatialIndex::FlagStoreFeatureGeometries );
+      return true;
+    },
+    QgsSpatialIndex::FlagStoreFeatureGeometries );
 
   step = mSource->featureCount() > 0 ? 50.0 / mSource->featureCount() : 1;
   QgsFeatureIterator sourceIterator = mSource->getFeatures();

@@ -59,9 +59,7 @@ void QgsStatisticalSummary::reset()
 
   mRequiresHisto = mStatistics & Qgis::Statistic::Majority || mStatistics & Qgis::Statistic::Minority || mStatistics & Qgis::Statistic::Variety;
 
-  mRequiresAllValueStorage = mStatistics & Qgis::Statistic::StDev || mStatistics & Qgis::Statistic::StDevSample ||
-                             mStatistics & Qgis::Statistic::Median || mStatistics & Qgis::Statistic::FirstQuartile ||
-                             mStatistics & Qgis::Statistic::ThirdQuartile || mStatistics & Qgis::Statistic::InterQuartileRange;
+  mRequiresAllValueStorage = mStatistics & Qgis::Statistic::StDev || mStatistics & Qgis::Statistic::StDevSample || mStatistics & Qgis::Statistic::Median || mStatistics & Qgis::Statistic::FirstQuartile || mStatistics & Qgis::Statistic::ThirdQuartile || mStatistics & Qgis::Statistic::InterQuartileRange;
 }
 
 /***************************************************************************
@@ -178,7 +176,7 @@ void QgsStatisticalSummary::finalize()
       }
       else //odd
       {
-        mFirstQuartile = mValues[( halfCount  + 1 ) / 2 - 1];
+        mFirstQuartile = mValues[( halfCount + 1 ) / 2 - 1];
       }
     }
     else
@@ -191,7 +189,7 @@ void QgsStatisticalSummary::finalize()
       }
       else //odd
       {
-        mFirstQuartile = mValues[( halfCount  + 1 ) / 2 - 1];
+        mFirstQuartile = mValues[( halfCount + 1 ) / 2 - 1];
       }
     }
   }
@@ -205,11 +203,11 @@ void QgsStatisticalSummary::finalize()
       const bool even = ( halfCount % 2 ) < 1;
       if ( even )
       {
-        mThirdQuartile = ( mValues[ halfCount + halfCount / 2 - 1] + mValues[ halfCount + halfCount / 2] ) / 2.0;
+        mThirdQuartile = ( mValues[halfCount + halfCount / 2 - 1] + mValues[halfCount + halfCount / 2] ) / 2.0;
       }
       else //odd
       {
-        mThirdQuartile = mValues[( halfCount + 1 ) / 2 - 1 + halfCount ];
+        mThirdQuartile = mValues[( halfCount + 1 ) / 2 - 1 + halfCount];
       }
     }
     else
@@ -218,11 +216,11 @@ void QgsStatisticalSummary::finalize()
       const bool even = ( halfCount % 2 ) < 1;
       if ( even )
       {
-        mThirdQuartile = ( mValues[ halfCount + halfCount / 2 - 2 ] + mValues[ halfCount + halfCount / 2 - 1 ] ) / 2.0;
+        mThirdQuartile = ( mValues[halfCount + halfCount / 2 - 2] + mValues[halfCount + halfCount / 2 - 1] ) / 2.0;
       }
       else //odd
       {
-        mThirdQuartile = mValues[( halfCount + 1 ) / 2 - 2 + halfCount ];
+        mThirdQuartile = mValues[( halfCount + 1 ) / 2 - 2 + halfCount];
       }
     }
   }
@@ -240,7 +238,6 @@ void QgsStatisticalSummary::finalize()
       mMajority = mValueCount.key( *std::max_element( valueCounts.begin(), valueCounts.end() ) );
     }
   }
-
 }
 
 /***************************************************************************
@@ -386,4 +383,3 @@ QString QgsStatisticalSummary::shortName( Qgis::Statistic statistic )
   }
   return QString();
 }
-

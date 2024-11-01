@@ -27,12 +27,11 @@
  * \class Qgs3DAlgorithms
  * \brief QGIS 3D processing algorithm provider.
  */
-class _3D_EXPORT Qgs3DAlgorithms: public QgsProcessingProvider
+class _3D_EXPORT Qgs3DAlgorithms : public QgsProcessingProvider
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for Qgs3DAlgorithms.
      */
@@ -46,11 +45,7 @@ class _3D_EXPORT Qgs3DAlgorithms: public QgsProcessingProvider
     bool supportsNonFileBasedOutput() const override;
 
   protected:
-
     void loadAlgorithms() override;
-
 };
 
 #endif // QGS3DALGORITHMS_H
-
-

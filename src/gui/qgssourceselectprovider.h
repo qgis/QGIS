@@ -36,25 +36,23 @@ class GUI_EXPORT QgsSourceSelectProvider
     Q_GADGET
 
   public:
-
     //! Provider ordering groups
     enum Ordering
     {
-      OrderLocalProvider = 0, //!< Starting point for local file providers (e.g. OGR)
+      OrderLocalProvider = 0,       //!< Starting point for local file providers (e.g. OGR)
       OrderDatabaseProvider = 1000, //!< Starting point for database providers (e.g. Postgres)
-      OrderRemoteProvider = 2000, //!< Starting point for remote (online) providers (e.g. WMS)
-      OrderSearchProvider = 4000, //!< Starting point for search providers (e.g. Layer Metadata)
-      OrderOtherProvider = 5000, //!< Starting point for other providers (e.g. plugin based providers)
+      OrderRemoteProvider = 2000,   //!< Starting point for remote (online) providers (e.g. WMS)
+      OrderSearchProvider = 4000,   //!< Starting point for search providers (e.g. Layer Metadata)
+      OrderOtherProvider = 5000,    //!< Starting point for other providers (e.g. plugin based providers)
     };
 
     /**
      * The Capability enum describes the capabilities of the source select implementation.
      * \since QGIS 3.38
      */
-    enum class Capability : int SIP_ENUM_BASETYPE( IntFlag )
-    {
-      NoCapabilities  = 0, //!< No capabilities
-      ConfigureFromUri = 1  //!< The source select widget can be configured from a URI
+    enum class Capability : int SIP_ENUM_BASETYPE( IntFlag ) {
+      NoCapabilities = 0,  //!< No capabilities
+      ConfigureFromUri = 1 //!< The source select widget can be configured from a URI
     };
     Q_ENUM( Capability )
     //!
@@ -92,7 +90,7 @@ class GUI_EXPORT QgsSourceSelectProvider
      * Ordering: the source select provider registry will be able to sort
      * the source selects (ascending) using this integer value
      */
-    virtual int ordering( ) const { return OrderOtherProvider; }
+    virtual int ordering() const { return OrderOtherProvider; }
 
     /**
      * Create a new instance of QgsAbstractDataSourceWidget (or NULLPTR).
@@ -109,7 +107,6 @@ class GUI_EXPORT QgsSourceSelectProvider
     {
       return Capability::NoCapabilities;
     }
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSourceSelectProvider::Capabilities )

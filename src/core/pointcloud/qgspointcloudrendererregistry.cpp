@@ -28,17 +28,17 @@ QgsPointCloudRendererRegistry::QgsPointCloudRendererRegistry()
 {
   // add default renderers
   addRenderer( new QgsPointCloudRendererMetadata( QStringLiteral( "extent" ),
-               QObject::tr( "Extent Only" ),
-               QgsPointCloudExtentRenderer::create ) );
+                                                  QObject::tr( "Extent Only" ),
+                                                  QgsPointCloudExtentRenderer::create ) );
   addRenderer( new QgsPointCloudRendererMetadata( QStringLiteral( "ramp" ),
-               QObject::tr( "Attribute by Ramp" ),
-               QgsPointCloudAttributeByRampRenderer::create ) );
+                                                  QObject::tr( "Attribute by Ramp" ),
+                                                  QgsPointCloudAttributeByRampRenderer::create ) );
   addRenderer( new QgsPointCloudRendererMetadata( QStringLiteral( "rgb" ),
-               QObject::tr( "RGB" ),
-               QgsPointCloudRgbRenderer::create ) );
+                                                  QObject::tr( "RGB" ),
+                                                  QgsPointCloudRgbRenderer::create ) );
   addRenderer( new QgsPointCloudRendererMetadata( QStringLiteral( "classified" ),
-               QObject::tr( "Classification" ),
-               QgsPointCloudClassifiedRenderer::create ) );
+                                                  QObject::tr( "Classification" ),
+                                                  QgsPointCloudClassifiedRenderer::create ) );
 }
 
 QgsPointCloudRendererRegistry::~QgsPointCloudRendererRegistry()
@@ -109,7 +109,7 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
   //if red/green/blue attributes are present, then default to a RGB renderer
   if ( attributes.indexOf( QLatin1String( "Red" ) ) >= 0 && attributes.indexOf( QLatin1String( "Green" ) ) >= 0 && attributes.indexOf( QLatin1String( "Blue" ) ) >= 0 )
   {
-    std::unique_ptr< QgsPointCloudRgbRenderer > renderer = std::make_unique< QgsPointCloudRgbRenderer >();
+    std::unique_ptr<QgsPointCloudRgbRenderer> renderer = std::make_unique<QgsPointCloudRgbRenderer>();
 
     // set initial guess for rgb ranges
     const double redMax = stats.maximum( QStringLiteral( "Red" ) );
@@ -170,13 +170,13 @@ QgsPointCloudRenderer *QgsPointCloudRendererRegistry::defaultRenderer( const Qgs
     if ( !classes.empty() )
     {
       const QgsPointCloudCategoryList categories = classificationAttributeCategories( layer );
-      std::unique_ptr< QgsPointCloudClassifiedRenderer > renderer = std::make_unique< QgsPointCloudClassifiedRenderer >( QLatin1String( "Classification" ), categories );
+      std::unique_ptr<QgsPointCloudClassifiedRenderer> renderer = std::make_unique<QgsPointCloudClassifiedRenderer>( QLatin1String( "Classification" ), categories );
       return renderer.release();
     }
   }
 
   // fallback to shading by Z
-  std::unique_ptr< QgsPointCloudAttributeByRampRenderer > renderer = std::make_unique< QgsPointCloudAttributeByRampRenderer >();
+  std::unique_ptr<QgsPointCloudAttributeByRampRenderer> renderer = std::make_unique<QgsPointCloudAttributeByRampRenderer>();
   renderer->setAttribute( QStringLiteral( "Z" ) );
 
   // set initial range for z values if possible

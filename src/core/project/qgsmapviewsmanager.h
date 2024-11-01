@@ -42,7 +42,6 @@ class CORE_EXPORT QgsMapViewsManager : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsMapViewsManager. The project will become the parent object for this
      * manager.

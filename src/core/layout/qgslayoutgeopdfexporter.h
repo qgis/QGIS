@@ -47,7 +47,6 @@ class QgsGeospatialPdfRenderedFeatureHandler;
 class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialPdfExporter
 {
   public:
-
     /**
      * Constructor for QgsLayoutGeospatialPdfExporter, associated with the specified \a layout.
      */
@@ -60,7 +59,7 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
      *
      * \see layerTreeGroupOrder()
      */
-    QMap< QString, QString > customLayerTreeGroups() const { return mCustomLayerTreeGroups; }
+    QMap<QString, QString> customLayerTreeGroups() const { return mCustomLayerTreeGroups; }
 
     /**
      * Optional map of map layer ID to initial visibility state. If a layer ID is not present in this,
@@ -68,7 +67,7 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
      *
      * \since QGIS 3.14
      */
-    QMap< QString, bool > initialLayerVisibility() const { return mInitialLayerVisibility; }
+    QMap<QString, bool> initialLayerVisibility() const { return mInitialLayerVisibility; }
 
     /**
      * Optional list of map layer IDs in the order they should be shown in the generated geospatial PDF layer tree.
@@ -92,14 +91,13 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
     QStringList layerTreeGroupOrder() const { return mLayerTreeGroupOrder; }
 
   private:
-
     VectorComponentDetail componentDetailForLayerId( const QString &layerId ) override;
 
     QgsLayout *mLayout = nullptr;
-    QHash< QgsLayoutItemMap *, QgsGeospatialPdfRenderedFeatureHandler * > mMapHandlers;
+    QHash<QgsLayoutItemMap *, QgsGeospatialPdfRenderedFeatureHandler *> mMapHandlers;
 
-    QMap< QString, bool > mInitialLayerVisibility;
-    QMap< QString, QString > mCustomLayerTreeGroups;
+    QMap<QString, bool> mInitialLayerVisibility;
+    QMap<QString, QString> mCustomLayerTreeGroups;
     QStringList mLayerOrder;
     QStringList mLayerTreeGroupOrder;
 
@@ -107,6 +105,3 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
 };
 
 #endif //QGSLAYOUTGEOPDFEXPORTER_H
-
-
-

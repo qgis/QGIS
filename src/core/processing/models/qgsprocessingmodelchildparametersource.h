@@ -33,7 +33,6 @@ class QgsProcessingModelAlgorithm;
 class CORE_EXPORT QgsProcessingModelChildParameterSource
 {
   public:
-
     /**
      * Constructor for QgsProcessingModelChildParameterSource. It is recommended that the static methods
      * fromStaticValue(), fromModelParameter(), fromChildOutput() and fromExpression() are used instead.
@@ -122,7 +121,11 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
      * Sets the source's static value. Calling this will also change the source() to StaticValue.
      * \see staticValue()
      */
-    void setStaticValue( const QVariant &value ) { mStaticValue = value; mSource = Qgis::ProcessingModelChildParameterSource::StaticValue; }
+    void setStaticValue( const QVariant &value )
+    {
+      mStaticValue = value;
+      mSource = Qgis::ProcessingModelChildParameterSource::StaticValue;
+    }
 
     /**
      * Returns the source's model parameter name. This is only used when the source() is ModelParameter.
@@ -134,7 +137,11 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
      * Sets the source's model parameter \a name. Calling this will also change the source() to ModelParameter.
      * \see parameterName()
      */
-    void setParameterName( const QString &name ) { mParameterName = name; mSource = Qgis::ProcessingModelChildParameterSource::ModelParameter; }
+    void setParameterName( const QString &name )
+    {
+      mParameterName = name;
+      mSource = Qgis::ProcessingModelChildParameterSource::ModelParameter;
+    }
 
     /**
      * Returns the source's child algorithm ID from which the output value will be taken. This is only used when the source() is ChildOutput.
@@ -148,7 +155,11 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
      * \see parameterName()
      * \see setOutputName()
      */
-    void setOutputChildId( const QString &id ) { mChildId = id; mSource = Qgis::ProcessingModelChildParameterSource::ChildOutput; }
+    void setOutputChildId( const QString &id )
+    {
+      mChildId = id;
+      mSource = Qgis::ProcessingModelChildParameterSource::ChildOutput;
+    }
 
     /**
      * Returns the source's child algorithm output name from which the output value will be taken. This is only used when the source() is ChildOutput.
@@ -162,7 +173,11 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
      * \see outputName()
      * \see setOutputChildId()
      */
-    void setOutputName( const QString &name ) { mOutputName = name; mSource = Qgis::ProcessingModelChildParameterSource::ChildOutput; }
+    void setOutputName( const QString &name )
+    {
+      mOutputName = name;
+      mSource = Qgis::ProcessingModelChildParameterSource::ChildOutput;
+    }
 
     /**
      * Returns the source's expression. This is only used when the source() is Expression.
@@ -177,7 +192,11 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
      * executed by the model.
      * \see expression()
      */
-    void setExpression( const QString &expression ) { mExpression = expression; mSource = Qgis::ProcessingModelChildParameterSource::Expression; }
+    void setExpression( const QString &expression )
+    {
+      mExpression = expression;
+      mSource = Qgis::ProcessingModelChildParameterSource::Expression;
+    }
 
     /**
      * Returns the source's text with expressions. This is only used when the
@@ -196,7 +215,11 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
      * \see expressionText()
      * \since QGIS 3.2
      */
-    void setExpressionText( const QString &text ) { mExpressionText = text; mSource = Qgis::ProcessingModelChildParameterSource::ExpressionText; }
+    void setExpressionText( const QString &text )
+    {
+      mExpressionText = text;
+      mSource = Qgis::ProcessingModelChildParameterSource::ExpressionText;
+    }
 
     /**
      * Saves this source to a QVariant.
@@ -215,7 +238,7 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
      *
      * The \a friendlyChildNames argument gives a map of child id to a friendly algorithm name, to be used in the code to identify that algorithm instead of the raw child id.
      */
-    QString asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsProcessingParameterDefinition *definition, const QMap< QString, QString > &friendlyChildNames ) const;
+    QString asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsProcessingParameterDefinition *definition, const QMap<QString, QString> &friendlyChildNames ) const;
 
     /**
      * Returns an explanatory Python comment for the source, or an empty string if no comment is available.
@@ -231,7 +254,6 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
     QString friendlyIdentifier( QgsProcessingModelAlgorithm *model ) const;
 
   private:
-
     Qgis::ProcessingModelChildParameterSource mSource = Qgis::ProcessingModelChildParameterSource::StaticValue;
     QVariant mStaticValue;
     QString mParameterName;
@@ -239,7 +261,6 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
     QString mOutputName;
     QString mExpression;
     QString mExpressionText;
-
 };
 
 Q_DECLARE_METATYPE( QgsProcessingModelChildParameterSource );
@@ -248,7 +269,7 @@ CORE_EXPORT QDataStream &operator>>( QDataStream &in, QgsProcessingModelChildPar
 
 #ifndef SIP_RUN
 //! List of child parameter sources
-typedef QList< QgsProcessingModelChildParameterSource > QgsProcessingModelChildParameterSources;
+typedef QList<QgsProcessingModelChildParameterSource> QgsProcessingModelChildParameterSources;
 #endif
 
 ///@endcond

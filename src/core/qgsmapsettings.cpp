@@ -136,10 +136,7 @@ void QgsMapSettings::updateDerived()
   // the ratio indicates that there is more than about 12 significant
   // figures (there are about 16 significant figures in a double).
 
-  if ( extent.width()  > 0 &&
-       extent.height() > 0 &&
-       extent.width()  < 1 &&
-       extent.height() < 1 )
+  if ( extent.width() > 0 && extent.height() > 0 && extent.width() < 1 && extent.height() < 1 )
   {
     // Use abs() on the extent to avoid the case where the extent is
     // symmetrical about 0.
@@ -231,7 +228,6 @@ void QgsMapSettings::updateDerived()
   QgsDebugMsgLevel( QStringLiteral( "Extent: %1" ).arg( mExtent.asWktCoordinates() ), 5 );
   QgsDebugMsgLevel( QStringLiteral( "Visible Extent: %1" ).arg( mVisibleExtent.asWktCoordinates() ), 5 );
   QgsDebugMsgLevel( QStringLiteral( "Magnification factor: %1" ).arg( mMagnificationFactor ), 5 );
-
 }
 
 
@@ -287,7 +283,7 @@ void QgsMapSettings::setDpiTarget( double dpi )
 
 QStringList QgsMapSettings::layerIds( bool expandGroupLayers ) const
 {
-  const QList<QgsMapLayer * > mapLayers = layers( expandGroupLayers );
+  const QList<QgsMapLayer *> mapLayers = layers( expandGroupLayers );
   QStringList res;
   res.reserve( mapLayers.size() );
   for ( const QgsMapLayer *layer : mapLayers )
@@ -301,14 +297,13 @@ QList<QgsMapLayer *> QgsMapSettings::layers( bool expandGroupLayers ) const
   if ( !expandGroupLayers )
     return actualLayers;
 
-  QList< QgsMapLayer * > result;
+  QList<QgsMapLayer *> result;
 
-  std::function< void( const QList< QgsMapLayer * >& layers ) > expandLayers;
-  expandLayers = [&result, &expandLayers]( const QList< QgsMapLayer * > &layers )
-  {
+  std::function<void( const QList<QgsMapLayer *> &layers )> expandLayers;
+  expandLayers = [&result, &expandLayers]( const QList<QgsMapLayer *> &layers ) {
     for ( QgsMapLayer *layer : layers )
     {
-      if ( QgsGroupLayer *groupLayer = qobject_cast< QgsGroupLayer * >( layer ) )
+      if ( QgsGroupLayer *groupLayer = qobject_cast<QgsGroupLayer *>( layer ) )
       {
         expandLayers( groupLayer->childLayers() );
       }
@@ -345,10 +340,10 @@ void QgsMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
   // filter list, removing null layers and non-spatial layers
   auto filteredList = layers;
   filteredList.erase( std::remove_if( filteredList.begin(), filteredList.end(),
-                                      []( QgsMapLayer * layer )
-  {
-    return !layer || !layer->isSpatial();
-  } ), filteredList.end() );
+                                      []( QgsMapLayer *layer ) {
+                                        return !layer || !layer->isSpatial();
+                                      } ),
+                      filteredList.end() );
 
   mLayers = _qgis_listRawToQPointer( filteredList );
 }
@@ -400,7 +395,7 @@ void QgsMapSettings::setFlag( Qgis::MapSettingsFlag flag, bool on )
   if ( on )
     mFlags |= flag;
   else
-    mFlags &= ~( static_cast< int >( flag ) );
+    mFlags &= ~( static_cast<int>( flag ) );
 }
 
 Qgis::MapSettingsFlags QgsMapSettings::flags() const
@@ -701,7 +696,6 @@ QgsRectangle QgsMapSettings::mapToLayerCoordinates( const QgsMapLayer *layer, Qg
 }
 
 
-
 QgsRectangle QgsMapSettings::fullExtent() const
 {
   // reset the map canvas extent since the extent may now be smaller
@@ -738,8 +732,7 @@ QgsRectangle QgsMapSettings::fullExtent() const
     // rectangle a bit. If they are all at zero, do something a bit
     // more crude.
 
-    if ( fullExtent.xMinimum() == 0.0 && fullExtent.xMaximum() == 0.0 &&
-         fullExtent.yMinimum() == 0.0 && fullExtent.yMaximum() == 0.0 )
+    if ( fullExtent.xMinimum() == 0.0 && fullExtent.xMaximum() == 0.0 && fullExtent.yMinimum() == 0.0 && fullExtent.yMaximum() == 0.0 )
     {
       fullExtent.set( -1.0, -1.0, 1.0, 1.0 );
     }
@@ -780,7 +773,7 @@ void QgsMapSettings::readXml( QDomNode &node )
   // set rotation
   const QDomNode rotationNode = node.namedItem( QStringLiteral( "rotation" ) );
   const QString rotationVal = rotationNode.toElement().text();
-  if ( ! rotationVal.isEmpty() )
+  if ( !rotationVal.isEmpty() )
   {
     const double rot = rotationVal.toDouble();
     setRotation( rot );
@@ -795,7 +788,6 @@ void QgsMapSettings::readXml( QDomNode &node )
 }
 
 
-
 void QgsMapSettings::writeXml( QDomNode &node, QDomDocument &doc )
 {
   // units
@@ -807,8 +799,7 @@ void QgsMapSettings::writeXml( QDomNode &node, QDomDocument &doc )
   // Write current view rotation
   QDomElement rotNode = doc.createElement( QStringLiteral( "rotation" ) );
   rotNode.appendChild(
-    doc.createTextNode( qgsDoubleToString( rotation() ) )
-  );
+    doc.createTextNode( qgsDoubleToString( rotation() ) ) );
   node.appendChild( rotNode );
 
   // destination CRS
@@ -915,4 +906,3 @@ void QgsMapSettings::setElevationShadingRenderer( const QgsElevationShadingRende
 {
   mShadingRenderer = elevationShadingRenderer;
 }
-

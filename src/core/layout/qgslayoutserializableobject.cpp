@@ -21,10 +21,9 @@
 #include "qgsproject.h"
 
 ///@cond PRIVATE
-class QgsLayoutSerializableObjectUndoCommand: public QgsAbstractLayoutUndoCommand
+class QgsLayoutSerializableObjectUndoCommand : public QgsAbstractLayoutUndoCommand
 {
   public:
-
     QgsLayoutSerializableObjectUndoCommand( QgsLayoutSerializableObject *object, const QString &text, int id, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr )
       : QgsAbstractLayoutUndoCommand( text, id, parent )
       , mObject( object )
@@ -49,7 +48,6 @@ class QgsLayoutSerializableObjectUndoCommand: public QgsAbstractLayoutUndoComman
     }
 
   protected:
-
     void saveState( QDomDocument &stateDoc ) const override
     {
       stateDoc.clear();
@@ -69,7 +67,6 @@ class QgsLayoutSerializableObjectUndoCommand: public QgsAbstractLayoutUndoComman
     }
 
   private:
-
     QgsLayoutSerializableObject *mObject = nullptr;
 };
 ///@endcond

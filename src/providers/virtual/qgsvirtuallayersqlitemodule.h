@@ -18,8 +18,7 @@ email                : hugo dot mercier at oslandia dot com
 #define QGSVIRTUAL_SQLITE_LAYER_MODULE_H
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 int vtableCreate( sqlite3 *sql, void *aux, int argc, const char *const *argv, sqlite3_vtab **out_vtab, char **out_err );
 int vtableConnect( sqlite3 *sql, void *aux, int argc, const char *const *argv, sqlite3_vtab **out_vtab, char **out_err );

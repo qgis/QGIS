@@ -41,11 +41,7 @@ QString QgsSqlExpressionCompiler::result()
 
 bool QgsSqlExpressionCompiler::opIsStringComparison( QgsExpressionNodeBinaryOperator::BinaryOperator op )
 {
-  if ( op == QgsExpressionNodeBinaryOperator::BinaryOperator::boILike ||
-       op == QgsExpressionNodeBinaryOperator::BinaryOperator::boLike ||
-       op == QgsExpressionNodeBinaryOperator::BinaryOperator::boNotILike ||
-       op == QgsExpressionNodeBinaryOperator::BinaryOperator::boNotLike ||
-       op == QgsExpressionNodeBinaryOperator::BinaryOperator::boRegexp )
+  if ( op == QgsExpressionNodeBinaryOperator::BinaryOperator::boILike || op == QgsExpressionNodeBinaryOperator::BinaryOperator::boLike || op == QgsExpressionNodeBinaryOperator::BinaryOperator::boNotILike || op == QgsExpressionNodeBinaryOperator::BinaryOperator::boNotLike || op == QgsExpressionNodeBinaryOperator::BinaryOperator::boRegexp )
     return true;
   else
     return false;
@@ -95,8 +91,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
 
   // This is just to identify the most simple cases where nodes are numeric
   std::function<bool( const QgsExpressionNode * )> nodeIsNumeric;
-  nodeIsNumeric = [this, &nodeIsNumeric]( const QgsExpressionNode * node )
-  {
+  nodeIsNumeric = [this, &nodeIsNumeric]( const QgsExpressionNode *node ) {
     const QgsExpressionNode::NodeType nodeType { node->nodeType() };
 
     switch ( nodeType )
@@ -110,7 +105,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       case QgsExpressionNode::ntLiteral:
       {
         const QgsExpressionNodeLiteral *lit = static_cast<const QgsExpressionNodeLiteral *>( node );
-        return QgsVariantUtils::isNumericType( static_cast< QMetaType::Type >( lit->value().userType() ) );
+        return QgsVariantUtils::isNumericType( static_cast<QMetaType::Type>( lit->value().userType() ) );
       }
       case QgsExpressionNode::ntBinaryOperator:
       {
@@ -126,7 +121,6 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       default:
         return false;
     }
-
   };
 
   switch ( node->nodeType() )
@@ -312,7 +306,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       QString left;
       const Result lr( compileNode( n->opLeft(), left ) );
 
-      if ( opIsStringComparison( n ->op() ) )
+      if ( opIsStringComparison( n->op() ) )
         left = castToText( left );
 
       QString right;

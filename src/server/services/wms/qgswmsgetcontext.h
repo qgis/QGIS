@@ -38,7 +38,3 @@ namespace QgsWms
                            const QgsWmsRequest &request );
 
 } // namespace QgsWms
-
-
-
-

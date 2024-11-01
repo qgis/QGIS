@@ -112,7 +112,6 @@ QImage QgsVectorTileDataProvider::spriteImage() const
 }
 
 
-
 QgsVectorTileDataProviderSharedData::QgsVectorTileDataProviderSharedData()
 {
   mTileCache.setMaxCost( 200 );

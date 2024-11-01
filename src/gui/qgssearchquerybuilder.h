@@ -96,7 +96,6 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
     void btnSampleValues_clicked();
 
   private:
-
     /**
      * Populate the field list for the selected table
      */
@@ -125,7 +124,6 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
     void showHelp();
 
   private:
-
     //! Layer for which is the query builder opened
     QgsVectorLayer *mLayer = nullptr;
     //! Map that holds field information, keyed by field name

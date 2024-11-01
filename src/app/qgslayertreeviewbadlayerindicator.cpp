@@ -66,7 +66,7 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModel
   else
   {
     QStringList thisLayerErrors;
-    QList< Error > newErrors;
+    QList<Error> newErrors;
     for ( const Error &error : std::as_const( mErrors ) )
     {
       if ( error.layer != layer )

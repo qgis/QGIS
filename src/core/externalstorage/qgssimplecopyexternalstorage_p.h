@@ -36,7 +36,6 @@ class QgsCopyFileTask;
 class CORE_EXPORT QgsSimpleCopyExternalStorage : public QgsExternalStorage
 {
   public:
-
     QString type() const override;
 
     QString displayName() const override;
@@ -51,12 +50,11 @@ class CORE_EXPORT QgsSimpleCopyExternalStorage : public QgsExternalStorage
  *
  * \since QGIS 3.22
  */
-class QgsSimpleCopyExternalStorageStoredContent  : public QgsExternalStorageStoredContent
+class QgsSimpleCopyExternalStorageStoredContent : public QgsExternalStorageStoredContent
 {
     Q_OBJECT
 
   public:
-
     QgsSimpleCopyExternalStorageStoredContent( const QString &filePath, const QString &url, const QString &authcfg = QString() );
 
     void cancel() override;
@@ -66,7 +64,6 @@ class QgsSimpleCopyExternalStorageStoredContent  : public QgsExternalStorageStor
     void store() override;
 
   private:
-
     QPointer<QgsCopyFileTask> mCopyTask;
     QString mUrl;
 };
@@ -81,7 +78,6 @@ class QgsSimpleCopyExternalStorageFetchedContent : public QgsExternalStorageFetc
     Q_OBJECT
 
   public:
-
     QgsSimpleCopyExternalStorageFetchedContent( const QString &filePath );
 
     QString filePath() const override;
@@ -89,7 +85,6 @@ class QgsSimpleCopyExternalStorageFetchedContent : public QgsExternalStorageFetc
     void fetch() override;
 
   private:
-
     QString mFilePath;
     QString mResultFilePath;
 };

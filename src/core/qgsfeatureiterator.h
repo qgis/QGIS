@@ -28,13 +28,12 @@ class QgsFeedback;
 class CORE_EXPORT QgsAbstractFeatureIterator
 {
   public:
-
     //! Status of expression compilation for filter expression requests
     enum CompileStatus
     {
-      NoCompilation, //!< Expression could not be compiled or not attempt was made to compile expression
+      NoCompilation,     //!< Expression could not be compiled or not attempt was made to compile expression
       PartiallyCompiled, //!< Expression was partially compiled, but extra checks need to be applied to features
-      Compiled, //!< Expression was fully compiled and delegated to data provider source
+      Compiled,          //!< Expression was fully compiled and delegated to data provider source
     };
 
     //! base class constructor - stores the iteration parameters
@@ -102,12 +101,11 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      */
     enum class RequestToSourceCrsResult : int
     {
-      Success, //!< Request was successfully updated to the source CRS, or no changes were required
+      Success,                             //!< Request was successfully updated to the source CRS, or no changes were required
       DistanceWithinMustBeCheckedManually, //!< The distance within request cannot be losslessly updated to the source CRS, and callers will need to take appropriate steps to handle the distance within requirement manually during feature iteration
     };
 
   protected:
-
     /**
      * If you write a feature iterator for your provider, this is the method you
      * need to implement!!
@@ -289,22 +287,26 @@ class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
 class CORE_EXPORT QgsFeatureIterator
 {
   public:
-
 #ifdef SIP_RUN
     QgsFeatureIterator *__iter__();
     % MethodCode
-    sipRes = sipCpp;
+        sipRes
+      = sipCpp;
     % End
 
-    SIP_PYOBJECT __next__() SIP_TYPEHINT( QgsFeature );
+        SIP_PYOBJECT
+      __next__() SIP_TYPEHINT( QgsFeature );
     % MethodCode
-    std::unique_ptr< QgsFeature > f = std::make_unique< QgsFeature >();
+        std::unique_ptr<QgsFeature>
+          f
+      = std::make_unique<QgsFeature>();
     bool result = false;
     Py_BEGIN_ALLOW_THREADS
-    result = ( sipCpp->nextFeature( *f ) );
-    Py_END_ALLOW_THREADS
-    if ( result )
-      sipRes = sipConvertFromType( f.release(), sipType_QgsFeature, Py_None );
+      result
+      = ( sipCpp->nextFeature( *f ) );
+    Py_END_ALLOW_THREADS if ( result )
+      sipRes
+      = sipConvertFromType( f.release(), sipType_QgsFeature, Py_None );
     else
     {
       PyErr_SetString( PyExc_StopIteration, "" );
@@ -312,8 +314,9 @@ class CORE_EXPORT QgsFeatureIterator
     % End
 #endif
 
-    //! Construct invalid iterator
-    QgsFeatureIterator() = default;
+      //! Construct invalid iterator
+      QgsFeatureIterator()
+      = default;
     //! Construct a valid iterator
     QgsFeatureIterator( QgsAbstractFeatureIterator *iter SIP_TRANSFER );
     //! Copy constructor copies the iterator, increases ref.count
@@ -373,13 +376,11 @@ class CORE_EXPORT QgsFeatureIterator
      */
     bool compileFailed() const { return mIter->compileFailed(); }
 
-    friend bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 ) SIP_SKIP;
-    friend bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 ) SIP_SKIP;
+    friend bool operator==( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 ) SIP_SKIP;
+    friend bool operator!=( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 ) SIP_SKIP;
 
   protected:
     QgsAbstractFeatureIterator *mIter = nullptr;
-
-
 };
 
 #ifndef SIP_RUN
@@ -430,12 +431,12 @@ inline bool QgsFeatureIterator::isClosed() const
   return mIter ? mIter->mClosed && !mIter->mZombie : true;
 }
 
-inline bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )
+inline bool operator==( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )
 {
   return fi1.mIter == fi2.mIter;
 }
 
-inline bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )
+inline bool operator!=( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 )
 {
   return !( fi1 == fi2 );
 }

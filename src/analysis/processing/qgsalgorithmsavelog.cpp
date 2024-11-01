@@ -84,7 +84,7 @@ QVariantMap QgsSaveLogToFileAlgorithm::processAlgorithm( const QVariantMap &para
       throw QgsProcessingException( QObject::tr( "Could not save log to file %1" ).arg( file ) );
     }
     QTextStream fout( &exportFile );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     fout.setCodec( "UTF-8" );
 #endif
     fout << ( useHtml ? feedback->htmlLog() : feedback->textLog() );

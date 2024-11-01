@@ -56,26 +56,25 @@ namespace pal
   class Feats
   {
     public:
-
       Feats() = default;
 
       FeaturePart *feature = nullptr;
       PointSet *shape = nullptr;
       double priority = 0;
-      std::vector< std::unique_ptr< LabelPosition > > candidates;
+      std::vector<std::unique_ptr<LabelPosition>> candidates;
   };
 
 
   struct ElemTrans
   {
-    int feat;
-    int  old_label;
-    int  new_label;
+      int feat;
+      int old_label;
+      int new_label;
   };
 
   struct Point
   {
-    double x, y;
+      double x, y;
   };
 
 #define EPSILON 1e-9
@@ -89,12 +88,11 @@ namespace pal
   class Util
   {
     public:
-
       static QLinkedList<const GEOSGeometry *> *unmulti( const GEOSGeometry *the_geom );
   };
 
 
-} // namespace
+} // namespace pal
 
 Q_DECLARE_TYPEINFO( pal::Point, Q_PRIMITIVE_TYPE );
 

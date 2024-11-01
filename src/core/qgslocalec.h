@@ -38,7 +38,6 @@ class CORE_EXPORT QgsLocaleNumC
 
     QgsLocaleNumC( const QgsLocaleNumC &rh ) = delete;
     QgsLocaleNumC &operator=( const QgsLocaleNumC &rh ) = delete;
-
 };
 
 #endif // QGSLOCALENUMC_H

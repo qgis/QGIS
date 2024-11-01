@@ -68,14 +68,12 @@ class GUI_EXPORT QgsStyleGroupSelectionDialog : public QDialog, private Ui::Symb
     void groupTreeSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
   private:
-
     /**
      * \brief build group tree
      * \param parent
      */
     void buildTagTree( QStandardItem *&parent );
     QgsStyle *mStyle = nullptr;
-
 };
 
 #endif // QGSSTYLEV2GROUPSELECTIONDIALOG_H

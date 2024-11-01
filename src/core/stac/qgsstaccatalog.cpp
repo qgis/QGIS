@@ -18,7 +18,7 @@
 QgsStacCatalog::QgsStacCatalog( const QString &id,
                                 const QString &version,
                                 const QString &description,
-                                const QVector< QgsStacLink > &links )
+                                const QVector<QgsStacLink> &links )
   : QgsStacObject( id, version, links )
   , mDescription( description )
 {
@@ -52,7 +52,7 @@ QString QgsStacCatalog::toHtml() const
     html += QStringLiteral( "</ul>\n" );
   }
 
-  if ( ! mConformanceClasses.isEmpty() )
+  if ( !mConformanceClasses.isEmpty() )
   {
     html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QStringLiteral( "Conformance Classes" ) );
     html += QStringLiteral( "<ul>\n" );
@@ -105,7 +105,7 @@ bool QgsStacCatalog::conformsTo( const QString &conformanceClass ) const
 
 void QgsStacCatalog::setConformanceClasses( const QStringList &conformanceClasses )
 {
-  mConformanceClasses = QSet< QString >( conformanceClasses.constBegin(), conformanceClasses.constEnd() );
+  mConformanceClasses = QSet<QString>( conformanceClasses.constBegin(), conformanceClasses.constEnd() );
 }
 
 void QgsStacCatalog::addConformanceClass( const QString &conformanceClass )

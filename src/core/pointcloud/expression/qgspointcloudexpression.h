@@ -52,7 +52,6 @@ class CORE_EXPORT QgsPointCloudExpression
 {
     Q_DECLARE_TR_FUNCTIONS( QgsPointCloudExpression )
   public:
-
     /**
      * Create an expression using a string.
      */
@@ -132,13 +131,13 @@ class CORE_EXPORT QgsPointCloudExpression
     /**
      * Returns a list of all nodes which are used in this expression
      */
-    QList<const QgsPointCloudExpressionNode *> nodes( ) const;
+    QList<const QgsPointCloudExpressionNode *> nodes() const;
 
     /**
      * Returns a list of all nodes of the given class which are used in this expression
      */
-    template <class T>
-    QList<const T *> findNodes( ) const
+    template<class T>
+    QList<const T *> findNodes() const
     {
       QList<const T *> lst;
       const QList<const QgsPointCloudExpressionNode *> allNodes( nodes() );
@@ -213,7 +212,6 @@ class CORE_EXPORT QgsPointCloudExpression
     QString asPdalExpression() const;
 
   private:
-
     /**
      * Helper for implicit sharing. When called will create
      * a new deep copy of this expression.
@@ -221,7 +219,6 @@ class CORE_EXPORT QgsPointCloudExpression
     void detach();
 
     QgsPointCloudExpressionPrivate *d = nullptr;
-
 };
 
 Q_DECLARE_METATYPE( QgsPointCloudExpression )

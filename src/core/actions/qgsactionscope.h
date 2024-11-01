@@ -51,14 +51,14 @@ class CORE_EXPORT QgsActionScope
 #ifdef SIP_RUN
     % TypeCode
 #include <QHash>
-    % End
+      % End
 #endif
 
-    /**
+      /**
      * Creates a new invalid action scope.
      *
      */
-    explicit QgsActionScope();
+      explicit QgsActionScope();
 
     /**
      * Creates a new action scope.
@@ -154,12 +154,12 @@ class CORE_EXPORT QgsActionScope
 #ifdef SIP_RUN
     long __hash__();
     % MethodCode
-    sipRes = qHash( *sipCpp );
+        sipRes
+      = qHash( *sipCpp );
     % End
 #endif
 
-  private:
-    QString mId;
+      private : QString mId;
     QString mTitle;
     QString mDescription;
     QgsExpressionContextScope mExpressionContextScope;

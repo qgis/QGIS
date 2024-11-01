@@ -204,7 +204,7 @@ class CORE_EXPORT QgsPointCloudDataBounds
  *
  * \since QGIS 3.18
  */
-class CORE_EXPORT QgsPointCloudIndex: public QObject
+class CORE_EXPORT QgsPointCloudIndex : public QObject
 {
     Q_OBJECT
   public:
@@ -290,7 +290,7 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
      *
      * May return nullptr in case the node is not present or any other problem with loading
      */
-    virtual std::unique_ptr< QgsPointCloudBlock > nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) = 0;
+    virtual std::unique_ptr<QgsPointCloudBlock> nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) = 0;
 
     /**
      * Returns a handle responsible for loading a node data block
@@ -392,17 +392,17 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     //! Sets native attributes of the data
     void setAttributes( const QgsPointCloudAttributeCollection &attributes );
 
-    QgsRectangle mExtent;  //!< 2D extent of data
-    double mZMin = 0, mZMax = 0;   //!< Vertical extent of data
+    QgsRectangle mExtent;        //!< 2D extent of data
+    double mZMin = 0, mZMax = 0; //!< Vertical extent of data
 
     mutable QMutex mHierarchyMutex;
     mutable QHash<IndexedPointCloudNode, int> mHierarchy; //!< Data hierarchy
-    QgsVector3D mScale; //!< Scale of our int32 coordinates compared to CRS coords
-    QgsVector3D mOffset; //!< Offset of our int32 coordinates compared to CRS coords
-    QgsPointCloudDataBounds mRootBounds;  //!< Bounds of the root node's cube (in int32 coordinates)
-    QgsPointCloudAttributeCollection mAttributes; //! All native attributes stored in the file
-    int mSpan = 0;  //!< Number of points in one direction in a single node
-    QgsPointCloudExpression mFilterExpression;  //!< The filter expression to be evaluated when fetching node data
+    QgsVector3D mScale;                                   //!< Scale of our int32 coordinates compared to CRS coords
+    QgsVector3D mOffset;                                  //!< Offset of our int32 coordinates compared to CRS coords
+    QgsPointCloudDataBounds mRootBounds;                  //!< Bounds of the root node's cube (in int32 coordinates)
+    QgsPointCloudAttributeCollection mAttributes;         //! All native attributes stored in the file
+    int mSpan = 0;                                        //!< Number of points in one direction in a single node
+    QgsPointCloudExpression mFilterExpression;            //!< The filter expression to be evaluated when fetching node data
 
     QString mError;
     QString mUri;

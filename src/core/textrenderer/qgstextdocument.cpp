@@ -319,7 +319,7 @@ QStringList QgsTextDocument::toPlainText() const
 
 void QgsTextDocument::splitLines( const QString &wrapCharacter, int autoWrapLength, bool useMaxLineLengthWhenAutoWrapping )
 {
-  const QVector< QgsTextBlock > prevBlocks = mBlocks;
+  const QVector<QgsTextBlock> prevBlocks = mBlocks;
   mBlocks.clear();
   mBlocks.reserve( prevBlocks.size() );
   for ( const QgsTextBlock &block : prevBlocks )
@@ -366,7 +366,7 @@ void QgsTextDocument::splitLines( const QString &wrapCharacter, int autoWrapLeng
 
         append( destinationBlock );
         destinationBlock.clear();
-        for ( int i = 1 ; i < thisParts.size() - 1; ++i )
+        for ( int i = 1; i < thisParts.size() - 1; ++i )
         {
           QgsTextBlock partBlock( QgsTextFragment( thisParts.at( i ), fragment.characterFormat() ) );
           partBlock.setBlockFormat( block.blockFormat() );
@@ -388,12 +388,12 @@ void QgsTextDocument::applyCapitalization( Qgis::Capitalization capitalization )
 }
 
 ///@cond PRIVATE
-QVector< QgsTextBlock >::const_iterator QgsTextDocument::begin() const
+QVector<QgsTextBlock>::const_iterator QgsTextDocument::begin() const
 {
   return mBlocks.begin();
 }
 
-QVector< QgsTextBlock >::const_iterator QgsTextDocument::end() const
+QVector<QgsTextBlock>::const_iterator QgsTextDocument::end() const
 {
   return mBlocks.end();
 }

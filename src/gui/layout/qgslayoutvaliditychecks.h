@@ -38,7 +38,7 @@ class GUI_EXPORT QgsLayoutScaleBarValidityCheck : public QgsAbstractValidityChec
     QString id() const override;
     int checkType() const override;
     bool prepareCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
-    QList< QgsValidityCheckResult > runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
+    QList<QgsValidityCheckResult> runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
 
   private:
     QList<QgsValidityCheckResult> mResults;
@@ -60,7 +60,7 @@ class GUI_EXPORT QgsLayoutNorthArrowValidityCheck : public QgsAbstractValidityCh
     QString id() const override;
     int checkType() const override;
     bool prepareCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
-    QList< QgsValidityCheckResult > runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
+    QList<QgsValidityCheckResult> runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
 
   private:
     QList<QgsValidityCheckResult> mResults;
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsLayoutOverviewValidityCheck : public QgsAbstractValidityChec
     QString id() const override;
     int checkType() const override;
     bool prepareCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
-    QList< QgsValidityCheckResult > runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
+    QList<QgsValidityCheckResult> runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
 
   private:
     QList<QgsValidityCheckResult> mResults;
@@ -104,7 +104,7 @@ class GUI_EXPORT QgsLayoutPictureSourceValidityCheck : public QgsAbstractValidit
     QString id() const override;
     int checkType() const override;
     bool prepareCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
-    QList< QgsValidityCheckResult > runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
+    QList<QgsValidityCheckResult> runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
 
   private:
     QList<QgsValidityCheckResult> mResults;
@@ -126,7 +126,7 @@ class GUI_EXPORT QgsLayoutHtmlItemValidityCheck : public QgsAbstractValidityChec
     QString id() const override;
     int checkType() const override;
     bool prepareCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
-    QList< QgsValidityCheckResult > runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
+    QList<QgsValidityCheckResult> runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
 
   private:
     QList<QgsValidityCheckResult> mResults;

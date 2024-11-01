@@ -69,7 +69,7 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
     QByteArray rawHeader( int part, const QByteArray &headerName ) const { return mHeaders.value( part ).value( headerName ); }
 
     //! Gets headers
-    QList< RawHeaderMap > headers() const { return mHeaders; }
+    QList<RawHeaderMap> headers() const { return mHeaders; }
 
     /**
      * Gets part part body
@@ -98,7 +98,7 @@ class CORE_EXPORT QgsNetworkReplyParser : public QObject
     QString mError;
 
     /* List of header maps */
-    QList< RawHeaderMap > mHeaders;
+    QList<RawHeaderMap> mHeaders;
 
     /* List of part bodies */
     QList<QByteArray> mBodies;

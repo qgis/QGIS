@@ -21,13 +21,12 @@
 #include "qgssettingsentryimpl.h"
 
 ///@cond PRIVATE
-const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeSensorThingsConnections, QString() ) ;
-const QgsSettingsEntryVariantMap *QgsSensorThingsProviderConnection::settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeSensorThingsConnections ) ;
-const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeSensorThingsConnections ) ;
-const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeSensorThingsConnections ) ;
-const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsAuthcfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeSensorThingsConnections ) ;
+const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsUrl = new QgsSettingsEntryString( QStringLiteral( "url" ), sTreeSensorThingsConnections, QString() );
+const QgsSettingsEntryVariantMap *QgsSensorThingsProviderConnection::settingsHeaders = new QgsSettingsEntryVariantMap( QStringLiteral( "http-header" ), sTreeSensorThingsConnections );
+const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsUsername = new QgsSettingsEntryString( QStringLiteral( "username" ), sTreeSensorThingsConnections );
+const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsPassword = new QgsSettingsEntryString( QStringLiteral( "password" ), sTreeSensorThingsConnections );
+const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsAuthcfg = new QgsSettingsEntryString( QStringLiteral( "authcfg" ), sTreeSensorThingsConnections );
 ///@endcond
-
 
 
 QgsSensorThingsProviderConnection::QgsSensorThingsProviderConnection( const QString &name )
@@ -141,4 +140,3 @@ QString QgsSensorThingsProviderConnection::encodedLayerUri( const QgsSensorThing
 
   return uri.uri( false );
 }
-

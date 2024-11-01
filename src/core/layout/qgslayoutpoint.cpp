@@ -36,13 +36,11 @@ QgsLayoutPoint::QgsLayoutPoint( const QPointF point, const Qgis::LayoutUnit unit
   , mY( point.y() )
   , mUnits( units )
 {
-
 }
 
 QgsLayoutPoint::QgsLayoutPoint( const Qgis::LayoutUnit units )
   : mUnits( units )
 {
-
 }
 
 bool QgsLayoutPoint::isNull() const
@@ -86,7 +84,7 @@ bool QgsLayoutPoint::operator==( const QgsLayoutPoint &other ) const
 
 bool QgsLayoutPoint::operator!=( const QgsLayoutPoint &other ) const
 {
-  return ( ! operator==( other ) );
+  return ( !operator==( other ) );
 }
 
 QgsLayoutPoint QgsLayoutPoint::operator*( const double v ) const

@@ -52,7 +52,7 @@ void QgsVectorLayerJoinInfo::setEditable( bool enabled )
 {
   mEditable = enabled;
 
-  if ( ! mEditable )
+  if ( !mEditable )
   {
     setCascadedDelete( false );
     setUpsertOnEdit( false );

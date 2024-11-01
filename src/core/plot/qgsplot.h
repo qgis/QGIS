@@ -43,7 +43,6 @@ class QgsNumericFormat;
 class CORE_EXPORT QgsPlot
 {
   public:
-
     QgsPlot() = default;
 
     virtual ~QgsPlot();
@@ -59,8 +58,6 @@ class CORE_EXPORT QgsPlot
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
   private:
-
-
 };
 
 /**
@@ -74,7 +71,6 @@ class CORE_EXPORT QgsPlot
 class CORE_EXPORT QgsPlotAxis
 {
   public:
-
     QgsPlotAxis();
     ~QgsPlotAxis();
 
@@ -236,7 +232,6 @@ class CORE_EXPORT QgsPlotAxis
     void setLabelSuffixPlacement( Qgis::PlotAxisSuffixPlacement placement );
 
   private:
-
 #ifdef SIP_RUN
     QgsPlotAxis( const QgsPlotAxis &other );
 #endif
@@ -249,13 +244,12 @@ class CORE_EXPORT QgsPlotAxis
     QString mLabelSuffix;
     Qgis::PlotAxisSuffixPlacement mSuffixPlacement = Qgis::PlotAxisSuffixPlacement::EveryLabel;
 
-    std::unique_ptr< QgsNumericFormat > mNumericFormat;
+    std::unique_ptr<QgsNumericFormat> mNumericFormat;
 
-    std::unique_ptr< QgsLineSymbol > mGridMajorSymbol;
-    std::unique_ptr< QgsLineSymbol > mGridMinorSymbol;
+    std::unique_ptr<QgsLineSymbol> mGridMajorSymbol;
+    std::unique_ptr<QgsLineSymbol> mGridMinorSymbol;
 
     QgsTextFormat mLabelTextFormat;
-
 };
 
 /**
@@ -272,7 +266,6 @@ class CORE_EXPORT QgsPlotAxis
 class CORE_EXPORT Qgs2DPlot : public QgsPlot
 {
   public:
-
     /**
      * Constructor for Qgs2DPlot.
      */
@@ -464,7 +457,6 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
     void setMargins( const QgsMargins &margins );
 
   private:
-
 #ifdef SIP_RUN
     Qgs2DPlot( const Qgs2DPlot &other );
 #endif
@@ -476,8 +468,8 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
     double mMaxX = 10;
     double mMaxY = 10;
 
-    std::unique_ptr< QgsFillSymbol > mChartBackgroundSymbol;
-    std::unique_ptr< QgsFillSymbol > mChartBorderSymbol;
+    std::unique_ptr<QgsFillSymbol> mChartBackgroundSymbol;
+    std::unique_ptr<QgsFillSymbol> mChartBorderSymbol;
 
     QgsMargins mMargins;
 
@@ -496,7 +488,6 @@ class CORE_EXPORT Qgs2DPlot : public QgsPlot
 class CORE_EXPORT QgsPlotDefaultSettings
 {
   public:
-
     /**
      * Returns the default numeric format to use for plot axis labels.
      */
@@ -529,7 +520,6 @@ class CORE_EXPORT QgsPlotDefaultSettings
      * \see chartBackgroundSymbol()
      */
     static QgsFillSymbol *chartBorderSymbol() SIP_FACTORY;
-
 };
 
 #endif // QGSPLOT_H

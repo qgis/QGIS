@@ -48,7 +48,7 @@ class CORE_EXPORT QgsStacCatalog : public QgsStacObject
     QgsStacCatalog( const QString &id,
                     const QString &version,
                     const QString &description,
-                    const QVector< QgsStacLink > &links );
+                    const QVector<QgsStacLink> &links );
 
     QgsStacObject::Type type() const override;
     QString toHtml() const override;
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsStacCatalog : public QgsStacObject
   protected:
     QString mTitle;
     QString mDescription;
-    QSet< QString > mConformanceClasses;
+    QSet<QString> mConformanceClasses;
 };
 
 #endif // QGSSTACCATALOG_H

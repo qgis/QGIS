@@ -31,9 +31,7 @@
  */
 class QgsAlignSingleRasterAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsAlignSingleRasterAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     Qgis::ProcessingAlgorithmFlags flags() const override;
@@ -46,7 +44,6 @@ class QgsAlignSingleRasterAlgorithm : public QgsProcessingAlgorithm
     QgsAlignSingleRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };

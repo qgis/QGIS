@@ -102,7 +102,6 @@ class CORE_EXPORT QgsMapHitTest
     bool legendKeyVisible( const QString &ruleKey, QgsVectorLayer *layer ) const;
 
   private:
-
     //! \note not available in Python bindings
     typedef QSet<QString> SymbolSet;
 
@@ -155,7 +154,6 @@ class CORE_EXPORT QgsMapHitTestTask : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsMapHitTestTask, using the specified filter \a settings.
      */
@@ -180,31 +178,29 @@ class CORE_EXPORT QgsMapHitTestTask : public QgsTask
     void cancel() override;
 
   protected:
-
     bool run() override;
 
   private:
-
     void prepare();
 
     struct PreparedLayerData
     {
-      std::unique_ptr< QgsAbstractFeatureSource > source;
-      QString layerId;
-      QgsFields fields;
-      std::unique_ptr< QgsFeatureRenderer > renderer;
-      QgsGeometry extent;
-      QgsCoordinateTransform transform;
-      std::unique_ptr< QgsExpressionContextScope > layerScope;
+        std::unique_ptr<QgsAbstractFeatureSource> source;
+        QString layerId;
+        QgsFields fields;
+        std::unique_ptr<QgsFeatureRenderer> renderer;
+        QgsGeometry extent;
+        QgsCoordinateTransform transform;
+        std::unique_ptr<QgsExpressionContextScope> layerScope;
     };
 
-    std::vector< PreparedLayerData > mPreparedData;
+    std::vector<PreparedLayerData> mPreparedData;
 
     QgsLayerTreeFilterSettings mSettings;
 
     QMap<QString, QSet<QString>> mResults;
 
-    std::unique_ptr< QgsFeedback > mFeedback;
+    std::unique_ptr<QgsFeedback> mFeedback;
 };
 
 #endif // QGSMAPHITTEST_H

@@ -40,7 +40,6 @@ class QgsGeometry;
 class CORE_EXPORT QgsVectorLayerUndoCommand : public QUndoCommand
 {
   public:
-
     /**
      * Constructor for QgsVectorLayerUndoCommand
      * \param buffer associated edit buffer
@@ -70,7 +69,6 @@ class CORE_EXPORT QgsVectorLayerUndoCommand : public QUndoCommand
 class CORE_EXPORT QgsVectorLayerUndoCommandAddFeature : public QgsVectorLayerUndoCommand
 {
   public:
-
     /**
      * Constructor for QgsVectorLayerUndoCommandAddFeature
      * \param buffer associated edit buffer
@@ -95,7 +93,6 @@ class CORE_EXPORT QgsVectorLayerUndoCommandAddFeature : public QgsVectorLayerUnd
 class CORE_EXPORT QgsVectorLayerUndoCommandDeleteFeature : public QgsVectorLayerUndoCommand
 {
   public:
-
     /**
      * Constructor for QgsVectorLayerUndoCommandDeleteFeature
      * \param buffer associated edit buffer
@@ -120,7 +117,6 @@ class CORE_EXPORT QgsVectorLayerUndoCommandDeleteFeature : public QgsVectorLayer
 class CORE_EXPORT QgsVectorLayerUndoCommandChangeGeometry : public QgsVectorLayerUndoCommand
 {
   public:
-
     /**
      * Constructor for QgsVectorLayerUndoCommandChangeGeometry
      * \param buffer associated edit buffer
@@ -150,7 +146,6 @@ class CORE_EXPORT QgsVectorLayerUndoCommandChangeGeometry : public QgsVectorLaye
 class CORE_EXPORT QgsVectorLayerUndoCommandChangeAttribute : public QgsVectorLayerUndoCommand
 {
   public:
-
     /**
      * Constructor for QgsVectorLayerUndoCommandChangeAttribute
      * \param buffer associated edit buffer
@@ -180,7 +175,6 @@ class CORE_EXPORT QgsVectorLayerUndoCommandChangeAttribute : public QgsVectorLay
 class CORE_EXPORT QgsVectorLayerUndoCommandAddAttribute : public QgsVectorLayerUndoCommand
 {
   public:
-
     /**
      * Constructor for QgsVectorLayerUndoCommandAddAttribute
      * \param buffer associated edit buffer
@@ -205,7 +199,6 @@ class CORE_EXPORT QgsVectorLayerUndoCommandAddAttribute : public QgsVectorLayerU
 class CORE_EXPORT QgsVectorLayerUndoCommandDeleteAttribute : public QgsVectorLayerUndoCommand
 {
   public:
-
     /**
      * Constructor for QgsVectorLayerUndoCommandDeleteAttribute
      * \param buffer associated edit buffer
@@ -238,7 +231,6 @@ class CORE_EXPORT QgsVectorLayerUndoCommandDeleteAttribute : public QgsVectorLay
 class CORE_EXPORT QgsVectorLayerUndoCommandRenameAttribute : public QgsVectorLayerUndoCommand
 {
   public:
-
     /**
      * Constructor for QgsVectorLayerUndoCommandRenameAttribute
      * \param buffer associated edit buffer

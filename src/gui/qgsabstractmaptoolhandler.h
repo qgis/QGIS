@@ -60,9 +60,7 @@ class QAction;
  */
 class GUI_EXPORT QgsAbstractMapToolHandler
 {
-
   public:
-
     /**
      * Context of a QgsAbstractMapToolHandler call.
      *
@@ -70,8 +68,8 @@ class GUI_EXPORT QgsAbstractMapToolHandler
      */
     struct Context
     {
-      //! Placeholder only
-      bool dummy = false;
+        //! Placeholder only
+        bool dummy = false;
     };
 
     /**
@@ -120,7 +118,6 @@ class GUI_EXPORT QgsAbstractMapToolHandler
     virtual void setLayerForTool( QgsMapLayer *layer );
 
   private:
-
     QgsMapTool *mMapTool = nullptr;
     QAction *mAction = nullptr;
 };

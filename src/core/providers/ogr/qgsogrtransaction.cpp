@@ -37,7 +37,7 @@ bool QgsOgrTransaction::beginTransaction( QString &error, int /* statementTimeou
   if ( driverName == QLatin1String( "GPKG" ) || driverName == QLatin1String( "SQLite" ) )
   {
     QString fkDeferError;
-    if ( ! executeSql( QStringLiteral( "PRAGMA defer_foreign_keys = ON" ), fkDeferError ) )
+    if ( !executeSql( QStringLiteral( "PRAGMA defer_foreign_keys = ON" ), fkDeferError ) )
     {
       QgsDebugError( QStringLiteral( "Error setting PRAGMA defer_foreign_keys = ON: %1" ).arg( fkDeferError ) );
     }
@@ -57,7 +57,6 @@ bool QgsOgrTransaction::rollbackTransaction( QString &error )
 
 bool QgsOgrTransaction::executeSql( const QString &sql, QString &errorMsg, bool isDirty, const QString &name )
 {
-
   QString err;
   if ( isDirty )
   {

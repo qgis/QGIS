@@ -28,7 +28,6 @@
 QgsPointCloudExtentRenderer::QgsPointCloudExtentRenderer( QgsFillSymbol *symbol )
   : mFillSymbol( symbol ? symbol : defaultFillSymbol() )
 {
-
 }
 
 QgsPointCloudExtentRenderer::~QgsPointCloudExtentRenderer() = default;
@@ -40,19 +39,18 @@ QString QgsPointCloudExtentRenderer::type() const
 
 QgsPointCloudRenderer *QgsPointCloudExtentRenderer::clone() const
 {
-  std::unique_ptr< QgsPointCloudExtentRenderer > res = std::make_unique< QgsPointCloudExtentRenderer >( mFillSymbol ? mFillSymbol->clone() : nullptr );
+  std::unique_ptr<QgsPointCloudExtentRenderer> res = std::make_unique<QgsPointCloudExtentRenderer>( mFillSymbol ? mFillSymbol->clone() : nullptr );
   copyCommonProperties( res.get() );
   return res.release();
 }
 
 void QgsPointCloudExtentRenderer::renderBlock( const QgsPointCloudBlock *, QgsPointCloudRenderContext & )
 {
-
 }
 
 QgsPointCloudRenderer *QgsPointCloudExtentRenderer::create( QDomElement &element, const QgsReadWriteContext &context )
 {
-  std::unique_ptr< QgsPointCloudExtentRenderer > r = std::make_unique< QgsPointCloudExtentRenderer >();
+  std::unique_ptr<QgsPointCloudExtentRenderer> r = std::make_unique<QgsPointCloudExtentRenderer>();
 
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
@@ -66,8 +64,7 @@ QgsPointCloudRenderer *QgsPointCloudExtentRenderer::create( QDomElement &element
 
 void QgsPointCloudExtentRenderer::renderExtent( const QgsGeometry &extent, QgsPointCloudRenderContext &context )
 {
-  auto transformRing = [&context]( QPolygonF & pts )
-  {
+  auto transformRing = [&context]( QPolygonF &pts ) {
     //transform the QPolygonF to screen coordinates
     if ( context.renderContext().coordinateTransform().isValid() )
     {
@@ -83,10 +80,10 @@ void QgsPointCloudExtentRenderer::renderExtent( const QgsGeometry &extent, QgsPo
 
     // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
     pts.erase( std::remove_if( pts.begin(), pts.end(),
-                               []( const QPointF point )
-    {
-      return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
-    } ), pts.end() );
+                               []( const QPointF point ) {
+                                 return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
+                               } ),
+               pts.end() );
 
     QPointF *ptr = pts.data();
     for ( int i = 0; i < pts.size(); ++i, ++ptr )
@@ -97,7 +94,7 @@ void QgsPointCloudExtentRenderer::renderExtent( const QgsGeometry &extent, QgsPo
 
   for ( auto it = extent.const_parts_begin(); it != extent.const_parts_end(); ++it )
   {
-    if ( const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( *it ) )
+    if ( const QgsPolygon *polygon = qgsgeometry_cast<const QgsPolygon *>( *it ) )
     {
       QPolygonF exterior = polygon->exteriorRing()->asQPolygonF();
       transformRing( exterior );
@@ -117,7 +114,7 @@ void QgsPointCloudExtentRenderer::renderExtent( const QgsGeometry &extent, QgsPo
 
 QgsFillSymbol *QgsPointCloudExtentRenderer::defaultFillSymbol()
 {
-  std::unique_ptr< QgsSimpleLineSymbolLayer > layer = std::make_unique< QgsSimpleLineSymbolLayer >();
+  std::unique_ptr<QgsSimpleLineSymbolLayer> layer = std::make_unique<QgsSimpleLineSymbolLayer>();
   layer->setColor( QColor( 228, 26, 28 ) );
   layer->setWidth( 0.960000 );
   layer->setPenStyle( Qt::DotLine );

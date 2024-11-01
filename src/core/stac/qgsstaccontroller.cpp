@@ -328,8 +328,3 @@ QgsStacItem *QgsStacController::openLocalItem( const QString &fileName ) const
   parser.setBaseUrl( fileName );
   return parser.item();
 }
-
-
-
-
-

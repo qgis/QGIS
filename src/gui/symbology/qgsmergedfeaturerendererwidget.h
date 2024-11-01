@@ -34,7 +34,6 @@ class GUI_EXPORT QgsMergedFeatureRendererWidget : public QgsRendererWidget, priv
     Q_OBJECT
 
   public:
-
     /**
      * Static creation method
      * \param layer the layer where this renderer is applied

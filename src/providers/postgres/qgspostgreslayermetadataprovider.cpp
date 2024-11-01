@@ -30,12 +30,11 @@ QgsLayerMetadataSearchResults QgsPostgresLayerMetadataProvider::search( const Qg
   QgsLayerMetadataSearchResults results;
   QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) ) };
 
-  if ( md && ( ! feedback || ! feedback->isCanceled() ) )
+  if ( md && ( !feedback || !feedback->isCanceled() ) )
   {
-    const QMap<QString, QgsAbstractProviderConnection *> constConnections { md->connections( ) };
+    const QMap<QString, QgsAbstractProviderConnection *> constConnections { md->connections() };
     for ( const QgsAbstractProviderConnection *conn : std::as_const( constConnections ) )
     {
-
       if ( feedback && feedback->isCanceled() )
       {
         break;
@@ -64,5 +63,3 @@ QgsLayerMetadataSearchResults QgsPostgresLayerMetadataProvider::search( const Qg
 
   return results;
 }
-
-

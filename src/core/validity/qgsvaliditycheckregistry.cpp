@@ -38,7 +38,7 @@ QList<const QgsAbstractValidityCheck *> QgsValidityCheckRegistry::checks() const
 
 QList<const QgsAbstractValidityCheck *> QgsValidityCheckRegistry::checks( int type ) const
 {
-  QList< const QgsAbstractValidityCheck * > results;
+  QList<const QgsAbstractValidityCheck *> results;
   for ( const QgsAbstractValidityCheck *check : mChecks )
   {
     if ( check && check->checkType() == type )
@@ -62,9 +62,9 @@ void QgsValidityCheckRegistry::removeCheck( QgsAbstractValidityCheck *check )
 QList<QgsValidityCheckResult> QgsValidityCheckRegistry::runChecks( int type, const QgsValidityCheckContext *context, QgsFeedback *feedback ) const
 {
   QList<QgsValidityCheckResult> result;
-  const std::vector<std::unique_ptr<QgsAbstractValidityCheck> > toCheck = createChecks( type );
+  const std::vector<std::unique_ptr<QgsAbstractValidityCheck>> toCheck = createChecks( type );
   int i = 0;
-  for ( const std::unique_ptr< QgsAbstractValidityCheck > &check : toCheck )
+  for ( const std::unique_ptr<QgsAbstractValidityCheck> &check : toCheck )
   {
     if ( feedback && feedback->isCanceled() )
       break;
@@ -73,12 +73,12 @@ QList<QgsValidityCheckResult> QgsValidityCheckRegistry::runChecks( int type, con
     {
       if ( feedback )
       {
-        feedback->setProgress( static_cast< double >( i ) / toCheck.size() * 100 );
+        feedback->setProgress( static_cast<double>( i ) / toCheck.size() * 100 );
       }
       continue;
     }
 
-    const QList< QgsValidityCheckResult > checkResults = check->runCheck( context, feedback );
+    const QList<QgsValidityCheckResult> checkResults = check->runCheck( context, feedback );
     for ( QgsValidityCheckResult checkResult : checkResults )
     {
       checkResult.checkId = check->id();
@@ -87,20 +87,20 @@ QList<QgsValidityCheckResult> QgsValidityCheckRegistry::runChecks( int type, con
     i++;
     if ( feedback )
     {
-      feedback->setProgress( static_cast< double >( i ) / toCheck.size() * 100 );
+      feedback->setProgress( static_cast<double>( i ) / toCheck.size() * 100 );
     }
   }
   return result;
 }
 
-std::vector<std::unique_ptr<QgsAbstractValidityCheck> > QgsValidityCheckRegistry::createChecks( int type ) const
+std::vector<std::unique_ptr<QgsAbstractValidityCheck>> QgsValidityCheckRegistry::createChecks( int type ) const
 {
-  const QList< const QgsAbstractValidityCheck *> toCheck = checks( type );
-  std::vector<std::unique_ptr<QgsAbstractValidityCheck> > results;
+  const QList<const QgsAbstractValidityCheck *> toCheck = checks( type );
+  std::vector<std::unique_ptr<QgsAbstractValidityCheck>> results;
   results.reserve( toCheck.size() );
   for ( const QgsAbstractValidityCheck *check : toCheck )
   {
-    results.emplace_back( std::unique_ptr< QgsAbstractValidityCheck >( check->create() ) );
+    results.emplace_back( std::unique_ptr<QgsAbstractValidityCheck>( check->create() ) );
   }
   return results;
 }

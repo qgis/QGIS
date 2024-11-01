@@ -62,7 +62,6 @@ class CORE_EXPORT QgsProcessingParameterVectorTileWriterLayers : public QgsProce
     static QgsVectorTileWriter::Layer variantMapAsLayer( const QVariantMap &layerVariantMap, QgsProcessingContext &context );
     //! Converts a single input layer to QVariant representation (a QVariantMap)
     static QVariantMap layerAsVariantMap( const QgsVectorTileWriter::Layer &layer );
-
 };
 
 #ifndef SIP_RUN

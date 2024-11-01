@@ -43,7 +43,6 @@ class QgsMatrix4x4;
 class CORE_EXPORT QgsCesiumUtils
 {
   public:
-
 #ifndef SIP_RUN
 
     /**
@@ -99,11 +98,11 @@ class CORE_EXPORT QgsCesiumUtils
      */
     struct B3DMContents
     {
-      //! GLTF binary content
-      QByteArray gltf;
+        //! GLTF binary content
+        QByteArray gltf;
 
-      //! Optional RTC center
-      QgsVector3D rtcCenter;
+        //! Optional RTC center
+        QgsVector3D rtcCenter;
     };
 
     /**
@@ -117,11 +116,11 @@ class CORE_EXPORT QgsCesiumUtils
      */
     struct TileContents
     {
-      //! GLTF binary content
-      QByteArray gltf;
+        //! GLTF binary content
+        QByteArray gltf;
 
-      //! Center position of relative-to-center coordinates (when used)
-      QgsVector3D rtcCenter;
+        //! Center position of relative-to-center coordinates (when used)
+        QgsVector3D rtcCenter;
     };
 
     /**
@@ -131,7 +130,6 @@ class CORE_EXPORT QgsCesiumUtils
      * \note cmpt, pnts, i3dm tile types are currently not supported
      */
     static TileContents extractGltfFromTileContent( const QByteArray &tileContent );
-
 };
 
 #endif // QGSCESIUMUTILS_H

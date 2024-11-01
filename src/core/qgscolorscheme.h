@@ -30,7 +30,7 @@
  * \ingroup core
  * \brief List of colors paired with a friendly display name identifying the color
 */
-typedef QList< QPair< QColor, QString > > QgsNamedColorList;
+typedef QList<QPair<QColor, QString>> QgsNamedColorList;
 
 /**
  * \ingroup core
@@ -43,7 +43,6 @@ typedef QList< QPair< QColor, QString > > QgsNamedColorList;
  */
 class CORE_EXPORT QgsColorScheme
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsUserColorScheme *>( sipCpp ) != NULL )
@@ -62,14 +61,12 @@ class CORE_EXPORT QgsColorScheme
 #endif
 
   public:
-
     /**
      * Flags for controlling behavior of color scheme
      */
-    enum SchemeFlag SIP_ENUM_BASETYPE( IntFlag )
-    {
-      ShowInColorDialog = 0x01, //!< Show scheme in color picker dialog
-      ShowInColorButtonMenu = 0x02, //!< Show scheme in color button drop-down menu
+    enum SchemeFlag SIP_ENUM_BASETYPE( IntFlag ) {
+      ShowInColorDialog = 0x01,                                     //!< Show scheme in color picker dialog
+      ShowInColorButtonMenu = 0x02,                                 //!< Show scheme in color button drop-down menu
       ShowInAllContexts = ShowInColorDialog | ShowInColorButtonMenu //!< Show scheme in all contexts
     };
     Q_DECLARE_FLAGS( SchemeFlags, SchemeFlag )
@@ -102,7 +99,8 @@ class CORE_EXPORT QgsColorScheme
      * \returns a list of QPairs of color and color name
      */
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() ) = 0;
+                                           const QColor &baseColor = QColor() )
+      = 0;
 
     /**
      * Returns whether the color scheme is editable
@@ -138,7 +136,6 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsColorScheme::SchemeFlags )
 class CORE_EXPORT QgsGplColorScheme : public QgsColorScheme
 {
   public:
-
     QgsGplColorScheme() = default;
 
     QgsNamedColorList fetchColors( const QString &context = QString(),
@@ -147,13 +144,11 @@ class CORE_EXPORT QgsGplColorScheme : public QgsColorScheme
     bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) override;
 
   protected:
-
     /**
      * Returns the file path for the associated gpl palette file
      * \returns gpl file path
      */
     virtual QString gplFilePath() = 0;
-
 };
 
 /**
@@ -165,7 +160,6 @@ class CORE_EXPORT QgsGplColorScheme : public QgsColorScheme
 class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
 {
   public:
-
     /**
      * Constructs a new user color scheme, using a specified gpl palette file
      * \param filename filename of gpl palette file stored in the users "palettes" folder
@@ -199,7 +193,6 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
     void setShowSchemeInMenu( bool show );
 
   protected:
-
     QString mName;
 
     QString mFilename;
@@ -207,7 +200,6 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
     bool mEditable = false;
 
     QString gplFilePath() override;
-
 };
 
 /**
@@ -218,7 +210,6 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
 class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
 {
   public:
-
     QgsRecentColorScheme() = default;
 
     QString schemeName() const override { return QObject::tr( "Recent colors" ); }
@@ -252,7 +243,6 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
 class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 {
   public:
-
     QgsCustomColorScheme() = default;
 
     QString schemeName() const override { return QObject::tr( "Standard colors" ); }
@@ -277,7 +267,6 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
 {
   public:
-
     QgsProjectColorScheme() = default;
 
     QString schemeName() const override { return QObject::tr( "Project colors" ); }

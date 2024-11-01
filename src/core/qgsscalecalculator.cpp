@@ -49,7 +49,7 @@ Qgis::DistanceUnit QgsScaleCalculator::mapUnits() const
   return mMapUnits;
 }
 
-double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, double canvasWidth )  const
+double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, double canvasWidth ) const
 {
   if ( qgsDoubleNear( canvasWidth, 0. ) || qgsDoubleNear( mDpi, 0.0 ) )
   {
@@ -61,12 +61,12 @@ double QgsScaleCalculator::calculate( const QgsRectangle &mapExtent, double canv
   double delta = 0;
   calculateMetrics( mapExtent, delta, conversionFactor );
 
-  const double scale = ( delta * conversionFactor ) / ( static_cast< double >( canvasWidth ) / mDpi );
+  const double scale = ( delta * conversionFactor ) / ( static_cast<double>( canvasWidth ) / mDpi );
   QgsDebugMsgLevel( QStringLiteral( "scale = %1 conversionFactor = %2" ).arg( scale ).arg( conversionFactor ), 4 );
   return scale;
 }
 
-QSizeF QgsScaleCalculator::calculateImageSize( const QgsRectangle &mapExtent, double scale )  const
+QSizeF QgsScaleCalculator::calculateImageSize( const QgsRectangle &mapExtent, double scale ) const
 {
   if ( qgsDoubleNear( scale, 0.0 ) || qgsDoubleNear( mDpi, 0.0 ) )
   {
@@ -77,12 +77,15 @@ QSizeF QgsScaleCalculator::calculateImageSize( const QgsRectangle &mapExtent, do
   double delta = 0;
 
   calculateMetrics( mapExtent, delta, conversionFactor );
-  const double imageWidth = ( delta * conversionFactor ) / ( static_cast< double >( scale ) ) * mDpi;
+  const double imageWidth = ( delta * conversionFactor ) / ( static_cast<double>( scale ) ) * mDpi;
   const double deltaHeight = ( mapExtent.yMaximum() - mapExtent.yMinimum() ) * delta / ( mapExtent.xMaximum() - mapExtent.xMinimum() );
-  const double imageHeight = ( deltaHeight * conversionFactor ) / ( static_cast< double >( scale ) ) * mDpi;
+  const double imageHeight = ( deltaHeight * conversionFactor ) / ( static_cast<double>( scale ) ) * mDpi;
 
   QgsDebugMsgLevel( QStringLiteral( "imageWidth = %1 imageHeight = %2 conversionFactor = %3" )
-                    .arg( imageWidth ).arg( imageHeight ).arg( conversionFactor ), 4 );
+                      .arg( imageWidth )
+                      .arg( imageHeight )
+                      .arg( conversionFactor ),
+                    4 );
 
   return QSizeF( imageWidth, imageHeight );
 }
@@ -194,8 +197,7 @@ double QgsScaleCalculator::calculateGeographicDistance( const QgsRectangle &mapE
   // The eccentricity. This comes from sqrt(1.0 - rb*rb/(ra*ra)) with rb set
   // to 6357000 m.
   static const double E = 0.0810820288;
-  const double radius = RA * ( 1.0 - E * E ) /
-                        std::pow( 1.0 - E * E * std::sin( lat * RADS ) * std::sin( lat * RADS ), 1.5 );
+  const double radius = RA * ( 1.0 - E * E ) / std::pow( 1.0 - E * E * std::sin( lat * RADS ) * std::sin( lat * RADS ), 1.5 );
   const double meters = ( mapExtent.xMaximum() - mapExtent.xMinimum() ) / 180.0 * radius * c;
 
   QgsDebugMsgLevel( "Distance across map extent (m): " + QString::number( meters ), 4 );

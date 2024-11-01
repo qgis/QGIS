@@ -102,5 +102,3 @@ void QgsDxfPaintDevice::setShift( QPointF shift )
     mPaintEngine->setShift( shift );
   }
 }
-
-

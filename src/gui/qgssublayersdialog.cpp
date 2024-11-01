@@ -28,10 +28,10 @@ class SubLayerItem : public QTreeWidgetItem
 {
   public:
     SubLayerItem( const QStringList &strings, int type = QTreeWidgetItem::Type )
-      :  QTreeWidgetItem( strings, type )
+      : QTreeWidgetItem( strings, type )
     {}
 
-    bool operator <( const QTreeWidgetItem &other ) const override
+    bool operator<( const QTreeWidgetItem &other ) const override
     {
       QgsSublayersDialog *d = qobject_cast<QgsSublayersDialog *>( treeWidget()->parent() );
       const int col = treeWidget()->sortColumn();
@@ -58,10 +58,10 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType,
   QString title;
   switch ( providerType )
   {
-    case QgsSublayersDialog::Ogr :
+    case QgsSublayersDialog::Ogr:
       title = tr( "Select Vector Layers to Add…" );
       layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
-                                    << tr( "Number of features" ) << tr( "Geometry type" ) << tr( "Description" ) );
+                                                  << tr( "Number of features" ) << tr( "Geometry type" ) << tr( "Description" ) );
       mShowCount = true;
       mShowType = true;
       mShowDescription = true;
@@ -77,7 +77,7 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType,
     default:
       title = tr( "Select Layers to Add…" );
       layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
-                                    << tr( "Type" ) );
+                                                  << tr( "Type" ) );
       mShowType = true;
   }
 
@@ -88,7 +88,7 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType,
 
   setWindowTitle( fileName.isEmpty() ? title : QStringLiteral( "%1 | %2" ).arg( title, fileName ) );
   mLblFilePath->setText( QDir::toNativeSeparators( QFileInfo( filePath ).canonicalFilePath() ) );
-  mLblFilePath->setVisible( ! fileName.isEmpty() );
+  mLblFilePath->setVisible( !fileName.isEmpty() );
 
   // add a "Select All" button - would be nicer with an icon
   connect( mBtnSelectAll, &QAbstractButton::pressed, layersTable, &QTreeView::selectAll );
@@ -152,9 +152,9 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
     QStringList elements;
     elements << QString::number( item.layerId ) << item.layerName;
     if ( mShowCount )
-      elements << ( item.count == static_cast< int >( Qgis::FeatureCountState::Uncounted ) ||
-                    item.count == static_cast< int >( Qgis::FeatureCountState::UnknownCount )
-                    ? tr( "Unknown" ) : QString::number( item.count ) );
+      elements << ( item.count == static_cast<int>( Qgis::FeatureCountState::Uncounted ) || item.count == static_cast<int>( Qgis::FeatureCountState::UnknownCount )
+                      ? tr( "Unknown" )
+                      : QString::number( item.count ) );
     if ( mShowType )
       elements << item.type;
     if ( mShowDescription )
@@ -166,7 +166,7 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
   const QgsSettings settings;
   const QByteArray ba = settings.value( "/Windows/" + mName + "SubLayers/headerState" ).toByteArray();
   const int savedColumnCount = settings.value( "/Windows/" + mName + "SubLayers/headerColumnCount" ).toInt();
-  if ( ! ba.isNull() && savedColumnCount == layersTable->columnCount() )
+  if ( !ba.isNull() && savedColumnCount == layersTable->columnCount() )
   {
     layersTable->header()->restoreState( ba );
   }
@@ -211,7 +211,7 @@ int QgsSublayersDialog::exec()
   const bool overrideCursor = nullptr != QApplication::overrideCursor();
   if ( overrideCursor )
   {
-    cursor = QCursor( * QApplication::overrideCursor() );
+    cursor = QCursor( *QApplication::overrideCursor() );
     QApplication::restoreOverrideCursor();
   }
 

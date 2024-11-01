@@ -36,16 +36,15 @@
 class CORE_EXPORT QgsLegendStyle
 {
   public:
-
     //! Component of legends which can be styled
     enum Style
     {
-      Undefined, //!< Should not happen, only if corrupted project file
-      Hidden, //!< Special style, item is hidden including margins around
-      Title, //!< Legend title
-      Group, //!< Legend group title
-      Subgroup, //!< Legend subgroup title
-      Symbol, //!< Symbol icon (excluding label)
+      Undefined,   //!< Should not happen, only if corrupted project file
+      Hidden,      //!< Special style, item is hidden including margins around
+      Title,       //!< Legend title
+      Group,       //!< Legend group title
+      Subgroup,    //!< Legend subgroup title
+      Symbol,      //!< Symbol icon (excluding label)
       SymbolLabel, //!< Symbol label (excluding icon)
     };
 
@@ -54,10 +53,10 @@ class CORE_EXPORT QgsLegendStyle
     //! Margin sides
     enum Side
     {
-      Top = 0, //!< Top side
+      Top = 0,    //!< Top side
       Bottom = 1, //!< Bottom side
-      Left = 2, //!< Left side
-      Right = 3, //!< Right side
+      Left = 2,   //!< Left side
+      Right = 3,  //!< Right side
     };
 
     QgsLegendStyle();

@@ -44,7 +44,7 @@ class QgsLayoutItemRenderContext;
  * several frames (QgsLayoutFrame items).
  */
 
-class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutUndoObjectInterface
+class CORE_EXPORT QgsLayoutMultiFrame : public QgsLayoutObject, public QgsLayoutUndoObjectInterface
 {
 #ifdef SIP_RUN
 #include "qgslayoutitemhtml.h"
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
     SIP_CONVERT_TO_SUBCLASS_CODE
     // the conversions have to be static, because they're using multiple inheritance
     // (seen in PyQt4 .sip files for some QGraphicsItem classes)
-    if ( QgsLayoutMultiFrame *mf = qobject_cast< QgsLayoutMultiFrame *>( sipCpp ) )
+    if ( QgsLayoutMultiFrame *mf = qobject_cast<QgsLayoutMultiFrame *>( sipCpp ) )
     {
       switch ( mf->type() )
       {
@@ -93,34 +93,33 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
     Q_OBJECT
 
   public:
-
     /**
      * Specifies the behavior for creating new frames to fit the multiframe's content
      */
     enum ResizeMode
     {
       UseExistingFrames = 0, //!< Don't automatically create new frames, just use existing frames
-      ExtendToNextPage, //!< Creates new full page frames on the following page(s) until the entire multiframe content is visible
-      RepeatOnEveryPage, //!< Repeats the same frame on every page
-      RepeatUntilFinished /*!< creates new frames with the same position and dimensions as the existing frame on the following page(s),
+      ExtendToNextPage,      //!< Creates new full page frames on the following page(s) until the entire multiframe content is visible
+      RepeatOnEveryPage,     //!< Repeats the same frame on every page
+      RepeatUntilFinished    /*!< creates new frames with the same position and dimensions as the existing frame on the following page(s),
                               until the entire multiframe content is visible */
     };
 
-//! Multiframe item undo commands, used for collapsing undo commands
+    //! Multiframe item undo commands, used for collapsing undo commands
     enum UndoCommand
     {
-      UndoHtmlBreakDistance, //!< HTML page break distance
-      UndoHtmlSource, //!< HTML source
-      UndoHtmlStylesheet, //!< HTML stylesheet
-      UndoTableCellStyle, //!< Table cell style
-      UndoTableMaximumFeatures, //!< Maximum features in table
-      UndoTableMargin, //!< Table margins
-      UndoTableHeaderFontColor, //!< Table header font color
+      UndoHtmlBreakDistance,     //!< HTML page break distance
+      UndoHtmlSource,            //!< HTML source
+      UndoHtmlStylesheet,        //!< HTML stylesheet
+      UndoTableCellStyle,        //!< Table cell style
+      UndoTableMaximumFeatures,  //!< Maximum features in table
+      UndoTableMargin,           //!< Table margins
+      UndoTableHeaderFontColor,  //!< Table header font color
       UndoTableContentFontColor, //!< Table content font color
-      UndoTableGridStrokeWidth, //!< Table grid stroke width
-      UndoTableGridColor, //!< Table grid color
-      UndoTableBackgroundColor, //!< Table background color
-      UndoNone = -1, //!< No command suppression
+      UndoTableGridStrokeWidth,  //!< Table grid stroke width
+      UndoTableGridColor,        //!< Table grid color
+      UndoTableBackgroundColor,  //!< Table background color
+      UndoNone = -1,             //!< No command suppression
     };
 
     /**
@@ -376,7 +375,6 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
     void contentsChanged();
 
   protected:
-
     /**
      * Stores multiframe state within an XML DOM element.
      * \param element is the DOM element to store the multiframe's properties in
@@ -430,10 +428,10 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
     bool mBlockUpdates = false;
     bool mBlockUndoCommands = false;
 
-    QList< QString > mFrameUuids;
-    QList< QString > mFrameTemplateUuids;
+    QList<QString> mFrameUuids;
+    QList<QString> mFrameTemplateUuids;
 
-//! Unique id
+    //! Unique id
     QString mUuid;
     QString mTemplateUuid;
     friend class QgsLayoutFrame;

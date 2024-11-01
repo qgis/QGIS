@@ -96,8 +96,7 @@ bool QgsHueSaturationFilter::setInput( QgsRasterInterface *input )
     return false;
   }
 
-  if ( input->dataType( 1 ) != Qgis::DataType::ARGB32_Premultiplied &&
-       input->dataType( 1 ) != Qgis::DataType::ARGB32 )
+  if ( input->dataType( 1 ) != Qgis::DataType::ARGB32_Premultiplied && input->dataType( 1 ) != Qgis::DataType::ARGB32 )
   {
     QgsDebugError( QStringLiteral( "Unknown input data type" ) );
     return false;
@@ -108,12 +107,12 @@ bool QgsHueSaturationFilter::setInput( QgsRasterInterface *input )
   return true;
 }
 
-QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
+QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo )
   QgsDebugMsgLevel( QStringLiteral( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ), 4 );
 
-  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
+  std::unique_ptr<QgsRasterBlock> outputBlock( new QgsRasterBlock() );
   if ( !mInput )
   {
     return outputBlock.release();
@@ -121,7 +120,7 @@ QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const &
 
   // At this moment we know that we read rendered image
   int bandNumber = 1;
-  std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( bandNumber, extent, width, height, feedback ) );
+  std::unique_ptr<QgsRasterBlock> inputBlock( mInput->block( bandNumber, extent, width, height, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugError( QStringLiteral( "No raster data!" ) );
@@ -147,7 +146,7 @@ QgsRasterBlock *QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const &
   int r, g, b, alpha;
   double alphaFactor = 1.0;
 
-  for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
+  for ( qgssize i = 0; i < ( qgssize ) width * height; i++ )
   {
     if ( inputBlock->color( i ) == myNoDataColor )
     {
@@ -261,7 +260,6 @@ void QgsHueSaturationFilter::processColorization( int &r, int &g, int &b, int &h
 // Process a change in saturation and update resultant HSL & RGB values
 void QgsHueSaturationFilter::processSaturation( int &r, int &g, int &b, int &h, int &s, int &l )
 {
-
   QColor myColor;
 
   // Are we converting layer to grayscale?
@@ -305,13 +303,13 @@ void QgsHueSaturationFilter::processSaturation( int &r, int &g, int &b, int &h, 
       if ( mSaturationScale < 1 )
       {
         // Lowering the saturation. Use a simple linear relationship
-        s = std::min( ( int )( s * mSaturationScale ), 255 );
+        s = std::min( ( int ) ( s * mSaturationScale ), 255 );
       }
       else
       {
         // Raising the saturation. Use a saturation curve to prevent
         // clipping at maximum saturation with ugly results.
-        s = std::min( ( int )( 255. * ( 1 - std::pow( 1 - ( s / 255. ), std::pow( mSaturationScale, 2 ) ) ) ), 255 );
+        s = std::min( ( int ) ( 255. * ( 1 - std::pow( 1 - ( s / 255. ), std::pow( mSaturationScale, 2 ) ) ) ), 255 );
       }
 
       // Saturation changed, so update rgb values
@@ -368,14 +366,13 @@ void QgsHueSaturationFilter::readXml( const QDomElement &filterElem )
   }
 
   setSaturation( filterElem.attribute( QStringLiteral( "saturation" ), QStringLiteral( "0" ) ).toInt() );
-  mGrayscaleMode = static_cast< QgsHueSaturationFilter::GrayscaleMode >( filterElem.attribute( QStringLiteral( "grayscaleMode" ), QStringLiteral( "0" ) ).toInt() );
-  mInvertColors = static_cast< bool >( filterElem.attribute( QStringLiteral( "invertColors" ), QStringLiteral( "0" ) ).toInt() );
+  mGrayscaleMode = static_cast<QgsHueSaturationFilter::GrayscaleMode>( filterElem.attribute( QStringLiteral( "grayscaleMode" ), QStringLiteral( "0" ) ).toInt() );
+  mInvertColors = static_cast<bool>( filterElem.attribute( QStringLiteral( "invertColors" ), QStringLiteral( "0" ) ).toInt() );
 
-  mColorizeOn = static_cast< bool >( filterElem.attribute( QStringLiteral( "colorizeOn" ), QStringLiteral( "0" ) ).toInt() );
+  mColorizeOn = static_cast<bool>( filterElem.attribute( QStringLiteral( "colorizeOn" ), QStringLiteral( "0" ) ).toInt() );
   int mColorizeRed = filterElem.attribute( QStringLiteral( "colorizeRed" ), QStringLiteral( "255" ) ).toInt();
   int mColorizeGreen = filterElem.attribute( QStringLiteral( "colorizeGreen" ), QStringLiteral( "128" ) ).toInt();
   int mColorizeBlue = filterElem.attribute( QStringLiteral( "colorizeBlue" ), QStringLiteral( "128" ) ).toInt();
   setColorizeColor( QColor::fromRgb( mColorizeRed, mColorizeGreen, mColorizeBlue ) );
   mColorizeStrength = filterElem.attribute( QStringLiteral( "colorizeStrength" ), QStringLiteral( "100" ) ).toInt();
-
 }

@@ -26,10 +26,9 @@
  * \ingroup core
  * \brief A scale bar style that draws text in the form of '1:XXXXX'.
  */
-class CORE_EXPORT QgsNumericScaleBarRenderer: public QgsScaleBarRenderer
+class CORE_EXPORT QgsNumericScaleBarRenderer : public QgsScaleBarRenderer
 {
   public:
-
     QgsNumericScaleBarRenderer() = default;
 
     QString id() const override;
@@ -46,13 +45,11 @@ class CORE_EXPORT QgsNumericScaleBarRenderer: public QgsScaleBarRenderer
                              const QgsScaleBarSettings &settings,
                              const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
 
-    Q_DECL_DEPRECATED QSizeF calculateBoxSize( const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override SIP_DEPRECATED ;
+    Q_DECL_DEPRECATED QSizeF calculateBoxSize( const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override SIP_DEPRECATED;
 
   private:
-
     //! Returns the text for the scale bar or an empty string in case of error
     QString scaleText( double scale, const QgsScaleBarSettings &settings ) const;
-
 };
 
 #endif // QGSNUMERICSCALEBARRENDERER_H

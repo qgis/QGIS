@@ -32,8 +32,7 @@ class QgsRectangle;
 
 class QButtonGroup;
 
-extern "C"
-{
+extern "C" {
 #include <grass/gis.h>
 }
 
@@ -42,7 +41,7 @@ extern "C"
  *  \brief GRASS attributes.
  *
  */
-class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
+class QgsGrassRegion : public QWidget, private Ui::QgsGrassRegionBase
 {
     Q_OBJECT
 
@@ -88,6 +87,7 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
     void mDrawButton_clicked();
 
     void canvasMapToolSet( QgsMapTool *tool );
+
   private:
     //! Pointer to plugin
     //QgsGrassPlugin *mPlugin;

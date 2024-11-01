@@ -101,5 +101,3 @@ class CORE_EXPORT QgsMaskMarkerSymbolLayer : public QgsMarkerSymbolLayer
 };
 
 #endif
-
-

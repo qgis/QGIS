@@ -31,9 +31,7 @@
  */
 class QgsSegmentizeByMaximumDistanceAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsSegmentizeByMaximumDistanceAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -49,14 +47,12 @@ class QgsSegmentizeByMaximumDistanceAlgorithm : public QgsProcessingFeatureBased
   protected:
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     double mTolerance = 1.0;
     bool mDynamicTolerance = false;
     QgsProperty mToleranceProperty;
-
 };
 
 
@@ -65,9 +61,7 @@ class QgsSegmentizeByMaximumDistanceAlgorithm : public QgsProcessingFeatureBased
  */
 class QgsSegmentizeByMaximumAngleAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsSegmentizeByMaximumAngleAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -83,18 +77,14 @@ class QgsSegmentizeByMaximumAngleAlgorithm : public QgsProcessingFeatureBasedAlg
   protected:
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     double mTolerance = 1.0;
     bool mDynamicTolerance = false;
     QgsProperty mToleranceProperty;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMSEGMENTIZE_H
-
-

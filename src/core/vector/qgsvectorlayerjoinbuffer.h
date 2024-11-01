@@ -27,7 +27,7 @@
 #include <QString>
 
 
-typedef QList< QgsVectorLayerJoinInfo > QgsVectorJoinList;
+typedef QList<QgsVectorLayerJoinInfo> QgsVectorJoinList;
 
 
 /**
@@ -230,7 +230,6 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
     void connectJoinedLayer( QgsVectorLayer *vl );
 
   private:
-
     QgsVectorLayer *mLayer = nullptr;
 
     //! Joined vector layers

@@ -62,4 +62,3 @@ QString QgsLayerTreeViewMemoryIndicatorProvider::tooltipText( QgsMapLayer *layer
 
   return tr( "<b>Temporary layer only!</b><br>Contents will be discarded after closing QGIS." );
 }
-

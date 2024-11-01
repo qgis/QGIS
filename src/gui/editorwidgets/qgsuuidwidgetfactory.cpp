@@ -19,7 +19,7 @@
 #include "qgsdummyconfigdlg.h"
 
 QgsUuidWidgetFactory::QgsUuidWidgetFactory( const QString &name )
-  :  QgsEditorWidgetFactory( name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 

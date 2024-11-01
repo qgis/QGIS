@@ -41,7 +41,6 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
     Q_OBJECT
 
   public:
-
     //! Constructor for QgsAuthCertInfo
     explicit QgsAuthCertInfo( const QSslCertificate &cert,
                               bool manageCertTrust = false,
@@ -109,7 +108,7 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
 
     QCA::Certificate mCert;
     QList<QSslCertificate> mConnectionCAs;
-    QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > mCaCertsCache;
+    QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate>> mCaCertsCache;
     QCA::CertificateCollection mCaCerts;
     QCA::CertificateChain mACertChain;
     QList<QSslCertificate> mQCertChain;
@@ -147,7 +146,6 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Construct a dialog displaying detailed info on a certificate and its hierarchical trust chain
      * \param cert Certificate object

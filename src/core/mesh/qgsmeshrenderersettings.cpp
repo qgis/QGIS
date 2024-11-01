@@ -135,7 +135,7 @@ QDomElement QgsMeshRendererScalarSettings::writeXml( QDomDocument &doc, const Qg
 
   QDomElement elemEdge = doc.createElement( QStringLiteral( "edge-settings" ) );
   elemEdge.appendChild( mEdgeStrokeWidth.writeXml( doc, context ) );
-  elemEdge.setAttribute( QStringLiteral( "stroke-width-unit" ), static_cast< int >( mEdgeStrokeWidthUnit ) );
+  elemEdge.setAttribute( QStringLiteral( "stroke-width-unit" ), static_cast<int>( mEdgeStrokeWidthUnit ) );
   elem.appendChild( elemEdge );
 
   return elem;
@@ -163,7 +163,7 @@ void QgsMeshRendererScalarSettings::readXml( const QDomElement &elem, const QgsR
   const QDomElement elemEdgeStrokeWidth = elemEdge.firstChildElement( QStringLiteral( "mesh-stroke-width" ) );
   mEdgeStrokeWidth.readXml( elemEdgeStrokeWidth, context );
   mEdgeStrokeWidthUnit = static_cast<Qgis::RenderUnit>(
-                           elemEdge.attribute( QStringLiteral( "stroke-width-unit" ) ).toInt() );
+    elemEdge.attribute( QStringLiteral( "stroke-width-unit" ) ).toInt() );
 }
 
 QgsInterpolatedLineWidth QgsMeshRendererScalarSettings::edgeStrokeWidth() const
@@ -348,7 +348,7 @@ QDomElement QgsMeshRendererVectorArrowSettings::writeXml( QDomDocument &doc ) co
       elemShaft.setAttribute( QStringLiteral( "scale-factor" ), mScaleFactor );
       break;
     case Fixed:
-      methodTxt = QStringLiteral( "fixed" ) ;
+      methodTxt = QStringLiteral( "fixed" );
       elemShaft.setAttribute( QStringLiteral( "fixed-length" ), mFixedShaftLength );
       break;
   }
@@ -375,7 +375,7 @@ void QgsMeshRendererVectorArrowSettings::readXml( const QDomElement &elem )
     mShaftLengthMethod = Scaled;
     mScaleFactor = elemShaft.attribute( QStringLiteral( "scale-factor" ) ).toDouble();
   }
-  else  // fixed
+  else // fixed
   {
     mShaftLengthMethod = Fixed;
     mFixedShaftLength = elemShaft.attribute( QStringLiteral( "fixed-length" ) ).toDouble();
@@ -444,7 +444,7 @@ QDomElement QgsMeshRendererSettings::writeXml( QDomDocument &doc, const QgsReadW
   if ( mAveragingMethod )
   {
     QDomElement elemAveraging = doc.createElement( QStringLiteral( "averaging-3d" ) );
-    elemAveraging.setAttribute( QStringLiteral( "method" ), QString::number( mAveragingMethod->method() ) ) ;
+    elemAveraging.setAttribute( QStringLiteral( "method" ), QString::number( mAveragingMethod->method() ) );
     const QDomElement elemAveragingParams = mAveragingMethod->writeXml( doc );
     elemAveraging.appendChild( elemAveragingParams );
     elem.appendChild( elemAveraging );
@@ -556,9 +556,8 @@ QDomElement QgsMeshRendererVectorStreamlineSettings::writeXml( QDomDocument &doc
 
 void QgsMeshRendererVectorStreamlineSettings::readXml( const QDomElement &elem )
 {
-  mSeedingMethod =
-    static_cast<QgsMeshRendererVectorStreamlineSettings::SeedingStartPointsMethod>(
-      elem.attribute( QStringLiteral( "seeding-method" ) ).toInt() );
+  mSeedingMethod = static_cast<QgsMeshRendererVectorStreamlineSettings::SeedingStartPointsMethod>(
+    elem.attribute( QStringLiteral( "seeding-method" ) ).toInt() );
   mSeedingDensity = elem.attribute( QStringLiteral( "seeding-density" ) ).toDouble();
 }
 
@@ -620,11 +619,11 @@ QDomElement QgsMeshRendererVectorSettings::writeXml( QDomDocument &doc, const Qg
 void QgsMeshRendererVectorSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mDisplayingMethod = static_cast<QgsMeshRendererVectorSettings::Symbology>(
-                        elem.attribute( QStringLiteral( "symbology" ) ).toInt() );
+    elem.attribute( QStringLiteral( "symbology" ) ).toInt() );
 
   mLineWidth = elem.attribute( QStringLiteral( "line-width" ) ).toDouble();
   mColoringMethod = static_cast<QgsInterpolatedLineColor::ColoringMethod>(
-                      elem.attribute( QStringLiteral( "coloring-method" ) ).toInt() );
+    elem.attribute( QStringLiteral( "coloring-method" ) ).toInt() );
   mColor = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "color" ) ) );
   mColorRampShader.readXml( elem.firstChildElement( "colorrampshader" ), context );
   mFilterMin = elem.attribute( QStringLiteral( "filter-min" ) ).toDouble();
@@ -635,19 +634,19 @@ void QgsMeshRendererVectorSettings::readXml( const QDomElement &elem, const QgsR
   mUserGridCellHeight = elem.attribute( QStringLiteral( "user-grid-height" ) ).toInt();
 
   const QDomElement elemVector = elem.firstChildElement( QStringLiteral( "vector-arrow-settings" ) );
-  if ( ! elemVector.isNull() )
+  if ( !elemVector.isNull() )
     mArrowsSettings.readXml( elemVector );
 
   const QDomElement elemStreamLine = elem.firstChildElement( QStringLiteral( "vector-streamline-settings" ) );
-  if ( ! elemStreamLine.isNull() )
+  if ( !elemStreamLine.isNull() )
     mStreamLinesSettings.readXml( elemStreamLine );
 
   const QDomElement elemTraces = elem.firstChildElement( QStringLiteral( "vector-traces-settings" ) );
-  if ( ! elemTraces.isNull() )
+  if ( !elemTraces.isNull() )
     mTracesSettings.readXml( elemTraces );
 
   const QDomElement elemWindBarb = elem.firstChildElement( QStringLiteral( "vector-windbarb-settings" ) );
-  if ( ! elemWindBarb.isNull() )
+  if ( !elemWindBarb.isNull() )
     mWindBarbSettings.readXml( elemWindBarb );
 }
 
@@ -701,7 +700,7 @@ void QgsMeshRendererVectorTracesSettings::readXml( const QDomElement &elem )
 {
   mMaximumTailLength = elem.attribute( QStringLiteral( "maximum-tail-length" ) ).toInt();
   mMaximumTailLengthUnit = static_cast<Qgis::RenderUnit>(
-                             elem.attribute( QStringLiteral( "maximum-tail-length-unit" ) ).toInt() );
+    elem.attribute( QStringLiteral( "maximum-tail-length-unit" ) ).toInt() );
   mParticlesCount = elem.attribute( QStringLiteral( "particles-count" ) ).toInt();
 }
 
@@ -709,7 +708,7 @@ QDomElement QgsMeshRendererVectorTracesSettings::writeXml( QDomDocument &doc ) c
 {
   QDomElement elem = doc.createElement( QStringLiteral( "vector-traces-settings" ) );
   elem.setAttribute( QStringLiteral( "maximum-tail-length" ), mMaximumTailLength );
-  elem.setAttribute( QStringLiteral( "maximum-tail-length-unit" ), static_cast< int >( mMaximumTailLengthUnit ) );
+  elem.setAttribute( QStringLiteral( "maximum-tail-length-unit" ), static_cast<int>( mMaximumTailLengthUnit ) );
   elem.setAttribute( QStringLiteral( "particles-count" ), mParticlesCount );
 
   return elem;
@@ -764,19 +763,19 @@ void QgsMeshRendererVectorWindBarbSettings::readXml( const QDomElement &elem )
 {
   mShaftLength = elem.attribute( QStringLiteral( "shaft-length" ), QStringLiteral( "10" ) ).toDouble();
   mShaftLengthUnits = static_cast<Qgis::RenderUnit>(
-                        elem.attribute( QStringLiteral( "shaft-length-units" ) ).toInt() );
+    elem.attribute( QStringLiteral( "shaft-length-units" ) ).toInt() );
   mMagnitudeMultiplier = elem.attribute( QStringLiteral( "magnitude-multiplier" ), QStringLiteral( "1" ) ).toDouble();
   mMagnitudeUnits = static_cast<WindSpeedUnit>(
-                      elem.attribute( QStringLiteral( "magnitude-units" ), QStringLiteral( "0" ) ).toInt() );
+    elem.attribute( QStringLiteral( "magnitude-units" ), QStringLiteral( "0" ) ).toInt() );
 }
 
 QDomElement QgsMeshRendererVectorWindBarbSettings::writeXml( QDomDocument &doc ) const
 {
   QDomElement elem = doc.createElement( QStringLiteral( "vector-windbarb-settings" ) );
   elem.setAttribute( QStringLiteral( "shaft-length" ), mShaftLength );
-  elem.setAttribute( QStringLiteral( "shaft-length-units" ), static_cast< int >( mShaftLengthUnits ) );
+  elem.setAttribute( QStringLiteral( "shaft-length-units" ), static_cast<int>( mShaftLengthUnits ) );
   elem.setAttribute( QStringLiteral( "magnitude-multiplier" ), mMagnitudeMultiplier );
-  elem.setAttribute( QStringLiteral( "magnitude-units" ), static_cast< int >( mMagnitudeUnits ) );
+  elem.setAttribute( QStringLiteral( "magnitude-units" ), static_cast<int>( mMagnitudeUnits ) );
   return elem;
 }
 
@@ -793,7 +792,7 @@ double QgsMeshRendererVectorWindBarbSettings::magnitudeMultiplier() const
     case QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit::MilesPerHour:
       return 1.609344 / 1.852;
     case QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit::FeetPerSecond:
-      return 3600.0 / 1.852 / 5280.0 * 1.609344 ;
+      return 3600.0 / 1.852 / 5280.0 * 1.609344;
     case QgsMeshRendererVectorWindBarbSettings::WindSpeedUnit::OtherUnit:
       return mMagnitudeMultiplier;
   }

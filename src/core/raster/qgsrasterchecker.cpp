@@ -44,7 +44,7 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
 
   //QgsRasterDataProvider* verifiedProvider = QgsRasterLayer::loadProvider( verifiedKey, verifiedUri );
   const QgsDataProvider::ProviderOptions options;
-  QgsRasterDataProvider *verifiedProvider = qobject_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( verifiedKey, verifiedUri, options ) );
+  QgsRasterDataProvider *verifiedProvider = qobject_cast<QgsRasterDataProvider *>( QgsProviderRegistry::instance()->createProvider( verifiedKey, verifiedUri, options ) );
   if ( !verifiedProvider || !verifiedProvider->isValid() )
   {
     error( QStringLiteral( "Cannot load provider %1 with URI: %2" ).arg( verifiedKey, verifiedUri ), mReport );
@@ -52,7 +52,7 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
   }
 
   //QgsRasterDataProvider* expectedProvider = QgsRasterLayer::loadProvider( expectedKey, expectedUri );
-  QgsRasterDataProvider *expectedProvider = qobject_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( expectedKey, expectedUri, options ) );
+  QgsRasterDataProvider *expectedProvider = qobject_cast<QgsRasterDataProvider *>( QgsProviderRegistry::instance()->createProvider( expectedKey, expectedUri, options ) );
   if ( !expectedProvider || !expectedProvider->isValid() )
   {
     error( QStringLiteral( "Cannot load provider %1 with URI: %2" ).arg( expectedKey, expectedUri ), mReport );
@@ -73,12 +73,14 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
 
   compareRow( QStringLiteral( "Extent" ), verifiedProvider->extent().toString(), expectedProvider->extent().toString(), mReport, verifiedProvider->extent() == expectedProvider->extent() );
 
-  if ( verifiedProvider->extent() != expectedProvider->extent() ) ok = false;
+  if ( verifiedProvider->extent() != expectedProvider->extent() )
+    ok = false;
 
 
   mReport += QLatin1String( "</table>\n" );
 
-  if ( !ok ) return false;
+  if ( !ok )
+    return false;
 
   bool allOk = true;
   for ( int band = 1; band <= expectedProvider->bandCount(); band++ )
@@ -140,11 +142,10 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
 
     const int width = expectedProvider->xSize();
     const int height = expectedProvider->ySize();
-    std::unique_ptr< QgsRasterBlock > expectedBlock( expectedProvider->block( band, expectedProvider->extent(), width, height ) );
-    std::unique_ptr< QgsRasterBlock > verifiedBlock( verifiedProvider->block( band, expectedProvider->extent(), width, height ) );
+    std::unique_ptr<QgsRasterBlock> expectedBlock( expectedProvider->block( band, expectedProvider->extent(), width, height ) );
+    std::unique_ptr<QgsRasterBlock> verifiedBlock( verifiedProvider->block( band, expectedProvider->extent(), width, height ) );
 
-    if ( !expectedBlock || !expectedBlock->isValid() ||
-         !verifiedBlock || !verifiedBlock->isValid() )
+    if ( !expectedBlock || !expectedBlock->isValid() || !verifiedBlock || !verifiedBlock->isValid() )
     {
       allOk = false;
       mReport += QLatin1String( "cannot read raster block" );
@@ -153,10 +154,10 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
 
     // compare data values
     QString htmlTable = QStringLiteral( "<table style='%1'>" ).arg( mTabStyle );
-    for ( int row = 0; row < height; row ++ )
+    for ( int row = 0; row < height; row++ )
     {
       htmlTable += QLatin1String( "<tr>" );
-      for ( int col = 0; col < width; col ++ )
+      for ( int col = 0; col < width; col++ )
       {
         bool cellOk = true;
         const double verifiedVal = verifiedBlock->value( row, col );
@@ -218,7 +219,7 @@ void QgsRasterChecker::compare( const QString &paramName, int verifiedVal, int e
 void QgsRasterChecker::compare( const QString &paramName, Qgis::DataType verifiedVal, Qgis::DataType expectedVal, QString &report, bool &ok )
 {
   const bool isEqual = verifiedVal == expectedVal;
-  compareRow( paramName, QString::number( static_cast< int>( verifiedVal ) ), QString::number( static_cast< int >( expectedVal ) ), report, isEqual, QString::number( static_cast< int >( verifiedVal ) - static_cast< int>( expectedVal ) ) );
+  compareRow( paramName, QString::number( static_cast<int>( verifiedVal ) ), QString::number( static_cast<int>( expectedVal ) ), report, isEqual, QString::number( static_cast<int>( verifiedVal ) - static_cast<int>( expectedVal ) ) );
   if ( !isEqual )
     ok = false;
 }

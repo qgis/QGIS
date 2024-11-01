@@ -25,7 +25,6 @@
 QgsPointCloudAttributeModel::QgsPointCloudAttributeModel( QObject *parent )
   : QAbstractItemModel( parent )
 {
-
 }
 
 void QgsPointCloudAttributeModel::setLayer( QgsPointCloudLayer *layer )
@@ -138,7 +137,7 @@ QVariant QgsPointCloudAttributeModel::data( const QModelIndex &index, int role )
 
   switch ( role )
   {
-    case static_cast< int >( CustomRole::AttributeName ):
+    case static_cast<int>( CustomRole::AttributeName ):
     {
       if ( isEmpty )
       {
@@ -147,7 +146,7 @@ QVariant QgsPointCloudAttributeModel::data( const QModelIndex &index, int role )
       return mAttributes.at( index.row() - fieldOffset ).name();
     }
 
-    case static_cast< int >( CustomRole::AttributeIndex ):
+    case static_cast<int>( CustomRole::AttributeIndex ):
     {
       if ( isEmpty )
       {
@@ -156,30 +155,30 @@ QVariant QgsPointCloudAttributeModel::data( const QModelIndex &index, int role )
       return index.row() - fieldOffset;
     }
 
-    case static_cast< int >( CustomRole::AttributeSize ):
+    case static_cast<int>( CustomRole::AttributeSize ):
     {
       if ( isEmpty )
       {
         return QVariant();
       }
-      return static_cast< int >( mAttributes.at( index.row() - fieldOffset ).size() );
+      return static_cast<int>( mAttributes.at( index.row() - fieldOffset ).size() );
     }
 
-    case static_cast< int >( CustomRole::AttributeType ):
+    case static_cast<int>( CustomRole::AttributeType ):
     {
       if ( isEmpty )
       {
         return QVariant();
       }
-      return static_cast< int >( mAttributes.at( index.row() - fieldOffset ).type() );
+      return static_cast<int>( mAttributes.at( index.row() - fieldOffset ).type() );
     }
 
-    case static_cast< int >( CustomRole::IsEmpty ):
+    case static_cast<int>( CustomRole::IsEmpty ):
     {
       return isEmpty;
     }
 
-    case static_cast< int >( CustomRole::IsNumeric ):
+    case static_cast<int>( CustomRole::IsNumeric ):
     {
       if ( isEmpty )
       {
@@ -247,7 +246,6 @@ QIcon QgsPointCloudAttributeModel::iconForAttributeType( QgsPointCloudAttribute:
     {
       return QgsApplication::getThemeIcon( "/mIconFieldFloat.svg" );
     }
-
   }
   return QIcon();
 }
@@ -277,25 +275,16 @@ bool QgsPointCloudAttributeProxyModel::filterAcceptsRow( int source_row, const Q
   if ( mFilters.testFlag( AllTypes ) )
     return true;
 
-  const QVariant typeVar = mModel->data( index, static_cast< int >( QgsPointCloudAttributeModel::CustomRole::AttributeType ) );
+  const QVariant typeVar = mModel->data( index, static_cast<int>( QgsPointCloudAttributeModel::CustomRole::AttributeType ) );
   if ( QgsVariantUtils::isNull( typeVar ) )
     return true;
 
   bool ok;
-  const QgsPointCloudAttribute::DataType type = static_cast< QgsPointCloudAttribute::DataType >( typeVar.toInt( &ok ) );
+  const QgsPointCloudAttribute::DataType type = static_cast<QgsPointCloudAttribute::DataType>( typeVar.toInt( &ok ) );
   if ( !ok )
     return true;
 
-  if ( ( mFilters.testFlag( Char ) && type == QgsPointCloudAttribute::Char ) ||
-       ( mFilters.testFlag( Char ) && type == QgsPointCloudAttribute::UChar ) ||
-       ( mFilters.testFlag( Short ) && type == QgsPointCloudAttribute::Short ) ||
-       ( mFilters.testFlag( Short ) && type == QgsPointCloudAttribute::UShort ) ||
-       ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::Int32 ) ||
-       ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::UInt32 ) ||
-       ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::Int64 ) ||
-       ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::UInt64 ) ||
-       ( mFilters.testFlag( Float ) && type == QgsPointCloudAttribute::Float ) ||
-       ( mFilters.testFlag( Double ) && type == QgsPointCloudAttribute::Double ) )
+  if ( ( mFilters.testFlag( Char ) && type == QgsPointCloudAttribute::Char ) || ( mFilters.testFlag( Char ) && type == QgsPointCloudAttribute::UChar ) || ( mFilters.testFlag( Short ) && type == QgsPointCloudAttribute::Short ) || ( mFilters.testFlag( Short ) && type == QgsPointCloudAttribute::UShort ) || ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::Int32 ) || ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::UInt32 ) || ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::Int64 ) || ( mFilters.testFlag( Int32 ) && type == QgsPointCloudAttribute::UInt64 ) || ( mFilters.testFlag( Float ) && type == QgsPointCloudAttribute::Float ) || ( mFilters.testFlag( Double ) && type == QgsPointCloudAttribute::Double ) )
     return true;
 
   return false;
@@ -304,15 +293,15 @@ bool QgsPointCloudAttributeProxyModel::filterAcceptsRow( int source_row, const Q
 bool QgsPointCloudAttributeProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
   // empty field is always first
-  if ( sourceModel()->data( left, static_cast< int >( QgsPointCloudAttributeModel::CustomRole::IsEmpty ) ).toBool() )
+  if ( sourceModel()->data( left, static_cast<int>( QgsPointCloudAttributeModel::CustomRole::IsEmpty ) ).toBool() )
     return true;
-  else if ( sourceModel()->data( right, static_cast< int >( QgsPointCloudAttributeModel::CustomRole::IsEmpty ) ).toBool() )
+  else if ( sourceModel()->data( right, static_cast<int>( QgsPointCloudAttributeModel::CustomRole::IsEmpty ) ).toBool() )
     return false;
 
   // order is attribute order
   bool lok, rok;
-  const int leftId = sourceModel()->data( left, static_cast< int >( QgsPointCloudAttributeModel::CustomRole::AttributeIndex ) ).toInt( &lok );
-  const int rightId = sourceModel()->data( right, static_cast< int >( QgsPointCloudAttributeModel::CustomRole::AttributeIndex ) ).toInt( &rok );
+  const int leftId = sourceModel()->data( left, static_cast<int>( QgsPointCloudAttributeModel::CustomRole::AttributeIndex ) ).toInt( &lok );
+  const int rightId = sourceModel()->data( right, static_cast<int>( QgsPointCloudAttributeModel::CustomRole::AttributeIndex ) ).toInt( &rok );
 
   if ( !lok )
     return false;

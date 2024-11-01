@@ -31,7 +31,6 @@
 class CORE_EXPORT QgsAnnotationItemNode
 {
   public:
-
     QgsAnnotationItemNode() = default;
 
     /**
@@ -47,18 +46,20 @@ class CORE_EXPORT QgsAnnotationItemNode
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsAnnotationItemNode: %1 - %2 (%3, %4)>" ).arg( sipCpp->id().vertex )
-                  .arg( qgsEnumValueToKey( sipCpp->type() ) )
-                  .arg( sipCpp->point().x() )
-                  .arg( sipCpp->point().y() );
+        QString str
+      = QStringLiteral( "<QgsAnnotationItemNode: %1 - %2 (%3, %4)>" ).arg( sipCpp->id().vertex ).arg( qgsEnumValueToKey( sipCpp->type() ) ).arg( sipCpp->point().x() ).arg( sipCpp->point().y() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    /**
+        /**
      * Returns the ID number of the node, used for uniquely identifying the node in the item.
      */
-    QgsVertexId id() const { return mId; }
+        QgsVertexId
+      id() const
+    {
+      return mId;
+    }
 
     /**
      * Returns the node's position, in geographic coordinates.
@@ -126,12 +127,10 @@ class CORE_EXPORT QgsAnnotationItemNode
     }
 
   private:
-
     QgsVertexId mId;
     QgsPointXY mPoint;
     Qgis::AnnotationItemNodeType mType = Qgis::AnnotationItemNodeType::VertexHandle;
     Qt::CursorShape mCursor = Qt::CursorShape::ArrowCursor;
-
 };
 
 #endif // QGSANNOTATIONITEMEDITNODE_H

@@ -16,7 +16,7 @@
 #include "qgsstacobject.h"
 
 
-QgsStacObject::QgsStacObject( const QString &id, const QString &version, const QVector< QgsStacLink > &links )
+QgsStacObject::QgsStacObject( const QString &id, const QString &version, const QVector<QgsStacLink> &links )
   : mId( id )
   , mStacVersion( version )
   , mLinks( links )
@@ -53,12 +53,12 @@ void QgsStacObject::setId( const QString &id )
   mId = id;
 }
 
-QVector< QgsStacLink > QgsStacObject::links() const
+QVector<QgsStacLink> QgsStacObject::links() const
 {
   return mLinks;
 }
 
-void QgsStacObject::setLinks( const QVector< QgsStacLink > &links )
+void QgsStacObject::setLinks( const QVector<QgsStacLink> &links )
 {
   mLinks = links;
 }
@@ -92,5 +92,3 @@ QString QgsStacObject::parentUrl() const
   }
   return QString();
 }
-
-

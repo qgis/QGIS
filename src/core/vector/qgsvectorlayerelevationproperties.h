@@ -37,11 +37,9 @@ class QgsMarkerSymbol;
  */
 class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevationProperties
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsVectorLayerElevationProperties, with the specified \a parent object.
      */
@@ -301,7 +299,6 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     void setShowMarkerSymbolInSurfacePlots( bool show );
 
   private:
-
     void setDefaultProfileLineSymbol( const QColor &color );
     void setDefaultProfileMarkerSymbol( const QColor &color );
     void setDefaultProfileFillSymbol( const QColor &color );
@@ -314,14 +311,13 @@ class CORE_EXPORT QgsVectorLayerElevationProperties : public QgsMapLayerElevatio
     bool mEnableExtrusion = false;
     double mExtrusionHeight = 0;
 
-    std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
-    std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;
-    std::unique_ptr< QgsMarkerSymbol > mProfileMarkerSymbol;
+    std::unique_ptr<QgsLineSymbol> mProfileLineSymbol;
+    std::unique_ptr<QgsFillSymbol> mProfileFillSymbol;
+    std::unique_ptr<QgsMarkerSymbol> mProfileMarkerSymbol;
     bool mRespectLayerSymbology = true;
     Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::Line;
-    double mElevationLimit = std::numeric_limits< double >::quiet_NaN();
+    double mElevationLimit = std::numeric_limits<double>::quiet_NaN();
     bool mShowMarkerSymbolInSurfacePlots = false;
-
 };
 
 #endif // QGSVECTORLAYERELEVATIONPROPERTIES_H

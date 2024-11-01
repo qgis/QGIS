@@ -64,8 +64,7 @@ class QPrinter;
  */
 class CORE_EXPORT QgsWebView : public QTextBrowser
 {
-
-/// @cond NOT_STABLE_API
+    /// @cond NOT_STABLE_API
     Q_OBJECT
   public:
     explicit QgsWebView( QWidget *parent = nullptr )
@@ -146,7 +145,7 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
     QWebSettings *mSettings = nullptr;
     QWebPage *mPage = nullptr;
 
-/// @endcond
+    /// @endcond
 };
 #endif
 

@@ -66,7 +66,6 @@ class QgsCurve;
 class CORE_EXPORT QgsArcGisRestContext
 {
   public:
-
     /**
      * Sets the time \a zone for datetime values.
      *
@@ -96,11 +95,9 @@ class CORE_EXPORT QgsArcGisRestContext
     QString objectIdFieldName() const { return mObjectIdFieldName; }
 
   private:
-
     QTimeZone mTimeZone;
 
     QString mObjectIdFieldName;
-
 };
 
 /**
@@ -116,7 +113,6 @@ class CORE_EXPORT QgsArcGisRestUtils
     Q_GADGET
 
   public:
-
     /**
      * Converts an ESRI REST field \a type to a QVariant type.
      */
@@ -225,9 +221,8 @@ class CORE_EXPORT QgsArcGisRestUtils
      *
      * \since QGIS 3.28
      */
-    enum class FeatureToJsonFlag : int SIP_ENUM_BASETYPE( IntFlag )
-    {
-      IncludeGeometry = 1 << 0, //!< Whether to include the geometry definition
+    enum class FeatureToJsonFlag : int SIP_ENUM_BASETYPE( IntFlag ) {
+      IncludeGeometry = 1 << 0,              //!< Whether to include the geometry definition
       IncludeNonObjectIdAttributes = 1 << 1, //!< Whether to include any non-objectId attributes
     };
     Q_ENUM( FeatureToJsonFlag );
@@ -248,7 +243,7 @@ class CORE_EXPORT QgsArcGisRestUtils
     static QVariantMap featureToJson( const QgsFeature &feature,
                                       const QgsArcGisRestContext &context,
                                       const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
-                                      QgsArcGisRestUtils::FeatureToJsonFlags flags = QgsArcGisRestUtils::FeatureToJsonFlags( static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry ) | static_cast< int >( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes ) ) );
+                                      QgsArcGisRestUtils::FeatureToJsonFlags flags = QgsArcGisRestUtils::FeatureToJsonFlags( static_cast<int>( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeGeometry ) | static_cast<int>( QgsArcGisRestUtils::FeatureToJsonFlag::IncludeNonObjectIdAttributes ) ) );
 
     /**
      * Converts a variant to a REST attribute value.
@@ -272,55 +267,54 @@ class CORE_EXPORT QgsArcGisRestUtils
     static Qgis::ArcGisRestServiceType serviceTypeFromString( const QString &type );
 
   private:
-
     /**
      * Converts a JSON \a list to a point geometry of the specified wkb \a type.
      */
-    static std::unique_ptr< QgsPoint > convertPoint( const QVariantList &list, Qgis::WkbType type );
+    static std::unique_ptr<QgsPoint> convertPoint( const QVariantList &list, Qgis::WkbType type );
 
     /**
      * Converts circular string JSON \a data to a geometry object of the specified \a type.
      *
      * The \a startPoint argument must specify the starting point of the circular string.
      */
-    static std::unique_ptr< QgsCircularString > convertCircularString( const QVariantMap &data, Qgis::WkbType type, const QgsPoint &startPoint );
+    static std::unique_ptr<QgsCircularString> convertCircularString( const QVariantMap &data, Qgis::WkbType type, const QgsPoint &startPoint );
 
     /**
      * Converts a compound curve JSON \a list to a geometry object of the specified \a type.
      */
-    static std::unique_ptr< QgsCompoundCurve > convertCompoundCurve( const QVariantList &list, Qgis::WkbType type );
+    static std::unique_ptr<QgsCompoundCurve> convertCompoundCurve( const QVariantList &list, Qgis::WkbType type );
 
     /**
      * Converts point \a data to a point object of the specified \a type.
      */
-    static std::unique_ptr< QgsPoint > convertGeometryPoint( const QVariantMap &data, Qgis::WkbType pointType );
+    static std::unique_ptr<QgsPoint> convertGeometryPoint( const QVariantMap &data, Qgis::WkbType pointType );
 
     /**
      * Converts multipoint \a data to a multipoint object of the specified \a type.
      */
-    static std::unique_ptr< QgsMultiPoint > convertMultiPoint( const QVariantMap &geometryData, Qgis::WkbType pointType );
+    static std::unique_ptr<QgsMultiPoint> convertMultiPoint( const QVariantMap &geometryData, Qgis::WkbType pointType );
 
     /**
      * Converts polyline \a data to a curve object of the specified \a type.
      */
-    static std::unique_ptr< QgsMultiCurve > convertGeometryPolyline( const QVariantMap &data, Qgis::WkbType pointType );
+    static std::unique_ptr<QgsMultiCurve> convertGeometryPolyline( const QVariantMap &data, Qgis::WkbType pointType );
 
     /**
      * Converts polygon \a data to a polygon object of the specified \a type.
      */
-    static std::unique_ptr< QgsMultiSurface > convertGeometryPolygon( const QVariantMap &data, Qgis::WkbType pointType );
+    static std::unique_ptr<QgsMultiSurface> convertGeometryPolygon( const QVariantMap &data, Qgis::WkbType pointType );
 
     /**
      * Converts envelope \a data to a polygon object.
      */
-    static std::unique_ptr< QgsPolygon > convertEnvelope( const QVariantMap &data );
+    static std::unique_ptr<QgsPolygon> convertEnvelope( const QVariantMap &data );
 
-    static std::unique_ptr< QgsLineSymbol > parseEsriLineSymbolJson( const QVariantMap &symbolData );
-    static std::unique_ptr< QgsFillSymbol > parseEsriFillSymbolJson( const QVariantMap &symbolData );
-    static std::unique_ptr< QgsFillSymbol > parseEsriPictureFillSymbolJson( const QVariantMap &symbolData );
-    static std::unique_ptr< QgsMarkerSymbol > parseEsriMarkerSymbolJson( const QVariantMap &symbolData );
-    static std::unique_ptr< QgsMarkerSymbol > parseEsriPictureMarkerSymbolJson( const QVariantMap &symbolData );
-    static std::unique_ptr< QgsMarkerSymbol > parseEsriTextMarkerSymbolJson( const QVariantMap &symbolData );
+    static std::unique_ptr<QgsLineSymbol> parseEsriLineSymbolJson( const QVariantMap &symbolData );
+    static std::unique_ptr<QgsFillSymbol> parseEsriFillSymbolJson( const QVariantMap &symbolData );
+    static std::unique_ptr<QgsFillSymbol> parseEsriPictureFillSymbolJson( const QVariantMap &symbolData );
+    static std::unique_ptr<QgsMarkerSymbol> parseEsriMarkerSymbolJson( const QVariantMap &symbolData );
+    static std::unique_ptr<QgsMarkerSymbol> parseEsriPictureMarkerSymbolJson( const QVariantMap &symbolData );
+    static std::unique_ptr<QgsMarkerSymbol> parseEsriTextMarkerSymbolJson( const QVariantMap &symbolData );
 
     static Qgis::MarkerShape parseEsriMarkerShape( const QString &style );
 

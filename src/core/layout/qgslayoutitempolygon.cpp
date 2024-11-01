@@ -188,9 +188,9 @@ void QgsLayoutItemPolygon::setSymbol( QgsFillSymbol *symbol )
 void QgsLayoutItemPolygon::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt, const QgsReadWriteContext &context ) const
 {
   const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(),
-                         mPolygonStyleSymbol.get(),
-                         doc,
-                         context );
+                                                          mPolygonStyleSymbol.get(),
+                                                          doc,
+                                                          context );
   elmt.appendChild( pe );
 }
 
@@ -208,4 +208,3 @@ bool QgsLayoutItemPolygon::_removeNode( const int index )
 
   return true;
 }
-

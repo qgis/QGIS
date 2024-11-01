@@ -29,7 +29,6 @@
 class CORE_EXPORT QgsProjectTranslator
 {
   public:
-
     virtual ~QgsProjectTranslator() = default;
 
     /**
@@ -47,7 +46,6 @@ class CORE_EXPORT QgsProjectTranslator
      * \since QGIS 3.4
      */
     virtual QString translate( const QString &context, const QString &sourceText, const char *disambiguation = nullptr, int n = -1 ) const = 0;
-
 };
 
 #endif // QGSPROJECTTRANSLATOR_H

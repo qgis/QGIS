@@ -89,7 +89,3 @@ QString fromEncodedComponent_helper( const QByteArray &ba )
   // now it's safe to call fromLatin1
   return QString::fromLatin1( intermediate, out - reinterpret_cast<uchar *>( intermediate.data() ) );
 }
-
-
-
-

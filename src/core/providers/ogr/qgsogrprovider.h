@@ -35,12 +35,11 @@ class QgsDataProviderElevationProperties;
  * \class QgsOgrProvider
  * \brief Data provider for OGR datasources
   */
-class QgsOgrProvider final: public QgsVectorDataProvider
+class QgsOgrProvider final : public QgsVectorDataProvider
 {
     Q_OBJECT
 
   public:
-
     //! Convert a vector layer to a vector file
     static Qgis::VectorExportResult createEmptyLayer(
       const QString &uri,
@@ -50,8 +49,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *options = nullptr
-    );
+      const QMap<QString, QVariant> *options = nullptr );
 
     /**
      * Constructor of the vector provider
@@ -126,7 +124,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     bool isValid() const override;
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
-    QSet< QVariant > uniqueValues( int index, int limit = -1 ) const override;
+    QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
     QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
                                        QgsFeedback *feedback = nullptr ) const override;
     Qgis::SpatialIndexPresence hasSpatialIndex() const override;
@@ -206,9 +204,9 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     //! Does the real job of settings the subset string and adds an argument to disable update capabilities
     bool _setSubsetString( const QString &theSQL, bool updateFeatureCount = true, bool updateCapabilities = true, bool hasExistingRef = true );
 
-    bool  createSpatialIndexImpl();
+    bool createSpatialIndexImpl();
 
-    QList< QgsProviderSublayerDetails > _subLayers( Qgis::SublayerQueryFlags flags ) const;
+    QList<QgsProviderSublayerDetails> _subLayers( Qgis::SublayerQueryFlags flags ) const;
 
     QgsFields mAttributeFields;
 
@@ -216,8 +214,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QMap<int, QString> mDefaultValues;
 
     bool mFirstFieldIsFid = false;
-    mutable std::unique_ptr< OGREnvelope3D > mExtent2D;
-    mutable std::unique_ptr< OGREnvelope3D > mExtent3D;
+    mutable std::unique_ptr<OGREnvelope3D> mExtent2D;
+    mutable std::unique_ptr<OGREnvelope3D> mExtent3D;
     bool mForceRecomputeExtent = false;
 
     QList<int> mPrimaryKeyAttrs;
@@ -298,7 +296,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     //! Whether the next call to featureCount() should refresh the feature count
     mutable bool mRefreshFeatureCount = true;
 
-    mutable long long mFeaturesCounted = static_cast< long long >( Qgis::FeatureCountState::Uncounted );
+    mutable long long mFeaturesCounted = static_cast<long long>( Qgis::FeatureCountState::Uncounted );
 
     mutable QList<QgsProviderSublayerDetails> mSubLayerList;
 

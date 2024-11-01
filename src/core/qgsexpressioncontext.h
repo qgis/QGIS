@@ -42,7 +42,6 @@ class LoadLayerFunction;
 class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpressionFunction
 {
   public:
-
     /**
      * Create a new QgsScopedExpressionFunction
      *
@@ -114,14 +113,12 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpressionFunction
 class CORE_EXPORT QgsExpressionContextScope
 {
   public:
-
     /**
      * Single variable definition for use within a QgsExpressionContextScope.
      */
     struct StaticVariable
     {
-
-      /**
+        /**
        * Constructor for StaticVariable.
        * \param name variable name (should be unique within the QgsExpressionContextScope)
        * \param value initial variable value
@@ -129,28 +126,28 @@ class CORE_EXPORT QgsExpressionContextScope
        * \param isStatic TRUE if the variable will not change during the lifteime of an iterator.
        * \param description optional translated description of variable, for use in expression builder widgets
        */
-      StaticVariable( const QString &name = QString(), const QVariant &value = QVariant(), bool readOnly = false, bool isStatic = false, const QString &description = QString() )
-        : name( name )
-        , value( value )
-        , readOnly( readOnly )
-        , isStatic( isStatic )
-        , description( description )
-      {}
+        StaticVariable( const QString &name = QString(), const QVariant &value = QVariant(), bool readOnly = false, bool isStatic = false, const QString &description = QString() )
+          : name( name )
+          , value( value )
+          , readOnly( readOnly )
+          , isStatic( isStatic )
+          , description( description )
+        {}
 
-      //! Variable name
-      QString name;
+        //! Variable name
+        QString name;
 
-      //! Variable value
-      QVariant value;
+        //! Variable value
+        QVariant value;
 
-      //! True if variable should not be editable by users
-      bool readOnly;
+        //! True if variable should not be editable by users
+        bool readOnly;
 
-      //! A static variable can be cached for the lifetime of a context
-      bool isStatic;
+        //! A static variable can be cached for the lifetime of a context
+        bool isStatic;
 
-      //! Translated description of variable, for use within expression builder widgets.
-      QString description;
+        //! Translated description of variable, for use within expression builder widgets.
+        QString description;
     };
 
     /**
@@ -310,14 +307,22 @@ class CORE_EXPORT QgsExpressionContextScope
      * \see removeFeature()
      * \see feature()
      */
-    void setFeature( const QgsFeature &feature ) { mHasFeature = true; mFeature = feature; }
+    void setFeature( const QgsFeature &feature )
+    {
+      mHasFeature = true;
+      mFeature = feature;
+    }
 
     /**
      * Removes any feature associated with the scope.
      * \see setFeature()
      * \see hasFeature()
      */
-    void removeFeature() { mHasFeature = false; mFeature = QgsFeature(); }
+    void removeFeature()
+    {
+      mHasFeature = false;
+      mFeature = QgsFeature();
+    }
 
     /**
      * Returns TRUE if the scope has a geometry associated with it.
@@ -342,7 +347,11 @@ class CORE_EXPORT QgsExpressionContextScope
      * \see geometry()
      * \since QGIS 3.24
      */
-    void setGeometry( const QgsGeometry &geometry ) { mHasGeometry = true; mGeometry = geometry; }
+    void setGeometry( const QgsGeometry &geometry )
+    {
+      mHasGeometry = true;
+      mGeometry = geometry;
+    }
 
     /**
      * Removes any geometry associated with the scope.
@@ -350,7 +359,11 @@ class CORE_EXPORT QgsExpressionContextScope
      * \see hasGeometry()
      * \since QGIS 3.24
      */
-    void removeGeometry() { mHasGeometry = false; mGeometry = QgsGeometry(); }
+    void removeGeometry()
+    {
+      mHasGeometry = false;
+      mGeometry = QgsGeometry();
+    }
 
     /**
      * Convenience function for setting a fields for the scope. Any existing
@@ -438,19 +451,19 @@ class CORE_EXPORT QgsExpressionContextScope
      * \see addLayerStore()
      * \since QGIS 3.30
      */
-    QList< QgsMapLayerStore * > layerStores() const;
+    QList<QgsMapLayerStore *> layerStores() const;
 
   private:
     QString mName;
     QHash<QString, StaticVariable> mVariables;
-    QHash<QString, QgsScopedExpressionFunction * > mFunctions;
+    QHash<QString, QgsScopedExpressionFunction *> mFunctions;
     bool mHasFeature = false;
     QgsFeature mFeature;
     bool mHasGeometry = false;
     QgsGeometry mGeometry;
     QStringList mHiddenVariables;
 
-    QList< QPointer< QgsMapLayerStore > > mLayerStores;
+    QList<QPointer<QgsMapLayerStore>> mLayerStores;
 };
 
 /**
@@ -470,7 +483,6 @@ class CORE_EXPORT QgsExpressionContextScope
 class CORE_EXPORT QgsExpressionContext
 {
   public:
-
     QgsExpressionContext();
 
     /**
@@ -599,7 +611,7 @@ class CORE_EXPORT QgsExpressionContext
      * Returns a list of scopes contained within the stack.
      * \returns list of pointers to scopes
      */
-    QList< QgsExpressionContextScope * > scopes() { return mStack; }
+    QList<QgsExpressionContextScope *> scopes() { return mStack; }
 
     /**
      * Returns the index of the specified scope if it exists within the context.
@@ -715,7 +727,7 @@ class CORE_EXPORT QgsExpressionContext
      * any matching variables or functions provided by existing scopes within the
      * context. Ownership of the scope is transferred to the stack.
      */
-    QgsExpressionContext &operator<< ( QgsExpressionContextScope *scope SIP_TRANSFER );
+    QgsExpressionContext &operator<<( QgsExpressionContextScope *scope SIP_TRANSFER );
 
     /**
      * Convenience function for setting a feature for the context. The feature
@@ -829,7 +841,7 @@ class CORE_EXPORT QgsExpressionContext
      *
      * \since QGIS 3.30
      */
-    QList< QgsMapLayerStore * > layerStores() const;
+    QList<QgsMapLayerStore *> layerStores() const;
 
     /**
      * Sets the destination layer \a store for any layers loaded during
@@ -916,19 +928,17 @@ class CORE_EXPORT QgsExpressionContext
     static const QString EXPR_CLUSTER_COLOR;
 
   private:
-
-    QList< QgsExpressionContextScope * > mStack;
+    QList<QgsExpressionContextScope *> mStack;
     QStringList mHighlightedVariables;
     QStringList mHighlightedFunctions;
 
     QgsFeedback *mFeedback = nullptr;
 
-    std::unique_ptr< LoadLayerFunction > mLoadLayerFunction;
-    QPointer< QgsMapLayerStore > mDestinationStore;
+    std::unique_ptr<LoadLayerFunction> mLoadLayerFunction;
+    QPointer<QgsMapLayerStore> mDestinationStore;
 
     // Cache is mutable because we want to be able to add cached values to const contexts
-    mutable QMap< QString, QVariant > mCachedValues;
-
+    mutable QMap<QString, QVariant> mCachedValues;
 };
 
 #endif // QGSEXPRESSIONCONTEXT_H

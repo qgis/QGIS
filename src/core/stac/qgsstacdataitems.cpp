@@ -87,10 +87,7 @@ bool QgsStacItemItem::hasDragEnabled() const
   const QMap<QString, QgsStacAsset> assets = mStacItem->assets();
   for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
   {
-    if ( it->mediaType() == QLatin1String( "image/tiff; application=geotiff; profile=cloud-optimized" ) ||
-         it->mediaType() == QLatin1String( "image/vnd.stac.geotiff; cloud-optimized=true" ) ||
-         it->mediaType() == QLatin1String( "application/vnd.laszip+copc" ) ||
-         it->href().endsWith( QStringLiteral( "/ept.json" ) ) )
+    if ( it->mediaType() == QLatin1String( "image/tiff; application=geotiff; profile=cloud-optimized" ) || it->mediaType() == QLatin1String( "image/vnd.stac.geotiff; cloud-optimized=true" ) || it->mediaType() == QLatin1String( "application/vnd.laszip+copc" ) || it->href().endsWith( QStringLiteral( "/ept.json" ) ) )
       return true;
   }
   return false;
@@ -112,13 +109,11 @@ QgsMimeDataUtils::UriList QgsStacItemItem::mimeUris() const
     {
       uri.uri = it->href();
     }
-    else if ( it->mediaType() == QLatin1String( "image/tiff; application=geotiff; profile=cloud-optimized" ) ||
-              it->mediaType() == QLatin1String( "image/vnd.stac.geotiff; cloud-optimized=true" ) )
+    else if ( it->mediaType() == QLatin1String( "image/tiff; application=geotiff; profile=cloud-optimized" ) || it->mediaType() == QLatin1String( "image/vnd.stac.geotiff; cloud-optimized=true" ) )
     {
       uri.layerType = QStringLiteral( "raster" );
       uri.providerKey = QStringLiteral( "gdal" );
-      if ( it->href().startsWith( QLatin1String( "http" ), Qt::CaseInsensitive ) ||
-           it->href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
+      if ( it->href().startsWith( QLatin1String( "http" ), Qt::CaseInsensitive ) || it->href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
       {
         uri.uri = QStringLiteral( "/vsicurl/%1" ).arg( it->href() );
       }
@@ -193,7 +188,7 @@ void QgsStacItemItem::itemRequestFinished( int requestId, QString error )
 {
   QgsStacController *controller = stacController();
   QgsStacObject *object = controller->takeStacObject( requestId );
-  QgsStacItem *item = dynamic_cast< QgsStacItem * >( object );
+  QgsStacItem *item = dynamic_cast<QgsStacItem *>( object );
   setStacItem( item );
   if ( item )
   {
@@ -245,7 +240,7 @@ QgsStacController *QgsStacCatalogItem::stacController() const
   const QgsDataItem *item = this;
   while ( item )
   {
-    if ( const QgsStacConnectionItem *ci = qobject_cast< const QgsStacConnectionItem *>( item ) )
+    if ( const QgsStacConnectionItem *ci = qobject_cast<const QgsStacConnectionItem *>( item ) )
       return ci->controller();
     item = item->parent();
   }
@@ -258,7 +253,7 @@ QgsStacCatalog *QgsStacCatalogItem::rootCatalog() const
   const QgsDataItem *item = this;
   while ( item )
   {
-    if ( const QgsStacConnectionItem *ci = qobject_cast< const QgsStacConnectionItem *>( item ) )
+    if ( const QgsStacConnectionItem *ci = qobject_cast<const QgsStacConnectionItem *>( item ) )
       return ci->mStacCatalog.get();
     item = item->parent();
   }
@@ -270,7 +265,7 @@ QgsStacFetchMoreItem *QgsStacCatalogItem::fetchMoreItem() const
 {
   for ( QgsDataItem *item : mChildren )
   {
-    if ( QgsStacFetchMoreItem *moreItem = qobject_cast< QgsStacFetchMoreItem *>( item ) )
+    if ( QgsStacFetchMoreItem *moreItem = qobject_cast<QgsStacFetchMoreItem *>( item ) )
     {
       return moreItem;
     }
@@ -331,7 +326,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
 
   int itemsCount = 0;
   QVector<QgsDataItem *> contents;
-  const QVector< QgsStacLink > links = mStacCatalog->links();
+  const QVector<QgsStacLink> links = mStacCatalog->links();
 
   // treat catalog/collection as static if it does not have a /items endpoint
   bool hasItemsEndpoint = false;
@@ -344,8 +339,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
       {
         hasItemsEndpoint = true;
       }
-      else if ( link.relation() == QLatin1String( "data" ) &&
-                link.href().endsWith( QLatin1String( "/collections" ) ) )
+      else if ( link.relation() == QLatin1String( "data" ) && link.href().endsWith( QLatin1String( "/collections" ) ) )
       {
         hasCollectionsEndpoint = true;
       }
@@ -357,25 +351,20 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
   for ( const auto &link : links )
   {
     // skip hierarchical navigation links
-    if ( link.relation() == QLatin1String( "self" ) ||
-         link.relation() == QLatin1String( "root" ) ||
-         link.relation() == QLatin1String( "parent" ) ||
-         link.relation() == QLatin1String( "collection" ) )
+    if ( link.relation() == QLatin1String( "self" ) || link.relation() == QLatin1String( "root" ) || link.relation() == QLatin1String( "parent" ) || link.relation() == QLatin1String( "collection" ) )
       continue;
 
-    if ( link.relation() == QLatin1String( "child" ) &&
-         !hasCollectionsEndpoint )
+    if ( link.relation() == QLatin1String( "child" ) && !hasCollectionsEndpoint )
     {
       // may be either catalog or collection
       QgsStacCatalogItem *c = new QgsStacCatalogItem( this, link.title(), link.href() );
       contents.append( c );
     }
-    else if ( link.relation() == QLatin1String( "data" ) &&
-              link.href().endsWith( QLatin1String( "/collections" ) ) )
+    else if ( link.relation() == QLatin1String( "data" ) && link.href().endsWith( QLatin1String( "/collections" ) ) )
     {
       // use /collections api
       QString error;
-      std::unique_ptr< QgsStacCollections > cols( controller->fetchCollections( link.href(), &error ) );
+      std::unique_ptr<QgsStacCollections> cols( controller->fetchCollections( link.href(), &error ) );
       if ( cols )
       {
         contents.append( createCollections( cols->takeCollections() ) );
@@ -387,8 +376,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
         contents.append( new QgsErrorItem( this, error, path() + QStringLiteral( "/error" ) ) );
       }
     }
-    else if ( link.relation() == QLatin1String( "item" ) &&
-              !hasItemsEndpoint )
+    else if ( link.relation() == QLatin1String( "item" ) && !hasItemsEndpoint )
     {
       itemsCount++;
 
@@ -402,7 +390,7 @@ QVector<QgsDataItem *> QgsStacCatalogItem::createChildren()
     {
       // stac api items (ogcapi features)
       QString error;
-      std::unique_ptr< QgsStacItemCollection > ic( controller->fetchItemCollection( link.href(), &error ) );
+      std::unique_ptr<QgsStacItemCollection> ic( controller->fetchItemCollection( link.href(), &error ) );
       if ( ic )
       {
         contents.append( createItems( ic->takeItems() ) );
@@ -478,9 +466,9 @@ QgsStacCatalog *QgsStacCatalogItem::stacCatalog() const
   return mStacCatalog.get();
 }
 
-QVector< QgsDataItem * > QgsStacCatalogItem::createItems( const QVector<QgsStacItem *> items )
+QVector<QgsDataItem *> QgsStacCatalogItem::createItems( const QVector<QgsStacItem *> items )
 {
-  QVector< QgsDataItem * > contents;
+  QVector<QgsDataItem *> contents;
   contents.reserve( items.size() );
   for ( QgsStacItem *item : items )
   {
@@ -499,7 +487,7 @@ QVector< QgsDataItem * > QgsStacCatalogItem::createItems( const QVector<QgsStacI
 
 QVector<QgsDataItem *> QgsStacCatalogItem::createCollections( const QVector<QgsStacCollection *> collections )
 {
-  QVector< QgsDataItem * > contents;
+  QVector<QgsDataItem *> contents;
   contents.reserve( collections.size() );
   for ( QgsStacCollection *col : collections )
   {
@@ -523,7 +511,7 @@ void QgsStacCatalogItem::fetchMoreChildren()
   QgsStacFetchMoreItem *moreItem = fetchMoreItem();
 
   QgsStacController *c = stacController();
-  std::unique_ptr< QgsStacItemCollection > ic( c->fetchItemCollection( mFetchMoreUrl ) );
+  std::unique_ptr<QgsStacItemCollection> ic( c->fetchItemCollection( mFetchMoreUrl ) );
   if ( ic )
   {
     populate( createItems( ic->takeItems() ) );
@@ -531,7 +519,6 @@ void QgsStacCatalogItem::fetchMoreChildren()
     mFetchMoreUrl = ic->nextUrl();
     if ( !ic->nextUrl().isEmpty() && moreItem )
     {
-
       const int numberMatched = ic->numberMatched();
       if ( numberMatched > -1 )
       {
@@ -571,7 +558,6 @@ QgsStacController *QgsStacConnectionItem::controller() const
 {
   return mController.get();
 }
-
 
 
 //

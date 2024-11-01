@@ -38,7 +38,6 @@ class QgsMdalProvider : public QgsMeshDataProvider
     Q_OBJECT
 
   public:
-
     static const QString MDAL_PROVIDER_KEY;
     static const QString MDAL_PROVIDER_DESCRIPTION;
 
@@ -86,14 +85,12 @@ class QgsMdalProvider : public QgsMeshDataProvider
                               const QgsMeshDatasetGroupMetadata &meta,
                               const QVector<QgsMeshDataBlock> &datasetValues,
                               const QVector<QgsMeshDataBlock> &datasetActive,
-                              const QVector<double> &times
-                            ) override;
+                              const QVector<double> &times ) override;
 
     bool persistDatasetGroup( const QString &outputFilePath,
                               const QString &outputDriver,
                               QgsMeshDatasetSourceInterface *source,
-                              int datasetGroupIndex
-                            ) override;
+                              int datasetGroupIndex ) override;
 
     bool saveMeshFrame( const QgsMesh &mesh ) override;
 
@@ -122,9 +119,9 @@ class QgsMdalProvider : public QgsMeshDataProvider
     static void fileMeshExtensions( QStringList &fileMeshExtensions, QStringList &fileMeshDatasetExtensions );
 
   private:
-    QVector<QgsMeshVertex> vertices( ) const;
-    QVector<QgsMeshEdge> edges( ) const;
-    QVector<QgsMeshFace> faces( ) const;
+    QVector<QgsMeshVertex> vertices() const;
+    QVector<QgsMeshEdge> edges() const;
+    QVector<QgsMeshFace> faces() const;
     void loadData();
     void addGroupToTemporalCapabilities( int indexGroup );
     MDAL_MeshH mMeshH = nullptr;
@@ -140,7 +137,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
     void reloadProviderData() override;
 };
 
-class QgsMdalProviderMetadata: public QgsProviderMetadata
+class QgsMdalProviderMetadata : public QgsProviderMetadata
 {
     Q_OBJECT
   public:
@@ -164,8 +161,8 @@ class QgsMdalProviderMetadata: public QgsProviderMetadata
     QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     ProviderCapabilities providerCapabilities() const override;
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
-    QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QList<QgsProviderSublayerDetails> querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
+    QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 #endif //QGSMDALPROVIDER_H

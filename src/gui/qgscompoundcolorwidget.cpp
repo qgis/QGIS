@@ -43,23 +43,19 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
 
   mScreenHelper = new QgsScreenHelper( this );
 
-  mRgbRadios =
-  {
+  mRgbRadios = {
     { mHueRadio, QgsColorWidget::ColorComponent::Hue },
     { mSaturationRadio, QgsColorWidget::ColorComponent::Saturation },
     { mValueRadio, QgsColorWidget::ColorComponent::Value },
     { mRedRadio, QgsColorWidget::ColorComponent::Red },
     { mGreenRadio, QgsColorWidget::ColorComponent::Green },
-    { mBlueRadio, QgsColorWidget::ColorComponent::Blue }
-  };
+    { mBlueRadio, QgsColorWidget::ColorComponent::Blue } };
 
-  mCmykRadios =
-  {
+  mCmykRadios = {
     { mCyanRadio, QgsColorWidget::ColorComponent::Cyan },
     { mMagentaRadio, QgsColorWidget::ColorComponent::Magenta },
     { mYellowRadio, QgsColorWidget::ColorComponent::Yellow },
-    { mBlackRadio, QgsColorWidget::ColorComponent::Black }
-  };
+    { mBlackRadio, QgsColorWidget::ColorComponent::Black } };
 
   mRgbGroup = new QButtonGroup( this );
   int i = 0;
@@ -81,9 +77,8 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
 
   mColorModel->addItem( tr( "RGB" ), QColor::Spec::Rgb );
   mColorModel->addItem( tr( "CMYK" ), QColor::Spec::Cmyk );
-  connect( mColorModel, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( int )
-  {
-    const QColor::Spec spec = static_cast< QColor::Spec >( mColorModel->currentData().toInt() );
+  connect( mColorModel, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
+    const QColor::Spec spec = static_cast<QColor::Spec>( mColorModel->currentData().toInt() );
     if ( spec == QColor::Spec::Cmyk )
       setColor( this->color().toCmyk() );
     else
@@ -108,7 +103,7 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   const QgsSettings settings;
 
   mSchemeList->header()->hide();
-  mSchemeList->setColumnWidth( 0, static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 6 ) );
+  mSchemeList->setColumnWidth( 0, static_cast<int>( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 6 ) );
 
   //get schemes with ShowInColorDialog set
   refreshSchemeComboBox();
@@ -226,8 +221,8 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   mSamplePreview->setColor( QColor() );
 
   // hidpi friendly sizes
-  const int swatchWidth = static_cast< int >( std::round( std::max( Qgis::UI_SCALE_FACTOR * 1.9 * mSwatchButton1->fontMetrics().height(), 38.0 ) ) );
-  const int swatchHeight = static_cast< int >( std::round( std::max( Qgis::UI_SCALE_FACTOR * 1.5 * mSwatchButton1->fontMetrics().height(), 30.0 ) ) );
+  const int swatchWidth = static_cast<int>( std::round( std::max( Qgis::UI_SCALE_FACTOR * 1.9 * mSwatchButton1->fontMetrics().height(), 38.0 ) ) );
+  const int swatchHeight = static_cast<int>( std::round( std::max( Qgis::UI_SCALE_FACTOR * 1.5 * mSwatchButton1->fontMetrics().height(), 30.0 ) ) );
   mSwatchButton1->setMinimumSize( swatchWidth, swatchHeight );
   mSwatchButton1->setMaximumSize( swatchWidth, swatchHeight );
   mSwatchButton2->setMinimumSize( swatchWidth, swatchHeight );
@@ -260,10 +255,10 @@ QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &c
   mSwatchButton15->setMaximumSize( swatchWidth, swatchHeight );
   mSwatchButton16->setMinimumSize( swatchWidth, swatchHeight );
   mSwatchButton16->setMaximumSize( swatchWidth, swatchHeight );
-  const int previewHeight = static_cast< int >( std::round( std::max( Qgis::UI_SCALE_FACTOR * 2.0 * mSwatchButton1->fontMetrics().height(), 40.0 ) ) );
+  const int previewHeight = static_cast<int>( std::round( std::max( Qgis::UI_SCALE_FACTOR * 2.0 * mSwatchButton1->fontMetrics().height(), 40.0 ) ) );
   mColorPreview->setMinimumSize( 0, previewHeight );
   mPreviewWidget->setMaximumHeight( previewHeight * 2 );
-  const int swatchAddSize = static_cast< int >( std::round( std::max( Qgis::UI_SCALE_FACTOR * 1.4 * mSwatchButton1->fontMetrics().height(), 28.0 ) ) );
+  const int swatchAddSize = static_cast<int>( std::round( std::max( Qgis::UI_SCALE_FACTOR * 1.4 * mSwatchButton1->fontMetrics().height(), 28.0 ) ) );
   mAddCustomColorButton->setMinimumWidth( swatchAddSize );
   mAddCustomColorButton->setMaximumWidth( swatchAddSize );
 
@@ -430,7 +425,8 @@ bool QgsCompoundColorWidget::removeUserPalette( QgsUserColorScheme *scheme, QWid
 {
   if ( QMessageBox::question( parent, tr( "Remove Color Palette" ),
                               tr( "Are you sure you want to remove %1?" ).arg( scheme->schemeName() ),
-                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+       != QMessageBox::Yes )
   {
     //user canceled
     return false;
@@ -477,7 +473,7 @@ QgsUserColorScheme *QgsCompoundColorWidget::createNewUserPalette( QWidget *paren
 {
   bool ok = false;
   const QString name = QInputDialog::getText( parent, tr( "Create New Palette" ), tr( "Enter a name for the new palette:" ),
-                       QLineEdit::Normal, tr( "New palette" ), &ok );
+                                              QLineEdit::Normal, tr( "New palette" ), &ok );
 
   if ( !ok || name.isEmpty() )
   {
@@ -636,14 +632,14 @@ void QgsCompoundColorWidget::mTabWidget_currentChanged( int index )
 {
   //disable radio buttons if not using the first tab, as they have no meaning for other tabs
   const bool enabled = index == 0;
-  const QList<QRadioButton *> colorRadios{ mHueRadio, mSaturationRadio, mValueRadio, mRedRadio, mGreenRadio, mBlueRadio, mCyanRadio, mMagentaRadio, mYellowRadio, mBlackRadio };
+  const QList<QRadioButton *> colorRadios { mHueRadio, mSaturationRadio, mValueRadio, mRedRadio, mGreenRadio, mBlueRadio, mCyanRadio, mMagentaRadio, mYellowRadio, mBlackRadio };
   for ( QRadioButton *colorRadio : colorRadios )
     colorRadio->setEnabled( enabled );
 }
 
 void QgsCompoundColorWidget::mActionShowInButtons_toggled( bool state )
 {
-  QgsUserColorScheme *scheme = dynamic_cast< QgsUserColorScheme * >( mSchemeList->scheme() );
+  QgsUserColorScheme *scheme = dynamic_cast<QgsUserColorScheme *>( mSchemeList->scheme() );
   if ( scheme )
   {
     scheme->setShowSchemeInMenu( state );
@@ -652,7 +648,7 @@ void QgsCompoundColorWidget::mActionShowInButtons_toggled( bool state )
 
 QScreen *QgsCompoundColorWidget::findScreenAt( QPoint pos )
 {
-  const QList< QScreen * > screens = QGuiApplication::screens();
+  const QList<QScreen *> screens = QGuiApplication::screens();
   for ( QScreen *screen : screens )
   {
     if ( screen->geometry().contains( pos ) )
@@ -805,7 +801,7 @@ QColor QgsCompoundColorWidget::averageColor( const QImage &image ) const
   //scan through image and sum rgb components
   for ( int heightIndex = 0; heightIndex < image.height(); ++heightIndex )
   {
-    const QRgb *scanLine = reinterpret_cast< const QRgb * >( image.constScanLine( heightIndex ) );
+    const QRgb *scanLine = reinterpret_cast<const QRgb *>( image.constScanLine( heightIndex ) );
     for ( int widthIndex = 0; widthIndex < image.width(); ++widthIndex )
     {
       tmpRgb = scanLine[widthIndex];
@@ -828,7 +824,7 @@ QColor QgsCompoundColorWidget::sampleColor( QPoint point ) const
 {
   const int sampleRadius = mSpinBoxRadius->value() - 1;
   QScreen *screen = findScreenAt( point );
-  if ( ! screen )
+  if ( !screen )
   {
     return QColor();
   }
@@ -836,10 +832,10 @@ QColor QgsCompoundColorWidget::sampleColor( QPoint point ) const
   const int x = point.x() - screen->geometry().left();
   const int y = point.y() - screen->geometry().top();
   const QPixmap snappedPixmap = screen->grabWindow( 0,
-                                x - sampleRadius,
-                                y - sampleRadius,
-                                1 + sampleRadius * 2,
-                                1 + sampleRadius * 2 );
+                                                    x - sampleRadius,
+                                                    y - sampleRadius,
+                                                    1 + sampleRadius * 2,
+                                                    1 + sampleRadius * 2 );
   const QImage snappedImage = snappedPixmap.toImage();
   //scan all pixels and take average color
   return averageColor( snappedImage );
@@ -924,7 +920,7 @@ void QgsCompoundColorWidget::updateActionsForCurrentScheme()
   mRemoveColorsFromSchemeButton->setEnabled( scheme->isEditable() );
 
   QgsUserColorScheme *userScheme = dynamic_cast<QgsUserColorScheme *>( scheme );
-  mActionRemovePalette->setEnabled( static_cast< bool >( userScheme ) );
+  mActionRemovePalette->setEnabled( static_cast<bool>( userScheme ) );
   if ( userScheme )
   {
     mActionShowInButtons->setEnabled( true );

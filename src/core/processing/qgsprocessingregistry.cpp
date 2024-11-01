@@ -43,7 +43,7 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeEnum() );
   addParameterType( new QgsProcessingParameterTypeExtent() );
   addParameterType( new QgsProcessingParameterTypeMatrix() );
-  addParameterType( new QgsProcessingParameterTypeFile() ) ;
+  addParameterType( new QgsProcessingParameterTypeFile() );
   addParameterType( new QgsProcessingParameterTypeField() );
   addParameterType( new QgsProcessingParameterTypeVectorDestination() );
   addParameterType( new QgsProcessingParameterTypeRasterDestination() );
@@ -121,11 +121,10 @@ bool QgsProcessingRegistry::addProvider( QgsProcessingProvider *provider )
   }
 
   provider->setParent( this );
-  mProviders[ provider->id()] = provider;
+  mProviders[provider->id()] = provider;
 
   mCachedInformation.clear();
-  connect( provider, &QgsProcessingProvider::algorithmsLoaded, this, [this]
-  {
+  connect( provider, &QgsProcessingProvider::algorithmsLoaded, this, [this] {
     mCachedInformation.clear();
   } );
 
@@ -172,9 +171,9 @@ QgsProcessingProvider *QgsProcessingRegistry::providerById( const QString &id ) 
   return nullptr;
 }
 
-QList< const QgsProcessingAlgorithm * > QgsProcessingRegistry::algorithms() const
+QList<const QgsProcessingAlgorithm *> QgsProcessingRegistry::algorithms() const
 {
-  QList< const QgsProcessingAlgorithm * > algs;
+  QList<const QgsProcessingAlgorithm *> algs;
   QMap<QString, QgsProcessingProvider *>::const_iterator it = mProviders.constBegin();
   for ( ; it != mProviders.constEnd(); ++it )
   {
@@ -236,7 +235,7 @@ const QgsProcessingAlgorithm *QgsProcessingRegistry::algorithmById( const QStrin
   QMap<QString, QgsProcessingProvider *>::const_iterator it = mProviders.constBegin();
   for ( ; it != mProviders.constEnd(); ++it )
   {
-    const QList< const QgsProcessingAlgorithm * > algorithms = it.value()->algorithms();
+    const QList<const QgsProcessingAlgorithm *> algorithms = it.value()->algorithms();
     for ( const QgsProcessingAlgorithm *alg : algorithms )
       if ( alg->id() == id )
         return alg;
@@ -251,7 +250,7 @@ QgsProcessingAlgorithm *QgsProcessingRegistry::createAlgorithmById( const QStrin
   if ( !alg )
     return nullptr;
 
-  std::unique_ptr< QgsProcessingAlgorithm > creation( alg->create( configuration ) );
+  std::unique_ptr<QgsProcessingAlgorithm> creation( alg->create( configuration ) );
   return creation.release();
 }
 

@@ -43,7 +43,6 @@ class QgsDataSourceUri;
 class QgsMssqlDatabase
 {
   public:
-
     /**
      * Tries to connect to a MSSQL database and returns shared pointer to the connection. On success,
      * the returned database object (QSqlDatabase) is already open and it is not necessary to call open().
@@ -89,7 +88,7 @@ class QgsMssqlDatabase
      */
     static QSqlDatabase getDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool transaction = false );
 
-    static QMap<QString, std::weak_ptr<QgsMssqlDatabase> > sConnections;
+    static QMap<QString, std::weak_ptr<QgsMssqlDatabase>> sConnections;
 
     static QRecursiveMutex sMutex;
 };
@@ -118,7 +117,6 @@ class QgsMssqlQuery : public QSqlQuery
 
   private:
     std::shared_ptr<QgsMssqlDatabase> mDb;
-
 };
 
 

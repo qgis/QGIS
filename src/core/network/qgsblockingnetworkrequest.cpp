@@ -33,7 +33,7 @@
 
 QgsBlockingNetworkRequest::QgsBlockingNetworkRequest()
 {
-  connect( QgsNetworkAccessManager::instance(), qOverload< QNetworkReply * >( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsBlockingNetworkRequest::requestTimedOut );
+  connect( QgsNetworkAccessManager::instance(), qOverload<QNetworkReply *>( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsBlockingNetworkRequest::requestTimedOut );
 }
 
 QgsBlockingNetworkRequest::~QgsBlockingNetworkRequest()
@@ -142,7 +142,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
   mForceRefresh = forceRefresh;
   mReplyContent.clear();
 
-  if ( !mAuthCfg.isEmpty() &&  !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
+  if ( !mAuthCfg.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
   {
     mErrorCode = NetworkError;
     mErrorMessage = errorMessageFailedAuth();
@@ -166,8 +166,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
   if ( mFeedback )
     connect( mFeedback, &QgsFeedback::canceled, this, &QgsBlockingNetworkRequest::abort );
 
-  const std::function<void()> downloaderFunction = [ this, request, &waitConditionMutex, &authRequestBufferNotEmpty, &threadFinished, &success, requestMadeFromMainThread ]()
-  {
+  const std::function<void()> downloaderFunction = [this, request, &waitConditionMutex, &authRequestBufferNotEmpty, &threadFinished, &success, requestMadeFromMainThread]() {
     // this function will always be run in worker threads -- either the blocking call is being made in a worker thread,
     // or the blocking call has been made from the main thread and we've fired up a new thread for this function
     Q_ASSERT( QThread::currentThread() != QgsApplication::instance()->thread() );
@@ -202,8 +201,7 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( QgsBl
       if ( request.hasRawHeader( "Range" ) )
         connect( mReply, &QNetworkReply::metaDataChanged, this, &QgsBlockingNetworkRequest::abortIfNotPartialContentReturned, Qt::DirectConnection );
 
-      auto resumeMainThread = [&waitConditionMutex, &authRequestBufferNotEmpty ]()
-      {
+      auto resumeMainThread = [&waitConditionMutex, &authRequestBufferNotEmpty]() {
         // when this method is called we have "produced" a single authentication request -- so the buffer is now full
         // and it's time for the "consumer" (main thread) to do its part
         waitConditionMutex.lock();
@@ -322,7 +320,6 @@ void QgsBlockingNetworkRequest::replyFinished()
 {
   if ( !mIsAborted && mReply )
   {
-
     if ( mReply->error() == QNetworkReply::NoError && ( !mFeedback || !mFeedback->isCanceled() ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "reply OK" ), 2 );

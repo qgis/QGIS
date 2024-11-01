@@ -26,9 +26,9 @@
 #include <QSet>
 
 QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterInterface *input, int redBand, int greenBand, int blueBand,
-    QgsContrastEnhancement *redEnhancement,
-    QgsContrastEnhancement *greenEnhancement,
-    QgsContrastEnhancement *blueEnhancement )
+                                                      QgsContrastEnhancement *redEnhancement,
+                                                      QgsContrastEnhancement *greenEnhancement,
+                                                      QgsContrastEnhancement *blueEnhancement )
   : QgsRasterRenderer( input, QStringLiteral( "multibandcolor" ) )
   , mRedBand( redBand )
   , mGreenBand( greenBand )
@@ -108,7 +108,7 @@ QgsRasterRenderer *QgsMultiBandColorRenderer::create( const QDomElement &elem, Q
   if ( !redContrastElem.isNull() )
   {
     redContrastEnhancement = new QgsContrastEnhancement( ( Qgis::DataType )(
-          input->dataType( redBand ) ) );
+      input->dataType( redBand ) ) );
     redContrastEnhancement->readXml( redContrastElem );
   }
 
@@ -117,7 +117,7 @@ QgsRasterRenderer *QgsMultiBandColorRenderer::create( const QDomElement &elem, Q
   if ( !greenContrastElem.isNull() )
   {
     greenContrastEnhancement = new QgsContrastEnhancement( ( Qgis::DataType )(
-          input->dataType( greenBand ) ) );
+      input->dataType( greenBand ) ) );
     greenContrastEnhancement->readXml( greenContrastElem );
   }
 
@@ -126,20 +126,20 @@ QgsRasterRenderer *QgsMultiBandColorRenderer::create( const QDomElement &elem, Q
   if ( !blueContrastElem.isNull() )
   {
     blueContrastEnhancement = new QgsContrastEnhancement( ( Qgis::DataType )(
-          input->dataType( blueBand ) ) );
+      input->dataType( blueBand ) ) );
     blueContrastEnhancement->readXml( blueContrastElem );
   }
 
   QgsRasterRenderer *r = new QgsMultiBandColorRenderer( input, redBand, greenBand, blueBand, redContrastEnhancement,
-      greenContrastEnhancement, blueContrastEnhancement );
+                                                        greenContrastEnhancement, blueContrastEnhancement );
   r->readXml( elem );
   return r;
 }
 
-QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
+QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo )
-  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
+  std::unique_ptr<QgsRasterBlock> outputBlock( new QgsRasterBlock() );
   if ( !mInput )
   {
     return outputBlock.release();
@@ -253,10 +253,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     bool hasEnhancement;
     if ( hasByteRgb )
     {
-      hasEnhancement =
-        ( mRedContrastEnhancement && mRedContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement ) ||
-        ( mGreenContrastEnhancement && mGreenContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement ) ||
-        ( mBlueContrastEnhancement && mBlueContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement );
+      hasEnhancement = ( mRedContrastEnhancement && mRedContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement ) || ( mGreenContrastEnhancement && mGreenContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement ) || ( mBlueContrastEnhancement && mBlueContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement );
     }
     else
     {
@@ -266,16 +263,14 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
       fastDraw = false;
   }
 
-  const qgssize count = ( qgssize )width * height;
+  const qgssize count = ( qgssize ) width * height;
   for ( qgssize i = 0; i < count; i++ )
   {
     if ( fastDraw ) //fast rendering if no transparency, stretching, color inversion, etc.
     {
       if ( hasByteRgb )
       {
-        if ( redBlock->isNoData( i ) ||
-             greenBlock->isNoData( i ) ||
-             blueBlock->isNoData( i ) )
+        if ( redBlock->isNoData( i ) || greenBlock->isNoData( i ) || blueBlock->isNoData( i ) )
         {
           outputBlock->setColor( i, myDefaultColor );
         }
@@ -301,9 +296,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
         if ( !redIsNoData && !greenIsNoData )
           blueVal = blueBlock->valueAndNoData( i, blueIsNoData );
 
-        if ( redIsNoData ||
-             greenIsNoData ||
-             blueIsNoData )
+        if ( redIsNoData || greenIsNoData || blueIsNoData )
         {
           outputBlock->setColor( i, myDefaultColor );
         }
@@ -565,12 +558,12 @@ void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
 
   const QList<int> bands = usesBands();
   QList<int>::const_iterator bandIt = bands.constBegin();
-  for ( int tagCounter = 0 ; bandIt != bands.constEnd(); ++bandIt, ++tagCounter )
+  for ( int tagCounter = 0; bandIt != bands.constEnd(); ++bandIt, ++tagCounter )
   {
     if ( *bandIt < 0 )
       continue;
 
-    QDomElement channelElem = doc.createElement( tags[ tagCounter ] );
+    QDomElement channelElem = doc.createElement( tags[tagCounter] );
     channelSelectionElem.appendChild( channelElem );
 
     // set band
@@ -581,10 +574,10 @@ void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
     // set ContrastEnhancement for each band
     // NO ContrastEnhancement parameter for the entire bands is managed e.g.
     // because min/max values can vary depending on band.
-    if ( contrastEnhancements[ tagCounter ] )
+    if ( contrastEnhancements[tagCounter] )
     {
       QDomElement contrastEnhancementElem = doc.createElement( QStringLiteral( "sld:ContrastEnhancement" ) );
-      contrastEnhancements[ tagCounter ]->toSld( doc, contrastEnhancementElem );
+      contrastEnhancements[tagCounter]->toSld( doc, contrastEnhancementElem );
       channelElem.appendChild( contrastEnhancementElem );
     }
   }

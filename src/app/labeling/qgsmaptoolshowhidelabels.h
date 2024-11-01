@@ -42,7 +42,6 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   protected:
-
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
 

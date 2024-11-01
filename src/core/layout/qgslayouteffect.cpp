@@ -58,6 +58,3 @@ void QgsLayoutEffect::setCompositionMode( QPainter::CompositionMode compositionM
   // force redraw with new composition mode
   update();
 }
-
-
-

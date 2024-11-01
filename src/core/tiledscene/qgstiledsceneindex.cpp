@@ -55,7 +55,6 @@ QByteArray QgsAbstractTiledSceneIndex::retrieveContent( const QString &uri, QgsF
 QgsTiledSceneIndex::QgsTiledSceneIndex( QgsAbstractTiledSceneIndex *index )
   : mIndex( index )
 {
-
 }
 
 QgsTiledSceneIndex::~QgsTiledSceneIndex() = default;
@@ -63,7 +62,6 @@ QgsTiledSceneIndex::~QgsTiledSceneIndex() = default;
 QgsTiledSceneIndex::QgsTiledSceneIndex( const QgsTiledSceneIndex &other )
   : mIndex( other.mIndex )
 {
-
 }
 
 QgsTiledSceneIndex &QgsTiledSceneIndex::operator=( const QgsTiledSceneIndex &other )
@@ -77,7 +75,7 @@ QgsTiledSceneIndex &QgsTiledSceneIndex::operator=( const QgsTiledSceneIndex &oth
 
 bool QgsTiledSceneIndex::isValid() const
 {
-  return static_cast< bool >( mIndex.get() );
+  return static_cast<bool>( mIndex.get() );
 }
 
 QgsTiledSceneTile QgsTiledSceneIndex::rootTile() const
@@ -104,7 +102,7 @@ long long QgsTiledSceneIndex::parentTileId( long long id ) const
   return mIndex->parentTileId( id );
 }
 
-QVector< long long > QgsTiledSceneIndex::childTileIds( long long id ) const
+QVector<long long> QgsTiledSceneIndex::childTileIds( long long id ) const
 {
   if ( !mIndex )
     return {};
@@ -112,7 +110,7 @@ QVector< long long > QgsTiledSceneIndex::childTileIds( long long id ) const
   return mIndex->childTileIds( id );
 }
 
-QVector< long long > QgsTiledSceneIndex::getTiles( const QgsTiledSceneRequest &request )
+QVector<long long> QgsTiledSceneIndex::getTiles( const QgsTiledSceneRequest &request )
 {
   if ( !mIndex )
     return {};
@@ -143,4 +141,3 @@ QByteArray QgsTiledSceneIndex::retrieveContent( const QString &uri, QgsFeedback 
 
   return mIndex->retrieveContent( uri, feedback );
 }
-

@@ -20,24 +20,23 @@
 ///@cond PRIVATE
 ///
 
-static void getFeaturesForProvider( const QPair< std::shared_ptr< QgsAbstractFeatureSource >, QgsFeatureRequest > &pair )
+static void getFeaturesForProvider( const QPair<std::shared_ptr<QgsAbstractFeatureSource>, QgsFeatureRequest> &pair )
 {
   QgsFeatureIterator it = pair.first->getFeatures( pair.second );
   QgsFeature f;
   while ( it.nextFeature( f ) )
   {
-
   }
 }
 
 bool QgsTestUtils::testProviderIteratorThreadSafety( QgsVectorDataProvider *provider, const QgsFeatureRequest &request )
 {
   constexpr int JOBS_TO_RUN = 100;
-  QList< QPair< std::shared_ptr< QgsAbstractFeatureSource >, QgsFeatureRequest > > jobs;
+  QList<QPair<std::shared_ptr<QgsAbstractFeatureSource>, QgsFeatureRequest>> jobs;
   jobs.reserve( JOBS_TO_RUN );
   for ( int i = 0; i < JOBS_TO_RUN; ++i )
   {
-    jobs.append( qMakePair( std::shared_ptr< QgsAbstractFeatureSource >( provider->featureSource() ), request ) );
+    jobs.append( qMakePair( std::shared_ptr<QgsAbstractFeatureSource>( provider->featureSource() ), request ) );
   }
 
   //freaking hammer the provider with a ton of concurrent requests.

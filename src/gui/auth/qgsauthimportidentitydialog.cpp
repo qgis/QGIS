@@ -32,7 +32,7 @@
 
 
 QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
-    QWidget *parent )
+                                                          QWidget *parent )
   : QDialog( parent )
   , mIdentityType( CertIdentity )
   , mPkiBundle( QgsPkiBundle() )
@@ -101,7 +101,7 @@ void QgsAuthImportIdentityDialog::populateIdentityType()
              cmbIdentityTypes, &QComboBox::setCurrentIndex );
 
     connect( cmbIdentityTypes, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-             this, [ = ] { validateIdentity(); } );
+             this, [=] { validateIdentity(); } );
     connect( stkwBundleType, &QStackedWidget::currentChanged,
              this, &QgsAuthImportIdentityDialog::validateIdentity );
 
@@ -123,7 +123,6 @@ void QgsAuthImportIdentityDialog::validateIdentity()
 
 bool QgsAuthImportIdentityDialog::validateBundle()
 {
-
   // clear out any previously set bundle
   const QSslCertificate emptycert;
   const QSslKey emptykey;
@@ -150,8 +149,8 @@ void QgsAuthImportIdentityDialog::clearValidation()
 }
 
 void QgsAuthImportIdentityDialog::writeValidation( const QString &msg,
-    QgsAuthImportIdentityDialog::Validity valid,
-    bool append )
+                                                   QgsAuthImportIdentityDialog::Validity valid,
+                                                   bool append )
 {
   QString ss;
   QString txt( msg );
@@ -193,7 +192,7 @@ void QgsAuthImportIdentityDialog::chkPkiPathsPassShow_stateChanged( int state )
 
 void QgsAuthImportIdentityDialog::btnPkiPathsCert_clicked()
 {
-  const QString &fn = getOpenFileName( tr( "Open Client Certificate File" ),  tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Client Certificate File" ), tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     lePkiPathsCert->setText( fn );
@@ -203,7 +202,7 @@ void QgsAuthImportIdentityDialog::btnPkiPathsCert_clicked()
 
 void QgsAuthImportIdentityDialog::btnPkiPathsKey_clicked()
 {
-  const QString &fn = getOpenFileName( tr( "Open Private Key File" ),  tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Private Key File" ), tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     lePkiPathsKey->setText( fn );
@@ -224,7 +223,7 @@ void QgsAuthImportIdentityDialog::chkPkiPkcs12PassShow_stateChanged( int state )
 
 void QgsAuthImportIdentityDialog::btnPkiPkcs12Bundle_clicked()
 {
-  const QString &fn = getOpenFileName( tr( "Open PKCS#12 Certificate Bundle" ),  tr( "PKCS#12 (*.p12 *.pfx)" ) );
+  const QString &fn = getOpenFileName( tr( "Open PKCS#12 Certificate Bundle" ), tr( "PKCS#12 (*.p12 *.pfx)" ) );
   if ( !fn.isEmpty() )
   {
     lePkiPkcs12Bundle->setText( fn );

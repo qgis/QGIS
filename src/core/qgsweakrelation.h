@@ -42,7 +42,6 @@
 class CORE_EXPORT QgsWeakRelation
 {
   public:
-
     /**
      * Enum to distinguish if the layer is referenced or referencing
      * \since QGIS 3.16
@@ -50,7 +49,7 @@ class CORE_EXPORT QgsWeakRelation
     enum WeakRelationType
     {
       Referencing, //!< The layer is referencing (or the "child" / "right" layer in the relationship)
-      Referenced //!< The layer is referenced (or the "parent" / "left" left in the relationship)
+      Referenced   //!< The layer is referenced (or the "parent" / "left" left in the relationship)
     };
 
     /**
@@ -73,8 +72,7 @@ class CORE_EXPORT QgsWeakRelation
                      const QString &referencedLayerId,
                      const QString &referencedLayerName,
                      const QString &referencedLayerSource,
-                     const QString &referencedLayerProviderKey
-                   );
+                     const QString &referencedLayerProviderKey );
 
     /**
      * Resolves a weak relation in the given \a project returning a list of possibly invalid QgsRelations
@@ -84,9 +82,9 @@ class CORE_EXPORT QgsWeakRelation
      * layer components are not NULL.
      */
 #ifndef SIP_RUN
-    QList< QgsRelation > resolvedRelations( const QgsProject *project, QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::All ) const;
+    QList<QgsRelation> resolvedRelations( const QgsProject *project, QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::All ) const;
 #else
-    QList< QgsRelation > resolvedRelations( const QgsProject *project ) const;
+    QList<QgsRelation> resolvedRelations( const QgsProject *project ) const;
 #endif
 
     /**
@@ -460,7 +458,7 @@ class CORE_EXPORT QgsWeakRelation
     SIP_PYOBJECT __repr__();
     % MethodCode
 
-    QString leftIdentifier;
+        QString leftIdentifier;
     if ( !sipCpp->referencedLayer().source.isEmpty() )
       leftIdentifier = sipCpp->referencedLayer().source;
 
@@ -478,9 +476,9 @@ class CORE_EXPORT QgsWeakRelation
     % End
 #endif
 
-  private:
+      private :
 
-    QgsVectorLayerRef mReferencingLayer;
+      QgsVectorLayerRef mReferencingLayer;
     QgsVectorLayerRef mReferencedLayer;
     QgsVectorLayerRef mMappingTable;
 
@@ -499,7 +497,6 @@ class CORE_EXPORT QgsWeakRelation
     QString mRelatedTableType;
 
     friend class TestQgsWeakRelation;
-
 };
 
 #endif // QGSWEAKRELATION_H

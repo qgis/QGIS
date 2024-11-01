@@ -23,16 +23,15 @@
 
 QgsProjectElevationProperties::QgsProjectElevationProperties( QObject *parent )
   : QObject( parent )
-  , mTerrainProvider( std::make_unique< QgsFlatTerrainProvider >() )
+  , mTerrainProvider( std::make_unique<QgsFlatTerrainProvider>() )
 {
-
 }
 
 QgsProjectElevationProperties::~QgsProjectElevationProperties() = default;
 
 void QgsProjectElevationProperties::reset()
 {
-  mTerrainProvider = std::make_unique< QgsFlatTerrainProvider >();
+  mTerrainProvider = std::make_unique<QgsFlatTerrainProvider>();
   mElevationRange = QgsDoubleRange();
   emit changed();
   emit elevationRangeChanged( mElevationRange );
@@ -51,27 +50,27 @@ bool QgsProjectElevationProperties::readXml( const QDomElement &element, const Q
   {
     const QString type = providerElement.attribute( QStringLiteral( "type" ) );
     if ( type.compare( QLatin1String( "flat" ) ) == 0 )
-      mTerrainProvider = std::make_unique< QgsFlatTerrainProvider >();
+      mTerrainProvider = std::make_unique<QgsFlatTerrainProvider>();
     else if ( type.compare( QLatin1String( "raster" ) ) == 0 )
-      mTerrainProvider = std::make_unique< QgsRasterDemTerrainProvider >();
+      mTerrainProvider = std::make_unique<QgsRasterDemTerrainProvider>();
     else if ( type.compare( QLatin1String( "mesh" ) ) == 0 )
-      mTerrainProvider = std::make_unique< QgsMeshTerrainProvider >();
+      mTerrainProvider = std::make_unique<QgsMeshTerrainProvider>();
     else
-      mTerrainProvider = std::make_unique< QgsFlatTerrainProvider >();
+      mTerrainProvider = std::make_unique<QgsFlatTerrainProvider>();
 
     mTerrainProvider->readXml( providerElement, context );
   }
   else
   {
-    mTerrainProvider = std::make_unique< QgsFlatTerrainProvider >();
+    mTerrainProvider = std::make_unique<QgsFlatTerrainProvider>();
   }
 
   bool ok = false;
-  double rangeLower = std::numeric_limits< double >::lowest();
+  double rangeLower = std::numeric_limits<double>::lowest();
   const double storedRangeLower = element.attribute( QStringLiteral( "RangeLower" ) ).toDouble( &ok );
   if ( ok )
     rangeLower = storedRangeLower;
-  double rangeUpper = std::numeric_limits< double >::max();
+  double rangeUpper = std::numeric_limits<double>::max();
   const double storedRangeUpper = element.attribute( QStringLiteral( "RangeUpper" ) ).toDouble( &ok );
   if ( ok )
     rangeUpper = storedRangeUpper;
@@ -100,9 +99,9 @@ QDomElement QgsProjectElevationProperties::writeXml( QDomDocument &document, con
     element.appendChild( providerElement );
   }
 
-  if ( mElevationRange.lower() != std::numeric_limits< double >::lowest() )
+  if ( mElevationRange.lower() != std::numeric_limits<double>::lowest() )
     element.setAttribute( QStringLiteral( "RangeLower" ), qgsDoubleToString( mElevationRange.lower() ) );
-  if ( mElevationRange.upper() != std::numeric_limits< double >::max() )
+  if ( mElevationRange.upper() != std::numeric_limits<double>::max() )
     element.setAttribute( QStringLiteral( "RangeUpper" ), qgsDoubleToString( mElevationRange.upper() ) );
 
   if ( mElevationFilterRangeSize >= 0 )
@@ -124,7 +123,7 @@ void QgsProjectElevationProperties::setTerrainProvider( QgsAbstractTerrainProvid
   if ( mTerrainProvider.get() == provider )
     return;
 
-  const bool hasChanged = ( provider && mTerrainProvider ) ? !mTerrainProvider->equals( provider ) : ( static_cast< bool >( provider ) != static_cast< bool >( mTerrainProvider.get() ) );
+  const bool hasChanged = ( provider && mTerrainProvider ) ? !mTerrainProvider->equals( provider ) : ( static_cast<bool>( provider ) != static_cast<bool>( mTerrainProvider.get() ) );
 
   mTerrainProvider.reset( provider );
   if ( hasChanged )

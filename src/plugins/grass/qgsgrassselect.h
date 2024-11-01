@@ -22,7 +22,7 @@
  * \brief Dialog to select GRASS layer.
  *
  */
-class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
+class QgsGrassSelect : public QDialog, private Ui::QgsGrassSelectBase
 {
     Q_OBJECT
 
@@ -36,16 +36,16 @@ class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
       MapSet,
       Vector,
       Raster,
-      Group, // group of rasters, used in selectedType
+      Group,  // group of rasters, used in selectedType
       MapCalc // file in $MAPSET/mapcalc directory (used by QgsGrassMapcalc)
     };
 
-    QString  gisdbase;
-    QString  location;
-    QString  mapset;
-    QString  map;
-    QString  layer;
-    int      selectedType;  // RASTER or GROUP
+    QString gisdbase;
+    QString location;
+    QString mapset;
+    QString map;
+    QString layer;
+    int selectedType; // RASTER or GROUP
 
   public slots:
     void accept() override;
@@ -70,8 +70,8 @@ class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
     void setLayers();
 
   private:
-    int type; // map type (mapset element)
-    static bool sFirst; // called first time
+    int type;                     // map type (mapset element)
+    static bool sFirst;           // called first time
     static QString sLastGisdbase; // Last selected values
     static QString sLastLocation;
     static QString sLastMapset;

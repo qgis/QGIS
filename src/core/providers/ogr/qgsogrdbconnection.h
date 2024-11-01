@@ -47,14 +47,13 @@ class CORE_EXPORT QgsOgrDbConnection : public QObject
     static void setSelectedConnection( const QString &connName, const QString &settingsKey );
 
   public:
-
     /**
      * Returns the uri
      * \see QgsDataSourceUri
      */
     QgsDataSourceUri uri();
     //! Returns the path
-    QString path( ) const { return mPath; }
+    QString path() const { return mPath; }
     //! Returns the connection name
     QString name() const { return mConnName; }
     //! Sets the \a path for the connection
@@ -68,7 +67,6 @@ class CORE_EXPORT QgsOgrDbConnection : public QObject
     QString mConnName;
     QString mPath;
     QString mSettingsKey;
-
 };
 
 ///@endcond

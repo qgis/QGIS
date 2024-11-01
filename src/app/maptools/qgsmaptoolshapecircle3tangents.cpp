@@ -154,10 +154,9 @@ void QgsMapToolShapeCircle3Tangents::cadCanvasMoveEvent( QgsMapMouseEvent *e, Qg
       mTempRubberBand->show();
     }
   }
-
 }
 
-void QgsMapToolShapeCircle3Tangents::clean( )
+void QgsMapToolShapeCircle3Tangents::clean()
 {
   mPosPoints.clear();
   QgsMapToolShapeCircleAbstract::clean();

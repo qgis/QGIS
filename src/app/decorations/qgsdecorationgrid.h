@@ -30,20 +30,18 @@ class QgsMarkerSymbol;
 #include <QFont>
 #include "qgis_app.h"
 
-class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
+class APP_EXPORT QgsDecorationGrid : public QgsDecorationItem
 {
-
     Q_OBJECT
 
   public:
-
     QgsDecorationGrid( QObject *parent = nullptr );
-    ~ QgsDecorationGrid() override;
+    ~QgsDecorationGrid() override;
 
     enum GridStyle
     {
       Line = 0, // lines
-      Marker //markers
+      Marker    //markers
     };
 
     enum GridAnnotationDirection
@@ -69,15 +67,15 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     void setTextFormat( const QgsTextFormat &format ) { mTextFormat = format; }
 
     //! Sets coordinate grid style.
-    void setGridStyle( GridStyle style ) {mGridStyle = style;}
+    void setGridStyle( GridStyle style ) { mGridStyle = style; }
     GridStyle gridStyle() const { return mGridStyle; }
 
     //! Sets coordinate interval in x-direction for composergrid.
-    void setGridIntervalX( double interval ) { mGridIntervalX = interval;}
+    void setGridIntervalX( double interval ) { mGridIntervalX = interval; }
     double gridIntervalX() const { return mGridIntervalX; }
 
     //! Sets coordinate interval in y-direction for composergrid.
-    void setGridIntervalY( double interval ) { mGridIntervalY = interval;}
+    void setGridIntervalY( double interval ) { mGridIntervalY = interval; }
     double gridIntervalY() const { return mGridIntervalY; }
 
     //! Sets x-coordinate offset for composer grid
@@ -94,27 +92,27 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     //! Sets with of grid pen
     void setGridPenWidth( double w ) { mGridPen.setWidthF( w ); }
     //! Sets the color of the grid pen
-    void setGridPenColor( const QColor &c ) {  mGridPen.setColor( c ); }
+    void setGridPenColor( const QColor &c ) { mGridPen.setColor( c ); }
 
     //! Sets font for grid annotations
     void setGridAnnotationFont( const QFont &f ) { mGridAnnotationFont = f; }
     QFont gridAnnotationFont() const { return mGridAnnotationFont; }
 
     //! Sets coordinate precision for grid annotations
-    void setGridAnnotationPrecision( int p ) {mGridAnnotationPrecision = p;}
-    int gridAnnotationPrecision() const {return mGridAnnotationPrecision;}
+    void setGridAnnotationPrecision( int p ) { mGridAnnotationPrecision = p; }
+    int gridAnnotationPrecision() const { return mGridAnnotationPrecision; }
 
     //! Sets flag if grid annotation should be shown
-    void setShowGridAnnotation( bool show ) {mShowGridAnnotation = show;}
-    bool showGridAnnotation() const {return mShowGridAnnotation;}
+    void setShowGridAnnotation( bool show ) { mShowGridAnnotation = show; }
+    bool showGridAnnotation() const { return mShowGridAnnotation; }
 
     //! Sets distance between map frame and annotations
-    void setAnnotationFrameDistance( double d ) {mAnnotationFrameDistance = d;}
-    double annotationFrameDistance() const {return mAnnotationFrameDistance;}
+    void setAnnotationFrameDistance( double d ) { mAnnotationFrameDistance = d; }
+    double annotationFrameDistance() const { return mAnnotationFrameDistance; }
 
     //! Sets grid annotation direction. Can be horizontal, vertical, direction of axis and horizontal and vertical
-    void setGridAnnotationDirection( GridAnnotationDirection d ) {mGridAnnotationDirection = d;}
-    GridAnnotationDirection gridAnnotationDirection() const {return mGridAnnotationDirection;}
+    void setGridAnnotationDirection( GridAnnotationDirection d ) { mGridAnnotationDirection = d; }
+    GridAnnotationDirection gridAnnotationDirection() const { return mGridAnnotationDirection; }
 
     //! Sets symbol that is used to draw grid lines. Takes ownership
     void setLineSymbol( QgsLineSymbol *symbol );
@@ -154,7 +152,6 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     void checkMapUnitsChanged();
 
   private:
-
     //! Enum for different frame borders
     enum Border
     {
@@ -187,8 +184,8 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     //! Annotation can be horizontal / vertical or different for axes
     GridAnnotationDirection mGridAnnotationDirection;
 
-    std::unique_ptr< QgsLineSymbol > mLineSymbol;
-    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
+    std::unique_ptr<QgsLineSymbol> mLineSymbol;
+    std::unique_ptr<QgsMarkerSymbol> mMarkerSymbol;
 
     Qgis::DistanceUnit mMapUnits;
 
@@ -198,20 +195,20 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
      * \param hLines horizontal coordinate lines in item coordinates
      * \param vLines vertical coordinate lines in item coordinates
      */
-    void drawCoordinateAnnotations( QgsRenderContext &context, const QList< QPair< qreal, QLineF > > &hLines, const QList< QPair< qreal, QLineF > > &vLines );
+    void drawCoordinateAnnotations( QgsRenderContext &context, const QList<QPair<qreal, QLineF>> &hLines, const QList<QPair<qreal, QLineF>> &vLines );
     void drawCoordinateAnnotation( QgsRenderContext &context, QPointF pos, const QString &annotationString );
 
     /**
      * Returns the grid lines with associated coordinate value
      * \returns 0 in case of success
      */
-    int xGridLines( const QgsMapSettings &mapSettings, QList< QPair< qreal, QLineF > > &lines ) const;
+    int xGridLines( const QgsMapSettings &mapSettings, QList<QPair<qreal, QLineF>> &lines ) const;
 
     /**
      * Returns the grid lines for the y-coordinates. Not vertical in case of rotation
      * \returns 0 in case of success
      */
-    int yGridLines( const QgsMapSettings &mapSettings, QList< QPair< qreal, QLineF > > &lines ) const;
+    int yGridLines( const QgsMapSettings &mapSettings, QList<QPair<qreal, QLineF>> &lines ) const;
 
     //! Returns the item border of a point (in item coordinates)
     Border borderForLineCoord( QPointF point, const QPainter *p ) const;

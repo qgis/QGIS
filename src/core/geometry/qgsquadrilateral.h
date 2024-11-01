@@ -36,7 +36,6 @@
 class CORE_EXPORT QgsQuadrilateral
 {
   public:
-
     /**
      * Constructor for an empty quadrilateral geometry.
      */
@@ -69,7 +68,7 @@ class CORE_EXPORT QgsQuadrilateral
      */
     enum ConstructionOption
     {
-      Distance, //!< Second distance is equal to the distance between 2nd and 3rd point
+      Distance,  //!< Second distance is equal to the distance between 2nd and 3rd point
       Projected, //!< Second distance is equal to the distance of the perpendicular projection of the 3rd point on the segment or its extension.
     };
 
@@ -213,12 +212,13 @@ class CORE_EXPORT QgsQuadrilateral
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsQuadrilateral: %1>" ).arg( sipCpp->toString() );
+        QString str
+      = QStringLiteral( "<QgsQuadrilateral: %1>" ).arg( sipCpp->toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
-  private:
-    QgsPoint mPoint1, mPoint2, mPoint3, mPoint4;
+      private : QgsPoint mPoint1,
+      mPoint2, mPoint3, mPoint4;
 };
 
 #endif // QGSQUADRILATERAL_H

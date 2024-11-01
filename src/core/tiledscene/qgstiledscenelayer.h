@@ -37,29 +37,27 @@ class CORE_EXPORT QgsTiledSceneLayer : public QgsMapLayer
     Q_OBJECT
 
   public:
-
     /**
      * Setting options for loading tiled scene layers.
      */
     struct LayerOptions
     {
-
-      /**
+        /**
        * Constructor for LayerOptions with optional \a transformContext.
        */
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) )
-        : transformContext( transformContext )
-      {}
+        explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() )
+          : transformContext( transformContext )
+        {}
 
-      /**
+        /**
        * Coordinate transform context
        */
-      QgsCoordinateTransformContext transformContext;
+        QgsCoordinateTransformContext transformContext;
 
-      //! Set to TRUE if the default layer style should be loaded
-      bool loadDefaultStyle = true;
+        //! Set to TRUE if the default layer style should be loaded
+        bool loadDefaultStyle = true;
 
-      /**
+        /**
        * Controls whether the layer is allowed to have an invalid/unknown CRS.
        *
        * If TRUE, then no validation will be performed on the layer's CRS and the layer
@@ -70,7 +68,7 @@ class CORE_EXPORT QgsTiledSceneLayer : public QgsMapLayer
        * which may cause a blocking, user-facing dialog asking users to manually select the correct CRS for the
        * layer.
        */
-      bool skipCrsValidation = false;
+        bool skipCrsValidation = false;
     };
 
     /**
@@ -89,12 +87,14 @@ class CORE_EXPORT QgsTiledSceneLayer : public QgsMapLayer
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsTiledSceneLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+        QString str
+      = QStringLiteral( "<QgsTiledSceneLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    QgsTiledSceneLayer *clone() const override SIP_FACTORY;
+        QgsTiledSceneLayer *
+      clone() const override SIP_FACTORY;
     QgsRectangle extent() const override;
     QgsTiledSceneDataProvider *dataProvider() override;
     const QgsTiledSceneDataProvider *dataProvider() const override SIP_SKIP;
@@ -143,7 +143,6 @@ class CORE_EXPORT QgsTiledSceneLayer : public QgsMapLayer
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags ) override;
 
   private:
-
     bool isReadOnly() const override;
 
 #ifdef SIP_RUN

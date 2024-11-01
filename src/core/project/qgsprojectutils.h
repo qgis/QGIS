@@ -33,15 +33,13 @@ class QgsMapLayer;
 */
 class CORE_EXPORT QgsProjectUtils
 {
-
   public:
-
     /**
      * Returns a list of all layers in the specified \a project which match the given \a path.
      *
      * This method can be used to retrieve a list of layers in a project associated with a file path.
      */
-    static QList< QgsMapLayer * > layersMatchingPath( const QgsProject *project, const QString &path );
+    static QList<QgsMapLayer *> layersMatchingPath( const QgsProject *project, const QString &path );
 
     /**
      * Updates a \a project, replacing the data source for all layers which match the given \a oldPath
@@ -57,10 +55,6 @@ class CORE_EXPORT QgsProjectUtils
      * \since QGIS 3.24
      */
     static bool layerIsContainedInGroupLayer( QgsProject *project, QgsMapLayer *layer );
-
-
 };
 
 #endif // QGSPROJECTUTILS_H
-
-

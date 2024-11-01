@@ -21,7 +21,6 @@
 QgsLayerMetadataProviderRegistry::QgsLayerMetadataProviderRegistry( QObject *parent )
   : QObject( parent )
 {
-
 }
 
 void QgsLayerMetadataProviderRegistry::registerLayerMetadataProvider( QgsAbstractLayerMetadataProvider *metadataProvider )
@@ -49,7 +48,6 @@ const QgsLayerMetadataSearchResults QgsLayerMetadataProviderRegistry::search( co
   QgsLayerMetadataSearchResults results;
   for ( auto it = mMetadataProviders.cbegin(); it != mMetadataProviders.cend(); ++it )
   {
-
     if ( feedback && feedback->isCanceled() )
     {
       break;

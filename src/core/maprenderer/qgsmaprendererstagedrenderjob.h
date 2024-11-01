@@ -33,7 +33,6 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
 {
     Q_OBJECT
   public:
-
     /**
      * Flags which control the staged render job behavior.
      */
@@ -49,8 +48,8 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
     enum RenderStage
     {
       Symbology, //!< Rendering layer symbology
-      Labels, //!< Rendering labels
-      Finished, //!< Rendering is finished
+      Labels,    //!< Rendering labels
+      Finished,  //!< Rendering is finished
     };
 
     /**
@@ -114,14 +113,13 @@ class CORE_EXPORT QgsMapRendererStagedRenderJob : public QgsMapRendererAbstractC
     RenderStage currentStage() const;
 
   private:
-
     void startPrivate() override;
 
-    std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;
+    std::unique_ptr<QgsLabelingEngine> mLabelingEngineV2;
 
-    std::vector< LayerRenderJob > mLayerJobs;
+    std::vector<LayerRenderJob> mLayerJobs;
     LabelRenderJob mLabelJob;
-    std::vector< LayerRenderJob >::iterator mJobIt;
+    std::vector<LayerRenderJob>::iterator mJobIt;
 
     bool mNextIsLabel = false;
     bool mExportedLabels = false;

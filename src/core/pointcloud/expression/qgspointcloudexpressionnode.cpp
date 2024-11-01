@@ -63,7 +63,6 @@ QgsPointCloudExpressionNode::QgsPointCloudExpressionNode( const QgsPointCloudExp
   , mHasCachedValue( other.mHasCachedValue )
   , mCachedStaticValue( other.mCachedStaticValue )
 {
-
 }
 
 QgsPointCloudExpressionNode &QgsPointCloudExpressionNode::operator=( const QgsPointCloudExpressionNode &other )
@@ -162,7 +161,7 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
         return nullptr;
       }
       const bool notIn = n->isNotIn();
-      QgsPointCloudExpressionNode::NodeList *nodeList = new QgsPointCloudExpressionNode::NodeList; \
+      QgsPointCloudExpressionNode::NodeList *nodeList = new QgsPointCloudExpressionNode::NodeList;
       const QList<QgsExpressionNode *> nNodeList = n->list()->list();
       for ( const QgsExpressionNode *nd : nNodeList )
       {

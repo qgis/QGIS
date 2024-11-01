@@ -33,7 +33,7 @@ class QgsWfsSubsetStringEditor
     static QgsSubsetStringEditorInterface *create( QgsVectorLayer *layer, QgsWFSProvider *provider, QWidget *parent, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 };
 
-class QgsWFSValidatorCallback: public QObject, public QgsSQLComposerDialog::SQLValidatorCallback
+class QgsWFSValidatorCallback : public QObject, public QgsSQLComposerDialog::SQLValidatorCallback
 {
     Q_OBJECT
 
@@ -42,13 +42,14 @@ class QgsWFSValidatorCallback: public QObject, public QgsSQLComposerDialog::SQLV
                              const QgsWFSDataSourceURI &uri, const QString &allSql,
                              const QgsWfsCapabilities::Capabilities &caps );
     bool isValid( const QString &sql, QString &errorReason, QString &warningMsg ) override;
+
   private:
     QgsWFSDataSourceURI mURI;
     QString mAllSql;
     const QgsWfsCapabilities::Capabilities mCaps;
 };
 
-class QgsWFSTableSelectedCallback: public QObject, public QgsSQLComposerDialog::TableSelectedCallback
+class QgsWFSTableSelectedCallback : public QObject, public QgsSQLComposerDialog::TableSelectedCallback
 {
     Q_OBJECT
 

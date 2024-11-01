@@ -92,7 +92,7 @@ QgsLayoutItem::Flags QgsLayoutNodesItem::itemFlags() const
 }
 
 double QgsLayoutNodesItem::computeDistance( QPointF pt1,
-    QPointF pt2 ) const
+                                            QPointF pt2 ) const
 {
   return std::sqrt( std::pow( pt1.x() - pt2.x(), 2 ) + std::pow( pt1.y() - pt2.y(), 2 ) );
 }
@@ -278,7 +278,7 @@ bool QgsLayoutNodesItem::moveNode( const int index, QPointF pt )
 }
 
 bool QgsLayoutNodesItem::readPropertiesFromElement( const QDomElement &itemElem,
-    const QDomDocument &, const QgsReadWriteContext &context )
+                                                    const QDomDocument &, const QgsReadWriteContext &context )
 {
   // restore style
   const QDomElement styleSymbolElem = itemElem.firstChildElement( QStringLiteral( "symbol" ) );
@@ -309,9 +309,11 @@ void QgsLayoutNodesItem::rescaleToFitBoundingBox()
 
   // compute x/y ratio
   const float ratioX = !qgsDoubleNear( boundingRect.width(), 0.0 )
-                       ? rect().width() / boundingRect.width() : 0;
+                         ? rect().width() / boundingRect.width()
+                         : 0;
   const float ratioY = !qgsDoubleNear( boundingRect.height(), 0.0 )
-                       ? rect().height() / boundingRect.height() : 0;
+                         ? rect().height() / boundingRect.height()
+                         : 0;
 
   // scaling
   QTransform trans;

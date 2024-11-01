@@ -31,7 +31,6 @@
 class CORE_EXPORT QgsUnsetAttributeValue
 {
   public:
-
     QgsUnsetAttributeValue() = default;
 
     /**
@@ -57,7 +56,7 @@ class CORE_EXPORT QgsUnsetAttributeValue
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str;
+        QString str;
     if ( !sipCpp->defaultValueClause().isEmpty() )
       str = QStringLiteral( "<QgsUnsetAttributeValue: %1>" ).arg( sipCpp->defaultValueClause() );
     else
@@ -66,16 +65,14 @@ class CORE_EXPORT QgsUnsetAttributeValue
     % End
 #endif
 
-    //! Allows direct construction of QVariants from unset values.
-    operator QVariant() const
+      //! Allows direct construction of QVariants from unset values.
+      operator QVariant() const
     {
       return QVariant::fromValue( *this );
     }
 
   private:
-
     QString mDefaultValueClause;
-
 };
 
 Q_DECLARE_METATYPE( QgsUnsetAttributeValue )
@@ -104,5 +101,3 @@ inline bool operator!=( const QString &other, const QgsUnsetAttributeValue &valu
 #endif
 
 #endif // QGSUNSETATTRIBUTEVALUE_H
-
-

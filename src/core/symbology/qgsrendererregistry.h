@@ -41,15 +41,13 @@ class QgsRendererWidget SIP_EXTERNAL;
 class CORE_EXPORT QgsRendererAbstractMetadata
 {
   public:
-
     /**
      * Layer types the renderer is compatible with
      */
-    enum LayerType SIP_ENUM_BASETYPE( IntFlag )
-    {
-      PointLayer = 1, //!< Compatible with point layers
-      LineLayer = 2, //!< Compatible with line layers
-      PolygonLayer = 4, //!< Compatible with polygon layers
+    enum LayerType SIP_ENUM_BASETYPE( IntFlag ) {
+      PointLayer = 1,                              //!< Compatible with point layers
+      LineLayer = 2,                               //!< Compatible with line layers
+      PolygonLayer = 4,                            //!< Compatible with polygon layers
       All = PointLayer | LineLayer | PolygonLayer, //!< Compatible with all vector layers
     };
     Q_DECLARE_FLAGS( LayerTypes, LayerType )
@@ -111,13 +109,22 @@ class CORE_EXPORT QgsRendererAbstractMetadata
      * The old renderer does not have to be of the same type as returned by createRenderer().
      */
     virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *oldRenderer ) SIP_FACTORY
-    { Q_UNUSED( layer ) Q_UNUSED( style ); Q_UNUSED( oldRenderer ); return nullptr; }
+    {
+      Q_UNUSED( layer )
+      Q_UNUSED( style );
+      Q_UNUSED( oldRenderer );
+      return nullptr;
+    }
 
     /**
      * Returns a new instance of the renderer, converted from an SLD XML element.
      */
     virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, Qgis::GeometryType geomType ) SIP_FACTORY
-    { Q_UNUSED( elem ) Q_UNUSED( geomType ); return nullptr; }
+    {
+      Q_UNUSED( elem )
+      Q_UNUSED( geomType );
+      return nullptr;
+    }
 
   protected:
     //! name used within QGIS for identification (the same what renderer's type() returns)
@@ -143,7 +150,6 @@ typedef QgsFeatureRenderer *( *QgsRendererCreateFromSldFunc )( QDomElement &, Qg
 class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
 {
   public:
-
     /**
      * Construct metadata
      * \note not available in Python bindings
@@ -154,11 +160,11 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
                          const QIcon &icon = QIcon(),
                          QgsRendererWidgetFunc pfWidget = nullptr,
                          QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All ) SIP_SKIP
-  : QgsRendererAbstractMetadata( name, visibleName, icon )
-    , mCreateFunc( pfCreate )
-    , mWidgetFunc( pfWidget )
-    , mCreateFromSldFunc( nullptr )
-    , mLayerTypes( layerTypes )
+      : QgsRendererAbstractMetadata( name, visibleName, icon ),
+        mCreateFunc( pfCreate ),
+        mWidgetFunc( pfWidget ),
+        mCreateFromSldFunc( nullptr ),
+        mLayerTypes( layerTypes )
     {}
 
     //! \note not available in Python bindings
@@ -169,29 +175,39 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
                          const QIcon &icon = QIcon(),
                          QgsRendererWidgetFunc pfWidget = nullptr,
                          QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All ) SIP_SKIP
-  : QgsRendererAbstractMetadata( name, visibleName, icon )
-    , mCreateFunc( pfCreate )
-    , mWidgetFunc( pfWidget )
-    , mCreateFromSldFunc( pfCreateFromSld )
-    , mLayerTypes( layerTypes )
+      : QgsRendererAbstractMetadata( name, visibleName, icon ),
+        mCreateFunc( pfCreate ),
+        mWidgetFunc( pfWidget ),
+        mCreateFromSldFunc( pfCreateFromSld ),
+        mLayerTypes( layerTypes )
     {}
 
     QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override SIP_FACTORY
-    { return mCreateFunc ? mCreateFunc( elem, context ) : nullptr; }
+    {
+      return mCreateFunc ? mCreateFunc( elem, context ) : nullptr;
+    }
     QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) override SIP_FACTORY
-    { return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : nullptr; }
+    {
+      return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : nullptr;
+    }
     QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, Qgis::GeometryType geomType ) override SIP_FACTORY
-    { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : nullptr; }
+    {
+      return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : nullptr;
+    }
 
     //! \note not available in Python bindings
-    QgsRendererCreateFunc createFunction() const { return mCreateFunc; } SIP_SKIP
+    QgsRendererCreateFunc createFunction() const { return mCreateFunc; }
+    SIP_SKIP
     //! \note not available in Python bindings
-    QgsRendererWidgetFunc widgetFunction() const { return mWidgetFunc; } SIP_SKIP
+    QgsRendererWidgetFunc widgetFunction() const { return mWidgetFunc; }
+    SIP_SKIP
     //! \note not available in Python bindings
-    QgsRendererCreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; } SIP_SKIP
+    QgsRendererCreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; }
+    SIP_SKIP
 
     //! \note not available in Python bindings
-    void setWidgetFunction( QgsRendererWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
+    void setWidgetFunction( QgsRendererWidgetFunc f ) { mWidgetFunc = f; }
+    SIP_SKIP
 
     QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const override { return mLayerTypes; }
 
@@ -225,7 +241,6 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
 class CORE_EXPORT QgsRendererRegistry
 {
   public:
-
     QgsRendererRegistry();
     ~QgsRendererRegistry();
 

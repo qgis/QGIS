@@ -40,7 +40,6 @@ class CORE_EXPORT QgsServerMetadataUrlProperties
     Q_GADGET
 
   public:
-
     /**
      * \brief MetadataUrl structure.
      * MetadataUrl is a link to the detailed, standardized metadata about the data.
@@ -48,35 +47,34 @@ class CORE_EXPORT QgsServerMetadataUrlProperties
      */
     struct CORE_EXPORT MetadataUrl
     {
-
-      /**
+        /**
        * Constructor for MetadataUrl.
        */
-      MetadataUrl( const QString &url = QString(), const QString &type = QString(), const QString &format = QString() )
-        : url( url )
-        , type( type )
-        , format( format )
-      {}
+        MetadataUrl( const QString &url = QString(), const QString &type = QString(), const QString &format = QString() )
+          : url( url )
+          , type( type )
+          , format( format )
+        {}
 
-      /**
+        /**
        * URL of the link
        */
-      QString url;
+        QString url;
 
-      /**
+        /**
        * Link type. Suggested to use FGDC or TC211.
        */
-      QString type;
+        QString type;
 
-      /**
+        /**
        * Format specification of online resource. It is strongly suggested to either use text/plain or text/xml.
        */
-      QString format;
+        QString format;
 
-      // TODO c++20 - replace with = default
+        // TODO c++20 - replace with = default
 
-      //! Compare two MetadataUrl structure.
-      bool operator==( const QgsServerMetadataUrlProperties::MetadataUrl &other ) const;
+        //! Compare two MetadataUrl structure.
+        bool operator==( const QgsServerMetadataUrlProperties::MetadataUrl &other ) const;
     };
 
     virtual ~QgsServerMetadataUrlProperties() = default;
@@ -123,7 +121,6 @@ class CORE_EXPORT QgsServerMetadataUrlProperties
 
   private:
     QList<MetadataUrl> mMetadataUrls;
-
 };
 
 
@@ -137,7 +134,6 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
     Q_GADGET
 
   public:
-
     /**
      * Predefined/Restricted WMS Dimension name
      */
@@ -155,44 +151,43 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
      */
     struct CORE_EXPORT WmsDimensionInfo
     {
-
-      /**
+        /**
        * Selection behavior for QGIS Server WMS Dimension default display
        * \since QGIS 3.10
        */
-      enum DefaultDisplay
-      {
-        AllValues = 0, //!< Display all values of the dimension
-        MinValue = 1, //!< Add selection to current selection
-        MaxValue = 2, //!< Modify current selection to include only select features which match
-        ReferenceValue = 3, //!< Remove from current selection
-      };
+        enum DefaultDisplay
+        {
+          AllValues = 0,      //!< Display all values of the dimension
+          MinValue = 1,       //!< Add selection to current selection
+          MaxValue = 2,       //!< Modify current selection to include only select features which match
+          ReferenceValue = 3, //!< Remove from current selection
+        };
 
-      /**
+        /**
        * Constructor for WmsDimensionInfo.
        */
-      explicit WmsDimensionInfo( const QString &dimName,
-                                 const QString &dimFieldName,
-                                 const QString &dimEndFieldName = QString(),
-                                 const QString &dimUnits = QString(),
-                                 const QString &dimUnitSymbol = QString(),
-                                 const int &dimDefaultDisplayType = QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues,
-                                 const QVariant &dimReferenceValue = QVariant() )
-        : name( dimName )
-        , fieldName( dimFieldName )
-        , endFieldName( dimEndFieldName )
-        , units( dimUnits )
-        , unitSymbol( dimUnitSymbol )
-        , defaultDisplayType( dimDefaultDisplayType )
-        , referenceValue( dimReferenceValue )
-      {}
-      QString name;
-      QString fieldName;
-      QString endFieldName;
-      QString units;
-      QString unitSymbol;
-      int defaultDisplayType;
-      QVariant referenceValue;
+        explicit WmsDimensionInfo( const QString &dimName,
+                                   const QString &dimFieldName,
+                                   const QString &dimEndFieldName = QString(),
+                                   const QString &dimUnits = QString(),
+                                   const QString &dimUnitSymbol = QString(),
+                                   const int &dimDefaultDisplayType = QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues,
+                                   const QVariant &dimReferenceValue = QVariant() )
+          : name( dimName )
+          , fieldName( dimFieldName )
+          , endFieldName( dimEndFieldName )
+          , units( dimUnits )
+          , unitSymbol( dimUnitSymbol )
+          , defaultDisplayType( dimDefaultDisplayType )
+          , referenceValue( dimReferenceValue )
+        {}
+        QString name;
+        QString fieldName;
+        QString endFieldName;
+        QString units;
+        QString unitSymbol;
+        int defaultDisplayType;
+        QVariant referenceValue;
     };
 
     virtual ~QgsServerWmsDimensionProperties() = default;
@@ -235,7 +230,6 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
     virtual const QgsMapLayer *layer() const = 0;
 
   protected:
-
     /**
      * Saves server properties to xml under the layer node
      */
@@ -258,7 +252,7 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
      */
     void reset() SIP_SKIP;
 
-  private:                       // Private attributes
+  private: // Private attributes
     //!stores QGIS Server WMS Dimension definitions
     QList<WmsDimensionInfo> mWmsDimensions;
 };
@@ -269,12 +263,11 @@ class CORE_EXPORT QgsServerWmsDimensionProperties
  * \brief Manages QGIS Server properties for a map layer
  * \since QGIS 3.10
  */
-class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProperties, public QgsServerWmsDimensionProperties
+class CORE_EXPORT QgsMapLayerServerProperties : public QgsServerMetadataUrlProperties, public QgsServerWmsDimensionProperties
 {
     Q_GADGET
 
   public:
-
     /**
      * Constructor - Creates a Map Layer QGIS Server Properties
      *
@@ -494,7 +487,7 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
 
     QString mShortName;
     QString mTitle;
-    QString mWfsTitle;  // optional WFS title
+    QString mWfsTitle; // optional WFS title
 
     QString mAttribution;
     QString mAttributionUrl;
@@ -504,7 +497,6 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
 
     QString mAbstract;
     QString mKeywordList;
-
 };
 
 /**
@@ -515,10 +507,9 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
  */
 // XXX How to make a proper SIP type alias ?
 //using QgsVectorLayerServerProperties = QgsMapLayerServerProperties;
-class CORE_EXPORT QgsVectorLayerServerProperties: public QgsMapLayerServerProperties
+class CORE_EXPORT QgsVectorLayerServerProperties : public QgsMapLayerServerProperties
 {
     Q_GADGET
 };
 
 #endif // QGSMAPLAYERSERVERPROPERTIES_H
-

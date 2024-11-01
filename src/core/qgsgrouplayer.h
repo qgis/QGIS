@@ -43,26 +43,23 @@ class CORE_EXPORT QgsGroupLayer : public QgsMapLayer
     Q_OBJECT
 
   public:
-
     /**
      * Setting options for loading group layers.
      * \since QGIS 3.16
      */
     struct LayerOptions
     {
-
-      /**
+        /**
        * Constructor for LayerOptions.
        */
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext )
-        : transformContext( transformContext )
-      {}
+        explicit LayerOptions( const QgsCoordinateTransformContext &transformContext )
+          : transformContext( transformContext )
+        {}
 
-      /**
+        /**
        * Coordinate transform context
        */
-      QgsCoordinateTransformContext transformContext;
-
+        QgsCoordinateTransformContext transformContext;
     };
 
     /**
@@ -76,12 +73,14 @@ class CORE_EXPORT QgsGroupLayer : public QgsMapLayer
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsGroupLayer: '%1'>" ).arg( sipCpp->name() );
+        QString str
+      = QStringLiteral( "<QgsGroupLayer: '%1'>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    QgsGroupLayer *clone() const override SIP_FACTORY;
+        QgsGroupLayer *
+      clone() const override SIP_FACTORY;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
     QgsRectangle extent() const override;
     void setTransformContext( const QgsCoordinateTransformContext &context ) override;
@@ -102,14 +101,14 @@ class CORE_EXPORT QgsGroupLayer : public QgsMapLayer
      *
      * \see childLayers()
     */
-    void setChildLayers( const QList< QgsMapLayer * > &layers );
+    void setChildLayers( const QList<QgsMapLayer *> &layers );
 
     /**
      * Returns the child layers contained by the group.
      *
      * \see setChildLayers()
      */
-    QList< QgsMapLayer * > childLayers() const;
+    QList<QgsMapLayer *> childLayers() const;
 
     /**
      * Returns the current paint effect for the group layer.
@@ -138,13 +137,11 @@ class CORE_EXPORT QgsGroupLayer : public QgsMapLayer
     void prepareLayersForRemovalFromGroup();
 
   private:
-
     QgsGroupLayerDataProvider *mDataProvider = nullptr;
     QgsCoordinateTransformContext mTransformContext;
 
-    QList< QgsMapLayerRef > mChildren;
-    std::unique_ptr< QgsPaintEffect > mPaintEffect;
-
+    QList<QgsMapLayerRef> mChildren;
+    std::unique_ptr<QgsPaintEffect> mPaintEffect;
 };
 
 #ifndef SIP_RUN
@@ -170,9 +167,7 @@ class QgsGroupLayerDataProvider : public QgsDataProvider
     bool isValid() const override;
 
   private:
-
     QgsCoordinateReferenceSystem mCrs;
-
 };
 ///@endcond
 #endif

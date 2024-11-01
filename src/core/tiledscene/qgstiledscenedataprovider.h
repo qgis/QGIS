@@ -32,12 +32,10 @@ class QgsTiledSceneIndex;
  *
  * \since QGIS 3.34
  */
-class CORE_EXPORT QgsTiledSceneDataProvider: public QgsDataProvider
+class CORE_EXPORT QgsTiledSceneDataProvider : public QgsDataProvider
 {
     Q_OBJECT
   public:
-
-
     //! Constructor for QgsTiledSceneDataProvider
     QgsTiledSceneDataProvider( const QString &uri,
                                const QgsDataProvider::ProviderOptions &providerOptions,
@@ -93,7 +91,6 @@ class CORE_EXPORT QgsTiledSceneDataProvider: public QgsDataProvider
      * Returns the provider's z range, or an infinite range if this is not known.
      */
     virtual QgsDoubleRange zRange() const;
-
 };
 
 #endif // QGSTILEDSCENEDATAPROVIDER_H

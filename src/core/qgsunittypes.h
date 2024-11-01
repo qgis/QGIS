@@ -40,23 +40,21 @@ class CORE_EXPORT QgsUnitTypes
     Q_GADGET
 
   public:
-
     /**
      * A combination of distance value and unit.
      *
      */
     struct DistanceValue
     {
-
-      /**
+        /**
        * The value part of the distance. For 3.7 meters, this will be 3.7.
        */
-      double value;
+        double value;
 
-      /**
+        /**
        * The value part of the distance. For 3.7 meters, this will be QgsUnitTypes::DistanceMeters.
        */
-      Qgis::DistanceUnit unit;
+        Qgis::DistanceUnit unit;
     };
 
     /**
@@ -65,16 +63,15 @@ class CORE_EXPORT QgsUnitTypes
      */
     struct AreaValue
     {
-
-      /**
+        /**
        * The value part of the distance. For 3.7 square meters, this will be 3.7.
        */
-      double value;
+        double value;
 
-      /**
+        /**
        * The value part of the distance. For 3.7 square meters, this will be QgsUnitTypes::AreaSquareMeters.
        */
-      Qgis::AreaUnit unit;
+        Qgis::AreaUnit unit;
     };
 
     //! List of render units
@@ -516,7 +513,6 @@ class CORE_EXPORT QgsUnitTypes
      *
      */
     static QString toString( Qgis::LayoutUnit unit );
-
 };
 
 #endif // QGSUNITTYPES_H

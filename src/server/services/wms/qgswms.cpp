@@ -36,8 +36,8 @@
 #include "qgswmsrequest.h"
 #include "qgswmsutils.h"
 
-#define QSTR_COMPARE( str, lit )\
-  (str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0)
+#define QSTR_COMPARE( str, lit ) \
+  ( str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0 )
 
 namespace QgsWms
 {
@@ -48,10 +48,9 @@ namespace QgsWms
    * \brief OGC web service specialized for WMS
    * \since QGIS 3.0
    */
-  class Service: public QgsService
+  class Service : public QgsService
   {
     public:
-
       /**
        * Constructor for WMS service.
        * \param version Version of the WMS service.
@@ -62,7 +61,7 @@ namespace QgsWms
         , mServerIface( serverIface )
       {}
 
-      QString name()    const override { return QStringLiteral( "WMS" ); }
+      QString name() const override { return QStringLiteral( "WMS" ); }
       QString version() const override { return mVersion; }
 
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
@@ -88,11 +87,11 @@ namespace QgsWms
         }
         else if ( QSTR_COMPARE( req, "GetMap" ) )
         {
-          if QSTR_COMPARE( wmsRequest.wmsParameters().formatAsString(), "application/dxf" )
+          if QSTR_COMPARE ( wmsRequest.wmsParameters().formatAsString(), "application/dxf" )
           {
             writeAsDxf( mServerIface, project, request, response );
           }
-          else if QSTR_COMPARE( wmsRequest.wmsParameters().formatAsString(), "application/pdf" )
+          else if QSTR_COMPARE ( wmsRequest.wmsParameters().formatAsString(), "application/pdf" )
           {
             writeAsPdf( mServerIface, project, request, response );
           }
@@ -156,14 +155,14 @@ namespace QgsWms
  * \brief Module specialized for WMS service
  * \since QGIS 3.0
  */
-class QgsWmsModule: public QgsServiceModule
+class QgsWmsModule : public QgsServiceModule
 {
   public:
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
       QgsDebugMsgLevel( QStringLiteral( "WMSModule::registerSelf called" ), 2 );
-      registry.registerService( new  QgsWms::Service( QgsWms::implementationVersion(), serverIface ) ); // 1.3.0 default version
-      registry.registerService( new  QgsWms::Service( QStringLiteral( "1.1.1" ), serverIface ) ); // second supported version
+      registry.registerService( new QgsWms::Service( QgsWms::implementationVersion(), serverIface ) ); // 1.3.0 default version
+      registry.registerService( new QgsWms::Service( QStringLiteral( "1.1.1" ), serverIface ) );       // second supported version
     }
 };
 

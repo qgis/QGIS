@@ -28,7 +28,6 @@ class QgsPointCloudElevationPropertiesWidget : public QgsMapLayerConfigWidget, p
 {
     Q_OBJECT
   public:
-
     QgsPointCloudElevationPropertiesWidget( QgsPointCloudLayer *layer, QgsMapCanvas *canvas, QWidget *parent );
 
     void syncToLayer( QgsMapLayer *layer ) final;
@@ -44,11 +43,9 @@ class QgsPointCloudElevationPropertiesWidget : public QgsMapLayerConfigWidget, p
     void updateVerticalCrsOptions();
 
   private:
-
     QgsPointCloudLayer *mLayer = nullptr;
     QgsProjectionSelectionWidget *mVerticalCrsWidget = nullptr;
     bool mBlockUpdates = false;
-
 };
 
 
@@ -64,7 +61,6 @@ class QgsPointCloudElevationPropertiesWidgetFactory : public QObject, public Qgs
     bool supportsLayer( QgsMapLayer *layer ) const override;
     QString layerPropertiesPagePositionHint() const override;
 };
-
 
 
 #endif // QGSPOINTCLOUDELEVATIONPROPERTIESWIDGET_H

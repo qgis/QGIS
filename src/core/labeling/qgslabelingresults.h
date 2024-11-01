@@ -44,7 +44,7 @@ class CORE_EXPORT QgsLabelingResults
      *
      * \since QGIS 3.20
      */
-    QList< QgsLabelPosition > allLabels() const;
+    QList<QgsLabelPosition> allLabels() const;
 
     /**
      * Returns the details of any labels placed at the specified point (in map coordinates).
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsLabelingResults
     QgsLabelingResults( const QgsLabelingResults & );
 #endif
 
-    std::unique_ptr< QgsLabelSearchTree > mLabelSearchTree;
+    std::unique_ptr<QgsLabelSearchTree> mLabelSearchTree;
 
     friend class QgsPalLabeling;
     friend class QgsVectorLayerLabelProvider;

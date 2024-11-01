@@ -34,7 +34,6 @@ class QgsRunnableProviderCreator : public QObject, public QRunnable
 {
     Q_OBJECT
   public:
-
     //! Constructor
     QgsRunnableProviderCreator( const QString &layerId,
                                 QString const &providerKey,

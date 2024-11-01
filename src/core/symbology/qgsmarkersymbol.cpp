@@ -336,8 +336,8 @@ void QgsMarkerSymbol::setDataDefinedSize( const QgsProperty &property ) const
       if ( !qgsDoubleNear( markerLayer->offset().x(), 0.0 ) || !qgsDoubleNear( markerLayer->offset().y(), 0.0 ) )
       {
         markerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::Offset, QgsSymbolLayerUtils::scaleWholeSymbol(
-                                               markerLayer->offset().x() / symbolSize,
-                                               markerLayer->offset().y() / symbolSize, property ) );
+                                                                                 markerLayer->offset().x() / symbolSize,
+                                                                                 markerLayer->offset().y() / symbolSize, property ) );
       }
     }
   }
@@ -450,7 +450,7 @@ void QgsMarkerSymbol::renderPointUsingLayer( QgsMarkerSymbolLayer *layer, QPoint
 void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRenderContext &context, int layerIdx, bool selected )
 {
   const double opacity = dataDefinedProperties().hasActiveProperties() ? dataDefinedProperties().valueAsDouble( QgsSymbol::Property::Opacity, context.expressionContext(), mOpacity * 100 ) * 0.01
-                         : mOpacity;
+                                                                       : mOpacity;
 
   QgsSymbolRenderContext symbolContext( context, Qgis::RenderUnit::Unknown, opacity, selected, renderHints(), f );
   symbolContext.setGeometryPartCount( symbolRenderContext()->geometryPartCount() );
@@ -484,13 +484,13 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
   // to QPictures, and then using the actual rendered shape from the QPictures to determine the buffer shape.
   QPainter *originalTargetPainter = nullptr;
   // this is an array, we need to separate out the symbol layers if we're drawing only one symbol level
-  std::vector< QPicture > picturesForDeferredRendering;
-  std::unique_ptr< QPainter > deferredRenderingPainter;
+  std::vector<QPicture> picturesForDeferredRendering;
+  std::unique_ptr<QPainter> deferredRenderingPainter;
   if ( usingBuffer )
   {
     originalTargetPainter = context.painter();
     picturesForDeferredRendering.emplace_back( QPicture() );
-    deferredRenderingPainter = std::make_unique< QPainter >( &picturesForDeferredRendering.front() );
+    deferredRenderingPainter = std::make_unique<QPainter>( &picturesForDeferredRendering.front() );
     context.setPainter( deferredRenderingPainter.get() );
   }
 
@@ -568,10 +568,10 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
     }
 
     const QgsGeometry bufferedGeometry = renderedShape.buffer( bufferSize, 8, Qgis::EndCapStyle::Round, joinStyle, 2 );
-    const QList<QList<QPolygonF> > polygons = QgsSymbolLayerUtils::toQPolygonF( bufferedGeometry, Qgis::SymbolType::Fill );
-    for ( const QList< QPolygonF > &polygon : polygons )
+    const QList<QList<QPolygonF>> polygons = QgsSymbolLayerUtils::toQPolygonF( bufferedGeometry, Qgis::SymbolType::Fill );
+    for ( const QList<QPolygonF> &polygon : polygons )
     {
-      QVector< QPolygonF > rings;
+      QVector<QPolygonF> rings;
       for ( int i = 1; i < polygon.size(); ++i )
         rings << polygon.at( i );
       mBufferSettings->fillSymbol()->renderPolygon( polygon.value( 0 ), &rings, nullptr, context );
@@ -597,7 +597,7 @@ QRectF QgsMarkerSymbol::bounds( QPointF point, QgsRenderContext &context, const 
            || ( layer->dataDefinedProperties().hasActiveProperties() && !layer->dataDefinedProperties().valueAsBool( QgsSymbolLayer::Property::LayerEnabled, context.expressionContext(), true ) ) )
         continue;
 
-      QgsMarkerSymbolLayer *symbolLayer = static_cast< QgsMarkerSymbolLayer * >( layer );
+      QgsMarkerSymbolLayer *symbolLayer = static_cast<QgsMarkerSymbolLayer *>( layer );
       if ( bound.isNull() )
         bound = symbolLayer->bounds( point, symbolContext );
       else

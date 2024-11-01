@@ -64,7 +64,6 @@ class CORE_EXPORT QgsAbstract3DRenderer SIP_ABSTRACT
     virtual void resolveReferences( const QgsProject &project );
 
   protected:
-
     QgsAbstract3DRenderer() = default;
 
   private:

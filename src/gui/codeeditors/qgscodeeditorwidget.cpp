@@ -106,14 +106,14 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
   mCaseSensitiveButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSearchCaseSensitive.svg" ) ) );
   findButtonLayout->addWidget( mCaseSensitiveButton );
 
-  mWholeWordButton = new QToolButton( );
+  mWholeWordButton = new QToolButton();
   mWholeWordButton->setToolTip( tr( "Whole Word" ) );
   mWholeWordButton->setCheckable( true );
   mWholeWordButton->setAutoRaise( true );
   mWholeWordButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSearchWholeWord.svg" ) ) );
   findButtonLayout->addWidget( mWholeWordButton );
 
-  mRegexButton = new QToolButton( );
+  mRegexButton = new QToolButton();
   mRegexButton->setToolTip( tr( "Use Regular Expressions" ) );
   mRegexButton->setCheckable( true );
   mRegexButton->setAutoRaise( true );
@@ -166,8 +166,7 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
   {
     QShortcut *replaceShortcut = new QShortcut( QKeySequence::StandardKey::Replace, this );
     replaceShortcut->setContext( Qt::ShortcutContext::WidgetWithChildrenShortcut );
-    connect( replaceShortcut, &QShortcut::activated, this, [ = ]
-    {
+    connect( replaceShortcut, &QShortcut::activated, this, [=] {
       // shortcut toggles bar visibility
       const bool show = mLineEditReplace->isHidden();
       setReplaceBarVisible( show );
@@ -181,8 +180,7 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
   // escape on editor hides the find bar
   QShortcut *closeFindShortcut = new QShortcut( Qt::Key::Key_Escape, this );
   closeFindShortcut->setContext( Qt::ShortcutContext::WidgetWithChildrenShortcut );
-  connect( closeFindShortcut, &QShortcut::activated, this, [this]
-  {
+  connect( closeFindShortcut, &QShortcut::activated, this, [this] {
     hideSearchBar();
     mEditor->setFocus();
   } );
@@ -219,8 +217,7 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
   const int iconSize = std::max( 18.0, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 0.9 );
   closeFindButton->setIconSize( QSize( iconSize, iconSize ) );
   closeFindButton->setFixedSize( QSize( iconSize, iconSize ) );
-  connect( closeFindButton, &QAbstractButton::clicked, this, [this]
-  {
+  connect( closeFindButton, &QAbstractButton::clicked, this, [this] {
     hideSearchBar();
     mEditor->setFocus();
   } );
@@ -236,7 +233,7 @@ QgsCodeEditorWidget::QgsCodeEditorWidget(
 
   setLayout( vl );
 
-  mHighlightController = std::make_unique< QgsScrollBarHighlightController >();
+  mHighlightController = std::make_unique<QgsScrollBarHighlightController>();
   mHighlightController->setScrollArea( mEditor );
 }
 
@@ -334,9 +331,7 @@ void QgsCodeEditorWidget::addWarning( int lineNumber, const QString &warning )
       HighlightCategory::Warning,
       lineNumber,
       QColor( 255, 0, 0 ),
-      QgsScrollBarHighlight::Priority::HighestPriority
-    )
-  );
+      QgsScrollBarHighlight::Priority::HighestPriority ) );
 }
 
 void QgsCodeEditorWidget::clearWarnings()
@@ -344,8 +339,7 @@ void QgsCodeEditorWidget::clearWarnings()
   mEditor->clearWarnings();
 
   mHighlightController->removeHighlights(
-    HighlightCategory::Warning
-  );
+    HighlightCategory::Warning );
 }
 
 void QgsCodeEditorWidget::showSearchBar()
@@ -512,13 +506,13 @@ bool QgsCodeEditorWidget::openInExternalEditor( int line, int column )
   if ( !editorCommand.isEmpty() )
   {
     const QFileInfo fi( editorCommand );
-    if ( fi.exists( ) )
+    if ( fi.exists() )
     {
       const QString command = fi.fileName();
       const bool isTerminalEditor = command.compare( QLatin1String( "nano" ), Qt::CaseInsensitive ) == 0
                                     || command.contains( QLatin1String( "vim" ), Qt::CaseInsensitive );
 
-      if ( !isTerminalEditor && QProcess::startDetached( editorCommand, {mFilePath}, dir.absolutePath() ) )
+      if ( !isTerminalEditor && QProcess::startDetached( editorCommand, { mFilePath }, dir.absolutePath() ) )
       {
         useFallback = false;
       }
@@ -592,12 +586,10 @@ bool QgsCodeEditorWidget::shareOnGist( bool isPublic )
   const QString filename = mFilePath.isEmpty() ? defaultFileName : QFileInfo( mFilePath ).fileName();
 
   const QString contents = mEditor->hasSelectedText() ? mEditor->selectedText() : mEditor->text();
-  const QVariantMap data
-  {
-    { QStringLiteral( "description" ), "Gist created by PyQGIS Console"},
+  const QVariantMap data {
+    { QStringLiteral( "description" ), "Gist created by PyQGIS Console" },
     { QStringLiteral( "public" ), isPublic },
-    { QStringLiteral( "files" ), QVariantMap{ {filename, QVariantMap{{ QStringLiteral( "content" ), contents }}    } } }
-  };
+    { QStringLiteral( "files" ), QVariantMap { { filename, QVariantMap { { QStringLiteral( "content" ), contents } } } } } };
 
   QNetworkRequest request;
   request.setUrl( QUrl( QStringLiteral( "https://api.github.com/gists" ) ) );
@@ -607,8 +599,7 @@ bool QgsCodeEditorWidget::shareOnGist( bool isPublic )
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsCodeEditorWidget" ) );
 
   QNetworkReply *reply = QgsNetworkAccessManager::instance()->post( request, QgsJsonUtils::jsonFromVariant( data ).dump().c_str() );
-  connect( reply, &QNetworkReply::finished, this, [this, reply]
-  {
+  connect( reply, &QNetworkReply::finished, this, [this, reply] {
     if ( reply->error() == QNetworkReply::NoError )
     {
       const QVariantMap replyJson = QgsJsonUtils::parseJson( reply->readAll() ).toMap();
@@ -746,7 +737,7 @@ void QgsCodeEditorWidget::addSearchHighlights()
     if ( fstart < 0 )
       break;
 
-    const int matchLength = mEditor->SendScintilla( QsciScintilla::SCI_GETTARGETTEXT, 0, static_cast< void * >( nullptr ) );
+    const int matchLength = mEditor->SendScintilla( QsciScintilla::SCI_GETTARGETTEXT, 0, static_cast<void *>( nullptr ) );
 
     if ( matchLength == 0 )
     {
@@ -840,4 +831,3 @@ void QgsCodeEditorWidget::updateHighlightController()
   mHighlightController->setLineHeight( QFontMetrics( mEditor->font() ).lineSpacing() );
   mHighlightController->setVisibleRange( mEditor->viewport()->rect().height() );
 }
-

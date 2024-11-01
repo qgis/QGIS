@@ -41,7 +41,7 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
     void triggerResultFromAction( const QgsLocatorResult &result, const int actionId ) override;
-    bool hasConfigWidget() const override {return true;}
+    bool hasConfigWidget() const override { return true; }
     void openConfigWidget( QWidget *parent ) override;
 
   private:
@@ -72,12 +72,16 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
         ResultData( QgsFeatureId id, const QString &layerId, bool layerIsSpatial )
           : mId( id ), mLayerId( layerId ), mLayerIsSpatial( layerIsSpatial ) {}
 
-        QgsFeatureId id() const {return mId;}
-        QString layerId() const {return mLayerId;}
-        bool layerIsSpatial() const {return mLayerIsSpatial;}
+        QgsFeatureId id() const { return mId; }
+        QString layerId() const { return mLayerId; }
+        bool layerIsSpatial() const { return mLayerIsSpatial; }
 
-        QVariant toVariant() const {return QVariantList() << mId << mLayerId << mLayerIsSpatial;}
-        static ResultData fromVariant( QVariant const &value ) {QList dataList = value.toList(); return ResultData( dataList.at( 0 ).toLongLong(), dataList.at( 1 ).toString(), dataList.at( 2 ).toBool() );}
+        QVariant toVariant() const { return QVariantList() << mId << mLayerId << mLayerIsSpatial; }
+        static ResultData fromVariant( QVariant const &value )
+        {
+          QList dataList = value.toList();
+          return ResultData( dataList.at( 0 ).toLongLong(), dataList.at( 1 ).toString(), dataList.at( 2 ).toBool() );
+        }
 
       private:
         QgsFeatureId mId;

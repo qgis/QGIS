@@ -44,7 +44,6 @@
 class CORE_EXPORT QgsDateTimeStatisticalSummary
 {
   public:
-
     /**
      * Constructor for QgsDateTimeStatisticalSummary
      * \param stats flags for statistics to calculate
@@ -121,7 +120,7 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     /**
      * Returns the set of distinct datetime values.
      */
-    QSet< QDateTime > distinctValues() const { return mValues; }
+    QSet<QDateTime> distinctValues() const { return mValues; }
 
     /**
      * Returns the number of missing (null) datetime values.
@@ -150,11 +149,10 @@ class CORE_EXPORT QgsDateTimeStatisticalSummary
     static QString displayName( Qgis::DateTimeStatistic statistic );
 
   private:
-
     Qgis::DateTimeStatistics mStatistics;
 
     int mCount;
-    QSet< QDateTime > mValues;
+    QSet<QDateTime> mValues;
     int mCountMissing;
     QDateTime mMin;
     QDateTime mMax;

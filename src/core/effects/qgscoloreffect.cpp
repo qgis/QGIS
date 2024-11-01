@@ -32,7 +32,6 @@ QgsPaintEffect *QgsColorEffect::create( const QVariantMap &map )
 QgsColorEffect::QgsColorEffect()
   : mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
 {
-
 }
 
 void QgsColorEffect::draw( QgsRenderContext &context )
@@ -52,7 +51,7 @@ void QgsColorEffect::draw( QgsRenderContext &context )
 
   if ( mGrayscaleMode != QgsImageOperation::GrayscaleOff )
   {
-    QgsImageOperation::convertToGrayscale( image, static_cast< QgsImageOperation::GrayscaleMode >( mGrayscaleMode ), context.feedback() );
+    QgsImageOperation::convertToGrayscale( image, static_cast<QgsImageOperation::GrayscaleMode>( mGrayscaleMode ), context.feedback() );
   }
 
   if ( context.feedback() && context.feedback()->isCanceled() )
@@ -95,7 +94,7 @@ QVariantMap QgsColorEffect::properties() const
 void QgsColorEffect::readProperties( const QVariantMap &props )
 {
   bool ok;
-  QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
+  QPainter::CompositionMode mode = static_cast<QPainter::CompositionMode>( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
   if ( ok )
   {
     mBlendMode = mode;
@@ -117,12 +116,12 @@ void QgsColorEffect::readProperties( const QVariantMap &props )
     }
   }
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
-  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
+  mDrawMode = static_cast<QgsPaintEffect::DrawMode>( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
 
   mBrightness = props.value( QStringLiteral( "brightness" ), QStringLiteral( "0" ) ).toInt();
   mContrast = props.value( QStringLiteral( "contrast" ), QStringLiteral( "0" ) ).toInt();
   mSaturation = props.value( QStringLiteral( "saturation" ), QStringLiteral( "1.0" ) ).toDouble();
-  mGrayscaleMode = static_cast< QgsImageOperation::GrayscaleMode >( props.value( QStringLiteral( "grayscale_mode" ), QStringLiteral( "0" ) ).toInt() );
+  mGrayscaleMode = static_cast<QgsImageOperation::GrayscaleMode>( props.value( QStringLiteral( "grayscale_mode" ), QStringLiteral( "0" ) ).toInt() );
   mColorizeOn = props.value( QStringLiteral( "colorize" ), QStringLiteral( "0" ) ).toInt();
   if ( props.contains( QStringLiteral( "colorize_color" ) ) )
   {

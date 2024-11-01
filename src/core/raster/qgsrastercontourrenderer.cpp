@@ -115,12 +115,12 @@ void QgsRasterContourRenderer::writeXml( QDomDocument &doc, QDomElement &parentE
 
 struct ContourWriterData
 {
-  QPainter *painter;
-  double scaleX, scaleY;
-  QgsLineSymbol *symbol;
-  QgsLineSymbol *indexSymbol;
-  double indexInterval;
-  QgsRenderContext *context;
+    QPainter *painter;
+    double scaleX, scaleY;
+    QgsLineSymbol *symbol;
+    QgsLineSymbol *indexSymbol;
+    double indexInterval;
+    QgsRenderContext *context;
 };
 
 CPLErr _rasterContourWriter( double dfLevel, int nPoints, double *padfX, double *padfY, void *ptr )
@@ -145,7 +145,7 @@ QgsRasterBlock *QgsRasterContourRenderer::block( int bandNo, const QgsRectangle 
 {
   Q_UNUSED( bandNo )
 
-  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
+  std::unique_ptr<QgsRasterBlock> outputBlock( new QgsRasterBlock() );
   if ( !mInput || !mContourSymbol )
   {
     return outputBlock.release();
@@ -154,7 +154,7 @@ QgsRasterBlock *QgsRasterContourRenderer::block( int bandNo, const QgsRectangle 
   const int inputWidth = static_cast<int>( round( width / mDownscale ) );
   const int inputHeight = static_cast<int>( round( height / mDownscale ) );
 
-  std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( mInputBand, extent, inputWidth, inputHeight, feedback ) );
+  std::unique_ptr<QgsRasterBlock> inputBlock( mInput->block( mInputBand, extent, inputWidth, inputHeight, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugError( QStringLiteral( "No raster data!" ) );
@@ -188,9 +188,9 @@ QgsRasterBlock *QgsRasterContourRenderer::block( int bandNo, const QgsRectangle 
 
   const double contourBase = 0.;
   GDALContourGeneratorH cg = GDAL_CG_Create( inputBlock->width(), inputBlock->height(),
-                             inputBlock->hasNoDataValue(), inputBlock->noDataValue(),
-                             mContourInterval, contourBase,
-                             _rasterContourWriter, static_cast<void *>( &crData ) );
+                                             inputBlock->hasNoDataValue(), inputBlock->noDataValue(),
+                                             mContourInterval, contourBase,
+                                             _rasterContourWriter, static_cast<void *>( &crData ) );
   for ( int i = 0; i < inputHeight; ++i )
   {
     if ( feedback && feedback->isCanceled() )

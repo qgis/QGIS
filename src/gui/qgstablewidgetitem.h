@@ -27,7 +27,6 @@
 class GUI_EXPORT QgsTableWidgetItem : public QTableWidgetItem
 {
   public:
-
     QgsTableWidgetItem() = default;
 
     /**
@@ -48,7 +47,7 @@ class GUI_EXPORT QgsTableWidgetItem : public QTableWidgetItem
      */
     int sortRole() const;
 
-    bool operator <( const QTableWidgetItem &other ) const override;
+    bool operator<( const QTableWidgetItem &other ) const override;
 
   private:
     int mSortRole = Qt::DisplayRole;

@@ -43,21 +43,19 @@ namespace QgsWms
     // Build default url
     if ( href.isEmpty() )
     {
-      static const QSet<QString> sFilter
-      {
+      static const QSet<QString> sFilter {
         QStringLiteral( "REQUEST" ),
         QStringLiteral( "VERSION" ),
         QStringLiteral( "SERVICE" ),
         QStringLiteral( "LAYERS" ),
         QStringLiteral( "STYLES" ),
         QStringLiteral( "SLD_VERSION" ),
-        QStringLiteral( "_DC" )
-      };
+        QStringLiteral( "_DC" ) };
 
       href = request.originalUrl();
       QUrlQuery q( href );
 
-      const QList<QPair<QString, QString> > queryItems = q.queryItems();
+      const QList<QPair<QString, QString>> queryItems = q.queryItems();
       for ( const QPair<QString, QString> &param : queryItems )
       {
         if ( sFilter.contains( param.first.toUpper() ) )
@@ -67,24 +65,21 @@ namespace QgsWms
       href.setQuery( q );
     }
 
-    return  href;
+    return href;
   }
 
 
   ImageOutputFormat parseImageFormat( const QString &format )
   {
-    if ( format.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 ||
-         format.compare( QLatin1String( "image/png" ), Qt::CaseInsensitive ) == 0 )
+    if ( format.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 || format.compare( QLatin1String( "image/png" ), Qt::CaseInsensitive ) == 0 )
     {
       return ImageOutputFormat::PNG;
     }
-    else if ( format.compare( QLatin1String( "jpg " ), Qt::CaseInsensitive ) == 0  ||
-              format.compare( QLatin1String( "image/jpeg" ), Qt::CaseInsensitive ) == 0 )
+    else if ( format.compare( QLatin1String( "jpg " ), Qt::CaseInsensitive ) == 0 || format.compare( QLatin1String( "image/jpeg" ), Qt::CaseInsensitive ) == 0 )
     {
       return ImageOutputFormat::JPEG;
     }
-    else if ( format.compare( QLatin1String( "webp" ), Qt::CaseInsensitive ) == 0  ||
-              format.compare( QLatin1String( "image/webp" ), Qt::CaseInsensitive ) == 0 )
+    else if ( format.compare( QLatin1String( "webp" ), Qt::CaseInsensitive ) == 0 || format.compare( QLatin1String( "image/webp" ), Qt::CaseInsensitive ) == 0 )
     {
       return ImageOutputFormat::WEBP;
     }
@@ -92,7 +87,7 @@ namespace QgsWms
     {
       // lookup for png with mode
       const thread_local QRegularExpression modeExpr = QRegularExpression( QStringLiteral( "image/png\\s*;\\s*mode=([^;]+)" ),
-          QRegularExpression::CaseInsensitiveOption );
+                                                                           QRegularExpression::CaseInsensitiveOption );
 
       const QRegularExpressionMatch match = modeExpr.match( format );
       const QString mode = match.captured( 1 );
@@ -112,7 +107,7 @@ namespace QgsWms
                    int imageQuality )
   {
     const ImageOutputFormat outputFormat = parseImageFormat( formatStr );
-    QImage  result;
+    QImage result;
     QString saveFormat;
     QString contentType;
     switch ( outputFormat )
@@ -132,12 +127,11 @@ namespace QgsWms
         const QImage img256 = img.convertToFormat( QImage::Format_ARGB32 );
         medianCut( colorTable, 256, img256 );
         result = img256.convertToFormat( QImage::Format_Indexed8, colorTable,
-                                         Qt::ColorOnly | Qt::ThresholdDither |
-                                         Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
+                                         Qt::ColorOnly | Qt::ThresholdDither | Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
       }
-      contentType = QStringLiteral( "image/png" );
-      saveFormat = QStringLiteral( "PNG" );
-      break;
+        contentType = QStringLiteral( "image/png" );
+        saveFormat = QStringLiteral( "PNG" );
+        break;
       case ImageOutputFormat::PNG16:
         result = img.convertToFormat( QImage::Format_ARGB4444_Premultiplied );
         contentType = QStringLiteral( "image/png" );
@@ -145,8 +139,7 @@ namespace QgsWms
         break;
       case ImageOutputFormat::PNG1:
         result = img.convertToFormat( QImage::Format_Mono,
-                                      Qt::MonoOnly | Qt::ThresholdDither |
-                                      Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
+                                      Qt::MonoOnly | Qt::ThresholdDither | Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
         contentType = QStringLiteral( "image/png" );
         saveFormat = QStringLiteral( "PNG" );
         break;

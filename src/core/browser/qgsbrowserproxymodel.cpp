@@ -25,7 +25,7 @@ QgsBrowserProxyModel::QgsBrowserProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
 {
   setDynamicSortFilter( true );
-  setSortRole( static_cast< int >( QgsBrowserModel::CustomRole::Sort ) );
+  setSortRole( static_cast<int>( QgsBrowserModel::CustomRole::Sort ) );
   setSortCaseSensitivity( Qt::CaseInsensitive );
   sort( 0 );
 }
@@ -136,10 +136,10 @@ bool QgsBrowserProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &s
   if ( !filterAcceptsProviderKey( sourceIndex ) || !filterRootAcceptsProviderKey( sourceIndex ) )
     return false;
 
-  if ( ! mShowLayers )
+  if ( !mShowLayers )
   {
     QgsDataItem *item = mModel->dataItem( sourceIndex );
-    if ( qobject_cast< QgsLayerItem * >( item ) )
+    if ( qobject_cast<QgsLayerItem *>( item ) )
     {
       return false;
     }
@@ -216,22 +216,22 @@ bool QgsBrowserProxyModel::filterAcceptsItem( const QModelIndex &sourceIndex ) c
   if ( mFilterByLayerType )
   {
     QgsDataItem *item = mModel->dataItem( sourceIndex );
-    if ( QgsLayerItem *layerItem = qobject_cast< QgsLayerItem * >( item ) )
+    if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
     {
       if ( layerItem->mapLayerType() != mLayerType )
         return false;
     }
-    else if ( !qobject_cast< QgsDataCollectionItem * >( item ) )
+    else if ( !qobject_cast<QgsDataCollectionItem *>( item ) )
       return false;
   }
 
   if ( !mFilter.isEmpty() )
   {
     //accept item if either displayed text or comment role matches string
-    const QString comment = mModel->data( sourceIndex, static_cast< int >( QgsBrowserModel::CustomRole::Comment ) ).toString();
+    const QString comment = mModel->data( sourceIndex, static_cast<int>( QgsBrowserModel::CustomRole::Comment ) ).toString();
     return ( filterAcceptsString( mModel->data( sourceIndex, Qt::DisplayRole ).toString() )
              || ( !comment.isEmpty() && filterAcceptsString( comment ) )
-             || mModel->data( sourceIndex, static_cast< int >( QgsBrowserModel::CustomRole::LayerMetadata ) ).value< QgsLayerMetadata >( ).matches( mREList ) );
+             || mModel->data( sourceIndex, static_cast<int>( QgsBrowserModel::CustomRole::LayerMetadata ) ).value<QgsLayerMetadata>().matches( mREList ) );
   }
 
   return true;
@@ -242,7 +242,7 @@ bool QgsBrowserProxyModel::filterAcceptsProviderKey( const QModelIndex &sourceIn
   if ( !mModel )
     return true;
 
-  const QString providerKey = mModel->data( sourceIndex, static_cast< int >( QgsBrowserModel::CustomRole::ProviderKey ) ).toString();
+  const QString providerKey = mModel->data( sourceIndex, static_cast<int>( QgsBrowserModel::CustomRole::ProviderKey ) ).toString();
   if ( providerKey.isEmpty() )
     return true;
 
@@ -282,12 +282,12 @@ bool QgsBrowserProxyModel::hasChildren( const QModelIndex &parent ) const
   if ( isFertile && parent.isValid() )
   {
     QgsDataItem *item = dataItem( parent );
-    if ( ! mShowLayers )
+    if ( !mShowLayers )
     {
-      return ! item->layerCollection();
+      return !item->layerCollection();
     }
     // Hide everything below layers if filter is set
-    else if ( mFilterByLayerType && qobject_cast< QgsLayerItem * >( item ) )
+    else if ( mFilterByLayerType && qobject_cast<QgsLayerItem *>( item ) )
     {
       return false;
     }

@@ -32,9 +32,7 @@
  */
 class GUI_EXPORT QgsModelSnapper
 {
-
   public:
-
     /**
      * Constructor for QgsModelSnapper, attached to the specified \a layout.
      */
@@ -152,13 +150,11 @@ class GUI_EXPORT QgsModelSnapper
      *
      * \see snapPointToGrid()
      */
-    QPointF snapPointsToGrid( const QList< QPointF > &points, double scaleFactor, bool &snappedX SIP_OUT, bool &snappedY SIP_OUT ) const;
+    QPointF snapPointsToGrid( const QList<QPointF> &points, double scaleFactor, bool &snappedX SIP_OUT, bool &snappedY SIP_OUT ) const;
 
   private:
-
     int mTolerance = 5;
     bool mSnapToGrid = false;
-
 };
 
 #endif //QGSMODELSNAPPER_H

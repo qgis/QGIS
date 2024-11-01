@@ -58,7 +58,7 @@ void QgsAnnotationRectangleTextItem::renderInBounds( QgsRenderContext &context, 
   context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, true );
   QgsTextRenderer::drawText( innerRect, 0,
                              QgsTextRenderer::convertQtHAlignment( mAlignment ),
-                             mTextFormat.allowHtmlFormatting() ? QStringList{displayText }: displayText.split( '\n' ), context, mTextFormat, true,
+                             mTextFormat.allowHtmlFormatting() ? QStringList { displayText } : displayText.split( '\n' ), context, mTextFormat, true,
                              QgsTextRenderer::convertQtVAlignment( mAlignment ),
                              Qgis::TextRendererFlag::WrapLines );
   context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering, prevWorkaroundFlag );
@@ -100,7 +100,7 @@ bool QgsAnnotationRectangleTextItem::readXml( const QDomElement &element, const 
   mMargins = QgsMargins::fromString( element.attribute( QStringLiteral( "margins" ) ) );
   mMarginUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "marginUnit" ), QgsUnitTypes::encodeUnit( Qgis::RenderUnit::Millimeters ) ) );
 
-  mAlignment = static_cast< Qt::Alignment >( element.attribute( QStringLiteral( "alignment" ) ).toInt() );
+  mAlignment = static_cast<Qt::Alignment>( element.attribute( QStringLiteral( "alignment" ) ).toInt() );
 
   readCommonProperties( element, context );
   return true;
@@ -108,7 +108,7 @@ bool QgsAnnotationRectangleTextItem::readXml( const QDomElement &element, const 
 
 QgsAnnotationRectangleTextItem *QgsAnnotationRectangleTextItem::clone() const
 {
-  std::unique_ptr< QgsAnnotationRectangleTextItem > item = std::make_unique< QgsAnnotationRectangleTextItem >( mText, bounds() );
+  std::unique_ptr<QgsAnnotationRectangleTextItem> item = std::make_unique<QgsAnnotationRectangleTextItem>( mText, bounds() );
 
   item->setFormat( mTextFormat );
   item->setAlignment( mAlignment );

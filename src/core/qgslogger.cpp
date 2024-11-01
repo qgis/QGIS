@@ -44,11 +44,11 @@ void QgsLogger::init()
   *sFileFilter() = getenv( "QGIS_DEBUG_FILE" ) ? getenv( "QGIS_DEBUG_FILE" ) : "";
   sDebugLevel = getenv( "QGIS_DEBUG" ) ? atoi( getenv( "QGIS_DEBUG" ) ) :
 #ifdef QGISDEBUG
-                1
+                                       1
 #else
-                0
+                                       0
 #endif
-                ;
+    ;
 
   sPrefixLength = sizeof( CMAKE_SOURCE_DIR );
   // cppcheck-suppress internalAstError
@@ -73,7 +73,7 @@ void QgsLogger::debug( const QString &msg, int debuglevel, const char *file, con
   {
     if ( qApp && qApp->thread() != QThread::currentThread() )
     {
-      m.prepend( QStringLiteral( "[thread:0x%1] " ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ) );
+      m.prepend( QStringLiteral( "[thread:0x%1] " ).arg( reinterpret_cast<qint64>( QThread::currentThread() ), 0, 16 ) );
     }
 
     m.prepend( QStringLiteral( "[%1ms] " ).arg( sTime()->elapsed() ) );

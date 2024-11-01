@@ -30,10 +30,10 @@ class QgsSymbolSelectorWidget;
 /* Features count for rule */
 struct QgsRuleBasedRendererCount SIP_SKIP
 {
-  int count; // number of features
-  int duplicateCount; // number of features present also in other rule(s)
-  // map of feature counts in other rules
-  QHash<QgsRuleBasedRenderer::Rule *, int> duplicateCountMap;
+    int count;          // number of features
+    int duplicateCount; // number of features present also in other rule(s)
+    // map of feature counts in other rules
+    QHash<QgsRuleBasedRenderer::Rule *, int> duplicateCountMap;
 };
 
 /**
@@ -49,7 +49,6 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRuleBasedRendererModel, for the specified \a renderer.
      */
@@ -94,7 +93,7 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
     void setSymbol( const QModelIndex &index, QgsSymbol *symbol SIP_TRANSFER );
 
     void willAddRules( const QModelIndex &parent, int count ); // call beginInsertRows
-    void finishedAddingRules(); // call endInsertRows
+    void finishedAddingRules();                                // call endInsertRows
 
     //! \note not available in Python bindungs
     void setFeatureCounts( const QHash<QgsRuleBasedRenderer::Rule *, QgsRuleBasedRendererCount> &countMap ) SIP_SKIP;
@@ -103,7 +102,7 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
   protected:
     QgsRuleBasedRenderer *mR = nullptr;
     QHash<QgsRuleBasedRenderer::Rule *, QgsRuleBasedRendererCount> mFeatureCountMap;
-    QPointer< QScreen > mScreen;
+    QPointer<QScreen> mScreen;
 };
 
 
@@ -120,7 +119,6 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
     Q_OBJECT
 
   public:
-
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     QgsRuleBasedRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
@@ -158,7 +156,7 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
     void refineRuleRangesGui();
     void refineRuleScalesGui( const QModelIndexList &index );
 
-    void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled ) override;
+    void setSymbolLevels( const QList<QgsLegendSymbolItem> &levels, bool enabled ) override;
 
     QgsRuleBasedRenderer::Rule *currentRule();
 
@@ -167,7 +165,7 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
     void refreshSymbolView() override;
     void keyPressEvent( QKeyEvent *event ) override;
 
-    std::unique_ptr< QgsRuleBasedRenderer > mRenderer;
+    std::unique_ptr<QgsRuleBasedRenderer> mRenderer;
     QgsRuleBasedRendererModel *mModel = nullptr;
 
     QMenu *mRefineMenu = nullptr;
@@ -205,7 +203,6 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
     Q_OBJECT
 
   public:
-
     /**
        * Widget to edit the details of a rule based renderer rule.
        * \param rule The rule to edit.
@@ -268,7 +265,6 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRendererRulePropsDialog
      * \param rule associated rule based renderer rule

@@ -27,10 +27,10 @@
 
 QgsProjectDisplaySettings::QgsProjectDisplaySettings( QObject *parent )
   : QObject( parent )
-  , mBearingFormat( std::make_unique< QgsBearingNumericFormat >() )
-  , mGeographicCoordinateFormat( std::make_unique< QgsGeographicCoordinateNumericFormat >() )
+  , mBearingFormat( std::make_unique<QgsBearingNumericFormat>() )
+  , mGeographicCoordinateFormat( std::make_unique<QgsGeographicCoordinateNumericFormat>() )
 {
-  if ( QgsProject *project = qobject_cast< QgsProject * >( parent ) )
+  if ( QgsProject *project = qobject_cast<QgsProject *>( parent ) )
   {
     connect( project, &QgsProject::crsChanged, this, &QgsProjectDisplaySettings::updateCoordinateCrs );
   }
@@ -116,7 +116,7 @@ void QgsProjectDisplaySettings::setCoordinateCustomCrs( const QgsCoordinateRefer
 
 void QgsProjectDisplaySettings::updateCoordinateCrs()
 {
-  if ( QgsProject *project = qobject_cast< QgsProject * >( parent() ) )
+  if ( QgsProject *project = qobject_cast<QgsProject *>( parent() ) )
   {
     const QgsCoordinateReferenceSystem projectCrs = project->crs();
     QgsCoordinateReferenceSystem crs;
@@ -147,17 +147,17 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
 {
   {
     const QDomElement bearingElement = element.firstChildElement( QStringLiteral( "BearingFormat" ) );
-    mBearingFormat.reset( static_cast< QgsBearingNumericFormat * >( QgsApplication::numericFormatRegistry()->createFromXml( bearingElement, context ) ) );
+    mBearingFormat.reset( static_cast<QgsBearingNumericFormat *>( QgsApplication::numericFormatRegistry()->createFromXml( bearingElement, context ) ) );
     emit bearingFormatChanged();
   }
 
-  QgsProject *project = qobject_cast< QgsProject * >( parent() );
+  QgsProject *project = qobject_cast<QgsProject *>( parent() );
 
   {
     const QDomElement geographicElement = element.firstChildElement( QStringLiteral( "GeographicCoordinateFormat" ) );
     if ( !geographicElement.isNull() )
     {
-      mGeographicCoordinateFormat.reset( static_cast< QgsGeographicCoordinateNumericFormat * >( QgsApplication::numericFormatRegistry()->createFromXml( geographicElement, context ) ) );
+      mGeographicCoordinateFormat.reset( static_cast<QgsGeographicCoordinateNumericFormat *>( QgsApplication::numericFormatRegistry()->createFromXml( geographicElement, context ) ) );
     }
     else if ( project )
     {
@@ -166,7 +166,7 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
       const QString format = project->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DegreeFormat" ), QString(), &ok );
       if ( ok )
       {
-        mGeographicCoordinateFormat = std::make_unique< QgsGeographicCoordinateNumericFormat >();
+        mGeographicCoordinateFormat = std::make_unique<QgsGeographicCoordinateNumericFormat>();
         mGeographicCoordinateFormat->setShowDirectionalSuffix( true );
         if ( format == QLatin1String( "DM" ) )
           mGeographicCoordinateFormat->setAngleFormat( QgsGeographicCoordinateNumericFormat::AngleFormat::DegreesMinutes );
@@ -235,13 +235,13 @@ QDomElement QgsProjectDisplaySettings::writeXml( QDomDocument &doc, const QgsRea
   QDomElement element = doc.createElement( QStringLiteral( "ProjectDisplaySettings" ) );
 
   {
-    QDomElement bearingElement =  doc.createElement( QStringLiteral( "BearingFormat" ) );
+    QDomElement bearingElement = doc.createElement( QStringLiteral( "BearingFormat" ) );
     mBearingFormat->writeXml( bearingElement, doc, context );
     element.appendChild( bearingElement );
   }
 
   {
-    QDomElement geographicElement =  doc.createElement( QStringLiteral( "GeographicCoordinateFormat" ) );
+    QDomElement geographicElement = doc.createElement( QStringLiteral( "GeographicCoordinateFormat" ) );
     mGeographicCoordinateFormat->writeXml( geographicElement, doc, context );
     element.appendChild( geographicElement );
   }

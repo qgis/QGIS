@@ -54,7 +54,7 @@ QgsGroupLayer *QgsGroupLayer::clone() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   const QgsGroupLayer::LayerOptions options( mTransformContext );
-  std::unique_ptr< QgsGroupLayer > layer = std::make_unique< QgsGroupLayer >( name(), options );
+  std::unique_ptr<QgsGroupLayer> layer = std::make_unique<QgsGroupLayer>( name(), options );
   QgsMapLayer::clone( layer.get() );
   layer->setChildLayers( _qgis_listRefToRaw( mChildren ) );
   layer->setPaintEffect( mPaintEffect ? mPaintEffect->clone() : nullptr );
@@ -95,7 +95,7 @@ bool QgsGroupLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext &con
     return false;
   }
 
-  const QList< QgsMapLayer * > currentLayers = _qgis_listRefToRaw( mChildren );
+  const QList<QgsMapLayer *> currentLayers = _qgis_listRefToRaw( mChildren );
   for ( QgsMapLayer *layer : currentLayers )
   {
     disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapLayer::triggerRepaint );
@@ -156,7 +156,7 @@ bool QgsGroupLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &
   // add the layer opacity
   if ( categories.testFlag( Rendering ) )
   {
-    QDomElement layerOpacityElem  = doc.createElement( QStringLiteral( "layerOpacity" ) );
+    QDomElement layerOpacityElem = doc.createElement( QStringLiteral( "layerOpacity" ) );
     const QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
     layerOpacityElem.appendChild( layerOpacityText );
     node.appendChild( layerOpacityElem );
@@ -172,8 +172,8 @@ bool QgsGroupLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &
   if ( categories.testFlag( Symbology ) )
   {
     // add the blend mode field
-    QDomElement blendModeElem  = doc.createElement( QStringLiteral( "blendMode" ) );
-    const QDomText blendModeText = doc.createTextNode( QString::number( static_cast< int >( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
+    QDomElement blendModeElem = doc.createElement( QStringLiteral( "blendMode" ) );
+    const QDomText blendModeText = doc.createTextNode( QString::number( static_cast<int>( QgsPainting::getBlendModeEnum( blendMode() ) ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
   }
@@ -215,7 +215,7 @@ bool QgsGroupLayer::readSymbology( const QDomNode &node, QString &, QgsReadWrite
     if ( !blendModeNode.isNull() )
     {
       const QDomElement e = blendModeNode.toElement();
-      setBlendMode( QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( e.text().toInt() ) ) );
+      setBlendMode( QgsPainting::getCompositionMode( static_cast<Qgis::BlendMode>( e.text().toInt() ) ) );
     }
   }
 
@@ -276,11 +276,11 @@ void QgsGroupLayer::resolveReferences( QgsProject *project )
   invalidateWgs84Extent();
 }
 
-void QgsGroupLayer::setChildLayers( const QList< QgsMapLayer * > &layers )
+void QgsGroupLayer::setChildLayers( const QList<QgsMapLayer *> &layers )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  const QList< QgsMapLayer * > currentLayers = _qgis_listRefToRaw( mChildren );
+  const QList<QgsMapLayer *> currentLayers = _qgis_listRefToRaw( mChildren );
   for ( QgsMapLayer *layer : layers )
   {
     if ( !currentLayers.contains( layer ) )
@@ -289,7 +289,7 @@ void QgsGroupLayer::setChildLayers( const QList< QgsMapLayer * > &layers )
       if ( layer->blendMode() == QPainter::CompositionMode_SourceOver && layer->customProperty( QStringLiteral( "_prevGroupBlendMode" ) ).isValid() )
       {
         // try to restore previous group blend mode
-        layer->setBlendMode( static_cast< QPainter::CompositionMode >( layer->customProperty( QStringLiteral( "_prevGroupBlendMode" ) ).toInt() ) );
+        layer->setBlendMode( static_cast<QPainter::CompositionMode>( layer->customProperty( QStringLiteral( "_prevGroupBlendMode" ) ).toInt() ) );
       }
     }
   }
@@ -304,7 +304,7 @@ void QgsGroupLayer::setChildLayers( const QList< QgsMapLayer * > &layers )
       if ( QgsPainting::isClippingMode( QgsPainting::getBlendModeEnum( groupBlendMode ) ) )
       {
         layer->setBlendMode( QPainter::CompositionMode_SourceOver );
-        layer->setCustomProperty( QStringLiteral( "_prevGroupBlendMode" ), static_cast< int >( groupBlendMode ) );
+        layer->setCustomProperty( QStringLiteral( "_prevGroupBlendMode" ), static_cast<int>( groupBlendMode ) );
       }
       else
       {
@@ -317,7 +317,7 @@ void QgsGroupLayer::setChildLayers( const QList< QgsMapLayer * > &layers )
   // group layer inherits first valid child layer's crs
   for ( const QgsMapLayer *layer : layers )
   {
-    if ( layer->isValid() && layer->crs().isValid( ) )
+    if ( layer->isValid() && layer->crs().isValid() )
     {
       setCrs( layer->crs() );
       mDataProvider->setCrs( crs() );
@@ -328,7 +328,7 @@ void QgsGroupLayer::setChildLayers( const QList< QgsMapLayer * > &layers )
   triggerRepaint();
 }
 
-QList< QgsMapLayer * > QgsGroupLayer::childLayers() const
+QList<QgsMapLayer *> QgsGroupLayer::childLayers() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -412,4 +412,3 @@ bool QgsGroupLayerDataProvider::isValid() const
   return true;
 }
 ///@endcond
-

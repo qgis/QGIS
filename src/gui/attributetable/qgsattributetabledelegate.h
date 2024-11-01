@@ -40,7 +40,6 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
     static const QgsAttributeTableModel *masterModel( const QAbstractItemModel *model );
 
   public:
-
     /**
      * Constructor
      * \param parent parent object

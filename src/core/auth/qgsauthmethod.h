@@ -40,7 +40,6 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Flags that represent the update points (where authentication configurations are expanded)
      * supported by an authentication method. These equate to the 'update*()' virtual functions
@@ -49,16 +48,14 @@ class CORE_EXPORT QgsAuthMethod : public QObject
      * \note When adding an 'update' member function, also add the corresponding Expansion flag.
      * \note These flags will be added to as new update points are added
      */
-    enum Expansion SIP_ENUM_BASETYPE( IntFlag )
-    {
+    enum Expansion SIP_ENUM_BASETYPE( IntFlag ) {
       // TODO: Figure out all different authentication expansions current layer providers use
-      NetworkRequest       = 0x1,
-      NetworkReply         = 0x2,
-      DataSourceUri        = 0x4,
+      NetworkRequest = 0x1,
+      NetworkReply = 0x2,
+      DataSourceUri = 0x4,
       GenericDataSourceUri = 0x8,
-      NetworkProxy                = 0x16,
-      All = NetworkRequest | NetworkReply | DataSourceUri | GenericDataSourceUri | NetworkProxy
-    };
+      NetworkProxy = 0x16,
+      All = NetworkRequest | NetworkReply | DataSourceUri | GenericDataSourceUri | NetworkProxy };
     Q_DECLARE_FLAGS( Expansions, Expansion )
 
     //! A non-translated short name representing the auth method
@@ -181,7 +178,6 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     virtual void updateMethodConfig( QgsAuthMethodConfig &mconfig ) = 0;
 
   protected:
-
     /**
      * Construct a default authentication method
      * \note Non-public since this is an abstract base class

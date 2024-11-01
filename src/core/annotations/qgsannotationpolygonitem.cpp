@@ -28,9 +28,8 @@
 QgsAnnotationPolygonItem::QgsAnnotationPolygonItem( QgsCurvePolygon *polygon )
   : QgsAnnotationItem()
   , mPolygon( polygon )
-  , mSymbol( std::make_unique< QgsFillSymbol >() )
+  , mSymbol( std::make_unique<QgsFillSymbol>() )
 {
-
 }
 
 QgsAnnotationPolygonItem::~QgsAnnotationPolygonItem() = default;
@@ -42,9 +41,7 @@ QString QgsAnnotationPolygonItem::type() const
 
 void QgsAnnotationPolygonItem::render( QgsRenderContext &context, QgsFeedback * )
 {
-
-  auto transformRing = [&context]( QPolygonF & pts )
-  {
+  auto transformRing = [&context]( QPolygonF &pts ) {
     //transform the QPolygonF to screen coordinates
     if ( context.coordinateTransform().isValid() )
     {
@@ -60,10 +57,10 @@ void QgsAnnotationPolygonItem::render( QgsRenderContext &context, QgsFeedback * 
 
     // remove non-finite points, e.g. infinite or NaN points caused by reprojecting errors
     pts.erase( std::remove_if( pts.begin(), pts.end(),
-                               []( const QPointF point )
-    {
-      return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
-    } ), pts.end() );
+                               []( const QPointF point ) {
+                                 return !std::isfinite( point.x() ) || !std::isfinite( point.y() );
+                               } ),
+               pts.end() );
 
     QPointF *ptr = pts.data();
     for ( int i = 0; i < pts.size(); ++i, ++ptr )
@@ -99,10 +96,9 @@ bool QgsAnnotationPolygonItem::writeXml( QDomElement &element, QDomDocument &doc
 
 QList<QgsAnnotationItemNode> QgsAnnotationPolygonItem::nodesV2( const QgsAnnotationItemEditContext & ) const
 {
-  QList< QgsAnnotationItemNode > res;
+  QList<QgsAnnotationItemNode> res;
 
-  auto processRing  = [&res]( const QgsCurve * ring, int ringId )
-  {
+  auto processRing = [&res]( const QgsCurve *ring, int ringId ) {
     // we don't want a duplicate node for the closed ring vertex
     const int count = ring->isClosed() ? ring->numPoints() - 1 : ring->numPoints();
     res.reserve( res.size() + count );
@@ -130,7 +126,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEditV2( Q
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast<QgsAnnotationItemEditOperationMoveNode *>( operation );
       if ( mPolygon->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
         return Qgis::AnnotationItemEditOperationResult::Success;
       break;
@@ -138,7 +134,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEditV2( Q
 
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     {
-      QgsAnnotationItemEditOperationDeleteNode *deleteOperation = qgis::down_cast< QgsAnnotationItemEditOperationDeleteNode * >( operation );
+      QgsAnnotationItemEditOperationDeleteNode *deleteOperation = qgis::down_cast<QgsAnnotationItemEditOperationDeleteNode *>( operation );
       if ( mPolygon->deleteVertex( deleteOperation->nodeId() ) )
         return mPolygon->isEmpty() ? Qgis::AnnotationItemEditOperationResult::ItemCleared : Qgis::AnnotationItemEditOperationResult::Success;
       break;
@@ -146,7 +142,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEditV2( Q
 
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
     {
-      QgsAnnotationItemEditOperationAddNode *addOperation = qgis::down_cast< QgsAnnotationItemEditOperationAddNode * >( operation );
+      QgsAnnotationItemEditOperationAddNode *addOperation = qgis::down_cast<QgsAnnotationItemEditOperationAddNode *>( operation );
 
       QgsPoint segmentPoint;
       QgsVertexId endOfSegmentVertex;
@@ -158,7 +154,7 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEditV2( Q
 
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
-      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast<QgsAnnotationItemEditOperationTranslateItem *>( operation );
       const QTransform transform = QTransform::fromTranslate( moveOperation->translationX(), moveOperation->translationY() );
       mPolygon->transform( transform );
       return Qgis::AnnotationItemEditOperationResult::Success;
@@ -174,8 +170,8 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPolygonItem::transi
   {
     case QgsAbstractAnnotationItemEditOperation::Type::MoveNode:
     {
-      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast< QgsAnnotationItemEditOperationMoveNode * >( operation );
-      std::unique_ptr< QgsCurvePolygon > modifiedPolygon( mPolygon->clone() );
+      QgsAnnotationItemEditOperationMoveNode *moveOperation = dynamic_cast<QgsAnnotationItemEditOperationMoveNode *>( operation );
+      std::unique_ptr<QgsCurvePolygon> modifiedPolygon( mPolygon->clone() );
       if ( modifiedPolygon->moveVertex( moveOperation->nodeId(), QgsPoint( moveOperation->after() ) ) )
       {
         return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedPolygon ) ) );
@@ -185,9 +181,9 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPolygonItem::transi
 
     case QgsAbstractAnnotationItemEditOperation::Type::TranslateItem:
     {
-      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
+      QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast<QgsAnnotationItemEditOperationTranslateItem *>( operation );
       const QTransform transform = QTransform::fromTranslate( moveOperation->translationX(), moveOperation->translationY() );
-      std::unique_ptr< QgsCurvePolygon > modifiedPolygon( mPolygon->clone() );
+      std::unique_ptr<QgsCurvePolygon> modifiedPolygon( mPolygon->clone() );
       modifiedPolygon->transform( transform );
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedPolygon ) ) );
     }
@@ -213,12 +209,12 @@ bool QgsAnnotationPolygonItem::readXml( const QDomElement &element, const QgsRea
 {
   const QString wkt = element.attribute( QStringLiteral( "wkt" ) );
   const QgsGeometry geometry = QgsGeometry::fromWkt( wkt );
-  if ( const QgsCurvePolygon *polygon = qgsgeometry_cast< const QgsCurvePolygon * >( geometry.constGet() ) )
+  if ( const QgsCurvePolygon *polygon = qgsgeometry_cast<const QgsCurvePolygon *>( geometry.constGet() ) )
     mPolygon.reset( polygon->clone() );
 
   const QDomElement symbolElem = element.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
-    setSymbol( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( symbolElem, context ) );
+    setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context ) );
 
   readCommonProperties( element, context );
   return true;
@@ -226,9 +222,10 @@ bool QgsAnnotationPolygonItem::readXml( const QDomElement &element, const QgsRea
 
 QgsAnnotationPolygonItem *QgsAnnotationPolygonItem::clone() const
 {
-  std::unique_ptr< QgsAnnotationPolygonItem > item = std::make_unique< QgsAnnotationPolygonItem >( mPolygon->clone() );
+  std::unique_ptr<QgsAnnotationPolygonItem> item = std::make_unique<QgsAnnotationPolygonItem>( mPolygon->clone() );
   item->setSymbol( mSymbol->clone() );
-  item->copyCommonProperties( this );;
+  item->copyCommonProperties( this );
+  ;
   return item.release();
 }
 

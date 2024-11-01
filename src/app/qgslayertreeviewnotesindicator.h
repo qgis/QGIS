@@ -28,8 +28,9 @@ class QgsLayerTreeViewNotesIndicatorProvider : public QgsLayerTreeViewIndicatorP
   protected slots:
 
     void onIndicatorClicked( const QModelIndex &index ) override;
+
   protected:
-    void connectSignals( QgsMapLayer *layer ) override ;
+    void connectSignals( QgsMapLayer *layer ) override;
     void disconnectSignals( QgsMapLayer *layer ) override;
 
   private:

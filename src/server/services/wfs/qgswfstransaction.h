@@ -27,64 +27,64 @@ namespace QgsWfs
 {
   struct transactionInsert
   {
-    QString typeName;
+      QString typeName;
 
-    QString handle;
+      QString handle;
 
-    QDomNodeList featureNodeList;
+      QDomNodeList featureNodeList;
 
-    QStringList insertFeatureIds;
+      QStringList insertFeatureIds;
 
-    bool error = false;
+      bool error = false;
 
-    QString errorMsg;
+      QString errorMsg;
   };
 
   struct transactionUpdate
   {
-    QString typeName;
+      QString typeName;
 
-    QString handle;
+      QString handle;
 
-    QMap<QString, QString> propertyMap;
+      QMap<QString, QString> propertyMap;
 
-    QDomElement geometryElement;
+      QDomElement geometryElement;
 
-    QgsFeatureRequest featureRequest;
+      QgsFeatureRequest featureRequest;
 
-    QStringList serverFids;
+      QStringList serverFids;
 
-    int totalUpdated = 0;
+      int totalUpdated = 0;
 
-    bool error = false;
+      bool error = false;
 
-    QString errorMsg;
+      QString errorMsg;
   };
 
   struct transactionDelete
   {
-    QString typeName;
+      QString typeName;
 
-    QString handle;
+      QString handle;
 
-    QgsFeatureRequest featureRequest;
+      QgsFeatureRequest featureRequest;
 
-    QStringList serverFids;
+      QStringList serverFids;
 
-    int totalDeleted = 0;
+      int totalDeleted = 0;
 
-    bool error = false;
+      bool error = false;
 
-    QString errorMsg;
+      QString errorMsg;
   };
 
   struct transactionRequest
   {
-    QList< transactionInsert > inserts;
+      QList<transactionInsert> inserts;
 
-    QList< transactionUpdate > updates;
+      QList<transactionUpdate> updates;
 
-    QList< transactionDelete > deletes;
+      QList<transactionDelete> deletes;
   };
 
   /**
@@ -136,4 +136,3 @@ namespace QgsWfs
 } // namespace QgsWfs
 
 #endif
-

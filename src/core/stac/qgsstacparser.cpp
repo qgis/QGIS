@@ -88,12 +88,12 @@ QgsStacCatalog *QgsStacParser::parseCatalog( const nlohmann::json &data )
     const QString id( QString::fromStdString( data.at( "id" ) ) );
     const QString description( getString( data.at( "description" ) ) );
 
-    QVector< QgsStacLink > links = parseLinks( data.at( "links" ) );
+    QVector<QgsStacLink> links = parseLinks( data.at( "links" ) );
 
-    std::unique_ptr< QgsStacCatalog > catalog = std::make_unique< QgsStacCatalog >( id,
-        ver,
-        description,
-        links );
+    std::unique_ptr<QgsStacCatalog> catalog = std::make_unique<QgsStacCatalog>( id,
+                                                                                ver,
+                                                                                description,
+                                                                                links );
 
     if ( data.contains( "title" ) )
       catalog->setTitle( getString( data["title"] ) );
@@ -186,8 +186,7 @@ QgsStacCollection *QgsStacParser::parseCollection( const nlohmann::json &data )
     totalExtents = 0;
     for ( const auto &e : data.at( "extent" ).at( "temporal" ).at( "interval" ) )
     {
-      if ( !e.is_array() ||
-           e.size() != 2 )
+      if ( !e.is_array() || e.size() != 2 )
       {
         mError = QStringLiteral( "Malformed STAC collection temporal extents" );
         QgsDebugError( mError );
@@ -202,14 +201,14 @@ QgsStacCollection *QgsStacParser::parseCollection( const nlohmann::json &data )
         stacExtent.addDetailedTemporalExtent( QgsDateTimeRange( start, end ) );
     }
 
-    QVector< QgsStacLink > links = parseLinks( data.at( "links" ) );
+    QVector<QgsStacLink> links = parseLinks( data.at( "links" ) );
 
-    std::unique_ptr< QgsStacCollection > collection = std::make_unique< QgsStacCollection >( id,
-        ver,
-        description,
-        links,
-        license,
-        stacExtent );
+    std::unique_ptr<QgsStacCollection> collection = std::make_unique<QgsStacCollection>( id,
+                                                                                         ver,
+                                                                                         description,
+                                                                                         links,
+                                                                                         license,
+                                                                                         stacExtent );
 
     if ( data.contains( "title" ) )
       collection->setTitle( getString( data["title"] ) );
@@ -238,11 +237,10 @@ QgsStacCollection *QgsStacParser::parseCollection( const nlohmann::json &data )
 
     if ( data.contains( "providers" ) )
     {
-      QVector< QgsStacProvider > providers;
+      QVector<QgsStacProvider> providers;
       for ( const auto &p : data["providers"] )
       {
-        if ( !p.contains( "name" ) ||
-             ( p.contains( "roles" ) && !p["roles"].is_array() ) )
+        if ( !p.contains( "name" ) || ( p.contains( "roles" ) && !p["roles"].is_array() ) )
         {
           QgsDebugError( QStringLiteral( "Malformed STAC provider object" ) );
           continue;
@@ -263,7 +261,6 @@ QgsStacCollection *QgsStacParser::parseCollection( const nlohmann::json &data )
                                         p.contains( "url" ) ? getString( p["url"] ) : QString() );
 
 
-
         providers.append( provider );
       }
       collection->setProviders( providers );
@@ -277,7 +274,7 @@ QgsStacCollection *QgsStacParser::parseCollection( const nlohmann::json &data )
 
     if ( data.contains( "assets" ) )
     {
-      QMap< QString, QgsStacAsset > assets = parseAssets( data["assets"] );
+      QMap<QString, QgsStacAsset> assets = parseAssets( data["assets"] );
       collection->setAssets( assets );
     }
 
@@ -333,8 +330,7 @@ QgsStacItem *QgsStacParser::parseItem( const nlohmann::json &data )
     }
 
     auto datetime = data.at( "properties" ).at( "datetime" );
-    if ( !datetime.is_string() ||
-         !QDateTime::fromString( QString::fromStdString( datetime ), Qt::ISODate ).isValid() )
+    if ( !datetime.is_string() || !QDateTime::fromString( QString::fromStdString( datetime ), Qt::ISODate ).isValid() )
     {
       auto s = data.at( "properties" ).at( "start_datetime" );
       QString ss = QString::fromStdString( s );
@@ -343,8 +339,7 @@ QgsStacItem *QgsStacParser::parseItem( const nlohmann::json &data )
       auto e = data.at( "properties" ).at( "end_datetime" );
       const QString ee = QString::fromStdString( e );
       const QDateTime end = QDateTime::fromString( ee, Qt::ISODate );
-      if ( start.isNull() ||
-           end.isNull() )
+      if ( start.isNull() || end.isNull() )
       {
         // invalid datetime
         mError = QStringLiteral( "Invalid STAC item temporal range" );
@@ -353,17 +348,17 @@ QgsStacItem *QgsStacParser::parseItem( const nlohmann::json &data )
     }
     const QVariantMap properties = QgsJsonUtils::jsonToVariant( data.at( "properties" ) ).toMap();
 
-    QVector< QgsStacLink > links = parseLinks( data.at( "links" ) );
+    QVector<QgsStacLink> links = parseLinks( data.at( "links" ) );
 
-    QMap< QString, QgsStacAsset > assets = parseAssets( data.at( "assets" ) );
+    QMap<QString, QgsStacAsset> assets = parseAssets( data.at( "assets" ) );
 
-    std::unique_ptr< QgsStacItem > item = std::make_unique< QgsStacItem >( id,
-                                          ver,
-                                          geom,
-                                          properties,
-                                          links,
-                                          assets,
-                                          bbox );
+    std::unique_ptr<QgsStacItem> item = std::make_unique<QgsStacItem>( id,
+                                                                       ver,
+                                                                       geom,
+                                                                       properties,
+                                                                       links,
+                                                                       assets,
+                                                                       bbox );
 
     if ( data.contains( "stac_extensions" ) )
     {
@@ -391,7 +386,7 @@ QgsStacItem *QgsStacParser::parseItem( const nlohmann::json &data )
 
 QVector<QgsStacLink> QgsStacParser::parseLinks( const json &data )
 {
-  QVector< QgsStacLink > links;
+  QVector<QgsStacLink> links;
   links.reserve( static_cast<int>( data.size() ) );
   for ( const auto &link : data )
   {
@@ -410,7 +405,7 @@ QVector<QgsStacLink> QgsStacParser::parseLinks( const json &data )
 
 QMap<QString, QgsStacAsset> QgsStacParser::parseAssets( const json &data )
 {
-  QMap< QString, QgsStacAsset > assets;
+  QMap<QString, QgsStacAsset> assets;
   for ( const auto &asset : data.items() )
   {
     const json value = asset.value();
@@ -448,11 +443,7 @@ bool QgsStacParser::isSupportedStacVersion( const QString &version )
   const int minor = m[2].toInt();
   const int release = m[3].toInt();
 
-  if ( major > maxMajor ||
-       major < minMajor ||
-       ( major == minMajor && minor < minMinor ) ||
-       ( major == minMajor && minor == minMinor && release < minRelease ) ||
-       ( major == minMajor && minor == minMinor && release == minRelease && m.length() == 5 ) )
+  if ( major > maxMajor || major < minMajor || ( major == minMajor && minor < minMinor ) || ( major == minMajor && minor == minMinor && release < minRelease ) || ( major == minMajor && minor == minMinor && release == minRelease && m.length() == 5 ) )
   {
     return false;
   }
@@ -468,9 +459,9 @@ QgsStacItemCollection *QgsStacParser::itemCollection()
 {
   try
   {
-    QVector< QgsStacLink > links = parseLinks( mData.at( "links" ) );
+    QVector<QgsStacLink> links = parseLinks( mData.at( "links" ) );
 
-    QVector< QgsStacItem * > items;
+    QVector<QgsStacItem *> items;
     items.reserve( static_cast<int>( mData.at( "features" ).size() ) );
     for ( auto &item : mData.at( "features" ) )
     {
@@ -495,9 +486,9 @@ QgsStacCollections *QgsStacParser::collections()
 {
   try
   {
-    QVector< QgsStacLink > links = parseLinks( mData.at( "links" ) );
+    QVector<QgsStacLink> links = parseLinks( mData.at( "links" ) );
 
-    QVector< QgsStacCollection * > cols;
+    QVector<QgsStacCollection *> cols;
     cols.reserve( static_cast<int>( mData.at( "collections" ).size() ) );
     for ( auto &col : mData.at( "collections" ) )
     {

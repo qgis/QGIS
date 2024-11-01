@@ -43,11 +43,10 @@
  *
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsDataSourceSelectWidget: public QgsPanelWidget, private Ui::QgsDataSourceSelectDialog
+class GUI_EXPORT QgsDataSourceSelectWidget : public QgsPanelWidget, private Ui::QgsDataSourceSelectDialog
 {
     Q_OBJECT
   public:
-
     /**
      * Constructs a QgsDataSourceSelectWidget, optionally filtering by layer type
      *
@@ -134,7 +133,6 @@ class GUI_EXPORT QgsDataSourceSelectWidget: public QgsPanelWidget, private Ui::Q
     void itemDoubleClicked( const QModelIndex &index );
 
   private:
-
     //! Refresh the model
     void refreshModel( const QModelIndex &index );
 
@@ -166,12 +164,11 @@ class GUI_EXPORT QgsDataSourceSelectWidget: public QgsPanelWidget, private Ui::Q
  *
  * \since QGIS 3.6
  */
-class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog
+class GUI_EXPORT QgsDataSourceSelectDialog : public QDialog
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
      *
@@ -224,9 +221,7 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog
     void setFilter();
 
   private:
-
     QgsDataSourceSelectWidget *mWidget = nullptr;
-
 };
 
 #endif // QGSDATASOURCESELECTDIALOG_H

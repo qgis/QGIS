@@ -35,7 +35,6 @@ class GUI_EXPORT QgsLayoutItemComboBox : public QComboBox
     Q_OBJECT
 
   public:
-
     /**
      * QgsLayoutItemComboBox creates a combo box to display a list of items in a
      * \a layout. The items can optionally be filtered by type.
@@ -76,13 +75,13 @@ class GUI_EXPORT QgsLayoutItemComboBox : public QComboBox
      * Sets a list of specific items to exclude from the combo box.
      * \see exceptedItemList()
      */
-    void setExceptedItemList( const QList< QgsLayoutItem * > &exceptList );
+    void setExceptedItemList( const QList<QgsLayoutItem *> &exceptList );
 
     /**
      * Returns the list of specific items excluded from the combo box.
      * \see setExceptedItemList()
      */
-    QList< QgsLayoutItem * > exceptedItemList() const;
+    QList<QgsLayoutItem *> exceptedItemList() const;
 
     /**
      * Sets whether an optional empty layout item is present in the combobox.
@@ -146,8 +145,7 @@ class GUI_EXPORT QgsLayoutItemComboBox : public QComboBox
     void rowsChanged();
 
   private:
-    std::unique_ptr< QgsLayoutProxyModel > mProxyModel;
-
+    std::unique_ptr<QgsLayoutProxyModel> mProxyModel;
 };
 
 #endif // QGSLAYOUTITEMCOMBOBOX_H

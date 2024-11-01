@@ -28,7 +28,7 @@
 ///@cond PRIVATE
 
 QgsAuthConfigurationStorageSqlite::QgsAuthConfigurationStorageSqlite( const QString &databasePath )
-  : QgsAuthConfigurationStorageDb( {{ QStringLiteral( "driver" ), QStringLiteral( "QSQLITE" ) }, { QStringLiteral( "database" ), databasePath }} )
+  : QgsAuthConfigurationStorageDb( { { QStringLiteral( "driver" ), QStringLiteral( "QSQLITE" ) }, { QStringLiteral( "database" ), databasePath } } )
 {
 }
 
@@ -40,7 +40,7 @@ bool QgsAuthConfigurationStorageSqlite::initialize()
   {
     // Check if the parent path exists
     QFileInfo parentInfo( QFileInfo( mDatabase ).path() );
-    if ( ! parentInfo.exists() )
+    if ( !parentInfo.exists() )
     {
       // Try to create the directory
       QDir dir;
@@ -74,7 +74,7 @@ bool QgsAuthConfigurationStorageSqlite::initialize()
     setError( tr( "Auth db file '%1' is not writable" ).arg( mDatabase ), Qgis::MessageLevel::Warning );
   }
 
-  const bool ok { createConfigTables() &&createCertTables() };
+  const bool ok { createConfigTables() && createCertTables() };
   if ( !ok )
   {
     setError( tr( "Auth db initialization FAILED" ), Qgis::MessageLevel::Critical );
@@ -87,8 +87,7 @@ bool QgsAuthConfigurationStorageSqlite::initialize()
   checkCapabilities();
 
   // Recompute capabilities if needed
-  connect( this, &QgsAuthConfigurationStorageDb::readOnlyChanged, this, [this]( bool )
-  {
+  connect( this, &QgsAuthConfigurationStorageDb::readOnlyChanged, this, [this]( bool ) {
     checkCapabilities();
   } );
 
@@ -97,7 +96,7 @@ bool QgsAuthConfigurationStorageSqlite::initialize()
 
 QList<QgsAuthConfigurationStorage::SettingParameter> QgsAuthConfigurationStorageSqlite::settingsParameters() const
 {
-  return {{ QStringLiteral( "database" ), tr( "Path to the SQLite database file" ), QVariant::String }};
+  return { { QStringLiteral( "database" ), tr( "Path to the SQLite database file" ), QVariant::String } };
 }
 
 QString QgsAuthConfigurationStorageSqlite::description() const
@@ -116,7 +115,7 @@ bool QgsAuthConfigurationStorageSqlite::tableExists( const QString &table ) cons
 
   if ( !authDbOpen() )
   {
-    const_cast< QgsAuthConfigurationStorageSqlite * >( this )->setError( tr( "Auth db could not be opened" ) );
+    const_cast<QgsAuthConfigurationStorageSqlite *>( this )->setError( tr( "Auth db could not be opened" ) );
     return false;
   }
 
@@ -126,11 +125,11 @@ bool QgsAuthConfigurationStorageSqlite::tableExists( const QString &table ) cons
 
   if ( !authDbQuery( &query ) )
   {
-    const_cast< QgsAuthConfigurationStorageSqlite * >( this )->setError( tr( "Failed to check if table '%1' exists" ).arg( table ) );
+    const_cast<QgsAuthConfigurationStorageSqlite *>( this )->setError( tr( "Failed to check if table '%1' exists" ).arg( table ) );
     return false;
   }
 
-  if ( ! query.next() )
+  if ( !query.next() )
   {
     return false;
   }
@@ -140,10 +139,9 @@ bool QgsAuthConfigurationStorageSqlite::tableExists( const QString &table ) cons
 
 void QgsAuthConfigurationStorageSqlite::checkCapabilities()
 {
-
   QMutexLocker locker( &mMutex );
   QFileInfo fileInfo( mDatabase );
-  if ( ! fileInfo.exists() )
+  if ( !fileInfo.exists() )
   {
     mCapabilities = Qgis::AuthConfigurationStorageCapabilities();
     return;
@@ -154,7 +152,7 @@ void QgsAuthConfigurationStorageSqlite::checkCapabilities()
   mIsReadOnly = mIsReadOnly && fileInfo.isWritable();
   QgsAuthConfigurationStorageDb::checkCapabilities();
 
-  if ( ! fileInfo.isReadable() )
+  if ( !fileInfo.isReadable() )
   {
     mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadConfiguration, false );
     mCapabilities.setFlag( Qgis::AuthConfigurationStorageCapability::ReadMasterPassword, false );
@@ -170,7 +168,6 @@ void QgsAuthConfigurationStorageSqlite::checkCapabilities()
     mIsReadOnly = readOnly;
     whileBlocking( this )->setReadOnly( !readOnly );
   }
-
 }
 
 /// @endcond

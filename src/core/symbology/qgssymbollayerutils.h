@@ -31,7 +31,7 @@
 
 #include <QFile>
 
-#define FONTMARKER_CHR_FIX  "~!_#!#_!~"
+#define FONTMARKER_CHR_FIX "~!_#!#_!~"
 
 class QgsExpression;
 class QgsPathResolver;
@@ -39,8 +39,8 @@ class QgsReadWriteContext;
 class QgsSymbolLayer;
 
 typedef QMap<QString, QString> QgsStringMap;
-typedef QMap<QString, QgsSymbol * > QgsSymbolMap;
-typedef QList< QPair< QColor, QString > > QgsNamedColorList SIP_SKIP;
+typedef QMap<QString, QgsSymbol *> QgsSymbolMap;
+typedef QList<QPair<QColor, QString>> QgsNamedColorList SIP_SKIP;
 
 class QDomDocument;
 class QDomElement;
@@ -60,7 +60,6 @@ class QgsSymbolLayerId;
 class CORE_EXPORT QgsSymbolLayerUtils
 {
   public:
-
     static QString encodeColor( const QColor &color );
     static QColor decodeColor( const QString &str );
 
@@ -379,7 +378,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns decoded symbol cast to specified type, if possible
      * \note not available in Python bindings
      */
-    template <class SymbolType> static SymbolType *loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) SIP_SKIP
+    template<class SymbolType> static SymbolType *loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) SIP_SKIP
     {
       QgsSymbol *tmpSymbol = QgsSymbolLayerUtils::loadSymbol( element, context );
       SymbolType *symbolCastToType = dynamic_cast<SymbolType *>( tmpSymbol );
@@ -622,7 +621,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \param colorStr string representing the color list
      * \returns list of parsed colors
      */
-    static QList< QColor > parseColorList( const QString &colorStr );
+    static QList<QColor> parseColorList( const QString &colorStr );
 
     /**
      * Creates mime data from a color. Sets both the mime data's color data, and the
@@ -754,7 +753,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      *
      * \since QGIS 3.40
      */
-    static QList< QList< QPolygonF > > toQPolygonF( const QgsGeometry &geometry, Qgis::SymbolType type );
+    static QList<QList<QPolygonF>> toQPolygonF( const QgsGeometry &geometry, Qgis::SymbolType type );
 
     //! Calculate the centroid point of a QPolygonF
     static QPointF polygonCentroid( const QPolygonF &points );
@@ -952,7 +951,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      *
      * \since QGIS 3.38
      */
-    static QVector< QgsGeometry > collectSymbolLayerClipGeometries( const QgsRenderContext &context, const QString &symbolLayerId, const QRectF &bounds );
+    static QVector<QgsGeometry> collectSymbolLayerClipGeometries( const QgsRenderContext &context, const QString &symbolLayerId, const QRectF &bounds );
 
     ///@cond PRIVATE
 #ifndef SIP_RUN
@@ -972,13 +971,10 @@ class CORE_EXPORT QgsSymbolLayerUtils
     {
       const QString exprString = property.asExpression();
       return QgsProperty::fromExpression(
-               ( !qgsDoubleNear( scaleFactorX, 0.0 ) ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : QStringLiteral( "'0'" ) ) +
-               "|| ',' || " +
-               ( !qgsDoubleNear( scaleFactorY, 0.0 ) ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : QStringLiteral( "'0'" ) ) );
+        ( !qgsDoubleNear( scaleFactorX, 0.0 ) ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : QStringLiteral( "'0'" ) ) + "|| ',' || " + ( !qgsDoubleNear( scaleFactorY, 0.0 ) ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : QStringLiteral( "'0'" ) ) );
     }
 #endif
     ///@endcond
-
 };
 
 class QPolygonF;

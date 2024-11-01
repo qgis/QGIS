@@ -41,7 +41,6 @@ class QTemporaryDir;
 class CORE_EXPORT QgsImageCacheEntry : public QgsAbstractContentCacheEntry
 {
   public:
-
     /**
      * Constructor for QgsImageCacheEntry, corresponding to the specified image \a path , \a size and \a opacity.
      *
@@ -53,7 +52,7 @@ class CORE_EXPORT QgsImageCacheEntry : public QgsAbstractContentCacheEntry
      * The \a frameNumber argument specifies a frame number for image formats which support animations. This should be
      * set to -1 if not required.
      */
-    QgsImageCacheEntry( const QString &path, QSize size, bool keepAspectRatio, double opacity, double targetDpi, int frameNumber ) ;
+    QgsImageCacheEntry( const QString &path, QSize size, bool keepAspectRatio, double opacity, double targetDpi, int frameNumber );
 
     //! Rendered image size
     QSize size;
@@ -105,7 +104,6 @@ class CORE_EXPORT QgsImageCacheEntry : public QgsAbstractContentCacheEntry
     int dataSize() const override;
     void dump() const override;
     bool isEqual( const QgsAbstractContentCacheEntry *other ) const override;
-
 };
 
 ///@endcond
@@ -128,13 +126,12 @@ class CORE_EXPORT QgsImageCacheEntry : public QgsAbstractContentCacheEntry
 class CORE_EXPORT QgsImageCache : public QgsAbstractContentCacheBase // for sip we skip to the base class and avoid the template difficulty
 {
 #else
-class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheEntry >
+class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache<QgsImageCacheEntry>
 {
 #endif
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsImageCache, with the specified \a parent object.
      */
@@ -249,7 +246,6 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
     void remoteImageFetched( const QString &url );
 
   private:
-
     QImage pathAsImagePrivate( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache, bool blocking, double targetDpi, int frameNumber, bool *isMissing, int &totalFrameCount, int &nextFrameDelayMs );
 
     QImage renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, double targetDpi, int frameNumber, bool &isBroken, int &totalFrameCount, int &nextFrameDelayMs, bool blocking = false ) const;
@@ -261,10 +257,10 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
 
     QByteArray mFetchingSvg;
 
-    QMap< QString, QString > mExtractedAnimationPaths;
-    std::unique_ptr< QTemporaryDir > mTemporaryDir;
-    QMap< QString, int > mTotalFrameCounts;
-    QMap< QString, QVector< int > > mImageDelays;
+    QMap<QString, QString> mExtractedAnimationPaths;
+    std::unique_ptr<QTemporaryDir> mTemporaryDir;
+    QMap<QString, int> mTotalFrameCounts;
+    QMap<QString, QVector<int>> mImageDelays;
 
     friend class TestQgsImageCache;
 };

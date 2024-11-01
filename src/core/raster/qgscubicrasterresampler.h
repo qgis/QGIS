@@ -29,10 +29,9 @@
  * \ingroup core
  * \brief Cubic Raster Resampler.
  */
-class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResamplerV2
+class CORE_EXPORT QgsCubicRasterResampler : public QgsRasterResamplerV2
 {
   public:
-
     QgsCubicRasterResampler() = default;
     QgsCubicRasterResampler *clone() const override SIP_FACTORY;
 

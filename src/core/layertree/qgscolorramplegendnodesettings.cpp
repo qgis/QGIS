@@ -21,7 +21,7 @@
 #include "qgis.h"
 
 QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings()
-  : mNumericFormat( std::make_unique< QgsBasicNumericFormat >() )
+  : mNumericFormat( std::make_unique<QgsBasicNumericFormat>() )
 {
 }
 
@@ -36,7 +36,6 @@ QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings( const QgsColorRa
   , mTextFormat( other.textFormat() )
   , mOrientation( other.mOrientation )
 {
-
 }
 
 QgsColorRampLegendNodeSettings &QgsColorRampLegendNodeSettings::operator=( const QgsColorRampLegendNodeSettings &other )
@@ -99,13 +98,13 @@ void QgsColorRampLegendNodeSettings::writeXml( QDomDocument &doc, QDomElement &e
 {
   QDomElement settingsElement = doc.createElement( QStringLiteral( "rampLegendSettings" ) );
 
-  settingsElement.setAttribute( QStringLiteral( "useContinuousLegend" ),  mUseContinuousLegend );
+  settingsElement.setAttribute( QStringLiteral( "useContinuousLegend" ), mUseContinuousLegend );
   settingsElement.setAttribute( QStringLiteral( "minimumLabel" ), mMinimumLabel );
   settingsElement.setAttribute( QStringLiteral( "maximumLabel" ), mMaximumLabel );
   settingsElement.setAttribute( QStringLiteral( "prefix" ), mPrefix );
   settingsElement.setAttribute( QStringLiteral( "suffix" ), mSuffix );
-  settingsElement.setAttribute( QStringLiteral( "direction" ), static_cast< int >( mDirection ) );
-  settingsElement.setAttribute( QStringLiteral( "orientation" ), static_cast< int >( mOrientation ) );
+  settingsElement.setAttribute( QStringLiteral( "direction" ), static_cast<int>( mDirection ) );
+  settingsElement.setAttribute( QStringLiteral( "orientation" ), static_cast<int>( mOrientation ) );
 
   QDomElement numericFormatElem = doc.createElement( QStringLiteral( "numericFormat" ) );
   mNumericFormat->writeXml( numericFormatElem, doc, context );
@@ -124,13 +123,13 @@ void QgsColorRampLegendNodeSettings::readXml( const QDomElement &element, const 
   const QDomElement settingsElement = element.firstChildElement( QStringLiteral( "rampLegendSettings" ) );
   if ( !settingsElement.isNull() )
   {
-    mUseContinuousLegend = settingsElement.attribute( QStringLiteral( "useContinuousLegend" ), QStringLiteral( "1" ) ).toInt( );
+    mUseContinuousLegend = settingsElement.attribute( QStringLiteral( "useContinuousLegend" ), QStringLiteral( "1" ) ).toInt();
     mMinimumLabel = settingsElement.attribute( QStringLiteral( "minimumLabel" ) );
     mMaximumLabel = settingsElement.attribute( QStringLiteral( "maximumLabel" ) );
     mPrefix = settingsElement.attribute( QStringLiteral( "prefix" ) );
     mSuffix = settingsElement.attribute( QStringLiteral( "suffix" ) );
-    mDirection = static_cast<  QgsColorRampLegendNodeSettings::Direction >( settingsElement.attribute( QStringLiteral( "direction" ) ).toInt() );
-    mOrientation = static_cast<  Qt::Orientation >( settingsElement.attribute( QStringLiteral( "orientation" ), QString::number( Qt::Vertical ) ).toInt() );
+    mDirection = static_cast<QgsColorRampLegendNodeSettings::Direction>( settingsElement.attribute( QStringLiteral( "direction" ) ).toInt() );
+    mOrientation = static_cast<Qt::Orientation>( settingsElement.attribute( QStringLiteral( "orientation" ), QString::number( Qt::Vertical ) ).toInt() );
 
     const QDomNodeList numericFormatNodeList = settingsElement.elementsByTagName( QStringLiteral( "numericFormat" ) );
     if ( !numericFormatNodeList.isEmpty() )

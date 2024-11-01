@@ -40,16 +40,7 @@ int QgsSingleBoxScaleBarRenderer::sortKey() const
 
 QgsScaleBarRenderer::Flags QgsSingleBoxScaleBarRenderer::flags() const
 {
-  return Flag::FlagUsesLineSymbol |
-         Flag::FlagUsesFillSymbol |
-         Flag::FlagUsesAlternateFillSymbol |
-         Flag::FlagRespectsUnits |
-         Flag::FlagRespectsMapUnitsPerScaleBarUnit |
-         Flag::FlagUsesUnitLabel |
-         Flag::FlagUsesSegments |
-         Flag::FlagUsesLabelBarSpace |
-         Flag::FlagUsesLabelVerticalPlacement |
-         Flag::FlagUsesLabelHorizontalPlacement;
+  return Flag::FlagUsesLineSymbol | Flag::FlagUsesFillSymbol | Flag::FlagUsesAlternateFillSymbol | Flag::FlagRespectsUnits | Flag::FlagRespectsMapUnitsPerScaleBarUnit | Flag::FlagUsesUnitLabel | Flag::FlagUsesSegments | Flag::FlagUsesLabelBarSpace | Flag::FlagUsesLabelVerticalPlacement | Flag::FlagUsesLabelHorizontalPlacement;
 }
 
 QgsSingleBoxScaleBarRenderer *QgsSingleBoxScaleBarRenderer::clone() const
@@ -74,13 +65,13 @@ void QgsSingleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
   painter->save();
   context.setPainterFlagsUsingContext( painter );
 
-  std::unique_ptr< QgsLineSymbol > lineSymbol( settings.lineSymbol()->clone() );
+  std::unique_ptr<QgsLineSymbol> lineSymbol( settings.lineSymbol()->clone() );
   lineSymbol->startRender( context );
 
-  std::unique_ptr< QgsFillSymbol > fillSymbol1( settings.fillSymbol()->clone() );
+  std::unique_ptr<QgsFillSymbol> fillSymbol1( settings.fillSymbol()->clone() );
   fillSymbol1->startRender( context );
 
-  std::unique_ptr< QgsFillSymbol > fillSymbol2( settings.alternateFillSymbol()->clone() );
+  std::unique_ptr<QgsFillSymbol> fillSymbol2( settings.alternateFillSymbol()->clone() );
   fillSymbol2->startRender( context );
 
   painter->setPen( Qt::NoPen );
@@ -117,11 +108,12 @@ void QgsSingleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
 
     const QRectF segmentRect( thisX, barTopPosition, thisWidth, barHeight );
     currentSymbol->renderPolygon( QPolygonF()
-                                  << segmentRect.topLeft()
-                                  << segmentRect.topRight()
-                                  << segmentRect.bottomRight()
-                                  << segmentRect.bottomLeft()
-                                  << segmentRect.topLeft(), nullptr, nullptr, context );
+                                    << segmentRect.topLeft()
+                                    << segmentRect.topRight()
+                                    << segmentRect.bottomRight()
+                                    << segmentRect.bottomLeft()
+                                    << segmentRect.topLeft(),
+                                  nullptr, nullptr, context );
     useColor = !useColor;
   }
 
@@ -133,18 +125,18 @@ void QgsSingleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
     {
       const double lineX = context.convertToPainterUnits( positions.at( i ), Qgis::RenderUnit::Millimeters ) + xOffset;
       lineSymbol->renderPolyline( QPolygonF()
-                                  << QPointF( lineX, barTopPosition )
-                                  << QPointF( lineX, barTopPosition + barHeight ),
+                                    << QPointF( lineX, barTopPosition )
+                                    << QPointF( lineX, barTopPosition + barHeight ),
                                   nullptr, context, layer );
     }
 
     // outside line
     lineSymbol->renderPolyline( QPolygonF()
-                                << QPointF( minX, barTopPosition )
-                                << QPointF( maxX, barTopPosition )
-                                << QPointF( maxX, barTopPosition + barHeight )
-                                << QPointF( minX, barTopPosition + barHeight )
-                                << QPointF( minX, barTopPosition ),
+                                  << QPointF( minX, barTopPosition )
+                                  << QPointF( maxX, barTopPosition )
+                                  << QPointF( maxX, barTopPosition + barHeight )
+                                  << QPointF( minX, barTopPosition + barHeight )
+                                  << QPointF( minX, barTopPosition ),
                                 nullptr, context, layer );
   }
 
@@ -156,6 +148,3 @@ void QgsSingleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
   //draw labels using the default method
   drawDefaultLabels( context, settings, scaleContext );
 }
-
-
-

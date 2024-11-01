@@ -42,7 +42,7 @@ class APP_EXPORT QgsVersionMigration
      * \param toVersion The version migrating to.
      * \returns new migration object
      */
-    static std::unique_ptr< QgsVersionMigration > canMigrate( int fromVersion, int toVersion );
+    static std::unique_ptr<QgsVersionMigration> canMigrate( int fromVersion, int toVersion );
 
     /**
      * Run the version migration to convert between versions.
@@ -58,6 +58,7 @@ class Qgs2To3Migration : public QgsVersionMigration
   public:
     QgsError runMigration() override;
     bool requiresMigration() override;
+
   private:
     QgsError migrateStyles();
     QgsError migrateSettings();
@@ -71,7 +72,6 @@ class Qgs2To3Migration : public QgsVersionMigration
     int mMigrationFileVersion = 0;
 
     QSettings *mOldSettings = nullptr;
-
 };
 
 #endif // QGSVERSIONMIGRATION_H

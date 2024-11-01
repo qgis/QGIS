@@ -24,12 +24,11 @@
  * \ingroup core
  * \brief A container for grouping several QgsLayoutItems.
  */
-class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
+class CORE_EXPORT QgsLayoutItemGroup : public QgsLayoutItem
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutItemGroup, belonging to the specified \a layout.
      */
@@ -88,13 +87,9 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
     void updateBoundingRect();
 
   private:
-
-    QList< QString > mItemUuids;
-    QList< QPointer< QgsLayoutItem >> mItems;
+    QList<QString> mItemUuids;
+    QList<QPointer<QgsLayoutItem>> mItems;
     QRectF mRectWithFrame;
 };
 
 #endif //QGSLAYOUTITEMGROUP_H
-
-
-

@@ -52,7 +52,7 @@ QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWi
   tags->setEditable( false );
   tags->setFlags( tags->flags() & ~Qt::ItemIsSelectable );
   buildTagTree( tags );
-  tags->setText( tr( "Tags" ) );//set title later
+  tags->setText( tr( "Tags" ) ); //set title later
   setBold( tags );
   model->appendRow( tags );
 

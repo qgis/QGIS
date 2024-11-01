@@ -32,7 +32,7 @@ QgsEmbeddedSymbolRenderer::~QgsEmbeddedSymbolRenderer() = default;
 QgsSymbol *QgsEmbeddedSymbolRenderer::symbolForFeature( const QgsFeature &feature, QgsRenderContext & ) const
 {
   if ( feature.embeddedSymbol() )
-    return const_cast< QgsSymbol * >( feature.embeddedSymbol() );
+    return const_cast<QgsSymbol *>( feature.embeddedSymbol() );
   else
     return mDefaultSymbol.get();
 }
@@ -41,7 +41,7 @@ QgsSymbol *QgsEmbeddedSymbolRenderer::originalSymbolForFeature( const QgsFeature
 {
   Q_UNUSED( context )
   if ( feature.embeddedSymbol() )
-    return const_cast< QgsSymbol * >( feature.embeddedSymbol() );
+    return const_cast<QgsSymbol *>( feature.embeddedSymbol() );
   else
     return mDefaultSymbol.get();
 }
@@ -57,7 +57,7 @@ bool QgsEmbeddedSymbolRenderer::renderFeature( const QgsFeature &feature, QgsRen
 {
   if ( const QgsSymbol *symbol = feature.embeddedSymbol() )
   {
-    std::unique_ptr< QgsSymbol > clone( symbol->clone() );
+    std::unique_ptr<QgsSymbol> clone( symbol->clone() );
 
     clone->startRender( context );
     renderFeatureWithSymbol( feature, clone.get(), context, layer, selected, drawVertexMarker );
@@ -124,7 +124,7 @@ QgsEmbeddedSymbolRenderer *QgsEmbeddedSymbolRenderer::convertFromRenderer( const
   }
   else if ( renderer->type() == QLatin1String( "singleSymbol" ) )
   {
-    std::unique_ptr< QgsEmbeddedSymbolRenderer > symbolRenderer = std::make_unique< QgsEmbeddedSymbolRenderer >( static_cast< const QgsSingleSymbolRenderer * >( renderer )->symbol()->clone() );
+    std::unique_ptr<QgsEmbeddedSymbolRenderer> symbolRenderer = std::make_unique<QgsEmbeddedSymbolRenderer>( static_cast<const QgsSingleSymbolRenderer *>( renderer )->symbol()->clone() );
     renderer->copyRendererData( symbolRenderer.get() );
     return symbolRenderer.release();
   }

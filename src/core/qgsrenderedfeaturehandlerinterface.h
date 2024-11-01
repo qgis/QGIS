@@ -50,7 +50,6 @@ class CORE_EXPORT QgsRenderedFeatureHandlerInterface
 
     struct CORE_EXPORT RenderedFeatureContext
     {
-
         /**
          * Constructor for RenderedFeatureContext.
          * \param renderContext The render context which was used while rendering feature.
@@ -90,7 +89,12 @@ class CORE_EXPORT QgsRenderedFeatureHandlerInterface
      * Returns a list of attributes required by this handler, for the specified \a layer. Attributes not listed in here may
      * not be requested from the provider at rendering time.
      */
-    virtual QSet<QString> usedAttributes( QgsVectorLayer *layer, const QgsRenderContext &context ) const { Q_UNUSED( layer ); Q_UNUSED( context ); return QSet< QString >(); }
+    virtual QSet<QString> usedAttributes( QgsVectorLayer *layer, const QgsRenderContext &context ) const
+    {
+      Q_UNUSED( layer );
+      Q_UNUSED( context );
+      return QSet<QString>();
+    }
 };
 
 #endif // QGSRENDEREDFEATUREHANDLERINTERFACE_H

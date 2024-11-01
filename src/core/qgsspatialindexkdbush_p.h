@@ -42,11 +42,10 @@
 #include <functional>
 
 
-class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsSpatialIndexKDBushData, std::size_t >
+class PointXYKDBush : public kdbush::KDBush<std::pair<double, double>, QgsSpatialIndexKDBushData, std::size_t>
 {
   public:
-
-    explicit PointXYKDBush( QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr, const std::function< bool( const QgsFeature & ) > *callback = nullptr )
+    explicit PointXYKDBush( QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr, const std::function<bool( const QgsFeature & )> *callback = nullptr )
     {
       fillFromIterator( fi, feedback, callback );
     }
@@ -58,7 +57,7 @@ class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsSpati
       fillFromIterator( it, feedback, nullptr );
     }
 
-    void fillFromIterator( QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr, const std::function< bool( const QgsFeature & ) > *callback = nullptr )
+    void fillFromIterator( QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr, const std::function<bool( const QgsFeature & )> *callback = nullptr )
     {
       std::size_t size = 0;
 
@@ -76,7 +75,7 @@ class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsSpati
 
         if ( QgsWkbTypes::flatType( f.geometry().wkbType() ) == Qgis::WkbType::Point )
         {
-          const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( f.geometry().constGet() );
+          const QgsPoint *point = qgsgeometry_cast<const QgsPoint *>( f.geometry().constGet() );
           points.emplace_back( QgsSpatialIndexKDBushData( f.id(), point->x(), point->y() ) );
         }
         else
@@ -98,27 +97,25 @@ class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsSpati
     {
       return points.size();
     }
-
 };
 
 class QgsSpatialIndexKDBushPrivate
 {
   public:
-
     explicit QgsSpatialIndexKDBushPrivate( QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr )
-      : index( std::make_unique < PointXYKDBush >( fi, feedback ) )
+      : index( std::make_unique<PointXYKDBush>( fi, feedback ) )
     {}
 
     explicit QgsSpatialIndexKDBushPrivate( const QgsFeatureSource &source, QgsFeedback *feedback = nullptr )
-      : index( std::make_unique < PointXYKDBush >( source, feedback ) )
+      : index( std::make_unique<PointXYKDBush>( source, feedback ) )
     {}
 
-    explicit QgsSpatialIndexKDBushPrivate( QgsFeatureIterator &fi, const std::function< bool( const QgsFeature & ) > &callback, QgsFeedback *feedback = nullptr )
-      : index( std::make_unique < PointXYKDBush >( fi, feedback, &callback ) )
+    explicit QgsSpatialIndexKDBushPrivate( QgsFeatureIterator &fi, const std::function<bool( const QgsFeature & )> &callback, QgsFeedback *feedback = nullptr )
+      : index( std::make_unique<PointXYKDBush>( fi, feedback, &callback ) )
     {}
 
     QAtomicInt ref = 1;
-    std::unique_ptr< PointXYKDBush > index;
+    std::unique_ptr<PointXYKDBush> index;
 };
 
 /// @endcond

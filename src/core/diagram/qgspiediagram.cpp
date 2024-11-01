@@ -106,7 +106,8 @@ void QgsPieDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext &
     currentVal = expression->evaluate( &expressionContext ).toDouble();
     values.push_back( currentVal );
     valSum += currentVal;
-    if ( currentVal ) valCount++;
+    if ( currentVal )
+      valCount++;
   }
 
   //draw the slices
@@ -129,7 +130,7 @@ void QgsPieDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext &
   if ( valSum > 0 )
   {
     QList<double>::const_iterator valIt = values.constBegin();
-    QList< QColor >::const_iterator colIt = s.categoryColors.constBegin();
+    QList<QColor>::const_iterator colIt = s.categoryColors.constBegin();
     for ( ; valIt != values.constEnd(); ++valIt, ++colIt )
     {
       if ( *valIt )

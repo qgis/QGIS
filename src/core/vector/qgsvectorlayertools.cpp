@@ -137,7 +137,7 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
   else if ( errorMsg )
   {
     errorMsg = new QString( tr( "Only %1 out of %2 features were copied." )
-                            .arg( browsedFeatureCount - couldNotWriteCount - noGeometryCount, browsedFeatureCount ) );
+                              .arg( browsedFeatureCount - couldNotWriteCount - noGeometryCount, browsedFeatureCount ) );
     if ( noGeometryCount )
     {
       errorMsg->append( " " );

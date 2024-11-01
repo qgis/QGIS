@@ -22,7 +22,7 @@
 #include "qgsthreadingutils.h"
 
 QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options,
-    Qgis::DataProviderReadFlags flags )
+                                          Qgis::DataProviderReadFlags flags )
   : QgsDataProvider( uri, options, flags )
 {
 }
@@ -113,8 +113,8 @@ QList<QgsMeshDatasetIndex> QgsMeshDatasetSourceInterface::datasetIndexInTimeInte
   return ret;
 }
 
-QgsMeshDatasetSourceInterface::QgsMeshDatasetSourceInterface():
-  mTemporalCapabilities( std::make_unique<QgsMeshDataProviderTemporalCapabilities>() ) {}
+QgsMeshDatasetSourceInterface::QgsMeshDatasetSourceInterface()
+  : mTemporalCapabilities( std::make_unique<QgsMeshDataProviderTemporalCapabilities>() ) {}
 
 int QgsMeshDatasetSourceInterface::datasetCount( QgsMeshDatasetIndex index ) const
 {

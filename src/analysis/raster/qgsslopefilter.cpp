@@ -21,7 +21,6 @@
 QgsSlopeFilter::QgsSlopeFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat )
   : QgsDerivativeFilter( inputFile, outputFile, outputFormat )
 {
-
 }
 
 float QgsSlopeFilter::processNineCellWindow(
@@ -39,4 +38,3 @@ float QgsSlopeFilter::processNineCellWindow(
 
   return std::atan( std::sqrt( derX * derX + derY * derY ) ) * 180.0 / M_PI;
 }
-

@@ -84,7 +84,7 @@ namespace SpatialIndex SIP_SKIP
 {
   class IStorageManager;
   class ISpatialIndex;
-}
+} // namespace SIP_SKIP
 
 /**
  * \ingroup core
@@ -101,7 +101,6 @@ class CORE_EXPORT QgsPointLocator : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * Construct point locator for a \a layer.
      *
@@ -147,15 +146,14 @@ class CORE_EXPORT QgsPointLocator : public QObject
     /**
      * The type of a snap result or the filter type for a snap request.
      */
-    enum Type SIP_ENUM_BASETYPE( IntFlag )
-    {
-      Invalid = 0, //!< Invalid
-      Vertex  = 1 << 0, //!< Snapped to a vertex. Can be a vertex of the geometry or an intersection.
-      Edge    = 1 << 1, //!< Snapped to an edge
-      Area    = 1 << 2, //!< Snapped to an area
-      Centroid = 1 << 3, //!< Snapped to a centroid
-      MiddleOfSegment = 1 << 4, //!< Snapped to the middle of a segment
-      LineEndpoint = 1 << 5, //!< Start or end points of lines only \since QGIS 3.20
+    enum Type SIP_ENUM_BASETYPE( IntFlag ) {
+      Invalid = 0,                                            //!< Invalid
+      Vertex = 1 << 0,                                        //!< Snapped to a vertex. Can be a vertex of the geometry or an intersection.
+      Edge = 1 << 1,                                          //!< Snapped to an edge
+      Area = 1 << 2,                                          //!< Snapped to an area
+      Centroid = 1 << 3,                                      //!< Snapped to a centroid
+      MiddleOfSegment = 1 << 4,                               //!< Snapped to the middle of a segment
+      LineEndpoint = 1 << 5,                                  //!< Start or end points of lines only \since QGIS 3.20
       All = Vertex | Edge | Area | Centroid | MiddleOfSegment //!< Combination of all types. Note LineEndpoint is not included as endpoints made redundant by the presence of the Vertex flag.
     };
 
@@ -315,16 +313,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
         // TODO c++20 - replace with = default
         bool operator==( const QgsPointLocator::Match &other ) const
         {
-          return mType == other.mType &&
-                 mDist == other.mDist &&
-                 mPoint == other.mPoint &&
-                 mLayer == other.mLayer &&
-                 mFid == other.mFid &&
-                 mVertexIndex == other.mVertexIndex &&
-                 mEdgePoints[0] == other.mEdgePoints[0] &&
-                 mEdgePoints[1] == other.mEdgePoints[1] &&
-                 mCentroid == other.mCentroid &&
-                 mMiddleOfSegment == other.mMiddleOfSegment;
+          return mType == other.mType && mDist == other.mDist && mPoint == other.mPoint && mLayer == other.mLayer && mFid == other.mFid && mVertexIndex == other.mVertexIndex && mEdgePoints[0] == other.mEdgePoints[0] && mEdgePoints[1] == other.mEdgePoints[1] && mCentroid == other.mCentroid && mMiddleOfSegment == other.mMiddleOfSegment;
         }
 
       protected:
@@ -352,8 +341,8 @@ class CORE_EXPORT QgsPointLocator : public QObject
      */
     struct MatchFilter
     {
-      virtual ~MatchFilter() = default;
-      virtual bool acceptMatch( const QgsPointLocator::Match &match ) = 0;
+        virtual ~MatchFilter() = default;
+        virtual bool acceptMatch( const QgsPointLocator::Match &match ) = 0;
     };
 
     // intersection queries
@@ -487,7 +476,6 @@ class CORE_EXPORT QgsPointLocator : public QObject
     void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
 
   private:
-
     /**
      * prepare index if need and returns TRUE if the index is ready to be used
      * \param relaxed TRUE if index build has to be non blocking
@@ -495,10 +483,10 @@ class CORE_EXPORT QgsPointLocator : public QObject
     bool prepare( bool relaxed );
 
     //! Storage manager
-    std::unique_ptr< SpatialIndex::IStorageManager > mStorage;
+    std::unique_ptr<SpatialIndex::IStorageManager> mStorage;
 
     QHash<QgsFeatureId, QgsGeometry *> mGeoms;
-    std::unique_ptr< SpatialIndex::ISpatialIndex > mRTree;
+    std::unique_ptr<SpatialIndex::ISpatialIndex> mRTree;
 
     //! flag whether the layer is currently empty (i.e. mRTree is NULLPTR but it is not necessary to rebuild it)
     bool mIsEmptyLayer = false;
@@ -507,7 +495,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! R-tree containing spatial index
     QgsCoordinateTransform mTransform;
     QgsVectorLayer *mLayer = nullptr;
-    std::unique_ptr< QgsRectangle > mExtent;
+    std::unique_ptr<QgsRectangle> mExtent;
 
     std::unique_ptr<QgsRenderContext> mContext;
     std::unique_ptr<QgsFeatureRenderer> mRenderer;

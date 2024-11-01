@@ -85,24 +85,20 @@ void QgsGeometryValidationService::onLayersAdded( const QList<QgsMapLayer *> &la
     QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vectorLayer )
     {
-      connect( vectorLayer->geometryOptions(), &QgsGeometryOptions::checkConfigurationChanged, this, [this, vectorLayer]()
-      {
+      connect( vectorLayer->geometryOptions(), &QgsGeometryOptions::checkConfigurationChanged, this, [this, vectorLayer]() {
         enableLayerChecks( vectorLayer );
       } );
 
-      connect( vectorLayer->geometryOptions(), &QgsGeometryOptions::geometryChecksChanged, this, [this, vectorLayer]()
-      {
+      connect( vectorLayer->geometryOptions(), &QgsGeometryOptions::geometryChecksChanged, this, [this, vectorLayer]() {
         enableLayerChecks( vectorLayer );
       } );
 
-      connect( vectorLayer, &QgsVectorLayer::destroyed, this, [vectorLayer, this]()
-      {
+      connect( vectorLayer, &QgsVectorLayer::destroyed, this, [vectorLayer, this]() {
         cleanupLayerChecks( vectorLayer );
         mLayerChecks.remove( vectorLayer );
       } );
 
-      connect( vectorLayer, &QgsMapLayer::beforeResolveReferences, this, [this, vectorLayer]()
-      {
+      connect( vectorLayer, &QgsMapLayer::beforeResolveReferences, this, [this, vectorLayer]() {
         enableLayerChecks( vectorLayer );
       } );
     }
@@ -176,7 +172,7 @@ void QgsGeometryValidationService::onEditingStopped( QgsVectorLayer *layer )
 void QgsGeometryValidationService::showMessage( const QString &message )
 {
   mMessageBar->popWidget( mMessageBarItem );
-  mMessageBarItem = QgsMessageBar::createMessage( tr( "Geometry Validation" ),  message );
+  mMessageBarItem = QgsMessageBar::createMessage( tr( "Geometry Validation" ), message );
   mMessageBarItem->setDuration( 5 );
   mMessageBar->pushItem( mMessageBarItem );
 }
@@ -301,30 +297,25 @@ void QgsGeometryValidationService::enableLayerChecks( QgsVectorLayer *layer )
     // We keep all connections around in a list, so if in the future all checks get disabled
     // we can kill those connections to be sure the layer does not even get a tiny bit of overhead.
     checkInformation.connections
-        << connect( layer, &QgsVectorLayer::featureAdded, this, [this, layer]( QgsFeatureId fid )
-    {
-      onFeatureAdded( layer, fid );
-    } );
+      << connect( layer, &QgsVectorLayer::featureAdded, this, [this, layer]( QgsFeatureId fid ) {
+           onFeatureAdded( layer, fid );
+         } );
     checkInformation.connections
-        << connect( layer, &QgsVectorLayer::geometryChanged, this, [this, layer]( QgsFeatureId fid, const QgsGeometry & geometry )
-    {
-      onGeometryChanged( layer, fid, geometry );
-    } );
+      << connect( layer, &QgsVectorLayer::geometryChanged, this, [this, layer]( QgsFeatureId fid, const QgsGeometry &geometry ) {
+           onGeometryChanged( layer, fid, geometry );
+         } );
     checkInformation.connections
-        << connect( layer, &QgsVectorLayer::featureDeleted, this, [this, layer]( QgsFeatureId fid )
-    {
-      onFeatureDeleted( layer, fid );
-    } );
+      << connect( layer, &QgsVectorLayer::featureDeleted, this, [this, layer]( QgsFeatureId fid ) {
+           onFeatureDeleted( layer, fid );
+         } );
     checkInformation.connections
-        << connect( layer, &QgsVectorLayer::beforeCommitChanges, this, [this, layer]( bool stopEditing )
-    {
-      onBeforeCommitChanges( layer, stopEditing );
-    } );
+      << connect( layer, &QgsVectorLayer::beforeCommitChanges, this, [this, layer]( bool stopEditing ) {
+           onBeforeCommitChanges( layer, stopEditing );
+         } );
     checkInformation.connections
-        << connect( layer, &QgsVectorLayer::editingStopped, this, [this, layer]()
-    {
-      onEditingStopped( layer );
-    } );
+      << connect( layer, &QgsVectorLayer::editingStopped, this, [this, layer]() {
+           onEditingStopped( layer );
+         } );
   }
 }
 
@@ -369,7 +360,7 @@ void QgsGeometryValidationService::processFeature( QgsVectorLayer *layer, QgsFea
   if ( !mLayerChecks.contains( layer ) )
     return;
 
-  const QList< QgsSingleGeometryCheck * > checks = mLayerChecks[layer].singleFeatureChecks;
+  const QList<QgsSingleGeometryCheck *> checks = mLayerChecks[layer].singleFeatureChecks;
   if ( checks.empty() )
     return;
 
@@ -458,8 +449,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer,
   mLayerChecks[layer].topologyCheckFeedbacks = feedbacks.values();
 
   QFutureWatcher<void> *futureWatcher = new QFutureWatcher<void>();
-  connect( futureWatcher, &QFutureWatcherBase::finished, this, [&allErrors, layer, feedbacks, futureWatcher, stopEditing, this]()
-  {
+  connect( futureWatcher, &QFutureWatcherBase::finished, this, [&allErrors, layer, feedbacks, futureWatcher, stopEditing, this]() {
     QgsReadWriteLocker errorLocker( mTopologyCheckLock, QgsReadWriteLocker::Read );
     layer->setAllowCommit( allErrors.empty() && mLayerChecks[layer].singleFeatureCheckErrors.empty() );
     errorLocker.unlock();
@@ -487,8 +477,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer,
     mLayerChecks[layer].commitPending = false;
   } );
 
-  QFuture<void> future = QtConcurrent::map( checks, [&allErrors, layerFeatureIds, layer, layerId, feedbacks, affectedFeatureIds, this]( const QgsGeometryCheck * check )
-  {
+  QFuture<void> future = QtConcurrent::map( checks, [&allErrors, layerFeatureIds, layer, layerId, feedbacks, affectedFeatureIds, this]( const QgsGeometryCheck *check ) {
     // Watch out with the layer pointer in here. We are running in a thread, so we do not want to actually use it
     // except for using its address to report the error.
     QList<QgsGeometryCheckError *> errors;
@@ -498,7 +487,7 @@ void QgsGeometryValidationService::triggerTopologyChecks( QgsVectorLayer *layer,
     check->collectErrors( mFeaturePools, errors, messages, feedback, layerFeatureIds );
     QgsReadWriteLocker errorLocker( mTopologyCheckLock, QgsReadWriteLocker::Write );
 
-    QList<std::shared_ptr<QgsGeometryCheckError> > sharedErrors;
+    QList<std::shared_ptr<QgsGeometryCheckError>> sharedErrors;
     for ( QgsGeometryCheckError *err : errors )
     {
       std::shared_ptr<QgsGeometryCheckError> error( err );

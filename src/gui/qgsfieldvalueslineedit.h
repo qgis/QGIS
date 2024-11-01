@@ -42,7 +42,7 @@ class QgsVectorLayer;
  * \class QgsFieldValuesLineEditValuesGatherer
  * Collates unique values containing a matching substring in a thread.
  */
-class QgsFieldValuesLineEditValuesGatherer: public QThread
+class QgsFieldValuesLineEditValuesGatherer : public QThread
 {
     Q_OBJECT
 
@@ -75,7 +75,6 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
     void collectedValues( const QStringList &values );
 
   private:
-
     QgsVectorLayer *mLayer = nullptr;
     int mAttributeIndex;
     QString mSubstring;
@@ -96,7 +95,7 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
  * The autocompleter is populated from the vector layer in the background to ensure responsive
  * interaction with the widget.
  */
-class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
+class GUI_EXPORT QgsFieldValuesLineEdit : public QgsFilterLineEdit
 {
     Q_OBJECT
 
@@ -104,7 +103,6 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
     Q_PROPERTY( int attributeIndex READ attributeIndex WRITE setAttributeIndex NOTIFY attributeIndexChanged )
 
   public:
-
     /**
      * Constructor for QgsFieldValuesLineEdit
      * \param parent parent widget
@@ -185,7 +183,6 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
     void gathererThreadFinished();
 
   private:
-
     QgsVectorLayer *mLayer = nullptr;
     int mAttributeIndex = -1;
 
@@ -203,7 +200,6 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
 
     //! Kicks off the gathering of completer text values for a specified substring
     void updateCompletionList( const QString &substring );
-
 };
 
 

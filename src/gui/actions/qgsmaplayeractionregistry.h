@@ -42,7 +42,6 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsMapLayerActionRegistry.
      *
@@ -70,17 +69,14 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
     QgsMapLayerAction *defaultActionForLayer( QgsMapLayer *layer );
 
   protected:
-
-    QList< QgsMapLayerAction * > mMapLayerActionList;
+    QList<QgsMapLayerAction *> mMapLayerActionList;
 
   signals:
     //! Triggered when an action is added or removed from the registry
     void changed();
 
   private:
-
-    QMap< QgsMapLayer *, QgsMapLayerAction * > mDefaultLayerActionMap;
-
+    QMap<QgsMapLayer *, QgsMapLayerAction *> mDefaultLayerActionMap;
 };
 
 #endif // QGSMAPLAYERACTIONREGISTRY_H

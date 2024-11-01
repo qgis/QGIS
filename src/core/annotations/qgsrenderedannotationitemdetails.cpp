@@ -20,5 +20,4 @@ QgsRenderedAnnotationItemDetails::QgsRenderedAnnotationItemDetails( const QStrin
   : QgsRenderedItemDetails( layerId )
   , mItemId( itemId )
 {
-
 }

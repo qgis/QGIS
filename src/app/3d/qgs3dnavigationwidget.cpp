@@ -32,7 +32,8 @@ Q_NOWARN_DEPRECATED_POP
 
 #include <Qt3DRender/QCamera>
 
-Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *canvas, QWidget *parent ) : QWidget( parent )
+Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *canvas, QWidget *parent )
+  : QWidget( parent )
 {
   setupUi( this );
 
@@ -42,44 +43,36 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *canvas, QWidget *p
     mZoomInButton,
     &QToolButton::clicked,
     m3DMapCanvas,
-    [ = ]
-  {
-    m3DMapCanvas->cameraController()->zoom( 5 );
-  }
-  );
+    [=] {
+      m3DMapCanvas->cameraController()->zoom( 5 );
+    } );
 
   // Zoom out button
   QObject::connect(
     mZoomOutButton,
     &QToolButton::clicked,
     m3DMapCanvas,
-    [ = ]
-  {
-    m3DMapCanvas->cameraController()->zoom( -5 );
-  }
-  );
+    [=] {
+      m3DMapCanvas->cameraController()->zoom( -5 );
+    } );
 
   // Tilt up button
   QObject::connect(
     mTiltUpButton,
     &QToolButton::clicked,
     m3DMapCanvas,
-    [ = ]
-  {
-    m3DMapCanvas->cameraController()->tiltUpAroundViewCenter( 1 );
-  }
-  );
+    [=] {
+      m3DMapCanvas->cameraController()->tiltUpAroundViewCenter( 1 );
+    } );
 
   // Tilt down button
   QObject::connect(
     mTiltDownButton,
     &QToolButton::clicked,
     m3DMapCanvas,
-    [ = ]
-  {
-    m3DMapCanvas->cameraController()->tiltUpAroundViewCenter( -1 );
-  }
-  );
+    [=] {
+      m3DMapCanvas->cameraController()->tiltUpAroundViewCenter( -1 );
+    } );
 
   // Compas
   QwtCompassMagnetNeedle *compasNeedle = new QwtCompassMagnetNeedle();
@@ -89,55 +82,45 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *canvas, QWidget *p
     mCompass,
     &QwtDial::valueChanged,
     m3DMapCanvas,
-    [ = ]
-  {
-    m3DMapCanvas->cameraController()->setCameraHeadingAngle( float( mCompass->value() ) );
-  }
-  );
+    [=] {
+      m3DMapCanvas->cameraController()->setCameraHeadingAngle( float( mCompass->value() ) );
+    } );
 
   // Move up button
   QObject::connect(
     mMoveUpButton,
     &QToolButton::clicked,
     m3DMapCanvas,
-    [ = ]
-  {
-    m3DMapCanvas->cameraController()->moveView( 0, 1 );
-  }
-  );
+    [=] {
+      m3DMapCanvas->cameraController()->moveView( 0, 1 );
+    } );
 
   // Move right button
   QObject::connect(
     mMoveRightButton,
     &QToolButton::clicked,
     m3DMapCanvas,
-    [ = ]
-  {
-    m3DMapCanvas->cameraController()->moveView( 1, 0 );
-  }
-  );
+    [=] {
+      m3DMapCanvas->cameraController()->moveView( 1, 0 );
+    } );
 
   // Move down button
   QObject::connect(
     mMoveDownButton,
     &QToolButton::clicked,
     m3DMapCanvas,
-    [ = ]
-  {
-    m3DMapCanvas->cameraController()->moveView( 0, -1 );
-  }
-  );
+    [=] {
+      m3DMapCanvas->cameraController()->moveView( 0, -1 );
+    } );
 
   // Move left button
   QObject::connect(
     mMoveLeftButton,
     &QToolButton::clicked,
     m3DMapCanvas,
-    [ = ]
-  {
-    m3DMapCanvas->cameraController()->moveView( -1, 0 );
-  }
-  );
+    [=] {
+      m3DMapCanvas->cameraController()->moveView( -1, 0 );
+    } );
 
   mCameraInfoItemModel = new QStandardItemModel( this );
 
@@ -155,7 +138,7 @@ Qgs3DNavigationWidget::Qgs3DNavigationWidget( Qgs3DMapCanvas *canvas, QWidget *p
   mCameraInfo->horizontalHeader()->hide();
   mCameraInfo->horizontalHeader()->setSectionResizeMode( QHeaderView::ResizeMode::Stretch );
 
-  QObject::connect( mCameraInfoCheckBox, &QCheckBox::clicked, m3DMapCanvas, [ = ]( bool enabled ) { mCameraInfo->setVisible( enabled ); } );
+  QObject::connect( mCameraInfoCheckBox, &QCheckBox::clicked, m3DMapCanvas, [=]( bool enabled ) { mCameraInfo->setVisible( enabled ); } );
 }
 
 void Qgs3DNavigationWidget::updateFromCamera()

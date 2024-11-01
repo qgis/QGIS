@@ -42,7 +42,6 @@ class QgsRenderContext;
 class CORE_EXPORT QgsTextCharacterFormat
 {
   public:
-
     QgsTextCharacterFormat() = default;
 
     /**
@@ -53,8 +52,8 @@ class CORE_EXPORT QgsTextCharacterFormat
     //! Status values for boolean format properties
     enum class BooleanValue
     {
-      NotSet, //!< Property is not set
-      SetTrue, //!< Property is set and TRUE
+      NotSet,   //!< Property is not set
+      SetTrue,  //!< Property is set and TRUE
       SetFalse, //!< Property is set and FALSE
     };
 
@@ -362,7 +361,6 @@ class CORE_EXPORT QgsTextCharacterFormat
     void updateFontForFormat( QFont &font, const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 
   private:
-
     QColor mTextColor;
     int mFontWeight = -1;
     QString mStyleName;
@@ -370,7 +368,7 @@ class CORE_EXPORT QgsTextCharacterFormat
     double mFontPointSize = -1;
     double mFontPercentageSize = -1;
     QString mFontFamily;
-    double mWordSpacing = std::numeric_limits< double >::quiet_NaN();
+    double mWordSpacing = std::numeric_limits<double>::quiet_NaN();
 
     bool mHasVerticalAlignSet = false;
     Qgis::TextCharacterVerticalAlignment mVerticalAlign = Qgis::TextCharacterVerticalAlignment::Normal;

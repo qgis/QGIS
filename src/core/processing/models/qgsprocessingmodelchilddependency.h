@@ -33,7 +33,6 @@
 class CORE_EXPORT QgsProcessingModelChildDependency
 {
   public:
-
     /**
      * Constructor for QgsProcessingModelChildDependency, with the specified \a childId.
      */

@@ -38,7 +38,6 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     Q_OBJECT
 
   public:
-
     static const QString AUTH_METHOD_KEY;
     static const QString AUTH_METHOD_DESCRIPTION;
     static const QString AUTH_METHOD_DISPLAY_DESCRIPTION;
@@ -96,7 +95,7 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     void onAuthCode();
 
 #ifdef HAVE_GUI
-    QWidget *editWidget( QWidget *parent )const override;
+    QWidget *editWidget( QWidget *parent ) const override;
 #endif
 
   signals:
@@ -127,7 +126,7 @@ class QgsAuthOAuth2MethodMetadata : public QgsAuthMethodMetadata
     QgsAuthOAuth2MethodMetadata()
       : QgsAuthMethodMetadata( QgsAuthOAuth2Method::AUTH_METHOD_KEY, QgsAuthOAuth2Method::AUTH_METHOD_DESCRIPTION )
     {}
-    QgsAuthOAuth2Method *createAuthMethod() const override {return new QgsAuthOAuth2Method;}
+    QgsAuthOAuth2Method *createAuthMethod() const override { return new QgsAuthOAuth2Method; }
     //QStringList supportedDataProviders() const override;
 };
 

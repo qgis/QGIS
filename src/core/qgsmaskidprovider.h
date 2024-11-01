@@ -39,7 +39,6 @@
 class CORE_EXPORT QgsMaskIdProvider
 {
   public:
-
     /**
      * Inserts a label layer to the provider and returns its associated mask id.
      * \param layerId id of the vector layer that carries these labels
@@ -61,7 +60,6 @@ class CORE_EXPORT QgsMaskIdProvider
     int size() const;
 
   private:
-
     /**
      * Storage of symbol layer references sets. The index in the list gives the associated mask id.
      */

@@ -51,6 +51,7 @@ class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
       PanoramicSkybox,
       DistinctTexturesSkybox
     };
+
   public:
     //! Constructor
     QgsSkyboxEntity( QNode *parent = nullptr );
@@ -90,6 +91,7 @@ class _3D_EXPORT QgsPanoramicSkyboxEntity : public QgsSkyboxEntity
 
   private:
     void reloadTexture();
+
   private:
     QString mTexturePath;
     Qt3DRender::QTextureLoader *mLoadedTexture = nullptr;
@@ -116,6 +118,7 @@ class _3D_EXPORT QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity
   private:
     void init();
     void reloadTexture();
+
   private:
     QMap<Qt3DRender::QTextureCubeMap::CubeMapFace, QString> mCubeFacesPaths;
     Qt3DRender::QShaderProgram *mGlShader = nullptr;

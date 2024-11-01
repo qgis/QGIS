@@ -29,12 +29,11 @@
 QgsSvgAnnotation::QgsSvgAnnotation( QObject *parent )
   : QgsAnnotation( parent )
 {
-
 }
 
 QgsSvgAnnotation *QgsSvgAnnotation::clone() const
 {
-  std::unique_ptr< QgsSvgAnnotation > c( new QgsSvgAnnotation() );
+  std::unique_ptr<QgsSvgAnnotation> c( new QgsSvgAnnotation() );
   copyCommonProperties( c.get() );
   c->setFilePath( mFilePath );
   return c.release();

@@ -58,7 +58,7 @@ QVector<QgsProfileIdentifyResults> QgsMeshLayerProfileResults::identify( const Q
 QgsMeshLayerProfileGenerator::QgsMeshLayerProfileGenerator( QgsMeshLayer *layer, const QgsProfileRequest &request )
   : QgsAbstractProfileSurfaceGenerator( request )
   , mId( layer->id() )
-  , mFeedback( std::make_unique< QgsFeedback >() )
+  , mFeedback( std::make_unique<QgsFeedback>() )
   , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
   , mSourceCrs( layer->crs() )
   , mTargetCrs( request.crs() )
@@ -71,10 +71,10 @@ QgsMeshLayerProfileGenerator::QgsMeshLayerProfileGenerator( QgsMeshLayer *layer,
   layer->updateTriangularMesh();
   mTriangularMesh = *layer->triangularMesh();
 
-  mSymbology = qgis::down_cast< QgsMeshLayerElevationProperties * >( layer->elevationProperties() )->profileSymbology();
-  mElevationLimit = qgis::down_cast< QgsMeshLayerElevationProperties * >( layer->elevationProperties() )->elevationLimit();
-  mLineSymbol.reset( qgis::down_cast< QgsMeshLayerElevationProperties * >( layer->elevationProperties() )->profileLineSymbol()->clone() );
-  mFillSymbol.reset( qgis::down_cast< QgsMeshLayerElevationProperties * >( layer->elevationProperties() )->profileFillSymbol()->clone() );
+  mSymbology = qgis::down_cast<QgsMeshLayerElevationProperties *>( layer->elevationProperties() )->profileSymbology();
+  mElevationLimit = qgis::down_cast<QgsMeshLayerElevationProperties *>( layer->elevationProperties() )->elevationLimit();
+  mLineSymbol.reset( qgis::down_cast<QgsMeshLayerElevationProperties *>( layer->elevationProperties() )->profileLineSymbol()->clone() );
+  mFillSymbol.reset( qgis::down_cast<QgsMeshLayerElevationProperties *>( layer->elevationProperties() )->profileFillSymbol()->clone() );
 }
 
 QString QgsMeshLayerProfileGenerator::sourceId() const
@@ -106,7 +106,7 @@ bool QgsMeshLayerProfileGenerator::generateProfile( const QgsProfileGenerationCo
   if ( mFeedback->isCanceled() )
     return false;
 
-  mResults = std::make_unique< QgsMeshLayerProfileResults >();
+  mResults = std::make_unique<QgsMeshLayerProfileResults>();
   mResults->mLayer = mLayer;
   mResults->mId = mId;
   mResults->copyPropertiesFromGenerator( this );
@@ -180,4 +180,3 @@ double QgsMeshLayerProfileGenerator::heightAt( double x, double y )
 {
   return QgsMeshLayerUtils::interpolateZForPoint( mTriangularMesh, x, y ) * mScale + mOffset;
 }
-

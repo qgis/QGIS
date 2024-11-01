@@ -32,7 +32,6 @@ class GUI_EXPORT QgsLayerMetadataResultsProxyModel : public QSortFilterProxyMode
     Q_OBJECT
 
   public:
-
     /**
      * Constructs a QgsLayerMetadataResultsProxyModel with an optional \a parent.
      */
@@ -81,7 +80,6 @@ class GUI_EXPORT QgsLayerMetadataResultsProxyModel : public QSortFilterProxyMode
 
 
   private:
-
     QgsRectangle mFilterExtent;
     QString mFilterString;
     Qgis::GeometryType mFilterGeometryType = Qgis::GeometryType::Point;

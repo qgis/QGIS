@@ -21,7 +21,6 @@
 QgsProfileRequest::QgsProfileRequest( QgsCurve *curve )
   : mCurve( curve )
 {
-
 }
 
 QgsProfileRequest::~QgsProfileRequest() = default;
@@ -35,7 +34,6 @@ QgsProfileRequest::QgsProfileRequest( const QgsProfileRequest &other )
   , mTerrainProvider( other.mTerrainProvider ? other.mTerrainProvider->clone() : nullptr )
   , mExpressionContext( other.mExpressionContext )
 {
-
 }
 
 QgsProfileRequest &QgsProfileRequest::operator=( const QgsProfileRequest &other )
@@ -149,4 +147,3 @@ QgsProfileRequest &QgsProfileRequest::setExpressionContext( const QgsExpressionC
   mExpressionContext = context;
   return *this;
 }
-

@@ -246,7 +246,6 @@ bool QgsGeospatialPdfLayerFilteredTreeModel::filterAcceptsRow( int source_row, c
     // filter out non-spatial layers
     if ( !layer->isSpatial() )
       return false;
-
   }
   return true;
 }

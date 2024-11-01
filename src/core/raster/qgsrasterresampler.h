@@ -96,14 +96,12 @@ class CORE_EXPORT QgsRasterResampler
 class CORE_EXPORT QgsRasterResamplerV2 : public QgsRasterResampler
 {
   public:
-
     /**
      * Resamples a \a source image to the specified \a size.
      *
      * Returns the resampled image, or a null QImage if the resampling fails.
      */
     virtual QImage resampleV2( const QImage &source, const QSize &size ) = 0;
-
 };
 
 #endif // QGSRASTERRESAMPLER_H

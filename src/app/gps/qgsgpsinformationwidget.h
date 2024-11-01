@@ -43,11 +43,10 @@ class QgsAppGpsDigitizing;
  * allows the user to capture features using gps readings to
  * specify the geometry.
 */
-class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::QgsGpsInformationWidgetBase
+class APP_EXPORT QgsGpsInformationWidget : public QgsPanelWidget, private Ui::QgsGpsInformationWidgetBase
 {
     Q_OBJECT
   public:
-
     QgsGpsInformationWidget( QgsAppGpsConnection *connection, QgsMapCanvas *mapCanvas, QgsAppGpsDigitizing *digitizing = nullptr, QWidget *parent = nullptr );
     ~QgsGpsInformationWidget() override;
 
@@ -68,12 +67,11 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
     void updateTrackInformation();
 
   private:
-
     void setStatusIndicator( Qgis::GpsFixStatus statusValue );
     void showStatusBarMessage( const QString &msg );
 
     QgsAppGpsConnection *mConnection = nullptr;
-    QPointer< QgsMapCanvas > mMapCanvas;
+    QPointer<QgsMapCanvas> mMapCanvas;
     QgsAppGpsDigitizing *mDigitizing = nullptr;
 
     QwtPlot *mPlot = nullptr;
@@ -81,7 +79,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
 #ifdef WITH_QWTPOLAR
     QwtPolarPlot *mpSatellitesWidget = nullptr;
     QwtPolarGrid *mpSatellitesGrid = nullptr;
-    QList< QwtPolarMarker * > mMarkerList;
+    QList<QwtPolarMarker *> mMarkerList;
 #endif
 
     QgsPointXY mLastGpsPosition;

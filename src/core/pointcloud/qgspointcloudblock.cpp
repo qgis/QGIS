@@ -23,8 +23,7 @@
 QgsPointCloudBlock::QgsPointCloudBlock(
   int count,
   const QgsPointCloudAttributeCollection &attributes,
-  const QByteArray &data, const QgsVector3D &scale, const QgsVector3D &offset
-)
+  const QByteArray &data, const QgsVector3D &scale, const QgsVector3D &offset )
   : mPointCount( count )
   , mAttributes( attributes )
   , mRecordSize( mAttributes.pointRecordSize() )

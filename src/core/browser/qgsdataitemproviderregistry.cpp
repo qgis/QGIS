@@ -36,9 +36,9 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
     mProviders << providerList;
     for ( const auto &p : std::as_const( providerList ) )
     {
-      if ( ! p->dataProviderKey().isEmpty() )
+      if ( !p->dataProviderKey().isEmpty() )
       {
-        mDataItemProviderOrigin[ p->name() ] = p->dataProviderKey();
+        mDataItemProviderOrigin[p->name()] = p->dataProviderKey();
       }
     }
   }
@@ -65,9 +65,9 @@ QgsDataItemProvider *QgsDataItemProviderRegistry::provider( const QString &provi
 
 void QgsDataItemProviderRegistry::addProvider( QgsDataItemProvider *provider )
 {
-  if ( ! provider->dataProviderKey().isEmpty() )
+  if ( !provider->dataProviderKey().isEmpty() )
   {
-    mDataItemProviderOrigin[ provider->name() ] = provider->dataProviderKey();
+    mDataItemProviderOrigin[provider->name()] = provider->dataProviderKey();
   }
   mProviders.append( provider );
   emit providerAdded( provider );

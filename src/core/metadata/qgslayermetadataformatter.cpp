@@ -73,27 +73,27 @@ QString QgsLayerMetadataFormatter::contactsSectionHtml() const
         {
           myMetadata += QLatin1String( "<br />\n" );
         }
-        if ( ! oneAddress.type.isEmpty() )
+        if ( !oneAddress.type.isEmpty() )
         {
           myMetadata += oneAddress.type + QStringLiteral( "<br />" );
         }
-        if ( ! oneAddress.address.isEmpty() )
+        if ( !oneAddress.address.isEmpty() )
         {
           myMetadata += oneAddress.address + QStringLiteral( "<br />" );
         }
-        if ( ! oneAddress.postalCode.isEmpty() )
+        if ( !oneAddress.postalCode.isEmpty() )
         {
           myMetadata += oneAddress.postalCode + QStringLiteral( "<br />" );
         }
-        if ( ! oneAddress.city.isEmpty() )
+        if ( !oneAddress.city.isEmpty() )
         {
           myMetadata += oneAddress.city + QStringLiteral( "<br />" );
         }
-        if ( ! oneAddress.administrativeArea.isEmpty() )
+        if ( !oneAddress.administrativeArea.isEmpty() )
         {
           myMetadata += oneAddress.administrativeArea + QStringLiteral( "<br />" );
         }
-        if ( ! oneAddress.country.isEmpty() )
+        if ( !oneAddress.country.isEmpty() )
         {
           myMetadata += oneAddress.country;
         }
@@ -126,7 +126,7 @@ QString QgsLayerMetadataFormatter::extentSectionHtml( const bool showSpatialExte
     myMetadata += QLatin1String( "</td></tr>\n" );
 
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Spatial Extent" ) + QStringLiteral( "</td><td>" );
-    const QList< QgsLayerMetadata::SpatialExtent > spatialExtents = extent.spatialExtents();
+    const QList<QgsLayerMetadata::SpatialExtent> spatialExtents = extent.spatialExtents();
     for ( const QgsLayerMetadata::SpatialExtent &spatialExtent : spatialExtents )
     {
       if ( spatialExtent.bounds.isNull() || spatialExtent.bounds.toRectangle().isNull() )
@@ -142,21 +142,21 @@ QString QgsLayerMetadataFormatter::extentSectionHtml( const bool showSpatialExte
       else
         myMetadata += tr( "Projected" );
       myMetadata += QLatin1String( "<br />" );
-      myMetadata += QStringLiteral( "<strong>" ) + tr( "X Minimum:" ) + QStringLiteral( " </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.xMinimum() ) + QStringLiteral( "<br />" );
-      myMetadata += QStringLiteral( "<strong>" ) + tr( "Y Minimum:" ) + QStringLiteral( " </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.yMinimum() ) + QStringLiteral( "<br />" );
-      myMetadata += QStringLiteral( "<strong>" ) + tr( "X Maximum:" ) + QStringLiteral( " </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.xMaximum() ) + QStringLiteral( "<br />" );
-      myMetadata += QStringLiteral( "<strong>" ) + tr( "Y Maximum:" ) + QStringLiteral( " </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.yMaximum() ) + QStringLiteral( "<br />" );
+      myMetadata += QStringLiteral( "<strong>" ) + tr( "X Minimum:" ) + QStringLiteral( " </strong>" ) + qgsDoubleToString( spatialExtent.bounds.xMinimum() ) + QStringLiteral( "<br />" );
+      myMetadata += QStringLiteral( "<strong>" ) + tr( "Y Minimum:" ) + QStringLiteral( " </strong>" ) + qgsDoubleToString( spatialExtent.bounds.yMinimum() ) + QStringLiteral( "<br />" );
+      myMetadata += QStringLiteral( "<strong>" ) + tr( "X Maximum:" ) + QStringLiteral( " </strong>" ) + qgsDoubleToString( spatialExtent.bounds.xMaximum() ) + QStringLiteral( "<br />" );
+      myMetadata += QStringLiteral( "<strong>" ) + tr( "Y Maximum:" ) + QStringLiteral( " </strong>" ) + qgsDoubleToString( spatialExtent.bounds.yMaximum() ) + QStringLiteral( "<br />" );
       if ( spatialExtent.bounds.zMinimum() || spatialExtent.bounds.zMaximum() )
       {
-        myMetadata += QStringLiteral( "<strong>" ) + tr( "Z Minimum:" ) + QStringLiteral( " </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.zMinimum() ) + QStringLiteral( "<br />" );
-        myMetadata += QStringLiteral( "<strong>" ) + tr( "Z Maximum:" ) + QStringLiteral( " </strong>" ) +  qgsDoubleToString( spatialExtent.bounds.zMaximum() );
+        myMetadata += QStringLiteral( "<strong>" ) + tr( "Z Minimum:" ) + QStringLiteral( " </strong>" ) + qgsDoubleToString( spatialExtent.bounds.zMinimum() ) + QStringLiteral( "<br />" );
+        myMetadata += QStringLiteral( "<strong>" ) + tr( "Z Maximum:" ) + QStringLiteral( " </strong>" ) + qgsDoubleToString( spatialExtent.bounds.zMaximum() );
       }
       notFirstRow = true;
     }
     myMetadata += QLatin1String( "</td></tr>\n" );
   }
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Temporal Extent" ) + QStringLiteral( "</td><td>" );
-  const QList< QgsDateTimeRange > temporalExtents = extent.temporalExtents();
+  const QList<QgsDateTimeRange> temporalExtents = extent.temporalExtents();
   notFirstRow = false;
   for ( const QgsDateTimeRange &temporalExtent : temporalExtents )
   {
@@ -225,7 +225,7 @@ QString QgsLayerMetadataFormatter::identificationSectionHtml() const
     myMetadata += QLatin1String( "</table>\n" ); // End keywords table
   }
   myMetadata += QLatin1String( "</td></tr>\n" ); // End of keywords row
-  myMetadata += QLatin1String( "</table>\n" ); // End identification table
+  myMetadata += QLatin1String( "</table>\n" );   // End identification table
   return myMetadata;
 }
 

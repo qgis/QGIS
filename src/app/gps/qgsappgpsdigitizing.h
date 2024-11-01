@@ -39,23 +39,21 @@ class QgsUpdateGpsDetailsAction : public QgsMapLayerAction
     Q_OBJECT
 
   public:
-
     QgsUpdateGpsDetailsAction( QgsAppGpsConnection *connection, QgsAppGpsDigitizing *digitizing, QObject *parent );
     bool canRunUsingLayer( QgsMapLayer *layer ) const override;
     bool canRunUsingLayer( QgsMapLayer *layer, const QgsMapLayerActionContext &context ) const override;
     void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature, const QgsMapLayerActionContext &context ) override;
+
   private:
     QgsAppGpsConnection *mConnection = nullptr;
     QgsAppGpsDigitizing *mDigitizing = nullptr;
-
 };
 
-class APP_EXPORT QgsAppGpsDigitizing: public QgsGpsLogger
+class APP_EXPORT QgsAppGpsDigitizing : public QgsGpsLogger
 {
     Q_OBJECT
 
   public:
-
     static const QgsSettingsEntryString *settingTrackLineSymbol;
 
     QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QObject *parent = nullptr );

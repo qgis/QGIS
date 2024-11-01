@@ -21,7 +21,7 @@
 #include "qgsrasterlayer.h"
 
 QgsRasterLayerTemporalProperties::QgsRasterLayerTemporalProperties( QObject *parent, bool enabled )
-  :  QgsMapLayerTemporalProperties( parent, enabled )
+  : QgsMapLayerTemporalProperties( parent, enabled )
 {
   mTemporalRepresentationScale.setDays( 1.0 );
 }
@@ -56,7 +56,7 @@ bool QgsRasterLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTi
 
 QgsDateTimeRange QgsRasterLayerTemporalProperties::calculateTemporalExtent( QgsMapLayer *layer ) const
 {
-  QgsRasterLayer *rasterLayer = qobject_cast< QgsRasterLayer *>( layer );
+  QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
   if ( !rasterLayer )
     return QgsDateTimeRange();
 
@@ -108,7 +108,7 @@ QgsDateTimeRange QgsRasterLayerTemporalProperties::calculateTemporalExtent( QgsM
 
 QList<QgsDateTimeRange> QgsRasterLayerTemporalProperties::allTemporalRanges( QgsMapLayer *layer ) const
 {
-  QgsRasterLayer *rasterLayer = qobject_cast< QgsRasterLayer *>( layer );
+  QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
 
   switch ( mMode )
   {
@@ -131,8 +131,8 @@ QList<QgsDateTimeRange> QgsRasterLayerTemporalProperties::allTemporalRanges( Qgs
       if ( !rasterLayer || !rasterLayer->dataProvider() )
         return {};
 
-      const QList< QgsDateTimeRange > ranges = rasterLayer->dataProvider()->temporalCapabilities()->allAvailableTemporalRanges();
-      return ranges.empty() ? QList< QgsDateTimeRange > { rasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange() } : ranges;
+      const QList<QgsDateTimeRange> ranges = rasterLayer->dataProvider()->temporalCapabilities()->allAvailableTemporalRanges();
+      return ranges.empty() ? QList<QgsDateTimeRange> { rasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange() } : ranges;
     }
 
     case Qgis::RasterTemporalMode::RepresentsTemporalValues:
@@ -183,7 +183,7 @@ void QgsRasterLayerTemporalProperties::setIntervalHandlingMethod( Qgis::Temporal
   mIntervalHandlingMethod = method;
 }
 
-void  QgsRasterLayerTemporalProperties::setFixedTemporalRange( const QgsDateTimeRange &range )
+void QgsRasterLayerTemporalProperties::setFixedTemporalRange( const QgsDateTimeRange &range )
 {
   mFixedRange = range;
 }
@@ -226,7 +226,7 @@ int QgsRasterLayerTemporalProperties::bandForTemporalRange( QgsRasterLayer *, co
         if ( it.value().overlaps( range ) )
         {
           if ( currentMatchingRange.isInfinite()
-               || ( it.value().includeEnd() && it.value().end() >= currentMatchingRange.end() ) // cppcheck-suppress mismatchingContainerExpression
+               || ( it.value().includeEnd() && it.value().end() >= currentMatchingRange.end() )              // cppcheck-suppress mismatchingContainerExpression
                || ( !currentMatchingRange.includeEnd() && it.value().end() >= currentMatchingRange.end() ) ) // cppcheck-suppress mismatchingContainerExpression
           {
             currentMatchingBand = it.key();
@@ -252,7 +252,7 @@ QList<int> QgsRasterLayerTemporalProperties::filteredBandsForTemporalRange( QgsR
     case Qgis::RasterTemporalMode::RedrawLayerOnly:
     {
       const int bandCount = layer->bandCount();
-      QList< int > res;
+      QList<int> res;
       res.reserve( bandCount );
       for ( int i = 1; i <= bandCount; ++i )
         res.append( i );
@@ -329,9 +329,9 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
 
   setIsActive( temporalNode.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt() );
 
-  mMode = static_cast< Qgis::RasterTemporalMode >( temporalNode.attribute( QStringLiteral( "mode" ), QStringLiteral( "0" ) ). toInt() );
+  mMode = static_cast<Qgis::RasterTemporalMode>( temporalNode.attribute( QStringLiteral( "mode" ), QStringLiteral( "0" ) ).toInt() );
   mBandNumber = temporalNode.attribute( QStringLiteral( "bandNumber" ), QStringLiteral( "1" ) ).toInt();
-  mIntervalHandlingMethod = static_cast< Qgis::TemporalIntervalMatchMethod >( temporalNode.attribute( QStringLiteral( "fetchMode" ), QStringLiteral( "0" ) ). toInt() );
+  mIntervalHandlingMethod = static_cast<Qgis::TemporalIntervalMatchMethod>( temporalNode.attribute( QStringLiteral( "fetchMode" ), QStringLiteral( "0" ) ).toInt() );
 
   switch ( mMode )
   {
@@ -372,7 +372,7 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
     {
       mTemporalRepresentationOffset = QDateTime::fromString( temporalNode.attribute( QStringLiteral( "temporalRepresentationOffset" ) ), Qt::ISODate );
       mTemporalRepresentationScale = QgsInterval( temporalNode.attribute( QStringLiteral( "temporalRepresentationScale" ), QStringLiteral( "1" ) ).toDouble(),
-                                     static_cast< Qgis::TemporalUnit >( temporalNode.attribute( QStringLiteral( "temporalRepresentationScaleUnit" ), QStringLiteral( "4" ) ).toInt() ) );
+                                                  static_cast<Qgis::TemporalUnit>( temporalNode.attribute( QStringLiteral( "temporalRepresentationScaleUnit" ), QStringLiteral( "4" ) ).toInt() ) );
       break;
     }
 
@@ -392,15 +392,14 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
 
   QDomElement temporalElement = document.createElement( QStringLiteral( "temporal" ) );
   temporalElement.setAttribute( QStringLiteral( "enabled" ), isActive() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  temporalElement.setAttribute( QStringLiteral( "mode" ), QString::number( static_cast< int >( mMode ) ) );
+  temporalElement.setAttribute( QStringLiteral( "mode" ), QString::number( static_cast<int>( mMode ) ) );
   temporalElement.setAttribute( QStringLiteral( "bandNumber" ), QString::number( mBandNumber ) );
-  temporalElement.setAttribute( QStringLiteral( "fetchMode" ), QString::number( static_cast< int >( mIntervalHandlingMethod ) ) );
+  temporalElement.setAttribute( QStringLiteral( "fetchMode" ), QString::number( static_cast<int>( mIntervalHandlingMethod ) ) );
 
   switch ( mMode )
   {
     case Qgis::RasterTemporalMode::FixedTemporalRange:
     {
-
       QDomElement rangeElement = document.createElement( QStringLiteral( "fixedRange" ) );
 
       QDomElement startElement = document.createElement( QStringLiteral( "start" ) );
@@ -438,7 +437,7 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
     {
       temporalElement.setAttribute( QStringLiteral( "temporalRepresentationOffset" ), mTemporalRepresentationOffset.toString( Qt::ISODate ) );
       temporalElement.setAttribute( QStringLiteral( "temporalRepresentationScale" ), QString::number( mTemporalRepresentationScale.originalDuration() ) );
-      temporalElement.setAttribute( QStringLiteral( "temporalRepresentationScaleUnit" ), QString::number( static_cast< int >( mTemporalRepresentationScale.originalUnit() ) ) );
+      temporalElement.setAttribute( QStringLiteral( "temporalRepresentationScaleUnit" ), QString::number( static_cast<int>( mTemporalRepresentationScale.originalUnit() ) ) );
       break;
     }
 
@@ -454,7 +453,7 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
 
 void QgsRasterLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities )
 {
-  if ( const QgsRasterDataProviderTemporalCapabilities *rasterCaps = dynamic_cast< const QgsRasterDataProviderTemporalCapabilities *>( capabilities ) )
+  if ( const QgsRasterDataProviderTemporalCapabilities *rasterCaps = dynamic_cast<const QgsRasterDataProviderTemporalCapabilities *>( capabilities ) )
   {
     setIsActive( rasterCaps->hasTemporalCapabilities() );
     setFixedTemporalRange( rasterCaps->availableTemporalRange() );

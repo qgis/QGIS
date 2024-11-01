@@ -49,7 +49,6 @@
 class CORE_EXPORT QgsMeshCalcUtils
 {
   public:
-
     /**
      * Creates the utils and validates the input
      *
@@ -260,9 +259,9 @@ class CORE_EXPORT QgsMeshCalcUtils
      * exists. Resulting datasets are guaranteed to have the same mOutputType type
      */
     std::shared_ptr<QgsMeshMemoryDatasetGroup> createMemoryDatasetGroup( const QString &datasetGroupName,
-        const QgsInterval &relativeTime = QgsInterval(),
-        const QgsInterval &startTime = QgsInterval(),
-        const QgsInterval &endTime = QgsInterval() ) const;
+                                                                         const QgsInterval &relativeTime = QgsInterval(),
+                                                                         const QgsInterval &startTime = QgsInterval(),
+                                                                         const QgsInterval &endTime = QgsInterval() ) const;
 
     /**
      *  Returns dataset group based on name, the dataset count contained in the group will depend on \a isAggregate.
@@ -293,13 +292,13 @@ class CORE_EXPORT QgsMeshCalcUtils
      * Returns dataset based on (time) index. If group has only 1 dataset, returns first one
      */
     std::shared_ptr<QgsMeshMemoryDataset> canditateDataset( QgsMeshMemoryDatasetGroup &group,
-        int datasetIndex ) const;
+                                                            int datasetIndex ) const;
 
     /**
      * Returns dataset based on on (time) index. If group has only 1 dataset, returns first one
      */
     std::shared_ptr<const QgsMeshMemoryDataset> constCandidateDataset( const QgsMeshMemoryDatasetGroup &group,
-        int datasetIndex ) const;
+                                                                       int datasetIndex ) const;
 
     /**
      * Returns maximum number of datasets in the groups
@@ -334,19 +333,19 @@ class CORE_EXPORT QgsMeshCalcUtils
 
     //! Calculates unary aggregate operator (e.g. sum of values of one vertex for all times)
     void funcAggr( QgsMeshMemoryDatasetGroup &group1,
-                   std::function<double( QVector<double>& )> func ) const;
+                   std::function<double( QVector<double> & )> func ) const;
 
     const QgsTriangularMesh *triangularMesh() const;
     const QgsMesh *nativeMesh() const;
     void updateMesh() const;
 
-    QgsMeshLayer *mMeshLayer; //!< Reference mesh
-    bool mIsValid; //!< All used datasets (in datasetMap) do have outputs for same times & all used dataset names are present in mesh
+    QgsMeshLayer *mMeshLayer;                          //!< Reference mesh
+    bool mIsValid;                                     //!< All used datasets (in datasetMap) do have outputs for same times & all used dataset names are present in mesh
     QgsMeshDatasetGroupMetadata::DataType mOutputType; //!< Mesh can work only with one output types, so you cannot mix
     //!< E.g. one dataset with element outputs and one with node outputs
     QVector<double> mTimes;
-    QMap < QString, std::shared_ptr<QgsMeshMemoryDatasetGroup> > mDatasetGroupMap; //!< Groups that are referenced in the expression
-    QMap < QString, std::shared_ptr<QgsMeshMemoryDatasetGroup> > mDatasetGroupMapForAggregate; //!< Groups that are referenced in the expression and used for aggregate function
+    QMap<QString, std::shared_ptr<QgsMeshMemoryDatasetGroup>> mDatasetGroupMap;             //!< Groups that are referenced in the expression
+    QMap<QString, std::shared_ptr<QgsMeshMemoryDatasetGroup>> mDatasetGroupMapForAggregate; //!< Groups that are referenced in the expression and used for aggregate function
 
     bool mIgnoreTime = false; // with virtual datasetgroup, we only consider the current time step, except for aggregate function where we don't care about time value
 };

@@ -25,12 +25,14 @@
 #include <QRect>
 #include <cmath>
 
-QgsSlider::QgsSlider( QWidget *parent ) : QSlider( parent )
+QgsSlider::QgsSlider( QWidget *parent )
+  : QSlider( parent )
 {
   setMinimumSize( QSize( 100, 40 ) );
 }
 
-QgsSlider::QgsSlider( Qt::Orientation orientation, QWidget *parent ) : QSlider( orientation, parent )
+QgsSlider::QgsSlider( Qt::Orientation orientation, QWidget *parent )
+  : QSlider( orientation, parent )
 {
   setMinimumSize( QSize( 100, 40 ) );
 }
@@ -78,10 +80,7 @@ void QgsSlider::update()
   if ( QgsVariantUtils::isNull( mValue ) )
     mValue = mMin;
 
-  if ( mMin.userType() == QMetaType::Type::Int &&
-       mMax.userType() == QMetaType::Type::Int &&
-       mStep.userType() == QMetaType::Type::Int &&
-       mValue.userType() == QMetaType::Type::Int )
+  if ( mMin.userType() == QMetaType::Type::Int && mMax.userType() == QMetaType::Type::Int && mStep.userType() == QMetaType::Type::Int && mValue.userType() == QMetaType::Type::Int )
   {
     QSlider::setMinimum( mMin.toInt() );
     QSlider::setMaximum( mMax.toInt() );
@@ -117,10 +116,7 @@ void QgsSlider::onValueChanged( int value )
   {
     mValue = QVariant();
   }
-  else if ( mMin.userType() == QMetaType::Type::Int &&
-            mMax.userType() == QMetaType::Type::Int &&
-            mStep.userType() == QMetaType::Type::Int &&
-            mValue.userType() == QMetaType::Type::Int )
+  else if ( mMin.userType() == QMetaType::Type::Int && mMax.userType() == QMetaType::Type::Int && mStep.userType() == QMetaType::Type::Int && mValue.userType() == QMetaType::Type::Int )
   {
     mValue = value;
   }

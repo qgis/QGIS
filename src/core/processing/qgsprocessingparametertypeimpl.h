@@ -67,10 +67,10 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterLayer : public QgsProcessingPa
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "str: layer ID" )
-             << QObject::tr( "str: layer name" )
-             << QObject::tr( "str: layer source" )
-             << QStringLiteral( "QgsProperty" )
-             << QStringLiteral( "QgsRasterLayer" );
+                           << QObject::tr( "str: layer name" )
+                           << QObject::tr( "str: layer source" )
+                           << QStringLiteral( "QgsProperty" )
+                           << QStringLiteral( "QgsRasterLayer" );
     }
 
     QStringList acceptedStringValues() const override
@@ -121,9 +121,9 @@ class CORE_EXPORT QgsProcessingParameterTypeMeshLayer : public QgsProcessingPara
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "str: layer ID" )
-             << QObject::tr( "str: layer name" )
-             << QObject::tr( "str: layer source" )
-             << QStringLiteral( "QgsMeshLayer" );
+                           << QObject::tr( "str: layer name" )
+                           << QObject::tr( "str: layer source" )
+                           << QStringLiteral( "QgsMeshLayer" );
     }
 
     QStringList acceptedStringValues() const override
@@ -174,10 +174,10 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorLayer : public QgsProcessingPa
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "str: layer ID" )
-             << QObject::tr( "str: layer name" )
-             << QObject::tr( "str: layer source" )
-             << QStringLiteral( "QgsProperty" )
-             << QStringLiteral( "QgsVectorLayer" );
+                           << QObject::tr( "str: layer name" )
+                           << QObject::tr( "str: layer source" )
+                           << QStringLiteral( "QgsProperty" )
+                           << QStringLiteral( "QgsVectorLayer" );
     }
 
     QStringList acceptedStringValues() const override
@@ -228,12 +228,12 @@ class CORE_EXPORT QgsProcessingParameterTypeMapLayer : public QgsProcessingParam
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "str: layer ID" )
-             << QObject::tr( "str: layer name" )
-             << QObject::tr( "str: layer source" )
-             << QStringLiteral( "QgsMapLayer" )
-             << QStringLiteral( "QgsProperty" )
-             << QStringLiteral( "QgsRasterLayer" )
-             << QStringLiteral( "QgsVectorLayer" );
+                           << QObject::tr( "str: layer name" )
+                           << QObject::tr( "str: layer source" )
+                           << QStringLiteral( "QgsMapLayer" )
+                           << QStringLiteral( "QgsProperty" )
+                           << QStringLiteral( "QgsRasterLayer" )
+                           << QStringLiteral( "QgsVectorLayer" );
     }
 
     QStringList acceptedStringValues() const override
@@ -284,17 +284,17 @@ class CORE_EXPORT QgsProcessingParameterTypeBoolean : public QgsProcessingParame
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "bool" )
-             << QStringLiteral( "int" )
-             << QStringLiteral( "str" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "int" )
+                           << QStringLiteral( "str" )
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "1 for true/yes" )
-             << QObject::tr( "0 for false/no" )
-             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
-             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+                           << QObject::tr( "0 for false/no" )
+                           << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+                           << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
 };
 
@@ -340,7 +340,7 @@ class CORE_EXPORT QgsProcessingParameterTypeExpression : public QgsProcessingPar
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "str" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
@@ -407,9 +407,9 @@ class CORE_EXPORT QgsProcessingParameterTypeCrs : public QgsProcessingParameterT
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "CRS as an auth ID (e.g. 'EPSG:3111')" )
-             << QObject::tr( "CRS as a PROJ4 string (e.g. 'PROJ4:…')" )
-             << QObject::tr( "CRS as a WKT string (e.g. 'WKT:…')" )
-             << QObject::tr( "Path to a layer. The CRS of the layer is used." ) ;
+                           << QObject::tr( "CRS as a PROJ4 string (e.g. 'PROJ4:…')" )
+                           << QObject::tr( "CRS as a WKT string (e.g. 'WKT:…')" )
+                           << QObject::tr( "Path to a layer. The CRS of the layer is used." );
     }
 };
 
@@ -455,9 +455,9 @@ class CORE_EXPORT QgsProcessingParameterTypeRange : public QgsProcessingParamete
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "list[float]: list of 2 float values" )
-             << QObject::tr( "list[str]: list of strings representing floats" )
-             << QObject::tr( "str: as two comma delimited floats, e.g. '1,10'" )
-             << QStringLiteral( "QgsProperty" );
+                           << QObject::tr( "list[str]: list of strings representing floats" )
+                           << QObject::tr( "str: as two comma delimited floats, e.g. '1,10'" )
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
@@ -508,10 +508,10 @@ class CORE_EXPORT QgsProcessingParameterTypePoint : public QgsProcessingParamete
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "str: as an 'x,y' string, e.g. '1.5,10.1'" )
-             << QStringLiteral( "QgsPointXY" )
-             << QStringLiteral( "QgsProperty" )
-             << QStringLiteral( "QgsReferencedPointXY" )
-             << QStringLiteral( "QgsGeometry: centroid of geometry is used" );
+                           << QStringLiteral( "QgsPointXY" )
+                           << QStringLiteral( "QgsProperty" )
+                           << QStringLiteral( "QgsReferencedPointXY" )
+                           << QStringLiteral( "QgsGeometry: centroid of geometry is used" );
     }
 
     QStringList acceptedStringValues() const override
@@ -562,8 +562,8 @@ class CORE_EXPORT QgsProcessingParameterTypeGeometry : public QgsProcessingParam
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "str: as Well-Known Text string (WKT)" )
-             << QStringLiteral( "QgsGeometry" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "QgsGeometry" )
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
@@ -614,14 +614,14 @@ class CORE_EXPORT QgsProcessingParameterTypeEnum : public QgsProcessingParameter
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "int" )
-             << QObject::tr( "str: as string representation of int, e.g. '1'" )
-             << QStringLiteral( "QgsProperty" );
+                           << QObject::tr( "str: as string representation of int, e.g. '1'" )
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "Number of selected option, e.g. '1'" )
-             << QObject::tr( "Comma separated list of options, e.g. '1,3'" );
+                           << QObject::tr( "Comma separated list of options, e.g. '1,3'" );
     }
 };
 
@@ -667,21 +667,21 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "str: as comma delimited list of x min, x max, y min, y max. E.g. '4,10,101,105'" )
-             << QObject::tr( "str: layer ID. Extent of layer is used." )
-             << QObject::tr( "str: layer name. Extent of layer is used." )
-             << QObject::tr( "str: layer source. Extent of layer is used." )
-             << QObject::tr( "QgsMapLayer: Extent of layer is used" )
-             << QObject::tr( "QgsProcessingFeatureSourceDefinition: Extent of source is used" )
-             << QStringLiteral( "QgsProperty" )
-             << QStringLiteral( "QgsRectangle" )
-             << QStringLiteral( "QgsReferencedRectangle" )
-             << QStringLiteral( "QgsGeometry: bounding box of geometry is used" );
+                           << QObject::tr( "str: layer ID. Extent of layer is used." )
+                           << QObject::tr( "str: layer name. Extent of layer is used." )
+                           << QObject::tr( "str: layer source. Extent of layer is used." )
+                           << QObject::tr( "QgsMapLayer: Extent of layer is used" )
+                           << QObject::tr( "QgsProcessingFeatureSourceDefinition: Extent of source is used" )
+                           << QStringLiteral( "QgsProperty" )
+                           << QStringLiteral( "QgsRectangle" )
+                           << QStringLiteral( "QgsReferencedRectangle" )
+                           << QStringLiteral( "QgsGeometry: bounding box of geometry is used" );
     }
 
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "A comma delimited string of x min, x max, y min, y max. E.g. '4,10,101,105'" )
-             << QObject::tr( "Path to a layer. The extent of the layer is used." ) ;
+                           << QObject::tr( "Path to a layer. The extent of the layer is used." );
     }
 };
 
@@ -727,8 +727,8 @@ class CORE_EXPORT QgsProcessingParameterTypeMatrix : public QgsProcessingParamet
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "str: as comma delimited list of values" )
-             << QStringLiteral( "list" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "list" )
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
@@ -779,7 +779,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFile : public QgsProcessingParameter
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "str" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
@@ -830,13 +830,13 @@ class CORE_EXPORT QgsProcessingParameterTypeField : public QgsProcessingParamete
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "str" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "The name of an existing field" )
-             << QObject::tr( "; delimited list of existing field names" );
+                           << QObject::tr( "; delimited list of existing field names" );
     }
 };
 
@@ -890,8 +890,8 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorDestination : public QgsProces
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "str" )
-             << QStringLiteral( "QgsProperty" )
-             << QStringLiteral( "QgsProcessingOutputLayerDefinition" );
+                           << QStringLiteral( "QgsProperty" )
+                           << QStringLiteral( "QgsProcessingOutputLayerDefinition" );
     }
 
     QStringList acceptedStringValues() const override
@@ -950,7 +950,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessi
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "str" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
@@ -1010,7 +1010,7 @@ class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProces
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "str" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
@@ -1069,8 +1069,8 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterDestination : public QgsProces
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "str" )
-             << QStringLiteral( "QgsProperty" )
-             << QStringLiteral( "QgsProcessingOutputLayerDefinition" );
+                           << QStringLiteral( "QgsProperty" )
+                           << QStringLiteral( "QgsProcessingOutputLayerDefinition" );
     }
 
     QStringList acceptedStringValues() const override
@@ -1121,14 +1121,14 @@ class CORE_EXPORT QgsProcessingParameterTypeString : public QgsProcessingParamet
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "str" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "String value" )
-             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
-             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+                           << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+                           << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
 };
 
@@ -1224,10 +1224,10 @@ class CORE_EXPORT QgsProcessingParameterTypeMultipleLayers : public QgsProcessin
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "list[str]: list of layer IDs" )
-             << QObject::tr( "list[str]: list of layer names" )
-             << QObject::tr( "list[str]: list of layer sources" )
-             << QStringLiteral( "list[QgsMapLayer]" )
-             << QStringLiteral( "QgsProperty" );
+                           << QObject::tr( "list[str]: list of layer names" )
+                           << QObject::tr( "list[str]: list of layer sources" )
+                           << QStringLiteral( "list[QgsMapLayer]" )
+                           << QStringLiteral( "QgsProperty" );
     }
 };
 
@@ -1273,11 +1273,11 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSource : public QgsProcessing
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "str: layer ID" )
-             << QObject::tr( "str: layer name" )
-             << QObject::tr( "str: layer source" )
-             << QStringLiteral( "QgsProcessingFeatureSourceDefinition" )
-             << QStringLiteral( "QgsProperty" )
-             << QStringLiteral( "QgsVectorLayer" );
+                           << QObject::tr( "str: layer name" )
+                           << QObject::tr( "str: layer source" )
+                           << QStringLiteral( "QgsProcessingFeatureSourceDefinition" )
+                           << QStringLiteral( "QgsProperty" )
+                           << QStringLiteral( "QgsVectorLayer" );
     }
 
     QStringList acceptedStringValues() const override
@@ -1328,15 +1328,15 @@ class CORE_EXPORT QgsProcessingParameterTypeNumber : public QgsProcessingParamet
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "int" )
-             << QStringLiteral( "float" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "float" )
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "A numeric value" )
-             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
-             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+                           << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+                           << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
 };
 
@@ -1382,15 +1382,15 @@ class CORE_EXPORT QgsProcessingParameterTypeDistance : public QgsProcessingParam
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "int" )
-             << QStringLiteral( "float" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "float" )
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "A numeric value" )
-             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
-             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+                           << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+                           << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
 };
 
@@ -1437,15 +1437,15 @@ class CORE_EXPORT QgsProcessingParameterTypeArea : public QgsProcessingParameter
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "int" )
-             << QStringLiteral( "float" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "float" )
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "A numeric value" )
-             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
-             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+                           << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+                           << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
 };
 
@@ -1492,18 +1492,17 @@ class CORE_EXPORT QgsProcessingParameterTypeVolume : public QgsProcessingParamet
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "int" )
-             << QStringLiteral( "float" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "float" )
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "A numeric value" )
-             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
-             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+                           << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+                           << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
 };
-
 
 
 /**
@@ -1548,15 +1547,15 @@ class CORE_EXPORT QgsProcessingParameterTypeDuration : public QgsProcessingParam
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "int" )
-             << QStringLiteral( "float" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "float" )
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "A numeric value (unit type set by algorithms)" )
-             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
-             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+                           << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+                           << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
 };
 
@@ -1602,8 +1601,8 @@ class CORE_EXPORT QgsProcessingParameterTypeScale : public QgsProcessingParamete
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "int: scale denominator" )
-             << QStringLiteral( "float: scale denominator" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "float: scale denominator" )
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
@@ -1654,7 +1653,7 @@ class CORE_EXPORT QgsProcessingParameterTypeBand : public QgsProcessingParameter
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "int" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
@@ -1712,10 +1711,10 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSink : public QgsProcessingPa
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "str: destination vector file, e.g. 'd:/test.shp'" )
-             << QObject::tr( "str: 'memory:' to store result in temporary memory layer" )
-             << QObject::tr( "str: using vector provider ID prefix and destination URI, e.g. 'postgres:…' to store result in PostGIS table" )
-             << QStringLiteral( "QgsProcessingOutputLayerDefinition" )
-             << QStringLiteral( "QgsProperty" );
+                           << QObject::tr( "str: 'memory:' to store result in temporary memory layer" )
+                           << QObject::tr( "str: using vector provider ID prefix and destination URI, e.g. 'postgres:…' to store result in PostGIS table" )
+                           << QStringLiteral( "QgsProcessingOutputLayerDefinition" )
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
@@ -1766,7 +1765,7 @@ class CORE_EXPORT QgsProcessingParameterTypeLayout : public QgsProcessingParamet
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "str: name of print layout in current project" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
@@ -1817,8 +1816,8 @@ class CORE_EXPORT QgsProcessingParameterTypeLayoutItem : public QgsProcessingPar
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "str: UUID of print layout item" )
-             << QObject::tr( "str: id of print layout item" )
-             << QStringLiteral( "QgsProperty" );
+                           << QObject::tr( "str: id of print layout item" )
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
@@ -1869,15 +1868,15 @@ class CORE_EXPORT QgsProcessingParameterTypeColor : public QgsProcessingParamete
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "str: string representation of color, e.g #ff0000 or rgba(200,100,50,0.8)" )
-             << QStringLiteral( "QColor" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "QColor" )
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "String representation of color, e.g #ff0000 or rgba(200,100,50,0.8)" )
-             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
-             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+                           << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+                           << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
 };
 
@@ -1938,7 +1937,7 @@ class CORE_EXPORT QgsProcessingParameterTypeCoordinateOperation : public QgsProc
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('maptheme')
  * \since QGIS 3.12
  */
-class CORE_EXPORT QgsProcessingParameterTypeMapTheme: public QgsProcessingParameterType
+class CORE_EXPORT QgsProcessingParameterTypeMapTheme : public QgsProcessingParameterType
 {
     QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
     {
@@ -1973,7 +1972,7 @@ class CORE_EXPORT QgsProcessingParameterTypeMapTheme: public QgsProcessingParame
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "str: name of an existing map theme" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
@@ -2024,17 +2023,17 @@ class CORE_EXPORT QgsProcessingParameterTypeDateTime : public QgsProcessingParam
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "str" )
-             << QStringLiteral( "QDateTime" )
-             << QStringLiteral( "QDate" )
-             << QStringLiteral( "QTime" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "QDateTime" )
+                           << QStringLiteral( "QDate" )
+                           << QStringLiteral( "QTime" )
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "A datetime value in ISO format" )
-             << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
-             << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
+                           << QObject::tr( "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field" )
+                           << QObject::tr( "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression" );
     }
 };
 
@@ -2080,7 +2079,7 @@ class CORE_EXPORT QgsProcessingParameterTypeProviderConnection : public QgsProce
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "str" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
@@ -2131,7 +2130,7 @@ class CORE_EXPORT QgsProcessingParameterTypeDatabaseSchema : public QgsProcessin
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "str" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
@@ -2147,7 +2146,7 @@ class CORE_EXPORT QgsProcessingParameterTypeDatabaseSchema : public QgsProcessin
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('databasetable')
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsProcessingParameterTypeDatabaseTable: public QgsProcessingParameterType
+class CORE_EXPORT QgsProcessingParameterTypeDatabaseTable : public QgsProcessingParameterType
 {
     QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
     {
@@ -2182,7 +2181,7 @@ class CORE_EXPORT QgsProcessingParameterTypeDatabaseTable: public QgsProcessingP
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "str" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
@@ -2233,9 +2232,9 @@ class CORE_EXPORT QgsProcessingParameterTypePointCloudLayer : public QgsProcessi
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "str: layer ID" )
-             << QObject::tr( "str: layer name" )
-             << QObject::tr( "str: layer source" )
-             << QStringLiteral( "QgsPointCloudLayer" );
+                           << QObject::tr( "str: layer name" )
+                           << QObject::tr( "str: layer source" )
+                           << QStringLiteral( "QgsPointCloudLayer" );
     }
 
     QStringList acceptedStringValues() const override
@@ -2286,9 +2285,9 @@ class CORE_EXPORT QgsProcessingParameterTypeAnnotationLayer : public QgsProcessi
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "str: layer ID" )
-             << QObject::tr( "str: layer name" )
-             << QObject::tr( "\"main\": main annotation layer for a project" )
-             << QStringLiteral( "QgsAnnotationLayer" );
+                           << QObject::tr( "str: layer name" )
+                           << QObject::tr( "\"main\": main annotation layer for a project" )
+                           << QStringLiteral( "QgsAnnotationLayer" );
     }
 
     QStringList acceptedStringValues() const override
@@ -2347,8 +2346,8 @@ class CORE_EXPORT QgsProcessingParameterTypePointCloudDestination : public QgsPr
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "str" )
-             << QStringLiteral( "QgsProperty" )
-             << QStringLiteral( "QgsProcessingOutputLayerDefinition" );
+                           << QStringLiteral( "QgsProperty" )
+                           << QStringLiteral( "QgsProcessingOutputLayerDefinition" );
     }
 
     QStringList acceptedStringValues() const override
@@ -2399,13 +2398,13 @@ class CORE_EXPORT QgsProcessingParameterTypePointCloudAttribute : public QgsProc
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "str" )
-             << QStringLiteral( "QgsProperty" );
+                           << QStringLiteral( "QgsProperty" );
     }
 
     QStringList acceptedStringValues() const override
     {
       return QStringList() << QObject::tr( "The name of an attribute" )
-             << QObject::tr( "; delimited list of attribute names" );
+                           << QObject::tr( "; delimited list of attribute names" );
     }
 };
 
@@ -2459,8 +2458,8 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorTileDestination : public QgsPr
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QStringLiteral( "str" )
-             << QStringLiteral( "QgsProperty" )
-             << QStringLiteral( "QgsProcessingOutputLayerDefinition" );
+                           << QStringLiteral( "QgsProperty" )
+                           << QStringLiteral( "QgsProcessingOutputLayerDefinition" );
     }
 
     QStringList acceptedStringValues() const override

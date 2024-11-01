@@ -46,7 +46,6 @@ class CORE_EXPORT QgsFileDownloader : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * QgsFileDownloader
      * \param url the download URL
@@ -114,7 +113,6 @@ class CORE_EXPORT QgsFileDownloader : public QObject
     ~QgsFileDownloader() override;
 
   private:
-
     /**
      * Abort current request and show an error if the instance has GUI
      * notifications enabled.

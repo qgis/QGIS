@@ -27,10 +27,9 @@
  * \brief Scalebar style that draws a single box with alternating
  * color for the segments.
  */
-class CORE_EXPORT QgsSingleBoxScaleBarRenderer: public QgsScaleBarRenderer
+class CORE_EXPORT QgsSingleBoxScaleBarRenderer : public QgsScaleBarRenderer
 {
   public:
-
     QgsSingleBoxScaleBarRenderer() = default;
 
     QString id() const override;
@@ -42,7 +41,6 @@ class CORE_EXPORT QgsSingleBoxScaleBarRenderer: public QgsScaleBarRenderer
     void draw( QgsRenderContext &context,
                const QgsScaleBarSettings &settings,
                const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
-
 };
 
 #endif // QGSSINGLEBOXSCALEBARRENDERER_H

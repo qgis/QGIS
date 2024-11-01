@@ -97,7 +97,7 @@ void QgsEptPointCloudIndex::loadManifest( const QByteArray &manifestJson )
   {
     const QJsonArray manifestArray = manifestDoc.array();
     // TODO how to handle multiple?
-    if ( ! manifestArray.empty() )
+    if ( !manifestArray.empty() )
     {
       const QJsonObject sourceObject = manifestArray.at( 0 ).toObject();
       const QString metadataPath = sourceObject.value( QStringLiteral( "metadataPath" ) ).toString();
@@ -127,11 +127,11 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
   if ( err.error != QJsonParseError::NoError )
     return false;
   const QJsonObject result = doc.object();
-  mDataType = result.value( QLatin1String( "dataType" ) ).toString();  // "binary" or "laszip"
+  mDataType = result.value( QLatin1String( "dataType" ) ).toString(); // "binary" or "laszip"
   if ( mDataType != QLatin1String( "laszip" ) && mDataType != QLatin1String( "binary" ) && mDataType != QLatin1String( "zstandard" ) )
     return false;
 
-  const QString hierarchyType = result.value( QLatin1String( "hierarchyType" ) ).toString();  // "json" or "gzip"
+  const QString hierarchyType = result.value( QLatin1String( "hierarchyType" ) ).toString(); // "json" or "gzip"
   if ( hierarchyType != QLatin1String( "json" ) )
     return false;
 
@@ -265,7 +265,7 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
 
     if ( schemaObj.contains( QLatin1String( "counts" ) ) )
     {
-      QMap< int, int >  classCounts;
+      QMap<int, int> classCounts;
       const QJsonArray counts = schemaObj.value( QLatin1String( "counts" ) ).toArray();
       for ( const QJsonValue &count : counts )
       {
@@ -288,18 +288,17 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
   const double zmax = bounds[5].toDouble();
 
   mRootBounds = QgsPointCloudDataBounds(
-                  ( xmin - mOffset.x() ) / mScale.x(),
-                  ( ymin - mOffset.y() ) / mScale.y(),
-                  ( zmin - mOffset.z() ) / mScale.z(),
-                  ( xmax - mOffset.x() ) / mScale.x(),
-                  ( ymax - mOffset.y() ) / mScale.y(),
-                  ( zmax - mOffset.z() ) / mScale.z()
-                );
+    ( xmin - mOffset.x() ) / mScale.x(),
+    ( ymin - mOffset.y() ) / mScale.y(),
+    ( zmin - mOffset.z() ) / mScale.z(),
+    ( xmax - mOffset.x() ) / mScale.x(),
+    ( ymax - mOffset.y() ) / mScale.y(),
+    ( zmax - mOffset.z() ) / mScale.z() );
 
 
 #ifdef QGIS_DEBUG
   double dx = xmax - xmin, dy = ymax - ymin, dz = zmax - zmin;
-  QgsDebugMsgLevel( QStringLiteral( "lvl0 node size in CRS units: %1 %2 %3" ).arg( dx ).arg( dy ).arg( dz ), 2 );    // all dims should be the same
+  QgsDebugMsgLevel( QStringLiteral( "lvl0 node size in CRS units: %1 %2 %3" ).arg( dx ).arg( dy ).arg( dz ), 2 ); // all dims should be the same
   QgsDebugMsgLevel( QStringLiteral( "res at lvl0 %1" ).arg( dx / mSpan ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "res at lvl1 %1" ).arg( dx / mSpan / 2 ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "res at lvl2 %1 with node size %2" ).arg( dx / mSpan / 4 ).arg( dx / 4 ), 2 );
@@ -378,7 +377,7 @@ QVariant QgsEptPointCloudIndex::metadataStatistic( const QString &attribute, Qgi
   if ( !mMetadataStats.contains( attribute ) )
     return QVariant();
 
-  const AttributeStatistics &stats = mMetadataStats[ attribute ];
+  const AttributeStatistics &stats = mMetadataStats[attribute];
   switch ( statistic )
   {
     case Qgis::Statistic::Count:
@@ -420,7 +419,7 @@ QVariant QgsEptPointCloudIndex::metadataStatistic( const QString &attribute, Qgi
 QVariantList QgsEptPointCloudIndex::metadataClasses( const QString &attribute ) const
 {
   QVariantList classes;
-  const QMap< int, int > values =  mAttributeClasses.value( attribute );
+  const QMap<int, int> values = mAttributeClasses.value( attribute );
   for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
   {
     classes << it.key();
@@ -433,7 +432,7 @@ QVariant QgsEptPointCloudIndex::metadataClassStatistic( const QString &attribute
   if ( statistic != Qgis::Statistic::Count )
     return QVariant();
 
-  const QMap< int, int > values =  mAttributeClasses.value( attribute );
+  const QMap<int, int> values = mAttributeClasses.value( attribute );
   if ( !values.contains( value.toInt() ) )
     return QVariant();
   return values.value( value.toInt() );

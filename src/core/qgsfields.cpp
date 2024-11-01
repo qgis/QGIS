@@ -37,7 +37,7 @@ QgsFields::QgsFields( const QgsFields &other ) //NOLINT
 {
 }
 
-QgsFields &QgsFields::operator =( const QgsFields &other )  //NOLINT
+QgsFields &QgsFields::operator=( const QgsFields &other ) //NOLINT
 {
   d = other.d;
   return *this;
@@ -103,7 +103,7 @@ bool QgsFields::append( const QgsFields &fields )
       return false;
   }
 
-  for ( int i = 0; i < fields.size(); ++ i )
+  for ( int i = 0; i < fields.size(); ++i )
   {
     append( fields.at( i ), fields.fieldOrigin( i ), fields.fieldOriginIndex( i ) );
   }
@@ -121,8 +121,8 @@ bool QgsFields::rename( int fieldIdx, const QString &name )
   if ( d->nameToIndex.contains( name ) )
     return false;
 
-  const QString oldName = d->fields[ fieldIdx ].field.name();
-  d->fields[ fieldIdx ].field.setName( name );
+  const QString oldName = d->fields[fieldIdx].field.name();
+  d->fields[fieldIdx].field.setName( name );
   d->nameToIndex.remove( oldName );
   d->nameToIndex.insert( name, fieldIdx );
   return true;
@@ -213,7 +213,7 @@ QgsField QgsFields::field( int fieldIdx ) const
 
 QgsField QgsFields::field( const QString &name ) const
 {
-  return d->fields[ indexFromName( name )].field;
+  return d->fields[indexFromName( name )].field;
 }
 
 /***************************************************************************
@@ -447,7 +447,7 @@ QgsAttributeList QgsFields::allAttributesList() const
 
 QDataStream &operator<<( QDataStream &out, const QgsFields &fields )
 {
-  out << static_cast< quint32 >( fields.size() );
+  out << static_cast<quint32>( fields.size() );
   for ( int i = 0; i < fields.size(); i++ )
   {
     out << fields.field( i );

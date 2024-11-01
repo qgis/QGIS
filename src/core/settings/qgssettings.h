@@ -64,7 +64,6 @@ class CORE_EXPORT QgsSettings : public QObject
 {
     Q_OBJECT
   public:
-
     //! Sections for namespaced settings
     enum Section
     {
@@ -229,17 +228,19 @@ class CORE_EXPORT QgsSettings : public QObject
 #else
     SIP_PYOBJECT value( const QString &key, const QVariant &defaultValue = QVariant(),
                         SIP_PYOBJECT type = 0,
-                        QgsSettings::Section section = QgsSettings::NoSection ) const / ReleaseGIL /;
-    % MethodCode
-    typedef PyObject *( *pyqt_from_qvariant_by_type )( QVariant &value, PyObject *type );
+                        QgsSettings::Section section = QgsSettings::NoSection ) const
+      / ReleaseGIL / ;
+    % MethodCode typedef PyObject *( *pyqt_from_qvariant_by_type )( QVariant &value, PyObject *type );
     QVariant value;
 
     // QSettings has an internal mutex so release the GIL to avoid the possibility of deadlocks.
     Py_BEGIN_ALLOW_THREADS
-    value = sipCpp->value( *a0, *a1, a3 );
+      value
+      = sipCpp->value( *a0, *a1, a3 );
     Py_END_ALLOW_THREADS
 
-    pyqt_from_qvariant_by_type f = ( pyqt_from_qvariant_by_type ) sipImportSymbol( SIP_PYQT_FROM_QVARIANT_BY_TYPE );
+      pyqt_from_qvariant_by_type f
+      = ( pyqt_from_qvariant_by_type ) sipImportSymbol( SIP_PYQT_FROM_QVARIANT_BY_TYPE );
     sipRes = f( value, a2 );
 
     sipIsErr = !sipRes;
@@ -259,7 +260,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * \see setEnumValue
      * \see flagValue
      */
-    template <class T>
+    template<class T>
     T enumValue( const QString &key, const T &defaultValue,
                  const Section section = NoSection )
     {
@@ -311,7 +312,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * \see enumValue
      * \see setFlagValue
      */
-    template <class T>
+    template<class T>
     void setEnumValue( const QString &key, const T &value,
                        const Section section = NoSection )
     {
@@ -337,7 +338,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * \see setFlagValue
      * \see enumValue
      */
-    template <class T>
+    template<class T>
     T flagValue( const QString &key, const T &defaultValue,
                  const Section section = NoSection )
     {
@@ -354,7 +355,7 @@ class CORE_EXPORT QgsSettings : public QObject
       if ( metaEnum.isValid() )
       {
         // read as string
-        QByteArray ba = value( key, metaEnum.valueToKeys( static_cast< const int >( defaultValue ) ) ).toString().toUtf8();
+        QByteArray ba = value( key, metaEnum.valueToKeys( static_cast<const int>( defaultValue ) ) ).toString().toUtf8();
         const char *vs = ba.data();
         v = static_cast<T>( metaEnum.keysToValue( vs, &ok ) );
       }
@@ -401,7 +402,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * \see flagValue
      * \see setEnumValue
      */
-    template <class T>
+    template<class T>
     void setFlagValue( const QString &key, const T &value,
                        const Section section = NoSection )
     {
@@ -409,7 +410,7 @@ class CORE_EXPORT QgsSettings : public QObject
       Q_ASSERT( metaEnum.isValid() );
       if ( metaEnum.isValid() )
       {
-        setValue( key, metaEnum.valueToKeys( static_cast< const int >( value ) ), section );
+        setValue( key, metaEnum.valueToKeys( static_cast<const int>( value ) ), section );
       }
       else
       {
@@ -498,7 +499,6 @@ class CORE_EXPORT QgsSettings : public QObject
     QSettings *mGlobalSettings = nullptr;
     bool mUsingGlobalArray = false;
     Q_DISABLE_COPY( QgsSettings )
-
 };
 
 // as static members cannot be CORE_EXPORTed

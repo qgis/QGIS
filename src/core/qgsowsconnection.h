@@ -92,7 +92,6 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     Q_OBJECT
 
   public:
-
 #ifndef SIP_RUN
     static inline QgsSettingsTreeNamedListNode *sTtreeOwsServices = QgsSettingsTree::sTreeConnections->createNamedListNode( QStringLiteral( "ows" ) );
     static inline QgsSettingsTreeNamedListNode *sTreeOwsConnections = sTtreeOwsServices->createNamedListNode( QStringLiteral( "connections" ), Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
@@ -189,14 +188,12 @@ class CORE_EXPORT QgsOwsConnection : public QObject
     QgsDataSourceUri mUri;
 
   private:
-
     QString mConnName;
     QString mService;
     QString mConnectionInfo;
 
     Q_DECL_DEPRECATED static void addCommonConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey );
     static void addCommonConnectionSettings( QgsDataSourceUri &uri, const QString &service, const QString &connectionName );
-
 };
 
 

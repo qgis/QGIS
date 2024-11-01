@@ -103,8 +103,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
       break;
     }
     ctx = ctx->parentContext();
-  }
-  while ( ctx );
+  } while ( ctx );
 
   // If AllowNULL is not set in the config, provide a default value based on the
   // constraints of the referencing fields

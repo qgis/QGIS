@@ -54,7 +54,7 @@ QString QgsError::message( QgsErrorMessage::Format format ) const
   QString srcUrl;
 #endif
 
-#if defined(QGISDEBUG) && defined(QGS_GIT_REMOTE_URL)
+#if defined( QGISDEBUG ) && defined( QGS_GIT_REMOTE_URL )
   // TODO: verify if we are not ahead to origin (remote hash does not exist)
   //       and there are no local not committed changes
   QString hash = QString( Qgis::devVersion() );

@@ -47,7 +47,7 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mPreviewRenderPainter( rh.mPreviewRenderPainter )
   , mMaskPainter( rh.mMaskPainter )
 
-    // TODO -- these were NOT being copied, but it's unclear if that was intentional or a bug??
+  // TODO -- these were NOT being copied, but it's unclear if that was intentional or a bug??
   , mMaskIdProvider( nullptr )
   , mCurrentMaskId( -1 )
 
@@ -230,7 +230,7 @@ void QgsRenderContext::setFlag( Qgis::RenderContextFlag flag, bool on )
   if ( on )
     mFlags |= flag;
   else
-    mFlags &= ~( static_cast< int >( flag ) );
+    mFlags &= ~( static_cast<int>( flag ) );
 }
 
 Qgis::RenderContextFlags QgsRenderContext::flags() const
@@ -521,7 +521,8 @@ double QgsRenderContext::convertFromPainterUnits( double size, Qgis::RenderUnit 
     {
       if ( mMapToPixel.isValid() )
       {
-        const double mup = mapToPixel().mapUnitsPerPixel();;
+        const double mup = mapToPixel().mapUnitsPerPixel();
+        ;
         if ( mup > 0 )
         {
           conversionFactor = mup / 1.0;
@@ -871,11 +872,11 @@ void QgsRenderContext::addSymbolLayerClipGeometry( const QString &symbolLayerId,
 {
   if ( geometry.isMultipart() )
   {
-    mSymbolLayerClippingGeometries[ symbolLayerId ].append( geometry.asGeometryCollection() );
+    mSymbolLayerClippingGeometries[symbolLayerId].append( geometry.asGeometryCollection() );
   }
   else
   {
-    mSymbolLayerClippingGeometries[ symbolLayerId ].append( geometry );
+    mSymbolLayerClippingGeometries[symbolLayerId].append( geometry );
   }
 }
 
@@ -889,7 +890,7 @@ bool QgsRenderContext::symbolLayerHasClipGeometries( const QString &symbolLayerI
 
 QVector<QgsGeometry> QgsRenderContext::symbolLayerClipGeometries( const QString &symbolLayerId ) const
 {
-  return mSymbolLayerClippingGeometries[ symbolLayerId ];
+  return mSymbolLayerClippingGeometries[symbolLayerId];
 }
 
 void QgsRenderContext::setDisabledSymbolLayers( const QSet<const QgsSymbolLayer *> &symbolLayers )

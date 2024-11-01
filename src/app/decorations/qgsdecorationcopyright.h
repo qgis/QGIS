@@ -35,7 +35,6 @@ class APP_EXPORT QgsDecorationCopyright : public QgsDecorationItem
 {
     Q_OBJECT
   public:
-
     //! Constructor
     QgsDecorationCopyright( QObject *parent = nullptr );
 

@@ -242,7 +242,7 @@ bool QgsBookmarkManager::updateBookmark( const QgsBookmark &bookmark )
 
 void QgsBookmarkManager::clear()
 {
-  const QList< QgsBookmark > bookmarks = mBookmarks;
+  const QList<QgsBookmark> bookmarks = mBookmarks;
   for ( const QgsBookmark &b : bookmarks )
   {
     removeBookmark( b.id() );
@@ -260,7 +260,7 @@ void QgsBookmarkManager::renameGroup( const QString &oldName, const QString &new
   {
     if ( mBookmarks.at( i ).group() == oldName )
     {
-      mBookmarks[ i ].setGroup( newName );
+      mBookmarks[i].setGroup( newName );
       emit bookmarkChanged( mBookmarks.at( i ).id() );
     }
   }
@@ -371,17 +371,17 @@ bool QgsBookmarkManager::exportToFile( const QString &path, const QList<const Qg
 
   QList<QString> headerList;
   headerList
-      << QStringLiteral( "project" )
-      << QStringLiteral( "xmin" )
-      << QStringLiteral( "ymin" )
-      << QStringLiteral( "xmax" )
-      << QStringLiteral( "ymax" )
-      << QStringLiteral( "rotation" )
-      << QStringLiteral( "sr_id" );
+    << QStringLiteral( "project" )
+    << QStringLiteral( "xmin" )
+    << QStringLiteral( "ymin" )
+    << QStringLiteral( "xmax" )
+    << QStringLiteral( "ymax" )
+    << QStringLiteral( "rotation" )
+    << QStringLiteral( "sr_id" );
 
   for ( const QgsBookmarkManager *manager : managers )
   {
-    const QList< QgsBookmark > bookmarks = manager->bookmarks();
+    const QList<QgsBookmark> bookmarks = manager->bookmarks();
     for ( const QgsBookmark &b : bookmarks )
     {
       if ( !group.isEmpty() && b.group() != group )
@@ -433,7 +433,7 @@ bool QgsBookmarkManager::exportToFile( const QString &path, const QList<const Qg
   }
 
   QTextStream out( &f );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
   out.setCodec( "UTF-8" );
 #endif
   doc.save( out, 2 );
@@ -485,9 +485,10 @@ bool QgsBookmarkManager::importFromFile( const QString &path )
     QgsCoordinateReferenceSystem crs;
     crs.createFromSrsId( srid.text().toLongLong() );
     b.setExtent( QgsReferencedRectangle( QgsRectangle( xmin.text().toDouble(),
-                                         ymin.text().toDouble(),
-                                         xmax.text().toDouble(),
-                                         ymax.text().toDouble() ), crs ) );
+                                                       ymin.text().toDouble(),
+                                                       xmax.text().toDouble(),
+                                                       ymax.text().toDouble() ),
+                                         crs ) );
     b.setRotation( rotation.text().toDouble() );
     addBookmark( b, &ok );
     res = res && ok;
@@ -512,7 +513,7 @@ void QgsBookmarkManager::store()
     doc.appendChild( elem );
 
     QTextStream out( &f );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     out.setCodec( "UTF-8" );
 #endif
     doc.save( out, 2 );

@@ -60,11 +60,10 @@ class QgsWFSSharedData;
  * the specific attributes of a WFS URI.
  *
  */
-class QgsWFSProvider final: public QgsVectorDataProvider
+class QgsWFSProvider final : public QgsVectorDataProvider
 {
     Q_OBJECT
   public:
-
     static const QString WFS_PROVIDER_KEY;
     static const QString WFS_PROVIDER_DESCRIPTION;
 
@@ -129,12 +128,12 @@ class QgsWFSProvider final: public QgsVectorDataProvider
 
     static QgsWfsCapabilities::Capabilities getCachedCapabilities( const QString &uri );
     static QString buildFilterByGeometryType( const QgsWfsCapabilities::Capabilities &caps,
-        const QString &geometryElement,
-        const QString &function );
+                                              const QString &geometryElement,
+                                              const QString &function );
     static QString buildIsNullGeometryFilter( const QgsWfsCapabilities::Capabilities &caps,
-        const QString &geometryElement );
+                                              const QString &geometryElement );
     static QString buildGeometryCollectionFilter( const QgsWfsCapabilities::Capabilities &caps,
-        const QString &geometryElement );
+                                                  const QString &geometryElement );
 
     //! Perform an initial GetFeature request with a 1-feature limit.
     void issueInitialGetFeature();
@@ -184,16 +183,16 @@ class QgsWFSProvider final: public QgsVectorDataProvider
     bool setLayerPropertiesListFromDescribeFeature( QDomDocument &describeFeatureDocument, const QByteArray &response, const QStringList &typenameList, QString &errorMsg );
 
     //! backup of mShared->mLayerPropertiesList on the feature type when there is no sql request
-    QList< QgsOgcUtils::LayerProperties > mLayerPropertiesListWhenNoSqlRequest;
+    QList<QgsOgcUtils::LayerProperties> mLayerPropertiesListWhenNoSqlRequest;
 
     //! Set if metadata retrieval has been canceled (typically download of the schema)
     bool mMetadataRetrievalCanceled = false;
 
     bool readAttributesFromSchemaWithoutGMLAS( QDomDocument &schemaDoc,
-        const QString &prefixedTypename,
-        QString &geometryAttribute,
-        QgsFields &fields, Qgis::WkbType &geomType,
-        QString &errorMsg, bool &mayTryWithGMLAS );
+                                               const QString &prefixedTypename,
+                                               QString &geometryAttribute,
+                                               QgsFields &fields, Qgis::WkbType &geomType,
+                                               QString &errorMsg, bool &mayTryWithGMLAS );
 
     bool readAttributesFromSchemaWithGMLAS( const QByteArray &response,
                                             const QString &prefixedTypename,
@@ -204,7 +203,6 @@ class QgsWFSProvider final: public QgsVectorDataProvider
                                             QString &errorMsg );
 
   protected:
-
     //! String used to define a subset of the layer
     QString mSubsetString;
 

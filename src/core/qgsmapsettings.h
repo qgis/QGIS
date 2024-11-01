@@ -56,7 +56,6 @@ class QgsRenderedFeatureHandlerInterface;
 class CORE_EXPORT QgsLabelBlockingRegion
 {
   public:
-
     /**
      * Constructor for a label blocking region
      */
@@ -66,7 +65,6 @@ class CORE_EXPORT QgsLabelBlockingRegion
 
     //! Geometry of region to avoid placing labels within (in destination map coordinates and CRS)
     QgsGeometry geometry;
-
 };
 
 
@@ -271,7 +269,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \note not available in Python bindings
      * \since QGIS 3.40
      */
-    template <typename T>
+    template<typename T>
     QVector<T> layers() const;
 #endif
 
@@ -702,7 +700,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \see setLabelBoundaryGeometry()
      * \since QGIS 3.6
      */
-    void setLabelBlockingRegions( const QList< QgsLabelBlockingRegion > &regions ) { mLabelBlockingRegions = regions; }
+    void setLabelBlockingRegions( const QList<QgsLabelBlockingRegion> &regions ) { mLabelBlockingRegions = regions; }
 
     /**
      * Returns the list of regions to avoid placing labels within.
@@ -710,7 +708,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \see labelBoundaryGeometry()
      * \since QGIS 3.6
      */
-    QList< QgsLabelBlockingRegion > labelBlockingRegions() const { return mLabelBlockingRegions; }
+    QList<QgsLabelBlockingRegion> labelBlockingRegions() const { return mLabelBlockingRegions; }
 
     /**
      * Adds a new clipping \a region to the map settings.
@@ -730,7 +728,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      *
      * \since QGIS 3.16
      */
-    void setClippingRegions( const QList< QgsMapClippingRegion > &regions );
+    void setClippingRegions( const QList<QgsMapClippingRegion> &regions );
 
     /**
      * Returns the list of clipping regions to apply to the map.
@@ -740,7 +738,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      *
      * \since QGIS 3.16
      */
-    QList< QgsMapClippingRegion > clippingRegions() const;
+    QList<QgsMapClippingRegion> clippingRegions() const;
 
     /**
      * Sets the simplification setting to use when rendering vector layers.
@@ -816,7 +814,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * \see addRenderedFeatureHandler()
      * \since QGIS 3.10
      */
-    QList< QgsRenderedFeatureHandlerInterface * > renderedFeatureHandlers() const;
+    QList<QgsRenderedFeatureHandlerInterface *> renderedFeatureHandlers() const;
 
     /**
      * Returns the range of z-values which will be visible in the map.
@@ -910,7 +908,6 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     void setElevationShadingRenderer( const QgsElevationShadingRenderer &renderer );
 
   protected:
-
     double mDpi = 96.0;
     double mDpiTarget = -1;
 
@@ -984,13 +981,11 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     void updateDerived();
 
   private:
-
-    QList< QgsLabelBlockingRegion > mLabelBlockingRegions;
-    QList< QgsMapClippingRegion > mClippingRegions;
-    QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
+    QList<QgsLabelBlockingRegion> mLabelBlockingRegions;
+    QList<QgsMapClippingRegion> mClippingRegions;
+    QList<QgsRenderedFeatureHandlerInterface *> mRenderedFeatureHandlers;
 
     QgsDoubleRange mZRange;
-
 };
 
 #endif // QGSMAPSETTINGS_H

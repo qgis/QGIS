@@ -42,7 +42,6 @@ class QgsMeshRendererVectorSettingsWidget : public QWidget, private Ui::QgsMeshR
     Q_OBJECT
 
   public:
-
     /**
      * A widget to hold the renderer Vector settings for a mesh layer.
      * \param parent Parent object
@@ -74,7 +73,6 @@ class QgsMeshRendererVectorSettingsWidget : public QWidget, private Ui::QgsMeshR
     void loadColorRampShader();
 
   private:
-
     /**
      * Returns the value of the spin box, returns err_val if the
      * value is equal to the clear value.

@@ -39,7 +39,8 @@ bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QV
 
 /***************************************************************************/
 
-QgsTopologyPreservingSimplifier::QgsTopologyPreservingSimplifier( double tolerance ) : mTolerance( tolerance )
+QgsTopologyPreservingSimplifier::QgsTopologyPreservingSimplifier( double tolerance )
+  : mTolerance( tolerance )
 {
 }
 
@@ -56,7 +57,6 @@ QgsAbstractGeometry *QgsTopologyPreservingSimplifier::simplify( const QgsAbstrac
   }
 
   const QgsGeos geos( geometry );
-  std::unique_ptr< QgsAbstractGeometry > simplifiedGeom( geos.simplify( mTolerance ) );
+  std::unique_ptr<QgsAbstractGeometry> simplifiedGeom( geos.simplify( mTolerance ) );
   return simplifiedGeom.release();
 }
-

@@ -78,8 +78,8 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
   // we can only report one diff image, so just use the first
   QString diffImageFile;
 
-  QMap< QString, int > variantMismatchCount;
-  QMap< QString, int > variantSize;
+  QMap<QString, int> variantMismatchCount;
+  QMap<QString, int> variantSize;
 
   for ( const QString &suffix : std::as_const( subDirs ) )
   {
@@ -133,7 +133,7 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
       measurement.send();
 
     QgsDartMeasurement msg( QStringLiteral( "Image not accepted by test" ), QgsDartMeasurement::Text, "This may be caused because the test is supposed to fail or rendering inconsistencies."
-                            "If this is a rendering inconsistency, please add another control image folder, add an anomaly image or increase the color tolerance." );
+                                                                                                      "If this is a rendering inconsistency, please add another control image folder, add an anomaly image or increase the color tolerance." );
     msg.send();
 
 #if DUMP_BASE64_IMAGES
@@ -212,12 +212,8 @@ QString QgsMultiRenderChecker::report() const
     const QString githubSha = qgetenv( "GITHUB_SHA" );
     if ( !githubSha.isEmpty() )
     {
-      const QString githubBlobUrl = QStringLiteral( "https://github.com/qgis/QGIS/blob/%1/%2#L%3" ).arg(
-                                      githubSha, mSourceFile ).arg( mSourceLine );
-      report += QStringLiteral( "<b style=\"color: red\">Test failed in %1 at <a href=\"%2\">%3:%4</a></b>\n" ).arg(
-                  mSourceFunction,
-                  githubBlobUrl,
-                  mSourceFile ).arg( mSourceLine );
+      const QString githubBlobUrl = QStringLiteral( "https://github.com/qgis/QGIS/blob/%1/%2#L%3" ).arg( githubSha, mSourceFile ).arg( mSourceLine );
+      report += QStringLiteral( "<b style=\"color: red\">Test failed in %1 at <a href=\"%2\">%3:%4</a></b>\n" ).arg( mSourceFunction, githubBlobUrl, mSourceFile ).arg( mSourceLine );
     }
     else
     {
@@ -242,8 +238,7 @@ QString QgsMultiRenderChecker::markdownReport() const
     QString fileLink;
     if ( !githubSha.isEmpty() )
     {
-      fileLink = QStringLiteral( "https://github.com/qgis/QGIS/blob/%1/%2#L%3" ).arg(
-                   githubSha, mSourceFile ).arg( mSourceLine );
+      fileLink = QStringLiteral( "https://github.com/qgis/QGIS/blob/%1/%2#L%3" ).arg( githubSha, mSourceFile ).arg( mSourceLine );
     }
     else
     {
@@ -258,8 +253,7 @@ QString QgsMultiRenderChecker::markdownReport() const
 QString QgsMultiRenderChecker::controlImagePath() const
 {
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myControlImageDir = myDataDir + QDir::separator() + "control_images" +
-                              QDir::separator() + mControlPathPrefix + QDir::separator() + mControlName + QDir::separator();
+  QString myControlImageDir = myDataDir + QDir::separator() + "control_images" + QDir::separator() + mControlPathPrefix + QDir::separator() + mControlName + QDir::separator();
   return myControlImageDir;
 }
 
@@ -303,13 +297,12 @@ bool QgsLayoutChecker::testLayout( QString &checkedReport, int page, int pixelDi
     _exporter.renderPage( &_p, page );
     _p.end();
 
-    if ( ! QDir( controlImagePath() ).exists() )
+    if ( !QDir( controlImagePath() ).exists() )
     {
       QDir().mkdir( controlImagePath() );
     }
     _outputImage.save( controlImagePath() + QDir::separator() + "expected_" + mTestName + ".png", "PNG" );
-    qDebug( ) << "Reference image saved to : " + controlImagePath() + QDir::separator() + "expected_" + mTestName + ".png";
-
+    qDebug() << "Reference image saved to : " + controlImagePath() + QDir::separator() + "expected_" + mTestName + ".png";
   }
 
   QImage outputImage( mSize, QImage::Format_RGB32 );

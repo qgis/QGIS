@@ -29,7 +29,7 @@
 
 QReadWriteLock QgsGoogleMapsGeocoder::sMutex;
 
-typedef QMap< QUrl, QList< QgsGeocoderResult > > CachedGeocodeResult;
+typedef QMap<QUrl, QList<QgsGeocoderResult>> CachedGeocodeResult;
 Q_GLOBAL_STATIC( CachedGeocodeResult, sCachedResults )
 
 
@@ -39,7 +39,6 @@ QgsGoogleMapsGeocoder::QgsGoogleMapsGeocoder( const QString &apiKey, const QStri
   , mRegion( regionBias )
   , mEndpoint( QStringLiteral( "https://maps.googleapis.com/maps/api/geocode/json" ) )
 {
-
 }
 
 QgsGeocoderInterface::Flags QgsGoogleMapsGeocoder::flags() const
@@ -146,8 +145,8 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
     return QList<QgsGeocoderResult>();
   }
 
-  QList< QgsGeocoderResult > matches;
-  matches.reserve( results.size( ) );
+  QList<QgsGeocoderResult> matches;
+  matches.reserve( results.size() );
   for ( const QVariant &result : results )
   {
     matches << jsonToResult( result.toMap() );
@@ -163,10 +162,7 @@ QUrl QgsGoogleMapsGeocoder::requestUrl( const QString &address, const QgsRectang
   QUrlQuery query;
   if ( !bounds.isNull() )
   {
-    query.addQueryItem( QStringLiteral( "bounds" ), QStringLiteral( "%1,%2|%3,%4" ).arg( bounds.yMinimum() )
-                        .arg( bounds.xMinimum() )
-                        .arg( bounds.yMaximum() )
-                        .arg( bounds.yMinimum() ) );
+    query.addQueryItem( QStringLiteral( "bounds" ), QStringLiteral( "%1,%2|%3,%4" ).arg( bounds.yMinimum() ).arg( bounds.xMinimum() ).arg( bounds.yMaximum() ).arg( bounds.yMinimum() ) );
   }
   if ( !mRegion.isEmpty() )
   {
@@ -257,8 +253,7 @@ QgsGeocoderResult QgsGoogleMapsGeocoder::jsonToResult( const QVariantMap &json )
             QStringLiteral( "administrative_area_level_2" ),
             QStringLiteral( "administrative_area_level_1" ),
             QStringLiteral( "country" ),
-            QStringLiteral( "postal_code" )
-          } )
+            QStringLiteral( "postal_code" ) } )
     {
       if ( types.contains( t ) )
       {
@@ -277,8 +272,7 @@ QgsGeocoderResult QgsGoogleMapsGeocoder::jsonToResult( const QVariantMap &json )
     res.setViewport( QgsRectangle( southWest.value( QStringLiteral( "lng" ) ).toDouble(),
                                    southWest.value( QStringLiteral( "lat" ) ).toDouble(),
                                    northEast.value( QStringLiteral( "lng" ) ).toDouble(),
-                                   northEast.value( QStringLiteral( "lat" ) ).toDouble()
-                                 ) );
+                                   northEast.value( QStringLiteral( "lat" ) ).toDouble() ) );
   }
 
   res.setAdditionalAttributes( attributes );

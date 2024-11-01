@@ -47,7 +47,7 @@ QgsProcessingRasterCalculatorExpressionLineEdit::QgsProcessingRasterCalculatorEx
 
   setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
   setFocusProxy( mLineEdit );
-  connect( mLineEdit, &QLineEdit::textChanged, this, static_cast < void ( QgsProcessingRasterCalculatorExpressionLineEdit::* )( const QString & ) > ( &QgsProcessingRasterCalculatorExpressionLineEdit::expressionEdited ) );
+  connect( mLineEdit, &QLineEdit::textChanged, this, static_cast<void ( QgsProcessingRasterCalculatorExpressionLineEdit::* )( const QString & )>( &QgsProcessingRasterCalculatorExpressionLineEdit::expressionEdited ) );
 
   setExpression( expression() );
 }

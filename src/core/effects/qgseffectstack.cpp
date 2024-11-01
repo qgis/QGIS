@@ -86,7 +86,7 @@ void QgsEffectStack::draw( QgsRenderContext &context )
   //becomes the source of the previous effect
   QPicture *sourcePic = new QPicture( *source() );
   QPicture *currentPic = sourcePic;
-  QList< QPicture * > results;
+  QList<QPicture *> results;
   for ( int i = mEffectList.count() - 1; i >= 0; --i )
   {
     QgsPaintEffect *effect = mEffectList.at( i );

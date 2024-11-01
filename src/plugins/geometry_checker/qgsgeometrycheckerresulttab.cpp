@@ -81,7 +81,7 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
   connect( ui.pushButtonFixWithDefault, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::fixErrorsWithDefault );
   connect( ui.pushButtonFixWithPrompt, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::fixErrorsWithPrompt );
   connect( ui.pushButtonErrorResolutionSettings, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::setDefaultResolutionMethods );
-  connect( ui.checkBoxHighlight, &QAbstractButton::clicked, this, [ = ] { QgsGeometryCheckerResultTab::highlightErrors(); } );
+  connect( ui.checkBoxHighlight, &QAbstractButton::clicked, this, [=] { QgsGeometryCheckerResultTab::highlightErrors(); } );
   connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsGeometryCheckerResultTab::checkRemovedLayer );
   connect( ui.pushButtonExport, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::exportErrors );
 
@@ -112,7 +112,6 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
 
 QgsGeometryCheckerResultTab::~QgsGeometryCheckerResultTab()
 {
-
   delete mChecker;
   qDeleteAll( mCurrentRubberBands );
 }
@@ -204,7 +203,7 @@ void QgsGeometryCheckerResultTab::updateError( QgsGeometryCheckError *error, boo
   else if ( error->status() == QgsGeometryCheckError::StatusObsolete )
   {
     ui.tableWidgetErrors->setRowHidden( row, true );
-//    setRowStatus( row, Qt::gray, tr( "Obsolete" ), false );
+    //    setRowStatus( row, Qt::gray, tr( "Obsolete" ), false );
     --mErrorCount;
     // If error was new, don't report it as obsolete since the user never got to see the new error anyways
     if ( statusChanged && !mStatistics.newErrors.remove( error ) )
@@ -252,7 +251,7 @@ void QgsGeometryCheckerResultTab::exportErrors()
 
 bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
 {
-  QList< QPair<QString, QString> > attributes;
+  QList<QPair<QString, QString>> attributes;
   attributes.append( qMakePair( QStringLiteral( "Layer" ), QStringLiteral( "String;30;" ) ) );
   attributes.append( qMakePair( QStringLiteral( "FeatureID" ), QStringLiteral( "String;20;" ) ) );
   attributes.append( qMakePair( QStringLiteral( "ErrorDesc" ), QStringLiteral( "String;80;" ) ) );
@@ -306,8 +305,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   QStringList toRemove;
   for ( QgsMapLayer *maplayer : QgsProject::instance()->mapLayers() )
   {
-    if ( qobject_cast<QgsVectorLayer *>( maplayer ) &&
-         static_cast<QgsVectorLayer *>( maplayer )->dataProvider()->dataSourceUri() == layer->dataProvider()->dataSourceUri() )
+    if ( qobject_cast<QgsVectorLayer *>( maplayer ) && static_cast<QgsVectorLayer *>( maplayer )->dataProvider()->dataSourceUri() == layer->dataProvider()->dataSourceUri() )
     {
       toRemove.append( maplayer->id() );
     }
@@ -468,7 +466,6 @@ void QgsGeometryCheckerResultTab::openAttributeTable()
 
 void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
 {
-
   //! Collect errors to fix
   QModelIndexList rows = ui.tableWidgetErrors->selectionModel()->selectedRows();
   if ( rows.isEmpty() )

@@ -64,7 +64,6 @@ class CORE_EXPORT QgsPointXY
     Q_PROPERTY( double y READ y WRITE setY )
 
   public:
-
     QgsPointXY() = default;
 
     QgsPointXY( const QgsPointXY &p ) SIP_HOLDGIL;
@@ -75,9 +74,9 @@ class CORE_EXPORT QgsPointXY
      * \param y y coordinate
      */
     QgsPointXY( double x, double y ) SIP_HOLDGIL
-  : mX( x )
-    , mY( y )
-    , mIsEmpty( false )
+      : mX( x ),
+        mY( y ),
+        mIsEmpty( false )
     {}
 
     /**
@@ -85,9 +84,9 @@ class CORE_EXPORT QgsPointXY
      * \param point QPointF source
      */
     QgsPointXY( QPointF point ) SIP_HOLDGIL
-  : mX( point.x() )
-    , mY( point.y() )
-    , mIsEmpty( false )
+      : mX( point.x() ),
+        mY( point.y() ),
+        mIsEmpty( false )
     {}
 
     /**
@@ -95,9 +94,9 @@ class CORE_EXPORT QgsPointXY
      * \param point QPoint source
      */
     QgsPointXY( QPoint point ) SIP_HOLDGIL
-  : mX( point.x() )
-    , mY( point.y() )
-    , mIsEmpty( false )
+      : mX( point.x() ),
+        mY( point.y() ),
+        mIsEmpty( false )
     {}
 
     /**
@@ -276,7 +275,7 @@ class CORE_EXPORT QgsPointXY
         return true;
       if ( isEmpty() && !other.isEmpty() )
         return false;
-      if ( ! isEmpty() && other.isEmpty() )
+      if ( !isEmpty() && other.isEmpty() )
         return false;
 
       return QgsGeometryUtilsBase::fuzzyEqual( 1E-8, mX, mY, other.x(), other.y() );
@@ -288,7 +287,7 @@ class CORE_EXPORT QgsPointXY
         return false;
       if ( isEmpty() && !other.isEmpty() )
         return true;
-      if ( ! isEmpty() && other.isEmpty() )
+      if ( !isEmpty() && other.isEmpty() )
         return true;
 
       return !QgsGeometryUtilsBase::fuzzyEqual( 1E-8, mX, mY, other.x(), other.y() );
@@ -317,10 +316,18 @@ class CORE_EXPORT QgsPointXY
     QgsVector operator-( const QgsPointXY &p ) const { return QgsVector( mX - p.mX, mY - p.mY ); }
 
     //! Adds a vector to this point in place
-    QgsPointXY &operator+=( QgsVector v ) { *this = *this + v; return *this; }
+    QgsPointXY &operator+=( QgsVector v )
+    {
+      *this = *this + v;
+      return *this;
+    }
 
     //! Subtracts a vector from this point in place
-    QgsPointXY &operator-=( QgsVector v ) { *this = *this - v; return *this; }
+    QgsPointXY &operator-=( QgsVector v )
+    {
+      *this = *this - v;
+      return *this;
+    }
 
     //! Adds a vector to this point
     QgsPointXY operator+( QgsVector v ) const { return QgsPointXY( mX + v.x(), mY + v.y() ); }
@@ -335,10 +342,20 @@ class CORE_EXPORT QgsPointXY
     QgsPointXY operator/( double scalar ) const { return QgsPointXY( mX / scalar, mY / scalar ); }
 
     //! Multiplies the coordinates in this point by a scalar quantity in place
-    QgsPointXY &operator*=( double scalar ) { mX *= scalar; mY *= scalar; return *this; }
+    QgsPointXY &operator*=( double scalar )
+    {
+      mX *= scalar;
+      mY *= scalar;
+      return *this;
+    }
 
     //! Divides the coordinates in this point by a scalar quantity in place
-    QgsPointXY &operator/=( double scalar ) { mX /= scalar; mY /= scalar; return *this; }
+    QgsPointXY &operator/=( double scalar )
+    {
+      mX /= scalar;
+      mY /= scalar;
+      return *this;
+    }
 
     //! Allows direct construction of QVariants from points.
     operator QVariant() const
@@ -349,19 +366,22 @@ class CORE_EXPORT QgsPointXY
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsPointXY: %1>" ).arg( sipCpp->asWkt() );
+        QString str
+      = QStringLiteral( "<QgsPointXY: %1>" ).arg( sipCpp->asWkt() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 
-    int __len__();
+      int
+      __len__();
     % MethodCode
-    sipRes = 2;
+        sipRes
+      = 2;
     % End
 
 
-    SIP_PYOBJECT __getitem__( int );
-    % MethodCode
-    if ( a0 == 0 )
+        SIP_PYOBJECT
+      __getitem__( int );
+    % MethodCode if ( a0 == 0 )
     {
       sipRes = Py_BuildValue( "d", sipCpp->x() );
     }
@@ -376,16 +396,19 @@ class CORE_EXPORT QgsPointXY
     }
     % End
 
-    long __hash__() const;
+      long
+      __hash__() const;
     % MethodCode
-    sipRes = qHash( *sipCpp );
+        sipRes
+      = qHash( *sipCpp );
     % End
 #endif
 
-  private:
+      private :
 
-    //! x coordinate
-    double mX = 0; //std::numeric_limits<double>::quiet_NaN();
+      //! x coordinate
+      double mX
+      = 0; //std::numeric_limits<double>::quiet_NaN();
 
     //! y coordinate
     double mY = 0; //std::numeric_limits<double>::quiet_NaN();
@@ -399,7 +422,7 @@ class CORE_EXPORT QgsPointXY
 
 Q_DECLARE_METATYPE( QgsPointXY )
 
-inline std::ostream &operator << ( std::ostream &os, const QgsPointXY &p ) SIP_SKIP
+inline std::ostream &operator<<( std::ostream &os, const QgsPointXY &p ) SIP_SKIP
 {
   // Use Local8Bit for printouts
   os << p.toString().toLocal8Bit().data();
@@ -409,8 +432,8 @@ inline std::ostream &operator << ( std::ostream &os, const QgsPointXY &p ) SIP_S
 inline uint qHash( const QgsPointXY &p ) SIP_SKIP
 {
   uint hash;
-  const uint h1 = qHash( static_cast< quint64 >( p.mX ) );
-  const uint h2 = qHash( static_cast< quint64 >( p.mY ) );
+  const uint h1 = qHash( static_cast<quint64>( p.mX ) );
+  const uint h2 = qHash( static_cast<quint64>( p.mY ) );
   hash = h1 ^ ( h2 << 1 );
   return hash;
 }

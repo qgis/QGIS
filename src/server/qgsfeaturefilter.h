@@ -60,7 +60,6 @@ class SERVER_EXPORT QgsFeatureFilter : public QgsFeatureFilterProvider
 
   private:
     QMap<QString, QString> mFilters;
-
 };
 
 #endif

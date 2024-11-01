@@ -35,7 +35,6 @@ template<typename T>
 class CORE_EXPORT QgsOptional
 {
   public:
-
     /**
      * A QgsOptional is disabled by default if default constructed.
      */
@@ -66,7 +65,7 @@ class CORE_EXPORT QgsOptional
      * of the contained class.
      *
      */
-    bool operator== ( const QgsOptional<T> &other ) const
+    bool operator==( const QgsOptional<T> &other ) const
     {
       return mEnabled == other.mEnabled && mData == other.mData;
     }

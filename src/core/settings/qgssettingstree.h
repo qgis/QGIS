@@ -29,9 +29,7 @@
  */
 class CORE_EXPORT QgsSettingsTree
 {
-
   public:
-
     /**
      * Returns the tree root node for the settings tree
      */
@@ -72,7 +70,7 @@ class CORE_EXPORT QgsSettingsTree
      * Returns the tree node at the given \a key
      * \note For Plugins, use createPluginTreeNode() to create nodes for plugin settings.
      */
-    static const QgsSettingsTreeNode *node( const QString &key ) {return treeRoot()->childNode( key );}
+    static const QgsSettingsTreeNode *node( const QString &key ) { return treeRoot()->childNode( key ); }
 
     /**
      * Creates a settings tree node for the given \a pluginName

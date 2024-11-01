@@ -34,7 +34,7 @@
  *
  * \since QGIS 3.32
  */
-template <class ENUM, class FLAGS>
+template<class ENUM, class FLAGS>
 class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryEnumFlag<FLAGS>, QComboBox, FLAGS>
 {
   public:
@@ -45,14 +45,13 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
 
     void enableAutomaticUpdatePrivate() override
     {
-      QObject::connect( &mModel, &QStandardItemModel::itemChanged, this, [ = ]( const QStandardItem * item )
-      {
+      QObject::connect( &mModel, &QStandardItemModel::itemChanged, this, [=]( const QStandardItem *item ) {
         Q_UNUSED( item )
         setSettingFromWidget();
       } );
     }
 
-    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsFlagsEditorWidgetWrapper<ENUM, FLAGS>( parent );}
+    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsFlagsEditorWidgetWrapper<ENUM, FLAGS>( parent ); }
 
     virtual QString id() const override
     {
@@ -119,7 +118,6 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
     }
 
   protected:
-
     void configureEditorPrivateImplementation() override
     {
       mModel.clear();
@@ -144,7 +142,7 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
  *
  * \since QGIS 3.32
  */
-template <class ENUM>
+template<class ENUM>
 class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryEnumFlag<ENUM>, QComboBox, ENUM>
 {
   public:
@@ -155,8 +153,7 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
 
     void enableAutomaticUpdatePrivate() override
     {
-      QObject::connect( this->mEditor, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
-      {
+      QObject::connect( this->mEditor, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int index ) {
         Q_UNUSED( index );
         ENUM value = this->mEditor->currentData().template value<ENUM>();
         this->mSetting->setValue( value, this->mDynamicKeyPartList );
@@ -175,7 +172,7 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
      */
     void setDisplayStrings( const QMap<ENUM, QString> &displayStrings ) { mDisplayStrings = displayStrings; }
 
-    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsEnumEditorWidgetWrapper<ENUM>( parent );}
+    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsEnumEditorWidgetWrapper<ENUM>( parent ); }
 
     QVariant variantValueFromWidget() const override
     {
@@ -226,7 +223,6 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
     }
 
   protected:
-
     void configureEditorPrivateImplementation() override
     {
       const QMap<ENUM, QString> enumMap = qgsEnumMap<ENUM>();
@@ -239,7 +235,6 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
 
   private:
     QMap<ENUM, QString> mDisplayStrings;
-
 };
 
 #endif // QGSSETTINGSENUMFLAGEDITORWIDGETWRAPPER_H

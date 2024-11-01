@@ -26,12 +26,11 @@ class QgsArrowSymbolLayer;
  * \ingroup gui
  * \class QgsArrowSymbolLayerWidget
  */
-class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerWidget, private Ui::QgsArrowSymbolLayerWidgetBase
+class GUI_EXPORT QgsArrowSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::QgsArrowSymbolLayerWidgetBase
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      * \param layer the layer where this symbol layer is applied

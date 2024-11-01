@@ -33,12 +33,9 @@ class QgsLayerTreeViewNonRemovableIndicatorProvider : public QgsLayerTreeViewInd
     bool acceptLayer( QgsMapLayer *layer ) override;
 
   protected:
-
     void connectSignals( QgsMapLayer *layer ) override;
     void disconnectSignals( QgsMapLayer *layer ) override;
-
 };
-
 
 
 #endif // QGSLAYERTREEVIEWNONREMOVABLEINDICATOR_H

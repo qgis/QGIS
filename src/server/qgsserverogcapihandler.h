@@ -93,9 +93,7 @@ class QgsServerApiContext;
  */
 class SERVER_EXPORT QgsServerOgcApiHandler
 {
-
   public:
-
     virtual ~QgsServerOgcApiHandler();
 
     // /////////////////////////////////////////////
@@ -121,7 +119,11 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * Depending on the handler, it may be dynamic (per-request) or static.
      * \param context the request context
      */
-    virtual QList<QgsServerQueryStringParameter> parameters( const QgsServerApiContext &context ) const  { Q_UNUSED( context ); return { }; }
+    virtual QList<QgsServerQueryStringParameter> parameters( const QgsServerApiContext &context ) const
+    {
+      Q_UNUSED( context );
+      return {};
+    }
 
     // /////////////////////////////////////////////
     // METADATA Sections (informative)
@@ -197,7 +199,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     // /////////////////////////////////////////////////////
     // Utility methods: override should not be required
 
-#ifndef SIP_RUN  // Skip SIP
+#ifndef SIP_RUN // Skip SIP
 
     /**
      * Writes \a data to the \a context response stream, content-type is calculated from the \a context request,
@@ -286,7 +288,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      */
     QgsVectorLayer *layerFromContext( const QgsServerApiContext &context ) const;
 
-#endif  // SIP skipped
+#endif // SIP skipped
 
     /**
      * Writes \a data to the \a context response stream, content-type is calculated from the \a context request,
@@ -375,10 +377,9 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      *
      * \note not available in Python bindings
      */
-    json jsonTags( ) const SIP_SKIP;
+    json jsonTags() const SIP_SKIP;
 
   protected:
-
     /**
      * Set the content types to \a contentTypes
      */
@@ -391,11 +392,8 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     void setContentTypes( const QList<QgsServerOgcApi::ContentType> &contentTypes ) SIP_SKIP;
 
   private:
-
     //! List of content types this handler can serve, first is the default
     QList<QgsServerOgcApi::ContentType> mContentTypes = { QgsServerOgcApi::ContentType::JSON, QgsServerOgcApi::ContentType::HTML };
-
-
 };
 
 #endif // QGSSERVEROGCAPIHANDLER_H

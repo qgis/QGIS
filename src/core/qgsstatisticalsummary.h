@@ -44,7 +44,6 @@
 class CORE_EXPORT QgsStatisticalSummary
 {
   public:
-
     /**
      * Constructor for QgsStatisticalSummary
      * \param stats flags for statistics to calculate
@@ -271,7 +270,6 @@ class CORE_EXPORT QgsStatisticalSummary
     static QString shortName( Qgis::Statistic statistic );
 
   private:
-
     Qgis::Statistics mStatistics;
 
     int mCount;
@@ -289,8 +287,8 @@ class CORE_EXPORT QgsStatisticalSummary
     double mThirdQuartile;
     double mFirst;
     double mLast;
-    QMap< double, int > mValueCount;
-    QList< double > mValues;
+    QMap<double, int> mValueCount;
+    QList<double> mValues;
     bool mRequiresAllValueStorage = false;
     bool mRequiresHisto = false;
 };

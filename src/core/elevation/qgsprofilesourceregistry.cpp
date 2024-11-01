@@ -18,7 +18,6 @@
 
 QgsProfileSourceRegistry::QgsProfileSourceRegistry()
 {
-
 }
 
 QgsProfileSourceRegistry::~QgsProfileSourceRegistry()
@@ -26,7 +25,7 @@ QgsProfileSourceRegistry::~QgsProfileSourceRegistry()
   qDeleteAll( mSources );
 }
 
-QList< QgsAbstractProfileSource * > QgsProfileSourceRegistry::profileSources() const
+QList<QgsAbstractProfileSource *> QgsProfileSourceRegistry::profileSources() const
 {
   return mSources;
 }

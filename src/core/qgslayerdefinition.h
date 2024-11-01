@@ -45,7 +45,6 @@ class QgsProject;
 class CORE_EXPORT QgsLayerDefinition
 {
   public:
-
     /**
      * Loads the QLR at path into QGIS.  New layers are added to given project into layer tree specified by rootGroup
      * \param path file path to the qlr
@@ -69,7 +68,7 @@ class CORE_EXPORT QgsLayerDefinition
      *  \param insertPoint describes where in rootGroup the qlr layers/groups shall be inserted (since QGIS 3.38)
      *  \return true in case of success
      */
-    static bool loadLayerDefinition( QDomDocument doc,  QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT, QgsReadWriteContext &context, Qgis::LayerTreeInsertionMethod insertMethod = Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = nullptr );
+    static bool loadLayerDefinition( QDomDocument doc, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage SIP_OUT, QgsReadWriteContext &context, Qgis::LayerTreeInsertionMethod insertMethod = Qgis::LayerTreeInsertionMethod::OptimalInInsertionGroup, const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint = nullptr );
 
     /**
      * Exports the selected layer tree nodes to a QLR file.
@@ -137,7 +136,6 @@ class CORE_EXPORT QgsLayerDefinition
     class CORE_EXPORT DependencySorter
     {
       public:
-
         /**
          * Constructor
          * \param doc The XML document containing maplayer elements
@@ -179,10 +177,7 @@ class CORE_EXPORT QgsLayerDefinition
     };
 
   private:
-
     static QList<QgsMapLayer *> loadLayerDefinitionLayersInternal( QDomDocument &document, QgsReadWriteContext &context, QString &errorMessage );
-
-
 };
 
 #endif // QGSLAYERDEFINITION_H

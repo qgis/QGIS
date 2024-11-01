@@ -163,7 +163,6 @@ void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
     connect( mScene, &Qgs3DMapScene::sceneStateChanged, this, &QgsLayoutItem3DMap::onSceneStateChanged );
 
     mEngine->setRootEntity( mScene );
-
   }
 
   if ( mEngine->size() != sizePixelsInt )

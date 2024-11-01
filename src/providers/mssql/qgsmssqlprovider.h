@@ -56,12 +56,11 @@ enum QgsMssqlPrimaryKeyType
  * \class QgsMssqlProvider
  * \brief Data provider for mssql server.
 */
-class QgsMssqlProvider final: public QgsVectorDataProvider
+class QgsMssqlProvider final : public QgsVectorDataProvider
 {
     Q_OBJECT
 
   public:
-
     static const QString MSSQL_PROVIDER_KEY;
     static const QString MSSQL_PROVIDER_DESCRIPTION;
 
@@ -159,8 +158,7 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
       QString *errorMessage = nullptr,
-      const QMap<QString, QVariant> *coordinateTransformContext = nullptr
-    );
+      const QMap<QString, QVariant> *coordinateTransformContext = nullptr );
 
     QgsCoordinateReferenceSystem crs() const override;
 
@@ -178,7 +176,6 @@ class QgsMssqlProvider final: public QgsVectorDataProvider
     void loadMetadata();
 
   private:
-
     bool execLogged( QSqlQuery &qry, const QString &sql, const QString &queryOrigin = QString() ) const;
     bool execPreparedLogged( QSqlQuery &qry, const QString &queryOrigin = QString() ) const;
 
@@ -293,12 +290,12 @@ class QgsMssqlSharedData
   protected:
     QMutex mMutex; //!< Access to all data members is guarded by the mutex
 
-    QgsFeatureId mFidCounter = 0;                    // next feature id if map is used
-    QMap<QVariantList, QgsFeatureId> mKeyToFid;      // map key values to feature id
-    QMap<QgsFeatureId, QVariantList> mFidToKey;      // map feature back to fea
+    QgsFeatureId mFidCounter = 0;               // next feature id if map is used
+    QMap<QVariantList, QgsFeatureId> mKeyToFid; // map key values to feature id
+    QMap<QgsFeatureId, QVariantList> mFidToKey; // map feature back to fea
 };
 
-class QgsMssqlProviderMetadata final: public QgsProviderMetadata
+class QgsMssqlProviderMetadata final : public QgsProviderMetadata
 {
     Q_OBJECT
   public:
@@ -323,7 +320,7 @@ class QgsMssqlProviderMetadata final: public QgsProviderMetadata
       QString &errorMessage,
       const QMap<QString, QVariant> *options ) override;
     QgsMssqlProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    virtual QList< QgsDataItemProvider * > dataItemProviders() const override;
+    virtual QList<QgsDataItemProvider *> dataItemProviders() const override;
     QgsTransaction *createTransaction( const QString &connString ) override;
 
     // Connections API
@@ -336,13 +333,11 @@ class QgsMssqlProviderMetadata final: public QgsProviderMetadata
     // Data source URI API
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QList<Qgis::LayerType> supportedLayerTypes() const override;
 
 
   private:
-
     bool execLogged( QSqlQuery &qry, const QString &sql, const QString &uri, const QString &queryOrigin = QString() ) const;
-
 };
 
 #endif // QGSMSSQLPROVIDER_H

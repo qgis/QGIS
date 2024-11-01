@@ -33,8 +33,7 @@
 
 #include <chrono>
 
-const QStringList QgsMssqlProviderConnection::EXTRA_CONNECTION_PARAMETERS
-{
+const QStringList QgsMssqlProviderConnection::EXTRA_CONNECTION_PARAMETERS {
   QStringLiteral( "geometryColumnsOnly" ),
   QStringLiteral( "allowGeometrylessTables" ),
   QStringLiteral( "disableInvalidGeometryHandling" ),
@@ -51,8 +50,8 @@ QgsMssqlProviderConnection::QgsMssqlProviderConnection( const QString &name )
   setDefaultCapabilities();
 }
 
-QgsMssqlProviderConnection::QgsMssqlProviderConnection( const QString &uri, const QVariantMap &configuration ):
-  QgsAbstractDatabaseProviderConnection( QString(), configuration )
+QgsMssqlProviderConnection::QgsMssqlProviderConnection( const QString &uri, const QVariantMap &configuration )
+  : QgsAbstractDatabaseProviderConnection( QString(), configuration )
 {
   mProviderKey = QStringLiteral( "mssql" );
   // Additional connection information
@@ -84,8 +83,7 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
 {
   // TODO: we might check at this point if the user actually has the privileges and return
   //       properly filtered capabilities instead of all of them
-  mCapabilities =
-  {
+  mCapabilities = {
     Capability::DropVectorTable,
     Capability::CreateVectorTable,
     Capability::DropSchema,
@@ -97,16 +95,12 @@ void QgsMssqlProviderConnection::setDefaultCapabilities()
     Capability::TableExists,
     Capability::DeleteField,
     Capability::DeleteFieldCascade,
-    Capability::AddField
-  };
-  mGeometryColumnCapabilities =
-  {
+    Capability::AddField };
+  mGeometryColumnCapabilities = {
     GeometryColumnCapability::Z,
     GeometryColumnCapability::M,
-    GeometryColumnCapability::Curves
-  };
-  mSqlLayerDefinitionCapabilities =
-  {
+    GeometryColumnCapability::Curves };
+  mSqlLayerDefinitionCapabilities = {
     Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
     Qgis::SqlLayerDefinitionCapability::PrimaryKeys,
     Qgis::SqlLayerDefinitionCapability::GeometryColumn,
@@ -142,47 +136,45 @@ void QgsMssqlProviderConnection::dropTablePrivate( const QString &schema, const 
      DELETE FROM geometry_columns WHERE f_table_schema = @schema AND f_table_name = @table
 
   )raw" )
-                      .arg( QgsMssqlProvider::quotedValue( QStringLiteral( "master" ) ),  // in my testing docker, it is 'master' instead of QgsMssqlProvider::quotedValue( QgsDataSourceUri( uri() ).database() ),
-                            QgsMssqlProvider::quotedValue( name ),
-                            QgsMssqlProvider::quotedValue( schema ),
-                            QgsMssqlProvider::quotedIdentifier( name ),
-                            QgsMssqlProvider::quotedIdentifier( schema ) ) };
+                        .arg( QgsMssqlProvider::quotedValue( QStringLiteral( "master" ) ), // in my testing docker, it is 'master' instead of QgsMssqlProvider::quotedValue( QgsDataSourceUri( uri() ).database() ),
+                              QgsMssqlProvider::quotedValue( name ),
+                              QgsMssqlProvider::quotedValue( schema ),
+                              QgsMssqlProvider::quotedIdentifier( name ),
+                              QgsMssqlProvider::quotedIdentifier( schema ) ) };
 
   executeSqlPrivate( sql );
 }
 
 void QgsMssqlProviderConnection::createVectorTable( const QString &schema,
-    const QString &name,
-    const QgsFields &fields,
-    Qgis::WkbType wkbType,
-    const QgsCoordinateReferenceSystem &srs,
-    bool overwrite,
-    const QMap<QString,
-    QVariant> *options ) const
+                                                    const QString &name,
+                                                    const QgsFields &fields,
+                                                    Qgis::WkbType wkbType,
+                                                    const QgsCoordinateReferenceSystem &srs,
+                                                    bool overwrite,
+                                                    const QMap<QString,
+                                                               QVariant> *options ) const
 {
-
   checkCapability( Capability::CreateVectorTable );
 
   QgsDataSourceUri newUri { uri() };
   newUri.setSchema( schema );
   newUri.setTable( name );
   // Set geometry column if it's not aspatial
-  if ( wkbType != Qgis::WkbType::Unknown &&  wkbType != Qgis::WkbType::NoGeometry )
+  if ( wkbType != Qgis::WkbType::Unknown && wkbType != Qgis::WkbType::NoGeometry )
   {
     newUri.setGeometryColumn( options->value( QStringLiteral( "geometryColumn" ), QStringLiteral( "geom" ) ).toString() );
   }
   QMap<int, int> map;
   QString errCause;
   const Qgis::VectorExportResult res = QgsMssqlProvider::createEmptyLayer(
-                                         newUri.uri(),
-                                         fields,
-                                         wkbType,
-                                         srs,
-                                         overwrite,
-                                         &map,
-                                         &errCause,
-                                         options
-                                       );
+    newUri.uri(),
+    fields,
+    wkbType,
+    srs,
+    overwrite,
+    &map,
+    &errCause,
+    options );
   if ( res != Qgis::VectorExportResult::Success )
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
@@ -209,11 +201,10 @@ void QgsMssqlProviderConnection::createSchema( const QString &schemaName ) const
 {
   checkCapability( Capability::CreateSchema );
   executeSqlPrivate( QStringLiteral( "CREATE SCHEMA %1" )
-                     .arg( QgsMssqlProvider::quotedIdentifier( schemaName ) ) );
-
+                       .arg( QgsMssqlProvider::quotedIdentifier( schemaName ) ) );
 }
 
-void QgsMssqlProviderConnection::dropSchema( const QString &schemaName,  bool force ) const
+void QgsMssqlProviderConnection::dropSchema( const QString &schemaName, bool force ) const
 {
   checkCapability( Capability::DropSchema );
   // We need to delete all tables first!
@@ -228,7 +219,7 @@ void QgsMssqlProviderConnection::dropSchema( const QString &schemaName,  bool fo
     }
   }
   executeSqlPrivate( QStringLiteral( "DROP SCHEMA %1" )
-                     .arg( QgsMssqlProvider::quotedIdentifier( schemaName ) ) );
+                       .arg( QgsMssqlProvider::quotedIdentifier( schemaName ) ) );
 }
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
@@ -252,11 +243,10 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
   if ( !db->isValid() )
   {
     throw QgsProviderConnectionException( QObject::tr( "Connection to %1 failed: %2" )
-                                          .arg( uri(), db->errorText() ) );
+                                            .arg( uri(), db->errorText() ) );
   }
   else
   {
-
     if ( feedback && feedback->isCanceled() )
     {
       return QgsAbstractDatabaseProviderConnection::QueryResult();
@@ -271,13 +261,12 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
 
     const std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
-    if ( ! q->exec( sql ) )
+    if ( !q->exec( sql ) )
     {
       const QString errorMessage { q->lastError().text() };
       logWrapper.setError( errorMessage );
       throw QgsProviderConnectionException( QObject::tr( "SQL error: %1 \n %2" )
-                                            .arg( sql, errorMessage ) );
-
+                                              .arg( sql, errorMessage ) );
     }
 
     if ( q->isActive() )
@@ -294,13 +283,12 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsMssqlProviderConnection::e
       }
       return results;
     }
-
   }
   return QgsAbstractDatabaseProviderConnection::QueryResult();
 }
 
 
-QgssMssqlProviderResultIterator::QgssMssqlProviderResultIterator( bool resolveTypes, int columnCount,  std::unique_ptr<QSqlQuery> query )
+QgssMssqlProviderResultIterator::QgssMssqlProviderResultIterator( bool resolveTypes, int columnCount, std::unique_ptr<QSqlQuery> query )
   : mResolveTypes( resolveTypes )
   , mColumnCount( columnCount )
   , mQuery( std::move( query ) )
@@ -318,7 +306,7 @@ QVariantList QgssMssqlProviderResultIterator::nextRowPrivate()
 
 bool QgssMssqlProviderResultIterator::hasNextRowPrivate() const
 {
-  return ! mNextRow.isEmpty();
+  return !mNextRow.isEmpty();
 }
 
 QVariantList QgssMssqlProviderResultIterator::nextRowInternal()
@@ -360,11 +348,11 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
 
   // Defaults to false
   const bool useGeometryColumnsOnly { dsUri.hasParam( QStringLiteral( "geometryColumnsOnly" ) )
-                                      &&( dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == QStringLiteral( "true" )
-                                          || dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == '1' ) };
+                                      && ( dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == QStringLiteral( "true" )
+                                           || dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == '1' ) };
 
   // Defaults to true
-  const bool useEstimatedMetadata { ! dsUri.hasParam( QStringLiteral( "estimatedMetadata" ) )
+  const bool useEstimatedMetadata { !dsUri.hasParam( QStringLiteral( "estimatedMetadata" ) )
                                     || ( dsUri.param( QStringLiteral( "estimatedMetadata" ) ) == QStringLiteral( "true" )
                                          || dsUri.param( QStringLiteral( "estimatedMetadata" ) ) == '1' ) };
 
@@ -384,7 +372,7 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
   if ( useGeometryColumnsOnly )
   {
     query += QStringLiteral( "f_table_schema, f_table_name, f_geometry_column, srid, geometry_type, 0 FROM geometry_columns WHERE f_table_schema = N%1" )
-             .arg( QgsMssqlProvider::quotedValue( schema ) );
+               .arg( QgsMssqlProvider::quotedValue( schema ) );
   }
   else
   {
@@ -402,7 +390,7 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
                                   AND (sys.types.name = 'geometry' OR sys.types.name = 'geography')
                                   AND (sys.objects.type = 'U' OR sys.objects.type = 'V')
                              )raw" )
-             .arg( QgsMssqlProvider::quotedValue( schema ) );
+               .arg( QgsMssqlProvider::quotedValue( schema ) );
   }
 
   if ( allowGeometrylessTables )
@@ -422,7 +410,7 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
                                     AND sys.objects.object_id = sc1.object_id )
                                AND (sys.objects.type = 'U' OR sys.objects.type = 'V')
                              )raw" )
-             .arg( QgsMssqlProvider::quotedValue( schema ) );
+               .arg( QgsMssqlProvider::quotedValue( schema ) );
   }
 
   const QList<QVariantList> results { executeSqlPrivate( query, false ).rows() };
@@ -431,7 +419,7 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
     if ( feedback && feedback->isCanceled() )
       break;
 
-    Q_ASSERT( row.count( ) == 6 );
+    Q_ASSERT( row.count() == 6 );
     QgsMssqlProviderConnection::TableProperty table;
     table.setSchema( row[0].toString() );
     table.setTableName( row[1].toString() );
@@ -443,11 +431,10 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
 
     int geomColCount { 0 };
 
-    if ( ! table.geometryColumn().isEmpty() )
+    if ( !table.geometryColumn().isEmpty() )
     {
       // Fetch geom cols
-      const QString geomColSql
-      {
+      const QString geomColSql {
         QStringLiteral( R"raw(
                         SELECT %4 UPPER( %1.STGeometryType()), %1.STSrid,
                             %1.HasZ, %1.HasM
@@ -455,10 +442,10 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
                         WHERE %1 IS NOT NULL
                         GROUP BY %1.STGeometryType(), %1.STSrid, %1.HasZ, %1.HasM
                         )raw" )
-        .arg( QgsMssqlProvider::quotedIdentifier( table.geometryColumn() ),
-              QgsMssqlProvider::quotedIdentifier( table.schema() ),
-              QgsMssqlProvider::quotedIdentifier( table.tableName() ),
-              useEstimatedMetadata ? "TOP 1" : "" ) };
+          .arg( QgsMssqlProvider::quotedIdentifier( table.geometryColumn() ),
+                QgsMssqlProvider::quotedIdentifier( table.schema() ),
+                QgsMssqlProvider::quotedIdentifier( table.tableName() ),
+                useEstimatedMetadata ? "TOP 1" : "" ) };
 
       // This may fail for invalid geometries
       try
@@ -476,20 +463,19 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
             geometryType = QgsWkbTypes::addM( geometryType );
           }
           table.addGeometryColumnType( geometryType,
-                                       QgsCoordinateReferenceSystem::fromEpsgId( row[1].toLongLong( ) ) );
+                                       QgsCoordinateReferenceSystem::fromEpsgId( row[1].toLongLong() ) );
           ++geomColCount;
         }
       }
       catch ( QgsProviderConnectionException &ex )
       {
         QgsMessageLog::logMessage( QObject::tr( "Error retrieving geometry type for '%1' on table %2.%3:\n%4" )
-                                   .arg( table.geometryColumn(),
-                                         QgsMssqlProvider::quotedIdentifier( table.schema() ),
-                                         QgsMssqlProvider::quotedIdentifier( table.tableName() ),
-                                         ex.what() ),
+                                     .arg( table.geometryColumn(),
+                                           QgsMssqlProvider::quotedIdentifier( table.schema() ),
+                                           QgsMssqlProvider::quotedIdentifier( table.tableName() ),
+                                           ex.what() ),
                                    QStringLiteral( "MSSQL" ), Qgis::MessageLevel::Warning );
       }
-
     }
     else
     {
@@ -505,7 +491,7 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
   return tables;
 }
 
-QStringList QgsMssqlProviderConnection::schemas( ) const
+QStringList QgsMssqlProviderConnection::schemas() const
 {
   checkCapability( Capability::Schemas );
   QStringList schemas;
@@ -513,8 +499,7 @@ QStringList QgsMssqlProviderConnection::schemas( ) const
   const QgsDataSourceUri connUri( uri() );
 
   const QgsDataSourceUri dsUri { uri() };
-  const QString sql
-  {
+  const QString sql {
     QStringLiteral(
       R"raw(
     SELECT s.name AS schema_name,
@@ -525,8 +510,7 @@ QStringList QgsMssqlProviderConnection::schemas( ) const
             ON u.uid = s.principal_id
      WHERE u.issqluser = 1
         AND u.name NOT IN ('sys', 'guest', 'INFORMATION_SCHEMA')
-    )raw" )
-  };
+    )raw" ) };
 
   const QList<QVariantList> result { executeSqlPrivate( sql, false ).rows() };
 
@@ -573,7 +557,7 @@ void QgsMssqlProviderConnection::store( const QString &name ) const
     if ( dsUri.hasParam( param ) )
     {
       settings.setValue( param, dsUri.param( param ) == QStringLiteral( "true" )
-                         || dsUri.param( param ) == '1' );
+                                  || dsUri.param( param ) == '1' );
     }
   }
 
@@ -582,7 +566,7 @@ void QgsMssqlProviderConnection::store( const QString &name ) const
   for ( const auto &p : config )
   {
     settings.setValue( p, configuration().value( p ) == QStringLiteral( "true" )
-                       || configuration().value( p ) == '1' );
+                            || configuration().value( p ) == '1' );
   }
 
   settings.endGroup();

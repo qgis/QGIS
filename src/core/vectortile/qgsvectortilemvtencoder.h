@@ -86,7 +86,6 @@ class CORE_EXPORT QgsVectorTileMVTEncoder
     vector_tile::Tile tile;
 
     QMap<QVariant, int> mKnownValues;
-
 };
 
 #endif // QGSVECTORTILEMVTENCODER_H

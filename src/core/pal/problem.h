@@ -57,10 +57,10 @@ namespace pal
 
   struct Chain
   {
-    int degree;
-    double delta;
-    int *feat = nullptr;
-    int *label = nullptr;
+      int degree;
+      double delta;
+      int *feat = nullptr;
+      int *label = nullptr;
   };
 
   /**
@@ -74,7 +74,6 @@ namespace pal
       friend class Pal;
 
     public:
-
       /**
        * Constructor for Problem.
        *
@@ -93,7 +92,7 @@ namespace pal
        * Adds a candidate label position to the problem.
        * \param position label candidate position. Ownership is transferred to Problem.
        */
-      void addCandidatePosition( std::unique_ptr< LabelPosition > position );
+      void addCandidatePosition( std::unique_ptr<LabelPosition> position );
 
       /**
        * Returns the total number of features considered during the labeling problem.
@@ -108,7 +107,7 @@ namespace pal
       /**
        * Returns the candidate corresponding to the specified \a feature and \a candidate index.
        */
-      LabelPosition *featureCandidate( int feature, int candidate ) const { return mLabelPositions[ mFirstCandidateIndexForFeature[feature] + candidate ].get(); }
+      LabelPosition *featureCandidate( int feature, int candidate ) const { return mLabelPositions[mFirstCandidateIndexForFeature[feature] + candidate].get(); }
 
       /**
        * Gets called AFTER extractProblem.
@@ -145,7 +144,7 @@ namespace pal
        *
        * Ownership of positions added to this list is transferred to the problem.
        */
-      std::vector< std::unique_ptr< LabelPosition > > *positionsWithNoCandidates()
+      std::vector<std::unique_ptr<LabelPosition>> *positionsWithNoCandidates()
       {
         return &mPositionsWithNoCandidates;
       }
@@ -153,10 +152,9 @@ namespace pal
       /**
        * Returns the index containing all label candidates.
        */
-      PalRtree< LabelPosition > &allCandidatesIndex() { return mAllCandidatesIndex; }
+      PalRtree<LabelPosition> &allCandidatesIndex() { return mAllCandidatesIndex; }
 
     private:
-
       /**
        * Returns TRUE if a labelling candidate \a lp1 conflicts with \a lp2.
        */
@@ -195,28 +193,27 @@ namespace pal
       /**
        * Map extent (xmin, ymin, xmax, ymax)
        */
-      double mMapExtentBounds[4] = {0, 0, 0, 0};
+      double mMapExtentBounds[4] = { 0, 0, 0, 0 };
 
-      std::vector< std::unique_ptr< LabelPosition > > mLabelPositions;
+      std::vector<std::unique_ptr<LabelPosition>> mLabelPositions;
 
       PalRtree<LabelPosition> mAllCandidatesIndex;
       PalRtree<LabelPosition> mActiveCandidatesIndex;
 
-      std::vector< std::unique_ptr< LabelPosition > > mPositionsWithNoCandidates;
+      std::vector<std::unique_ptr<LabelPosition>> mPositionsWithNoCandidates;
 
       //! Index of the position in mLabelPositions which corresponds to the first candidate for a feature, array index corresponds to label feature index
-      std::vector< int > mFirstCandidateIndexForFeature;
+      std::vector<int> mFirstCandidateIndexForFeature;
       //! Total number of registered candidates for each feature, array index corresponds to label feature index
-      std::vector< int > mCandidateCountForFeature;
+      std::vector<int> mCandidateCountForFeature;
       //! Cost for excluding (ie not labeling) a feature, array index corresponds to label feature index
-      std::vector< double > mUnlabeledCostForFeature;
+      std::vector<double> mUnlabeledCostForFeature;
 
       class Sol
       {
         public:
-
           //! Placeholder list for active labels. Will contain label id for active labels, or -1 for empty positions in list
-          std::vector< int > activeLabelIds;
+          std::vector<int> activeLabelIds;
 
           void init( std::size_t featureCount )
           {
@@ -236,6 +233,6 @@ namespace pal
       void ignoreLabel( const LabelPosition *lp, pal::PriorityQueue &list, PalRtree<LabelPosition> &candidatesIndex );
   };
 
-} // namespace
+} // namespace pal
 
 #endif

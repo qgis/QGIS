@@ -33,7 +33,6 @@ class QgsFillSymbol;
 class CORE_EXPORT QgsPointCloudExtentRenderer : public QgsPointCloudRenderer
 {
   public:
-
     /**
      * Constructor for QgsPointCloudExtentRenderer.
      *
@@ -84,9 +83,7 @@ class CORE_EXPORT QgsPointCloudExtentRenderer : public QgsPointCloudRenderer
     void setFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
   private:
-
-    std::unique_ptr< QgsFillSymbol > mFillSymbol;
-
+    std::unique_ptr<QgsFillSymbol> mFillSymbol;
 };
 
 #endif // QGSPOINTCLOUDEXTENTRENDERER_H

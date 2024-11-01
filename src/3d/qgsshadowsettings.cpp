@@ -27,7 +27,6 @@ QgsShadowSettings::QgsShadowSettings( const QgsShadowSettings &other )
   , mShadowBias( other.mShadowBias )
   , mShadowMapResolution( other.mShadowMapResolution )
 {
-
 }
 
 QgsShadowSettings &QgsShadowSettings::operator=( QgsShadowSettings const &rhs )

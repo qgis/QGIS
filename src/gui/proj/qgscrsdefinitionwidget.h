@@ -32,7 +32,6 @@ class GUI_EXPORT QgsCrsDefinitionWidget : public QWidget, private Ui::QgsCrsDefi
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsCrsDefinitionWidget, with the specified \a parent widget.
      */
@@ -112,9 +111,7 @@ class GUI_EXPORT QgsCrsDefinitionWidget : public QWidget, private Ui::QgsCrsDefi
     void formatChanged();
 
   private:
-
     QString multiLineWktToSingleLine( const QString &wkt );
-
 };
 
 #endif // QGSCRSDEFINITIONWIDGET_H

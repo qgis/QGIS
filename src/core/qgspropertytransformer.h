@@ -55,7 +55,6 @@ class QgsColorRamp;
 class CORE_EXPORT QgsCurveTransform
 {
   public:
-
     /**
      * Constructs a default QgsCurveTransform which linearly maps values
      * between 0 and 1 unchanged. I.e. y == x.
@@ -67,7 +66,7 @@ class CORE_EXPORT QgsCurveTransform
      * Behavior is undefined if duplicate x values exist in the control points
      * list.
      */
-    QgsCurveTransform( const QList< QgsPointXY > &controlPoints );
+    QgsCurveTransform( const QList<QgsPointXY> &controlPoints );
 
     ~QgsCurveTransform();
 
@@ -79,14 +78,14 @@ class CORE_EXPORT QgsCurveTransform
      * Returns a list of the control points for the transform.
      * \see setControlPoints()
      */
-    QList< QgsPointXY > controlPoints() const { return mControlPoints; }
+    QList<QgsPointXY> controlPoints() const { return mControlPoints; }
 
     /**
      * Sets the list of control points for the transform. Any existing
      * points are removed.
      * \see controlPoints()
      */
-    void setControlPoints( const QList< QgsPointXY > &points );
+    void setControlPoints( const QList<QgsPointXY> &points );
 
     /**
      * Adds a control point to the transform. Behavior is undefined if duplicate
@@ -112,7 +111,7 @@ class CORE_EXPORT QgsCurveTransform
      * Calling this method is faster then calling the double variant multiple
      * times.
      */
-    QVector< double > y( const QVector< double > &x ) const;
+    QVector<double> y( const QVector<double> &x ) const;
 
     /**
      * Reads the curve's state from an XML element.
@@ -147,10 +146,9 @@ class CORE_EXPORT QgsCurveTransform
     bool loadVariant( const QVariant &transformer );
 
   private:
-
     void calcSecondDerivativeArray();
 
-    QList< QgsPointXY > mControlPoints;
+    QList<QgsPointXY> mControlPoints;
 
     double *mSecondDerivativeArray = nullptr;
 };
@@ -164,7 +162,6 @@ class CORE_EXPORT QgsCurveTransform
  */
 class CORE_EXPORT QgsPropertyTransformer
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->transformerType() == QgsPropertyTransformer::GenericNumericTransformer )
@@ -179,13 +176,12 @@ class CORE_EXPORT QgsPropertyTransformer
 #endif
 
   public:
-
     //! Transformer types
     enum Type
     {
       GenericNumericTransformer, //!< Generic transformer for numeric values (QgsGenericNumericTransformer)
-      SizeScaleTransformer, //!< Size scaling transformer (QgsSizeScaleTransformer)
-      ColorRampTransformer, //!< Color ramp transformer (QgsColorRampTransformer)
+      SizeScaleTransformer,      //!< Size scaling transformer (QgsSizeScaleTransformer)
+      ColorRampTransformer,      //!< Color ramp transformer (QgsColorRampTransformer)
     };
 
     /**
@@ -301,7 +297,6 @@ class CORE_EXPORT QgsPropertyTransformer
     static QgsPropertyTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY;
 
   protected:
-
     /**
      * Applies base class numeric transformations. Derived classes should call this
      * to transform an \a input numeric value before they apply any transform to the result.
@@ -316,7 +311,7 @@ class CORE_EXPORT QgsPropertyTransformer
     double mMaxValue;
 
     //! Optional curve transform
-    std::unique_ptr< QgsCurveTransform > mCurveTransform;
+    std::unique_ptr<QgsCurveTransform> mCurveTransform;
 #endif
 };
 
@@ -329,7 +324,6 @@ class CORE_EXPORT QgsPropertyTransformer
 class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
 {
   public:
-
     /**
      * Constructor for QgsGenericNumericTransformer.
      * \param minValue minimum expected input value
@@ -433,7 +427,6 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
     double mMaxOutput;
     double mNullOutput;
     double mExponent;
-
 };
 
 /**
@@ -446,13 +439,12 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
 class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
 {
   public:
-
     //! Size scaling methods
     enum ScaleType
     {
-      Linear, //!< Linear scaling
-      Area, //!< Area based scaling
-      Flannery, //!< Flannery scaling method
+      Linear,      //!< Linear scaling
+      Area,        //!< Area based scaling
+      Flannery,    //!< Flannery scaling method
       Exponential, //!< Scale using set exponent
     };
 
@@ -574,7 +566,6 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
     double mMaxSize;
     double mNullSize;
     double mExponent;
-
 };
 
 /**
@@ -587,7 +578,6 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
 class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
 {
   public:
-
     /**
      * Constructor for QgsColorRampTransformer.
      * \param minValue minimum expected value
@@ -661,11 +651,9 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
     void setRampName( const QString &name ) { mRampName = name; }
 
   private:
-
-    std::unique_ptr< QgsColorRamp > mGradientRamp;
+    std::unique_ptr<QgsColorRamp> mGradientRamp;
     QColor mNullColor;
     QString mRampName;
-
 };
 
 #endif // QGSPROPERTYTRANSFORMER_H

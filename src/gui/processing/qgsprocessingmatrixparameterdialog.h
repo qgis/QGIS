@@ -39,12 +39,11 @@ class GUI_EXPORT QgsProcessingMatrixParameterPanelWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingMatrixParameterDialog.
      */
     QgsProcessingMatrixParameterPanelWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QgsProcessingParameterMatrix *param = nullptr,
-        const QVariantList &initialTable = QVariantList() );
+                                             const QVariantList &initialTable = QVariantList() );
 
     /**
      * Returns the table's contents as a 1 dimensional array.
@@ -58,7 +57,6 @@ class GUI_EXPORT QgsProcessingMatrixParameterPanelWidget : public QgsPanelWidget
     void deleteAllRows();
 
   private:
-
     QPushButton *mButtonAdd = nullptr;
     QPushButton *mButtonRemove = nullptr;
     QPushButton *mButtonRemoveAll = nullptr;
@@ -83,7 +81,6 @@ class GUI_EXPORT QgsProcessingMatrixParameterPanel : public QWidget
     Q_OBJECT
 
   public:
-
     QgsProcessingMatrixParameterPanel( QWidget *parent = nullptr, const QgsProcessingParameterMatrix *param = nullptr );
 
     QVariantList value() const { return mTable; }
@@ -99,7 +96,6 @@ class GUI_EXPORT QgsProcessingMatrixParameterPanel : public QWidget
     void showDialog();
 
   private:
-
     void updateSummaryText();
 
     const QgsProcessingParameterMatrix *mParam = nullptr;

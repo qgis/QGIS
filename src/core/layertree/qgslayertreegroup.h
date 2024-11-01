@@ -40,7 +40,6 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor
      */
@@ -53,15 +52,17 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsLayerTreeGroup: %1>" ).arg( sipCpp->name() );
+        QString str
+      = QStringLiteral( "<QgsLayerTreeGroup: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    /**
+        /**
      * Returns the group's name.
      */
-    QString name() const override;
+        QString
+      name() const override;
 
     /**
      * Sets the group's name.
@@ -155,7 +156,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      *
      * \since QGIS 3.30
      */
-    void reorderGroupLayers( const QList< QgsMapLayer * > &order );
+    void reorderGroupLayers( const QList<QgsMapLayer *> &order );
 
     /**
      * Returns an ordered list of map layers in the group, ignoring any layers which
@@ -185,7 +186,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * Read group (tree) from XML element <layer-tree-group> and return the newly created group (or NULLPTR on error).
      * Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
      */
-    static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;  // cppcheck-suppress duplInheritedMember
+    static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     /**
      * Read group (tree) from XML element <layer-tree-group> and return the newly created group (or NULLPTR on error).
@@ -280,7 +281,6 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     void nodeVisibilityChanged( QgsLayerTreeNode *node );
 
   protected:
-
     /**
      * Set check state of children - if mutually exclusive
      */
@@ -303,7 +303,6 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     virtual void makeOrphan() override SIP_SKIP;
 
   private:
-
 #ifdef SIP_RUN
 
     /**
@@ -312,7 +311,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     QgsLayerTreeGroup( const QgsLayerTreeGroup &other );
 #endif
 
-    QgsLayerTreeGroup &operator= ( const QgsLayerTreeGroup & ) = delete;
+    QgsLayerTreeGroup &operator=( const QgsLayerTreeGroup & ) = delete;
 
     void init();
     void updateGroupLayers();

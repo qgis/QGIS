@@ -49,9 +49,9 @@ void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthent
   for ( ;; )
   {
     const bool ok = QgsCredentials::instance()->get(
-                      QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
-                      username, password,
-                      QObject::tr( "Authentication required" ) );
+      QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
+      username, password,
+      QObject::tr( "Authentication required" ) );
     if ( !ok )
       return;
 
@@ -60,8 +60,7 @@ void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthent
       // save credentials
       QgsCredentials::instance()->put(
         QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
-        username, password
-      );
+        username, password );
       break;
     }
     else

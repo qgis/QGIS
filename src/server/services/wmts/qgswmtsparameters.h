@@ -153,7 +153,6 @@ namespace QgsWmts
       Q_GADGET
 
     public:
-
       //! Output format for the response
       enum Format
       {
@@ -322,6 +321,6 @@ namespace QgsWmts
       QList<QgsProjectVersion> mVersions;
       QMap<QgsWmtsParameter::Name, QgsWmtsParameter> mWmtsParameters;
   };
-}
+} // namespace QgsWmts
 
 #endif

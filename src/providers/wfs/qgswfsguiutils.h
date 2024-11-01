@@ -23,7 +23,6 @@ class QWidget;
 class QgsWfsGuiUtils
 {
   public:
-
     //! Display a message box when a capability error occur.
     static void displayErrorMessageOnFailedCapabilities( QgsWfsCapabilities *capabilities, QWidget *parent );
 };

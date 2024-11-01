@@ -120,7 +120,7 @@ Qgis::WkbType QgsArcGisRestUtils::convertGeometryType( const QString &esriGeomet
   return Qgis::WkbType::Unknown;
 }
 
-std::unique_ptr< QgsPoint > QgsArcGisRestUtils::convertPoint( const QVariantList &coordList, Qgis::WkbType pointType )
+std::unique_ptr<QgsPoint> QgsArcGisRestUtils::convertPoint( const QVariantList &coordList, Qgis::WkbType pointType )
 {
   int nCoords = coordList.size();
   if ( nCoords < 2 )
@@ -131,14 +131,14 @@ std::unique_ptr< QgsPoint > QgsArcGisRestUtils::convertPoint( const QVariantList
   if ( !xok || !yok )
     return nullptr;
   const bool hasZ = QgsWkbTypes::hasZ( pointType );
-  const double z = hasZ && nCoords >= 3 ? coordList[2].toDouble() : std::numeric_limits< double >::quiet_NaN();
+  const double z = hasZ && nCoords >= 3 ? coordList[2].toDouble() : std::numeric_limits<double>::quiet_NaN();
 
   // if point has just M but not Z, then the point dimension list will only have X, Y, M, otherwise it will have X, Y, Z, M
-  const double m = QgsWkbTypes::hasM( pointType ) && ( ( hasZ && nCoords >= 4 ) || ( !hasZ && nCoords >= 3 ) ) ? coordList[ hasZ ? 3 : 2].toDouble() : std::numeric_limits< double >::quiet_NaN();
-  return std::make_unique< QgsPoint >( pointType, x, y, z, m );
+  const double m = QgsWkbTypes::hasM( pointType ) && ( ( hasZ && nCoords >= 4 ) || ( !hasZ && nCoords >= 3 ) ) ? coordList[hasZ ? 3 : 2].toDouble() : std::numeric_limits<double>::quiet_NaN();
+  return std::make_unique<QgsPoint>( pointType, x, y, z, m );
 }
 
-std::unique_ptr< QgsCircularString > QgsArcGisRestUtils::convertCircularString( const QVariantMap &curveData, Qgis::WkbType pointType, const QgsPoint &startPoint )
+std::unique_ptr<QgsCircularString> QgsArcGisRestUtils::convertCircularString( const QVariantMap &curveData, Qgis::WkbType pointType, const QgsPoint &startPoint )
 {
   const QVariantList coordsList = curveData[QStringLiteral( "c" )].toList();
   if ( coordsList.isEmpty() )
@@ -153,31 +153,31 @@ std::unique_ptr< QgsCircularString > QgsArcGisRestUtils::convertCircularString( 
   {
     // first point is end point, second is point on curve
     // i.e. the opposite to what QGIS requires!
-    std::unique_ptr< QgsPoint > endPoint( convertPoint( coordsList.at( i ).toList(), pointType ) );
+    std::unique_ptr<QgsPoint> endPoint( convertPoint( coordsList.at( i ).toList(), pointType ) );
     if ( !endPoint )
       return nullptr;
     i++;
-    std::unique_ptr< QgsPoint > interiorPoint( convertPoint( coordsList.at( i ).toList(), pointType ) );
+    std::unique_ptr<QgsPoint> interiorPoint( convertPoint( coordsList.at( i ).toList(), pointType ) );
     if ( !interiorPoint )
       return nullptr;
     i++;
     points << *interiorPoint;
     points << *endPoint;
   }
-  std::unique_ptr< QgsCircularString > curve = std::make_unique< QgsCircularString> ();
+  std::unique_ptr<QgsCircularString> curve = std::make_unique<QgsCircularString>();
   curve->setPoints( points );
   return curve;
 }
 
-std::unique_ptr< QgsCompoundCurve > QgsArcGisRestUtils::convertCompoundCurve( const QVariantList &curvesList, Qgis::WkbType pointType )
+std::unique_ptr<QgsCompoundCurve> QgsArcGisRestUtils::convertCompoundCurve( const QVariantList &curvesList, Qgis::WkbType pointType )
 {
   // [[6,3],[5,3],{"b":[[3,2],[6,1],[2,4]]},[1,2],{"c": [[3,3],[1,4]]}]
-  std::unique_ptr< QgsCompoundCurve > compoundCurve = std::make_unique< QgsCompoundCurve >();
+  std::unique_ptr<QgsCompoundCurve> compoundCurve = std::make_unique<QgsCompoundCurve>();
 
-  QVector< double > lineX;
-  QVector< double > lineY;
-  QVector< double > lineZ;
-  QVector< double > lineM;
+  QVector<double> lineX;
+  QVector<double> lineY;
+  QVector<double> lineZ;
+  QVector<double> lineM;
   int maxCurveListSize = curvesList.size();
   lineX.resize( maxCurveListSize );
   lineY.resize( maxCurveListSize );
@@ -218,13 +218,13 @@ std::unique_ptr< QgsCompoundCurve > QgsArcGisRestUtils::convertCompoundCurve( co
       *outLineY++ = y;
       if ( hasZ )
       {
-        *outLineZ++ = nCoords >= 3 ? coordList[2].toDouble() : std::numeric_limits< double >::quiet_NaN();
+        *outLineZ++ = nCoords >= 3 ? coordList[2].toDouble() : std::numeric_limits<double>::quiet_NaN();
       }
 
       if ( hasM )
       {
         // if point has just M but not Z, then the point dimension list will only have X, Y, M, otherwise it will have X, Y, Z, M
-        *outLineM++ = ( ( hasZ && nCoords >= 4 ) || ( !hasZ && nCoords >= 3 ) ) ? coordList[ hasZ ? 3 : 2].toDouble() : std::numeric_limits< double >::quiet_NaN();
+        *outLineM++ = ( ( hasZ && nCoords >= 4 ) || ( !hasZ && nCoords >= 3 ) ) ? coordList[hasZ ? 3 : 2].toDouble() : std::numeric_limits<double>::quiet_NaN();
       }
     }
     else if ( curveData.userType() == QMetaType::Type::QVariantMap )
@@ -235,10 +235,10 @@ std::unique_ptr< QgsCompoundCurve > QgsArcGisRestUtils::convertCompoundCurve( co
       {
         lastLineStringPoint = QgsPoint( lineX.at( actualLineSize - 1 ),
                                         lineY.at( actualLineSize - 1 ),
-                                        hasZ ? lineZ.at( actualLineSize - 1 ) : std::numeric_limits< double >::quiet_NaN(),
-                                        hasM ? lineM.at( actualLineSize - 1 ) : std::numeric_limits< double >::quiet_NaN() );
+                                        hasZ ? lineZ.at( actualLineSize - 1 ) : std::numeric_limits<double>::quiet_NaN(),
+                                        hasM ? lineM.at( actualLineSize - 1 ) : std::numeric_limits<double>::quiet_NaN() );
       }
-      std::unique_ptr< QgsCircularString > circularString( convertCircularString( curveData.toMap(), pointType, lastLineStringPoint ) );
+      std::unique_ptr<QgsCircularString> circularString( convertCircularString( curveData.toMap(), pointType, lastLineStringPoint ) );
       if ( !circularString )
       {
         return nullptr;
@@ -312,7 +312,7 @@ std::unique_ptr< QgsCompoundCurve > QgsArcGisRestUtils::convertCompoundCurve( co
   return compoundCurve;
 }
 
-std::unique_ptr< QgsPoint > QgsArcGisRestUtils::convertGeometryPoint( const QVariantMap &geometryData, Qgis::WkbType pointType )
+std::unique_ptr<QgsPoint> QgsArcGisRestUtils::convertGeometryPoint( const QVariantMap &geometryData, Qgis::WkbType pointType )
 {
   // {"x" : <x>, "y" : <y>, "z" : <z>, "m" : <m>}
   bool xok = false, yok = false;
@@ -322,20 +322,20 @@ std::unique_ptr< QgsPoint > QgsArcGisRestUtils::convertGeometryPoint( const QVar
     return nullptr;
   double z = geometryData[QStringLiteral( "z" )].toDouble();
   double m = geometryData[QStringLiteral( "m" )].toDouble();
-  return std::make_unique< QgsPoint >( pointType, x, y, z, m );
+  return std::make_unique<QgsPoint>( pointType, x, y, z, m );
 }
 
-std::unique_ptr< QgsMultiPoint > QgsArcGisRestUtils::convertMultiPoint( const QVariantMap &geometryData, Qgis::WkbType pointType )
+std::unique_ptr<QgsMultiPoint> QgsArcGisRestUtils::convertMultiPoint( const QVariantMap &geometryData, Qgis::WkbType pointType )
 {
   // {"points" : [[ <x1>, <y1>, <z1>, <m1> ] , [ <x2>, <y2>, <z2>, <m2> ], ... ]}
   const QVariantList coordsList = geometryData[QStringLiteral( "points" )].toList();
 
-  std::unique_ptr< QgsMultiPoint > multiPoint = std::make_unique< QgsMultiPoint >();
+  std::unique_ptr<QgsMultiPoint> multiPoint = std::make_unique<QgsMultiPoint>();
   multiPoint->reserve( coordsList.size() );
   for ( const QVariant &coordData : coordsList )
   {
     const QVariantList coordList = coordData.toList();
-    std::unique_ptr< QgsPoint > p = convertPoint( coordList, pointType );
+    std::unique_ptr<QgsPoint> p = convertPoint( coordList, pointType );
     if ( !p )
     {
       continue;
@@ -345,7 +345,7 @@ std::unique_ptr< QgsMultiPoint > QgsArcGisRestUtils::convertMultiPoint( const QV
 
   // second chance -- sometimes layers are reported as multipoint but features have single
   // point geometries. Silently handle this and upgrade to multipoint.
-  std::unique_ptr< QgsPoint > p = convertGeometryPoint( geometryData, pointType );
+  std::unique_ptr<QgsPoint> p = convertGeometryPoint( geometryData, pointType );
   if ( p )
     multiPoint->addGeometry( p.release() );
 
@@ -357,7 +357,7 @@ std::unique_ptr< QgsMultiPoint > QgsArcGisRestUtils::convertMultiPoint( const QV
   return multiPoint;
 }
 
-std::unique_ptr< QgsMultiCurve > QgsArcGisRestUtils::convertGeometryPolyline( const QVariantMap &geometryData, Qgis::WkbType pointType )
+std::unique_ptr<QgsMultiCurve> QgsArcGisRestUtils::convertGeometryPolyline( const QVariantMap &geometryData, Qgis::WkbType pointType )
 {
   // {"curvePaths": [[[0,0], {"c": [[3,3],[1,4]]} ]]}
   QVariantList pathsList;
@@ -367,11 +367,11 @@ std::unique_ptr< QgsMultiCurve > QgsArcGisRestUtils::convertGeometryPolyline( co
     pathsList = geometryData[QStringLiteral( "curvePaths" )].toList();
   if ( pathsList.isEmpty() )
     return nullptr;
-  std::unique_ptr< QgsMultiCurve > multiCurve = std::make_unique< QgsMultiCurve >();
+  std::unique_ptr<QgsMultiCurve> multiCurve = std::make_unique<QgsMultiCurve>();
   multiCurve->reserve( pathsList.size() );
   for ( const QVariant &pathData : std::as_const( pathsList ) )
   {
-    std::unique_ptr< QgsCompoundCurve > curve = convertCompoundCurve( pathData.toList(), pointType );
+    std::unique_ptr<QgsCompoundCurve> curve = convertCompoundCurve( pathData.toList(), pointType );
     if ( !curve )
     {
       return nullptr;
@@ -381,7 +381,7 @@ std::unique_ptr< QgsMultiCurve > QgsArcGisRestUtils::convertGeometryPolyline( co
   return multiCurve;
 }
 
-std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::convertGeometryPolygon( const QVariantMap &geometryData, Qgis::WkbType pointType )
+std::unique_ptr<QgsMultiSurface> QgsArcGisRestUtils::convertGeometryPolygon( const QVariantMap &geometryData, Qgis::WkbType pointType )
 {
   // {"curveRings": [[[0,0], {"c": [[3,3],[1,4]]} ]]}
   QVariantList ringsList;
@@ -392,10 +392,10 @@ std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::convertGeometryPolygon( c
   if ( ringsList.isEmpty() )
     return nullptr;
 
-  QList< QgsCompoundCurve * > curves;
+  QList<QgsCompoundCurve *> curves;
   for ( int i = 0, n = ringsList.size(); i < n; ++i )
   {
-    std::unique_ptr< QgsCompoundCurve > curve = convertCompoundCurve( ringsList[i].toList(), pointType );
+    std::unique_ptr<QgsCompoundCurve> curve = convertCompoundCurve( ringsList[i].toList(), pointType );
     if ( !curve )
     {
       continue;
@@ -405,17 +405,17 @@ std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::convertGeometryPolygon( c
   if ( curves.count() == 0 )
     return nullptr;
 
-  std::unique_ptr< QgsMultiSurface > result = std::make_unique< QgsMultiSurface >();
+  std::unique_ptr<QgsMultiSurface> result = std::make_unique<QgsMultiSurface>();
   if ( curves.count() == 1 )
   {
     // shortcut for exterior ring only
-    std::unique_ptr< QgsCurvePolygon > newPolygon = std::make_unique< QgsCurvePolygon >();
+    std::unique_ptr<QgsCurvePolygon> newPolygon = std::make_unique<QgsCurvePolygon>();
     newPolygon->setExteriorRing( curves.takeAt( 0 ) );
     result->addGeometry( newPolygon.release() );
     return result;
   }
 
-  std::sort( curves.begin(), curves.end(), []( const QgsCompoundCurve * a, const QgsCompoundCurve * b )->bool{ double a_area = 0.0; double b_area = 0.0; a->sumUpArea( a_area ); b->sumUpArea( b_area ); return std::abs( a_area ) > std::abs( b_area ); } );
+  std::sort( curves.begin(), curves.end(), []( const QgsCompoundCurve *a, const QgsCompoundCurve *b ) -> bool { double a_area = 0.0; double b_area = 0.0; a->sumUpArea( a_area ); b->sumUpArea( b_area ); return std::abs( a_area ) > std::abs( b_area ); } );
   result->reserve( curves.size() );
   while ( !curves.isEmpty() )
   {
@@ -425,7 +425,7 @@ std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::convertGeometryPolygon( c
     std::unique_ptr<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( newPolygon ) );
     engine->prepareGeometry();
 
-    QMutableListIterator< QgsCompoundCurve * > it( curves );
+    QMutableListIterator<QgsCompoundCurve *> it( curves );
     while ( it.hasNext() )
     {
       QgsCompoundCurve *curve = it.next();
@@ -450,7 +450,7 @@ std::unique_ptr< QgsMultiSurface > QgsArcGisRestUtils::convertGeometryPolygon( c
   return result;
 }
 
-std::unique_ptr< QgsPolygon > QgsArcGisRestUtils::convertEnvelope( const QVariantMap &geometryData )
+std::unique_ptr<QgsPolygon> QgsArcGisRestUtils::convertEnvelope( const QVariantMap &geometryData )
 {
   // {"xmin" : -109.55, "ymin" : 25.76, "xmax" : -86.39, "ymax" : 49.94}
   bool xminOk = false, yminOk = false, xmaxOk = false, ymaxOk = false;
@@ -460,13 +460,13 @@ std::unique_ptr< QgsPolygon > QgsArcGisRestUtils::convertEnvelope( const QVarian
   double ymax = geometryData[QStringLiteral( "ymax" )].toDouble( &ymaxOk );
   if ( !xminOk || !yminOk || !xmaxOk || !ymaxOk )
     return nullptr;
-  std::unique_ptr< QgsLineString > ext = std::make_unique< QgsLineString> ();
+  std::unique_ptr<QgsLineString> ext = std::make_unique<QgsLineString>();
   ext->addVertex( QgsPoint( xmin, ymin ) );
   ext->addVertex( QgsPoint( xmax, ymin ) );
   ext->addVertex( QgsPoint( xmax, ymax ) );
   ext->addVertex( QgsPoint( xmin, ymax ) );
   ext->addVertex( QgsPoint( xmin, ymin ) );
-  std::unique_ptr< QgsPolygon > poly = std::make_unique< QgsPolygon >();
+  std::unique_ptr<QgsPolygon> poly = std::make_unique<QgsPolygon>();
   poly->setExteriorRing( ext.release() );
   return poly;
 }
@@ -591,11 +591,11 @@ std::unique_ptr<QgsLineSymbol> QgsArcGisRestUtils::parseEsriLineSymbolJson( cons
 
   QgsSymbolLayerList layers;
   Qt::PenStyle penStyle = convertLineStyle( symbolData.value( QStringLiteral( "style" ) ).toString() );
-  std::unique_ptr< QgsSimpleLineSymbolLayer > lineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( lineColor, widthInPoints, penStyle );
+  std::unique_ptr<QgsSimpleLineSymbolLayer> lineLayer = std::make_unique<QgsSimpleLineSymbolLayer>( lineColor, widthInPoints, penStyle );
   lineLayer->setWidthUnit( Qgis::RenderUnit::Points );
   layers.append( lineLayer.release() );
 
-  std::unique_ptr< QgsLineSymbol > symbol = std::make_unique< QgsLineSymbol >( layers );
+  std::unique_ptr<QgsLineSymbol> symbol = std::make_unique<QgsLineSymbol>( layers );
   return symbol;
 }
 
@@ -611,11 +611,11 @@ std::unique_ptr<QgsFillSymbol> QgsArcGisRestUtils::parseEsriFillSymbolJson( cons
   double penWidthInPoints = outlineData.value( QStringLiteral( "width" ) ).toDouble( &ok );
 
   QgsSymbolLayerList layers;
-  std::unique_ptr< QgsSimpleFillSymbolLayer > fillLayer = std::make_unique< QgsSimpleFillSymbolLayer >( fillColor, brushStyle, lineColor, penStyle, penWidthInPoints );
+  std::unique_ptr<QgsSimpleFillSymbolLayer> fillLayer = std::make_unique<QgsSimpleFillSymbolLayer>( fillColor, brushStyle, lineColor, penStyle, penWidthInPoints );
   fillLayer->setStrokeWidthUnit( Qgis::RenderUnit::Points );
   layers.append( fillLayer.release() );
 
-  std::unique_ptr< QgsFillSymbol > symbol = std::make_unique< QgsFillSymbol >( layers );
+  std::unique_ptr<QgsFillSymbol> symbol = std::make_unique<QgsFillSymbol>( layers );
   return symbol;
 }
 
@@ -643,7 +643,7 @@ std::unique_ptr<QgsFillSymbol> QgsArcGisRestUtils::parseEsriPictureFillSymbolJso
   symbolPath.prepend( QLatin1String( "base64:" ) );
 
   QgsSymbolLayerList layers;
-  std::unique_ptr< QgsRasterFillSymbolLayer > fillLayer = std::make_unique< QgsRasterFillSymbolLayer >( symbolPath );
+  std::unique_ptr<QgsRasterFillSymbolLayer> fillLayer = std::make_unique<QgsRasterFillSymbolLayer>( symbolPath );
   fillLayer->setWidth( widthInPixels );
   fillLayer->setAngle( angleCW );
   fillLayer->setSizeUnit( Qgis::RenderUnit::Points );
@@ -656,11 +656,11 @@ std::unique_ptr<QgsFillSymbol> QgsArcGisRestUtils::parseEsriPictureFillSymbolJso
   Qt::PenStyle penStyle = convertLineStyle( outlineData.value( QStringLiteral( "style" ) ).toString() );
   double penWidthInPoints = outlineData.value( QStringLiteral( "width" ) ).toDouble( &ok );
 
-  std::unique_ptr< QgsSimpleLineSymbolLayer > lineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( lineColor, penWidthInPoints, penStyle );
+  std::unique_ptr<QgsSimpleLineSymbolLayer> lineLayer = std::make_unique<QgsSimpleLineSymbolLayer>( lineColor, penWidthInPoints, penStyle );
   lineLayer->setWidthUnit( Qgis::RenderUnit::Points );
   layers.append( lineLayer.release() );
 
-  std::unique_ptr< QgsFillSymbol > symbol = std::make_unique< QgsFillSymbol >( layers );
+  std::unique_ptr<QgsFillSymbol> symbol = std::make_unique<QgsFillSymbol>( layers );
   return symbol;
 }
 
@@ -705,7 +705,7 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriMarkerSymbolJson( 
   double penWidthInPoints = outlineData.value( QStringLiteral( "width" ) ).toDouble( &ok );
 
   QgsSymbolLayerList layers;
-  std::unique_ptr< QgsSimpleMarkerSymbolLayer > markerLayer = std::make_unique< QgsSimpleMarkerSymbolLayer >( shape, sizeInPoints, angleCW, Qgis::ScaleMethod::ScaleArea, fillColor, lineColor );
+  std::unique_ptr<QgsSimpleMarkerSymbolLayer> markerLayer = std::make_unique<QgsSimpleMarkerSymbolLayer>( shape, sizeInPoints, angleCW, Qgis::ScaleMethod::ScaleArea, fillColor, lineColor );
   markerLayer->setSizeUnit( Qgis::RenderUnit::Points );
   markerLayer->setStrokeWidthUnit( Qgis::RenderUnit::Points );
   markerLayer->setStrokeStyle( penStyle );
@@ -714,7 +714,7 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriMarkerSymbolJson( 
   markerLayer->setOffsetUnit( Qgis::RenderUnit::Points );
   layers.append( markerLayer.release() );
 
-  std::unique_ptr< QgsMarkerSymbol > symbol = std::make_unique< QgsMarkerSymbol >( layers );
+  std::unique_ptr<QgsMarkerSymbol> symbol = std::make_unique<QgsMarkerSymbol>( layers );
   return symbol;
 }
 
@@ -742,18 +742,18 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriPictureMarkerSymbo
   symbolPath.prepend( QLatin1String( "base64:" ) );
 
   QgsSymbolLayerList layers;
-  std::unique_ptr< QgsRasterMarkerSymbolLayer > markerLayer = std::make_unique< QgsRasterMarkerSymbolLayer >( symbolPath, widthInPixels, angleCW, Qgis::ScaleMethod::ScaleArea );
+  std::unique_ptr<QgsRasterMarkerSymbolLayer> markerLayer = std::make_unique<QgsRasterMarkerSymbolLayer>( symbolPath, widthInPixels, angleCW, Qgis::ScaleMethod::ScaleArea );
   markerLayer->setSizeUnit( Qgis::RenderUnit::Points );
 
   // only change the default aspect ratio if the server height setting requires this
-  if ( !qgsDoubleNear( static_cast< double >( heightInPixels ) / widthInPixels, markerLayer->defaultAspectRatio() ) )
-    markerLayer->setFixedAspectRatio( static_cast< double >( heightInPixels ) / widthInPixels );
+  if ( !qgsDoubleNear( static_cast<double>( heightInPixels ) / widthInPixels, markerLayer->defaultAspectRatio() ) )
+    markerLayer->setFixedAspectRatio( static_cast<double>( heightInPixels ) / widthInPixels );
 
   markerLayer->setOffset( QPointF( xOffset, yOffset ) );
   markerLayer->setOffsetUnit( Qgis::RenderUnit::Points );
   layers.append( markerLayer.release() );
 
-  std::unique_ptr< QgsMarkerSymbol > symbol = std::make_unique< QgsMarkerSymbol >( layers );
+  std::unique_ptr<QgsMarkerSymbol> symbol = std::make_unique<QgsMarkerSymbol>( layers );
   return symbol;
 }
 
@@ -773,7 +773,7 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriTextMarkerSymbolJs
 
   const double angle = 90.0 - esriAngle;
 
-  std::unique_ptr< QgsFontMarkerSymbolLayer > markerLayer = std::make_unique< QgsFontMarkerSymbolLayer >( fontFamily, chr, pointSize, color, angle );
+  std::unique_ptr<QgsFontMarkerSymbolLayer> markerLayer = std::make_unique<QgsFontMarkerSymbolLayer>( fontFamily, chr, pointSize, color, angle );
 
   QColor strokeColor = convertColor( symbolData.value( QStringLiteral( "borderLineColor" ) ) );
   markerLayer->setStrokeColor( strokeColor );
@@ -830,7 +830,7 @@ std::unique_ptr<QgsMarkerSymbol> QgsArcGisRestUtils::parseEsriTextMarkerSymbolJs
 
   layers.append( markerLayer.release() );
 
-  std::unique_ptr< QgsMarkerSymbol > symbol = std::make_unique< QgsMarkerSymbol >( layers );
+  std::unique_ptr<QgsMarkerSymbol> symbol = std::make_unique<QgsMarkerSymbol>( layers );
   return symbol;
 }
 
@@ -896,23 +896,17 @@ QgsAbstractVectorLayerLabeling *QgsArcGisRestUtils::convertLabeling( const QVari
       settings->placement = Qgis::LabelPlacement::OverPoint;
       settings->pointSettings().setQuadrant( Qgis::LabelQuadrantPosition::Right );
     }
-    else if ( placement == QLatin1String( "esriServerLinePlacementAboveAfter" ) ||
-              placement == QLatin1String( "esriServerLinePlacementAboveStart" ) ||
-              placement == QLatin1String( "esriServerLinePlacementAboveAlong" ) )
+    else if ( placement == QLatin1String( "esriServerLinePlacementAboveAfter" ) || placement == QLatin1String( "esriServerLinePlacementAboveStart" ) || placement == QLatin1String( "esriServerLinePlacementAboveAlong" ) )
     {
       settings->placement = Qgis::LabelPlacement::Line;
       settings->lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
     }
-    else if ( placement == QLatin1String( "esriServerLinePlacementBelowAfter" ) ||
-              placement == QLatin1String( "esriServerLinePlacementBelowStart" ) ||
-              placement == QLatin1String( "esriServerLinePlacementBelowAlong" ) )
+    else if ( placement == QLatin1String( "esriServerLinePlacementBelowAfter" ) || placement == QLatin1String( "esriServerLinePlacementBelowStart" ) || placement == QLatin1String( "esriServerLinePlacementBelowAlong" ) )
     {
       settings->placement = Qgis::LabelPlacement::Line;
       settings->lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine | Qgis::LabelLinePlacementFlag::MapOrientation );
     }
-    else if ( placement == QLatin1String( "esriServerLinePlacementCenterAfter" ) ||
-              placement == QLatin1String( "esriServerLinePlacementCenterStart" ) ||
-              placement == QLatin1String( "esriServerLinePlacementCenterAlong" ) )
+    else if ( placement == QLatin1String( "esriServerLinePlacementCenterAfter" ) || placement == QLatin1String( "esriServerLinePlacementCenterStart" ) || placement == QLatin1String( "esriServerLinePlacementCenterAlong" ) )
     {
       settings->placement = Qgis::LabelPlacement::Line;
       settings->lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::OnLine | Qgis::LabelLinePlacementFlag::MapOrientation );
@@ -975,7 +969,7 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
   if ( type == QLatin1String( "simple" ) )
   {
     const QVariantMap symbolProps = rendererData.value( QStringLiteral( "symbol" ) ).toMap();
-    std::unique_ptr< QgsSymbol > symbol( convertSymbol( symbolProps ) );
+    std::unique_ptr<QgsSymbol> symbol( convertSymbol( symbolProps ) );
     if ( symbol )
       return new QgsSingleSymbolRenderer( symbol.release() );
     else
@@ -1011,14 +1005,14 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
       const QVariantMap categoryData = category.toMap();
       const QString value = categoryData.value( QStringLiteral( "value" ) ).toString();
       const QString label = categoryData.value( QStringLiteral( "label" ) ).toString();
-      std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( categoryData.value( QStringLiteral( "symbol" ) ).toMap() ) );
+      std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( categoryData.value( QStringLiteral( "symbol" ) ).toMap() ) );
       if ( symbol )
       {
         categoryList.append( QgsRendererCategory( value, symbol.release(), label ) );
       }
     }
 
-    std::unique_ptr< QgsSymbol > defaultSymbol( convertSymbol( rendererData.value( QStringLiteral( "defaultSymbol" ) ).toMap() ) );
+    std::unique_ptr<QgsSymbol> defaultSymbol( convertSymbol( rendererData.value( QStringLiteral( "defaultSymbol" ) ).toMap() ) );
     if ( defaultSymbol )
     {
       categoryList.append( QgsRendererCategory( QVariant(), defaultSymbol.release(), rendererData.value( QStringLiteral( "defaultLabel" ) ).toString() ) );
@@ -1047,7 +1041,7 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
     {
       symbolData = classBreakInfos.at( 0 ).toMap().value( QStringLiteral( "symbol" ) ).toMap();
     }
-    std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( symbolData ) );
+    std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( symbolData ) );
     if ( !symbol )
       return nullptr;
 
@@ -1094,20 +1088,18 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
           gradientStops.append( QgsGradientStop( scaledBreakpoint, fillColor ) );
         }
 
-        std::unique_ptr< QgsGradientColorRamp > colorRamp = std::make_unique< QgsGradientColorRamp >(
-              minColor, maxColor, false, gradientStops
-            );
+        std::unique_ptr<QgsGradientColorRamp> colorRamp = std::make_unique<QgsGradientColorRamp>(
+          minColor, maxColor, false, gradientStops );
 
         QgsProperty colorProperty = QgsProperty::fromField( attrName );
         colorProperty.setTransformer(
-          new QgsColorRampTransformer( minValue, maxValue, colorRamp.release() )
-        );
+          new QgsColorRampTransformer( minValue, maxValue, colorRamp.release() ) );
         for ( int layer = 0; layer < symbol->symbolLayerCount(); ++layer )
         {
           symbol->symbolLayer( layer )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, colorProperty );
         }
 
-        std::unique_ptr< QgsSingleSymbolRenderer > singleSymbolRenderer = std::make_unique< QgsSingleSymbolRenderer >( symbol.release() );
+        std::unique_ptr<QgsSingleSymbolRenderer> singleSymbolRenderer = std::make_unique<QgsSingleSymbolRenderer>( symbol.release() );
 
         return singleSymbolRenderer.release();
       }
@@ -1119,7 +1111,7 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
 
     double lastValue = rendererData.value( QStringLiteral( "minValue" ) ).toDouble();
 
-    std::unique_ptr< QgsGraduatedSymbolRenderer > graduatedRenderer = std::make_unique< QgsGraduatedSymbolRenderer >( attrName );
+    std::unique_ptr<QgsGraduatedSymbolRenderer> graduatedRenderer = std::make_unique<QgsGraduatedSymbolRenderer>( attrName );
 
     graduatedRenderer->setSourceSymbol( symbol.release() );
 
@@ -1166,7 +1158,7 @@ QgsFeatureRenderer *QgsArcGisRestUtils::convertRenderer( const QVariantMap &rend
     for ( const QVariant &classBreakInfo : classBreakInfos )
     {
       const QVariantMap symbolData = classBreakInfo.toMap().value( QStringLiteral( "symbol" ) ).toMap();
-      std::unique_ptr< QgsSymbol > symbol( QgsArcGisRestUtils::convertSymbol( symbolData ) );
+      std::unique_ptr<QgsSymbol> symbol( QgsArcGisRestUtils::convertSymbol( symbolData ) );
       double classMaxValue = classBreakInfo.toMap().value( QStringLiteral( "classMaxValue" ) ).toDouble();
       const QString label = classBreakInfo.toMap().value( QStringLiteral( "label" ) ).toString();
 
@@ -1294,24 +1286,28 @@ QgsRectangle QgsArcGisRestUtils::convertRectangle( const QVariant &value )
     return QgsRectangle();
 
   const QVariantMap coords = value.toMap();
-  if ( coords.isEmpty() ) return QgsRectangle();
+  if ( coords.isEmpty() )
+    return QgsRectangle();
 
   bool ok;
 
   const double xmin = coords.value( QStringLiteral( "xmin" ) ).toDouble( &ok );
-  if ( ! ok ) return QgsRectangle();
+  if ( !ok )
+    return QgsRectangle();
 
   const double ymin = coords.value( QStringLiteral( "ymin" ) ).toDouble( &ok );
-  if ( ! ok ) return QgsRectangle();
+  if ( !ok )
+    return QgsRectangle();
 
   const double xmax = coords.value( QStringLiteral( "xmax" ) ).toDouble( &ok );
-  if ( ! ok ) return QgsRectangle();
+  if ( !ok )
+    return QgsRectangle();
 
   const double ymax = coords.value( QStringLiteral( "ymax" ) ).toDouble( &ok );
-  if ( ! ok ) return QgsRectangle();
+  if ( !ok )
+    return QgsRectangle();
 
   return QgsRectangle( xmin, ymin, xmax, ymax );
-
 }
 
 
@@ -1329,44 +1325,44 @@ QVariantMap QgsArcGisRestUtils::geometryToJson( const QgsGeometry &geometry, con
       return QVariantMap();
 
     case Qgis::WkbType::Point:
-      res = pointToJson( qgsgeometry_cast< const QgsPoint * >( geom ) );
+      res = pointToJson( qgsgeometry_cast<const QgsPoint *>( geom ) );
       break;
 
     case Qgis::WkbType::LineString:
-      res = lineStringToJson( qgsgeometry_cast< const QgsLineString * >( geom ) );
+      res = lineStringToJson( qgsgeometry_cast<const QgsLineString *>( geom ) );
       break;
 
     case Qgis::WkbType::CircularString:
     case Qgis::WkbType::CompoundCurve:
-      res = curveToJson( qgsgeometry_cast< const QgsCurve * >( geom ) );
+      res = curveToJson( qgsgeometry_cast<const QgsCurve *>( geom ) );
       break;
 
     case Qgis::WkbType::Polygon:
-      res = polygonToJson( qgsgeometry_cast< const QgsPolygon * >( geom ) );
+      res = polygonToJson( qgsgeometry_cast<const QgsPolygon *>( geom ) );
       break;
 
     case Qgis::WkbType::MultiPoint:
-      res = multiPointToJson( qgsgeometry_cast< const QgsMultiPoint * >( geom ) );
+      res = multiPointToJson( qgsgeometry_cast<const QgsMultiPoint *>( geom ) );
       break;
 
     case Qgis::WkbType::MultiLineString:
-      res = multiLineStringToJson( qgsgeometry_cast< const QgsMultiLineString * >( geom ) );
+      res = multiLineStringToJson( qgsgeometry_cast<const QgsMultiLineString *>( geom ) );
       break;
 
     case Qgis::WkbType::MultiCurve:
-      res = multiCurveToJson( qgsgeometry_cast< const QgsMultiCurve * >( geom ) );
+      res = multiCurveToJson( qgsgeometry_cast<const QgsMultiCurve *>( geom ) );
       break;
 
     case Qgis::WkbType::MultiPolygon:
-      res = multiPolygonToJson( qgsgeometry_cast< const QgsMultiPolygon * >( geom ) );
+      res = multiPolygonToJson( qgsgeometry_cast<const QgsMultiPolygon *>( geom ) );
       break;
 
     case Qgis::WkbType::CurvePolygon:
-      res = curvePolygonToJson( qgsgeometry_cast< const QgsCurvePolygon * >( geom ) );
+      res = curvePolygonToJson( qgsgeometry_cast<const QgsCurvePolygon *>( geom ) );
       break;
 
     case Qgis::WkbType::MultiSurface:
-      res = multiSurfaceToJson( qgsgeometry_cast< const QgsMultiSurface * >( geom ) );
+      res = multiSurfaceToJson( qgsgeometry_cast<const QgsMultiSurface *>( geom ) );
       break;
 
     case Qgis::WkbType::GeometryCollection:
@@ -1377,7 +1373,6 @@ QVariantMap QgsArcGisRestUtils::geometryToJson( const QgsGeometry &geometry, con
 
     default:
       return QVariantMap(); //unreachable
-
   }
 
   if ( crs.isValid() )
@@ -1400,10 +1395,10 @@ QVariantMap QgsArcGisRestUtils::pointToJson( const QgsPoint *point )
     data[QStringLiteral( "y" )] = point->y();
 
     if ( point->is3D() )
-      data[QStringLiteral( "z" )] = !std::isnan( point->z() ) ? QVariant( point->z() ) :  QVariant( QStringLiteral( "NaN" ) );
+      data[QStringLiteral( "z" )] = !std::isnan( point->z() ) ? QVariant( point->z() ) : QVariant( QStringLiteral( "NaN" ) );
 
     if ( point->isMeasure() )
-      data[QStringLiteral( "m" )] = !std::isnan( point->m() ) ? QVariant( point->m() ) :  QVariant( QStringLiteral( "NaN" ) );
+      data[QStringLiteral( "m" )] = !std::isnan( point->m() ) ? QVariant( point->m() ) : QVariant( QStringLiteral( "NaN" ) );
   }
   return data;
 }
@@ -1479,8 +1474,7 @@ QVariantList QgsArcGisRestUtils::curveToJsonCurve( const QgsCurve *curve, bool i
   const bool hasZ = curve->is3D();
   const bool hasM = curve->isMeasure();
 
-  auto pointToList = [hasZ, hasM]( const QgsPoint & point ) -> QVariantList
-  {
+  auto pointToList = [hasZ, hasM]( const QgsPoint &point ) -> QVariantList {
     QVariantList pointList;
 
     pointList.append( point.x() );
@@ -1500,7 +1494,7 @@ QVariantList QgsArcGisRestUtils::curveToJsonCurve( const QgsCurve *curve, bool i
   {
     case Qgis::WkbType::LineString:
     {
-      QVariantList part = lineStringToJsonPath( qgsgeometry_cast< const QgsLineString *>( curve ) );
+      QVariantList part = lineStringToJsonPath( qgsgeometry_cast<const QgsLineString *>( curve ) );
       if ( !part.isEmpty() && !includeStart )
         part.removeAt( 0 );
       res = part;
@@ -1509,7 +1503,7 @@ QVariantList QgsArcGisRestUtils::curveToJsonCurve( const QgsCurve *curve, bool i
 
     case Qgis::WkbType::CircularString:
     {
-      const QgsCircularString *circularString = qgsgeometry_cast<const QgsCircularString * >( curve );
+      const QgsCircularString *circularString = qgsgeometry_cast<const QgsCircularString *>( curve );
       if ( includeStart && !circularString->isEmpty() )
       {
         res.push_back( pointToList( circularString->startPoint() ) );
@@ -1533,7 +1527,7 @@ QVariantList QgsArcGisRestUtils::curveToJsonCurve( const QgsCurve *curve, bool i
 
     case Qgis::WkbType::CompoundCurve:
     {
-      const QgsCompoundCurve *compoundCurve = qgsgeometry_cast<const QgsCompoundCurve * >( curve );
+      const QgsCompoundCurve *compoundCurve = qgsgeometry_cast<const QgsCompoundCurve *>( curve );
 
       const int size = compoundCurve->nCurves();
       for ( int i = 0; i < size; ++i )
@@ -1632,7 +1626,7 @@ QVariantList QgsArcGisRestUtils::polygonToJsonRings( const QgsPolygon *polygon )
   const int numInteriorRings = polygon->numInteriorRings();
   rings.reserve( numInteriorRings + 1 );
 
-  if ( const QgsLineString *exterior = qgsgeometry_cast< const QgsLineString * >( polygon->exteriorRing() ) )
+  if ( const QgsLineString *exterior = qgsgeometry_cast<const QgsLineString *>( polygon->exteriorRing() ) )
   {
     // exterior ring MUST be clockwise
     switch ( exterior->orientation() )
@@ -1643,7 +1637,7 @@ QVariantList QgsArcGisRestUtils::polygonToJsonRings( const QgsPolygon *polygon )
 
       case Qgis::AngularDirection::CounterClockwise:
       {
-        std::unique_ptr< QgsLineString > reversed( exterior->reversed() );
+        std::unique_ptr<QgsLineString> reversed( exterior->reversed() );
         rings.push_back( lineStringToJsonPath( reversed.get() ) );
         break;
       }
@@ -1654,7 +1648,7 @@ QVariantList QgsArcGisRestUtils::polygonToJsonRings( const QgsPolygon *polygon )
 
   for ( int i = 0; i < numInteriorRings; ++i )
   {
-    const QgsLineString *ring = qgsgeometry_cast< const QgsLineString * >( polygon->interiorRing( i ) );
+    const QgsLineString *ring = qgsgeometry_cast<const QgsLineString *>( polygon->interiorRing( i ) );
     // holes MUST be counter-clockwise
     switch ( ring->orientation() )
     {
@@ -1664,7 +1658,7 @@ QVariantList QgsArcGisRestUtils::polygonToJsonRings( const QgsPolygon *polygon )
 
       case Qgis::AngularDirection::Clockwise:
       {
-        std::unique_ptr< QgsLineString > reversed( ring->reversed() );
+        std::unique_ptr<QgsLineString> reversed( ring->reversed() );
         rings.push_back( lineStringToJsonPath( reversed.get() ) );
         break;
       }
@@ -1681,7 +1675,7 @@ QVariantList QgsArcGisRestUtils::curvePolygonToJsonRings( const QgsCurvePolygon 
   const int numInteriorRings = polygon->numInteriorRings();
   rings.reserve( numInteriorRings + 1 );
 
-  if ( const QgsCurve *exterior = qgsgeometry_cast< const QgsCurve * >( polygon->exteriorRing() ) )
+  if ( const QgsCurve *exterior = qgsgeometry_cast<const QgsCurve *>( polygon->exteriorRing() ) )
   {
     // exterior ring MUST be clockwise
     switch ( exterior->orientation() )
@@ -1692,7 +1686,7 @@ QVariantList QgsArcGisRestUtils::curvePolygonToJsonRings( const QgsCurvePolygon 
 
       case Qgis::AngularDirection::CounterClockwise:
       {
-        std::unique_ptr< QgsCurve > reversed( exterior->reversed() );
+        std::unique_ptr<QgsCurve> reversed( exterior->reversed() );
         rings.push_back( curveToJsonCurve( reversed.get(), true ) );
         break;
       }
@@ -1703,7 +1697,7 @@ QVariantList QgsArcGisRestUtils::curvePolygonToJsonRings( const QgsCurvePolygon 
 
   for ( int i = 0; i < numInteriorRings; ++i )
   {
-    const QgsCurve *ring = qgsgeometry_cast< const QgsCurve * >( polygon->interiorRing( i ) );
+    const QgsCurve *ring = qgsgeometry_cast<const QgsCurve *>( polygon->interiorRing( i ) );
     // holes MUST be counter-clockwise
     switch ( ring->orientation() )
     {
@@ -1713,7 +1707,7 @@ QVariantList QgsArcGisRestUtils::curvePolygonToJsonRings( const QgsCurvePolygon 
 
       case Qgis::AngularDirection::Clockwise:
       {
-        std::unique_ptr< QgsCurve > reversed( ring->reversed() );
+        std::unique_ptr<QgsCurve> reversed( ring->reversed() );
         rings.push_back( curveToJsonCurve( reversed.get(), true ) );
         break;
       }
@@ -1778,7 +1772,7 @@ QVariantMap QgsArcGisRestUtils::multiSurfaceToJson( const QgsMultiSurface *multi
   QVariantList rings;
   for ( int i = 0; i < size; ++i )
   {
-    const QgsCurvePolygon *polygon = qgsgeometry_cast< const QgsCurvePolygon * >( multiSurface->geometryN( i ) );
+    const QgsCurvePolygon *polygon = qgsgeometry_cast<const QgsCurvePolygon *>( multiSurface->geometryN( i ) );
     if ( !polygon )
       continue;
 
@@ -1801,11 +1795,8 @@ QVariantMap QgsArcGisRestUtils::crsToJson( const QgsCoordinateReferenceSystem &c
     const thread_local QRegularExpression rxAuthid( QStringLiteral( "(\\w+):(\\d+)" ) );
     const QRegularExpressionMatch match = rxAuthid.match( authid );
     if ( match.hasMatch()
-         && (
-           ( match.captured( 1 ).compare( QLatin1String( "EPSG" ), Qt::CaseInsensitive ) == 0 )
-           || ( match.captured( 1 ).compare( QLatin1String( "ESRI" ), Qt::CaseInsensitive ) == 0 )
-         )
-       )
+         && ( ( match.captured( 1 ).compare( QLatin1String( "EPSG" ), Qt::CaseInsensitive ) == 0 )
+              || ( match.captured( 1 ).compare( QLatin1String( "ESRI" ), Qt::CaseInsensitive ) == 0 ) ) )
     {
       const QString wkid = match.captured( 2 );
       res.insert( QStringLiteral( "wkid" ), wkid );
@@ -1949,4 +1940,3 @@ Qgis::ArcGisRestServiceType QgsArcGisRestUtils::serviceTypeFromString( const QSt
 
   return Qgis::ArcGisRestServiceType::Unknown;
 }
-

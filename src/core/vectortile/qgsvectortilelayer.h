@@ -89,8 +89,6 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     Q_OBJECT
 
   public:
-
-
     /**
      * Setting options for loading vector tile layers.
      *
@@ -98,16 +96,15 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
      */
     struct LayerOptions
     {
-
-      /**
+        /**
        * Constructor for LayerOptions with optional \a transformContext.
        */
-      explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext( ) )
-        : transformContext( transformContext )
-      {}
+        explicit LayerOptions( const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext() )
+          : transformContext( transformContext )
+        {}
 
-      //! Coordinate transform context
-      QgsCoordinateTransformContext transformContext;
+        //! Coordinate transform context
+        QgsCoordinateTransformContext transformContext;
     };
 
     //! Constructs a new vector tile layer
@@ -117,14 +114,16 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsVectorTileLayer: '%1'>" ).arg( sipCpp->name() );
+        QString str
+      = QStringLiteral( "<QgsVectorTileLayer: '%1'>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    // implementation of virtual functions from QgsMapLayer
+        // implementation of virtual functions from QgsMapLayer
 
-    QgsVectorTileLayer *clone() const override SIP_FACTORY;
+        QgsVectorTileLayer *
+      clone() const override SIP_FACTORY;
     QgsDataProvider *dataProvider() override;
     const QgsDataProvider *dataProvider() const override SIP_SKIP;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
@@ -165,7 +164,7 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
      *
      * \since QGIS 3.28
      */
-    bool loadDefaultStyleAndSubLayers( QString &error, QStringList &warnings, QList< QgsMapLayer * > &subLayers SIP_OUT SIP_TRANSFERBACK );
+    bool loadDefaultStyleAndSubLayers( QString &error, QStringList &warnings, QList<QgsMapLayer *> &subLayers SIP_OUT SIP_TRANSFERBACK );
 
     QString loadDefaultMetadata( bool &resultFlag SIP_OUT ) override;
 
@@ -252,7 +251,7 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
      * \see selectionChanged()
      * \since QGIS 3.28
      */
-    QList< QgsFeature > selectedFeatures() const;
+    QList<QgsFeature> selectedFeatures() const;
 
     /**
      * Returns the number of features that are selected in this layer.
@@ -322,15 +321,14 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 
     QgsCoordinateTransformContext mTransformContext;
 
-    std::unique_ptr< QgsDataProvider > mDataProvider;
+    std::unique_ptr<QgsDataProvider> mDataProvider;
 
-    QHash< QgsFeatureId, QgsFeature > mSelectedFeatures;
+    QHash<QgsFeatureId, QgsFeature> mSelectedFeatures;
 
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider,
                                const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags ) override;
 
-    bool loadDefaultStyleAndSubLayersPrivate( QString &error, QStringList &warnings, QList< QgsMapLayer * > *subLayers );
-
+    bool loadDefaultStyleAndSubLayersPrivate( QString &error, QStringList &warnings, QList<QgsMapLayer *> *subLayers );
 };
 
 #endif // QGSVECTORTILELAYER_H

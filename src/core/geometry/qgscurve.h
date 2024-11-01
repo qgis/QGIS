@@ -31,10 +31,9 @@ class QgsLineString;
  * \class QgsCurve
  * \brief Abstract base class for curved geometry type
  */
-class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
+class CORE_EXPORT QgsCurve : public QgsAbstractGeometry SIP_ABSTRACT
 {
   public:
-
     QgsCurve() = default;
 
     /**
@@ -118,23 +117,27 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
 #ifdef SIP_RUN
     int __len__() const;
     % Docstring
-    Returns the number of points in the curve.
-    % End
-    % MethodCode
-    sipRes = sipCpp->numPoints();
+        Returns the number of points in the curve.
+      % End
+      % MethodCode
+        sipRes
+      = sipCpp->numPoints();
     % End
 
-    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
-    int __bool__() const;
+      //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
+      int
+      __bool__() const;
     % MethodCode
-    sipRes = true;
+        sipRes
+      = true;
     % End
 #endif
 
-    /**
+      /**
      * Sums up the area of the curve by iterating over the vertices (shoelace formula).
      */
-    virtual void sumUpArea( double &sum SIP_OUT ) const = 0;
+      virtual void
+      sumUpArea( double &sum SIP_OUT ) const = 0;
 
     QgsCoordinateSequence coordinateSequence() const override;
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
@@ -323,13 +326,12 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
      * \note Not available in Python bindings.
      * \since QGIS 3.20
      */
-    virtual std::tuple< std::unique_ptr< QgsCurve >, std::unique_ptr< QgsCurve > > splitCurveAtVertex( int index ) const = 0;
+    virtual std::tuple<std::unique_ptr<QgsCurve>, std::unique_ptr<QgsCurve>> splitCurveAtVertex( int index ) const = 0;
 
 #endif
 
 
   protected:
-
     void clearCache() const override;
 
     int childCount() const override;
@@ -355,7 +357,6 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
     mutable double mSummedUpArea = 0;
 
   private:
-
     mutable bool mHasCachedValidity = false;
     mutable QString mValidityFailureReason;
 

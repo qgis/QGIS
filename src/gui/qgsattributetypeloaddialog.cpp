@@ -41,8 +41,8 @@ QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
   setupUi( this );
 
   connect( layerComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAttributeTypeLoadDialog::fillComboBoxes );
-  connect( keyComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int index ) { createPreview( index ); } );
-  connect( valueComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int index ) { createPreview( index ); } );
+  connect( keyComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=]( int index ) { createPreview( index ); } );
+  connect( valueComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=]( int index ) { createPreview( index ); } );
   connect( previewButton, &QAbstractButton::pressed, this, &QgsAttributeTypeLoadDialog::previewButtonPushed );
 
   fillLayerList();
@@ -68,7 +68,7 @@ void QgsAttributeTypeLoadDialog::fillLayerList()
   const auto constMapLayers = QgsProject::instance()->mapLayers();
   for ( QgsMapLayer *l : constMapLayers )
   {
-    QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( l );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
     if ( vl )
       layerComboBox->addItem( vl->name(), vl->id() );
   }

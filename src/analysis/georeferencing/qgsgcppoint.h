@@ -30,11 +30,10 @@ class QgsCoordinateTransformContext;
 class ANALYSIS_EXPORT QgsGcpPoint
 {
   public:
-
     //! Coordinate point types
     enum class PointType
     {
-      Source, //!< Source point
+      Source,      //!< Source point
       Destination, //!< Destination point
     };
 
@@ -129,12 +128,10 @@ class ANALYSIS_EXPORT QgsGcpPoint
     }
 
   private:
-
     QgsPointXY mSourcePoint;
     QgsPointXY mDestinationPoint;
     QgsCoordinateReferenceSystem mDestinationCrs;
     bool mEnabled = true;
-
 };
 
 #endif //QGSGCPPOINT_H

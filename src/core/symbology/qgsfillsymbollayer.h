@@ -20,12 +20,12 @@
 #include "qgis.h"
 #include "qgssymbollayer.h"
 
-#define DEFAULT_SIMPLEFILL_COLOR        QColor(0,0,255)
-#define DEFAULT_SIMPLEFILL_STYLE        Qt::SolidPattern
-#define DEFAULT_SIMPLEFILL_BORDERCOLOR  QColor( 35, 35, 35 )
-#define DEFAULT_SIMPLEFILL_BORDERSTYLE  Qt::SolidLine
-#define DEFAULT_SIMPLEFILL_BORDERWIDTH  DEFAULT_LINE_WIDTH
-#define DEFAULT_SIMPLEFILL_JOINSTYLE    Qt::BevelJoin
+#define DEFAULT_SIMPLEFILL_COLOR QColor( 0, 0, 255 )
+#define DEFAULT_SIMPLEFILL_STYLE Qt::SolidPattern
+#define DEFAULT_SIMPLEFILL_BORDERCOLOR QColor( 35, 35, 35 )
+#define DEFAULT_SIMPLEFILL_BORDERSTYLE Qt::SolidLine
+#define DEFAULT_SIMPLEFILL_BORDERWIDTH DEFAULT_LINE_WIDTH
+#define DEFAULT_SIMPLEFILL_JOINSTYLE Qt::BevelJoin
 
 #define INF 1E20
 
@@ -49,8 +49,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
                               const QColor &strokeColor = DEFAULT_SIMPLEFILL_BORDERCOLOR,
                               Qt::PenStyle strokeStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE,
                               double strokeWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH,
-                              Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE
-                            );
+                              Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEFILL_JOINSTYLE );
 
     ~QgsSimpleFillSymbolLayer() override;
 
@@ -173,7 +172,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
     Qt::PenStyle dxfPenStyle() const override;
     QColor dxfBrushColor( QgsSymbolRenderContext &context ) const override;
     Qt::BrushStyle dxfBrushStyle() const override;
-    QImage toTiledPatternImage( ) const override;
+    QImage toTiledPatternImage() const override;
 
   protected:
     QBrush mBrush;
@@ -195,7 +194,6 @@ class CORE_EXPORT QgsSimpleFillSymbolLayer : public QgsFillSymbolLayer
   private:
     //helper functions for data defined symbology
     void applyDataDefinedSymbology( QgsSymbolRenderContext &context, QBrush &brush, QPen &pen, QPen &selPen );
-
 };
 
 class QgsColorRamp;
@@ -208,7 +206,6 @@ class QgsColorRamp;
 class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 {
   public:
-
     /**
      * Constructor for QgsGradientFillSymbolLayer.
      */
@@ -217,8 +214,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
                                 Qgis::GradientColorSource gradientColorType = Qgis::GradientColorSource::SimpleTwoColor,
                                 Qgis::GradientType gradientType = Qgis::GradientType::Linear,
                                 Qgis::SymbolCoordinateReference coordinateMode = Qgis::SymbolCoordinateReference::Feature,
-                                Qgis::GradientSpread gradientSpread = Qgis::GradientSpread::Pad
-                              );
+                                Qgis::GradientSpread gradientSpread = Qgis::GradientSpread::Pad );
 
     ~QgsGradientFillSymbolLayer() override;
 
@@ -463,7 +459,6 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
     QgsMapUnitScale mOffsetMapUnitScale;
 
   private:
-
     //helper functions for data defined symbology
     void applyDataDefinedSymbology( QgsSymbolRenderContext &context, const QPolygonF &points );
 
@@ -484,7 +479,6 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
 class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
 {
   public:
-
     /**
      * Constructor for QgsShapeburstFillSymbolLayer.
      */
@@ -728,7 +722,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
     Qgis::RenderUnit mOffsetUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
 
-    std::unique_ptr< QgsColorRamp > mGradientRamp;
+    std::unique_ptr<QgsColorRamp> mGradientRamp;
 
     //helper functions for data defined symbology
     void applyDataDefinedSymbology( QgsSymbolRenderContext &context, QColor &color, QColor &color2, int &blurRadius, bool &useWholeShape,
@@ -753,10 +747,9 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
  * \ingroup core
  * \brief Base class for polygon renderers generating texture images
 */
-class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer SIP_ABSTRACT
+class CORE_EXPORT QgsImageFillSymbolLayer : public QgsFillSymbolLayer SIP_ABSTRACT
 {
   public:
-
     QgsImageFillSymbolLayer();
     ~QgsImageFillSymbolLayer() override;
 
@@ -852,10 +845,9 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer SIP_ABSTRAC
  * \class QgsRasterFillSymbolLayer
  * \brief A class for filling symbols with a repeated raster image.
  */
-class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
+class CORE_EXPORT QgsRasterFillSymbolLayer : public QgsImageFillSymbolLayer
 {
   public:
-
     /**
      * Constructor for QgsRasterFillSymbolLayer, using a raster fill from the
      * specified \a imageFilePath.
@@ -1140,11 +1132,10 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     const QgsMapUnitScale &sizeMapUnitScale() const { return mSizeMapUnitScale; }
 
   protected:
-
     void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
     bool applyBrushTransformFromContext( QgsSymbolRenderContext *context = nullptr ) const override;
-  private:
 
+  private:
     //! Path to the image file
     QString mImageFilePath;
     Qgis::SymbolCoordinateReference mCoordinateMode = Qgis::SymbolCoordinateReference::Feature;
@@ -1169,10 +1160,9 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
  * \ingroup core
  * \brief A class for filling symbols with a repeated SVG file.
 */
-class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
+class CORE_EXPORT QgsSVGFillSymbolLayer : public QgsImageFillSymbolLayer
 {
   public:
-
     /**
      * Constructor for QgsSVGFillSymbolLayer, using the SVG picture at the specified absolute file path.
      */
@@ -1249,7 +1239,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see setPatternWidthUnit()
      * \see setPatternWidthMapUnitScale()
      */
-    void setPatternWidth( double width ) { mPatternWidth = width;}
+    void setPatternWidth( double width ) { mPatternWidth = width; }
 
     /**
      * Returns the width of the rendered SVG content within the fill (i.e. the pattern repeat/tile size).
@@ -1271,7 +1261,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
      * \see svgFillColor()
      * \see setSvgStrokeColor()
      */
-    void setSvgFillColor( const QColor &c ) { setColor( c );  }
+    void setSvgFillColor( const QColor &c ) { setColor( c ); }
 
     /**
      * Returns the fill color used for rendering the SVG content.
@@ -1419,11 +1409,9 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     void setParameters( const QMap<QString, QgsProperty> &parameters );
 
   protected:
-
     void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
 
   private:
-
     //! Width of the pattern (in output units)
     double mPatternWidth = 20;
     Qgis::RenderUnit mPatternWidthUnit = Qgis::RenderUnit::Millimeters;
@@ -1445,7 +1433,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsMapUnitScale mSvgStrokeWidthMapUnitScale;
 
     //! Custom stroke -- here for historic reasons only
-    std::unique_ptr< QgsLineSymbol > mStroke;
+    std::unique_ptr<QgsLineSymbol> mStroke;
 
     //! Helper function that gets the view box from the byte array
     void storeViewBox();
@@ -1462,7 +1450,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
  * \class QgsLinePatternFillSymbolLayer
  * \brief A symbol fill consisting of repeated parallel lines.
  */
-class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
+class CORE_EXPORT QgsLinePatternFillSymbolLayer : public QgsImageFillSymbolLayer
 {
   public:
     QgsLinePatternFillSymbolLayer();
@@ -1487,7 +1475,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QVariantMap properties() const override;
     QgsLinePatternFillSymbolLayer *clone() const override SIP_FACTORY;
     void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
-    QImage toTiledPatternImage( ) const override;
+    QImage toTiledPatternImage() const override;
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
 
     QString ogrFeatureStyleWidth( double widthScaleFactor ) const;
@@ -1697,7 +1685,6 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
 
   protected:
-
     void applyDataDefinedSettings( QgsSymbolRenderContext &context ) override;
 
   private:
@@ -1726,7 +1713,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     bool applyPattern( const QgsSymbolRenderContext &context, QBrush &brush, double lineAngle, double distance );
 
     //! Fill line
-    std::unique_ptr< QgsLineSymbol > mFillLineSymbol;
+    std::unique_ptr<QgsLineSymbol> mFillLineSymbol;
     bool mFillLineSymbolRenderStarted = false;
 
     Qgis::LineClipMode mClipMode = Qgis::LineClipMode::ClipPainterOnly;
@@ -1737,7 +1724,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
  * \class QgsPointPatternFillSymbolLayer
  * \brief A fill symbol layer which fills polygon shapes with repeating marker symbols.
  */
-class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
+class CORE_EXPORT QgsPointPatternFillSymbolLayer : public QgsImageFillSymbolLayer
 {
   public:
     QgsPointPatternFillSymbolLayer();
@@ -1760,7 +1747,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QVariantMap properties() const override;
     QgsPointPatternFillSymbolLayer *clone() const override SIP_FACTORY;
     void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
-    QImage toTiledPatternImage( ) const override;
+    QImage toTiledPatternImage() const override;
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     QgsSymbol *subSymbol() override;
@@ -2240,7 +2227,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setSeed( unsigned long seed ) { mSeed = seed; }
 
   protected:
-    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
+    std::unique_ptr<QgsMarkerSymbol> mMarkerSymbol;
     bool mMarkerSymbolRenderStarted = false;
     double mDistanceX = 15;
     Qgis::RenderUnit mDistanceXUnit = Qgis::RenderUnit::Millimeters;
@@ -2295,7 +2282,6 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
 {
   public:
-
     /**
      * Constructor for QgsRandomMarkerFillSymbolLayer, with the specified \a pointCount.
      *
@@ -2453,15 +2439,15 @@ class CORE_EXPORT QgsRandomMarkerFillSymbolLayer : public QgsFillSymbolLayer
 
     struct Part
     {
-      QPolygonF exterior;
-      QVector<QPolygonF> rings;
+        QPolygonF exterior;
+        QVector<QPolygonF> rings;
     };
 
-    QVector< Part > mCurrentParts;
+    QVector<Part> mCurrentParts;
 
-    void render( QgsRenderContext &context, const QVector< Part > &parts, const QgsFeature &feature, bool selected );
+    void render( QgsRenderContext &context, const QVector<Part> &parts, const QgsFeature &feature, bool selected );
 
-    std::unique_ptr< QgsMarkerSymbol > mMarker;
+    std::unique_ptr<QgsMarkerSymbol> mMarker;
     Qgis::PointCountMethod mCountMethod = Qgis::PointCountMethod::Absolute;
     int mPointCount = 10;
     double mDensityArea = 250.0;
@@ -2570,8 +2556,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
 
   protected:
-
-    std::unique_ptr< QgsMarkerSymbol > mMarker;
+    std::unique_ptr<QgsMarkerSymbol> mMarker;
     bool mPointOnSurface = false;
     bool mPointOnAllParts = true;
     bool mClipPoints = false;
@@ -2587,8 +2572,8 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 #endif
     struct Part
     {
-      QPolygonF exterior;
-      QVector<QPolygonF> rings;
+        QPolygonF exterior;
+        QVector<QPolygonF> rings;
     };
 
     void render( QgsRenderContext &context, const QVector<Part> &parts, const QgsFeature &feature, bool selected );

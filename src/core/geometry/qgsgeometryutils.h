@@ -37,7 +37,6 @@ class QgsLineString;
 class CORE_EXPORT QgsGeometryUtils
 {
   public:
-
     /**
      * Returns list of linestrings extracted from the passed geometry. The returned objects
      *  have to be deleted by the caller.
@@ -187,15 +186,16 @@ class CORE_EXPORT QgsGeometryUtils
       const double nx = s2.y() - s1.y();
       const double ny = -( s2.x() - s1.x() );
       const double t = ( p.x() * ny - p.y() * nx - s1.x() * ny + s1.y() * nx ) / ( ( s2.x() - s1.x() ) * ny - ( s2.y() - s1.y() ) * nx );
-      return t < 0. ? s1 : t > 1. ? s2 : QgsPoint( s1.x() + ( s2.x() - s1.x() ) * t, s1.y() + ( s2.y() - s1.y() ) * t );
+      return t < 0. ? s1 : t > 1. ? s2
+                                  : QgsPoint( s1.x() + ( s2.x() - s1.x() ) * t, s1.y() + ( s2.y() - s1.y() ) * t );
     }
 
     //! \note not available in Python bindings
     struct SelfIntersection SIP_SKIP
     {
-      int segment1;
-      int segment2;
-      QgsPoint point;
+        int segment1;
+        int segment2;
+        QgsPoint point;
     };
 
     /**
@@ -263,7 +263,7 @@ class CORE_EXPORT QgsGeometryUtils
      * Convert circular arc defined by p1, p2, p3 (p1/p3 being start resp. end point, p2 lies on the arc) into a sequence of points.
      */
     static void segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3,
-                               QgsPointSequence SIP_PYALTERNATIVETYPE( QVector<QgsPoint> ) &points SIP_OUT, double tolerance = M_PI_2 / 90,
+                               QgsPointSequence SIP_PYALTERNATIVETYPE( QVector<QgsPoint> ) & points SIP_OUT, double tolerance = M_PI_2 / 90,
                                QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle,
                                bool hasZ = false, bool hasM = false );
 
@@ -516,12 +516,12 @@ class CORE_EXPORT QgsGeometryUtils
      * \note Not available in Python bindings
      * \since QGIS 3.20
      */
-    template <class Iterator> static bool transferFirstZOrMValueToPoint( Iterator verticesBegin, Iterator verticesEnd, QgsPoint &point ) SIP_SKIP
+    template<class Iterator> static bool transferFirstZOrMValueToPoint( Iterator verticesBegin, Iterator verticesEnd, QgsPoint &point ) SIP_SKIP
     {
       bool zFound = false;
       bool mFound = false;
 
-      for ( auto it = verticesBegin ; it != verticesEnd ; ++it )
+      for ( auto it = verticesBegin; it != verticesEnd; ++it )
       {
         if ( !mFound && ( *it ).isMeasure() )
         {
@@ -593,7 +593,7 @@ class CORE_EXPORT QgsGeometryUtils
     };
 
     //! \note not available in Python bindings
-    template<class T> static double closestSegmentFromComponents( T &container, ComponentType ctype, const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon ) SIP_SKIP
+    template<class T> static double closestSegmentFromComponents( T &container, ComponentType ctype, const QgsPoint &pt, QgsPoint &segmentPt, QgsVertexId &vertexAfter, int *leftOf, double epsilon ) SIP_SKIP
     {
       double minDist = std::numeric_limits<double>::max();
       double minDistSegmentX = 0.0, minDistSegmentY = 0.0;
@@ -638,7 +638,7 @@ class CORE_EXPORT QgsGeometryUtils
       }
 
       if ( minDist == std::numeric_limits<double>::max() )
-        return -1;  // error: no segments
+        return -1; // error: no segments
 
       segmentPt.setX( minDistSegmentX );
       segmentPt.setY( minDistSegmentY );
@@ -659,7 +659,7 @@ class CORE_EXPORT QgsGeometryUtils
      *
      * \deprecated QGIS 3.40. Use QgsGeometryUtilsBase methods instead.
      */
-    Q_DECL_DEPRECATED static double sqrDistance2D( double x1, double y1, double x2, double y2 ) SIP_DEPRECATED SIP_HOLDGIL {return QgsGeometryUtilsBase::sqrDistance2D( x1, y1, x2, y2 ); }
+    Q_DECL_DEPRECATED static double sqrDistance2D( double x1, double y1, double x2, double y2 ) SIP_DEPRECATED SIP_HOLDGIL { return QgsGeometryUtilsBase::sqrDistance2D( x1, y1, x2, y2 ); }
 
     /**
      * Returns the squared 2D distance between two points.
@@ -685,12 +685,12 @@ class CORE_EXPORT QgsGeometryUtils
      *
      * \deprecated QGIS 3.40. Use QgsGeometryUtilsBase methods instead.
      */
-    Q_DECL_DEPRECATED static double distance2D( double x1, double y1, double x2, double y2 ) SIP_DEPRECATED SIP_HOLDGIL {return QgsGeometryUtilsBase::distance2D( x1, y1, x2, y2 ); }
+    Q_DECL_DEPRECATED static double distance2D( double x1, double y1, double x2, double y2 ) SIP_DEPRECATED SIP_HOLDGIL { return QgsGeometryUtilsBase::distance2D( x1, y1, x2, y2 ); }
 
     /**
      * Returns the 2D distance between two points.
      */
-    static double distance2D( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL { return QgsGeometryUtilsBase::distance2D( pt1.x(), pt1.y(), pt2.x(), pt2.y() );}
+    static double distance2D( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL { return QgsGeometryUtilsBase::distance2D( pt1.x(), pt1.y(), pt2.x(), pt2.y() ); }
 
     /**
      * Returns the 3D distance between two points.
@@ -725,7 +725,7 @@ class CORE_EXPORT QgsGeometryUtils
      */
     Q_DECL_DEPRECATED static int leftOfLine( const double x, const double y, const double x1, const double y1, const double x2, const double y2 ) SIP_DEPRECATED SIP_HOLDGIL
     {
-      return QgsGeometryUtilsBase::leftOfLine( x, y, x1, y1, x2, y2 ) ;
+      return QgsGeometryUtilsBase::leftOfLine( x, y, x1, y1, x2, y2 );
     }
 
     /**
@@ -739,12 +739,12 @@ class CORE_EXPORT QgsGeometryUtils
      * \deprecated QGIS 3.40. Use QgsGeometryUtilsBase methods instead.
      */
     Q_DECL_DEPRECATED static void pointOnLineWithDistance( double x1, double y1, double x2, double y2, double distance, double &x, double &y,
-        double *z1 = nullptr, double *z2 = nullptr, double *z = nullptr,
-        double *m1 = nullptr, double *m2 = nullptr, double *m = nullptr ) SIP_SKIP
+                                                           double *z1 = nullptr, double *z2 = nullptr, double *z = nullptr,
+                                                           double *m1 = nullptr, double *m2 = nullptr, double *m = nullptr ) SIP_SKIP
     {
       return QgsGeometryUtilsBase::pointOnLineWithDistance( x1, y1, x2, y2, distance, x, y,
-          z1, z2, z,
-          m1, m2, m );
+                                                            z1, z2, z,
+                                                            m1, m2, m );
     }
 
     /**
@@ -779,8 +779,6 @@ class CORE_EXPORT QgsGeometryUtils
     {
       QgsGeometryUtilsBase::perpendicularOffsetPointAlongSegment( x1, y1, x2, y2, proportion, offset, x, y );
     }
-
-
 
 
     /**
@@ -995,11 +993,11 @@ class CORE_EXPORT QgsGeometryUtils
      * \deprecated QGIS 3.40. Use QgsGeometryUtilsBase methods instead.
      */
     Q_DECL_DEPRECATED static void perpendicularCenterSegment( double centerPointX, double centerPointY,
-        double segmentPoint1x, double segmentPoint1y,
-        double segmentPoint2x, double segmentPoint2y,
-        double &perpendicularSegmentPoint1x SIP_OUT, double &perpendicularSegmentPoint1y SIP_OUT,
-        double &perpendicularSegmentPoint2x SIP_OUT, double &perpendicularSegmentPoint2y SIP_OUT,
-        double segmentLength = 0 ) SIP_HOLDGIL
+                                                              double segmentPoint1x, double segmentPoint1y,
+                                                              double segmentPoint2x, double segmentPoint2y,
+                                                              double &perpendicularSegmentPoint1x SIP_OUT, double &perpendicularSegmentPoint1y SIP_OUT,
+                                                              double &perpendicularSegmentPoint2x SIP_OUT, double &perpendicularSegmentPoint2y SIP_OUT,
+                                                              double segmentLength = 0 ) SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::perpendicularCenterSegment( centerPointX, centerPointY, segmentPoint1x, segmentPoint1y, segmentPoint2x, segmentPoint2y, perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y, segmentLength );
     }
@@ -1032,9 +1030,9 @@ class CORE_EXPORT QgsGeometryUtils
      * \deprecated QGIS 3.40. Use QgsGeometryUtilsBase methods instead.
      */
     Q_DECL_DEPRECATED static bool skewLinesProjection( const QgsVector3D &P1, const QgsVector3D &P12,
-        const QgsVector3D &P2, const QgsVector3D &P22,
-        QgsVector3D &X1 SIP_OUT,
-        double epsilon = 0.0001 ) SIP_HOLDGIL
+                                                       const QgsVector3D &P2, const QgsVector3D &P22,
+                                                       QgsVector3D &X1 SIP_OUT,
+                                                       double epsilon = 0.0001 ) SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::skewLinesProjection( P1, P12, P2, P22, X1, epsilon );
     }
@@ -1079,8 +1077,8 @@ class CORE_EXPORT QgsGeometryUtils
      *   \deprecated QGIS 3.40. Use QgsGeometryUtilsBase methods instead.
      */
     Q_DECL_DEPRECATED static bool linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2,
-        const QgsVector3D &Lb1, const QgsVector3D &Lb2,
-        QgsVector3D &intersection SIP_OUT ) SIP_HOLDGIL
+                                                       const QgsVector3D &Lb1, const QgsVector3D &Lb2,
+                                                       QgsVector3D &intersection SIP_OUT ) SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::linesIntersection3D( La1, La2, Lb1, Lb2, intersection );
     }
@@ -1130,7 +1128,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \deprecated QGIS 3.40. Use QgsGeometryUtilsBase methods instead.
      */
     Q_DECL_DEPRECATED static void weightedPointInTriangle( double aX, double aY, double bX, double bY, double cX, double cY,
-        double weightB, double weightC, double &pointX SIP_OUT, double &pointY SIP_OUT ) SIP_HOLDGIL
+                                                           double weightB, double weightC, double &pointX SIP_OUT, double &pointY SIP_OUT ) SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::weightedPointInTriangle( aX, aY, bX, bY, cX, cY, weightB, weightC, pointX, pointY );
     }
@@ -1169,7 +1167,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \deprecated QGIS 3.40. Use QgsGeometryUtilsBase methods instead.
      */
     Q_DECL_DEPRECATED static bool angleBisector( double aX, double aY, double bX, double bY, double cX, double cY, double dX, double dY,
-        double &pointX SIP_OUT, double &pointY SIP_OUT, double &angle SIP_OUT ) SIP_HOLDGIL
+                                                 double &pointX SIP_OUT, double &pointY SIP_OUT, double &angle SIP_OUT ) SIP_HOLDGIL
     {
       return QgsGeometryUtilsBase::angleBisector( aX, aY, bX, bY, cX, cY, dX, dY, pointX, pointY, angle );
     }
@@ -1273,7 +1271,5 @@ class CORE_EXPORT QgsGeometryUtils
       intersectionPoint.setY( intersectionPointY );
       return result;
     }
-
-
 };
 #include "qgsgeometryutils_base.h"

@@ -37,7 +37,6 @@ class QgsDataItem;
 class GUI_EXPORT QgsDataItemGuiProviderUtils
 {
   public:
-
 #ifndef SIP_RUN
 
     /**
@@ -46,9 +45,9 @@ class GUI_EXPORT QgsDataItemGuiProviderUtils
      * \note Not available in Python bindings
      */
     template<class T>
-    static void deleteConnections( const QList< T * > &items, const std::function< void( const QString & ) > &deleteConnection, QgsDataItemGuiContext context )
+    static void deleteConnections( const QList<T *> &items, const std::function<void( const QString & )> &deleteConnection, QgsDataItemGuiContext context )
     {
-      ( void )context;
+      ( void ) context;
       if ( items.empty() )
         return;
 
@@ -58,7 +57,7 @@ class GUI_EXPORT QgsDataItemGuiProviderUtils
       {
         connectionNames << item->name();
       }
-      QPointer< QgsDataItem > firstParent( items.at( 0 )->parent() );
+      QPointer<QgsDataItem> firstParent( items.at( 0 )->parent() );
       deleteConnectionsPrivate( connectionNames, deleteConnection, firstParent );
     }
 
@@ -75,7 +74,7 @@ class GUI_EXPORT QgsDataItemGuiProviderUtils
 #endif
 
   private:
-    static void deleteConnectionsPrivate( const QStringList &connectionNames, const std::function<void ( const QString & )> &deleteConnection, QPointer<QgsDataItem> firstParent );
+    static void deleteConnectionsPrivate( const QStringList &connectionNames, const std::function<void( const QString & )> &deleteConnection, QPointer<QgsDataItem> firstParent );
 };
 
 #endif // QGSDATAITEMGUIPROVIDERUTILS_H

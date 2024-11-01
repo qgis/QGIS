@@ -39,7 +39,6 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingToolboxTreeView, with the specified \a parent widget.
      *
@@ -116,11 +115,9 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
     void setFilterString( const QString &filter );
 
   protected:
-
     void keyPressEvent( QKeyEvent *event ) override;
 
   private:
-
     QgsProcessingToolboxProxyModel *mModel = nullptr;
     QgsProcessingToolboxModel *mToolboxModel = nullptr;
 
@@ -130,7 +127,6 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
     QModelIndex findFirstVisibleAlgorithm( const QModelIndex &parent );
 
     friend class TestQgsProcessingModel;
-
 };
 
 ///@endcond

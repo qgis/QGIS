@@ -35,7 +35,7 @@
 #ifdef _MSC_VER
 #include <Windows.h>
 #include <ShlObj.h>
-#pragma comment(lib,"Shell32.lib")
+#pragma comment( lib, "Shell32.lib" )
 #endif
 
 QString QgsFileUtils::representFileSize( qint64 bytes )
@@ -157,7 +157,7 @@ QString QgsFileUtils::findClosestExistingPath( const QString &path )
   else
     currentPath = QDir( path );
 
-  QSet< QString > visited;
+  QSet<QString> visited;
   while ( !currentPath.exists() )
   {
     const QString parentPath = QDir::cleanPath( currentPath.absolutePath() + QStringLiteral( "/.." ) );
@@ -188,7 +188,7 @@ QStringList QgsFileUtils::findFile( const QString &file, const QString &basePath
 
   if ( QFileInfo( baseFolder ).isDir() )
   {
-    folder = QDir( baseFolder ) ;
+    folder = QDir( baseFolder );
     originalFolder = folder.absolutePath();
   }
   else // invalid folder or file path
@@ -208,7 +208,6 @@ QStringList QgsFileUtils::findFile( const QString &file, const QString &basePath
   // find the nearest existing folder
   while ( !folder.exists() && folder.absolutePath().count( '/' ) > searchCeilling )
   {
-
     existingBase = folder.path();
     if ( !folder.cdUp() )
       folder = QFileInfo( existingBase ).absoluteDir(); // using fileinfo to move up one level
@@ -228,7 +227,6 @@ QStringList QgsFileUtils::findFile( const QString &file, const QString &basePath
 
   while ( depth <= maxClimbs && folderExists && folder.absolutePath().count( '/' ) >= searchCeilling )
   {
-
     QDirIterator localFinder( folder.path(), QStringList() << fileName, QDir::Files, QDirIterator::NoIteratorFlags );
     searchedFolder.append( folder.absolutePath() );
     if ( localFinder.hasNext() )
@@ -241,7 +239,7 @@ QStringList QgsFileUtils::findFile( const QString &file, const QString &basePath
     const QFileInfoList subdirs = folder.entryInfoList( QDir::AllDirs );
     for ( const QFileInfo &subdir : subdirs )
     {
-      if ( ! searchedFolder.contains( subdir.absolutePath() ) )
+      if ( !searchedFolder.contains( subdir.absolutePath() ) )
       {
         QDirIterator subDirFinder( subdir.path(), QStringList() << fileName, QDir::Files, QDirIterator::Subdirectories );
         if ( subDirFinder.hasNext() )
@@ -277,13 +275,13 @@ QStringList QgsFileUtils::findFile( const QString &file, const QString &basePath
 }
 
 #ifdef _MSC_VER
-std::unique_ptr< wchar_t[] > pathToWChar( const QString &path )
+std::unique_ptr<wchar_t[]> pathToWChar( const QString &path )
 {
   const QString nativePath = QDir::toNativeSeparators( path );
 
-  std::unique_ptr< wchar_t[] > pathArray( new wchar_t[static_cast< uint>( nativePath.length() + 1 )] );
+  std::unique_ptr<wchar_t[]> pathArray( new wchar_t[static_cast<uint>( nativePath.length() + 1 )] );
   nativePath.toWCharArray( pathArray.get() );
-  pathArray[static_cast< size_t >( nativePath.length() )] = 0;
+  pathArray[static_cast<size_t>( nativePath.length() )] = 0;
   return pathArray;
 }
 
@@ -333,7 +331,7 @@ bool pathIsLikelyCloudStorage( QString path )
     path = dirIt.next();
   }
 
-  std::unique_ptr< wchar_t[] > pathArray = pathToWChar( path );
+  std::unique_ptr<wchar_t[]> pathArray = pathToWChar( path );
   const HANDLE handle = CreateFileW( pathArray.get(), 0, FILE_SHARE_READ,
                                      nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS, nullptr );
   if ( handle != INVALID_HANDLE_VALUE )
@@ -367,9 +365,8 @@ bool pathIsLikelyCloudStorage( QString path )
 Qgis::DriveType QgsFileUtils::driveType( const QString &path )
 {
 #ifdef _MSC_VER
-  auto pathType = [ = ]( const QString & path ) -> Qgis::DriveType
-  {
-    std::unique_ptr< wchar_t[] > pathArray = pathToWChar( path );
+  auto pathType = [=]( const QString &path ) -> Qgis::DriveType {
+    std::unique_ptr<wchar_t[]> pathArray = pathToWChar( path );
     const UINT type = GetDriveTypeW( pathArray.get() );
     switch ( type )
     {
@@ -396,7 +393,6 @@ Qgis::DriveType QgsFileUtils::driveType( const QString &path )
     }
 
     return Qgis::DriveType::Unknown;
-
   };
 
   const QString originalPath = QDir::cleanPath( path );
@@ -417,7 +413,7 @@ Qgis::DriveType QgsFileUtils::driveType( const QString &path )
   return Qgis::DriveType::Unknown;
 
 #else
-  ( void )path;
+  ( void ) path;
   throw QgsNotSupportedException( QStringLiteral( "Determining drive type is not supported on this platform" ) );
 #endif
 }
@@ -449,14 +445,13 @@ bool QgsFileUtils::pathIsSlowDevice( const QString &path )
   }
   catch ( QgsNotSupportedException & )
   {
-
   }
   return false;
 }
 
 QSet<QString> QgsFileUtils::sidecarFilesForPath( const QString &path )
 {
-  QSet< QString > res;
+  QSet<QString> res;
   const QStringList providers = QgsProviderRegistry::instance()->providerList();
   for ( const QString &provider : providers )
   {
@@ -483,7 +478,7 @@ bool QgsFileUtils::renameDataset( const QString &oldPath, const QString &newPath
   }
 
   const QFileInfo oldPathInfo( oldPath );
-  QSet< QString > sidecars = sidecarFilesForPath( oldPath );
+  QSet<QString> sidecars = sidecarFilesForPath( oldPath );
   if ( flags & Qgis::FileOperationFlag::IncludeMetadataFile )
   {
     const QString qmdPath = oldPathInfo.dir().filePath( oldPathInfo.completeBaseName() + QStringLiteral( ".qmd" ) );
@@ -609,7 +604,7 @@ QStringList QgsFileUtils::splitPathToComponents( const QString &input )
 
 QString QgsFileUtils::uniquePath( const QString &path )
 {
-  if ( ! QFileInfo::exists( path ) )
+  if ( !QFileInfo::exists( path ) )
   {
     return path;
   }

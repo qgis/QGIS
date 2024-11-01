@@ -29,16 +29,15 @@ class QgsLineSymbol;
  * \ingroup core
  * \brief Layout item for node based polyline shapes.
  */
-class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
+class CORE_EXPORT QgsLayoutItemPolyline : public QgsLayoutNodesItem
 {
     Q_OBJECT
 
   public:
-
     //! Vertex marker mode
     enum MarkerMode
     {
-      NoMarker, //!< Don't show marker
+      NoMarker,  //!< Don't show marker
       ArrowHead, //!< Show arrow marker
       SvgMarker, //!< Show SVG marker
     };
@@ -194,7 +193,6 @@ class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
   protected:
-
     bool _addNode( int indexPoint, QPointF newPoint, double radius ) override;
     bool _removeNode( int nodeIndex ) override;
     void _draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
@@ -208,7 +206,6 @@ class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
     void updateBoundingRect() override;
 
   private:
-
     //! QgsSymbol use to draw the shape.
     std::unique_ptr<QgsLineSymbol> mPolylineStyleSymbol;
 
@@ -270,8 +267,6 @@ class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
 
     friend class TestQgsLayoutPolyline;
     friend class QgsCompositionConverter;
-
 };
 
 #endif // QGSLAYOUTITEMPOLYLINE_H
-

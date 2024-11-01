@@ -41,7 +41,7 @@ QgsContrastEnhancement::QgsContrastEnhancement( Qgis::DataType dataType )
   //If the data type is larger than 16-bit do not generate a lookup table
   if ( mRasterDataTypeRange <= 65535.0 )
   {
-    mLookupTable = new int[static_cast <int>( mRasterDataTypeRange + 1 )];
+    mLookupTable = new int[static_cast<int>( mRasterDataTypeRange + 1 )];
   }
 }
 
@@ -60,13 +60,13 @@ QgsContrastEnhancement::QgsContrastEnhancement( const QgsContrastEnhancement &ce
   //If the data type is larger than 16-bit do not generate a lookup table
   if ( mRasterDataTypeRange <= 65535.0 )
   {
-    mLookupTable = new int[static_cast <int>( mRasterDataTypeRange + 1 )];
+    mLookupTable = new int[static_cast<int>( mRasterDataTypeRange + 1 )];
   }
 }
 
 QgsContrastEnhancement::~QgsContrastEnhancement()
 {
-  delete [] mLookupTable;
+  delete[] mLookupTable;
 }
 
 int QgsContrastEnhancement::enhanceContrast( double value )
@@ -80,7 +80,7 @@ int QgsContrastEnhancement::enhanceContrast( double value )
   {
     const double shiftedValue = value + mLookupTableOffset;
     if ( shiftedValue >= 0 && shiftedValue < mRasterDataTypeRange + 1 )
-      return mLookupTable[static_cast <int>( shiftedValue )];
+      return mLookupTable[static_cast<int>( shiftedValue )];
     return 0;
   }
   else
@@ -134,7 +134,7 @@ bool QgsContrastEnhancement::generateLookupTable()
 
   for ( int myIterator = 0; myIterator <= mRasterDataTypeRange; myIterator++ )
   {
-    mLookupTable[myIterator] = mContrastEnhancementFunction->enhance( static_cast< double >( myIterator ) - mLookupTableOffset );
+    mLookupTable[myIterator] = mContrastEnhancementFunction->enhance( static_cast<double>( myIterator ) - mLookupTableOffset );
   }
 
   return true;
@@ -154,16 +154,16 @@ void QgsContrastEnhancement::setContrastEnhancementAlgorithm( ContrastEnhancemen
 {
   switch ( algorithm )
   {
-    case StretchToMinimumMaximum :
+    case StretchToMinimumMaximum:
       mContrastEnhancementFunction.reset( new QgsLinearMinMaxEnhancement( mRasterDataType, mMinimumValue, mMaximumValue ) );
       break;
-    case StretchAndClipToMinimumMaximum :
+    case StretchAndClipToMinimumMaximum:
       mContrastEnhancementFunction.reset( new QgsLinearMinMaxEnhancementWithClip( mRasterDataType, mMinimumValue, mMaximumValue ) );
       break;
-    case ClipToMinimumMaximum :
+    case ClipToMinimumMaximum:
       mContrastEnhancementFunction.reset( new QgsClipToMinMaxEnhancement( mRasterDataType, mMinimumValue, mMaximumValue ) );
       break;
-    case UserDefinedEnhancement :
+    case UserDefinedEnhancement:
       //Do nothing
       break;
     default:
@@ -194,7 +194,7 @@ void QgsContrastEnhancement::setContrastEnhancementFunction( QgsContrastEnhancem
 
 void QgsContrastEnhancement::setMaximumValue( double value, bool generateTable )
 {
-  QgsDebugMsgLevel( "called value: " + QString::number( value ) + " generate lookup table: " + QString::number( static_cast< int >( generateTable ) ), 4 );
+  QgsDebugMsgLevel( "called value: " + QString::number( value ) + " generate lookup table: " + QString::number( static_cast<int>( generateTable ) ), 4 );
 
   if ( value > maximumValuePossible( mRasterDataType ) )
   {
@@ -220,7 +220,7 @@ void QgsContrastEnhancement::setMaximumValue( double value, bool generateTable )
 
 void QgsContrastEnhancement::setMinimumValue( double value, bool generateTable )
 {
-  QgsDebugMsgLevel( "called value: " + QString::number( value ) + " generate lookup table: " + QString::number( static_cast< int >( generateTable ) ), 4 );
+  QgsDebugMsgLevel( "called value: " + QString::number( value ) + " generate lookup table: " + QString::number( static_cast<int>( generateTable ) ), 4 );
 
   if ( value < minimumValuePossible( mRasterDataType ) )
   {

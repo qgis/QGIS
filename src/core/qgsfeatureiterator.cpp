@@ -212,8 +212,7 @@ void QgsAbstractFeatureIterator::setupOrderBy( const QList<QgsFeatureRequest::Or
     do
     {
       orderByIt->prepare( expressionContext );
-    }
-    while ( ++orderByIt != preparedOrderBys.end() );
+    } while ( ++orderByIt != preparedOrderBys.end() );
 
     // Fetch all features
     QgsIndexedFeature indexedFeature;

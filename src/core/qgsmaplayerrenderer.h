@@ -51,7 +51,6 @@ class QgsRenderedItemDetails;
 class CORE_EXPORT QgsMapLayerRenderer
 {
   public:
-
     /**
      * Constructor for QgsMapLayerRenderer, with the associated \a layerID and render \a context.
      */
@@ -149,7 +148,7 @@ class CORE_EXPORT QgsMapLayerRenderer
      * \see appendRenderedItemDetails()
      * \since QGIS 3.22
      */
-    QList< QgsRenderedItemDetails * > takeRenderedItemDetails() SIP_TRANSFERBACK;
+    QList<QgsRenderedItemDetails *> takeRenderedItemDetails() SIP_TRANSFERBACK;
 
   protected:
     QStringList mErrors;
@@ -196,7 +195,6 @@ class CORE_EXPORT QgsMapLayerRenderer
     void appendRenderedItemDetails( QgsRenderedItemDetails *details SIP_TRANSFER );
 
   private:
-
     // TODO QGIS 4.0 - make reference instead of pointer!
 
     /**

@@ -36,7 +36,6 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsMapLayerStore.
      */
@@ -62,24 +61,28 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      */
     int __len__() const;
     % MethodCode
-    sipRes = sipCpp->count();
+        sipRes
+      = sipCpp->count();
     % End
 
-    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
-    int __bool__() const;
+      //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
+      int
+      __bool__() const;
     % MethodCode
-    sipRes = true;
+        sipRes
+      = true;
     % End
 #endif
 
-    /**
+        /**
      * Retrieve a pointer to a layer by layer \a id.
      * \param id ID of layer to retrieve
      * \returns matching layer, or NULLPTR if no matching layer found
      * \see mapLayersByName()
      * \see mapLayers()
      */
-    QgsMapLayer *mapLayer( const QString &id ) const;
+        QgsMapLayer *
+      mapLayer( const QString &id ) const;
 
     /**
      * Retrieve a list of matching layers by layer \a name.
@@ -119,7 +122,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      * \note not available in Python bindings
      * \see mapLayers()
      */
-    template <typename T>
+    template<typename T>
     QVector<T> layers() const
     {
       QVector<T> layers;
@@ -360,9 +363,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
     void onMapLayerDeleted( QObject *obj );
 
   private:
-
     QMap<QString, QgsMapLayer *> mMapLayers;
-
 };
 
 #endif //QGSMAPLAYERSTORE_H

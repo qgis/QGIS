@@ -27,7 +27,6 @@ class APP_EXPORT QgsBookmarkLocatorFilter : public QgsLocatorFilter
     Q_OBJECT
 
   public:
-
     QgsBookmarkLocatorFilter( QObject *parent = nullptr );
     QgsBookmarkLocatorFilter *clone() const override;
     QString name() const override { return QStringLiteral( "bookmarks" ); }

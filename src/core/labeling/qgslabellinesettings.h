@@ -39,15 +39,14 @@ class CORE_EXPORT QgsLabelLineSettings
     Q_GADGET
 
   public:
-
     /**
      * Placement options for direction symbols.
      */
     enum class DirectionSymbolPlacement : int
     {
       SymbolLeftRight, //!< Place direction symbols on left/right of label
-      SymbolAbove, //!< Place direction symbols on above label
-      SymbolBelow //!< Place direction symbols on below label
+      SymbolAbove,     //!< Place direction symbols on above label
+      SymbolBelow      //!< Place direction symbols on below label
     };
     Q_ENUM( DirectionSymbolPlacement )
 
@@ -57,7 +56,7 @@ class CORE_EXPORT QgsLabelLineSettings
     enum class AnchorType : int
     {
       HintOnly, //!< Line anchor is a hint for preferred placement only, but other placements close to the hint are permitted
-      Strict, //!< Line anchor is a strict placement, and other placements are not permitted
+      Strict,   //!< Line anchor is a strict placement, and other placements are not permitted
     };
     Q_ENUM( AnchorType )
 
@@ -69,7 +68,7 @@ class CORE_EXPORT QgsLabelLineSettings
     enum class AnchorClipping : int
     {
       UseVisiblePartsOfLine, //!< Only visible parts of lines are considered when calculating the line anchor for labels
-      UseEntireLine, //!< Entire original feature line geometry is used when calculating the line anchor for labels
+      UseEntireLine,         //!< Entire original feature line geometry is used when calculating the line anchor for labels
     };
     Q_ENUM( AnchorClipping )
 
@@ -80,9 +79,9 @@ class CORE_EXPORT QgsLabelLineSettings
      */
     enum class AnchorTextPoint : int
     {
-      StartOfText, //!< Anchor using start of text
-      CenterOfText, //!< Anchor using center of text
-      EndOfText, //!< Anchor using end of text
+      StartOfText,     //!< Anchor using start of text
+      CenterOfText,    //!< Anchor using center of text
+      EndOfText,       //!< Anchor using end of text
       FollowPlacement, //!< Automatically set the anchor point based on the lineAnchorPercent() value. Values <25% will use the start of text, values > 75% will use the end of text, and values in between will use the center of the text
     };
     Q_ENUM( AnchorTextPoint )
@@ -235,7 +234,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * \see overrunDistanceUnit()
      * \see overrunDistanceMapUnitScale()
      */
-    void setOverrunDistance( double distance ) {  mOverrunDistance = distance; }
+    void setOverrunDistance( double distance ) { mOverrunDistance = distance; }
 
     /**
      * Returns the units for label overrun distance.
@@ -243,7 +242,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * \see overrunDistance()
      * \see overrunDistanceMapUnitScale()
      */
-    Qgis::RenderUnit overrunDistanceUnit() const {return mOverrunDistanceUnit; }
+    Qgis::RenderUnit overrunDistanceUnit() const { return mOverrunDistanceUnit; }
 
     /**
      * Sets the \a unit for label overrun distance.
@@ -251,7 +250,7 @@ class CORE_EXPORT QgsLabelLineSettings
      * \see overrunDistance()
      * \see overrunDistanceMapUnitScale()
      */
-    void setOverrunDistanceUnit( const Qgis::RenderUnit &unit ) { mOverrunDistanceUnit = unit;}
+    void setOverrunDistanceUnit( const Qgis::RenderUnit &unit ) { mOverrunDistanceUnit = unit; }
 
     /**
      * Returns the map unit scale for label overrun distance.

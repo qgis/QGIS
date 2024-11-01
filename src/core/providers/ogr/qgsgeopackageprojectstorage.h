@@ -27,9 +27,9 @@
 //! Stores information parsed from postgres project URI
 typedef struct
 {
-  bool valid;
-  QString database;
-  QString projectName;
+    bool valid;
+    QString database;
+    QString projectName;
 
 } QgsGeoPackageProjectUri;
 
@@ -37,7 +37,6 @@ typedef struct
 class CORE_EXPORT QgsGeoPackageProjectStorage : public QgsProjectStorage
 {
   public:
-
     // QgsProjectStorage interface
   public:
     QString type() override { return QStringLiteral( "geopackage" ); }

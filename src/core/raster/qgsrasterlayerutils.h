@@ -34,7 +34,6 @@ class QgsRasterLayer;
 class CORE_EXPORT QgsRasterLayerUtils
 {
   public:
-
     /**
      * Given a raster \a layer, returns the band which should be used for
      * rendering the layer for a specified temporal and elevation range,
@@ -52,7 +51,6 @@ class CORE_EXPORT QgsRasterLayerUtils
       const QgsDateTimeRange &temporalRange,
       const QgsDoubleRange &elevationRange,
       bool &matched SIP_OUT );
-
 };
 
 #endif //QGSRASTERLAYERUTILS_H

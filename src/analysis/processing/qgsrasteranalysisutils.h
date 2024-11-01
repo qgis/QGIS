@@ -67,9 +67,9 @@ namespace QgsRasterAnalysisUtils
    * Returns a new processing enum parameter for choice of raster data types.
    * \see rasterTypeChoiceToDataType()
    */
-  std::unique_ptr< QgsProcessingParameterDefinition > createRasterTypeParameter( const QString &name,
-      const QString &description,
-      Qgis::DataType defaultType = Qgis::DataType::Float32 );
+  std::unique_ptr<QgsProcessingParameterDefinition> createRasterTypeParameter( const QString &name,
+                                                                               const QString &description,
+                                                                               Qgis::DataType defaultType = Qgis::DataType::Float32 );
 
   /**
    * Converts the value of a raster type parameter to the corresponding data type.
@@ -79,22 +79,22 @@ namespace QgsRasterAnalysisUtils
 
   struct RasterLogicInput
   {
-    std::unique_ptr< QgsRasterInterface > sourceDataProvider;
-    std::unique_ptr< QgsRasterProjector> projector;
-    QgsRasterInterface *interface = nullptr;
-    bool hasNoDataValue = false;
-    std::vector< int > bands { 1 };
+      std::unique_ptr<QgsRasterInterface> sourceDataProvider;
+      std::unique_ptr<QgsRasterProjector> projector;
+      QgsRasterInterface *interface = nullptr;
+      bool hasNoDataValue = false;
+      std::vector<int> bands { 1 };
   };
 
-  ANALYSIS_EXPORT void applyRasterLogicOperator( const std::vector< QgsRasterAnalysisUtils::RasterLogicInput > &inputs, QgsRasterDataProvider *destinationRaster, double outputNoDataValue, const bool treatNoDataAsFalse,
-      int width, int height, const QgsRectangle &extent, QgsFeedback *feedback,
-      std::function<void( const std::vector< std::unique_ptr< QgsRasterBlock > > &, bool &, bool &, int, int, bool )> &applyLogicFunc,
-      qgssize &noDataCount, qgssize &trueCount, qgssize &falseCount );
+  ANALYSIS_EXPORT void applyRasterLogicOperator( const std::vector<QgsRasterAnalysisUtils::RasterLogicInput> &inputs, QgsRasterDataProvider *destinationRaster, double outputNoDataValue, const bool treatNoDataAsFalse,
+                                                 int width, int height, const QgsRectangle &extent, QgsFeedback *feedback,
+                                                 std::function<void( const std::vector<std::unique_ptr<QgsRasterBlock>> &, bool &, bool &, int, int, bool )> &applyLogicFunc,
+                                                 qgssize &noDataCount, qgssize &trueCount, qgssize &falseCount );
 
   /**
    * Returns a vector of double values obtained from a stack of input QgsRasterBlocks
    */
-  std::vector<double> getCellValuesFromBlockStack( const std::vector< std::unique_ptr< QgsRasterBlock > > &inputBlocks, int &row, int &col, bool &noDataInStack );
+  std::vector<double> getCellValuesFromBlockStack( const std::vector<std::unique_ptr<QgsRasterBlock>> &inputBlocks, int &row, int &col, bool &noDataInStack );
 
   /**
    * Enum of cell value statistic methods to be used with QgsProcessingParameterEnum
@@ -212,7 +212,7 @@ namespace QgsRasterAnalysisUtils
    */
   double interpolatedPercentRankExc( std::vector<double> &cellValues, int stackSize, double value, double noDataValue );
 
-}
+} // namespace QgsRasterAnalysisUtils
 
 
 ///@endcond PRIVATE

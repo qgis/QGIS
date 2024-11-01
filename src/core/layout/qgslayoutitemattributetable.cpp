@@ -48,7 +48,7 @@ QgsLayoutItemAttributeTable::QgsLayoutItemAttributeTable( QgsLayout *layout )
 {
   if ( mLayout )
   {
-    connect( mLayout->project(), static_cast < void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ), this, &QgsLayoutItemAttributeTable::removeLayer );
+    connect( mLayout->project(), static_cast<void ( QgsProject::* )( const QString & )>( &QgsProject::layerWillBeRemoved ), this, &QgsLayoutItemAttributeTable::removeLayer );
 
     //coverage layer change = regenerate columns
     connect( &mLayout->reportContext(), &QgsLayoutReportContext::layerChanged, this, &QgsLayoutItemAttributeTable::atlasLayerChanged );
@@ -153,7 +153,7 @@ void QgsLayoutItemAttributeTable::atlasLayerChanged( QgsVectorLayer *layer )
     disconnect( mCurrentAtlasLayer, &QgsVectorLayer::layerModified, this, &QgsLayoutTable::refreshAttributes );
   }
 
-  const bool mustRebuildColumns = static_cast< bool >( mCurrentAtlasLayer ) || mColumns.empty();
+  const bool mustRebuildColumns = static_cast<bool>( mCurrentAtlasLayer ) || mColumns.empty();
   mCurrentAtlasLayer = layer;
 
   if ( mustRebuildColumns )
@@ -414,7 +414,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   bool activeFilter = false;
   if ( mFilterFeatures && !mFeatureFilter.isEmpty() )
   {
-    filterExpression = std::make_unique< QgsExpression >( mFeatureFilter );
+    filterExpression = std::make_unique<QgsExpression>( mFeatureFilter );
     if ( !filterExpression->hasParserError() )
     {
       activeFilter = true;
@@ -431,7 +431,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 
   QgsRectangle selectionRect;
   QgsGeometry visibleRegion;
-  std::unique_ptr< QgsGeometryEngine > visibleMapEngine;
+  std::unique_ptr<QgsGeometryEngine> visibleMapEngine;
   if ( mMap && mShowOnlyVisibleFeatures )
   {
     visibleRegion = QgsGeometry::fromQPolygonF( mMap->visibleExtentPolygon() );
@@ -455,7 +455,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   }
 
   QgsGeometry atlasGeometry;
-  std::unique_ptr< QgsGeometryEngine > atlasGeometryEngine;
+  std::unique_ptr<QgsGeometryEngine> atlasGeometryEngine;
   if ( mFilterToAtlasIntersection )
   {
     atlasGeometry = mLayout->reportContext().currentGeometry( layer->crs() );
@@ -510,7 +510,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   mConditionalStyles.clear();
   mFeatures.clear();
 
-  QVector< QVector< Cell > > tempContents;
+  QVector<QVector<Cell>> tempContents;
   QgsLayoutTableContents existingContents;
 
   while ( fit.nextFeature( f ) && counter < mMaximumNumberOfFeatures )
@@ -553,7 +553,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 
     if ( mUseConditionalStyling )
     {
-      const QList<QgsConditionalStyle> styles = QgsConditionalStyle::matchingConditionalStyles( conditionalStyles->rowStyles(), QVariant(),  context );
+      const QList<QgsConditionalStyle> styles = QgsConditionalStyle::matchingConditionalStyles( conditionalStyles->rowStyles(), QVariant(), context );
       rowStyle = QgsConditionalStyle::compressStyles( styles );
     }
 
@@ -562,7 +562,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     // correctly when this occurs
     // We also need a list of just the cell contents, so that we can do a quick check for row uniqueness (when the
     // corresponding option is enabled)
-    QVector< Cell > currentRow;
+    QVector<Cell> currentRow;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     mColumns = filteredColumns();
 #endif
@@ -588,7 +588,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 
         const QgsEditorWidgetSetup setup = layer->fields().at( idx ).editorWidgetSetup();
 
-        if ( ! setup.isNull() )
+        if ( !setup.isNull() )
         {
           QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
           QVariant cache;
@@ -614,7 +614,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       else
       {
         // Lets assume it's an expression
-        std::unique_ptr< QgsExpression > expression = std::make_unique< QgsExpression >( column.attribute() );
+        std::unique_ptr<QgsExpression> expression = std::make_unique<QgsExpression>( column.attribute() );
         context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), counter + 1, true ) );
         expression->prepare( &context );
         QVariant value = expression->evaluate( &context );
@@ -642,7 +642,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   for ( auto it = tempContents.constBegin(); it != tempContents.constEnd(); ++it )
   {
     QgsLayoutTableRow row;
-    QList< QgsConditionalStyle > rowStyles;
+    QList<QgsConditionalStyle> rowStyles;
     row.reserve( it->size() );
     rowStyles.reserve( it->size() );
 
@@ -712,7 +712,7 @@ QgsTextFormat QgsLayoutItemAttributeTable::textFormatForCell( int row, int colum
 
 QgsExpressionContextScope *QgsLayoutItemAttributeTable::scopeForCell( int row, int column ) const
 {
-  std::unique_ptr< QgsExpressionContextScope >scope( QgsLayoutTable::scopeForCell( row, column ) );
+  std::unique_ptr<QgsExpressionContextScope> scope( QgsLayoutTable::scopeForCell( row, column ) );
   scope->setFeature( mFeatures.value( row ) );
   scope->setFields( scope->feature().fields() );
   return scope.release();
@@ -735,7 +735,7 @@ void QgsLayoutItemAttributeTable::finalizeRestoreFromXml()
   QgsLayoutTable::finalizeRestoreFromXml();
   if ( !mMap && !mMapUuid.isEmpty() && mLayout )
   {
-    mMap = qobject_cast< QgsLayoutItemMap *>( mLayout->itemByUuid( mMapUuid, true ) );
+    mMap = qobject_cast<QgsLayoutItemMap *>( mLayout->itemByUuid( mMapUuid, true ) );
     if ( mMap )
     {
       //if we have found a valid map item, listen out to extent changes on it and refresh the table
@@ -749,8 +749,7 @@ void QgsLayoutItemAttributeTable::refreshDataDefinedProperty( const QgsLayoutObj
 {
   QgsExpressionContext context = createExpressionContext();
 
-  if ( mSource == QgsLayoutItemAttributeTable::LayerAttributes &&
-       ( property == QgsLayoutObject::DataDefinedProperty::AttributeTableSourceLayer || property == QgsLayoutObject::DataDefinedProperty::AllProperties ) )
+  if ( mSource == QgsLayoutItemAttributeTable::LayerAttributes && ( property == QgsLayoutObject::DataDefinedProperty::AttributeTableSourceLayer || property == QgsLayoutObject::DataDefinedProperty::AllProperties ) )
   {
     mDataDefinedVectorLayer = nullptr;
 
@@ -759,7 +758,7 @@ void QgsLayoutItemAttributeTable::refreshDataDefinedProperty( const QgsLayoutObj
       currentLayerIdentifier = currentLayer->id();
 
     const QString layerIdentifier = mDataDefinedProperties.valueAsString( QgsLayoutObject::DataDefinedProperty::AttributeTableSourceLayer, context, currentLayerIdentifier );
-    QgsVectorLayer *ddLayer = qobject_cast< QgsVectorLayer * >( QgsLayoutUtils::mapLayerFromString( layerIdentifier, mLayout->project() ) );
+    QgsVectorLayer *ddLayer = qobject_cast<QgsVectorLayer *>( QgsLayoutUtils::mapLayerFromString( layerIdentifier, mLayout->project() ) );
     if ( ddLayer )
       mDataDefinedVectorLayer = ddLayer;
   }
@@ -781,16 +780,14 @@ QVariant QgsLayoutItemAttributeTable::replaceWrapChar( const QVariant &variant )
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
 {
-
   QgsLayoutTableColumns allowedColumns { mColumns };
 
   // Filter columns
   if ( mLayout->renderContext().featureFilterProvider() )
   {
-
     QgsVectorLayer *source { sourceLayer() };
 
-    if ( ! source )
+    if ( !source )
     {
       return allowedColumns;
     }
@@ -800,14 +797,14 @@ QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
 
     for ( const auto &c : std::as_const( allowedColumns ) )
     {
-      if ( ! c.attribute().isEmpty() && ! columnAttributesMap.contains( c.attribute() ) )
+      if ( !c.attribute().isEmpty() && !columnAttributesMap.contains( c.attribute() ) )
       {
-        columnAttributesMap[ c.attribute() ] = QSet<QString>();
+        columnAttributesMap[c.attribute()] = QSet<QString>();
         const QgsExpression columnExp { c.attribute() };
         const auto constRefs { columnExp.findNodes<QgsExpressionNodeColumnRef>() };
         for ( const auto &cref : constRefs )
         {
-          columnAttributesMap[ c.attribute() ].insert( cref->name() );
+          columnAttributesMap[c.attribute()].insert( cref->name() );
           allowedAttributes.insert( cref->name() );
         }
       }
@@ -818,18 +815,17 @@ QgsLayoutTableColumns QgsLayoutItemAttributeTable::filteredColumns()
     if ( filteredAttributesSet != allowedAttributes )
     {
       const auto forbidden { allowedAttributes.subtract( filteredAttributesSet ) };
-      allowedColumns.erase( std::remove_if( allowedColumns.begin(), allowedColumns.end(), [ &columnAttributesMap, &forbidden ]( QgsLayoutTableColumn & c ) -> bool
-      {
-        for ( const auto &f : std::as_const( forbidden ) )
-        {
-          if ( columnAttributesMap[ c.attribute() ].contains( f ) )
-          {
-            return true;
-          }
-        }
-        return false;
-      } ), allowedColumns.end() );
-
+      allowedColumns.erase( std::remove_if( allowedColumns.begin(), allowedColumns.end(), [&columnAttributesMap, &forbidden]( QgsLayoutTableColumn &c ) -> bool {
+                              for ( const auto &f : std::as_const( forbidden ) )
+                              {
+                                if ( columnAttributesMap[c.attribute()].contains( f ) )
+                                {
+                                  return true;
+                                }
+                              }
+                              return false;
+                            } ),
+                            allowedColumns.end() );
     }
   }
 
@@ -889,7 +885,7 @@ bool QgsLayoutItemAttributeTable::writePropertiesToElement( QDomElement &tableEl
   if ( !QgsLayoutTable::writePropertiesToElement( tableElem, doc, context ) )
     return false;
 
-  tableElem.setAttribute( QStringLiteral( "source" ), QString::number( static_cast< int >( mSource ) ) );
+  tableElem.setAttribute( QStringLiteral( "source" ), QString::number( static_cast<int>( mSource ) ) );
   tableElem.setAttribute( QStringLiteral( "relationId" ), mRelationId );
   tableElem.setAttribute( QStringLiteral( "showUniqueRowsOnly" ), mShowUniqueRowsOnly );
   tableElem.setAttribute( QStringLiteral( "showOnlyVisibleFeatures" ), mShowOnlyVisibleFeatures );

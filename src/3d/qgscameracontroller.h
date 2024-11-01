@@ -30,7 +30,7 @@ namespace Qt3DInput
   class QMouseEvent;
   class QMouseHandler;
   class QWheelEvent;
-}
+} // namespace Qt3DInput
 
 namespace Qt3DRender
 {
@@ -63,7 +63,6 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     Q_OBJECT
   public:
-
     //! Constructs the camera controller with optional parent node that will take ownership
     QgsCameraController( Qgs3DMapScene *scene ) SIP_SKIP;
     ~QgsCameraController() override;
@@ -236,12 +235,10 @@ class _3D_EXPORT QgsCameraController : public QObject
     // This list gathers all the rotation and translation operations.
     // It is used to update the appropriate parameters when successive
     // translation and rotation happen.
-    const QList<MouseOperation> mTranslateOrRotate =
-    {
+    const QList<MouseOperation> mTranslateOrRotate = {
       MouseOperation::Translation,
       MouseOperation::RotationCamera,
-      MouseOperation::RotationCenter
-    };
+      MouseOperation::RotationCenter };
 
     // check that current sequence (current operation and new operation) is a rotation or translation
     bool isATranslationRotationSequence( MouseOperation newOperation ) const;
@@ -324,7 +321,7 @@ class _3D_EXPORT QgsCameraController : public QObject
     bool mDepthBufferIsReady = false;
     QImage mDepthBufferImage;
 
-    std::unique_ptr< Qt3DRender::QCamera > mCameraBefore;
+    std::unique_ptr<Qt3DRender::QCamera> mCameraBefore;
 
     bool mRotationCenterCalculated = false;
     QVector3D mRotationCenter;
@@ -345,7 +342,7 @@ class _3D_EXPORT QgsCameraController : public QObject
     Qgis::VerticalAxisInversion mVerticalAxisInversion = Qgis::VerticalAxisInversion::WhenDragging;
     double mCameraMovementSpeed = 5.0;
 
-    QSet< int > mDepressedKeys;
+    QSet<int> mDepressedKeys;
     bool mCaptureFpsMouseMovements = false;
     bool mIgnoreNextMouseMove = false;
     QTimer *mFpsNavTimer = nullptr;

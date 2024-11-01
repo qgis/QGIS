@@ -44,12 +44,10 @@ class CORE_EXPORT QgsXyzVectorTileDataProviderBase : public QgsVectorTileDataPro
     QList<QNetworkRequest> tileRequests( const QgsTileMatrixSet &tileMatrix, const QgsTileXYZ &id, Qgis::RendererUsage usage ) const override;
 
   protected:
-
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
 
   private:
-
     //! Returns raw tile data for a single tile, doing a HTTP request. Block the caller until tile data are downloaded.
     static QByteArray loadFromNetwork( const QgsTileXYZ &id,
                                        const QgsTileMatrix &tileMatrix,
@@ -58,7 +56,6 @@ class CORE_EXPORT QgsXyzVectorTileDataProviderBase : public QgsVectorTileDataPro
                                        const QgsHttpHeaders &headers,
                                        QgsFeedback *feedback = nullptr,
                                        Qgis::RendererUsage usage = Qgis::RendererUsage::Unknown );
-
 };
 
 class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsXyzVectorTileDataProviderBase
@@ -86,14 +83,13 @@ class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsXyzVectorTileDataProv
 
     static QString XYZ_DATA_PROVIDER_KEY;
     static QString XYZ_DATA_PROVIDER_DESCRIPTION;
-  protected:
 
+  protected:
     bool mIsValid = false;
     QgsRectangle mExtent;
     QgsVectorTileMatrixSet mMatrixSet;
 
   private:
-
     //! Returns raw tile data for a single tile, doing a HTTP request. Block the caller until tile data are downloaded.
     static QByteArray loadFromNetwork( const QgsTileXYZ &id,
                                        const QgsTileMatrix &tileMatrix,
@@ -101,7 +97,6 @@ class CORE_EXPORT QgsXyzVectorTileDataProvider : public QgsXyzVectorTileDataProv
                                        const QString &authid,
                                        const QgsHttpHeaders &headers,
                                        QgsFeedback *feedback = nullptr );
-
 };
 
 
@@ -117,7 +112,7 @@ class QgsXyzVectorTileDataProviderMetadata : public QgsProviderMetadata
     QString encodeUri( const QVariantMap &parts ) const override;
     QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 

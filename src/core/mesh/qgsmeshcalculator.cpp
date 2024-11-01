@@ -159,7 +159,7 @@ QgsMeshCalculator::Result QgsMeshCalculator::expressionIsValid(
   QgsMeshDriverMetadata::MeshDriverCapability &requiredCapability )
 {
   QString errorString;
-  std::unique_ptr< QgsMeshCalcNode > calcNode( QgsMeshCalcNode::parseMeshCalcString( formulaString, errorString ) );
+  std::unique_ptr<QgsMeshCalcNode> calcNode( QgsMeshCalcNode::parseMeshCalcString( formulaString, errorString ) );
   if ( !calcNode )
     return ParserError;
 
@@ -168,8 +168,7 @@ QgsMeshCalculator::Result QgsMeshCalculator::expressionIsValid(
 
   const QgsMeshDatasetGroupMetadata::DataType dataType = QgsMeshCalcUtils::determineResultDataType( layer, calcNode->usedDatasetGroupNames() );
 
-  requiredCapability = dataType == QgsMeshDatasetGroupMetadata::DataOnFaces ? QgsMeshDriverMetadata::MeshDriverCapability::CanWriteFaceDatasets :
-                       QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets;
+  requiredCapability = dataType == QgsMeshDatasetGroupMetadata::DataOnFaces ? QgsMeshDriverMetadata::MeshDriverCapability::CanWriteFaceDatasets : QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets;
 
   return Success;
 }
@@ -177,22 +176,19 @@ QgsMeshCalculator::Result QgsMeshCalculator::expressionIsValid(
 QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *feedback )
 {
   // check input
-  if ( mOutputFile.isEmpty() &&  mDestination == QgsMeshDatasetGroup::Persistent )
+  if ( mOutputFile.isEmpty() && mDestination == QgsMeshDatasetGroup::Persistent )
   {
     return CreateOutputError;
   }
 
-  if ( !mMeshLayer ||
-       !mMeshLayer->dataProvider() ||
-       mMeshLayer->providerType() != QStringLiteral( "mdal" )
-     )
+  if ( !mMeshLayer || !mMeshLayer->dataProvider() || mMeshLayer->providerType() != QStringLiteral( "mdal" ) )
   {
     return CreateOutputError;
   }
 
   //prepare search string / tree
   QString errorString;
-  std::unique_ptr< QgsMeshCalcNode > calcNode( QgsMeshCalcNode::parseMeshCalcString( mFormulaString, errorString ) );
+  std::unique_ptr<QgsMeshCalcNode> calcNode( QgsMeshCalcNode::parseMeshCalcString( mFormulaString, errorString ) );
   if ( !calcNode )
   {
     return ParserError;
@@ -200,10 +196,9 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
 
   // proceed eventually on the fly
   bool err;
-  if ( mDestination ==  QgsMeshDatasetGroup::Virtual )
+  if ( mDestination == QgsMeshDatasetGroup::Virtual )
   {
-    std::unique_ptr<QgsMeshDatasetGroup> virtualDatasetGroup =
-      std::make_unique<QgsMeshVirtualDatasetGroup> ( mOutputGroupName, mFormulaString, mMeshLayer, mStartTime * 3600 * 1000, mEndTime * 3600 * 1000 );
+    std::unique_ptr<QgsMeshDatasetGroup> virtualDatasetGroup = std::make_unique<QgsMeshVirtualDatasetGroup>( mOutputGroupName, mFormulaString, mMeshLayer, mStartTime * 3600 * 1000, mEndTime * 3600 * 1000 );
     virtualDatasetGroup->initialize();
     virtualDatasetGroup->setReferenceTime( static_cast<QgsMeshLayerTemporalProperties *>( mMeshLayer->temporalProperties() )->referenceTime() );
     err = !mMeshLayer->addDatasets( virtualDatasetGroup.release() );
@@ -226,7 +221,7 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
     return InvalidDatasets;
   }
 
-  std::unique_ptr<QgsMeshMemoryDatasetGroup> outputGroup = std::make_unique<QgsMeshMemoryDatasetGroup> ( mOutputGroupName, dsu.outputType() );
+  std::unique_ptr<QgsMeshMemoryDatasetGroup> outputGroup = std::make_unique<QgsMeshMemoryDatasetGroup>( mOutputGroupName, dsu.outputType() );
 
   // calculate
   const bool ok = calcNode->calculate( dsu, *outputGroup );
@@ -282,15 +277,13 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
     datasetValues.push_back(
       dataset->datasetValues( outputGroup->isScalar(),
                               0,
-                              dataset->values.size() )
-    );
+                              dataset->values.size() ) );
     if ( !dataset->active.isEmpty() )
     {
       datasetActive.push_back(
         dataset->areFacesActive(
           0,
-          dataset->active.size() )
-      );
+          dataset->active.size() ) );
     }
   }
 
@@ -307,13 +300,12 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
   else
   {
     err = mMeshLayer->dataProvider()->persistDatasetGroup(
-            mOutputFile,
-            mOutputDriver,
-            meta,
-            datasetValues,
-            datasetActive,
-            times
-          );
+      mOutputFile,
+      mOutputDriver,
+      meta,
+      datasetValues,
+      datasetActive,
+      times );
   }
 
 

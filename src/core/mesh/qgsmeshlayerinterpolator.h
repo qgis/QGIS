@@ -39,19 +39,19 @@ class QgsRenderContext;
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include "qgsmeshlayerinterpolator.h"
-% End
+  % End
 #endif
 
-///@cond PRIVATE
+  ///@cond PRIVATE
 
-/**
+  /**
  * \ingroup core
  * \brief Interpolate mesh scalar dataset to raster block
  *
  * \note not available in Python bindings
  * \since QGIS 3.2
  */
-class QgsMeshLayerInterpolator : public QgsRasterInterface SIP_SKIP
+  class QgsMeshLayerInterpolator : public QgsRasterInterface SIP_SKIP
 {
   public:
     //! Ctor
@@ -115,8 +115,7 @@ namespace QgsMeshUtils
     const QgsCoordinateTransformContext &transformContext,
     double mapUnitsPerPixel,
     const QgsRectangle &extent,
-    QgsRasterBlockFeedback *feedback = nullptr
-  ) SIP_FACTORY;
+    QgsRasterBlockFeedback *feedback = nullptr ) SIP_FACTORY;
 
 
   /**
@@ -142,8 +141,7 @@ namespace QgsMeshUtils
     const QgsCoordinateTransform &transform,
     double mapUnitsPerPixel,
     const QgsRectangle &extent,
-    QgsRasterBlockFeedback *feedback = nullptr
-  ) SIP_SKIP;
-};
+    QgsRasterBlockFeedback *feedback = nullptr ) SIP_SKIP;
+}; // namespace QgsMeshUtils
 
 #endif // QGSMESHLAYERINTERPOLATOR_H

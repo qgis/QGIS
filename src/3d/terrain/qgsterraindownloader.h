@@ -47,23 +47,21 @@ class QgsCoordinateTransformContext;
  */
 class _3D_EXPORT QgsTerrainDownloader
 {
-
   public:
-
     /**
      * Constructs a QgsTerrainDownloader object
      * \param transformContext coordinate transform context
      */
-    QgsTerrainDownloader( const QgsCoordinateTransformContext  &transformContext );
+    QgsTerrainDownloader( const QgsCoordinateTransformContext &transformContext );
 
     ~QgsTerrainDownloader();
 
     //! Definition of data source for terrain tiles (assuming "terrarium" data encoding with usual XYZ tiling scheme)
     struct DataSource
     {
-      QString uri;  //!< HTTP(S) template for XYZ tiles requests (e.g. http://example.com/{z}/{x}/{y}.png)
-      int zMin = 0;  //!< Minimum zoom level (Z) with valid data
-      int zMax = 0;  //!< Maximum zoom level (Z) with valid data
+        QString uri;  //!< HTTP(S) template for XYZ tiles requests (e.g. http://example.com/{z}/{x}/{y}.png)
+        int zMin = 0; //!< Minimum zoom level (Z) with valid data
+        int zMax = 0; //!< Maximum zoom level (Z) with valid data
     };
 
     //! Returns the data source used by default
@@ -82,7 +80,6 @@ class _3D_EXPORT QgsTerrainDownloader
     QByteArray getHeightMap( const QgsRectangle &extentOrig, int res, const QgsCoordinateReferenceSystem &destCrs, const QgsCoordinateTransformContext &context = QgsCoordinateTransformContext(), QString tmpFilenameImg = QString(), QString tmpFilenameTif = QString() );
 
   private:
-
     /**
      * For the requested resolution given as map units per pixel, find out the best native tile resolution
      * (higher resolution = fewer map units per pixel)
@@ -103,7 +100,7 @@ class _3D_EXPORT QgsTerrainDownloader
   private:
     DataSource mDataSource;
     std::unique_ptr<QgsRasterLayer> mOnlineDtm;
-    double mXSpan = 0;   //!< Width of the tile at zoom level 0 in map units
+    double mXSpan = 0; //!< Width of the tile at zoom level 0 in map units
 };
 
 #endif // QGSTERRAINDOWNLOADER_H

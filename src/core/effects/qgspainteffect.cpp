@@ -28,7 +28,6 @@ QgsPaintEffect::QgsPaintEffect( const QgsPaintEffect &other )
   : mEnabled( other.enabled() )
   , mDrawMode( other.drawMode() )
 {
-
 }
 
 QgsPaintEffect::~QgsPaintEffect()
@@ -238,7 +237,7 @@ QVariantMap QgsDrawSourceEffect::properties() const
 void QgsDrawSourceEffect::readProperties( const QVariantMap &props )
 {
   bool ok;
-  const QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
+  const QPainter::CompositionMode mode = static_cast<QPainter::CompositionMode>( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
   if ( ok )
   {
     mBlendMode = mode;
@@ -260,7 +259,7 @@ void QgsDrawSourceEffect::readProperties( const QVariantMap &props )
     }
   }
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
-  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
+  mDrawMode = static_cast<QgsPaintEffect::DrawMode>( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
 }
 
 

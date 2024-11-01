@@ -38,7 +38,6 @@ class GUI_EXPORT QgsDetailedItemDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
   public:
-
     //! Constructor for QgsDetailedItemDelegate
     QgsDetailedItemDelegate( QObject *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsDetailedItemDelegate() override;

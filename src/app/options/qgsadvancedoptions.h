@@ -35,7 +35,6 @@ class QgsAdvancedSettingsWidget : public QgsOptionsPageWidget, private Ui::QgsAd
     Q_OBJECT
 
   public:
-
     static inline QgsSettingsTreeNode *sTreeSettings = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "settings" ) );
     static const QgsSettingsEntryBool *settingsUseNewTreeWidget;
     static const QgsSettingsEntryBool *settingsShowWarning;
@@ -54,7 +53,6 @@ class QgsAdvancedSettingsWidget : public QgsOptionsPageWidget, private Ui::QgsAd
 
     QgsSettingsTreeWidget *mTreeWidget = nullptr;
     QgsSettingsTreeWidgetOld *mTreeWidgetOld = nullptr;
-
 };
 
 
@@ -63,12 +61,10 @@ class QgsAdvancedSettingsOptionsFactory : public QgsOptionsWidgetFactory
     Q_OBJECT
 
   public:
-
     QgsAdvancedSettingsOptionsFactory();
 
     QIcon icon() const override;
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
-
 };
 
 

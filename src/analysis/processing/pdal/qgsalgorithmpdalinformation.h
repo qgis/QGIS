@@ -30,9 +30,7 @@
  */
 class QgsPdalInformationAlgorithm : public QgsPdalAlgorithmBase
 {
-
   public:
-
     QgsPdalInformationAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -45,8 +43,8 @@ class QgsPdalInformationAlgorithm : public QgsPdalAlgorithmBase
 
     QStringList createArgumentLists( const QVariantMap &parameters,
                                      QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-  protected:
 
+  protected:
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 

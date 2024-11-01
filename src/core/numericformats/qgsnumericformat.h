@@ -37,7 +37,6 @@ class CORE_EXPORT QgsNumericFormatContext
     Q_GADGET
 
   public:
-
     /**
      * Constructor for QgsNumericFormatContext.
      *
@@ -192,8 +191,8 @@ class CORE_EXPORT QgsNumericFormatContext
      */
     enum class Interpretation
     {
-      Generic, //!< Generic
-      Latitude, //!< Latitude values
+      Generic,   //!< Generic
+      Latitude,  //!< Latitude values
       Longitude, //!< Longitude values
     };
     Q_ENUM( Interpretation )
@@ -262,10 +261,10 @@ class CORE_EXPORT QgsNumericFormatContext
 #include <qgsscientificnumericformat.h>
 #include <qgscoordinatenumericformat.h>
 #include <qgsexpressionbasednumericformat.h>
-% End
+  % End
 #endif
 
-/**
+  /**
  * \ingroup core
  * \brief A numeric formatter allows for formatting a numeric value for display, using
  * a variety of different formatting techniques (e.g. as scientific notation, currency values,
@@ -275,28 +274,27 @@ class CORE_EXPORT QgsNumericFormatContext
  *
  * \since QGIS 3.12
  */
-class CORE_EXPORT QgsNumericFormat
+  class CORE_EXPORT QgsNumericFormat
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast< QgsBearingNumericFormat * >( sipCpp ) )
+    if ( dynamic_cast<QgsBearingNumericFormat *>( sipCpp ) )
       sipType = sipType_QgsBearingNumericFormat;
-    else if ( dynamic_cast< QgsGeographicCoordinateNumericFormat * >( sipCpp ) )
+    else if ( dynamic_cast<QgsGeographicCoordinateNumericFormat *>( sipCpp ) )
       sipType = sipType_QgsGeographicCoordinateNumericFormat;
-    else if ( dynamic_cast< QgsFallbackNumericFormat * >( sipCpp ) )
+    else if ( dynamic_cast<QgsFallbackNumericFormat *>( sipCpp ) )
       sipType = sipType_QgsFallbackNumericFormat;
-    else if ( dynamic_cast< QgsPercentageNumericFormat * >( sipCpp ) )
+    else if ( dynamic_cast<QgsPercentageNumericFormat *>( sipCpp ) )
       sipType = sipType_QgsPercentageNumericFormat;
-    else if ( dynamic_cast< QgsScientificNumericFormat * >( sipCpp ) )
+    else if ( dynamic_cast<QgsScientificNumericFormat *>( sipCpp ) )
       sipType = sipType_QgsScientificNumericFormat;
-    else if ( dynamic_cast< QgsCurrencyNumericFormat * >( sipCpp ) )
+    else if ( dynamic_cast<QgsCurrencyNumericFormat *>( sipCpp ) )
       sipType = sipType_QgsCurrencyNumericFormat;
-    else if ( dynamic_cast< QgsBasicNumericFormat * >( sipCpp ) )
+    else if ( dynamic_cast<QgsBasicNumericFormat *>( sipCpp ) )
       sipType = sipType_QgsBasicNumericFormat;
-    else if ( dynamic_cast< QgsFractionNumericFormat * >( sipCpp ) )
+    else if ( dynamic_cast<QgsFractionNumericFormat *>( sipCpp ) )
       sipType = sipType_QgsFractionNumericFormat;
-    else if ( dynamic_cast< QgsExpressionBasedNumericFormat * >( sipCpp ) )
+    else if ( dynamic_cast<QgsExpressionBasedNumericFormat *>( sipCpp ) )
       sipType = sipType_QgsExpressionBasedNumericFormat;
     else
       sipType = NULL;
@@ -304,7 +302,6 @@ class CORE_EXPORT QgsNumericFormat
 #endif
 
   public:
-
     QgsNumericFormat() = default;
 
     virtual ~QgsNumericFormat() = default;
@@ -368,7 +365,6 @@ class CORE_EXPORT QgsNumericFormat
     bool operator!=( const QgsNumericFormat &other ) const;
 
   protected:
-
     static constexpr int DEFAULT_SORT_KEY = 100;
 };
 

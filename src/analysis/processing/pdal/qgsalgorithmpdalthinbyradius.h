@@ -30,9 +30,7 @@
  */
 class QgsPdalThinByRadiusAlgorithm : public QgsPdalAlgorithmBase
 {
-
   public:
-
     QgsPdalThinByRadiusAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;

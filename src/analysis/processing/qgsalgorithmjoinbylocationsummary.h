@@ -30,9 +30,7 @@
  */
 class QgsJoinByLocationSummaryAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsJoinByLocationSummaryAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -50,13 +48,9 @@ class QgsJoinByLocationSummaryAlgorithm : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     QStringList mAllSummaries;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMJOINBYLOCATIONSUMMARY_H
-
-

@@ -52,10 +52,12 @@ email                : morb at ozemail dot com dot au
 
 struct QgsGeometryPrivate
 {
-  QgsGeometryPrivate(): ref( 1 ) {}
-  QgsGeometryPrivate( std::unique_ptr< QgsAbstractGeometry > geometry ): ref( 1 ), geometry( std::move( geometry ) ) {}
-  QAtomicInt ref;
-  std::unique_ptr< QgsAbstractGeometry > geometry;
+    QgsGeometryPrivate()
+      : ref( 1 ) {}
+    QgsGeometryPrivate( std::unique_ptr<QgsAbstractGeometry> geometry )
+      : ref( 1 ), geometry( std::move( geometry ) ) {}
+    QAtomicInt ref;
+    std::unique_ptr<QgsAbstractGeometry> geometry;
 };
 
 QgsGeometry::QgsGeometry()
@@ -108,7 +110,7 @@ void QgsGeometry::detach()
   if ( d->ref <= 1 )
     return;
 
-  std::unique_ptr< QgsAbstractGeometry > cGeom;
+  std::unique_ptr<QgsAbstractGeometry> cGeom;
   if ( d->geometry )
     cGeom.reset( d->geometry->clone() );
 
@@ -119,7 +121,7 @@ void QgsGeometry::reset( std::unique_ptr<QgsAbstractGeometry> newGeometry )
 {
   if ( d->ref > 1 )
   {
-    ( void )d->ref.deref();
+    ( void ) d->ref.deref();
     d = new QgsGeometryPrivate();
   }
   d->geometry = std::move( newGeometry );
@@ -143,7 +145,7 @@ void QgsGeometry::set( QgsAbstractGeometry *geometry )
     return;
   }
 
-  reset( std::unique_ptr< QgsAbstractGeometry >( geometry ) );
+  reset( std::unique_ptr<QgsAbstractGeometry>( geometry ) );
 }
 
 bool QgsGeometry::isNull() const
@@ -151,8 +153,8 @@ bool QgsGeometry::isNull() const
   return !d->geometry;
 }
 
-typedef QCache< QString, QgsGeometry > WktCache;
-Q_GLOBAL_STATIC_WITH_ARGS( WktCache, sWktCache, ( 2000 ) )  // store up to 2000 geometries
+typedef QCache<QString, QgsGeometry> WktCache;
+Q_GLOBAL_STATIC_WITH_ARGS( WktCache, sWktCache, ( 2000 ) ) // store up to 2000 geometries
 Q_GLOBAL_STATIC( QMutex, sWktMutex )
 
 QgsGeometry QgsGeometry::fromWkt( const QString &wkt )
@@ -167,7 +169,7 @@ QgsGeometry QgsGeometry::fromWkt( const QString &wkt )
 
 QgsGeometry QgsGeometry::fromPointXY( const QgsPointXY &point )
 {
-  std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::fromPointXY( point ) );
+  std::unique_ptr<QgsAbstractGeometry> geom( QgsGeometryFactory::fromPointXY( point ) );
   if ( geom )
   {
     return QgsGeometry( geom.release() );
@@ -182,7 +184,7 @@ QgsGeometry QgsGeometry::fromPoint( const QgsPoint &point )
 
 QgsGeometry QgsGeometry::fromPolylineXY( const QgsPolylineXY &polyline )
 {
-  std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::fromPolylineXY( polyline );
+  std::unique_ptr<QgsAbstractGeometry> geom = QgsGeometryFactory::fromPolylineXY( polyline );
   if ( geom )
   {
     return QgsGeometry( std::move( geom ) );
@@ -192,12 +194,12 @@ QgsGeometry QgsGeometry::fromPolylineXY( const QgsPolylineXY &polyline )
 
 QgsGeometry QgsGeometry::fromPolyline( const QgsPolyline &polyline )
 {
-  return QgsGeometry( std::make_unique< QgsLineString >( polyline ) );
+  return QgsGeometry( std::make_unique<QgsLineString>( polyline ) );
 }
 
 QgsGeometry QgsGeometry::fromPolygonXY( const QgsPolygonXY &polygon )
 {
-  std::unique_ptr< QgsPolygon > geom = QgsGeometryFactory::fromPolygonXY( polygon );
+  std::unique_ptr<QgsPolygon> geom = QgsGeometryFactory::fromPolygonXY( polygon );
   if ( geom )
   {
     return QgsGeometry( std::move( geom ) );
@@ -207,7 +209,7 @@ QgsGeometry QgsGeometry::fromPolygonXY( const QgsPolygonXY &polygon )
 
 QgsGeometry QgsGeometry::fromMultiPointXY( const QgsMultiPointXY &multipoint )
 {
-  std::unique_ptr< QgsMultiPoint > geom = QgsGeometryFactory::fromMultiPointXY( multipoint );
+  std::unique_ptr<QgsMultiPoint> geom = QgsGeometryFactory::fromMultiPointXY( multipoint );
   if ( geom )
   {
     return QgsGeometry( std::move( geom ) );
@@ -217,7 +219,7 @@ QgsGeometry QgsGeometry::fromMultiPointXY( const QgsMultiPointXY &multipoint )
 
 QgsGeometry QgsGeometry::fromMultiPolylineXY( const QgsMultiPolylineXY &multiline )
 {
-  std::unique_ptr< QgsMultiLineString > geom = QgsGeometryFactory::fromMultiPolylineXY( multiline );
+  std::unique_ptr<QgsMultiLineString> geom = QgsGeometryFactory::fromMultiPolylineXY( multiline );
   if ( geom )
   {
     return QgsGeometry( std::move( geom ) );
@@ -227,7 +229,7 @@ QgsGeometry QgsGeometry::fromMultiPolylineXY( const QgsMultiPolylineXY &multilin
 
 QgsGeometry QgsGeometry::fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly )
 {
-  std::unique_ptr< QgsMultiPolygon > geom = QgsGeometryFactory::fromMultiPolygonXY( multipoly );
+  std::unique_ptr<QgsMultiPolygon> geom = QgsGeometryFactory::fromMultiPolygonXY( multipoly );
   if ( geom )
   {
     return QgsGeometry( std::move( geom ) );
@@ -240,18 +242,18 @@ QgsGeometry QgsGeometry::fromRect( const QgsRectangle &rect )
   if ( rect.isNull() )
     return QgsGeometry();
 
-  std::unique_ptr< QgsLineString > ext = std::make_unique< QgsLineString >(
-      QVector< double >() << rect.xMinimum()
-      << rect.xMaximum()
-      << rect.xMaximum()
-      << rect.xMinimum()
-      << rect.xMinimum(),
-      QVector< double >() << rect.yMinimum()
-      << rect.yMinimum()
-      << rect.yMaximum()
-      << rect.yMaximum()
-      << rect.yMinimum() );
-  std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
+  std::unique_ptr<QgsLineString> ext = std::make_unique<QgsLineString>(
+    QVector<double>() << rect.xMinimum()
+                      << rect.xMaximum()
+                      << rect.xMaximum()
+                      << rect.xMinimum()
+                      << rect.xMinimum(),
+    QVector<double>() << rect.yMinimum()
+                      << rect.yMinimum()
+                      << rect.yMaximum()
+                      << rect.yMaximum()
+                      << rect.yMinimum() );
+  std::unique_ptr<QgsPolygon> polygon = std::make_unique<QgsPolygon>();
   polygon->setExteriorRing( ext.release() );
   return QgsGeometry( std::move( polygon ) );
 }
@@ -263,126 +265,126 @@ QgsGeometry QgsGeometry::fromBox3D( const QgsBox3D &box )
     return fromRect( box.toRectangle() );
   }
 
-  std::unique_ptr< QgsPolyhedralSurface > polyhedralSurface = std::make_unique< QgsPolyhedralSurface >();
+  std::unique_ptr<QgsPolyhedralSurface> polyhedralSurface = std::make_unique<QgsPolyhedralSurface>();
 
-  std::unique_ptr< QgsLineString > ext1 = std::make_unique< QgsLineString >(
-      QVector< double >() << box.xMinimum()
-      << box.xMinimum()
-      << box.xMaximum()
-      << box.xMaximum()
-      << box.xMinimum(),
-      QVector< double >() << box.yMinimum()
-      << box.yMaximum()
-      << box.yMaximum()
-      << box.yMinimum()
-      << box.yMinimum(),
-      QVector< double >() << box.zMinimum()
-      << box.zMinimum()
-      << box.zMinimum()
-      << box.zMinimum()
-      << box.zMinimum() );
-  std::unique_ptr< QgsPolygon > polygon1 = std::make_unique< QgsPolygon >( ext1.release() );
+  std::unique_ptr<QgsLineString> ext1 = std::make_unique<QgsLineString>(
+    QVector<double>() << box.xMinimum()
+                      << box.xMinimum()
+                      << box.xMaximum()
+                      << box.xMaximum()
+                      << box.xMinimum(),
+    QVector<double>() << box.yMinimum()
+                      << box.yMaximum()
+                      << box.yMaximum()
+                      << box.yMinimum()
+                      << box.yMinimum(),
+    QVector<double>() << box.zMinimum()
+                      << box.zMinimum()
+                      << box.zMinimum()
+                      << box.zMinimum()
+                      << box.zMinimum() );
+  std::unique_ptr<QgsPolygon> polygon1 = std::make_unique<QgsPolygon>( ext1.release() );
   polyhedralSurface->addPatch( polygon1.release() );
 
-  std::unique_ptr< QgsLineString > ext2 = std::make_unique< QgsLineString >(
-      QVector< double >() << box.xMinimum()
-      << box.xMinimum()
-      << box.xMinimum()
-      << box.xMinimum()
-      << box.xMinimum(),
-      QVector< double >() << box.yMinimum()
-      << box.yMaximum()
-      << box.yMaximum()
-      << box.yMinimum()
-      << box.yMinimum(),
-      QVector< double >() << box.zMinimum()
-      << box.zMinimum()
-      << box.zMaximum()
-      << box.zMaximum()
-      << box.zMinimum() );
-  std::unique_ptr< QgsPolygon > polygon2 = std::make_unique< QgsPolygon >( ext2.release() );
+  std::unique_ptr<QgsLineString> ext2 = std::make_unique<QgsLineString>(
+    QVector<double>() << box.xMinimum()
+                      << box.xMinimum()
+                      << box.xMinimum()
+                      << box.xMinimum()
+                      << box.xMinimum(),
+    QVector<double>() << box.yMinimum()
+                      << box.yMaximum()
+                      << box.yMaximum()
+                      << box.yMinimum()
+                      << box.yMinimum(),
+    QVector<double>() << box.zMinimum()
+                      << box.zMinimum()
+                      << box.zMaximum()
+                      << box.zMaximum()
+                      << box.zMinimum() );
+  std::unique_ptr<QgsPolygon> polygon2 = std::make_unique<QgsPolygon>( ext2.release() );
   polyhedralSurface->addPatch( polygon2.release() );
 
-  std::unique_ptr< QgsLineString > ext3 = std::make_unique< QgsLineString >(
-      QVector< double >() << box.xMinimum()
-      << box.xMaximum()
-      << box.xMaximum()
-      << box.xMinimum()
-      << box.xMinimum(),
-      QVector< double >() << box.yMinimum()
-      << box.yMinimum()
-      << box.yMinimum()
-      << box.yMinimum()
-      << box.yMinimum(),
-      QVector< double >() << box.zMinimum()
-      << box.zMinimum()
-      << box.zMaximum()
-      << box.zMaximum()
-      << box.zMinimum() );
-  std::unique_ptr< QgsPolygon > polygon3 = std::make_unique< QgsPolygon >( ext3.release() );
+  std::unique_ptr<QgsLineString> ext3 = std::make_unique<QgsLineString>(
+    QVector<double>() << box.xMinimum()
+                      << box.xMaximum()
+                      << box.xMaximum()
+                      << box.xMinimum()
+                      << box.xMinimum(),
+    QVector<double>() << box.yMinimum()
+                      << box.yMinimum()
+                      << box.yMinimum()
+                      << box.yMinimum()
+                      << box.yMinimum(),
+    QVector<double>() << box.zMinimum()
+                      << box.zMinimum()
+                      << box.zMaximum()
+                      << box.zMaximum()
+                      << box.zMinimum() );
+  std::unique_ptr<QgsPolygon> polygon3 = std::make_unique<QgsPolygon>( ext3.release() );
   polyhedralSurface->addPatch( polygon3.release() );
 
-  std::unique_ptr< QgsLineString > ext4 = std::make_unique< QgsLineString >(
-      QVector< double >() << box.xMaximum()
-      << box.xMaximum()
-      << box.xMinimum()
-      << box.xMinimum()
-      << box.xMaximum(),
-      QVector< double >() << box.yMaximum()
-      << box.yMinimum()
-      << box.yMinimum()
-      << box.yMaximum()
-      << box.yMaximum(),
-      QVector< double >() << box.zMaximum()
-      << box.zMaximum()
-      << box.zMaximum()
-      << box.zMaximum()
-      << box.zMaximum() );
-  std::unique_ptr< QgsPolygon > polygon4 = std::make_unique< QgsPolygon >( ext4.release() );
+  std::unique_ptr<QgsLineString> ext4 = std::make_unique<QgsLineString>(
+    QVector<double>() << box.xMaximum()
+                      << box.xMaximum()
+                      << box.xMinimum()
+                      << box.xMinimum()
+                      << box.xMaximum(),
+    QVector<double>() << box.yMaximum()
+                      << box.yMinimum()
+                      << box.yMinimum()
+                      << box.yMaximum()
+                      << box.yMaximum(),
+    QVector<double>() << box.zMaximum()
+                      << box.zMaximum()
+                      << box.zMaximum()
+                      << box.zMaximum()
+                      << box.zMaximum() );
+  std::unique_ptr<QgsPolygon> polygon4 = std::make_unique<QgsPolygon>( ext4.release() );
   polyhedralSurface->addPatch( polygon4.release() );
 
-  std::unique_ptr< QgsLineString > ext5 = std::make_unique< QgsLineString >(
-      QVector< double >() << box.xMaximum()
-      << box.xMaximum()
-      << box.xMaximum()
-      << box.xMaximum()
-      << box.xMaximum(),
-      QVector< double >() << box.yMaximum()
-      << box.yMinimum()
-      << box.yMinimum()
-      << box.yMaximum()
-      << box.yMaximum(),
-      QVector< double >() << box.zMaximum()
-      << box.zMaximum()
-      << box.zMinimum()
-      << box.zMinimum()
-      << box.zMaximum() );
-  std::unique_ptr< QgsPolygon > polygon5 = std::make_unique< QgsPolygon >( ext5.release() );
+  std::unique_ptr<QgsLineString> ext5 = std::make_unique<QgsLineString>(
+    QVector<double>() << box.xMaximum()
+                      << box.xMaximum()
+                      << box.xMaximum()
+                      << box.xMaximum()
+                      << box.xMaximum(),
+    QVector<double>() << box.yMaximum()
+                      << box.yMinimum()
+                      << box.yMinimum()
+                      << box.yMaximum()
+                      << box.yMaximum(),
+    QVector<double>() << box.zMaximum()
+                      << box.zMaximum()
+                      << box.zMinimum()
+                      << box.zMinimum()
+                      << box.zMaximum() );
+  std::unique_ptr<QgsPolygon> polygon5 = std::make_unique<QgsPolygon>( ext5.release() );
   polyhedralSurface->addPatch( polygon5.release() );
 
-  std::unique_ptr< QgsLineString > ext6 = std::make_unique< QgsLineString >(
-      QVector< double >() << box.xMaximum()
-      << box.xMaximum()
-      << box.xMinimum()
-      << box.xMinimum()
-      << box.xMaximum(),
-      QVector< double >() << box.yMaximum()
-      << box.yMaximum()
-      << box.yMaximum()
-      << box.yMaximum()
-      << box.yMaximum(),
-      QVector< double >() << box.zMaximum()
-      << box.zMinimum()
-      << box.zMinimum()
-      << box.zMaximum()
-      << box.zMaximum() );
-  std::unique_ptr< QgsPolygon > polygon6 = std::make_unique< QgsPolygon >( ext6.release() );
+  std::unique_ptr<QgsLineString> ext6 = std::make_unique<QgsLineString>(
+    QVector<double>() << box.xMaximum()
+                      << box.xMaximum()
+                      << box.xMinimum()
+                      << box.xMinimum()
+                      << box.xMaximum(),
+    QVector<double>() << box.yMaximum()
+                      << box.yMaximum()
+                      << box.yMaximum()
+                      << box.yMaximum()
+                      << box.yMaximum(),
+    QVector<double>() << box.zMaximum()
+                      << box.zMinimum()
+                      << box.zMinimum()
+                      << box.zMaximum()
+                      << box.zMaximum() );
+  std::unique_ptr<QgsPolygon> polygon6 = std::make_unique<QgsPolygon>( ext6.release() );
   polyhedralSurface->addPatch( polygon6.release() );
 
   return QgsGeometry( std::move( polyhedralSurface ) );
 }
 
-QgsGeometry QgsGeometry::collectGeometry( const QVector< QgsGeometry > &geometries )
+QgsGeometry QgsGeometry::collectGeometry( const QVector<QgsGeometry> &geometries )
 {
   QgsGeometry collected;
 
@@ -421,27 +423,27 @@ QgsGeometry QgsGeometry::createWedgeBuffer( const QgsPoint &center, const double
 
 QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, double startAngle, double endAngle, double outerRadius, double innerRadius )
 {
-  std::unique_ptr< QgsCompoundCurve > wedge = std::make_unique< QgsCompoundCurve >();
+  std::unique_ptr<QgsCompoundCurve> wedge = std::make_unique<QgsCompoundCurve>();
 
   const double DEG_TO_RAD = M_PI / 180.0;
   const double RAD_TO_DEG = 180.0 / M_PI;
 
-  const double angularWidth =  endAngle - startAngle;
+  const double angularWidth = endAngle - startAngle;
   const bool useShortestArc = QgsGeometryUtilsBase::normalizedAngle( angularWidth * DEG_TO_RAD ) * RAD_TO_DEG <= 180.0;
 
   if ( std::abs( angularWidth ) >= 360.0 )
   {
-    std::unique_ptr< QgsCompoundCurve > outerCc = std::make_unique< QgsCompoundCurve >();
+    std::unique_ptr<QgsCompoundCurve> outerCc = std::make_unique<QgsCompoundCurve>();
 
     QgsCircle outerCircle = QgsCircle( center, outerRadius );
     outerCc->addCurve( outerCircle.toCircularString() );
 
-    std::unique_ptr< QgsCurvePolygon > cp = std::make_unique< QgsCurvePolygon >();
+    std::unique_ptr<QgsCurvePolygon> cp = std::make_unique<QgsCurvePolygon>();
     cp->setExteriorRing( outerCc.release() );
 
     if ( !qgsDoubleNear( innerRadius, 0.0 ) && innerRadius > 0 )
     {
-      std::unique_ptr< QgsCompoundCurve > innerCc = std::make_unique< QgsCompoundCurve >();
+      std::unique_ptr<QgsCompoundCurve> innerCc = std::make_unique<QgsCompoundCurve>();
 
       QgsCircle innerCircle = QgsCircle( center, innerRadius );
       innerCc->addCurve( innerCircle.toCircularString() );
@@ -471,7 +473,7 @@ QgsGeometry QgsGeometry::createWedgeBufferFromAngles( const QgsPoint &center, do
     wedge->addCurve( new QgsLineString( center, outerP1 ) );
   }
 
-  std::unique_ptr< QgsCurvePolygon > cp = std::make_unique< QgsCurvePolygon >();
+  std::unique_ptr<QgsCurvePolygon> cp = std::make_unique<QgsCurvePolygon>();
   cp->setExteriorRing( wedge.release() );
   return QgsGeometry( std::move( cp ) );
 }
@@ -480,7 +482,7 @@ void QgsGeometry::fromWkb( unsigned char *wkb, int length )
 {
   QgsConstWkbPtr ptr( wkb, length );
   reset( QgsGeometryFactory::geomFromWkb( ptr ) );
-  delete [] wkb;
+  delete[] wkb;
 }
 
 void QgsGeometry::fromWkb( const QByteArray &wkb )
@@ -657,7 +659,7 @@ bool QgsGeometry::deleteVertex( int atVertex )
   {
     detach();
     //delete geometry instead of point
-    return static_cast< QgsGeometryCollection * >( d->geometry.get() )->removeGeometry( atVertex );
+    return static_cast<QgsGeometryCollection *>( d->geometry.get() )->removeGeometry( atVertex );
   }
 
   //if it is a point, set the geometry to nullptr
@@ -680,7 +682,6 @@ bool QgsGeometry::deleteVertex( int atVertex )
 
 bool QgsGeometry::toggleCircularAtVertex( int atVertex )
 {
-
   if ( !d->geometry )
     return false;
 
@@ -714,7 +715,7 @@ bool QgsGeometry::toggleCircularAtVertex( int atVertex )
     return false;
 
   bool success = false;
-  QgsCompoundCurve *cpdCurve  = qgsgeometry_cast<QgsCompoundCurve *>( curve );
+  QgsCompoundCurve *cpdCurve = qgsgeometry_cast<QgsCompoundCurve *>( curve );
   if ( cpdCurve )
   {
     // If the geom is a already compound curve, we convert inplace, and we're done
@@ -773,7 +774,7 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
   {
     detach();
     //insert geometry instead of point
-    return static_cast< QgsGeometryCollection * >( d->geometry.get() )->insertGeometry( new QgsPoint( x, y ), beforeVertex );
+    return static_cast<QgsGeometryCollection *>( d->geometry.get() )->insertGeometry( new QgsPoint( x, y ), beforeVertex );
   }
 
   QgsVertexId id;
@@ -799,7 +800,7 @@ bool QgsGeometry::insertVertex( const QgsPoint &point, int beforeVertex )
   {
     detach();
     //insert geometry instead of point
-    return static_cast< QgsGeometryCollection * >( d->geometry.get() )->insertGeometry( new QgsPoint( point ), beforeVertex );
+    return static_cast<QgsGeometryCollection *>( d->geometry.get() )->insertGeometry( new QgsPoint( point ), beforeVertex );
   }
 
   QgsVertexId id;
@@ -833,7 +834,7 @@ bool QgsGeometry::addTopologicalPoint( const QgsPoint &point, double snappingTol
   closestVertex( point, atVertex, beforeVertex, afterVertex, sqrDistVertexSnap );
 
   if ( sqrDistVertexSnap < sqrSnappingTolerance )
-    return false;  // the vertex already exists - do not insert it
+    return false; // the vertex already exists - do not insert it
 
   if ( !insertVertex( point, segmentAfterVertex ) )
   {
@@ -852,7 +853,7 @@ QgsPoint QgsGeometry::vertexAt( int atVertex ) const
   }
 
   QgsVertexId vId;
-  ( void )vertexIdFromVertexNr( atVertex, vId );
+  ( void ) vertexIdFromVertexNr( atVertex, vId );
   if ( vId.vertex < 0 )
   {
     return QgsPoint();
@@ -871,7 +872,7 @@ QgsGeometry QgsGeometry::nearestPoint( const QgsGeometry &other ) const
   // avoid calling geos for trivial point calculations
   if ( d->geometry && QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point )
   {
-    return QgsGeometry( qgsgeometry_cast< const QgsPoint * >( d->geometry.get() )->clone() );
+    return QgsGeometry( qgsgeometry_cast<const QgsPoint *>( d->geometry.get() )->clone() );
   }
 
   QgsGeos geos( d->geometry.get() );
@@ -886,7 +887,7 @@ QgsGeometry QgsGeometry::shortestLine( const QgsGeometry &other ) const
   // avoid calling geos for trivial point-to-point line calculations
   if ( d->geometry && QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point && QgsWkbTypes::flatType( other.wkbType() ) == Qgis::WkbType::Point )
   {
-    return QgsGeometry( std::make_unique< QgsLineString >( *qgsgeometry_cast< const QgsPoint * >( d->geometry.get() ), *qgsgeometry_cast< const QgsPoint * >( other.constGet() ) ) );
+    return QgsGeometry( std::make_unique<QgsLineString>( *qgsgeometry_cast<const QgsPoint *>( d->geometry.get() ), *qgsgeometry_cast<const QgsPoint *>( other.constGet() ) ) );
   }
 
   QgsGeos geos( d->geometry.get() );
@@ -913,10 +914,10 @@ double QgsGeometry::closestVertexWithContext( const QgsPointXY &point, int &atVe
 }
 
 double QgsGeometry::closestSegmentWithContext( const QgsPointXY &point,
-    QgsPointXY &minDistPoint,
-    int &nextVertexIndex,
-    int *leftOrRightOfSegment,
-    double epsilon ) const
+                                               QgsPointXY &minDistPoint,
+                                               int &nextVertexIndex,
+                                               int *leftOrRightOfSegment,
+                                               double epsilon ) const
 {
   if ( !d->geometry )
   {
@@ -926,7 +927,7 @@ double QgsGeometry::closestSegmentWithContext( const QgsPointXY &point,
   QgsPoint segmentPt;
   QgsVertexId vertexAfter;
 
-  double sqrDist = d->geometry->closestSegment( QgsPoint( point ), segmentPt,  vertexAfter, leftOrRightOfSegment, epsilon );
+  double sqrDist = d->geometry->closestSegment( QgsPoint( point ), segmentPt, vertexAfter, leftOrRightOfSegment, epsilon );
   if ( sqrDist < 0 )
     return -1;
 
@@ -938,13 +939,13 @@ double QgsGeometry::closestSegmentWithContext( const QgsPointXY &point,
 
 Qgis::GeometryOperationResult QgsGeometry::addRing( const QVector<QgsPointXY> &ring )
 {
-  std::unique_ptr< QgsLineString > ringLine = std::make_unique< QgsLineString >( ring );
+  std::unique_ptr<QgsLineString> ringLine = std::make_unique<QgsLineString>( ring );
   return addRing( ringLine.release() );
 }
 
 Qgis::GeometryOperationResult QgsGeometry::addRing( QgsCurve *ring )
 {
-  std::unique_ptr< QgsCurve > r( ring );
+  std::unique_ptr<QgsCurve> r( ring );
   if ( !d->geometry )
   {
     return Qgis::GeometryOperationResult::InvalidInputGeometryType;
@@ -973,14 +974,14 @@ Qgis::GeometryOperationResult QgsGeometry::addPartV2( const QVector<QgsPointXY> 
 
 Qgis::GeometryOperationResult QgsGeometry::addPart( const QgsPointSequence &points, Qgis::GeometryType geomType )
 {
-  std::unique_ptr< QgsAbstractGeometry > partGeom;
+  std::unique_ptr<QgsAbstractGeometry> partGeom;
   if ( points.size() == 1 )
   {
-    partGeom = std::make_unique< QgsPoint >( points[0] );
+    partGeom = std::make_unique<QgsPoint>( points[0] );
   }
   else if ( points.size() > 1 )
   {
-    std::unique_ptr< QgsLineString > ringLine = std::make_unique< QgsLineString >();
+    std::unique_ptr<QgsLineString> ringLine = std::make_unique<QgsLineString>();
     ringLine->setPoints( points );
     partGeom = std::move( ringLine );
   }
@@ -991,14 +992,14 @@ Qgis::GeometryOperationResult QgsGeometry::addPart( const QgsPointSequence &poin
 
 Qgis::GeometryOperationResult QgsGeometry::addPartV2( const QgsPointSequence &points, Qgis::WkbType wkbType )
 {
-  std::unique_ptr< QgsAbstractGeometry > partGeom;
+  std::unique_ptr<QgsAbstractGeometry> partGeom;
   if ( points.size() == 1 )
   {
-    partGeom = std::make_unique< QgsPoint >( points[0] );
+    partGeom = std::make_unique<QgsPoint>( points[0] );
   }
   else if ( points.size() > 1 )
   {
-    std::unique_ptr< QgsLineString > ringLine = std::make_unique< QgsLineString >();
+    std::unique_ptr<QgsLineString> ringLine = std::make_unique<QgsLineString>();
     ringLine->setPoints( points );
     partGeom = std::move( ringLine );
   }
@@ -1007,19 +1008,19 @@ Qgis::GeometryOperationResult QgsGeometry::addPartV2( const QgsPointSequence &po
 
 Qgis::GeometryOperationResult QgsGeometry::addPart( QgsAbstractGeometry *part, Qgis::GeometryType geomType )
 {
-  std::unique_ptr< QgsAbstractGeometry > p( part );
+  std::unique_ptr<QgsAbstractGeometry> p( part );
   if ( !d->geometry )
   {
     switch ( geomType )
     {
       case Qgis::GeometryType::Point:
-        reset( std::make_unique< QgsMultiPoint >() );
+        reset( std::make_unique<QgsMultiPoint>() );
         break;
       case Qgis::GeometryType::Line:
-        reset( std::make_unique< QgsMultiLineString >() );
+        reset( std::make_unique<QgsMultiLineString>() );
         break;
       case Qgis::GeometryType::Polygon:
-        reset( std::make_unique< QgsMultiPolygon >() );
+        reset( std::make_unique<QgsMultiPolygon>() );
         break;
       default:
         reset( nullptr );
@@ -1037,27 +1038,27 @@ Qgis::GeometryOperationResult QgsGeometry::addPart( QgsAbstractGeometry *part, Q
 
 Qgis::GeometryOperationResult QgsGeometry::addPartV2( QgsAbstractGeometry *part, Qgis::WkbType wkbType )
 {
-  std::unique_ptr< QgsAbstractGeometry > p( part );
+  std::unique_ptr<QgsAbstractGeometry> p( part );
   if ( !d->geometry )
   {
     switch ( QgsWkbTypes::singleType( QgsWkbTypes::flatType( wkbType ) ) )
     {
       case Qgis::WkbType::Point:
-        reset( std::make_unique< QgsMultiPoint >() );
+        reset( std::make_unique<QgsMultiPoint>() );
         break;
       case Qgis::WkbType::LineString:
-        reset( std::make_unique< QgsMultiLineString >() );
+        reset( std::make_unique<QgsMultiLineString>() );
         break;
       case Qgis::WkbType::Polygon:
       case Qgis::WkbType::Triangle:
-        reset( std::make_unique< QgsMultiPolygon >() );
+        reset( std::make_unique<QgsMultiPolygon>() );
         break;
       case Qgis::WkbType::CurvePolygon:
-        reset( std::make_unique< QgsMultiSurface >() );
+        reset( std::make_unique<QgsMultiSurface>() );
         break;
       case Qgis::WkbType::CompoundCurve:
       case Qgis::WkbType::CircularString:
-        reset( std::make_unique< QgsMultiCurve >() );
+        reset( std::make_unique<QgsMultiCurve>() );
         break;
       default:
         reset( nullptr );
@@ -1117,7 +1118,7 @@ QgsGeometry QgsGeometry::removeInteriorRings( double minimumRingArea ) const
   }
   else
   {
-    std::unique_ptr< QgsCurvePolygon > newPoly( static_cast< QgsCurvePolygon * >( d->geometry->clone() ) );
+    std::unique_ptr<QgsCurvePolygon> newPoly( static_cast<QgsCurvePolygon *>( d->geometry->clone() ) );
     newPoly->removeInteriorRings( minimumRingArea );
     return QgsGeometry( std::move( newPoly ) );
   }
@@ -1176,7 +1177,7 @@ Qgis::GeometryOperationResult QgsGeometry::splitGeometry( const QgsPointSequence
     tmpGeom.addTopologicalPoint( v );
   }
 
-  QVector<QgsGeometry > newGeoms;
+  QVector<QgsGeometry> newGeoms;
   QgsLineString splitLineString( splitLine );
 
   QgsGeos geos( tmpGeom.get() );
@@ -1244,7 +1245,7 @@ Qgis::GeometryOperationResult QgsGeometry::reshapeGeometry( const QgsLineString 
   QgsGeos geos( d->geometry.get() );
   QgsGeometryEngine::EngineOperationResult errorCode = QgsGeometryEngine::Success;
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > geom( geos.reshapeGeometry( reshapeLineString, &errorCode, &mLastError ) );
+  std::unique_ptr<QgsAbstractGeometry> geom( geos.reshapeGeometry( reshapeLineString, &errorCode, &mLastError ) );
   if ( errorCode == QgsGeometryEngine::Success && geom )
   {
     reset( std::move( geom ) );
@@ -1283,7 +1284,7 @@ int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other )
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError ) );
+  std::unique_ptr<QgsAbstractGeometry> diffGeom( geos.intersection( other.constGet(), &mLastError ) );
   if ( !diffGeom )
   {
     return 1;
@@ -1303,7 +1304,7 @@ QgsGeometry QgsGeometry::makeDifference( const QgsGeometry &other ) const
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError ) );
+  std::unique_ptr<QgsAbstractGeometry> diffGeom( geos.intersection( other.constGet(), &mLastError ) );
   if ( !diffGeom )
   {
     QgsGeometry result;
@@ -1421,7 +1422,6 @@ QgsGeometry QgsGeometry::minimalEnclosingCircle( QgsPointXY &center, double &rad
   QgsGeometry geom;
   geom.set( circ.toPolygon( segments ) );
   return geom;
-
 }
 
 QgsGeometry QgsGeometry::minimalEnclosingCircle( unsigned int segments ) const
@@ -1429,7 +1429,6 @@ QgsGeometry QgsGeometry::minimalEnclosingCircle( unsigned int segments ) const
   QgsPointXY center;
   double radius;
   return minimalEnclosingCircle( center, radius, segments );
-
 }
 
 QgsGeometry QgsGeometry::orthogonalize( double tolerance, int maxIterations, double angleThreshold ) const
@@ -1692,12 +1691,11 @@ json QgsGeometry::asJsonObject( int precision ) const
     return nullptr;
   }
   return d->geometry->asJsonObject( precision );
-
 }
 
 QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double defaultZ, double defaultM ) const
 {
-  QVector< QgsGeometry > res;
+  QVector<QgsGeometry> res;
   if ( isNull() )
     return res;
 
@@ -1721,35 +1719,33 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
   }
 
   // polygon -> line
-  if ( QgsWkbTypes::geometryType( type ) == Qgis::GeometryType::Line &&
-       newGeom.type() == Qgis::GeometryType::Polygon )
+  if ( QgsWkbTypes::geometryType( type ) == Qgis::GeometryType::Line && newGeom.type() == Qgis::GeometryType::Polygon )
   {
     // boundary gives us a (multi)line string of exterior + interior rings
     newGeom = QgsGeometry( newGeom.constGet()->boundary() );
   }
   // line -> polygon
-  if ( QgsWkbTypes::geometryType( type ) == Qgis::GeometryType::Polygon &&
-       newGeom.type() == Qgis::GeometryType::Line )
+  if ( QgsWkbTypes::geometryType( type ) == Qgis::GeometryType::Polygon && newGeom.type() == Qgis::GeometryType::Line )
   {
-    std::unique_ptr< QgsGeometryCollection > gc( QgsGeometryFactory::createCollectionOfType( type ) );
+    std::unique_ptr<QgsGeometryCollection> gc( QgsGeometryFactory::createCollectionOfType( type ) );
     const QgsGeometry source = newGeom;
     for ( auto part = source.const_parts_begin(); part != source.const_parts_end(); ++part )
     {
-      std::unique_ptr< QgsAbstractGeometry > exterior( ( *part )->clone() );
-      if ( QgsCurve *curve = qgsgeometry_cast< QgsCurve * >( exterior.get() ) )
+      std::unique_ptr<QgsAbstractGeometry> exterior( ( *part )->clone() );
+      if ( QgsCurve *curve = qgsgeometry_cast<QgsCurve *>( exterior.get() ) )
       {
         if ( QgsWkbTypes::isCurvedType( type ) )
         {
-          std::unique_ptr< QgsCurvePolygon > cp = std::make_unique< QgsCurvePolygon >();
+          std::unique_ptr<QgsCurvePolygon> cp = std::make_unique<QgsCurvePolygon>();
           cp->setExteriorRing( curve );
-          ( void )exterior.release();
+          ( void ) exterior.release();
           gc->addGeometry( cp.release() );
         }
         else
         {
-          std::unique_ptr< QgsPolygon > p = std::make_unique< QgsPolygon  >();
-          p->setExteriorRing( qgsgeometry_cast< QgsLineString * >( curve ) );
-          ( void )exterior.release();
+          std::unique_ptr<QgsPolygon> p = std::make_unique<QgsPolygon>();
+          p->setExteriorRing( qgsgeometry_cast<QgsLineString *>( curve ) );
+          ( void ) exterior.release();
           gc->addGeometry( p.release() );
         }
       }
@@ -1758,14 +1754,12 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
   }
 
   // line/polygon -> points
-  if ( QgsWkbTypes::geometryType( type ) == Qgis::GeometryType::Point &&
-       ( newGeom.type() == Qgis::GeometryType::Line ||
-         newGeom.type() == Qgis::GeometryType::Polygon ) )
+  if ( QgsWkbTypes::geometryType( type ) == Qgis::GeometryType::Point && ( newGeom.type() == Qgis::GeometryType::Line || newGeom.type() == Qgis::GeometryType::Polygon ) )
   {
     // lines/polygons to a point layer, extract all vertices
-    std::unique_ptr< QgsMultiPoint > mp = std::make_unique< QgsMultiPoint >();
+    std::unique_ptr<QgsMultiPoint> mp = std::make_unique<QgsMultiPoint>();
     const QgsGeometry source = newGeom;
-    QSet< QgsPoint > added;
+    QSet<QgsPoint> added;
     for ( auto vertex = source.vertices_begin(); vertex != source.vertices_end(); ++vertex )
     {
       if ( added.contains( *vertex ) )
@@ -1777,14 +1771,13 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
   }
 
   //(Multi)Polygon to PolyhedralSurface
-  if ( QgsWkbTypes::flatType( type ) == Qgis::WkbType::PolyhedralSurface &&
-       QgsWkbTypes::flatType( QgsWkbTypes::singleType( newGeom.wkbType() ) ) == Qgis::WkbType::Polygon )
+  if ( QgsWkbTypes::flatType( type ) == Qgis::WkbType::PolyhedralSurface && QgsWkbTypes::flatType( QgsWkbTypes::singleType( newGeom.wkbType() ) ) == Qgis::WkbType::Polygon )
   {
-    std::unique_ptr< QgsPolyhedralSurface > polySurface = std::make_unique< QgsPolyhedralSurface >();
+    std::unique_ptr<QgsPolyhedralSurface> polySurface = std::make_unique<QgsPolyhedralSurface>();
     const QgsGeometry source = newGeom;
     for ( auto part = source.const_parts_begin(); part != source.const_parts_end(); ++part )
     {
-      if ( const QgsPolygon *polygon = qgsgeometry_cast< const QgsPolygon * >( *part ) )
+      if ( const QgsPolygon *polygon = qgsgeometry_cast<const QgsPolygon *>( *part ) )
       {
         polySurface->addPatch( polygon->clone() );
       }
@@ -1793,12 +1786,11 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
   }
 
   // Polygon -> Triangle
-  if ( QgsWkbTypes::flatType( type ) == Qgis::WkbType::Triangle &&
-       QgsWkbTypes::flatType( newGeom.wkbType() ) == Qgis::WkbType::Polygon )
+  if ( QgsWkbTypes::flatType( type ) == Qgis::WkbType::Triangle && QgsWkbTypes::flatType( newGeom.wkbType() ) == Qgis::WkbType::Polygon )
   {
-    std::unique_ptr< QgsTriangle > triangle = std::make_unique< QgsTriangle >();
+    std::unique_ptr<QgsTriangle> triangle = std::make_unique<QgsTriangle>();
     const QgsGeometry source = newGeom;
-    if ( QgsPolygon *polygon = qgsgeometry_cast< QgsPolygon * >( newGeom.constGet() ) )
+    if ( QgsPolygon *polygon = qgsgeometry_cast<QgsPolygon *>( newGeom.constGet() ) )
     {
       triangle->setExteriorRing( polygon->exteriorRing()->clone() );
     }
@@ -1807,25 +1799,25 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
 
 
   // Single -> multi
-  if ( QgsWkbTypes::isMultiType( type ) && ! newGeom.isMultipart( ) )
+  if ( QgsWkbTypes::isMultiType( type ) && !newGeom.isMultipart() )
   {
     newGeom.convertToMultiType();
   }
   // Drop Z/M
-  if ( newGeom.constGet()->is3D() && ! QgsWkbTypes::hasZ( type ) )
+  if ( newGeom.constGet()->is3D() && !QgsWkbTypes::hasZ( type ) )
   {
     newGeom.get()->dropZValue();
   }
-  if ( newGeom.constGet()->isMeasure() && ! QgsWkbTypes::hasM( type ) )
+  if ( newGeom.constGet()->isMeasure() && !QgsWkbTypes::hasM( type ) )
   {
     newGeom.get()->dropMValue();
   }
   // Add Z/M back, set to 0
-  if ( ! newGeom.constGet()->is3D() && QgsWkbTypes::hasZ( type ) )
+  if ( !newGeom.constGet()->is3D() && QgsWkbTypes::hasZ( type ) )
   {
     newGeom.get()->addZValue( defaultZ );
   }
-  if ( ! newGeom.constGet()->isMeasure() && QgsWkbTypes::hasM( type ) )
+  if ( !newGeom.constGet()->isMeasure() && QgsWkbTypes::hasM( type ) )
   {
     newGeom.get()->addMValue( defaultM );
   }
@@ -1837,11 +1829,11 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
   }
 
   // Multi -> single
-  if ( ! QgsWkbTypes::isMultiType( type ) && newGeom.isMultipart( ) )
+  if ( !QgsWkbTypes::isMultiType( type ) && newGeom.isMultipart() )
   {
-    const QgsGeometryCollection *parts( static_cast< const QgsGeometryCollection * >( newGeom.constGet() ) );
+    const QgsGeometryCollection *parts( static_cast<const QgsGeometryCollection *>( newGeom.constGet() ) );
     res.reserve( parts->partCount() );
-    for ( int i = 0; i < parts->partCount( ); i++ )
+    for ( int i = 0; i < parts->partCount(); i++ )
     {
       res << QgsGeometry( parts->geometryN( i )->clone() );
     }
@@ -1883,7 +1875,7 @@ bool QgsGeometry::convertToMultiType()
     return true;
   }
 
-  std::unique_ptr< QgsAbstractGeometry >geom = QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::multiType( d->geometry->wkbType() ) );
+  std::unique_ptr<QgsAbstractGeometry> geom = QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::multiType( d->geometry->wkbType() ) );
   QgsGeometryCollection *multiGeom = qgsgeometry_cast<QgsGeometryCollection *>( geom.get() );
   if ( !multiGeom )
   {
@@ -1923,7 +1915,7 @@ bool QgsGeometry::convertToCurvedMultiType()
       break;
   }
 
-  std::unique_ptr< QgsAbstractGeometry >geom = QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::curveType( QgsWkbTypes::multiType( d->geometry->wkbType() ) ) );
+  std::unique_ptr<QgsAbstractGeometry> geom = QgsGeometryFactory::geomFromWkbType( QgsWkbTypes::curveType( QgsWkbTypes::multiType( d->geometry->wkbType() ) ) );
   QgsGeometryCollection *multiGeom = qgsgeometry_cast<QgsGeometryCollection *>( geom.get() );
   if ( !multiGeom )
   {
@@ -1965,7 +1957,7 @@ bool QgsGeometry::convertToSingleType()
   if ( !multiGeom || multiGeom->partCount() < 1 )
     return false;
 
-  std::unique_ptr< QgsAbstractGeometry > firstPart( multiGeom->geometryN( 0 )->clone() );
+  std::unique_ptr<QgsAbstractGeometry> firstPart( multiGeom->geometryN( 0 )->clone() );
   reset( std::move( firstPart ) );
   return true;
 }
@@ -2034,7 +2026,7 @@ QgsPolylineXY QgsGeometry::asPolyline() const
 
   bool doSegmentation = ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::CompoundCurve
                           || QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::CircularString );
-  std::unique_ptr< QgsLineString > segmentizedLine;
+  std::unique_ptr<QgsLineString> segmentizedLine;
   QgsLineString *line = nullptr;
   if ( doSegmentation )
   {
@@ -2078,7 +2070,7 @@ QgsPolygonXY QgsGeometry::asPolygon() const
   bool doSegmentation = ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::CurvePolygon );
 
   QgsPolygon *p = nullptr;
-  std::unique_ptr< QgsPolygon > segmentized;
+  std::unique_ptr<QgsPolygon> segmentized;
   if ( doSegmentation )
   {
     QgsCurvePolygon *curvePoly = qgsgeometry_cast<QgsCurvePolygon *>( d->geometry.get() );
@@ -2153,7 +2145,7 @@ QgsMultiPolylineXY QgsGeometry::asMultiPolyline() const
   for ( int i = 0; i < nLines; ++i )
   {
     const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( geomCollection->geometryN( i ) );
-    std::unique_ptr< QgsLineString > segmentized;
+    std::unique_ptr<QgsLineString> segmentized;
     if ( !line )
     {
       const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( geomCollection->geometryN( i ) );
@@ -2271,7 +2263,7 @@ double QgsGeometry::distance( const QgsGeometry &geom ) const
   // avoid calling geos for trivial point-to-point distance calculations
   if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == Qgis::WkbType::Point && QgsWkbTypes::flatType( geom.wkbType() ) == Qgis::WkbType::Point )
   {
-    return qgsgeometry_cast< const QgsPoint * >( d->geometry.get() )->distance( *qgsgeometry_cast< const QgsPoint * >( geom.constGet() ) );
+    return qgsgeometry_cast<const QgsPoint *>( d->geometry.get() )->distance( *qgsgeometry_cast<const QgsPoint *>( geom.constGet() ) );
   }
 
   QgsGeos g( d->geometry.get() );
@@ -2468,9 +2460,9 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, Qgis::JoinS
     mLastError.clear();
 
     // GEOS can flip the curve orientation in some circumstances. So record previous orientation and correct if required
-    const Qgis::AngularDirection prevOrientation = qgsgeometry_cast< const QgsCurve * >( d->geometry.get() )->orientation();
+    const Qgis::AngularDirection prevOrientation = qgsgeometry_cast<const QgsCurve *>( d->geometry.get() )->orientation();
 
-    std::unique_ptr< QgsAbstractGeometry > offsetGeom( geos.offsetCurve( distance, segments, joinStyle, miterLimit, &mLastError ) );
+    std::unique_ptr<QgsAbstractGeometry> offsetGeom( geos.offsetCurve( distance, segments, joinStyle, miterLimit, &mLastError ) );
     if ( !offsetGeom )
     {
       QgsGeometry result;
@@ -2478,13 +2470,13 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, Qgis::JoinS
       return result;
     }
 
-    if ( const QgsCurve *offsetCurve = qgsgeometry_cast< const QgsCurve * >( offsetGeom.get() ) )
+    if ( const QgsCurve *offsetCurve = qgsgeometry_cast<const QgsCurve *>( offsetGeom.get() ) )
     {
       const Qgis::AngularDirection newOrientation = offsetCurve->orientation();
       if ( newOrientation != prevOrientation )
       {
         // GEOS has flipped line orientation, flip it back
-        std::unique_ptr< QgsAbstractGeometry > flipped( offsetCurve->reversed() );
+        std::unique_ptr<QgsAbstractGeometry> flipped( offsetCurve->reversed() );
         offsetGeom = std::move( flipped );
       }
     }
@@ -2524,8 +2516,8 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Qgis:
   {
     QgsGeos geos( d->geometry.get() );
     mLastError.clear();
-    std::unique_ptr< QgsAbstractGeometry > bufferGeom = geos.singleSidedBuffer( distance, segments, side,
-        joinStyle, miterLimit, &mLastError );
+    std::unique_ptr<QgsAbstractGeometry> bufferGeom = geos.singleSidedBuffer( distance, segments, side,
+                                                                              joinStyle, miterLimit, &mLastError );
     if ( !bufferGeom )
     {
       QgsGeometry result;
@@ -2580,11 +2572,11 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
   }
   else
   {
-    QgsLineString *line = qgsgeometry_cast< QgsLineString * >( d->geometry.get() );
+    QgsLineString *line = qgsgeometry_cast<QgsLineString *>( d->geometry.get() );
     if ( !line )
       return QgsGeometry();
 
-    std::unique_ptr< QgsLineString > newLine( line->clone() );
+    std::unique_ptr<QgsLineString> newLine( line->clone() );
     newLine->extend( startDistance, endDistance );
     return QgsGeometry( std::move( newLine ) );
   }
@@ -2599,7 +2591,7 @@ QgsGeometry QgsGeometry::simplify( double tolerance ) const
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > simplifiedGeom( geos.simplify( tolerance, &mLastError ) );
+  std::unique_ptr<QgsAbstractGeometry> simplifiedGeom( geos.simplify( tolerance, &mLastError ) );
   if ( !simplifiedGeom )
   {
     QgsGeometry result;
@@ -2676,7 +2668,7 @@ QgsGeometry QgsGeometry::poleOfInaccessibility( double precision, double *distan
   return engine.poleOfInaccessibility( precision, distanceToBoundary );
 }
 
-QgsGeometry QgsGeometry::largestEmptyCircle( double tolerance,  const QgsGeometry &boundary ) const
+QgsGeometry QgsGeometry::largestEmptyCircle( double tolerance, const QgsGeometry &boundary ) const
 {
   if ( !d->geometry )
   {
@@ -2710,7 +2702,7 @@ double QgsGeometry::minimumClearance() const
 {
   if ( !d->geometry )
   {
-    return std::numeric_limits< double >::quiet_NaN();
+    return std::numeric_limits<double>::quiet_NaN();
   }
 
   QgsGeos geos( d->geometry.get() );
@@ -2742,7 +2734,7 @@ QgsGeometry QgsGeometry::convexHull() const
   }
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > cHull( geos.convexHull( &mLastError ) );
+  std::unique_ptr<QgsAbstractGeometry> cHull( geos.convexHull( &mLastError ) );
   if ( !cHull )
   {
     QgsGeometry geom;
@@ -2760,7 +2752,7 @@ QgsGeometry QgsGeometry::concaveHull( double targetPercent, bool allowHoles ) co
   }
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > concaveHull( geos.concaveHull( targetPercent, allowHoles, &mLastError ) );
+  std::unique_ptr<QgsAbstractGeometry> concaveHull( geos.concaveHull( targetPercent, allowHoles, &mLastError ) );
   if ( !concaveHull )
   {
     QgsGeometry geom;
@@ -2819,8 +2811,7 @@ QgsGeometry QgsGeometry::unionCoverage() const
     return QgsGeometry();
   }
 
-  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::GeometryCollection &&
-       QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::MultiPolygon
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::GeometryCollection && QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::MultiPolygon
        && QgsWkbTypes::flatType( d->geometry->wkbType() ) != Qgis::WkbType::Polygon )
     return QgsGeometry();
 
@@ -2840,7 +2831,7 @@ Qgis::CoverageValidityResult QgsGeometry::validateCoverage( double gapWidth, Qgs
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > invalidEdgesGeom;
+  std::unique_ptr<QgsAbstractGeometry> invalidEdgesGeom;
 
   const Qgis::CoverageValidityResult result = geos.validateCoverage( gapWidth, invalidEdges ? &invalidEdgesGeom : nullptr, &mLastError );
 
@@ -2900,7 +2891,7 @@ QgsGeometry QgsGeometry::subdivide( int maxNodes, const QgsGeometryParameters &p
   }
 
   const QgsAbstractGeometry *geom = d->geometry.get();
-  std::unique_ptr< QgsAbstractGeometry > segmentizedCopy;
+  std::unique_ptr<QgsAbstractGeometry> segmentizedCopy;
   if ( QgsWkbTypes::isCurvedType( d->geometry->wkbType() ) )
   {
     segmentizedCopy.reset( d->geometry->segmentize() );
@@ -2909,7 +2900,7 @@ QgsGeometry QgsGeometry::subdivide( int maxNodes, const QgsGeometryParameters &p
 
   QgsGeos geos( geom );
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > result( geos.subdivide( maxNodes, &mLastError, parameters ) );
+  std::unique_ptr<QgsAbstractGeometry> result( geos.subdivide( maxNodes, &mLastError, parameters ) );
   if ( !result )
   {
     QgsGeometry geom;
@@ -2938,10 +2929,10 @@ QgsGeometry QgsGeometry::interpolate( double distance ) const
   if ( line.isMultipart() )
   {
     // if multi part, iterate through parts to find target part
-    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( line.constGet() );
+    const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( line.constGet() );
     for ( int part = 0; part < collection->numGeometries(); ++part )
     {
-      const QgsCurve *candidate = qgsgeometry_cast< const QgsCurve * >( collection->geometryN( part ) );
+      const QgsCurve *candidate = qgsgeometry_cast<const QgsCurve *>( collection->geometryN( part ) );
       if ( !candidate )
         continue;
       const double candidateLength = candidate->length();
@@ -2956,12 +2947,12 @@ QgsGeometry QgsGeometry::interpolate( double distance ) const
   }
   else
   {
-    curve = qgsgeometry_cast< const QgsCurve * >( line.constGet() );
+    curve = qgsgeometry_cast<const QgsCurve *>( line.constGet() );
   }
   if ( !curve )
     return QgsGeometry();
 
-  std::unique_ptr< QgsPoint > result( curve->interpolatePoint( distance ) );
+  std::unique_ptr<QgsPoint> result( curve->interpolatePoint( distance ) );
   if ( !result )
   {
     return QgsGeometry();
@@ -2980,12 +2971,12 @@ double QgsGeometry::lineLocatePoint( const QgsGeometry &point ) const
   QgsGeometry segmentized = *this;
   if ( QgsWkbTypes::isCurvedType( wkbType() ) )
   {
-    segmentized = QgsGeometry( static_cast< QgsCurve * >( d->geometry.get() )->segmentize() );
+    segmentized = QgsGeometry( static_cast<QgsCurve *>( d->geometry.get() )->segmentize() );
   }
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  return geos.lineLocatePoint( *( static_cast< QgsPoint * >( point.d->geometry.get() ) ), &mLastError );
+  return geos.lineLocatePoint( *( static_cast<QgsPoint *>( point.d->geometry.get() ) ), &mLastError );
 }
 
 double QgsGeometry::interpolateAngle( double distance ) const
@@ -3001,7 +2992,7 @@ double QgsGeometry::interpolateAngle( double distance ) const
   QgsGeometry segmentized = *this;
   if ( QgsWkbTypes::isCurvedType( geom->wkbType() ) )
   {
-    segmentized = QgsGeometry( static_cast< const QgsCurve * >( geom )->segmentize() );
+    segmentized = QgsGeometry( static_cast<const QgsCurve *>( geom )->segmentize() );
   }
 
   QgsVertexId previous;
@@ -3056,7 +3047,7 @@ QgsGeometry QgsGeometry::intersection( const QgsGeometry &geometry, const QgsGeo
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.intersection( geometry.d->geometry.get(), &mLastError, parameters ) );
+  std::unique_ptr<QgsAbstractGeometry> resultGeom( geos.intersection( geometry.d->geometry.get(), &mLastError, parameters ) );
 
   if ( !resultGeom )
   {
@@ -3077,7 +3068,7 @@ QgsGeometry QgsGeometry::combine( const QgsGeometry &geometry, const QgsGeometry
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.combine( geometry.d->geometry.get(), &mLastError, parameters ) );
+  std::unique_ptr<QgsAbstractGeometry> resultGeom( geos.combine( geometry.d->geometry.get(), &mLastError, parameters ) );
   if ( !resultGeom )
   {
     QgsGeometry geom;
@@ -3117,7 +3108,7 @@ QgsGeometry QgsGeometry::difference( const QgsGeometry &geometry, const QgsGeome
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.difference( geometry.d->geometry.get(), &mLastError, parameters ) );
+  std::unique_ptr<QgsAbstractGeometry> resultGeom( geos.difference( geometry.d->geometry.get(), &mLastError, parameters ) );
   if ( !resultGeom )
   {
     QgsGeometry geom;
@@ -3137,7 +3128,7 @@ QgsGeometry QgsGeometry::symDifference( const QgsGeometry &geometry, const QgsGe
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > resultGeom( geos.symDifference( geometry.d->geometry.get(), &mLastError, parameters ) );
+  std::unique_ptr<QgsAbstractGeometry> resultGeom( geos.symDifference( geometry.d->geometry.get(), &mLastError, parameters ) );
   if ( !resultGeom )
   {
     QgsGeometry geom;
@@ -3156,10 +3147,10 @@ QgsGeometry QgsGeometry::extrude( double x, double y )
 
 ///@cond PRIVATE // avoid dox warning
 
-QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed, QgsFeedback *feedback, int maxTriesPerPoint ) const
+QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, const std::function<bool( const QgsPointXY & )> &acceptPoint, unsigned long seed, QgsFeedback *feedback, int maxTriesPerPoint ) const
 {
   if ( type() != Qgis::GeometryType::Polygon )
-    return QVector< QgsPointXY >();
+    return QVector<QgsPointXY>();
 
   QgsInternalGeometryEngine engine( *this );
   const QVector<QgsPointXY> res = engine.randomPointsInPolygon( count, acceptPoint, seed, feedback, maxTriesPerPoint );
@@ -3170,10 +3161,11 @@ QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, const std::fu
 QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, unsigned long seed, QgsFeedback *feedback ) const
 {
   if ( type() != Qgis::GeometryType::Polygon )
-    return QVector< QgsPointXY >();
+    return QVector<QgsPointXY>();
 
   QgsInternalGeometryEngine engine( *this );
-  const QVector<QgsPointXY> res = engine.randomPointsInPolygon( count, []( const QgsPointXY & ) { return true; }, seed, feedback, 0 );
+  const QVector<QgsPointXY> res = engine.randomPointsInPolygon(
+    count, []( const QgsPointXY & ) { return true; }, seed, feedback, 0 );
   mLastError = engine.lastError();
   return res;
 }
@@ -3226,7 +3218,7 @@ QPolygonF QgsGeometry::asQPolygonF() const
   const QgsAbstractGeometry *part = constGet();
 
   // if a geometry collection, get first part only
-  if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection *>( part ) )
+  if ( const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( part ) )
   {
     if ( collection->numGeometries() > 0 )
       part = collection->geometryN( 0 );
@@ -3234,9 +3226,9 @@ QPolygonF QgsGeometry::asQPolygonF() const
       return QPolygonF();
   }
 
-  if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( part ) )
+  if ( const QgsCurve *curve = qgsgeometry_cast<const QgsCurve *>( part ) )
     return curve->asQPolygonF();
-  else if ( const QgsCurvePolygon *polygon = qgsgeometry_cast< const QgsCurvePolygon * >( part ) )
+  else if ( const QgsCurvePolygon *polygon = qgsgeometry_cast<const QgsCurvePolygon *>( part ) )
     return polygon->exteriorRing() ? polygon->exteriorRing()->asQPolygonF() : QPolygonF();
   return QPolygonF();
 }
@@ -3271,7 +3263,7 @@ bool QgsGeometry::deletePart( int partNum )
   return ok;
 }
 
-Qgis::GeometryOperationResult QgsGeometry::avoidIntersectionsV2( const QList<QgsVectorLayer *> &avoidIntersectionsLayers, const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures )
+Qgis::GeometryOperationResult QgsGeometry::avoidIntersectionsV2( const QList<QgsVectorLayer *> &avoidIntersectionsLayers, const QHash<QgsVectorLayer *, QSet<QgsFeatureId>> &ignoreFeatures )
 {
   if ( !d->geometry )
   {
@@ -3283,7 +3275,7 @@ Qgis::GeometryOperationResult QgsGeometry::avoidIntersectionsV2( const QList<Qgs
   bool haveInvalidGeometry = false;
   bool geomModified = false;
 
-  std::unique_ptr< QgsAbstractGeometry > diffGeom = QgsGeometryEditUtils::avoidIntersections( *( d->geometry ), avoidIntersectionsLayers, haveInvalidGeometry, ignoreFeatures );
+  std::unique_ptr<QgsAbstractGeometry> diffGeom = QgsGeometryEditUtils::avoidIntersections( *( d->geometry ), avoidIntersectionsLayers, haveInvalidGeometry, ignoreFeatures );
   if ( diffGeom )
   {
     reset( std::move( diffGeom ) );
@@ -3300,7 +3292,7 @@ Qgis::GeometryOperationResult QgsGeometry::avoidIntersectionsV2( const QList<Qgs
   return Qgis::GeometryOperationResult::Success;
 }
 
-int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers, const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures )
+int QgsGeometry::avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers, const QHash<QgsVectorLayer *, QSet<QgsFeatureId>> &ignoreFeatures )
 {
   const Qgis::GeometryOperationResult result = avoidIntersectionsV2( avoidIntersectionsLayers, ignoreFeatures );
   switch ( result )
@@ -3339,7 +3331,7 @@ QgsGeometry QgsGeometry::makeValid( Qgis::MakeValidMethod method, bool keepColla
 
   mLastError.clear();
   QgsGeos geos( d->geometry.get() );
-  std::unique_ptr< QgsAbstractGeometry > g( geos.makeValid( method, keepCollapsed, &mLastError ) );
+  std::unique_ptr<QgsAbstractGeometry> g( geos.makeValid( method, keepCollapsed, &mLastError ) );
 
   QgsGeometry result = QgsGeometry( std::move( g ) );
   result.mLastError = mLastError;
@@ -3360,23 +3352,22 @@ Qgis::AngularDirection QgsGeometry::polygonOrientation() const
 
   if ( isMultipart() )
   {
-    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( d->geometry.get() );
+    const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( d->geometry.get() );
     const QgsAbstractGeometry *g = collection->geometryN( 0 );
-    if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( g ) )
+    if ( const QgsCurvePolygon *cp = qgsgeometry_cast<const QgsCurvePolygon *>( g ) )
     {
       return cp->exteriorRing() ? cp->exteriorRing()->orientation() : Qgis::AngularDirection::NoOrientation;
     }
   }
   else
   {
-    if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( d->geometry.get() ) )
+    if ( const QgsCurvePolygon *cp = qgsgeometry_cast<const QgsCurvePolygon *>( d->geometry.get() ) )
     {
       return cp->exteriorRing() ? cp->exteriorRing()->orientation() : Qgis::AngularDirection::NoOrientation;
     }
   }
 
   return Qgis::AngularDirection::NoOrientation;
-
 }
 
 QgsGeometry QgsGeometry::forcePolygonClockwise() const
@@ -3386,15 +3377,15 @@ QgsGeometry QgsGeometry::forcePolygonClockwise() const
 
   if ( isMultipart() )
   {
-    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( d->geometry.get() );
-    std::unique_ptr< QgsGeometryCollection > newCollection( collection->createEmptyWithSameType() );
+    const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( d->geometry.get() );
+    std::unique_ptr<QgsGeometryCollection> newCollection( collection->createEmptyWithSameType() );
     newCollection->reserve( collection->numGeometries() );
     for ( int i = 0; i < collection->numGeometries(); ++i )
     {
       const QgsAbstractGeometry *g = collection->geometryN( i );
-      if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( g ) )
+      if ( const QgsCurvePolygon *cp = qgsgeometry_cast<const QgsCurvePolygon *>( g ) )
       {
-        std::unique_ptr< QgsCurvePolygon > corrected( cp->clone() );
+        std::unique_ptr<QgsCurvePolygon> corrected( cp->clone() );
         corrected->forceClockwise();
         newCollection->addGeometry( corrected.release() );
       }
@@ -3407,9 +3398,9 @@ QgsGeometry QgsGeometry::forcePolygonClockwise() const
   }
   else
   {
-    if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( d->geometry.get() ) )
+    if ( const QgsCurvePolygon *cp = qgsgeometry_cast<const QgsCurvePolygon *>( d->geometry.get() ) )
     {
-      std::unique_ptr< QgsCurvePolygon > corrected( cp->clone() );
+      std::unique_ptr<QgsCurvePolygon> corrected( cp->clone() );
       corrected->forceClockwise();
       return QgsGeometry( std::move( corrected ) );
     }
@@ -3428,15 +3419,15 @@ QgsGeometry QgsGeometry::forcePolygonCounterClockwise() const
 
   if ( isMultipart() )
   {
-    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( d->geometry.get() );
-    std::unique_ptr< QgsGeometryCollection > newCollection( collection->createEmptyWithSameType() );
+    const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( d->geometry.get() );
+    std::unique_ptr<QgsGeometryCollection> newCollection( collection->createEmptyWithSameType() );
     newCollection->reserve( collection->numGeometries() );
     for ( int i = 0; i < collection->numGeometries(); ++i )
     {
       const QgsAbstractGeometry *g = collection->geometryN( i );
-      if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( g ) )
+      if ( const QgsCurvePolygon *cp = qgsgeometry_cast<const QgsCurvePolygon *>( g ) )
       {
-        std::unique_ptr< QgsCurvePolygon > corrected( cp->clone() );
+        std::unique_ptr<QgsCurvePolygon> corrected( cp->clone() );
         corrected->forceCounterClockwise();
         newCollection->addGeometry( corrected.release() );
       }
@@ -3449,9 +3440,9 @@ QgsGeometry QgsGeometry::forcePolygonCounterClockwise() const
   }
   else
   {
-    if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( d->geometry.get() ) )
+    if ( const QgsCurvePolygon *cp = qgsgeometry_cast<const QgsCurvePolygon *>( d->geometry.get() ) )
     {
-      std::unique_ptr< QgsCurvePolygon > corrected( cp->clone() );
+      std::unique_ptr<QgsCurvePolygon> corrected( cp->clone() );
       corrected->forceCounterClockwise();
       return QgsGeometry( std::move( corrected ) );
     }
@@ -3580,7 +3571,7 @@ QgsGeometry QgsGeometry::unaryUnion( const QVector<QgsGeometry> &geometries, con
   QgsGeos geos( nullptr );
 
   QString error;
-  std::unique_ptr< QgsAbstractGeometry > geom( geos.combine( geometries, &error, parameters ) );
+  std::unique_ptr<QgsAbstractGeometry> geom( geos.combine( geometries, &error, parameters ) );
   QgsGeometry result( std::move( geom ) );
   result.mLastError = error;
   return result;
@@ -3610,7 +3601,7 @@ void QgsGeometry::convertToStraightSegment( double tolerance, QgsAbstractGeometr
     return;
   }
 
-  std::unique_ptr< QgsAbstractGeometry > straightGeom( d->geometry->segmentize( tolerance, toleranceType ) );
+  std::unique_ptr<QgsAbstractGeometry> straightGeom( d->geometry->segmentize( tolerance, toleranceType ) );
   reset( std::move( straightGeom ) );
 }
 
@@ -3666,7 +3657,7 @@ QgsGeometry QgsGeometry::clipped( const QgsRectangle &rectangle )
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > resultGeom = geos.clip( rectangle, &mLastError );
+  std::unique_ptr<QgsAbstractGeometry> resultGeom = geos.clip( rectangle, &mLastError );
   if ( !resultGeom )
   {
     QgsGeometry result;
@@ -3687,7 +3678,7 @@ void QgsGeometry::draw( QPainter &p ) const
 static bool vertexIndexInfo( const QgsAbstractGeometry *g, int vertexIndex, int &partIndex, int &ringIndex, int &vertex )
 {
   if ( vertexIndex < 0 )
-    return false;  // clearly something wrong
+    return false; // clearly something wrong
 
   if ( const QgsGeometryCollection *geomCollection = qgsgeometry_cast<const QgsGeometryCollection *>( g ) )
   {
@@ -3809,7 +3800,7 @@ QString QgsGeometry::lastError() const
   return mLastError;
 }
 
-void QgsGeometry::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )
+void QgsGeometry::filterVertices( const std::function<bool( const QgsPoint & )> &filter )
 {
   if ( !d->geometry )
     return;
@@ -3851,12 +3842,11 @@ void QgsGeometry::convertPolygon( const QgsPolygon &input, QgsPolygonXY &output 
 {
   output.clear();
 
-  auto convertRing = []( const QgsCurve * ring ) -> QgsPolylineXY
-  {
+  auto convertRing = []( const QgsCurve *ring ) -> QgsPolylineXY {
     QgsPolylineXY res;
     bool doSegmentation = ( QgsWkbTypes::flatType( ring->wkbType() ) == Qgis::WkbType::CompoundCurve
                             || QgsWkbTypes::flatType( ring->wkbType() ) == Qgis::WkbType::CircularString );
-    std::unique_ptr< QgsLineString > segmentizedLine;
+    std::unique_ptr<QgsLineString> segmentizedLine;
     const QgsLineString *line = nullptr;
     if ( doSegmentation )
     {
@@ -3901,16 +3891,16 @@ void QgsGeometry::convertPolygon( const QgsPolygon &input, QgsPolygonXY &output 
 
 QgsGeometry QgsGeometry::fromQPointF( QPointF point )
 {
-  return QgsGeometry( std::make_unique< QgsPoint >( point.x(), point.y() ) );
+  return QgsGeometry( std::make_unique<QgsPoint>( point.x(), point.y() ) );
 }
 
 QgsGeometry QgsGeometry::fromQPolygonF( const QPolygonF &polygon )
 {
-  std::unique_ptr < QgsLineString > ring( QgsLineString::fromQPolygonF( polygon ) );
+  std::unique_ptr<QgsLineString> ring( QgsLineString::fromQPolygonF( polygon ) );
 
   if ( polygon.isClosed() )
   {
-    std::unique_ptr< QgsPolygon > poly = std::make_unique< QgsPolygon >();
+    std::unique_ptr<QgsPolygon> poly = std::make_unique<QgsPolygon>();
     poly->setExteriorRing( ring.release() );
     return QgsGeometry( std::move( poly ) );
   }
@@ -3998,15 +3988,15 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
 
     case Qgis::WkbType::LineString:
     {
-      const QgsLineString *lineString = qgsgeometry_cast< const QgsLineString * >( geom.constGet() );
+      const QgsLineString *lineString = qgsgeometry_cast<const QgsLineString *>( geom.constGet() );
       return QgsGeometry( smoothLine( *lineString, iterations, offset, minimumDistance, maxAngle ) );
     }
 
     case Qgis::WkbType::MultiLineString:
     {
-      const QgsMultiLineString *multiLine = qgsgeometry_cast< const QgsMultiLineString * >( geom.constGet() );
+      const QgsMultiLineString *multiLine = qgsgeometry_cast<const QgsMultiLineString *>( geom.constGet() );
 
-      std::unique_ptr< QgsMultiLineString > resultMultiline = std::make_unique< QgsMultiLineString> ();
+      std::unique_ptr<QgsMultiLineString> resultMultiline = std::make_unique<QgsMultiLineString>();
       resultMultiline->reserve( multiLine->numGeometries() );
       for ( int i = 0; i < multiLine->numGeometries(); ++i )
       {
@@ -4017,15 +4007,15 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
 
     case Qgis::WkbType::Polygon:
     {
-      const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon * >( geom.constGet() );
+      const QgsPolygon *poly = qgsgeometry_cast<const QgsPolygon *>( geom.constGet() );
       return QgsGeometry( smoothPolygon( *poly, iterations, offset, minimumDistance, maxAngle ) );
     }
 
     case Qgis::WkbType::MultiPolygon:
     {
-      const QgsMultiPolygon *multiPoly = qgsgeometry_cast< const QgsMultiPolygon * >( geom.constGet() );
+      const QgsMultiPolygon *multiPoly = qgsgeometry_cast<const QgsMultiPolygon *>( geom.constGet() );
 
-      std::unique_ptr< QgsMultiPolygon > resultMultiPoly = std::make_unique< QgsMultiPolygon >();
+      std::unique_ptr<QgsMultiPolygon> resultMultiPoly = std::make_unique<QgsMultiPolygon>();
       resultMultiPoly->reserve( multiPoly->numGeometries() );
       for ( int i = 0; i < multiPoly->numGeometries(); ++i )
       {
@@ -4040,11 +4030,11 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
   }
 }
 
-std::unique_ptr< QgsLineString > smoothCurve( const QgsLineString &line, const unsigned int iterations,
-    const double offset, double squareDistThreshold, double maxAngleRads,
-    bool isRing )
+std::unique_ptr<QgsLineString> smoothCurve( const QgsLineString &line, const unsigned int iterations,
+                                            const double offset, double squareDistThreshold, double maxAngleRads,
+                                            bool isRing )
 {
-  std::unique_ptr< QgsLineString > result = std::make_unique< QgsLineString >( line );
+  std::unique_ptr<QgsLineString> result = std::make_unique<QgsLineString>( line );
   QgsPointSequence outputLine;
   for ( unsigned int iteration = 0; iteration < iterations; ++iteration )
   {
@@ -4058,7 +4048,7 @@ std::unique_ptr< QgsLineString > smoothCurve( const QgsLineString &line, const u
       QgsPoint p2 = result->pointN( 0 );
       QgsPoint p3 = result->pointN( 1 );
       double angle = QgsGeometryUtilsBase::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
-                     p3.x(), p3.y() );
+                                                                    p3.x(), p3.y() );
       angle = std::fabs( M_PI - angle );
       skipFirst = angle > maxAngleRads;
     }
@@ -4072,19 +4062,19 @@ std::unique_ptr< QgsLineString > smoothCurve( const QgsLineString &line, const u
       {
         QgsPoint p3 = result->pointN( result->numPoints() - 2 );
         angle = QgsGeometryUtilsBase::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
-                p3.x(), p3.y() );
+                                                               p3.x(), p3.y() );
       }
       else if ( i < result->numPoints() - 2 )
       {
         QgsPoint p3 = result->pointN( i + 2 );
         angle = QgsGeometryUtilsBase::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
-                p3.x(), p3.y() );
+                                                               p3.x(), p3.y() );
       }
       else if ( i == result->numPoints() - 2 && isRing )
       {
         QgsPoint p3 = result->pointN( 1 );
         angle = QgsGeometryUtilsBase::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(),
-                p3.x(), p3.y() );
+                                                               p3.x(), p3.y() );
       }
 
       skipLast = angle < M_PI - maxAngleRads || angle > M_PI + maxAngleRads;
@@ -4137,15 +4127,17 @@ std::unique_ptr<QgsPolygon> QgsGeometry::smoothPolygon( const QgsPolygon &polygo
 {
   double maxAngleRads = maxAngle * M_PI / 180.0;
   double squareDistThreshold = minimumDistance > 0 ? minimumDistance * minimumDistance : -1;
-  std::unique_ptr< QgsPolygon > resultPoly = std::make_unique< QgsPolygon >();
+  std::unique_ptr<QgsPolygon> resultPoly = std::make_unique<QgsPolygon>();
 
-  resultPoly->setExteriorRing( smoothCurve( *( static_cast< const QgsLineString *>( polygon.exteriorRing() ) ), iterations, offset,
-                               squareDistThreshold, maxAngleRads, true ).release() );
+  resultPoly->setExteriorRing( smoothCurve( *( static_cast<const QgsLineString *>( polygon.exteriorRing() ) ), iterations, offset,
+                                            squareDistThreshold, maxAngleRads, true )
+                                 .release() );
 
   for ( int i = 0; i < polygon.numInteriorRings(); ++i )
   {
-    resultPoly->addInteriorRing( smoothCurve( *( static_cast< const QgsLineString *>( polygon.interiorRing( i ) ) ), iterations, offset,
-                                 squareDistThreshold, maxAngleRads, true ).release() );
+    resultPoly->addInteriorRing( smoothCurve( *( static_cast<const QgsLineString *>( polygon.interiorRing( i ) ) ), iterations, offset,
+                                              squareDistThreshold, maxAngleRads, true )
+                                   .release() );
   }
   return resultPoly;
 }
@@ -4158,8 +4150,7 @@ QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const
     {
       bool srcIsMultipart = isMultipart();
 
-      if ( ( destMultipart && srcIsMultipart ) ||
-           ( !destMultipart && !srcIsMultipart ) )
+      if ( ( destMultipart && srcIsMultipart ) || ( !destMultipart && !srcIsMultipart ) )
       {
         // return a copy of the same geom
         return QgsGeometry( *this );
@@ -4264,8 +4255,7 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
     {
       bool srcIsMultipart = isMultipart();
 
-      if ( ( destMultipart && srcIsMultipart ) ||
-           ( !destMultipart && ! srcIsMultipart ) )
+      if ( ( destMultipart && srcIsMultipart ) || ( !destMultipart && !srcIsMultipart ) )
       {
         // return a copy of the same geom
         return QgsGeometry( *this );
@@ -4438,8 +4428,7 @@ QgsGeometry QgsGeometry::convertToPolygon( bool destMultipart ) const
     {
       bool srcIsMultipart = isMultipart();
 
-      if ( ( destMultipart && srcIsMultipart ) ||
-           ( !destMultipart && ! srcIsMultipart ) )
+      if ( ( destMultipart && srcIsMultipart ) || ( !destMultipart && !srcIsMultipart ) )
       {
         // return a copy of the same geom
         return QgsGeometry( *this );

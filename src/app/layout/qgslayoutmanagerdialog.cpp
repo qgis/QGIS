@@ -41,7 +41,8 @@
 #include <QMessageBox>
 #include <QUrl>
 
-QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags f ): QDialog( parent, f )
+QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
 {
   setupUi( this );
   connect( mAddButton, &QPushButton::clicked, this, &QgsLayoutManagerDialog::mAddButton_clicked );
@@ -58,8 +59,7 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   mTemplateFileWidget->setDefaultRoot( settings.value( QStringLiteral( "lastComposerTemplateDir" ), QString(), QgsSettings::App ).toString() );
   mTemplateFileWidget->setFilePath( settings.value( QStringLiteral( "ComposerManager/templatePath" ), QString(), QgsSettings::App ).toString() );
 
-  connect( mTemplateFileWidget, &QgsFileWidget::fileChanged, this, [ = ]
-  {
+  connect( mTemplateFileWidget, &QgsFileWidget::fileChanged, this, [=] {
     QgsSettings settings;
     settings.setValue( QStringLiteral( "ComposerManager/templatePath" ), mTemplateFileWidget->filePath(), QgsSettings::App );
     QFileInfo tmplFileInfo( mTemplateFileWidget->filePath() );
@@ -152,7 +152,6 @@ void QgsLayoutManagerDialog::addTemplates( const QMap<QString, QString> &templat
       mTemplate->addItem( templateIt.key(), templateIt.value() );
     }
   }
-
 }
 
 void QgsLayoutManagerDialog::activate()
@@ -261,11 +260,11 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
       title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::PrintLayout );
     }
 
-    std::unique_ptr< QgsPrintLayout > layout = std::make_unique< QgsPrintLayout >( QgsProject::instance() );
+    std::unique_ptr<QgsPrintLayout> layout = std::make_unique<QgsPrintLayout>( QgsProject::instance() );
     if ( loadingTemplate )
     {
       bool loadedOK = false;
-      ( void )layout->loadFromTemplate( templateDoc, QgsReadWriteContext(), true, &loadedOK );
+      ( void ) layout->loadFromTemplate( templateDoc, QgsReadWriteContext(), true, &loadedOK );
       if ( !loadedOK )
       {
         QMessageBox::warning( this, tr( "Create Layout" ), tr( "Invalid template file “%1”." ).arg( templateFile.fileName() ) );
@@ -322,10 +321,10 @@ void QgsLayoutManagerDialog::createReport()
     title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::Report );
   }
 
-  std::unique_ptr< QgsReport > report = std::make_unique< QgsReport >( QgsProject::instance() );
+  std::unique_ptr<QgsReport> report = std::make_unique<QgsReport>( QgsProject::instance() );
   report->setName( title );
 
-  std::unique_ptr< QgsLayout > header = std::make_unique< QgsLayout >( QgsProject::instance() );
+  std::unique_ptr<QgsLayout> header = std::make_unique<QgsLayout>( QgsProject::instance() );
   header->initializeDefaults();
   report->setHeader( header.release() );
   report->setHeaderEnabled( true );
@@ -392,8 +391,7 @@ void QgsLayoutManagerDialog::removeClicked()
   if ( layoutItems.count() == 1 )
   {
     title = tr( "Remove Layout" );
-    message = tr( "Do you really want to remove the print layout “%1”?" ).arg(
-                mLayoutListView->model()->data( layoutItems.at( 0 ), Qt::DisplayRole ).toString() );
+    message = tr( "Do you really want to remove the print layout “%1”?" ).arg( mLayoutListView->model()->data( layoutItems.at( 0 ), Qt::DisplayRole ).toString() );
   }
   else
   {
@@ -508,5 +506,3 @@ void QgsLayoutManagerDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "print_composer/overview_composer.html#the-layout-manager" ) );
 }
-
-

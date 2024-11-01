@@ -45,7 +45,6 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
 {
     Q_OBJECT
   public:
-
 #ifndef SIP_RUN
     static inline QgsSettingsTreeNamedListNode *sTreeNewsFeed = QgsSettingsTree::sTreeApp->createNamedListNode( QStringLiteral( "news-feed" ) );
     static const QgsSettingsEntryInteger64 *settingsFeedLastFetchTime;
@@ -70,7 +69,6 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     class Entry
     {
       public:
-
         //! Unique entry identifier
         int key = 0;
 
@@ -107,7 +105,7 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     /**
      * Returns a list of existing entries in the feed.
      */
-    QList< QgsNewsFeedParser::Entry > entries() const;
+    QList<QgsNewsFeedParser::Entry> entries() const;
 
     /**
      * Dismisses an entry with matching \a key.
@@ -149,7 +147,7 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
      *
      * \see fetch()
      */
-    void fetched( const QList< QgsNewsFeedParser::Entry > &entries );
+    void fetched( const QList<QgsNewsFeedParser::Entry> &entries );
 
     /**
      * Emitted whenever a new \a entry is available from the feed (as a result
@@ -188,14 +186,13 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     void onFetch( const QString &content );
 
   private:
-
     QString mBaseUrl;
     QUrl mFeedUrl;
     QString mAuthCfg;
     qint64 mFetchStartTime = 0;
     QString mFeedKey;
 
-    QList< Entry > mEntries;
+    QList<Entry> mEntries;
     bool mBlockSignals = false;
 
     void readStoredEntries();
@@ -204,7 +201,6 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     void fetchImageForEntry( const Entry &entry );
 
     friend class TestQgsNewsFeedParser;
-
 };
 
 #endif // QGSNEWSFEEDPARSER_H

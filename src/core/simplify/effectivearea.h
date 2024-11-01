@@ -31,10 +31,10 @@
 #define _EFFECTIVEAREA_H 1
 
 
-#define LWDEBUG //
+#define LWDEBUG  //
 #define LWDEBUGF //
 #define FP_MAX std::max
-#define FLAGS_GET_Z( flags ) ( ( flags ) & 0x01 )
+#define FLAGS_GET_Z( flags ) ( ( flags ) &0x01 )
 #define LW_MSG_MAXLEN 256
 #define lwalloc qgsMalloc
 #define lwfree qgsFree
@@ -47,10 +47,10 @@
  */
 struct areanode
 {
-  double area;
-  int treeindex;
-  int prev;
-  int next;
+    double area;
+    int treeindex;
+    int prev;
+    int next;
 };
 
 /**
@@ -61,9 +61,9 @@ struct areanode
  */
 struct MINHEAP
 {
-  int maxSize;
-  int usedSize;
-  areanode **key_array = nullptr;
+    int maxSize;
+    int usedSize;
+    areanode **key_array = nullptr;
 };
 
 /**
@@ -71,29 +71,27 @@ struct MINHEAP
  */
 struct EFFECTIVE_AREAS
 {
-  EFFECTIVE_AREAS( const QgsCurve &curve )
-    : is3d( curve.is3D() )
-  {
-    curve.points( inpts );
-    initial_arealist = new areanode[ inpts.size()];
-    res_arealist = new double[ inpts.size()];
-  }
+    EFFECTIVE_AREAS( const QgsCurve &curve )
+      : is3d( curve.is3D() )
+    {
+      curve.points( inpts );
+      initial_arealist = new areanode[inpts.size()];
+      res_arealist = new double[inpts.size()];
+    }
 
-  ~EFFECTIVE_AREAS()
-  {
-    delete [] initial_arealist;
-    delete [] res_arealist;
-  }
+    ~EFFECTIVE_AREAS()
+    {
+      delete[] initial_arealist;
+      delete[] res_arealist;
+    }
 
-  EFFECTIVE_AREAS( const EFFECTIVE_AREAS &other ) = delete;
-  EFFECTIVE_AREAS &operator=( const EFFECTIVE_AREAS &other ) = delete;
+    EFFECTIVE_AREAS( const EFFECTIVE_AREAS &other ) = delete;
+    EFFECTIVE_AREAS &operator=( const EFFECTIVE_AREAS &other ) = delete;
 
-  bool is3d;
-  QgsPointSequence inpts;
-  areanode *initial_arealist = nullptr;
-  double *res_arealist = nullptr;
-
-
+    bool is3d;
+    QgsPointSequence inpts;
+    areanode *initial_arealist = nullptr;
+    double *res_arealist = nullptr;
 };
 
 void ptarray_calc_areas( EFFECTIVE_AREAS *ea, int avoid_collaps, int set_area, double trshld );

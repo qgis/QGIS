@@ -59,7 +59,8 @@ class CORE_EXPORT QgsImageFetcher : public QObject
     Q_OBJECT
   public:
     //! Constructor
-    QgsImageFetcher( QObject *parent = nullptr ) : QObject( parent ) {}
+    QgsImageFetcher( QObject *parent = nullptr )
+      : QObject( parent ) {}
 
     /**
      * Starts the image download
@@ -90,7 +91,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     Q_OBJECT
 
   public:
-
     QgsRasterDataProvider();
 
     /**
@@ -113,7 +113,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual Qgis::RasterProviderCapabilities providerCapabilities() const;
 
     // It makes no sense to set input on provider
-    bool setInput( QgsRasterInterface *input ) override { Q_UNUSED( input ) return false; }
+    bool setInput( QgsRasterInterface *input ) override
+    {
+      Q_UNUSED( input )
+      return false;
+    }
 
     QgsRectangle extent() const override = 0;
 
@@ -150,12 +154,20 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Read band scale for raster value
      */
-    virtual double bandScale( int bandNo ) const { Q_UNUSED( bandNo ) return 1.0; }
+    virtual double bandScale( int bandNo ) const
+    {
+      Q_UNUSED( bandNo )
+      return 1.0;
+    }
 
     /**
      * Read band offset for raster value
      */
-    virtual double bandOffset( int bandNo ) const { Q_UNUSED( bandNo ) return 0.0; }
+    virtual double bandOffset( int bandNo ) const
+    {
+      Q_UNUSED( bandNo )
+      return 0.0;
+    }
 
     /**
      * Returns the maximum tile size in pixels for the data provider.
@@ -189,7 +201,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual QgsRasterRangeList userNoDataValues( int bandNo ) const { return mUserNoDataValue.value( bandNo - 1 ); }
 
     virtual QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo ) const
-    { Q_UNUSED( bandNo ) return QList<QgsColorRampShader::ColorRampItem>(); }
+    {
+      Q_UNUSED( bandNo )
+      return QList<QgsColorRampShader::ColorRampItem>();
+    }
 
     /**
      * \brief Returns the sublayers of this layer - useful for providers that manage
@@ -294,7 +309,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \see hasPyramids()
      */
     virtual QList<QgsRasterPyramid> buildPyramidList( const QList<int> &overviewList = QList<int>() )
-    { Q_UNUSED( overviewList ) return QList<QgsRasterPyramid>(); }
+    {
+      Q_UNUSED( overviewList )
+      return QList<QgsRasterPyramid>();
+    }
 
     /**
      * Returns TRUE if raster has at least one existing pyramid.
@@ -405,7 +423,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \see isEditable()
      * \see writeBlock()
      */
-    virtual bool setEditable( bool enabled ) { Q_UNUSED( enabled ) return false; }
+    virtual bool setEditable( bool enabled )
+    {
+      Q_UNUSED( enabled )
+      return false;
+    }
 
     // TODO: add data type (may be different from band type)
 
@@ -453,7 +475,12 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *  \param bandNo band number
      *  \param noDataValue no data value
      */
-    virtual bool setNoDataValue( int bandNo, double noDataValue ) { Q_UNUSED( bandNo ) Q_UNUSED( noDataValue ); return false; }
+    virtual bool setNoDataValue( int bandNo, double noDataValue )
+    {
+      Q_UNUSED( bandNo )
+      Q_UNUSED( noDataValue );
+      return false;
+    }
 
     //! Remove dataset
     virtual bool remove() { return false; }
@@ -462,7 +489,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Returns a list of pyramid resampling method name and label pairs
      * for given provider
      */
-    static QList<QPair<QString, QString> > pyramidResamplingMethods( const QString &providerKey );
+    static QList<QPair<QString, QString>> pyramidResamplingMethods( const QString &providerKey );
 
     /**
      * Struct that stores information of the raster used in QgsVirtualRasterProvider for the calculations,
@@ -471,9 +498,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     struct VirtualRasterInputLayers
     {
-      QString name;
-      QString uri;
-      QString provider;
+        QString name;
+        QString uri;
+        QString provider;
     };
 
     /**
@@ -483,13 +510,12 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     struct VirtualRasterParameters
     {
-      QgsCoordinateReferenceSystem crs;
-      QgsRectangle extent;
-      int width;
-      int height;
-      QString formula;
-      QList <QgsRasterDataProvider::VirtualRasterInputLayers> rInputLayers;
-
+        QgsCoordinateReferenceSystem crs;
+        QgsRectangle extent;
+        int width;
+        int height;
+        QString formula;
+        QList<QgsRasterDataProvider::VirtualRasterInputLayers> rInputLayers;
     };
 
     /**
@@ -512,15 +538,24 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \note see also validateCreationOptionsFormat() in gdal provider for validating options based on format only
      */
     virtual QString validateCreationOptions( const QStringList &createOptions, const QString &format )
-    { Q_UNUSED( createOptions ) Q_UNUSED( format ); return QString(); }
+    {
+      Q_UNUSED( createOptions )
+      Q_UNUSED( format );
+      return QString();
+    }
 
     /**
      * Validates pyramid creation options for a specific dataset and destination format
      * \note used by GDAL provider only
      */
     virtual QString validatePyramidsConfigOptions( Qgis::RasterPyramidFormat pyramidsFormat,
-        const QStringList &configOptions, const QString &fileFormat )
-    { Q_UNUSED( pyramidsFormat ) Q_UNUSED( configOptions ); Q_UNUSED( fileFormat ); return QString(); }
+                                                   const QStringList &configOptions, const QString &fileFormat )
+    {
+      Q_UNUSED( pyramidsFormat )
+      Q_UNUSED( configOptions );
+      Q_UNUSED( fileFormat );
+      return QString();
+    }
 
     /**
      * Converts a raster identify \a format to a string name.
@@ -566,7 +601,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *
      * \since QGIS 3.8.0
      */
-    virtual QList< double > nativeResolutions() const;
+    virtual QList<double> nativeResolutions() const;
 
     /**
      * Returns TRUE if the extents reported by the data provider are not reliable
@@ -582,8 +617,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     enum TransformType
     {
-      TransformImageToLayer,  //!< Transforms image coordinates to layer (georeferenced) coordinates
-      TransformLayerToImage,  //!< Transforms layer (georeferenced) coordinates to image coordinates
+      TransformImageToLayer, //!< Transforms image coordinates to layer (georeferenced) coordinates
+      TransformLayerToImage, //!< Transforms layer (georeferenced) coordinates to image coordinates
     };
 
     /**
@@ -607,7 +642,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \return TRUE if success
      * \since QGIS 3.16
      */
-    virtual bool enableProviderResampling( bool enable ) { Q_UNUSED( enable ); return false; }
+    virtual bool enableProviderResampling( bool enable )
+    {
+      Q_UNUSED( enable );
+      return false;
+    }
 
     /**
      * Returns whether provider-level resampling is enabled.
@@ -629,14 +668,14 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     enum class ResamplingMethod
     {
-      Nearest, //!< Nearest-neighbour resampling
-      Bilinear, //!< Bilinear (2x2 kernel) resampling
-      Cubic,//!< Cubic Convolution Approximation (4x4 kernel) resampling
+      Nearest,     //!< Nearest-neighbour resampling
+      Bilinear,    //!< Bilinear (2x2 kernel) resampling
+      Cubic,       //!< Cubic Convolution Approximation (4x4 kernel) resampling
       CubicSpline, //!< Cubic B-Spline Approximation (4x4 kernel)
-      Lanczos, //!< Lanczos windowed sinc interpolation (6x6 kernel)
-      Average, //!< Average resampling
-      Mode, //!< Mode (selects the value which appears most often of all the sampled points)
-      Gauss //!< Gauss blurring
+      Lanczos,     //!< Lanczos windowed sinc interpolation (6x6 kernel)
+      Average,     //!< Average resampling
+      Mode,        //!< Mode (selects the value which appears most often of all the sampled points)
+      Gauss        //!< Gauss blurring
     };
 
     /**
@@ -645,7 +684,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \return TRUE if success
      * \since QGIS 3.16
      */
-    virtual bool setZoomedInResamplingMethod( ResamplingMethod method ) { Q_UNUSED( method ); return false; }
+    virtual bool setZoomedInResamplingMethod( ResamplingMethod method )
+    {
+      Q_UNUSED( method );
+      return false;
+    }
 
     /**
      * Returns resampling method for zoomed-in operations.
@@ -659,7 +702,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \return TRUE if success
      * \since QGIS 3.16
      */
-    virtual bool setZoomedOutResamplingMethod( ResamplingMethod method ) { Q_UNUSED( method ); return false; }
+    virtual bool setZoomedOutResamplingMethod( ResamplingMethod method )
+    {
+      Q_UNUSED( method );
+      return false;
+    }
 
     /**
      * Returns resampling method for zoomed-out operations.
@@ -673,7 +720,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \return TRUE if success
      * \since QGIS 3.16
      */
-    virtual bool setMaxOversampling( double factor ) { Q_UNUSED( factor ); return false; }
+    virtual bool setMaxOversampling( double factor )
+    {
+      Q_UNUSED( factor );
+      return false;
+    }
 
     /**
      * Returns maximum oversampling factor for zoomed-out operations.
@@ -737,7 +788,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \note No checks for Raster Attribute Table validity are performed when saving, it is client code responsibility to handle validation.
      * \since QGIS 3.30
      */
-    virtual bool writeNativeAttributeTable( QString *errorMessage SIP_OUT = nullptr );  //#spellok
+    virtual bool writeNativeAttributeTable( QString *errorMessage SIP_OUT = nullptr ); //#spellok
 
     /**
      * Reads the native attribute table, optionally reporting any error in \a errorMessage, returns TRUE on success.
@@ -747,7 +798,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \returns TRUE on success
      * \since QGIS 3.30
      */
-    virtual bool readNativeAttributeTable( QString *errorMessage SIP_OUT  = nullptr );
+    virtual bool readNativeAttributeTable( QString *errorMessage SIP_OUT = nullptr );
 
     /**
      * Returns the description for band \a bandNumber, or an empty string if the band is not valid or has not description.
@@ -767,22 +818,35 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
 
   protected:
-
     /**
      * Reads a block of raster data into \a data.
      * \returns TRUE if the block was successfully read, or FALSE if an error occurred and the block could not be read.
      * \note not available in Python bindings
      */
     virtual bool readBlock( int bandNo, int xBlock, int yBlock, void *data ) SIP_SKIP
-    { Q_UNUSED( bandNo ) Q_UNUSED( xBlock ); Q_UNUSED( yBlock ); Q_UNUSED( data ); return false; }
+    {
+      Q_UNUSED( bandNo )
+      Q_UNUSED( xBlock );
+      Q_UNUSED( yBlock );
+      Q_UNUSED( data );
+      return false;
+    }
 
     /**
      * Reads a block of raster data into \a data, using the given extent and size.
      * \returns TRUE if the block was successfully read, or FALSE if an error occurred and the block could not be read.
      * \note not available in Python bindings
      */
-    virtual bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) SIP_SKIP
-    { Q_UNUSED( bandNo ) Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); Q_UNUSED( feedback ); return false; }
+    virtual bool readBlock( int bandNo, QgsRectangle const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) SIP_SKIP
+    {
+      Q_UNUSED( bandNo )
+      Q_UNUSED( viewExtent );
+      Q_UNUSED( width );
+      Q_UNUSED( height );
+      Q_UNUSED( data );
+      Q_UNUSED( feedback );
+      return false;
+    }
 
     //! Returns TRUE if user no data contains value
     bool userNoDataValuesContains( int bandNo, double value ) const;
@@ -819,7 +883,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \brief List of lists of user defined additional no data values
      *  for each band, indexed from 0
     */
-    QList< QgsRasterRangeList > mUserNoDataValue;
+    QList<QgsRasterRangeList> mUserNoDataValue;
 
     mutable QgsRectangle mExtent;
 
@@ -836,16 +900,14 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     double mMaxOversampling = 2.0;
 
   private:
-
     /**
      * Data provider temporal properties
      */
-    std::unique_ptr< QgsRasterDataProviderTemporalCapabilities > mTemporalCapabilities;
+    std::unique_ptr<QgsRasterDataProviderTemporalCapabilities> mTemporalCapabilities;
 
-    std::unique_ptr< QgsRasterDataProviderElevationProperties > mElevationProperties;
+    std::unique_ptr<QgsRasterDataProviderElevationProperties> mElevationProperties;
 
     std::map<int, std::unique_ptr<QgsRasterAttributeTable>> mAttributeTables;
-
 };
 
 // clazy:excludeall=qstring-allocations

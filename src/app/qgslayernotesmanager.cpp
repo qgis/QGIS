@@ -50,8 +50,7 @@ QgsLayerNotesDialog::QgsLayerNotesDialog( QWidget *parent )
   QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Save | QDialogButtonBox::Help | QDialogButtonBox::Cancel );
   connect( buttonBox->button( QDialogButtonBox::Save ), &QPushButton::clicked, this, &QDialog::accept );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [ = ]
-  {
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [=] {
     QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#layer-notes" ) );
   } );
   layout->addWidget( buttonBox );

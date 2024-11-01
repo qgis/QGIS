@@ -19,7 +19,7 @@ QList<QgsGeocoderResult> QgsGeocoderInterface::geocodeFeature( const QgsFeature 
 {
   Q_UNUSED( feature )
   Q_UNUSED( context )
-  return QList< QgsGeocoderResult >();
+  return QList<QgsGeocoderResult>();
 }
 
 QgsFields QgsGeocoderInterface::appendedFields() const { return QgsFields(); }
@@ -30,5 +30,5 @@ QList<QgsGeocoderResult> QgsGeocoderInterface::geocodeString( const QString &str
 {
   Q_UNUSED( string )
   Q_UNUSED( context )
-  return QList< QgsGeocoderResult >();
+  return QList<QgsGeocoderResult>();
 }

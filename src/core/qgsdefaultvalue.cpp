@@ -20,7 +20,6 @@ QgsDefaultValue::QgsDefaultValue( const QString &expression, bool applyOnUpdate 
   : mExpression( expression )
   , mApplyOnUpdate( applyOnUpdate )
 {
-
 }
 
 bool QgsDefaultValue::operator==( const QgsDefaultValue &other ) const

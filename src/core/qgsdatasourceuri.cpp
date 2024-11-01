@@ -579,7 +579,7 @@ QString QgsDataSourceUri::connectionInfo( bool expandAuthConfig ) const
     }
   }
 
-  if ( mSSLmode != SslPrefer )  // no need to output the default
+  if ( mSSLmode != SslPrefer ) // no need to output the default
   {
     connectionItems << QStringLiteral( "sslmode=" ) + encodeSslMode( mSSLmode );
   }
@@ -652,8 +652,8 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
   if ( !mTable.isEmpty() )
   {
     uri += QStringLiteral( " table=%1%2" )
-           .arg( quotedTablename(),
-                 mGeometryColumn.isEmpty() ? QString() : QStringLiteral( " (%1)" ).arg( columnName ) );
+             .arg( quotedTablename(),
+                   mGeometryColumn.isEmpty() ? QString() : QStringLiteral( " (%1)" ).arg( columnName ) );
   }
   else if ( !mSchema.isEmpty() )
   {
@@ -739,11 +739,11 @@ QString QgsDataSourceUri::quotedTablename() const
 {
   if ( !mSchema.isEmpty() )
     return QStringLiteral( "\"%1\".\"%2\"" )
-           .arg( escape( mSchema, '"' ),
-                 escape( mTable, '"' ) );
+      .arg( escape( mSchema, '"' ),
+            escape( mTable, '"' ) );
   else
     return QStringLiteral( "\"%1\"" )
-           .arg( escape( mTable, '"' ) );
+      .arg( escape( mTable, '"' ) );
 }
 
 void QgsDataSourceUri::setConnection( const QString &host,
@@ -836,19 +836,25 @@ QgsDataSourceUri::SslMode QgsDataSourceUri::decodeSslMode( const QString &sslMod
   else if ( sslMode == QLatin1String( "verify-full" ) )
     return SslVerifyFull;
   else
-    return SslPrefer;  // default
+    return SslPrefer; // default
 }
 
 QString QgsDataSourceUri::encodeSslMode( QgsDataSourceUri::SslMode sslMode )
 {
   switch ( sslMode )
   {
-    case SslPrefer: return QStringLiteral( "prefer" );
-    case SslDisable: return QStringLiteral( "disable" );
-    case SslAllow: return QStringLiteral( "allow" );
-    case SslRequire: return QStringLiteral( "require" );
-    case SslVerifyCa: return QStringLiteral( "verify-ca" );
-    case SslVerifyFull: return QStringLiteral( "verify-full" );
+    case SslPrefer:
+      return QStringLiteral( "prefer" );
+    case SslDisable:
+      return QStringLiteral( "disable" );
+    case SslAllow:
+      return QStringLiteral( "allow" );
+    case SslRequire:
+      return QStringLiteral( "require" );
+    case SslVerifyCa:
+      return QStringLiteral( "verify-ca" );
+    case SslVerifyFull:
+      return QStringLiteral( "verify-full" );
   }
   return QString();
 }

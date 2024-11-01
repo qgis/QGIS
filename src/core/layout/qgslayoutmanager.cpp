@@ -31,7 +31,6 @@ QgsLayoutManager::QgsLayoutManager( QgsProject *project )
   : QObject( project )
   , mProject( project )
 {
-
 }
 
 QgsLayoutManager::~QgsLayoutManager()
@@ -55,17 +54,15 @@ bool QgsLayoutManager::addLayout( QgsMasterLayoutInterface *layout )
   }
 
   // ugly, but unavoidable for interfaces...
-  if ( QgsPrintLayout *l = dynamic_cast< QgsPrintLayout * >( layout ) )
+  if ( QgsPrintLayout *l = dynamic_cast<QgsPrintLayout *>( layout ) )
   {
-    connect( l, &QgsPrintLayout::nameChanged, this, [this, l]( const QString & newName )
-    {
+    connect( l, &QgsPrintLayout::nameChanged, this, [this, l]( const QString &newName ) {
       emit layoutRenamed( l, newName );
     } );
   }
-  else if ( QgsReport *r = dynamic_cast< QgsReport * >( layout ) )
+  else if ( QgsReport *r = dynamic_cast<QgsReport *>( layout ) )
   {
-    connect( r, &QgsReport::nameChanged, this, [this, r]( const QString & newName )
-    {
+    connect( r, &QgsReport::nameChanged, this, [this, r]( const QString &newName ) {
       emit layoutRenamed( r, newName );
     } );
   }
@@ -96,7 +93,7 @@ bool QgsLayoutManager::removeLayout( QgsMasterLayoutInterface *layout )
 
 void QgsLayoutManager::clear()
 {
-  const QList< QgsMasterLayoutInterface * > layouts = mLayouts;
+  const QList<QgsMasterLayoutInterface *> layouts = mLayouts;
   for ( QgsMasterLayoutInterface *l : layouts )
   {
     removeLayout( l );
@@ -159,7 +156,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
     QDomNodeList compositionNodes = composerNodes.at( i ).toElement().elementsByTagName( QStringLiteral( "Composition" ) );
     for ( int j = 0; j < compositionNodes.size(); ++j )
     {
-      std::unique_ptr< QgsPrintLayout > l( QgsCompositionConverter::createLayoutFromCompositionXml( compositionNodes.at( j ).toElement(), mProject ) );
+      std::unique_ptr<QgsPrintLayout> l( QgsCompositionConverter::createLayoutFromCompositionXml( compositionNodes.at( j ).toElement(), mProject ) );
       if ( l )
       {
         if ( l->name().isEmpty() )
@@ -186,8 +183,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
             l->setName( QStringLiteral( "%1 %2" ).arg( originalName ).arg( id ) );
             id++;
           }
-        }
-        while ( isDuplicateName );
+        } while ( isDuplicateName );
 
         bool added = addLayout( l.release() );
         result = added && result;
@@ -210,7 +206,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
     const QString layoutName = layoutNodes.at( i ).toElement().attribute( QStringLiteral( "name" ) );
     QgsScopedRuntimeProfile profile( layoutName, QStringLiteral( "projectload" ) );
 
-    std::unique_ptr< QgsPrintLayout > l = std::make_unique< QgsPrintLayout >( mProject );
+    std::unique_ptr<QgsPrintLayout> l = std::make_unique<QgsPrintLayout>( mProject );
     l->undoStack()->blockCommands( true );
     if ( !l->readLayoutXml( layoutNodes.at( i ).toElement(), doc, context ) )
     {
@@ -231,7 +227,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
     const QString layoutName = reportNodes.at( i ).toElement().attribute( QStringLiteral( "name" ) );
     QgsScopedRuntimeProfile profile( layoutName, QStringLiteral( "projectload" ) );
 
-    std::unique_ptr< QgsReport > r = std::make_unique< QgsReport >( mProject );
+    std::unique_ptr<QgsReport> r = std::make_unique<QgsReport>( mProject );
     if ( !r->readLayoutXml( reportNodes.at( i ).toElement(), doc, context ) )
     {
       result = false;
@@ -264,7 +260,7 @@ QgsMasterLayoutInterface *QgsLayoutManager::duplicateLayout( const QgsMasterLayo
   if ( !layout )
     return nullptr;
 
-  std::unique_ptr< QgsMasterLayoutInterface > newLayout( layout->clone() );
+  std::unique_ptr<QgsMasterLayoutInterface> newLayout( layout->clone() );
   if ( !newLayout )
   {
     return nullptr;
@@ -331,7 +327,6 @@ bool QgsLayoutManager::accept( QgsStyleEntityVisitorInterface *visitor ) const
 }
 
 
-
 //
 // QgsLayoutManagerModel
 //
@@ -368,13 +363,13 @@ QVariant QgsLayoutManagerModel::data( const QModelIndex &index, int role ) const
     case Qt::EditRole:
       return !isEmpty && mLayoutManager ? mLayoutManager->layouts().at( layoutRow )->name() : QVariant();
 
-    case static_cast< int >( CustomRole::Layout ):
+    case static_cast<int>( CustomRole::Layout ):
     {
       if ( isEmpty || !mLayoutManager )
         return QVariant();
-      else if ( QgsLayout *l = dynamic_cast< QgsLayout * >( mLayoutManager->layouts().at( layoutRow ) ) )
+      else if ( QgsLayout *l = dynamic_cast<QgsLayout *>( mLayoutManager->layouts().at( layoutRow ) ) )
         return QVariant::fromValue( l );
-      else if ( QgsReport *r = dynamic_cast< QgsReport * >( mLayoutManager->layouts().at( layoutRow ) ) )
+      else if ( QgsReport *r = dynamic_cast<QgsReport *>( mLayoutManager->layouts().at( layoutRow ) ) )
         return QVariant::fromValue( r );
       else
         return QVariant();
@@ -418,7 +413,7 @@ bool QgsLayoutManagerModel::setData( const QModelIndex &index, const QVariant &v
 
   //check if name already exists
   QStringList layoutNames;
-  const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts(); // skip-keyword-check
+  const QList<QgsMasterLayoutInterface *> layouts = QgsProject::instance()->layoutManager()->layouts(); // skip-keyword-check
   for ( QgsMasterLayoutInterface *l : layouts )
   {
     layoutNames << l->name();
@@ -455,9 +450,9 @@ QgsMasterLayoutInterface *QgsLayoutManagerModel::layoutFromIndex( const QModelIn
   if ( index.row() == 0 && mAllowEmpty )
     return nullptr;
 
-  if ( QgsPrintLayout *l = qobject_cast< QgsPrintLayout * >( qvariant_cast<QObject *>( data( index, static_cast< int >( CustomRole::Layout ) ) ) ) )
+  if ( QgsPrintLayout *l = qobject_cast<QgsPrintLayout *>( qvariant_cast<QObject *>( data( index, static_cast<int>( CustomRole::Layout ) ) ) ) )
     return l;
-  else if ( QgsReport *r = qobject_cast< QgsReport * >( qvariant_cast<QObject *>( data( index, static_cast< int >( CustomRole::Layout ) ) ) ) )
+  else if ( QgsReport *r = qobject_cast<QgsReport *>( qvariant_cast<QObject *>( data( index, static_cast<int>( CustomRole::Layout ) ) ) ) )
     return r;
   else
     return nullptr;
@@ -559,7 +554,7 @@ bool QgsLayoutManagerProxyModel::lessThan( const QModelIndex &left, const QModel
 
 bool QgsLayoutManagerProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
-  QgsLayoutManagerModel *model = qobject_cast< QgsLayoutManagerModel * >( sourceModel() );
+  QgsLayoutManagerModel *model = qobject_cast<QgsLayoutManagerModel *>( sourceModel() );
   if ( !model )
     return false;
 

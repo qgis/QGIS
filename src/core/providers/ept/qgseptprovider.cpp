@@ -45,11 +45,11 @@ QgsEptProvider::QgsEptProvider(
   else
     mIndex.reset( new QgsEptPointCloudIndex );
 
-  std::unique_ptr< QgsScopedRuntimeProfile > profile;
+  std::unique_ptr<QgsScopedRuntimeProfile> profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
+    profile = std::make_unique<QgsScopedRuntimeProfile>( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
-  loadIndex( );
+  loadIndex();
   if ( mIndex && !mIndex->isValid() )
   {
     appendError( mIndex->error() );
@@ -120,7 +120,7 @@ qint64 QgsEptProvider::pointCount() const
   return mIndex->pointCount();
 }
 
-void QgsEptProvider::loadIndex( )
+void QgsEptProvider::loadIndex()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -137,15 +137,14 @@ QVariantMap QgsEptProvider::originalMetadata() const
   return mIndex->originalMetadata();
 }
 
-void QgsEptProvider::generateIndex()
-{
+void QgsEptProvider::generateIndex() {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   //no-op, index is always generated
 }
 
-QgsEptProviderMetadata::QgsEptProviderMetadata():
-  QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
+QgsEptProviderMetadata::QgsEptProviderMetadata()
+  : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION )
 {
 }
 
@@ -169,7 +168,7 @@ QList<QgsProviderSublayerDetails> QgsEptProviderMetadata::querySublayers( const 
     details.setProviderKey( QStringLiteral( "ept" ) );
     details.setType( Qgis::LayerType::PointCloud );
     details.setName( QgsProviderUtils::suggestLayerNameFromFilePath( uri ) );
-    return {details};
+    return { details };
   }
   else
   {
@@ -190,9 +189,9 @@ QList<Qgis::LayerType> QgsEptProviderMetadata::validLayerTypesForUri( const QStr
 {
   const QVariantMap parts = decodeUri( uri );
   if ( parts.value( QStringLiteral( "file-name" ) ).toString().compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) == 0 )
-    return QList< Qgis::LayerType>() << Qgis::LayerType::PointCloud;
+    return QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud;
 
-  return QList< Qgis::LayerType>();
+  return QList<Qgis::LayerType>();
 }
 
 bool QgsEptProviderMetadata::uriIsBlocklisted( const QString &uri ) const
@@ -260,4 +259,3 @@ QgsProviderMetadata::ProviderMetadataCapabilities QgsEptProviderMetadata::capabi
          | ProviderMetadataCapability::QuerySublayers;
 }
 ///@endcond
-

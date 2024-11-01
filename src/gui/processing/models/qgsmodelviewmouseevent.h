@@ -35,9 +35,7 @@ class QgsModelGraphicsView;
  */
 class GUI_EXPORT QgsModelViewMouseEvent : public QMouseEvent
 {
-
   public:
-
     /**
      * Constructor for QgsModelViewMouseEvent. Should only be required to be called from the QgsModelGraphicsView.
      * \param view The view in which the event occurred.
@@ -71,7 +69,6 @@ class GUI_EXPORT QgsModelViewMouseEvent : public QMouseEvent
 
 
   private:
-
     //! The view in which the event was triggered.
     QgsModelGraphicsView *mView = nullptr;
 

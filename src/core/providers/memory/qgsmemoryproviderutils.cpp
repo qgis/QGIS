@@ -88,14 +88,11 @@ QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, 
   for ( const QgsField &field : fields )
   {
     const QString lengthPrecision = QStringLiteral( "(%1,%2)" ).arg( field.length() ).arg( field.precision() );
-    parts << QStringLiteral( "field=%1:%2%3%4" ).arg( QString( QUrl::toPercentEncoding( field.name() ) ),
-          memoryLayerFieldType( field.type() == QMetaType::Type::QVariantList || field.type() == QMetaType::Type::QStringList ? field.subType() : field.type(), field.typeName() ),
-          lengthPrecision,
-          field.type() == QMetaType::Type::QVariantList || field.type() == QMetaType::Type::QStringList ? QStringLiteral( "[]" ) : QString() );
+    parts << QStringLiteral( "field=%1:%2%3%4" ).arg( QString( QUrl::toPercentEncoding( field.name() ) ), memoryLayerFieldType( field.type() == QMetaType::Type::QVariantList || field.type() == QMetaType::Type::QStringList ? field.subType() : field.type(), field.typeName() ), lengthPrecision, field.type() == QMetaType::Type::QVariantList || field.type() == QMetaType::Type::QStringList ? QStringLiteral( "[]" ) : QString() );
   }
 
   const QString uri = geomType + '?' + parts.join( '&' );
-  QgsVectorLayer::LayerOptions options{ QgsCoordinateTransformContext() };
+  QgsVectorLayer::LayerOptions options { QgsCoordinateTransformContext() };
   options.skipCrsValidation = true;
   options.loadDefaultStyle = loadDefaultStyle;
   return new QgsVectorLayer( uri, name, QStringLiteral( "memory" ), options );

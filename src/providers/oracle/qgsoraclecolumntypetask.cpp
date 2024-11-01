@@ -48,15 +48,15 @@ bool QgsOracleColumnTypeTask::run()
                                mSchema,
                                QgsOracleConn::geometryColumnsOnly( mName ),
                                QgsOracleConn::userTablesOnly( mName ),
-                               mAllowGeometrylessTables ) ||
-       layerProperties.isEmpty() )
+                               mAllowGeometrylessTables )
+       || layerProperties.isEmpty() )
   {
     return false;
   }
 
   int i = 0, n = layerProperties.size();
   for ( QVector<QgsOracleLayerProperty>::iterator it = layerProperties.begin(),
-        end = layerProperties.end();
+                                                  end = layerProperties.end();
         it != end; ++it )
   {
     QgsOracleLayerProperty &layerProperty = *it;
@@ -64,9 +64,9 @@ bool QgsOracleColumnTypeTask::run()
     {
       setProgress( ( i * 100. ) / n );
       emit progressMessage( tr( "Scanning column %1.%2.%3…" )
-                            .arg( layerProperty.ownerName,
-                                  layerProperty.tableName,
-                                  layerProperty.geometryColName ) );
+                              .arg( layerProperty.ownerName,
+                                    layerProperty.tableName,
+                                    layerProperty.geometryColName ) );
       conn->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata, QgsOracleConn::onlyExistingTypes( mName ) );
     }
 

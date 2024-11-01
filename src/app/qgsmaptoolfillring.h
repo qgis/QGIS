@@ -24,7 +24,7 @@
  * A tool to cut holes into polygon and multipolygon features and fill them
  *  with new feature. Attributes are copied from parent feature.
  */
-class APP_EXPORT QgsMapToolFillRing: public QgsMapToolCapture
+class APP_EXPORT QgsMapToolFillRing : public QgsMapToolCapture
 {
     Q_OBJECT
   public:

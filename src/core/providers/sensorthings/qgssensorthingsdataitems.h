@@ -32,7 +32,6 @@ class CORE_EXPORT QgsSensorThingsRootItem : public QgsConnectionsRootItem
     QVector<QgsDataItem *> createChildren() override;
 
     QVariant sortKey() const override { return 8; }
-
 };
 
 //! Item implementation for sensorthings connections
@@ -43,6 +42,7 @@ class CORE_EXPORT QgsSensorThingsConnectionItem : public QgsDataCollectionItem
     QgsSensorThingsConnectionItem( QgsDataItem *parent, const QString &name, const QString &path );
     bool equal( const QgsDataItem *other ) override;
     QVector<QgsDataItem *> createChildren() override;
+
   private:
     QString mConnName;
 };
@@ -56,6 +56,7 @@ class CORE_EXPORT QgsSensorThingsEntityContainerItem : public QgsDataCollectionI
                                         Qgis::SensorThingsEntity entityType, const QString &connectionName );
     bool equal( const QgsDataItem *other ) override;
     QVector<QgsDataItem *> createChildren() override;
+
   private:
     QVariantMap mEntityUriParts;
     Qgis::SensorThingsEntity mEntityType = Qgis::SensorThingsEntity::Invalid;
@@ -71,6 +72,7 @@ class CORE_EXPORT QgsSensorThingsLayerEntityItem : public QgsLayerItem
                                     const QVariantMap &uriParts, const QString &provider, Qgis::BrowserLayerType type,
                                     Qgis::SensorThingsEntity entityType, const QString &connectionName );
     QString layerName() const final;
+
   private:
     QVariantMap mUriParts;
     Qgis::SensorThingsEntity mEntityType = Qgis::SensorThingsEntity::Invalid;

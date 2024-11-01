@@ -43,7 +43,7 @@ QgsAuthApiHeaderMethod::QgsAuthApiHeaderMethod()
   setExpansions( QgsAuthMethod::NetworkRequest );
   setDataProviders( QStringList()
                     << QStringLiteral( "ows" )
-                    << QStringLiteral( "wfs" )  // convert to lowercase
+                    << QStringLiteral( "wfs" ) // convert to lowercase
                     << QStringLiteral( "wcs" )
                     << QStringLiteral( "wms" ) );
 }
@@ -64,7 +64,7 @@ QString QgsAuthApiHeaderMethod::displayDescription() const
 }
 
 bool QgsAuthApiHeaderMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
-    const QString &dataprovider )
+                                                   const QString &dataprovider )
 {
   Q_UNUSED( dataprovider )
   const QgsAuthMethodConfig config = getMethodConfig( authcfg );

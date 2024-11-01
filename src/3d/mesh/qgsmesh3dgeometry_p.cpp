@@ -21,7 +21,7 @@
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 
@@ -65,7 +65,7 @@ static QByteArray createTerrainVertexData(
   {
     const QgsMeshVertex &vert = mesh.vertices().at( i );
     *fptr++ = float( vert.x() - origin.x() );
-    *fptr++ = float( vert.z() - origin.z() ) * vertScale ;
+    *fptr++ = float( vert.z() - origin.z() ) * vertScale;
     *fptr++ = float( -vert.y() + origin.y() );
 
     QVector3D normal = normals.at( i );
@@ -89,18 +89,16 @@ static QByteArray createDatasetVertexData(
 {
   const int nVerts = mesh.vertices().count();
 
-  const QVector<double> verticalMagnitude =
-    QgsMeshLayerUtils::calculateMagnitudeOnVertices( nativeMesh, data.verticalGroupMetadata, data.verticalData, data.activeFaceFlagValues );
+  const QVector<double> verticalMagnitude = QgsMeshLayerUtils::calculateMagnitudeOnVertices( nativeMesh, data.verticalGroupMetadata, data.verticalData, data.activeFaceFlagValues );
 
-  const QVector<double> scalarMagnitude =
-    QgsMeshLayerUtils::calculateMagnitudeOnVertices( nativeMesh, data.scalarGroupMetadata, data.scalarData, data.activeFaceFlagValues );
+  const QVector<double> scalarMagnitude = QgsMeshLayerUtils::calculateMagnitudeOnVertices( nativeMesh, data.scalarGroupMetadata, data.scalarData, data.activeFaceFlagValues );
 
   //Calculate normals with Z value equal to verticaleMagnitude
   const QVector<QVector3D> normals = QgsMeshLayerUtils::calculateNormals( mesh, verticalMagnitude, data.isVerticalMagnitudeRelative );
 
   // Populate a buffer with the interleaved per-vertex data with
   // vec3 pos, vec3 normal, float magnitude
-  const quint32 elementSize = 3 + 3 + 1 ;
+  const quint32 elementSize = 3 + 3 + 1;
   const quint32 stride = elementSize * sizeof( float );
   QByteArray bufferBytes;
   bufferBytes.resize( stride * nVerts );
@@ -116,7 +114,7 @@ static QByteArray createDatasetVertexData(
       vertMag += vert.z();
 
     *fptr++ = float( vert.x() - origin.x() );
-    *fptr++ = float( vertMag - origin.z() ) * vertScale ;
+    *fptr++ = float( vertMag - origin.z() ) * vertScale;
     *fptr++ = float( -vert.y() + origin.y() );
 
     QVector3D normal = normals.at( i );
@@ -201,7 +199,7 @@ QgsMesh3DGeometry::QgsMesh3DGeometry( const QgsTriangularMesh &triangularMesh,
                                       const QgsRectangle &extent,
                                       double verticalScale,
                                       Qt3DCore::QNode *parent )
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
   : Qt3DRender::QGeometry( parent )
 #else
   : Qt3DCore::QGeometry( parent )
@@ -229,14 +227,11 @@ QgsMeshDataset3DGeometry::QgsMeshDataset3DGeometry(
   , mTimeRange( timeRange )
   , mLayerRef( layer )
 {
+  const int stride = ( 3 /*position*/ + 3 /*normal*/ + 1 /*magnitude*/ ) * sizeof( float );
 
-  const int stride = ( 3 /*position*/ +
-                       3 /*normal*/ +
-                       1 /*magnitude*/ ) * sizeof( float );
-
-  prepareVerticesPositionAttribute( mVertexBuffer,  stride, 0 );
-  prepareVerticesNormalAttribute( mVertexBuffer,  stride, 3 );
-  prepareVerticesDatasetAttribute( mVertexBuffer,  stride, 6 );
+  prepareVerticesPositionAttribute( mVertexBuffer, stride, 0 );
+  prepareVerticesNormalAttribute( mVertexBuffer, stride, 3 );
+  prepareVerticesDatasetAttribute( mVertexBuffer, stride, 6 );
   prepareIndexesAttribute( mIndexBuffer );
 
   prepareData();
@@ -292,21 +287,19 @@ void QgsMeshDataset3DGeometry::prepareData()
 
   VertexData data;
   data.verticalGroupMetadata = layer->datasetGroupMetadata( mVerticalGroupDatasetIndex );
-  const bool verticalDataOnVertices =  data.verticalGroupMetadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
+  const bool verticalDataOnVertices = data.verticalGroupMetadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
   int datacount = verticalDataOnVertices ? nativeMesh.vertices.count() : nativeMesh.faces.count();
   data.verticalData = QgsMeshLayerUtils::datasetValues( layer, verticalMagDatasetIndex, 0, datacount );
 
   data.scalarGroupMetadata = layer->datasetGroupMetadata( layer->activeScalarDatasetAtTime( mTimeRange ) );
-  const bool scalarDataOnVertices =  data.scalarGroupMetadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
+  const bool scalarDataOnVertices = data.scalarGroupMetadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
   datacount = scalarDataOnVertices ? nativeMesh.vertices.count() : nativeMesh.faces.count();
   data.scalarData = QgsMeshLayerUtils::datasetValues( layer, scalarDatasetIndex, 0, datacount );
 
-  if ( ( verticalDataOnVertices && ( data.verticalData.count() != mTriangulaMesh.vertices().count() ) )  ||
-       ( scalarDataOnVertices && ( data.scalarData.count() != mTriangulaMesh.vertices().count() ) ) )
+  if ( ( verticalDataOnVertices && ( data.verticalData.count() != mTriangulaMesh.vertices().count() ) ) || ( scalarDataOnVertices && ( data.scalarData.count() != mTriangulaMesh.vertices().count() ) ) )
     return;
 
-  if ( ( !verticalDataOnVertices && ( data.verticalData.count() != nativeMesh.faces.count() ) )  ||
-       ( !scalarDataOnVertices && ( data.scalarData.count() != nativeMesh.faces.count() ) ) )
+  if ( ( !verticalDataOnVertices && ( data.verticalData.count() != nativeMesh.faces.count() ) ) || ( !scalarDataOnVertices && ( data.scalarData.count() != nativeMesh.faces.count() ) ) )
     return;
 
   data.activeFaceFlagValues = layer->areFacesActive( scalarDatasetIndex, 0, nativeMesh.faces.count() );
@@ -320,18 +313,16 @@ void QgsMeshDataset3DGeometry::prepareData()
 
 
 QgsMeshTerrain3DGeometry::QgsMeshTerrain3DGeometry( const QgsTriangularMesh &triangularMesh,
-    const QgsVector3D &origin,
-    const QgsRectangle &extent,
-    double verticalScale,
-    Qt3DCore::QNode *parent )
+                                                    const QgsVector3D &origin,
+                                                    const QgsRectangle &extent,
+                                                    double verticalScale,
+                                                    Qt3DCore::QNode *parent )
   : QgsMesh3DGeometry( triangularMesh, origin, extent, verticalScale, parent )
 {
-
-  const int stride = ( 3 /*position*/ +
-                       3 /*normal*/ ) * sizeof( float );
+  const int stride = ( 3 /*position*/ + 3 /*normal*/ ) * sizeof( float );
 
   prepareVerticesPositionAttribute( mVertexBuffer, stride, 0 );
-  prepareVerticesNormalAttribute( mVertexBuffer,  stride, 3 );
+  prepareVerticesNormalAttribute( mVertexBuffer, stride, 3 );
   prepareIndexesAttribute( mIndexBuffer );
 
   mBuilder = new QgsMesh3DGeometryBuilder( triangularMesh, origin, extent, mVertScale, this );
@@ -419,8 +410,8 @@ void QgsMesh3DGeometry::prepareIndexesAttribute( Qt3DQBuffer *buffer )
 }
 
 
-QgsMesh3DGeometryBuilder::QgsMesh3DGeometryBuilder( const QgsTriangularMesh &mesh, const QgsVector3D &origin, const QgsRectangle &extent, float vertScale, QObject *parent ):
-  QObject( parent )
+QgsMesh3DGeometryBuilder::QgsMesh3DGeometryBuilder( const QgsTriangularMesh &mesh, const QgsVector3D &origin, const QgsRectangle &extent, float vertScale, QObject *parent )
+  : QObject( parent )
   , mMesh( mesh )
   , mOrigin( origin )
   , mExtent( extent )
@@ -462,15 +453,14 @@ void QgsMesh3DGeometryBuilder::indexFinished()
   }
 }
 
-QgsMeshDataset3DGeometryBuilder::QgsMeshDataset3DGeometryBuilder
-( const QgsTriangularMesh &mesh,
-  const QgsMesh &nativeMesh,
-  const QgsVector3D &origin,
-  const QgsRectangle &extent,
-  float vertScale,
-  const QgsMeshDataset3DGeometry::VertexData &vertexData,
-  QObject *parent ):
-  QgsMesh3DGeometryBuilder( mesh, origin, extent, vertScale, parent )
+QgsMeshDataset3DGeometryBuilder::QgsMeshDataset3DGeometryBuilder( const QgsTriangularMesh &mesh,
+                                                                  const QgsMesh &nativeMesh,
+                                                                  const QgsVector3D &origin,
+                                                                  const QgsRectangle &extent,
+                                                                  float vertScale,
+                                                                  const QgsMeshDataset3DGeometry::VertexData &vertexData,
+                                                                  QObject *parent )
+  : QgsMesh3DGeometryBuilder( mesh, origin, extent, vertScale, parent )
   , mNativeMesh( nativeMesh )
   , mVertexData( vertexData )
 {}

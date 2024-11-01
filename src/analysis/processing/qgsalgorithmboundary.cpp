@@ -42,7 +42,7 @@ QString QgsBoundaryAlgorithm::group() const
 
 QString QgsBoundaryAlgorithm::groupId() const
 {
-  return  QStringLiteral( "vectorgeometry" );
+  return QStringLiteral( "vectorgeometry" );
 }
 
 QString QgsBoundaryAlgorithm::outputName() const
@@ -60,7 +60,7 @@ QString QgsBoundaryAlgorithm::shortHelpString() const
 
 QList<int> QgsBoundaryAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 bool QgsBoundaryAlgorithm::supportInPlaceEdit( const QgsMapLayer * ) const

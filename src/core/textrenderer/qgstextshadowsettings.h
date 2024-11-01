@@ -35,16 +35,15 @@ class QgsPropertyCollection;
 class CORE_EXPORT QgsTextShadowSettings
 {
   public:
-
     /**
      * Placement positions for text shadow.
      */
     enum ShadowPlacement
     {
       ShadowLowest = 0, //!< Draw shadow below all text components
-      ShadowText, //!< Draw shadow under text
-      ShadowBuffer, //!< Draw shadow under buffer
-      ShadowShape //!< Draw shadow under background shape
+      ShadowText,       //!< Draw shadow under text
+      ShadowBuffer,     //!< Draw shadow under buffer
+      ShadowShape       //!< Draw shadow under background shape
     };
 
     QgsTextShadowSettings();
@@ -309,9 +308,7 @@ class CORE_EXPORT QgsTextShadowSettings
     QSet<QString> referencedFields( const QgsRenderContext &context ) const;
 
   private:
-
     QSharedDataPointer<QgsTextShadowSettingsPrivate> d;
-
 };
 
 #endif // QGSTEXTSHADOWSETTINGS_H

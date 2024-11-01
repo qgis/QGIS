@@ -24,9 +24,9 @@
 #include "qgsmessagelog.h"
 
 QgsFieldDomainsItem::QgsFieldDomainsItem( QgsDataItem *parent,
-    const QString &path,
-    const QString &connectionUri,
-    const QString &providerKey )
+                                          const QString &path,
+                                          const QString &connectionUri,
+                                          const QString &providerKey )
   : QgsDataItem( Qgis::BrowserItemType::Custom, parent, tr( "Field Domains" ), path, providerKey )
   , mConnectionUri( connectionUri )
 {
@@ -61,7 +61,7 @@ QVector<QgsDataItem *> QgsFieldDomainsItem::createChildren()
         {
           try
           {
-            std::unique_ptr< QgsFieldDomain > domain( conn->fieldDomain( name ) );
+            std::unique_ptr<QgsFieldDomain> domain( conn->fieldDomain( name ) );
             QgsFieldDomainItem *fieldDomainItem { new QgsFieldDomainItem( this, domain.release() ) };
             children.push_back( fieldDomainItem );
           }
@@ -129,4 +129,3 @@ const QgsFieldDomain *QgsFieldDomainItem::fieldDomain()
 }
 
 QgsFieldDomainItem::~QgsFieldDomainItem() = default;
-

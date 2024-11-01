@@ -56,7 +56,6 @@ class GUI_EXPORT QgsAuthMethodEdit : public QWidget
     virtual void clearConfig() = 0;
 
   protected:
-
     /**
      * Construct widget to edit an authentication method configuration
      * \note Non-public since this is an abstract base class

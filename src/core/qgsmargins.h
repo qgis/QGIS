@@ -36,7 +36,6 @@
 class CORE_EXPORT QgsMargins
 {
   public:
-
     /**
      * Constructs a margins object with all margins set to 0.
      */

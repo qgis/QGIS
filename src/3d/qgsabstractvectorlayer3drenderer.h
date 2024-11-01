@@ -37,7 +37,6 @@ class QgsVectorLayer;
 class _3D_EXPORT QgsVectorLayer3DTilingSettings
 {
   public:
-
     /**
      * Returns number of zoom levels. One zoom level means there will be one tile.
      * Every extra zoom level multiplies number of tiles by four. For example, three
@@ -100,8 +99,8 @@ class _3D_EXPORT QgsAbstractVectorLayer3DRenderer : public QgsAbstract3DRenderer
     void readXmlBaseProperties( const QDomElement &elem, const QgsReadWriteContext &context );
 
   private:
-    QgsMapLayerRef mLayerRef; //!< Layer used to extract polygons from
-    QgsVectorLayer3DTilingSettings mTilingSettings;  //!< How is layer tiled into chunks
+    QgsMapLayerRef mLayerRef;                       //!< Layer used to extract polygons from
+    QgsVectorLayer3DTilingSettings mTilingSettings; //!< How is layer tiled into chunks
 };
 
 #endif // QGSABSTRACTVECTORLAYER3DRENDERER_H

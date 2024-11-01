@@ -33,7 +33,6 @@
 class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
 {
   public:
-
     /**
      * Constructor for QgsReportSectionLayout, attached to the specified \a parent section.
      * Note that ownership is not transferred to \a parent.
@@ -83,14 +82,12 @@ class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
     void reloadSettings() override;
 
   protected:
-
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private:
-
     bool mExportedBody = false;
-    std::unique_ptr< QgsLayout > mBody;
+    std::unique_ptr<QgsLayout> mBody;
     bool mBodyEnabled = true;
 };
 

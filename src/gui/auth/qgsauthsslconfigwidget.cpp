@@ -41,9 +41,9 @@ static const QString configFoundText_() { return QObject::tr( "Configuration loa
 static const QString configNotFoundText_() { return QObject::tr( "Configuration not found in database" ); }
 
 QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget *parent,
-    const QSslCertificate &cert,
-    const QString &hostport,
-    const QList<QSslCertificate> &connectionCAs )
+                                                const QSslCertificate &cert,
+                                                const QString &hostport,
+                                                const QList<QSslCertificate> &connectionCAs )
   : QWidget( parent )
   , mCert( nullptr )
   , mConnectionCAs( connectionCAs )
@@ -165,7 +165,7 @@ void QgsAuthSslConfigWidget::setUpSslConfigTree()
 
   mIgnoreErrorsItem = addRootItem( tr( "Ignore errors" ) );
 
-  const QList<QPair<QSslError::SslError, QString> > errenums = QgsAuthCertUtils::sslErrorEnumStrings();
+  const QList<QPair<QSslError::SslError, QString>> errenums = QgsAuthCertUtils::sslErrorEnumStrings();
   for ( int i = 0; i < errenums.size(); i++ )
   {
     QTreeWidgetItem *item = new QTreeWidgetItem(
@@ -334,7 +334,7 @@ QSsl::SslProtocol QgsAuthSslConfigWidget::sslProtocol()
   {
     return QSsl::UnknownProtocol;
   }
-  return ( QSsl::SslProtocol )mProtocolCmbBx->currentData().toInt();
+  return ( QSsl::SslProtocol ) mProtocolCmbBx->currentData().toInt();
 }
 
 void QgsAuthSslConfigWidget::setSslProtocol( QSsl::SslProtocol protocol )
@@ -374,7 +374,7 @@ void QgsAuthSslConfigWidget::appendSslIgnoreErrors( const QList<QSslError> &erro
   for ( int i = 0; i < mIgnoreErrorsItem->childCount(); i++ )
   {
     QTreeWidgetItem *item( mIgnoreErrorsItem->child( i ) );
-    if ( errenums.contains( ( QSslError::SslError )item->data( 0, Qt::UserRole ).toInt() ) )
+    if ( errenums.contains( ( QSslError::SslError ) item->data( 0, Qt::UserRole ).toInt() ) )
     {
       item->setCheckState( 0, Qt::Checked );
     }
@@ -419,7 +419,7 @@ void QgsAuthSslConfigWidget::setSslIgnoreErrors( const QList<QSslError> &errors 
   for ( int i = 0; i < mIgnoreErrorsItem->childCount(); i++ )
   {
     QTreeWidgetItem *item( mIgnoreErrorsItem->child( i ) );
-    const bool enable( errenums.contains( ( QSslError::SslError )item->data( 0, Qt::UserRole ).toInt() ) );
+    const bool enable( errenums.contains( ( QSslError::SslError ) item->data( 0, Qt::UserRole ).toInt() ) );
     item->setCheckState( 0, enable ? Qt::Checked : Qt::Unchecked );
   }
 }
@@ -448,7 +448,7 @@ const QList<QSslError::SslError> QgsAuthSslConfigWidget::sslIgnoreErrorEnums()
     QTreeWidgetItem *item( mIgnoreErrorsItem->child( i ) );
     if ( item->checkState( 0 ) == Qt::Checked )
     {
-      errs.append( ( QSslError::SslError )item->data( 0, Qt::UserRole ).toInt() );
+      errs.append( ( QSslError::SslError ) item->data( 0, Qt::UserRole ).toInt() );
     }
   }
   return errs;
@@ -460,7 +460,7 @@ QSslSocket::PeerVerifyMode QgsAuthSslConfigWidget::sslPeerVerifyMode()
   {
     return QSslSocket::AutoVerifyPeer;
   }
-  return ( QSslSocket::PeerVerifyMode )mVerifyPeerCmbBx->currentData().toInt();
+  return ( QSslSocket::PeerVerifyMode ) mVerifyPeerCmbBx->currentData().toInt();
 }
 
 int QgsAuthSslConfigWidget::sslPeerVerifyDepth()
@@ -546,7 +546,7 @@ void QgsAuthSslConfigWidget::validateHostPortText( const QString &txt )
   }
   const bool valid = validateHostPort( txt );
   leHost->setStyleSheet( valid ? QgsAuthGuiUtils::greenTextStyleSheet()
-                         : QgsAuthGuiUtils::redTextStyleSheet() );
+                               : QgsAuthGuiUtils::redTextStyleSheet() );
   emit hostPortValidityChanged( valid );
 }
 

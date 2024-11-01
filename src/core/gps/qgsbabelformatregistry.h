@@ -37,7 +37,6 @@ class QgsBabelGpsDeviceFormat;
 class CORE_EXPORT QgsBabelFormatRegistry
 {
   public:
-
 #ifndef SIP_RUN
 
     static inline QgsSettingsTreeNamedListNode *sTreeBabelDevices = QgsSettingsTree::sTreeGps->createNamedListNode( QStringLiteral( "babel-devices" ) );
@@ -105,7 +104,7 @@ class CORE_EXPORT QgsBabelFormatRegistry
      * \see deviceFormat()
      * \see deviceNames()
      */
-    QMap< QString, QgsBabelGpsDeviceFormat * > devices() const;
+    QMap<QString, QgsBabelGpsDeviceFormat *> devices() const;
 
     /**
      * Reloads the registry's members from the currently stored configuration.
@@ -118,9 +117,9 @@ class CORE_EXPORT QgsBabelFormatRegistry
 #endif
 
     //! Importers for external GPS data file formats
-    QMap< QString, QgsBabelSimpleImportFormat *> mImporters;
+    QMap<QString, QgsBabelSimpleImportFormat *> mImporters;
     //! Upload/downloaders for GPS devices
-    QMap< QString, QgsBabelGpsDeviceFormat *> mDevices;
+    QMap<QString, QgsBabelGpsDeviceFormat *> mDevices;
 };
 
 

@@ -43,12 +43,7 @@ QgsMeshLayerInterpolator::QgsMeshLayerInterpolator(
   QgsMeshDatasetGroupMetadata::DataType dataType,
   const QgsRenderContext &context,
   const QSize &size )
-  : mTriangularMesh( m ),
-    mDatasetValues( datasetValues ),
-    mActiveFaceFlagValues( activeFaceFlagValues ),
-    mContext( context ),
-    mDataType( dataType ),
-    mOutputSize( size )
+  : mTriangularMesh( m ), mDatasetValues( datasetValues ), mActiveFaceFlagValues( activeFaceFlagValues ), mContext( context ), mDataType( dataType ), mOutputSize( size )
 {
 }
 
@@ -75,7 +70,7 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
   std::unique_ptr<QgsRasterBlock> outputBlock( new QgsRasterBlock( Qgis::DataType::Float64, width, height ) );
   const double noDataValue = std::numeric_limits<double>::quiet_NaN();
   outputBlock->setNoDataValue( noDataValue );
-  outputBlock->setIsNoData();  // assume initially that all values are unset
+  outputBlock->setIsNoData(); // assume initially that all values are unset
   double *data = reinterpret_cast<double *>( outputBlock->bits() );
 
   QList<int> spatialIndexTriangles;
@@ -160,22 +155,21 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
         const QgsPointXY p = mContext.mapToPixel().toMapCoordinates( k / pixelRatio, j / pixelRatio );
         if ( mDataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices )
           val = QgsMeshLayerUtils::interpolateFromVerticesData(
-                  p1,
-                  p2,
-                  p3,
-                  value1,
-                  value2,
-                  value3,
-                  p );
+            p1,
+            p2,
+            p3,
+            value1,
+            value2,
+            value3,
+            p );
         else
         {
           val = QgsMeshLayerUtils::interpolateFromFacesData(
-                  p1,
-                  p2,
-                  p3,
-                  value,
-                  p
-                );
+            p1,
+            p2,
+            p3,
+            value,
+            p );
         }
         if ( !std::isnan( val ) )
         {
@@ -249,20 +243,20 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
 
   const QgsMeshDatasetGroupMetadata metadata = layer.datasetGroupMetadata( datasetIndex );
   const QgsMeshDatasetGroupMetadata::DataType scalarDataType = QgsMeshLayerUtils::datasetValuesType( metadata.dataType() );
-  const int count =  QgsMeshLayerUtils::datasetValuesCount( nativeMesh.get(), scalarDataType );
+  const int count = QgsMeshLayerUtils::datasetValuesCount( nativeMesh.get(), scalarDataType );
   const QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
-                                  &layer,
-                                  datasetIndex,
-                                  0,
-                                  count );
+    &layer,
+    datasetIndex,
+    0,
+    count );
   if ( !vals.isValid() )
     return nullptr;
 
   const QVector<double> datasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
   const QgsMeshDataBlock activeFaceFlagValues = layer.areFacesActive(
-        datasetIndex,
-        0,
-        nativeMesh->faces.count() );
+    datasetIndex,
+    0,
+    nativeMesh->faces.count() );
 
   QgsMeshLayerInterpolator interpolator(
     *( triangularMesh.get() ),
@@ -270,8 +264,7 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
     activeFaceFlagValues,
     scalarDataType,
     renderContext,
-    QSize( widthPixel, heightPixel )
-  );
+    QSize( widthPixel, heightPixel ) );
 
   return interpolator.block( 0, extent, widthPixel, heightPixel, feedback );
 }
@@ -286,7 +279,6 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
   const QgsRectangle &extent,
   QgsRasterBlockFeedback *feedback )
 {
-
   const int widthPixel = static_cast<int>( extent.width() / mapUnitsPerPixel );
   const int heightPixel = static_cast<int>( extent.height() / mapUnitsPerPixel );
 
@@ -311,8 +303,7 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
     activeFlags,
     dataType,
     renderContext,
-    QSize( widthPixel, heightPixel )
-  );
+    QSize( widthPixel, heightPixel ) );
 
   return interpolator.block( 0, extent, widthPixel, heightPixel, feedback );
 }

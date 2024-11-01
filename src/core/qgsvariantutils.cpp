@@ -169,7 +169,7 @@ QString QgsVariantUtils::typeToDisplayString( QVariant::Type type, QVariant::Typ
 bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings )
 {
 #ifndef QGISDEBUG
-  ( void )silenceNullWarnings;
+  ( void ) silenceNullWarnings;
 #endif
 
   if ( variant.isNull() || !variant.isValid() )
@@ -358,7 +358,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       }
       return false;
     case QMetaType::Type::QPixmap:
-      if ( variant.value< QPixmap >().isNull() )
+      if ( variant.value<QPixmap>().isNull() )
       {
         if ( !silenceNullWarnings )
         {
@@ -368,7 +368,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       }
       return false;
     case QMetaType::Type::QImage:
-      if ( variant.value< QImage >().isNull() )
+      if ( variant.value<QImage>().isNull() )
       {
         if ( !silenceNullWarnings )
         {
@@ -378,7 +378,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       }
       return false;
     case QMetaType::Type::QRegion:
-      if ( variant.value< QRegion >().isNull() )
+      if ( variant.value<QRegion>().isNull() )
       {
         if ( !silenceNullWarnings )
         {
@@ -388,7 +388,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       }
       return false;
     case QMetaType::Type::QBitmap:
-      if ( variant.value< QBitmap >().isNull() )
+      if ( variant.value<QBitmap>().isNull() )
       {
         if ( !silenceNullWarnings )
         {
@@ -398,7 +398,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       }
       return false;
     case QMetaType::Type::QIcon:
-      if ( variant.value< QIcon >().isNull() )
+      if ( variant.value<QIcon>().isNull() )
       {
         if ( !silenceNullWarnings )
         {
@@ -408,7 +408,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       }
       return false;
     case QMetaType::Type::QVector2D:
-      if ( variant.value< QVector2D >().isNull() )
+      if ( variant.value<QVector2D>().isNull() )
       {
         if ( !silenceNullWarnings )
         {
@@ -418,7 +418,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       }
       return false;
     case QMetaType::Type::QVector3D:
-      if ( variant.value< QVector3D >().isNull() )
+      if ( variant.value<QVector3D>().isNull() )
       {
         if ( !silenceNullWarnings )
         {
@@ -428,7 +428,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       }
       return false;
     case QMetaType::Type::QVector4D:
-      if ( variant.value< QVector4D >().isNull() )
+      if ( variant.value<QVector4D>().isNull() )
       {
         if ( !silenceNullWarnings )
         {
@@ -438,7 +438,7 @@ bool QgsVariantUtils::isNull( const QVariant &variant, bool silenceNullWarnings 
       }
       return false;
     case QMetaType::Type::QQuaternion:
-      if ( variant.value< QQuaternion >().isNull() )
+      if ( variant.value<QQuaternion>().isNull() )
       {
         if ( !silenceNullWarnings )
         {
@@ -494,7 +494,7 @@ bool QgsVariantUtils::isNumericType( QMetaType::Type metaType )
 QMetaType::Type QgsVariantUtils::variantTypeToMetaType( QVariant::Type variantType )
 {
   // variant types can be directly mapped to meta types
-  return static_cast< QMetaType::Type >( variantType );
+  return static_cast<QMetaType::Type>( variantType );
 }
 
 QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType )
@@ -560,7 +560,7 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
     case QMetaType::QSizePolicy:
     case QMetaType::UnknownType:
     case QMetaType::User:
-      return static_cast< QVariant::Type >( metaType );
+      return static_cast<QVariant::Type>( metaType );
 
     // lossy, not exact mappings. We prefer to "expand" types
     // to avoid truncation
@@ -571,7 +571,7 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
       return QVariant::Type::ULongLong;
 
     case QMetaType::Char:
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     case QMetaType::Char16:
     case QMetaType::Char32:
 #endif
@@ -584,7 +584,7 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
       return QVariant::Type::UInt;
 
     case QMetaType::Float:
-#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 5, 0 )
     case QMetaType::Float16:
 #endif
       return QVariant::Type::Double;
@@ -603,7 +603,7 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
     case QMetaType::QCborArray:
     case QMetaType::QCborMap:
     case QMetaType::QObjectStar:
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     case QMetaType::QVariantPair:
 #endif
     case QMetaType::QByteArrayList:
@@ -619,10 +619,9 @@ QVariant::Type QgsVariantUtils::metaTypeToVariantType( QMetaType::Type metaType 
 
 QVariant QgsVariantUtils::createNullVariant( QMetaType::Type metaType )
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
   return QVariant( QgsVariantUtils::metaTypeToVariantType( metaType ) );
 #else
   return QVariant( QMetaType( metaType ) );
 #endif
-
 }

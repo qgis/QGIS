@@ -42,7 +42,6 @@ bool QgsDatabaseQueryLog::sEnabled = false;
 QgsDatabaseQueryLog::QgsDatabaseQueryLog( QObject *parent )
   : QObject( parent )
 {
-
 }
 
 void QgsDatabaseQueryLog::log( const QgsDatabaseQueryLogEntry &query )
@@ -76,4 +75,3 @@ void QgsDatabaseQueryLog::queryFinishedPrivate( const QgsDatabaseQueryLogEntry &
   QgsDebugMsgLevel( query.query, 2 );
   emit queryFinished( query );
 }
-

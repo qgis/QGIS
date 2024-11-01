@@ -21,14 +21,12 @@
 QgsTiledSceneTile::QgsTiledSceneTile()
   : mBoundingVolume( QgsTiledSceneBoundingVolume( QgsOrientedBox3D() ) )
 {
-
 }
 
 QgsTiledSceneTile::QgsTiledSceneTile( long long id )
   : mId( id )
   , mBoundingVolume( QgsTiledSceneBoundingVolume( QgsOrientedBox3D() ) )
 {
-
 }
 
 QgsTiledSceneTile::~QgsTiledSceneTile() = default;
@@ -78,7 +76,7 @@ void QgsTiledSceneTile::setTransform( const QgsMatrix4x4 &transform )
   if ( transform.isIdentity() )
     mTransform.reset();
   else
-    mTransform = std::make_unique< QgsMatrix4x4 >( transform );
+    mTransform = std::make_unique<QgsMatrix4x4>( transform );
 }
 
 QVariantMap QgsTiledSceneTile::resources() const

@@ -36,7 +36,6 @@ class QgsReadWriteContext;
 class CORE_EXPORT QgsProjectStorage
 {
   public:
-
     /**
      * \ingroup core
      * \brief Metadata associated with a project
@@ -99,13 +98,23 @@ class CORE_EXPORT QgsProjectStorage
      * Rename an existing project at the given URI to a different URI. Returns TRUE if renaming
      * was successful.
      */
-    virtual bool renameProject( const QString &uri, const QString &uriNew ) { Q_UNUSED( uri ) Q_UNUSED( uriNew ); return false; }
+    virtual bool renameProject( const QString &uri, const QString &uriNew )
+    {
+      Q_UNUSED( uri )
+      Q_UNUSED( uriNew );
+      return false;
+    }
 
     /**
      * Reads project metadata (e.g. last modified time) if this is supported by the storage implementation.
      * Returns TRUE if the metadata were read with success.
      */
-    virtual bool readProjectStorageMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata SIP_OUT ) { Q_UNUSED( uri ) Q_UNUSED( metadata ); return false; }
+    virtual bool readProjectStorageMetadata( const QString &uri, QgsProjectStorage::Metadata &metadata SIP_OUT )
+    {
+      Q_UNUSED( uri )
+      Q_UNUSED( metadata );
+      return false;
+    }
 
     /**
      * Extracts and returns the file path from a storage backend \a uri, filesystem-based storage
@@ -136,7 +145,6 @@ class CORE_EXPORT QgsProjectStorage
      * \deprecated QGIS 3.10. Use QgsProjectStorageGuiProvider for GUI-related project storage functionality.
      */
     Q_DECL_DEPRECATED virtual QString showSaveGui() SIP_DEPRECATED { return QString(); }
-
 };
 
 #endif // QGSPROJECTSTORAGE_H

@@ -47,7 +47,6 @@ void QgsAnnotationItemEditContext::setRenderContext( const QgsRenderContext &con
 QgsAbstractAnnotationItemEditOperation::QgsAbstractAnnotationItemEditOperation( const QString &itemId )
   : mItemId( itemId )
 {
-
 }
 
 QgsAbstractAnnotationItemEditOperation::~QgsAbstractAnnotationItemEditOperation() = default;
@@ -57,7 +56,7 @@ QgsAbstractAnnotationItemEditOperation::~QgsAbstractAnnotationItemEditOperation(
 // QgsAnnotationItemEditOperationMoveNode
 //
 QgsAnnotationItemEditOperationMoveNode::QgsAnnotationItemEditOperationMoveNode( const QString &itemId, QgsVertexId nodeId, const QgsPoint &before, const QgsPoint &after,
-    double translatePixelsX, double translatePixelsY )
+                                                                                double translatePixelsX, double translatePixelsY )
   : QgsAbstractAnnotationItemEditOperation( itemId )
   , mNodeId( nodeId )
   , mBefore( before )
@@ -65,7 +64,6 @@ QgsAnnotationItemEditOperationMoveNode::QgsAnnotationItemEditOperationMoveNode( 
   , mTranslatePixelsX( translatePixelsX )
   , mTranslatePixelsY( translatePixelsY )
 {
-
 }
 
 QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationMoveNode::type() const
@@ -83,7 +81,6 @@ QgsAnnotationItemEditOperationDeleteNode::QgsAnnotationItemEditOperationDeleteNo
   , mNodeId( nodeId )
   , mBefore( before )
 {
-
 }
 
 QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationDeleteNode::type() const
@@ -102,7 +99,6 @@ QgsAnnotationItemEditOperationTranslateItem::QgsAnnotationItemEditOperationTrans
   , mTranslatePixelsX( translatePixelsX )
   , mTranslatePixelsY( translatePixelsY )
 {
-
 }
 
 QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationTranslateItem::type() const
@@ -119,7 +115,6 @@ QgsAnnotationItemEditOperationAddNode::QgsAnnotationItemEditOperationAddNode( co
   : QgsAbstractAnnotationItemEditOperation( itemId )
   , mPoint( point )
 {
-
 }
 
 QgsAbstractAnnotationItemEditOperation::Type QgsAnnotationItemEditOperationAddNode::type() const

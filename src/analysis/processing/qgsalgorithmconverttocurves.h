@@ -31,9 +31,7 @@
  */
 class QgsConvertToCurvesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsConvertToCurvesAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -48,11 +46,10 @@ class QgsConvertToCurvesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   protected:
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
 
   private:
-
     double mTolerance = 0.000001;
     bool mDynamicTolerance = false;
     QgsProperty mToleranceProperty;
@@ -60,11 +57,8 @@ class QgsConvertToCurvesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     double mAngleTolerance = 0.000001;
     bool mDynamicAngleTolerance = false;
     QgsProperty mAngleToleranceProperty;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMCONVERTTOCURVES_H
-
-

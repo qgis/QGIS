@@ -108,7 +108,7 @@ bool QgsRasterLayerElevationProperties::readXml( const QDomElement &element, con
   if ( elevationElement.hasAttribute( QStringLiteral( "elevationLimit" ) ) )
     mElevationLimit = elevationElement.attribute( QStringLiteral( "elevationLimit" ) ).toDouble();
   else
-    mElevationLimit = std::numeric_limits< double >::quiet_NaN();
+    mElevationLimit = std::numeric_limits<double>::quiet_NaN();
 
   readCommonProperties( elevationElement, context );
 
@@ -153,12 +153,12 @@ bool QgsRasterLayerElevationProperties::readXml( const QDomElement &element, con
   const QColor defaultColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
 
   const QDomElement profileLineSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileLineSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-  mProfileLineSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( profileLineSymbolElement, context ) );
+  mProfileLineSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( profileLineSymbolElement, context ) );
   if ( !mProfileLineSymbol )
     setDefaultProfileLineSymbol( defaultColor );
 
   const QDomElement profileFillSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileFillSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-  mProfileFillSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( profileFillSymbolElement, context ) );
+  mProfileFillSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( profileFillSymbolElement, context ) );
   if ( !mProfileFillSymbol )
     setDefaultProfileFillSymbol( defaultColor );
 
@@ -167,7 +167,7 @@ bool QgsRasterLayerElevationProperties::readXml( const QDomElement &element, con
 
 QgsRasterLayerElevationProperties *QgsRasterLayerElevationProperties::clone() const
 {
-  std::unique_ptr< QgsRasterLayerElevationProperties > res = std::make_unique< QgsRasterLayerElevationProperties >( nullptr );
+  std::unique_ptr<QgsRasterLayerElevationProperties> res = std::make_unique<QgsRasterLayerElevationProperties>( nullptr );
   res->setEnabled( mEnabled );
   res->setMode( mMode );
   res->setProfileLineSymbol( mProfileLineSymbol->clone() );
@@ -231,7 +231,7 @@ bool QgsRasterLayerElevationProperties::isVisibleInZRange( const QgsDoubleRange 
 
     case Qgis::RasterElevationMode::DynamicRangePerBand:
     {
-      if ( QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( layer ) )
+      if ( QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer ) )
       {
         QgsExpressionContext context;
         context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
@@ -282,8 +282,8 @@ QgsDoubleRange QgsRasterLayerElevationProperties::calculateZRange( QgsMapLayer *
 
     case Qgis::RasterElevationMode::FixedRangePerBand:
     {
-      double lower = std::numeric_limits< double >::max();
-      double upper = std::numeric_limits< double >::min();
+      double lower = std::numeric_limits<double>::max();
+      double upper = std::numeric_limits<double>::min();
       bool includeLower = true;
       bool includeUpper = true;
       for ( auto it = mRangePerBand.constBegin(); it != mRangePerBand.constEnd(); ++it )
@@ -312,7 +312,7 @@ QgsDoubleRange QgsRasterLayerElevationProperties::calculateZRange( QgsMapLayer *
 
     case Qgis::RasterElevationMode::DynamicRangePerBand:
     {
-      if ( QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( layer ) )
+      if ( QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer ) )
       {
         QgsExpressionContext context;
         context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
@@ -373,15 +373,15 @@ QList<double> QgsRasterLayerElevationProperties::significantZValues( QgsMapLayer
 
     case Qgis::RasterElevationMode::FixedRangePerBand:
     {
-      QList< double > res;
+      QList<double> res;
       for ( auto it = mRangePerBand.constBegin(); it != mRangePerBand.constEnd(); ++it )
       {
         if ( it.value().isInfinite() )
           continue;
 
-        if ( !res.contains( it.value().lower( ) ) )
+        if ( !res.contains( it.value().lower() ) )
           res.append( it.value().lower() );
-        if ( !res.contains( it.value().upper( ) ) )
+        if ( !res.contains( it.value().upper() ) )
           res.append( it.value().upper() );
       }
       std::sort( res.begin(), res.end() );
@@ -390,8 +390,8 @@ QList<double> QgsRasterLayerElevationProperties::significantZValues( QgsMapLayer
 
     case Qgis::RasterElevationMode::DynamicRangePerBand:
     {
-      QList< double > res;
-      if ( QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( layer ) )
+      QList<double> res;
+      if ( QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer ) )
       {
         QgsExpressionContext context;
         context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
@@ -715,24 +715,24 @@ bool QgsRasterLayerElevationProperties::layerLooksLikeDem( QgsRasterLayer *layer
   // Check the layer's name for DEM-ish hints.
   // See discussion at https://github.com/qgis/QGIS/pull/30245 - this list must NOT be translated,
   // but adding hardcoded localized variants of the strings is encouraged.
-  static const QStringList sPartialCandidates{ QStringLiteral( "dem" ),
-      QStringLiteral( "dtm" ),
-      QStringLiteral( "dsm" ),
-      QStringLiteral( "height" ),
-      QStringLiteral( "elev" ),
-      QStringLiteral( "srtm" ),
-      // French hints
-      QStringLiteral( "mne" ),
-      QStringLiteral( "mnt" ),
-      QStringLiteral( "mns" ),
-      QStringLiteral( "rge" ),
-      QStringLiteral( "alti" ),
-      // German hints
-      QStringLiteral( "dhm" ),
-      QStringLiteral( "dgm" ),
-      QStringLiteral( "dom" ),
-      QStringLiteral( "Höhe" ),
-      QStringLiteral( "Hoehe" ) };
+  static const QStringList sPartialCandidates { QStringLiteral( "dem" ),
+                                                QStringLiteral( "dtm" ),
+                                                QStringLiteral( "dsm" ),
+                                                QStringLiteral( "height" ),
+                                                QStringLiteral( "elev" ),
+                                                QStringLiteral( "srtm" ),
+                                                // French hints
+                                                QStringLiteral( "mne" ),
+                                                QStringLiteral( "mnt" ),
+                                                QStringLiteral( "mns" ),
+                                                QStringLiteral( "rge" ),
+                                                QStringLiteral( "alti" ),
+                                                // German hints
+                                                QStringLiteral( "dhm" ),
+                                                QStringLiteral( "dgm" ),
+                                                QStringLiteral( "dom" ),
+                                                QStringLiteral( "Höhe" ),
+                                                QStringLiteral( "Hoehe" ) };
   const QString layerName = layer->name();
   for ( const QString &candidate : sPartialCandidates )
   {
@@ -741,7 +741,7 @@ bool QgsRasterLayerElevationProperties::layerLooksLikeDem( QgsRasterLayer *layer
   }
 
   // these candidates must occur with word boundaries (we don't want to find "aster" in "raster"!)
-  static const QStringList sWordCandidates{ QStringLiteral( "aster" ) };
+  static const QStringList sWordCandidates { QStringLiteral( "aster" ) };
   for ( const QString &candidate : sWordCandidates )
   {
     const thread_local QRegularExpression re( QStringLiteral( "\\b%1\\b" ).arg( candidate ) );
@@ -754,15 +754,15 @@ bool QgsRasterLayerElevationProperties::layerLooksLikeDem( QgsRasterLayer *layer
 
 void QgsRasterLayerElevationProperties::setDefaultProfileLineSymbol( const QColor &color )
 {
-  std::unique_ptr< QgsSimpleLineSymbolLayer > profileLineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( color, 0.6 );
-  mProfileLineSymbol = std::make_unique< QgsLineSymbol>( QgsSymbolLayerList( { profileLineLayer.release() } ) );
+  std::unique_ptr<QgsSimpleLineSymbolLayer> profileLineLayer = std::make_unique<QgsSimpleLineSymbolLayer>( color, 0.6 );
+  mProfileLineSymbol = std::make_unique<QgsLineSymbol>( QgsSymbolLayerList( { profileLineLayer.release() } ) );
 }
 
 void QgsRasterLayerElevationProperties::setDefaultProfileFillSymbol( const QColor &color )
 {
-  std::unique_ptr< QgsSimpleFillSymbolLayer > profileFillLayer = std::make_unique< QgsSimpleFillSymbolLayer >( color );
+  std::unique_ptr<QgsSimpleFillSymbolLayer> profileFillLayer = std::make_unique<QgsSimpleFillSymbolLayer>( color );
   profileFillLayer->setStrokeStyle( Qt::NoPen );
-  mProfileFillSymbol = std::make_unique< QgsFillSymbol>( QgsSymbolLayerList( { profileFillLayer.release() } ) );
+  mProfileFillSymbol = std::make_unique<QgsFillSymbol>( QgsSymbolLayerList( { profileFillLayer.release() } ) );
 }
 
 QMap<int, QgsDoubleRange> QgsRasterLayerElevationProperties::fixedRangePerBand() const

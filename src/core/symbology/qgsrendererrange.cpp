@@ -65,9 +65,7 @@ QgsRendererRange &QgsRendererRange::operator=( QgsRendererRange range )
 
 bool QgsRendererRange::operator<( const QgsRendererRange &other ) const
 {
-  return
-    lowerValue() < other.lowerValue() ||
-    ( qgsDoubleNear( lowerValue(), other.lowerValue() ) && upperValue() < other.upperValue() );
+  return lowerValue() < other.lowerValue() || ( qgsDoubleNear( lowerValue(), other.lowerValue() ) && upperValue() < other.upperValue() );
 }
 
 QString QgsRendererRange::uuid() const
@@ -97,7 +95,8 @@ QString QgsRendererRange::label() const
 
 void QgsRendererRange::setSymbol( QgsSymbol *s )
 {
-  if ( mSymbol.get() != s ) mSymbol.reset( s );
+  if ( mSymbol.get() != s )
+    mSymbol.reset( s );
 }
 
 void QgsRendererRange::setLabel( const QString &label )
@@ -135,7 +134,7 @@ void QgsRendererRange::toSld( QDomDocument &doc, QDomElement &element, QVariantM
   if ( !mSymbol || props.value( QStringLiteral( "attribute" ), QString() ).toString().isEmpty() )
     return;
 
-  QString attrName = props[ QStringLiteral( "attribute" )].toString();
+  QString attrName = props[QStringLiteral( "attribute" )].toString();
 
   QDomElement ruleElem = doc.createElement( QStringLiteral( "se:Rule" ) );
   element.appendChild( ruleElem );
@@ -153,10 +152,10 @@ void QgsRendererRange::toSld( QDomDocument &doc, QDomElement &element, QVariantM
 
   // create the ogc:Filter for the range
   QString filterFunc = QStringLiteral( "\"%1\" %2 %3 AND \"%1\" <= %4" )
-                       .arg( attrName.replace( '\"', QLatin1String( "\"\"" ) ),
-                             firstRange ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
-                             qgsDoubleToString( mLowerValue ),
-                             qgsDoubleToString( mUpperValue ) );
+                         .arg( attrName.replace( '\"', QLatin1String( "\"\"" ) ),
+                               firstRange ? QStringLiteral( ">=" ) : QStringLiteral( ">" ),
+                               qgsDoubleToString( mLowerValue ),
+                               qgsDoubleToString( mUpperValue ) );
   QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, filterFunc );
 
   mSymbol->toSld( doc, ruleElem, props );
@@ -187,10 +186,7 @@ QgsRendererRangeLabelFormat::QgsRendererRangeLabelFormat( const QString &format,
 
 bool QgsRendererRangeLabelFormat::operator==( const QgsRendererRangeLabelFormat &other ) const
 {
-  return
-    format() == other.format() &&
-    precision() == other.precision() &&
-    trimTrailingZeroes() == other.trimTrailingZeroes();
+  return format() == other.format() && precision() == other.precision() && trimTrailingZeroes() == other.trimTrailingZeroes();
 }
 
 bool QgsRendererRangeLabelFormat::operator!=( const QgsRendererRangeLabelFormat &other ) const
@@ -252,10 +248,7 @@ QString QgsRendererRangeLabelFormat::labelForRange( double lower, double upper )
 void QgsRendererRangeLabelFormat::setFromDomElement( QDomElement &element )
 {
   mFormat = element.attribute( QStringLiteral( "format" ),
-                               element.attribute( QStringLiteral( "prefix" ), QStringLiteral( " " ) ) + "%1" +
-                               element.attribute( QStringLiteral( "separator" ), QStringLiteral( " - " ) ) + "%2" +
-                               element.attribute( QStringLiteral( "suffix" ), QStringLiteral( " " ) )
-                             );
+                               element.attribute( QStringLiteral( "prefix" ), QStringLiteral( " " ) ) + "%1" + element.attribute( QStringLiteral( "separator" ), QStringLiteral( " - " ) ) + "%2" + element.attribute( QStringLiteral( "suffix" ), QStringLiteral( " " ) ) );
   setPrecision( element.attribute( QStringLiteral( "decimalplaces" ), QStringLiteral( "4" ) ).toInt() );
   mTrimTrailingZeroes = element.attribute( QStringLiteral( "trimtrailingzeroes" ), QStringLiteral( "false" ) ) == QLatin1String( "true" );
 }
@@ -266,4 +259,3 @@ void QgsRendererRangeLabelFormat::saveToDomElement( QDomElement &element )
   element.setAttribute( QStringLiteral( "decimalplaces" ), mPrecision );
   element.setAttribute( QStringLiteral( "trimtrailingzeroes" ), mTrimTrailingZeroes ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
 }
-

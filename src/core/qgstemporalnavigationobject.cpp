@@ -90,12 +90,12 @@ void QgsTemporalNavigationObject::setLooping( bool loopAnimation )
 
 QgsExpressionContextScope *QgsTemporalNavigationObject::createExpressionContextScope() const
 {
-  std::unique_ptr< QgsExpressionContextScope > scope = std::make_unique< QgsExpressionContextScope >( QStringLiteral( "temporal" ) );
+  std::unique_ptr<QgsExpressionContextScope> scope = std::make_unique<QgsExpressionContextScope>( QStringLiteral( "temporal" ) );
   scope->setVariable( QStringLiteral( "frame_rate" ), mFramesPerSecond, true );
   scope->setVariable( QStringLiteral( "frame_number" ), mCurrentFrameNumber, true );
   scope->setVariable( QStringLiteral( "frame_duration" ), mFrameDuration, true );
   scope->setVariable( QStringLiteral( "frame_timestep" ), mFrameDuration.originalDuration(), true );
-  scope->setVariable( QStringLiteral( "frame_timestep_unit" ), static_cast< int >( mFrameDuration.originalUnit() ), true );
+  scope->setVariable( QStringLiteral( "frame_timestep_unit" ), static_cast<int>( mFrameDuration.originalUnit() ), true );
   scope->setVariable( QStringLiteral( "frame_timestep_units" ), QgsUnitTypes::toString( mFrameDuration.originalUnit() ), true );
   scope->setVariable( QStringLiteral( "animation_start_time" ), mTemporalExtents.begin(), true );
   scope->setVariable( QStringLiteral( "animation_end_time" ), mTemporalExtents.end(), true );
@@ -195,7 +195,6 @@ void QgsTemporalNavigationObject::setTemporalExtents( const QgsDateTimeRange &te
     case Qgis::TemporalNavigationMode::Movie:
       break;
   }
-
 }
 
 QgsDateTimeRange QgsTemporalNavigationObject::temporalExtents() const
@@ -260,7 +259,7 @@ void QgsTemporalNavigationObject::setFramesPerSecond( double framesPerSeconds )
   if ( framesPerSeconds > 0 )
   {
     mFramesPerSecond = framesPerSeconds;
-    mNewFrameTimer->setInterval( static_cast< int >( ( 1.0 / mFramesPerSecond ) * 1000 ) );
+    mNewFrameTimer->setInterval( static_cast<int>( ( 1.0 / mFramesPerSecond ) * 1000 ) );
   }
 }
 
@@ -289,7 +288,7 @@ bool QgsTemporalNavigationObject::temporalRangeCumulative() const
 
 void QgsTemporalNavigationObject::play()
 {
-  mNewFrameTimer->start( static_cast< int >( ( 1.0 / mFramesPerSecond ) * 1000 ) );
+  mNewFrameTimer->start( static_cast<int>( ( 1.0 / mFramesPerSecond ) * 1000 ) );
 }
 
 void QgsTemporalNavigationObject::pause()
@@ -300,7 +299,7 @@ void QgsTemporalNavigationObject::pause()
 
 void QgsTemporalNavigationObject::playForward()
 {
-  if ( mPlayBackMode == Qgis::AnimationState::Idle &&  mCurrentFrameNumber >= totalFrameCount() - 1 )
+  if ( mPlayBackMode == Qgis::AnimationState::Idle && mCurrentFrameNumber >= totalFrameCount() - 1 )
   {
     // if we are paused at the end of the video, and the user hits play, we automatically rewind and play again
     rewindToStart();
@@ -312,7 +311,7 @@ void QgsTemporalNavigationObject::playForward()
 
 void QgsTemporalNavigationObject::playBackward()
 {
-  if ( mPlayBackMode == Qgis::AnimationState::Idle &&  mCurrentFrameNumber <= 0 )
+  if ( mPlayBackMode == Qgis::AnimationState::Idle && mCurrentFrameNumber <= 0 )
   {
     // if we are paused at the start of the video, and the user hits play, we automatically skip to end and play in reverse again
     skipToEnd();
@@ -355,7 +354,7 @@ long long QgsTemporalNavigationObject::totalFrameCount() const
   else
   {
     const QgsInterval totalAnimationLength = mTemporalExtents.end() - mTemporalExtents.begin();
-    return static_cast< long long >( std::ceil( totalAnimationLength.seconds() / mFrameDuration.seconds() ) );
+    return static_cast<long long>( std::ceil( totalAnimationLength.seconds() / mFrameDuration.seconds() ) );
   }
 }
 
@@ -403,7 +402,7 @@ long long QgsTemporalNavigationObject::findBestFrameNumberForFrameStart( const Q
       // We tend to receive a framestart of 'now()' upon startup for example
       if ( mTemporalExtents.contains( frameStart ) )
       {
-        roughFrameStart = static_cast< long long >( std::floor( QgsInterval( frameStart - mTemporalExtents.begin() ).seconds() / mFrameDuration.seconds() ) );
+        roughFrameStart = static_cast<long long>( std::floor( QgsInterval( frameStart - mTemporalExtents.begin() ).seconds() / mFrameDuration.seconds() ) );
       }
       roughFrameEnd = roughFrameStart + 100; // just in case we miss the guess
     }

@@ -49,19 +49,19 @@
 
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
-  , mFeedback( std::make_unique< QgsFeedback >() )
+  , mFeedback( std::make_unique<QgsFeedback>() )
   , mLayer( layer )
   , mLayerName( layer->name() )
   , mFields( layer->fields() )
-  , mSource( std::make_unique< QgsVectorLayerFeatureSource >( layer ) )
+  , mSource( std::make_unique<QgsVectorLayerFeatureSource>( layer ) )
   , mNoSetLayerExpressionContext( layer->customProperty( QStringLiteral( "_noset_layer_expression_context" ) ).toBool() )
   , mEnableProfile( context.flags() & Qgis::RenderContextFlag::RecordProfile )
 {
   QElapsedTimer timer;
   timer.start();
-  std::unique_ptr< QgsFeatureRenderer > mainRenderer( layer->renderer() ? layer->renderer()->clone() : nullptr );
+  std::unique_ptr<QgsFeatureRenderer> mainRenderer( layer->renderer() ? layer->renderer()->clone() : nullptr );
 
-  QgsVectorLayerSelectionProperties *selectionProperties = qobject_cast< QgsVectorLayerSelectionProperties * >( layer->selectionProperties() );
+  QgsVectorLayerSelectionProperties *selectionProperties = qobject_cast<QgsVectorLayerSelectionProperties *>( layer->selectionProperties() );
   switch ( selectionProperties->selectionRenderingMode() )
   {
     case Qgis::SelectionRenderingMode::Default:
@@ -78,7 +78,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
 
     case Qgis::SelectionRenderingMode::CustomSymbol:
     {
-      if ( QgsSymbol *selectionSymbol =  qobject_cast< QgsVectorLayerSelectionProperties * >( layer->selectionProperties() )->selectionSymbol() )
+      if ( QgsSymbol *selectionSymbol = qobject_cast<QgsVectorLayerSelectionProperties *>( layer->selectionProperties() )->selectionSymbol() )
         mSelectionSymbol.reset( selectionSymbol->clone() );
       break;
     }
@@ -87,14 +87,13 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   if ( !mainRenderer )
     return;
 
-  QList< const QgsFeatureRendererGenerator * > generators = layer->featureRendererGenerators();
-  std::sort( generators.begin(), generators.end(), []( const QgsFeatureRendererGenerator * g1, const QgsFeatureRendererGenerator * g2 )
-  {
+  QList<const QgsFeatureRendererGenerator *> generators = layer->featureRendererGenerators();
+  std::sort( generators.begin(), generators.end(), []( const QgsFeatureRendererGenerator *g1, const QgsFeatureRendererGenerator *g2 ) {
     return g1->level() < g2->level();
   } );
 
   bool insertedMainRenderer = false;
-  double prevLevel = std::numeric_limits< double >::lowest();
+  double prevLevel = std::numeric_limits<double>::lowest();
   // cppcheck-suppress danglingLifetime
   mRenderer = mainRenderer.get();
   for ( const QgsFeatureRendererGenerator *generator : std::as_const( generators ) )
@@ -127,7 +126,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   {
     QgsVectorLayerTemporalContext temporalContext;
     temporalContext.setLayer( layer );
-    mTemporalFilter = qobject_cast< const QgsVectorLayerTemporalProperties * >( layer->temporalProperties() )->createFilterString( temporalContext, context.temporalRange() );
+    mTemporalFilter = qobject_cast<const QgsVectorLayerTemporalProperties *>( layer->temporalProperties() )->createFilterString( temporalContext, context.temporalRange() );
     QgsDebugMsgLevel( "Rendering with Temporal Filter: " + mTemporalFilter, 2 );
   }
 
@@ -136,8 +135,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   if ( renderContext()->vectorSimplifyMethod().simplifyHints() != Qgis::VectorRenderingSimplificationFlags( Qgis::VectorRenderingSimplificationFlag::NoSimplification ) )
   {
     mSimplifyMethod = renderContext()->vectorSimplifyMethod();
-    mSimplifyGeometry = renderContext()->vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::GeometrySimplification ||
-                        renderContext()->vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::FullSimplification;
+    mSimplifyGeometry = renderContext()->vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::GeometrySimplification || renderContext()->vectorSimplifyMethod().simplifyHints() & Qgis::VectorRenderingSimplificationFlag::FullSimplification;
   }
   else
   {
@@ -174,13 +172,13 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   if ( !mNoSetLayerExpressionContext )
     renderContext()->expressionContext() << QgsExpressionContextUtils::layerScope( layer );
 
-  for ( const std::unique_ptr< QgsFeatureRenderer > &renderer : mRenderers )
+  for ( const std::unique_ptr<QgsFeatureRenderer> &renderer : mRenderers )
   {
     mAttrNames.unite( renderer->usedAttributes( context ) );
   }
   if ( context.hasRenderedFeatureHandlers() )
   {
-    const QList< QgsRenderedFeatureHandlerInterface * > handlers = context.renderedFeatureHandlers();
+    const QList<QgsRenderedFeatureHandlerInterface *> handlers = context.renderedFeatureHandlers();
     for ( QgsRenderedFeatureHandlerInterface *handler : handlers )
       mAttrNames.unite( handler->usedAttributes( layer, context ) );
   }
@@ -191,16 +189,13 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( context, layer );
 
-  if ( std::any_of( mRenderers.begin(), mRenderers.end(), []( const auto & renderer ) { return renderer->forceRasterRender(); } ) )
+  if ( std::any_of( mRenderers.begin(), mRenderers.end(), []( const auto &renderer ) { return renderer->forceRasterRender(); } ) )
   {
     //raster rendering is forced for this layer
     mForceRasterRender = true;
   }
 
-  if ( context.testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) &&
-       ( ( layer->blendMode() != QPainter::CompositionMode_SourceOver )
-         || ( layer->featureBlendMode() != QPainter::CompositionMode_SourceOver )
-         || ( !qgsDoubleNear( layer->opacity(), 1.0 ) ) ) )
+  if ( context.testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) && ( ( layer->blendMode() != QPainter::CompositionMode_SourceOver ) || ( layer->featureBlendMode() != QPainter::CompositionMode_SourceOver ) || ( !qgsDoubleNear( layer->opacity(), 1.0 ) ) ) )
   {
     //layer properties require rasterization
     mForceRasterRender = true;
@@ -250,10 +245,10 @@ bool QgsVectorLayerRenderer::render()
     return false;
   }
 
-  std::unique_ptr< QgsScopedRuntimeProfile > profile;
+  std::unique_ptr<QgsScopedRuntimeProfile> profile;
   if ( mEnableProfile )
   {
-    profile = std::make_unique< QgsScopedRuntimeProfile >( mLayerName, QStringLiteral( "rendering" ), layerId() );
+    profile = std::make_unique<QgsScopedRuntimeProfile>( mLayerName, QStringLiteral( "rendering" ), layerId() );
     if ( mPreparationTime > 0 )
       QgsApplication::profiler()->record( QObject::tr( "Create renderer" ), mPreparationTime / 1000.0, QStringLiteral( "rendering" ) );
   }
@@ -268,7 +263,7 @@ bool QgsVectorLayerRenderer::render()
 
   bool res = true;
   int rendererIndex = 0;
-  for ( const std::unique_ptr< QgsFeatureRenderer > &renderer : mRenderers )
+  for ( const std::unique_ptr<QgsFeatureRenderer> &renderer : mRenderers )
   {
     if ( mFeedback->isCanceled() || !res )
     {
@@ -292,12 +287,11 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
   {
     // a little shortcut for the null symbol renderer - most of the time it is not going to render anything
     // so we can even skip the whole loop to fetch features
-    if ( !isMainRenderer ||
-         ( !mDrawVertexMarkers && !mLabelProvider && !mDiagramProvider && mSelectedFeatureIds.isEmpty() ) )
+    if ( !isMainRenderer || ( !mDrawVertexMarkers && !mLabelProvider && !mDiagramProvider && mSelectedFeatureIds.isEmpty() ) )
       return true;
   }
 
-  std::unique_ptr< QgsScopedRuntimeProfile > preparingProfile;
+  std::unique_ptr<QgsScopedRuntimeProfile> preparingProfile;
   if ( mEnableProfile )
   {
     QString title;
@@ -305,7 +299,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
       title = QObject::tr( "Preparing render %1" ).arg( rendererIndex + 1 );
     else
       title = QObject::tr( "Preparing render" );
-    preparingProfile = std::make_unique< QgsScopedRuntimeProfile >( title, QStringLiteral( "rendering" ) );
+    preparingProfile = std::make_unique<QgsScopedRuntimeProfile>( title, QStringLiteral( "rendering" ) );
   }
 
   QgsScopedQPainterState painterState( context.painter() );
@@ -357,9 +351,9 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
   renderer->modifyRequestExtent( requestExtent, context );
 
   QgsFeatureRequest featureRequest = QgsFeatureRequest()
-                                     .setFilterRect( requestExtent )
-                                     .setSubsetOfAttributes( mAttrNames, mFields )
-                                     .setExpressionContext( context.expressionContext() );
+                                       .setFilterRect( requestExtent )
+                                       .setSubsetOfAttributes( mAttrNames, mFields )
+                                       .setExpressionContext( context.expressionContext() );
   if ( renderer->orderByEnabled() )
   {
     featureRequest.setOrderBy( renderer->orderBy() );
@@ -466,10 +460,10 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
   // which could benefit from early exit paths...
   context.expressionContext().setFeedback( mFeedback.get() );
 
-  std::unique_ptr< QgsScopedRuntimeProfile > preparingFeatureItProfile;
+  std::unique_ptr<QgsScopedRuntimeProfile> preparingFeatureItProfile;
   if ( mEnableProfile )
   {
-    preparingFeatureItProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Prepare feature iteration" ), QStringLiteral( "rendering" ) );
+    preparingFeatureItProfile = std::make_unique<QgsScopedRuntimeProfile>( QObject::tr( "Prepare feature iteration" ), QStringLiteral( "rendering" ) );
   }
 
   QgsFeatureIterator fit = mSource->getFeatures( featureRequest );
@@ -483,10 +477,10 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
   preparingFeatureItProfile.reset();
   preparingProfile.reset();
 
-  std::unique_ptr< QgsScopedRuntimeProfile > renderingProfile;
+  std::unique_ptr<QgsScopedRuntimeProfile> renderingProfile;
   if ( mEnableProfile )
   {
-    renderingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering" ), QStringLiteral( "rendering" ) );
+    renderingProfile = std::make_unique<QgsScopedRuntimeProfile>( QObject::tr( "Rendering" ), QStringLiteral( "rendering" ) );
   }
 
   if ( ( renderer->capabilities() & QgsFeatureRenderer::SymbolLevels ) && renderer->usingSymbolLevels() )
@@ -521,7 +515,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
   QgsRenderContext &context = *renderContext();
   context.expressionContext().appendScope( symbolScope );
 
-  std::unique_ptr< QgsGeometryEngine > clipEngine;
+  std::unique_ptr<QgsGeometryEngine> clipEngine;
   if ( mApplyClipFilter )
   {
     clipEngine.reset( QgsGeometry::createGeometryEngine( mClipFilterGeom.constGet() ) );
@@ -551,7 +545,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
       if ( mApplyClipGeometries )
         context.setFeatureClipGeometry( mClipFeatureGeom );
 
-      if ( ! mNoSetLayerExpressionContext )
+      if ( !mNoSetLayerExpressionContext )
         context.expressionContext().setFeature( fet );
 
       const bool featureIsSelected = isMainRenderer && context.showSelection() && mSelectedFeatureIds.contains( fet.id() );
@@ -630,13 +624,14 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
     {
       Q_UNUSED( cse )
       QgsDebugError( QStringLiteral( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
-                     .arg( fet.id() ).arg( cse.what() ) );
+                       .arg( fet.id() )
+                       .arg( cse.what() ) );
     }
   }
 
   delete context.expressionContext().popScope();
 
-  std::unique_ptr< QgsScopedRuntimeProfile > cleanupProfile;
+  std::unique_ptr<QgsScopedRuntimeProfile> cleanupProfile;
   if ( mEnableProfile )
   {
     QgsApplication::profiler()->record( QObject::tr( "Rendering features" ), ( timer.elapsed() - totalLabelTime ) / 1000.0, QStringLiteral( "rendering" ) );
@@ -644,7 +639,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureRenderer *renderer, QgsFeat
     {
       QgsApplication::profiler()->record( QObject::tr( "Registering labels" ), totalLabelTime / 1000.0, QStringLiteral( "rendering" ) );
     }
-    cleanupProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Finalizing" ), QStringLiteral( "rendering" ) );
+    cleanupProfile = std::make_unique<QgsScopedRuntimeProfile>( QObject::tr( "Finalizing" ), QStringLiteral( "rendering" ) );
   }
 
   if ( mSelectionSymbol && isMainRenderer )
@@ -668,7 +663,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   //
   // If orderBy is not enabled, this list will only ever contain a single
   // element.
-  QList<QHash< QgsSymbol *, QList<QgsFeature> >> features;
+  QList<QHash<QgsSymbol *, QList<QgsFeature>>> features;
 
   // We have at least one "level" for the features.
   features.push_back( {} );
@@ -691,10 +686,10 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   }
 
   QgsExpressionContextScope *symbolScope = QgsExpressionContextUtils::updateSymbolScope( nullptr, new QgsExpressionContextScope() );
-  std::unique_ptr< QgsExpressionContextScopePopper > scopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolScope );
+  std::unique_ptr<QgsExpressionContextScopePopper> scopePopper = std::make_unique<QgsExpressionContextScopePopper>( context.expressionContext(), symbolScope );
 
 
-  std::unique_ptr< QgsGeometryEngine > clipEngine;
+  std::unique_ptr<QgsGeometryEngine> clipEngine;
   if ( mApplyClipFilter )
   {
     clipEngine.reset( QgsGeometry::createGeometryEngine( mClipFilterGeom.constGet() ) );
@@ -704,10 +699,10 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   if ( mApplyLabelClipGeometries )
     context.setFeatureClipGeometry( mLabelClipFeatureGeom );
 
-  std::unique_ptr< QgsScopedRuntimeProfile > fetchFeaturesProfile;
+  std::unique_ptr<QgsScopedRuntimeProfile> fetchFeaturesProfile;
   if ( mEnableProfile )
   {
-    fetchFeaturesProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Fetching features" ), QStringLiteral( "rendering" ) );
+    fetchFeaturesProfile = std::make_unique<QgsScopedRuntimeProfile>( QObject::tr( "Fetching features" ), QStringLiteral( "rendering" ) );
   }
 
   QElapsedTimer timer;
@@ -732,7 +727,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
     if ( clipEngine && !clipEngine->intersects( fet.geometry().constGet() ) )
       continue; // skip features outside of clipping region
 
-    if ( ! mNoSetLayerExpressionContext )
+    if ( !mNoSetLayerExpressionContext )
       context.expressionContext().setFeature( fet );
     QgsSymbol *sym = renderer->symbolForFeature( fet, context );
     if ( !sym )
@@ -762,7 +757,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
 
     if ( !context.testFlag( Qgis::RenderContextFlag::SkipSymbolRendering ) )
     {
-      QHash<QgsSymbol *, QList<QgsFeature> > &featuresBack = features.back();
+      QHash<QgsSymbol *, QList<QgsFeature>> &featuresBack = features.back();
       auto featuresBackIt = featuresBack.find( sym );
       if ( featuresBackIt == featuresBack.end() )
       {
@@ -825,10 +820,10 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   }
 
 
-  std::unique_ptr< QgsScopedRuntimeProfile > sortingProfile;
+  std::unique_ptr<QgsScopedRuntimeProfile> sortingProfile;
   if ( mEnableProfile )
   {
-    sortingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Sorting features" ), QStringLiteral( "rendering" ) );
+    sortingProfile = std::make_unique<QgsScopedRuntimeProfile>( QObject::tr( "Sorting features" ), QStringLiteral( "rendering" ) );
   }
   // find out the order
   QgsSymbolLevelOrder levels;
@@ -853,15 +848,15 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
     context.setFeatureClipGeometry( mClipFeatureGeom );
 
   // 2. draw features in correct order
-  for ( const QHash< QgsSymbol *, QList<QgsFeature> > &featureLists : features )
+  for ( const QHash<QgsSymbol *, QList<QgsFeature>> &featureLists : features )
   {
     for ( int l = 0; l < levels.count(); l++ )
     {
       const QgsSymbolLevel &level = levels[l];
-      std::unique_ptr< QgsScopedRuntimeProfile > renderingProfile;
+      std::unique_ptr<QgsScopedRuntimeProfile> renderingProfile;
       if ( mEnableProfile )
       {
-        renderingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering symbol level %1" ).arg( l + 1 ), QStringLiteral( "rendering" ) );
+        renderingProfile = std::make_unique<QgsScopedRuntimeProfile>( QObject::tr( "Rendering symbol level %1" ).arg( l + 1 ), QStringLiteral( "rendering" ) );
       }
 
       for ( int i = 0; i < level.count(); i++ )
@@ -889,7 +884,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
           // maybe vertex markers should be drawn only during the last pass...
           const bool drawMarker = isMainRenderer && ( mDrawVertexMarkers && context.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || featureIsSelected ) );
 
-          if ( ! mNoSetLayerExpressionContext )
+          if ( !mNoSetLayerExpressionContext )
             context.expressionContext().setFeature( feature );
 
           try
@@ -908,7 +903,8 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
           {
             Q_UNUSED( cse )
             QgsDebugError( QStringLiteral( "Failed to transform a point while drawing a feature with ID '%1'. Ignoring this feature. %2" )
-                           .arg( fet.id() ).arg( cse.what() ) );
+                             .arg( fet.id() )
+                             .arg( cse.what() ) );
           }
         }
       }
@@ -919,7 +915,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
   {
     mSelectionSymbol->startRender( context, mFields );
 
-    for ( const QHash< QgsSymbol *, QList<QgsFeature> > &featureLists : features )
+    for ( const QHash<QgsSymbol *, QList<QgsFeature>> &featureLists : features )
     {
       for ( auto it = featureLists.constBegin(); it != featureLists.constEnd(); ++it )
       {
@@ -946,10 +942,10 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureRenderer *renderer, Q
     mSelectionSymbol->stopRender( context );
   }
 
-  std::unique_ptr< QgsScopedRuntimeProfile > cleanupProfile;
+  std::unique_ptr<QgsScopedRuntimeProfile> cleanupProfile;
   if ( mEnableProfile )
   {
-    cleanupProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Finalizing" ), QStringLiteral( "rendering" ) );
+    cleanupProfile = std::make_unique<QgsScopedRuntimeProfile>( QObject::tr( "Finalizing" ), QStringLiteral( "rendering" ) );
   }
 
   stopRenderer( renderer, selRenderer );
@@ -1044,9 +1040,8 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer *layer, QSet<QStrin
       if ( !mDiagramProvider->prepare( context, attributeNames ) )
       {
         engine2->removeProvider( mDiagramProvider );
-        mDiagramProvider = nullptr;  // deleted by engine
+        mDiagramProvider = nullptr; // deleted by engine
       }
     }
   }
 }
-

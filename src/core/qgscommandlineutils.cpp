@@ -27,9 +27,8 @@
 #include <proj.h>
 #include <QSysInfo>
 
-QString QgsCommandLineUtils::allVersions( )
+QString QgsCommandLineUtils::allVersions()
 {
-
   // QGIS main version
   QString versionString = QStringLiteral( "QGIS %1 '%2' (%3)\n" ).arg( VERSION, RELEASE_NAME, QGSVERSION );
 
@@ -52,8 +51,8 @@ QString QgsCommandLineUtils::allVersions( )
   }
 
   // Qt version
-  const QString qtVersionCompiled{ QT_VERSION_STR };
-  const QString qtVersionRunning{ qVersion() };
+  const QString qtVersionCompiled { QT_VERSION_STR };
+  const QString qtVersionRunning { qVersion() };
   if ( qtVersionCompiled != qtVersionRunning )
   {
     versionString += QStringLiteral( "Compiled against Qt %1\n" ).arg( qtVersionCompiled );

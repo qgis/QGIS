@@ -31,11 +31,10 @@
  * \note This template class has a dedicated handling in sipify.py
  * \since QGIS 3.20
  */
-template <typename T>
+template<typename T>
 class QgsSettingsEntryEnumFlag : public QgsSettingsEntryBaseTemplate<T>
 {
   public:
-
     /**
      * Constructor for QgsSettingsEntryEnumFlagBase.
      *
@@ -171,7 +170,6 @@ class QgsSettingsEntryEnumFlag : public QgsSettingsEntryBaseTemplate<T>
   private:
     T mDefaultValue;
     QMetaEnum mMetaEnum;
-
 };
 
 #endif // QGSSETTINGSENTRYENUMFLAG_H

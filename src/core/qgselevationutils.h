@@ -32,7 +32,6 @@ class QgsMapLayer;
 class CORE_EXPORT QgsElevationUtils
 {
   public:
-
     /**
      * Calculates the elevation range for a \a project.
      *
@@ -49,7 +48,7 @@ class CORE_EXPORT QgsElevationUtils
      *
      * \since QGIS 3.38
      */
-    static QList< double > significantZValuesForProject( QgsProject *project );
+    static QList<double> significantZValuesForProject( QgsProject *project );
 
     /**
      * Returns a list of significant elevation/z-values for the specified \a layers.
@@ -58,7 +57,7 @@ class CORE_EXPORT QgsElevationUtils
      *
      * \since QGIS 3.38
      */
-    static QList< double > significantZValuesForLayers( const QList< QgsMapLayer * > &layers );
+    static QList<double> significantZValuesForLayers( const QList<QgsMapLayer *> &layers );
 
     /**
      * Returns TRUE if elevation can be enabled for a map \a layer.
@@ -75,7 +74,6 @@ class CORE_EXPORT QgsElevationUtils
      * \since QGIS 3.32
      */
     static bool enableElevationForLayer( QgsMapLayer *layer );
-
 };
 
 

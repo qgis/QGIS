@@ -40,7 +40,6 @@ QgsLayoutSize::QgsLayoutSize( const QSizeF size, const Qgis::LayoutUnit units )
 QgsLayoutSize::QgsLayoutSize( const Qgis::LayoutUnit units )
   : mUnits( units )
 {
-
 }
 
 bool QgsLayoutSize::isEmpty() const
@@ -81,7 +80,7 @@ bool QgsLayoutSize::operator==( const QgsLayoutSize &other ) const
 
 bool QgsLayoutSize::operator!=( const QgsLayoutSize &other ) const
 {
-  return ( ! operator==( other ) );
+  return ( !operator==( other ) );
 }
 
 QgsLayoutSize QgsLayoutSize::operator*( const double v ) const

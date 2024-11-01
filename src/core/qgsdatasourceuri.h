@@ -38,7 +38,6 @@ class CORE_EXPORT QgsDataSourceUri
 {
     Q_GADGET
   public:
-
     /**
      * Available SSL connection modes.
      */
@@ -354,13 +353,14 @@ class CORE_EXPORT QgsDataSourceUri
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsDataSourceUri: %1>" ).arg( sipCpp->uri( false ) );
+        QString str
+      = QStringLiteral( "<QgsDataSourceUri: %1>" ).arg( sipCpp->uri( false ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-  private:
-    void skipBlanks( const QString &uri, int &i );
+      private : void
+                skipBlanks( const QString &uri, int &i );
     QString getValue( const QString &uri, int &i );
     QString escape( const QString &uri, QChar delim ) const;
 

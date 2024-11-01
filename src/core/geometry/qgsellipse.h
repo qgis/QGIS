@@ -37,9 +37,7 @@
  */
 class CORE_EXPORT QgsEllipse
 {
-
   public:
-
     /**
      * Constructor for QgsEllipse.
      */
@@ -106,8 +104,8 @@ class CORE_EXPORT QgsEllipse
      */
     static QgsEllipse fromCenter2Points( const QgsPoint &ptc, const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL;
 
-    virtual bool operator ==( const QgsEllipse &elp ) const;
-    virtual bool operator !=( const QgsEllipse &elp ) const;
+    virtual bool operator==( const QgsEllipse &elp ) const;
+    virtual bool operator!=( const QgsEllipse &elp ) const;
 
     //! An ellipse is empty if axes are equal to 0
     virtual bool isEmpty() const SIP_HOLDGIL;
@@ -117,25 +115,25 @@ class CORE_EXPORT QgsEllipse
      * \see setCenter()
      * \see rcenter()
      */
-    QgsPoint center() const SIP_HOLDGIL {return mCenter; }
+    QgsPoint center() const SIP_HOLDGIL { return mCenter; }
 
     /**
      * Returns the semi-major axis.
      * \see setSemiMajorAxis()
      */
-    double semiMajorAxis() const SIP_HOLDGIL {return mSemiMajorAxis; }
+    double semiMajorAxis() const SIP_HOLDGIL { return mSemiMajorAxis; }
 
     /**
      * Returns the semi-minor axis.
      * \see setSemiMinorAxis()
      */
-    double semiMinorAxis() const SIP_HOLDGIL {return mSemiMinorAxis; }
+    double semiMinorAxis() const SIP_HOLDGIL { return mSemiMinorAxis; }
 
     /**
      * Returns the azimuth.
      * \see setAzimuth()
      */
-    double azimuth() const SIP_HOLDGIL {return mAzimuth; }
+    double azimuth() const SIP_HOLDGIL { return mAzimuth; }
 
     /**
      * Returns a reference to the center point of this ellipse.
@@ -151,7 +149,7 @@ class CORE_EXPORT QgsEllipse
      * \see center()
      * \see rcenter()
      */
-    void setCenter( const QgsPoint &center ) SIP_HOLDGIL {mCenter = center; }
+    void setCenter( const QgsPoint &center ) SIP_HOLDGIL { mCenter = center; }
 
     /**
      * Sets the semi-major axis.
@@ -242,13 +240,13 @@ class CORE_EXPORT QgsEllipse
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsEllipse: %1>" ).arg( sipCpp->toString() );
+        QString str
+      = QStringLiteral( "<QgsEllipse: %1>" ).arg( sipCpp->toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-  protected:
-    QgsPoint mCenter;
+      protected : QgsPoint mCenter;
     double mSemiMajorAxis = 0.0;
     double mSemiMinorAxis = 0.0;
     double mAzimuth = 90.0;
@@ -257,7 +255,7 @@ class CORE_EXPORT QgsEllipse
     //! The semi-minor axis is always smaller than the semi-major axis. If it is set larger, it will be swapped and the azimuth will increase by 90 degrees.
     void normalizeAxis();
 
-    void pointsInternal( unsigned int segments, QVector< double> &x, QVector< double> &y, QVector<double> &z, QVector< double> &m ) const;
+    void pointsInternal( unsigned int segments, QVector<double> &x, QVector<double> &y, QVector<double> &z, QVector<double> &m ) const;
 };
 
 #endif // QGSELLIPSE_H

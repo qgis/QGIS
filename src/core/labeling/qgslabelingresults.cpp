@@ -19,7 +19,7 @@
 
 
 QgsLabelingResults::QgsLabelingResults()
-  : mLabelSearchTree( std::make_unique< QgsLabelSearchTree >() )
+  : mLabelSearchTree( std::make_unique<QgsLabelSearchTree>() )
 {
 }
 
@@ -86,7 +86,7 @@ QList<QgsCalloutPosition> QgsLabelingResults::calloutsWithinRectangle( const Qgs
 
   if ( mLabelSearchTree )
   {
-    const QList<const QgsCalloutPosition *>positionPointers  = mLabelSearchTree->calloutsInRectangle( rectangle );
+    const QList<const QgsCalloutPosition *> positionPointers = mLabelSearchTree->calloutsInRectangle( rectangle );
     for ( const QgsCalloutPosition *pos : positionPointers )
     {
       positions.push_back( QgsCalloutPosition( *pos ) );

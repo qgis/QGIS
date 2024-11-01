@@ -29,13 +29,11 @@ class QgsExpression;
 class QgsOgrExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
-
     explicit QgsOgrExpressionCompiler( QgsOgrFeatureSource *source, bool ignoreStaticNodes = false );
 
     Result compile( const QgsExpression *exp ) override;
 
   protected:
-
     Result compileNode( const QgsExpressionNode *node, QString &str ) override;
     QString quotedIdentifier( const QString &identifier ) override;
     QString quotedValue( const QVariant &value, bool &ok ) override;
@@ -45,7 +43,6 @@ class QgsOgrExpressionCompiler : public QgsSqlExpressionCompiler
     QString castToInt( const QString &value ) const override;
 
   private:
-
     QgsOgrFeatureSource *mSource = nullptr;
 };
 

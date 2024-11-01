@@ -64,8 +64,7 @@ class CORE_EXPORT QgsCPLHTTPFetchOverrider
     QThread *thread() const;
 
   private:
-
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,2,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 2, 0 )
     static CPLHTTPResult *callback( const char *pszURL,
                                     CSLConstList papszOptions,
                                     GDALProgressFunc pfnProgress,
@@ -79,7 +78,7 @@ class CORE_EXPORT QgsCPLHTTPFetchOverrider
 
     QgsFeedback *mFeedback = nullptr;
 
-    QPointer< QThread > mThread;
+    QPointer<QThread> mThread;
 
     std::map<QNetworkRequest::Attribute, QVariant> mAttributes;
 };

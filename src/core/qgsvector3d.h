@@ -110,14 +110,13 @@ class CORE_EXPORT QgsVector3D
     }
 
     //! Returns a new vector multiplied by scalar
-    QgsVector3D operator *( const double factor ) const SIP_HOLDGIL
+    QgsVector3D operator*( const double factor ) const SIP_HOLDGIL
     {
-
       return QgsVector3D( mX * factor, mY * factor, mZ * factor );
     }
 
     //! Returns a new vector divided by scalar
-    QgsVector3D operator /( const double factor ) const SIP_HOLDGIL
+    QgsVector3D operator/( const double factor ) const SIP_HOLDGIL
     {
       return QgsVector3D( mX / factor, mY / factor, mZ / factor );
     }
@@ -157,9 +156,7 @@ class CORE_EXPORT QgsVector3D
     //! Returns the distance with the \a other QgsVector3D
     double distance( const QgsVector3D &other ) const SIP_HOLDGIL
     {
-      return std::sqrt( ( mX - other.x() ) * ( mX - other.x() ) +
-                        ( mY - other.y() ) * ( mY - other.y() ) +
-                        ( mZ - other.z() ) * ( mZ - other.z() ) );
+      return std::sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) + ( mZ - other.z() ) * ( mZ - other.z() ) );
     }
 
     //! Returns the perpendicular point of vector \a vp from [\a v1 - \a v2]
@@ -193,17 +190,19 @@ class CORE_EXPORT QgsVector3D
      * \warning the conversion may decrease the accuracy (double to float values conversion)
      * \since QGIS 3.24
      */
-    QVector3D toVector3D() const SIP_HOLDGIL { return QVector3D( static_cast< float >( mX ), static_cast< float >( mY ), static_cast< float >( mZ ) ); }
+    QVector3D toVector3D() const SIP_HOLDGIL { return QVector3D( static_cast<float>( mX ), static_cast<float>( mY ), static_cast<float>( mZ ) ); }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsVector3D: %1>" ).arg( sipCpp->toString() );
+        QString str
+      = QStringLiteral( "<QgsVector3D: %1>" ).arg( sipCpp->toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
-  private:
-    double mX = 0, mY = 0, mZ = 0;
+      private : double mX
+      = 0,
+      mY = 0, mZ = 0;
 };
 
 #endif // QGSVECTOR3D_H

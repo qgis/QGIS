@@ -37,7 +37,6 @@ class QgsProviderSourceWidget;
 class GUI_EXPORT QgsProviderSourceWidgetProvider
 {
   public:
-
     virtual ~QgsProviderSourceWidgetProvider();
 
     //! Provider key

@@ -70,7 +70,6 @@ class CORE_EXPORT QgsAbstractGeometrySimplifier
 class CORE_EXPORT QgsTopologyPreservingSimplifier : public QgsAbstractGeometrySimplifier
 {
   public:
-
     /**
      * Constructor for QgsTopologyPreservingSimplifier. The tolerance parameter
      * is specified in layer units.
@@ -83,7 +82,6 @@ class CORE_EXPORT QgsTopologyPreservingSimplifier : public QgsAbstractGeometrySi
   protected:
     //! Distance tolerance for the simplification
     double mTolerance;
-
 };
 
 #endif // QGSGEOMETRYSIMPLIFIER_H

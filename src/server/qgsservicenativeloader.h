@@ -43,7 +43,6 @@ class QgsServerInterface;
 class SERVER_EXPORT QgsServiceNativeLoader
 {
   public:
-
     //! Constructor
     QgsServiceNativeLoader() = default;
 
@@ -71,7 +70,7 @@ class SERVER_EXPORT QgsServiceNativeLoader
 
 
   private:
-    typedef QHash<QString, std::shared_ptr<QgsServiceNativeModuleEntry> > ModuleTable;
+    typedef QHash<QString, std::shared_ptr<QgsServiceNativeModuleEntry>> ModuleTable;
 
     /**
      * Finds module.
@@ -90,4 +89,3 @@ class SERVER_EXPORT QgsServiceNativeLoader
 };
 
 #endif
-

@@ -60,7 +60,6 @@ QgsGamepad2DMapController::QgsGamepad2DMapController( int gamepadDeviceId, QObje
     emit zoomMap( value + 1 );
   } );
 #endif
-
 }
 
 QgsGamepad2DMapController *QgsGamepad2DMapController::clone() const

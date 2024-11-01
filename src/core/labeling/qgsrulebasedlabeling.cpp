@@ -42,7 +42,7 @@ bool QgsRuleBasedLabelProvider::prepare( QgsRenderContext &context, QSet<QString
 QList<QgsLabelFeature *> QgsRuleBasedLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
 {
   // will register the feature to relevant sub-providers
-  return std::get< 1 >( mRules->rootRule()->registerFeature( feature, context, mSubProviders, obstacleGeometry, symbol ) );
+  return std::get<1>( mRules->rootRule()->registerFeature( feature, context, mSubProviders, obstacleGeometry, symbol ) );
 }
 
 QList<QgsAbstractLabelProvider *> QgsRuleBasedLabelProvider::subProviders()
@@ -100,7 +100,7 @@ void QgsRuleBasedLabeling::Rule::initFilter()
   if ( mFilterExp.trimmed().compare( QLatin1String( "ELSE" ), Qt::CaseInsensitive ) == 0 )
   {
     mElseRule = true;
-    mFilter.reset( );
+    mFilter.reset();
   }
   else if ( mFilterExp.trimmed().isEmpty() )
   {
@@ -110,7 +110,7 @@ void QgsRuleBasedLabeling::Rule::initFilter()
   else
   {
     mElseRule = false;
-    mFilter = std::make_unique< QgsExpression >( mFilterExp );
+    mFilter = std::make_unique<QgsExpression>( mFilterExp );
   }
 }
 
@@ -354,9 +354,9 @@ void QgsRuleBasedLabeling::Rule::prepare( QgsRenderContext &context, QSet<QStrin
   }
 }
 
-std::tuple< QgsRuleBasedLabeling::Rule::RegisterResult, QList< QgsLabelFeature * > > QgsRuleBasedLabeling::Rule::registerFeature( const QgsFeature &feature, QgsRenderContext &context, QgsRuleBasedLabeling::RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
+std::tuple<QgsRuleBasedLabeling::Rule::RegisterResult, QList<QgsLabelFeature *>> QgsRuleBasedLabeling::Rule::registerFeature( const QgsFeature &feature, QgsRenderContext &context, QgsRuleBasedLabeling::RuleToProviderMap &subProviders, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
 {
-  QList< QgsLabelFeature * > labels;
+  QList<QgsLabelFeature *> labels;
   if ( !isFilterOK( feature, context )
        || !isScaleOK( context.rendererScale() ) )
   {
@@ -381,7 +381,7 @@ std::tuple< QgsRuleBasedLabeling::Rule::RegisterResult, QList< QgsLabelFeature *
     if ( !rule->isElse() )
     {
       RegisterResult res;
-      QList< QgsLabelFeature * > added;
+      QList<QgsLabelFeature *> added;
       std::tie( res, added ) = rule->registerFeature( feature, context, subProviders, obstacleGeometry );
       labels.append( added );
       // consider inactive items as "matched" so the else rule will ignore them
@@ -396,8 +396,8 @@ std::tuple< QgsRuleBasedLabeling::Rule::RegisterResult, QList< QgsLabelFeature *
     for ( Rule *rule : std::as_const( mElseRules ) )
     {
       RegisterResult res;
-      QList< QgsLabelFeature * > added;
-      std::tie( res, added ) = rule->registerFeature( feature, context, subProviders, obstacleGeometry, symbol ) ;
+      QList<QgsLabelFeature *> added;
+      std::tie( res, added ) = rule->registerFeature( feature, context, subProviders, obstacleGeometry, symbol );
       matchedAChild |= ( res == Registered || res == Inactive );
       registered |= res != Filtered;
       labels.append( added );
@@ -414,7 +414,7 @@ std::tuple< QgsRuleBasedLabeling::Rule::RegisterResult, QList< QgsLabelFeature *
 
 bool QgsRuleBasedLabeling::Rule::isFilterOK( const QgsFeature &f, QgsRenderContext &context ) const
 {
-  if ( ! mFilter || mElseRule )
+  if ( !mFilter || mElseRule )
     return true;
 
   context.expressionContext().setFeature( f );
@@ -583,9 +583,7 @@ void QgsRuleBasedLabeling::toSld( QDomNode &parent, const QVariantMap &props ) c
 
       QgsAbstractVectorLayerLabeling::writeTextSymbolizer( ruleElement, *settings, props );
     }
-
   }
-
 }
 
 void QgsRuleBasedLabeling::multiplyOpacity( double opacityFactor )
@@ -606,7 +604,5 @@ void QgsRuleBasedLabeling::multiplyOpacity( double opacityFactor )
       format.multiplyOpacity( opacityFactor );
       settings->setFormat( format );
     }
-
   }
 }
-

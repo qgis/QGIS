@@ -43,7 +43,6 @@ class QgsTiledSceneRequest;
 class CORE_EXPORT QgsAbstractTiledSceneIndex
 {
   public:
-
     QgsAbstractTiledSceneIndex();
     virtual ~QgsAbstractTiledSceneIndex();
 
@@ -68,7 +67,7 @@ class CORE_EXPORT QgsAbstractTiledSceneIndex
      *
      * \see parentTileId()
      */
-    virtual QVector< long long > childTileIds( long long id ) const = 0;
+    virtual QVector<long long> childTileIds( long long id ) const = 0;
 
     /**
      * Returns the tile with matching \a id, or an invalid tile if the matching tile is not available.
@@ -80,7 +79,7 @@ class CORE_EXPORT QgsAbstractTiledSceneIndex
      *
      * May return an empty list if no data satisfies the request.
      */
-    virtual QVector< long long > getTiles( const QgsTiledSceneRequest &request ) = 0;
+    virtual QVector<long long> getTiles( const QgsTiledSceneRequest &request ) = 0;
 
     /**
      * Retrieves index content for the specified \a uri.
@@ -110,7 +109,6 @@ class CORE_EXPORT QgsAbstractTiledSceneIndex
     virtual bool fetchHierarchy( long long id, QgsFeedback *feedback = nullptr ) = 0;
 
   protected:
-
     /**
      * Fetches index content for the specified \a uri.
      *
@@ -122,12 +120,10 @@ class CORE_EXPORT QgsAbstractTiledSceneIndex
     virtual QByteArray fetchContent( const QString &uri, QgsFeedback *feedback = nullptr ) = 0;
 
   private:
-
     // we have to use a mutex to protect a QCache, not a read/write lock
     // see https://bugreports.qt.io/browse/QTBUG-19794
     mutable QMutex mCacheMutex;
-    QCache< QString, QByteArray > mContentCache;
-
+    QCache<QString, QByteArray> mContentCache;
 };
 #endif
 
@@ -146,7 +142,6 @@ class CORE_EXPORT QgsAbstractTiledSceneIndex
 class CORE_EXPORT QgsTiledSceneIndex
 {
   public:
-
     /**
      * Constructor for QgsTiledSceneIndex.
      *
@@ -189,14 +184,14 @@ class CORE_EXPORT QgsTiledSceneIndex
      *
      * \see parentTileId()
      */
-    QVector< long long > childTileIds( long long id ) const;
+    QVector<long long> childTileIds( long long id ) const;
 
     /**
      * Returns the list of tile IDs which match the given \a request.
      *
      * May return an empty list if no data satisfies the request.
      */
-    QVector< long long > getTiles( const QgsTiledSceneRequest &request );
+    QVector<long long> getTiles( const QgsTiledSceneRequest &request );
 
     /**
      * Returns the availability for a tile's children.
@@ -226,7 +221,6 @@ class CORE_EXPORT QgsTiledSceneIndex
     QByteArray retrieveContent( const QString &uri, QgsFeedback *feedback = nullptr );
 
   private:
-
     std::shared_ptr<QgsAbstractTiledSceneIndex> mIndex;
 };
 

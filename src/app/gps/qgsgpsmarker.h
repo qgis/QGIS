@@ -39,7 +39,6 @@ class QgsGpsMarker : public QObject, public QgsMapCanvasMarkerSymbolItem
     Q_OBJECT
 
   public:
-
     static const QgsSettingsEntryString *settingLocationMarkerSymbol;
     static const QgsSettingsEntryBool *settingShowLocationMarker;
     static const QgsSettingsEntryBool *settingRotateLocationMarker;
@@ -58,7 +57,6 @@ class QgsGpsMarker : public QObject, public QgsMapCanvasMarkerSymbolItem
     void setMarkerRotation( double rotation );
 
   protected:
-
     //! Coordinates of the point in the center, in map CRS
     QgsPointXY mCenter;
 
@@ -69,8 +67,7 @@ class QgsGpsMarker : public QObject, public QgsMapCanvasMarkerSymbolItem
   private:
     QgsCoordinateReferenceSystem mWgs84CRS;
 
-    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
-
+    std::unique_ptr<QgsMarkerSymbol> mMarkerSymbol;
 };
 
 #endif

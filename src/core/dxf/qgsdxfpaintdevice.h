@@ -34,7 +34,7 @@ class QPaintEngine;
  * \note not available in Python bindings
 */
 
-class CORE_EXPORT QgsDxfPaintDevice: public QPaintDevice
+class CORE_EXPORT QgsDxfPaintDevice : public QPaintDevice
 {
   public:
     QgsDxfPaintDevice( QgsDxfExport *dxf );
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsDxfPaintDevice: public QPaintDevice
     QgsDxfPaintEngine *mPaintEngine = nullptr;
 
     QSizeF mDrawingSize; //size (in source coordinates)
-    QRectF mRectangle; //size (in dxf coordinates)
+    QRectF mRectangle;   //size (in dxf coordinates)
 };
 
 #endif // QGSDXFPAINTDEVICE_H

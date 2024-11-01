@@ -75,8 +75,7 @@ void QgsNetworkContentFetcher::fetchContent( const QNetworkRequest &r, const QSt
   connect( mReply, &QNetworkReply::finished, this, [this] { contentLoaded(); } );
   connect( mReply, &QNetworkReply::downloadProgress, this, &QgsNetworkContentFetcher::downloadProgress );
 
-  auto onError = [this]( QNetworkReply::NetworkError code )
-  {
+  auto onError = [this]( QNetworkReply::NetworkError code ) {
     // could have been canceled in the meantime
     if ( mReply )
       emit errorOccurred( code, mReply->errorString() );

@@ -77,7 +77,7 @@ class QgsMesh3DMaterial : public QgsMaterial
                        MagnitudeType magnitudeType = ZValue );
 
   private:
-    std::unique_ptr< QgsMesh3DSymbol > mSymbol;
+    std::unique_ptr<QgsMesh3DSymbol> mSymbol;
     Qt3DRender::QTechnique *mTechnique;
     MagnitudeType mMagnitudeType = ZValue;
     QgsVector3D mOrigin;
@@ -87,7 +87,7 @@ class QgsMesh3DMaterial : public QgsMaterial
 };
 
 
-class ArrowsGridTexture: public Qt3DRender::QAbstractTextureImage
+class ArrowsGridTexture : public Qt3DRender::QAbstractTextureImage
 {
     Q_OBJECT
 

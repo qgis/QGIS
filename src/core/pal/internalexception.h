@@ -44,7 +44,6 @@ namespace pal
   class InternalException
   {
     public:
-
       /**
        * \brief Thrown when something is added in a Full set
        * \ingroup core
@@ -107,6 +106,6 @@ namespace pal
       };
   };
 
-} // end namespace
+} // namespace pal
 
 #endif

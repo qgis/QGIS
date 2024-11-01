@@ -32,9 +32,7 @@ class QgsAbstractProfileGenerator;
  */
 class CORE_EXPORT QgsAbstractProfileSource
 {
-
   public:
-
     virtual ~QgsAbstractProfileSource();
 
     /**
@@ -46,7 +44,6 @@ class CORE_EXPORT QgsAbstractProfileSource
      * May return NULLPTR if the source cannot generate a profile at this time.
      */
     virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) = 0 SIP_FACTORY;
-
 };
 
 #endif // QGSABSTRACTPROFILESOURCE_H

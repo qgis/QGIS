@@ -68,14 +68,18 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
      */
     void setOvervewCanvas( QgsMapOverviewCanvas *overviewCanvas ) SIP_DEPRECATED; // TODO QGIS 4.0 remove
     % MethodCode
-    sipCpp->setOverviewCanvas( a0 );
+        sipCpp->setOverviewCanvas( a0 );
     % End
 #endif
 
-    /**
+        /**
      * Returns associated overview canvas (may be NULLPTR)
      */
-    QgsMapOverviewCanvas *overviewCanvas() const { return mOverviewCanvas; }
+        QgsMapOverviewCanvas *
+      overviewCanvas() const
+    {
+      return mOverviewCanvas;
+    }
 
     /**
      * if enabled, will automatically set full canvas extent and destination CRS + map units
@@ -93,7 +97,7 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
      * Emitted when the set of layers (or order of layers) visible in the
      * canvas changes.
      */
-    void canvasLayersChanged( const QList< QgsMapLayer * > &layers );
+    void canvasLayersChanged( const QList<QgsMapLayer *> &layers );
 
   private slots:
     void nodeVisibilityChanged();

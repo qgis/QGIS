@@ -96,16 +96,15 @@ class CORE_EXPORT QgsSymbolLayerId
     //! Comparison operator, for storage in a QSet or QMap
     bool operator<( const QgsSymbolLayerId &other ) const
     {
-      return ( mSymbolKey == other.mSymbolKey ) ?
-             mIndexPath < other.mIndexPath
-             : mSymbolKey < other.mSymbolKey;
+      return ( mSymbolKey == other.mSymbolKey ) ? mIndexPath < other.mIndexPath
+                                                : mSymbolKey < other.mSymbolKey;
     }
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
 
-    QStringList pathString;
+        QStringList pathString;
     for ( int path : sipCpp->symbolLayerIndexPath() )
     {
       pathString.append( QString::number( path ) );
@@ -115,9 +114,9 @@ class CORE_EXPORT QgsSymbolLayerId
     % End
 #endif
 
-  private:
-    //! Symbol unique identifier (legend key)
-    QString mSymbolKey;
+      private :
+      //! Symbol unique identifier (legend key)
+      QString mSymbolKey;
 
     //! Symbol layer index path in symbol
     QVector<int> mIndexPath;
@@ -133,7 +132,6 @@ class CORE_EXPORT QgsSymbolLayerId
 class CORE_EXPORT QgsSymbolLayerReference
 {
   public:
-
     QgsSymbolLayerReference() = default;
 
     /**
@@ -143,7 +141,8 @@ class CORE_EXPORT QgsSymbolLayerReference
      * \deprecated QGIS 3.30
      */
     Q_DECL_DEPRECATED QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer ) SIP_DEPRECATED
-  : mLayerId( layerId ), mDeprecatedSymbolLayerId( symbolLayer )
+      : mLayerId( layerId ),
+        mDeprecatedSymbolLayerId( symbolLayer )
     {}
 
     /**
@@ -184,7 +183,7 @@ class CORE_EXPORT QgsSymbolLayerReference
     SIP_PYOBJECT __repr__();
     % MethodCode
 
-    QStringList pathString;
+        QStringList pathString;
     for ( int path : sipCpp->symbolLayerId().symbolLayerIndexPath() )
     {
       pathString.append( QString::number( path ) );
@@ -194,8 +193,7 @@ class CORE_EXPORT QgsSymbolLayerReference
     % End
 #endif
 
-  private:
-    QString mLayerId;
+      private : QString mLayerId;
 
     // TODO QGIS 4 : remove mDeprecatedSymbolLayerId
     QgsSymbolLayerId mDeprecatedSymbolLayerId;

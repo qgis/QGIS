@@ -43,7 +43,6 @@ class QgsCoordinateTransform;
 class CORE_EXPORT QgsGroupLayerRenderer : public QgsMapLayerRenderer
 {
   public:
-
     /**
      * Constructor for a QgsGroupLayerRenderer, for the specified \a layer.
      */
@@ -54,15 +53,14 @@ class CORE_EXPORT QgsGroupLayerRenderer : public QgsMapLayerRenderer
     bool forceRasterRender() const override;
 
   private:
-    std::unique_ptr< QgsFeedback > mFeedback;
+    std::unique_ptr<QgsFeedback> mFeedback;
     bool mForceRasterRender = false;
-    std::vector< std::unique_ptr< QgsMapLayerRenderer > > mChildRenderers;
-    std::vector< QPainter::CompositionMode > mRendererCompositionModes;
-    std::vector< double > mRendererOpacity;
-    std::vector< QgsCoordinateTransform > mTransforms;
+    std::vector<std::unique_ptr<QgsMapLayerRenderer>> mChildRenderers;
+    std::vector<QPainter::CompositionMode> mRendererCompositionModes;
+    std::vector<double> mRendererOpacity;
+    std::vector<QgsCoordinateTransform> mTransforms;
     double mLayerOpacity = 1.0;
-    std::unique_ptr< QgsPaintEffect > mPaintEffect;
-
+    std::unique_ptr<QgsPaintEffect> mPaintEffect;
 };
 
 #endif // QGSGROUPLAYERRENDERER_H

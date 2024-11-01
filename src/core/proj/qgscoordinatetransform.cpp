@@ -47,12 +47,13 @@
 // #define COORDINATE_TRANSFORM_VERBOSE
 
 QReadWriteLock QgsCoordinateTransform::sCacheLock;
-QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > QgsCoordinateTransform::sTransforms; //same auth_id pairs might have different datum transformations
+QMultiHash<QPair<QString, QString>, QgsCoordinateTransform> QgsCoordinateTransform::sTransforms; //same auth_id pairs might have different datum transformations
 bool QgsCoordinateTransform::sDisableCache = false;
 
-std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
-                     const QgsCoordinateReferenceSystem &destinationCrs,
-                     const QString &desiredOperation )> QgsCoordinateTransform::sFallbackOperationOccurredHandler = nullptr;
+std::function<void( const QgsCoordinateReferenceSystem &sourceCrs,
+                    const QgsCoordinateReferenceSystem &destinationCrs,
+                    const QString &desiredOperation )>
+  QgsCoordinateTransform::sFallbackOperationOccurredHandler = nullptr;
 
 QgsCoordinateTransform::QgsCoordinateTransform()
 {
@@ -150,9 +151,9 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateTransform &o 
   , mHasContext( o.mHasContext )
 #endif
   , mLastError()
-    // none of these should be copied -- they must be set manually for every object instead, or
-    // we risk contaminating the cache and copies retrieved from cache with settings which should NOT
-    // be applied to all transforms
+  // none of these should be copied -- they must be set manually for every object instead, or
+  // we risk contaminating the cache and copies retrieved from cache with settings which should NOT
+  // be applied to all transforms
   , mIgnoreImpossible( false )
   , mBallparkTransformsAreAppropriate( false )
   , mDisableFallbackHandler( false )
@@ -161,7 +162,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateTransform &o 
   d = o.d;
 }
 
-QgsCoordinateTransform &QgsCoordinateTransform::operator=( const QgsCoordinateTransform &o )  //NOLINT
+QgsCoordinateTransform &QgsCoordinateTransform::operator=( const QgsCoordinateTransform &o ) //NOLINT
 {
   d = o.d;
 #ifdef QGISDEBUG
@@ -193,7 +194,7 @@ bool QgsCoordinateTransform::isTransformationPossible( const QgsCoordinateRefere
   if ( !source.isValid() || !destination.isValid() )
     return false;
 
-#if PROJ_VERSION_MAJOR>8 || (PROJ_VERSION_MAJOR==8 && PROJ_VERSION_MINOR>=1)
+#if PROJ_VERSION_MAJOR > 8 || ( PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR >= 1 )
   if ( source.celestialBodyName() != destination.celestialBodyName() )
     return false;
 #endif
@@ -383,7 +384,7 @@ QgsVector3D QgsCoordinateTransform::transform( const QgsVector3D &point, Qgis::T
 }
 
 void QgsCoordinateTransform::transformInPlace( double &x, double &y, double &z,
-    Qgis::TransformDirection direction ) const
+                                               Qgis::TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
     return;
@@ -404,21 +405,21 @@ void QgsCoordinateTransform::transformInPlace( double &x, double &y, double &z,
 }
 
 void QgsCoordinateTransform::transformInPlace( float &x, float &y, double &z,
-    Qgis::TransformDirection direction ) const
+                                               Qgis::TransformDirection direction ) const
 {
-  double xd = static_cast< double >( x ), yd = static_cast< double >( y );
+  double xd = static_cast<double>( x ), yd = static_cast<double>( y );
   transformInPlace( xd, yd, z, direction );
   x = xd;
   y = yd;
 }
 
 void QgsCoordinateTransform::transformInPlace( float &x, float &y, float &z,
-    Qgis::TransformDirection direction ) const
+                                               Qgis::TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
     return;
 #ifdef QGISDEBUG
-  // QgsDebugMsgLevel(QString("Using transform in place %1 %2").arg(__FILE__).arg(__LINE__), 2);
+    // QgsDebugMsgLevel(QString("Using transform in place %1 %2").arg(__FILE__).arg(__LINE__), 2);
 #endif
   // transform x
   try
@@ -492,9 +493,8 @@ void QgsCoordinateTransform::transformPolygon( QPolygonF &poly, Qgis::TransformD
 }
 
 void QgsCoordinateTransform::transformInPlace( QVector<double> &x, QVector<double> &y, QVector<double> &z,
-    Qgis::TransformDirection direction ) const
+                                               Qgis::TransformDirection direction ) const
 {
-
   if ( !d->mIsValid || d->mShortCircuit )
     return;
 
@@ -519,7 +519,7 @@ void QgsCoordinateTransform::transformInPlace( QVector<double> &x, QVector<doubl
 
 
 void QgsCoordinateTransform::transformInPlace( QVector<float> &x, QVector<float> &y, QVector<float> &z,
-    Qgis::TransformDirection direction ) const
+                                               Qgis::TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
     return;
@@ -549,9 +549,9 @@ void QgsCoordinateTransform::transformInPlace( QVector<float> &x, QVector<float>
 
     for ( int i = 0; i < vectorSize; ++i )
     {
-      *destX++ = static_cast< double >( *srcX++ );
-      *destY++ = static_cast< double >( *srcY++ );
-      *destZ++ = static_cast< double >( *srcZ++ );
+      *destX++ = static_cast<double>( *srcX++ );
+      *destY++ = static_cast<double>( *srcY++ );
+      *destZ++ = static_cast<double>( *srcZ++ );
     }
 
     transformCoords( x.size(), &xd[0], &yd[0], &zd[0], direction );
@@ -565,9 +565,9 @@ void QgsCoordinateTransform::transformInPlace( QVector<float> &x, QVector<float>
     const double *srcZD = zd.constData();
     for ( int i = 0; i < vectorSize; ++i )
     {
-      *destFX++ = static_cast< float >( *srcXD++ );
-      *destFY++ = static_cast< float >( *srcYD++ );
-      *destFZ++ = static_cast< float >( *srcZD++ );
+      *destFX++ = static_cast<float>( *srcXD++ );
+      *destFY++ = static_cast<float>( *srcYD++ );
+      *destFZ++ = static_cast<float>( *srcZD++ );
     }
   }
   catch ( QgsCsException & )
@@ -596,9 +596,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 
   double yMin = rect.yMinimum();
   double yMax = rect.yMaximum();
-  if ( d->mGeographicToWebMercator &&
-       ( ( direction == Qgis::TransformDirection::Forward && !d->mIsReversed ) ||
-         ( direction == Qgis::TransformDirection::Reverse && d->mIsReversed ) ) )
+  if ( d->mGeographicToWebMercator && ( ( direction == Qgis::TransformDirection::Forward && !d->mIsReversed ) || ( direction == Qgis::TransformDirection::Reverse && d->mIsReversed ) ) )
   {
     // Latitudes close to 90 degree project to infinite northing in theory.
     // We limit to 90 - 1e-1 which reproject to northing of ~ 44e6 m (about twice
@@ -625,9 +623,9 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   // even with 1000 points it takes < 1ms.
   // TODO: how to effectively and precisely reproject bounding box?
   const int nPoints = 1000;
-  const double dst = std::sqrt( ( rect.width() * ( yMax - yMin ) ) / std::pow( std::sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
-  const int nXPoints = std::min( static_cast< int >( std::ceil( rect.width() / dst ) ) + 1, 1000 );
-  const int nYPoints = std::min( static_cast< int >( std::ceil( ( yMax - yMin ) / dst ) ) + 1, 1000 );
+  const double dst = std::sqrt( ( rect.width() * ( yMax - yMin ) ) / std::pow( std::sqrt( static_cast<double>( nPoints ) ) - 1, 2.0 ) );
+  const int nXPoints = std::min( static_cast<int>( std::ceil( rect.width() / dst ) ) + 1, 1000 );
+  const int nYPoints = std::min( static_cast<int>( std::ceil( ( yMax - yMin ) / dst ) ) + 1, 1000 );
 
   QgsRectangle bb_rect;
   bb_rect.setNull();
@@ -642,14 +640,13 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 
   // Populate the vectors
 
-  const double dx = rect.width()  / static_cast< double >( nXPoints - 1 );
-  const double dy = ( yMax - yMin ) / static_cast< double >( nYPoints - 1 );
+  const double dx = rect.width() / static_cast<double>( nXPoints - 1 );
+  const double dy = ( yMax - yMin ) / static_cast<double>( nYPoints - 1 );
 
   double pointY = yMin;
 
-  for ( int i = 0; i < nYPoints ; i++ )
+  for ( int i = 0; i < nYPoints; i++ )
   {
-
     // Start at right edge
     double pointX = rect.xMinimum();
 
@@ -685,8 +682,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
     const double xMin = std::fmod( x[0], 180.0 );
     const double xMax = std::fmod( x[nXPoints - 1], 180.0 );
     if ( handle180Crossover
-         && ( ( direction == Qgis::TransformDirection::Forward && d->mDestCRS.isGeographic() ) ||
-              ( direction == Qgis::TransformDirection::Reverse && d->mSourceCRS.isGeographic() ) )
+         && ( ( direction == Qgis::TransformDirection::Forward && d->mDestCRS.isGeographic() ) || ( direction == Qgis::TransformDirection::Reverse && d->mSourceCRS.isGeographic() ) )
          && xMin > 0.0 && xMin <= 180.0 && xMax < 0.0 && xMax >= -180.0 )
     {
       doHandle180Crossover = true;
@@ -746,17 +742,20 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   {
     QgsMessageLog::logMessage( QObject::tr( "The source spatial reference system (CRS) is not valid. "
                                             "The coordinates can not be reprojected. The CRS is: %1" )
-                               .arg( d->mSourceCRS.toProj() ), QObject::tr( "CRS" ) );
+                                 .arg( d->mSourceCRS.toProj() ),
+                               QObject::tr( "CRS" ) );
     return;
   }
   if ( !d->mDestCRS.isValid() )
   {
     QgsMessageLog::logMessage( QObject::tr( "The destination spatial reference system (CRS) is not valid. "
-                                            "The coordinates can not be reprojected. The CRS is: %1" ).arg( d->mDestCRS.toProj() ), QObject::tr( "CRS" ) );
+                                            "The coordinates can not be reprojected. The CRS is: %1" )
+                                 .arg( d->mDestCRS.toProj() ),
+                               QObject::tr( "CRS" ) );
     return;
   }
 
-  std::vector< int > zNanPositions;
+  std::vector<int> zNanPositions;
   for ( int i = 0; i < numPoints; i++ )
   {
     if ( std::isnan( z[i] ) )
@@ -766,15 +765,15 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     }
   }
 
-  std::vector< double > xprev( numPoints );
+  std::vector<double> xprev( numPoints );
   memcpy( xprev.data(), x, sizeof( double ) * numPoints );
-  std::vector< double > yprev( numPoints );
+  std::vector<double> yprev( numPoints );
   memcpy( yprev.data(), y, sizeof( double ) * numPoints );
-  std::vector< double > zprev( numPoints );
+  std::vector<double> zprev( numPoints );
   memcpy( zprev.data(), z, sizeof( double ) * numPoints );
 
   const bool useTime = !std::isnan( d->mDefaultTime );
-  std::vector< double > t( useTime ? numPoints : 0, d->mDefaultTime );
+  std::vector<double> t( useTime ? numPoints : 0, d->mDefaultTime );
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   double xorg = *x;
@@ -817,15 +816,15 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   }
   else
   {
-    actualRes =  proj_errno( projData );
+    actualRes = proj_errno( projData );
   }
   if ( actualRes == 0 )
   {
     // proj_errno is sometimes not an accurate method to test for transform failures - so we need to
     // manually scan for nan values
     if ( std::any_of( x, x + numPoints, []( double v ) { return std::isinf( v ); } )
-    || std::any_of( y, y + numPoints, []( double v ) { return std::isinf( v ); } )
-    || std::any_of( z, z + numPoints, []( double v ) { return std::isinf( v ); } ) )
+         || std::any_of( y, y + numPoints, []( double v ) { return std::isinf( v ); } )
+         || std::any_of( z, z + numPoints, []( double v ) { return std::isinf( v ); } ) )
     {
       actualRes = 1;
     }
@@ -902,9 +901,9 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     const QString msg = QObject::tr( "%1 of\n"
                                      "%2"
                                      "Error: %3" )
-                        .arg( dir,
-                              points,
-                              projResult < 0 ? QString::fromUtf8( proj_errno_string( projResult ) ) : QObject::tr( "Fallback transform failed" ) );
+                          .arg( dir,
+                                points,
+                                projResult < 0 ? QString::fromUtf8( proj_errno_string( projResult ) ) : QObject::tr( "Fallback transform failed" ) );
 
 
     // don't flood console with thousands of duplicate transform error messages
@@ -920,8 +919,11 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   QgsDebugMsgLevel( QStringLiteral( "[[[[[[ Projected %1, %2 to %3, %4 ]]]]]]" )
-                    .arg( xorg, 0, 'g', 15 ).arg( yorg, 0, 'g', 15 )
-                    .arg( *x, 0, 'g', 15 ).arg( *y, 0, 'g', 15 ), 2 );
+                      .arg( xorg, 0, 'g', 15 )
+                      .arg( yorg, 0, 'g', 15 )
+                      .arg( *x, 0, 'g', 15 )
+                      .arg( *y, 0, 'g', 15 ),
+                    2 );
 #endif
 }
 
@@ -1001,10 +1003,8 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
   if ( !src.isValid() || !dest.isValid() )
     return false;
 
-  const QString sourceKey = src.authid().isEmpty() ?
-                            src.toWkt( Qgis::CrsWktVariant::Preferred ) : src.authid();
-  const QString destKey = dest.authid().isEmpty() ?
-                          dest.toWkt( Qgis::CrsWktVariant::Preferred ) : dest.authid();
+  const QString sourceKey = src.authid().isEmpty() ? src.toWkt( Qgis::CrsWktVariant::Preferred ) : src.authid();
+  const QString destKey = dest.authid().isEmpty() ? dest.toWkt( Qgis::CrsWktVariant::Preferred ) : dest.authid();
 
   if ( sourceKey.isEmpty() || destKey.isEmpty() )
     return false;
@@ -1013,14 +1013,13 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
   if ( sDisableCache )
     return false;
 
-  const QList< QgsCoordinateTransform > values = sTransforms.values( qMakePair( sourceKey, destKey ) );
+  const QList<QgsCoordinateTransform> values = sTransforms.values( qMakePair( sourceKey, destKey ) );
   for ( auto valIt = values.constBegin(); valIt != values.constEnd(); ++valIt )
   {
     if ( ( *valIt ).coordinateOperation() == coordinateOperationProj
          && ( *valIt ).allowFallbackTransforms() == allowFallback
          && qgsNanCompatibleEquals( src.coordinateEpoch(), ( *valIt ).sourceCrs().coordinateEpoch() )
-         && qgsNanCompatibleEquals( dest.coordinateEpoch(), ( *valIt ).destinationCrs().coordinateEpoch() )
-       )
+         && qgsNanCompatibleEquals( dest.coordinateEpoch(), ( *valIt ).destinationCrs().coordinateEpoch() ) )
     {
       // need to save, and then restore the context... we don't want this to be cached or to use the values from the cache
       const QgsCoordinateTransformContext context = mContext;
@@ -1046,10 +1045,8 @@ void QgsCoordinateTransform::addToCache()
   if ( !d->mSourceCRS.isValid() || !d->mDestCRS.isValid() )
     return;
 
-  const QString sourceKey = d->mSourceCRS.authid().isEmpty() ?
-                            d->mSourceCRS.toWkt( Qgis::CrsWktVariant::Preferred ) : d->mSourceCRS.authid();
-  const QString destKey = d->mDestCRS.authid().isEmpty() ?
-                          d->mDestCRS.toWkt( Qgis::CrsWktVariant::Preferred ) : d->mDestCRS.authid();
+  const QString sourceKey = d->mSourceCRS.authid().isEmpty() ? d->mSourceCRS.toWkt( Qgis::CrsWktVariant::Preferred ) : d->mSourceCRS.authid();
+  const QString destKey = d->mDestCRS.authid().isEmpty() ? d->mDestCRS.toWkt( Qgis::CrsWktVariant::Preferred ) : d->mDestCRS.authid();
 
   if ( sourceKey.isEmpty() || destKey.isEmpty() )
     return;
@@ -1140,32 +1137,32 @@ double QgsCoordinateTransform::scaleFactor( const QgsRectangle &ReferenceExtent 
   return distDestUnits / distSourceUnits;
 }
 
-void QgsCoordinateTransform::setCustomMissingRequiredGridHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::GridDetails & )> &handler )
+void QgsCoordinateTransform::setCustomMissingRequiredGridHandler( const std::function<void( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::GridDetails & )> &handler )
 {
   QgsCoordinateTransformPrivate::setCustomMissingRequiredGridHandler( handler );
 }
 
-void QgsCoordinateTransform::setCustomMissingPreferredGridHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::TransformDetails &, const QgsDatumTransform::TransformDetails & )> &handler )
+void QgsCoordinateTransform::setCustomMissingPreferredGridHandler( const std::function<void( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::TransformDetails &, const QgsDatumTransform::TransformDetails & )> &handler )
 {
   QgsCoordinateTransformPrivate::setCustomMissingPreferredGridHandler( handler );
 }
 
-void QgsCoordinateTransform::setCustomCoordinateOperationCreationErrorHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QString & )> &handler )
+void QgsCoordinateTransform::setCustomCoordinateOperationCreationErrorHandler( const std::function<void( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QString & )> &handler )
 {
   QgsCoordinateTransformPrivate::setCustomCoordinateOperationCreationErrorHandler( handler );
 }
 
-void QgsCoordinateTransform::setCustomMissingGridUsedByContextHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::TransformDetails & )> &handler )
+void QgsCoordinateTransform::setCustomMissingGridUsedByContextHandler( const std::function<void( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::TransformDetails & )> &handler )
 {
   QgsCoordinateTransformPrivate::setCustomMissingGridUsedByContextHandler( handler );
 }
 
-void QgsCoordinateTransform::setFallbackOperationOccurredHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QString & )> &handler )
+void QgsCoordinateTransform::setFallbackOperationOccurredHandler( const std::function<void( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QString & )> &handler )
 {
   sFallbackOperationOccurredHandler = handler;
 }
 
-void QgsCoordinateTransform::setDynamicCrsToDynamicCrsWarningHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem & )> &handler )
+void QgsCoordinateTransform::setDynamicCrsToDynamicCrsWarningHandler( const std::function<void( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem & )> &handler )
 {
   QgsCoordinateTransformPrivate::setDynamicCrsToDynamicCrsWarningHandler( handler );
 }

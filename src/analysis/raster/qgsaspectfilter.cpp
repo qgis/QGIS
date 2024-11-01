@@ -21,7 +21,6 @@
 QgsAspectFilter::QgsAspectFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat )
   : QgsDerivativeFilter( inputFile, outputFile, outputFormat )
 {
-
 }
 
 float QgsAspectFilter::processNineCellWindow(
@@ -32,9 +31,7 @@ float QgsAspectFilter::processNineCellWindow(
   const float derX = calcFirstDerX( x11, x21, x31, x12, x22, x32, x13, x23, x33 );
   const float derY = calcFirstDerY( x11, x21, x31, x12, x22, x32, x13, x23, x33 );
 
-  if ( derX == mOutputNodataValue ||
-       derY == mOutputNodataValue ||
-       ( derX == 0.0 && derY == 0.0 ) )
+  if ( derX == mOutputNodataValue || derY == mOutputNodataValue || ( derX == 0.0 && derY == 0.0 ) )
   {
     return mOutputNodataValue;
   }
@@ -43,4 +40,3 @@ float QgsAspectFilter::processNineCellWindow(
     return 180.0 + std::atan2( derX, derY ) * 180.0 / M_PI;
   }
 }
-

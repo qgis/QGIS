@@ -38,7 +38,7 @@ bool QgsProcessingParameterAlignRasterLayers::checkValueIsAcceptable( const QVar
   if ( !input.isValid() )
     return mFlags & Qgis::ProcessingParameterFlag::Optional;
 
-  if ( qobject_cast< QgsRasterLayer * >( qvariant_cast<QObject *>( input ) ) )
+  if ( qobject_cast<QgsRasterLayer *>( qvariant_cast<QObject *>( input ) ) )
   {
     return true;
   }
@@ -57,12 +57,13 @@ bool QgsProcessingParameterAlignRasterLayers::checkValueIsAcceptable( const QVar
   else if ( input.userType() == QMetaType::Type::QVariantList )
   {
     if ( input.toList().isEmpty() )
-      return mFlags & Qgis::ProcessingParameterFlag::Optional;;
+      return mFlags & Qgis::ProcessingParameterFlag::Optional;
+    ;
 
     const QVariantList layerList = input.toList();
     for ( const QVariant &variantLayer : layerList )
     {
-      if ( qobject_cast< QgsRasterLayer * >( qvariant_cast<QObject *>( variantLayer ) ) )
+      if ( qobject_cast<QgsRasterLayer *>( qvariant_cast<QObject *>( variantLayer ) ) )
         continue;
 
       if ( variantLayer.userType() == QMetaType::Type::QString )
@@ -145,7 +146,7 @@ QString QgsProcessingParameterAlignRasterLayers::asPythonString( QgsProcessing::
     case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
       QString code = QStringLiteral( "QgsProcessingParameterAlignRasterLayers('%1', %2)" )
-                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
+                       .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       return code;
     }
   }
@@ -166,7 +167,7 @@ QList<QgsAlignRasterData::RasterItem> QgsProcessingParameterAlignRasterLayers::p
 {
   QList<QgsAlignRasterData::RasterItem> items;
 
-  if ( qobject_cast< QgsRasterLayer * >( qvariant_cast<QObject *>( layersVariant ) ) )
+  if ( qobject_cast<QgsRasterLayer *>( qvariant_cast<QObject *>( layersVariant ) ) )
   {
     QVariantMap vm;
     vm["inputFile"] = layersVariant;
@@ -218,14 +219,14 @@ QList<QgsAlignRasterData::RasterItem> QgsProcessingParameterAlignRasterLayers::p
 
 QgsAlignRasterData::RasterItem QgsProcessingParameterAlignRasterLayers::variantMapAsItem( const QVariantMap &layerVariantMap, QgsProcessingContext &context )
 {
-  const QVariant layerVariant = layerVariantMap[ QStringLiteral( "inputFile" ) ];
+  const QVariant layerVariant = layerVariantMap[QStringLiteral( "inputFile" )];
 
   QgsRasterLayer *inputLayer = nullptr;
-  if ( ( inputLayer = qobject_cast< QgsRasterLayer * >( qvariant_cast<QObject *>( layerVariant ) ) ) )
+  if ( ( inputLayer = qobject_cast<QgsRasterLayer *>( qvariant_cast<QObject *>( layerVariant ) ) ) )
   {
     // good
   }
-  else if ( ( inputLayer = qobject_cast< QgsRasterLayer * >( QgsProcessingUtils::mapLayerFromString( layerVariant.toString(), context ) ) ) )
+  else if ( ( inputLayer = qobject_cast<QgsRasterLayer *>( QgsProcessingUtils::mapLayerFromString( layerVariant.toString(), context ) ) ) )
   {
     // good
   }
@@ -235,7 +236,7 @@ QgsAlignRasterData::RasterItem QgsProcessingParameterAlignRasterLayers::variantM
     return item;
   }
 
-  QgsAlignRasterData::RasterItem item( inputLayer->source(), layerVariantMap[ QStringLiteral( "outputFile" ) ].toString() );
+  QgsAlignRasterData::RasterItem item( inputLayer->source(), layerVariantMap[QStringLiteral( "outputFile" )].toString() );
   item.resampleMethod = static_cast<Qgis::GdalResampleAlgorithm>( layerVariantMap.value( QStringLiteral( "resampleMethod" ), 0 ).toInt() );
   item.rescaleValues = layerVariantMap.value( QStringLiteral( "rescale" ), false ).toBool();
   return item;
@@ -244,9 +245,9 @@ QgsAlignRasterData::RasterItem QgsProcessingParameterAlignRasterLayers::variantM
 QVariantMap QgsProcessingParameterAlignRasterLayers::itemAsVariantMap( const QgsAlignRasterData::RasterItem &item )
 {
   QVariantMap vm;
-  vm[ QStringLiteral( "inputFile" )] = item.inputFilename;
-  vm[ QStringLiteral( "outputFile" ) ] = item.outputFilename;
-  vm[ QStringLiteral( "resampleMethod" ) ] = static_cast<int>( item.resampleMethod );
-  vm[ QStringLiteral( "rescale" ) ] = item.rescaleValues;
+  vm[QStringLiteral( "inputFile" )] = item.inputFilename;
+  vm[QStringLiteral( "outputFile" )] = item.outputFilename;
+  vm[QStringLiteral( "resampleMethod" )] = static_cast<int>( item.resampleMethod );
+  vm[QStringLiteral( "rescale" )] = item.rescaleValues;
   return vm;
 }

@@ -51,11 +51,10 @@
 class CORE_EXPORT QgsAbstractContentCacheEntry
 {
   public:
-
     /**
      * Constructor for QgsAbstractContentCacheEntry for an entry relating to the specified \a path.
      */
-    QgsAbstractContentCacheEntry( const QString &path ) ;
+    QgsAbstractContentCacheEntry( const QString &path );
 
     virtual ~QgsAbstractContentCacheEntry() = default;
 
@@ -104,7 +103,6 @@ class CORE_EXPORT QgsAbstractContentCacheEntry
     virtual void dump() const = 0;
 
   protected:
-
     /**
      * Tests whether this entry matches another entry. Subclasses must take care to check
      * that the type of \a other is of a matching class, and then test extra cache-specific
@@ -116,7 +114,6 @@ class CORE_EXPORT QgsAbstractContentCacheEntry
 #ifdef SIP_RUN
     QgsAbstractContentCacheEntry( const QgsAbstractContentCacheEntry &rh );
 #endif
-
 };
 
 /**
@@ -129,12 +126,11 @@ class CORE_EXPORT QgsAbstractContentCacheEntry
  *
  * \since QGIS 3.6
  */
-class CORE_EXPORT QgsAbstractContentCacheBase: public QObject
+class CORE_EXPORT QgsAbstractContentCacheBase : public QObject
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAbstractContentCacheBase, with the specified \a parent object.
      */
@@ -171,7 +167,6 @@ class CORE_EXPORT QgsAbstractContentCacheBase: public QObject
     void remoteContentFetched( const QString &url );
 
   protected:
-
     /**
      * Runs additional checks on a network \a reply to ensure that the reply content is
      * consistent with that required by the cache.
@@ -192,7 +187,6 @@ class CORE_EXPORT QgsAbstractContentCacheBase: public QObject
      * it was not fetched successfully.
      */
     virtual void onRemoteContentFetched( const QString &url, bool success );
-
 };
 
 #ifndef SIP_RUN
@@ -213,9 +207,7 @@ class CORE_EXPORT QgsAbstractContentCacheBase: public QObject
 template<class T>
 class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
 {
-
   public:
-
     /**
      * Constructor for QgsAbstractContentCache, with the specified \a parent object.
      *
@@ -244,7 +236,6 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
     }
 
   protected:
-
     /**
      * Removes the least used cache entries until the maximum cache size is under the predefined size limit.
      */
@@ -259,7 +250,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
       while ( entry && ( mTotalSize > mMaxCacheSize ) )
       {
         T *bkEntry = entry;
-        entry = static_cast< T * >( entry->nextEntry );
+        entry = static_cast<T *>( entry->nextEntry );
 
         takeEntryFromList( bkEntry );
         mEntryLookup.remove( bkEntry->path, bkEntry );
@@ -291,7 +282,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
       T *nextEntry = mLeastRecentEntry;
       while ( T *entry = nextEntry )
       {
-        nextEntry = static_cast< T * >( entry->nextEntry );
+        nextEntry = static_cast<T *>( entry->nextEntry );
         if ( entry->path == url )
         {
           takeEntryFromList( entry );
@@ -378,7 +369,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
       {
         delete entryTemplate;
         entryTemplate = nullptr;
-        ( void )entryTemplate;
+        ( void ) entryTemplate;
         takeEntryFromList( currentEntry );
         if ( !mMostRecentEntry ) //list is empty
         {
@@ -408,7 +399,6 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
     long mMaxCacheSize = 20000000;
 
   private:
-
     /**
      * Inserts a new \a entry into the cache.
      *
@@ -463,7 +453,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
       }
       else
       {
-        mLeastRecentEntry = static_cast< T * >( entry->nextEntry );
+        mLeastRecentEntry = static_cast<T *>( entry->nextEntry );
       }
       if ( entry->nextEntry )
       {
@@ -471,7 +461,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
       }
       else
       {
-        mMostRecentEntry = static_cast< T * >( entry->previousEntry );
+        mMostRecentEntry = static_cast<T *>( entry->previousEntry );
       }
     }
 
@@ -487,12 +477,12 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
       {
         QgsDebugMsgLevel( QStringLiteral( "***Entry:" ), 1 );
         entry->dump();
-        entry = static_cast< T * >( entry->nextEntry );
+        entry = static_cast<T *>( entry->nextEntry );
       }
     }
 
     //! Entry pointers accessible by file name
-    QMultiHash< QString, T * > mEntryLookup;
+    QMultiHash<QString, T *> mEntryLookup;
 
     //! Minimum time (in ms) between consecutive file modified time checks
     int mFileModifiedCheckTimeout = 30000;
@@ -502,8 +492,8 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
     T *mLeastRecentEntry = nullptr;
     T *mMostRecentEntry = nullptr;
 
-    mutable QCache< QString, QByteArray > mRemoteContentCache;
-    mutable QSet< QString > mPendingRemoteUrls;
+    mutable QCache<QString, QByteArray> mRemoteContentCache;
+    mutable QSet<QString> mPendingRemoteUrls;
 
     QString mTypeString;
 

@@ -84,8 +84,7 @@ QStringList QgsPdalThinByRadiusAlgorithm::createArgumentLists( const QVariantMap
                        QStringLiteral( "--input=%1" ).arg( layer->source() ),
                        QStringLiteral( "--output=%1" ).arg( outputFile ),
                        QStringLiteral( "--mode=sample" ),
-                       QStringLiteral( "--step-sample=%1" ).arg( step )
-                     };
+                       QStringLiteral( "--step-sample=%1" ).arg( step ) };
 
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );

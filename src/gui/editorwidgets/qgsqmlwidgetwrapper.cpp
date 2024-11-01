@@ -43,8 +43,7 @@ QWidget *QgsQmlWidgetWrapper::createWidget( QWidget *parent )
   if ( form )
   {
     mFormFeature = form->feature();
-    connect( form, &QgsAttributeForm::widgetValueChanged, this, [ = ]( const QString & attribute, const QVariant & newValue, bool attributeChanged )
-    {
+    connect( form, &QgsAttributeForm::widgetValueChanged, this, [=]( const QString &attribute, const QVariant &newValue, bool attributeChanged ) {
       if ( attributeChanged )
       {
         if ( mRequiresFormScope )
@@ -79,7 +78,7 @@ void QgsQmlWidgetWrapper::initWidget( QWidget *editor )
 }
 
 
-void QgsQmlWidgetWrapper::reinitWidget( )
+void QgsQmlWidgetWrapper::reinitWidget()
 {
   if ( !mWidget )
     return;
@@ -121,7 +120,7 @@ void QgsQmlWidgetWrapper::setQmlCode( const QString &qmlCode )
   mQmlFile.close();
 }
 
-void QgsQmlWidgetWrapper::setQmlContext( )
+void QgsQmlWidgetWrapper::setQmlContext()
 {
   if ( !mWidget )
     return;

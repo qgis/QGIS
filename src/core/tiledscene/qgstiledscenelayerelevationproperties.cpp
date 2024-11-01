@@ -48,7 +48,7 @@ bool QgsTiledSceneLayerElevationProperties::readXml( const QDomElement &element,
 
 QgsTiledSceneLayerElevationProperties *QgsTiledSceneLayerElevationProperties::clone() const
 {
-  std::unique_ptr< QgsTiledSceneLayerElevationProperties > res = std::make_unique< QgsTiledSceneLayerElevationProperties >( nullptr );
+  std::unique_ptr<QgsTiledSceneLayerElevationProperties> res = std::make_unique<QgsTiledSceneLayerElevationProperties>( nullptr );
   res->copyCommonProperties( this );
 
   return res.release();
@@ -64,7 +64,7 @@ QString QgsTiledSceneLayerElevationProperties::htmlSummary() const
 
 QgsDoubleRange QgsTiledSceneLayerElevationProperties::calculateZRange( QgsMapLayer *layer ) const
 {
-  if ( QgsTiledSceneLayer *tiledSceneLayer = qobject_cast< QgsTiledSceneLayer * >( layer ) )
+  if ( QgsTiledSceneLayer *tiledSceneLayer = qobject_cast<QgsTiledSceneLayer *>( layer ) )
   {
     if ( QgsTiledSceneDataProvider *dp = tiledSceneLayer->dataProvider() )
     {
@@ -83,9 +83,9 @@ QList<double> QgsTiledSceneLayerElevationProperties::significantZValues( QgsMapL
 {
   const QgsDoubleRange range = calculateZRange( layer );
   if ( !range.isInfinite() && range.lower() != range.upper() )
-    return {range.lower(), range.upper() };
+    return { range.lower(), range.upper() };
   else if ( !range.isInfinite() )
-    return {range.lower() };
+    return { range.lower() };
   else
     return {};
 }

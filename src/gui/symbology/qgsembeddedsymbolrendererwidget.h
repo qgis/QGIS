@@ -34,7 +34,6 @@ class GUI_EXPORT QgsEmbeddedSymbolRendererWidget : public QgsRendererWidget, pri
     Q_OBJECT
 
   public:
-
     /**
      * Static creation method
      * \param layer the layer where this renderer is applied
@@ -59,7 +58,6 @@ class GUI_EXPORT QgsEmbeddedSymbolRendererWidget : public QgsRendererWidget, pri
   private:
     //! The renderer
     std::unique_ptr<QgsEmbeddedSymbolRenderer> mRenderer;
-
 };
 
 

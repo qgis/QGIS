@@ -40,11 +40,9 @@ class QgsReadWriteContext;
  */
 class CORE_EXPORT QgsLayoutGuide : public QObject
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for a new guide with the specified \a orientation and
      * initial \a position.
@@ -142,20 +140,18 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
     void positionChanged();
 
   private:
-
     Qt::Orientation mOrientation = Qt::Vertical;
 
     //! Horizontal/vertical position of guide on page
     QgsLayoutMeasurement mPosition;
 
     //! Page
-    QPointer< QgsLayoutItemPage > mPage;
+    QPointer<QgsLayoutItemPage> mPage;
 
-    QPointer< QgsLayout > mLayout;
+    QPointer<QgsLayout> mLayout;
 
     //! Line item used in scene for guide
     QGraphicsLineItem *mLineItem = nullptr;
-
 };
 
 /**
@@ -165,11 +161,9 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
  */
 class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public QgsLayoutSerializableObject
 {
-
     Q_OBJECT
 
   public:
-
     //! Model roles
 
     // *INDENT-OFF*
@@ -180,13 +174,12 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public 
      * \note Prior to QGIS 3.36 this was available as QgsLayoutGuideCollection::Roles
      * \since QGIS 3.36
      */
-    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutGuideCollection, Roles ) : int
-    {
-      Orientation SIP_MONKEYPATCH_COMPAT_NAME(OrientationRole) = Qt::UserRole, //!< Guide orientation role
-      Position SIP_MONKEYPATCH_COMPAT_NAME(PositionRole), //!< Guide position role
-      Units SIP_MONKEYPATCH_COMPAT_NAME(UnitsRole), //!< Guide position units role
-      Page SIP_MONKEYPATCH_COMPAT_NAME(PageRole), //!< Guide page role
-      LayoutPosition SIP_MONKEYPATCH_COMPAT_NAME(LayoutPositionRole), //!< Guide position in layout coordinates
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutGuideCollection, Roles ) : int {
+      Orientation SIP_MONKEYPATCH_COMPAT_NAME( OrientationRole ) = Qt::UserRole, //!< Guide orientation role
+      Position SIP_MONKEYPATCH_COMPAT_NAME( PositionRole ),                      //!< Guide position role
+      Units SIP_MONKEYPATCH_COMPAT_NAME( UnitsRole ),                            //!< Guide position units role
+      Page SIP_MONKEYPATCH_COMPAT_NAME( PageRole ),                              //!< Guide page role
+      LayoutPosition SIP_MONKEYPATCH_COMPAT_NAME( LayoutPositionRole ),          //!< Guide position in layout coordinates
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -247,7 +240,7 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public 
     /**
      * Returns a list of all guides contained in the collection.
      */
-    QList< QgsLayoutGuide * > guides();
+    QList<QgsLayoutGuide *> guides();
 
     /**
      * Returns the list of guides contained in the collection with the specified
@@ -255,13 +248,13 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public 
      * If \a page is -1, guides from all pages will be returned.
      * \see guidesOnPage()
      */
-    QList< QgsLayoutGuide * > guides( Qt::Orientation orientation, int page = -1 );
+    QList<QgsLayoutGuide *> guides( Qt::Orientation orientation, int page = -1 );
 
     /**
      * Returns the list of guides contained on a matching \a page.
      * \see guides()
      */
-    QList< QgsLayoutGuide * > guidesOnPage( int page );
+    QList<QgsLayoutGuide *> guidesOnPage( int page );
 
     /**
      * Returns TRUE if the guide lines should be drawn.
@@ -292,7 +285,6 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public 
     void pageAboutToBeRemoved( int pageNumber );
 
   private:
-
     enum UndoRoles
     {
       Move = 10000,
@@ -302,14 +294,13 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public 
     QgsLayout *mLayout = nullptr;
     QgsLayoutPageCollection *mPageCollection = nullptr;
 
-    QList< QgsLayoutGuide * > mGuides;
+    QList<QgsLayoutGuide *> mGuides;
     int mHeaderSize = 0;
 
     bool mGuidesVisible = true;
     bool mBlockUndoCommands = false;
 
     friend class QgsLayoutGuideCollectionUndoCommand;
-
 };
 
 
@@ -323,7 +314,6 @@ class CORE_EXPORT QgsLayoutGuideProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutGuideProxyModel, filtered to guides of the specified \a orientation and \a page only.
      *
@@ -342,7 +332,6 @@ class CORE_EXPORT QgsLayoutGuideProxyModel : public QSortFilterProxyModel
   private:
     Qt::Orientation mOrientation = Qt::Horizontal;
     int mPage = 0;
-
 };
 
 #endif //QGSLAYOUTGUIDECOLLECTION_H

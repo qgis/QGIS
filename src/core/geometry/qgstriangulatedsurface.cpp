@@ -37,7 +37,7 @@ QgsTriangulatedSurface::~QgsTriangulatedSurface()
 
 QgsTriangulatedSurface *QgsTriangulatedSurface::createEmptyWithSameType() const
 {
-  auto result = std::make_unique< QgsTriangulatedSurface >();
+  auto result = std::make_unique<QgsTriangulatedSurface>();
   result->mWkbType = mWkbType;
   return result.release();
 }
@@ -96,7 +96,7 @@ bool QgsTriangulatedSurface::fromWkb( QgsConstWkbPtr &wkbPtr )
 
   int nTriangles;
   wkbPtr >> nTriangles;
-  std::unique_ptr< QgsTriangle > currentTriangle;
+  std::unique_ptr<QgsTriangle> currentTriangle;
   for ( int i = 0; i < nTriangles; ++i )
   {
     Qgis::WkbType triangleType = wkbPtr.readHeader();
@@ -110,7 +110,7 @@ bool QgsTriangulatedSurface::fromWkb( QgsConstWkbPtr &wkbPtr )
     {
       return false;
     }
-    currentTriangle->fromWkb( wkbPtr );  // also updates wkbPtr
+    currentTriangle->fromWkb( wkbPtr ); // also updates wkbPtr
     mPatches.append( currentTriangle.release() );
   }
 
@@ -130,8 +130,7 @@ bool QgsTriangulatedSurface::fromWkt( const QString &wkt )
 
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
-  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
-       secondWithoutParentheses.isEmpty() )
+  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) || secondWithoutParentheses.isEmpty() )
     return true;
 
   QString defaultChildWkbType = QStringLiteral( "Triangle%1%2" ).arg( is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
@@ -213,7 +212,7 @@ void QgsTriangulatedSurface::normalize()
 
 QgsTriangulatedSurface *QgsTriangulatedSurface::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing, bool removeRedundantPoints ) const
 {
-  std::unique_ptr< QgsTriangulatedSurface > surface( createEmptyWithSameType() );
+  std::unique_ptr<QgsTriangulatedSurface> surface( createEmptyWithSameType() );
 
   for ( QgsPolygon *patch : mPatches )
   {
@@ -221,7 +220,7 @@ QgsTriangulatedSurface *QgsTriangulatedSurface::snappedToGrid( double hSpacing, 
     if ( !triangle )
       continue;
 
-    std::unique_ptr<QgsCurve> exteriorRing( qgsgeometry_cast< QgsCurve *>( triangle->exteriorRing()->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, removeRedundantPoints ) ) );
+    std::unique_ptr<QgsCurve> exteriorRing( qgsgeometry_cast<QgsCurve *>( triangle->exteriorRing()->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing, removeRedundantPoints ) ) );
     if ( !exteriorRing )
     {
       return nullptr;
@@ -287,12 +286,12 @@ void QgsTriangulatedSurface::addTriangle( QgsTriangle *triangle )
 
 QgsTriangle *QgsTriangulatedSurface::triangleN( int index )
 {
-  return qgsgeometry_cast< QgsTriangle * >( patchN( index ) );
+  return qgsgeometry_cast<QgsTriangle *>( patchN( index ) );
 }
 
 const QgsTriangle *QgsTriangulatedSurface::triangleN( int index ) const
 {
-  return qgsgeometry_cast< const QgsTriangle * >( patchN( index ) );
+  return qgsgeometry_cast<const QgsTriangle *>( patchN( index ) );
 }
 
 bool QgsTriangulatedSurface::insertVertex( QgsVertexId vId, const QgsPoint &vertex )

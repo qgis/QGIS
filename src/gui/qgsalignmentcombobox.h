@@ -36,7 +36,6 @@ class GUI_EXPORT QgsAlignmentComboBox : public QComboBox
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAlignmentComboBox, with the specified parent widget.
      */
@@ -79,7 +78,6 @@ class GUI_EXPORT QgsAlignmentComboBox : public QComboBox
     void changed();
 
   private:
-
     void populate();
 
     Qt::Alignment mAlignments = Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight;

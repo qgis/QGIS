@@ -33,11 +33,9 @@ class QgsPoint;
  * \class QgsGeometryCollection
  * \brief Geometry collection
  */
-class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
+class CORE_EXPORT QgsGeometryCollection : public QgsAbstractGeometry
 {
   public:
-
-
     /**
      * Constructor for an empty geometry collection.
      */
@@ -61,7 +59,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
   private:
     bool fuzzyHelper( const QgsAbstractGeometry &other, double epsilon, bool useDistance ) const
     {
-      const QgsGeometryCollection *otherCollection = qgsgeometry_cast< const QgsGeometryCollection * >( &other );
+      const QgsGeometryCollection *otherCollection = qgsgeometry_cast<const QgsGeometryCollection *>( &other );
       if ( !otherCollection )
         return false;
 
@@ -94,7 +92,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
           {
             if ( !( *g1 ).fuzzyEqual( *g2, epsilon ) )
             {
-              return false;;
+              return false;
+              ;
             }
           }
         }
@@ -129,23 +128,27 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      */
     int __len__() const;
     % MethodCode
-    sipRes = sipCpp->numGeometries();
+        sipRes
+      = sipCpp->numGeometries();
     % End
 
-    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
-    int __bool__() const;
+      //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
+      int
+      __bool__() const;
     % MethodCode
-    sipRes = true;
+        sipRes
+      = true;
     % End
 #endif
 
 
-    /**
+      /**
      * Returns a const reference to a geometry from within the collection.
      * \param n index of geometry to return
      * \note not available in Python bindings
      */
-    const QgsAbstractGeometry *geometryN( int n ) const SIP_SKIP
+      const QgsAbstractGeometry *
+      geometryN( int n ) const SIP_SKIP
     {
       return mGeometries.value( n );
     }
@@ -165,8 +168,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      * \throws IndexError if no geometry with the specified index exists.
      */
     SIP_PYOBJECT geometryN( int n ) SIP_TYPEHINT( QgsAbstractGeometry );
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -211,7 +213,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      *
      * \since QGIS 3.38
      */
-    virtual bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries SIP_TRANSFER );
+    virtual bool addGeometries( const QVector<QgsAbstractGeometry *> &geometries SIP_TRANSFER );
 
     /**
      * Inserts a geometry before a specified index and takes ownership. Returns TRUE in case of success.
@@ -237,8 +239,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      * \throws IndexError if no geometry with the specified index exists.
      */
     virtual bool removeGeometry( int nr );
-    % MethodCode
-    const int count = sipCpp->numGeometries();
+    % MethodCode const int count = sipCpp->numGeometries();
     if ( a0 < 0 || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
@@ -257,7 +258,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      *
      * \since QGIS 3.38
      */
-    QVector< QgsAbstractGeometry * > takeGeometries() SIP_TRANSFER;
+    QVector<QgsAbstractGeometry *> takeGeometries() SIP_TRANSFER;
 
     void normalize() final SIP_HOLDGIL;
     void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) override SIP_THROW( QgsCsException );
@@ -323,8 +324,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
 
 #ifndef SIP_RUN
-    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
-    void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
+    void filterVertices( const std::function<bool( const QgsPoint & )> &filter ) override;
+    void transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform ) override;
 
     /**
      * Cast the \a geom to a QgsGeometryCollection.
@@ -354,8 +355,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     * \since QGIS 3.6
     */
     SIP_PYOBJECT __getitem__( int index ) SIP_TYPEHINT( QgsAbstractGeometry );
-    % MethodCode
-    const int count = sipCpp->numGeometries();
+    % MethodCode const int count = sipCpp->numGeometries();
     if ( a0 < -count || a0 >= count )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
@@ -371,7 +371,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     }
     % End
 
-    /**
+      /**
      * Deletes the geometry at the specified ``index``.
      *
      * Indexes can be less than 0, in which case they correspond to geometries from the end of the collection. E.g. an index of -1
@@ -381,9 +381,9 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      *
      * \since QGIS 3.6
      */
-    void __delitem__( int index );
-    % MethodCode
-    const int count = sipCpp->numGeometries();
+      void
+      __delitem__( int index );
+    % MethodCode const int count = sipCpp->numGeometries();
     if ( a0 >= 0 && a0 < count )
       sipCpp->removeGeometry( a0 );
     else if ( a0 < 0 && a0 >= -count )
@@ -395,18 +395,20 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     }
     % End
 
-    /**
+        /**
      * Iterates through all geometries in the collection.
      *
      * \since QGIS 3.6
      */
-    SIP_PYOBJECT __iter__() SIP_TYPEHINT( QgsGeometryPartIterator );
+        SIP_PYOBJECT
+      __iter__() SIP_TYPEHINT( QgsGeometryPartIterator );
     % MethodCode
-    sipRes = sipConvertFromNewType( new QgsGeometryPartIterator( sipCpp ), sipType_QgsGeometryPartIterator, Py_None );
+        sipRes
+      = sipConvertFromNewType( new QgsGeometryPartIterator( sipCpp ), sipType_QgsGeometryPartIterator, Py_None );
     % End
 #endif
 
-    /**
+        /**
      * Returns a new QgsGeometryCollection subclass which consists of the parts of this collection
      * which match the specified WKB \a type.
      *
@@ -419,7 +421,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      *
      * \since QGIS 3.36
     */
-    QgsGeometryCollection *extractPartsByType( Qgis::WkbType type, bool useFlatType = true ) const SIP_FACTORY;
+        QgsGeometryCollection *
+      extractPartsByType( Qgis::WkbType type, bool useFlatType = true ) const SIP_FACTORY;
 
     QgsGeometryCollection *createEmptyWithSameType() const override SIP_FACTORY;
 
@@ -429,7 +432,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     int compareToSameClass( const QgsAbstractGeometry *other ) const final;
 
   protected:
-    QVector< QgsAbstractGeometry * > mGeometries;
+    QVector<QgsAbstractGeometry *> mGeometries;
 
     /**
      * Returns whether child type names are omitted from Wkt representations of the collection
@@ -445,7 +448,6 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     void clearCache() const override;
 
   private:
-
     mutable QgsBox3D mBoundingBox;
     mutable bool mHasCachedValidity = false;
     mutable QString mValidityFailureReason;

@@ -88,7 +88,7 @@ void QgsGeoPackageRootItem::onConnectionsChanged()
 
 void QgsGeoPackageRootItem::newConnection()
 {
-  if ( QgsOgrProviderUtils::createConnection( QStringLiteral( "GeoPackage" ),  QStringLiteral( "GeoPackage Database (*.gpkg)" ),  QStringLiteral( "GPKG" ) ) )
+  if ( QgsOgrProviderUtils::createConnection( QStringLiteral( "GeoPackage" ), QStringLiteral( "GeoPackage Database (*.gpkg)" ), QStringLiteral( "GPKG" ) ) )
   {
     refreshConnections();
   }
@@ -107,7 +107,7 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
   QVector<QgsDataItem *> children;
 
   const QString path = mPath.remove( QLatin1String( "gpkg:/" ) );
-  const QList< QgsProviderSublayerDetails > sublayers = QgsProviderRegistry::instance()->querySublayers( path );
+  const QList<QgsProviderSublayerDetails> sublayers = QgsProviderRegistry::instance()->querySublayers( path );
   for ( const QgsProviderSublayerDetails &sublayer : sublayers )
   {
     switch ( sublayer.type() )
@@ -186,7 +186,7 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
 
     if ( !fieldDomains.empty() || !domainError.isEmpty() )
     {
-      std::unique_ptr< QgsFieldDomainsItem > domainsItem = std::make_unique< QgsFieldDomainsItem >( this, mPath + "/domains", path, QStringLiteral( "ogr" ) );
+      std::unique_ptr<QgsFieldDomainsItem> domainsItem = std::make_unique<QgsFieldDomainsItem>( this, mPath + "/domains", path, QStringLiteral( "ogr" ) );
       // force this item to appear last by setting a maximum string value for the sort key
       domainsItem->setSortKey( QString( QChar( 0x10FFFF ) ) );
       children.append( domainsItem.release() );
@@ -195,7 +195,7 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
   if ( conn && ( conn->capabilities() & QgsAbstractDatabaseProviderConnection::Capability::RetrieveRelationships ) )
   {
     QString relationError;
-    QList< QgsWeakRelation > relations;
+    QList<QgsWeakRelation> relations;
     try
     {
       relations = conn->relationships();
@@ -207,7 +207,7 @@ QVector<QgsDataItem *> QgsGeoPackageCollectionItem::createChildren()
 
     if ( !relations.empty() || !relationError.isEmpty() )
     {
-      std::unique_ptr< QgsRelationshipsItem > relationsItem = std::make_unique< QgsRelationshipsItem >( this, mPath + "/relations", conn->uri(), QStringLiteral( "ogr" ) );
+      std::unique_ptr<QgsRelationshipsItem> relationsItem = std::make_unique<QgsRelationshipsItem>( this, mPath + "/relations", conn->uri(), QStringLiteral( "ogr" ) );
       // force this item to appear last by setting a maximum string value for the sort key
       relationsItem->setSortKey( QString( QChar( 0x11FFFF ) ) );
       children.append( relationsItem.release() );
@@ -245,7 +245,6 @@ bool QgsGeoPackageCollectionItem::equal( const QgsDataItem *other )
   }
   const QgsGeoPackageCollectionItem *o = qobject_cast<const QgsGeoPackageCollectionItem *>( other );
   return o && mPath == o->mPath && mName == o->mName;
-
 }
 
 bool QgsGeoPackageCollectionItem::deleteRasterLayer( const QString &layerName, QString &errCause )
@@ -343,7 +342,6 @@ bool QgsGeoPackageCollectionItem::vacuumGeoPackageDb( const QString &name, const
 QgsGeoPackageConnectionItem::QgsGeoPackageConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsGeoPackageCollectionItem( parent, name, path )
 {
-
 }
 
 bool QgsGeoPackageConnectionItem::equal( const QgsDataItem *other )
@@ -354,12 +352,11 @@ bool QgsGeoPackageConnectionItem::equal( const QgsDataItem *other )
   }
   const QgsGeoPackageConnectionItem *o = qobject_cast<const QgsGeoPackageConnectionItem *>( other );
   return o && mPath == o->mPath && mName == o->mName;
-
 }
 
 QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, Qgis::BrowserLayerType layerType, const QString &providerKey )
   : QgsLayerItem( parent, name, path, uri, layerType, providerKey )
-  , mCollection( qobject_cast<QgsGeoPackageCollectionItem*>( parent ) )
+  , mCollection( qobject_cast<QgsGeoPackageCollectionItem *>( parent ) )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Delete;
   mToolTip = uri;
@@ -375,12 +372,12 @@ QStringList QgsGeoPackageAbstractLayerItem::tableNames() const
   QgsGeoPackageProviderConnection *conn { static_cast<QgsGeoPackageProviderConnection *>( md->findConnection( parent()->name() ) ) };
   if ( conn )
   {
-    for ( const QgsGeoPackageProviderConnection::TableProperty &p : conn->tables( ) )
+    for ( const QgsGeoPackageProviderConnection::TableProperty &p : conn->tables() )
     {
       names.push_back( p.tableName() );
     }
   }
-  return  names;
+  return names;
 }
 
 
@@ -389,7 +386,7 @@ QList<QgsMapLayer *> QgsGeoPackageAbstractLayerItem::layersInProject() const
   // Check if the layer(s) are in the registry
   QList<QgsMapLayer *> layersList;
   const auto mapLayers( QgsProject::instance()->mapLayers() ); // skip-keyword-check
-  for ( QgsMapLayer *layer :  mapLayers )
+  for ( QgsMapLayer *layer : mapLayers )
   {
     if ( layer->publicSource() == mUri )
     {
@@ -445,8 +442,8 @@ bool QgsGeoPackageRasterLayerItem::executeDeleteLayer( QString &errCause )
   else
   {
     errCause = QObject::tr( "There was an error deleting '%1' on '%2'!" )
-               .arg( tableName )
-               .arg( collection()->path() );
+                 .arg( tableName )
+                 .arg( collection()->path() );
     return false;
   }
   return true;
@@ -472,7 +469,7 @@ bool QgsGeoPackageVectorLayerItem::executeDeleteLayer( QString &errCause )
   else
   {
     errCause = QObject::tr( "There was an error deleting '%1' on '%2'!" )
-               .arg( tableName, parent()->path() );
+                 .arg( tableName, parent()->path() );
     return false;
   }
   return true;

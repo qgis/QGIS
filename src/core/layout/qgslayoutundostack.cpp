@@ -47,7 +47,7 @@ void QgsLayoutUndoStack::beginCommand( QgsLayoutUndoObjectInterface *object, con
     return;
   }
 
-  mActiveCommands.emplace_back( std::unique_ptr< QgsAbstractLayoutUndoCommand >( object->createCommand( commandText, id, nullptr ) ) );
+  mActiveCommands.emplace_back( std::unique_ptr<QgsAbstractLayoutUndoCommand>( object->createCommand( commandText, id, nullptr ) ) );
   mActiveCommands.back()->saveBeforeState();
 }
 

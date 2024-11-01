@@ -17,8 +17,7 @@
 #define QGSGRASSGISLIB_H
 
 // GRASS header files
-extern "C"
-{
+extern "C" {
 #include <grass/gis.h>
 }
 
@@ -56,14 +55,14 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     class Raster
     {
       public:
-        int fd; // fake file descriptor
+        int fd;       // fake file descriptor
         QString name; // name passed from grass module, uri
         QgsRasterDataProvider *provider = nullptr;
         QgsRasterProjector *projector = nullptr;
         // Input points to provider or projector
         QgsRasterInterface *input = nullptr;
         int band;
-        int row; // next row to be written
+        int row;            // next row to be written
         double noDataValue; // output no data value
 
         Raster()

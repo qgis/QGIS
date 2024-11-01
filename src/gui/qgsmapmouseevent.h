@@ -34,7 +34,6 @@ class QgsMapToolAdvancedDigitizing;
  */
 class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsMapMouseEvent *>( sipCpp ) )
@@ -45,7 +44,6 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
 #endif
 
   public:
-
     /**
      * Creates a new QgsMapMouseEvent. Should only be required to be called from the QgsMapCanvas.
      *
@@ -135,7 +133,6 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
     void snapToGrid( double precision, const QgsCoordinateReferenceSystem &crs );
 
   private:
-
     QPoint mapToPixelCoordinates( const QgsPointXY &point );
 
     //! Whether snapPoint() was already called

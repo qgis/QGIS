@@ -81,7 +81,7 @@ bool QgsRasterPipe::connect( QVector<QgsRasterInterface *> interfaces )
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   for ( int i = 1; i < interfaces.size(); i++ )
   {
-    if ( ! interfaces[i]->setInput( interfaces[i - 1] ) )
+    if ( !interfaces[i]->setInput( interfaces[i - 1] ) )
     {
 #ifdef QGISDEBUG
       const QgsRasterInterface &a = *interfaces[i];
@@ -126,10 +126,12 @@ bool QgsRasterPipe::insert( int idx, QgsRasterInterface *interface )
 
 bool QgsRasterPipe::replace( int idx, QgsRasterInterface *interface )
 {
-  if ( !interface ) return false;
+  if ( !interface )
+    return false;
 
   QgsDebugMsgLevel( QStringLiteral( "replace by %1 at %2" ).arg( typeid( *interface ).name() ).arg( idx ), 4 );
-  if ( !checkBounds( idx ) ) return false;
+  if ( !checkBounds( idx ) )
+    return false;
 
   // make a copy of pipe to test connection, we test the connections
   // of the whole pipe, because the types and band numbers may change
@@ -188,7 +190,7 @@ void QgsRasterPipe::unsetRole( QgsRasterInterface *interface )
   if ( role == Qgis::RasterPipeInterfaceRole::Unknown )
     return;
 
-  const int roleIdx{ mRoleMap[role] };
+  const int roleIdx { mRoleMap[role] };
   mRoleMap.remove( role );
 
   // Decrease all indexes greater than the removed one
@@ -258,10 +260,10 @@ bool QgsRasterPipe::set( QgsRasterInterface *interface )
   }
   else if ( role == Qgis::RasterPipeInterfaceRole::Projector )
   {
-    idx = std::max( std::max( std::max( std::max( providerIdx, rendererIdx ), brightnessIdx ), hueSaturationIdx ), resamplerIdx )  + 1;
+    idx = std::max( std::max( std::max( std::max( providerIdx, rendererIdx ), brightnessIdx ), hueSaturationIdx ), resamplerIdx ) + 1;
   }
 
-  return insert( idx, interface );  // insert may still fail and return false
+  return insert( idx, interface ); // insert may still fail and return false
 }
 
 QgsRasterInterface *QgsRasterPipe::interface( Qgis::RasterPipeInterfaceRole role ) const
@@ -343,7 +345,8 @@ bool QgsRasterPipe::remove( int idx )
 
 bool QgsRasterPipe::remove( QgsRasterInterface *interface )
 {
-  if ( !interface ) return false;
+  if ( !interface )
+    return false;
 
   return remove( mInterfaces.indexOf( interface ) );
 }
@@ -409,7 +412,7 @@ void QgsRasterPipe::setResamplingStage( Qgis::RasterResamplingStage stage )
       setOn( resamplerIndex, stage == Qgis::RasterResamplingStage::ResampleFilter );
       break;
     }
-    resamplerIndex ++;
+    resamplerIndex++;
   }
 
   if ( QgsRasterDataProvider *l_provider = provider() )
@@ -445,17 +448,15 @@ void QgsRasterPipe::initPropertyDefinitions()
 {
   const QString origin = QStringLiteral( "raster" );
 
-  sPropertyDefinitions = QgsPropertiesDefinition
-  {
-    { static_cast< int >( QgsRasterPipe::Property::RendererOpacity ), QgsPropertyDefinition( "RendererOpacity", QObject::tr( "Renderer opacity" ), QgsPropertyDefinition::Opacity, origin ) },
+  sPropertyDefinitions = QgsPropertiesDefinition {
+    { static_cast<int>( QgsRasterPipe::Property::RendererOpacity ), QgsPropertyDefinition( "RendererOpacity", QObject::tr( "Renderer opacity" ), QgsPropertyDefinition::Opacity, origin ) },
   };
 }
 
 QgsPropertiesDefinition QgsRasterPipe::propertyDefinitions()
 {
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]( )
-  {
+  std::call_once( initialized, [=]() {
     initPropertyDefinitions();
   } );
   return sPropertyDefinitions;

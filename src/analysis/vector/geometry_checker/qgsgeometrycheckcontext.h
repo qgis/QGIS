@@ -31,7 +31,6 @@
 class ANALYSIS_EXPORT QgsGeometryCheckContext
 {
   public:
-
     /**
      * Creates a new QgsGeometryCheckContext.
      */

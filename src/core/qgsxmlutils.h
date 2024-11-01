@@ -28,7 +28,6 @@ class QgsBox3D;
 #include "qgis.h"
 
 
-
 /**
  * \ingroup core
  * \brief Assorted helper methods for reading and writing chunks of XML
@@ -36,7 +35,6 @@ class QgsBox3D;
 class CORE_EXPORT QgsXmlUtils
 {
   public:
-
     /* reading */
 
     /**

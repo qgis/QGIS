@@ -54,7 +54,7 @@ void QgsLayoutSnapper::setSnapToItems( bool enabled )
 }
 
 QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &snapped, QGraphicsLineItem *horizontalSnapLine, QGraphicsLineItem *verticalSnapLine,
-                                     const QList< QgsLayoutItem * > *ignoreItems ) const
+                                     const QList<QgsLayoutItem *> *ignoreItems ) const
 {
   snapped = false;
 
@@ -82,7 +82,7 @@ QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &sn
   bool snappedYToItems = false;
   if ( !snappedXToGuides )
   {
-    newX = snapPointToItems( point.x(), Qt::Horizontal, scaleFactor, ignoreItems ? *ignoreItems : QList< QgsLayoutItem * >(), snappedXToItems, verticalSnapLine );
+    newX = snapPointToItems( point.x(), Qt::Horizontal, scaleFactor, ignoreItems ? *ignoreItems : QList<QgsLayoutItem *>(), snappedXToItems, verticalSnapLine );
     if ( snappedXToItems )
     {
       snapped = true;
@@ -91,7 +91,7 @@ QPointF QgsLayoutSnapper::snapPoint( QPointF point, double scaleFactor, bool &sn
   }
   if ( !snappedYToGuides )
   {
-    newY = snapPointToItems( point.y(), Qt::Vertical, scaleFactor, ignoreItems ? *ignoreItems : QList< QgsLayoutItem * >(), snappedYToItems, horizontalSnapLine );
+    newY = snapPointToItems( point.y(), Qt::Vertical, scaleFactor, ignoreItems ? *ignoreItems : QList<QgsLayoutItem *>(), snappedYToItems, horizontalSnapLine );
     if ( snappedYToItems )
     {
       snapped = true;
@@ -121,9 +121,9 @@ QRectF QgsLayoutSnapper::snapRect( const QRectF &rect, double scaleFactor, bool 
   snapped = false;
   QRectF snappedRect = rect;
 
-  QList< double > xCoords;
+  QList<double> xCoords;
   xCoords << rect.left() << rect.center().x() << rect.right();
-  QList< double > yCoords;
+  QList<double> yCoords;
   yCoords << rect.top() << rect.center().y() << rect.bottom();
 
   // highest priority - guides
@@ -150,7 +150,7 @@ QRectF QgsLayoutSnapper::snapRect( const QRectF &rect, double scaleFactor, bool 
   bool snappedYToItems = false;
   if ( !snappedXToGuides )
   {
-    deltaX = snapPointsToItems( xCoords, Qt::Horizontal, scaleFactor, ignoreItems ? *ignoreItems : QList< QgsLayoutItem * >(), snappedXToItems, verticalSnapLine );
+    deltaX = snapPointsToItems( xCoords, Qt::Horizontal, scaleFactor, ignoreItems ? *ignoreItems : QList<QgsLayoutItem *>(), snappedXToItems, verticalSnapLine );
     if ( snappedXToItems )
     {
       snapped = true;
@@ -159,7 +159,7 @@ QRectF QgsLayoutSnapper::snapRect( const QRectF &rect, double scaleFactor, bool 
   }
   if ( !snappedYToGuides )
   {
-    deltaY = snapPointsToItems( yCoords, Qt::Vertical, scaleFactor, ignoreItems ? *ignoreItems : QList< QgsLayoutItem * >(), snappedYToItems, horizontalSnapLine );
+    deltaY = snapPointsToItems( yCoords, Qt::Vertical, scaleFactor, ignoreItems ? *ignoreItems : QList<QgsLayoutItem *>(), snappedYToItems, horizontalSnapLine );
     if ( snappedYToItems )
     {
       snapped = true;
@@ -169,7 +169,7 @@ QRectF QgsLayoutSnapper::snapRect( const QRectF &rect, double scaleFactor, bool 
 
   bool snappedXToGrid = false;
   bool snappedYToGrid = false;
-  QList< QPointF > points;
+  QList<QPointF> points;
   points << rect.topLeft() << rect.topRight() << rect.bottomLeft() << rect.bottomRight();
   QPointF res = snapPointsToGrid( points, scaleFactor, snappedXToGrid, snappedYToGrid );
   if ( snappedXToGrid && !snappedXToGuides && !snappedXToItems )
@@ -188,7 +188,7 @@ QRectF QgsLayoutSnapper::snapRect( const QRectF &rect, double scaleFactor, bool 
 
 QPointF QgsLayoutSnapper::snapPointToGrid( QPointF point, double scaleFactor, bool &snappedX, bool &snappedY ) const
 {
-  QPointF delta = snapPointsToGrid( QList< QPointF >() << point, scaleFactor, snappedX, snappedY );
+  QPointF delta = snapPointsToGrid( QList<QPointF>() << point, scaleFactor, snappedX, snappedY );
   return point + delta;
 }
 
@@ -219,8 +219,8 @@ QPointF QgsLayoutSnapper::snapPointsToGrid( const QList<QPointF> &points, double
     //snap x coordinate
     double gridRes = mLayout->convertToLayoutUnits( grid.resolution() );
     QPointF gridOffset = mLayout->convertToLayoutUnits( grid.offset() );
-    int xRatio = static_cast< int >( ( point.x() - gridOffset.x() ) / gridRes + 0.5 ); //NOLINT
-    int yRatio = static_cast< int >( ( yPage - gridOffset.y() ) / gridRes + 0.5 ); //NOLINT
+    int xRatio = static_cast<int>( ( point.x() - gridOffset.x() ) / gridRes + 0.5 ); //NOLINT
+    int yRatio = static_cast<int>( ( yPage - gridOffset.y() ) / gridRes + 0.5 );     //NOLINT
 
     double xSnapped = xRatio * gridRes + gridOffset.x();
     double ySnapped = yRatio * gridRes + gridOffset.y() + yAtTopOfPage;
@@ -262,7 +262,7 @@ QPointF QgsLayoutSnapper::snapPointsToGrid( const QList<QPointF> &points, double
 
 double QgsLayoutSnapper::snapPointToGuides( double original, Qt::Orientation orientation, double scaleFactor, bool &snapped ) const
 {
-  double delta = snapPointsToGuides( QList< double >() << original, orientation, scaleFactor, snapped );
+  double delta = snapPointsToGuides( QList<double>() << original, orientation, scaleFactor, snapped );
   return original + delta;
 }
 
@@ -307,9 +307,9 @@ double QgsLayoutSnapper::snapPointsToGuides( const QList<double> &points, Qt::Or
 }
 
 double QgsLayoutSnapper::snapPointToItems( double original, Qt::Orientation orientation, double scaleFactor, const QList<QgsLayoutItem *> &ignoreItems, bool &snapped,
-    QGraphicsLineItem *snapLine ) const
+                                           QGraphicsLineItem *snapLine ) const
 {
-  double delta = snapPointsToItems( QList< double >() << original, orientation, scaleFactor, ignoreItems, snapped, snapLine );
+  double delta = snapPointsToItems( QList<double>() << original, orientation, scaleFactor, ignoreItems, snapped, snapLine );
   return original + delta;
 }
 
@@ -329,10 +329,10 @@ double QgsLayoutSnapper::snapPointsToItems( const QList<double> &points, Qt::Ori
   double smallestDiff = std::numeric_limits<double>::max();
   double closest = 0;
   const QList<QGraphicsItem *> itemList = mLayout->items();
-  QList< double > currentCoords;
+  QList<double> currentCoords;
   for ( QGraphicsItem *item : itemList )
   {
-    QgsLayoutItem *currentItem = dynamic_cast< QgsLayoutItem *>( item );
+    QgsLayoutItem *currentItem = dynamic_cast<QgsLayoutItem *>( item );
     if ( !currentItem || ignoreItems.contains( currentItem ) )
       continue;
     if ( currentItem->type() == QgsLayoutItemRegistry::LayoutGroup )

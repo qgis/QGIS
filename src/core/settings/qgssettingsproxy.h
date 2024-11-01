@@ -34,7 +34,6 @@
 class CORE_EXPORT QgsSettingsProxy
 {
   public:
-
     /**
      * Constructor for QgsSettingsProxy.
      *
@@ -54,15 +53,13 @@ class CORE_EXPORT QgsSettingsProxy
     /**
      * Returns a reference to the proxied QgsSettings object.
      */
-    QgsSettings &operator* ()
+    QgsSettings &operator*()
     {
       return mOwnedSettings.has_value() ? mOwnedSettings.value() : *mNonOwnedSettings;
     }
 
   private:
-
     QgsSettings *mNonOwnedSettings = nullptr;
-    std::optional< QgsSettings > mOwnedSettings;
-
+    std::optional<QgsSettings> mOwnedSettings;
 };
 #endif // QGSSETTINGSPROXY_H

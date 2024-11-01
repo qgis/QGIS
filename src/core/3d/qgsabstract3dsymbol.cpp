@@ -21,7 +21,7 @@ QgsPropertiesDefinition QgsAbstract3DSymbol::sPropertyDefinitions;
 
 QList<Qgis::GeometryType> QgsAbstract3DSymbol::compatibleGeometryTypes() const
 {
-  return QList< Qgis::GeometryType >();
+  return QList<Qgis::GeometryType>();
 }
 
 const QgsPropertiesDefinition &QgsAbstract3DSymbol::propertyDefinitions()
@@ -42,12 +42,10 @@ void QgsAbstract3DSymbol::initPropertyDefinitions()
 
   const QString origin = QStringLiteral( "symbol3d" );
 
-  sPropertyDefinitions = QgsPropertiesDefinition
-  {
-    { static_cast< int >( Property::Height ), QgsPropertyDefinition( "height", QObject::tr( "Height" ), QgsPropertyDefinition::Double, origin ) },
-    { static_cast< int >( Property::ExtrusionHeight ), QgsPropertyDefinition( "extrusionHeight", QObject::tr( "ExtrusionHeight" ), QgsPropertyDefinition::DoublePositive, origin ) },
+  sPropertyDefinitions = QgsPropertiesDefinition {
+    { static_cast<int>( Property::Height ), QgsPropertyDefinition( "height", QObject::tr( "Height" ), QgsPropertyDefinition::Double, origin ) },
+    { static_cast<int>( Property::ExtrusionHeight ), QgsPropertyDefinition( "extrusionHeight", QObject::tr( "ExtrusionHeight" ), QgsPropertyDefinition::DoublePositive, origin ) },
   };
-
 }
 
 bool QgsAbstract3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCore::QEntity *entity, const QString &objectNamePrefix ) const
@@ -60,5 +58,4 @@ bool QgsAbstract3DSymbol::exportGeometries( Qgs3DSceneExporter *exporter, Qt3DCo
 
 void QgsAbstract3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer * )
 {
-
 }

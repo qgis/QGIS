@@ -37,14 +37,13 @@ class QgsVectorLayer;
 class QgsGeometryEditUtils
 {
   public:
-
     /**
      * Add an interior \a ring to a \a geometry.
      * Ownership of the \a ring is transferred.
      * \returns 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
      * 3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring
      */
-    static Qgis::GeometryOperationResult addRing( QgsAbstractGeometry *geometry, std::unique_ptr< QgsCurve > ring );
+    static Qgis::GeometryOperationResult addRing( QgsAbstractGeometry *geometry, std::unique_ptr<QgsCurve> ring );
 
     /**
      * Add a \a part to multi type \a geometry.
@@ -52,7 +51,7 @@ class QgsGeometryEditUtils
      * \returns 0 in case of success, 1 if not a multigeometry, 2 if part is not a valid geometry, 3 if new polygon ring
      * not disjoint with existing polygons of the feature
      */
-    static Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *geometry, std::unique_ptr< QgsAbstractGeometry > part );
+    static Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *geometry, std::unique_ptr<QgsAbstractGeometry> part );
 
     /**
      * Deletes a ring from a geometry.
@@ -74,10 +73,10 @@ class QgsGeometryEditUtils
      * \param ignoreFeatures map of layer to feature id of features to ignore
      * \return the modified geometry or a null unique_ptr if the \a geom polygon doesn't intersect any geometry in \a avoidIntersectionsLayers
      */
-    static std::unique_ptr< QgsAbstractGeometry > avoidIntersections( const QgsAbstractGeometry &geom,
-        const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
-        bool &haveInvalidGeometry,
-        const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
+    static std::unique_ptr<QgsAbstractGeometry> avoidIntersections( const QgsAbstractGeometry &geom,
+                                                                    const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
+                                                                    bool &haveInvalidGeometry,
+                                                                    const QHash<QgsVectorLayer *, QSet<QgsFeatureId>> &ignoreFeatures = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId>>() ) );
 };
 
 #endif // QGSGEOMETRYEDITUTILS_H

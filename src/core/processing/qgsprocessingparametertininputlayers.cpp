@@ -16,8 +16,8 @@
 #include "qgsprocessingparametertininputlayers.h"
 #include "qgsvectorlayer.h"
 
-QgsProcessingParameterTinInputLayers::QgsProcessingParameterTinInputLayers( const QString &name, const QString &description ):
-  QgsProcessingParameterDefinition( name, description )
+QgsProcessingParameterTinInputLayers::QgsProcessingParameterTinInputLayers( const QString &name, const QString &description )
+  : QgsProcessingParameterDefinition( name, description )
 {}
 
 QgsProcessingParameterDefinition *QgsProcessingParameterTinInputLayers::clone() const
@@ -46,13 +46,11 @@ bool QgsProcessingParameterTinInputLayers::checkValueIsAcceptable( const QVarian
       return false;
     const QVariantMap layerMap = variantLayer.toMap();
 
-    if ( !layerMap.contains( QStringLiteral( "source" ) ) ||
-         !layerMap.contains( QStringLiteral( "type" ) ) ||
-         !layerMap.contains( QStringLiteral( "attributeIndex" ) ) )
+    if ( !layerMap.contains( QStringLiteral( "source" ) ) || !layerMap.contains( QStringLiteral( "type" ) ) || !layerMap.contains( QStringLiteral( "attributeIndex" ) ) )
       return false;
 
     if ( !context )
-      continue;  // when called without context, we will skip checking whether the layer can be resolved
+      continue; // when called without context, we will skip checking whether the layer can be resolved
 
     QgsMapLayer *mapLayer = QgsProcessingUtils::mapLayerFromString( layerMap.value( QStringLiteral( "source" ) ).toString(), *context );
     if ( !mapLayer || mapLayer->type() != Qgis::LayerType::Vector )
@@ -102,7 +100,7 @@ QString QgsProcessingParameterTinInputLayers::asPythonString( QgsProcessing::Pyt
     case QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass:
     {
       QString code = QStringLiteral( "QgsProcessingParameterTinInputLayers('%1', %2)" )
-                     .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
+                       .arg( name(), QgsProcessingUtils::stringToPythonLiteral( description() ) );
       return code;
     }
   }

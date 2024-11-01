@@ -63,21 +63,21 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
 
   connect( mIntervalXSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsLayoutMapGridWidget::mIntervalXSpinBox_editingFinished );
   connect( mIntervalYSpinBox, &QgsDoubleSpinBox::editingFinished, this, &QgsLayoutMapGridWidget::mIntervalYSpinBox_editingFinished );
-  connect( mOffsetXSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mOffsetXSpinBox_valueChanged );
-  connect( mOffsetYSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mOffsetYSpinBox_valueChanged );
-  connect( mCrossWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mCrossWidthSpinBox_valueChanged );
-  connect( mFrameWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mFrameWidthSpinBox_valueChanged );
-  connect( mGridFrameMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mGridFrameMarginSpinBox_valueChanged );
+  connect( mOffsetXSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mOffsetXSpinBox_valueChanged );
+  connect( mOffsetYSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mOffsetYSpinBox_valueChanged );
+  connect( mCrossWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mCrossWidthSpinBox_valueChanged );
+  connect( mFrameWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mFrameWidthSpinBox_valueChanged );
+  connect( mGridFrameMarginSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mGridFrameMarginSpinBox_valueChanged );
   connect( mFrameStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapGridWidget::mFrameStyleComboBox_currentIndexChanged );
   connect( mRotatedTicksGroupBox, &QGroupBox::toggled, this, &QgsLayoutMapGridWidget::mRotatedTicksGroupBox_toggled );
   connect( mRotatedTicksLengthModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapGridWidget::mRotatedTicksLengthModeComboBox_currentIndexChanged );
-  connect( mRotatedTicksThresholdSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mRotatedTicksThresholdSpinBox_valueChanged );
-  connect( mRotatedTicksMarginToCornerSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mRotatedTicksMarginToCornerSpinBox_valueChanged );
+  connect( mRotatedTicksThresholdSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mRotatedTicksThresholdSpinBox_valueChanged );
+  connect( mRotatedTicksMarginToCornerSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mRotatedTicksMarginToCornerSpinBox_valueChanged );
   connect( mRotatedAnnotationsGroupBox, &QGroupBox::toggled, this, &QgsLayoutMapGridWidget::mRotatedAnnotationsGroupBox_toggled );
   connect( mRotatedAnnotationsLengthModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapGridWidget::mRotatedAnnotationsLengthModeComboBox_currentIndexChanged );
-  connect( mRotatedAnnotationsThresholdSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mRotatedAnnotationsThresholdSpinBox_valueChanged );
-  connect( mRotatedAnnotationsMarginToCornerSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mRotatedAnnotationsMarginToCornerSpinBox_valueChanged );
-  connect( mGridFramePenSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mGridFramePenSizeSpinBox_valueChanged );
+  connect( mRotatedAnnotationsThresholdSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mRotatedAnnotationsThresholdSpinBox_valueChanged );
+  connect( mRotatedAnnotationsMarginToCornerSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mRotatedAnnotationsMarginToCornerSpinBox_valueChanged );
+  connect( mGridFramePenSizeSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mGridFramePenSizeSpinBox_valueChanged );
   connect( mGridFramePenColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutMapGridWidget::mGridFramePenColorButton_colorChanged );
   connect( mGridFrameFill1ColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutMapGridWidget::mGridFrameFill1ColorButton_colorChanged );
   connect( mGridFrameFill2ColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutMapGridWidget::mGridFrameFill2ColorButton_colorChanged );
@@ -107,10 +107,10 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   connect( mAnnotationDirectionComboBoxTop, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapGridWidget::mAnnotationDirectionComboBoxTop_currentIndexChanged );
   connect( mAnnotationDirectionComboBoxBottom, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapGridWidget::mAnnotationDirectionComboBoxBottom_currentIndexChanged );
   connect( mAnnotationFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapGridWidget::mAnnotationFormatComboBox_currentIndexChanged );
-  connect( mCoordinatePrecisionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mCoordinatePrecisionSpinBox_valueChanged );
-  connect( mDistanceToMapFrameSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mDistanceToMapFrameSpinBox_valueChanged );
-  connect( mMinWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::minIntervalChanged );
-  connect( mMaxWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::maxIntervalChanged );
+  connect( mCoordinatePrecisionSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mCoordinatePrecisionSpinBox_valueChanged );
+  connect( mDistanceToMapFrameSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mDistanceToMapFrameSpinBox_valueChanged );
+  connect( mMinWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::minIntervalChanged );
+  connect( mMaxWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::maxIntervalChanged );
   connect( mEnabledCheckBox, &QCheckBox::toggled, this, &QgsLayoutMapGridWidget::gridEnabledToggled );
   setPanelTitle( tr( "Map Grid Properties" ) );
 
@@ -468,7 +468,7 @@ void QgsLayoutMapGridWidget::initAnnotationDirectionBox( QComboBox *c, QgsLayout
 bool QgsLayoutMapGridWidget::hasPredefinedScales() const
 {
   // first look at project's scales
-  const QVector< double > scales = QgsProject::instance()->viewSettings()->mapScales();
+  const QVector<double> scales = QgsProject::instance()->viewSettings()->mapScales();
   const bool hasProjectScales( QgsProject::instance()->viewSettings()->useProjectScales() );
   if ( !hasProjectScales || scales.isEmpty() )
   {
@@ -808,22 +808,22 @@ void QgsLayoutMapGridWidget::mCheckGridBottomSide_toggled( bool checked )
 
 void QgsLayoutMapGridWidget::mFrameDivisionsLeftComboBox_currentIndexChanged( int index )
 {
-  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Left, static_cast< QgsLayoutItemMapGrid::DisplayMode >( mFrameDivisionsLeftComboBox->itemData( index ).toInt() ) );
+  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Left, static_cast<QgsLayoutItemMapGrid::DisplayMode>( mFrameDivisionsLeftComboBox->itemData( index ).toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mFrameDivisionsRightComboBox_currentIndexChanged( int index )
 {
-  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Right, static_cast< QgsLayoutItemMapGrid::DisplayMode >( mFrameDivisionsRightComboBox->itemData( index ).toInt() ) );
+  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Right, static_cast<QgsLayoutItemMapGrid::DisplayMode>( mFrameDivisionsRightComboBox->itemData( index ).toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mFrameDivisionsTopComboBox_currentIndexChanged( int index )
 {
-  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Top, static_cast< QgsLayoutItemMapGrid::DisplayMode >( mFrameDivisionsTopComboBox->itemData( index ).toInt() ) );
+  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Top, static_cast<QgsLayoutItemMapGrid::DisplayMode>( mFrameDivisionsTopComboBox->itemData( index ).toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mFrameDivisionsBottomComboBox_currentIndexChanged( int index )
 {
-  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Bottom, static_cast< QgsLayoutItemMapGrid::DisplayMode >( mFrameDivisionsBottomComboBox->itemData( index ).toInt() ) );
+  handleChangedFrameDisplay( QgsLayoutItemMapGrid::Bottom, static_cast<QgsLayoutItemMapGrid::DisplayMode>( mFrameDivisionsBottomComboBox->itemData( index ).toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mGridFramePenSizeSpinBox_valueChanged( double d )
@@ -886,7 +886,7 @@ void QgsLayoutMapGridWidget::mFrameStyleComboBox_currentIndexChanged( int )
     return;
   }
 
-  const QgsLayoutItemMapGrid::FrameStyle style = static_cast< QgsLayoutItemMapGrid::FrameStyle >( mFrameStyleComboBox->currentData().toInt() );
+  const QgsLayoutItemMapGrid::FrameStyle style = static_cast<QgsLayoutItemMapGrid::FrameStyle>( mFrameStyleComboBox->currentData().toInt() );
   mMap->beginCommand( tr( "Change Frame Style" ) );
   mMapGrid->setFrameStyle( style );
   switch ( style )
@@ -933,7 +933,7 @@ void QgsLayoutMapGridWidget::mRotatedTicksLengthModeComboBox_currentIndexChanged
     return;
   }
 
-  const QgsLayoutItemMapGrid::TickLengthMode mode = static_cast< QgsLayoutItemMapGrid::TickLengthMode >( mRotatedTicksLengthModeComboBox->currentData().toInt() );
+  const QgsLayoutItemMapGrid::TickLengthMode mode = static_cast<QgsLayoutItemMapGrid::TickLengthMode>( mRotatedTicksLengthModeComboBox->currentData().toInt() );
   mMap->beginCommand( tr( "Change Tick Length Mode" ) );
   mMapGrid->setRotatedTicksLengthMode( mode );
   mMap->update();
@@ -986,7 +986,7 @@ void QgsLayoutMapGridWidget::mRotatedAnnotationsLengthModeComboBox_currentIndexC
     return;
   }
 
-  const QgsLayoutItemMapGrid::TickLengthMode mode = static_cast< QgsLayoutItemMapGrid::TickLengthMode >( mRotatedAnnotationsLengthModeComboBox->currentData().toInt() );
+  const QgsLayoutItemMapGrid::TickLengthMode mode = static_cast<QgsLayoutItemMapGrid::TickLengthMode>( mRotatedAnnotationsLengthModeComboBox->currentData().toInt() );
   mMap->beginCommand( tr( "Change Annotation Length Mode" ) );
   mMapGrid->setRotatedAnnotationsLengthMode( mode );
   mMap->update();
@@ -1026,7 +1026,7 @@ void QgsLayoutMapGridWidget::intervalUnitChanged( int )
     return;
   }
 
-  const QgsLayoutItemMapGrid::GridUnit unit = static_cast< QgsLayoutItemMapGrid::GridUnit >( mMapGridUnitComboBox->currentData().toInt() );
+  const QgsLayoutItemMapGrid::GridUnit unit = static_cast<QgsLayoutItemMapGrid::GridUnit>( mMapGridUnitComboBox->currentData().toInt() );
   switch ( unit )
   {
     case QgsLayoutItemMapGrid::MapUnit:
@@ -1082,7 +1082,7 @@ void QgsLayoutMapGridWidget::annotationTextFormatChanged()
 void QgsLayoutMapGridWidget::onCrsChanged()
 {
   mBlockAnnotationFormatUpdates++;
-  const QgsLayoutItemMapGrid::AnnotationFormat prevFormat = static_cast< QgsLayoutItemMapGrid::AnnotationFormat  >( mAnnotationFormatComboBox->currentData().toInt() );
+  const QgsLayoutItemMapGrid::AnnotationFormat prevFormat = static_cast<QgsLayoutItemMapGrid::AnnotationFormat>( mAnnotationFormatComboBox->currentData().toInt() );
 
   mAnnotationFormatComboBox->clear();
   mAnnotationFormatComboBox->addItem( tr( "Decimal" ), QgsLayoutItemMapGrid::Decimal );
@@ -1161,7 +1161,7 @@ void QgsLayoutMapGridWidget::onCrsChanged()
     mAnnotationFormatComboBox->setCurrentIndex( 0 );
   mBlockAnnotationFormatUpdates--;
 
-  const QgsLayoutItemMapGrid::AnnotationFormat newFormat = static_cast< QgsLayoutItemMapGrid::AnnotationFormat  >( mAnnotationFormatComboBox->currentData().toInt() );
+  const QgsLayoutItemMapGrid::AnnotationFormat newFormat = static_cast<QgsLayoutItemMapGrid::AnnotationFormat>( mAnnotationFormatComboBox->currentData().toInt() );
   if ( newFormat != prevFormat )
   {
     mAnnotationFormatComboBox_currentIndexChanged( mAnnotationFormatComboBox->currentIndex() );
@@ -1178,7 +1178,6 @@ void QgsLayoutMapGridWidget::mGridBlendComboBox_currentIndexChanged( int index )
     mMap->update();
     mMap->endCommand();
   }
-
 }
 
 void QgsLayoutMapGridWidget::mGridTypeComboBox_currentIndexChanged( int )
@@ -1189,7 +1188,7 @@ void QgsLayoutMapGridWidget::mGridTypeComboBox_currentIndexChanged( int )
   }
 
   mMap->beginCommand( tr( "Change Grid Type" ) );
-  switch ( static_cast< QgsLayoutItemMapGrid::GridStyle >( mGridTypeComboBox->currentData().toInt() ) )
+  switch ( static_cast<QgsLayoutItemMapGrid::GridStyle>( mGridTypeComboBox->currentData().toInt() ) )
   {
     case QgsLayoutItemMapGrid::Cross:
       mMapGrid->setStyle( QgsLayoutItemMapGrid::Cross );
@@ -1311,62 +1310,62 @@ void QgsLayoutMapGridWidget::mAnnotationFormatButton_clicked()
 
 void QgsLayoutMapGridWidget::mAnnotationDisplayLeftComboBox_currentIndexChanged( int )
 {
-  handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::Left, static_cast< QgsLayoutItemMapGrid::DisplayMode >( mAnnotationDisplayLeftComboBox->currentData().toInt() ) );
+  handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::Left, static_cast<QgsLayoutItemMapGrid::DisplayMode>( mAnnotationDisplayLeftComboBox->currentData().toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationDisplayRightComboBox_currentIndexChanged( int )
 {
-  handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::Right, static_cast< QgsLayoutItemMapGrid::DisplayMode >( mAnnotationDisplayRightComboBox->currentData().toInt() ) );
+  handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::Right, static_cast<QgsLayoutItemMapGrid::DisplayMode>( mAnnotationDisplayRightComboBox->currentData().toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationDisplayTopComboBox_currentIndexChanged( int )
 {
-  handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::Top, static_cast< QgsLayoutItemMapGrid::DisplayMode >( mAnnotationDisplayTopComboBox->currentData().toInt() ) );
+  handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::Top, static_cast<QgsLayoutItemMapGrid::DisplayMode>( mAnnotationDisplayTopComboBox->currentData().toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationDisplayBottomComboBox_currentIndexChanged( int )
 {
-  handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::Bottom, static_cast< QgsLayoutItemMapGrid::DisplayMode >( mAnnotationDisplayBottomComboBox->currentData().toInt() ) );
+  handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::Bottom, static_cast<QgsLayoutItemMapGrid::DisplayMode>( mAnnotationDisplayBottomComboBox->currentData().toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationPositionLeftComboBox_currentIndexChanged( int )
 {
-  handleChangedAnnotationPosition( QgsLayoutItemMapGrid::Left, static_cast< QgsLayoutItemMapGrid::AnnotationPosition >( mAnnotationPositionLeftComboBox->currentData().toInt() ) );
+  handleChangedAnnotationPosition( QgsLayoutItemMapGrid::Left, static_cast<QgsLayoutItemMapGrid::AnnotationPosition>( mAnnotationPositionLeftComboBox->currentData().toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationPositionRightComboBox_currentIndexChanged( int )
 {
-  handleChangedAnnotationPosition( QgsLayoutItemMapGrid::Right, static_cast< QgsLayoutItemMapGrid::AnnotationPosition >( mAnnotationPositionRightComboBox->currentData().toInt() ) );
+  handleChangedAnnotationPosition( QgsLayoutItemMapGrid::Right, static_cast<QgsLayoutItemMapGrid::AnnotationPosition>( mAnnotationPositionRightComboBox->currentData().toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationPositionTopComboBox_currentIndexChanged( int )
 {
-  handleChangedAnnotationPosition( QgsLayoutItemMapGrid::Top, static_cast< QgsLayoutItemMapGrid::AnnotationPosition >( mAnnotationPositionTopComboBox->currentData().toInt() ) );
+  handleChangedAnnotationPosition( QgsLayoutItemMapGrid::Top, static_cast<QgsLayoutItemMapGrid::AnnotationPosition>( mAnnotationPositionTopComboBox->currentData().toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationPositionBottomComboBox_currentIndexChanged( int )
 {
-  handleChangedAnnotationPosition( QgsLayoutItemMapGrid::Bottom, static_cast< QgsLayoutItemMapGrid::AnnotationPosition >( mAnnotationPositionBottomComboBox->currentData().toInt() ) );
+  handleChangedAnnotationPosition( QgsLayoutItemMapGrid::Bottom, static_cast<QgsLayoutItemMapGrid::AnnotationPosition>( mAnnotationPositionBottomComboBox->currentData().toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationDirectionComboBoxLeft_currentIndexChanged( int index )
 {
-  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Left, static_cast< QgsLayoutItemMapGrid::AnnotationDirection >( mAnnotationDirectionComboBoxLeft->itemData( index ).toInt() ) );
+  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Left, static_cast<QgsLayoutItemMapGrid::AnnotationDirection>( mAnnotationDirectionComboBoxLeft->itemData( index ).toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationDirectionComboBoxRight_currentIndexChanged( int index )
 {
-  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Right, static_cast< QgsLayoutItemMapGrid::AnnotationDirection >( mAnnotationDirectionComboBoxRight->itemData( index ).toInt() ) );
+  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Right, static_cast<QgsLayoutItemMapGrid::AnnotationDirection>( mAnnotationDirectionComboBoxRight->itemData( index ).toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationDirectionComboBoxTop_currentIndexChanged( int index )
 {
-  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Top, static_cast< QgsLayoutItemMapGrid::AnnotationDirection >( mAnnotationDirectionComboBoxTop->itemData( index ).toInt() ) );
+  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Top, static_cast<QgsLayoutItemMapGrid::AnnotationDirection>( mAnnotationDirectionComboBoxTop->itemData( index ).toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mAnnotationDirectionComboBoxBottom_currentIndexChanged( int index )
 {
-  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Bottom, static_cast< QgsLayoutItemMapGrid::AnnotationDirection >( mAnnotationDirectionComboBoxBottom->itemData( index ).toInt() ) );
+  handleChangedAnnotationDirection( QgsLayoutItemMapGrid::Bottom, static_cast<QgsLayoutItemMapGrid::AnnotationDirection>( mAnnotationDirectionComboBoxBottom->itemData( index ).toInt() ) );
 }
 
 void QgsLayoutMapGridWidget::mDistanceToMapFrameSpinBox_valueChanged( double d )
@@ -1434,7 +1433,7 @@ void QgsLayoutMapGridWidget::mAnnotationFormatComboBox_currentIndexChanged( int 
 
   mMap->beginCommand( tr( "Change Annotation Format" ) );
 
-  mMapGrid->setAnnotationFormat( static_cast< QgsLayoutItemMapGrid::AnnotationFormat >( mAnnotationFormatComboBox->itemData( index ).toInt() ) );
+  mMapGrid->setAnnotationFormat( static_cast<QgsLayoutItemMapGrid::AnnotationFormat>( mAnnotationFormatComboBox->itemData( index ).toInt() ) );
   mAnnotationFormatButton->setEnabled( mMapGrid->annotationFormat() == QgsLayoutItemMapGrid::CustomFormat );
 
   mMap->updateBoundingRect();

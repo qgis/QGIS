@@ -52,7 +52,6 @@ struct geod_geodesic;
 class CORE_EXPORT QgsDistanceArea
 {
   public:
-
     QgsDistanceArea();
     ~QgsDistanceArea();
 
@@ -313,7 +312,7 @@ class CORE_EXPORT QgsDistanceArea
      *
      * \since QGIS 3.6
      */
-    QVector<QVector<QgsPointXY> > geodesicLine( const QgsPointXY &p1, const QgsPointXY &p2, double interval, bool breakLine = false ) const;
+    QVector<QVector<QgsPointXY>> geodesicLine( const QgsPointXY &p1, const QgsPointXY &p2, double interval, bool breakLine = false ) const;
 
     /**
      * Calculates the latitude at which the geodesic line joining \a p1 and \a p2 crosses
@@ -359,7 +358,6 @@ class CORE_EXPORT QgsDistanceArea
     QgsGeometry splitGeometryAtAntimeridian( const QgsGeometry &geometry ) const;
 
   private:
-
     /**
      * Calculates area of polygon on ellipsoid
      * algorithm has been taken from GRASS: gis/area_poly1.c
@@ -392,15 +390,13 @@ class CORE_EXPORT QgsDistanceArea
     //! ellipsoid parameters
     double mSemiMajor, mSemiMinor, mInvFlattening;
 
-    mutable std::unique_ptr< geod_geodesic > mGeod;
+    mutable std::unique_ptr<geod_geodesic> mGeod;
 
     // utility functions for polygon area measurement
 
     double measure( const QgsAbstractGeometry *geomV2, MeasureType type = Default ) const;
     double measureLine( const QgsCurve *curve ) const;
     double measurePolygon( const QgsCurve *curve ) const;
-
 };
 
 #endif
-

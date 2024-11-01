@@ -37,7 +37,7 @@
 #include <QBuffer>
 #include <QTimeZone>
 #include <QTextStream>
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
 #include <QColorSpace>
 #include <QPdfOutputIntent>
 #endif
@@ -50,7 +50,6 @@
 class LayoutContextPreviewSettingRestorer
 {
   public:
-
     LayoutContextPreviewSettingRestorer( QgsLayout *layout )
       : mLayout( layout )
       , mPreviousSetting( layout->renderContext().mIsPreviewRender )
@@ -74,11 +73,10 @@ class LayoutContextPreviewSettingRestorer
 class LayoutGuideHider
 {
   public:
-
     LayoutGuideHider( QgsLayout *layout )
       : mLayout( layout )
     {
-      const QList< QgsLayoutGuide * > guides = mLayout->guides().guides();
+      const QList<QgsLayoutGuide *> guides = mLayout->guides().guides();
       for ( QgsLayoutGuide *guide : guides )
       {
         mPrevVisibility.insert( guide, guide->item()->isVisible() );
@@ -99,7 +97,7 @@ class LayoutGuideHider
 
   private:
     QgsLayout *mLayout = nullptr;
-    QHash< QgsLayoutGuide *, bool > mPrevVisibility;
+    QHash<QgsLayoutGuide *, bool> mPrevVisibility;
 };
 
 class LayoutItemHider
@@ -114,7 +112,7 @@ class LayoutItemHider
         mPrevVisibility[item] = isVisible;
         if ( isVisible )
           mItemsToIterate.append( item );
-        if ( QgsLayoutItem *layoutItem = dynamic_cast< QgsLayoutItem * >( item ) )
+        if ( QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
           layoutItem->setProperty( "wasVisible", isVisible );
 
         item->hide();
@@ -134,19 +132,18 @@ class LayoutItemHider
       for ( auto it = mPrevVisibility.constBegin(); it != mPrevVisibility.constEnd(); ++it )
       {
         it.key()->setVisible( it.value() );
-        if ( QgsLayoutItem *layoutItem = dynamic_cast< QgsLayoutItem * >( it.key() ) )
+        if ( QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( it.key() ) )
           layoutItem->setProperty( "wasVisible", QVariant() );
       }
     }
 
-    QList< QGraphicsItem * > itemsToIterate() const { return mItemsToIterate; }
+    QList<QGraphicsItem *> itemsToIterate() const { return mItemsToIterate; }
 
     LayoutItemHider( const LayoutItemHider &other ) = delete;
     LayoutItemHider &operator=( const LayoutItemHider &other ) = delete;
 
   private:
-
-    QList<QGraphicsItem * > mItemsToIterate;
+    QList<QGraphicsItem *> mItemsToIterate;
     QHash<QGraphicsItem *, bool> mPrevVisibility;
 };
 
@@ -160,7 +157,6 @@ const QgsSettingsEntryInteger *QgsLayoutExporter::settingImageQuality = new QgsS
 QgsLayoutExporter::QgsLayoutExporter( QgsLayout *layout )
   : mLayout( layout )
 {
-
 }
 
 QgsLayoutExporter::~QgsLayoutExporter()
@@ -190,7 +186,7 @@ void QgsLayoutExporter::renderPage( QPainter *painter, int page ) const
   }
 
   LayoutContextPreviewSettingRestorer restorer( mLayout );
-  ( void )restorer;
+  ( void ) restorer;
 
   QRectF paperRect = QRectF( pageItem->pos().x(), pageItem->pos().y(), pageItem->rect().width(), pageItem->rect().height() );
   renderRegion( painter, paperRect );
@@ -213,11 +209,11 @@ QImage QgsLayoutExporter::renderPageToImage( int page, QSize imageSize, double d
   }
 
   LayoutContextPreviewSettingRestorer restorer( mLayout );
-  ( void )restorer;
+  ( void ) restorer;
 
   QRectF paperRect = QRectF( pageItem->pos().x(), pageItem->pos().y(), pageItem->rect().width(), pageItem->rect().height() );
 
-  const double imageAspectRatio = static_cast< double >( imageSize.width() ) / imageSize.height();
+  const double imageAspectRatio = static_cast<double>( imageSize.width() ) / imageSize.height();
   const double paperAspectRatio = paperRect.width() / paperRect.height();
   if ( imageSize.isValid() && ( !qgsDoubleNear( imageAspectRatio, paperAspectRatio, 0.008 ) ) )
   {
@@ -235,11 +231,10 @@ QImage QgsLayoutExporter::renderPageToImage( int page, QSize imageSize, double d
 class LayoutItemCacheSettingRestorer
 {
   public:
-
     LayoutItemCacheSettingRestorer( QgsLayout *layout )
       : mLayout( layout )
     {
-      const QList< QGraphicsItem * > items = mLayout->items();
+      const QList<QGraphicsItem *> items = mLayout->items();
       for ( QGraphicsItem *item : items )
       {
         mPrevCacheMode.insert( item, item->cacheMode() );
@@ -260,7 +255,7 @@ class LayoutItemCacheSettingRestorer
 
   private:
     QgsLayout *mLayout = nullptr;
-    QHash< QGraphicsItem *, QGraphicsItem::CacheMode > mPrevCacheMode;
+    QHash<QGraphicsItem *, QGraphicsItem::CacheMode> mPrevCacheMode;
 };
 
 ///@endcond PRIVATE
@@ -274,9 +269,9 @@ void QgsLayoutExporter::renderRegion( QPainter *painter, const QRectF &region ) 
   }
 
   LayoutItemCacheSettingRestorer cacheRestorer( mLayout );
-  ( void )cacheRestorer;
+  ( void ) cacheRestorer;
   LayoutContextPreviewSettingRestorer restorer( mLayout );
-  ( void )restorer;
+  ( void ) restorer;
   LayoutGuideHider guideHider( mLayout );
   ( void ) guideHider;
 
@@ -291,7 +286,7 @@ QImage QgsLayoutExporter::renderRegionToImage( const QRectF &region, QSize image
     return QImage();
 
   LayoutContextPreviewSettingRestorer restorer( mLayout );
-  ( void )restorer;
+  ( void ) restorer;
 
   double resolution = mLayout->renderContext().dpi();
   double oneInchInLayoutUnits = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 1, Qgis::LayoutUnit::Inches ) );
@@ -300,7 +295,8 @@ QImage QgsLayoutExporter::renderRegionToImage( const QRectF &region, QSize image
     //output size in pixels specified, calculate resolution using average of
     //derived x/y dpi
     resolution = ( imageSize.width() / region.width()
-                   + imageSize.height() / region.height() ) / 2.0 * oneInchInLayoutUnits;
+                   + imageSize.height() / region.height() )
+                 / 2.0 * oneInchInLayoutUnits;
   }
   else if ( dpi > 0 )
   {
@@ -309,9 +305,9 @@ QImage QgsLayoutExporter::renderRegionToImage( const QRectF &region, QSize image
   }
 
   int width = imageSize.isValid() ? imageSize.width()
-              : static_cast< int >( resolution * region.width() / oneInchInLayoutUnits );
+                                  : static_cast<int>( resolution * region.width() / oneInchInLayoutUnits );
   int height = imageSize.isValid() ? imageSize.height()
-               : static_cast< int >( resolution * region.height() / oneInchInLayoutUnits );
+                                   : static_cast<int>( resolution * region.height() / oneInchInLayoutUnits );
 
   QImage image( QSize( width, height ), QImage::Format_ARGB32 );
   if ( !image.isNull() )
@@ -319,8 +315,8 @@ QImage QgsLayoutExporter::renderRegionToImage( const QRectF &region, QSize image
     // see https://doc.qt.io/qt-5/qpainter.html#limitations
     if ( width > 32768 || height > 32768 )
       QgsMessageLog::logMessage( QObject::tr( "Error: output width or height is larger than 32768 pixel, result will be clipped" ) );
-    image.setDotsPerMeterX( static_cast< int >( std::round( resolution / 25.4 * 1000 ) ) );
-    image.setDotsPerMeterY( static_cast< int>( std::round( resolution / 25.4 * 1000 ) ) );
+    image.setDotsPerMeterX( static_cast<int>( std::round( resolution / 25.4 * 1000 ) ) );
+    image.setDotsPerMeterY( static_cast<int>( std::round( resolution / 25.4 * 1000 ) ) );
     image.fill( Qt::transparent );
     QPainter imagePainter( &image );
     renderRegion( &imagePainter, region );
@@ -335,7 +331,6 @@ QImage QgsLayoutExporter::renderRegionToImage( const QRectF &region, QSize image
 class LayoutContextSettingsRestorer
 {
   public:
-
     Q_NOWARN_DEPRECATED_PUSH
     LayoutContextSettingsRestorer( QgsLayout *layout )
       : mLayout( layout )
@@ -377,8 +372,7 @@ class LayoutContextSettingsRestorer
     QgsVectorSimplifyMethod mPreviousSimplifyMethod;
     QgsMaskRenderSettings mPreviousMaskSettings;
     QStringList mExportThemes;
-    QVector< double > mPredefinedScales;
-
+    QVector<double> mPredefinedScales;
 };
 ///@endcond PRIVATE
 
@@ -412,14 +406,14 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
   pageDetails.extension = fi.suffix();
 
   LayoutContextPreviewSettingRestorer restorer( mLayout );
-  ( void )restorer;
+  ( void ) restorer;
   LayoutContextSettingsRestorer dpiRestorer( mLayout );
-  ( void )dpiRestorer;
+  ( void ) dpiRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
   mLayout->renderContext().setFlags( settings.flags );
   mLayout->renderContext().setPredefinedScales( settings.predefinedMapScales );
 
-  QList< int > pages;
+  QList<int> pages;
   if ( settings.pages.empty() )
   {
     for ( int page = 0; page < mLayout->pageCollection()->pageCount(); ++page )
@@ -486,7 +480,6 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
         writeWorldFile( worldFileName, a, b, c, d, e, f );
       }
     }
-
   }
   captureLabelingResults();
   return Success;
@@ -554,9 +547,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   mErrorFileName.clear();
 
   LayoutContextPreviewSettingRestorer restorer( mLayout );
-  ( void )restorer;
+  ( void ) restorer;
   LayoutContextSettingsRestorer contextRestorer( mLayout );
-  ( void )contextRestorer;
+  ( void ) contextRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
   mLayout->renderContext().setPredefinedScales( settings.predefinedMapScales );
   mLayout->renderContext().setMaskSettings( createExportMaskSettings() );
@@ -566,9 +559,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
     mLayout->renderContext().setSimplifyMethod( createExportSimplifyMethod() );
   }
 
-  std::unique_ptr< QgsLayoutGeospatialPdfExporter > geospatialPdfExporter;
-  if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles )  //#spellok
-    geospatialPdfExporter = std::make_unique< QgsLayoutGeospatialPdfExporter >( mLayout );
+  std::unique_ptr<QgsLayoutGeospatialPdfExporter> geospatialPdfExporter;
+  if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles ) //#spellok
+    geospatialPdfExporter = std::make_unique<QgsLayoutGeospatialPdfExporter>( mLayout );
 
   mLayout->renderContext().setFlags( settings.flags );
 
@@ -586,26 +579,25 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   mLayout->renderContext().setExportThemes( settings.exportThemes );
 
   ExportResult result = Success;
-  if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles )  //#spellok
+  if ( settings.writeGeoPdf || settings.exportLayersAsSeperateFiles ) //#spellok
   {
     mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagRenderLabelsByMapLayer, true );
 
     // here we need to export layers to individual PDFs
     PdfExportSettings subSettings = settings;
     subSettings.writeGeoPdf = false;
-    subSettings.exportLayersAsSeperateFiles = false;  //#spellok
+    subSettings.exportLayersAsSeperateFiles = false; //#spellok
 
     const QList<QGraphicsItem *> items = mLayout->items( Qt::AscendingOrder );
 
-    QList< QgsLayoutGeospatialPdfExporter::ComponentLayerDetail > pdfComponents;
+    QList<QgsLayoutGeospatialPdfExporter::ComponentLayerDetail> pdfComponents;
 
-    const QDir baseDir = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).dir() : QDir();  //#spellok
-    const QString baseFileName = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).completeBaseName() : QString();  //#spellok
+    const QDir baseDir = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).dir() : QDir();                         //#spellok
+    const QString baseFileName = settings.exportLayersAsSeperateFiles ? QFileInfo( filePath ).completeBaseName() : QString(); //#spellok
 
     QSet<QString> mutuallyExclusiveGroups;
 
-    auto exportFunc = [this, &subSettings, &pdfComponents, &geospatialPdfExporter, &settings, &baseDir, &baseFileName, &mutuallyExclusiveGroups]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail & layerDetail )->QgsLayoutExporter::ExportResult
-    {
+    auto exportFunc = [this, &subSettings, &pdfComponents, &geospatialPdfExporter, &settings, &baseDir, &baseFileName, &mutuallyExclusiveGroups]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetail ) -> QgsLayoutExporter::ExportResult {
       ExportResult layerExportResult = Success;
       QgsLayoutGeospatialPdfExporter::ComponentLayerDetail component;
       component.name = layerDetail.name;
@@ -635,8 +627,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       p.end();
       return layerExportResult;
     };
-    auto getExportGroupNameFunc = []( QgsLayoutItem * item )->QString
-    {
+    auto getExportGroupNameFunc = []( QgsLayoutItem *item ) -> QString {
       return item->customProperty( QStringLiteral( "pdfExportGroup" ) ).toString();
     };
     result = handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
@@ -665,7 +656,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
         details.keywords = mLayout->project()->metadata().keywords();
       }
 
-      const QList< QgsMapLayer * > layers = mLayout->project()->mapLayers().values();
+      const QList<QgsMapLayer *> layers = mLayout->project()->mapLayers().values();
       for ( const QgsMapLayer *layer : layers )
       {
         details.layerIdToPdfLayerTreeNameMap.insert( layer->id(), layer->name() );
@@ -674,7 +665,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       if ( settings.appendGeoreference )
       {
         // setup georeferencing
-        QList< QgsLayoutItemMap * > maps;
+        QList<QgsLayoutItemMap *> maps;
         mLayout->layoutItems( maps );
         for ( QgsLayoutItemMap *map : std::as_const( maps ) )
         {
@@ -690,11 +681,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
           const QgsLayoutPoint bottomLeftMm = mLayout->convertFromLayoutUnits( bottomLeft, Qgis::LayoutUnit::Millimeters );
           const QgsLayoutPoint bottomRightMm = mLayout->convertFromLayoutUnits( bottomRight, Qgis::LayoutUnit::Millimeters );
 
-          georef.pageBoundsPolygon.setExteriorRing( new QgsLineString( QVector< QgsPointXY >() << QgsPointXY( topLeftMm.x(), topLeftMm.y() )
-              << QgsPointXY( topRightMm.x(), topRightMm.y() )
-              << QgsPointXY( bottomRightMm.x(), bottomRightMm.y() )
-              << QgsPointXY( bottomLeftMm.x(), bottomLeftMm.y() )
-              << QgsPointXY( topLeftMm.x(), topLeftMm.y() ) ) );
+          georef.pageBoundsPolygon.setExteriorRing( new QgsLineString( QVector<QgsPointXY>() << QgsPointXY( topLeftMm.x(), topLeftMm.y() )
+                                                                                             << QgsPointXY( topRightMm.x(), topRightMm.y() )
+                                                                                             << QgsPointXY( bottomRightMm.x(), bottomRightMm.y() )
+                                                                                             << QgsPointXY( bottomLeftMm.x(), bottomLeftMm.y() )
+                                                                                             << QgsPointXY( topLeftMm.x(), topLeftMm.y() ) ) );
 
           georef.controlPoints.reserve( 4 );
           const QTransform t = map->layoutToMapCoordsTransform();
@@ -791,9 +782,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
       settings.dpi = iterator->layout()->renderContext().dpi();
 
     LayoutContextPreviewSettingRestorer restorer( iterator->layout() );
-    ( void )restorer;
+    ( void ) restorer;
     LayoutContextSettingsRestorer contextRestorer( iterator->layout() );
-    ( void )contextRestorer;
+    ( void ) contextRestorer;
     iterator->layout()->renderContext().setDpi( settings.dpi );
 
     iterator->layout()->renderContext().setFlags( settings.flags );
@@ -917,9 +908,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QPrinter &printer, con
   mErrorFileName.clear();
 
   LayoutContextPreviewSettingRestorer restorer( mLayout );
-  ( void )restorer;
+  ( void ) restorer;
   LayoutContextSettingsRestorer contextRestorer( mLayout );
-  ( void )contextRestorer;
+  ( void ) contextRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
 
   mLayout->renderContext().setFlags( settings.flags );
@@ -979,9 +970,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QgsAbstractLayoutItera
       settings.dpi = iterator->layout()->renderContext().dpi();
 
     LayoutContextPreviewSettingRestorer restorer( iterator->layout() );
-    ( void )restorer;
+    ( void ) restorer;
     LayoutContextSettingsRestorer contextRestorer( iterator->layout() );
-    ( void )contextRestorer;
+    ( void ) contextRestorer;
     iterator->layout()->renderContext().setDpi( settings.dpi );
 
     iterator->layout()->renderContext().setFlags( settings.flags );
@@ -1039,9 +1030,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
   mErrorFileName.clear();
 
   LayoutContextPreviewSettingRestorer restorer( mLayout );
-  ( void )restorer;
+  ( void ) restorer;
   LayoutContextSettingsRestorer contextRestorer( mLayout );
-  ( void )contextRestorer;
+  ( void ) contextRestorer;
   mLayout->renderContext().setDpi( settings.dpi );
 
   mLayout->renderContext().setFlags( settings.flags );
@@ -1098,9 +1089,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
     }
 
     //width in pixel
-    int width = static_cast< int >( bounds.width() * settings.dpi / inchesToLayoutUnits );
+    int width = static_cast<int>( bounds.width() * settings.dpi / inchesToLayoutUnits );
     //height in pixel
-    int height = static_cast< int >( bounds.height() * settings.dpi / inchesToLayoutUnits );
+    int height = static_cast<int>( bounds.height() * settings.dpi / inchesToLayoutUnits );
     if ( width == 0 || height == 0 )
     {
       //invalid size, skip this page
@@ -1117,15 +1108,13 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
       QDomDocument svg;
       QDomNode svgDocRoot;
       const QList<QGraphicsItem *> items = mLayout->items( paperRect,
-                                           Qt::IntersectsItemBoundingRect,
-                                           Qt::AscendingOrder );
+                                                           Qt::IntersectsItemBoundingRect,
+                                                           Qt::AscendingOrder );
 
-      auto exportFunc = [this, &settings, width, height, i, bounds, fileName, &svg, &svgDocRoot]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail & layerDetail )->QgsLayoutExporter::ExportResult
-      {
+      auto exportFunc = [this, &settings, width, height, i, bounds, fileName, &svg, &svgDocRoot]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetail ) -> QgsLayoutExporter::ExportResult {
         return renderToLayeredSvg( settings, width, height, i, bounds, fileName, layerId, layerDetail.name, svg, svgDocRoot, settings.exportMetadata );
       };
-      auto getExportGroupNameFunc = []( QgsLayoutItem * )->QString
-      {
+      auto getExportGroupNameFunc = []( QgsLayoutItem * ) -> QString {
         return QString();
       };
       ExportResult res = handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
@@ -1158,7 +1147,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
         generator.setOutputDevice( &svgBuffer );
         generator.setSize( QSize( width, height ) );
         generator.setViewBox( QRect( 0, 0, width, height ) );
-        generator.setResolution( static_cast< int >( std::round( settings.dpi ) ) );
+        generator.setResolution( static_cast<int>( std::round( settings.dpi ) ) );
 
         QPainter p;
         bool createOk = p.begin( &generator );
@@ -1181,7 +1170,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
         QDomDocument svg;
         QString errorMsg;
         int errorLine;
-        if ( ! svg.setContent( &svgBuffer, false, &errorMsg, &errorLine ) )
+        if ( !svg.setContent( &svgBuffer, false, &errorMsg, &errorLine ) )
         {
           mErrorFileName = fileName;
           return SvgLayerError;
@@ -1256,7 +1245,6 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( QgsAbstractLayou
 
   iterator->endRender();
   return Success;
-
 }
 
 QMap<QString, QgsLabelingResults *> QgsLayoutExporter::labelingResults()
@@ -1283,14 +1271,13 @@ void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPdfWriter *device
   updatePrinterPageSize( layout, device, firstPageToBeExported( layout ) );
 
   // force a non empty title to avoid invalid (according to specification) PDF/X-4
-  const QString title = !layout->project() || layout->project()->metadata().title().isEmpty() ?
-                        fi.baseName() : layout->project()->metadata().title();
+  const QString title = !layout->project() || layout->project()->metadata().title().isEmpty() ? fi.baseName() : layout->project()->metadata().title();
 
   device->setTitle( title );
 
   QPagedPaintDevice::PdfVersion pdfVersion = QPagedPaintDevice::PdfVersion_1_4;
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
 
   if ( const QgsProjectStyleSettings *styleSettings = ( layout->project() ? layout->project()->styleSettings() : nullptr ) )
   {
@@ -1334,7 +1321,7 @@ void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPdfWriter *device
   // May not work on Windows or non-X11 Linux. Works fine on Mac using QPrinter::NativeFormat
   //printer.setFontEmbeddingEnabled( true );
 
-#if defined(HAS_KDE_QT5_PDF_TRANSFORM_FIX) || QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
+#if defined( HAS_KDE_QT5_PDF_TRANSFORM_FIX ) || QT_VERSION >= QT_VERSION_CHECK( 6, 3, 0 )
   // paint engine hack not required, fixed upstream
 #else
   QgsPaintEngineHack::fixEngineFlags( static_cast<QPaintDevice *>( device )->paintEngine() );
@@ -1345,7 +1332,7 @@ void QgsLayoutExporter::preparePrint( QgsLayout *layout, QPagedPaintDevice *devi
 {
   if ( QPdfWriter *pdf = dynamic_cast<QPdfWriter *>( device ) )
   {
-    pdf->setResolution( static_cast< int>( std::round( layout->renderContext().dpi() ) ) );
+    pdf->setResolution( static_cast<int>( std::round( layout->renderContext().dpi() ) ) );
   }
 #if defined( HAVE_QTPRINTER )
   else if ( QPrinter *printer = dynamic_cast<QPrinter *>( device ) )
@@ -1353,7 +1340,7 @@ void QgsLayoutExporter::preparePrint( QgsLayout *layout, QPagedPaintDevice *devi
     printer->setFullPage( true );
     printer->setColorMode( QPrinter::Color );
     //set user-defined resolution
-    printer->setResolution( static_cast< int>( std::round( layout->renderContext().dpi() ) ) );
+    printer->setResolution( static_cast<int>( std::round( layout->renderContext().dpi() ) ) );
   }
 #endif
 
@@ -1475,19 +1462,19 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const Svg
     QSvgGenerator generator;
     if ( includeMetadata )
     {
-      if ( const QgsMasterLayoutInterface *l = dynamic_cast< const QgsMasterLayoutInterface * >( mLayout.data() ) )
+      if ( const QgsMasterLayoutInterface *l = dynamic_cast<const QgsMasterLayoutInterface *>( mLayout.data() ) )
         generator.setTitle( l->name() );
       else if ( mLayout->project() )
         generator.setTitle( mLayout->project()->title() );
     }
 
     generator.setOutputDevice( &svgBuffer );
-    generator.setSize( QSize( static_cast< int >( std::round( width ) ),
-                              static_cast< int >( std::round( height ) ) ) );
+    generator.setSize( QSize( static_cast<int>( std::round( width ) ),
+                              static_cast<int>( std::round( height ) ) ) );
     generator.setViewBox( QRect( 0, 0,
-                                 static_cast< int >( std::round( width ) ),
-                                 static_cast< int >( std::round( height ) ) ) );
-    generator.setResolution( static_cast< int >( std::round( settings.dpi ) ) ); //because the rendering is done in mm, convert the dpi
+                                 static_cast<int>( std::round( width ) ),
+                                 static_cast<int>( std::round( height ) ) ) );
+    generator.setResolution( static_cast<int>( std::round( settings.dpi ) ) ); //because the rendering is done in mm, convert the dpi
 
     QPainter svgPainter( &generator );
     if ( settings.cropToContents )
@@ -1496,16 +1483,16 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const Svg
       renderPage( &svgPainter, page );
   }
 
-// post-process svg output to create groups in a single svg file
-// we create inkscape layers since it's nice and clean and free
-// and fully svg compatible
+  // post-process svg output to create groups in a single svg file
+  // we create inkscape layers since it's nice and clean and free
+  // and fully svg compatible
   {
     svgBuffer.close();
     svgBuffer.open( QIODevice::ReadOnly );
     QDomDocument doc;
     QString errorMsg;
     int errorLine;
-    if ( ! doc.setContent( &svgBuffer, false, &errorMsg, &errorLine ) )
+    if ( !doc.setContent( &svgBuffer, false, &errorMsg, &errorLine ) )
     {
       mErrorFileName = filename;
       return SvgLayerError;
@@ -1541,8 +1528,7 @@ void QgsLayoutExporter::appendMetadataToSvg( QDomDocument &svg ) const
   QDomElement workElement = svg.createElement( QStringLiteral( "cc:Work" ) );
   workElement.setAttribute( QStringLiteral( "rdf:about" ), QString() );
 
-  auto addTextNode = [&workElement, &descriptionElement, &svg]( const QString & tag, const QString & value )
-  {
+  auto addTextNode = [&workElement, &descriptionElement, &svg]( const QString &tag, const QString &value ) {
     // inkscape compatible
     QDomElement element = svg.createElement( tag );
     QDomText t = svg.createTextNode( value );
@@ -1559,8 +1545,7 @@ void QgsLayoutExporter::appendMetadataToSvg( QDomDocument &svg ) const
   addTextNode( QStringLiteral( "dc:identifier" ), metadata.identifier() );
   addTextNode( QStringLiteral( "dc:description" ), metadata.abstract() );
 
-  auto addAgentNode = [&workElement, &descriptionElement, &svg]( const QString & tag, const QString & value )
-  {
+  auto addAgentNode = [&workElement, &descriptionElement, &svg]( const QString &tag, const QString &value ) {
     // inkscape compatible
     QDomElement inkscapeElement = svg.createElement( tag );
     QDomElement agentElement = svg.createElement( QStringLiteral( "cc:Agent" ) );
@@ -1648,7 +1633,7 @@ std::unique_ptr<double[]> QgsLayoutExporter::computeGeoTransform( const QgsLayou
   QgsRectangle mapExtent = map->extent();
   double mapXCenter = mapExtent.center().x();
   double mapYCenter = mapExtent.center().y();
-  double alpha = - map->mapRotation() / 180 * M_PI;
+  double alpha = -map->mapRotation() / 180 * M_PI;
   double sinAlpha = std::sin( alpha );
   double cosAlpha = std::cos( alpha );
 
@@ -1681,8 +1666,8 @@ std::unique_ptr<double[]> QgsLayoutExporter::computeGeoTransform( const QgsLayou
   }
 
   // calculate scaling of pixels
-  int pageWidthPixels = static_cast< int >( dpi * outputWidthMM / 25.4 );
-  int pageHeightPixels = static_cast< int >( dpi * outputHeightMM / 25.4 );
+  int pageWidthPixels = static_cast<int>( dpi * outputWidthMM / 25.4 );
+  int pageHeightPixels = static_cast<int>( dpi * outputHeightMM / 25.4 );
   double pixelWidthScale = paperExtent.width() / pageWidthPixels;
   double pixelHeightScale = paperExtent.height() / pageHeightPixels;
 
@@ -1793,7 +1778,7 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
   return true;
 }
 
-QString nameForLayerWithItems( const QList< QGraphicsItem * > &items, unsigned int layerId )
+QString nameForLayerWithItems( const QList<QGraphicsItem *> &items, unsigned int layerId )
 {
   if ( items.count() == 1 )
   {
@@ -1834,11 +1819,11 @@ QString nameForLayerWithItems( const QList< QGraphicsItem * > &items, unsigned i
 }
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QList<QGraphicsItem *> &items,
-    const std::function<QgsLayoutExporter::ExportResult( unsigned int, const QgsLayoutItem::ExportLayerDetail & )> &exportFunc,
-    const std::function<QString( QgsLayoutItem *item )> &getItemExportGroupFunc )
+                                                                        const std::function<QgsLayoutExporter::ExportResult( unsigned int, const QgsLayoutItem::ExportLayerDetail & )> &exportFunc,
+                                                                        const std::function<QString( QgsLayoutItem *item )> &getItemExportGroupFunc )
 {
   LayoutItemHider itemHider( items );
-  ( void )itemHider;
+  ( void ) itemHider;
 
   int prevType = -1;
   QgsLayoutItem::ExportLayerBehavior prevItemBehavior = QgsLayoutItem::CanGroupWithAnyOtherItem;
@@ -1846,8 +1831,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::handleLayeredExport( const QL
   unsigned int layerId = 1;
   QgsLayoutItem::ExportLayerDetail layerDetails;
   itemHider.hideAll();
-  const QList< QGraphicsItem * > itemsToIterate = itemHider.itemsToIterate();
-  QList< QGraphicsItem * > currentLayerItems;
+  const QList<QGraphicsItem *> itemsToIterate = itemHider.itemsToIterate();
+  QList<QGraphicsItem *> currentLayerItems;
   for ( QGraphicsItem *item : itemsToIterate )
   {
     QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
@@ -2072,8 +2057,8 @@ void QgsLayoutExporter::computeWorldFileParameters( const QRectF &exportRegion, 
   if ( dpi < 0 )
     dpi = mLayout->renderContext().dpi();
 
-  int widthPx = static_cast< int >( dpi * destinationWidth / 25.4 );
-  int heightPx = static_cast< int >( dpi * destinationHeight / 25.4 );
+  int widthPx = static_cast<int>( dpi * destinationWidth / 25.4 );
+  int heightPx = static_cast<int>( dpi * destinationHeight / 25.4 );
 
   double Ww = paperExtent.width() / widthPx;
   double Hh = paperExtent.height() / heightPx;
@@ -2094,7 +2079,7 @@ void QgsLayoutExporter::computeWorldFileParameters( const QRectF &exportRegion, 
   r[2] = xCenter * ( 1 - std::cos( alpha ) ) + yCenter * std::sin( alpha );
   r[3] = std::sin( alpha );
   r[4] = std::cos( alpha );
-  r[5] = - xCenter * std::sin( alpha ) + yCenter * ( 1 - std::cos( alpha ) );
+  r[5] = -xCenter * std::sin( alpha ) + yCenter * ( 1 - std::cos( alpha ) );
 
   // result = rotation x scaling = rotation(scaling(X))
   a = r[0] * s[0] + r[1] * s[3];
@@ -2110,7 +2095,7 @@ bool QgsLayoutExporter::requiresRasterization( const QgsLayout *layout )
   if ( !layout )
     return false;
 
-  QList< QgsLayoutItem *> items;
+  QList<QgsLayoutItem *> items;
   layout->layoutItems( items );
 
   for ( QgsLayoutItem *currentItem : std::as_const( items ) )
@@ -2127,7 +2112,7 @@ bool QgsLayoutExporter::containsAdvancedEffects( const QgsLayout *layout )
   if ( !layout )
     return false;
 
-  QList< QgsLayoutItem *> items;
+  QList<QgsLayoutItem *> items;
   layout->layoutItems( items );
 
   for ( QgsLayoutItem *currentItem : std::as_const( items ) )
@@ -2208,12 +2193,12 @@ void QgsLayoutExporter::captureLabelingResults()
   qDeleteAll( mLabelingResults );
   mLabelingResults.clear();
 
-  QList< QgsLayoutItemMap * > maps;
+  QList<QgsLayoutItemMap *> maps;
   mLayout->layoutItems( maps );
 
   for ( QgsLayoutItemMap *map : std::as_const( maps ) )
   {
-    mLabelingResults[ map->uuid() ] = map->mExportLabelingResults.release();
+    mLabelingResults[map->uuid()] = map->mExportLabelingResults.release();
   }
 }
 
@@ -2257,7 +2242,7 @@ QString QgsLayoutExporter::getCreator()
 
 void QgsLayoutExporter::setXmpMetadata( QPdfWriter *pdfWriter, QgsLayout *layout )
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
   QUuid documentId = pdfWriter->documentId();
 #else
   QUuid documentId = QUuid::createUuid();
@@ -2290,14 +2275,14 @@ void QgsLayoutExporter::setXmpMetadata( QPdfWriter *pdfWriter, QgsLayout *layout
 
   QXmlStreamWriter w( &output );
   w.setAutoFormatting( true );
-  w.writeNamespace( adobeNS, "x" );  //#spellok
-  w.writeNamespace( rdfNS, "rdf" );  //#spellok
-  w.writeNamespace( dcNS, "dc" );  //#spellok
-  w.writeNamespace( xmpNS, "xmp" );  //#spellok
-  w.writeNamespace( xmpMMNS, "xmpMM" );  //#spellok
-  w.writeNamespace( pdfNS, "pdf" );  //#spellok
-  w.writeNamespace( pdfaidNS, "pdfaid" );  //#spellok
-  w.writeNamespace( pdfxidNS, "pdfxid" );  //#spellok
+  w.writeNamespace( adobeNS, "x" );       //#spellok
+  w.writeNamespace( rdfNS, "rdf" );       //#spellok
+  w.writeNamespace( dcNS, "dc" );         //#spellok
+  w.writeNamespace( xmpNS, "xmp" );       //#spellok
+  w.writeNamespace( xmpMMNS, "xmpMM" );   //#spellok
+  w.writeNamespace( pdfNS, "pdf" );       //#spellok
+  w.writeNamespace( pdfaidNS, "pdfaid" ); //#spellok
+  w.writeNamespace( pdfxidNS, "pdfxid" ); //#spellok
 
   w.writeStartElement( adobeNS, "xmpmeta" );
   w.writeStartElement( rdfNS, "RDF" );
@@ -2348,7 +2333,7 @@ void QgsLayoutExporter::setXmpMetadata( QPdfWriter *pdfWriter, QgsLayout *layout
   w.writeAttribute( xmpMMNS, "RenditionClass", "default" );
   w.writeEndElement();
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
 
   // Version-specific
   switch ( pdfWriter->pdfVersion() )

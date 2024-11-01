@@ -20,7 +20,6 @@
 QgsProjectGpsSettings::QgsProjectGpsSettings( QObject *parent )
   : QObject( parent )
 {
-
 }
 
 void QgsProjectGpsSettings::resolveReferences( const QgsProject *project )
@@ -74,7 +73,7 @@ bool QgsProjectGpsSettings::readXml( const QDomElement &element, const QgsReadWr
     {
       const QString layerId = layerElement.attribute( QStringLiteral( "destinationLayer" ) );
       const QString field = layerElement.attribute( QStringLiteral( "field" ) );
-      mDestinationTimestampFields[ layerId ] = field;
+      mDestinationTimestampFields[layerId] = field;
       layerElement = layerElement.nextSiblingElement();
     }
   }
@@ -91,9 +90,9 @@ QDomElement QgsProjectGpsSettings::writeXml( QDomDocument &doc, const QgsReadWri
 {
   QDomElement element = doc.createElement( QStringLiteral( "ProjectGpsSettings" ) );
 
-  element.setAttribute( QStringLiteral( "autoAddTrackVertices" ),  mAutoAddTrackVertices ? 1 : 0 );
-  element.setAttribute( QStringLiteral( "autoCommitFeatures" ),  mAutoCommitFeatures ? 1 : 0 );
-  element.setAttribute( QStringLiteral( "destinationFollowsActiveLayer" ),  mDestinationFollowsActiveLayer ? 1 : 0 );
+  element.setAttribute( QStringLiteral( "autoAddTrackVertices" ), mAutoAddTrackVertices ? 1 : 0 );
+  element.setAttribute( QStringLiteral( "autoCommitFeatures" ), mAutoCommitFeatures ? 1 : 0 );
+  element.setAttribute( QStringLiteral( "destinationFollowsActiveLayer" ), mDestinationFollowsActiveLayer ? 1 : 0 );
 
   if ( mDestinationLayer )
   {
@@ -112,7 +111,7 @@ QDomElement QgsProjectGpsSettings::writeXml( QDomDocument &doc, const QgsReadWri
     for ( auto it = mDestinationTimestampFields.constBegin(); it != mDestinationTimestampFields.constEnd(); ++it )
     {
       const QString layerId = it.key();
-      if ( QgsProject *project = qobject_cast< QgsProject * >( parent() ) )
+      if ( QgsProject *project = qobject_cast<QgsProject *>( parent() ) )
       {
         // do some housekeeping and don't save removed layers in the project
         if ( !project->mapLayer( layerId ) )

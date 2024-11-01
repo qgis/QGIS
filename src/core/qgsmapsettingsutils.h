@@ -30,15 +30,12 @@ class QgsMapSettings;
  */
 class CORE_EXPORT QgsMapSettingsUtils
 {
-
   public:
-
     /**
      * Flags for controlling the behavior of containsAdvancedEffects()
      * \since QGIS 3.14
      */
-    enum class EffectsCheckFlag : int SIP_ENUM_BASETYPE( IntFlag )
-    {
+    enum class EffectsCheckFlag : int SIP_ENUM_BASETYPE( IntFlag ) {
       IgnoreGeoPdfSupportedEffects = 1 << 0, //!< Ignore advanced effects which are supported in geospatial PDF exports
     };
     Q_DECLARE_FLAGS( EffectsCheckFlags, EffectsCheckFlag )
@@ -69,7 +66,6 @@ class CORE_EXPORT QgsMapSettingsUtils
      * \note Uses 17 places of precision for all numbers output
      */
     static QString worldFileContent( const QgsMapSettings &mapSettings );
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapSettingsUtils::EffectsCheckFlags )

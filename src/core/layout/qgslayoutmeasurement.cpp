@@ -49,7 +49,7 @@ bool QgsLayoutMeasurement::operator==( const QgsLayoutMeasurement other ) const
 
 bool QgsLayoutMeasurement::operator!=( const QgsLayoutMeasurement other ) const
 {
-  return ( ! operator==( other ) );
+  return ( !operator==( other ) );
 }
 
 QgsLayoutMeasurement QgsLayoutMeasurement::operator+( const double v ) const

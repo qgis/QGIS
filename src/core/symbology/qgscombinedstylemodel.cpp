@@ -23,7 +23,6 @@
 QgsCombinedStyleModel::QgsCombinedStyleModel( QObject *parent )
   : QConcatenateTablesProxyModel( parent )
 {
-
 }
 
 QVariant QgsCombinedStyleModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -33,8 +32,7 @@ QVariant QgsCombinedStyleModel::headerData( int section, Qt::Orientation orienta
 
 void QgsCombinedStyleModel::addStyle( QgsStyle *style )
 {
-  connect( style, &QgsStyle::destroyed, this, [this, style]()
-  {
+  connect( style, &QgsStyle::destroyed, this, [this, style]() {
     if ( QgsSingleItemModel *model = mTitleModels.value( style ) )
     {
       removeSourceModel( model );
@@ -54,19 +52,16 @@ void QgsCombinedStyleModel::addStyle( QgsStyle *style )
   mStyles.append( style );
 
   QgsSingleItemModel *titleModel = new QgsSingleItemModel( this,
-  {
-    {
-      { Qt::DisplayRole, style->name() },
-      { Qt::ToolTipRole, style->name() },
-      { static_cast< int >( QgsStyleModel::CustomRole::IsTitle ), true },
-      { static_cast< int >( QgsStyleModel::CustomRole::StyleFileName ), style->fileName() },
-      { static_cast< int >( QgsStyleModel::CustomRole::StyleName ), style->name() },
-    }, {
-      { static_cast< int >( QgsStyleModel::CustomRole::IsTitle ), true },
-      { static_cast< int >( QgsStyleModel::CustomRole::StyleFileName ), style->fileName() },
-      { static_cast< int >( QgsStyleModel::CustomRole::StyleName ), style->name() }
-    }
-  } );
+                                                           { {
+                                                               { Qt::DisplayRole, style->name() },
+                                                               { Qt::ToolTipRole, style->name() },
+                                                               { static_cast<int>( QgsStyleModel::CustomRole::IsTitle ), true },
+                                                               { static_cast<int>( QgsStyleModel::CustomRole::StyleFileName ), style->fileName() },
+                                                               { static_cast<int>( QgsStyleModel::CustomRole::StyleName ), style->name() },
+                                                             },
+                                                             { { static_cast<int>( QgsStyleModel::CustomRole::IsTitle ), true },
+                                                               { static_cast<int>( QgsStyleModel::CustomRole::StyleFileName ), style->fileName() },
+                                                               { static_cast<int>( QgsStyleModel::CustomRole::StyleName ), style->name() } } } );
   addSourceModel( titleModel );
   mTitleModels.insert( style, titleModel );
 
@@ -114,19 +109,16 @@ void QgsCombinedStyleModel::addDefaultStyle()
   mStyles.append( defaultStyle );
 
   QgsSingleItemModel *titleModel = new QgsSingleItemModel( this,
-  {
-    {
-      { Qt::DisplayRole, defaultStyle->name() },
-      { Qt::ToolTipRole, defaultStyle->name() },
-      { static_cast< int >( QgsStyleModel::CustomRole::IsTitle ), true },
-      { static_cast< int >( QgsStyleModel::CustomRole::StyleFileName ), defaultStyle->fileName() },
-      { static_cast< int >( QgsStyleModel::CustomRole::StyleName ), defaultStyle->name() },
-    }, {
-      { static_cast< int >( QgsStyleModel::CustomRole::IsTitle ), true },
-      { static_cast< int >( QgsStyleModel::CustomRole::StyleFileName ), defaultStyle->fileName() },
-      { static_cast< int >( QgsStyleModel::CustomRole::StyleName ), defaultStyle->name() }
-    }
-  } );
+                                                           { {
+                                                               { Qt::DisplayRole, defaultStyle->name() },
+                                                               { Qt::ToolTipRole, defaultStyle->name() },
+                                                               { static_cast<int>( QgsStyleModel::CustomRole::IsTitle ), true },
+                                                               { static_cast<int>( QgsStyleModel::CustomRole::StyleFileName ), defaultStyle->fileName() },
+                                                               { static_cast<int>( QgsStyleModel::CustomRole::StyleName ), defaultStyle->name() },
+                                                             },
+                                                             { { static_cast<int>( QgsStyleModel::CustomRole::IsTitle ), true },
+                                                               { static_cast<int>( QgsStyleModel::CustomRole::StyleFileName ), defaultStyle->fileName() },
+                                                               { static_cast<int>( QgsStyleModel::CustomRole::StyleName ), defaultStyle->name() } } } );
 
   addSourceModel( titleModel );
   mTitleModels.insert( defaultStyle, titleModel );
@@ -144,7 +136,7 @@ void QgsCombinedStyleModel::addDefaultStyle()
   addSourceModel( styleModel );
 }
 
-QList< QgsStyle * > QgsCombinedStyleModel::styles() const
+QList<QgsStyle *> QgsCombinedStyleModel::styles() const
 {
   return mStyles;
 }

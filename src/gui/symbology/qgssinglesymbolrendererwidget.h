@@ -45,7 +45,7 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
     void disableSymbolLevels() override SIP_SKIP;
 
   protected:
-    void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled ) override;
+    void setSymbolLevels( const QList<QgsLegendSymbolItem> &levels, bool enabled ) override;
 
   private slots:
     void changeSingleSymbol();
@@ -55,10 +55,9 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
     void dataDefinedSizeLegend();
 
   private:
-
-    std::unique_ptr< QgsSingleSymbolRenderer > mRenderer;
+    std::unique_ptr<QgsSingleSymbolRenderer> mRenderer;
     QgsSymbolSelectorWidget *mSelector = nullptr;
-    std::unique_ptr< QgsSymbol > mSingleSymbol;
+    std::unique_ptr<QgsSymbol> mSingleSymbol;
     QAction *mActionLevels = nullptr;
 };
 

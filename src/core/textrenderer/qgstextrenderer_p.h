@@ -49,7 +49,6 @@
 class QgsTextBufferSettingsPrivate : public QSharedData
 {
   public:
-
     QgsTextBufferSettingsPrivate()
       : color( Qt::white )
     {
@@ -79,7 +78,7 @@ class QgsTextBufferSettingsPrivate : public QSharedData
     bool fillBufferInterior = false;
     Qt::PenJoinStyle joinStyle = Qt::RoundJoin;
     QPainter::CompositionMode blendMode = QPainter::CompositionMode_SourceOver;
-    std::unique_ptr< QgsPaintEffect > paintEffect;
+    std::unique_ptr<QgsPaintEffect> paintEffect;
 
   private:
     QgsTextBufferSettingsPrivate &operator=( const QgsTextBufferSettingsPrivate & ) = delete;
@@ -89,7 +88,6 @@ class QgsTextBufferSettingsPrivate : public QSharedData
 class QgsTextBackgroundSettingsPrivate : public QSharedData
 {
   public:
-
     QgsTextBackgroundSettingsPrivate()
       : size( QSizeF( 0.0, 0.0 ) )
       , offset( QPointF( 0.0, 0.0 ) )
@@ -132,7 +130,7 @@ class QgsTextBackgroundSettingsPrivate : public QSharedData
 
     bool enabled = false;
     QgsTextBackgroundSettings::ShapeType type = QgsTextBackgroundSettings::ShapeRectangle;
-    QString svgFile;   //!< Absolute path to SVG file
+    QString svgFile; //!< Absolute path to SVG file
     QgsTextBackgroundSettings::SizeType sizeType = QgsTextBackgroundSettings::SizeBuffer;
     QSizeF size;
     Qgis::RenderUnit sizeUnits = Qgis::RenderUnit::Millimeters;
@@ -153,24 +151,21 @@ class QgsTextBackgroundSettingsPrivate : public QSharedData
     Qgis::RenderUnit strokeWidthUnits = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale strokeWidthMapUnitScale;
     Qt::PenJoinStyle joinStyle = Qt::BevelJoin;
-    std::unique_ptr< QgsPaintEffect > paintEffect;
-    std::unique_ptr< QgsMarkerSymbol > markerSymbol;
-    std::unique_ptr< QgsFillSymbol > fillSymbol;
+    std::unique_ptr<QgsPaintEffect> paintEffect;
+    std::unique_ptr<QgsMarkerSymbol> markerSymbol;
+    std::unique_ptr<QgsFillSymbol> fillSymbol;
 
   private:
     QgsTextBackgroundSettingsPrivate &operator=( const QgsTextBackgroundSettingsPrivate & ) = delete;
 };
 
 
-
 class QgsTextShadowSettingsPrivate : public QSharedData
 {
   public:
-
     QgsTextShadowSettingsPrivate()
       : color( QColor( 0, 0, 0 ) )
     {
-
     }
 
     QgsTextShadowSettingsPrivate( const QgsTextShadowSettingsPrivate &other )
@@ -217,10 +212,8 @@ class QgsTextShadowSettingsPrivate : public QSharedData
 class QgsTextMaskSettingsPrivate : public QSharedData
 {
   public:
-
     QgsTextMaskSettingsPrivate()
     {
-
     }
 
     QgsTextMaskSettingsPrivate( const QgsTextMaskSettingsPrivate &other )
@@ -244,7 +237,7 @@ class QgsTextMaskSettingsPrivate : public QSharedData
     QgsMapUnitScale sizeMapUnitScale;
     Qt::PenJoinStyle joinStyle = Qt::RoundJoin;
     double opacity = 1.0;
-    std::unique_ptr< QgsPaintEffect > paintEffect;
+    std::unique_ptr<QgsPaintEffect> paintEffect;
     QgsSymbolLayerReferenceList maskedSymbolLayers;
 
   private:
@@ -255,7 +248,6 @@ class QgsTextMaskSettingsPrivate : public QSharedData
 class QgsTextSettingsPrivate : public QSharedData
 {
   public:
-
     QgsTextSettingsPrivate()
       : textColor( Qt::black )
     {
@@ -299,7 +291,7 @@ class QgsTextSettingsPrivate : public QSharedData
     bool forcedItalic = false;
     Qgis::RenderUnit fontSizeUnits = Qgis::RenderUnit::Points;
     QgsMapUnitScale fontSizeMapUnitScale;
-    double fontSize = 10 ; //may differ from size in textFont due to units (e.g., size in map units)
+    double fontSize = 10; //may differ from size in textFont due to units (e.g., size in map units)
     QColor textColor;
     double opacity = 1.0;
     QPainter::CompositionMode blendMode = QPainter::CompositionMode_SourceOver;

@@ -127,7 +127,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( Qgis::TransactionMode transactionMode READ transactionMode WRITE setTransactionMode NOTIFY transactionModeChanged )
 
   public:
-
     // *INDENT-OFF*
 
     /**
@@ -138,10 +137,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \since QGIS 3.14
      */
-    enum class DataDefinedServerProperty SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProject, DataDefinedServerProperty ) : int
-      {
-      NoProperty = 0, //!< No property
-      AllProperties = 1, //!< All properties for item
+    enum class DataDefinedServerProperty SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsProject, DataDefinedServerProperty ) : int {
+      NoProperty = 0,        //!< No property
+      AllProperties = 1,     //!< All properties for item
       WMSOnlineResource = 2, //!< Alias
     };
     // *INDENT-ON*
@@ -157,7 +155,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see instance()
      * \since QGIS 3.10.11
      */
-    static void setInstance( QgsProject *project ) ;
+    static void setInstance( QgsProject *project );
 
     /**
      * Create a new QgsProject.
@@ -754,7 +752,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The optional \a flags argument can be used to control layer reading behavior.
      *
      */
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers,  Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
+    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
 
     //! Convenience function to set topological editing
     void setTopologicalEditing( bool enabled );
@@ -1063,7 +1061,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \note Not available in Python bindings
      */
-    QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups() SIP_SKIP;
+    QMap<QPair<QString, QString>, QgsTransactionGroup *> transactionGroups() SIP_SKIP;
 
     /**
      * Returns the matching transaction group from a provider key and connection string.
@@ -1200,7 +1198,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \since QGIS 3.6
      */
-    template <class T>
+    template<class T>
     T mapLayer( const QString &layerId ) const
     {
       return qobject_cast<T>( mapLayer( layerId ) );
@@ -1255,7 +1253,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note not available in Python bindings
      * \see mapLayers()
      */
-    template <typename T>
+    template<typename T>
     QVector<T> layers() const
     {
       return mLayerStore->layers<T>();
@@ -1272,14 +1270,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note not available in Python bindings
      * \since QGIS 3.10
      */
-    template <typename T>
+    template<typename T>
     QVector<T> mapLayersByShortName( const QString &shortName ) const
     {
       QVector<T> layers;
       const auto constMapLayers { mLayerStore->layers<T>() };
       for ( const auto l : constMapLayers )
       {
-        if ( ! l->serverProperties()->shortName().isEmpty() )
+        if ( !l->serverProperties()->shortName().isEmpty() )
         {
           if ( l->serverProperties()->shortName() == shortName )
             layers << l;
@@ -1721,22 +1719,24 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),
-                  sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() ); // skip-keyword-check
+        QString str
+      = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),
+                                                      sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() ); // skip-keyword-check
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-  signals:
+        signals :
 
-    /**
+      /**
      * Emitted when the project is cleared (and additionally when an open project is cleared
      * just before a new project is read).
      *
      * \see clear()
      * \since QGIS 3.2
      */
-    void cleared();
+      void
+      cleared();
 
     /**
      * Emitted when the project is about to be cleared.
@@ -2280,7 +2280,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void updateTransactionGroups();
 
   private:
-
     static QgsProject *sProject;
 
 
@@ -2377,7 +2376,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     Qgis::ProjectCapabilities mCapabilities;
 
-    std::unique_ptr< QgsMapLayerStore > mLayerStore;
+    std::unique_ptr<QgsMapLayerStore> mLayerStore;
 
     QString mErrorMessage;
 
@@ -2388,7 +2387,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * value: pair< project file path, save layer yes / no (e.g. if the layer is part of an embedded group, loading/saving is done by the legend)
      *  If the project file path is empty, QgsProject is going to ignore the layer for saving (e.g. because it is part and managed by an embedded group)
      */
-    QHash< QString, QPair< QString, bool> > mEmbeddedLayers;
+    QHash<QString, QPair<QString, bool>> mEmbeddedLayers;
 
     QgsSnappingConfig mSnappingConfig;
     Qgis::AvoidIntersectionsMode mAvoidIntersectionsMode = Qgis::AvoidIntersectionsMode::AllowIntersections;
@@ -2422,7 +2421,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsAnnotationLayer *mMainAnnotationLayer = nullptr;
 
     //! map of transaction group: QPair( providerKey, connString ) -> transactionGroup
-    QMap< QPair< QString, QString>, QgsTransactionGroup *> mTransactionGroups;
+    QMap<QPair<QString, QString>, QgsTransactionGroup *> mTransactionGroups;
 
     QgsVectorLayerEditBufferGroup mEditBufferGroup;
 
@@ -2436,12 +2435,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     std::unique_ptr<QgsAuxiliaryStorage> mAuxiliaryStorage;
 
-    QFile mFile;                 // current physical project file
+    QFile mFile; // current physical project file
 
     QString mOriginalPath;
 
-    QString mSaveUser;              // last saved user.
-    QString mSaveUserFull;          // last saved user full name.
+    QString mSaveUser;     // last saved user.
+    QString mSaveUserFull; // last saved user full name.
     QDateTime mSaveDateTime;
     QgsProjectVersion mSaveVersion;
 
@@ -2458,7 +2457,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Qgis::DistanceUnit mDistanceUnits = Qgis::DistanceUnit::Meters;
     Qgis::AreaUnit mAreaUnits = Qgis::AreaUnit::SquareMeters;
 
-    mutable QgsProjectPropertyKey mProperties;  // property hierarchy, TODO: this shouldn't be mutable
+    mutable QgsProjectPropertyKey mProperties;                                // property hierarchy, TODO: this shouldn't be mutable
     Qgis::TransactionMode mTransactionMode = Qgis::TransactionMode::Disabled; // transaction grouped editing
 
     Qgis::ProjectFlags mFlags;
@@ -2466,7 +2465,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsCoordinateReferenceSystem mVerticalCrs;
     QgsCoordinateReferenceSystem mCrs3D;
 
-    bool mDirty = false;                 // project has been modified since it has been read or saved
+    bool mDirty = false; // project has been modified since it has been read or saved
     int mDirtyBlockCount = 0;
 
     QgsPropertyCollection mDataDefinedServerProperties;
@@ -2475,13 +2474,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsProjectMetadata mMetadata;
 
-    std::unique_ptr< QTranslator > mTranslator;
+    std::unique_ptr<QTranslator> mTranslator;
 
     bool mIsBeingDeleted = false;
 
     QgsSettings mSettings;
 
-    mutable std::unique_ptr< QgsExpressionContextScope > mProjectScope;
+    mutable std::unique_ptr<QgsExpressionContextScope> mProjectScope;
 
     bool mBlockChangeSignalsDuringClear = false;
     int mBlockSnappingUpdates = 0;
@@ -2527,7 +2526,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 class CORE_EXPORT QgsProjectDirtyBlocker
 {
   public:
-
     /**
      * Constructor for QgsProjectDirtyBlocker.
      *
@@ -2563,7 +2561,6 @@ class CORE_EXPORT QgsProjectDirtyBlocker
 CORE_EXPORT QgsProjectVersion getVersion( QDomDocument const &doc ) SIP_SKIP;
 
 
-
 /// @cond PRIVATE
 #ifndef SIP_RUN
 class GetNamedProjectColor : public QgsScopedExpressionFunction
@@ -2575,14 +2572,13 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
      * Optimized constructor for GetNamedProjectColor when a list of map is already available
      * and does not need to be read from a project.
      */
-    GetNamedProjectColor( const QHash< QString, QColor > &colors );
+    GetNamedProjectColor( const QHash<QString, QColor> &colors );
 
     QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
     QgsScopedExpressionFunction *clone() const override;
 
   private:
-
-    QHash< QString, QColor > mColors;
+    QHash<QString, QColor> mColors;
 };
 
 class GetNamedProjectColorObject : public QgsScopedExpressionFunction
@@ -2594,16 +2590,14 @@ class GetNamedProjectColorObject : public QgsScopedExpressionFunction
      * Optimized constructor for GetNamedProjectColor when a list of map is already available
      * and does not need to be read from a project.
      */
-    GetNamedProjectColorObject( const QHash< QString, QColor > &colors );
+    GetNamedProjectColorObject( const QHash<QString, QColor> &colors );
 
     QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override;
     QgsScopedExpressionFunction *clone() const override;
 
   private:
-
-    QHash< QString, QColor > mColors;
+    QHash<QString, QColor> mColors;
 };
-
 
 
 class GetSensorData : public QgsScopedExpressionFunction
@@ -2614,7 +2608,6 @@ class GetSensorData : public QgsScopedExpressionFunction
     QgsScopedExpressionFunction *clone() const override;
 
   private:
-
     QMap<QString, QgsAbstractSensor::SensorData> mSensorData;
 };
 #endif

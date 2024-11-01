@@ -33,11 +33,9 @@
  */
 class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElevationProperties
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsPointCloudLayerElevationProperties, with the specified \a parent object.
      */
@@ -50,7 +48,7 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
     QString htmlSummary() const override;
     bool isVisibleInZRange( const QgsDoubleRange &range, QgsMapLayer *layer = nullptr ) const override;
     QgsDoubleRange calculateZRange( QgsMapLayer *layer ) const override;
-    QList< double > significantZValues( QgsMapLayer *layer ) const override;
+    QList<double> significantZValues( QgsMapLayer *layer ) const override;
     bool showByDefaultInElevationProfilePlots() const override;
 
     /**
@@ -208,7 +206,6 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
     void setRespectLayerColors( bool enabled );
 
   private:
-
     double mMaximumScreenError = 0.3;
     Qgis::RenderUnit mMaximumScreenErrorUnit = Qgis::RenderUnit::Millimeters;
 

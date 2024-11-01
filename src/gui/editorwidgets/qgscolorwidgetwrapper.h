@@ -29,11 +29,10 @@ class QgsColorButton;
  * \note not available in Python bindings
  */
 
-class GUI_EXPORT  QgsColorWidgetWrapper : public QgsEditorWidgetWrapper
+class GUI_EXPORT QgsColorWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsColorWidgetWrapper.
      *

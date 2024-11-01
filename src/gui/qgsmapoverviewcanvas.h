@@ -71,7 +71,6 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     void layerRepaintRequested( bool deferred = false );
 
   protected:
-
     //! used for overview canvas to reflect changed extent in main map canvas
     void drawExtentRect();
 
@@ -141,7 +140,6 @@ class QgsPanningWidget : public QWidget
     void setPolygon( const QPolygon &p );
 
     void paintEvent( QPaintEvent *pe ) override;
-
 };
 ///@endcond
 

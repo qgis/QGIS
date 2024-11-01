@@ -35,9 +35,7 @@ class QgsMssqlDatabase;
 */
 class QgsMssqlConnection
 {
-
   public:
-
     /**
      * Returns true if the connection with matching \a name should
      * only look in the geometry_columns metadata table when scanning for tables.
@@ -261,8 +259,6 @@ class QgsMssqlConnection
     static void duplicateConnection( const QString &src, const QString &dst );
 
   private:
-
-
 };
 
 #endif // QGSMSSQLCONNECTION_H

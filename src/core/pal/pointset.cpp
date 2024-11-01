@@ -57,7 +57,6 @@ PointSet::PointSet( int nbPoints, double *x, double *y )
     this->x[i] = x[i];
     this->y[i] = y[i];
   }
-
 }
 
 PointSet::PointSet( double aX, double aY )
@@ -102,13 +101,13 @@ void PointSet::createGeosGeom() const
   GEOSContextHandle_t geosctxt = QgsGeosContext::get();
 
   bool needClose = false;
-  if ( type == GEOS_POLYGON && ( !qgsDoubleNear( x[0], x[ nbPoints - 1] ) || !qgsDoubleNear( y[0], y[ nbPoints - 1 ] ) ) )
+  if ( type == GEOS_POLYGON && ( !qgsDoubleNear( x[0], x[nbPoints - 1] ) || !qgsDoubleNear( y[0], y[nbPoints - 1] ) ) )
   {
     needClose = true;
   }
 
   GEOSCoordSequence *coord = nullptr;
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=10 )
+#if GEOS_VERSION_MAJOR > 3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 10 )
   if ( !needClose )
   {
     // use optimised method if we don't have to force close an open ring
@@ -240,7 +239,7 @@ std::unique_ptr<PointSet> PointSet::extractShape( int nbPtSh, int imin, int imax
 {
   int i, j;
 
-  std::unique_ptr<PointSet> newShape = std::make_unique< PointSet >();
+  std::unique_ptr<PointSet> newShape = std::make_unique<PointSet>();
   newShape->type = GEOS_POLYGON;
   newShape->nbPoints = nbPtSh;
   newShape->x.resize( newShape->nbPoints );
@@ -265,7 +264,7 @@ std::unique_ptr<PointSet> PointSet::extractShape( int nbPtSh, int imin, int imax
 
 std::unique_ptr<PointSet> PointSet::clone() const
 {
-  return std::unique_ptr< PointSet>( new PointSet( *this ) );
+  return std::unique_ptr<PointSet>( new PointSet( *this ) );
 }
 
 bool PointSet::containsPoint( double x, double y ) const
@@ -284,7 +283,6 @@ bool PointSet::containsPoint( double x, double y ) const
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return false;
   }
-
 }
 
 bool PointSet::containsLabelCandidate( double x, double y, double width, double height, double alpha ) const
@@ -300,7 +298,7 @@ QLinkedList<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double la
 
   double b;
 
-  int holeS = -1;  // hole start and end points
+  int holeS = -1; // hole start and end points
   int holeE = -1;
 
   int retainedPt = -1;
@@ -315,10 +313,10 @@ QLinkedList<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double la
   {
     PointSet *shape = inputShapes.takeFirst();
 
-    const std::vector< double > &x = shape->x;
-    const std::vector< double > &y = shape->y;
+    const std::vector<double> &x = shape->x;
+    const std::vector<double> &y = shape->y;
     const int nbp = shape->nbPoints;
-    std::vector< int > pts( nbp );
+    std::vector<int> pts( nbp );
     for ( int i = 0; i < nbp; i++ )
     {
       pts[i] = i;
@@ -346,8 +344,8 @@ QLinkedList<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double la
         for ( int i = ips; i != shape->convexHull[ihn]; i = ( i + 1 ) % nbp )
         {
           const double cp = std::fabs( GeomFunction::cross_product( x[shape->convexHull[ihs]], y[shape->convexHull[ihs]],
-                                       x[shape->convexHull[ihn]], y[shape->convexHull[ihn]],
-                                       x[i], y[i] ) );
+                                                                    x[shape->convexHull[ihn]], y[shape->convexHull[ihn]],
+                                                                    x[i], y[i] ) );
           if ( cp - bestcp > EPSILON )
           {
             bestcp = cp;
@@ -355,17 +353,17 @@ QLinkedList<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double la
           }
         }
 
-        if ( pt  != -1 )
+        if ( pt != -1 )
         {
           // compute the ihs->ihn->pt triangle's area
           const double base = QgsGeometryUtilsBase::distance2D( x[shape->convexHull[ihs]], y[shape->convexHull[ihs]],
-                              x[shape->convexHull[ihn]], y[shape->convexHull[ihn]] );
+                                                                x[shape->convexHull[ihn]], y[shape->convexHull[ihn]] );
 
           b = QgsGeometryUtilsBase::distance2D( x[shape->convexHull[ihs]], y[shape->convexHull[ihs]],
                                                 x[pt], y[pt] );
 
           const double c = QgsGeometryUtilsBase::distance2D( x[shape->convexHull[ihn]], y[shape->convexHull[ihn]],
-                           x[pt], y[pt] );
+                                                             x[pt], y[pt] );
 
           const double s = ( base + b + c ) / 2; // s = half perimeter
           double area = s * ( s - base ) * ( s - b ) * ( s - c );
@@ -418,7 +416,7 @@ QLinkedList<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double la
         fx = cx + dx;
         fy = cy - dy;
 
-        if ( seg_length < EPSILON || std::fabs( ( b = GeomFunction::cross_product( ex, ey, fx, fy, x[retainedPt], y[retainedPt] ) / ( seg_length ) ) ) > ( seg_length / 2 ) )   // retainedPt is not fronting i->j
+        if ( seg_length < EPSILON || std::fabs( ( b = GeomFunction::cross_product( ex, ey, fx, fy, x[retainedPt], y[retainedPt] ) / ( seg_length ) ) ) > ( seg_length / 2 ) ) // retainedPt is not fronting i->j
         {
           if ( ( ex = QgsGeometryUtilsBase::sqrDistance2D( x[i], y[i], x[retainedPt], y[retainedPt] ) ) < ( ey = QgsGeometryUtilsBase::sqrDistance2D( x[j], y[j], x[retainedPt], y[retainedPt] ) ) )
           {
@@ -433,7 +431,7 @@ QLinkedList<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double la
             pe = j;
           }
         }
-        else   // point fronting i->j => compute pependicular distance  => create a new point
+        else // point fronting i->j => compute pependicular distance  => create a new point
         {
           b = GeomFunction::cross_product( x[i], y[i], x[j], y[j], x[retainedPt], y[retainedPt] ) / seg_length;
           b *= b;
@@ -478,7 +476,7 @@ QLinkedList<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double la
           fptx = ptx;
           fpty = pty;
         }
-      }  // for point which are not in hole
+      } // for point which are not in hole
 
       // we will cut the shapeu in two new shapes, one from [retainedPoint] to [newPoint] and one form [newPoint] to [retainedPoint]
       const int imin = retainedPt;
@@ -501,13 +499,12 @@ QLinkedList<PointSet *> PointSet::splitPolygons( PointSet *inputShape, double la
           delete shape;
       }
       // check for useless splitting
-      else if ( imax == imin || nbPtSh1 <= 2 || nbPtSh2 <= 2 || nbPtSh1 == nbp  || nbPtSh2 == nbp )
+      else if ( imax == imin || nbPtSh1 <= 2 || nbPtSh2 <= 2 || nbPtSh1 == nbp || nbPtSh2 == nbp )
       {
         outputShapes.append( shape );
       }
       else
       {
-
         PointSet *newShape = shape->extractShape( nbPtSh1, imin, imax, fps, fpe, fptx, fpty ).release();
 
         if ( shape->parent )
@@ -590,7 +587,7 @@ void PointSet::offsetCurveByDistance( double distance )
       newGeos = std::move( longestPartClone );
     }
 
-#if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<11
+#if GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 11
     if ( distance < 0 )
     {
       // geos < 3.11 reverses the direction of offset curves with negative distances -- we don't want that!
@@ -604,8 +601,8 @@ void PointSet::offsetCurveByDistance( double distance )
 
     const int newNbPoints = GEOSGeomGetNumPoints_r( geosctxt, newGeos.get() );
     const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, newGeos.get() );
-    std::vector< double > newX;
-    std::vector< double > newY;
+    std::vector<double> newX;
+    std::vector<double> newY;
     newX.resize( newNbPoints );
     newY.resize( newNbPoints );
     for ( int i = 0; i < newNbPoints; i++ )
@@ -728,7 +725,7 @@ OrientedConvexHullBoundingBox PointSet::computeConvexHullOrientedBoundingBox( bo
 
   double d1, d2;
 
-  double bb[16];   // {ax, ay, bx, by, cx, cy, dx, dy, ex, ey, fx, fy, gx, gy, hx, hy}}
+  double bb[16]; // {ax, ay, bx, by, cx, cy, dx, dy, ex, ey, fx, fy, gx, gy, hx, hy}}
 
   double best_area = std::numeric_limits<double>::max();
   double best_alpha = -1;
@@ -768,36 +765,35 @@ OrientedConvexHullBoundingBox PointSet::computeConvexHullOrientedBoundingBox( bo
 
   for ( alpha_d = 0; alpha_d < 90; alpha_d++ )
   {
-    alpha = alpha_d *  M_PI / 180.0;
+    alpha = alpha_d * M_PI / 180.0;
     d1 = std::cos( alpha ) * dref;
     d2 = std::sin( alpha ) * dref;
 
-    bb[0]  = bbox[0];
-    bb[1]  = bbox[3]; // ax, ay
+    bb[0] = bbox[0];
+    bb[1] = bbox[3]; // ax, ay
 
-    bb[4]  = bbox[0];
-    bb[5]  = bbox[1]; // cx, cy
+    bb[4] = bbox[0];
+    bb[5] = bbox[1]; // cx, cy
 
-    bb[8]  = bbox[2];
-    bb[9]  = bbox[1]; // ex, ey
+    bb[8] = bbox[2];
+    bb[9] = bbox[1]; // ex, ey
 
     bb[12] = bbox[2];
     bb[13] = bbox[3]; // gx, gy
 
 
-    bb[2]  = bb[0] + d1;
-    bb[3]  = bb[1] + d2; // bx, by
-    bb[6]  = bb[4] - d2;
-    bb[7]  = bb[5] + d1; // dx, dy
+    bb[2] = bb[0] + d1;
+    bb[3] = bb[1] + d2; // bx, by
+    bb[6] = bb[4] - d2;
+    bb[7] = bb[5] + d1; // dx, dy
     bb[10] = bb[8] - d1;
     bb[11] = bb[9] - d2; // fx, fy
     bb[14] = bb[12] + d2;
     bb[15] = bb[13] - d1; // hx, hy
 
     // adjust all points
-    for ( int  i = 0; i < 16; i += 4 )
+    for ( int i = 0; i < 16; i += 4 )
     {
-
       alpha_seg = ( ( i / 4 > 0 ? ( i / 4 ) - 1 : 3 ) ) * M_PI_2 + alpha;
 
       double best_cp = std::numeric_limits<double>::max();
@@ -816,7 +812,7 @@ OrientedConvexHullBoundingBox PointSet::computeConvexHullOrientedBoundingBox( bo
       d1 = std::cos( alpha_seg ) * distNearestPoint;
       d2 = std::sin( alpha_seg ) * distNearestPoint;
 
-      bb[i]   += d1; // x
+      bb[i] += d1;     // x
       bb[i + 1] += d2; // y
       bb[i + 2] += d1; // x
       bb[i + 3] += d2; // y
@@ -847,7 +843,7 @@ OrientedConvexHullBoundingBox PointSet::computeConvexHullOrientedBoundingBox( bo
   {
     GeomFunction::computeLineIntersection( best_bb[i], best_bb[i + 1], best_bb[i + 2], best_bb[i + 3],
                                            best_bb[( i + 4 ) % 16], best_bb[( i + 5 ) % 16], best_bb[( i + 6 ) % 16], best_bb[( i + 7 ) % 16],
-                                           &finalBb.x[int ( i / 4 )], &finalBb.y[int ( i / 4 )] );
+                                           &finalBb.x[int( i / 4 )], &finalBb.y[int( i / 4 )] );
   }
 
   finalBb.alpha = best_alpha;
@@ -883,7 +879,7 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
     {
       //for polygons, we want distance to exterior ring (not an interior point)
       extRing = GEOSGetExteriorRing_r( geosctxt, mGeos );
-      if ( ! mGeosPreparedBoundary )
+      if ( !mGeosPreparedBoundary )
       {
         mGeosPreparedBoundary = GEOSPrepare_r( geosctxt, extRing );
       }
@@ -898,7 +894,7 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
     if ( nPoints == 0 )
       return 0;
 
-    ( void )GEOSCoordSeq_getXY_r( geosctxt, nearestCoord.get(), 0, &nx, &ny );
+    ( void ) GEOSCoordSeq_getXY_r( geosctxt, nearestCoord.get(), 0, &nx, &ny );
 
     if ( rx )
       *rx = nx;
@@ -982,7 +978,8 @@ void PointSet::getPointByDistance( double *d, double *ad, double dl, double *px,
   i = 0;
   if ( dl >= 0 )
   {
-    while ( i < nbPoints && ad[i] <= dl ) i++;
+    while ( i < nbPoints && ad[i] <= dl )
+      i++;
     i--;
   }
 
@@ -1005,7 +1002,7 @@ void PointSet::getPointByDistance( double *d, double *ad, double dl, double *px,
     *px = x[i] + dx * distr / di;
     *py = y[i] + dy * distr / di;
   }
-  else    // just select last point...
+  else // just select last point...
   {
     *px = x[i];
     *py = y[i];
@@ -1073,7 +1070,7 @@ double PointSet::length() const
 
   try
   {
-    ( void )GEOSLength_r( geosctxt, mGeos, &mLength );
+    ( void ) GEOSLength_r( geosctxt, mGeos, &mLength );
     return mLength;
   }
   catch ( GEOSException &e )
@@ -1099,7 +1096,7 @@ double PointSet::area() const
 
   try
   {
-    ( void )GEOSArea_r( geosctxt, mGeos, &mArea );
+    ( void ) GEOSArea_r( geosctxt, mGeos, &mArea );
     mArea = std::fabs( mArea );
     return mArea;
   }
@@ -1145,9 +1142,9 @@ QString PointSet::toWkt() const
   }
 }
 
-std::tuple< std::vector< double >, double > PointSet::edgeDistances() const
+std::tuple<std::vector<double>, double> PointSet::edgeDistances() const
 {
-  std::vector< double > distances( nbPoints );
+  std::vector<double> distances( nbPoints );
   double totalDistance = 0;
   double oldX = -1.0, oldY = -1.0;
   for ( int i = 0; i < nbPoints; i++ )

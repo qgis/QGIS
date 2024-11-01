@@ -47,7 +47,6 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
 {
     Q_OBJECT
   public:
-
     //! Constructor for QgsMapLayerLegend
     explicit QgsMapLayerLegend( QObject *parent SIP_TRANSFERTHIS = nullptr );
 

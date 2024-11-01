@@ -29,11 +29,9 @@
  */
 class GUI_EXPORT QgsModelViewToolPan : public QgsModelViewTool
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelViewToolPan.
      */
@@ -45,11 +43,9 @@ class GUI_EXPORT QgsModelViewToolPan : public QgsModelViewTool
     void deactivate() override;
 
   private:
-
     bool mIsPanning = false;
     QPoint mLastMousePos;
     //! Start position for mouse press
     QPoint mMousePressStartPos;
-
 };
 #endif // QGSMODELVIEWTOOLPAN_H

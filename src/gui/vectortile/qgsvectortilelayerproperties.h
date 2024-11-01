@@ -87,7 +87,6 @@ class GUI_EXPORT QgsVectorTileLayerProperties : public QgsLayerPropertiesDialog,
     QgsMetadataWidget *mMetadataWidget = nullptr;
 
     QgsProviderSourceWidget *mSourceWidget = nullptr;
-
 };
 
 #endif // QGSVECTORTILELAYERPROPERTIES_H

@@ -47,8 +47,7 @@ QString QgsElevationOptionsWidget::helpKey() const
 void QgsElevationOptionsWidget::apply()
 {
   QgsElevationProfileWidget::settingBackgroundColor->setValue(
-    mButtonBackgroundColor->isNull() ? QColor() : mButtonBackgroundColor->color()
-  );
+    mButtonBackgroundColor->isNull() ? QColor() : mButtonBackgroundColor->color() );
 }
 
 //
@@ -73,4 +72,3 @@ QString QgsElevationOptionsFactory::pagePositionHint() const
 {
   return QStringLiteral( "mOptionsPageColors" );
 }
-

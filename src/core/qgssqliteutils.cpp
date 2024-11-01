@@ -129,18 +129,18 @@ QSet<QString> QgsSqliteUtils::uniqueFields( sqlite3 *connection, const QString &
   std::vector<std::string> rows;
   const QByteArray tableNameUtf8 = tableName.toUtf8();
   QString sql = qgs_sqlite3_mprintf( "select sql from sqlite_master "
-                                     "where type='table' and name='%q'", tableNameUtf8.constData() );
-  auto cb = [ ](
+                                     "where type='table' and name='%q'",
+                                     tableNameUtf8.constData() );
+  auto cb = [](
               void *data /* Data provided in the 4th argument of sqlite3_exec() */,
               int /* The number of columns in row */,
               char **argv /* An array of strings representing fields in the row */,
-              char ** /* An array of strings representing column names */ ) -> int
-  {
-    static_cast<std::vector<std::string>*>( data )->push_back( argv[0] );
+              char ** /* An array of strings representing column names */ ) -> int {
+    static_cast<std::vector<std::string> *>( data )->push_back( argv[0] );
     return 0;
   };
 
-  int rc = sqlite3_exec( connection, sql.toUtf8(), cb, ( void * )&rows, &zErrMsg );
+  int rc = sqlite3_exec( connection, sql.toUtf8(), cb, ( void * ) &rows, &zErrMsg );
   if ( rc != SQLITE_OK )
   {
     errorMessage = zErrMsg;
@@ -166,7 +166,7 @@ QSet<QString> QgsSqliteUtils::uniqueFields( sqlite3 *connection, const QString &
         if ( std::regex_search( fieldStr, uniqueFieldMatch, sFieldIdentifierRe ) )
         {
           const std::string quoted { uniqueFieldMatch.str( 2 ) };
-          uniqueFieldsResults.insert( QString::fromStdString( quoted.length() ? quoted :  uniqueFieldMatch.str( 4 ) ) );
+          uniqueFieldsResults.insert( QString::fromStdString( quoted.length() ? quoted : uniqueFieldMatch.str( 4 ) ) );
         }
       }
     }
@@ -175,8 +175,9 @@ QSet<QString> QgsSqliteUtils::uniqueFields( sqlite3 *connection, const QString &
 
   // Search indexes:
   sql = qgs_sqlite3_mprintf( "SELECT sql FROM sqlite_master WHERE type='index' AND"
-                             " tbl_name='%q' AND sql LIKE 'CREATE UNIQUE INDEX%%'", tableNameUtf8.constData() );
-  rc = sqlite3_exec( connection, sql.toUtf8(), cb, ( void * )&rows, &zErrMsg );
+                             " tbl_name='%q' AND sql LIKE 'CREATE UNIQUE INDEX%%'",
+                             tableNameUtf8.constData() );
+  rc = sqlite3_exec( connection, sql.toUtf8(), cb, ( void * ) &rows, &zErrMsg );
   if ( rc != SQLITE_OK )
   {
     errorMessage = zErrMsg;
@@ -213,7 +214,8 @@ long long QgsSqliteUtils::nextSequenceValue( sqlite3 *connection, const QString 
 
   int resultCode = 0;
   sqlite3_statement_unique_ptr stmt { dsPtr.prepare( QStringLiteral( "SELECT seq FROM sqlite_sequence WHERE name = %1" )
-                                      .arg( quotedTableName ), resultCode )};
+                                                       .arg( quotedTableName ),
+                                                     resultCode ) };
   if ( resultCode == SQLITE_OK )
   {
     stmt.step();
@@ -234,8 +236,9 @@ long long QgsSqliteUtils::nextSequenceValue( sqlite3 *connection, const QString 
     else // increment
     {
       if ( dsPtr.exec( QStringLiteral( "UPDATE sqlite_sequence SET seq = %1 WHERE name = %2" )
-                       .arg( QString::number( ++result ), quotedTableName ),
-                       errorMessage ) != SQLITE_OK )
+                         .arg( QString::number( ++result ), quotedTableName ),
+                       errorMessage )
+           != SQLITE_OK )
       {
         errorMessage = QObject::tr( "Error retrieving default value for %1" ).arg( tableName );
         result = -1;
@@ -294,20 +297,20 @@ QString QgsSqliteUtils::quotedValue( const QVariant &value )
 QStringList QgsSqliteUtils::systemTables()
 {
   return QStringList() << QStringLiteral( "SpatialIndex" ) << QStringLiteral( "geom_cols_ref_sys" ) << QStringLiteral( "geometry_columns" )
-         << QStringLiteral( "geometry_columns_auth" ) << QStringLiteral( "views_geometry_columns" ) << QStringLiteral( "virts_geometry_columns" )
-         << QStringLiteral( "spatial_ref_sys" ) << QStringLiteral( "spatial_ref_sys_all" ) << QStringLiteral( "spatial_ref_sys_aux" )
-         << QStringLiteral( "sqlite_sequence" ) << QStringLiteral( "tableprefix_metadata" ) << QStringLiteral( "tableprefix_rasters" )
-         << QStringLiteral( "layer_params" ) << QStringLiteral( "layer_statistics" ) << QStringLiteral( "layer_sub_classes" )
-         << QStringLiteral( "layer_table_layout" ) << QStringLiteral( "pattern_bitmaps" ) << QStringLiteral( "symbol_bitmaps" )
-         << QStringLiteral( "project_defs" ) << QStringLiteral( "raster_pyramids" ) << QStringLiteral( "sqlite_stat1" ) << QStringLiteral( "sqlite_stat2" )
-         << QStringLiteral( "spatialite_history" ) << QStringLiteral( "geometry_columns_field_infos" ) << QStringLiteral( "geometry_columns_statistics" )
-         << QStringLiteral( "geometry_columns_time" ) << QStringLiteral( "sql_statements_log" ) << QStringLiteral( "vector_layers" )
-         << QStringLiteral( "vector_layers_auth" ) << QStringLiteral( "vector_layers_field_infos" ) << QStringLiteral( "vector_layers_statistics" )
-         << QStringLiteral( "views_geometry_columns_auth" ) << QStringLiteral( "views_geometry_columns_field_infos" )
-         << QStringLiteral( "views_geometry_columns_statistics" ) << QStringLiteral( "virts_geometry_columns_auth" )
-         << QStringLiteral( "virts_geometry_columns_field_infos" ) << QStringLiteral( "virts_geometry_columns_statistics" )
-         << QStringLiteral( "virts_layer_statistics" ) << QStringLiteral( "views_layer_statistics" )
-         << QStringLiteral( "ElementaryGeometries" );
+                       << QStringLiteral( "geometry_columns_auth" ) << QStringLiteral( "views_geometry_columns" ) << QStringLiteral( "virts_geometry_columns" )
+                       << QStringLiteral( "spatial_ref_sys" ) << QStringLiteral( "spatial_ref_sys_all" ) << QStringLiteral( "spatial_ref_sys_aux" )
+                       << QStringLiteral( "sqlite_sequence" ) << QStringLiteral( "tableprefix_metadata" ) << QStringLiteral( "tableprefix_rasters" )
+                       << QStringLiteral( "layer_params" ) << QStringLiteral( "layer_statistics" ) << QStringLiteral( "layer_sub_classes" )
+                       << QStringLiteral( "layer_table_layout" ) << QStringLiteral( "pattern_bitmaps" ) << QStringLiteral( "symbol_bitmaps" )
+                       << QStringLiteral( "project_defs" ) << QStringLiteral( "raster_pyramids" ) << QStringLiteral( "sqlite_stat1" ) << QStringLiteral( "sqlite_stat2" )
+                       << QStringLiteral( "spatialite_history" ) << QStringLiteral( "geometry_columns_field_infos" ) << QStringLiteral( "geometry_columns_statistics" )
+                       << QStringLiteral( "geometry_columns_time" ) << QStringLiteral( "sql_statements_log" ) << QStringLiteral( "vector_layers" )
+                       << QStringLiteral( "vector_layers_auth" ) << QStringLiteral( "vector_layers_field_infos" ) << QStringLiteral( "vector_layers_statistics" )
+                       << QStringLiteral( "views_geometry_columns_auth" ) << QStringLiteral( "views_geometry_columns_field_infos" )
+                       << QStringLiteral( "views_geometry_columns_statistics" ) << QStringLiteral( "virts_geometry_columns_auth" )
+                       << QStringLiteral( "virts_geometry_columns_field_infos" ) << QStringLiteral( "virts_geometry_columns_statistics" )
+                       << QStringLiteral( "virts_layer_statistics" ) << QStringLiteral( "views_layer_statistics" )
+                       << QStringLiteral( "ElementaryGeometries" );
 }
 
 QString qgs_sqlite3_mprintf( const char *format, ... )

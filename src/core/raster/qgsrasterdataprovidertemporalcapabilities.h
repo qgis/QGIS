@@ -38,7 +38,6 @@
 class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProviderTemporalCapabilities
 {
   public:
-
     /**
      * Constructor for QgsRasterDataProviderTemporalProperties.
      *
@@ -100,7 +99,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      * \see setAvailableTemporalRange()
      * \since QGIS 3.20
     */
-    void setAllAvailableTemporalRanges( const QList< QgsDateTimeRange > &ranges );
+    void setAllAvailableTemporalRanges( const QList<QgsDateTimeRange> &ranges );
 
     /**
      * Returns a list of all valid datetime ranges for which temporal data is available from the provider.
@@ -112,7 +111,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      * \see availableTemporalRange()
      * \since QGIS 3.20
     */
-    QList< QgsDateTimeRange > allAvailableTemporalRanges() const;
+    QList<QgsDateTimeRange> allAvailableTemporalRanges() const;
 
     /**
      * Sets the available reference datetime \a range. This is to be used for
@@ -167,7 +166,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     void setRequestedTemporalRange( const QgsDateTimeRange &range ) SIP_SKIP;
 
   private:
-
     /**
      * Represents available data provider datetime range.
      *
@@ -182,7 +180,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      * A list of all valid temporal ranges for the provider. Used when a provider
      * has a non-contiguous set of available temporal ranges.
      */
-    QList< QgsDateTimeRange > mAllAvailableTemporalRanges;
+    QList<QgsDateTimeRange> mAllAvailableTemporalRanges;
 
     //! Represents the requested temporal range.
     QgsDateTimeRange mRequestedRange;
@@ -201,7 +199,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
 
     friend class QgsRasterLayerRenderer;
     friend class TestQgsRasterDataProviderTemporalCapabilities;
-
 };
 
 #endif // QGSRASTERDATAPROVIDERTEMPORALCAPABILITIES_H

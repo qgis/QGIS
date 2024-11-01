@@ -64,21 +64,21 @@ Qgis::BabelFormatCapabilities QgsAbstractBabelFormat::capabilities() const
 //
 
 QgsBabelSimpleImportFormat::QgsBabelSimpleImportFormat( const QString &format, const QString &description,
-    Qgis::BabelFormatCapabilities capabilities, const QStringList extensions )
+                                                        Qgis::BabelFormatCapabilities capabilities, const QStringList extensions )
   : QgsAbstractBabelFormat( format )
   , mDescription( description )
   , mExtensions( extensions )
 {
   mCapabilities = capabilities;
   mCapabilities |= Qgis::BabelFormatCapability::Import;
-  mCapabilities &= ~( static_cast< int >( Qgis::BabelFormatCapability::Export ) );
+  mCapabilities &= ~( static_cast<int>( Qgis::BabelFormatCapability::Export ) );
 }
 
 QStringList QgsBabelSimpleImportFormat::importCommand( const QString &babel,
-    Qgis::GpsFeatureType featureType,
-    const QString &input,
-    const QString &output,
-    Qgis::BabelCommandFlags flags ) const
+                                                       Qgis::GpsFeatureType featureType,
+                                                       const QString &input,
+                                                       const QString &output,
+                                                       Qgis::BabelCommandFlags flags ) const
 {
   return { ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( babel ) : babel,
            featureTypeToArgument( featureType ),
@@ -87,6 +87,5 @@ QStringList QgsBabelSimpleImportFormat::importCommand( const QString &babel,
            QStringLiteral( "-o" ),
            QStringLiteral( "gpx" ),
            ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( input ) : input,
-           ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( output ) : output
-         };
+           ( flags & Qgis::BabelCommandFlag::QuoteFilePaths ) ? QStringLiteral( "\"%1\"" ).arg( output ) : output };
 }

@@ -40,7 +40,6 @@ QgsAbstractContentCacheBase::QgsAbstractContentCacheBase( QObject *parent )
 
 void QgsAbstractContentCacheBase::onRemoteContentFetched( const QString &, bool )
 {
-
 }
 
 bool QgsAbstractContentCacheBase::parseBase64DataUrl( const QString &path, QString *mimeType, QString *data )

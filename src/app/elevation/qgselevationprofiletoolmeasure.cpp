@@ -65,9 +65,7 @@ void QgsProfileMeasureResultsDialog::setCrs( const QgsCoordinateReferenceSystem 
 
 bool QgsProfileMeasureResultsDialog::eventFilter( QObject *object, QEvent *event )
 {
-  if ( object == this && ( event->type() == QEvent::Close ||
-                           event->type() == QEvent::Destroy ||
-                           event->type() == QEvent::Hide ) )
+  if ( object == this && ( event->type() == QEvent::Close || event->type() == QEvent::Destroy || event->type() == QEvent::Hide ) )
   {
     emit closed();
   }
@@ -147,14 +145,12 @@ QgsElevationProfileToolMeasure::QgsElevationProfileToolMeasure( QgsElevationProf
   mDialog = new QgsProfileMeasureResultsDialog();
 
   connect( this, &QgsElevationProfileToolMeasure::cleared, mDialog, &QDialog::hide );
-  connect( this, &QgsElevationProfileToolMeasure::measureChanged, mDialog, [ = ]( double totalDistance, double deltaCurve, double deltaElevation )
-  {
+  connect( this, &QgsElevationProfileToolMeasure::measureChanged, mDialog, [=]( double totalDistance, double deltaCurve, double deltaElevation ) {
     mDialog->setCrs( mElevationCanvas->crs() );
     mDialog->setMeasures( totalDistance, deltaCurve, deltaElevation );
     mDialog->show();
   } );
-  connect( mDialog, &QgsProfileMeasureResultsDialog::closed, this, [ = ]
-  {
+  connect( mDialog, &QgsProfileMeasureResultsDialog::closed, this, [=] {
     mMeasureInProgress = false;
     mRubberBand->hide();
     emit cleared();

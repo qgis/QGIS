@@ -20,7 +20,7 @@
 #include "qgsvectorlayer.h"
 
 QgsClassificationWidgetWrapper::QgsClassificationWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
-  :  QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
+  : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 
 {
 }

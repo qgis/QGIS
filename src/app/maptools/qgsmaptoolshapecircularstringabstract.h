@@ -22,7 +22,7 @@
 class QgsGeometryRubberBand;
 
 
-class APP_EXPORT QgsMapToolShapeCircularStringAbstract: public QgsMapToolShapeAbstract
+class APP_EXPORT QgsMapToolShapeCircularStringAbstract : public QgsMapToolShapeAbstract
 {
     Q_OBJECT
   public:
@@ -39,7 +39,6 @@ class APP_EXPORT QgsMapToolShapeCircularStringAbstract: public QgsMapToolShapeAb
     void undo() override;
 
   protected:
-
     void addCurveToParentTool();
 
     //! The rubberband to show the already completed circular strings

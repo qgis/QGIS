@@ -33,7 +33,7 @@ class QgsTask;
 class QgsTaskRunnableWrapper;
 
 //! List of QgsTask objects
-typedef QList< QgsTask * > QgsTaskList;
+typedef QList<QgsTask *> QgsTaskList;
 
 /**
  * \ingroup core
@@ -56,26 +56,24 @@ class CORE_EXPORT QgsTask : public QObject
     Q_OBJECT
 
   public:
-
     //! Status of tasks
     enum TaskStatus
     {
-      Queued, //!< Task is queued and has not begun
-      OnHold, //!< Task is queued but on hold and will not be started
-      Running, //!< Task is currently running
-      Complete, //!< Task successfully completed
+      Queued,     //!< Task is queued and has not begun
+      OnHold,     //!< Task is queued but on hold and will not be started
+      Running,    //!< Task is currently running
+      Complete,   //!< Task successfully completed
       Terminated, //!< Task was terminated or errored
     };
     Q_ENUM( TaskStatus )
 
     //! Task flags
-    enum Flag SIP_ENUM_BASETYPE( IntFlag )
-    {
-      CanCancel = 1 << 1, //!< Task can be canceled
+    enum Flag SIP_ENUM_BASETYPE( IntFlag ) {
+      CanCancel = 1 << 1,           //!< Task can be canceled
       CancelWithoutPrompt = 1 << 2, //!< Task can be canceled without any users prompts, e.g. when closing a project or QGIS.
-      Hidden = 1 << 3, //!< Hide task from GUI \since QGIS 3.26
-      Silent = 1 << 4, //!< Don't show task updates (such as completion/failure messages) as operating-system level notifications \since QGIS 3.26
-      AllFlags = CanCancel, //!< Task supports all flags
+      Hidden = 1 << 3,              //!< Hide task from GUI \since QGIS 3.26
+      Silent = 1 << 4,              //!< Don't show task updates (such as completion/failure messages) as operating-system level notifications \since QGIS 3.26
+      AllFlags = CanCancel,         //!< Task supports all flags
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -205,7 +203,7 @@ class CORE_EXPORT QgsTask : public QObject
      * be canceled if any of these layers are about to be removed.
      * \see setDependentLayers()
      */
-    QList< QgsMapLayer * > dependentLayers() const;
+    QList<QgsMapLayer *> dependentLayers() const;
 
     /**
      * Blocks the current thread until the task finishes or a maximum of \a timeout milliseconds.
@@ -260,7 +258,6 @@ class CORE_EXPORT QgsTask : public QObject
     void taskTerminated();
 
   protected:
-
     /**
      * Performs the task's operation. This method will be called when the task commences
      * (ie via calling start() ), and subclasses should implement the operation they
@@ -303,7 +300,6 @@ class CORE_EXPORT QgsTask : public QObject
     void subTaskStatusChanged( int status );
 
   private:
-
     Flags mFlags;
     QString mDescription;
     //! Status of this (parent) task alone
@@ -333,16 +329,16 @@ class CORE_EXPORT QgsTask : public QObject
 
     struct SubTask
     {
-      SubTask( QgsTask *task, const QgsTaskList &dependencies, SubTaskDependency dependency )
-        : task( task )
-        , dependencies( dependencies )
-        , dependency( dependency )
-      {}
-      QgsTask *task = nullptr;
-      QgsTaskList dependencies;
-      SubTaskDependency dependency;
+        SubTask( QgsTask *task, const QgsTaskList &dependencies, SubTaskDependency dependency )
+          : task( task )
+          , dependencies( dependencies )
+          , dependency( dependency )
+        {}
+        QgsTask *task = nullptr;
+        QgsTaskList dependencies;
+        SubTaskDependency dependency;
     };
-    QList< SubTask > mSubTasks;
+    QList<SubTask> mSubTasks;
 
     QgsWeakMapLayerPointerList mDependentLayers;
 
@@ -377,7 +373,6 @@ class CORE_EXPORT QgsTask : public QObject
     void processSubTasksForCompletion();
 
     void processSubTasksForTermination();
-
 };
 
 
@@ -395,7 +390,6 @@ class CORE_EXPORT QgsTaskManager : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsTaskManager.
      * \param parent parent QObject
@@ -409,26 +403,24 @@ class CORE_EXPORT QgsTaskManager : public QObject
      */
     struct TaskDefinition
     {
-
-      /**
+        /**
        * Constructor for TaskDefinition. Ownership of the task is not transferred to the definition,
        * but will be transferred to a QgsTaskManager.
        */
-      explicit TaskDefinition( QgsTask *task, const QgsTaskList &dependentTasks = QgsTaskList() )
-        : task( task )
-        , dependentTasks( dependentTasks )
-      {}
+        explicit TaskDefinition( QgsTask *task, const QgsTaskList &dependentTasks = QgsTaskList() )
+          : task( task )
+          , dependentTasks( dependentTasks )
+        {}
 
-      //! Task
-      QgsTask *task = nullptr;
+        //! Task
+        QgsTask *task = nullptr;
 
-      /**
+        /**
        * List of dependent tasks which must be completed before task can run. If any dependent tasks are
        * canceled this task will also be canceled. Dependent tasks must also be added
        * to the task manager for proper handling of dependencies.
        */
-      QgsTaskList dependentTasks;
-
+        QgsTaskList dependentTasks;
     };
 
     /**
@@ -494,7 +486,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
      * Returns the set of task IDs on which a task is dependent
      * \note not available in Python bindings
      */
-    QSet< long > dependencies( long taskId ) const SIP_SKIP;
+    QSet<long> dependencies( long taskId ) const SIP_SKIP;
 
     /**
      * Returns a list of layers on which as task is dependent. The task will automatically
@@ -503,19 +495,19 @@ class CORE_EXPORT QgsTaskManager : public QObject
      * \returns list of layers
      * \see tasksDependentOnLayer()
      */
-    QList< QgsMapLayer * > dependentLayers( long taskId ) const;
+    QList<QgsMapLayer *> dependentLayers( long taskId ) const;
 
     /**
      * Returns a list of tasks which depend on a layer.
      * \see dependentLayers()
      */
-    QList< QgsTask * > tasksDependentOnLayer( QgsMapLayer *layer ) const;
+    QList<QgsTask *> tasksDependentOnLayer( QgsMapLayer *layer ) const;
 
     /**
      * Returns a list of the active (queued or running) tasks.
      * \see countActiveTasks()
      */
-    QList< QgsTask * > activeTasks() const;
+    QList<QgsTask *> activeTasks() const;
 
     /**
      * Returns the number of active (queued or running) tasks.
@@ -597,15 +589,14 @@ class CORE_EXPORT QgsTaskManager : public QObject
     void layersWillBeRemoved( const QList<QgsMapLayer *> &layers );
 
   private:
-
     struct TaskInfo
     {
-      TaskInfo( QgsTask *task = nullptr, int priority = 0 );
-      void createRunnable();
-      QgsTask *task = nullptr;
-      QAtomicInt added;
-      int priority;
-      QgsTaskRunnableWrapper *runnable = nullptr;
+        TaskInfo( QgsTask *task = nullptr, int priority = 0 );
+        void createRunnable();
+        QgsTask *task = nullptr;
+        QAtomicInt added;
+        int priority;
+        QgsTaskRunnableWrapper *runnable = nullptr;
     };
 
     QThreadPool *mThreadPool = nullptr;
@@ -614,22 +605,22 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     mutable QRecursiveMutex *mTaskMutex;
 
-    QMap< long, TaskInfo > mTasks;
-    QMap< QgsTask *, long> mMapTaskPtrToId;
-    QMap< long, QgsTaskList > mTaskDependencies;
-    QMap< long, QgsWeakMapLayerPointerList > mLayerDependencies;
+    QMap<long, TaskInfo> mTasks;
+    QMap<QgsTask *, long> mMapTaskPtrToId;
+    QMap<long, QgsTaskList> mTaskDependencies;
+    QMap<long, QgsWeakMapLayerPointerList> mLayerDependencies;
 
     //! Tracks the next unique task ID
     long mNextTaskId = 1;
 
     //! List of active (queued or running) tasks. Includes subtasks.
-    QSet< QgsTask * > mActiveTasks;
+    QSet<QgsTask *> mActiveTasks;
     //! List of parent tasks
-    QSet< QgsTask * > mParentTasks;
+    QSet<QgsTask *> mParentTasks;
     //! List of subtasks
-    QSet< QgsTask * > mSubTasks;
+    QSet<QgsTask *> mSubTasks;
 
-    QSet< QgsTask * > mPendingDeletion;
+    QSet<QgsTask *> mPendingDeletion;
 
     long addTaskPrivate( QgsTask *task,
                          QgsTaskList dependencies,
@@ -651,7 +642,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
      */
     void cancelDependentTasks( long taskId );
 
-    bool resolveDependencies( long taskId, QSet< long > &results ) const;
+    bool resolveDependencies( long taskId, QSet<long> &results ) const;
 
     //! Will return TRUE if the specified task has circular dependencies
     bool hasCircularDependencies( long taskId ) const;
@@ -673,7 +664,8 @@ class CORE_EXPORT QgsTaskWithSerialSubTasks : public QgsTask
 
   public:
     //! Constructor
-    QgsTaskWithSerialSubTasks( const QString &desc = QString() ) : QgsTask( desc ) {}
+    QgsTaskWithSerialSubTasks( const QString &desc = QString() )
+      : QgsTask( desc ) {}
     ~QgsTaskWithSerialSubTasks() override;
 
     /**
@@ -690,8 +682,7 @@ class CORE_EXPORT QgsTaskWithSerialSubTasks : public QgsTask
     void cancel() override;
 
   protected:
-
-    QList< QgsTask *> mSubTasksSerial;
+    QList<QgsTask *> mSubTasksSerial;
 
     bool run() override;
 };

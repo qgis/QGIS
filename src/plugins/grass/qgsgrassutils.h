@@ -29,7 +29,6 @@ class QgisInterface;
  */
 class QgsGrassUtils
 {
-
   public:
     //! Constructor
     QgsGrassUtils() = default;
@@ -53,7 +52,7 @@ class QgsGrassUtils
  * \class QgsGrassElementDialog
  * \brief Dialog for entering a name for a new GRASS element.
  */
-class QgsGrassElementDialog: public QObject
+class QgsGrassElementDialog : public QObject
 {
     Q_OBJECT
 

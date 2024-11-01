@@ -25,13 +25,11 @@ class QgsAuthOAuth2Config;
  * \ingroup auth_plugins
  * \since QGIS 3.4
  */
-class QgsO2: public O2
+class QgsO2 : public O2
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Construct QgsO2
      * \param authcfg authentication configuration id
@@ -53,7 +51,7 @@ class QgsO2: public O2
     Q_PROPERTY( QString state READ state WRITE setState NOTIFY stateChanged )
 
     //! Retrieve oauth2 state
-    QString state() const  { return state_; }
+    QString state() const { return state_; }
 
     //! Store oauth2 state to a random value when called
     void setState( const QString &value );
@@ -90,7 +88,6 @@ class QgsO2: public O2
     void onVerificationReceived( QMap<QString, QString> response ) override;
 
   protected:
-
     QNetworkAccessManager *getManager() override;
 
   signals:

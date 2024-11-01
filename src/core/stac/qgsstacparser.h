@@ -100,8 +100,8 @@ class QgsStacParser
     QgsStacCatalog *parseCatalog( const nlohmann::json &data );
     QgsStacCollection *parseCollection( const nlohmann::json &data );
 
-    QVector< QgsStacLink > parseLinks( const nlohmann::json &data );
-    QMap< QString, QgsStacAsset > parseAssets( const nlohmann::json &data );
+    QVector<QgsStacLink> parseLinks( const nlohmann::json &data );
+    QMap<QString, QgsStacAsset> parseAssets( const nlohmann::json &data );
     static bool isSupportedStacVersion( const QString &version );
     //! Returns a QString, treating null elements as empty strings
     static QString getString( const nlohmann::json &data );

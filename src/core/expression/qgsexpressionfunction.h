@@ -40,11 +40,10 @@ class QgsExpressionContextScope;
 class CORE_EXPORT QgsExpressionFunction
 {
   public:
-
     /**
      * Function definition for evaluation against an expression context, using a list of values as parameters to the function.
      */
-    typedef QVariant( *FcnEval )( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) SIP_SKIP;
+    typedef QVariant ( *FcnEval )( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) SIP_SKIP;
 
     /**
      * \ingroup core
@@ -53,7 +52,6 @@ class CORE_EXPORT QgsExpressionFunction
     class CORE_EXPORT Parameter
     {
       public:
-
         /**
          * Constructor for Parameter.
          * \param name parameter name, used when named parameter are specified in an expression
@@ -100,7 +98,7 @@ class CORE_EXPORT QgsExpressionFunction
     };
 
     //! List of parameters, used for function definition
-    typedef QList< QgsExpressionFunction::Parameter > ParameterList;
+    typedef QList<QgsExpressionFunction::Parameter> ParameterList;
 
     //! Constructor for function which uses unnamed parameters
     QgsExpressionFunction( const QString &fnname,
@@ -305,7 +303,6 @@ class CORE_EXPORT QgsExpressionFunction
     virtual bool handlesNull() const;
 
   protected:
-
     /**
      * This will return TRUE if all the params for the provided function \a node are static within the
      * constraints imposed by the \a context within the given \a parent.
@@ -336,7 +333,6 @@ class CORE_EXPORT QgsExpressionFunction
 class QgsStaticExpressionFunction : public QgsExpressionFunction
 {
   public:
-
     /**
      * Static function for evaluation against a QgsExpressionContext, using an unnamed list of parameter values.
      */
@@ -416,8 +412,8 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
                                  FcnEval fcn,
                                  const QString &group,
                                  const QString &helpText,
-                                 const std::function< bool( const QgsExpressionNodeFunction *node )> &usesGeometry,
-                                 const std::function< QSet<QString>( const QgsExpressionNodeFunction *node )> &referencedColumns,
+                                 const std::function<bool( const QgsExpressionNodeFunction *node )> &usesGeometry,
+                                 const std::function<QSet<QString>( const QgsExpressionNodeFunction *node )> &referencedColumns,
                                  bool lazyEval = false,
                                  const QStringList &aliases = QStringList(),
                                  bool handlesNull = false );
@@ -465,7 +461,7 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
      *
      * \since QGIS 3.30
      */
-    void setUsesGeometryFunction( const std::function< bool( const QgsExpressionNodeFunction *node )> &usesGeometry );
+    void setUsesGeometryFunction( const std::function<bool( const QgsExpressionNodeFunction *node )> &usesGeometry );
 
     QSet<QString> referencedColumns( const QgsExpressionNodeFunction *node ) const override;
 
@@ -479,7 +475,7 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
      * By default this is set to a function that checks all arguments that have been passed to the variable
      * and if all of them are static, it will be assumed that the function is static as well.
      */
-    void setIsStaticFunction( const std::function< bool ( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * ) > &isStatic );
+    void setIsStaticFunction( const std::function<bool( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * )> &isStatic );
 
 
     /**
@@ -497,7 +493,7 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
      * By default this is set to a function that checks all arguments that have been passed to the variable
      * and if all of them are static, it will be assumed that the function is static as well.
      */
-    void setPrepareFunction( const std::function< bool( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * )> &prepareFunc );
+    void setPrepareFunction( const std::function<bool( const QgsExpressionNodeFunction *, QgsExpression *, const QgsExpressionContext * )> &prepareFunc );
 
     /**
      * Returns a list of all registered expression functions.
@@ -508,10 +504,10 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
     FcnEval mFnc;
     QStringList mAliases;
     bool mUsesGeometry;
-    std::function < bool( const QgsExpressionNodeFunction *node ) > mUsesGeometryFunc;
-    std::function < QSet<QString>( const QgsExpressionNodeFunction *node ) > mReferencedColumnsFunc;
-    std::function < bool( const QgsExpressionNodeFunction *node,  QgsExpression *parent, const QgsExpressionContext *context ) > mIsStaticFunc = allParamsStatic;
-    std::function < bool( const QgsExpressionNodeFunction *node,  QgsExpression *parent, const QgsExpressionContext *context ) > mPrepareFunc;
+    std::function<bool( const QgsExpressionNodeFunction *node )> mUsesGeometryFunc;
+    std::function<QSet<QString>( const QgsExpressionNodeFunction *node )> mReferencedColumnsFunc;
+    std::function<bool( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context )> mIsStaticFunc = allParamsStatic;
+    std::function<bool( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context )> mPrepareFunc;
     QSet<QString> mReferencedColumns;
     bool mIsStatic = false;
 };
@@ -536,7 +532,6 @@ class QgsArrayForeachExpressionFunction : public QgsExpressionFunction
     QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) override;
 
     bool prepare( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
-
 };
 
 /**
@@ -559,7 +554,6 @@ class QgsArrayFilterExpressionFunction : public QgsExpressionFunction
     QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) override;
 
     bool prepare( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
-
 };
 
 /**
@@ -584,7 +578,6 @@ class QgsWithVariableExpressionFunction : public QgsExpressionFunction
     bool prepare( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
   private:
-
     /**
      * Append a scope with a single variable definition (``name``=``value``)
      */

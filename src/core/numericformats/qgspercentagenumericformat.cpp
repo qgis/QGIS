@@ -72,9 +72,9 @@ QgsNumericFormat *QgsPercentageNumericFormat::clone() const
 
 QgsNumericFormat *QgsPercentageNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
-  std::unique_ptr< QgsPercentageNumericFormat > res = std::make_unique< QgsPercentageNumericFormat >();
+  std::unique_ptr<QgsPercentageNumericFormat> res = std::make_unique<QgsPercentageNumericFormat>();
   res->setConfiguration( configuration, context );
-  res->mInputValues = static_cast< InputValues >( configuration.value( QStringLiteral( "input_values" ), static_cast< int >( ValuesArePercentage ) ).toInt() );
+  res->mInputValues = static_cast<InputValues>( configuration.value( QStringLiteral( "input_values" ), static_cast<int>( ValuesArePercentage ) ).toInt() );
   res->setRoundingType( QgsBasicNumericFormat::DecimalPlaces );
   return res.release();
 }
@@ -82,7 +82,7 @@ QgsNumericFormat *QgsPercentageNumericFormat::create( const QVariantMap &configu
 QVariantMap QgsPercentageNumericFormat::configuration( const QgsReadWriteContext &context ) const
 {
   QVariantMap res = QgsBasicNumericFormat::configuration( context );
-  res.insert( QStringLiteral( "input_values" ), static_cast< int >( mInputValues ) );
+  res.insert( QStringLiteral( "input_values" ), static_cast<int>( mInputValues ) );
   return res;
 }
 

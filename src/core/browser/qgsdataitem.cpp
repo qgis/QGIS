@@ -49,14 +49,14 @@
 #include <QRegularExpression>
 
 // use GDAL VSI mechanism
-#define CPL_SUPRESS_CPLUSPLUS  //#spellok
+#define CPL_SUPRESS_CPLUSPLUS //#spellok
 #include "cpl_vsi.h"
 #include "cpl_string.h"
 
 QgsAnimatedIcon *QgsDataItem::sPopulatingIcon = nullptr;
 
 QgsDataItem::QgsDataItem( Qgis::BrowserItemType type, QgsDataItem *parent, const QString &name, const QString &path, const QString &providerKey )
-// Do not pass parent to QObject, Qt would delete this when parent is deleted
+  // Do not pass parent to QObject, Qt would delete this when parent is deleted
   : mType( type )
   , mParent( parent )
   , mName( name )
@@ -204,7 +204,7 @@ void QgsDataItem::populate( bool foreground )
     // The watcher must not be created with item (in constructor) because the item may be created in thread and the watcher created in thread does not work correctly.
     if ( !mFutureWatcher )
     {
-      mFutureWatcher = new QFutureWatcher< QVector <QgsDataItem *> >( this );
+      mFutureWatcher = new QFutureWatcher<QVector<QgsDataItem *>>( this );
     }
 
     connect( mFutureWatcher, &QFutureWatcherBase::finished, this, &QgsDataItem::childrenCreated );
@@ -218,7 +218,7 @@ QVector<QgsDataItem *> QgsDataItem::runCreateChildren( QgsDataItem *item )
   QgsDebugMsgLevel( "path = " + item->path(), 2 );
   QElapsedTimer time;
   time.start();
-  const QVector <QgsDataItem *> children = item->createChildren();
+  const QVector<QgsDataItem *> children = item->createChildren();
   QgsDebugMsgLevel( QStringLiteral( "%1 children created in %2 ms" ).arg( children.size() ).arg( time.elapsed() ), 3 );
   // Children objects must be pushed to main thread.
   for ( QgsDataItem *child : children )
@@ -305,7 +305,7 @@ void QgsDataItem::refresh()
     setState( Qgis::BrowserItemState::Populating );
     if ( !mFutureWatcher )
     {
-      mFutureWatcher = new QFutureWatcher< QVector <QgsDataItem *> >( this );
+      mFutureWatcher = new QFutureWatcher<QVector<QgsDataItem *>>( this );
     }
     connect( mFutureWatcher, &QFutureWatcherBase::finished, this, &QgsDataItem::childrenCreated );
     mFutureWatcher->setFuture( QtConcurrent::run( runCreateChildren, this ) );
@@ -423,7 +423,7 @@ void QgsDataItem::setParent( QgsDataItem *parent )
 void QgsDataItem::addChildItem( QgsDataItem *child, bool refresh )
 {
   Q_ASSERT( child );
-  QgsDebugMsgLevel( QStringLiteral( "path = %1 add child #%2 - %3 - %4" ).arg( mPath ).arg( mChildren.size() ).arg( child->mName ).arg( qgsEnumValueToKey< Qgis::BrowserItemType >( child->mType ) ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "path = %1 add child #%2 - %3 - %4" ).arg( mPath ).arg( mChildren.size() ).arg( child->mName ).arg( qgsEnumValueToKey<Qgis::BrowserItemType>( child->mType ) ), 3 );
 
   //calculate position to insert child
   int i;
@@ -432,8 +432,7 @@ void QgsDataItem::addChildItem( QgsDataItem *child, bool refresh )
     for ( i = 0; i < mChildren.size(); i++ )
     {
       // sort items by type, so directories are before data items
-      if ( mChildren.at( i )->mType == child->mType &&
-           mChildren.at( i )->mName.localeAwareCompare( child->mName ) > 0 )
+      if ( mChildren.at( i )->mType == child->mType && mChildren.at( i )->mName.localeAwareCompare( child->mName ) > 0 )
         break;
     }
   }
@@ -498,8 +497,7 @@ int QgsDataItem::findItem( QVector<QgsDataItem *> items, QgsDataItem *item )
 
 bool QgsDataItem::equal( const QgsDataItem *other )
 {
-  return ( metaObject()->className() == other->metaObject()->className() &&
-           mPath == other->path() );
+  return ( metaObject()->className() == other->metaObject()->className() && mPath == other->path() );
 }
 
 QList<QAction *> QgsDataItem::actions( QWidget *parent )
@@ -544,7 +542,7 @@ bool QgsDataItem::rename( const QString & )
 
 void QgsDataItem::setCapabilities( int capabilities )
 {
-  setCapabilities( static_cast< Qgis::BrowserItemCapabilities >( capabilities ) );
+  setCapabilities( static_cast<Qgis::BrowserItemCapabilities>( capabilities ) );
 }
 
 Qgis::BrowserItemState QgsDataItem::state() const
@@ -554,7 +552,7 @@ Qgis::BrowserItemState QgsDataItem::state() const
 
 void QgsDataItem::setState( Qgis::BrowserItemState state )
 {
-  QgsDebugMsgLevel( QStringLiteral( "item %1 set state %2 -> %3" ).arg( path() ).arg( qgsEnumValueToKey< Qgis::BrowserItemState >( this->state() ) ).arg( qgsEnumValueToKey< Qgis::BrowserItemState >( state ) ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "item %1 set state %2 -> %3" ).arg( path() ).arg( qgsEnumValueToKey<Qgis::BrowserItemState>( this->state() ) ).arg( qgsEnumValueToKey<Qgis::BrowserItemState>( state ) ), 3 );
   if ( state == mState )
     return;
 
@@ -596,4 +594,3 @@ QgsErrorItem::QgsErrorItem( QgsDataItem *parent, const QString &error, const QSt
 
   setState( Qgis::BrowserItemState::Populated ); // no more children
 }
-

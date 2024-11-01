@@ -36,7 +36,6 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingProvider.
      */
@@ -299,7 +298,11 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * \returns TRUE if provider could be successfully loaded
      * \see unload()
      */
-    virtual bool load() { refreshAlgorithms(); return true; }
+    virtual bool load()
+    {
+      refreshAlgorithms();
+      return true;
+    }
 
     /**
      * Unloads the provider. Any tear-down steps required by the provider should be implemented here.
@@ -316,7 +319,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * Returns a list of algorithms supplied by this provider.
      * \see algorithm()
      */
-    QList< const QgsProcessingAlgorithm * > algorithms() const;
+    QList<const QgsProcessingAlgorithm *> algorithms() const;
 
     /**
      * Returns the matching algorithm by \a name, or NULLPTR if no matching
@@ -335,7 +338,6 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     void algorithmsLoaded();
 
   protected:
-
     /**
      * Loads all algorithms belonging to this provider. Subclasses should implement this, calling
      * addAlgorithm() to register all their associated algorithms.
@@ -348,8 +350,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     bool addAlgorithm( QgsProcessingAlgorithm *algorithm SIP_TRANSFER );
 
   private:
-
-    QMap< QString, const QgsProcessingAlgorithm * > mAlgorithms;
+    QMap<QString, const QgsProcessingAlgorithm *> mAlgorithms;
 
 #ifdef SIP_RUN
     QgsProcessingProvider( const QgsProcessingProvider &other );
@@ -357,5 +358,3 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
 };
 
 #endif // QGSPROCESSINGPROVIDER_H
-
-

@@ -29,16 +29,15 @@ class QgsSensorManager;
  * \brief A QAbstractItemModel subclass for showing sensors within a QgsSensorManager.
  * \since QGIS 3.32
  */
-class CORE_EXPORT QgsSensorModel: public QAbstractItemModel
+class CORE_EXPORT QgsSensorModel : public QAbstractItemModel
 {
     Q_OBJECT
 
   public:
-
     //! Model columns
     enum class Column : int
     {
-      Name = 0, //!< Name
+      Name = 0,      //!< Name
       LastValue = 1, //!< Last value
     };
 
@@ -50,15 +49,14 @@ class CORE_EXPORT QgsSensorModel: public QAbstractItemModel
      * \note Prior to QGIS 3.36 this was available as QgsSensorModel::Role
      * \since QGIS 3.36
      */
-    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSensorModel, Role ) : int
-    {
+    enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSensorModel, Role ) : int {
       SensorType = Qt::UserRole + 1, //!< Sensor type
-      SensorId, //!< Sensor id
-      SensorName, //!< Sensor name
-      SensorStatus, //!< Sensor status (disconnected, connected, etc.)
-      SensorLastValue, //!< Sensor last captured value
-      SensorLastTimestamp, //!< Sensor timestamp of last captured value
-      Sensor, //!< Sensor object pointer
+      SensorId,                      //!< Sensor id
+      SensorName,                    //!< Sensor name
+      SensorStatus,                  //!< Sensor status (disconnected, connected, etc.)
+      SensorLastValue,               //!< Sensor last captured value
+      SensorLastTimestamp,           //!< Sensor timestamp of last captured value
+      Sensor,                        //!< Sensor object pointer
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -88,7 +86,6 @@ class CORE_EXPORT QgsSensorModel: public QAbstractItemModel
     void sensorDataCaptured( const QString &id );
 
   private:
-
     QgsSensorManager *mSensorManager = nullptr;
     QStringList mSensorIds;
 };

@@ -26,21 +26,19 @@
 class QgsGeoPackageProviderConnection : public QgsOgrProviderConnection
 {
   public:
-
     QgsGeoPackageProviderConnection( const QString &name );
     QgsGeoPackageProviderConnection( const QString &uri, const QVariantMap &configuration );
 
 
     // QgsAbstractProviderConnection interface
   public:
-
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
     QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
     QString tableUri( const QString &schema, const QString &name ) const override;
     void dropRasterTable( const QString &schema, const QString &name ) const override;
     void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const override;
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,10,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 10, 0 )
     void renameRasterTable( const QString &schema, const QString &name, const QString &newName ) const override;
 #endif
     void vacuum( const QString &schema, const QString &name ) const override;
@@ -48,25 +46,21 @@ class QgsGeoPackageProviderConnection : public QgsOgrProviderConnection
     bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
     void deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
-        const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
+                                                                        const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
     QIcon icon() const override;
     QgsFields fields( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
     QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
-    QList< Qgis::FieldDomainType > supportedFieldDomainTypes() const override;
+    QList<Qgis::FieldDomainType> supportedFieldDomainTypes() const override;
     QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const override;
 
   protected:
-
     QString databaseQueryLogIdentifier() const override;
     QString primaryKeyColumnName( const QString &table ) const override;
 
   private:
-
     void setDefaultCapabilities();
     void renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const;
-
 };
-
 
 
 ///@endcond

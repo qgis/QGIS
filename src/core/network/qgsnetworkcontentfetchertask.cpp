@@ -50,8 +50,7 @@ bool QgsNetworkContentFetcherTask::run()
   // different thread because they have been created in different thread.
 
   connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, &QEventLoop::quit );
-  connect( mFetcher, &QgsNetworkContentFetcher::downloadProgress, &loop, [this]( qint64 bytesReceived, qint64 bytesTotal )
-  {
+  connect( mFetcher, &QgsNetworkContentFetcher::downloadProgress, &loop, [this]( qint64 bytesReceived, qint64 bytesTotal ) {
     if ( !isCanceled() && bytesTotal > 0 )
     {
       const int progress = ( bytesReceived * 100 ) / bytesTotal;
@@ -64,8 +63,7 @@ bool QgsNetworkContentFetcherTask::run()
 
 
   bool hasErrorOccurred = false;
-  connect( mFetcher, &QgsNetworkContentFetcher::errorOccurred, &loop, [ &hasErrorOccurred, this ]( QNetworkReply::NetworkError code, const QString & errorMsg )
-  {
+  connect( mFetcher, &QgsNetworkContentFetcher::errorOccurred, &loop, [&hasErrorOccurred, this]( QNetworkReply::NetworkError code, const QString &errorMsg ) {
     hasErrorOccurred = true;
     emit errorOccurred( code, errorMsg );
   } );

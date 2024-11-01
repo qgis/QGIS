@@ -39,7 +39,6 @@ QgsColorBrewerColorRampWidget::QgsColorBrewerColorRampWidget( const QgsColorBrew
   : QgsPanelWidget( parent )
   , mRamp( ramp )
 {
-
   setupUi( this );
 
   const QSize iconSize( 50, 16 );

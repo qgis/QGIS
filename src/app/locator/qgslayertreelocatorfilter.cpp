@@ -39,7 +39,7 @@ void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLo
   for ( QgsLayerTreeLayer *layer : layers )
   {
     // if the layer is broken, don't include it in the results
-    if ( ! layer->layer() )
+    if ( !layer->layer() )
       continue;
 
     QgsLocatorResult result;

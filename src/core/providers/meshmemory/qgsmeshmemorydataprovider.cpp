@@ -47,8 +47,8 @@ QgsCoordinateReferenceSystem QgsMeshMemoryDataProvider::crs() const
 }
 
 QgsMeshMemoryDataProvider::QgsMeshMemoryDataProvider( const QString &uri,
-    const ProviderOptions &options,
-    Qgis::DataProviderReadFlags flags )
+                                                      const ProviderOptions &options,
+                                                      Qgis::DataProviderReadFlags flags )
   : QgsMeshDataProvider( uri, options, flags )
 {
   QString data( uri );
@@ -132,8 +132,10 @@ bool QgsMeshMemoryDataProvider::addMeshFacesOrEdges( const QString &def )
       QgsMeshEdge edge;
       edge.first = vertices[0].toInt();
       edge.second = vertices[1].toInt();
-      if ( !checkVertexId( edge.first ) ) return false;
-      if ( !checkVertexId( edge.second ) ) return false;
+      if ( !checkVertexId( edge.first ) )
+        return false;
+      if ( !checkVertexId( edge.second ) )
+        return false;
       edges.push_back( edge );
     }
     else
@@ -142,7 +144,8 @@ bool QgsMeshMemoryDataProvider::addMeshFacesOrEdges( const QString &def )
       for ( int j = 0; j < vertices.size(); ++j )
       {
         const int vertex_id = vertices[j].toInt();
-        if ( !checkVertexId( vertex_id ) ) return false;
+        if ( !checkVertexId( vertex_id ) )
+          return false;
         face.push_back( vertex_id );
       }
       faces.push_back( face );
@@ -358,7 +361,7 @@ void QgsMeshMemoryDataProvider::addGroupToTemporalCapabilities( int groupIndex, 
     QString timeReferenceString = group.extraMetadata().value( QStringLiteral( "reference_time" ) );
     if ( !timeReferenceString.isEmpty() )
     {
-      timeReferenceString.append( 'Z' );//For now provider doesn't support time zone and return always in local time, force UTC
+      timeReferenceString.append( 'Z' ); //For now provider doesn't support time zone and return always in local time, force UTC
       const QDateTime referenceTime = QDateTime::fromString( timeReferenceString, Qt::ISODate );
       tempCap->addGroupReferenceDateTime( groupIndex, referenceTime );
     }
@@ -366,7 +369,6 @@ void QgsMeshMemoryDataProvider::addGroupToTemporalCapabilities( int groupIndex, 
       if ( group.memoryDatasets.at( i ) )
         tempCap->addDatasetTime( groupIndex, group.memoryDatasets.at( i )->time );
   }
-
 }
 
 int QgsMeshMemoryDataProvider::vertexCount() const
@@ -396,7 +398,7 @@ void QgsMeshMemoryDataProvider::populateMesh( QgsMesh *mesh ) const
 
 QgsRectangle QgsMeshMemoryDataProvider::extent() const
 {
-  return calculateExtent( );
+  return calculateExtent();
 }
 
 bool QgsMeshMemoryDataProvider::addDataset( const QString &uri )
@@ -461,12 +463,9 @@ QgsMeshDatasetGroupMetadata QgsMeshMemoryDataProvider::datasetGroupMetadata( int
 }
 
 
-
 QgsMeshDatasetMetadata QgsMeshMemoryDataProvider::datasetMetadata( QgsMeshDatasetIndex index ) const
 {
-  if ( ( index.group() >= 0 ) && ( index.group() < datasetGroupCount() ) &&
-       ( index.dataset() >= 0 ) && ( index.dataset() < datasetCount( index.group() ) )
-     )
+  if ( ( index.group() >= 0 ) && ( index.group() < datasetGroupCount() ) && ( index.dataset() >= 0 ) && ( index.dataset() < datasetCount( index.group() ) ) )
   {
     const QgsMeshMemoryDatasetGroup &grp = mDatasetGroups.at( index.group() );
     QgsMeshDatasetMetadata metadata(
@@ -474,8 +473,7 @@ QgsMeshDatasetMetadata QgsMeshMemoryDataProvider::datasetMetadata( QgsMeshDatase
       grp.memoryDatasets[index.dataset()]->valid,
       grp.memoryDatasets[index.dataset()]->minimum,
       grp.memoryDatasets[index.dataset()]->maximum,
-      0
-    );
+      0 );
     return metadata;
   }
   else
@@ -486,9 +484,7 @@ QgsMeshDatasetMetadata QgsMeshMemoryDataProvider::datasetMetadata( QgsMeshDatase
 
 QgsMeshDatasetValue QgsMeshMemoryDataProvider::datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const
 {
-  if ( ( index.group() >= 0 ) && ( index.group() < datasetGroupCount() ) &&
-       ( index.dataset() >= 0 ) && ( index.dataset() < datasetCount( index.group() ) ) &&
-       ( valueIndex >= 0 ) && ( valueIndex < mDatasetGroups[index.group()].memoryDatasets[index.dataset()]->values.count() ) )
+  if ( ( index.group() >= 0 ) && ( index.group() < datasetGroupCount() ) && ( index.dataset() >= 0 ) && ( index.dataset() < datasetCount( index.group() ) ) && ( valueIndex >= 0 ) && ( valueIndex < mDatasetGroups[index.group()].memoryDatasets[index.dataset()]->values.count() ) )
   {
     return mDatasetGroups[index.group()].memoryDatasets[index.dataset()]->values[valueIndex];
   }
@@ -526,7 +522,6 @@ QgsMesh3DDataBlock QgsMeshMemoryDataProvider::dataset3dValues( QgsMeshDatasetInd
 }
 
 
-
 bool QgsMeshMemoryDataProvider::isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const
 {
   if ( mDatasetGroups[index.group()].memoryDatasets[index.dataset()]->active.isEmpty() )
@@ -556,13 +551,12 @@ QgsMeshDataBlock QgsMeshMemoryDataProvider::areFacesActive( QgsMeshDatasetIndex 
 }
 
 
-
 bool QgsMeshMemoryDataProvider::persistDatasetGroup( const QString &outputFilePath,
-    const QString &outputDriver,
-    const QgsMeshDatasetGroupMetadata &meta,
-    const QVector<QgsMeshDataBlock> &datasetValues,
-    const QVector<QgsMeshDataBlock> &datasetActive,
-    const QVector<double> &times )
+                                                     const QString &outputDriver,
+                                                     const QgsMeshDatasetGroupMetadata &meta,
+                                                     const QVector<QgsMeshDataBlock> &datasetValues,
+                                                     const QVector<QgsMeshDataBlock> &datasetActive,
+                                                     const QVector<double> &times )
 {
   Q_UNUSED( outputFilePath )
   Q_UNUSED( outputDriver )
@@ -574,9 +568,9 @@ bool QgsMeshMemoryDataProvider::persistDatasetGroup( const QString &outputFilePa
 }
 
 bool QgsMeshMemoryDataProvider::persistDatasetGroup( const QString &outputFilePath,
-    const QString &outputDriver,
-    QgsMeshDatasetSourceInterface *source,
-    int datasetGroupIndex )
+                                                     const QString &outputDriver,
+                                                     QgsMeshDatasetSourceInterface *source,
+                                                     int datasetGroupIndex )
 {
   Q_UNUSED( outputFilePath )
   Q_UNUSED( outputDriver )
@@ -611,7 +605,6 @@ QgsRectangle QgsMeshMemoryDataProvider::calculateExtent() const
 QgsMeshMemoryProviderMetadata::QgsMeshMemoryProviderMetadata()
   : QgsProviderMetadata( QgsMeshMemoryDataProvider::providerKey(), QgsMeshMemoryDataProvider::providerDescription() )
 {
-
 }
 
 QIcon QgsMeshMemoryProviderMetadata::icon() const

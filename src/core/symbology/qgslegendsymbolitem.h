@@ -35,7 +35,6 @@ class QgsSymbol;
 class CORE_EXPORT QgsLegendSymbolItem
 {
   public:
-
     QgsLegendSymbolItem() = default;
 
     /**
@@ -149,9 +148,9 @@ class CORE_EXPORT QgsLegendSymbolItem
     //! Key of the parent legend node. For legends with tree hierarchy
     QString mParentKey;
 
-    QMap< int, QVariant > mUserData;
+    QMap<int, QVariant> mUserData;
 };
 
-typedef QList< QgsLegendSymbolItem > QgsLegendSymbolList;
+typedef QList<QgsLegendSymbolItem> QgsLegendSymbolList;
 
 #endif // QGSLEGENDSYMBOLITEM_H

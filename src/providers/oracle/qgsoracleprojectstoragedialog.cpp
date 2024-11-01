@@ -53,7 +53,7 @@ QgsOracleProjectStorageDialog::QgsOracleProjectStorageDialog( bool saving, QWidg
     setWindowTitle( tr( "Load project from Oracle" ) );
   }
 
-  connect( mCboConnection, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsOracleProjectStorageDialog::populateOwners );
+  connect( mCboConnection, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsOracleProjectStorageDialog::populateOwners );
 
   mLblProjectsNotAllowed->setVisible( false );
 
@@ -65,7 +65,7 @@ QgsOracleProjectStorageDialog::QgsOracleProjectStorageDialog( bool saving, QWidg
   mCboConnection->setCurrentIndex( mCboConnection->findText( toSelect ) );
   populateProjects();
 
-  connect( mCboOwner, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsOracleProjectStorageDialog::populateProjects );
+  connect( mCboOwner, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsOracleProjectStorageDialog::populateProjects );
   connect( mCboProject, &QComboBox::currentTextChanged, this, &QgsOracleProjectStorageDialog::projectChanged );
 
   projectChanged();

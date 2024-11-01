@@ -29,7 +29,7 @@
 #include <QJsonArray>
 
 QMutex QgsNominatimGeocoder::sMutex;
-typedef QMap< QUrl, QList< QgsGeocoderResult > > CachedGeocodeResult;
+typedef QMap<QUrl, QList<QgsGeocoderResult>> CachedGeocodeResult;
 Q_GLOBAL_STATIC( CachedGeocodeResult, sCachedResults )
 qint64 QgsNominatimGeocoder::sLastRequestTimestamp = 0;
 
@@ -133,7 +133,7 @@ QList<QgsGeocoderResult> QgsNominatimGeocoder::geocodeString( const QString &str
     return QList<QgsGeocoderResult>();
   }
 
-  QList< QgsGeocoderResult > matches;
+  QList<QgsGeocoderResult> matches;
   matches.reserve( results.size() );
   for ( const QVariant &result : results )
   {

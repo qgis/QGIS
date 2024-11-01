@@ -39,7 +39,7 @@ void QgsMapToolProfileCurveFromFeature::canvasPressEvent( QgsMapMouseEvent *e )
     e->ignore();
 
     const QList<QgsMapToolIdentify::IdentifyResult> results = QgsIdentifyMenu::findFeaturesOnCanvas( e, mCanvas, { Qgis::GeometryType::Line } );
-    if ( results.empty( ) )
+    if ( results.empty() )
       return;
 
     QgsIdentifyMenu *menu = new QgsIdentifyMenu( mCanvas );
@@ -67,4 +67,3 @@ void QgsMapToolProfileCurveFromFeature::canvasPressEvent( QgsMapMouseEvent *e )
     }
   }
 }
-

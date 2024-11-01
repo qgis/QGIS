@@ -100,7 +100,8 @@ void QgsAlignRastersAlgorithm::initAlgorithm( const QVariantMap & )
 
 struct QgsAlignRasterProgress : public QgsAlignRaster::ProgressHandler
 {
-    explicit QgsAlignRasterProgress( QgsFeedback *feedback ) : mFeedback( feedback ) {}
+    explicit QgsAlignRasterProgress( QgsFeedback *feedback )
+      : mFeedback( feedback ) {}
     bool progress( double complete ) override
     {
       mFeedback->setProgress( complete * 100 );

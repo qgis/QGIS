@@ -94,7 +94,6 @@ class QgsWmsLayerInfos
     Qgis::LayerType type;
 
   public:
-
     /**
      * Returns the WMS layers definition to build WMS capabilities
      *
@@ -109,7 +108,7 @@ class QgsWmsLayerInfos
      *
      * \since QGIS 3.28.0
      */
-    static QMap< QString, QgsWmsLayerInfos > buildWmsLayerInfos(
+    static QMap<QString, QgsWmsLayerInfos> buildWmsLayerInfos(
       QgsServerInterface *serverIface,
       const QgsProject *project,
       const QList<QgsCoordinateReferenceSystem> &outputCrsList );
@@ -126,7 +125,7 @@ class QgsWmsLayerInfos
      *
      * \since QGIS 3.28.0
      */
-    static QMap< QString, QgsRectangle > transformExtentToCrsList(
+    static QMap<QString, QgsRectangle> transformExtentToCrsList(
       const QgsRectangle &extent,
       const QgsCoordinateReferenceSystem &source,
       const QList<QgsCoordinateReferenceSystem> &destinations,

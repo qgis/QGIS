@@ -51,7 +51,7 @@ using namespace pal;
 
 QgsMeshLayerLabelProvider::QgsMeshLayerLabelProvider( QgsMeshLayer *layer, const QString &providerId, const QgsPalLayerSettings *settings, const QString &layerName, bool labelFaces )
   : QgsAbstractLabelProvider( layer, providerId )
-  , mSettings( settings ? * settings : QgsPalLayerSettings() )
+  , mSettings( settings ? *settings : QgsPalLayerSettings() )
   , mLabelFaces( labelFaces )
   , mCrs( layer->crs() )
 {
@@ -75,12 +75,12 @@ void QgsMeshLayerLabelProvider::init()
   mPriority = 1 - mSettings.priority / 10.0; // convert 0..10 --> 1..0
 
   mVectorLabelProvider = std::make_unique<QgsVectorLayerLabelProvider>(
-                           mLabelFaces ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Point,
-                           QgsFields(),
-                           mCrs,
-                           QString(),
-                           &mSettings,
-                           mLayer );
+    mLabelFaces ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Point,
+    QgsFields(),
+    mCrs,
+    QString(),
+    &mSettings,
+    mLayer );
 
   if ( mLabelFaces )
   {
@@ -128,10 +128,10 @@ QList<QgsLabelFeature *> QgsMeshLayerLabelProvider::labelFeatures( QgsRenderCont
   return mLabels;
 }
 
-QList< QgsLabelFeature * > QgsMeshLayerLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
+QList<QgsLabelFeature *> QgsMeshLayerLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
 {
-  std::unique_ptr< QgsLabelFeature > label = mSettings.registerFeatureWithDetails( feature, context, obstacleGeometry, symbol );
-  QList< QgsLabelFeature * > res;
+  std::unique_ptr<QgsLabelFeature> label = mSettings.registerFeatureWithDetails( feature, context, obstacleGeometry, symbol );
+  QList<QgsLabelFeature *> res;
   if ( label )
   {
     res << label.get();

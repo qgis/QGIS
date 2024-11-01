@@ -29,10 +29,9 @@
  * \note not available in Python bindings
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsOgrProxyTextCodec: public QTextCodec
+class CORE_EXPORT QgsOgrProxyTextCodec : public QTextCodec
 {
   public:
-
     /**
      * Constructor for QgsOgrProxyTextCodec, for the specified encoding \a name.
      */
@@ -51,7 +50,6 @@ class CORE_EXPORT QgsOgrProxyTextCodec: public QTextCodec
     static QStringList supportedCodecs();
 
   private:
-
     QByteArray mName;
 };
 

@@ -60,7 +60,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   }
 
   // Draw current tool
-  if ( QgsAdvancedDigitizingTool *tool =  mAdvancedDigitizingDockWidget->tool() )
+  if ( QgsAdvancedDigitizingTool *tool = mAdvancedDigitizingDockWidget->tool() )
   {
     // if a tool is active in the dock, then delegate to that tool to handle decorating the canvas instead of using the default decorations
     tool->paint( painter );
@@ -91,7 +91,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     return;
 
   const double canvasRotationRad = mMapCanvas->rotation() * M_PI / 180;
-  const double canvasDiagonalDimension = ( canvasWidth + canvasHeight ) / mupp ;
+  const double canvasDiagonalDimension = ( canvasWidth + canvasHeight ) / mupp;
 
   QPointF curPointPix, prevPointPix, penulPointPix, snapSegmentPix1, snapSegmentPix2;
 
@@ -249,7 +249,6 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     {
       painter->drawLine( toCanvasCoordinates( QgsPointXY( mapPoly[0].x(), y ) ) - canvasDiagonalDimension * QPointF( std::cos( -canvasRotationRad ), -std::sin( -canvasRotationRad ) ),
                          toCanvasCoordinates( QgsPointXY( mapPoly[0].x(), y ) ) + canvasDiagonalDimension * QPointF( std::cos( -canvasRotationRad ), -std::sin( -canvasRotationRad ) ) );
-
     }
   }
 
@@ -279,9 +278,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   }
 
   auto lineExtensionSide = mAdvancedDigitizingDockWidget->lineExtensionSide();
-  if ( mAdvancedDigitizingDockWidget->constraintLineExtension()->isLocked() &&
-       lineExtensionSide != Qgis::LineExtensionSide::NoVertex &&
-       !mAdvancedDigitizingDockWidget->lockedSnapVertices().isEmpty() )
+  if ( mAdvancedDigitizingDockWidget->constraintLineExtension()->isLocked() && lineExtensionSide != Qgis::LineExtensionSide::NoVertex && !mAdvancedDigitizingDockWidget->lockedSnapVertices().isEmpty() )
   {
     painter->setPen( mLockedPen );
 
@@ -328,7 +325,6 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
       painter->drawLine( snappedPoint + ( canvasPadding - canvasDiagonalDimension ) * QPointF( std::cos( angle ), std::sin( angle ) ),
                          snappedPoint + ( canvasPadding + canvasDiagonalDimension ) * QPointF( std::cos( angle ), std::sin( angle ) ) );
     }
-
   }
 
   if ( mAdvancedDigitizingDockWidget->constraintXyVertex()->isLocked() )
@@ -356,7 +352,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
 
   painter->setPen( mCursorPen );
 
-  const QList< QgsPointLocator::Match > lockedSnapVertices = mAdvancedDigitizingDockWidget->lockedSnapVertices();
+  const QList<QgsPointLocator::Match> lockedSnapVertices = mAdvancedDigitizingDockWidget->lockedSnapVertices();
   for ( const QgsPointLocator::Match &snapMatch : lockedSnapVertices )
   {
     const QgsPointXY point = snapMatch.point();
@@ -387,11 +383,9 @@ void QgsAdvancedDigitizingCanvasItem::updatePosition()
   const double canvasWidth = QLineF( mapPoly[0], mapPoly[1] ).length();
   const double canvasHeight = QLineF( mapPoly[0], mapPoly[3] ).length();
   const QgsRectangle mapRect = QgsRectangle( mapPoly[0],
-                               QgsPointXY(
-                                 mapPoly[0].x() + canvasWidth,
-                                 mapPoly[0].y() - canvasHeight
-                               )
-                                           );
+                                             QgsPointXY(
+                                               mapPoly[0].x() + canvasWidth,
+                                               mapPoly[0].y() - canvasHeight ) );
   if ( rect() != mapRect )
     setRect( mapRect );
 }

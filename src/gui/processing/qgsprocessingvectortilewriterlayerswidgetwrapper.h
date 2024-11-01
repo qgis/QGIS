@@ -52,7 +52,6 @@ class QgsProcessingVectorTileWriterLayersPanelWidget : public QgsProcessingMulti
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingVectorTileWriterLayersPanelWidget.
      */
@@ -75,13 +74,11 @@ class QgsProcessingVectorTileWriterLayersPanelWidget : public QgsProcessingMulti
 };
 
 
-
 class QgsProcessingVectorTileWriterLayersWidget : public QWidget
 {
     Q_OBJECT
 
   public:
-
     QgsProcessingVectorTileWriterLayersWidget( QWidget *parent = nullptr );
 
     QVariant value() const { return mValue; }
@@ -98,7 +95,6 @@ class QgsProcessingVectorTileWriterLayersWidget : public QWidget
     void showDialog();
 
   private:
-
     void updateSummaryText();
 
     QLineEdit *mLineEdit = nullptr;
@@ -117,9 +113,8 @@ class QgsProcessingVectorTileWriterLayersWidgetWrapper : public QgsAbstractProce
     Q_OBJECT
 
   public:
-
     QgsProcessingVectorTileWriterLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
-        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+                                                      QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
 
     // QgsProcessingParameterWidgetFactoryInterface
     QString parameterType() const override;
@@ -130,7 +125,6 @@ class QgsProcessingVectorTileWriterLayersWidgetWrapper : public QgsAbstractProce
     void setWidgetContext( const QgsProcessingParameterWidgetContext &context ) override;
 
   protected:
-
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
@@ -138,7 +132,6 @@ class QgsProcessingVectorTileWriterLayersWidgetWrapper : public QgsAbstractProce
     QStringList compatibleOutputTypes() const override;
 
   private:
-
     QgsProcessingVectorTileWriterLayersWidget *mPanel = nullptr;
 
     friend class TestProcessingGui;

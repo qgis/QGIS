@@ -41,7 +41,6 @@ class QgsSettings;
 class CORE_EXPORT QgsHttpHeaders
 {
   public:
-
 #ifndef SIP_RUN
 
     //! Used in settings as the group name
@@ -90,7 +89,7 @@ class CORE_EXPORT QgsHttpHeaders
      * \brief Returns the headers as a variant map
      * \since QGIS 3.30
      */
-    QVariantMap headers() const {return mHeaders;}
+    QVariantMap headers() const { return mHeaders; }
 
     /**
      * \brief Updates the \a settings by adding all the http headers in the path "key/PATH_PREFIX/"
@@ -180,7 +179,7 @@ class CORE_EXPORT QgsHttpHeaders
      */
     QVariant &operator[]( const QString &key );
 
-    QgsHttpHeaders &operator = ( const QMap<QString, QVariant> &headers ) SIP_SKIP;
+    QgsHttpHeaders &operator=( const QMap<QString, QVariant> &headers ) SIP_SKIP;
 
     /**
      * \brief insert a \a key with the specific \a value

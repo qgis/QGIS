@@ -48,7 +48,6 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAnnotationManager. The project will become the parent object for this
      * manager.
@@ -86,7 +85,7 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
      * Returns a list of all annotations contained in the manager.
      * \see cloneAnnotations()
      */
-    QList< QgsAnnotation * > annotations() const;
+    QList<QgsAnnotation *> annotations() const;
 
     /**
      * Returns a list containing clones of all annotations contained
@@ -94,7 +93,7 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
      * all returned annotations.
      * \see annotations()
      */
-    QList< QgsAnnotation * > cloneAnnotations() const SIP_FACTORY;
+    QList<QgsAnnotation *> cloneAnnotations() const SIP_FACTORY;
 
     /**
      * Reads the manager's state from a DOM element, restoring all annotations
@@ -116,7 +115,7 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
      * \since QGIS 3.40
      */
     bool readXmlAndUpgradeToAnnotationLayerItems( const QDomElement &element, const QgsReadWriteContext &context,
-        QgsAnnotationLayer *layer, const QgsCoordinateTransformContext &transformContext ) SIP_SKIP;
+                                                  QgsAnnotationLayer *layer, const QgsCoordinateTransformContext &transformContext ) SIP_SKIP;
 
     /**
      * Returns a DOM element representing the state of the manager.
@@ -147,17 +146,15 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
     void annotationAboutToBeRemoved( QgsAnnotation *annotation );
 
   private:
-
     bool readXmlPrivate( const QDomElement &element, const QgsReadWriteContext &context, QgsAnnotationLayer *layer, const QgsCoordinateTransformContext &transformContext );
-    static std::unique_ptr< QgsAnnotationItem > convertToAnnotationItem( QgsAnnotation *annotation, QgsAnnotationLayer *layer,
-        const QgsCoordinateTransformContext &transformContext );
+    static std::unique_ptr<QgsAnnotationItem> convertToAnnotationItem( QgsAnnotation *annotation, QgsAnnotationLayer *layer,
+                                                                       const QgsCoordinateTransformContext &transformContext );
 
     QgsProject *mProject = nullptr;
 
-    QList< QgsAnnotation * > mAnnotations;
+    QList<QgsAnnotation *> mAnnotations;
 
     QgsAnnotation *createAnnotationFromXml( const QDomElement &element, const QgsReadWriteContext &context );
-
 };
 
 #endif // QGSANNOTATIONMANAGER_H

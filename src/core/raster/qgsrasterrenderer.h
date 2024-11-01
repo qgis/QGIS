@@ -39,11 +39,9 @@ class QgsLayerTreeLayer;
   */
 class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 {
-
     Q_DECLARE_TR_FUNCTIONS( QgsRasterRenderer ) // cppcheck-suppress duplInheritedMember
 
   public:
-
     static const QRgb NODATA_COLOR;
 
     /**
@@ -81,7 +79,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      *
      *  \since QGIS 3.30
      */
-    virtual bool canCreateRasterAttributeTable( ) const;
+    virtual bool canCreateRasterAttributeTable() const;
 
     bool setInput( QgsRasterInterface *input ) override;
 
@@ -169,7 +167,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      *
      * \see createLegendNodes()
      */
-    virtual QList< QPair< QString, QColor > > legendSymbologyItems() const;
+    virtual QList<QPair<QString, QColor>> legendSymbologyItems() const;
 
     /**
      * Creates a set of legend nodes representing the renderer.
@@ -223,7 +221,6 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
   protected:
-
     //! Write upper class info into rasterrenderer element (called by writeXml method of subclasses)
     void _writeXml( QDomDocument &doc, QDomElement &rasterRendererElem ) const;
 
@@ -254,14 +251,12 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     QRgb renderColorForNodataPixel() const;
 
   private:
-
     QColor mNodataColor;
 
 #ifdef SIP_RUN
     QgsRasterRenderer( const QgsRasterRenderer & );
     const QgsRasterRenderer &operator=( const QgsRasterRenderer & );
 #endif
-
 };
 
 #endif // QGSRASTERRENDERER_H

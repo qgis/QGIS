@@ -31,7 +31,6 @@ class APP_EXPORT QgsUserProfileOptionsWidget : public QgsOptionsPageWidget, priv
     Q_OBJECT
 
   public:
-
     //! Constructor for QgsUserProfileOptionsWidget with the specified \a parent widget.
     QgsUserProfileOptionsWidget( QWidget *parent );
     QString helpKey() const override;
@@ -55,12 +54,10 @@ class QgsUserProfileOptionsFactory : public QgsOptionsWidgetFactory
     Q_OBJECT
 
   public:
-
     QgsUserProfileOptionsFactory();
 
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
     QString pagePositionHint() const override;
-
 };
 
 

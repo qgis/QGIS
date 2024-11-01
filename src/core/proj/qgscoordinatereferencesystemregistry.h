@@ -40,13 +40,13 @@ class QgsProjOperation;
  */
 struct CORE_EXPORT QgsCrsDbRecord
 {
-  QString description;
-  QString projectionAcronym;
-  QString srsId;
-  QString authName;
-  QString authId;
-  Qgis::CrsType type = Qgis::CrsType::Unknown;
-  bool deprecated = false;
+    QString description;
+    QString projectionAcronym;
+    QString srsId;
+    QString authName;
+    QString authId;
+    Qgis::CrsType type = Qgis::CrsType::Unknown;
+    bool deprecated = false;
 };
 #endif
 
@@ -65,7 +65,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsCoordinateReferenceSystemRegistry, with the specified \a parent object.
      */
@@ -81,7 +80,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
     class UserCrsDetails
     {
       public:
-
         //! CRS ID
         long id = -1;
 
@@ -105,7 +103,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      * Returns a list containing the details of all registered
      * custom (user-defined) CRSes.
      */
-    QList< QgsCoordinateReferenceSystemRegistry::UserCrsDetails > userCrsList() const;
+    QList<QgsCoordinateReferenceSystemRegistry::UserCrsDetails> userCrsList() const;
 
     /**
      * Adds a new \a crs definition as a custom ("USER") CRS.
@@ -157,7 +155,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      *
      * \since QGIS 3.20
      */
-    QMap< QString, QgsProjOperation > projOperations() const;
+    QMap<QString, QgsProjOperation> projOperations() const;
 
     /**
      * Returns a list of all known celestial bodies.
@@ -168,7 +166,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      *
      * \since QGIS 3.20
      */
-    QList< QgsCelestialBody > celestialBodies() const;
+    QList<QgsCelestialBody> celestialBodies() const;
 
     /**
      * Returns a list of all known authorities.
@@ -177,7 +175,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      *
      * \since QGIS 3.34
      */
-    QSet< QString > authorities() const;
+    QSet<QString> authorities() const;
 
     /**
      * Returns the list of records from the QGIS srs db.
@@ -185,14 +183,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      * \note Not available in Python bindings
      * \since QGIS 3.34
      */
-    QList< QgsCrsDbRecord > crsDbRecords() const SIP_SKIP;
+    QList<QgsCrsDbRecord> crsDbRecords() const SIP_SKIP;
 
     /**
      * Returns a list of recently used CRS.
      *
      * \since QGIS 3.36
     */
-    QList< QgsCoordinateReferenceSystem > recentCrs();
+    QList<QgsCoordinateReferenceSystem> recentCrs();
 
     /**
      * Pushes a recently used CRS to the top of the recent CRS list.
@@ -289,13 +287,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
     void recentCrsCleared();
 
   private:
-
     bool insertProjection( const QString &projectionAcronym );
 
     mutable QReadWriteLock mCrsDbRecordsLock;
     mutable bool mCrsDbRecordsPopulated = false;
-    mutable QList< QgsCrsDbRecord > mCrsDbRecords;
-
+    mutable QList<QgsCrsDbRecord> mCrsDbRecords;
 };
 
 

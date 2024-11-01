@@ -40,7 +40,6 @@
 class CORE_EXPORT QgsLayoutSize
 {
   public:
-
     /**
      * Constructor for QgsLayoutSize.
      * \param width width
@@ -180,17 +179,18 @@ class CORE_EXPORT QgsLayoutSize
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsLayoutSize: %1 x %2 %3 >" ).arg( sipCpp->width() ).arg( sipCpp->height() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
+        QString str
+      = QStringLiteral( "<QgsLayoutSize: %1 x %2 %3 >" ).arg( sipCpp->width() ).arg( sipCpp->height() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-  private:
+      private :
 
-    double mWidth = 0.0;
+      double mWidth
+      = 0.0;
     double mHeight = 0.0;
     Qgis::LayoutUnit mUnits = Qgis::LayoutUnit::Millimeters;
-
 };
 
 #endif // QGSLAYOUTSIZE_H

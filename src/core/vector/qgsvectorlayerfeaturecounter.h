@@ -35,7 +35,6 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
     Q_OBJECT
 
   public:
-
     /**
      * Create a new feature counter for \a layer.
      * \param layer Target QgsVectorLayer to perform counting on.
@@ -97,10 +96,9 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
     QgsExpressionContext mExpressionContext;
     QHash<QString, long long> mSymbolFeatureCountMap;
     QHash<QString, QgsFeatureIds> mSymbolFeatureIdMap;
-    std::unique_ptr< QgsFeedback > mFeedback;
+    std::unique_ptr<QgsFeedback> mFeedback;
     bool mWithFids = false;
     long mFeatureCount = 0;
-
 };
 
 #endif // QGSVECTORLAYERFEATURECOUNTER_H

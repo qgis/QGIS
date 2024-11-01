@@ -21,7 +21,7 @@
 #include "qgsmaptoolannotation.h"
 #include "qgis_app.h"
 
-class APP_EXPORT QgsMapToolHtmlAnnotation: public QgsMapToolAnnotation
+class APP_EXPORT QgsMapToolHtmlAnnotation : public QgsMapToolAnnotation
 {
     Q_OBJECT
 

@@ -35,15 +35,13 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     Q_OBJECT
 
   public:
-
     /**
      * Available connection types for configuring in the dialog.
      */
-    enum ConnectionType SIP_ENUM_BASETYPE( IntFlag )
-    {
-      ConnectionWfs = 1 << 1, //!< WFS connection
-      ConnectionWms = 1 << 2, //!< WMS connection
-      ConnectionWcs = 1 << 3, //!< WCS connection
+    enum ConnectionType SIP_ENUM_BASETYPE( IntFlag ) {
+      ConnectionWfs = 1 << 1,   //!< WFS connection
+      ConnectionWms = 1 << 2,   //!< WMS connection
+      ConnectionWcs = 1 << 3,   //!< WCS connection
       ConnectionOther = 1 << 4, //!< Other connection type
     };
     Q_DECLARE_FLAGS( ConnectionTypes, ConnectionType )
@@ -51,11 +49,10 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     /**
      * Flags controlling dialog behavior.
      */
-    enum Flag SIP_ENUM_BASETYPE( IntFlag )
-    {
-      FlagShowTestConnection = 1 << 1, //!< Display the 'test connection' button
+    enum Flag SIP_ENUM_BASETYPE( IntFlag ) {
+      FlagShowTestConnection = 1 << 1,      //!< Display the 'test connection' button
       FlagHideAuthenticationGroup = 1 << 2, //!< Hide the Authentication group
-      FlagShowHttpSettings = 1 << 3, //!< Display the 'http' group
+      FlagShowHttpSettings = 1 << 3,        //!< Display the 'http' group
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -98,7 +95,6 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     void wfsFeaturePagingCurrentIndexChanged( int index );
 
   protected:
-
     //! Index of wfsVersionComboBox
     enum WfsVersionIndex
     {
@@ -191,13 +187,11 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     void updateServiceSpecificSettings();
 
   private:
-
     ConnectionTypes mTypes = ConnectionWms;
 
     QString mServiceName;
     QString mOriginalConnName; //store initial name to delete entry in case of rename
     void showHelp();
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsNewHttpConnection::ConnectionTypes )

@@ -33,7 +33,6 @@
 class QgsRandomPointsOnLinesAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-
     QgsRandomPointsOnLinesAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomPointsOnLines.svg" ) ); }

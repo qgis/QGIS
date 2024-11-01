@@ -163,8 +163,8 @@ void QgsStackedBarDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCo
     return;
   }
 
-  QList< QPair<double, QColor> > values;
-  QList< QPair<double, QColor> > negativeValues;
+  QList<QPair<double, QColor>> values;
+  QList<QPair<double, QColor>> negativeValues;
 
   QgsExpressionContext expressionContext = c.expressionContext();
   expressionContext.setFeature( feature );
@@ -175,7 +175,7 @@ void QgsStackedBarDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCo
   double total = 0;
   double negativeTotal = 0;
 
-  QList< QColor >::const_iterator colIt = s.categoryColors.constBegin();
+  QList<QColor>::const_iterator colIt = s.categoryColors.constBegin();
   for ( const QString &cat : std::as_const( s.categoryAttributes ) )
   {
     QgsExpression *expression = getExpression( cat, expressionContext );
@@ -242,7 +242,7 @@ void QgsStackedBarDiagram::renderDiagram( const QgsFeature &feature, QgsRenderCo
   }
 
   double currentOffset = 0;
-  QList< QPair<double, QColor> >::const_iterator valIt = values.constBegin();
+  QList<QPair<double, QColor>>::const_iterator valIt = values.constBegin();
   for ( ; valIt != values.constEnd(); ++valIt )
   {
     double length = valIt->first / total * scaledMaxVal;

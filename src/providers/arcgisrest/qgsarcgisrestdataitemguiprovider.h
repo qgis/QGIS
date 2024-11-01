@@ -25,7 +25,6 @@ class QgsArcGisRestDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
     Q_OBJECT
 
   public:
-
     QgsArcGisRestDataItemGuiProvider() = default;
 
     QString name() override

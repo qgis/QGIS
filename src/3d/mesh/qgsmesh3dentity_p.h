@@ -50,6 +50,7 @@ class QgsMesh3DEntity
   public:
     //! Builds the geometry and the material
     void build();
+
   protected:
     //! Constructor
     QgsMesh3DEntity( const Qgs3DRenderContext &context,
@@ -60,7 +61,7 @@ class QgsMesh3DEntity
 
     Qgs3DRenderContext mRenderContext;
     QgsTriangularMesh mTriangularMesh;
-    std::unique_ptr< QgsMesh3DSymbol > mSymbol;
+    std::unique_ptr<QgsMesh3DSymbol> mSymbol;
 
   private:
     virtual void buildGeometry() = 0;
@@ -68,7 +69,7 @@ class QgsMesh3DEntity
 };
 
 //! Entity that handles rendering of dataset
-class QgsMeshDataset3DEntity: public Qt3DCore::QEntity, public QgsMesh3DEntity
+class QgsMeshDataset3DEntity : public Qt3DCore::QEntity, public QgsMesh3DEntity
 {
     Q_OBJECT
 
@@ -85,11 +86,10 @@ class QgsMeshDataset3DEntity: public Qt3DCore::QEntity, public QgsMesh3DEntity
 
     QgsMeshLayer *layer() const;
     QgsMapLayerRef mLayerRef;
-
 };
 
 //! Entity that handles rendering of terrain mesh
-class QgsMesh3DTerrainTileEntity: public QgsTerrainTileEntity, public QgsMesh3DEntity
+class QgsMesh3DTerrainTileEntity : public QgsTerrainTileEntity, public QgsMesh3DEntity
 {
     Q_OBJECT
 

@@ -37,13 +37,11 @@
  *
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
+class GUI_EXPORT QgsFieldMappingModel : public QAbstractTableModel
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * The ColumnDataIndex enum represents the column index for the view
      */
@@ -66,12 +64,12 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
      */
     struct Field
     {
-      //! The original name of the field
-      QString originalName;
-      //! The field in its current status (it might have been renamed)
-      QgsField field;
-      //! The expression for the mapped field from the source fields
-      QString expression;
+        //! The original name of the field
+        QString originalName;
+        //! The field in its current status (it might have been renamed)
+        QgsField field;
+        //! The expression for the mapped field from the source fields
+        QString expression;
     };
 
     /**
@@ -116,14 +114,14 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
      *
      * \see setFieldPropertyMap()
      */
-    QMap< QString, QgsProperty > fieldPropertyMap() const;
+    QMap<QString, QgsProperty> fieldPropertyMap() const;
 
     /**
      * Sets a map of destination field name to QgsProperty definition for field value.
      *
      * \see fieldPropertyMap()
      */
-    void setFieldPropertyMap( const QMap< QString, QgsProperty > &map );
+    void setFieldPropertyMap( const QMap<QString, QgsProperty> &map );
 
     //! Appends a new \a field to the model, with an optional \a expression
     void appendField( const QgsField &field, const QString &expression = QString() );
@@ -167,12 +165,9 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
   private:
-
-    class ExpressionContextGenerator: public QgsExpressionContextGenerator
+    class ExpressionContextGenerator : public QgsExpressionContextGenerator
     {
-
       public:
-
         ExpressionContextGenerator( const QgsFields &sourceFields );
 
         // QgsExpressionContextGenerator interface
@@ -181,11 +176,9 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
         void setSourceFields( const QgsFields &fields );
 
       private:
-
         const QgsExpressionContextGenerator *mBaseGenerator = nullptr;
 
         QgsFields mSourceFields;
-
     };
 
 
@@ -222,9 +215,7 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
     std::unique_ptr<ExpressionContextGenerator> mExpressionContextGenerator;
 
     friend class QgsAggregateMappingModel;
-
 };
-
 
 
 #endif // QGSFIELDMAPPINGMODEL_H

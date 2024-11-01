@@ -35,16 +35,7 @@ QString QgsDoubleBoxScaleBarRenderer::visibleName() const
 
 QgsScaleBarRenderer::Flags QgsDoubleBoxScaleBarRenderer::flags() const
 {
-  return Flag::FlagUsesLineSymbol |
-         Flag::FlagUsesFillSymbol |
-         Flag::FlagUsesAlternateFillSymbol |
-         Flag::FlagRespectsUnits |
-         Flag::FlagRespectsMapUnitsPerScaleBarUnit |
-         Flag::FlagUsesUnitLabel |
-         Flag::FlagUsesSegments |
-         Flag::FlagUsesLabelBarSpace |
-         Flag::FlagUsesLabelVerticalPlacement |
-         Flag::FlagUsesLabelHorizontalPlacement;
+  return Flag::FlagUsesLineSymbol | Flag::FlagUsesFillSymbol | Flag::FlagUsesAlternateFillSymbol | Flag::FlagRespectsUnits | Flag::FlagRespectsMapUnitsPerScaleBarUnit | Flag::FlagUsesUnitLabel | Flag::FlagUsesSegments | Flag::FlagUsesLabelBarSpace | Flag::FlagUsesLabelVerticalPlacement | Flag::FlagUsesLabelHorizontalPlacement;
 }
 
 int QgsDoubleBoxScaleBarRenderer::sortKey() const
@@ -74,13 +65,13 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
   painter->save();
   context.setPainterFlagsUsingContext( painter );
 
-  std::unique_ptr< QgsLineSymbol > lineSymbol( settings.lineSymbol()->clone() );
+  std::unique_ptr<QgsLineSymbol> lineSymbol( settings.lineSymbol()->clone() );
   lineSymbol->startRender( context );
 
-  std::unique_ptr< QgsFillSymbol > fillSymbol1( settings.fillSymbol()->clone() );
+  std::unique_ptr<QgsFillSymbol> fillSymbol1( settings.fillSymbol()->clone() );
   fillSymbol1->startRender( context );
 
-  std::unique_ptr< QgsFillSymbol > fillSymbol2( settings.alternateFillSymbol()->clone() );
+  std::unique_ptr<QgsFillSymbol> fillSymbol2( settings.alternateFillSymbol()->clone() );
   fillSymbol2->startRender( context );
 
   painter->setPen( Qt::NoPen );
@@ -118,11 +109,11 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
 
     const QRectF segmentRectTop( thisX, barTopPosition, thisWidth, segmentHeight );
     currentSymbol->renderPolygon( QPolygonF()
-                                  << segmentRectTop.topLeft()
-                                  << segmentRectTop.topRight()
-                                  << segmentRectTop.bottomRight()
-                                  << segmentRectTop.bottomLeft()
-                                  << segmentRectTop.topLeft(),
+                                    << segmentRectTop.topLeft()
+                                    << segmentRectTop.topRight()
+                                    << segmentRectTop.bottomRight()
+                                    << segmentRectTop.bottomLeft()
+                                    << segmentRectTop.topLeft(),
                                   nullptr, nullptr, context );
     painter->drawRect( segmentRectTop );
 
@@ -134,17 +125,18 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
     }
     else //primary symbol
     {
-      currentSymbol = fillSymbol1.get(); ;
+      currentSymbol = fillSymbol1.get();
+      ;
     }
 
     const QRectF segmentRectBottom( thisX, barTopPosition + segmentHeight, thisWidth, segmentHeight );
 
     currentSymbol->renderPolygon( QPolygonF()
-                                  << segmentRectBottom.topLeft()
-                                  << segmentRectBottom.topRight()
-                                  << segmentRectBottom.bottomRight()
-                                  << segmentRectBottom.bottomLeft()
-                                  << segmentRectBottom.topLeft(),
+                                    << segmentRectBottom.topLeft()
+                                    << segmentRectBottom.topRight()
+                                    << segmentRectBottom.bottomRight()
+                                    << segmentRectBottom.bottomLeft()
+                                    << segmentRectBottom.topLeft(),
                                   nullptr, nullptr, context );
     useColor = !useColor;
   }
@@ -159,25 +151,25 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
     {
       const double lineX = context.convertToPainterUnits( positions.at( i ), Qgis::RenderUnit::Millimeters ) + xOffset;
       lineSymbol->renderPolyline( QPolygonF()
-                                  << QPointF( lineX, barTopPosition )
-                                  << QPointF( lineX, barTopPosition + segmentHeight * 2 ),
+                                    << QPointF( lineX, barTopPosition )
+                                    << QPointF( lineX, barTopPosition + segmentHeight * 2 ),
                                   nullptr, context, layer );
     }
 
     // middle horizontal line
     lineSymbol->renderPolyline( QPolygonF()
-                                << QPointF( minX, barTopPosition + segmentHeight )
-                                << QPointF( maxX, barTopPosition + segmentHeight ),
+                                  << QPointF( minX, barTopPosition + segmentHeight )
+                                  << QPointF( maxX, barTopPosition + segmentHeight ),
                                 nullptr, context, layer );
 
 
     // outside line
     lineSymbol->renderPolyline( QPolygonF()
-                                << QPointF( minX, barTopPosition )
-                                << QPointF( maxX, barTopPosition )
-                                << QPointF( maxX, barTopPosition + segmentHeight * 2 )
-                                << QPointF( minX, barTopPosition + segmentHeight * 2 )
-                                << QPointF( minX, barTopPosition ),
+                                  << QPointF( minX, barTopPosition )
+                                  << QPointF( maxX, barTopPosition )
+                                  << QPointF( maxX, barTopPosition + segmentHeight * 2 )
+                                  << QPointF( minX, barTopPosition + segmentHeight * 2 )
+                                  << QPointF( minX, barTopPosition ),
                                 nullptr, context, layer );
   }
 

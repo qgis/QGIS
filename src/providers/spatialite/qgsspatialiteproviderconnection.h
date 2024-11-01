@@ -23,7 +23,7 @@
 #define SIP_NO_FILE
 
 
-struct QgsSpatialiteProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
+struct QgsSpatialiteProviderResultIterator : public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
     QgsSpatialiteProviderResultIterator( gdal::dataset_unique_ptr hDS, OGRLayerH ogrLayer );
 
@@ -34,7 +34,6 @@ struct QgsSpatialiteProviderResultIterator: public QgsAbstractDatabaseProviderCo
     void setGeometryColumnName( const QString &geometryColumnName );
 
   private:
-
     gdal::dataset_unique_ptr mHDS;
     OGRLayerH mOgrLayer;
     QgsFields mFields;
@@ -55,7 +54,6 @@ struct QgsSpatialiteProviderResultIterator: public QgsAbstractDatabaseProviderCo
 class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnection
 {
   public:
-
     QgsSpatiaLiteProviderConnection( const QString &name );
     // Note: URI must be in PG QgsDataSourceUri format ( "dbname='path_to_sqlite.db'" )
     QgsSpatiaLiteProviderConnection( const QString &uri, const QVariantMap &configuration );
@@ -75,7 +73,7 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     void createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions() ) const override;
     bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
-        const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
+                                                                        const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
     QIcon icon() const override;
     void deleteField( const QString &fieldName, const QString &schema, const QString &tableName, bool force ) const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
@@ -83,7 +81,6 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
 
   private:
-
     void setDefaultCapabilities();
     //! Use GDAL to execute SQL
     QgsAbstractDatabaseProviderConnection::QueryResult executeSqlPrivate( const QString &sql, QgsFeedback *feedback = nullptr ) const;
@@ -93,7 +90,6 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
 
     //! extract the path from the DS URI (which is in "PG" form: 'dbname=\'/path_to.sqlite\' table="table_name" (geom_col_name)')
     QString pathFromUri() const;
-
 };
 
 

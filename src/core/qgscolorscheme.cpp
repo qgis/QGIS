@@ -49,7 +49,7 @@ QgsNamedColorList QgsRecentColorScheme::fetchColors( const QString &context, con
 
   //fetch recent colors
   const QgsSettings settings;
-  const QList< QVariant > recentColorVariants = settings.value( QStringLiteral( "colors/recent" ) ).toList();
+  const QList<QVariant> recentColorVariants = settings.value( QStringLiteral( "colors/recent" ) ).toList();
 
   //generate list from recent colors
   QgsNamedColorList colorList;
@@ -78,7 +78,7 @@ void QgsRecentColorScheme::addRecentColor( const QColor &color )
   opaqueColor.setAlpha( 255 );
 
   QgsSettings settings;
-  QList< QVariant > recentColorVariants = settings.value( QStringLiteral( "colors/recent" ) ).toList();
+  QList<QVariant> recentColorVariants = settings.value( QStringLiteral( "colors/recent" ) ).toList();
 
   //remove colors by name
   for ( int colorIdx = recentColorVariants.length() - 1; colorIdx >= 0; --colorIdx )
@@ -106,7 +106,7 @@ QColor QgsRecentColorScheme::lastUsedColor()
 {
   //fetch recent colors
   const QgsSettings settings;
-  const QList< QVariant > recentColorVariants = settings.value( QStringLiteral( "colors/recent" ) ).toList();
+  const QList<QVariant> recentColorVariants = settings.value( QStringLiteral( "colors/recent" ) ).toList();
 
   if ( recentColorVariants.isEmpty() )
     return QColor();
@@ -141,12 +141,12 @@ QgsNamedColorList QgsCustomColorScheme::fetchColors( const QString &context, con
     return colorList;
   }
 
-  QList< QVariant > customColorVariants = settings.value( QStringLiteral( "colors/palettecolors" ) ).toList();
-  const QList< QVariant > customColorLabels = settings.value( QStringLiteral( "colors/palettelabels" ) ).toList();
+  QList<QVariant> customColorVariants = settings.value( QStringLiteral( "colors/palettecolors" ) ).toList();
+  const QList<QVariant> customColorLabels = settings.value( QStringLiteral( "colors/palettelabels" ) ).toList();
 
   //generate list from custom colors
   int colorIndex = 0;
-  for ( QList< QVariant >::iterator it = customColorVariants.begin();
+  for ( QList<QVariant>::iterator it = customColorVariants.begin();
         it != customColorVariants.end(); ++it )
   {
     const QColor color = ( *it ).value<QColor>();
@@ -170,8 +170,8 @@ bool QgsCustomColorScheme::setColors( const QgsNamedColorList &colors, const QSt
 
   // save colors to settings
   QgsSettings settings;
-  QList< QVariant > customColors;
-  QList< QVariant > customColorLabels;
+  QList<QVariant> customColors;
+  QList<QVariant> customColorLabels;
 
   QgsNamedColorList::const_iterator colorIt = colors.constBegin();
   for ( ; colorIt != colors.constEnd(); ++colorIt )
@@ -199,7 +199,7 @@ QgsNamedColorList QgsProjectColorScheme::fetchColors( const QString &context, co
 
   QgsNamedColorList colorList;
 
-  QStringList colorStrings = QgsProject::instance()->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ) ); // skip-keyword-check
+  QStringList colorStrings = QgsProject::instance()->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ) );      // skip-keyword-check
   const QStringList colorLabels = QgsProject::instance()->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Labels" ) ); // skip-keyword-check
 
   //generate list from custom colors
@@ -361,7 +361,7 @@ bool QgsUserColorScheme::erase()
   }
 
   // if file does not exist, nothing to do on the disk, so we can consider erasing done
-  if ( ! QFile::exists( filePath ) )
+  if ( !QFile::exists( filePath ) )
   {
     return true;
   }

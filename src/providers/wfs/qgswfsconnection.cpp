@@ -26,7 +26,7 @@ static const QString SERVICE_WFS = QStringLiteral( "WFS" );
 QgsWfsConnection::QgsWfsConnection( const QString &connName )
   : QgsOwsConnection( SERVICE_WFS, connName )
 {
-  const QStringList detailsParameters = {service().toLower(), connName};
+  const QStringList detailsParameters = { service().toLower(), connName };
   const QString version = settingsVersion->value( detailsParameters );
   if ( !version.isEmpty() )
   {

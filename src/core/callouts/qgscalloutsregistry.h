@@ -39,7 +39,6 @@ class QDomElement;
 class CORE_EXPORT QgsCalloutAbstractMetadata
 {
   public:
-
     /**
      * Constructor for QgsCalloutAbstractMetadata, with the specified \a name.
      *
@@ -110,24 +109,26 @@ typedef QgsCalloutWidget *( *QgsCalloutWidgetFunc )( QgsMapLayer * ) SIP_SKIP;
 class CORE_EXPORT QgsCalloutMetadata : public QgsCalloutAbstractMetadata
 {
   public:
-
     //! \note not available in Python bindings
     QgsCalloutMetadata( const QString &name, const QString &visibleName,
                         const QIcon &icon,
                         QgsCalloutCreateFunc pfCreate,
                         QgsCalloutWidgetFunc pfWidget = nullptr ) SIP_SKIP
-  : QgsCalloutAbstractMetadata( name, visibleName, icon )
-    , mCreateFunc( pfCreate )
-    , mWidgetFunc( pfWidget )
+      : QgsCalloutAbstractMetadata( name, visibleName, icon ),
+        mCreateFunc( pfCreate ),
+        mWidgetFunc( pfWidget )
     {}
 
     //! \note not available in Python bindings
-    QgsCalloutCreateFunc createFunction() const { return mCreateFunc; } SIP_SKIP
+    QgsCalloutCreateFunc createFunction() const { return mCreateFunc; }
+    SIP_SKIP
     //! \note not available in Python bindings
-    QgsCalloutWidgetFunc widgetFunction() const { return mWidgetFunc; } SIP_SKIP
+    QgsCalloutWidgetFunc widgetFunction() const { return mWidgetFunc; }
+    SIP_SKIP
 
     //! \note not available in Python bindings
-    void setWidgetFunction( QgsCalloutWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
+    void setWidgetFunction( QgsCalloutWidgetFunc f ) { mWidgetFunc = f; }
+    SIP_SKIP
 
     QgsCallout *createCallout( const QVariantMap &properties, const QgsReadWriteContext &context ) override SIP_FACTORY;
     QgsCalloutWidget *createCalloutWidget( QgsMapLayer *vl ) override SIP_FACTORY;
@@ -155,7 +156,6 @@ class CORE_EXPORT QgsCalloutMetadata : public QgsCalloutAbstractMetadata
 class CORE_EXPORT QgsCalloutRegistry
 {
   public:
-
     QgsCalloutRegistry();
     ~QgsCalloutRegistry();
 

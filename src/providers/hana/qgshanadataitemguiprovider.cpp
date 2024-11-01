@@ -56,14 +56,14 @@ void QgsHanaDataItemGuiProvider::populateContextMenu(
     connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
     menu->addAction( actionDuplicate );
 
-    const QList< QgsHanaConnectionItem * > hanaConnectionItems = QgsDataItem::filteredItems<QgsHanaConnectionItem>( selection );
+    const QList<QgsHanaConnectionItem *> hanaConnectionItems = QgsDataItem::filteredItems<QgsHanaConnectionItem>( selection );
     QAction *actionDelete = new QAction( hanaConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [hanaConnectionItems, context]
-    {
-      QgsDataItemGuiProviderUtils::deleteConnections( hanaConnectionItems, []( const QString & connectionName )
-      {
-        QgsHanaSettings::removeConnection( connectionName );
-      }, context );
+    connect( actionDelete, &QAction::triggered, this, [hanaConnectionItems, context] {
+      QgsDataItemGuiProviderUtils::deleteConnections(
+        hanaConnectionItems, []( const QString &connectionName ) {
+          QgsHanaSettings::removeConnection( connectionName );
+        },
+        context );
     } );
     menu->addAction( actionDelete );
 
@@ -95,7 +95,7 @@ void QgsHanaDataItemGuiProvider::populateContextMenu(
     menu->addMenu( maintainMenu );
   }
 
-  if ( QgsHanaLayerItem *layerItem = qobject_cast< QgsHanaLayerItem * >( item ) )
+  if ( QgsHanaLayerItem *layerItem = qobject_cast<QgsHanaLayerItem *>( item ) )
   {
     const QgsHanaLayerProperty &layerInfo = layerItem->layerInfo();
     if ( !layerInfo.isView )
@@ -120,7 +120,8 @@ bool QgsHanaDataItemGuiProvider::deleteLayer( QgsLayerItem *item, QgsDataItemGui
     const QString caption = tr( layerInfo.isView ? "Delete View" : "Delete Table" );
     if ( QMessageBox::question( nullptr, caption,
                                 tr( "Are you sure you want to delete '%1'?" ).arg( layerName ),
-                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+         != QMessageBox::Yes )
       return false;
 
     QString errorMsg;
@@ -282,7 +283,8 @@ void QgsHanaDataItemGuiProvider::deleteSchema( QgsHanaSchemaItem *schemaItem, Qg
     {
       if ( QMessageBox::question( nullptr, caption,
                                   tr( "Are you sure you want to delete '%1'?" ).arg( schemaName ),
-                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+           != QMessageBox::Yes )
         return;
     }
     else
@@ -303,7 +305,8 @@ void QgsHanaDataItemGuiProvider::deleteSchema( QgsHanaSchemaItem *schemaItem, Qg
 
       if ( QMessageBox::question( nullptr, caption,
                                   tr( "Schema '%1' contains objects:\n\n%2\n\nAre you sure you want to delete the schema and all these objects?" ).arg( schemaName, tableNames ),
-                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+                                  QMessageBox::Yes | QMessageBox::No, QMessageBox::No )
+           != QMessageBox::Yes )
         return;
     }
 

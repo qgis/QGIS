@@ -41,41 +41,37 @@
 
 class QgsMapRendererTaskGeospatialPdfExporter : public QgsAbstractGeospatialPdfExporter
 {
-
   public:
-
     QgsMapRendererTaskGeospatialPdfExporter( const QgsMapSettings &ms )
     {
       // collect details upfront, while we are still in the main thread
-      const QList< QgsMapLayer * > layers = ms.layers();
+      const QList<QgsMapLayer *> layers = ms.layers();
       for ( const QgsMapLayer *layer : layers )
       {
         VectorComponentDetail detail;
         detail.name = layer->name();
         detail.mapLayerId = layer->id();
-        if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
+        if ( const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer ) )
         {
           detail.displayAttribute = vl->displayField();
         }
-        mLayerDetails[ layer->id() ] = detail;
+        mLayerDetails[layer->id()] = detail;
       }
     }
 
   private:
-
     QgsAbstractGeospatialPdfExporter::VectorComponentDetail componentDetailForLayerId( const QString &layerId ) override
     {
       return mLayerDetails.value( layerId );
     }
 
-    QMap< QString, VectorComponentDetail > mLayerDetails;
+    QMap<QString, VectorComponentDetail> mLayerDetails;
 };
 
 
 class QgsMapRendererTaskRenderedFeatureHandler : public QgsRenderedFeatureHandlerInterface
 {
   public:
-
     QgsMapRendererTaskRenderedFeatureHandler( QgsMapRendererTaskGeospatialPdfExporter *exporter, const QgsMapSettings &settings )
       : mExporter( exporter )
       , mMapSettings( settings )
@@ -103,16 +99,14 @@ class QgsMapRendererTaskRenderedFeatureHandler : public QgsRenderedFeatureHandle
 
     QSet<QString> usedAttributes( QgsVectorLayer *, const QgsRenderContext & ) const override
     {
-      return QSet< QString >() << QgsFeatureRequest::ALL_ATTRIBUTES;
+      return QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES;
     }
 
   private:
-
     QgsMapRendererTaskGeospatialPdfExporter *mExporter = nullptr;
     QgsMapSettings mMapSettings;
     //! Transform from output space (pixels) to PDF space (pixels at 72 dpi)
     QTransform mTransform;
-
 };
 
 ///@endcond
@@ -146,7 +140,7 @@ QgsMapRendererTask::QgsMapRendererTask( const QgsMapSettings &ms, QPainter *p )
 
 QgsMapRendererTask::~QgsMapRendererTask() = default;
 
-void QgsMapRendererTask::addAnnotations( const QList< QgsAnnotation * > &annotations )
+void QgsMapRendererTask::addAnnotations( const QList<QgsAnnotation *> &annotations )
 {
   qDeleteAll( mAnnotations );
   mAnnotations.clear();
@@ -158,7 +152,7 @@ void QgsMapRendererTask::addAnnotations( const QList< QgsAnnotation * > &annotat
   }
 }
 
-void QgsMapRendererTask::addDecorations( const QList< QgsMapDecoration * > &decorations )
+void QgsMapRendererTask::addDecorations( const QList<QgsMapDecoration *> &decorations )
 {
   mDecorations = decorations;
 }
@@ -181,9 +175,9 @@ bool QgsMapRendererTask::run()
 
   if ( mGeospatialPDF )
   {
-    QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > pdfComponents;
+    QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail> pdfComponents;
 
-    QgsMapRendererStagedRenderJob *job = static_cast< QgsMapRendererStagedRenderJob * >( mJob.get() );
+    QgsMapRendererStagedRenderJob *job = static_cast<QgsMapRendererStagedRenderJob *>( mJob.get() );
     int outputLayer = 1;
     while ( !job->isFinished() )
     {
@@ -200,7 +194,7 @@ bool QgsMapRendererTask::run()
       pdfWriter.setPageOrientation( QPageLayout::Orientation::Portrait );
       // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
       const QSizeF outputSize = mMapSettings.outputSize();
-      const QPageSize pageSize( outputSize  * 25.4 / mMapSettings.outputDpi(), QPageSize::Unit::Millimeter );
+      const QPageSize pageSize( outputSize * 25.4 / mMapSettings.outputDpi(), QPageSize::Unit::Millimeter );
       pdfWriter.setPageSize( pageSize );
       pdfWriter.setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
       pdfWriter.setResolution( static_cast<int>( mMapSettings.outputDpi() ) );
@@ -242,7 +236,7 @@ bool QgsMapRendererTask::run()
     return res;
   }
   else
-    static_cast< QgsMapRendererCustomPainterJob *>( mJob.get() )->renderPrepared();
+    static_cast<QgsMapRendererCustomPainterJob *>( mJob.get() )->renderPrepared();
 
   mJobMutex.lock();
   mJob.reset( nullptr );
@@ -385,7 +379,7 @@ bool QgsMapRendererTask::run()
 
       if ( mSaveWorldFile )
       {
-        const QFileInfo info  = QFileInfo( mFileName );
+        const QFileInfo info = QFileInfo( mFileName );
 
         // build the world file name
         const QString outputSuffix = info.suffix();
@@ -445,14 +439,14 @@ void QgsMapRendererTask::prepare()
 {
   if ( mGeospatialPDF )
   {
-    mGeospatialPdfExporter = std::make_unique< QgsMapRendererTaskGeospatialPdfExporter >( mMapSettings );
+    mGeospatialPdfExporter = std::make_unique<QgsMapRendererTaskGeospatialPdfExporter>( mMapSettings );
     if ( mGeospatialPdfExportDetails.includeFeatures )
     {
-      mRenderedFeatureHandler = std::make_unique< QgsMapRendererTaskRenderedFeatureHandler >( static_cast< QgsMapRendererTaskGeospatialPdfExporter * >( mGeospatialPdfExporter.get() ), mMapSettings );
+      mRenderedFeatureHandler = std::make_unique<QgsMapRendererTaskRenderedFeatureHandler>( static_cast<QgsMapRendererTaskGeospatialPdfExporter *>( mGeospatialPdfExporter.get() ), mMapSettings );
       mMapSettings.addRenderedFeatureHandler( mRenderedFeatureHandler.get() );
     }
 
-    const QList< QgsMapLayer * > layers = mMapSettings.layers();
+    const QList<QgsMapLayer *> layers = mMapSettings.layers();
     for ( const QgsMapLayer *layer : layers )
     {
       mLayerIdToLayerNameMap.insert( layer->id(), layer->name() );
@@ -472,7 +466,7 @@ void QgsMapRendererTask::prepare()
     mPdfWriter->setPageOrientation( QPageLayout::Orientation::Portrait );
     // paper size needs to be given in millimeters in order to be able to set a resolution to pass onto the map renderer
     const QSizeF outputSize = mMapSettings.outputSize();
-    const QPageSize pageSize( outputSize  * 25.4 / mMapSettings.outputDpi(), QPageSize::Unit::Millimeter );
+    const QPageSize pageSize( outputSize * 25.4 / mMapSettings.outputDpi(), QPageSize::Unit::Millimeter );
     mPdfWriter->setPageSize( pageSize );
     mPdfWriter->setPageMargins( QMarginsF( 0, 0, 0, 0 ) );
     mPdfWriter->setResolution( static_cast<int>( mMapSettings.outputDpi() ) );
@@ -510,5 +504,5 @@ void QgsMapRendererTask::prepare()
   }
 
   mJob.reset( new QgsMapRendererCustomPainterJob( mMapSettings, mDestPainter ) );
-  static_cast< QgsMapRendererCustomPainterJob *>( mJob.get() )->prepare();
+  static_cast<QgsMapRendererCustomPainterJob *>( mJob.get() )->prepare();
 }

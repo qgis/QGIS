@@ -27,7 +27,10 @@ class QString;
 class QgsReadWriteContext;
 class Qgs3DSceneExporter;
 
-namespace Qt3DCore SIP_SKIP { class QEntity; }
+namespace Qt3DCore SIP_SKIP
+{
+  class QEntity;
+}
 
 
 /**
@@ -62,13 +65,12 @@ class CORE_EXPORT QgsAbstract3DSymbol
      *
      * \since QGIS 3.16
      */
-    virtual QList< Qgis::GeometryType > compatibleGeometryTypes() const;
+    virtual QList<Qgis::GeometryType> compatibleGeometryTypes() const;
 
     // *INDENT-OFF*
     //! Data definable properties.
-    enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAbstract3DSymbol, Property ) : int
-      {
-      Height SIP_MONKEYPATCH_COMPAT_NAME( PropertyHeight ) = 0, //!< Height (altitude)
+    enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAbstract3DSymbol, Property ) : int {
+      Height SIP_MONKEYPATCH_COMPAT_NAME( PropertyHeight ) = 0,               //!< Height (altitude)
       ExtrusionHeight SIP_MONKEYPATCH_COMPAT_NAME( PropertyExtrusionHeight ), //!< Extrusion height (zero means no extrusion)
     };
     // *INDENT-ON*
@@ -100,7 +102,6 @@ class CORE_EXPORT QgsAbstract3DSymbol
     virtual void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer );
 
   protected:
-
     /**
      * Copies base class settings from this object to a \a destination object.
      */

@@ -37,11 +37,10 @@ class QgsFeedback;
 class CORE_EXPORT QgsValidityCheckResult
 {
   public:
-
     //! Result types
     enum Type
     {
-      Warning, //!< Warning only, allow operation to proceed but notify user of result
+      Warning,  //!< Warning only, allow operation to proceed but notify user of result
       Critical, //!< Critical error - notify user of result and prevent operation from proceeding
     };
 
@@ -63,7 +62,6 @@ class CORE_EXPORT QgsValidityCheckResult
      * ID of the check which generated the result. This is usually automatically populated.
      */
     QString checkId;
-
 };
 
 /**
@@ -91,13 +89,10 @@ class CORE_EXPORT QgsValidityCheckResult
  */
 class CORE_EXPORT QgsAbstractValidityCheck
 {
-
   public:
-
     // *INDENT-OFF*
     //! Check types
-    enum class Type SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAbstractValidityCheck, Type ) : int
-      {
+    enum class Type SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAbstractValidityCheck, Type ) : int {
       LayoutCheck SIP_MONKEYPATCH_COMPAT_NAME( TypeLayoutCheck ) = 0, //!< Print layout validity check, triggered on exporting a print layout
       UserCheck SIP_MONKEYPATCH_COMPAT_NAME( TypeUserCheck ) = 10000, //!< Starting point for custom user types
     };
@@ -155,8 +150,7 @@ class CORE_EXPORT QgsAbstractValidityCheck
      *
      * The \a context argument gives the wider in which the check is being run.
      */
-    virtual QList< QgsValidityCheckResult > runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) = 0;
-
+    virtual QList<QgsValidityCheckResult> runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) = 0;
 };
 
 #endif // QGSABSTRACTVALIDITYCHECK_H

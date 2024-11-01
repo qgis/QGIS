@@ -40,7 +40,6 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsCrsSelectionWidget, with the specified \a parent widget.
      *
@@ -148,23 +147,20 @@ class GUI_EXPORT QgsCrsSelectionWidget : public QgsPanelWidget, private Ui::QgsG
     void hasValidSelectionChanged( bool isValid );
 
   private:
-
     /**
      * CRS types
      */
     enum class CrsType
     {
       Predefined, //!< Predefined (from database )
-      Custom, //!< Custom CRS
+      Custom,     //!< Custom CRS
     };
 
     QString mNotSetText;
     bool mShowNoCrsOption = false;
     bool mDeferredInvalidCrsSet = false;
     int mBlockSignals = 0;
-
 };
-
 
 
 /**
@@ -191,7 +187,6 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsProjectionSelectionDialog.
      *
@@ -307,7 +302,6 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog
     void showHelp();
 
   private:
-
     QDialogButtonBox *mButtonBox = nullptr;
     QgsCrsSelectionWidget *mCrsWidget = nullptr;
 

@@ -25,7 +25,7 @@
  * \ingroup analysis
  * \brief Calculates slope values in a window of 3x3 cells based on first order derivatives in x- and y- directions.
 */
-class ANALYSIS_EXPORT QgsSlopeFilter: public QgsDerivativeFilter
+class ANALYSIS_EXPORT QgsSlopeFilter : public QgsDerivativeFilter
 {
   public:
     QgsSlopeFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
@@ -37,13 +37,11 @@ class ANALYSIS_EXPORT QgsSlopeFilter: public QgsDerivativeFilter
 
 #ifdef HAVE_OPENCL
   private:
-
     virtual const QString openClProgramBaseName() const override
     {
       return QStringLiteral( "slope" );
     }
 #endif
-
 };
 
 #endif // QGSSLOPEFILTER_H

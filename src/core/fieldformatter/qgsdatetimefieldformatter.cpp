@@ -72,7 +72,7 @@ QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer *layer, int fi
   }
   else if ( static_cast<QMetaType::Type>( value.userType() ) == QMetaType::QTime )
   {
-    return  value.toTime().toString( displayFormat );
+    return value.toTime().toString( displayFormat );
   }
   else
   {

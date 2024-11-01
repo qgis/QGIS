@@ -36,7 +36,7 @@ QgsTextBufferSettings::QgsTextBufferSettings( const QgsTextBufferSettings &other
 {
 }
 
-QgsTextBufferSettings &QgsTextBufferSettings::operator=( const QgsTextBufferSettings &other )  //NOLINT
+QgsTextBufferSettings &QgsTextBufferSettings::operator=( const QgsTextBufferSettings &other ) //NOLINT
 {
   d = other.d;
   return *this;
@@ -44,7 +44,6 @@ QgsTextBufferSettings &QgsTextBufferSettings::operator=( const QgsTextBufferSett
 
 QgsTextBufferSettings::~QgsTextBufferSettings() //NOLINT
 {
-
 }
 
 bool QgsTextBufferSettings::operator==( const QgsTextBufferSettings &other ) const
@@ -60,7 +59,7 @@ bool QgsTextBufferSettings::operator==( const QgsTextBufferSettings &other ) con
        || d->blendMode != other.blendMode() )
     return false;
 
-  if ( static_cast< bool >( d->paintEffect ) != static_cast< bool >( other.paintEffect() )
+  if ( static_cast<bool>( d->paintEffect ) != static_cast<bool>( other.paintEffect() )
        || ( d->paintEffect && d->paintEffect->properties() != other.paintEffect()->properties() ) )
     return false;
 
@@ -236,7 +235,7 @@ void QgsTextBufferSettings::updateDataDefinedProperties( QgsRenderContext &conte
 
 QSet<QString> QgsTextBufferSettings::referencedFields( const QgsRenderContext & ) const
 {
-  return QSet< QString >(); // nothing for now
+  return QSet<QString>(); // nothing for now
 }
 
 void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
@@ -294,8 +293,8 @@ void QgsTextBufferSettings::readFromLayer( QgsVectorLayer *layer )
     d->opacity = ( layer->customProperty( QStringLiteral( "labeling/bufferOpacity" ) ).toDouble() );
   }
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( layer->customProperty( QStringLiteral( "labeling/bufferBlendMode" ), QVariant( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
-  d->joinStyle = static_cast< Qt::PenJoinStyle >( layer->customProperty( QStringLiteral( "labeling/bufferJoinStyle" ), QVariant( Qt::RoundJoin ) ).toUInt() );
+    static_cast<Qgis::BlendMode>( layer->customProperty( QStringLiteral( "labeling/bufferBlendMode" ), QVariant( static_cast<int>( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
+  d->joinStyle = static_cast<Qt::PenJoinStyle>( layer->customProperty( QStringLiteral( "labeling/bufferJoinStyle" ), QVariant( Qt::RoundJoin ) ).toUInt() );
 
   d->fillBufferInterior = !layer->customProperty( QStringLiteral( "labeling/bufferNoFill" ), QVariant( false ) ).toBool();
 
@@ -367,8 +366,8 @@ void QgsTextBufferSettings::readXml( const QDomElement &elem )
   }
 
   d->blendMode = QgsPainting::getCompositionMode(
-                   static_cast< Qgis::BlendMode >( textBufferElem.attribute( QStringLiteral( "bufferBlendMode" ), QString::number( static_cast< int >( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
-  d->joinStyle = static_cast< Qt::PenJoinStyle >( textBufferElem.attribute( QStringLiteral( "bufferJoinStyle" ), QString::number( Qt::RoundJoin ) ).toUInt() );
+    static_cast<Qgis::BlendMode>( textBufferElem.attribute( QStringLiteral( "bufferBlendMode" ), QString::number( static_cast<int>( Qgis::BlendMode::Normal ) ) ).toUInt() ) );
+  d->joinStyle = static_cast<Qt::PenJoinStyle>( textBufferElem.attribute( QStringLiteral( "bufferJoinStyle" ), QString::number( Qt::RoundJoin ) ).toUInt() );
   d->fillBufferInterior = !textBufferElem.attribute( QStringLiteral( "bufferNoFill" ), QStringLiteral( "0" ) ).toInt();
   const QDomElement effectElem = textBufferElem.firstChildElement( QStringLiteral( "effect" ) );
   if ( !effectElem.isNull() )
@@ -388,8 +387,8 @@ QDomElement QgsTextBufferSettings::writeXml( QDomDocument &doc ) const
   textBufferElem.setAttribute( QStringLiteral( "bufferColor" ), QgsColorUtils::colorToString( d->color ) );
   textBufferElem.setAttribute( QStringLiteral( "bufferNoFill" ), !d->fillBufferInterior );
   textBufferElem.setAttribute( QStringLiteral( "bufferOpacity" ), d->opacity );
-  textBufferElem.setAttribute( QStringLiteral( "bufferJoinStyle" ), static_cast< unsigned int >( d->joinStyle ) );
-  textBufferElem.setAttribute( QStringLiteral( "bufferBlendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( d->blendMode ) ) );
+  textBufferElem.setAttribute( QStringLiteral( "bufferJoinStyle" ), static_cast<unsigned int>( d->joinStyle ) );
+  textBufferElem.setAttribute( QStringLiteral( "bufferBlendMode" ), static_cast<int>( QgsPainting::getBlendModeEnum( d->blendMode ) ) );
   if ( d->paintEffect && !QgsPaintEffectRegistry::isDefaultStack( d->paintEffect.get() ) )
     d->paintEffect->saveProperties( doc, textBufferElem );
   return textBufferElem;

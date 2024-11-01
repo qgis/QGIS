@@ -27,10 +27,10 @@
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include <qgstemporalnavigationobject.h>
-% End
+  % End
 #endif
 
-/**
+  /**
  * \class QgsTemporalController
  * \ingroup core
  * \brief A controller base class for temporal objects, contains a signal for notifying
@@ -38,7 +38,7 @@
  *
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsTemporalController : public QObject
+  class CORE_EXPORT QgsTemporalController : public QObject
 {
     Q_OBJECT
 
@@ -56,7 +56,6 @@ class CORE_EXPORT QgsTemporalController : public QObject
 #endif
 
   public:
-
     /**
      * Constructor for QgsTemporalController, with the specified \a parent object.
      *
@@ -70,7 +69,6 @@ class CORE_EXPORT QgsTemporalController : public QObject
      * all connected objects.
      */
     void updateTemporalRange( const QgsDateTimeRange &range );
-
 };
 
 #endif // QGSTEMPORALCONTROLLER_H

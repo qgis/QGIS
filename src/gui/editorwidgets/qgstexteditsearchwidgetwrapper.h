@@ -35,7 +35,6 @@ class GUI_EXPORT QgsTextEditSearchWidgetWrapper : public QgsDefaultSearchWidgetW
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsTextEditSearchWidgetWrapper.
      * \param vl associated vector layer
@@ -47,7 +46,6 @@ class GUI_EXPORT QgsTextEditSearchWidgetWrapper : public QgsDefaultSearchWidgetW
     bool applyDirectly() override;
 
   private:
-
     friend class QgsTextEditWidgetFactory;
 };
 

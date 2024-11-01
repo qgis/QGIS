@@ -81,7 +81,6 @@ QgsConfigCache *QgsConfigCache::instance()
 QgsConfigCache::QgsConfigCache( QgsServerSettings *settings )
   : QgsConfigCache( getStrategyFromSettings( settings ) )
 {
-
 }
 
 QgsConfigCache::QgsConfigCache( QgsAbstractCacheStrategy *strategy )
@@ -90,14 +89,14 @@ QgsConfigCache::QgsConfigCache( QgsAbstractCacheStrategy *strategy )
   mStrategy->attach( this );
 }
 
-QgsConfigCache::QgsConfigCache() : QgsConfigCache( new QgsFileSystemCacheStrategy() )
+QgsConfigCache::QgsConfigCache()
+  : QgsConfigCache( new QgsFileSystemCacheStrategy() )
 {
-
 }
 
 const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerSettings *settings )
 {
-  if ( !mProjectCache[ path ] )
+  if ( !mProjectCache[path] )
   {
     // disable the project style database -- this incurs unwanted cost and is not required
     std::unique_ptr<QgsProject> prj( new QgsProject( nullptr, Qgis::ProjectCapabilities() ) );
@@ -145,8 +144,7 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
         {
           // if this bad layer is in restricted layers
           // it doesn't need to be added to unrestricted bad layers
-          if ( badLayerNames.contains( badLayerId ) &&
-               resctrictedLayers.contains( badLayerNames.value( badLayerId ) ) )
+          if ( badLayerNames.contains( badLayerId ) && resctrictedLayers.contains( badLayerNames.value( badLayerId ) ) )
           {
             continue;
           }
@@ -155,7 +153,7 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
         if ( !unrestrictedBadLayers.isEmpty() )
         {
           // This is a critical error unless QGIS_SERVER_IGNORE_BAD_LAYERS is set to TRUE
-          if ( ! settings || ! settings->ignoreBadLayers() )
+          if ( !settings || !settings->ignoreBadLayers() )
           {
             QgsMessageLog::logMessage(
               QStringLiteral( "Error, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QLatin1String( ", " ) ), path ),
@@ -180,7 +178,7 @@ const QgsProject *QgsConfigCache::project( const QString &path, const QgsServerS
     }
   }
 
-  auto entry = mProjectCache[ path ];
+  auto entry = mProjectCache[path];
   return entry ? entry->second.get() : nullptr;
 }
 
@@ -188,7 +186,7 @@ QList<QgsProject *> QgsConfigCache::projects() const
 {
   QList<QgsProject *> projects;
 
-  const auto constKeys {  mProjectCache.keys() };
+  const auto constKeys { mProjectCache.keys() };
   for ( const auto &path : std::as_const( constKeys ) )
   {
     projects << mProjectCache[path]->second.get();
@@ -223,8 +221,7 @@ QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
     int line, column;
     if ( !xmlDoc->setContent( &configFile, true, &errorMsg, &line, &column ) )
     {
-      QgsMessageLog::logMessage( "Error parsing file '" + filePath +
-                                 QStringLiteral( "': parse error %1 at row %2, column %3" ).arg( errorMsg ).arg( line ).arg( column ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
+      QgsMessageLog::logMessage( "Error parsing file '" + filePath + QStringLiteral( "': parse error %1 at row %2, column %3" ).arg( errorMsg ).arg( line ).arg( column ), QStringLiteral( "Server" ), Qgis::MessageLevel::Critical );
       delete xmlDoc;
       return nullptr;
     }
@@ -238,7 +235,7 @@ QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
 
 void QgsConfigCache::cacheProject( const QString &path, QgsProject *project )
 {
-  mProjectCache.insert( path, new std::pair<QDateTime, std::unique_ptr<QgsProject> >( project->lastModified(),  std::unique_ptr<QgsProject>( project ) ) );
+  mProjectCache.insert( path, new std::pair<QDateTime, std::unique_ptr<QgsProject>>( project->lastModified(), std::unique_ptr<QgsProject>( project ) ) );
 
   mStrategy->entryInserted( path );
 }
@@ -267,10 +264,10 @@ void QgsConfigCache::removeChangedEntries()
 {
   // QCache::keys returns a QList so it is safe
   // to mutate while iterating
-  const auto constKeys {  mProjectCache.keys() };
+  const auto constKeys { mProjectCache.keys() };
   for ( const auto &path : std::as_const( constKeys ) )
   {
-    const auto entry = mProjectCache[ path ];
+    const auto entry = mProjectCache[path];
     if ( entry && entry->first < entry->second->lastModified() )
     {
       removeEntry( path );
@@ -279,7 +276,6 @@ void QgsConfigCache::removeChangedEntries()
 }
 
 // File system invalidation strategy
-
 
 
 QgsFileSystemCacheStrategy::QgsFileSystemCacheStrategy()
@@ -312,7 +308,6 @@ void QgsPeriodicCacheStrategy::attach( QgsConfigCache *cache )
 {
   QObject::connect( &mTimer, &QTimer::timeout, cache, &QgsConfigCache::removeChangedEntries );
 }
-
 
 
 void QgsPeriodicCacheStrategy::entryRemoved( const QString &path )

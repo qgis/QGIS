@@ -35,16 +35,14 @@ class CORE_EXPORT QgsBearingUtils
     Q_GADGET
 
   public:
-
     /**
      * Returns the direction to true north from a specified point and for a specified
      * coordinate reference system. The returned value is in degrees clockwise from
      * vertical. An exception will be thrown if the bearing could not be calculated.
      */
     Q_INVOKABLE static double bearingTrueNorth( const QgsCoordinateReferenceSystem &crs,
-        const QgsCoordinateTransformContext  &transformContext,
-        const QgsPointXY &point );
-
+                                                const QgsCoordinateTransformContext &transformContext,
+                                                const QgsPointXY &point );
 };
 
 #endif //QGSBEARINGUTILS_H

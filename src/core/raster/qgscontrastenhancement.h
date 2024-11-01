@@ -41,13 +41,11 @@ class QString;
  */
 class CORE_EXPORT QgsContrastEnhancement
 {
-
   public:
-
     //! \brief This enumerator describes the types of contrast enhancement algorithms that can be used.
     enum ContrastEnhancementAlgorithm
     {
-      NoEnhancement, //!< Default color scaling algorithm, no scaling is applied
+      NoEnhancement,           //!< Default color scaling algorithm, no scaling is applied
       StretchToMinimumMaximum, //!< Linear histogram
       StretchAndClipToMinimumMaximum,
       ClipToMinimumMaximum,
@@ -236,7 +234,7 @@ class CORE_EXPORT QgsContrastEnhancement
     ContrastEnhancementAlgorithm mContrastEnhancementAlgorithm = NoEnhancement;
 
     //! \brief Pointer to the contrast enhancement function
-    std::unique_ptr< QgsContrastEnhancementFunction > mContrastEnhancementFunction;
+    std::unique_ptr<QgsContrastEnhancementFunction> mContrastEnhancementFunction;
 
     //! \brief Flag indicating if the lookup table needs to be regenerated
     bool mEnhancementDirty = false;
@@ -264,7 +262,6 @@ class CORE_EXPORT QgsContrastEnhancement
 
     //! \brief Method to calculate the actual enhanceContrasted value(s)
     int calculateContrastEnhancementValue( double );
-
 };
 
 #endif

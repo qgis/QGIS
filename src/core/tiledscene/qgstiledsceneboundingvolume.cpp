@@ -37,12 +37,12 @@ QgsBox3D QgsTiledSceneBoundingVolume::bounds( const QgsCoordinateTransform &tran
 {
   if ( transform.isValid() && !transform.isShortCircuited() )
   {
-    const QVector< QgsVector3D > corners = mBox.corners();
-    QVector< double > x;
+    const QVector<QgsVector3D> corners = mBox.corners();
+    QVector<double> x;
     x.reserve( 8 );
-    QVector< double > y;
+    QVector<double> y;
     y.reserve( 8 );
-    QVector< double > z;
+    QVector<double> z;
     z.reserve( 8 );
     for ( int i = 0; i < 8; ++i )
     {
@@ -66,14 +66,14 @@ QgsBox3D QgsTiledSceneBoundingVolume::bounds( const QgsCoordinateTransform &tran
 
 QgsAbstractGeometry *QgsTiledSceneBoundingVolume::as2DGeometry( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
 {
-  std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
+  std::unique_ptr<QgsPolygon> polygon = std::make_unique<QgsPolygon>();
 
-  const QVector< QgsVector3D > corners = mBox.corners();
-  QVector< double > x;
+  const QVector<QgsVector3D> corners = mBox.corners();
+  QVector<double> x;
   x.reserve( 8 );
-  QVector< double > y;
+  QVector<double> y;
   y.reserve( 8 );
-  QVector< double > z;
+  QVector<double> z;
   z.reserve( 8 );
   for ( int i = 0; i < 8; ++i )
   {
@@ -88,7 +88,7 @@ QgsAbstractGeometry *QgsTiledSceneBoundingVolume::as2DGeometry( const QgsCoordin
     transform.transformInPlace( x, y, z, direction );
   }
 
-  std::unique_ptr< QgsMultiPoint > mp = std::make_unique< QgsMultiPoint >( x, y );
+  std::unique_ptr<QgsMultiPoint> mp = std::make_unique<QgsMultiPoint>( x, y );
   QgsGeos geosMp( mp.get() );
   return geosMp.convexHull();
 }
@@ -97,4 +97,3 @@ bool QgsTiledSceneBoundingVolume::intersects( const QgsOrientedBox3D &box ) cons
 {
   return mBox.intersects( box );
 }
-

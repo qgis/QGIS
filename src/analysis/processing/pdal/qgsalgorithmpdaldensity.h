@@ -30,9 +30,7 @@
  */
 class QgsPdalDensityAlgorithm : public QgsPdalAlgorithmBase
 {
-
   public:
-
     QgsPdalDensityAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;

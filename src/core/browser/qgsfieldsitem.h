@@ -35,7 +35,6 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsFieldsItem, with the specified \a parent item.
      *
@@ -58,12 +57,14 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsFieldsItem: %1>" ).arg( sipCpp->path() );
+        QString str
+      = QStringLiteral( "<QgsFieldsItem: %1>" ).arg( sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    QVector<QgsDataItem *> createChildren() override;
+        QVector<QgsDataItem *>
+      createChildren() override;
 
     QIcon icon() override;
 
@@ -101,13 +102,11 @@ class CORE_EXPORT QgsFieldsItem : public QgsDataItem
     bool canRenameFields() const { return mCanRename; }
 
   private:
-
     QString mSchema;
     QString mTableName;
     QString mConnectionUri;
     bool mCanRename = false;
     std::unique_ptr<QgsAbstractDatabaseProviderConnection::TableProperty> mTableProperty;
-
 };
 
 
@@ -123,7 +122,6 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsFieldItem, with the specified \a parent item and \a field.
      * \note parent item must be a QgsFieldsItem
@@ -136,12 +134,14 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsFieldItem: %1>" ).arg( sipCpp->name() );
+        QString str
+      = QStringLiteral( "<QgsFieldItem: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    QIcon icon() override;
+        QIcon
+      icon() override;
 
     /**
      * Returns the field definition.
@@ -153,11 +153,7 @@ class CORE_EXPORT QgsFieldItem : public QgsDataItem
     bool equal( const QgsDataItem *other ) override;
 
   private:
-
     const QgsField mField;
-
 };
 
 #endif // QGSFIELDSITEM_H
-
-

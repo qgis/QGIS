@@ -135,7 +135,7 @@ QList<QNetworkRequest> QgsXyzVectorTileDataProviderBase::tileRequests( const Qgs
 
     mHeaders.updateNetworkRequest( request );
 
-    if ( !mAuthCfg.isEmpty() &&  !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
+    if ( !mAuthCfg.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg ) )
     {
       QgsMessageLog::logMessage( tr( "network request update failed for authentication config" ), tr( "Network" ) );
     }
@@ -219,9 +219,7 @@ QVariantMap QgsXyzVectorTileDataProviderMetadata::decodeUri( const QString &uri 
   QVariantMap uriComponents;
   uriComponents.insert( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
 
-  if ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "mbtiles" ) ||
-       ( uriComponents[ QStringLiteral( "type" ) ] == QLatin1String( "xyz" ) &&
-         !dsUri.param( QStringLiteral( "url" ) ).startsWith( QLatin1String( "http" ) ) ) )
+  if ( uriComponents[QStringLiteral( "type" )] == QLatin1String( "mbtiles" ) || ( uriComponents[QStringLiteral( "type" )] == QLatin1String( "xyz" ) && !dsUri.param( QStringLiteral( "url" ) ).startsWith( QLatin1String( "http" ) ) ) )
   {
     uriComponents.insert( QStringLiteral( "path" ), dsUri.param( QStringLiteral( "url" ) ) );
   }
@@ -267,7 +265,7 @@ QString QgsXyzVectorTileDataProviderMetadata::encodeUri( const QVariantMap &part
   dsUri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
   dsUri.setParam( QStringLiteral( "url" ), parts.value( parts.contains( QStringLiteral( "path" ) ) ? QStringLiteral( "path" ) : QStringLiteral( "url" ) ).toString() );
   if ( parts.contains( QStringLiteral( "urlName" ) ) )
-    dsUri.setParam( QStringLiteral( "urlName" ), parts[ QStringLiteral( "urlName" ) ].toString() );
+    dsUri.setParam( QStringLiteral( "urlName" ), parts[QStringLiteral( "urlName" )].toString() );
 
   int i = 2;
   while ( true )
@@ -282,23 +280,23 @@ QString QgsXyzVectorTileDataProviderMetadata::encodeUri( const QVariantMap &part
     if ( url.isEmpty() || urlName.isEmpty() )
       break;
 
-    dsUri.setParam( urlNameKey, parts[ urlNameKey ].toString() );
-    dsUri.setParam( urlKey, parts[ urlKey ].toString() );
+    dsUri.setParam( urlNameKey, parts[urlNameKey].toString() );
+    dsUri.setParam( urlKey, parts[urlKey].toString() );
     i++;
   }
 
   if ( parts.contains( QStringLiteral( "zmin" ) ) )
-    dsUri.setParam( QStringLiteral( "zmin" ), parts[ QStringLiteral( "zmin" ) ].toString() );
+    dsUri.setParam( QStringLiteral( "zmin" ), parts[QStringLiteral( "zmin" )].toString() );
   if ( parts.contains( QStringLiteral( "zmax" ) ) )
-    dsUri.setParam( QStringLiteral( "zmax" ), parts[ QStringLiteral( "zmax" ) ].toString() );
+    dsUri.setParam( QStringLiteral( "zmax" ), parts[QStringLiteral( "zmax" )].toString() );
 
   dsUri.httpHeaders().setFromMap( parts );
 
   if ( parts.contains( QStringLiteral( "styleUrl" ) ) )
-    dsUri.setParam( QStringLiteral( "styleUrl" ), parts[ QStringLiteral( "styleUrl" ) ].toString() );
+    dsUri.setParam( QStringLiteral( "styleUrl" ), parts[QStringLiteral( "styleUrl" )].toString() );
 
   if ( parts.contains( QStringLiteral( "authcfg" ) ) )
-    dsUri.setAuthConfigId( parts[ QStringLiteral( "authcfg" ) ].toString() );
+    dsUri.setAuthConfigId( parts[QStringLiteral( "authcfg" )].toString() );
 
   return dsUri.encodedUri();
 }
@@ -315,7 +313,7 @@ QString QgsXyzVectorTileDataProviderMetadata::absoluteToRelativeUri( const QStri
   {
     // relative path will become "file:./x.txt"
     const QString relSrcUrl = context.pathResolver().writePath( sourceUrl.toLocalFile() );
-    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+    dsUri.removeParam( QStringLiteral( "url" ) ); // needed because setParam() would insert second "url" key
     dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( relSrcUrl ).toString() );
     return dsUri.encodedUri();
   }
@@ -331,10 +329,10 @@ QString QgsXyzVectorTileDataProviderMetadata::relativeToAbsoluteUri( const QStri
   QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
 
   const QUrl sourceUrl( sourcePath );
-  if ( sourceUrl.isLocalFile() )  // file-based URL? convert to relative path
+  if ( sourceUrl.isLocalFile() ) // file-based URL? convert to relative path
   {
     const QString absSrcUrl = context.pathResolver().readPath( sourceUrl.toLocalFile() );
-    dsUri.removeParam( QStringLiteral( "url" ) );  // needed because setParam() would insert second "url" key
+    dsUri.removeParam( QStringLiteral( "url" ) ); // needed because setParam() would insert second "url" key
     dsUri.setParam( QStringLiteral( "url" ), QUrl::fromLocalFile( absSrcUrl ).toString() );
     return dsUri.encodedUri();
   }
@@ -476,6 +474,3 @@ QgsStringMap QgsXyzVectorTileDataProvider::sourcePaths() const
 }
 
 ///@endcond
-
-
-

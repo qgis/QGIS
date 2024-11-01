@@ -28,7 +28,7 @@ namespace Qt3DRender
 {
   class QRenderSettings;
   class QCamera;
-}
+} // namespace Qt3DRender
 
 namespace Qt3DLogic
 {
@@ -39,7 +39,7 @@ namespace Qt3DExtras
 {
   class QForwardRenderer;
   class QSkyboxEntity;
-}
+} // namespace Qt3DExtras
 #endif
 
 
@@ -114,8 +114,8 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     //! Enumeration of possible states of the 3D scene
     enum SceneState
     {
-      Ready,     //!< The scene is fully loaded/updated
-      Updating,  //!< The scene is still being loaded/updated
+      Ready,    //!< The scene is fully loaded/updated
+      Updating, //!< The scene is still being loaded/updated
     };
 
     //! Returns the current state of the scene
@@ -212,7 +212,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      * \deprecated QGIS 3.36. Use QgisAppInterface::mapCanvases3D() instead.
      * \since QGIS 3.30
      */
-    Q_DECL_DEPRECATED static QMap< QString, Qgs3DMapScene * > openScenes() SIP_DEPRECATED;
+    Q_DECL_DEPRECATED static QMap<QString, Qgs3DMapScene *> openScenes() SIP_DEPRECATED;
 
     /**
      * Enables OpenGL clipping based on the planes equations defined in \a clipPlaneEquations.
@@ -246,7 +246,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
 
 #ifndef SIP_RUN
     //! Static function for returning open 3D map scenes
-    static std::function< QMap< QString, Qgs3DMapScene * >() > sOpenScenesFunction;
+    static std::function<QMap<QString, Qgs3DMapScene *>()> sOpenScenesFunction;
 #endif
 
   signals:
@@ -330,7 +330,6 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void handleClippingOnAllEntities() const;
 
   private:
-
     Qgs3DMapSettings &mMap;
     QgsAbstract3DEngine *mEngine = nullptr;
     //! Provides a way to have a synchronous function executed each frame
@@ -357,6 +356,5 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     bool mSceneUpdatesEnabled = true;
 
     QList<QVector4D> mClipPlanesEquations;
-
 };
 #endif // QGS3DMAPSCENE_H

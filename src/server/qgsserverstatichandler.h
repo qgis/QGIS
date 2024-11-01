@@ -25,10 +25,9 @@
  * \see QgsServerOgcApiHandler::staticPath()
  * \since QGIS 3.16
  */
-class SERVER_EXPORT QgsServerStaticHandler: public QgsServerOgcApiHandler
+class SERVER_EXPORT QgsServerStaticHandler : public QgsServerOgcApiHandler
 {
   public:
-
     /**
      * Creates QgsServerStaticHandler
      * \param pathRegExp optional regular expression to capture static file names, defaults to "/static/(?<staticFilePath>.*)$",
@@ -36,7 +35,7 @@ class SERVER_EXPORT QgsServerStaticHandler: public QgsServerOgcApiHandler
      * \param staticPathSuffix optional path suffix to use when static files are stored in a subdirectory of the default staticPath()
      * \see QgsServerOgcApiHandler::staticPath()
      */
-    QgsServerStaticHandler( const QString &pathRegExp = QStringLiteral( "/static/(?<staticFilePath>.*)$" ), const QString &staticPathSuffix = QString( ) );
+    QgsServerStaticHandler( const QString &pathRegExp = QStringLiteral( "/static/(?<staticFilePath>.*)$" ), const QString &staticPathSuffix = QString() );
 
     void handleRequest( const QgsServerApiContext &context ) const override;
 
@@ -49,7 +48,6 @@ class SERVER_EXPORT QgsServerStaticHandler: public QgsServerOgcApiHandler
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::data; }
 
   private:
-
     QRegularExpression mPathRegExp;
     QString mStaticPathSuffix;
 };

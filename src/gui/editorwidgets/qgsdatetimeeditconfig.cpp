@@ -46,7 +46,7 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
                       "<tr>"
                       "<td bgcolor=\"#ffffff\" style=\"vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;\">"
                       "<p><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e; background-color:#ffffff;\">"
-                      "<a href=\"http://www.iso.org/iso/catalogue_detail?csnumber=40874\">" )  //#spellok
+                      "<a href=\"http://www.iso.org/iso/catalogue_detail?csnumber=40874\">" ) //#spellok
     + tr( "ISO 8601" )
     + QStringLiteral( "</a> " )
     + tr( "extended format: either <code>yyyy-MM-dd</code> for dates or <code>yyyy-MM-ddTHH:mm:ss</code> (e.g. 2017-07-24T15:46:29), or with a time-zone suffix (Z for UTC otherwise an offset as [+|-]HH:mm) where appropriate for combined dates and times." )
@@ -374,8 +374,7 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
                       "</tr>"
                       "</table>"
                       "<p><br/></p>"
-                      "</body></html>" )
-  );
+                      "</body></html>" ) );
 
   mDemoDateTimeEdit->setDateTime( QDateTime::currentDateTime() );
 
@@ -393,8 +392,7 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
   connect( mDisplayFormatEdit, &QLineEdit::textChanged, this, &QgsEditorConfigWidget::changed );
   connect( mCalendarPopupCheckBox, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mAllowNullCheckBox, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
-  connect( mFieldFormatGroupBox, &QGroupBox::toggled, this, [ = ]( bool checked )
-  {
+  connect( mFieldFormatGroupBox, &QGroupBox::toggled, this, [=]( bool checked ) {
     //reset to default value when unchecking
     if ( !checked )
     {

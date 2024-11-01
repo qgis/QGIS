@@ -30,9 +30,7 @@
  */
 class QgsRenameTableFieldAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsRenameTableFieldAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -46,17 +44,15 @@ class QgsRenameTableFieldAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
-
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QString outputName() const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     QString mOriginalName;
     QString mNewName;
 };

@@ -35,9 +35,8 @@ QgsLayoutAtlas::QgsLayoutAtlas( QgsLayout *layout )
   , mLayout( layout )
   , mFilenameExpressionString( QStringLiteral( "'output_'||@atlas_featurenumber" ) )
 {
-
   //listen out for layer removal
-  connect( mLayout->project(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsLayoutAtlas::removeLayers );
+  connect( mLayout->project(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsLayoutAtlas::removeLayers );
 
   if ( QgsVariantUtils::isNull( mLayout->customProperty( QStringLiteral( "singleFile" ) ) ) )
     mLayout->setCustomProperty( QStringLiteral( "singleFile" ), true );
@@ -53,7 +52,7 @@ QgsLayout *QgsLayoutAtlas::layout()
   return mLayout;
 }
 
-const QgsLayout *QgsLayoutAtlas::layout() const  // cppcheck-suppress duplInheritedMember
+const QgsLayout *QgsLayoutAtlas::layout() const // cppcheck-suppress duplInheritedMember
 {
   return mLayout.data();
 }
@@ -251,10 +250,10 @@ class AtlasFeatureSorter
       , mAscending( ascending )
     {}
 
-    bool operator()( const QPair< QgsFeatureId, QString > &id1, const QPair< QgsFeatureId, QString > &id2 )
+    bool operator()( const QPair<QgsFeatureId, QString> &id1, const QPair<QgsFeatureId, QString> &id2 )
     {
       return mAscending ? qgsVariantLessThan( mKeys.value( id1.first ), mKeys.value( id2.first ) )
-             : qgsVariantGreaterThan( mKeys.value( id1.first ), mKeys.value( id2.first ) );
+                        : qgsVariantGreaterThan( mKeys.value( id1.first ), mKeys.value( id2.first ) );
     }
 
   private:
@@ -308,7 +307,7 @@ int QgsLayoutAtlas::updateFeatures()
   std::unique_ptr<QgsExpression> nameExpression;
   if ( !mPageNameExpression.isEmpty() )
   {
-    nameExpression = std::make_unique< QgsExpression >( mPageNameExpression );
+    nameExpression = std::make_unique<QgsExpression>( mPageNameExpression );
     if ( nameExpression->hasParserError() )
     {
       nameExpression.reset( nullptr );
@@ -328,7 +327,7 @@ int QgsLayoutAtlas::updateFeatures()
   std::unique_ptr<QgsExpression> sortExpression;
   if ( mSortFeatures && !mSortExpression.isEmpty() )
   {
-    sortExpression = std::make_unique< QgsExpression >( mSortExpression );
+    sortExpression = std::make_unique<QgsExpression>( mSortExpression );
     if ( sortExpression->hasParserError() )
     {
       sortExpression.reset( nullptr );
@@ -529,9 +528,9 @@ QgsExpressionContext QgsLayoutAtlas::createExpressionContext() const
     {
       expressionContext.lastScope()->setFeature( mCurrentFeature );
     }
-    else if ( mCoverageLayer )  // Create an empty feature for the expression validation
+    else if ( mCoverageLayer ) // Create an empty feature for the expression validation
     {
-      QgsFeature feature{ mCoverageLayer->fields() };
+      QgsFeature feature { mCoverageLayer->fields() };
       feature.setValid( true );
       expressionContext.lastScope()->setFeature( feature );
     }
@@ -570,7 +569,7 @@ bool QgsLayoutAtlas::updateFilenameExpression( QString &error )
     evalResult = evalFeatureFilename( expressionContext );
   }
 
-  if ( ! evalResult )
+  if ( !evalResult )
   {
     error = mFilenameExpressionError;
   }
@@ -620,7 +619,7 @@ bool QgsLayoutAtlas::prepareForFeature( const int featureI )
   mCurrentFeatureNo = featureI;
 
   // retrieve the next feature, based on its id
-  if ( !mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[ featureI ].first ) ).nextFeature( mCurrentFeature ) )
+  if ( !mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[featureI].first ) ).nextFeature( mCurrentFeature ) )
     return false;
 
   mLayout->reportContext().blockSignals( true ); // setFeature emits changed, we don't want 2 signals
@@ -643,4 +642,3 @@ bool QgsLayoutAtlas::prepareForFeature( const int featureI )
 
   return mCurrentFeature.isValid();
 }
-

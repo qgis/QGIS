@@ -32,9 +32,9 @@ QgsCrsDefinitionWidget::QgsCrsDefinitionWidget( QWidget *parent )
   connect( mButtonCopyCRS, &QPushButton::clicked, this, &QgsCrsDefinitionWidget::pbnCopyCRS_clicked );
   connect( mButtonValidate, &QPushButton::clicked, this, &QgsCrsDefinitionWidget::validateCurrent );
 
-  mFormatComboBox->addItem( tr( "WKT (Recommended)" ), static_cast< int >( Qgis::CrsDefinitionFormat::Wkt ) );
-  mFormatComboBox->addItem( tr( "Proj String (Legacy — Not Recommended)" ), static_cast< int >( Qgis::CrsDefinitionFormat::Proj ) );
-  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( Qgis::CrsDefinitionFormat::Wkt ) ) );
+  mFormatComboBox->addItem( tr( "WKT (Recommended)" ), static_cast<int>( Qgis::CrsDefinitionFormat::Wkt ) );
+  mFormatComboBox->addItem( tr( "Proj String (Legacy — Not Recommended)" ), static_cast<int>( Qgis::CrsDefinitionFormat::Proj ) );
+  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( static_cast<int>( Qgis::CrsDefinitionFormat::Wkt ) ) );
 
   connect( mFormatComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsCrsDefinitionWidget::formatChanged );
   connect( mTextEditParameters, &QPlainTextEdit::textChanged, this, &QgsCrsDefinitionWidget::crsChanged );
@@ -43,7 +43,7 @@ QgsCrsDefinitionWidget::QgsCrsDefinitionWidget( QWidget *parent )
 QgsCoordinateReferenceSystem QgsCrsDefinitionWidget::crs() const
 {
   QgsCoordinateReferenceSystem crs;
-  switch ( static_cast< Qgis::CrsDefinitionFormat >( mFormatComboBox->currentData().toInt() ) )
+  switch ( static_cast<Qgis::CrsDefinitionFormat>( mFormatComboBox->currentData().toInt() ) )
   {
     case Qgis::CrsDefinitionFormat::Wkt:
       crs = QgsCoordinateReferenceSystem::fromWkt( mTextEditParameters->toPlainText() );
@@ -75,18 +75,18 @@ void QgsCrsDefinitionWidget::setCrs( const QgsCoordinateReferenceSystem &crs, Qg
       break;
   }
 
-  whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( nativeFormat ) ) );
+  whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( static_cast<int>( nativeFormat ) ) );
   emit crsChanged();
 }
 
 Qgis::CrsDefinitionFormat QgsCrsDefinitionWidget::format() const
 {
-  return static_cast< Qgis::CrsDefinitionFormat >( mFormatComboBox->currentData().toInt() );
+  return static_cast<Qgis::CrsDefinitionFormat>( mFormatComboBox->currentData().toInt() );
 }
 
 void QgsCrsDefinitionWidget::setFormat( Qgis::CrsDefinitionFormat format )
 {
-  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( format ) ) );
+  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( static_cast<int>( format ) ) );
 }
 
 QString QgsCrsDefinitionWidget::definitionString() const
@@ -101,12 +101,12 @@ void QgsCrsDefinitionWidget::setDefinitionString( const QString &definition )
 
 void QgsCrsDefinitionWidget::pbnCopyCRS_clicked()
 {
-  std::unique_ptr< QgsProjectionSelectionDialog > selector = std::make_unique< QgsProjectionSelectionDialog >( this );
+  std::unique_ptr<QgsProjectionSelectionDialog> selector = std::make_unique<QgsProjectionSelectionDialog>( this );
   if ( selector->exec() )
   {
     const QgsCoordinateReferenceSystem srs = selector->crs();
 
-    whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( Qgis::CrsDefinitionFormat::Wkt ) ) );
+    whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( static_cast<int>( Qgis::CrsDefinitionFormat::Wkt ) ) );
     mTextEditParameters->setPlainText( srs.toWkt( Qgis::CrsWktVariant::Preferred, true ) );
   }
 }
@@ -120,7 +120,7 @@ void QgsCrsDefinitionWidget::validateCurrent()
   QgsScopedProjCollectingLogger projLogger;
   QgsProjUtils::proj_pj_unique_ptr crs;
 
-  switch ( static_cast< Qgis::CrsDefinitionFormat >( mFormatComboBox->currentData().toInt() ) )
+  switch ( static_cast<Qgis::CrsDefinitionFormat>( mFormatComboBox->currentData().toInt() ) )
   {
     case Qgis::CrsDefinitionFormat::Wkt:
     {
@@ -172,7 +172,7 @@ void QgsCrsDefinitionWidget::formatChanged()
 {
   QgsCoordinateReferenceSystem crs;
   QString newFormatString;
-  switch ( static_cast< Qgis::CrsDefinitionFormat >( mFormatComboBox->currentData().toInt() ) )
+  switch ( static_cast<Qgis::CrsDefinitionFormat>( mFormatComboBox->currentData().toInt() ) )
   {
     case Qgis::CrsDefinitionFormat::Proj:
     {
@@ -192,7 +192,7 @@ void QgsCrsDefinitionWidget::formatChanged()
       if ( crs )
       {
         const QByteArray multiLineOption = QStringLiteral( "MULTILINE=YES" ).toLocal8Bit();
-        const char *const options[] = {multiLineOption.constData(), nullptr};
+        const char *const options[] = { multiLineOption.constData(), nullptr };
         newFormatString = QString( proj_as_wkt( pjContext, crs.get(), PJ_WKT2_2019, options ) );
       }
       break;
@@ -222,7 +222,7 @@ void QgsCrsDefinitionWidget::pbnCalculate_clicked()
   }
 
   QgsCoordinateReferenceSystem target;
-  if ( static_cast< Qgis::CrsDefinitionFormat >( mFormatComboBox->currentData().toInt() ) == Qgis::CrsDefinitionFormat::Proj )
+  if ( static_cast<Qgis::CrsDefinitionFormat>( mFormatComboBox->currentData().toInt() ) == Qgis::CrsDefinitionFormat::Proj )
   {
     projDef = projDef + ( projDef.contains( QStringLiteral( "+type=crs" ) ) ? QString() : QStringLiteral( " +type=crs" ) );
     target = QgsCoordinateReferenceSystem::fromProj( projDef );

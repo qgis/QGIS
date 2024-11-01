@@ -43,9 +43,11 @@ QgsRasterRenderer::~QgsRasterRenderer()
 
 int QgsRasterRenderer::bandCount() const
 {
-  if ( mOn ) return 1;
+  if ( mOn )
+    return 1;
 
-  if ( mInput ) return mInput->bandCount();
+  if ( mInput )
+    return mInput->bandCount();
 
   return 0;
 }
@@ -54,9 +56,11 @@ Qgis::DataType QgsRasterRenderer::dataType( int bandNo ) const
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
 
-  if ( mOn ) return Qgis::DataType::ARGB32_Premultiplied;
+  if ( mOn )
+    return Qgis::DataType::ARGB32_Premultiplied;
 
-  if ( mInput ) return mInput->dataType( bandNo );
+  if ( mInput )
+    return mInput->dataType( bandNo );
 
   return Qgis::DataType::UnknownDataType;
 }
@@ -74,7 +78,8 @@ bool QgsRasterRenderer::canCreateRasterAttributeTable() const
 bool QgsRasterRenderer::setInput( QgsRasterInterface *input )
 {
   // Renderer can only work with numerical values in at least 1 band
-  if ( !input ) return false;
+  if ( !input )
+    return false;
 
   if ( !mOn )
   {
@@ -122,16 +127,16 @@ void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency *t )
   mRasterTransparency = t;
 }
 
-QList< QPair< QString, QColor > > QgsRasterRenderer::legendSymbologyItems() const
+QList<QPair<QString, QColor>> QgsRasterRenderer::legendSymbologyItems() const
 {
-  return QList< QPair< QString, QColor > >();
+  return QList<QPair<QString, QColor>>();
 }
 
 QList<QgsLayerTreeModelLegendNode *> QgsRasterRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer )
 {
   QList<QgsLayerTreeModelLegendNode *> nodes;
 
-  const QList< QPair< QString, QColor > > rasterItemList = legendSymbologyItems();
+  const QList<QPair<QString, QColor>> rasterItemList = legendSymbologyItems();
   if ( rasterItemList.isEmpty() )
     return nodes;
 

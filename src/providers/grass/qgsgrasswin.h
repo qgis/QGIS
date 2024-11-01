@@ -27,4 +27,3 @@ class GRASS_LIB_EXPORT QgsGrassWin
 };
 
 #endif // QGSGRASSWIN_H
-

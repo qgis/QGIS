@@ -33,7 +33,6 @@
 class CORE_EXPORT QgsSatelliteInfo
 {
   public:
-
     /**
      * Contains the satellite identifier number.
      *
@@ -53,7 +52,7 @@ class CORE_EXPORT QgsSatelliteInfo
     /**
      * Elevation of the satellite, in degrees.
      */
-    double elevation = std::numeric_limits< double >::quiet_NaN();
+    double elevation = std::numeric_limits<double>::quiet_NaN();
 #else
 
     /**
@@ -67,7 +66,7 @@ class CORE_EXPORT QgsSatelliteInfo
     /**
      * The azimuth of the satellite to true north, in degrees.
      */
-    double azimuth = std::numeric_limits< double >::quiet_NaN();
+    double azimuth = std::numeric_limits<double>::quiet_NaN();
 #else
 
     /**
@@ -96,13 +95,7 @@ class CORE_EXPORT QgsSatelliteInfo
 
     bool operator==( const QgsSatelliteInfo &other ) const
     {
-      return id == other.id &&
-             inUse == other.inUse &&
-             elevation == other.elevation &&
-             azimuth == other.azimuth &&
-             signal == other.signal &&
-             satType == other.satType &&
-             mConstellation == other.mConstellation;
+      return id == other.id && inUse == other.inUse && elevation == other.elevation && azimuth == other.azimuth && signal == other.signal && satType == other.satType && mConstellation == other.mConstellation;
     }
 
     bool operator!=( const QgsSatelliteInfo &other ) const
@@ -111,7 +104,6 @@ class CORE_EXPORT QgsSatelliteInfo
     }
 
   private:
-
     Qgis::GnssConstellation mConstellation = Qgis::GnssConstellation::Unknown;
 
     friend class QgsNmeaConnection;

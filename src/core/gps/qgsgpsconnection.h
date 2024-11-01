@@ -39,14 +39,14 @@ template<class T> class QgsSettingsEntryEnumFlag;
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include "qgsgpsconnection.h"
-% End
+  % End
 #endif
 
-/**
+  /**
  * \ingroup core
  * \brief Abstract base class for connection to a GPS device
 */
-class CORE_EXPORT QgsGpsConnection : public QObject
+  class CORE_EXPORT QgsGpsConnection : public QObject
 {
 #ifdef SIP_RUN
 #include <qgsgpsdconnection.h>
@@ -67,7 +67,6 @@ class CORE_EXPORT QgsGpsConnection : public QObject
 
     Q_OBJECT
   public:
-
     enum Status
     {
       NotConnected,
@@ -176,7 +175,7 @@ class CORE_EXPORT QgsGpsConnection : public QObject
 
   protected:
     //! Data source (e.g. serial device, socket, file,...)
-    std::unique_ptr< QIODevice > mSource;
+    std::unique_ptr<QIODevice> mSource;
     //! Last state of the gps related variables (e.g. position, time, ...)
     QgsGpsInformation mLastGPSInformation;
     //! Connection status
@@ -193,10 +192,9 @@ class CORE_EXPORT QgsGpsConnection : public QObject
 
   protected slots:
     //! Parse available data source content
-    virtual void parseData() = 0;  // cppcheck-suppress pureVirtualCall
+    virtual void parseData() = 0; // cppcheck-suppress pureVirtualCall
 
   private:
-
     //! Last fix status
     Qgis::GpsFixStatus mLastFixStatus = Qgis::GpsFixStatus::NoData;
 

@@ -161,17 +161,17 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
 
     struct AttributeValueChange
     {
-      QgsFeatureId fid;
-      int attr;
-      QString value;
+        QgsFeatureId fid;
+        int attr;
+        QString value;
     };
     typedef QList<AttributeValueChange> AttributeValueChanges;
     AttributeValueChanges sqlQueryAttributeValueChanges( sqlite3 *db, const QString &sql );
 
     struct GeometryChange
     {
-      QgsFeatureId fid;
-      QString geom_wkt;
+        QgsFeatureId fid;
+        QString geom_wkt;
     };
     typedef QList<GeometryChange> GeometryChanges;
     GeometryChanges sqlQueryGeometryChanges( sqlite3 *db, const QString &sql );

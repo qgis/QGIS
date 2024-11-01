@@ -33,7 +33,7 @@ class QgsRenderContext;
  * \class QgsTextDiagram
  * \brief A text based diagram.
  */
-class CORE_EXPORT QgsTextDiagram: public QgsDiagram SIP_NODEFAULTCTORS
+class CORE_EXPORT QgsTextDiagram : public QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
     static const QString DIAGRAM_NAME_TEXT SIP_SKIP;

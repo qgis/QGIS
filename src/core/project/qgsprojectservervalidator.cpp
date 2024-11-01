@@ -43,7 +43,7 @@ QString QgsProjectServerValidator::displayValidationError( QgsProjectServerValid
 
 void QgsProjectServerValidator::browseLayerTree( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages )
 {
-  const QList< QgsLayerTreeNode * > treeGroupChildren = treeGroup->children();
+  const QList<QgsLayerTreeNode *> treeGroupChildren = treeGroup->children();
   for ( int i = 0; i < treeGroupChildren.size(); ++i )
   {
     QgsLayerTreeNode *treeNode = treeGroupChildren.at( i );

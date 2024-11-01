@@ -138,7 +138,7 @@ void QgsMapToolPan::pinchTriggered( QPinchGesture *gesture )
   if ( gesture->state() == Qt::GestureFinished )
   {
     //a very small totalScaleFactor indicates a two finger tap (pinch gesture without pinching)
-    if ( 0.98 < gesture->totalScaleFactor()  && gesture->totalScaleFactor() < 1.02 )
+    if ( 0.98 < gesture->totalScaleFactor() && gesture->totalScaleFactor() < 1.02 )
     {
       mCanvas->zoomOut();
     }
@@ -148,7 +148,7 @@ void QgsMapToolPan::pinchTriggered( QPinchGesture *gesture )
       QPoint pos = gesture->centerPoint().toPoint();
       pos = mCanvas->mapFromGlobal( pos );
       // transform the mouse pos to map coordinates
-      const QgsPointXY center  = mCanvas->getCoordinateTransform()->toMapCoordinates( pos.x(), pos.y() );
+      const QgsPointXY center = mCanvas->getCoordinateTransform()->toMapCoordinates( pos.x(), pos.y() );
       QgsRectangle r = mCanvas->extent();
       r.scale( 1 / gesture->totalScaleFactor(), &center );
       mCanvas->setExtent( r );

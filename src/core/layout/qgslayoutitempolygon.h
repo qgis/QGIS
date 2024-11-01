@@ -26,12 +26,11 @@ class QgsFillSymbol;
  * \ingroup core
  * \brief Layout item for node based polygon shapes.
  */
-class CORE_EXPORT QgsLayoutItemPolygon: public QgsLayoutNodesItem
+class CORE_EXPORT QgsLayoutItemPolygon : public QgsLayoutNodesItem
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutItemPolygon for the specified \a layout.
      */
@@ -81,7 +80,6 @@ class CORE_EXPORT QgsLayoutItemPolygon: public QgsLayoutNodesItem
     void _writeXmlStyle( QDomDocument &doc, QDomElement &elmt, const QgsReadWriteContext &context ) const override;
 
   private:
-
     //! QgsSymbol use to draw the shape.
     std::unique_ptr<QgsFillSymbol> mPolygonStyleSymbol;
     //! Create a default symbol.

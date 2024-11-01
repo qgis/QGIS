@@ -60,10 +60,10 @@ class Qgs3DMapSceneEntity : public Qt3DCore::QEntity
     //! Records some bits about the scene (context for handleSceneUpdate() method)
     struct SceneContext
     {
-      QVector3D cameraPos;   //!< Camera position
-      float cameraFov;       //!< Field of view (in degrees)
-      int screenSizePx;      //!< Size of the viewport in pixels
-      QMatrix4x4 viewProjectionMatrix; //!< For frustum culling
+        QVector3D cameraPos;             //!< Camera position
+        float cameraFov;                 //!< Field of view (in degrees)
+        int screenSizePx;                //!< Size of the viewport in pixels
+        QMatrix4x4 viewProjectionMatrix; //!< For frustum culling
     };
 
     //! Called when e.g. camera changes and entity may need updated
@@ -76,7 +76,11 @@ class Qgs3DMapSceneEntity : public Qt3DCore::QEntity
     virtual bool needsUpdate() const { return false; }
 
     //! Returns the near to far plane range for the entity using the specified \a viewMatrix
-    virtual QgsRange<float> getNearFarPlaneRange( const QMatrix4x4 &viewMatrix ) const { Q_UNUSED( viewMatrix ) return QgsRange<float>( 1e9, 0 ); }
+    virtual QgsRange<float> getNearFarPlaneRange( const QMatrix4x4 &viewMatrix ) const
+    {
+      Q_UNUSED( viewMatrix )
+      return QgsRange<float>( 1e9, 0 );
+    }
 
     /**
      * Returns the associated 3D mapSettings settings.

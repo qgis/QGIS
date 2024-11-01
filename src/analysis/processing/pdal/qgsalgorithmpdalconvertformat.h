@@ -30,9 +30,7 @@
  */
 class QgsPdalConvertFormatAlgorithm : public QgsPdalAlgorithmBase
 {
-
   public:
-
     QgsPdalConvertFormatAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;

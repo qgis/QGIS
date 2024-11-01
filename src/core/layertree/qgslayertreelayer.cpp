@@ -51,7 +51,7 @@ QgsLayerTreeLayer::QgsLayerTreeLayer( const QgsLayerTreeLayer &other )
 void QgsLayerTreeLayer::resolveReferences( const QgsProject *project, bool looseMatching )
 {
   if ( mRef )
-    return;  // already assigned
+    return; // already assigned
 
   if ( !looseMatching )
   {
@@ -137,7 +137,7 @@ QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element, const QgsRe
 
   nodeLayer->setPatchSize( QgsSymbolLayerUtils::decodeSize( element.attribute( QStringLiteral( "patch_size" ) ) ) );
 
-  nodeLayer->setLegendSplitBehavior( static_cast< LegendNodesSplitBehavior >( element.attribute( QStringLiteral( "legend_split_behavior" ), QStringLiteral( "0" ) ).toInt() ) );
+  nodeLayer->setLegendSplitBehavior( static_cast<LegendNodesSplitBehavior>( element.attribute( QStringLiteral( "legend_split_behavior" ), QStringLiteral( "0" ) ).toInt() ) );
 
   return nodeLayer;
 }
@@ -204,7 +204,6 @@ void QgsLayerTreeLayer::layerWillBeDeleted()
   // in theory we do not even need to do this - the weak ref should clear itself
   mRef.layer.clear();
   // layerId stays in the reference
-
 }
 
 void QgsLayerTreeLayer::setUseLayerName( const bool use )
@@ -237,4 +236,3 @@ void QgsLayerTreeLayer::setPatchShape( const QgsLegendPatchShape &shape )
 {
   mPatchShape = shape;
 }
-

@@ -27,10 +27,9 @@ class QgsLineString;
  * \class QgsMultiLineString
  * \brief Multi line string geometry collection.
  */
-class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
+class CORE_EXPORT QgsMultiLineString : public QgsMultiCurve
 {
   public:
-
     /**
      * Constructor for an empty multilinestring geometry.
      */
@@ -43,7 +42,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
      *
      * \since QGIS 3.38
      */
-    QgsMultiLineString( const QList< QgsLineString > &linestrings ) SIP_HOLDGIL;
+    QgsMultiLineString( const QList<QgsLineString> &linestrings ) SIP_HOLDGIL;
 
     /**
      * Constructor for a multilinestring containing the specified \a linestrings.
@@ -52,7 +51,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
      *
      * \since QGIS 3.38
      */
-    QgsMultiLineString( const QList< QgsLineString * > &linestrings SIP_TRANSFER ) SIP_HOLDGIL;
+    QgsMultiLineString( const QList<QgsLineString *> &linestrings SIP_TRANSFER ) SIP_HOLDGIL;
 
 #ifndef SIP_RUN
 
@@ -72,8 +71,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
      * \since QGIS 3.16
      */
     SIP_PYOBJECT lineStringN( int index ) SIP_TYPEHINT( QgsLineString );
-    % MethodCode
-    if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
+    % MethodCode if ( a0 < 0 || a0 >= sipCpp->numGeometries() )
     {
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
@@ -105,7 +103,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     json asJsonObject( int precision = 17 ) const override SIP_SKIP;
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
-    bool addGeometries( const QVector< QgsAbstractGeometry * > &geometries SIP_TRANSFER ) final;
+    bool addGeometries( const QVector<QgsAbstractGeometry *> &geometries SIP_TRANSFER ) final;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
     QgsMultiLineString *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
 
@@ -136,7 +134,8 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString wkt = sipCpp->asWkt();
+        QString wkt
+      = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
       wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
     QString str = QStringLiteral( "<QgsMultiLineString: %1>" ).arg( wkt );
@@ -144,16 +143,16 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     % End
 #endif
 
-    /**
+        /**
      * Re-write the measure ordinate (or add one, if it isn't already there) interpolating
      * the measure between the supplied \a start and \a end values.
      *
      * \since QGIS 3.36
      */
-    QgsMultiLineString *measuredLine( double start, double end ) const SIP_FACTORY;
+        QgsMultiLineString *
+      measuredLine( double start, double end ) const SIP_FACTORY;
 
   protected:
-
     bool wktOmitChildType() const override;
 };
 

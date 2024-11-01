@@ -34,9 +34,7 @@ class QgsSettingsEntryVariantMap;
 
 class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderConnection
 {
-
   public:
-
 #ifndef SIP_RUN
 
     static inline QgsSettingsTreeNamedListNode *sTreeConnectionVectorTile = QgsSettingsTree::sTreeConnections->createNamedListNode( QStringLiteral( "vector-tile" ), Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
@@ -65,31 +63,30 @@ class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderCo
      */
     enum ServiceType
     {
-      Generic, //!< Generic (XYZ) connection
+      Generic,                 //!< Generic (XYZ) connection
       ArcgisVectorTileService, //!< ArcGIS VectorTileServer connection
     };
 
     //! Represents decoded data of a connection
     struct Data
     {
-      QString url;
-      int zMin = -1;
-      int zMax = -1;
+        QString url;
+        int zMin = -1;
+        int zMax = -1;
 
-      ServiceType serviceType = Generic;
+        ServiceType serviceType = Generic;
 
-      //! Authentication configuration id
-      QString authCfg;
-      //! HTTP Basic username
-      QString username;
-      //! HTTP Basic password
-      QString password;
-      //! HTTP headers
-      QgsHttpHeaders httpHeaders;
+        //! Authentication configuration id
+        QString authCfg;
+        //! HTTP Basic username
+        QString username;
+        //! HTTP Basic password
+        QString password;
+        //! HTTP headers
+        QgsHttpHeaders httpHeaders;
 
-      //! Optional style URL (will override any default styles)
-      QString styleUrl;
-
+        //! Optional style URL (will override any default styles)
+        QString styleUrl;
     };
 
     //! Returns connection data encoded as a string

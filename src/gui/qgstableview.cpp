@@ -21,7 +21,6 @@
 QgsTableView::QgsTableView( QWidget *parent )
   : QTableView( parent )
 {
-
 }
 
 void QgsTableView::wheelEvent( QWheelEvent *event )

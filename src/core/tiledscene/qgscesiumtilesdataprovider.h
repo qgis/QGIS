@@ -32,12 +32,10 @@ class QgsCesiumTilesDataProviderSharedData;
 
 ///@cond PRIVATE
 
-class CORE_EXPORT QgsCesiumTilesDataProvider final: public QgsTiledSceneDataProvider
+class CORE_EXPORT QgsCesiumTilesDataProvider final : public QgsTiledSceneDataProvider
 {
     Q_OBJECT
   public:
-
-
     //! Constructor for QgsCesiumTilesDataProvider
     QgsCesiumTilesDataProvider( const QString &uri,
                                 const QgsDataProvider::ProviderOptions &providerOptions,
@@ -62,7 +60,6 @@ class CORE_EXPORT QgsCesiumTilesDataProvider final: public QgsTiledSceneDataProv
     QgsDoubleRange zRange() const final;
 
   private:
-
     bool init();
 
     bool mIsValid = false;
@@ -70,8 +67,7 @@ class CORE_EXPORT QgsCesiumTilesDataProvider final: public QgsTiledSceneDataProv
     QString mAuthCfg;
     QgsHttpHeaders mHeaders;
 
-    std::shared_ptr<QgsCesiumTilesDataProviderSharedData> mShared;  //!< Mutable data shared between provider instances
-
+    std::shared_ptr<QgsCesiumTilesDataProviderSharedData> mShared; //!< Mutable data shared between provider instances
 };
 
 
@@ -84,18 +80,16 @@ class QgsCesiumTilesProviderMetadata : public QgsProviderMetadata
     QIcon icon() const override;
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
     QgsCesiumTilesDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
+    QList<QgsProviderSublayerDetails> querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
     int priorityForUri( const QString &uri ) const override;
-    QList< Qgis::LayerType > validLayerTypesForUri( const QString &uri ) const override;
+    QList<Qgis::LayerType> validLayerTypesForUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString filters( Qgis::FileFilterType type ) override;
     ProviderCapabilities providerCapabilities() const override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
-
+    QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 ///@endcond
 
 #endif // QGSCESIUMTILESDATAPROVIDER_H
-

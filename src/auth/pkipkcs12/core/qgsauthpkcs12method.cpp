@@ -51,7 +51,7 @@ QgsAuthPkcs12Method::QgsAuthPkcs12Method()
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
   setDataProviders( QStringList()
                     << QStringLiteral( "ows" )
-                    << QStringLiteral( "wfs" )  // convert to lowercase
+                    << QStringLiteral( "wfs" ) // convert to lowercase
                     << QStringLiteral( "wcs" )
                     << QStringLiteral( "wms" )
                     << QStringLiteral( "postgres" ) );
@@ -81,7 +81,7 @@ QString QgsAuthPkcs12Method::displayDescription() const
 }
 
 bool QgsAuthPkcs12Method::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
-    const QString &dataprovider )
+                                                const QString &dataprovider )
 {
 #ifndef QT_NO_SSL
   Q_UNUSED( dataprovider )
@@ -112,9 +112,9 @@ bool QgsAuthPkcs12Method::updateNetworkRequest( QNetworkRequest &request, const 
   sslConfig.setPrivateKey( pkibundle->clientCertKey() );
 
   // add extra CAs from the bundle, QNAM will prepend the trusted CAs in createRequest()
-  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) == QStringLiteral( "true" ) )
   {
-    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) == QStringLiteral( "true" ) )
     {
       sslConfig.setCaCertificates( pkibundle->caChain() );
     }
@@ -133,7 +133,7 @@ bool QgsAuthPkcs12Method::updateNetworkRequest( QNetworkRequest &request, const 
 }
 
 bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
-    const QString &dataprovider )
+                                                    const QString &dataprovider )
 {
 #ifndef QT_NO_SSL
   Q_UNUSED( dataprovider )
@@ -154,8 +154,8 @@ bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems
 
   // save client cert to temp file
   const QString certFilePath = QgsAuthCertUtils::pemTextToTempFile(
-                                 pkiTempFileBase.arg( QUuid::createUuid().toString() ),
-                                 pkibundle->clientCert().toPem() );
+    pkiTempFileBase.arg( QUuid::createUuid().toString() ),
+    pkibundle->clientCert().toPem() );
   if ( certFilePath.isEmpty() )
   {
     return false;
@@ -163,8 +163,8 @@ bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems
 
   // save client cert key to temp file
   const QString keyFilePath = QgsAuthCertUtils::pemTextToTempFile(
-                                pkiTempFileBase.arg( QUuid::createUuid().toString() ),
-                                pkibundle->clientCertKey().toPem() );
+    pkiTempFileBase.arg( QUuid::createUuid().toString() ),
+    pkibundle->clientCertKey().toPem() );
   if ( keyFilePath.isEmpty() )
   {
     return false;
@@ -172,9 +172,9 @@ bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems
 
   // add extra CAs from the bundle
   QList<QSslCertificate> cas;
-  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) == QStringLiteral( "true" ) )
   {
-    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) == QStringLiteral( "true" ) )
     {
       cas = QgsAuthCertUtils::casMerge( QgsApplication::authManager()->trustedCaCerts(), pkibundle->caChain() );
     }
@@ -191,8 +191,8 @@ bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems
 
   // save CAs to temp file
   const QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
-                               pkiTempFileBase.arg( QUuid::createUuid().toString() ),
-                               QgsAuthCertUtils::certsToPemText( cas ) );
+    pkiTempFileBase.arg( QUuid::createUuid().toString() ),
+    QgsAuthCertUtils::certsToPemText( cas ) );
 
   if ( caFilePath.isEmpty() )
   {
@@ -308,7 +308,7 @@ QgsPkiConfigBundle *QgsAuthPkcs12Method::getPkiConfigBundle( const QString &auth
   }
 
   const QStringList bundlelist = QgsAuthCertUtils::pkcs12BundleToPem( mconfig.config( QStringLiteral( "bundlepath" ) ),
-                                 mconfig.config( QStringLiteral( "bundlepass" ) ), false );
+                                                                      mconfig.config( QStringLiteral( "bundlepass" ) ), false );
 
   if ( bundlelist.isEmpty() || bundlelist.size() < 2 )
   {

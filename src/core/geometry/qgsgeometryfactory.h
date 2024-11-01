@@ -52,24 +52,23 @@ typedef QVector<QgsPolygonXY> QgsMultiPolygonXY;
 class CORE_EXPORT QgsGeometryFactory
 {
   public:
-
     /**
      * Construct geometry from a WKB string.
      * Updates position of the passed WKB pointer.
      */
-    static std::unique_ptr< QgsAbstractGeometry > geomFromWkb( QgsConstWkbPtr &wkb );
+    static std::unique_ptr<QgsAbstractGeometry> geomFromWkb( QgsConstWkbPtr &wkb );
 
     /**
      * Construct geometry from a WKT string.
      */
-    static std::unique_ptr< QgsAbstractGeometry > geomFromWkt( const QString &text );
+    static std::unique_ptr<QgsAbstractGeometry> geomFromWkt( const QString &text );
 
     //! Construct geometry from a point
-    static std::unique_ptr< QgsAbstractGeometry > fromPointXY( const QgsPointXY &point );
+    static std::unique_ptr<QgsAbstractGeometry> fromPointXY( const QgsPointXY &point );
     //! Construct geometry from a multipoint
     static std::unique_ptr<QgsMultiPoint> fromMultiPointXY( const QgsMultiPointXY &multipoint );
     //! Construct geometry from a polyline
-    static std::unique_ptr< QgsAbstractGeometry > fromPolylineXY( const QgsPolylineXY &polyline );
+    static std::unique_ptr<QgsAbstractGeometry> fromPolylineXY( const QgsPolylineXY &polyline );
     //! Construct geometry from a multipolyline
     static std::unique_ptr<QgsMultiLineString> fromMultiPolylineXY( const QgsMultiPolylineXY &multiline );
     //! Construct geometry from a polygon
@@ -77,16 +76,16 @@ class CORE_EXPORT QgsGeometryFactory
     //! Construct geometry from a multipolygon
     static std::unique_ptr<QgsMultiPolygon> fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly );
     //! Returns empty geometry from wkb type
-    static std::unique_ptr< QgsAbstractGeometry > geomFromWkbType( Qgis::WkbType t );
+    static std::unique_ptr<QgsAbstractGeometry> geomFromWkbType( Qgis::WkbType t );
 
     /**
      * Returns a new geometry collection matching a specified WKB \a type. For instance, if
      * type is PolygonM the returned geometry will be a QgsMultiPolygon with M values.
      */
-    static std::unique_ptr< QgsGeometryCollection > createCollectionOfType( Qgis::WkbType type );
+    static std::unique_ptr<QgsGeometryCollection> createCollectionOfType( Qgis::WkbType type );
 
   private:
-    static std::unique_ptr< QgsLineString > linestringFromPolyline( const QgsPolylineXY &polyline );
+    static std::unique_ptr<QgsLineString> linestringFromPolyline( const QgsPolylineXY &polyline );
 };
 
 #endif // QGSGEOMETRYFACTORY_H

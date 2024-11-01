@@ -52,19 +52,18 @@ class QgsSettingsTreeWidgetOld : public QTreeWidget
     Q_OBJECT
 
   public:
-
     //! Model roles
     enum Roles
     {
       TypeRole = Qt::UserRole + 1, //!< Item type role, see Type enum
-      PathRole, //!< Complete setting path, including parent groups
+      PathRole,                    //!< Complete setting path, including parent groups
     };
 
     //! Item types
     enum Type
     {
       Group = 0, //!< Group item
-      Setting, //!< Setting item
+      Setting,   //!< Setting item
     };
     Q_ENUM( Type )
 
@@ -72,7 +71,7 @@ class QgsSettingsTreeWidgetOld : public QTreeWidget
 
     QSize sizeHint() const override;
 
-    void setSettingsMap( QMap< QString, QStringList > &map ) { mSettingsMap = map; }
+    void setSettingsMap( QMap<QString, QStringList> &map ) { mSettingsMap = map; }
     QString itemKey( QTreeWidgetItem *item );
 
   public slots:
@@ -89,7 +88,6 @@ class QgsSettingsTreeWidgetOld : public QTreeWidget
     void showContextMenu( QPoint pos );
 
   private:
-
     enum Columns
     {
       ColumnSettings = 0,
@@ -112,7 +110,7 @@ class QgsSettingsTreeWidgetOld : public QTreeWidget
     QIcon mGroupIcon;
     QIcon mKeyIcon;
 
-    QMap< QString, QStringList > mSettingsMap;
+    QMap<QString, QStringList> mSettingsMap;
     QMenu *mContextMenu = nullptr;
 };
 

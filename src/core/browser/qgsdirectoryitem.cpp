@@ -110,7 +110,7 @@ void QgsDirectoryItem::reevaluateMonitoring()
   const QVector<QgsDataItem *> childItems = children();
   for ( QgsDataItem *child : childItems )
   {
-    if ( QgsDirectoryItem *dirItem = qobject_cast< QgsDirectoryItem *>( child ) )
+    if ( QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( child ) )
       dirItem->reevaluateMonitoring();
   }
 
@@ -172,8 +172,8 @@ QIcon QgsDirectoryItem::icon()
   if ( mIsDir && mIsSymLink )
   {
     return mIconColor.isValid()
-           ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderLinkParams.svg" ), mIconColor, mIconColor.darker() )
-           : QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderLink.svg" ) );
+             ? QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderLinkParams.svg" ), mIconColor, mIconColor.darker() )
+             : QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderLink.svg" ) );
   }
 
   // loaded? show the open dir icon
@@ -246,7 +246,7 @@ void QgsDirectoryItem::setMonitoring( Qgis::BrowserDirectoryMonitoring monitorin
   const QVector<QgsDataItem *> childItems = children();
   for ( QgsDataItem *child : childItems )
   {
-    if ( QgsDirectoryItem *dirItem = qobject_cast< QgsDirectoryItem *>( child ) )
+    if ( QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( child ) )
       dirItem->reevaluateMonitoring();
   }
 
@@ -322,8 +322,7 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
     {
       const Qgis::DataItemProviderCapabilities capabilities = provider->capabilities();
 
-      if ( !( ( fileInfo.isFile() && ( capabilities & Qgis::DataItemProviderCapability::Files ) ) ||
-              ( fileInfo.isDir() && ( capabilities & Qgis::DataItemProviderCapability::Directories ) ) ) )
+      if ( !( ( fileInfo.isFile() && ( capabilities & Qgis::DataItemProviderCapability::Files ) ) || ( fileInfo.isDir() && ( capabilities & Qgis::DataItemProviderCapability::Directories ) ) ) )
       {
         continue;
       }
@@ -345,8 +344,7 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
     {
       // if item is a QGIS project, and no specific item provider has overridden handling of
       // project items, then use the default project item behavior
-      if ( fileInfo.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 ||
-           fileInfo.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0 )
+      if ( fileInfo.suffix().compare( QLatin1String( "qgs" ), Qt::CaseInsensitive ) == 0 || fileInfo.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) == 0 )
       {
         QgsDataItem *item = new QgsProjectItem( this, fileInfo.completeBaseName(), path );
         item->setCapabilities( item->capabilities2() | Qgis::BrowserItemCapability::ItemRepresentsFile );
@@ -354,7 +352,6 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
         continue;
       }
     }
-
   }
   return children;
 }
@@ -415,7 +412,8 @@ bool QgsDirectoryItem::hiddenPath( const QString &path )
 {
   const QgsSettings settings;
   const QStringList hiddenItems = settings.value( QStringLiteral( "browser/hiddenPaths" ),
-                                  QStringList() ).toStringList();
+                                                  QStringList() )
+                                    .toStringList();
   const int idx = hiddenItems.indexOf( path );
   return ( idx > -1 );
 }
@@ -492,7 +490,7 @@ bool QgsDirectoryItem::equal( const QgsDataItem *other )
   {
     return false;
   }
-  const QgsDirectoryItem *otherDirItem = qobject_cast< const QgsDirectoryItem * >( other );
+  const QgsDirectoryItem *otherDirItem = qobject_cast<const QgsDirectoryItem *>( other );
   if ( !otherDirItem )
     return false;
 
@@ -675,5 +673,3 @@ QVariant QgsProjectHomeItem::sortKey() const
 {
   return QStringLiteral( " 1" );
 }
-
-

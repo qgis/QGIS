@@ -51,7 +51,7 @@ QgsFeatureList QgsRemappingProxyFeatureSink::remapFeature( const QgsFeature &fea
   QgsFeature f;
   f.setFields( mDefinition.destinationFields(), true );
   QgsAttributes attributes;
-  const QMap< QString, QgsProperty > fieldMap = mDefinition.fieldMap();
+  const QMap<QString, QgsProperty> fieldMap = mDefinition.fieldMap();
   for ( const QgsField &field : mDefinition.destinationFields() )
   {
     if ( fieldMap.contains( field.name() ) )
@@ -68,7 +68,7 @@ QgsFeatureList QgsRemappingProxyFeatureSink::remapFeature( const QgsFeature &fea
   // make geometries compatible, and reproject if necessary
   if ( feature.hasGeometry() )
   {
-    const QVector< QgsGeometry > geometries = feature.geometry().coerceToType( mDefinition.destinationWkbType() );
+    const QVector<QgsGeometry> geometries = feature.geometry().coerceToType( mDefinition.destinationWkbType() );
     if ( !geometries.isEmpty() )
     {
       res.reserve( geometries.size() );
@@ -138,7 +138,7 @@ QString QgsRemappingProxyFeatureSink::lastError() const
 QVariant QgsRemappingSinkDefinition::toVariant() const
 {
   QVariantMap map;
-  map.insert( QStringLiteral( "wkb_type" ), static_cast< quint32>( mDestinationWkbType ) );
+  map.insert( QStringLiteral( "wkb_type" ), static_cast<quint32>( mDestinationWkbType ) );
   // we only really care about names here
   QVariantList fieldNames;
   for ( const QgsField &field : mDestinationFields )
@@ -159,7 +159,7 @@ QVariant QgsRemappingSinkDefinition::toVariant() const
 
 bool QgsRemappingSinkDefinition::loadVariant( const QVariantMap &map )
 {
-  mDestinationWkbType = static_cast< Qgis::WkbType >( map.value( QStringLiteral( "wkb_type" ), static_cast< quint32>( Qgis::WkbType::Unknown ) ).toInt() );
+  mDestinationWkbType = static_cast<Qgis::WkbType>( map.value( QStringLiteral( "wkb_type" ), static_cast<quint32>( Qgis::WkbType::Unknown ) ).toInt() );
 
   const QVariantList fieldNames = map.value( QStringLiteral( "destination_field_names" ) ).toList();
   QgsFields fields;

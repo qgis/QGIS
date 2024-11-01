@@ -32,11 +32,9 @@
  */
 class MetadataUrlItemDelegate : public QStyledItemDelegate
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * \brief MetadataUrlItemDelegate constructor
      * \param parent

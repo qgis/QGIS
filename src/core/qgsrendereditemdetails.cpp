@@ -19,7 +19,6 @@
 QgsRenderedItemDetails::QgsRenderedItemDetails( const QString &layerId )
   : mLayerId( layerId )
 {
-
 }
 
 QgsRenderedItemDetails::~QgsRenderedItemDetails() = default;

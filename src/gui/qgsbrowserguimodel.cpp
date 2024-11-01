@@ -35,8 +35,8 @@ QgsDataItemGuiContext QgsBrowserGuiModel::createDataItemContext() const
 
 struct QgsBrowserGuiModelCachedAcceptDropValue
 {
-  bool acceptDrop;
-  int numberOfProviders;
+    bool acceptDrop;
+    int numberOfProviders;
 };
 Q_DECLARE_METATYPE( QgsBrowserGuiModelCachedAcceptDropValue )
 

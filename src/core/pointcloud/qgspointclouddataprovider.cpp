@@ -79,32 +79,30 @@ QgsPointCloudRenderer *QgsPointCloudDataProvider::createRenderer( const QVariant
 
 QMap<int, QString> QgsPointCloudDataProvider::lasClassificationCodes()
 {
-  static QMap< int, QString > sCodes
-  {
-    {0, QStringLiteral( "Created, Never Classified" )},
-    {1, QStringLiteral( "Unclassified" )},
-    {2, QStringLiteral( "Ground" )},
-    {3, QStringLiteral( "Low Vegetation" )},
-    {4, QStringLiteral( "Medium Vegetation" )},
-    {5, QStringLiteral( "High Vegetation" )},
-    {6, QStringLiteral( "Building" )},
-    {7, QStringLiteral( "Low Point (Low Noise)" )},
-    {8, QStringLiteral( "Reserved" )},
-    {9, QStringLiteral( "Water" )},
-    {10, QStringLiteral( "Rail" )},
-    {11, QStringLiteral( "Road Surface" )},
-    {12, QStringLiteral( "Reserved" )},
-    {13, QStringLiteral( "Wire - Guard (Shield)" )},
-    {14, QStringLiteral( "Wire - Conductor (Phase)" )},
-    {15, QStringLiteral( "Transmission Tower" )},
-    {16, QStringLiteral( "Wire-Structure Connector (Insulator)" )},
-    {17, QStringLiteral( "Bridge Deck" )},
-    {18, QStringLiteral( "High Noise" )},
+  static QMap<int, QString> sCodes {
+    { 0, QStringLiteral( "Created, Never Classified" ) },
+    { 1, QStringLiteral( "Unclassified" ) },
+    { 2, QStringLiteral( "Ground" ) },
+    { 3, QStringLiteral( "Low Vegetation" ) },
+    { 4, QStringLiteral( "Medium Vegetation" ) },
+    { 5, QStringLiteral( "High Vegetation" ) },
+    { 6, QStringLiteral( "Building" ) },
+    { 7, QStringLiteral( "Low Point (Low Noise)" ) },
+    { 8, QStringLiteral( "Reserved" ) },
+    { 9, QStringLiteral( "Water" ) },
+    { 10, QStringLiteral( "Rail" ) },
+    { 11, QStringLiteral( "Road Surface" ) },
+    { 12, QStringLiteral( "Reserved" ) },
+    { 13, QStringLiteral( "Wire - Guard (Shield)" ) },
+    { 14, QStringLiteral( "Wire - Conductor (Phase)" ) },
+    { 15, QStringLiteral( "Transmission Tower" ) },
+    { 16, QStringLiteral( "Wire-Structure Connector (Insulator)" ) },
+    { 17, QStringLiteral( "Bridge Deck" ) },
+    { 18, QStringLiteral( "High Noise" ) },
   };
 
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]( )
-  {
+  std::call_once( initialized, [=]() {
     for ( int i = 19; i <= 63; ++i )
       sCodes.insert( i, QStringLiteral( "Reserved" ) );
     for ( int i = 64; i <= 255; ++i )
@@ -116,32 +114,30 @@ QMap<int, QString> QgsPointCloudDataProvider::lasClassificationCodes()
 
 QMap<int, QString> QgsPointCloudDataProvider::translatedLasClassificationCodes()
 {
-  static QMap< int, QString > sCodes
-  {
-    {0, QObject::tr( "Created, Never Classified" )},
-    {1, QObject::tr( "Unclassified" )},
-    {2, QObject::tr( "Ground" )},
-    {3, QObject::tr( "Low Vegetation" )},
-    {4, QObject::tr( "Medium Vegetation" )},
-    {5, QObject::tr( "High Vegetation" )},
-    {6, QObject::tr( "Building" )},
-    {7, QObject::tr( "Low Point (Noise)" )},
-    {8, QObject::tr( "Reserved" )},
-    {9, QObject::tr( "Water" )},
-    {10, QObject::tr( "Rail" )},
-    {11, QObject::tr( "Road Surface" )},
-    {12, QObject::tr( "Reserved" )},
-    {13, QObject::tr( "Wire - Guard (Shield)" )},
-    {14, QObject::tr( "Wire - Conductor (Phase)" )},
-    {15, QObject::tr( "Transmission Tower" )},
-    {16, QObject::tr( "Wire-Structure Connector (Insulator)" )},
-    {17, QObject::tr( "Bridge Deck" )},
-    {18, QObject::tr( "High Noise" )},
+  static QMap<int, QString> sCodes {
+    { 0, QObject::tr( "Created, Never Classified" ) },
+    { 1, QObject::tr( "Unclassified" ) },
+    { 2, QObject::tr( "Ground" ) },
+    { 3, QObject::tr( "Low Vegetation" ) },
+    { 4, QObject::tr( "Medium Vegetation" ) },
+    { 5, QObject::tr( "High Vegetation" ) },
+    { 6, QObject::tr( "Building" ) },
+    { 7, QObject::tr( "Low Point (Noise)" ) },
+    { 8, QObject::tr( "Reserved" ) },
+    { 9, QObject::tr( "Water" ) },
+    { 10, QObject::tr( "Rail" ) },
+    { 11, QObject::tr( "Road Surface" ) },
+    { 12, QObject::tr( "Reserved" ) },
+    { 13, QObject::tr( "Wire - Guard (Shield)" ) },
+    { 14, QObject::tr( "Wire - Conductor (Phase)" ) },
+    { 15, QObject::tr( "Transmission Tower" ) },
+    { 16, QObject::tr( "Wire-Structure Connector (Insulator)" ) },
+    { 17, QObject::tr( "Bridge Deck" ) },
+    { 18, QObject::tr( "High Noise" ) },
   };
 
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]( )
-  {
+  std::call_once( initialized, [=]() {
     for ( int i = 19; i <= 63; ++i )
       sCodes.insert( i, QObject::tr( "Reserved" ) );
     for ( int i = 64; i <= 255; ++i )
@@ -153,15 +149,14 @@ QMap<int, QString> QgsPointCloudDataProvider::translatedLasClassificationCodes()
 
 QMap<int, QString> QgsPointCloudDataProvider::dataFormatIds()
 {
-  static const QMap< int, QString > sCodes
-  {
-    {0, QStringLiteral( "No color or time stored" )},
-    {1, QStringLiteral( "Time is stored" )},
-    {2, QStringLiteral( "Color is stored" )},
-    {3, QStringLiteral( "Color and time are stored" )},
-    {6, QStringLiteral( "Time is stored" )},
-    {7, QStringLiteral( "Time and color are stored)" )},
-    {8, QStringLiteral( "Time, color and near infrared are stored" )},
+  static const QMap<int, QString> sCodes {
+    { 0, QStringLiteral( "No color or time stored" ) },
+    { 1, QStringLiteral( "Time is stored" ) },
+    { 2, QStringLiteral( "Color is stored" ) },
+    { 3, QStringLiteral( "Color and time are stored" ) },
+    { 6, QStringLiteral( "Time is stored" ) },
+    { 7, QStringLiteral( "Time and color are stored)" ) },
+    { 8, QStringLiteral( "Time, color and near infrared are stored" ) },
   };
 
   return sCodes;
@@ -169,15 +164,14 @@ QMap<int, QString> QgsPointCloudDataProvider::dataFormatIds()
 
 QMap<int, QString> QgsPointCloudDataProvider::translatedDataFormatIds()
 {
-  static const QMap< int, QString > sCodes
-  {
-    {0, QObject::tr( "No color or time stored" )},
-    {1, QObject::tr( "Time is stored" )},
-    {2, QObject::tr( "Color is stored" )},
-    {3, QObject::tr( "Color and time are stored" )},
-    {6, QObject::tr( "Time is stored" )},
-    {7, QObject::tr( "Time and color are stored)" )},
-    {8, QObject::tr( "Time, color and near infrared are stored" )},
+  static const QMap<int, QString> sCodes {
+    { 0, QObject::tr( "No color or time stored" ) },
+    { 1, QObject::tr( "Time is stored" ) },
+    { 2, QObject::tr( "Color is stored" ) },
+    { 3, QObject::tr( "Color and time are stored" ) },
+    { 6, QObject::tr( "Time is stored" ) },
+    { 7, QObject::tr( "Time and color are stored)" ) },
+    { 8, QObject::tr( "Time, color and near infrared are stored" ) },
   };
 
   return sCodes;
@@ -256,56 +250,56 @@ QString QgsPointCloudDataProvider::subsetStringHelpUrl() const
 
 struct MapIndexedPointCloudNode
 {
-  typedef QVector<QMap<QString, QVariant>> result_type;
+    typedef QVector<QMap<QString, QVariant>> result_type;
 
-  MapIndexedPointCloudNode( QgsPointCloudRequest &request, const QgsVector3D &indexScale, const QgsVector3D &indexOffset,
-                            const QgsGeometry &extentGeometry, const QgsDoubleRange &zRange, QgsPointCloudIndex *index, int pointsLimit )
-    : mRequest( request ), mIndexScale( indexScale ), mIndexOffset( indexOffset ), mExtentGeometry( extentGeometry ), mZRange( zRange ), mIndex( index ), mPointsLimit( pointsLimit )
-  { }
+    MapIndexedPointCloudNode( QgsPointCloudRequest &request, const QgsVector3D &indexScale, const QgsVector3D &indexOffset,
+                              const QgsGeometry &extentGeometry, const QgsDoubleRange &zRange, QgsPointCloudIndex *index, int pointsLimit )
+      : mRequest( request ), mIndexScale( indexScale ), mIndexOffset( indexOffset ), mExtentGeometry( extentGeometry ), mZRange( zRange ), mIndex( index ), mPointsLimit( pointsLimit )
+    {}
 
-  QVector<QVariantMap> operator()( IndexedPointCloudNode n )
-  {
-    QVector<QVariantMap> acceptedPoints;
-    std::unique_ptr<QgsPointCloudBlock> block( mIndex->nodeData( n, mRequest ) );
-
-    if ( !block || pointsCount == mPointsLimit )
-      return acceptedPoints;
-
-    const char *ptr = block->data();
-    const QgsPointCloudAttributeCollection blockAttributes = block->attributes();
-    const std::size_t recordSize = blockAttributes.pointRecordSize();
-    int xOffset = 0, yOffset = 0, zOffset = 0;
-    const QgsPointCloudAttribute::DataType xType = blockAttributes.find( QStringLiteral( "X" ), xOffset )->type();
-    const QgsPointCloudAttribute::DataType yType = blockAttributes.find( QStringLiteral( "Y" ), yOffset )->type();
-    const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
-    std::unique_ptr< QgsGeos > extentEngine = std::make_unique< QgsGeos >( mExtentGeometry.constGet() );
-    extentEngine->prepareGeometry();
-    for ( int i = 0; i < block->pointCount() && pointsCount < mPointsLimit; ++i )
+    QVector<QVariantMap> operator()( IndexedPointCloudNode n )
     {
-      double x, y, z;
-      QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, block->scale(), block->offset(), x, y, z );
+      QVector<QVariantMap> acceptedPoints;
+      std::unique_ptr<QgsPointCloudBlock> block( mIndex->nodeData( n, mRequest ) );
 
-      if ( mZRange.contains( z ) && extentEngine->contains( x, y ) )
+      if ( !block || pointsCount == mPointsLimit )
+        return acceptedPoints;
+
+      const char *ptr = block->data();
+      const QgsPointCloudAttributeCollection blockAttributes = block->attributes();
+      const std::size_t recordSize = blockAttributes.pointRecordSize();
+      int xOffset = 0, yOffset = 0, zOffset = 0;
+      const QgsPointCloudAttribute::DataType xType = blockAttributes.find( QStringLiteral( "X" ), xOffset )->type();
+      const QgsPointCloudAttribute::DataType yType = blockAttributes.find( QStringLiteral( "Y" ), yOffset )->type();
+      const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
+      std::unique_ptr<QgsGeos> extentEngine = std::make_unique<QgsGeos>( mExtentGeometry.constGet() );
+      extentEngine->prepareGeometry();
+      for ( int i = 0; i < block->pointCount() && pointsCount < mPointsLimit; ++i )
       {
-        QVariantMap pointAttr = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, blockAttributes );
-        pointAttr[ QStringLiteral( "X" ) ] = x;
-        pointAttr[ QStringLiteral( "Y" ) ] = y;
-        pointAttr[ QStringLiteral( "Z" ) ] = z;
-        pointsCount++;
-        acceptedPoints.push_back( pointAttr );
-      }
-    }
-    return acceptedPoints;
-  }
+        double x, y, z;
+        QgsPointCloudAttribute::getPointXYZ( ptr, i, recordSize, xOffset, xType, yOffset, yType, zOffset, zType, block->scale(), block->offset(), x, y, z );
 
-  QgsPointCloudRequest &mRequest;
-  QgsVector3D mIndexScale;
-  QgsVector3D mIndexOffset;
-  const QgsGeometry &mExtentGeometry;
-  const QgsDoubleRange &mZRange;
-  QgsPointCloudIndex *mIndex = nullptr;
-  int mPointsLimit;
-  int pointsCount = 0;
+        if ( mZRange.contains( z ) && extentEngine->contains( x, y ) )
+        {
+          QVariantMap pointAttr = QgsPointCloudAttribute::getAttributeMap( ptr, i * recordSize, blockAttributes );
+          pointAttr[QStringLiteral( "X" )] = x;
+          pointAttr[QStringLiteral( "Y" )] = y;
+          pointAttr[QStringLiteral( "Z" )] = z;
+          pointsCount++;
+          acceptedPoints.push_back( pointAttr );
+        }
+      }
+      return acceptedPoints;
+    }
+
+    QgsPointCloudRequest &mRequest;
+    QgsVector3D mIndexScale;
+    QgsVector3D mIndexOffset;
+    const QgsGeometry &mExtentGeometry;
+    const QgsDoubleRange &mZRange;
+    QgsPointCloudIndex *mIndex = nullptr;
+    int mPointsLimit;
+    int pointsCount = 0;
 };
 
 QVector<QVariantMap> QgsPointCloudDataProvider::identify(
@@ -357,9 +351,9 @@ QVector<QVariantMap> QgsPointCloudDataProvider::identify(
   request.setAttributes( attributeCollection );
 
   acceptedPoints = QtConcurrent::blockingMappedReduced( nodes,
-                   MapIndexedPointCloudNode( request, index->scale(), index->offset(), extentGeometry, extentZRange, index, pointsLimit ),
-                   qOverload<const QVector<QMap<QString, QVariant>>&>( &QVector<QMap<QString, QVariant>>::append ),
-                   QtConcurrent::UnorderedReduce );
+                                                        MapIndexedPointCloudNode( request, index->scale(), index->offset(), extentGeometry, extentZRange, index, pointsLimit ),
+                                                        qOverload<const QVector<QMap<QString, QVariant>> &>( &QVector<QMap<QString, QVariant>>::append ),
+                                                        QtConcurrent::UnorderedReduce );
 
   return acceptedPoints;
 }
@@ -421,4 +415,3 @@ QString QgsPointCloudDataProvider::subsetString() const
 
   return mSubsetString;
 }
-

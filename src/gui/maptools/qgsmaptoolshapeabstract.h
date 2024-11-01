@@ -45,11 +45,11 @@ class GUI_EXPORT QgsMapToolShapeAbstract
     //! List of different shapes
     enum class ShapeCategory
     {
-      Curve, //!< Curve
-      Circle,//!< Circle
-      Ellipse,//!< Ellipse
-      Rectangle,//!< Rectangle
-      RegularPolygon,//!< RegularPolygon (e.g pentagons or hexagons)
+      Curve,          //!< Curve
+      Circle,         //!< Circle
+      Ellipse,        //!< Ellipse
+      Rectangle,      //!< Rectangle
+      RegularPolygon, //!< RegularPolygon (e.g pentagons or hexagons)
     };
     Q_ENUM( ShapeCategory )
 
@@ -64,7 +64,7 @@ class GUI_EXPORT QgsMapToolShapeAbstract
     virtual ~QgsMapToolShapeAbstract();
 
     //! Returns the id of the shape tool (equivalent to the one from the metadata)
-    QString id() const {return mId;}
+    QString id() const { return mId; }
 
     /**
      * Called for a mouse release event
@@ -88,10 +88,14 @@ class GUI_EXPORT QgsMapToolShapeAbstract
     virtual void keyReleaseEvent( QKeyEvent *e );
 
     //! Activates the map tool with the last captured map point
-    virtual void activate( QgsMapToolCapture::CaptureMode mode, const QgsPoint &lastCapturedMapPoint ) {Q_UNUSED( mode ); Q_UNUSED( lastCapturedMapPoint )}
+    virtual void activate( QgsMapToolCapture::CaptureMode mode, const QgsPoint &lastCapturedMapPoint )
+    {
+      Q_UNUSED( mode );
+      Q_UNUSED( lastCapturedMapPoint )
+    }
 
     //! Deactivates the map tool
-    virtual void deactivate() {clean();}
+    virtual void deactivate() { clean(); }
 
     //! Called to clean the map tool (after canceling the operation or when the digitization has finished)
     virtual void clean();
@@ -109,9 +113,7 @@ class GUI_EXPORT QgsMapToolShapeAbstract
     QgsPointSequence mPoints;
 
     QgsGeometryRubberBand *mTempRubberBand = nullptr;
-
 };
-
 
 
 #endif // QGSMAPTOOLSHAPEABSTRACT_H

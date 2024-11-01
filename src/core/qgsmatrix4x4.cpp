@@ -23,10 +23,22 @@ QgsMatrix4x4::QgsMatrix4x4( double m11, double m12, double m13, double m14,
                             double m31, double m32, double m33, double m34,
                             double m41, double m42, double m43, double m44 )
 {
-  m[0][0] = m11; m[0][1] = m21; m[0][2] = m31; m[0][3] = m41;
-  m[1][0] = m12; m[1][1] = m22; m[1][2] = m32; m[1][3] = m42;
-  m[2][0] = m13; m[2][1] = m23; m[2][2] = m33; m[2][3] = m43;
-  m[3][0] = m14; m[3][1] = m24; m[3][2] = m34; m[3][3] = m44;
+  m[0][0] = m11;
+  m[0][1] = m21;
+  m[0][2] = m31;
+  m[0][3] = m41;
+  m[1][0] = m12;
+  m[1][1] = m22;
+  m[1][2] = m32;
+  m[1][3] = m42;
+  m[2][0] = m13;
+  m[2][1] = m23;
+  m[2][2] = m33;
+  m[2][3] = m43;
+  m[3][0] = m14;
+  m[3][1] = m24;
+  m[3][2] = m34;
+  m[3][3] = m44;
 }
 
 void QgsMatrix4x4::translate( const QgsVector3D &vector )
@@ -37,9 +49,9 @@ void QgsMatrix4x4::translate( const QgsVector3D &vector )
   m[3][3] += m[0][3] * vector.x() + m[1][3] * vector.y() + m[2][3] * vector.z();
 }
 
-QList< double > QgsMatrix4x4::dataList() const
+QList<double> QgsMatrix4x4::dataList() const
 {
-  QList< double > res;
+  QList<double> res;
   res.reserve( 9 );
   for ( int i = 0; i < 16; ++i )
   {
@@ -52,22 +64,10 @@ QgsVector3D operator*( const QgsMatrix4x4 &matrix, const QgsVector3D &vector )
 {
   double x, y, z, w;
 
-  x = vector.x() * matrix.m[0][0] +
-      vector.y() * matrix.m[1][0] +
-      vector.z() * matrix.m[2][0] +
-      matrix.m[3][0];
-  y = vector.x() * matrix.m[0][1] +
-      vector.y() * matrix.m[1][1] +
-      vector.z() * matrix.m[2][1] +
-      matrix.m[3][1];
-  z = vector.x() * matrix.m[0][2] +
-      vector.y() * matrix.m[1][2] +
-      vector.z() * matrix.m[2][2] +
-      matrix.m[3][2];
-  w = vector.x() * matrix.m[0][3] +
-      vector.y() * matrix.m[1][3] +
-      vector.z() * matrix.m[2][3] +
-      matrix.m[3][3];
+  x = vector.x() * matrix.m[0][0] + vector.y() * matrix.m[1][0] + vector.z() * matrix.m[2][0] + matrix.m[3][0];
+  y = vector.x() * matrix.m[0][1] + vector.y() * matrix.m[1][1] + vector.z() * matrix.m[2][1] + matrix.m[3][1];
+  z = vector.x() * matrix.m[0][2] + vector.y() * matrix.m[1][2] + vector.z() * matrix.m[2][2] + matrix.m[3][2];
+  w = vector.x() * matrix.m[0][3] + vector.y() * matrix.m[1][3] + vector.z() * matrix.m[2][3] + matrix.m[3][3];
   if ( w == 1.0f )
     return QgsVector3D( x, y, z );
   else

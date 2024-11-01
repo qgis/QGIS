@@ -31,7 +31,7 @@
 
 
 QgsPointCloudQueryBuilder::QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer,
-    QWidget *parent, Qt::WindowFlags fl )
+                                                      QWidget *parent, Qt::WindowFlags fl )
   : QgsSubsetStringEditorInterface( parent, fl )
   , mLayer( layer )
 {
@@ -280,8 +280,7 @@ void QgsPointCloudQueryBuilder::test()
     int offset;
     for ( const auto &attribute : attributes )
     {
-      if ( mLayer->dataProvider() &&
-           !mLayer->dataProvider()->attributes().find( attribute, offset ) )
+      if ( mLayer->dataProvider() && !mLayer->dataProvider()->attributes().find( attribute, offset ) )
       {
         QMessageBox::warning( this,
                               tr( "Query Result" ),

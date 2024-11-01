@@ -62,7 +62,7 @@ QRectF QgsModelSnapper::snapRect( const QRectF &rect, double scaleFactor, bool &
 
   bool snappedXToGrid = false;
   bool snappedYToGrid = false;
-  QList< QPointF > points;
+  QList<QPointF> points;
   points << rect.topLeft() << rect.topRight() << rect.bottomLeft() << rect.bottomRight();
   const QPointF res = snapPointsToGrid( points, scaleFactor, snappedXToGrid, snappedYToGrid );
   if ( snappedXToGrid && snapVertical )
@@ -86,7 +86,7 @@ QRectF QgsModelSnapper::snapRectWithResize( const QRectF &rect, double scaleFact
 
   bool snappedXToGrid = false;
   bool snappedYToGrid = false;
-  QPointF res = snapPointsToGrid( QList< QPointF >() << rect.topLeft(), scaleFactor, snappedXToGrid, snappedYToGrid );
+  QPointF res = snapPointsToGrid( QList<QPointF>() << rect.topLeft(), scaleFactor, snappedXToGrid, snappedYToGrid );
   if ( snappedXToGrid && snapVertical )
   {
     snapped = true;
@@ -97,7 +97,7 @@ QRectF QgsModelSnapper::snapRectWithResize( const QRectF &rect, double scaleFact
     snapped = true;
     snappedRect.setTop( snappedRect.top() + res.y() );
   }
-  res = snapPointsToGrid( QList< QPointF >() << rect.bottomRight(), scaleFactor, snappedXToGrid, snappedYToGrid );
+  res = snapPointsToGrid( QList<QPointF>() << rect.bottomRight(), scaleFactor, snappedXToGrid, snappedYToGrid );
   if ( snappedXToGrid && snapVertical )
   {
     snapped = true;
@@ -114,7 +114,7 @@ QRectF QgsModelSnapper::snapRectWithResize( const QRectF &rect, double scaleFact
 
 QPointF QgsModelSnapper::snapPointToGrid( QPointF point, double scaleFactor, bool &snappedX, bool &snappedY ) const
 {
-  const QPointF delta = snapPointsToGrid( QList< QPointF >() << point, scaleFactor, snappedX, snappedY );
+  const QPointF delta = snapPointsToGrid( QList<QPointF>() << point, scaleFactor, snappedX, snappedY );
   return point + delta;
 }
 
@@ -139,9 +139,9 @@ QPointF QgsModelSnapper::snapPointsToGrid( const QList<QPointF> &points, double 
   for ( const QPointF point : points )
   {
     //snap x coordinate
-    const double gridRes = 30; //mLayout->convertToLayoutUnits( grid.resolution() );
-    int xRatio = static_cast< int >( ( point.x() ) / gridRes + 0.5 ); //NOLINT
-    int yRatio = static_cast< int >( ( point.y() ) / gridRes + 0.5 ); //NOLINT
+    const double gridRes = 30;                                      //mLayout->convertToLayoutUnits( grid.resolution() );
+    int xRatio = static_cast<int>( ( point.x() ) / gridRes + 0.5 ); //NOLINT
+    int yRatio = static_cast<int>( ( point.y() ) / gridRes + 0.5 ); //NOLINT
 
     const double xSnapped = xRatio * gridRes;
     const double ySnapped = yRatio * gridRes;

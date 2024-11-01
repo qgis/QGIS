@@ -178,7 +178,6 @@ void QgsCodeEditorShell::initializeLexer()
 QgsQsciLexerBash::QgsQsciLexerBash( QObject *parent )
   : QsciLexer( parent )
 {
-
 }
 
 const char *QgsQsciLexerBash::language() const
@@ -244,11 +243,9 @@ const char *QgsQsciLexerBash::keywords( int set ) const
 }
 
 
-
 QgsQsciLexerBatch::QgsQsciLexerBatch( QObject *parent )
   : QsciLexer( parent )
 {
-
 }
 
 const char *QgsQsciLexerBatch::language() const

@@ -57,8 +57,7 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   mTitle = mSettings.title();
 
   connect( mLegendModel.get(), &QgsLayerTreeModel::hitTestStarted, this, [this] { emit backgroundTaskCountChanged( 1 ); } );
-  connect( mLegendModel.get(), &QgsLayerTreeModel::hitTestCompleted, this, [this]
-  {
+  connect( mLegendModel.get(), &QgsLayerTreeModel::hitTestCompleted, this, [this] {
     adjustBoxSize();
     emit backgroundTaskCountChanged( 0 );
   } );
@@ -68,13 +67,11 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   connect( mLayout->project()->layerTreeRoot(), &QgsLayerTreeNode::customPropertyChanged, this, &QgsLayoutItemLegend::nodeCustomPropertyChanged );
 
   // If project colors change, we need to redraw legend, as legend symbols may rely on project colors
-  connect( mLayout->project(), &QgsProject::projectColorsChanged, this, [this]
-  {
+  connect( mLayout->project(), &QgsProject::projectColorsChanged, this, [this] {
     invalidateCache();
     update();
   } );
-  connect( mLegendModel.get(), &QgsLegendModel::refreshLegend, this, [this]
-  {
+  connect( mLegendModel.get(), &QgsLegendModel::refreshLegend, this, [this] {
     // NOTE -- we do NOT connect to ::refresh here, as we don't want to trigger the call to onAtlasFeature() which sets mFilterAskedForUpdate to true,
     // causing an endless loop.
     invalidateCache();
@@ -156,7 +153,7 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   if ( mSizeToContents )
   {
     QgsRenderContext context = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, painter )
-                               : QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
+                                    : QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
 
     const QSizeF size = legendRenderer.minimumSize( &context );
     if ( mForceResize )
@@ -197,16 +194,16 @@ void QgsLayoutItemLegend::finalizeRestoreFromXml()
 {
   if ( !mMapUuid.isEmpty() )
   {
-    setLinkedMap( qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mMapUuid, true ) ) );
+    setLinkedMap( qobject_cast<QgsLayoutItemMap *>( mLayout->itemByUuid( mMapUuid, true ) ) );
   }
 
   if ( !mFilterByMapUuids.isEmpty() )
   {
-    QList< QgsLayoutItemMap * > maps;
+    QList<QgsLayoutItemMap *> maps;
     maps.reserve( mFilterByMapUuids.size() );
     for ( const QString &uuid : std::as_const( mFilterByMapUuids ) )
     {
-      if ( QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( uuid, true ) ) )
+      if ( QgsLayoutItemMap *map = qobject_cast<QgsLayoutItemMap *>( mLayout->itemByUuid( uuid, true ) ) )
       {
         maps << map;
       }
@@ -233,7 +230,7 @@ void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
   QPainter *painter = context.renderContext().painter();
 
   QgsRenderContext rc = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, painter, context.renderContext().scaleFactor() * 25.4 )
-                        : QgsLayoutUtils::createRenderContextForLayout( mLayout, painter, context.renderContext().scaleFactor() * 25.4 );
+                             : QgsLayoutUtils::createRenderContextForLayout( mLayout, painter, context.renderContext().scaleFactor() * 25.4 );
 
   rc.expressionContext().appendScopes( createExpressionContext().takeScopes() );
 
@@ -279,8 +276,7 @@ void QgsLayoutItemLegend::adjustBoxSize()
     return;
   }
 
-  QgsRenderContext context = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, nullptr ) :
-                             QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
+  QgsRenderContext context = mMap ? QgsLayoutUtils::createRenderContextForMap( mMap, nullptr ) : QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
 
   QgsLegendRenderer legendRenderer = createRenderer();
   const QSizeF size = legendRenderer.minimumSize( &context );
@@ -317,7 +313,7 @@ void QgsLayoutItemLegend::ensureModelIsInitialized() const
 {
   if ( mDeferLegendModelInitialization )
   {
-    QgsLayoutItemLegend *mutableThis = const_cast< QgsLayoutItemLegend * >( this );
+    QgsLayoutItemLegend *mutableThis = const_cast<QgsLayoutItemLegend *>( this );
     mutableThis->mDeferLegendModelInitialization = false;
     mutableThis->setCustomLayerTree( mutableThis->mCustomLayerTree.release() );
   }
@@ -328,7 +324,7 @@ QgsLegendRenderer QgsLayoutItemLegend::createRenderer() const
   QgsLegendRenderer res( mLegendModel.get(), mSettings );
 
   // only show private layers when not in auto update mode
-  res.proxyModel()->setShowPrivateLayers( static_cast< bool >( mCustomLayerTree ) );
+  res.proxyModel()->setShowPrivateLayers( static_cast<bool>( mCustomLayerTree ) );
 
   return res;
 }
@@ -643,10 +639,9 @@ void QgsLayoutItemLegend::updateLegend()
 
 bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &legendElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-
   //write general properties
   legendElem.setAttribute( QStringLiteral( "title" ), mTitle );
-  legendElem.setAttribute( QStringLiteral( "titleAlignment" ), QString::number( static_cast< int >( mSettings.titleAlignment() ) ) );
+  legendElem.setAttribute( QStringLiteral( "titleAlignment" ), QString::number( static_cast<int>( mSettings.titleAlignment() ) ) );
   legendElem.setAttribute( QStringLiteral( "columnCount" ), QString::number( mColumnCount ) );
   legendElem.setAttribute( QStringLiteral( "splitLayer" ), QString::number( mSettings.splitLayer() ) );
   legendElem.setAttribute( QStringLiteral( "equalColumnWidth" ), QString::number( mSettings.equalColumnWidth() ) );
@@ -724,10 +719,11 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
   mSettings.setTitle( mTitle );
   if ( !itemElem.attribute( QStringLiteral( "titleAlignment" ) ).isEmpty() )
   {
-    mSettings.setTitleAlignment( static_cast< Qt::AlignmentFlag >( itemElem.attribute( QStringLiteral( "titleAlignment" ) ).toInt() ) );
+    mSettings.setTitleAlignment( static_cast<Qt::AlignmentFlag>( itemElem.attribute( QStringLiteral( "titleAlignment" ) ).toInt() ) );
   }
   int colCount = itemElem.attribute( QStringLiteral( "columnCount" ), QStringLiteral( "1" ) ).toInt();
-  if ( colCount < 1 ) colCount = 1;
+  if ( colCount < 1 )
+    colCount = 1;
   mColumnCount = colCount;
   mSettings.setColumnCount( mColumnCount );
   mSettings.setSplitLayer( itemElem.attribute( QStringLiteral( "splitLayer" ), QStringLiteral( "0" ) ).toInt() == 1 );
@@ -744,12 +740,18 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
       style.readXml( styleElem, doc, context );
       const QString name = styleElem.attribute( QStringLiteral( "name" ) );
       QgsLegendStyle::Style s;
-      if ( name == QLatin1String( "title" ) ) s = QgsLegendStyle::Title;
-      else if ( name == QLatin1String( "group" ) ) s = QgsLegendStyle::Group;
-      else if ( name == QLatin1String( "subgroup" ) ) s = QgsLegendStyle::Subgroup;
-      else if ( name == QLatin1String( "symbol" ) ) s = QgsLegendStyle::Symbol;
-      else if ( name == QLatin1String( "symbolLabel" ) ) s = QgsLegendStyle::SymbolLabel;
-      else continue;
+      if ( name == QLatin1String( "title" ) )
+        s = QgsLegendStyle::Title;
+      else if ( name == QLatin1String( "group" ) )
+        s = QgsLegendStyle::Group;
+      else if ( name == QLatin1String( "subgroup" ) )
+        s = QgsLegendStyle::Subgroup;
+      else if ( name == QLatin1String( "symbol" ) )
+        s = QgsLegendStyle::Symbol;
+      else if ( name == QLatin1String( "symbolLabel" ) )
+        s = QgsLegendStyle::SymbolLabel;
+      else
+        continue;
       setStyle( s, style );
     }
   }
@@ -770,7 +772,7 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
   mSettings.setColumnSpace( itemElem.attribute( QStringLiteral( "columnSpace" ), QStringLiteral( "2.0" ) ).toDouble() );
 
   mSettings.setSymbolSize( QSizeF( itemElem.attribute( QStringLiteral( "symbolWidth" ), QStringLiteral( "7.0" ) ).toDouble(), itemElem.attribute( QStringLiteral( "symbolHeight" ), QStringLiteral( "14.0" ) ).toDouble() ) );
-  mSettings.setSymbolAlignment( static_cast< Qt::AlignmentFlag >( itemElem.attribute( QStringLiteral( "symbolAlignment" ), QString::number( Qt::AlignLeft ) ).toInt() ) );
+  mSettings.setSymbolAlignment( static_cast<Qt::AlignmentFlag>( itemElem.attribute( QStringLiteral( "symbolAlignment" ), QString::number( Qt::AlignLeft ) ).toInt() ) );
 
   mSettings.setMaximumSymbolSize( itemElem.attribute( QStringLiteral( "maxSymbolSize" ), QStringLiteral( "0.0" ) ).toDouble() );
   mSettings.setMinimumSymbolSize( itemElem.attribute( QStringLiteral( "minSymbolSize" ), QStringLiteral( "0.0" ) ).toDouble() );
@@ -852,7 +854,7 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
 
   if ( !layerTreeElem.isNull() )
   {
-    std::unique_ptr< QgsLayerTree > tree( QgsLayerTree::readXml( layerTreeElem, context ) );
+    std::unique_ptr<QgsLayerTree> tree( QgsLayerTree::readXml( layerTreeElem, context ) );
     if ( mLayout )
       tree->resolveReferences( mLayout->project(), true );
     setCustomLayerTree( tree.release() );
@@ -1029,7 +1031,7 @@ void QgsLayoutItemLegend::setModelStyleOverrides( const QMap<QString, QString> &
   mLegendModel->setLayerStyleOverrides( overrides );
   if ( QgsLayerTree *rootGroup = mLegendModel->rootGroup() )
   {
-    const QList< QgsLayerTreeLayer * > layers =  rootGroup->findLayers();
+    const QList<QgsLayerTreeLayer *> layers = rootGroup->findLayers();
     for ( QgsLayerTreeLayer *nodeLayer : std::as_const( layers ) )
       mLegendModel->refreshLayerLegend( nodeLayer );
   }
@@ -1037,14 +1039,13 @@ void QgsLayoutItemLegend::setModelStyleOverrides( const QMap<QString, QString> &
 
 void QgsLayoutItemLegend::clearLegendCachedData()
 {
-  std::function< void( QgsLayerTreeNode * ) > clearNodeCache;
-  clearNodeCache = [&]( QgsLayerTreeNode * node )
-  {
+  std::function<void( QgsLayerTreeNode * )> clearNodeCache;
+  clearNodeCache = [&]( QgsLayerTreeNode *node ) {
     mLegendModel->clearCachedData( node );
     if ( QgsLayerTree::isGroup( node ) )
     {
       QgsLayerTreeGroup *group = QgsLayerTree::toGroup( node );
-      const QList< QgsLayerTreeNode * > children = group->children();
+      const QList<QgsLayerTreeNode *> children = group->children();
       for ( QgsLayerTreeNode *child : children )
       {
         clearNodeCache( child );
@@ -1148,7 +1149,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
   {
     const double dpi = mLayout->renderContext().dpi();
 
-    QSet< QgsLayoutItemMap * > linkedFilterMaps;
+    QSet<QgsLayoutItemMap *> linkedFilterMaps;
     if ( mLegendFilterByMap )
     {
       linkedFilterMaps = qgis::listToSet( filterByMapItems() );
@@ -1203,7 +1204,6 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     {
       for ( QgsLayoutItemMap *map : std::as_const( linkedFilterMaps ) )
       {
-
         if ( map == mMap )
           continue;
 
@@ -1220,7 +1220,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
           continue;
         }
 
-        const QList< QgsMapLayer * > layersForMap = map->layersToRender();
+        const QList<QgsMapLayer *> layersForMap = map->layersToRender();
         for ( QgsMapLayer *layer : layersForMap )
         {
           if ( mInAtlas && !atlasGeometry.isNull() )
@@ -1321,10 +1321,9 @@ QgsLayoutItem::ExportLayerBehavior QgsLayoutItemLegend::exportLayerBehavior() co
 
 bool QgsLayoutItemLegend::accept( QgsStyleEntityVisitorInterface *visitor ) const
 {
-  std::function<bool( QgsLayerTreeGroup *group ) >visit;
+  std::function<bool( QgsLayerTreeGroup * group )> visit;
 
-  visit = [this, visitor, &visit]( QgsLayerTreeGroup * group ) -> bool
-  {
+  visit = [this, visitor, &visit]( QgsLayerTreeGroup *group ) -> bool {
     const QList<QgsLayerTreeNode *> childNodes = group->children();
     for ( QgsLayerTreeNode *node : childNodes )
     {
@@ -1346,7 +1345,7 @@ bool QgsLayoutItemLegend::accept( QgsStyleEntityVisitorInterface *visitor ) cons
         const QList<QgsLayerTreeModelLegendNode *> legendNodes = mLegendModel->layerLegendNodes( nodeLayer );
         for ( QgsLayerTreeModelLegendNode *legendNode : legendNodes )
         {
-          if ( QgsSymbolLegendNode *symbolNode = dynamic_cast< QgsSymbolLegendNode * >( legendNode ) )
+          if ( QgsSymbolLegendNode *symbolNode = dynamic_cast<QgsSymbolLegendNode *>( legendNode ) )
           {
             if ( !symbolNode->patchShape().isNull() )
             {
@@ -1360,7 +1359,7 @@ bool QgsLayoutItemLegend::accept( QgsStyleEntityVisitorInterface *visitor ) cons
     }
     return true;
   };
-  return visit( model()->rootGroup( ) );
+  return visit( model()->rootGroup() );
 }
 
 bool QgsLayoutItemLegend::isRefreshing() const
@@ -1381,7 +1380,7 @@ QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QObject *parent, QgsLayo
   connect( this, &QgsLegendModel::dataChanged, this, &QgsLegendModel::refreshLegend );
 }
 
-QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode,  QgsLayoutItemLegend *layout )
+QgsLegendModel::QgsLegendModel( QgsLayerTree *rootNode, QgsLayoutItemLegend *layout )
   : QgsLayerTreeModel( rootNode )
   , mLayoutLegend( layout )
 {

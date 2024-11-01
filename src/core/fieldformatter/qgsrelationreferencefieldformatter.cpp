@@ -78,7 +78,7 @@ QString QgsRelationReferenceFieldFormatter::representValue( QgsVectorLayer *laye
   // Attributes from the referencing layer
   QgsAttributes attrs = QgsAttributes( layer->fields().count() );
   // Set the value on the foreign key field of the referencing record
-  attrs[ referencingFieldIdx ] = value;
+  attrs[referencingFieldIdx] = value;
 
   const QgsFeatureRequest request = relation.getReferencedFeatureRequest( attrs );
   QgsFeature feature;
@@ -184,13 +184,11 @@ QList<QgsVectorLayerRef> QgsRelationReferenceFieldFormatter::layerDependencies( 
     return {};
   }
 
-  const QList<QgsVectorLayerRef> result {{
-      QgsVectorLayerRef(
-        config.value( QStringLiteral( "ReferencedLayerId" ) ).toString(),
-        config.value( QStringLiteral( "ReferencedLayerName" ) ).toString(),
-        config.value( QStringLiteral( "ReferencedLayerDataSource" ) ).toString(),
-        config.value( QStringLiteral( "ReferencedLayerProviderKey" ) ).toString() )
-    }};
+  const QList<QgsVectorLayerRef> result { { QgsVectorLayerRef(
+    config.value( QStringLiteral( "ReferencedLayerId" ) ).toString(),
+    config.value( QStringLiteral( "ReferencedLayerName" ) ).toString(),
+    config.value( QStringLiteral( "ReferencedLayerDataSource" ) ).toString(),
+    config.value( QStringLiteral( "ReferencedLayerProviderKey" ) ).toString() ) } };
   return result;
 }
 
@@ -202,7 +200,7 @@ QVariantList QgsRelationReferenceFieldFormatter::availableValues( const QVariant
     const QgsVectorLayer *referencedLayer = lProject->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() ).referencedLayer();
     if ( referencedLayer )
     {
-      const int fieldIndex =  lProject->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() ).referencedFields().first();
+      const int fieldIndex = lProject->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() ).referencedFields().first();
       values = qgis::setToList( referencedLayer->uniqueValues( fieldIndex, countLimit ) );
     }
   }

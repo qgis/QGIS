@@ -17,16 +17,15 @@
 #include "moc_qgssingleitemmodel.cpp"
 
 
-QgsSingleItemModel::QgsSingleItemModel( QObject *parent, const QString &text, const QMap< int, QVariant > &data, Qt::ItemFlags flags )
+QgsSingleItemModel::QgsSingleItemModel( QObject *parent, const QString &text, const QMap<int, QVariant> &data, Qt::ItemFlags flags )
   : QAbstractItemModel( parent )
   , mText( text )
   , mData( data )
   , mFlags( flags )
 {
-
 }
 
-QgsSingleItemModel::QgsSingleItemModel( QObject *parent, const QList<QMap<int, QVariant> > &columnData, Qt::ItemFlags flags )
+QgsSingleItemModel::QgsSingleItemModel( QObject *parent, const QList<QMap<int, QVariant>> &columnData, Qt::ItemFlags flags )
   : QAbstractItemModel( parent )
   , mColumnData( columnData )
   , mFlags( flags )

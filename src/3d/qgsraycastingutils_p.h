@@ -37,7 +37,7 @@ namespace Qt3DRender
 {
   class QCamera;
   class QGeometryRenderer;
-}
+} // namespace Qt3DRender
 
 
 namespace QgsRayCastingUtils
@@ -118,7 +118,7 @@ namespace QgsRayCastingUtils
                             QVector3D &intPt,
                             int &triangleIndex );
 
-}
+} // namespace QgsRayCastingUtils
 
 /// @endcond
 

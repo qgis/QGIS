@@ -31,7 +31,7 @@
 // QgsServerParameterDefinition
 //
 QgsServerParameterDefinition::QgsServerParameterDefinition( const QMetaType::Type type,
-    const QVariant defaultValue )
+                                                            const QVariant defaultValue )
   : mType( type )
   , mDefaultValue( defaultValue )
 {
@@ -44,7 +44,7 @@ QgsServerParameterDefinition::QgsServerParameterDefinition( const QVariant::Type
 
 QString QgsServerParameterDefinition::typeName() const
 {
-  return  QVariant::typeToName( mType );
+  return QVariant::typeToName( mType );
 }
 
 QColor QgsServerParameterDefinition::toColor( bool &ok ) const
@@ -166,8 +166,7 @@ QStringList QgsServerParameterDefinition::toExpressionList() const
   QStringList filters;
   const QString filter = toString();
 
-  auto isOgcFilter = [filter]()
-  {
+  auto isOgcFilter = [filter]() {
     return filter.contains( QStringLiteral( "<Filter>" ) ) || filter.contains( QStringLiteral( "()" ) );
   };
 
@@ -177,13 +176,13 @@ QStringList QgsServerParameterDefinition::toExpressionList() const
 
     if ( posEnd == pos + 1 )
     {
-      if ( ! isOgcFilter() )
+      if ( !isOgcFilter() )
         filters.append( QString() );
       pos = posEnd;
       continue;
     }
 
-    if ( ! isOgcFilter() )
+    if ( !isOgcFilter() )
       filters.append( filter.mid( pos, posEnd - pos ) );
 
     if ( posEnd < 0 )
@@ -196,7 +195,7 @@ QStringList QgsServerParameterDefinition::toExpressionList() const
     }
   }
 
-  if ( ! filter.isEmpty() && filter.back() == ';' )
+  if ( !filter.isEmpty() && filter.back() == ';' )
   {
     filters.append( QString() );
   }
@@ -485,7 +484,7 @@ QgsServerParameters::QgsServerParameters( const QUrlQuery &query )
 
 void QgsServerParameters::save( const QgsServerParameter &parameter )
 {
-  mParameters[ parameter.mName ] = parameter;
+  mParameters[parameter.mName] = parameter;
 }
 
 void QgsServerParameters::add( const QString &key, const QString &value )
@@ -557,7 +556,7 @@ QString QgsServerParameters::service() const
   if ( serviceValue.isEmpty() )
   {
     // SERVICE not mandatory for WMS 1.3.0 GetMap & GetFeatureInfo
-    if ( request() == QLatin1String( "GetMap" ) \
+    if ( request() == QLatin1String( "GetMap" )
          || request() == QLatin1String( "GetFeatureInfo" ) )
     {
       serviceValue = "WMS";
@@ -597,7 +596,7 @@ QString QgsServerParameters::request() const
 
 QString QgsServerParameters::value( const QString &key ) const
 {
-  if ( ! mParameters.contains( QgsServerParameter::name( key ) ) )
+  if ( !mParameters.contains( QgsServerParameter::name( key ) ) )
   {
     return mUnmanagedParameters[key];
   }
@@ -626,21 +625,21 @@ void QgsServerParameters::load( const QUrlQuery &query )
     if ( name >= 0 )
     {
       mParameters[name].mValue = item.second;
-      if ( ! mParameters[name].isValid() )
+      if ( !mParameters[name].isValid() )
       {
         mParameters[name].raiseError();
       }
     }
-    else if ( item.first.compare( QLatin1String( "VERSION" ),  Qt::CaseInsensitive ) == 0 )
+    else if ( item.first.compare( QLatin1String( "VERSION" ), Qt::CaseInsensitive ) == 0 )
     {
       const QgsServerParameter::Name name = QgsServerParameter::VERSION_SERVICE;
       mParameters[name].mValue = item.second;
-      if ( ! mParameters[name].isValid() )
+      if ( !mParameters[name].isValid() )
       {
         mParameters[name].raiseError();
       }
     }
-    else if ( ! loadParameter( item.first, item.second ) )
+    else if ( !loadParameter( item.first, item.second ) )
     {
       mUnmanagedParameters[item.first.toUpper()] = item.second;
     }

@@ -38,19 +38,17 @@ class QgsExpressionNode;
  */
 class CORE_EXPORT QgsPointCloudExpressionNode
 {
-
     Q_DECLARE_TR_FUNCTIONS( QgsPointCloudExpressionNode )
 
   public:
-
     //! Known node types.
     enum NodeType
     {
-      ntUnaryOperator, //!< \see QgsPointCloudExpression::Node::NodeUnaryOperator
+      ntUnaryOperator,  //!< \see QgsPointCloudExpression::Node::NodeUnaryOperator
       ntBinaryOperator, //!< \see QgsPointCloudExpression::Node::NodeBinaryOperator
-      ntInOperator, //!< \see QgsExpression::Node::NodeInOperator
-      ntLiteral, //!< \see QgsPointCloudExpression::Node::NodeLiteral
-      ntAttributeRef, //!< \see QgsPointCloudExpression::Node::NodeAttributeRef
+      ntInOperator,     //!< \see QgsExpression::Node::NodeInOperator
+      ntLiteral,        //!< \see QgsPointCloudExpression::Node::NodeLiteral
+      ntAttributeRef,   //!< \see QgsPointCloudExpression::Node::NodeAttributeRef
     };
 
 
@@ -63,7 +61,11 @@ class CORE_EXPORT QgsPointCloudExpressionNode
       public:
         virtual ~NodeList();
         //! Takes ownership of the provided node
-        void append( QgsPointCloudExpressionNode *node ) { mList.append( node ); mNameList.append( QString() ); }
+        void append( QgsPointCloudExpressionNode *node )
+        {
+          mList.append( node );
+          mNameList.append( QString() );
+        }
 
         /**
          * Returns the number of nodes in the list.
@@ -147,7 +149,7 @@ class CORE_EXPORT QgsPointCloudExpressionNode
     /**
      * Returns a list of all nodes which are used in this expression.
      */
-    virtual QList<const QgsPointCloudExpressionNode *> nodes( ) const = 0;
+    virtual QList<const QgsPointCloudExpressionNode *> nodes() const = 0;
 
     /**
      * Returns TRUE if this node can be evaluated for a static value. This is used during
@@ -217,7 +219,6 @@ class CORE_EXPORT QgsPointCloudExpressionNode
     static QgsPointCloudExpressionNode *convert( const QgsExpressionNode *node, QString &error );
 
   protected:
-
     QgsPointCloudExpressionNode() = default;
 
     //! Copy constructor
@@ -242,7 +243,6 @@ class CORE_EXPORT QgsPointCloudExpressionNode
     mutable double mCachedStaticValue = 0;
 
   private:
-
     /**
      * Abstract virtual preparation method
      * Errors are reported to the parent
@@ -254,7 +254,6 @@ class CORE_EXPORT QgsPointCloudExpressionNode
      * Errors are reported to the parent
      */
     virtual double evalNode( QgsPointCloudExpression *parent, int pointIndex ) = 0;
-
 };
 
 Q_DECLARE_METATYPE( QgsPointCloudExpressionNode * )

@@ -148,15 +148,13 @@ QList<QgsGdalCloudProviderConnection::DirectoryObject> QgsGdalCloudProviderConne
   if ( !connectionDetails.credentialOptions.isEmpty() )
   {
     QgsGdalUtils::applyVsiCredentialOptions( connectionDetails.vsiHandler,
-        connectionDetails.container, connectionDetails.credentialOptions );
+                                             connectionDetails.container, connectionDetails.credentialOptions );
   }
 
   char **papszOptions = nullptr;
   papszOptions = CSLAddString( papszOptions, "NAME_AND_TYPE_ONLY=YES" );
 
-  const QString vsiPath = QStringLiteral( "/%1/%2/%3" ).arg( connectionDetails.vsiHandler,
-                          connectionDetails.container,
-                          path );
+  const QString vsiPath = QStringLiteral( "/%1/%2/%3" ).arg( connectionDetails.vsiHandler, connectionDetails.container, path );
 
   VSIDIR *dir = VSIOpenDir( vsiPath.toUtf8().constData(), 0, papszOptions );
   if ( !dir )
@@ -165,7 +163,7 @@ QList<QgsGdalCloudProviderConnection::DirectoryObject> QgsGdalCloudProviderConne
     return {};
   }
 
-  QList< QgsGdalCloudProviderConnection::DirectoryObject > objects;
+  QList<QgsGdalCloudProviderConnection::DirectoryObject> objects;
   while ( const VSIDIREntry *entry = VSIGetNextDirEntry( dir ) )
   {
     QgsGdalCloudProviderConnection::DirectoryObject object;

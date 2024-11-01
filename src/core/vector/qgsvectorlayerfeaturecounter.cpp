@@ -53,7 +53,7 @@ bool QgsVectorLayerFeatureCounter::run()
   // If there are no features to be counted, we can spare us the trouble
   if ( mFeatureCount > 0 )
   {
-    mFeedback = std::make_unique< QgsFeedback >();
+    mFeedback = std::make_unique<QgsFeedback>();
 
     int featuresCounted = 0;
 
@@ -89,7 +89,7 @@ bool QgsVectorLayerFeatureCounter::run()
       }
       ++featuresCounted;
 
-      const double p = ( static_cast< double >( featuresCounted ) / mFeatureCount ) * 100;
+      const double p = ( static_cast<double>( featuresCounted ) / mFeatureCount ) * 100;
       if ( p - progress > 1 )
       {
         progress = p;

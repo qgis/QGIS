@@ -22,7 +22,6 @@ class QgsWcsDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT
   public:
-
     QString name() override { return QStringLiteral( "WCS" ); }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu,
@@ -35,7 +34,6 @@ class QgsWcsDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     static void refreshConnection( QgsDataItem *item );
     static void saveConnections();
     static void loadConnections( QgsDataItem *item );
-
 };
 
 #endif // QGSWCSDATAITEMGUIPROVIDER_H

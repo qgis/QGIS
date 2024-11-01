@@ -56,7 +56,7 @@ void QgsProcessingHistoryProvider::portOldLog()
   if ( logFile.open( QIODevice::ReadOnly ) )
   {
     QTextStream in( &logFile );
-    QList< QgsHistoryEntry > entries;
+    QList<QgsHistoryEntry> entries;
     while ( !in.atEnd() )
     {
       const QString line = in.readLine().trimmed();
@@ -90,7 +90,6 @@ void QgsProcessingHistoryProvider::portOldLog()
 class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
 {
   public:
-
     ProcessingHistoryBaseNode( const QgsHistoryEntry &entry, QgsProcessingHistoryProvider *provider )
       : mEntry( entry )
       , mAlgorithmId( mEntry.entry.value( "algorithm_id" ).toString() )
@@ -98,7 +97,6 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
       , mProcessCommand( mEntry.entry.value( "process_command" ).toString() )
       , mProvider( provider )
     {
-
       const QVariant parameters = mEntry.entry.value( QStringLiteral( "parameters" ) );
       if ( parameters.userType() == QMetaType::Type::QVariantMap )
       {
@@ -116,14 +114,12 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
       execAlgorithmDialogCommand.replace( QLatin1String( "processing.run(" ), QLatin1String( "processing.execAlgorithmDialog(" ) );
 
       // adding to this list? Also update the BatchPanel.py imports!!
-      const QStringList script =
-      {
+      const QStringList script = {
         QStringLiteral( "import processing" ),
         QStringLiteral( "from qgis.core import QgsProcessingOutputLayerDefinition, QgsProcessingFeatureSourceDefinition, QgsProperty, QgsCoordinateReferenceSystem, QgsFeatureRequest" ),
         QStringLiteral( "from qgis.PyQt.QtCore import QDate, QTime, QDateTime" ),
         QStringLiteral( "from qgis.PyQt.QtGui import QColor" ),
-        execAlgorithmDialogCommand
-      };
+        execAlgorithmDialogCommand };
 
       mProvider->emitExecute( script.join( '\n' ) );
       return true;
@@ -136,8 +132,7 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
         QAction *pythonAction = new QAction(
           QObject::tr( "Copy as Python Command" ), menu );
         pythonAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconPythonFile.svg" ) ) );
-        QObject::connect( pythonAction, &QAction::triggered, menu, [ = ]
-        {
+        QObject::connect( pythonAction, &QAction::triggered, menu, [=] {
           copyText( mPythonCommand );
         } );
         menu->addAction( pythonAction );
@@ -147,8 +142,7 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
         QAction *processAction = new QAction(
           QObject::tr( "Copy as qgis_process Command" ), menu );
         processAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionTerminal.svg" ) ) );
-        QObject::connect( processAction, &QAction::triggered, menu, [ = ]
-        {
+        QObject::connect( processAction, &QAction::triggered, menu, [=] {
           copyText( mProcessCommand );
         } );
         menu->addAction( processAction );
@@ -158,8 +152,7 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
         QAction *inputsAction = new QAction(
           QObject::tr( "Copy as JSON" ), menu );
         inputsAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCopy.svg" ) ) );
-        QObject::connect( inputsAction, &QAction::triggered, menu, [ = ]
-        {
+        QObject::connect( inputsAction, &QAction::triggered, menu, [=] {
           copyText( QString::fromStdString( QgsJsonUtils::jsonFromVariant( mInputs ).dump( 2 ) ) );
         } );
         menu->addAction( inputsAction );
@@ -174,8 +167,7 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
 
         QAction *createTestAction = new QAction(
           QObject::tr( "Create Test…" ), menu );
-        QObject::connect( createTestAction, &QAction::triggered, menu, [ = ]
-        {
+        QObject::connect( createTestAction, &QAction::triggered, menu, [=] {
           mProvider->emitCreateTest( mPythonCommand );
         } );
         menu->addAction( createTestAction );
@@ -196,13 +188,11 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
     QVariantMap mInputs;
 
     QgsProcessingHistoryProvider *mProvider = nullptr;
-
 };
 
 class ProcessingHistoryPythonCommandNode : public ProcessingHistoryBaseNode
 {
   public:
-
     ProcessingHistoryPythonCommandNode( const QgsHistoryEntry &entry, QgsProcessingHistoryProvider *provider )
       : ProcessingHistoryBaseNode( entry, provider )
     {}
@@ -231,7 +221,7 @@ class ProcessingHistoryPythonCommandNode : public ProcessingHistoryBaseNode
 
     QWidget *createWidget( const QgsHistoryWidgetContext & ) override
     {
-      QgsCodeEditorPython *codeEditor = new QgsCodeEditorPython( );
+      QgsCodeEditorPython *codeEditor = new QgsCodeEditorPython();
       codeEditor->setReadOnly( true );
       codeEditor->setCaretLineVisible( false );
       codeEditor->setLineNumbersVisible( false );
@@ -240,8 +230,7 @@ class ProcessingHistoryPythonCommandNode : public ProcessingHistoryBaseNode
       codeEditor->setWrapMode( QsciScintilla::WrapMode::WrapWord );
 
 
-      const QString introText = QStringLiteral( "\"\"\"\n%1\n\"\"\"\n\n " ).arg(
-                                  QObject::tr( "Double-click on the history item or paste the command below to re-run the algorithm" ) );
+      const QString introText = QStringLiteral( "\"\"\"\n%1\n\"\"\"\n\n " ).arg( QObject::tr( "Double-click on the history item or paste the command below to re-run the algorithm" ) );
       codeEditor->setText( introText + mPythonCommand );
 
       return codeEditor;
@@ -251,7 +240,6 @@ class ProcessingHistoryPythonCommandNode : public ProcessingHistoryBaseNode
 class ProcessingHistoryProcessCommandNode : public ProcessingHistoryBaseNode
 {
   public:
-
     ProcessingHistoryProcessCommandNode( const QgsHistoryEntry &entry, QgsProcessingHistoryProvider *provider )
       : ProcessingHistoryBaseNode( entry, provider )
     {}
@@ -280,7 +268,7 @@ class ProcessingHistoryProcessCommandNode : public ProcessingHistoryBaseNode
 
     QWidget *createWidget( const QgsHistoryWidgetContext & ) override
     {
-      QgsCodeEditorShell *codeEditor = new QgsCodeEditorShell( );
+      QgsCodeEditorShell *codeEditor = new QgsCodeEditorShell();
       codeEditor->setReadOnly( true );
       codeEditor->setCaretLineVisible( false );
       codeEditor->setLineNumbersVisible( false );
@@ -298,7 +286,6 @@ class ProcessingHistoryProcessCommandNode : public ProcessingHistoryBaseNode
 class ProcessingHistoryJsonNode : public ProcessingHistoryBaseNode
 {
   public:
-
     ProcessingHistoryJsonNode( const QgsHistoryEntry &entry, QgsProcessingHistoryProvider *provider )
       : ProcessingHistoryBaseNode( entry, provider )
     {
@@ -330,7 +317,7 @@ class ProcessingHistoryJsonNode : public ProcessingHistoryBaseNode
 
     QWidget *createWidget( const QgsHistoryWidgetContext & ) override
     {
-      QgsCodeEditorJson *codeEditor = new QgsCodeEditorJson( );
+      QgsCodeEditorJson *codeEditor = new QgsCodeEditorJson();
       codeEditor->setReadOnly( true );
       codeEditor->setCaretLineVisible( false );
       codeEditor->setLineNumbersVisible( false );
@@ -351,7 +338,6 @@ class ProcessingHistoryJsonNode : public ProcessingHistoryBaseNode
 class ProcessingHistoryRootNode : public ProcessingHistoryBaseNode
 {
   public:
-
     ProcessingHistoryRootNode( const QgsHistoryEntry &entry, QgsProcessingHistoryProvider *provider )
       : ProcessingHistoryBaseNode( entry, provider )
     {
@@ -394,12 +380,9 @@ class ProcessingHistoryRootNode : public ProcessingHistoryBaseNode
         {
           const QString algName = mAlgorithmInformation.displayName;
           if ( !mDescription.isEmpty() )
-            return QStringLiteral( "[%1] %2 - %3" ).arg( mEntry.timestamp.toString( QStringLiteral( "yyyy-MM-dd hh:mm" ) ),
-                   algName,
-                   mDescription );
+            return QStringLiteral( "[%1] %2 - %3" ).arg( mEntry.timestamp.toString( QStringLiteral( "yyyy-MM-dd hh:mm" ) ), algName, mDescription );
           else
-            return QStringLiteral( "[%1] %2" ).arg( mEntry.timestamp.toString( QStringLiteral( "yyyy-MM-dd hh:mm" ) ),
-                                                    algName );
+            return QStringLiteral( "[%1] %2" ).arg( mEntry.timestamp.toString( QStringLiteral( "yyyy-MM-dd hh:mm" ) ), algName );
         }
 
         case Qt::DecorationRole:
@@ -420,7 +403,6 @@ class ProcessingHistoryRootNode : public ProcessingHistoryBaseNode
 
     QString mDescription;
     mutable QgsProcessingAlgorithmInformation mAlgorithmInformation;
-
 };
 
 ///@endcond
@@ -432,7 +414,7 @@ QgsHistoryEntryNode *QgsProcessingHistoryProvider::createNodeForEntry( const Qgs
 
 void QgsProcessingHistoryProvider::updateNodeForEntry( QgsHistoryEntryNode *node, const QgsHistoryEntry &entry, const QgsHistoryWidgetContext & )
 {
-  if ( ProcessingHistoryRootNode *rootNode = dynamic_cast< ProcessingHistoryRootNode * >( node ) )
+  if ( ProcessingHistoryRootNode *rootNode = dynamic_cast<ProcessingHistoryRootNode *>( node ) )
   {
     rootNode->setEntry( entry );
   }

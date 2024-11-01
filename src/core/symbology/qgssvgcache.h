@@ -36,7 +36,6 @@ class QDomElement;
 class CORE_EXPORT QgsSvgCacheEntry : public QgsAbstractContentCacheEntry
 {
   public:
-
     /**
      * Constructor.
      * \param path Absolute path to SVG file (relative paths are not resolved).
@@ -49,7 +48,7 @@ class CORE_EXPORT QgsSvgCacheEntry : public QgsAbstractContentCacheEntry
      * \param parameters an optional map of parameters to dynamically replace content in the SVG
      */
     QgsSvgCacheEntry( const QString &path, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke,
-                      double fixedAspectRatio = 0, const QMap<QString, QString> &parameters = QMap<QString, QString>() ) ;
+                      double fixedAspectRatio = 0, const QMap<QString, QString> &parameters = QMap<QString, QString>() );
 
     QgsSvgCacheEntry( const QgsSvgCacheEntry &rh ) = delete;
     QgsSvgCacheEntry &operator=( const QgsSvgCacheEntry &rh ) = delete;
@@ -70,8 +69,8 @@ class CORE_EXPORT QgsSvgCacheEntry : public QgsAbstractContentCacheEntry
     QColor stroke = Qt::black;
     QMap<QString, QString> parameters;
 
-    std::unique_ptr< QImage > image;
-    std::unique_ptr< QPicture > picture;
+    std::unique_ptr<QImage> image;
+    std::unique_ptr<QPicture> picture;
     //content (with params replaced)
     QByteArray svgContent;
 
@@ -85,7 +84,6 @@ class CORE_EXPORT QgsSvgCacheEntry : public QgsAbstractContentCacheEntry
     bool isEqual( const QgsAbstractContentCacheEntry *other ) const override;
     int dataSize() const override;
     void dump() const override;
-
 };
 
 ///@endcond
@@ -118,13 +116,12 @@ class CORE_EXPORT QgsSvgCacheEntry : public QgsAbstractContentCacheEntry
 class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCacheBase // for sip we skip to the base class and avoid the template difficulty
 {
 #else
-class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry >
+class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache<QgsSvgCacheEntry>
 {
 #endif
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSvgCache.
      */
@@ -285,7 +282,7 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      * Emit a signal to be caught by qgisapp and display a msg on status bar.
      * \deprecated QGIS 3.6. No longer emitted.
      */
-    Q_DECL_DEPRECATED void statusChanged( const QString  &statusQString ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED void statusChanged( const QString &statusQString ) SIP_DEPRECATED;
 
     /**
      * Emitted when the cache has finished retrieving an SVG file from a remote \a url.
@@ -294,11 +291,9 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
     void remoteSvgFetched( const QString &url );
 
   protected:
-
     bool checkReply( QNetworkReply *reply, const QString &path ) const override;
 
   private:
-
     void replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry, bool blocking = false );
     void cacheImage( QgsSvgCacheEntry *entry );
     void cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput = false );

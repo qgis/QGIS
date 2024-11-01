@@ -50,7 +50,7 @@ void QgsColorUtils::writeXml( const QColor &color, const QString &identifier, QD
       {
         // QColor will automatically adapt between extended rgb/rgb based on value of red/green/blue components
         spec = QStringLiteral( "rgb" );
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
         float red = 1;
         float green = 1;
         float blue = 1;
@@ -70,7 +70,7 @@ void QgsColorUtils::writeXml( const QColor &color, const QString &identifier, QD
       {
         spec = QStringLiteral( "hsv" );
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
         float h = 1;
         float s = 1;
         float v = 1;
@@ -90,7 +90,7 @@ void QgsColorUtils::writeXml( const QColor &color, const QString &identifier, QD
       {
         spec = QStringLiteral( "hsl" );
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
         float h = 1;
         float s = 1;
         float l = 1;
@@ -110,7 +110,7 @@ void QgsColorUtils::writeXml( const QColor &color, const QString &identifier, QD
       {
         spec = QStringLiteral( "cmyk" );
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
         float c = 1;
         float m = 1;
         float y = 1;
@@ -208,7 +208,7 @@ QString QgsColorUtils::colorToString( const QColor &color )
     case QColor::ExtendedRgb:
     {
       // QColor will automatically adapt between extended rgb/rgb based on value of red/green/blue components
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
       float red = 1;
       float green = 1;
       float blue = 1;
@@ -220,15 +220,12 @@ QString QgsColorUtils::colorToString( const QColor &color )
       qreal alpha = 1;
 #endif
       color.getRgbF( &red, &green, &blue, &alpha );
-      return compatString + QStringLiteral( "rgb:%1,%2,%3,%4" ).arg( qgsDoubleToString( red ),
-             qgsDoubleToString( green ),
-             qgsDoubleToString( blue ),
-             qgsDoubleToString( alpha ) );
+      return compatString + QStringLiteral( "rgb:%1,%2,%3,%4" ).arg( qgsDoubleToString( red ), qgsDoubleToString( green ), qgsDoubleToString( blue ), qgsDoubleToString( alpha ) );
     }
 
     case QColor::Hsv:
     {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
       float h = 1;
       float s = 1;
       float v = 1;
@@ -240,15 +237,12 @@ QString QgsColorUtils::colorToString( const QColor &color )
       qreal alpha = 1;
 #endif
       color.getHsvF( &h, &s, &v, &alpha );
-      return compatString + QStringLiteral( "hsv:%1,%2,%3,%4" ).arg( qgsDoubleToString( h ),
-             qgsDoubleToString( s ),
-             qgsDoubleToString( v ),
-             qgsDoubleToString( alpha ) );
+      return compatString + QStringLiteral( "hsv:%1,%2,%3,%4" ).arg( qgsDoubleToString( h ), qgsDoubleToString( s ), qgsDoubleToString( v ), qgsDoubleToString( alpha ) );
     }
 
     case QColor::Hsl:
     {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
       float h = 1;
       float s = 1;
       float l = 1;
@@ -260,15 +254,12 @@ QString QgsColorUtils::colorToString( const QColor &color )
       qreal alpha = 1;
 #endif
       color.getHslF( &h, &s, &l, &alpha );
-      return compatString + QStringLiteral( "hsl:%1,%2,%3,%4" ).arg( qgsDoubleToString( h ),
-             qgsDoubleToString( s ),
-             qgsDoubleToString( l ),
-             qgsDoubleToString( alpha ) );
+      return compatString + QStringLiteral( "hsl:%1,%2,%3,%4" ).arg( qgsDoubleToString( h ), qgsDoubleToString( s ), qgsDoubleToString( l ), qgsDoubleToString( alpha ) );
     }
 
     case QColor::Cmyk:
     {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
       float c = 1;
       float m = 1;
       float y = 1;
@@ -283,11 +274,7 @@ QString QgsColorUtils::colorToString( const QColor &color )
 #endif
 
       color.getCmykF( &c, &m, &y, &k, &alpha );
-      return compatString + QStringLiteral( "cmyk:%1,%2,%3,%4,%5" ).arg( qgsDoubleToString( c ),
-             qgsDoubleToString( m ),
-             qgsDoubleToString( y ),
-             qgsDoubleToString( k ),
-             qgsDoubleToString( alpha ) );
+      return compatString + QStringLiteral( "cmyk:%1,%2,%3,%4,%5" ).arg( qgsDoubleToString( c ), qgsDoubleToString( m ), qgsDoubleToString( y ), qgsDoubleToString( k ), qgsDoubleToString( alpha ) );
     }
   }
   return QString();
@@ -393,7 +380,7 @@ QString QgsColorUtils::saveIccProfile( const QColorSpace &colorSpace, const QStr
   return QString();
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
 
 Qgis::ColorModel QgsColorUtils::toColorModel( QColorSpace::ColorModel colorModel, bool *ok )
 {

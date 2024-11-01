@@ -32,11 +32,9 @@ class QgsQsciLexerPython : public QsciLexerPython
 {
     Q_OBJECT
   public:
-
     QgsQsciLexerPython( QObject *parent = nullptr );
 
     const char *keywords( int set ) const override;
-
 };
 ///@endcond
 #endif
@@ -52,9 +50,8 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     Q_OBJECT
 
   public:
-
 #ifndef SIP_RUN
-///@cond PRIVATE
+    ///@cond PRIVATE
     static inline QgsSettingsTreeNode *sTreePythonCodeEditor = QgsCodeEditor::sTreeCodeEditor->createChildNode( QStringLiteral( "python" ) );
     static const QgsSettingsEntryString *settingCodeFormatter;
     static const QgsSettingsEntryInteger *settingMaxLineLength;
@@ -137,7 +134,6 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     void toggleComment() override;
 
   protected:
-
     void initializeLexer() override;
     virtual void keyPressEvent( QKeyEvent *event ) override;
     QString reformatCodeString( const QString &string ) override;
@@ -153,7 +149,6 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     void autoComplete();
 
   private:
-
     QList<QString> mAPISFilesList;
     QString mPapFile;
 
@@ -163,7 +158,6 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
 
     // Only used for selected text
     static const QStringList sCompletionSingleCharacters;
-
 };
 
 #endif

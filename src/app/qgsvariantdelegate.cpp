@@ -88,8 +88,8 @@ void QgsVariantDelegate::paint( QPainter *painter,
 }
 
 QWidget *QgsVariantDelegate::createEditor( QWidget *parent,
-    const QStyleOptionViewItem &option,
-    const QModelIndex &index ) const
+                                           const QStyleOptionViewItem &option,
+                                           const QModelIndex &index ) const
 {
   Q_UNUSED( option )
   if ( index.column() != 2 )
@@ -140,8 +140,7 @@ QWidget *QgsVariantDelegate::createEditor( QWidget *parent,
     case QMetaType::Type::ULongLong:
       regExp = mUnsignedIntegerExp;
       break;
-    default:
-      ;
+    default:;
   }
 
   if ( QgsVariantDelegate::type( originalValue ) == QMetaType::Type::Bool )
@@ -169,11 +168,11 @@ void QgsVariantDelegate::setEditorData( QWidget *editor,
 {
   const QVariant value = index.model()->data( index, Qt::UserRole );
 
-  if ( QComboBox *comboBox = qobject_cast<QComboBox * >( editor ) )
+  if ( QComboBox *comboBox = qobject_cast<QComboBox *>( editor ) )
   {
     comboBox->setCurrentIndex( value.toBool() ? 1 : 0 );
   }
-  else if ( QLineEdit *lineEdit = qobject_cast<QLineEdit * >( editor ) )
+  else if ( QLineEdit *lineEdit = qobject_cast<QLineEdit *>( editor ) )
   {
     lineEdit->setText( displayText( value ) );
   }
@@ -185,11 +184,11 @@ void QgsVariantDelegate::setModelData( QWidget *editor, QAbstractItemModel *mode
   const QVariant originalValue = index.model()->data( index, Qt::UserRole );
   QVariant value;
 
-  if ( QComboBox *comboBox = qobject_cast<QComboBox * >( editor ) )
+  if ( QComboBox *comboBox = qobject_cast<QComboBox *>( editor ) )
   {
     value = comboBox->currentIndex() == 1;
   }
-  else if ( QLineEdit *lineEdit = qobject_cast<QLineEdit * >( editor ) )
+  else if ( QLineEdit *lineEdit = qobject_cast<QLineEdit *>( editor ) )
   {
     if ( !lineEdit->isModified() )
       return;
@@ -318,8 +317,10 @@ QString QgsVariantDelegate::displayText( const QVariant &value )
     {
       const QColor color = qvariant_cast<QColor>( value );
       return QStringLiteral( "(%1,%2,%3,%4)" )
-             .arg( color.red() ).arg( color.green() )
-             .arg( color.blue() ).arg( color.alpha() );
+        .arg( color.red() )
+        .arg( color.green() )
+        .arg( color.blue() )
+        .arg( color.alpha() );
     }
     case QMetaType::Type::QDate:
       return value.toDate().toString( Qt::ISODate );
@@ -336,8 +337,10 @@ QString QgsVariantDelegate::displayText( const QVariant &value )
     {
       const QRect rect = value.toRect();
       return QStringLiteral( "(%1,%2,%3,%4)" )
-             .arg( rect.x() ).arg( rect.y() )
-             .arg( rect.width() ).arg( rect.height() );
+        .arg( rect.x() )
+        .arg( rect.y() )
+        .arg( rect.width() )
+        .arg( rect.height() );
     }
     case QMetaType::Type::QSize:
     {
@@ -352,7 +355,6 @@ QString QgsVariantDelegate::displayText( const QVariant &value )
       break;
   }
   return QStringLiteral( "<%1>" ).arg( value.toString() );
-
 }
 
 /* hack to get "real" type of a variant, because QVariant::type() almost always returns QString */
@@ -378,7 +380,6 @@ QMetaType::Type QgsVariantDelegate::type( const QVariant &value )
     ( void ) str.toDouble( &ok );
     if ( ok )
       return QMetaType::Type::Double;
-
   }
 
   // fallback to QVariant::type()

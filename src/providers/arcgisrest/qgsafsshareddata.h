@@ -30,12 +30,11 @@ class QgsFeedback;
  */
 class QgsAfsSharedData
 {
-
   public:
     QgsAfsSharedData( const QgsDataSourceUri &uri );
 
     //! Creates a deep copy of this shared data
-    std::shared_ptr< QgsAfsSharedData > clone() const;
+    std::shared_ptr<QgsAfsSharedData> clone() const;
 
     long long objectIdCount() const;
     long long featureCount() const;
@@ -69,11 +68,10 @@ class QgsAfsSharedData
     bool hasCachedAllFeatures() const;
 
   private:
-
     QVariantMap postData( const QUrl &url, const QByteArray &payload, QgsFeedback *feedback, bool &ok, QString &errorText ) const;
 
     friend class QgsAfsProvider;
-    mutable QReadWriteLock mReadWriteLock{ QReadWriteLock::Recursive };
+    mutable QReadWriteLock mReadWriteLock { QReadWriteLock::Recursive };
     QgsDataSourceUri mDataSource;
     bool mLimitBBox = false;
     QgsRectangle mExtent;

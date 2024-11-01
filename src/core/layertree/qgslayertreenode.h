@@ -96,12 +96,11 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
 #endif
 
   public:
-
     //! Enumeration of possible tree node types
     enum NodeType
     {
-      NodeGroup,   //!< Container of other groups and layers
-      NodeLayer    //!< Leaf node pointing to a layer
+      NodeGroup, //!< Container of other groups and layers
+      NodeLayer  //!< Leaf node pointing to a layer
     };
 
     ~QgsLayerTreeNode() override;
@@ -109,19 +108,25 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsLayerTreeNode: %1>" ).arg( sipCpp->name() );
+        QString str
+      = QStringLiteral( "<QgsLayerTreeNode: %1>" ).arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    //! Find out about type of the node. It is usually shorter to use convenience functions from QgsLayerTree namespace for that
-    NodeType nodeType() const { return mNodeType; }
+        //! Find out about type of the node. It is usually shorter to use convenience functions from QgsLayerTree namespace for that
+        NodeType
+      nodeType() const
+    {
+      return mNodeType;
+    }
     //! Gets pointer to the parent. If parent is NULLPTR, the node is a root node
     QgsLayerTreeNode *parent() { return mParent; }
     //! Gets list of children of the node. Children are owned by the parent
     QList<QgsLayerTreeNode *> children() { return mChildren; }
     //! Gets list of children of the node. Children are owned by the parent
-    QList<QgsLayerTreeNode *> children() const { return mChildren; } SIP_SKIP
+    QList<QgsLayerTreeNode *> children() const { return mChildren; }
+    SIP_SKIP
 
     /**
      * Removes the children, disconnect all the forwarded and external signals and sets their parent to NULLPTR
@@ -213,7 +218,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
      * Returns a list of any checked layers which belong to this node or its
      * children.
      */
-    QList< QgsMapLayer * > checkedLayers() const;
+    QList<QgsMapLayer *> checkedLayers() const;
 
     /**
      * Returns the depth of this node, i.e. the number of its ancestors
@@ -260,7 +265,6 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     void nameChanged( QgsLayerTreeNode *node, QString name );
 
   protected:
-
     //! Constructor
     QgsLayerTreeNode( NodeType t, bool checked = true );
     QgsLayerTreeNode( const QgsLayerTreeNode &other );
@@ -295,10 +299,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
 
   private:
     QgsLayerTreeNode &operator=( const QgsLayerTreeNode & ) = delete;
-
 };
-
-
 
 
 #endif // QGSLAYERTREENODE_H

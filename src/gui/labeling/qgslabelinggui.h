@@ -85,7 +85,6 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     void calloutTypeChanged();
 
   private:
-
     QgsPalLayerSettings mSettings;
     LabelMode mMode;
     QgsFeature mPreviewFeature;
@@ -101,7 +100,6 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     void updateCalloutWidget( QgsCallout *callout );
     void showObstacleSettings();
     void showLineAnchorSettings();
-
 };
 
 class GUI_EXPORT QgsLabelSettingsDialog : public QDialog
@@ -109,7 +107,6 @@ class GUI_EXPORT QgsLabelSettingsDialog : public QDialog
     Q_OBJECT
 
   public:
-
     QgsLabelSettingsDialog( const QgsPalLayerSettings &settings, QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, QWidget *parent SIP_TRANSFERTHIS = nullptr,
                             Qgis::GeometryType geomType = Qgis::GeometryType::Unknown );
 
@@ -121,17 +118,13 @@ class GUI_EXPORT QgsLabelSettingsDialog : public QDialog
     QDialogButtonBox *buttonBox() const;
 
   private:
-
     QgsLabelingGui *mWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
 
   private slots:
     void showHelp();
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSLABELINGGUI_H
-
-

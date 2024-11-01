@@ -30,17 +30,16 @@ class QgsStyleEntityVisitorInterface;
 % ModuleHeaderCode
 #include "qgsprintlayout.h"
 #include "qgsreport.h"
-% End
+  % End
 #endif
 
-/**
+  /**
  * \ingroup core
  * \class QgsMasterLayoutInterface
  * \brief Interface for master layout type objects, such as print layouts and reports.
  */
-class CORE_EXPORT QgsMasterLayoutInterface
+  class CORE_EXPORT QgsMasterLayoutInterface
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     switch ( sipCpp->layoutType() )
@@ -49,7 +48,7 @@ class CORE_EXPORT QgsMasterLayoutInterface
         sipType = sipType_QgsPrintLayout;
         *sipCppRet = static_cast<QgsPrintLayout *>( sipCpp );
         break;
-      case  QgsMasterLayoutInterface::Report:
+      case QgsMasterLayoutInterface::Report:
         *sipCppRet = static_cast<QgsReport *>( sipCpp );
         sipType = sipType_QgsReport;
         break;
@@ -60,12 +59,11 @@ class CORE_EXPORT QgsMasterLayoutInterface
 #endif
 
   public:
-
     //! Master layout type
     enum Type
     {
       PrintLayout = 0, //!< Individual print layout (QgsPrintLayout)
-      Report = 1, //!< Report (QgsReport)
+      Report = 1,      //!< Report (QgsReport)
     };
 
     virtual ~QgsMasterLayoutInterface() = default;
@@ -130,11 +128,11 @@ class CORE_EXPORT QgsMasterLayoutInterface
      *
      * \since QGIS 3.10
      */
-    virtual bool layoutAccept( QgsStyleEntityVisitorInterface *visitor ) const { Q_UNUSED( visitor ); return true; }
-
+    virtual bool layoutAccept( QgsStyleEntityVisitorInterface *visitor ) const
+    {
+      Q_UNUSED( visitor );
+      return true;
+    }
 };
 
 #endif //QGSLAYOUTINTERFACE_H
-
-
-

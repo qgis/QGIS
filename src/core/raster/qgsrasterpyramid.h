@@ -28,7 +28,6 @@
 class CORE_EXPORT QgsRasterPyramid
 {
   public:
-
     //TODO QGIS 4.0 - rename get* to remove get prefix, and remove
     //temporary SIP_PROPERTY definitions
 
@@ -136,7 +135,6 @@ class CORE_EXPORT QgsRasterPyramid
 #endif
 
   private:
-
     //! \brief The pyramid level as implemented in gdal (level 2 is half original raster size etc)
     int mLevel = 0;
     //! \brief XDimension for this pyramid layer
@@ -147,6 +145,5 @@ class CORE_EXPORT QgsRasterPyramid
     bool mExists = false;
     //! \brief Whether the pyramid should be built
     bool mBuild = false;
-
 };
 #endif

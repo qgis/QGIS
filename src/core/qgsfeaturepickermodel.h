@@ -32,7 +32,6 @@ class CORE_EXPORT QgsFeaturePickerModel : public QgsFeaturePickerModelBase
     Q_OBJECT
 
   public:
-
     /**
      * Create a new QgsFeaturePickerModel, optionally specifying a \a parent.
      */

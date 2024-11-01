@@ -26,5 +26,4 @@ QgsHistoryEntryNode *QgsAbstractHistoryProvider::createNodeForEntry( const QgsHi
 
 void QgsAbstractHistoryProvider::updateNodeForEntry( QgsHistoryEntryNode *, const QgsHistoryEntry &, const QgsHistoryWidgetContext & )
 {
-
 }

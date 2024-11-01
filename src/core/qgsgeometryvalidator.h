@@ -33,7 +33,6 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsGeometryValidator.
      */

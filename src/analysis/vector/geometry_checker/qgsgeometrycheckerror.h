@@ -35,16 +35,15 @@ class QgsPointXY;
 class ANALYSIS_EXPORT QgsGeometryCheckError
 {
   public:
-
     /**
      * The status of an error.
      */
     enum Status
     {
-      StatusPending, //!< The error is detected and pending to be handled
+      StatusPending,   //!< The error is detected and pending to be handled
       StatusFixFailed, //!< A fix has been tried on the error but failed
-      StatusFixed, //!< The error is fixed
-      StatusObsolete //!< The error is obsolete because of other modifications
+      StatusFixed,     //!< The error is fixed
+      StatusObsolete   //!< The error is obsolete because of other modifications
     };
 
     /**
@@ -53,8 +52,8 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     enum ValueType
     {
       ValueLength, //!< The value is a length
-      ValueArea, //!< The value is an area
-      ValueOther //!< The value if of another type
+      ValueArea,   //!< The value is an area
+      ValueOther   //!< The value if of another type
     };
 
     /**
@@ -196,7 +195,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
      *
      * \since QGIS 3.8
      */
-    virtual QMap<QString, QgsFeatureIds > involvedFeatures() const SIP_SKIP;
+    virtual QMap<QString, QgsFeatureIds> involvedFeatures() const SIP_SKIP;
 
     /**
      * Returns an icon that should be shown for this kind of error.
@@ -204,8 +203,8 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
      * \since QGIS 3.8
      */
     virtual QIcon icon() const;
-  protected:
 
+  protected:
     /**
      * Create a new geometry check error with the parent \a check and for the
      * layer with \a layerId and \a featureId.
@@ -235,7 +234,6 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     QString mResolutionMessage;
 
   private:
-
 #ifdef SIP_RUN
     const QgsGeometryCheckError &operator=( const QgsGeometryCheckError & );
 #endif

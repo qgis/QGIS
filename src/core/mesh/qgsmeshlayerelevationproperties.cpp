@@ -101,7 +101,7 @@ bool QgsMeshLayerElevationProperties::readXml( const QDomElement &element, const
   if ( elevationElement.hasAttribute( QStringLiteral( "elevationLimit" ) ) )
     mElevationLimit = elevationElement.attribute( QStringLiteral( "elevationLimit" ) ).toDouble();
   else
-    mElevationLimit = std::numeric_limits< double >::quiet_NaN();
+    mElevationLimit = std::numeric_limits<double>::quiet_NaN();
 
   readCommonProperties( elevationElement, context );
 
@@ -142,12 +142,12 @@ bool QgsMeshLayerElevationProperties::readXml( const QDomElement &element, const
   const QColor defaultColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
 
   const QDomElement profileLineSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileLineSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-  mProfileLineSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsLineSymbol >( profileLineSymbolElement, context ) );
+  mProfileLineSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( profileLineSymbolElement, context ) );
   if ( !mProfileLineSymbol )
     setDefaultProfileLineSymbol( defaultColor );
 
   const QDomElement profileFillSymbolElement = elevationElement.firstChildElement( QStringLiteral( "profileFillSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-  mProfileFillSymbol.reset( QgsSymbolLayerUtils::loadSymbol< QgsFillSymbol >( profileFillSymbolElement, context ) );
+  mProfileFillSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( profileFillSymbolElement, context ) );
   if ( !mProfileFillSymbol )
     setDefaultProfileFillSymbol( defaultColor );
 
@@ -182,7 +182,7 @@ QString QgsMeshLayerElevationProperties::htmlSummary() const
 
 QgsMeshLayerElevationProperties *QgsMeshLayerElevationProperties::clone() const
 {
-  std::unique_ptr< QgsMeshLayerElevationProperties > res = std::make_unique< QgsMeshLayerElevationProperties >( nullptr );
+  std::unique_ptr<QgsMeshLayerElevationProperties> res = std::make_unique<QgsMeshLayerElevationProperties>( nullptr );
   res->setMode( mMode );
   res->setProfileLineSymbol( mProfileLineSymbol->clone() );
   res->setProfileFillSymbol( mProfileFillSymbol->clone() );
@@ -227,8 +227,8 @@ QgsDoubleRange QgsMeshLayerElevationProperties::calculateZRange( QgsMapLayer * )
 
     case Qgis::MeshElevationMode::FixedRangePerGroup:
     {
-      double lower = std::numeric_limits< double >::max();
-      double upper = std::numeric_limits< double >::min();
+      double lower = std::numeric_limits<double>::max();
+      double upper = std::numeric_limits<double>::min();
       bool includeLower = true;
       bool includeUpper = true;
       for ( auto it = mRangePerGroup.constBegin(); it != mRangePerGroup.constEnd(); ++it )
@@ -278,15 +278,15 @@ QList<double> QgsMeshLayerElevationProperties::significantZValues( QgsMapLayer *
 
     case Qgis::MeshElevationMode::FixedRangePerGroup:
     {
-      QList< double > res;
+      QList<double> res;
       for ( auto it = mRangePerGroup.constBegin(); it != mRangePerGroup.constEnd(); ++it )
       {
         if ( it.value().isInfinite() )
           continue;
 
-        if ( !res.contains( it.value().lower( ) ) )
+        if ( !res.contains( it.value().lower() ) )
           res.append( it.value().lower() );
-        if ( !res.contains( it.value().upper( ) ) )
+        if ( !res.contains( it.value().upper() ) )
           res.append( it.value().upper() );
       }
       std::sort( res.begin(), res.end() );
@@ -411,13 +411,13 @@ void QgsMeshLayerElevationProperties::setElevationLimit( double limit )
 
 void QgsMeshLayerElevationProperties::setDefaultProfileLineSymbol( const QColor &color )
 {
-  std::unique_ptr< QgsSimpleLineSymbolLayer > profileLineLayer = std::make_unique< QgsSimpleLineSymbolLayer >( color, 0.6 );
-  mProfileLineSymbol = std::make_unique< QgsLineSymbol>( QgsSymbolLayerList( { profileLineLayer.release() } ) );
+  std::unique_ptr<QgsSimpleLineSymbolLayer> profileLineLayer = std::make_unique<QgsSimpleLineSymbolLayer>( color, 0.6 );
+  mProfileLineSymbol = std::make_unique<QgsLineSymbol>( QgsSymbolLayerList( { profileLineLayer.release() } ) );
 }
 
 void QgsMeshLayerElevationProperties::setDefaultProfileFillSymbol( const QColor &color )
 {
-  std::unique_ptr< QgsSimpleFillSymbolLayer > profileFillLayer = std::make_unique< QgsSimpleFillSymbolLayer >( color );
+  std::unique_ptr<QgsSimpleFillSymbolLayer> profileFillLayer = std::make_unique<QgsSimpleFillSymbolLayer>( color );
   profileFillLayer->setStrokeStyle( Qt::NoPen );
-  mProfileFillSymbol = std::make_unique< QgsFillSymbol>( QgsSymbolLayerList( { profileFillLayer.release() } ) );
+  mProfileFillSymbol = std::make_unique<QgsFillSymbol>( QgsSymbolLayerList( { profileFillLayer.release() } ) );
 }

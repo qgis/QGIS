@@ -84,7 +84,7 @@ void QgsLayoutItemGroup::addItem( QgsLayoutItem *item )
     return;
   }
 
-  mItems << QPointer< QgsLayoutItem >( item );
+  mItems << QPointer<QgsLayoutItem>( item );
   item->setParentGroup( this );
 
   updateBoundingRect();
@@ -159,7 +159,7 @@ void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point, bool useRefer
     if ( !item )
       continue;
 
-    std::unique_ptr< QgsAbstractLayoutUndoCommand > command;
+    std::unique_ptr<QgsAbstractLayoutUndoCommand> command;
     if ( !shouldBlockUndoCommands() )
     {
       command.reset( createCommand( QString(), 0 ) );
@@ -200,7 +200,7 @@ void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size, bool includes
     if ( !item )
       continue;
 
-    std::unique_ptr< QgsAbstractLayoutUndoCommand > command;
+    std::unique_ptr<QgsAbstractLayoutUndoCommand> command;
     if ( !shouldBlockUndoCommands() )
     {
       command.reset( createCommand( QString(), 0 ) );
@@ -296,7 +296,6 @@ void QgsLayoutItemGroup::draw( QgsLayoutItemRenderContext & )
 
 void QgsLayoutItemGroup::updateBoundingRect()
 {
-
   if ( mItems.isEmpty() )
   {
     setRect( QRectF() );

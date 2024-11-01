@@ -90,11 +90,11 @@ QgsSymbol *QgsFeatureRenderer::originalSymbolForFeature( const QgsFeature &featu
   return symbolForFeature( feature, context );
 }
 
-QSet< QString > QgsFeatureRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
+QSet<QString> QgsFeatureRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   Q_UNUSED( feature )
   Q_UNUSED( context )
-  return QSet< QString >();
+  return QSet<QString>();
 }
 
 void QgsFeatureRenderer::startRender( QgsRenderContext &context, const QgsFields & )
@@ -288,16 +288,12 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, Qgis::Geo
       while ( !ruleChildElem.isNull() )
       {
         // rule has filter or min/max scale denominator, use the RuleRenderer
-        if ( ruleChildElem.localName() == QLatin1String( "Filter" ) ||
-             ruleChildElem.localName() == QLatin1String( "ElseFilter" ) ||
-             ruleChildElem.localName() == QLatin1String( "MinScaleDenominator" ) ||
-             ruleChildElem.localName() == QLatin1String( "MaxScaleDenominator" ) )
+        if ( ruleChildElem.localName() == QLatin1String( "Filter" ) || ruleChildElem.localName() == QLatin1String( "ElseFilter" ) || ruleChildElem.localName() == QLatin1String( "MinScaleDenominator" ) || ruleChildElem.localName() == QLatin1String( "MaxScaleDenominator" ) )
         {
           hasRuleRenderer = true;
         }
         // rule has a renderer symbolizer, not a text symbolizer
-        else if ( ruleChildElem.localName().endsWith( QLatin1String( "Symbolizer" ) ) &&
-                  ruleChildElem.localName() != QLatin1String( "TextSymbolizer" ) )
+        else if ( ruleChildElem.localName().endsWith( QLatin1String( "Symbolizer" ) ) && ruleChildElem.localName() != QLatin1String( "TextSymbolizer" ) )
         {
           QgsDebugMsgLevel( QStringLiteral( "Symbolizer element found and not a TextSymbolizer" ), 2 );
           hasRendererSymbolizer = true;
@@ -359,7 +355,7 @@ QSet<QString> QgsFeatureRenderer::legendKeys() const
 {
   // build up a list of unique legend keys
   const QgsLegendSymbolList allLegendSymbols = legendSymbolItems();
-  QSet< QString > keys;
+  QSet<QString> keys;
   keys.reserve( allLegendSymbols.size() );
   for ( const QgsLegendSymbolItem &symbol : allLegendSymbols )
   {
@@ -486,7 +482,8 @@ QgsSymbolList QgsFeatureRenderer::symbolsForFeature( const QgsFeature &feature, 
 {
   QgsSymbolList lst;
   QgsSymbol *s = symbolForFeature( feature, context );
-  if ( s ) lst.append( s );
+  if ( s )
+    lst.append( s );
   return lst;
 }
 
@@ -500,7 +497,8 @@ QgsSymbolList QgsFeatureRenderer::originalSymbolsForFeature( const QgsFeature &f
 {
   QgsSymbolList lst;
   QgsSymbol *s = originalSymbolForFeature( feature, context );
-  if ( s ) lst.append( s );
+  if ( s )
+    lst.append( s );
   return lst;
 }
 
@@ -557,7 +555,7 @@ bool QgsFeatureRenderer::accept( QgsStyleEntityVisitorInterface * ) const
 
 void QgsFeatureRenderer::convertSymbolSizeScale( QgsSymbol *symbol, Qgis::ScaleMethod method, const QString &field )
 {
-  if ( symbol->type() == Qgis:: SymbolType::Marker )
+  if ( symbol->type() == Qgis::SymbolType::Marker )
   {
     QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( symbol );
     if ( Qgis::ScaleMethod::ScaleArea == method )
@@ -583,8 +581,9 @@ void QgsFeatureRenderer::convertSymbolRotation( QgsSymbol *symbol, const QString
   {
     QgsMarkerSymbol *s = static_cast<QgsMarkerSymbol *>( symbol );
     const QgsProperty dd = QgsProperty::fromExpression( ( s->angle()
-                           ? QString::number( s->angle() ) + " + "
-                           : QString() ) + field );
+                                                            ? QString::number( s->angle() ) + " + "
+                                                            : QString() )
+                                                        + field );
     s->setDataDefinedAngle( dd );
   }
 }
@@ -596,10 +595,9 @@ void QgsFeatureRenderer::initPropertyDefinitions()
 
   QString origin = QStringLiteral( "renderer" );
 
-  sPropertyDefinitions = QgsPropertiesDefinition
-  {
-    { static_cast< int >( QgsFeatureRenderer::Property::HeatmapRadius ), QgsPropertyDefinition( "heatmapRadius", QObject::tr( "Radius" ), QgsPropertyDefinition::DoublePositive, origin )},
-    { static_cast< int >( QgsFeatureRenderer::Property::HeatmapMaximum ), QgsPropertyDefinition( "heatmapMaximum", QObject::tr( "Maximum" ), QgsPropertyDefinition::DoublePositive, origin )},
+  sPropertyDefinitions = QgsPropertiesDefinition {
+    { static_cast<int>( QgsFeatureRenderer::Property::HeatmapRadius ), QgsPropertyDefinition( "heatmapRadius", QObject::tr( "Radius" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { static_cast<int>( QgsFeatureRenderer::Property::HeatmapMaximum ), QgsPropertyDefinition( "heatmapMaximum", QObject::tr( "Maximum" ), QgsPropertyDefinition::DoublePositive, origin ) },
   };
 }
 

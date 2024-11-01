@@ -141,7 +141,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
   }
   else
   {
-    std::unique_ptr< QgsLineString > segmented( captureCurve()->curveToLine() );
+    std::unique_ptr<QgsLineString> segmented( captureCurve()->curveToLine() );
     segmented->points( pts );
   }
 
@@ -183,7 +183,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
         if ( vlayer->geometryType() == Qgis::GeometryType::Polygon )
         {
           //ignore all current layer features as they should be reshaped too
-          QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
+          QHash<QgsVectorLayer *, QSet<QgsFeatureId>> ignoreFeatures;
           ignoreFeatures.insert( vlayer, vlayer->allFeatureIds() );
 
           const QgsAvoidIntersectionsOperation::Result res = avoidIntersections.apply( vlayer, f.id(), geom, ignoreFeatures );
@@ -216,7 +216,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
     {
       const QList<QgsPointLocator::Match> sm = snappingMatches();
       Q_ASSERT( pts.size() == sm.size() );
-      for ( int i = 0; i < sm.size() ; ++i )
+      for ( int i = 0; i < sm.size(); ++i )
       {
         if ( sm.at( i ).layer() )
         {

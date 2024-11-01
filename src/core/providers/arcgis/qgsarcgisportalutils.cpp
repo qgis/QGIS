@@ -38,7 +38,7 @@ QVariantMap QgsArcGisPortalUtils::retrieveUserInfo( const QString &communityUrl,
   return QgsArcGisRestQueryUtils::queryServiceJSON( queryUrl, authcfg, errorTitle, errorText, requestHeaders, feedback, urlPrefix );
 }
 
-QVariantMap QgsArcGisPortalUtils::retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle, QString &errorText, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback, const QString &urlPrefix )
+QVariantMap QgsArcGisPortalUtils::retrieveUserInfo( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle, QString &errorText, const QMap<QString, QVariant> &requestHeaders, QgsFeedback *feedback, const QString &urlPrefix )
 {
   return QgsArcGisPortalUtils::retrieveUserInfo( communityUrl, user, authcfg, errorTitle, errorText, QgsHttpHeaders( requestHeaders ), feedback, urlPrefix );
 }
@@ -49,7 +49,7 @@ QVariantList QgsArcGisPortalUtils::retrieveUserGroups( const QString &communityU
   return info.value( QStringLiteral( "groups" ) ).toList();
 }
 
-QVariantList QgsArcGisPortalUtils::retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle, QString &errorText, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback, const QString &urlPrefix )
+QVariantList QgsArcGisPortalUtils::retrieveUserGroups( const QString &communityUrl, const QString &user, const QString &authcfg, QString &errorTitle, QString &errorText, const QMap<QString, QVariant> &requestHeaders, QgsFeedback *feedback, const QString &urlPrefix )
 {
   return QgsArcGisPortalUtils::retrieveUserGroups( communityUrl, user, authcfg, errorTitle, errorText, QgsHttpHeaders( requestHeaders ), feedback, urlPrefix );
 }
@@ -91,7 +91,7 @@ QVariantList QgsArcGisPortalUtils::retrieveGroupContent( const QString &contentU
   return items;
 }
 
-QVariantList QgsArcGisPortalUtils::retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle, QString &errorText, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback, int pageSize, const QString &urlPrefix )
+QVariantList QgsArcGisPortalUtils::retrieveGroupContent( const QString &contentUrl, const QString &groupId, const QString &authcfg, QString &errorTitle, QString &errorText, const QMap<QString, QVariant> &requestHeaders, QgsFeedback *feedback, int pageSize, const QString &urlPrefix )
 {
   return QgsArcGisPortalUtils::retrieveGroupContent( contentUrl, groupId, authcfg, errorTitle, errorText, QgsHttpHeaders( requestHeaders ), feedback, pageSize, urlPrefix );
 }
@@ -109,7 +109,7 @@ QVariantList QgsArcGisPortalUtils::retrieveGroupItemsOfType( const QString &cont
 
     for ( const int filterType : itemTypes )
     {
-      if ( typeToString( static_cast< Qgis::ArcGisRestServiceType >( filterType ) ).compare( itemType, Qt::CaseInsensitive ) == 0 )
+      if ( typeToString( static_cast<Qgis::ArcGisRestServiceType>( filterType ) ).compare( itemType, Qt::CaseInsensitive ) == 0 )
       {
         result << item;
         break;
@@ -119,7 +119,7 @@ QVariantList QgsArcGisPortalUtils::retrieveGroupItemsOfType( const QString &cont
   return result;
 }
 
-QVariantList QgsArcGisPortalUtils::retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg, const QList<int> &itemTypes, QString &errorTitle, QString &errorText, const QMap< QString, QVariant > &requestHeaders, QgsFeedback *feedback, int pageSize, const QString &urlPrefix )
+QVariantList QgsArcGisPortalUtils::retrieveGroupItemsOfType( const QString &contentUrl, const QString &groupId, const QString &authcfg, const QList<int> &itemTypes, QString &errorTitle, QString &errorText, const QMap<QString, QVariant> &requestHeaders, QgsFeedback *feedback, int pageSize, const QString &urlPrefix )
 {
   return QgsArcGisPortalUtils::retrieveGroupItemsOfType( contentUrl, groupId, authcfg, itemTypes, errorTitle, errorText, QgsHttpHeaders( requestHeaders ), feedback, pageSize, urlPrefix );
 }

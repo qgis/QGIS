@@ -40,7 +40,6 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRasterLayerTemporalProperties, with the specified \a parent object.
      *
@@ -50,7 +49,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
 
     bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const override;
     QgsDateTimeRange calculateTemporalExtent( QgsMapLayer *layer ) const override SIP_SKIP;
-    QList< QgsDateTimeRange > allTemporalRanges( QgsMapLayer *layer ) const override;
+    QList<QgsDateTimeRange> allTemporalRanges( QgsMapLayer *layer ) const override;
 
     /**
      * Returns the temporal properties mode.
@@ -143,7 +142,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      *
      * \since QGIS 3.38
      */
-    QList< int > filteredBandsForTemporalRange( QgsRasterLayer *layer, const QgsDateTimeRange &range ) const;
+    QList<int> filteredBandsForTemporalRange( QgsRasterLayer *layer, const QgsDateTimeRange &range ) const;
 
     /**
      * Returns the band number from which temporal values should be taken.
@@ -210,7 +209,6 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     void setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities ) override;
 
   private:
-
     //! Temporal layer mode.
     Qgis::RasterTemporalMode mMode = Qgis::RasterTemporalMode::FixedTemporalRange;
 
@@ -220,7 +218,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     //! Represents fixed temporal range.
     QgsDateTimeRange mFixedRange;
 
-    QMap< int, QgsDateTimeRange > mRangePerBand;
+    QMap<int, QgsDateTimeRange> mRangePerBand;
 
     int mBandNumber = 1;
 

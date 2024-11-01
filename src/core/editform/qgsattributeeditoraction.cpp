@@ -39,7 +39,7 @@ QgsAttributeEditorElement *QgsAttributeEditorAction::clone( QgsAttributeEditorEl
 const QgsAction &QgsAttributeEditorAction::action( const QgsVectorLayer *layer ) const
 {
   // Lazy loading
-  if ( ! mAction.isValid() && ! mUuid.isNull() && layer )
+  if ( !mAction.isValid() && !mUuid.isNull() && layer )
   {
     mAction = layer->actions()->action( mUuid );
   }

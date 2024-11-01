@@ -40,7 +40,6 @@ QgsLayoutItem *QgsLayoutItemAbstractGuiMetadata::createItem( QgsLayout * )
 
 void QgsLayoutItemAbstractGuiMetadata::newItemAddedToLayout( QgsLayoutItem * )
 {
-
 }
 
 QgsLayoutItemGuiRegistry::QgsLayoutItemGuiRegistry( QObject *parent )
@@ -90,7 +89,7 @@ bool QgsLayoutItemGuiRegistry::addItemGroup( const QgsLayoutItemGuiGroup &group 
 
 const QgsLayoutItemGuiGroup &QgsLayoutItemGuiRegistry::itemGroup( const QString &id )
 {
-  return mItemGroups[ id ];
+  return mItemGroups[id];
 }
 
 QgsLayoutItem *QgsLayoutItemGuiRegistry::createItem( int metadataId, QgsLayout *layout ) const
@@ -98,7 +97,7 @@ QgsLayoutItem *QgsLayoutItemGuiRegistry::createItem( int metadataId, QgsLayout *
   if ( !mMetadata.contains( metadataId ) )
     return nullptr;
 
-  std::unique_ptr< QgsLayoutItem > item( mMetadata.value( metadataId )->createItem( layout ) );
+  std::unique_ptr<QgsLayoutItem> item( mMetadata.value( metadataId )->createItem( layout ) );
   if ( item )
     return item.release();
 
@@ -129,7 +128,7 @@ QgsLayoutItemBaseWidget *QgsLayoutItemGuiRegistry::createItemWidget( QgsLayoutIt
   int type = item->type();
   if ( type == QgsLayoutItemRegistry::LayoutFrame )
   {
-    QgsLayoutMultiFrame *multiFrame = qobject_cast< QgsLayoutFrame * >( item )->multiFrame();
+    QgsLayoutMultiFrame *multiFrame = qobject_cast<QgsLayoutFrame *>( item )->multiFrame();
     if ( multiFrame )
       type = multiFrame->type();
   }

@@ -127,11 +127,9 @@ qint64 QgsNetworkDiskCache::smartCacheSize( const QString &cacheDir )
 {
   static qint64 cacheSize = 0;
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]
-  {
+  std::call_once( initialized, [=] {
     std::function<qint64( const QString & )> dirSize;
-    dirSize = [&dirSize]( const QString & dirPath ) -> qint64
-    {
+    dirSize = [&dirSize]( const QString &dirPath ) -> qint64 {
       qint64 size = 0;
       QDir dir( dirPath );
 

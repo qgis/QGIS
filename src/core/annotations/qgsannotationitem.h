@@ -42,7 +42,6 @@ class QgsReadWriteContext;
  */
 class CORE_EXPORT QgsAnnotationItem
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->type() == QLatin1String( "marker" ) )
@@ -81,7 +80,6 @@ class CORE_EXPORT QgsAnnotationItem
 #endif
 
   public:
-
     QgsAnnotationItem();
 
 #ifndef SIP_RUN
@@ -120,7 +118,11 @@ class CORE_EXPORT QgsAnnotationItem
     /**
      * Returns the bounding box of the item's geographic location, in the parent layer's coordinate reference system.
      */
-    virtual QgsRectangle boundingBox( QgsRenderContext &context ) const { Q_UNUSED( context ) return boundingBox();}
+    virtual QgsRectangle boundingBox( QgsRenderContext &context ) const
+    {
+      Q_UNUSED( context )
+      return boundingBox();
+    }
 
     /**
      * Renders the item to the specified render \a context.
@@ -215,14 +217,14 @@ class CORE_EXPORT QgsAnnotationItem
      *
      * \deprecated QGIS 3.40. Use nodesV2() instead.
      */
-    Q_DECL_DEPRECATED virtual QList< QgsAnnotationItemNode > nodes() const SIP_DEPRECATED;
+    Q_DECL_DEPRECATED virtual QList<QgsAnnotationItemNode> nodes() const SIP_DEPRECATED;
 
     /**
      * Returns the nodes for the item, used for editing the item.
      *
      * \since QGIS 3.40
      */
-    virtual QList< QgsAnnotationItemNode > nodesV2( const QgsAnnotationItemEditContext &context ) const;
+    virtual QList<QgsAnnotationItemNode> nodesV2( const QgsAnnotationItemEditContext &context ) const;
 
     /**
      * Returns TRUE if the annotation item uses a symbology reference scale.
@@ -383,7 +385,6 @@ class CORE_EXPORT QgsAnnotationItem
     void setOffsetFromCalloutUnit( Qgis::RenderUnit unit );
 
   protected:
-
     /**
      * Copies common properties from the base class from an \a other item.
      *
@@ -417,13 +418,12 @@ class CORE_EXPORT QgsAnnotationItem
     void renderCallout( QgsRenderContext &context, const QRectF &rect, double angle, QgsCallout::QgsCalloutContext &calloutContext, QgsFeedback *feedback );
 
   private:
-
     int mZIndex = 0;
     bool mEnabled = true;
     bool mUseReferenceScale = false;
     double mReferenceScale = 0;
 
-    std::unique_ptr< QgsCallout > mCallout;
+    std::unique_ptr<QgsCallout> mCallout;
     QgsGeometry mCalloutAnchor;
     QSizeF mOffsetFromCallout;
     Qgis::RenderUnit mOffsetFromCalloutUnit = Qgis::RenderUnit::Millimeters;
@@ -431,7 +431,6 @@ class CORE_EXPORT QgsAnnotationItem
 #ifdef SIP_RUN
     QgsAnnotationItem( const QgsAnnotationItem &other );
 #endif
-
 };
 
 #endif // QGSANNOTATIONITEM_H

@@ -60,7 +60,6 @@ QgsSettingsEditorWidgetRegistry::QgsSettingsEditorWidgetRegistry()
 
   // flags
   addWrapper( new QgsSettingsFlagsEditorWidgetWrapper<Qgis::GpsInformationComponent, Qgis::GpsInformationComponents>() );
-
 }
 
 QgsSettingsEditorWidgetRegistry::~QgsSettingsEditorWidgetRegistry()

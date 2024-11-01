@@ -59,7 +59,6 @@ class QgsAuthOAuth2Config : public QObject
     Q_PROPERTY( QString customHeader READ customHeader WRITE setCustomHeader NOTIFY customHeaderChanged )
 
   public:
-
     //! Configuration type
     enum ConfigType
     {
@@ -103,7 +102,7 @@ class QgsAuthOAuth2Config : public QObject
     ConfigType configType() const { return mConfigType; }
 
     //! Authorization flow
-    GrantFlow grantFlow()  const { return mGrantFlow; }
+    GrantFlow grantFlow() const { return mGrantFlow; }
 
     //! Configuration name
     QString name() const { return mName; }
@@ -210,8 +209,8 @@ class QgsAuthOAuth2Config : public QObject
      * \return config map
      */
     static QVariantMap variantFromSerialized( const QByteArray &serial,
-        ConfigFormat format = JSON,
-        bool *ok = nullptr );
+                                              ConfigFormat format = JSON,
+                                              bool *ok = nullptr );
 
     //! Write config object out to a formatted file (e.g. JSON)
     static bool writeOAuth2Config( const QString &filepath,
@@ -410,7 +409,7 @@ class QgsAuthOAuth2Config : public QObject
     bool mPersistToken = false;
     AccessMethod mAccessMethod = AccessMethod::Header;
     QString mCustomHeader;
-    int mRequestTimeout = 30 ; // in seconds
+    int mRequestTimeout = 30; // in seconds
     QVariantMap mQueryPairs;
     bool mValid = false;
 };

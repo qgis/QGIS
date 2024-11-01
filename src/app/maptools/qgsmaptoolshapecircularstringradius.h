@@ -40,7 +40,7 @@ class APP_EXPORT QgsMapToolShapeCircularStringRadiusMetadata : public QgsMapTool
     QgsMapToolShapeAbstract *factory( QgsMapToolCapture *parentTool ) const override;
 };
 
-class APP_EXPORT QgsMapToolShapeCircularStringRadius: public QgsMapToolShapeCircularStringAbstract
+class APP_EXPORT QgsMapToolShapeCircularStringRadius : public QgsMapToolShapeCircularStringAbstract
 {
     Q_OBJECT
   public:

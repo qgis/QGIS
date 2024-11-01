@@ -30,7 +30,6 @@ class CORE_EXPORT QgsDatabaseSchemaItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsDatabaseSchemaItem, with the specified \a parent item.
      *
@@ -49,15 +48,14 @@ class CORE_EXPORT QgsDatabaseSchemaItem : public QgsDataCollectionItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsDatabaseSchemaItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+        QString str
+      = QStringLiteral( "<QgsDatabaseSchemaItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
-
+        QgsAbstractDatabaseProviderConnection *
+      databaseConnection() const override;
 };
 
 #endif // QGSDATABASESCHEMAITEM_H
-
-

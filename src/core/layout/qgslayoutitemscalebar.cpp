@@ -106,9 +106,7 @@ void QgsLayoutItemScaleBar::draw( QgsLayoutItemRenderContext &context )
       painter->setPen( QColor( 200, 0, 0, 255 ) );
       QTextDocument td;
       td.setTextWidth( thisPaintRect.width() );
-      td.setHtml( QStringLiteral( "<span style=\"color: rgb(200,0,0);\"><b>%1</b><br>%2</span>" ).arg(
-                    tr( "Invalid scale!" ),
-                    tr( "The scale bar cannot be rendered due to invalid settings or an incompatible linked map extent." ) ) );
+      td.setHtml( QStringLiteral( "<span style=\"color: rgb(200,0,0);\"><b>%1</b><br>%2</span>" ).arg( tr( "Invalid scale!" ), tr( "The scale bar cannot be rendered due to invalid settings or an incompatible linked map extent." ) ) );
       painter->setClipRect( thisPaintRect );
       QAbstractTextDocumentLayout::PaintContext ctx;
       td.documentLayout()->draw( painter, ctx );
@@ -120,7 +118,7 @@ void QgsLayoutItemScaleBar::draw( QgsLayoutItemRenderContext &context )
   {
     // compatibility code - ScalebarLineColor and ScalebarLineWidth are deprecated
     const QgsExpressionContext expContext = createExpressionContext();
-    std::unique_ptr< QgsLineSymbol > sym( mSettings.lineSymbol()->clone() );
+    std::unique_ptr<QgsLineSymbol> sym( mSettings.lineSymbol()->clone() );
     Q_NOWARN_DEPRECATED_PUSH
     if ( dataDefinedProperties().isActive( QgsLayoutObject::DataDefinedProperty::ScalebarLineWidth ) )
       sym->setWidth( mDataDefinedProperties.valueAsDouble( QgsLayoutObject::DataDefinedProperty::ScalebarLineWidth, expContext, mSettings.lineWidth() ) );
@@ -133,7 +131,7 @@ void QgsLayoutItemScaleBar::draw( QgsLayoutItemRenderContext &context )
   {
     // compatibility code - ScalebarLineColor and ScalebarLineWidth are deprecated
     const QgsExpressionContext expContext = createExpressionContext();
-    std::unique_ptr< QgsFillSymbol > sym( mSettings.fillSymbol()->clone() );
+    std::unique_ptr<QgsFillSymbol> sym( mSettings.fillSymbol()->clone() );
     Q_NOWARN_DEPRECATED_PUSH
     sym->setColor( mDataDefinedProperties.valueAsColor( QgsLayoutObject::DataDefinedProperty::ScalebarFillColor, expContext, mSettings.fillColor() ) );
     Q_NOWARN_DEPRECATED_POP
@@ -143,7 +141,7 @@ void QgsLayoutItemScaleBar::draw( QgsLayoutItemRenderContext &context )
   {
     // compatibility code - ScalebarLineColor and ScalebarLineWidth are deprecated
     const QgsExpressionContext expContext = createExpressionContext();
-    std::unique_ptr< QgsFillSymbol > sym( mSettings.alternateFillSymbol()->clone() );
+    std::unique_ptr<QgsFillSymbol> sym( mSettings.alternateFillSymbol()->clone() );
     Q_NOWARN_DEPRECATED_PUSH
     sym->setColor( mDataDefinedProperties.valueAsColor( QgsLayoutObject::DataDefinedProperty::ScalebarFillColor2, expContext, mSettings.fillColor2() ) );
     Q_NOWARN_DEPRECATED_POP
@@ -487,7 +485,7 @@ void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::D
     forceUpdate = true;
   }
 
-  if ( property ==  QgsLayoutObject::DataDefinedProperty::ScalebarLeftSegments || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
+  if ( property == QgsLayoutObject::DataDefinedProperty::ScalebarLeftSegments || property == QgsLayoutObject::DataDefinedProperty::AllProperties )
   {
     refreshNumberOfSegmentsLeft( &context );
     forceUpdate = true;
@@ -576,7 +574,7 @@ void QgsLayoutItemScaleBar::refreshSegmentMillimeters()
     const double currentMapWidth = mapWidth();
     if ( qgsDoubleNear( currentMapWidth, 0 ) || std::isnan( currentMapWidth ) )
     {
-      mSegmentMillimeters = std::numeric_limits< double >::quiet_NaN();
+      mSegmentMillimeters = std::numeric_limits<double>::quiet_NaN();
       return;
     }
 
@@ -630,7 +628,7 @@ double QgsLayoutItemScaleBar::mapWidth() const
 
     const Qgis::DistanceUnit units = da.lengthUnits();
 
-    QList< double > yValues;
+    QList<double> yValues;
     switch ( mMethod )
     {
       case Qgis::ScaleCalculationMethod::HorizontalTop:
@@ -682,7 +680,7 @@ double QgsLayoutItemScaleBar::mapWidth() const
     }
 
     if ( validMeasureCount == 0 )
-      return std::numeric_limits< double >::quiet_NaN();
+      return std::numeric_limits<double>::quiet_NaN();
 
     return sumValidMeasures / validMeasureCount;
   }
@@ -772,7 +770,7 @@ void QgsLayoutItemScaleBar::setLineCapStyle( Qt::PenCapStyle style )
 void QgsLayoutItemScaleBar::applyDefaultSettings()
 {
   //style
-  mStyle = std::make_unique< QgsSingleBoxScaleBarRenderer >();
+  mStyle = std::make_unique<QgsSingleBoxScaleBarRenderer>();
 
   //default to no background
   setBackgroundEnabled( false );
@@ -928,7 +926,7 @@ void QgsLayoutItemScaleBar::updateScale()
 void QgsLayoutItemScaleBar::setStyle( const QString &styleName )
 {
   //switch depending on style name
-  std::unique_ptr< QgsScaleBarRenderer> renderer( QgsApplication::scaleBarRendererRegistry()->renderer( styleName ) );
+  std::unique_ptr<QgsScaleBarRenderer> renderer( QgsApplication::scaleBarRendererRegistry()->renderer( styleName ) );
   if ( renderer )
   {
     mStyle = std::move( renderer );
@@ -1073,7 +1071,7 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
   composerScaleBarElem.setAttribute( QStringLiteral( "numSubdivisions" ), mSettings.numberOfSubdivisions() );
   composerScaleBarElem.setAttribute( QStringLiteral( "subdivisionsHeight" ), mSettings.subdivisionsHeight() );
   composerScaleBarElem.setAttribute( QStringLiteral( "numUnitsPerSegment" ), QString::number( mSettings.unitsPerSegment() ) );
-  composerScaleBarElem.setAttribute( QStringLiteral( "segmentSizeMode" ), static_cast< int >( mSettings.segmentSizeMode() ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "segmentSizeMode" ), static_cast<int>( mSettings.segmentSizeMode() ) );
   composerScaleBarElem.setAttribute( QStringLiteral( "minBarWidth" ), mSettings.minimumBarWidth() );
   composerScaleBarElem.setAttribute( QStringLiteral( "maxBarWidth" ), mSettings.maximumBarWidth() );
   composerScaleBarElem.setAttribute( QStringLiteral( "segmentMillimeters" ), QString::number( mSegmentMillimeters ) );
@@ -1140,49 +1138,49 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
   Q_NOWARN_DEPRECATED_POP
 
   //label vertical/horizontal placement
-  composerScaleBarElem.setAttribute( QStringLiteral( "labelVerticalPlacement" ), QString::number( static_cast< int >( mSettings.labelVerticalPlacement() ) ) );
-  composerScaleBarElem.setAttribute( QStringLiteral( "labelHorizontalPlacement" ), QString::number( static_cast< int >( mSettings.labelHorizontalPlacement() ) ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "labelVerticalPlacement" ), QString::number( static_cast<int>( mSettings.labelVerticalPlacement() ) ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "labelHorizontalPlacement" ), QString::number( static_cast<int>( mSettings.labelHorizontalPlacement() ) ) );
 
   //alignment
-  composerScaleBarElem.setAttribute( QStringLiteral( "alignment" ), QString::number( static_cast< int >( mSettings.alignment() ) ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "alignment" ), QString::number( static_cast<int>( mSettings.alignment() ) ) );
 
   QDomElement lineSymbol = doc.createElement( QStringLiteral( "lineSymbol" ) );
   const QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QString(),
-                                 mSettings.lineSymbol(),
-                                 doc,
-                                 rwContext );
+                                                                  mSettings.lineSymbol(),
+                                                                  doc,
+                                                                  rwContext );
   lineSymbol.appendChild( symbolElem );
   composerScaleBarElem.appendChild( lineSymbol );
 
   QDomElement divisionSymbol = doc.createElement( QStringLiteral( "divisionLineSymbol" ) );
   const QDomElement divisionSymbolElem = QgsSymbolLayerUtils::saveSymbol( QString(),
-                                         mSettings.divisionLineSymbol(),
-                                         doc,
-                                         rwContext );
+                                                                          mSettings.divisionLineSymbol(),
+                                                                          doc,
+                                                                          rwContext );
   divisionSymbol.appendChild( divisionSymbolElem );
   composerScaleBarElem.appendChild( divisionSymbol );
 
   QDomElement subdivisionSymbol = doc.createElement( QStringLiteral( "subdivisionLineSymbol" ) );
   const QDomElement subdivisionSymbolElem = QgsSymbolLayerUtils::saveSymbol( QString(),
-      mSettings.subdivisionLineSymbol(),
-      doc,
-      rwContext );
+                                                                             mSettings.subdivisionLineSymbol(),
+                                                                             doc,
+                                                                             rwContext );
   subdivisionSymbol.appendChild( subdivisionSymbolElem );
   composerScaleBarElem.appendChild( subdivisionSymbol );
 
   QDomElement fillSymbol1Elem = doc.createElement( QStringLiteral( "fillSymbol1" ) );
   const QDomElement symbol1Elem = QgsSymbolLayerUtils::saveSymbol( QString(),
-                                  mSettings.fillSymbol(),
-                                  doc,
-                                  rwContext );
+                                                                   mSettings.fillSymbol(),
+                                                                   doc,
+                                                                   rwContext );
   fillSymbol1Elem.appendChild( symbol1Elem );
   composerScaleBarElem.appendChild( fillSymbol1Elem );
 
   QDomElement fillSymbol2Elem = doc.createElement( QStringLiteral( "fillSymbol2" ) );
   const QDomElement symbol2Elem = QgsSymbolLayerUtils::saveSymbol( QString(),
-                                  mSettings.alternateFillSymbol(),
-                                  doc,
-                                  rwContext );
+                                                                   mSettings.alternateFillSymbol(),
+                                                                   doc,
+                                                                   rwContext );
   fillSymbol2Elem.appendChild( symbol2Elem );
   composerScaleBarElem.appendChild( fillSymbol2Elem );
 
@@ -1200,7 +1198,7 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   mSettings.setNumberOfSubdivisions( itemElem.attribute( QStringLiteral( "numSubdivisions" ), QStringLiteral( "1" ) ).toInt() );
   mSettings.setSubdivisionsHeight( itemElem.attribute( QStringLiteral( "subdivisionsHeight" ), QStringLiteral( "1.5" ) ).toDouble() );
   mSettings.setUnitsPerSegment( itemElem.attribute( QStringLiteral( "numUnitsPerSegment" ), QStringLiteral( "1.0" ) ).toDouble() );
-  mSettings.setSegmentSizeMode( static_cast<Qgis::ScaleBarSegmentSizeMode >( itemElem.attribute( QStringLiteral( "segmentSizeMode" ), QStringLiteral( "0" ) ).toInt() ) );
+  mSettings.setSegmentSizeMode( static_cast<Qgis::ScaleBarSegmentSizeMode>( itemElem.attribute( QStringLiteral( "segmentSizeMode" ), QStringLiteral( "0" ) ).toInt() ) );
   mSettings.setMinimumBarWidth( itemElem.attribute( QStringLiteral( "minBarWidth" ), QStringLiteral( "50" ) ).toDouble() );
   mSettings.setMaximumBarWidth( itemElem.attribute( QStringLiteral( "maxBarWidth" ), QStringLiteral( "150" ) ).toDouble() );
   mSegmentMillimeters = itemElem.attribute( QStringLiteral( "segmentMillimeters" ), QStringLiteral( "0.0" ) ).toDouble();
@@ -1214,7 +1212,7 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   if ( !lineSymbolElem.isNull() )
   {
     const QDomElement symbolElem = lineSymbolElem.firstChildElement( QStringLiteral( "symbol" ) );
-    std::unique_ptr< QgsLineSymbol > lineSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem, context ) );
+    std::unique_ptr<QgsLineSymbol> lineSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem, context ) );
     if ( lineSymbol )
     {
       mSettings.setLineSymbol( lineSymbol.release() );
@@ -1225,7 +1223,7 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   if ( !divisionSymbolElem.isNull() )
   {
     const QDomElement symbolElem = divisionSymbolElem.firstChildElement( QStringLiteral( "symbol" ) );
-    std::unique_ptr< QgsLineSymbol > lineSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem, context ) );
+    std::unique_ptr<QgsLineSymbol> lineSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem, context ) );
     if ( lineSymbol )
     {
       mSettings.setDivisionLineSymbol( lineSymbol.release() );
@@ -1239,7 +1237,7 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   if ( !subdivisionSymbolElem.isNull() )
   {
     const QDomElement symbolElem = subdivisionSymbolElem.firstChildElement( QStringLiteral( "symbol" ) );
-    std::unique_ptr< QgsLineSymbol > lineSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem, context ) );
+    std::unique_ptr<QgsLineSymbol> lineSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( symbolElem, context ) );
     if ( lineSymbol )
     {
       mSettings.setSubdivisionLineSymbol( lineSymbol.release() );
@@ -1253,8 +1251,8 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   if ( !foundLineSymbol )
   {
     // old project compatibility
-    std::unique_ptr< QgsLineSymbol > lineSymbol = std::make_unique< QgsLineSymbol >();
-    std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >();
+    std::unique_ptr<QgsLineSymbol> lineSymbol = std::make_unique<QgsLineSymbol>();
+    std::unique_ptr<QgsSimpleLineSymbolLayer> lineSymbolLayer = std::make_unique<QgsSimpleLineSymbolLayer>();
     lineSymbolLayer->setWidth( itemElem.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "0.3" ) ).toDouble() );
     lineSymbolLayer->setWidthUnit( Qgis::RenderUnit::Millimeters );
     lineSymbolLayer->setPenJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( itemElem.attribute( QStringLiteral( "lineJoinStyle" ), QStringLiteral( "miter" ) ) ) );
@@ -1336,7 +1334,7 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   if ( !fillSymbol1Elem.isNull() )
   {
     const QDomElement symbolElem = fillSymbol1Elem.firstChildElement( QStringLiteral( "symbol" ) );
-    std::unique_ptr< QgsFillSymbol > fillSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context ) );
+    std::unique_ptr<QgsFillSymbol> fillSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context ) );
     if ( fillSymbol )
     {
       mSettings.setFillSymbol( fillSymbol.release() );
@@ -1346,8 +1344,8 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   if ( !foundFillSymbol1 )
   {
     // old project compatibility
-    std::unique_ptr< QgsFillSymbol > fillSymbol = std::make_unique< QgsFillSymbol >();
-    std::unique_ptr< QgsSimpleFillSymbolLayer > fillSymbolLayer = std::make_unique< QgsSimpleFillSymbolLayer >();
+    std::unique_ptr<QgsFillSymbol> fillSymbol = std::make_unique<QgsFillSymbol>();
+    std::unique_ptr<QgsSimpleFillSymbolLayer> fillSymbolLayer = std::make_unique<QgsSimpleFillSymbolLayer>();
     fillSymbolLayer->setStrokeStyle( Qt::NoPen );
 
     //fill color
@@ -1387,7 +1385,7 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   if ( !fillSymbol2Elem.isNull() )
   {
     const QDomElement symbolElem = fillSymbol2Elem.firstChildElement( QStringLiteral( "symbol" ) );
-    std::unique_ptr< QgsFillSymbol > fillSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context ) );
+    std::unique_ptr<QgsFillSymbol> fillSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context ) );
     if ( fillSymbol )
     {
       mSettings.setAlternateFillSymbol( fillSymbol.release() );
@@ -1397,8 +1395,8 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   if ( !foundFillSymbol2 )
   {
     // old project compatibility
-    std::unique_ptr< QgsFillSymbol > fillSymbol = std::make_unique< QgsFillSymbol >();
-    std::unique_ptr< QgsSimpleFillSymbolLayer > fillSymbolLayer = std::make_unique< QgsSimpleFillSymbolLayer >();
+    std::unique_ptr<QgsFillSymbol> fillSymbol = std::make_unique<QgsFillSymbol>();
+    std::unique_ptr<QgsSimpleFillSymbolLayer> fillSymbolLayer = std::make_unique<QgsSimpleFillSymbolLayer>();
     fillSymbolLayer->setStrokeStyle( Qt::NoPen );
 
     //fill color 2
@@ -1432,7 +1430,6 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
 
     fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
     mSettings.setAlternateFillSymbol( fillSymbol.release() );
-
   }
 
   //font color
@@ -1491,10 +1488,10 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
     mSettings.setUnits( QgsUnitTypes::decodeDistanceUnit( itemElem.attribute( QStringLiteral( "unitType" ) ) ) );
   }
 
-  mSettings.setLabelVerticalPlacement( static_cast< Qgis::ScaleBarDistanceLabelVerticalPlacement >( itemElem.attribute( QStringLiteral( "labelVerticalPlacement" ), QStringLiteral( "0" ) ).toInt() ) );
-  mSettings.setLabelHorizontalPlacement( static_cast< Qgis::ScaleBarDistanceLabelHorizontalPlacement >( itemElem.attribute( QStringLiteral( "labelHorizontalPlacement" ), QStringLiteral( "0" ) ).toInt() ) );
+  mSettings.setLabelVerticalPlacement( static_cast<Qgis::ScaleBarDistanceLabelVerticalPlacement>( itemElem.attribute( QStringLiteral( "labelVerticalPlacement" ), QStringLiteral( "0" ) ).toInt() ) );
+  mSettings.setLabelHorizontalPlacement( static_cast<Qgis::ScaleBarDistanceLabelHorizontalPlacement>( itemElem.attribute( QStringLiteral( "labelHorizontalPlacement" ), QStringLiteral( "0" ) ).toInt() ) );
 
-  mSettings.setAlignment( static_cast< Qgis::ScaleBarAlignment >( itemElem.attribute( QStringLiteral( "alignment" ), QStringLiteral( "0" ) ).toInt() ) );
+  mSettings.setAlignment( static_cast<Qgis::ScaleBarAlignment>( itemElem.attribute( QStringLiteral( "alignment" ), QStringLiteral( "0" ) ).toInt() ) );
 
   //map
   disconnectCurrentMap();
@@ -1509,7 +1506,7 @@ void QgsLayoutItemScaleBar::finalizeRestoreFromXml()
   if ( mLayout && !mMapUuid.isEmpty() )
   {
     disconnectCurrentMap();
-    mMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mMapUuid, true ) );
+    mMap = qobject_cast<QgsLayoutItemMap *>( mLayout->itemByUuid( mMapUuid, true ) );
     if ( mMap )
     {
       connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemScaleBar::updateScale );

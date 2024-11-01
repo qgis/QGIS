@@ -48,7 +48,6 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     Q_OBJECT
 
   private:
-
     /**
      * This is a wrapper class around a cached QgsFeature, which
      * will inform the cache, when it has been deleted, so indexes can be
@@ -57,7 +56,6 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     class CORE_EXPORT QgsCachedFeature
     {
       public:
-
         /**
          * Will create a new cached feature.
          *
@@ -143,7 +141,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * \see setCacheSubsetOfAttributes()
      * \since QGIS 3.32
      */
-    QgsAttributeList cacheSubsetOfAttributes( ) const;
+    QgsAttributeList cacheSubsetOfAttributes() const;
 
     /**
      * If this is enabled, the subset of cached attributes will automatically be extended
@@ -305,24 +303,27 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      */
     int __len__() const;
     % MethodCode
-    sipRes = sipCpp->featureCount();
+        sipRes
+      = sipCpp->featureCount();
     % End
 
-    //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
-    int __bool__() const;
+      //! Ensures that bool(obj) returns TRUE (otherwise __len__() would be used)
+      int
+      __bool__() const;
     % MethodCode
-    sipRes = true;
+        sipRes
+      = true;
     % End
 #endif
 
-    /**
+      /**
      * Returns the number of features contained in the source, or -1
      * if the feature count is unknown.
      */
-    long long featureCount() const;
+      long long
+      featureCount() const;
 
   protected:
-
     /**
      * \brief
      * Gets called, whenever the full list of feature ids for a certain request is known.
@@ -414,7 +415,6 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     void invalidate();
 
   private:
-
     void connectJoinedLayers() const;
 
     inline void cacheFeature( QgsFeature &feat, bool allAttributesFetched )
@@ -429,13 +429,13 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     }
 
     QgsVectorLayer *mLayer = nullptr;
-    QCache< QgsFeatureId, QgsCachedFeature > mCache;
+    QCache<QgsFeatureId, QgsCachedFeature> mCache;
 
     // we need two containers here. One is used for efficient tracking of the IDs which have been added to the cache, the other
     // is used to store the order of the incoming feature ids, so that we can correctly iterate through features in the original order.
     // the ordered list alone is far too slow to handle this -- searching for existing items in a list is magnitudes slower than the unordered_set
-    std::unordered_set< QgsFeatureId > mCacheUnorderedKeys;
-    std::deque< QgsFeatureId > mCacheOrderedKeys;
+    std::unordered_set<QgsFeatureId> mCacheUnorderedKeys;
+    std::deque<QgsFeatureId> mCacheOrderedKeys;
 
     bool mCacheGeometry = true;
     bool mFullCache = false;

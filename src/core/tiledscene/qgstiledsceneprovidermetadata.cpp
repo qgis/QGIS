@@ -38,10 +38,8 @@ QIcon QgsTiledSceneProviderMetadata::icon() const
 
 QList<QgsDataItemProvider *> QgsTiledSceneProviderMetadata::dataItemProviders() const
 {
-  return
-  {
-    new QgsTiledSceneDataItemProvider()
-  };
+  return {
+    new QgsTiledSceneDataItemProvider() };
 }
 
 QMap<QString, QgsAbstractProviderConnection *> QgsTiledSceneProviderMetadata::connections( bool cached )

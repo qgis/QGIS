@@ -20,7 +20,6 @@
 class QgsCanvasRefreshBlocker
 {
   public:
-
     QgsCanvasRefreshBlocker();
     QgsCanvasRefreshBlocker( const QgsCanvasRefreshBlocker &other ) = delete;
     QgsCanvasRefreshBlocker &operator=( const QgsCanvasRefreshBlocker &other ) = delete;
@@ -30,7 +29,6 @@ class QgsCanvasRefreshBlocker
     ~QgsCanvasRefreshBlocker();
 
   private:
-
     bool mReleased = false;
 };
 

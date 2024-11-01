@@ -31,11 +31,10 @@
  * \note Not available in Python bindings.
  * \since QGIS 3.12
  */
-template <typename T>
+template<typename T>
 class PalRtree : public RTree<T *, float, 2, float>
 {
   public:
-
     /**
      * Constructor for PalRtree. The \a maxBounds argument specifies the maximum bounding box
      * for all coordinates which will be stored in the index.
@@ -43,11 +42,10 @@ class PalRtree : public RTree<T *, float, 2, float>
     PalRtree( const QgsRectangle &maxBounds )
       : mXMin( maxBounds.xMinimum() )
       , mYMin( maxBounds.yMinimum() )
-      , mXRes( ( std::numeric_limits< float >::max() - 1 ) / ( maxBounds.xMaximum() - maxBounds.xMinimum() ) )
-      , mYRes( ( std::numeric_limits< float >::max() - 1 ) / ( maxBounds.yMaximum() - maxBounds.yMinimum() ) )
+      , mXRes( ( std::numeric_limits<float>::max() - 1 ) / ( maxBounds.xMaximum() - maxBounds.xMinimum() ) )
+      , mYRes( ( std::numeric_limits<float>::max() - 1 ) / ( maxBounds.yMaximum() - maxBounds.yMinimum() ) )
       , mMaxBounds( maxBounds )
     {
-
     }
 
     /**
@@ -58,15 +56,11 @@ class PalRtree : public RTree<T *, float, 2, float>
      */
     void insert( T *data, const QgsRectangle &bounds )
     {
-      std::array< float, 4 > scaledBounds = scaleBounds( bounds );
+      std::array<float, 4> scaledBounds = scaleBounds( bounds );
       this->Insert(
-      {
-        scaledBounds[0], scaledBounds[ 1]
-      },
-      {
-        scaledBounds[2], scaledBounds[3]
-      },
-      data );
+        { scaledBounds[0], scaledBounds[1] },
+        { scaledBounds[2], scaledBounds[3] },
+        data );
     }
 
     /**
@@ -77,15 +71,11 @@ class PalRtree : public RTree<T *, float, 2, float>
      */
     void remove( T *data, const QgsRectangle &bounds )
     {
-      std::array< float, 4 > scaledBounds = scaleBounds( bounds );
+      std::array<float, 4> scaledBounds = scaleBounds( bounds );
       this->Remove(
-      {
-        scaledBounds[0], scaledBounds[ 1]
-      },
-      {
-        scaledBounds[2], scaledBounds[3]
-      },
-      data );
+        { scaledBounds[0], scaledBounds[1] },
+        { scaledBounds[2], scaledBounds[3] },
+        data );
     }
 
     /**
@@ -93,22 +83,17 @@ class PalRtree : public RTree<T *, float, 2, float>
      *
      * The \a callback function will be called once for each matching data object encountered.
      */
-    bool intersects( const QgsRectangle &bounds, const std::function< bool( T *data )> &callback ) const
+    bool intersects( const QgsRectangle &bounds, const std::function<bool( T *data )> &callback ) const
     {
-      std::array< float, 4 > scaledBounds = scaleBounds( bounds );
+      std::array<float, 4> scaledBounds = scaleBounds( bounds );
       this->Search(
-      {
-        scaledBounds[0], scaledBounds[ 1]
-      },
-      {
-        scaledBounds[2], scaledBounds[3]
-      },
-      callback );
+        { scaledBounds[0], scaledBounds[1] },
+        { scaledBounds[2], scaledBounds[3] },
+        callback );
       return true;
     }
 
   private:
-
     // Coordinates are scaled inside the index so that they cover the maximum range for float values
     double mXMin = 0;
     double mYMin = 0;
@@ -117,15 +102,12 @@ class PalRtree : public RTree<T *, float, 2, float>
     const QgsRectangle mMaxBounds;
     std::array<float, 4> scaleBounds( const QgsRectangle &bounds ) const
     {
-      return
-      {
-        static_cast< float >( ( std::max( bounds.xMinimum(), mMaxBounds.xMinimum() ) - mXMin ) / mXRes ),
-        static_cast< float >( ( std::max( bounds.yMinimum(), mMaxBounds.yMinimum() ) - mYMin ) / mYRes ),
-        static_cast< float >( ( std::min( bounds.xMaximum(), mMaxBounds.xMaximum() ) - mXMin ) / mXRes ),
-        static_cast< float >( ( std::min( bounds.yMaximum(), mMaxBounds.yMaximum() ) - mYMin ) / mYRes )
-      };
+      return {
+        static_cast<float>( ( std::max( bounds.xMinimum(), mMaxBounds.xMinimum() ) - mXMin ) / mXRes ),
+        static_cast<float>( ( std::max( bounds.yMinimum(), mMaxBounds.yMinimum() ) - mYMin ) / mYRes ),
+        static_cast<float>( ( std::min( bounds.xMaximum(), mMaxBounds.xMaximum() ) - mXMin ) / mXRes ),
+        static_cast<float>( ( std::min( bounds.yMaximum(), mMaxBounds.yMaximum() ) - mYMin ) / mYRes ) };
     }
 };
 
 #endif
-

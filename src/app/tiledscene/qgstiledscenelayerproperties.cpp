@@ -190,4 +190,3 @@ void QgsTiledSceneLayerProperties::crsChanged( const QgsCoordinateReferenceSyste
   mLayer->setCrs( crs );
   mMetadataWidget->crsChanged();
 }
-

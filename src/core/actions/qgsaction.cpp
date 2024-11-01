@@ -40,8 +40,8 @@
 
 bool QgsAction::runable() const
 {
-// clang analyzer is not happy because of the multiple duplicate return branches, but this is ok :)
-// NOLINTBEGIN(bugprone-branch-clone)
+  // clang analyzer is not happy because of the multiple duplicate return branches, but this is ok :)
+  // NOLINTBEGIN(bugprone-branch-clone)
   switch ( mType )
   {
     case Qgis::AttributeActionType::Generic:
@@ -51,13 +51,13 @@ bool QgsAction::runable() const
     case Qgis::AttributeActionType::SubmitUrlMultipart:
       return true;
 
-#if defined(Q_OS_WIN)
+#if defined( Q_OS_WIN )
     case Qgis::AttributeActionType::Windows:
       return true;
     case Qgis::AttributeActionType::Mac:
     case Qgis::AttributeActionType::Unix:
       return false;
-#elif defined(Q_OS_MAC)
+#elif defined( Q_OS_MAC )
     case Qgis::AttributeActionType::Mac:
       return true;
     case Qgis::AttributeActionType::Windows:
@@ -87,18 +87,17 @@ void QgsAction::run( QgsVectorLayer *layer, const QgsFeature &feature, const Qgs
 
 void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
 {
-
   // Show busy in case the form subit is slow
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QUrl url{ expandedAction };
+  QUrl url { expandedAction };
 
   // Encode '+' (fully encoded doesn't encode it)
   const QString payload { url.query( QUrl::ComponentFormattingOption::FullyEncoded ).replace( QChar( '+' ), QStringLiteral( "%2B" ) ) };
 
   // Remove query string from URL
-  const QUrlQuery queryString { url.query( ) };
-  url.setQuery( QString( ) );
+  const QUrlQuery queryString { url.query() };
+  url.setQuery( QString() );
 
   QNetworkRequest req { url };
 
@@ -134,7 +133,7 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
       QHttpPart part;
       part.setHeader( QNetworkRequest::ContentDispositionHeader,
                       QStringLiteral( "form-data; name=\"%1\"" )
-                      .arg( QString( queryItem.first ).replace( '"', QLatin1String( R"(\")" ) ) ) );
+                        .arg( QString( queryItem.first ).replace( '"', QLatin1String( R"(\")" ) ) ) );
       part.setBody( queryItem.second.toUtf8() );
       multiPart->append( part );
     }
@@ -142,20 +141,16 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
     multiPart->setParent( reply );
   }
 
-  QObject::connect( reply, &QNetworkReply::finished, reply, [ reply ]
-  {
+  QObject::connect( reply, &QNetworkReply::finished, reply, [reply] {
     if ( reply->error() == QNetworkReply::NoError )
     {
-
       if ( QgsVariantUtils::isNull( reply->attribute( QNetworkRequest::RedirectionTargetAttribute ) ) )
       {
-
         const QByteArray replyData = reply->readAll();
 
         QString filename { "download.bin" };
-        if ( const std::string header = reply->header( QNetworkRequest::KnownHeaders::ContentDispositionHeader ).toString().toStdString(); ! header.empty() )
+        if ( const std::string header = reply->header( QNetworkRequest::KnownHeaders::ContentDispositionHeader ).toString().toStdString(); !header.empty() )
         {
-
           // Extract filename dealing with ill formed headers with unquoted file names
 
           std::string ascii;
@@ -164,7 +159,6 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
 
           if ( size_t pos = header.find( q1 ); pos != std::string::npos )
           {
-
             // Deal with ill formed headers with unquoted file names
             if ( header.find( R"(filename=")" ) != std::string::npos )
             {
@@ -216,7 +210,7 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
           // Prefer ascii over utf8
           if ( ascii.empty() )
           {
-            if ( ! utf8.empty( ) )
+            if ( !utf8.empty() )
             {
               filename = QString::fromStdString( utf8 );
             }
@@ -245,8 +239,8 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
         QTemporaryDir tempDir;
         tempDir.setAutoRemove( false );
         tempDir.path();
-        const QString tempFilePath{ tempDir.path() + QDir::separator() + filename };
-        QFile tempFile{ tempFilePath };
+        const QString tempFilePath { tempDir.path() + QDir::separator() + filename };
+        QFile tempFile { tempFilePath };
         tempFile.open( QIODevice::WriteOnly );
         tempFile.write( replyData );
         tempFile.close();
@@ -262,9 +256,8 @@ void QgsAction::handleFormSubmitAction( const QString &expandedAction ) const
       QgsMessageLog::logMessage( reply->errorString(), QStringLiteral( "Form Submit Action" ), Qgis::MessageLevel::Critical );
     }
     reply->deleteLater();
-    QApplication::restoreOverrideCursor( );
+    QApplication::restoreOverrideCursor();
   } );
-
 }
 
 void QgsAction::setCommand( const QString &newCommand )
@@ -334,9 +327,9 @@ void QgsAction::readXml( const QDomNode &actionNode )
   if ( actionScopeNodes.isEmpty() )
   {
     mActionScopes
-        << QStringLiteral( "Canvas" )
-        << QStringLiteral( "Field" )
-        << QStringLiteral( "Feature" );
+      << QStringLiteral( "Canvas" )
+      << QStringLiteral( "Field" )
+      << QStringLiteral( "Feature" );
   }
   else
   {
@@ -347,7 +340,7 @@ void QgsAction::readXml( const QDomNode &actionNode )
     }
   }
 
-  mType = static_cast< Qgis::AttributeActionType >( actionElement.attributeNode( QStringLiteral( "type" ) ).value().toInt() );
+  mType = static_cast<Qgis::AttributeActionType>( actionElement.attributeNode( QStringLiteral( "type" ) ).value().toInt() );
   mDescription = actionElement.attributeNode( QStringLiteral( "name" ) ).value();
   mCommand = actionElement.attributeNode( QStringLiteral( "action" ) ).value();
   mIcon = actionElement.attributeNode( QStringLiteral( "icon" ) ).value();
@@ -363,7 +356,7 @@ void QgsAction::readXml( const QDomNode &actionNode )
 void QgsAction::writeXml( QDomNode &actionsNode ) const
 {
   QDomElement actionSetting = actionsNode.ownerDocument().createElement( QStringLiteral( "actionsetting" ) );
-  actionSetting.setAttribute( QStringLiteral( "type" ), static_cast< int >( mType ) );
+  actionSetting.setAttribute( QStringLiteral( "type" ), static_cast<int>( mType ) );
   actionSetting.setAttribute( QStringLiteral( "name" ), mDescription );
   actionSetting.setAttribute( QStringLiteral( "shortTitle" ), mShortTitle );
   actionSetting.setAttribute( QStringLiteral( "icon" ), mIcon );
@@ -450,5 +443,6 @@ QString QgsAction::html() const
    <b>Action:</b><br>
    <pre>%6</pre>
 </p>
-  )html" ).arg( mDescription, mShortTitle, typeText, actionScopes().values().join( QLatin1String( ", " ) ), mCommand )};
+  )html" )
+             .arg( mDescription, mShortTitle, typeText, actionScopes().values().join( QLatin1String( ", " ) ), mCommand ) };
 };

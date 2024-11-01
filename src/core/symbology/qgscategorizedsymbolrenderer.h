@@ -35,7 +35,6 @@ class QgsColorRamp;
 class CORE_EXPORT QgsRendererCategory
 {
   public:
-
     QgsRendererCategory() = default;
 
     /**
@@ -136,18 +135,16 @@ class CORE_EXPORT QgsRendererCategory
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    const QString str = !sipCpp->value().isValid()
-                        ? QStringLiteral( "<QgsRendererCategory>" )
-                        : sipCpp->label().isEmpty()
-                        ? QStringLiteral( "<QgsRendererCategory: %1>" ).arg( sipCpp->value().toString() )
-                        : QStringLiteral( "<QgsRendererCategory: %1 (%2)>" ).arg( sipCpp->value().toString(), sipCpp->label() );
+    % MethodCode const QString str = !sipCpp->value().isValid()
+                                       ? QStringLiteral( "<QgsRendererCategory>" )
+                                     : sipCpp->label().isEmpty()
+                                       ? QStringLiteral( "<QgsRendererCategory: %1>" ).arg( sipCpp->value().toString() )
+                                       : QStringLiteral( "<QgsRendererCategory: %1 (%2)>" ).arg( sipCpp->value().toString(), sipCpp->label() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-  protected:
-    QVariant mValue;
+      protected : QVariant mValue;
     std::unique_ptr<QgsSymbol> mSymbol;
     QString mLabel;
     bool mRender = true;
@@ -163,7 +160,6 @@ typedef QList<QgsRendererCategory> QgsCategoryList;
 class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 {
   public:
-
     /**
      * Constructor for QgsCategorizedSymbolRenderer.
      *
@@ -325,7 +321,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     QgsLegendSymbolList legendSymbolItems() const override;
-    QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QSet<QString> legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     QString legendKeyToExpression( const QString &key, QgsVectorLayer *layer, bool &ok ) const override;
 
     /**
@@ -517,7 +513,6 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     //! Returns list of legend symbol items from individual categories
     QgsLegendSymbolList baseLegendSymbolItems() const;
-
 };
 
 #endif // QGSCATEGORIZEDSYMBOLRENDERER_H

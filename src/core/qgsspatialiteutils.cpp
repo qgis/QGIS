@@ -32,7 +32,7 @@
 #include <QThread>
 static int trace_callback( unsigned, void *ctx, void *p, void * )
 {
-  sqlite3_stmt *stmt = ( sqlite3_stmt * )p;
+  sqlite3_stmt *stmt = ( sqlite3_stmt * ) p;
   char *sql = sqlite3_expanded_sql( stmt );
   qDebug() << "SPATIALITE" << QThread::currentThreadId() << ( sqlite3 * ) ctx << sql;
   sqlite3_free( sql );
@@ -50,7 +50,7 @@ int spatialite_database_unique_ptr::open( const QString &path )
 
   sqlite3 *database = nullptr;
   const int result = sqlite3_open( path.toUtf8(), &database );
-  std::unique_ptr< sqlite3, QgsSpatialiteCloser>::reset( database );
+  std::unique_ptr<sqlite3, QgsSpatialiteCloser>::reset( database );
 
 #ifdef HAVE_SPATIALITE
   if ( result == SQLITE_OK )
@@ -62,7 +62,7 @@ int spatialite_database_unique_ptr::open( const QString &path )
 
 void spatialite_database_unique_ptr::reset()
 {
-  std::unique_ptr< sqlite3, QgsSpatialiteCloser>::reset();
+  std::unique_ptr<sqlite3, QgsSpatialiteCloser>::reset();
 }
 
 int spatialite_database_unique_ptr::open_v2( const QString &path, int flags, const char *zVfs )
@@ -74,7 +74,7 @@ int spatialite_database_unique_ptr::open_v2( const QString &path, int flags, con
 
   sqlite3 *database = nullptr;
   const int result = sqlite3_open_v2( path.toUtf8(), &database, flags, zVfs );
-  std::unique_ptr< sqlite3, QgsSpatialiteCloser>::reset( database );
+  std::unique_ptr<sqlite3, QgsSpatialiteCloser>::reset( database );
 
 #ifdef HAVE_SPATIALITE
   if ( result == SQLITE_OK )
@@ -87,8 +87,7 @@ int spatialite_database_unique_ptr::open_v2( const QString &path, int flags, con
     database,
     SQLITE_TRACE_STMT,
     trace_callback,
-    database
-  );
+    database );
 #endif
 
   return result;

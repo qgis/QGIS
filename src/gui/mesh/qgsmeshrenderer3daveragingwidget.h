@@ -40,7 +40,6 @@ class QgsMeshRenderer3DAveragingWidget : public QWidget, private Ui::QgsMeshRend
     Q_OBJECT
 
   public:
-
     /**
      * A widget to hold the renderer Vector settings for a mesh layer.
      * \param parent Parent object

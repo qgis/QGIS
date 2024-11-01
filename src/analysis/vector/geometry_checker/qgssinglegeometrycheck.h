@@ -39,7 +39,6 @@ class QgsSingleGeometryCheck;
 class ANALYSIS_EXPORT QgsSingleGeometryCheckError
 {
   public:
-
     /**
      * Creates a new single geometry check error.
      */
@@ -115,7 +114,6 @@ class ANALYSIS_EXPORT QgsSingleGeometryCheckError
 class ANALYSIS_EXPORT QgsGeometryCheckErrorSingle : public QgsGeometryCheckError
 {
   public:
-
     /**
      * Creates a new error for a QgsSingleGeometryCheck.
      */
@@ -149,7 +147,6 @@ class ANALYSIS_EXPORT QgsGeometryCheckErrorSingle : public QgsGeometryCheckError
 class ANALYSIS_EXPORT QgsSingleGeometryCheck : public QgsGeometryCheck
 {
   public:
-
     /**
      * Creates a new single geometry check.
      */
@@ -175,14 +172,12 @@ class ANALYSIS_EXPORT QgsSingleGeometryCheck : public QgsGeometryCheck
     virtual QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const = 0;
 
   private:
-
     /**
      * Converts a QgsSingleGeometryCheckError to a QgsGeometryCheckErrorSingle.
      *
      * \since QGIS 3.4
      */
     QgsGeometryCheckErrorSingle *convertToGeometryCheckError( QgsSingleGeometryCheckError *singleGeometryCheckError, const QgsGeometryCheckerUtils::LayerFeature &layerFeature ) const;
-
 };
 
 #endif // QGSSINGLEGEOMETRYCHECK_H

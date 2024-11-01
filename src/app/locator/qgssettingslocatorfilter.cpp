@@ -33,7 +33,7 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
 {
   QMap<QString, QMap<QString, QString>> matchingSettingsPagesMap;
 
-  const QMap<QString, QString > optionsPagesMap = QgisApp::instance()->optionsPagesMap();
+  const QMap<QString, QString> optionsPagesMap = QgisApp::instance()->optionsPagesMap();
   for ( auto optionsPagesIterator = optionsPagesMap.constBegin(); optionsPagesIterator != optionsPagesMap.constEnd(); ++optionsPagesIterator )
   {
     const QString title = optionsPagesIterator.key();
@@ -76,7 +76,7 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
   }
 }
 
-QMap<QString, QString> QgsSettingsLocatorFilter::settingsPage( const QString &type,  const QString &page )
+QMap<QString, QString> QgsSettingsLocatorFilter::settingsPage( const QString &type, const QString &page )
 {
   QMap<QString, QString> returnPage;
   returnPage.insert( QStringLiteral( "type" ), type );
@@ -86,7 +86,6 @@ QMap<QString, QString> QgsSettingsLocatorFilter::settingsPage( const QString &ty
 
 void QgsSettingsLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
-
   const QMap<QString, QString> settingsPage = qvariant_cast<QMap<QString, QString>>( result.userData() );
   const QString type = settingsPage.value( QStringLiteral( "type" ) );
   const QString page = settingsPage.value( QStringLiteral( "page" ) );

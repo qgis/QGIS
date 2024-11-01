@@ -31,7 +31,6 @@ email                : hugo dot mercier at oslandia dot com
 class CORE_EXPORT QgsVirtualLayerDefinition
 {
   public:
-
     /**
      * \ingroup core
      * \brief A SourceLayer is either a reference to a live layer in the registry

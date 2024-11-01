@@ -34,7 +34,6 @@
 #include "qgssettingsentryimpl.h"
 
 
-
 QgsLockedFeature::QgsLockedFeature( QgsFeatureId featureId,
                                     QgsVectorLayer *layer,
                                     QgsMapCanvas *canvas )
@@ -231,7 +230,6 @@ QgsGeometry *QgsLockedFeature::geometry()
 
 void QgsLockedFeature::createVertexMap()
 {
-
   if ( !mGeometry )
   {
     QgsDebugMsgLevel( QStringLiteral( "Loading feature" ), 2 );

@@ -32,7 +32,7 @@ class QgsVectorLayer;
  * \ingroup gui
  * \class QgsAttributeTypeLoadDialog
  */
-class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttributeLoadValues
+class GUI_EXPORT QgsAttributeTypeLoadDialog : public QDialog, private Ui::QgsAttributeLoadValues
 {
     Q_OBJECT
 
@@ -87,7 +87,6 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
     void previewButtonPushed();
 
   private:
-
     /**
      * Internal function to fill the list of layers
      */

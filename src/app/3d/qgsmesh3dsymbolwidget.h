@@ -32,7 +32,7 @@ class QgsMesh3DSymbolWidget : public QWidget, private Ui::QgsMesh3dPropsWidget
   public:
     explicit QgsMesh3DSymbolWidget( QgsMeshLayer *meshLayer, QWidget *parent = nullptr );
 
-    std::unique_ptr< QgsMesh3DSymbol > symbol() const;
+    std::unique_ptr<QgsMesh3DSymbol> symbol() const;
 
     void setLayer( QgsMeshLayer *meshLayer, bool updateSymbol = true );
     QgsMeshLayer *meshLayer() const;
@@ -60,8 +60,7 @@ class QgsMesh3DSymbolWidget : public QWidget, private Ui::QgsMesh3dPropsWidget
     void setColorRampMinMax( double min, double max );
     QgsMeshLayer *mLayer = nullptr;
     QgsMeshDatasetGroupListModel *mDatasetGroupListModel = nullptr;
-    std::unique_ptr< QgsMesh3DSymbol > mSymbol;
-
+    std::unique_ptr<QgsMesh3DSymbol> mSymbol;
 };
 
 #endif // QGSMESH3DSYMBOLWIDGET_H

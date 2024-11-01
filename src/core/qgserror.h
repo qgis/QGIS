@@ -23,7 +23,7 @@
 #include "qgis_core.h"
 
 // Macro to create Error message including info about where it was created.
-#define QGS_ERROR_MESSAGE(message, tag) QgsErrorMessage(QString(message),QString(tag), QString(__FILE__), QString(__FUNCTION__), __LINE__)
+#define QGS_ERROR_MESSAGE( message, tag ) QgsErrorMessage( QString( message ), QString( tag ), QString( __FILE__ ), QString( __FUNCTION__ ), __LINE__ )
 
 /**
  * \ingroup core
@@ -80,7 +80,6 @@ class CORE_EXPORT QgsErrorMessage
 class CORE_EXPORT QgsError
 {
   public:
-
     QgsError() = default;
 
     /**
@@ -135,14 +134,16 @@ class CORE_EXPORT QgsError
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsError: %1>" ).arg( sipCpp->message( QgsErrorMessage::Text ) );
+        QString str
+      = QStringLiteral( "<QgsError: %1>" ).arg( sipCpp->message( QgsErrorMessage::Text ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-  private:
-    //! List of messages
-    QList<QgsErrorMessage> mMessageList;
+      private :
+      //! List of messages
+      QList<QgsErrorMessage>
+        mMessageList;
 };
 
 #endif

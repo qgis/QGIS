@@ -154,7 +154,7 @@ void QgsAppScreenShots::saveScreenshot( QPixmap &pixmap, const QString &name, co
   }
 
   const QDir directory( topDirectory.absolutePath() + "/" + folder );
-  const QString fileName =  directory.absolutePath() + "/" + name + ".png";
+  const QString fileName = directory.absolutePath() + "/" + name + ".png";
   if ( !directory.exists() )
   {
     if ( !topDirectory.mkpath( folder ) )
@@ -321,9 +321,9 @@ void QgsAppScreenShots::takeGlobalOptions()
   // advanced settings
   dlg->mOptionsStackedWidget->setCurrentIndex( dlg->mOptionsStackedWidget->count() - 1 );
   QCoreApplication::processEvents();
-  Q_ASSERT( dlg->mOptTreeView->currentIndex().data( Qt::DecorationRole ).value< QIcon >().pixmap( 24, 24 ).toImage()
+  Q_ASSERT( dlg->mOptTreeView->currentIndex().data( Qt::DecorationRole ).value<QIcon>().pixmap( 24, 24 ).toImage()
             == QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ).pixmap( 24, 24 ).toImage() );
-  QWidget *editor = dlg->findChild< QWidget * >( QStringLiteral( "mAdvancedSettingsEditor" ) );
+  QWidget *editor = dlg->findChild<QWidget *>( QStringLiteral( "mAdvancedSettingsEditor" ) );
   if ( editor )
     editor->show();
   QCoreApplication::processEvents();
