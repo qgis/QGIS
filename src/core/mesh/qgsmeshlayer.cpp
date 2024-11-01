@@ -1709,6 +1709,12 @@ bool QgsMeshLayer::minimumMaximumActiveScalarDataset( const QgsRectangle &extent
 
   QVector<double> scalarDatasetValues;
   const QgsMeshDatasetGroupMetadata metadata = datasetGroupMetadata( datasetIndex.group() );
+
+  if ( !metadata.isScalar() )
+  {
+    return false;
+  }
+
   QgsMeshDatasetGroupMetadata::DataType scalarDataType = QgsMeshLayerUtils::datasetValuesType( metadata.dataType() );
 
   if ( !datasetIndex.isValid() )
