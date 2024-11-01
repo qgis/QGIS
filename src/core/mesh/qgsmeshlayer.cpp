@@ -1702,9 +1702,6 @@ bool QgsMeshLayer::minimumMaximumActiveScalarDataset( const QgsRectangle &extent
   if ( extent.isNull() || !this->extent().intersects( extent ) )
     return false;
 
-  min = std::numeric_limits<double>::max();
-  max = -std::numeric_limits<double>::max();
-
   QgsTriangularMesh *tMesh = triangularMesh();
 
   QVector<double> scalarDatasetValues;
@@ -1746,6 +1743,9 @@ bool QgsMeshLayer::minimumMaximumActiveScalarDataset( const QgsRectangle &extent
   {
     return false;
   }
+
+  min = std::numeric_limits<double>::max();
+  max = -std::numeric_limits<double>::max();
 
   double value;
 
