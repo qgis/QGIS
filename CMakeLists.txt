@@ -824,10 +824,14 @@ if(MSVC)
   add_definitions(-DNOMINMAX)
 endif()
 
-# Prevent build when Qt api deprecated before this Qt version is used:
-add_definitions(-DQT_DEPRECATED_WARNINGS)
-# Unfortunately Qwt uses deprecated QString::null in headers, preventing this being raised above 5.8
-add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
+if(BUILD_WITH_QT6)
+  # Qt deprecated warnings are too noisy for now -- we have a LOT of QVariant::Type usage
+  # in order to maintain Qt5 compatibility
+  add_definitions(-DQT_NO_DEPRECATED_WARNINGS)
+else()
+  # Unfortunately Qwt uses deprecated QString::null in headers, preventing this being raised above 5.8
+  add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
+endif()
 
 # For fast string concatenation
 add_definitions(-DQT_USE_QSTRINGBUILDER)
