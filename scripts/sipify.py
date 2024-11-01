@@ -1130,8 +1130,13 @@ def fix_annotations(line):
         r'SIP_PYNAME\(\s*(\w+)\s*\)': r'/PyName=\1/',
         r'SIP_TYPEHINT\(\s*([\w\.\s,\[\]]+?)\s*\)': r'/TypeHint="\1"/',
         r'SIP_VIRTUALERRORHANDLER\(\s*(\w+)\s*\)': r'/VirtualErrorHandler=\1/',
-        r'SIP_THROW\(\s*([\w\s,]+?)\s*\)': r'throw( \1 )',
     }
+
+    if not CONTEXT.is_qt6:
+        replacements[r'SIP_THROW\(\s*([\w\s,]+?)\s*\)'] = r'throw( \1 )'
+    else:
+        # these have no effect (and aren't required) on sip >= 6
+        replacements[r'SIP_THROW\(\s*([\w\s,]+?)\s*\)'] = ''
 
     for _pattern, replacement in replacements.items():
         line = re.sub(_pattern, replacement, line)

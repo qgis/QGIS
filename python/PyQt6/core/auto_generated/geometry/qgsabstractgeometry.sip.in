@@ -346,7 +346,7 @@ Returns a KML representation of the geometry.
 
 
 
-    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) throw( QgsCsException ) = 0;
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false )  = 0;
 %Docstring
 Transforms the geometry using a coordinate transform
 

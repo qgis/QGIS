@@ -127,7 +127,7 @@ Iterators should call this method before returning features to ensure that any
 %End
 
 
-    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const throw( QgsCsException );
+    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const;
 %Docstring
 Returns a rectangle representing the original request's :py:func:`QgsFeatureRequest.filterRect()`.
 If ``transform`` is a valid coordinate transform, the return rectangle will represent
@@ -137,7 +137,7 @@ features to ensure that any :py:func:`QgsFeatureRequest.destinationCrs()` set on
 Will throw a :py:class:`QgsCsException` if the rect cannot be transformed from the destination CRS.
 %End
 
-    RequestToSourceCrsResult updateRequestToSourceCrs( QgsFeatureRequest &request, const QgsCoordinateTransform &transform ) const throw( QgsCsException );
+    RequestToSourceCrsResult updateRequestToSourceCrs( QgsFeatureRequest &request, const QgsCoordinateTransform &transform ) const;
 %Docstring
 Update a :py:class:`QgsFeatureRequest` so that spatial filters are
 transformed to the source's coordinate reference system.
