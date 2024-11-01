@@ -2814,6 +2814,12 @@ void QgsMapToolEditMeshFrame::addVertex(
       // either outside of terrain or the point cannot be transformed to terrainProvider CRS, use currentZValue
       if ( std::isnan( zValue ) )
       {
+        QgisApp::instance()->messageBar()->pushMessage(
+          tr( "Terrain Z Value" ),
+          tr( "Z Value from project terrain could not be obtained, setting default value %1." ).arg( mZValueWidget->getDefaultValue() ),
+          Qgis::MessageLevel::Warning,
+          3 );
+
         zValue = mZValueWidget->getDefaultValue();
       }
     }
