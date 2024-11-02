@@ -1664,6 +1664,11 @@ if(MSVC)
     ${CMAKE_BINARY_DIR}/src/gui/qgis_gui_autogen/mocs_compilation.cpp
     PROPERTIES COMPILE_FLAGS "/bigobj"
   )
+elseif(MINGW)
+  set_source_files_properties(
+    ${CMAKE_BINARY_DIR}/src/gui/qgis_gui_autogen/mocs_compilation.cpp
+    PROPERTIES COMPILE_FLAGS "-Wa,-mbig-obj"
+  )
 endif()
 
 #############################################################
