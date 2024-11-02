@@ -247,6 +247,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * If no prefix is specified, WKT definition is assumed.
      * \param definition A String containing a coordinate reference system definition.
+     *
+     * \note This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+     * Call invalidateCache() to clear the cache.
+     *
      * \see createFromString()
      */
     explicit QgsCoordinateReferenceSystem( const QString &definition );
@@ -287,6 +291,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
+     *
+     * \note This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+     * Call invalidateCache() to clear the cache.
+     *
      * \param ogcCrs OGR compliant CRS definition, e.g., "EPSG:4326"
      * \returns matching CRS, or an invalid CRS if string could not be matched
      * \see createFromOgcWmsCrs()
@@ -295,6 +303,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Creates a CRS from a given EPSG ID.
+     *
+     * \note This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+     * Call invalidateCache() to clear the cache.
+     *
      * \param epsg epsg CRS ID
      * \returns matching CRS, or an invalid CRS if string could not be matched
     */
@@ -302,6 +314,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Creates a CRS from a proj style formatted string.
+     *
+     * \note This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+     * Call invalidateCache() to clear the cache.
+     *
      * \returns matching CRS, or an invalid CRS if string could not be matched
      * \see createFromProj()
      * \deprecated QGIS 3.10. Use fromProj() instead.
@@ -319,6 +335,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Creates a CRS from a WKT spatial ref sys definition string.
+     *
+     * \note This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+     * Call invalidateCache() to clear the cache.
+     *
      * \param wkt WKT for the desired spatial reference system.
      * \returns matching CRS, or an invalid CRS if string could not be matched
      * \see createFromWkt()
@@ -327,6 +347,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Creates a CRS from a specified QGIS SRS ID.
+     *
+     * \note This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+     * Call invalidateCache() to clear the cache.
+     *
      * \param srsId internal QGIS SRS ID
      * \returns matching CRS, or an invalid CRS if ID could not be found
      * \see createFromSrsId()
@@ -371,7 +395,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * It also recognizes "QGIS", "USER", "CUSTOM" authorities, which all have the same meaning
      * and refer to QGIS internal CRS IDs.
      * \returns TRUE on success else FALSE
-     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
+     *
+     * \note This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+     * Call invalidateCache() to clear the cache.
+     *
      * \see fromOgcWmsCrs()
      */
     bool createFromOgcWmsCrs( const QString &crs );
@@ -396,7 +423,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \param wkt The WKT for the desired spatial reference system.
      * \returns TRUE on success else FALSE
      * \note Some members may be left blank if no match can be found in CRS database.
-     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
+     *
+     * \note This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+     * Call invalidateCache() to clear the cache.
+     *
      * \see fromWkt()
      */
     bool createFromWkt( const QString &wkt );
@@ -408,7 +438,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * user's local CRS database from home directory is used.
      * \param srsId The internal QGIS CRS ID for the desired spatial reference system.
      * \returns TRUE on success else FALSE
-     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
+     *
+     * \note This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+     * Call invalidateCache() to clear the cache.
+     *
      * \see fromSrsId()
      * \warning This method is highly discouraged, and CRS objects should instead be constructed
      * using auth:id codes or WKT strings
@@ -434,7 +467,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \param projString A Proj format string
      * \returns TRUE on success else FALSE
      * \note Some members may be left blank if no match can be found in CRS database.
-     * \note This method uses an internal cache. Call invalidateCache() to clear the cache.
+     *
+     * \note This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+     * Call invalidateCache() to clear the cache.
+     *
      * \see fromProj()
      * \deprecated QGIS 3.10. Use createFromProj() instead.
      */
@@ -463,7 +499,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \returns TRUE on success else FALSE
      * \note Some members may be left blank if no match can be found in CRS database.
-     * \note This method uses an internal cache. Call invalidateCache() to clear the cache.
+     * \note This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+     * Call invalidateCache() to clear the cache.
+     *
      * \see fromProj()
      * \since QGIS 3.10.3
      */
@@ -486,6 +524,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * If no prefix is specified, WKT definition is assumed.
      * \param definition A String containing a coordinate reference system definition.
+     *
+     * \note This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+     * Call invalidateCache() to clear the cache.
+     *
      * \returns TRUE on success else FALSE
      */
     bool createFromString( const QString &definition );
@@ -506,6 +548,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \returns TRUE on success else FALSE
      * \note this function generates a WKT string using OSRSetFromUserInput() and
      * passes it to createFromWkt() function.
+     *
+     * \note This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+     * Call invalidateCache() to clear the cache.
      */
     bool createFromUserInput( const QString &definition );
 
@@ -1043,14 +1088,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 #ifndef SIP_RUN
 
     /**
-     * Returns the underlying PROJ PJ object corresponding to the CRS, or NULLPTR
-     * if the CRS is invalid.
-     *
-     * This object is only valid for the lifetime of the QgsCoordinateReferenceSystem.
-     *
-     * \note Not available in Python bindings.
-     * \since QGIS 3.8
-     */
+    * Returns the underlying PROJ PJ object corresponding to the CRS, or NULLPTR
+    * if the CRS is invalid.
+    *
+    * This object is only valid for the lifetime of the QgsCoordinateReferenceSystem.
+    *
+    * \note Not available in Python bindings.
+    * \since QGIS 3.8
+    */
     PJ *projObject() const;
 
     /**
@@ -1188,6 +1233,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Helper for getting number of user CRS already in db
     static long getRecordCount();
 
+    /**
+     * \warning This method does not utilize caching, and can be slow to call. Consider
+     * using one of the alternate createFrom methods or constructors which take
+     * advantage of caches.
+     */
     bool loadFromAuthCode( const QString &auth, const QString &code );
 
     /**
