@@ -66,7 +66,7 @@ void TestQgs3DUtils::testTransforms()
   const QgsVector3D map123( 1, 2, 3 );
 
   const QgsVector3D world123 = Qgs3DUtils::mapToWorldCoordinates( map123, QgsVector3D() );
-  QCOMPARE( world123, QgsVector3D( 1, 3, -2 ) );
+  QCOMPARE( world123, QgsVector3D( 1, 2, 3 ) );
 
   const QgsVector3D world123map = Qgs3DUtils::worldToMapCoordinates( world123, QgsVector3D() );
   QCOMPARE( world123map, map123 );
@@ -76,7 +76,7 @@ void TestQgs3DUtils::testTransforms()
   const QgsVector3D origin( -10, -20, -30 );
 
   const QgsVector3D world123x = Qgs3DUtils::mapToWorldCoordinates( map123, origin );
-  QCOMPARE( world123x, QgsVector3D( 11, 33, -22 ) );
+  QCOMPARE( world123x, QgsVector3D( 11, 22, 33 ) );
 
   const QgsVector3D world123xmap = Qgs3DUtils::worldToMapCoordinates( world123x, origin );
   QCOMPARE( world123xmap, map123 );
@@ -85,11 +85,11 @@ void TestQgs3DUtils::testTransforms()
   // transform world point from one system to another
   //
 
-  const QgsVector3D worldPoint1( 5, 7, -6 );
+  const QgsVector3D worldPoint1( 5, 6, 7 );
   const QgsVector3D origin1( 10, 20, 30 );
   const QgsVector3D origin2( 1, 2, 3 );
   const QgsVector3D worldPoint2 = Qgs3DUtils::transformWorldCoordinates( worldPoint1, origin1, QgsCoordinateReferenceSystem(), origin2, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext() );
-  QCOMPARE( worldPoint2, QgsVector3D( 14, 34, -24 ) );
+  QCOMPARE( worldPoint2, QgsVector3D( 14, 24, 34 ) );
   // verify that both are the same map point
   const QgsVector3D mapPoint1 = Qgs3DUtils::worldToMapCoordinates( worldPoint1, origin1 );
   const QgsVector3D mapPoint2 = Qgs3DUtils::worldToMapCoordinates( worldPoint2, origin2 );
@@ -291,15 +291,13 @@ void TestQgs3DUtils::testExportToObj()
     0.676449, 0, -0.736489,
     0.676449, 0, -0.736489
   };
-  float scale = 1.0f;
-  QVector3D translation( 0.0f, 0.0f, 0.0f );
 
   const QString myTmpDir = QDir::tempPath() + '/';
 
   // case where all vertices are used
   {
     Qgs3DExportObject object( "all_faces" );
-    object.setupPositionCoordinates( positionData, scale, translation );
+    object.setupPositionCoordinates( positionData, QMatrix4x4() );
     QCOMPARE( object.vertexPosition().size(), positionData.size() );
 
     // exported vertice indexes
@@ -320,7 +318,7 @@ void TestQgs3DUtils::testExportToObj()
     object.setupFaces( indexData );
     QCOMPARE( object.indexes().size(), indexData.size() );
 
-    object.setupNormalCoordinates( normalsData );
+    object.setupNormalCoordinates( normalsData, QMatrix4x4() );
     QCOMPARE( object.normals().size(), normalsData.size() );
 
 
@@ -329,7 +327,7 @@ void TestQgs3DUtils::testExportToObj()
     QTextStream out( &file );
 
     out << "o " << object.name() << "\n";
-    object.saveTo( out, scale, translation, 3 );
+    object.saveTo( out, 1.0, QVector3D( 0, 0, 0 ), 3 );
 
     out.flush();
     out.seek( 0 );
@@ -356,20 +354,20 @@ void TestQgs3DUtils::testExportToObj()
     };
 
     Qgs3DExportObject object( "sparse_faces" );
-    object.setupPositionCoordinates( positionData, scale, translation );
+    object.setupPositionCoordinates( positionData, QMatrix4x4() );
     QCOMPARE( object.vertexPosition().size(), positionData.size() );
 
     object.setupFaces( indexData );
     QCOMPARE( object.indexes().size(), indexData.size() );
 
-    object.setupNormalCoordinates( normalsData );
+    object.setupNormalCoordinates( normalsData, QMatrix4x4() );
     QCOMPARE( object.normals().size(), normalsData.size() );
 
     QFile file( myTmpDir + "sparse_faces.obj" );
     file.open( QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate );
     QTextStream out( &file );
     out << "o " << object.name() << "\n";
-    object.saveTo( out, scale, translation, 3 );
+    object.saveTo( out, 1.0, QVector3D( 0, 0, 0 ), 3 );
 
     out.flush();
     out.seek( 0 );
