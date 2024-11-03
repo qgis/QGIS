@@ -120,12 +120,6 @@ void QgsUserProfileSelectionDialog::onDeleteProfile()
 {
   QString selectedProfile = selectedProfileName();
 
-  if ( selectedProfile == QStringLiteral( "default" ) )
-  {
-    QMessageBox::warning( this, tr( "Delete Profile" ), tr( "The default profile cannot be deleted." ), QMessageBox::Ok );
-    return;
-  }
-
   if ( selectedProfile == mActiveProfile )
   {
     QMessageBox::warning( this, tr( "Delete Profile" ), tr( "The active profile cannot be deleted." ), QMessageBox::Ok );
