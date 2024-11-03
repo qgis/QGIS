@@ -30,14 +30,14 @@ runs:
     - name: Run vcpkg install (HEAD)
       shell: bash
       run: |
-        vcpkg install --dry-run --triplet ${{ inputs.triplet }} --x-manifest-root=${{ inputs.vcpkg-manifest-dir }} $(awk -v FS=',' '{for(i=1; i<=NF; i++) printf "--x-feature=\"%s\" ", $i}' <<< "${{ inputs.features }}") --allow-unsupported > /tmp/vcpkg-head-output.txt
+        vcpkg install --dry-run --triplet ${{ inputs.triplet }} --x-manifest-root=${{ inputs.vcpkg-manifest-dir }} $(awk -v FS=',' '{for(i=1; i<=NF; i++) printf "--x-feature=%s ", $i}' <<< "${{ inputs.features }}") --allow-unsupported > /tmp/vcpkg-head-output.txt
 
     # Run vcpkg install --dry-run on the base ref
     - name: Run vcpkg install (BASE)
       shell: bash
       run: |
         git worktree add .base-ref ${{ github.event.pull_request.base.sha }}
-        vcpkg install --dry-run --triplet ${{ inputs.triplet }} --x-manifest-root=.base-ref/${{ inputs.vcpkg-manifest-dir }} $(awk -v FS=',' '{for(i=1; i<=NF; i++) printf "--x-feature=\"%s\" ", $i}' <<< "${{ inputs.features }}")  --allow-unsupported > /tmp/vcpkg-base-output.txt
+        vcpkg install --dry-run --triplet ${{ inputs.triplet }} --x-manifest-root=.base-ref/${{ inputs.vcpkg-manifest-dir }} $(awk -v FS=',' '{for(i=1; i<=NF; i++) printf "--x-feature=%s ", $i}' <<< "${{ inputs.features }}")  --allow-unsupported > /tmp/vcpkg-base-output.txt
 
 
     # Compare the outputs and generate a report
