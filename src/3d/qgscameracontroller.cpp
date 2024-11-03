@@ -800,15 +800,15 @@ void QgsCameraController::walkView( double tx, double ty, double tz )
 
   if ( tx != 0.0 )
   {
-    cameraPosDiff += tx * cameraFront;
+    cameraPosDiff += static_cast<float>( tx ) * cameraFront;
   }
   if ( ty != 0.0 )
   {
-    cameraPosDiff += ty * cameraLeft;
+    cameraPosDiff += static_cast<float>( ty ) * cameraLeft;
   }
   if ( tz != 0.0 )
   {
-    cameraPosDiff += tz * QVector3D( 0.0f, 0.0f, 1.0f );
+    cameraPosDiff += static_cast<float>( tz ) * QVector3D( 0.0f, 0.0f, 1.0f );
   }
 
   moveCameraPositionBy( cameraPosDiff );

@@ -62,10 +62,10 @@ static QByteArray createPlaneVertexData( int res, float side, float vertScale, f
   QSize resolution( res, res );
   const float x0 = 0;
   const float y0 = side;
-  const float dx = side / ( resolution.width() - 1 );
-  const float dy = side / ( resolution.height() - 1 );
-  const float du = 1.0 / ( resolution.width() - 1 );
-  const float dv = 1.0 / ( resolution.height() - 1 );
+  const float dx = side / static_cast<float>( resolution.width() - 1 );
+  const float dy = side / static_cast<float>( resolution.height() - 1 );
+  const float du = 1.0f / static_cast<float>( resolution.width() - 1 );
+  const float dv = 1.0f / static_cast<float>( resolution.height() - 1 );
 
   // the height of vertices with no-data value... the value should not really matter
   // as we do not create valid triangles that would use such vertices
@@ -135,7 +135,7 @@ static QByteArray createPlaneVertexData( int res, float side, float vertScale, f
         else
           dj = zj0 - zj1;
 
-        n = QVector3D( di, -dj, 2 * side / res );
+        n = QVector3D( di, -dj, 2 * side / static_cast<float>( res ) );
         n.normalize();
       }
 
