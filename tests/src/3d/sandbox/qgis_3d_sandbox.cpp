@@ -79,7 +79,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
   map->setTerrainElevationOffset( QgsProject::instance()->elevationProperties()->terrainProvider()->offset() );
 
   QgsPointLightSettings defaultPointLight;
-  defaultPointLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultPointLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
   defaultPointLight.setConstantAttenuation( 0 );
   map->setLightSources( {defaultPointLight.clone() } );
   if ( QScreen *screen = QGuiApplication::primaryScreen() )
