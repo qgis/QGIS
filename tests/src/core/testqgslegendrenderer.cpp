@@ -98,6 +98,7 @@ class TestQgsLegendRenderer : public QgsTest
     void testBasic();
     void testMultiline();
     void testOverrideSize();
+    void testOverrideSizeSmall();
     void testSpacing();
     void testEffects();
     void testBigMarker();
@@ -435,6 +436,43 @@ void TestQgsLegendRenderer::testOverrideSize()
   legendModel.refreshLayerLegend( layer );
 
   QgsLegendSettings settings;
+  setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+
+  const QImage res = renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
+}
+
+void TestQgsLegendRenderer::testOverrideSizeSmall()
+{
+  // Setting an explicit size for a legend node should override all other settings,
+  // including the heights calculated from minimum/maximum symbol size.
+  // This is because explicit fixed sizes are PER NODE, and can be used as a last-resort
+  // for users to manually adjust the sizing of one particular legend node
+  const QString testName = QStringLiteral( "legend_override_size_small" );
+
+  QgsLayerTreeModel legendModel( mRoot );
+
+  legendModel.findLegendNode( mVL1->id(), QString() );
+
+  QgsLayerTreeLayer *layer = legendModel.rootGroup()->findLayer( mVL1 );
+  layer->setPatchSize( QSizeF( 30, 0 ) );
+
+  QgsLayerTreeModelLegendNode *embeddedNode = legendModel.legendNodeEmbeddedInParent( layer );
+  embeddedNode->setUserLabel( QString() );
+
+  layer = legendModel.rootGroup()->findLayer( mVL3 );
+  QgsMapLayerLegendUtils::setLegendNodeSymbolSize( layer, 1, QSizeF( 0, 1 ) );
+  legendModel.refreshLayerLegend( layer );
+
+  layer = legendModel.rootGroup()->findLayer( mVL3 );
+  QgsMapLayerLegendUtils::setLegendNodeSymbolSize( layer, 2, QSizeF( 0, 0.5 ) );
+  legendModel.refreshLayerLegend( layer );
+
+  QgsLegendSettings settings;
+  settings.rstyle( QgsLegendStyle::Symbol ).setMargin( QgsLegendStyle::Top, 0 );
+  settings.rstyle( QgsLegendStyle::Symbol ).setMargin( QgsLegendStyle::Bottom, 0 );
+  settings.setMinimumSymbolSize( 5 );
+  settings.setMaximumSymbolSize( 9 );
   setStandardTestFont( settings, QStringLiteral( "Bold" ) );
 
   const QImage res = renderLegend( &legendModel, settings );
