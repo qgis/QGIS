@@ -1113,6 +1113,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Sets the list of layers with which intersections should be avoided.
      * Only used if the avoid intersection mode is set to advanced.
+     * Line and point layers will not be added.
      *
      */
     void setAvoidIntersectionsLayers( const QList<QgsVectorLayer *> &layers );
