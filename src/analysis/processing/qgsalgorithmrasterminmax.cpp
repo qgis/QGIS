@@ -120,12 +120,6 @@ QVariantMap QgsRasterMinMaxAlgorithm::processAlgorithm( const QVariantMap &param
 
   const int extractType = parameterAsInt( parameters, QStringLiteral( "EXTRACT" ), context );
 
-  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  const int numberBlocksWidth = static_cast< int >( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  const int numberBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  const qint64 numberBlocks = static_cast< qint64>( numberBlocksWidth ) * numberBlocksHeight;
-
   QgsRasterIterator iter( mInterface.get() );
   iter.startRasterRead( mBand, mLayerWidth, mLayerHeight, mExtent );
 
@@ -149,7 +143,6 @@ QVariantMap QgsRasterMinMaxAlgorithm::processAlgorithm( const QVariantMap &param
   QgsRectangle blockExtent;
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, rasterBlock, iterLeft, iterTop, &blockExtent ) )
   {
-    feedback->setProgress( 100 * ( ( iterTop / static_cast< double >( maxHeight * numberBlocksWidth ) ) + iterLeft / static_cast< double >( maxWidth ) ) / static_cast< double >( numberBlocks ) );
     if ( feedback->isCanceled() )
       break;
 
@@ -163,48 +156,51 @@ QVariantMap QgsRasterMinMaxAlgorithm::processAlgorithm( const QVariantMap &param
     {
       case 0:
       {
-        if ( !rasterBlock->minimumMaximum( blockMinimum, blockMinRow, blockMinCol, blockMaximum, blockMaxRow, blockMaxCol ) )
-          continue;
-
-        if ( std::isnan( rasterMinimum ) || blockMinimum < rasterMinimum )
+        if ( rasterBlock->minimumMaximum( blockMinimum, blockMinRow, blockMinCol, blockMaximum, blockMaxRow, blockMaxCol ) )
         {
-          rasterMinimum = blockMinimum;
-          rasterMinPoint = blockRowColToXY( blockExtent, blockMinRow, blockMinCol );
-        }
-        if ( std::isnan( rasterMaximum ) || blockMaximum > rasterMaximum )
-        {
-          rasterMaximum = blockMaximum;
-          rasterMaxPoint = blockRowColToXY( blockExtent, blockMaxRow, blockMaxCol );
+          if ( std::isnan( rasterMinimum ) || blockMinimum < rasterMinimum )
+          {
+            rasterMinimum = blockMinimum;
+            rasterMinPoint = blockRowColToXY( blockExtent, blockMinRow, blockMinCol );
+          }
+          if ( std::isnan( rasterMaximum ) || blockMaximum > rasterMaximum )
+          {
+            rasterMaximum = blockMaximum;
+            rasterMaxPoint = blockRowColToXY( blockExtent, blockMaxRow, blockMaxCol );
+          }
         }
         break;
       }
 
       case 1:
       {
-        if ( !rasterBlock->minimum( blockMinimum, blockMinRow, blockMinCol ) )
-          continue;
-        if ( std::isnan( rasterMinimum ) || blockMinimum < rasterMinimum )
+        if ( rasterBlock->minimum( blockMinimum, blockMinRow, blockMinCol ) )
         {
-          rasterMinimum = blockMinimum;
-          rasterMinPoint = blockRowColToXY( blockExtent, blockMinRow, blockMinCol );
+          if ( std::isnan( rasterMinimum ) || blockMinimum < rasterMinimum )
+          {
+            rasterMinimum = blockMinimum;
+            rasterMinPoint = blockRowColToXY( blockExtent, blockMinRow, blockMinCol );
+          }
         }
         break;
       }
 
       case 2:
       {
-        if ( !rasterBlock->maximum( blockMaximum, blockMaxRow, blockMaxCol ) )
-          continue;
-        if ( std::isnan( rasterMaximum ) || blockMaximum > rasterMaximum )
+        if ( rasterBlock->maximum( blockMaximum, blockMaxRow, blockMaxCol ) )
         {
-          rasterMaximum = blockMaximum;
-          rasterMaxPoint = blockRowColToXY( blockExtent, blockMaxRow, blockMaxCol );
+          if ( std::isnan( rasterMaximum ) || blockMaximum > rasterMaximum )
+          {
+            rasterMaximum = blockMaximum;
+            rasterMaxPoint = blockRowColToXY( blockExtent, blockMaxRow, blockMaxCol );
+          }
         }
         break;
       }
       default:
-        continue;
+        break;
     }
+    feedback->setProgress( 100 * iter.progress( mBand ) );
   }
 
   QVariantMap outputs;
