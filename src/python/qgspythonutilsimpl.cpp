@@ -69,7 +69,7 @@ class StartupScriptRunner:
         self.info_messages: list[str] = []
         self.warning_messages: list[str] = []
 
-    def run_startup_script(self, script_path: pathlib.Path | str | None) -> bool:
+    def run_startup_script(self, script_path: 'pathlib.Path | str | None') -> bool:
         script_executed = False
         if not script_path:
             return script_executed
