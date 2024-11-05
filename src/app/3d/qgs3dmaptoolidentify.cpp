@@ -87,10 +87,10 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       {
         mapCoordsCanvas2D = ct.transform( mapCoords );
       }
-      catch ( QgsException &e )
+      catch ( QgsCsException &e )
       {
         Q_UNUSED( e )
-        QgsDebugError( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
+        QgsDebugError( QStringLiteral( "Could not transform identified coordinates to project crs: %1" ).arg( e.what() ) );
       }
 
       const QgsPoint pt( mapCoordsCanvas2D.x(), mapCoordsCanvas2D.y(), mapCoordsCanvas2D.z() );
@@ -167,10 +167,10 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       const QgsPointXY mapPointSearchRadiusCanvas2D = ct.transform( mapPointSearchRadius );
       searchRadiusCanvas2D = mapPointCanvas2D.distance( mapPointSearchRadiusCanvas2D );
     }
-    catch ( QgsException &e )
+    catch ( QgsCsException &e )
     {
       Q_UNUSED( e )
-      QgsDebugError( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
+      QgsDebugError( QStringLiteral( "Could not transform identified coordinates to project crs: %1" ).arg( e.what() ) );
     }
 
     identifyTool2D->identifyAndShowResults( QgsGeometry::fromPointXY( mapPointCanvas2D ), searchRadiusCanvas2D );
