@@ -14010,6 +14010,9 @@ QgsRasterBlock.isNoData: src/core/raster/qgsrasterblock.h#L297
 QgsRasterBlock.isNoData: src/core/raster/qgsrasterblock.h#L309
 QgsRasterBlock.isNoData: src/core/raster/qgsrasterblock.h#L346
 QgsRasterBlock.isValid: src/core/raster/qgsrasterblock.h#L68
+QgsRasterBlock.maximum: src/core/raster/qgsrasterblock.h#L714
+QgsRasterBlock.minimum: src/core/raster/qgsrasterblock.h#L695
+QgsRasterBlock.minimumMaximum: src/core/raster/qgsrasterblock.h#L738
 QgsRasterBlock.noDataValue: src/core/raster/qgsrasterblock.h#L185
 QgsRasterBlock.printValue: src/core/raster/qgsrasterblock.h#L603
 QgsRasterBlock.reset: src/core/raster/qgsrasterblock.h#L58
