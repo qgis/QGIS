@@ -83,7 +83,6 @@ QgsRasterMinMaxAlgorithm *QgsRasterMinMaxAlgorithm::createInstance() const
 bool QgsRasterMinMaxAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
-  const int band = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
 
   if ( !layer )
     throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
@@ -94,7 +93,7 @@ bool QgsRasterMinMaxAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
                                   .arg( layer->bandCount() ) );
 
   mInterface.reset( layer->dataProvider()->clone() );
-  mHasNoDataValue = layer->dataProvider()->sourceHasNoDataValue( band );
+  mHasNoDataValue = layer->dataProvider()->sourceHasNoDataValue( mBand );
   mLayerWidth = layer->width();
   mLayerHeight = layer->height();
   mExtent = layer->extent();
