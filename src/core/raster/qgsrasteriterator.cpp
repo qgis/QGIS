@@ -232,7 +232,7 @@ double QgsRasterIterator::progress( int bandNumber ) const
     return 0;
   }
 
-  return ( ( partIt->currentRow / static_cast< double >( mMaximumTileHeight ) ) * mNumberBlocksWidth + partIt->currentCol / static_cast< double >( mMaximumTileWidth ) ) / ( static_cast< double >( mNumberBlocksWidth ) * static_cast< double >( mNumberBlocksHeight ) );
+  return ( ( static_cast< double >( partIt->currentRow ) / static_cast< double >( mMaximumTileHeight ) ) * mNumberBlocksWidth + static_cast< double >( partIt->currentCol ) / static_cast< double >( mMaximumTileWidth ) ) / ( static_cast< double >( mNumberBlocksWidth ) * static_cast< double >( mNumberBlocksHeight ) );
 }
 
 void QgsRasterIterator::removePartInfo( int bandNumber )
