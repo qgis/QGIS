@@ -605,7 +605,7 @@ void MDAL_M_RemoveDatasetGroup( MDAL_MeshH mesh, int index )
   }
   size_t i = static_cast<size_t>( index );
 
-  m->datasetGroups.erase( m->datasetGroups.begin() + i );
+  m->datasetGroups.erase( m->datasetGroups.begin() + static_cast<long> i );
 }
 
 const char *MDAL_M_driverName( MDAL_MeshH mesh )

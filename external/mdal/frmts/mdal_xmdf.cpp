@@ -556,7 +556,7 @@ std::unique_ptr< MDAL::Mesh > MDAL::DriverXmdf::load( const std::string &meshFil
   facesData.clear();
 
   // copy only the faces that have been properly filled
-  faces = Faces( faces.begin(), faces.begin() + currentFaceIndex );
+  faces = Faces( faces.begin(), faces.begin() + static_cast<long>( currentFaceIndex ) );
 
   // create the mesh and set the required data
   std::unique_ptr< MemoryMesh > mesh(
