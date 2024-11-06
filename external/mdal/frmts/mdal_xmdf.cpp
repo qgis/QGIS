@@ -515,19 +515,19 @@ std::unique_ptr< MDAL::Mesh > MDAL::DriverXmdf::load( const std::string &meshFil
 
   std::vector<hsize_t> elementsDims = elements.dims();
   hsize_t elementsRows = elementsDims[0];
-  int elementsRowsDims = elementsDims[1];
+  hsize_t elementsRowsDims = elementsDims[1];
 
   std::vector<int> facesData = elements.readArrayInt();
 
   Faces faces( elementsRows );
-  int maxVerticesPerFace = 0;
+  size_t maxVerticesPerFace = 0;
 
   size_t currentFaceIndex = 0;
   i = 0;
   while ( i < facesData.size() )
   {
     std::vector<size_t> tempFace;
-    for ( int j = 0; j < elementsRowsDims; j++ )
+    for ( hsize_t j = 0; j < elementsRowsDims; j++ )
     {
       int vertexIndex = facesData[i];
       if ( vertexIndex > 0 )
