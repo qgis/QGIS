@@ -238,6 +238,7 @@
 #include "qgsalgorithmwritevectortiles.h"
 #include "qgsalgorithmxyztiles.h"
 #include "qgsalgorithmzonalhistogram.h"
+#include "qgsalgorithmzonalminmaxpoint.h"
 #include "qgsalgorithmzonalstatistics.h"
 #include "qgsalgorithmzonalstatisticsfeaturebased.h"
 #include "qgsalgorithmpolygonstolines.h"
@@ -559,6 +560,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsXyzTilesDirectoryAlgorithm() );
   addAlgorithm( new QgsXyzTilesMbtilesAlgorithm() );
   addAlgorithm( new QgsZonalHistogramAlgorithm() );
+  addAlgorithm( new QgsZonalMinimumMaximumPointAlgorithm() );
   addAlgorithm( new QgsZonalStatisticsAlgorithm() );
   addAlgorithm( new QgsZonalStatisticsFeatureBasedAlgorithm() );
   addAlgorithm( new QgsPolygonsToLinesAlgorithm() );
