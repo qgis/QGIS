@@ -99,12 +99,12 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
 
   mShadowMinX = new Qt3DRender::QParameter( QStringLiteral( "shadowMinX" ), QVariant::fromValue( 0.0f ) );
   mShadowMaxX = new Qt3DRender::QParameter( QStringLiteral( "shadowMaxX" ), QVariant::fromValue( 0.0f ) );
-  mShadowMinZ = new Qt3DRender::QParameter( QStringLiteral( "shadowMinZ" ), QVariant::fromValue( 0.0f ) );
-  mShadowMaxZ = new Qt3DRender::QParameter( QStringLiteral( "shadowMaxZ" ), QVariant::fromValue( 0.0f ) );
+  mShadowMinY = new Qt3DRender::QParameter( QStringLiteral( "shadowMinY" ), QVariant::fromValue( 0.0f ) );
+  mShadowMaxY = new Qt3DRender::QParameter( QStringLiteral( "shadowMaxY" ), QVariant::fromValue( 0.0f ) );
   mMaterial->addParameter( mShadowMinX );
   mMaterial->addParameter( mShadowMaxX );
-  mMaterial->addParameter( mShadowMinZ );
-  mMaterial->addParameter( mShadowMaxZ );
+  mMaterial->addParameter( mShadowMinY );
+  mMaterial->addParameter( mShadowMaxY );
 
   mRenderShadowsParameter = new Qt3DRender::QParameter( QStringLiteral( "renderShadows" ), QVariant::fromValue( 0 ) );
   mMaterial->addParameter( mRenderShadowsParameter );
@@ -134,12 +134,12 @@ QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3
   mShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( fragmentShaderPath ) ) );
 }
 
-void QgsPostprocessingEntity::setupShadowRenderingExtent( float minX, float maxX, float minZ, float maxZ )
+void QgsPostprocessingEntity::setupShadowRenderingExtent( float minX, float maxX, float minY, float maxY )
 {
   mShadowMinX->setValue( minX );
   mShadowMaxX->setValue( maxX );
-  mShadowMinZ->setValue( minZ );
-  mShadowMaxZ->setValue( maxZ );
+  mShadowMinY->setValue( minY );
+  mShadowMaxY->setValue( maxY );
 }
 
 void QgsPostprocessingEntity::setupDirectionalLight( QVector3D position, QVector3D direction )
