@@ -1045,9 +1045,8 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
     if ( formEditorWidget->editorWidget() == eww )
       continue;
 
-    // formEditorWidget and eww points to the same field, so block signals
-    // as there is no need to handle valueChanged again for each duplicate
-    whileBlocking( formEditorWidget->editorWidget() )->setValue( value );
+    // formEditorWidget and eww points to the same field, so update its value
+    formEditorWidget->editorWidget()->setValue( value );
   }
 
   switch ( mMode )
