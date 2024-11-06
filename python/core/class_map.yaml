@@ -14298,10 +14298,14 @@ QgsRasterInterface.xSize: src/core/raster/qgsrasterinterface.h#L258
 QgsRasterInterface.yBlockSize: src/core/raster/qgsrasterinterface.h#L255
 QgsRasterInterface.ySize: src/core/raster/qgsrasterinterface.h#L259
 QgsRasterInterface: src/core/raster/qgsrasterinterface.h#L135
+QgsRasterIterator.blockCount: src/core/raster/qgsrasteriterator.h#L198
+QgsRasterIterator.blockCountHeight: src/core/raster/qgsrasteriterator.h#L189
+QgsRasterIterator.blockCountWidth: src/core/raster/qgsrasteriterator.h#L180
 QgsRasterIterator.input: src/core/raster/qgsrasteriterator.h#L143
 QgsRasterIterator.maximumTileHeight: src/core/raster/qgsrasteriterator.h#L171
 QgsRasterIterator.maximumTileWidth: src/core/raster/qgsrasteriterator.h#L157
 QgsRasterIterator.next: src/core/raster/qgsrasteriterator.h#L93
+QgsRasterIterator.progress: src/core/raster/qgsrasteriterator.h#L205
 QgsRasterIterator.readNextRasterPart: src/core/raster/qgsrasteriterator.h#L106
 QgsRasterIterator.readNextRasterPart: src/core/raster/qgsrasteriterator.h#L128
 QgsRasterIterator.setMaximumTileHeight: src/core/raster/qgsrasteriterator.h#L164
