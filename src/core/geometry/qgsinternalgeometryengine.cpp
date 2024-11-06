@@ -1230,6 +1230,7 @@ QVector<QgsPointXY> randomPointsInPolygonPoly2TriBackend( const QgsAbstractGeome
   // step 1 - tessellate the polygon to triangles
   QgsRectangle bounds = geometry->boundingBox();
   QgsTessellator t( bounds, false, false, false, true );
+  t.setOutputZUp( true );
 
   if ( const QgsMultiSurface *ms = qgsgeometry_cast< const QgsMultiSurface * >( geometry ) )
   {
@@ -1285,14 +1286,14 @@ QVector<QgsPointXY> randomPointsInPolygonPoly2TriBackend( const QgsAbstractGeome
       return QVector< QgsPointXY >();
 
     const float aX = *it++;
+    const float aY = *it++;
     ( void )it++; // z
-    const float aY = -( *it++ );
     const float bX = *it++;
+    const float bY = *it++;
     ( void )it++; // z
-    const float bY = -( *it++ );
     const float cX = *it++;
+    const float cY = *it++;
     ( void )it++; // z
-    const float cY = -( *it++ );
 
     const double area = QgsGeometryUtilsBase::triangleArea( aX, aY, bX, bY, cX, cY );
     totalArea += area;
