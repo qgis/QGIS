@@ -18,6 +18,7 @@
 
 #include "qgis_analysis.h"
 #include "qgis.h"
+#include "qgspointxy.h"
 
 #include <functional>
 #include <memory>
@@ -48,11 +49,11 @@ namespace QgsRasterAnalysisUtils
 
   //! Returns statistics by considering the pixels where the center point is within the polygon (fast)
   void statisticsFromMiddlePointTest( QgsRasterInterface *rasterInterface, int rasterBand, const QgsGeometry &poly, int nCellsX, int nCellsY,
-                                      double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, const std::function<void( double )> &addValue, bool skipNodata = true );
+                                      double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, const std::function<void( double, const QgsPointXY & )> &addValue, bool skipNodata = true );
 
   //! Returns statistics with precise pixel - polygon intersection test (slow)
   void statisticsFromPreciseIntersection( QgsRasterInterface *rasterInterface, int rasterBand, const QgsGeometry &poly, int nCellsX, int nCellsY,
-                                          double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, const std::function<void( double, double )> &addValue, bool skipNodata = true );
+                                          double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, const std::function<void( double, double, const QgsPointXY & )> &addValue, bool skipNodata = true );
 
   //! Tests whether a pixel's value should be included in the result
   bool validPixel( double value );

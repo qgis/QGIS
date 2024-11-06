@@ -5348,19 +5348,21 @@ class CORE_EXPORT Qgis
      */
     enum class ZonalStatistic : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      Count = 1,  //!< Pixel count
-      Sum = 2,  //!< Sum of pixel values
-      Mean = 4,  //!< Mean of pixel values
-      Median = 8, //!< Median of pixel values
-      StDev = 16, //!< Standard deviation of pixel values
-      Min = 32,  //!< Min of pixel values
-      Max = 64,  //!< Max of pixel values
-      Range = 128, //!< Range of pixel values (max - min)
-      Minority = 256, //!< Minority of pixel values
-      Majority = 512, //!< Majority of pixel values
-      Variety = 1024, //!< Variety (count of distinct) pixel values
-      Variance = 2048, //!< Variance of pixel values
-      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance, //!< All statistics
+      Count = 1 << 0,  //!< Pixel count
+      Sum = 1 << 1,  //!< Sum of pixel values
+      Mean = 1 << 2,  //!< Mean of pixel values
+      Median = 1 << 3, //!< Median of pixel values
+      StDev = 1 << 4, //!< Standard deviation of pixel values
+      Min = 1 << 5,  //!< Min of pixel values
+      Max = 1 << 6,  //!< Max of pixel values
+      Range = 1 << 7, //!< Range of pixel values (max - min)
+      Minority = 1 << 8, //!< Minority of pixel values
+      Majority = 1 << 9, //!< Majority of pixel values
+      Variety = 1 << 10, //!< Variety (count of distinct) pixel values
+      Variance = 1 << 11, //!< Variance of pixel values
+      MinimumPoint = 1 << 12, //!< Pixel centroid for minimum pixel value \since QGIS 3.42
+      MaximumPoint = 1 << 13, //!< Pixel centroid for minimum pixel value \since QGIS 3.42
+      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance | MinimumPoint | MaximumPoint, //!< All statistics
       Default = Count | Sum | Mean, //!< Default statistics
     };
     Q_ENUM( ZonalStatistic )

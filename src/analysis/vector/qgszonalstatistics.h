@@ -164,7 +164,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
           values.clear();
         }
 
-        void addValue( double value, double weight = 1.0 )
+        void addValue( double value, const QgsPointXY &point, double weight = 1.0 )
         {
           if ( weight < 1.0 )
           {
@@ -176,8 +176,16 @@ class ANALYSIS_EXPORT QgsZonalStatistics
             sum += value;
             ++count;
           }
-          min = std::min( min, value );
-          max = std::max( max, value );
+          if ( value < min )
+          {
+            min = value;
+            minPoint = point;
+          }
+          if ( value > max )
+          {
+            max = value;
+            maxPoint = point;
+          }
           if ( mStoreValueCounts )
             valueCount.insert( value, valueCount.value( value, 0 ) + 1 );
           if ( mStoreValues )
@@ -187,6 +195,8 @@ class ANALYSIS_EXPORT QgsZonalStatistics
         double count = 0.0;
         double max = std::numeric_limits<double>::lowest();
         double min = std::numeric_limits<double>::max();
+        QgsPointXY minPoint;
+        QgsPointXY maxPoint;
         QMap< double, int > valueCount;
         QList< double > values;
 

@@ -3031,6 +3031,8 @@ The development version
       Majority,
       Variety,
       Variance,
+      MinimumPoint,
+      MaximumPoint,
       All,
       Default,
     };

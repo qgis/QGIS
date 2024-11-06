@@ -285,3 +285,18 @@ tests:
       OUTPUT:
         name: expected/raster_max.gml
         type: vector
+
+  - algorithm: native:zonalminmaxpoint
+    name: Raster zonal min max
+    params:
+      INPUT:
+        name: custom/dem_zones.geojson
+        type: vector
+      INPUT_RASTER:
+        name: custom/dem_crs.tif
+        type: raster
+      RASTER_BAND: 1
+    results:
+      OUTPUT:
+        name: expected/raster_zonal_extremum.gml
+        type: vector
