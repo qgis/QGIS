@@ -438,11 +438,31 @@ void TestQgsDualView::testDuplicateField()
 
   const QList<QgsAttributeFormEditorWidget *> formEditorWidgets = dualView.mAttributeForm->mFormEditorWidgets.values( 0 );
 
+  // reset mIsChanged state
+  formEditorWidgets[0]->changesCommitted();
+  formEditorWidgets[1]->changesCommitted();
+  QVERIFY( !formEditorWidgets[0]->hasChanged() );
+  QVERIFY( !formEditorWidgets[1]->hasChanged() );
+
   formEditorWidgets[0]->editorWidget()->setValues( 20, QVariantList() );
+  QCOMPARE( formEditorWidgets[0]->editorWidget()->value().toInt(), 20 );
+  QCOMPARE( formEditorWidgets[1]->editorWidget()->value().toInt(), 20 );
+  QVERIFY( formEditorWidgets[0]->hasChanged() );
+  QVERIFY( formEditorWidgets[1]->hasChanged() );
   ft = layer->getFeature( ft.id() );
   QCOMPARE( ft.attribute( QStringLiteral( "col0" ) ).toInt(), 20 );
 
+  // reset mIsChanged state
+  formEditorWidgets[0]->changesCommitted();
+  formEditorWidgets[1]->changesCommitted();
+  QVERIFY( !formEditorWidgets[0]->hasChanged() );
+  QVERIFY( !formEditorWidgets[1]->hasChanged() );
+
   formEditorWidgets[1]->editorWidget()->setValues( 21, QVariantList() );
+  QCOMPARE( formEditorWidgets[0]->editorWidget()->value().toInt(), 21 );
+  QCOMPARE( formEditorWidgets[1]->editorWidget()->value().toInt(), 21 );
+  QVERIFY( formEditorWidgets[0]->hasChanged() );
+  QVERIFY( formEditorWidgets[1]->hasChanged() );
   ft = layer->getFeature( ft.id() );
   QCOMPARE( ft.attribute( QStringLiteral( "col0" ) ).toInt(), 21 );
 
