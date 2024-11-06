@@ -114,6 +114,9 @@ bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<Q
                                  3,
                                  texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
 
+  outNormal.tessellator->setOutputZUp( true );
+  outSelected.tessellator->setOutputZUp( true );
+
   return true;
 }
 
@@ -225,7 +228,6 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
 
   // add transform (our geometry has coordinates relative to mChunkOrigin)
   Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
-  tr->setRotation( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), 90 ) ); // flip (x,z,-y) to map (x,y,z)
   QVector3D nodeTranslation = ( mChunkOrigin - context.origin() ).toVector3D();
   tr->setTranslation( nodeTranslation );
 

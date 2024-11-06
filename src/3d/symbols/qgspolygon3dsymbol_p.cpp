@@ -109,6 +109,9 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
                                  mSymbol->renderedFacade(),
                                  texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
 
+  outNormal.tessellator->setOutputZUp( true );
+  outSelected.tessellator->setOutputZUp( true );
+
   QSet<QString> attrs = mSymbol->dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );
   attrs = mSymbol->materialSettings()->dataDefinedProperties().referencedFields( context.expressionContext() );
@@ -298,7 +301,6 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
 
   // add transform (our geometry has coordinates relative to mChunkOrigin)
   Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
-  tr->setRotation( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), 90 ) ); // flip (x,z,-y) to map (x,y,z)
   QVector3D nodeTranslation = ( mChunkOrigin - context.origin() ).toVector3D();
   tr->setTranslation( nodeTranslation );
 
