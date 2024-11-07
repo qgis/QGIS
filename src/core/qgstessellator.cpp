@@ -573,13 +573,13 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 
       if ( mOutputZUp )
       {
-        mData << *xData - mOriginX << *yData - mOriginY << z;
+        mData << static_cast<float>( *xData - mOriginX ) << static_cast<float>( *yData - mOriginY ) << z;
         if ( mAddNormals )
           mData << pNormal.x() << pNormal.y() << pNormal.z();
       }
       else  // Y axis is the up direction
       {
-        mData << *xData - mOriginX << z << - *yData + mOriginY;
+        mData << static_cast<float>( *xData - mOriginX ) << z << static_cast<float>( - *yData + mOriginY );
         if ( mAddNormals )
           mData << pNormal.x() << pNormal.z() << - pNormal.y();
       }
@@ -610,13 +610,17 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       {
         if ( mOutputZUp )
         {
-          mData << exterior->xAt( i ) - mOriginX << exterior->yAt( i ) - mOriginY << ( mNoZ ? 0 : exterior->zAt( i ) );
+          mData << static_cast<float>( exterior->xAt( i ) - mOriginX )
+                << static_cast<float>( exterior->yAt( i ) - mOriginY )
+                << static_cast<float>( mNoZ ? 0 : exterior->zAt( i ) );
           if ( mAddNormals )
             mData << -pNormal.x() << -pNormal.y() << -pNormal.z();
         }
         else // Y axis is the up direction
         {
-          mData << exterior->xAt( i ) - mOriginX << ( mNoZ ? 0 : exterior->zAt( i ) ) << - exterior->yAt( i ) + mOriginY;
+          mData << static_cast<float>( exterior->xAt( i ) - mOriginX )
+                << static_cast<float>( mNoZ ? 0 : exterior->zAt( i ) )
+                << static_cast<float>( - exterior->yAt( i ) + mOriginY );
           if ( mAddNormals )
             mData << -pNormal.x() << -pNormal.z() << pNormal.y();
         }
@@ -720,13 +724,13 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 
           if ( mOutputZUp )
           {
-            mData << fx << fy << fz;
+            mData << static_cast<float>( fx ) << static_cast<float>( fy ) << static_cast<float>( fz );
             if ( mAddNormals )
               mData << pNormal.x() << pNormal.y() << pNormal.z();
           }
           else
           {
-            mData << fx << fz << -fy;
+            mData << static_cast<float>( fx ) << static_cast<float>( fz ) << static_cast<float>( -fy );
             if ( mAddNormals )
               mData << pNormal.x() << pNormal.z() << - pNormal.y();
           }
@@ -753,13 +757,13 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 
             if ( mOutputZUp )
             {
-              mData << fx << fy << fz;
+              mData << static_cast<float>( fx ) << static_cast<float>( fy ) << static_cast<float>( fz );
               if ( mAddNormals )
                 mData << -pNormal.x() << -pNormal.y() << -pNormal.z();
             }
             else
             {
-              mData << fx << fz << -fy;
+              mData << static_cast<float>( fx ) << static_cast<float>( fz ) << static_cast<float>( -fy );
               if ( mAddNormals )
                 mData << -pNormal.x() << -pNormal.z() << pNormal.y();
             }
