@@ -126,10 +126,14 @@ class VectorLayerScatterplot(QgisAlgorithm):
 
         if title.strip() == "":
             title = None
-        if xaxis_title.strip() == "":
+        if xaxis_title == "":
             xaxis_title = xfieldname
-        if yaxis_title.strip() == "":
+        elif xaxis_title == " ":
+            xaxis_title = None
+        if yaxis_title == "":
             yaxis_title = yfieldname
+        elif yaxis_title == " ":
+            yaxis_title = None
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
