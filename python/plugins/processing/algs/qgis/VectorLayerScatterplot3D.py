@@ -123,11 +123,11 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
 
         if title.strip() == "":
             title = None
-        if xaxis_title.strip() == "":
+        if xaxis_title == "":
             xaxis_title = xfieldname
-        if yaxis_title.strip() == "":
+        if yaxis_title == "":
             yaxis_title = yfieldname
-        if zaxis_title.strip() == "":
+        if zaxis_title == "":
             zaxis_title = zfieldname
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
