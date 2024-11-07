@@ -10346,7 +10346,7 @@ Qgis.ZonalStatistic.Majority.__doc__ = "Majority of pixel values"
 Qgis.ZonalStatistic.Variety.__doc__ = "Variety (count of distinct) pixel values"
 Qgis.ZonalStatistic.Variance.__doc__ = "Variance of pixel values"
 Qgis.ZonalStatistic.MinimumPoint.__doc__ = "Pixel centroid for minimum pixel value \n.. versionadded:: 3.42"
-Qgis.ZonalStatistic.MaximumPoint.__doc__ = "Pixel centroid for minimum pixel value \n.. versionadded:: 3.42"
+Qgis.ZonalStatistic.MaximumPoint.__doc__ = "Pixel centroid for maximum pixel value \n.. versionadded:: 3.42"
 Qgis.ZonalStatistic.All.__doc__ = "All statistics"
 Qgis.ZonalStatistic.Default.__doc__ = "Default statistics"
 Qgis.ZonalStatistic.__doc__ = """Statistics to be calculated during a zonal statistics operation.
@@ -10369,7 +10369,7 @@ Qgis.ZonalStatistic.__doc__ = """Statistics to be calculated during a zonal stat
 
   .. versionadded:: 3.42
 
-* ``MaximumPoint``: Pixel centroid for minimum pixel value
+* ``MaximumPoint``: Pixel centroid for maximum pixel value
 
   .. versionadded:: 3.42
 
