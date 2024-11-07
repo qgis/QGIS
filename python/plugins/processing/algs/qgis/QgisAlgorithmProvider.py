@@ -77,6 +77,7 @@ from .VariableDistanceBuffer import VariableDistanceBuffer
 from .VectorLayerHistogram import VectorLayerHistogram
 from .VectorLayerScatterplot import VectorLayerScatterplot
 from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
+from .KeepMetadata import KeepMetadata
 
 
 class QgisAlgorithmProvider(QgsProcessingProvider):
@@ -137,6 +138,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 VectorLayerHistogram(),
                 VectorLayerScatterplot(),
                 VectorLayerScatterplot3D(),
+                KeepMetadata()
                 ]
 
         return algs
