@@ -505,10 +505,23 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
     const QString myFullPath = pluginDirString + '/' + myPluginDir[i];
     if ( checkCppPlugin( myFullPath ) )
     {
-      // check if the plugin was active on last session
+      // check if there is a watchdog timestamp left after last session
 
+      bool pluginCrashedPreviously = false;
       const QString baseName = QFileInfo( myFullPath ).baseName();
-      if ( mySettings.value( QStringLiteral( "Plugins/watchDog/%1" ).arg( baseName ) ).isValid() )
+      const QVariant lastRun = mySettings.value( QStringLiteral( "Plugins/watchDog/%1" ).arg( baseName ) );
+      if ( lastRun.isValid() )
+      {
+        const int delta = QDateTime::currentDateTime().toSecsSinceEpoch() - lastRun.toInt();
+        if ( delta > 5 )
+        {
+          // The timestamp is left unremoved and is older than 5 seconds, so it doesn't come
+          // from a parallelly running instance.
+          pluginCrashedPreviously = true;
+        }
+      }
+
+      if ( pluginCrashedPreviously )
       {
         QToolButton *btnEnablePlugin = new QToolButton();
         btnEnablePlugin ->setText( QObject::tr( "Enable Plugin" ) );
@@ -548,7 +561,8 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
       }
       if ( mySettings.value( "/Plugins/" + baseName ).toBool() )
       {
-        mySettings.setValue( QStringLiteral( "Plugins/watchDog/%1" ).arg( baseName ), true );
+        mySettings.setValue( QStringLiteral( "Plugins/watchDog/%1" ).arg( baseName ),
+                             QDateTime::currentDateTime().toSecsSinceEpoch() );
         loadCppPlugin( myFullPath );
         mySettings.remove( QStringLiteral( "/Plugins/watchDog/%1" ).arg( baseName ) );
       }
@@ -597,8 +611,20 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
       }
       // end - temporary fix for issue #5879, more below
 
+      bool pluginCrashedPreviously = false;
+      const QVariant lastRun = mySettings.value( QStringLiteral( "/PythonPlugins/watchDog/%1" ).arg( packageName ) );
+      if ( lastRun.isValid() )
+      {
+        const int delta = QDateTime::currentDateTime().toSecsSinceEpoch() - lastRun.toInt();
+        if ( delta > 5 )
+        {
+          // The timestamp is left unremoved and is older than 5 seconds, so it doesn't come
+          // from a parallelly running instance.
+          pluginCrashedPreviously = true;
+        }
+      }
 
-      if ( mySettings.value( "/PythonPlugins/watchDog/" + packageName ).isValid() )
+      if ( pluginCrashedPreviously )
       {
         QToolButton *btnEnablePlugin = new QToolButton();
         btnEnablePlugin->setText( QObject::tr( "Enable Plugin" ) );
@@ -645,7 +671,8 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
       // check if the plugin was active on last session
       if ( mySettings.value( "/PythonPlugins/" + packageName ).toBool() )
       {
-        mySettings.setValue( "/PythonPlugins/watchDog/" + packageName, true );
+        mySettings.setValue( "/PythonPlugins/watchDog/" + packageName,
+                             QDateTime::currentDateTime().toSecsSinceEpoch() );
         if ( checkPythonPlugin( packageName ) )
         {
           loadPythonPlugin( packageName );
