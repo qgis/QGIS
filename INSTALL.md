@@ -805,7 +805,7 @@ This will require some time, cpu and disk space.
 # Configure
 cmake -S . \
       -B build \
-      -D WITH_VCPKG \
+      -D WITH_VCPKG=ON \
       -D BUILD_WITH_QT6=ON \
       -D WITH_QTWEBKIT=OFF \
       -D VCPKG_TARGET_TRIPLET=x64-windows-release \
