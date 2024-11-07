@@ -591,29 +591,58 @@ try:
    QgsRasterLayer.as_numpy = _raster_layer_as_numpy
 
    def _qgsgeometry_as_numpy(self) -> _typing.Union[_numpy.ndarray, _typing.List[_numpy.ndarray]]:
+       wkb = self.wkbType()
+       hasM = QgsWkbTypes.hasM(wkb)
+       hasZ = QgsWkbTypes.hasZ(wkb)
+
+       def get_xyzm_coordinates(pt):
+                 if hasZ and hasM:
+                     return _numpy.array([pt.x(), pt.y(), pt.z(), pt.m()])
+                 elif hasZ:
+                     return _numpy.array([pt.x(), pt.y(), pt.z()])
+                 elif hasM:
+                     return _numpy.array([pt.x(), pt.y(), pt.m()])
+                 else:
+                     return _numpy.array([pt.x(), pt.y()])
+
+       def fill_structure_with_elements(lst: _typing.List, elements: _typing.List, idx: int=0):
+           for i in range(len(lst)):
+               if isinstance(lst[i], list):
+                    idx = fill_structure_with_elements(lst[i], elements, idx)
+               else:
+                   lst[i] = _numpy.array(elements[idx])
+                   idx += 1
+           return idx
+
        if self.isMultipart():
-           if self.type() == QgsWkbTypes.PointGeometry:
-               # MultiPoint
-               return [_numpy.array([pt.x(), pt.y()]) for pt in self.asMultiPoint()]
-           elif self.type() == QgsWkbTypes.LineGeometry:
-               # MultiLineString
-               return [_numpy.array([[pt.x(), pt.y()] for pt in line]) for line in self.asMultiPolyline()]
-           elif self.type() == QgsWkbTypes.PolygonGeometry:
-               # MultiPolygon
-               return [
-                   [_numpy.array([[pt.x(), pt.y()] for pt in ring]) for ring in polygon]
-                   for polygon in self.asMultiPolygon()
-               ]
+            geometry_type = self.type()
+            elements = [get_xyzm_coordinates(i) for i in self.vertices()]
+
+            if geometry_type == QgsWkbTypes.PointGeometry:
+                skeleton = self.asMultiPoint()
+                fill_structure_with_elements(skeleton, elements)
+                return skeleton
+
+            elif geometry_type == QgsWkbTypes.LineGeometry:
+                skeleton = self.asMultiPolyline()
+                fill_structure_with_elements(skeleton, elements)
+                return skeleton
+
+            elif geometry_type == QgsWkbTypes.PolygonGeometry:
+                skeleton = self.asMultiPolygon()
+                fill_structure_with_elements(skeleton, elements)
+                return skeleton
        else:
-           if self.type() == QgsWkbTypes.PointGeometry:
-               point = self.asPoint()
-               return _numpy.array([point.x(), point.y()])
-           elif self.type() == QgsWkbTypes.LineGeometry:
-               line = self.asPolyline()
-               return _numpy.array([[pt.x(), pt.y()] for pt in line])
-           elif self.type() == QgsWkbTypes.PolygonGeometry:
-               polygon = self.asPolygon()
-               return _numpy.array([_numpy.array([[pt.x(), pt.y()] for pt in ring]) for ring in polygon])
+            if self.type() == QgsWkbTypes.PointGeometry:
+                return _numpy.array([get_xyzm_coordinates(i) for i in self.vertices()][0])
+            elif self.type() == QgsWkbTypes.LineGeometry:
+                line = self.vertices()
+                return _numpy.array([get_xyzm_coordinates(pt) for pt in line])
+            elif self.type() == QgsWkbTypes.PolygonGeometry:
+                skeleton = self.asPolygon()
+                elements = [get_xyzm_coordinates(i) for i in self.vertices()]
+                fill_structure_with_elements(skeleton, elements)
+                return _numpy.array(skeleton)
 
 
    QgsGeometry.as_numpy = _qgsgeometry_as_numpy
