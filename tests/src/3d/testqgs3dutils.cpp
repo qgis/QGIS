@@ -25,6 +25,21 @@
 #include <QSize>
 #include <QtMath>
 
+static bool qgsVectorNear( const QVector3D &v1, const QVector3D &v2, double eps )
+{
+  return qgsDoubleNear( v1.x(), v2.x(), eps ) &&
+         qgsDoubleNear( v1.y(), v2.y(), eps ) &&
+         qgsDoubleNear( v1.z(), v2.z(), eps );
+}
+
+static bool qgsQuaternionNear( const QQuaternion &q1, const QQuaternion &q2, double eps )
+{
+  return qgsDoubleNear( q1.x(), q2.x(), eps ) &&
+         qgsDoubleNear( q1.y(), q2.y(), eps ) &&
+         qgsDoubleNear( q1.z(), q2.z(), eps ) &&
+         qgsDoubleNear( q1.scalar(), q2.scalar(), eps );
+}
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the vertex tool
@@ -45,6 +60,7 @@ class TestQgs3DUtils : public QgsTest
     void testQgsRay3D();
     void testExportToObj();
     void testDefinesToShaderCode();
+    void testDecomposeTransformMatrix();
   private:
 };
 
@@ -439,6 +455,32 @@ void TestQgs3DUtils::testDefinesToShaderCode()
   // result should be empty
   const QByteArray actualEmpty = Qgs3DUtils::removeDefinesFromShaderCode( QByteArray(), definesList );
   QCOMPARE( actualEmpty, QByteArray() );
+}
+
+void TestQgs3DUtils::testDecomposeTransformMatrix()
+{
+  QMatrix4x4 m1;
+  m1.translate( QVector3D( 100, 200, 300 ) );
+  m1.scale( QVector3D( 2, 5, 7 ) );
+  QVector3D t1, s1;
+  QQuaternion r1;
+  Qgs3DUtils::decomposeTransformMatrix( m1, t1, r1, s1 );
+
+  QCOMPARE( s1, QVector3D( 2, 5, 7 ) );
+  QCOMPARE( t1, QVector3D( 100, 200, 300 ) );
+  QCOMPARE( r1, QQuaternion() );
+
+  QMatrix4x4 m2;
+  m2.translate( QVector3D( 500, 600, 700 ) );
+  QQuaternion q2 = QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), 90 );
+  m2.rotate( q2 );
+  QVector3D t2, s2;
+  QQuaternion r2;
+  Qgs3DUtils::decomposeTransformMatrix( m2, t2, r2, s2 );
+
+  QVERIFY( qgsVectorNear( s2, QVector3D( 1, 1, 1 ), 1e-6 ) );
+  QVERIFY( qgsVectorNear( t2, QVector3D( 500, 600, 700 ), 1e-6 ) );
+  QVERIFY( qgsQuaternionNear( r2, q2, 1e-6 ) );
 }
 
 
