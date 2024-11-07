@@ -36,7 +36,7 @@ Building QGIS from source - step by step
            * [4.2.1.2. Building the dependencies](#4212-building-the-dependencies)
            * [4.2.1.3. Cross-Building QGIS](#4213-cross-building-qgis)
        * [4.2.2. Testing QGIS](#422-testing-qgis)
-   * [4.3 Building for Qt 6 with VCPKG in Microsoft Visual Studio](43-building-on-windows-with-vcpkg)
+   * [4.3 Building for Qt 6 with VCPKG in Microsoft Visual Studio](#43-building-on-windows-with-vcpkg)
 * [5. Building on MacOS X](#5-building-on-macos-x)
    * [5.1. Install Developer Tools](#51-install-developer-tools)
    * [5.2. Install CMake and other build tools](#52-install-cmake-and-other-build-tools)
