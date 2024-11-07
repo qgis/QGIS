@@ -137,7 +137,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 VectorLayerHistogram(),
                 VectorLayerScatterplot(),
                 VectorLayerScatterplot3D(),
-                KeepMetadata()
+                KeepMetadata(),
                 ]
 
         return algs
