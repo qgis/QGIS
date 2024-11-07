@@ -41,6 +41,10 @@ QgsPoint3DSymbol::QgsPoint3DSymbol()
   : mMaterialSettings( std::make_unique< QgsPhongMaterialSettings >() )
 {
   setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
+
+  // our built-in 3D geometries (e.g. cylinder, plane, ...) assume Y axis going "up",
+  // let's rotate them by default so that their Z axis goes "up" (like the rest of the scene)
+  mTransform.rotate( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), 90 ) );
 }
 
 QgsPoint3DSymbol::QgsPoint3DSymbol( const QgsPoint3DSymbol &other )
@@ -274,7 +278,7 @@ QVariant QgsPoint3DSymbol::shapeProperty( const QString &property ) const
 
 float QgsPoint3DSymbol::billboardHeight() const
 {
-  return mTransform.data()[13];
+  return mTransform.data()[14];
 }
 
 QgsAbstractMaterialSettings *QgsPoint3DSymbol::materialSettings() const
