@@ -512,10 +512,9 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
       const QVariant lastRun = mySettings.value( QStringLiteral( "Plugins/watchDog/%1" ).arg( baseName ) );
       if ( lastRun.isValid() )
       {
-        const int delta = QDateTime::currentDateTime().toSecsSinceEpoch() - lastRun.toInt();
-        if ( delta > 5 )
+        if ( QDateTime::currentDateTime().toSecsSinceEpoch() - lastRun.toLongLong() > 5 )
         {
-          // The timestamp is left unremoved and is older than 5 seconds, so it doesn't come
+          // The timestamp is left unremoved and is older than 5 seconds, so it's not coming
           // from a parallelly running instance.
           pluginCrashedPreviously = true;
         }
@@ -615,10 +614,9 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
       const QVariant lastRun = mySettings.value( QStringLiteral( "/PythonPlugins/watchDog/%1" ).arg( packageName ) );
       if ( lastRun.isValid() )
       {
-        const int delta = QDateTime::currentDateTime().toSecsSinceEpoch() - lastRun.toInt();
-        if ( delta > 5 )
+        if ( QDateTime::currentDateTime().toSecsSinceEpoch() - lastRun.toLongLong() > 5 )
         {
-          // The timestamp is left unremoved and is older than 5 seconds, so it doesn't come
+          // The timestamp is left unremoved and is older than 5 seconds, so it's not coming
           // from a parallelly running instance.
           pluginCrashedPreviously = true;
         }
