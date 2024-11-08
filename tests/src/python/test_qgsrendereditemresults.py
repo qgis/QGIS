@@ -11,10 +11,13 @@ __author__ = '(C) 2021 by Nyall Dawson'
 __date__ = '03/09/2021'
 __copyright__ = 'Copyright 2021, The QGIS Project'
 
+import math
+
 from qgis.core import (
     QgsRectangle,
     QgsRenderContext,
     QgsRenderedAnnotationItemDetails,
+    QgsRenderedLayerStatistics,
     QgsRenderedItemDetails,
     QgsRenderedItemResults,
 )
@@ -40,6 +43,40 @@ class TestQgsRenderedItemResults(QgisTestCase):
         self.assertEqual(details.layerId(), 'layer_id')
         self.assertEqual(details.itemId(), 'item_id')
         self.assertEqual(str(details), '<QgsRenderedAnnotationItemDetails: layer_id - item_id>')
+
+    def test_rendered_calculated_results(self):
+        results = QgsRenderedLayerStatistics('layer_id')
+        self.assertEqual(results.layerId(), 'layer_id')
+        self.assertEqual(len(results.minimum()), 1)
+        self.assertTrue(math.isnan(results.minimum(0)))
+        self.assertEqual(len(results.maximum()), 1)
+        self.assertTrue(math.isnan(results.maximum(0)))
+
+        results.setBoundingBox(QgsRectangle(1, 2, 3, 4))
+        self.assertEqual(results.boundingBox(), QgsRectangle(1, 2, 3, 4))
+
+        results.setMinimum(0, -10.0)
+        results.setMaximum(0, 10.0)
+        self.assertEqual(len(results.minimum()), 1)
+        self.assertEqual(results.minimum(), [-10.0])
+        self.assertEqual(len(results.maximum()), 1)
+        self.assertEqual(results.maximum(), [10.0])
+
+        results.setMinimum([-10.0, -3.4])
+        results.setMaximum([10.0, 5.2])
+        self.assertEqual(len(results.minimum()), 2)
+        self.assertEqual(results.minimum(), [-10.0, -3.4])
+        self.assertEqual(len(results.maximum()), 2)
+        self.assertEqual(results.maximum(), [10.0, 5.2])
+
+        results2 = QgsRenderedLayerStatistics('layer_id', [-5.2, 3.0], [5.0, 9.3])
+        self.assertEqual(results2.layerId(), 'layer_id')
+        self.assertEqual(len(results.minimum()), 2)
+        self.assertEqual(results2.minimum(), [-5.2, 3.0])
+        self.assertEqual(results2.minimum(1), 3.0)
+        self.assertEqual(len(results.maximum()), 2)
+        self.assertEqual(results2.maximum(1), 9.3)
+        self.assertEqual(str(results2), '<QgsRenderedLayerStatistics: layer_id (min: -5.2,3 - max: 5,9.3)>')
 
     def test_results(self):
         results = QgsRenderedItemResults()
