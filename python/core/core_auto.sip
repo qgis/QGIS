@@ -160,6 +160,7 @@
 %Include auto_generated/qgsrenderchecker.sip
 %Include auto_generated/qgsrendercontext.sip
 %Include auto_generated/qgsrenderedfeaturehandlerinterface.sip
+%Include auto_generated/qgsrenderedlayerstatistics.sip
 %Include auto_generated/qgsrendereditemdetails.sip
 %Include auto_generated/qgsrunprocess.sip
 %Include auto_generated/qgsruntimeprofiler.sip

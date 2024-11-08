@@ -578,6 +578,7 @@ set(QGIS_CORE_SRCS
   qgsremappingproxyfeaturesink.cpp
   qgsrenderchecker.cpp
   qgsrendercontext.cpp
+  qgsrenderedlayerstatistics.cpp
   qgsrendereditemdetails.cpp
   qgsrunprocess.cpp
   qgsruntimeprofiler.cpp
@@ -1280,6 +1281,7 @@ set(QGIS_CORE_HDRS
   qgsrenderchecker.h
   qgsrendercontext.h
   qgsrenderedfeaturehandlerinterface.h
+  qgsrenderedlayerstatistics.h
   qgsrendereditemdetails.h
   qgsrunprocess.h
   qgsruntimeprofiler.h
