@@ -30,6 +30,7 @@
 #include <QRegularExpression>
 #include <QIcon>
 #include <mutex>
+#include <QRegExp>
 
 const QString QgsMdalProvider::MDAL_PROVIDER_KEY = QStringLiteral( "mdal" );
 const QString QgsMdalProvider::MDAL_PROVIDER_DESCRIPTION = QStringLiteral( "MDAL provider" );
@@ -677,10 +678,15 @@ void QgsMdalProvider::fileMeshExtensions( QStringList &fileMeshExtensions,
 
 bool QgsMdalProvider::addDataset( const QString &uri )
 {
+  if ( mExtraDatasetUris.contains( uri ) && dataSourceUri().contains( uri ) )
+    return false;
+
   int datasetCount = datasetGroupCount();
 
   std::string str = uri.toStdString();
   MDAL_M_LoadDatasets( mMeshH, str.c_str() );
+
+  makeLastDatasetGroupNameUnique();
 
   if ( datasetCount == datasetGroupCount() )
   {
@@ -698,6 +704,44 @@ bool QgsMdalProvider::addDataset( const QString &uri )
     emit datasetGroupsAdded( datasetCountAdded );
     emit dataChanged();
     return true; // Ok
+  }
+}
+
+void QgsMdalProvider::makeLastDatasetGroupNameUnique()
+{
+  MDAL_DatasetGroupH datasetGroupH = MDAL_M_datasetGroup( mMeshH, datasetGroupCount() - 1 );
+  QString lastAddedGroupName = QString( MDAL_G_name( datasetGroupH ) );
+
+  QSet<QString> existingNames;
+
+  for ( int i = 0; i <  datasetGroupCount() - 1; i++ )
+  {
+    existingNames.insert( MDAL_G_name( MDAL_M_datasetGroup( mMeshH, i ) ) );
+  }
+
+  if ( existingNames.contains( lastAddedGroupName ) )
+  {
+    QRegularExpression reEndsNumber( "_[0-9]+$" );
+    QRegularExpression reNumber( "[0-9]+$" );
+    QRegularExpressionMatch match;
+
+    while ( existingNames.find( lastAddedGroupName ) != existingNames.end() )
+    {
+      if ( reEndsNumber.match( lastAddedGroupName ).hasMatch() )
+      {
+        match = reNumber.match( lastAddedGroupName );
+        if ( match.hasMatch() )
+        {
+          int number = match.capturedTexts().first().toInt();
+          lastAddedGroupName = lastAddedGroupName.left( lastAddedGroupName.length() - match.capturedLength() ) + QString( number + 1 );
+        }
+      }
+      else
+      {
+        lastAddedGroupName = lastAddedGroupName.append( "_1" );;
+      }
+    }
+    MDAL_G_setName( datasetGroupH, lastAddedGroupName.toStdString().c_str() );
   }
 }
 

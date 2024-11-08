@@ -130,6 +130,9 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QVector<QgsMeshFace> faces( ) const;
     void loadData();
     void addGroupToTemporalCapabilities( int indexGroup );
+
+    void makeLastDatasetGroupNameUnique();
+
     MDAL_MeshH mMeshH = nullptr;
     QStringList mExtraDatasetUris;
     QgsCoordinateReferenceSystem mCrs;

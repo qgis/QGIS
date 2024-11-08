@@ -942,6 +942,16 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      */
     void setLabeling( QgsAbstractMeshLayerLabeling *labeling SIP_TRANSFER );
 
+    /**
+     * Checks that datasets path is already added to this mesh layer. Return true if the
+     * dataset path is unique.
+     *
+     * \param path the path to the datasets file
+     * @return whether the datasets path is unique
+     *
+     * \since QGIS 3.42
+     */
+    bool datasetsPathUnique( const QString &path );
 
   public slots:
 
