@@ -56,17 +56,17 @@ class CORE_EXPORT QgsTessellator
                     bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f );
 
     /**
-     * Sets whether the "up" direction should be the Z axis on output (true),
-     * otherwise the "up" direction will be the Y axis (false). The default
-     * value is false (to keep compatibility for existing tessellator use cases).
+     * Sets whether the "up" direction should be the Z axis on output (TRUE),
+     * otherwise the "up" direction will be the Y axis (FALSE). The default
+     * value is FALSE (to keep compatibility for existing tessellator use cases).
      * \since QGIS 3.42
      */
     void setOutputZUp( bool zUp ) { mOutputZUp = zUp; }
 
     /**
-     * Returns whether the "up" direction should be the Z axis on output (true),
-     * otherwise the "up" direction will be the Y axis (false). The default
-     * value is false (to keep compatibility for existing tessellator use cases).
+     * Returns whether the "up" direction should be the Z axis on output (TRUE),
+     * otherwise the "up" direction will be the Y axis (FALSE). The default
+     * value is FALSE (to keep compatibility for existing tessellator use cases).
      * \since QGIS 3.42
      */
     bool isOutputZUp() const { return mOutputZUp; }
