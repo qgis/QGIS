@@ -77,7 +77,7 @@ void QgsStacDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
     if ( catalogItem->stacCatalog() )
     {
-      QAction *actionDetails = new QAction( tr( "Details" ), menu );
+      QAction *actionDetails = new QAction( tr( "Details…" ), menu );
       connect( actionDetails, &QAction::triggered, this, [catalogItem] { showDetails( catalogItem ); } );
       menu->addAction( actionDetails );
     }
@@ -93,11 +93,11 @@ void QgsStacDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     {
       menu->addSeparator();
 
-      QAction *actionDownload = new QAction( tr( "Download assets" ), menu );
+      QAction *actionDownload = new QAction( tr( "Download Assets…" ), menu );
       connect( actionDownload, &QAction::triggered, this, [itemItem, context] { downloadAssets( itemItem, context ); } );
       menu->addAction( actionDownload );
 
-      QAction *actionDetails = new QAction( tr( "Details" ), menu );
+      QAction *actionDetails = new QAction( tr( "Details…" ), menu );
       connect( actionDetails, &QAction::triggered, this, [itemItem] { showDetails( itemItem ); } );
       menu->addAction( actionDetails );
     }
