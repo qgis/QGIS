@@ -136,7 +136,7 @@ bool QgsZonalMinimumMaximumPointAlgorithm::prepareAlgorithm( const QVariantMap &
 
   QgsFields newFields;
   newFields.append( QgsField( QStringLiteral( "value" ), QMetaType::Type::Double, QString(), 20, 8 ) );
-  newFields.append( QgsField( QStringLiteral( "extremum" ), QMetaType::Type::QString ) );
+  newFields.append( QgsField( QStringLiteral( "extremum_type" ), QMetaType::Type::QString ) );
   mOutputFields = QgsProcessingUtils::combineFields( source->fields(), newFields );
 
   return true;

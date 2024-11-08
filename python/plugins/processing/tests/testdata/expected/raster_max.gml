@@ -12,7 +12,7 @@
       <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>45.7964514376 18.6964479442</gml:lowerCorner><gml:upperCorner>45.7964514376 18.6964479442</gml:upperCorner></gml:Envelope></gml:boundedBy>
       <ogr:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="raster_max.geom.0"><gml:pos>45.7964514376 18.6964479442</gml:pos></gml:Point></ogr:geometryProperty>
       <ogr:value>243.00000000</ogr:value>
-      <ogr:extremum>maximum</ogr:extremum>
+      <ogr:extremum_type>maximum</ogr:extremum_type>
     </ogr:raster_max>
   </ogr:featureMember>
 </ogr:FeatureCollection>

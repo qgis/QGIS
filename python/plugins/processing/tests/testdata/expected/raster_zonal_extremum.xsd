@@ -54,7 +54,7 @@
             </xs:restriction>
           </xs:simpleType>
         </xs:element>
-        <xs:element name="extremum" nillable="true" minOccurs="0" maxOccurs="1">
+        <xs:element name="extremum_type" nillable="true" minOccurs="0" maxOccurs="1">
           <xs:simpleType>
             <xs:restriction base="xs:string">
             </xs:restriction>
