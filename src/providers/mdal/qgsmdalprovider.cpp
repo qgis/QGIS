@@ -755,9 +755,12 @@ bool QgsMdalProvider::removeDatasetGroup( const int &index )
   {
     QgsMeshDatasetGroupMetadata datasetGroupMeta = datasetGroupMetadata( index );
 
-    if ( mExtraDatasetUris.contains( datasetGroupMeta.uri() ) )
-      mExtraDatasetUris.removeOne( datasetGroupMeta.uri() );
+    if ( !mExtraDatasetUris.contains( datasetGroupMeta.uri() ) )
+    {
+      return false;
+    }
 
+    mExtraDatasetUris.removeOne( datasetGroupMeta.uri() );
     MDAL_M_RemoveDatasetGroup( mMeshH, index );
     emit dataChanged();
     return true;
