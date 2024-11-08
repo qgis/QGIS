@@ -36,6 +36,7 @@
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudexpression.h"
 #include "qgspointcloudrequest.h"
+#include "qgslazinfo.h"
 
 #define SIP_NO_FILE
 
