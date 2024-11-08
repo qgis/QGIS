@@ -952,3 +952,25 @@ QByteArray Qgs3DUtils::removeDefinesFromShaderCode( const QByteArray &shaderCode
 
   return newShaderCode;
 }
+
+void Qgs3DUtils::decomposeTransformMatrix( const QMatrix4x4 &matrix, QVector3D &translation, QQuaternion &rotation, QVector3D &scale )
+{
+  // decompose the transform matrix
+  // assuming the last row has values [0 0 0 1]
+  // see https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
+  const float *md = matrix.data();  // returns data in column-major order
+  const float sx = QVector3D( md[0], md[1], md[2] ).length();
+  const float sy = QVector3D( md[4], md[5], md[6] ).length();
+  const float sz = QVector3D( md[8], md[9], md[10] ).length();
+  float rd[9] =
+  {
+    md[0] / sx, md[4] / sy, md[8] / sz,
+    md[1] / sx, md[5] / sy, md[9] / sz,
+    md[2] / sx, md[6] / sy, md[10] / sz,
+  };
+  const QMatrix3x3 rot3x3( rd ); // takes data in row-major order
+
+  scale = QVector3D( sx, sy, sz );
+  rotation = QQuaternion::fromRotationMatrix( rot3x3 );
+  translation = QVector3D( md[12], md[13], md[14] );
+}

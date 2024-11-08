@@ -1,6 +1,10 @@
 #pragma once
 
+#include <windows.h>
 #include <io.h>
+#include <fcntl.h>
+
+#include <stringconv.hpp>
 
 namespace untwine
 {
@@ -30,7 +34,7 @@ public:
     HANDLE m_handle;
 };
 
-MapContext mapFile(const std::string& filename, bool readOnly, size_t pos, size_t size)
+inline MapContext mapFile(const std::string& filename, bool readOnly, size_t pos, size_t size)
 {
     MapContext ctx;
 
@@ -61,7 +65,7 @@ MapContext mapFile(const std::string& filename, bool readOnly, size_t pos, size_
     return ctx;
 }
 
-MapContext unmapFile(MapContext ctx)
+inline MapContext unmapFile(MapContext ctx)
 {
     if (UnmapViewOfFile(ctx.m_addr) == 0)
         ctx.m_error = "Couldn't unmap file.";

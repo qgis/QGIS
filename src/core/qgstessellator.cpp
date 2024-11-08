@@ -43,14 +43,13 @@ static std::pair<float, float> rotateCoords( float x, float y, float origin_x, f
   return std::make_pair( x1, y1 );
 }
 
-static void make_quad( float x0, float y0, float z0, float x1, float y1, float z1, float height, QVector<float> &data, bool addNormals, bool addTextureCoords, float textureRotation )
+static void make_quad( float x0, float y0, float z0, float x1, float y1, float z1, float height, QVector<float> &data, bool addNormals, bool addTextureCoords, float textureRotation, bool zUp )
 {
   const float dx = x1 - x0;
-  const float dy = -( y1 - y0 );
+  const float dy = y1 - y0;
 
   // perpendicular vector in plane to [x,y] is [-y,x]
-  QVector3D vn( -dy, 0, dx );
-  vn = -vn;
+  QVector3D vn = zUp ? QVector3D( -dy, dx, 0 ) : QVector3D( -dy, 0, -dx );
   vn.normalize();
 
   float u0, v0;
@@ -119,19 +118,28 @@ static void make_quad( float x0, float y0, float z0, float x1, float y1, float z
 
   // triangle 1
   // vertice 1
-  data << x0 << z0 + height << -y0;
+  if ( zUp )
+    data << x0 << y0 << z0 + height;
+  else
+    data << x0 << z0 + height << -y0;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
   if ( addTextureCoords )
     data << textureCoordinates[0] << textureCoordinates[1];
   // vertice 2
-  data << x1 << z1 + height << -y1;
+  if ( zUp )
+    data << x1 << y1 << z1 + height;
+  else
+    data << x1 << z1 + height << -y1;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
   if ( addTextureCoords )
     data << textureCoordinates[2] << textureCoordinates[3];
   // verice 3
-  data << x0 << z0 << -y0;
+  if ( zUp )
+    data << x0 << y0 << z0;
+  else
+    data << x0 << z0 << -y0;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
   if ( addTextureCoords )
@@ -139,19 +147,28 @@ static void make_quad( float x0, float y0, float z0, float x1, float y1, float z
 
   // triangle 2
   // vertice 1
-  data << x0 << z0 << -y0;
+  if ( zUp )
+    data << x0 << y0 << z0;
+  else
+    data << x0 << z0 << -y0;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
   if ( addTextureCoords )
     data << textureCoordinates[6] << textureCoordinates[7];
   // vertice 2
-  data << x1 << z1 + height << -y1;
+  if ( zUp )
+    data << x1 << y1 << z1 + height;
+  else
+    data << x1 << z1 + height << -y1;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
   if ( addTextureCoords )
     data << textureCoordinates[8] << textureCoordinates[9];
   // vertice 3
-  data << x1 << z1 << -y1;
+  if ( zUp )
+    data << x1 << y1 << z1;
+  else
+    data << x1 << z1 << -y1;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
   if ( addTextureCoords )
@@ -216,7 +233,7 @@ static bool _isRingCounterClockWise( const QgsCurve &ring )
 }
 
 static void _makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeight, QVector<float> &data,
-                        bool addNormals, bool addTextureCoords, double originX, double originY, float textureRotation )
+                        bool addNormals, bool addTextureCoords, double originX, double originY, float textureRotation, bool zUp )
 {
   // we need to find out orientation of the ring so that the triangles we generate
   // face the right direction
@@ -234,7 +251,7 @@ static void _makeWalls( const QgsLineString &ring, bool ccw, float extrusionHeig
     const float z1 = std::isnan( pt.z() ) ? 0 : pt.z();
 
     // make a quad
-    make_quad( x0, y0, z0, x1, y1, z1, extrusionHeight, data, addNormals, addTextureCoords, textureRotation );
+    make_quad( x0, y0, z0, x1, y1, z1, extrusionHeight, data, addNormals, addTextureCoords, textureRotation, zUp );
     ptPrev = pt;
   }
 }
@@ -554,9 +571,19 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       if ( z > zMaxExtruded )
         zMaxExtruded = z;
 
-      mData << *xData - mOriginX << z << - *yData + mOriginY;
-      if ( mAddNormals )
-        mData << pNormal.x() << pNormal.z() << - pNormal.y();
+      if ( mOutputZUp )
+      {
+        mData << static_cast<float>( *xData - mOriginX ) << static_cast<float>( *yData - mOriginY ) << z;
+        if ( mAddNormals )
+          mData << pNormal.x() << pNormal.y() << pNormal.z();
+      }
+      else  // Y axis is the up direction
+      {
+        mData << static_cast<float>( *xData - mOriginX ) << z << static_cast<float>( - *yData + mOriginY );
+        if ( mAddNormals )
+          mData << pNormal.x() << pNormal.z() << - pNormal.y();
+      }
+
       if ( mAddTextureCoords )
       {
         std::pair<float, float> p( triangle->xAt( i ), triangle->yAt( i ) );
@@ -581,9 +608,23 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       // the same triangle with reversed order of coordinates and inverted normal
       for ( int i = 2; i >= 0; i-- )
       {
-        mData << exterior->xAt( i ) - mOriginX << ( mNoZ ? 0 : exterior->zAt( i ) ) << - exterior->yAt( i ) + mOriginY;
-        if ( mAddNormals )
-          mData << -pNormal.x() << -pNormal.z() << pNormal.y();
+        if ( mOutputZUp )
+        {
+          mData << static_cast<float>( exterior->xAt( i ) - mOriginX )
+                << static_cast<float>( exterior->yAt( i ) - mOriginY )
+                << static_cast<float>( mNoZ ? 0 : exterior->zAt( i ) );
+          if ( mAddNormals )
+            mData << -pNormal.x() << -pNormal.y() << -pNormal.z();
+        }
+        else // Y axis is the up direction
+        {
+          mData << static_cast<float>( exterior->xAt( i ) - mOriginX )
+                << static_cast<float>( mNoZ ? 0 : exterior->zAt( i ) )
+                << static_cast<float>( - exterior->yAt( i ) + mOriginY );
+          if ( mAddNormals )
+            mData << -pNormal.x() << -pNormal.z() << pNormal.y();
+        }
+
         if ( mAddTextureCoords )
         {
           std::pair<float, float> p( triangle->xAt( i ), triangle->yAt( i ) );
@@ -681,9 +722,19 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           if ( fz > zMaxExtruded )
             zMaxExtruded = fz;
 
-          mData << fx << fz << -fy;
-          if ( mAddNormals )
-            mData << pNormal.x() << pNormal.z() << - pNormal.y();
+          if ( mOutputZUp )
+          {
+            mData << static_cast<float>( fx ) << static_cast<float>( fy ) << static_cast<float>( fz );
+            if ( mAddNormals )
+              mData << pNormal.x() << pNormal.y() << pNormal.z();
+          }
+          else
+          {
+            mData << static_cast<float>( fx ) << static_cast<float>( fz ) << static_cast<float>( -fy );
+            if ( mAddNormals )
+              mData << pNormal.x() << pNormal.z() << - pNormal.y();
+          }
+
           if ( mAddTextureCoords )
           {
             const std::pair<float, float> pr = rotateCoords( p->x, p->y, 0.0f, 0.0f, mTextureRotation );
@@ -703,9 +754,20 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
             const double fx = ( pt.x() / scale ) - mOriginX + pt0.x();
             const double fy = ( pt.y() / scale ) - mOriginY + pt0.y();
             const double fz = mNoZ ? 0 : ( pt.z() + extrusionHeight + pt0.z() );
-            mData << fx << fz << -fy;
-            if ( mAddNormals )
-              mData << -pNormal.x() << -pNormal.z() << pNormal.y();
+
+            if ( mOutputZUp )
+            {
+              mData << static_cast<float>( fx ) << static_cast<float>( fy ) << static_cast<float>( fz );
+              if ( mAddNormals )
+                mData << -pNormal.x() << -pNormal.y() << -pNormal.z();
+            }
+            else
+            {
+              mData << static_cast<float>( fx ) << static_cast<float>( fz ) << static_cast<float>( -fy );
+              if ( mAddNormals )
+                mData << -pNormal.x() << -pNormal.z() << pNormal.y();
+            }
+
             if ( mAddTextureCoords )
             {
               const std::pair<float, float> pr = rotateCoords( p->x, p->y, 0.0f, 0.0f, mTextureRotation );
@@ -731,10 +793,10 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   // add walls if extrusion is enabled
   if ( extrusionHeight != 0 && ( mTessellatedFacade & 1 ) )
   {
-    _makeWalls( *exterior, false, extrusionHeight, mData, mAddNormals, mAddTextureCoords, mOriginX, mOriginY, mTextureRotation );
+    _makeWalls( *exterior, false, extrusionHeight, mData, mAddNormals, mAddTextureCoords, mOriginX, mOriginY, mTextureRotation, mOutputZUp );
 
     for ( int i = 0; i < polygon.numInteriorRings(); ++i )
-      _makeWalls( *qgsgeometry_cast< const QgsLineString * >( polygon.interiorRing( i ) ), true, extrusionHeight, mData, mAddNormals, mAddTextureCoords, mOriginX, mOriginY, mTextureRotation );
+      _makeWalls( *qgsgeometry_cast< const QgsLineString * >( polygon.interiorRing( i ) ), true, extrusionHeight, mData, mAddNormals, mAddTextureCoords, mOriginX, mOriginY, mTextureRotation, mOutputZUp );
 
     if ( zMaxBase + extrusionHeight > zMaxExtruded )
       zMaxExtruded = zMaxBase + extrusionHeight;
@@ -760,11 +822,21 @@ std::unique_ptr<QgsMultiPolygon> QgsTessellator::asMultiPolygon() const
   mp->reserve( nVals / 9 );
   for ( auto i = decltype( nVals ) {0}; i + 8 < nVals; i += 9 )
   {
-    // tessellator geometry is x, z, -y
-    const QgsPoint p1( mData[i + 0], -mData[i + 2], mData[i + 1] );
-    const QgsPoint p2( mData[i + 3], -mData[i + 5], mData[i + 4] );
-    const QgsPoint p3( mData[i + 6], -mData[i + 8], mData[i + 7] );
-    mp->addGeometry( new QgsTriangle( p1, p2, p3 ) );
+    if ( mOutputZUp )
+    {
+      const QgsPoint p1( mData[i + 0], mData[i + 1], mData[i + 2] );
+      const QgsPoint p2( mData[i + 3], mData[i + 4], mData[i + 5] );
+      const QgsPoint p3( mData[i + 6], mData[i + 7], mData[i + 8] );
+      mp->addGeometry( new QgsTriangle( p1, p2, p3 ) );
+    }
+    else
+    {
+      // tessellator geometry is x, z, -y
+      const QgsPoint p1( mData[i + 0], -mData[i + 2], mData[i + 1] );
+      const QgsPoint p2( mData[i + 3], -mData[i + 5], mData[i + 4] );
+      const QgsPoint p3( mData[i + 6], -mData[i + 8], mData[i + 7] );
+      mp->addGeometry( new QgsTriangle( p1, p2, p3 ) );
+    }
   }
   return mp;
 }

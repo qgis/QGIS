@@ -117,7 +117,8 @@ namespace MDAL
 
   //! Returns a string with scientific format
   //! precision is the number of signifiant digits
-  std::string doubleToString( double value, int precision = 6 );
+  //! forceScientific forces the scientific notation of the number even if not necessary
+  std::string doubleToString( double value, int precision = 6, bool forceScientific = false );
 
   /**
    * Splits by deliminer and skips empty parts.

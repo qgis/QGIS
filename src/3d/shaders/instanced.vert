@@ -20,16 +20,12 @@ uniform mat4 instNormal;  // should be mat3 but Qt3D only supports mat4...
 
 void main()
 {
-    // vertexPosition uses XZ plane as the base plane, with Y going upwards
+    // vertexPosition uses XY plane as the base plane, with Z going upwards
     // and the coordinates are local to the object
 
     // first let's apply user defined transform for each object (translation, rotation, scaling)
     vec3 vertexPositionObject = vec3(inst * vec4(vertexPosition, 1.0));
     vec3 vertexNormalObject = mat3(instNormal) * vertexNormal;
-
-    // next let's flip axes, so we have XY plane as the base plane (like in map coordinates)
-    vertexPositionObject = vec3(vertexPositionObject.x, -vertexPositionObject.z, vertexPositionObject.y);
-    vertexNormalObject = vec3(vertexNormalObject.x, -vertexNormalObject.z, vertexNormalObject.y);
 
     // add offset of the object relative to the chunk's origin
     vec3 vertexPositionChunk = vertexPositionObject + pos;
