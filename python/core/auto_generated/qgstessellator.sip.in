@@ -45,18 +45,18 @@ If ``noZ`` is ``True``, then a 2-dimensional tessellation only will be performed
 
     void setOutputZUp( bool zUp );
 %Docstring
-Sets whether the "up" direction should be the Z axis on output (true),
-otherwise the "up" direction will be the Y axis (false). The default
-value is false (to keep compatibility for existing tessellator use cases).
+Sets whether the "up" direction should be the Z axis on output (``True``),
+otherwise the "up" direction will be the Y axis (``False``). The default
+value is ``False`` (to keep compatibility for existing tessellator use cases).
 
 .. versionadded:: 3.42
 %End
 
     bool isOutputZUp() const;
 %Docstring
-Returns whether the "up" direction should be the Z axis on output (true),
-otherwise the "up" direction will be the Y axis (false). The default
-value is false (to keep compatibility for existing tessellator use cases).
+Returns whether the "up" direction should be the Z axis on output (``True``),
+otherwise the "up" direction will be the Y axis (``False``). The default
+value is ``False`` (to keep compatibility for existing tessellator use cases).
 
 .. versionadded:: 3.42
 %End
