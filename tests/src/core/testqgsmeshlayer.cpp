@@ -107,6 +107,8 @@ class TestQgsMeshLayer : public QgsTest
     void testSelectByExpression();
 
     void testSetDataSourceRetainStyle();
+    void testRemoveDatasets();
+    void testDatasetsUniquePath();
 
     void keepDatasetIndexConsistency();
     void symbologyConsistencyWithName();
@@ -2364,6 +2366,47 @@ void TestQgsMeshLayer::testHaveSameParentQuantity()
   QVERIFY( layer2.isValid() );
 
   QVERIFY( !QgsMeshLayerUtils::haveSameParentQuantity( &layer2, QgsMeshDatasetIndex( 0 ), QgsMeshDatasetIndex( 1 ) ) );
+}
+
+
+void TestQgsMeshLayer::testDatasetsUniquePath()
+{
+  QgsMeshLayer layer(
+    testDataPath( "mesh/quad_and_triangle.2dm" ),
+    QStringLiteral( "mesh" ),
+    QStringLiteral( "mdal" ) );
+  QVERIFY( layer.isValid() );
+
+  QString path = testDataPath( "/mesh/quad_and_triangle_vertex_vector.dat" );
+
+  // is unique
+  QVERIFY( layer.datasetsPathUnique( path ) );
+
+  // add dataset group
+  QVERIFY( layer.addDatasets( path ) );
+
+  // no longer unique - already exist
+  QCOMPARE( layer.datasetsPathUnique( path ), false );
+}
+
+void TestQgsMeshLayer::testRemoveDatasets()
+{
+  QgsMeshLayer layer(
+    testDataPath( "mesh/quad_and_triangle.2dm" ),
+    QStringLiteral( "mesh" ),
+    QStringLiteral( "mdal" ) );
+  QVERIFY( layer.isValid() );
+
+  // add datasets with same name
+  QVERIFY( layer.addDatasets( testDataPath( "/mesh/quad_and_triangle_vertex_vector.dat" ) ) );
+  QVERIFY( layer.addDatasets( testDataPath( "/mesh/quad_and_triangle_vertex_vector_existing_name.dat" ) ) );
+
+  // can remove but the second has added "_1"
+  QVERIFY( layer.removeDatasets( "VertexVectorDataset" ) );
+  QVERIFY( layer.removeDatasets( "VertexVectorDataset_1" ) );
+
+  // cannot remove by name - does not exist
+  QCOMPARE( layer.removeDatasets( "Non Existing Dataset Group" ), false );
 }
 
 QGSTEST_MAIN( TestQgsMeshLayer )
