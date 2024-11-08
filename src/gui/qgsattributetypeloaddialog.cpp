@@ -23,7 +23,6 @@
 #include "qgsvectordataprovider.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgsiconutils.h"
 
 #include <QTableWidgetItem>
 #include <QLineEdit>
@@ -41,15 +40,16 @@ QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
 {
   setupUi( this );
 
-  connect( layerComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAttributeTypeLoadDialog::fillComboBoxes );
+  layerComboBox->setFilters( Qgis::LayerFilter::VectorLayer );
+  layerComboBox->setCurrentIndex( -1 );
+
+  connect( layerComboBox, &QgsMapLayerComboBox::layerChanged, keyComboBox, &QgsFieldComboBox::setLayer );
+  connect( layerComboBox, &QgsMapLayerComboBox::layerChanged, valueComboBox, &QgsFieldComboBox::setLayer );
   connect( keyComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int index ) { createPreview( index ); } );
   connect( valueComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int index ) { createPreview( index ); } );
   connect( previewButton, &QAbstractButton::pressed, this, &QgsAttributeTypeLoadDialog::previewButtonPushed );
 
-  fillLayerList();
 
-  keyComboBox->setDisabled( true );
-  valueComboBox->setDisabled( true );
 }
 
 void QgsAttributeTypeLoadDialog::setVectorLayer( QgsVectorLayer *layer )
@@ -60,51 +60,6 @@ void QgsAttributeTypeLoadDialog::setVectorLayer( QgsVectorLayer *layer )
 void QgsAttributeTypeLoadDialog::previewButtonPushed()
 {
   createPreview( valueComboBox->currentIndex(), true );
-}
-
-void QgsAttributeTypeLoadDialog::fillLayerList()
-{
-  layerComboBox->blockSignals( true );
-  layerComboBox->clear();
-  const auto constMapLayers = QgsProject::instance()->mapLayers();
-  for ( QgsMapLayer *l : constMapLayers )
-  {
-    QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( l );
-    if ( vl )
-      layerComboBox->addItem( QgsIconUtils::iconForLayer( vl ), vl->name(), vl->id() );
-  }
-  layerComboBox->setCurrentIndex( -1 );
-  layerComboBox->blockSignals( false );
-}
-
-void QgsAttributeTypeLoadDialog::fillComboBoxes( int layerIndex )
-{
-  keyComboBox->blockSignals( true );
-  valueComboBox->blockSignals( true );
-
-  //clear comboboxes first
-  keyComboBox->clear();
-  valueComboBox->clear();
-
-  QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layerIndex < 0 ? nullptr : QgsProject::instance()->mapLayer( layerComboBox->itemData( layerIndex ).toString() ) );
-  if ( vLayer )
-  {
-    const QgsFields vLayerFields = vLayer->dataProvider()->fields();
-    for (int idx = 0; idx < vLayerFields.count(); ++idx )
-    {
-      keyComboBox->addItem( vLayerFields.iconForField( idx ), vLayerFields.at( idx ).name(), idx );
-      valueComboBox->addItem( vLayerFields.iconForField( idx ), vLayerFields.at( idx ).name(), idx );
-    }
-  }
-
-  keyComboBox->setEnabled( nullptr != vLayer );
-  valueComboBox->setEnabled( nullptr != vLayer );
-
-  keyComboBox->setCurrentIndex( -1 );
-  valueComboBox->setCurrentIndex( -1 );
-
-  keyComboBox->blockSignals( false );
-  valueComboBox->blockSignals( false );
 }
 
 void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
@@ -120,9 +75,9 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
     //when nothing is selected there is no reason for preview
     return;
   }
-  const int idx = keyComboBox->currentData().toInt();
-  const int idx2 = valueComboBox->currentData().toInt();
-  QgsMapLayer *dataLayer = QgsProject::instance()->mapLayer( layerComboBox->currentData().toString() );
+  const int idx = keyComboBox->currentIndex();
+  const int idx2 = valueComboBox->currentIndex();
+  QgsMapLayer *dataLayer = QgsProject::instance()->mapLayer( layerComboBox->currentLayer()->id() );
   QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( !vLayer )
     return;
@@ -169,9 +124,9 @@ bool QgsAttributeTypeLoadDialog::insertNull()
 void QgsAttributeTypeLoadDialog::loadDataToValueMap()
 {
   mValueMap.clear();
-  const int idx = keyComboBox->currentData().toInt();
-  const int idx2 = valueComboBox->currentData().toInt();
-  QgsMapLayer *dataLayer = QgsProject::instance()->mapLayer( layerComboBox->currentData().toString() );
+  const int idx = keyComboBox->currentIndex();
+  const int idx2 = valueComboBox->currentIndex();
+  QgsMapLayer *dataLayer = QgsProject::instance()->mapLayer( layerComboBox->currentLayer()->id() );
   QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( !vLayer )
     return;
