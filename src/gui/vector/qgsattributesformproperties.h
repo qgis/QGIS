@@ -33,6 +33,9 @@
 #include <QHBoxLayout>
 #include <QFormLayout>
 #include <QPlainTextEdit>
+#include <QAction>
+#include <QMenu>
+#include <QClipboard>
 
 #include "ui_qgsattributesformproperties.h"
 #include "qgis_gui.h"
@@ -431,6 +434,9 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void onAttributeSelectionChanged();
     void onFormLayoutSelectionChanged();
 
+    //! Context menu for Fields and Relations to enable Copy&Paste
+    void onContextMenuRequested( QPoint );
+
     void updatedFields();
 
   private:
@@ -441,12 +447,16 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void storeAttributeWidgetEdit();
 
     void loadAttributeTypeDialog();
+    void loadAttributeTypeDialogFromConfiguration( const FieldConfig cfg );
     void storeAttributeTypeDialog();
 
     void storeAttributeContainerEdit();
     void loadAttributeContainerEdit();
 
     void loadInfoWidget( const QString &infoText );
+
+    void copyWidgetConfiguration();
+    void pasteWidgetConfiguration();
 
     QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *widgetDef, QTreeWidgetItem *parent, QgsAttributesDnDTree *tree );
 
@@ -455,6 +465,12 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QString mInitFilePath;
     QString mInitCode;
     int mBlockUpdates = 0;
+
+    //! Context menu for Fields and Relations
+    QMenu *mAvailableWidgetsTreeContextMenu = nullptr;
+    QAction *mActionCopyWidgetConfiguration = nullptr;
+    QAction *mActionPasteWidgetConfiguration = nullptr;
+
 };
 
 
