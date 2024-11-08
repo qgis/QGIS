@@ -84,7 +84,7 @@ jobs:
             -DWITH_POSTGRESQL=ON \
             -DWITH_QTWEBKIT=OFF \
             -DWITH_QUICK=ON \
-            -DWITH_QWTPOLAR=ON
+            -DWITH_QWTPOLAR=OFF \
             -DWITH_GRASS=OFF \
             -DUSE_CCACHE=ON \
             -S . \
