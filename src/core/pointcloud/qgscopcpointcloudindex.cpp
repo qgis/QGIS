@@ -506,4 +506,9 @@ QByteArray QgsCopcPointCloudIndex::fetchCopcStatisticsEvlrData()
   return statisticsEvlrData;
 }
 
+bool QgsCopcPointCloudIndex::gpsTimeFlag() const
+{
+  return mLazInfo.get()->header().global_encoding % 2;
+}
+
 ///@endcond

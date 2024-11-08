@@ -24,6 +24,7 @@
 #include "qgsgeos.h"
 #include "qgspointcloudstatscalculator.h"
 #include "qgsthreadingutils.h"
+#include "qgscopcpointcloudindex.h"
 
 #include <mutex>
 #include <QDebug>
@@ -291,6 +292,26 @@ struct MapIndexedPointCloudNode
         pointAttr[ QStringLiteral( "X" ) ] = x;
         pointAttr[ QStringLiteral( "Y" ) ] = y;
         pointAttr[ QStringLiteral( "Z" ) ] = z;
+
+        const QDateTime gpsBaseTime = QDateTime::fromSecsSinceEpoch( 315964809, Qt::UTC );
+        const int numberOfSecsInWeek = 3600 * 24 * 7;
+        const QgsCopcPointCloudIndex *recastedIndex = dynamic_cast<QgsCopcPointCloudIndex *>( mIndex );
+        if ( recastedIndex )
+        {
+          const uint16_t gpsTimeFlag = recastedIndex->gpsTimeFlag();
+          if ( gpsTimeFlag || pointAttr[QStringLiteral( "GpsTime" )].toDouble() > numberOfSecsInWeek )
+          {
+            QString utcTime = gpsBaseTime.addSecs( pointAttr[QStringLiteral( "GpsTime" )].toDouble() + qPow( 10, 9 ) ).toString( Qt::ISODate );
+            pointAttr[ QStringLiteral( "GpsTime (raw)" )] = pointAttr[QStringLiteral( "GpsTime" )];
+            pointAttr[ QStringLiteral( "GpsTime" )] = utcTime;
+          }
+          else
+          {
+            QString weekTime = gpsBaseTime.addSecs( pointAttr[QStringLiteral( "GpsTime" )].toDouble() ).toString( "ddd hh:mm:ss" );
+            pointAttr[ QStringLiteral( "GpsTime (raw)" )] = pointAttr[QStringLiteral( "GpsTime" )];
+            pointAttr[ QStringLiteral( "GpsTime" )] = weekTime;
+          }
+        }
         pointsCount++;
         acceptedPoints.push_back( pointAttr );
       }

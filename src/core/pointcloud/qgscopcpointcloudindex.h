@@ -85,6 +85,12 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
      */
     void copyCommonProperties( QgsCopcPointCloudIndex *destination ) const;
 
+    /**
+     * Returns the gps time flag from LAS header
+     * \since QGIS 3.34.12
+     */
+    bool gpsTimeFlag() const;
+
   protected:
     bool loadSchema( QgsLazInfo &lazInfo );
     bool loadHierarchy();
