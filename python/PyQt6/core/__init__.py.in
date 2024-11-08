@@ -594,6 +594,7 @@ try:
        wkb_type = self.wkbType()
        hasM = QgsWkbTypes.hasM(wkb_type)
        hasZ = QgsWkbTypes.hasZ(wkb_type)
+       geometry_type = self.type()
 
        def get_xyzm_coordinates(pt):
                  if hasZ and hasM:
@@ -615,7 +616,6 @@ try:
            return idx
 
        if self.isMultipart():
-            geometry_type = self.type()
             elements = [get_xyzm_coordinates(i) for i in self.vertices()]
 
             if geometry_type == QgsWkbTypes.PointGeometry:
@@ -633,12 +633,12 @@ try:
                 fill_structure_with_elements(skeleton, elements)
                 return skeleton
        else:
-            if self.type() == QgsWkbTypes.PointGeometry:
+            if geometry_type == QgsWkbTypes.PointGeometry:
                 return _numpy.array([get_xyzm_coordinates(i) for i in self.vertices()][0])
-            elif self.type() == QgsWkbTypes.LineGeometry:
+            elif geometry_type == QgsWkbTypes.LineGeometry:
                 line = self.vertices()
                 return _numpy.array([get_xyzm_coordinates(pt) for pt in line])
-            elif self.type() == QgsWkbTypes.PolygonGeometry:
+            elif geometry_type == QgsWkbTypes.PolygonGeometry:
                 skeleton = self.asPolygon()
                 elements = [get_xyzm_coordinates(i) for i in self.vertices()]
                 fill_structure_with_elements(skeleton, elements)
