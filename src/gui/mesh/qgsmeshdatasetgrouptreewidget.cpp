@@ -111,6 +111,12 @@ void QgsMeshDatasetGroupTreeWidget::addDataset()
     return; // canceled by the user
   }
 
+  if ( !mMeshLayer->datasetsPathUnique( openFileString ) )
+  {
+    QMessageBox::warning( this, tr( "Load mesh datasets" ), tr( "Could not add dataset from path that is already added to the mesh." ) );
+    return;
+  }
+
   const QFileInfo openFileInfo( openFileString );
   settings.setValue( QStringLiteral( "lastMeshDatasetDir" ), openFileInfo.absolutePath(), QgsSettings::App );
   const QFile datasetFile( openFileString );
