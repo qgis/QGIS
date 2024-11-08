@@ -368,6 +368,9 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
                                    " %1\nNumber of missed points: %2\nFeatures with missing points: "
                                    " %3\nFeatures with empty or missing geometries: %4"
                                  ).arg( totNPoints ).arg( missedPoints ).arg( missedLines ).arg( emptyOrNullGeom ) );
+
+  sink->finalize();
+
   QVariantMap outputs;
   outputs.insert( OUTPUT, ldest );
   outputs.insert( OUTPUT_POINTS, totNPoints );

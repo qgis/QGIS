@@ -215,6 +215,7 @@ class StatisticsByCategories(QgisAlgorithm):
         else:
             self.calcStringStats(values, sink, feedback)
 
+        sink.finalize()
         return {self.OUTPUT: dest_id}
 
     def saveCounts(self, values, sink, feedback):

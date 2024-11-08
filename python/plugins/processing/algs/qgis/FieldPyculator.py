@@ -232,6 +232,7 @@ class FieldsPyculator(QgisAlgorithm):
             feat.setAttributes(attrs)
             sink.addFeature(feat, QgsFeatureSink.Flag.FastInsert)
 
+        sink.finalize()
         return {self.OUTPUT: dest_id}
 
     def checkParameterValues(self, parameters, context):

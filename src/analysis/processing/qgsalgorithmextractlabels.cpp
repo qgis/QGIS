@@ -507,6 +507,7 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
     if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
   }
+  sink->finalize();
   sink.reset();
 
   if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( dest, context ) ) )

@@ -197,9 +197,12 @@ class CheckValidity(QgisAlgorithm):
             self.ERROR_COUNT: error_count
         }
         if valid_output_sink:
+            valid_output_sink.finalize()
             results[self.VALID_OUTPUT] = valid_output_dest_id
         if invalid_output_sink:
+            invalid_output_sink.finalize()
             results[self.INVALID_OUTPUT] = invalid_output_dest_id
         if error_output_sink:
+            error_output_sink.finalize()
             results[self.ERROR_OUTPUT] = error_output_dest_id
         return results

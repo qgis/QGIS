@@ -128,4 +128,5 @@ class VariableDistanceBuffer(QgisAlgorithm):
         buff.buffering(feedback, context, sink, 0, field, True, source, dissolve, segments, end_cap_style,
                        join_style, miter_limit)
 
+        sink.finalize()
         return {self.OUTPUT: dest_id}

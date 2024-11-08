@@ -273,11 +273,17 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
 
   QVariantMap outputs;
   if ( sink )
+  {
+    sink->finalize();
     outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  }
   outputs.insert( QStringLiteral( "JOINED_COUNT" ), joinedCount );
   outputs.insert( QStringLiteral( "UNJOINABLE_COUNT" ), unjoinedCount );
   if ( sinkNonMatching1 )
+  {
+    sinkNonMatching1->finalize();
     outputs.insert( QStringLiteral( "NON_MATCHING" ), destNonMatching1 );
+  }
   return outputs;
 }
 

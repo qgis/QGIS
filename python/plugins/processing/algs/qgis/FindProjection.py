@@ -149,4 +149,5 @@ class FindProjection(QgisAlgorithm):
         if found_results == 0:
             feedback.reportError(self.tr('No matching projections found'))
 
+        sink.finalize()
         return {self.OUTPUT: dest_id}

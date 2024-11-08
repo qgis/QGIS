@@ -226,6 +226,7 @@ class PointDistance(QgisAlgorithm):
 
             feedback.setProgress(int(current * total))
 
+        sink.finalize()
         return {self.OUTPUT: dest_id}
 
     def regularMatrix(self, parameters, context, source, inField, target_source, targetField,
