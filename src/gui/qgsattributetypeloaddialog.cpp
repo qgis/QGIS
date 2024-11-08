@@ -23,6 +23,8 @@
 #include "qgsvectordataprovider.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
 
 #include <QTableWidgetItem>
 #include <QLineEdit>
@@ -39,6 +41,7 @@ QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
   : mLayer( vl )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
 
   layerComboBox->setFilters( Qgis::LayerFilter::VectorLayer );
   layerComboBox->setCurrentIndex( -1 );
@@ -48,6 +51,10 @@ QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
   connect( keyComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int index ) { createPreview( index ); } );
   connect( valueComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int index ) { createPreview( index ); } );
   connect( previewButton, &QAbstractButton::pressed, this, &QgsAttributeTypeLoadDialog::previewButtonPushed );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [ = ]
+  {
+    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#edit-widgets" ) );
+  } );
 
 
 }
