@@ -425,7 +425,7 @@ QString QgsMssqlConnection::buildQueryForTables( bool allowTablesWithNoGeometry,
   {
     QStringList quotedSchemas;
     for ( const QString &sch : excludedSchemaList )
-      quotedSchemas.append( QgsMssqlProvider::quotedValue( sch ) );
+      quotedSchemas.append( QString("[%1]").arg(sch) );
     notSelectedSchemas = quotedSchemas.join( ',' );
     notSelectedSchemas.prepend( QStringLiteral( "( " ) );
     notSelectedSchemas.append( QStringLiteral( " )" ) );
