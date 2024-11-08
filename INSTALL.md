@@ -1,6 +1,6 @@
 Building QGIS from source - step by step
 
-<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
+<!-- TOC start (generated with https://bitdowntoc.derlin.ch/) -->
 
 - [1. Introduction](#1-introduction)
 - [2. Overview](#2-overview)
