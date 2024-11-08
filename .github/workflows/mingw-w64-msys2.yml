@@ -1,0 +1,103 @@
+name: MSYS2/MinGW-w64
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - master
+      - release-**
+      - queued_ltr_backports
+    paths:
+    - 'src/**'
+    - 'external/**'
+    - 'python/**'
+    - 'tests/**'
+    - 'ms-windows/**'
+    - 'CMakeLists.txt'
+    - '.github/workflows/mingw-w64-msys2.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mingw-w64-msys2-build:
+    name: build (MSYS2/UCRT64)
+    runs-on: windows-latest
+    #strategy:
+    #  fail-fast: false
+    #  matrix:
+    #    QT_VERSION: [qt6, qt6]
+    #    MSYSTEM: [UCRT64, CLANG64]
+    env:
+      CCACHE_DIR: build/ccache
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Install core & build dependencies
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          install: base-devel
+          pacboy: >-
+            draco exiv2 gdal geos gsl hdf5 libspatialite libxml2 libzip netcdf nlohmann-json
+            opencl-icd opencl-clhpp pdal postgresql proj protobuf qca-qt6 qscintilla-qt6
+            qtkeychain-qt6 qwt-qt6 spatialindex sqlite3 zlib zstd
+            qt6-3d qt6-base qt6-declarative qt6-multimedia qt6-positioning qt6-serialport qt6-svg qt6-tools
+            python python-gdal python-owslib python-pyqt6 python-qscintilla-qt6 pyqt-builder sip
+            cc cmake ninja ccache
+          update: true
+          release: false
+
+      - name: Restore build cache
+        uses: actions/cache/restore@v4
+        with:
+          path: build
+          key: build-ccache-mingw64-msys2-${{ github.event.pull_request.base.ref || github.ref_name }}
+          restore-keys: |
+            build-ccache-mingw64-msys2-master
+
+      - name: Configure QGIS
+        run: |
+          cmake \
+            -G"Ninja" \
+            -DPython_EXECUTABLE=${MINGW_PREFIX}/bin/python \
+            -DPREFER_INTERNAL_LIBS=OFF \
+            -DWITH_INTERNAL_POLY2TRI=ON \
+            -DWITH_INTERNAL_MESHOPTIMIZER=ON \
+            -DWITH_INTERNAL_NLOHMANN_JSON=OFF \
+            -DBUILD_WITH_QT6=ON
+            -DWITH_3D=ON \
+            -DWITH_BINDINGS=ON \
+            -DWITH_CUSTOM_WIDGETS=ON \
+            -DWITH_DRACO=ON \
+            -DWITH_EPT=ON \
+            -DWITH_PDAL=ON \
+            -DWITH_POSTGRESQL=ON \
+            -DWITH_QTWEBKIT=OFF \
+            -DWITH_QUICK=ON \
+            -DWITH_QWTPOLAR=ON
+            -DWITH_GRASS=OFF \
+            -DUSE_CCACHE=ON \
+            -S . \
+            -B build
+
+      - name: Build QGIS
+        run: |
+          cmake --build build
+          ccache -s
+
+      - name: Save build cache for push only
+        uses: actions/cache/save@v4
+        if: ${{ github.event_name == 'push' }}
+        with:
+          path: build
+          key: build-ccache-mingw64-msys2-${{ github.ref_name }}-${{ github.run_id }}
