@@ -74,7 +74,7 @@ jobs:
             -DWITH_INTERNAL_POLY2TRI=ON \
             -DWITH_INTERNAL_MESHOPTIMIZER=ON \
             -DWITH_INTERNAL_NLOHMANN_JSON=OFF \
-            -DBUILD_WITH_QT6=ON
+            -DBUILD_WITH_QT6=ON \
             -DWITH_3D=ON \
             -DWITH_BINDINGS=ON \
             -DWITH_CUSTOM_WIDGETS=ON \
@@ -84,7 +84,7 @@ jobs:
             -DWITH_POSTGRESQL=ON \
             -DWITH_QTWEBKIT=OFF \
             -DWITH_QUICK=ON \
-            -DWITH_QWTPOLAR=OFF \
+            -DWITH_QWTPOLAR=ON \
             -DWITH_GRASS=OFF \
             -DUSE_CCACHE=ON \
             -S . \
