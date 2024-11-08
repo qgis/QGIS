@@ -430,6 +430,26 @@ bool QgsMeshMemoryDataProvider::addDataset( const QString &uri )
   return valid;
 }
 
+bool QgsMeshMemoryDataProvider::removeDatasetGroup( const int &index )
+{
+  if ( index < 0 && index > datasetGroupCount() - 1 )
+  {
+    return false;
+  }
+  else
+  {
+    QgsMeshDatasetGroupMetadata datasetGroupMeta = datasetGroupMetadata( index );
+
+    mDatasetGroups.removeAt( index );
+
+    if ( !mExtraDatasetUris.contains( datasetGroupMeta.uri() ) )
+      mExtraDatasetUris.removeAll( datasetGroupMeta.uri() );
+
+    emit dataChanged();
+    return true;
+  }
+}
+
 QStringList QgsMeshMemoryDataProvider::extraDatasets() const
 {
   return mExtraDatasetUris;

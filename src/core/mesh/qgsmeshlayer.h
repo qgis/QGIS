@@ -212,6 +212,16 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     bool addDatasets( const QString &path, const QDateTime &defaultReferenceTime = QDateTime() );
 
     /**
+     * Removes datasets from the mesh with given \a name.
+     *
+     * \param name of dataset group to remove
+     * \return whether the dataset is added
+     *
+     * \since QGIS 3.42
+     */
+    bool removeDatasets( const QString &name );
+
+    /**
      * Adds extra datasets to the mesh. Take ownership.
      *
      * \param datasetGroup the extra dataset group

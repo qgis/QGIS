@@ -241,6 +241,8 @@ class QgsMeshDatasetGroupStore: public QObject
      */
     QString groupName( int groupIndex ) const;
 
+    void removeDatasetGroup( int index );
+
   signals:
     //! Emitted after dataset groups are added
     void datasetGroupsAdded( QList<int> indexes );
@@ -258,6 +260,8 @@ class QgsMeshDatasetGroupStore: public QObject
     std::unique_ptr<QgsMeshDatasetGroupTreeItem> mDatasetGroupTreeRootItem;
 
     void removePersistentProvider();
+
+    void reindexDatasetGroups();
 
     DatasetGroup datasetGroup( int index ) const;
 

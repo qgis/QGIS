@@ -63,6 +63,9 @@ class QgsMdalProvider : public QgsMeshDataProvider
     void populateMesh( QgsMesh *mesh ) const override;
 
     bool addDataset( const QString &uri ) override;
+
+    bool removeDatasetGroup( const int &index ) override;
+
     QStringList extraDatasets() const override;
 
     int datasetGroupCount() const override;

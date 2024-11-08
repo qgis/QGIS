@@ -701,6 +701,25 @@ bool QgsMdalProvider::addDataset( const QString &uri )
   }
 }
 
+bool QgsMdalProvider::removeDatasetGroup( const int &index )
+{
+  if ( index < 0 && index > datasetGroupCount() - 1 )
+  {
+    return false;
+  }
+  else
+  {
+    QgsMeshDatasetGroupMetadata datasetGroupMeta = datasetGroupMetadata( index );
+
+    if ( mExtraDatasetUris.contains( datasetGroupMeta.uri() ) )
+      mExtraDatasetUris.removeOne( datasetGroupMeta.uri() );
+
+    MDAL_M_RemoveDatasetGroup( mMeshH, index );
+    emit dataChanged();
+    return true;
+  }
+}
+
 QStringList QgsMdalProvider::extraDatasets() const
 {
   return mExtraDatasetUris;

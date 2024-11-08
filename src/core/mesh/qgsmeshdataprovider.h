@@ -475,6 +475,17 @@ class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDat
      */
     virtual void close() = 0;
 
+    /**
+     * \brief Remove dataset group from the mesh
+     *
+     * emits dataChanged when successful
+     *
+     * \return True on success
+     *
+     * \since QGIS 3.42
+     */
+    virtual bool removeDatasetGroup( const int &index ) = 0;
+
   signals:
     //! Emitted when some new dataset groups have been added
     void datasetGroupsAdded( int count );
