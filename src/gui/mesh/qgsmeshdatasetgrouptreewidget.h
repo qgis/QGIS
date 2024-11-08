@@ -48,6 +48,7 @@ class GUI_EXPORT QgsMeshDatasetGroupTreeWidget: public QWidget, private Ui::QgsM
 
   private slots:
     void addDataset();
+    void removeDataset();
 
   private:
     QgsMeshLayer *mMeshLayer;

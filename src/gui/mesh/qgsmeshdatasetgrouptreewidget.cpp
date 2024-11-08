@@ -34,6 +34,7 @@ QgsMeshDatasetGroupTreeWidget::QgsMeshDatasetGroupTreeWidget( QWidget *parent ):
   setupUi( this );
 
   connect( mAddDatasetButton, &QToolButton::clicked, this, &QgsMeshDatasetGroupTreeWidget::addDataset );
+  connect( mRemoveDatasetButton, &QToolButton::clicked, this, &QgsMeshDatasetGroupTreeWidget::removeDataset );
   connect( mCollapseButton, &QToolButton::clicked, mDatasetGroupTreeView, &QTreeView::collapseAll );
   connect( mExpandButton, &QToolButton::clicked, mDatasetGroupTreeView, &QTreeView::expandAll );
   connect( mCheckAllButton, &QToolButton::clicked, mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::selectAllGroups );
@@ -41,6 +42,23 @@ QgsMeshDatasetGroupTreeWidget::QgsMeshDatasetGroupTreeWidget( QWidget *parent ):
   connect( mResetDefaultButton, &QToolButton::clicked, this, [this]
   {
     this->mDatasetGroupTreeView->resetDefault( this->mMeshLayer );
+  } );
+
+  connect( mDatasetGroupTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, [this]()
+  {
+    QModelIndex index = mDatasetGroupTreeView->currentIndex();
+    QgsMeshDatasetGroupTreeItem *meshGroupItem = mDatasetGroupTreeView->datasetGroupTreeRootItem()->childFromDatasetGroupIndex( index.row() );
+    if ( meshGroupItem )
+    {
+      if ( mMeshLayer->dataProvider()->dataSourceUri().contains( meshGroupItem->description() ) )
+      {
+        mRemoveDatasetButton->setEnabled( false );
+      }
+      else
+      {
+        mRemoveDatasetButton->setEnabled( true );
+      }
+    }
   } );
 
   connect( mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::apply, this, &QgsMeshDatasetGroupTreeWidget::apply );
@@ -56,6 +74,24 @@ void QgsMeshDatasetGroupTreeWidget::apply()
 {
   if ( mMeshLayer )
     mMeshLayer->setDatasetGroupTreeRootItem( mDatasetGroupTreeView->datasetGroupTreeRootItem() );
+}
+
+void QgsMeshDatasetGroupTreeWidget::removeDataset()
+{
+  QModelIndex index = mDatasetGroupTreeView->currentIndex();
+  QgsMeshDatasetGroupTreeItem *meshGroupItem = mDatasetGroupTreeView->datasetGroupTreeRootItem()->child( index.row() );
+  QString datasetGroupName = meshGroupItem->defaultName();
+  if ( mMeshLayer->removeDatasets( datasetGroupName ) )
+  {
+    QMessageBox::warning( this, tr( "Remove mesh datasets" ), tr( "Dataset Group removed from mesh." ) );
+    emit datasetGroupAdded();
+  }
+  else
+  {
+    QMessageBox::warning( this, tr( "Remove mesh datasets" ), tr( "Could not remove mesh dataset group." ) );
+  }
+
+  mDatasetGroupTreeView->resetDefault( mMeshLayer );
 }
 
 void QgsMeshDatasetGroupTreeWidget::addDataset()
