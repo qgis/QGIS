@@ -591,9 +591,9 @@ try:
    QgsRasterLayer.as_numpy = _raster_layer_as_numpy
 
    def _qgsgeometry_as_numpy(self) -> _typing.Union[_numpy.ndarray, _typing.List[_numpy.ndarray]]:
-       wkb = self.wkbType()
-       hasM = QgsWkbTypes.hasM(wkb)
-       hasZ = QgsWkbTypes.hasZ(wkb)
+       wkb_type = self.wkbType()
+       hasM = QgsWkbTypes.hasM(wkb_type)
+       hasZ = QgsWkbTypes.hasZ(wkb_type)
 
        def get_xyzm_coordinates(pt):
                  if hasZ and hasM:
