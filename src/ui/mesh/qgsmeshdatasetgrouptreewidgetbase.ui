@@ -53,7 +53,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../../images/images.qrc">
-            <normaloff>:/images/themes/default/mActionAdd.svg</normaloff>:/images/themes/default/mActionAdd.svg</iconset>
+            <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
           </property>
           <property name="iconSize">
            <size>
