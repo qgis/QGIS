@@ -678,7 +678,7 @@ void QgsMdalProvider::fileMeshExtensions( QStringList &fileMeshExtensions,
 
 bool QgsMdalProvider::addDataset( const QString &uri )
 {
-  if ( mExtraDatasetUris.contains( uri ) && dataSourceUri().contains( uri ) )
+  if ( mExtraDatasetUris.contains( uri ) || dataSourceUri().contains( uri ) )
     return false;
 
   int datasetCount = datasetGroupCount();
