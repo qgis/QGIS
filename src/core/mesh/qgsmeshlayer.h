@@ -203,7 +203,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     /**
      * Adds datasets to the mesh from file with \a path. Use the the time \a defaultReferenceTime as reference time is not provided in the file
      *
-     * \param path the path to the atasets file
+     * \param path the path to the datasets file
      * \param defaultReferenceTime reference time used if not provided in the file
      * \return whether the dataset is added
      *
@@ -1006,7 +1006,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      * \param flags provider flags since QGIS 3.16
      */
     bool setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
-
 #ifdef SIP_RUN
     QgsMeshLayer( const QgsMeshLayer &rhs );
 #endif
