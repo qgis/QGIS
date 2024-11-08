@@ -36,10 +36,14 @@ class QgsStacDownloadAssetsDialog : public QDialog, private Ui::QgsStacDownloadA
     QString selectedFolder();
     QStringList selectedUrls();
 
+  private slots:
+    void showContextMenu( QPoint p );
+
   private:
     void selectAll();
     void deselectAll();
 
+    QMenu *mContextMenu = nullptr;
 };
 
 ///@endcond
