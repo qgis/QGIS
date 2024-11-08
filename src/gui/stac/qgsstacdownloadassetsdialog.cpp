@@ -21,6 +21,9 @@
 
 #include <QTreeWidget>
 #include <QPushButton>
+#include <QAction>
+#include <QMenu>
+#include <QClipboard>
 
 ///@cond PRIVATE
 
@@ -38,8 +41,14 @@ QgsStacDownloadAssetsDialog::QgsStacDownloadAssetsDialog( QWidget *parent ) :
   mFileWidget->setFilePath( defPath );
   mFileWidget->lineEdit()->setReadOnly( true );
 
+  mContextMenu = new QMenu( this );
+
   connect( mSelectAllButton, &QPushButton::clicked, this, &QgsStacDownloadAssetsDialog::selectAll );
   connect( mDeselectAllButton, &QPushButton::clicked, this, &QgsStacDownloadAssetsDialog::deselectAll );
+
+  mTreeWidget->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( mTreeWidget, &QWidget::customContextMenuRequested,
+           this, &QgsStacDownloadAssetsDialog::showContextMenu );
 }
 
 void QgsStacDownloadAssetsDialog::setStacItem( QgsStacItem *stacItem )
@@ -84,6 +93,25 @@ QStringList QgsStacDownloadAssetsDialog::selectedUrls()
       urls.append( item->text( 5 ) );
   }
   return urls;
+}
+
+void QgsStacDownloadAssetsDialog::showContextMenu( QPoint p )
+{
+  QTreeWidgetItem *item = mTreeWidget->itemAt( p );
+  if ( !item )
+    return;
+
+  mTreeWidget->setCurrentItem( item );
+  mContextMenu->clear();
+
+  const QString url = item->text( 5 );
+  QAction *copyUrlAction = new QAction( tr( "Copy URL" ), this );
+  connect( copyUrlAction, &QAction::triggered, this, [url]
+  {
+    QApplication::clipboard()->setText( url );
+  } );
+  mContextMenu->addAction( copyUrlAction );
+  mContextMenu->exec( QCursor::pos() );
 }
 
 void QgsStacDownloadAssetsDialog::selectAll()
