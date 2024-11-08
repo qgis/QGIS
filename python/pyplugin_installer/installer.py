@@ -118,11 +118,11 @@ class QgsPluginInstaller(QObject):
                 self.uninstallPlugin(key, quiet=True)
                 updateAvailablePlugins()
                 if plugin_is_active:
-                    settings.setValue("/PythonPlugins/watchDog/" + key,
+                    settings.setValue("/PythonPlugins/watchDogTimestamp/" + key,
                                       QDateTime.currentDateTime().toSecsSinceEpoch())
                     loadPlugin(key)
                     startPlugin(key)
-                    settings.remove("/PythonPlugins/watchDog/" + key)
+                    settings.remove("/PythonPlugins/watchDogTimestamp/" + key)
 
     # ----------------------------------------- #
     def fetchAvailablePlugins(self, reloadMode):
