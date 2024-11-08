@@ -191,6 +191,8 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
     }
   }
 
+  sink->finalize();
+
   return dest;
 }
 
@@ -269,6 +271,8 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithoutAttributes( const QVariantMap
       feedback->setProgress( i * step );
     }
   }
+
+  sink->finalize();
 
   return dest;
 }

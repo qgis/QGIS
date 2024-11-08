@@ -200,6 +200,8 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
     }
   }
 
+  sink->finalize();
+
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;

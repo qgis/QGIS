@@ -98,6 +98,8 @@ QVariantMap QgsConcaveHullAlgorithm::processAlgorithm( const QVariantMap &parame
   concaveHullGeos( sink, parameters, feedback );
 #endif
 
+  sink->finalize();
+
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;

@@ -425,6 +425,13 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
   feedback->pushInfo( QObject::tr( "%n feature(s) added", nullptr, addedRevisedIds.size() ) );
   feedback->pushInfo( QObject::tr( "%n feature(s) deleted", nullptr, deleted ) );
 
+  if ( unchangedSink )
+    unchangedSink->finalize();
+  if ( addedSink )
+    addedSink->finalize();
+  if ( deletedSink )
+    deletedSink->finalize();
+
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "UNCHANGED" ), unchangedDestId );
   outputs.insert( QStringLiteral( "ADDED" ), addedDestId );

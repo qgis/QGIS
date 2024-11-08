@@ -290,6 +290,8 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
   if ( errored )
     throw QgsProcessingException( QObject::tr( "Error obtained while merging one or more layers." ) );
 
+  sink->finalize();
+
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;

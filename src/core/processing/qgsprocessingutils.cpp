@@ -2011,6 +2011,14 @@ QgsProcessingFeatureSink::~QgsProcessingFeatureSink()
     delete destinationSink();
 }
 
+void QgsProcessingFeatureSink::finalize()
+{
+  if ( !flushBuffer() )
+  {
+    throw QgsProcessingException( lastError() );
+  }
+}
+
 bool QgsProcessingFeatureSink::addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags )
 {
   bool result = QgsProxyFeatureSink::addFeature( feature, flags );

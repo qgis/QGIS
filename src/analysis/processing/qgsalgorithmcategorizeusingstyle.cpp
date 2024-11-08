@@ -278,6 +278,11 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
   context.addLayerToLoadOnCompletion( mLayerId, QgsProcessingContext::LayerDetails( mLayerName, context.project(), mLayerName ) );
   context.layerToLoadOnCompletionDetails( mLayerId ).setPostProcessor( new SetCategorizedRendererPostProcessor( std::move( mRenderer ) ) );
 
+  if ( nonMatchingCategoriesSink )
+    nonMatchingCategoriesSink->finalize();
+  if ( nonMatchingSymbolsSink )
+    nonMatchingSymbolsSink->finalize();
+
   QVariantMap results;
   results.insert( QStringLiteral( "OUTPUT" ), mLayerId );
   if ( nonMatchingCategoriesSink )

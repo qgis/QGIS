@@ -187,4 +187,5 @@ class PointsDisplacement(QgisAlgorithm):
             current += 1
             feedback.setProgress(int(current * total))
 
+        sink.finalize()
         return {self.OUTPUT: dest_id}

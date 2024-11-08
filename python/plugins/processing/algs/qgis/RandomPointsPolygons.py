@@ -242,5 +242,5 @@ class RandomPointsPolygons(QgisAlgorithm):
                                           'points. Maximum number of attempts exceeded.'))
 
         feedback.setProgress(100)
-
+        sink.finalize()
         return {self.OUTPUT: dest_id}

@@ -1183,6 +1183,8 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
     current++;
   }
 
+  sink->finalize();
+
   mSource.reset();
 
   // probably not necessary - context's aren't usually recycled, but can't hurt

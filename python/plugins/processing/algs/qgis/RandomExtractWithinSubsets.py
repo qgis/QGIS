@@ -132,4 +132,5 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
                 break
             sink.addFeature(feat, QgsFeatureSink.Flag.FastInsert)
             feedback.setProgress(int(i * total))
+        sink.finalize()
         return {self.OUTPUT: dest_id}

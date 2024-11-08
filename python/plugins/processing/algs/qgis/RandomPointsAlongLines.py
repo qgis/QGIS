@@ -185,4 +185,5 @@ class RandomPointsAlongLines(QgisAlgorithm):
             feedback.pushInfo(self.tr('Could not generate requested number of random points. '
                                       'Maximum number of attempts exceeded.'))
 
+        sink.finalize()
         return {self.OUTPUT: dest_id}

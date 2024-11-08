@@ -384,6 +384,9 @@ QVariantMap QgsRandomPointsInPolygonsAlgorithm::processAlgorithm( const QVariant
                                    "%3\nFeatures with empty or missing "
                                    "geometries: %4"
                                  ).arg( totNPoints ).arg( missedPoints ).arg( missedPolygons ).arg( emptyOrNullGeom ) );
+
+  sink->finalize();
+
   QVariantMap outputs;
   outputs.insert( OUTPUT, ldest );
   outputs.insert( OUTPUT_POINTS, totNPoints );

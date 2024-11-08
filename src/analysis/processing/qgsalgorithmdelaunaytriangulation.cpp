@@ -166,6 +166,8 @@ QVariantMap QgsDelaunayTriangulationAlgorithm::processAlgorithm( const QVariantM
     }
   }
 
+  sink->finalize();
+
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;

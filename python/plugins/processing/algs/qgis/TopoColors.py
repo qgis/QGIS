@@ -144,6 +144,7 @@ class TopoColor(QgisAlgorithm):
             current += 1
             feedback.setProgress(80 + int(current * total))
 
+        sink.finalize()
         return {self.OUTPUT: dest_id}
 
     @staticmethod

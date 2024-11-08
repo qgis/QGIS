@@ -392,6 +392,8 @@ QVariantMap QgsExportMeshOnElement::processAlgorithm( const QVariantMap &paramet
     }
   }
 
+  sink->finalize();
+
   QVariantMap ret;
   ret[QStringLiteral( "OUTPUT" )] = identifier;
 
@@ -702,6 +704,8 @@ QVariantMap QgsExportMeshOnGridAlgorithm::processAlgorithm( const QVariantMap &p
       }
     }
   }
+
+  sink->finalize();
 
   QVariantMap ret;
   ret[QStringLiteral( "OUTPUT" )] = identifier;
@@ -1198,6 +1202,11 @@ QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &param
       feedback->setProgress( 100 * i / mDataPerGroup.count() );
     }
   }
+
+  if ( sinkPolygons )
+    sinkPolygons->finalize();
+  if ( sinkLines )
+    sinkLines->finalize();
 
   QVariantMap ret;
   ret[QStringLiteral( "OUTPUT_LINES" )] = lineIdentifier;

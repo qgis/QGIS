@@ -104,6 +104,8 @@ QVariantMap QgsSaveSelectedFeatures::processAlgorithm( const QVariantMap &parame
     feedback->setProgress( current++ * step );
   }
 
+  sink->finalize();
+
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;

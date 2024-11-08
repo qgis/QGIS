@@ -458,9 +458,15 @@ QVariantMap QgsGltfToVectorFeaturesAlgorithm::processAlgorithm( const QVariantMa
 
   QVariantMap outputs;
   if ( polygonSink )
+  {
+    polygonSink->finalize();
     outputs.insert( QStringLiteral( "OUTPUT_POLYGONS" ), polygonDest );
+  }
   if ( lineSink )
+  {
+    lineSink->finalize();
     outputs.insert( QStringLiteral( "OUTPUT_LINES" ), lineDest );
+  }
   return outputs;
 }
 

@@ -168,6 +168,8 @@ QVariantMap QgsExportLayersInformationAlgorithm::processAlgorithm( const QVarian
       throw QgsProcessingException( writeFeatureError( outputSink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
   }
 
+  outputSink->finalize();
+
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), outputDest );
   return outputs;

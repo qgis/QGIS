@@ -291,6 +291,9 @@ QVariantMap QgsAngleToNearestAlgorithm::processAlgorithm( const QVariantMap &par
     }
   }
 
+  if ( sink )
+    sink->finalize();
+
   const bool applySymbology = parameterAsBool( parameters, QStringLiteral( "APPLY_SYMBOLOGY" ), context );
   if ( applySymbology )
   {

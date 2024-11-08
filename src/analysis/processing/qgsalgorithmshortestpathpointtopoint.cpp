@@ -156,6 +156,8 @@ QVariantMap QgsShortestPathPointToPointAlgorithm::processAlgorithm( const QVaria
   if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
     throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
 
+  sink->finalize();
+
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   outputs.insert( QStringLiteral( "TRAVEL_COST" ), cost / mMultiplier );

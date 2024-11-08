@@ -161,6 +161,8 @@ QVariantMap QgsLayoutMapExtentToLayerAlgorithm::processAlgorithm( const QVariant
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
   }
 
+  sink->finalize();
+
   feedback->setProgress( 100 );
 
   QVariantMap outputs;

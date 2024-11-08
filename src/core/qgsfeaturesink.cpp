@@ -17,6 +17,11 @@
 
 #include "qgsfeaturestore.h"
 
+void QgsFeatureSink::finalize()
+{
+  flushBuffer();
+}
+
 bool QgsFeatureSink::addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags )
 {
   QgsFeatureList features;

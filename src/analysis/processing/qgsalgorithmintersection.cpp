@@ -129,6 +129,8 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
 
   QgsOverlayUtils::intersection( *sourceA, *sourceB, *sink, context, feedback, count, total, fieldIndicesA, fieldIndicesB, geometryParameters );
 
+  sink->finalize();
+
   return outputs;
 }
 

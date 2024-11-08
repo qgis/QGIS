@@ -279,6 +279,8 @@ QVariantMap QgsAggregateAlgorithm::processAlgorithm( const QVariantMap &paramete
       break;
   }
 
+  sink->finalize();
+
   QVariantMap results;
   results.insert( QStringLiteral( "OUTPUT" ), destId );
   return results;

@@ -156,6 +156,10 @@ QVariantMap QgsExtractByExpressionAlgorithm::processAlgorithm( const QVariantMap
     }
   }
 
+  if ( matchingSink )
+    matchingSink->finalize();
+  if ( nonMatchingSink )
+    nonMatchingSink->finalize();
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), matchingSinkId );

@@ -797,6 +797,18 @@ class CORE_EXPORT QgsProcessingFeatureSink : public QgsProxyFeatureSink
      */
     QgsProcessingFeatureSink( QgsFeatureSink *originalSink, const QString &sinkName, QgsProcessingContext &context, bool ownsOriginalSink = false );
     ~QgsProcessingFeatureSink() override;
+
+    /**
+     * Finalizes the sink, flushing any buffered features to the destination.
+     *
+     * \warning All algorithms which use feature sinks should explicitly call finalize() prior to destroying the sink!
+     *
+     * \throws QgsProcessingException if an error occurs while finalizing the sink
+     *
+     * \since QGIS 3.42
+     */
+    void finalize() override SIP_THROW( QgsProcessingException );
+
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;

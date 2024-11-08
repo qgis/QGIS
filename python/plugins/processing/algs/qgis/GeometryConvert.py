@@ -126,6 +126,7 @@ class GeometryConvert(QgisAlgorithm):
 
             feedback.setProgress(int(current * total))
 
+        sink.finalize()
         return {self.OUTPUT: dest_id}
 
     def convertGeometry(self, geom, target_type):

@@ -158,9 +158,15 @@ QVariantMap QgsAddUniqueValueIndexAlgorithm::processAlgorithm( const QVariantMap
 
   QVariantMap results;
   if ( sink )
+  {
+    sink->finalize();
     results.insert( QStringLiteral( "OUTPUT" ), dest );
+  }
   if ( summarySink )
+  {
+    summarySink->finalize();
     results.insert( QStringLiteral( "SUMMARY_OUTPUT" ), summaryDest );
+  }
   return results;
 }
 

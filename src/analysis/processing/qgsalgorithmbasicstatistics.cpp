@@ -184,6 +184,8 @@ QVariantMap QgsBasicStatisticsAlgorithm::processAlgorithm( const QVariantMap &pa
   {
     outputs = calculateStringStatistics( fieldIndex, features, count, sink.get(), data, feedback );
   }
+  if ( sink )
+    sink->finalize();
 
   if ( !outputHtml.isEmpty() )
   {
