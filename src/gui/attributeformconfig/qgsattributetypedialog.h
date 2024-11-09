@@ -27,7 +27,6 @@
 #include "qgsvectordataprovider.h"
 #include "qgshelp.h"
 #include "qgis_gui.h"
-#include "qgsxmlutils.h"
 
 class QWidget;
 class QStandardItem;

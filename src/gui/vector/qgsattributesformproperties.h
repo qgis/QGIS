@@ -434,7 +434,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void onAttributeSelectionChanged();
     void onFormLayoutSelectionChanged();
 
-    //! Context menu for Fields and Relations to enable Copy&Paste
+    //! Context menu for Fields to enable Copy&Paste
     void onContextMenuRequested( QPoint );
 
     void updatedFields();
@@ -466,7 +466,7 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QString mInitCode;
     int mBlockUpdates = 0;
 
-    //! Context menu for Fields and Relations
+    //! Context menu for Fields
     QMenu *mAvailableWidgetsTreeContextMenu = nullptr;
     QAction *mActionCopyWidgetConfiguration = nullptr;
     QAction *mActionPasteWidgetConfiguration = nullptr;

@@ -44,6 +44,7 @@
 #include "qgsexpressionfinder.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgshelp.h"
+#include "qgsxmlutils.h"
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -2026,9 +2027,8 @@ void QgsAttributesFormProperties::onContextMenuRequested( QPoint point )
 
   QTreeWidgetItem *item = mAvailableWidgetsTree->itemAt( point );
   const DnDTreeItemData itemData = item->data( 0, DnDTreeRole ).value<DnDTreeItemData>();
-  if ( itemData.type() == DnDTreeItemData::Field || itemData.type() == DnDTreeItemData::Relation )
+  if ( itemData.type() == DnDTreeItemData::Field )
   {
-    // TODO: Data should come from the same item type (Field or Relation)
     const QClipboard *clipboard = QApplication::clipboard();
     const bool pasteEnabled = clipboard->mimeData()->hasFormat( QStringLiteral( "application/x-qgsattributetabledesignerelementclipboard" ) );
     mActionPasteWidgetConfiguration->setEnabled( pasteEnabled );
