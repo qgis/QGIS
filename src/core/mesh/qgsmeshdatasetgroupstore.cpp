@@ -733,10 +733,10 @@ int QgsMeshExtraDatasetStore::addDatasetGroup( QgsMeshDatasetGroup *datasetGroup
   return mGroups.size() - 1;
 }
 
-void QgsMeshExtraDatasetStore::removeDatasetGroup( int index )
+void QgsMeshExtraDatasetStore::removeDatasetGroup( int groupIndex )
 {
-  if ( index < datasetGroupCount() )
-    mGroups.erase( mGroups.begin() + index );
+  if ( groupIndex < datasetGroupCount() )
+    mGroups.erase( mGroups.begin() + groupIndex );
 
 
   updateTemporalCapabilities();

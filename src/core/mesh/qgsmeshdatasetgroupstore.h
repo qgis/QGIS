@@ -241,7 +241,12 @@ class QgsMeshDatasetGroupStore: public QObject
      */
     QString groupName( int groupIndex ) const;
 
-    void removeDatasetGroup( int index );
+    /**
+     * Removes dataset group with global index \a groupIndex
+     *
+     * \since QGIS 3.42
+     */
+    void removeDatasetGroup( int groupIndex );
 
   signals:
     //! Emitted after dataset groups are added
