@@ -776,13 +776,13 @@ Open a _Developer PowerShell for VS 2022_
 # and have changed the working directory into it
 
 # Configure
-cmake -S . \
-      -B build \
-      -DSDK_PATH="path/to/vcpkg-export-[date]" \
-      -DBUILD_WITH_QT6=ON \
-      -DWITH_QTWEBKIT=OFF \
-      -DVCPKG_TARGET_TRIPLET=x64-windows-release \
-      -DFLEX_EXECUTABLE="path/to/flex-executable" \
+cmake -S . `
+      -B build `
+      -DSDK_PATH="path/to/vcpkg-export-[date]" `
+      -DBUILD_WITH_QT6=ON `
+      -DWITH_QTWEBKIT=OFF `
+      -DVCPKG_TARGET_TRIPLET=x64-windows-release `
+      -DFLEX_EXECUTABLE="path/to/flex-executable" `
       -DBISON_EXECUTABLE="path/to/bison-executable"
 ```
 
@@ -808,12 +808,12 @@ This will require some time, cpu and disk space.
 # and have changed the working directory into it
 
 # Configure
-cmake -S . \
-      -B build \
-      -D WITH_VCPKG \
-      -D BUILD_WITH_QT6=ON \
-      -D WITH_QTWEBKIT=OFF \
-      -D VCPKG_TARGET_TRIPLET=x64-windows-release \
+cmake -S . `
+      -B build `
+      -D WITH_VCPKG=ON `
+      -D BUILD_WITH_QT6=ON `
+      -D WITH_QTWEBKIT=OFF `
+      -D VCPKG_TARGET_TRIPLET=x64-windows-release `
       -D VCPKG_HOST_TRIPLET=x64-windows-release
 ```
 
