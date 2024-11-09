@@ -947,7 +947,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      * dataset path is unique.
      *
      * \param path the path to the datasets file
-     * @return whether the datasets path is unique
+     * \return whether the datasets path is unique
      *
      * \since QGIS 3.42
      */

@@ -922,7 +922,8 @@ Checks that datasets path is already added to this mesh layer. Return true if th
 dataset path is unique.
 
 :param path: the path to the datasets file
-             @return whether the datasets path is unique
+
+:return: whether the datasets path is unique
 
 .. versionadded:: 3.42
 %End
