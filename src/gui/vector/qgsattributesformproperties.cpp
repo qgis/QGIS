@@ -2056,74 +2056,59 @@ void QgsAttributesFormProperties::copyWidgetConfiguration()
 
   const QgsField field = mLayer->fields().field( index );
 
+  // We won't copy field aliases nor comments
   QDomDocument doc;
   QDomElement documentElement = doc.createElement( QStringLiteral( "FormWidgetClipboard" ) );
   documentElement.setAttribute( QStringLiteral( "name" ), field.name() );
-
-  QDomElement fieldConfigurationElement;
-  fieldConfigurationElement = doc.createElement( QStringLiteral( "fieldConfiguration" ) );
-  documentElement.appendChild( fieldConfigurationElement );
-
-  QDomElement fieldElement = doc.createElement( QStringLiteral( "field" ) );
-  fieldElement.setAttribute( QStringLiteral( "name" ), field.name() );
-  fieldConfigurationElement.appendChild( fieldElement );
 
   // Editor widget setup
   QgsEditorWidgetSetup widgetSetup = field.editorWidgetSetup();
 
   QDomElement editWidgetElement = doc.createElement( QStringLiteral( "editWidget" ) );
-  fieldElement.appendChild( editWidgetElement );
+  documentElement.appendChild( editWidgetElement );
   editWidgetElement.setAttribute( QStringLiteral( "type" ), widgetSetup.type() );
   QDomElement editWidgetConfigElement = doc.createElement( QStringLiteral( "config" ) );
 
   editWidgetConfigElement.appendChild( QgsXmlUtils::writeVariant( widgetSetup.config(), doc ) );
   editWidgetElement.appendChild( editWidgetConfigElement );
 
-  // Split policies
-  QDomElement splitPoliciesElement = doc.createElement( QStringLiteral( "splitPolicies" ) );
-  QDomElement splitPolicyElem = doc.createElement( QStringLiteral( "policy" ) );
-  splitPolicyElem.setAttribute( QStringLiteral( "field" ), field.name() );
-  splitPolicyElem.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.splitPolicy() ) );
-  splitPoliciesElement.appendChild( splitPolicyElem );
-  documentElement.appendChild( splitPoliciesElement );
+  // Split policy
+  QDomElement splitPolicyElement = doc.createElement( QStringLiteral( "splitPolicy" ) );
+  splitPolicyElement.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.splitPolicy() ) );
+  documentElement.appendChild( splitPolicyElement );
 
-  // Duplicate policies
-  QDomElement duplicatePoliciesElement = doc.createElement( QStringLiteral( "duplicatePolicies" ) );
-  QDomElement duplicatePolicyElem = doc.createElement( QStringLiteral( "policy" ) );
-  duplicatePolicyElem.setAttribute( QStringLiteral( "field" ), field.name() );
-  duplicatePolicyElem.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.duplicatePolicy() ) );
-  duplicatePoliciesElement.appendChild( duplicatePolicyElem );
-  documentElement.appendChild( duplicatePoliciesElement );
+  // Duplicate policy
+  QDomElement duplicatePolicyElement = doc.createElement( QStringLiteral( "duplicatePolicy" ) );
+  duplicatePolicyElement.setAttribute( QStringLiteral( "policy" ), qgsEnumValueToKey( field.duplicatePolicy() ) );
+  documentElement.appendChild( duplicatePolicyElement );
 
   // Default expressions
-  //QDomElement defaultsElem = doc.createElement( QStringLiteral( "defaults" ) );
   QDomElement defaultElem = doc.createElement( QStringLiteral( "default" ) );
-  defaultElem.setAttribute( QStringLiteral( "field" ), field.name() );
   defaultElem.setAttribute( QStringLiteral( "expression" ), field.defaultValueDefinition().expression() );
   defaultElem.setAttribute( QStringLiteral( "applyOnUpdate" ), field.defaultValueDefinition().applyOnUpdate() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  //defaultsElem.appendChild( defaultElem );
   documentElement.appendChild( defaultElem );
 
   // Constraints
-  QDomElement constraintsElem = doc.createElement( QStringLiteral( "constraints" ) );
   QDomElement constraintElem = doc.createElement( QStringLiteral( "constraint" ) );
-  constraintElem.setAttribute( QStringLiteral( "field" ), field.name() );
   constraintElem.setAttribute( QStringLiteral( "constraints" ), field.constraints().constraints() );
   constraintElem.setAttribute( QStringLiteral( "unique_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ) );
   constraintElem.setAttribute( QStringLiteral( "notnull_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintNotNull ) );
   constraintElem.setAttribute( QStringLiteral( "exp_strength" ), field.constraints().constraintStrength( QgsFieldConstraints::ConstraintExpression ) );
-
-  constraintsElem.appendChild( constraintElem );
-  documentElement.appendChild( constraintsElem );
+  documentElement.appendChild( constraintElem );
 
   // Constraint expressions
-  QDomElement constraintExpressionsElem = doc.createElement( QStringLiteral( "constraintExpressions" ) );
-  QDomElement constraintExpressionElem = doc.createElement( QStringLiteral( "constraint" ) );
-  constraintExpressionElem.setAttribute( QStringLiteral( "field" ), field.name() );
+  QDomElement constraintExpressionElem = doc.createElement( QStringLiteral( "constraintExpression" ) );
   constraintExpressionElem.setAttribute( QStringLiteral( "exp" ), field.constraints().constraintExpression() );
   constraintExpressionElem.setAttribute( QStringLiteral( "desc" ), field.constraints().constraintDescription() );
-  constraintExpressionsElem.appendChild( constraintExpressionElem );
-  documentElement.appendChild( constraintExpressionsElem );
+  documentElement.appendChild( constraintExpressionElem );
+
+  // Widget general settings
+  QDomElement widgetGeneralSettingsElem = doc.createElement( QStringLiteral( "widgetGeneralSettings" ) );
+  widgetGeneralSettingsElem.setAttribute( QStringLiteral( "editable" ), !mLayer->editFormConfig().readOnly( index ) );
+  widgetGeneralSettingsElem.setAttribute( QStringLiteral( "reuse_last_values" ), mLayer->editFormConfig().labelOnTop( index ) );
+  widgetGeneralSettingsElem.setAttribute( QStringLiteral( "label_on_top" ), mLayer->editFormConfig().reuseLastValue( index ) );
+  documentElement.appendChild( widgetGeneralSettingsElem );
+
   doc.appendChild( documentElement );
 
   QMimeData *mimeData = new QMimeData;
@@ -2141,8 +2126,14 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
 
   QTreeWidgetItem *item = mAvailableWidgetsTree->selectedItems().at( 0 );
 
-  const FieldConfig config = item->data( 0, FieldConfigRole ).value<FieldConfig>();
   const QString fieldName = item->data( 0, FieldNameRole ).toString();
+  const int fieldIndex = mLayer->fields().indexOf( fieldName );
+
+  if ( fieldIndex < 0 )
+    return;
+
+  // Get base config from target item and ovewrite settings when possible
+  FieldConfig config = item->data( 0, FieldConfigRole ).value<FieldConfig>();
 
   QDomDocument doc;
   QClipboard *clipboard = QApplication::clipboard();
@@ -2156,18 +2147,119 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
       if ( sourceFieldName == fieldName )
         return;
 
-      // When pasting, the target item has been already selected and
+      // When pasting, the target item has already been selected and
       // has triggered attribute type dialog loading. Therefore, we'll
-      // only overwrite settings instead of destroying and recreating.
+      // only overwrite settings instead of destroying and recreating
+      // the whole dialog.
 
-      // Overwrite field configuration object
-      QDomElement defaultElement = docElem.firstChildElement( QStringLiteral( "default" ) );
-      mAttributeTypeDialog->setDefaultValueExpression( defaultElement.attribute( QStringLiteral( "expression" ) ) );
-      mAttributeTypeDialog->setApplyDefaultValueOnUpdate( defaultElement.attribute( QStringLiteral( "applyOnUpdate" ) ).toInt() );
+      // Editor widget configuration
+      const QDomElement fieldWidgetElement = docElem.firstChildElement( QStringLiteral( "editWidget" ) );
+      if ( !fieldWidgetElement.isNull() )
+      {
+        const QString widgetType = fieldWidgetElement.attribute( QStringLiteral( "type" ) );
 
-      // Check if source editor widget type is supported by target field
+        // Only paste if source editor widget type is supported by target field
+        const QgsEditorWidgetFactory *factory = QgsGui::editorWidgetRegistry()->factory( widgetType );
+        if ( factory->supportsField( mLayer, fieldIndex ) )
+        {
+          const QDomElement configElement = fieldWidgetElement.firstChildElement( QStringLiteral( "config" ) );
+          if ( !configElement.isNull() )
+          {
+            const QDomElement optionsElem = configElement.childNodes().at( 0 ).toElement();
+            QVariantMap optionsMap = QgsXmlUtils::readVariant( optionsElem ).toMap();
+            QgsReadWriteContext context;
+            if ( widgetType == QLatin1String( "ValueRelation" ) )
+            {
+              optionsMap[ QStringLiteral( "Value" ) ] = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fields:%2:valuerelationvalue" ).arg( mLayer->id(), fieldName ), optionsMap[ QStringLiteral( "Value" ) ].toString() );
+            }
+
+            config.mEditorWidgetType = widgetType;
+            config.mEditorWidgetConfig = optionsMap;
+          }
+        }
+      }
+
+      // Split policy
+      const QDomElement splitPolicyElement = docElem.firstChildElement( QStringLiteral( "splitPolicy" ) );
+      if ( !splitPolicyElement.isNull() )
+      {
+        const Qgis::FieldDomainSplitPolicy policy = qgsEnumKeyToValue( splitPolicyElement.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDomainSplitPolicy::Duplicate );
+        config.mSplitPolicy = policy;
+      }
+
+      // Duplicate policy
+      const QDomElement duplicatePolicyElement = docElem.firstChildElement( QStringLiteral( "duplicatePolicy" ) );
+      if ( !duplicatePolicyElement.isNull() )
+      {
+        const Qgis::FieldDuplicatePolicy policy = qgsEnumKeyToValue( duplicatePolicyElement.attribute( QStringLiteral( "policy" ) ), Qgis::FieldDuplicatePolicy::Duplicate );
+        config.mDuplicatePolicy = policy;
+      }
+
+      // Default expressions
+      const QDomElement defaultElement = docElem.firstChildElement( QStringLiteral( "default" ) );
+      if ( !defaultElement.isNull() )
+      {
+        mAttributeTypeDialog->setDefaultValueExpression( defaultElement.attribute( QStringLiteral( "expression" ) ) );
+        mAttributeTypeDialog->setApplyDefaultValueOnUpdate( defaultElement.attribute( QStringLiteral( "applyOnUpdate" ) ).toInt() );
+      }
+
+      // Constraints
+      // take target field constraints as a basis
+      QgsFieldConstraints fieldConstraints = config.mFieldConstraints;
+      const QDomElement constraintElement = docElem.firstChildElement( QStringLiteral( "constraint" ) );
+      if ( !constraintElement.isNull() )
+      {
+        int intConstraints = constraintElement.attribute( QStringLiteral( "constraints" ), QStringLiteral( "0" ) ).toInt();
+        if ( intConstraints != 0 )
+        {
+          QgsFieldConstraints::Constraints constraints = static_cast< QgsFieldConstraints::Constraints >( intConstraints );
+
+          // always keep provider constraints intact
+          if ( !( fieldConstraints.constraints() & QgsFieldConstraints::ConstraintNotNull ) && ( constraints & QgsFieldConstraints::ConstraintNotNull ) )
+            fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginLayer );
+          if ( !( fieldConstraints.constraints() & QgsFieldConstraints::ConstraintUnique ) && ( constraints & QgsFieldConstraints::ConstraintUnique ) )
+            fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginLayer );
+          if ( !( fieldConstraints.constraints() & QgsFieldConstraints::ConstraintExpression ) && ( constraints & QgsFieldConstraints::ConstraintExpression ) )
+            fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintOriginLayer );
+
+          const int uniqueStrength = constraintElement.attribute( QStringLiteral( "unique_strength" ), QStringLiteral( "1" ) ).toInt();
+          const int notNullStrength = constraintElement.attribute( QStringLiteral( "notnull_strength" ), QStringLiteral( "1" ) ).toInt();
+          const int expStrength = constraintElement.attribute( QStringLiteral( "exp_strength" ), QStringLiteral( "1" ) ).toInt();
+
+          fieldConstraints.setConstraintStrength( QgsFieldConstraints::ConstraintUnique, static_cast< QgsFieldConstraints::ConstraintStrength >( uniqueStrength ) );
+          fieldConstraints.setConstraintStrength( QgsFieldConstraints::ConstraintNotNull, static_cast< QgsFieldConstraints::ConstraintStrength >( notNullStrength ) );
+          fieldConstraints.setConstraintStrength( QgsFieldConstraints::ConstraintExpression, static_cast< QgsFieldConstraints::ConstraintStrength >( expStrength ) );
+        }
+      }
+
+      // Constraint expressions
+      // always keep provider constraints intact
+      if ( fieldConstraints.constraintOrigin( QgsFieldConstraints::ConstraintExpression ) != QgsFieldConstraints::ConstraintOriginProvider )
+      {
+        const QDomElement constraintExpressionElement = docElem.firstChildElement( QStringLiteral( "constraintExpression" ) );
+        if ( !constraintExpressionElement.isNull() )
+        {
+          QString expression = constraintExpressionElement.attribute( QStringLiteral( "exp" ), QString() );
+          QString description = constraintExpressionElement.attribute( QStringLiteral( "desc" ), QString() );
+          if ( !expression.isEmpty() )
+            fieldConstraints.setConstraintExpression( expression, description );
+        }
+      }
+      config.mFieldConstraints = fieldConstraints;
+
+      const QDomElement widgetGeneralSettingsElement = docElem.firstChildElement( QStringLiteral( "widgetGeneralSettings" ) );
+      if ( !widgetGeneralSettingsElement.isNull() )
+      {
+        const int editable = widgetGeneralSettingsElement.attribute( QStringLiteral( "editable" ), QStringLiteral( "0" ) ).toInt();
+        const int reuse = widgetGeneralSettingsElement.attribute( QStringLiteral( "reuse_last_values" ), QStringLiteral( "0" ) ).toInt();
+        const int labelOnTop = widgetGeneralSettingsElement.attribute( QStringLiteral( "label_on_top" ), QStringLiteral( "0" ) ).toInt();
+
+        config.mEditable = editable;
+        config.mReuseLastValues = reuse;
+        config.mLabelOnTop = labelOnTop;
+      }
+
       loadAttributeTypeDialogFromConfiguration( config );
-
     }
   }
 }
