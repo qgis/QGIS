@@ -175,12 +175,18 @@ const QVariantMap QgsAttributeTypeDialog::editorWidgetConfig()
   return QVariantMap();
 }
 
-void QgsAttributeTypeDialog::setEditorWidgetType( const QString &type )
+void QgsAttributeTypeDialog::setEditorWidgetType( const QString &type, bool forceWidgetRefresh )
 {
   mWidgetTypeComboBox->setCurrentIndex( mWidgetTypeComboBox->findData( type ) );
 
   if ( mEditorConfigWidgets.contains( type ) && mEditorConfigWidgets.value( type ) /* may be a null pointer */ )
   {
+    if ( forceWidgetRefresh )
+    {
+      // Force to reset the config, even if
+      // if the type matches the current one
+      mEditorConfigWidgets.value( type )->setConfig( mWidgetConfig );
+    }
     stackedWidget->setCurrentWidget( mEditorConfigWidgets[type] );
   }
   else
