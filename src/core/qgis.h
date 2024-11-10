@@ -5362,7 +5362,7 @@ class CORE_EXPORT Qgis
       Variance = 1 << 11, //!< Variance of pixel values
       MinimumPoint = 1 << 12, //!< Pixel centroid for minimum pixel value \since QGIS 3.42
       MaximumPoint = 1 << 13, //!< Pixel centroid for maximum pixel value \since QGIS 3.42
-      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance | MinimumPoint | MaximumPoint, //!< All statistics
+      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance, //!< All statistics, excluding MinimumPoint and MaximumPoint
       Default = Count | Sum | Mean, //!< Default statistics
     };
     Q_ENUM( ZonalStatistic )
