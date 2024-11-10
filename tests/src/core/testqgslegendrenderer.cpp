@@ -51,6 +51,9 @@
 #include "qgsfillsymbol.h"
 #include "qgsheatmaprenderer.h"
 #include "qgsmeshlayer.h"
+
+#include "gdal.h"
+
 class TestRasterRenderer : public QgsPalettedRasterRenderer
 {
   public:
@@ -294,9 +297,17 @@ void TestQgsLegendRenderer::init()
   }
   QgsProject::instance()->addMapLayer( mVL3 );
 
-  static const char RASTER_ARRAY[] = { 1, 2, 2, 1 };
-  const QString rasterUri = QStringLiteral( "MEM:::DATAPOINTER=%1,PIXELS=2,LINES=2" ).arg( ( qulonglong ) RASTER_ARRAY );
-  mRL = new QgsRasterLayer( rasterUri, QStringLiteral( "Raster Layer" ), QStringLiteral( "gdal" ) );
+  char RASTER_ARRAY[] = { 1, 2, 2, 1 };
+  GDALDriverH hGTiffDrv = GDALGetDriverByName( "GTiff" );
+  Q_ASSERT( hGTiffDrv );
+  const char *tempFileName = "/vsimem/temp.tif";
+  GDALDatasetH hDS = GDALCreate( hGTiffDrv, tempFileName, 2, 2, 1, GDT_Byte, NULL );
+  Q_ASSERT( hDS );
+  CPLErr eErr = GDALRasterIO( GDALGetRasterBand( hDS, 1 ), GF_Write, 0, 0, 2, 2, RASTER_ARRAY, 2, 2, GDT_Byte, 1, 2 );
+  QVERIFY( eErr == CE_None );
+  GDALClose( hDS );
+
+  mRL = new QgsRasterLayer( QString( tempFileName ), QStringLiteral( "Raster Layer" ), QStringLiteral( "gdal" ) );
 
   std::unique_ptr< TestRasterRenderer > rasterRenderer( new  TestRasterRenderer( mRL->dataProvider(), 1,
   {
@@ -326,6 +337,8 @@ void TestQgsLegendRenderer::init()
   grp1->addLayer( mVL2 );
   mRoot->addLayer( mVL3 );
   mRoot->addLayer( mRL );
+
+  VSIUnlink( tempFileName );
 }
 
 void TestQgsLegendRenderer::cleanup()
