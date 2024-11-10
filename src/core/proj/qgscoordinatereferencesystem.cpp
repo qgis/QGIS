@@ -3242,7 +3242,7 @@ bool QgsCoordinateReferenceSystem::createFromProjObject( PJ *object )
     // maybe we can directly grab the auth name and code from the crs
     const QString authName( proj_get_id_auth_name( d->threadLocalProjObject(), 0 ) );
     const QString authCode( proj_get_id_code( d->threadLocalProjObject(), 0 ) );
-    if ( !authName.isEmpty() && !authCode.isEmpty() && loadFromAuthCode( authName, authCode ) )
+    if ( !authName.isEmpty() && !authCode.isEmpty() && createFromOgcWmsCrs( QStringLiteral( "%1:%2" ).arg( authName, authCode ) ) )
     {
       return d->mIsValid;
     }
