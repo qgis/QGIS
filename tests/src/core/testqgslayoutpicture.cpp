@@ -170,6 +170,14 @@ void TestQgsLayoutPicture::pictureRotation()
 
   mLayout->removeItem( mPicture );
   mPicture->setPictureRotation( 0 );
+
+  // Set picture rotation on uninitialized picture should not create an invalid size (NaN)
+  std::unique_ptr<QgsLayoutItemPicture> uninitialized( new QgsLayoutItemPicture( mLayout ) );
+  uninitialized->setResizeMode( QgsLayoutItemPicture::ZoomResizeFrame );
+  QCOMPARE( uninitialized->sizeWithUnits().toQSizeF(), QSizeF( 0, 0 ) );
+  uninitialized->setPictureRotation( 10 );
+  QCOMPARE( uninitialized->sizeWithUnits().toQSizeF(), QSizeF( 0, 0 ) );
+
 }
 
 void TestQgsLayoutPicture::pictureItemRotation()
