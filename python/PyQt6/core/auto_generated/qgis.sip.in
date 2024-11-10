@@ -3017,6 +3017,7 @@ The development version
       Other,
     };
 
+
     enum class ZonalStatistic /BaseType=IntFlag/
     {
       Count,
@@ -3034,6 +3035,7 @@ The development version
       MinimumPoint,
       MaximumPoint,
       All,
+      AllNumeric,
       Default,
     };
 
