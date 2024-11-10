@@ -105,6 +105,8 @@ class TestQgsProcessingAlgsPt2: public QgsTest
 
     void generateElevationProfileImage();
 
+    void copyMetadata();
+
   private:
 
     QString mPointLayerPath;
@@ -1991,6 +1993,41 @@ void TestQgsProcessingAlgsPt2::generateElevationProfileImage()
   QVERIFY( QFileInfo::exists( outputImage ) );
   QGSVERIFYIMAGECHECK( "generate_elevation_profile", "generate_elevation_profile", outputImage, QString(), 500, QSize( 3, 3 ) );
 }
+
+void TestQgsProcessingAlgsPt2::copyMetadata()
+{
+  std::unique_ptr< QgsVectorLayer > inputLayer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  QVERIFY( inputLayer->isValid() );
+
+  std::unique_ptr< QgsVectorLayer > targetLayer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "target" ), QStringLiteral( "memory" ) );
+  QVERIFY( targetLayer->isValid() );
+
+  QgsLayerMetadata md;
+  md.setTitle( QStringLiteral( "Title" ) );
+  md.setAbstract( QStringLiteral( "Abstract" ) );
+  inputLayer->setMetadata( md );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:copylayermetadata" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( inputLayer.get() ) );
+  parameters.insert( QStringLiteral( "TARGET" ), QVariant::fromValue( targetLayer.get() ) );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), targetLayer->id() );
+
+  QgsLayerMetadata targetMetadata = targetLayer->metadata();
+  QCOMPARE( targetMetadata.title(), QStringLiteral( "Title" ) );
+  QCOMPARE( targetMetadata.abstract(), QStringLiteral( "Abstract" ) );
+}
+
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )
 #include "testqgsprocessingalgspt2.moc"
