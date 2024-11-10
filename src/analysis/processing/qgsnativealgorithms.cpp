@@ -300,6 +300,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsAlignRastersAlgorithm() );
   addAlgorithm( new QgsAlignSingleRasterAlgorithm() );
   addAlgorithm( new QgsAngleToNearestAlgorithm() );
+  addAlgorithm( new QgsApplyLayerMetadataAlgorithm() );
   addAlgorithm( new QgsApplyLayerStyleAlgorithm() );
   addAlgorithm( new QgsArrayTranslatedFeaturesAlgorithm() );
   addAlgorithm( new QgsAspectAlgorithm() );

@@ -106,6 +106,7 @@ class TestQgsProcessingAlgsPt2: public QgsTest
     void generateElevationProfileImage();
 
     void copyMetadata();
+    void applyMetadata();
 
   private:
 
@@ -2028,6 +2029,34 @@ void TestQgsProcessingAlgsPt2::copyMetadata()
   QCOMPARE( targetMetadata.abstract(), QStringLiteral( "Abstract" ) );
 }
 
+void TestQgsProcessingAlgsPt2::applyMetadata()
+{
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:setlayermetadata" ) ) );
+  QVERIFY( alg != nullptr );
+
+  const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString metadataFileName = dataDir + "/simple_metadata.qmd";
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
+  parameters.insert( QStringLiteral( "METADATA" ), metadataFileName );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
+
+  QgsLayerMetadata targetMetadata = layer->metadata();
+  QCOMPARE( targetMetadata.title(), QStringLiteral( "Title" ) );
+  QCOMPARE( targetMetadata.abstract(), QStringLiteral( "Abstract" ) );
+}
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )
 #include "testqgsprocessingalgspt2.moc"
