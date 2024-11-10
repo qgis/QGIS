@@ -90,7 +90,6 @@ class QgsAlgorithmElevationProfilePlotItem: public Qgs2DPlot
 void QgsGenerateElevationProfileAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterGeometry( QStringLiteral( "CURVE" ), QObject::tr( "Profile curve" ), QVariant(), false,  QList<int>() << static_cast<int>( Qgis::GeometryType::Line ) ) );
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CURVE_CRS" ), QObject::tr( "Profile curve CRS" ), QVariant(), false ) );
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "MAP_LAYERS" ), QObject::tr( "Map layers" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), false ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "WIDTH" ), QObject::tr( "Chart width (in pixels)" ), Qgis::ProcessingNumberParameterType::Integer, 400, false, 0 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "HEIGHT" ), QObject::tr( "Chart height (in pixels)" ), Qgis::ProcessingNumberParameterType::Integer, 300, false, 0 ) );
@@ -168,7 +167,7 @@ QgsGenerateElevationProfileAlgorithm *QgsGenerateElevationProfileAlgorithm::crea
 bool QgsGenerateElevationProfileAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   const QgsGeometry curveGeom = parameterAsGeometry( parameters, QStringLiteral( "CURVE" ), context );
-  const QgsCoordinateReferenceSystem curveCrs = parameterAsCrs( parameters, QStringLiteral( "CURVE_CRS" ), context );
+  const QgsCoordinateReferenceSystem curveCrs = parameterAsGeometryCrs( parameters, QStringLiteral( "CURVE" ), context );
 
   QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "MAP_LAYERS" ), context );
   QgsMapLayer *terrainLayer = parameterAsLayer( parameters, QStringLiteral( "TERRAIN_LAYER" ), context );
@@ -214,13 +213,13 @@ QVariantMap QgsGenerateElevationProfileAlgorithm::processAlgorithm( const QVaria
 {
   const QgsGeometry curveGeom = parameterAsGeometry( parameters, QStringLiteral( "CURVE" ), context );
 
-  const bool hasMinimumDistance = !parameterAsString( parameters, QStringLiteral( "MINIMUM_DISTANCE" ), context ).isEmpty();
+  const bool hasMinimumDistance = parameters.value( QStringLiteral( "MINIMUM_DISTANCE" ) ).isValid();
   const double minimumDistance = parameterAsDouble( parameters, QStringLiteral( "MINIMUM_DISTANCE" ), context );
-  const bool hasMaximumDistance = !parameterAsString( parameters, QStringLiteral( "MAXIMUM_DISTANCE" ), context ).isEmpty();
+  const bool hasMaximumDistance = parameters.value( QStringLiteral( "MAXIMUM_DISTANCE" ) ).isValid();
   const double maximumDistance = parameterAsDouble( parameters, QStringLiteral( "MAXIMUM_DISTANCE" ), context );
-  const bool hasMinimumElevation = !parameterAsString( parameters, QStringLiteral( "MINIMUM_ELEVATION" ), context ).isEmpty();
+  const bool hasMinimumElevation = parameters.value( QStringLiteral( "MINIMUM_ELEVATION" ) ).isValid();
   const double minimumElevation = parameterAsDouble( parameters, QStringLiteral( "MINIMUM_ELEVATION" ), context );
-  const bool hasMaximumElevation = !parameterAsString( parameters, QStringLiteral( "MAXIMUM_ELEVATION" ), context ).isEmpty();
+  const bool hasMaximumElevation = parameters.value( QStringLiteral( "MAXIMUM_ELEVATION" ) ).isValid();
   const double maximumElevation = parameterAsDouble( parameters, QStringLiteral( "MAXIMUM_ELEVATION" ), context );
 
   const int width = parameterAsInt( parameters, QStringLiteral( "WIDTH" ), context );
