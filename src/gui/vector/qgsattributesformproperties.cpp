@@ -353,8 +353,10 @@ void QgsAttributesFormProperties::loadAttributeTypeDialogFromConfiguration( cons
   mAttributeTypeDialog->setConstraintExpressionDescription( constraints.constraintDescription() );
   mAttributeTypeDialog->setConstraintExpressionEnforced( constraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) == QgsFieldConstraints::ConstraintStrengthHard );
 
+  // Make sure the widget is refreshed, even if
+  // the new widget type matches the current one
   mAttributeTypeDialog->setEditorWidgetConfig( config.mEditorWidgetConfig );
-  mAttributeTypeDialog->setEditorWidgetType( config.mEditorWidgetType );
+  mAttributeTypeDialog->setEditorWidgetType( config.mEditorWidgetType, true );
 }
 
 void QgsAttributesFormProperties::storeAttributeTypeDialog()
