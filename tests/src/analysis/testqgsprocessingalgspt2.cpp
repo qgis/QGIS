@@ -38,6 +38,8 @@
 #include "qgstextformat.h"
 #include "qgsreferencedgeometry.h"
 #include "qgsdxfexport.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgslinesymbol.h"
 
 class TestQgsProcessingAlgsPt2: public QgsTest
 {
@@ -100,6 +102,8 @@ class TestQgsProcessingAlgsPt2: public QgsTest
 
     void randomPointsInPolygonsFromField_data();
     void randomPointsInPolygonsFromField();
+
+    void generateElevationProfileImage();
 
   private:
 
@@ -1901,12 +1905,10 @@ void TestQgsProcessingAlgsPt2::randomPointsInPolygonsFromField_data()
 
   QTest::newRow( "5" ) << QVariant::fromValue<int>( 5 ) << 5;
   QTest::newRow( "NULL" ) << QVariant() << 0;
-
 }
 
 void TestQgsProcessingAlgsPt2::randomPointsInPolygonsFromField()
 {
-
   QFETCH( QVariant, num_points );
   QFETCH( int, expected );
 
@@ -1948,8 +1950,46 @@ void TestQgsProcessingAlgsPt2::randomPointsInPolygonsFromField()
   QVERIFY( resultLayer );
   QCOMPARE( resultLayer->wkbType(), Qgis::WkbType::Point );
   QCOMPARE( resultLayer->featureCount(), expected );
+}
 
+void TestQgsProcessingAlgsPt2::generateElevationProfileImage()
+{
+  std::unique_ptr< QgsVectorLayer > lineLayer = std::make_unique< QgsVectorLayer >( QStringLiteral( "LineStringZ?crs=epsg:3857" ), QStringLiteral( "lines" ), QStringLiteral( "memory" ) );
+  QVERIFY( lineLayer->isValid() );
+  QgsFeature feature;
+  feature.setGeometry( QgsGeometry::fromWkt( "LineStringZ (0 0 0, 10 10 10)" ) );
+  lineLayer->dataProvider()->addFeature( feature );
 
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
+  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
+  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
+  dynamic_cast<QgsSingleSymbolRenderer *>( lineLayer->renderer() )->setSymbol( QgsLineSymbol::createSimple( properties ) );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:generateelevationprofileimage" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QgsReferencedGeometry curve( QgsGeometry::fromWkt( "LineString(0 0, 10 10)" ), QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+
+  const QString outputImage = QDir::tempPath() + "/my_elevation_profile.png";
+  if ( QFile::exists( outputImage ) )
+    QFile::remove( outputImage );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "CURVE" ), QVariant::fromValue( curve ) );
+  parameters.insert( QStringLiteral( "MAP_LAYERS" ), QVariantList() << QVariant::fromValue( lineLayer.get() ) );
+  parameters.insert( QStringLiteral( "WIDTH" ), 500 );
+  parameters.insert( QStringLiteral( "HEIGHT" ), 350 );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputImage );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QVERIFY( QFileInfo::exists( outputImage ) );
+  QGSVERIFYIMAGECHECK( "generate_elevation_profile", "generate_elevation_profile", outputImage, QString(), 500, QSize( 3, 3 ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )
