@@ -733,7 +733,7 @@ void QgsMdalProvider::makeLastDatasetGroupNameUnique()
         if ( match.hasMatch() )
         {
           int number = match.capturedTexts().first().toInt();
-          lastAddedGroupName = lastAddedGroupName.left( lastAddedGroupName.length() - match.capturedLength() ) + QString( number + 1 );
+          lastAddedGroupName = lastAddedGroupName.left( lastAddedGroupName.length() - match.capturedLength() ) + QString::number( number + 1 );
         }
       }
       else
