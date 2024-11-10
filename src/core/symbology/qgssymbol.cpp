@@ -1032,7 +1032,7 @@ void QgsSymbol::exportImage( const QString &path, const QString &format, QSize s
     QSvgGenerator generator;
     generator.setFileName( path );
     generator.setSize( size );
-    generator.setViewBox( QRect( 0, 0, size.height(), size.height() ) );
+    generator.setViewBox( QRect( 0, 0, size.width(), size.height() ) );
 
     QPainter painter( &generator );
     drawPreviewIcon( &painter, size );
