@@ -1227,12 +1227,8 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
   QCOMPARE( layer.datasetGroupCount(), 2 );
   QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 2 );
 
-  // Add twice the same file
-  QVERIFY( layer.addDatasets( testFileDataSet.fileName() ) ); //dataset added
-  QCOMPARE( layer.dataProvider()->extraDatasets().count(), 1 ); //uri not dupplicated
-  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 3 ); //dataset added
-  QCOMPARE( layer.datasetGroupCount(), 2 ); // meshLayer do not allow dataset group with same name
-  QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 2 );
+  // Add twice the same file - not allow since 3.42
+  QCOMPARE( layer.addDatasets( testFileDataSet.fileName() ), false ); //dataset added
 
   indexes = layer.datasetGroupsIndexes();
   for ( int index : std::as_const( indexes ) )
@@ -1244,7 +1240,7 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
 
   QVERIFY( layer.addDatasets( testFileDataSet_3.fileName() ) );
   QCOMPARE( layer.dataProvider()->extraDatasets().count(), 2 );
-  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 4 );
+  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 3 );
   QCOMPARE( layer.datasetGroupCount(), 3 );
   QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 3 );
 
