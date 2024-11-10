@@ -5341,6 +5341,9 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( VsiHandlerType )
 
+    // TODO QGIS 4: make All include all values (we can't do this before 4.0, as we need to keep
+    // compatibility with code which expects all these statistics to give numeric results)
+
     /**
      * Statistics to be calculated during a zonal statistics operation.
      *
@@ -5362,7 +5365,8 @@ class CORE_EXPORT Qgis
       Variance = 1 << 11, //!< Variance of pixel values
       MinimumPoint = 1 << 12, //!< Pixel centroid for minimum pixel value \since QGIS 3.42
       MaximumPoint = 1 << 13, //!< Pixel centroid for maximum pixel value \since QGIS 3.42
-      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance, //!< All statistics, excluding MinimumPoint and MaximumPoint
+      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance, //!< All statistics. For QGIS 3.x this includes ONLY numeric statistics, but for 4.0 this will be extended to included non-numeric statistics. Consider using AllNumeric instead.
+      AllNumeric = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance, //!< All numeric statistics \since QGIS 3.42
       Default = Count | Sum | Mean, //!< Default statistics
     };
     Q_ENUM( ZonalStatistic )
