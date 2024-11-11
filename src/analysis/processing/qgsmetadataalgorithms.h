@@ -79,6 +79,33 @@ class QgsApplyLayerMetadataAlgorithm : public QgsProcessingAlgorithm
     QString mLayerId;
 };
 
+
+/**
+ * Native export layer metadata algorithm.
+ */
+class QgsExportLayerMetadataAlgorithm : public QgsProcessingAlgorithm
+{
+  public:
+    QgsExportLayerMetadataAlgorithm() = default;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QgsExportLayerMetadataAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback * ) override;
+
+  private:
+
+    QString mLayerId;
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSMETADATAALGORITHMS_H

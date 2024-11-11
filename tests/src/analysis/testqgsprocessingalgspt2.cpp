@@ -41,6 +41,7 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgslinesymbol.h"
 
+
 class TestQgsProcessingAlgsPt2: public QgsTest
 {
     Q_OBJECT
@@ -107,6 +108,7 @@ class TestQgsProcessingAlgsPt2: public QgsTest
 
     void copyMetadata();
     void applyMetadata();
+    void exportMetadata();
 
   private:
 
@@ -2057,6 +2059,52 @@ void TestQgsProcessingAlgsPt2::applyMetadata()
   QCOMPARE( targetMetadata.title(), QStringLiteral( "Title" ) );
   QCOMPARE( targetMetadata.abstract(), QStringLiteral( "Abstract" ) );
 }
+
+void TestQgsProcessingAlgsPt2::exportMetadata()
+{
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsLayerMetadata md;
+  md.setTitle( QStringLiteral( "Title" ) );
+  md.setAbstract( QStringLiteral( "Abstract" ) );
+  layer->setMetadata( md );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:exportlayermetadata" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  int line, column;
+  QString errorMessage;
+
+  QDomDocument doc( QStringLiteral( "qgis" ) );
+  QFile metadataFile( results.value( QStringLiteral( "OUTPUT" ) ).toString() );
+  if ( metadataFile.open( QFile::ReadOnly ) )
+  {
+    ok = doc.setContent( &metadataFile, &errorMessage, &line, &column );
+    QVERIFY( ok );
+    metadataFile.close();
+  }
+
+  const QDomElement root = doc.firstChildElement( QStringLiteral( "qgis" ) );
+  QVERIFY( !root.isNull() );
+
+  QgsLayerMetadata exportedMetadata;
+  exportedMetadata.readMetadataXml( root );
+  QCOMPARE( md.title(), exportedMetadata.title() );
+  QCOMPARE( md.abstract(), exportedMetadata.abstract() );
+}
+
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )
 #include "testqgsprocessingalgspt2.moc"

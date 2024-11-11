@@ -89,7 +89,7 @@ QVariantMap QgsCopyLayerMetadataAlgorithm::processAlgorithm( const QVariantMap &
   return results;
 }
 
-
+///
 
 QString QgsApplyLayerMetadataAlgorithm::name() const
 {
@@ -160,6 +160,69 @@ QVariantMap QgsApplyLayerMetadataAlgorithm::processAlgorithm( const QVariantMap 
 
   QVariantMap results;
   results.insert( QStringLiteral( "OUTPUT" ), mLayerId );
+  return results;
+}
+
+///
+
+QString QgsExportLayerMetadataAlgorithm::name() const
+{
+  return QStringLiteral( "exportlayermetadata" );
+}
+
+QString QgsExportLayerMetadataAlgorithm::displayName() const
+{
+  return QObject::tr( "Export layer metadata" );
+}
+
+QStringList QgsExportLayerMetadataAlgorithm::tags() const
+{
+  return QObject::tr( "export,layer,metadata,qmd" ).split( ',' );
+}
+
+QString QgsExportLayerMetadataAlgorithm::group() const
+{
+  return QObject::tr( "Layer tools" );
+}
+
+QString QgsExportLayerMetadataAlgorithm::groupId() const
+{
+  return QStringLiteral( "layertools" );
+}
+
+QString QgsExportLayerMetadataAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "Exports layer's metadata to a QMD file." );
+}
+
+QgsExportLayerMetadataAlgorithm *QgsExportLayerMetadataAlgorithm::createInstance() const
+{
+  return new QgsExportLayerMetadataAlgorithm();
+}
+
+void QgsExportLayerMetadataAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Layer" ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output" ), QObject::tr( "QGIS Metadata File" ) + QStringLiteral( " (*.qmd *.QMD)" ) ) );
+}
+
+QVariantMap QgsExportLayerMetadataAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  QgsMapLayer *layer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
+  const QString outputFile = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
+
+  if ( !layer )
+    throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
+
+  bool ok = false;
+  const QString message = layer->saveNamedMetadata( outputFile, ok );
+  if ( !ok )
+  {
+    throw QgsProcessingException( QObject::tr( "Failed to save metadata. Error: %1" ).arg( message ) );
+  }
+
+  QVariantMap results;
+  results.insert( QStringLiteral( "OUTPUT" ), outputFile );
   return results;
 }
 
