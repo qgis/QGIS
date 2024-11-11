@@ -353,6 +353,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExplodeAlgorithm() );
   addAlgorithm( new QgsExplodeHstoreAlgorithm() );
   addAlgorithm( new QgsExportLayersInformationAlgorithm() );
+  addAlgorithm( new QgsExportLayerMetadataAlgorithm() );
   addAlgorithm( new QgsExportMeshVerticesAlgorithm );
   addAlgorithm( new QgsExportMeshFacesAlgorithm );
   addAlgorithm( new QgsExportMeshEdgesAlgorithm );
