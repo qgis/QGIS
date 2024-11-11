@@ -105,7 +105,7 @@ void QgsStacDownloadAssetsDialog::showContextMenu( QPoint p )
   mContextMenu->clear();
 
   const QString url = item->text( 5 );
-  QAction *copyUrlAction = new QAction( tr( "Copy URL" ), this );
+  QAction *copyUrlAction = new QAction( tr( "Copy URL" ), mContextMenu );
   connect( copyUrlAction, &QAction::triggered, this, [url]
   {
     QApplication::clipboard()->setText( url );
