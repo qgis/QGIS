@@ -86,8 +86,9 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
     void copyCommonProperties( QgsCopcPointCloudIndex *destination ) const;
 
     /**
-     * Returns the gps time flag from LAS header
-     * \since QGIS 3.34.12
+     * Returns the gps time flag from global_encoding field in LAS header, 0 indicates GPS week time (seconds passed since the beginning of the week)
+     * 1 indicates GPS adjusted time, which is seconds passed since the GPS base time minus 1e9
+     * \since QGIS 3.42
      */
     bool gpsTimeFlag() const;
 
