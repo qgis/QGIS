@@ -2230,16 +2230,31 @@ void QgsAttributesFormProperties::pasteWidgetConfiguration()
     const QDomElement constraintElement = docElem.firstChildElement( QStringLiteral( "constraint" ) );
     if ( !constraintElement.isNull() )
     {
-      int intConstraints = constraintElement.attribute( QStringLiteral( "constraints" ), QStringLiteral( "0" ) ).toInt();
+      const int intConstraints = constraintElement.attribute( QStringLiteral( "constraints" ), QStringLiteral( "0" ) ).toInt();
       QgsFieldConstraints::Constraints constraints = static_cast< QgsFieldConstraints::Constraints >( intConstraints );
 
       // always keep provider constraints intact
-      if ( !( fieldConstraints.constraints() & QgsFieldConstraints::ConstraintNotNull ) && ( constraints & QgsFieldConstraints::ConstraintNotNull ) )
-        fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginLayer );
-      if ( !( fieldConstraints.constraints() & QgsFieldConstraints::ConstraintUnique ) && ( constraints & QgsFieldConstraints::ConstraintUnique ) )
-        fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginLayer );
-      if ( !( fieldConstraints.constraints() & QgsFieldConstraints::ConstraintExpression ) && ( constraints & QgsFieldConstraints::ConstraintExpression ) )
-        fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintOriginLayer );
+      if ( fieldConstraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) != QgsFieldConstraints::ConstraintOriginProvider )
+      {
+        if ( constraints & QgsFieldConstraints::ConstraintNotNull )
+          fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginLayer );
+        else
+          fieldConstraints.removeConstraint( QgsFieldConstraints::ConstraintNotNull );
+      }
+      if ( fieldConstraints.constraintOrigin( QgsFieldConstraints::ConstraintUnique ) != QgsFieldConstraints::ConstraintOriginProvider )
+      {
+        if ( constraints & QgsFieldConstraints::ConstraintUnique )
+          fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginLayer );
+        else
+          fieldConstraints.removeConstraint( QgsFieldConstraints::ConstraintUnique );
+      }
+      if ( fieldConstraints.constraintOrigin( QgsFieldConstraints::ConstraintExpression ) != QgsFieldConstraints::ConstraintOriginProvider )
+      {
+        if ( constraints & QgsFieldConstraints::ConstraintExpression )
+          fieldConstraints.setConstraint( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintOriginLayer );
+        else
+          fieldConstraints.removeConstraint( QgsFieldConstraints::ConstraintExpression );
+      }
 
       const int uniqueStrength = constraintElement.attribute( QStringLiteral( "unique_strength" ), QStringLiteral( "1" ) ).toInt();
       const int notNullStrength = constraintElement.attribute( QStringLiteral( "notnull_strength" ), QStringLiteral( "1" ) ).toInt();
