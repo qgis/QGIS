@@ -410,7 +410,7 @@ QByteArray QgsCopcPointCloudIndex::fetchCopcStatisticsEvlrData()
 
 bool QgsCopcPointCloudIndex::gpsTimeFlag() const
 {
-  return mLazInfo.get()->header().global_encoding % 2;
+  return mLazInfo.get()->header().global_encoding & 1;
 }
 
 ///@endcond
