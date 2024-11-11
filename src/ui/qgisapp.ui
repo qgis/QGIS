@@ -2229,7 +2229,9 @@ Acts on all layers.</string>
      <normaloff>:/images/themes/default/mActionOffsetCurve.svg</normaloff>:/images/themes/default/mActionOffsetCurve.svg</iconset>
    </property>
    <property name="text">
-    <string>Offset Curve</string>
+    <string>Offset Curve
+  Ctrl+click with snapping to offset geometry from another layer.
+  Ctrl+2nd click to create a copy.</string>
    </property>
   </action>
   <action name="mActionCopyStyle">
@@ -2663,7 +2665,8 @@ Shift+click to snap rotation to 45 degree steps.</string>
     <string>Fill Ring</string>
    </property>
    <property name="toolTip">
-    <string>Fill Ring</string>
+    <string>Fill Ring
+Shift+click on existing ring to fill.</string>
    </property>
   </action>
   <action name="mActionAddLayerDefinition">
