@@ -21,3 +21,48 @@
 QgsProxyFeatureSink::QgsProxyFeatureSink( QgsFeatureSink *sink )
   : mSink( sink )
 {}
+
+bool QgsProxyFeatureSink::addFeature( QgsFeature &feature, Flags flags )
+{
+  if ( !mSink )
+    return false;
+
+  return mSink->addFeature( feature, flags );
+}
+
+bool QgsProxyFeatureSink::addFeatures( QgsFeatureList &features, Flags flags )
+{
+  if ( !mSink )
+    return false;
+
+  return mSink->addFeatures( features, flags );
+}
+
+bool QgsProxyFeatureSink::addFeatures( QgsFeatureIterator &iterator, Flags flags )
+{
+  if ( !mSink )
+    return false;
+
+  return mSink->addFeatures( iterator, flags );
+}
+
+QString QgsProxyFeatureSink::lastError() const
+{
+  return mSink ? mSink->lastError() : QString();
+}
+
+bool QgsProxyFeatureSink::flushBuffer()
+{
+  if ( !mSink )
+    return false;
+
+  return mSink->flushBuffer();
+}
+
+void QgsProxyFeatureSink::finalize()
+{
+  if ( mSink )
+  {
+    mSink->finalize();
+  }
+}

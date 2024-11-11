@@ -2008,7 +2008,10 @@ QgsProcessingFeatureSink::~QgsProcessingFeatureSink()
   }
 
   if ( mOwnsSink )
-    delete destinationSink();
+  {
+    delete mSink;
+    mSink = nullptr;
+  }
 }
 
 void QgsProcessingFeatureSink::finalize()

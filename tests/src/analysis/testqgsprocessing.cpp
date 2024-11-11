@@ -2333,6 +2333,7 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( layer->featureCount(), 0L );
   QVERIFY( sink->addFeature( f ) );
   QCOMPARE( layer->featureCount(), 1L );
+  sink.reset();
   context.temporaryLayerStore()->removeAllMapLayers();
   layer = nullptr;
 
@@ -2392,6 +2393,7 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( layer->featureCount(), 0L );
   QVERIFY( sink->addFeature( f ) );
   QCOMPARE( layer->featureCount(), 1L );
+  sink.reset();
   context.temporaryLayerStore()->removeAllMapLayers();
 
   // non memory layer output
