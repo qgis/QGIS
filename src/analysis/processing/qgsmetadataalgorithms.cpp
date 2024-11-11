@@ -58,6 +58,7 @@ void QgsCopyLayerMetadataAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Source layer" ) ) );
   addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "TARGET" ), QObject::tr( "Target layer" ) ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DEFAULT" ), QObject::tr( "Save metadata as default" ), false ) );
   addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Updated layer" ) ) );
 }
 
@@ -65,6 +66,7 @@ bool QgsCopyLayerMetadataAlgorithm::prepareAlgorithm( const QVariantMap &paramet
 {
   QgsMapLayer *inputLayer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
   QgsMapLayer *targetLayer = parameterAsLayer( parameters, QStringLiteral( "TARGET" ), context );
+  const bool saveAsDefault = parameterAsBool( parameters, QStringLiteral( "DEFAULT" ), context );
 
   if ( !inputLayer )
     throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
@@ -76,6 +78,15 @@ bool QgsCopyLayerMetadataAlgorithm::prepareAlgorithm( const QVariantMap &paramet
 
   QgsLayerMetadata *metadata = inputLayer->metadata().clone();
   targetLayer->setMetadata( *metadata );
+  if ( saveAsDefault )
+  {
+    bool ok;
+    targetLayer->saveDefaultMetadata( ok );
+    if ( !ok )
+    {
+      throw QgsProcessingException( QObject::tr( "Failed to save metadata as default metadata." ) );
+    }
+  }
   return true;
 }
 
@@ -130,6 +141,7 @@ void QgsApplyLayerMetadataAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Layer" ) ) );
   addParameter( new QgsProcessingParameterFile( QStringLiteral( "METADATA" ), QObject::tr( "Metadata file" ), Qgis::ProcessingFileParameterBehavior::File, QStringLiteral( "qmd" ) ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DEFAULT" ), QObject::tr( "Save metadata as default" ), false ) );
   addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Updated" ) ) );
 }
 
@@ -137,6 +149,7 @@ bool QgsApplyLayerMetadataAlgorithm::prepareAlgorithm( const QVariantMap &parame
 {
   QgsMapLayer *layer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
   const QString metadata = parameterAsFile( parameters, QStringLiteral( "METADATA" ), context );
+  const bool saveAsDefault = parameterAsBool( parameters, QStringLiteral( "DEFAULT" ), context );
 
   if ( !layer )
     throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
@@ -148,6 +161,16 @@ bool QgsApplyLayerMetadataAlgorithm::prepareAlgorithm( const QVariantMap &parame
   if ( !ok )
   {
     throw QgsProcessingException( QObject::tr( "Failed to apply metadata. Error: %1" ).arg( msg ) );
+  }
+
+  if ( saveAsDefault )
+  {
+    bool ok;
+    layer->saveDefaultMetadata( ok );
+    if ( !ok )
+    {
+      throw QgsProcessingException( QObject::tr( "Failed to save metadata as default metadata." ) );
+    }
   }
 
   return true;
