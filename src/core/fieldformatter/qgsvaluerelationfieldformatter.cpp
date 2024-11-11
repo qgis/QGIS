@@ -182,7 +182,7 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
       description = descriptionExpression.evaluate( &context ).toString();
     }
     const QVariant group = groupIdx > -1 ? f.attribute( groupIdx ) : QVariant();
-    const QVariant keyValue { f.attribute( keyIdx ) };
+    const QVariant keyValue = f.attribute( keyIdx );
     if ( fieldIdx != -1 )
     {
       orderByFieldValues.insert( keyValue, f.attribute( fieldIdx ) );
