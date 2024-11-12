@@ -432,6 +432,14 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     int eyeDomeLightingDistance() const;
 
     /**
+    * Sets whether to keep updating scene on zooming or keep the same amount of points visible
+    * \since QGIS 3.42
+    */
+    void setStopUpdates( bool enabled );
+    //! Returns whether to keep updating the scene on zoom
+    bool stopUpdates() const;
+
+    /**
      * Sets the debugging settings of the shadow map
      * \see debugShadowMapEnabled()
      * \see debugShadowMapCorner()
@@ -791,6 +799,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void showLabelsChanged();
 
     /**
+     * Emitted when the flag whether to keep updating scene has changed
+     * \since QGIS 3.42
+     */
+    void stopUpdatesChanged();
+
+    /**
      * Emitted when the flag whether eye dome lighting is used has changed
      * \since QGIS 3.18
      */
@@ -950,6 +964,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mShowCameraRotationCenter = false; //!< Whether to show camera rotation center as a sphere - useful for debugging
     bool mShowLightSources = false; //!< Whether to show the origin of light sources
     bool mShowLabels = false; //!< Whether to display labels on terrain tiles
+    bool mStopUpdates = false; //!< Whether to stop updating scene on zoom
     QList< QgsLightSource * > mLightSources; //!< List of light sources in the scene (owned by the settings)
     float mFieldOfView = 45.0f; //<! Camera lens field of view value
     Qt3DRender::QCameraLens::ProjectionType mProjectionType = Qt3DRender::QCameraLens::PerspectiveProjection;  //<! Camera lens projection type

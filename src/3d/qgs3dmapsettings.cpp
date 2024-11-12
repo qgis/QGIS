@@ -70,6 +70,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mShowCameraRotationCenter( other.mShowCameraRotationCenter )
   , mShowLightSources( other.mShowLightSources )
   , mShowLabels( other.mShowLabels )
+  , mStopUpdates( other.mStopUpdates )
   , mFieldOfView( other.mFieldOfView )
   , mProjectionType( other.mProjectionType )
   , mCameraNavigationMode( other.mCameraNavigationMode )
@@ -313,6 +314,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mShowCameraRotationCenter = elemDebug.attribute( QStringLiteral( "camera-rotation-center" ), QStringLiteral( "0" ) ).toInt();
   mShowLightSources = elemDebug.attribute( QStringLiteral( "show-light-sources" ), QStringLiteral( "0" ) ).toInt();
   mIsFpsCounterEnabled = elemDebug.attribute( QStringLiteral( "show-fps-counter" ), QStringLiteral( "0" ) ).toInt();
+  mStopUpdates = elemDebug.attribute( QStringLiteral( "stop-updates" ), QStringLiteral( "0" ) ).toInt();
 
   QDomElement elemTemporalRange = elem.firstChildElement( QStringLiteral( "temporal-range" ) );
   QDateTime start = QDateTime::fromString( elemTemporalRange.attribute( QStringLiteral( "start" ) ), Qt::ISODate );
@@ -428,6 +430,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemDebug.setAttribute( QStringLiteral( "camera-rotation-center" ), mShowCameraRotationCenter ? 1 : 0 );
   elemDebug.setAttribute( QStringLiteral( "show-light-sources" ), mShowLightSources ? 1 : 0 );
   elemDebug.setAttribute( QStringLiteral( "show-fps-counter" ), mIsFpsCounterEnabled ? 1 : 0 );
+  elemDebug.setAttribute( QStringLiteral( "stop-updates" ), mStopUpdates ? 1 : 0 );
   elem.appendChild( elemDebug );
 
   QDomElement elemEyeDomeLighting = doc.createElement( QStringLiteral( "eye-dome-lighting" ) );
@@ -977,6 +980,24 @@ bool Qgs3DMapSettings::showLabels() const
   return mShowLabels;
 }
 
+void Qgs3DMapSettings::setStopUpdates( bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mStopUpdates == enabled )
+    return;
+
+  mStopUpdates = enabled;
+  emit stopUpdatesChanged();
+}
+
+bool Qgs3DMapSettings::stopUpdates() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mStopUpdates;
+}
+
 void Qgs3DMapSettings::setEyeDomeLightingEnabled( bool enabled )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -1426,6 +1447,7 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
   connect( this, &Qgs3DMapSettings::ambientOcclusionSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::extentChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::showExtentIn2DViewChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::stopUpdatesChanged, this, &Qgs3DMapSettings::settingsChanged );
 }
 
 

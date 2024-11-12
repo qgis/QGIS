@@ -191,7 +191,7 @@
        <item>
         <widget class="QStackedWidget" name="m3DOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>5</number>
          </property>
          <widget class="QWidget" name="mPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -217,7 +217,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>813</width>
+                <width>818</width>
                 <height>649</height>
                </rect>
               </property>
@@ -284,8 +284,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>280</width>
-                <height>283</height>
+                <width>259</width>
+                <height>326</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutTerrain">
@@ -448,7 +448,7 @@
                   </property>
                   <item>
                    <widget class="QgsPhongMaterialWidget" name="widgetTerrainMaterial" native="true">
-                    <property name="hasOpacity">
+                    <property name="hasOpacity" stdset="0">
                      <bool>false</bool>
                     </property>
                    </widget>
@@ -499,8 +499,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>77</width>
-                <height>43</height>
+                <width>100</width>
+                <height>46</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutLight">
@@ -583,8 +583,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>149</width>
-                <height>43</height>
+                <width>221</width>
+                <height>176</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutShadow">
@@ -665,24 +665,24 @@
                   <item row="1" column="0">
                    <widget class="QLabel" name="label_2">
                     <property name="text">
-                        <string>Lighting distance</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="1">
-                      <widget class="QgsSpinBox" name="edlDistanceSpinBox">
-                       <property name="minimum">
-                        <number>1</number>
-                       </property>
-                       <property name="maximum">
-                        <number>20</number>
-                       </property>
-                      </widget>
-                     </item>
+                     <string>Lighting distance</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QgsSpinBox" name="edlDistanceSpinBox">
+                    <property name="minimum">
+                     <number>1</number>
+                    </property>
+                    <property name="maximum">
+                     <number>20</number>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                </item>
-               <item row="2" column="0">
+               <item>
                 <widget class="QgsAmbientOcclusionSettingsWidget" name="mAmbientOcclusionSettingsWidget" native="true"/>
                </item>
                <item>
@@ -728,8 +728,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>335</width>
-                <height>488</height>
+                <width>291</width>
+                <height>528</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutCameraSkybox">
@@ -940,8 +940,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>803</width>
-                <height>706</height>
+                <width>818</width>
+                <height>649</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayoutAdvanced">
@@ -1010,37 +1010,6 @@
                   </item>
                   <item row="0" column="0">
                    <layout class="QGridLayout" name="gridLayoutAdvanced">
-                    <item row="1" column="1">
-                     <widget class="QgsDoubleSpinBox" name="spinScreenError">
-                      <property name="suffix">
-                       <string> px</string>
-                      </property>
-                      <property name="decimals">
-                       <number>1</number>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="10" column="0" colspan="2">
-                     <widget class="QCheckBox" name="chkShowLightSourceOrigins">
-                      <property name="text">
-                       <string>Show light sources</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="7" column="0" colspan="2">
-                     <widget class="QCheckBox" name="chkShowBoundingBoxes">
-                      <property name="text">
-                       <string>Show bounding boxes</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="6" column="0" colspan="2">
-                     <widget class="QCheckBox" name="chkShowTileInfo">
-                      <property name="text">
-                       <string>Show map tile info</string>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="2" column="1">
                      <widget class="QgsDoubleSpinBox" name="spinGroundError">
                       <property name="suffix">
@@ -1060,17 +1029,31 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="1" column="0">
-                     <widget class="QLabel" name="label_5">
+                    <item row="7" column="0" colspan="2">
+                     <widget class="QCheckBox" name="chkShowBoundingBoxes">
                       <property name="text">
-                       <string>Max. screen error</string>
+                       <string>Show bounding boxes</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="5" column="0" colspan="2">
-                     <widget class="QCheckBox" name="chkShowLabels">
+                    <item row="3" column="1">
+                     <widget class="QLabel" name="labelZoomLevels">
                       <property name="text">
-                       <string>Show labels</string>
+                       <string>0</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="label_4">
+                      <property name="text">
+                       <string>Map tile resolution</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="9" column="0">
+                     <widget class="QCheckBox" name="chkShowCameraRotationCenter">
+                      <property name="text">
+                       <string>Show camera's rotation center</string>
                       </property>
                      </widget>
                     </item>
@@ -1084,17 +1067,10 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="8" column="0" colspan="2">
-                     <widget class="QCheckBox" name="chkShowCameraViewCenter">
+                    <item row="1" column="0">
+                     <widget class="QLabel" name="label_5">
                       <property name="text">
-                       <string>Show camera's view center</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="0">
-                     <widget class="QLabel" name="label_4">
-                      <property name="text">
-                       <string>Map tile resolution</string>
+                       <string>Max. screen error</string>
                       </property>
                      </widget>
                     </item>
@@ -1105,7 +1081,35 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="12" column="0" colspan="2">
+                    <item row="3" column="0">
+                     <widget class="QLabel" name="label_7">
+                      <property name="text">
+                       <string>Zoom levels</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="5" column="0" colspan="2">
+                     <widget class="QCheckBox" name="chkShowLabels">
+                      <property name="text">
+                       <string>Show labels</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="8" column="0" colspan="2">
+                     <widget class="QCheckBox" name="chkShowCameraViewCenter">
+                      <property name="text">
+                       <string>Show camera's view center</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="6" column="0" colspan="2">
+                     <widget class="QCheckBox" name="chkShowTileInfo">
+                      <property name="text">
+                       <string>Show map tile info</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="13" column="0" colspan="2">
                      <widget class="QCheckBox" name="mDebugOverlayCheckBox">
                       <property name="visible">
                        <bool>false</bool>
@@ -1115,10 +1119,20 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="3" column="0">
-                     <widget class="QLabel" name="label_7">
+                    <item row="10" column="0" colspan="2">
+                     <widget class="QCheckBox" name="chkShowLightSourceOrigins">
                       <property name="text">
-                       <string>Zoom levels</string>
+                       <string>Show light sources</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QgsDoubleSpinBox" name="spinScreenError">
+                      <property name="suffix">
+                       <string> px</string>
+                      </property>
+                      <property name="decimals">
+                       <number>1</number>
                       </property>
                      </widget>
                     </item>
@@ -1129,17 +1143,10 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="3" column="1">
-                     <widget class="QLabel" name="labelZoomLevels">
+                    <item row="12" column="0">
+                     <widget class="QCheckBox" name="chkStopUpdates">
                       <property name="text">
-                       <string>0</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="9" column="0">
-                     <widget class="QCheckBox" name="chkShowCameraRotationCenter">
-                      <property name="text">
-                       <string>Show camera's rotation center</string>
+                       <string>Stop scene updates</string>
                       </property>
                      </widget>
                     </item>

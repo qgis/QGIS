@@ -164,6 +164,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   chkShowCameraRotationCenter->setChecked( mMap->showCameraRotationCenter() );
   chkShowLightSourceOrigins->setChecked( mMap->showLightSourceOrigins() );
   mFpsCounterCheckBox->setChecked( mMap->isFpsCounterEnabled() );
+  chkStopUpdates->setChecked( mMap->stopUpdates() );
 
   mDebugOverlayCheckBox->setChecked( mMap->isDebugOverlayEnabled() );
   mDebugOverlayCheckBox->setVisible( true );
@@ -378,6 +379,7 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setShowCameraRotationCenter( chkShowCameraRotationCenter->isChecked() );
   mMap->setShowLightSourceOrigins( chkShowLightSourceOrigins->isChecked() );
   mMap->setIsFpsCounterEnabled( mFpsCounterCheckBox->isChecked() );
+  mMap->setStopUpdates( chkStopUpdates->isChecked() );
   mMap->setTerrainShadingEnabled( groupTerrainShading->isChecked() );
   mMap->setIsDebugOverlayEnabled( mDebugOverlayCheckBox->isChecked() );
 
