@@ -303,13 +303,13 @@ struct MapIndexedPointCloudNode
           // however often times the flag is set wrong, so we determine if the value is bigger than the maximum amount of seconds in week then it has to be adjusted standard time
           if ( copcIndex->gpsTimeFlag() || pointAttr[QStringLiteral( "GpsTime" )].toDouble() > numberOfSecsInWeek )
           {
-            const QString utcTime = gpsBaseTime.addSecs( pointAttr[QStringLiteral( "GpsTime" )].toDouble() + 1e9 ).toString( Qt::ISODate );
+            const QString utcTime = gpsBaseTime.addSecs( static_cast<qint64>( pointAttr[QStringLiteral( "GpsTime" )].toDouble() + 1e9 ) ).toString( Qt::ISODate );
             pointAttr[ QStringLiteral( "GpsTime (raw)" )] = pointAttr[QStringLiteral( "GpsTime" )];
             pointAttr[ QStringLiteral( "GpsTime" )] = utcTime;
           }
           else
           {
-            const QString weekTime = gpsBaseTime.addSecs( pointAttr[QStringLiteral( "GpsTime" )].toDouble() ).toString( "ddd hh:mm:ss" );
+            const QString weekTime = gpsBaseTime.addSecs( pointAttr[QStringLiteral( "GpsTime" )].toLongLong() ).toString( "ddd hh:mm:ss" );
             pointAttr[ QStringLiteral( "GpsTime (raw)" )] = pointAttr[QStringLiteral( "GpsTime" )];
             pointAttr[ QStringLiteral( "GpsTime" )] = weekTime;
           }
