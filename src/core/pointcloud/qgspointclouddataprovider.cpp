@@ -296,12 +296,12 @@ struct MapIndexedPointCloudNode
 
         if ( const QgsCopcPointCloudIndex *copcIndex = dynamic_cast<QgsCopcPointCloudIndex *>( mIndex ) )
         {
-          const QDateTime gpsBaseTime =
-            QDateTime::fromSecsSinceEpoch( 315964809, Qt::UTC );
+          const QDateTime gpsBaseTime = QDateTime::fromSecsSinceEpoch( 315964809, Qt::UTC );
           constexpr int numberOfSecsInWeek = 3600 * 24 * 7;
-          // here we check the flag set in header to determine if we need to parse the time as GPS week time or GPS adjusted standard time
+          // here we check the flag set in header to determine if we need to
+          // parse the time as GPS week time or GPS adjusted standard time
           // however often times the flag is set wrong, so we determine if the value is bigger than the maximum amount of seconds in week then it has to be adjusted standard time
-          if ( const bool gpsTimeFlag = copcIndex->gpsTimeFlag(); gpsTimeFlag || pointAttr[QStringLiteral( "GpsTime" )].toDouble() > numberOfSecsInWeek )
+          if ( copcIndex->gpsTimeFlag() || pointAttr[QStringLiteral( "GpsTime" )].toDouble() > numberOfSecsInWeek )
           {
             const QString utcTime = gpsBaseTime.addSecs( pointAttr[QStringLiteral( "GpsTime" )].toDouble() + 1e9 ).toString( Qt::ISODate );
             pointAttr[ QStringLiteral( "GpsTime (raw)" )] = pointAttr[QStringLiteral( "GpsTime" )];
