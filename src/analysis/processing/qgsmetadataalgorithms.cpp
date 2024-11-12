@@ -76,7 +76,7 @@ bool QgsCopyLayerMetadataAlgorithm::prepareAlgorithm( const QVariantMap &paramet
 
   mLayerId = targetLayer->id();
 
-  targetLayer->setMetadata( *inputLayer->metadata() );
+  targetLayer->setMetadata( inputLayer->metadata() );
   if ( saveAsDefault )
   {
     bool ok;
