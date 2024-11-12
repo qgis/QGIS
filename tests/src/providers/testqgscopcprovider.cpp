@@ -397,7 +397,7 @@ void TestQgsCopcProvider::testIdentify()
     expected[ QStringLiteral( "Blue" ) ] = 0;
     expected[ QStringLiteral( "Classification" ) ] = 2;
     expected[ QStringLiteral( "EdgeOfFlightLine" ) ] = 0;
-    expected[ QStringLiteral( "GpsTime" ) ] = 268793.37257748609409;
+    expected[ QStringLiteral( "GpsTime (raw)" ) ] = 268793.37257748609409;
     expected[ QStringLiteral( "Green" ) ] = 0;
     expected[ QStringLiteral( "Intensity" ) ] = 1765;
     expected[ QStringLiteral( "NumberOfReturns" ) ] = 1;
@@ -436,7 +436,7 @@ void TestQgsCopcProvider::testIdentify()
       point[ QStringLiteral( "Blue" ) ] =  "0" ;
       point[ QStringLiteral( "Classification" ) ] =  "2" ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =  "0" ;
-      point[ QStringLiteral( "GpsTime" ) ] =  "268793.3373408913" ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =  "268793.3373408913" ;
       point[ QStringLiteral( "Green" ) ] =  "0" ;
       point[ QStringLiteral( "Intensity" ) ] =  "278" ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =  "1" ;
@@ -479,7 +479,7 @@ void TestQgsCopcProvider::testIdentify()
       point[ QStringLiteral( "Blue" ) ] =  "0" ;
       point[ QStringLiteral( "Classification" ) ] =  "2" ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =  "0" ;
-      point[ QStringLiteral( "GpsTime" ) ] =  "268793.3813974548" ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =  "268793.3813974548" ;
       point[ QStringLiteral( "Green" ) ] =  "0" ;
       point[ QStringLiteral( "Intensity" ) ] =  "1142" ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =  "1" ;
@@ -499,7 +499,7 @@ void TestQgsCopcProvider::testIdentify()
       point[ QStringLiteral( "Blue" ) ] =  "0" ;
       point[ QStringLiteral( "Classification" ) ] =  "3" ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =  "0" ;
-      point[ QStringLiteral( "GpsTime" ) ] =  "269160.5176644815" ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =  "269160.5176644815" ;
       point[ QStringLiteral( "Green" ) ] =  "0" ;
       point[ QStringLiteral( "Intensity" ) ] =  "1631" ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =  "1" ;
@@ -589,7 +589,7 @@ void TestQgsCopcProvider::testExtraBytesAttributesValues()
       point[ QStringLiteral( "Classification" ) ] =   "2"  ;
       point[ QStringLiteral( "Deviation" ) ] =   "0"  ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
-      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.235839"  ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =   "302522582.235839"  ;
       point[ QStringLiteral( "Green" ) ] =   "0"  ;
       point[ QStringLiteral( "Intensity" ) ] =   "1417"  ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
@@ -612,7 +612,7 @@ void TestQgsCopcProvider::testExtraBytesAttributesValues()
       point[ QStringLiteral( "Classification" ) ] =   "5"  ;
       point[ QStringLiteral( "Deviation" ) ] =   "2"  ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
-      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.235838"  ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =   "302522582.235838"  ;
       point[ QStringLiteral( "Green" ) ] =   "0"  ;
       point[ QStringLiteral( "Intensity" ) ] =   "441"  ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
@@ -673,7 +673,7 @@ void TestQgsCopcProvider::testClassFlagsValues()
       point[ QStringLiteral( "Classification" ) ] =   "2"  ;
       point[ QStringLiteral( "Deviation" ) ] =   "0"  ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
-      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.235839"  ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =   "302522582.235839"  ;
       point[ QStringLiteral( "Green" ) ] =   "0"  ;
       point[ QStringLiteral( "Intensity" ) ] =   "1417"  ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
@@ -700,7 +700,7 @@ void TestQgsCopcProvider::testClassFlagsValues()
       point[ QStringLiteral( "Classification" ) ] =   "5"  ;
       point[ QStringLiteral( "Deviation" ) ] =   "2"  ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
-      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.235838"  ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =   "302522582.235838"  ;
       point[ QStringLiteral( "Green" ) ] =   "0"  ;
       point[ QStringLiteral( "Intensity" ) ] =   "441"  ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
@@ -727,7 +727,7 @@ void TestQgsCopcProvider::testClassFlagsValues()
       point[ QStringLiteral( "Classification" ) ] =   "5"  ;
       point[ QStringLiteral( "Deviation" ) ] =   "8"  ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
-      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.235837"  ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =   "302522582.235837"  ;
       point[ QStringLiteral( "Green" ) ] =   "0"  ;
       point[ QStringLiteral( "Intensity" ) ] =   "754"  ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
@@ -754,7 +754,7 @@ void TestQgsCopcProvider::testClassFlagsValues()
       point[ QStringLiteral( "Classification" ) ] =   "2"  ;
       point[ QStringLiteral( "Deviation" ) ] =   "6"  ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
-      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.235838"  ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =   "302522582.235838"  ;
       point[ QStringLiteral( "Green" ) ] =   "0"  ;
       point[ QStringLiteral( "Intensity" ) ] =   "1539"  ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
@@ -781,7 +781,7 @@ void TestQgsCopcProvider::testClassFlagsValues()
       point[ QStringLiteral( "Classification" ) ] =   "5"  ;
       point[ QStringLiteral( "Deviation" ) ] =   "43"  ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
-      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.23583597"  ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =   "302522582.23583597"  ;
       point[ QStringLiteral( "Green" ) ] =   "0"  ;
       point[ QStringLiteral( "Intensity" ) ] =   "1171"  ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
