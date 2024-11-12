@@ -442,6 +442,17 @@ Sets the eye dome lighting distance value (contributes to the contrast of the im
 Returns the eye dome lighting distance value (contributes to the contrast of the image)
 %End
 
+    void setStopUpdates( bool enabled );
+%Docstring
+Sets whether to keep updating scene on zooming or keep the same amount of points visible
+
+.. versionadded:: 3.42
+%End
+    bool stopUpdates() const;
+%Docstring
+Returns whether to keep updating the scene on zoom
+%End
+
     void setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size );
 %Docstring
 Sets the debugging settings of the shadow map
@@ -814,6 +825,13 @@ Emitted when the flag whether light source origins are shown has changed.
     void showLabelsChanged();
 %Docstring
 Emitted when the flag whether labels are displayed on terrain tiles has changed
+%End
+
+    void stopUpdatesChanged();
+%Docstring
+Emitted when the flag whether to keep updating scene has changed
+
+.. versionadded:: 3.42
 %End
 
     void eyeDomeLightingEnabledChanged();
