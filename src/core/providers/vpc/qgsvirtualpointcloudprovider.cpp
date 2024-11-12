@@ -22,7 +22,6 @@
 #include "moc_qgsvirtualpointcloudprovider.cpp"
 #include "qgscopcpointcloudindex.h"
 #include "qgseptpointcloudindex.h"
-#include "qgsremotecopcpointcloudindex.h"
 #include "qgsremoteeptpointcloudindex.h"
 #include "qgspointcloudsubindex.h"
 #include "qgspointcloudclassifiedrenderer.h"
@@ -395,7 +394,7 @@ void QgsVirtualPointCloudProvider::loadSubIndex( int i )
   if ( sl.uri().startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive ) )
   {
     if ( sl.uri().endsWith( QStringLiteral( "copc.laz" ), Qt::CaseSensitivity::CaseInsensitive ) )
-      sl.setIndex( new QgsRemoteCopcPointCloudIndex() );
+      sl.setIndex( new QgsCopcPointCloudIndex() );
     else if ( sl.uri().endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) )
       sl.setIndex( new QgsRemoteEptPointCloudIndex() );
   }
