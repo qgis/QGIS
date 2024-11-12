@@ -305,7 +305,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onCameraMovementSpeedChanged();
     void onCameraNavigationModeChanged();
     void onDebugOverlayEnabledChanged();
-
+    void onStopUpdatesChanged();
     void on3DAxisSettingsChanged();
 
     bool updateCameraNearFarPlanes();
