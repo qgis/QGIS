@@ -36,17 +36,17 @@ QStringList QgsCopyLayerMetadataAlgorithm::tags() const
 
 QString QgsCopyLayerMetadataAlgorithm::group() const
 {
-  return QObject::tr( "Layer tools" );
+  return QObject::tr( "Metadata tools" );
 }
 
 QString QgsCopyLayerMetadataAlgorithm::groupId() const
 {
-  return QStringLiteral( "layertools" );
+  return QStringLiteral( "metadatatools" );
 }
 
 QString QgsCopyLayerMetadataAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Copies metadata from an input layer to a target layer." );
+  return QObject::tr( "Copies metadata from an input layer to a target layer.\n\nAny existing metadata in the target layer will be replaced." );
 }
 
 QgsCopyLayerMetadataAlgorithm *QgsCopyLayerMetadataAlgorithm::createInstance() const
@@ -76,8 +76,7 @@ bool QgsCopyLayerMetadataAlgorithm::prepareAlgorithm( const QVariantMap &paramet
 
   mLayerId = targetLayer->id();
 
-  QgsLayerMetadata *metadata = inputLayer->metadata().clone();
-  targetLayer->setMetadata( *metadata );
+  targetLayer->setMetadata( *inputLayer->metadata() );
   if ( saveAsDefault )
   {
     bool ok;
@@ -119,17 +118,17 @@ QStringList QgsApplyLayerMetadataAlgorithm::tags() const
 
 QString QgsApplyLayerMetadataAlgorithm::group() const
 {
-  return QObject::tr( "Layer tools" );
+  return QObject::tr( "Metadata tools" );
 }
 
 QString QgsApplyLayerMetadataAlgorithm::groupId() const
 {
-  return QStringLiteral( "layertools" );
+  return QStringLiteral( "metadatatools" );
 }
 
 QString QgsApplyLayerMetadataAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Applies the metadata to a layer. The metadata must be defined as QMD file." );
+  return QObject::tr( "Applies the metadata to a layer. The metadata must be defined as QMD file.\n\nAny existing metadata in the layer will be replaced." );
 }
 
 QgsApplyLayerMetadataAlgorithm *QgsApplyLayerMetadataAlgorithm::createInstance() const
@@ -205,12 +204,12 @@ QStringList QgsExportLayerMetadataAlgorithm::tags() const
 
 QString QgsExportLayerMetadataAlgorithm::group() const
 {
-  return QObject::tr( "Layer tools" );
+  return QObject::tr( "Metadata tools" );
 }
 
 QString QgsExportLayerMetadataAlgorithm::groupId() const
 {
-  return QStringLiteral( "layertools" );
+  return QStringLiteral( "metadatatools" );
 }
 
 QString QgsExportLayerMetadataAlgorithm::shortHelpString() const
