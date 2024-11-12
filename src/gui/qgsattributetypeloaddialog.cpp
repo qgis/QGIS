@@ -84,7 +84,7 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
   }
   const int idx = keyComboBox->currentIndex();
   const int idx2 = valueComboBox->currentIndex();
-  QgsMapLayer *dataLayer = QgsProject::instance()->mapLayer( layerComboBox->currentLayer()->id() );
+  QgsMapLayer *dataLayer = layerComboBox->currentLayer();
   QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( !vLayer )
     return;
@@ -133,7 +133,7 @@ void QgsAttributeTypeLoadDialog::loadDataToValueMap()
   mValueMap.clear();
   const int idx = keyComboBox->currentIndex();
   const int idx2 = valueComboBox->currentIndex();
-  QgsMapLayer *dataLayer = QgsProject::instance()->mapLayer( layerComboBox->currentLayer()->id() );
+  QgsMapLayer *dataLayer = layerComboBox->currentLayer();
   QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( dataLayer );
   if ( !vLayer )
     return;
