@@ -2258,7 +2258,6 @@ if (WITH_COPC)
       providers/copc/qgscopcprovider.cpp
       providers/vpc/qgsvirtualpointcloudprovider.cpp
       pointcloud/qgscopcpointcloudindex.cpp
-      pointcloud/qgsremotecopcpointcloudindex.cpp
       pointcloud/qgscopcpointcloudblockrequest.cpp
       pointcloud/qgscachedpointcloudblockrequest.cpp
   )
@@ -2266,7 +2265,6 @@ if (WITH_COPC)
       providers/copc/qgscopcprovider.h
       providers/vpc/qgsvirtualpointcloudprovider.h
       pointcloud/qgscopcpointcloudindex.h
-      pointcloud/qgsremotecopcpointcloudindex.h
       pointcloud/qgscopcpointcloudblockrequest.h
       pointcloud/qgscachedpointcloudblockrequest.h
   )
