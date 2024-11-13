@@ -5580,7 +5580,7 @@ class CORE_EXPORT Qgis
     Q_ENUM( ColorModel )
 
     /**
-     * Documentation Api
+     * Documentation API
      *
      * \since QGIS 3.42
      */

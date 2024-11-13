@@ -200,7 +200,7 @@ void QgsDevToolsPanelWidget::showApiDocumentation(
   }
 #ifndef HAVE_WEBENGINE
   // QWebView does not support the search function from the PyQGIS documentation homepage
-  if ( api == QStringLiteral( "pyqgis-search" ) )
+  if ( api == Qgis::DocumentationApi::PyQgisSearch )
   {
     browser = Qgis::DocumentationBrowser::SystemWebBrowser;
   }

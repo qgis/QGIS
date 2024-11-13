@@ -14,9 +14,16 @@
  ***************************************************************************/
 
 #include "qgsdocumentationpanelwidget.h"
-#include "qgswebview.h"
+#include "moc_qgsdocumentationpanelwidget.cpp"
 #include "qgisapp.h"
 #include <QVBoxLayout>
+
+#ifdef HAVE_WEBENGINE
+#include <QtWebEngineWidgets/QWebEngineView>
+#else
+#include "qgswebview.h"
+#endif
+
 
 //
 // QgsDocumentationPanelWidget
@@ -26,6 +33,13 @@ QgsDocumentationPanelWidget::QgsDocumentationPanelWidget( QWidget *parent )
   : QgsDevToolWidget( parent )
 {
   setupUi( this );
+#ifdef HAVE_WEBENGINE
+  mWebView = new QWebEngineView( this );
+#else
+  mWebView = new QgsWebView( this );
+#endif
+
+  mWebViewContainer->layout()->addWidget( mWebView );
 
   connect( mPyQgisHomeButton, &QToolButton::clicked, this, [] {QgisApp::instance()->showApiDocumentation( Qgis::DocumentationApi::PyQgis, Qgis::DocumentationBrowser::DeveloperToolsPanel );} );
   connect( mQtHomeButton, &QToolButton::clicked, this, [] {QgisApp::instance()->showApiDocumentation( Qgis::DocumentationApi::Qt, Qgis::DocumentationBrowser::DeveloperToolsPanel );} );

@@ -112,7 +112,6 @@ def _help(object=None, api=Qgis.DocumentationApi.PyQgis, force_search=False):
     If the object is not part of the QGIS API but is a Qt object the Qt documentation is opened.
     '''
 
-    
     pythonSettingsTreeNode = QgsSettingsTree.node("gui").childNode("code-editor").childNode("python")
     browserName = pythonSettingsTreeNode.childSetting('context-help-browser').valueAsVariant()
     try:
@@ -123,22 +122,26 @@ def _help(object=None, api=Qgis.DocumentationApi.PyQgis, force_search=False):
     if not object:
         return iface.showApiDocumentation(api, browser=browser)
 
-    embedded = browser == Qgis.DocumentationBrowser.DeveloperToolsPanel
+    def search_or_home(object_str):
+        if not object_str:
+            return iface.showApiDocumentation(api, browser=browser)
+        if browser == Qgis.DocumentationBrowser.DeveloperToolsPanel and not QgsGui.hasWebEngine():
+            if force_search:
+                return iface.showApiDocumentation(Qgis.DocumentationApi.PyQgisSearch, object=object, browser=Qgis.DocumentationBrowser.SystemWebBrowser)
+            else:
+                return iface.showApiDocumentation(api, browser=browser)
+        else:
+            return iface.showApiDocumentation(Qgis.DocumentationApi.PyQgisSearch, object=object, browser=browser)
+
     if isinstance(object, str):
         try:
             object = eval(object)
         except (SyntaxError, NameError):
-            if embedded and not force_search:
-                return iface.showApiDocumentation(api, browser=browser)
-            else:
-                return iface.showApiDocumentation(Qgis.DocumentationApi.PyQgisSearch, object=object, browser=Qgis.DocumentationBrowser.SystemWebBrowser)
+            return search_or_home(object)
 
     obj_info = __parse_object(object)
     if not obj_info:
-        if force_search or isinstance(object, str) and not embedded:
-            return iface.showApiDocumentation(Qgis.DocumentationApi.PyQgisSearch, object=object, browser=Qgis.DocumentationBrowser.SystemWebBrowser)
-        else:
-            return iface.showApiDocumentation(api, browser=browser)
+        return search_or_home(object if isinstance(object, str) else None)
 
     obj_type, module, class_name = obj_info
     if obj_type == "qt":

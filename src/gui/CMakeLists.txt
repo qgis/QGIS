@@ -1824,6 +1824,13 @@ if (BUILD_WITH_QT6)
   )
 endif()
 
+if (WITH_QTWEBENGINE)
+  find_package(${QT_VERSION_BASE} COMPONENTS WebEngineWidgets REQUIRED)
+  target_link_libraries(qgis_gui
+    ${QT_VERSION_BASE}::WebEngineWidgets
+  )
+endif()
+
 if (WITH_QTGAMEPAD)
     target_link_libraries(qgis_gui
       ${QT_VERSION_BASE}::Gamepad
