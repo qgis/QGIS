@@ -52,6 +52,7 @@ QgsTextCharacterFormat::QgsTextCharacterFormat( const QTextCharFormat &format )
   , mStrikethrough( format.hasProperty( QTextFormat::FontStrikeOut ) ? ( format.fontStrikeOut() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mUnderline( format.hasProperty( QTextFormat::FontUnderline ) ? ( format.fontUnderline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mOverline( format.hasProperty( QTextFormat::FontOverline ) ? ( format.fontOverline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
+  , mBackgroundBrush( format.background() )
 {
   mVerticalAlign = convertTextCharFormatVAlign( format, mHasVerticalAlignSet );
 
@@ -102,6 +103,8 @@ void QgsTextCharacterFormat::overrideWith( const QgsTextCharacterFormat &other )
     mVerticalAlign = other.mVerticalAlign;
     mHasVerticalAlignSet = true;
   }
+  if ( mBackgroundBrush.style() == Qt::NoBrush && other.mBackgroundBrush.style() != Qt::NoBrush )
+    mBackgroundBrush = other.mBackgroundBrush;
 }
 
 QColor QgsTextCharacterFormat::textColor() const
@@ -280,4 +283,19 @@ double QgsTextCharacterFormat::wordSpacing() const
 void QgsTextCharacterFormat::setWordSpacing( double spacing )
 {
   mWordSpacing = spacing;
+}
+
+bool QgsTextCharacterFormat::hasBackground() const
+{
+  return mBackgroundBrush.style() != Qt::NoBrush;
+}
+
+QBrush QgsTextCharacterFormat::backgroundBrush() const
+{
+  return mBackgroundBrush;
+}
+
+void QgsTextCharacterFormat::setBackgroundBrush( const QBrush &brush )
+{
+  mBackgroundBrush = brush;
 }

@@ -9,6 +9,7 @@ the Free Software Foundation; either version 2 of the License, or
 """
 import math
 
+from qgis.PyQt.QtGui import QBrush, QColor
 from qgis.core import (
     Qgis,
     QgsFontUtils,
@@ -37,6 +38,7 @@ class TestQgsTextBlockFormat(QgisTestCase):
         self.assertTrue(math.isnan(format.margins().right()))
         self.assertTrue(math.isnan(format.margins().left()))
         self.assertTrue(math.isnan(format.margins().bottom()))
+        self.assertFalse(format.hasBackground())
 
         format.setHasHorizontalAlignmentSet(True)
         self.assertTrue(format.hasHorizontalAlignmentSet())
@@ -54,6 +56,10 @@ class TestQgsTextBlockFormat(QgisTestCase):
 
         format.setMargins(QgsMargins(1, 2, 3, 4))
         self.assertEqual(format.margins(), QgsMargins(1, 2, 3, 4))
+
+        format.setBackgroundBrush(QBrush(QColor(255, 255, 0)))
+        self.assertTrue(format.hasBackground())
+        self.assertEqual(format.backgroundBrush().color().name(), '#ffff00')
 
     def testUpdateFont(self):
         context = QgsRenderContext()
