@@ -31,12 +31,20 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fi
   mGroupColumn->setLayer( mLayerName->currentLayer() );
   mGroupColumn->setAllowEmptyFieldName( true );
   mDescriptionExpression->setLayer( mLayerName->currentLayer() );
+  mOrderByFieldName->setLayer( mLayerName->currentLayer() );
+  mOrderByFieldName->setAllowEmptyFieldName( false );
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mKeyColumn, &QgsFieldComboBox::setLayer );
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mValueColumn, &QgsFieldComboBox::setLayer );
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mGroupColumn, &QgsFieldComboBox::setLayer );
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mDescriptionExpression, &QgsFieldExpressionWidget::setLayer );
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, this, &QgsValueRelationConfigDlg::layerChanged );
   connect( mEditExpression, &QAbstractButton::clicked, this, &QgsValueRelationConfigDlg::editExpression );
+  connect( mOrderByField, &QAbstractButton::toggled, mOrderByFieldName, [ = ]( bool enabled )
+  {
+    mOrderByFieldName->setEnabled( enabled );
+  } );
+
+  mOrderByGroupBox->setCollapsed( true );
 
   mNofColumns->setMinimum( 1 );
   mNofColumns->setMaximum( 10 );
@@ -93,6 +101,10 @@ QVariantMap QgsValueRelationConfigDlg::config()
   cfg.insert( QStringLiteral( "NofColumns" ), mNofColumns->value() );
   cfg.insert( QStringLiteral( "AllowNull" ), mAllowNull->isChecked() );
   cfg.insert( QStringLiteral( "OrderByValue" ), mOrderByValue->isChecked() );
+  cfg.insert( QStringLiteral( "OrderByKey" ), mOrderByKey->isChecked() );
+  cfg.insert( QStringLiteral( "OrderByField" ), mOrderByField->isChecked() );
+  cfg.insert( QStringLiteral( "OrderByFieldName" ), mOrderByFieldName->currentField() );
+  cfg.insert( QStringLiteral( "OrderByDescending" ), mOrderByDescending->isChecked() );
   cfg.insert( QStringLiteral( "FilterExpression" ), mFilterExpression->toPlainText() );
   cfg.insert( QStringLiteral( "UseCompleter" ), mUseCompleter->isChecked() );
   const Qt::MatchFlags completerMatchFlags { mCompleterMatchFromStart->isChecked() ? Qt::MatchFlag::MatchStartsWith : Qt::MatchFlag::MatchContains };
@@ -105,6 +117,7 @@ void QgsValueRelationConfigDlg::setConfig( const QVariantMap &config )
 {
   QgsVectorLayer *lyr = QgsValueRelationFieldFormatter::resolveLayer( config, QgsProject::instance() );
   mLayerName->setLayer( lyr );
+  mOrderByFieldName->setLayer( lyr );
   mKeyColumn->setField( config.value( QStringLiteral( "Key" ) ).toString() );
   mValueColumn->setField( config.value( QStringLiteral( "Value" ) ).toString() );
   mGroupColumn->setField( config.value( QStringLiteral( "Group" ) ).toString() );
@@ -119,6 +132,22 @@ void QgsValueRelationConfigDlg::setConfig( const QVariantMap &config )
   }
   mAllowNull->setChecked( config.value( QStringLiteral( "AllowNull" ) ).toBool() );
   mOrderByValue->setChecked( config.value( QStringLiteral( "OrderByValue" ) ).toBool() );
+  mOrderByField->setChecked( config.value( QStringLiteral( "OrderByField" ) ).toBool() );
+  mOrderByKey->setChecked( config.value( QStringLiteral( "OrderByKey" ) ).toBool() );
+  mOrderByFieldName->setField( config.value( QStringLiteral( "OrderByFieldName" ) ).toString() );
+  mOrderByDescending->setChecked( config.value( QStringLiteral( "OrderByDescending" ) ).toBool() );
+
+  if ( !mOrderByField->isChecked() && !mOrderByValue->isChecked() && !mOrderByKey->isChecked() )
+  {
+    mOrderByKey->setChecked( true );
+  }
+
+  // order by key is the default, if it is not checked, expand the config
+  if ( !mOrderByKey->isChecked() )
+  {
+    mOrderByGroupBox->setCollapsed( false );
+  }
+
   mFilterExpression->setPlainText( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
   mUseCompleter->setChecked( config.value( QStringLiteral( "UseCompleter" ) ).toBool() );
   // Default is MatchStartsWith for backwards compatibility
@@ -130,6 +159,7 @@ void QgsValueRelationConfigDlg::layerChanged()
 {
   mFilterExpression->setEnabled( qobject_cast<QgsVectorLayer *>( mLayerName->currentLayer() ) );
   mEditExpression->setEnabled( qobject_cast<QgsVectorLayer *>( mLayerName->currentLayer() ) );
+  mOrderByFieldName->setLayer( mLayerName->currentLayer() );
 }
 
 void QgsValueRelationConfigDlg::editExpression()

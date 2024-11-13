@@ -39,6 +39,8 @@ class TestQgsValueRelationFieldFormatter: public QObject
     void testDependencies();
     void testSortValueNull();
     void testGroup();
+    void testOrderBy_data();
+    void testOrderBy();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -112,7 +114,7 @@ void TestQgsValueRelationFieldFormatter::init()
   QgsFeature ft3( mLayer2->fields() );
   ft3.setAttribute( QStringLiteral( "pk" ), 11 );
   ft3.setAttribute( QStringLiteral( "material" ), "iron" );
-  ft3.setAttribute( QStringLiteral( "diameter" ), 120 );
+  ft3.setAttribute( QStringLiteral( "diameter" ), 110 );
   ft3.setAttribute( QStringLiteral( "raccord" ), "sleeve" );
   mLayer2->startEditing();
   mLayer2->addFeature( ft3 );
@@ -121,7 +123,7 @@ void TestQgsValueRelationFieldFormatter::init()
   QgsFeature ft4( mLayer2->fields() );
   ft4.setAttribute( QStringLiteral( "pk" ), 12 );
   ft4.setAttribute( QStringLiteral( "material" ), "steel" );
-  ft4.setAttribute( QStringLiteral( "diameter" ), 120 );
+  ft4.setAttribute( QStringLiteral( "diameter" ), 100 );
   ft4.setAttribute( QStringLiteral( "raccord" ), "collar" );
   mLayer2->startEditing();
   mLayer2->addFeature( ft4 );
@@ -178,6 +180,63 @@ void TestQgsValueRelationFieldFormatter::testGroup()
   QVERIFY( !cache.isEmpty() );
   QCOMPARE( cache.at( 0 ).group, QVariant( QStringLiteral( "iron" ) ) );
   QCOMPARE( cache.at( cache.size() - 1 ).group, QVariant( QStringLiteral( "steel" ) ) );
+}
+
+void TestQgsValueRelationFieldFormatter::testOrderBy_data()
+{
+  QTest::addColumn<QString>( "orderBy" );
+  QTest::addColumn<QString>( "fieldName" );
+  QTest::addColumn<QString>( "expectedFirst" );
+  QTest::addColumn<QString>( "expectedLast" );
+
+  QTest::newRow( "orderByDefault(pk)" ) << QString() << QString() << "brides" << "collar";
+  QTest::newRow( "orderByKey(pk)" ) << QString() << QStringLiteral( "Key" ) << "brides" << "collar";
+  QTest::newRow( "orderByValue(raccord)" ) << QString() << QStringLiteral( "Value" ) << "brides" << "collar";
+  QTest::newRow( "orderByField(raccord)" ) << QStringLiteral( "Field" ) << QStringLiteral( "raccord" ) << "brides" << "sleeve";
+  QTest::newRow( "orderByField(diameter)" ) << QStringLiteral( "Field" ) << QStringLiteral( "diameter" ) << "collar" << "brides";
+  QTest::newRow( "orderByField(material)" ) << QStringLiteral( "Field" ) << QStringLiteral( "material" ) << "brides" << "collar";
+}
+
+void TestQgsValueRelationFieldFormatter::testOrderBy()
+{
+
+  QFETCH( QString, orderBy );
+  QFETCH( QString, fieldName );
+  QFETCH( QString, expectedFirst );
+  QFETCH( QString, expectedLast );
+
+  QVariantMap config;
+  config.insert( QStringLiteral( "Layer" ), mLayer2->id() );
+  config.insert( QStringLiteral( "Key" ), QStringLiteral( "pk" ) );
+  config.insert( QStringLiteral( "Value" ), QStringLiteral( "raccord" ) );
+
+  if ( !orderBy.isEmpty() )
+  {
+    config.insert( QStringLiteral( "OrderBy%1" ).arg( orderBy ), true );
+  }
+  if ( !fieldName.isEmpty() )
+  {
+    config.insert( QStringLiteral( "OrderByFieldName" ), fieldName );
+  }
+
+  // Ascending
+  {
+    const QgsValueRelationFieldFormatter formatter;
+    QgsValueRelationFieldFormatter::ValueRelationCache cache = formatter.createCache( config );
+    QVERIFY( !cache.isEmpty() );
+    QCOMPARE( cache.at( 0 ).value, expectedFirst );
+    QCOMPARE( cache.at( mLayer2->featureCount() - 1 ).value, expectedLast );
+  }
+
+  // Descending
+  {
+    config.insert( QStringLiteral( "OrderByDescending" ), true );
+    const QgsValueRelationFieldFormatter formatter;
+    QgsValueRelationFieldFormatter::ValueRelationCache cache = formatter.createCache( config );
+    QVERIFY( !cache.isEmpty() );
+    QCOMPARE( cache.at( 0 ).value, expectedLast );
+    QCOMPARE( cache.at( mLayer2->featureCount() - 1 ).value, expectedFirst );
+  }
 }
 
 QGSTEST_MAIN( TestQgsValueRelationFieldFormatter )
