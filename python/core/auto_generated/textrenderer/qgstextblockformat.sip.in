@@ -185,6 +185,35 @@ Sets the block margins, in points.
 .. versionadded:: 3.42
 %End
 
+    bool hasBackground() const;
+%Docstring
+Returns ``True`` if the block has a background set.
+
+.. seealso:: :py:func:`backgroundBrush`
+
+.. versionadded:: 3.42
+%End
+
+    QBrush backgroundBrush() const;
+%Docstring
+Returns the brush used for rendering the background of the block.
+
+.. seealso:: :py:func:`hasBackground`
+
+.. seealso:: :py:func:`setBackgroundBrush`
+
+.. versionadded:: 3.42
+%End
+
+    void setBackgroundBrush( const QBrush &brush );
+%Docstring
+Sets the ``brush`` used for rendering the background of the block.
+
+.. seealso:: :py:func:`backgroundBrush`
+
+.. versionadded:: 3.42
+%End
+
     void updateFontForFormat( QFont &font, const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 %Docstring
 Updates the specified ``font`` in place, applying block formatting options which

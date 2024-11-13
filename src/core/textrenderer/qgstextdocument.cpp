@@ -393,6 +393,11 @@ void QgsTextDocument::applyCapitalization( Qgis::Capitalization capitalization )
   }
 }
 
+bool QgsTextDocument::hasBackgrounds() const
+{
+  return std::any_of( mBlocks.begin(), mBlocks.end(), []( const QgsTextBlock & block ) { return block.hasBackgrounds(); } );
+}
+
 ///@cond PRIVATE
 QVector< QgsTextBlock >::const_iterator QgsTextDocument::begin() const
 {

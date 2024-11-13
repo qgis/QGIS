@@ -114,6 +114,12 @@ void QgsTextBlock::applyCapitalization( Qgis::Capitalization capitalization )
   }
 }
 
+bool QgsTextBlock::hasBackgrounds() const
+{
+  return mBlockFormat.hasBackground()
+  || std::any_of( mFragments.begin(), mFragments.end(), []( const QgsTextFragment & fragment ) { return fragment.characterFormat().hasBackground(); } );
+}
+
 const QgsTextFragment &QgsTextBlock::at( int index ) const
 {
   return mFragments.at( index );

@@ -12,7 +12,10 @@ __date__ = '12/05/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 from qgis.PyQt.QtCore import QSizeF
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import (
+    QColor,
+    QBrush
+)
 from qgis.core import (
     Qgis,
     QgsFontUtils,
@@ -40,6 +43,7 @@ class TestQgsTextCharacterFormat(QgisTestCase):
         self.assertFalse(format.family())
         self.assertFalse(format.hasVerticalAlignmentSet())
         self.assertEqual(format.verticalAlignment(), Qgis.TextCharacterVerticalAlignment.Normal)
+        self.assertFalse(format.hasBackground())
 
         format.setTextColor(QColor(255, 0, 0))
         self.assertTrue(format.textColor().isValid())
@@ -71,6 +75,10 @@ class TestQgsTextCharacterFormat(QgisTestCase):
         format.setImageSize(QSizeF(40, 60))
         self.assertEqual(format.imagePath(), 'my.jpg')
         self.assertEqual(format.imageSize(), QSizeF(40, 60))
+
+        format.setBackgroundBrush(QBrush(QColor(255, 255, 0)))
+        self.assertTrue(format.hasBackground())
+        self.assertEqual(format.backgroundBrush().color().name(), '#ffff00')
 
     def testUpdateFont(self):
         context = QgsRenderContext()
