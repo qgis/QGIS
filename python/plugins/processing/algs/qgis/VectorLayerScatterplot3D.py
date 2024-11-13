@@ -76,17 +76,17 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
 
         self.addParameter(QgsProcessingParameterString(
             self.XAXIS_TITLE,
-            self.tr('X-axis Title'),
+            self.tr('X-axis title'),
             optional=True))
 
         self.addParameter(QgsProcessingParameterString(
             self.YAXIS_TITLE,
-            self.tr('Y-axis Title'),
+            self.tr('Y-axis title'),
             optional=True))
 
         self.addParameter(QgsProcessingParameterString(
             self.ZAXIS_TITLE,
-            self.tr('Z-axis Title'),
+            self.tr('Z-axis title'),
             optional=True))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Scatterplot 3D'), self.tr('HTML files (*.html)')))
