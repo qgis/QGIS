@@ -9760,7 +9760,7 @@ void TestQgsProcessing::parameterColor()
   QCOMPARE( fromCode->name(), def->name() );
   QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
-  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->defaultValue().toString(), QStringLiteral( "#0a141e" ) );
   QVERIFY( fromCode->opacityEnabled() );
 
   fromCode.reset( dynamic_cast< QgsProcessingParameterColor * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##non_optional=color 'my val'" ) ) ) );
@@ -11016,7 +11016,7 @@ void TestQgsProcessing::parameterDateTime()
   QCOMPARE( fromCode->name(), def->name() );
   QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
-  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->defaultValue().toString(), QStringLiteral( "2010-04-03T12:11:10.000" ) );
 
   QVariantMap map = def->toVariantMap();
   QgsProcessingParameterDateTime fromMap( "x" );
@@ -11076,7 +11076,7 @@ void TestQgsProcessing::parameterDateTime()
   QCOMPARE( fromCode->name(), def->name() );
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
-  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->defaultValue().toString(), QStringLiteral( "2018-05-06T04:05:06.000" ) );
 
   fromCode.reset( dynamic_cast< QgsProcessingParameterDateTime * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##optional=optional datetime None" ) ) ) );
   QVERIFY( fromCode.get() );
@@ -11196,7 +11196,7 @@ void TestQgsProcessing::parameterDateTime()
   QCOMPARE( fromCode->name(), def->name() );
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
-  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->defaultValue().toString(), QStringLiteral( "2018-05-06" ) );
 
   fromCode.reset( dynamic_cast< QgsProcessingParameterDateTime * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##optional=optional datetime None" ) ) ) );
   QVERIFY( fromCode.get() );
@@ -11303,7 +11303,7 @@ void TestQgsProcessing::parameterDateTime()
   QCOMPARE( fromCode->name(), def->name() );
   QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
   QCOMPARE( fromCode->flags(), def->flags() );
-  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->defaultValue().toString(), QStringLiteral( "14:15:16.000" ) );
 
   fromCode.reset( dynamic_cast< QgsProcessingParameterDateTime * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##optional=optional datetime None" ) ) ) );
   QVERIFY( fromCode.get() );
