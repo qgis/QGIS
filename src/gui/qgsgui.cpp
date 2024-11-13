@@ -527,6 +527,15 @@ void QgsGui::initCalloutWidgets()
   } );
 }
 
+bool QgsGui::hasWebEngine()
+{
+#ifdef HAVE_WEBENGINE
+  return true;
+#else
+  return false;
+#endif
+}
+
 ///@cond PRIVATE
 void QgsGui::emitOptionsChanged()
 {

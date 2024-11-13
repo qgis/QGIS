@@ -16,7 +16,14 @@
 #define QGSDOCUMENTATIONPANELWIDGET_H
 
 #include "qgsdevtoolwidget.h"
+#include "qgsconfig.h"
 #include "ui_qgsdocumentationpanelbase.h"
+
+#ifdef HAVE_WEBENGINE
+class QWebEngineView;
+#else
+class QgsWebView;
+#endif
 
 /**
  * \ingroup app
@@ -38,6 +45,15 @@ class QgsDocumentationPanelWidget : public QgsDevToolWidget, private Ui::QgsDocu
 
 
     void showUrl( const QUrl &url );
+
+  private:
+
+#ifdef HAVE_WEBENGINE
+    QWebEngineView *mWebView = nullptr;
+#else
+    QgsWebView *mWebView = nullptr;
+#endif
+
 
 };
 

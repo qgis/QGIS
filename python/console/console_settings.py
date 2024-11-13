@@ -78,7 +78,7 @@ class ConsoleOptionsWidget(QWidget, Ui_SettingsDialogPythonConsole):
 
         # Populate the documentation Browser combobox
         self.contextHelpBrowser.addItem(QCoreApplication.translate("PythonConsole", "Embedded Webview (developer tools)"), Qgis.DocumentationBrowser.DeveloperToolsPanel)
-        self.contextHelpBrowser.addItem(QCoreApplication.translate("PythonConsole", "Default system web browser"), Qgis.DocumentationBrowser.SystemWebBrowser)
+        self.contextHelpBrowser.addItem(QCoreApplication.translate("PythonConsole", "Default System Web Browser"), Qgis.DocumentationBrowser.SystemWebBrowser)
 
         self.autopep8Level.setClearValue(1)
         self.maxLineLength.setClearValue(80)

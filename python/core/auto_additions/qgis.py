@@ -10799,7 +10799,7 @@ Qgis.DocumentationApi.PyQgis.__doc__ = "PyQgis API documentation"
 Qgis.DocumentationApi.PyQgisSearch.__doc__ = "Search in PyQgis API documentation"
 Qgis.DocumentationApi.CppQgis.__doc__ = "C++ QGIS API documentation"
 Qgis.DocumentationApi.Qt.__doc__ = "Qt API documentation"
-Qgis.DocumentationApi.__doc__ = """Documentation Api
+Qgis.DocumentationApi.__doc__ = """Documentation API
 
 .. versionadded:: 3.42
 
