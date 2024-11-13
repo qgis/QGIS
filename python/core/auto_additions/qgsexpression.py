@@ -10,6 +10,7 @@ try:
     QgsExpression.quoteFieldExpression = staticmethod(QgsExpression.quoteFieldExpression)
     QgsExpression.checkExpression = staticmethod(QgsExpression.checkExpression)
     QgsExpression.replaceExpressionText = staticmethod(QgsExpression.replaceExpressionText)
+    QgsExpression.referencedExpressions = staticmethod(QgsExpression.referencedExpressions)
     QgsExpression.evaluateToDouble = staticmethod(QgsExpression.evaluateToDouble)
     QgsExpression.registerFunction = staticmethod(QgsExpression.registerFunction)
     QgsExpression.unregisterFunction = staticmethod(QgsExpression.unregisterFunction)

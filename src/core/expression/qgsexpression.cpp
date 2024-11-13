@@ -516,6 +516,19 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
 QSet<QString> QgsExpression::referencedVariables( const QString &text )
 {
   QSet<QString> variables;
+  const QStringList expressions = QgsExpression::referencedExpressions( text );
+  for ( const QString &expression : expressions )
+  {
+    QgsExpression exp( expression );
+    variables.unite( exp.referencedVariables() );
+  }
+
+  return variables;
+}
+
+QStringList QgsExpression::referencedExpressions( const QString &text )
+{
+  QStringList expressions;
   int index = 0;
   while ( index < text.size() )
   {
@@ -527,11 +540,10 @@ QSet<QString> QgsExpression::referencedVariables( const QString &text )
     index = match.capturedStart() + match.capturedLength();
     QString to_replace = match.captured( 1 ).trimmed();
 
-    QgsExpression exp( to_replace );
-    variables.unite( exp.referencedVariables() );
+    expressions.append( to_replace );
   }
 
-  return variables;
+  return expressions;
 }
 
 double QgsExpression::evaluateToDouble( const QString &text, const double fallbackValue )

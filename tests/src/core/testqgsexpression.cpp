@@ -5453,6 +5453,27 @@ class TestQgsExpression: public QObject
       QCOMPARE( zustaendigkeitskataster->dataProvider()->featureCount(), 4l );
     }
 
+    void testReferencedExpressions_data()
+    {
+      QTest::addColumn<QString>( "input" );
+      QTest::addColumn<QStringList>( "expected" );
+      QTest::newRow( "no exp" ) << "some text" << QStringList();
+      QTest::newRow( "simple exp" ) << "some text [% 1 + 2 %]" << ( QStringList() << QStringLiteral( "1 + 2" ) );
+      QTest::newRow( "multiple exp" ) << "some [% 3+ 7 %] text [% 1 + 2 %]" << ( QStringList() << QStringLiteral( "3+ 7" ) << QStringLiteral( "1 + 2" ) );
+      QTest::newRow( "complex" ) << "some [%map('a', 1, 'b', 2)['a']%] text [%map('a', 1, 'b', 2)['b']%]" << ( QStringList() << QStringLiteral( "map('a', 1, 'b', 2)['a']" ) << QStringLiteral( "map('a', 1, 'b', 2)['b']" ) );
+      QTest::newRow( "complex2" ) << "some [% 'my text]' %] text" << ( QStringList() << QStringLiteral( "'my text]'" ) );
+      QTest::newRow( "newline 1" ) << "some \n [% 1 + 2 %] \n text" << ( QStringList() << QStringLiteral( "1 + 2" ) );
+      QTest::newRow( "newline 2" ) << "some [% \n 1 \n + \n 2 %] \n text" << ( QStringList() << QStringLiteral( "\n 1 \n + \n 2" ) );
+      QTest::newRow( "field values" ) << "[% \"string_field\" %] - [% \"non_null_int\" %] - [% \"null_int\" %]" << ( QStringList() << QStringLiteral( "\"string_field\"" ) << QStringLiteral( "\"non_null_int\"" ) << QStringLiteral( "\"null_int\"" ) );
+    }
+
+    void testReferencedExpressions()
+    {
+      QFETCH( QString, input );
+      QFETCH( QStringList, expected );
+      QCOMPARE( QgsExpression::referencedExpressions( input ), expected );
+    }
+
     void testReplaceExpressionText_data()
     {
       QTest::addColumn<QString>( "input" );

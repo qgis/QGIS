@@ -551,7 +551,6 @@ class CORE_EXPORT QgsExpression
      * This function replaces each expression between [% and %]
      * in the string with the result of its evaluation with the specified context
      *
-     * Additional substitutions can be passed through the substitutionMap parameter
      * \param action The source string in which placeholders should be replaced.
      * \param context Expression context
      * \param distanceArea Optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
@@ -568,6 +567,16 @@ class CORE_EXPORT QgsExpression
      * \since QGIS 3.2
      */
     static QSet<QString> referencedVariables( const QString &text );
+
+    /**
+     * This function returns expressions found between [% and %].
+     * Expressions returned are guaranteed to be valid QGIS expressions.
+     *
+     * \param text The source string in which expressions should be searched.
+     *
+     * \since QGIS 3.42
+     */
+    static QStringList referencedExpressions( const QString &text );
 
     /**
      * Attempts to evaluate a text string as an expression to a resultant double
