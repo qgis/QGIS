@@ -84,6 +84,12 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
 
         self.assertStaticRotation(root, '50')
 
+        symbol.setAngle(-50)
+        dom, root = self.symbolToSld(symbol)
+        # print( "Simple marker rotation: " + root.ownerDocument().toString())
+
+        self.assertStaticRotation(root, '-50')
+
     def testSimpleMarkerUnitDefault(self):
         symbol = QgsSimpleMarkerSymbolLayer(
             QgsSimpleMarkerSymbolLayerBase.Star, color=QColor(255, 0, 0), strokeColor=QColor(0, 255, 0), size=10)
@@ -146,6 +152,10 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         self.assertStaticRotation(root, '90')
         self.assertStaticDisplacement(root, 18, 36)
 
+        symbol.setAngle(-45)
+        dom, root = self.symbolToSld(symbol)
+        self.assertStaticRotation(root, '-45')
+
     def testSvgMarkerUnitPixels(self):
         symbol = QgsSvgMarkerSymbolLayer('symbols/star.svg', 10, 0)
         symbol.setFillColor(QColor("blue"))
@@ -179,6 +189,10 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         self.assertStaticRotation(root, '45')
         self.assertStaticDisplacement(root, 18, 36)
 
+        symbol.setAngle(-45)
+        dom, root = self.symbolToSld(symbol)
+        self.assertStaticRotation(root, '-45')
+
     def testFontMarkerUnitPixel(self):
         symbol = QgsFontMarkerSymbolLayer('sans', ',', 10, QColor('black'), 45)
         symbol.setOffset(QPointF(5, 10))
@@ -190,6 +204,10 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         self.assertStaticSize(root, '10')
         self.assertStaticRotation(root, '45')
         self.assertStaticDisplacement(root, 5, 10)
+
+        symbol.setAngle(-45)
+        dom, root = self.symbolToSld(symbol)
+        self.assertStaticRotation(root, '-45')
 
     def createEllipseSymbolLayer(self):
         # No way to build it programmatically...
@@ -349,6 +367,10 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         lineSymbolizer = root.elementsByTagName('se:LineSymbolizer').item(0).toElement()
         self.assertStrokeWidth(lineSymbolizer, 1, 36)
 
+        symbol.setAngle(-45)
+        dom, root = self.symbolToSld(symbol)
+        self.assertStaticRotation(root, '-45')
+
     def testSvgFillPixel(self):
         symbol = QgsSVGFillSymbolLayer('test/star.svg', 10, 45)
         symbol.setSubSymbol(QgsLineSymbol())
@@ -374,6 +396,10 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         lineSymbolizer = root.elementsByTagName('se:LineSymbolizer').item(0).toElement()
         self.assertStrokeWidth(lineSymbolizer, 1, 10)
 
+        symbol.setAngle(-45)
+        dom, root = self.symbolToSld(symbol)
+        self.assertStaticRotation(root, '-45')
+
     def testLineFillDefault(self):
         symbol = QgsLinePatternFillSymbolLayer()
         symbol.setLineAngle(45)
@@ -387,6 +413,10 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         self.assertStrokeWidth(root, 1, 4)
         self.assertStaticSize(root, '18')
         self.assertStaticDisplacement(root, 15, 9)
+
+        symbol.setLineAngle(-45)
+        dom, root = self.symbolToSld(symbol)
+        self.assertStaticRotation(root, '-45')
 
     def testLineFillPixels(self):
         symbol = QgsLinePatternFillSymbolLayer()
@@ -402,6 +432,10 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         self.assertStrokeWidth(root, 1, 1)
         self.assertStaticSize(root, '5')
         self.assertStaticDisplacement(root, 4.25, 2.63)
+
+        symbol.setLineAngle(-45)
+        dom, root = self.symbolToSld(symbol)
+        self.assertStaticRotation(root, '-45')
 
     def testPointFillDefault(self):
         symbol = QgsPointPatternFillSymbolLayer()
