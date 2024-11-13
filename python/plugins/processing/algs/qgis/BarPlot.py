@@ -70,12 +70,12 @@ class BarPlot(QgisAlgorithm):
 
         self.addParameter(QgsProcessingParameterString(
             self.XAXIS_TITLE,
-            self.tr('Xaxis Title'),
+            self.tr('X-axis Title'),
             optional=True))
 
         self.addParameter(QgsProcessingParameterString(
             self.YAXIS_TITLE,
-            self.tr('Yaxis Title'),
+            self.tr('Y-axis Title'),
             optional=True))
 
     def name(self):

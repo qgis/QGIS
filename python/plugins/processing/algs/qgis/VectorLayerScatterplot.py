@@ -72,23 +72,23 @@ class VectorLayerScatterplot(QgisAlgorithm):
 
         self.addParameter(QgsProcessingParameterString(
             self.XAXIS_TITLE,
-            self.tr('Xaxis Title'),
+            self.tr('X-axis Title'),
             optional=True))
 
         self.addParameter(QgsProcessingParameterString(
             self.YAXIS_TITLE,
-            self.tr('Yaxis Title'),
+            self.tr('Y-axis Title'),
             optional=True))
 
         self.addParameter(QgsProcessingParameterBoolean(
             self.XAXIS_LOG,
-            self.tr('Xaxis logarithmic'),
+            self.tr('Use logarithmic scale for x-axis'),
             defaultValue=False,
             optional=True))
 
         self.addParameter(QgsProcessingParameterBoolean(
             self.YAXIS_LOG,
-            self.tr('Yaxis logarithmic'),
+            self.tr('Use logarithmic scale for y-axis'),
             defaultValue=False,
             optional=True))
 
