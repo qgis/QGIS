@@ -27,7 +27,6 @@
 #define SIP_NO_FILE
 
 class QgsEptPointCloudIndex;
-class QgsRemoteEptPointCloudIndex;
 
 class QgsEptProvider: public QgsPointCloudDataProvider
 {

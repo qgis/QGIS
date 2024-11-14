@@ -201,8 +201,7 @@ qint64 QgsPointCloudIndex::nodePointCount( const IndexedPointCloudNode &n ) cons
 
 QList<IndexedPointCloudNode> QgsPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
 {
-  QMutexLocker locker( &mHierarchyMutex );
-  Q_ASSERT( mHierarchy.contains( n ) );
+  Q_ASSERT( hasNode( n ) );
   QList<IndexedPointCloudNode> lst;
   const int d = n.d() + 1;
   const int x = n.x() * 2;
@@ -213,7 +212,7 @@ QList<IndexedPointCloudNode> QgsPointCloudIndex::nodeChildren( const IndexedPoin
   {
     int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
     const IndexedPointCloudNode n2( d, x + dx, y + dy, z + dz );
-    if ( mHierarchy.contains( n2 ) )
+    if ( hasNode( n2 ) )
       lst.append( n2 );
   }
   return lst;
@@ -276,14 +275,6 @@ void QgsPointCloudIndex::setAttributes( const QgsPointCloudAttributeCollection &
 int QgsPointCloudIndex::span() const
 {
   return mSpan;
-}
-
-int QgsPointCloudIndex::nodePointCount( const IndexedPointCloudNode &n )
-{
-  mHierarchyMutex.lock();
-  const int count = mHierarchy.value( n, -1 );
-  mHierarchyMutex.unlock();
-  return count;
 }
 
 bool QgsPointCloudIndex::setSubsetString( const QString &subset )
