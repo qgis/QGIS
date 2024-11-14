@@ -151,8 +151,8 @@ void QgsAbout::init()
   {
     const QString donorsHTML = tr( "<p>For a list of individuals and institutions who have contributed "
                                    "money to fund QGIS development and other project costs see "
-                                   "<a href=\"https://qgis.org/en/site/about/sustaining_members.html#list-of-donors\">"
-                                   "https://qgis.org/en/site/about/sustaining_members.html#list-of-donors</a></p>" );
+                                   "<a href=\"https://qgis.org/funding/donate/\">"
+                                   "https://qgis.org/funding/donate/</a></p>" );
 #if 0
     QString website;
     QTextStream donorsStream( &donorsFile );
