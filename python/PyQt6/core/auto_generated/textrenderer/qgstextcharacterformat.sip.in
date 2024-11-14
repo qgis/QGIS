@@ -385,6 +385,8 @@ Returns ``True`` if the fragment has a background set.
 %Docstring
 Returns the brush used for rendering the background of the fragment.
 
+Alternatively, the format may have a :py:func:`~QgsTextCharacterFormat.backgroundImagePath` set.
+
 .. seealso:: :py:func:`hasBackground`
 
 .. seealso:: :py:func:`setBackgroundBrush`
@@ -396,7 +398,33 @@ Returns the brush used for rendering the background of the fragment.
 %Docstring
 Sets the ``brush`` used for rendering the background of the fragment.
 
+Alternatively, the format may have a :py:func:`~QgsTextCharacterFormat.backgroundImagePath` set.
+
 .. seealso:: :py:func:`backgroundBrush`
+
+.. versionadded:: 3.42
+%End
+
+    QString backgroundImagePath() const;
+%Docstring
+Returns the path for the image to be used for rendering the background of the fragment.
+
+Alternatively, the format may have a :py:func:`~QgsTextCharacterFormat.backgroundBrush` set.
+
+.. seealso:: :py:func:`hasBackground`
+
+.. seealso:: :py:func:`setBackgroundImagePath`
+
+.. versionadded:: 3.42
+%End
+
+    void setBackgroundImagePath( const QString &path );
+%Docstring
+Sets the ``path`` for the image to be used for rendering the background of the fragment.
+
+Alternatively, the format may have a :py:func:`~QgsTextCharacterFormat.backgroundBrush` set.
+
+.. seealso:: :py:func:`backgroundImagePath`
 
 .. versionadded:: 3.42
 %End

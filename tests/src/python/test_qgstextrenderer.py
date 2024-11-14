@@ -20,7 +20,7 @@ from qgis.PyQt.QtCore import (
     QRectF,
     QSize,
     QSizeF,
-    Qt,
+    Qt
 )
 from qgis.PyQt.QtGui import (
     QBrush,
@@ -306,6 +306,48 @@ class PyQgsTextRenderer(QgisTestCase):
         painter.end()
 
         self.assertTrue(self.image_check('draw_document_rect', 'draw_document_rect', image, 'draw_document_rect'))
+
+    def testDrawRectHtmlBackground(self):
+        """
+        Test drawing html with backgrounds in rect mode
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setAllowHtmlFormatting(True)
+        format.setSize(16)
+        self.assertTrue(self.checkRender(format, 'html_background_rect', rect=QRectF(10, 100, 300, 100), text=['<div style="background-color: blue"><span style="background-color: rgba(255,0,0,0.5);">red</span> <span style="font-size: 10pt; background-color: yellow;">yellow</span> outside span</div><div style="background-color: pink; text-align: right;">no span <span style="background-color: yellow;">yel</span> no bg</div>']))
+
+    def testDrawPointHtmlBackground(self):
+        """
+        Test drawing html with backgrounds in point mode
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setAllowHtmlFormatting(True)
+        format.setSize(16)
+        self.assertTrue(self.checkRenderPoint(format, 'html_background_point', point=QPointF(10, 100), text=['<div style="background-color: blue"><span style="background-color: rgba(255,0,0,0.5);">red</span> <span style="font-size: 10pt; background-color: yellow;">yellow</span> outside span</div><div style="background-color: pink; ext-align: right;">no span <span style="background-color: yellow;">yel</span> no bg</div>']))
+
+    def testDrawRectHtmlBackgroundImage(self):
+        """
+        Test drawing html with background image in rect mode
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setAllowHtmlFormatting(True)
+        format.setSize(36)
+        image_url = unitTestDataPath() + "/raster_brush.png"
+        self.assertTrue(self.checkRender(format, 'html_background_image_rect', rect=QRectF(10, 100, 300, 100), text=[f'<div style="background-image: url({image_url})">test text</div>']))
+
+    def testDrawPointHtmlBackgroundImage(self):
+        """
+        Test drawing html with backgrounds in point mode
+        """
+        format = QgsTextFormat()
+        format.setFont(getTestFont('bold'))
+        format.setAllowHtmlFormatting(True)
+        format.setSize(36)
+        image_url = unitTestDataPath() + "/raster_brush.png"
+        self.assertTrue(self.checkRenderPoint(format, 'html_background_image_point', point=QPointF(10, 100), text=[f'<div style="background-image: url({image_url})">test text</div>']))
 
     def testDrawRectCapHeightMode(self):
         """

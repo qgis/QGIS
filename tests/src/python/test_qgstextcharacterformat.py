@@ -80,6 +80,11 @@ class TestQgsTextCharacterFormat(QgisTestCase):
         self.assertTrue(format.hasBackground())
         self.assertEqual(format.backgroundBrush().color().name(), '#ffff00')
 
+        format = QgsTextCharacterFormat()
+        format.setBackgroundImagePath('test')
+        self.assertTrue(format.hasBackground())
+        self.assertEqual(format.backgroundImagePath(), 'test')
+
     def testUpdateFont(self):
         context = QgsRenderContext()
         font = QgsFontUtils.getStandardTestFont()

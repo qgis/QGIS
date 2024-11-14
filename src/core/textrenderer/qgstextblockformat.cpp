@@ -45,6 +45,7 @@ Qgis::TextHorizontalAlignment convertTextBlockFormatAlign( const QTextBlockForma
 
 QgsTextBlockFormat::QgsTextBlockFormat( const QTextBlockFormat &format )
   : mBackgroundBrush( format.background() )
+  , mBackgroundPath( format.stringProperty( QTextFormat::BackgroundImageUrl ) )
   , mLineHeight( format.hasProperty( QTextFormat::LineHeight ) && format.lineHeightType() != QTextBlockFormat::ProportionalHeight ? format.lineHeight() : std::numeric_limits< double >::quiet_NaN() )
   , mLineHeightPercentage( format.hasProperty( QTextFormat::LineHeight ) && format.lineHeightType() == QTextBlockFormat::ProportionalHeight ? ( format.lineHeight() / 100.0 ) : std::numeric_limits< double >::quiet_NaN() )
 {
@@ -107,7 +108,7 @@ void QgsTextBlockFormat::updateFontForFormat( QFont &, const QgsRenderContext &,
 
 bool QgsTextBlockFormat::hasBackground() const
 {
-  return mBackgroundBrush.style() != Qt::NoBrush;
+  return mBackgroundBrush.style() != Qt::NoBrush || !mBackgroundPath.isEmpty();
 }
 
 QBrush QgsTextBlockFormat::backgroundBrush() const
@@ -118,4 +119,14 @@ QBrush QgsTextBlockFormat::backgroundBrush() const
 void QgsTextBlockFormat::setBackgroundBrush( const QBrush &brush )
 {
   mBackgroundBrush = brush;
+}
+
+QString QgsTextBlockFormat::backgroundImagePath() const
+{
+  return mBackgroundPath;
+}
+
+void QgsTextBlockFormat::setBackgroundImagePath( const QString &path )
+{
+  mBackgroundPath = path;
 }
