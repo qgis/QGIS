@@ -345,11 +345,6 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     int span() const;
 
     /**
-     * Returns the number of points of indexed point cloud node \a n
-     */
-    int nodePointCount( const IndexedPointCloudNode &n );
-
-    /**
      * Sets the string used to define a subset of the point cloud.
      * \param subset The subset string to be used in a \a QgsPointCloudExpression
      * \returns true if the expression is parsed with no errors, false otherwise

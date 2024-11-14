@@ -19,7 +19,6 @@
 #include "qgseptprovider.h"
 #include "moc_qgseptprovider.cpp"
 #include "qgseptpointcloudindex.h"
-#include "qgsremoteeptpointcloudindex.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
 #include "qgsprovidersublayerdetails.h"
@@ -40,10 +39,7 @@ QgsEptProvider::QgsEptProvider(
   Qgis::DataProviderReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
 {
-  if ( uri.startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive ) )
-    mIndex.reset( new QgsRemoteEptPointCloudIndex );
-  else
-    mIndex.reset( new QgsEptPointCloudIndex );
+  mIndex.reset( new QgsEptPointCloudIndex );
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )

@@ -2236,13 +2236,11 @@ if (WITH_EPT)
   set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
       providers/ept/qgseptprovider.cpp
       pointcloud/qgseptpointcloudindex.cpp
-      pointcloud/qgsremoteeptpointcloudindex.cpp
       pointcloud/qgseptpointcloudblockrequest.cpp
   )
   set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
       providers/ept/qgseptprovider.h
       pointcloud/qgseptpointcloudindex.h
-      pointcloud/qgsremoteeptpointcloudindex.h
       pointcloud/qgseptpointcloudblockrequest.h
   )
 
