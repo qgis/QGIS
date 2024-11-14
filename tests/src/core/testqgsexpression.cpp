@@ -5600,6 +5600,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "simple3 mixed" ) << QStringLiteral( "field = 'value' OR field = 'value2' OR field2 = 'value3'" ) << QStringLiteral( "field  IN ('value', 'value2') OR field2 = 'value3'" );
       QTest::newRow( "simple3 mixed 2" ) << QStringLiteral( "field2 = 'value3' OR field = 'value1' OR field = 'value2'" ) << QStringLiteral( "field2 = 'value3' OR field  IN ('value1', 'value2')" );
       QTest::newRow( "simple3 mixed 3" ) << QStringLiteral( "field = 'value1' OR field2 = 'value3' OR field = 'value2'" ) << QStringLiteral( "field  IN ('value1', 'value2') OR field2 = 'value3'" );
+      QTest::newRow( "simple mixed order" ) << QStringLiteral( "field = 'value' OR 'value2' = field OR field = 'value3'" ) << QStringLiteral( "field  IN ('value', 'value2', 'value3')" );
 
       // test with IN
       QTest::newRow( "simple IN" ) << QStringLiteral( "field IN ('value', 'value2') OR field = 'value3'" ) << QStringLiteral( "field  IN ('value', 'value2', 'value3')" );

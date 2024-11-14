@@ -716,7 +716,7 @@ bool QgsExpressionNodeBinaryOperator::prepareNode( QgsExpression *parent, const 
         if ( op->op() == boEQ )
         {
           // If left is a column ref and right is a literal, collect
-          if ( dynamic_cast<QgsExpressionNodeColumnRef *>( op->opLeft() ) && dynamic_cast<QgsExpressionNodeLiteral *>( op->opRight() ) )
+          if ( ( dynamic_cast<QgsExpressionNodeColumnRef *>( op->opLeft() ) && dynamic_cast<QgsExpressionNodeLiteral *>( op->opRight() ) ) )
           {
             const QString fieldName = op->opLeft()->dump();
             if ( !orValuesMap.contains( fieldName ) )
@@ -725,6 +725,17 @@ bool QgsExpressionNodeBinaryOperator::prepareNode( QgsExpression *parent, const 
               orValuesMap.insert( fieldName, QgsExpressionNode::NodeList() );
             }
             orValuesMap[fieldName].append( op->opRight()->clone() );
+            return true;
+          }
+          else if ( ( dynamic_cast<QgsExpressionNodeColumnRef *>( op->opRight() ) && dynamic_cast<QgsExpressionNodeLiteral *>( op->opLeft() ) ) )
+          {
+            const QString fieldName = op->opRight()->dump();
+            if ( !orValuesMap.contains( fieldName ) )
+            {
+              orFieldNames.append( fieldName );
+              orValuesMap.insert( fieldName, QgsExpressionNode::NodeList() );
+            }
+            orValuesMap[fieldName].append( op->opLeft()->clone() );
             return true;
           }
           return false;
