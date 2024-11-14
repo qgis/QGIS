@@ -20,6 +20,8 @@
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsfeatureaction.h"
@@ -58,9 +60,13 @@ std::unique_ptr<QgsHighlight> QgsMapToolAddFeature::createHighlight( QgsVectorLa
 
       break;
     }
+
+    case Qgis::GeometryType::Polygon:
     case Qgis::GeometryType::Line:
     {
-      highlight->setWidth( 2 );
+      const double rubberbandWidth = QgsSettingsRegistryCore::settingsDigitizingLineWidth->value();
+
+      highlight->setWidth( static_cast<int>( rubberbandWidth ) + 1 );
 
       break;
     }
