@@ -789,34 +789,41 @@ bool QgsExpressionNodeBinaryOperator::prepareNode( QgsExpression *parent, const 
     if ( visitOrNodes( this ) && ! orValuesMap.empty() )
     {
 
-      // Recursively build the OR chain of IN operators
-      std::function<QgsExpressionNode* ( QList<QString>::const_iterator )> buildOrChain = [&buildOrChain, &orValuesMap, &orFieldNames]( QList<QString>::const_iterator fieldNameit ) -> QgsExpressionNode *
+      std::unique_ptr<QgsExpressionNode> currentNode;
+      for ( const auto &fieldName : std::as_const( orFieldNames ) )
       {
-
-        QgsExpressionNode *currentNode;
-        auto orValuesIt = orValuesMap.find( *fieldNameit );
-
+        auto orValuesIt = orValuesMap.find( fieldName );
         if ( orValuesIt.value().count() == 1 )
         {
-          currentNode = new QgsExpressionNodeBinaryOperator( boEQ, new QgsExpressionNodeColumnRef( orValuesIt.key() ), orValuesIt.value().at( 0 )->clone() );
+          std::unique_ptr<QgsExpressionNodeBinaryOperator> eqNode = std::make_unique<QgsExpressionNodeBinaryOperator>( boEQ, new QgsExpressionNodeColumnRef( fieldName ), orValuesIt.value().at( 0 )->clone() );
+          if ( currentNode )
+          {
+            currentNode = std::make_unique<QgsExpressionNodeBinaryOperator>( boOr, currentNode.release(), eqNode.release() );
+          }
+          else
+          {
+            currentNode = std::move( eqNode );
+          }
         }
         else
         {
-          currentNode = new QgsExpressionNodeInOperator( new QgsExpressionNodeColumnRef( orValuesIt.key() ), orValuesIt.value().clone() );
+          std::unique_ptr<QgsExpressionNodeInOperator> inNode = std::make_unique<QgsExpressionNodeInOperator>( new QgsExpressionNodeColumnRef( fieldName ), orValuesIt.value().clone() );
+          if ( currentNode )
+          {
+            currentNode = std::make_unique<QgsExpressionNodeBinaryOperator>( boOr, currentNode.release(), inNode.release() );
+          }
+          else
+          {
+            currentNode = std::move( inNode );
+          }
         }
+      }
 
-        if ( fieldNameit + 1 == orFieldNames.cend() )
-        {
-          return currentNode;
-        }
-        else
-        {
-          QgsExpressionNode *nextNode = buildOrChain( fieldNameit + 1 );
-          return new QgsExpressionNodeBinaryOperator( boOr, currentNode, nextNode );
-        }
-      };
 
-      mCompiledSimplifiedNode.reset( buildOrChain( orFieldNames.cbegin() ) );
+      if ( currentNode )
+      {
+        mCompiledSimplifiedNode = std::move( currentNode );
+      }
     }
 
   }
