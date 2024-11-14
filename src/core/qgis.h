@@ -1192,7 +1192,7 @@ class CORE_EXPORT Qgis
       Right SIP_MONKEYPATCH_COMPAT_NAME( QuadrantRight ), //!< Right middle
       BelowLeft SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelowLeft ), //!< Below left
       Below SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelow ), //!< Below center
-      BelowRight SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelowRight ), //!< BelowRight
+      BelowRight SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelowRight ), //!< Below right
     };
     Q_ENUM( LabelQuadrantPosition )
 

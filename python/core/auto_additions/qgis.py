@@ -2253,7 +2253,7 @@ QgsPalLayerSettings.QuadrantBelow.__doc__ = "Below center"
 QgsPalLayerSettings.QuadrantBelowRight = Qgis.LabelQuadrantPosition.BelowRight
 QgsPalLayerSettings.QuadrantPosition.QuadrantBelowRight = Qgis.LabelQuadrantPosition.BelowRight
 QgsPalLayerSettings.QuadrantBelowRight.is_monkey_patched = True
-QgsPalLayerSettings.QuadrantBelowRight.__doc__ = "BelowRight"
+QgsPalLayerSettings.QuadrantBelowRight.__doc__ = "Below right"
 Qgis.LabelQuadrantPosition.__doc__ = """Label quadrant positions
 
 .. note::
@@ -2294,7 +2294,7 @@ Qgis.LabelQuadrantPosition.__doc__ = """Label quadrant positions
 
   Available as ``QgsPalLayerSettings.QuadrantBelow`` in older QGIS releases.
 
-* ``BelowRight``: BelowRight
+* ``BelowRight``: Below right
 
   Available as ``QgsPalLayerSettings.QuadrantBelowRight`` in older QGIS releases.
 
