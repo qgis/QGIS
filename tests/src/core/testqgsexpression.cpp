@@ -5589,6 +5589,41 @@ class TestQgsExpression: public QObject
       }
     }
 
+    void testCollapseOrValues_data()
+    {
+      QTest::addColumn<QString>( "expression" );
+      QTest::addColumn<QString>( "expected" );
+
+
+      QTest::newRow( "simple" ) << QStringLiteral( "field = 'value' OR field = 'value2'" ) << QStringLiteral( "field  IN ('value', 'value2')" );
+      QTest::newRow( "simple 2" ) << QStringLiteral( "\"field\" = 'value' OR field = 'value2' OR field = 'value3'" ) << QStringLiteral( "field  IN ('value', 'value2', 'value3')" );
+      QTest::newRow( "simple3 mixed" ) << QStringLiteral( "field = 'value' OR field = 'value2' OR field2 = 'value3'" ) << QStringLiteral( "field  IN ('value', 'value2') OR field2 = 'value3'" );
+      QTest::newRow( "simple3 mixed 2" ) << QStringLiteral( "field2 = 'value3' OR field = 'value1' OR field = 'value2'" ) << QStringLiteral( "field2 = 'value3' OR field  IN ('value1', 'value2')" );
+      QTest::newRow( "simple3 mixed 3" ) << QStringLiteral( "field = 'value1' OR field2 = 'value3' OR field = 'value2'" ) << QStringLiteral( "field  IN ('value1', 'value2') OR field2 = 'value3'" );
+      QTest::newRow( "simple mixed order" ) << QStringLiteral( "field = 'value' OR 'value2' = field OR field = 'value3'" ) << QStringLiteral( "field  IN ('value', 'value2', 'value3')" );
+
+      // test with IN
+      QTest::newRow( "simple IN" ) << QStringLiteral( "field IN ('value', 'value2') OR field = 'value3'" ) << QStringLiteral( "field  IN ('value', 'value2', 'value3')" );
+      QTest::newRow( "simple IN 2" ) << QStringLiteral( "field = 'value' OR field IN ('value2', 'value3')" ) << QStringLiteral( "field  IN ('value', 'value2', 'value3')" );
+
+      // test cases that should not trigger reduction
+      QTest::newRow( "no reduction 1" ) << QStringLiteral( "field = 'value' OR field2 = 'value2'" ) << QStringLiteral( "field = 'value' OR field2 = 'value2'" );
+      // this could theoretically be reduced, but we don't currently support this
+      QTest::newRow( "no reduction 2" ) << QStringLiteral( "field = 'value' OR field != 'value2' OR field = 'value3'" ) << QStringLiteral( "field = 'value' OR field <> 'value2' OR field = 'value3'" );
+
+    }
+
+    void testCollapseOrValues()
+    {
+      QFETCH( QString, expression );
+      QFETCH( QString, expected );
+
+      QgsExpression exp( expression );
+      QgsExpressionContext context;
+      exp.prepare( &context );
+      QCOMPARE( exp.rootNode()->effectiveNode()->dump(), expected );
+    }
+
     void testPrecomputedNodesWithIntrospectionFunctions()
     {
       QgsFields fields;
