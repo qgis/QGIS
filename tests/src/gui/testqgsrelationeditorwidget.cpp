@@ -296,7 +296,6 @@ void TestQgsRelationEditorWidget::testFeatureRequest()
 
   QVERIFY( !relationEditorWidget.multiEditModeActive() );
 
-  QgsFeatureIds featureIds;
   QgsFeatureIterator featureIterator = mLayer1->getFeatures();
   QgsFeature feature;
   featureIterator.nextFeature( feature );
