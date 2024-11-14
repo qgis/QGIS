@@ -516,6 +516,16 @@ class CORE_EXPORT QgsTextRenderer
       QString text;
     };
 
+    struct BlockMetrics
+    {
+      double xOffset = 0;
+      double width = 0;
+      double extraWordSpace = 0;
+      double extraLetterSpace = 0;
+    };
+
+    static QVector< QgsTextRenderer::BlockMetrics > calculateBlockMetrics( const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, Qgis::TextLayoutMode mode, double targetWidth, const Qgis::TextHorizontalAlignment hAlignment );
+
     struct DeferredRenderBlock
     {
       QPointF origin;
