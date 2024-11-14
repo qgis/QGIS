@@ -637,7 +637,16 @@ void QgsRelationEditorWidget::updateUiSingleEdit()
     }
 
     QgsFeatureRequest nmRequest;
-    nmRequest.setFilterExpression( filters.join( QLatin1String( " OR " ) ) );
+
+    QString reducedExpression;
+    if ( QgsExpression::attemptReduceToInClause( filters, reducedExpression ) )
+    {
+      nmRequest.setFilterExpression( reducedExpression );
+    }
+    else
+    {
+      nmRequest.setFilterExpression( filters.join( QStringLiteral( " OR " ) ) );
+    }
 
     request = nmRequest;
     layer = mNmRelation.referencedLayer();

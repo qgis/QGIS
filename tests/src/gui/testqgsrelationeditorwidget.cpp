@@ -41,6 +41,7 @@ class TestQgsRelationEditorWidget : public QObject
 
     void testMultiEdit1N();
     void testMultiEditNM();
+    void testFeatureRequest();
     void testUpdateUi();
 
   private:
@@ -159,7 +160,7 @@ void TestQgsRelationEditorWidget::init()
   mLayerJoin->commitChanges();
 
   QgsFeature jft3( mLayerJoin->fields() );
-  jft3.setAttribute( QStringLiteral( "pk" ), 102 );
+  jft3.setAttribute( QStringLiteral( "pk" ), 103 );
   jft3.setAttribute( QStringLiteral( "fk_layer1" ), 0 );
   jft3.setAttribute( QStringLiteral( "fk_layer2" ), 11 );
   mLayerJoin->startEditing();
@@ -283,6 +284,30 @@ void TestQgsRelationEditorWidget::testMultiEditNM()
             << QStringLiteral( "Layer2-11" )
             << QStringLiteral( "Layer2-11" ) );
 
+}
+
+void TestQgsRelationEditorWidget::testFeatureRequest()
+{
+
+  // Init a relation editor widget
+  QgsRelationEditorWidget relationEditorWidget( QVariantMap(),
+      new QWidget() );
+  relationEditorWidget.setRelations( *mRelation1N, *mRelationNM );
+
+  QVERIFY( !relationEditorWidget.multiEditModeActive() );
+
+  QgsFeatureIterator featureIterator = mLayer1->getFeatures();
+  QgsFeature feature;
+  featureIterator.nextFeature( feature );
+  relationEditorWidget.setFeature( feature );
+
+  QgsAttributeEditorContext context;
+  QgsTrackedVectorLayerTools tools;
+  context.setVectorLayerTools( &tools );
+  relationEditorWidget.setEditorContext( context );
+
+  relationEditorWidget.updateUiSingleEdit();
+  QCOMPARE( relationEditorWidget.mDualView->masterModel()->request().filterExpression()->expression(), QStringLiteral( "\"pk\" IN (10,11)" ) );
 }
 
 void TestQgsRelationEditorWidget::testUpdateUi()
