@@ -1774,11 +1774,99 @@ bool QgsTextRenderer::usePictureToRender( const QgsRenderContext &, const QgsTex
   } );
 }
 
+QVector< QgsTextRenderer::BlockMetrics > QgsTextRenderer::calculateBlockMetrics( const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, Qgis::TextLayoutMode mode, double targetWidth, const Qgis::TextHorizontalAlignment hAlignment )
+{
+  QVector< BlockMetrics > blockMetrics;
+  blockMetrics.reserve( document.size() );
+
+  int blockIndex = 0;
+  for ( const QgsTextBlock &block : document )
+  {
+    Qgis::TextHorizontalAlignment blockAlignment = hAlignment;
+    if ( block.blockFormat().hasHorizontalAlignmentSet() )
+      blockAlignment = block.blockFormat().horizontalAlignment();
+    const bool adjustForAlignment = blockAlignment != Qgis::TextHorizontalAlignment::Left &&
+                                    ( mode != Qgis::TextLayoutMode::Labeling
+                                      || document.size() > 1 );
+
+    const bool isFinalLineInParagraph = ( blockIndex == document.size() - 1 )
+                                        || document.at( blockIndex + 1 ).toPlainText().trimmed().isEmpty();
+
+    BlockMetrics thisBlockMetrics;
+    // figure x offset for horizontal alignment of multiple lines
+    thisBlockMetrics.width = metrics.blockWidth( blockIndex );
+
+    if ( adjustForAlignment )
+    {
+      double blockWidthDiff = 0;
+      switch ( blockAlignment )
+      {
+        case Qgis::TextHorizontalAlignment::Center:
+          blockWidthDiff = ( targetWidth - thisBlockMetrics.width - metrics.blockLeftMargin( blockIndex ) - metrics.blockRightMargin( blockIndex ) ) * 0.5 + metrics.blockLeftMargin( blockIndex );
+          break;
+
+        case Qgis::TextHorizontalAlignment::Right:
+          blockWidthDiff = targetWidth - thisBlockMetrics.width - metrics.blockRightMargin( blockIndex );
+          break;
+
+        case Qgis::TextHorizontalAlignment::Justify:
+          if ( !isFinalLineInParagraph && targetWidth > thisBlockMetrics.width )
+          {
+            calculateExtraSpacingForLineJustification( targetWidth - thisBlockMetrics.width, block, thisBlockMetrics.extraWordSpace, thisBlockMetrics.extraLetterSpace );
+            thisBlockMetrics.width = targetWidth;
+          }
+          blockWidthDiff = metrics.blockLeftMargin( blockIndex );
+          break;
+
+        case Qgis::TextHorizontalAlignment::Left:
+          blockWidthDiff = metrics.blockLeftMargin( blockIndex );
+          break;
+      }
+
+      switch ( mode )
+      {
+        case Qgis::TextLayoutMode::Labeling:
+        case Qgis::TextLayoutMode::Rectangle:
+        case Qgis::TextLayoutMode::RectangleCapHeightBased:
+        case Qgis::TextLayoutMode::RectangleAscentBased:
+          thisBlockMetrics.xOffset = blockWidthDiff;
+          break;
+
+        case Qgis::TextLayoutMode::Point:
+        {
+          switch ( blockAlignment )
+          {
+            case Qgis::TextHorizontalAlignment::Right:
+              thisBlockMetrics.xOffset = blockWidthDiff - targetWidth;
+              break;
+
+            case Qgis::TextHorizontalAlignment::Center:
+              thisBlockMetrics.xOffset = blockWidthDiff - targetWidth / 2.0;
+              break;
+
+            case Qgis::TextHorizontalAlignment::Left:
+            case Qgis::TextHorizontalAlignment::Justify:
+              thisBlockMetrics.xOffset = metrics.blockLeftMargin( blockIndex );
+              break;
+          }
+        }
+        break;
+      }
+    }
+    else if ( blockAlignment == Qgis::TextHorizontalAlignment::Left || blockAlignment == Qgis::TextHorizontalAlignment::Justify )
+    {
+      thisBlockMetrics.xOffset = metrics.blockLeftMargin( blockIndex );
+    }
+    blockMetrics << thisBlockMetrics;
+    blockIndex++;
+  }
+  return blockMetrics;
+}
+
 void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents components, Qgis::TextLayoutMode mode, const Component &component, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, double fontScale, const Qgis::TextHorizontalAlignment hAlignment,
     Qgis::TextVerticalAlignment vAlignment, double rotation )
 {
   QPainter *maskPainter = context.maskPainter( context.currentMaskId() );
-  const QStringList textLines = document.toPlainText();
 
   const QSizeF documentSize = metrics.documentSize( mode, Qgis::TextOrientation::Horizontal );
 
@@ -1840,143 +1928,68 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
     deferredBlocks->reserve( document.size() );
   }
 
-  int blockIndex = 0;
-  for ( const QgsTextBlock &block : document )
+  if ( ( components & Qgis::TextComponent::Buffer )
+       || ( components & Qgis::TextComponent::Text )
+       || ( components & Qgis::TextComponent::Shadow ) )
   {
-    Qgis::TextHorizontalAlignment blockAlignment = hAlignment;
-    if ( block.blockFormat().hasHorizontalAlignmentSet() )
-      blockAlignment = block.blockFormat().horizontalAlignment();
-    const bool adjustForAlignment = blockAlignment != Qgis::TextHorizontalAlignment::Left &&
-                                    ( mode != Qgis::TextLayoutMode::Labeling
-                                      || textLines.size() > 1 );
-
-    const bool isFinalLineInParagraph = ( blockIndex == document.size() - 1 )
-                                        || document.at( blockIndex + 1 ).toPlainText().trimmed().isEmpty();
-
-    const double blockHeight = metrics.blockHeight( blockIndex );
-
-    DeferredRenderBlock *deferredBlock = nullptr;
-    if ( requiresMultiPassRendering && deferredBlocks )
+    const QVector< BlockMetrics > blockMetrics = calculateBlockMetrics( document, metrics, mode, targetWidth, hAlignment );
+    int blockIndex = 0;
+    for ( const QgsTextBlock &block : document )
     {
-      deferredBlocks->emplace_back( DeferredRenderBlock() );
-      deferredBlock = &deferredBlocks->back();
-      deferredBlock->fragments.reserve( block.size() );
-    }
+      const double blockHeight = metrics.blockHeight( blockIndex );
 
-    QgsScopedQPainterState painterState( context.painter() );
-    context.setPainterFlagsUsingContext();
-    context.painter()->translate( component.origin );
-    if ( !qgsDoubleNear( rotation, 0.0 ) )
-      context.painter()->rotate( rotation );
+      DeferredRenderBlock *deferredBlock = nullptr;
+      if ( requiresMultiPassRendering && deferredBlocks )
+      {
+        deferredBlocks->emplace_back( DeferredRenderBlock() );
+        deferredBlock = &deferredBlocks->back();
+        deferredBlock->fragments.reserve( block.size() );
+      }
 
-    // apply to the mask painter the same transformations
-    if ( maskPainter )
-    {
-      maskPainter->save();
-      maskPainter->translate( component.origin );
+      QgsScopedQPainterState painterState( context.painter() );
+      context.setPainterFlagsUsingContext();
+      context.painter()->translate( component.origin );
       if ( !qgsDoubleNear( rotation, 0.0 ) )
-        maskPainter->rotate( rotation );
-    }
+        context.painter()->rotate( rotation );
 
-    // figure x offset for horizontal alignment of multiple lines
-    double xMultiLineOffset = 0.0;
-    double blockWidth = metrics.blockWidth( blockIndex );
-    double extraWordSpace = 0;
-    double extraLetterSpace = 0;
-    if ( adjustForAlignment )
-    {
-      double labelWidthDiff = 0;
-      switch ( blockAlignment )
+      // apply to the mask painter the same transformations
+      if ( maskPainter )
       {
-        case Qgis::TextHorizontalAlignment::Center:
-          labelWidthDiff = ( targetWidth - blockWidth - metrics.blockLeftMargin( blockIndex ) - metrics.blockRightMargin( blockIndex ) ) * 0.5 + metrics.blockLeftMargin( blockIndex );
-          break;
-
-        case Qgis::TextHorizontalAlignment::Right:
-          labelWidthDiff = targetWidth - blockWidth - metrics.blockRightMargin( blockIndex );
-          break;
-
-        case Qgis::TextHorizontalAlignment::Justify:
-          if ( !isFinalLineInParagraph && targetWidth > blockWidth )
-          {
-            calculateExtraSpacingForLineJustification( targetWidth - blockWidth, block, extraWordSpace, extraLetterSpace );
-            blockWidth = targetWidth;
-          }
-          labelWidthDiff = metrics.blockLeftMargin( blockIndex );
-          break;
-
-        case Qgis::TextHorizontalAlignment::Left:
-          labelWidthDiff = metrics.blockLeftMargin( blockIndex );
-          break;
+        maskPainter->save();
+        maskPainter->translate( component.origin );
+        if ( !qgsDoubleNear( rotation, 0.0 ) )
+          maskPainter->rotate( rotation );
       }
 
-      switch ( mode )
+      const BlockMetrics thisBlockMetrics = blockMetrics[ blockIndex ];
+      const double baseLineOffset = metrics.baselineOffset( blockIndex, mode );
+
+      const QPointF blockOrigin( thisBlockMetrics.xOffset, baseLineOffset + verticalAlignOffset );
+      if ( deferredBlock )
+        deferredBlock->origin = blockOrigin;
+      else
+        context.painter()->translate( blockOrigin );
+      if ( maskPainter )
+        maskPainter->translate( blockOrigin );
+
+      Component subComponent;
+      subComponent.block = block;
+      subComponent.blockIndex = blockIndex;
+      subComponent.size = QSizeF( thisBlockMetrics.width, blockHeight );
+      subComponent.offset = QPointF( 0.0, -metrics.ascentOffset() );
+      subComponent.rotation = -component.rotation * 180 / M_PI;
+      subComponent.rotationOffset = 0.0;
+      subComponent.extraWordSpacing = thisBlockMetrics.extraWordSpace * fontScale;
+      subComponent.extraLetterSpacing = thisBlockMetrics.extraLetterSpace * fontScale;
+      if ( deferredBlock )
+        deferredBlock->component = subComponent;
+
+      // draw the mask below the text (for preview)
+      if ( format.mask().enabled() )
       {
-        case Qgis::TextLayoutMode::Labeling:
-        case Qgis::TextLayoutMode::Rectangle:
-        case Qgis::TextLayoutMode::RectangleCapHeightBased:
-        case Qgis::TextLayoutMode::RectangleAscentBased:
-          xMultiLineOffset = labelWidthDiff;
-          break;
-
-        case Qgis::TextLayoutMode::Point:
-        {
-          switch ( blockAlignment )
-          {
-            case Qgis::TextHorizontalAlignment::Right:
-              xMultiLineOffset = labelWidthDiff - targetWidth;
-              break;
-
-            case Qgis::TextHorizontalAlignment::Center:
-              xMultiLineOffset = labelWidthDiff - targetWidth / 2.0;
-              break;
-
-            case Qgis::TextHorizontalAlignment::Left:
-            case Qgis::TextHorizontalAlignment::Justify:
-              xMultiLineOffset = metrics.blockLeftMargin( blockIndex );
-              break;
-          }
-        }
-        break;
+        QgsTextRenderer::drawMask( context, subComponent, format, metrics, mode );
       }
-    }
-    else if ( blockAlignment == Qgis::TextHorizontalAlignment::Left || blockAlignment == Qgis::TextHorizontalAlignment::Justify )
-    {
-      xMultiLineOffset = metrics.blockLeftMargin( blockIndex );
-    }
 
-    const double baseLineOffset = metrics.baselineOffset( blockIndex, mode );
-
-    const QPointF blockOrigin( xMultiLineOffset, baseLineOffset + verticalAlignOffset );
-    if ( deferredBlock )
-      deferredBlock->origin = blockOrigin;
-    else
-      context.painter()->translate( blockOrigin );
-    if ( maskPainter )
-      maskPainter->translate( blockOrigin );
-
-    Component subComponent;
-    subComponent.block = block;
-    subComponent.blockIndex = blockIndex;
-    subComponent.size = QSizeF( blockWidth, blockHeight );
-    subComponent.offset = QPointF( 0.0, -metrics.ascentOffset() );
-    subComponent.rotation = -component.rotation * 180 / M_PI;
-    subComponent.rotationOffset = 0.0;
-    subComponent.extraWordSpacing = extraWordSpace * fontScale;
-    subComponent.extraLetterSpacing = extraLetterSpace * fontScale;
-    if ( deferredBlock )
-      deferredBlock->component = subComponent;
-
-    // draw the mask below the text (for preview)
-    if ( format.mask().enabled() )
-    {
-      QgsTextRenderer::drawMask( context, subComponent, format, metrics, mode );
-    }
-
-    if ( ( components & Qgis::TextComponent::Buffer )
-         || ( components & Qgis::TextComponent::Text )
-         || ( components & Qgis::TextComponent::Shadow ) )
-    {
       // if we are drawing both text + buffer, we'll need a path, as we HAVE to render buffers using paths
       const bool needsPaths = usePathsForText
                               || ( ( components & Qgis::TextComponent::Buffer ) && format.buffer().enabled() )
@@ -2004,13 +2017,15 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
       context.painter()->scale( 1 / fontScale, 1 / fontScale );
       context.painter()->setPen( Qt::NoPen );
       context.painter()->setBrush( Qt::NoBrush );
-      renderBlockHorizontal( block, blockIndex, metrics, context, format, context.painter(), needsPaths,
-                             fontScale, extraWordSpace, extraLetterSpace, mode, deferredBlock );
-    }
-    if ( maskPainter )
-      maskPainter->restore();
 
-    blockIndex++;
+      renderBlockHorizontal( block, blockIndex, metrics, context, format, context.painter(), needsPaths,
+                             fontScale, thisBlockMetrics.extraWordSpace, thisBlockMetrics.extraLetterSpace, mode, deferredBlock );
+
+      if ( maskPainter )
+        maskPainter->restore();
+
+      blockIndex++;
+    }
   }
 
   if ( deferredBlocks )
