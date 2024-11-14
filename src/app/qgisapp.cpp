@@ -5506,7 +5506,7 @@ void QgisApp::sponsors()
 {
   QgsSettings settings;
   QString qgisSponsorsUrl = settings.value( QStringLiteral( "qgis/qgisSponsorsUrl" ),
-                            tr( "https://qgis.org/en/site/about/sustaining_members.html" ) ).toString();
+                            tr( "https://qgis.org/funding/membership/members/" ) ).toString();
   openURL( qgisSponsorsUrl, false );
 }
 
@@ -12976,7 +12976,7 @@ void QgisApp::reportaBug()
 {
   QgsSettings settings;
   QString reportaBugUrl = settings.value( QStringLiteral( "qgis/reportaBugUrl" ),
-                                          tr( "https://qgis.org/en/site/getinvolved/development/bugreporting.html" ) ).toString();
+                                          tr( "https://qgis.org/resources/support/bug-reporting/" ) ).toString();
   openURL( reportaBugUrl, false );
 }
 
@@ -12984,7 +12984,7 @@ void QgisApp::getInvolved()
 {
   QgsSettings settings;
   QString getInvolvedUrl = settings.value( QStringLiteral( "qgis/getInvolved" ),
-                           tr( "https://qgis.org/en/site/getinvolved/" ) ).toString();
+                           tr( "https://qgis.org/community/involve/" ) ).toString();
   openURL( getInvolvedUrl, false );
 }
 
@@ -12992,7 +12992,7 @@ void QgisApp::donate()
 {
   QgsSettings settings;
   QString donateUrl = settings.value( QStringLiteral( "qgis/donate" ),
-                                      tr( "https://donate.qgis.org/" ) ).toString();
+                                      tr( "https://qgis.org/funding/donate/" ) ).toString();
   openURL( donateUrl, false );
 }
 
@@ -13000,7 +13000,7 @@ void QgisApp::supportProviders()
 {
   QgsSettings settings;
   QString supportProvidersUrl = settings.value( QStringLiteral( "qgis/supportProvidersUrl" ),
-                                tr( "https://qgis.org/en/site/forusers/commercial_support.html" ) ).toString();
+                                tr( "https://qgis.org/resources/support/commercial-support/" ) ).toString();
   openURL( supportProvidersUrl, false );
 }
 
