@@ -676,7 +676,6 @@ void QgsRelationEditorWidget::updateUiSingleEdit()
     updateButtons();
   }
 
-  mFeatureRequest = request;
 }
 
 void QgsRelationEditorWidget::updateUiMultiEdit()

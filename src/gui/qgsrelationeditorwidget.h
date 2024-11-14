@@ -267,9 +267,6 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     bool mAllowAddChildFeatureWithNoGeometry = true;
     QString mFilterExpression;
 
-    // Mainly used for testing purposes
-    QgsFeatureRequest mFeatureRequest;
-
     QList<QTreeWidgetItem *> mMultiEditPreviousSelectedItems;
     QgsFeatureIds mMultiEdit1NJustAddedIds;
 

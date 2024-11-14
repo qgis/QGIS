@@ -307,7 +307,7 @@ void TestQgsRelationEditorWidget::testFeatureRequest()
   relationEditorWidget.setEditorContext( context );
 
   relationEditorWidget.updateUiSingleEdit();
-  QCOMPARE( relationEditorWidget.mFeatureRequest.filterExpression()->expression(), QStringLiteral( "\"pk\" IN (10,11)" ) );
+  QCOMPARE( relationEditorWidget.mDualView->masterModel()->request().filterExpression()->expression(), QStringLiteral( "\"pk\" IN (10,11)" ) );
 }
 
 void TestQgsRelationEditorWidget::testUpdateUi()
