@@ -4575,8 +4575,8 @@ void QgsLayoutDesignerDialog::toggleActions( bool layoutAvailable )
   mActionZoomOut->setEnabled( layoutAvailable );
   mActionZoomActual->setEnabled( layoutAvailable );
   mActionZoomToWidth->setEnabled( layoutAvailable );
-  mActionZoomLast->setEnabled( layoutAvailable );
-  mActionZoomNext->setEnabled( layoutAvailable );
+  mActionZoomLast->setEnabled( layoutAvailable && mView->canZoomLast() );
+  mActionZoomNext->setEnabled( layoutAvailable && mView->canZoomNext() );
   mActionAddPages->setEnabled( layoutAvailable );
   mActionShowGrid->setEnabled( layoutAvailable );
   mActionSnapGrid->setEnabled( layoutAvailable );

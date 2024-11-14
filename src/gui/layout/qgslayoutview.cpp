@@ -586,24 +586,44 @@ void QgsLayoutView::zoomActual()
 
 void QgsLayoutView::zoomLast()
 {
+  if ( !canZoomLast() )
+    return;
   mLastTransformIndex--;
   centerOn( mLastTransform[mLastTransformIndex].first );
-  setTransform( mLastTransform[mLastTransformIndex].second );
-  invalidateCachedRenders();
+  if ( transform() != mLastTransform[mLastTransformIndex].second )
+  {
+    setTransform( mLastTransform[mLastTransformIndex].second );
+    invalidateCachedRenders();
+  }
   // update controls' enabled state
-  emit zoomLastStatusChanged( mLastTransformIndex > 0 );
-  emit zoomNextStatusChanged( mLastTransformIndex < mLastTransform.size() - 1 );
+  emit zoomLastStatusChanged( canZoomLast() );
+  emit zoomNextStatusChanged( canZoomNext() );
 }
 
 void QgsLayoutView::zoomNext()
 {
+  if ( !canZoomNext() )
+    return;
   mLastTransformIndex++;
   centerOn( mLastTransform[mLastTransformIndex].first );
-  setTransform( mLastTransform[mLastTransformIndex].second );
-  invalidateCachedRenders();
+  if ( transform() != mLastTransform[mLastTransformIndex].second )
+  {
+    setTransform( mLastTransform[mLastTransformIndex].second );
+    invalidateCachedRenders();
+  }
   // update controls' enabled state
-  emit zoomLastStatusChanged( mLastTransformIndex > 0 );
-  emit zoomNextStatusChanged( mLastTransformIndex < mLastTransform.size() - 1 );
+  emit zoomLastStatusChanged( canZoomLast() );
+  emit zoomNextStatusChanged( canZoomNext() );
+}
+
+bool QgsLayoutView::canZoomNext() const
+{
+  return mLastTransformIndex < mLastTransform.size() - 1;
+}
+
+bool QgsLayoutView::canZoomLast() const
+{
+  return mLastTransformIndex > 0;
 }
 
 void QgsLayoutView::emitZoomLevelChanged()
@@ -615,10 +635,7 @@ void QgsLayoutView::onExtentChanged()
 {
 
   //clear all transforms items after current index
-  for ( int i = mLastTransform.size() - 1; i > mLastTransformIndex; i-- )
-  {
-    mLastTransform.removeAt( i );
-  }
+  mLastTransform = mLastTransform.mid( 0, mLastTransformIndex + 1 );
 
   QPointF center = mapToScene( viewport()->rect().center() );
 
@@ -637,8 +654,8 @@ void QgsLayoutView::onExtentChanged()
   mLastTransformIndex = mLastTransform.size() - 1;
 
   // update controls' enabled state
-  emit zoomLastStatusChanged( mLastTransformIndex > 0 );
-  emit zoomNextStatusChanged( mLastTransformIndex < mLastTransform.size() - 1 );
+  emit zoomLastStatusChanged( canZoomLast() );
+  emit zoomNextStatusChanged( canZoomNext() );
 }
 
 void QgsLayoutView::selectAll()
@@ -1030,7 +1047,20 @@ void QgsLayoutView::mouseReleaseEvent( QMouseEvent *event )
   }
 
   if ( !mTool || !event->isAccepted() )
+  {
+
+    if ( event->button() == Qt::BackButton )
+    {
+      zoomLast();
+      return;
+    }
+    else if ( event->button() == Qt::ForwardButton )
+    {
+      zoomNext();
+      return;
+    }
     QGraphicsView::mouseReleaseEvent( event );
+  }
 }
 
 void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
@@ -1175,9 +1205,6 @@ void QgsLayoutView::keyReleaseEvent( QKeyEvent *event )
 void QgsLayoutView::resizeEvent( QResizeEvent *event )
 {
   QGraphicsView::resizeEvent( event );
-  disconnect( this, &QgsLayoutView::zoomLevelChanged, this, &QgsLayoutView::extentChanged );
-  emit zoomLevelChanged();
-  connect( this, &QgsLayoutView::zoomLevelChanged, this, &QgsLayoutView::extentChanged );
   viewChanged();
 }
 

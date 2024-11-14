@@ -354,7 +354,19 @@ Zooms to the next zoom level
 .. versionadded:: 3.42
 %End
 
+    bool canZoomLast() const;
+%Docstring
+Whether zoom last is available
 
+.. versionadded:: 3.42
+%End
+
+    bool canZoomNext() const;
+%Docstring
+Whether zoom next is available
+
+.. versionadded:: 3.42
+%End
 
     void emitZoomLevelChanged();
 

@@ -352,7 +352,17 @@ class GUI_EXPORT QgsLayoutView : public QGraphicsView
      */
     void zoomNext();
 
+    /**
+     * Whether zoom last is available
+     * \since QGIS 3.42
+     */
+    bool canZoomLast() const;
 
+    /**
+     * Whether zoom next is available
+     * \since QGIS 3.42
+     */
+    bool canZoomNext() const;
 
     /**
      * Emits the zoomLevelChanged() signal. This should be called after
