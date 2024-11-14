@@ -356,6 +356,23 @@ class TestQgsTextDocument(QgisTestCase):
         self.assertFalse(doc.hasBackgrounds())
         self.assertFalse(doc[0].hasBackgrounds())
 
+        # background paths
+        doc = QgsTextDocument.fromHtml(['<div style="background-image: url(something)"><span style="background-color: red;">red</span><span style="background-image: url(something_else);">yellow</span>outside span</div>'])
+        self.assertTrue(doc.hasBackgrounds())
+        self.assertEqual(len(doc), 1)
+        # there's a bug in Qt's css parsing here -- the background-image incorrectly gets attached to the spans, not the div!
+        # self.assertTrue(doc[0].blockFormat().hasBackground())
+        self.assertTrue(doc[0].hasBackgrounds())
+
+        self.assertTrue(doc[0][0].characterFormat().hasBackground())
+        self.assertEqual(doc[0][0].characterFormat().backgroundBrush().color().name(), '#ff0000')
+        self.assertFalse(doc[0][0].characterFormat().backgroundImagePath())
+        self.assertTrue(doc[0][1].characterFormat().hasBackground())
+        self.assertEqual(doc[0][1].characterFormat().backgroundImagePath(), 'something_else')
+        self.assertTrue(doc[0][2].characterFormat().hasBackground())
+        self.assertEqual(doc[0][2].characterFormat().backgroundImagePath(),
+                         'something')
+
     def testFromTextAndFormat(self):
         format = QgsTextFormat()
         format.setAllowHtmlFormatting(False)

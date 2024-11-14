@@ -519,7 +519,9 @@ class CORE_EXPORT QgsTextRenderer
     struct BlockMetrics
     {
       double xOffset = 0;
+      double backgroundXOffset = 0;
       double width = 0;
+      double backgroundWidth = 0;
       double extraWordSpace = 0;
       double extraLetterSpace = 0;
     };
@@ -533,6 +535,8 @@ class CORE_EXPORT QgsTextRenderer
       QVector< DeferredRenderFragment > fragments;
     };
 
+    static QBrush createBrushForPath( QgsRenderContext &context, const QString &path );
+
     static void renderBlockHorizontal( const QgsTextBlock &block, int blockIndex,
                                        const QgsTextDocumentMetrics &metrics, QgsRenderContext &context,
                                        const QgsTextFormat &format,
@@ -540,6 +544,7 @@ class CORE_EXPORT QgsTextRenderer
                                        double fontScale, double extraWordSpace, double extraLetterSpace,
                                        Qgis::TextLayoutMode mode,
                                        DeferredRenderBlock *deferredRenderBlock );
+    static void renderDocumentBackgrounds( QgsRenderContext &context, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, const Component &component, const QVector< QgsTextRenderer::BlockMetrics > &blockMetrics, Qgis::TextLayoutMode mode, double verticalAlignOffset, double rotation );
     static void renderDeferredBlocks( QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents components, const std::vector<DeferredRenderBlock> &deferredBlocks, bool usePathsForText, double fontScale, const Component &component, double rotation );
     static void renderDeferredBuffer( QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents components, const std::vector<DeferredRenderBlock> &deferredBlocks, double fontScale, const Component &component, double rotation );
     static void renderDeferredShadowForText( QgsRenderContext &context, const QgsTextFormat &format, const std::vector<DeferredRenderBlock> &deferredBlocks, double fontScale, const Component &component, double rotation );

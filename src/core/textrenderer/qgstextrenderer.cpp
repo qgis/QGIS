@@ -1856,10 +1856,122 @@ QVector< QgsTextRenderer::BlockMetrics > QgsTextRenderer::calculateBlockMetrics(
     {
       thisBlockMetrics.xOffset = metrics.blockLeftMargin( blockIndex );
     }
+
+    switch ( mode )
+    {
+      case Qgis::TextLayoutMode::Rectangle:
+      case Qgis::TextLayoutMode::RectangleCapHeightBased:
+      case Qgis::TextLayoutMode::RectangleAscentBased:
+        thisBlockMetrics.backgroundWidth = targetWidth;
+        thisBlockMetrics.backgroundXOffset = 0;
+        break;
+      case Qgis::TextLayoutMode::Point:
+      case Qgis::TextLayoutMode::Labeling:
+        thisBlockMetrics.backgroundWidth = thisBlockMetrics.width;
+        thisBlockMetrics.backgroundXOffset = thisBlockMetrics.xOffset;
+        break;
+    }
+
     blockMetrics << thisBlockMetrics;
     blockIndex++;
   }
   return blockMetrics;
+}
+
+QBrush QgsTextRenderer::createBrushForPath( QgsRenderContext &context, const QString &path )
+{
+  bool fitsInCache = false;
+  // use original image size
+  const QSize imageSize = QgsApplication::imageCache()->originalSize( path, context.flags() & Qgis::RenderContextFlag::RenderBlocking );
+  // TODO: maybe there's more optimal logic we could use here, but for now we assume 96dpi image resolution...
+  const QSizeF originalSizeMmAt96Dpi = imageSize / 3.7795275590551185;
+  const double pixelsPerMm = context.scaleFactor();
+  const double imageWidth = originalSizeMmAt96Dpi.width() * pixelsPerMm;
+  const double imageHeight = originalSizeMmAt96Dpi.height() * pixelsPerMm;
+  QBrush res;
+  if ( imageWidth == 0 || imageHeight == 0 )
+    return res;
+  const QImage image = QgsApplication::imageCache()->pathAsImage( path,
+                       QSize( static_cast< int >( std::round( imageWidth ) ),
+                              static_cast< int >( std::round( imageHeight ) ) ),
+                       false,
+                       1, fitsInCache, context.flags() & Qgis::RenderContextFlag::RenderBlocking );
+
+  if ( !image.isNull() )
+  {
+
+    res.setTextureImage( image );
+  }
+  return res;
+}
+
+void QgsTextRenderer::renderDocumentBackgrounds( QgsRenderContext &context, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, const Component &component,  const QVector< QgsTextRenderer::BlockMetrics > &blockMetrics, Qgis::TextLayoutMode mode, double verticalAlignOffset, double rotation )
+{
+  int blockIndex = 0;
+  context.painter()->translate( component.origin );
+  if ( !qgsDoubleNear( rotation, 0.0 ) )
+    context.painter()->rotate( rotation );
+
+  context.painter()->setPen( Qt::NoPen );
+  context.painter()->setBrush( Qt::NoBrush );
+  for ( const QgsTextBlock &block : document )
+  {
+    const double baseLineOffset = metrics.baselineOffset( blockIndex, mode );
+    const double blockMaximumDescent = metrics.blockMaximumDescent( blockIndex );
+    const double blockMaximumAscent = metrics.blockMaximumAscent( blockIndex );
+
+    if ( block.blockFormat().hasBackground() )
+    {
+      QBrush backgroundBrush = block.blockFormat().backgroundBrush();
+      if ( !block.blockFormat().backgroundImagePath().isEmpty() )
+      {
+        const QBrush backgroundImageBrush = createBrushForPath( context, block.blockFormat().backgroundImagePath() );
+        if ( backgroundImageBrush.style() == Qt::BrushStyle::TexturePattern )
+          backgroundBrush = backgroundImageBrush;
+      }
+
+      context.painter()->setBrush( backgroundBrush );
+      context.painter()->drawRect( QRectF( blockMetrics[ blockIndex ].backgroundXOffset, baseLineOffset - blockMaximumAscent, blockMetrics[ blockIndex ].backgroundWidth, blockMaximumDescent + blockMaximumAscent ) );
+    }
+
+    double xOffset = 0;
+    int fragmentIndex = 0;
+
+    for ( const QgsTextFragment &fragment : block )
+    {
+      const double horizontalAdvance = metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, mode );
+      const double ascent = metrics.fragmentAscent( blockIndex, fragmentIndex, mode );
+      const double descent = metrics.fragmentDescent( blockIndex, fragmentIndex, mode );
+
+      if ( fragment.characterFormat().hasBackground() )
+      {
+        const double yOffset = metrics.fragmentVerticalOffset( blockIndex, fragmentIndex, mode );
+
+        QBrush backgroundBrush = fragment.characterFormat().backgroundBrush();
+        if ( !fragment.characterFormat().backgroundImagePath().isEmpty() )
+        {
+          const QBrush backgroundImageBrush = createBrushForPath( context, fragment.characterFormat().backgroundImagePath() );
+          if ( backgroundImageBrush.style() == Qt::BrushStyle::TexturePattern )
+            backgroundBrush = backgroundImageBrush;
+        }
+
+        context.painter()->setBrush( backgroundBrush );
+        context.painter()->drawRect( QRectF( blockMetrics[ blockIndex ].xOffset + xOffset,
+                                             baseLineOffset + verticalAlignOffset + yOffset - ascent, horizontalAdvance, ascent + descent ) );
+      }
+
+      xOffset += horizontalAdvance;
+      fragmentIndex ++;
+    }
+
+    blockIndex++;
+  }
+
+  context.painter()->setBrush( Qt::NoBrush );
+
+  if ( !qgsDoubleNear( rotation, 0.0 ) )
+    context.painter()->rotate( -rotation );
+  context.painter()->translate( -component.origin );
 }
 
 void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents components, Qgis::TextLayoutMode mode, const Component &component, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, double fontScale, const Qgis::TextHorizontalAlignment hAlignment,
@@ -1932,6 +2044,12 @@ void QgsTextRenderer::drawTextInternalHorizontal( QgsRenderContext &context, con
        || ( components & Qgis::TextComponent::Shadow ) )
   {
     const QVector< BlockMetrics > blockMetrics = calculateBlockMetrics( document, metrics, mode, targetWidth, hAlignment );
+
+    if ( document.hasBackgrounds() )
+    {
+      renderDocumentBackgrounds( context, document, metrics, component, blockMetrics, mode, verticalAlignOffset, rotation );
+    }
+
     int blockIndex = 0;
     for ( const QgsTextBlock &block : document )
     {

@@ -362,6 +362,8 @@ class CORE_EXPORT QgsTextCharacterFormat
     /**
      * Returns the brush used for rendering the background of the fragment.
      *
+     * Alternatively, the format may have a backgroundImagePath() set.
+     *
      * \see hasBackground()
      * \see setBackgroundBrush()
      * \since QGIS 3.42
@@ -371,10 +373,33 @@ class CORE_EXPORT QgsTextCharacterFormat
     /**
      * Sets the \a brush used for rendering the background of the fragment.
      *
+     * Alternatively, the format may have a backgroundImagePath() set.
+     *
      * \see backgroundBrush()
      * \since QGIS 3.42
      */
     void setBackgroundBrush( const QBrush &brush );
+
+    /**
+     * Returns the path for the image to be used for rendering the background of the fragment.
+     *
+     * Alternatively, the format may have a backgroundBrush() set.
+     *
+     * \see hasBackground()
+     * \see setBackgroundImagePath()
+     * \since QGIS 3.42
+     */
+    QString backgroundImagePath() const;
+
+    /**
+     * Sets the \a path for the image to be used for rendering the background of the fragment.
+     *
+     * Alternatively, the format may have a backgroundBrush() set.
+     *
+     * \see backgroundImagePath()
+     * \since QGIS 3.42
+     */
+    void setBackgroundImagePath( const QString &path );
 
     /**
      * Updates the specified \a font in place, applying character formatting options which
@@ -409,6 +434,7 @@ class CORE_EXPORT QgsTextCharacterFormat
     BooleanValue mOverline = BooleanValue::NotSet;
 
     QBrush mBackgroundBrush;
+    QString mBackgroundPath;
 
 };
 
