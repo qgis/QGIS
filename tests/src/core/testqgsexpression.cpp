@@ -440,7 +440,7 @@ class TestQgsExpression: public QObject
     {
       QgsExpression exp( QString( "1+" ) );
       QCOMPARE( exp.hasParserError(), true );
-      QCOMPARE( exp.parserErrorString(), "\nInvalid expression. Unexpected end. You might not have finished the full expression" );
+      QCOMPARE( exp.parserErrorString(), "\nIncomplete expression. You might not have finished the full expression." );
     }
 
     void max_errors()
@@ -6011,7 +6011,6 @@ class TestQgsExpression: public QObject
         }
       }
     }
-
 
 };
 
