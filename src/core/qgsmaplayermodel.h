@@ -148,7 +148,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      */
     void setLayersChecked( const QList< QgsMapLayer * > &layers );
 
-    //! Returns if the items can be checked or not
+    //! Returns whether the items can be checked or not
     bool itemsCheckable() const { return mItemCheckable; }
 
     /**
