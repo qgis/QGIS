@@ -127,7 +127,7 @@ Sets which layers are checked in the model.
 
     bool itemsCheckable() const;
 %Docstring
-Returns if the items can be checked or not
+Returns whether the items can be checked or not
 %End
 
     QModelIndex indexFromLayer( QgsMapLayer *layer ) const;
