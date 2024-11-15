@@ -123,6 +123,8 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
 
         if title.strip() == "":
             title = None
+        # Passing None for axis titles to Plotly does not work in this case: Unlike in 2D charts, Plotly would use x, y, z as axis titles.
+        # If our users enter space, we still get invisible axes titles, resulting in the same behavoir as for the other algs.
         if xaxis_title == "":
             xaxis_title = xfieldname
         if yaxis_title == "":
