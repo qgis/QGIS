@@ -9,3 +9,7 @@ try:
     QgsMapThemeCollection.__signal_arguments__ = {'mapThemeChanged': ['theme: str'], 'mapThemeRenamed': ['name: str', 'newName: str']}
 except NameError:
     pass
+try:
+    QgsMapThemeCollection.MapThemeRecord.readXml = staticmethod(QgsMapThemeCollection.MapThemeRecord.readXml)
+except NameError:
+    pass
