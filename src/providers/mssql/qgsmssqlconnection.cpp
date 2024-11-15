@@ -425,7 +425,7 @@ QString QgsMssqlConnection::buildQueryForTables( bool allowTablesWithNoGeometry,
   {
     QStringList quotedSchemas;
     for ( const QString &sch : excludedSchemaList )
-      quotedSchemas.append( QgsMssqlProvider::quotedValue( sch ) );
+      quotedSchemas.append( QStringLiteral("QUOTENAME('%1')").arg(sch) );
     notSelectedSchemas = quotedSchemas.join( ',' );
     notSelectedSchemas.prepend( QStringLiteral( "( " ) );
     notSelectedSchemas.append( QStringLiteral( " )" ) );
@@ -436,7 +436,7 @@ QString QgsMssqlConnection::buildQueryForTables( bool allowTablesWithNoGeometry,
   {
     query += QLatin1String( "f_table_schema, f_table_name, f_geometry_column, srid, geometry_type, 0, coord_dimension FROM geometry_columns" );
     if ( !notSelectedSchemas.isEmpty() )
-      query += QStringLiteral( " WHERE f_table_schema NOT IN %1" ).arg( notSelectedSchemas );
+      query += QStringLiteral( " WHERE QUOTENAME(f_table_schema) NOT IN %1" ).arg( notSelectedSchemas );
   }
   else
   {
@@ -444,7 +444,7 @@ QString QgsMssqlConnection::buildQueryForTables( bool allowTablesWithNoGeometry,
                              "FROM sys.columns JOIN sys.types ON sys.columns.system_type_id = sys.types.system_type_id AND sys.columns.user_type_id = sys.types.user_type_id JOIN sys.objects ON sys.objects.object_id = sys.columns.object_id JOIN sys.schemas ON sys.objects.schema_id = sys.schemas.schema_id \n"
                              "WHERE (sys.types.name = 'geometry' OR sys.types.name = 'geography') AND (sys.objects.type = 'U' OR sys.objects.type = 'V')" );
     if ( !notSelectedSchemas.isEmpty() )
-      query += QStringLiteral( " AND (sys.schemas.name NOT IN %1)" ).arg( notSelectedSchemas );
+      query += QStringLiteral( " AND QUOTENAME(sys.schemas.name) NOT IN %1" ).arg( notSelectedSchemas );
   }
 
   if ( allowTablesWithNoGeometry )
@@ -454,7 +454,7 @@ QString QgsMssqlConnection::buildQueryForTables( bool allowTablesWithNoGeometry,
                              "FROM  sys.objects JOIN sys.schemas ON sys.objects.schema_id = sys.schemas.schema_id "
                              "WHERE NOT EXISTS (SELECT * FROM sys.columns sc1 JOIN sys.types ON sc1.system_type_id = sys.types.system_type_id WHERE (sys.types.name = 'geometry' OR sys.types.name = 'geography') AND sys.objects.object_id = sc1.object_id) AND (sys.objects.type = 'U' or sys.objects.type = 'V')" );
     if ( !notSelectedSchemas.isEmpty() )
-      query += QStringLiteral( " AND sys.schemas.name NOT IN %1" ).arg( notSelectedSchemas );
+      query += QStringLiteral( " AND QUOTENAME(sys.schemas.name) NOT IN %1" ).arg( notSelectedSchemas );
   }
 
   return query;
