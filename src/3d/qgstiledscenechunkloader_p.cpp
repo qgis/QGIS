@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include "qgscesiumutils.h"
 #include "qgscoordinatetransform.h"
+#include "qgsgeotransform.h"
 #include "qgsgltf3dutils.h"
 #include "qgsquantizedmeshtiles.h"
 #include "qgsraycastingutils_p.h"
@@ -63,7 +64,8 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
   const QgsCoordinateTransform &boundsTransform = factory.mBoundsTransform;
 
   const QgsChunkNodeId tileId = node->tileId();
-  const QFuture<void> future = QtConcurrent::run( [this, tileId, zValueScale, zValueOffset, boundsTransform]
+  const QgsVector3D chunkOrigin = node->box3D().center();
+  const QFuture<void> future = QtConcurrent::run( [this, tileId, zValueScale, zValueOffset, boundsTransform, chunkOrigin]
   {
     const QgsTiledSceneTile tile = mIndex.getTile( tileId.uniqueId );
 
@@ -92,7 +94,7 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
 
     QgsGltf3DUtils::EntityTransform entityTransform;
     entityTransform.tileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
-    entityTransform.sceneOriginTargetCrs = mFactory.mRenderContext.origin();
+    entityTransform.chunkOriginTargetCrs = chunkOrigin;
     entityTransform.ecefToTargetCrs = &mFactory.mBoundsTransform;
     entityTransform.zValueScale = zValueScale;
     entityTransform.zValueOffset = zValueOffset;
@@ -131,7 +133,13 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
     }
 
     if ( mEntity )
+    {
+      QgsGeoTransform *transform = new QgsGeoTransform;
+      transform->setGeoTranslation( chunkOrigin );
+      mEntity->addComponent( transform );
+
       mEntity->moveToThread( QgsApplication::instance()->thread() );
+    }
   } );
 
   // emit finished() as soon as the handler is populated with features

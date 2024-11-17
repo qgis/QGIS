@@ -25,6 +25,7 @@
 #include "qgspointcloudblockrequest.h"
 #include "qgsfeedback.h"
 #include "qgsaabb.h"
+#include "qgsgeotransform.h"
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QGeometryRenderer>
@@ -307,9 +308,8 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 
   // Transform: chunks are using coordinates relative to chunk origin, with X,Y,Z axes being the same
   // as map coordinates, so we need to rotate and translate entities to get them into world coordinates
-  Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
-  QVector3D nodeTranslation = ( out.positionsOrigin - context.origin() ).toVector3D();
-  tr->setTranslation( nodeTranslation );
+  QgsGeoTransform *tr = new QgsGeoTransform;
+  tr->setGeoTranslation( out.positionsOrigin );
 
   // Material
   QgsMaterial *mat = new QgsMaterial;

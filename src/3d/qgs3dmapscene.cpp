@@ -52,6 +52,7 @@
 #include "qgschunkedentity.h"
 #include "qgschunknode.h"
 #include "qgseventtracing.h"
+#include "qgsgeotransform.h"
 #include "qgsmaterial.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
@@ -148,6 +149,8 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::stopUpdatesChanged, this, &Qgs3DMapScene::onStopUpdatesChanged );
 
   connect( &map, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapScene::on3DAxisSettingsChanged );
+
+  connect( &map, &Qgs3DMapSettings::originChanged, this, &Qgs3DMapScene::onOriginChanged );
 
   connect( QgsApplication::sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
   {
@@ -491,6 +494,13 @@ void Qgs3DMapScene::createTerrainDeferred()
     connect( mTerrain, &QgsTerrainEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::terrainPendingJobsCountChanged );
     connect( mTerrain, &Qgs3DMapSceneEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity * entity )
     {
+      // let's make sure that any entity we're about to show has the right scene origin set
+      const QList<QgsGeoTransform *> transforms = entity->findChildren<QgsGeoTransform *>();
+      for ( QgsGeoTransform *transform : transforms )
+      {
+        transform->setOrigin( mMap.origin() );
+      }
+
       // enable clipping on the terrain if necessary
       handleClippingOnEntity( entity );
     } );
@@ -749,6 +759,13 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
 
 void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
 {
+  // let's make sure that any entity we're about to show has the right scene origin set
+  const QList<QgsGeoTransform *> transforms = newEntity->findChildren<QgsGeoTransform *>();
+  for ( QgsGeoTransform *transform : transforms )
+  {
+    transform->setOrigin( mMap.origin() );
+  }
+
   // set clip planes on the new entity if necessary
   handleClippingOnEntity( newEntity );
 
@@ -1180,6 +1197,17 @@ void Qgs3DMapScene::on3DAxisSettingsChanged()
                                &mMap );
     }
   }
+}
+
+void Qgs3DMapScene::onOriginChanged()
+{
+  const QList<QgsGeoTransform *> geoTransforms = findChildren<QgsGeoTransform *>();
+  for ( QgsGeoTransform *transform : geoTransforms )
+  {
+    transform->setOrigin( mMap.origin() );
+  }
+
+  mCameraController->setOrigin( mMap.origin() );
 }
 
 void Qgs3DMapScene::handleClippingOnEntity( QEntity *entity ) const

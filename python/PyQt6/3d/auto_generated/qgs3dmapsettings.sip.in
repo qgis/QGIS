@@ -1016,6 +1016,15 @@ Emitted when the Show debug panel checkbox changes value
 .. versionadded:: 3.42
 %End
 
+    void originChanged();
+%Docstring
+Emitted when the world's origin point has been shifted
+
+.. seealso:: :py:func:`setOrigin`
+
+.. versionadded:: 3.42
+%End
+
   private:
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
 };
