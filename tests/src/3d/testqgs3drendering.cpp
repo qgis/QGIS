@@ -1873,6 +1873,8 @@ void TestQgs3DRendering::testFilteredFlatTerrain()
   fullExtent.setXMinimum( fullExtent.xMinimum() + fullExtent.width() / 3 );
   map->setExtent( fullExtent );
 
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2000, 0, 0 );
+
   QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
 
   delete scene;

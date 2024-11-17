@@ -245,7 +245,7 @@ void TestQgsGltf3DUtils::testTransforms()
   delete entity1;
 
   QgsGltf3DUtils::EntityTransform transform2;
-  transform2.sceneOriginTargetCrs = QgsVector3D( -10, -20, 0 );
+  transform2.chunkOriginTargetCrs = QgsVector3D( -10, -20, 0 );
   Qt3DCore::QEntity *entity2 = QgsGltf3DUtils::gltfToEntity( gltfData, transform2, QString(), nullptr );
   extractTriangleCoordinates( entity2, v1, v2, v3 );
   QCOMPARE( v1, QVector3D( 10, 20, 0 ) );
@@ -258,7 +258,7 @@ void TestQgsGltf3DUtils::testTransforms()
                              0, 2, 0, 0,
                              0, 0, 2, 0,
                              0, 0, 0, 1 );
-  transform3.sceneOriginTargetCrs = QgsVector3D( -10, -20, 0 );
+  transform3.chunkOriginTargetCrs = QgsVector3D( -10, -20, 0 );
   Qt3DCore::QEntity *entity3 = QgsGltf3DUtils::gltfToEntity( gltfData, transform3, QString(), nullptr );
   extractTriangleCoordinates( entity3, v1, v2, v3 );
   QCOMPARE( v1, QVector3D( 10, 20, 0 ) );
