@@ -524,9 +524,9 @@ class GdalUtils:
             if r:
                 return r.groups()[0]
         elif 'layername' in uri:
-            regex = re.compile(r'(?<=layername=)[^:|&]+')
+            regex = re.compile('(layername=)([^|]*)')
             r = regex.search(uri)
-            return r.groups()[0]
+            return r.groups()[1]
 
         fields = uri.split('|')
         basePath = fields[0]
