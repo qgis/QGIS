@@ -92,8 +92,6 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   terrainElevationOffsetSpinBox->setClearValue( 0.0 );
   edlStrengthSpinBox->setClearValue( 1000 );
   edlDistanceSpinBox->setClearValue( 1 );
-  mDebugShadowMapSizeSpinBox->setClearValue( 0.1 );
-  mDebugDepthMapSizeSpinBox->setClearValue( 0.1 );
 
   cboTerrainLayer->setAllowEmptyLayer( true );
   cboTerrainLayer->setFilters( Qgis::LayerFilter::RasterLayer );
@@ -158,16 +156,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   spinGroundError->setValue( mMap->maxTerrainGroundError() );
   terrainElevationOffsetSpinBox->setValue( mMap->terrainElevationOffset() );
   chkShowLabels->setChecked( mMap->showLabels() );
-  chkShowTileInfo->setChecked( mMap->showTerrainTilesInfo() );
-  chkShowBoundingBoxes->setChecked( mMap->showTerrainBoundingBoxes() );
-  chkShowCameraViewCenter->setChecked( mMap->showCameraViewCenter() );
-  chkShowCameraRotationCenter->setChecked( mMap->showCameraRotationCenter() );
-  chkShowLightSourceOrigins->setChecked( mMap->showLightSourceOrigins() );
   mFpsCounterCheckBox->setChecked( mMap->isFpsCounterEnabled() );
-  chkStopUpdates->setChecked( mMap->stopUpdates() );
-
-  mDebugOverlayCheckBox->setChecked( mMap->isDebugOverlayEnabled() );
-  mDebugOverlayCheckBox->setVisible( true );
 
   groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
   widgetTerrainMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture );
@@ -231,25 +220,6 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   edlGroupBox->setChecked( map->eyeDomeLightingEnabled() );
   edlStrengthSpinBox->setValue( map->eyeDomeLightingStrength() );
   edlDistanceSpinBox->setValue( map->eyeDomeLightingDistance() );
-
-  mDebugShadowMapCornerComboBox->addItem( tr( "Top Left" ) );
-  mDebugShadowMapCornerComboBox->addItem( tr( "Top Right" ) );
-  mDebugShadowMapCornerComboBox->addItem( tr( "Bottom Left" ) );
-  mDebugShadowMapCornerComboBox->addItem( tr( "Bottom Right" ) );
-
-  mDebugDepthMapCornerComboBox->addItem( tr( "Top Left" ) );
-  mDebugDepthMapCornerComboBox->addItem( tr( "Top Right" ) );
-  mDebugDepthMapCornerComboBox->addItem( tr( "Bottom Left" ) );
-  mDebugDepthMapCornerComboBox->addItem( tr( "Bottom Right" ) );
-
-  mDebugShadowMapGroupBox->setChecked( map->debugShadowMapEnabled() );
-
-  mDebugShadowMapCornerComboBox->setCurrentIndex( static_cast<int>( map->debugShadowMapCorner() ) );
-  mDebugShadowMapSizeSpinBox->setValue( map->debugShadowMapSize() );
-
-  mDebugDepthMapGroupBox->setChecked( map->debugDepthMapEnabled() );
-  mDebugDepthMapCornerComboBox->setCurrentIndex( static_cast<int>( map->debugDepthMapCorner() ) );
-  mDebugDepthMapSizeSpinBox->setValue( map->debugDepthMapSize() );
 
   // Ambient occlusion
   mAmbientOcclusionSettingsWidget->setAmbientOcclusionSettings( map->ambientOcclusionSettings() );
@@ -373,15 +343,8 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setMaxTerrainGroundError( spinGroundError->value() );
   mMap->setTerrainElevationOffset( terrainElevationOffsetSpinBox->value() );
   mMap->setShowLabels( chkShowLabels->isChecked() );
-  mMap->setShowTerrainTilesInfo( chkShowTileInfo->isChecked() );
-  mMap->setShowTerrainBoundingBoxes( chkShowBoundingBoxes->isChecked() );
-  mMap->setShowCameraViewCenter( chkShowCameraViewCenter->isChecked() );
-  mMap->setShowCameraRotationCenter( chkShowCameraRotationCenter->isChecked() );
-  mMap->setShowLightSourceOrigins( chkShowLightSourceOrigins->isChecked() );
   mMap->setIsFpsCounterEnabled( mFpsCounterCheckBox->isChecked() );
-  mMap->setStopUpdates( chkStopUpdates->isChecked() );
   mMap->setTerrainShadingEnabled( groupTerrainShading->isChecked() );
-  mMap->setIsDebugOverlayEnabled( mDebugOverlayCheckBox->isChecked() );
 
   const std::unique_ptr< QgsAbstractMaterialSettings > terrainMaterial( widgetTerrainMaterial->settings() );
   if ( QgsPhongMaterialSettings *phongMaterial = dynamic_cast< QgsPhongMaterialSettings * >( terrainMaterial.get() ) )
@@ -405,11 +368,6 @@ void Qgs3DMapConfigWidget::apply()
   viewSyncMode.setFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D, mSync3DTo2DCheckbox->isChecked() );
   mMap->setViewSyncMode( viewSyncMode );
   mMap->setViewFrustumVisualizationEnabled( mVisualizeExtentCheckBox->isChecked() );
-
-  mMap->setDebugDepthMapSettings( mDebugDepthMapGroupBox->isChecked(), static_cast<Qt::Corner>( mDebugDepthMapCornerComboBox->currentIndex() ), mDebugDepthMapSizeSpinBox->value() );
-
-  // Do not display the shadow debug map if the shadow effect is not enabled.
-  mMap->setDebugShadowMapSettings( mDebugShadowMapGroupBox->isChecked() && groupShadowRendering->isChecked(), static_cast<Qt::Corner>( mDebugShadowMapCornerComboBox->currentIndex() ), mDebugShadowMapSizeSpinBox->value() );
 }
 
 void Qgs3DMapConfigWidget::onTerrainTypeChanged()

@@ -1,9 +1,9 @@
 /***************************************************************************
-  qgs3dnavigationwidget.h
+  qgs3ddebugwidget.h
   --------------------------------------
-  Date                 : June 2019
-  Copyright            : (C) 2019 by Ismail Sunni
-  Email                : imajimatika at gmail dot com
+  Date                 : November 2024
+  Copyright            : (C) 2024 by Matej Bagar
+  Email                : matej dot bagar at lutraconsulting dot co dot uk
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,24 +13,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGS3DNAVIGATIONWIDGET_H
-#define QGS3DNAVIGATIONWIDGET_H
+#ifndef QGS3DDEBUGWIDGET_H
+#define QGS3DDEBUGWIDGET_H
 
 class QStandardItemModel;
-
 class Qgs3DMapCanvas;
-class QwtCompass;
 
-#include <ui_3dnavigationwidget.h>
+#include <ui_3ddebugwidget.h>
+#include "qgs3dmapsettings.h"
 
-class Qgs3DNavigationWidget : public QWidget, private Ui::Q3DNavigationWidget
+class Qgs3DDebugWidget : public QWidget, Ui::Q3DDebugWidget
 {
     Q_OBJECT
   public:
-    Qgs3DNavigationWidget( Qgs3DMapCanvas *canvas, QWidget *parent = nullptr );
+    explicit Qgs3DDebugWidget( Qgs3DMapCanvas *canvas, QWidget *parent = nullptr );
+
+    void setMapSettings( Qgs3DMapSettings *mapSettings );
+
+  public slots:
+    void updateFromCamera() const;
 
   private:
+    Qgs3DMapSettings *mMap = nullptr;
     Qgs3DMapCanvas *m3DMapCanvas = nullptr;
 };
 
-#endif // QGS3DNAVIGATIONWIDGET_H
+#endif // QGS3DDEBUGWIDGET_H
