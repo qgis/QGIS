@@ -100,9 +100,12 @@ class Buffer(GdalAlgorithm):
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
         fields = source.fields()
-        source_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
-
-        geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
+        source_details = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing=True)
+        # QgsVectorFileWriter defaults to geometry column called geom when exporting virtual, memory and grass layer
+        if source_details.layer_name == 'INPUT' and 'INPUT.gpkg' in source_details.connection_string:
+            geometry = parameters[self.GEOMETRY] = 'geom'
+        else:
+            geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
         dissolve = self.parameterAsBoolean(parameters, self.DISSOLVE, context)
@@ -122,6 +125,7 @@ class Buffer(GdalAlgorithm):
         arguments = [
             output_details.connection_string,
             source_details.connection_string,
+            '-nlt PROMOTE_TO_MULTI',
             '-dialect',
             'sqlite',
             '-sql'
