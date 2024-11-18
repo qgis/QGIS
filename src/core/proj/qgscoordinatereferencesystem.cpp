@@ -1627,7 +1627,11 @@ void QgsCoordinateReferenceSystem::setProjString( const QString &proj4String )
   {
 #ifdef QGISDEBUG
     const int errNo = proj_context_errno( ctx );
+#if PROJ_VERSION_MAJOR>=8
+    QgsDebugError( QStringLiteral( "proj string rejected: %1" ).arg( proj_context_errno_string( ctx, errNo ) ) );
+#else
     QgsDebugError( QStringLiteral( "proj string rejected: %1" ).arg( proj_errno_string( errNo ) ) );
+#endif
 #endif
     d->mIsValid = false;
   }
