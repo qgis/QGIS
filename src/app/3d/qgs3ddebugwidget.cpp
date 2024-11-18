@@ -80,13 +80,13 @@ Qgs3DDebugWidget::Qgs3DDebugWidget( Qgs3DMapCanvas *canvas, QWidget *parent ) : 
 void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
 {
   mMap = mapSettings;
-  chkShowTileInfo->setChecked( mMap->showTerrainTilesInfo() );
-  chkShowBoundingBoxes->setChecked( mMap->showTerrainBoundingBoxes() );
-  chkShowCameraViewCenter->setChecked( mMap->showCameraViewCenter() );
-  chkShowCameraRotationCenter->setChecked( mMap->showCameraRotationCenter() );
-  chkShowLightSourceOrigins->setChecked( mMap->showLightSourceOrigins() );
-  chkStopUpdates->setChecked( mMap->stopUpdates() );
-  chkDebugOverlay->setChecked( mMap->isDebugOverlayEnabled() );
+  whileBlocking( chkShowTileInfo )->setChecked( mMap->showTerrainTilesInfo() );
+  whileBlocking( chkShowBoundingBoxes )->setChecked( mMap->showTerrainBoundingBoxes() );
+  whileBlocking( chkShowCameraViewCenter )->setChecked( mMap->showCameraViewCenter() );
+  whileBlocking( chkShowCameraRotationCenter )->setChecked( mMap->showCameraRotationCenter() );
+  whileBlocking( chkShowLightSourceOrigins )->setChecked( mMap->showLightSourceOrigins() );
+  whileBlocking( chkStopUpdates )->setChecked( mMap->stopUpdates() );
+  whileBlocking( chkDebugOverlay )->setChecked( mMap->isDebugOverlayEnabled() );
   connect( chkShowTileInfo, &QCheckBox::toggled, this, [ = ]( const bool enabled ) {mMap->setShowTerrainTilesInfo( enabled ); } );
   connect( chkShowBoundingBoxes, &QCheckBox::toggled, this, [ = ]( const bool enabled ) {mMap->setShowTerrainBoundingBoxes( enabled ); } );
   connect( chkShowCameraViewCenter, &QCheckBox::toggled, this, [ = ]( const bool enabled ) {mMap->setShowCameraViewCenter( enabled ); } );
@@ -95,9 +95,9 @@ void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
   connect( chkStopUpdates, &QCheckBox::toggled, this, [ = ]( const bool enabled ) {mMap->setStopUpdates( enabled ); } );
   connect( chkDebugOverlay, &QCheckBox::toggled, this, [ = ]( const bool enabled ) {mMap->setIsDebugOverlayEnabled( enabled ); } );
 
-  mDebugShadowMapGroupBox->setChecked( mMap->debugShadowMapEnabled() );
-  mDebugShadowMapCornerComboBox->setCurrentIndex( mMap->debugShadowMapCorner() );
-  mDebugShadowMapSizeSpinBox->setValue( mMap->debugShadowMapSize() );
+  whileBlocking( mDebugShadowMapGroupBox )->setChecked( mMap->debugShadowMapEnabled() );
+  whileBlocking( mDebugShadowMapCornerComboBox )->setCurrentIndex( mMap->debugShadowMapCorner() );
+  whileBlocking( mDebugShadowMapSizeSpinBox )->setValue( mMap->debugShadowMapSize() );
   // Do not display the shadow debug map if the shadow effect is not enabled.
   connect( mDebugShadowMapGroupBox, &QGroupBox::toggled, this, [ = ]( const bool enabled )
   {
@@ -107,14 +107,14 @@ void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
   {
     mMap->setDebugShadowMapSettings( mDebugShadowMapGroupBox->isChecked() && mMap->shadowSettings().renderShadows(), static_cast<Qt::Corner>( index ), mDebugShadowMapSizeSpinBox->value() );
   } );
-  connect( mDebugShadowMapSizeSpinBox, QOverload<double>::of( &QDoubleSpinBox::valueChanged ), this, [ = ]( const int value )
+  connect( mDebugShadowMapSizeSpinBox, QOverload<double>::of( &QDoubleSpinBox::valueChanged ), this, [ = ]( const double value )
   {
     mMap->setDebugShadowMapSettings( mDebugShadowMapGroupBox->isChecked() && mMap->shadowSettings().renderShadows(), static_cast<Qt::Corner>( mDebugShadowMapCornerComboBox->currentIndex() ), value );
   } );
 
-  mDebugDepthMapGroupBox->setChecked( mMap->debugDepthMapEnabled() );
-  mDebugDepthMapCornerComboBox->setCurrentIndex( mMap->debugDepthMapCorner() );
-  mDebugDepthMapSizeSpinBox->setValue( mMap->debugDepthMapSize() );
+  whileBlocking( mDebugDepthMapGroupBox )->setChecked( mMap->debugDepthMapEnabled() );
+  whileBlocking( mDebugDepthMapCornerComboBox )->setCurrentIndex( mMap->debugDepthMapCorner() );
+  whileBlocking( mDebugDepthMapSizeSpinBox )->setValue( mMap->debugDepthMapSize() );
   connect( mDebugDepthMapGroupBox, &QGroupBox::toggled, this, [ = ]( const bool enabled )
   {
     mMap->setDebugDepthMapSettings( enabled, static_cast<Qt::Corner>( mDebugDepthMapCornerComboBox->currentIndex() ), mDebugDepthMapSizeSpinBox->value() );
@@ -123,7 +123,7 @@ void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
   {
     mMap->setDebugDepthMapSettings( mDebugDepthMapGroupBox->isChecked(), static_cast<Qt::Corner>( index ), mDebugDepthMapSizeSpinBox->value() );
   } );
-  connect( mDebugShadowMapSizeSpinBox, QOverload<double>::of( &QDoubleSpinBox::valueChanged ), this, [ = ]( const int value )
+  connect( mDebugDepthMapSizeSpinBox, QOverload<double>::of( &QDoubleSpinBox::valueChanged ), this, [ = ]( const double value )
   {
     mMap->setDebugDepthMapSettings( mDebugDepthMapGroupBox->isChecked(), static_cast<Qt::Corner>( mDebugDepthMapCornerComboBox->currentIndex() ), value );
   } );
