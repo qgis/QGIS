@@ -2105,10 +2105,10 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                             value_comment_indented += f'\n\n  Available as ``{enum_mk_base}.{compat_name}`` in older QGIS releases.\n'
                         if CONTEXT.actual_class:
                             CONTEXT.output_python.append(
-                                f"{enum_mk_base}.{compat_name} = {CONTEXT.actual_class}.{enum_qualname}.{enum_member}\n")
+                                f"{enum_mk_base}.{compat_name} = {'.'.join(CONTEXT.classname)}.{enum_qualname}.{enum_member}\n")
                             if enum_old_name and compat_name != enum_member:
                                 CONTEXT.output_python.append(
-                                    f"{enum_mk_base}.{enum_old_name}.{compat_name} = {CONTEXT.actual_class}.{enum_qualname}.{enum_member}\n")
+                                    f"{enum_mk_base}.{enum_old_name}.{compat_name} = {'.'.join(CONTEXT.classname)}.{enum_qualname}.{enum_member}\n")
                             CONTEXT.output_python.append(
                                 f"{enum_mk_base}.{compat_name}.is_monkey_patched = True\n")
                             CONTEXT.output_python.append(
@@ -2130,7 +2130,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
                         if monkeypatch:
                             CONTEXT.output_python.append(
-                                f"{CONTEXT.actual_class}.{compat_name} = {CONTEXT.actual_class}.{enum_qualname}.{enum_member}\n")
+                                f"{CONTEXT.actual_class}.{compat_name} = {'.'.join(CONTEXT.classname)}.{enum_qualname}.{enum_member}\n")
                             CONTEXT.output_python.append(
                                 f"{CONTEXT.actual_class}.{compat_name}.is_monkey_patched = True\n")
                         if CONTEXT.actual_class:
@@ -2163,7 +2163,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 enum_member_doc_string = "\n".join(enum_members_doc)
                 if CONTEXT.actual_class:
                     CONTEXT.output_python.append(
-                        f'{CONTEXT.actual_class}.{enum_qualname}.__doc__ = """{CONTEXT.comment}\n\n{enum_member_doc_string}\n\n"""\n# --\n')
+                        f'{".".join(CONTEXT.classname)}.{enum_qualname}.__doc__ = """{CONTEXT.comment}\n\n{enum_member_doc_string}\n\n"""\n# --\n')
                 else:
                     CONTEXT.output_python.append(
                         f'{enum_qualname}.__doc__ = """{CONTEXT.comment}\n\n{enum_member_doc_string}\n\n"""\n# --\n')
