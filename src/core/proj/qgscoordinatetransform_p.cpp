@@ -332,7 +332,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
       {
         // huh?
         const int errNo = proj_context_errno( context );
-        if ( errNo && errNo != -61 )
+        if ( errNo )
         {
 #if PROJ_VERSION_MAJOR>=8
           nonAvailableError = QString( proj_context_errno_string( context, errNo ) );
@@ -342,6 +342,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
         }
         else
         {
+          // in theory should never be hit!
           nonAvailableError = QObject::tr( "No coordinate operations are available between these two reference systems" );
         }
       }
@@ -470,7 +471,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   {
     const int errNo = proj_context_errno( context );
     const QStringList projErrors = errorLogger.errors();
-    if ( errNo && errNo != -61 )
+    if ( errNo )
     {
 #if PROJ_VERSION_MAJOR>=8
       nonAvailableError = QString( proj_context_errno_string( context, errNo ) );
