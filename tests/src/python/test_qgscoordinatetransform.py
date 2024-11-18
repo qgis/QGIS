@@ -11,11 +11,14 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 
 
 from qgis.core import (
+    Qgis,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
     QgsCoordinateTransformContext,
     QgsProject,
     QgsRectangle,
+    QgsPointXY,
+    QgsCsException
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -207,6 +210,22 @@ class TestQgsCoordinateTransform(QgisTestCase):
             QgsCoordinateTransformContext()
         )
         self.assertTrue(transform.hasVerticalComponent())
+
+    def test_cs_exception(self):
+        ct = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4326'),
+                                    QgsCoordinateReferenceSystem('EPSG:3857'), QgsProject.instance())
+        point = QgsPointXY(-7603859, -7324441)
+        with self.assertRaises(QgsCsException) as e:
+            ct.transform(point)
+        self.assertEqual(str(e.exception), 'Forward transform (EPSG:4326 to EPSG:3857) of (-7603859.000000, -7324441.000000) Error: Invalid coordinate')
+
+        # reverse transform
+        ct = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:3857'),
+                                    QgsCoordinateReferenceSystem('EPSG:4326'), QgsProject.instance())
+        point = QgsPointXY(-7603859, -7324441)
+        with self.assertRaises(QgsCsException) as e:
+            ct.transform(point, Qgis.TransformDirection.Reverse)
+        self.assertEqual(str(e.exception), 'Inverse transform (EPSG:4326 to EPSG:3857) of (-7603859.000000, -7324441.000000) Error: Invalid coordinate')
 
 
 if __name__ == '__main__':
