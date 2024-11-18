@@ -95,7 +95,7 @@ class CORE_EXPORT QgsSnappingConfig
     /**
      * Convenient method to return an icon corresponding to the enum type
      * Qgis::SnappingTypes.
-     * \deprecated QGIS 3.26. Use Qgis::snappingTypeToString instead.
+     * \deprecated QGIS 3.26. Use Qgis::snappingTypeToIcon instead.
      * \since QGIS 3.20
      */
     Q_DECL_DEPRECATED static QIcon snappingTypeFlagToIcon( Qgis::SnappingType type ) SIP_DEPRECATED {return snappingTypeToIcon( type );}
