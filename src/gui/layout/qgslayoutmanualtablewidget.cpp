@@ -170,6 +170,99 @@ bool QgsLayoutManualTableWidget::setNewItem( QgsLayoutItem *item )
   return true;
 }
 
+QgsTableEditorDialog *QgsLayoutManualTableWidget::openTableDesigner( QgsLayoutFrame *frame, QWidget *parent )
+{
+  QgsLayoutItemManualTable *table = frame ? qobject_cast<QgsLayoutItemManualTable *> ( frame->multiFrame() ) : nullptr;
+  if ( !table )
+  {
+    return nullptr;
+  }
+  QgsTableEditorDialog *editorDialog = new QgsTableEditorDialog( parent );
+  if ( QgsLayout *layout = table->layout() )
+  {
+    editorDialog->setLayer( layout->reportContext().layer() );
+  }
+  editorDialog->registerExpressionContextGenerator( table );
+  connect( frame, &QgsLayoutFrame::destroyed, editorDialog, &QMainWindow::close );
+  auto updateName = [editorDialog, frame] {editorDialog->setWindowTitle( QString( "%1 - %2 " ).arg( editorDialog->tr( "Table Designer" ) ).arg( frame->displayName() ) );};
+  connect( frame, &QgsLayoutFrame::changed, editorDialog, updateName );
+  updateName();
+
+  if ( parent )
+    connect( parent, &QWidget::destroyed, editorDialog, &QMainWindow::close );
+
+  editorDialog->setIncludeTableHeader( table->includeTableHeader() );
+  editorDialog->setTableContents( table->tableContents() );
+
+  int row = 0;
+  const QList< double > rowHeights = table->rowHeights();
+  for ( const double height : rowHeights )
+  {
+    editorDialog->setTableRowHeight( row, height );
+    row++;
+  }
+  int col = 0;
+  const QList< double > columnWidths = table->columnWidths();
+  QVariantList headers;
+  headers.reserve( columnWidths.size() );
+  for ( const double width : columnWidths )
+  {
+    editorDialog->setTableColumnWidth( col, width );
+    headers << ( col < table->headers().count() ? table->headers().value( col ).heading() : QVariant() );
+    col++;
+  }
+  editorDialog->setTableHeaders( headers );
+
+  connect( editorDialog, &QgsTableEditorDialog::tableChanged, table, [ = ]
+  {
+    table->beginCommand( tr( "Change Table Contents" ) );
+    table->setTableContents( editorDialog->tableContents() );
+
+    const QVariantList headerText = editorDialog->tableHeaders();
+    if ( editorDialog->includeTableHeader() )
+    {
+      QgsLayoutTableColumns headers;
+      for ( const QVariant &h : headerText )
+      {
+        headers << QgsLayoutTableColumn( h.toString() );
+      }
+      table->setHeaders( headers );
+    }
+
+    const int rowCount = table->tableContents().size();
+    QList< double > rowHeights;
+    rowHeights.reserve( rowCount );
+    for ( int row = 0; row < rowCount; ++row )
+    {
+      rowHeights << editorDialog->tableRowHeight( row );
+    }
+    table->setRowHeights( rowHeights );
+
+    if ( !table->tableContents().empty() )
+    {
+      const int columnCount = table->tableContents().at( 0 ).size();
+      QList< double > columnWidths;
+      columnWidths.reserve( columnCount );
+      for ( int col = 0; col < columnCount; ++col )
+      {
+        columnWidths << editorDialog->tableColumnWidth( col );
+      }
+      table->setColumnWidths( columnWidths );
+    }
+
+    table->endCommand();
+  } );
+
+  connect( editorDialog, &QgsTableEditorDialog::includeHeaderChanged, table, [ = ]( bool included )
+  {
+    table->beginCommand( tr( "Change Table Header" ) );
+    table->setIncludeTableHeader( included );
+    table->endCommand();
+  } );
+  editorDialog->show();
+  return editorDialog;
+}
+
 void QgsLayoutManualTableWidget::setTableContents()
 {
   if ( !mTable )
@@ -187,89 +280,7 @@ void QgsLayoutManualTableWidget::setTableContents()
   }
   else
   {
-    mEditorDialog = new QgsTableEditorDialog( this );
-    if ( QgsLayout *layout = mTable->layout() )
-    {
-      mEditorDialog->setLayer( layout->reportContext().layer() );
-    }
-    mEditorDialog->registerExpressionContextGenerator( mTable );
-    connect( this, &QWidget::destroyed, mEditorDialog, &QMainWindow::close );
-
-    mEditorDialog->setIncludeTableHeader( mTable->includeTableHeader() );
-    mEditorDialog->setTableContents( mTable->tableContents() );
-
-    int row = 0;
-    const QList< double > rowHeights = mTable->rowHeights();
-    for ( const double height : rowHeights )
-    {
-      mEditorDialog->setTableRowHeight( row, height );
-      row++;
-    }
-    int col = 0;
-    const QList< double > columnWidths = mTable->columnWidths();
-    QVariantList headers;
-    headers.reserve( columnWidths.size() );
-    for ( const double width : columnWidths )
-    {
-      mEditorDialog->setTableColumnWidth( col, width );
-      headers << ( col < mTable->headers().count() ? mTable->headers().value( col ).heading() : QVariant() );
-      col++;
-    }
-    mEditorDialog->setTableHeaders( headers );
-
-    connect( mEditorDialog, &QgsTableEditorDialog::tableChanged, this, [ = ]
-    {
-      if ( mTable )
-      {
-        mTable->beginCommand( tr( "Change Table Contents" ) );
-        mTable->setTableContents( mEditorDialog->tableContents() );
-
-        const QVariantList headerText = mEditorDialog->tableHeaders();
-        if ( mEditorDialog->includeTableHeader() )
-        {
-          QgsLayoutTableColumns headers;
-          for ( const QVariant &h : headerText )
-          {
-            headers << QgsLayoutTableColumn( h.toString() );
-          }
-          mTable->setHeaders( headers );
-        }
-
-        const int rowCount = mTable->tableContents().size();
-        QList< double > rowHeights;
-        rowHeights.reserve( rowCount );
-        for ( int row = 0; row < rowCount; ++row )
-        {
-          rowHeights << mEditorDialog->tableRowHeight( row );
-        }
-        mTable->setRowHeights( rowHeights );
-
-        if ( !mTable->tableContents().empty() )
-        {
-          const int columnCount = mTable->tableContents().at( 0 ).size();
-          QList< double > columnWidths;
-          columnWidths.reserve( columnCount );
-          for ( int col = 0; col < columnCount; ++col )
-          {
-            columnWidths << mEditorDialog->tableColumnWidth( col );
-          }
-          mTable->setColumnWidths( columnWidths );
-        }
-
-        mTable->endCommand();
-      }
-    } );
-
-    connect( mEditorDialog, &QgsTableEditorDialog::includeHeaderChanged, this, [ = ]( bool included )
-    {
-      if ( mTable )
-      {
-        mTable->beginCommand( tr( "Change Table Header" ) );
-        mTable->setIncludeTableHeader( included );
-        mTable->endCommand();
-      }
-    } );
-    mEditorDialog->show();
+    mEditorDialog = openTableDesigner( mFrame, this );
   }
 }
 
