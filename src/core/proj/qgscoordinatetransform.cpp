@@ -817,6 +817,9 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     }
   }
 
+  // something which won't clash with Proj's real error codes!
+  constexpr int PROJ_RESULT_FALLBACK_OPERATION_FAILED = -481516;
+
   mFallbackOperationOccurred = false;
   if ( actualRes != 0
        && ( d->mAvailableOpCount > 1 || d->mAvailableOpCount == -1 ) // only use fallbacks if more than one operation is possible -- otherwise we've already tried it and it failed
@@ -845,7 +848,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
         // hmm - something very odd here. We can't trust proj_errno( transform ), as that's giving us incorrect error numbers
         // (such as "failed to load datum shift file", which is definitely incorrect for a default proj created operation!)
         // so we resort to testing values ourselves...
-        projResult = std::isinf( xprev[0] ) || std::isinf( yprev[0] ) || std::isinf( zprev[0] ) ? 1 : 0;
+        projResult = std::isinf( xprev[0] ) || std::isinf( yprev[0] ) || std::isinf( zprev[0] ) ? PROJ_RESULT_FALLBACK_OPERATION_FAILED : 0;
       }
 
       if ( projResult == 0 )
@@ -890,8 +893,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
                         .arg( dir,
                               QString( delim ),
                               points,
-                              projResult < 0 ? QString::fromUtf8( proj_errno_string( projResult ) ) : QObject::tr( "Fallback transform failed" ) );
-
+                              projResult != PROJ_RESULT_FALLBACK_OPERATION_FAILED ? QString::fromUtf8( proj_errno_string( projResult ) ) : QObject::tr( "Fallback transform failed" ) );
 
     // don't flood console with thousands of duplicate transform error messages
     if ( msg != mLastError )
