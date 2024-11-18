@@ -2241,9 +2241,9 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
     # TODO needs fixing!!
     # original perl regex was:
-    #       ^(?<staticconst> *(?<static>static )?const \w+(?:<(?:[\w<>, ]|::)+>)? \w+)(?: = [^()]+?(\((?:[^()]++|(?3))*\))?[^()]*?)?(?<endingchar>[|;]) *(\/\/.*?)?$
+    #       ^(?<staticconst> *(?<static>static )?const (\w+::)*\w+(?:<(?:[\w<>, ]|::)+>)? \w+)(?: = [^()]+?(\((?:[^()]++|(?3))*\))?[^()]*?)?(?<endingchar>[|;]) *(\/\/.*?)?$
     match = re.search(
-        r'^(?P<staticconst> *(?P<static>static )?const \w+(?:<(?:[\w<>, ]|::)+>)? \w+)(?: = [^()]+?(\((?:[^()]|\([^()]*\))*\))?[^()]*?)?(?P<endingchar>[|;]) *(//.*)?$',
+        r'^(?P<staticconst> *(?P<static>static )?const (\w+::)*\w+(?:<(?:[\w<>, ]|::)+>)? \w+)(?: = [^()]+?(\((?:[^()]|\([^()]*\))*\))?[^()]*?)?(?P<endingchar>[|;]) *(//.*)?$',
         CONTEXT.current_line
     )
     if match:
