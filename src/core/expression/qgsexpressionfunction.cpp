@@ -7951,7 +7951,8 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     bool testResult { false };
     // For return measures:
     QVector<double> overlapValues;
-    for ( auto it = intersection.const_parts_begin(); ! testResult && it != intersection.const_parts_end(); ++it )
+    const QgsGeometry merged { intersection.mergeLines() };
+    for ( auto it = merged.const_parts_begin(); ! testResult && it != merged.const_parts_end(); ++it )
     {
       const QgsCurve *geom = qgsgeometry_cast< const QgsCurve * >( *it );
       // Check min overlap for intersection (if set)
@@ -8059,7 +8060,68 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 
       if ( isIntersectsFunc && ( requireMeasures || overlapOrRadiusFilter ) )
       {
-        const QgsGeometry intersection { geometry.intersection( feat2.geometry() ) };
+
+        QgsGeometry intersection { geometry.intersection( feat2.geometry() ) };
+
+        // Pre-process collections: if the tested geometry is a polygon we take the polygons from the collection
+        if ( intersection.wkbType() == Qgis::WkbType::GeometryCollection )
+        {
+          const QVector<QgsGeometry> geometries { intersection.asGeometryCollection() };
+          intersection = QgsGeometry();
+          QgsMultiPolygonXY poly;
+          QgsMultiPolylineXY line;
+          QgsMultiPointXY point;
+          for ( const auto &geom : std::as_const( geometries ) )
+          {
+            switch ( geom.type() )
+            {
+              case Qgis::GeometryType::Polygon:
+              {
+                poly.append( geom.asPolygon() );
+                break;
+              }
+              case Qgis::GeometryType::Line:
+              {
+                line.append( geom.asPolyline() );
+                break;
+              }
+              case Qgis::GeometryType::Point:
+              {
+                point.append( geom.asPoint() );
+                break;
+              }
+              case Qgis::GeometryType::Unknown:
+              case Qgis::GeometryType::Null:
+              {
+                break;
+              }
+            }
+          }
+
+          switch ( geometry.type() )
+          {
+            case Qgis::GeometryType::Polygon:
+            {
+              intersection = QgsGeometry::fromMultiPolygonXY( poly );
+              break;
+            }
+            case Qgis::GeometryType::Line:
+            {
+              intersection = QgsGeometry::fromMultiPolylineXY( line );
+              break;
+            }
+            case Qgis::GeometryType::Point:
+            {
+              intersection = QgsGeometry::fromMultiPointXY( point );
+              break;
+            }
+            case Qgis::GeometryType::Unknown:
+            case Qgis::GeometryType::Null:
+            {
+              break;
+            }
+          }
+        }
 
         // Depending on the intersection geometry type and on the geometry type of
         // the tested geometry we can run different tests and collect different measures
