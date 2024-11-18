@@ -66,7 +66,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   const QgsSettings setting;
 
   QToolBar *toolBar = new QToolBar( this );
-  toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
+  toolBar->setIconSize( QgisApp::instance()->iconSize( isDocked ) );
 
   QAction *actionCameraControl = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionPan.svg" ) ),
                                  tr( "Camera Control" ), this, &Qgs3DMapCanvasWidget::cameraControl );
@@ -308,6 +308,19 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
 
   onTotalPendingJobsCountChanged();
 
+  QAction *toggleDebugPanel = toolBar->addAction(
+                                QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/general.svg" ) ),
+                                tr( "Toggle On-Screen Debug Information" ) );
+
+  toggleDebugPanel->setCheckable( true );
+  toggleDebugPanel->setChecked(
+    setting.value( QStringLiteral( "/3D/debugWidget/visibility" ), false, QgsSettings::Gui ).toBool()
+  );
+  toggleDebugWidget(
+    setting.value( QStringLiteral( "/3D/debugWidget/visibility" ), false, QgsSettings::Gui ).toBool()
+  );
+  connect( toggleDebugPanel, &QAction::toggled, this, &Qgs3DMapCanvasWidget::toggleDebugWidget );
+
   mDockableWidgetHelper = new QgsDockableWidgetHelper( isDocked, mCanvasName, this, QgisApp::instance() );
   if ( QDialog *dialog = mDockableWidgetHelper->dialog() )
   {
@@ -321,19 +334,10 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   {
     QgisApp::instance()->close3DMapView( canvasName() );
   } );
-
-  QAction *toggleDebugPanel = toolBar->addAction(
-                                QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/general.svg" ) ),
-                                tr( "Toggle On-Screen Debug Information" ) );
-
-  toggleDebugPanel->setCheckable( true );
-  toggleDebugPanel->setChecked(
-    setting.value( QStringLiteral( "/3D/debugWidget/visibility" ), false, QgsSettings::Gui ).toBool()
-  );
-  toggleDebugWidget(
-    setting.value( QStringLiteral( "/3D/debugWidget/visibility" ), false, QgsSettings::Gui ).toBool()
-  );
-  connect( toggleDebugPanel, &QAction::toggled, this, &Qgs3DMapCanvasWidget::toggleDebugWidget );
+  connect( dockAction, &QAction::toggled, this, [ = ]( const bool isSmallSize )
+  {
+    toolBar->setIconSize( QgisApp::instance()->iconSize( isSmallSize ) );
+  } );
 }
 
 Qgs3DMapCanvasWidget::~Qgs3DMapCanvasWidget()

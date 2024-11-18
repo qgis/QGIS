@@ -57,21 +57,6 @@ Qgs3DDebugWidget::Qgs3DDebugWidget( Qgs3DMapCanvas *canvas, QWidget *parent ) : 
   mLookingX->setRange( std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max() );
   mLookingY->setRange( std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max() );
   mLookingZ->setRange( std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max() );
-
-  // hide camera info on first render
-  for ( QWidget *childWidget : mCameraInfoGroupBox->findChildren<QWidget *>() )
-  {
-    childWidget->setVisible( false );
-  }
-
-  // hide or show camera info on toggle
-  connect( mCameraInfoGroupBox, &QGroupBox::toggled, this, [ = ]( const bool enabled )
-  {
-    for ( QWidget *childWidget : mCameraInfoGroupBox->findChildren<QWidget *>() )
-    {
-      childWidget->setVisible( enabled );
-    }
-  } );
 }
 
 /**

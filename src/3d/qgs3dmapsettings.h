@@ -995,7 +995,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     double mDebugShadowMapSize = 0.2;
 
     bool mDebugDepthMapEnabled = false;
-    Qt::Corner mDebugDepthMapCorner = Qt::Corner::TopRightCorner;
+    Qt::Corner mDebugDepthMapCorner = Qt::Corner::BottomLeftCorner;
     double mDebugDepthMapSize = 0.2;
 
     bool mTerrainRenderingEnabled = true;

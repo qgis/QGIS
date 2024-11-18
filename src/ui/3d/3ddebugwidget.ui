@@ -44,9 +44,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-295</y>
         <width>250</width>
-        <height>792</height>
+        <height>790</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -214,7 +214,7 @@
           <string>Show camera info</string>
          </property>
          <property name="checkable">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="checked">
           <bool>false</bool>
