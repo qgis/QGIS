@@ -577,7 +577,7 @@ double QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRend
   {
     case Qgis::TextOrientation::Horizontal:
     {
-      // NOT SUPPORTED BY THIS METHOD ANYMORE -- buffer drawing is handled in drawTextInternalHorizontal now
+      // NOT SUPPORTED BY THIS METHOD ANYMORE -- buffer drawing is handled in drawTextInternalHorizontal since QGIS 3.42
       break;
     }
 
