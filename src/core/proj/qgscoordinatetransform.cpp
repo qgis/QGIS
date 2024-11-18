@@ -878,17 +878,17 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     //something bad happened....
     QString points;
 
+    const QChar delim = numPoints > 1 ? '\n' : ' ';
     for ( int i = 0; i < numPoints; ++i )
     {
-      points += QStringLiteral( "(%1, %2)\n" ).arg( xprev[i], 0, 'f' ).arg( yprev[i], 0, 'f' );
+      points += QStringLiteral( "(%1, %2)" ).arg( xprev[i], 0, 'f' ).arg( yprev[i], 0, 'f' ) + delim;
     }
 
-    const QString dir = ( direction == Qgis::TransformDirection::Forward ) ? QObject::tr( "forward transform" ) : QObject::tr( "inverse transform" );
+    const QString dir = ( direction == Qgis::TransformDirection::Forward ) ? QObject::tr( "Forward transform" ) : QObject::tr( "Inverse transform" );
 
-    const QString msg = QObject::tr( "%1 of\n"
-                                     "%2"
-                                     "Error: %3" )
+    const QString msg = QObject::tr( "%1 of%2%3Error: %4" )
                         .arg( dir,
+                              QString( delim ),
                               points,
                               projResult < 0 ? QString::fromUtf8( proj_errno_string( projResult ) ) : QObject::tr( "Fallback transform failed" ) );
 
