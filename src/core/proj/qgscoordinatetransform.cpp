@@ -892,7 +892,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
     for ( int i = 0; i < numPoints; ++i )
     {
-      points += QStringLiteral( "(%1, %2)\n" ).arg( x[i], 0, 'f' ).arg( y[i], 0, 'f' );
+      points += QStringLiteral( "(%1, %2)\n" ).arg( xprev[i], 0, 'f' ).arg( yprev[i], 0, 'f' );
     }
 
     const QString dir = ( direction == Qgis::TransformDirection::Forward ) ? QObject::tr( "forward transform" ) : QObject::tr( "inverse transform" );
