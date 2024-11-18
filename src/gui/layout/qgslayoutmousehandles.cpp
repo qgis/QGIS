@@ -18,13 +18,17 @@
 #include "qgslayoutmousehandles.h"
 #include "moc_qgslayoutmousehandles.cpp"
 #include "qgis.h"
+#include "qgsgui.h"
 #include "qgslayout.h"
 #include "qgslayoutitem.h"
 #include "qgslayoututils.h"
 #include "qgslayoutview.h"
 #include "qgslayoutviewtoolselect.h"
+#include "qgslayoutitemguiregistry.h"
 #include "qgslayoutsnapper.h"
 #include "qgslayoutitemgroup.h"
+#include "qgslayoutmultiframe.h"
+#include "qgslayoutframe.h"
 #include "qgslayoutundostack.h"
 #include "qgslayoutrendercontext.h"
 #include <QGraphicsView>
@@ -265,5 +269,29 @@ void QgsLayoutMouseHandles::showStatusMessage( const QString &message )
   mView->pushStatusMessage( message );
 }
 
+
+void QgsLayoutMouseHandles::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
+{
+  QList<QGraphicsItem *> items = selectedSceneItems();
+  if ( items.isEmpty() )
+    return;
+
+  QgsLayoutItem *item = dynamic_cast< QgsLayoutItem * >( items.first() );
+  if ( item == nullptr )
+    return;
+
+  // If item is a frame, use the multiFrame type
+  int itemtype = item->type();
+  if ( QgsLayoutFrame *frame = dynamic_cast< QgsLayoutFrame * >( item ) )
+    if ( QgsLayoutMultiFrame *multiFrame = frame->multiFrame() )
+      itemtype = multiFrame->type();
+
+  int metadataId = QgsGui::layoutItemGuiRegistry()->metadataIdForItemType( itemtype );
+  if ( metadataId == -1 )
+  {
+    return;
+  }
+  QgsGui::layoutItemGuiRegistry()->itemMetadata( metadataId )->handleDoubleClick( item, mouseActionForScenePos( event->scenePos() ) );
+}
 
 ///@endcond PRIVATE
