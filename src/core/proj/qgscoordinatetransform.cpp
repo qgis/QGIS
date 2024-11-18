@@ -901,11 +901,18 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
     const QString dir = ( direction == Qgis::TransformDirection::Forward ) ? QObject::tr( "Forward transform" ) : QObject::tr( "Inverse transform" );
 
+#if PROJ_VERSION_MAJOR>=8
+    PJ_CONTEXT *projContext = QgsProjContext::get();
+    const QString projError = projResult != PROJ_RESULT_FALLBACK_OPERATION_FAILED ? QString::fromUtf8( proj_context_errno_string( projContext, projResult ) ) : QObject::tr( "Fallback transform failed" );
+#else
+    const QString projError = projResult != PROJ_RESULT_FALLBACK_OPERATION_FAILED ? QString::fromUtf8( proj_errno_string( projResult ) ) : QObject::tr( "Fallback transform failed" );
+#endif
+
     const QString msg = QObject::tr( "%1 of%2%3Error: %4" )
                         .arg( dir,
                               QString( delim ),
                               points,
-                              projResult != PROJ_RESULT_FALLBACK_OPERATION_FAILED ? QString::fromUtf8( proj_errno_string( projResult ) ) : QObject::tr( "Fallback transform failed" ) );
+                              projError );
 
     // don't flood console with thousands of duplicate transform error messages
     if ( msg != mLastError )
