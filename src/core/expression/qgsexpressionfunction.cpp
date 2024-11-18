@@ -7746,6 +7746,12 @@ typedef bool ( QgsGeometry::*RelationFunction )( const QgsGeometry &geometry ) c
 static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const RelationFunction &relationFunction, bool invert = false, double bboxGrow = 0, bool isNearestFunc = false, bool isIntersectsFunc = false )
 {
 
+  if ( ! context )
+  {
+    parent->setEvalErrorString( QObject::tr( "This function was called without an expression context." ) );
+    return QVariant();
+  }
+
   const QVariant sourceLayerRef = context->variable( QStringLiteral( "layer" ) ); //used to detect if sourceLayer and targetLayer are the same
   // TODO this function is NOT thread safe
   Q_NOWARN_DEPRECATED_PUSH
