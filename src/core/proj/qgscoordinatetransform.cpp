@@ -896,8 +896,10 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     const QString projError = projResult != PROJ_RESULT_FALLBACK_OPERATION_FAILED ? QString::fromUtf8( proj_errno_string( projResult ) ) : QObject::tr( "Fallback transform failed" );
 #endif
 
-    const QString msg = QObject::tr( "%1 of%2%3Error: %4" )
+    const QString msg = QObject::tr( "%1 (%2 to %3) of%4%5Error: %6" )
                         .arg( dir,
+                              ( direction == Qgis::TransformDirection::Forward ) ? d->mSourceCRS.authid() : d->mDestCRS.authid(),
+                              ( direction == Qgis::TransformDirection::Forward ) ? d->mDestCRS.authid() : d->mSourceCRS.authid(),
                               QString( delim ),
                               points,
                               projError );
