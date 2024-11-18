@@ -2105,15 +2105,16 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                         if part_idx < len(value_comment_parts) - 1:
                             value_comment_indented += '\n'
 
+                    complete_class_path = '.'.join(CONTEXT.classname)
                     if monkeypatch and enum_mk_base:
                         if compat_name != enum_member:
                             value_comment_indented += f'\n\n  Available as ``{enum_mk_base}.{compat_name}`` in older QGIS releases.\n'
                         if CONTEXT.actual_class:
                             CONTEXT.output_python.append(
-                                f"{enum_mk_base}.{compat_name} = {'.'.join(CONTEXT.classname)}.{enum_qualname}.{enum_member}\n")
+                                f"{enum_mk_base}.{compat_name} = {complete_class_path}.{enum_qualname}.{enum_member}\n")
                             if enum_old_name and compat_name != enum_member:
                                 CONTEXT.output_python.append(
-                                    f"{enum_mk_base}.{enum_old_name}.{compat_name} = {'.'.join(CONTEXT.classname)}.{enum_qualname}.{enum_member}\n")
+                                    f"{enum_mk_base}.{enum_old_name}.{compat_name} = {complete_class_path}.{enum_qualname}.{enum_member}\n")
                             CONTEXT.output_python.append(
                                 f"{enum_mk_base}.{compat_name}.is_monkey_patched = True\n")
                             CONTEXT.output_python.append(
@@ -2135,11 +2136,10 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
                         if monkeypatch:
                             CONTEXT.output_python.append(
-                                f"{CONTEXT.actual_class}.{compat_name} = {'.'.join(CONTEXT.classname)}.{enum_qualname}.{enum_member}\n")
+                                f"{complete_class_path}.{compat_name} = {complete_class_path}.{enum_qualname}.{enum_member}\n")
                             CONTEXT.output_python.append(
-                                f"{CONTEXT.actual_class}.{compat_name}.is_monkey_patched = True\n")
+                                f"{complete_class_path}.{compat_name}.is_monkey_patched = True\n")
                         if CONTEXT.actual_class:
-                            complete_class_path = '.'.join(CONTEXT.classname)
                             CONTEXT.output_python.append(
                                 f"{complete_class_path}.{enum_qualname}.{compat_name}.__doc__ = \"{value_comment}\"\n")
                             enum_members_doc.append(
