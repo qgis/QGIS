@@ -63,6 +63,9 @@ class TestQgsOverlayExpression : public QObject
 
     void testOverlayMeasure();
     void testOverlayMeasure_data();
+
+    void testOverlayIntersectsDetails();
+
 };
 
 
@@ -391,6 +394,64 @@ void TestQgsOverlayExpression::testOverlayMeasure_data()
   expectedPoly.insert( QStringLiteral( "radius" ), 12.576424447201404 );
   expectedPoly.insert( QStringLiteral( "result" ), 1002 );
   QTest::newRow( "intersects line expression no match" ) << "overlay_intersects('polygons2', expression:=fid, return_details:=true, min_inscribed_circle_radius:=3, sort_by_intersection_size:='desc')" << "Polygon ((2604689.01899999985471368 1231313.05799999996088445, 2604695.41300000017508864 1231337.88999999989755452, 2604704.85499999998137355 1231335.10299999988637865, 2604713.89399999985471368 1231333.42900000000372529, 2604719.80599999986588955 1231332.34700000006705523, 2604713.325999999884516 1231305.375, 2604697.20899999979883432 1231310.25600000005215406, 2604689.01899999985471368 1231313.05799999996088445))" << ( QVariantList() << expectedPoly );
+}
+
+void TestQgsOverlayExpression::testOverlayIntersectsDetails()
+{
+  // Create polygon memory layer 1
+  QgsVectorLayer *poly1 = new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:4326" ), QStringLiteral( "poly_details" ), QStringLiteral( "memory" ) );
+  QgsFeature f1;
+  f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((0 0, 0 6, 6 6, 6 0, 0 0))" ) ) );
+  poly1->dataProvider()->addFeature( f1 );
+  QgsProject::instance()->addMapLayer( poly1 );
+
+  // Create linestring memory layer
+  QgsVectorLayer *line = new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326" ), QStringLiteral( "line_details" ), QStringLiteral( "memory" ) );
+  QgsFeature f2;
+  f2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (0 0, 1 1, 2 1, 3 1, 4 0)" ) ) );
+  line->dataProvider()->addFeature( f2 );
+  QgsProject::instance()->addMapLayer( line );
+
+  QgsExpressionContext context;
+  QgsFeature feat;
+  feat.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((6 0, 6 2, 4 2, 4 4, 6 4, 6 6, 12 6, 12 0, 6 0))" ) ) );
+  context.setFeature( feat );
+  context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+
+  QgsExpression exp( QStringLiteral( "overlay_intersects('poly_details', return_details:=true, expression:=$id)" ) );
+  QVERIFY2( exp.prepare( &context ), exp.parserErrorString().toUtf8().constData() );
+  QVariantList result = exp.evaluate( &context ).toList();
+  QCOMPARE( result.size(), 1 );
+  QCOMPARE( result.at( 0 ).toMap().value( QStringLiteral( "id" ) ).toLongLong(), 1 );
+  QCOMPARE( result.at( 0 ).toMap().value( QStringLiteral( "overlap" ) ).toLongLong(), 4 );
+
+  feat.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((7 0, 7 1, 5 1, 5 2, 7 2, 7 3, 4 3, 4 5, 7 5, 7 6, 12 6, 12 0, 7 0))" ) ) );
+  context.setFeature( feat );
+  result = exp.evaluate( &context ).toList();
+  QCOMPARE( result.size(), 1 );
+  QCOMPARE( result.at( 0 ).toMap().value( QStringLiteral( "id" ) ).toLongLong(), 1 );
+  QCOMPARE( result.at( 0 ).toMap().value( QStringLiteral( "overlap" ) ).toLongLong(), 4 );
+
+  feat.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((6 0, 6 1, 5 1, 5 2, 6 2, 6 3, 4 3, 4 5, 6 5, 6 6, 12 6, 12 0, 6 0))" ) ) );
+  context.setFeature( feat );
+  result = exp.evaluate( &context ).toList();
+  QCOMPARE( result.size(), 1 );
+  QCOMPARE( result.at( 0 ).toMap().value( QStringLiteral( "id" ) ).toLongLong(), 1 );
+  QCOMPARE( result.at( 0 ).toMap().value( QStringLiteral( "overlap" ) ).toLongLong(), 4 );
+
+  // Test linestring
+  QgsExpression exp2( QStringLiteral( "overlay_intersects('line_details', return_details:=true, expression:=$id)" ) );
+  feat.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (0 2, 1 1, 2 1, 3 1, 4 2)" ) ) );
+  context.setFeature( feat );
+  QVERIFY2( exp2.prepare( &context ), exp2.parserErrorString().toUtf8().constData() );
+  result = exp2.evaluate( &context ).toList();
+  QCOMPARE( result.size(), 1 );
+  QCOMPARE( result.at( 0 ).toMap().value( QStringLiteral( "id" ) ).toLongLong(), 1 );
+  QCOMPARE( result.at( 0 ).toMap().value( QStringLiteral( "overlap" ) ).toLongLong(), 2 );
+
+  QgsProject::instance()->removeMapLayer( poly1->id() );
+  QgsProject::instance()->removeMapLayer( line->id() );
+
 }
 
 void TestQgsOverlayExpression::testOverlayExpression()
