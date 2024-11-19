@@ -716,6 +716,20 @@ Sets whether the extent is displayed on the main 2D map canvas
 .. versionadded:: 3.32
 %End
 
+    void setShowDebugPanel( bool enabled );
+%Docstring
+Sets whether the debug side panel is shown
+
+.. versionadded:: 3.42
+%End
+
+    bool showDebugPanel() const;
+%Docstring
+Returns whether the debug side panel is shown
+
+.. versionadded:: 3.42
+%End
+
   signals:
 
     void settingsChanged();
@@ -984,6 +998,15 @@ Emitted when the parameter to display 3d view's extent in the 2D canvas has chan
 .. seealso:: :py:func:`setShowExtentIn2DView`
 
 .. versionadded:: 3.32
+%End
+
+    void showDebugPanelChanged( bool shown );
+%Docstring
+Emitted when the Show debug panel checkbox changes value
+
+.. seealso:: :py:func:`setShowDebugPanel`
+
+.. versionadded:: 3.42
 %End
 
   private:

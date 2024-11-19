@@ -157,6 +157,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   terrainElevationOffsetSpinBox->setValue( mMap->terrainElevationOffset() );
   chkShowLabels->setChecked( mMap->showLabels() );
   mFpsCounterCheckBox->setChecked( mMap->isFpsCounterEnabled() );
+  chkShowDebugPanel->setChecked( mMap->showDebugPanel() );
 
   groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
   widgetTerrainMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture );
@@ -344,6 +345,7 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setTerrainElevationOffset( terrainElevationOffsetSpinBox->value() );
   mMap->setShowLabels( chkShowLabels->isChecked() );
   mMap->setIsFpsCounterEnabled( mFpsCounterCheckBox->isChecked() );
+  mMap->setShowDebugPanel( chkShowDebugPanel->isChecked() );
   mMap->setTerrainShadingEnabled( groupTerrainShading->isChecked() );
 
   const std::unique_ptr< QgsAbstractMaterialSettings > terrainMaterial( widgetTerrainMaterial->settings() );
