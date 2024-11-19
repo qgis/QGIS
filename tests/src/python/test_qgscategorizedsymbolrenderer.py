@@ -939,8 +939,8 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         # this category should NOT be included in the SLD, as it would otherwise result
         # in an invalid se:rule with no symbolizer element
         symbol_which_is_empty_in_sld = createFillSymbol()
-        symbol_which_is_empty_in_sld[0].setBrushStyle(Qt.NoBrush)
-        symbol_which_is_empty_in_sld[0].setStrokeStyle(Qt.NoPen)
+        symbol_which_is_empty_in_sld[0].setBrushStyle(Qt.BrushStyle.NoBrush)
+        symbol_which_is_empty_in_sld[0].setStrokeStyle(Qt.PenStyle.NoPen)
         renderer.addCategory(QgsRendererCategory(None, symbol_which_is_empty_in_sld, 'empty', True, '4'))
 
         dom = QDomDocument()
