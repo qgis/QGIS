@@ -3428,6 +3428,10 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   {
     return QStringLiteral( "to_string(%1)" ).arg( parseExpression( expression.value( 1 ).toList(), context ) );
   }
+  else if ( op == QLatin1String( "to-boolean" ) )
+  {
+    return QStringLiteral( "to_bool(%1)" ).arg( parseExpression( expression.value( 1 ).toList(), context ) );
+  }
   else if ( op == QLatin1String( "case" ) )
   {
     QString caseString = QStringLiteral( "CASE" );
