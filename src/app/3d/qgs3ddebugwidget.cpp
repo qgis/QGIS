@@ -61,9 +61,6 @@ Qgs3DDebugWidget::Qgs3DDebugWidget( Qgs3DMapCanvas *canvas, QWidget *parent )
   mLookingZ->setRange( std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max() );
 }
 
-/**
- * Sets up the interactive elements with values from Qgs3DMapSettings
- */
 void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
 {
   mMap = mapSettings;
@@ -116,9 +113,6 @@ void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
   } );
 }
 
-/**
-   * Update the state of navigation widget from camera's state
-   */
 void Qgs3DDebugWidget::updateFromCamera() const
 {
   mNearPlane->setValue( m3DMapCanvas->cameraController()->camera()->nearPlane() );

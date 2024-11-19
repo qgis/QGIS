@@ -28,9 +28,17 @@ class Qgs3DDebugWidget : public QWidget, Ui::Q3DDebugWidget
   public:
     explicit Qgs3DDebugWidget( Qgs3DMapCanvas *canvas, QWidget *parent = nullptr );
 
+    /**
+    * Sets the map settings and necessary connections based on Qgs3DMapSettings.
+    * \note We need separate function as Qgs3DMapCanvasWidget, which wraps this widget, also gets it later.
+    */
     void setMapSettings( Qgs3DMapSettings *mapSettings );
 
   public slots:
+
+    /**
+    * Function updates the camera info values when the user moves in the scene.
+    */
     void updateFromCamera() const;
 
   private:
