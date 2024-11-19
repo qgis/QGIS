@@ -7748,7 +7748,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 
   if ( ! context )
   {
-    parent->setEvalErrorString( QObject::tr( "This function was called without an expression context." ) );
+    parent->setEvalErrorString( QStringLiteral( "This function was called without an expression context." ) );
     return QVariant();
   }
 
