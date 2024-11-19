@@ -71,6 +71,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mShowLightSources( other.mShowLightSources )
   , mShowLabels( other.mShowLabels )
   , mStopUpdates( other.mStopUpdates )
+  , mShowDebugPanel( other.mShowDebugPanel )
   , mFieldOfView( other.mFieldOfView )
   , mProjectionType( other.mProjectionType )
   , mCameraNavigationMode( other.mCameraNavigationMode )
@@ -315,6 +316,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mShowLightSources = elemDebug.attribute( QStringLiteral( "show-light-sources" ), QStringLiteral( "0" ) ).toInt();
   mIsFpsCounterEnabled = elemDebug.attribute( QStringLiteral( "show-fps-counter" ), QStringLiteral( "0" ) ).toInt();
   mStopUpdates = elemDebug.attribute( QStringLiteral( "stop-updates" ), QStringLiteral( "0" ) ).toInt();
+  mShowDebugPanel = elemDebug.attribute( QStringLiteral( "debug-panel" ), QStringLiteral( "0" ) ).toInt();
 
   QDomElement elemTemporalRange = elem.firstChildElement( QStringLiteral( "temporal-range" ) );
   QDateTime start = QDateTime::fromString( elemTemporalRange.attribute( QStringLiteral( "start" ) ), Qt::ISODate );
@@ -431,6 +433,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemDebug.setAttribute( QStringLiteral( "show-light-sources" ), mShowLightSources ? 1 : 0 );
   elemDebug.setAttribute( QStringLiteral( "show-fps-counter" ), mIsFpsCounterEnabled ? 1 : 0 );
   elemDebug.setAttribute( QStringLiteral( "stop-updates" ), mStopUpdates ? 1 : 0 );
+  elemDebug.setAttribute( QStringLiteral( "debug-panel" ), mShowDebugPanel ? 1 : 0 );
   elem.appendChild( elemDebug );
 
   QDomElement elemEyeDomeLighting = doc.createElement( QStringLiteral( "eye-dome-lighting" ) );

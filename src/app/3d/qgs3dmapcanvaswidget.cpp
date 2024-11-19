@@ -297,7 +297,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   hLayout->addWidget( mNavigationWidget );
   hLayout->addWidget( mDebugWidget );
 
-  auto *debugPanelShortCut = new QShortcut( QKeySequence( tr( "Ctrl+Shift+d" ) ), this );
+  QShortcut *debugPanelShortCut = new QShortcut( QKeySequence( tr( "Ctrl+Shift+d" ) ), this );
   connect( debugPanelShortCut, &QShortcut::activated, this, qOverload<>( &Qgs3DMapCanvasWidget::toggleDebugWidget ) );
   debugPanelShortCut->setObjectName( QStringLiteral( "DebugPanel" ) );
   debugPanelShortCut->setWhatsThis( tr( "Debug panel visibility" ) );
