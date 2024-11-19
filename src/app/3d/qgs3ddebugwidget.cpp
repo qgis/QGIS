@@ -59,11 +59,21 @@ Qgs3DDebugWidget::Qgs3DDebugWidget( Qgs3DMapCanvas *canvas, QWidget *parent )
   mLookingX->setRange( std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max() );
   mLookingY->setRange( std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max() );
   mLookingZ->setRange( std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max() );
+  connect( mNearPlane, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DDebugWidget::castCameraInputValue );
+  connect( mFarPlane, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DDebugWidget::castCameraInputValue );
+  connect( mCameraX, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DDebugWidget::castCameraInputValue );
+  connect( mCameraY, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DDebugWidget::castCameraInputValue );
+  connect( mCameraZ, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DDebugWidget::castCameraInputValue );
+  connect( mLookingX, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DDebugWidget::castCameraInputValue );
+  connect( mLookingY, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DDebugWidget::castCameraInputValue );
+  connect( mLookingZ, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &Qgs3DDebugWidget::castCameraInputValue );
 }
 
 void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
 {
   mMap = mapSettings;
+
+  // set up the checkbox block
   whileBlocking( chkShowTileInfo )->setChecked( mMap->showTerrainTilesInfo() );
   whileBlocking( chkShowBoundingBoxes )->setChecked( mMap->showTerrainBoundingBoxes() );
   whileBlocking( chkShowCameraViewCenter )->setChecked( mMap->showCameraViewCenter() );
@@ -79,6 +89,7 @@ void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
   connect( chkStopUpdates, &QCheckBox::toggled, this, [ = ]( const bool enabled ) {mMap->setStopUpdates( enabled ); } );
   connect( chkDebugOverlay, &QCheckBox::toggled, this, [ = ]( const bool enabled ) {mMap->setIsDebugOverlayEnabled( enabled ); } );
 
+  // set up the shadow map block
   whileBlocking( mDebugShadowMapGroupBox )->setChecked( mMap->debugShadowMapEnabled() );
   whileBlocking( mDebugShadowMapCornerComboBox )->setCurrentIndex( mMap->debugShadowMapCorner() );
   whileBlocking( mDebugShadowMapSizeSpinBox )->setValue( mMap->debugShadowMapSize() );
@@ -96,6 +107,7 @@ void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
     mMap->setDebugShadowMapSettings( mDebugShadowMapGroupBox->isChecked() && mMap->shadowSettings().renderShadows(), static_cast<Qt::Corner>( mDebugShadowMapCornerComboBox->currentIndex() ), value );
   } );
 
+  // set up the depth map block
   whileBlocking( mDebugDepthMapGroupBox )->setChecked( mMap->debugDepthMapEnabled() );
   whileBlocking( mDebugDepthMapCornerComboBox )->setCurrentIndex( mMap->debugDepthMapCorner() );
   whileBlocking( mDebugDepthMapSizeSpinBox )->setValue( mMap->debugDepthMapSize() );
@@ -111,16 +123,75 @@ void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
   {
     mMap->setDebugDepthMapSettings( mDebugDepthMapGroupBox->isChecked(), static_cast<Qt::Corner>( mDebugDepthMapCornerComboBox->currentIndex() ), value );
   } );
+
+  // connect signals emitted by castCameraInputValue
+  connect( this, &Qgs3DDebugWidget::nearPlaneChanged, m3DMapCanvas->cameraController()->camera(), &Qt3DRender::QCamera::setNearPlane );
+  connect( this, &Qgs3DDebugWidget::farPlaneChanged, m3DMapCanvas->cameraController()->camera(), &Qt3DRender::QCamera::setFarPlane );
+  connect( this, &Qgs3DDebugWidget::positionChanged, m3DMapCanvas->cameraController()->camera(), &Qt3DRender::QCamera::setPosition );
 }
 
 void Qgs3DDebugWidget::updateFromCamera() const
 {
-  mNearPlane->setValue( m3DMapCanvas->cameraController()->camera()->nearPlane() );
-  mFarPlane->setValue( m3DMapCanvas->cameraController()->camera()->farPlane() );
-  mCameraX->setValue( m3DMapCanvas->cameraController()->camera()->position().x() );
-  mCameraY->setValue( m3DMapCanvas->cameraController()->camera()->position().y() );
-  mCameraZ->setValue( m3DMapCanvas->cameraController()->camera()->position().z() );
-  mLookingX->setValue( m3DMapCanvas->cameraController()->lookingAtPoint().x() );
-  mLookingY->setValue( m3DMapCanvas->cameraController()->lookingAtPoint().y() );
-  mLookingZ->setValue( m3DMapCanvas->cameraController()->lookingAtPoint().z() );
+  whileBlocking( mNearPlane )->setValue( m3DMapCanvas->cameraController()->camera()->nearPlane() );
+  whileBlocking( mFarPlane )->setValue( m3DMapCanvas->cameraController()->camera()->farPlane() );
+  whileBlocking( mCameraX )->setValue( m3DMapCanvas->cameraController()->camera()->position().x() );
+  whileBlocking( mCameraY )->setValue( m3DMapCanvas->cameraController()->camera()->position().y() );
+  whileBlocking( mCameraZ )->setValue( m3DMapCanvas->cameraController()->camera()->position().z() );
+  whileBlocking( mLookingX )->setValue( m3DMapCanvas->cameraController()->lookingAtPoint().x() );
+  whileBlocking( mLookingY )->setValue( m3DMapCanvas->cameraController()->lookingAtPoint().y() );
+  whileBlocking( mLookingZ )->setValue( m3DMapCanvas->cameraController()->lookingAtPoint().z() );
+}
+
+void Qgs3DDebugWidget::castCameraInputValue( const double value )
+{
+  if ( sender() == mCameraX || sender() == mCameraY || sender() == mCameraZ )
+  {
+    auto *newPosition = new QVector3D( m3DMapCanvas->cameraController()->camera()->position().x(), m3DMapCanvas->cameraController()->camera()->position().y(), m3DMapCanvas->cameraController()->camera()->position().z() );
+    if ( sender() == mCameraX )
+    {
+      newPosition->setX( static_cast<float>( value ) );
+      emit positionChanged( *newPosition );
+    }
+    else if ( sender() == mCameraY )
+    {
+      newPosition->setY( static_cast<float>( value ) );
+      emit positionChanged( *newPosition );
+    }
+    else if ( sender() == mCameraZ )
+    {
+      newPosition->setZ( static_cast<float>( value ) );
+      emit positionChanged( *newPosition );
+    }
+  }
+  else if ( sender() == mLookingX || sender() == mLookingY || sender() == mLookingZ )
+  {
+    const float distance = m3DMapCanvas->cameraController()->distance();
+    const float pitch = m3DMapCanvas->cameraController()->pitch();
+    const float yaw = m3DMapCanvas->cameraController()->yaw();
+    QgsVector3D newLookingAt =
+      m3DMapCanvas->cameraController()->lookingAtPoint();
+    if ( sender() == mLookingX )
+    {
+      newLookingAt.setX( value );
+      m3DMapCanvas->cameraController()->setLookingAtPoint( newLookingAt, distance, pitch, yaw );
+    }
+    else if ( sender() == mLookingY )
+    {
+      newLookingAt.setY( value );
+      m3DMapCanvas->cameraController()->setLookingAtPoint( newLookingAt, distance, pitch, yaw );
+    }
+    else if ( sender() == mLookingZ )
+    {
+      newLookingAt.setZ( value );
+      m3DMapCanvas->cameraController()->setLookingAtPoint( newLookingAt, distance, pitch, yaw );
+    }
+  }
+  else if ( sender() == mNearPlane )
+  {
+    emit nearPlaneChanged( static_cast<float>( value ) );
+  }
+  else if ( sender() == mFarPlane )
+  {
+    emit farPlaneChanged( static_cast<float>( value ) );
+  }
 }
