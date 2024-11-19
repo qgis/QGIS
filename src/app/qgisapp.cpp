@@ -4786,7 +4786,7 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bo
   connect( mapCanvasWidget->dockableWidgetHelper(), &QgsDockableWidgetHelper::closed, this, [ this, mapCanvasWidget]
   {
     mOpen2DMapViews.remove( mapCanvasWidget );
-    delete mapCanvasWidget;
+    mapCanvasWidget->deleteLater();
     markDirty();
   } );
   connect( mapCanvasWidget, &QgsMapCanvasDockWidget::renameTriggered, this, &QgisApp::renameView );
