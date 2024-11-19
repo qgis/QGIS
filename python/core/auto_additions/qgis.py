@@ -10826,6 +10826,37 @@ Qgis.DocumentationBrowser.__doc__ = """Documentation API browser
 """
 # --
 Qgis.DocumentationBrowser.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.MouseHandlesAction.MoveItem.__doc__ = "Move item"
+Qgis.MouseHandlesAction.ResizeUp.__doc__ = "Resize up (Top handle)"
+Qgis.MouseHandlesAction.ResizeDown.__doc__ = "Resize down (Bottom handle)"
+Qgis.MouseHandlesAction.ResizeLeft.__doc__ = "Resize left (Left handle)"
+Qgis.MouseHandlesAction.ResizeRight.__doc__ = "Resize right (Right handle)"
+Qgis.MouseHandlesAction.ResizeLeftUp.__doc__ = "Resize left up (Top left handle)"
+Qgis.MouseHandlesAction.ResizeRightUp.__doc__ = "Resize right up (Top right handle)"
+Qgis.MouseHandlesAction.ResizeLeftDown.__doc__ = "Resize left down (Bottom left handle)"
+Qgis.MouseHandlesAction.ResizeRightDown.__doc__ = "Resize right down (Bottom right handle)"
+Qgis.MouseHandlesAction.SelectItem.__doc__ = "Select item"
+Qgis.MouseHandlesAction.NoAction.__doc__ = "No action"
+Qgis.MouseHandlesAction.__doc__ = """Action to be performed by the mouse handles
+
+.. versionadded:: 3.42
+
+* ``MoveItem``: Move item
+* ``ResizeUp``: Resize up (Top handle)
+* ``ResizeDown``: Resize down (Bottom handle)
+* ``ResizeLeft``: Resize left (Left handle)
+* ``ResizeRight``: Resize right (Right handle)
+* ``ResizeLeftUp``: Resize left up (Top left handle)
+* ``ResizeRightUp``: Resize right up (Top right handle)
+* ``ResizeLeftDown``: Resize left down (Bottom left handle)
+* ``ResizeRightDown``: Resize right down (Bottom right handle)
+* ``SelectItem``: Select item
+* ``NoAction``: No action
+
+"""
+# --
+Qgis.MouseHandlesAction.baseClass = Qgis
 from enum import Enum
 
 

@@ -43,11 +43,11 @@ void QgsLayoutItemAbstractGuiMetadata::newItemAddedToLayout( QgsLayoutItem * )
 
 }
 
-void QgsLayoutItemAbstractGuiMetadata::handleDoubleClick( QgsLayoutItem *, QgsGraphicsViewMouseHandles::MouseAction )
+void QgsLayoutItemAbstractGuiMetadata::handleDoubleClick( QgsLayoutItem *, Qgis::MouseHandlesAction )
 {
 }
 
-void QgsLayoutItemGuiMetadata::handleDoubleClick( QgsLayoutItem *item, QgsGraphicsViewMouseHandles::MouseAction action )
+void QgsLayoutItemGuiMetadata::handleDoubleClick( QgsLayoutItem *item, Qgis::MouseHandlesAction action )
 {
   if ( mDoubleClickedFunc )
     mDoubleClickedFunc( item, action );
