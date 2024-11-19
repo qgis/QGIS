@@ -25,6 +25,7 @@ from qgis.core import (
     QgsRendererRange,
     QgsRendererRangeLabelFormat,
     QgsVectorLayer,
+    QgsFillSymbol,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -41,6 +42,13 @@ def createMarkerSymbol():
         "color": "100,150,50",
         "name": "square",
         "size": "3.0"
+    })
+    return symbol
+
+
+def createFillSymbol():
+    symbol = QgsFillSymbol.createSimple({
+        "color": "100,150,50"
     })
     return symbol
 
@@ -563,6 +571,135 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
         exp, ok = renderer.legendKeyToExpression('2', layer)
         self.assertTrue(ok)
         self.assertEqual(exp, """(log("field_name") >= 15.5) AND (log("field_name") <= 16.5)""")
+
+    def test_to_sld(self):
+        renderer = QgsGraduatedSymbolRenderer()
+        renderer.setClassAttribute('field_name')
+
+        symbol_a = createMarkerSymbol()
+        renderer.addClassRange(QgsRendererRange(1, 2, symbol_a, 'a', True, '0'))
+        symbol_b = createMarkerSymbol()
+        renderer.addClassRange(QgsRendererRange(5, 6, symbol_b, 'b', True, '1'))
+        symbol_c = createMarkerSymbol()
+        renderer.addClassRange(QgsRendererRange(15.5, 16.5, symbol_c, 'c', False, '2'))
+
+        # this category should NOT be included in the SLD, as it would otherwise result
+        # in an invalid se:rule with no symbolizer element
+        symbol_which_is_empty_in_sld = createFillSymbol()
+        symbol_which_is_empty_in_sld[0].setBrushStyle(Qt.NoBrush)
+        symbol_which_is_empty_in_sld[0].setStrokeStyle(Qt.NoPen)
+        renderer.addClassRange(
+            QgsRendererRange(25.5, 26.5, symbol_which_is_empty_in_sld, 'd', False, '2'))
+
+        dom = QDomDocument()
+        root = dom.createElement("FakeRoot")
+        dom.appendChild(root)
+        renderer.toSld(dom, root, {})
+
+        expected = """<FakeRoot>
+ <se:Rule>
+  <se:Name>a</se:Name>
+  <se:Description>
+   <se:Title>a</se:Title>
+  </se:Description>
+  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+   <ogc:And>
+    <ogc:PropertyIsGreaterThanOrEqualTo>
+     <ogc:PropertyName>field_name</ogc:PropertyName>
+     <ogc:Literal>1</ogc:Literal>
+    </ogc:PropertyIsGreaterThanOrEqualTo>
+    <ogc:PropertyIsLessThanOrEqualTo>
+     <ogc:PropertyName>field_name</ogc:PropertyName>
+     <ogc:Literal>2</ogc:Literal>
+    </ogc:PropertyIsLessThanOrEqualTo>
+   </ogc:And>
+  </ogc:Filter>
+  <se:PointSymbolizer>
+   <se:Graphic>
+    <se:Mark>
+     <se:WellKnownName>square</se:WellKnownName>
+     <se:Fill>
+      <se:SvgParameter name="fill">#649632</se:SvgParameter>
+     </se:Fill>
+     <se:Stroke>
+      <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+      <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
+     </se:Stroke>
+    </se:Mark>
+    <se:Size>11</se:Size>
+   </se:Graphic>
+  </se:PointSymbolizer>
+ </se:Rule>
+ <se:Rule>
+  <se:Name>b</se:Name>
+  <se:Description>
+   <se:Title>b</se:Title>
+  </se:Description>
+  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+   <ogc:And>
+    <ogc:PropertyIsGreaterThan>
+     <ogc:PropertyName>field_name</ogc:PropertyName>
+     <ogc:Literal>5</ogc:Literal>
+    </ogc:PropertyIsGreaterThan>
+    <ogc:PropertyIsLessThanOrEqualTo>
+     <ogc:PropertyName>field_name</ogc:PropertyName>
+     <ogc:Literal>6</ogc:Literal>
+    </ogc:PropertyIsLessThanOrEqualTo>
+   </ogc:And>
+  </ogc:Filter>
+  <se:PointSymbolizer>
+   <se:Graphic>
+    <se:Mark>
+     <se:WellKnownName>square</se:WellKnownName>
+     <se:Fill>
+      <se:SvgParameter name="fill">#649632</se:SvgParameter>
+     </se:Fill>
+     <se:Stroke>
+      <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+      <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
+     </se:Stroke>
+    </se:Mark>
+    <se:Size>11</se:Size>
+   </se:Graphic>
+  </se:PointSymbolizer>
+ </se:Rule>
+ <se:Rule>
+  <se:Name>c</se:Name>
+  <se:Description>
+   <se:Title>c</se:Title>
+  </se:Description>
+  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+   <ogc:And>
+    <ogc:PropertyIsGreaterThan>
+     <ogc:PropertyName>field_name</ogc:PropertyName>
+     <ogc:Literal>15.5</ogc:Literal>
+    </ogc:PropertyIsGreaterThan>
+    <ogc:PropertyIsLessThanOrEqualTo>
+     <ogc:PropertyName>field_name</ogc:PropertyName>
+     <ogc:Literal>16.5</ogc:Literal>
+    </ogc:PropertyIsLessThanOrEqualTo>
+   </ogc:And>
+  </ogc:Filter>
+  <se:PointSymbolizer>
+   <se:Graphic>
+    <se:Mark>
+     <se:WellKnownName>square</se:WellKnownName>
+     <se:Fill>
+      <se:SvgParameter name="fill">#649632</se:SvgParameter>
+     </se:Fill>
+     <se:Stroke>
+      <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+      <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
+     </se:Stroke>
+    </se:Mark>
+    <se:Size>11</se:Size>
+   </se:Graphic>
+  </se:PointSymbolizer>
+ </se:Rule>
+</FakeRoot>
+"""
+
+        self.assertEqual(dom.toString(), expected)
 
 
 if __name__ == "__main__":

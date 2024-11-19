@@ -389,6 +389,20 @@ Qt::BrushStyle QgsSymbolLayerUtils::decodeSldBrushStyle( const QString &str )
   return Qt::NoBrush;
 }
 
+bool QgsSymbolLayerUtils::hasSldSymbolizer( const QDomElement &element )
+{
+  const QDomNodeList children = element.childNodes();
+  for ( int i = 0; i < children.size(); ++i )
+  {
+    const QDomElement childElement = children.at( i ).toElement();
+    if ( childElement.tagName() == QLatin1String( "se:LineSymbolizer" )
+         || childElement.tagName() == QLatin1String( "se:PointSymbolizer" )
+         || childElement.tagName() == QLatin1String( "se:PolygonSymbolizer" ) )
+      return true;
+  }
+  return false;
+}
+
 Qgis::SymbolCoordinateReference QgsSymbolLayerUtils::decodeCoordinateReference( const QString &string, bool *ok )
 {
   const QString compareString = string.trimmed();
