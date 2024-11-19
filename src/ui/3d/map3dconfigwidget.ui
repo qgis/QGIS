@@ -217,8 +217,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>803</width>
+                <height>649</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -499,7 +499,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
+                <width>73</width>
                 <height>46</height>
                </rect>
               </property>
@@ -940,7 +940,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>818</width>
+                <width>803</width>
                 <height>649</height>
                </rect>
               </property>
@@ -965,17 +965,10 @@
                  <layout class="QGridLayout" name="gridLayout_11">
                   <item row="0" column="0">
                    <layout class="QGridLayout" name="gridLayoutAdvanced">
-                    <item row="1" column="0">
-                     <widget class="QLabel" name="label_5">
+                    <item row="6" column="0" colspan="2">
+                     <widget class="QCheckBox" name="chkShowLabels">
                       <property name="text">
-                       <string>Max. screen error</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="0">
-                     <widget class="QLabel" name="label_6">
-                      <property name="text">
-                       <string>Max. ground error</string>
+                       <string>Show labels</string>
                       </property>
                      </widget>
                     </item>
@@ -989,17 +982,17 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="6" column="0" colspan="2">
-                     <widget class="QCheckBox" name="mFpsCounterCheckBox">
+                    <item row="3" column="1">
+                     <widget class="QLabel" name="labelZoomLevels">
                       <property name="text">
-                       <string>Show frames per second (FPS)</string>
+                       <string>0</string>
                       </property>
                      </widget>
                     </item>
-                    <item row="5" column="0" colspan="2">
-                     <widget class="QCheckBox" name="chkShowLabels">
+                    <item row="1" column="0">
+                     <widget class="QLabel" name="label_5">
                       <property name="text">
-                       <string>Show labels</string>
+                       <string>Max. screen error</string>
                       </property>
                      </widget>
                     </item>
@@ -1022,10 +1015,24 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="3" column="1">
-                     <widget class="QLabel" name="labelZoomLevels">
+                    <item row="3" column="0">
+                     <widget class="QLabel" name="label_7">
                       <property name="text">
-                       <string>0</string>
+                       <string>Zoom levels</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="7" column="0" colspan="2">
+                     <widget class="QCheckBox" name="mFpsCounterCheckBox">
+                      <property name="text">
+                       <string>Show frames per second (FPS)</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="0">
+                     <widget class="QLabel" name="label_6">
+                      <property name="text">
+                       <string>Max. ground error</string>
                       </property>
                      </widget>
                     </item>
@@ -1046,16 +1053,16 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="3" column="0">
-                     <widget class="QLabel" name="label_7">
+                    <item row="8" column="0" colspan="2">
+                     <widget class="QCheckBox" name="chkShowDebugPanel">
                       <property name="text">
-                       <string>Zoom levels</string>
+                       <string>Show debug panel</string>
                       </property>
                      </widget>
                     </item>
                    </layout>
                   </item>
-                  <item row="1" column="0">
+                  <item row="2" column="0">
                    <spacer name="verticalSpacerAdvanced">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>

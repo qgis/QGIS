@@ -1250,6 +1250,24 @@ bool Qgs3DMapSettings::isFpsCounterEnabled() const
   return mIsFpsCounterEnabled;
 }
 
+void Qgs3DMapSettings::setShowDebugPanel( const bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mShowDebugPanel == enabled )
+    return;
+
+  mShowDebugPanel = enabled;
+  emit showDebugPanelChanged( enabled );
+}
+
+bool Qgs3DMapSettings::showDebugPanel() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mShowDebugPanel;
+}
+
 void Qgs3DMapSettings::setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -1448,6 +1466,7 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
   connect( this, &Qgs3DMapSettings::extentChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::showExtentIn2DViewChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::stopUpdatesChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::showDebugPanelChanged, this, &Qgs3DMapSettings::settingsChanged );
 }
 
 

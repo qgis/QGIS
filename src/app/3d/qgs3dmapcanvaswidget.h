@@ -81,6 +81,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void toggleNavigationWidget( bool visibility );
     void toggleFpsCounter( bool visibility );
     void toggleDebugWidget( bool visibility ) const;
+    void toggleDebugWidget() const;
     void setSceneExtentOn2DCanvas();
     void setSceneExtent( const QgsRectangle &extent );
 

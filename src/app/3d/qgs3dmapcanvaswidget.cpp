@@ -297,6 +297,10 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   hLayout->addWidget( mNavigationWidget );
   hLayout->addWidget( mDebugWidget );
 
+  auto *debugPanelShortCut = new QShortcut( QKeySequence( tr( "Ctrl+Shift+d" ) ), this );
+  connect( debugPanelShortCut, &QShortcut::activated, this, qOverload<>( &Qgs3DMapCanvasWidget::toggleDebugWidget ) );
+  debugPanelShortCut->setObjectName( QStringLiteral( "DebugPanel" ) );
+  debugPanelShortCut->setWhatsThis( tr( "Debug panel visibility" ) );
   toggleNavigationWidget(
     setting.value( QStringLiteral( "/3D/navigationWidget/visibility" ), false, QgsSettings::Gui ).toBool()
   );
@@ -307,19 +311,6 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   setLayout( layout );
 
   onTotalPendingJobsCountChanged();
-
-  QAction *toggleDebugPanel = toolBar->addAction(
-                                QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/general.svg" ) ),
-                                tr( "Toggle On-Screen Debug Information" ) );
-
-  toggleDebugPanel->setCheckable( true );
-  toggleDebugPanel->setChecked(
-    setting.value( QStringLiteral( "/3D/debugWidget/visibility" ), false, QgsSettings::Gui ).toBool()
-  );
-  toggleDebugWidget(
-    setting.value( QStringLiteral( "/3D/debugWidget/visibility" ), false, QgsSettings::Gui ).toBool()
-  );
-  connect( toggleDebugPanel, &QAction::toggled, this, &Qgs3DMapCanvasWidget::toggleDebugWidget );
 
   mDockableWidgetHelper = new QgsDockableWidgetHelper( isDocked, mCanvasName, this, QgisApp::instance() );
   if ( QDialog *dialog = mDockableWidgetHelper->dialog() )
@@ -419,8 +410,14 @@ void Qgs3DMapCanvasWidget::toggleFpsCounter( bool visibility )
 void Qgs3DMapCanvasWidget::toggleDebugWidget( const bool visibility ) const
 {
   mDebugWidget->setVisible( visibility );
-  QgsSettings setting;
-  setting.setValue( QStringLiteral( "/3D/debugWidget/visibility" ), visibility, QgsSettings::Gui );
+}
+
+// this is used only for keyboard shortcut, you should supply the visibility value
+void Qgs3DMapCanvasWidget::toggleDebugWidget() const
+{
+  const bool newVisibility = !mCanvas->mapSettings()->showDebugPanel();
+  mDebugWidget->setVisible( newVisibility );
+  mCanvas->mapSettings()->setShowDebugPanel( newVisibility );
 }
 
 void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
@@ -432,6 +429,8 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
   whileBlocking( mActionSync3DNavTo2D )->setChecked( map->viewSyncMode().testFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D ) );
   whileBlocking( mShowFrustumPolyogon )->setChecked( map->viewFrustumVisualizationEnabled() );
 
+  connect( map, &Qgs3DMapSettings::showDebugPanelChanged, this, qOverload<bool>( &Qgs3DMapCanvasWidget::toggleDebugWidget ) );
+  toggleDebugWidget( map->showDebugPanel() );
   mDebugWidget->setMapSettings( map );
   mCanvas->setMapSettings( map );
 
