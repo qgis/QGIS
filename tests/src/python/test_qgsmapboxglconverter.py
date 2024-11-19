@@ -529,6 +529,9 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                                                                    conversion_context),
                          '''"name"''')
 
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["to-boolean", ["get", "name"]],
+                                                                   conversion_context),
+                         '''to_bool("name")''')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["to-string", ["get", "name"]],
                                                                    conversion_context),
                          '''to_string("name")''')
