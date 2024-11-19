@@ -1829,6 +1829,14 @@ class TestQgsExpression: public QObject
       QTest::newRow( "try invalid with alternative" ) << "try(to_int('a'),0)" << false << QVariant( 0 );
       QTest::newRow( "try invalid without alternative" ) << "try(to_int('a'))" << false << QVariant();
 
+      QTest::newRow( "to_bool with empty string" ) << "to_bool('')" << false << QVariant( false );
+      QTest::newRow( "to_bool with non-empty string" ) << "to_bool('0')" << false << QVariant( true );
+      QTest::newRow( "to_bool with zero" ) << "to_bool(0)" << false << QVariant( false );
+      QTest::newRow( "to_bool with number" ) << "to_bool(123)" << false << QVariant( true );
+      QTest::newRow( "to_bool with null" ) << "to_bool(null)" << false << QVariant( false );
+      QTest::newRow( "to_bool with empty list" ) << "to_bool(array())" << false << QVariant( false );
+      QTest::newRow( "to_bool with non-empty list" ) << "to_bool(array(1,2,3))" << false << QVariant( true );
+
       // Datetime functions
       QTest::newRow( "make date" ) << "make_date(2012,6,28)" << false << QVariant( QDate( 2012, 6, 28 ) );
       QTest::newRow( "make date invalid" ) << "make_date('a',6,28)" << true << QVariant();
