@@ -20,7 +20,9 @@
 #include "qgs3dmapcanvas.h"
 #include "qgscameracontroller.h"
 
-Qgs3DDebugWidget::Qgs3DDebugWidget( Qgs3DMapCanvas *canvas, QWidget *parent ) : QWidget( parent ), m3DMapCanvas( canvas )
+Qgs3DDebugWidget::Qgs3DDebugWidget( Qgs3DMapCanvas *canvas, QWidget *parent )
+  : QWidget( parent )
+  , m3DMapCanvas( canvas )
 {
   // set up the widget defined in ui file
   setupUi( this );
@@ -32,7 +34,7 @@ Qgs3DDebugWidget::Qgs3DDebugWidget( Qgs3DMapCanvas *canvas, QWidget *parent ) : 
   scrollAreaWidgetContents->adjustSize();
   scrollArea->setMinimumWidth( scrollArea->sizeHint().width() );
   scrollArea->adjustSize();
-  this->adjustSize();
+  adjustSize();
 
   // set up the shadow map block
   mDebugShadowMapCornerComboBox->addItem( tr( "Top Left" ) );

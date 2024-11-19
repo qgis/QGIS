@@ -444,13 +444,20 @@ Returns the eye dome lighting distance value (contributes to the contrast of the
 
     void setStopUpdates( bool enabled );
 %Docstring
-Sets whether to keep updating scene on zooming or keep the same amount of points visible
+Sets whether scene updates on camera movement should be enabled
+
+.. note::
+
+   By default, scene is updating on camera movement. Useful for debugging purposes.
 
 .. versionadded:: 3.42
 %End
+
     bool stopUpdates() const;
 %Docstring
-Returns whether to keep updating the scene on zoom
+Returns whether the scene updates on camera movement
+
+.. versionadded:: 3.42
 %End
 
     void setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size );

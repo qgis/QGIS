@@ -432,11 +432,16 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     int eyeDomeLightingDistance() const;
 
     /**
-    * Sets whether to keep updating scene on zooming or keep the same amount of points visible
+    * Sets whether scene updates on camera movement should be enabled
+    * \note By default, scene is updating on camera movement. Useful for debugging purposes.
     * \since QGIS 3.42
     */
     void setStopUpdates( bool enabled );
-    //! Returns whether to keep updating the scene on zoom
+
+    /**
+     * Returns whether the scene updates on camera movement
+     * \since QGIS 3.42
+     */
     bool stopUpdates() const;
 
     /**
