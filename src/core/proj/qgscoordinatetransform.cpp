@@ -817,10 +817,8 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     }
   }
 
-  // something which won't clash with Proj's real error codes!
-  constexpr int PROJ_RESULT_FALLBACK_OPERATION_FAILED = -481516;
-
   mFallbackOperationOccurred = false;
+  bool errorOccurredDuringFallbackOperation = false;
   if ( actualRes != 0
        && ( d->mAvailableOpCount > 1 || d->mAvailableOpCount == -1 ) // only use fallbacks if more than one operation is possible -- otherwise we've already tried it and it failed
        && ( d->mAllowFallbackTransforms || mBallparkTransformsAreAppropriate ) )
@@ -845,13 +843,14 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
       // So here just check proj_errno() for single point transform
       if ( numPoints == 1 )
       {
+        projResult = proj_errno( transform );
         // hmm - something very odd here. We can't trust proj_errno( transform ), as that's giving us incorrect error numbers
         // (such as "failed to load datum shift file", which is definitely incorrect for a default proj created operation!)
         // so we resort to testing values ourselves...
-        projResult = std::isinf( xprev[0] ) || std::isinf( yprev[0] ) || std::isinf( zprev[0] ) ? PROJ_RESULT_FALLBACK_OPERATION_FAILED : 0;
+        errorOccurredDuringFallbackOperation = std::isinf( xprev[0] ) || std::isinf( yprev[0] ) || std::isinf( zprev[0] );
       }
 
-      if ( projResult == 0 )
+      if ( !errorOccurredDuringFallbackOperation )
       {
         memcpy( x, xprev.data(), sizeof( double ) * numPoints );
         memcpy( y, yprev.data(), sizeof( double ) * numPoints );
@@ -876,7 +875,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     z[pos] = std::numeric_limits<double>::quiet_NaN();
   }
 
-  if ( projResult != 0 )
+  if ( projResult != 0 || errorOccurredDuringFallbackOperation )
   {
     //something bad happened....
     QString points;
@@ -891,9 +890,9 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
 #if PROJ_VERSION_MAJOR>=8
     PJ_CONTEXT *projContext = QgsProjContext::get();
-    const QString projError = projResult != PROJ_RESULT_FALLBACK_OPERATION_FAILED ? QString::fromUtf8( proj_context_errno_string( projContext, projResult ) ) : QObject::tr( "Fallback transform failed" );
+    const QString projError = !errorOccurredDuringFallbackOperation ? QString::fromUtf8( proj_context_errno_string( projContext, projResult ) ) : QObject::tr( "Fallback transform failed" );
 #else
-    const QString projError = projResult != PROJ_RESULT_FALLBACK_OPERATION_FAILED ? QString::fromUtf8( proj_errno_string( projResult ) ) : QObject::tr( "Fallback transform failed" );
+    const QString projError = !errorOccurredDuringFallbackOperation ? QString::fromUtf8( proj_errno_string( projResult ) ) : QObject::tr( "Fallback transform failed" );
 #endif
 
     const QString msg = QObject::tr( "%1 (%2 to %3) of%4%5Error: %6" )
