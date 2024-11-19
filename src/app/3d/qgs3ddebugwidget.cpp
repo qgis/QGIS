@@ -88,11 +88,11 @@ void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
   {
     mMap->setDebugShadowMapSettings( enabled && mMap->shadowSettings().renderShadows(), static_cast<Qt::Corner>( mDebugShadowMapCornerComboBox->currentIndex() ), mDebugShadowMapSizeSpinBox->value() );
   } );
-  connect( mDebugShadowMapCornerComboBox, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( const int index )
+  connect( mDebugShadowMapCornerComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( const int index )
   {
     mMap->setDebugShadowMapSettings( mDebugShadowMapGroupBox->isChecked() && mMap->shadowSettings().renderShadows(), static_cast<Qt::Corner>( index ), mDebugShadowMapSizeSpinBox->value() );
   } );
-  connect( mDebugShadowMapSizeSpinBox, QOverload<double>::of( &QDoubleSpinBox::valueChanged ), this, [ = ]( const double value )
+  connect( mDebugShadowMapSizeSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [ = ]( const double value )
   {
     mMap->setDebugShadowMapSettings( mDebugShadowMapGroupBox->isChecked() && mMap->shadowSettings().renderShadows(), static_cast<Qt::Corner>( mDebugShadowMapCornerComboBox->currentIndex() ), value );
   } );
@@ -104,11 +104,11 @@ void Qgs3DDebugWidget::setMapSettings( Qgs3DMapSettings *mapSettings )
   {
     mMap->setDebugDepthMapSettings( enabled, static_cast<Qt::Corner>( mDebugDepthMapCornerComboBox->currentIndex() ), mDebugDepthMapSizeSpinBox->value() );
   } );
-  connect( mDebugDepthMapCornerComboBox, QOverload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( const int index )
+  connect( mDebugDepthMapCornerComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( const int index )
   {
     mMap->setDebugDepthMapSettings( mDebugDepthMapGroupBox->isChecked(), static_cast<Qt::Corner>( index ), mDebugDepthMapSizeSpinBox->value() );
   } );
-  connect( mDebugDepthMapSizeSpinBox, QOverload<double>::of( &QDoubleSpinBox::valueChanged ), this, [ = ]( const double value )
+  connect( mDebugDepthMapSizeSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [ = ]( const double value )
   {
     mMap->setDebugDepthMapSettings( mDebugDepthMapGroupBox->isChecked(), static_cast<Qt::Corner>( mDebugDepthMapCornerComboBox->currentIndex() ), value );
   } );
