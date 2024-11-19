@@ -95,6 +95,13 @@ class CORE_EXPORT QgsSymbolLayerUtils
     static Qt::BrushStyle decodeSldBrushStyle( const QString &str );
 
     /**
+     * Returns TRUE if a DOM \a element contains an SLD Symbolizer element.
+     *
+     * \since QGIS 3.42
+     */
+    static bool hasSldSymbolizer( const QDomElement &element );
+
+    /**
      * Decodes a \a string representing a symbol coordinate reference mode.
      *
      * \param string string to decode
