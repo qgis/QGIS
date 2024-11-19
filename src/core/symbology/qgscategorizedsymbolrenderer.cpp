@@ -151,7 +151,6 @@ void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QVaria
   }
 
   QDomElement ruleElem = doc.createElement( QStringLiteral( "se:Rule" ) );
-  element.appendChild( ruleElem );
 
   QDomElement nameElem = doc.createElement( QStringLiteral( "se:Name" ) );
   nameElem.appendChild( doc.createTextNode( mLabel ) );
@@ -200,6 +199,14 @@ void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QVaria
   QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElem, props );
 
   mSymbol->toSld( doc, ruleElem, props );
+  if ( !QgsSymbolLayerUtils::hasSldSymbolizer( ruleElem ) )
+  {
+    // symbol could not be converted to SLD, or is an "empty" symbol. In this case we do not generate a rule, as
+    // SLD spec requires a Symbolizer element to be present
+    return;
+  }
+
+  element.appendChild( ruleElem );
 }
 
 ///////////////////
