@@ -378,8 +378,11 @@
 #include "qgsbrightnesscontrastfilter.h"
 #include "qgsrasterlayersaveasdialog.h"
 #include "qgsrasterprojector.h"
+#include "qgsrasterrenderer.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrectangle.h"
+#include "qgsrendereditemresults.h"
+#include "qgsrenderedlayerstatistics.h"
 #include "qgsreport.h"
 #include "qgsscalevisibilitydialog.h"
 #include "qgsgroupwmsdatadialog.h"
@@ -5212,12 +5215,19 @@ void QgisApp::createDecorations()
   addDecorationItem( decorationScaleBar );
   addDecorationItem( decorationLayoutExtent );
 
-  connect( mMapCanvas, &QgsMapCanvas::renderComplete, this, &QgisApp::renderDecorationItems );
+  connect( mMapCanvas, &QgsMapCanvas::renderComplete, this, &QgisApp::onRenderComplete );
   connect( this, &QgisApp::newProject, this, &QgisApp::projectReadDecorationItems );
   connect( this, &QgisApp::projectRead, this, &QgisApp::projectReadDecorationItems );
 }
 
-void QgisApp::renderDecorationItems( QPainter *p )
+void QgisApp::onRenderComplete( QPainter *p )
+{
+  renderDecorationItems( p );
+  handleRenderedLayerStatistics();
+}
+
+
+void QgisApp::renderDecorationItems( QPainter *p ) const
 {
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mMapCanvas->mapSettings() );
   context.setPainter( p );
@@ -17580,4 +17590,28 @@ void QgisApp::showEvent( QShowEvent *event )
       QgsDebugError( QStringLiteral( "restore of UI state failed" ) );
     }
   } );
+}
+
+void QgisApp::handleRenderedLayerStatistics() const
+{
+  const QgsRenderedItemResults *renderedItemResults = mMapCanvas->renderedItemResults( false );
+  if ( !renderedItemResults )
+  {
+    return;
+  }
+
+  for ( const QgsRenderedItemDetails *item : renderedItemResults->renderedItems() )
+  {
+    if ( const QgsRenderedLayerStatistics *layerStatistics = dynamic_cast< const QgsRenderedLayerStatistics *>( item ) )
+    {
+      QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( QgsProject::instance()->mapLayer( layerStatistics->layerId() ) );
+      if ( rasterLayer )
+      {
+        // refresh the renderer of the layer, the style and the legend of the main canvas
+        rasterLayer->renderer()->refresh( layerStatistics->boundingBox(), layerStatistics->minimum(), layerStatistics->maximum() );
+        rasterLayer->emitStyleChanged();
+        emit rasterLayer->rendererChanged();
+      }
+    }
+  }
 }

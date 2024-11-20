@@ -1695,7 +1695,21 @@ bool QgsRasterLayer::setSubsetString( const QString &subset )
   if ( res )
   {
     setExtent( mDataProvider->extent() );
-    refreshRenderer( renderer(), extent() );
+    QList<double> minValues;
+    QList<double> maxValues;
+    const QgsRasterMinMaxOrigin &minMaxOrigin = renderer()->minMaxOrigin();
+    for ( const int bandIdx : renderer()->usesBands() )
+    {
+      double min;
+      double max;
+
+      computeMinMax( bandIdx, minMaxOrigin, minMaxOrigin.limits(),
+                     extent(), static_cast<int>( QgsRasterLayer::SAMPLE_SIZE ),
+                     min, max );
+      minValues.append( min );
+      maxValues.append( max );
+    }
+    renderer()->refresh( extent(), minValues, maxValues, true );
     emit subsetStringChanged();
   }
 
