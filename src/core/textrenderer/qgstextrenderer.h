@@ -446,7 +446,7 @@ class CORE_EXPORT QgsTextRenderer
                               Qgis::TextLayoutMode mode );
 
     static void drawBackground( QgsRenderContext &context,
-                                Component component,
+                                const Component &component,
                                 const QgsTextFormat &format,
                                 const QgsTextDocumentMetrics &metrics,
                                 Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Rectangle );

@@ -961,8 +961,9 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
   return metrics.documentSize( mode, format.orientation() ).height();
 }
 
-void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer::Component component, const QgsTextFormat &format, const QgsTextDocumentMetrics &metrics, Qgis::TextLayoutMode mode )
+void QgsTextRenderer::drawBackground( QgsRenderContext &context, const QgsTextRenderer::Component &c, const QgsTextFormat &format, const QgsTextDocumentMetrics &metrics, Qgis::TextLayoutMode mode )
 {
+  Component component = c;
   QgsTextBackgroundSettings background = format.background();
 
   QPainter *prevP = context.painter();

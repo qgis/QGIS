@@ -114,7 +114,7 @@ QString QgsProcessingModelAlgorithm::helpUrl() const
 QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext, QString &error, const QgsProcessingContext *context ) const
 {
   error.clear();
-  auto evaluateSources = [ =, &error ]( const QgsProcessingParameterDefinition * def )->QVariant
+  auto evaluateSources = [&child, &modelParameters, &results, &error, &expressionContext]( const QgsProcessingParameterDefinition * def )->QVariant
   {
     const QgsProcessingModelChildParameterSources paramSources = child.parameterSources().value( def->name() );
 
