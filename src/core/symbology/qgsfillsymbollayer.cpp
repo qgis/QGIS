@@ -2704,7 +2704,6 @@ QImage QgsLinePatternFillSymbolLayer::toTiledPatternImage() const
   layerClone->drawPreviewIcon( symbolContext, pixmap.size() );
   painter.end();
   return pixmap.toImage();
-  return QImage();
 }
 
 double QgsLinePatternFillSymbolLayer::estimateMaxBleed( const QgsRenderContext & ) const
