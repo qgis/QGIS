@@ -293,14 +293,14 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      *
      * \since QGIS 3.10
      */
-    static QgsLineString *fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments = 30 ) SIP_FACTORY;
+    static std::unique_ptr< QgsLineString > fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments = 30 );
 
     /**
      * Returns a new linestring from a QPolygonF \a polygon input.
      *
      * \since QGIS 3.10
      */
-    static QgsLineString *fromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
+    static std::unique_ptr< QgsLineString > fromQPolygonF( const QPolygonF &polygon );
 #ifndef SIP_RUN
   private:
     bool fuzzyHelper( double epsilon,
@@ -1204,7 +1204,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      *
      * \since QGIS 3.36
      */
-    QgsLineString *measuredLine( double start, double end ) const SIP_FACTORY;
+    std::unique_ptr< QgsLineString > measuredLine( double start, double end ) const;
 
     /**
      * Returns a copy of this line with all missing (NaN) m values interpolated
@@ -1219,7 +1219,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \see lineLocatePointByM()
      * \since QGIS 3.38
      */
-    QgsLineString *interpolateM( bool use3DDistance = true ) const SIP_FACTORY;
+    std::unique_ptr< QgsLineString > interpolateM( bool use3DDistance = true ) const;
 
     /**
      * Attempts to locate a point on the linestring by m value.
