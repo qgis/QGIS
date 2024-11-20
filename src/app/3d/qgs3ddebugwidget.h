@@ -34,36 +34,12 @@ class Qgs3DDebugWidget : public QWidget, Ui::Q3DDebugWidget
     */
     void setMapSettings( Qgs3DMapSettings *mapSettings );
 
-  signals:
-
-    /**
-    * Emitted when the near plane value is changed by user in the QDoubleSpinBox widget.
-    */
-    void nearPlaneChanged( float value );
-
-    /**
-    * Emitted when the far plane value is changed by user in the QDoubleSpinBox widget.
-    */
-    void farPlaneChanged( float value );
-
-    /**
-    * Emitted when the camera position value is changed by user in the QDoubleSpinBox widget.
-    */
-    void positionChanged( const QVector3D &position );
-
   public slots:
 
     /**
     * Function updates the camera info values when the user moves in the scene.
     */
     void updateFromCamera() const;
-
-  private slots:
-
-    /**
-    * Necessary function which casts the new camera info value from signals and either emits new signals or changes the values directly.
-    */
-    void castCameraInputValue( double value );
 
   private:
     Qgs3DMapSettings *mMap = nullptr;
