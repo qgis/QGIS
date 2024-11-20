@@ -445,6 +445,11 @@ void QgsProcessingAlgorithm::removeParameter( const QString &name )
 
 bool QgsProcessingAlgorithm::addOutput( QgsProcessingOutputDefinition *definition )
 {
+  return addOutput( std::unique_ptr<QgsProcessingOutputDefinition>( definition ) );
+}
+
+bool QgsProcessingAlgorithm::addOutput( std::unique_ptr<QgsProcessingOutputDefinition> definition )
+{
   if ( !definition )
     return false;
 
@@ -452,11 +457,10 @@ bool QgsProcessingAlgorithm::addOutput( QgsProcessingOutputDefinition *definitio
   if ( QgsProcessingAlgorithm::outputDefinition( definition->name() ) )
   {
     QgsMessageLog::logMessage( QObject::tr( "Duplicate output %1 registered for alg %2" ).arg( definition->name(), id() ), QObject::tr( "Processing" ) );
-    delete definition;
     return false;
   }
 
-  mOutputs << definition;
+  mOutputs << definition.release();
   return true;
 }
 

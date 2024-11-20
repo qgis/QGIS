@@ -555,6 +555,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
     bool addOutput( QgsProcessingOutputDefinition *outputDefinition SIP_TRANSFER ) SIP_HOLDGIL;
 
     /**
+     * Same as above addOutput(QgsProcessingOutputDefinition*), but using
+     * a smart pointer for safer use.
+     */
+    bool addOutput( std::unique_ptr<QgsProcessingOutputDefinition> outputDefinition ) SIP_SKIP;
+
+    /**
      * Prepares the algorithm to run using the specified \a parameters. Algorithms should implement
      * their logic for evaluating parameter values here. The evaluated parameter results should
      * be stored in member variables ready for a call to processAlgorithm().
