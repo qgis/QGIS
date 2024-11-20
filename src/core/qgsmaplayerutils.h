@@ -28,6 +28,7 @@ class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 class QgsCoordinateTransformContext;
 class QgsAbstractDatabaseProviderConnection;
+class QgsGeometry;
 
 /**
  * \ingroup core
