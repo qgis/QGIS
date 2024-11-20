@@ -70,7 +70,7 @@ QgsAmbientOcclusionRenderEntity::QgsAmbientOcclusionRenderEntity( Qt3DRender::QT
       randomFloats( generator ) * 2.0 - 1.0
     );
     sample.normalize();
-    float scale = static_cast< float >( i ) / kernelSize;
+    float scale = static_cast< float >( i ) /static_cast< float >( kernelSize );
     scale = 0.1 + 0.9 * scale * scale;
     sample *= scale;
     ssaoKernelValues.push_back( sample );
