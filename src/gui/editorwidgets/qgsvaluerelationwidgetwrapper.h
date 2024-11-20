@@ -196,6 +196,16 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
   private:
     void updateValues( const QVariant &value, const QVariantList & = QVariantList() ) override;
 
+    /**
+     * Set widget wrapper value, called by updateValues()
+     * \param forceComboInsertion if TRUE \a value would be inserted even if it doesn't exist in
+     * combobox items and would appear as '(value)', else value would not be inserted. This has
+     * no effects for widgets other than combobox because other widgets have different behavior:
+     *
+     * - line edit displays '(no selection)' if value doesn't exist
+     * - table widget would check only items existing in value
+     */
+    void updateValue( const QVariant &value, bool forceComboInsertion );
 
     /**
      * Returns the value configured in `NofColumns` or 1 if not
