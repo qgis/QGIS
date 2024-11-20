@@ -30,7 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <QString>
 #include <QVector>
 #include <QFlags>
-
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
+#include <QRandomGenerator>
+#endif
 #include "o0baseauth.h"
 
 /**
@@ -82,7 +84,7 @@ public:
         ProtectionHash     /*!< A cryptographic hash is used to verify the integrity of the data. This method produces a much stronger, but longer check */
     };
     /**
-      Error describes the type of error that occurred.
+      Error describes the type of error that occured.
       */
     enum Error {
         ErrorNoError,         /*!< No error occurred. */
@@ -175,7 +177,7 @@ public:
       Decrypts a cyphertext string encrypted with this class with the set key back to the
       plain text version.
 
-      If an error occurred, such as non-matching keys between encryption and decryption,
+      If an error occured, such as non-matching keys between encryption and decryption,
       an empty string or a string containing nonsense may be returned.
       */
     QString decryptToString(const QString& cyphertext) ;
@@ -183,7 +185,7 @@ public:
       Decrypts a cyphertext string encrypted with this class with the set key back to the
       plain text version.
 
-      If an error occurred, such as non-matching keys between encryption and decryption,
+      If an error occured, such as non-matching keys between encryption and decryption,
       an empty string or a string containing nonsense may be returned.
       */
     QByteArray decryptToByteArray(const QString& cyphertext) ;
@@ -191,7 +193,7 @@ public:
       Decrypts a cyphertext binary encrypted with this class with the set key back to the
       plain text version.
 
-      If an error occurred, such as non-matching keys between encryption and decryption,
+      If an error occured, such as non-matching keys between encryption and decryption,
       an empty string or a string containing nonsense may be returned.
       */
     QString decryptToString(QByteArray cypher) ;
@@ -199,7 +201,7 @@ public:
       Decrypts a cyphertext binary encrypted with this class with the set key back to the
       plain text version.
 
-      If an error occurred, such as non-matching keys between encryption and decryption,
+      If an error occured, such as non-matching keys between encryption and decryption,
       an empty string or a string containing nonsense may be returned.
       */
     QByteArray decryptToByteArray(QByteArray cypher) ;
@@ -221,6 +223,9 @@ private:
     CompressionMode m_compressionMode;
     IntegrityProtectionMode m_protectionMode;
     Error m_lastError;
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
+    QRandomGenerator m_rand;
+#endif
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(O0SimpleCrypt::CryptoFlags)
 

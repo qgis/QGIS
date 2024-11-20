@@ -7,7 +7,6 @@
 #endif
 
 #include "o2surveymonkey.h"
-#include "o2globals.h"
 
 static const char *SMEndpoint = "https://api.surveymonkey.net/oauth/authorize";
 static const char *SMTokenUrl = "https://api.surveymonkey.net/oauth/token";

@@ -30,6 +30,9 @@ public:
     int callbackTries();
     void setCallbackTries(int maxtries);
 
+    QString uniqueState();
+    void setUniqueState(const QString &state);
+
 Q_SIGNALS:
     void verificationReceived(QMap<QString, QString>);
     void serverClosed(bool); // whether it has found parameters
@@ -45,6 +48,7 @@ protected:
     int timeout_;
     int maxtries_;
     int tries_;
+    QString uniqueState_;
 };
 
 #endif // O2REPLYSERVER_H
