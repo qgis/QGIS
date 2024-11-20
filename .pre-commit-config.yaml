@@ -1,0 +1,23 @@
+exclude: ".venv|tests/dev/|tests/fixtures/"
+fail_fast: false
+repos:
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.19.0
+    hooks:
+      - id: pyupgrade
+        args: [--py39-plus]
+
+  - repo: https://github.com/psf/black
+    rev: 24.10.0
+    hooks:
+      - id: black
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: ["--profile", "black", "--filter-files"]
+
+ci:
+  autofix_prs: true
+  autoupdate_schedule: quarterly
