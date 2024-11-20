@@ -474,6 +474,20 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     QgsMapLayerTemporalProperties *temporalProperties() override;
     QgsMapLayerElevationProperties *elevationProperties() override;
 
+    /**
+     * Compute the \a min \a max values along \a band according to MinMaxOrigin parameters \a mmo
+     * and \a extent.
+     * \note not available in Python bindings
+     *
+     * \since QGIS 3.42
+     */
+    void computeMinMax( int band,
+                        const QgsRasterMinMaxOrigin &mmo,
+                        QgsRasterMinMaxOrigin::Limits limits,
+                        const QgsRectangle &extent,
+                        int sampleSize,
+                        double &min, double &max ) SIP_SKIP;
+
   public slots:
     void showStatusMessage( const QString &message );
 
@@ -526,13 +540,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
 
     //! Refresh renderer
     void refreshRenderer( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent );
-
-    void computeMinMax( int band,
-                        const QgsRasterMinMaxOrigin &mmo,
-                        QgsRasterMinMaxOrigin::Limits limits,
-                        const QgsRectangle &extent,
-                        int sampleSize,
-                        double &min, double &max );
 
     /**
      * Updates the data source of the layer. The layer's renderer and legend will be preserved only

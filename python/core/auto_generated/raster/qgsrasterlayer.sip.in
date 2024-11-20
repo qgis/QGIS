@@ -430,6 +430,7 @@ to be drawn outside the data extent.
     virtual QgsMapLayerElevationProperties *elevationProperties();
 
 
+
   public slots:
     void showStatusMessage( const QString &message );
 
