@@ -732,7 +732,7 @@ QgsLineString *doDensify( const QgsLineString *ring, int extraNodesPerSegment = 
     if ( extraNodesPerSegment < 0 )
     {
       // distance mode
-      extraNodesThisSegment = std::floor( QgsGeometryUtilsBase::distance2D( x2, y2, x1, y1 ) / distance );
+      extraNodesThisSegment = std::floor( QgsGeometryUtilsBase::distance2D( x1, y1, x2, y2 ) / distance );
       if ( extraNodesThisSegment >= 1 )
         multiplier = 1.0 / ( extraNodesThisSegment + 1 );
     }

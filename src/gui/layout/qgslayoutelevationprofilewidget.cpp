@@ -714,7 +714,7 @@ void QgsLayoutElevationProfileWidget::setGuiElementValues()
     mDistanceAxisMinorLinesSymbolButton->setSymbol( mProfile->plot()->xAxis().gridMinorSymbol()->clone() );
   if ( mProfile->plot()->yAxis().gridMajorSymbol() )
     mElevationAxisMajorLinesSymbolButton->setSymbol( mProfile->plot()->yAxis().gridMajorSymbol()->clone() );
-  if ( mProfile->plot()->yAxis().gridMajorSymbol() )
+  if ( mProfile->plot()->yAxis().gridMinorSymbol() )
     mElevationAxisMinorLinesSymbolButton->setSymbol( mProfile->plot()->yAxis().gridMinorSymbol()->clone() );
 
   mDistanceAxisLabelFontButton->setTextFormat( mProfile->plot()->xAxis().textFormat() );
