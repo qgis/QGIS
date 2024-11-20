@@ -56,6 +56,11 @@ const QgsDataProvider *QgsPluginLayer::dataProvider() const
   return mDataProvider;
 }
 
+QIcon QgsPluginLayer::icon() const
+{
+  return QIcon();
+}
+
 //
 // QgsPluginLayerDataProvider
 //
