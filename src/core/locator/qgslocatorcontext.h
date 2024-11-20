@@ -30,6 +30,12 @@
  */
 class CORE_EXPORT QgsLocatorContext
 {
+    Q_GADGET
+
+    Q_PROPERTY( QgsRectangle targetExtent MEMBER targetExtent )
+    Q_PROPERTY( QgsCoordinateReferenceSystem targetExtentCrs MEMBER targetExtentCrs )
+    Q_PROPERTY( bool usingPrefix MEMBER usingPrefix )
+
   public:
 
     QgsLocatorContext() = default;
