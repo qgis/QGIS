@@ -519,6 +519,7 @@ occur.
 .. seealso:: :py:func:`addOutput`
 %End
 
+
     void removeParameter( const QString &name ) /HoldGIL/;
 %Docstring
 Removes the parameter with matching ``name`` from the algorithm, and deletes any existing
