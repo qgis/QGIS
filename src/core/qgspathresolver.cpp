@@ -228,12 +228,12 @@ QString QgsPathResolver::setPathWriter( const std::function<QString( const QStri
 
 bool QgsPathResolver::removePathWriter( const QString &id )
 {
-  const size_t prevCount = sCustomWriters->size();
-  sCustomWriters()->erase( std::remove_if( sCustomWriters->begin(), sCustomWriters->end(), [id]( std::pair< QString, std::function< QString( const QString & ) > > &a )
+  const size_t prevCount = sCustomWriters()->size();
+  sCustomWriters()->erase( std::remove_if( sCustomWriters()->begin(), sCustomWriters()->end(), [id]( std::pair< QString, std::function< QString( const QString & ) > > &a )
   {
     return a.first == id;
-  } ), sCustomWriters->end() );
-  return prevCount != sCustomWriters->size();
+  } ), sCustomWriters()->end() );
+  return prevCount != sCustomWriters()->size();
 }
 
 QString QgsPathResolver::writePath( const QString &s ) const
