@@ -221,6 +221,7 @@
      <addaction name="mActionAddVectorTileLayer"/>
      <addaction name="mActionAddPointCloudLayer"/>
      <addaction name="mActionAddGpsLayer"/>
+     <addaction name="mActionAddStacLayer"/>
     </widget>
     <widget class="QMenu" name="mMenuFilterTable">
      <property name="title">
@@ -467,6 +468,7 @@
    <addaction name="mActionAddWmsLayer"/>
    <addaction name="mActionAddWcsLayer"/>
    <addaction name="mActionAddWfsLayer"/>
+   <addaction name="mActionAddStacLayer"/>
   </widget>
   <widget class="QToolBar" name="mDigitizeToolBar">
    <property name="windowTitle">
@@ -3343,6 +3345,15 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="toolTip">
     <string>Elevation Controller Panel</string>
+   </property>
+  </action>
+  <action name="mActionAddStacLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconStac.svg</normaloff>:/images/themes/default/mIconStac.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add layer from STAC catalog…</string>
    </property>
   </action>
  </widget>

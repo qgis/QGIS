@@ -509,7 +509,11 @@ set(QGIS_GUI_SRCS
   stac/qgsstacconnectiondialog.cpp
   stac/qgsstacdataitemguiprovider.cpp
   stac/qgsstacdownloadassetsdialog.cpp
+  stac/qgsstacitemlistmodel.cpp
   stac/qgsstacobjectdetailsdialog.cpp
+  stac/qgsstacsearchparametersdialog.cpp
+  stac/qgsstacsourceselect.cpp
+  stac/qgsstacsourceselectprovider.cpp
 
   tableeditor/qgstableeditordialog.cpp
   tableeditor/qgstableeditorformattingwidget.cpp
@@ -1570,7 +1574,11 @@ set(QGIS_GUI_HDRS
   stac/qgsstacconnectiondialog.h
   stac/qgsstacdataitemguiprovider.h
   stac/qgsstacdownloadassetsdialog.h
+  stac/qgsstacitemlistmodel.h
   stac/qgsstacobjectdetailsdialog.h
+  stac/qgsstacsearchparametersdialog.h
+  stac/qgsstacsourceselect.h
+  stac/qgsstacsourceselectprovider.h
 
   tableeditor/qgstableeditordialog.h
   tableeditor/qgstableeditorformattingwidget.h

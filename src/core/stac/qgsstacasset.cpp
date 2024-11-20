@@ -52,3 +52,25 @@ QStringList QgsStacAsset::roles() const
 {
   return mRoles;
 }
+
+bool QgsStacAsset::isCloudOptimized() const
+{
+  if ( mMediaType == QLatin1String( "image/tiff; application=geotiff; profile=cloud-optimized" ) ||
+       mMediaType == QLatin1String( "image/vnd.stac.geotiff; cloud-optimized=true" ) ||
+       mMediaType == QLatin1String( "application/vnd.laszip+copc" ) ||
+       mHref.endsWith( QLatin1String( "/ept.json" ) ) )
+    return true;
+  return false;
+}
+
+QString QgsStacAsset::formatName() const
+{
+  if ( mMediaType == QLatin1String( "image/tiff; application=geotiff; profile=cloud-optimized" ) ||
+       mMediaType == QLatin1String( "image/vnd.stac.geotiff; cloud-optimized=true" ) )
+    return QStringLiteral( "COG" );
+  else if ( mMediaType == QLatin1String( "application/vnd.laszip+copc" ) )
+    return QStringLiteral( "COPC" );
+  else if ( mHref.endsWith( QLatin1String( "/ept.json" ) ) )
+    return QStringLiteral( "EPT" );
+  return QString();
+}

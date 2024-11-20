@@ -51,6 +51,24 @@ int QgsStacController::fetchItemCollectionAsync( const QUrl &url )
   return reply->property( "requestId" ).toInt();
 }
 
+int QgsStacController::fetchCollectionsAsync( const QUrl &url )
+{
+  QNetworkReply *reply = fetchAsync( url );
+  connect( reply, &QNetworkReply::finished, this, &QgsStacController::handleCollectionsReply );
+
+  return reply->property( "requestId" ).toInt();
+}
+
+void QgsStacController::cancelPendingAsyncRequests()
+{
+  for ( QNetworkReply *reply : std::as_const( mReplies ) )
+  {
+    reply->abort();
+    reply->deleteLater();
+  }
+  mReplies.clear();
+}
+
 QNetworkReply *QgsStacController::fetchAsync( const QUrl &url )
 {
   QNetworkRequest req( url );
@@ -153,6 +171,35 @@ void QgsStacController::handleItemCollectionReply()
   mReplies.removeOne( reply );
 }
 
+void QgsStacController::handleCollectionsReply()
+{
+  QNetworkReply *reply = qobject_cast<QNetworkReply *>( QObject::sender() );
+  if ( !reply )
+    return;
+
+  const int requestId = reply->property( "requestId" ).toInt();
+  QgsDebugMsgLevel( QStringLiteral( "Finished STAC request with id %1" ).arg( requestId ), 2 );
+
+  if ( reply->error() != QNetworkReply::NoError )
+  {
+    emit finishedCollectionsRequest( requestId, reply->errorString() );
+    reply->deleteLater();
+    mReplies.removeOne( reply );
+    return;
+  }
+
+  const QByteArray data = reply->readAll();
+  QgsStacParser parser;
+  parser.setData( data );
+  parser.setBaseUrl( reply->url() );
+
+  QgsStacCollections *cols = parser.collections();
+  mFetchedCollections.insert( requestId, cols );
+  emit finishedCollectionsRequest( requestId, parser.error() );
+  reply->deleteLater();
+  mReplies.removeOne( reply );
+}
+
 QgsStacObject *QgsStacController::takeStacObject( int requestId )
 {
   return mFetchedStacObjects.take( requestId );
@@ -161,6 +208,11 @@ QgsStacObject *QgsStacController::takeStacObject( int requestId )
 QgsStacItemCollection *QgsStacController::takeItemCollection( int requestId )
 {
   return mFetchedItemCollections.take( requestId );
+}
+
+QgsStacCollections *QgsStacController::takeCollections( int requestId )
+{
+  return mFetchedCollections.take( requestId );
 }
 
 QgsStacObject *QgsStacController::fetchStacObject( const QUrl &url, QString *error )

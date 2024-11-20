@@ -108,6 +108,21 @@ class CORE_EXPORT QgsStacController : public QObject
     int fetchItemCollectionAsync( const QUrl &url );
 
     /**
+     * Initiates an asynchronous request for a Collections collection using the \a url
+     * and returns an associated request id.
+     * When the request is completed, the finishedCollectionsRequest() signal is fired
+     * and the collections can be accessed with takeCollections()
+     * \since QGIS 3.42
+     */
+    int fetchCollectionsAsync( const QUrl &url );
+
+    /**
+     * Cancels all pending async requests
+     * \since QGIS 3.42
+     */
+    void cancelPendingAsyncRequests();
+
+    /**
      * Returns the STAC object fetched with the specified \a requestId.
      * It should be used after the finishedStacObjectRequest signal is fired to get the fetched STAC object.
      * Returns NULLPTR if the requestId was not found, request was canceled, request failed or parsing the STAC object failed.
@@ -126,6 +141,17 @@ class CORE_EXPORT QgsStacController : public QObject
      * \see finishedItemCollectionRequest
      */
     QgsStacItemCollection *takeItemCollection( int requestId );
+
+    /**
+     * Returns the collections collection fetched with the specified \a requestId
+     * It should be used after the finishedCollectionsRequest signal is fired to get the fetched STAC collections.
+     * Returns NULLPTR if the requestId was not found, request was canceled, request failed or parsing the STAC object failed.
+     * The caller takes ownership of the returned collections
+     * \see fetchCollectionsAsync
+     * \see finishedCollectionsRequest
+     * \since QGIS 3.42
+     */
+    QgsStacCollections *takeCollections( int requestId );
 
     /**
      * Returns the authentication config id which will be used during the request.
@@ -161,9 +187,21 @@ class CORE_EXPORT QgsStacController : public QObject
      */
     void finishedItemCollectionRequest( int id, QString errorMessage );
 
+    /**
+     * This signal is fired when an async request initiated with fetchCollectionsAsync is finished.
+     * The parsed STAC collections collection can be retrieved using takeCollections
+     * \param id The requestId attribute of the finished request
+     * \param errorMessage Reason the request or parsing of the STAC collections may have failed
+     * \see fetchCollectionsAsync
+     * \see takeCollections
+     * \since QGIS 3.42
+     */
+    void finishedCollectionsRequest( int id, QString errorMessage );
+
   private slots:
     void handleStacObjectReply();
     void handleItemCollectionReply();
+    void handleCollectionsReply();
 
   private:
     QNetworkReply *fetchAsync( const QUrl &url );
@@ -173,6 +211,7 @@ class CORE_EXPORT QgsStacController : public QObject
     QgsHttpHeaders mHeaders;
     QMap< int, QgsStacObject *> mFetchedStacObjects;
     QMap< int, QgsStacItemCollection *> mFetchedItemCollections;
+    QMap< int, QgsStacCollections *> mFetchedCollections;
     QVector<QNetworkReply *> mReplies;
     QString mError;
 };
