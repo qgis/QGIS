@@ -350,8 +350,9 @@ QString QgsExpressionUtils::getFilePathValue( const QVariant &value, const QgsEx
 
 ///@endcond
 
-std::tuple<QMetaType::Type, int> QgsExpressionUtils::determineResultType( const QString &expression, const QgsVectorLayer *layer, const QgsFeatureRequest &r, QgsExpressionContext context, bool *foundFeatures )
+std::tuple<QMetaType::Type, int> QgsExpressionUtils::determineResultType( const QString &expression, const QgsVectorLayer *layer, const QgsFeatureRequest &r, const QgsExpressionContext &c, bool *foundFeatures )
 {
+  QgsExpressionContext context = c;
   QgsFeatureRequest request = r;
   QgsExpression exp( expression );
   request.setFlags( ( exp.needsGeometry() ) ?
