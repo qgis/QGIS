@@ -404,12 +404,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     void refreshContrastEnhancement( const QgsRectangle &extent ) SIP_SKIP;
 
     /**
-     * \brief Refresh renderer with new extent, if needed
-     *  \note not available in Python bindings
-     */
-    void refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent ) SIP_SKIP;
-
-    /**
      * Returns the string (typically sql) used to define a subset of the layer.
      * \returns The subset string or null QString if not implemented by the provider
      * \since QGIS 3.12
@@ -538,9 +532,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
                                  bool generateLookupTableFlag,
                                  QgsRasterRenderer *rasterRenderer );
 
-    //! Refresh renderer
-    void refreshRenderer( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent );
-
     /**
      * Updates the data source of the layer. The layer's renderer and legend will be preserved only
      * if the geometry type of the new data source matches the current geometry type of the layer.
@@ -591,9 +582,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     Qgis::RasterLayerType mRasterType = Qgis::RasterLayerType::GrayOrUndefined;
 
     std::unique_ptr< QgsRasterPipe > mPipe;
-
-    //! To save computations and possible infinite cycle of notifications
-    QgsRectangle mLastRectangleUsedByRefreshContrastEnhancementIfNeeded;
 
     QDomDocument mOriginalStyleDocument;
     QDomElement mOriginalStyleElement;

@@ -354,7 +354,6 @@ Set contrast enhancement algorithm
 %End
 
 
-
     virtual QString subsetString() const;
 %Docstring
 Returns the string (typically sql) used to define a subset of the layer.

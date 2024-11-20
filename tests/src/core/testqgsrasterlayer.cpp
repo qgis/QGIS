@@ -1008,15 +1008,16 @@ void TestQgsRasterLayer::testRefreshRendererIfNeeded()
   QVERIFY( dynamic_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() ) );
   mMapSettings->setLayers( QList<QgsMapLayer *>() << mpLandsatRasterLayer );
   mMapSettings->setExtent( mpLandsatRasterLayer->extent() );
-  const double initMinVal = static_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->minimumValue();
+  const double initRedMinVal = static_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->minimumValue();
+  const double initRedMaxVal = static_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->maximumValue();
+  const double initGreenMinVal = static_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() )->greenContrastEnhancement()->minimumValue();
+  const double initGreenMaxVal = static_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() )->greenContrastEnhancement()->maximumValue();
+  const double initBlueMinVal = static_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() )->blueContrastEnhancement()->minimumValue();
+  const double initBlueMaxVal = static_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() )->blueContrastEnhancement()->maximumValue();
 
   // Should do nothing
   const QgsRectangle newExtent = QgsRectangle( 785000, 3340000, 785100, 3340100 );
   QVERIFY( !mpLandsatRasterLayer->renderer()->needsRefresh( newExtent ) );
-  mpLandsatRasterLayer->refreshRendererIfNeeded( mpLandsatRasterLayer->renderer(), newExtent );
-  QCOMPARE( mpLandsatRasterLayer->renderer()->minMaxOrigin().limits(), QgsRasterMinMaxOrigin::MinMax );
-  const double minVal = static_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->minimumValue();
-  QGSCOMPARENEAR( initMinVal, minVal, 1e-5 );
 
   // Change to UpdatedCanvas
   QgsRasterMinMaxOrigin mmo = mpLandsatRasterLayer->renderer()->minMaxOrigin();
@@ -1025,9 +1026,42 @@ void TestQgsRasterLayer::testRefreshRendererIfNeeded()
   mpLandsatRasterLayer->renderer()->setMinMaxOrigin( mmo );
   QCOMPARE( mpLandsatRasterLayer->renderer()->minMaxOrigin().extent(), QgsRasterMinMaxOrigin::UpdatedCanvas );
   QVERIFY( mpLandsatRasterLayer->renderer()->needsRefresh( newExtent ) );
-  mpLandsatRasterLayer->refreshRendererIfNeeded( mpLandsatRasterLayer->renderer(), newExtent );
-  const double newMinVal = static_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->minimumValue();
-  QGSCOMPARENOTNEAR( initMinVal, newMinVal, 1e-5 );
+
+  QList<double> minValues;
+  QList<double> maxValues;
+  for ( const int bandIdx : mpLandsatRasterLayer->renderer()->usesBands() )
+  {
+    double min;
+    double max;
+    mpLandsatRasterLayer->computeMinMax( bandIdx, mmo, mmo.limits(),
+                                         newExtent, static_cast<int>( QgsRasterLayer::SAMPLE_SIZE ),
+                                         min, max );
+    minValues.append( min );
+    maxValues.append( max );
+  }
+
+  const bool refreshed = mpLandsatRasterLayer->renderer()->refresh( newExtent, minValues, maxValues );
+  QVERIFY( refreshed );
+  QVERIFY( !mpLandsatRasterLayer->renderer()->needsRefresh( newExtent ) );
+
+  const double newRedMinVal = static_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->minimumValue();
+  const double newRedMaxVal = static_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->maximumValue();
+  const double newGreenMinVal = static_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() )->greenContrastEnhancement()->minimumValue();
+  const double newGreenMaxVal = static_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() )->greenContrastEnhancement()->maximumValue();
+  const double newBlueMinVal = static_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() )->blueContrastEnhancement()->minimumValue();
+  const double newBlueMaxVal = static_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() )->blueContrastEnhancement()->maximumValue();
+  QGSCOMPARENOTNEAR( initRedMinVal, newRedMinVal, 1e-5 );
+  QGSCOMPARENOTNEAR( initRedMaxVal, newRedMaxVal, 1e-5 );
+  QGSCOMPARENOTNEAR( initGreenMinVal, newGreenMinVal, 1e-5 );
+  QGSCOMPARENOTNEAR( initGreenMaxVal, newGreenMaxVal, 1e-5 );
+  QGSCOMPARENOTNEAR( initBlueMinVal, newBlueMinVal, 1e-5 );
+  QGSCOMPARENOTNEAR( initBlueMaxVal, newBlueMaxVal, 1e-5 );
+  QGSCOMPARENEAR( newRedMinVal, 208.0, 1e-5 );
+  QGSCOMPARENEAR( newRedMaxVal, 225.0, 1e-5 );
+  QGSCOMPARENEAR( newGreenMinVal, 162.0, 1e-5 );
+  QGSCOMPARENEAR( newGreenMaxVal, 172.0, 1e-5 );
+  QGSCOMPARENEAR( newBlueMinVal, 90.0, 1e-5 );
+  QGSCOMPARENEAR( newBlueMaxVal, 94.0, 1e-5 );
 }
 
 void TestQgsRasterLayer::sample()
