@@ -333,8 +333,8 @@ bool QgsMapToolCapture::tracingAddVertex( const QgsPointXY &point )
     {
       const QgsGeometry linear = QgsGeometry( mCaptureCurve.segmentize() );
       const QgsGeometry curved = linear.convertToCurves(
-                                   QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance->value(),
-                                   QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance->value()
+                                   QgsSettingsRegistryCore::settingsDigitizingConvertToCurveDistanceTolerance->value(),
+                                   QgsSettingsRegistryCore::settingsDigitizingConvertToCurveAngleTolerance->value()
                                  );
       if ( QgsWkbTypes::flatType( curved.wkbType() ) != Qgis::WkbType::CompoundCurve )
       {

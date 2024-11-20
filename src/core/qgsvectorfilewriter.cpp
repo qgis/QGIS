@@ -3765,7 +3765,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Qgs
   if ( err != NoError )
     return err;
 
-  return writeAsVectorFormatV2( details, fileName, transformContext, options, errorMessage, newFilename, newLayer );
+  return writeAsVectorFormatV2( details, fileName, transformContext, options, newFilename, newLayer, errorMessage );
 }
 
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV3( QgsVectorLayer *layer, const QString &fileName, const QgsCoordinateTransformContext &transformContext, const QgsVectorFileWriter::SaveVectorOptions &options, QString *errorMessage, QString *newFilename, QString *newLayer )
