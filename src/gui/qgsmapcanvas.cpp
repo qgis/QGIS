@@ -952,7 +952,7 @@ void QgsMapCanvas::rendererJobFinished()
 
     QImage img = mJob->renderedImage();
 
-    // emit renderComplete to get our decorations drawn
+    // emit renderComplete to get our decorations drawn and to handle computed statistics
     QPainter p( &img );
     emit renderComplete( &p );
 

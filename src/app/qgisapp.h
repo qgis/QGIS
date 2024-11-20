@@ -2050,7 +2050,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Activates label property tool
     void changeLabelProperties();
 
-    void renderDecorationItems( QPainter *p );
+    void onRenderComplete( QPainter *p );
     void projectReadDecorationItems();
 
     //! clear out any stuff from project
@@ -2429,6 +2429,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Returns a list of all capture map tools.
      */
     QList< QgsMapToolCapture * > captureTools();
+
+    void renderDecorationItems( QPainter *p ) const;
+
+    void handleRenderedLayerStatistics() const;
 
     QgsScreenHelper *mScreenHelper = nullptr;
 
