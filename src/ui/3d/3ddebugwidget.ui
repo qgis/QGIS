@@ -44,7 +44,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-350</y>
         <width>250</width>
         <height>790</height>
        </rect>
@@ -226,7 +226,7 @@
           <item row="12" column="1">
            <widget class="QDoubleSpinBox" name="mCameraZ">
             <property name="decimals">
-             <number>6</number>
+             <number>2</number>
             </property>
            </widget>
           </item>
@@ -250,7 +250,7 @@
              <enum>QAbstractSpinBox::UpDownArrows</enum>
             </property>
             <property name="decimals">
-             <number>6</number>
+             <number>2</number>
             </property>
            </widget>
           </item>
@@ -260,7 +260,7 @@
              <enum>QAbstractSpinBox::UpDownArrows</enum>
             </property>
             <property name="decimals">
-             <number>6</number>
+             <number>2</number>
             </property>
            </widget>
           </item>
@@ -281,7 +281,7 @@
           <item row="10" column="1">
            <widget class="QDoubleSpinBox" name="mCameraX">
             <property name="decimals">
-             <number>6</number>
+             <number>2</number>
             </property>
            </widget>
           </item>
@@ -309,7 +309,7 @@
           <item row="11" column="1">
            <widget class="QDoubleSpinBox" name="mCameraY">
             <property name="decimals">
-             <number>6</number>
+             <number>2</number>
             </property>
            </widget>
           </item>
@@ -323,21 +323,21 @@
           <item row="13" column="1">
            <widget class="QDoubleSpinBox" name="mLookingX">
             <property name="decimals">
-             <number>6</number>
+             <number>2</number>
             </property>
            </widget>
           </item>
           <item row="14" column="1">
            <widget class="QDoubleSpinBox" name="mLookingY">
             <property name="decimals">
-             <number>6</number>
+             <number>2</number>
             </property>
            </widget>
           </item>
           <item row="15" column="1">
            <widget class="QDoubleSpinBox" name="mLookingZ">
             <property name="decimals">
-             <number>6</number>
+             <number>2</number>
             </property>
            </widget>
           </item>
