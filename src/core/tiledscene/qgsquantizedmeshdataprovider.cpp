@@ -90,7 +90,7 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
   QgsBlockingNetworkRequest request;
   if ( !mAuthCfg.isEmpty() )
     request.setAuthCfg( mAuthCfg );
-  auto respCode = request.get( requestData );
+  const QgsBlockingNetworkRequest::ErrorCode respCode = request.get( requestData );
   if ( respCode != QgsBlockingNetworkRequest::ErrorCode::NoError )
   {
     error.append(
@@ -98,7 +98,7 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
       .arg( request.errorMessage().data() ) );
     return;
   }
-  auto reply = request.reply().content();
+  const QByteArray reply = request.reply().content();
 
   try
   {
@@ -112,7 +112,7 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
       return;
     }
 
-    auto crsString = QString::fromStdString( jsonGet<std::string>( replyJson, "projection" ) );
+    const QString crsString = QString::fromStdString( jsonGet<std::string>( replyJson, "projection" ) );
     mCrs = QgsCoordinateReferenceSystem( crsString );
     if ( !mCrs.isValid() )
     {
@@ -135,12 +135,11 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
       mExtent = mCrs.bounds();
     }
 
-    auto zRange = dummyZRange;
     mBoundingVolume =
       QgsOrientedBox3D::fromBox3D(
         QgsBox3D(
-          mExtent.xMinimum(), mExtent.yMinimum(), zRange.lower(),
-          mExtent.xMaximum(), mExtent.yMaximum(), zRange.upper() ) );
+          mExtent.xMinimum(), mExtent.yMinimum(), dummyZRange.lower(),
+          mExtent.xMaximum(), mExtent.yMaximum(), dummyZRange.upper() ) );
 
     // The TileJSON spec uses "scheme", but some real-world datasets use "schema"
     if ( replyJson.find( "scheme" ) != replyJson.end() )
@@ -190,7 +189,7 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
 
     QgsCoordinateReferenceSystem wgs84( QStringLiteral( "EPSG:4326" ) );
     // Bounds of tile schema in projected coordinates
-    auto crsBounds =
+    const QgsRectangle crsBounds =
       QgsCoordinateTransform( wgs84, mCrs, transformContext )
       .transform( mCrs.bounds() );
     QgsPointXY topLeft( crsBounds.xMinimum(), crsBounds.yMaximum() );
@@ -228,7 +227,7 @@ bool QgsQuantizedMeshMetadata::containsTile( QgsTileXYZ tile ) const
   // be given in TMS-style
   if ( mTileScheme == QLatin1String( "tms" ) )
     tile = tileToTms( tile );
-  for ( auto &range : mAvailableTiles[tile.zoomLevel()] )
+  for ( const QgsTileRange &range : mAvailableTiles[tile.zoomLevel()] )
   {
     if ( range.startColumn() <= tile.column() && range.endColumn() >= tile.column() &&
          range.startRow() <= tile.row() && range.endRow() >= tile.row() )
@@ -273,8 +272,8 @@ QgsTileXYZ QgsQuantizedMeshIndex::decodeTileId( long long id )
 QgsTiledSceneTile QgsQuantizedMeshIndex::rootTile() const
 {
   // Returns virtual tile to paper over tiling schemes which have >1 tile at zoom 0
-  auto tile = QgsTiledSceneTile( ROOT_TILE_ID );
-  auto bounds = mWgs84ToCrs.transform( mMetadata.mCrs.bounds() );
+  QgsTiledSceneTile tile = QgsTiledSceneTile( ROOT_TILE_ID );
+  const QgsRectangle bounds = mWgs84ToCrs.transform( mMetadata.mCrs.bounds() );
   tile.setBoundingVolume(
     QgsOrientedBox3D::fromBox3D(
       QgsBox3D( bounds, mMetadata.dummyZRange.lower(), mMetadata.dummyZRange.upper() ) ) );
@@ -285,16 +284,18 @@ long long QgsQuantizedMeshIndex::parentTileId( long long id ) const
 {
   if ( id == ROOT_TILE_ID )
     return -1;
-  auto tile = decodeTileId( id );
+  const QgsTileXYZ tile = decodeTileId( id );
   if ( tile.zoomLevel() == 0 )
     return ROOT_TILE_ID;
   return encodeTileId( {tile.zoomLevel() - 1, tile.column() / 2, tile.row() / 2} );
 }
 QVector<long long> QgsQuantizedMeshIndex::childTileIds( long long id ) const
 {
-  auto tile = decodeTileId( id );
+  const QgsTileXYZ tile = decodeTileId( id );
   QVector<long long> children;
-  auto x = tile.column(), y = tile.row(), zoom = tile.zoomLevel();
+  const int x = tile.column();
+  const int y = tile.row();
+  const int zoom = tile.zoomLevel();
 
   if ( mMetadata.containsTile( {x * 2, y * 2, zoom + 1} ) )
     children.push_back( encodeTileId( {x * 2, y * 2, zoom + 1} ) );
@@ -309,11 +310,11 @@ QVector<long long> QgsQuantizedMeshIndex::childTileIds( long long id ) const
 }
 QgsTiledSceneTile QgsQuantizedMeshIndex::getTile( long long id )
 {
-  auto xyzTile = decodeTileId( id );
+  QgsTileXYZ xyzTile = decodeTileId( id );
   QgsTiledSceneTile sceneTile( id );
 
-  auto zoomedMatrix = QgsTileMatrix::fromTileMatrix( xyzTile.zoomLevel(), mMetadata.mTileMatrix );
-  auto tileExtent = zoomedMatrix.tileExtent( xyzTile );
+  const QgsTileMatrix zoomedMatrix = QgsTileMatrix::fromTileMatrix( xyzTile.zoomLevel(), mMetadata.mTileMatrix );
+  const QgsRectangle tileExtent = zoomedMatrix.tileExtent( xyzTile );
 
   sceneTile.setBoundingVolume(
     QgsOrientedBox3D::fromBox3D(
@@ -334,8 +335,8 @@ QgsTiledSceneTile QgsQuantizedMeshIndex::getTile( long long id )
   else
   {
     // TODO: Intelligently choose from alternatives. Round robin?
-    auto tileUri = QgsVectorTileUtils::formatXYZUrlTemplate(
-                     mMetadata.mTileUrls[0], xyzTile, zoomedMatrix );
+    const QString tileUri = QgsVectorTileUtils::formatXYZUrlTemplate(
+                              mMetadata.mTileUrls[0], xyzTile, zoomedMatrix );
     sceneTile.setResources( {{"content", tileUri}} );
     sceneTile.setMetadata(
     {
@@ -365,25 +366,25 @@ QgsQuantizedMeshIndex::getTiles( const QgsTiledSceneRequest &request )
             mMetadata.geometricErrorAtZoom( zoomLevel ) > request.requiredGeometricError() )
       zoomLevel++;
   }
-  auto tileMatrix = QgsTileMatrix::fromTileMatrix( zoomLevel, mMetadata.mTileMatrix );
+  const QgsTileMatrix tileMatrix = QgsTileMatrix::fromTileMatrix( zoomLevel, mMetadata.mTileMatrix );
 
   QVector<long long> ids;
   // We can only filter on X and Y
-  auto extent = request.filterBox().extent().toRectangle();
+  const QgsRectangle extent = request.filterBox().extent().toRectangle();
   if ( request.parentTileId() != -1 )
   {
-    auto parentTile = decodeTileId( request.parentTileId() );
+    const QgsTileXYZ parentTile = decodeTileId( request.parentTileId() );
     extent.intersect( tileMatrix.tileExtent( parentTile ) );
   }
 
-  auto tileRange = tileMatrix.tileRangeFromExtent( extent );
+  const QgsTileRange tileRange = tileMatrix.tileRangeFromExtent( extent );
   if ( !tileRange.isValid() )
     return {};
 
   for ( int col = tileRange.startColumn(); col <= tileRange.endColumn(); col++ )
     for ( int row = tileRange.startRow(); row <= tileRange.endRow(); row++ )
     {
-      auto xyzTile = QgsTileXYZ( col, row, zoomLevel );
+      const QgsTileXYZ xyzTile = QgsTileXYZ( col, row, zoomLevel );
       if ( mMetadata.containsTile( xyzTile ) )
         ids.push_back( encodeTileId( xyzTile ) );
     }
@@ -393,7 +394,7 @@ QgsQuantizedMeshIndex::getTiles( const QgsTiledSceneRequest &request )
 Qgis::TileChildrenAvailability
 QgsQuantizedMeshIndex::childAvailability( long long id ) const
 {
-  auto childIds = childTileIds( id );
+  const QVector<long long> childIds = childTileIds( id );
   if ( childIds.count() == 0 )
     return Qgis::TileChildrenAvailability::NoChildren;
   return Qgis::TileChildrenAvailability::Available;
