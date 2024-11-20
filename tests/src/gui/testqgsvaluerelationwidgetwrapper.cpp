@@ -1937,7 +1937,9 @@ void TestQgsValueRelationWidgetWrapper::testMultiEditMode()
   cfg.insert( QStringLiteral( "AllowNull" ), false );
   cfg.insert( QStringLiteral( "OrderByValue" ), false );
   cfg.insert( QStringLiteral( "UseCompleter" ), false );
-  cfg.insert( QStringLiteral( "FilterExpression" ), QStringLiteral( "left(\"name\",4)  = current_value('firstname')" ) );
+
+  // we match only the 3 first character so Jhon and Jhon would work both. Useful for later tests
+  cfg.insert( QStringLiteral( "FilterExpression" ), QStringLiteral( "left(\"name\",3)  = left(current_value('firstname'),3)" ) );
 
   people->setEditorWidgetSetup( 1, QgsEditorWidgetSetup( QStringLiteral( "ValueRelation" ), cfg ) );
 
@@ -1973,6 +1975,14 @@ void TestQgsValueRelationWidgetWrapper::testMultiEditMode()
   QCOMPARE( valueRelationWrapper->mComboBox->model()->data( valueRelationWrapper->mComboBox->model()->index( 0, 0 ), Qt::DisplayRole ), QStringLiteral( "Jhon Carpenter" ) );
   QCOMPARE( valueRelationWrapper->mComboBox->model()->data( valueRelationWrapper->mComboBox->model()->index( 1, 0 ), Qt::DisplayRole ), QStringLiteral( "Jhon F. Kennedy" ) );
   QCOMPARE( valueRelationWrapper->mComboBox->model()->data( valueRelationWrapper->mComboBox->model()->index( 2, 0 ), Qt::DisplayRole ), QStringLiteral( "Jhon Lennon" ) );
+
+  valueRelationWrapper->setValues( QStringLiteral( "Jhon Lennon" ), QVariantList() );
+  QCOMPARE( valueRelationWrapper->mComboBox->currentIndex(), 2 );
+  QCOMPARE( valueRelationWrapper->mComboBox->currentText(), QStringLiteral( "Jhon Lennon" ) );
+
+  firstNameWrapper->setValues( QStringLiteral( "Jho" ), QVariantList() );
+  QCOMPARE( valueRelationWrapper->mComboBox->currentIndex(), 2 );
+  QCOMPARE( valueRelationWrapper->mComboBox->currentText(), QStringLiteral( "Jhon Lennon" ) );
 
   people->rollBack();
   QgsProject::instance()->removeMapLayer( people.get() );
