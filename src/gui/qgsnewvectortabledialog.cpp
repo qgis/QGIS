@@ -191,7 +191,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     mHasZChk->setEnabled( false );
     mHasZChk->setChecked( false );
   }
-  if ( ! hasM && ! hasM )
+  if ( ! hasM && ! hasZ )
   {
     mHasZChk->setVisible( false );
     mHasMChk->setVisible( false );
