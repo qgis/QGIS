@@ -22,6 +22,7 @@ try:
     QgsSymbolLayerUtils.decodeBrushStyle = staticmethod(QgsSymbolLayerUtils.decodeBrushStyle)
     QgsSymbolLayerUtils.encodeSldBrushStyle = staticmethod(QgsSymbolLayerUtils.encodeSldBrushStyle)
     QgsSymbolLayerUtils.decodeSldBrushStyle = staticmethod(QgsSymbolLayerUtils.decodeSldBrushStyle)
+    QgsSymbolLayerUtils.hasSldSymbolizer = staticmethod(QgsSymbolLayerUtils.hasSldSymbolizer)
     QgsSymbolLayerUtils.decodeCoordinateReference = staticmethod(QgsSymbolLayerUtils.decodeCoordinateReference)
     QgsSymbolLayerUtils.encodeCoordinateReference = staticmethod(QgsSymbolLayerUtils.encodeCoordinateReference)
     QgsSymbolLayerUtils.decodeArrowHeadType = staticmethod(QgsSymbolLayerUtils.decodeArrowHeadType)
