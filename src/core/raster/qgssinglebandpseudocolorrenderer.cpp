@@ -493,3 +493,42 @@ bool QgsSingleBandPseudoColorRenderer::canCreateRasterAttributeTable() const
   return true;
 }
 
+bool QgsSingleBandPseudoColorRenderer::refresh( const QgsRectangle &extent, const QList<double> &min, const QList<double> &max, bool force )
+{
+  if ( !needsRefresh( extent ) && !force )
+  {
+    return false;
+  }
+
+  bool refreshed = false;
+  if ( min.size() >= 1 && max.size() >= 1 )
+  {
+    mLastRectangleUsedByRefreshContrastEnhancementIfNeeded = extent;
+
+    // Do not overwrite min/max with NaN if they were already set,
+    // for example when the style was already loaded from a raster attribute table
+    // in that case we need to respect the style from the attribute table and do
+    // not perform any reclassification.
+    bool refreshed = false;
+
+    if ( !std::isnan( min[0] ) )
+    {
+      setClassificationMin( min[0] );
+      refreshed = true;
+    }
+
+    if ( !std::isnan( max[0] ) )
+    {
+      setClassificationMax( max[0] );
+      refreshed = true;
+    }
+
+    QgsColorRampShader *rampShader = dynamic_cast<QgsColorRampShader *>( mShader->rasterShaderFunction() );
+    if ( rampShader && refreshed )
+    {
+      rampShader->classifyColorRamp( mBand, extent, input() );
+    }
+  }
+
+  return refreshed;
+}

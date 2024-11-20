@@ -222,6 +222,7 @@ should be canceled.
 %End
 
 
+
   protected:
 
     void _writeXml( QDomDocument &doc, QDomElement &rasterRendererElem ) const;

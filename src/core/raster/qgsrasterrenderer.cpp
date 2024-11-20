@@ -256,3 +256,14 @@ bool QgsRasterRenderer::needsRefresh( const QgsRectangle &extent ) const
 
   return false;
 }
+
+bool QgsRasterRenderer::refresh( const QgsRectangle &extent, const QList<double> &, const QList<double> &, bool forceRefresh )
+{
+  if ( !needsRefresh( extent ) && !forceRefresh )
+  {
+    return false;
+  }
+
+  mLastRectangleUsedByRefreshContrastEnhancementIfNeeded = extent;
+  return true;
+}

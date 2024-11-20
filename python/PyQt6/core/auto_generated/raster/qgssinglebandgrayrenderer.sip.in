@@ -107,6 +107,7 @@ Ownership of ``settings`` is transferred.
 .. versionadded:: 3.18
 %End
 
+
   private:
     QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer & );
     const QgsSingleBandGrayRenderer &operator=( const QgsSingleBandGrayRenderer & );
