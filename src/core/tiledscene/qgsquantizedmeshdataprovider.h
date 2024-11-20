@@ -70,8 +70,8 @@ class CORE_EXPORT QgsQuantizedMeshMetadata
 class CORE_EXPORT QgsQuantizedMeshIndex : public QgsAbstractTiledSceneIndex
 {
   public:
-    QgsQuantizedMeshIndex( QgsQuantizedMeshMetadata metadata,
-                           QgsCoordinateTransform wgs84ToCrs )
+    QgsQuantizedMeshIndex( const QgsQuantizedMeshMetadata &metadata,
+                           const QgsCoordinateTransform &wgs84ToCrs )
       : mMetadata( metadata ), mWgs84ToCrs( wgs84ToCrs ) {}
     QgsTiledSceneTile rootTile() const override;
     long long parentTileId( long long id ) const override;

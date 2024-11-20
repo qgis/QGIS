@@ -66,7 +66,7 @@ QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri &uri, bool trans
   return conn;
 }
 
-QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
+QgsOracleConn::QgsOracleConn( const QgsDataSourceUri &uri, bool transaction )
   : mRef( 1 )
   , mCurrentUser( QString() )
   , mHasSpatial( -1 )
@@ -78,23 +78,23 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
   // so we don't want login/password here
   mConnInfo = uri.connectionInfo( false );
 
-  uri = QgsDataSourceUri( uri.connectionInfo( true ) );
+  QgsDataSourceUri expandedUri = QgsDataSourceUri( uri.connectionInfo( true ) );
 
-  QString database = databaseName( uri.database(), uri.host(), uri.port() );
+  QString database = databaseName( expandedUri.database(), expandedUri.host(), expandedUri.port() );
   QgsDebugMsgLevel( QStringLiteral( "New Oracle database " ) + database, 2 );
 
   mDatabase = QSqlDatabase::addDatabase( QStringLiteral( "QOCISPATIAL" ), QStringLiteral( "oracle%1" ).arg( snConnections++ ) );
   mDatabase.setDatabaseName( database );
-  QString options = uri.hasParam( QStringLiteral( "dboptions" ) ) ? uri.param( QStringLiteral( "dboptions" ) ) : QStringLiteral( "OCI_ATTR_PREFETCH_ROWS=1000" );
+  QString options = expandedUri.hasParam( QStringLiteral( "dboptions" ) ) ? expandedUri.param( QStringLiteral( "dboptions" ) ) : QStringLiteral( "OCI_ATTR_PREFETCH_ROWS=1000" );
   if ( mTransaction )
     options += ( !options.isEmpty() ? QStringLiteral( ";" ) : QString() ) + QStringLiteral( "COMMIT_ON_SUCCESS=false" );
-  QString workspace = uri.hasParam( QStringLiteral( "dbworkspace" ) ) ? uri.param( QStringLiteral( "dbworkspace" ) ) : QString();
+  QString workspace = expandedUri.hasParam( QStringLiteral( "dbworkspace" ) ) ? expandedUri.param( QStringLiteral( "dbworkspace" ) ) : QString();
   mDatabase.setConnectOptions( options );
-  mDatabase.setUserName( uri.username() );
-  mDatabase.setPassword( uri.password() );
+  mDatabase.setUserName( expandedUri.username() );
+  mDatabase.setPassword( expandedUri.password() );
 
-  QString username = uri.username();
-  QString password = uri.password();
+  QString username = expandedUri.username();
+  QString password = expandedUri.password();
 
   if ( sBrokenConnections.contains( mConnInfo ) )
   {
@@ -130,11 +130,11 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
 
       if ( !username.isEmpty() )
       {
-        uri.setUsername( username );
+        expandedUri.setUsername( username );
       }
 
       if ( !password.isEmpty() )
-        uri.setPassword( password );
+        expandedUri.setPassword( password );
 
       QgsDebugMsgLevel( "Connecting to " + database, 2 );
       mDatabase.setUserName( username );

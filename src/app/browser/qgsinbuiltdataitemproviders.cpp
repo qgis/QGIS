@@ -2519,7 +2519,7 @@ void QgsRelationshipItemGuiProvider::populateContextMenu( QgsDataItem *item, QMe
 
           QPointer< QgsDataItem > itemWeakPointer( item );
 
-          connect( deleteRelationshipAction, &QAction::triggered, this, [ = ]
+          connect( deleteRelationshipAction, &QAction::triggered, this, [relation, md, connectionUri, itemWeakPointer, context]
           {
             if ( QMessageBox::question( nullptr, tr( "Delete Relationship" ),
                                         tr( "Are you sure you want to delete the %1 relationship?" ).arg( relation.name() ),

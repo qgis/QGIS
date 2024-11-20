@@ -504,7 +504,7 @@ class CORE_EXPORT QgsExpressionUtils
      * \param foundFeatures An optional boolean parameter that will be set when features are found.
      * \since QGIS 3.22
      */
-    static std::tuple<QMetaType::Type, int> determineResultType( const QString &expression, const QgsVectorLayer *layer, QgsFeatureRequest request = QgsFeatureRequest(), QgsExpressionContext context = QgsExpressionContext(), bool *foundFeatures = nullptr );
+    static std::tuple<QMetaType::Type, int> determineResultType( const QString &expression, const QgsVectorLayer *layer, const QgsFeatureRequest &request = QgsFeatureRequest(), QgsExpressionContext context = QgsExpressionContext(), bool *foundFeatures = nullptr );
 
   private:
 

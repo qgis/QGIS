@@ -270,7 +270,7 @@ class QgsOracleConn : public QObject
     static QString getLastExecutedQuery( const QSqlQuery &query );
 
   private:
-    explicit QgsOracleConn( QgsDataSourceUri uri, bool transaction );
+    explicit QgsOracleConn( const QgsDataSourceUri &uri, bool transaction );
     ~QgsOracleConn() override;
 
     bool exec( QSqlQuery &qry, const QString &sql, const QVariantList &params );

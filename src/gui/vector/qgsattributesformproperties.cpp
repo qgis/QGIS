@@ -1128,7 +1128,7 @@ QgsAttributesDnDTree::QgsAttributesDnDTree( QgsVectorLayer *layer, QWidget *pare
   connect( this, &QTreeWidget::itemDoubleClicked, this, &QgsAttributesDnDTree::onItemDoubleClicked );
 }
 
-QTreeWidgetItem *QgsAttributesDnDTree::addItem( QTreeWidgetItem *parent, QgsAttributesFormProperties::DnDTreeItemData data, int index, const QIcon &icon )
+QTreeWidgetItem *QgsAttributesDnDTree::addItem( QTreeWidgetItem *parent, const QgsAttributesFormProperties::DnDTreeItemData &data, int index, const QIcon &icon )
 {
   QTreeWidgetItem *newItem = new QTreeWidgetItem( QStringList() << data.name() );
 
@@ -1153,7 +1153,7 @@ QTreeWidgetItem *QgsAttributesDnDTree::addItem( QTreeWidgetItem *parent, QgsAttr
     break;
   }
 
-  newItem->setData( 0, QgsAttributesFormProperties::DnDTreeRole, data );
+  newItem->setData( 0, QgsAttributesFormProperties::DnDTreeRole, QVariant::fromValue( data ) );
   newItem->setText( 0, data.displayName() );
   newItem->setIcon( 0, icon );
 
