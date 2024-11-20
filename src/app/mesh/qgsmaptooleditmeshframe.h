@@ -351,6 +351,9 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QAction *mActionSelectByExpression = nullptr;
     QAction *mActionForceByLines = nullptr;
 
+    QAction *mActionSelectIsolatedVertices = nullptr;
+    QAction *mActionSelectAllVertices = nullptr;
+
     QgsMeshEditForceByLineAction *mWidgetActionForceByLine = nullptr;
     QAction *mActionReindexMesh = nullptr;
 
