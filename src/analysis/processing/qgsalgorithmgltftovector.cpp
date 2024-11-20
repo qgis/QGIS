@@ -384,7 +384,7 @@ QVariantMap QgsGltfToVectorFeaturesAlgorithm::processAlgorithm( const QVariantMa
               {
                 QgsFeature f;
                 f.setGeometry( std::move( geometry ) );
-                polygonSink->addFeature( f, QgsFeatureSink::FastInsert );
+                lineSink->addFeature( f, QgsFeatureSink::FastInsert );
               }
             }
             break;
