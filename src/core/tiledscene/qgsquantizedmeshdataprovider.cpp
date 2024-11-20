@@ -53,7 +53,7 @@ class MissingFieldException : public std::exception
     MissingFieldException( const char *field ) : mField( field ) { }
     const char *what() const noexcept
     {
-      return QString( "Missing field: %1" ).arg( mField ).toLocal8Bit().data();
+      return QString( "Missing field: %1" ).arg( mField ).toLocal8Bit().constData();
     }
   private:
     const char *mField;
@@ -95,7 +95,7 @@ QgsQuantizedMeshMetadata::QgsQuantizedMeshMetadata(
   {
     error.append(
       QObject::tr( "Failed to retrieve quantized mesh tiles metadata: %1" )
-      .arg( request.errorMessage().data() ) );
+      .arg( request.errorMessage() ) );
     return;
   }
   const QByteArray reply = request.reply().content();
