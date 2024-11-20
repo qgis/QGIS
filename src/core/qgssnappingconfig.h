@@ -98,7 +98,7 @@ class CORE_EXPORT QgsSnappingConfig
      * \deprecated QGIS 3.26. Use snappingTypeToIcon instead.
      * \since QGIS 3.20
      */
-    Q_DECL_ static QIcon snappingTypeFlagToIcon( Qgis::SnappingType type ) SIP_DEPRECATED {return snappingTypeToIcon( type );}
+    Q_DECL_DEPRECATED static QIcon snappingTypeFlagToIcon( Qgis::SnappingType type ) SIP_DEPRECATED {return snappingTypeToIcon( type );}
 
     /**
      * \ingroup core
