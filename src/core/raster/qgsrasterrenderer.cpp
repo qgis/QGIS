@@ -244,3 +244,15 @@ bool QgsRasterRenderer::accept( QgsStyleEntityVisitorInterface * ) const
 {
   return true;
 }
+
+bool QgsRasterRenderer::needsRefresh( const QgsRectangle &extent ) const
+{
+  if ( mLastRectangleUsedByRefreshContrastEnhancementIfNeeded != extent &&
+       mMinMaxOrigin.limits() != QgsRasterMinMaxOrigin::None &&
+       mMinMaxOrigin.extent() == QgsRasterMinMaxOrigin::UpdatedCanvas )
+  {
+    return true;
+  }
+
+  return false;
+}

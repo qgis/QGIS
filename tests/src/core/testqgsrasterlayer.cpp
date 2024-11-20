@@ -1012,6 +1012,7 @@ void TestQgsRasterLayer::testRefreshRendererIfNeeded()
 
   // Should do nothing
   const QgsRectangle newExtent = QgsRectangle( 785000, 3340000, 785100, 3340100 );
+  QVERIFY( !mpLandsatRasterLayer->renderer()->needsRefresh( newExtent ) );
   mpLandsatRasterLayer->refreshRendererIfNeeded( mpLandsatRasterLayer->renderer(), newExtent );
   QCOMPARE( mpLandsatRasterLayer->renderer()->minMaxOrigin().limits(), QgsRasterMinMaxOrigin::MinMax );
   const double minVal = static_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->minimumValue();
@@ -1023,6 +1024,7 @@ void TestQgsRasterLayer::testRefreshRendererIfNeeded()
   mmo.setStatAccuracy( QgsRasterMinMaxOrigin::Exact );
   mpLandsatRasterLayer->renderer()->setMinMaxOrigin( mmo );
   QCOMPARE( mpLandsatRasterLayer->renderer()->minMaxOrigin().extent(), QgsRasterMinMaxOrigin::UpdatedCanvas );
+  QVERIFY( mpLandsatRasterLayer->renderer()->needsRefresh( newExtent ) );
   mpLandsatRasterLayer->refreshRendererIfNeeded( mpLandsatRasterLayer->renderer(), newExtent );
   const double newMinVal = static_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->minimumValue();
   QGSCOMPARENOTNEAR( initMinVal, newMinVal, 1e-5 );
