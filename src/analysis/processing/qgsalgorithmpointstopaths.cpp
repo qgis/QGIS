@@ -62,27 +62,29 @@ QString QgsPointsToPathsAlgorithm::groupId() const
 
 void QgsPointsToPathsAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "CLOSE_PATH" ), QObject::tr( "Create closed paths" ), false, true ) );
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "ORDER_EXPRESSION" ), QObject::tr( "Order expression" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "NATURAL_SORT" ), QObject::tr( "Sort text containing numbers naturally" ), false, true ) );
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "GROUP_EXPRESSION" ), QObject::tr( "Path group expression" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Paths" ), Qgis::ProcessingSourceType::VectorLine ) );
+  addParameter( std::make_unique<QgsProcessingParameterFeatureSource>( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
+  addParameter( std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "CLOSE_PATH" ), QObject::tr( "Create closed paths" ), false, true ) );
+  addParameter( std::make_unique<QgsProcessingParameterExpression>( QStringLiteral( "ORDER_EXPRESSION" ), QObject::tr( "Order expression" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
+  addParameter( std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "NATURAL_SORT" ), QObject::tr( "Sort text containing numbers naturally" ), false, true ) );
+  addParameter( std::make_unique<QgsProcessingParameterExpression>( QStringLiteral( "GROUP_EXPRESSION" ), QObject::tr( "Path group expression" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
+  addParameter( std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "OUTPUT" ), QObject::tr( "Paths" ), Qgis::ProcessingSourceType::VectorLine ) );
   // TODO QGIS 4: remove parameter. move logic to separate algorithm if needed.
-  addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT_TEXT_DIR" ), QObject::tr( "Directory for text output" ), QVariant(), true, false ) );
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NUM_PATHS" ), QObject::tr( "Number of paths" ) ) );
+  addParameter( std::make_unique<QgsProcessingParameterFolderDestination>( QStringLiteral( "OUTPUT_TEXT_DIR" ), QObject::tr( "Directory for text output" ), QVariant(), true, false ) );
+  addOutput( std::make_unique<QgsProcessingOutputNumber>( QStringLiteral( "NUM_PATHS" ), QObject::tr( "Number of paths" ) ) );
 
   // backwards compatibility parameters
   // TODO QGIS 4: remove compatibility parameters and their logic
-  QgsProcessingParameterField *orderField = new QgsProcessingParameterField( QStringLiteral( "ORDER_FIELD" ), QObject::tr( "Order field" ), QVariant(), QString(), Qgis::ProcessingFieldParameterDataType::Any, false, true );
+  auto orderField = std::make_unique<QgsProcessingParameterField>( QStringLiteral( "ORDER_FIELD" ), QObject::tr( "Order field" ), QVariant(), QString(), Qgis::ProcessingFieldParameterDataType::Any, false, true );
   orderField->setFlags( orderField->flags() | Qgis::ProcessingParameterFlag::Hidden );
-  addParameter( orderField );
-  QgsProcessingParameterField *groupField = new QgsProcessingParameterField( QStringLiteral( "GROUP_FIELD" ), QObject::tr( "Group field" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, false, true );
+  addParameter( std::move( orderField ) );
+
+  auto groupField = std::make_unique<QgsProcessingParameterField>( QStringLiteral( "GROUP_FIELD" ), QObject::tr( "Group field" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Any, false, true );
   groupField->setFlags( groupField->flags() | Qgis::ProcessingParameterFlag::Hidden );
-  addParameter( groupField );
-  QgsProcessingParameterString *dateFormat = new QgsProcessingParameterString( QStringLiteral( "DATE_FORMAT" ), QObject::tr( "Date format (if order field is DateTime)" ), QVariant(), false, true );
+  addParameter( std::move( groupField ) );
+
+  auto dateFormat = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "DATE_FORMAT" ), QObject::tr( "Date format (if order field is DateTime)" ), QVariant(), false, true );
   dateFormat->setFlags( dateFormat->flags() | Qgis::ProcessingParameterFlag::Hidden );
-  addParameter( dateFormat );
+  addParameter( std::move( dateFormat ) );
 }
 
 QgsPointsToPathsAlgorithm *QgsPointsToPathsAlgorithm::createInstance() const
