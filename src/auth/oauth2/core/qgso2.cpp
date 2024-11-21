@@ -181,8 +181,8 @@ void QgsO2::link()
     if ( replyServer() == NULL )
     {
       O2ReplyServer *replyServer = new O2ReplyServer( this );
-      connect( replyServer, SIGNAL( verificationReceived( QMap<QString, QString> ) ), this, SLOT( onVerificationReceived( QMap<QString, QString> ) ) );
-      connect( replyServer, SIGNAL( serverClosed( bool ) ), this, SLOT( serverHasClosed( bool ) ) );
+      connect( replyServer, &O2ReplyServer::verificationReceived, this, &QgsO2::onVerificationReceived );
+      connect( replyServer, &O2ReplyServer::serverClosed, this, &QgsO2::serverHasClosed );
       setReplyServer( replyServer );
     }
   }
@@ -301,8 +301,8 @@ void QgsO2::link()
     tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/x-www-form-urlencoded" ) );
     QNetworkReply *tokenReply = getManager()->post( tokenRequest, payload );
 
-    connect( tokenReply, SIGNAL( finished() ), this, SLOT( onTokenReplyFinished() ), Qt::QueuedConnection );
-    connect( tokenReply, SIGNAL( error( QNetworkReply::NetworkError ) ), this, SLOT( onTokenReplyError( QNetworkReply::NetworkError ) ), Qt::QueuedConnection );
+    connect( tokenReply, &QNetworkReply::finished, this, &QgsO2::onTokenReplyFinished, Qt::QueuedConnection );
+    connect( tokenReply, &QNetworkReply::errorOccurred, this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
   }
 }
 
