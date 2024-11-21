@@ -306,66 +306,16 @@ QString QgsPointCloudIndex::subsetString() const
   return mFilterExpression;
 }
 
-QVariant QgsPointCloudIndex::metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const
-{
-  if ( attribute == QLatin1String( "X" ) && statistic == Qgis::Statistic::Min )
-    return mExtent.xMinimum();
-  if ( attribute == QLatin1String( "X" ) && statistic == Qgis::Statistic::Max )
-    return mExtent.xMaximum();
-
-  if ( attribute == QLatin1String( "Y" ) && statistic == Qgis::Statistic::Min )
-    return mExtent.yMinimum();
-  if ( attribute == QLatin1String( "Y" ) && statistic == Qgis::Statistic::Max )
-    return mExtent.yMaximum();
-
-  if ( attribute == QLatin1String( "Z" ) && statistic == Qgis::Statistic::Min )
-    return mZMin;
-  if ( attribute == QLatin1String( "Z" ) && statistic == Qgis::Statistic::Max )
-    return mZMax;
-
-  return QVariant();
-}
-
-QVariantList QgsPointCloudIndex::metadataClasses( const QString &attribute ) const
-{
-  Q_UNUSED( attribute );
-  return QVariantList();
-}
-
-QVariant QgsPointCloudIndex::metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const
-{
-  Q_UNUSED( attribute );
-  Q_UNUSED( value );
-  Q_UNUSED( statistic );
-  return QVariant();
-}
-
 QgsPointCloudStatistics QgsPointCloudIndex::metadataStatistics() const
 {
   QMap<QString, QgsPointCloudAttributeStatistics> statsMap;
-  for ( QgsPointCloudAttribute attribute : attributes().attributes() )
-  {
-    QString name = attribute.name();
-    QgsPointCloudAttributeStatistics s;
-    QVariant min = metadataStatistic( name, Qgis::Statistic::Min );
-    QVariant max = metadataStatistic( name, Qgis::Statistic::Max );
-    QVariant mean = metadataStatistic( name, Qgis::Statistic::Mean );
-    QVariant stDev = metadataStatistic( name, Qgis::Statistic::StDev );
-    if ( !min.isValid() )
-      continue;
+  statsMap[ "X" ].minimum = mExtent.xMinimum();
+  statsMap[ "X" ].maximum = mExtent.xMaximum();
+  statsMap[ "Y" ].minimum = mExtent.yMinimum();
+  statsMap[ "Y" ].maximum = mExtent.yMinimum();
+  statsMap[ "Z" ].minimum = mZMin;
+  statsMap[ "Z" ].maximum = mZMax;
 
-    s.minimum = min.toDouble();
-    s.maximum = max.toDouble();
-    s.mean = mean.toDouble();
-    s.stDev = stDev.toDouble();
-    s.count = metadataStatistic( name, Qgis::Statistic::Count ).toInt();
-    QVariantList classes = metadataClasses( name );
-    for ( QVariant c : classes )
-    {
-      s.classCount[ c.toInt() ] = metadataClassStatistic( name, c, Qgis::Statistic::Count ).toInt();
-    }
-    statsMap[ name ] = s;
-  }
   return QgsPointCloudStatistics( pointCount(), statsMap );
 }
 

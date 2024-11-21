@@ -53,11 +53,8 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
     QgsCoordinateReferenceSystem crs() const override;
     qint64 pointCount() const override;
     virtual qint64 nodePointCount( const IndexedPointCloudNode &n ) const override;
-    bool hasStatisticsMetadata() const override;
-    QVariant metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const override;
-    QVariantList metadataClasses( const QString &attribute ) const override;
-    QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const override;
     QVariantMap originalMetadata() const override { return mOriginalMetadata; }
+    virtual QgsPointCloudStatistics metadataStatistics() const override;
 
     bool isValid() const override;
     QgsPointCloudIndex::AccessType accessType() const override;

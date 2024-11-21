@@ -310,16 +310,18 @@ bool QgsCopcPointCloudIndex::writeStatistics( QgsPointCloudStatistics &stats )
   return true;
 }
 
-QgsPointCloudStatistics QgsCopcPointCloudIndex::readStatistics()
+QgsPointCloudStatistics QgsCopcPointCloudIndex::metadataStatistics() const
 {
-  QByteArray statisticsEvlrData = fetchCopcStatisticsEvlrData();
-
-  if ( statisticsEvlrData.isEmpty() )
+  if ( ! mStatistics )
   {
-    return QgsPointCloudStatistics();
+    QByteArray statisticsEvlrData = fetchCopcStatisticsEvlrData();
+    if ( statisticsEvlrData.isEmpty() )
+      mStatistics = QgsPointCloudIndex::metadataStatistics();
+    else
+      mStatistics = QgsPointCloudStatistics::fromStatisticsJson( statisticsEvlrData );
   }
 
-  return QgsPointCloudStatistics::fromStatisticsJson( statisticsEvlrData );
+  return *mStatistics;
 }
 
 bool QgsCopcPointCloudIndex::isValid() const
@@ -476,7 +478,7 @@ void QgsCopcPointCloudIndex::copyCommonProperties( QgsCopcPointCloudIndex *desti
   destination->mLazInfo.reset( new QgsLazInfo( *mLazInfo ) );
 }
 
-QByteArray QgsCopcPointCloudIndex::fetchCopcStatisticsEvlrData()
+QByteArray QgsCopcPointCloudIndex::fetchCopcStatisticsEvlrData() const
 {
   Q_ASSERT( mAccessType == Local ); // TODO: Remote
   uint64_t offset = mLazInfo->firstEvlrOffset();

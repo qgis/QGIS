@@ -19,6 +19,7 @@
 #include "moc_qgspointcloudlayer.cpp"
 #include "qgspointcloudlayerrenderer.h"
 #include "qgspointcloudindex.h"
+#include "qgspointcloudstatistics.h"
 #include "qgspointcloudsubindex.h"
 #include "qgsrectangle.h"
 #include "qgspointclouddataprovider.h"
@@ -449,7 +450,6 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
 
   if ( !mLayerOptions.skipStatisticsCalculation &&
        mDataProvider &&
-       !mDataProvider->hasStatisticsMetadata() &&
        mDataProvider->indexingState() == QgsPointCloudDataProvider::PointCloudIndexGenerationState::Indexed &&
        mDataProvider->pointCount() > 0 )
   {
@@ -864,15 +864,6 @@ void QgsPointCloudLayer::calculateStatistics()
     QgsMessageLog::logMessage( QObject::tr( "A statistics calculation task for the point cloud %1 is already in progress" ).arg( this->name() ) );
     return;
   }
-#ifdef HAVE_COPC
-  if ( mDataProvider && mDataProvider->index() && mDataProvider->index()->isValid() )
-  {
-    if ( QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( mDataProvider->index() ) )
-    {
-      mStatistics = index->readStatistics();
-    }
-  }
-#endif
   if ( mStatistics.sampledPointsCount() != 0 )
   {
     mStatisticsCalculationState = QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculated;
@@ -881,11 +872,13 @@ void QgsPointCloudLayer::calculateStatistics()
     return;
   }
 
+  QgsPointCloudStatistics indexStats = mDataProvider->metadataStatistics();
+  QList<QString> indexStatsAttributes = indexStats.statisticsMap().keys();
   QVector<QgsPointCloudAttribute> attributes = mDataProvider->attributes().attributes();
-  // Do not calculate stats for X, Y & Z since the point cloud index contains that
+  // Do not calculate stats for attributes that the index gives us stats for
   for ( int i = 0; i < attributes.size(); ++i )
   {
-    if ( attributes[i].name() == QLatin1String( "X" ) || attributes[i].name() == QLatin1String( "Y" ) || attributes[i].name() == QLatin1String( "Z" ) )
+    if ( indexStatsAttributes.contains( attributes[i].name() ) )
     {
       attributes.remove( i );
       --i;
@@ -893,39 +886,17 @@ void QgsPointCloudLayer::calculateStatistics()
   }
 
   QgsPointCloudStatsCalculationTask *task = new QgsPointCloudStatsCalculationTask( mDataProvider->index(), attributes, 1000000 );
-  connect( task, &QgsTask::taskCompleted, this, [this, task]()
+  connect( task, &QgsTask::taskCompleted, this, [this, task, indexStats, indexStatsAttributes]()
   {
     mStatistics = task->calculationResults();
 
-    // fetch X, Y & Z stats directly from the index
-    QVector<QString> coordinateAttributes;
-    coordinateAttributes.push_back( QStringLiteral( "X" ) );
-    coordinateAttributes.push_back( QStringLiteral( "Y" ) );
-    coordinateAttributes.push_back( QStringLiteral( "Z" ) );
-
+    // Fetch what we can directly from the index
     QMap<QString, QgsPointCloudAttributeStatistics> statsMap = mStatistics.statisticsMap();
-    QgsPointCloudIndex *index = mDataProvider->index();
-    for ( const QString &attribute : coordinateAttributes )
+    for ( const QString &attribute : indexStatsAttributes )
     {
-      QgsPointCloudAttributeStatistics s;
-      QVariant min = index->metadataStatistic( attribute, Qgis::Statistic::Min );
-      QVariant max = index->metadataStatistic( attribute, Qgis::Statistic::Max );
-      if ( !min.isValid() )
-        continue;
-      s.minimum = min.toDouble();
-      s.maximum = max.toDouble();
-      s.count = index->metadataStatistic( attribute, Qgis::Statistic::Count ).toInt();
-      s.mean = index->metadataStatistic( attribute, Qgis::Statistic::Mean ).toInt();
-      s.stDev = index->metadataStatistic( attribute, Qgis::Statistic::StDev ).toInt();
-      QVariantList classes = index->metadataClasses( attribute );
-      for ( const QVariant &c : classes )
-      {
-        s.classCount[ c.toInt() ] = index->metadataClassStatistic( attribute, c, Qgis::Statistic::Count ).toInt();
-      }
-      statsMap[ attribute ] = s;
+      statsMap[ attribute ] = indexStats.statisticsOf( attribute );
     }
     mStatistics = QgsPointCloudStatistics( mStatistics.sampledPointsCount(), statsMap );
-    //
 
     mStatisticsCalculationState = QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculated;
     emit statisticsCalculationStateChanged( mStatisticsCalculationState );
@@ -963,7 +934,7 @@ void QgsPointCloudLayer::resetRenderer()
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   mDataProvider->loadIndex();
-  if ( !mLayerOptions.skipStatisticsCalculation && !mDataProvider->hasStatisticsMetadata() && statisticsCalculationState() == QgsPointCloudLayer::PointCloudStatisticsCalculationState::NotStarted )
+  if ( !mLayerOptions.skipStatisticsCalculation && statisticsCalculationState() == QgsPointCloudLayer::PointCloudStatisticsCalculationState::NotStarted )
   {
     calculateStatistics();
   }

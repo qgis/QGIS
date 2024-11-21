@@ -28,6 +28,7 @@
 #include <QCache>
 
 #include "qgis_core.h"
+#include "qgspointcloudstatistics.h"
 #include "qgsrectangle.h"
 #include "qgsvector3d.h"
 #include "qgis_sip.h"
@@ -251,14 +252,6 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
     virtual QgsCoordinateReferenceSystem crs() const = 0;
     //! Returns the number of points in the point cloud
     virtual qint64 pointCount() const = 0;
-    //! Returns whether the dataset contains metadata of statistics
-    virtual bool hasStatisticsMetadata() const = 0;
-    //! Returns the statistic \a statistic of \a attribute
-    virtual QVariant metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const;
-    //! Returns the classes of \a attribute
-    virtual QVariantList metadataClasses( const QString &attribute ) const;
-    //! Returns the statistic \a statistic of the class \a value of the attribute \a attribute
-    virtual QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const;
     //! Returns the original metadata map
     virtual QVariantMap originalMetadata() const = 0;
 

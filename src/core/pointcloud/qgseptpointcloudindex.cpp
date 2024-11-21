@@ -41,6 +41,7 @@
 #include "qgslogger.h"
 #include "qgspointcloudexpression.h"
 #include "qgssetrequestinitiator_p.h"
+#include "qgspointcloudstatistics.h"
 
 ///@cond PRIVATE
 
@@ -513,75 +514,27 @@ qint64 QgsEptPointCloudIndex::nodePointCount( const IndexedPointCloudNode &nodeI
   return -1;
 }
 
-bool QgsEptPointCloudIndex::hasStatisticsMetadata() const
+QgsPointCloudStatistics QgsEptPointCloudIndex::metadataStatistics() const
 {
-  return !mMetadataStats.isEmpty();
-}
-
-QVariant QgsEptPointCloudIndex::metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const
-{
-  if ( !mMetadataStats.contains( attribute ) )
-    return QVariant();
-
-  const AttributeStatistics &stats = mMetadataStats[ attribute ];
-  switch ( statistic )
+  QMap<QString, QgsPointCloudAttributeStatistics> statsMap;
+  for ( QgsPointCloudAttribute attribute : attributes().attributes() )
   {
-    case Qgis::Statistic::Count:
-      return stats.count >= 0 ? QVariant( stats.count ) : QVariant();
+    QString name = attribute.name();
+    const AttributeStatistics &stats = mMetadataStats[ name ];
+    if ( !stats.minimum.isValid() )
+      continue;
+    QgsPointCloudAttributeStatistics s;
+    s.minimum = stats.minimum.toDouble();
+    s.maximum = stats.maximum.toDouble();
+    s.mean = stats.mean;
+    s.stDev = stats.stDev;
+    s.count = stats.count;
 
-    case Qgis::Statistic::Mean:
-      return std::isnan( stats.mean ) ? QVariant() : QVariant( stats.mean );
+    s.classCount = mAttributeClasses[ name ];
 
-    case Qgis::Statistic::StDev:
-      return std::isnan( stats.stDev ) ? QVariant() : QVariant( stats.stDev );
-
-    case Qgis::Statistic::Min:
-      return stats.minimum;
-
-    case Qgis::Statistic::Max:
-      return stats.maximum;
-
-    case Qgis::Statistic::Range:
-      return stats.minimum.isValid() && stats.maximum.isValid() ? QVariant( stats.maximum.toDouble() - stats.minimum.toDouble() ) : QVariant();
-
-    case Qgis::Statistic::CountMissing:
-    case Qgis::Statistic::Sum:
-    case Qgis::Statistic::Median:
-    case Qgis::Statistic::StDevSample:
-    case Qgis::Statistic::Minority:
-    case Qgis::Statistic::Majority:
-    case Qgis::Statistic::Variety:
-    case Qgis::Statistic::FirstQuartile:
-    case Qgis::Statistic::ThirdQuartile:
-    case Qgis::Statistic::InterQuartileRange:
-    case Qgis::Statistic::First:
-    case Qgis::Statistic::Last:
-    case Qgis::Statistic::All:
-      return QVariant();
+    statsMap[ name ] = s;
   }
-  return QVariant();
-}
-
-QVariantList QgsEptPointCloudIndex::metadataClasses( const QString &attribute ) const
-{
-  QVariantList classes;
-  const QMap< int, int > values =  mAttributeClasses.value( attribute );
-  for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
-  {
-    classes << it.key();
-  }
-  return classes;
-}
-
-QVariant QgsEptPointCloudIndex::metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const
-{
-  if ( statistic != Qgis::Statistic::Count )
-    return QVariant();
-
-  const QMap< int, int > values =  mAttributeClasses.value( attribute );
-  if ( !values.contains( value.toInt() ) )
-    return QVariant();
-  return values.value( value.toInt() );
+  return QgsPointCloudStatistics( pointCount(), statsMap );
 }
 
 bool QgsEptPointCloudIndex::loadSingleNodeHierarchy( const IndexedPointCloudNode &nodeId ) const

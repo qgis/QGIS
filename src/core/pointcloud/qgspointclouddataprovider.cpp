@@ -184,49 +184,6 @@ QMap<int, QString> QgsPointCloudDataProvider::translatedDataFormatIds()
   return sCodes;
 }
 
-bool QgsPointCloudDataProvider::hasStatisticsMetadata() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return index() && index()->hasStatisticsMetadata();
-}
-
-QVariant QgsPointCloudDataProvider::metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  QgsPointCloudIndex *pcIndex = index();
-  if ( pcIndex )
-  {
-    return pcIndex->metadataStatistic( attribute, statistic );
-  }
-  return QVariant();
-}
-
-QVariantList QgsPointCloudDataProvider::metadataClasses( const QString &attribute ) const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  QgsPointCloudIndex *pcIndex = index();
-  if ( pcIndex )
-  {
-    return pcIndex->metadataClasses( attribute );
-  }
-  return QVariantList();
-}
-
-QVariant QgsPointCloudDataProvider::metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  QgsPointCloudIndex *pcIndex = index();
-  if ( pcIndex )
-  {
-    return pcIndex->metadataClassStatistic( attribute, value, statistic );
-  }
-  return QVariant();
-}
-
 QgsPointCloudStatistics QgsPointCloudDataProvider::metadataStatistics()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
