@@ -47,6 +47,7 @@ set(TESTS
   testqgsmessagebar.cpp
   testprojectionissues.cpp
   testqgsgui.cpp
+  testqgsgdalguiutils.cpp
   testprocessinggui.cpp
   testqgsprocessingmodel.cpp
   testqgsrubberband.cpp
