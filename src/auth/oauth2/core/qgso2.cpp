@@ -216,10 +216,10 @@ void QgsO2::link()
     if ( mIsLocalHost )
     {
       // Start listening to authentication replies
-      replyServer_->listen( QHostAddress::Any, localPort_ );
+      replyServer()->listen( QHostAddress::Any, localPort_ );
 
       // Save redirect URI, as we have to reuse it when requesting the access token
-      redirectUri_ = localhostPolicy_.arg( replyServer_->serverPort() );
+      redirectUri_ = localhostPolicy_.arg( replyServer()->serverPort() );
     }
     // Assemble initial authentication URL
     QList<QPair<QString, QString> > parameters;
