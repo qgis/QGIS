@@ -198,6 +198,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
 
     /**
      * Set widget wrapper value, called by updateValues()
+     * \param value new value to update the widget with
      * \param forceComboInsertion if TRUE \a value would be inserted even if it doesn't exist in
      * combobox items and would appear as '(value)', else value would not be inserted. This has
      * no effects for widgets other than combobox because other widgets have different behavior:
