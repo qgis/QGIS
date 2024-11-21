@@ -27,6 +27,7 @@
 #include <QFile>
 
 #include <fstream>
+#include <optional>
 
 #include "qgspointcloudindex.h"
 #include "qgspointcloudstatistics.h"
@@ -59,7 +60,6 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
 
     QgsCoordinateReferenceSystem crs() const override;
     qint64 pointCount() const override;
-    bool hasStatisticsMetadata() const override { return false; };
     QVariantMap originalMetadata() const override { return mOriginalMetadata; }
 
     bool isValid() const override;
@@ -75,9 +75,9 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
     /**
      * Returns the statistics object contained in the COPC dataset.
      * If the dataset doesn't contain statistics EVLR, an object with 0 samples will be returned.
-     * \since QGIS 3.26
+     * \since QGIS 3.42
      */
-    QgsPointCloudStatistics readStatistics();
+    virtual QgsPointCloudStatistics metadataStatistics() const override;
 
     /**
      * Copies common properties to the \a destination index
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
 
     void populateHierarchy( const char *hierarchyPageData, uint64_t byteSize ) const;
 
-    QByteArray fetchCopcStatisticsEvlrData();
+    QByteArray fetchCopcStatisticsEvlrData() const;
 
     bool mIsValid = false;
     QgsPointCloudIndex::AccessType mAccessType = Local;
@@ -115,6 +115,7 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
     mutable QHash<IndexedPointCloudNode, QPair<uint64_t, int32_t>> mHierarchyNodePos; //!< Additional data hierarchy for COPC
 
     QVariantMap mOriginalMetadata;
+    mutable std::optional<QgsPointCloudStatistics> mStatistics;
 
     std::unique_ptr<QgsLazInfo> mLazInfo = nullptr;
 };

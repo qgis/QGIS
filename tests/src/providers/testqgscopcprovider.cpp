@@ -1144,7 +1144,7 @@ void TestQgsCopcProvider::testSaveLoadStats()
     QVERIFY( layer->dataProvider() && layer->dataProvider()->isValid() && layer->dataProvider()->index() );
 
     QgsCopcPointCloudIndex *index = qobject_cast<QgsCopcPointCloudIndex *>( layer->dataProvider()->index() );
-    readStats = index->readStatistics();
+    readStats = index->metadataStatistics();
   }
 
   QVERIFY( calculatedStats.sampledPointsCount() == readStats.sampledPointsCount() );
