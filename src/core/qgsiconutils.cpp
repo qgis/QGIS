@@ -120,12 +120,14 @@ QIcon QgsIconUtils::iconForLayer( const QgsMapLayer *layer )
       }
       case Qgis::LayerType::Plugin:
       {
-        const QgsPluginLayer *vl = qobject_cast<const QgsPluginLayer *>( layer );
-        if ( !vl )
+        if ( const QgsPluginLayer *pl = qobject_cast<const QgsPluginLayer *>( layer ) )
         {
-          return QIcon();
+          const QIcon icon = pl->icon();
+          if ( !icon.isNull() )
+            return icon;
         }
-        return vl->icon();
+        // fallback to default icon if layer did not provide a specific icon
+        return QgsIconUtils::iconForLayerType( layer->type() );
       }
       case Qgis::LayerType::Vector:
       {
