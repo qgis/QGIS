@@ -182,23 +182,6 @@ jobs:
           python-version: '3.12'
       - name: Install Requirements
         run: |
-          sudo apt-get update
-          sudo apt install -y \
-              cpanminus \
-              libyaml-tiny-perl \
-              libio-socket-ssl-perl \
-              libhttp-date-perl \
-              libgetopt-long-descriptive-perl \
-              libmoo-perl \
-              libnamespace-clean-perl \
-              libpath-tiny-perl \
-              libpod-constants-perl \
-              libscalar-list-utils-perl \
-              libsort-key-perl \
-              libstrictures-perl \
-              libstring-escape-perl \
-              libtry-tiny-perl \
-              expect
           python -m pip install --upgrade pip
           pip install autopep8 nose2 mock termcolor pyyaml
       - name: Checkout
