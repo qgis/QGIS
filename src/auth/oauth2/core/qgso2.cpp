@@ -174,6 +174,19 @@ void QgsO2::link()
 {
   QgsDebugMsgLevel( QStringLiteral( "QgsO2::link" ), 4 );
 
+  // Create the reply server if it doesn't exist
+  // and we don't use an external web interceptor
+  if ( !useExternalWebInterceptor_ )
+  {
+    if ( replyServer() == NULL )
+    {
+      O2ReplyServer *replyServer = new O2ReplyServer( this );
+      connect( replyServer, SIGNAL( verificationReceived( QMap<QString, QString> ) ), this, SLOT( onVerificationReceived( QMap<QString, QString> ) ) );
+      connect( replyServer, SIGNAL( serverClosed( bool ) ), this, SLOT( serverHasClosed( bool ) ) );
+      setReplyServer( replyServer );
+    }
+  }
+
   if ( linked() )
   {
     QgsDebugMsgLevel( QStringLiteral( "QgsO2::link: Linked already" ), 4 );
@@ -190,13 +203,33 @@ void QgsO2::link()
 
   if ( grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowImplicit || grantFlow_ == GrantFlowPkce )
   {
-    if ( mIsLocalHost )
+    if ( useExternalWebInterceptor_ )
     {
-      // Start listening to authentication replies
-      replyServer()->listen( QHostAddress::Any, localPort_ );
-
       // Save redirect URI, as we have to reuse it when requesting the access token
-      redirectUri_ = localhostPolicy_.arg( replyServer()->serverPort() );
+      redirectUri_ = localhostPolicy_.arg( localPort() );
+    }
+    else
+    {
+      if ( mIsLocalHost )
+      {
+        if ( !replyServer()->isListening() )
+        {
+          // Start listening to authentication replies
+          if ( replyServer()->listen( QHostAddress::Any, localPort_ ) )
+          {
+//qDebug() << "O2::link: Reply server listening on port" << localPort();
+          }
+          else
+          {
+            qWarning() << "O2::link: Reply server failed to start listening on port" << localPort();
+            emit linkingFailed();
+            return;
+          }
+        }
+
+        // Save redirect URI, as we have to reuse it when requesting the access token
+        redirectUri_ = localhostPolicy_.arg( replyServer()->serverPort() );
+      }
     }
     // Assemble initial authentication URL
     QList<QPair<QString, QString> > parameters;
