@@ -22,6 +22,15 @@ repos:
       - id: isort
         args: ["--profile", "black", "--filter-files"]
 
+  - repo: local
+    hooks:
+      - id: prepare_commit
+        name: prepare_commit
+        entry: ./scripts/prepare_commit.sh
+        language: system
+        always_run: true
+        pass_filenames: false
+
 ci:
   autofix_prs: true
   autoupdate_schedule: quarterly
