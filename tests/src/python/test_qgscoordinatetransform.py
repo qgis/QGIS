@@ -12,6 +12,7 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.core import (
+    Qgis,
     QgsCoordinateReferenceSystem,
     QgsCoordinateTransform,
     QgsCoordinateTransformContext,
