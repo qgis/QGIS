@@ -194,7 +194,7 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
     QgsMeshRendererScalarSettings::MinMaxValueType minMaxValueType() const { return mMinMaxValueType; }
 
     /**
-     * Sets the extent type for minimum maximum calculation
+     * Sets the extent type for minimum and maximum calculation
      *
      * \since QGIS 3.42
      */
