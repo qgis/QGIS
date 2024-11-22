@@ -35,12 +35,14 @@ class QgsO2: public O2
     /**
      * Construct QgsO2
      * \param authcfg authentication configuration id
-     * \param oauth2config OAuth2 configuration
+     * \param oauth2config OAuth2 configuration. Will be reparented to this object.
      * \param parent
      * \param manager QGIS network access manager instance
      */
-    explicit QgsO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config = nullptr,
-                    QObject *parent = nullptr, QNetworkAccessManager *manager = nullptr );
+    explicit QgsO2( const QString &authcfg,
+                    QgsAuthOAuth2Config *oauth2config = nullptr,
+                    QObject *parent = nullptr,
+                    QNetworkAccessManager *manager = nullptr );
 
     ~QgsO2() override;
 
