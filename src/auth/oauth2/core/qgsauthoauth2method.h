@@ -58,6 +58,12 @@ class QgsOAuth2Factory : public QThread
      */
     static QgsO2 *createO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config );
 
+    /**
+     * Request linking a \a o2 object. This ensures that the link is done
+     * in a thread-safe manner.
+     */
+    static void requestLink( QgsO2 *o2 );
+
   private:
     static QgsOAuth2Factory *instance();
 
