@@ -265,8 +265,8 @@ void TestQgsEptProvider::validLayer()
 
   QVERIFY( layer->dataProvider()->index() );
   // all hierarchy is stored in a single node
-  QVERIFY( layer->dataProvider()->index()->hasNode( IndexedPointCloudNode::fromString( "0-0-0-0" ) ) );
-  QVERIFY( !layer->dataProvider()->index()->hasNode( IndexedPointCloudNode::fromString( "1-0-0-0" ) ) );
+  QVERIFY( layer->dataProvider()->index()->hasNode( QgsPointCloudNodeId::fromString( "0-0-0-0" ) ) );
+  QVERIFY( !layer->dataProvider()->index()->hasNode( QgsPointCloudNodeId::fromString( "1-0-0-0" ) ) );
 }
 
 void TestQgsEptProvider::validLayerWithEptHierarchy()
@@ -283,8 +283,8 @@ void TestQgsEptProvider::validLayerWithEptHierarchy()
 
   QVERIFY( layer->dataProvider()->index() );
   // all hierarchy is stored in multiple nodes
-  QVERIFY( layer->dataProvider()->index()->hasNode( IndexedPointCloudNode::fromString( "1-1-1-1" ) ) );
-  QVERIFY( layer->dataProvider()->index()->hasNode( IndexedPointCloudNode::fromString( "2-3-3-1" ) ) );
+  QVERIFY( layer->dataProvider()->index()->hasNode( QgsPointCloudNodeId::fromString( "1-1-1-1" ) ) );
+  QVERIFY( layer->dataProvider()->index()->hasNode( QgsPointCloudNodeId::fromString( "2-3-3-1" ) ) );
 }
 
 void TestQgsEptProvider::attributes()
@@ -630,10 +630,10 @@ void TestQgsEptProvider::testPointCloudIndex()
   QgsPointCloudIndex *index = layer->dataProvider()->index();
   QVERIFY( index->isValid() );
 
-  QCOMPARE( index->nodePointCount( IndexedPointCloudNode::fromString( QStringLiteral( "0-0-0-0" ) ) ), 41998 );
-  QCOMPARE( index->nodePointCount( IndexedPointCloudNode::fromString( QStringLiteral( "1-1-1-1" ) ) ), 48879 );
-  QCOMPARE( index->nodePointCount( IndexedPointCloudNode::fromString( QStringLiteral( "2-3-3-1" ) ) ), 41734 );
-  QCOMPARE( index->nodePointCount( IndexedPointCloudNode::fromString( QStringLiteral( "9-9-9-9" ) ) ), -1 );
+  QCOMPARE( index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "0-0-0-0" ) ) ).pointCount(), 41998 );
+  QCOMPARE( index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "1-1-1-1" ) ) ).pointCount(), 48879 );
+  QCOMPARE( index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "2-3-3-1" ) ) ).pointCount(), 41734 );
+  QCOMPARE( index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "9-9-9-9" ) ) ).pointCount(), -1 );
 
   QCOMPARE( index->pointCount(), 518862 );
   QCOMPARE( index->zMin(), 2322 );
@@ -642,11 +642,12 @@ void TestQgsEptProvider::testPointCloudIndex()
   QCOMPARE( index->offset().toVector3D(), QVector3D( 515385, 4918361, 2331 ) );
   QCOMPARE( index->span(), 128 );
 
-  QCOMPARE( index->nodeError( IndexedPointCloudNode::fromString( QStringLiteral( "0-0-0-0" ) ) ), 0.34375 );
-  QCOMPARE( index->nodeError( IndexedPointCloudNode::fromString( QStringLiteral( "1-1-1-1" ) ) ), 0.171875 );
-  QCOMPARE( index->nodeError( IndexedPointCloudNode::fromString( QStringLiteral( "2-3-3-1" ) ) ), 0.0859375 );
+  QCOMPARE( index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "0-0-0-0" ) ) ).error(), 0.34375 );
+  QCOMPARE( index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "1-1-1-1" ) ) ).error(), 0.171875 );
+  QCOMPARE( index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "2-3-3-1" ) ) ).error(), 0.0859375 );
 
   {
+<<<<<<< HEAD
     QgsPointCloudDataBounds bounds = index->nodeBounds( IndexedPointCloudNode::fromString( QStringLiteral( "0-0-0-0" ) ) );
     QCOMPARE( bounds.xMin(), -88000 );
     QCOMPARE( bounds.yMin(), -88000 );
@@ -654,26 +655,35 @@ void TestQgsEptProvider::testPointCloudIndex()
     QCOMPARE( bounds.xMax(), 88000 );
     QCOMPARE( bounds.yMax(), 88000 );
     QCOMPARE( bounds.zMax(), 88000 );
+=======
+    QgsBox3D bounds = index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "0-0-0-0" ) ) ).bounds();
+    QCOMPARE( bounds.xMinimum(), 515363 );
+    QCOMPARE( bounds.yMinimum(), 4918339 );
+    QCOMPARE( bounds.zMinimum(), 2309 );
+    QCOMPARE( bounds.xMaximum(), 515407 );
+    QCOMPARE( bounds.yMaximum(), 4918383 );
+    QCOMPARE( bounds.zMaximum(), 2353 );
+>>>>>>> 4bac513354a (Refactor QgsPointCloudIndex)
   }
 
   {
-    QgsPointCloudDataBounds bounds = index->nodeBounds( IndexedPointCloudNode::fromString( QStringLiteral( "1-1-1-1" ) ) );
-    QCOMPARE( bounds.xMin(), 0 );
-    QCOMPARE( bounds.yMin(), 0 );
-    QCOMPARE( bounds.zMin(), 0 );
-    QCOMPARE( bounds.xMax(), 88000 );
-    QCOMPARE( bounds.yMax(), 88000 );
-    QCOMPARE( bounds.zMax(), 88000 );
+    QgsBox3D bounds = index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "1-1-1-1" ) ) ).bounds();
+    QCOMPARE( bounds.xMinimum(), 515385 );
+    QCOMPARE( bounds.yMinimum(), 4918361 );
+    QCOMPARE( bounds.zMinimum(), 2331 );
+    QCOMPARE( bounds.xMaximum(), 515407 );
+    QCOMPARE( bounds.yMaximum(), 4918383 );
+    QCOMPARE( bounds.zMaximum(), 2353 );
   }
 
   {
-    QgsPointCloudDataBounds bounds = index->nodeBounds( IndexedPointCloudNode::fromString( QStringLiteral( "2-3-3-1" ) ) );
-    QCOMPARE( bounds.xMin(), 44000 );
-    QCOMPARE( bounds.yMin(), 44000 );
-    QCOMPARE( bounds.zMin(), -44000 );
-    QCOMPARE( bounds.xMax(), 88000 );
-    QCOMPARE( bounds.yMax(), 88000 );
-    QCOMPARE( bounds.zMax(), 0 );
+    QgsBox3D bounds = index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "2-3-3-1" ) ) ).bounds();
+    QCOMPARE( bounds.xMinimum(), 515396 );
+    QCOMPARE( bounds.yMinimum(), 4918372 );
+    QCOMPARE( bounds.zMinimum(), 2320 );
+    QCOMPARE( bounds.xMaximum(), 515407 );
+    QCOMPARE( bounds.yMaximum(), 4918383 );
+    QCOMPARE( bounds.zMaximum(), 2331 );
   }
 }
 
@@ -687,16 +697,16 @@ void TestQgsEptProvider::testPointCloudRequest()
   QgsPointCloudIndex *index = layer->dataProvider()->index();
   QVERIFY( index->isValid() );
 
-  QVector<IndexedPointCloudNode> nodes;
-  QQueue<IndexedPointCloudNode> queue;
+  QVector<QgsPointCloudNodeId> nodes;
+  QQueue<QgsPointCloudNodeId> queue;
   queue.push_back( index->root() );
   while ( !queue.empty() )
   {
-    IndexedPointCloudNode node = queue.front();
+    QgsPointCloudNodeId node = queue.front();
     queue.pop_front();
     nodes.push_back( node );
 
-    for ( const IndexedPointCloudNode &child : index->nodeChildren( node ) )
+    for ( const QgsPointCloudNodeId &child : index->getNode( node ).children() )
     {
       queue.push_back( child );
     }
@@ -706,7 +716,7 @@ void TestQgsEptProvider::testPointCloudRequest()
   request.setAttributes( layer->attributes() );
   // If request.setFilterRect() is not called, no filter should be applied
   int count = 0;
-  for ( IndexedPointCloudNode node : nodes )
+  for ( QgsPointCloudNodeId node : nodes )
   {
     std::unique_ptr<QgsPointCloudBlock> block( index->nodeData( node, request ) );
     count += block->pointCount();
@@ -717,7 +727,7 @@ void TestQgsEptProvider::testPointCloudRequest()
   QgsRectangle extent( 515390, 4918360, 515400, 4918370 );
   request.setFilterRect( extent );
   count = 0;
-  for ( IndexedPointCloudNode node : nodes )
+  for ( QgsPointCloudNodeId node : nodes )
   {
     std::unique_ptr<QgsPointCloudBlock> block( index->nodeData( node, request ) );
     count += block->pointCount();
@@ -728,7 +738,7 @@ void TestQgsEptProvider::testPointCloudRequest()
   extent = QgsRectangle( 0, 0, 1, 1 );
   request.setFilterRect( extent );
   count = 0;
-  for ( IndexedPointCloudNode node : nodes )
+  for ( QgsPointCloudNodeId node : nodes )
   {
     std::unique_ptr<QgsPointCloudBlock> block( index->nodeData( node, request ) );
     count += block->pointCount();
@@ -739,7 +749,7 @@ void TestQgsEptProvider::testPointCloudRequest()
   count = 0;
   extent = QgsRectangle();
   request.setFilterRect( extent );
-  for ( IndexedPointCloudNode node : nodes )
+  for ( QgsPointCloudNodeId node : nodes )
   {
     std::unique_ptr<QgsPointCloudBlock> block( index->nodeData( node, request ) );
     count += block->pointCount();

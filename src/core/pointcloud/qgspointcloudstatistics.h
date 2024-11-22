@@ -26,7 +26,7 @@
 #include <QtMath>
 
 class QgsPointCloudAttribute;
-class IndexedPointCloudNode;
+class QgsPointCloudNodeId;
 
 /**
  * \ingroup core

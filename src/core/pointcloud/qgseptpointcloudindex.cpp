@@ -50,7 +50,7 @@
 
 QgsEptPointCloudIndex::QgsEptPointCloudIndex()
 {
-  mHierarchyNodes.insert( IndexedPointCloudNode( 0, 0, 0, 0 ) );
+  mHierarchyNodes.insert( QgsPointCloudNodeId( 0, 0, 0, 0 ) );
 }
 
 QgsEptPointCloudIndex::~QgsEptPointCloudIndex() = default;
@@ -98,7 +98,7 @@ void QgsEptPointCloudIndex::load( const QString &urlString )
     QFile f( mUri );
     if ( !f.open( QIODevice::ReadOnly ) )
     {
-      mError = tr( "Unable to open %1 for reading" ).arg( mUri );
+      mError = QObject::tr( "Unable to open %1 for reading" ).arg( mUri );
       mIsValid = false;
       return;
     }
@@ -132,7 +132,7 @@ void QgsEptPointCloudIndex::load( const QString &urlString )
       loadManifest( manifestJson );
   }
 
-  if ( !loadNodeHierarchy( IndexedPointCloudNode( 0, 0, 0, 0 ) ) )
+  if ( !loadNodeHierarchy( QgsPointCloudNodeId( 0, 0, 0, 0 ) ) )
   {
     QgsDebugError( QStringLiteral( "Failed to load root EPT node" ) );
     success = false;
@@ -356,15 +356,7 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
   const double ymax = bounds[4].toDouble();
   const double zmax = bounds[5].toDouble();
 
-  mRootBounds = QgsPointCloudDataBounds(
-                  ( xmin - mOffset.x() ) / mScale.x(),
-                  ( ymin - mOffset.y() ) / mScale.y(),
-                  ( zmin - mOffset.z() ) / mScale.z(),
-                  ( xmax - mOffset.x() ) / mScale.x(),
-                  ( ymax - mOffset.y() ) / mScale.y(),
-                  ( zmax - mOffset.z() ) / mScale.z()
-                );
-
+  mRootBounds = QgsBox3D( xmin, ymin, zmin, xmax, ymax, zmax );
 
 #ifdef QGIS_DEBUG
   double dx = xmax - xmin, dy = ymax - ymin, dz = zmax - zmin;
@@ -377,7 +369,7 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
   return true;
 }
 
-std::unique_ptr<QgsPointCloudBlock> QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
+std::unique_ptr<QgsPointCloudBlock> QgsEptPointCloudIndex::nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
 {
   if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
   {
@@ -392,7 +384,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsEptPointCloudIndex::nodeData( const Index
       return nullptr;
 
     QEventLoop loop;
-    connect( blockRequest.get(), &QgsPointCloudBlockRequest::finished, &loop, &QEventLoop::quit );
+    QObject::connect( blockRequest.get(), &QgsPointCloudBlockRequest::finished, &loop, &QEventLoop::quit );
     loop.exec();
 
     block = blockRequest->takeBlock();
@@ -432,7 +424,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsEptPointCloudIndex::nodeData( const Index
   return block;
 }
 
-QgsPointCloudBlockRequest *QgsEptPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
+QgsPointCloudBlockRequest *QgsEptPointCloudIndex::asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
 {
   if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
   {
@@ -473,7 +465,7 @@ QgsPointCloudBlockRequest *QgsEptPointCloudIndex::asyncNodeData( const IndexedPo
   return new QgsEptPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), requestAttributes, scale(), offset(), filterExpression, request.filterRect() );
 }
 
-bool QgsEptPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const
+bool QgsEptPointCloudIndex::hasNode( const QgsPointCloudNodeId &n ) const
 {
   return loadNodeHierarchy( n );
 }
@@ -488,30 +480,29 @@ qint64 QgsEptPointCloudIndex::pointCount() const
   return mPointCount;
 }
 
-qint64 QgsEptPointCloudIndex::nodePointCount( const IndexedPointCloudNode &nodeId ) const
+QgsPointCloudNode QgsEptPointCloudIndex::getNode( const QgsPointCloudNodeId &id ) const
 {
-  // First try loading our cached value
-  {
-    QMutexLocker locker( &mHierarchyMutex );
-    qint64 pointCount = mHierarchy.value( nodeId, -1 );
-    if ( pointCount != -1 )
-      return pointCount;
-  }
+  QgsPointCloudNode node = QgsPointCloudIndex::getNode( id );
+
+  // First try cached value
+  if ( node.pointCount() != -1 )
+    return node;
 
   // Try loading all nodes' hierarchy files on the path from root and stop when
   // one contains the point count for nodeId
-  QVector<IndexedPointCloudNode> pathToRoot = nodePathToRoot( nodeId );
+  QVector<QgsPointCloudNodeId> pathToRoot = nodePathToRoot( id );
   for ( int i = pathToRoot.size() - 1; i >= 0; --i )
   {
     loadSingleNodeHierarchy( pathToRoot[i] );
 
     QMutexLocker locker( &mHierarchyMutex );
-    qint64 pointCount = mHierarchy.value( nodeId, -1 );
+    qint64 pointCount = mHierarchy.value( id, -1 );
     if ( pointCount != -1 )
-      return pointCount;
+      return QgsPointCloudNode( *this, id, pointCount, node.children() );
   }
 
-  return -1;
+  // If we fail, return with pointCount = -1 anyway
+  return node;
 }
 
 QgsPointCloudStatistics QgsEptPointCloudIndex::metadataStatistics() const
@@ -537,7 +528,7 @@ QgsPointCloudStatistics QgsEptPointCloudIndex::metadataStatistics() const
   return QgsPointCloudStatistics( pointCount(), statsMap );
 }
 
-bool QgsEptPointCloudIndex::loadSingleNodeHierarchy( const IndexedPointCloudNode &nodeId ) const
+bool QgsEptPointCloudIndex::loadSingleNodeHierarchy( const QgsPointCloudNodeId &nodeId ) const
 {
   mHierarchyMutex.lock();
   const bool foundInHierarchy = mHierarchy.contains( nodeId );
@@ -563,7 +554,7 @@ bool QgsEptPointCloudIndex::loadSingleNodeHierarchy( const IndexedPointCloudNode
     std::unique_ptr<QgsTileDownloadManagerReply> reply( QgsApplication::tileDownloadManager()->get( nr ) );
 
     QEventLoop loop;
-    connect( reply.get(), &QgsTileDownloadManagerReply::finished, &loop, &QEventLoop::quit );
+    QObject::connect( reply.get(), &QgsTileDownloadManagerReply::finished, &loop, &QEventLoop::quit );
     loop.exec();
 
     if ( reply->error() != QNetworkReply::NoError )
@@ -599,7 +590,7 @@ bool QgsEptPointCloudIndex::loadSingleNodeHierarchy( const IndexedPointCloudNode
   {
     const QString nodeIdStr = it.key();
     const int nodePointCount = it.value().toInt();
-    const IndexedPointCloudNode nodeId = IndexedPointCloudNode::fromString( nodeIdStr );
+    const QgsPointCloudNodeId nodeId = QgsPointCloudNodeId::fromString( nodeIdStr );
     if ( nodePointCount >= 0 )
       mHierarchy[nodeId] = nodePointCount;
     else if ( nodePointCount == -1 )
@@ -609,10 +600,10 @@ bool QgsEptPointCloudIndex::loadSingleNodeHierarchy( const IndexedPointCloudNode
   return true;
 }
 
-QVector<IndexedPointCloudNode> QgsEptPointCloudIndex::nodePathToRoot( const IndexedPointCloudNode &nodeId ) const
+QVector<QgsPointCloudNodeId> QgsEptPointCloudIndex::nodePathToRoot( const QgsPointCloudNodeId &nodeId ) const
 {
-  QVector<IndexedPointCloudNode> path;
-  IndexedPointCloudNode currentNode = nodeId;
+  QVector<QgsPointCloudNodeId> path;
+  QgsPointCloudNodeId currentNode = nodeId;
   do
   {
     path.push_back( currentNode );
@@ -623,25 +614,28 @@ QVector<IndexedPointCloudNode> QgsEptPointCloudIndex::nodePathToRoot( const Inde
   return path;
 }
 
-bool QgsEptPointCloudIndex::loadNodeHierarchy( const IndexedPointCloudNode &nodeId ) const
+bool QgsEptPointCloudIndex::loadNodeHierarchy( const QgsPointCloudNodeId &nodeId ) const
 {
-  mHierarchyMutex.lock();
-  bool found = mHierarchy.contains( nodeId );
-  mHierarchyMutex.unlock();
+  bool found;
+  {
+    QMutexLocker lock( &mHierarchyMutex );
+    found = mHierarchy.contains( nodeId );
+  }
   if ( found )
     return true;
 
-  QVector<IndexedPointCloudNode> pathToRoot = nodePathToRoot( nodeId );
+  QVector<QgsPointCloudNodeId> pathToRoot = nodePathToRoot( nodeId );
   for ( int i = pathToRoot.size() - 1; i >= 0 && !mHierarchy.contains( nodeId ); --i )
   {
-    const IndexedPointCloudNode node = pathToRoot[i];
+    const QgsPointCloudNodeId node = pathToRoot[i];
     if ( !loadSingleNodeHierarchy( node ) )
       return false;
   }
 
-  mHierarchyMutex.lock();
-  found = mHierarchy.contains( nodeId );
-  mHierarchyMutex.unlock();
+  {
+    QMutexLocker lock( &mHierarchyMutex );
+    found = mHierarchy.contains( nodeId );
+  }
 
   return found;
 }
