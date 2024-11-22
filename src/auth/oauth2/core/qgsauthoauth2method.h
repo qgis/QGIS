@@ -105,7 +105,6 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     void setAuthCode( const QString code );
 
   private:
-    QString mTempStorePath;
 
     QgsO2 *getOAuth2Bundle( const QString &authcfg, bool fullconfig = true );
 
