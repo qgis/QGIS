@@ -197,6 +197,8 @@ void QgsO2::onSetAuthCode( const QString &code )
 
 void QgsO2::link()
 {
+  Q_ASSERT( thread() == QThread::currentThread() );
+
   QgsDebugMsgLevel( QStringLiteral( "QgsO2::link" ), 4 );
 
   // Create the reply server if it doesn't exist

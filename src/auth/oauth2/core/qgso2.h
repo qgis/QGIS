@@ -83,9 +83,6 @@ class QgsO2: public O2
     //! Triggered when auth code was set
     void onSetAuthCode( const QString &code );
 
-    //! Authenticate.
-    void link() override;
-
   protected slots:
 
     //! Handle verification response.
@@ -104,6 +101,12 @@ class QgsO2: public O2
     void getAuthCode();
 
   private:
+
+    // block from calling externally -- this may be dangerous, we want to prevent
+    // anyone from calling this from a different thread
+    // Use instead QgsOAuth2Factory::requestLink
+    void link() override;
+
     void initOAuthConfig();
 
     void setSettingsStore( bool persist = false );
@@ -121,6 +124,7 @@ class QgsO2: public O2
     int mExpirationDelay = 0;
 
     static QString O2_OAUTH2_STATE;
+    friend class QgsOAuth2Factory;
 };
 
 #endif // QGSO2_H
