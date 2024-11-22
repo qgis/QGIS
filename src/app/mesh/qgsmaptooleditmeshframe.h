@@ -111,6 +111,24 @@ class QgsMeshEditForceByLineAction : public QWidgetAction
     QgsDoubleSpinBox *mToleranceSpinBox = nullptr;
 };
 
+class QgsMeshEditDelaunayRefinementAction : public QWidgetAction
+{
+    Q_OBJECT
+  public:
+
+    //! Constructor
+    QgsMeshEditDelaunayRefinementAction( QObject *parent = nullptr );
+
+    //! Returns
+    bool refineNeighboringFaces() const;
+
+  private slots:
+    void updateSettings();
+
+  private:
+    QCheckBox *mCheckBoxRefineNeighboringFaces = nullptr;
+};
+
 class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
@@ -128,6 +146,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QList<QAction *> forceByLinesActions() const;
     QAction *defaultForceAction() const;
     QWidgetAction *forceByLineWidgetActionSettings() const;
+    QWidgetAction *delaunayRefinementWidgetActionSettings() const;
     QAction *reindexAction() const;
 
     void setActionsEnable( bool enable );
@@ -352,6 +371,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QAction *mActionForceByLines = nullptr;
 
     QgsMeshEditForceByLineAction *mWidgetActionForceByLine = nullptr;
+    QgsMeshEditDelaunayRefinementAction *mWidgetActionDelaunayRefinementAction = nullptr;
     QAction *mActionReindexMesh = nullptr;
 
     friend class TestQgsMapToolEditMesh;

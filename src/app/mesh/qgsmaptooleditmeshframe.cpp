@@ -204,6 +204,42 @@ void QgsMeshEditForceByLineAction::updateSettings()
 }
 
 //
+// QgsMeshEditDelaunayRefinementAction
+//
+
+QgsMeshEditDelaunayRefinementAction::QgsMeshEditDelaunayRefinementAction( QObject *parent )
+  : QWidgetAction( parent )
+{
+  QVBoxLayout *layout = new QVBoxLayout();
+
+  QgsSettings settings;
+
+  mCheckBoxRefineNeighboringFaces = new QCheckBox( tr( "On add vertex in face refine neighboring faces" ) );
+
+  bool refineNeighboringFaces = settings.value( QStringLiteral( "UI/Mesh/RefineNeighboringFaces" ) ).toBool();
+  mCheckBoxRefineNeighboringFaces->setChecked( refineNeighboringFaces );
+  layout->addWidget( mCheckBoxRefineNeighboringFaces );
+
+  QWidget *w = new QWidget();
+  w->setLayout( layout );
+  setDefaultWidget( w );
+
+  connect( mCheckBoxRefineNeighboringFaces, &QCheckBox::toggled, this, &QgsMeshEditDelaunayRefinementAction::updateSettings );
+}
+
+void QgsMeshEditDelaunayRefinementAction::updateSettings()
+{
+  QgsSettings settings;
+
+  settings.setValue( QStringLiteral( "UI/Mesh/RefineNeighboringFaces" ), mCheckBoxRefineNeighboringFaces->isChecked() );
+}
+
+bool QgsMeshEditDelaunayRefinementAction::refineNeighboringFaces() const
+{
+  return mCheckBoxRefineNeighboringFaces->isChecked();
+}
+
+//
 // QgsMapToolEditMeshFrame
 //
 
@@ -233,6 +269,8 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
 
   mWidgetActionForceByLine = new QgsMeshEditForceByLineAction( this );
   mWidgetActionForceByLine->setMapCanvas( canvas );
+
+  mWidgetActionDelaunayRefinementAction = new QgsMeshEditDelaunayRefinementAction( this );
 
   mActionReindexMesh = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshReindex.svg" ) ), tr( "Reindex Faces and Vertices" ), this );
 
@@ -428,6 +466,12 @@ QWidgetAction *QgsMapToolEditMeshFrame::forceByLineWidgetActionSettings() const
 {
   return mWidgetActionForceByLine;
 }
+
+QWidgetAction *QgsMapToolEditMeshFrame::delaunayRefinementWidgetActionSettings() const
+{
+  return mWidgetActionDelaunayRefinementAction;
+}
+
 
 QAction *QgsMapToolEditMeshFrame::reindexAction() const
 {
@@ -2726,10 +2770,18 @@ void QgsMapToolEditMeshFrame::addVertex(
     zValue = currentZValue();
 
   const QVector<QgsMeshVertex> points( 1, QgsMeshVertex( effectivePoint.x(), effectivePoint.y(), zValue ) );
+
   if ( mCurrentEditor )
   {
     double tolerance = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
-    mCurrentEditor->addVertices( points, tolerance );
+    if ( mWidgetActionDelaunayRefinementAction->refineNeighboringFaces() && mCurrentFaceIndex != -1 )
+    {
+      mCurrentEditor->addVertexWithDelaunayRefinement( points.first(), tolerance );
+    }
+    else
+    {
+      mCurrentEditor->addVertices( points, tolerance );
+    }
   }
 }
 
