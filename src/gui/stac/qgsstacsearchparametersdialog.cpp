@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstacsearchparametersdialog.h"
+#include "moc_qgsstacsearchparametersdialog.cpp"
 #include "qgsgui.h"
 #include "qgsmapcanvas.h"
 #include "qgsprojecttimesettings.h"
@@ -53,7 +54,7 @@ QgsStacSearchParametersDialog::QgsStacSearchParametersDialog( QgsMapCanvas *canv
   mCollectionsFilterLineEdit->setShowSearchIcon( true );
 
   mMenu = new QMenu( this );
-  mTemporalExtentFromProjectAction = new QAction( tr( "Use project's temporal extent" ), this );
+  mTemporalExtentFromProjectAction = new QAction( tr( "Use Project's Temporal Extent" ), this );
   connect( mTemporalExtentFromProjectAction, &QAction::triggered, this, &QgsStacSearchParametersDialog::readTemporalExtentsFromProject );
 
   mMenu->addAction( mTemporalExtentFromProjectAction );

@@ -55,12 +55,10 @@ QStringList QgsStacAsset::roles() const
 
 bool QgsStacAsset::isCloudOptimized() const
 {
-  if ( mMediaType == QLatin1String( "image/tiff; application=geotiff; profile=cloud-optimized" ) ||
-       mMediaType == QLatin1String( "image/vnd.stac.geotiff; cloud-optimized=true" ) ||
-       mMediaType == QLatin1String( "application/vnd.laszip+copc" ) ||
-       mHref.endsWith( QLatin1String( "/ept.json" ) ) )
-    return true;
-  return false;
+  const QString format = formatName();
+  return format == QLatin1String( "COG" ) ||
+         format == QLatin1String( "COPC" ) ||
+         format == QLatin1String( "EPT" );
 }
 
 QString QgsStacAsset::formatName() const

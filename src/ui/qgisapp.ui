@@ -3353,7 +3353,7 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
      <normaloff>:/images/themes/default/mIconStac.svg</normaloff>:/images/themes/default/mIconStac.svg</iconset>
    </property>
    <property name="text">
-    <string>Add layer from STAC catalog…</string>
+    <string>Add Layer from STAC Catalog…</string>
    </property>
   </action>
  </widget>

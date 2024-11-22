@@ -53,9 +53,9 @@ class QgsStacItemListModel : public QAbstractListModel
     void clear();
 
     //! Builds collection dictionary. Does not take ownership
-    void setCollections( const QVector< QgsStacCollection * > collections );
+    void setCollections( const QVector< QgsStacCollection * > &collections );
     //! Add items to the model. Takes ownership
-    void addItems( const QVector< QgsStacItem * > items );
+    void addItems( const QVector< QgsStacItem * > &items );
 
   private:
     QVector< QgsStacItem * > mItems;

@@ -199,8 +199,7 @@ QgsMimeDataUtils::UriList QgsStacItem::uris() const
     {
       uri.uri = it->href();
     }
-    else if ( it->mediaType() == QLatin1String( "image/tiff; application=geotiff; profile=cloud-optimized" ) ||
-              it->mediaType() == QLatin1String( "image/vnd.stac.geotiff; cloud-optimized=true" ) )
+    else if ( it->formatName() == QLatin1String( "COG" ) )
     {
       uri.layerType = QStringLiteral( "raster" );
       uri.providerKey = QStringLiteral( "gdal" );
@@ -218,13 +217,13 @@ QgsMimeDataUtils::UriList QgsStacItem::uris() const
         uri.uri = it->href();
       }
     }
-    else if ( it->mediaType() == QLatin1String( "application/vnd.laszip+copc" ) )
+    else if ( it->formatName() == QLatin1String( "COPC" ) )
     {
       uri.layerType = QStringLiteral( "pointcloud" );
       uri.providerKey = QStringLiteral( "copc" );
       uri.uri = it->href();
     }
-    else if ( it->href().endsWith( QStringLiteral( "/ept.json" ) ) )
+    else if ( it->formatName() == QLatin1String( "EPT" ) )
     {
       uri.layerType = QStringLiteral( "pointcloud" );
       uri.providerKey = QStringLiteral( "ept" );

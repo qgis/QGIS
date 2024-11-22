@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstacsourceselect.h"
+#include "moc_qgsstacsourceselect.cpp"
 #include "qgsgui.h"
 #include "qgsmapcanvas.h"
 #include "qgsstaccontroller.h"
@@ -47,7 +48,7 @@ QgsStacSourceSelect::QgsStacSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
-  setWindowTitle( tr( "Add Layer from STAC catalog" ) );
+  setWindowTitle( tr( "Add Layer from STAC Catalog" ) );
 
   connect( btnConnect, &QToolButton::clicked, this, &QgsStacSourceSelect::btnConnect_clicked );
   connect( btnNew, &QToolButton::clicked, this, &QgsStacSourceSelect::btnNew_clicked );

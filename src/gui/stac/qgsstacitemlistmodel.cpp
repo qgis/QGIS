@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstacitemlistmodel.h"
+#include "moc_qgsstacitemlistmodel.cpp"
 #include "qgsstacitem.h"
 #include "qgsstaccollection.h"
 #include "qgsnetworkcontentfetcher.h"
@@ -119,7 +120,7 @@ void QgsStacItemListModel::clear()
   endResetModel();
 }
 
-void QgsStacItemListModel::setCollections( const QVector<QgsStacCollection *> collections )
+void QgsStacItemListModel::setCollections( const QVector<QgsStacCollection *> &collections )
 {
   for ( QgsStacCollection *col : collections )
   {
@@ -128,7 +129,7 @@ void QgsStacItemListModel::setCollections( const QVector<QgsStacCollection *> co
   }
 }
 
-void QgsStacItemListModel::addItems( const QVector<QgsStacItem *> items )
+void QgsStacItemListModel::addItems( const QVector<QgsStacItem *> &items )
 {
   int nextItemIndex = mItems.count();
   beginInsertRows( QModelIndex(), mItems.size(), mItems.size() + items.size() - 1 );
@@ -156,7 +157,10 @@ void QgsStacItemListModel::addItems( const QVector<QgsStacItem *> items )
             previewPainter.setRenderHint( QPainter::Antialiasing, true );
             previewPainter.setPen( Qt::NoPen );
             previewPainter.setBrush( Qt::black );
-            previewPainter.drawRoundedRect( 0, 0, previewImage.width(), previewImage.height(), previewImage.width() / 10, previewImage.width() / 10 );
+            previewPainter.drawRoundedRect( 0, 0,
+                                            previewImage.width(), previewImage.height(),
+                                            static_cast<double>( previewImage.width() ) / 10.,
+                                            static_cast<double>( previewImage.width() ) / 10. );
             previewPainter.setCompositionMode( QPainter::CompositionMode_SourceIn );
             previewPainter.drawImage( 0, 0, img );
             previewPainter.end();
@@ -222,8 +226,11 @@ void QgsStacItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
   painter->setRenderHint( QPainter::SmoothPixmapTransform, true );
   painter->setPen( QColor( 0, 0, 0, 0 ) );
   painter->setBrush( QBrush( color ) );
-  painter->drawRoundedRect( option.rect.left() + 0.625 * mRoundedRectSizePixels, option.rect.top() + 0.625 * mRoundedRectSizePixels,
-                            option.rect.width() - 2 * 0.625 * mRoundedRectSizePixels, option.rect.height() - 2 * 0.625 * mRoundedRectSizePixels, mRoundedRectSizePixels, mRoundedRectSizePixels );
+  painter->drawRoundedRect( option.rect.left() + static_cast<int>( 0.625 * mRoundedRectSizePixels ),
+                            option.rect.top() + static_cast<int>( 0.625 * mRoundedRectSizePixels ),
+                            option.rect.width() - static_cast<int>( 2 * 0.625 * mRoundedRectSizePixels ),
+                            option.rect.height() - static_cast<int>( 2 * 0.625 * mRoundedRectSizePixels ),
+                            mRoundedRectSizePixels, mRoundedRectSizePixels );
 
   const QFontMetrics fm( option.font );
   const int textSize = static_cast<int>( fm.height() * 0.85 );
@@ -244,7 +251,8 @@ void QgsStacItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
 
   if ( !icon.isNull() )
   {
-    painter->drawPixmap( option.rect.left() + 1.25 * mRoundedRectSizePixels, option.rect.top() + 1.25 * mRoundedRectSizePixels,
+    painter->drawPixmap( option.rect.left() + static_cast<int>( 1.25 * mRoundedRectSizePixels ),
+                         option.rect.top() + static_cast<int>( 1.25 * mRoundedRectSizePixels ),
                          iconSize.width(), iconSize.height(),  icon );
   }
 

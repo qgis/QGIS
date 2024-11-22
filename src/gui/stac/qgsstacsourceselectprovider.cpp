@@ -35,7 +35,7 @@ QString QgsStacSourceSelectProvider::text() const
 
 QString QgsStacSourceSelectProvider::toolTip() const
 {
-  return QObject::tr( "Spatio-Temporal Asset Catalog " );
+  return QObject::tr( "Spatio-Temporal Asset Catalog" );
 }
 
 QIcon QgsStacSourceSelectProvider::icon() const
