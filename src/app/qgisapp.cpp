@@ -3930,7 +3930,15 @@ void QgisApp::createToolBars()
   QgsMapToolEditMeshFrame *editMeshMapTool = qobject_cast<QgsMapToolEditMeshFrame *>( mMapTools->mapTool( QgsAppMapTools::EditMeshFrame ) );
   if ( editMeshMapTool )
   {
-    mMeshToolBar->addAction( editMeshMapTool->digitizeAction() );
+    QToolButton *meshEditToolButton = new QToolButton();
+    meshEditToolButton->setPopupMode( QToolButton::MenuButtonPopup );
+    QMenu *meshEditMenu = new QMenu( meshEditToolButton );
+
+    meshEditToolButton->setDefaultAction( editMeshMapTool->digitizeAction() );
+    meshEditMenu->addSeparator();
+    meshEditMenu->addAction( editMeshMapTool->delaunayRefinementWidgetActionSettings() );
+    meshEditToolButton->setMenu( meshEditMenu );
+    mMeshToolBar->addWidget( meshEditToolButton );
 
     QToolButton *meshSelectToolButton = new QToolButton();
     meshSelectToolButton->setPopupMode( QToolButton::MenuButtonPopup );
