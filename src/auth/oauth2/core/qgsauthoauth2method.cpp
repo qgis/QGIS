@@ -47,10 +47,6 @@ const QString QgsAuthOAuth2Method::AUTH_METHOD_KEY = QStringLiteral( "OAuth2" );
 const QString QgsAuthOAuth2Method::AUTH_METHOD_DESCRIPTION = QStringLiteral( "OAuth2 authentication" );
 const QString QgsAuthOAuth2Method::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "OAuth2 authentication" );
 
-QMap<QString, QgsO2 * > QgsAuthOAuth2Method::sOAuth2ConfigCache =
-  QMap<QString, QgsO2 * >();
-
-
 QgsAuthOAuth2Method::QgsAuthOAuth2Method()
 {
   setVersion( 1 );
@@ -522,10 +518,10 @@ QgsO2 *QgsAuthOAuth2Method::getOAuth2Bundle( const QString &authcfg, bool fullco
   // TODO: update to QgsMessageLog output where appropriate
 
   // check if it is cached
-  if ( sOAuth2ConfigCache.contains( authcfg ) )
+  if ( QgsO2 *cachedBundle = mOAuth2ConfigCache.value( authcfg ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "Retrieving OAuth bundle for authcfg: %1" ).arg( authcfg ), 2 );
-    return sOAuth2ConfigCache.value( authcfg );
+    return cachedBundle;
   }
 
   QgsAuthOAuth2Config *config = new QgsAuthOAuth2Config( );
@@ -645,15 +641,16 @@ QgsO2 *QgsAuthOAuth2Method::getOAuth2Bundle( const QString &authcfg, bool fullco
 void QgsAuthOAuth2Method::putOAuth2Bundle( const QString &authcfg, QgsO2 *bundle )
 {
   QgsDebugMsgLevel( QStringLiteral( "Putting oauth2 bundle for authcfg: %1" ).arg( authcfg ), 2 );
-  sOAuth2ConfigCache.insert( authcfg, bundle );
+  mOAuth2ConfigCache.insert( authcfg, bundle );
 }
 
 void QgsAuthOAuth2Method::removeOAuth2Bundle( const QString &authcfg )
 {
-  if ( sOAuth2ConfigCache.contains( authcfg ) )
+  auto it = mOAuth2ConfigCache.find( authcfg );
+  if ( it != mOAuth2ConfigCache.end() )
   {
-    sOAuth2ConfigCache.value( authcfg )->deleteLater();
-    sOAuth2ConfigCache.remove( authcfg );
+    it.value()->deleteLater();
+    mOAuth2ConfigCache.erase( it );
     QgsDebugMsgLevel( QStringLiteral( "Removed oauth2 bundle for authcfg: %1" ).arg( authcfg ), 2 );
   }
 }
