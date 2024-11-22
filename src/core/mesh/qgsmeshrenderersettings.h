@@ -187,7 +187,7 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
     void setEdgeStrokeWidthUnit( Qgis::RenderUnit edgeStrokeWidthUnit );
 
     /**
-     * Gets the extent type for minimum maximum calculation
+     * Gets the extent type for minimum and maximum calculation
      *
      * \since QGIS 3.42
      */
