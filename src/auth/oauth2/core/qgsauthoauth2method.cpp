@@ -26,6 +26,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsreadwritelocker.h"
 #ifdef HAVE_GUI
 #include "qgsauthoauth2edit.h"
 #endif
@@ -518,11 +519,13 @@ QgsO2 *QgsAuthOAuth2Method::getOAuth2Bundle( const QString &authcfg, bool fullco
   // TODO: update to QgsMessageLog output where appropriate
 
   // check if it is cached
+  QgsReadWriteLocker locker( mO2CacheLock, QgsReadWriteLocker::Read );
   if ( QgsO2 *cachedBundle = mOAuth2ConfigCache.value( authcfg ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "Retrieving OAuth bundle for authcfg: %1" ).arg( authcfg ), 2 );
     return cachedBundle;
   }
+  locker.unlock();
 
   QgsAuthOAuth2Config *config = new QgsAuthOAuth2Config( );
   QgsO2 *nullbundle =  nullptr;
@@ -640,15 +643,18 @@ QgsO2 *QgsAuthOAuth2Method::getOAuth2Bundle( const QString &authcfg, bool fullco
 
 void QgsAuthOAuth2Method::putOAuth2Bundle( const QString &authcfg, QgsO2 *bundle )
 {
+  QgsReadWriteLocker locker( mO2CacheLock, QgsReadWriteLocker::Write );
   QgsDebugMsgLevel( QStringLiteral( "Putting oauth2 bundle for authcfg: %1" ).arg( authcfg ), 2 );
   mOAuth2ConfigCache.insert( authcfg, bundle );
 }
 
 void QgsAuthOAuth2Method::removeOAuth2Bundle( const QString &authcfg )
 {
+  QgsReadWriteLocker locker( mO2CacheLock, QgsReadWriteLocker::Read );
   auto it = mOAuth2ConfigCache.find( authcfg );
   if ( it != mOAuth2ConfigCache.end() )
   {
+    locker.changeMode( QgsReadWriteLocker::Write );
     it.value()->deleteLater();
     mOAuth2ConfigCache.erase( it );
     QgsDebugMsgLevel( QStringLiteral( "Removed oauth2 bundle for authcfg: %1" ).arg( authcfg ), 2 );
