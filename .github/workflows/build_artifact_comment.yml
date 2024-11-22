@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   on-success:
-    if: github.event.workflow_run.event == 'pull_request'
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.base_branch != 'release-3_34'
 
     permissions:
       pull-requests: write
