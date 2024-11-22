@@ -49,7 +49,6 @@ Constructor for QgsCoordinateTransformContext.
     QgsCoordinateTransformContext( const QgsCoordinateTransformContext &rhs );
 
     bool operator==( const QgsCoordinateTransformContext &rhs ) const;
-    bool operator!=( const QgsCoordinateTransformContext &rhs ) const;
 
     void clear();
 %Docstring
