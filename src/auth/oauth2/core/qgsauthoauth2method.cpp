@@ -65,14 +65,11 @@ QgsOAuth2Factory::QgsOAuth2Factory( QObject *parent )
 
 QgsOAuth2Factory *QgsOAuth2Factory::instance()
 {
+  static QMutex sMutex;
+  const QMutexLocker locker( &sMutex );
   if ( !sInstance )
   {
-    static QMutex sMutex;
-    const QMutexLocker locker( &sMutex );
-    if ( !sInstance )
-    {
-      sInstance = new QgsOAuth2Factory();
-    }
+    sInstance = new QgsOAuth2Factory();
   }
   return sInstance;
 }
