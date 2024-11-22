@@ -527,30 +527,26 @@ QgsO2 *QgsAuthOAuth2Method::getOAuth2Bundle( const QString &authcfg, bool fullco
   }
   locker.unlock();
 
-  QgsAuthOAuth2Config *config = new QgsAuthOAuth2Config( );
-  QgsO2 *nullbundle =  nullptr;
-
   // else build oauth2 config
   QgsAuthMethodConfig mconfig;
   if ( !QgsApplication::authManager()->loadAuthenticationConfig( authcfg, mconfig, fullconfig ) )
   {
     QgsDebugError( QStringLiteral( "Retrieve config FAILED for authcfg: %1" ).arg( authcfg ) );
-    config->deleteLater();
-    return nullbundle;
+    return nullptr;
   }
 
   const QgsStringMap configmap = mconfig.configMap();
 
   // do loading of method config into oauth2 config
 
+  std::unique_ptr< QgsAuthOAuth2Config > config( new QgsAuthOAuth2Config() );
   if ( configmap.contains( QStringLiteral( "oauth2config" ) ) )
   {
     const QByteArray configtxt = configmap.value( QStringLiteral( "oauth2config" ) ).toUtf8();
     if ( configtxt.isEmpty() )
     {
       QgsDebugError( QStringLiteral( "FAILED to load OAuth2 config: empty config txt" ) );
-      config->deleteLater();
-      return nullbundle;
+      return nullptr;
     }
     //###################### DO NOT LEAVE ME UNCOMMENTED #####################
     //QgsDebugMsgLevel( QStringLiteral( "LOAD oauth2config configtxt: \n\n%1\n\n" ).arg( QString( configtxt ) ), 2 );
@@ -559,8 +555,7 @@ QgsO2 *QgsAuthOAuth2Method::getOAuth2Bundle( const QString &authcfg, bool fullco
     if ( !config->loadConfigTxt( configtxt, QgsAuthOAuth2Config::JSON ) )
     {
       QgsDebugError( QStringLiteral( "FAILED to load OAuth2 config into object" ) );
-      config->deleteLater();
-      return nullbundle;
+      return nullptr;
     }
   }
   else if ( configmap.contains( QStringLiteral( "definedid" ) ) )
@@ -570,8 +565,7 @@ QgsO2 *QgsAuthOAuth2Method::getOAuth2Bundle( const QString &authcfg, bool fullco
     if ( definedid.isEmpty() )
     {
       QgsDebugError( QStringLiteral( "FAILED to load a defined ID for OAuth2 config" ) );
-      config->deleteLater();
-      return nullbundle;
+      return nullptr;
     }
 
     const QString extradir = configmap.value( QStringLiteral( "defineddirpath" ) );
@@ -585,23 +579,20 @@ QgsO2 *QgsAuthOAuth2Method::getOAuth2Bundle( const QString &authcfg, bool fullco
     if ( !definedcache.contains( definedid ) )
     {
       QgsDebugError( QStringLiteral( "FAILED to load OAuth2 config for defined ID: missing ID or file for %1" ).arg( definedid ) );
-      config->deleteLater();
-      return nullbundle;
+      return nullptr;
     }
 
     const QByteArray definedtxt = definedcache.value( definedid ).toUtf8();
     if ( definedtxt.isNull() || definedtxt.isEmpty() )
     {
       QgsDebugError( QStringLiteral( "FAILED to load config text for defined ID: empty text for %1" ).arg( definedid ) );
-      config->deleteLater();
-      return nullbundle;
+      return nullptr;
     }
 
     if ( !config->loadConfigTxt( definedtxt, QgsAuthOAuth2Config::JSON ) )
     {
       QgsDebugError( QStringLiteral( "FAILED to load config text for defined ID: %1" ).arg( definedid ) );
-      config->deleteLater();
-      return nullbundle;
+      return nullptr;
     }
 
     const QByteArray querypairstxt = configmap.value( QStringLiteral( "querypairs" ) ).toUtf8();
@@ -633,7 +624,7 @@ QgsO2 *QgsAuthOAuth2Method::getOAuth2Bundle( const QString &authcfg, bool fullco
   QgsDebugMsgLevel( QStringLiteral( "Loading authenticator object with %1 flow properties of OAuth2 config: %2" )
                     .arg( QgsAuthOAuth2Config::grantFlowString( config->grantFlow() ), authcfg ), 2 );
 
-  QgsO2 *o2 = new QgsO2( authcfg, config, nullptr, QgsNetworkAccessManager::instance() );
+  QgsO2 *o2 = new QgsO2( authcfg, config.release(), nullptr, QgsNetworkAccessManager::instance() );
 
   // cache bundle
   putOAuth2Bundle( authcfg, o2 );
