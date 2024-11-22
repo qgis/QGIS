@@ -82,6 +82,14 @@ QgsO2 *QgsOAuth2Factory::createO2( const QString &authcfg, QgsAuthOAuth2Config *
   return instance()->createO2Private( authcfg, oauth2config );
 }
 
+void QgsOAuth2Factory::requestLink( QgsO2 *o2 )
+{
+  if ( QThread::currentThread() == o2->thread() )
+    o2->link();
+  else
+    QMetaObject::invokeMethod( o2, &QgsO2::link, Qt::BlockingQueuedConnection );
+}
+
 QgsO2 *QgsOAuth2Factory::createO2Private( const QString &authcfg, QgsAuthOAuth2Config *oauth2config )
 {
   QgsO2 *o2 = nullptr;
@@ -268,7 +276,7 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     timer.start();
 
     // asynchronously attempt the linking
-    o2->link();
+    QgsOAuth2Factory::requestLink( o2 );
 
     // block request update until asynchronous linking loop is quit
     loop.exec();
