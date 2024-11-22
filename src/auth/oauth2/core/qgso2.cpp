@@ -65,6 +65,9 @@ QgsO2::QgsO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config,
     } );
   } );
 
+  if ( mOAuth2Config )
+    mOAuth2Config->setParent( this );
+
   initOAuthConfig();
 }
 
