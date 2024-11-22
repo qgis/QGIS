@@ -17,25 +17,29 @@
 
 #include <QApplication>
 
-#include "qgsapplication.h"
 #include "qgs3d.h"
+#include "qgs3dmapcanvas.h"
+#include "qgs3dmapscene.h"
+#include "qgs3dmapsettings.h"
+#include "qgsapplication.h"
+#include "qgsflatterraingenerator.h"
 #include "qgslayertree.h"
 #include "qgsmapsettings.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
+#include "qgspointlightsettings.h"
 #include "qgsproject.h"
-#include "qgsflatterraingenerator.h"
-#include "qgs3dmapscene.h"
-#include "qgs3dmapsettings.h"
-#include "qgs3dmapcanvas.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsprojectviewsettings.h"
-#include "qgspointlightsettings.h"
 #include "qgsterrainprovider.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenelayer3drenderer.h"
+#include "qgs3ddebugwidget.h"
 
+#include <QHBoxLayout>
 #include <QScreen>
+#include <QToolBar>
+#include <qgisapp.h>
 
 void initCanvas3D( Qgs3DMapCanvas *canvas )
 {
@@ -151,8 +155,50 @@ int main( int argc, char *argv[] )
 
   Qgs3DMapCanvas *canvas = new Qgs3DMapCanvas;
   initCanvas3D( canvas );
-  canvas->resize( 800, 600 );
-  canvas->show();
+
+  // set up the UI
+  QWidget *windowWidget = new QWidget;
+  QVBoxLayout *vLayout = new QVBoxLayout;
+  vLayout->setContentsMargins( 0, 0, 0, 0 );
+  vLayout->setSpacing( 0 );
+
+  QToolBar *toolBar = new QToolBar( windowWidget );
+  toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
+  toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionZoomFullExtent.svg" ) ), QStringLiteral( "Reset camera to default position" ), windowWidget, [canvas]
+  {
+    canvas->resetView();
+  } );
+  QAction *toggleDebugPanel = toolBar->addAction(
+                                QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/general.svg" ) ),
+                                QStringLiteral( "Toggle on-screen Debug panel" ) );
+  toggleDebugPanel->setCheckable( true );
+  vLayout->addWidget( toolBar );
+
+  QWidget *container = QWidget::createWindowContainer( canvas );
+  container->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+  Qgs3DDebugWidget *debugWidget = new Qgs3DDebugWidget( canvas );
+  debugWidget->setMapSettings( canvas->mapSettings() );
+  debugWidget->setVisible( false );
+
+  // Connect the camera to the debug widget.
+  QObject::connect( canvas->cameraController(), &QgsCameraController::cameraChanged, debugWidget, &Qgs3DDebugWidget::updateFromCamera );
+  QObject::connect( canvas->cameraController()->camera(), &Qt3DRender::QCamera::nearPlaneChanged, debugWidget, &Qgs3DDebugWidget::updateFromCamera );
+  QObject::connect( canvas->cameraController()->camera(), &Qt3DRender::QCamera::farPlaneChanged, debugWidget, &Qgs3DDebugWidget::updateFromCamera );
+  QObject::connect( toggleDebugPanel, &QAction::toggled, windowWidget, [ = ]( const bool enabled )
+  {
+    debugWidget->setVisible( enabled );
+  } );
+
+  QHBoxLayout *hLayout = new QHBoxLayout;
+  vLayout->addLayout( hLayout );
+  hLayout->setContentsMargins( 0, 0, 0, 0 );
+  hLayout->addWidget( container );
+  hLayout->addWidget( debugWidget );
+
+
+  windowWidget->resize( 800, debugWidget->height() );
+  windowWidget->setLayout( vLayout );
+  windowWidget->show();
 
   return myApp.exec();
 }
