@@ -85,21 +85,7 @@ QgsZValueWidget::QgsZValueWidget( const QString &label, QWidget *parent ): QWidg
 
   mZValueSpinBox->setFocusPolicy( Qt::NoFocus );
 
-  mGetZValuesButton = new QPushButton( this );
-  mGetZValuesButton->setText( "Get Z value from project terrain" );
-
-  mGetZValuesFromProjectElevationByDefaultCheckBox = new QCheckBox( "Set Z value from project terrain for new points", this );
-
   mainLayout->addLayout( layout );
-  mainLayout->addWidget( mGetZValuesButton );
-  mainLayout->addWidget( mGetZValuesFromProjectElevationByDefaultCheckBox );
-
-  connect( mGetZValuesButton, &QPushButton::pressed, this, &QgsZValueWidget::applyZValuesFromProjectElevation );
-}
-
-bool QgsZValueWidget::getZFromProjectElevationEnabled()
-{
-  return mGetZValuesFromProjectElevationByDefaultCheckBox->isChecked();
 }
 
 double QgsZValueWidget::zValue() const
@@ -229,6 +215,57 @@ void QgsMeshEditForceByLineAction::updateSettings()
 }
 
 //
+// QgsMeshEditDigitizingAction
+//
+
+QgsMeshEditDigitizingAction::QgsMeshEditDigitizingAction( QObject *parent )
+  : QWidgetAction( parent )
+{
+  QGridLayout *gLayout = new QGridLayout();
+  gLayout->setContentsMargins( 3, 2, 3, 2 );
+
+  QgsSettings settings;
+
+  QLabel *labelZValueType = new QLabel( tr( "Z value from" ) );
+  mComboZValueType = new QComboBox();
+  mComboZValueType->addItem( tr( "Z Widget" ), ZWidget );
+  mComboZValueType->addItem( tr( "Terrain" ), Terrain );
+  mComboZValueType->addItem( tr( "In Mesh Use Mesh Otherwise Terrain" ), InMeshUseMeshTerrainOtherwise );
+  mComboZValueType->addItem( tr( "In Mesh Use Mesh Otherwise Z Widget" ), InMeshUseMeshZWidgetOtherwise );
+
+  int interpolateFromValue = settings.enumValue( QStringLiteral( "UI/Mesh/ZValueFrom" ), InMeshUseMeshZWidgetOtherwise );
+  mComboZValueType->setCurrentIndex( interpolateFromValue );
+
+  gLayout->addWidget( labelZValueType, 2, 0, 1, 3 );
+  gLayout->addWidget( mComboZValueType, 2, 3, 1, 1 );
+
+
+  QWidget *w = new QWidget();
+  w->setLayout( gLayout );
+  setDefaultWidget( w );
+
+  //connect( mCheckBoxNewVertex, &QCheckBox::toggled, this, &QgsMeshEditForceByLineAction::updateSettings );
+}
+
+void QgsMeshEditDigitizingAction::updateSettings()
+{
+  QgsSettings settings;
+
+  settings.setEnumValue( QStringLiteral( "UI/Mesh/ZValueFrom" ),
+                         static_cast<ZValueSource>( mComboZValueType->currentData().toInt() ) );
+}
+
+QgsMeshEditDigitizingAction::ZValueSource QgsMeshEditDigitizingAction::zValueSourceType() const
+{
+  return static_cast<ZValueSource>( mComboZValueType->currentData().toInt() );
+}
+
+void QgsMeshEditDigitizingAction::setZValueType( QgsMeshEditDigitizingAction::ZValueSource zValueSource )
+{
+  mComboZValueType->setCurrentIndex( static_cast<int>( zValueSource ) );
+}
+
+//
 // QgsMapToolEditMeshFrame
 //
 
@@ -258,6 +295,8 @@ QgsMapToolEditMeshFrame::QgsMapToolEditMeshFrame( QgsMapCanvas *canvas )
 
   mWidgetActionForceByLine = new QgsMeshEditForceByLineAction( this );
   mWidgetActionForceByLine->setMapCanvas( canvas );
+
+  mWidgetActionDigitizing = new QgsMeshEditDigitizingAction( this );
 
   mActionReindexMesh = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMeshReindex.svg" ) ), tr( "Reindex Faces and Vertices" ), this );
 
@@ -450,6 +489,11 @@ QAction *QgsMapToolEditMeshFrame::defaultForceAction() const
 QWidgetAction *QgsMapToolEditMeshFrame::forceByLineWidgetActionSettings() const
 {
   return mWidgetActionForceByLine;
+}
+
+QWidgetAction *QgsMapToolEditMeshFrame::digitizingWidgetActionSettings() const
+{
+  return mWidgetActionDigitizing;
 }
 
 QAction *QgsMapToolEditMeshFrame::reindexAction() const
@@ -2707,8 +2751,6 @@ void QgsMapToolEditMeshFrame::createZValueWidget()
   mZValueWidget->setDefaultValue( defaultZValue() );
   mZValueWidget->setZValue( mUserZValue );
   QgisApp::instance()->addUserInputWidget( mZValueWidget );
-
-  connect( mZValueWidget, &QgsZValueWidget::applyZValuesFromProjectElevation, this, &QgsMapToolEditMeshFrame::applyZValueFromProjectTerrainOnSelectedVertices );
 }
 
 void QgsMapToolEditMeshFrame::deleteZValueWidget()
@@ -2765,63 +2807,74 @@ void QgsMapToolEditMeshFrame::addVertex(
   double zValue;
   QgsPointXY effectivePoint = mapPoint;
 
-  if ( mCadDockWidget->cadEnabled() && mCurrentFaceIndex == -1 )
-    zValue = currentZValue();
-  else if ( mapPointMatch.isValid() &&
-            mapPointMatch.layer() &&
-            QgsWkbTypes::hasZ( mapPointMatch.layer()->wkbType() ) )
+  bool isOnMesh = mCurrentFaceIndex != -1 || ( mCurrentEdge.first != -1 && mCurrentEdge.second != -1 );
+
+  if ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::Terrain ||
+       ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::InMeshUseMeshTerrainOtherwise && !isOnMesh ) )
   {
-    const QgsPoint layerPoint = mapPointMatch.interpolatedPoint( mCanvas->mapSettings().destinationCrs() );
-    zValue = layerPoint.z();
+    const QgsAbstractTerrainProvider *terrainProvider = QgsProject::instance()->elevationProperties()->terrainProvider();
+    const QgsCoordinateTransform transformation = QgsCoordinateTransform( mCurrentLayer->crs(), terrainProvider->crs(), QgsProject::instance() );
+
+    try
+    {
+      const QgsPointXY point = transformation.transform( effectivePoint.x(), effectivePoint.y() );
+      zValue = terrainProvider->heightAt( point.x(), point.y() );
+    }
+    catch ( const QgsCsException & )
+    {
+      zValue = std::numeric_limits<double>::quiet_NaN();
+    }
+
+    // either outside of terrain or the point cannot be transformed to terrainProvider CRS, use currentZValue
+    if ( std::isnan( zValue ) )
+    {
+      QgisApp::instance()->messageBar()->pushMessage(
+        tr( "Terrain Z Value" ),
+        tr( "Z Value from project terrain could not be obtained, setting default value %1." ).arg( mZValueWidget->getDefaultValue() ),
+        Qgis::MessageLevel::Warning,
+        3 );
+
+      zValue = mZValueWidget->getDefaultValue();
+    }
   }
-  else if ( mCurrentEdge.first != -1 && mCurrentEdge.second != -1 ) //we are on a edge -->interpolate the z value
+  else if ( isOnMesh && ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::InMeshUseMeshZWidgetOtherwise ||
+                          mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::InMeshUseMeshTerrainOtherwise ) )
   {
-    const QVector<int> &edge = edgeVertices( mCurrentEdge );
-    const QgsTriangularMesh &triangularMesh = *mCurrentLayer->triangularMesh();
-    const QgsMeshVertex &v1 = triangularMesh.vertices().at( edge.at( 0 ) );
-    const QgsMeshVertex &v2 = triangularMesh.vertices().at( edge.at( 1 ) );
-    const QgsPoint projectedPoint = QgsGeometryUtils::projectPointOnSegment( QgsPoint( mapPoint ), v1, v2 );
-    zValue = v1.z() + ( v2.z() - v1.z() ) * projectedPoint.distance( v1 ) / v1.distance( v2 );
-    effectivePoint = QgsPointXY( projectedPoint );
-  }
-  else if ( mCurrentFaceIndex != -1 ) //we are on a face -->interpolate the z value
-  {
-    const QgsTriangularMesh &triangularMesh = *mCurrentLayer->triangularMesh();
-    int triangleFaceIndex = triangularMesh.faceIndexForPoint_v2( mapPoint );
-    const QgsMeshFace &triangleFace = triangularMesh.triangles().at( triangleFaceIndex );
-    const QgsMeshVertex &v1 = triangularMesh.vertices().at( triangleFace.at( 0 ) );
-    const QgsMeshVertex &v2 = triangularMesh.vertices().at( triangleFace.at( 1 ) );
-    const QgsMeshVertex &v3 = triangularMesh.vertices().at( triangleFace.at( 2 ) );
-    zValue = QgsMeshLayerUtils::interpolateFromVerticesData( v1, v2, v3, v1.z(), v2.z(), v3.z(), mapPoint );
+    if ( mCurrentEdge.first != -1 && mCurrentEdge.second != -1 ) //we are on a edge -->interpolate the z value
+    {
+      const QVector<int> &edge = edgeVertices( mCurrentEdge );
+      const QgsTriangularMesh &triangularMesh = *mCurrentLayer->triangularMesh();
+      const QgsMeshVertex &v1 = triangularMesh.vertices().at( edge.at( 0 ) );
+      const QgsMeshVertex &v2 = triangularMesh.vertices().at( edge.at( 1 ) );
+      const QgsPoint projectedPoint = QgsGeometryUtils::projectPointOnSegment( QgsPoint( mapPoint ), v1, v2 );
+      zValue = v1.z() + ( v2.z() - v1.z() ) * projectedPoint.distance( v1 ) / v1.distance( v2 );
+      effectivePoint = QgsPointXY( projectedPoint );
+    }
+    else if ( mCurrentFaceIndex != -1 ) //we are on a face -->interpolate the z value
+    {
+      const QgsTriangularMesh &triangularMesh = *mCurrentLayer->triangularMesh();
+      int triangleFaceIndex = triangularMesh.faceIndexForPoint_v2( mapPoint );
+      const QgsMeshFace &triangleFace = triangularMesh.triangles().at( triangleFaceIndex );
+      const QgsMeshVertex &v1 = triangularMesh.vertices().at( triangleFace.at( 0 ) );
+      const QgsMeshVertex &v2 = triangularMesh.vertices().at( triangleFace.at( 1 ) );
+      const QgsMeshVertex &v3 = triangularMesh.vertices().at( triangleFace.at( 2 ) );
+      zValue = QgsMeshLayerUtils::interpolateFromVerticesData( v1, v2, v3, v1.z(), v2.z(), v3.z(), mapPoint );
+    }
+    else // this should not really happen
+    {
+      zValue = currentZValue();
+    }
   }
   else
   {
-    if ( mZValueWidget->getZFromProjectElevationEnabled() )
+    if ( mCadDockWidget->cadEnabled() && mCurrentFaceIndex == -1 )
+      zValue = currentZValue();
+    else if ( mapPointMatch.isValid() &&
+              mapPointMatch.layer() &&
+              QgsWkbTypes::hasZ( mapPointMatch.layer()->wkbType() ) )
     {
-      const QgsAbstractTerrainProvider *terrainProvider = QgsProject::instance()->elevationProperties()->terrainProvider();
-      const QgsCoordinateTransform transformation = QgsCoordinateTransform( mCurrentLayer->crs(), terrainProvider->crs(), QgsProject::instance() );
-
-      try
-      {
-        const QgsPointXY point = transformation.transform( effectivePoint.x(), effectivePoint.y() );
-        zValue = terrainProvider->heightAt( point.x(), point.y() );
-      }
-      catch ( const QgsCsException & )
-      {
-        zValue = std::numeric_limits<double>::quiet_NaN();
-      }
-
-      // either outside of terrain or the point cannot be transformed to terrainProvider CRS, use currentZValue
-      if ( std::isnan( zValue ) )
-      {
-        QgisApp::instance()->messageBar()->pushMessage(
-          tr( "Terrain Z Value" ),
-          tr( "Z Value from project terrain could not be obtained, setting default value %1." ).arg( mZValueWidget->getDefaultValue() ),
-          Qgis::MessageLevel::Warning,
-          3 );
-
-        zValue = mZValueWidget->getDefaultValue();
-      }
+      const QgsPoint layerPoint = mapPointMatch.interpolatedPoint( mCanvas->mapSettings().destinationCrs() );
+      zValue = layerPoint.z();
     }
     else
     {
@@ -2950,4 +3003,9 @@ void QgsMapToolEditMeshFrame::showSelectByExpressionDialog()
   dialog->show();
   connect( dialog, &QgsMeshSelectByExpressionDialog::select, this, &QgsMapToolEditMeshFrame::selectByExpression );
   connect( dialog, &QgsMeshSelectByExpressionDialog::zoomToSelected, this, &QgsMapToolEditMeshFrame::onZoomToSelected );
+}
+
+void QgsMapToolEditMeshFrame::setZValueType( QgsMeshEditDigitizingAction::ZValueSource zValueSource )
+{
+  mWidgetActionDigitizing->setZValueType( zValueSource );
 }
