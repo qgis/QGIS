@@ -2409,7 +2409,7 @@ void TestQgsMeshLayer::testMinimumMaximumActiveScalarDataset()
   QCOMPARE( min, 1 );
   QCOMPARE( max, 1 );
 
-  // cannot get data for vector dataset - index points to wrong dadataset index
+  // cannot get data for vector dataset - index points to wrong dataset index
   datasetIndex = QgsMeshDatasetIndex( 2, 0 );
   meta = mMdalLayer->datasetGroupMetadata( datasetIndex );
   QCOMPARE( meta.name(), QStringLiteral( "VertexVectorDataset" ) );
