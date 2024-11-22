@@ -21,10 +21,10 @@
 #include <QEventLoop>
 #include <QTimer>
 #include <QMutex>
+#include <QReadWriteLock>
 
 #include "qgsauthmethod.h"
 #include "qgsauthmethodmetadata.h"
-
 
 class QgsO2;
 
@@ -113,10 +113,12 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
 
     void removeOAuth2Bundle( const QString &authcfg );
 
+    QReadWriteLock mO2CacheLock;
     QMap<QString, QgsO2 *> mOAuth2ConfigCache;
 
     QgsO2 *authO2( const QString &authcfg );
 
+    // TODO: This mutex does not appear to be protecting anything which is thread-unsafe?
     QRecursiveMutex mNetworkRequestMutex;
 };
 
