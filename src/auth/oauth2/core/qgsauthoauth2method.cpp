@@ -48,6 +48,69 @@ const QString QgsAuthOAuth2Method::AUTH_METHOD_KEY = QStringLiteral( "OAuth2" );
 const QString QgsAuthOAuth2Method::AUTH_METHOD_DESCRIPTION = QStringLiteral( "OAuth2 authentication" );
 const QString QgsAuthOAuth2Method::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "OAuth2 authentication" );
 
+
+//
+// QgsOAuth2Factory
+//
+
+QgsOAuth2Factory *QgsOAuth2Factory::sInstance = nullptr;
+
+QgsOAuth2Factory::QgsOAuth2Factory( QObject *parent )
+  : QThread( parent )
+{
+  // YES, this IS correct in this context!
+  moveToThread( this );
+  start();
+}
+
+QgsOAuth2Factory *QgsOAuth2Factory::instance()
+{
+  if ( !sInstance )
+  {
+    static QMutex sMutex;
+    const QMutexLocker locker( &sMutex );
+    if ( !sInstance )
+    {
+      sInstance = new QgsOAuth2Factory();
+    }
+  }
+  return sInstance;
+}
+
+QgsO2 *QgsOAuth2Factory::createO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config )
+{
+  return instance()->createO2Private( authcfg, oauth2config );
+}
+
+QgsO2 *QgsOAuth2Factory::createO2Private( const QString &authcfg, QgsAuthOAuth2Config *oauth2config )
+{
+  QgsO2 *o2 = nullptr;
+  auto createO2InThread = [ &o2, authcfg, oauth2config, this ]
+  {
+    Q_ASSERT( QThread::currentThread() == this );
+    oauth2config->moveToThread( this );
+    o2 = new QgsO2( authcfg, oauth2config, nullptr, QgsNetworkAccessManager::instance() );
+  };
+
+  Q_ASSERT( isRunning() );
+
+  // Make sure that O2 objects are created on the factory thread only!
+  if ( QThread::currentThread() == this )
+    createO2InThread();
+  else
+  {
+    oauth2config->moveToThread( nullptr );
+    QMetaObject::invokeMethod( this, createO2InThread, Qt::BlockingQueuedConnection );
+  }
+  Q_ASSERT( o2->thread() == this );
+
+  return o2;
+}
+
+//
+// QgsAuthOAuth2Method
+//
+
 QgsAuthOAuth2Method::QgsAuthOAuth2Method()
 {
   setVersion( 1 );
@@ -624,7 +687,7 @@ QgsO2 *QgsAuthOAuth2Method::getOAuth2Bundle( const QString &authcfg, bool fullco
   QgsDebugMsgLevel( QStringLiteral( "Loading authenticator object with %1 flow properties of OAuth2 config: %2" )
                     .arg( QgsAuthOAuth2Config::grantFlowString( config->grantFlow() ), authcfg ), 2 );
 
-  QgsO2 *o2 = new QgsO2( authcfg, config.release(), nullptr, QgsNetworkAccessManager::instance() );
+  QgsO2 *o2 = QgsOAuth2Factory::createO2( authcfg, config.release() );
 
   // cache bundle
   putOAuth2Bundle( authcfg, o2 );
@@ -670,3 +733,4 @@ QGISEXTERN QgsAuthMethodMetadata *authMethodMetadataFactory()
   return new QgsAuthOAuth2MethodMetadata();
 }
 #endif
+
