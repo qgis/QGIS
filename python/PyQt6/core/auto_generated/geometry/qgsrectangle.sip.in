@@ -26,6 +26,9 @@ Examples are storing a layer extent or the current view extent of a map
 #include "qgsrectangle.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     QgsRectangle(); // optimised constructor for null rectangle - no need to call normalize here
 
