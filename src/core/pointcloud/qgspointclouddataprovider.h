@@ -24,8 +24,6 @@
 #include "qgspointcloudindex.h"
 #include "qgspointcloudsubindex.h"
 
-class IndexedPointCloudNode;
-class QgsPointCloudIndex;
 class QgsPointCloudRenderer;
 class QgsGeometry;
 class QgsPointCloudStatistics;
@@ -284,7 +282,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     QVector<QVariantMap> identify( QgsPointCloudIndex *index, double maxError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange, int pointsLimit ) SIP_SKIP ;
 
   private:
-    QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
+    QVector<QgsPointCloudNodeId> traverseTree( const QgsPointCloudIndex *pc, QgsPointCloudNode node, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
 
 };
 

@@ -42,7 +42,6 @@ class QgsCoordinateReferenceSystem;
 
 class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
 {
-    Q_OBJECT
   public:
 
     explicit QgsCopcPointCloudIndex();
@@ -52,11 +51,11 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
 
     void load( const QString &fileName ) override;
 
-    bool hasNode( const IndexedPointCloudNode &n ) const override;
-    QList<IndexedPointCloudNode> nodeChildren( const IndexedPointCloudNode &n ) const override;
+    bool hasNode( const QgsPointCloudNodeId &n ) const override;
+    virtual QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const override;
 
-    std::unique_ptr< QgsPointCloudBlock> nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
-    QgsPointCloudBlockRequest *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
+    std::unique_ptr< QgsPointCloudBlock> nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
+    QgsPointCloudBlockRequest *asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
 
     QgsCoordinateReferenceSystem crs() const override;
     qint64 pointCount() const override;
@@ -97,7 +96,7 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
     bool loadHierarchy();
 
     //! Fetches all nodes leading to node \a node into memory
-    bool fetchNodeHierarchy( const IndexedPointCloudNode &n ) const;
+    bool fetchNodeHierarchy( const QgsPointCloudNodeId &n ) const;
 
     /**
      * Fetches the COPC hierarchy page at offset \a offset and of size \a byteSize into memory
@@ -112,7 +111,7 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
     QgsPointCloudIndex::AccessType mAccessType = Local;
     mutable std::ifstream mCopcFile;
     mutable lazperf::copc_info_vlr mCopcInfoVlr;
-    mutable QHash<IndexedPointCloudNode, QPair<uint64_t, int32_t>> mHierarchyNodePos; //!< Additional data hierarchy for COPC
+    mutable QHash<QgsPointCloudNodeId, QPair<uint64_t, int32_t>> mHierarchyNodePos; //!< Additional data hierarchy for COPC
 
     QVariantMap mOriginalMetadata;
     mutable std::optional<QgsPointCloudStatistics> mStatistics;
