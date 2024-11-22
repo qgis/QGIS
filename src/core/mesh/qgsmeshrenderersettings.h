@@ -119,9 +119,9 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
      */
     enum class MinMaxValueType
     {
-      UserDefined, //User defined Min Max values
-      WholeMesh, // Values from whole mesh
-      FixedCanvas, //Fixed Min Max Values set from canvas
+      UserDefined, //!< User defined Min Max values
+      WholeMesh, //!< Values from whole mesh
+      FixedCanvas, //!< Fixed Min Max Values set from canvas
       InteractiveFromCanvas, //Constantly updated from extent of the canvas is used to compute statistics
     };
 
