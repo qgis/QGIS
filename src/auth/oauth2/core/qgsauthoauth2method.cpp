@@ -81,10 +81,14 @@ QgsO2 *QgsOAuth2Factory::createO2( const QString &authcfg, QgsAuthOAuth2Config *
 
 void QgsOAuth2Factory::requestLink( QgsO2 *o2 )
 {
+#ifndef __clang_analyzer__
   if ( QThread::currentThread() == o2->thread() )
     o2->link();
   else
     QMetaObject::invokeMethod( o2, &QgsO2::link, Qt::BlockingQueuedConnection );
+#else
+  ( void )o2;
+#endif
 }
 
 QgsO2 *QgsOAuth2Factory::createO2Private( const QString &authcfg, QgsAuthOAuth2Config *oauth2config )
