@@ -640,6 +640,15 @@ QgsMeshEditingError QgsMeshEditor::removeFaces( const QList<int> &facesToRemove 
   return error;
 }
 
+void QgsMeshEditor::addVertexWithDelaunayRefinement( const QgsMeshVertex vertex, const double tolerance )
+{
+  int triangleIndex = mTriangularMesh->faceIndexForPoint_v2( vertex );
+  if ( triangleIndex == -1 )
+    return;
+
+  mUndoStack->push( new QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement( this, vertex, tolerance ) );
+}
+
 bool QgsMeshEditor::edgeCanBeFlipped( int vertexIndex1, int vertexIndex2 ) const
 {
   return mTopologicalMesh.edgeCanBeFlipped( vertexIndex1, vertexIndex2 );
@@ -1481,4 +1490,153 @@ void QgsMeshLayerUndoCommandAdvancedEditing::redo()
     for ( QgsMeshEditor::Edit &edit : mEdits )
       mMeshEditor->applyEdit( edit );
   }
+}
+
+QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement::QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement(
+  QgsMeshEditor *meshEditor,
+  const QgsMeshVertex vertex,
+  double tolerance )
+  : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
+  , mVertex( vertex )
+  , mTolerance( tolerance )
+{
+  setText( QObject::tr( "Add vertex inside face with Delaunay refinement" ) );
+}
+
+void QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement::redo()
+{
+  if ( !mVertex.isEmpty() )
+  {
+    QgsMeshEditor::Edit edit;
+
+    mMeshEditor->applyAddVertex( edit, mVertex, mTolerance );
+    mEdits.append( edit );
+
+    QList<std::pair<int, int>> sharedEdges = innerEdges( triangularFaces( facesContainingVertex( mMeshEditor->topologicalMesh().mesh()->vertexCount() - 1 ) ) );
+
+    for ( std::pair<int, int> edge : sharedEdges )
+    {
+      if ( mMeshEditor->edgeCanBeFlipped( edge.first, edge.second ) && !mMeshEditor->topologicalMesh().delaunayConditionForEdge( edge.first, edge.second ) )
+      {
+        mMeshEditor->applyFlipEdge( edit, edge.first, edge.second );
+        mEdits.append( edit );
+      }
+    }
+
+    mVertex = QgsMeshVertex();
+  }
+  else
+  {
+    for ( QgsMeshEditor::Edit &edit : mEdits )
+      mMeshEditor->applyEdit( edit );
+  }
+}
+
+QSet<int> QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement::facesContainingVertex( const int vertexId )
+{
+  QList<int> facesAroundVertex;
+
+  for ( int i = 0; i < mMeshEditor->topologicalMesh().mesh()->faceCount(); i++ )
+  {
+    QgsMeshFace face = mMeshEditor->topologicalMesh().mesh()->face( i );
+
+    if ( face.contains( vertexId ) )
+    {
+      facesAroundVertex.push_back( i );
+    }
+  }
+
+  QSet<int> vertexIndexes;
+
+  for ( int faceIndex : facesAroundVertex )
+  {
+    QgsMeshFace face = mMeshEditor->topologicalMesh().mesh()->face( faceIndex );
+
+    for ( int i = 0; i < face.count(); i++ )
+    {
+      vertexIndexes.insert( face.at( i ) );
+    }
+  }
+
+  // faces that have at least one common vertex with newly added faces
+  QSet<int> selectedFaces;
+
+  for ( int i = 0; i < mMeshEditor->topologicalMesh().mesh()->faceCount(); i++ )
+  {
+    const QgsMeshFace face = mMeshEditor->topologicalMesh().mesh()->face( i );
+
+    for ( int j = 0; j < face.count(); j++ )
+    {
+      for ( int vertex : vertexIndexes )
+      {
+        if ( face.contains( vertex ) )
+        {
+          selectedFaces.insert( i );
+          break;
+        }
+      }
+    }
+  }
+  return selectedFaces;
+}
+
+
+QSet<int> QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement::triangularFaces( const QSet<int> &faces )
+{
+  QSet<int> triangularFaces;
+
+  for ( int faceIndex : faces )
+  {
+    if ( mMeshEditor->topologicalMesh().mesh()->face( faceIndex ).count() == 3 )
+    {
+      triangularFaces.insert( faceIndex );
+    }
+  }
+
+  return triangularFaces;
+}
+
+QList<std::pair<int, int>> QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement::innerEdges( const QSet<int> &faces )
+{
+  // edges and number of their occurrence in triangular faces
+  QMap<std::pair<int, int>, int> edges;
+
+  for ( int faceIndex : faces )
+  {
+    const QgsMeshFace face = mMeshEditor->topologicalMesh().mesh()->face( faceIndex );
+
+    for ( int i = 0; i < face.size(); i++ )
+    {
+      int next = i + 1;
+      if ( next == face.size() )
+      {
+        next = 0;
+      }
+
+      int minIndex = std::min( face.at( i ), face.at( next ) );
+      int maxIndex = std::max( face.at( i ), face.at( next ) );
+      std::pair<int, int> edge = std::pair<int, int>( minIndex, maxIndex );
+
+      int count = 1;
+      if ( edges.contains( edge ) )
+      {
+        count = edges.take( edge );
+        count++;
+      }
+
+      edges.insert( edge, count );
+    }
+  }
+
+  QList<std::pair<int, int>> sharedEdges;
+
+  for ( auto it = edges.begin(); it != edges.end(); it++ )
+  {
+    if ( it.value() == 2 )
+    {
+      sharedEdges.push_back( it.key() );
+    }
+  }
+
+  return sharedEdges;
 }
