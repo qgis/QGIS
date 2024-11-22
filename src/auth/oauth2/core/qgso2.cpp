@@ -18,7 +18,6 @@
 #include "o0globals.h"
 #include "o0settingsstore.h"
 #include "o2replyserver.h"
-#include "qgsapplication.h"
 #include "qgsauthoauth2config.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
@@ -309,12 +308,10 @@ void QgsO2::link()
     if ( !apiKey_.isEmpty() )
       parameters.append( O0RequestParameter( O2_OAUTH2_API_KEY, apiKey_.toUtf8() ) );
 
-
     for ( auto iter = extraReqParams_.constBegin(); iter != extraReqParams_.constEnd(); ++iter )
     {
       parameters.append( O0RequestParameter( iter.key().toUtf8(), iter.value().toString().toUtf8() ) );
     }
-
 
     const QByteArray payload = O0BaseAuth::createQueryParameters( parameters );
 
@@ -329,13 +326,11 @@ void QgsO2::link()
   }
 }
 
-
 void QgsO2::setState( const QString & )
 {
   state_ = QString::number( QRandomGenerator::system()->generate() );
   Q_EMIT stateChanged();
 }
-
 
 void QgsO2::onVerificationReceived( QMap<QString, QString> response )
 {
@@ -417,7 +412,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
         if ( ok )
         {
           QgsDebugMsgLevel( QStringLiteral( "O2::onVerificationReceived: Token expires in %1 seconds" ).arg( expiresIn ), 2 );
-          setExpires( QDateTime::currentMSecsSinceEpoch() / 1000 + expiresIn );
+          setExpires( static_cast< int >( QDateTime::currentMSecsSinceEpoch() / 1000 + expiresIn ) );
         }
       }
       setLinked( true );
@@ -507,7 +502,7 @@ void QgsO2::refreshSynchronous()
     else
     {
       setToken( tokens.value( O2_OAUTH2_ACCESS_TOKEN ).toString() );
-      setExpires( QDateTime::currentMSecsSinceEpoch() / 1000 + tokens.value( O2_OAUTH2_EXPIRES_IN ).toInt() );
+      setExpires( static_cast< int >( QDateTime::currentMSecsSinceEpoch() / 1000 + tokens.value( O2_OAUTH2_EXPIRES_IN ).toInt() ) );
       const QString refreshToken = tokens.value( O2_OAUTH2_REFRESH_TOKEN ).toString();
       if ( !refreshToken.isEmpty() )
         setRefreshToken( refreshToken );
