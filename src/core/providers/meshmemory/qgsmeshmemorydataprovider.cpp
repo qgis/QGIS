@@ -430,7 +430,7 @@ bool QgsMeshMemoryDataProvider::addDataset( const QString &uri )
   return valid;
 }
 
-bool QgsMeshMemoryDataProvider::removeDatasetGroup( const int &index )
+bool QgsMeshMemoryDataProvider::removeDatasetGroup( int index )
 {
   if ( index < 0 && index > datasetGroupCount() - 1 )
   {

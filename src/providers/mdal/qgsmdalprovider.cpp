@@ -745,7 +745,7 @@ void QgsMdalProvider::makeLastDatasetGroupNameUnique()
   }
 }
 
-bool QgsMdalProvider::removeDatasetGroup( const int &index )
+bool QgsMdalProvider::removeDatasetGroup( int index )
 {
   if ( index < 0 && index > datasetGroupCount() - 1 )
   {

@@ -64,7 +64,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
 
     bool addDataset( const QString &uri ) override;
 
-    bool removeDatasetGroup( const int &index ) override;
+    bool removeDatasetGroup( int index ) override;
 
     QStringList extraDatasets() const override;
 
