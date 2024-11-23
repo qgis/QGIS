@@ -467,13 +467,13 @@ Closes the data provider and free every resources used
 .. versionadded:: 3.22
 %End
 
-    virtual bool removeDatasetGroup( const int &index ) = 0;
+    virtual bool removeDatasetGroup( int index ) = 0;
 %Docstring
 Remove dataset group from the mesh
 
 emits dataChanged when successful
 
-:return: True on success
+:return: ``True`` on success
 
 .. versionadded:: 3.42
 %End

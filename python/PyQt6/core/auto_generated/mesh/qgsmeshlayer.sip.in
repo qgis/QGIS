@@ -186,7 +186,7 @@ Removes datasets from the mesh with given ``name``.
 
 :param name: of dataset group to remove
 
-:return: whether the dataset is added
+:return: whether the dataset is removed
 
 .. versionadded:: 3.42
 %End
@@ -918,8 +918,8 @@ Sets labeling configuration. Takes ownership of the object.
 
     bool datasetsPathUnique( const QString &path );
 %Docstring
-Checks that datasets path is already added to this mesh layer. Return true if the
-dataset path is unique.
+Checks whether that datasets path is already added to this mesh layer. Return ``True`` if the
+dataset path is not already added.
 
 :param path: the path to the datasets file
 
