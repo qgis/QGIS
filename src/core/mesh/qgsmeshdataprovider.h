@@ -480,7 +480,7 @@ class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDat
      *
      * emits dataChanged when successful
      *
-     * \return True on success
+     * \return TRUE on success
      *
      * \since QGIS 3.42
      */
