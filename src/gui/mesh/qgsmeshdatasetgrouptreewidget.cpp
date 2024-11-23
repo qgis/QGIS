@@ -84,7 +84,7 @@ void QgsMeshDatasetGroupTreeWidget::removeDataset()
   if ( mMeshLayer->removeDatasets( datasetGroupName ) )
   {
     QMessageBox::warning( this, tr( "Remove mesh datasets" ), tr( "Dataset Group removed from mesh." ) );
-    emit datasetGroupAdded();
+    emit datasetGroupsChanged();
   }
   else
   {
@@ -124,7 +124,7 @@ void QgsMeshDatasetGroupTreeWidget::addDataset()
   if ( mMeshLayer->addDatasets( openFileString, QgsProject::instance()->timeSettings()->temporalRange().begin() ) )
   {
     QMessageBox::information( this, tr( "Load mesh datasets" ), tr( "Datasets successfully added to the mesh layer" ) );
-    emit datasetGroupAdded();
+    emit datasetGroupsChanged();
   }
   else
   {

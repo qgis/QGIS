@@ -44,7 +44,7 @@ class GUI_EXPORT QgsMeshDatasetGroupTreeWidget: public QWidget, private Ui::QgsM
     void apply();
 
   signals:
-    void datasetGroupAdded();
+    void datasetGroupsChanged();
 
   private slots:
     void addDataset();
