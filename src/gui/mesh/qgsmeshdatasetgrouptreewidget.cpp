@@ -78,9 +78,9 @@ void QgsMeshDatasetGroupTreeWidget::apply()
 
 void QgsMeshDatasetGroupTreeWidget::removeDataset()
 {
-  QModelIndex index = mDatasetGroupTreeView->currentIndex();
-  QgsMeshDatasetGroupTreeItem *meshGroupItem = mDatasetGroupTreeView->datasetGroupTreeRootItem()->child( index.row() );
-  QString datasetGroupName = meshGroupItem->defaultName();
+  const QModelIndex index = mDatasetGroupTreeView->currentIndex();
+  const QgsMeshDatasetGroupTreeItem *meshGroupItem = mDatasetGroupTreeView->datasetGroupTreeRootItem()->child( index.row() );
+  const QString datasetGroupName = meshGroupItem->defaultName();
   if ( mMeshLayer->removeDatasets( datasetGroupName ) )
   {
     QMessageBox::warning( this, tr( "Remove mesh datasets" ), tr( "Dataset Group removed from mesh." ) );

@@ -127,7 +127,7 @@ bool QgsMeshDatasetGroupStore::addDatasetGroup( QgsMeshDatasetGroup *group )
 
 void QgsMeshDatasetGroupStore::removeDatasetGroup( int index )
 {
-  QgsMeshDatasetGroupStore::DatasetGroup group = datasetGroup( index );
+  const QgsMeshDatasetGroupStore::DatasetGroup group = datasetGroup( index );
   if ( group.first == mPersistentProvider )
     mPersistentProvider->removeDatasetGroup( group.second );
   else if ( group.first == &mExtraDatasets )

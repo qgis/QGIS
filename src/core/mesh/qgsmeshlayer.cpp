@@ -255,14 +255,14 @@ QString QgsMeshLayer::loadDefaultStyle( bool &resultFlag )
 
 bool QgsMeshLayer::removeDatasets( const QString &name )
 {
-  int index = mDatasetGroupStore->indexFromGroupName( name );
+  const int index = mDatasetGroupStore->indexFromGroupName( name );
 
   if ( index == -1 )
   {
     return false;
   }
 
-  QgsMeshDatasetGroupMetadata groupMetadata =  datasetGroupMetadata( index );
+  const QgsMeshDatasetGroupMetadata groupMetadata =  datasetGroupMetadata( index );
 
   mDatasetGroupStore->removeDatasetGroup( index );
 
