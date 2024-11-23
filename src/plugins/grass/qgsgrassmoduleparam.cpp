@@ -36,6 +36,7 @@
 #include "qgsgrassmodule.h"
 #include "qgsgrassmoduleinput.h"
 #include "qgsgrassmoduleparam.h"
+#include "moc_qgsgrassmoduleparam.cpp"
 #include "qgsgrassplugin.h"
 #include "qgsgrassprovider.h"
 

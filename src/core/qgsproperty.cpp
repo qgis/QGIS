@@ -505,7 +505,7 @@ QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context
 
 bool QgsProperty::isProjectColor() const
 {
-  const thread_local QRegularExpression rx( QStringLiteral( "^project_color\\('.*'\\)$" ) );
+  const thread_local QRegularExpression rx( QStringLiteral( "^project_color(_object|)\\('.*'\\)$" ) );
   return d->type == Qgis::PropertyType::Expression && !d->expressionString.isEmpty()
          && rx.match( d->expressionString ).hasMatch();
 }

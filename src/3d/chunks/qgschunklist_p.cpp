@@ -15,7 +15,7 @@
 
 #include "qgschunklist_p.h"
 
-#include "qgschunknode_p.h"
+#include "qgschunknode.h"
 
 ///@cond PRIVATE
 

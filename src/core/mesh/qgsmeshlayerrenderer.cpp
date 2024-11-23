@@ -25,6 +25,7 @@
 #include <QElapsedTimer>
 
 #include "qgsmeshlayerrenderer.h"
+#include "moc_qgsmeshlayerrenderer.cpp"
 
 #include "qgslogger.h"
 #include "qgsmeshlayer.h"

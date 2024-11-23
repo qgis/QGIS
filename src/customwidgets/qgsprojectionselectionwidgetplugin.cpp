@@ -16,6 +16,7 @@
 #include "qgiscustomwidgets.h"
 #include "qgsprojectionselectionwidget.h"
 #include "qgsprojectionselectionwidgetplugin.h"
+#include "moc_qgsprojectionselectionwidgetplugin.cpp"
 
 
 QgsProjectionSelectionWidgetPlugin::QgsProjectionSelectionWidgetPlugin( QObject *parent )

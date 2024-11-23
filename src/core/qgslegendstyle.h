@@ -104,7 +104,7 @@ class CORE_EXPORT QgsLegendStyle
      *
      * \see setMargin()
      */
-    double margin( Side side ) { return mMarginMap.value( side ); }
+    double margin( Side side ) const { return mMarginMap.value( side ); }
 
     /**
      * Sets the \a margin (in mm) for the specified \a side of the component.

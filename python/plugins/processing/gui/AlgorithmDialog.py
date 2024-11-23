@@ -226,7 +226,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.feedback.pushInfo('')
             start_time = time.time()
 
-            def elapsed_time(start_time, result):
+            def elapsed_time(start_time) -> str:
                 delta_t = time.time() - start_time
                 hours = int(delta_t / 3600)
                 minutes = int((delta_t % 3600) / 60)
@@ -237,14 +237,14 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 str_seconds = [self.tr("second"), self.tr("seconds")][seconds != 1]
 
                 if hours > 0:
-                    elapsed = '{0} {1:0.2f} {2} ({3} {4} {5} {6} {7:0.0f} {2})'.format(
-                        result, delta_t, str_seconds, hours, str_hours, minutes, str_minutes, seconds)
+                    elapsed = '{0:0.2f} {1} ({2} {3} {4} {5} {6:0.0f} {1})'.format(
+                        delta_t, str_seconds, hours, str_hours, minutes, str_minutes, seconds)
                 elif minutes > 0:
-                    elapsed = '{0} {1:0.2f} {2} ({3} {4} {5:0.0f} {2})'.format(
-                        result, delta_t, str_seconds, minutes, str_minutes, seconds)
+                    elapsed = '{0:0.2f} {1} ({2} {3} {4:0.0f} {1})'.format(
+                        delta_t, str_seconds, minutes, str_minutes, seconds)
                 else:
-                    elapsed = '{} {:0.2f} {}'.format(
-                        result, delta_t, str_seconds)
+                    elapsed = '{:0.2f} {}'.format(
+                        delta_t, str_seconds)
 
                 return elapsed
 
@@ -259,7 +259,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 self.cancelButton().setEnabled(self.algorithm().flags() & QgsProcessingAlgorithm.Flag.FlagCanCancel)
                 if executeIterating(self.algorithm(), parameters, self.iterateParam, self.context, self.feedback):
                     self.feedback.pushInfo(
-                        self.tr(elapsed_time(start_time, 'Execution completed in')))
+                        self.tr('Execution completed in {}').format(elapsed_time(start_time)))
                     self.cancelButton().setEnabled(False)
                     self.finish(True, parameters, self.context, self.feedback)
                 else:
@@ -282,11 +282,11 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 def on_complete(ok, results):
                     if ok:
                         self.feedback.pushInfo(
-                            self.tr(elapsed_time(start_time, 'Execution completed in')))
+                            self.tr('Execution completed in {}').format(elapsed_time(start_time)))
                         self.feedback.pushFormattedResults(self.algorithm(), self.context, results)
                     else:
                         self.feedback.reportError(
-                            self.tr(elapsed_time(start_time, 'Execution failed after')))
+                            self.tr('Execution failed after {}').format(elapsed_time(start_time)))
                     self.feedback.pushInfo('')
 
                     if self.history_log_id is not None:

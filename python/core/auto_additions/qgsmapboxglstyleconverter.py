@@ -4,6 +4,7 @@ QgsMapBoxGlStyleConverter.PropertyType.Color.__doc__ = "Color property"
 QgsMapBoxGlStyleConverter.PropertyType.Numeric.__doc__ = "Numeric property (e.g. line width, text size)"
 QgsMapBoxGlStyleConverter.PropertyType.Opacity.__doc__ = "Opacity property"
 QgsMapBoxGlStyleConverter.PropertyType.Point.__doc__ = "Point/offset property"
+QgsMapBoxGlStyleConverter.PropertyType.NumericArray.__doc__ = "Numeric array for dash arrays or such"
 QgsMapBoxGlStyleConverter.PropertyType.__doc__ = """Property types, for interpolated value conversion
 
 .. warning::
@@ -14,6 +15,7 @@ QgsMapBoxGlStyleConverter.PropertyType.__doc__ = """Property types, for interpol
 * ``Numeric``: Numeric property (e.g. line width, text size)
 * ``Opacity``: Opacity property
 * ``Point``: Point/offset property
+* ``NumericArray``: Numeric array for dash arrays or such
 
 """
 # --

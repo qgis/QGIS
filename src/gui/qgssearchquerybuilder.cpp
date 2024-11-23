@@ -27,6 +27,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsfields.h"
 #include "qgssearchquerybuilder.h"
+#include "moc_qgssearchquerybuilder.cpp"
 #include "qgsexpression.h"
 #include "qgsvectorlayer.h"
 #include "qgshelp.h"

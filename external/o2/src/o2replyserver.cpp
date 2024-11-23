@@ -12,6 +12,7 @@
 #include <QUrlQuery>
 #endif
 
+#include "o0globals.h"
 #include "o2replyserver.h"
 
 O2ReplyServer::O2ReplyServer(QObject *parent): QTcpServer(parent),
@@ -72,6 +73,11 @@ void O2ReplyServer::onBytesReady() {
             closeServer(socket, false);
             return;
         }
+    }
+    if (!uniqueState_.isEmpty() && !queryParams.contains(QString(O2_OAUTH2_STATE))) {
+        //qDebug() << "O2ReplyServer::onBytesReady: Malicious or service request";
+        closeServer(socket, true);
+        return; // Malicious or service (e.g. favicon.ico) request
     }
     //qDebug() << "O2ReplyServer::onBytesReady: Query params found, closing server";
     closeServer(socket, true);
@@ -165,4 +171,14 @@ int O2ReplyServer::callbackTries()
 void O2ReplyServer::setCallbackTries(int maxtries)
 {
   maxtries_ = maxtries;
+}
+
+QString O2ReplyServer::uniqueState()
+{
+    return uniqueState_;
+}
+
+void O2ReplyServer::setUniqueState(const QString &state)
+{
+    uniqueState_ = state;
 }

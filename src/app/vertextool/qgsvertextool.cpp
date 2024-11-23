@@ -14,6 +14,7 @@
  ***************************************************************************/
 #include "qgsmessagelog.h"
 #include "qgsvertextool.h"
+#include "moc_qgsvertextool.cpp"
 
 #include "qgsavoidintersectionsoperation.h"
 #include "qgsadvanceddigitizingdockwidget.h"
@@ -163,11 +164,14 @@ class OneFeatureFilter : public QgsPointLocator::MatchFilter
 };
 
 
-//! a filter just to gather all matches at the same place
+/**
+ * For polygons we need to filter out the last vertex, because it will have
+ * the same coordinates than the first and we would have a duplicate match which
+ * would make topology editing mode behave incorrectly
+ */
 class MatchCollectingFilter : public QgsPointLocator::MatchFilter
 {
   public:
-    QList<QgsPointLocator::Match> matches;
     QgsVertexTool *vertextool = nullptr;
 
     MatchCollectingFilter( QgsVertexTool *vertextool )
@@ -175,43 +179,18 @@ class MatchCollectingFilter : public QgsPointLocator::MatchFilter
 
     bool acceptMatch( const QgsPointLocator::Match &match ) override
     {
-      if ( match.distance() > 0 )
+      if ( match.layer()->geometryType() != Qgis::GeometryType::Polygon )
+        return true;
+
+      QgsVertexId vid;
+      QgsGeometry matchGeom = vertextool->cachedGeometry( match.layer(), match.featureId() );
+      if ( !matchGeom.vertexIdFromVertexNr( match.vertexIndex(), vid ) )
+        // should not happen because vertex index in match object was created with vertexNrFromVertexId
+        // so the methods are reversible and we will have a vid
         return false;
 
-      // there may be multiple points at the same location, but we get only one
-      // result... the locator API needs a new method verticesInRect()
-      QgsGeometry matchGeom = vertextool->cachedGeometry( match.layer(), match.featureId() );
-      bool isPolygon = matchGeom.type() == Qgis::GeometryType::Polygon;
-      QgsVertexId polygonRingVid;
-      QgsVertexId vid;
-      QgsPoint pt;
-      while ( matchGeom.constGet()->nextVertex( vid, pt ) )
-      {
-        int vindex = matchGeom.vertexNrFromVertexId( vid );
-        if ( pt.x() == match.point().x() && pt.y() == match.point().y() )
-        {
-          if ( isPolygon )
-          {
-            // for polygons we need to handle the case where the first vertex is matching because the
-            // last point will have the same coordinates and we would have a duplicate match which
-            // would make subsequent code behave incorrectly (topology editing mode would add a single
-            // vertex twice)
-            if ( vid.vertex == 0 )
-            {
-              polygonRingVid = vid;
-            }
-            else if ( vid.ringEqual( polygonRingVid ) && vid.vertex == matchGeom.constGet()->vertexCount( vid.part, vid.ring ) - 1 )
-            {
-              continue;
-            }
-          }
-
-          QgsPointLocator::Match extra_match( match.type(), match.layer(), match.featureId(),
-                                              0, match.point(), vindex );
-          matches.append( extra_match );
-        }
-      }
-      return true;
+      // filter out the vertex if it is the last one (of its ring, in its part)
+      return vid.vertex != matchGeom.constGet()->vertexCount( vid.part, vid.ring ) - 1;
     }
 };
 
@@ -1012,7 +991,7 @@ QgsPointLocator::Match QgsVertexTool::snapToPolygonInterior( QgsMapMouseEvent *e
 }
 
 
-QList<QgsPointLocator::Match> QgsVertexTool::findEditableLayerMatches( const QgsPointXY &mapPoint, QgsVectorLayer *layer )
+QgsPointLocator::MatchList QgsVertexTool::findEditableLayerMatches( const QgsPointXY &mapPoint, QgsVectorLayer *layer )
 {
   QgsPointLocator::MatchList matchList;
 
@@ -1935,29 +1914,29 @@ void QgsVertexTool::buildDragBandsForVertices( const QSet<Vertex> &movingVertice
   }
 }
 
-QList<QgsPointLocator::Match> QgsVertexTool::layerVerticesSnappedToPoint( QgsVectorLayer *layer, const QgsPointXY &mapPoint )
+QgsPointLocator::MatchList QgsVertexTool::layerVerticesSnappedToPoint( QgsVectorLayer *layer, const QgsPointXY &mapPoint )
 {
   MatchCollectingFilter myfilter( this );
   QgsPointLocator *loc = canvas()->snappingUtils()->locatorForLayer( layer );
-  loc->nearestVertex( mapPoint, 0, &myfilter, true );
-  return myfilter.matches;
+  double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
+  return loc->verticesInRect( mapPoint, tol, &myfilter, true );
 }
 
-QList<QgsPointLocator::Match> QgsVertexTool::layerSegmentsSnappedToSegment( QgsVectorLayer *layer, const QgsPointXY &mapPoint1, const QgsPointXY &mapPoint2 )
+QgsPointLocator::MatchList QgsVertexTool::layerSegmentsSnappedToSegment( QgsVectorLayer *layer, const QgsPointXY &mapPoint1, const QgsPointXY &mapPoint2 )
 {
-  QList<QgsPointLocator::Match> finalMatches;
+  QgsPointLocator::MatchList finalMatches;
   // we want segment matches that have exactly the same vertices as the given segment (mapPoint1, mapPoint2)
   // so rather than doing nearest edge search which could return any segment within a tolerance,
   // we first find matches for one endpoint and then see if there is a matching other endpoint.
-  const QList<QgsPointLocator::Match> matches1 = layerVerticesSnappedToPoint( layer, mapPoint1 );
+  const QgsPointLocator::MatchList matches1 = layerVerticesSnappedToPoint( layer, mapPoint1 );
   for ( const QgsPointLocator::Match &m : matches1 )
   {
     QgsGeometry g = cachedGeometry( layer, m.featureId() );
     int v0, v1;
     g.adjacentVertices( m.vertexIndex(), v0, v1 );
-    if ( v0 != -1 && QgsPointXY( g.vertexAt( v0 ) ) == mapPoint2 )
+    if ( v0 != -1 && toMapCoordinates( layer, QgsPointXY( g.vertexAt( v0 ) ) ) == mapPoint2 )
       finalMatches << QgsPointLocator::Match( QgsPointLocator::Edge, layer, m.featureId(), 0, m.point(), v0 );
-    else if ( v1 != -1 && QgsPointXY( g.vertexAt( v1 ) ) == mapPoint2 )
+    else if ( v1 != -1 && toMapCoordinates( layer, QgsPointXY( g.vertexAt( v1 ) ) ) == mapPoint2 )
       finalMatches << QgsPointLocator::Match( QgsPointLocator::Edge, layer, m.featureId(), 0, m.point(), m.vertexIndex() );
   }
   return finalMatches;
@@ -2258,18 +2237,27 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
   {
     // topo editing: add vertex to existing segments when moving/adding a vertex to such segment.
 
-    // compute layers we have to add topological point on (modified ones + snapped one)
-    QSet<QgsVectorLayer *> targetLayers( edits.keyBegin(), edits.keyEnd() );
-    if ( mapPointMatch->layer() )
-      targetLayers << mapPointMatch->layer();
+    const QList<QgsMapLayer *> targetLayers = canvas()->layers( true );
 
     for ( auto itLayerEdits = edits.begin(); itLayerEdits != edits.end(); ++itLayerEdits )
     {
-      for ( QgsVectorLayer *targetLayer : targetLayers )
+      for ( QgsMapLayer *targetLayer : targetLayers )
       {
-        // layer's CRS need to be the the same (otherwise we would need to reproject the point and it will not be coincident)
-        if ( targetLayer->crs() != itLayerEdits.key()->crs() )
+        QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( targetLayer );
+
+        if ( !vectorLayer || !vectorLayer->isEditable() )
           continue;
+
+        if ( !( vectorLayer->geometryType() == Qgis::GeometryType::Polygon || vectorLayer->geometryType() == Qgis::GeometryType::Line ) )
+          continue;
+
+        // layer's CRS need to be the the same (otherwise we would need to reproject the point and it will not be coincident)
+        if ( vectorLayer->crs() != itLayerEdits.key()->crs() )
+          continue;
+
+        vectorLayer->beginEditCommand( tr( "Topological points added by 'Vertex Tool'" ) );
+
+        bool topoPointsAdded = false;
 
         for ( auto itFeatEdit = itLayerEdits->begin(); itFeatEdit != itLayerEdits->end(); ++itFeatEdit )
         {
@@ -2278,9 +2266,17 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
             if ( !point.is3D() )
               point.addZValue( defaultZValue() );
 
-            targetLayer->addTopologicalPoints( point );
+            int res = vectorLayer->addTopologicalPoints( point );
+
+            if ( res == 0 )
+              topoPointsAdded = true;
           }
         }
+
+        if ( topoPointsAdded )
+          vectorLayer->endEditCommand();
+        else
+          vectorLayer->destroyEditCommand();
       }
     }
   }

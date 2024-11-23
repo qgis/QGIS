@@ -50,6 +50,9 @@
 #include "qgsmarkersymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsheatmaprenderer.h"
+#include "qgsmeshlayer.h"
+
+#include "gdal.h"
 
 class TestRasterRenderer : public QgsPalettedRasterRenderer
 {
@@ -95,6 +98,7 @@ class TestQgsLegendRenderer : public QgsTest
     void testBasic();
     void testMultiline();
     void testOverrideSize();
+    void testOverrideSizeSmall();
     void testSpacing();
     void testEffects();
     void testBigMarker();
@@ -135,6 +139,7 @@ class TestQgsLegendRenderer : public QgsTest
     void testFilterByExpression();
     void testFilterByExpressionWithContext();
     void testDiagramAttributeLegend();
+    void testDiagramMeshLegend();
     void testDiagramSizeLegend();
     void testDataDefinedSizeCollapsed();
     void testDataDefinedSizeSeparated();
@@ -161,9 +166,9 @@ class TestQgsLegendRenderer : public QgsTest
     QgsRasterLayer *mRL = nullptr;
     bool _testLegendColumns( int itemCount, int columnCount, const QString &testName, double symbolSpacing );
 
-    bool _verifyImage( const QImage &image, const QString &testName, int diff = 30 )
+    bool _verifyImage( const QImage &image, const QString &testName, int diff = 30, const QSize &sizeTolerance = QSize( 6, 10 ) )
     {
-      return QGSIMAGECHECK( testName, testName, image, QString(), diff, QSize( 6, 10 ) );
+      return QGSIMAGECHECK( testName, testName, image, QString(), diff, sizeTolerance );
     }
 
     static void setStandardTestFont( QgsLegendSettings &settings, const QString &style = QStringLiteral( "Roman" ) )
@@ -293,9 +298,17 @@ void TestQgsLegendRenderer::init()
   }
   QgsProject::instance()->addMapLayer( mVL3 );
 
-  static const char RASTER_ARRAY[] = { 1, 2, 2, 1 };
-  const QString rasterUri = QStringLiteral( "MEM:::DATAPOINTER=%1,PIXELS=2,LINES=2" ).arg( ( qulonglong ) RASTER_ARRAY );
-  mRL = new QgsRasterLayer( rasterUri, QStringLiteral( "Raster Layer" ), QStringLiteral( "gdal" ) );
+  char RASTER_ARRAY[] = { 1, 2, 2, 1 };
+  GDALDriverH hGTiffDrv = GDALGetDriverByName( "GTiff" );
+  Q_ASSERT( hGTiffDrv );
+  const char *tempFileName = "/vsimem/temp.tif";
+  GDALDatasetH hDS = GDALCreate( hGTiffDrv, tempFileName, 2, 2, 1, GDT_Byte, NULL );
+  Q_ASSERT( hDS );
+  CPLErr eErr = GDALRasterIO( GDALGetRasterBand( hDS, 1 ), GF_Write, 0, 0, 2, 2, RASTER_ARRAY, 2, 2, GDT_Byte, 1, 2 );
+  QVERIFY( eErr == CE_None );
+  GDALClose( hDS );
+
+  mRL = new QgsRasterLayer( QString( tempFileName ), QStringLiteral( "Raster Layer" ), QStringLiteral( "gdal" ) );
 
   std::unique_ptr< TestRasterRenderer > rasterRenderer( new  TestRasterRenderer( mRL->dataProvider(), 1,
   {
@@ -325,6 +338,8 @@ void TestQgsLegendRenderer::init()
   grp1->addLayer( mVL2 );
   mRoot->addLayer( mVL3 );
   mRoot->addLayer( mRL );
+
+  VSIUnlink( tempFileName );
 }
 
 void TestQgsLegendRenderer::cleanup()
@@ -421,6 +436,43 @@ void TestQgsLegendRenderer::testOverrideSize()
   legendModel.refreshLayerLegend( layer );
 
   QgsLegendSettings settings;
+  setStandardTestFont( settings, QStringLiteral( "Bold" ) );
+
+  const QImage res = renderLegend( &legendModel, settings );
+  QVERIFY( _verifyImage( res, testName ) );
+}
+
+void TestQgsLegendRenderer::testOverrideSizeSmall()
+{
+  // Setting an explicit size for a legend node should override all other settings,
+  // including the heights calculated from minimum/maximum symbol size.
+  // This is because explicit fixed sizes are PER NODE, and can be used as a last-resort
+  // for users to manually adjust the sizing of one particular legend node
+  const QString testName = QStringLiteral( "legend_override_size_small" );
+
+  QgsLayerTreeModel legendModel( mRoot );
+
+  legendModel.findLegendNode( mVL1->id(), QString() );
+
+  QgsLayerTreeLayer *layer = legendModel.rootGroup()->findLayer( mVL1 );
+  layer->setPatchSize( QSizeF( 30, 0 ) );
+
+  QgsLayerTreeModelLegendNode *embeddedNode = legendModel.legendNodeEmbeddedInParent( layer );
+  embeddedNode->setUserLabel( QString() );
+
+  layer = legendModel.rootGroup()->findLayer( mVL3 );
+  QgsMapLayerLegendUtils::setLegendNodeSymbolSize( layer, 1, QSizeF( 0, 1 ) );
+  legendModel.refreshLayerLegend( layer );
+
+  layer = legendModel.rootGroup()->findLayer( mVL3 );
+  QgsMapLayerLegendUtils::setLegendNodeSymbolSize( layer, 2, QSizeF( 0, 0.5 ) );
+  legendModel.refreshLayerLegend( layer );
+
+  QgsLegendSettings settings;
+  settings.rstyle( QgsLegendStyle::Symbol ).setMargin( QgsLegendStyle::Top, 0 );
+  settings.rstyle( QgsLegendStyle::Symbol ).setMargin( QgsLegendStyle::Bottom, 0 );
+  settings.setMinimumSymbolSize( 5 );
+  settings.setMaximumSymbolSize( 9 );
   setStandardTestFont( settings, QStringLiteral( "Bold" ) );
 
   const QImage res = renderLegend( &legendModel, settings );
@@ -1448,6 +1500,79 @@ void TestQgsLegendRenderer::testDiagramAttributeLegend()
   QVERIFY( _verifyImage( res, QStringLiteral( "legend_diagram_attributes" ) ) );
 
   QgsProject::instance()->removeMapLayer( vl4 );
+}
+
+void TestQgsLegendRenderer::testDiagramMeshLegend()
+{
+  const QString uri_1( QString( TEST_DATA_DIR ) + QStringLiteral( "/mesh/mesh_z_ws_d_vel.nc" ) ); //mesh with dataset group "Bed Elevation", "Water Level", "Depth" and "Velocity"
+
+  QTemporaryDir tempDir;
+  const QString uri( tempDir.filePath( QStringLiteral( "mesh.nc" ) ) );
+
+  QFile::copy( uri_1, uri );
+  QgsMeshLayer *layer = new QgsMeshLayer( uri, QStringLiteral( "mesh" ), QStringLiteral( "mdal" ) );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->datasetGroupCount(), 4 );
+
+  QgsProject::instance()->addMapLayer( layer );
+
+  int scalarIndex = 0;
+  int vectorIndex = -1;
+
+  QgsMeshRendererSettings rendererSettings = layer->rendererSettings();
+  rendererSettings.setActiveScalarDatasetGroup( scalarIndex );
+  rendererSettings.setActiveVectorDatasetGroup( vectorIndex );
+  layer->setRendererSettings( rendererSettings );
+
+  std::unique_ptr< QgsLayerTree > root( std::make_unique<QgsLayerTree>() );
+  root->addLayer( layer );
+  std::unique_ptr<QgsLayerTreeModel> legendModel( std::make_unique<QgsLayerTreeModel>( root.get() ) );
+
+  QgsLegendSettings settings;
+
+  setStandardTestFont( settings );
+  QImage res = renderLegend( legendModel.get(), settings );
+
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_mesh_diagram_no_vector" ), 30, QSize( 8, 12 ) ) );
+
+  //red vector
+  QgsMeshLayer *layer2 = layer->clone();
+  QgsProject::instance()->removeMapLayer( layer );
+  QgsProject::instance()->addMapLayer( layer2 );
+
+  vectorIndex = 2;
+  rendererSettings.setActiveVectorDatasetGroup( vectorIndex );
+  QgsMeshRendererVectorSettings vectorSettings = rendererSettings.vectorSettings( vectorIndex );
+  vectorSettings.setColor( Qt::red );
+  rendererSettings.setVectorSettings( vectorIndex, vectorSettings );
+  layer2->setRendererSettings( rendererSettings );
+
+  root = std::make_unique<QgsLayerTree>();
+  root->addLayer( layer2 );
+  legendModel = std::make_unique<QgsLayerTreeModel>( root.get() );
+
+  res = renderLegend( legendModel.get(), settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_mesh_diagram_red_vector" ), 30, QSize( 8, 13 ) ) );
+
+  //color ramp vector
+  QgsMeshLayer *layer3 = layer2->clone();
+  QgsProject::instance()->removeMapLayer( layer2 );
+  QgsProject::instance()->addMapLayer( layer3 );
+
+  const QgsColorRampShader fcn = rendererSettings.scalarSettings( vectorIndex ).colorRampShader();
+  vectorSettings.setColorRampShader( fcn );
+  vectorSettings.setColoringMethod( QgsInterpolatedLineColor::ColorRamp );
+  rendererSettings.setVectorSettings( vectorIndex, vectorSettings );
+  layer3->setRendererSettings( rendererSettings );
+
+  root = std::make_unique<QgsLayerTree>();
+  root->addLayer( layer3 );
+  legendModel = std::make_unique<QgsLayerTreeModel>( root.get() );
+
+  res = renderLegend( legendModel.get(), settings );
+  QVERIFY( _verifyImage( res, QStringLiteral( "legend_mesh_diagram_color_ramp_vector" ), 30, QSize( 8, 19 ) ) );
+
+  QgsProject::instance()->removeMapLayer( layer3 );
 }
 
 void TestQgsLegendRenderer::testDiagramSizeLegend()

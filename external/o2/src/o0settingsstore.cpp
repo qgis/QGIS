@@ -1,5 +1,6 @@
 #include <QCryptographicHash>
 #include <QByteArray>
+#include <QDebug>
 
 #include "o0settingsstore.h"
 
@@ -41,4 +42,13 @@ QString O0SettingsStore::value(const QString &key, const QString &defaultValue) 
 void O0SettingsStore::setValue(const QString &key, const QString &value) {
     QString fullKey = groupKey_.isEmpty() ? key : (groupKey_ + '/' + key);
     settings_->setValue(fullKey, crypt_.encryptToString(value));
+
+    const QSettings::Status status = settings_->status();
+    if (status != QSettings::NoError) {
+        qCritical() << "O0SettingsStore QSettings error:" << status;
+        if (status == QSettings::AccessError) {
+            qCritical() << "Did you forget to set organization name and application name "
+                           "in QSettings or QCoreApplication?";
+        }
+    }
 }

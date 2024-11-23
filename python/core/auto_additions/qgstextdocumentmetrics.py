@@ -4,3 +4,7 @@ try:
     QgsTextDocumentMetrics.__group__ = ['textrenderer']
 except NameError:
     pass
+try:
+    QgsTextDocumentRenderContext.__group__ = ['textrenderer']
+except NameError:
+    pass

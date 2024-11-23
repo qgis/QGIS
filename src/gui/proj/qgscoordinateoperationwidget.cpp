@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscoordinateoperationwidget.h"
+#include "moc_qgscoordinateoperationwidget.cpp"
 #include "qgscoordinatetransform.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgslogger.h"

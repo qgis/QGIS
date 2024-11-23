@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptooltrimextendfeature.h"
+#include "moc_qgsmaptooltrimextendfeature.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"

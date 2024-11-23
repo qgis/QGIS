@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "qgsauthoauth2edit.h"
+#include "moc_qgsauthoauth2edit.cpp"
 #include "ui_qgsauthoauth2edit.h"
 
 #include <QDir>

@@ -28,7 +28,6 @@
  */
 
 #include "pal.h"
-#include "palstat.h"
 #include "layer.h"
 #include "feature.h"
 #include "geomfunction.h"
@@ -232,7 +231,7 @@ void Problem::init_sol_falp()
       ignoreLabel( conflict, list, mAllCandidatesIndex );
     }
 
-    mActiveCandidatesIndex.insert( lp, lp->boundingBox() );
+    mActiveCandidatesIndex.insert( lp, lp->outerBoundingBox() );
   }
 
   if ( mDisplayAll )

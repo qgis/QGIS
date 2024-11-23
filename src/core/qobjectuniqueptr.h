@@ -147,7 +147,7 @@ class QObjectUniquePtr
      * If it is not ``nullptr`` TRUE will be returned, if it is ``nullptr``
      * FALSE will be returned.
      */
-    inline operator bool() const
+    explicit inline operator bool() const
     {
       return !mPtr.isNull();
     }
@@ -404,7 +404,7 @@ class QObjectParentUniquePtr
      * If it is not NULLPTR TRUE will be returned, if it is NULLPTR
      * FALSE will be returned.
      */
-    inline operator bool() const
+    explicit inline operator bool() const
     {
       return static_cast< bool >( mChild );
     }

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstexteditsearchwidgetwrapper.h"
+#include "moc_qgstexteditsearchwidgetwrapper.cpp"
 
 #include "qgsfields.h"
 #include "qgsvectorlayer.h"

@@ -19,6 +19,7 @@
  ***************************************************************************/
 #include "qgslogger.h"
 #include "qgswcscapabilities.h"
+#include "moc_qgswcscapabilities.cpp"
 #include "qgsowsconnection.h"
 
 #include <cmath>

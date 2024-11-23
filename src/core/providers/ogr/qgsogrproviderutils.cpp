@@ -2322,7 +2322,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
 
   if ( checkModificationDateAgainstCache && !canUseOpenedDatasets( dsName ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Cannot reuse existing opened dataset(s) on %1 since it has been modified" ).arg( dsName ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Cannot reuse existing opened dataset(s) %1 on %2 since it has been modified" ).arg( layerName, dsName ), 2 );
     invalidateCachedDatasets( dsName );
   }
 

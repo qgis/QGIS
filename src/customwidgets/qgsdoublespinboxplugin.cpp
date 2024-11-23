@@ -15,6 +15,7 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsdoublespinboxplugin.h"
+#include "moc_qgsdoublespinboxplugin.cpp"
 #include "qgsdoublespinbox.h"
 
 

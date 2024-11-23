@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayer.h"
+#include "moc_qgspointcloudlayer.cpp"
 #include "qgspointcloudlayerrenderer.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudsubindex.h"

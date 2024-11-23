@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrunnableprovidercreator.h"
+#include "moc_qgsrunnableprovidercreator.cpp"
 
 #include <QDebug>
 #include <QThread>

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmssqlprovider.h"
+#include "moc_qgsmssqlprovider.cpp"
 #include "qgsmssqlconnection.h"
 #include "qgsmssqldatabase.h"
 #include "qgsmssqlproviderconnection.h"
@@ -1481,7 +1482,7 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
   for ( QList<QgsField>::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
     QString type = it->typeName();
-    if ( type == QLatin1String( "char" ) || type == QLatin1String( "varchar" ) )
+    if ( type == QLatin1String( "char" ) || type == QLatin1String( "varchar" ) || type == QLatin1String( "nvarchar" ) )
     {
       if ( it->length() > 0 )
         type = QStringLiteral( "%1(%2)" ).arg( type ).arg( it->length() );

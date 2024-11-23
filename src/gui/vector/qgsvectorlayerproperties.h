@@ -33,7 +33,7 @@ class QgsMapLayer;
 class QgsAttributeActionDialog;
 class QgsVectorLayer;
 class QgsLabelingWidget;
-class QgsDiagramProperties;
+class QgsDiagramWidget;
 class QgsSourceFieldsProperties;
 class QgsAttributesFormProperties;
 class QgsRendererPropertiesDialog;
@@ -172,7 +172,7 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
     //! Actions dialog. If apply is pressed, the actions are stored for later use
     QgsAttributeActionDialog *mActionDialog = nullptr;
     //! Diagram dialog. If apply is pressed, options are applied to vector's diagrams
-    QgsDiagramProperties *diagramPropertiesDialog = nullptr;
+    QgsDiagramWidget *diagramPropertiesDialog = nullptr;
     //! SourceFields dialog. If apply is pressed, options are applied to vector's diagrams
     QgsSourceFieldsProperties *mSourceFieldsPropertiesDialog = nullptr;
     //! AttributesForm dialog. If apply is pressed, options are applied to vector's diagrams
@@ -180,8 +180,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
 
     //! List of joins of a layer at the time of creation of the dialog. Used to return joins to previous state if dialog is canceled
     QList< QgsVectorLayerJoinInfo > mOldJoins;
-
-    void initDiagramTab();
 
     //! Adds a new join to mJoinTreeWidget
     void addJoinToTreeWidget( const QgsVectorLayerJoinInfo &join, int insertIndex = -1 );

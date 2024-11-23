@@ -18,6 +18,7 @@ using namespace nlohmann;
 
 #include "qgslogger.h"
 #include "qgsoapifitemsrequest.h"
+#include "moc_qgsoapifitemsrequest.cpp"
 #include "qgsoapifutils.h"
 #include "qgsproviderregistry.h"
 

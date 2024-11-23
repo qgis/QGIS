@@ -484,7 +484,7 @@ void TestQgsPolygon::setExteriorRingZM()
   QVERIFY( pl.is3D() );
   QVERIFY( !pl.isMeasure() );
   QCOMPARE( pl.wkbType(), Qgis::WkbType::PolygonZ );
-  QCOMPARE( pl.wktTypeStr(), QString( "PolygonZ" ) );
+  QCOMPARE( pl.wktTypeStr(), QString( "Polygon Z" ) );
   QCOMPARE( pl.geometryType(), QString( "Polygon" ) );
   QCOMPARE( *( static_cast< const QgsLineString * >( pl.exteriorRing() ) ), *ext );
 
@@ -500,7 +500,7 @@ void TestQgsPolygon::setExteriorRingZM()
   QVERIFY( !pl.is3D() );
   QVERIFY( pl.isMeasure() );
   QCOMPARE( pl.wkbType(), Qgis::WkbType::PolygonM );
-  QCOMPARE( pl.wktTypeStr(), QString( "PolygonM" ) );
+  QCOMPARE( pl.wktTypeStr(), QString( "Polygon M" ) );
   QCOMPARE( *( static_cast< const QgsLineString * >( pl.exteriorRing() ) ), *ext );
 
   pl.clear();
@@ -515,7 +515,7 @@ void TestQgsPolygon::setExteriorRingZM()
   QVERIFY( pl.is3D() );
   QVERIFY( pl.isMeasure() );
   QCOMPARE( pl.wkbType(), Qgis::WkbType::PolygonZM );
-  QCOMPARE( pl.wktTypeStr(), QString( "PolygonZM" ) );
+  QCOMPARE( pl.wktTypeStr(), QString( "Polygon ZM" ) );
   QCOMPARE( *( static_cast< const QgsLineString * >( pl.exteriorRing() ) ), *ext );
 
   pl.clear();
@@ -530,7 +530,7 @@ void TestQgsPolygon::setExteriorRingZM()
   QVERIFY( pl.is3D() );
   QVERIFY( !pl.isMeasure() );
   QCOMPARE( pl.wkbType(), Qgis::WkbType::Polygon25D );
-  QCOMPARE( pl.wktTypeStr(), QString( "PolygonZ" ) );
+  QCOMPARE( pl.wktTypeStr(), QString( "Polygon Z" ) );
   QCOMPARE( *( static_cast< const QgsLineString * >( pl.exteriorRing() ) ), *ext );
 }
 
@@ -1021,7 +1021,7 @@ void TestQgsPolygon::removeInvalidRings()
   pl.setExteriorRing( ls.clone() );
 
   pl.removeInvalidRings();
-  QCOMPARE( pl.asWkt(), QStringLiteral( "PolygonZM ((11 2 3 4, 4 12 13 14, 11 12 13 14, 11 22 23 24, 11 2 3 4))" ) );
+  QCOMPARE( pl.asWkt(), QStringLiteral( "Polygon ZM ((11 2 3 4, 4 12 13 14, 11 12 13 14, 11 22 23 24, 11 2 3 4))" ) );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM )
                 << QgsPoint( 11, 2, 5, 6, Qgis::WkbType::PointZM )
@@ -1035,7 +1035,7 @@ void TestQgsPolygon::removeInvalidRings()
   pl.addInteriorRing( ls.clone() );
 
   pl.removeInvalidRings();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((11 2 3 4, 4 12 13 14, 11 12 13 14, 11 22 23 24, 11 2 3 4),(1 2 5 6, 11.01 2.01 15 16, 11 2.01 25 26, 1 2 5 6))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((11 2 3 4, 4 12 13 14, 11 12 13 14, 11 22 23 24, 11 2 3 4),(1 2 5 6, 11.01 2.01 15 16, 11 2.01 25 26, 1 2 5 6))" ) );
 }
 
 void TestQgsPolygon::insertVertex()
@@ -1731,7 +1731,7 @@ void TestQgsPolygon::swapXy()
   pl.setExteriorRing( ls.clone() );
 
   pl.swapXy();
-  QCOMPARE( pl.asWkt(), QStringLiteral( "PolygonZM ((2 11 3 4, 12 11 13 14, 22 11 23 24, 2 11 3 4))" ) );
+  QCOMPARE( pl.asWkt(), QStringLiteral( "Polygon ZM ((2 11 3 4, 12 11 13 14, 22 11 23 24, 2 11 3 4))" ) );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 5, 6, Qgis::WkbType::PointZM )
                 << QgsPoint( 11.01, 2.01, 15, 16, Qgis::WkbType::PointZM )
@@ -1740,7 +1740,7 @@ void TestQgsPolygon::swapXy()
   pl.addInteriorRing( ls.clone() );
 
   pl.swapXy();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((11 2 3 4, 11 12 13 14, 11 22 23 24, 11 2 3 4),(2 1 5 6, 2.01 11.01 15 16, 2.01 11 25 26, 2 11 5 6, 2 1 5 6))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((11 2 3 4, 11 12 13 14, 11 22 23 24, 11 2 3 4),(2 1 5 6, 2.01 11.01 15 16, 2.01 11 25 26, 2 11 5 6, 2 1 5 6))" ) );
 }
 
 void TestQgsPolygon::boundary()
@@ -2029,73 +2029,73 @@ void TestQgsPolygon::forceRHR()
   QgsPolygon pl;
   pl.forceRHR(); // no crash
 
-  pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
+  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
   pl.forceRHR();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
 
-  pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))" ) );
+  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))" ) );
   pl.forceRHR();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 23 24, 100 100 23 24, 100 0 13 14, 0 0 3 4))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 23 24, 100 100 23 24, 100 0 13 14, 0 0 3 4))" ) );
 
-  pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
+  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
   pl.forceRHR();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))" ) );
 
-  pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
+  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
   pl.forceRHR();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 23 24, 100 100 13 14, 100 0 13 14, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 23 24, 100 100 13 14, 100 0 13 14, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))" ) );
 
-  pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
+  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
   pl.forceRHR();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 6 8, 10 20 3 4, 10 10 1 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 6 8, 10 20 3 4, 10 10 1 2))" ) );
 
   // force cw (same as force RHR)
   pl = QgsPolygon();
   pl.forceClockwise(); // no crash
 
-  pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
+  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
   pl.forceClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
 
-  pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))" ) );
+  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))" ) );
   pl.forceClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 23 24, 100 100 23 24, 100 0 13 14, 0 0 3 4))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 23 24, 100 100 23 24, 100 0 13 14, 0 0 3 4))" ) );
 
-  pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
+  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
   pl.forceClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))" ) );
 
-  pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
+  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
   pl.forceClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 23 24, 100 100 13 14, 100 0 13 14, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 23 24, 100 100 13 14, 100 0 13 14, 0 0 3 4),(10 10 1 2, 20 10 3 4, 10 20 6 8, 10 10 1 2))" ) );
 
-  pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
+  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
   pl.forceClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 6 8, 10 20 3 4, 10 10 1 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 6 8, 10 20 3 4, 10 10 1 2))" ) );
 
   // force ccw
   pl = QgsPolygon();
   pl.forceCounterClockwise(); // no crash
 
-  pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
+  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4))" ) );
   pl.forceCounterClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 23 24, 100 100 13 14, 0 100 13 14, 0 0 3 4))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 23 24, 100 100 13 14, 0 100 13 14, 0 0 3 4))" ) );
 
-  pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))" ) );
+  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))" ) );
   pl.forceCounterClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 23 24, 0 100 23 24, 0 0 3 4))" ) );
 
-  pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
+  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
   pl.forceCounterClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 23 24, 100 100 13 14, 0 100 13 14, 0 0 3 4),(10 10 1 2, 10 20 6 8, 20 10 3 4, 10 10 1 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 23 24, 100 100 13 14, 0 100 13 14, 0 0 3 4),(10 10 1 2, 10 20 6 8, 20 10 3 4, 10 10 1 2))" ) );
 
-  pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
+  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 20 10 3 4, 20 20 4, 5, 10 20 6 8, 10 10 1 2))" ) );
   pl.forceCounterClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 10 20 6 8, 20 10 3 4, 10 10 1 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 13 14, 100 100 13 14, 0 100 23 24, 0 0 3 4),(10 10 1 2, 10 20 6 8, 20 10 3 4, 10 10 1 2))" ) );
 
-  pl.fromWkt( QStringLiteral( "PolygonZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
+  pl.fromWkt( QStringLiteral( "Polygon ZM ((0 0 3 4, 0 100 13 14, 100 100 13 14, 100 0 23 24, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
   pl.forceCounterClockwise();
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((0 0 3 4, 100 0 23 24, 100 100 13 14, 0 100 13 14, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((0 0 3 4, 100 0 23 24, 100 100 13 14, 0 100 13 14, 0 0 3 4),(10 10 1 2, 10 20 3 4, 20 10 6 8, 10 10 1 2))" ) );
 }
 
 void TestQgsPolygon::boundingBoxIntersects()
@@ -2159,7 +2159,7 @@ void TestQgsPolygon::filterVertices()
 
   pl.filterVertices( filter );
 
-  QCOMPARE( pl.asWkt(), QStringLiteral( "PolygonZM ((11 2 3 4, 11 12 13 14, 11 22 23 24, 11 2 3 4))" ) );
+  QCOMPARE( pl.asWkt(), QStringLiteral( "Polygon ZM ((11 2 3 4, 11 12 13 14, 11 22 23 24, 11 2 3 4))" ) );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM )
                 << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM )
@@ -2177,7 +2177,7 @@ void TestQgsPolygon::filterVertices()
 
   pl.filterVertices( filter );
 
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((11 2 3 4, 11 12 13 14, 11 22 23 24, 11 2 3 4),(10 2 5 6, 11.01 2.01 15 16, 11 2.01 25 26, 11 2 5 6, 10 2 5 6),(11.01 2.01 15 16, 11 2.01 25 26))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((11 2 3 4, 11 12 13 14, 11 22 23 24, 11 2 3 4),(10 2 5 6, 11.01 2.01 15 16, 11 2.01 25 26, 11 2 5 6, 10 2 5 6),(11.01 2.01 15 16, 11 2.01 25 26))" ) );
 }
 
 void TestQgsPolygon::transformVertices()
@@ -2199,7 +2199,7 @@ void TestQgsPolygon::transformVertices()
   pl.setExteriorRing( ls.clone() );
 
   pl.transformVertices( transform );
-  QCOMPARE( pl.asWkt(), QStringLiteral( "PolygonZM ((13 5 7 9, 6 15 17 19, 13 15 17 19, 13 25 27 29, 13 5 7 9))" ) );
+  QCOMPARE( pl.asWkt(), QStringLiteral( "Polygon ZM ((13 5 7 9, 6 15 17 19, 13 15 17 19, 13 25 27 29, 13 5 7 9))" ) );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM )
                 << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM )
@@ -2216,7 +2216,7 @@ void TestQgsPolygon::transformVertices()
   pl.addInteriorRing( ls.clone() );
 
   pl.transformVertices( transform );
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((15 8 11 14, 8 18 21 24, 15 18 21 24, 15 28 31 34, 15 8 11 14),(12 5 9 11, 6 15 17 19, 13.01 5.01 19 21, 13 5.01 29 31, 13 5 9 11, 12 5 9 11),(3 5 9 11, 13.01 5.01 19 21, 13 5.01 29 31, 3 5 9 11))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((15 8 11 14, 8 18 21 24, 15 18 21 24, 15 28 31 34, 15 8 11 14),(12 5 9 11, 6 15 17 19, 13.01 5.01 19 21, 13 5.01 29 31, 13 5 9 11, 12 5 9 11),(3 5 9 11, 13.01 5.01 19 21, 13 5.01 29 31, 3 5 9 11))" ) );
 }
 
 void TestQgsPolygon::transformWithClass()
@@ -2236,7 +2236,7 @@ void TestQgsPolygon::transformWithClass()
   pl.setExteriorRing( ls.clone() );
 
   QVERIFY( pl.transform( &transformer ) );
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((33 16 8 3, 12 26 18 13, 33 26 18 13, 33 36 28 23, 33 16 8 3))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((33 16 8 3, 12 26 18 13, 33 26 18 13, 33 36 28 23, 33 16 8 3))" ) );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 10, 2, 5, 6, Qgis::WkbType::PointZM )
                 << QgsPoint( 4, 12, 13, 14, Qgis::WkbType::PointZM )
@@ -2253,7 +2253,7 @@ void TestQgsPolygon::transformWithClass()
   pl.addInteriorRing( ls.clone() );
 
   QVERIFY( pl.transform( &transformer ) );
-  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "PolygonZM ((99 30 13 2, 36 40 23 12, 99 40 23 12, 99 50 33 22, 99 30 13 2),(30 16 10 5, 12 26 18 13, 33.03 16.01 20 15, 33 16.01 30 25, 33 16 10 5, 30 16 10 5),(3 16 10 5, 33.03 16.01 20 15, 33 16.01 30 25, 3 16 10 5))" ) );
+  QCOMPARE( pl.asWkt( 2 ), QStringLiteral( "Polygon ZM ((99 30 13 2, 36 40 23 12, 99 40 23 12, 99 50 33 22, 99 30 13 2),(30 16 10 5, 12 26 18 13, 33.03 16.01 20 15, 33 16.01 30 25, 33 16 10 5, 30 16 10 5),(3 16 10 5, 33.03 16.01 20 15, 33 16.01 30 25, 3 16 10 5))" ) );
 
   TestFailTransformer failTransformer;
   QVERIFY( !pl.transform( &failTransformer ) );

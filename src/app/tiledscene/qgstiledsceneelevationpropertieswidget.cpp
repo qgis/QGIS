@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstiledsceneelevationpropertieswidget.h"
+#include "moc_qgstiledsceneelevationpropertieswidget.cpp"
 #include "qgstiledscenerendererpropertieswidget.h"
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"

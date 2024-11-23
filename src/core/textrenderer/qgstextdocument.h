@@ -72,6 +72,15 @@ class CORE_EXPORT QgsTextDocument
     static QgsTextDocument fromHtml( const QStringList &lines );
 
     /**
+     * Constructor for QgsTextDocument consisting of a set of \a lines, respecting settings from a text \a format.
+     *
+     * This method will determine from the text \a format whether the lines should be treated as HTML or plain text.
+     *
+     * \since QGIS 3.40
+     */
+    static QgsTextDocument fromTextAndFormat( const QStringList &lines, const QgsTextFormat &format );
+
+    /**
      * Appends a \a block to the document.
      */
     void append( const QgsTextBlock &block );
@@ -80,6 +89,44 @@ class CORE_EXPORT QgsTextDocument
      * Appends a \a block to the document.
      */
     void append( QgsTextBlock &&block ) SIP_SKIP;
+
+#ifndef SIP_RUN
+
+    /**
+     * Inserts a \a block into the document, at the specified index.
+     *
+     * \since QGIS 3.40
+     */
+    void insert( int index, const QgsTextBlock &block );
+#else
+
+    /**
+     * Inserts a \a block into the document, at the specified index.
+     *
+     * \throws IndexError if no block exists at the specified index.
+     *
+     * \since QGIS 3.40
+     */
+    void insert( int index, const QgsTextBlock &block );
+    % MethodCode
+    if ( a0 < 0 || a0 > sipCpp->size() )
+    {
+      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->insert( a0, *a1 );
+    }
+    % End
+#endif
+
+    /**
+     * Inserts a \a block into the document, at the specified index.
+     *
+     * \since QGIS 3.40
+     */
+    void insert( int index, QgsTextBlock &&block ) SIP_SKIP;
 
     /**
      * Reserves the specified \a count of blocks for optimised block appending.
@@ -161,6 +208,13 @@ class CORE_EXPORT QgsTextDocument
      * \since QGIS 3.16
      */
     void applyCapitalization( Qgis::Capitalization capitalization );
+
+    /**
+     * Returns TRUE if any blocks or fragments in the document have background brushes set.
+     *
+     * \since QGIS 3.42
+     */
+    bool hasBackgrounds() const;
 
 #ifndef SIP_RUN
     ///@cond PRIVATE

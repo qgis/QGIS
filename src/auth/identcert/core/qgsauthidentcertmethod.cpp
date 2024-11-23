@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthidentcertmethod.h"
+#include "moc_qgsauthidentcertmethod.cpp"
 
 #include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"

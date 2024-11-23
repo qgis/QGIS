@@ -29,6 +29,8 @@ Base class for all diagram types.
       sipType = sipType_QgsTextDiagram;
     else if ( sipCpp->diagramName() == QLatin1String( "Stacked" ) )
       sipType = sipType_QgsStackedBarDiagram;
+    else if ( sipCpp->diagramName() == QLatin1String( "StackedDiagram" ) )
+      sipType = sipType_QgsStackedDiagram;
     else
       sipType = NULL;
 %End
@@ -107,7 +109,7 @@ Calculates a size to match the current settings and rendering context
 Calculates a length to match the current settings and rendering context
 
 :param l: The length to convert
-:param s: Unused
+:param s: The settings that specify the size type
 :param c: The rendering specifying the proper scale units for pixel conversion
 
 :return: The converted length for rendering

@@ -13,6 +13,7 @@
  ***************************************************************************/
 
 #include "qgso2.h"
+#include "moc_qgso2.cpp"
 
 #include "o0globals.h"
 #include "o0settingsstore.h"
@@ -139,7 +140,11 @@ void QgsO2::setVerificationResponseContent()
   QFile verhtml( QStringLiteral( ":/oauth2method/oauth2_verification_finished.html" ) );
   if ( verhtml.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    setReplyContent( verhtml.readAll() );
+    setReplyContent( QString::fromUtf8( verhtml.readAll() )
+                     .replace( QLatin1String( "{{ H2_TITLE }}" ), tr( "QGIS OAuth2 verification has finished" ) )
+                     .replace( QLatin1String( "{{ H3_TITLE }}" ), tr( "If you have not been returned to QGIS, bring the application to the forefront." ) )
+                     .replace( QLatin1String( "{{ CLOSE_WINDOW }}" ), tr( "Close window" ) ).toUtf8()
+                   );
   }
 }
 
@@ -169,6 +174,19 @@ void QgsO2::link()
 {
   QgsDebugMsgLevel( QStringLiteral( "QgsO2::link" ), 4 );
 
+  // Create the reply server if it doesn't exist
+  // and we don't use an external web interceptor
+  if ( !useExternalWebInterceptor_ )
+  {
+    if ( replyServer() == NULL )
+    {
+      O2ReplyServer *replyServer = new O2ReplyServer( this );
+      connect( replyServer, &O2ReplyServer::verificationReceived, this, &QgsO2::onVerificationReceived );
+      connect( replyServer, &O2ReplyServer::serverClosed, this, &QgsO2::serverHasClosed );
+      setReplyServer( replyServer );
+    }
+  }
+
   if ( linked() )
   {
     QgsDebugMsgLevel( QStringLiteral( "QgsO2::link: Linked already" ), 4 );
@@ -185,13 +203,33 @@ void QgsO2::link()
 
   if ( grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowImplicit || grantFlow_ == GrantFlowPkce )
   {
-    if ( mIsLocalHost )
+    if ( useExternalWebInterceptor_ )
     {
-      // Start listening to authentication replies
-      replyServer_->listen( QHostAddress::Any, localPort_ );
-
       // Save redirect URI, as we have to reuse it when requesting the access token
-      redirectUri_ = localhostPolicy_.arg( replyServer_->serverPort() );
+      redirectUri_ = localhostPolicy_.arg( localPort() );
+    }
+    else
+    {
+      if ( mIsLocalHost )
+      {
+        if ( !replyServer()->isListening() )
+        {
+          // Start listening to authentication replies
+          if ( replyServer()->listen( QHostAddress::Any, localPort_ ) )
+          {
+//qDebug() << "O2::link: Reply server listening on port" << localPort();
+          }
+          else
+          {
+            qWarning() << "O2::link: Reply server failed to start listening on port" << localPort();
+            emit linkingFailed();
+            return;
+          }
+        }
+
+        // Save redirect URI, as we have to reuse it when requesting the access token
+        redirectUri_ = localhostPolicy_.arg( replyServer()->serverPort() );
+      }
     }
     // Assemble initial authentication URL
     QList<QPair<QString, QString> > parameters;
@@ -263,8 +301,8 @@ void QgsO2::link()
     tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/x-www-form-urlencoded" ) );
     QNetworkReply *tokenReply = getManager()->post( tokenRequest, payload );
 
-    connect( tokenReply, SIGNAL( finished() ), this, SLOT( onTokenReplyFinished() ), Qt::QueuedConnection );
-    connect( tokenReply, SIGNAL( error( QNetworkReply::NetworkError ) ), this, SLOT( onTokenReplyError( QNetworkReply::NetworkError ) ), Qt::QueuedConnection );
+    connect( tokenReply, &QNetworkReply::finished, this, &QgsO2::onTokenReplyFinished, Qt::QueuedConnection );
+    connect( tokenReply, &QNetworkReply::errorOccurred, this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
   }
 }
 

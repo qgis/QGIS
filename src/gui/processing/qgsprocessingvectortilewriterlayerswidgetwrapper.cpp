@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingvectortilewriterlayerswidgetwrapper.h"
+#include "moc_qgsprocessingvectortilewriterlayerswidgetwrapper.cpp"
 
 #include <QBoxLayout>
 #include <QLineEdit>

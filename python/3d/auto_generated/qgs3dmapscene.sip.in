@@ -114,6 +114,24 @@ Returns the 3D map settings.
 .. versionadded:: 3.30
 %End
 
+    bool hasSceneUpdatesEnabled() const;
+%Docstring
+Returns whether updates of the 3D scene's entities are allowed.
+Normally, scene updates are enabled. But for debugging purposes,
+it may be useful to temporarily disable scene updates.
+
+.. versionadded:: 3.40
+%End
+
+    void setSceneUpdatesEnabled( bool enabled );
+%Docstring
+Sets whether updates of the 3D scene's entities are allowed.
+Normally, scene updates are enabled. But for debugging purposes,
+it may be useful to temporarily disable scene updates.
+
+.. versionadded:: 3.40
+%End
+
  static QMap< QString, Qgs3DMapScene * > openScenes() /Deprecated/;
 %Docstring
 Returns a map of 3D map scenes (by name) open in the QGIS application.
@@ -126,6 +144,38 @@ Returns a map of 3D map scenes (by name) open in the QGIS application.
 
    Use QgisAppInterface.mapCanvases3D() instead.
 .. versionadded:: 3.30
+%End
+
+    void enableClipping( const QList<QVector4D> &clipPlaneEquations );
+%Docstring
+Enables OpenGL clipping based on the planes equations defined in ``clipPlaneEquations``.
+The number of planes is equal to the size of ``clipPlaneEquations``.
+A plane equation contains 4 elements.
+A simple way to define a clip plane equation is to define a normalized normal to
+the plane and its distance from the origin of the scene.
+In that case, the first 3 elements are the coordinates of the normal of the plane as ``(X, Y, Z)``.
+They need to be normalized.
+The last element is the distance of the plane from the origin of the scene.
+In mathematical terms, a 3d plane can be defined with the equation ``ax+by+cz+d=0``
+The normal is ``(a, b, c)`` with ``|a, b, c| = 1``
+The distance is ``-d``.
+
+The number of available clip planes depends on the OpenGL implementation. It should at least handle
+6 additional clip planes. When the map scene is created, this number is retrieved.
+If ``clipPlaneEquations`` contains more than this maximum, only the first ones will be kept.
+
+.. seealso:: :py:func:`disableClipping`
+
+.. versionadded:: 3.40
+%End
+
+    void disableClipping();
+%Docstring
+Disables OpenGL clipping.
+
+.. seealso:: :py:func:`enableClipping`
+
+.. versionadded:: 3.40
 %End
 
 

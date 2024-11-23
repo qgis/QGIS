@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmodelviewtooltemporarymousepan.h"
+#include "moc_qgsmodelviewtooltemporarymousepan.cpp"
 #include "qgsmodelviewmouseevent.h"
 #include "qgsmodelgraphicsview.h"
 #include <QScrollBar>

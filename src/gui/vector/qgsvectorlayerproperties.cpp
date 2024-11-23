@@ -26,7 +26,7 @@
 #include "qgsapplication.h"
 #include "qgsattributeactiondialog.h"
 #include "qgsdatumtransformdialog.h"
-#include "qgsdiagramproperties.h"
+#include "qgsdiagramwidget.h"
 #include "qgssourcefieldsproperties.h"
 #include "qgsattributesformproperties.h"
 #include "qgslabelingwidget.h"
@@ -38,6 +38,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerproperties.h"
+#include "moc_qgsvectorlayerproperties.cpp"
 #include "qgsvectordataprovider.h"
 #include "qgssubsetstringeditorinterface.h"
 #include "qgsdatasourceuri.h"
@@ -150,11 +151,18 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( this, &QDialog::accepted, this, &QgsVectorLayerProperties::apply );
   connect( this, &QDialog::rejected, this, &QgsVectorLayerProperties::rollback );
 
-  mContext << QgsExpressionContextUtils::globalScope()
-           << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-           << QgsExpressionContextUtils::atlasScope( nullptr )
-           << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() )
-           << QgsExpressionContextUtils::layerScope( mLayer );
+  if ( mCanvas )
+  {
+    mContext = mCanvas->createExpressionContext();
+  }
+  else
+  {
+    mContext << QgsExpressionContextUtils::globalScope()
+             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+             << QgsExpressionContextUtils::atlasScope( nullptr )
+             << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+  mContext << QgsExpressionContextUtils::layerScope( mLayer );
 
   mMapTipFieldComboBox->setLayer( lyr );
   mDisplayExpressionWidget->setLayer( lyr );
@@ -280,6 +288,15 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mSelectionSymbolButton->setEnabled( false );
   mRadioDefaultSelectionColor->setChecked( true );
 
+  // Diagram tab, before the syncToLayer
+  QVBoxLayout *diagLayout = new QVBoxLayout( mDiagramFrame );
+  diagLayout->setContentsMargins( 0, 0, 0, 0 );
+  diagramPropertiesDialog = new QgsDiagramWidget( mLayer, mCanvas, mDiagramFrame );
+  diagramPropertiesDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
+  connect( diagramPropertiesDialog, &QgsDiagramWidget::auxiliaryFieldCreated, this, [ = ] { updateAuxiliaryStoragePage(); } );
+  diagLayout->addWidget( diagramPropertiesDialog );
+  mDiagramFrame->setLayout( diagLayout );
+
   syncToLayer();
 
   if ( mLayer->dataProvider() )
@@ -332,14 +349,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   }
 
   mOldJoins = mLayer->vectorJoins();
-
-  QVBoxLayout *diagLayout = new QVBoxLayout( mDiagramFrame );
-  diagLayout->setContentsMargins( 0, 0, 0, 0 );
-  diagramPropertiesDialog = new QgsDiagramProperties( mLayer, mDiagramFrame, mCanvas );
-  diagramPropertiesDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
-  connect( diagramPropertiesDialog, &QgsDiagramProperties::auxiliaryFieldCreated, this, [ = ] { updateAuxiliaryStoragePage(); } );
-  diagLayout->addWidget( diagramPropertiesDialog );
-  mDiagramFrame->setLayout( diagLayout );
 
   // Legend tab
   mLegendWidget->setMapCanvas( mCanvas );
@@ -728,7 +737,7 @@ void QgsVectorLayerProperties::syncToLayer()
   updateVariableEditor();
 
   if ( diagramPropertiesDialog )
-    diagramPropertiesDialog->syncToLayer();
+    diagramPropertiesDialog->syncToOwnLayer();
 
   // sync all plugin dialogs
   for ( QgsMapLayerConfigWidget *page : std::as_const( mConfigWidgets ) )

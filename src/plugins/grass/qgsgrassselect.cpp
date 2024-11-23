@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsgrassselect.h"
+#include "moc_qgsgrassselect.cpp"
 #include "qgsgrass.h"
 
 #include "qgslogger.h"

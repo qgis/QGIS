@@ -26,6 +26,7 @@
 #include <QUiLoader>
 
 #include "qgisappinterface.h"
+#include "moc_qgisappinterface.cpp"
 #include "qgisappstylesheet.h"
 #include "qgisapp.h"
 #include "qgsapplayertreeviewmenuprovider.h"
@@ -639,6 +640,12 @@ void QgisAppInterface::unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *
 {
   qgis->unregisterDevToolFactory( factory );
 }
+
+void QgisAppInterface::showApiDocumentation( Qgis::DocumentationApi api, Qgis::DocumentationBrowser browser, const QString &object, const QString &module )
+{
+  qgis->showApiDocumentation( api, browser, object, module );
+}
+
 
 void QgisAppInterface::registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker )
 {

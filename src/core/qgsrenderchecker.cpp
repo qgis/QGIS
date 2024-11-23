@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrenderchecker.h"
+#include "moc_qgsrenderchecker.cpp"
 
 #include "qgis.h"
 #include "qgsmaprenderersequentialjob.h"
@@ -523,7 +524,9 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
   // Put the same info to debug too
   //
 
-  if ( expectedImage.width() != myResultImage.width() || expectedImage.height() != myResultImage.height() )
+  if ( !flags.testFlag( Flag::Silent )
+       && ( expectedImage.width() != myResultImage.width() || expectedImage.height() != myResultImage.height() )
+     )
   {
     qDebug( "Expected size: %dw x %dh", expectedImage.width(), expectedImage.height() );
     qDebug( "Actual   size: %dw x %dh", myResultImage.width(), myResultImage.height() );
@@ -533,7 +536,10 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
 
   if ( mMatchTarget != myPixelCount )
   {
-    qDebug( "Expected image and rendered image for %s are different dimensions", testName.toLocal8Bit().constData() );
+    if ( !flags.testFlag( Flag::Silent ) )
+    {
+      qDebug( "Expected image and rendered image for %s are different dimensions", testName.toLocal8Bit().constData() );
+    }
 
     if ( std::abs( expectedImage.width() - myResultImage.width() ) > mMaxSizeDifferenceX ||
          std::abs( expectedImage.height() - myResultImage.height() ) > mMaxSizeDifferenceY )
@@ -690,7 +696,10 @@ bool QgsRenderChecker::compareImages( const QString &testName, const QString &re
     emitDashMessage( "Rendered Image " + testName + prefix, QgsDartMeasurement::ImagePng, mRenderedImageFile );
     emitDashMessage( "Expected Image " + testName + prefix, QgsDartMeasurement::ImagePng, referenceImageFile );
 
-    qDebug( "%d/%d pixels mismatched (%d allowed)", mMismatchCount, mMatchTarget, mismatchCount );
+    if ( !flags.testFlag( Flag::Silent ) )
+    {
+      qDebug( "%d/%d pixels mismatched (%d allowed)", mMismatchCount, mMatchTarget, mismatchCount );
+    }
 
     //
     //save the diff image to disk

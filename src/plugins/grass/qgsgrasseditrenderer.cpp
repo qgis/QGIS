@@ -29,6 +29,7 @@
 #include "qgsgrassvectormap.h"
 
 #include "qgsgrasseditrenderer.h"
+#include "moc_qgsgrasseditrenderer.cpp"
 
 QgsGrassEditRenderer::QgsGrassEditRenderer()
   : QgsFeatureRenderer( QStringLiteral( "grassEdit" ) )

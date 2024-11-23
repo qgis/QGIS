@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgpsoptions.h"
+#include "moc_qgsgpsoptions.cpp"
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsgpsmarker.h"

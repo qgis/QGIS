@@ -19,6 +19,7 @@
 #include "qgsattributedialog.h"
 #include "qgsdistancearea.h"
 #include "qgsfeatureaction.h"
+#include "moc_qgsfeatureaction.cpp"
 #include "qgslogger.h"
 #include "qgshighlight.h"
 #include "qgsproject.h"

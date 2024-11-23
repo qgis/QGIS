@@ -815,6 +815,24 @@ Ownership of ``format`` is transferred to the scalebar.
 .. versionadded:: 3.12
 %End
 
+    Qgis::ScaleCalculationMethod method() const;
+%Docstring
+Returns the scale calculation method, which determines how the bar's scale will be calculated.
+
+.. seealso:: :py:func:`setMethod`
+
+.. versionadded:: 3.40
+%End
+
+    void setMethod( Qgis::ScaleCalculationMethod method );
+%Docstring
+Sets the scale calculation ``method``, which determines how the bar's scale will be calculated.
+
+.. seealso:: :py:func:`method`
+
+.. versionadded:: 3.40
+%End
+
     void update();
 %Docstring
 Adjusts the scale bar box size and updates the item.

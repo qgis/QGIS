@@ -16,6 +16,7 @@
 #include <QPushButton>
 
 #include "qgsmaptoolsimplify.h"
+#include "moc_qgsmaptoolsimplify.cpp"
 
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"

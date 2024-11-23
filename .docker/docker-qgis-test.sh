@@ -265,10 +265,10 @@ fi
 ###########
 # Run tests
 ###########
-EXCLUDE_TESTS=$(cat ${SRCDIR}/.ci/test_blocklist_qt${QT_VERSION}.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)
+EXCLUDE_TESTS="^$(cat ${SRCDIR}/.ci/test_blocklist_qt${QT_VERSION}.txt | sed -r '/^(#.*?)?$/d' | paste -sd '~' | sed -r 's/~/\$|^/g' -)\$"
 if ! [[ ${RUN_FLAKY_TESTS} == true ]]; then
   echo "Flaky tests are skipped!"
-  EXCLUDE_TESTS=${EXCLUDE_TESTS}"|"$(cat ${SRCDIR}/.ci/test_flaky.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)
+  EXCLUDE_TESTS=${EXCLUDE_TESTS}"|^"$(cat ${SRCDIR}/.ci/test_flaky.txt | sed -r '/^(#.*?)?$/d' | paste -sd '~' | sed -r 's/~/\$|^/g' -)"$"
 else
   echo "Flaky tests are run!"
 fi

@@ -133,7 +133,7 @@ void TestQgsMapToolReverseLine::testReverseLineString()
 
   const QgsFeature f = memoryLayer->getFeature( 1 );
 
-  const QString wkt = "LineStringZ (5 5 5, 10 10 10, 0 0 0)";
+  const QString wkt = "LineString Z (5 5 5, 10 10 10, 0 0 0)";
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   memoryLayer->rollBack();
@@ -148,7 +148,7 @@ void TestQgsMapToolReverseLine::testReverseMultiLineString()
 
   multi.setAttribute( QStringLiteral( "pk" ), 1 );
   multi.setGeometry( QgsGeometry::fromWkt( QStringLiteral(
-                       "MultiLineStringZ((0 0 0, 10 10 10, 5 5 5), (100 100 100, 120 120 120))" ) ) );
+                       "MultiLineString Z((0 0 0, 10 10 10, 5 5 5), (100 100 100, 120 120 120))" ) ) );
 
   memoryLayer->dataProvider()->addFeatures( QgsFeatureList() << multi );
   mCanvas->setLayers( QList<QgsMapLayer *>() << memoryLayer.get() );
@@ -168,7 +168,7 @@ void TestQgsMapToolReverseLine::testReverseMultiLineString()
   tool->canvasReleaseEvent( event.get() );
   QgsFeature f = memoryLayer->getFeature( 1 );
 
-  QString wkt = "MultiLineStringZ ((5 5 5, 10 10 10, 0 0 0),(100 100 100, 120 120 120))";
+  QString wkt = "MultiLineString Z ((5 5 5, 10 10 10, 0 0 0),(100 100 100, 120 120 120))";
   QCOMPARE( f.geometry().asWkt(), wkt );
 
   mapPoint = mCanvas->getCoordinateTransform()->transform( 110, 110 );
@@ -182,7 +182,7 @@ void TestQgsMapToolReverseLine::testReverseMultiLineString()
   tool->canvasReleaseEvent( event.get() );
   f = memoryLayer->getFeature( 1 );
 
-  wkt = "MultiLineStringZ ((5 5 5, 10 10 10, 0 0 0),(120 120 120, 100 100 100))";
+  wkt = "MultiLineString Z ((5 5 5, 10 10 10, 0 0 0),(120 120 120, 100 100 100))";
   QCOMPARE( f.geometry().asWkt(), wkt );
   memoryLayer->rollBack();
 }

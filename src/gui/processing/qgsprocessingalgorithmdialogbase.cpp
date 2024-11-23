@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingalgorithmdialogbase.h"
+#include "moc_qgsprocessingalgorithmdialogbase.cpp"
 #include "qgssettings.h"
 #include "qgshelp.h"
 #include "qgsmessagebar.h"
@@ -796,6 +797,19 @@ QString QgsProcessingAlgorithmDialogBase::formatHelp( QgsProcessingAlgorithm *al
     }
     result += QStringLiteral( "<ul><li><i>%1</i></li></ul>" ).arg( flags.join( QLatin1String( "</i></li><li><i>" ) ) );
   }
+  if ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::SecurityRisk )
+  {
+    result += QStringLiteral( "<p><b>%1</b></p>" ).arg(
+                tr( "Warning: This algorithm is a potential security risk if executed with unchecked inputs, and may result in system damage or data leaks." )
+              );
+  }
+  if ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues )
+  {
+    result += QStringLiteral( "<p><b>%1</b></p>" ).arg(
+                tr( "Warning: This algorithm has known issues. The results must be carefully validated by the user." )
+              );
+  }
+
   return result;
 }
 

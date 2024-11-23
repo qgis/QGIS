@@ -226,6 +226,7 @@ class MinimumBoundingGeometry(QgisAlgorithm):
                     feature = self.createFeature(feedback, 0, type, geometry_queue)
                 sink.addFeature(feature, QgsFeatureSink.Flag.FastInsert)
 
+        sink.finalize()
         return {self.OUTPUT: dest_id}
 
     def createFeature(self, feedback, feature_id, type, geometries, class_field=None):

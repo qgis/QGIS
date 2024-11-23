@@ -18,6 +18,7 @@
 #include <string>
 
 #include "qgsmdalprovider.h"
+#include "moc_qgsmdalprovider.cpp"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
@@ -1083,7 +1084,7 @@ QVariantMap QgsMdalProviderMetadata::decodeUri( const QString &uri ) const
 {
   QVariantMap uriComponents;
 
-  const thread_local QRegularExpression layerRegex( QStringLiteral( "^([a-zA-Z0-9_]+?):\"(.*)\"(?::([a-zA-Z0-9_ ]+?$)|($))" ) );
+  const thread_local QRegularExpression layerRegex( QStringLiteral( "^([a-zA-Z0-9_]+?):\"(.*)\"(?::([a-zA-Z0-9_ /]+?$)|($))" ) );
   const QRegularExpressionMatch layerNameMatch = layerRegex.match( uri );
   if ( layerNameMatch.hasMatch() )
   {

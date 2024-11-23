@@ -17,6 +17,7 @@
 
 
 #include "qgsprocessingparameterdefinitionwidget.h"
+#include "moc_qgsprocessingparameterdefinitionwidget.cpp"
 #include "qgsgui.h"
 #include "qgsprocessingguiregistry.h"
 #include "qgsapplication.h"

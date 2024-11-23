@@ -125,6 +125,14 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     double clearValue() const;
 
     /**
+     * \returns TRUE if the value is equal to the clear value.
+     * \see clearValue()
+     *
+     * \since QGIS 3.42
+     */
+    bool isCleared() const;
+
+    /**
      * Set alignment in the embedded line edit widget
      * \param alignment
      */

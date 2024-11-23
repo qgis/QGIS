@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsjoindialog.h"
+#include "moc_qgsjoindialog.cpp"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"

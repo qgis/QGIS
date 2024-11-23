@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsmssqlsourceselect.h"
+#include "moc_qgsmssqlsourceselect.cpp"
 
 #include "qgslogger.h"
 #include "qgsmssqlgeomcolumntypethread.h"

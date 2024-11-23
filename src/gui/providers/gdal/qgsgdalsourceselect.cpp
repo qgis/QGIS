@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgdalsourceselect.h"
+#include "moc_qgsgdalsourceselect.cpp"
 ///@cond PRIVATE
 
 #include <QMessageBox>

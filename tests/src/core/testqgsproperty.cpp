@@ -1946,6 +1946,10 @@ void TestQgsProperty::isProjectColor()
   QVERIFY( p.isProjectColor() );
   p = QgsProperty::fromExpression( QStringLiteral( "project_color('burnt pineapple Skin 76')" ), true );
   QVERIFY( p.isProjectColor() );
+  p = QgsProperty::fromExpression( QStringLiteral( "project_color_object('mine')" ), true );
+  QVERIFY( p.isProjectColor() );
+  p = QgsProperty::fromExpression( QStringLiteral( "project_color_object('burnt pineapple Skin 76')" ), true );
+  QVERIFY( p.isProjectColor() );
   p.setActive( false );
   QVERIFY( p.isProjectColor() );
 }

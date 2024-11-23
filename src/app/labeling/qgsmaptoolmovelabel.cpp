@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolmovelabel.h"
+#include "moc_qgsmaptoolmovelabel.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"

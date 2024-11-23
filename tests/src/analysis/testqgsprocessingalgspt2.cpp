@@ -38,6 +38,9 @@
 #include "qgstextformat.h"
 #include "qgsreferencedgeometry.h"
 #include "qgsdxfexport.h"
+#include "qgssinglesymbolrenderer.h"
+#include "qgslinesymbol.h"
+
 
 class TestQgsProcessingAlgsPt2: public QgsTest
 {
@@ -100,6 +103,12 @@ class TestQgsProcessingAlgsPt2: public QgsTest
 
     void randomPointsInPolygonsFromField_data();
     void randomPointsInPolygonsFromField();
+
+    void generateElevationProfileImage();
+
+    void copyMetadata();
+    void applyMetadata();
+    void exportMetadata();
 
   private:
 
@@ -559,7 +568,7 @@ void TestQgsProcessingAlgsPt2::exportMeshVertices()
   QgsFeatureIterator featIt = resultLayer->getFeatures();
   QgsFeature feat;
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "PointZ (1000 2000 20)" ), feat.geometry().asWkt() );
+  QCOMPARE( QStringLiteral( "Point Z (1000 2000 20)" ), feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 2.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 2.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.0 );
@@ -567,28 +576,28 @@ void TestQgsProcessingAlgsPt2::exportMeshVertices()
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45.0, 2 ) );
 
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "PointZ (2000 2000 30)" ), feat.geometry().asWkt() );
+  QCOMPARE( QStringLiteral( "Point Z (2000 2000 30)" ), feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 3.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 3.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.0 );
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 3.605, 2 ) );
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 56.3099, 2 ) );
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "PointZ (3000 2000 40)" ), feat.geometry().asWkt() );
+  QCOMPARE( QStringLiteral( "Point Z (3000 2000 40)" ), feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 4.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 4.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 3.0 );
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 5.0, 2 ) );
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 53.130, 2 ) );
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "PointZ (2000 3000 50)" ), feat.geometry().asWkt() );
+  QCOMPARE( QStringLiteral( "Point Z (2000 3000 50)" ), feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 3.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 3.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 3.0 );
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 3 ).toDouble(), 4.242, 2 ) );
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45, 2 ) );
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "PointZ (1000 3000 10)" ), feat.geometry().asWkt() );
+  QCOMPARE( QStringLiteral( "Point Z (1000 3000 10)" ), feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 2.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 2.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), -1.0 );
@@ -641,7 +650,7 @@ void TestQgsProcessingAlgsPt2::exportMeshFaces()
   QgsFeatureIterator featIt = resultLayer->getFeatures();
   QgsFeature feat;
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "PolygonZ ((1000 2000 20, 2000 2000 30, 2000 3000 50, 1000 3000 10, 1000 2000 20))" ), feat.geometry().asWkt() );
+  QCOMPARE( QStringLiteral( "Polygon Z ((1000 2000 20, 2000 2000 30, 2000 3000 50, 1000 3000 10, 1000 2000 20))" ), feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 2.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 2.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.0 );
@@ -649,7 +658,7 @@ void TestQgsProcessingAlgsPt2::exportMeshFaces()
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45.0, 2 ) );
 
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "PolygonZ ((2000 2000 30, 3000 2000 40, 2000 3000 50, 2000 2000 30))" ), feat.geometry().asWkt() );
+  QCOMPARE( QStringLiteral( "Polygon Z ((2000 2000 30, 3000 2000 40, 2000 3000 50, 2000 2000 30))" ), feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 3.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 3.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 3.0 );
@@ -702,7 +711,7 @@ void TestQgsProcessingAlgsPt2::exportMeshEdges()
   QgsFeatureIterator featIt = resultLayer->getFeatures();
   QgsFeature feat;
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "LineStringZ (1000 2000 20, 2000 2000 30)" ), feat.geometry().asWkt() );
+  QCOMPARE( QStringLiteral( "LineString Z (1000 2000 20, 2000 2000 30)" ), feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 2.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 2.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.0 );
@@ -710,7 +719,7 @@ void TestQgsProcessingAlgsPt2::exportMeshEdges()
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45.0, 2 ) );
 
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "LineStringZ (2000 2000 30, 3000 2000 40)" ), feat.geometry().asWkt() );
+  QCOMPARE( QStringLiteral( "LineString Z (2000 2000 30, 3000 2000 40)" ), feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 3.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 3.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 3.0 );
@@ -718,7 +727,7 @@ void TestQgsProcessingAlgsPt2::exportMeshEdges()
   QVERIFY( qgsDoubleNearSig( feat.attributes().at( 4 ).toDouble(), 45.0, 2 ) );
 
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "LineStringZ (3000 2000 40, 2000 3000 50)" ), feat.geometry().asWkt() );
+  QCOMPARE( QStringLiteral( "LineString Z (3000 2000 40, 2000 3000 50)" ), feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toDouble(), 4.0 );
   QCOMPARE( feat.attributes().at( 1 ).toDouble(), 4.0 );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 4.0 );
@@ -928,22 +937,22 @@ void TestQgsProcessingAlgsPt2::exportMeshContours()
   QgsFeatureIterator featIt = resultLinesLayer->getFeatures();
   QgsFeature feat;
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "LineStringZ (1250 3000 20, 1250 2250 27.5, 1250 2000 22.5)" ), feat.geometry().asWkt() );
+  QCOMPARE( QStringLiteral( "LineString Z (1250 3000 20, 1250 2250 27.5, 1250 2000 22.5)" ), feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexScalarDataset" ) );
   QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "LineStringZ (1006.94319345290614365 3000 10.27772773811624596, 1000 2976.48044676110157525 10.23519553238898538)" ), feat.geometry().asWkt() );
+  QCOMPARE( QStringLiteral( "LineString Z (1006.94319345290614365 3000 10.27772773811624596, 1000 2976.48044676110157525 10.23519553238898538)" ), feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexVectorDataset" ) );
   QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "LineStringZ (2009.71706923721990279 2990.28293076277986984 49.90282930762779756, 2462.15304528350043256 2000 34.62153045283500319)" ), feat.geometry().asWkt() );
+  QCOMPARE( QStringLiteral( "LineString Z (2009.71706923721990279 2990.28293076277986984 49.90282930762779756, 2462.15304528350043256 2000 34.62153045283500319)" ), feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexVectorDataset" ) );
   QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 4.25 );
   featIt.nextFeature( feat );
-  QCOMPARE( QStringLiteral( "LineStringZ (1500 3000 30, 1500 2500 35, 1500 2000 25)" ), feat.geometry().asWkt() );
+  QCOMPARE( QStringLiteral( "LineString Z (1500 3000 30, 1500 2500 35, 1500 2000 25)" ), feat.geometry().asWkt() );
   QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "FaceScalarDataset" ) );
   QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
@@ -963,7 +972,7 @@ void TestQgsProcessingAlgsPt2::exportMeshContours()
   featIt.nextFeature( feat );
   QgsGeometry geom = feat.geometry();
   geom.normalize();
-  QCOMPARE( geom.asWkt(), QStringLiteral( "PolygonZ ((1000 2000 20, 1000 3000 10, 1250 3000 20, 1250 2250 27.5, 1250 2000 22.5, 1000 2000 20))" ) );
+  QCOMPARE( geom.asWkt(), QStringLiteral( "Polygon Z ((1000 2000 20, 1000 3000 10, 1250 3000 20, 1250 2250 27.5, 1250 2000 22.5, 1000 2000 20))" ) );
   QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexScalarDataset" ) );
   QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 0.25 );
@@ -971,7 +980,7 @@ void TestQgsProcessingAlgsPt2::exportMeshContours()
   featIt.nextFeature( feat );
   geom = feat.geometry();
   geom.normalize();
-  QCOMPARE( geom.asWkt(), QStringLiteral( "PolygonZ ((1250 2000 22.5, 1250 2250 27.5, 1250 3000 20, 2000 3000 50, 3000 2000 40, 2000 2000 30, 1250 2000 22.5))" ) );
+  QCOMPARE( geom.asWkt(), QStringLiteral( "Polygon Z ((1250 2000 22.5, 1250 2250 27.5, 1250 3000 20, 2000 3000 50, 3000 2000 40, 2000 2000 30, 1250 2000 22.5))" ) );
   QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexScalarDataset" ) );
   QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
@@ -979,7 +988,7 @@ void TestQgsProcessingAlgsPt2::exportMeshContours()
   featIt.nextFeature( feat );
   geom = feat.geometry();
   geom.normalize();
-  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "PolygonZ ((1000 2976.48 10.24, 1000 3000 10, 1006.94 3000 10.28, 1000 2976.48 10.24))" ) );
+  QCOMPARE( geom.asWkt( 2 ), QStringLiteral( "Polygon Z ((1000 2976.48 10.24, 1000 3000 10, 1006.94 3000 10.28, 1000 2976.48 10.24))" ) );
   QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "VertexVectorDataset" ) );
   QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 0.25 );
@@ -988,7 +997,7 @@ void TestQgsProcessingAlgsPt2::exportMeshContours()
   featIt.nextFeature( feat );
   geom = feat.geometry();
   geom.normalize();
-  QCOMPARE( geom.asWkt(), QStringLiteral( "PolygonZ ((1000 2000 20, 1000 3000 10, 1500 3000 30, 1500 2500 35, 1500 2000 25, 1000 2000 20))" ) );
+  QCOMPARE( geom.asWkt(), QStringLiteral( "Polygon Z ((1000 2000 20, 1000 3000 10, 1500 3000 30, 1500 2500 35, 1500 2000 25, 1000 2000 20))" ) );
   QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "FaceScalarDataset" ) );
   QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 0.25 );
@@ -996,7 +1005,7 @@ void TestQgsProcessingAlgsPt2::exportMeshContours()
   featIt.nextFeature( feat );
   geom = feat.geometry();
   geom.normalize();
-  QCOMPARE( geom.asWkt(), QStringLiteral( "PolygonZ ((1500 2000 25, 1500 2500 35, 1500 3000 30, 2000 3000 50, 3000 2000 40, 2000 2000 30, 1500 2000 25))" ) );
+  QCOMPARE( geom.asWkt(), QStringLiteral( "Polygon Z ((1500 2000 25, 1500 2500 35, 1500 3000 30, 2000 3000 50, 3000 2000 40, 2000 2000 30, 1500 2000 25))" ) );
   QCOMPARE( feat.attributes().at( 0 ).toString(), QStringLiteral( "FaceScalarDataset" ) );
   QCOMPARE( feat.attributes().at( 1 ).toString(), QStringLiteral( "1950-01-01 01:00:00" ) );
   QCOMPARE( feat.attributes().at( 2 ).toDouble(), 2.25 );
@@ -1901,12 +1910,10 @@ void TestQgsProcessingAlgsPt2::randomPointsInPolygonsFromField_data()
 
   QTest::newRow( "5" ) << QVariant::fromValue<int>( 5 ) << 5;
   QTest::newRow( "NULL" ) << QVariant() << 0;
-
 }
 
 void TestQgsProcessingAlgsPt2::randomPointsInPolygonsFromField()
 {
-
   QFETCH( QVariant, num_points );
   QFETCH( int, expected );
 
@@ -1948,9 +1955,156 @@ void TestQgsProcessingAlgsPt2::randomPointsInPolygonsFromField()
   QVERIFY( resultLayer );
   QCOMPARE( resultLayer->wkbType(), Qgis::WkbType::Point );
   QCOMPARE( resultLayer->featureCount(), expected );
-
-
 }
+
+void TestQgsProcessingAlgsPt2::generateElevationProfileImage()
+{
+  std::unique_ptr< QgsVectorLayer > lineLayer = std::make_unique< QgsVectorLayer >( QStringLiteral( "LineStringZ?crs=epsg:3857" ), QStringLiteral( "lines" ), QStringLiteral( "memory" ) );
+  QVERIFY( lineLayer->isValid() );
+  QgsFeature feature;
+  feature.setGeometry( QgsGeometry::fromWkt( "LineStringZ (0 0 0, 10 10 10)" ) );
+  lineLayer->dataProvider()->addFeature( feature );
+
+  QVariantMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
+  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
+  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
+  dynamic_cast<QgsSingleSymbolRenderer *>( lineLayer->renderer() )->setSymbol( QgsLineSymbol::createSimple( properties ) );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:generateelevationprofileimage" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QgsReferencedGeometry curve( QgsGeometry::fromWkt( "LineString(0 0, 10 10)" ), QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+
+  const QString outputImage = QDir::tempPath() + "/my_elevation_profile.png";
+  if ( QFile::exists( outputImage ) )
+    QFile::remove( outputImage );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "CURVE" ), QVariant::fromValue( curve ) );
+  parameters.insert( QStringLiteral( "MAP_LAYERS" ), QVariantList() << QVariant::fromValue( lineLayer.get() ) );
+  parameters.insert( QStringLiteral( "WIDTH" ), 500 );
+  parameters.insert( QStringLiteral( "HEIGHT" ), 350 );
+  parameters.insert( QStringLiteral( "OUTPUT" ), outputImage );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QVERIFY( QFileInfo::exists( outputImage ) );
+  QGSVERIFYIMAGECHECK( "generate_elevation_profile", "generate_elevation_profile", outputImage, QString(), 500, QSize( 3, 3 ) );
+}
+
+void TestQgsProcessingAlgsPt2::copyMetadata()
+{
+  std::unique_ptr< QgsVectorLayer > inputLayer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  QVERIFY( inputLayer->isValid() );
+
+  std::unique_ptr< QgsVectorLayer > targetLayer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "target" ), QStringLiteral( "memory" ) );
+  QVERIFY( targetLayer->isValid() );
+
+  QgsLayerMetadata md;
+  md.setTitle( QStringLiteral( "Title" ) );
+  md.setAbstract( QStringLiteral( "Abstract" ) );
+  inputLayer->setMetadata( md );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:copylayermetadata" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( inputLayer.get() ) );
+  parameters.insert( QStringLiteral( "TARGET" ), QVariant::fromValue( targetLayer.get() ) );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), targetLayer->id() );
+
+  QgsLayerMetadata targetMetadata = targetLayer->metadata();
+  QCOMPARE( targetMetadata.title(), QStringLiteral( "Title" ) );
+  QCOMPARE( targetMetadata.abstract(), QStringLiteral( "Abstract" ) );
+}
+
+void TestQgsProcessingAlgsPt2::applyMetadata()
+{
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:setlayermetadata" ) ) );
+  QVERIFY( alg != nullptr );
+
+  const QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  const QString metadataFileName = dataDir + "/simple_metadata.qmd";
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
+  parameters.insert( QStringLiteral( "METADATA" ), metadataFileName );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
+
+  QgsLayerMetadata targetMetadata = layer->metadata();
+  QCOMPARE( targetMetadata.title(), QStringLiteral( "Title" ) );
+  QCOMPARE( targetMetadata.abstract(), QStringLiteral( "Abstract" ) );
+}
+
+void TestQgsProcessingAlgsPt2::exportMetadata()
+{
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsLayerMetadata md;
+  md.setTitle( QStringLiteral( "Title" ) );
+  md.setAbstract( QStringLiteral( "Abstract" ) );
+  layer->setMetadata( md );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:exportlayermetadata" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  int line, column;
+  QString errorMessage;
+
+  QDomDocument doc( QStringLiteral( "qgis" ) );
+  QFile metadataFile( results.value( QStringLiteral( "OUTPUT" ) ).toString() );
+  if ( metadataFile.open( QFile::ReadOnly ) )
+  {
+    ok = doc.setContent( &metadataFile, &errorMessage, &line, &column );
+    QVERIFY( ok );
+    metadataFile.close();
+  }
+
+  const QDomElement root = doc.firstChildElement( QStringLiteral( "qgis" ) );
+  QVERIFY( !root.isNull() );
+
+  QgsLayerMetadata exportedMetadata;
+  exportedMetadata.readMetadataXml( root );
+  QCOMPARE( md.title(), exportedMetadata.title() );
+  QCOMPARE( md.abstract(), exportedMetadata.abstract() );
+}
+
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )
 #include "testqgsprocessingalgspt2.moc"

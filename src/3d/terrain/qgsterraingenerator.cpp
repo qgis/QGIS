@@ -14,19 +14,20 @@
  ***************************************************************************/
 
 #include "qgsterraingenerator.h"
+#include "moc_qgsterraingenerator.cpp"
 
-#include "qgsaabb.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgscoordinatetransform.h"
 
-QgsAABB QgsTerrainGenerator::rootChunkBbox( const Qgs3DMapSettings &map ) const
+QgsBox3D QgsTerrainGenerator::rootChunkBox3D( const Qgs3DMapSettings &map ) const
 {
   QgsRectangle te = Qgs3DUtils::tryReprojectExtent2D( rootChunkExtent(), crs(), map.crs(), map.transformContext() );
 
   float hMin, hMax;
   rootChunkHeightRange( hMin, hMax );
-  return Qgs3DUtils::mapToWorldExtent( te, hMin * map.terrainVerticalScale(), hMax * map.terrainVerticalScale(), map.origin() );
+  return QgsBox3D( te.xMinimum(), te.yMinimum(), hMin * map.terrainVerticalScale(),
+                   te.xMaximum(), te.yMaximum(), hMax * map.terrainVerticalScale() );
 }
 
 float QgsTerrainGenerator::rootChunkError( const Qgs3DMapSettings &map ) const

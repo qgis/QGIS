@@ -20,6 +20,7 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 from __future__ import annotations
 
 import sys
+from functools import partial
 from typing import TYPE_CHECKING
 
 from qgis.PyQt import sip
@@ -36,6 +37,8 @@ if TYPE_CHECKING:
 
 
 class writeOut(QObject):
+    # QsciLexerPython uses style codes up to 15 (Decorator style). We use 16 for error messages
+    ERROR_STYLE_INDEX = 16
     ERROR_COLOR = "#e31a1c"
 
     def __init__(self, shellOut, out=None, style=None):
@@ -61,13 +64,14 @@ class writeOut(QObject):
         if self.style == "_traceback":
             # Show errors in red
             stderrColor = QColor(QgsSettings().value("pythonConsole/stderrFontColor", QColor(self.ERROR_COLOR)))
-            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETFORE, 0o01, stderrColor)
-            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETITALIC, 0o01, True)
-            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETBOLD, 0o01, True)
-            pos = self.sO.SendScintilla(QsciScintilla.SCI_GETCURRENTPOS)
-            self.sO.SendScintilla(QsciScintilla.SCI_STARTSTYLING, pos, 31)
+            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETFORE, self.ERROR_STYLE_INDEX, stderrColor)
+            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETITALIC, self.ERROR_STYLE_INDEX, True)
+            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETBOLD, self.ERROR_STYLE_INDEX, True)
+            pos = self.sO.linearPosition()
+            self.sO.SendScintilla(QsciScintilla.SCI_STARTSTYLING, pos, 0)
             self.sO.append(m)
-            self.sO.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), 0o01)
+            self.sO.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), self.ERROR_STYLE_INDEX)
+
         else:
             self.sO.append(m)
 
@@ -236,11 +240,15 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         clearAction.triggered.connect(self.clearConsole)
         menu.addAction(clearAction)
 
-        pyQGISHelpAction = QAction(QgsApplication.getThemeIcon("console/iconHelpConsole.svg"),
-                                   QCoreApplication.translate("PythonConsole", "Search Selection in PyQGIS Documentation"),
-                                   menu)
-        pyQGISHelpAction.triggered.connect(self.searchSelectedTextInPyQGISDocs)
-        menu.addAction(pyQGISHelpAction)
+        word = self.selectedText() or self.wordAtPoint(e.pos())
+        if word:
+            context_help_action = QAction(
+                QgsApplication.getThemeIcon("mActionHelpContents.svg"),
+                QCoreApplication.translate("PythonConsole", "Context Help"),
+                menu)
+            context_help_action.triggered.connect(partial(self.shell_editor.showApiDocumentation, word, force_search=True))
+            context_help_action.setShortcut('F1')
+            menu.addAction(context_help_action)
 
         menu.addSeparator()
         copyAction = QAction(
@@ -268,13 +276,11 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         runAction.setEnabled(False)
         clearAction.setEnabled(False)
         copyAction.setEnabled(False)
-        pyQGISHelpAction.setEnabled(False)
         selectAllAction.setEnabled(False)
         showEditorAction.setEnabled(True)
         if self.hasSelectedText():
             runAction.setEnabled(True)
             copyAction.setEnabled(True)
-            pyQGISHelpAction.setEnabled(True)
         if not self.text(3) == '':
             selectAllAction.setEnabled(True)
             clearAction.setEnabled(True)
@@ -308,17 +314,8 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         self.shell_editor.insertFromDropPaste(cmd)
         self.shell_editor.entered()
 
-    def keyPressEvent(self, e):
-        # empty text indicates possible shortcut key sequence so stay in output
-        txt = e.text()
-        if len(txt) and txt >= " ":
-            self.shell_editor.append(txt)
-            self.shell_editor.moveCursorToEnd()
-            self.shell_editor.setFocus()
-            e.ignore()
-        else:
-            # possible shortcut key sequence, accept it
-            e.accept()
-
     def widgetMessageBar(self, text: str):
         self.infoBar.pushMessage(text, Qgis.MessageLevel.Info)
+
+    def showApiDocumentation(self, text):
+        self.shell_editor.showApiDocumentation(text)

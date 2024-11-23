@@ -28,6 +28,7 @@
 #include "qgsvertexid.h"
 #include "qgswkbptr.h"
 #include "qgsmultilinestring.h"
+#include "qgsgeos.h"
 
 #include <QPainter>
 #include <QPainterPath>
@@ -993,4 +994,44 @@ int QgsPolyhedralSurface::compareToSameClass( const QgsAbstractGeometry *other )
   }
 
   return 0;
+}
+
+bool QgsPolyhedralSurface::isValid( QString &error, Qgis::GeometryValidityFlags flags ) const
+{
+  if ( flags == 0 && mHasCachedValidity )
+  {
+    // use cached validity results
+    error = mValidityFailureReason;
+    return error.isEmpty();
+  }
+
+  if ( isEmpty() )
+    return true;
+
+  error.clear();
+
+  // GEOS does not handle PolyhedralSurface, check the polygons one by one
+  for ( int i = 0; i < mPatches.size(); ++i )
+  {
+    const QgsGeos geos( mPatches.at( i ), 0, Qgis::GeosCreationFlags() );
+    const bool valid = geos.isValid( &error, flags & Qgis::GeometryValidityFlag::AllowSelfTouchingHoles, nullptr );
+    if ( !valid )
+    {
+      error = QStringLiteral( "Polygon %1 is invalid: %2" ).arg( QString::number( i ), error );
+      break;
+    }
+  }
+
+  //TODO: Also check that the polyhedral surface is connected
+  // For example, see SFCGAL implementation:
+  // https://gitlab.com/sfcgal/SFCGAL/-/blob/19e3ff0c9057542a0e271edfee873d5f8b220871/src/algorithm/isValid.cpp#L469
+
+  const bool valid = error.isEmpty();
+  if ( flags == 0 )
+  {
+    mValidityFailureReason = !valid ? error : QString();
+    mHasCachedValidity = true;
+  }
+
+  return valid;
 }

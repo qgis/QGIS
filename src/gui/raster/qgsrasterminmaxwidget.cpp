@@ -20,6 +20,7 @@
 
 #include "qgsrasterlayer.h"
 #include "qgsrasterminmaxwidget.h"
+#include "moc_qgsrasterminmaxwidget.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterminmaxorigin.h"

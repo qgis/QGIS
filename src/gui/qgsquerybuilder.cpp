@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsquerybuilder.h"
+#include "moc_qgsquerybuilder.cpp"
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
@@ -93,7 +94,34 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   connect( layer, &QgsVectorLayer::subsetStringChanged, this, &QgsQueryBuilder::layerSubsetStringChanged );
   layerSubsetStringChanged();
 
-  lblDataUri->setText( tr( "Set provider filter on %1" ).arg( layer->name() ) );
+  QString subsetStringDialect;
+  QString subsetStringHelpUrl;
+
+  if ( QgsDataProvider *provider = layer->dataProvider() )
+  {
+    lblDataUri->setText( tr( "Set provider filter on %1 (provider: %2)" ).arg( layer->name(), provider->name() ) );
+    subsetStringDialect = provider->subsetStringDialect();
+    subsetStringHelpUrl = provider->subsetStringHelpUrl();
+  }
+  else
+  {
+    lblDataUri->setText( tr( "Set provider filter on %1 (provider: %2)" ).arg( layer->name(), layer->providerType() ) );
+  }
+
+  if ( !subsetStringDialect.isEmpty() && !subsetStringHelpUrl.isEmpty() )
+  {
+    lblProviderFilterInfo->setOpenExternalLinks( true );
+    lblProviderFilterInfo->setText( tr( "Enter a <a href=\"%1\">%2</a> to filter the layer" ).arg( subsetStringHelpUrl ).arg( subsetStringDialect ) ) ;
+  }
+  else if ( !subsetStringDialect.isEmpty() )
+  {
+    lblProviderFilterInfo->setText( tr( "Enter a %1 to filter the layer" ).arg( subsetStringDialect ) ) ;
+  }
+  else
+  {
+    lblProviderFilterInfo->hide();
+  }
+
   mTxtSql->setText( mOrigSubsetString );
 
   mFilterLineEdit->setShowSearchIcon( true );

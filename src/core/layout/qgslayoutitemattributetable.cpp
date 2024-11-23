@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitemattributetable.h"
+#include "moc_qgslayoutitemattributetable.cpp"
 #include "qgslayout.h"
 #include "qgslayouttablecolumn.h"
 #include "qgslayoutitemmap.h"
@@ -472,6 +473,10 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       atlasGeometryEngine.reset( QgsGeometry::createGeometryEngine( atlasGeometry.constGet() ) );
       atlasGeometryEngine->prepareGeometry();
     }
+    else
+    {
+      return false;
+    }
   }
 
   if ( mSource == QgsLayoutItemAttributeTable::RelationChildren )
@@ -481,7 +486,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     req = relation.getRelatedFeaturesRequest( atlasFeature );
   }
 
-  if ( !selectionRect.isEmpty() )
+  if ( !selectionRect.isNull() )
     req.setFilterRect( selectionRect );
 
   req.setFlags( mShowOnlyVisibleFeatures ? Qgis::FeatureRequestFlag::ExactIntersect : Qgis::FeatureRequestFlag::NoFlags );
@@ -533,9 +538,9 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     }
 
     //check against atlas feature intersection
-    if ( mFilterToAtlasIntersection )
+    if ( atlasGeometryEngine )
     {
-      if ( !f.hasGeometry() || !atlasGeometryEngine )
+      if ( !f.hasGeometry() )
       {
         continue;
       }

@@ -32,7 +32,7 @@
 #include <getopt.h>
 #endif
 
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
 #include <ApplicationServices/ApplicationServices.h>
 #if MAC_OS_X_VERSION_MAX_ALLOWED < 1050
 typedef SInt32 SRefCon;
@@ -391,7 +391,7 @@ int main( int argc, char *argv[] )
 
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
 
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
   // If the GDAL plugins are bundled with the application and GDAL_DRIVER_PATH
   // is not already defined, use the GDAL plugins in the application bundle.
   QString gdalPlugins( QCoreApplication::applicationDirPath().append( "/lib/gdalplugins" ) );
@@ -429,7 +429,7 @@ int main( int argc, char *argv[] )
   QCoreApplication::addLibraryPath( QApplication::applicationDirPath()
                                     + QDir::separator() + "qtplugins" );
 #endif
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
   //qDebug("Adding qt image plugins to plugin search path...");
   CFURLRef myBundleRef = CFBundleCopyBundleURL( CFBundleGetMainBundle() );
   CFStringRef myMacPath = CFURLCopyFileSystemPath( myBundleRef, kCFURLPOSIXPathStyle );

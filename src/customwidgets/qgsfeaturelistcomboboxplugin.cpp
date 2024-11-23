@@ -15,6 +15,7 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsfeaturelistcomboboxplugin.h"
+#include "moc_qgsfeaturelistcomboboxplugin.cpp"
 #include "qgsfeaturelistcombobox.h"
 
 

@@ -325,7 +325,7 @@ class CORE_EXPORT QgsImageOperation
           , mContrast( contrast )
         {  }
 
-        void operator()( QRgb &rgb, int x, int y );
+        void operator()( QRgb &rgb, int x, int y ) const;
 
       private:
         int mBrightness;

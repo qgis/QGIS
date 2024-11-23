@@ -17,6 +17,7 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 
 #include "qgsvirtuallayersourceselect.h"
+#include "moc_qgsvirtuallayersourceselect.cpp"
 
 #include "layertree/qgslayertreeview.h"
 #include "qgsvectorlayer.h"

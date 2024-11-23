@@ -714,19 +714,21 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     QgsExpression subExp( subExpression );
     QgsExpression filterExp( parameters.filter );
 
+    const QSet< QString > filterVars = filterExp.referencedVariables();
+    const QSet< QString > subExpVars = subExp.referencedVariables();
+    QSet<QString> allVars = filterVars + subExpVars;
+
     bool isStatic = true;
-    if ( filterExp.referencedVariables().contains( QStringLiteral( "parent" ) )
-         || filterExp.referencedVariables().contains( QString() )
-         || subExp.referencedVariables().contains( QStringLiteral( "parent" ) )
-         || subExp.referencedVariables().contains( QString() ) )
+    if ( filterVars.contains( QStringLiteral( "parent" ) )
+         || filterVars.contains( QString() )
+         || subExpVars.contains( QStringLiteral( "parent" ) )
+         || subExpVars.contains( QString() ) )
     {
       isStatic = false;
     }
     else
     {
-
-      const QSet<QString> refVars = filterExp.referencedVariables() + subExp.referencedVariables();
-      for ( const QString &varName : refVars )
+      for ( const QString &varName : allVars )
       {
         const QgsExpressionContextScope *scope = context->activeScopeForVariable( varName );
         if ( scope && !scope->isStatic( varName ) )
@@ -752,15 +754,20 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
 
     if ( !isStatic )
     {
-      cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4:%5%6:%7" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter,
-                 QString::number( context->feature().id() ), QString::number( qHash( context->feature() ) ), orderBy );
+      bool ok = false;
+      const QString contextHash = context->uniqueHash( ok, allVars );
+      if ( ok )
+      {
+        cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4:%5:%6" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter,
+                   orderBy, contextHash );
+      }
     }
     else
     {
       cacheKey = QStringLiteral( "aggfcn:%1:%2:%3:%4:%5" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter, orderBy );
     }
 
-    if ( context->hasCachedValue( cacheKey ) )
+    if ( !cacheKey.isEmpty() && context->hasCachedValue( cacheKey ) )
     {
       return context->cachedValue( cacheKey );
     }
@@ -771,7 +778,7 @@ static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionCon
     subContext.appendScope( subScope );
     result = vl->aggregate( aggregate, subExpression, parameters, &subContext, &ok, nullptr, context->feedback(), &aggregateError );
 
-    if ( ok )
+    if ( ok && !cacheKey.isEmpty() )
     {
       // important -- we should only store cached values when the expression is successfully calculated. Otherwise subsequent
       // use of the expression context will happily grab the invalid QVariant cached value without realising that there was actually an error
@@ -824,11 +831,11 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
   ENSURE_NO_EVAL_ERROR
   QString relationId = value.toString();
   // check relation exists
-  QgsRelation relation = QgsProject::instance()->relationManager()->relation( relationId );
+  QgsRelation relation = QgsProject::instance()->relationManager()->relation( relationId ); // skip-keyword-check
   if ( !relation.isValid() || relation.referencedLayer() != vl )
   {
     // check for relations by name
-    QList< QgsRelation > relations = QgsProject::instance()->relationManager()->relationsByName( relationId );
+    QList< QgsRelation > relations = QgsProject::instance()->relationManager()->relationsByName( relationId ); // skip-keyword-check
     if ( relations.isEmpty() || relations.at( 0 ).referencedLayer() != vl )
     {
       parent->setEvalErrorString( QObject::tr( "Cannot find relation with id '%1'" ).arg( relationId ) );
@@ -1018,8 +1025,13 @@ static QVariant fcnAggregateGeneric( Qgis::Aggregate aggregate, const QVariantLi
   QString cacheKey;
   if ( !isStatic )
   {
-    cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5%6:%7" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter,
-               QString::number( context->feature().id() ), QString::number( qHash( context->feature() ) ), orderBy );
+    bool ok = false;
+    const QString contextHash = context->uniqueHash( ok, refVars );
+    if ( ok )
+    {
+      cacheKey = QStringLiteral( "agg:%1:%2:%3:%4:%5:%6" ).arg( vl->id(), QString::number( static_cast< int >( aggregate ) ), subExpression, parameters.filter,
+                 orderBy, contextHash );
+    }
   }
   else
   {
@@ -1232,6 +1244,24 @@ static QVariant fcnCeil( const QVariantList &values, const QgsExpressionContext 
   return QVariant( std::ceil( x ) );
 }
 
+static QVariant fcnToBool( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
+{
+  const QVariant value = values.at( 0 );
+  if ( QgsExpressionUtils::isNull( value.isValid() ) )
+  {
+    return QVariant( false );
+  }
+  else if ( value.userType() == QMetaType::QString )
+  {
+    // Capture strings to avoid a '0' string value casted to 0 and wrongly returning false
+    return QVariant( !value.toString().isEmpty() );
+  }
+  else if ( QgsExpressionUtils::isList( value ) )
+  {
+    return !value.toList().isEmpty();
+  }
+  return QVariant( value.toBool() );
+}
 static QVariant fcnToInt( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   return QVariant( QgsExpressionUtils::getIntValue( values.at( 0 ), parent ) );
@@ -1478,14 +1508,15 @@ static QVariant fcnWordwrap( const QVariantList &values, const QgsExpressionCont
 static QVariant fcnLength( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   // two variants, one for geometry, one for string
-  if ( values.at( 0 ).userType() == qMetaTypeId< QgsGeometry>() )
-  {
-    //geometry variant
-    QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
-    if ( geom.type() != Qgis::GeometryType::Line )
-      return QVariant();
 
-    return QVariant( geom.length() );
+  //geometry variant
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent, true );
+  if ( !geom.isNull() )
+  {
+    if ( geom.type() == Qgis::GeometryType::Line )
+      return QVariant( geom.length() );
+    else
+      return QVariant();
   }
 
   //otherwise fall back to string variant
@@ -3684,15 +3715,10 @@ static QVariant fcnCollectGeometries( const QVariantList &values, const QgsExpre
   parts.reserve( list.size() );
   for ( const QVariant &value : std::as_const( list ) )
   {
-    if ( value.userType() == qMetaTypeId< QgsGeometry>() )
-    {
-      parts << value.value<QgsGeometry>();
-    }
-    else
-    {
-      parent->setEvalErrorString( QStringLiteral( "Cannot convert to geometry" ) );
+    QgsGeometry part = QgsExpressionUtils::getGeometry( value, parent );
+    if ( part.isNull() )
       return QgsGeometry();
-    }
+    parts << part;
   }
 
   return QgsGeometry::collectGeometry( parts );
@@ -6073,7 +6099,7 @@ static QVariant fncColorRgba( const QVariantList &values, const QgsExpressionCon
   return QgsSymbolLayerUtils::encodeColor( color );
 }
 
-QVariant fcnRampColor( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+QVariant fcnRampColorObject( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGradientColorRamp expRamp;
   const QgsColorRamp *ramp = nullptr;
@@ -6095,7 +6121,13 @@ QVariant fcnRampColor( const QVariantList &values, const QgsExpressionContext *,
 
   double value = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
   QColor color = ramp->color( value );
-  return QgsSymbolLayerUtils::encodeColor( color );
+  return color;
+}
+
+QVariant fcnRampColor( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node )
+{
+  QColor color = fcnRampColorObject( values, context, parent, node ).value<QColor>();
+  return color.isValid() ? QgsSymbolLayerUtils::encodeColor( color ) : QVariant();
 }
 
 static QVariant fcnColorHsl( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -7714,6 +7746,12 @@ typedef bool ( QgsGeometry::*RelationFunction )( const QgsGeometry &geometry ) c
 static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const RelationFunction &relationFunction, bool invert = false, double bboxGrow = 0, bool isNearestFunc = false, bool isIntersectsFunc = false )
 {
 
+  if ( ! context )
+  {
+    parent->setEvalErrorString( QStringLiteral( "This function was called without an expression context." ) );
+    return QVariant();
+  }
+
   const QVariant sourceLayerRef = context->variable( QStringLiteral( "layer" ) ); //used to detect if sourceLayer and targetLayer are the same
   // TODO this function is NOT thread safe
   Q_NOWARN_DEPRECATED_PUSH
@@ -8353,6 +8391,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "floor" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnFloor, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "ceil" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnCeil, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "pi" ), 0, fcnPi, QStringLiteral( "Math" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "$pi" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "to_bool" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToBool, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "tobool" ), /* handlesNull = */ true )
         << new QgsStaticExpressionFunction( QStringLiteral( "to_int" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToInt, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "toint" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "to_real" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToReal, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "toreal" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "to_string" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToString, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "String" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "tostring" ) )
@@ -8572,6 +8611,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "ramp_color" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "ramp_name" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ),
                                             fcnRampColor, QStringLiteral( "Color" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "ramp_color_object" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "ramp_name" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ),
+                                            fcnRampColorObject, QStringLiteral( "Color" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "create_ramp" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "map" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "discrete" ), true, false ),
                                             fcnCreateRamp, QStringLiteral( "Color" ) )

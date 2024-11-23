@@ -88,7 +88,7 @@ whenever this signal is emitted.
 
     virtual ~QgsCreateAnnotationItemMapToolInterface();
 
-    virtual QgsCreateAnnotationItemMapToolHandler *handler() = 0;
+    virtual QgsCreateAnnotationItemMapToolHandler *handler() const = 0;
 %Docstring
 Returns the handler object for the map tool.
 %End

@@ -15,6 +15,7 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsexternalresourcewidgetplugin.h"
+#include "moc_qgsexternalresourcewidgetplugin.cpp"
 #include "qgsexternalresourcewidget.h"
 
 

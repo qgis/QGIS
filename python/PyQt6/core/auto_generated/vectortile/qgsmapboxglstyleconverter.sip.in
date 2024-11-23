@@ -346,6 +346,7 @@ Constructor for QgsMapBoxGlStyleConverter.
       Numeric,
       Opacity,
       Point,
+      NumericArray,
     };
 
     Result convert( const QVariantMap &style, QgsMapBoxGlStyleConversionContext *context = 0 );

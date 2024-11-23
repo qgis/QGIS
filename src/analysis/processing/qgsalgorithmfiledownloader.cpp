@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfiledownloader.h"
+#include "moc_qgsalgorithmfiledownloader.cpp"
 #include "qgsprocessingparameters.h"
 #include "qgis.h"
 #include "qgsfiledownloader.h"

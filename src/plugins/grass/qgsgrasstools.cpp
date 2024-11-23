@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsgrasstools.h"
+#include "moc_qgsgrasstools.cpp"
 #include "qgsgrassmodule.h"
 #include "qgsgrassregion.h"
 #include "qgsgrass.h"

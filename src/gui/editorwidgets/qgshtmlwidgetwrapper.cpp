@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgshtmlwidgetwrapper.h"
+#include "moc_qgshtmlwidgetwrapper.cpp"
 #include "qgsexpressioncontextutils.h"
 #include "qgswebframe.h"
 #include "qgsvaluerelationfieldformatter.h"

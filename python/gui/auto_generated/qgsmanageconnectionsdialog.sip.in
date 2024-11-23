@@ -38,6 +38,7 @@ class QgsManageConnectionsDialog : QDialog
       TiledScene,
       SensorThings,
       CloudStorage,
+      STAC,
     };
 
     QgsManageConnectionsDialog( QWidget *parent /TransferThis/ = 0, Mode mode = Export, Type type = WMS, const QString &fileName = QString() );

@@ -366,33 +366,34 @@ class PyQgsOGRProvider(QgisTestCase):
         testsets = (
             ("Triangle((0 0, 0 1, 1 1, 0 0))", QgsWkbTypes.Type.Triangle, "Triangle ((0 0, 0 1, 1 1, 0 0))"),
             ("Triangle Z((0 0 1, 0 1 2, 1 1 3, 0 0 1))", QgsWkbTypes.Type.TriangleZ,
-             "TriangleZ ((0 0 1, 0 1 2, 1 1 3, 0 0 1))"),
+             "Triangle Z ((0 0 1, 0 1 2, 1 1 3, 0 0 1))"),
             ("Triangle M((0 0 4, 0 1 5, 1 1 6, 0 0 4))", QgsWkbTypes.Type.TriangleM,
-             "TriangleM ((0 0 4, 0 1 5, 1 1 6, 0 0 4))"),
+             "Triangle M ((0 0 4, 0 1 5, 1 1 6, 0 0 4))"),
             ("Triangle ZM((0 0 0 1, 0 1 2 3, 1 1 4 5, 0 0 0 1))", QgsWkbTypes.Type.TriangleZM,
-             "TriangleZM ((0 0 0 1, 0 1 2 3, 1 1 4 5, 0 0 0 1))"),
+             "Triangle ZM ((0 0 0 1, 0 1 2 3, 1 1 4 5, 0 0 0 1))"),
 
             ("TIN (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))", QgsWkbTypes.Type.TIN,
              "TIN (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))"),
             ("TIN Z(((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))", QgsWkbTypes.Type.TINZ,
-             "TINZ (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
+             "TIN Z (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
             ("TIN M(((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))", QgsWkbTypes.Type.TINM,
-             "TINM (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
+             "TIN M (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
             ("TIN ZM(((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))",
              QgsWkbTypes.Type.TINZM,
-             "TINZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))"),
+             "TIN ZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))"),
 
             ("PolyhedralSurface (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))", QgsWkbTypes.Type.PolyhedralSurface,
              "PolyhedralSurface (((0 0, 0 1, 1 1, 0 0)),((0 0, 1 0, 1 1, 0 0)))"),
             ("PolyhedralSurface Z(((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))",
+
              QgsWkbTypes.Type.PolyhedralSurfaceZ,
-             "PolyhedralSurfaceZ (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
+             "PolyhedralSurface Z (((0 0 0, 0 1 1, 1 1 1, 0 0 0)),((0 0 0, 1 0 0, 1 1 1, 0 0 0)))"),
             ("PolyhedralSurface M(((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))",
              QgsWkbTypes.Type.PolyhedralSurfaceM,
-             "PolyhedralSurfaceM (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
+             "PolyhedralSurface M (((0 0 0, 0 1 2, 1 1 3, 0 0 0)),((0 0 0, 1 0 4, 1 1 3, 0 0 0)))"),
             ("PolyhedralSurface ZM(((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))",
              QgsWkbTypes.Type.PolyhedralSurfaceZM,
-             "PolyhedralSurfaceZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))")
+             "PolyhedralSurface ZM (((0 0 0 0, 0 1 1 2, 1 1 1 3, 0 0 0 0)),((0 0 0 0, 1 0 0 4, 1 1 1 3, 0 0 0 0)))")
         )
         for row in testsets:
             datasource = os.path.join(self.basetestpath, 'test.csv')
@@ -1625,6 +1626,15 @@ class PyQgsOGRProvider(QgisTestCase):
         encodedUri = QgsProviderRegistry.instance().encodeUri('ogr', parts)
         self.assertEqual(encodedUri, uri)
 
+    @unittest.skipIf(gdal.GetDriverByName("GTFS") is None, "GTFS driver required")
+    def testDecodeGTFS(self):
+        """Test querySublayers() for GTFS .zip dataset"""
+
+        uri = os.path.join(TEST_DATA_DIR, "ogr", "gtfs_extract.zip")
+        metadata = QgsProviderRegistry.instance().providerMetadata('ogr')
+        res = metadata.querySublayers(uri)
+        self.assertEqual(len(res), 9)
+
     def testDecodeEncodeUriCredentialOptions(self):
         """Test decodeUri/encodeUri credential options support"""
 
@@ -1920,7 +1930,7 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertTrue(vl.isValid())
         feature = next(vl.getFeatures())
         self.assertEqual(feature.geometry().wkbType(), QgsWkbTypes.Type.MultiPolygonZ)
-        self.assertEqual(feature.geometry().asWkt(), 'MultiPolygonZ (((0 0 0, 0 1 0, 1 1 0, 0 0 0)),((0 0 0, 1 1 0, 1 0 0,'
+        self.assertEqual(feature.geometry().asWkt(), 'MultiPolygon Z (((0 0 0, 0 1 0, 1 1 0, 0 0 0)),((0 0 0, 1 1 0, 1 0 0,'
                                                      ' 0 0 0)),((0 0 0, 0 -1 0, 1 -1 0, 0 0 0)),((0 0 0, 1 -1 0, 1 0 0, 0 0 0)))')
 
         # single layer geopackage -- sublayers MUST have the layerName set on the uri,
@@ -2677,7 +2687,7 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertTrue(feature.isValid())
         self.assertEqual(feature.geometry().wkbType(), QgsWkbTypes.Type.PointZ)
         self.assertEqual(feature.geometry().asWkt(),
-                         'PointZ (635660.10747100005391985 1768912.79759799991734326 3.36980799999999991)')
+                         'Point Z (635660.10747100005391985 1768912.79759799991734326 3.36980799999999991)')
 
         self.assertTrue(polyline_layer.isValid())
         self.assertEqual(polyline_layer.featureCount(), 2)
@@ -2685,7 +2695,7 @@ class PyQgsOGRProvider(QgisTestCase):
         self.assertTrue(feature.isValid())
         self.assertEqual(feature.geometry().wkbType(), QgsWkbTypes.Type.LineStringZ)
         self.assertEqual(feature.geometry().vertexAt(1).asWkt(),
-                         'PointZ (635660.11699699994642287 1768910.93880999996326864 3.33884099999999995)')
+                         'Point Z (635660.11699699994642287 1768910.93880999996326864 3.33884099999999995)')
 
     def test_provider_connection_shp(self):
         """

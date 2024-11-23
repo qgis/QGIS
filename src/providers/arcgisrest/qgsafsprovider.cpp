@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsafsprovider.h"
+#include "moc_qgsafsprovider.cpp"
 #include "qgsarcgisrestutils.h"
 #include "qgsarcgisrestquery.h"
 #include "qgsafsfeatureiterator.h"

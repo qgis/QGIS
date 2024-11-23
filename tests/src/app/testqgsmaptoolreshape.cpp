@@ -107,8 +107,8 @@ void TestQgsMapToolReshape::initTestCase()
   QVERIFY( mLayerTopo2->isValid() );
 
   mLayerLineZ->startEditing();
-  const QString wkt1 = "LineStringZ (0 0 0, 1 1 0, 1 2 0)";
-  const QString wkt2 = "LineStringZ (2 1 5, 3 3 5)";
+  const QString wkt1 = "LineString Z (0 0 0, 1 1 0, 1 2 0)";
+  const QString wkt2 = "LineString Z (2 1 5, 3 3 5)";
   QgsFeature f1;
   f1.setGeometry( QgsGeometry::fromWkt( wkt1 ) );
   QgsFeature f2;
@@ -122,10 +122,10 @@ void TestQgsMapToolReshape::initTestCase()
   QCOMPARE( mLayerLineZ->getFeature( 2 ).geometry().asWkt(), wkt2 );
 
   mLayerPointZ->startEditing();
-  const QString wkt3 = "PointZ (5 5 5)";
+  const QString wkt3 = "Point Z (5 5 5)";
   QgsFeature f3;
   f3.setGeometry( QgsGeometry::fromWkt( wkt3 ) );
-  const QString wkt4 = "PointZ (6 6 6)";
+  const QString wkt4 = "Point Z (6 6 6)";
   QgsFeature f4;
   f4.setGeometry( QgsGeometry::fromWkt( wkt4 ) );
 
@@ -137,7 +137,7 @@ void TestQgsMapToolReshape::initTestCase()
   QCOMPARE( mLayerPointZ->getFeature( 2 ).geometry().asWkt(), wkt4 );
 
   mLayerPolygonZ->startEditing();
-  const QString wkt5 = "PolygonZ ((7 5 4, 3 2 1, 0 1 2, 7 5 4))";
+  const QString wkt5 = "Polygon Z ((7 5 4, 3 2 1, 0 1 2, 7 5 4))";
   QgsFeature f5;
   f5.setGeometry( QgsGeometry::fromWkt( wkt5 ) );
   QgsFeatureList flistPolygon;
@@ -210,7 +210,7 @@ void TestQgsMapToolReshape::testReshapeZ()
   utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 2, 1, Qt::RightButton );
 
-  const QString wkt = "LineStringZ (0 0 0, 1 1 0, 1 2 0, 2 1 5)";
+  const QString wkt = "LineString Z (0 0 0, 1 1 0, 1 2 0, 2 1 5)";
   QCOMPARE( mLayerLineZ->getFeature( 1 ).geometry().asWkt(), wkt );
 
   // snap on a pointz layer
@@ -219,7 +219,7 @@ void TestQgsMapToolReshape::testReshapeZ()
   utils.mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 6, 6, Qt::RightButton );
 
-  const QString wkt2 = "LineStringZ (0 0 0, 1 1 0, 1 2 0, 2 1 5, 5 5 5, 6 6 6)";
+  const QString wkt2 = "LineString Z (0 0 0, 1 1 0, 1 2 0, 2 1 5, 5 5 5, 6 6 6)";
   QCOMPARE( mLayerLineZ->getFeature( 1 ).geometry().asWkt(), wkt2 );
 
   // snap on a polygonz layer
@@ -228,7 +228,7 @@ void TestQgsMapToolReshape::testReshapeZ()
   utils.mouseClick( 3, 2, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 3, 2, Qt::RightButton );
 
-  const QString wkt3 = "LineStringZ (0 0 0, 1 1 0, 1 2 0, 2 1 5, 5 5 5, 6 6 6, 7 5 4, 3 2 1)";
+  const QString wkt3 = "LineString Z (0 0 0, 1 1 0, 1 2 0, 2 1 5, 5 5 5, 6 6 6, 7 5 4, 3 2 1)";
   QCOMPARE( mLayerLineZ->getFeature( 1 ).geometry().asWkt(), wkt3 );
   mLayerLineZ->undoStack()->undo();
 

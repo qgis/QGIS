@@ -34,6 +34,7 @@ email                : tim at linfiniti.com
 #include "qgsrasterdrawer.h"
 #include "qgsrasteriterator.h"
 #include "qgsrasterlayer.h"
+#include "moc_qgsrasterlayer.cpp"
 #include "qgsrasterlayerrenderer.h"
 #include "qgsrasterprojector.h"
 #include "qgsrasterrange.h"
@@ -2216,9 +2217,9 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
     {
       const QString rendererType = rasterRendererElem.attribute( QStringLiteral( "type" ) );
       QgsRasterRendererRegistryEntry rendererEntry;
-      if ( QgsApplication::rasterRendererRegistry()->rendererData( rendererType, rendererEntry ) )
+      if ( mDataProvider && QgsApplication::rasterRendererRegistry()->rendererData( rendererType, rendererEntry ) )
       {
-        QgsRasterRenderer *renderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
+        QgsRasterRenderer *renderer = rendererEntry.rendererCreateFunction( rasterRendererElem, mDataProvider );
         mPipe->set( renderer );
       }
     }
@@ -2412,8 +2413,8 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     if ( !( mReadFlags & QgsMapLayer::FlagDontResolveLayers ) )
     {
       QgsDebugError( QStringLiteral( "Raster data provider could not be created for %1" ).arg( mDataSource ) );
+      return false;
     }
-    return false;
   }
 
   QString error;
@@ -2452,7 +2453,7 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
 
   const QDomNodeList noDataBandList = noDataElement.elementsByTagName( QStringLiteral( "noDataList" ) );
 
-  for ( int i = 0; i < noDataBandList.size(); ++i )
+  for ( int i = 0; mDataProvider && i < noDataBandList.size(); ++i )
   {
     const QDomElement bandElement = noDataBandList.at( i ).toElement();
     bool ok;

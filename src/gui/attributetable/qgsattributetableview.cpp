@@ -22,6 +22,7 @@
 
 #include "qgsactionmanager.h"
 #include "qgsattributetableview.h"
+#include "moc_qgsattributetableview.cpp"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetabledelegate.h"
 #include "qgsattributetablefiltermodel.h"

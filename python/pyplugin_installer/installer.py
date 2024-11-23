@@ -29,7 +29,7 @@ import zipfile
 from functools import partial
 
 from qgis.PyQt import sip
-from qgis.PyQt.QtCore import Qt, QObject, QDir, QUrl, QFileInfo, QFile
+from qgis.PyQt.QtCore import Qt, QObject, QDateTime, QDir, QUrl, QFileInfo, QFile
 from qgis.PyQt.QtWidgets import (
     QApplication,
     QDialog,
@@ -118,10 +118,11 @@ class QgsPluginInstaller(QObject):
                 self.uninstallPlugin(key, quiet=True)
                 updateAvailablePlugins()
                 if plugin_is_active:
-                    settings.setValue("/PythonPlugins/watchDog/" + key, True)
+                    settings.setValue("/PythonPlugins/watchDogTimestamp/" + key,
+                                      QDateTime.currentDateTime().toSecsSinceEpoch())
                     loadPlugin(key)
                     startPlugin(key)
-                    settings.remove("/PythonPlugins/watchDog/" + key)
+                    settings.remove("/PythonPlugins/watchDogTimestamp/" + key)
 
     # ----------------------------------------- #
     def fetchAvailablePlugins(self, reloadMode):

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>385</width>
+    <width>407</width>
     <height>405</height>
    </rect>
   </property>
@@ -48,7 +48,7 @@
    <item>
     <widget class="QFrame" name="frame">
      <property name="frameShape">
-      <enum>QFrame::Box</enum>
+      <enum>QFrame::StyledPanel</enum>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Sunken</enum>
@@ -86,7 +86,7 @@
              <property name="value">
               <double>100.000000000000000</double>
              </property>
-             <property name="showClearButton">
+             <property name="showClearButton" stdset="0">
               <bool>false</bool>
              </property>
             </widget>
@@ -105,7 +105,7 @@
              <property name="value">
               <double>100.000000000000000</double>
              </property>
-             <property name="showClearButton">
+             <property name="showClearButton" stdset="0">
               <bool>false</bool>
              </property>
             </widget>
@@ -213,20 +213,14 @@
         </layout>
        </widget>
       </item>
-      <item row="3" column="1">
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Background</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
+       </widget>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item row="3" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="QCheckBox" name="mExcludePageCheckBox">
@@ -263,14 +257,7 @@
         </item>
        </layout>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Background</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
+      <item row="1" column="1">
        <widget class="QgsSymbolButton" name="mSymbolButton">
         <property name="enabled">
          <bool>true</bool>
@@ -289,6 +276,29 @@
         </property>
         <property name="text">
          <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QPushButton" name="mApplyToAllButton">
+        <property name="toolTip">
+         <string>Resets all other pages' size and background color to match this page</string>
+        </property>
+        <property name="text">
+         <string>Apply to all Pages</string>
         </property>
        </widget>
       </item>
@@ -338,7 +348,6 @@
   <tabstop>mSizeUnitsComboBox</tabstop>
   <tabstop>mExcludePageCheckBox</tabstop>
   <tabstop>mExcludePageDDBtn</tabstop>
-  <tabstop>mSymbolButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

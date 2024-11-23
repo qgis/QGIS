@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtooltemporarykeyzoom.h"
+#include "moc_qgslayoutviewtooltemporarykeyzoom.cpp"
 #include "qgslayoutviewmouseevent.h"
 #include "qgslayoutview.h"
 #include <QScrollBar>

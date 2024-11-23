@@ -20,6 +20,7 @@
 #include <QMessageBox>
 
 #include "qgsgui.h"
+#include "moc_qgsgui.cpp"
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
 #include "qgsmaplayeractionregistry.h"
@@ -29,7 +30,7 @@
 #include "qgsadvanceddigitizingtoolsregistry.h"
 #include "qgscalloutsregistry.h"
 #include "callouts/qgscalloutwidget.h"
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
 #include "qgsmacnative.h"
 #elif defined (Q_OS_WIN)
 #ifndef __MINGW32__
@@ -524,6 +525,15 @@ void QgsGui::initCalloutWidgets()
     _initCalloutWidgetFunction( QStringLiteral( "curved" ), QgsCurvedLineCalloutWidget::create );
     _initCalloutWidgetFunction( QStringLiteral( "balloon" ), QgsBalloonCalloutWidget::create );
   } );
+}
+
+bool QgsGui::hasWebEngine()
+{
+#ifdef HAVE_WEBENGINE
+  return true;
+#else
+  return false;
+#endif
 }
 
 ///@cond PRIVATE

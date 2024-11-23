@@ -263,6 +263,18 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      */
     QList<QgsMapLayer *> layers( bool expandGroupLayers = false ) const;
 
+
+#ifndef SIP_RUN
+    /**
+     * Returns a list of registered map layers with a specified layer type.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.40
+     */
+    template <typename T>
+    QVector<T> layers() const;
+#endif
+
     /**
      * Sets the list of \a layers to render in the map.
      *

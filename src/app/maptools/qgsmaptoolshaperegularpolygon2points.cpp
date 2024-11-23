@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshaperegularpolygon2points.h"
+#include "moc_qgsmaptoolshaperegularpolygon2points.cpp"
 #include "qgsgeometryrubberband.h"
 #include "qgspoint.h"
 #include "qgsmapmouseevent.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgssensorthingsconnectiondialog.h"
+#include "moc_qgssensorthingsconnectiondialog.cpp"
 #include "qgssensorthingsconnection.h"
 #include "qgsgui.h"
 #include "qgshelp.h"

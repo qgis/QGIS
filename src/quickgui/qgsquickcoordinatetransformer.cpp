@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsquickcoordinatetransformer.h"
+#include "moc_qgsquickcoordinatetransformer.cpp"
 #include "qgslogger.h"
 
 QgsQuickCoordinateTransformer::QgsQuickCoordinateTransformer( QObject *parent )

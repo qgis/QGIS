@@ -31,6 +31,7 @@
 #include "qgswfsconstants.h"
 #include "qgswfsfeatureiterator.h"
 #include "qgswfsprovider.h"
+#include "moc_qgswfsprovider.cpp"
 #include "qgswfscapabilities.h"
 #include "qgswfsdescribefeaturetype.h"
 #include "qgswfstransactionrequest.h"

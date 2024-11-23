@@ -63,6 +63,12 @@ Stores the settings for rendering of all diagrams for a layer.
       StartAngle,
     };
 
+    enum DiagramType /BaseType=IntEnum/
+    {
+      Single,
+      Stacked
+    };
+
     static const QgsPropertiesDefinition &propertyDefinitions();
 %Docstring
 Returns the diagram property definitions.
@@ -321,6 +327,12 @@ Stores the settings for rendering a single diagram.
       Counterclockwise,
     };
 
+    enum StackedDiagramMode /BaseType=IntEnum/
+    {
+      Horizontal,
+      Vertical
+    };
+
     QgsDiagramSettings();
     ~QgsDiagramSettings();
     QgsDiagramSettings( const QgsDiagramSettings &other );
@@ -346,6 +358,7 @@ Stores the settings for rendering a single diagram.
     double penWidth;
     LabelPlacementMethod labelPlacementMethod;
     DiagramOrientation diagramOrientation;
+    StackedDiagramMode stackedDiagramMode;
     double barWidth;
 
     double opacity;
@@ -442,6 +455,88 @@ Returns the map unit scale for the content spacing.
 .. seealso:: :py:func:`spacingUnit`
 
 .. versionadded:: 3.12
+%End
+
+    double stackedDiagramSpacing() const;
+%Docstring
+Returns the spacing between subdiagrams in a stacked diagram.
+
+Spacing units can be retrieved by calling :py:func:`~QgsDiagramSettings.stackedDiagramSpacingUnit`.
+
+.. seealso:: :py:func:`setStackedDiagramSpacing`
+
+.. seealso:: :py:func:`stackedDiagramSpacingUnit`
+
+.. seealso:: :py:func:`stackedDiagramSpacingMapUnitScale`
+
+.. versionadded:: 3.40
+%End
+
+    void setStackedDiagramSpacing( double spacing );
+%Docstring
+Sets the ``spacing`` between subdiagrams in a stacked diagram.
+
+Spacing units are set via :py:func:`~QgsDiagramSettings.setStackedDiagramSpacingUnit`.
+
+.. seealso:: :py:func:`stackedDiagramSpacing`
+
+.. seealso:: :py:func:`setStackedDiagramSpacingUnit`
+
+.. seealso:: :py:func:`setStackedDiagramSpacingMapUnitScale`
+
+.. versionadded:: 3.40
+%End
+
+    void setStackedDiagramSpacingUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the spacing between subdiagrams in a stacked diagram.
+
+.. seealso:: :py:func:`stackedDiagramSpacingUnit`
+
+.. seealso:: :py:func:`setStackedDiagramSpacing`
+
+.. seealso:: :py:func:`setStackedDiagramSpacingMapUnitScale`
+
+.. versionadded:: 3.40
+%End
+
+    Qgis::RenderUnit stackedDiagramSpacingUnit() const;
+%Docstring
+Returns the units for the spacing between subdiagrams in a stacked diagram.
+
+.. seealso:: :py:func:`setStackedDiagramSpacingUnit`
+
+.. seealso:: :py:func:`stackedDiagramSpacing`
+
+.. seealso:: :py:func:`stackedDiagramSpacingMapUnitScale`
+
+.. versionadded:: 3.40
+%End
+
+    void setStackedDiagramSpacingMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the spacing between subdiagrams in a stacked diagram.
+
+.. seealso:: :py:func:`stackedDiagramSpacingMapUnitScale`
+
+.. seealso:: :py:func:`setStackedDiagramSpacing`
+
+.. seealso:: :py:func:`setStackedDiagramSpacingUnit`
+
+.. versionadded:: 3.40
+%End
+
+    const QgsMapUnitScale &stackedDiagramSpacingMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the spacing between subdiagrams in a stacked diagram.
+
+.. seealso:: :py:func:`setStackedDiagramSpacingMapUnitScale` ;
+
+.. seealso:: :py:func:`stackedDiagramSpacing`
+
+.. seealso:: :py:func:`stackedDiagramSpacingUnit`
+
+.. versionadded:: 3.40
 %End
 
     Direction direction() const;
@@ -585,6 +680,8 @@ Evaluates and returns the diagram settings relating to a diagram for a specific 
       sipType = sipType_QgsSingleCategoryDiagramRenderer;
     else if ( sipCpp->rendererName() == QLatin1String( "LinearlyInterpolated" ) )
       sipType = sipType_QgsLinearlyInterpolatedDiagramRenderer;
+    else if ( sipCpp->rendererName() == QLatin1String( "Stacked" ) )
+      sipType = sipType_QgsStackedDiagramRenderer;
     else
       sipType = NULL;
 %End
@@ -617,7 +714,7 @@ Returns the set of any fields required for diagram rendering
 :param context: expression context the diagrams will be drawn using
 %End
 
-    void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, QPointF pos, const QgsPropertyCollection &properties = QgsPropertyCollection() ) const;
+    virtual void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, QPointF pos, const QgsPropertyCollection &properties = QgsPropertyCollection() ) const;
 %Docstring
 Renders the diagram for a specified feature at a specific position in the passed render context.
 %End
@@ -683,9 +780,12 @@ Returns diagram settings for a feature (or ``False`` if the diagram for the feat
 :param s: out: diagram settings for the feature
 %End
 
-    virtual QSizeF diagramSize( const QgsFeature &features, const QgsRenderContext &c ) const = 0;
+    virtual QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c ) const = 0;
 %Docstring
 Returns size of the diagram (in painter units) or an invalid size in case of error
+
+:param feature: the feature
+:param c: render context
 %End
 
     void convertSizeToMapUnits( QSizeF &size, const QgsRenderContext &context ) const;
@@ -712,6 +812,7 @@ Writes internal QgsDiagramRenderer diagram state to a DOM element.
 
 .. seealso:: _readXml
 %End
+
 
 
 };
@@ -768,6 +869,7 @@ Alters the size of rendered diagrams using a linear scaling.
 #include "qgsdiagramrenderer.h"
 %End
   public:
+
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer();
     QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
@@ -850,6 +952,115 @@ Returns configuration of appearance of legend. Will return ``None`` if no config
 
 
 };
+
+class QgsStackedDiagramRenderer : QgsDiagramRenderer
+{
+%Docstring(signature="appended")
+Renders diagrams using mixed diagram render types. The size of
+the rendered diagram is given by a combination of subrenderers.
+
+.. versionadded:: 3.40
+%End
+
+%TypeHeaderCode
+#include "qgsdiagramrenderer.h"
+%End
+  public:
+
+    QgsStackedDiagramRenderer();
+    ~QgsStackedDiagramRenderer();
+
+    QgsStackedDiagramRenderer( const QgsStackedDiagramRenderer &other );
+
+
+    virtual QgsStackedDiagramRenderer *clone() const /Factory/;
+
+
+    virtual QSizeF sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const;
+%Docstring
+Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error
+%End
+
+    virtual void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, QPointF pos, const QgsPropertyCollection &properties = QgsPropertyCollection() ) const;
+%Docstring
+Renders the diagram for a specified feature at a specific position in the
+passed render context, taking all renderers and their own diagrams into account.
+Diagram rendering is delegated to renderer's diagram.
+%End
+
+    virtual QList<QgsDiagramSettings> diagramSettings() const;
+
+%Docstring
+Returns list with all diagram settings in the renderer
+%End
+
+    void setDiagramSettings( const QgsDiagramSettings &s );
+
+    virtual QList<QString> diagramAttributes() const;
+
+
+    virtual QString rendererName() const;
+
+    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
+
+    virtual void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+
+    void _readXmlSubRenderers( const QDomElement &elem, const QgsReadWriteContext &context );
+%Docstring
+Reads stacked renderers state from a DOM element.
+
+.. seealso:: _writeXmlSubRenderers
+%End
+
+    void _writeXmlSubRenderers( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+%Docstring
+Writes stacked renderers state to a DOM element.
+
+.. seealso:: _readXmlSubRenderers
+%End
+
+    virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
+
+
+    QList< QgsDiagramRenderer * > renderers( bool sortByDiagramMode = false ) const;
+%Docstring
+Returns an ordered list with the renderers of the stacked renderer object.
+Does not transfer ownership.
+
+:param sortByDiagramMode: If true, the list is returned backwards for vertical orientation.
+%End
+
+    void addRenderer( QgsDiagramRenderer *renderer /Transfer/ );
+%Docstring
+Adds a renderer to the stacked renderer object. Takes ownership.
+
+Renderers added first will render their diagrams first, i.e., more to
+the left (horizontal mode) or more to the top (vertical mode).
+
+:param renderer: diagram renderer to be added to the stacked renderer
+%End
+
+    const QgsDiagramRenderer *renderer( const int index ) const;
+%Docstring
+Returns the renderer at the given ``index``. Does not transfer ownership.
+
+:param index: index of the desired renderer in the stacked renderer
+%End
+
+    int rendererCount() const;
+%Docstring
+Returns the number of sub renderers in the stacked diagram renderer
+%End
+
+  protected:
+    virtual bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const;
+
+    virtual QSizeF diagramSize( const QgsFeature &, const QgsRenderContext &c ) const;
+
+
+};
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

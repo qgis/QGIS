@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgseditorwidgetwrapper.h"
+#include "moc_qgseditorwidgetwrapper.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfields.h"
@@ -52,7 +53,7 @@ QVariant QgsEditorWidgetWrapper::defaultValue() const
   return mDefaultValue;
 }
 
-QgsEditorWidgetWrapper *QgsEditorWidgetWrapper::fromWidget( QWidget *widget )
+QgsEditorWidgetWrapper *QgsEditorWidgetWrapper::fromWidget( QWidget *widget ) // cppcheck-suppress duplInheritedMember
 {
   if ( !widget )
     return nullptr;

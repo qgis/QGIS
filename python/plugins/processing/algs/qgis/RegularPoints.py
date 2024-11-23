@@ -155,4 +155,5 @@ class RegularPoints(QgisAlgorithm):
 
             y = y - pSpacing
 
+        sink.finalize()
         return {self.OUTPUT: dest_id}

@@ -821,13 +821,13 @@ QgsSymbol *QgsSymbol::defaultSymbol( Qgis::GeometryType geomType )
   switch ( geomType )
   {
     case Qgis::GeometryType::Point:
-      s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Marker ) );
+      s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Marker ) ); // skip-keyword-check
       break;
     case Qgis::GeometryType::Line:
-      s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Line ) );
+      s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Line ) ); // skip-keyword-check
       break;
     case Qgis::GeometryType::Polygon:
-      s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Fill ) );
+      s.reset( QgsProject::instance()->styleSettings()->defaultSymbol( Qgis::SymbolType::Fill ) ); // skip-keyword-check
       break;
     default:
       break;
@@ -857,15 +857,15 @@ QgsSymbol *QgsSymbol::defaultSymbol( Qgis::GeometryType geomType )
     return nullptr;
 
   // set opacity
-  s->setOpacity( QgsProject::instance()->styleSettings()->defaultSymbolOpacity() );
+  s->setOpacity( QgsProject::instance()->styleSettings()->defaultSymbolOpacity() ); // skip-keyword-check
 
   // set random color, it project prefs allow
-  if ( QgsProject::instance()->styleSettings()->randomizeDefaultSymbolColor() )
+  if ( QgsProject::instance()->styleSettings()->randomizeDefaultSymbolColor() ) // skip-keyword-check
   {
     s->setColor( QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor() );
   }
 
-  const bool isCmyk = QgsProject::instance()->styleSettings() && QgsProject::instance()->styleSettings()->colorModel() == Qgis::ColorModel::Cmyk;
+  const bool isCmyk = QgsProject::instance()->styleSettings() && QgsProject::instance()->styleSettings()->colorModel() == Qgis::ColorModel::Cmyk; // skip-keyword-check
   if ( s->color().spec() == QColor::Spec::Rgb && isCmyk )
   {
     s->setColor( s->color().toCmyk() );
@@ -1250,7 +1250,7 @@ void QgsSymbol::exportImage( const QString &path, const QString &format, QSize s
     QSvgGenerator generator;
     generator.setFileName( path );
     generator.setSize( size );
-    generator.setViewBox( QRect( 0, 0, size.height(), size.height() ) );
+    generator.setViewBox( QRect( 0, 0, size.width(), size.height() ) );
 
     QPainter painter( &generator );
     drawPreviewIcon( &painter, size );
@@ -1560,6 +1560,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
       break;
     }
   }
+  clippingEnabled &= !context.testFlag( Qgis::RenderContextFlag::DisableSymbolClippingToExtent );
   if ( clippingEnabled && context.testFlag( Qgis::RenderContextFlag::RenderMapTile ) )
   {
     // If the "avoid artifacts between adjacent tiles" flag is set (RenderMapTile), then we'll force disable

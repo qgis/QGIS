@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgsrelation.h"
+#include "qgspolymorphicrelation.h"
 
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsrelation_p.h"
-#include "qgspolymorphicrelation.h"
 #include "qgsrelationmanager.h"
+#include "moc_qgsrelation.cpp"
 
 #include <QApplication>
 

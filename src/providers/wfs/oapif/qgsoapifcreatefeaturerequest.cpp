@@ -19,6 +19,7 @@ using namespace nlohmann;
 #include "qgslogger.h"
 #include "qgsjsonutils.h"
 #include "qgsoapifcreatefeaturerequest.h"
+#include "moc_qgsoapifcreatefeaturerequest.cpp"
 #include "qgsoapifprovider.h"
 
 QgsOapifCreateFeatureRequest::QgsOapifCreateFeatureRequest( const QgsDataSourceUri &uri ):

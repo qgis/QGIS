@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsabstractsensor.h"
+#include "moc_qgsabstractsensor.cpp"
 
 #include <QUuid>
 

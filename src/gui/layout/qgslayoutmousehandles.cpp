@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutmousehandles.h"
+#include "moc_qgslayoutmousehandles.cpp"
 #include "qgis.h"
 #include "qgslayout.h"
 #include "qgslayoutitem.h"

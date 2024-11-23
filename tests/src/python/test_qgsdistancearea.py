@@ -994,9 +994,9 @@ class TestQgsDistanceArea(QgisTestCase):
         g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('MultiPoint(1 2, 3 4)'))
         self.assertEqual(g.asWkt(), 'MultiPoint ((1 2),(3 4))')
         g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('PointZ(1 2 3)'))
-        self.assertEqual(g.asWkt(), 'PointZ (1 2 3)')
+        self.assertEqual(g.asWkt(), 'Point Z (1 2 3)')
         g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('PointM(1 2 3)'))
-        self.assertEqual(g.asWkt(), 'PointM (1 2 3)')
+        self.assertEqual(g.asWkt(), 'Point M (1 2 3)')
         g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineString EMPTY'))
         self.assertEqual(g.asWkt(), 'MultiLineString EMPTY')
 
@@ -1025,19 +1025,19 @@ class TestQgsDistanceArea(QgisTestCase):
         self.assertEqual(g.asWkt(3), 'MultiLineString ((1 10, 50 30),(179 -80, 179.99 70))')
 
         # with z/m
-        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineStringZ(179 -80 1, -179 70 10)'))
+        g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineString Z(179 -80 1, -179 70 10)'))
         self.assertEqual(g.asWkt(3),
-                         'MultiLineStringZ ((179 -80 1, 180 -55.685 2.466),(-180 -55.685 2.466, -179 70 10))')
+                         'MultiLineString Z ((179 -80 1, 180 -55.685 2.466),(-180 -55.685 2.466, -179 70 10))')
         g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineStringM(179 -80 1, -179 70 10)'))
         self.assertEqual(g.asWkt(3),
-                         'MultiLineStringM ((179 -80 1, 180 -55.685 2.466),(-180 -55.685 2.466, -179 70 10))')
+                         'MultiLineString M ((179 -80 1, 180 -55.685 2.466),(-180 -55.685 2.466, -179 70 10))')
         g = da.splitGeometryAtAntimeridian(QgsGeometry.fromWkt('LineStringZM(179 -80 1 -4, -179 70 10 -30)'))
         self.assertEqual(g.asWkt(3),
-                         'MultiLineStringZM ((179 -80 1 -4, 180 -55.685 2.466 -8.234),(-180 -55.685 2.466 -8.234, -179 70 10 -30))')
+                         'MultiLineString ZM ((179 -80 1 -4, 180 -55.685 2.466 -8.234),(-180 -55.685 2.466 -8.234, -179 70 10 -30))')
         g = da.splitGeometryAtAntimeridian(
-            QgsGeometry.fromWkt('MultiLineStringZ((179 -80 1, -179 70 10),(-170 -5 1, -181 10 5))'))
+            QgsGeometry.fromWkt('MultiLineString Z((179 -80 1, -179 70 10),(-170 -5 1, -181 10 5))'))
         self.assertEqual(g.asWkt(3),
-                         'MultiLineStringZ ((179 -80 1, 180 -55.685 2.466),(-180 -55.685 2.466, -179 70 10),(-170 -5 1, -181 10 5))')
+                         'MultiLineString Z ((179 -80 1, 180 -55.685 2.466),(-180 -55.685 2.466, -179 70 10),(-170 -5 1, -181 10 5))')
 
         # different ellipsoid - should change intersection latitude
         da.setEllipsoid('PARAMETER:6370997:6370997')

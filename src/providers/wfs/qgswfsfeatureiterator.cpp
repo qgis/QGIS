@@ -24,6 +24,7 @@
 #include "qgsmultipolygon.h"
 #include "qgsogcutils.h"
 #include "qgswfsfeatureiterator.h"
+#include "moc_qgswfsfeatureiterator.cpp"
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
 #include "qgslogger.h"

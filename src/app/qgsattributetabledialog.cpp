@@ -20,6 +20,7 @@
 #include <QMenu>
 
 #include "qgsattributetabledialog.h"
+#include "moc_qgsattributetabledialog.cpp"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetableview.h"
@@ -1059,8 +1060,8 @@ void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
     }
 
     // for extra safety to make sure we know that the delete can have impact on children and joins
-    int res = QMessageBox::question( this, tr( "Delete at least %1 feature(s) on other layer(s)" ).arg( childrenCount ),
-                                     tr( "Delete of feature on layer \"%1\", %2 as well\nand all of its other descendants.\nDelete these features?" ).arg( mLayer->name() ).arg( childrenInfo ),
+    int res = QMessageBox::question( this, tr( "Delete at least %n feature(s) on other layer(s)", nullptr, childrenCount ),
+                                     tr( "Delete of feature on layer \"%1\", %2 as well and all of its other descendants.\nDelete these features?" ).arg( mLayer->name() ).arg( childrenInfo ),
                                      QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
       return;

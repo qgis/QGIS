@@ -68,7 +68,7 @@ void QgsMetalRoughMaterialSettings::writeXml( QDomElement &elem, const QgsReadWr
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }
 
-Qt3DRender::QMaterial *QgsMetalRoughMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
+QgsMaterial *QgsMetalRoughMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
   switch ( technique )
   {

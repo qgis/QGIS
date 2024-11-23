@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgselevationprofilewidget.h"
+#include "moc_qgselevationprofilewidget.cpp"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgselevationprofilecanvas.h"

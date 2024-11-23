@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgspropertyassistantwidget.h"
+#include "moc_qgspropertyassistantwidget.cpp"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
 #include "qgsmapsettings.h"

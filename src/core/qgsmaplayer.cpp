@@ -27,6 +27,7 @@
 #include "qgslogger.h"
 #include "qgsauthmanager.h"
 #include "qgsmaplayer.h"
+#include "moc_qgsmaplayer.cpp"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgspathresolver.h"
@@ -37,6 +38,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrectangle.h"
+#include "qgsscaleutils.h"
 #include "qgssldexportcontext.h"
 #include "qgsvectorlayer.h"
 #include "qgsxmlutils.h"
@@ -921,7 +923,7 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
     layerElement.setAttribute( QStringLiteral( "maxScale" ), QString::number( maximumScale() ) );
     layerElement.setAttribute( QStringLiteral( "minScale" ), QString::number( minimumScale() ) );
     layerElement.setAttribute( QStringLiteral( "autoRefreshMode" ), qgsEnumValueToKey( mAutoRefreshMode ) );
-    layerElement.setAttribute( QStringLiteral( "autoRefreshInterval" ), QString::number( autoRefreshInterval() ) );
+    layerElement.setAttribute( QStringLiteral( "autoRefreshTime" ), QString::number( autoRefreshInterval() ) );
   }
 
   if ( categories.testFlag( Symbology3D ) )
@@ -1153,9 +1155,11 @@ bool QgsMapLayer::isInScaleRange( double scale ) const
   // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
-  return !mScaleBasedVisibility ||
-         ( ( mMinScale == 0 || mMinScale * Qgis::SCALE_PRECISION < scale )
-           && ( mMaxScale == 0 || scale < mMaxScale ) );
+  // mMinScale (denominator!) is inclusive ( >= --> In range )
+  // mMaxScale (denominator!) is exclusive ( < --> In range )
+  return !mScaleBasedVisibility
+         || ( ( mMinScale == 0 || !QgsScaleUtils::lessThanMaximumScale( scale, mMinScale ) )
+              && ( mMaxScale == 0 || !QgsScaleUtils::equalToOrGreaterThanMinimumScale( scale, mMaxScale ) ) );
 }
 
 bool QgsMapLayer::hasScaleBasedVisibility() const
@@ -1354,15 +1358,18 @@ QgsCoordinateReferenceSystem QgsMapLayer::crs3D() const
 void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSignal )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-  if ( mCRS == srs )
+  const bool needToValidateCrs = mShouldValidateCrs && isSpatial() && !srs.isValid() && type() != Qgis::LayerType::Annotation;
+
+  if ( mCRS == srs && !needToValidateCrs )
     return;
 
   const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
   const QgsCoordinateReferenceSystem oldCrs3D = mCrs3D;
+  const QgsCoordinateReferenceSystem oldCrs = mCRS;
 
   mCRS = srs;
 
-  if ( mShouldValidateCrs && isSpatial() && !mCRS.isValid() && type() != Qgis::LayerType::Annotation )
+  if ( needToValidateCrs )
   {
     mCRS.setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
     mCRS.validate();
@@ -1370,7 +1377,7 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
 
   rebuildCrs3D();
 
-  if ( emitSignal )
+  if ( emitSignal && mCRS != oldCrs )
     emit crsChanged();
 
   // Did vertical crs also change as a result of this? If so, emit signal
@@ -1701,7 +1708,7 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
   }
   else
   {
-    const QFileInfo project( QgsProject::instance()->fileName() );
+    const QFileInfo project( QgsProject::instance()->fileName() ); // skip-keyword-check
     QgsDebugMsgLevel( QStringLiteral( "project fileName: %1" ).arg( project.absoluteFilePath() ), 4 );
 
     QString xml;
@@ -2444,7 +2451,10 @@ void QgsMapLayer::setDataSource( const QString &dataSource, const QString &baseN
   {
     flags |= Qgis::DataProviderReadFlag::TrustDataSource;
   }
-  setDataSource( dataSource, baseName, provider, options, flags );
+  setDataSource( dataSource,
+                 baseName.isEmpty() ? mLayerName : baseName,
+                 provider.isEmpty() ? mProviderKey : provider,
+                 options, flags );
 }
 
 void QgsMapLayer::setDataSource( const QString &dataSource, const QString &baseName, const QString &provider,
@@ -2550,7 +2560,7 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
     if ( layerElement.hasAttribute( QStringLiteral( "autoRefreshMode" ) ) )
     {
       setAutoRefreshMode( qgsEnumKeyToValue( layerElement.attribute( QStringLiteral( "autoRefreshMode" ) ), Qgis::AutoRefreshMode::Disabled ) );
-      setAutoRefreshInterval( layerElement.attribute( QStringLiteral( "autoRefreshInterval" ) ).toInt() );
+      setAutoRefreshInterval( layerElement.attribute( QStringLiteral( "autoRefreshTime" ) ).toInt() );
     }
   }
 

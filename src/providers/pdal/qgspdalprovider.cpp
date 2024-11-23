@@ -17,6 +17,7 @@
 
 #include "qgis.h"
 #include "qgspdalprovider.h"
+#include "moc_qgspdalprovider.cpp"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"

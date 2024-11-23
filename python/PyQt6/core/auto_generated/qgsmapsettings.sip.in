@@ -253,6 +253,8 @@ all their child layers.
 .. seealso:: :py:func:`layerIds`
 %End
 
+
+
     void setLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
 Sets the list of ``layers`` to render in the map.

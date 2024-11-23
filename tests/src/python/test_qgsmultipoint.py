@@ -126,7 +126,7 @@ class TestQgsMultiPoint(QgisTestCase):
                 QgsPoint(11, 22, 33)])
         )
         self.assertEqual(collection.asWkt(),
-                         'MultiPointZ ((1 2 3),(11 22 33))')
+                         'MultiPoint Z ((1 2 3),(11 22 33))')
         self.assertEqual(collection.boundingBox(),
                          QgsRectangle(1, 2, 11, 22))
 
@@ -136,7 +136,7 @@ class TestQgsMultiPoint(QgisTestCase):
                 QgsLineString([[100, 200], [200, 200]])]
             ))
         self.assertEqual(collection.asWkt(),
-                         'MultiPointZ ((1 2 3),(11 22 33))')
+                         'MultiPoint Z ((1 2 3),(11 22 33))')
         self.assertEqual(collection.boundingBox(),
                          QgsRectangle(1, 2, 11, 22))
 
@@ -144,7 +144,7 @@ class TestQgsMultiPoint(QgisTestCase):
             collection.addGeometries([
                 QgsPoint(100, 2, 3)])
         )
-        self.assertEqual(collection.asWkt(), 'MultiPointZ ((1 2 3),(11 22 33),(100 2 3))')
+        self.assertEqual(collection.asWkt(), 'MultiPoint Z ((1 2 3),(11 22 33),(100 2 3))')
         self.assertEqual(collection.boundingBox(),
                          QgsRectangle(1, 2, 100, 22))
 

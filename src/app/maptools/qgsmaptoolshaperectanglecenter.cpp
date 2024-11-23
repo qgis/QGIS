@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshaperectanglecenter.h"
+#include "moc_qgsmaptoolshaperectanglecenter.cpp"
 #include "qgsgeometryrubberband.h"
 #include "qgspoint.h"
 #include "qgsmapmouseevent.h"

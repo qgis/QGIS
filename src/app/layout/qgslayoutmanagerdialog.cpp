@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayoutmanagerdialog.h"
+#include "moc_qgslayoutmanagerdialog.cpp"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsbusyindicatordialog.h"

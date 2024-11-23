@@ -2,15 +2,22 @@ name: Write build artifact comments
 
 on:
   workflow_run:
-    workflows: [🪟 MingW64 Windows 64bit Build]
+    workflows: 
+      - 🪟 MingW64 Windows 64bit Build
+      - 🪟 Windows Qt6
+      - 🧮 Vcpkg report
     types:
       - completed
 
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
 jobs:
   on-success:
+    if: github.event.workflow_run.event == 'pull_request'
 
     permissions:
       pull-requests: write
@@ -22,86 +29,128 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+            const fs = require('fs');
+
+            const allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
                owner: context.repo.owner,
                repo: context.repo.repo,
                run_id: context.payload.workflow_run.id,
             });
+
             let matchArtifacts = allArtifacts.data.artifacts.filter((artifact) => {
-              return artifact.name == "QGIS for Windows 64bit"
+              return artifact.name.startsWith('comment_artifacts-');
             });
-            if (matchArtifacts.length>0)
+
+            if (matchArtifacts.length > 0)
             {
-              let download = await github.rest.actions.downloadArtifact({
-                 owner: context.repo.owner,
-                 repo: context.repo.repo,
-                 artifact_id: matchArtifacts[0].id,
-                 archive_format: 'zip',
-              });
-              let fs = require('fs');
-              fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/QGIS for Windows 64bit.zip`, Buffer.from(download.data));
-              core.setOutput('artifact_id', matchArtifacts[0].id);
+              for (const artifact of matchArtifacts) {
+                const suffix = artifact.name.split('comment_artifacts-')[1]; // Extract the suffix from the artifact name
+
+                // Download each matching artifact
+                let download = await github.rest.actions.downloadArtifact({
+                   owner: context.repo.owner,
+                   repo: context.repo.repo,
+                   artifact_id: artifact.id,
+                   archive_format: 'zip',
+                });
+
+                // Write each artifact to a zip file named after its suffix
+                const zipFilePath = `${process.env.GITHUB_WORKSPACE}/data-${suffix}.zip`;
+                fs.writeFileSync(zipFilePath, Buffer.from(download.data));
+                console.log(`Downloaded and saved artifact: ${artifact.name} to ${zipFilePath}`);
+              }
             }
             else
             {
               core.setOutput('artifact_id', 0);
             }
-            let matchArtifactsDebugSymbols = allArtifacts.data.artifacts.filter((artifact) => {
-              return artifact.name == "QGIS for Windows 64bit Debug Symbols"
-            });
-            if (matchArtifactsDebugSymbols.length>0)
-            {
-              core.setOutput('debug_symbols_artifact_id', matchArtifactsDebugSymbols[0].id);
-            }
-            else
-            {
-              core.setOutput('debug_symbols_artifact_id', 0);
-            }
 
       - name: 'Unzip artifact'
-        if: fromJSON(steps.download_artifact.outputs.artifact_id) > 0
         run: |
-          unzip "QGIS for Windows 64bit.zip"
-          unzip -j qgis-portable-win64.zip pr_number git_commit
+          unzip data-*.zip
 
       - name: 'Post artifact download link as comment on PR'
-        if: fromJSON(steps.download_artifact.outputs.artifact_id) > 0
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            let fs = require('fs');
-            let issue_number = Number(fs.readFileSync('./pr_number'));
-            let git_sha = String(fs.readFileSync('./git_commit')).trim();
+            function updateCommentSection(prComment, marker, body) {
+              // Create a regular expression to match the section between start and end markers
+              const sectionRegex = new RegExp(`(<!-- ====startsection ${marker}-->\\n)([\\s\\S]*?)(<!-- ====endsection ${marker}-->)`, 'm');
+              
+              // Check if the section with the marker exists
+              if (sectionRegex.test(prComment)) {
+                // Replace the existing body text between the markers
+                return prComment.replace(sectionRegex, `$1${body}\n$3`);
+              } else {
+                // If the section doesn't exist, append the new section to the end
+                return prComment.trim() + `\n\n<!-- ====startsection ${marker}-->\n${body}\n<!-- ====endsection ${marker}-->\n`;
+              }
+            }
+            const fs = require('fs');
+            const path = require('path');
+
+            // Read all files matching the pattern 'comment*.json'
+            const files = fs.readdirSync('.').filter(file => file.startsWith('comment') && file.endsWith('.json'));
+
+            if (files.length === 0) {
+              console.log('No comment*.json files found');
+              return;
+            }
+
+            // Take the PR number from the first file
+            const dataSample = JSON.parse(fs.readFileSync(files[0], 'utf8'));
+            const prNumber = dataSample.pr_number;
+
             const prComments = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: issue_number,
+              issue_number: prNumber,
             });
-            const PREFIX = "## 🪟 Windows builds ready!";
-            let body = PREFIX + "\n\n" +
-                "Windows builds of this PR are available for testing [here](https://github.com/" + context.repo.owner + "/" + context.repo.repo + "/suites/" +  context.payload.workflow_run.check_suite_id + "/artifacts/${{steps.download_artifact.outputs.artifact_id}}).";
-            if ( ${{steps.download_artifact.outputs.debug_symbols_artifact_id}} > 0 )
-            {
-              body += " Debug symbols for this build are available [here](https://github.com/" + context.repo.owner + "/" + context.repo.repo + "/suites/" +  context.payload.workflow_run.check_suite_id + "/artifacts/${{steps.download_artifact.outputs.debug_symbols_artifact_id}}).";
-            }
-            body += "\n\n*(Built from commit " + git_sha + ")*";
 
-            const winBuildComment = prComments.data?.find(c => c.body.startsWith(PREFIX));
-            if (!!winBuildComment) {
-              // update the existing comment
+            const PREFIX = "<!-- !!## stickymarker ##!! -->";
+
+            // Find the comment that starts with the specified PREFIX
+            const comment = prComments.data?.find(c => c.body.startsWith(PREFIX));
+
+            let newPrComment;
+            if (!!comment) {
+                newPrComment = comment.body;
+            } else {
+                newPrComment = PREFIX + "\n";
+            }
+
+
+            // Loop through all the comment*.json files
+            for (const file of files) {
+                try {
+                    const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+
+                    const marker = data.marker;
+                    const body = data.body;
+                    console.debug(data);
+
+                    newPrComment = updateCommentSection(newPrComment, marker, body);
+                } catch (error) {
+                    console.error(`Failed to process file ${file}: ${error.message}`);
+                }
+            }
+
+            // Update or create the PR comment after processing all the files
+            if (!!comment) {
+              // Update the existing comment
               await github.rest.issues.updateComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                comment_id: winBuildComment.id,
-                body: body
+                comment_id: comment.id,
+                body: newPrComment
               });
             } else {
-              // submit a new comment
+              // Create a new comment
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: issue_number,
-                body: body
+                issue_number: prNumber,
+                body: newPrComment
               });
             }

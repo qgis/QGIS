@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgradientcolorrampdialog.h"
+#include "moc_qgsgradientcolorrampdialog.cpp"
 
 #include "qgsdialog.h"
 #include "qgscptcityarchive.h"

@@ -241,6 +241,7 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
     void dragEnterEvent( QDragEnterEvent *event ) override;
     void dragLeaveEvent( QDragLeaveEvent *event ) override;
     void dropEvent( QDropEvent *event ) override;
+    void showEvent( QShowEvent *event ) override;
 
   private slots:
 
@@ -292,6 +293,10 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
     bool mHasFixedOutputCrs = false;
 
     QRegularExpression mCondensedRe;
+
+    bool mFirstShow = true;
+    bool mBlockDrawOnCanvas = false;
+
     void setValid( bool valid );
 
     void setExtentToLayerExtent( const QString &layerId );

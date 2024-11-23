@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dicongenerator.h"
+#include "moc_qgs3dicongenerator.cpp"
 #include "qgsapplication.h"
 #include <QDir>
 

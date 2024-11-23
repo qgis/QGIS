@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingparameterswidget.h"
+#include "moc_qgsprocessingparameterswidget.cpp"
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingparameters.h"
 

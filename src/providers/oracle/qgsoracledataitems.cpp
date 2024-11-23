@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsoracledataitems.h"
+#include "moc_qgsoracledataitems.cpp"
 #include "qgsoraclenewconnection.h"
 #include "qgsoraclecolumntypetask.h"
 #include "qgsoracleprovider.h"

@@ -984,7 +984,7 @@ class TestQgsVectorFileWriter(QgisTestCase):
             filename,
             options)
         self.assertEqual(write_result, QgsVectorFileWriter.WriterError.ErrCreateDataSource)
-        self.assertEqual(error_message, 'Cannot overwrite a OGR layer in place')
+        self.assertEqual(error_message, 'Cannot overwrite an OGR layer in place')
 
         options.layerName = 'test2'
         write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(
@@ -1058,7 +1058,7 @@ class TestQgsVectorFileWriter(QgisTestCase):
         created_layer = QgsVectorLayer(dest_file_name, 'test', 'ogr')
         self.assertTrue(created_layer.isValid())
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
-        self.assertEqual(f.geometry().asWkt(), 'PointZ (10 10 0)')
+        self.assertEqual(f.geometry().asWkt(), 'Point Z (10 10 0)')
 
     def testDropZ(self):
         """Check dropping z values input."""
@@ -1328,7 +1328,7 @@ class TestQgsVectorFileWriter(QgisTestCase):
         created_layer = QgsVectorLayer(dest_file_name, 'test', 'ogr')
         self.assertTrue(created_layer.isValid())
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
-        self.assertEqual(f.geometry().asWkt(), 'PointZ (2 49 0)')
+        self.assertEqual(f.geometry().asWkt(), 'Point Z (2 49 0)')
 
     def testWriteGpkgWithFID(self):
         """Check writing a memory layer with a FID column takes it as FID"""
@@ -1393,7 +1393,7 @@ class TestQgsVectorFileWriter(QgisTestCase):
         created_layer = QgsVectorLayer(dest_file_name, 'test', 'ogr')
         self.assertTrue(created_layer.isValid())
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
-        self.assertEqual(f.geometry().asWkt(), 'MultiPolygonZ (((1 2 3, 2 2 4, 2 3 4, 1 2 3)))')
+        self.assertEqual(f.geometry().asWkt(), 'MultiPolygon Z (((1 2 3, 2 2 4, 2 3 4, 1 2 3)))')
         self.assertEqual(f.attributes(), [1, 'Johny'])
 
     def testWriteConversionErrors(self):

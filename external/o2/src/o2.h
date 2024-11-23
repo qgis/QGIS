@@ -11,11 +11,11 @@
 #include "o2reply.h"
 #include "o0abstractstore.h"
 
-class O2ReplyServer;
-
 /// Simple OAuth2 authenticator.
-class O0_EXPORT O2: public O0BaseAuth {
+class O0_EXPORT O2: public O0BaseAuth
+{
     Q_OBJECT
+public:
     Q_ENUMS(GrantFlow)
 
 public:
@@ -25,6 +25,7 @@ public:
         GrantFlowImplicit, ///< @see http://tools.ietf.org/html/draft-ietf-oauth-v2-15#section-4.2
         GrantFlowResourceOwnerPasswordCredentials,
         GrantFlowPkce, ///< @see https://www.rfc-editor.org/rfc/rfc7636
+        GrantFlowDevice ///< @see https://tools.ietf.org/html/rfc8628#section-1
     };
 
     /// Authorization flow.
@@ -60,12 +61,6 @@ public:
     QString apiKey();
     void setApiKey(const QString &value);
 
-    /// Page content on local host after successful oauth.
-    /// Provide it in case you do not want to close the browser, but display something
-    Q_PROPERTY(QByteArray replyContent READ replyContent WRITE setReplyContent)
-    QByteArray replyContent();
-    void setReplyContent(const QByteArray &value);
-
     /// Allow ignoring SSL errors?
     /// E.g. SurveyMonkey fails on Mac due to SSL error. Ignoring the error circumvents the problem
     Q_PROPERTY(bool ignoreSslErrors READ ignoreSslErrors WRITE setIgnoreSslErrors)
@@ -92,10 +87,15 @@ public:
     QString refreshTokenUrl();
     void setRefreshTokenUrl(const QString &value);
 
+    /// Grant type (if non-standard)
+    Q_PROPERTY(QString grantType READ grantType WRITE setGrantType)
+    QString grantType();
+    void setGrantType(const QString &value);
+
 public:
     /// Constructor.
     /// @param  parent  Parent object.
-    explicit O2(QObject *parent = 0, QNetworkAccessManager *manager = 0);
+    explicit O2(QObject *parent = 0, QNetworkAccessManager *manager = 0, O0AbstractStore *store = 0);
 
     /// Get authentication code.
     QString code();
@@ -133,10 +133,11 @@ Q_SIGNALS:
     void refreshTokenUrlChanged();
     void tokenUrlChanged();
 
-protected Q_SLOTS:
+public Q_SLOTS:
     /// Handle verification response.
     virtual void onVerificationReceived(QMap<QString, QString>);
 
+protected Q_SLOTS:
     /// Handle completion of a token request.
     virtual void onTokenReplyFinished();
 
@@ -148,6 +149,9 @@ protected Q_SLOTS:
 
     /// Handle failure of a refresh request.
     virtual void onRefreshError(QNetworkReply::NetworkError error);
+
+    /// Handle completion of a Device Authorization Request
+    virtual void onDeviceAuthReplyFinished();
 
 protected:
     /// Build HTTP request body.
@@ -163,6 +167,8 @@ protected:
     void setExpires(int v);
 
     virtual QNetworkAccessManager *getManager();
+    /// Start polling authorization server
+    void startPollServer(const QVariantMap &params);
 
 protected:
     QString username_;
@@ -176,9 +182,9 @@ protected:
     QString localhostPolicy_;
     QString apiKey_;
     QNetworkAccessManager *manager_;
-    O2ReplyServer *replyServer_;
     O2ReplyList timedReplies_;
     GrantFlow grantFlow_;
+    QString grantType_;
 };
 
 #endif // O2_H

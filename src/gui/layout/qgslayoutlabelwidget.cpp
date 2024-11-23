@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutlabelwidget.h"
+#include "moc_qgslayoutlabelwidget.cpp"
 #include "qgslayoutitemlabel.h"
 #include "qgslayout.h"
 #include "qgsexpressionbuilderdialog.h"

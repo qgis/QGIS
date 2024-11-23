@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsanimationexportdialog.h"
+#include "moc_qgsanimationexportdialog.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgshelp.h"

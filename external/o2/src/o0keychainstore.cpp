@@ -21,62 +21,63 @@ o0keyChainStore::o0keyChainStore(const QString& app,const QString& name,QObject 
 }
 
 QString o0keyChainStore::value(const QString &key, const QString &defaultValue) {
-    Q_UNUSED(defaultValue)
-    return  pairs_.value(key);
+    return pairs_.value(key, defaultValue);
 }
 
 void o0keyChainStore::setValue(const QString &key, const QString &value) {
     pairs_.insert(key,value);
 }
 
-void o0keyChainStore::persist() {
+int o0keyChainStore::persist() {
     WritePasswordJob job(app_);
-    job.setAutoDelete(false);
-    job.setKey(name_);
+    initJob(job);
+
     QByteArray data;
     QDataStream ds(&data,QIODevice::ReadWrite);
     ds << pairs_;
+    job.setBinaryData(data);
 
-    job.setTextData(data);
-    QEventLoop loop;
-    job.connect( &job, SIGNAL(finished(QKeychain::Job*)), &loop, SLOT(quit()) );
-    job.start();
-    loop.exec();
-    if(job.error())
-    {
-        qWarning() << "keychain could not be persisted "<< name_ << ":" << qPrintable(job.errorString());
-    }
+    return executeJob(job, "persist");
 }
 
-void o0keyChainStore::fetchFromKeychain() {
+int o0keyChainStore::fetchFromKeychain() {
     ReadPasswordJob job(app_);
-    job.setKey(name_);
-    QEventLoop loop;
-    job.connect( &job, SIGNAL(finished(QKeychain::Job*)), &loop, SLOT(quit()) );
-    job.start();
-    loop.exec();
-
-    QByteArray data;
-    // QKeychain::ReadPasswordJob::textData() returns QString::fromUtf8( <password data> )
-    // switch back to UTF-8 to avoid issues when QT_NO_CAST_TO_ASCII is defined
-    data.append(job.textData().toUtf8());
-    QDataStream ds(&data,QIODevice::ReadOnly);
-    ds >> pairs_;
-
-    if(job.error())
-    {
-        qWarning() << "keychain could not be fetched"<< name_ << ":" << qPrintable(job.errorString());
+    initJob(job);
+    const int result = executeJob(job, "fetch");
+    if (result == 0) { // success
+        QByteArray data;
+        data.append(job.binaryData());
+        QDataStream ds(&data, QIODevice::ReadOnly);
+        ds >> pairs_;
     }
+    return result;
 }
 
-void o0keyChainStore::clearFromKeychain() {
+int o0keyChainStore::clearFromKeychain() {
     DeletePasswordJob job(app_);
+    initJob(job);
+    return executeJob(job, "clear");
+}
+
+bool o0keyChainStore::isEntryNotFoundError(int errorCode) {
+    return errorCode == QKeychain::EntryNotFound;
+}
+
+void o0keyChainStore::initJob(QKeychain::Job &job) const {
+    job.setAutoDelete(false);
     job.setKey(name_);
+}
+
+int o0keyChainStore::executeJob(QKeychain::Job &job, const char *actionName) const {
     QEventLoop loop;
     job.connect( &job, SIGNAL(finished(QKeychain::Job*)), &loop, SLOT(quit()) );
     job.start();
     loop.exec();
-    if ( job.error() ) {
-        qWarning() << "Deleting keychain failed: " << qPrintable(job.errorString());
+
+    const QKeychain::Error errorCode = job.error();
+    if (errorCode != QKeychain::NoError) {
+        qWarning() << "keychain store could not" << actionName << name_ << ":"
+                   << job.errorString() << "(" << errorCode << ").";
     }
+    return errorCode;
 }

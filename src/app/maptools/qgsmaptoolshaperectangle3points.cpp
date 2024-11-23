@@ -15,6 +15,7 @@
 ***************************************************************************/
 
 #include "qgsmaptoolshaperectangle3points.h"
+#include "moc_qgsmaptoolshaperectangle3points.cpp"
 #include "qgsgeometryrubberband.h"
 #include "qgslinestring.h"
 #include "qgsmapcanvas.h"

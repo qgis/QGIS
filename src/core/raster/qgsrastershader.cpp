@@ -43,7 +43,7 @@ bool QgsRasterShader::shade( double value, int *returnRedValue, int *returnGreen
   return false;
 }
 
-bool QgsRasterShader::shade( double redValue, double greenValue, double blueValue, double alphaValue, int *returnRedValue, int *returnGreenValue, int *returnBlueValue, int *returnAlphaValue )
+bool QgsRasterShader::shade( double redValue, double greenValue, double blueValue, double alphaValue, int *returnRedValue, int *returnGreenValue, int *returnBlueValue, int *returnAlphaValue ) const
 {
   if ( mRasterShaderFunction )
   {

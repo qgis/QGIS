@@ -28,10 +28,10 @@ void QgsFeature3DHandler::updateZRangeFromPositions( const QVector<QVector3D> &p
 {
   for ( const QVector3D &pos : positions )
   {
-    if ( pos.y() < mZMin )
-      mZMin = pos.y();
-    if ( pos.y() > mZMax )
-      mZMax = pos.y();
+    if ( pos.z() < mZMin )
+      mZMin = pos.z();
+    if ( pos.z() > mZMax )
+      mZMax = pos.z();
   }
 }
 

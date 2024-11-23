@@ -22,6 +22,8 @@
 #include <qgsapplication.h>
 #include <qgsproject.h>
 #include <qgsvectorlayer.h>
+#include "qgsattributeform.h"
+#include "qgsattributeformeditorwidget.h"
 #include "qgseditorwidgetwrapper.h"
 #include <editorwidgets/qgsvaluerelationwidgetwrapper.h>
 #include "qgsfilterlineedit.h"
@@ -63,6 +65,7 @@ class TestQgsValueRelationWidgetWrapper : public QObject
     void testAllowMultiColumns();
     void testAllowMultiAndCompleter();
     void testGroup();
+    void testMultiEditMode();
 };
 
 void TestQgsValueRelationWidgetWrapper::initTestCase()
@@ -1900,6 +1903,82 @@ void TestQgsValueRelationWidgetWrapper::testGroup()
 
   QCOMPARE( w4.mTableWidget->rowCount(), 4 ); // 2 items + 2 group names
 }
+
+void TestQgsValueRelationWidgetWrapper::testMultiEditMode()
+{
+  std::unique_ptr<QgsVectorLayer> people = std::make_unique<QgsVectorLayer>( QStringLiteral( "None?field=firstname:string&field=fullname:string" ), QStringLiteral( "people" ), QStringLiteral( "memory" ) );
+
+  QgsFeature ft( people->dataProvider()->fields(), 1 );
+  ft.setAttribute( QStringLiteral( "firstname" ), QStringLiteral( "Jhon" ) );
+  ft.setAttribute( QStringLiteral( "fullname" ), QStringLiteral( "Jhon Carpenter" ) );
+  people->dataProvider()->addFeature( ft );
+
+  std::unique_ptr<QgsVectorLayer> famous = std::make_unique<QgsVectorLayer>( QStringLiteral( "None?field=name:string" ), QStringLiteral( "famous" ), QStringLiteral( "memory" ) );
+
+  const QStringList famousNames { QStringLiteral( "Jhon Carpenter" ), QStringLiteral( "Jhon F. Kennedy" ), QStringLiteral( "Jhon Lennon" ), QStringLiteral( "Paul Mc Cartney" ) };
+  for ( const QString &name : famousNames )
+  {
+    QgsFeature ft( famous->dataProvider()->fields(), 1 );
+    ft.setAttribute( QStringLiteral( "name" ), name );
+    famous->dataProvider()->addFeature( ft );
+  }
+
+  QgsProject::instance()->addMapLayer( people.get(), false, false );
+  QgsProject::instance()->addMapLayer( famous.get(), false, false );
+  people->startEditing();
+
+  people->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "TextEdit" ), QVariantMap() ) );
+  QVariantMap cfg;
+  cfg.insert( QStringLiteral( "Layer" ), famous->id() );
+  cfg.insert( QStringLiteral( "Key" ),  QStringLiteral( "name" ) );
+  cfg.insert( QStringLiteral( "Value" ), QStringLiteral( "name" ) );
+  cfg.insert( QStringLiteral( "AllowMulti" ), false );
+  cfg.insert( QStringLiteral( "NofColumns" ), 1 );
+  cfg.insert( QStringLiteral( "AllowNull" ), false );
+  cfg.insert( QStringLiteral( "OrderByValue" ), false );
+  cfg.insert( QStringLiteral( "UseCompleter" ), false );
+  cfg.insert( QStringLiteral( "FilterExpression" ), QStringLiteral( "left(\"name\",4)  = current_value('firstname')" ) );
+
+  people->setEditorWidgetSetup( 1, QgsEditorWidgetSetup( QStringLiteral( "ValueRelation" ), cfg ) );
+
+  // build a form for this feature
+  QgsAttributeForm form( people.get() );
+  form.setFeature( ft );
+
+  QList<QgsAttributeFormEditorWidget *> formEditorWidgets = form.mFormEditorWidgets.values( 0 );
+  QgsEditorWidgetWrapper *firstNameWrapper = formEditorWidgets[0]->editorWidget();
+  QCOMPARE( firstNameWrapper->value(), QStringLiteral( "Jhon" ) );
+
+  formEditorWidgets = form.mFormEditorWidgets.values( 1 );
+  QgsEditorWidgetWrapper *widgetWrapper = formEditorWidgets[0]->editorWidget();
+  QCOMPARE( widgetWrapper->value(), QStringLiteral( "Jhon Carpenter" ) );
+
+  QgsValueRelationWidgetWrapper *valueRelationWrapper = qobject_cast<QgsValueRelationWidgetWrapper *>( widgetWrapper );
+  QVERIFY( valueRelationWrapper );
+  QVERIFY( valueRelationWrapper->mComboBox );
+  QCOMPARE( valueRelationWrapper->mComboBox->model()->rowCount(), 3 );
+  QCOMPARE( valueRelationWrapper->mComboBox->model()->data( valueRelationWrapper->mComboBox->model()->index( 0, 0 ), Qt::DisplayRole ), QStringLiteral( "Jhon Carpenter" ) );
+  QCOMPARE( valueRelationWrapper->mComboBox->model()->data( valueRelationWrapper->mComboBox->model()->index( 1, 0 ), Qt::DisplayRole ), QStringLiteral( "Jhon F. Kennedy" ) );
+  QCOMPARE( valueRelationWrapper->mComboBox->model()->data( valueRelationWrapper->mComboBox->model()->index( 2, 0 ), Qt::DisplayRole ), QStringLiteral( "Jhon Lennon" ) );
+
+  firstNameWrapper->setValues( QStringLiteral( "Paul" ), QVariantList() );
+  QCOMPARE( valueRelationWrapper->mComboBox->model()->rowCount(), 1 );
+  QCOMPARE( valueRelationWrapper->mComboBox->model()->data( valueRelationWrapper->mComboBox->model()->index( 0, 0 ), Qt::DisplayRole ), QStringLiteral( "Paul Mc Cartney" ) );
+
+  people->select( ft.id() );
+  form.setMode( QgsAttributeEditorContext::MultiEditMode );
+
+  firstNameWrapper->setValues( QStringLiteral( "Jhon" ), QVariantList() );
+  QCOMPARE( valueRelationWrapper->mComboBox->model()->rowCount(), 3 );
+  QCOMPARE( valueRelationWrapper->mComboBox->model()->data( valueRelationWrapper->mComboBox->model()->index( 0, 0 ), Qt::DisplayRole ), QStringLiteral( "Jhon Carpenter" ) );
+  QCOMPARE( valueRelationWrapper->mComboBox->model()->data( valueRelationWrapper->mComboBox->model()->index( 1, 0 ), Qt::DisplayRole ), QStringLiteral( "Jhon F. Kennedy" ) );
+  QCOMPARE( valueRelationWrapper->mComboBox->model()->data( valueRelationWrapper->mComboBox->model()->index( 2, 0 ), Qt::DisplayRole ), QStringLiteral( "Jhon Lennon" ) );
+
+  people->rollBack();
+  QgsProject::instance()->removeMapLayer( people.get() );
+  QgsProject::instance()->removeMapLayer( famous.get() );
+}
+
 
 QGSTEST_MAIN( TestQgsValueRelationWidgetWrapper )
 #include "testqgsvaluerelationwidgetwrapper.moc"

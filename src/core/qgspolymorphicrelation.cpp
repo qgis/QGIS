@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgspolymorphicrelation.h"
+#include "qgsvectorlayer.h"
+#include "moc_qgspolymorphicrelation.cpp"
 #include "qgslogger.h"
 #include "qgsproject.h"
-#include "qgsvectorlayer.h"
 #include "qgspolymorphicrelation_p.h"
 
 #include <QApplication>
@@ -189,7 +190,7 @@ QgsAttributeList QgsPolymorphicRelation::referencedFields( const QString &layerI
 
   if ( d->mReferencedLayerIds.contains( layerId ) )
   {
-    QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+    QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) ); // skip-keyword-check
 
     if ( vl && vl->isValid() )
     {

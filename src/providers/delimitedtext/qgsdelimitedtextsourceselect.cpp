@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "qgsdelimitedtextsourceselect.h"
+#include "moc_qgsdelimitedtextsourceselect.cpp"
 
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"

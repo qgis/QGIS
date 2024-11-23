@@ -15,6 +15,7 @@
 
 #include "qgsapplication.h"
 #include "qgsgroupwmsdatadialog.h"
+#include "moc_qgsgroupwmsdatadialog.cpp"
 
 #include <QRegularExpressionValidator>
 

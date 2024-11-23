@@ -195,6 +195,8 @@ class GUI_EXPORT QgsLabelingRulePropsWidget : public QgsPanelWidget, private Ui:
     void buildExpression();
 
   private:
+    static QgsExpressionContext createExpressionContext( QgsMapCanvas *mapCanvas, const QgsMapLayer *layer );
+
     QgsRuleBasedLabeling::Rule *mRule; // borrowed
     QgsVectorLayer *mLayer = nullptr;
 

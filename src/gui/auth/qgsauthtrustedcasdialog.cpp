@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthtrustedcasdialog.h"
+#include "moc_qgsauthtrustedcasdialog.cpp"
 #include "ui_qgsauthtrustedcasdialog.h"
 
 #include <QPushButton>

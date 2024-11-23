@@ -16,6 +16,7 @@
 
 
 #include "qgscrashdialog.h"
+#include "moc_qgscrashdialog.cpp"
 
 #include "qgscrashreport.h"
 
@@ -40,7 +41,7 @@ QgsCrashDialog::QgsCrashDialog( QWidget *parent )
                               "<br><br>" )
                           +  tr( "Are you keen to help us fix bugs? QGIS relies on donations to pay developers to do funded bug fixing to improve the stability of the software. "
                                  "We also have a team of enthusiastic volunteers who are all working hard to improve the quality of QGIS. To do that, we need your help. "
-                                 "<a href=\"http://qgis.org/en/site/getinvolved/development/bugreporting.html#bugs-features-and-issues\">Find out how to help our developers</a>."
+                                 "<a href=\"https://qgis.org/resources/support/bug-reporting/#bugs-features-and-issues\">Find out how to help our developers</a>."
                                  "<br><br>"
                                  "Send us a helpful bug report by using the 'Copy Report' button below, <br>then open a ticket on the "
                                  "<a href=\"https://github.com/qgis/QGIS/issues\">QGIS Issue Tracker</a>." ) );

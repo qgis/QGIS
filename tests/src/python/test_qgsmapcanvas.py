@@ -17,6 +17,7 @@ from qgis.PyQt.QtCore import QDate, QDateTime, QTime, Qt
 from qgis.PyQt.QtGui import QImage
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
+    Qgis,
     QgsAnnotationLayer,
     QgsAnnotationLineItem,
     QgsAnnotationMarkerItem,
@@ -509,6 +510,20 @@ class TestQgsMapCanvas(QgisTestCase):
 
         # annotation must be rendered over other layers
         rendered_image = self.canvas_to_image(canvas)
+
+        # should NOT be shown, as ShowMainAnnotationLayer flag not set
+        self.assertFalse(
+            self.image_check('main_annotation_layer', 'main_annotation_layer', rendered_image,
+                             color_tolerance=2,
+                             allowed_mismatch=20,
+                             expect_fail=True)
+        )
+
+        canvas.setFlags(Qgis.MapCanvasFlag.ShowMainAnnotationLayer)
+        canvas.refresh()
+        canvas.waitWhileRendering()
+        rendered_image = self.canvas_to_image(canvas)
+        # now annotation should be rendered
         self.assertTrue(
             self.image_check('main_annotation_layer', 'main_annotation_layer', rendered_image,
                              color_tolerance=2,

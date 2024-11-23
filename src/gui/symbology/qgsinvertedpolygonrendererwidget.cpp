@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsinvertedpolygonrendererwidget.h"
+#include "moc_qgsinvertedpolygonrendererwidget.cpp"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgsrendererregistry.h"
 #include "qgsvectorlayer.h"

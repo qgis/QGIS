@@ -32,12 +32,12 @@ class CORE_EXPORT QgsSettingsTree
 
   public:
 
-#ifndef SIP_RUN
-
     /**
      * Returns the tree root node for the settings tree
      */
     static QgsSettingsTreeNode *treeRoot();
+
+#ifndef SIP_RUN
 
     // only create first level here
     static inline QgsSettingsTreeNode *sTreeApp = treeRoot()->createChildNode( QStringLiteral( "app" ) );

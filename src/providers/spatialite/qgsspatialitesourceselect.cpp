@@ -17,6 +17,7 @@ email                : a.furieri@lqt.it
  ***************************************************************************/
 
 #include "qgsspatialitesourceselect.h"
+#include "moc_qgsspatialitesourceselect.cpp"
 #include "qgsspatialiteconnection.h"
 
 #include "qgsquerybuilder.h"

@@ -252,7 +252,7 @@ void TestQgsVirtualPointCloudProvider::attributes()
   QCOMPARE( attributes.at( 8 ).name(), QStringLiteral( "Classification" ) );
   QCOMPARE( attributes.at( 8 ).type(), QgsPointCloudAttribute::UChar );
   QCOMPARE( attributes.at( 9 ).name(), QStringLiteral( "ScanAngleRank" ) );
-  QCOMPARE( attributes.at( 9 ).type(), QgsPointCloudAttribute::Short );
+  QCOMPARE( attributes.at( 9 ).type(), QgsPointCloudAttribute::Float );
   QCOMPARE( attributes.at( 10 ).name(), QStringLiteral( "UserData" ) );
   QCOMPARE( attributes.at( 10 ).type(), QgsPointCloudAttribute::Char );
   QCOMPARE( attributes.at( 11 ).name(), QStringLiteral( "PointSourceId" ) );

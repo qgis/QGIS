@@ -19,6 +19,7 @@
  */
 
 #include "qgsmapboxglstyleconverter.h"
+#include "moc_qgsmapboxglstyleconverter.cpp"
 #include "qgsvectortilebasicrenderer.h"
 #include "qgsvectortilebasiclabeling.h"
 #include "qgssymbollayer.h"
@@ -699,48 +700,64 @@ bool QgsMapBoxGlStyleConverter::parseLineLayer( const QVariantMap &jsonLayer, Qg
       {
         const QVariantList dashSource = jsonLineDashArray.toList();
 
-        QVector< double > rawDashVectorSizes;
-        rawDashVectorSizes.reserve( dashSource.size() );
-        for ( const QVariant &v : dashSource )
+        if ( dashSource.at( 0 ).userType() == QMetaType::Type::QString )
         {
-          rawDashVectorSizes << v.toDouble();
-        }
-
-        // handle non-compliant dash vector patterns
-        if ( rawDashVectorSizes.size() == 1 )
-        {
-          // match behavior of MapBox style rendering -- if a user makes a line dash array with one element, it's ignored
-          rawDashVectorSizes.clear();
-        }
-        else if ( rawDashVectorSizes.size() % 2 == 1 )
-        {
-          // odd number of dash pattern sizes -- this isn't permitted by Qt/QGIS, but isn't explicitly blocked by the MapBox specs
-          // MapBox seems to add the extra dash element to the first dash size
-          rawDashVectorSizes[0] = rawDashVectorSizes[0] + rawDashVectorSizes[rawDashVectorSizes.size() - 1];
-          rawDashVectorSizes.resize( rawDashVectorSizes.size() - 1 );
-        }
-
-        if ( !rawDashVectorSizes.isEmpty() && ( !lineWidthProperty.asExpression().isEmpty() ) )
-        {
-          QStringList dashArrayStringParts;
-          dashArrayStringParts.reserve( rawDashVectorSizes.size() );
-          for ( double v : std::as_const( rawDashVectorSizes ) )
+          QgsProperty property = parseValueList( dashSource, PropertyType::NumericArray, context, 1, 255, nullptr, nullptr );
+          if ( !lineWidthProperty.asExpression().isEmpty() )
           {
-            dashArrayStringParts << qgsDoubleToString( v );
+            property = QgsProperty::fromExpression( QStringLiteral( "array_to_string(array_foreach(%1,@element * (%2)), ';')" ) // skip-keyword-check
+                                                    .arg( property.asExpression(), lineWidthProperty.asExpression() ) );
+          }
+          else
+          {
+            property = QgsProperty::fromExpression( QStringLiteral( "array_to_string(%1, ';')" ).arg( property.asExpression() ) );
+          }
+          ddProperties.setProperty( QgsSymbolLayer::Property::CustomDash, property );
+        }
+        else
+        {
+          QVector< double > rawDashVectorSizes;
+          rawDashVectorSizes.reserve( dashSource.size() );
+          for ( const QVariant &v : dashSource )
+          {
+            rawDashVectorSizes << v.toDouble();
           }
 
-          QString arrayExpression = QStringLiteral( "array_to_string(array_foreach(array(%1),@element * (%2)), ';')" ) // skip-keyword-check
-                                    .arg( dashArrayStringParts.join( ',' ),
-                                          lineWidthProperty.asExpression() );
-          ddProperties.setProperty( QgsSymbolLayer::Property::CustomDash, QgsProperty::fromExpression( arrayExpression ) );
-        }
+          // handle non-compliant dash vector patterns
+          if ( rawDashVectorSizes.size() == 1 )
+          {
+            // match behavior of MapBox style rendering -- if a user makes a line dash array with one element, it's ignored
+            rawDashVectorSizes.clear();
+          }
+          else if ( rawDashVectorSizes.size() % 2 == 1 )
+          {
+            // odd number of dash pattern sizes -- this isn't permitted by Qt/QGIS, but isn't explicitly blocked by the MapBox specs
+            // MapBox seems to add the extra dash element to the first dash size
+            rawDashVectorSizes[0] = rawDashVectorSizes[0] + rawDashVectorSizes[rawDashVectorSizes.size() - 1];
+            rawDashVectorSizes.resize( rawDashVectorSizes.size() - 1 );
+          }
 
-        // dash vector sizes for QGIS symbols must be multiplied by the target line width
-        for ( double v : std::as_const( rawDashVectorSizes ) )
-        {
-          dashVector << v *lineWidth;
-        }
+          if ( !rawDashVectorSizes.isEmpty() && ( !lineWidthProperty.asExpression().isEmpty() ) )
+          {
+            QStringList dashArrayStringParts;
+            dashArrayStringParts.reserve( rawDashVectorSizes.size() );
+            for ( double v : std::as_const( rawDashVectorSizes ) )
+            {
+              dashArrayStringParts << qgsDoubleToString( v );
+            }
 
+            QString arrayExpression = QStringLiteral( "array_to_string(array_foreach(array(%1),@element * (%2)), ';')" ) // skip-keyword-check
+                                      .arg( dashArrayStringParts.join( ',' ),
+                                            lineWidthProperty.asExpression() );
+            ddProperties.setProperty( QgsSymbolLayer::Property::CustomDash, QgsProperty::fromExpression( arrayExpression ) );
+          }
+
+          // dash vector sizes for QGIS symbols must be multiplied by the target line width
+          for ( double v : std::as_const( rawDashVectorSizes ) )
+          {
+            dashVector << v *lineWidth;
+          }
+        }
         break;
       }
 
@@ -1665,6 +1682,32 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
     }
   }
 
+  if ( jsonLayout.contains( QStringLiteral( "text-rotate" ) ) )
+  {
+    const QVariant jsonTextRotate = jsonLayout.value( QStringLiteral( "text-rotate" ) );
+    switch ( jsonTextRotate.userType() )
+    {
+      case QMetaType::Type::Double:
+      case QMetaType::Type::Int:
+      {
+        labelSettings.angleOffset = jsonTextRotate.toDouble();
+        break;
+      }
+
+      case QMetaType::Type::QVariantList:
+      case QMetaType::Type::QStringList:
+      {
+        const QgsProperty property = parseValueList( jsonTextRotate.toList(), PropertyType::Numeric, context );
+        ddLabelProperties.setProperty( QgsPalLayerSettings::Property::LabelRotation, property );
+        break;
+      }
+
+      default:
+        context.pushWarning( QObject::tr( "%1: Skipping unsupported text-rotate type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonTextRotate.userType() ) ) ) );
+        break;
+    }
+  }
+
   if ( jsonLayout.contains( QStringLiteral( "text-transform" ) ) )
   {
     const QString textTransform = jsonLayout.value( QStringLiteral( "text-transform" ) ).toString();
@@ -1714,13 +1757,13 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
               textOffsetProperty = parseInterpolatePointByZoom( jsonTextOffset.toMap(), context, !textSizeProperty ? textSize : 1.0, &textOffset );
               if ( !textSizeProperty )
               {
-                ddLabelProperties.setProperty( QgsPalLayerSettings::Property::LabelDistance, QStringLiteral( "abs(array_get(%1,1))-%2" ).arg( textOffsetProperty ).arg( textSize ) );
+                ddLabelProperties.setProperty( QgsPalLayerSettings::Property::LabelDistance, QStringLiteral( "abs(array_get(%1,1))-%2" ).arg( textOffsetProperty.asExpression() ).arg( textSize ) );
               }
               else
               {
                 ddLabelProperties.setProperty( QgsPalLayerSettings::Property::LabelDistance, QStringLiteral( "with_variable('text_size',%2,abs(array_get(%1,1))*@text_size-@text_size)" ).arg( textOffsetProperty.asExpression(), textSizeProperty.asExpression() ) );
               }
-              ddLabelProperties.setProperty( QgsPalLayerSettings::Property::LinePlacementOptions, QStringLiteral( "if(array_get(%1,1)>0,'BL','AL')" ).arg( textOffsetProperty ) );
+              ddLabelProperties.setProperty( QgsPalLayerSettings::Property::LinePlacementOptions, QStringLiteral( "if(array_get(%1,1)>0,'BL','AL')" ).arg( textOffsetProperty.asExpression() ) );
               break;
 
             case QMetaType::Type::QVariantList:
@@ -2416,10 +2459,12 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateByZoom( const QVariantMap
   QString scaleExpression;
   if ( stops.size() <= 2 )
   {
-    scaleExpression = interpolateExpression( stops.value( 0 ).toList().value( 0 ).toDouble(),
-                      stops.last().toList().value( 0 ).toDouble(),
-                      stops.value( 0 ).toList().value( 1 ),
-                      stops.last().toList().value( 1 ), base, multiplier, &context );
+    scaleExpression = interpolateExpression(
+                        stops.value( 0 ).toList().value( 0 ).toDouble(), // zoomMin
+                        stops.last().toList().value( 0 ).toDouble(), // zoomMax
+                        stops.value( 0 ).toList().value( 1 ), // valueMin
+                        stops.last().toList().value( 1 ), // valueMax
+                        base, multiplier, &context );
   }
   else
   {
@@ -2453,10 +2498,11 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateOpacityByZoom( const QVar
     double top = 0.0;
     const bool numeric = numericArgumentsOnly( bv, tv, bottom, top );
     scaleExpression = QStringLiteral( "set_color_part(@symbol_color, 'alpha', %1)" )
-                      .arg( interpolateExpression( stops.value( 0 ).toList().value( 0 ).toDouble(),
-                            stops.last().toList().value( 0 ).toDouble(),
-                            numeric ? QString::number( bottom * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( bv, context ) ).arg( maxOpacity ),
-                            numeric ? QString::number( top * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( tv, context ) ).arg( maxOpacity ), base, 1, &context ) );
+                      .arg( interpolateExpression(
+                              stops.value( 0 ).toList().value( 0 ).toDouble(),
+                              stops.last().toList().value( 0 ).toDouble(),
+                              numeric ? QString::number( bottom * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( bv, context ) ).arg( maxOpacity ),
+                              numeric ? QString::number( top * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( tv, context ) ).arg( maxOpacity ), base, 1, &context ) );
   }
   else
   {
@@ -2483,17 +2529,24 @@ QString QgsMapBoxGlStyleConverter::parseOpacityStops( double base, const QVarian
                                   "THEN set_color_part(@symbol_color, 'alpha', %3)" )
                   .arg( stops.value( i ).toList().value( 0 ).toString(),
                         stops.value( i + 1 ).toList().value( 0 ).toString(),
-                        interpolateExpression( stops.value( i ).toList().value( 0 ).toDouble(),
-                            stops.value( i + 1 ).toList().value( 0 ).toDouble(),
-                            numeric ? QString::number( bottom * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( bv, context ) ).arg( maxOpacity ),
-                            numeric ? QString::number( top * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( tv, context ) ).arg( maxOpacity ),
-                            base, 1, &context ) );
+                        interpolateExpression(
+                          stops.value( i ).toList().value( 0 ).toDouble(),
+                          stops.value( i + 1 ).toList().value( 0 ).toDouble(),
+                          numeric ? QString::number( bottom * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( bv, context ) ).arg( maxOpacity ),
+                          numeric ? QString::number( top * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( tv, context ) ).arg( maxOpacity ),
+                          base, 1, &context ) );
   }
 
+
+  bool numeric = false;
+  const QVariant vv = stops.last().toList().value( 1 );
+  double dv = vv.toDouble( &numeric );
+
   caseString += QStringLiteral( " WHEN @vector_tile_zoom >= %1 "
-                                "THEN set_color_part(@symbol_color, 'alpha', %2) END" )
-                .arg( stops.last().toList().value( 0 ).toString() )
-                .arg( stops.last().toList().value( 1 ).toDouble() * maxOpacity );
+                                "THEN set_color_part(@symbol_color, 'alpha', %2) END" ).arg(
+                  stops.last().toList().value( 0 ).toString(),
+                  numeric ? QString::number( dv * maxOpacity ) : QString( "(%1) * %2" ).arg( parseValue( vv, context ) ).arg( maxOpacity )
+                );
   return caseString;
 }
 
@@ -2853,6 +2906,19 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
                       value.toList().value( 0 ).toDouble() * multiplier );
         break;
       }
+
+      case PropertyType::NumericArray:
+      {
+        if ( value.toList().count() == 2 && value.toList().first().toString() == QLatin1String( "literal" ) )
+        {
+          valueString = QStringLiteral( "array(%1)" ).arg( value.toList().at( 1 ).toStringList().join( ',' ) );
+        }
+        else
+        {
+          valueString = QStringLiteral( "array(%1)" ).arg( value.toStringList().join( ',' ) );
+        }
+        break;
+      }
     }
 
     if ( matchString.count() == 1 )
@@ -2915,6 +2981,19 @@ QgsProperty QgsMapBoxGlStyleConverter::parseMatchList( const QVariantList &json,
           break;
         }
 
+        case PropertyType::NumericArray:
+        {
+          if ( json.constLast().toList().count() == 2 && json.constLast().toList().first().toString() == QLatin1String( "literal" ) )
+          {
+            elseValue = QStringLiteral( "array(%1)" ).arg( json.constLast().toList().at( 1 ).toStringList().join( ',' ) );
+          }
+          else
+          {
+            elseValue = QStringLiteral( "array(%1)" ).arg( json.constLast().toStringList().join( ',' ) );
+          }
+          break;
+        }
+
       }
       break;
     }
@@ -2941,7 +3020,9 @@ QgsProperty QgsMapBoxGlStyleConverter::parseStepList( const QVariantList &json, 
     const QVariant stepValue = json.value( i + 1 );
 
     QString valueString;
-    if ( stepValue.canConvert<QVariantList>() && ( stepValue.toList().count() != 2 || type != PropertyType::Point ) )
+    if ( stepValue.canConvert<QVariantList>()
+         && ( stepValue.toList().count() != 2 || type != PropertyType::Point )
+         && type != PropertyType::NumericArray )
     {
       valueString = parseValueList( stepValue.toList(), type, context, multiplier, maxOpacity, defaultColor, defaultNumber ).expressionString();
     }
@@ -2976,6 +3057,19 @@ QgsProperty QgsMapBoxGlStyleConverter::parseStepList( const QVariantList &json, 
                           stepValue.toList().value( 0 ).toDouble() * multiplier ).arg(
                           stepValue.toList().value( 0 ).toDouble() * multiplier
                         );
+          break;
+        }
+
+        case PropertyType::NumericArray:
+        {
+          if ( stepValue.toList().count() == 2 && stepValue.toList().first().toString() == QLatin1String( "literal" ) )
+          {
+            valueString = QStringLiteral( "array(%1)" ).arg( stepValue.toList().at( 1 ).toStringList().join( ',' ) );
+          }
+          else
+          {
+            valueString = QStringLiteral( "array(%1)" ).arg( stepValue.toStringList().join( ',' ) );
+          }
           break;
         }
       }
@@ -3048,6 +3142,11 @@ QgsProperty QgsMapBoxGlStyleConverter::parseInterpolateListByZoom( const QVarian
 
     case PropertyType::Point:
       return parseInterpolatePointByZoom( props, context, multiplier );
+
+    case PropertyType::NumericArray:
+      context.pushWarning( QObject::tr( "%1: Skipping unsupported numeric array in interpolate" ).arg( context.layerId() ) );
+      return QgsProperty();
+
   }
   return QgsProperty();
 }
@@ -3121,23 +3220,11 @@ QString QgsMapBoxGlStyleConverter::interpolateExpression( double zoomMin, double
   {
     if ( base == 1 )
     {
-      expression = QStringLiteral( "scale_linear(@vector_tile_zoom,%1,%2,%3,%4)" ).arg( zoomMin )
-                   .arg( zoomMax )
-                   .arg( minValueExpr )
-                   .arg( maxValueExpr );
+      expression = QStringLiteral( "scale_linear(@vector_tile_zoom,%1,%2,%3,%4)" ).arg( zoomMin ).arg( zoomMax ).arg( minValueExpr ).arg( maxValueExpr );
     }
     else
     {
-      // use formula to scale value exponentially as scale_exp expression function
-      // gives wrong resutls, see https://github.com/qgis/QGIS/pull/53164
-      QString ratioExpr = QStringLiteral( "(%1^(@vector_tile_zoom - %2) - 1) / (%1^(%3 - %2) - 1)" ).arg( base ).arg( zoomMin ).arg( zoomMax );
-      expression = QStringLiteral( "(%1) + (%2) * ((%3) - (%1))" ).arg( minValueExpr ).arg( ratioExpr ).arg( maxValueExpr );
-      // can be uncommented when scale_exponential expression function gets to the old LTR
-      //expression = QStringLiteral( "scale_exponential(@vector_tile_zoom,%1,%2,%3,%4,%5)" ).arg( zoomMin )
-      //             .arg( zoomMax )
-      //             .arg( minValueExpr )
-      //             .arg( maxValueExpr )
-      //             .arg( base );
+      expression = QStringLiteral( "scale_exponential(@vector_tile_zoom,%1,%2,%3,%4,%5)" ).arg( zoomMin ).arg( zoomMax ).arg( minValueExpr ).arg( maxValueExpr ).arg( base );
     }
   }
 
@@ -3250,7 +3337,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
     QVariantList values = expression.mid( 2 );
     if ( expression.size() == 3
          && expression.at( 2 ).userType() == QMetaType::Type::QVariantList && expression.at( 2 ).toList().count() > 1
-         && expression.at( 2 ).toList().at( 0 ).toString() == QStringLiteral( "literal" ) )
+         && expression.at( 2 ).toList().at( 0 ).toString() == QLatin1String( "literal" ) )
     {
       values = expression.at( 2 ).toList().at( 1 ).toList();
     }
@@ -3340,6 +3427,10 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   else if ( op == QLatin1String( "to-string" ) )
   {
     return QStringLiteral( "to_string(%1)" ).arg( parseExpression( expression.value( 1 ).toList(), context ) );
+  }
+  else if ( op == QLatin1String( "to-boolean" ) )
+  {
+    return QStringLiteral( "to_bool(%1)" ).arg( parseExpression( expression.value( 1 ).toList(), context ) );
   }
   else if ( op == QLatin1String( "case" ) )
   {

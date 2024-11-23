@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsactionlocatorfilter.h"
+#include "moc_qgsactionlocatorfilter.cpp"
 
 #include <QAction>
 #include <QMenu>

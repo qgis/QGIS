@@ -27,6 +27,7 @@
 #include "qgswfsconstants.h"
 #include "qgswfsprovider.h"
 #include "qgswfsprovidermetadata.h"
+#include "moc_qgswfsprovidermetadata.cpp"
 #include "qgswfscapabilities.h"
 #include "qgswfsgetfeature.h"
 #include "qgswfsshareddata.h"

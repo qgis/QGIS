@@ -16,6 +16,7 @@
 
 
 #include "qgsauthcertificateinfo.h"
+#include "moc_qgsauthcertificateinfo.cpp"
 #include "ui_qgsauthcertificateinfo.h"
 
 #include <QtCrypto>

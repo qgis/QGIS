@@ -16,6 +16,7 @@
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeometrygapcheck.h"
+#include "moc_qgsgeometrygapcheck.cpp"
 #include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
@@ -74,12 +75,12 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
       allowedGaps.append( gg );
     }
 
-    std::unique_ptr< QgsGeometryEngine > allowedGapsEngine = QgsGeometryCheckerUtils::createGeomEngine( nullptr, mContext->tolerance );
+    std::unique_ptr< QgsGeometryEngine > allowedGapsEngine( QgsGeometry::createGeometryEngine( nullptr, mContext->tolerance ) );
 
     // Create union of allowed gaps
     QString errMsg;
     allowedGapsGeom.reset( allowedGapsEngine->combine( allowedGaps, &errMsg ) );
-    allowedGapsGeomEngine = QgsGeometryCheckerUtils::createGeomEngine( allowedGapsGeom.get(), mContext->tolerance );
+    allowedGapsGeomEngine.reset( QgsGeometry::createGeometryEngine( allowedGapsGeom.get(), mContext->tolerance ) );
     allowedGapsGeomEngine->prepareGeometry();
   }
 
@@ -102,7 +103,7 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
     return;
   }
 
-  std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( nullptr, mContext->tolerance );
+  std::unique_ptr< QgsGeometryEngine > geomEngine( QgsGeometry::createGeometryEngine( nullptr, mContext->tolerance ) );
 
   // Create union of geometry
   QString errMsg;
@@ -114,7 +115,7 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
   }
 
   // Get envelope of union
-  geomEngine = QgsGeometryCheckerUtils::createGeomEngine( unionGeom.get(), mContext->tolerance );
+  geomEngine.reset( QgsGeometry::createGeometryEngine( unionGeom.get(), mContext->tolerance ) );
   geomEngine->prepareGeometry();
   std::unique_ptr<QgsAbstractGeometry> envelope( geomEngine->envelope( &errMsg ) );
   if ( !envelope )
@@ -124,13 +125,13 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
   }
 
   // Buffer envelope
-  geomEngine = QgsGeometryCheckerUtils::createGeomEngine( envelope.get(), mContext->tolerance );
+  geomEngine.reset( QgsGeometry::createGeometryEngine( envelope.get(), mContext->tolerance ) );
   geomEngine->prepareGeometry();
   QgsAbstractGeometry *bufEnvelope = geomEngine->buffer( 2, 0, Qgis::EndCapStyle::Square, Qgis::JoinStyle::Miter, 4. );  //#spellok  //#spellok
   envelope.reset( bufEnvelope );
 
   // Compute difference between envelope and union to obtain gap polygons
-  geomEngine = QgsGeometryCheckerUtils::createGeomEngine( envelope.get(), mContext->tolerance );
+  geomEngine.reset( QgsGeometry::createGeometryEngine( envelope.get(), mContext->tolerance ) );
   geomEngine->prepareGeometry();
   std::unique_ptr<QgsAbstractGeometry> diffGeom( geomEngine->difference( unionGeom.get(), &errMsg ) );
   if ( !diffGeom )
@@ -162,7 +163,7 @@ void QgsGeometryGapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &
     // Get neighboring polygons
     QMap<QString, QgsFeatureIds> neighboringIds;
     const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds.keys(), gapAreaBBox, compatibleGeometryTypes(), mContext );
-    std::unique_ptr< QgsGeometryEngine > gapGeomEngine = QgsGeometryCheckerUtils::createGeomEngine( gapGeom, mContext->tolerance );
+    std::unique_ptr< QgsGeometryEngine > gapGeomEngine( QgsGeometry::createGeometryEngine( gapGeom, mContext->tolerance ) );
     gapGeomEngine->prepareGeometry();
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
     {
@@ -407,7 +408,7 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
   errLayerGeom->transform( ct, Qgis::TransformDirection::Reverse );
   const QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
   const QgsAbstractGeometry *mergeGeom = mergeFeatureGeom.constGet();
-  std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( errLayerGeom.get(), 0 );
+  std::unique_ptr< QgsGeometryEngine > geomEngine( QgsGeometry::createGeometryEngine( errLayerGeom.get(), 0 ) );
   std::unique_ptr<QgsAbstractGeometry> combinedGeom( geomEngine->combine( QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), &errMsg ) );
   if ( !combinedGeom || combinedGeom->isEmpty() || !QgsWkbTypes::isSingleType( combinedGeom->wkbType() ) )
   {

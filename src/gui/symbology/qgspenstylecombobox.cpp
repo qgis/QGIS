@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspenstylecombobox.h"
+#include "moc_qgspenstylecombobox.cpp"
 
 #include "qgsapplication.h"
 #include "qgsguiutils.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsannotationitempropertieswidget.h"
+#include "moc_qgsannotationitempropertieswidget.cpp"
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgsannotationlayer.h"

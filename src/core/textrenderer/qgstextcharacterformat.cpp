@@ -52,6 +52,8 @@ QgsTextCharacterFormat::QgsTextCharacterFormat( const QTextCharFormat &format )
   , mStrikethrough( format.hasProperty( QTextFormat::FontStrikeOut ) ? ( format.fontStrikeOut() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mUnderline( format.hasProperty( QTextFormat::FontUnderline ) ? ( format.fontUnderline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
   , mOverline( format.hasProperty( QTextFormat::FontOverline ) ? ( format.fontOverline() ? BooleanValue::SetTrue : BooleanValue::SetFalse ) : BooleanValue::NotSet )
+  , mBackgroundBrush( format.background() )
+  , mBackgroundPath( format.background().style() == Qt::NoBrush ? format.stringProperty( QTextFormat::BackgroundImageUrl ) : QString() )
 {
   mVerticalAlign = convertTextCharFormatVAlign( format, mHasVerticalAlignSet );
 
@@ -64,6 +66,12 @@ QgsTextCharacterFormat::QgsTextCharacterFormat( const QTextCharFormat &format )
     const QStringList families = format.fontFamilies().toStringList();
     if ( !families.isEmpty() )
       mFontFamily = families.at( 0 );
+  }
+  if ( format.isImageFormat() )
+  {
+    const QTextImageFormat imageFormat = format.toImageFormat();
+    mImagePath = imageFormat.name();
+    mImageSize = QSizeF( imageFormat.width(), imageFormat.height() );
   }
 }
 
@@ -96,6 +104,10 @@ void QgsTextCharacterFormat::overrideWith( const QgsTextCharacterFormat &other )
     mVerticalAlign = other.mVerticalAlign;
     mHasVerticalAlignSet = true;
   }
+  if ( mBackgroundBrush.style() == Qt::NoBrush && mBackgroundPath.isEmpty() && other.mBackgroundBrush.style() != Qt::NoBrush )
+    mBackgroundBrush = other.mBackgroundBrush;
+  if ( mBackgroundBrush.style() == Qt::NoBrush  && mBackgroundPath.isEmpty() && !other.mBackgroundPath.isEmpty() )
+    mBackgroundPath = other.mBackgroundPath;
 }
 
 QColor QgsTextCharacterFormat::textColor() const
@@ -168,6 +180,26 @@ void QgsTextCharacterFormat::setOverline( QgsTextCharacterFormat::BooleanValue e
   mOverline = enabled;
 }
 
+QString QgsTextCharacterFormat::imagePath() const
+{
+  return mImagePath;
+}
+
+void QgsTextCharacterFormat::setImagePath( const QString &path )
+{
+  mImagePath = path;
+}
+
+QSizeF QgsTextCharacterFormat::imageSize() const
+{
+  return mImageSize;
+}
+
+void QgsTextCharacterFormat::setImageSize( const QSizeF &size )
+{
+  mImageSize = size;
+}
+
 void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderContext &context, const double scaleFactor ) const
 {
   // important -- MUST set family first
@@ -226,6 +258,16 @@ void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderCo
   }
 }
 
+QString QgsTextCharacterFormat::backgroundImagePath() const
+{
+  return mBackgroundPath;
+}
+
+void QgsTextCharacterFormat::setBackgroundImagePath( const QString &path )
+{
+  mBackgroundPath = path;
+}
+
 QgsTextCharacterFormat::BooleanValue QgsTextCharacterFormat::italic() const
 {
   return mItalic;
@@ -254,4 +296,19 @@ double QgsTextCharacterFormat::wordSpacing() const
 void QgsTextCharacterFormat::setWordSpacing( double spacing )
 {
   mWordSpacing = spacing;
+}
+
+bool QgsTextCharacterFormat::hasBackground() const
+{
+  return mBackgroundBrush.style() != Qt::NoBrush || !mBackgroundPath.isEmpty();
+}
+
+QBrush QgsTextCharacterFormat::backgroundBrush() const
+{
+  return mBackgroundBrush;
+}
+
+void QgsTextCharacterFormat::setBackgroundBrush( const QBrush &brush )
+{
+  mBackgroundBrush = brush;
 }

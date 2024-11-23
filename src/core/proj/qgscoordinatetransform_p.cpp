@@ -247,36 +247,6 @@ void QgsCoordinateTransformPrivate::calculateTransforms( const QgsCoordinateTran
   }
 }
 
-static void proj_collecting_logger( void *user_data, int /*level*/, const char *message )
-{
-  QStringList *dest = reinterpret_cast< QStringList * >( user_data );
-  dest->append( QString( message ) );
-}
-
-static void proj_logger( void *, int level, const char *message )
-{
-#ifndef QGISDEBUG
-  Q_UNUSED( message )
-#endif
-  if ( level == PJ_LOG_ERROR )
-  {
-    const QString messageString( message );
-    if ( messageString == QLatin1String( "push: Invalid latitude" ) )
-    {
-      // these messages tend to spam the console as they can be repeated 1000s of times
-      QgsDebugMsgLevel( messageString, 3 );
-    }
-    else
-    {
-      QgsDebugError( messageString );
-    }
-  }
-  else if ( level == PJ_LOG_DEBUG )
-  {
-    QgsDebugMsgLevel( QString( message ), 3 );
-  }
-}
-
 ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
 {
   QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
@@ -294,8 +264,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   locker.changeMode( QgsReadWriteLocker::Write );
 
   // use a temporary proj error collector
-  QStringList projErrors;
-  proj_log_func( context, &projErrors, proj_collecting_logger );
+  QgsScopedProjCollectingLogger errorLogger;
 
   mIsReversed = false;
 
@@ -345,7 +314,6 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   {
     if ( !mSourceCRS.projObject() || ! mDestCRS.projObject() )
     {
-      proj_log_func( context, nullptr, nullptr );
       return nullptr;
     }
 
@@ -364,12 +332,17 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
       {
         // huh?
         const int errNo = proj_context_errno( context );
-        if ( errNo && errNo != -61 )
+        if ( errNo )
         {
+#if PROJ_VERSION_MAJOR>=8
+          nonAvailableError = QString( proj_context_errno_string( context, errNo ) );
+#else
           nonAvailableError = QString( proj_errno_string( errNo ) );
+#endif
         }
         else
         {
+          // in theory should never be hit!
           nonAvailableError = QObject::tr( "No coordinate operations are available between these two reference systems" );
         }
       }
@@ -497,9 +470,14 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   if ( !transform && nonAvailableError.isEmpty() )
   {
     const int errNo = proj_context_errno( context );
-    if ( errNo && errNo != -61 )
+    const QStringList projErrors = errorLogger.errors();
+    if ( errNo )
     {
+#if PROJ_VERSION_MAJOR>=8
+      nonAvailableError = QString( proj_context_errno_string( context, errNo ) );
+#else
       nonAvailableError = QString( proj_errno_string( errNo ) );
+#endif
     }
     else if ( !projErrors.empty() )
     {
@@ -531,9 +509,6 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
       QgsMessageLog::logMessage( err, QString(), Qgis::MessageLevel::Critical );
     }
   }
-
-  // reset logger to terminal output
-  proj_log_func( context, nullptr, proj_logger );
 
   if ( !transform )
   {

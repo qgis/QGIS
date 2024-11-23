@@ -496,6 +496,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
                              double size = DEFAULT_SVGMARKER_SIZE,
                              double angle = DEFAULT_SVGMARKER_ANGLE,
                              Qgis::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
+    QgsSvgMarkerSymbolLayer( const QgsSvgMarkerSymbolLayer &other ) SIP_SKIP;
 
     ~QgsSvgMarkerSymbolLayer() override;
 
@@ -1091,7 +1092,7 @@ class CORE_EXPORT QgsAnimatedMarkerSymbolLayer : public QgsRasterMarkerSymbolLay
     /**
      * Creates an animated marker symbol layer from a string map of \a properties.
      */
-    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     // implemented from base classes
 

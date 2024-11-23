@@ -1,16 +1,19 @@
 #include <QDataStream>
 #include <QDebug>
 #include <QIODevice>
+#include <QUrlQuery>
 
 #include "o0baseauth.h"
 #include "o0globals.h"
 #include "o0settingsstore.h"
+#include "o2replyserver.h"
+#include "o2pollserver.h"
 
 static const quint16 DefaultLocalPort = 1965;
 
-O0BaseAuth::O0BaseAuth(QObject *parent): QObject(parent) {
+O0BaseAuth::O0BaseAuth(QObject *parent, O0AbstractStore *store): QObject(parent), store_(0), useExternalWebInterceptor_(false), replyServer_(NULL), pollServer_(NULL) {
     localPort_ = DefaultLocalPort;
-    store_ = new O0SettingsStore(O2_ENCRYPTION_KEY, this);
+    setStore(store);
 }
 
 void O0BaseAuth::setStore(O0AbstractStore *store) {
@@ -83,6 +86,25 @@ void O0BaseAuth::setClientSecret(const QString &value) {
     Q_EMIT clientSecretChanged();
 }
 
+bool O0BaseAuth::useExternalWebInterceptor() {
+    return useExternalWebInterceptor_;
+}
+
+void O0BaseAuth::setUseExternalWebInterceptor(bool useExternalWebInterceptor) {
+    useExternalWebInterceptor_ = useExternalWebInterceptor;
+}
+
+QByteArray O0BaseAuth::replyContent() const {
+    return replyContent_;
+}
+
+void O0BaseAuth::setReplyContent(const QByteArray &value) {
+    replyContent_ = value;
+    if (replyServer_) {
+        replyServer_->setReplyContent(replyContent_);
+    }
+}
+
 int O0BaseAuth::localPort() {
     return localPort_;
 }
@@ -110,6 +132,32 @@ void O0BaseAuth::setExtraTokens(QVariantMap extraTokens) {
     QString key = QString(O2_KEY_EXTRA_TOKENS).arg(clientId_);
     store_->setValue(key, bytes.toBase64());
     Q_EMIT extraTokensChanged();
+}
+
+void O0BaseAuth::setReplyServer(O2ReplyServer * server)
+{
+    delete replyServer_;
+
+    replyServer_ = server;
+    replyServer_->setReplyContent(replyContent_);
+}
+
+O2ReplyServer * O0BaseAuth::replyServer() const
+{
+    return replyServer_;
+}
+
+void O0BaseAuth::setPollServer(O2PollServer *server)
+{
+    if (pollServer_)
+        pollServer_->deleteLater();
+
+    pollServer_ = server;
+}
+
+O2PollServer *O0BaseAuth::pollServer() const
+{
+    return pollServer_;
 }
 
 QByteArray O0BaseAuth::createQueryParameters(const QList<O0RequestParameter> &parameters) {

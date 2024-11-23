@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreenode.h"
+#include "moc_qgslayertreenode.cpp"
 
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"

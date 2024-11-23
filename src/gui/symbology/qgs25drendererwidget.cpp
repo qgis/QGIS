@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgs25drendererwidget.h"
+#include "moc_qgs25drendererwidget.cpp"
 #include "qgs25drenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutappmenuprovider.h"
+#include "moc_qgslayoutappmenuprovider.cpp"
 #include "qgslayoutitempage.h"
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutdesignerdialog.h"

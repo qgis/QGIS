@@ -270,7 +270,7 @@ class CORE_EXPORT QgsPointXY
       return QgsGeometryUtilsBase::fuzzyDistanceEqual( epsilon, mX, mY, other.x(), other.y() );
     }
 
-    bool operator==( const QgsPointXY &other ) SIP_HOLDGIL
+    bool operator==( const QgsPointXY &other ) const SIP_HOLDGIL
     {
       if ( isEmpty() && other.isEmpty() )
         return true;
@@ -398,26 +398,6 @@ class CORE_EXPORT QgsPointXY
 }; // class QgsPointXY
 
 Q_DECLARE_METATYPE( QgsPointXY )
-
-inline bool operator==( const QgsPointXY &p1, const QgsPointXY &p2 ) SIP_SKIP
-{
-  const bool nan1X = std::isnan( p1.x() );
-  const bool nan2X = std::isnan( p2.x() );
-  if ( nan1X != nan2X )
-    return false;
-  if ( !nan1X && !qgsDoubleNear( p1.x(), p2.x(), 1E-8 ) )
-    return false;
-
-  const bool nan1Y = std::isnan( p1.y() );
-  const bool nan2Y = std::isnan( p2.y() );
-  if ( nan1Y != nan2Y )
-    return false;
-
-  if ( !nan1Y && !qgsDoubleNear( p1.y(), p2.y(), 1E-8 ) )
-    return false;
-
-  return true;
-}
 
 inline std::ostream &operator << ( std::ostream &os, const QgsPointXY &p ) SIP_SKIP
 {

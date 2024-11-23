@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrenderpassquad.h"
+#include "moc_qgsrenderpassquad.cpp"
 
 #include <random>
 

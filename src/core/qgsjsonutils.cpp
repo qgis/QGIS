@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsjsonutils.h"
+#include "moc_qgsjsonutils.cpp"
 #include "qgsfeatureiterator.h"
 #include "qgsogrutils.h"
 #include "qgsgeometry.h"
@@ -170,7 +171,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
 
         QVariant val = feature.attributes().at( i );
 
-        if ( mLayer )
+        if ( mUseFieldFormatters && mLayer )
         {
           const QgsEditorWidgetSetup setup = fields.at( i ).editorWidgetSetup();
           const QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
@@ -199,7 +200,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
     // related attributes
     if ( mLayer && mIncludeRelatedAttributes )
     {
-      QList< QgsRelation > relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer.data() );
+      QList< QgsRelation > relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer.data() ); // skip-keyword-check
       for ( const auto &relation : std::as_const( relations ) )
       {
         QgsFeatureRequest req = relation.getRelatedFeaturesRequest( feature );
@@ -222,7 +223,7 @@ json QgsJsonExporter::exportFeatureToJsonObject( const QgsFeature &feature, cons
           QgsFeature relatedFet;
           while ( it.nextFeature( relatedFet ) )
           {
-            relatedFeatureAttributes += QgsJsonUtils::exportAttributesToJsonObject( relatedFet, childLayer, attributeWidgetCaches );
+            relatedFeatureAttributes += QgsJsonUtils::exportAttributesToJsonObject( relatedFet, childLayer, attributeWidgetCaches, mUseFieldFormatters );
           }
         }
         properties[ relation.name().toStdString() ] = relatedFeatureAttributes;
@@ -901,7 +902,7 @@ QVariant QgsJsonUtils::parseJson( const QString &jsonString )
   return parseJson( jsonString.toStdString() );
 }
 
-json QgsJsonUtils::exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer, const QVector<QVariant> &attributeWidgetCaches )
+json QgsJsonUtils::exportAttributesToJsonObject( const QgsFeature &feature, QgsVectorLayer *layer, const QVector<QVariant> &attributeWidgetCaches, bool useFieldFormatters )
 {
   QgsFields fields = feature.fields();
   json attrs;
@@ -909,7 +910,7 @@ json QgsJsonUtils::exportAttributesToJsonObject( const QgsFeature &feature, QgsV
   {
     QVariant val = feature.attributes().at( i );
 
-    if ( layer )
+    if ( layer && useFieldFormatters )
     {
       QgsEditorWidgetSetup setup = layer->fields().at( i ).editorWidgetSetup();
       QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );

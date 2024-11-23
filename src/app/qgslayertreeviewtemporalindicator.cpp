@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewtemporalindicator.h"
+#include "moc_qgslayertreeviewtemporalindicator.cpp"
 #include "qgslayertreeview.h"
 #include "qgslayertree.h"
 #include "qgsmaplayertemporalproperties.h"

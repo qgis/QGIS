@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgselevationshadingrenderersettingswidget.h"
+#include "moc_qgselevationshadingrenderersettingswidget.cpp"
 #include "ui_qgselevationshadingrenderersettingswidget.h"
 
 #include "qgsapplication.h"

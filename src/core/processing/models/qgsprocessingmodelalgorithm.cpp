@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingmodelalgorithm.h"
+#include "moc_qgsprocessingmodelalgorithm.cpp"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingfeedback.h"
 #include "qgsprocessingutils.h"
@@ -43,6 +44,23 @@ QgsProcessingModelAlgorithm::QgsProcessingModelAlgorithm( const QString &name, c
 
 void QgsProcessingModelAlgorithm::initAlgorithm( const QVariantMap & )
 {
+}
+
+Qgis::ProcessingAlgorithmFlags QgsProcessingModelAlgorithm::flags() const
+{
+  Qgis::ProcessingAlgorithmFlags res = QgsProcessingAlgorithm::flags();
+
+  // don't force algorithm attachment here, that's potentially too expensive
+  QMap< QString, QgsProcessingModelChildAlgorithm >::const_iterator childIt = mChildAlgorithms.constBegin();
+  for ( ; childIt != mChildAlgorithms.constEnd(); ++childIt )
+  {
+    if ( childIt->algorithm() && childIt->algorithm()->flags().testFlag( Qgis::ProcessingAlgorithmFlag::SecurityRisk ) )
+    {
+      // security risk flag propagates from child algorithms to model
+      res |= Qgis::ProcessingAlgorithmFlag::SecurityRisk;
+    }
+  }
+  return res;
 }
 
 QString QgsProcessingModelAlgorithm::name() const
@@ -96,7 +114,7 @@ QString QgsProcessingModelAlgorithm::helpUrl() const
 QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext, QString &error, const QgsProcessingContext *context ) const
 {
   error.clear();
-  auto evaluateSources = [ =, &error ]( const QgsProcessingParameterDefinition * def )->QVariant
+  auto evaluateSources = [&child, &modelParameters, &results, &error, &expressionContext]( const QgsProcessingParameterDefinition * def )->QVariant
   {
     const QgsProcessingModelChildParameterSources paramSources = child.parameterSources().value( def->name() );
 

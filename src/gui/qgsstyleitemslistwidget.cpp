@@ -15,6 +15,7 @@
 
 
 #include "qgsstyleitemslistwidget.h"
+#include "moc_qgsstyleitemslistwidget.cpp"
 #include "qgsstylemanagerdialog.h"
 #include "qgspanelwidget.h"
 #include "qgssettings.h"

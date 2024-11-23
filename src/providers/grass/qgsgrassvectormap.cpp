@@ -24,6 +24,7 @@
 #include "qgslogger.h"
 #include "qgsgrass.h"
 #include "qgsgrassvectormap.h"
+#include "moc_qgsgrassvectormap.cpp"
 #include "qgsgrassvectormaplayer.h"
 #include "qgsgrassundocommand.h"
 

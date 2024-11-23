@@ -58,6 +58,9 @@ Creates a polyhedral surface from a multiPolygon.
     virtual bool fromWkt( const QString &wkt );
 
 
+    virtual bool isValid( QString &error /Out/, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const;
+
+
     virtual int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
 
     virtual QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const;
@@ -150,7 +153,7 @@ The corresponding patch is removed from the polyhedral surface and deleted.
 
     virtual void draw( QPainter &p ) const;
 
-    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false ) throw( QgsCsException );
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false );
 
     virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 

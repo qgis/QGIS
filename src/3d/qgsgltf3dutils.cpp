@@ -21,6 +21,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
 #include "qgsmetalroughmaterial.h"
+#include "qgstexturematerial.h"
 
 #include <Qt3DCore/QEntity>
 
@@ -42,7 +43,6 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QTexture>
-#include <Qt3DExtras/QTextureMaterial>
 
 #include <QFile>
 #include <QFileInfo>
@@ -166,10 +166,9 @@ static Qt3DQAttribute *reprojectPositions( tinygltf::Model &model, int accessorI
     double y = vy[i] - sceneOrigin.y();
     double z = ( vz[i] * transform.zValueScale ) + transform.zValueOffset - sceneOrigin.z();
 
-    // QGIS 3D uses base plane (X,-Z) with Y up - so flip the coordinates
     out[i * 3 + 0] = static_cast< float >( x );
-    out[i * 3 + 1] = static_cast< float >( z );
-    out[i * 3 + 2] = static_cast< float >( -y );
+    out[i * 3 + 1] = static_cast< float >( y );
+    out[i * 3 + 2] = static_cast< float >( z );
   }
 
   Qt3DQBuffer *buffer = new Qt3DQBuffer();
@@ -287,7 +286,7 @@ static QByteArray fetchUri( const QUrl &url, QStringList *errors )
 }
 
 // Returns NULLPTR if primitive should not be rendered
-static Qt3DRender::QMaterial *parseMaterial( tinygltf::Model &model, int materialIndex, QString baseUri, QStringList *errors )
+static QgsMaterial *parseMaterial( tinygltf::Model &model, int materialIndex, QString baseUri, QStringList *errors )
 {
   if ( materialIndex < 0 )
   {
@@ -357,7 +356,7 @@ static Qt3DRender::QMaterial *parseMaterial( tinygltf::Model &model, int materia
     // We should be using PBR material unless unlit material is requested using KHR_materials_unlit
     // GLTF extension, but in various datasets that extension is not used (even though it should have been).
     // In the future we may want to have a switch whether to use unlit material or PBR material...
-    Qt3DExtras::QTextureMaterial *mat = new Qt3DExtras::QTextureMaterial;
+    QgsTextureMaterial *mat = new QgsTextureMaterial;
     mat->setTexture( texture );
     return mat;
   }
@@ -417,7 +416,7 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
         continue;
       }
 
-      Qt3DRender::QMaterial *material = parseMaterial( model, primitive.material, baseUri, errors );
+      QgsMaterial *material = parseMaterial( model, primitive.material, baseUri, errors );
       if ( !material )
       {
         // primitive should be skipped, eg fully transparent material

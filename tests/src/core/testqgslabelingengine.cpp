@@ -75,10 +75,13 @@ class TestQgsLabelingEngine : public QgsTest
     void testCurvedPerimeterLabelsHtmlFormatting();
     void testCurvedLabelsHtmlSuperSubscript();
     void testCurvedLabelsHtmlWordSpacing();
+    void testCurvedLabelsTabs();
+    void testCurvedLabelsTabPositions();
     void testPointLabelTabs();
     void testPointLabelTabsHtml();
     void testPointLabelHtmlFormatting();
     void testPointLabelHtmlFormattingDataDefinedSize();
+    void testPointLabelHtmlImages();
     void testCurvedLabelsWithTinySegments();
     void testCurvedLabelCorrectLinePlacement();
     void testCurvedLabelNegativeDistance();
@@ -143,6 +146,11 @@ class TestQgsLabelingEngine : public QgsTest
     void testShowAllLabelsWhenALabelHasNoCandidates();
     void testSymbologyScalingFactor();
     void testSymbologyScalingFactor2();
+
+    void testLineDirectionSymbolRight();
+    void testLineDirectionSymbolLeft();
+    void testLineDirectionSymbolAbove();
+    void testLineDirectionSymbolBelow();
 
   private:
     QgsVectorLayer *vl = nullptr;
@@ -408,7 +416,7 @@ void TestQgsLabelingEngine::testRuleBased()
   QgsTextFormat format = s1.format();
   format.setColor( QColor( 200, 0, 200 ) );
   QFont font = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
-#ifdef HAS_KDE_QT5_FONT_STRETCH_FIX
+#if defined(HAS_KDE_QT5_FONT_STRETCH_FIX) || (QT_VERSION >= QT_VERSION_CHECK(6, 3, 0))
   font.setStretch( 100 );
 #endif
   format.setFont( font );
@@ -1900,6 +1908,59 @@ void TestQgsLabelingEngine::testPointLabelHtmlFormattingDataDefinedSize()
   QVERIFY( imageCheck( QStringLiteral( "label_point_html_rendering" ), img, 20 ) );
 }
 
+void TestQgsLabelingEngine::testPointLabelHtmlImages()
+{
+  // test point label rendering with HTML images
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  format.setAllowHtmlFormatting( true );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'<i>test</i> <img src=\"%1/small_sample_image.png\" width=\"80\" height=\"200\"> <b style=\"font-size: 30pt\">HTML</b>'" ).arg( TEST_DATA_DIR );
+  settings.isExpression = true;
+  settings.placement = Qgis::LabelPlacement::OverPoint;
+  settings.labelPerPart = false;
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsNullSymbolRenderer() );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  const QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString (190000 5000010, 190100 5000000, 190200 5000000)" ) );
+  f.setGeometry( refGeom.centroid() );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( refGeom.boundingBox() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
+  engineSettings.setFlag( Qgis::LabelingFlag::DrawCandidates, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "html_images" ), img, 20 ) );
+}
+
 void TestQgsLabelingEngine::testCurvedLabelsHtmlSuperSubscript()
 {
   // test line label rendering with HTML formatting
@@ -2010,6 +2071,120 @@ void TestQgsLabelingEngine::testCurvedLabelsHtmlWordSpacing()
 
   QImage img = job.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "curved_html_wordspacing" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testCurvedLabelsTabs()
+{
+  // test curved label rendering with tab characters
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 30 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  format.setTabStopDistance( 28 );
+  format.setTabStopDistanceUnit( Qgis::RenderUnit::Millimeters );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'test of\ttab\ttext'" );
+  settings.isExpression = true;
+  settings.placement = Qgis::LabelPlacement::Curved;
+  settings.labelPerPart = false;
+  settings.lineSettings().setLineAnchorPercent( 0.5 );
+  settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
+  settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsNullSymbolRenderer() );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (190000 5000010, 190100 5000000, 190200 5000000)" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
+  engineSettings.setFlag( Qgis::LabelingFlag::DrawCandidates, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "curved_tabs" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testCurvedLabelsTabPositions()
+{
+  // test curved label rendering with tab characters
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 30 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  format.setTabPositions( {QgsTextFormat::Tab( 55 ), QgsTextFormat::Tab( 82 )} );
+  format.setTabStopDistanceUnit( Qgis::RenderUnit::Millimeters );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'test of\ttab\ttext'" );
+  settings.isExpression = true;
+  settings.placement = Qgis::LabelPlacement::Curved;
+  settings.labelPerPart = false;
+  settings.lineSettings().setLineAnchorPercent( 0.5 );
+  settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
+  settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine | Qgis::LabelLinePlacementFlag::MapOrientation );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsNullSymbolRenderer() );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (190000 5000010, 190100 5000000, 190200 5000000)" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
+  engineSettings.setFlag( Qgis::LabelingFlag::DrawCandidates, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "curved_tab_positions" ), img, 20 ) );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelsHtmlFormatting()
@@ -6661,6 +6836,222 @@ void TestQgsLabelingEngine::testSymbologyScalingFactor2()
 
   img = job2.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "labeling_reference_scale2_set" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testLineDirectionSymbolRight()
+{
+  // test line label parallel labels with direction symbols
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'XXXXXXXX'" );
+  settings.isExpression = true;
+  settings.placement = Qgis::LabelPlacement::Line;
+  settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
+  settings.labelPerPart = false;
+  settings.lineSettings().setAddDirectionSymbol( true );
+  settings.lineSettings().setDirectionSymbolPlacement( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight );
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (190000 5000010, 190200 5000000)" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox().buffered( 10 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
+  engineSettings.setFlag( Qgis::LabelingFlag::DrawLabelMetrics, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_direction_symbol_right" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testLineDirectionSymbolLeft()
+{
+  // test line label parallel labels with direction symbols
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'XXXXXXXX'" );
+  settings.isExpression = true;
+  settings.placement = Qgis::LabelPlacement::Line;
+  settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
+  settings.labelPerPart = false;
+  settings.lineSettings().setAddDirectionSymbol( true );
+  settings.lineSettings().setDirectionSymbolPlacement( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight );
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (190200 5000000, 190000 5000010)" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox().buffered( 10 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
+  engineSettings.setFlag( Qgis::LabelingFlag::DrawLabelMetrics, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_direction_symbol_left" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testLineDirectionSymbolAbove()
+{
+  // test line label parallel labels with direction symbols
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'XXXXXXXX'" );
+  settings.isExpression = true;
+  settings.placement = Qgis::LabelPlacement::Line;
+  settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
+  settings.labelPerPart = false;
+  settings.lineSettings().setAddDirectionSymbol( true );
+  settings.lineSettings().setDirectionSymbolPlacement( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove );
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (190000 5000010, 190200 5000000)" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox().buffered( 10 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
+  engineSettings.setFlag( Qgis::LabelingFlag::DrawLabelMetrics, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_direction_symbol_above" ), img, 20 ) );
+}
+
+void TestQgsLabelingEngine::testLineDirectionSymbolBelow()
+{
+  // test line label parallel labels with direction symbols
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'XXXXXXXX'" );
+  settings.isExpression = true;
+  settings.placement = Qgis::LabelPlacement::Line;
+  settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::AboveLine );
+  settings.labelPerPart = false;
+  settings.lineSettings().setAddDirectionSymbol( true );
+  settings.lineSettings().setDirectionSymbolPlacement( QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow );
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { {QStringLiteral( "color" ), QStringLiteral( "#000000" )}, {QStringLiteral( "outline_width" ), 0.6} } ) ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (190000 5000010, 190200 5000000)" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox().buffered( 10 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
+  engineSettings.setFlag( Qgis::LabelingFlag::DrawLabelMetrics, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QVERIFY( imageCheck( QStringLiteral( "parallel_direction_symbol_below" ), img, 20 ) );
 }
 
 QGSTEST_MAIN( TestQgsLabelingEngine )

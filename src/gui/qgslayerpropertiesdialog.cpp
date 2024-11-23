@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayerpropertiesdialog.h"
+#include "moc_qgslayerpropertiesdialog.cpp"
 #include "qgsmaplayerloadstyledialog.h"
 #include "qgsmaplayersavestyledialog.h"
 #include "qgsmaplayerconfigwidget.h"

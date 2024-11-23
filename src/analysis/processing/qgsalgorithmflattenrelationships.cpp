@@ -156,7 +156,10 @@ QVariantMap QgsFlattenRelationshipsAlgorithm::processAlgorithm( const QVariantMa
 
   QVariantMap outputs;
   if ( sink )
+  {
+    sink->finalize();
     outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  }
   return outputs;
 }
 

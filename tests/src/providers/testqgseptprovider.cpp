@@ -629,50 +629,50 @@ void TestQgsEptProvider::testPointCloudIndex()
   QgsPointCloudIndex *index = layer->dataProvider()->index();
   QVERIFY( index->isValid() );
 
-  QVERIFY( index->nodePointCount( IndexedPointCloudNode::fromString( QStringLiteral( "0-0-0-0" ) ) ) == 41998 );
-  QVERIFY( index->nodePointCount( IndexedPointCloudNode::fromString( QStringLiteral( "1-1-1-1" ) ) ) == 48879 );
-  QVERIFY( index->nodePointCount( IndexedPointCloudNode::fromString( QStringLiteral( "2-3-3-1" ) ) ) == 41734 );
-  QVERIFY( index->nodePointCount( IndexedPointCloudNode::fromString( QStringLiteral( "9-9-9-9" ) ) ) == -1 );
+  QCOMPARE( index->nodePointCount( IndexedPointCloudNode::fromString( QStringLiteral( "0-0-0-0" ) ) ),  41998 );
+  QCOMPARE( index->nodePointCount( IndexedPointCloudNode::fromString( QStringLiteral( "1-1-1-1" ) ) ),  48879 );
+  QCOMPARE( index->nodePointCount( IndexedPointCloudNode::fromString( QStringLiteral( "2-3-3-1" ) ) ),  41734 );
+  QCOMPARE( index->nodePointCount( IndexedPointCloudNode::fromString( QStringLiteral( "9-9-9-9" ) ) ), -1 );
 
-  QVERIFY( index->pointCount() == 518862 );
-  QVERIFY( index->zMin() == 2322 );
-  QVERIFY( index->zMax() == 2339 );
-  QVERIFY( index->scale().toVector3D() == QVector3D( 0.00025f, 0.00025f, 0.00025f ) );
-  QVERIFY( index->offset().toVector3D() == QVector3D( 515385, 4918361, 2331 ) );
-  QVERIFY( index->span() == 128 );
+  QCOMPARE( index->pointCount(), 518862 );
+  QCOMPARE( index->zMin(), 2322 );
+  QCOMPARE( index->zMax(), 2339 );
+  QCOMPARE( index->scale().toVector3D(), QVector3D( 0.00025f, 0.00025f, 0.00025f ) );
+  QCOMPARE( index->offset().toVector3D(), QVector3D( 515385, 4918361, 2331 ) );
+  QCOMPARE( index->span(), 128 );
 
-  QVERIFY( index->nodeError( IndexedPointCloudNode::fromString( QStringLiteral( "0-0-0-0" ) ) ) == 0.34375 );
-  QVERIFY( index->nodeError( IndexedPointCloudNode::fromString( QStringLiteral( "1-1-1-1" ) ) ) == 0.171875 );
-  QVERIFY( index->nodeError( IndexedPointCloudNode::fromString( QStringLiteral( "2-3-3-1" ) ) ) == 0.0859375 );
+  QCOMPARE( index->nodeError( IndexedPointCloudNode::fromString( QStringLiteral( "0-0-0-0" ) ) ), 0.34375 );
+  QCOMPARE( index->nodeError( IndexedPointCloudNode::fromString( QStringLiteral( "1-1-1-1" ) ) ), 0.171875 );
+  QCOMPARE( index->nodeError( IndexedPointCloudNode::fromString( QStringLiteral( "2-3-3-1" ) ) ), 0.0859375 );
 
   {
     QgsPointCloudDataBounds bounds = index->nodeBounds( IndexedPointCloudNode::fromString( QStringLiteral( "0-0-0-0" ) ) );
-    QVERIFY( bounds.xMin() == -88000 );
-    QVERIFY( bounds.yMin() == -88000 );
-    QVERIFY( bounds.zMin() == -88000 );
-    QVERIFY( bounds.xMax() ==  88000 );
-    QVERIFY( bounds.yMax() ==  88000 );
-    QVERIFY( bounds.zMax() ==  88000 );
+    QCOMPARE( bounds.xMin(), -88000 );
+    QCOMPARE( bounds.yMin(), -88000 );
+    QCOMPARE( bounds.zMin(), -88000 );
+    QCOMPARE( bounds.xMax(),  88000 );
+    QCOMPARE( bounds.yMax(),  88000 );
+    QCOMPARE( bounds.zMax(),  88000 );
   }
 
   {
     QgsPointCloudDataBounds bounds = index->nodeBounds( IndexedPointCloudNode::fromString( QStringLiteral( "1-1-1-1" ) ) );
-    QVERIFY( bounds.xMin() == 0 );
-    QVERIFY( bounds.yMin() == 0 );
-    QVERIFY( bounds.zMin() == 0 );
-    QVERIFY( bounds.xMax() == 88000 );
-    QVERIFY( bounds.yMax() == 88000 );
-    QVERIFY( bounds.zMax() == 88000 );
+    QCOMPARE( bounds.xMin(), 0 );
+    QCOMPARE( bounds.yMin(), 0 );
+    QCOMPARE( bounds.zMin(), 0 );
+    QCOMPARE( bounds.xMax(), 88000 );
+    QCOMPARE( bounds.yMax(), 88000 );
+    QCOMPARE( bounds.zMax(), 88000 );
   }
 
   {
     QgsPointCloudDataBounds bounds = index->nodeBounds( IndexedPointCloudNode::fromString( QStringLiteral( "2-3-3-1" ) ) );
-    QVERIFY( bounds.xMin() == 44000 );
-    QVERIFY( bounds.yMin() == 44000 );
-    QVERIFY( bounds.zMin() == -44000 );
-    QVERIFY( bounds.xMax() == 88000 );
-    QVERIFY( bounds.yMax() == 88000 );
-    QVERIFY( bounds.zMax() == 0 );
+    QCOMPARE( bounds.xMin(), 44000 );
+    QCOMPARE( bounds.yMin(), 44000 );
+    QCOMPARE( bounds.zMin(), -44000 );
+    QCOMPARE( bounds.xMax(), 88000 );
+    QCOMPARE( bounds.yMax(), 88000 );
+    QCOMPARE( bounds.zMax(), 0 );
   }
 }
 

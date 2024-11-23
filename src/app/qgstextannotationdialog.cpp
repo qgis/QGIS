@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgstextannotationdialog.h"
+#include "moc_qgstextannotationdialog.cpp"
 #include "qgsannotationwidget.h"
 #include "qgstextannotation.h"
 #include "qgsmapcanvasannotationitem.h"

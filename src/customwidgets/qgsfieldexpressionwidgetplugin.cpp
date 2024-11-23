@@ -15,6 +15,7 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsfieldexpressionwidgetplugin.h"
+#include "moc_qgsfieldexpressionwidgetplugin.cpp"
 #include "qgsfieldexpressionwidget.h"
 
 

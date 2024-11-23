@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsnumericformat.h"
+#include "moc_qgsnumericformat.cpp"
 #include "qgsxmlutils.h"
 #include "qgsreadwritecontext.h"
 

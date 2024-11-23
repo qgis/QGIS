@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutmanualtablewidget.h"
+#include "moc_qgslayoutmanualtablewidget.cpp"
 #include "qgslayoutatlas.h"
 #include "qgslayout.h"
 #include "qgslayoutreportcontext.h"

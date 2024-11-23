@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptooladdfeature.h"
+#include "moc_qgsmaptooladdfeature.cpp"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
@@ -30,7 +31,6 @@
 
 QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
   : QgsMapToolDigitizeFeature( canvas, cadDockWidget, mode )
-  , mCheckGeometryType( true )
 {
   setLayer( canvas->currentLayer() );
 
@@ -48,8 +48,25 @@ std::unique_ptr<QgsHighlight> QgsMapToolAddFeature::createHighlight( QgsVectorLa
 {
   std::unique_ptr< QgsHighlight > highlight = std::make_unique< QgsHighlight >( mCanvas, f.geometry(), layer );
   highlight->applyDefaultStyle();
-  highlight->mPointSizeRadiusMM = 1.0;
-  highlight->mPointSymbol = QgsHighlight::PointSymbol::Circle;
+
+  switch ( f.geometry().type() )
+  {
+    case Qgis::GeometryType::Point:
+    {
+      highlight->mPointSizeRadiusMM = 1.0;
+      highlight->mPointSymbol = QgsHighlight::PointSymbol::Circle;
+
+      break;
+    }
+    case Qgis::GeometryType::Line:
+    {
+      highlight->setWidth( 2 );
+
+      break;
+    }
+    default:
+      break;
+  }
   return highlight;
 };
 
@@ -64,13 +81,14 @@ bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, const QgsFeature 
   {
     connect( action, &QgsFeatureAction::addFeatureFinished, rb, &QgsRubberBand::deleteLater );
   }
-  else
-  {
-    // if we didn't get a rubber band, then create manually a highlight for the geometry. This ensures
-    // that tools which don't create a rubber band (ie those which digitize single points) still have
-    // a visible way of representing the captured geometry
+
+  // create a highlight for all spatial layers to enable distinguishing features in case
+  // the user digitizes multiple features and has many pending attribute dialogs. This also
+  // ensures that tools which don't create a rubber band (ie those which digitize single points)
+  // still have a visible way of representing the captured geometry
+
+  if ( vlayer->isSpatial() )
     highlight = createHighlight( vlayer, f );
-  }
 
   const QgsFeatureAction::AddFeatureResult res = action->addFeature( QgsAttributeMap(), showModal, std::move( scope ), false, std::move( highlight ) );
   if ( showModal )

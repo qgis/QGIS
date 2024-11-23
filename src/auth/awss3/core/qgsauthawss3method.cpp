@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsauthawss3method.h"
+#include "moc_qgsauthawss3method.cpp"
 
 #include <QUrlQuery>
 #include <QDateTime>

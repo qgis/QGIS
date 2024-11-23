@@ -16,6 +16,7 @@
 #include "qgiscustomwidgets.h"
 #include "qgsexpressionbuilderwidget.h"
 #include "qgsexpressionbuilderwidgetplugin.h"
+#include "moc_qgsexpressionbuilderwidgetplugin.cpp"
 
 
 QgsExpressionBuilderWidgetPlugin::QgsExpressionBuilderWidgetPlugin( QObject *parent )

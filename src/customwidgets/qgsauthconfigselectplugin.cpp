@@ -16,6 +16,7 @@
 #include "qgiscustomwidgets.h"
 #include "qgsauthconfigselect.h"
 #include "qgsauthconfigselectplugin.h"
+#include "moc_qgsauthconfigselectplugin.cpp"
 
 
 QgsAuthConfigSelectPlugin::QgsAuthConfigSelectPlugin( QObject *parent )

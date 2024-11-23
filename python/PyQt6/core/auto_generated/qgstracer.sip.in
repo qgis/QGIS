@@ -143,6 +143,21 @@ The optional "error" argument may receive error code (PathError enum) if it is n
 Find out whether the point is snapped to a vertex or edge (i.e. it can be used for tracing start/stop)
 %End
 
+    void setAddPointsOnIntersectionsEnabled( bool enable );
+%Docstring
+When ``enable`` is ``True``, the shortest path's straight segments will include vertices where the input layers intersect, even if
+no such vertex existed on the input layers
+
+.. versionadded:: 3.40
+%End
+
+    bool addPointsOnIntersectionsEnabled() const;
+%Docstring
+Returns whether the shortest path's straight segments will include vertices where the input layers intersect, even if
+no such vertex existed on the input layers
+
+.. versionadded:: 3.40
+%End
   protected:
 
     virtual void configure();

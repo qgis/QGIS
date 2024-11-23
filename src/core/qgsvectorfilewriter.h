@@ -1045,6 +1045,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param newFilename potentially modified file name (output parameter)
      * \param newLayer potentially modified layer name (output parameter)
      * \param errorMessage will be set to the error message text, if an error occurs while writing the layer
+     * \param sinkFlags optional sink flags (since QGIS 3.40)
      * \returns Error message code, or QgsVectorFileWriter.NoError if the write operation was successful
      * \since QGIS 3.10.3
      */
@@ -1054,7 +1055,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         const QgsVectorFileWriter::SaveVectorOptions &options,
         QString *newFilename = nullptr,
         QString *newLayer = nullptr,
-        QString *errorMessage SIP_OUT = nullptr );
+        QString *errorMessage SIP_OUT = nullptr,
+        QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 
     /**
      * Writes a previously prepared PreparedWriterDetails \a details object.

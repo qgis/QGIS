@@ -278,7 +278,7 @@ The development version
 
 
     enum class PythonEmbeddedMode /BaseType=IntEnum/
-    {
+      {
       Never,
       Ask,
       SessionOnly,
@@ -1530,6 +1530,7 @@ The development version
       SkipSymbolRendering,
       RecordProfile,
       AlwaysUseGlobalMasks,
+      DisableSymbolClippingToExtent,
     };
     typedef QFlags<Qgis::RenderContextFlag> RenderContextFlags;
 
@@ -1549,6 +1550,7 @@ The development version
       {
       AlwaysOutlines,
       AlwaysText,
+      PreferText,
     };
 
     enum class LabelingFlag /BaseType=IntFlag/
@@ -1589,13 +1591,16 @@ The development version
       RectangleAscentBased,
     };
 
-    enum class TextComponent /BaseType=IntEnum/
-      {
+    enum class TextComponent /BaseType=IntFlag/
+    {
       Text,
       Buffer,
       Background,
       Shadow,
     };
+
+    typedef QFlags<Qgis::TextComponent> TextComponents;
+
 
     enum class TextHorizontalAlignment /BaseType=IntEnum/
       {
@@ -1856,6 +1861,14 @@ The development version
       Unknown,
     };
 
+    enum class MapCanvasFlag /BaseType=IntFlag/
+    {
+      ShowMainAnnotationLayer,
+    };
+
+    typedef QFlags<Qgis::MapCanvasFlag> MapCanvasFlags;
+
+
     enum class ViewSyncModeFlag /BaseType=IntFlag/
     {
       Sync3DTo2D,
@@ -1922,6 +1935,7 @@ The development version
       SkipGenericModelLogging,
       NotAvailableInStandaloneTool,
       RequiresProject,
+      SecurityRisk,
       Deprecated,
     };
 
@@ -2775,6 +2789,13 @@ The development version
       Unknown,
     };
 
+    enum class ScaleCalculationMethod /BaseType=IntEnum/
+    {
+      HorizontalTop,
+      HorizontalMiddle,
+      HorizontalBottom,
+      HorizontalAverage,
+    };
 
     enum class ScaleBarAlignment /BaseType=IntEnum/
       {
@@ -2999,6 +3020,7 @@ The development version
       Other,
     };
 
+
     enum class ZonalStatistic /BaseType=IntFlag/
     {
       Count,
@@ -3013,7 +3035,10 @@ The development version
       Majority,
       Variety,
       Variance,
+      MinimumPoint,
+      MaximumPoint,
       All,
+      AllNumeric,
       Default,
     };
 
@@ -3151,6 +3176,20 @@ The development version
       Cmyk,
     };
 
+    enum class DocumentationApi /BaseType=IntEnum/
+    {
+      PyQgis,
+      PyQgisSearch,
+      CppQgis,
+      Qt,
+    };
+
+    enum class DocumentationBrowser /BaseType=IntEnum/
+    {
+      DeveloperToolsPanel,
+      SystemWebBrowser,
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -3161,7 +3200,7 @@ The development version
 
     static const double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
 
-    static const double SCALE_PRECISION;
+ static const double SCALE_PRECISION;
 
     static const double DEFAULT_Z_COORDINATE;
 
@@ -3311,6 +3350,8 @@ QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgi
 
 QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);
 
+QFlags<Qgis::TextComponent> operator|(Qgis::TextComponent f1, QFlags<Qgis::TextComponent> f2);
+
 QFlags<Qgis::TextRendererFlag> operator|(Qgis::TextRendererFlag f1, QFlags<Qgis::TextRendererFlag> f2);
 
 QFlags<Qgis::TiledSceneProviderCapability> operator|(Qgis::TiledSceneProviderCapability f1, QFlags<Qgis::TiledSceneProviderCapability> f2);
@@ -3372,6 +3413,8 @@ QFlags<Qgis::VectorRenderingSimplificationFlag> operator|(Qgis::VectorRenderingS
 QFlags<Qgis::DataProviderReadFlag> operator|(Qgis::DataProviderReadFlag f1, QFlags<Qgis::DataProviderReadFlag> f2);
 
 QFlags<Qgis::VectorProviderCapability> operator|(Qgis::VectorProviderCapability f1, QFlags<Qgis::VectorProviderCapability> f2);
+
+QFlags<Qgis::MapCanvasFlag> operator|(Qgis::MapCanvasFlag f1, QFlags<Qgis::MapCanvasFlag> f2);
 
 
 

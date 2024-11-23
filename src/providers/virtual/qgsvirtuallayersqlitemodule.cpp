@@ -831,7 +831,8 @@ void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args
       sqlite3_result_text( ctxt, ba.constData(), ba.size(), SQLITE_TRANSIENT );
       break;
     }
-    case QMetaType::Type::User:
+
+    default:
     {
       if ( ret.userType() == qMetaTypeId< QgsGeometry>() )
       {
@@ -844,20 +845,20 @@ void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args
       {
         sqlite3_result_double( ctxt, ret.value<QgsInterval>().seconds() );
       }
+      else
+      {
+        QBuffer buffer;
+        buffer.open( QBuffer::ReadWrite );
+        QDataStream ds( &buffer );
+        // something different from 0 (to distinguish from the first byte of a geometry blob)
+        char type = 1;
+        buffer.write( &type, 1 );
+        // then the serialized version of the variant
+        ds << ret;
+        buffer.close();
+        sqlite3_result_blob( ctxt, buffer.buffer().constData(), buffer.buffer().size(), SQLITE_TRANSIENT );
+      }
       break;
-    }
-    default:
-    {
-      QBuffer buffer;
-      buffer.open( QBuffer::ReadWrite );
-      QDataStream ds( &buffer );
-      // something different from 0 (to distinguish from the first byte of a geometry blob)
-      char type = 1;
-      buffer.write( &type, 1 );
-      // then the serialized version of the variant
-      ds << ret;
-      buffer.close();
-      sqlite3_result_blob( ctxt, buffer.buffer().constData(), buffer.buffer().size(), SQLITE_TRANSIENT );
     }
   };
 }

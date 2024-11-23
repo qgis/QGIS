@@ -15,6 +15,7 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsrelationreferencewidgetplugin.h"
+#include "moc_qgsrelationreferencewidgetplugin.cpp"
 #include "qgsrelationreferencewidget.h"
 
 

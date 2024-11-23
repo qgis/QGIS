@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthpkipathsmethod.h"
+#include "moc_qgsauthpkipathsmethod.cpp"
 
 #include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"

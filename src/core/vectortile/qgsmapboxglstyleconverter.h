@@ -371,6 +371,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
       Numeric, //!< Numeric property (e.g. line width, text size)
       Opacity, //!< Opacity property
       Point, //!< Point/offset property
+      NumericArray, //!< Numeric array for dash arrays or such
     };
     Q_ENUM( PropertyType )
 

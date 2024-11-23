@@ -112,8 +112,7 @@ class GUI_EXPORT QgsNewVectorTableDialog : public QDialog, private Ui_QgsNewVect
     void setFields( const QgsFields &fields );
 
     /**
-     * Returns TRUE if spatialindex checkbox is checked
-     * @return
+     * Returns TRUE if spatialindex checkbox is checked.
      */
     bool createSpatialIndex();
 

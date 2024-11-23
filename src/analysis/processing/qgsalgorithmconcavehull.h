@@ -56,10 +56,10 @@ class QgsConcaveHullAlgorithm : public QgsProcessingAlgorithm
     void concaveHullQgis( std::unique_ptr< QgsFeatureSink > &sink, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
     std::unique_ptr< QgsProcessingFeatureSource > mSource;
-    double mPercentage;
-    bool mAllowHoles;
-    bool mSplitMultipart;
-    double mStep;
+    double mPercentage = 0;
+    bool mAllowHoles = false;
+    bool mSplitMultipart = false;
+    double mStep = 0;
 };
 
 ///@endcond PRIVATE

@@ -15,6 +15,7 @@
 
 #include "qgsapplication.h"
 #include "qgscolorramplegendnode.h"
+#include "moc_qgscolorramplegendnode.cpp"
 #include "qgscolorrampimpl.h"
 #include "qgslegendsettings.h"
 #include "qgslayertreemodel.h"
@@ -27,9 +28,11 @@
 #include <QPalette>
 #include <QBuffer>
 
-QgsColorRampLegendNode::QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp, const QString &minimumLabel, const QString &maximumLabel, QObject *parent )
+QgsColorRampLegendNode::QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp, const QString &minimumLabel, const QString &maximumLabel, QObject *parent, const QString &key, const QString &parentKey )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
   , mRamp( ramp )
+  , mKey( key )
+  , mParentKey( parentKey )
 {
   mSettings.setMinimumLabel( minimumLabel );
   mSettings.setMaximumLabel( maximumLabel );
@@ -37,12 +40,14 @@ QgsColorRampLegendNode::QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, Qg
   init( nodeLayer );
 }
 
-QgsColorRampLegendNode::QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp, const QgsColorRampLegendNodeSettings &settings, double minimumValue, double maximumValue, QObject *parent )
+QgsColorRampLegendNode::QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp, const QgsColorRampLegendNodeSettings &settings, double minimumValue, double maximumValue, QObject *parent, const QString &key, const QString &parentKey )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
   , mRamp( ramp )
   , mSettings( settings )
   , mMinimumValue( minimumValue )
   , mMaximumValue( maximumValue )
+  , mKey( key )
+  , mParentKey( parentKey )
 {
   init( nodeLayer );
 }
@@ -178,7 +183,10 @@ QVariant QgsColorRampLegendNode::data( int role ) const
   {
     return QgsLayerTreeModelLegendNode::ColorRampLegend;
   }
-
+  else if ( role == static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) )
+    return mKey;
+  else if ( role == static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::ParentRuleKey ) )
+    return mParentKey;
   return QVariant();
 }
 

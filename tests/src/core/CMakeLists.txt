@@ -169,6 +169,7 @@ set(TESTS
  testqgsrenderers.cpp
  testqgsrulebasedrenderer.cpp
  testqgsruntimeprofiler.cpp
+ testqgsscaleutils.cpp
  testqgssensorthingsconnection.cpp
  testqgssettings.cpp
  testqgssettingsentry.cpp
@@ -181,6 +182,8 @@ set(TESTS
  testqgsspatialindexkdbush.cpp
  testqgssqliteexpressioncompiler.cpp
  testqgssqliteutils.cpp
+ testqgsstac.cpp
+ testqgsstackeddiagram.cpp
  testqgsrelation.cpp
  testqgsstatisticalsummary.cpp
  testqgsstoredexpressionmanager.cpp

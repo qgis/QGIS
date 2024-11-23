@@ -161,12 +161,18 @@ QVariantMap QgsRemoveDuplicatesByAttributeAlgorithm::processAlgorithm( const QVa
     current++;
   }
 
+  if ( noDupeSink )
+    noDupeSink->finalize();
+
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "RETAINED_COUNT" ), keptCount );
   outputs.insert( QStringLiteral( "DUPLICATE_COUNT" ), discardedCount );
   outputs.insert( QStringLiteral( "OUTPUT" ), noDupeSinkId );
   if ( dupesSink )
+  {
+    dupesSink->finalize();
     outputs.insert( QStringLiteral( "DUPLICATES" ), dupeSinkId );
+  }
   return outputs;
 }
 

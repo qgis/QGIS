@@ -1065,6 +1065,7 @@ A list of layers with which intersections should be avoided.
 %Docstring
 Sets the list of layers with which intersections should be avoided.
 Only used if the avoid intersection mode is set to advanced.
+Line and point layers will not be added.
 %End
 
     void setAvoidIntersectionsMode( const Qgis::AvoidIntersectionsMode mode );
@@ -1663,7 +1664,7 @@ Sets the elevation shading renderer used for global map shading
     SIP_PYOBJECT __repr__();
 %MethodCode
     QString str = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),
-                  sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() );
+                  sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() ); // skip-keyword-check
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
 

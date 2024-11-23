@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayernotesmanager.h"
+#include "moc_qgslayernotesmanager.cpp"
 #include "qgslayernotesutils.h"
 #include "qgsmaplayer.h"
 #include "qgsrichtexteditor.h"

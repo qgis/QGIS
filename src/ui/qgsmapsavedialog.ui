@@ -67,9 +67,9 @@
       </widget>
      </item>
      <item row="9" column="0" colspan="2">
-      <widget class="QgsCollapsibleGroupBoxBasic" name="mGeoPDFGroupBox">
+      <widget class="QgsCollapsibleGroupBoxBasic" name="mGeospatialPDFGroupBox">
        <property name="title">
-        <string>Create Geospatial PDF (GeoPDF)</string>
+        <string>Create Geospatial PDF</string>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -79,7 +79,7 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QStackedWidget" name="mGeoPDFOptionsStackedWidget">
+         <widget class="QStackedWidget" name="mGeospatialPDFOptionsStackedWidget">
           <property name="currentIndex">
            <number>1</number>
           </property>
@@ -98,7 +98,7 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QLabel" name="mGeoPdfUnavailableReason">
+             <widget class="QLabel" name="mGeospatialPdfUnavailableReason">
               <property name="text">
                <string/>
               </property>
@@ -121,7 +121,7 @@
              <number>0</number>
             </property>
             <item row="1" column="1">
-             <widget class="QComboBox" name="mGeoPdfFormatComboBox"/>
+             <widget class="QComboBox" name="mGeospatialPdfFormatComboBox"/>
             </item>
             <item row="1" column="0">
              <widget class="QLabel" name="label">
@@ -131,7 +131,7 @@
              </widget>
             </item>
             <item row="2" column="0" colspan="2">
-             <widget class="QCheckBox" name="mExportGeoPdfFeaturesCheckBox">
+             <widget class="QCheckBox" name="mExportGeospatialPdfFeaturesCheckBox">
               <property name="text">
                <string>Include vector feature information</string>
               </property>
@@ -428,9 +428,9 @@ Rasterizing the map is recommended when such effects are used.</string>
   <tabstop>mDrawAnnotations</tabstop>
   <tabstop>mSaveWorldFile</tabstop>
   <tabstop>mExportMetadataCheckBox</tabstop>
-  <tabstop>mGeoPDFGroupBox</tabstop>
-  <tabstop>mGeoPdfFormatComboBox</tabstop>
-  <tabstop>mExportGeoPdfFeaturesCheckBox</tabstop>
+  <tabstop>mGeospatialPDFGroupBox</tabstop>
+  <tabstop>mGeospatialPdfFormatComboBox</tabstop>
+  <tabstop>mExportGeospatialPdfFeaturesCheckBox</tabstop>
   <tabstop>mSaveAsRaster</tabstop>
   <tabstop>mSimplifyGeometriesCheckbox</tabstop>
   <tabstop>mTextRenderFormatComboBox</tabstop>

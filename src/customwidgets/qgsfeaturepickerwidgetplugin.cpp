@@ -15,6 +15,7 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsfeaturepickerwidgetplugin.h"
+#include "moc_qgsfeaturepickerwidgetplugin.cpp"
 #include "qgsfeaturepickerwidget.h"
 
 

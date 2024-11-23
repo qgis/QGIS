@@ -18,6 +18,7 @@
 #include "qaction.h"
 #include "qgsapplication.h"
 #include "qgsexpressionpreviewwidget.h"
+#include "moc_qgsexpressionpreviewwidget.cpp"
 #include "qgsmessageviewer.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeaturepickerwidget.h"

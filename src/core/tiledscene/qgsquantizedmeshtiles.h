@@ -18,6 +18,8 @@
 
 #include "qgis_core.h"
 #include "qgsexception.h"
+#include "qgsmeshdataprovider.h"
+#include "qgsrectangle.h"
 #include <qbytearray.h>
 
 #define TINYGLTF_NO_STB_IMAGE         // we use QImage-based reading of images
@@ -87,8 +89,11 @@ struct CORE_EXPORT QgsQuantizedMeshTile
   QgsQuantizedMeshTile( const QByteArray &data );
   // For some reason, commonly available QM tiles often have a very high (as
   // much as 50%) percentage of degenerate triangles. They don't harm our
-  // rendering, but removing them could improve performance
+  // rendering, but removing them could improve performance and makes working
+  // with the data easier.
   void removeDegenerateTriangles();
   void generateNormals();
   tinygltf::Model toGltf( bool addSkirt = false, double skirtDepth = 0, bool withTextureCoords = false );
+  // Make sure to call removeDegenerateTriangles() beforehand!
+  QgsMesh toMesh( QgsRectangle tileBounds );
 };

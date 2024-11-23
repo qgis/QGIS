@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3daxis.h"
+#include "moc_qgs3daxis.cpp"
 
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QCylinderMesh>
@@ -36,7 +37,7 @@
 
 #include "qgsmapsettings.h"
 #include "qgs3dmapscene.h"
-#include "qgsterrainentity_p.h"
+#include "qgsterrainentity.h"
 #include "qgscoordinatereferencesystemutils.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgswindow3dengine.h"
@@ -326,7 +327,7 @@ Qt3DRender::QViewport *Qgs3DAxis::constructAxisScene( Qt3DCore::QEntity *parent3
   mAxisCamera->setProjectionType( mCameraController->camera()->projectionType() );
   mAxisCamera->lens()->setFieldOfView( mCameraController->camera()->lens()->fieldOfView() * 0.5f );
 
-  mAxisCamera->setUpVector( QVector3D( 0.0f, 0.0f, 1.0f ) );
+  mAxisCamera->setUpVector( QVector3D( 0.0f, 1.0f, 0.0f ) );
   mAxisCamera->setViewCenter( QVector3D( 0.0f, 0.0f, 0.0f ) );
   // position will be set later
 
@@ -476,7 +477,7 @@ void Qgs3DAxis::createAxisScene()
       if ( axisDirections.length() > 0 )
         mTextX->setText( QgsCoordinateReferenceSystemUtils::axisDirectionToAbbreviatedString( axisDirections.at( 0 ) ) );
       else
-        mTextY->setText( "X?" );
+        mTextX->setText( "X?" );
 
       if ( axisDirections.length() > 1 )
         mTextY->setText( QgsCoordinateReferenceSystemUtils::axisDirectionToAbbreviatedString( axisDirections.at( 1 ) ) );
@@ -747,7 +748,7 @@ void Qgs3DAxis::onCameraViewChange( float pitch, float yaw )
     const QVector<QgsRayCastingUtils::RayHit> hits = mMapScene->terrainEntity()->rayIntersection( ray, QgsRayCastingUtils::RayCastContext() );
     if ( !hits.isEmpty() )
     {
-      elevation = hits.at( 0 ).pos.y();
+      elevation = hits.at( 0 ).pos.z();
       QgsDebugMsgLevel( QString( "Computed elevation from terrain: %1" ).arg( elevation ), 2 );
     }
     else
@@ -755,7 +756,7 @@ void Qgs3DAxis::onCameraViewChange( float pitch, float yaw )
       QgsDebugMsgLevel( "Unable to obtain elevation from terrain", 2 );
     }
   }
-  pos.set( pos.x(), elevation + mMapSettings->terrainElevationOffset(), pos.z() );
+  pos.set( pos.x(), pos.y(), elevation + mMapSettings->terrainElevationOffset() );
 
   mCameraController->setLookingAtPoint( pos, ( mCameraController->camera()->position() - pos.toVector3D() ).length(),
                                         pitch, yaw );
@@ -946,7 +947,8 @@ void Qgs3DAxis::createAxis( Qt::Axis axisType )
       mTextTransformY = new Qt3DCore::QTransform();
       mTextCoordY = QVector3D( 0.0f, mCylinderLength + coneLength / 2.0f, 0.0f );
 
-      rotation = QQuaternion::fromAxisAndAngle( QVector3D( 0.0f, 0.0f, 0.0f ), 0.0f );
+      // no rotation
+
       color = Qt::green;
       text = mTextY;
       textTransform = mTextTransformY;
@@ -1149,20 +1151,10 @@ void Qgs3DAxis::onCameraUpdate( )
        && !std::isnan( parentCamera->viewVector().z() ) )
   {
     mPreviousVector = parentCamera->viewVector();
-    QVector3D mainCameraShift = parentCamera->viewVector().normalized();
-    float zy_swap = mainCameraShift.y();
-    mainCameraShift.setY( mainCameraShift.z() );
-    mainCameraShift.setZ( -zy_swap );
-    mainCameraShift.setX( -mainCameraShift.x() );
 
-    if ( mAxisCamera->projectionType() == Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection )
-    {
-      mAxisCamera->setPosition( mainCameraShift );
-    }
-    else
-    {
-      mAxisCamera->setPosition( mainCameraShift * mCylinderLength * 9.0 );
-    }
+    QQuaternion q = QQuaternion::fromDirection( -parentCamera->viewVector(), parentCamera->upVector() );
+    mAxisCamera->setPosition( q.rotatedVector( QVector3D( 0, 0, mCylinderLength * 9.0f ) ) );
+    mAxisCamera->setUpVector( q.rotatedVector( QVector3D( 0, 1, 0 ) ) );
 
     if ( mAxisRoot->isEnabled() )
     {

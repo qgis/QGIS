@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprojectsensorsettingswidget.h"
+#include "moc_qgsprojectsensorsettingswidget.cpp"
 
 #include "qgis.h"
 #include "qgsabstractsensor.h"

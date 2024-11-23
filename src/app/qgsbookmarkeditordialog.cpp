@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsbookmarkeditordialog.h"
+#include "moc_qgsbookmarkeditordialog.cpp"
 
 #include "qgis.h"
 #include "qgisapp.h"

@@ -559,6 +559,7 @@ QVariantMap QgsJoinByLocationSummaryAlgorithm::processAlgorithm( const QVariantM
     }
   }
 
+  sink->finalize();
   sink.reset();
 
   QVariantMap results;

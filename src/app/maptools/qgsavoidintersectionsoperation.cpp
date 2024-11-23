@@ -18,6 +18,7 @@
 #include "qgis.h"
 #include "qgisapp.h"
 #include "qgsavoidintersectionsoperation.h"
+#include "moc_qgsavoidintersectionsoperation.cpp"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsproject.h"

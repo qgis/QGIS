@@ -35,17 +35,20 @@ from qgis.core import (
     QgsGeometry,
     QgsGeometryGeneratorSymbolLayer,
     QgsLineSymbol,
+    QgsMapRendererSequentialJob,
     QgsMapSettings,
     QgsMarkerSymbol,
     QgsProject,
     QgsProperty,
     QgsRectangle,
+    QgsReferencedGeometry,
     QgsRenderContext,
     QgsSingleSymbolRenderer,
     QgsSymbol,
     QgsSymbolLayer,
     QgsUnitTypes,
     QgsVectorLayer,
+    QgsVectorLayerUtils,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -459,6 +462,31 @@ class TestQgsGeometryGeneratorSymbolLayerV2(QgisTestCase):
             self.render_map_settings_check(
                 'geometrygenerator_function_geometry',
                 'geometrygenerator_function_geometry',
+                mapsettings
+            )
+        )
+
+    def test_field_geometry(self):
+        """
+        Use a geometry field
+        """
+
+        points = QgsVectorLayer('Point?crs=epsg:2154&field=other_geom:geometry(0,0)', 'Points', 'memory')
+        f = QgsVectorLayerUtils.createFeature(points,
+                                              QgsGeometry.fromWkt('Point(5 4)'),
+                                              {0: QgsReferencedGeometry(QgsGeometry.fromWkt('LineString(5 6, 7 8)'), QgsCoordinateReferenceSystem("EPSG:4326"))})
+        points.dataProvider().addFeature(f)
+        other_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': '"other_geom"', 'outline_color': 'black', 'SymbolType': 'Line', 'line_width': 2})
+        points.renderer().symbol().changeSymbolLayer(0, other_layer)
+
+        mapsettings = QgsMapSettings(self.mapsettings)
+        mapsettings.setExtent(QgsRectangle(0, 0, 10, 10))
+        mapsettings.setLayers([points])
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                'geometrygenerator_field_geometry',
+                'geometrygenerator_field_geometry',
                 mapsettings
             )
         )

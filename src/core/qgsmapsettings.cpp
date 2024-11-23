@@ -323,6 +323,23 @@ QList<QgsMapLayer *> QgsMapSettings::layers( bool expandGroupLayers ) const
   return result;
 }
 
+template<typename T>
+QVector<T> QgsMapSettings::layers() const
+{
+  const QList<QgsMapLayer *> actualLayers = _qgis_listQPointerToRaw( mLayers );
+
+  QVector<T> layers;
+  for ( QgsMapLayer *layer : actualLayers )
+  {
+    T tLayer = qobject_cast<T>( layer );
+    if ( tLayer )
+    {
+      layers << tLayer;
+    }
+  }
+  return layers;
+}
+
 void QgsMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
 {
   // filter list, removing null layers and non-spatial layers
@@ -898,3 +915,4 @@ void QgsMapSettings::setElevationShadingRenderer( const QgsElevationShadingRende
 {
   mShadingRenderer = elevationShadingRenderer;
 }
+

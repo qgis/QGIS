@@ -29,9 +29,10 @@ if (HAVE_OPENCL)
 endif()
 
 # Server, also install server subdirectory
+set(SERVER_DEST_RESOURCE_FILES "")
 if (WITH_SERVER)
   file(GLOB_RECURSE SERVER_RESOURCE_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} server/*)
-  set(RESOURCES_FILES ${RESOURCES_FILES} ${SERVER_RESOURCE_FILES})
+  add_qgis_resources("${CMAKE_CURRENT_SOURCE_DIR}" resources SERVER_DEST_RESOURCE_FILES "${SERVER_RESOURCE_FILES}")
 endif()
 
 # Server landingpage webapp
@@ -43,6 +44,32 @@ if (WITH_SERVER_LANDINGPAGE_WEBAPP)
 
   add_custom_target (server_landingpage ALL DEPENDS ${LANDINGPAGE_OUTPUT_PATH}/landingpage.stamp)
 
+  # add_custom_command does not support OUTPUT_QUIET, so we need to make a cmake subcommand first:
+  file(WRITE ${CMAKE_BINARY_DIR}/yarn_commands.cmake
+  "execute_process(
+      COMMAND ${YARN} install --frozen-lockfile
+      WORKING_DIRECTORY ${LANDINGPAGE_OUTPUT_PATH}
+      OUTPUT_QUIET
+      ERROR_FILE ${CMAKE_BINARY_DIR}/yarn_error.log
+      RESULT_VARIABLE YARN_RESULT
+  )
+  if(NOT YARN_RESULT EQUAL 0)
+      file(READ ${CMAKE_BINARY_DIR}/yarn_error.log ERROR_CONTENTS)
+      message(FATAL_ERROR \${ERROR_CONTENTS})
+  endif()
+
+  execute_process(
+      COMMAND ${YARN} build
+      WORKING_DIRECTORY ${LANDINGPAGE_OUTPUT_PATH}
+      OUTPUT_QUIET
+      ERROR_FILE ${CMAKE_BINARY_DIR}/yarn_error.log
+      RESULT_VARIABLE YARN_RESULT
+  )
+  if(NOT YARN_RESULT EQUAL 0)
+      file(READ ${CMAKE_BINARY_DIR}/yarn_error.log ERROR_CONTENTS)
+      message(FATAL_ERROR \${ERROR_CONTENTS})
+  endif()
+  ")
   add_custom_command(
     POST_BUILD
     OUTPUT ${LANDINGPAGE_OUTPUT_PATH}/landingpage.stamp
@@ -51,7 +78,7 @@ if (WITH_SERVER_LANDINGPAGE_WEBAPP)
     ${CMAKE_CURRENT_SOURCE_DIR}/server/src/landingpage/
     ${LANDINGPAGE_OUTPUT_PATH}/
     COMMAND ${CMAKE_COMMAND} -E touch ${LANDINGPAGE_OUTPUT_PATH}/landingpage.stamp
-    COMMAND cd ${LANDINGPAGE_OUTPUT_PATH} && ${YARN} install --frozen-lockfile && ${YARN} build
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/yarn_commands.cmake
   )
 endif()
 
@@ -77,4 +104,5 @@ list(APPEND DEST_RESOURCE_FILES
   "${CMAKE_CURRENT_BINARY_DIR}/srs.db")
 install(FILES ${SRSDB} DESTINATION ${QGIS_DATA_DIR}/resources RENAME srs.db)
 
+list(APPEND DEST_RESOURCE_FILES ${SERVER_DEST_RESOURCE_FILES})
 add_custom_target(resources ALL DEPENDS ${DEST_RESOURCE_FILES})

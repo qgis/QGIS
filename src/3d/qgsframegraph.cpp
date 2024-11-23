@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsframegraph.h"
+#include "moc_qgsframegraph.cpp"
 #include "qgsdirectionallightsettings.h"
 #include "qgspostprocessingentity.h"
 #include "qgspreviewquad.h"
@@ -53,6 +54,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <Qt3DRender/QAbstractTexture>
 #include "qgsfgutils.h"
 #include <Qt3DRender/QNoDraw>
+#include <Qt3DRender/QClipPlane>
 
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
 {
@@ -66,6 +68,10 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
   //                                  |
   //                         +-----------------+
   //                         |  QLayerFilter   |  (using mForwardRenderLayer)
+  //                         +-----------------+
+  //                                  |
+  //                         +-----------------+
+  //                         | QRenderStateSet |  define clip planes
   //                         +-----------------+
   //                                  |
   //                      +-----------------------+
@@ -98,6 +104,9 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
   mForwardRenderLayerFilter = new Qt3DRender::QLayerFilter( mMainCameraSelector );
   mForwardRenderLayerFilter->addLayer( mForwardRenderLayer );
 
+  mClipRenderStateSet = new Qt3DRender::QRenderStateSet( mForwardRenderLayerFilter );
+  mClipRenderStateSet->setObjectName( "Forward render pass Clip Plane RenderStateSet" );
+
   mForwardColorTexture = new Qt3DRender::QTexture2D;
   mForwardColorTexture->setWidth( mSize.width() );
   mForwardColorTexture->setHeight( mSize.height() );
@@ -128,7 +137,7 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructForwardRenderPass()
   forwardRenderTargetColorOutput->setTexture( mForwardColorTexture );
   forwardRenderTarget->addOutput( forwardRenderTargetColorOutput );
 
-  mForwardRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mForwardRenderLayerFilter );
+  mForwardRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mClipRenderStateSet );
   mForwardRenderTargetSelector->setTarget( forwardRenderTarget );
 
   // first branch: opaque layer filter
@@ -735,8 +744,8 @@ QgsPreviewQuad *QgsFrameGraph::addTexturePreviewOverlay( Qt3DRender::QTexture2D 
   return previewQuad;
 }
 
-// computes the portion of the Y=y plane the camera is looking at
-void calculateViewExtent( Qt3DRender::QCamera *camera, float shadowRenderingDistance, float y, float &minX, float &maxX, float &minY, float &maxY, float &minZ, float &maxZ )
+// computes the portion of the Z=z plane the camera is looking at
+void calculateViewExtent( Qt3DRender::QCamera *camera, float shadowRenderingDistance, float z, float &minX, float &maxX, float &minY, float &maxY, float &minZ, float &maxZ )
 {
   const QVector3D cameraPos = camera->position();
   const QMatrix4x4 projectionMatrix = camera->projectionMatrix();
@@ -775,12 +784,12 @@ void calculateViewExtent( Qt3DRender::QCamera *camera, float shadowRenderingDist
     minZ = std::min( minZ, viewFrustumPoints[i].z() );
     maxZ = std::max( maxZ, viewFrustumPoints[i].z() );
     // find the intersection between the line going from cameraPos to the frustum quad point
-    // and the horizontal plane Y=y
+    // and the horizontal plane Z=z
     // if the intersection is on the back side of the viewing panel we get a point that is
     // shadowRenderingDistance units in front of the camera
     const QVector3D pt = cameraPos;
     const QVector3D vect = ( viewFrustumPoints[i] - pt ).normalized();
-    float t = ( y - pt.y() ) / vect.y();
+    float t = ( z - pt.z() ) / vect.z();
     if ( t < 0 )
       t = shadowRenderingDistance;
     else
@@ -801,24 +810,23 @@ void QgsFrameGraph::setupDirectionalLight( const QgsDirectionalLightSettings &li
   QVector3D lookingAt = mMainCamera->viewCenter();
   const float d = 2 * ( mMainCamera->position() - mMainCamera->viewCenter() ).length();
 
-  const QVector3D vertical = QVector3D( 0.0f, d, 0.0f );
   const QVector3D lightDirection = QVector3D( light.direction().x(), light.direction().y(), light.direction().z() ).normalized();
-  calculateViewExtent( mMainCamera, maximumShadowRenderingDistance, lookingAt.y(), minX, maxX, minY, maxY, minZ, maxZ );
+  calculateViewExtent( mMainCamera, maximumShadowRenderingDistance, lookingAt.z(), minX, maxX, minY, maxY, minZ, maxZ );
 
-  lookingAt = QVector3D( 0.5 * ( minX + maxX ), mMainCamera->viewCenter().y(), 0.5 * ( minZ + maxZ ) );
-  const QVector3D lightPosition = lookingAt + vertical;
+  lookingAt = QVector3D( 0.5f * ( minX + maxX ), 0.5f * ( minY + maxY ), mMainCamera->viewCenter().z() );
+  const QVector3D lightPosition = lookingAt + QVector3D( 0.0f, 0.0f, d );
   mLightCamera->setPosition( lightPosition );
   mLightCamera->setViewCenter( lookingAt );
   mLightCamera->setUpVector( QVector3D( 0.0f, 1.0f, 0.0f ) );
-  mLightCamera->rotateAboutViewCenter( QQuaternion::rotationTo( vertical.normalized(), -lightDirection.normalized() ) );
+  mLightCamera->rotateAboutViewCenter( QQuaternion::rotationTo( QVector3D( 0.0f, 0.0f, -1.0f ), lightDirection ) );
 
   mLightCamera->setProjectionType( Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection );
   mLightCamera->lens()->setOrthographicProjection(
-    - 0.7 * ( maxX - minX ), 0.7 * ( maxX - minX ),
-    - 0.7 * ( maxZ - minZ ), 0.7 * ( maxZ - minZ ),
+    - 0.7f * ( maxX - minX ), 0.7f * ( maxX - minX ),
+    - 0.7f * ( maxY - minY ), 0.7f * ( maxY - minY ),
     1.0f, 2 * ( lookingAt - lightPosition ).length() );
 
-  mPostprocessingEntity->setupShadowRenderingExtent( minX, maxX, minZ, maxZ );
+  mPostprocessingEntity->setupShadowRenderingExtent( minX, maxX, minY, maxY );
   mPostprocessingEntity->setupDirectionalLight( lightPosition, lightDirection );
 }
 
@@ -988,4 +996,30 @@ void QgsFrameGraph::setRenderCaptureEnabled( bool enabled )
 void QgsFrameGraph::setDebugOverlayEnabled( bool enabled )
 {
   mDebugOverlay->setEnabled( enabled );
+}
+
+void QgsFrameGraph::removeClipPlanes()
+{
+  for ( Qt3DRender::QRenderState *state : mClipRenderStateSet->renderStates() )
+  {
+    if ( qobject_cast<Qt3DRender::QClipPlane *>( state ) )
+    {
+      mClipRenderStateSet->removeRenderState( state );
+    }
+  }
+}
+
+void QgsFrameGraph::addClipPlanes( int nrClipPlanes )
+{
+  // remove existing QClipPlane
+  removeClipPlanes();
+
+  // create new QClipPlane
+  for ( int i = 0; i < nrClipPlanes; ++i )
+  {
+    Qt3DRender::QClipPlane *clipPlane = new Qt3DRender::QClipPlane;
+    clipPlane->setPlaneIndex( i );
+    mClipRenderStateSet->addRenderState( clipPlane );
+  }
+
 }

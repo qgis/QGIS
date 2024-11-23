@@ -235,6 +235,10 @@ QString QgsZonalStatistics::displayName( Qgis::ZonalStatistic statistic )
       return QObject::tr( "Minimum" );
     case Qgis::ZonalStatistic::Max:
       return QObject::tr( "Maximum" );
+    case Qgis::ZonalStatistic::MinimumPoint:
+      return QObject::tr( "Minimum point" );
+    case Qgis::ZonalStatistic::MaximumPoint:
+      return QObject::tr( "Maximum point" );
     case Qgis::ZonalStatistic::Range:
       return QObject::tr( "Range" );
     case Qgis::ZonalStatistic::Minority:
@@ -270,6 +274,10 @@ QString QgsZonalStatistics::shortName( Qgis::ZonalStatistic statistic )
       return QStringLiteral( "min" );
     case Qgis::ZonalStatistic::Max:
       return QStringLiteral( "max" );
+    case Qgis::ZonalStatistic::MinimumPoint:
+      return QStringLiteral( "minpoint" );
+    case Qgis::ZonalStatistic::MaximumPoint:
+      return QStringLiteral( "maxpoint" );
     case Qgis::ZonalStatistic::Range:
       return QStringLiteral( "range" );
     case Qgis::ZonalStatistic::Minority:
@@ -330,13 +338,13 @@ QMap<Qgis::ZonalStatistic, QVariant> QgsZonalStatistics::calculateStatistics( Qg
   QgsRasterAnalysisUtils::cellInfoForBBox( rasterBBox, featureRect, cellSizeX, cellSizeY, nCellsX, nCellsY, nCellsXProvider, nCellsYProvider, rasterBlockExtent );
 
   featureStats.reset();
-  QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( rasterInterface, rasterBand, geometry, nCellsX, nCellsY, cellSizeX, cellSizeY, rasterBlockExtent, [ &featureStats ]( double value ) { featureStats.addValue( value ); } );
+  QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( rasterInterface, rasterBand, geometry, nCellsX, nCellsY, cellSizeX, cellSizeY, rasterBlockExtent, [ &featureStats ]( double value, const QgsPointXY & point ) { featureStats.addValue( value, point ); } );
 
   if ( featureStats.count <= 1 )
   {
     //the cell resolution is probably larger than the polygon area. We switch to precise pixel - polygon intersection in this case
     featureStats.reset();
-    QgsRasterAnalysisUtils::statisticsFromPreciseIntersection( rasterInterface, rasterBand, geometry, nCellsX, nCellsY, cellSizeX, cellSizeY, rasterBlockExtent, [ &featureStats ]( double value, double weight ) { featureStats.addValue( value, weight ); } );
+    QgsRasterAnalysisUtils::statisticsFromPreciseIntersection( rasterInterface, rasterBand, geometry, nCellsX, nCellsY, cellSizeX, cellSizeY, rasterBlockExtent, [ &featureStats ]( double value, double weight, const QgsPointXY & point ) { featureStats.addValue( value, point, weight ); } );
   }
 
   // calculate the statistics
@@ -387,6 +395,10 @@ QMap<Qgis::ZonalStatistic, QVariant> QgsZonalStatistics::calculateStatistics( Qg
       results.insert( Qgis::ZonalStatistic::Min, QVariant( featureStats.min ) );
     if ( statistics & Qgis::ZonalStatistic::Max )
       results.insert( Qgis::ZonalStatistic::Max, QVariant( featureStats.max ) );
+    if ( statistics & Qgis::ZonalStatistic::MinimumPoint )
+      results.insert( Qgis::ZonalStatistic::MinimumPoint, QVariant( featureStats.minPoint ) );
+    if ( statistics & Qgis::ZonalStatistic::MaximumPoint )
+      results.insert( Qgis::ZonalStatistic::MaximumPoint, QVariant( featureStats.maxPoint ) );
     if ( statistics & Qgis::ZonalStatistic::Range )
       results.insert( Qgis::ZonalStatistic::Range, QVariant( featureStats.max - featureStats.min ) );
     if ( statistics & Qgis::ZonalStatistic::Minority || statistics & Qgis::ZonalStatistic::Majority )

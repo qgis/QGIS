@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdashspacedialog.h"
+#include "moc_qgsdashspacedialog.cpp"
 #include "qgsdoublevalidator.h"
 #include "qgsapplication.h"
 

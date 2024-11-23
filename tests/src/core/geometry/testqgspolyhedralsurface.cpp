@@ -61,6 +61,7 @@ class TestQgsPolyhedralSurface: public QObject
     void testWKT();
     void testExport();
     void testCast();
+    void testIsValid();
 };
 
 void TestQgsPolyhedralSurface::testConstructor()
@@ -103,7 +104,7 @@ void TestQgsPolyhedralSurface::testConstructor()
   QVERIFY( polySurface.is3D() );
   QVERIFY( polySurface.isMeasure() );
   QCOMPARE( polySurface.wkbType(), Qgis::WkbType::PolyhedralSurfaceZM );
-  QCOMPARE( polySurface.wktTypeStr(), QString( "PolyhedralSurfaceZM" ) );
+  QCOMPARE( polySurface.wktTypeStr(), QString( "PolyhedralSurface ZM" ) );
   QCOMPARE( polySurface.geometryType(), QString( "PolyhedralSurface" ) );
   QCOMPARE( polySurface.dimension(), 2 );
   QVERIFY( !polySurface.hasCurvedSegments() );
@@ -1689,6 +1690,48 @@ void TestQgsPolyhedralSurface::testCast()
   QVERIFY( QgsPolyhedralSurface().cast( &pCast2 ) );
 
   QVERIFY( !pCast2.fromWkt( QStringLiteral( "PolyhedralSurfaceZ((111111))" ) ) );
+}
+
+void TestQgsPolyhedralSurface::testIsValid()
+{
+  QString error;
+  bool isValid;
+
+  // an empty QgsPolyhedralSurface is valid
+  QgsPolyhedralSurface polySurfaceEmpty;
+  isValid = polySurfaceEmpty.isValid( error );
+  QVERIFY( error.isEmpty() );
+  QVERIFY( isValid );
+
+  // a QgsPolyhedralSurface with a valid QgsPolygon is valid
+  QgsPolyhedralSurface polySurface1;
+  polySurface1.fromWkt( QStringLiteral( "PolyhedralSurfaceZ((0 0 0, 0 1 1, 1 0 2, 0 0 0))" ) );
+  isValid = polySurface1.isValid( error );
+  QVERIFY( error.isEmpty() );
+  QVERIFY( isValid );
+
+  // a QgsPolyhedralSurface with an invalid QgsPolygon is not valid
+  QgsPolyhedralSurface polySurface2;
+  QgsPolygon patch;
+  QgsLineString lineString;
+
+  lineString.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 11, 2, 3 )
+                        << QgsPoint( Qgis::WkbType::PointZ, 4, 12, 13 )
+                        << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 13 )
+                        << QgsPoint( Qgis::WkbType::PointZ, 11, 22, 23 )
+                        << QgsPoint( Qgis::WkbType::PointZ, 11, 2, 3 ) );
+  patch.setExteriorRing( lineString.clone() );
+
+  lineString.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 10, 2, 5 )
+                        << QgsPoint( Qgis::WkbType::PointZ, 11, 2, 5 )
+                        << QgsPoint( Qgis::WkbType::PointZ, 10, 2, 5 ) );
+  patch.addInteriorRing( lineString.clone() );
+
+  polySurface2.addPatch( patch.clone() );
+
+  isValid = polySurface2.isValid( error );
+  QCOMPARE( error, "Polygon 0 is invalid: Too few points in geometry component" );
+  QVERIFY( !isValid );
 }
 
 

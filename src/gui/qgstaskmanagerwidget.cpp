@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgstaskmanagerwidget.h"
+#include "moc_qgstaskmanagerwidget.cpp"
 #include "qgstaskmanager.h"
 #include "qgsapplication.h"
 #include <QPainter>

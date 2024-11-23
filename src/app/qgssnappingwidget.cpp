@@ -38,6 +38,7 @@
 #include "qgssnappingconfig.h"
 #include "qgssnappinglayertreemodel.h"
 #include "qgssnappingwidget.h"
+#include "moc_qgssnappingwidget.cpp"
 #include "qgsunittypes.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsscalewidget.h"

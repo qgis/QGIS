@@ -19,6 +19,7 @@
 #include "qgsguiutils.h"
 #include "qgsrasterrendererwidget.h"
 #include "qgsrasterhistogramwidget.h"
+#include "moc_qgsrasterhistogramwidget.cpp"
 #include "qgsrasterminmaxwidget.h"
 #include "qgsdoublevalidator.h"
 #include "qgssettings.h"

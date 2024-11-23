@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmapcanvastracer.h"
+#include "moc_qgsmapcanvastracer.cpp"
 
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"

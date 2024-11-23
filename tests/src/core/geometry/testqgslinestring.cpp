@@ -467,7 +467,7 @@ void TestQgsLineString::addVertex()
   QVERIFY( ls.is3D() );
   QVERIFY( !ls.isMeasure() );
   QCOMPARE( ls.wkbType(), Qgis::WkbType::LineStringZ );
-  QCOMPARE( ls.wktTypeStr(), QString( "LineStringZ" ) );
+  QCOMPARE( ls.wktTypeStr(), QString( "LineString Z" ) );
 
   ls = QgsLineString();
   ls.addVertex( QgsPoint( Qgis::WkbType::PointM, 1.0, 2.0, 0.0, 3.0 ) );
@@ -476,7 +476,7 @@ void TestQgsLineString::addVertex()
   QVERIFY( !ls.is3D() );
   QVERIFY( ls.isMeasure() );
   QCOMPARE( ls.wkbType(), Qgis::WkbType::LineStringM );
-  QCOMPARE( ls.wktTypeStr(), QString( "LineStringM" ) );
+  QCOMPARE( ls.wktTypeStr(), QString( "LineString M" ) );
 
   ls = QgsLineString();
   ls.addVertex( QgsPoint( Qgis::WkbType::PointZM, 1.0, 2.0, 3.0, 4.0 ) );
@@ -485,7 +485,7 @@ void TestQgsLineString::addVertex()
   QVERIFY( ls.is3D() );
   QVERIFY( ls.isMeasure() );
   QCOMPARE( ls.wkbType(), Qgis::WkbType::LineStringZM );
-  QCOMPARE( ls.wktTypeStr(), QString( "LineStringZM" ) );
+  QCOMPARE( ls.wktTypeStr(), QString( "LineString ZM" ) );
 
   ls = QgsLineString();
   ls.addVertex( QgsPoint( Qgis::WkbType::Point25D, 1.0, 2.0, 3.0 ) );
@@ -494,7 +494,7 @@ void TestQgsLineString::addVertex()
   QVERIFY( ls.is3D() );
   QVERIFY( !ls.isMeasure() );
   QCOMPARE( ls.wkbType(), Qgis::WkbType::LineString25D );
-  QCOMPARE( ls.wktTypeStr(), QString( "LineStringZ" ) );
+  QCOMPARE( ls.wktTypeStr(), QString( "LineString Z" ) );
 
   //adding subsequent vertices should not alter z/m type, regardless of points type
   ls = QgsLineString();
@@ -2654,14 +2654,14 @@ void TestQgsLineString::removeDuplicateNodes()
                 << QgsPoint( 111, 12, 5 ) << QgsPoint( 111.01, 11.99, 6 ) );
 
   QVERIFY( ls.removeDuplicateNodes( 0.02 ) );
-  QCOMPARE( ls.asWkt(), QStringLiteral( "LineStringZ (11 2 1, 11 12 4, 111 12 5)" ) );
+  QCOMPARE( ls.asWkt(), QStringLiteral( "LineString Z (11 2 1, 11 12 4, 111 12 5)" ) );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 1 ) << QgsPoint( 11.01, 1.99, 2 )
                 << QgsPoint( 11.02, 2.01, 3 ) << QgsPoint( 11, 12, 4 )
                 << QgsPoint( 111, 12, 5 ) << QgsPoint( 111.01, 11.99, 6 ) );
 
   QVERIFY( !ls.removeDuplicateNodes( 0.02, true ) );
-  QCOMPARE( ls.asWkt( 2 ), QStringLiteral( "LineStringZ (11 2 1, 11.01 1.99 2, 11.02 2.01 3, 11 12 4, 111 12 5, 111.01 11.99 6)" ) );
+  QCOMPARE( ls.asWkt( 2 ), QStringLiteral( "LineString Z (11 2 1, 11.01 1.99 2, 11.02 2.01 3, 11 12 4, 111 12 5, 111.01 11.99 6)" ) );
 }
 
 void TestQgsLineString::swapXy()
@@ -2673,7 +2673,7 @@ void TestQgsLineString::swapXy()
                 << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
   ls.swapXy();
 
-  QCOMPARE( ls.asWkt( 2 ), QStringLiteral( "LineStringZM (2 11 3 4, 12 11 13 14, 12 111 23 24)" ) );
+  QCOMPARE( ls.asWkt( 2 ), QStringLiteral( "LineString ZM (2 11 3 4, 12 11 13 14, 12 111 23 24)" ) );
 }
 
 void TestQgsLineString::filterVertices()
@@ -2692,7 +2692,7 @@ void TestQgsLineString::filterVertices()
                 << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
   ls.filterVertices( filter );
 
-  QCOMPARE( ls.asWkt( 2 ), QStringLiteral( "LineStringZM (1 2 3 4, 4 12 13 14)" ) );
+  QCOMPARE( ls.asWkt( 2 ), QStringLiteral( "LineString ZM (1 2 3 4, 4 12 13 14)" ) );
 
 }
 
@@ -2712,7 +2712,7 @@ void TestQgsLineString::transformVertices()
                 << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
   ls.transformVertices( transform );
 
-  QCOMPARE( ls.asWkt( 2 ), QStringLiteral( "LineStringZM (16 8 10 12, 6 8 10 12, 9 18 20 22, 116 18 30 32)" ) );
+  QCOMPARE( ls.asWkt( 2 ), QStringLiteral( "LineString ZM (16 8 10 12, 6 8 10 12, 9 18 20 22, 116 18 30 32)" ) );
 
   // transform using class
   ls = QgsLineString();
@@ -2728,7 +2728,7 @@ void TestQgsLineString::transformVertices()
                 << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
 
   QVERIFY( ls.transform( &transformer ) );
-  QCOMPARE( ls.asWkt( 2 ), QStringLiteral( "LineStringZM (33 16 8 3, 3 16 8 3, 12 26 18 13, 333 26 28 23)" ) );
+  QCOMPARE( ls.asWkt( 2 ), QStringLiteral( "LineString ZM (33 16 8 3, 3 16 8 3, 12 26 18 13, 333 26 28 23)" ) );
 
   QgsFeedback feedback;
   feedback.cancel();
@@ -2751,7 +2751,7 @@ void TestQgsLineString::curveSubstring()
                 << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
   substringResult.reset( ls.curveSubstring( 0, 0 ) );
 
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineStringZM (11 2 3 4, 11 2 3 4)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineString ZM (11 2 3 4, 11 2 3 4)" ) );
 
   substringResult.reset( ls.curveSubstring( -1, -0.1 ) );
   QVERIFY( substringResult->isEmpty() );
@@ -2760,37 +2760,37 @@ void TestQgsLineString::curveSubstring()
   QVERIFY( substringResult->isEmpty() );
 
   substringResult.reset( ls.curveSubstring( -1, 1 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineStringZM (11 2 3 4, 11 3 4 5)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineString ZM (11 2 3 4, 11 3 4 5)" ) );
 
   substringResult.reset( ls.curveSubstring( 1, -1 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineStringZM (11 3 4 5, 11 3 4 5)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineString ZM (11 3 4 5, 11 3 4 5)" ) );
 
   substringResult.reset( ls.curveSubstring( -1, 10000 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineStringZM (11 2 3 4, 11 12 13 14, 111 12 23 24)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineString ZM (11 2 3 4, 11 12 13 14, 111 12 23 24)" ) );
 
   substringResult.reset( ls.curveSubstring( 1, 10000 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineStringZM (11 3 4 5, 11 12 13 14, 111 12 23 24)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineString ZM (11 3 4 5, 11 12 13 14, 111 12 23 24)" ) );
 
   substringResult.reset( ls.curveSubstring( 1, 20 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineStringZM (11 3 4 5, 11 12 13 14, 21 12 14 15)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineString ZM (11 3 4 5, 11 12 13 14, 21 12 14 15)" ) );
 
   substringResult.reset( ls.curveSubstring(
                            QgsGeometryUtils::distanceToVertex( ls, QgsVertexId( 0, 0, 1 ) ),
                            QgsGeometryUtils::distanceToVertex( ls, QgsVertexId( 0, 0, 2 ) ) ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineStringZM (11 12 13 14, 111 12 23 24)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineString ZM (11 12 13 14, 111 12 23 24)" ) );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 0, Qgis::WkbType::PointZ )
                 << QgsPoint( 11, 12, 13, 0, Qgis::WkbType::PointZ )
                 << QgsPoint( 111, 12, 23, 0, Qgis::WkbType::PointZ ) );
   substringResult.reset( ls.curveSubstring( 1, 20 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineStringZ (11 3 4, 11 12 13, 21 12 14)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineString Z (11 3 4, 11 12 13, 21 12 14)" ) );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 0, 3, Qgis::WkbType::PointM )
                 << QgsPoint( 11, 12, 0, 13, Qgis::WkbType::PointM )
                 << QgsPoint( 111, 12, 0, 23, Qgis::WkbType::PointM ) );
   substringResult.reset( ls.curveSubstring( 1, 20 ) );
 
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineStringM (11 3 4, 11 12 13, 21 12 14)" ) );
+  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineString M (11 3 4, 11 12 13, 21 12 14)" ) );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) );
   substringResult.reset( ls.curveSubstring( 1, 20 ) );
@@ -2810,7 +2810,7 @@ void TestQgsLineString::interpolatePoint()
                 << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
 
   interpolateResult.reset( ls.interpolatePoint( 0 ) );
-  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (11 2 3 4)" ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point ZM (11 2 3 4)" ) );
 
   interpolateResult.reset( ls.interpolatePoint( -1 ) );
   QVERIFY( !interpolateResult.get() );
@@ -2819,27 +2819,27 @@ void TestQgsLineString::interpolatePoint()
   QVERIFY( !interpolateResult.get() );
 
   interpolateResult.reset( ls.interpolatePoint( 1 ) );
-  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (11 3 4 5)" ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point ZM (11 3 4 5)" ) );
 
   interpolateResult.reset( ls.interpolatePoint( 20 ) );
-  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (21 12 14 15)" ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point ZM (21 12 14 15)" ) );
 
   interpolateResult.reset( ls.interpolatePoint( 110 ) );
-  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (111 12 23 24)" ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point ZM (111 12 23 24)" ) );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 0, Qgis::WkbType::PointZ )
                 << QgsPoint( 11, 12, 13, 0, Qgis::WkbType::PointZ )
                 << QgsPoint( 111, 12, 23, 0, Qgis::WkbType::PointZ ) );
 
   interpolateResult.reset( ls.interpolatePoint( 1 ) );
-  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZ (11 3 4)" ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point Z (11 3 4)" ) );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 0, 3, Qgis::WkbType::PointM )
                 << QgsPoint( 11, 12, 0, 13, Qgis::WkbType::PointM )
                 << QgsPoint( 111, 12, 0, 23, Qgis::WkbType::PointM ) );
 
   interpolateResult.reset( ls.interpolatePoint( 1 ) );
-  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointM (11 3 4)" ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point M (11 3 4)" ) );
 
   ls.setPoints( QgsPointSequence() << QgsPoint( 11, 2 )
                 << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) );

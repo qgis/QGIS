@@ -215,6 +215,17 @@ Convenience methods which sets the visible state of the specified map ``layer``.
 .. versionadded:: 3.10
 %End
 
+    void setCurrentNode( QgsLayerTreeNode *node );
+%Docstring
+Sets the currently selected ``node``.
+
+If ``node`` is ``None`` then all nodes will be deselected.
+
+.. seealso:: :py:func:`currentNode`
+
+.. versionadded:: 3.40
+%End
+
     void setCurrentLayer( QgsMapLayer *layer );
 %Docstring
 Sets the currently selected ``layer``.

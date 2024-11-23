@@ -15,6 +15,7 @@
 
 
 #include "qgsmaptoolidentifyfeature.h"
+#include "moc_qgsmaptoolidentifyfeature.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 

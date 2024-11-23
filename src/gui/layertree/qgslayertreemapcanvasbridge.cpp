@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreemapcanvasbridge.h"
+#include "moc_qgslayertreemapcanvasbridge.cpp"
 
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"

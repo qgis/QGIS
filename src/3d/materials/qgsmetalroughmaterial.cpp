@@ -14,19 +14,19 @@
  ***************************************************************************/
 
 #include "qgsmetalroughmaterial.h"
+#include "moc_qgsmetalroughmaterial.cpp"
 #include "qgs3dutils.h"
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QRenderPass>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QAbstractTexture>
-#include <Qt3DRender/QEffect>
 #include <Qt3DRender/QShaderProgramBuilder>
 #include <Qt3DRender/QGraphicsApiFilter>
 
 ///@cond PRIVATE
 QgsMetalRoughMaterial::QgsMetalRoughMaterial( QNode *parent )
-  : QMaterial( parent )
+  : QgsMaterial( parent )
   , mBaseColorParameter( new Qt3DRender::QParameter( QStringLiteral( "baseColor" ), QColor( "grey" ), this ) )
   , mMetalnessParameter( new Qt3DRender::QParameter( QStringLiteral( "metalness" ), 0.0f, this ) )
   , mRoughnessParameter( new Qt3DRender::QParameter( QStringLiteral( "roughness" ), 0.0f, this ) )

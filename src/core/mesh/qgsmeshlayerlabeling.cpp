@@ -103,7 +103,7 @@ bool QgsMeshLayerSimpleLabeling::requiresAdvancedEffects() const
   return mSettings->containsAdvancedEffects();
 }
 
-QgsMeshLayerSimpleLabeling *QgsMeshLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
+QgsMeshLayerSimpleLabeling *QgsMeshLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
   const QDomElement settingsElem = element.firstChildElement( QStringLiteral( "settings" ) );
   if ( !settingsElem.isNull() )

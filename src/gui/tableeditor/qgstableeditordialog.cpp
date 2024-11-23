@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstableeditordialog.h"
+#include "moc_qgstableeditordialog.cpp"
 #include "qgstableeditorwidget.h"
 #include "qgsmessagebar.h"
 #include "qgsgui.h"

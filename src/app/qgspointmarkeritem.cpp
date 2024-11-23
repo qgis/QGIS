@@ -42,17 +42,17 @@ QgsMapCanvasSymbolItem::~QgsMapCanvasSymbolItem() = default;
 QgsRenderContext QgsMapCanvasSymbolItem::renderContext( QPainter *painter )
 {
   QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-          << QgsExpressionContextUtils::atlasScope( nullptr );
+
   if ( mMapCanvas )
   {
-    context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-            << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
+    context = mMapCanvas->createExpressionContext();
   }
   else
   {
-    context << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    context << QgsExpressionContextUtils::globalScope()
+            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+            << QgsExpressionContextUtils::atlasScope( nullptr )
+            << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
   //context << QgsExpressionContextUtils::layerScope( mLayer );
   context.setFeature( mFeature );

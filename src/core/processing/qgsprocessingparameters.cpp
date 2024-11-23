@@ -7974,7 +7974,7 @@ QString QgsProcessingParameterScale::asPythonString( const QgsProcessing::Python
   return QString();
 }
 
-QgsProcessingParameterScale *QgsProcessingParameterScale::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+QgsProcessingParameterScale *QgsProcessingParameterScale::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) // cppcheck-suppress duplInheritedMember
 {
   return new QgsProcessingParameterScale( name, description, definition.isEmpty() ? QVariant()
                                           : ( definition.toLower().trimmed() == QLatin1String( "none" ) ? QVariant() : definition ), isOptional );

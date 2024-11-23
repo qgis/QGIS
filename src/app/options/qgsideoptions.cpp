@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsideoptions.h"
+#include "moc_qgsideoptions.cpp"
 #include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgis.h"

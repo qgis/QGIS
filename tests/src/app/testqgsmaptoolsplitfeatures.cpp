@@ -157,8 +157,8 @@ void TestQgsMapToolSplitFeatures::testSplitPolygon()
 
   QCOMPARE( mPolygonLayer->undoStack()->index(), 1 );
   QCOMPARE( mPolygonLayer->featureCount(), 3 );
-  QCOMPARE( mPolygonLayer->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "PolygonZ ((4 10 24, 4 5 14, 0 5 10, 0 10 20, 4 10 24))" ) );
-  QCOMPARE( mPolygonLayer->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "PolygonZ ((0 0 10, 0 5 20, 10 5 30, 0 0 10))" ) );
+  QCOMPARE( mPolygonLayer->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "Polygon Z ((4 10 24, 4 5 14, 0 5 10, 0 10 20, 4 10 24))" ) );
+  QCOMPARE( mPolygonLayer->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "Polygon Z ((0 0 10, 0 5 20, 10 5 30, 0 0 10))" ) );
 
   // no change to other layers
   QCOMPARE( mMultiLineStringLayer->undoStack()->index(), 0 );
@@ -176,8 +176,8 @@ void TestQgsMapToolSplitFeatures::testSplitPolygonTopologicalEditing()
 
   QCOMPARE( mPolygonLayer->undoStack()->index(), 1 );
   QCOMPARE( mPolygonLayer->featureCount(), 3 );
-  QCOMPARE( mPolygonLayer->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "PolygonZ ((4 10 24, 4 5 14, 0 5 10, 0 10 20, 4 10 24))" ) );
-  QCOMPARE( mPolygonLayer->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "PolygonZ ((0 0 10, 0 5 20, 4 5 14, 10 5 30, 0 0 10))" ) );
+  QCOMPARE( mPolygonLayer->getFeature( 1 ).geometry().asWkt(), QStringLiteral( "Polygon Z ((4 10 24, 4 5 14, 0 5 10, 0 10 20, 4 10 24))" ) );
+  QCOMPARE( mPolygonLayer->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "Polygon Z ((0 0 10, 0 5 20, 4 5 14, 10 5 30, 0 0 10))" ) );
 
   QCOMPARE( mMultiLineStringLayer->undoStack()->index(), 1 );
   QCOMPARE( mMultiLineStringLayer->getFeature( 2 ).geometry().asWkt(), QStringLiteral( "MultiLineString ((0 5, 4 5, 10 5),(10 5, 15 5))" ) );
@@ -248,7 +248,7 @@ void TestQgsMapToolSplitFeatures::testSplitPolygonSnapToSegment()
   QCOMPARE( mPolygonLayer->featureCount(), 12 );
 
   // No change to the other feature in the layer
-  QCOMPARE( mPolygonLayer->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "PolygonZ ((0 5 10, 0 10 20, 10 10 30, 10 5 20, 0 5 10))" ) );
+  QCOMPARE( mPolygonLayer->getFeature( 1 ).geometry().asWkt( 2 ), QStringLiteral( "Polygon Z ((0 5 10, 0 10 20, 10 10 30, 10 5 20, 0 5 10))" ) );
 
   // No change to other layers
   QCOMPARE( mMultiLineStringLayer->undoStack()->index(), 0 );

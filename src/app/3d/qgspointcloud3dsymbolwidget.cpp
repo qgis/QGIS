@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspointcloud3dsymbolwidget.h"
+#include "moc_qgspointcloud3dsymbolwidget.cpp"
 
 #include "qgspointcloudlayer.h"
 #include "qgspointcloud3dsymbol.h"

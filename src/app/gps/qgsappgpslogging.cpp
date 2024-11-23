@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsappgpslogging.h"
+#include "moc_qgsappgpslogging.cpp"
 #include "qgsgui.h"
 #include "qgisapp.h"
 #include "qgsmessagebar.h"

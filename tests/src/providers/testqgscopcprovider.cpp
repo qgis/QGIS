@@ -317,7 +317,7 @@ void TestQgsCopcProvider::attributes()
   QCOMPARE( attributes.at( 8 ).name(), QStringLiteral( "Classification" ) );
   QCOMPARE( attributes.at( 8 ).type(), QgsPointCloudAttribute::UChar );
   QCOMPARE( attributes.at( 9 ).name(), QStringLiteral( "ScanAngleRank" ) );
-  QCOMPARE( attributes.at( 9 ).type(), QgsPointCloudAttribute::Short );
+  QCOMPARE( attributes.at( 9 ).type(), QgsPointCloudAttribute::Float );
   QCOMPARE( attributes.at( 10 ).name(), QStringLiteral( "UserData" ) );
   QCOMPARE( attributes.at( 10 ).type(), QgsPointCloudAttribute::UChar );
   QCOMPARE( attributes.at( 11 ).name(), QStringLiteral( "PointSourceId" ) );
@@ -397,14 +397,14 @@ void TestQgsCopcProvider::testIdentify()
     expected[ QStringLiteral( "Blue" ) ] = 0;
     expected[ QStringLiteral( "Classification" ) ] = 2;
     expected[ QStringLiteral( "EdgeOfFlightLine" ) ] = 0;
-    expected[ QStringLiteral( "GpsTime" ) ] = 268793.37257748609409;
+    expected[ QStringLiteral( "GpsTime (raw)" ) ] = 268793.37257748609409;
     expected[ QStringLiteral( "Green" ) ] = 0;
     expected[ QStringLiteral( "Intensity" ) ] = 1765;
     expected[ QStringLiteral( "NumberOfReturns" ) ] = 1;
     expected[ QStringLiteral( "PointSourceId" ) ] = 7041;
     expected[ QStringLiteral( "Red" ) ] = 0;
     expected[ QStringLiteral( "ReturnNumber" ) ] = 1;
-    expected[ QStringLiteral( "ScanAngleRank" ) ] = -59;
+    expected[ QStringLiteral( "ScanAngleRank" ) ] = -28.0020008087;
     expected[ QStringLiteral( "ScanDirectionFlag" ) ] = 1;
     expected[ QStringLiteral( "UserData" ) ] = 17;
     expected[ QStringLiteral( "X" ) ] = 498062.52;
@@ -436,14 +436,14 @@ void TestQgsCopcProvider::testIdentify()
       point[ QStringLiteral( "Blue" ) ] =  "0" ;
       point[ QStringLiteral( "Classification" ) ] =  "2" ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =  "0" ;
-      point[ QStringLiteral( "GpsTime" ) ] =  "268793.3373408913" ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =  "268793.3373408913" ;
       point[ QStringLiteral( "Green" ) ] =  "0" ;
       point[ QStringLiteral( "Intensity" ) ] =  "278" ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =  "1" ;
       point[ QStringLiteral( "PointSourceId" ) ] =  "7041" ;
       point[ QStringLiteral( "Red" ) ] =  "0" ;
       point[ QStringLiteral( "ReturnNumber" ) ] =  "1" ;
-      point[ QStringLiteral( "ScanAngleRank" ) ] =  "-59" ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =  "-28.0020008087" ;
       point[ QStringLiteral( "ScanDirectionFlag" ) ] =  "1" ;
       point[ QStringLiteral( "UserData" ) ] =  "17" ;
       point[ QStringLiteral( "X" ) ] =  "498066.27" ;
@@ -479,14 +479,14 @@ void TestQgsCopcProvider::testIdentify()
       point[ QStringLiteral( "Blue" ) ] =  "0" ;
       point[ QStringLiteral( "Classification" ) ] =  "2" ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =  "0" ;
-      point[ QStringLiteral( "GpsTime" ) ] =  "268793.3813974548" ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =  "268793.3813974548" ;
       point[ QStringLiteral( "Green" ) ] =  "0" ;
       point[ QStringLiteral( "Intensity" ) ] =  "1142" ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =  "1" ;
       point[ QStringLiteral( "PointSourceId" ) ] =  "7041" ;
       point[ QStringLiteral( "Red" ) ] =  "0" ;
       point[ QStringLiteral( "ReturnNumber" ) ] =  "1" ;
-      point[ QStringLiteral( "ScanAngleRank" ) ] =  "-59" ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =  "-28.0020008087" ;
       point[ QStringLiteral( "ScanDirectionFlag" ) ] =  "1" ;
       point[ QStringLiteral( "UserData" ) ] =  "17" ;
       point[ QStringLiteral( "X" ) ] =  "498063.14" ;
@@ -499,14 +499,14 @@ void TestQgsCopcProvider::testIdentify()
       point[ QStringLiteral( "Blue" ) ] =  "0" ;
       point[ QStringLiteral( "Classification" ) ] =  "3" ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =  "0" ;
-      point[ QStringLiteral( "GpsTime" ) ] =  "269160.5176644815" ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =  "269160.5176644815" ;
       point[ QStringLiteral( "Green" ) ] =  "0" ;
       point[ QStringLiteral( "Intensity" ) ] =  "1631" ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =  "1" ;
       point[ QStringLiteral( "PointSourceId" ) ] =  "7042" ;
       point[ QStringLiteral( "Red" ) ] =  "0" ;
       point[ QStringLiteral( "ReturnNumber" ) ] =  "1" ;
-      point[ QStringLiteral( "ScanAngleRank" ) ] =  "48" ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =  "-12" ;
       point[ QStringLiteral( "ScanDirectionFlag" ) ] =  "1" ;
       point[ QStringLiteral( "UserData" ) ] =  "17" ;
       point[ QStringLiteral( "X" ) ] =  "498063.11" ;
@@ -589,7 +589,7 @@ void TestQgsCopcProvider::testExtraBytesAttributesValues()
       point[ QStringLiteral( "Classification" ) ] =   "2"  ;
       point[ QStringLiteral( "Deviation" ) ] =   "0"  ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
-      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.235839"  ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =   "302522582.235839"  ;
       point[ QStringLiteral( "Green" ) ] =   "0"  ;
       point[ QStringLiteral( "Intensity" ) ] =   "1417"  ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
@@ -597,7 +597,7 @@ void TestQgsCopcProvider::testExtraBytesAttributesValues()
       point[ QStringLiteral( "Red" ) ] =   "0"  ;
       point[ QStringLiteral( "Reflectance" ) ] =   "-8.050000190734863"  ;
       point[ QStringLiteral( "ReturnNumber" ) ] =   "3"  ;
-      point[ QStringLiteral( "ScanAngleRank" ) ] =   "24"  ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =   "-6"  ;
       point[ QStringLiteral( "ScanDirectionFlag" ) ] =   "0"  ;
       point[ QStringLiteral( "UserData" ) ] =   "0"  ;
       point[ QStringLiteral( "X" ) ] =   "527919.11"  ;
@@ -612,7 +612,7 @@ void TestQgsCopcProvider::testExtraBytesAttributesValues()
       point[ QStringLiteral( "Classification" ) ] =   "5"  ;
       point[ QStringLiteral( "Deviation" ) ] =   "2"  ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
-      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.235838"  ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =   "302522582.235838"  ;
       point[ QStringLiteral( "Green" ) ] =   "0"  ;
       point[ QStringLiteral( "Intensity" ) ] =   "441"  ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
@@ -620,7 +620,7 @@ void TestQgsCopcProvider::testExtraBytesAttributesValues()
       point[ QStringLiteral( "Red" ) ] =   "0"  ;
       point[ QStringLiteral( "Reflectance" ) ] =   "-17.829999923706055"  ;
       point[ QStringLiteral( "ReturnNumber" ) ] =   "2"  ;
-      point[ QStringLiteral( "ScanAngleRank" ) ] =   "24"  ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =   "-6"  ;
       point[ QStringLiteral( "ScanDirectionFlag" ) ] =   "0"  ;
       point[ QStringLiteral( "UserData" ) ] =   "0"  ;
       point[ QStringLiteral( "X" ) ] =   "527919.1799999999"  ;
@@ -673,7 +673,7 @@ void TestQgsCopcProvider::testClassFlagsValues()
       point[ QStringLiteral( "Classification" ) ] =   "2"  ;
       point[ QStringLiteral( "Deviation" ) ] =   "0"  ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
-      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.235839"  ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =   "302522582.235839"  ;
       point[ QStringLiteral( "Green" ) ] =   "0"  ;
       point[ QStringLiteral( "Intensity" ) ] =   "1417"  ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
@@ -681,7 +681,7 @@ void TestQgsCopcProvider::testClassFlagsValues()
       point[ QStringLiteral( "Red" ) ] =   "0"  ;
       point[ QStringLiteral( "Reflectance" ) ] =   "-8.050000190734863"  ;
       point[ QStringLiteral( "ReturnNumber" ) ] =   "3"  ;
-      point[ QStringLiteral( "ScanAngleRank" ) ] =   "24"  ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =   "-6"  ;
       point[ QStringLiteral( "ScanDirectionFlag" ) ] =   "0"  ;
       point[ QStringLiteral( "UserData" ) ] =   "0"  ;
       point[ QStringLiteral( "Synthetic" ) ] =   "1"  ;
@@ -700,7 +700,7 @@ void TestQgsCopcProvider::testClassFlagsValues()
       point[ QStringLiteral( "Classification" ) ] =   "5"  ;
       point[ QStringLiteral( "Deviation" ) ] =   "2"  ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
-      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.235838"  ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =   "302522582.235838"  ;
       point[ QStringLiteral( "Green" ) ] =   "0"  ;
       point[ QStringLiteral( "Intensity" ) ] =   "441"  ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
@@ -708,7 +708,7 @@ void TestQgsCopcProvider::testClassFlagsValues()
       point[ QStringLiteral( "Red" ) ] =   "0"  ;
       point[ QStringLiteral( "Reflectance" ) ] =   "-17.829999923706055"  ;
       point[ QStringLiteral( "ReturnNumber" ) ] =   "2"  ;
-      point[ QStringLiteral( "ScanAngleRank" ) ] =   "24"  ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =   "-6"  ;
       point[ QStringLiteral( "ScanDirectionFlag" ) ] =   "0"  ;
       point[ QStringLiteral( "UserData" ) ] =   "0"  ;
       point[ QStringLiteral( "Synthetic" ) ] =   "1"  ;
@@ -727,7 +727,7 @@ void TestQgsCopcProvider::testClassFlagsValues()
       point[ QStringLiteral( "Classification" ) ] =   "5"  ;
       point[ QStringLiteral( "Deviation" ) ] =   "8"  ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
-      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.235837"  ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =   "302522582.235837"  ;
       point[ QStringLiteral( "Green" ) ] =   "0"  ;
       point[ QStringLiteral( "Intensity" ) ] =   "754"  ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
@@ -735,7 +735,7 @@ void TestQgsCopcProvider::testClassFlagsValues()
       point[ QStringLiteral( "Red" ) ] =   "0"  ;
       point[ QStringLiteral( "Reflectance" ) ] =   "-14.720000267028809"  ;
       point[ QStringLiteral( "ReturnNumber" ) ] =   "2"  ;
-      point[ QStringLiteral( "ScanAngleRank" ) ] =   "24"  ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =   "-6"  ;
       point[ QStringLiteral( "ScanDirectionFlag" ) ] =   "0"  ;
       point[ QStringLiteral( "UserData" ) ] =   "0"  ;
       point[ QStringLiteral( "Synthetic" ) ] =   "1"  ;
@@ -754,7 +754,7 @@ void TestQgsCopcProvider::testClassFlagsValues()
       point[ QStringLiteral( "Classification" ) ] =   "2"  ;
       point[ QStringLiteral( "Deviation" ) ] =   "6"  ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
-      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.235838"  ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =   "302522582.235838"  ;
       point[ QStringLiteral( "Green" ) ] =   "0"  ;
       point[ QStringLiteral( "Intensity" ) ] =   "1539"  ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
@@ -762,7 +762,7 @@ void TestQgsCopcProvider::testClassFlagsValues()
       point[ QStringLiteral( "Red" ) ] =   "0"  ;
       point[ QStringLiteral( "Reflectance" ) ] =   "-6.829999923706055"  ;
       point[ QStringLiteral( "ReturnNumber" ) ] =   "3"  ;
-      point[ QStringLiteral( "ScanAngleRank" ) ] =   "24"  ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =   "-6"  ;
       point[ QStringLiteral( "ScanDirectionFlag" ) ] =   "0"  ;
       point[ QStringLiteral( "UserData" ) ] =   "0"  ;
       point[ QStringLiteral( "Synthetic" ) ] =   "1"  ;
@@ -781,7 +781,7 @@ void TestQgsCopcProvider::testClassFlagsValues()
       point[ QStringLiteral( "Classification" ) ] =   "5"  ;
       point[ QStringLiteral( "Deviation" ) ] =   "43"  ;
       point[ QStringLiteral( "EdgeOfFlightLine" ) ] =   "0"  ;
-      point[ QStringLiteral( "GpsTime" ) ] =   "302522582.23583597"  ;
+      point[ QStringLiteral( "GpsTime (raw)" ) ] =   "302522582.23583597"  ;
       point[ QStringLiteral( "Green" ) ] =   "0"  ;
       point[ QStringLiteral( "Intensity" ) ] =   "1171"  ;
       point[ QStringLiteral( "NumberOfReturns" ) ] =   "3"  ;
@@ -789,7 +789,7 @@ void TestQgsCopcProvider::testClassFlagsValues()
       point[ QStringLiteral( "Red" ) ] =   "0"  ;
       point[ QStringLiteral( "Reflectance" ) ] =   "-10.550000190734863"  ;
       point[ QStringLiteral( "ReturnNumber" ) ] =   "1"  ;
-      point[ QStringLiteral( "ScanAngleRank" ) ] =   "24"  ;
+      point[ QStringLiteral( "ScanAngleRank" ) ] =   "-6"  ;
       point[ QStringLiteral( "ScanDirectionFlag" ) ] =   "0"  ;
       point[ QStringLiteral( "UserData" ) ] =   "0"  ;
       point[ QStringLiteral( "Synthetic" ) ] =   "0"  ;
@@ -1035,8 +1035,8 @@ void TestQgsCopcProvider::testStatsCalculator()
 
   {
     QgsPointCloudAttributeStatistics s = stats.statisticsOf( QStringLiteral( "ScanAngleRank" ) );
-    QCOMPARE( ( float )s.minimum, -65 );
-    QCOMPARE( ( float )s.maximum, 125 );
+    QCOMPARE( ( float )s.minimum, -10.998000145f );
+    QCOMPARE( ( float )s.maximum, -4.001999855f );
   }
 
   {

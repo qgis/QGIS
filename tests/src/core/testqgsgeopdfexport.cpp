@@ -21,7 +21,7 @@
 #include <QObject>
 #include "qgstest.h"
 
-class TestGeoPdfExporter : public QgsAbstractGeoPdfExporter
+class TestGeospatialPdfExporter : public QgsAbstractGeospatialPdfExporter
 {
 
   private:
@@ -38,12 +38,12 @@ class TestGeoPdfExporter : public QgsAbstractGeoPdfExporter
 
 };
 
-class TestQgsGeoPdfExport : public QgsTest
+class TestQgsGeospatialPdfExport : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsGeoPdfExport() : QgsTest( QStringLiteral( "GeoPDF Export Testss" ) ) {}
+    TestQgsGeospatialPdfExport() : QgsTest( QStringLiteral( "Geospatial PDF Export Testss" ) ) {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -61,28 +61,28 @@ class TestQgsGeoPdfExport : public QgsTest
     void testMutuallyExclusiveGroupsCustom();
 };
 
-void TestQgsGeoPdfExport::initTestCase()
+void TestQgsGeospatialPdfExport::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
 }
 
-void TestQgsGeoPdfExport::cleanupTestCase()
+void TestQgsGeospatialPdfExport::cleanupTestCase()
 {
   QgsApplication::exitQgis();
 }
 
-void TestQgsGeoPdfExport::testCollectingFeatures()
+void TestQgsGeospatialPdfExport::testCollectingFeatures()
 {
-  if ( !QgsAbstractGeoPdfExporter::geoPDFCreationAvailable() )
+  if ( !QgsAbstractGeospatialPdfExporter::geospatialPDFCreationAvailable() )
   {
-    QSKIP( "This test requires GeoPDF creation abilities", SkipSingle );
+    QSKIP( "This test requires geospatial PDF creation abilities", SkipSingle );
   }
 
-  TestGeoPdfExporter geoPdfExporter;
+  TestGeospatialPdfExporter geospatialPdfExporter;
   // no features, no crash
-  QVERIFY( geoPdfExporter.saveTemporaryLayers() );
-  QCOMPARE( geoPdfExporter.mVectorComponents.count(), 0 );
+  QVERIFY( geospatialPdfExporter.saveTemporaryLayers() );
+  QCOMPARE( geospatialPdfExporter.mVectorComponents.count(), 0 );
 
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "a1" ), QMetaType::Type::Int ) );
@@ -92,20 +92,20 @@ void TestQgsGeoPdfExport::testCollectingFeatures()
   f.setAttributes( QgsAttributes() << 1 << 2 );
   f.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
   QgsGeometry renderedBounds( QgsGeometry::fromRect( QgsRectangle( 1, 10, 6, 20 ) ) );
-  geoPdfExporter.pushRenderedFeature( QStringLiteral( "layer1" ), QgsAbstractGeoPdfExporter::RenderedFeature( f, renderedBounds ) );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer1" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ) );
   f.setAttributes( QgsAttributes() << 11 << 22 );
   f.setGeometry( QgsGeometry( new QgsPoint( 3, 4 ) ) );
   renderedBounds = QgsGeometry::fromRect( QgsRectangle( 2, 10, 7, 20 ) );
-  geoPdfExporter.pushRenderedFeature( QStringLiteral( "layer1" ), QgsAbstractGeoPdfExporter::RenderedFeature( f, renderedBounds ) );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer1" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ) );
   f.setAttributes( QgsAttributes() << 31 << 32 );
   f.setGeometry( QgsGeometry( new QgsPoint( 4, 5 ) ) );
   renderedBounds = QgsGeometry::fromWkt( QStringLiteral( "LineString(1 1, 2 2)" ) );
-  geoPdfExporter.pushRenderedFeature( QStringLiteral( "layer2" ), QgsAbstractGeoPdfExporter::RenderedFeature( f, renderedBounds ) );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer2" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ) );
 
-  QVERIFY( geoPdfExporter.saveTemporaryLayers() );
-  QCOMPARE( geoPdfExporter.mVectorComponents.count(), 2 );
-  QgsAbstractGeoPdfExporter::VectorComponentDetail component;
-  for ( const auto &it : std::as_const( geoPdfExporter.mVectorComponents ) )
+  QVERIFY( geospatialPdfExporter.saveTemporaryLayers() );
+  QCOMPARE( geospatialPdfExporter.mVectorComponents.count(), 2 );
+  QgsAbstractGeospatialPdfExporter::VectorComponentDetail component;
+  for ( const auto &it : std::as_const( geospatialPdfExporter.mVectorComponents ) )
   {
     if ( it.mapLayerId == QLatin1String( "layer1" ) )
     {
@@ -132,7 +132,7 @@ void TestQgsGeoPdfExport::testCollectingFeatures()
   QCOMPARE( f.attributes().at( 2 ).toInt(), 22 );
   QCOMPARE( f.geometry().asWkt(), QStringLiteral( "Polygon ((2 10, 7 10, 7 20, 2 20, 2 10))" ) );
 
-  for ( const auto &it : std::as_const( geoPdfExporter.mVectorComponents ) )
+  for ( const auto &it : std::as_const( geospatialPdfExporter.mVectorComponents ) )
   {
     if ( it.mapLayerId == QLatin1String( "layer2" ) )
     {
@@ -155,12 +155,12 @@ void TestQgsGeoPdfExport::testCollectingFeatures()
   QCOMPARE( f.geometry().asWkt(), QStringLiteral( "LineString (1 1, 2 2)" ) );
 }
 
-void TestQgsGeoPdfExport::testComposition()
+void TestQgsGeospatialPdfExport::testComposition()
 {
-  TestGeoPdfExporter geoPdfExporter;
+  TestGeospatialPdfExporter geospatialPdfExporter;
   // no features, no crash
-  QVERIFY( geoPdfExporter.saveTemporaryLayers() );
-  QCOMPARE( geoPdfExporter.mVectorComponents.count(), 0 );
+  QVERIFY( geospatialPdfExporter.saveTemporaryLayers() );
+  QCOMPARE( geospatialPdfExporter.mVectorComponents.count(), 0 );
 
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "a1" ), QMetaType::Type::Int ) );
@@ -170,20 +170,20 @@ void TestQgsGeoPdfExport::testComposition()
   f.setAttributes( QgsAttributes() << 1 << 2 );
   f.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
   QgsGeometry renderedBounds( QgsGeometry::fromRect( QgsRectangle( 1, 10, 6, 20 ) ) );
-  geoPdfExporter.pushRenderedFeature( QStringLiteral( "layer1" ), QgsAbstractGeoPdfExporter::RenderedFeature( f, renderedBounds ) );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer1" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ) );
   f.setAttributes( QgsAttributes() << 31 << 32 );
   f.setGeometry( QgsGeometry( new QgsPoint( 4, 5 ) ) );
   renderedBounds = QgsGeometry::fromWkt( QStringLiteral( "LineString(1 1, 2 2)" ) );
-  geoPdfExporter.pushRenderedFeature( QStringLiteral( "layer2" ), QgsAbstractGeoPdfExporter::RenderedFeature( f, renderedBounds ) );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer2" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ) );
 
-  QVERIFY( geoPdfExporter.saveTemporaryLayers() );
-  QgsAbstractGeoPdfExporter::VectorComponentDetail component;
+  QVERIFY( geospatialPdfExporter.saveTemporaryLayers() );
+  QgsAbstractGeospatialPdfExporter::VectorComponentDetail component;
   QString layer1Path;
   QString layer1Layer;
   QString layer2Path;
   QString layer2Layer;
 
-  for ( const auto &it : std::as_const( geoPdfExporter.mVectorComponents ) )
+  for ( const auto &it : std::as_const( geospatialPdfExporter.mVectorComponents ) )
   {
     if ( it.mapLayerId == QLatin1String( "layer1" ) )
     {
@@ -198,8 +198,8 @@ void TestQgsGeoPdfExport::testComposition()
   }
 
   // test creation of the composition xml
-  QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > renderedLayers;
-  QgsAbstractGeoPdfExporter::ComponentLayerDetail detail;
+  QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > renderedLayers;
+  QgsAbstractGeospatialPdfExporter::ComponentLayerDetail detail;
   detail.mapLayerId = QStringLiteral( "layer3" );
   detail.name = QStringLiteral( "xxx" );
   detail.opacity = 0.7;
@@ -207,12 +207,12 @@ void TestQgsGeoPdfExport::testComposition()
   detail.sourcePdfPath = QStringLiteral( "a pdf.pdf" );
   renderedLayers << detail;
 
-  QgsAbstractGeoPdfExporter::ExportDetails details;
+  QgsAbstractGeospatialPdfExporter::ExportDetails details;
 
   details.layerIdToPdfLayerTreeNameMap.insert( QStringLiteral( "layer1" ), QStringLiteral( "my first layer" ) );
   details.initialLayerVisibility.insert( QStringLiteral( "layer2" ), false );
   details.layerOrder = QStringList() << QStringLiteral( "layer2" );
-  QString composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
+  QString composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
   QDomDocument doc;
   doc.setContent( composition );
@@ -262,14 +262,14 @@ void TestQgsGeoPdfExport::testComposition()
 
 }
 
-void TestQgsGeoPdfExport::testMetadata()
+void TestQgsGeospatialPdfExport::testMetadata()
 {
-  TestGeoPdfExporter geoPdfExporter;
+  TestGeospatialPdfExporter geospatialPdfExporter;
   // test creation of the composition xml with metadata
 
-  QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > renderedLayers;
-  QgsAbstractGeoPdfExporter::ExportDetails details;
-  QString composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
+  QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > renderedLayers;
+  QgsAbstractGeospatialPdfExporter::ExportDetails details;
+  QString composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
   QDomDocument doc;
   doc.setContent( composition );
@@ -290,7 +290,7 @@ void TestQgsGeoPdfExport::testMetadata()
   details.title = QStringLiteral( "my title" );
   details.keywords.insert( QStringLiteral( "k1" ), QStringList() << QStringLiteral( "v1" ) << QStringLiteral( "v2" ) );
 
-  composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
+  composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
   doc.setContent( composition );
   QCOMPARE( doc.elementsByTagName( QStringLiteral( "Author" ) ).at( 0 ).toElement().text(), QStringLiteral( "my author" ) );
@@ -303,30 +303,30 @@ void TestQgsGeoPdfExport::testMetadata()
 
 }
 
-void TestQgsGeoPdfExport::testGeoref()
+void TestQgsGeospatialPdfExport::testGeoref()
 {
-  TestGeoPdfExporter geoPdfExporter;
+  TestGeospatialPdfExporter geospatialPdfExporter;
   // test creation of the composition xml with georeferencing
 
-  QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > renderedLayers;
-  QgsAbstractGeoPdfExporter::ExportDetails details;
-  QString composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
+  QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > renderedLayers;
+  QgsAbstractGeospatialPdfExporter::ExportDetails details;
+  QString composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
   QDomDocument doc;
   doc.setContent( composition );
   QCOMPARE( doc.elementsByTagName( QStringLiteral( "Georeferencing" ) ).count(), 0 );
 
   // with points
-  QgsAbstractGeoPdfExporter::GeoReferencedSection section;
+  QgsAbstractGeospatialPdfExporter::GeoReferencedSection section;
   section.crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4283" ) );
   section.pageBoundsMm = QgsRectangle( 0, 0, 253.2, 222.25 );
-  section.controlPoints.append( QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( 0, 0 ), QgsPointXY( -122.4, 53.6 ) ) );
-  section.controlPoints.append( QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( 253.2, 0 ), QgsPointXY( -78, 53.6 ) ) );
-  section.controlPoints.append( QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( 253.2, 222.25 ), QgsPointXY( -78, 14.6 ) ) );
-  section.controlPoints.append( QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( 0, 222.25 ), QgsPointXY( -122.4, 14.6 ) ) );
+  section.controlPoints.append( QgsAbstractGeospatialPdfExporter::ControlPoint( QgsPointXY( 0, 0 ), QgsPointXY( -122.4, 53.6 ) ) );
+  section.controlPoints.append( QgsAbstractGeospatialPdfExporter::ControlPoint( QgsPointXY( 253.2, 0 ), QgsPointXY( -78, 53.6 ) ) );
+  section.controlPoints.append( QgsAbstractGeospatialPdfExporter::ControlPoint( QgsPointXY( 253.2, 222.25 ), QgsPointXY( -78, 14.6 ) ) );
+  section.controlPoints.append( QgsAbstractGeospatialPdfExporter::ControlPoint( QgsPointXY( 0, 222.25 ), QgsPointXY( -122.4, 14.6 ) ) );
   details.georeferencedSections << section;
 
-  composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
+  composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
   doc.setContent( composition );
   QCOMPARE( doc.elementsByTagName( QStringLiteral( "SRS" ) ).at( 0 ).toElement().text(), QStringLiteral( "EPSG:4283" ) );
@@ -353,28 +353,28 @@ void TestQgsGeoPdfExport::testGeoref()
   QCOMPARE( cp1.attribute( QStringLiteral( "y" ) ).left( 10 ), QStringLiteral( "-2.8346456" ) );
 }
 
-void TestQgsGeoPdfExport::testGeorefPolygon()
+void TestQgsGeospatialPdfExport::testGeorefPolygon()
 {
   // test georeferencing a region using polygon bounds
-  TestGeoPdfExporter geoPdfExporter;
+  TestGeospatialPdfExporter geospatialPdfExporter;
 
-  QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > renderedLayers;
-  QgsAbstractGeoPdfExporter::ExportDetails details;
+  QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > renderedLayers;
+  QgsAbstractGeospatialPdfExporter::ExportDetails details;
 
   // with points
-  QgsAbstractGeoPdfExporter::GeoReferencedSection section;
+  QgsAbstractGeospatialPdfExporter::GeoReferencedSection section;
   section.crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4283" ) );
   section.pageBoundsMm = QgsRectangle( 0, 0, 253.2, 222.25 );
   QgsPolygon p;
   p.fromWkt( QStringLiteral( "Polygon((30 5, 250 15, 240 200, 50 190, 30 5))" ) );
   section.pageBoundsPolygon = p;
-  section.controlPoints.append( QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( 0, 0 ), QgsPointXY( -122.4, 53.6 ) ) );
-  section.controlPoints.append( QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( 253.2, 0 ), QgsPointXY( -78, 53.6 ) ) );
-  section.controlPoints.append( QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( 253.2, 222.25 ), QgsPointXY( -78, 14.6 ) ) );
-  section.controlPoints.append( QgsAbstractGeoPdfExporter::ControlPoint( QgsPointXY( 0, 222.25 ), QgsPointXY( -122.4, 14.6 ) ) );
+  section.controlPoints.append( QgsAbstractGeospatialPdfExporter::ControlPoint( QgsPointXY( 0, 0 ), QgsPointXY( -122.4, 53.6 ) ) );
+  section.controlPoints.append( QgsAbstractGeospatialPdfExporter::ControlPoint( QgsPointXY( 253.2, 0 ), QgsPointXY( -78, 53.6 ) ) );
+  section.controlPoints.append( QgsAbstractGeospatialPdfExporter::ControlPoint( QgsPointXY( 253.2, 222.25 ), QgsPointXY( -78, 14.6 ) ) );
+  section.controlPoints.append( QgsAbstractGeospatialPdfExporter::ControlPoint( QgsPointXY( 0, 222.25 ), QgsPointXY( -122.4, 14.6 ) ) );
   details.georeferencedSections << section;
 
-  QString composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
+  QString composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
   QDomDocument doc;
   doc.setContent( composition );
@@ -399,12 +399,12 @@ void TestQgsGeoPdfExport::testGeorefPolygon()
   QCOMPARE( cp1.attribute( QStringLiteral( "y" ) ).left( 10 ), QStringLiteral( "-2.8346456" ) );
 }
 
-void TestQgsGeoPdfExport::testGroups()
+void TestQgsGeospatialPdfExport::testGroups()
 {
-  TestGeoPdfExporter geoPdfExporter;
+  TestGeospatialPdfExporter geospatialPdfExporter;
   // no features, no crash
-  QVERIFY( geoPdfExporter.saveTemporaryLayers() );
-  QCOMPARE( geoPdfExporter.mVectorComponents.count(), 0 );
+  QVERIFY( geospatialPdfExporter.saveTemporaryLayers() );
+  QCOMPARE( geospatialPdfExporter.mVectorComponents.count(), 0 );
 
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "a1" ), QMetaType::Type::Int ) );
@@ -414,20 +414,20 @@ void TestQgsGeoPdfExport::testGroups()
   f.setAttributes( QgsAttributes() << 1 << 2 );
   f.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
   QgsGeometry renderedBounds( QgsGeometry::fromRect( QgsRectangle( 1, 10, 6, 20 ) ) );
-  geoPdfExporter.pushRenderedFeature( QStringLiteral( "layer1" ), QgsAbstractGeoPdfExporter::RenderedFeature( f, renderedBounds ) );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer1" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ) );
   f.setAttributes( QgsAttributes() << 31 << 32 );
   f.setGeometry( QgsGeometry( new QgsPoint( 4, 5 ) ) );
   renderedBounds = QgsGeometry::fromWkt( QStringLiteral( "LineString(1 1, 2 2)" ) );
-  geoPdfExporter.pushRenderedFeature( QStringLiteral( "layer2" ), QgsAbstractGeoPdfExporter::RenderedFeature( f, renderedBounds ) );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer2" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ) );
 
-  QVERIFY( geoPdfExporter.saveTemporaryLayers() );
-  QgsAbstractGeoPdfExporter::VectorComponentDetail component;
+  QVERIFY( geospatialPdfExporter.saveTemporaryLayers() );
+  QgsAbstractGeospatialPdfExporter::VectorComponentDetail component;
   QString layer1Path;
   QString layer1Layer;
   QString layer2Path;
   QString layer2Layer;
 
-  for ( const auto &it : std::as_const( geoPdfExporter.mVectorComponents ) )
+  for ( const auto &it : std::as_const( geospatialPdfExporter.mVectorComponents ) )
   {
     if ( it.mapLayerId == QLatin1String( "layer1" ) )
     {
@@ -442,9 +442,9 @@ void TestQgsGeoPdfExport::testGroups()
   }
 
   // test creation of the composition xml
-  QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > renderedLayers; // no extra layers for now
-  QgsAbstractGeoPdfExporter::ExportDetails details;
-  QString composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
+  QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > renderedLayers; // no extra layers for now
+  QgsAbstractGeospatialPdfExporter::ExportDetails details;
+  QString composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
   QDomDocument doc;
   doc.setContent( composition );
@@ -483,9 +483,9 @@ void TestQgsGeoPdfExport::testGroups()
 
 }
 
-void TestQgsGeoPdfExport::testCustomGroups()
+void TestQgsGeospatialPdfExport::testCustomGroups()
 {
-  TestGeoPdfExporter geoPdfExporter;
+  TestGeospatialPdfExporter geospatialPdfExporter;
 
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "a1" ), QMetaType::Type::Int ) );
@@ -495,20 +495,20 @@ void TestQgsGeoPdfExport::testCustomGroups()
   f.setAttributes( QgsAttributes() << 1 << 2 );
   f.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
   QgsGeometry renderedBounds( QgsGeometry::fromRect( QgsRectangle( 1, 10, 6, 20 ) ) );
-  geoPdfExporter.pushRenderedFeature( QStringLiteral( "layer1" ), QgsAbstractGeoPdfExporter::RenderedFeature( f, renderedBounds ) );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer1" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ) );
   f.setAttributes( QgsAttributes() << 31 << 32 );
   f.setGeometry( QgsGeometry( new QgsPoint( 4, 5 ) ) );
   renderedBounds = QgsGeometry::fromWkt( QStringLiteral( "LineString(1 1, 2 2)" ) );
-  geoPdfExporter.pushRenderedFeature( QStringLiteral( "layer2" ), QgsAbstractGeoPdfExporter::RenderedFeature( f, renderedBounds ) );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer2" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ) );
 
-  QVERIFY( geoPdfExporter.saveTemporaryLayers() );
-  QgsAbstractGeoPdfExporter::VectorComponentDetail component;
+  QVERIFY( geospatialPdfExporter.saveTemporaryLayers() );
+  QgsAbstractGeospatialPdfExporter::VectorComponentDetail component;
   QString layer1Path;
   QString layer1Layer;
   QString layer2Path;
   QString layer2Layer;
 
-  for ( const auto &it : std::as_const( geoPdfExporter.mVectorComponents ) )
+  for ( const auto &it : std::as_const( geospatialPdfExporter.mVectorComponents ) )
   {
     if ( it.mapLayerId == QLatin1String( "layer1" ) )
     {
@@ -523,15 +523,15 @@ void TestQgsGeoPdfExport::testCustomGroups()
   }
 
   // test creation of the composition xml
-  QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > renderedLayers; // no extra layers for now
-  QgsAbstractGeoPdfExporter::ExportDetails details;
+  QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > renderedLayers; // no extra layers for now
+  QgsAbstractGeospatialPdfExporter::ExportDetails details;
   details.customLayerTreeGroups.insert( QStringLiteral( "layer1" ), QStringLiteral( "my group" ) );
   details.customLayerTreeGroups.insert( QStringLiteral( "layer2" ), QStringLiteral( "my group2" ) );
 
   // this group is empty, since layer3 doesn't exist
   details.customLayerTreeGroups.insert( QStringLiteral( "layer3" ), QStringLiteral( "my empty group" ) );
 
-  QString composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
+  QString composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
   QDomDocument doc;
   doc.setContent( composition );
@@ -578,9 +578,9 @@ void TestQgsGeoPdfExport::testCustomGroups()
   QCOMPARE( contentList.at( layer2Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "LogicalStructure" ) ).at( 0 ).toElement().attribute( QStringLiteral( "displayLayerName" ) ), QStringLiteral( "name layer2" ) );
 }
 
-void TestQgsGeoPdfExport::testGroupOrder()
+void TestQgsGeospatialPdfExport::testGroupOrder()
 {
-  TestGeoPdfExporter geoPdfExporter;
+  TestGeospatialPdfExporter geospatialPdfExporter;
 
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "a1" ), QMetaType::Type::Int ) );
@@ -590,20 +590,20 @@ void TestQgsGeoPdfExport::testGroupOrder()
   f.setAttributes( QgsAttributes() << 1 << 2 );
   f.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
   QgsGeometry renderedBounds( QgsGeometry::fromRect( QgsRectangle( 1, 10, 6, 20 ) ) );
-  geoPdfExporter.pushRenderedFeature( QStringLiteral( "layer1" ), QgsAbstractGeoPdfExporter::RenderedFeature( f, renderedBounds ) );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer1" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ) );
   f.setAttributes( QgsAttributes() << 31 << 32 );
   f.setGeometry( QgsGeometry( new QgsPoint( 4, 5 ) ) );
   renderedBounds = QgsGeometry::fromWkt( QStringLiteral( "LineString(1 1, 2 2)" ) );
-  geoPdfExporter.pushRenderedFeature( QStringLiteral( "layer2" ), QgsAbstractGeoPdfExporter::RenderedFeature( f, renderedBounds ) );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer2" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ) );
 
-  QVERIFY( geoPdfExporter.saveTemporaryLayers() );
-  QgsAbstractGeoPdfExporter::VectorComponentDetail component;
+  QVERIFY( geospatialPdfExporter.saveTemporaryLayers() );
+  QgsAbstractGeospatialPdfExporter::VectorComponentDetail component;
   QString layer1Path;
   QString layer1Layer;
   QString layer2Path;
   QString layer2Layer;
 
-  for ( const auto &it : std::as_const( geoPdfExporter.mVectorComponents ) )
+  for ( const auto &it : std::as_const( geospatialPdfExporter.mVectorComponents ) )
   {
     if ( it.mapLayerId == QLatin1String( "layer1" ) )
     {
@@ -618,14 +618,14 @@ void TestQgsGeoPdfExport::testGroupOrder()
   }
 
   // test creation of the composition xml
-  QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > renderedLayers; // no extra layers for now
-  QgsAbstractGeoPdfExporter::ExportDetails details;
+  QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > renderedLayers; // no extra layers for now
+  QgsAbstractGeospatialPdfExporter::ExportDetails details;
   details.customLayerTreeGroups.insert( QStringLiteral( "layer1" ), QStringLiteral( "my group" ) );
   details.customLayerTreeGroups.insert( QStringLiteral( "layer2" ), QStringLiteral( "my group2" ) );
 
   details.layerTreeGroupOrder = QStringList{ QStringLiteral( "my group2" ), QStringLiteral( "my group" )};
 
-  QString composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
+  QString composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
   QDomDocument doc;
   doc.setContent( composition );
@@ -637,7 +637,7 @@ void TestQgsGeoPdfExport::testGroupOrder()
 
   details.layerTreeGroupOrder = QStringList{ QStringLiteral( "my group" ), QStringLiteral( "my group2" )};
 
-  composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
+  composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
   doc.setContent( composition );
 
@@ -649,7 +649,7 @@ void TestQgsGeoPdfExport::testGroupOrder()
   // incomplete list
   details.layerTreeGroupOrder = QStringList{ QStringLiteral( "my group2" )};
 
-  composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
+  composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
   doc.setContent( composition );
 
@@ -661,7 +661,7 @@ void TestQgsGeoPdfExport::testGroupOrder()
   // list with extra groups which don't have content
   details.layerTreeGroupOrder = QStringList{ QStringLiteral( "aaa" ), QStringLiteral( "my group" )};
 
-  composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
+  composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
   doc.setContent( composition );
 
@@ -671,9 +671,9 @@ void TestQgsGeoPdfExport::testGroupOrder()
   QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my group2" ) );
 }
 
-void TestQgsGeoPdfExport::testMutuallyExclusiveGroupsLayers()
+void TestQgsGeospatialPdfExport::testMutuallyExclusiveGroupsLayers()
 {
-  TestGeoPdfExporter geoPdfExporter;
+  TestGeospatialPdfExporter geospatialPdfExporter;
 
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "a1" ), QMetaType::Type::Int ) );
@@ -683,18 +683,18 @@ void TestQgsGeoPdfExport::testMutuallyExclusiveGroupsLayers()
   f.setAttributes( QgsAttributes() << 1 << 2 );
   f.setGeometry( QgsGeometry( new QgsPoint( 1, 2 ) ) );
   QgsGeometry renderedBounds( QgsGeometry::fromRect( QgsRectangle( 1, 10, 6, 20 ) ) );
-  geoPdfExporter.pushRenderedFeature( QStringLiteral( "layer1" ), QgsAbstractGeoPdfExporter::RenderedFeature( f, renderedBounds ) );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer1" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ) );
   f.setAttributes( QgsAttributes() << 31 << 32 );
   f.setGeometry( QgsGeometry( new QgsPoint( 4, 5 ) ) );
   renderedBounds = QgsGeometry::fromWkt( QStringLiteral( "LineString(1 1, 2 2)" ) );
-  geoPdfExporter.pushRenderedFeature( QStringLiteral( "layer2" ), QgsAbstractGeoPdfExporter::RenderedFeature( f, renderedBounds ) );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer2" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ) );
   f.setAttributes( QgsAttributes() << 41 << 42 );
   f.setGeometry( QgsGeometry( new QgsPoint( 6, 7 ) ) );
   renderedBounds = QgsGeometry::fromWkt( QStringLiteral( "LineString(6 6, 7 7)" ) );
-  geoPdfExporter.pushRenderedFeature( QStringLiteral( "layer3" ), QgsAbstractGeoPdfExporter::RenderedFeature( f, renderedBounds ) );
+  geospatialPdfExporter.pushRenderedFeature( QStringLiteral( "layer3" ), QgsAbstractGeospatialPdfExporter::RenderedFeature( f, renderedBounds ) );
 
-  QVERIFY( geoPdfExporter.saveTemporaryLayers() );
-  QgsAbstractGeoPdfExporter::VectorComponentDetail component;
+  QVERIFY( geospatialPdfExporter.saveTemporaryLayers() );
+  QgsAbstractGeospatialPdfExporter::VectorComponentDetail component;
   QString layer1Path;
   QString layer1Layer;
   QString layer2Path;
@@ -702,7 +702,7 @@ void TestQgsGeoPdfExport::testMutuallyExclusiveGroupsLayers()
   QString layer3Path;
   QString layer3Layer;
 
-  for ( const auto &it : std::as_const( geoPdfExporter.mVectorComponents ) )
+  for ( const auto &it : std::as_const( geospatialPdfExporter.mVectorComponents ) )
   {
     if ( it.mapLayerId == QLatin1String( "layer1" ) )
     {
@@ -722,8 +722,8 @@ void TestQgsGeoPdfExport::testMutuallyExclusiveGroupsLayers()
   }
 
   // test creation of the composition xml
-  QList< QgsAbstractGeoPdfExporter::ComponentLayerDetail > renderedLayers; // no extra layers for now
-  QgsAbstractGeoPdfExporter::ExportDetails details;
+  QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > renderedLayers; // no extra layers for now
+  QgsAbstractGeospatialPdfExporter::ExportDetails details;
   details.customLayerTreeGroups.insert( QStringLiteral( "layer1" ), QStringLiteral( "my group" ) );
   details.customLayerTreeGroups.insert( QStringLiteral( "layer2" ), QStringLiteral( "my group2" ) );
   details.customLayerTreeGroups.insert( QStringLiteral( "layer3" ), QStringLiteral( "my group3" ) );
@@ -731,7 +731,7 @@ void TestQgsGeoPdfExport::testMutuallyExclusiveGroupsLayers()
   details.mutuallyExclusiveGroups.insert( QStringLiteral( "my group" ) );
   details.mutuallyExclusiveGroups.insert( QStringLiteral( "my group2" ) );
 
-  QString composition = geoPdfExporter.createCompositionXml( renderedLayers, details );
+  QString composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
   QDomDocument doc;
   doc.setContent( composition );
@@ -803,29 +803,29 @@ void TestQgsGeoPdfExport::testMutuallyExclusiveGroupsLayers()
   QCOMPARE( contentList.at( layer3Idx ).toElement().firstChildElement().elementsByTagName( QStringLiteral( "LogicalStructure" ) ).at( 0 ).toElement().attribute( QStringLiteral( "displayLayerName" ) ), QStringLiteral( "name layer3" ) );
 }
 
-void TestQgsGeoPdfExport::testMutuallyExclusiveGroupsCustom()
+void TestQgsGeospatialPdfExport::testMutuallyExclusiveGroupsCustom()
 {
-  TestGeoPdfExporter geoPdfExporter;
+  TestGeospatialPdfExporter geospatialPdfExporter;
 
   // test creation of the composition xml
-  QgsAbstractGeoPdfExporter::ComponentLayerDetail group1;
+  QgsAbstractGeospatialPdfExporter::ComponentLayerDetail group1;
   group1.group = QStringLiteral( "my group" );
   group1.sourcePdfPath =  QStringLiteral( "group1.pdf" );
-  QgsAbstractGeoPdfExporter::ComponentLayerDetail group2;
+  QgsAbstractGeospatialPdfExporter::ComponentLayerDetail group2;
   group2.group = QStringLiteral( "my group2" );
   group2.sourcePdfPath =  QStringLiteral( "group2.pdf" );
-  QgsAbstractGeoPdfExporter::ComponentLayerDetail group3;
+  QgsAbstractGeospatialPdfExporter::ComponentLayerDetail group3;
   group3.group = QStringLiteral( "my group3" );
   group3.sourcePdfPath =  QStringLiteral( "group3.pdf" );
-  QgsAbstractGeoPdfExporter::ComponentLayerDetail object4;
+  QgsAbstractGeospatialPdfExporter::ComponentLayerDetail object4;
   object4.sourcePdfPath =  QStringLiteral( "object4.pdf" );
 
-  QgsAbstractGeoPdfExporter::ExportDetails details;
+  QgsAbstractGeospatialPdfExporter::ExportDetails details;
   // groups 1 & 2 should be mutually exclusive
   details.mutuallyExclusiveGroups.insert( QStringLiteral( "my group" ) );
   details.mutuallyExclusiveGroups.insert( QStringLiteral( "my group2" ) );
 
-  QString composition = geoPdfExporter.createCompositionXml( { group1, group2, group3, object4 }, details );
+  QString composition = geospatialPdfExporter.createCompositionXml( { group1, group2, group3, object4 }, details );
 
   QgsDebugError( composition );
   QDomDocument doc;
@@ -871,37 +871,37 @@ void TestQgsGeoPdfExport::testMutuallyExclusiveGroupsCustom()
   QCOMPARE( contentList.at( 3 ).toElement().attribute( QStringLiteral( "dataset" ) ), QStringLiteral( "object4.pdf" ) );
 }
 
-void TestQgsGeoPdfExport::compositionMode()
+void TestQgsGeospatialPdfExport::compositionMode()
 {
-  QVERIFY( QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode_SourceOver ) );
-  QVERIFY( QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode_Multiply ) );
-  QVERIFY( QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode_Screen ) );
-  QVERIFY( QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode_Overlay ) );
-  QVERIFY( QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode_Darken ) );
-  QVERIFY( QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode_Lighten ) );
-  QVERIFY( QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode_ColorDodge ) );
-  QVERIFY( QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode_ColorBurn ) );
-  QVERIFY( QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode_HardLight ) );
-  QVERIFY( QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode_SoftLight ) );
-  QVERIFY( QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode_Difference ) );
-  QVERIFY( QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode_Exclusion ) );
-  QVERIFY( !QgsAbstractGeoPdfExporter::compositionModeSupported( QPainter::CompositionMode_Plus ) );
+  QVERIFY( QgsAbstractGeospatialPdfExporter::compositionModeSupported( QPainter::CompositionMode_SourceOver ) );
+  QVERIFY( QgsAbstractGeospatialPdfExporter::compositionModeSupported( QPainter::CompositionMode_Multiply ) );
+  QVERIFY( QgsAbstractGeospatialPdfExporter::compositionModeSupported( QPainter::CompositionMode_Screen ) );
+  QVERIFY( QgsAbstractGeospatialPdfExporter::compositionModeSupported( QPainter::CompositionMode_Overlay ) );
+  QVERIFY( QgsAbstractGeospatialPdfExporter::compositionModeSupported( QPainter::CompositionMode_Darken ) );
+  QVERIFY( QgsAbstractGeospatialPdfExporter::compositionModeSupported( QPainter::CompositionMode_Lighten ) );
+  QVERIFY( QgsAbstractGeospatialPdfExporter::compositionModeSupported( QPainter::CompositionMode_ColorDodge ) );
+  QVERIFY( QgsAbstractGeospatialPdfExporter::compositionModeSupported( QPainter::CompositionMode_ColorBurn ) );
+  QVERIFY( QgsAbstractGeospatialPdfExporter::compositionModeSupported( QPainter::CompositionMode_HardLight ) );
+  QVERIFY( QgsAbstractGeospatialPdfExporter::compositionModeSupported( QPainter::CompositionMode_SoftLight ) );
+  QVERIFY( QgsAbstractGeospatialPdfExporter::compositionModeSupported( QPainter::CompositionMode_Difference ) );
+  QVERIFY( QgsAbstractGeospatialPdfExporter::compositionModeSupported( QPainter::CompositionMode_Exclusion ) );
+  QVERIFY( !QgsAbstractGeospatialPdfExporter::compositionModeSupported( QPainter::CompositionMode_Plus ) );
 
-  QCOMPARE( QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::CompositionMode_SourceOver ), QStringLiteral( "Normal" ) );
-  QCOMPARE( QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::CompositionMode_Multiply ), QStringLiteral( "Multiply" ) );
-  QCOMPARE( QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::CompositionMode_Screen ), QStringLiteral( "Screen" ) );
-  QCOMPARE( QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::CompositionMode_Overlay ), QStringLiteral( "Overlay" ) );
-  QCOMPARE( QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::CompositionMode_Darken ), QStringLiteral( "Darken" ) );
-  QCOMPARE( QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::CompositionMode_Lighten ), QStringLiteral( "Lighten" ) );
-  QCOMPARE( QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::CompositionMode_ColorDodge ), QStringLiteral( "ColorDodge" ) );
-  QCOMPARE( QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::CompositionMode_ColorBurn ), QStringLiteral( "ColorBurn" ) );
-  QCOMPARE( QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::CompositionMode_HardLight ), QStringLiteral( "HardLight" ) );
-  QCOMPARE( QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::CompositionMode_SoftLight ), QStringLiteral( "SoftLight" ) );
-  QCOMPARE( QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::CompositionMode_Difference ), QStringLiteral( "Difference" ) );
-  QCOMPARE( QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::CompositionMode_Exclusion ), QStringLiteral( "Exclusion" ) );
-  QCOMPARE( QgsAbstractGeoPdfExporter::compositionModeToString( QPainter::CompositionMode_Plus ), QStringLiteral( "Normal" ) );
+  QCOMPARE( QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode_SourceOver ), QStringLiteral( "Normal" ) );
+  QCOMPARE( QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode_Multiply ), QStringLiteral( "Multiply" ) );
+  QCOMPARE( QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode_Screen ), QStringLiteral( "Screen" ) );
+  QCOMPARE( QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode_Overlay ), QStringLiteral( "Overlay" ) );
+  QCOMPARE( QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode_Darken ), QStringLiteral( "Darken" ) );
+  QCOMPARE( QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode_Lighten ), QStringLiteral( "Lighten" ) );
+  QCOMPARE( QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode_ColorDodge ), QStringLiteral( "ColorDodge" ) );
+  QCOMPARE( QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode_ColorBurn ), QStringLiteral( "ColorBurn" ) );
+  QCOMPARE( QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode_HardLight ), QStringLiteral( "HardLight" ) );
+  QCOMPARE( QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode_SoftLight ), QStringLiteral( "SoftLight" ) );
+  QCOMPARE( QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode_Difference ), QStringLiteral( "Difference" ) );
+  QCOMPARE( QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode_Exclusion ), QStringLiteral( "Exclusion" ) );
+  QCOMPARE( QgsAbstractGeospatialPdfExporter::compositionModeToString( QPainter::CompositionMode_Plus ), QStringLiteral( "Normal" ) );
 }
 
 
-QGSTEST_MAIN( TestQgsGeoPdfExport )
+QGSTEST_MAIN( TestQgsGeospatialPdfExport )
 #include "testqgsgeopdfexport.moc"

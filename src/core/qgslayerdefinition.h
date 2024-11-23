@@ -74,7 +74,7 @@ class CORE_EXPORT QgsLayerDefinition
     /**
      * Exports the selected layer tree nodes to a QLR file.
      *
-     * This method uses the QgsProject::instance()'s file path setting to determine whether absolute
+     * This method uses the QgsProject.instance()'s file path setting to determine whether absolute
      * or relative paths are written. Use the variant with an explicit argument for file path type
      * for control over this setting.
      *

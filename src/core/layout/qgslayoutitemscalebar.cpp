@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitemscalebar.h"
+#include "moc_qgslayoutitemscalebar.cpp"
 #include "qgslayoutitemregistry.h"
 #include "qgsscalebarrendererregistry.h"
 #include "qgslayoutitemmap.h"
@@ -43,6 +44,8 @@
 #include <QDomElement>
 #include <QFontMetricsF>
 #include <QPainter>
+#include <QTextDocument>
+#include <QAbstractTextDocumentLayout>
 
 #include <cmath>
 
@@ -71,13 +74,47 @@ QgsLayoutItemScaleBar *QgsLayoutItemScaleBar::create( QgsLayout *layout )
 QgsLayoutSize QgsLayoutItemScaleBar::minimumSize() const
 {
   QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
-  return QgsLayoutSize( mStyle->calculateBoxSize( context, mSettings, createScaleContext() ), Qgis::LayoutUnit::Millimeters );
+
+  const QgsScaleBarRenderer::ScaleBarContext scaleContext = createScaleContext();
+  if ( !scaleContext.isValid() )
+    return QgsLayoutSize();
+
+  return QgsLayoutSize( mStyle->calculateBoxSize( context, mSettings, scaleContext ), Qgis::LayoutUnit::Millimeters );
 }
 
 void QgsLayoutItemScaleBar::draw( QgsLayoutItemRenderContext &context )
 {
   if ( !mStyle )
     return;
+
+  const QgsScaleBarRenderer::ScaleBarContext scaleContext = createScaleContext();
+  if ( !scaleContext.isValid() )
+  {
+    if ( mLayout->renderContext().isPreviewRender() )
+    {
+      // No initial render available - so draw some preview text alerting user
+      QPainter *painter = context.renderContext().painter();
+
+      const double scale = context.renderContext().convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
+      const QRectF thisPaintRect = QRectF( 0, 0, rect().width() * scale, rect().height() * scale );
+
+      painter->setBrush( QBrush( QColor( 255, 125, 125, 125 ) ) );
+      painter->setPen( Qt::NoPen );
+      painter->drawRect( thisPaintRect );
+      painter->setBrush( Qt::NoBrush );
+
+      painter->setPen( QColor( 200, 0, 0, 255 ) );
+      QTextDocument td;
+      td.setTextWidth( thisPaintRect.width() );
+      td.setHtml( QStringLiteral( "<span style=\"color: rgb(200,0,0);\"><b>%1</b><br>%2</span>" ).arg(
+                    tr( "Invalid scale!" ),
+                    tr( "The scale bar cannot be rendered due to invalid settings or an incompatible linked map extent." ) ) );
+      painter->setClipRect( thisPaintRect );
+      QAbstractTextDocumentLayout::PaintContext ctx;
+      td.documentLayout()->draw( painter, ctx );
+    }
+    return;
+  }
 
   if ( dataDefinedProperties().isActive( QgsLayoutObject::DataDefinedProperty::ScalebarLineColor ) || dataDefinedProperties().isActive( QgsLayoutObject::DataDefinedProperty::ScalebarLineWidth ) )
   {
@@ -113,7 +150,7 @@ void QgsLayoutItemScaleBar::draw( QgsLayoutItemRenderContext &context )
     mSettings.setAlternateFillSymbol( sym.release() );
   }
 
-  mStyle->draw( context.renderContext(), mSettings, createScaleContext() );
+  mStyle->draw( context.renderContext(), mSettings, scaleContext );
 }
 
 void QgsLayoutItemScaleBar::setNumberOfSegments( int nSegments )
@@ -288,6 +325,21 @@ void QgsLayoutItemScaleBar::disconnectCurrentMap()
   disconnect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemScaleBar::updateScale );
   disconnect( mMap, &QObject::destroyed, this, &QgsLayoutItemScaleBar::disconnectCurrentMap );
   mMap = nullptr;
+}
+
+Qgis::ScaleCalculationMethod QgsLayoutItemScaleBar::method() const
+{
+  return mMethod;
+}
+
+void QgsLayoutItemScaleBar::setMethod( Qgis::ScaleCalculationMethod method )
+{
+  if ( mMethod == method )
+    return;
+
+  mMethod = method;
+  refreshSegmentMillimeters();
+  resizeToMinimumWidth();
 }
 
 void QgsLayoutItemScaleBar::refreshUnitsPerSegment( const QgsExpressionContext *context )
@@ -521,12 +573,19 @@ void QgsLayoutItemScaleBar::refreshSegmentMillimeters()
     //get mm dimension of composer map
     const QRectF composerItemRect = mMap->rect();
 
+    const double currentMapWidth = mapWidth();
+    if ( qgsDoubleNear( currentMapWidth, 0 ) || std::isnan( currentMapWidth ) )
+    {
+      mSegmentMillimeters = std::numeric_limits< double >::quiet_NaN();
+      return;
+    }
+
     switch ( mSettings.segmentSizeMode() )
     {
       case Qgis::ScaleBarSegmentSizeMode::Fixed:
       {
         //calculate size depending on mNumUnitsPerSegment
-        mSegmentMillimeters = composerItemRect.width() / mapWidth() * mSettings.unitsPerSegment();
+        mSegmentMillimeters = composerItemRect.width() / currentMapWidth * mSettings.unitsPerSegment();
         break;
       }
 
@@ -540,10 +599,10 @@ void QgsLayoutItemScaleBar::refreshSegmentMillimeters()
         {
           const double nSegments = ( mSettings.numberOfSegmentsLeft() != 0 ) + mSettings.numberOfSegments();
           // unitsPerSegments which fit minBarWidth resp. maxBarWidth
-          const double minUnitsPerSeg = ( mSettings.minimumBarWidth() * mapWidth() ) / ( nSegments * composerItemRect.width() );
-          const double maxUnitsPerSeg = ( mSettings.maximumBarWidth() * mapWidth() ) / ( nSegments * composerItemRect.width() );
+          const double minUnitsPerSeg = ( mSettings.minimumBarWidth() * currentMapWidth ) / ( nSegments * composerItemRect.width() );
+          const double maxUnitsPerSeg = ( mSettings.maximumBarWidth() * currentMapWidth ) / ( nSegments * composerItemRect.width() );
           mSettings.setUnitsPerSegment( QgsLayoutUtils::calculatePrettySize( minUnitsPerSeg, maxUnitsPerSeg ) );
-          mSegmentMillimeters = composerItemRect.width() / mapWidth() * mSettings.unitsPerSegment();
+          mSegmentMillimeters = composerItemRect.width() / currentMapWidth * mSettings.unitsPerSegment();
         }
         break;
       }
@@ -570,19 +629,62 @@ double QgsLayoutItemScaleBar::mapWidth() const
     da.setEllipsoid( mLayout->project()->ellipsoid() );
 
     const Qgis::DistanceUnit units = da.lengthUnits();
-    double measure = 0;
-    try
+
+    QList< double > yValues;
+    switch ( mMethod )
     {
-      measure = da.measureLine( QgsPointXY( mapExtent.xMinimum(), mapExtent.yMinimum() ),
-                                QgsPointXY( mapExtent.xMaximum(), mapExtent.yMinimum() ) );
-      measure /= QgsUnitTypes::fromUnitToUnitFactor( mSettings.units(), units );
+      case Qgis::ScaleCalculationMethod::HorizontalTop:
+        yValues << mapExtent.yMaximum();
+        break;
+
+      case Qgis::ScaleCalculationMethod::HorizontalMiddle:
+        yValues << 0.5 * ( mapExtent.yMaximum() + mapExtent.yMinimum() );
+        break;
+
+
+      case Qgis::ScaleCalculationMethod::HorizontalBottom:
+        yValues << mapExtent.yMinimum();
+        break;
+
+      case Qgis::ScaleCalculationMethod::HorizontalAverage:
+        yValues << mapExtent.yMaximum();
+        yValues << 0.5 * ( mapExtent.yMaximum() + mapExtent.yMinimum() );
+        yValues << mapExtent.yMinimum();
+        break;
     }
-    catch ( QgsCsException & )
+
+    double sumValidMeasures = 0;
+    int validMeasureCount = 0;
+
+    for ( const double y : std::as_const( yValues ) )
     {
-      // TODO report errors to user
-      QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+      try
+      {
+        double measure = da.measureLine( QgsPointXY( mapExtent.xMinimum(), y ),
+                                         QgsPointXY( mapExtent.xMaximum(), y ) );
+        if ( std::isnan( measure ) )
+        {
+          // TODO report errors to user
+          QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+          continue;
+        }
+
+        measure /= QgsUnitTypes::fromUnitToUnitFactor( mSettings.units(), units );
+        sumValidMeasures += measure;
+        validMeasureCount++;
+      }
+      catch ( QgsCsException & )
+      {
+        // TODO report errors to user
+        QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+        continue;
+      }
     }
-    return measure;
+
+    if ( validMeasureCount == 0 )
+      return std::numeric_limits< double >::quiet_NaN();
+
+    return sumValidMeasures / validMeasureCount;
   }
 }
 
@@ -717,6 +819,9 @@ Qgis::DistanceUnit QgsLayoutItemScaleBar::guessUnits() const
 
   // try to pick reasonable choice between metric / imperial units
   const double widthInSelectedUnits = mapWidth();
+  if ( std::isnan( widthInSelectedUnits ) )
+    return unit;
+
   const double initialUnitsPerSegment = widthInSelectedUnits / 10.0; //default scalebar width equals half the map width
   switch ( unit )
   {
@@ -750,26 +855,29 @@ void QgsLayoutItemScaleBar::applyDefaultSize( Qgis::DistanceUnit units )
   {
     double upperMagnitudeMultiplier = 1.0;
     const double widthInSelectedUnits = mapWidth();
-    const double initialUnitsPerSegment = widthInSelectedUnits / 10.0; //default scalebar width equals half the map width
-    mSettings.setUnitsPerSegment( initialUnitsPerSegment );
-
-    setUnitLabel( QgsUnitTypes::toAbbreviatedString( units ) );
-    upperMagnitudeMultiplier = 1;
-
-    const double segmentWidth = initialUnitsPerSegment / upperMagnitudeMultiplier;
-    const int segmentMagnitude = std::floor( std::log10( segmentWidth ) );
-    double unitsPerSegment = upperMagnitudeMultiplier * ( std::pow( 10.0, segmentMagnitude ) );
-    const double multiplier = std::floor( ( widthInSelectedUnits / ( unitsPerSegment * 10.0 ) ) / 2.5 ) * 2.5;
-
-    if ( multiplier > 0 )
+    if ( !std::isnan( widthInSelectedUnits ) )
     {
-      unitsPerSegment = unitsPerSegment * multiplier;
-    }
-    mSettings.setUnitsPerSegment( unitsPerSegment );
-    mSettings.setMapUnitsPerScaleBarUnit( upperMagnitudeMultiplier );
+      const double initialUnitsPerSegment = widthInSelectedUnits / 10.0; //default scalebar width equals half the map width
+      mSettings.setUnitsPerSegment( initialUnitsPerSegment );
 
-    mSettings.setNumberOfSegments( 2 );
-    mSettings.setNumberOfSegmentsLeft( 0 );
+      setUnitLabel( QgsUnitTypes::toAbbreviatedString( units ) );
+      upperMagnitudeMultiplier = 1;
+
+      const double segmentWidth = initialUnitsPerSegment / upperMagnitudeMultiplier;
+      const int segmentMagnitude = std::floor( std::log10( segmentWidth ) );
+      double unitsPerSegment = upperMagnitudeMultiplier * ( std::pow( 10.0, segmentMagnitude ) );
+      const double multiplier = std::floor( ( widthInSelectedUnits / ( unitsPerSegment * 10.0 ) ) / 2.5 ) * 2.5;
+
+      if ( multiplier > 0 )
+      {
+        unitsPerSegment = unitsPerSegment * multiplier;
+      }
+      mSettings.setUnitsPerSegment( unitsPerSegment );
+      mSettings.setMapUnitsPerScaleBarUnit( upperMagnitudeMultiplier );
+
+      mSettings.setNumberOfSegments( 2 );
+      mSettings.setNumberOfSegmentsLeft( 0 );
+    }
   }
 
   refreshSegmentMillimeters();
@@ -783,7 +891,12 @@ void QgsLayoutItemScaleBar::resizeToMinimumWidth()
     return;
 
   QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
-  const double widthMM = mStyle->calculateBoxSize( context, mSettings, createScaleContext() ).width();
+
+  const QgsScaleBarRenderer::ScaleBarContext scaleContext = createScaleContext();
+  if ( !scaleContext.isValid() )
+    return;
+
+  const double widthMM = mStyle->calculateBoxSize( context, mSettings, scaleContext ).width();
   QgsLayoutSize currentSize = sizeWithUnits();
   currentSize.setWidth( mLayout->renderContext().measurementConverter().convert( QgsLayoutMeasurement( widthMM, Qgis::LayoutUnit::Millimeters ), currentSize.units() ).length() );
   attemptResize( currentSize );
@@ -965,6 +1078,7 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
   composerScaleBarElem.setAttribute( QStringLiteral( "maxBarWidth" ), mSettings.maximumBarWidth() );
   composerScaleBarElem.setAttribute( QStringLiteral( "segmentMillimeters" ), QString::number( mSegmentMillimeters ) );
   composerScaleBarElem.setAttribute( QStringLiteral( "numMapUnitsPerScaleBarUnit" ), QString::number( mSettings.mapUnitsPerScaleBarUnit() ) );
+  composerScaleBarElem.setAttribute( QStringLiteral( "method" ), qgsEnumValueToKey( mMethod ) );
 
   const QDomElement textElem = mSettings.textFormat().writeXml( doc, rwContext );
   composerScaleBarElem.appendChild( textElem );
@@ -1091,6 +1205,9 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   mSettings.setMaximumBarWidth( itemElem.attribute( QStringLiteral( "maxBarWidth" ), QStringLiteral( "150" ) ).toDouble() );
   mSegmentMillimeters = itemElem.attribute( QStringLiteral( "segmentMillimeters" ), QStringLiteral( "0.0" ) ).toDouble();
   mSettings.setMapUnitsPerScaleBarUnit( itemElem.attribute( QStringLiteral( "numMapUnitsPerScaleBarUnit" ), QStringLiteral( "1.0" ) ).toDouble() );
+
+  // default to horizontal bottom to keep same behavior for older projects
+  mMethod = qgsEnumKeyToValue( itemElem.attribute( QStringLiteral( "method" ) ), Qgis::ScaleCalculationMethod::HorizontalBottom );
 
   const QDomElement lineSymbolElem = itemElem.firstChildElement( QStringLiteral( "lineSymbol" ) );
   bool foundLineSymbol = false;

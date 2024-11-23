@@ -710,7 +710,7 @@ void QgsPointCloudLayerRenderer::renderTriangulatedSurface( QgsPointCloudRenderC
   QPainter *painter = context.renderContext().painter();
   QgsElevationMap *elevationMap = context.renderContext().elevationMap();
   QPointF triangle[3];
-  float elev[3];
+  float elev[3] {0, 0, 0};
   for ( size_t i = 0; i < triangleIndexes.size(); i += 3 )
   {
     size_t v0 = triangleIndexes[i], v1 = triangleIndexes[i + 1], v2 = triangleIndexes[i + 2];

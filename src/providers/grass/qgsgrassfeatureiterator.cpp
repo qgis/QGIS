@@ -18,6 +18,7 @@
 
 #include "qgsgrass.h"
 #include "qgsgrassfeatureiterator.h"
+#include "moc_qgsgrassfeatureiterator.cpp"
 #include "qgsgrassprovider.h"
 #include "qgsgrassvectormap.h"
 #include "qgsgeometry.h"

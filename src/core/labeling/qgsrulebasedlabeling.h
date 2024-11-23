@@ -363,7 +363,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     const Rule *rootRule() const SIP_SKIP;
 
     //! Create the instance from a DOM element with saved configuration
-    static QgsRuleBasedLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static QgsRuleBasedLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     // implementation of parent interface
 

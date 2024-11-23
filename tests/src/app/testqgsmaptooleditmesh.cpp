@@ -43,6 +43,7 @@ class TestQgsMapToolEditMesh : public QObject
 
     void testAssignVertexZValueFromTerrainOnCreation();
     void testAssignVertexZValueFromTerrainOnButtonClick();
+    void selectElements();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -682,6 +683,54 @@ void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnButtonClick()
 
   // remove edits
   layer->rollBackFrameEditing( transform, false );
+}
+
+void TestQgsMapToolEditMesh::selectElements()
+{
+  QString uri = QString( mDataDir + "/quad_and_triangle_with_free_vertices.2dm" );
+  std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
+  QVERIFY( layer->isValid() );
+  
+  const QgsCoordinateTransform transform;
+  QgsMeshEditingError error;
+  layer->startFrameEditing( transform, error, false );
+  QVERIFY( error == QgsMeshEditingError() );
+  
+  mCanvas->setLayers( QList<QgsMapLayer *>() << layer.get() );
+
+  QVERIFY( layer->meshEditor() );
+
+  TestQgsMapToolAdvancedDigitizingUtils tool( mEditMeshMapTool );
+  mCanvas->setCurrentLayer( layer.get() );
+  mEditMeshMapTool->mActionDigitizing->trigger();
+  
+  // select all vertices
+  QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 0 );
+  mEditMeshMapTool->mActionSelectAllVertices->trigger();
+  QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 10 );
+
+  // reset selection
+  tool.mouseClick( 0, 0, Qt::LeftButton );
+
+  // select isolated vertices
+  QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 0 );
+  mEditMeshMapTool->mActionSelectIsolatedVertices->trigger();
+  QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 5 );
+
+  // reset selection
+  tool.mouseClick( 0, 0, Qt::LeftButton );
+
+  // select by polygon
+  QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 0 );
+  mEditMeshMapTool->mActionSelectByPolygon->trigger();
+
+  // polygon definition
+  tool.mouseClick( 2100, 3000, Qt::LeftButton );
+  tool.mouseClick( 2900, 2300, Qt::LeftButton );
+  tool.mouseClick( 3100, 3000, Qt::LeftButton );
+  tool.mouseClick( 2500, 3000, Qt::RightButton );
+
+  QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 3 );
 }
 
 QGSTEST_MAIN( TestQgsMapToolEditMesh )

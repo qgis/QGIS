@@ -116,6 +116,7 @@ QVariantMap QgsMultiDifferenceAlgorithm::processAlgorithm( const QVariantMap &pa
 
     const long total = sourceA->featureCount();
     QgsOverlayUtils::difference( *sourceA, *overlayLayer, *sink, context, feedback, count, total, QgsOverlayUtils::OutputA );
+    sink->finalize();
   }
   else
   {

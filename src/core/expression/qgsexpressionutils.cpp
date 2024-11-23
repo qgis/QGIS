@@ -133,7 +133,7 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
   // last resort - QgsProject instance. This is bad, we need to remove this!
   auto getMapLayerFromProjectInstance = [ &ml, identifier ]
   {
-    QgsProject *project = QgsProject::instance();
+    QgsProject *project = QgsProject::instance(); // skip-keyword-check
 
     // No pointer yet, maybe it's a layer id?
     ml = project->mapLayer( identifier );
@@ -213,10 +213,10 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
 
     // Make sure we only deal with the project on the thread where it lives.
     // Anything else risks a crash.
-    if ( QThread::currentThread() == QgsProject::instance()->thread() )
+    if ( QThread::currentThread() == QgsProject::instance()->thread() ) // skip-keyword-check
       runFunction();
     else
-      QMetaObject::invokeMethod( QgsProject::instance(), runFunction, Qt::BlockingQueuedConnection );
+      QMetaObject::invokeMethod( QgsProject::instance(), runFunction, Qt::BlockingQueuedConnection ); // skip-keyword-check
   }
   else
   {
@@ -266,7 +266,7 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
     // last resort - QgsProject instance. This is bad, we need to remove this!
     auto getMapLayerFromProjectInstance = [ value, identifier, &function, &foundLayer ]
     {
-      QgsProject *project = QgsProject::instance();
+      QgsProject *project = QgsProject::instance(); // skip-keyword-check
 
       // maybe it's a layer id?
       QgsMapLayer *ml = project->mapLayer( identifier );
@@ -284,10 +284,10 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
       }
     };
 
-    if ( QThread::currentThread() == QgsProject::instance()->thread() )
+    if ( QThread::currentThread() == QgsProject::instance()->thread() ) // skip-keyword-check
       getMapLayerFromProjectInstance();
     else
-      QMetaObject::invokeMethod( QgsProject::instance(), getMapLayerFromProjectInstance, Qt::BlockingQueuedConnection );
+      QMetaObject::invokeMethod( QgsProject::instance(), getMapLayerFromProjectInstance, Qt::BlockingQueuedConnection ); // skip-keyword-check
   }
 #endif
 }
@@ -350,8 +350,10 @@ QString QgsExpressionUtils::getFilePathValue( const QVariant &value, const QgsEx
 
 ///@endcond
 
-std::tuple<QMetaType::Type, int> QgsExpressionUtils::determineResultType( const QString &expression, const QgsVectorLayer *layer, QgsFeatureRequest request, QgsExpressionContext context, bool *foundFeatures )
+std::tuple<QMetaType::Type, int> QgsExpressionUtils::determineResultType( const QString &expression, const QgsVectorLayer *layer, const QgsFeatureRequest &r, const QgsExpressionContext &c, bool *foundFeatures )
 {
+  QgsExpressionContext context = c;
+  QgsFeatureRequest request = r;
   QgsExpression exp( expression );
   request.setFlags( ( exp.needsGeometry() ) ?
                     Qgis::FeatureRequestFlag::NoFlags :

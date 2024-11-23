@@ -528,7 +528,7 @@ void QgsProviderRegistry::clean()
 {
   // avoid recreating a new project just to clean it
   if ( QgsProject::sProject )
-    QgsProject::instance()->removeAllMapLayers();
+    QgsProject::instance()->removeAllMapLayers(); // skip-keyword-check
 
   Providers::const_iterator it = mProviders.begin();
 

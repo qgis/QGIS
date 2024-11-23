@@ -29,7 +29,7 @@ public:
 };
 
 /// List of O2Replies.
-class O2ReplyList {
+class O0_EXPORT O2ReplyList {
 public:
     O2ReplyList() { ignoreSslErrors_ = false; }
 

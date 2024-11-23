@@ -16,6 +16,7 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsappbrowserproviders.h"
+#include "moc_qgsappbrowserproviders.cpp"
 #include "qgsbookmarkeditordialog.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"

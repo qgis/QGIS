@@ -19,6 +19,8 @@
 
 #include <QPainter>
 
+const QString QgsTextDiagram::DIAGRAM_NAME_TEXT = QStringLiteral( "Text" );
+
 QgsTextDiagram::QgsTextDiagram()
 {
   mPen.setWidthF( 2.0 );
@@ -68,7 +70,7 @@ double QgsTextDiagram::legendSize( double value, const QgsDiagramSettings &s, co
 
 QString QgsTextDiagram::diagramName() const
 {
-  return DIAGRAM_NAME_TEXT;
+  return QgsTextDiagram::DIAGRAM_NAME_TEXT;
 }
 
 QSizeF QgsTextDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )

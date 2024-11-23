@@ -15,6 +15,7 @@
 
 #include "qgsmapmouseevent.h"
 #include "qgsmaptooladvanceddigitizing.h"
+#include "moc_qgsmaptooladvanceddigitizing.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsvectorlayer.h"
@@ -177,11 +178,17 @@ void QgsMapToolAdvancedDigitizing::onCurrentLayerChanged()
       mSnapToGridCanvasItem->setPrecision( layer->geometryOptions()->geometryPrecision() );
       mSnapToGridCanvasItem->setCrs( layer->crs() );
     }
-
-    if ( !layer )
+    if ( !layer || !layer->isSpatial() )
+    {
+      mCadDockWidget->clear();
+      mCadDockWidget->disable();
       mSnapToGridCanvasItem->setEnabled( false );
+    }
     else
+    {
+      mCadDockWidget->enable();
       mSnapToGridCanvasItem->setEnabled( mSnapToLayerGridEnabled );
+    }
   }
 }
 

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsattributedialog.h"
+#include "moc_qgsattributedialog.cpp"
 
 #include "qgsattributeform.h"
 #include "qgshighlight.h"

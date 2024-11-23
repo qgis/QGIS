@@ -51,6 +51,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsauthmanager.h"
+#include "moc_qgsauthmanager.cpp"
 #include "qgsauthconfigurationstorageregistry.h"
 #include "qgsauthconfigurationstoragesqlite.h"
 #include "qgsvariantutils.h"
@@ -355,6 +356,10 @@ bool QgsAuthManager::initPrivate( const QString &pluginPath )
       return false;
     }
   }
+
+#ifndef QT_NO_SSL
+  initSslCaches();
+#endif
 
   return true;
 }
@@ -2229,7 +2234,6 @@ const QList<QgsAuthConfigSslServer> QgsAuthManager::sslCertCustomConfigs()
         emit messageLog( tr( "SSL custom config already in the list: %1" ).arg( hostPort ), authManTag(), Qgis::MessageLevel::Warning );
       }
     }
-    configs.append( storageConfigs );
   }
 
   if ( storages.empty() )
@@ -2440,11 +2444,11 @@ bool QgsAuthManager::rebuildIgnoredSslErrorCache()
         ids.append( shaHostPort );
         if ( !config.sslIgnoredErrorEnums().isEmpty() )
         {
-          nextcache.insert( config.sslHostPort(), QSet<QSslError::SslError>( config.sslIgnoredErrorEnums().cbegin(), config.sslIgnoredErrorEnums().cend() ) );
+          nextcache.insert( shaHostPort, QSet<QSslError::SslError>( config.sslIgnoredErrorEnums().cbegin(), config.sslIgnoredErrorEnums().cend() ) );
         }
-        if ( prevcache.contains( config.sslHostPort() ) )
+        if ( prevcache.contains( shaHostPort ) )
         {
-          prevcache.remove( config.sslHostPort() );
+          prevcache.remove( shaHostPort );
         }
       }
       else

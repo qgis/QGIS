@@ -19,6 +19,7 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsbookmarks.h"
+#include "moc_qgsbookmarks.cpp"
 #include "qgsbookmarkeditordialog.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"

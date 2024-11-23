@@ -17,6 +17,7 @@
 #include <QTreeWidgetItemIterator>
 
 #include "qgsnewdatabasetablenamewidget.h"
+#include "moc_qgsnewdatabasetablenamewidget.cpp"
 #include "qgsapplication.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsdataitemprovider.h"

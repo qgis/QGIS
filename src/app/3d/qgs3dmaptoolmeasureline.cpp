@@ -16,6 +16,7 @@
 #include <QKeyEvent>
 
 #include "qgs3dmaptoolmeasureline.h"
+#include "moc_qgs3dmaptoolmeasureline.cpp"
 #include "qgs3dutils.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapcanvas.h"

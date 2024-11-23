@@ -140,6 +140,29 @@ class CORE_EXPORT QgsAbstractContentCacheBase: public QObject
      */
     QgsAbstractContentCacheBase( QObject *parent );
 
+    /**
+     * Parses a \a path to determine if it represents a base 64 encoded HTML data URL, and if so, extracts the components
+     * of the URL.
+     *
+     * Data URLs are of the form ``data:[<mediatype>;]base64,<data>``.
+     *
+     * \param path path to test
+     * \param mimeType will be set to the extracted mime type if the \a path is a data URL
+     * \param data will be set to the extracted base64 data if the \a path is a data URL
+     *
+     * \returns TRUE if \a path is a base 64 encoded data URL
+     *
+     * \since QGIS 3.40
+     */
+    static bool parseBase64DataUrl( const QString &path, QString *mimeType SIP_OUT = nullptr, QString *data SIP_OUT = nullptr );
+
+    /**
+     * Returns TRUE if \a path represents base64 encoded data.
+     *
+     * \since QGIS 3.40
+     */
+    static bool isBase64Data( const QString &path );
+
   signals:
 
     /**

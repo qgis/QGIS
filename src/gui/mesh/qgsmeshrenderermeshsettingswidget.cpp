@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmeshrenderermeshsettingswidget.h"
+#include "moc_qgsmeshrenderermeshsettingswidget.cpp"
 #include <QtGlobal>
 
 #include "qgis.h"

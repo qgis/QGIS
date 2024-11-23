@@ -170,6 +170,9 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
 
     //! Text substitution list
     QgsStringReplacementCollection mSubstitutions;
+    //! Tab positions
+    QList< QgsTextFormat::Tab > mTabPositions;
+
     //! Quadrant button group
     QButtonGroup *mQuadrantBtnGrp = nullptr;
     //! Symbol direction button group
@@ -259,7 +262,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void populateFontCapitalsComboBox();
     void populateFontStyleComboBox();
     void updateFont( const QFont &font );
-    void connectValueChanged( const QList<QWidget *> &widgets, const char *slot );
+    void connectValueChanged( const QList<QWidget *> &widgets );
 
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key );
 
@@ -299,6 +302,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void mDirectSymbRightToolBtn_clicked();
     void chkLineOrientationDependent_toggled( bool active );
     void mToolButtonConfigureSubstitutes_clicked();
+    void configureTabStops();
     void collapseSample( bool collapse );
     void changeTextColor( const QColor &color );
     void changeBufferColor( const QColor &color );

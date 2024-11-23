@@ -16,6 +16,7 @@
 #include "qgsconfig.h"
 
 #include "qgssensorwidget.h"
+#include "moc_qgssensorwidget.cpp"
 #include "qgsiodevicesensor.h"
 
 #if defined( HAVE_QTSERIALPORT )

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrelationmanager.h"
+#include "moc_qgsrelationmanager.cpp"
 
 #include "qgslogger.h"
 #include "qgsproject.h"

@@ -22,6 +22,7 @@
 
 #include "qgssettings.h"
 #include "qgsmanageconnectionsdialog.h"
+#include "moc_qgsmanageconnectionsdialog.cpp"
 #include "qgshttpheaders.h"
 #include "qgsowsconnection.h"
 #include "qgsvectortileconnection.h"
@@ -30,6 +31,7 @@
 #include "qgstiledsceneconnection.h"
 #include "qgssensorthingsconnection.h"
 #include "qgsgdalcloudconnection.h"
+#include "qgsstacconnection.h"
 
 QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type, const QString &fileName )
   : QDialog( parent )
@@ -159,6 +161,9 @@ void QgsManageConnectionsDialog::doExportImport()
       case CloudStorage:
         doc = saveCloudStorageConnections( items );
         break;
+      case STAC:
+        doc = saveStacConnections( items );
+        break;
     }
 
     QFile file( mFileName );
@@ -245,6 +250,9 @@ void QgsManageConnectionsDialog::doExportImport()
       case CloudStorage:
         loadCloudStorageConnections( doc, items );
         break;
+      case STAC:
+        loadStacConnections( doc, items );
+        break;
     }
     // clear connections list and close window
     listConnections->clear();
@@ -306,6 +314,9 @@ bool QgsManageConnectionsDialog::populateConnections()
         break;
       case CloudStorage:
         connections = QgsGdalCloudProviderConnection::sTreeConnectionCloud->items();
+        break;
+      case STAC:
+        connections = QgsStacConnection::sTreeConnectionStac->items();
         break;
     }
     for ( const QString &connection : std::as_const( connections ) )
@@ -459,6 +470,14 @@ bool QgsManageConnectionsDialog::populateConnections()
         {
           QMessageBox::information( this, tr( "Loading Connections" ),
                                     tr( "The file is not a cloud storage connections exchange file." ) );
+          return false;
+        }
+        break;
+      case STAC:
+        if ( root.tagName() != QLatin1String( "qgsStacConnections" ) )
+        {
+          QMessageBox::information( this, tr( "Loading Connections" ),
+                                    tr( "The file is not a STAC connections exchange file." ) );
           return false;
         }
         break;
@@ -884,6 +903,32 @@ QDomDocument QgsManageConnectionsDialog::saveCloudStorageConnections( const QStr
       }
     }
     el.setAttribute( QStringLiteral( "credentials" ), credentialString );
+
+    root.appendChild( el );
+  }
+
+  return doc;
+}
+
+QDomDocument QgsManageConnectionsDialog::saveStacConnections( const QStringList &connections )
+{
+  QDomDocument doc( QStringLiteral( "connections" ) );
+  QDomElement root = doc.createElement( QStringLiteral( "qgsStacConnections" ) );
+  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.0" ) );
+  doc.appendChild( root );
+
+  for ( int i = 0; i < connections.count(); ++i )
+  {
+    QDomElement el = doc.createElement( QStringLiteral( "stac" ) );
+
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "url" ), QgsStacConnection::settingsUrl->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "authcfg" ), QgsStacConnection::settingsAuthcfg->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "username" ), QgsStacConnection::settingsUsername->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "password" ), QgsStacConnection::settingsPassword->value( connections[ i ] ) );
+
+    QgsHttpHeaders httpHeader( QgsStacConnection::settingsHeaders->value( connections[ i ] ) );
+    httpHeader.updateDomElement( el );
 
     root.appendChild( el );
   }
@@ -1969,6 +2014,89 @@ void QgsManageConnectionsDialog::loadCloudStorageConnections( const QDomDocument
     }
 
     QgsGdalCloudProviderConnection::settingsCredentialOptions->setValue( credentialOptions, connectionName );
+
+    child = child.nextSiblingElement();
+  }
+}
+
+void QgsManageConnectionsDialog::loadStacConnections( const QDomDocument &doc, const QStringList &items )
+{
+  const QDomElement root = doc.documentElement();
+  if ( root.tagName() != QLatin1String( "qgsStacConnections" ) )
+  {
+    QMessageBox::information( this, tr( "Loading Connections" ),
+                              tr( "The file is not a STAC connections exchange file." ) );
+    return;
+  }
+
+  QString connectionName;
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "/qgis/connections-stac" ) );
+  QStringList keys = settings.childGroups();
+  settings.endGroup();
+  QDomElement child = root.firstChildElement();
+  bool prompt = true;
+  bool overwrite = true;
+
+  while ( !child.isNull() )
+  {
+    connectionName = child.attribute( QStringLiteral( "name" ) );
+    if ( !items.contains( connectionName ) )
+    {
+      child = child.nextSiblingElement();
+      continue;
+    }
+
+    // check for duplicates
+    if ( keys.contains( connectionName ) && prompt )
+    {
+      const int res = QMessageBox::warning( this,
+                                            tr( "Loading Connections" ),
+                                            tr( "Connection with name '%1' already exists. Overwrite?" )
+                                            .arg( connectionName ),
+                                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+
+      switch ( res )
+      {
+        case QMessageBox::Cancel:
+          return;
+        case QMessageBox::No:
+          child = child.nextSiblingElement();
+          continue;
+        case QMessageBox::Yes:
+          overwrite = true;
+          break;
+        case QMessageBox::YesToAll:
+          prompt = false;
+          overwrite = true;
+          break;
+        case QMessageBox::NoToAll:
+          prompt = false;
+          overwrite = false;
+          break;
+      }
+    }
+
+    if ( keys.contains( connectionName ) )
+    {
+      if ( !overwrite )
+      {
+        child = child.nextSiblingElement();
+        continue;
+      }
+    }
+    else
+    {
+      keys << connectionName;
+    }
+
+    QgsStacConnection::settingsUrl->setValue( child.attribute( QStringLiteral( "url" ) ), connectionName );
+    QgsStacConnection::settingsAuthcfg->setValue( child.attribute( QStringLiteral( "authcfg" ) ), connectionName );
+    QgsStacConnection::settingsUsername->setValue( child.attribute( QStringLiteral( "username" ) ), connectionName );
+    QgsStacConnection::settingsPassword->setValue( child.attribute( QStringLiteral( "password" ) ), connectionName );
+
+    QgsHttpHeaders httpHeader( child );
+    QgsStacConnection::settingsHeaders->setValue( httpHeader.headers(), connectionName );
 
     child = child.nextSiblingElement();
   }

@@ -25,6 +25,7 @@
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsavoidintersectionsoperation.h"
 #include "qgsmaptoolscalefeature.h"
+#include "moc_qgsmaptoolscalefeature.cpp"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"

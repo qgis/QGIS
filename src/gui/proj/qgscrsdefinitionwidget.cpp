@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscrsdefinitionwidget.h"
+#include "moc_qgscrsdefinitionwidget.cpp"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsprojutils.h"
 
@@ -110,22 +111,13 @@ void QgsCrsDefinitionWidget::pbnCopyCRS_clicked()
   }
 }
 
-static void proj_collecting_logger( void *user_data, int /*level*/, const char *message )
-{
-  QStringList *dest = reinterpret_cast< QStringList * >( user_data );
-  QString messageString( message );
-  messageString.replace( QLatin1String( "internal_proj_create: " ), QString() );
-  dest->append( messageString );
-}
-
 void QgsCrsDefinitionWidget::validateCurrent()
 {
   const QString projDef = mTextEditParameters->toPlainText();
 
-  PJ_CONTEXT *context = proj_context_create();
+  PJ_CONTEXT *context = QgsProjContext::get();
 
-  QStringList projErrors;
-  proj_log_func( context, &projErrors, proj_collecting_logger );
+  QgsScopedProjCollectingLogger projLogger;
   QgsProjUtils::proj_pj_unique_ptr crs;
 
   switch ( static_cast< Qgis::CrsDefinitionFormat >( mFormatComboBox->currentData().toInt() ) )
@@ -169,16 +161,11 @@ void QgsCrsDefinitionWidget::validateCurrent()
       else
       {
         QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
-                              tr( "This proj projection definition is not valid:" ) + QStringLiteral( "\n\n" ) + projErrors.join( '\n' ) );
+                              tr( "This proj projection definition is not valid:" ) + QStringLiteral( "\n\n" ) + projLogger.errors().join( '\n' ) );
       }
       break;
     }
   }
-
-  // reset logger to terminal output
-  proj_log_func( context, nullptr, nullptr );
-  proj_context_destroy( context );
-  context = nullptr;
 }
 
 void QgsCrsDefinitionWidget::formatChanged()

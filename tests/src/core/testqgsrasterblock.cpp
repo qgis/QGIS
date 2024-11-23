@@ -26,11 +26,13 @@
  * \ingroup UnitTests
  * This is a unit test for the QgsRasterBlock class.
  */
-class TestQgsRasterBlock : public QObject
+class TestQgsRasterBlock : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsRasterBlock() = default;
+    TestQgsRasterBlock()
+      : QgsTest( QStringLiteral( "Raster block" ) )
+    {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -44,6 +46,7 @@ class TestQgsRasterBlock : public QObject
     void testPrintValueFloat();
     void testPrintValueDouble_data();
     void testPrintValueDouble();
+    void testMinimumMaximum();
 
   private:
 
@@ -279,6 +282,92 @@ void TestQgsRasterBlock::testPrintValueDouble()
   QString actual = QgsRasterBlock::printValue( value, localized );
   QCOMPARE( actual, expected );
   QLocale::setDefault( QLocale::Language::English );
+}
+
+void TestQgsRasterBlock::testMinimumMaximum()
+{
+  QgsRasterLayer rl( copyTestData( QStringLiteral( "raster/dem.tif" ) ), QStringLiteral( "dem" ) );
+  QVERIFY( rl.isValid() );
+
+  QgsRasterDataProvider *provider = rl.dataProvider();
+  provider->setUseSourceNoDataValue( 1, false );
+  const QgsRectangle fullExtent = rl.extent();
+  const int width = rl.width();
+  const int height = rl.height();
+  std::unique_ptr< QgsRasterBlock > block( provider->block( 1, fullExtent, width, height ) );
+  QVERIFY( block );
+  QVERIFY( !block->hasNoData() );
+
+  double value = 0;
+  int row = 0;
+  int col = 0;
+  QVERIFY( block->minimum( value, row, col ) );
+  QCOMPARE( value, 85 );
+  QCOMPARE( row, 89 );
+  QCOMPARE( col, 123 );
+
+  QVERIFY( block->maximum( value, row, col ) );
+  QCOMPARE( value, 243 );
+  QCOMPARE( row, 152 );
+  QCOMPARE( col, 301 );
+
+  double value2 = 0;
+  int row2 = 0;
+  int col2 = 0;
+
+  QVERIFY( block->minimumMaximum( value, row, col, value2, row2, col2 ) );
+  QCOMPARE( value, 85 );
+  QCOMPARE( row, 89 );
+  QCOMPARE( col, 123 );
+  QCOMPARE( value2, 243 );
+  QCOMPARE( row2, 152 );
+  QCOMPARE( col2, 301 );
+
+  // with no data value corresponding to min
+  provider->setNoDataValue( 1, 85 );
+  block.reset( provider->block( 1, fullExtent, width, height ) );
+  QVERIFY( block );
+  QVERIFY( block->hasNoData() );
+  QCOMPARE( block->noDataValue(), 85 );
+
+  QVERIFY( block->minimum( value, row, col ) );
+  QCOMPARE( value, 85.5 );
+  QCOMPARE( row, 50 );
+  QCOMPARE( col, 183 );
+  QVERIFY( block->maximum( value, row, col ) );
+  QCOMPARE( value, 243 );
+  QCOMPARE( row, 152 );
+  QCOMPARE( col, 301 );
+  QVERIFY( block->minimumMaximum( value, row, col, value2, row2, col2 ) );
+  QCOMPARE( value, 85.5 );
+  QCOMPARE( row, 50 );
+  QCOMPARE( col, 183 );
+  QCOMPARE( value2, 243 );
+  QCOMPARE( row2, 152 );
+  QCOMPARE( col2, 301 );
+
+  // with no data value corresponding to max
+  provider->setNoDataValue( 1, 243 );
+  block.reset( provider->block( 1, fullExtent, width, height ) );
+  QVERIFY( block );
+  QVERIFY( block->hasNoData() );
+  QCOMPARE( block->noDataValue(), 243 );
+
+  QVERIFY( block->minimum( value, row, col ) );
+  QCOMPARE( value, 85 );
+  QCOMPARE( row, 89 );
+  QCOMPARE( col, 123 );
+  QVERIFY( block->maximum( value, row, col ) );
+  QGSCOMPARENEAR( value, 241.800003052, 0.0000001 );
+  QCOMPARE( row, 144 );
+  QCOMPARE( col, 293 );
+  QVERIFY( block->minimumMaximum( value, row, col, value2, row2, col2 ) );
+  QCOMPARE( value, 85 );
+  QCOMPARE( row, 89 );
+  QCOMPARE( col, 123 );
+  QGSCOMPARENEAR( value2, 241.800003052, 0.0000001 );
+  QCOMPARE( row2, 144 );
+  QCOMPARE( col2, 293 );
 }
 
 void TestQgsRasterBlock::testPrintValueFloat_data( )

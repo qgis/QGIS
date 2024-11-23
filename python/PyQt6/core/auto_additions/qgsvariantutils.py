@@ -2,5 +2,6 @@
 try:
     QgsVariantUtils.typeToDisplayString = staticmethod(QgsVariantUtils.typeToDisplayString)
     QgsVariantUtils.isNull = staticmethod(QgsVariantUtils.isNull)
+    QgsVariantUtils.isNumericType = staticmethod(QgsVariantUtils.isNumericType)
 except NameError:
     pass

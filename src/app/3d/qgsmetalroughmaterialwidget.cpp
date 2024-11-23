@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmetalroughmaterialwidget.h"
+#include "moc_qgsmetalroughmaterialwidget.cpp"
 
 #include "qgsmetalroughmaterialsettings.h"
 #include "qgis.h"

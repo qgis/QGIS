@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dmapsettings.h"
+#include "moc_qgs3dmapsettings.cpp"
 
 #include "qgs3dutils.h"
 #include "qgsflatterraingenerator.h"
@@ -31,6 +32,7 @@
 #include "qgsdirectionallightsettings.h"
 #include "qgs3drendercontext.h"
 #include "qgsthreadingutils.h"
+#include "qgsmaplayerlistutils_p.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -68,6 +70,8 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mShowCameraRotationCenter( other.mShowCameraRotationCenter )
   , mShowLightSources( other.mShowLightSources )
   , mShowLabels( other.mShowLabels )
+  , mStopUpdates( other.mStopUpdates )
+  , mShowDebugPanel( other.mShowDebugPanel )
   , mFieldOfView( other.mFieldOfView )
   , mProjectionType( other.mProjectionType )
   , mCameraNavigationMode( other.mCameraNavigationMode )
@@ -311,6 +315,8 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mShowCameraRotationCenter = elemDebug.attribute( QStringLiteral( "camera-rotation-center" ), QStringLiteral( "0" ) ).toInt();
   mShowLightSources = elemDebug.attribute( QStringLiteral( "show-light-sources" ), QStringLiteral( "0" ) ).toInt();
   mIsFpsCounterEnabled = elemDebug.attribute( QStringLiteral( "show-fps-counter" ), QStringLiteral( "0" ) ).toInt();
+  mStopUpdates = elemDebug.attribute( QStringLiteral( "stop-updates" ), QStringLiteral( "0" ) ).toInt();
+  mShowDebugPanel = elemDebug.attribute( QStringLiteral( "debug-panel" ), QStringLiteral( "0" ) ).toInt();
 
   QDomElement elemTemporalRange = elem.firstChildElement( QStringLiteral( "temporal-range" ) );
   QDateTime start = QDateTime::fromString( elemTemporalRange.attribute( QStringLiteral( "start" ) ), Qt::ISODate );
@@ -426,6 +432,8 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemDebug.setAttribute( QStringLiteral( "camera-rotation-center" ), mShowCameraRotationCenter ? 1 : 0 );
   elemDebug.setAttribute( QStringLiteral( "show-light-sources" ), mShowLightSources ? 1 : 0 );
   elemDebug.setAttribute( QStringLiteral( "show-fps-counter" ), mIsFpsCounterEnabled ? 1 : 0 );
+  elemDebug.setAttribute( QStringLiteral( "stop-updates" ), mStopUpdates ? 1 : 0 );
+  elemDebug.setAttribute( QStringLiteral( "debug-panel" ), mShowDebugPanel ? 1 : 0 );
   elem.appendChild( elemDebug );
 
   QDomElement elemEyeDomeLighting = doc.createElement( QStringLiteral( "eye-dome-lighting" ) );
@@ -470,6 +478,10 @@ void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
   }
 
   mTerrainGenerator->resolveReferences( project );
+
+  // Set extent now that layer-based generators actually have a chance to know their CRS
+  QgsRectangle terrainExtent = Qgs3DUtils::tryReprojectExtent2D( mExtent, mCrs, mTerrainGenerator->crs(), mTransformContext );
+  mTerrainGenerator->setExtent( terrainExtent );
 }
 
 QgsRectangle Qgs3DMapSettings::extent() const
@@ -639,17 +651,12 @@ void Qgs3DMapSettings::setLayers( const QList<QgsMapLayer *> &layers )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QList<QgsMapLayerRef> lst;
-  lst.reserve( layers.count() );
-  for ( QgsMapLayer *layer : layers )
-  {
-    lst.append( layer );
-  }
+  const QList<QgsMapLayer *> raw = _qgis_listRefToRaw( mLayers );
 
-  if ( mLayers == lst )
+  if ( layers == raw )
     return;
 
-  mLayers = lst;
+  mLayers = _qgis_listRawToRef( layers );
   emit layersChanged();
 }
 
@@ -795,8 +802,11 @@ void Qgs3DMapSettings::setTerrainGenerator( QgsTerrainGenerator *gen )
     disconnect( mTerrainGenerator.get(), &QgsTerrainGenerator::terrainChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
   }
 
-  QgsRectangle terrainExtent = Qgs3DUtils::tryReprojectExtent2D( mExtent, mCrs, gen->crs(), mTransformContext );
-  gen->setExtent( terrainExtent );
+  if ( gen->crs().isValid() ) // Don't bother setting an extent rect in the wrong CRS
+  {
+    QgsRectangle terrainExtent = Qgs3DUtils::tryReprojectExtent2D( mExtent, mCrs, gen->crs(), mTransformContext );
+    gen->setExtent( terrainExtent );
+  }
   mTerrainGenerator.reset( gen );
   connect( mTerrainGenerator.get(), &QgsTerrainGenerator::terrainChanged, this, &Qgs3DMapSettings::terrainGeneratorChanged );
 
@@ -971,6 +981,24 @@ bool Qgs3DMapSettings::showLabels() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mShowLabels;
+}
+
+void Qgs3DMapSettings::setStopUpdates( bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mStopUpdates == enabled )
+    return;
+
+  mStopUpdates = enabled;
+  emit stopUpdatesChanged();
+}
+
+bool Qgs3DMapSettings::stopUpdates() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mStopUpdates;
 }
 
 void Qgs3DMapSettings::setEyeDomeLightingEnabled( bool enabled )
@@ -1225,6 +1253,24 @@ bool Qgs3DMapSettings::isFpsCounterEnabled() const
   return mIsFpsCounterEnabled;
 }
 
+void Qgs3DMapSettings::setShowDebugPanel( const bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mShowDebugPanel == enabled )
+    return;
+
+  mShowDebugPanel = enabled;
+  emit showDebugPanelChanged( enabled );
+}
+
+bool Qgs3DMapSettings::showDebugPanel() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mShowDebugPanel;
+}
+
 void Qgs3DMapSettings::setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -1422,6 +1468,8 @@ void Qgs3DMapSettings::connectChangedSignalsToSettingsChanged()
   connect( this, &Qgs3DMapSettings::ambientOcclusionSettingsChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::extentChanged, this, &Qgs3DMapSettings::settingsChanged );
   connect( this, &Qgs3DMapSettings::showExtentIn2DViewChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::stopUpdatesChanged, this, &Qgs3DMapSettings::settingsChanged );
+  connect( this, &Qgs3DMapSettings::showDebugPanelChanged, this, &Qgs3DMapSettings::settingsChanged );
 }
 
 

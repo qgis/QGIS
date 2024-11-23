@@ -168,7 +168,7 @@ void TestQgsPoint::constructorZ()
   QVERIFY( pt1.is3D() );
   QVERIFY( !pt1.isMeasure() );
   QCOMPARE( pt1.wkbType(), Qgis::WkbType::PointZ );
-  QCOMPARE( pt1.wktTypeStr(), QString( "PointZ" ) );
+  QCOMPARE( pt1.wktTypeStr(), QString( "Point Z" ) );
 
   QgsPoint pt2( Qgis::WkbType::PointZ, 11.0, 13.0, 17.0, 18.0 );
 
@@ -195,7 +195,7 @@ void TestQgsPoint::constructorM()
   QVERIFY( !pt1.is3D() );
   QVERIFY( pt1.isMeasure() );
   QCOMPARE( pt1.wkbType(), Qgis::WkbType::PointM );
-  QCOMPARE( pt1.wktTypeStr(), QString( "PointM" ) );
+  QCOMPARE( pt1.wktTypeStr(), QString( "Point M" ) );
 
   QgsPoint pt2( Qgis::WkbType::PointM, 11.0, 13.0, 15.0, 17.0 );
 
@@ -223,7 +223,7 @@ void TestQgsPoint::constructorZM()
   QVERIFY( pt1.is3D() );
   QVERIFY( pt1.isMeasure() );
   QCOMPARE( pt1.wkbType(), Qgis::WkbType::PointZM );
-  QCOMPARE( pt1.wktTypeStr(), QString( "PointZM" ) );
+  QCOMPARE( pt1.wktTypeStr(), QString( "Point ZM" ) );
 
   QgsPoint pt2( Qgis::WkbType::PointZM );
 

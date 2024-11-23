@@ -643,6 +643,17 @@ If ``useZValues`` is ``True`` then z values will also be considered when testing
 
 
 
+    QVector<QgsLineString *> splitToDisjointXYParts() const /Factory/;
+%Docstring
+Divides the linestring into parts that don't share any points or lines.
+
+This method throws away Z and M coordinates.
+
+The ownership of returned pointers is transferred to the caller.
+
+.. versionadded:: 3.40
+%End
+
     double length3D() const /HoldGIL/;
 %Docstring
 Returns the length in 3D world of the line string.
@@ -677,7 +688,7 @@ of the curve.
     virtual void draw( QPainter &p ) const;
 
 
-    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false )  throw( QgsCsException );
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false );
 
     virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 

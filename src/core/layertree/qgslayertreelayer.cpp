@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreelayer.h"
+#include "moc_qgslayertreelayer.cpp"
 
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"
@@ -101,7 +102,7 @@ void QgsLayerTreeLayer::setName( const QString &n )
   }
 }
 
-QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element, const QgsReadWriteContext &context )
+QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
 {
   if ( element.tagName() != QLatin1String( "layer-tree-layer" ) )
     return nullptr;

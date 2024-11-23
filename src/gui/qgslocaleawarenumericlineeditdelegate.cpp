@@ -17,6 +17,7 @@
 #include <QLineEdit>
 
 #include "qgslocaleawarenumericlineeditdelegate.h"
+#include "moc_qgslocaleawarenumericlineeditdelegate.cpp"
 #include "qgsdoublevalidator.h"
 #include "qgsguiutils.h"
 

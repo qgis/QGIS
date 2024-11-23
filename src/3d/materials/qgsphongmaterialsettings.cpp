@@ -103,7 +103,7 @@ void QgsPhongMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteCo
 }
 
 
-Qt3DRender::QMaterial *QgsPhongMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
+QgsMaterial *QgsPhongMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
   switch ( technique )
   {
@@ -253,9 +253,9 @@ void QgsPhongMaterialSettings::applyDataDefinedToGeometry( Qt3DQGeometry *geomet
   dataBuffer->setData( data );
 }
 
-Qt3DRender::QMaterial *QgsPhongMaterialSettings::buildMaterial( const QgsMaterialContext &context ) const
+QgsMaterial *QgsPhongMaterialSettings::buildMaterial( const QgsMaterialContext &context ) const
 {
-  Qt3DRender::QMaterial *material = new Qt3DRender::QMaterial;
+  QgsMaterial *material = new QgsMaterial;
 
   Qt3DRender::QEffect *effect = new Qt3DRender::QEffect( material );
 

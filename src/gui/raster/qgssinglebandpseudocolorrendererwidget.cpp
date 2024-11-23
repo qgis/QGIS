@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssinglebandpseudocolorrendererwidget.h"
+#include "moc_qgssinglebandpseudocolorrendererwidget.cpp"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"

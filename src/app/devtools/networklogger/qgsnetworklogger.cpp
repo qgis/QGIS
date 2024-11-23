@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsnetworklogger.h"
+#include "moc_qgsnetworklogger.cpp"
 #include "qgsnetworkloggernode.h"
 #include "qgssettings.h"
 #include "qgis.h"

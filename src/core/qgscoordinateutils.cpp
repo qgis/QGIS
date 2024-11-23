@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscoordinateutils.h"
+#include "moc_qgscoordinateutils.cpp"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatereferencesystemutils.h"
 #include "qgscoordinatetransform.h"
@@ -35,7 +36,7 @@
 int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs, QgsProject *project )
 {
   if ( !project )
-    project = QgsProject::instance();
+    project = QgsProject::instance(); // skip-keyword-check
   // Get the display precision from the project settings
   const bool automatic = project->readBoolEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ) );
   int dp = 0;
@@ -87,7 +88,7 @@ int QgsCoordinateUtils::calculateCoordinatePrecisionForCrs( const QgsCoordinateR
   QgsProject *prj = project;
   if ( !prj )
   {
-    prj = QgsProject::instance();
+    prj = QgsProject::instance(); // skip-keyword-check
   }
 
   const bool automatic = prj->readBoolEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ) );
@@ -308,7 +309,7 @@ double QgsCoordinateUtils::dmsToDecimal( const QString &string, bool *ok, bool *
       value = !sign1.isEmpty() && negative.contains( sign1 ) ? -v : v;
       if ( isEasting )
       {
-        *isEasting = easting.contains( sign2 );
+        *isEasting = easting.contains( sign1 );
       }
     }
     else

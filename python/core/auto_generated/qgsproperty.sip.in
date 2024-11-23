@@ -224,7 +224,6 @@ Returns a new StaticProperty created from the specified value.
 
     QgsProperty( const QgsProperty &other );
 
-    operator bool() const;
 
     bool operator==( const QgsProperty &other ) const;
     bool operator!=( const QgsProperty &other ) const;

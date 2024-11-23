@@ -53,18 +53,18 @@ class TestQgsMultiLineString(QgisTestCase):
         p = QgsMultiLineString([QgsLineString([[1, 2, 3], [10, 2, 3], [10, 10, 3], [1, 2, 3]]),
                                 QgsLineString([[100, 2, 4], [110, 2, 4], [110, 10, 4], [100, 2, 4]])])
         self.assertEqual(p.asWkt(),
-                         'MultiLineStringZ ((1 2 3, 10 2 3, 10 10 3, 1 2 3),(100 2 4, 110 2 4, 110 10 4, 100 2 4))')
+                         'MultiLineString Z ((1 2 3, 10 2 3, 10 10 3, 1 2 3),(100 2 4, 110 2 4, 110 10 4, 100 2 4))')
 
         # with zm
         p = QgsMultiLineString([QgsLineString([[1, 2, 3, 5], [10, 2, 3, 5], [10, 10, 3, 5], [1, 2, 3, 5]]),
                                 QgsLineString([[100, 2, 4, 6], [110, 2, 4, 6], [110, 10, 4, 6], [100, 2, 4, 6]])])
         self.assertEqual(p.asWkt(),
-                         'MultiLineStringZM ((1 2 3 5, 10 2 3 5, 10 10 3 5, 1 2 3 5),(100 2 4 6, 110 2 4 6, 110 10 4 6, 100 2 4 6))')
+                         'MultiLineString ZM ((1 2 3 5, 10 2 3 5, 10 10 3 5, 1 2 3 5),(100 2 4 6, 110 2 4 6, 110 10 4 6, 100 2 4 6))')
 
     def testMeasureLine(self):
         multiline = QgsMultiLineString()
         m_line = multiline.measuredLine(10, 20)
-        self.assertEqual(m_line.asWkt(0), "MultiLineStringM EMPTY")
+        self.assertEqual(m_line.asWkt(0), "MultiLineString M EMPTY")
 
         multiline.addGeometry(QgsLineString([[0, 0], [2, 0], [4, 0]]))
         m_line = multiline.measuredLine(10, 20)
@@ -80,14 +80,14 @@ class TestQgsMultiLineString(QgisTestCase):
         multiline.addGeometry(QgsLineString([[0, 0], [9, 0], [10, 0]]))
         m_line = multiline.measuredLine(10, 20)
         self.assertEqual(m_line.numGeometries(), 2)
-        self.assertEqual(m_line.asWkt(0), "MultiLineStringM ((1 0 10, 3 0 12, 4 0 12),(0 0 12, 9 0 19, 10 0 20))")
+        self.assertEqual(m_line.asWkt(0), "MultiLineString M ((1 0 10, 3 0 12, 4 0 12),(0 0 12, 9 0 19, 10 0 20))")
 
         multiline = QgsMultiLineString()
         multiline.addGeometry(QgsLineString([[1, 0], [1, 0], [1, 0]]))
         multiline.addGeometry(QgsLineString([[2, 2], [2, 2], [2, 2]]))
         m_line = multiline.measuredLine(10, 20)
         self.assertEqual(m_line.numGeometries(), 2)
-        self.assertEqual(m_line.asWkt(0), "MultiLineStringM ((1 0 nan, 1 0 nan, 1 0 nan),(2 2 nan, 2 2 nan, 2 2 nan))")
+        self.assertEqual(m_line.asWkt(0), "MultiLineString M ((1 0 nan, 1 0 nan, 1 0 nan),(2 2 nan, 2 2 nan, 2 2 nan))")
 
     def testFuzzyComparisons(self):
         ######
@@ -211,7 +211,7 @@ class TestQgsMultiLineString(QgisTestCase):
                     [[11, 22, 33], [13, 14, 33], [11, 14, 33], [11, 22, 33]])])
         )
         self.assertEqual(collection.asWkt(),
-                         'MultiLineStringZ ((1 2 3, 3 4 3, 1 4 3, 1 2 3),(11 22 33, 13 14 33, 11 14 33, 11 22 33))')
+                         'MultiLineString Z ((1 2 3, 3 4 3, 1 4 3, 1 2 3),(11 22 33, 13 14 33, 11 14 33, 11 22 33))')
         self.assertEqual(collection.boundingBox(),
                          QgsRectangle(1, 2, 13, 22))
 
@@ -221,7 +221,7 @@ class TestQgsMultiLineString(QgisTestCase):
                 QgsPoint(100, 200)]
             ))
         self.assertEqual(collection.asWkt(),
-                         'MultiLineStringZ ((1 2 3, 3 4 3, 1 4 3, 1 2 3),(11 22 33, 13 14 33, 11 14 33, 11 22 33))')
+                         'MultiLineString Z ((1 2 3, 3 4 3, 1 4 3, 1 2 3),(11 22 33, 13 14 33, 11 14 33, 11 22 33))')
         self.assertEqual(collection.boundingBox(),
                          QgsRectangle(1, 2, 13, 22))
 
@@ -229,7 +229,7 @@ class TestQgsMultiLineString(QgisTestCase):
             collection.addGeometries([
                 QgsLineString([[100, 2, 3], [300, 4, 3]])])
         )
-        self.assertEqual(collection.asWkt(), 'MultiLineStringZ ((1 2 3, 3 4 3, 1 4 3, 1 2 3),(11 22 33, 13 14 33, 11 14 33, 11 22 33),(100 2 3, 300 4 3))')
+        self.assertEqual(collection.asWkt(), 'MultiLineString Z ((1 2 3, 3 4 3, 1 4 3, 1 2 3),(11 22 33, 13 14 33, 11 14 33, 11 22 33),(100 2 3, 300 4 3))')
         self.assertEqual(collection.boundingBox(),
                          QgsRectangle(1, 2, 300, 22))
 

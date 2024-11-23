@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrenderermeshpropertieswidget.h"
+#include "moc_qgsrenderermeshpropertieswidget.cpp"
 
 #include "qgis.h"
 #include "qgsmapcanvas.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmeshrendereractivedatasetwidget.h"
+#include "moc_qgsmeshrendereractivedatasetwidget.cpp"
 
 #include <QDateTime>
 #include <QIcon>

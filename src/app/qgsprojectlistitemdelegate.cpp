@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprojectlistitemdelegate.h"
+#include "moc_qgsprojectlistitemdelegate.cpp"
 #include "qgis.h"
 #include "qgsnewsfeedmodel.h"
 #include "qgswebframe.h"

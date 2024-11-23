@@ -71,6 +71,7 @@ Create a new QgsMaskMarkerSymbolLayer
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
 
+
     bool enabled() const;
 %Docstring
 Whether some masked symbol layers are defined

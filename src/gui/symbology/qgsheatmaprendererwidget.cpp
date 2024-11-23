@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsheatmaprendererwidget.h"
+#include "moc_qgsheatmaprendererwidget.cpp"
 #include "qgsheatmaprenderer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgstemporalcontroller.h"
@@ -34,22 +35,17 @@ QgsRendererWidget *QgsHeatmapRendererWidget::create( QgsVectorLayer *layer, QgsS
 QgsExpressionContext QgsHeatmapRendererWidget::createExpressionContext() const
 {
   QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( auto *lMapCanvas = mContext.mapCanvas() )
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( lMapCanvas->mapSettings() )
-               << new QgsExpressionContextScope( lMapCanvas->expressionContextScope() );
-    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( lMapCanvas->temporalController() ) )
-    {
-      expContext << generator->createExpressionContextScope();
-    }
+    expContext = lMapCanvas->createExpressionContext();
   }
   else
   {
-    expContext << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    expContext << QgsExpressionContextUtils::globalScope()
+               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+               << QgsExpressionContextUtils::atlasScope( nullptr )
+               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
   if ( auto *lVectorLayer = vectorLayer() )

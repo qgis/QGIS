@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthidentitieseditor.h"
+#include "moc_qgsauthidentitieseditor.cpp"
 #include "ui_qgsauthidentitieseditor.h"
 
 #include <QMenu>

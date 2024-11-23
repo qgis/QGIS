@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayerstylewidget.h"
+#include "moc_qgspointcloudlayerstylewidget.cpp"
 #include "qgspointcloudrendererpropertieswidget.h"
 #include "qgsstyle.h"
 #include "qgsapplication.h"

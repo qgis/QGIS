@@ -42,6 +42,7 @@
 #include "qgsrastertransparencywidget.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
+#include "moc_qgsrasterlayerproperties.cpp"
 #include "qgsrasterpyramid.h"
 #include "qgsrasterrange.h"
 #include "qgsrasterrenderer.h"
@@ -272,17 +273,20 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     } );
   }
 
-  mContext << QgsExpressionContextUtils::globalScope()
-           << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-           << QgsExpressionContextUtils::atlasScope( nullptr );
-
   if ( mCanvas )
   {
-    mContext << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() );
-    // Initialize with layer center
-    mContext << QgsExpressionContextUtils::mapLayerPositionScope( mRasterLayer->extent().center() );
+    mContext = mCanvas->createExpressionContext();
+  }
+  else
+  {
+    mContext << QgsExpressionContextUtils::globalScope()
+             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+             << QgsExpressionContextUtils::atlasScope( nullptr )
+             << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
 
+  // Initialize with layer center
+  mContext << QgsExpressionContextUtils::mapLayerPositionScope( mRasterLayer->extent().center() );
   mContext << QgsExpressionContextUtils::layerScope( mRasterLayer );
 
   connect( mInsertExpressionButton, &QAbstractButton::clicked, this, [ = ]

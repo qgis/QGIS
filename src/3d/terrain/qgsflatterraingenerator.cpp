@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgsflatterraingenerator.h"
+#include "moc_qgsflatterraingenerator.cpp"
 
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DCore/QTransform>
 
 #include "qgs3dmapsettings.h"
-#include "qgschunknode_p.h"
-#include "qgsterrainentity_p.h"
+#include "qgschunknode.h"
+#include "qgsterrainentity.h"
 #include "qgsterraintileentity_p.h"
 #include "qgs3dutils.h"
 /// @cond PRIVATE
@@ -62,22 +63,23 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
   entity->addComponent( transform );
 
   // set up transform according to the extent covered by the quad geometry
-  const QgsAABB bbox = mNode->bbox();
+  const QgsBox3D box3D = mNode->box3D();
+  const QgsBox3D mapFullBox3D( map->extent(), box3D.zMinimum(), box3D.zMaximum() );
 
-  const QgsAABB mapFullExtent = Qgs3DUtils::mapToWorldExtent( map->extent(), bbox.yMin, bbox.yMax, map->origin() );
+  const QgsBox3D commonExtent( std::max( box3D.xMinimum(), mapFullBox3D.xMinimum() ),
+                               std::max( box3D.yMinimum(), mapFullBox3D.yMinimum() ),
+                               box3D.zMinimum(),
+                               std::min( box3D.xMaximum(), mapFullBox3D.xMaximum() ),
+                               std::min( box3D.yMaximum(), mapFullBox3D.yMaximum() ),
+                               box3D.zMaximum() );
+  const double xSide = commonExtent.width();
+  const double ySide = commonExtent.height();
+  const double xMin = commonExtent.xMinimum() - map->origin().x();
+  const double yMin = commonExtent.yMinimum() - map->origin().y();
 
-  const QgsAABB commonExtent = QgsAABB( std::max( bbox.xMin, mapFullExtent.xMin ),
-                                        bbox.yMin,
-                                        std::max( bbox.zMin, mapFullExtent.zMin ),
-                                        std::min( bbox.xMax, mapFullExtent.xMax ),
-                                        bbox.yMax,
-                                        std::min( bbox.zMax, mapFullExtent.zMax )
-                                      );
-  const double xSide = commonExtent.xExtent();
-  const double zSide = commonExtent.zExtent();
-
-  transform->setScale3D( QVector3D( xSide, 1, zSide ) );
-  transform->setTranslation( QVector3D( commonExtent.xMin + xSide / 2, 0, commonExtent.zMin + zSide / 2 ) );
+  transform->setRotation( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), 90 ) ); // QPlaneGeometry uses XZ as the base plane
+  transform->setScale3D( QVector3D( static_cast<float>( xSide ), 1, static_cast<float>( ySide ) ) );
+  transform->setTranslation( QVector3D( static_cast<float>( xMin + xSide / 2 ), static_cast<float>( yMin + ySide / 2 ), 0 ) );
 
   createTextureComponent( entity, map->isTerrainShadingEnabled(), map->terrainShadingMaterial(), !map->layers().empty() );
 
@@ -146,13 +148,6 @@ void QgsFlatTerrainGenerator::setExtent( const QgsRectangle &extent )
 
 void QgsFlatTerrainGenerator::updateTilingScheme()
 {
-  if ( mExtent.isNull() )
-  {
-    mTerrainTilingScheme = QgsTilingScheme();
-  }
-  else
-  {
-    // the real extent will be a square where the given extent fully fits
-    mTerrainTilingScheme = QgsTilingScheme( mExtent, mCrs );
-  }
+  // the real extent will be a square where the given extent fully fits
+  mTerrainTilingScheme = QgsTilingScheme( mExtent, mCrs );
 }

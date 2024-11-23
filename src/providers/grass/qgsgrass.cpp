@@ -31,6 +31,7 @@
 #endif
 
 #include "qgsgrass.h"
+#include "moc_qgsgrass.cpp"
 #include "qgsgrassvector.h"
 
 #ifdef HAVE_GUI
@@ -2691,7 +2692,7 @@ QString QgsGrass::defaultGisbase()
   gisbase = shortPath( QCoreApplication::applicationDirPath() + ( QgsApplication::isRunningFromBuildDir() ?  + "/.." : "" ) + "/grass" );
 #endif
   // Use the location specified by WITH_GRASS during configure
-#elif defined(Q_OS_MACX)
+#elif defined(Q_OS_MACOS)
   // check for bundled GRASS, fall back to configured path
   gisbase = QCoreApplication::applicationDirPath().append( "/grass" );
   if ( !isValidGrassBaseDir( gisbase ) )

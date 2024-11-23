@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgswfsconnection.h"
+#include "moc_qgswfsconnection.cpp"
 #include "qgswfsconstants.h"
 #include "qgslogger.h"
 #include "qgssettingsentryimpl.h"

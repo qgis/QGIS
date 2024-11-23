@@ -49,11 +49,11 @@ class TestQgsExifUtils(QgisTestCase):
 
         tag, ok = QgsExifTools.getGeoTag(os.path.join(photos_folder, '0997.JPG'))
         self.assertTrue(ok)
-        self.assertEqual(tag.asWkt(6), 'PointZ (149.275167 -37.2305 422.191011)')
+        self.assertEqual(tag.asWkt(6), 'Point Z (149.275167 -37.2305 422.191011)')
 
         tag, ok = QgsExifTools.getGeoTag(os.path.join(photos_folder, 'geotagged.jpg'))
         self.assertTrue(ok)
-        self.assertEqual(tag.asWkt(6), 'PointZ (149.131878 -36.220892 867)')
+        self.assertEqual(tag.asWkt(6), 'Point Z (149.131878 -36.220892 867)')
 
         tag, ok = QgsExifTools.getGeoTag(os.path.join(photos_folder, 'notags.JPG'))
         self.assertFalse(ok)
@@ -92,7 +92,7 @@ class TestQgsExifUtils(QgisTestCase):
         self.assertTrue(QgsExifTools.geoTagImage(tmpName, QgsPointXY(1.1, 3.3), deets))
         tag, ok = QgsExifTools.getGeoTag(tmpName)
         self.assertTrue(ok)
-        self.assertEqual(tag.asWkt(6), 'PointZ (1.1 3.3 110.1)')
+        self.assertEqual(tag.asWkt(6), 'Point Z (1.1 3.3 110.1)')
         os.remove(tmpName)
 
         shutil.copy(src_photo, tmpName)
@@ -101,7 +101,7 @@ class TestQgsExifUtils(QgisTestCase):
         self.assertTrue(QgsExifTools.geoTagImage(tmpName, QgsPointXY(1.1, 3.3), deets))
         tag, ok = QgsExifTools.getGeoTag(tmpName)
         self.assertTrue(ok)
-        self.assertEqual(tag.asWkt(6), 'PointZ (1.1 3.3 -110.1)')
+        self.assertEqual(tag.asWkt(6), 'Point Z (1.1 3.3 -110.1)')
         os.remove(tmpName)
 
         shutil.copy(src_photo, tmpName)

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgswmsdimensiondialog.h"
+#include "moc_qgswmsdimensiondialog.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsfieldcombobox.h"
 

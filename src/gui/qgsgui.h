@@ -318,6 +318,13 @@ class GUI_EXPORT QgsGui : public QObject
      */
     static void initCalloutWidgets() SIP_SKIP;
 
+    /**
+     *  Checks whether QWebEngineView is available to display HTML content.
+     *
+     * \since QGIS 3.42
+     */
+    static bool hasWebEngine();
+
     ///@cond PRIVATE
     void emitOptionsChanged() SIP_SKIP;
     ///@endcond

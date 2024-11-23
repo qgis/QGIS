@@ -179,6 +179,8 @@ QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap 
     }
   }
 
+  sink->finalize();
+
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 

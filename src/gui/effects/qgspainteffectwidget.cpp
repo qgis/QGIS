@@ -15,6 +15,7 @@
 
 
 #include "qgspainteffectwidget.h"
+#include "moc_qgspainteffectwidget.cpp"
 #include "qgslogger.h"
 #include "qgspainteffect.h"
 #include "qgsshadoweffect.h"

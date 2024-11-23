@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgswmsdataitemguiproviders.h"
+#include "moc_qgswmsdataitemguiproviders.cpp"
 
 #include "qgswmsdataitems.h"
 

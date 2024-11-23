@@ -16,6 +16,7 @@ email                : jef at norbit dot de
  ***************************************************************************/
 
 #include "qgsoraclecolumntypetask.h"
+#include "moc_qgsoraclecolumntypetask.cpp"
 #include "qgslogger.h"
 #include "qgsoracleconnpool.h"
 

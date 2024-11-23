@@ -71,6 +71,9 @@ QgsDateTimeRange.__repr__ = _datetime_range_repr
 QgsDateRange.__repr__ = _date_range_repr
 
 
+QgsProperty.__bool__ = lambda self: self.propertyType() != Qgis.PropertyType.Invalid
+QgsOptionalExpression.__bool__ = lambda self: self.enabled()
+
 # add some __repr__ methods to processing classes
 def _processing_source_repr(self):
     if self.featureLimit != -1:
@@ -540,7 +543,6 @@ QgsException.__doc__ = "Defines a QGIS exception class."
 
 try:
    import numpy as _numpy
-
    def _qgis_data_type_to_numeric_data_type(dataType: Qgis.DataType) -> _typing.Optional[_numpy.dtype]:
       qgis_to_numpy_dtype_dict = {
        Qgis.DataType.UnknownDataType: None,
@@ -588,6 +590,34 @@ try:
 
    QgsRasterLayer.as_numpy = _raster_layer_as_numpy
 
+   def _qgsgeometry_as_numpy(self) -> _typing.Union[_numpy.ndarray, _typing.List[_numpy.ndarray]]:
+       if self.isMultipart():
+           if self.type() == QgsWkbTypes.PointGeometry:
+               # MultiPoint
+               return [_numpy.array([pt.x(), pt.y()]) for pt in self.asMultiPoint()]
+           elif self.type() == QgsWkbTypes.LineGeometry:
+               # MultiLineString
+               return [_numpy.array([[pt.x(), pt.y()] for pt in line]) for line in self.asMultiPolyline()]
+           elif self.type() == QgsWkbTypes.PolygonGeometry:
+               # MultiPolygon
+               return [
+                   [_numpy.array([[pt.x(), pt.y()] for pt in ring]) for ring in polygon]
+                   for polygon in self.asMultiPolygon()
+               ]
+       else:
+           if self.type() == QgsWkbTypes.PointGeometry:
+               point = self.asPoint()
+               return _numpy.array([point.x(), point.y()])
+           elif self.type() == QgsWkbTypes.LineGeometry:
+               line = self.asPolyline()
+               return _numpy.array([[pt.x(), pt.y()] for pt in line])
+           elif self.type() == QgsWkbTypes.PolygonGeometry:
+               polygon = self.asPolygon()
+               return _numpy.array([_numpy.array([[pt.x(), pt.y()] for pt in ring]) for ring in polygon])
+
+
+   QgsGeometry.as_numpy = _qgsgeometry_as_numpy
+   
 except ModuleNotFoundError:
    def _raster_block_as_numpy(self, use_masking:bool = True):
        raise QgsNotSupportedException('QgsRasterBlock.as_numpy is not available, numpy is not installed on the system')
@@ -598,6 +628,30 @@ except ModuleNotFoundError:
        raise QgsNotSupportedException('QgsRasterLayer.as_numpy is not available, numpy is not installed on the system')
 
    QgsRasterLayer.as_numpy = _raster_layer_as_numpy
+   
+   def _geometry_as_numpy(self):
+      raise QgsNotSupportedException('QgsGeometry.as_numpy is not available, numpy is not installed on the system')
+
+   QgsGeometry.as_numpy = _geometry_as_numpy
+
+try:
+   import shapely as _shapely
+   import shapely.geometry as _sg
+
+   def _geometry_as_shapely(self) -> _sg.base.BaseGeometry:
+      wkb_qbytearray = self.asWkb()  # Get the geometry in WKB format (QByteArray)
+      shapely_geom = _shapely.from_wkb(wkb_qbytearray.data())
+
+      return shapely_geom
+
+   QgsGeometry.as_shapely = _geometry_as_shapely
+
+except ModuleNotFoundError:
+   def _geometry_as_shapely(self):
+       raise QgsNotSupportedException('QgsGeometry.as_shapely is not available, shapely is not installed on the system')
+
+   QgsGeometry.as_shapely = _geometry_as_shapely
+
 
 QgsRasterBlock.as_numpy.__doc__ = """
 Returns the block data as a numpy array.
@@ -608,6 +662,7 @@ If `use_masking` is `True` then the returned array will be a numpy masked array,
 
 .. versionadded:: 3.40
 """
+
 QgsRasterLayer.as_numpy.__doc__ = """
 Returns the layer data as a numpy array.
 
@@ -616,6 +671,22 @@ If `use_masking` is `True` then the returned arrays will be numpy masked arrays,
 If `bands` is provided, only the specified bands will be included in the returned array; otherwise, all bands will be used.
 
 :raises QgsNotSupportedException: if numpy is not available on the system
+
+.. versionadded:: 3.40
+"""
+
+QgsGeometry.as_numpy.__doc__ = """
+Returns the geometry data as a numpy array or list of numpy arrays.
+
+:raises QgsNotSupportedException: if numpy is not available on the system
+
+.. versionadded:: 3.40
+"""
+
+QgsGeometry.as_shapely.__doc__ = """
+Returns the geometry data as a shapely object.
+
+:raises QgsNotSupportedException: if shapely is not available on the system
 
 .. versionadded:: 3.40
 """

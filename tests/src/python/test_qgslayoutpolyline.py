@@ -9,16 +9,20 @@ __author__ = '(C) 2016 by Paul Blottiere'
 __date__ = '14/03/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
 
-from qgis.PyQt.QtCore import QPointF
+from qgis.PyQt.QtCore import QPointF, QRectF
 from qgis.PyQt.QtGui import QPolygonF
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
+    Qgis,
     QgsLayout,
     QgsLayoutItemPolyline,
+    QgsLayoutItemMap,
     QgsLayoutItemRegistry,
     QgsLineSymbol,
     QgsProject,
-    QgsReadWriteContext
+    QgsReadWriteContext,
+    QgsGeometryGeneratorSymbolLayer,
+    QgsRectangle
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -381,6 +385,47 @@ class TestQgsLayoutPolyline(QgisTestCase, LayoutItemTestCase):
             self.render_layout_check(
                 'composerpolyline_vertline',
                 l
+            )
+        )
+
+    def test_generator(self):
+        project = QgsProject()
+        layout = QgsLayout(project)
+        layout.initializeDefaults()
+
+        p = QPolygonF()
+        p.append(QPointF(0.0, 0.0))
+        p.append(QPointF(100.0, 100.0))
+        shape = QgsLayoutItemPolyline(p, layout)
+        layout.addLayoutItem(shape)
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(0, 0, 10, 10))
+        map.zoomToExtent(QgsRectangle(1, 1, 2, 2))
+        layout.addLayoutItem(map)
+
+        props = {}
+        props["color"] = "0,0,0,255"
+        props["width"] = "10.0"
+        props["capstyle"] = "square"
+
+        sub_symbol = QgsLineSymbol.createSimple(props)
+
+        line_symbol = QgsLineSymbol()
+        generator = QgsGeometryGeneratorSymbolLayer.create({
+            'geometryModifier': "geom_from_wkt('POLYGON((10 10,287 10,287 200,10 200,10 10))')",
+            'SymbolType': 'Line',
+        })
+        generator.setUnits(Qgis.RenderUnit.Millimeters)
+        generator.setSubSymbol(sub_symbol)
+
+        line_symbol.changeSymbolLayer(0, generator)
+        shape.setSymbol(line_symbol)
+
+        self.assertTrue(
+            self.render_layout_check(
+                'polyline_generator',
+                layout
             )
         )
 

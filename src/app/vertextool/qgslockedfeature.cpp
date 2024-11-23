@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslockedfeature.h"
+#include "moc_qgslockedfeature.cpp"
 #include "qgsvertexeditor.h"
 
 #include "qgsfeatureiterator.h"

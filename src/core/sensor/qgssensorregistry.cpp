@@ -17,6 +17,7 @@
 #include "qgsconfig.h"
 
 #include "qgssensorregistry.h"
+#include "moc_qgssensorregistry.cpp"
 #include "qgsiodevicesensor.h"
 #include "qgsproject.h"
 #include "qgssensormanager.h"
@@ -66,12 +67,12 @@ bool QgsSensorRegistry::removeSensorType( const QString &type )
     return false;
 
   // remove any sensor of this type in the project sensor manager
-  const QList<QgsAbstractSensor *> sensors = QgsProject::instance()->sensorManager()->sensors();
+  const QList<QgsAbstractSensor *> sensors = QgsProject::instance()->sensorManager()->sensors(); // skip-keyword-check
   for ( QgsAbstractSensor *sensor : sensors )
   {
     if ( sensor->type() == type )
     {
-      QgsProject::instance()->sensorManager()->removeSensor( sensor->id() );
+      QgsProject::instance()->sensorManager()->removeSensor( sensor->id() ); // skip-keyword-check
     }
   }
 

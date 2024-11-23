@@ -17,6 +17,7 @@
  ***************************************************************************/
 #include "qgsapplication.h"
 #include "qgsoptions.h"
+#include "moc_qgsoptions.cpp"
 #include "qgis.h"
 #include "qgisapp.h"
 #include "qgisappstylesheet.h"

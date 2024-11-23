@@ -235,7 +235,7 @@ void TestQgsMultiSurface::addGeometryInitialDimension()
   QVERIFY( ms.is3D() );
   QVERIFY( !ms.isMeasure() );
   QCOMPARE( ms.wkbType(), Qgis::WkbType::MultiSurfaceZ );
-  QCOMPARE( ms.wktTypeStr(), QString( "MultiSurfaceZ" ) );
+  QCOMPARE( ms.wktTypeStr(), QString( "MultiSurface Z" ) );
   QCOMPARE( ms.geometryType(), QString( "MultiSurface" ) );
   QCOMPARE( *( static_cast< const QgsCurvePolygon * >( ms.geometryN( 0 ) ) ), part );
 
@@ -251,7 +251,7 @@ void TestQgsMultiSurface::addGeometryInitialDimension()
   QVERIFY( !ms.is3D() );
   QVERIFY( ms.isMeasure() );
   QCOMPARE( ms.wkbType(), Qgis::WkbType::MultiSurfaceM );
-  QCOMPARE( ms.wktTypeStr(), QString( "MultiSurfaceM" ) );
+  QCOMPARE( ms.wktTypeStr(), QString( "MultiSurface M" ) );
   QCOMPARE( *( static_cast< const QgsCurvePolygon * >( ms.geometryN( 0 ) ) ), part );
 
   ms.clear();
@@ -266,7 +266,7 @@ void TestQgsMultiSurface::addGeometryInitialDimension()
   QVERIFY( ms.is3D() );
   QVERIFY( ms.isMeasure() );
   QCOMPARE( ms.wkbType(), Qgis::WkbType::MultiSurfaceZM );
-  QCOMPARE( ms.wktTypeStr(), QString( "MultiSurfaceZM" ) );
+  QCOMPARE( ms.wktTypeStr(), QString( "MultiSurface ZM" ) );
   QCOMPARE( *( static_cast< const QgsCurvePolygon * >( ms.geometryN( 0 ) ) ), part );
 }
 

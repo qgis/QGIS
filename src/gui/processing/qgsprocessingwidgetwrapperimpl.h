@@ -75,6 +75,7 @@ class QgsProcessingPointCloudExpressionLineEdit;
 class QgsProcessingRasterCalculatorExpressionLineEdit;
 class QgsRubberBand;
 class QgsHighlightableLineEdit;
+class QgsGeometryWidget;
 
 ///@cond PRIVATE
 
@@ -1130,10 +1131,12 @@ class GUI_EXPORT QgsProcessingPointPanel : public QWidget
     void setMapCanvas( QgsMapCanvas *canvas );
     void setAllowNull( bool allowNull );
     void setShowPointOnCanvas( bool show );
+    void setAllowSelectOnCanvas( bool allow );
 
     QVariant value() const;
     void clear();
     void setValue( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs );
+    void showEvent( QShowEvent *event ) override;
 
   signals:
 
@@ -1152,6 +1155,8 @@ class GUI_EXPORT QgsProcessingPointPanel : public QWidget
 
     QgsFilterLineEdit *mLineEdit = nullptr;
     bool mShowPointOnCanvas = false;
+    bool mFirstShow = true;
+    bool mAllowSelectOnCanvas = true;
     QToolButton *mButton = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
     QgsCoordinateReferenceSystem mCrs;
@@ -1234,7 +1239,7 @@ class GUI_EXPORT QgsProcessingGeometryParameterDefinitionWidget : public QgsProc
 
   private:
 
-    QLineEdit *mDefaultLineEdit = nullptr;
+    QgsGeometryWidget *mGeometryWidget = nullptr;
 
 };
 
@@ -1270,7 +1275,7 @@ class GUI_EXPORT QgsProcessingGeometryWidgetWrapper : public QgsAbstractProcessi
     QString modelerExpressionFormatString() const override;
   private:
 
-    QLineEdit *mLineEdit = nullptr;
+    QgsGeometryWidget *mGeometryWidget = nullptr;
 
     friend class TestProcessingGui;
 };

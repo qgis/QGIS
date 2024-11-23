@@ -22,7 +22,8 @@ __copyright__ = '(C) 2012, Victor Olaya & NextGIS'
 import sys
 
 from qgis.PyQt.QtCore import QMetaType
-from qgis.core import (QgsProcessingException,
+from qgis.core import (Qgis,
+                       QgsProcessingException,
                        QgsField,
                        QgsFields,
                        QgsFeatureSink,
@@ -46,6 +47,11 @@ class FieldsPyculator(QgisAlgorithm):
     FORMULA = 'FORMULA'
     OUTPUT = 'OUTPUT'
     RESULT_VAR_NAME = 'value'
+
+    def flags(self):
+        # This algorithm represents a security risk, due to the use
+        # of the Python "exec" function
+        return super().flags() | Qgis.ProcessingAlgorithmFlag.SecurityRisk
 
     def group(self):
         return self.tr('Vector table')
@@ -226,6 +232,7 @@ class FieldsPyculator(QgisAlgorithm):
             feat.setAttributes(attrs)
             sink.addFeature(feat, QgsFeatureSink.Flag.FastInsert)
 
+        sink.finalize()
         return {self.OUTPUT: dest_id}
 
     def checkParameterValues(self, parameters, context):

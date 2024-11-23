@@ -16,6 +16,7 @@
 #include <QMouseEvent>
 
 #include "qgsidentifymenu.h"
+#include "moc_qgsidentifymenu.cpp"
 #include "qgsapplication.h"
 #include "qgshighlight.h"
 #include "qgsmapcanvas.h"

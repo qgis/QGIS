@@ -113,7 +113,7 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      * Read layer node from XML. Returns new instance.
      * Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
      */
-    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;  // cppcheck-suppress duplInheritedMember
 
     /**
      * Read layer node from XML. Returns new instance.

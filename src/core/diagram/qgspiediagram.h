@@ -15,8 +15,6 @@
 #ifndef QGSPIEDIAGRAM_H
 #define QGSPIEDIAGRAM_H
 
-#define DIAGRAM_NAME_PIE "Pie"
-
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsdiagram.h"
@@ -38,6 +36,8 @@ class QgsRenderContext;
 class CORE_EXPORT QgsPieDiagram: public QgsDiagram SIP_NODEFAULTCTORS
 {
   public:
+    static const QString DIAGRAM_NAME_PIE SIP_SKIP;
+
     QgsPieDiagram();
 
     QgsPieDiagram *clone() const override SIP_FACTORY;

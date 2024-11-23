@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsnominatimlocatorfilter.h"
+#include "moc_qgsnominatimlocatorfilter.cpp"
 #include "qgssettings.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessagebar.h"

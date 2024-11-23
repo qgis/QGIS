@@ -26,6 +26,7 @@ QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *laye
   : QgsMapLayerRenderer( layer->id(), &context )
   , mFeedback( std::make_unique< QgsFeedback >() )
   , mLayerOpacity( layer->opacity() )
+  , mLayerBlendMode( layer->blendMode() )
 {
   if ( QgsMapLayer *linkedLayer = layer->linkedVisibilityLayer() )
   {
@@ -123,5 +124,14 @@ bool QgsAnnotationLayerRenderer::render()
 
 bool QgsAnnotationLayerRenderer::forceRasterRender() const
 {
-  return renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) && ( !qgsDoubleNear( mLayerOpacity, 1.0 ) );
+  if ( !renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) )
+    return false;
+
+  if ( !qgsDoubleNear( mLayerOpacity, 1.0 ) )
+    return true;
+
+  if ( mLayerBlendMode != QPainter::CompositionMode_SourceOver )
+    return true;
+
+  return false;
 }

@@ -42,12 +42,12 @@ class TopologyRule
     QList<Qgis::GeometryType> layer1SupportedTypes;
     QList<Qgis::GeometryType> layer2SupportedTypes;
 
-    bool layer1AcceptsType( Qgis::GeometryType type )
+    bool layer1AcceptsType( Qgis::GeometryType type ) const
     {
       return layer1SupportedTypes.contains( type );
     }
 
-    bool layer2AcceptsType( Qgis::GeometryType type )
+    bool layer2AcceptsType( Qgis::GeometryType type ) const
     {
       return layer2SupportedTypes.contains( type );
     }

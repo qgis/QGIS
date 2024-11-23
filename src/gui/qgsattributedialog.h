@@ -121,17 +121,12 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog, public QgsMapLayerActionCo
     QString mSettingsPath;
     // Used to sync multiple widgets for the same field
     QgsHighlight *mHighlight = nullptr;
-    int mFormNr;
-    bool mShowDialogButtons;
     QString mReturnvarname;
     QgsAttributeForm *mAttributeForm = nullptr;
     QgsFeature *mOwnedFeature = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
 
     QgsTrackedVectorLayerTools mTrackedVectorLayerTools;
-
-    // true if this dialog is editable
-    bool mEditable;
 
     QgsActionMenu *mMenu;
     QMenuBar *mMenuBar = nullptr;

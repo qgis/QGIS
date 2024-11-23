@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsconfigureshortcutsdialog.h"
+#include "moc_qgsconfigureshortcutsdialog.cpp"
 
 #include "qgsshortcutsmanager.h"
 #include "qgsapplication.h"

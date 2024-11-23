@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmbtilesvectortilesourcewidget.h"
+#include "moc_qgsmbtilesvectortilesourcewidget.cpp"
 ///@cond PRIVATE
 
 #include "qgsproviderregistry.h"

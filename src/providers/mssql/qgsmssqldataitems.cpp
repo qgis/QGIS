@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmssqldataitems.h"
+#include "moc_qgsmssqldataitems.cpp"
 #include "qgsmssqlconnection.h"
 #include "qgsmssqldatabase.h"
 

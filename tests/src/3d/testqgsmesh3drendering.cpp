@@ -48,6 +48,7 @@ class TestQgsMesh3DRendering : public QgsTest
     void testMesh_datasetOnFaces();
     void testMeshSimplified();
     void testFilteredMesh();
+    void testMeshClipping();
 
   private:
 
@@ -152,7 +153,7 @@ void TestQgsMesh3DRendering::testMesh()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -194,7 +195,7 @@ void TestQgsMesh3DRendering::testMesh_datasetOnFaces()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -307,7 +308,7 @@ void TestQgsMesh3DRendering::testFilteredMesh()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
@@ -329,6 +330,57 @@ void TestQgsMesh3DRendering::testFilteredMesh()
   delete map;
 
   QGSVERIFYIMAGECHECK( "mesh3d_filtered", "mesh3d_filtered", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgsMesh3DRendering::testMeshClipping()
+{
+  QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
+  symbolMesh3d->setVerticalDatasetGroupIndex( 3 );
+  symbolMesh3d->setVerticalScale( 10 );
+  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::ColorRamp2DRendering );
+  symbolMesh3d->setArrowsEnabled( true );
+  symbolMesh3d->setArrowsSpacing( 300 );
+  QgsMeshLayer3DRenderer *meshDatasetRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
+  mLayerMeshDataset->setRenderer3D( meshDatasetRenderer3d );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( mLayerMeshDataset->extent() );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 3000, 25, 45 );
+
+  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
+                                         << QVector4D( 1.0, 0, 0.0, 1.0 );
+  scene->enableClipping( clipPlanesEquations );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "mesh3d_clipping", "mesh3d_clipping", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  scene->disableClipping();
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  delete scene;
+  delete map;
+  QGSVERIFYIMAGECHECK( "mesh3dOnFace", "mesh3dOnFace", img2, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 QGSTEST_MAIN( TestQgsMesh3DRendering )

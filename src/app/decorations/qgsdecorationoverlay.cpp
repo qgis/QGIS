@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsdecorationoverlay.h"
+#include "moc_qgsdecorationoverlay.cpp"
 #include "qgsmapdecoration.h"
 #include "qgsmapcanvas.h"
 #include "qgisapp.h"

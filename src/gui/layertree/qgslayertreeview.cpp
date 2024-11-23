@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreeview.h"
+#include "moc_qgslayertreeview.cpp"
 
 #include "qgslayertree.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
@@ -151,6 +152,17 @@ QgsMapLayer *QgsLayerTreeView::currentLayer() const
   return layerForIndex( currentIndex() );
 }
 
+void QgsLayerTreeView::setCurrentNode( QgsLayerTreeNode *node )
+{
+  if ( !node )
+  {
+    setCurrentIndex( QModelIndex() );
+    return;
+  }
+
+  setCurrentIndex( node2index( node ) );
+}
+
 void QgsLayerTreeView::setCurrentLayer( QgsMapLayer *layer )
 {
   if ( !layer )
@@ -163,7 +175,7 @@ void QgsLayerTreeView::setCurrentLayer( QgsMapLayer *layer )
   if ( !nodeLayer )
     return;
 
-  setCurrentIndex( node2index( nodeLayer ) );
+  setCurrentNode( nodeLayer );
 }
 
 void QgsLayerTreeView::setLayerVisible( QgsMapLayer *layer, bool visible )

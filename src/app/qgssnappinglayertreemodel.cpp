@@ -20,6 +20,7 @@
 #include <QMenu>
 #include <QAction>
 #include "qgssnappinglayertreemodel.h"
+#include "moc_qgssnappinglayertreemodel.cpp"
 
 #include "qgslayertree.h"
 #include "qgsmapcanvas.h"

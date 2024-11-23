@@ -18,6 +18,7 @@ email                : matthias@opengis.ch
 #include <QPropertyAnimation>
 
 #include "qgsgeometryvalidationdock.h"
+#include "moc_qgsgeometryvalidationdock.cpp"
 #include "qgsgeometryvalidationmodel.h"
 #include "qgsgeometryvalidationservice.h"
 #include "qgsmapcanvas.h"

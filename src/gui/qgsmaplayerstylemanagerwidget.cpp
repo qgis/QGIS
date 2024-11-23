@@ -20,6 +20,7 @@
 #include <QFileDialog>
 
 #include "qgsmaplayerstylemanagerwidget.h"
+#include "moc_qgsmaplayerstylemanagerwidget.cpp"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"

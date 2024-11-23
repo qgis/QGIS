@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsdwgimportdialog.h"
+#include "moc_qgsdwgimportdialog.cpp"
 
 #include <QDialogButtonBox>
 #include <QFileInfo>

@@ -51,6 +51,28 @@ class DummyAlgorithm2 : public QgsProcessingAlgorithm
 
 };
 
+
+class DummySecurityRiskAlgorithm : public QgsProcessingAlgorithm
+{
+  public:
+
+    DummySecurityRiskAlgorithm( const QString &name ) : mName( name ) {  }
+
+    void initAlgorithm( const QVariantMap & = QVariantMap() ) override
+    {
+      addParameter( new QgsProcessingParameterVectorDestination( QStringLiteral( "vector_dest" ) ) );
+    }
+    QString name() const override { return mName; }
+    QString displayName() const override { return mName; }
+    QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) override { return QVariantMap(); }
+
+    Qgis::ProcessingAlgorithmFlags flags() const override { return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::SecurityRisk; }
+    DummySecurityRiskAlgorithm *createInstance() const override { return new DummySecurityRiskAlgorithm( name() ); }
+
+    QString mName;
+
+};
+
 class DummyRaiseExceptionAlgorithm : public QgsProcessingAlgorithm
 {
   public:
@@ -116,6 +138,7 @@ class DummyProvider4 : public QgsProcessingProvider // clazy:exclude=missing-qob
     {
       QVERIFY( addAlgorithm( new DummyAlgorithm2( QStringLiteral( "alg1" ) ) ) );
       QVERIFY( addAlgorithm( new DummyRaiseExceptionAlgorithm( QStringLiteral( "raise" ) ) ) );
+      QVERIFY( addAlgorithm( new DummySecurityRiskAlgorithm( QStringLiteral( "risky" ) ) ) );
     }
 
 };
@@ -155,6 +178,7 @@ class TestQgsProcessingModelAlgorithm: public QgsTest
     void renameModelParameter();
     void internalVersion();
     void modelChildOrderWithVariables();
+    void flags();
 
   private:
 
@@ -2742,6 +2766,27 @@ void TestQgsProcessingModelAlgorithm::modelChildOrderWithVariables()
   QCOMPARE( model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).size(), 2 );
   QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).contains( QStringLiteral( "c1" ) ) );
   QVERIFY( model.dependsOnChildAlgorithms( QStringLiteral( "c2" ) ).contains( QStringLiteral( "c3" ) ) );
+}
+
+void TestQgsProcessingModelAlgorithm::flags()
+{
+  QgsProcessingModelAlgorithm model( "test", "testGroup" );
+
+  const QgsProcessingModelParameter stringParam( "a_parameter" );
+  model.addModelParameter( new QgsProcessingParameterString( "a_parameter" ), stringParam );
+
+  QgsProcessingModelChildAlgorithm c1;
+  c1.setChildId( QStringLiteral( "c1" ) );
+  c1.setAlgorithmId( QStringLiteral( "native:stringconcatenation" ) );
+  model.addChildAlgorithm( c1 );
+  QVERIFY( !model.flags().testFlag( Qgis::ProcessingAlgorithmFlag::SecurityRisk ) );
+
+  // add algorithm with security risk
+  QgsProcessingModelChildAlgorithm c2;
+  c2.setChildId( QStringLiteral( "c2" ) );
+  c2.setAlgorithmId( QStringLiteral( "dummy4:risky" ) );
+  model.addChildAlgorithm( c2 );
+  QVERIFY( model.flags().testFlag( Qgis::ProcessingAlgorithmFlag::SecurityRisk ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingModelAlgorithm )

@@ -1327,7 +1327,7 @@ Write just the symbology information for the layer into the document
 %End
 
 
-    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
+    void setDataSource( const QString &dataSource, const QString &baseName = QString(), const QString &provider = QString(), bool loadDefaultStyleFlag = false );
 %Docstring
 Updates the data source of the layer.
 
@@ -1335,11 +1335,12 @@ The ``dataSource`` argument must specify the new data source string for the laye
 the specified data ``provider`` in use. See :py:class:`QgsDataSourceUri` and the documentation for the various :py:class:`QgsMapLayer`
 subclasses for further details on data source strings.
 
-The ``baseName`` argument specifies the user-visible name to use for the layer. (See :py:func:`~QgsMapLayer.name` or :py:func:`~QgsMapLayer.setName`).
+The ``baseName`` argument specifies the user-visible name to use for the layer. (See :py:func:`~QgsMapLayer.name` or :py:func:`~QgsMapLayer.setName`). If not
+specified, then the current name will be left unchanged (since QGIS 3.40).
 
 The ``provider`` argument is used to specify the unique key of the data provider to use for
 the layer. This must match one of the values returned by :py:func:`QgsProviderRegistry.instance()`->:py:func:`~QgsMapLayer.providerList`.
-(See :py:func:`~QgsMapLayer.providerType`).
+(See :py:func:`~QgsMapLayer.providerType`). If not specified, then the current data provider will be used (since QGIS 3.40).
 
 If ``loadDefaultStyleFlag`` is set to ``True`` then the layer's existing style will be reset to the default
 for the data source.

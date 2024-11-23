@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscheckboxconfigdlg.h"
+#include "moc_qgscheckboxconfigdlg.cpp"
 #include "qgscheckboxwidgetwrapper.h"
 #include "qgscheckboxfieldformatter.h"
 

@@ -34,11 +34,10 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #endif
 
 #include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DExtras/QTextureMaterial>
 
 #include "qgsgltf3dutils.h"
 #include "qgsmetalroughmaterial.h"
-
+#include "qgstexturematerial.h"
 
 
 /**
@@ -200,9 +199,9 @@ void TestQgsGltf3DUtils::testBoxTextured()
   QCOMPARE( indexAttr->vertexBaseType(), Qt3DQAttribute::UnsignedShort );
   QCOMPARE( indexAttr->vertexSize(), 1 );
 
-  QVector<Qt3DExtras::QTextureMaterial *> textureMaterials = child->componentsOfType<Qt3DExtras::QTextureMaterial>();
+  QVector<QgsTextureMaterial *> textureMaterials = child->componentsOfType<QgsTextureMaterial>();
   QCOMPARE( textureMaterials.count(), 1 );
-  Qt3DExtras::QTextureMaterial *textureMaterial = textureMaterials[0];
+  QgsTextureMaterial *textureMaterial = textureMaterials[0];
   QVERIFY( textureMaterial->texture() );
 
   delete entity;
@@ -242,16 +241,16 @@ void TestQgsGltf3DUtils::testTransforms()
   extractTriangleCoordinates( entity1, v1, v2, v3 );
   QCOMPARE( v1, QVector3D( 0, 0, 0 ) );
   QCOMPARE( v2, QVector3D( 1, 0, 0 ) );
-  QCOMPARE( v3, QVector3D( 0, 1, 0 ) );
+  QCOMPARE( v3, QVector3D( 0, 0, 1 ) );
   delete entity1;
 
   QgsGltf3DUtils::EntityTransform transform2;
   transform2.sceneOriginTargetCrs = QgsVector3D( -10, -20, 0 );
   Qt3DCore::QEntity *entity2 = QgsGltf3DUtils::gltfToEntity( gltfData, transform2, QString(), nullptr );
   extractTriangleCoordinates( entity2, v1, v2, v3 );
-  QCOMPARE( v1, QVector3D( 10, 0, -20 ) );
-  QCOMPARE( v2, QVector3D( 11, 0, -20 ) );
-  QCOMPARE( v3, QVector3D( 10, 1, -20 ) );
+  QCOMPARE( v1, QVector3D( 10, 20, 0 ) );
+  QCOMPARE( v2, QVector3D( 11, 20, 0 ) );
+  QCOMPARE( v3, QVector3D( 10, 20, 1 ) );
   delete entity2;
 
   QgsGltf3DUtils::EntityTransform transform3;
@@ -262,9 +261,9 @@ void TestQgsGltf3DUtils::testTransforms()
   transform3.sceneOriginTargetCrs = QgsVector3D( -10, -20, 0 );
   Qt3DCore::QEntity *entity3 = QgsGltf3DUtils::gltfToEntity( gltfData, transform3, QString(), nullptr );
   extractTriangleCoordinates( entity3, v1, v2, v3 );
-  QCOMPARE( v1, QVector3D( 10, 0, -20 ) );
-  QCOMPARE( v2, QVector3D( 12, 0, -20 ) );
-  QCOMPARE( v3, QVector3D( 10, 2, -20 ) );
+  QCOMPARE( v1, QVector3D( 10, 20, 0 ) );
+  QCOMPARE( v2, QVector3D( 12, 20, 0 ) );
+  QCOMPARE( v3, QVector3D( 10, 20, 2 ) );
   delete entity3;
 
 }

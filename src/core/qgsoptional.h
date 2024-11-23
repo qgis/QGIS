@@ -17,7 +17,7 @@
 #define QGSOPTIONAL_H
 
 #include "qgis_core.h"
-
+#include "qgis_sip.h"
 
 /**
  * \ingroup core
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsOptional
     /**
      * Boolean operator. Will return TRUE if this optional is enabled.
      */
-    operator bool() const
+    explicit operator bool() const SIP_SKIP
     {
       return mEnabled;
     }

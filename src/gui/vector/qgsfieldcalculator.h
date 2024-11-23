@@ -62,6 +62,7 @@ class GUI_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     void mCreateVirtualFieldCheckbox_stateChanged( int state );
     void mOutputFieldNameLineEdit_textChanged( const QString &text );
     void mOutputFieldTypeComboBox_activated( int index );
+    void mExistingFieldComboBox_currentIndexChanged( const int index );
 
     //! Sets the dialog buttons (Ok and Apply) enabled / disabled
     void setDialogButtonState();

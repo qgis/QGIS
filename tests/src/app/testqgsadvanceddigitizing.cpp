@@ -16,7 +16,6 @@
 #include "qgstest.h"
 
 #include "qgsadvanceddigitizingdockwidget.h"
-#include "qgsguiutils.h"
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
@@ -581,7 +580,7 @@ void TestQgsAdvancedDigitizing::coordinateConstraintWithZM()
   utils.mouseClick( 0, 2, Qt::RightButton );
 
   QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ),
-            QStringLiteral( "LineStringZM (5 0 33 66, 3 5 33 66, 4 4 5 66, 6 6 33 5, 9 9 9 9)" ) );
+            QStringLiteral( "LineString ZM (5 0 33 66, 3 5 33 66, 4 4 5 66, 6 6 33 5, 9 9 9 9)" ) );
 }
 
 void TestQgsAdvancedDigitizing::coordinateConstraintWhenSnapping()
@@ -605,6 +604,16 @@ void TestQgsAdvancedDigitizing::coordinateConstraintWhenSnapping()
   QgsSnappingConfig snapConfig = mCanvas->snappingUtils()->config();
   snapConfig.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( snapConfig );
+
+  // move to trigger a re-indexing and wait for it to complete
+  utils.mouseMove( 0, 0 );
+  if ( QgsPointLocator *loc = mCanvas->snappingUtils()->locatorForLayer( mLayer3950 ) )
+  {
+    if ( loc->isIndexing() )
+    {
+      loc->waitForIndexingFinished();
+    }
+  }
 
   // simple snap test
   utils.mouseClick( 0, 2, Qt::LeftButton );
@@ -805,6 +814,15 @@ void TestQgsAdvancedDigitizing::lineExtensionConstraintGeographicCrs()
   snapConfig.setEnabled( true );
   snapConfig.setTypeFlag( Qgis::SnappingType::Vertex | Qgis::SnappingType::Segment );
   mCanvas->snappingUtils()->setConfig( snapConfig );
+
+  // Wait for indexing to complete
+  if ( QgsPointLocator *loc = mCanvas->snappingUtils()->locatorForLayer( mLayer4326 ) )
+  {
+    if ( loc->isIndexing() )
+    {
+      loc->waitForIndexingFinished();
+    }
+  }
 
   // test snapping on segment
   utils.mouseMove( 4.9, 5.1 );

@@ -367,6 +367,7 @@ Returns the expression related to the end extremity value for width.
    Use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndWidthValue ) instead.
 %End
 
+
     void setWidthUnit( Qgis::RenderUnit strokeWidthUnit );
 %Docstring
 Sets the width unit.

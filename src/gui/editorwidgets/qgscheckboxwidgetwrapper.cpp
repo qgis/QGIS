@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscheckboxwidgetwrapper.h"
+#include "moc_qgscheckboxwidgetwrapper.cpp"
 
 QgsCheckboxWidgetWrapper::QgsCheckboxWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )

@@ -15,6 +15,7 @@
 
 #include "qgsvectortiledataprovider.h"
 #include "qgsxyzvectortiledataprovider.h"
+#include "moc_qgsxyzvectortiledataprovider.cpp"
 #include "qgsthreadingutils.h"
 #include "qgstiles.h"
 #include "qgsvectortileloader.h"

@@ -678,6 +678,25 @@ class TestQgsAnnotationLayer(QgisTestCase):
         self.assertTrue(compareWkt(result, expected, tol=1000), "mismatch Expected:\n{}\nGot:\n{}\n".format(expected,
                                                                                                             result))
 
+    def test_force_raster_render(self):
+        layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
+        self.assertTrue(layer.isValid())
+        settings = QgsMapSettings()
+        rc = QgsRenderContext.fromMapSettings(settings)
+        renderer = layer.createMapRenderer(rc)
+        self.assertFalse(renderer.forceRasterRender())
+
+        # layer opacity should force raster render
+        layer.setOpacity(0.5)
+        renderer = layer.createMapRenderer(rc)
+        self.assertTrue(renderer.forceRasterRender())
+        layer.setOpacity(1.0)
+
+        # alternate blend mode should force raster render
+        layer.setBlendMode(QPainter.CompositionMode.CompositionMode_Multiply)
+        renderer = layer.createMapRenderer(rc)
+        self.assertTrue(renderer.forceRasterRender())
+
     def testRenderWithDisabledItems(self):
         layer = QgsAnnotationLayer('test', QgsAnnotationLayer.LayerOptions(QgsProject.instance().transformContext()))
         self.assertTrue(layer.isValid())

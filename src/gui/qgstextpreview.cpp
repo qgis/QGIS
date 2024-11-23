@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstextpreview.h"
+#include "moc_qgstextpreview.cpp"
 #include "qgstextrenderer.h"
 #include "qgsscreenhelper.h"
 

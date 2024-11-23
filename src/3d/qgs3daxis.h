@@ -57,27 +57,28 @@ class _3D_EXPORT Qgs3DAxis : public QObject
   public:
 
     /**
-     * \brief Default Qgs3DAxis constructor
+     * Default Qgs3DAxis constructor.
+     *
      * \param canvas parent Qgs3DMapCanvas
-     * @param parent3DScene root entity to set as parent
-     * @param mapScene 3d map scene to retrieve terrain and 3d engine data
-     * @param camera camera controller used to track camera movements
-     * @param map 3D map settings
+     * \param parent3DScene root entity to set as parent
+     * \param mapScene 3d map scene to retrieve terrain and 3d engine data
+     * \param camera camera controller used to track camera movements
+     * \param map 3D map settings
      */
     Qgs3DAxis( Qgs3DMapCanvas *canvas,  Qt3DCore::QEntity *parent3DScene,
                Qgs3DMapScene *mapScene, QgsCameraController *camera, Qgs3DMapSettings *map );
     ~Qgs3DAxis() override;
 
     /**
-     * \brief project a 3D position from sourceCamera to a 2D position for destCamera. destCamera acts as a billboarding layer. The labels displayed by this process will always face the camera.
+     * Project a 3D position from sourceCamera to a 2D position for \a destCamera.
+     *
+     * \a destCamera acts as a billboarding layer. The labels displayed by this process will always face the camera.
      *
      * \param sourcePos 3D label coordinates
-     * @param sourceCamera main view camera
-     * @param destCamera billboarding camera
-     * @return
+     * \param sourceCamera main view camera
+     * \param destCamera billboarding camera
      */
     QVector3D from3DTo2DLabelPosition( const QVector3D &sourcePos, Qt3DRender::QCamera *sourceCamera, Qt3DRender::QCamera *destCamera );
-
 
   public slots:
 

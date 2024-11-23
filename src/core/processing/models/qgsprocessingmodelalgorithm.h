@@ -47,6 +47,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;  //#spellok
 
+    Qgis::ProcessingAlgorithmFlags flags() const override;
     QString name() const override;
     QString displayName() const override;
     QString group() const override;

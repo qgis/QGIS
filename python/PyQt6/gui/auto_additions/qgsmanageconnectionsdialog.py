@@ -15,3 +15,4 @@ QgsManageConnectionsDialog.VectorTile = QgsManageConnectionsDialog.Type.VectorTi
 QgsManageConnectionsDialog.TiledScene = QgsManageConnectionsDialog.Type.TiledScene
 QgsManageConnectionsDialog.SensorThings = QgsManageConnectionsDialog.Type.SensorThings
 QgsManageConnectionsDialog.CloudStorage = QgsManageConnectionsDialog.Type.CloudStorage
+QgsManageConnectionsDialog.STAC = QgsManageConnectionsDialog.Type.STAC

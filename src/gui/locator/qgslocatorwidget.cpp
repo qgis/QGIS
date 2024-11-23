@@ -18,6 +18,7 @@
 #include "qgslocator.h"
 #include "qgslocatormodel.h"
 #include "qgslocatorwidget.h"
+#include "moc_qgslocatorwidget.cpp"
 #include "qgslocatormodelbridge.h"
 #include "qgsfilterlineedit.h"
 #include "qgsmapcanvas.h"
@@ -39,7 +40,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
 {
   setObjectName( QStringLiteral( "LocatorWidget" ) );
   mLineEdit->setShowClearButton( true );
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
   mLineEdit->setPlaceholderText( tr( "Type to locate (⌘K)" ) );
 #else
   mLineEdit->setPlaceholderText( tr( "Type to locate (Ctrl+K)" ) );

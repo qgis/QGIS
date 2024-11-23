@@ -432,32 +432,32 @@ class TestPyQgsPostgresProvider(QgisTestCase, ProviderTestCase):
 
         test_table(self.dbconn, 'p2d', 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
         test_table(self.dbconn, 'p3d',
-                   'PolygonZ ((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0 0))')
+                   'Polygon Z ((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0 0))')
         test_table(self.dbconn, 'triangle2d', 'Triangle ((0 0, 1 0, 1 1, 0 0))')
         test_table(self.dbconn, 'triangle3d',
-                   'TriangleZ ((0 0 0, 1 0 0, 1 1 0, 0 0 0))')
+                   'Triangle Z ((0 0 0, 1 0 0, 1 1 0, 0 0 0))')
         test_table(self.dbconn, 'tin2d',
                    'TIN (((0 0, 1 0, 1 1, 0 0)),((0 0, 0 1, 1 1, 0 0)))')
         test_table(self.dbconn, 'tin3d',
-                   'TINZ (((0 0 0, 1 0 0, 1 1 0, 0 0 0)),((0 0 0, 0 1 0, 1 1 0, 0 0 0)))')
+                   'TIN Z (((0 0 0, 1 0 0, 1 1 0, 0 0 0)),((0 0 0, 0 1 0, 1 1 0, 0 0 0)))')
         test_table(self.dbconn, 'ps2d',
                    'PolyhedralSurface (((0 0, 1 0, 1 1, 0 1, 0 0)))')
         test_table(self.dbconn, 'ps3d',
-                   'PolyhedralSurfaceZ (((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)),((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),((1 0 0, 1 0 1, 0 0 1, 0 0 0, 1 0 0)))')
+                   'PolyhedralSurface Z (((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)),((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),((1 0 0, 1 0 1, 0 0 1, 0 0 0, 1 0 0)))')
         test_table(self.dbconn, 'mp3d',
-                   'MultiPolygonZ (((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)),((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),((1 0 0, 1 0 1, 0 0 1, 0 0 0, 1 0 0)))')
+                   'MultiPolygon Z (((0 0 0, 0 1 0, 1 1 0, 1 0 0, 0 0 0)),((0 0 1, 1 0 1, 1 1 1, 0 1 1, 0 0 1)),((0 0 0, 0 0 1, 0 1 1, 0 1 0, 0 0 0)),((0 1 0, 0 1 1, 1 1 1, 1 1 0, 0 1 0)),((1 1 0, 1 1 1, 1 0 1, 1 0 0, 1 1 0)),((1 0 0, 1 0 1, 0 0 1, 0 0 0, 1 0 0)))')
         test_table(self.dbconn, 'pt2d', 'Point (0 0)')
-        test_table(self.dbconn, 'pt3d', 'PointZ (0 0 0)')
+        test_table(self.dbconn, 'pt3d', 'Point Z (0 0 0)')
         test_table(self.dbconn, 'ls2d', 'LineString (0 0, 1 1)')
-        test_table(self.dbconn, 'ls3d', 'LineStringZ (0 0 0, 1 1 1)')
+        test_table(self.dbconn, 'ls3d', 'LineString Z (0 0 0, 1 1 1)')
         test_table(self.dbconn, 'mpt2d', 'MultiPoint ((0 0),(1 1))')
-        test_table(self.dbconn, 'mpt3d', 'MultiPointZ ((0 0 0),(1 1 1))')
+        test_table(self.dbconn, 'mpt3d', 'MultiPoint Z ((0 0 0),(1 1 1))')
         test_table(self.dbconn, 'mls2d',
                    'MultiLineString ((0 0, 1 1),(2 2, 3 3))')
         test_table(self.dbconn, 'mls3d',
-                   'MultiLineStringZ ((0 0 0, 1 1 1),(2 2 2, 3 3 3))')
+                   'MultiLineString Z ((0 0 0, 1 1 1),(2 2 2, 3 3 3))')
 
-        test_table(self.dbconn, 'pt4d', 'PointZM (1 2 3 4)')
+        test_table(self.dbconn, 'pt4d', 'Point ZM (1 2 3 4)')
 
     def testMetadata(self):
         """ Test that metadata is correctly acquired from provider """
@@ -3475,6 +3475,15 @@ INSERT INTO public.test_geog_ext(g)
         cur.execute(sql_pk)
         self.assertEqual(cur.fetchall(), [('dep', 'character varying')])
 
+    def testNameType(self):
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'"table_catalog","table_schema","table_name"\' table="information_schema"."tables" () sql=', 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        feat = next(vl.getFeatures())
+        self.assertTrue(feat.isValid())
+        self.assertIsNotNone(feat.attributes()[0])
+
     def testColumnRestrictedLayerIsEditable(self):
         """
             Test editability of table with partial column insert privs
@@ -3506,6 +3515,28 @@ CREATE UNLOGGED TABLE public.qgis_issue_gh_28835 (
         vl = QgsVectorLayer(uri.uri(), 'test', 'postgres')
         self.assertTrue(vl.isValid(), "qgis_issue_gh_28835 is an invalid layer")
         self.assertTrue(vl.startEditing(), "qgis_issue_gh_28835 is not editable by qgis_test_unprivileged_user after restricted-column insert grant")
+
+    def testBitAndBitVarying(self):
+        """Test issue GH #59129"""
+
+        self.execSQLCommand(
+            'ALTER TABLE IF EXISTS qgis_test."bit_and_bit_varying" DROP CONSTRAINT IF EXISTS pk_bit_and_bit_varying;')
+        self.execSQLCommand(
+            'DROP TABLE IF EXISTS qgis_test."bit_and_bit_varying" CASCADE;')
+        self.execSQLCommand(
+            'CREATE TABLE qgis_test."bit_and_bit_varying" ( "T_Id" integer NOT NULL, a BIT(3), b BIT VARYING(5) );')
+        self.execSQLCommand(
+            """INSERT INTO qgis_test."bit_and_bit_varying" VALUES (1, B'101', B'00');""")
+        self.execSQLCommand(
+            'ALTER TABLE qgis_test."bit_and_bit_varying" ADD CONSTRAINT pk_gh_bit_and_bit_varying PRIMARY KEY ("T_Id");')
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'id\' table="qgis_test"."bit_and_bit_varying" () sql=', 'bit_and_bit_varying', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        feat = next(vl.getFeatures())
+        self.assertTrue(feat.isValid())
+        self.assertEqual(feat["a"], "101")
+        self.assertEqual(feat["b"], "00")
 
 
 class TestPyQgsPostgresProviderCompoundKey(QgisTestCase, ProviderTestCase):

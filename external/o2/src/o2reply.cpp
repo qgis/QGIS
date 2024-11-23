@@ -5,7 +5,11 @@
 
 O2Reply::O2Reply(QNetworkReply *r, int timeOut, QObject *parent): QTimer(parent), reply(r) {
     setSingleShot(true);
+#if QT_VERSION < 0x051500
     connect(this, SIGNAL(error(QNetworkReply::NetworkError)), reply, SIGNAL(error(QNetworkReply::NetworkError)), Qt::QueuedConnection);
+#else
+    connect(this, SIGNAL(error(QNetworkReply::NetworkError)), reply, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), Qt::QueuedConnection);
+#endif
     connect(this, SIGNAL(timeout()), this, SLOT(onTimeOut()), Qt::QueuedConnection);
     start(timeOut);
 }

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayout3dmapwidget.h"
+#include "moc_qgslayout3dmapwidget.cpp"
 
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"

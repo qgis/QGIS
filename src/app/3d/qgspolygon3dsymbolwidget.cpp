@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspolygon3dsymbolwidget.h"
+#include "moc_qgspolygon3dsymbolwidget.cpp"
 
 #include "qgs3dtypes.h"
 #include "qgspolygon3dsymbol.h"

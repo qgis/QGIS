@@ -38,6 +38,7 @@ QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *laye
   , mLayerName( layer->name() )
   , mDataProvider( qgis::down_cast< const QgsVectorTileDataProvider* >( layer->dataProvider() )->clone() )
   , mRenderer( layer->renderer()->clone() )
+  , mLayerBlendMode( layer->blendMode() )
   , mDrawTileBoundaries( layer->isTileBorderRenderingEnabled() )
   , mLabelsEnabled( layer->labelsEnabled() )
   , mFeedback( new QgsFeedback )
@@ -237,7 +238,16 @@ bool QgsVectorTileLayerRenderer::render()
 
 bool QgsVectorTileLayerRenderer::forceRasterRender() const
 {
-  return renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) && ( !qgsDoubleNear( mLayerOpacity, 1.0 ) );
+  if ( !renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) )
+    return false;
+
+  if ( !qgsDoubleNear( mLayerOpacity, 1.0 ) )
+    return true;
+
+  if ( mLayerBlendMode != QPainter::CompositionMode_SourceOver )
+    return true;
+
+  return false;
 }
 
 void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &rawTile )

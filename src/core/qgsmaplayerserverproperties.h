@@ -293,19 +293,19 @@ class CORE_EXPORT QgsMapLayerServerProperties: public QgsServerMetadataUrlProper
      * Saves server properties to xml under the layer node
      * \since QGIS 3.10
      */
-    void writeXml( QDomNode &layer_node, QDomDocument &document ) const;
+    void writeXml( QDomNode &layer_node, QDomDocument &document ) const; // cppcheck-suppress duplInheritedMember
 
     /**
      * Reads server properties from project file.
      * \since QGIS 3.10
      */
-    void readXml( const QDomNode &layer_node );
+    void readXml( const QDomNode &layer_node ); // cppcheck-suppress duplInheritedMember
 
     /**
      * Reset properties to default
      * \since QGIS 3.22
      */
-    void reset();
+    void reset(); // cppcheck-suppress duplInheritedMember
 
     /**
      * Sets the short \a name of the layer used by QGIS Server to identify the layer.

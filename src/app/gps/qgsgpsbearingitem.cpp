@@ -18,6 +18,7 @@
 #include <QObject>
 
 #include "qgsgpsbearingitem.h"
+#include "moc_qgsgpsbearingitem.cpp"
 #include "qgscoordinatetransform.h"
 #include "qgsmapcanvas.h"
 #include "qgsexception.h"

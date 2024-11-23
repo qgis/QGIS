@@ -190,4 +190,5 @@ class ExecuteSQL(QgisAlgorithm):
 
             sink.addFeature(inFeat, QgsFeatureSink.Flag.FastInsert)
             feedback.setProgress(int(current * total))
+        sink.finalize()
         return {self.OUTPUT: dest_id}

@@ -19,6 +19,9 @@ Encapsulates the properties relating to the context of a locator search.
 #include "qgslocatorcontext.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     QgsLocatorContext();
 

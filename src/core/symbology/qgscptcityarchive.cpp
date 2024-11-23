@@ -17,6 +17,7 @@
 
 #include "qgssettings.h"
 #include "qgscptcityarchive.h"
+#include "moc_qgscptcityarchive.cpp"
 #include "qgis.h"
 #include "qgsdataprovider.h"
 #include "qgslogger.h"
@@ -423,7 +424,7 @@ QMap< double, QPair<QColor, QColor> >QgsCptCityArchive::gradientColorMap( const 
   return colorMap;
 }
 
-bool QgsCptCityArchive::isEmpty()
+bool QgsCptCityArchive::isEmpty() const
 {
   return ( mRootItems.isEmpty() );
 }

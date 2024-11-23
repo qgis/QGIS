@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolreverseline.h"
+#include "moc_qgsmaptoolreverseline.cpp"
 
 #include "qgsfeatureiterator.h"
 #include "qgsmapcanvas.h"

@@ -30,6 +30,7 @@
 #include <QMenu>
 
 #include "qgsexpressionbuilderwidget.h"
+#include "moc_qgsexpressionbuilderwidget.cpp"
 #include "qgslogger.h"
 #include "qgsexpression.h"
 #include "qgsexpressionfunction.h"
@@ -339,7 +340,7 @@ void QgsExpressionBuilderWidget::btnRun_pressed()
   if ( !cmbFileNames->currentItem() )
     return;
 
-  if ( cmbFileNames->currentItem()->data( Qt::UserRole ) == QStringLiteral( "project" ) )
+  if ( cmbFileNames->currentItem()->data( Qt::UserRole ) == QLatin1String( "project" ) )
   {
     saveProjectFunctionsEntry();
   }
@@ -498,7 +499,7 @@ void QgsExpressionBuilderWidget::btnNewFile_pressed()
 
 void QgsExpressionBuilderWidget::btnRemoveFile_pressed()
 {
-  if ( cmbFileNames->currentItem()->data( Qt::UserRole ) == QStringLiteral( "project" ) )
+  if ( cmbFileNames->currentItem()->data( Qt::UserRole ) == QLatin1String( "project" ) )
   {
     if ( QMessageBox::question( this, tr( "Remove Project Functions" ),
                                 tr( "Are you sure you want to remove the project functions?" ),
@@ -531,7 +532,7 @@ void QgsExpressionBuilderWidget::btnRemoveFile_pressed()
   if ( cmbFileNames->count() > 0 )
   {
     whileBlocking( cmbFileNames )->setCurrentRow( currentRow > 0 ? currentRow - 1 : 0 );
-    if ( cmbFileNames->currentItem()->data( Qt::UserRole ) == QStringLiteral( "project" ) )
+    if ( cmbFileNames->currentItem()->data( Qt::UserRole ) == QLatin1String( "project" ) )
     {
       loadCodeFromProjectFunctions();
     }
@@ -552,7 +553,7 @@ void QgsExpressionBuilderWidget::cmbFileNames_currentItemChanged( QListWidgetIte
 {
   if ( lastitem )
   {
-    if ( lastitem->data( Qt::UserRole ) == QStringLiteral( "project" ) )
+    if ( lastitem->data( Qt::UserRole ) == QLatin1String( "project" ) )
     {
       saveProjectFunctionsEntry();
     }
@@ -563,7 +564,7 @@ void QgsExpressionBuilderWidget::cmbFileNames_currentItemChanged( QListWidgetIte
     }
   }
 
-  if ( item->data( Qt::UserRole ) == QStringLiteral( "project" ) )
+  if ( item->data( Qt::UserRole ) == QLatin1String( "project" ) )
   {
     loadCodeFromProjectFunctions();
   }
@@ -1070,7 +1071,7 @@ void QgsExpressionBuilderWidget::autosave()
   if ( !item )
     return;
 
-  if ( item->data( Qt::UserRole ) == QStringLiteral( "project" ) )
+  if ( item->data( Qt::UserRole ) == QLatin1String( "project" ) )
   {
     saveProjectFunctionsEntry();
   }

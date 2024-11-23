@@ -33,6 +33,7 @@
 #include "qgsphongtexturedmaterialsettings.h"
 #include "qgsmessagelog.h"
 
+#include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QPhongMaterial>
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
@@ -63,7 +64,7 @@ class QgsBufferedLine3DSymbolHandler : public QgsFeature3DHandler
       : mSymbol( static_cast< QgsLine3DSymbol *>( symbol->clone() ) )
       , mSelectedIds( selectedIds ) {}
 
-    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames ) override;
+    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
@@ -86,6 +87,9 @@ class QgsBufferedLine3DSymbolHandler : public QgsFeature3DHandler
     // inputs - generic
     QgsFeatureIds mSelectedIds;
 
+    //! origin (in the map coordinates) for output geometries (e.g. at the center of the chunk)
+    QgsVector3D mChunkOrigin;
+
     // outputs
     LineData outNormal;  //!< Features that are not selected
     LineData outSelected;  //!< Features that are selected
@@ -93,20 +97,25 @@ class QgsBufferedLine3DSymbolHandler : public QgsFeature3DHandler
 
 
 
-bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
+bool QgsBufferedLine3DSymbolHandler::prepare( const Qgs3DRenderContext &, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin )
 {
   Q_UNUSED( attributeNames )
 
+  mChunkOrigin = chunkOrigin;
+
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( mSymbol->materialSettings() );
 
-  outNormal.tessellator.reset( new QgsTessellator( context.origin().x(), context.origin().y(), true,
+  outNormal.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true,
                                false, false, false, texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false,
                                3,
                                texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
-  outSelected.tessellator.reset( new QgsTessellator( context.origin().x(), context.origin().y(), true,
+  outSelected.tessellator.reset( new QgsTessellator( chunkOrigin.x(), chunkOrigin.y(), true,
                                  false, false, false, texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false,
                                  3,
                                  texturedMaterialSettings ? texturedMaterialSettings->textureRotation() : 0 ) );
+
+  outNormal.tessellator->setOutputZUp( true );
+  outSelected.tessellator->setOutputZUp( true );
 
   return true;
 }
@@ -202,7 +211,7 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( selected );
   materialContext.setSelectionColor( context.selectionColor() );
-  Qt3DRender::QMaterial *mat = mSymbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
+  QgsMaterial *mat = mSymbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
 
   // extract vertex buffer data from tessellator
   const QByteArray data( ( const char * )out.tessellator->data().constData(), out.tessellator->data().count() * sizeof( float ) );
@@ -217,10 +226,16 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( geometry );
 
+  // add transform (our geometry has coordinates relative to mChunkOrigin)
+  Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
+  QVector3D nodeTranslation = ( mChunkOrigin - context.origin() ).toVector3D();
+  tr->setTranslation( nodeTranslation );
+
   // make entity
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
   entity->addComponent( renderer );
   entity->addComponent( mat );
+  entity->addComponent( tr );
   entity->setParent( parent );
 
   if ( !selected )
@@ -243,7 +258,7 @@ class QgsThickLine3DSymbolHandler : public QgsFeature3DHandler
     {
     }
 
-    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames ) override;
+    bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) override;
     void processFeature( const QgsFeature &feature, const Qgs3DRenderContext &context ) override;
     void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) override;
 
@@ -259,6 +274,9 @@ class QgsThickLine3DSymbolHandler : public QgsFeature3DHandler
     // inputs - generic
     QgsFeatureIds mSelectedIds;
 
+    //! origin (in the map coordinates) for output geometries (e.g. at the center of the chunk)
+    QgsVector3D mChunkOrigin;
+
     // outputs
     QgsLineVertexData outNormal;  //!< Features that are not selected
     QgsLineVertexData outSelected;  //!< Features that are selected
@@ -266,14 +284,16 @@ class QgsThickLine3DSymbolHandler : public QgsFeature3DHandler
 
 
 
-bool QgsThickLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames )
+bool QgsThickLine3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin )
 {
   Q_UNUSED( attributeNames )
 
+  mChunkOrigin = chunkOrigin;
+
   outNormal.withAdjacency = true;
   outSelected.withAdjacency = true;
-  outNormal.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->offset(), context );
-  outSelected.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->offset(), context );
+  outNormal.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->offset(), context, chunkOrigin );
+  outSelected.init( mSymbol->altitudeClamping(), mSymbol->altitudeBinding(), mSymbol->offset(), context, chunkOrigin );
 
   QSet<QString> attrs = mSymbol->dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );
@@ -348,7 +368,7 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( selected );
   materialContext.setSelectionColor( context.selectionColor() );
-  Qt3DRender::QMaterial *mat = mSymbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Lines, materialContext );
+  QgsMaterial *mat = mSymbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Lines, materialContext );
   if ( !mat )
   {
     const QgsSimpleLineMaterialSettings defaultMaterial;
@@ -374,9 +394,15 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
   renderer->setPrimitiveRestartEnabled( true );
   renderer->setRestartIndexValue( 0 );
 
+  // add transform (our geometry has coordinates relative to mChunkOrigin)
+  Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
+  QVector3D nodeTranslation = ( mChunkOrigin - context.origin() ).toVector3D();
+  tr->setTranslation( nodeTranslation );
+
   // make entity
   entity->addComponent( renderer );
   entity->addComponent( mat );
+  entity->addComponent( tr );
   entity->setParent( parent );
 }
 

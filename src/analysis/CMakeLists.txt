@@ -118,6 +118,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmflattenrelationships.cpp
   processing/qgsalgorithmforcerhr.cpp
   processing/qgsalgorithmfuzzifyraster.cpp
+  processing/qgsalgorithmgenerateelevationprofile.cpp
   processing/qgsalgorithmgeometrybyexpression.cpp
   processing/qgsalgorithmgltftovector.cpp
   processing/qgsalgorithmgpsbabeltools.cpp
@@ -181,6 +182,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrasterlayerproperties.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmrasterlogicalop.cpp
+  processing/qgsalgorithmrasterminmax.cpp
   processing/qgsalgorithmrasterize.cpp
   processing/qgsalgorithmrastersampling.cpp
   processing/qgsalgorithmrasterstackposition.cpp
@@ -245,6 +247,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmunion.cpp
   processing/qgsalgorithmuniquevalueindex.cpp
   processing/qgsalgorithmurlopener.cpp
+  processing/qgsalgorithmhttprequest.cpp
   processing/qgsalgorithmvectorize.cpp
   processing/qgsalgorithmvirtualrastercalculator.cpp
   processing/qgsalgorithmvoronoipolygons.cpp
@@ -252,9 +255,11 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmwritevectortiles.cpp
   processing/qgsalgorithmxyztiles.cpp
   processing/qgsalgorithmzonalhistogram.cpp
+  processing/qgsalgorithmzonalminmaxpoint.cpp
   processing/qgsalgorithmzonalstatistics.cpp
   processing/qgsalgorithmzonalstatisticsfeaturebased.cpp
   processing/qgsbookmarkalgorithms.cpp
+  processing/qgsmetadataalgorithms.cpp
   processing/qgsprojectstylealgorithms.cpp
   processing/qgsstylealgorithms.cpp
 
@@ -376,6 +381,7 @@ set(QGIS_ANALYSIS_HDRS
   processing/qgsprojectstylealgorithms.h
   processing/qgsreclassifyutils.h
   processing/qgsalgorithmurlopener.h
+  processing/qgsalgorithmhttprequest.h
 
   raster/qgsalignraster.h
   raster/qgsaspectfilter.h

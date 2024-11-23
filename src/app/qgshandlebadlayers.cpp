@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgshandlebadlayers.h"
+#include "moc_qgshandlebadlayers.cpp"
 #include "qgisapp.h"
 #include "qgsauthconfigselect.h"
 #include "qgsdataprovider.h"

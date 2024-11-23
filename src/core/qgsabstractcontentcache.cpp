@@ -16,7 +16,9 @@
  ***************************************************************************/
 
 #include "qgsabstractcontentcache.h"
+#include "moc_qgsabstractcontentcache.cpp"
 #include "qgssetrequestinitiator_p.h"
+#include <QRegularExpression>
 
 //
 // QgsAbstractContentCacheEntry
@@ -39,4 +41,24 @@ QgsAbstractContentCacheBase::QgsAbstractContentCacheBase( QObject *parent )
 void QgsAbstractContentCacheBase::onRemoteContentFetched( const QString &, bool )
 {
 
+}
+
+bool QgsAbstractContentCacheBase::parseBase64DataUrl( const QString &path, QString *mimeType, QString *data )
+{
+  const thread_local QRegularExpression sRx( QStringLiteral( "^data:(.*/.*?);?(?:base64)?,(.*)$" ) );
+  const QRegularExpressionMatch base64Match = sRx.match( path );
+  if ( !base64Match.hasMatch() )
+    return false;
+
+  if ( mimeType )
+    *mimeType = base64Match.captured( 1 );
+  if ( data )
+    *data = base64Match.captured( 2 );
+  return true;
+}
+
+bool QgsAbstractContentCacheBase::isBase64Data( const QString &path )
+{
+  return path.startsWith( QLatin1String( "base64:" ) )
+         || parseBase64DataUrl( path );
 }

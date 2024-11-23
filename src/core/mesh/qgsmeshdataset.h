@@ -1077,8 +1077,8 @@ class CORE_EXPORT QgsMeshDatasetGroupTreeItem
 
     QgsMeshDatasetGroupTreeItem *searchItemBySourceName( const QString &sourceName ) const;
     QgsMeshDatasetGroupTreeItem *rootItem() const;
-    void freeAsDependency();
-    void freeFromDependencies();
+    void freeAsDependency(); // cppcheck-suppress functionConst
+    void freeFromDependencies(); // cppcheck-suppress functionConst
 };
 
 #endif // QGSMESHDATASET_H

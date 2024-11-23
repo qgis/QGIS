@@ -15,6 +15,7 @@ email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
 #include "qgsogrprovidermetadata.h"
+#include "moc_qgsogrprovidermetadata.cpp"
 #include "qgsogrprovider.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgsmessagelog.h"
@@ -695,7 +696,7 @@ QgsTransaction *QgsOgrProviderMetadata::createTransaction( const QString &connSt
   auto ds = QgsOgrProviderUtils::getAlreadyOpenedDataset( connString );
   if ( !ds )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Cannot open transaction on %1, since it is is not currently opened" ).arg( connString ),
+    QgsMessageLog::logMessage( QObject::tr( "Cannot open transaction on %1, since it is not currently opened" ).arg( connString ),
                                QObject::tr( "OGR" ), Qgis::MessageLevel::Critical );
     return nullptr;
   }

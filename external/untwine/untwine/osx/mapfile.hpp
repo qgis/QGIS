@@ -1,0 +1,1 @@
+#include "../generic/mapfile.hpp"

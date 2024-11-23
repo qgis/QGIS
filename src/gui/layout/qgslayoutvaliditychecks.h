@@ -110,4 +110,27 @@ class GUI_EXPORT QgsLayoutPictureSourceValidityCheck : public QgsAbstractValidit
     QList<QgsValidityCheckResult> mResults;
 };
 
+#ifndef WITH_QTWEBKIT
+/**
+ * \ingroup gui
+ * \brief Layout HTML item validity check
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.40
+ */
+class GUI_EXPORT QgsLayoutHtmlItemValidityCheck : public QgsAbstractValidityCheck
+{
+  public:
+    //! constructor
+    QgsLayoutHtmlItemValidityCheck *create() const override;
+    QString id() const override;
+    int checkType() const override;
+    bool prepareCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
+    QList< QgsValidityCheckResult > runCheck( const QgsValidityCheckContext *context, QgsFeedback *feedback ) override;
+
+  private:
+    QList<QgsValidityCheckResult> mResults;
+};
+#endif
+
 #endif // QGSLAYOUTVALIDITYCHECKS_H

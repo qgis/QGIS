@@ -19,7 +19,7 @@
 #include "qgis_3d.h"
 
 #include "qgstilingscheme.h"
-#include "qgschunkloader_p.h"
+#include "qgschunkloader.h"
 
 class QgsAABB;
 class Qgs3DMapSettings;
@@ -79,8 +79,8 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
     //! extent of the terrain's root chunk in terrain's CRS
     virtual QgsRectangle rootChunkExtent() const = 0;
 
-    //! Returns bounding box of the root chunk
-    virtual QgsAABB rootChunkBbox( const Qgs3DMapSettings &map ) const;
+    //! Returns 3D box (in map coordinates) of the root chunk
+    virtual QgsBox3D rootChunkBox3D( const Qgs3DMapSettings &map ) const;
 
     //! Returns error of the root chunk in world coordinates
     virtual float rootChunkError( const Qgs3DMapSettings &map ) const;
@@ -88,7 +88,7 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
     //! Returns height range of the root chunk in world coordinates
     virtual void rootChunkHeightRange( float &hMin, float &hMax ) const;
 
-    //! Returns height at (x,y) in terrain's CRS
+    //! Returns height at (x,y) in map's CRS
     virtual float heightAt( double x, double y, const Qgs3DRenderContext &context ) const;
 
     //! Write terrain generator's configuration to XML
@@ -107,7 +107,7 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
     const QgsTilingScheme &tilingScheme() const { return mTerrainTilingScheme; }
 
     //! Returns CRS of the terrain
-    QgsCoordinateReferenceSystem crs() const { return mTerrainTilingScheme.crs(); }
+    virtual QgsCoordinateReferenceSystem crs() const { return mTerrainTilingScheme.crs(); }
 
     //! Returns whether the terrain generator is valid
     bool isValid() const;

@@ -54,7 +54,6 @@ class Qgs3DMapConfigWidget : public QWidget, private Ui::Map3DConfigWidget
   private:
     Qgs3DMapSettings *mMap = nullptr;
     QgsMapCanvas *mMainCanvas = nullptr;
-    Qgs3DMapCanvas *m3DMapCanvas = nullptr;
     QgsMesh3DSymbolWidget *mMeshSymbolWidget = nullptr;
     QgsSkyboxRenderingSettingsWidget *mSkyboxSettingsWidget = nullptr;
     QgsShadowRenderingSettingsWidget *mShadowSettingsWidget = nullptr;

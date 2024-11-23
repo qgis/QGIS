@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrendererrasterpropertieswidget.h"
+#include "moc_qgsrendererrasterpropertieswidget.cpp"
 
 #include "qgis.h"
 #include "qgsmapcanvas.h"

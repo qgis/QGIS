@@ -20,6 +20,7 @@
 
 #include "qgsapplication.h"
 #include "qgsfieldexpressionwidget.h"
+#include "moc_qgsfieldexpressionwidget.cpp"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldproxymodel.h"
 #include "qgsdistancearea.h"
@@ -391,7 +392,8 @@ void QgsFieldExpressionWidget::updateLineEditStyle( const QString &expression )
       currentField( &isExpression, &isValid );
     }
     QFont font = mCombo->lineEdit()->font();
-    font.setItalic( isExpression );
+    font.setFamily( ( QgsCodeEditor::getMonospaceFont() ).family() );
+    font.setItalic( false );
     mCombo->lineEdit()->setFont( font );
 
     if ( isExpression && !isValid )

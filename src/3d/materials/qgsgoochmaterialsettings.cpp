@@ -105,7 +105,7 @@ QMap<QString, QString> QgsGoochMaterialSettings::toExportParameters() const
   return QMap<QString, QString>();
 }
 
-Qt3DRender::QMaterial *QgsGoochMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
+QgsMaterial *QgsGoochMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
   switch ( technique )
   {
@@ -218,9 +218,9 @@ void QgsGoochMaterialSettings::applyDataDefinedToGeometry( Qt3DQGeometry *geomet
   dataBuffer->setData( data );
 }
 
-Qt3DRender::QMaterial *QgsGoochMaterialSettings::buildMaterial( const QgsMaterialContext &context ) const
+QgsMaterial *QgsGoochMaterialSettings::buildMaterial( const QgsMaterialContext &context ) const
 {
-  Qt3DRender::QMaterial *material = new Qt3DRender::QMaterial;
+  QgsMaterial *material = new QgsMaterial;
 
   Qt3DRender::QEffect *effect = new Qt3DRender::QEffect( material );
 

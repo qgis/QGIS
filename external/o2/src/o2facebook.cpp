@@ -1,4 +1,6 @@
 #include <QDebug>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QMap>
 #include <QNetworkReply>
 #include <QString>
@@ -13,7 +15,7 @@
 
 static const char *FbEndpoint = "https://graph.facebook.com/oauth/authorize?display=touch";
 static const char *FbTokenUrl = "https://graph.facebook.com/oauth/access_token";
-static const char *FbExpiresKey = "expires";
+static const char *FbExpiresKey = "expires_in";
 
 O2Facebook::O2Facebook(QObject *parent): O2(parent) {
     setRequestUrl(FbEndpoint);
@@ -58,7 +60,11 @@ void O2Facebook::onVerificationReceived(const QMap<QString, QString> response) {
     QNetworkReply *tokenReply = manager_->get(tokenRequest);
     timedReplies_.add(tokenReply);
     connect(tokenReply, SIGNAL(finished()), this, SLOT(onTokenReplyFinished()), Qt::QueuedConnection);
+#if QT_VERSION < 0x051500
     connect(tokenReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onTokenReplyError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
+#else
+    connect(tokenReply, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this, SLOT(onTokenReplyError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
+#endif
 }
 
 void O2Facebook::onTokenReplyFinished() {
@@ -68,12 +74,12 @@ void O2Facebook::onTokenReplyFinished() {
     if (tokenReply->error() == QNetworkReply::NoError) {
         // Process reply
         QByteArray replyData = tokenReply->readAll();
+        QJsonDocument doc = QJsonDocument::fromJson(replyData);
+        const QJsonObject rootObject = doc.object();
+
         QVariantMap reply;
-        foreach (QString pair, QString(replyData).split("&")) {
-            QStringList kv = pair.split("=");
-            if (kv.length() == 2) {
-                reply.insert(kv[0], kv[1]);
-            }
+        for (const QString &key : rootObject.keys()) {
+            reply.insert(key, rootObject[key].toVariant());
         }
 
         // Interpret reply

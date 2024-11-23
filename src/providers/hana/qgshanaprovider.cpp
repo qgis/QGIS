@@ -29,6 +29,7 @@
 #include "qgshanafeatureiterator.h"
 #include "qgshanaprimarykeys.h"
 #include "qgshanaprovider.h"
+#include "moc_qgshanaprovider.cpp"
 #include "qgshanaproviderconnection.h"
 #include "qgshanaresultset.h"
 #include "qgshanacrsutils.h"

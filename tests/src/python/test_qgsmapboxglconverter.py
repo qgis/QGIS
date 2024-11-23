@@ -66,8 +66,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 29, 1),
                          'scale_linear(@vector_tile_zoom,5,13,27,29)')
         self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 29, 1.5),
-                         '(27) + ((1.5^(@vector_tile_zoom - 5) - 1) / (1.5^(13 - 5) - 1)) * ((29) - (27))')
-        # 'scale_exp(@vector_tile_zoom,5,13,27,29,1.5)')
+                         'scale_exponential(@vector_tile_zoom,5,13,27,29,1.5)')
 
         # same values, return nice and simple expression!
         self.assertEqual(QgsMapBoxGlStyleConverter.interpolateExpression(5, 13, 27, 27, 1.5),
@@ -99,7 +98,10 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                                                                                     },
                                                                                    conversion_context)
         self.assertEqual(props.expressionString(),
-                         'CASE WHEN @vector_tile_zoom < 0 THEN color_hsla(59, 81, 70, 255) WHEN @vector_tile_zoom >= 0 AND @vector_tile_zoom < 150 THEN color_hsla((59) + ((2^(@vector_tile_zoom - 0) - 1) / (2^(150 - 0) - 1)) * ((352) - (59)), (81) + ((2^(@vector_tile_zoom - 0) - 1) / (2^(150 - 0) - 1)) * ((59) - (81)), (70) + ((2^(@vector_tile_zoom - 0) - 1) / (2^(150 - 0) - 1)) * ((44) - (70)), 255) WHEN @vector_tile_zoom >= 150 AND @vector_tile_zoom < 250 THEN color_hsla((352) + ((2^(@vector_tile_zoom - 150) - 1) / (2^(250 - 150) - 1)) * ((0) - (352)), (59) + ((2^(@vector_tile_zoom - 150) - 1) / (2^(250 - 150) - 1)) * ((72) - (59)), (44) + ((2^(@vector_tile_zoom - 150) - 1) / (2^(250 - 150) - 1)) * ((63) - (44)), 255) WHEN @vector_tile_zoom >= 250 THEN color_hsla(0, 72, 63, 255) ELSE color_hsla(0, 72, 63, 255) END')
+                         ('CASE WHEN @vector_tile_zoom < 0 THEN color_hsla(59, 81, 70, 255) '
+                          'WHEN @vector_tile_zoom >= 0 AND @vector_tile_zoom < 150 THEN color_hsla(scale_exponential(@vector_tile_zoom,0,150,59,352,2), scale_exponential(@vector_tile_zoom,0,150,81,59,2), scale_exponential(@vector_tile_zoom,0,150,70,44,2), 255) '
+                          'WHEN @vector_tile_zoom >= 150 AND @vector_tile_zoom < 250 THEN color_hsla(scale_exponential(@vector_tile_zoom,150,250,352,0,2), scale_exponential(@vector_tile_zoom,150,250,59,72,2), scale_exponential(@vector_tile_zoom,150,250,44,63,2), 255) '
+                          'WHEN @vector_tile_zoom >= 250 THEN color_hsla(0, 72, 63, 255) ELSE color_hsla(0, 72, 63, 255) END'))
         self.assertEqual(default_col.name(), '#f1f075')
 
         props, default_col = QgsMapBoxGlStyleConverter.parseInterpolateColorByZoom({'base': 1,
@@ -144,11 +146,13 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertEqual(QgsMapBoxGlStyleConverter.parseStops(1, [[1, 10], [2, 20], [5, 100]], 1, conversion_context),
                          'CASE WHEN @vector_tile_zoom >= 1 AND @vector_tile_zoom <= 2 THEN scale_linear(@vector_tile_zoom,1,2,10,20) WHEN @vector_tile_zoom > 2 AND @vector_tile_zoom <= 5 THEN scale_linear(@vector_tile_zoom,2,5,20,100) WHEN @vector_tile_zoom > 5 THEN 100 END')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseStops(1.5, [[1, 10], [2, 20], [5, 100]], 1, conversion_context),
-                         'CASE WHEN @vector_tile_zoom >= 1 AND @vector_tile_zoom <= 2 THEN (10) + ((1.5^(@vector_tile_zoom - 1) - 1) / (1.5^(2 - 1) - 1)) * ((20) - (10)) WHEN @vector_tile_zoom > 2 AND @vector_tile_zoom <= 5 THEN (20) + ((1.5^(@vector_tile_zoom - 2) - 1) / (1.5^(5 - 2) - 1)) * ((100) - (20)) WHEN @vector_tile_zoom > 5 THEN 100 END')
+                         'CASE WHEN @vector_tile_zoom >= 1 AND @vector_tile_zoom <= 2 THEN scale_exponential(@vector_tile_zoom,1,2,10,20,1.5) WHEN @vector_tile_zoom > 2 AND @vector_tile_zoom <= 5 THEN scale_exponential(@vector_tile_zoom,2,5,20,100,1.5) WHEN @vector_tile_zoom > 5 THEN 100 END')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseStops(1, [[1, 10], [2, 20], [5, 100]], 8, conversion_context),
                          'CASE WHEN @vector_tile_zoom >= 1 AND @vector_tile_zoom <= 2 THEN (scale_linear(@vector_tile_zoom,1,2,10,20)) * 8 WHEN @vector_tile_zoom > 2 AND @vector_tile_zoom <= 5 THEN (scale_linear(@vector_tile_zoom,2,5,20,100)) * 8 WHEN @vector_tile_zoom > 5 THEN 800 END')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseStops(1.5, [[1, 10], [2, 20], [5, 100]], 8, conversion_context),
-                         'CASE WHEN @vector_tile_zoom >= 1 AND @vector_tile_zoom <= 2 THEN ((10) + ((1.5^(@vector_tile_zoom - 1) - 1) / (1.5^(2 - 1) - 1)) * ((20) - (10))) * 8 WHEN @vector_tile_zoom > 2 AND @vector_tile_zoom <= 5 THEN ((20) + ((1.5^(@vector_tile_zoom - 2) - 1) / (1.5^(5 - 2) - 1)) * ((100) - (20))) * 8 WHEN @vector_tile_zoom > 5 THEN 800 END')
+                         ('CASE WHEN @vector_tile_zoom >= 1 AND @vector_tile_zoom <= 2 THEN (scale_exponential(@vector_tile_zoom,1,2,10,20,1.5)) * 8 '
+                          'WHEN @vector_tile_zoom > 2 AND @vector_tile_zoom <= 5 THEN (scale_exponential(@vector_tile_zoom,2,5,20,100,1.5)) * 8 '
+                          'WHEN @vector_tile_zoom > 5 THEN 800 END'))
 
     def testParseMatchList(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
@@ -336,18 +340,14 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                                                                               'stops': [[0, 11],
                                                                                         [150, 15]]
                                                                               }, conversion_context)
-        self.assertEqual(prop.expressionString(),
-                         '(11) + ((2^(@vector_tile_zoom - 0) - 1) / (2^(150 - 0) - 1)) * ((15) - (11))')
-        # 'scale_exponential(@vector_tile_zoom,0,150,11,15,2)')
+        self.assertEqual(prop.expressionString(), 'scale_exponential(@vector_tile_zoom,0,150,11,15,2)')
         self.assertEqual(default_val, 11.0)
 
         prop, default_val = QgsMapBoxGlStyleConverter.parseInterpolateByZoom({'base': 2,
                                                                               'stops': [[0, 11],
                                                                                         [150, 15]]
                                                                               }, conversion_context, multiplier=5)
-        self.assertEqual(prop.expressionString(),
-                         '((11) + ((2^(@vector_tile_zoom - 0) - 1) / (2^(150 - 0) - 1)) * ((15) - (11))) * 5')
-        # 'scale_exponential(@vector_tile_zoom,0,150,11,15,2) * 5')
+        self.assertEqual(prop.expressionString(), '(scale_exponential(@vector_tile_zoom,0,150,11,15,2)) * 5')
         self.assertEqual(default_val, 55.0)
 
     def testInterpolateOpacityByZoom(self):
@@ -377,13 +377,25 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                                                                                             [150, 0.15]]
                                                                                   }, 255,
                                                                                  conversion_context).expressionString(),
-                         "set_color_part(@symbol_color, 'alpha', (25.5) + ((2^(@vector_tile_zoom - 0) - 1) / (2^(150 - 0) - 1)) * ((38.25) - (25.5)))")
+                         "set_color_part(@symbol_color, 'alpha', scale_exponential(@vector_tile_zoom,0,150,25.5,38.25,2))")
         self.assertEqual(QgsMapBoxGlStyleConverter.parseInterpolateOpacityByZoom({'base': 2,
                                                                                   'stops': [[0, 0.1],
                                                                                             [150, 0.1]]
                                                                                   }, 255,
                                                                                  conversion_context).expressionString(),
                          "set_color_part(@symbol_color, 'alpha', 25.5)")
+
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseInterpolateOpacityByZoom({'base': 2,
+                                                                                  'stops': [
+                                                                                      [10, 0],
+                                                                                      [11, ["match", ["get", "class"], ["path"], 0.5, 0]],
+                                                                                      [13, ["match", ["get", "class"], ["path"], 1, 0.5]]]
+                                                                                  }, 255,
+                                                                                 conversion_context).expressionString(),
+                         ('''CASE WHEN @vector_tile_zoom < 10 THEN set_color_part(@symbol_color, 'alpha', 0) '''
+                          '''WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom < 11 THEN set_color_part(@symbol_color, 'alpha', scale_exponential(@vector_tile_zoom,10,11,(0) * 255,(CASE WHEN "class" = 'path' THEN 0.5 ELSE 0 END) * 255,2)) '''
+                          '''WHEN @vector_tile_zoom >= 11 AND @vector_tile_zoom < 13 THEN set_color_part(@symbol_color, 'alpha', scale_exponential(@vector_tile_zoom,11,13,(CASE WHEN "class" = 'path' THEN 0.5 ELSE 0 END) * 255,(CASE WHEN "class" = 'path' THEN 1 ELSE 0.5 END) * 255,2)) '''
+                          '''WHEN @vector_tile_zoom >= 13 THEN set_color_part(@symbol_color, 'alpha', (CASE WHEN "class" = 'path' THEN 1 ELSE 0.5 END) * 255) END'''))
 
     def testInterpolateListByZoom(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
@@ -432,7 +444,11 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             ["match", ["get", "class"], ["ice", "glacier"], 0, 0.3]
         ], QgsMapBoxGlStyleConverter.PropertyType.Numeric, conversion_context, 2)
         self.assertEqual(prop.expressionString(),
-                         'CASE WHEN @vector_tile_zoom >= 5 AND @vector_tile_zoom <= 6 THEN ((0) + ((1.5^(@vector_tile_zoom - 5) - 1) / (1.5^(6 - 5) - 1)) * ((CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0.3 ELSE 0 END) - (0))) * 2 WHEN @vector_tile_zoom > 6 AND @vector_tile_zoom <= 10 THEN ((CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0.3 ELSE 0 END) + ((1.5^(@vector_tile_zoom - 6) - 1) / (1.5^(10 - 6) - 1)) * ((CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0.2 ELSE 0 END) - (CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0.3 ELSE 0 END))) * 2 WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 11 THEN ((CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0.2 ELSE 0 END) + ((1.5^(@vector_tile_zoom - 10) - 1) / (1.5^(11 - 10) - 1)) * ((CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0.2 ELSE 0.3 END) - (CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0.2 ELSE 0 END))) * 2 WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 14 THEN ((CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0.2 ELSE 0.3 END) + ((1.5^(@vector_tile_zoom - 11) - 1) / (1.5^(14 - 11) - 1)) * ((CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0 ELSE 0.3 END) - (CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0.2 ELSE 0.3 END))) * 2 WHEN @vector_tile_zoom > 14 THEN ( ( CASE WHEN "class" IN (\'ice\', \'glacier\') THEN 0 ELSE 0.3 END ) * 2 ) END')
+                         ('''CASE WHEN @vector_tile_zoom >= 5 AND @vector_tile_zoom <= 6 THEN (scale_exponential(@vector_tile_zoom,5,6,0,CASE WHEN "class" IN ('ice', 'glacier') THEN 0.3 ELSE 0 END,1.5)) * 2 '''
+                          '''WHEN @vector_tile_zoom > 6 AND @vector_tile_zoom <= 10 THEN (scale_exponential(@vector_tile_zoom,6,10,CASE WHEN "class" IN ('ice', 'glacier') THEN 0.3 ELSE 0 END,CASE WHEN "class" IN ('ice', 'glacier') THEN 0.2 ELSE 0 END,1.5)) * 2 '''
+                          '''WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 11 THEN (scale_exponential(@vector_tile_zoom,10,11,CASE WHEN "class" IN ('ice', 'glacier') THEN 0.2 ELSE 0 END,CASE WHEN "class" IN ('ice', 'glacier') THEN 0.2 ELSE 0.3 END,1.5)) * 2 '''
+                          '''WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 14 THEN (scale_exponential(@vector_tile_zoom,11,14,CASE WHEN "class" IN ('ice', 'glacier') THEN 0.2 ELSE 0.3 END,CASE WHEN "class" IN ('ice', 'glacier') THEN 0 ELSE 0.3 END,1.5)) * 2 '''
+                          '''WHEN @vector_tile_zoom > 14 THEN ( ( CASE WHEN "class" IN ('ice', 'glacier') THEN 0 ELSE 0.3 END ) * 2 ) END'''))
 
         prop, default_col, default_val = QgsMapBoxGlStyleConverter.parseInterpolateListByZoom([
             "interpolate",
@@ -513,6 +529,9 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                                                                    conversion_context),
                          '''"name"''')
 
+        self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["to-boolean", ["get", "name"]],
+                                                                   conversion_context),
+                         '''to_bool("name")''')
         self.assertEqual(QgsMapBoxGlStyleConverter.parseExpression(["to-string", ["get", "name"]],
                                                                    conversion_context),
                          '''to_string("name")''')
@@ -946,7 +965,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertTrue(has_renderer)
         dd_properties = renderer.symbol().symbolLayers()[0].dataDefinedProperties()
         self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.PropertyWidth).asExpression(),
-                         '''with_variable('marker_size',CASE WHEN "foo" = 'foo' THEN 2 END,((0.2) + ((1.6^(@vector_tile_zoom - 14) - 1) / (1.6^(18 - 14) - 1)) * ((1) - (0.2)))*@marker_size)''')
+                         '''with_variable('marker_size',CASE WHEN "foo" = 'foo' THEN 2 END,(scale_exponential(@vector_tile_zoom,14,18,0.2,1,1.6))*@marker_size)''')
 
         image = QImage(QSize(1, 1), QImage.Format.Format_ARGB32)
         context.setSprites(image, {"arrow_blue": {"x": 0, "y": 0, "width": 2, "height": 2, "pixelRatio": 1}})
@@ -1109,9 +1128,24 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertTrue(rendererStyle.symbol()[0].useCustomDashPattern())
         dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
         self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.PropertyStrokeWidth).asExpression(),
-                         "CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN (1.5) + ((1.2^(@vector_tile_zoom - 10) - 1) / (1.2^(11 - 10) - 1)) * ((2) - (1.5)) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN (2) + ((1.2^(@vector_tile_zoom - 11) - 1) / (1.2^(12 - 11) - 1)) * ((3) - (2)) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN (3) + ((1.2^(@vector_tile_zoom - 12) - 1) / (1.2^(13 - 12) - 1)) * ((5) - (3)) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (5) + ((1.2^(@vector_tile_zoom - 13) - 1) / (1.2^(14 - 13) - 1)) * ((6) - (5)) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN (6) + ((1.2^(@vector_tile_zoom - 14) - 1) / (1.2^(16 - 14) - 1)) * ((10) - (6)) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN (10) + ((1.2^(@vector_tile_zoom - 16) - 1) / (1.2^(17 - 16) - 1)) * ((12) - (10)) WHEN @vector_tile_zoom > 17 THEN 12 END")
+                         ('CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN scale_exponential(@vector_tile_zoom,10,11,1.5,2,1.2) '
+                          'WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exponential(@vector_tile_zoom,11,12,2,3,1.2) '
+                          'WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exponential(@vector_tile_zoom,12,13,3,5,1.2) '
+                          'WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exponential(@vector_tile_zoom,13,14,5,6,1.2) '
+                          'WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exponential(@vector_tile_zoom,14,16,6,10,1.2) '
+                          'WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exponential(@vector_tile_zoom,16,17,10,12,1.2) '
+                          'WHEN @vector_tile_zoom > 17 THEN 12 END'))
         self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.PropertyCustomDash).asExpression(),
-                         "array_to_string(array_foreach(CASE WHEN @vector_tile_zoom <= 17 THEN array(1,1) WHEN @vector_tile_zoom > 17 THEN array(0.3,0.2) END,@element * (CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN (1.5) + ((1.2^(@vector_tile_zoom - 10) - 1) / (1.2^(11 - 10) - 1)) * ((2) - (1.5)) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN (2) + ((1.2^(@vector_tile_zoom - 11) - 1) / (1.2^(12 - 11) - 1)) * ((3) - (2)) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN (3) + ((1.2^(@vector_tile_zoom - 12) - 1) / (1.2^(13 - 12) - 1)) * ((5) - (3)) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (5) + ((1.2^(@vector_tile_zoom - 13) - 1) / (1.2^(14 - 13) - 1)) * ((6) - (5)) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN (6) + ((1.2^(@vector_tile_zoom - 14) - 1) / (1.2^(16 - 14) - 1)) * ((10) - (6)) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN (10) + ((1.2^(@vector_tile_zoom - 16) - 1) / (1.2^(17 - 16) - 1)) * ((12) - (10)) WHEN @vector_tile_zoom > 17 THEN 12 END)), ';')")
+                         ('array_to_string(array_foreach('
+                          'CASE WHEN @vector_tile_zoom <= 17 THEN array(1,1) WHEN @vector_tile_zoom > 17 THEN array(0.3,0.2) END,'
+                          '@element * ('
+                          'CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN scale_exponential(@vector_tile_zoom,10,11,1.5,2,1.2) '
+                          'WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exponential(@vector_tile_zoom,11,12,2,3,1.2) '
+                          'WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exponential(@vector_tile_zoom,12,13,3,5,1.2) '
+                          'WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exponential(@vector_tile_zoom,13,14,5,6,1.2) '
+                          'WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exponential(@vector_tile_zoom,14,16,6,10,1.2) '
+                          'WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exponential(@vector_tile_zoom,16,17,10,12,1.2) '
+                          "WHEN @vector_tile_zoom > 17 THEN 12 END)), ';')"))
 
     def testParseLineDashArrayOddNumber(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
@@ -1141,9 +1175,22 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertEqual(rendererStyle.symbol()[0].customDashVector(), [6.0, 3.0])
         dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
         self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.PropertyStrokeWidth).asExpression(),
-                         'CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN (1.5) + ((1.2^(@vector_tile_zoom - 10) - 1) / (1.2^(11 - 10) - 1)) * ((2) - (1.5)) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN (2) + ((1.2^(@vector_tile_zoom - 11) - 1) / (1.2^(12 - 11) - 1)) * ((3) - (2)) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN (3) + ((1.2^(@vector_tile_zoom - 12) - 1) / (1.2^(13 - 12) - 1)) * ((5) - (3)) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (5) + ((1.2^(@vector_tile_zoom - 13) - 1) / (1.2^(14 - 13) - 1)) * ((6) - (5)) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN (6) + ((1.2^(@vector_tile_zoom - 14) - 1) / (1.2^(16 - 14) - 1)) * ((10) - (6)) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN (10) + ((1.2^(@vector_tile_zoom - 16) - 1) / (1.2^(17 - 16) - 1)) * ((12) - (10)) WHEN @vector_tile_zoom > 17 THEN 12 END')
+                         ('CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN scale_exponential(@vector_tile_zoom,10,11,1.5,2,1.2) '
+                          'WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exponential(@vector_tile_zoom,11,12,2,3,1.2) '
+                          'WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exponential(@vector_tile_zoom,12,13,3,5,1.2) '
+                          'WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exponential(@vector_tile_zoom,13,14,5,6,1.2) '
+                          'WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exponential(@vector_tile_zoom,14,16,6,10,1.2) '
+                          'WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exponential(@vector_tile_zoom,16,17,10,12,1.2) '
+                          'WHEN @vector_tile_zoom > 17 THEN 12 END'))
         self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.PropertyCustomDash).asExpression(),
-                         """array_to_string(array_foreach(array(4,2),@element * (CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN (1.5) + ((1.2^(@vector_tile_zoom - 10) - 1) / (1.2^(11 - 10) - 1)) * ((2) - (1.5)) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN (2) + ((1.2^(@vector_tile_zoom - 11) - 1) / (1.2^(12 - 11) - 1)) * ((3) - (2)) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN (3) + ((1.2^(@vector_tile_zoom - 12) - 1) / (1.2^(13 - 12) - 1)) * ((5) - (3)) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (5) + ((1.2^(@vector_tile_zoom - 13) - 1) / (1.2^(14 - 13) - 1)) * ((6) - (5)) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN (6) + ((1.2^(@vector_tile_zoom - 14) - 1) / (1.2^(16 - 14) - 1)) * ((10) - (6)) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN (10) + ((1.2^(@vector_tile_zoom - 16) - 1) / (1.2^(17 - 16) - 1)) * ((12) - (10)) WHEN @vector_tile_zoom > 17 THEN 12 END)), ';')""")
+                         ('array_to_string(array_foreach(array(4,2),@element * ('
+                          'CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN scale_exponential(@vector_tile_zoom,10,11,1.5,2,1.2) '
+                          'WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exponential(@vector_tile_zoom,11,12,2,3,1.2) '
+                          'WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exponential(@vector_tile_zoom,12,13,3,5,1.2) '
+                          'WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exponential(@vector_tile_zoom,13,14,5,6,1.2) '
+                          'WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exponential(@vector_tile_zoom,14,16,6,10,1.2) '
+                          'WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exponential(@vector_tile_zoom,16,17,10,12,1.2) '
+                          "WHEN @vector_tile_zoom > 17 THEN 12 END)), ';')"))
 
     def testParseLineDashArraySingleNumber(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
@@ -1172,8 +1219,53 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertFalse(rendererStyle.symbol()[0].useCustomDashPattern())
         dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
         self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.PropertyStrokeWidth).asExpression(),
-                         'CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN (1.5) + ((1.2^(@vector_tile_zoom - 10) - 1) / (1.2^(11 - 10) - 1)) * ((2) - (1.5)) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN (2) + ((1.2^(@vector_tile_zoom - 11) - 1) / (1.2^(12 - 11) - 1)) * ((3) - (2)) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN (3) + ((1.2^(@vector_tile_zoom - 12) - 1) / (1.2^(13 - 12) - 1)) * ((5) - (3)) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (5) + ((1.2^(@vector_tile_zoom - 13) - 1) / (1.2^(14 - 13) - 1)) * ((6) - (5)) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN (6) + ((1.2^(@vector_tile_zoom - 14) - 1) / (1.2^(16 - 14) - 1)) * ((10) - (6)) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN (10) + ((1.2^(@vector_tile_zoom - 16) - 1) / (1.2^(17 - 16) - 1)) * ((12) - (10)) WHEN @vector_tile_zoom > 17 THEN 12 END')
+                         'CASE WHEN @vector_tile_zoom >= 10 AND @vector_tile_zoom <= 11 THEN scale_exponential(@vector_tile_zoom,10,11,1.5,2,1.2) WHEN @vector_tile_zoom > 11 AND @vector_tile_zoom <= 12 THEN scale_exponential(@vector_tile_zoom,11,12,2,3,1.2) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 13 THEN scale_exponential(@vector_tile_zoom,12,13,3,5,1.2) WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN scale_exponential(@vector_tile_zoom,13,14,5,6,1.2) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 16 THEN scale_exponential(@vector_tile_zoom,14,16,6,10,1.2) WHEN @vector_tile_zoom > 16 AND @vector_tile_zoom <= 17 THEN scale_exponential(@vector_tile_zoom,16,17,10,12,1.2) WHEN @vector_tile_zoom > 17 THEN 12 END')
         self.assertFalse(dd_properties.property(QgsSymbolLayer.Property.PropertyCustomDash).isActive())
+
+    def testParseLineDashArrayLiteral(self):
+        conversion_context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "id": "tunnel_public_transport",
+            "type": "line",
+            "source": "base_v1.0.0",
+            "source-layer": "transportation",
+            "minzoom": 8.0,
+            "layout": {"line-cap": "butt", "line-join": "miter", "visibility": "visible"},
+            "paint": {
+                "line-blur": 0.4,
+                "line-color": "hsl(0,80%,60%)",
+                "line-width": [
+                    "interpolate", ["linear"], ["zoom"], 8, 0.5, 10, 1.2, 12, ["match", ["get", "class"], ["rail"], ["match", ["get", "subclass"], ["rail", "narrow_gauge", "rack_rail"], ["match", ["get", "service"], ["yard", "siding"], 0.25, 1], 1], 1], 14, ["match", ["get", "class"], ["rail", "rail_construction"], ["match", ["get", "subclass"], ["rail", "narrow_gauge", "rack_rail"], ["match", ["get", "service"], ["yard", "siding"], 0.25, 1.5], 1.5], 1.5], 18,
+                    ["match", ["get", "class"], ["rail", "rail_construction"], ["match", ["get", "subclass"], ["rail", "narrow_gauge", "rack_rail"], ["match", ["get", "service"], ["yard", "siding"], 1, 2], 1.5], 1.5]
+                ],
+                "line-opacity": [
+                    "interpolate", ["linear"], ["zoom"], 8, 0, 8.5, ["match", ["get", "class"], ["rail"], 1, 0], 13, ["match", ["get", "subclass"], ["rail", "subway", "funicular", "narrow_gauge", "rack_rail"], ["match", ["get", "is_route"], 99, 1, 0], 0], 14,
+                    ["match", ["get", "class"], ["rail_construction", "transit_construction"], 0.8, ["match", ["get", "subclass"], ["rail", "narrow_gauge", "funicular", "subway", "rack_rail"], ["match", ["get", "service"], ["yard", "siding"], 0, 1], 0]], 14.5, ["match", ["get", "class"], ["rail_construction", "transit_construction"], 0.8, 1]
+                ],
+                "line-dasharray": ["step", ["zoom"], ["literal", [3, 1.875]], 14, ["literal", [4, 2.5]], 15, ["literal", [5, 3.125]], 16, ["literal", [6, 3.75]]]
+            },
+            "filter": ["all", ["==", ["get", "brunnel"], "tunnel"], ["in", ["get", "class"], ["literal", ["cable_car", "gondola", "rail", "rail_construction", "transit", "transit_construction"]]], ["==", ["geometry-type"], "LineString"]]
+        }
+        has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseLineLayer(style, conversion_context)
+        self.assertTrue(has_renderer)
+        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertFalse(rendererStyle.symbol()[0].useCustomDashPattern())
+        dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
+        self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.CustomDash).asExpression(),
+                         '''array_to_string(array_foreach(CASE  WHEN @vector_tile_zoom >= 16 THEN (array(6,3.75))  WHEN @vector_tile_zoom >= 15 THEN (array(5,3.125))  WHEN @vector_tile_zoom >= 14 THEN (array(4,2.5)) ELSE (array(3,1.875)) END,@element * (CASE WHEN @vector_tile_zoom >= 8 AND @vector_tile_zoom <= 10 THEN scale_linear(@vector_tile_zoom,8,10,0.5,1.2) WHEN @vector_tile_zoom > 10 AND @vector_tile_zoom <= 12 THEN scale_linear(@vector_tile_zoom,10,12,1.2,CASE WHEN "class" = 'rail' THEN CASE WHEN "subclass" IN ('rail', 'narrow_gauge', 'rack_rail') THEN CASE WHEN "service" IN ('yard', 'siding') THEN 0.25 ELSE 1 END ELSE 1 END ELSE 1 END) WHEN @vector_tile_zoom > 12 AND @vector_tile_zoom <= 14 THEN scale_linear(@vector_tile_zoom,12,14,CASE WHEN "class" = 'rail' THEN CASE WHEN "subclass" IN ('rail', 'narrow_gauge', 'rack_rail') THEN CASE WHEN "service" IN ('yard', 'siding') THEN 0.25 ELSE 1 END ELSE 1 END ELSE 1 END,CASE WHEN "class" IN ('rail', 'rail_construction') THEN CASE WHEN "subclass" IN ('rail', 'narrow_gauge', 'rack_rail') THEN CASE WHEN "service" IN ('yard', 'siding') THEN 0.25 ELSE 1.5 END ELSE 1.5 END ELSE 1.5 END) WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 18 THEN scale_linear(@vector_tile_zoom,14,18,CASE WHEN "class" IN ('rail', 'rail_construction') THEN CASE WHEN "subclass" IN ('rail', 'narrow_gauge', 'rack_rail') THEN CASE WHEN "service" IN ('yard', 'siding') THEN 0.25 ELSE 1.5 END ELSE 1.5 END ELSE 1.5 END,CASE WHEN "class" IN ('rail', 'rail_construction') THEN CASE WHEN "subclass" IN ('rail', 'narrow_gauge', 'rack_rail') THEN CASE WHEN "service" IN ('yard', 'siding') THEN 1 ELSE 2 END ELSE 1.5 END ELSE 1.5 END) WHEN @vector_tile_zoom > 18 THEN ( ( CASE WHEN "class" IN ('rail', 'rail_construction') THEN CASE WHEN "subclass" IN ('rail', 'narrow_gauge', 'rack_rail') THEN CASE WHEN "service" IN ('yard', 'siding') THEN 1 ELSE 2 END ELSE 1.5 END ELSE 1.5 END ) * 1 ) END)), ';')''')
+        self.assertTrue(dd_properties.property(QgsSymbolLayer.Property.PropertyCustomDash).isActive())
+
+        conversion_context = QgsMapBoxGlStyleConversionContext()
+        style["paint"].pop("line-width")
+        has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseLineLayer(style, conversion_context)
+        self.assertTrue(has_renderer)
+        self.assertEqual(rendererStyle.geometryType(), QgsWkbTypes.GeometryType.LineGeometry)
+        self.assertFalse(rendererStyle.symbol()[0].useCustomDashPattern())
+        dd_properties = rendererStyle.symbol().symbolLayers()[0].dataDefinedProperties()
+        self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.PropertyStrokeWidth).asExpression(), '')
+        self.assertEqual(dd_properties.property(QgsSymbolLayer.Property.CustomDash).asExpression(),
+                         '''array_to_string(CASE  WHEN @vector_tile_zoom >= 16 THEN (array(6,3.75))  WHEN @vector_tile_zoom >= 15 THEN (array(5,3.125))  WHEN @vector_tile_zoom >= 14 THEN (array(4,2.5)) ELSE (array(3,1.875)) END, ';')''')
+        self.assertTrue(dd_properties.property(QgsSymbolLayer.Property.PropertyCustomDash).isActive())
 
     def testParseLineNoWidth(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
@@ -1359,6 +1451,41 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         self.assertTrue(has_labeling)
         self.assertFalse(labeling_style.labelSettings().isExpression)
         self.assertEqual(labeling_style.labelSettings().fieldName, 'substance')
+
+    def testLabelRotation(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "visibility": "visible",
+                "text-field": "{substance}",
+                "text-rotate": 123
+            },
+            "paint": {
+                "text-color": "rgba(47, 47, 47, 1)",
+            },
+            "type": "symbol"
+        }
+        rendererStyle, has_renderer, labeling_style, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertTrue(has_labeling)
+        self.assertEqual(labeling_style.labelSettings().angleOffset, 123)
+
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "visibility": "visible",
+                "text-field": "{substance}",
+                "text-rotate": ["get", "direction"]
+            },
+            "paint": {
+                "text-color": "rgba(47, 47, 47, 1)",
+            },
+            "type": "symbol"
+        }
+        rendererStyle, has_renderer, labeling_style, has_labeling = QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        self.assertTrue(has_labeling)
+        ls = labeling_style.labelSettings()
+        ddp = ls.dataDefinedProperties()
+        self.assertEqual(ddp.property(QgsPalLayerSettings.Property.LabelRotation).asExpression(), '"direction"')
 
     def test_parse_zoom_levels(self):
         context = QgsMapBoxGlStyleConversionContext()

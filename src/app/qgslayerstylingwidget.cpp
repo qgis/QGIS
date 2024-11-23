@@ -23,7 +23,9 @@
 #include "qgsapplication.h"
 #include "qgslabelingwidget.h"
 #include "qgsmaskingwidget.h"
+#include "qgsdiagramwidget.h"
 #include "qgslayerstylingwidget.h"
+#include "moc_qgslayerstylingwidget.cpp"
 #include "qgsrastertransparencywidget.h"
 #include "qgsrendererpropertiesdialog.h"
 #include "qgsrendererrasterpropertieswidget.h"
@@ -217,6 +219,11 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       symbol3DItem->setToolTip( tr( "3D View" ) );
       mOptionsListWidget->addItem( symbol3DItem );
 #endif
+
+      QListWidgetItem *diagramItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/diagram.svg" ) ), QString() );
+      diagramItem->setData( Qt::UserRole, VectorDiagram );
+      diagramItem->setToolTip( tr( "Diagrams" ) );
+      mOptionsListWidget->addItem( diagramItem );
       break;
     }
     case Qgis::LayerType::Raster:
@@ -334,12 +341,6 @@ void QgsLayerStylingWidget::apply()
 
   bool styleWasChanged = false;
   bool triggerRepaint = false;  // whether the change needs the layer to be repainted
-  if ( QgsLabelingWidget *widget = qobject_cast<QgsLabelingWidget *>( current ) )
-  {
-    widget->apply();
-    styleWasChanged = true;
-    undoName = QStringLiteral( "Label Change" );
-  }
   if ( QgsMaskingWidget *widget = qobject_cast<QgsMaskingWidget *>( current ) )
   {
     widget->apply();
@@ -373,8 +374,23 @@ void QgsLayerStylingWidget::apply()
     styleWasChanged = true;
     triggerRepaint = true;
   }
+  else if ( QgsLabelingWidget *widget = qobject_cast<QgsLabelingWidget *>( current ) )
+  {
+    widget->apply();
+    styleWasChanged = true;
+    undoName = QStringLiteral( "Label Change" );
+  }
+  else if ( QgsDiagramWidget *widget = qobject_cast<QgsDiagramWidget *>( current ) )
+  {
+    widget->apply();
+    styleWasChanged = true;
+    undoName = QStringLiteral( "Diagram Change" );
+  }
   else if ( QgsMapLayerConfigWidget *widget = qobject_cast<QgsMapLayerConfigWidget *>( current ) )
   {
+    // Warning: All classes inheriting from QgsMapLayerConfigWidget
+    // should come in the current if block, before this else-if
+    // clause, to avoid duplicate calls to apply()!
     widget->apply();
     styleWasChanged = true;
     triggerRepaint = widget->shouldTriggerLayerRepaint();
@@ -463,6 +479,10 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       mMesh3DWidget = widget;
     }
 #endif
+    else if ( QgsDiagramWidget *widget = qobject_cast<QgsDiagramWidget *>( current ) )
+    {
+      mDiagramWidget = widget;
+    }
   }
 
   mWidgetStack->clear();
@@ -495,6 +515,11 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       {
         QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
 
+#ifdef HAVE_3D
+        const int tabShift = 1;  // To move subsequent tabs
+#else
+        const int tabShift = 0;
+#endif
         switch ( row )
         {
           case 0: // Style
@@ -550,6 +575,15 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             break;
           }
 #endif
+          case 3 + tabShift: // Diagrams
+          {
+            mDiagramWidget = new QgsDiagramWidget( vlayer, mMapCanvas, mWidgetStack );
+            mDiagramWidget->setDockMode( true );
+            connect( mDiagramWidget, &QgsDiagramWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            mDiagramWidget->syncToOwnLayer();
+            mWidgetStack->setMainPanel( mDiagramWidget );
+            break;
+          }
           default:
             break;
         }

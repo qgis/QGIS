@@ -11,8 +11,10 @@ class O0_EXPORT O2Facebook: public O2 {
 public:
     explicit O2Facebook(QObject *parent = 0);
 
-protected Q_SLOTS:
+public Q_SLOTS:
     void onVerificationReceived(QMap<QString, QString>);
+
+protected Q_SLOTS:
     virtual void onTokenReplyFinished();
 };
 

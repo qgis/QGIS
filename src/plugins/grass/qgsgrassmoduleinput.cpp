@@ -44,6 +44,7 @@ extern "C"
 }
 
 #include "qgsgrassmoduleinput.h"
+#include "moc_qgsgrassmoduleinput.cpp"
 
 /**************************** QgsGrassModuleInputModel ****************************/
 QgsGrassModuleInputModel::QgsGrassModuleInputModel( QObject *parent )

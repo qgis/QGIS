@@ -264,6 +264,8 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      */
     void setActivePrivate( bool active );
 
+    // Returns color name if current expression is a reference to a color
+    QString getColor() const;
 
     int mPropertyKey = -1;
 

@@ -818,8 +818,8 @@ class TestQgsProcessingInPlace(QgisTestCase):
         geoms = [f.geometry() for f in new_features]
         [g.normalize() for g in geoms]
         wkt1, wkt2 = (g.asWkt() for g in geoms)
-        self.assertEqual(wkt1, 'PolygonZ ((0 0 1, 1 1 2.25, 2 0 4, 0 0 1))')
-        self.assertEqual(wkt2, 'PolygonZ ((0 2 3, 2 2 1, 1 1 2.25, 0 2 3))')
+        self.assertEqual(wkt1, 'Polygon Z ((0 0 1, 1 1 2.25, 2 0 4, 0 0 1))')
+        self.assertEqual(wkt2, 'Polygon Z ((0 2 3, 2 2 1, 1 1 2.25, 0 2 3))')
 
     def _test_difference_on_invalid_geometries(self, geom_option):
         polygon_layer = self._make_layer('Polygon')

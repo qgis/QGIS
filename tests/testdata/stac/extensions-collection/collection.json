@@ -1,0 +1,68 @@
+{
+  "id": "extensions-collection",
+  "type": "Collection",
+  "stac_version": "1.0.0",
+  "description": "A heterogenous collection containing deeper examples of various extensions",
+  "links": [
+    {
+      "rel": "parent",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "Example Catalog"
+    },
+    {
+      "rel": "root",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "Example Catalog"
+    },
+    {
+      "rel": "item",
+      "href": "./proj-example/proj-example.json",
+      "title": "Proj extension example"
+    },
+    {
+      "rel": "license",
+      "href": "https://remotedata.io/license.html",
+      "title": "Remote Data License Terms"
+    }
+  ],
+  "stac_extensions": [],
+  "title": "Collection of Extension Items",
+  "keywords": [
+    "examples",
+    "sar",
+    "projection"
+  ],
+  "providers": [
+    {
+      "name": "Remote Data, Inc.",
+      "roles": [
+        "producer",
+        "licensor"
+      ],
+      "url": "https://remotedata.io"
+    }
+  ],
+  "extent": {
+    "spatial": {
+      "bbox": [
+        [
+          -180,
+          -56,
+          180,
+          83
+        ]
+      ]
+    },
+    "temporal": {
+      "interval": [
+        [
+          "2009-05-20T02:40:01.042784Z",
+          "2018-11-03T23:59:55.112875Z"
+        ]
+      ]
+    }
+  },
+  "license": "PDDL-1.0"
+}

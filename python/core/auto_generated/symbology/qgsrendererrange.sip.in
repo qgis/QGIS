@@ -178,8 +178,6 @@ Creates a DOM element representing the range in SLD format.
 %End
 
   protected:
-
-    void swap( QgsRendererRange &other );
 };
 
 typedef QList<QgsRendererRange> QgsRangeList;

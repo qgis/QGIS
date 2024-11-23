@@ -37,6 +37,7 @@
 #include "qgspointcloudexpression.h"
 #include "qgspointcloudrequest.h"
 
+
 #define SIP_NO_FILE
 
 class QgsPointCloudRequest;
@@ -342,11 +343,6 @@ class CORE_EXPORT QgsPointCloudIndex: public QObject
      * Returns the number of points in one direction in a single node.
      */
     int span() const;
-
-    /**
-     * Returns the number of points of indexed point cloud node \a n
-     */
-    int nodePointCount( const IndexedPointCloudNode &n );
 
     /**
      * Sets the string used to define a subset of the point cloud.

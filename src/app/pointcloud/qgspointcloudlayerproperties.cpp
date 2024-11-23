@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayerproperties.h"
+#include "moc_qgspointcloudlayerproperties.cpp"
 #include "qgshelp.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgspointcloudlayer.h"

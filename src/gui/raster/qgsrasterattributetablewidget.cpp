@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterattributetablewidget.h"
+#include "moc_qgsrasterattributetablewidget.cpp"
 #include "qgsrasterattributetable.h"
 #include "qgsrasterlayer.h"
 #include "qgsapplication.h"

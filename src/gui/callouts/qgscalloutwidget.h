@@ -23,8 +23,6 @@
 #include <QWidget>
 #include <QStandardItemModel>
 
-class QgsMapCanvas;
-
 /**
  * \ingroup gui
  * \class QgsCalloutWidget
@@ -106,8 +104,6 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
   private:
     QgsMapLayer *mLayer = nullptr;
 
-    QgsMapCanvas *mMapCanvas = nullptr;
-
   signals:
 
     /**
@@ -178,7 +174,7 @@ class GUI_EXPORT QgsManhattanLineCalloutWidget : public QgsSimpleLineCalloutWidg
 
     QgsManhattanLineCalloutWidget( QgsMapLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    static QgsCalloutWidget *create( QgsMapLayer *vl ) SIP_FACTORY { return new QgsManhattanLineCalloutWidget( vl ); }
+    static QgsCalloutWidget *create( QgsMapLayer *vl ) SIP_FACTORY { return new QgsManhattanLineCalloutWidget( vl ); } // cppcheck-suppress duplInheritedMember
 
 };
 

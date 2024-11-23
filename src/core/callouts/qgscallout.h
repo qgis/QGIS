@@ -759,7 +759,7 @@ class CORE_EXPORT QgsManhattanLineCallout : public QgsSimpleLineCallout
      * serialized in the \a properties map (corresponding to the output from
      * QgsManhattanLineCallout::properties() ).
      */
-    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) SIP_FACTORY;
+    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     QString type() const override;
     QgsManhattanLineCallout *clone() const override;
@@ -807,7 +807,7 @@ class CORE_EXPORT QgsCurvedLineCallout : public QgsSimpleLineCallout
      * serialized in the \a properties map (corresponding to the output from
      * QgsCurvedLineCallout::properties() ).
      */
-    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) SIP_FACTORY;
+    static QgsCallout *create( const QVariantMap &properties = QVariantMap(), const QgsReadWriteContext &context = QgsReadWriteContext() ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     QString type() const override;
     QgsCurvedLineCallout *clone() const override;

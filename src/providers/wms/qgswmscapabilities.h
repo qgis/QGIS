@@ -1067,6 +1067,7 @@ class QgsWmsCapabilities
 
     friend class QgsWmsProvider;
     friend class TestQgsWmsCapabilities;
+    friend class TestQgsWmsProvider;
 };
 
 

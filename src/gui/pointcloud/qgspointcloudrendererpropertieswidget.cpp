@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspointcloudrendererpropertieswidget.h"
+#include "moc_qgspointcloudrendererpropertieswidget.cpp"
 
 #include "qgis.h"
 #include "qgspointcloudrendererregistry.h"

@@ -432,6 +432,19 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     int eyeDomeLightingDistance() const;
 
     /**
+    * Sets whether scene updates on camera movement should be enabled
+    * \note By default, scene is updating on camera movement. Useful for debugging purposes.
+    * \since QGIS 3.42
+    */
+    void setStopUpdates( bool enabled );
+
+    /**
+     * Returns whether the scene updates on camera movement
+     * \since QGIS 3.42
+     */
+    bool stopUpdates() const;
+
+    /**
      * Sets the debugging settings of the shadow map
      * \see debugShadowMapEnabled()
      * \see debugShadowMapCorner()
@@ -707,6 +720,18 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void setShowExtentIn2DView( bool show );
 
+    /**
+     * Sets whether the debug side panel is shown
+     * \since QGIS 3.42
+     */
+    void setShowDebugPanel( bool enabled );
+
+    /**
+     * Returns whether the debug side panel is shown
+     * \since QGIS 3.42
+     */
+    bool showDebugPanel() const;
+
   signals:
 
     /**
@@ -789,6 +814,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     //! Emitted when the flag whether labels are displayed on terrain tiles has changed
     void showLabelsChanged();
+
+    /**
+     * Emitted when the flag whether to keep updating scene has changed
+     * \since QGIS 3.42
+     */
+    void stopUpdatesChanged();
 
     /**
      * Emitted when the flag whether eye dome lighting is used has changed
@@ -920,6 +951,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void showExtentIn2DViewChanged();
 
+    /**
+     * Emitted when the Show debug panel checkbox changes value
+     * \see setShowDebugPanel()
+     * \since QGIS 3.42
+     */
+    void showDebugPanelChanged( bool shown );
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
@@ -950,6 +988,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     bool mShowCameraRotationCenter = false; //!< Whether to show camera rotation center as a sphere - useful for debugging
     bool mShowLightSources = false; //!< Whether to show the origin of light sources
     bool mShowLabels = false; //!< Whether to display labels on terrain tiles
+    bool mStopUpdates = false; //!< Whether to stop updating scene on zoom
+    bool mShowDebugPanel = false; //!< Whether to show debug panel
     QList< QgsLightSource * > mLightSources; //!< List of light sources in the scene (owned by the settings)
     float mFieldOfView = 45.0f; //<! Camera lens field of view value
     Qt3DRender::QCameraLens::ProjectionType mProjectionType = Qt3DRender::QCameraLens::PerspectiveProjection;  //<! Camera lens projection type
@@ -980,7 +1020,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     double mDebugShadowMapSize = 0.2;
 
     bool mDebugDepthMapEnabled = false;
-    Qt::Corner mDebugDepthMapCorner = Qt::Corner::TopRightCorner;
+    Qt::Corner mDebugDepthMapCorner = Qt::Corner::BottomLeftCorner;
     double mDebugDepthMapSize = 0.2;
 
     bool mTerrainRenderingEnabled = true;

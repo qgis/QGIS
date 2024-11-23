@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgslayertreemodellegendnode.h"
+#include "moc_qgslayertreemodellegendnode.cpp"
 
 #include "qgsdatadefinedsizelegend.h"
 #include "qgslayertreemodel.h"
@@ -90,7 +91,7 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
 
   const QStringList lines = settings.evaluateItemText( data( Qt::DisplayRole ).toString(), ctx->context->expressionContext() );
 
-  const QgsTextDocument textDocument = f.allowHtmlFormatting() ? QgsTextDocument::fromHtml( lines ) : QgsTextDocument::fromPlainText( lines );
+  const QgsTextDocument textDocument = QgsTextDocument::fromTextAndFormat( lines, f );
   // cppcheck-suppress autoVariables
   ctx->textDocument = &textDocument;
 
@@ -142,27 +143,26 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbol( const QgsLegendSettings &setting
       size.setHeight( ctx->patchSize.height( ) );
   }
 
-  if ( ctx && ctx->painter )
+  if ( ctx && ctx->painter && ctx->context )
   {
+    const QgsScopedRenderContextScaleToPixels scopedScaleToPixels( *( ctx->context ) );
+    const double scaleFactor = ctx->context->scaleFactor();
+    const int width = static_cast<int>( size.width() * scaleFactor );
+    const int height = static_cast<int>( size.height() * scaleFactor );
+    const int y = static_cast<int>( ( ctx->top + ( itemHeight - size.height() ) / 2 ) * scaleFactor );
+    int x = 0;
+
     switch ( settings.symbolAlignment() )
     {
       case Qt::AlignLeft:
       default:
-        symbolIcon.paint( ctx->painter,
-                          static_cast< int >( ctx->columnLeft ),
-                          static_cast< int >( ctx->top + ( itemHeight - size.height() ) / 2 ),
-                          static_cast< int >( size.width() ),
-                          static_cast< int >( size.height() ) );
+        x = static_cast<int>( ctx->columnLeft * scaleFactor );
         break;
-
       case Qt::AlignRight:
-        symbolIcon.paint( ctx->painter,
-                          static_cast< int >( ctx->columnRight - size.width() ),
-                          static_cast< int >( ctx->top + ( itemHeight - size.height() ) / 2 ),
-                          static_cast< int >( size.width() ),
-                          static_cast< int >( size.height() ) );
+        x = static_cast<int>( ( ctx->columnRight - size.width() ) * scaleFactor );
         break;
     }
+    symbolIcon.paint( ctx->painter, x, y, width, height );
   }
   return size;
 }
@@ -203,7 +203,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
   if ( !document )
   {
     const QStringList lines = settings.evaluateItemText( data( Qt::DisplayRole ).toString(), context->expressionContext() );
-    tempDocument.emplace( format.allowHtmlFormatting() ? QgsTextDocument::fromHtml( lines ) : QgsTextDocument::fromPlainText( lines ) );
+    tempDocument.emplace( QgsTextDocument::fromTextAndFormat( lines, format ) );
     document = &tempDocument.value();
   }
 
@@ -682,8 +682,10 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   }
 
   //Consider symbol size for point markers
-  const double desiredHeight = ctx && ctx->patchSize.height() > 0 ? ctx->patchSize.height() : settings.symbolSize().height();
-  const double desiredWidth = ctx && ctx->patchSize.width() > 0 ? ctx->patchSize.width() : settings.symbolSize().width();
+  const bool hasFixedWidth = ctx && ctx->patchSize.width() > 0;
+  const bool hasFixedHeight = ctx && ctx->patchSize.height() > 0;
+  const double desiredHeight = hasFixedHeight ? ctx->patchSize.height() : settings.symbolSize().height();
+  const double desiredWidth = hasFixedWidth ? ctx->patchSize.width() : settings.symbolSize().width();
   double height = desiredHeight;
   double width = desiredWidth;
 
@@ -699,16 +701,24 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     const double size = markerSymbol->size( *context ) / context->scaleFactor();
     if ( size > 0 )
     {
-      height = size;
-      width = size;
+      if ( !hasFixedHeight )
+        height = size;
+      if ( !hasFixedWidth )
+        width = size;
     }
   }
 
   bool restrictedSizeSymbolOK;
-  const std::unique_ptr<QgsSymbol> minMaxSizeSymbol( QgsSymbolLayerUtils::restrictedSizeSymbol( s, minSymbolSize, maxSymbolSize, context, width, height, &restrictedSizeSymbolOK ) );
+  double restrictedSymbolWidth = width;
+  double restrictedSymbolHeight = height;
+  const std::unique_ptr<QgsSymbol> minMaxSizeSymbol( QgsSymbolLayerUtils::restrictedSizeSymbol( s, minSymbolSize, maxSymbolSize, context, restrictedSymbolWidth, restrictedSymbolHeight, &restrictedSizeSymbolOK ) );
   if ( minMaxSizeSymbol )
   {
     s = minMaxSizeSymbol.get();
+    if ( !hasFixedHeight )
+      height = restrictedSymbolHeight;
+    if ( !hasFixedWidth )
+      width = restrictedSymbolWidth;
   }
 
   if ( s->type() == Qgis::SymbolType::Marker )
@@ -1070,12 +1080,13 @@ QJsonObject QgsImageLegendNode::exportSymbolToJson( const QgsLegendSettings &, c
 
 // -------------------------------------------------------------------------
 
-QgsRasterSymbolLegendNode::QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent, bool isCheckable, const QString &ruleKey )
+QgsRasterSymbolLegendNode::QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent, bool isCheckable, const QString &ruleKey, const QString &parentRuleKey )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
   , mColor( color )
   , mLabel( label )
   , mCheckable( isCheckable )
   , mRuleKey( ruleKey )
+  , mParentRuleKey( parentRuleKey )
 {
 }
 
@@ -1108,6 +1119,9 @@ QVariant QgsRasterSymbolLegendNode::data( int role ) const
 
     case static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ):
       return mRuleKey;
+
+    case static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::ParentRuleKey ):
+      return mParentRuleKey;
 
     case Qt::CheckStateRole:
     {

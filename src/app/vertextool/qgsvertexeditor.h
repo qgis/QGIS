@@ -83,7 +83,6 @@ class APP_EXPORT QgsVertexEditorModel : public QAbstractTableModel
 
   private:
     QgsLockedFeature *mLockedFeature = nullptr;
-    QgsMapCanvas *mCanvas = nullptr;
 
     bool mHasZ = false;
     bool mHasM = false;

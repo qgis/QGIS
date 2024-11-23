@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdatetimeeditconfig.h"
+#include "moc_qgsdatetimeeditconfig.cpp"
 #include "qgsdatetimeeditfactory.h"
 #include "qgsvectorlayer.h"
 #include "qgsdatetimefieldformatter.h"

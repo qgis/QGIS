@@ -17,6 +17,7 @@
 
 
 #include "qgshillshaderendererwidget.h"
+#include "moc_qgshillshaderendererwidget.cpp"
 #include "qgsrasterlayer.h"
 #include "qgsbilinearrasterresampler.h"
 #include "qgshillshaderenderer.h"

@@ -42,7 +42,7 @@ Returns a list of temporal dimensions information for the given ``layer`` (eithe
 .. versionadded:: 3.12
 %End
 
-    static QgsDateRange parseTemporalDateInterval( const QString &interval ) throw( QgsServerApiBadRequestException );
+    static QgsDateRange parseTemporalDateInterval( const QString &interval );
 %Docstring
 Parses a date ``interval`` and returns a :py:class:`QgsDateRange`
 
@@ -51,7 +51,7 @@ Parses a date ``interval`` and returns a :py:class:`QgsDateRange`
 .. versionadded:: 3.12
 %End
 
-    static QgsDateTimeRange parseTemporalDateTimeInterval( const QString &interval ) throw( QgsServerApiBadRequestException );
+    static QgsDateTimeRange parseTemporalDateTimeInterval( const QString &interval );
 %Docstring
 Parses a datetime ``interval`` and returns a :py:class:`QgsDateTimeRange`
 
@@ -61,7 +61,7 @@ Parses a datetime ``interval`` and returns a :py:class:`QgsDateTimeRange`
 %End
 
 
-    static QString fieldName( const QString &name, const QgsVectorLayer *layer ) throw( QgsServerApiBadRequestException );
+    static QString fieldName( const QString &name, const QgsVectorLayer *layer );
 %Docstring
 Given a field ``name`` (or display name) and a ``layer`` returns the actual name of the field.
 

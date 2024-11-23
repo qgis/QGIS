@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspgtablemodel.h"
+#include "moc_qgspgtablemodel.cpp"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"

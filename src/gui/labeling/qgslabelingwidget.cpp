@@ -17,6 +17,7 @@
 #include <QDomElement>
 
 #include "qgslabelingwidget.h"
+#include "moc_qgslabelingwidget.cpp"
 
 #include "qgslabelengineconfigdialog.h"
 #include "qgslabelinggui.h"

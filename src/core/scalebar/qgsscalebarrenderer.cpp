@@ -246,7 +246,7 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const Q
 
   //consider last number and label
   const double largestLabelNumber = settings.numberOfSegments() * settings.unitsPerSegment() / settings.mapUnitsPerScaleBarUnit();
-  const QString largestNumberLabel = settings.numericFormat()->formatDouble( largestLabelNumber, QgsNumericFormatContext() );
+  const QString largestNumberLabel = std::isnan( largestLabelNumber ) ? QString() : settings.numericFormat()->formatDouble( largestLabelNumber, QgsNumericFormatContext() );
   const QString largestLabel = largestNumberLabel + ' ' + settings.unitLabel();
   double largestLabelWidth;
   if ( settings.labelHorizontalPlacement() == Qgis::ScaleBarDistanceLabelHorizontalPlacement::CenteredSegment && !std::isnan( scaleContext.segmentWidth ) )
@@ -417,4 +417,9 @@ QList<double> QgsScaleBarRenderer::segmentWidths( const ScaleBarContext &scaleCo
   }
 
   return widths;
+}
+
+bool QgsScaleBarRenderer::ScaleBarContext::isValid() const
+{
+  return !std::isnan( segmentWidth );
 }

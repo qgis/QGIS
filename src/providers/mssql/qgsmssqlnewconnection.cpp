@@ -24,6 +24,7 @@
 #include <QMenu>
 
 #include "qgsmssqlnewconnection.h"
+#include "moc_qgsmssqlnewconnection.cpp"
 #include "qgsmssqlprovider.h"
 #include "qgssettings.h"
 #include "qgsmssqlconnection.h"

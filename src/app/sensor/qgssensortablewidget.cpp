@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgssensortablewidget.h"
+#include "moc_qgssensortablewidget.cpp"
 
 #include "qgisapp.h"
 #include "qgsapplication.h"

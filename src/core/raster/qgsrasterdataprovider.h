@@ -157,6 +157,15 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual double bandOffset( int bandNo ) const { Q_UNUSED( bandNo ) return 0.0; }
 
+    /**
+     * Returns the maximum tile size in pixels for the data provider.
+     * By default, the maximum tile size is set to QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH x
+     * QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT but can be overridden in subclasses (e.g. WMS
+     * can retrieve that information from the GetCapabilities document).
+     * \since QGIS 3.40
+     */
+    virtual QSize maximumTileSize() const { return QSize( QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH, QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT ); }
+
     // TODO: remove or make protected all readBlock working with void*
 
     //! Read block of data using given extent and size.

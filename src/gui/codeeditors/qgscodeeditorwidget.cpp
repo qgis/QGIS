@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscodeeditorwidget.h"
+#include "moc_qgscodeeditorwidget.cpp"
 #include "qgscodeeditor.h"
 #include "qgsfilterlineedit.h"
 #include "qgsapplication.h"
@@ -417,10 +418,10 @@ bool QgsCodeEditorWidget::loadFile( const QString &path )
   {
     const QString content = file.readAll();
     mEditor->setText( content );
-    mEditor->setModified( false );
-    mEditor->recolor();
-    mLastModified = QFileInfo( path ).lastModified();
     setFilePath( path );
+    mEditor->recolor();
+    mEditor->setModified( false );
+    mLastModified = QFileInfo( path ).lastModified();
     return true;
   }
   return false;
@@ -448,9 +449,9 @@ bool QgsCodeEditorWidget::save( const QString &path )
       file.write( mEditor->text().toUtf8() );
       file.close();
 
+      setFilePath( filePath );
       mEditor->setModified( false );
       mLastModified = QFileInfo( filePath ).lastModified();
-      setFilePath( filePath );
 
       return true;
     }
@@ -745,9 +746,15 @@ void QgsCodeEditorWidget::addSearchHighlights()
     if ( fstart < 0 )
       break;
 
-    matchCount++;
     const int matchLength = mEditor->SendScintilla( QsciScintilla::SCI_GETTARGETTEXT, 0, static_cast< void * >( nullptr ) );
 
+    if ( matchLength == 0 )
+    {
+      startPos += 1;
+      continue;
+    }
+
+    matchCount++;
     startPos = fstart + matchLength;
 
     mEditor->SendScintilla( QsciScintilla::SCI_SETINDICATORCURRENT, QgsCodeEditor::SEARCH_RESULT_INDICATOR );

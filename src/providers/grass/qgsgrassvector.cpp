@@ -21,6 +21,7 @@
 #include "qgsgrass.h"
 
 #include "qgsgrassvector.h"
+#include "moc_qgsgrassvector.cpp"
 
 extern "C"
 {

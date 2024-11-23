@@ -34,6 +34,7 @@
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsgrass.h"
 #include "qgsgrassprovider.h"
+#include "moc_qgsgrassprovider.cpp"
 #include "qgsgrassfeatureiterator.h"
 #include "qgsgrassundocommand.h"
 #include "qgscoordinatereferencesystem.h"

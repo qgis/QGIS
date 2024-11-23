@@ -17,12 +17,14 @@
 
 #include "qgis.h"
 #include "qgspointclouddataprovider.h"
+#include "moc_qgspointclouddataprovider.cpp"
 #include "qgspointcloudindex.h"
 #include "qgsgeometry.h"
 #include "qgspointcloudrequest.h"
 #include "qgsgeos.h"
 #include "qgspointcloudstatscalculator.h"
 #include "qgsthreadingutils.h"
+#include "qgscopcpointcloudindex.h"
 
 #include <mutex>
 #include <QDebug>
@@ -290,6 +292,28 @@ struct MapIndexedPointCloudNode
         pointAttr[ QStringLiteral( "X" ) ] = x;
         pointAttr[ QStringLiteral( "Y" ) ] = y;
         pointAttr[ QStringLiteral( "Z" ) ] = z;
+
+
+        if ( const QgsCopcPointCloudIndex *copcIndex = dynamic_cast<QgsCopcPointCloudIndex *>( mIndex ) )
+        {
+          const QDateTime gpsBaseTime = QDateTime::fromSecsSinceEpoch( 315964809, Qt::UTC );
+          constexpr int numberOfSecsInWeek = 3600 * 24 * 7;
+          // here we check the flag set in header to determine if we need to
+          // parse the time as GPS week time or GPS adjusted standard time
+          // however often times the flag is set wrong, so we determine if the value is bigger than the maximum amount of seconds in week then it has to be adjusted standard time
+          if ( copcIndex->gpsTimeFlag() || pointAttr[QStringLiteral( "GpsTime" )].toDouble() > numberOfSecsInWeek )
+          {
+            const QString utcTime = gpsBaseTime.addSecs( static_cast<qint64>( pointAttr[QStringLiteral( "GpsTime" )].toDouble() + 1e9 ) ).toString( Qt::ISODate );
+            pointAttr[ QStringLiteral( "GpsTime (raw)" )] = pointAttr[QStringLiteral( "GpsTime" )];
+            pointAttr[ QStringLiteral( "GpsTime" )] = utcTime;
+          }
+          else
+          {
+            const QString weekTime = gpsBaseTime.addSecs( pointAttr[QStringLiteral( "GpsTime" )].toLongLong() ).toString( "ddd hh:mm:ss" );
+            pointAttr[ QStringLiteral( "GpsTime (raw)" )] = pointAttr[QStringLiteral( "GpsTime" )];
+            pointAttr[ QStringLiteral( "GpsTime" )] = weekTime;
+          }
+        }
         pointsCount++;
         acceptedPoints.push_back( pointAttr );
       }
@@ -312,11 +336,34 @@ QVector<QVariantMap> QgsPointCloudDataProvider::identify(
   const QgsGeometry &extentGeometry,
   const QgsDoubleRange &extentZRange, int pointsLimit )
 {
+  QVector<QVariantMap> acceptedPoints;
+
+  // Try sub-indexes first
+  for ( QgsPointCloudSubIndex &subidx : subIndexes() )
+  {
+    // Check if the sub-index is relevant and if it is loaded. We shouldn't
+    // need to identify points in unloaded indices.
+    if ( !subidx.index()
+         || ( !subidx.zRange().overlaps( extentZRange ) )
+         || !subidx.polygonBounds().intersects( extentGeometry ) )
+      continue;
+    acceptedPoints.append( identify( subidx.index(), maxError, extentGeometry, extentZRange, pointsLimit ) );
+  }
+
+  // Then look at main index
+  acceptedPoints.append( identify( index(), maxError, extentGeometry, extentZRange, pointsLimit ) );
+
+  return acceptedPoints;
+}
+
+QVector<QVariantMap> QgsPointCloudDataProvider::identify(
+  QgsPointCloudIndex *index, double maxError,
+  const QgsGeometry &extentGeometry,
+  const QgsDoubleRange &extentZRange, int pointsLimit )
+{
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   QVector<QVariantMap> acceptedPoints;
-
-  QgsPointCloudIndex *index = this->index();
 
   if ( !index || !index->isValid() )
     return acceptedPoints;

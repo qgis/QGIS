@@ -177,7 +177,6 @@ class QgsImageWarperTask : public QgsTask
     std::unique_ptr< QgsFeedback > mFeedback;
 
     QgsImageWarper::Result mResult = QgsImageWarper::Result::Success;
-    double mLastProgress = 0;
 };
 
 

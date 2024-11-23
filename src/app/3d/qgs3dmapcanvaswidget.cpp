@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dmapcanvaswidget.h"
+#include "moc_qgs3dmapcanvaswidget.cpp"
 
 #include <QBoxLayout>
 #include <QDialog>
@@ -45,6 +46,7 @@
 #include "qgs3dmaptoolidentify.h"
 #include "qgs3dmaptoolmeasureline.h"
 #include "qgs3dnavigationwidget.h"
+#include "qgs3ddebugwidget.h"
 #include "qgs3dutils.h"
 #include "qgswindow3dengine.h"
 
@@ -64,7 +66,7 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   const QgsSettings setting;
 
   QToolBar *toolBar = new QToolBar( this );
-  toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
+  toolBar->setIconSize( QgisApp::instance()->iconSize( isDocked ) );
 
   QAction *actionCameraControl = toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionPan.svg" ) ),
                                  tr( "Camera Control" ), this, &Qgs3DMapCanvasWidget::cameraControl );
@@ -287,12 +289,18 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mContainer->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
   mNavigationWidget = new Qgs3DNavigationWidget( mCanvas );
   mNavigationWidget->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
+  mDebugWidget = new Qgs3DDebugWidget( mCanvas );
 
   QHBoxLayout *hLayout = new QHBoxLayout;
   hLayout->setContentsMargins( 0, 0, 0, 0 );
   hLayout->addWidget( mContainer );
   hLayout->addWidget( mNavigationWidget );
+  hLayout->addWidget( mDebugWidget );
 
+  QShortcut *debugPanelShortCut = new QShortcut( QKeySequence( tr( "Ctrl+Shift+d" ) ), this );
+  connect( debugPanelShortCut, &QShortcut::activated, this, qOverload<>( &Qgs3DMapCanvasWidget::toggleDebugWidget ) );
+  debugPanelShortCut->setObjectName( QStringLiteral( "DebugPanel" ) );
+  debugPanelShortCut->setWhatsThis( tr( "Debug panel visibility" ) );
   toggleNavigationWidget(
     setting.value( QStringLiteral( "/3D/navigationWidget/visibility" ), false, QgsSettings::Gui ).toBool()
   );
@@ -316,6 +324,10 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [ = ]()
   {
     QgisApp::instance()->close3DMapView( canvasName() );
+  } );
+  connect( dockAction, &QAction::toggled, this, [ = ]( const bool isSmallSize )
+  {
+    toolBar->setIconSize( QgisApp::instance()->iconSize( isSmallSize ) );
   } );
 }
 
@@ -395,6 +407,19 @@ void Qgs3DMapCanvasWidget::toggleFpsCounter( bool visibility )
   mLabelFpsCounter->setVisible( visibility );
 }
 
+void Qgs3DMapCanvasWidget::toggleDebugWidget( const bool visibility ) const
+{
+  mDebugWidget->setVisible( visibility );
+}
+
+// this is used only for keyboard shortcut, you should supply the visibility value
+void Qgs3DMapCanvasWidget::toggleDebugWidget() const
+{
+  const bool newVisibility = !mCanvas->mapSettings()->showDebugPanel();
+  mDebugWidget->setVisible( newVisibility );
+  mCanvas->mapSettings()->setShowDebugPanel( newVisibility );
+}
+
 void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
 {
   whileBlocking( mActionEnableShadows )->setChecked( map->shadowSettings().renderShadows() );
@@ -405,15 +430,18 @@ void Qgs3DMapCanvasWidget::setMapSettings( Qgs3DMapSettings *map )
   whileBlocking( mShowFrustumPolyogon )->setChecked( map->viewFrustumVisualizationEnabled() );
 
   mCanvas->setMapSettings( map );
+  connect( map, &Qgs3DMapSettings::showDebugPanelChanged, this, qOverload<bool>( &Qgs3DMapCanvasWidget::toggleDebugWidget ) );
+  toggleDebugWidget( map->showDebugPanel() );
+  mDebugWidget->setMapSettings( map );
 
-  // Connect the camera to the navigation widget.
-  connect( mCanvas->cameraController(), &QgsCameraController::cameraChanged, mNavigationWidget, &Qgs3DNavigationWidget::updateFromCamera );
   connect( mCanvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, this, &Qgs3DMapCanvasWidget::onTotalPendingJobsCountChanged );
   connect( mCanvas->scene(), &Qgs3DMapScene::gpuMemoryLimitReached, this, &Qgs3DMapCanvasWidget::onGpuMemoryLimitReached );
 
-  // update the navigation widget when the near/far planes have been updated by the map scene
-  connect( mCanvas->cameraController()->camera(), &Qt3DRender::QCamera::nearPlaneChanged, mNavigationWidget, &Qgs3DNavigationWidget::updateFromCamera );
-  connect( mCanvas->cameraController()->camera(), &Qt3DRender::QCamera::farPlaneChanged, mNavigationWidget, &Qgs3DNavigationWidget::updateFromCamera );
+  // Connect the camera to the debug widget.
+  connect( mCanvas->cameraController(), &QgsCameraController::cameraChanged, mDebugWidget, &Qgs3DDebugWidget::updateFromCamera );
+  // update the debug widget when the near/far planes have been updated by the map scene
+  connect( mCanvas->cameraController()->camera(), &Qt3DRender::QCamera::nearPlaneChanged, mDebugWidget, &Qgs3DDebugWidget::updateFromCamera );
+  connect( mCanvas->cameraController()->camera(), &Qt3DRender::QCamera::farPlaneChanged, mDebugWidget, &Qgs3DDebugWidget::updateFromCamera );
 
   mAnimationWidget->setCameraController( mCanvas->cameraController() );
   mAnimationWidget->setMap( map );

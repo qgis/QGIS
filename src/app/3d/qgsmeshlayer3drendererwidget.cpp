@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmeshlayer3drendererwidget.h"
+#include "moc_qgsmeshlayer3drendererwidget.cpp"
 
 #include "qgsmesh3dsymbol.h"
 #include "qgsmesh3dsymbolwidget.h"

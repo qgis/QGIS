@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmeshselectbyexpressiondialog.h"
+#include "moc_qgsmeshselectbyexpressiondialog.cpp"
 
 #include <QAction>
 

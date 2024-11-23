@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgstilescalewidget.h"
+#include "moc_qgstilescalewidget.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"

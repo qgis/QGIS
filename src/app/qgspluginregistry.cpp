@@ -317,7 +317,7 @@ void QgsPluginRegistry::loadPythonPlugin( const QString &packageName )
     settings.setValue( "/PythonPlugins/" + packageName, true );
     QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName, packageName ), QObject::tr( "Plugins" ), Qgis::MessageLevel::Info );
 
-    settings.remove( "/PythonPlugins/watchDog/" + packageName );
+    settings.remove( "/PythonPlugins/watchDogTimestamp/" + packageName );
   }
 #else
   Q_UNUSED( packageName )
@@ -402,7 +402,7 @@ void QgsPluginRegistry::loadCppPlugin( const QString &fullPathName )
             }
           }
 
-          settings.remove( "/Plugins/watchDog/" + baseName );
+          settings.remove( "/Plugins/watchDogTimestamp/" + baseName );
         }
         else
         {
@@ -505,10 +505,22 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
     const QString myFullPath = pluginDirString + '/' + myPluginDir[i];
     if ( checkCppPlugin( myFullPath ) )
     {
-      // check if the plugin was active on last session
+      // check if there is a watchdog timestamp left after last session
 
+      bool pluginCrashedPreviously = false;
       const QString baseName = QFileInfo( myFullPath ).baseName();
-      if ( mySettings.value( QStringLiteral( "Plugins/watchDog/%1" ).arg( baseName ) ).isValid() )
+      const QVariant lastRun = mySettings.value( QStringLiteral( "Plugins/watchDogTimestamp/%1" ).arg( baseName ) );
+      if ( lastRun.isValid() )
+      {
+        if ( QDateTime::currentDateTime().toSecsSinceEpoch() - lastRun.toLongLong() > 5 )
+        {
+          // The timestamp is left unremoved and is older than 5 seconds, so it's not coming
+          // from a parallelly running instance.
+          pluginCrashedPreviously = true;
+        }
+      }
+
+      if ( pluginCrashedPreviously )
       {
         QToolButton *btnEnablePlugin = new QToolButton();
         btnEnablePlugin ->setText( QObject::tr( "Enable Plugin" ) );
@@ -532,14 +544,14 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
           QgsSettings settings;
           settings.setValue( "/Plugins/" + baseName, true );
           loadCppPlugin( myFullPath );
-          settings.remove( QStringLiteral( "/Plugins/watchDog/%1" ).arg( baseName ) );
+          settings.remove( QStringLiteral( "/Plugins/watchDogTimestamp/%1" ).arg( baseName ) );
           mQgisInterface->messageBar()->popWidget( watchdogMsg );
         } );
         QObject::connect( btnIgnore, &QToolButton::clicked, mQgisInterface->messageBar(), [ = ]()
         {
           QgsSettings settings;
           settings.setValue( "/Plugins/" + baseName, false );
-          settings.remove( "/Plugins/watchDog/" + baseName );
+          settings.remove( "/Plugins/watchDogTimestamp/" + baseName );
           mQgisInterface->messageBar()->popWidget( watchdogMsg );
         } );
 
@@ -548,9 +560,10 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
       }
       if ( mySettings.value( "/Plugins/" + baseName ).toBool() )
       {
-        mySettings.setValue( QStringLiteral( "Plugins/watchDog/%1" ).arg( baseName ), true );
+        mySettings.setValue( QStringLiteral( "Plugins/watchDogTimestamp/%1" ).arg( baseName ),
+                             QDateTime::currentDateTime().toSecsSinceEpoch() );
         loadCppPlugin( myFullPath );
-        mySettings.remove( QStringLiteral( "/Plugins/watchDog/%1" ).arg( baseName ) );
+        mySettings.remove( QStringLiteral( "/Plugins/watchDogTimestamp/%1" ).arg( baseName ) );
       }
     }
   }
@@ -597,8 +610,19 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
       }
       // end - temporary fix for issue #5879, more below
 
+      bool pluginCrashedPreviously = false;
+      const QVariant lastRun = mySettings.value( QStringLiteral( "/PythonPlugins/watchDogTimestamp/%1" ).arg( packageName ) );
+      if ( lastRun.isValid() )
+      {
+        if ( QDateTime::currentDateTime().toSecsSinceEpoch() - lastRun.toLongLong() > 5 )
+        {
+          // The timestamp is left unremoved and is older than 5 seconds, so it's not coming
+          // from a parallelly running instance.
+          pluginCrashedPreviously = true;
+        }
+      }
 
-      if ( mySettings.value( "/PythonPlugins/watchDog/" + packageName ).isValid() )
+      if ( pluginCrashedPreviously )
       {
         QToolButton *btnEnablePlugin = new QToolButton();
         btnEnablePlugin->setText( QObject::tr( "Enable Plugin" ) );
@@ -625,7 +649,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
           {
             loadPythonPlugin( packageName );
           }
-          settings.remove( "/PythonPlugins/watchDog/" + packageName );
+          settings.remove( "/PythonPlugins/watchDogTimestamp/" + packageName );
 
           mQgisInterface->messageBar()->popWidget( watchdogMsg );
         } );
@@ -634,7 +658,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
         {
           QgsSettings settings;
           settings.setValue( "/PythonPlugins/" + packageName, false );
-          settings.remove( "/PythonPlugins/watchDog/" + packageName );
+          settings.remove( "/PythonPlugins/watchDogTimestamp/" + packageName );
           mQgisInterface->messageBar()->popWidget( watchdogMsg );
         } );
 
@@ -645,12 +669,13 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
       // check if the plugin was active on last session
       if ( mySettings.value( "/PythonPlugins/" + packageName ).toBool() )
       {
-        mySettings.setValue( "/PythonPlugins/watchDog/" + packageName, true );
+        mySettings.setValue( "/PythonPlugins/watchDogTimestamp/" + packageName,
+                             QDateTime::currentDateTime().toSecsSinceEpoch() );
         if ( checkPythonPlugin( packageName ) )
         {
           loadPythonPlugin( packageName );
         }
-        mySettings.remove( "/PythonPlugins/watchDog/" + packageName );
+        mySettings.remove( "/PythonPlugins/watchDogTimestamp/" + packageName );
 
       }
     }
