@@ -2220,9 +2220,15 @@ Acts on all layers.</string>
      <normaloff>:/images/themes/default/mActionOffsetCurve.svg</normaloff>:/images/themes/default/mActionOffsetCurve.svg</iconset>
    </property>
    <property name="text">
+    <string>Offset Curve</string>
+   </property>
+   <property name="toolTip">
     <string>Offset Curve
-  Ctrl+click with snapping to offset geometry from another layer.
-  Ctrl+2nd click to create a copy.</string>
+Creates an offset or an offset copy of a line or polygon ring:
+Click to select ring or line to offset.
+2nd click to specify offset distance.
+Ctrl+2nd click to create a copy.
+Ctrl+click with snapping to offset geometry from another layer.</string>
    </property>
   </action>
   <action name="mActionCopyStyle">
@@ -2657,7 +2663,10 @@ Shift+click to snap rotation to 45 degree steps.</string>
    </property>
    <property name="toolTip">
     <string>Fill Ring
-Shift+click on existing ring to fill.</string>
+Creates a hole in a polygon and fills it with a new feature:
+Click within an existing polygon to draw new inner ring.
+Right click to finish and fill ring.
+Shift+click on existing inner ring to fill.</string>
    </property>
   </action>
   <action name="mActionAddLayerDefinition">
