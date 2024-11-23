@@ -228,9 +228,16 @@ void TestQgsMdalProvider::uniqueDatasetNames()
                                );
   QgsMeshDataProvider *mp1 = dynamic_cast< QgsMeshDataProvider * >( provider1 );
 
-  // these two dataset files have the same name
+  // these three dataset files have the same name
   const QString fileDatasetGroup1 = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/quad_and_triangle_vertex_vector.dat" );
-  const QString fileDatasetGroup2 = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/quad_and_triangle_vertex_vector_existing_name.dat" );
+  const QString fileDatasetGroup2 = QDir::tempPath() + QStringLiteral( "/quad_and_triangle_vertex_vector.dat" );
+  const QString fileDatasetGroup3 = QDir::tempPath() + QStringLiteral( "/quad_and_triangle_vertex_vector.dat" );
+
+  QFile::remove( fileDatasetGroup2 );
+  QVERIFY( QFile::copy( fileDatasetGroup1, fileDatasetGroup2 ) );
+
+  QFile::remove( fileDatasetGroup3 );
+  QVERIFY( QFile::copy( fileDatasetGroup1, fileDatasetGroup3 ) );
 
   // test that if added to different provider they have same names
   QVERIFY( mp->addDataset( fileDatasetGroup1 ) );
@@ -251,10 +258,15 @@ void TestQgsMdalProvider::uniqueDatasetNames()
   QVERIFY( mp->addDataset( fileDatasetGroup2 ) );
   QCOMPARE( mp->datasetGroupCount(), 3 );
 
+  QVERIFY( mp->addDataset( fileDatasetGroup3 ) );
+  QCOMPARE( mp->datasetGroupCount(), 4 );
+
   metadata =  mp->datasetGroupMetadata( 1 );
   QCOMPARE( metadata.name(), QStringLiteral( "VertexVectorDataset" ) );
   metadata =  mp->datasetGroupMetadata( 2 );
   QCOMPARE( metadata.name(), QStringLiteral( "VertexVectorDataset_1" ) );
+  metadata =  mp->datasetGroupMetadata( 3 );
+  QCOMPARE( metadata.name(), QStringLiteral( "VertexVectorDataset_2" ) );
 
   delete provider;
   delete provider1;
