@@ -361,12 +361,17 @@ void TestQgsRectangle::asVariant()
   const QgsRectangle rect1 = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
 
   //convert to and from a QVariant
-  const QVariant var = QVariant::fromValue( rect1 );
+  QVariant var = QVariant::fromValue( rect1 );
   QVERIFY( var.isValid() );
   QCOMPARE( var.userType(), qMetaTypeId<QgsRectangle>() );
-  QVERIFY( !var.canConvert< QgsReferencedRectangle >() );
-
   const QgsRectangle rect2 = qvariant_cast<QgsRectangle>( var );
+
+#if (QT_VERSION > QT_VERSION_CHECK(6, 0, 0))
+  QVERIFY( !var.convert( QMetaType::fromType<QgsReferencedRectangle >() ) );
+#else
+  QVERIFY( !var.convert( qMetaTypeId<QgsReferencedRectangle >() ) );
+#endif
+
   QCOMPARE( rect2.xMinimum(), rect1.xMinimum() );
   QCOMPARE( rect2.yMinimum(), rect1.yMinimum() );
   QCOMPARE( rect2.height(), rect1.height() );
