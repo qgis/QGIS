@@ -720,20 +720,16 @@ void QgsMdalProvider::makeLastDatasetGroupNameUnique()
 
   if ( existingNames.contains( lastAddedGroupName ) )
   {
-    QRegularExpression reEndsNumber( "_[0-9]+$" );
-    QRegularExpression reNumber( "[0-9]+$" );
+    const thread_local QRegularExpression reEndsNumber( "_([0-9]+)$" );
     QRegularExpressionMatch match;
 
     while ( existingNames.find( lastAddedGroupName ) != existingNames.end() )
     {
-      if ( reEndsNumber.match( lastAddedGroupName ).hasMatch() )
+      match = reEndsNumber.match(lastAddedGroupName);
+      if ( match.hasMatch() )
       {
-        match = reNumber.match( lastAddedGroupName );
-        if ( match.hasMatch() )
-        {
-          int number = match.capturedTexts().first().toInt();
-          lastAddedGroupName = lastAddedGroupName.left( lastAddedGroupName.length() - match.capturedLength() ) + QString::number( number + 1 );
-        }
+          const int number = match.capturedTexts().last().toInt();
+          lastAddedGroupName = lastAddedGroupName.left( lastAddedGroupName.length() - match.capturedLength() + 1 ) + QString::number( number + 1 );
       }
       else
       {
@@ -752,7 +748,7 @@ bool QgsMdalProvider::removeDatasetGroup( int index )
   }
   else
   {
-    QgsMeshDatasetGroupMetadata datasetGroupMeta = datasetGroupMetadata( index );
+    const QgsMeshDatasetGroupMetadata datasetGroupMeta = datasetGroupMetadata( index );
 
     if ( !mExtraDatasetUris.contains( datasetGroupMeta.uri() ) )
     {
