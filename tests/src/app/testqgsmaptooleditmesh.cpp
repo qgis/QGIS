@@ -41,9 +41,9 @@ class TestQgsMapToolEditMesh : public QObject
 
     void editMesh();
 
+    void selectElements();
     void testAssignVertexZValueFromTerrainOnCreation();
     void testAssignVertexZValueFromTerrainOnButtonClick();
-    void selectElements();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -690,12 +690,12 @@ void TestQgsMapToolEditMesh::selectElements()
   QString uri = QString( mDataDir + "/quad_and_triangle_with_free_vertices.2dm" );
   std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
   QVERIFY( layer->isValid() );
-  
+
   const QgsCoordinateTransform transform;
   QgsMeshEditingError error;
   layer->startFrameEditing( transform, error, false );
   QVERIFY( error == QgsMeshEditingError() );
-  
+
   mCanvas->setLayers( QList<QgsMapLayer *>() << layer.get() );
 
   QVERIFY( layer->meshEditor() );
@@ -703,7 +703,7 @@ void TestQgsMapToolEditMesh::selectElements()
   TestQgsMapToolAdvancedDigitizingUtils tool( mEditMeshMapTool );
   mCanvas->setCurrentLayer( layer.get() );
   mEditMeshMapTool->mActionDigitizing->trigger();
-  
+
   // select all vertices
   QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 0 );
   mEditMeshMapTool->mActionSelectAllVertices->trigger();
