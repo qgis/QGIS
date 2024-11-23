@@ -30,7 +30,6 @@
 #include <QRegularExpression>
 #include <QIcon>
 #include <mutex>
-#include <QRegExp>
 
 const QString QgsMdalProvider::MDAL_PROVIDER_KEY = QStringLiteral( "mdal" );
 const QString QgsMdalProvider::MDAL_PROVIDER_DESCRIPTION = QStringLiteral( "MDAL provider" );
