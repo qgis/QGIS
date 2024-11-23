@@ -266,6 +266,7 @@ class QgsMeshDatasetGroupStore: public QObject
 
     void removePersistentProvider();
 
+    //! reindex dataset group stores variables from provider and extra datasets, to keep data in sync after removal of dataset group
     void reindexDatasetGroups();
 
     DatasetGroup datasetGroup( int index ) const;

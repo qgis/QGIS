@@ -131,6 +131,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
     void loadData();
     void addGroupToTemporalCapabilities( int indexGroup );
 
+    // ensures that last added dataset group has unique name (adds suffix of underscore and number to make it unique)
     void makeLastDatasetGroupNameUnique();
 
     MDAL_MeshH mMeshH = nullptr;

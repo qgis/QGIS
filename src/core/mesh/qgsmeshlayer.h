@@ -215,7 +215,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      * Removes datasets from the mesh with given \a name.
      *
      * \param name of dataset group to remove
-     * \return whether the dataset is added
+     * \return whether the dataset is removed
      *
      * \since QGIS 3.42
      */
@@ -943,8 +943,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     void setLabeling( QgsAbstractMeshLayerLabeling *labeling SIP_TRANSFER );
 
     /**
-     * Checks that datasets path is already added to this mesh layer. Return true if the
-     * dataset path is unique.
+     * Checks whether that datasets path is already added to this mesh layer. Return TRUE if the
+     * dataset path is not already added.
      *
      * \param path the path to the datasets file
      * \return whether the datasets path is unique
