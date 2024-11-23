@@ -725,11 +725,11 @@ void QgsMdalProvider::makeLastDatasetGroupNameUnique()
 
     while ( existingNames.find( lastAddedGroupName ) != existingNames.end() )
     {
-      match = reEndsNumber.match(lastAddedGroupName);
+      match = reEndsNumber.match( lastAddedGroupName );
       if ( match.hasMatch() )
       {
-          const int number = match.capturedTexts().last().toInt();
-          lastAddedGroupName = lastAddedGroupName.left( lastAddedGroupName.length() - match.capturedLength() + 1 ) + QString::number( number + 1 );
+        const int number = match.capturedTexts().last().toInt();
+        lastAddedGroupName = lastAddedGroupName.left( lastAddedGroupName.length() - match.capturedLength() + 1 ) + QString::number( number + 1 );
       }
       else
       {

@@ -44,7 +44,7 @@ class GUI_EXPORT QgsMeshDatasetGroupTreeWidget: public QWidget, private Ui::QgsM
     void apply();
 
   signals:
-    //! Signal emited when dataset groups changed (addition or removal)
+    //! Emitted when dataset groups changed (addition or removal)
     void datasetGroupsChanged();
 
   private slots:
