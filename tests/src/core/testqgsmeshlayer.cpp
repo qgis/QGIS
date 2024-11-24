@@ -2395,7 +2395,13 @@ void TestQgsMeshLayer::testRemoveDatasets()
 
   // add datasets with same name
   QVERIFY( layer.addDatasets( testDataPath( "/mesh/quad_and_triangle_vertex_vector.dat" ) ) );
-  QVERIFY( layer.addDatasets( testDataPath( "/mesh/quad_and_triangle_vertex_vector_existing_name.dat" ) ) );
+
+  const QString fileDatasetGroup = QDir::tempPath() + QStringLiteral( "/quad_and_triangle_vertex_vector.dat" );
+
+  QFile::remove( fileDatasetGroup );
+  QVERIFY( QFile::copy( testDataPath( "/mesh/quad_and_triangle_vertex_vector.dat" ), fileDatasetGroup ) );
+
+  QVERIFY( layer.addDatasets( fileDatasetGroup ) );
 
   // can remove but the second has added "_1"
   QVERIFY( layer.removeDatasets( "VertexVectorDataset" ) );

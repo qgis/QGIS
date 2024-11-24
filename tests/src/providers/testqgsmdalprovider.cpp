@@ -230,8 +230,8 @@ void TestQgsMdalProvider::uniqueDatasetNames()
 
   // these three dataset files have the same name
   const QString fileDatasetGroup1 = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/quad_and_triangle_vertex_vector.dat" );
-  const QString fileDatasetGroup2 = QDir::tempPath() + QStringLiteral( "/quad_and_triangle_vertex_vector.dat" );
-  const QString fileDatasetGroup3 = QDir::tempPath() + QStringLiteral( "/quad_and_triangle_vertex_vector.dat" );
+  const QString fileDatasetGroup2 = QDir::tempPath() + QStringLiteral( "/quad_and_triangle_vertex_vector_1.dat" );
+  const QString fileDatasetGroup3 = QDir::tempPath() + QStringLiteral( "/quad_and_triangle_vertex_vector_2.dat" );
 
   QFile::remove( fileDatasetGroup2 );
   QVERIFY( QFile::copy( fileDatasetGroup1, fileDatasetGroup2 ) );
