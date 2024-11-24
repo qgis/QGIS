@@ -18,13 +18,20 @@
 #include <QApplication>
 
 #include "qgs3d.h"
+#include "qgs3ddebugwidget.h"
 #include "qgs3dmapcanvas.h"
+#include "qgs3dmapconfigwidget.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
 #include "qgsapplication.h"
 #include "qgsflatterraingenerator.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgslayertree.h"
+#include "qgsmapcanvas.h"
 #include "qgsmapsettings.h"
+#include "qgsmessagebaritem.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgspointlightsettings.h"
@@ -34,11 +41,9 @@
 #include "qgsterrainprovider.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenelayer3drenderer.h"
-#include "qgs3ddebugwidget.h"
 
 #include <QHBoxLayout>
 #include <QScreen>
-#include <QToolBar>
 #include <qgisapp.h>
 
 void initCanvas3D( Qgs3DMapCanvas *canvas )
@@ -110,6 +115,69 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
   qDebug() << "pending jobs:" << canvas->scene()->totalPendingJobsCount();
 }
 
+QPointer<QDialog> createConfigDialog( Qgs3DMapCanvas *canvas )
+{
+  const QPointer configDialog = new QDialog;
+  configDialog->setWindowTitle( QStringLiteral( "3D Configuration" ) );
+  configDialog->setObjectName( QStringLiteral( "3DConfigurationDialog" ) );
+  configDialog->setMinimumSize( 600, 460 );
+  QgsGui::enableAutoGeometryRestore( configDialog );
+
+  Qgs3DMapSettings *map = canvas->mapSettings();
+  Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, new QgsMapCanvas, canvas, configDialog );
+  QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Apply | QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, configDialog );
+
+  auto applyConfig = [ = ]
+  {
+    const QgsVector3D oldOrigin = map->origin();
+    const QgsCoordinateReferenceSystem oldCrs = map->crs();
+    const QgsCameraPose oldCameraPose = canvas->cameraController()->cameraPose();
+    const QgsVector3D oldLookingAt = oldCameraPose.centerPoint();
+
+    // update map
+    w->apply();
+
+    const QgsVector3D p = Qgs3DUtils::transformWorldCoordinates(
+      oldLookingAt,
+      oldOrigin, oldCrs,
+      map->origin(), map->crs(), QgsProject::instance()->transformContext() );
+
+    if ( p != oldLookingAt )
+    {
+      // apply() call has moved origin of the world so let's move camera so we look still at the same place
+      QgsCameraPose newCameraPose = oldCameraPose;
+      newCameraPose.setCenterPoint( p );
+      canvas->cameraController()->setCameraPose( newCameraPose );
+    }
+  };
+
+  QObject::connect( buttons, &QDialogButtonBox::rejected, configDialog, &QDialog::reject );
+  QObject::connect( buttons, &QDialogButtonBox::clicked, configDialog, [ = ]( const QAbstractButton * button )
+  {
+    if ( button == buttons->button( QDialogButtonBox::Apply ) || button == buttons->button( QDialogButtonBox::Ok ) )
+      applyConfig();
+    if ( button == buttons->button( QDialogButtonBox::Ok ) )
+      configDialog->accept();
+  } );
+  QObject::connect( buttons, &QDialogButtonBox::helpRequested, w, []() { QgsHelp::openHelp( QStringLiteral( "map_views/3d_map_view.html#scene-configuration" ) ); } );
+
+  QObject::connect( w, &Qgs3DMapConfigWidget::isValidChanged, configDialog, [ = ]( const bool valid )
+  {
+    buttons->button( QDialogButtonBox::Apply )->setEnabled( valid );
+    buttons->button( QDialogButtonBox::Ok )->setEnabled( valid );
+  } );
+
+  QgsMessageBar *messageBar = new QgsMessageBar;
+  QgsMessageBarItem *warningWidget = QgsMessageBar::createMessage( QString(), "Some settings are unavailable in sandbox" );
+  messageBar->pushWidget( warningWidget, Qgis::MessageLevel::Warning, 0 );
+
+  QVBoxLayout *layout = new QVBoxLayout( configDialog );
+  layout->addWidget( messageBar );
+  layout->addWidget( w, 1 );
+  layout->addWidget( buttons );
+  return configDialog;
+}
+
 int main( int argc, char *argv[] )
 {
   QgsApplication myApp( argc, argv, true, QString(), QStringLiteral( "desktop" ) );
@@ -172,6 +240,14 @@ int main( int argc, char *argv[] )
                                 QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/general.svg" ) ),
                                 QStringLiteral( "Toggle on-screen Debug panel" ) );
   toggleDebugPanel->setCheckable( true );
+  QAction *configureAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ),
+                                          QStringLiteral( "Configure…" ), windowWidget );
+  QPointer<QDialog> configDialog = createConfigDialog( canvas );
+  QObject::connect( configureAction, &QAction::triggered, windowWidget, [configDialog]
+  {
+    configDialog->setVisible( true );
+  } );
+  toolBar->addAction( configureAction );
   vLayout->addWidget( toolBar );
 
   QWidget *container = QWidget::createWindowContainer( canvas );
@@ -179,6 +255,10 @@ int main( int argc, char *argv[] )
   Qgs3DDebugWidget *debugWidget = new Qgs3DDebugWidget( canvas );
   debugWidget->setMapSettings( canvas->mapSettings() );
   debugWidget->setVisible( false );
+  QObject::connect( canvas->mapSettings(), &Qgs3DMapSettings::showDebugPanelChanged, windowWidget, [ = ]( const bool enabled )
+  {
+    debugWidget->setVisible( enabled );
+  } );
 
   // Connect the camera to the debug widget.
   QObject::connect( canvas->cameraController(), &QgsCameraController::cameraChanged, debugWidget, &Qgs3DDebugWidget::updateFromCamera );
