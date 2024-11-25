@@ -182,12 +182,12 @@ int QgsPointCloudLayerChunkLoaderFactory::primitivesCount( QgsChunkNode *node ) 
 
 static QgsBox3D nodeBoundsToBox3D( QgsBox3D nodeBounds, const QgsCoordinateTransform &coordinateTransform, double zValueOffset, double zValueScale )
 {
-  QgsVector3D extentMin3D( static_cast<double>( nodeBounds.xMinimum() ),
-                           static_cast<double>( nodeBounds.yMinimum() ),
-                           static_cast<double>( nodeBounds.zMinimum() ) * zValueScale + zValueOffset );
-  QgsVector3D extentMax3D( static_cast<double>( nodeBounds.xMaximum() ),
-                           static_cast<double>( nodeBounds.yMaximum() ),
-                           static_cast<double>( nodeBounds.zMaximum() ) * zValueScale + zValueOffset );
+  QgsVector3D extentMin3D( nodeBounds.xMinimum(),
+                           nodeBounds.yMinimum(),
+                           nodeBounds.zMinimum() * zValueScale + zValueOffset );
+  QgsVector3D extentMax3D( nodeBounds.xMaximum(),
+                           nodeBounds.yMaximum(),
+                           nodeBounds.zMaximum() * zValueScale + zValueOffset );
   QgsCoordinateTransform extentTransform = coordinateTransform;
   extentTransform.setBallparkTransformsAreAppropriate( true );
   try
