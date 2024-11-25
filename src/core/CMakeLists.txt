@@ -2196,6 +2196,11 @@ else()
   endif()
 endif()
 
+# Workaround CLANG deprecation warning
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+  set_source_files_properties(painting/qgsmaskpaintdevice.cpp PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations")
+endif()
+
 # Generate cpp+header file from .proto file using "protoc" tool (to support MVT encoding of vector tiles)
 protobuf_generate_cpp(VECTOR_TILE_PROTO_SRCS VECTOR_TILE_PROTO_HDRS vectortile/vector_tile.proto)
 set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS} ${VECTOR_TILE_PROTO_SRCS})
