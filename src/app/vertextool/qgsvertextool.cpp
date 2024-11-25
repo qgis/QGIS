@@ -2697,7 +2697,7 @@ void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, H
     QgsVertexMarker *marker = new QgsVertexMarker( canvas() );
     marker->setIconType( QgsVertexMarker::ICON_CIRCLE );
     marker->setZValue( marker->zValue() + 1 );
-    marker->setIconSize( QgsGuiUtils::scaleIconSize( 12 ) );
+    marker->setIconSize( QgsGuiUtils::scaleIconSize( 10 ) );
     marker->setPenWidth( QgsGuiUtils::scaleIconSize( 2 ) );
     marker->setColor( Qt::blue );
     marker->setCenter( toMapCoordinates( vertex.layer, geom.vertexAt( vertex.vertexId ) ) );
