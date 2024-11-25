@@ -57,15 +57,12 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <delaunator.hpp>
 
 // pick a point that we'll use as origin for coordinates for this node's points
-static QgsVector3D originFromNodeBounds( QgsPointCloudIndex *pc, const QgsPointCloudNodeId &n, const QgsPointCloud3DRenderContext &context, const QgsPointCloudBlock *block )
+static QgsVector3D originFromNodeBounds( QgsPointCloudIndex *pc, const QgsPointCloudNodeId &n, const QgsPointCloud3DRenderContext &context )
 {
-  const QgsVector3D blockScale = block->scale();
-  const QgsVector3D blockOffset = block->offset();
-
   QgsBox3D bounds = pc->getNode( n ).bounds();
-  double nodeOriginX = bounds.xMinimum() * blockScale.x() + blockOffset.x();
-  double nodeOriginY = bounds.yMinimum() * blockScale.y() + blockOffset.y();
-  double nodeOriginZ = ( bounds.zMinimum() * blockScale.z() + blockOffset.z() ) * context.zValueScale() + context.zValueFixedOffset();
+  double nodeOriginX = bounds.xMinimum();
+  double nodeOriginY = bounds.yMinimum();
+  double nodeOriginZ = bounds.zMinimum() * context.zValueScale() + context.zValueFixedOffset();
   try
   {
     context.coordinateTransform().transformInPlace( nodeOriginX, nodeOriginY, nodeOriginZ );
@@ -618,7 +615,7 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
   if ( !output )
     output = &outNormal;
 
-  output->positionsOrigin = originFromNodeBounds( pc, n, context, block.get() );
+  output->positionsOrigin = originFromNodeBounds( pc, n, context );
 
   for ( int i = 0; i < count; ++i )
   {
@@ -743,7 +740,7 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
   if ( !output )
     output = &outNormal;
 
-  output->positionsOrigin = originFromNodeBounds( pc, n, context, block.get() );
+  output->positionsOrigin = originFromNodeBounds( pc, n, context );
 
   for ( int i = 0; i < count; ++i )
   {
@@ -865,7 +862,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
   if ( !output )
     output = &outNormal;
 
-  output->positionsOrigin = originFromNodeBounds( pc, n, context, block.get() );
+  output->positionsOrigin = originFromNodeBounds( pc, n, context );
 
   int ir = 0;
   int ig = 0;
@@ -1035,7 +1032,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
   if ( !output )
     output = &outNormal;
 
-  output->positionsOrigin = originFromNodeBounds( pc, n, context, block.get() );
+  output->positionsOrigin = originFromNodeBounds( pc, n, context );
 
   const QSet<int> filteredOutValues = context.getFilteredOutValues();
   for ( int i = 0; i < count; ++i )

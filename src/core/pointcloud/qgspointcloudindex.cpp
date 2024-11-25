@@ -124,7 +124,7 @@ QgsBox3D QgsPointCloudNode::bounds() const
 {
   const QgsBox3D rootBounds = mIndex.rootNodeBounds();
   const double d = rootBounds.xMaximum() - rootBounds.xMinimum();
-  const double dLevel = ( double )d / pow( 2, mId.d() );
+  const double dLevel = d / pow( 2, mId.d() );
 
   const double xMin = rootBounds.xMinimum() + dLevel * mId.x();
   const double xMax = rootBounds.xMinimum() + dLevel * ( mId.x() + 1 );

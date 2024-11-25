@@ -158,16 +158,21 @@ uint qHash( const QgsPointCloudCacheKey &key );
 class CORE_EXPORT QgsPointCloudNode
 {
   public:
+    //! Constructs new node object. Should only be called by QgsPointCloudIndex::getNode()
     QgsPointCloudNode( const QgsPointCloudIndex &index, QgsPointCloudNodeId id, qint64 pointCount,
                        QList<QgsPointCloudNodeId> childIds )
       : mIndex( index ), mId( id ), mPointCount( pointCount ), mChildIds( childIds )
     {
     }
+    //! Returns node's ID (unique in index)
     QgsPointCloudNodeId id() const { return mId; }
+    //! Returns number of points contained in node data
     qint64 pointCount() const { return mPointCount; }
+    //! Returns IDs of child nodes
     QList<QgsPointCloudNodeId> children() const { return mChildIds; }
     //! Returns node's error in map units (used to determine in whether the node has enough detail for the current view)
     float error() const;
+    //! Returns node's bounding cube in CRS coords
     QgsBox3D bounds() const;
 
   private:
@@ -247,6 +252,7 @@ class CORE_EXPORT QgsPointCloudIndex
     //! Returns whether the octree contain given node
     virtual bool hasNode( const QgsPointCloudNodeId &n ) const;
 
+    //! Returns object for a given node
     virtual QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const;
 
     //! Returns all attributes that are stored in the file
