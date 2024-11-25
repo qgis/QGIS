@@ -158,10 +158,14 @@ uint qHash( const QgsPointCloudCacheKey &key );
 class CORE_EXPORT QgsPointCloudNode
 {
   public:
-    //! Constructs new node object. Should only be called by QgsPointCloudIndex::getNode()
-    QgsPointCloudNode( const QgsPointCloudIndex &index, QgsPointCloudNodeId id, qint64 pointCount,
-                       QList<QgsPointCloudNodeId> childIds )
-      : mIndex( index ), mId( id ), mPointCount( pointCount ), mChildIds( childIds )
+
+    /**
+     * Constructs new node object. Should only be called by QgsPointCloudIndex::getNode().
+     * Bounds should always be computed by QgsPointCloudNode::bounds().
+     */
+    QgsPointCloudNode( QgsPointCloudNodeId id, qint64 pointCount,
+                       QList<QgsPointCloudNodeId> childIds, float error, QgsBox3D bounds )
+      : mId( id ), mPointCount( pointCount ), mChildIds( childIds ), mError( error ), mBounds( bounds )
     {
     }
     //! Returns node's ID (unique in index)
@@ -175,12 +179,16 @@ class CORE_EXPORT QgsPointCloudNode
     //! Returns node's bounding cube in CRS coords
     QgsBox3D bounds() const;
 
+    //! Returns bounding box of specific node
+    static QgsBox3D bounds( QgsBox3D rootBounds, QgsPointCloudNodeId id );
+
   private:
-    const QgsPointCloudIndex &mIndex;
     // Specific node metadata:
     QgsPointCloudNodeId mId;
     qint64 mPointCount;
     QList<QgsPointCloudNodeId> mChildIds;
+    float mError;
+    QgsBox3D mBounds;
 };
 
 /**

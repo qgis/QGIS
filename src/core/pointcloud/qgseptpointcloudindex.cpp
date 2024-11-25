@@ -498,7 +498,7 @@ QgsPointCloudNode QgsEptPointCloudIndex::getNode( const QgsPointCloudNodeId &id 
     QMutexLocker locker( &mHierarchyMutex );
     qint64 pointCount = mHierarchy.value( id, -1 );
     if ( pointCount != -1 )
-      return QgsPointCloudNode( *this, id, pointCount, node.children() );
+      return QgsPointCloudNode( id, pointCount, node.children(), node.error(), node.bounds() );
   }
 
   // If we fail, return with pointCount = -1 anyway
