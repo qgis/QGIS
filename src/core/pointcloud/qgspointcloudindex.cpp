@@ -122,23 +122,27 @@ uint qHash( const QgsPointCloudCacheKey &key )
 
 QgsBox3D QgsPointCloudNode::bounds() const
 {
-  const QgsBox3D rootBounds = mIndex.rootNodeBounds();
-  const double d = rootBounds.xMaximum() - rootBounds.xMinimum();
-  const double dLevel = d / pow( 2, mId.d() );
+  return mBounds;
+}
 
-  const double xMin = rootBounds.xMinimum() + dLevel * mId.x();
-  const double xMax = rootBounds.xMinimum() + dLevel * ( mId.x() + 1 );
-  const double yMin = rootBounds.yMinimum() + dLevel * mId.y();
-  const double yMax = rootBounds.yMinimum() + dLevel * ( mId.y() + 1 );
-  const double zMin = rootBounds.zMinimum() + dLevel * mId.z();
-  const double zMax = rootBounds.zMinimum() + dLevel * ( mId.z() + 1 );
+QgsBox3D QgsPointCloudNode::bounds( QgsBox3D rootBounds, QgsPointCloudNodeId id )
+{
+  const double d = rootBounds.xMaximum() - rootBounds.xMinimum();
+  const double dLevel = d / pow( 2, id.d() );
+
+  const double xMin = rootBounds.xMinimum() + dLevel * id.x();
+  const double xMax = rootBounds.xMinimum() + dLevel * ( id.x() + 1 );
+  const double yMin = rootBounds.yMinimum() + dLevel * id.y();
+  const double yMax = rootBounds.yMinimum() + dLevel * ( id.y() + 1 );
+  const double zMin = rootBounds.zMinimum() + dLevel * id.z();
+  const double zMax = rootBounds.zMinimum() + dLevel * ( id.z() + 1 );
 
   return QgsBox3D( xMin, yMin, zMin, xMax, yMax, zMax );
 }
 
 float QgsPointCloudNode::error() const
 {
-  return bounds().width() / mIndex.span();
+  return mError;
 }
 
 ///@endcond
@@ -186,7 +190,8 @@ QgsPointCloudNode QgsPointCloudIndex::getNode( const QgsPointCloudNodeId &id ) c
     }
   }
 
-  return QgsPointCloudNode( *this, id, pointCount, children );
+  QgsBox3D bounds = QgsPointCloudNode::bounds( mRootBounds, id );
+  return QgsPointCloudNode( id, pointCount, children, bounds.width() / mSpan, bounds );
 }
 
 QgsPointCloudAttributeCollection QgsPointCloudIndex::attributes() const
