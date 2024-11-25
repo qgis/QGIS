@@ -40,7 +40,7 @@ void O1SmugMug::initAuthorizationUrl(Access access, Permissions permissions) {
                          + "&Permissions=" + ::permissionsToString(permissions)));
 }
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 
 void O1SmugMug::AuthorizationUrlBuilder::setAccess(Access value) {
     query_.addQueryItem("Access", ::accessToString(value));
@@ -77,7 +77,7 @@ void O1SmugMug::initAuthorizationUrl(const AuthorizationUrlBuilder &builder) {
     setAuthorizeUrl(builder.url());
 }
 
-#endif // QT_VERSION >= 0x050000
+#endif // QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 
 O1SmugMug::O1SmugMug(QObject *parent, QNetworkAccessManager *manager, O0AbstractStore *store)
     : O1(parent, manager, store) {

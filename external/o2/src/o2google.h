@@ -10,7 +10,7 @@
 class O2Google : public O2 {
     Q_OBJECT
 public:
-    explicit O2Google(QObject *parent = 0);
+    explicit O2Google(QObject *parent = nullptr);
 };
 
 

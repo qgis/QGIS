@@ -54,7 +54,7 @@ public:
     void setAccessTokenUrl(const QUrl &value);
 
     /// Constructor.
-    explicit O1(QObject *parent = 0, QNetworkAccessManager *manager = 0, O0AbstractStore *store = 0);
+    explicit O1(QObject *parent = nullptr, QNetworkAccessManager *manager = nullptr, O0AbstractStore *store = nullptr);
 
     /// Parse a URL-encoded response string.
     static QMap<QString, QString> parseResponse(const QByteArray &response);
@@ -89,10 +89,10 @@ public:
 
 public Q_SLOTS:
     /// Authenticate.
-    Q_INVOKABLE virtual void link();
+    Q_INVOKABLE void link() override;
 
     /// De-authenticate.
-    Q_INVOKABLE virtual void unlink();
+    Q_INVOKABLE void unlink() override;
 
 Q_SIGNALS:
     void requestTokenUrlChanged();

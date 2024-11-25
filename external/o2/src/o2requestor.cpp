@@ -1,9 +1,8 @@
 #include <cassert>
 
-#include <QDebug>
 #include <QTimer>
 #include <QBuffer>
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 #include <QUrlQuery>
 #endif
 
@@ -11,18 +10,21 @@
 #include "o2.h"
 #include "o0globals.h"
 
-O2Requestor::O2Requestor(QNetworkAccessManager *manager, O2 *authenticator, QObject *parent): QObject(parent), reply_(NULL), status_(Idle), addAccessTokenInQuery_(true), rawData_(false) {
+O2Requestor::O2Requestor(QNetworkAccessManager *manager, O2 *authenticator, QObject *parent): QObject(parent) {
     manager_ = manager;
     authenticator_ = authenticator;
     if (authenticator) {
         timedReplies_.setIgnoreSslErrors(authenticator->ignoreSslErrors());
     }
     qRegisterMetaType<QNetworkReply::NetworkError>("QNetworkReply::NetworkError");
-    connect(authenticator, SIGNAL(refreshFinished(QNetworkReply::NetworkError)), this, SLOT(onRefreshFinished(QNetworkReply::NetworkError)), Qt::QueuedConnection);
+    connect(authenticator,
+            &O2::refreshFinished,
+            this,
+            &O2Requestor::onRefreshFinished,
+            Qt::QueuedConnection);
 }
 
-O2Requestor::~O2Requestor() {
-}
+O2Requestor::~O2Requestor() = default;
 
 void O2Requestor::setAddAccessTokenInQuery(bool value) {
     addAccessTokenInQuery_ = value;
@@ -39,12 +41,20 @@ int O2Requestor::get(const QNetworkRequest &req, int timeout/* = 60*1000*/) {
     reply_ = manager_->get(request_);
     timedReplies_.add(new O2Reply(reply_, timeout));
 
-#if QT_VERSION < 0x051500
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
     connect(reply_, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onRequestError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
 #else
-    connect(reply_, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this, SLOT(onRequestError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
+    connect(reply_,
+            &QNetworkReply::errorOccurred,
+            this,
+            &O2Requestor::onRequestError,
+            Qt::QueuedConnection);
 #endif
-    connect(reply_, SIGNAL(finished()), this, SLOT(onRequestFinished()), Qt::QueuedConnection);
+    connect(reply_,
+            &QNetworkReply::finished,
+            this,
+            &O2Requestor::onRequestFinished,
+            Qt::QueuedConnection);
     return id_;
 }
 
@@ -56,13 +66,21 @@ int O2Requestor::post(const QNetworkRequest &req, const QByteArray &data, int ti
     data_ = data;
     reply_ = manager_->post(request_, data_);
     timedReplies_.add(new O2Reply(reply_, timeout));
-#if QT_VERSION < 0x051500
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
     connect(reply_, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onRequestError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
 #else
-    connect(reply_, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this, SLOT(onRequestError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
+    connect(reply_,
+            &QNetworkReply::errorOccurred,
+            this,
+            &O2Requestor::onRequestError,
+            Qt::QueuedConnection);
 #endif
-    connect(reply_, SIGNAL(finished()), this, SLOT(onRequestFinished()), Qt::QueuedConnection);
-    connect(reply_, SIGNAL(uploadProgress(qint64,qint64)), this, SLOT(onUploadProgress(qint64,qint64)));
+    connect(reply_,
+            &QNetworkReply::finished,
+            this,
+            &O2Requestor::onRequestFinished,
+            Qt::QueuedConnection);
+    connect(reply_, &QNetworkReply::uploadProgress, this, &O2Requestor::onUploadProgress);
     return id_;
 }
 
@@ -76,13 +94,21 @@ int O2Requestor::post(const QNetworkRequest & req, QHttpMultiPart* data, int tim
     reply_ = manager_->post(request_, multipartData_);
     multipartData_->setParent(reply_);
     timedReplies_.add(new O2Reply(reply_, timeout));
-#if QT_VERSION < 0x051500
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
     connect(reply_, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onRequestError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
 #else
-    connect(reply_, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this, SLOT(onRequestError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
+    connect(reply_,
+            &QNetworkReply::errorOccurred,
+            this,
+            &O2Requestor::onRequestError,
+            Qt::QueuedConnection);
 #endif
-    connect(reply_, SIGNAL(finished()), this, SLOT(onRequestFinished()), Qt::QueuedConnection);
-    connect(reply_, SIGNAL(uploadProgress(qint64,qint64)), this, SLOT(onUploadProgress(qint64,qint64)));
+    connect(reply_,
+            &QNetworkReply::finished,
+            this,
+            &O2Requestor::onRequestFinished,
+            Qt::QueuedConnection);
+    connect(reply_, &QNetworkReply::uploadProgress, this, &O2Requestor::onUploadProgress);
     return id_;
 }
 
@@ -94,13 +120,21 @@ int O2Requestor::put(const QNetworkRequest &req, const QByteArray &data, int tim
     data_ = data;
     reply_ = manager_->put(request_, data_);
     timedReplies_.add(new O2Reply(reply_, timeout));
-#if QT_VERSION < 0x051500
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
     connect(reply_, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onRequestError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
 #else
-    connect(reply_, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this, SLOT(onRequestError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
+    connect(reply_,
+            &QNetworkReply::errorOccurred,
+            this,
+            &O2Requestor::onRequestError,
+            Qt::QueuedConnection);
 #endif
-    connect(reply_, SIGNAL(finished()), this, SLOT(onRequestFinished()), Qt::QueuedConnection);
-    connect(reply_, SIGNAL(uploadProgress(qint64,qint64)), this, SLOT(onUploadProgress(qint64,qint64)));
+    connect(reply_,
+            &QNetworkReply::finished,
+            this,
+            &O2Requestor::onRequestFinished,
+            Qt::QueuedConnection);
+    connect(reply_, &QNetworkReply::uploadProgress, this, &O2Requestor::onUploadProgress);
     return id_;
 }
 
@@ -114,13 +148,21 @@ int O2Requestor::put(const QNetworkRequest & req, QHttpMultiPart* data, int time
     reply_ = manager_->put(request_, multipartData_);
     multipartData_->setParent(reply_);
     timedReplies_.add(new O2Reply(reply_, timeout));
-#if QT_VERSION < 0x051500
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
     connect(reply_, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onRequestError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
 #else
-    connect(reply_, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this, SLOT(onRequestError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
+    connect(reply_,
+            &QNetworkReply::errorOccurred,
+            this,
+            &O2Requestor::onRequestError,
+            Qt::QueuedConnection);
 #endif
-    connect(reply_, SIGNAL(finished()), this, SLOT(onRequestFinished()), Qt::QueuedConnection);
-    connect(reply_, SIGNAL(uploadProgress(qint64,qint64)), this, SLOT(onUploadProgress(qint64,qint64)));
+    connect(reply_,
+            &QNetworkReply::finished,
+            this,
+            &O2Requestor::onRequestFinished,
+            Qt::QueuedConnection);
+    connect(reply_, &QNetworkReply::uploadProgress, this, &O2Requestor::onUploadProgress);
     return id_;
 }
 
@@ -132,12 +174,20 @@ int O2Requestor::deleteResource(const QNetworkRequest & req, int timeout/* = 60*
     rawData_ = false;
     reply_ = manager_->deleteResource(request_);
     timedReplies_.add(new O2Reply(reply_, timeout));
-#if QT_VERSION < 0x051500
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
     connect(reply_, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onRequestError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
 #else
-    connect(reply_, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this, SLOT(onRequestError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
+    connect(reply_,
+            &QNetworkReply::errorOccurred,
+            this,
+            &O2Requestor::onRequestError,
+            Qt::QueuedConnection);
 #endif
-    connect(reply_, SIGNAL(finished()), this, SLOT(onRequestFinished()), Qt::QueuedConnection);
+    connect(reply_,
+            &QNetworkReply::finished,
+            this,
+            &O2Requestor::onRequestFinished,
+            Qt::QueuedConnection);
     return id_;
 }
 
@@ -154,13 +204,21 @@ int O2Requestor::customRequest(const QNetworkRequest &req, const QByteArray &ver
     reply_ = manager_->sendCustomRequest(request_, verb, buffer);
     buffer->setParent(reply_);
     timedReplies_.add(new O2Reply(reply_));
-#if QT_VERSION < 0x051500
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
     connect(reply_, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onRequestError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
 #else
-    connect(reply_, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this, SLOT(onRequestError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
+    connect(reply_,
+            &QNetworkReply::errorOccurred,
+            this,
+            &O2Requestor::onRequestError,
+            Qt::QueuedConnection);
 #endif
-    connect(reply_, SIGNAL(finished()), this, SLOT(onRequestFinished()), Qt::QueuedConnection);
-    connect(reply_, SIGNAL(uploadProgress(qint64,qint64)), this, SLOT(onUploadProgress(qint64,qint64)));
+    connect(reply_,
+            &QNetworkReply::finished,
+            this,
+            &O2Requestor::onRequestFinished,
+            Qt::QueuedConnection);
+    connect(reply_, &QNetworkReply::uploadProgress, this, &O2Requestor::onUploadProgress);
     return id_;
 }
 
@@ -171,26 +229,37 @@ int O2Requestor::head(const QNetworkRequest &req, int timeout/* = 60*1000*/)
     }
     reply_ = manager_->head(request_);
     timedReplies_.add(new O2Reply(reply_, timeout));
-#if QT_VERSION < 0x051500
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
     connect(reply_, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onRequestError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
 #else
-    connect(reply_, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this, SLOT(onRequestError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
+    connect(reply_,
+            &QNetworkReply::errorOccurred,
+            this,
+            &O2Requestor::onRequestError,
+            Qt::QueuedConnection);
 #endif
-    connect(reply_, SIGNAL(finished()), this, SLOT(onRequestFinished()), Qt::QueuedConnection);
+    connect(reply_,
+            &QNetworkReply::finished,
+            this,
+            &O2Requestor::onRequestFinished,
+            Qt::QueuedConnection);
     return id_;
 }
 
 void O2Requestor::onRefreshFinished(QNetworkReply::NetworkError error) {
     if (status_ != Requesting) {
-        qWarning() << "O2Requestor::onRefreshFinished: No pending request";
+        O0BaseAuth::log( QStringLiteral("O2Requestor::onRefreshFinished: No pending request"), O0BaseAuth::LogLevel::Warning );
         return;
     }
+// Suppress warning: Potential leak of memory in qtimer.h [clang-analyzer-cplusplus.NewDeleteLeaks]
+#ifndef __clang_analyzer__
     if (QNetworkReply::NoError == error) {
-        QTimer::singleShot(100, this, SLOT(retry()));
+        QTimer::singleShot(100, this, &O2Requestor::retry);
     } else {
         error_ = error;
-        QTimer::singleShot(10, this, SLOT(finish()));
+        QTimer::singleShot(10, this, &O2Requestor::finish);
     }
+#endif
 }
 
 void O2Requestor::onRequestFinished() {
@@ -200,13 +269,16 @@ void O2Requestor::onRequestFinished() {
     if (reply_ != qobject_cast<QNetworkReply *>(sender())) {
         return;
     }
+// Suppress warning: Potential leak of memory in qtimer.h [clang-analyzer-cplusplus.NewDeleteLeaks]
+#ifndef __clang_analyzer__
     if (reply_->error() == QNetworkReply::NoError) {
-        QTimer::singleShot(10, this, SLOT(finish()));
+        QTimer::singleShot(10, this, &O2Requestor::finish);
     }
+#endif
 }
 
 void O2Requestor::onRequestError(QNetworkReply::NetworkError error) {
-    qWarning() << "O2Requestor::onRequestError: Error" << (int)error;
+    O0BaseAuth::log( QStringLiteral("O2Requestor::onRequestError: Error %1").arg( error ), O0BaseAuth::LogLevel::Warning );
     if (status_ == Idle) {
         return;
     }
@@ -214,21 +286,24 @@ void O2Requestor::onRequestError(QNetworkReply::NetworkError error) {
         return;
     }
     int httpStatus = reply_->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    qWarning() << "O2Requestor::onRequestError: HTTP status" << httpStatus << reply_->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toString();
+    O0BaseAuth::log( QStringLiteral("O2Requestor::onRequestError: HTTP status %1 %2").arg( httpStatus ).arg( reply_->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toString()), O0BaseAuth::LogLevel::Warning );
     if ((status_ == Requesting) && (httpStatus == 401)) {
         // Call O2::refresh. Note the O2 instance might live in a different thread
         if (QMetaObject::invokeMethod(authenticator_, "refresh")) {
             return;
         }
-        qCritical() << "O2Requestor::onRequestError: Invoking remote refresh failed";
+        O0BaseAuth::log( QStringLiteral( "O2Requestor::onRequestError: Invoking remote refresh failed" ), O0BaseAuth::LogLevel::Critical );
     }
     error_ = error;
-    QTimer::singleShot(10, this, SLOT(finish()));
+// Suppress warning: Potential leak of memory in qtimer.h [clang-analyzer-cplusplus.NewDeleteLeaks]
+#ifndef __clang_analyzer__
+    QTimer::singleShot(10, this, &O2Requestor::finish);
+#endif
 }
 
 void O2Requestor::onUploadProgress(qint64 uploaded, qint64 total) {
     if (status_ == Idle) {
-        qWarning() << "O2Requestor::onUploadProgress: No pending request";
+        O0BaseAuth::log( QStringLiteral("O2Requestor::onUploadProgress: No pending request"), O0BaseAuth::LogLevel::Warning );
         return;
     }
     if (reply_ != qobject_cast<QNetworkReply *>(sender())) {
@@ -241,22 +316,22 @@ void O2Requestor::onUploadProgress(qint64 uploaded, qint64 total) {
     Q_EMIT uploadProgress(id_, uploaded, total);
 }
 
-int O2Requestor::setup(const QNetworkRequest &req, QNetworkAccessManager::Operation operation, const QByteArray &verb) {
-    static int currentId;
+int O2Requestor::setup(const QNetworkRequest &request, QNetworkAccessManager::Operation operation, const QByteArray &verb) {
+    static int currentId = 1;
 
     if (status_ != Idle) {
-        qWarning() << "O2Requestor::setup: Another request pending";
+        O0BaseAuth::log( QStringLiteral("O2Requestor::setup: Another request pending"), O0BaseAuth::LogLevel::Warning );
         return -1;
     }
 
-    request_ = req;
+    request_ = request;
     operation_ = operation;
     id_ = currentId++;
-    url_ = req.url();
+    url_ = request.url();
 
     QUrl url = url_;
     if (addAccessTokenInQuery_) {
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
         url.addQueryItem(O2_OAUTH2_ACCESS_TOKEN, authenticator_->token());
 #else
         QUrlQuery query(url);
@@ -284,7 +359,7 @@ int O2Requestor::setup(const QNetworkRequest &req, QNetworkAccessManager::Operat
 void O2Requestor::finish() {
     QByteArray data;
     if (status_ == Idle) {
-        qWarning() << "O2Requestor::finish: No pending request";
+        O0BaseAuth::log( QStringLiteral("O2Requestor::finish: No pending request"), O0BaseAuth::LogLevel::Warning );
         return;
     }
     data = reply_->readAll();
@@ -301,7 +376,7 @@ void O2Requestor::finish() {
 
 void O2Requestor::retry() {
     if (status_ != Requesting) {
-        qWarning() << "O2Requestor::retry: No pending request";
+        O0BaseAuth::log( QStringLiteral("O2Requestor::retry: No pending request"), O0BaseAuth::LogLevel::Warning );
         return;
     }
     timedReplies_.remove(reply_);
@@ -309,7 +384,7 @@ void O2Requestor::retry() {
     reply_->deleteLater();
     QUrl url = url_;
     if (addAccessTokenInQuery_) {
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
         url.addQueryItem(O2_OAUTH2_ACCESS_TOKEN, authenticator_->token());
 #else
         QUrlQuery query(url);
@@ -342,7 +417,7 @@ void O2Requestor::retry() {
     }
         break;
     case QNetworkAccessManager::PutOperation:
-        reply_ = rawData_ ? manager_->post(request_, data_) : manager_->put(request_, multipartData_);
+        reply_ = rawData_ ? manager_->put(request_, data_) : manager_->put(request_, multipartData_);
         break;
     case QNetworkAccessManager::HeadOperation:
         reply_ = manager_->head(request_);
@@ -353,11 +428,19 @@ void O2Requestor::retry() {
         break;
     }
     timedReplies_.add(reply_);
-#if QT_VERSION < 0x051500
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
     connect(reply_, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onRequestError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
 #else
-    connect(reply_, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this, SLOT(onRequestError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
+    connect(reply_,
+            &QNetworkReply::errorOccurred,
+            this,
+            &O2Requestor::onRequestError,
+            Qt::QueuedConnection);
 #endif
-    connect(reply_, SIGNAL(finished()), this, SLOT(onRequestFinished()), Qt::QueuedConnection);
-    connect(reply_, SIGNAL(uploadProgress(qint64,qint64)), this, SLOT(onUploadProgress(qint64,qint64)));
+    connect(reply_,
+            &QNetworkReply::finished,
+            this,
+            &O2Requestor::onRequestFinished,
+            Qt::QueuedConnection);
+    connect(reply_, &QNetworkReply::uploadProgress, this, &O2Requestor::onUploadProgress);
 }

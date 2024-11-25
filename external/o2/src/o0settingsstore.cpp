@@ -1,6 +1,5 @@
 #include <QCryptographicHash>
 #include <QByteArray>
-#include <QDebug>
 
 #include "o0settingsstore.h"
 
@@ -45,10 +44,10 @@ void O0SettingsStore::setValue(const QString &key, const QString &value) {
 
     const QSettings::Status status = settings_->status();
     if (status != QSettings::NoError) {
-        qCritical() << "O0SettingsStore QSettings error:" << status;
+        O0BaseAuth::log( QStringLiteral( "O0SettingsStore QSettings error: %1" ).arg( status ), O0BaseAuth::LogLevel::Critical );
         if (status == QSettings::AccessError) {
-            qCritical() << "Did you forget to set organization name and application name "
-                           "in QSettings or QCoreApplication?";
+            O0BaseAuth::log( QStringLiteral( "Did you forget to set organization name and application name "
+                                           "in QSettings or QCoreApplication?" ), O0BaseAuth::LogLevel::Critical );
         }
     }
 }

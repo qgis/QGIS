@@ -3,6 +3,7 @@
 
 #include "o2pollserver.h"
 #include "o0jsonresponse.h"
+#include "o0baseauth.h"
 
 static QMap<QString, QString> toVerificationParams(const QVariantMap &map)
 {
@@ -25,13 +26,13 @@ O2PollServer::O2PollServer(QNetworkAccessManager *manager, const QNetworkRequest
     expirationTimer.setTimerType(Qt::VeryCoarseTimer);
     expirationTimer.setInterval(expiresIn * 1000);
     expirationTimer.setSingleShot(true);
-    connect(&expirationTimer, SIGNAL(timeout()), this, SLOT(onExpiration()));
+    connect(&expirationTimer, &QTimer::timeout, this, &O2PollServer::onExpiration);
     expirationTimer.start();
 
     pollTimer.setTimerType(Qt::VeryCoarseTimer);
     pollTimer.setInterval(5 * 1000);
     pollTimer.setSingleShot(true);
-    connect(&pollTimer, SIGNAL(timeout()), this, SLOT(onPollTimeout()));
+    connect(&pollTimer, &QTimer::timeout, this, &O2PollServer::onPollTimeout);
 }
 
 int O2PollServer::interval() const
@@ -53,9 +54,9 @@ void O2PollServer::startPolling()
 
 void O2PollServer::onPollTimeout()
 {
-    qDebug() << "O2PollServer::onPollTimeout: retrying";
+    O0BaseAuth::log( QStringLiteral( "O2PollServer::onPollTimeout: retrying" ) );
     QNetworkReply * reply = manager_->post(request_, payload_);
-    connect(reply, SIGNAL(finished()), this, SLOT(onReplyFinished()));
+    connect(reply, &QNetworkReply::finished, this, &O2PollServer::onReplyFinished);
 }
 
 void O2PollServer::onExpiration()
@@ -69,7 +70,7 @@ void O2PollServer::onReplyFinished()
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
 
     if (!reply) {
-        qDebug() << "O2PollServer::onReplyFinished: reply is null";
+        O0BaseAuth::log( QStringLiteral( "O2PollServer::onReplyFinished: reply is null" ) );
         return;
     }
 

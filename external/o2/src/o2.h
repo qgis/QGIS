@@ -16,9 +16,7 @@ class O0_EXPORT O2: public O0BaseAuth
 {
     Q_OBJECT
 public:
-    Q_ENUMS(GrantFlow)
 
-public:
     /// Authorization flow types.
     enum GrantFlow {
         GrantFlowAuthorizationCode, ///< @see http://tools.ietf.org/html/draft-ietf-oauth-v2-15#section-4.1
@@ -27,6 +25,7 @@ public:
         GrantFlowPkce, ///< @see https://www.rfc-editor.org/rfc/rfc7636
         GrantFlowDevice ///< @see https://tools.ietf.org/html/rfc8628#section-1
     };
+    Q_ENUM(GrantFlow)
 
     /// Authorization flow.
     Q_PROPERTY(GrantFlow grantFlow READ grantFlow WRITE setGrantFlow NOTIFY grantFlowChanged)
@@ -95,7 +94,7 @@ public:
 public:
     /// Constructor.
     /// @param  parent  Parent object.
-    explicit O2(QObject *parent = 0, QNetworkAccessManager *manager = 0, O0AbstractStore *store = 0);
+    explicit O2(QObject *parent = nullptr, QNetworkAccessManager *manager = nullptr, O0AbstractStore *store = nullptr);
 
     /// Get authentication code.
     QString code();
@@ -108,10 +107,10 @@ public:
 
 public Q_SLOTS:
     /// Authenticate.
-    Q_INVOKABLE virtual void link();
+    Q_INVOKABLE void link() override;
 
     /// De-authenticate.
-    Q_INVOKABLE virtual void unlink();
+    Q_INVOKABLE void unlink() override;
 
     /// Refresh token.
     Q_INVOKABLE void refresh();
@@ -158,7 +157,7 @@ protected:
     QByteArray buildRequestBody(const QMap<QString, QString> &parameters);
 
     /// Set authentication code.
-    void setCode(const QString &v);
+    void setCode(const QString &c);
 
     /// Set refresh token.
     void setRefreshToken(const QString &v);
@@ -166,7 +165,9 @@ protected:
     /// Set token expiration time.
     void setExpires(int v);
 
+    /// Returns the QNetworkAccessManager instance to use for network access
     virtual QNetworkAccessManager *getManager();
+
     /// Start polling authorization server
     void startPollServer(const QVariantMap &params);
 
@@ -185,6 +186,8 @@ protected:
     O2ReplyList timedReplies_;
     GrantFlow grantFlow_;
     QString grantType_;
+
+    friend class TestO2;
 };
 
 #endif // O2_H

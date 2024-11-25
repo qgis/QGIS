@@ -11,10 +11,10 @@ public:
     O2Uber(QObject *parent = 0);
 
 public Q_SLOTS:
-    void onVerificationReceived(QMap<QString, QString>);
+    void onVerificationReceived(QMap<QString, QString>) override;
 
 protected Q_SLOTS:
-    virtual void onTokenReplyFinished();
+    void onTokenReplyFinished() override;
 };
 
 #endif // O2UBER_H

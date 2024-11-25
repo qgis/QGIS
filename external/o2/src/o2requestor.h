@@ -19,8 +19,8 @@ class O0_EXPORT O2Requestor: public QObject {
     Q_OBJECT
 
 public:
-    explicit O2Requestor(QNetworkAccessManager *manager, O2 *authenticator, QObject *parent = 0);
-    ~O2Requestor();
+    explicit O2Requestor(QNetworkAccessManager *manager, O2 *authenticator, QObject *parent = nullptr);
+    ~O2Requestor() override;
     
     
     /// Some services require the access token to be sent as a Authentication HTTP header
@@ -110,21 +110,21 @@ protected:
         Idle, Requesting, ReRequesting
     };
 
-    QNetworkAccessManager *manager_;
-    O2 *authenticator_;
+    QNetworkAccessManager *manager_{nullptr};
+    O2 *authenticator_{nullptr};
     QNetworkRequest request_;
     QByteArray data_;
-    QHttpMultiPart* multipartData_;
-    QNetworkReply *reply_;
-    Status status_;
-    int id_;
-    QNetworkAccessManager::Operation operation_;
+    QHttpMultiPart* multipartData_{nullptr};
+    QNetworkReply *reply_{nullptr};
+    Status status_{Idle};
+    int id_{1};
+    QNetworkAccessManager::Operation operation_{QNetworkAccessManager::GetOperation};
     QUrl url_;
     O2ReplyList timedReplies_;
-    QNetworkReply::NetworkError error_;
-    bool addAccessTokenInQuery_;
+    QNetworkReply::NetworkError error_{QNetworkReply::NoError};
+    bool addAccessTokenInQuery_{true};
     QString accessTokenInAuthenticationHTTPHeaderFormat_;
-    bool rawData_;
+    bool rawData_{false};
 };
 
 #endif // O2REQUESTOR_H

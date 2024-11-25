@@ -11,8 +11,9 @@
 
 static const quint16 DefaultLocalPort = 1965;
 
-O0BaseAuth::O0BaseAuth(QObject *parent, O0AbstractStore *store): QObject(parent), store_(0), useExternalWebInterceptor_(false), replyServer_(NULL), pollServer_(NULL) {
-    localPort_ = DefaultLocalPort;
+std::function<void( const QString&, O0BaseAuth::LogLevel level ) > O0BaseAuth::sLoggingFunction;
+
+O0BaseAuth::O0BaseAuth(QObject *parent, O0AbstractStore *store): QObject(parent), localPort_( DefaultLocalPort ) {
     setStore(store);
 }
 
@@ -32,12 +33,12 @@ void O0BaseAuth::setStore(O0AbstractStore *store) {
 bool O0BaseAuth::linked() {
     QString key = QString(O2_KEY_LINKED).arg(clientId_);
     bool result = !store_->value(key).isEmpty();
-    //qDebug() << "O0BaseAuth::linked:" << (result? "Yes": "No");
+    log( QStringLiteral( "O0BaseAuth::linked: %1 " ).arg( result? "Yes": "No" ) );
     return result;
 }
 
 void O0BaseAuth::setLinked(bool v) {
-    //qDebug() << "O0BaseAuth::setLinked:" << (v? "true": "false");
+    log( QStringLiteral( "O0BaseAuth::setLinked: %1 " ).arg( v? "true": "false" ) );
     bool oldValue = linked();
     QString key = QString(O2_KEY_LINKED).arg(clientId_);
     store_->setValue(key, v? "1": "");
@@ -110,15 +111,14 @@ int O0BaseAuth::localPort() {
 }
 
 void O0BaseAuth::setLocalPort(int value) {
-    //qDebug() << "O0BaseAuth::setLocalPort:" << value;
-    localPort_ = value;
+    log( QStringLiteral( "O0BaseAuth::setLocalPort:%1" ).arg( value ) );
+    localPort_ = static_cast<quint16>(value);
     Q_EMIT localPortChanged();
 }
 
 QVariantMap O0BaseAuth::extraTokens() {
-    QString key = QString(O2_KEY_EXTRA_TOKENS).arg(clientId_);
-    QString value = store_->value(key);
-    QByteArray bytes = QByteArray::fromBase64(value.toLatin1());
+    const QString key = QString(O2_KEY_EXTRA_TOKENS).arg(clientId_);
+    QByteArray bytes = QByteArray::fromBase64(store_->value(key).toLatin1());
     QDataStream stream(&bytes, QIODevice::ReadOnly);
     stream >> extraTokens_;
     return extraTokens_;
@@ -160,10 +160,38 @@ O2PollServer *O0BaseAuth::pollServer() const
     return pollServer_;
 }
 
+void O0BaseAuth::setLoggingFunction( std::function<void (const QString&, LogLevel)> function)
+{
+    sLoggingFunction = std::move( function );
+}
+
+void O0BaseAuth::log(const QString& message, LogLevel level)
+{
+    if ( sLoggingFunction )
+    {
+        sLoggingFunction( message, level );
+    }
+    else
+    {
+        switch ( level )
+        {
+            case LogLevel::Debug:
+                qDebug() << message;
+                break;
+            case LogLevel::Warning:
+                qWarning() << message;
+                break;
+            case LogLevel::Critical:
+                qCritical() << message;
+                break;
+        }
+    }
+}
+
 QByteArray O0BaseAuth::createQueryParameters(const QList<O0RequestParameter> &parameters) {
     QByteArray ret;
     bool first = true;
-    foreach (O0RequestParameter h, parameters) {
+    for (const O0RequestParameter& h : parameters) {
         if (first) {
             first = false;
         } else {
