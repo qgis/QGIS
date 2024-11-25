@@ -2,8 +2,8 @@
 // Created by michaelpollind on 3/13/17.
 //
 #include "o0keychainstore.h"
+#include "o0baseauth.h"
 
-#include <QDebug>
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <qt6keychain/keychain.h>
 #else
@@ -70,14 +70,15 @@ void o0keyChainStore::initJob(QKeychain::Job &job) const {
 
 int o0keyChainStore::executeJob(QKeychain::Job &job, const char *actionName) const {
     QEventLoop loop;
-    job.connect( &job, SIGNAL(finished(QKeychain::Job*)), &loop, SLOT(quit()) );
+    job.connect(&job, &Job::finished, &loop, &QEventLoop::quit);
     job.start();
     loop.exec();
 
     const QKeychain::Error errorCode = job.error();
     if (errorCode != QKeychain::NoError) {
-        qWarning() << "keychain store could not" << actionName << name_ << ":"
-                   << job.errorString() << "(" << errorCode << ").";
+        O0BaseAuth::log( QStringLiteral("keychain store could not %1 %2: %3 (%4)").arg(
+                            actionName, name_, job.errorString() )
+                            .arg( errorCode ), O0BaseAuth::LogLevel::Warning );
     }
     return errorCode;
 }

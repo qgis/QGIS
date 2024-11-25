@@ -4,7 +4,7 @@
 #include "o0export.h"
 #include "o1.h"
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 #include <QUrlQuery>
 #endif
 
@@ -27,24 +27,24 @@
 /// @endcode
 class O0_EXPORT O1SmugMug: public O1 {
     Q_OBJECT
-    Q_ENUMS(Access)
-    Q_ENUMS(Permissions)
 
 public:
     enum Access {
         AccessPublic,
         AccessFull
     };
+    Q_ENUM(Access)
 
     enum Permissions {
         PermissionsRead,
         PermissionsAdd,
         PermissionsModify
     };
+    Q_ENUM(Permissions)
 
     Q_INVOKABLE void initAuthorizationUrl(Access access, Permissions permissions);
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     class AuthorizationUrlBuilder {
     public:
         void setAccess(Access value);
@@ -61,9 +61,9 @@ public:
     };
 
     void initAuthorizationUrl(const AuthorizationUrlBuilder &builder);
-#endif // QT_VERSION >= 0x050000
+#endif // QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 
-    explicit O1SmugMug(QObject *parent = 0, QNetworkAccessManager *manager = 0, O0AbstractStore *store = 0);
+    explicit O1SmugMug(QObject *parent = nullptr, QNetworkAccessManager *manager = nullptr, O0AbstractStore *store = nullptr);
 };
 
 #endif // O1SMUGMUG_H
