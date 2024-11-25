@@ -201,6 +201,7 @@ class _3D_EXPORT QgsCameraController : public QObject
      * Reacts to the shift of origin of the scene, updating camera pose and
      * any other member variables so that the origin stays at the same position
      * relative to other entities.
+     * \since QGIS 3.42
      */
     void setOrigin( const QgsVector3D &origin );
 

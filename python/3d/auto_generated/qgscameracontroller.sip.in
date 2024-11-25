@@ -188,6 +188,8 @@ the controller ever receives it.
 Reacts to the shift of origin of the scene, updating camera pose and
 any other member variables so that the origin stays at the same position
 relative to other entities.
+
+.. versionadded:: 3.42
 %End
 
   public slots:
