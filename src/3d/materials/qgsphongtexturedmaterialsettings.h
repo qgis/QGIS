@@ -75,7 +75,7 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
      * The texture scale changes the size of the displayed texture in the 3D scene
      * If the texture scale is less than 1 the texture will be stretched
      */
-    float textureScale() const { return mTextureScale; }
+    double textureScale() const { return mTextureScale; }
 
     /**
      * Returns TRUE if the material requires texture coordinates to be generated
@@ -86,7 +86,7 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
     /**
      * Returns the texture rotation, in degrees.
      */
-    float textureRotation() const;
+    double textureRotation() const;
 
     /**
      * Returns the opacity of the surface
@@ -113,16 +113,16 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
      * The texture scale changes the size of the displayed texture in the 3D scene
      * If the texture scale is less than 1 the texture will be stretched
      */
-    void setTextureScale( float scale ) { mTextureScale = scale; }
+    void setTextureScale( double scale ) { mTextureScale = scale; }
 
     //! Sets the texture rotation in degrees
-    void setTextureRotation( float rotation ) { mTextureRotation = rotation; }
+    void setTextureRotation( double rotation ) { mTextureRotation = rotation; }
 
     /**
      * Sets opacity of the surface.
      * \since QGIS 3.28
      */
-    void setOpacity( float opacity ) { mOpacity = opacity; }
+    void setOpacity( double opacity ) { mOpacity = opacity; }
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
@@ -150,8 +150,8 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
     double mShininess = 0.0;
     double mOpacity = 1.0;
     QString mDiffuseTexturePath;
-    float mTextureScale{ 1.0f };
-    float mTextureRotation{ 0.0f };
+    double mTextureScale{ 1.0f };
+    double mTextureRotation{ 0.0f };
 };
 
 

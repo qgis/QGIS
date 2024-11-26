@@ -72,7 +72,7 @@ bool QgsPhongTexturedMaterialSettings::equals( const QgsAbstractMaterialSettings
   return *this == *otherPhong;
 }
 
-float QgsPhongTexturedMaterialSettings::textureRotation() const
+double QgsPhongTexturedMaterialSettings::textureRotation() const
 {
   return mTextureRotation;
 }
@@ -84,8 +84,8 @@ void QgsPhongTexturedMaterialSettings::readXml( const QDomElement &elem, const Q
   mShininess = elem.attribute( QStringLiteral( "shininess" ) ).toDouble();
   mOpacity = elem.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1.0" ) ).toDouble();
   mDiffuseTexturePath = elem.attribute( QStringLiteral( "diffuse_texture_path" ), QString() );
-  mTextureScale = elem.attribute( QStringLiteral( "texture_scale" ), QString( "1.0" ) ).toFloat();
-  mTextureRotation = elem.attribute( QStringLiteral( "texture-rotation" ), QString( "0.0" ) ).toFloat();
+  mTextureScale = elem.attribute( QStringLiteral( "texture_scale" ), QString( "1.0" ) ).toDouble();
+  mTextureRotation = elem.attribute( QStringLiteral( "texture-rotation" ), QString( "0.0" ) ).toDouble();
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }
@@ -158,7 +158,7 @@ QgsMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterialSettingsRe
       texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
 
       material->setDiffuseTexture( texture );
-      material->setDiffuseTextureScale( mTextureScale );
+      material->setDiffuseTextureScale( static_cast< float >( mTextureScale ) );
 
       return material;
     }
