@@ -108,6 +108,11 @@ Returns ``None`` if the specified type is not found in the registry.
 %End
 
 
+    QgsAbstractTerrainSettings *configureTerrainFromProject( QgsProjectElevationProperties *properties ) /Factory/;
+%Docstring
+Create terrain settings directly from a project's elevation ``properties``.
+%End
+
   private:
     Qgs3DTerrainRegistry( const Qgs3DTerrainRegistry &rh );
 };
