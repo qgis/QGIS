@@ -15,6 +15,11 @@
 
 #include "qgsflatterrainsettings.h"
 
+QgsAbstractTerrainSettings *QgsFlatTerrainSettings::create()
+{
+  return new QgsFlatTerrainSettings();
+}
+
 QgsFlatTerrainSettings *QgsFlatTerrainSettings::clone() const
 {
   return new QgsFlatTerrainSettings( *this );

@@ -16,6 +16,11 @@
 #include "qgsdemterrainsettings.h"
 #include "qgsrasterlayer.h"
 
+QgsAbstractTerrainSettings *QgsDemTerrainSettings::create()
+{
+  return new QgsDemTerrainSettings();
+}
+
 QgsDemTerrainSettings *QgsDemTerrainSettings::clone() const
 {
   return new QgsDemTerrainSettings( *this );

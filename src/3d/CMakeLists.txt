@@ -97,6 +97,7 @@ set(QGIS_3D_SRCS
   symbols/qgspointcloud3dsymbol.cpp
   symbols/qgspointcloud3dsymbol_p.cpp
 
+  terrain/qgs3dterrainregistry.cpp
   terrain/qgsdemterraingenerator.cpp
   terrain/qgsdemterrainsettings.cpp
   terrain/qgsdemterraintilegeometry_p.cpp
@@ -192,6 +193,7 @@ set(QGIS_3D_HDRS
   symbols/qgspolygon3dsymbol.h
   symbols/qgspointcloud3dsymbol.h
 
+  terrain/qgs3dterrainregistry.h
   terrain/qgsdemterraingenerator.h
   terrain/qgsdemterrainsettings.h
   terrain/qgsflatterraingenerator.h

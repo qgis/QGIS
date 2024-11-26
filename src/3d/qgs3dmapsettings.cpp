@@ -16,6 +16,7 @@
 #include "qgs3dmapsettings.h"
 #include "moc_qgs3dmapsettings.cpp"
 
+#include "qgs3d.h"
 #include "qgs3dutils.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsdemterraingenerator.h"
@@ -35,6 +36,7 @@
 #include "qgsmaplayerlistutils_p.h"
 #include "qgsterrainsettings.h"
 #include "qgsflatterrainsettings.h"
+#include "qgs3dterrainregistry.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -272,6 +274,14 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     flatGen->setCrs( mCrs );
     setTerrainGenerator( flatGen );
   }
+
+  std::unique_ptr<QgsAbstractTerrainSettings> terrainSettings( Qgs3D::terrainRegistry()->createTerrainSettings( terrainGenType ) );
+  if ( terrainSettings )
+  {
+    terrainSettings->readXml( elemTerrainGenerator, context );
+    setTerrainSettings( terrainSettings.release() );
+  }
+
   mTerrainGenerator->readXml( elemTerrainGenerator );
 
   QDomElement elemSkybox = elem.firstChildElement( QStringLiteral( "skybox" ) );

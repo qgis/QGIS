@@ -42,6 +42,8 @@
 #include "qgsphongtexturedmaterialsettings.h"
 #include "qgsnullmaterialsettings.h"
 
+#include "qgs3dterrainregistry.h"
+
 #include "qgsstyle.h"
 
 Qgs3D *Qgs3D::instance()
@@ -88,7 +90,13 @@ QgsMaterialRegistry *Qgs3D::materialRegistry()
   return instance()->mMaterialRegistry;
 }
 
+Qgs3DTerrainRegistry *Qgs3D::terrainRegistry()
+{
+  return instance()->mTerrainRegistry;
+}
+
 Qgs3D::Qgs3D()
 {
   mMaterialRegistry = new QgsMaterialRegistry();
+  mTerrainRegistry = new Qgs3DTerrainRegistry();
 }
