@@ -286,6 +286,46 @@ void QgsMesh3DSymbol::setLevelOfDetailIndex( int lod )
   mLevelOfDetailIndex = lod;
 }
 
+bool QgsMesh3DSymbol::operator==( const QgsMesh3DSymbol &other ) const
+{
+  if ( mAltClamping != other.mAltClamping
+       || mHeight != other.mHeight
+       || mAddBackFaces != other.mAddBackFaces
+       || mEnabled != other.mEnabled
+       || mCullingMode != other.mCullingMode
+       || mSmoothedTriangles != other.mSmoothedTriangles
+       || mWireframeEnabled != other.mWireframeEnabled
+       || !qgsDoubleNear( mWireframeLineWidth, other.mWireframeLineWidth )
+       || mWireframeLineColor != other.mWireframeLineColor
+       || mLevelOfDetailIndex != other.mLevelOfDetailIndex
+       || !qgsDoubleNear( mVerticalScale, other.mVerticalScale )
+       || mVerticalDatasetGroupIndex != other.mVerticalDatasetGroupIndex
+       || mIsVerticalMagnitudeRelative != other.mIsVerticalMagnitudeRelative
+       || mRenderingStyle != other.mRenderingStyle
+       || mColorRampShader != other.mColorRampShader
+       || mSingleColor != other.mSingleColor
+       || mArrowsEnabled != other.mArrowsEnabled
+       || !qgsDoubleNear( mArrowsSpacing, other.mArrowsSpacing )
+       || mArrowsFixedSize != other.mArrowsFixedSize
+       || mArrowsColor != other.mArrowsColor
+       || mMaximumTextureSize != other.mMaximumTextureSize )
+    return false;
+
+  if ( !mMaterialSettings->equals( other.materialSettings() ) )
+    return false;
+
+  // base class properties
+  if ( mDataDefinedProperties != other.mDataDefinedProperties )
+    return false;
+
+  return true;
+}
+
+bool QgsMesh3DSymbol::operator!=( const QgsMesh3DSymbol &other ) const
+{
+  return !( *this == other );
+}
+
 bool QgsMesh3DSymbol::isEnabled() const
 {
   return mEnabled;
