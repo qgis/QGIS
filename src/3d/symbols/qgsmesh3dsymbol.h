@@ -346,6 +346,9 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
      */
     void setLevelOfDetailIndex( int lod );
 
+    bool operator==( const QgsMesh3DSymbol &other ) const;
+    bool operator!=( const QgsMesh3DSymbol &other ) const;
+
   private:
 #ifdef SIP_RUN
     QgsMesh3DSymbol( const QgsMesh3DSymbol & );

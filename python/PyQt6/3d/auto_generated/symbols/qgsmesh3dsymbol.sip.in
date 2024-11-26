@@ -343,6 +343,9 @@ Returns the index of the level of detail of the mesh that is the position of the
 .. versionadded:: 3.18
 %End
 
+    bool operator==( const QgsMesh3DSymbol &other ) const;
+    bool operator!=( const QgsMesh3DSymbol &other ) const;
+
   private:
     QgsMesh3DSymbol( const QgsMesh3DSymbol & );
 };
