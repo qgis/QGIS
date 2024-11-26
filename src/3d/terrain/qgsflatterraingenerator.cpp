@@ -121,16 +121,6 @@ void QgsFlatTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) c
   hMax = 0;
 }
 
-void QgsFlatTerrainGenerator::writeXml( QDomElement &elem ) const
-{
-  Q_UNUSED( elem )
-}
-
-void QgsFlatTerrainGenerator::readXml( const QDomElement &elem )
-{
-  Q_UNUSED( elem )
-}
-
 void QgsFlatTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext & )
 {
   mCrs = crs;
