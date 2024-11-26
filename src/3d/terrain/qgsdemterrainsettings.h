@@ -46,6 +46,7 @@ class _3D_EXPORT QgsDemTerrainSettings : public QgsAbstractTerrainSettings
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const final;
     void resolveReferences( const QgsProject *project ) final;
     bool equals( const QgsAbstractTerrainSettings *other ) const final;
+    std::unique_ptr<QgsTerrainGenerator> createTerrainGenerator() const override SIP_SKIP;
 
     /**
      * Sets the raster \a layer with elevation model to be used for terrain generation.

@@ -15,6 +15,7 @@
 
 #include "qgsdemterrainsettings.h"
 #include "qgsrasterlayer.h"
+#include "qgsdemterraingenerator.h"
 
 QgsAbstractTerrainSettings *QgsDemTerrainSettings::create()
 {
@@ -64,6 +65,15 @@ bool QgsDemTerrainSettings::equals( const QgsAbstractTerrainSettings *other ) co
   return mResolution == otherTerrain->mResolution
          && qgsDoubleNear( mSkirtHeight, otherTerrain->mSkirtHeight )
          && mLayer.layerId == otherTerrain->mLayer.layerId;
+}
+
+std::unique_ptr<QgsTerrainGenerator> QgsDemTerrainSettings::createTerrainGenerator() const
+{
+  std::unique_ptr<QgsDemTerrainGenerator> generator = std::make_unique<QgsDemTerrainGenerator>();
+  generator->setLayer( layer() );
+  generator->setResolution( mResolution );
+  generator->setSkirtHeight( static_cast<float>( mSkirtHeight ) );
+  return generator;
 }
 
 void QgsDemTerrainSettings::setLayer( QgsRasterLayer *layer )

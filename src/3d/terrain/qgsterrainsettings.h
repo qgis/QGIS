@@ -19,10 +19,12 @@
 #include "qgis_3d.h"
 #include "qgis_sip.h"
 #include <QString>
+#include <memory>
 
 class QDomElement;
 class QgsReadWriteContext;
 class QgsProject;
+class QgsTerrainGenerator;
 
 /**
  * \ingroup 3d
@@ -36,7 +38,7 @@ class QgsProject;
  *
  * \since QGIS 3.42
  */
-class _3D_EXPORT QgsAbstractTerrainSettings
+class _3D_EXPORT QgsAbstractTerrainSettings SIP_ABSTRACT
 {
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -98,6 +100,13 @@ class _3D_EXPORT QgsAbstractTerrainSettings
      * \see readXml()
      */
     virtual void resolveReferences( const QgsProject *project );
+
+    /**
+     * Creates a new instance of a terrain generator which matches the terrain settings.
+     *
+     * \note Not available in Python bindings
+     */
+    virtual std::unique_ptr<QgsTerrainGenerator> createTerrainGenerator() const = 0 SIP_SKIP;
 
     // common settings
 

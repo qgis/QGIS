@@ -31,9 +31,7 @@
  */
 class _3D_EXPORT QgsOnlineDemTerrainSettings : public QgsAbstractTerrainSettings
 {
-
   public:
-
     /**
      * Creates a new instance of a QgsOnlineDemTerrainSettings object.
      */
@@ -44,6 +42,7 @@ class _3D_EXPORT QgsOnlineDemTerrainSettings : public QgsAbstractTerrainSettings
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) final;
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const final;
     bool equals( const QgsAbstractTerrainSettings *other ) const final;
+    std::unique_ptr<QgsTerrainGenerator> createTerrainGenerator() const override SIP_SKIP;
 
     /**
      * Sets the \a resolution of the terrain (how many elevation samples are taken on one side of a terrain tile).
@@ -78,7 +77,6 @@ class _3D_EXPORT QgsOnlineDemTerrainSettings : public QgsAbstractTerrainSettings
     double skirtHeight() const { return mSkirtHeight; }
 
   private:
-
     //! how many vertices to place on one side of the tile
     int mResolution = 16;
     //! height of the "skirts" at the edges of tiles to hide cracks between adjacent cracks

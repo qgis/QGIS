@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsflatterrainsettings.h"
+#include "qgsflatterraingenerator.h"
 
 QgsAbstractTerrainSettings *QgsFlatTerrainSettings::create()
 {
@@ -47,4 +48,11 @@ bool QgsFlatTerrainSettings::equals( const QgsAbstractTerrainSettings *other ) c
     return false;
 
   return equalsCommon( otherFlatTerrain );
+}
+
+std::unique_ptr<QgsTerrainGenerator> QgsFlatTerrainSettings::createTerrainGenerator() const
+{
+  std::unique_ptr<QgsFlatTerrainGenerator> generator = std::make_unique<QgsFlatTerrainGenerator>();
+
+  return generator;
 }

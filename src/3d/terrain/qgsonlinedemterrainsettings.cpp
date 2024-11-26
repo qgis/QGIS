@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsonlinedemterrainsettings.h"
+#include "qgsonlineterraingenerator.h"
 #include "qgis.h"
 #include <QDomElement>
 
@@ -48,7 +49,7 @@ void QgsOnlineDemTerrainSettings::writeXml( QDomElement &element, const QgsReadW
 
 bool QgsOnlineDemTerrainSettings::equals( const QgsAbstractTerrainSettings *other ) const
 {
-  const QgsOnlineDemTerrainSettings *otherTerrain = dynamic_cast< const QgsOnlineDemTerrainSettings * >( other );
+  const QgsOnlineDemTerrainSettings *otherTerrain = dynamic_cast<const QgsOnlineDemTerrainSettings *>( other );
   if ( !otherTerrain )
     return false;
 
@@ -57,4 +58,12 @@ bool QgsOnlineDemTerrainSettings::equals( const QgsAbstractTerrainSettings *othe
 
   return mResolution == otherTerrain->mResolution
          && qgsDoubleNear( mSkirtHeight, otherTerrain->mSkirtHeight );
+}
+
+std::unique_ptr<QgsTerrainGenerator> QgsOnlineDemTerrainSettings::createTerrainGenerator() const
+{
+  std::unique_ptr<QgsOnlineTerrainGenerator> generator = std::make_unique<QgsOnlineTerrainGenerator>();
+  generator->setResolution( mResolution );
+  generator->setSkirtHeight( static_cast<float>( mSkirtHeight ) );
+  return generator;
 }

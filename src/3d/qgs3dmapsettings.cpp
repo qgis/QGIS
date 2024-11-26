@@ -18,9 +18,6 @@
 
 #include "qgs3d.h"
 #include "qgs3dutils.h"
-#include "qgsflatterraingenerator.h"
-#include "qgsdemterraingenerator.h"
-#include "qgsmeshterraingenerator.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsterrainprovider.h"
@@ -57,8 +54,6 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mCrs( other.mCrs )
   , mBackgroundColor( other.mBackgroundColor )
   , mSelectionColor( other.mSelectionColor )
-  , mTerrainGenerator( other.mTerrainGenerator ? other.mTerrainGenerator->clone() : nullptr )
-  , mTerrainSettings( other.mTerrainSettings ? other.mTerrainSettings->clone() : new QgsFlatTerrainSettings() )
   , mTerrainShadingEnabled( other.mTerrainShadingEnabled )
   , mTerrainShadingMaterial( other.mTerrainShadingMaterial )
   , mTerrainMapTheme( other.mTerrainMapTheme )
@@ -102,6 +97,8 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mExtent( other.mExtent )
   , mShowExtentIn2DView( other.mShowExtentIn2DView )
 {
+  setTerrainSettings( other.mTerrainSettings ? other.mTerrainSettings->clone() : new QgsFlatTerrainSettings() );
+
   for ( QgsLightSource *source : std::as_const( other.mLightSources ) )
   {
     if ( source )
@@ -243,14 +240,6 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
 
   QDomElement elemTerrainGenerator = elemTerrain.firstChildElement( QStringLiteral( "generator" ) );
   const QString terrainGenType = elemTerrainGenerator.attribute( QStringLiteral( "type" ) );
-  std::unique_ptr< QgsTerrainGenerator > terrainGenerator( Qgs3D::terrainRegistry()->createTerrainGenerator( terrainGenType ) );
-  if ( terrainGenerator )
-  {
-    terrainGenerator->setCrs( mCrs, mTransformContext );
-    mTerrainGenerator->readXml( elemTerrainGenerator );
-    setTerrainGenerator( terrainGenerator.release() );
-  }
-
   std::unique_ptr<QgsAbstractTerrainSettings> terrainSettings( Qgs3D::terrainRegistry()->createTerrainSettings( terrainGenType ) );
   if ( terrainSettings )
   {
@@ -379,8 +368,8 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   elemTerrain.appendChild( elemMapLayers );
 
   QDomElement elemTerrainGenerator = doc.createElement( QStringLiteral( "generator" ) );
-  elemTerrainGenerator.setAttribute( QStringLiteral( "type" ), QgsTerrainGenerator::typeToString( mTerrainGenerator->type() ) );
-  mTerrainGenerator->writeXml( elemTerrainGenerator );
+  elemTerrainGenerator.setAttribute( QStringLiteral( "type" ), mTerrainSettings->type() );
+  mTerrainSettings->writeXml( elemTerrainGenerator, context );
   elemTerrain.appendChild( elemTerrainGenerator );
   elem.appendChild( elemTerrain );
 
@@ -449,6 +438,7 @@ void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
     layerRef.setLayer( project.mapLayer( layerRef.layerId ) );
   }
 
+  mTerrainSettings->resolveReferences( &project );
   mTerrainGenerator->resolveReferences( project );
 
   // Set extent now that layer-based generators actually have a chance to know their CRS
@@ -726,6 +716,13 @@ void Qgs3DMapSettings::setTerrainSettings( QgsAbstractTerrainSettings *settings 
 
   if ( hasChanged )
   {
+    std::unique_ptr<QgsTerrainGenerator> terrainGenerator = mTerrainSettings->createTerrainGenerator();
+    if ( terrainGenerator )
+    {
+      terrainGenerator->setCrs( mCrs, mTransformContext );
+      setTerrainGenerator( terrainGenerator.release() );
+    }
+
     // emit all the signals, we don't know exactly what's changed
     Q_NOWARN_DEPRECATED_PUSH
     emit mapTileResolutionChanged();
