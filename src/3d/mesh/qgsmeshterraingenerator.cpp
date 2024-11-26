@@ -48,6 +48,11 @@ Qt3DCore::QEntity *QgsMeshTerrainTileLoader::createEntity( Qt3DCore::QEntity *pa
 // QgsMeshTerrainGenerator
 //
 
+QgsTerrainGenerator *QgsMeshTerrainGenerator::create()
+{
+  return new QgsMeshTerrainGenerator();
+}
+
 QgsMeshTerrainGenerator::QgsMeshTerrainGenerator()
   : mSymbol( std::make_unique<QgsMesh3DSymbol>() )
 {

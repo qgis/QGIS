@@ -207,6 +207,11 @@ void QgsQuantizedMeshTerrainChunkLoader::onTextureLoaded()
 
 ///@endcond
 
+QgsTerrainGenerator *QgsQuantizedMeshTerrainGenerator::create()
+{
+  return new QgsQuantizedMeshTerrainGenerator();
+}
+
 void QgsQuantizedMeshTerrainGenerator::setTerrain( QgsTerrainEntity *t )
 {
   mTerrain = t;
