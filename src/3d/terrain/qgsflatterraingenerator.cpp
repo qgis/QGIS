@@ -131,7 +131,7 @@ void QgsFlatTerrainGenerator::readXml( const QDomElement &elem )
   Q_UNUSED( elem )
 }
 
-void QgsFlatTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs )
+void QgsFlatTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext & )
 {
   mCrs = crs;
   updateTilingScheme();

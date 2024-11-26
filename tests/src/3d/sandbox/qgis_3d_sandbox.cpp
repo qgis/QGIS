@@ -84,7 +84,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
   } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setCrs( map->crs(), map->transformContext() );
   map->setTerrainGenerator( flatTerrain );
   map->setTerrainElevationOffset( QgsProject::instance()->elevationProperties()->terrainProvider()->offset() );
 

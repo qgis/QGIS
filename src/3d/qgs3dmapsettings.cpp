@@ -21,9 +21,7 @@
 #include "qgsflatterraingenerator.h"
 #include "qgsdemterraingenerator.h"
 #include "qgsmeshterraingenerator.h"
-#include "qgsonlineterraingenerator.h"
 #include "qgsprojectviewsettings.h"
-#include "qgsquantizedmeshterraingenerator.h"
 #include "qgsprojectelevationproperties.h"
 #include "qgsterrainprovider.h"
 #include "qgslightsource.h"
@@ -244,35 +242,13 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   mLayers = mapLayers; // needs to resolve refs afterwards
 
   QDomElement elemTerrainGenerator = elemTerrain.firstChildElement( QStringLiteral( "generator" ) );
-  QString terrainGenType = elemTerrainGenerator.attribute( QStringLiteral( "type" ) );
-  if ( terrainGenType == QLatin1String( "dem" ) )
+  const QString terrainGenType = elemTerrainGenerator.attribute( QStringLiteral( "type" ) );
+  std::unique_ptr< QgsTerrainGenerator > terrainGenerator( Qgs3D::terrainRegistry()->createTerrainGenerator( terrainGenType ) );
+  if ( terrainGenerator )
   {
-    QgsDemTerrainGenerator *demTerrainGenerator = new QgsDemTerrainGenerator;
-    demTerrainGenerator->setCrs( mCrs, mTransformContext );
-    setTerrainGenerator( demTerrainGenerator );
-  }
-  else if ( terrainGenType == QLatin1String( "online" ) )
-  {
-    QgsOnlineTerrainGenerator *onlineTerrainGenerator = new QgsOnlineTerrainGenerator;
-    onlineTerrainGenerator->setCrs( mCrs, mTransformContext );
-    setTerrainGenerator( onlineTerrainGenerator );
-  }
-  else if ( terrainGenType == QLatin1String( "mesh" ) )
-  {
-    QgsMeshTerrainGenerator *meshTerrainGenerator = new QgsMeshTerrainGenerator;
-    meshTerrainGenerator->setCrs( mCrs, mTransformContext );
-    setTerrainGenerator( meshTerrainGenerator );
-  }
-  else if ( terrainGenType == QLatin1String( "quantizedmesh" ) )
-  {
-    QgsQuantizedMeshTerrainGenerator *qmTerrainGenerator = new QgsQuantizedMeshTerrainGenerator;
-    setTerrainGenerator( qmTerrainGenerator );
-  }
-  else // "flat"
-  {
-    QgsFlatTerrainGenerator *flatGen = new QgsFlatTerrainGenerator;
-    flatGen->setCrs( mCrs );
-    setTerrainGenerator( flatGen );
+    terrainGenerator->setCrs( mCrs, mTransformContext );
+    mTerrainGenerator->readXml( elemTerrainGenerator );
+    setTerrainGenerator( terrainGenerator.release() );
   }
 
   std::unique_ptr<QgsAbstractTerrainSettings> terrainSettings( Qgs3D::terrainRegistry()->createTerrainSettings( terrainGenType ) );
@@ -281,8 +257,6 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
     terrainSettings->readXml( elemTerrainGenerator, context );
     setTerrainSettings( terrainSettings.release() );
   }
-
-  mTerrainGenerator->readXml( elemTerrainGenerator );
 
   QDomElement elemSkybox = elem.firstChildElement( QStringLiteral( "skybox" ) );
   mIsSkyboxEnabled = elemSkybox.attribute( QStringLiteral( "skybox-enabled" ) ).toInt();
@@ -687,7 +661,7 @@ void Qgs3DMapSettings::configureTerrainFromProject( QgsProjectElevationPropertie
   if ( properties->terrainProvider()->type() == QLatin1String( "flat" ) )
   {
     QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-    flatTerrain->setCrs( crs() );
+    flatTerrain->setCrs( crs(), QgsProject::instance()->transformContext() );
     setTerrainGenerator( flatTerrain );
 
     setTerrainElevationOffset( properties->terrainProvider()->offset() );
@@ -722,7 +696,7 @@ void Qgs3DMapSettings::configureTerrainFromProject( QgsProjectElevationPropertie
   else
   {
     QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-    flatTerrain->setCrs( crs() );
+    flatTerrain->setCrs( crs(), QgsProject::instance()->transformContext() );
     setTerrainGenerator( flatTerrain );
   }
 }
