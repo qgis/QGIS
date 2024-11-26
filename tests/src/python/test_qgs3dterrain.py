@@ -19,6 +19,7 @@ from qgis.core import (
 from qgis._3d import (
     QgsFlatTerrainSettings,
     QgsDemTerrainSettings,
+    QgsOnlineDemTerrainSettings,
     QgsMeshTerrainSettings,
     Qgs3DTerrainRegistry,
     QgsQuantizedMeshTerrainSettings,
@@ -198,6 +199,87 @@ class TestQgs3DTerrain(QgisTestCase):
         self.assertEqual(settings3.maximumGroundError(), 14.5)
         self.assertEqual(settings3.elevationOffset(), 24.5)
 
+    def test_online_dem_terrain(self):
+        settings = QgsOnlineDemTerrainSettings.create()
+        self.assertIsInstance(settings, QgsOnlineDemTerrainSettings)
+
+        self.assertEqual(settings.resolution(), 16)
+        settings.setResolution(66)
+        self.assertEqual(settings.resolution(), 66)
+
+        self.assertEqual(settings.skirtHeight(), 10)
+        settings.setSkirtHeight(366)
+        self.assertEqual(settings.skirtHeight(), 366)
+
+        self.assertEqual(settings.verticalScale(), 1)
+        settings.setVerticalScale(3)
+        self.assertEqual(settings.verticalScale(), 3)
+
+        self.assertEqual(settings.mapTileResolution(), 512)
+        settings.setMapTileResolution(36)
+        self.assertEqual(settings.mapTileResolution(), 36)
+
+        self.assertEqual(settings.maximumScreenError(), 3.0)
+        settings.setMaximumScreenError(4.5)
+        self.assertEqual(settings.maximumScreenError(), 4.5)
+
+        self.assertEqual(settings.maximumGroundError(), 1)
+        settings.setMaximumGroundError(14.5)
+        self.assertEqual(settings.maximumGroundError(), 14.5)
+
+        self.assertEqual(settings.elevationOffset(), 0)
+        settings.setElevationOffset(24.5)
+        self.assertEqual(settings.elevationOffset(), 24.5)
+
+        # clone
+        settings2 = settings.clone()
+        self.assertEqual(settings2.resolution(), 66)
+        self.assertEqual(settings2.skirtHeight(), 366)
+        self.assertEqual(settings2.verticalScale(), 3)
+        self.assertEqual(settings2.mapTileResolution(), 36)
+        self.assertEqual(settings2.maximumScreenError(), 4.5)
+        self.assertEqual(settings2.maximumGroundError(), 14.5)
+        self.assertEqual(settings2.elevationOffset(), 24.5)
+        self.assertTrue(settings2.equals(settings))
+
+        # equals
+        settings2 = settings.clone()
+        settings2.setResolution(555)
+        self.assertFalse(settings2.equals(settings))
+        settings2 = settings.clone()
+        settings2.setSkirtHeight(1555)
+        self.assertFalse(settings2.equals(settings))
+        settings2 = settings.clone()
+        settings2.setVerticalScale(4)
+        self.assertFalse(settings2.equals(settings))
+        settings2 = settings.clone()
+        settings2.setMapTileResolution(136)
+        self.assertFalse(settings2.equals(settings))
+        settings2 = settings.clone()
+        settings2.setMaximumScreenError(136)
+        self.assertFalse(settings2.equals(settings))
+        settings2 = settings.clone()
+        settings2.setMaximumGroundError(136)
+        self.assertFalse(settings2.equals(settings))
+        settings2 = settings.clone()
+        settings2.setElevationOffset(136)
+        self.assertFalse(settings2.equals(settings))
+
+        # read/write xml
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("test")
+        settings.writeXml(elem, QgsReadWriteContext())
+
+        settings3 = QgsOnlineDemTerrainSettings()
+        settings3.readXml(elem, QgsReadWriteContext())
+        self.assertEqual(settings3.resolution(), 66)
+        self.assertEqual(settings3.skirtHeight(), 366)
+        self.assertEqual(settings3.verticalScale(), 3)
+        self.assertEqual(settings3.mapTileResolution(), 36)
+        self.assertEqual(settings3.maximumScreenError(), 4.5)
+        self.assertEqual(settings3.maximumGroundError(), 14.5)
+        self.assertEqual(settings3.elevationOffset(), 24.5)
+
     def test_mesh_terrain(self):
         p = QgsProject()
         ml = QgsMeshLayer(
@@ -367,6 +449,7 @@ class TestQgs3DTerrain(QgisTestCase):
         self.assertIn("dem", registry.types())
         self.assertIn("mesh", registry.types())
         self.assertIn("quantizedmesh", registry.types())
+        self.assertIn("online", registry.types())
 
         # check settings
         settings = registry.createTerrainSettings("flat")
@@ -377,6 +460,8 @@ class TestQgs3DTerrain(QgisTestCase):
         self.assertIsInstance(settings, QgsMeshTerrainSettings)
         settings = registry.createTerrainSettings("quantizedmesh")
         self.assertIsInstance(settings, QgsQuantizedMeshTerrainSettings)
+        settings = registry.createTerrainSettings("online")
+        self.assertIsInstance(settings, QgsOnlineDemTerrainSettings)
 
 
 if __name__ == "__main__":

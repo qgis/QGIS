@@ -106,6 +106,7 @@ set(QGIS_3D_SRCS
   terrain/qgsflatterrainsettings.cpp
   terrain/qgsmeshterrainsettings.cpp
   terrain/qgsonlineterraingenerator.cpp
+  terrain/qgsonlinedemterrainsettings.cpp
   terrain/qgsquantizedmeshterraingenerator.cpp
   terrain/qgsquantizedmeshterrainsettings.cpp
   terrain/qgsterraindownloader.cpp
@@ -201,6 +202,7 @@ set(QGIS_3D_HDRS
   terrain/qgsflatterrainsettings.h
   terrain/qgsmeshterrainsettings.h
   terrain/qgsonlineterraingenerator.h
+  terrain/qgsonlinedemterrainsettings.h
   terrain/qgsquantizedmeshterraingenerator.h
   terrain/qgsquantizedmeshterrainsettings.h
   terrain/qgsterraindownloader.h
