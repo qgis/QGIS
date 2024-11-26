@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 
 class QgsMaterialRegistry;
+class Qgs3DTerrainRegistry;
 
 /**
  * \ingroup gui
@@ -52,6 +53,11 @@ class _3D_EXPORT Qgs3D
      */
     static QgsMaterialRegistry *materialRegistry();
 
+    /**
+     * Returns the terrain registry, used for managing 3D terrains.
+     */
+    static Qgs3DTerrainRegistry *terrainRegistry();
+
   private:
     Qgs3D();
 
@@ -62,6 +68,7 @@ class _3D_EXPORT Qgs3D
     bool mInitialized = false;
 
     QgsMaterialRegistry *mMaterialRegistry = nullptr;
+    Qgs3DTerrainRegistry *mTerrainRegistry = nullptr;
 };
 
 #endif // QGS3D_H

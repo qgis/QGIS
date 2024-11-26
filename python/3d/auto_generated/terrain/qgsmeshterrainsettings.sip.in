@@ -26,6 +26,11 @@ Terrain settings for a terrain generator that uses uses the Z values of a mesh l
 #include "qgsmeshterrainsettings.h"
 %End
   public:
+    static QgsAbstractTerrainSettings *create() /Factory/;
+%Docstring
+Creates a new instance of a QgsMeshTerrainSettings object.
+%End
+
     QgsMeshTerrainSettings *clone() const final /Factory/;
     QString type() const final;
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) final;

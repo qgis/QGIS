@@ -38,6 +38,11 @@ class QgsMeshLayer;
 class _3D_EXPORT QgsMeshTerrainSettings : public QgsAbstractTerrainSettings
 {
   public:
+    /**
+     * Creates a new instance of a QgsMeshTerrainSettings object.
+     */
+    static QgsAbstractTerrainSettings *create() SIP_FACTORY;
+
     QgsMeshTerrainSettings *clone() const final SIP_FACTORY;
     QString type() const final;
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) final;

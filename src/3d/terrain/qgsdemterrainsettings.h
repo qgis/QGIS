@@ -35,6 +35,11 @@ class QgsRasterLayer;
 class _3D_EXPORT QgsDemTerrainSettings : public QgsAbstractTerrainSettings
 {
   public:
+    /**
+     * Creates a new instance of a QgsDemTerrainSettings object.
+     */
+    static QgsAbstractTerrainSettings *create() SIP_FACTORY;
+
     QgsDemTerrainSettings *clone() const final SIP_FACTORY;
     QString type() const final;
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) final;

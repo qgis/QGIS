@@ -16,6 +16,11 @@
 #include "qgsmeshterrainsettings.h"
 #include "qgsmeshlayer.h"
 
+QgsAbstractTerrainSettings *QgsMeshTerrainSettings::create()
+{
+  return new QgsMeshTerrainSettings();
+}
+
 QgsMeshTerrainSettings *QgsMeshTerrainSettings::clone() const
 {
   return new QgsMeshTerrainSettings( *this );

@@ -41,6 +41,11 @@ Initializes the 3D framework.
 Returns the material registry, used for managing 3D materials.
 %End
 
+    static Qgs3DTerrainRegistry *terrainRegistry();
+%Docstring
+Returns the terrain registry, used for managing 3D terrains.
+%End
+
   private:
     Qgs3D( const Qgs3D &other );
 };
