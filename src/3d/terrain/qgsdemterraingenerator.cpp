@@ -97,16 +97,7 @@ QgsChunkLoader *QgsDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) 
 
 void QgsDemTerrainGenerator::setExtent( const QgsRectangle &extent )
 {
-  if ( !mLayer )
-  {
-    // Keep the whole extent for now and setExtent() will be called by again by resolveReferences()
-    mExtent = extent;
-    return;
-  }
-
-  QgsRectangle layerExtent = Qgs3DUtils::tryReprojectExtent2D( mLayer->extent(), mLayer->crs(), mCrs, mTransformContext );
-  // no need to have an mExtent larger than the actual layer's extent
-  mExtent = extent.intersect( layerExtent );
+  mExtent = extent;
   updateGenerator();
 }
 
@@ -115,7 +106,11 @@ void QgsDemTerrainGenerator::updateGenerator()
   QgsRasterLayer *dem = layer();
   if ( dem && mCrs.isValid() )
   {
-    mTerrainTilingScheme = QgsTilingScheme( mExtent, mCrs );
+    QgsRectangle layerExtent = Qgs3DUtils::tryReprojectExtent2D( mLayer->extent(), mLayer->crs(), mCrs, mTransformContext );
+    // no need to have an mExtent larger than the actual layer's extent
+    const QgsRectangle intersectExtent = mExtent.intersect( layerExtent );
+
+    mTerrainTilingScheme = QgsTilingScheme( intersectExtent, mCrs );
     delete mHeightMapGenerator;
     mHeightMapGenerator = new QgsDemHeightMapGenerator( dem, mTerrainTilingScheme, mResolution, mTransformContext );
     mIsValid = true;

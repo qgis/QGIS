@@ -16,6 +16,8 @@
 #include "qgsonlinedemterrainsettings.h"
 #include "qgsonlineterraingenerator.h"
 #include "qgis.h"
+#include "qgs3drendercontext.h"
+
 #include <QDomElement>
 
 QgsAbstractTerrainSettings *QgsOnlineDemTerrainSettings::create()
@@ -37,6 +39,7 @@ void QgsOnlineDemTerrainSettings::readXml( const QDomElement &element, const Qgs
 {
   mResolution = element.attribute( QStringLiteral( "resolution" ) ).toInt();
   mSkirtHeight = element.attribute( QStringLiteral( "skirt-height" ) ).toDouble();
+
   readCommonProperties( element, context );
 }
 
@@ -44,6 +47,7 @@ void QgsOnlineDemTerrainSettings::writeXml( QDomElement &element, const QgsReadW
 {
   element.setAttribute( QStringLiteral( "resolution" ), mResolution );
   element.setAttribute( QStringLiteral( "skirt-height" ), mSkirtHeight );
+
   writeCommonProperties( element, context );
 }
 
@@ -60,10 +64,12 @@ bool QgsOnlineDemTerrainSettings::equals( const QgsAbstractTerrainSettings *othe
          && qgsDoubleNear( mSkirtHeight, otherTerrain->mSkirtHeight );
 }
 
-std::unique_ptr<QgsTerrainGenerator> QgsOnlineDemTerrainSettings::createTerrainGenerator() const
+std::unique_ptr<QgsTerrainGenerator> QgsOnlineDemTerrainSettings::createTerrainGenerator( const Qgs3DRenderContext &context ) const
 {
   std::unique_ptr<QgsOnlineTerrainGenerator> generator = std::make_unique<QgsOnlineTerrainGenerator>();
   generator->setResolution( mResolution );
   generator->setSkirtHeight( static_cast<float>( mSkirtHeight ) );
+  generator->setCrs( context.crs(), context.transformContext() );
+  generator->setExtent( context.extent() );
   return generator;
 }

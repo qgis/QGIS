@@ -19,6 +19,7 @@
 #include "qgis_3d.h"
 #include "qgis_sip.h"
 #include "qgsterrainsettings.h"
+#include "qgsrectangle.h"
 
 /**
  * \ingroup 3d
@@ -42,7 +43,7 @@ class _3D_EXPORT QgsOnlineDemTerrainSettings : public QgsAbstractTerrainSettings
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) final;
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const final;
     bool equals( const QgsAbstractTerrainSettings *other ) const final;
-    std::unique_ptr<QgsTerrainGenerator> createTerrainGenerator() const override SIP_SKIP;
+    std::unique_ptr<QgsTerrainGenerator> createTerrainGenerator( const Qgs3DRenderContext &context ) const override SIP_SKIP;
 
     /**
      * Sets the \a resolution of the terrain (how many elevation samples are taken on one side of a terrain tile).

@@ -681,10 +681,9 @@ void Qgs3DMapSettings::setTerrainSettings( QgsAbstractTerrainSettings *settings 
 
   if ( hasChanged )
   {
-    std::unique_ptr<QgsTerrainGenerator> terrainGenerator = mTerrainSettings->createTerrainGenerator();
+    std::unique_ptr<QgsTerrainGenerator> terrainGenerator = mTerrainSettings->createTerrainGenerator( Qgs3DRenderContext::fromMapSettings( this ) );
     if ( terrainGenerator )
     {
-      terrainGenerator->setCrs( mCrs, mTransformContext );
       setTerrainGenerator( terrainGenerator.release() );
     }
 

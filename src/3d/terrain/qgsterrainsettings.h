@@ -25,6 +25,7 @@ class QDomElement;
 class QgsReadWriteContext;
 class QgsProject;
 class QgsTerrainGenerator;
+class Qgs3DRenderContext;
 
 /**
  * \ingroup 3d
@@ -106,7 +107,7 @@ class _3D_EXPORT QgsAbstractTerrainSettings SIP_ABSTRACT
      *
      * \note Not available in Python bindings
      */
-    virtual std::unique_ptr<QgsTerrainGenerator> createTerrainGenerator() const = 0 SIP_SKIP;
+    virtual std::unique_ptr<QgsTerrainGenerator> createTerrainGenerator( const Qgs3DRenderContext &context ) const = 0 SIP_SKIP;
 
     // common settings
 

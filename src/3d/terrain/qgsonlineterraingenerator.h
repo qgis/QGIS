@@ -71,9 +71,6 @@ class _3D_EXPORT QgsOnlineTerrainGenerator : public QgsTerrainGenerator
     QgsRectangle rootChunkExtent() const override;
     void setExtent( const QgsRectangle &extent ) override;
     float heightAt( double x, double y, const Qgs3DRenderContext &context ) const override;
-    void writeXml( QDomElement &elem ) const override;
-    void readXml( const QDomElement &elem ) override;
-    //void resolveReferences( const QgsProject &project ) override;
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
 
