@@ -46,6 +46,8 @@ class _3D_EXPORT QgsAbstractTerrainSettings
       sipType = sipType_QgsDemTerrainSettings;
     else if ( sipCpp->type() == "mesh" )
       sipType = sipType_QgsMeshTerrainSettings;
+    else if ( sipCpp->type() == "quantizedmesh" )
+      sipType = sipType_QgsQuantizedMeshTerrainSettings;
     else
       sipType = 0;
     SIP_END
