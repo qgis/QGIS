@@ -34,7 +34,6 @@ class QgsProject;
 
 #define SIP_NO_FILE
 
-
 /**
  * \ingroup 3d
  * \brief Base class for generators of terrain.
