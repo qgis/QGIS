@@ -89,9 +89,9 @@ void QgsGoochMaterialSettings::readXml( const QDomElement &elem, const QgsReadWr
   mCool = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "cool" ), QStringLiteral( "255,130,0" ) ) );
   mDiffuse = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "diffuse" ), QStringLiteral( "178,178,178" ) ) );
   mSpecular = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "specular" ) ) );
-  mShininess = elem.attribute( QStringLiteral( "shininess2" ), QStringLiteral( "100" ) ).toFloat();
-  mAlpha = elem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "0.25" ) ).toFloat();
-  mBeta = elem.attribute( QStringLiteral( "beta" ), QStringLiteral( "0.5" ) ).toFloat();
+  mShininess = elem.attribute( QStringLiteral( "shininess2" ), QStringLiteral( "100" ) ).toDouble();
+  mAlpha = elem.attribute( QStringLiteral( "alpha" ), QStringLiteral( "0.25" ) ).toDouble();
+  mBeta = elem.attribute( QStringLiteral( "beta" ), QStringLiteral( "0.5" ) ).toDouble();
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }

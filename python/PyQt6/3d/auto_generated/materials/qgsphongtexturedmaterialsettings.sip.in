@@ -71,7 +71,7 @@ Returns the diffuse texture path.
 .. seealso:: :py:func:`setDiffuseTexturePath`
 %End
 
-    float textureScale() const;
+    double textureScale() const;
 %Docstring
 Returns the texture scale
 The texture scale changes the size of the displayed texture in the 3D scene
@@ -84,7 +84,7 @@ Returns ``True`` if the material requires texture coordinates to be generated
 during triangulation.quiresTextureCoordinates
 %End
 
-    float textureRotation() const;
+    double textureRotation() const;
 %Docstring
 Returns the texture rotation, in degrees.
 %End
@@ -117,19 +117,19 @@ Sets the ``path`` of the diffuse texture.
 .. seealso:: :py:func:`diffuseTexturePath`
 %End
 
-    void setTextureScale( float scale );
+    void setTextureScale( double scale );
 %Docstring
 Sets the texture scale
 The texture scale changes the size of the displayed texture in the 3D scene
 If the texture scale is less than 1 the texture will be stretched
 %End
 
-    void setTextureRotation( float rotation );
+    void setTextureRotation( double rotation );
 %Docstring
 Sets the texture rotation in degrees
 %End
 
-    void setOpacity( float opacity );
+    void setOpacity( double opacity );
 %Docstring
 Sets opacity of the surface.
 

@@ -62,8 +62,8 @@ bool QgsMetalRoughMaterialSettings::equals( const QgsAbstractMaterialSettings *o
 void QgsMetalRoughMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mBaseColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "base" ), QStringLiteral( "125,125,125" ) ) );
-  mMetalness = elem.attribute( QStringLiteral( "metalness" ) ).toFloat();
-  mRoughness = elem.attribute( QStringLiteral( "roughness" ) ).toFloat();
+  mMetalness = elem.attribute( QStringLiteral( "metalness" ) ).toDouble();
+  mRoughness = elem.attribute( QStringLiteral( "roughness" ) ).toDouble();
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }
