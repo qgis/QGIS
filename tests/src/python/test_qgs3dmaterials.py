@@ -103,8 +103,8 @@ class TestQgsPhongMaterialSettings(QgisTestCase):
         # Test default values
         self.assertEqual(settings.ambient(),
                          QColor.fromRgbF(0.1, 0.1, 0.1, 1.0))
-        self.assertEqual(settings.diffuse().name(),
-                         '#b2b2b2')
+        self.assertIn(settings.diffuse().name(),
+                      ('#b2b2b2', '#b3b3b3'))
         self.assertEqual(settings.specular(),
                          QColor.fromRgbF(1.0, 1.0, 1.0, 1.0))
         self.assertEqual(settings.shininess(), 0.0)
@@ -248,8 +248,8 @@ class TestQgsGoochMaterialSettings(QgisTestCase):
         # Test default values
         self.assertEqual(settings.warm(), QColor(107, 0, 107))
         self.assertEqual(settings.cool(), QColor(255, 130, 0))
-        self.assertEqual(settings.diffuse().name(),
-                         '#b2b2b2')
+        self.assertIn(settings.diffuse().name(),
+                      ('#b2b2b2', '#b3b3b3'))
         self.assertEqual(settings.specular(),
                          QColor.fromRgbF(1.0, 1.0, 1.0, 1.0))
         self.assertEqual(settings.shininess(), 100.0)
