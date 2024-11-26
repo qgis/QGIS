@@ -678,6 +678,17 @@ class TestQgsLayerTreeView(QgisTestCase):
         model = QgsLayerTreeModel(root)
         layer_tree_layer = root.addLayer(layer)
         view = QgsLayerTreeView()
+
+        self.assertEqual(view.selectedNodes(), [])
+        self.assertEqual(view.selectedLegendNodes(), [])
+        self.assertEqual(view.selectedLayersRecursive(), [])
+        self.assertEqual(view.selectedLayerNodes(), [])
+
+        self.assertEqual(view.selectedLayers(), [])
+        self.assertIsNone(view.currentNode())
+        self.assertIsNone(view.currentLegendNode())
+        self.assertIsNone(view.currentGroupNode())
+
         view.setModel(model)
 
         legend_nodes = model.layerLegendNodes(layer_tree_layer)
