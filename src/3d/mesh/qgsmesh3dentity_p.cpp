@@ -69,7 +69,7 @@ void QgsMeshDataset3DEntity::buildGeometry()
 
 void QgsMeshDataset3DEntity::applyMaterial()
 {
-  if ( mSymbol->renderingStyle() == QgsMesh3DSymbol::ColorRamp2DRendering && layer() )
+  if ( mSymbol->renderingStyle() == QgsMesh3DSymbol::RenderingStyle::ColorRamp2DRendering && layer() )
   {
     const QgsMeshRendererSettings rendererSettings = layer()->rendererSettings();
     const int datasetGroupIndex = rendererSettings.activeScalarDatasetGroup();
