@@ -71,6 +71,11 @@ QString QgsTerrainGenerator::typeToString( QgsTerrainGenerator::Type type )
   return QString();
 }
 
+void QgsTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &, const QgsCoordinateTransformContext & )
+{
+
+}
+
 bool QgsTerrainGenerator::isValid() const
 {
   return mIsValid;

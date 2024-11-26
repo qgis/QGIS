@@ -26,6 +26,7 @@ class Qgs3DMapSettings;
 class Qgs3DRenderContext;
 class QgsRectangle;
 class QgsTerrainEntity;
+class QgsCoordinateTransformContext;
 
 class QDomElement;
 class QDomDocument;
@@ -104,6 +105,13 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
 
     //! Returns tiling scheme of the terrain
     const QgsTilingScheme &tilingScheme() const { return mTerrainTilingScheme; }
+
+    /**
+     * Sets the CRS associated with the terrain.
+     *
+     * \see crs()
+     */
+    virtual void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
 
     //! Returns CRS of the terrain
     virtual QgsCoordinateReferenceSystem crs() const { return mTerrainTilingScheme.crs(); }

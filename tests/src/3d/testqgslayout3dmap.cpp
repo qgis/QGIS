@@ -86,7 +86,7 @@ void TestQgsLayout3DMap::testBasic()
   map->setLayers( QList<QgsMapLayer *>() << mLayerDtm );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
   map->setTerrainGenerator( flatTerrain );
 
   QgsCameraPose cam;

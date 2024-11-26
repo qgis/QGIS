@@ -99,7 +99,7 @@ void TestQgs3DCameraController::testTranslate()
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( mapSettings->crs() );
+  flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
   mapSettings->setTerrainGenerator( flatTerrain );
 
   QPoint winSize = QPoint( 640, 480 ); // default window size
@@ -172,7 +172,7 @@ void TestQgs3DCameraController::testZoom()
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( mapSettings->crs() );
+  flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
   mapSettings->setTerrainGenerator( flatTerrain );
 
   QPoint winSize = QPoint( 640, 480 ); // default window size
@@ -245,7 +245,7 @@ void TestQgs3DCameraController::testZoomWheel()
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( mapSettings->crs() );
+  flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
   mapSettings->setTerrainGenerator( flatTerrain );
 
   QPoint winSize = QPoint( 640, 480 ); // default window size
@@ -292,7 +292,7 @@ void TestQgs3DCameraController::testRotationCenter()
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( mapSettings->crs() );
+  flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
   mapSettings->setTerrainGenerator( flatTerrain );
 
   QPoint winSize = QPoint( 640, 480 ); // default window size
@@ -367,7 +367,7 @@ void TestQgs3DCameraController::testRotationCamera()
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( mapSettings->crs() );
+  flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
   mapSettings->setTerrainGenerator( flatTerrain );
 
   QPoint winSize = QPoint( 640, 480 ); // default window size
@@ -443,7 +443,7 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( mapSettings->crs() );
+  flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
   mapSettings->setTerrainGenerator( flatTerrain );
 
   QPoint winSize = QPoint( 640, 480 ); // default window size
@@ -586,7 +586,7 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( mapSettings->crs() );
+  flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
   mapSettings->setTerrainGenerator( flatTerrain );
 
   QPoint winSize = QPoint( 640, 480 ); // default window size
@@ -739,7 +739,7 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( mapSettings->crs() );
+  flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
   mapSettings->setTerrainGenerator( flatTerrain );
 
   QPoint winSize = QPoint( 640, 480 ); // default window size
@@ -883,7 +883,7 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( mapSettings->crs() );
+  flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
   mapSettings->setTerrainGenerator( flatTerrain );
 
   QPoint winSize = QPoint( 640, 480 ); // default window size
@@ -1034,7 +1034,7 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( mapSettings->crs() );
+  flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
   mapSettings->setTerrainGenerator( flatTerrain );
 
   QPoint winSize = QPoint( 640, 480 ); // default window size

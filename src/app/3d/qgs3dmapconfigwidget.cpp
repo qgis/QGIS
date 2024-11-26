@@ -263,7 +263,7 @@ void Qgs3DMapConfigWidget::apply()
     case QgsTerrainGenerator::Flat:
     {
       QgsFlatTerrainGenerator *flatTerrainGen = new QgsFlatTerrainGenerator;
-      flatTerrainGen->setCrs( mMap->crs() );
+      flatTerrainGen->setCrs( mMap->crs(), QgsProject::instance()->transformContext() );
       mMap->setTerrainGenerator( flatTerrainGen );
     }
     break;

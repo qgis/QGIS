@@ -69,9 +69,7 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
     void writeXml( QDomElement &elem ) const override;
     void readXml( const QDomElement &elem ) override;
 
-    //! Sets CRS of the terrain
-    void setCrs( const QgsCoordinateReferenceSystem &crs );
-    //! Returns CRS of the terrain
+    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) override;
     QgsCoordinateReferenceSystem crs() const override { return mCrs; }
 
   private:

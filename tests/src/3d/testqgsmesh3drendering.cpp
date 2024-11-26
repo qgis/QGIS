@@ -155,7 +155,7 @@ void TestQgsMesh3DRendering::testMesh()
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
   map->setTerrainGenerator( flatTerrain );
 
   QgsOffscreen3DEngine engine;
@@ -197,7 +197,7 @@ void TestQgsMesh3DRendering::testMesh_datasetOnFaces()
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
   map->setTerrainGenerator( flatTerrain );
 
   QgsOffscreen3DEngine engine;
@@ -309,7 +309,7 @@ void TestQgsMesh3DRendering::testFilteredMesh()
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
   map->setTerrainGenerator( flatTerrain );
 
   QgsOffscreen3DEngine engine;
@@ -350,7 +350,7 @@ void TestQgsMesh3DRendering::testMeshClipping()
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
   map->setTerrainGenerator( flatTerrain );
 
   QgsOffscreen3DEngine engine;

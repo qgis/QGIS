@@ -54,8 +54,7 @@ class _3D_EXPORT QgsMeshTerrainGenerator : public QgsTerrainGenerator
     //! Sets the symbol used to render the mesh as terrain
     void setSymbol( QgsMesh3DSymbol *symbol SIP_TRANSFER );
 
-    //! Sets CRS of the terrain
-    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
+    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) override;
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
     float rootChunkError( const Qgs3DMapSettings &map ) const override;
