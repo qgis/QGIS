@@ -23,6 +23,7 @@ from qgis._3d import (
     QgsMeshTerrainSettings,
     Qgs3DTerrainRegistry,
     QgsQuantizedMeshTerrainSettings,
+    QgsMesh3DSymbol,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -299,6 +300,11 @@ class TestQgs3DTerrain(QgisTestCase):
         settings.setLayer(ml)
         self.assertEqual(settings.layer(), ml)
 
+        symbol = QgsMesh3DSymbol()
+        symbol.setWireframeLineWidth(11.2)
+        settings.setSymbol(symbol.clone())
+        self.assertEqual(settings.symbol().wireframeLineWidth(), 11.2)
+
         self.assertEqual(settings.verticalScale(), 1)
         settings.setVerticalScale(3)
         self.assertEqual(settings.verticalScale(), 3)
@@ -327,6 +333,7 @@ class TestQgs3DTerrain(QgisTestCase):
         self.assertEqual(settings2.maximumScreenError(), 4.5)
         self.assertEqual(settings2.maximumGroundError(), 14.5)
         self.assertEqual(settings2.elevationOffset(), 24.5)
+        self.assertEqual(settings2.symbol().wireframeLineWidth(), 11.2)
         self.assertTrue(settings2.equals(settings))
 
         # equals
@@ -348,6 +355,12 @@ class TestQgs3DTerrain(QgisTestCase):
         settings2.setElevationOffset(136)
         self.assertFalse(settings2.equals(settings))
 
+        settings2 = settings.clone()
+        symbol = QgsMesh3DSymbol()
+        symbol.setWireframeLineWidth(111.2)
+        settings2.setSymbol(symbol.clone())
+        self.assertFalse(settings2.equals(settings))
+
         # read/write xml
         doc = QDomDocument("testdoc")
         elem = doc.createElement("test")
@@ -363,6 +376,7 @@ class TestQgs3DTerrain(QgisTestCase):
         self.assertEqual(settings3.maximumScreenError(), 4.5)
         self.assertEqual(settings3.maximumGroundError(), 14.5)
         self.assertEqual(settings3.elevationOffset(), 24.5)
+        self.assertEqual(settings3.symbol().wireframeLineWidth(), 11.2)
 
     def test_quantized_mesh_terrain(self):
         p = QgsProject()

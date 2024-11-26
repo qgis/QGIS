@@ -131,24 +131,6 @@ QgsRectangle QgsMeshTerrainGenerator::rootChunkExtent() const
   return mTriangularMesh.extent();
 }
 
-void QgsMeshTerrainGenerator::writeXml( QDomElement &elem ) const
-{
-  QDomDocument doc = elem.ownerDocument();
-
-  elem.setAttribute( QStringLiteral( "layer" ), mLayer.layerId );
-  QDomElement elemSymbol = doc.createElement( "symbol" );
-  const QgsReadWriteContext rwc;
-  mSymbol->writeXml( elemSymbol, rwc );
-  elem.appendChild( elemSymbol );
-}
-
-void QgsMeshTerrainGenerator::readXml( const QDomElement &elem )
-{
-  mLayer = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
-  const QgsReadWriteContext rwc;
-  mSymbol->readXml( elem.firstChildElement( "symbol" ), rwc );
-}
-
 float QgsMeshTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderContext & ) const
 {
   return QgsMeshLayerUtils::interpolateZForPoint( mTriangularMesh, x, y );

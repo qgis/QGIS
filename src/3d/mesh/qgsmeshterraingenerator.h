@@ -63,8 +63,6 @@ class _3D_EXPORT QgsMeshTerrainGenerator : public QgsTerrainGenerator
     QgsTerrainGenerator *clone() const override SIP_FACTORY;
     Type type() const override;
     QgsRectangle rootChunkExtent() const override;
-    void writeXml( QDomElement &elem ) const override;
-    void readXml( const QDomElement &elem ) override;
     float heightAt( double x, double y, const Qgs3DRenderContext &context ) const override;
 
   private slots:

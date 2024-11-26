@@ -25,6 +25,7 @@ class QDomElement;
 class QgsReadWriteContext;
 class QgsProject;
 class QgsMeshLayer;
+class QgsMesh3DSymbol;
 
 /**
  * \ingroup 3d
@@ -43,6 +44,8 @@ class _3D_EXPORT QgsMeshTerrainSettings : public QgsAbstractTerrainSettings
      */
     static QgsAbstractTerrainSettings *create() SIP_FACTORY;
 
+    QgsMeshTerrainSettings();
+    ~QgsMeshTerrainSettings() override;
     QgsMeshTerrainSettings *clone() const final SIP_FACTORY;
     QString type() const final;
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) final;
@@ -64,8 +67,26 @@ class _3D_EXPORT QgsMeshTerrainSettings : public QgsAbstractTerrainSettings
      */
     QgsMeshLayer *layer() const;
 
+    /**
+     * Returns the symbol used to render the mesh as terrain.
+     *
+     * \see setSymbol()
+     */
+    QgsMesh3DSymbol *symbol() const;
+
+    /**
+     * Sets the symbol used to render the mesh as terrain.
+     *
+     * \see symbol()
+     */
+    void setSymbol( QgsMesh3DSymbol *symbol SIP_TRANSFER );
+
   private:
+#ifdef SIP_RUN
+    QgsMeshTerrainSettings( const QgsMeshTerrainSettings & );
+#endif
     QgsMapLayerRef mLayer;
+    std::unique_ptr<QgsMesh3DSymbol> mSymbol;
 };
 
 

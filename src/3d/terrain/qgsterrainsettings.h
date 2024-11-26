@@ -210,6 +210,11 @@ class _3D_EXPORT QgsAbstractTerrainSettings SIP_ABSTRACT
     void readCommonProperties( const QDomElement &element, const QgsReadWriteContext &context );
 
     /**
+     * Copies common properties from a \a source object.
+     */
+    void copyCommonProperties( const QgsAbstractTerrainSettings *source );
+
+    /**
      * Returns TRUE if common base class settings from \a other match this object.
      */
     bool equalsCommon( const QgsAbstractTerrainSettings *other ) const;

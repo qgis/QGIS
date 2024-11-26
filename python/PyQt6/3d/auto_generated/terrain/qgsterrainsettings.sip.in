@@ -189,6 +189,11 @@ Reads common properties from the base class from the given DOM ``element``.
 .. seealso:: :py:func:`readXml`
 %End
 
+    void copyCommonProperties( const QgsAbstractTerrainSettings *source );
+%Docstring
+Copies common properties from a ``source`` object.
+%End
+
     bool equalsCommon( const QgsAbstractTerrainSettings *other ) const;
 %Docstring
 Returns ``True`` if common base class settings from ``other`` match this object.
