@@ -9,7 +9,7 @@
 
 
 
-class QgsAbstractTerrainSettings
+class QgsAbstractTerrainSettings /Abstract/
 {
 %Docstring(signature="appended")
 Base class for all terrain settings classes.
@@ -86,6 +86,7 @@ After reading settings from XML, resolves references to any layers in a ``projec
 
 .. seealso:: :py:func:`readXml`
 %End
+
 
 
     void setVerticalScale( double scale );

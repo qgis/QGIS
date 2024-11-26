@@ -15,6 +15,7 @@
 
 #include "qgsquantizedmeshterrainsettings.h"
 #include "qgstiledscenelayer.h"
+#include "qgsquantizedmeshterraingenerator.h"
 
 QgsAbstractTerrainSettings *QgsQuantizedMeshTerrainSettings::create()
 {
@@ -50,7 +51,7 @@ void QgsQuantizedMeshTerrainSettings::resolveReferences( const QgsProject *proje
 
 bool QgsQuantizedMeshTerrainSettings::equals( const QgsAbstractTerrainSettings *other ) const
 {
-  const QgsQuantizedMeshTerrainSettings *otherMeshTerrain = dynamic_cast< const QgsQuantizedMeshTerrainSettings * >( other );
+  const QgsQuantizedMeshTerrainSettings *otherMeshTerrain = dynamic_cast<const QgsQuantizedMeshTerrainSettings *>( other );
   if ( !otherMeshTerrain )
     return false;
 
@@ -58,6 +59,13 @@ bool QgsQuantizedMeshTerrainSettings::equals( const QgsAbstractTerrainSettings *
     return false;
 
   return mLayer.layerId == otherMeshTerrain->mLayer.layerId;
+}
+
+std::unique_ptr<QgsTerrainGenerator> QgsQuantizedMeshTerrainSettings::createTerrainGenerator() const
+{
+  std::unique_ptr<QgsQuantizedMeshTerrainGenerator> generator = std::make_unique<QgsQuantizedMeshTerrainGenerator>();
+  generator->setLayer( layer() );
+  return generator;
 }
 
 void QgsQuantizedMeshTerrainSettings::setLayer( QgsTiledSceneLayer *layer )

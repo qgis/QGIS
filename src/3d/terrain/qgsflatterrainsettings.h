@@ -46,6 +46,7 @@ class _3D_EXPORT QgsFlatTerrainSettings : public QgsAbstractTerrainSettings
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) final;
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const final;
     bool equals( const QgsAbstractTerrainSettings *other ) const final;
+    std::unique_ptr<QgsTerrainGenerator> createTerrainGenerator() const override SIP_SKIP;
 };
 
 

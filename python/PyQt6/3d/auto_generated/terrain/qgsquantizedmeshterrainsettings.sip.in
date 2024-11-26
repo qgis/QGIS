@@ -26,7 +26,6 @@ Terrain settings for a terrain generator that uses uses a quantized mesh tile la
 #include "qgsquantizedmeshterrainsettings.h"
 %End
   public:
-
     static QgsAbstractTerrainSettings *create() /Factory/;
 %Docstring
 Creates a new instance of a QgsQuantizedMeshTerrainSettings object.

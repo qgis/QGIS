@@ -37,9 +37,7 @@ class QgsTiledSceneLayer;
  */
 class _3D_EXPORT QgsQuantizedMeshTerrainSettings : public QgsAbstractTerrainSettings
 {
-
   public:
-
     /**
      * Creates a new instance of a QgsQuantizedMeshTerrainSettings object.
      */
@@ -51,6 +49,7 @@ class _3D_EXPORT QgsQuantizedMeshTerrainSettings : public QgsAbstractTerrainSett
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const final;
     void resolveReferences( const QgsProject *project ) final;
     bool equals( const QgsAbstractTerrainSettings *other ) const final;
+    std::unique_ptr<QgsTerrainGenerator> createTerrainGenerator() const override SIP_SKIP;
 
     /**
      * Sets the quantized mesh tile \a layer with elevation model to be used for terrain generation.
@@ -67,7 +66,6 @@ class _3D_EXPORT QgsQuantizedMeshTerrainSettings : public QgsAbstractTerrainSett
 
   private:
     QgsMapLayerRef mLayer;
-
 };
 
 

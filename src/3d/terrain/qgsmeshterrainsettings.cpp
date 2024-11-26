@@ -15,6 +15,7 @@
 
 #include "qgsmeshterrainsettings.h"
 #include "qgsmeshlayer.h"
+#include "qgsmeshterraingenerator.h"
 
 QgsAbstractTerrainSettings *QgsMeshTerrainSettings::create()
 {
@@ -58,6 +59,16 @@ bool QgsMeshTerrainSettings::equals( const QgsAbstractTerrainSettings *other ) c
     return false;
 
   return mLayer.layerId == otherMeshTerrain->mLayer.layerId;
+}
+
+std::unique_ptr<QgsTerrainGenerator> QgsMeshTerrainSettings::createTerrainGenerator() const
+{
+  std::unique_ptr<QgsMeshTerrainGenerator> generator = std::make_unique<QgsMeshTerrainGenerator>();
+  generator->setLayer( layer() );
+  std::unique_ptr<QgsMesh3DSymbol> symbol( generator->symbol()->clone() );
+  symbol->setVerticalScale( verticalScale() );
+  generator->setSymbol( symbol.release() );
+  return generator;
 }
 
 void QgsMeshTerrainSettings::setLayer( QgsMeshLayer *layer )

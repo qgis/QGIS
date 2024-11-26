@@ -25,7 +25,6 @@ Terrain settings for a terrain generator that uses an online DEM to build terrai
 #include "qgsonlinedemterrainsettings.h"
 %End
   public:
-
     static QgsAbstractTerrainSettings *create() /Factory/;
 %Docstring
 Creates a new instance of a QgsOnlineDemTerrainSettings object.
