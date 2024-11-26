@@ -69,17 +69,11 @@ void QgsOnlineTerrainGenerator::writeXml( QDomElement &elem ) const
   elemExtent.setAttribute( QStringLiteral( "ymax" ), QString::number( r.yMaximum() ) );
   elem.appendChild( elemExtent );
 
-  elem.setAttribute( QStringLiteral( "resolution" ), mResolution );
-  elem.setAttribute( QStringLiteral( "skirt-height" ), mSkirtHeight );
-
   // crs is not read/written - it should be the same as destination crs of the map
 }
 
 void QgsOnlineTerrainGenerator::readXml( const QDomElement &elem )
 {
-  mResolution = elem.attribute( QStringLiteral( "resolution" ) ).toInt();
-  mSkirtHeight = elem.attribute( QStringLiteral( "skirt-height" ) ).toFloat();
-
   const QDomElement elemExtent = elem.firstChildElement( QStringLiteral( "extent" ) );
   const double xmin = elemExtent.attribute( QStringLiteral( "xmin" ) ).toDouble();
   const double xmax = elemExtent.attribute( QStringLiteral( "xmax" ) ).toDouble();

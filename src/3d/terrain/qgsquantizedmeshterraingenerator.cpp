@@ -289,20 +289,6 @@ float QgsQuantizedMeshTerrainGenerator::heightAt( double x, double y, const Qgs3
   return QgsMeshLayerUtils::interpolateZForPoint( triMesh, point.x(), point.y() );
 }
 
-void QgsQuantizedMeshTerrainGenerator::writeXml( QDomElement &elem ) const
-{
-  QDomDocument doc = elem.ownerDocument();
-
-  elem.setAttribute( QStringLiteral( "layer" ), mLayerRef.layerId );
-}
-
-void QgsQuantizedMeshTerrainGenerator::readXml( const QDomElement &elem )
-{
-  QgsMapLayerRef layerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
-  // We can't call setLayer yet, the reference is not resolved
-  mLayerRef = layerRef;
-}
-
 void QgsQuantizedMeshTerrainGenerator::resolveReferences( const QgsProject &project )
 {
   mLayerRef.resolve( &project );

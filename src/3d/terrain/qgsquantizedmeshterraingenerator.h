@@ -52,8 +52,6 @@ class _3D_EXPORT QgsQuantizedMeshTerrainGenerator : public QgsTerrainGenerator
     virtual float rootChunkError( const Qgs3DMapSettings &map ) const override;
     virtual void rootChunkHeightRange( float &hMin, float &hMax ) const override;
     virtual float heightAt( double x, double y, const Qgs3DRenderContext &context ) const override;
-    virtual void writeXml( QDomElement &elem ) const override;
-    virtual void readXml( const QDomElement &elem ) override;
     virtual void resolveReferences( const QgsProject &project ) override;
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
     // Root node has zoom=0, x=0, y=0.
