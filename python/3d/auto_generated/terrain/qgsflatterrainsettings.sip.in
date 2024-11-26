@@ -36,6 +36,7 @@ Creates a new instance of a QgsFlatTerrainSettings object.
     void readXml( const QDomElement &element, const QgsReadWriteContext &context ) final;
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const final;
     bool equals( const QgsAbstractTerrainSettings *other ) const final;
+
 };
 
 

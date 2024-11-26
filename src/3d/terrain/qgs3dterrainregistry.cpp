@@ -26,6 +26,8 @@
 #include "qgsonlineterraingenerator.h"
 #include "qgsmeshterraingenerator.h"
 #include "qgsquantizedmeshterraingenerator.h"
+#include "qgsprojectelevationproperties.h"
+#include "qgsterrainprovider.h"
 
 #include <QDomElement>
 
@@ -68,6 +70,41 @@ QgsTerrainGenerator *Qgs3DTerrainRegistry::createTerrainGenerator( const QString
     return nullptr;
 
   return mMetadata[type]->createTerrainGenerator();
+}
+
+QgsAbstractTerrainSettings *Qgs3DTerrainRegistry::configureTerrainFromProject( QgsProjectElevationProperties *properties )
+{
+  if ( properties->terrainProvider()->type() == QLatin1String( "flat" ) )
+  {
+    std::unique_ptr<QgsFlatTerrainSettings> flatTerrain = std::make_unique<QgsFlatTerrainSettings>();
+    flatTerrain->setElevationOffset( properties->terrainProvider()->offset() );
+    return flatTerrain.release();
+  }
+  else if ( properties->terrainProvider()->type() == QLatin1String( "raster" ) )
+  {
+    QgsRasterDemTerrainProvider *rasterProvider = qgis::down_cast<QgsRasterDemTerrainProvider *>( properties->terrainProvider() );
+
+    std::unique_ptr<QgsDemTerrainSettings> demTerrain = std::make_unique<QgsDemTerrainSettings>();
+    demTerrain->setLayer( rasterProvider->layer() );
+    demTerrain->setElevationOffset( properties->terrainProvider()->offset() );
+    demTerrain->setVerticalScale( properties->terrainProvider()->scale() );
+    return demTerrain.release();
+  }
+  else if ( properties->terrainProvider()->type() == QLatin1String( "mesh" ) )
+  {
+    QgsMeshTerrainProvider *meshProvider = qgis::down_cast<QgsMeshTerrainProvider *>( properties->terrainProvider() );
+
+    std::unique_ptr<QgsMeshTerrainSettings> meshTerrain = std::make_unique<QgsMeshTerrainSettings>();
+    meshTerrain->setLayer( meshProvider->layer() );
+    meshTerrain->setElevationOffset( properties->terrainProvider()->offset() );
+    meshTerrain->setVerticalScale( properties->terrainProvider()->scale() );
+    return meshTerrain.release();
+  }
+  else
+  {
+    std::unique_ptr<QgsFlatTerrainSettings> flatTerrain = std::make_unique<QgsFlatTerrainSettings>();
+    return flatTerrain.release();
+  }
 }
 
 Qgs3DTerrainAbstractMetadata *Qgs3DTerrainRegistry::terrainMetadata( const QString &type ) const

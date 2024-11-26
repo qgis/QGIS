@@ -648,46 +648,11 @@ void Qgs3DMapSettings::configureTerrainFromProject( QgsProjectElevationPropertie
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   setExtent( fullExtent );
-  if ( properties->terrainProvider()->type() == QLatin1String( "flat" ) )
+
+  std::unique_ptr<QgsAbstractTerrainSettings> terrainSettings( Qgs3D::terrainRegistry()->configureTerrainFromProject( properties ) );
+  if ( terrainSettings )
   {
-    QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-    flatTerrain->setCrs( crs(), QgsProject::instance()->transformContext() );
-    setTerrainGenerator( flatTerrain );
-
-    setTerrainElevationOffset( properties->terrainProvider()->offset() );
-  }
-  else if ( properties->terrainProvider()->type() == QLatin1String( "raster" ) )
-  {
-    QgsRasterDemTerrainProvider *rasterProvider = qgis::down_cast<QgsRasterDemTerrainProvider *>( properties->terrainProvider() );
-
-    QgsDemTerrainGenerator *demTerrainGen = new QgsDemTerrainGenerator;
-    demTerrainGen->setCrs( crs(), QgsProject::instance()->transformContext() );
-    demTerrainGen->setLayer( rasterProvider->layer() );
-    setTerrainGenerator( demTerrainGen );
-
-    setTerrainElevationOffset( properties->terrainProvider()->offset() );
-    setTerrainVerticalScale( properties->terrainProvider()->scale() );
-  }
-  else if ( properties->terrainProvider()->type() == QLatin1String( "mesh" ) )
-  {
-    QgsMeshTerrainProvider *meshProvider = qgis::down_cast<QgsMeshTerrainProvider *>( properties->terrainProvider() );
-
-    QgsMeshTerrainGenerator *newTerrainGenerator = new QgsMeshTerrainGenerator;
-    newTerrainGenerator->setCrs( crs(), QgsProject::instance()->transformContext() );
-    newTerrainGenerator->setLayer( meshProvider->layer() );
-    std::unique_ptr<QgsMesh3DSymbol> symbol( newTerrainGenerator->symbol()->clone() );
-    symbol->setVerticalScale( properties->terrainProvider()->scale() );
-    newTerrainGenerator->setSymbol( symbol.release() );
-    setTerrainGenerator( newTerrainGenerator );
-
-    setTerrainElevationOffset( properties->terrainProvider()->offset() );
-    setTerrainVerticalScale( properties->terrainProvider()->scale() );
-  }
-  else
-  {
-    QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-    flatTerrain->setCrs( crs(), QgsProject::instance()->transformContext() );
-    setTerrainGenerator( flatTerrain );
+    setTerrainSettings( terrainSettings.release() );
   }
 }
 

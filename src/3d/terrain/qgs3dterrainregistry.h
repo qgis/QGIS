@@ -27,6 +27,8 @@
 class QgsReadWriteContext;
 class QgsAbstractTerrainSettings;
 class QgsTerrainGenerator;
+class QgsProjectElevationProperties;
+class QgsRectangle;
 
 /**
  * \ingroup core
@@ -190,6 +192,11 @@ class _3D_EXPORT Qgs3DTerrainRegistry
      * \note Not available in Python bindings
      */
     SIP_SKIP QgsTerrainGenerator *createTerrainGenerator( const QString &type ) const;
+
+    /**
+     * Create terrain settings directly from a project's elevation \a properties.
+     */
+    QgsAbstractTerrainSettings *configureTerrainFromProject( QgsProjectElevationProperties *properties ) SIP_FACTORY;
 
   private:
 #ifdef SIP_RUN
