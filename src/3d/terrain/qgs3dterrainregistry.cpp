@@ -18,6 +18,7 @@
 
 #include "qgsflatterrainsettings.h"
 #include "qgsdemterrainsettings.h"
+#include "qgsonlinedemterrainsettings.h"
 #include "qgsmeshterrainsettings.h"
 #include "qgsquantizedmeshterrainsettings.h"
 
@@ -28,6 +29,7 @@ Qgs3DTerrainRegistry::Qgs3DTerrainRegistry()
 {
   addType( new Qgs3DTerrainMetadata( QStringLiteral( "flat" ), QObject::tr( "Flat Terrain" ), &QgsFlatTerrainSettings::create ) );
   addType( new Qgs3DTerrainMetadata( QStringLiteral( "dem" ), QObject::tr( "DEM (Raster Layer)" ), &QgsDemTerrainSettings::create ) );
+  addType( new Qgs3DTerrainMetadata( QStringLiteral( "online" ), QObject::tr( "Online" ), &QgsOnlineDemTerrainSettings::create ) );
   addType( new Qgs3DTerrainMetadata( QStringLiteral( "mesh" ), QObject::tr( "Mesh" ), &QgsMeshTerrainSettings::create ) );
   addType( new Qgs3DTerrainMetadata( QStringLiteral( "quantizedmesh" ), QObject::tr( "Quantized Mesh" ), &QgsQuantizedMeshTerrainSettings::create ) );
 }
