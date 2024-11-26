@@ -26,6 +26,7 @@
 #include "qgsmaterial.h"
 #include "qgsmesh3dsymbol.h"
 #include "qgsvector3d.h"
+#include "qgsrange.h"
 
 ///@cond PRIVATE
 

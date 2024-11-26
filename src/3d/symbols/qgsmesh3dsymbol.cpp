@@ -84,7 +84,7 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
   elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-scale" ), mVerticalScale );
   elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-group-index" ), mVerticalDatasetGroupIndex );
   elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-relative" ), mIsVerticalMagnitudeRelative ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  elemAdvancedSettings.setAttribute( QStringLiteral( "texture-type" ), mRenderingStyle );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "texture-type" ), static_cast< int >( mRenderingStyle ) );
   elemAdvancedSettings.appendChild( mColorRampShader.writeXml( doc, context ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "min-color-ramp-shader" ), mColorRampShader.minimumValue() );
   elemAdvancedSettings.setAttribute( QStringLiteral( "max-color-ramp-shader" ), mColorRampShader.maximumValue() );

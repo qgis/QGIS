@@ -93,7 +93,7 @@ void TestQgsMesh3DRendering::initTestCase()
   QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
   symbolMesh3d->setVerticalDatasetGroupIndex( 0 );
   symbolMesh3d->setVerticalScale( 10 );
-  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::ColorRamp2DRendering );
+  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::RenderingStyle::ColorRamp2DRendering );
   symbolMesh3d->setArrowsEnabled( true );
   symbolMesh3d->setArrowsSpacing( 300 );
   QgsMeshLayer3DRenderer *meshDatasetRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
@@ -183,7 +183,7 @@ void TestQgsMesh3DRendering::testMesh_datasetOnFaces()
   QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
   symbolMesh3d->setVerticalDatasetGroupIndex( 3 );
   symbolMesh3d->setVerticalScale( 10 );
-  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::ColorRamp2DRendering );
+  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::RenderingStyle::ColorRamp2DRendering );
   symbolMesh3d->setArrowsEnabled( true );
   symbolMesh3d->setArrowsSpacing( 300 );
   QgsMeshLayer3DRenderer *meshDatasetRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
@@ -296,7 +296,7 @@ void TestQgsMesh3DRendering::testFilteredMesh()
   QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
   symbolMesh3d->setVerticalDatasetGroupIndex( 0 );
   symbolMesh3d->setVerticalScale( 10 );
-  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::ColorRamp2DRendering );
+  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::RenderingStyle::ColorRamp2DRendering );
   symbolMesh3d->setArrowsEnabled( true );
   symbolMesh3d->setArrowsSpacing( 300 );
   QgsMeshLayer3DRenderer *meshDatasetRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
@@ -337,7 +337,7 @@ void TestQgsMesh3DRendering::testMeshClipping()
   QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
   symbolMesh3d->setVerticalDatasetGroupIndex( 3 );
   symbolMesh3d->setVerticalScale( 10 );
-  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::ColorRamp2DRendering );
+  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::RenderingStyle::ColorRamp2DRendering );
   symbolMesh3d->setArrowsEnabled( true );
   symbolMesh3d->setArrowsSpacing( 300 );
   QgsMeshLayer3DRenderer *meshDatasetRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
