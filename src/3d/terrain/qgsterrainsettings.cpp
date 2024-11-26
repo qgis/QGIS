@@ -41,6 +41,15 @@ void QgsAbstractTerrainSettings::readCommonProperties( const QDomElement &elemen
   mTerrainElevationOffset = element.attribute( QStringLiteral( "elevation-offset" ), QStringLiteral( "0.0" ) ).toDouble();
 }
 
+void QgsAbstractTerrainSettings::copyCommonProperties( const QgsAbstractTerrainSettings *source )
+{
+  mTerrainVerticalScale = source->mTerrainVerticalScale;
+  mMapTileResolution = source->mMapTileResolution;
+  mMaxTerrainScreenError = source->mMaxTerrainScreenError;
+  mMaxTerrainGroundError = source->mMaxTerrainGroundError;
+  mTerrainElevationOffset = source->mTerrainElevationOffset;
+}
+
 bool QgsAbstractTerrainSettings::equalsCommon( const QgsAbstractTerrainSettings *other ) const
 {
   return mMapTileResolution == other->mMapTileResolution

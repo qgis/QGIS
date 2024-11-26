@@ -22,9 +22,20 @@ QgsAbstractTerrainSettings *QgsMeshTerrainSettings::create()
   return new QgsMeshTerrainSettings();
 }
 
+QgsMeshTerrainSettings::QgsMeshTerrainSettings()
+  : mSymbol( std::make_unique<QgsMesh3DSymbol>() )
+{
+}
+
+QgsMeshTerrainSettings::~QgsMeshTerrainSettings() = default;
+
 QgsMeshTerrainSettings *QgsMeshTerrainSettings::clone() const
 {
-  return new QgsMeshTerrainSettings( *this );
+  std::unique_ptr<QgsMeshTerrainSettings> cloned = std::make_unique<QgsMeshTerrainSettings>();
+  cloned->mSymbol.reset( mSymbol->clone() );
+  cloned->mLayer = mLayer;
+  cloned->copyCommonProperties( this );
+  return cloned.release();
 }
 
 QString QgsMeshTerrainSettings::type() const
@@ -35,12 +46,20 @@ QString QgsMeshTerrainSettings::type() const
 void QgsMeshTerrainSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   mLayer = QgsMapLayerRef( element.attribute( QStringLiteral( "layer" ) ) );
+  mSymbol->readXml( element.firstChildElement( "symbol" ), context );
   readCommonProperties( element, context );
 }
 
 void QgsMeshTerrainSettings::writeXml( QDomElement &element, const QgsReadWriteContext &context ) const
 {
   element.setAttribute( QStringLiteral( "layer" ), mLayer.layerId );
+
+  {
+    QDomElement elemSymbol = element.ownerDocument().createElement( "symbol" );
+    mSymbol->writeXml( elemSymbol, context );
+    element.appendChild( elemSymbol );
+  }
+
   writeCommonProperties( element, context );
 }
 
@@ -55,6 +74,9 @@ bool QgsMeshTerrainSettings::equals( const QgsAbstractTerrainSettings *other ) c
   if ( !otherMeshTerrain )
     return false;
 
+  if ( *mSymbol != *otherMeshTerrain->mSymbol )
+    return false;
+
   if ( !equalsCommon( otherMeshTerrain ) )
     return false;
 
@@ -65,7 +87,7 @@ std::unique_ptr<QgsTerrainGenerator> QgsMeshTerrainSettings::createTerrainGenera
 {
   std::unique_ptr<QgsMeshTerrainGenerator> generator = std::make_unique<QgsMeshTerrainGenerator>();
   generator->setLayer( layer() );
-  std::unique_ptr<QgsMesh3DSymbol> symbol( generator->symbol()->clone() );
+  std::unique_ptr<QgsMesh3DSymbol> symbol( mSymbol->clone() );
   symbol->setVerticalScale( verticalScale() );
   generator->setSymbol( symbol.release() );
   return generator;
@@ -79,4 +101,14 @@ void QgsMeshTerrainSettings::setLayer( QgsMeshLayer *layer )
 QgsMeshLayer *QgsMeshTerrainSettings::layer() const
 {
   return qobject_cast<QgsMeshLayer *>( mLayer.layer.data() );
+}
+
+QgsMesh3DSymbol *QgsMeshTerrainSettings::symbol() const
+{
+  return mSymbol.get();
+}
+
+void QgsMeshTerrainSettings::setSymbol( QgsMesh3DSymbol *symbol )
+{
+  mSymbol.reset( symbol );
 }
