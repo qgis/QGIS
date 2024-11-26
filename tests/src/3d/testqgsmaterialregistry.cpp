@@ -38,6 +38,8 @@ class DummyMaterialSettings : public QgsAbstractMaterialSettings
     QgsMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique, const QgsMaterialContext & ) const override { return nullptr; }
     QMap<QString, QString> toExportParameters() const override { return QMap<QString, QString>(); }
     QByteArray dataDefinedVertexColorsAsByte( const QgsExpressionContext & ) const override {return QByteArray();}
+    bool equals( const QgsAbstractMaterialSettings * ) const override { return true; }
+
 };
 
 class TestQgsMaterialRegistry : public QgsTest

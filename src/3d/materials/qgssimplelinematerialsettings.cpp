@@ -73,6 +73,15 @@ QgsSimpleLineMaterialSettings *QgsSimpleLineMaterialSettings::clone() const
   return new QgsSimpleLineMaterialSettings( *this );
 }
 
+bool QgsSimpleLineMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
+{
+  const QgsSimpleLineMaterialSettings *otherLine = dynamic_cast< const QgsSimpleLineMaterialSettings * >( other );
+  if ( !otherLine )
+    return false;
+
+  return *this == *otherLine;
+}
+
 void QgsSimpleLineMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mAmbient = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );

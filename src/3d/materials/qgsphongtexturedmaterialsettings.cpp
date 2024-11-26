@@ -63,6 +63,15 @@ QgsPhongTexturedMaterialSettings *QgsPhongTexturedMaterialSettings::clone() cons
   return new QgsPhongTexturedMaterialSettings( *this );
 }
 
+bool QgsPhongTexturedMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
+{
+  const QgsPhongTexturedMaterialSettings *otherPhong = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( other );
+  if ( !otherPhong )
+    return false;
+
+  return *this == *otherPhong;
+}
+
 float QgsPhongTexturedMaterialSettings::textureRotation() const
 {
   return mTextureRotation;

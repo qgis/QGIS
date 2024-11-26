@@ -52,6 +52,7 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
     static QgsAbstractMaterialSettings *create() SIP_FACTORY;
 
     QgsPhongTexturedMaterialSettings *clone() const override SIP_FACTORY;
+    bool equals( const QgsAbstractMaterialSettings *other ) const override;
 
     //! Returns ambient color component
     QColor ambient() const { return mAmbient; }
@@ -139,7 +140,8 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
              mOpacity == other.mOpacity &&
              mDiffuseTexturePath == other.mDiffuseTexturePath &&
              mTextureScale == other.mTextureScale &&
-             mTextureRotation == other.mTextureRotation;
+             mTextureRotation == other.mTextureRotation &&
+             dataDefinedProperties() == other.dataDefinedProperties();
     }
 
   private:

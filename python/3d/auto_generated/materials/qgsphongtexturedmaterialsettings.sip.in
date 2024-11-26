@@ -45,6 +45,8 @@ Returns a new instance of QgsPhongTexturedMaterialSettings.
 
     virtual QgsPhongTexturedMaterialSettings *clone() const /Factory/;
 
+    virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
+
 
     QColor ambient() const;
 %Docstring

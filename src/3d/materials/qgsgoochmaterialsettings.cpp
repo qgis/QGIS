@@ -74,6 +74,15 @@ QgsGoochMaterialSettings *QgsGoochMaterialSettings::clone() const
   return new QgsGoochMaterialSettings( *this );
 }
 
+bool QgsGoochMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
+{
+  const QgsGoochMaterialSettings *otherGooch = dynamic_cast< const QgsGoochMaterialSettings * >( other );
+  if ( !otherGooch )
+    return false;
+
+  return *this == *otherGooch;
+}
+
 void QgsGoochMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mWarm = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "warm" ), QStringLiteral( "107,0,107" ) ) );

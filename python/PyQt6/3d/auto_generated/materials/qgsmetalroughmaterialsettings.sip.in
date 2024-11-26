@@ -45,6 +45,8 @@ Returns a new instance of QgsMetalRoughMaterialSettings.
 
     virtual QgsMetalRoughMaterialSettings *clone() const /Factory/;
 
+    virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
+
 
     QColor baseColor() const;
 %Docstring

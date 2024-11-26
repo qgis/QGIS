@@ -53,6 +53,7 @@ class _3D_EXPORT QgsSimpleLineMaterialSettings : public QgsAbstractMaterialSetti
     static QgsAbstractMaterialSettings *create() SIP_FACTORY;
 
     QgsSimpleLineMaterialSettings *clone() const override SIP_FACTORY;
+    bool equals( const QgsAbstractMaterialSettings *other ) const override;
 
     /**
      * Returns the ambient color component.
@@ -85,7 +86,8 @@ class _3D_EXPORT QgsSimpleLineMaterialSettings : public QgsAbstractMaterialSetti
     // TODO c++20 - replace with = default
     bool operator==( const QgsSimpleLineMaterialSettings &other ) const
     {
-      return mAmbient == other.mAmbient;
+      return mAmbient == other.mAmbient &&
+             dataDefinedProperties() == other.dataDefinedProperties();
     }
 
   private:
