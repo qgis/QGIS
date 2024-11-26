@@ -9,12 +9,19 @@ the Free Software Foundation; either version 2 of the License, or
 from qgis.PyQt.QtXml import (
     QDomDocument,
 )
-from qgis.core import QgsProject, QgsRasterLayer, QgsMeshLayer, QgsReadWriteContext
+from qgis.core import (
+    QgsProject,
+    QgsRasterLayer,
+    QgsMeshLayer,
+    QgsTiledSceneLayer,
+    QgsReadWriteContext,
+)
 from qgis._3d import (
     QgsFlatTerrainSettings,
     QgsDemTerrainSettings,
     QgsMeshTerrainSettings,
     Qgs3DTerrainRegistry,
+    QgsQuantizedMeshTerrainSettings,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -275,12 +282,91 @@ class TestQgs3DTerrain(QgisTestCase):
         self.assertEqual(settings3.maximumGroundError(), 14.5)
         self.assertEqual(settings3.elevationOffset(), 24.5)
 
+    def test_quantized_mesh_terrain(self):
+        p = QgsProject()
+        ml = QgsTiledSceneLayer("not valid", "layer1")
+        ml2 = QgsTiledSceneLayer("not valid", "layer2")
+        p.addMapLayer(ml)
+        p.addMapLayer(ml2)
+
+        settings = QgsQuantizedMeshTerrainSettings.create()
+        self.assertIsInstance(settings, QgsQuantizedMeshTerrainSettings)
+
+        settings.setLayer(ml)
+        self.assertEqual(settings.layer(), ml)
+
+        self.assertEqual(settings.verticalScale(), 1)
+        settings.setVerticalScale(3)
+        self.assertEqual(settings.verticalScale(), 3)
+
+        self.assertEqual(settings.mapTileResolution(), 512)
+        settings.setMapTileResolution(36)
+        self.assertEqual(settings.mapTileResolution(), 36)
+
+        self.assertEqual(settings.maximumScreenError(), 3.0)
+        settings.setMaximumScreenError(4.5)
+        self.assertEqual(settings.maximumScreenError(), 4.5)
+
+        self.assertEqual(settings.maximumGroundError(), 1)
+        settings.setMaximumGroundError(14.5)
+        self.assertEqual(settings.maximumGroundError(), 14.5)
+
+        self.assertEqual(settings.elevationOffset(), 0)
+        settings.setElevationOffset(24.5)
+        self.assertEqual(settings.elevationOffset(), 24.5)
+
+        # clone
+        settings2 = settings.clone()
+        self.assertEqual(settings2.layer(), ml)
+        self.assertEqual(settings2.verticalScale(), 3)
+        self.assertEqual(settings2.mapTileResolution(), 36)
+        self.assertEqual(settings2.maximumScreenError(), 4.5)
+        self.assertEqual(settings2.maximumGroundError(), 14.5)
+        self.assertEqual(settings2.elevationOffset(), 24.5)
+        self.assertTrue(settings2.equals(settings))
+
+        # equals
+        settings2.setLayer(ml2)
+        self.assertFalse(settings2.equals(settings))
+        settings2 = settings.clone()
+        settings2.setVerticalScale(4)
+        self.assertFalse(settings2.equals(settings))
+        settings2 = settings.clone()
+        settings2.setMapTileResolution(136)
+        self.assertFalse(settings2.equals(settings))
+        settings2 = settings.clone()
+        settings2.setMaximumScreenError(136)
+        self.assertFalse(settings2.equals(settings))
+        settings2 = settings.clone()
+        settings2.setMaximumGroundError(136)
+        self.assertFalse(settings2.equals(settings))
+        settings2 = settings.clone()
+        settings2.setElevationOffset(136)
+        self.assertFalse(settings2.equals(settings))
+
+        # read/write xml
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("test")
+        settings.writeXml(elem, QgsReadWriteContext())
+
+        settings3 = QgsQuantizedMeshTerrainSettings()
+        settings3.readXml(elem, QgsReadWriteContext())
+        self.assertIsNone(settings3.layer())
+        settings3.resolveReferences(p)
+        self.assertEqual(settings3.layer(), ml)
+        self.assertEqual(settings3.verticalScale(), 3)
+        self.assertEqual(settings3.mapTileResolution(), 36)
+        self.assertEqual(settings3.maximumScreenError(), 4.5)
+        self.assertEqual(settings3.maximumGroundError(), 14.5)
+        self.assertEqual(settings3.elevationOffset(), 24.5)
+
     def test_registry(self):
         registry = Qgs3DTerrainRegistry()
         # registry should be populated with known types
         self.assertIn("flat", registry.types())
         self.assertIn("dem", registry.types())
         self.assertIn("mesh", registry.types())
+        self.assertIn("quantizedmesh", registry.types())
 
         # check settings
         settings = registry.createTerrainSettings("flat")
@@ -289,6 +375,8 @@ class TestQgs3DTerrain(QgisTestCase):
         self.assertIsInstance(settings, QgsDemTerrainSettings)
         settings = registry.createTerrainSettings("mesh")
         self.assertIsInstance(settings, QgsMeshTerrainSettings)
+        settings = registry.createTerrainSettings("quantizedmesh")
+        self.assertIsInstance(settings, QgsQuantizedMeshTerrainSettings)
 
 
 if __name__ == "__main__":
