@@ -53,6 +53,7 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
     static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
 
     QgsGoochMaterialSettings *clone() const override SIP_FACTORY;
+    bool equals( const QgsAbstractMaterialSettings *other ) const override;
 
     //! Returns warm color component
     QColor warm() const { return mWarm; }
@@ -119,7 +120,8 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
              mCool == other.mCool &&
              mShininess == other.mShininess &&
              mAlpha == other.mAlpha &&
-             mBeta == other.mBeta;
+             mBeta == other.mBeta &&
+             dataDefinedProperties() == other.dataDefinedProperties();
     }
 
   private:

@@ -51,6 +51,7 @@ class _3D_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSetti
     static QgsAbstractMaterialSettings *create() SIP_FACTORY;
 
     QgsMetalRoughMaterialSettings *clone() const override SIP_FACTORY;
+    bool equals( const QgsAbstractMaterialSettings *other ) const override;
 
     /**
      * Returns the base material color.
@@ -109,7 +110,8 @@ class _3D_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSetti
     {
       return mBaseColor == other.mBaseColor &&
              mMetalness == other.mMetalness &&
-             mRoughness == other.mRoughness;
+             mRoughness == other.mRoughness &&
+             dataDefinedProperties() == other.dataDefinedProperties();
     }
 
   private:
