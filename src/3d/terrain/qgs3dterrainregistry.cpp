@@ -21,17 +21,22 @@
 #include "qgsonlinedemterrainsettings.h"
 #include "qgsmeshterrainsettings.h"
 #include "qgsquantizedmeshterrainsettings.h"
+#include "qgsflatterraingenerator.h"
+#include "qgsdemterraingenerator.h"
+#include "qgsonlineterraingenerator.h"
+#include "qgsmeshterraingenerator.h"
+#include "qgsquantizedmeshterraingenerator.h"
 
 #include <QDomElement>
 
 
 Qgs3DTerrainRegistry::Qgs3DTerrainRegistry()
 {
-  addType( new Qgs3DTerrainMetadata( QStringLiteral( "flat" ), QObject::tr( "Flat Terrain" ), &QgsFlatTerrainSettings::create ) );
-  addType( new Qgs3DTerrainMetadata( QStringLiteral( "dem" ), QObject::tr( "DEM (Raster Layer)" ), &QgsDemTerrainSettings::create ) );
-  addType( new Qgs3DTerrainMetadata( QStringLiteral( "online" ), QObject::tr( "Online" ), &QgsOnlineDemTerrainSettings::create ) );
-  addType( new Qgs3DTerrainMetadata( QStringLiteral( "mesh" ), QObject::tr( "Mesh" ), &QgsMeshTerrainSettings::create ) );
-  addType( new Qgs3DTerrainMetadata( QStringLiteral( "quantizedmesh" ), QObject::tr( "Quantized Mesh" ), &QgsQuantizedMeshTerrainSettings::create ) );
+  addType( new Qgs3DTerrainMetadata( QStringLiteral( "flat" ), QObject::tr( "Flat Terrain" ), &QgsFlatTerrainSettings::create, &QgsFlatTerrainGenerator::create ) );
+  addType( new Qgs3DTerrainMetadata( QStringLiteral( "dem" ), QObject::tr( "DEM (Raster Layer)" ), &QgsDemTerrainSettings::create, &QgsDemTerrainGenerator::create ) );
+  addType( new Qgs3DTerrainMetadata( QStringLiteral( "online" ), QObject::tr( "Online" ), &QgsOnlineDemTerrainSettings::create, &QgsOnlineTerrainGenerator::create ) );
+  addType( new Qgs3DTerrainMetadata( QStringLiteral( "mesh" ), QObject::tr( "Mesh" ), &QgsMeshTerrainSettings::create, &QgsMeshTerrainGenerator::create ) );
+  addType( new Qgs3DTerrainMetadata( QStringLiteral( "quantizedmesh" ), QObject::tr( "Quantized Mesh" ), &QgsQuantizedMeshTerrainSettings::create, &QgsQuantizedMeshTerrainGenerator::create ) );
 }
 
 Qgs3DTerrainRegistry::~Qgs3DTerrainRegistry()
@@ -55,6 +60,14 @@ QgsAbstractTerrainSettings *Qgs3DTerrainRegistry::createTerrainSettings( const Q
     return nullptr;
 
   return mMetadata[type]->createTerrainSettings();
+}
+
+QgsTerrainGenerator *Qgs3DTerrainRegistry::createTerrainGenerator( const QString &type ) const
+{
+  if ( !mMetadata.contains( type ) )
+    return nullptr;
+
+  return mMetadata[type]->createTerrainGenerator();
 }
 
 Qgs3DTerrainAbstractMetadata *Qgs3DTerrainRegistry::terrainMetadata( const QString &type ) const

@@ -35,6 +35,11 @@ class _3D_EXPORT QgsMeshTerrainGenerator : public QgsTerrainGenerator
 {
     Q_OBJECT
   public:
+    /**
+     * Creates a new instance of a QgsMeshTerrainGenerator object.
+     */
+    static QgsTerrainGenerator *create() SIP_FACTORY;
+
     //! Creates mesh terrain generator object
     QgsMeshTerrainGenerator();
 

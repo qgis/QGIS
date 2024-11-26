@@ -91,6 +91,11 @@ void QgsOnlineTerrainGenerator::readXml( const QDomElement &elem )
   // crs is not read/written - it should be the same as destination crs of the map
 }
 
+QgsTerrainGenerator *QgsOnlineTerrainGenerator::create()
+{
+  return new QgsOnlineTerrainGenerator();
+}
+
 void QgsOnlineTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context )
 {
   mCrs = crs;

@@ -52,6 +52,11 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
 {
     Q_OBJECT
   public:
+    /**
+     * Creates a new instance of a QgsFlatTerrainGenerator object.
+     */
+    static QgsTerrainGenerator *create() SIP_FACTORY;
+
     QgsFlatTerrainGenerator() = default;
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;

@@ -22,6 +22,11 @@
 #include "qgsrasterlayer.h"
 #include "qgscoordinatetransform.h"
 
+QgsTerrainGenerator *QgsDemTerrainGenerator::create()
+{
+  return new QgsDemTerrainGenerator();
+}
+
 QgsDemTerrainGenerator::~QgsDemTerrainGenerator()
 {
   delete mHeightMapGenerator;

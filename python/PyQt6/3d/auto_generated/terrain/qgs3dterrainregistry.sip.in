@@ -58,6 +58,7 @@ Creates a new instance of this terrain settings type.
 Caller takes ownership of the returned object.
 %End
 
+
 };
 
 
@@ -105,6 +106,7 @@ The caller takes ownership of the returned object.
 
 Returns ``None`` if the specified type is not found in the registry.
 %End
+
 
   private:
     Qgs3DTerrainRegistry( const Qgs3DTerrainRegistry &rh );

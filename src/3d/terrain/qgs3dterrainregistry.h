@@ -26,6 +26,7 @@
 
 class QgsReadWriteContext;
 class QgsAbstractTerrainSettings;
+class QgsTerrainGenerator;
 
 /**
  * \ingroup core
@@ -74,6 +75,15 @@ class _3D_EXPORT Qgs3DTerrainAbstractMetadata
      */
     virtual QgsAbstractTerrainSettings *createTerrainSettings() = 0 SIP_FACTORY;
 
+    /**
+     * Creates a new instance of this terrain generator type.
+     *
+     * Caller takes ownership of the returned object.
+     *
+     * \note Not available in Python bindings
+     */
+    SIP_SKIP virtual QgsTerrainGenerator *createTerrainGenerator() { return nullptr; }
+
   private:
     QString mType;
     QString mVisibleName;
@@ -81,7 +91,9 @@ class _3D_EXPORT Qgs3DTerrainAbstractMetadata
 };
 
 //! Terrain settings creation function
-typedef QgsAbstractTerrainSettings *( *QgsTerrainSettingsCreateFunc )() SIP_SKIP;
+SIP_SKIP typedef QgsAbstractTerrainSettings *( *QgsTerrainSettingsCreateFunc )();
+//! Terrain generator creation function
+SIP_SKIP typedef QgsTerrainGenerator *( *QgsTerrainGeneratorCreateFunc )();
 
 #ifndef SIP_RUN
 
@@ -99,25 +111,33 @@ class _3D_EXPORT Qgs3DTerrainMetadata : public Qgs3DTerrainAbstractMetadata
     /**
      * Constructor for Qgs3DTerrainMetadata, with the specified \a type and \a visibleName.
      *
-     * The \a pfCreate argument is used to specify
-     * a static function for creating the terrain settings.
+     * The \a pfSettingsCreate and \a pfGeneratorCreate arguments are used to specify
+     * static functions for creating the terrain objects.
      *
      * An optional \a icon can be specified to represent the terrain type.
      */
-    Qgs3DTerrainMetadata( const QString &type, const QString &visibleName, QgsTerrainSettingsCreateFunc pfCreate, const QIcon &icon = QIcon() )
+    Qgs3DTerrainMetadata( const QString &type, const QString &visibleName, QgsTerrainSettingsCreateFunc pfSettingsCreate, QgsTerrainGeneratorCreateFunc pfGeneratorCreate, const QIcon &icon = QIcon() )
       : Qgs3DTerrainAbstractMetadata( type, visibleName, icon )
-      , mCreateFunc( pfCreate )
+      , mCreateFunc( pfSettingsCreate )
+      , mGeneratorCreateFunc( pfGeneratorCreate )
     {}
 
     /**
      * Returns the terrain setting's creation function.
      */
-    QgsTerrainSettingsCreateFunc createFunction() const { return mCreateFunc; }
+    QgsTerrainSettingsCreateFunc createSettingsFunction() const { return mCreateFunc; }
+
+    /**
+     * Returns the terrain generator creation function.
+     */
+    QgsTerrainGeneratorCreateFunc createGeneratorFunction() const { return mGeneratorCreateFunc; }
 
     QgsAbstractTerrainSettings *createTerrainSettings() override SIP_FACTORY { return mCreateFunc ? mCreateFunc() : nullptr; }
+    QgsTerrainGenerator *createTerrainGenerator() override { return mGeneratorCreateFunc ? mGeneratorCreateFunc() : nullptr; }
 
   private:
     QgsTerrainSettingsCreateFunc mCreateFunc;
+    QgsTerrainGeneratorCreateFunc mGeneratorCreateFunc;
 };
 #endif
 
@@ -159,6 +179,17 @@ class _3D_EXPORT Qgs3DTerrainRegistry
      * Returns NULLPTR if the specified type is not found in the registry.
      */
     QgsAbstractTerrainSettings *createTerrainSettings( const QString &type ) const SIP_FACTORY;
+
+    /**
+     * Creates a new instance of the terrain generator of the specified \a type.
+     *
+     * The caller takes ownership of the returned object.
+     *
+     * Returns NULLPTR if the specified type is not found in the registry.
+     *
+     * \note Not available in Python bindings
+     */
+    SIP_SKIP QgsTerrainGenerator *createTerrainGenerator( const QString &type ) const;
 
   private:
 #ifdef SIP_RUN
