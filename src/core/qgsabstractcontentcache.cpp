@@ -45,7 +45,7 @@ void QgsAbstractContentCacheBase::onRemoteContentFetched( const QString &, bool 
 
 bool QgsAbstractContentCacheBase::parseBase64DataUrl( const QString &path, QString *mimeType, QString *data )
 {
-  const thread_local QRegularExpression sRx( QStringLiteral( "^data:([a-zA-Z0-9+]*\\/[a-zA-Z0-9+]*?)(?:;(base64|utf8))?,(.*)$" ) );
+  const thread_local QRegularExpression sRx( QStringLiteral( "^data:([a-zA-Z0-9+\\-]*\\/[a-zA-Z0-9+\\-]*?)(?:;(base64|utf8))?,(.*)$" ) );
   const QRegularExpressionMatch base64Match = sRx.match( path );
   if ( !base64Match.hasMatch() )
     return false;
