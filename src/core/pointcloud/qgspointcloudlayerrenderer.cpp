@@ -18,24 +18,26 @@
 #include <QElapsedTimer>
 #include <QPointer>
 
-#include "qgspointcloudlayerrenderer.h"
-#include "qgspointcloudlayer.h"
-#include "qgsrendercontext.h"
-#include "qgspointcloudindex.h"
+#include "qgsapplication.h"
 #include "qgscolorramp.h"
 #include "qgselevationmap.h"
-#include "qgsmeshlayerutils.h"
-#include "qgspointcloudrequest.h"
-#include "qgspointcloudattribute.h"
-#include "qgspointcloudrenderer.h"
-#include "qgspointcloudextentrenderer.h"
 #include "qgslogger.h"
-#include "qgspointcloudlayerelevationproperties.h"
-#include "qgsmessagelog.h"
 #include "qgsmapclippingutils.h"
+#include "qgsmeshlayerutils.h"
+#include "qgsmessagelog.h"
+#include "qgspointcloudattribute.h"
 #include "qgspointcloudblockrequest.h"
+#include "qgspointcloudextentrenderer.h"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayerelevationproperties.h"
+#include "qgspointcloudlayerrenderer.h"
+#include "qgspointcloudrenderer.h"
+#include "qgspointcloudrequest.h"
+#include "qgsrendercontext.h"
 #include "qgsruntimeprofiler.h"
-#include "qgsapplication.h"
+#include "qgsstyle.h"
+#include "qgstextrenderer.h"
 
 #include <delaunator.hpp>
 
@@ -211,6 +213,16 @@ bool QgsPointCloudLayerRenderer::render()
         // when dealing with virtual point clouds, we want to render the individual extents when zoomed out
         // and only use the selected renderer when zoomed in
         mSubIndexExtentRenderer->renderExtent( si.polygonBounds(), context );
+        // render the label of point cloud tile
+        QString text = si.uri().section( "/", -1 );
+        double textWidth = QgsTextRenderer::textWidth( context.renderContext(), QgsStyle::defaultStyle()->textFormat( "Default" ), QStringList() << text );
+        QRectF rect = context.renderContext().mapToPixel().transformBounds( si.extent().toRectF() );
+        if ( textWidth < rect.width() )
+        {
+          QgsTextFormat textFormat = QgsStyle::defaultStyle()->textFormat( "Default" );
+          textFormat.buffer().setEnabled( true );
+          QgsTextRenderer::drawText( rect, 0, Qgis::TextHorizontalAlignment::Center, QStringList() << text, context.renderContext(), textFormat, true, Qgis::TextVerticalAlignment::VerticalCenter );
+        }
       }
       else
       {
