@@ -56,6 +56,8 @@ class QgsStacItemListModel : public QAbstractListModel
     void setCollections( const QVector< QgsStacCollection * > &collections );
     //! Add items to the model. Takes ownership
     void addItems( const QVector< QgsStacItem * > &items );
+    //! Returns all items in the model. Does not transfer ownership
+    QVector< QgsStacItem * > items() const;
 
   private:
     QVector< QgsStacItem * > mItems;

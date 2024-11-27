@@ -30,6 +30,7 @@
 class QgsStacSearchParametersDialog;
 class QgsStacItemListModel;
 class QgsStacController;
+class QgsRubberBand;
 
 
 class GUI_EXPORT QgsStacSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsStacSourceSelectBase
@@ -41,6 +42,9 @@ class GUI_EXPORT QgsStacSourceSelect : public QgsAbstractDataSourceWidget, priva
     QgsStacSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
     //! Destructor
     ~QgsStacSourceSelect() override;
+
+    void hideEvent( QHideEvent *e ) override;
+    void showEvent( QShowEvent *e ) override;
 
     void addButtonClicked() override;
 
@@ -79,7 +83,7 @@ class GUI_EXPORT QgsStacSourceSelect : public QgsAbstractDataSourceWidget, priva
     //! Called when double clicking a result item
     void onItemDoubleClicked( const QModelIndex &index );
 
-    //! Enables Add Layers button based on current item
+    //! Enables Add Layers button based on current item, updates rubber bands
     void onCurrentItemChanged( const QModelIndex &current, const QModelIndex &previous );
 
   private:
@@ -93,6 +97,9 @@ class GUI_EXPORT QgsStacSourceSelect : public QgsAbstractDataSourceWidget, priva
 
     void showItemsContextMenu( QPoint point );
 
+    void highlightFootprint( const QModelIndex &index );
+    void showFootprints( bool enable );
+
     QString mCollectionsUrl;
     QString mSearchUrl;
     QUrl mNextPageUrl;
@@ -100,6 +107,8 @@ class GUI_EXPORT QgsStacSourceSelect : public QgsAbstractDataSourceWidget, priva
     QgsStacController *mStac = nullptr;
     QgsStacItemListModel *mItemsModel = nullptr;
     QgsStacSearchParametersDialog *mParametersDialog = nullptr;
+    std::unique_ptr<QgsRubberBand> mCurrentItemBand;
+    QVector<QgsRubberBand *> mRubberBands;
 };
 
 ///@endcond

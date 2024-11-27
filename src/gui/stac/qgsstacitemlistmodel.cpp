@@ -105,6 +105,10 @@ QVariant QgsStacItemListModel::data( const QModelIndex &index, int role ) const
       }
       return QStringList( formats.cbegin(), formats.cend() );
     }
+    case Role::Geometry:
+    {
+      return QVariant::fromValue( mItems.at( index.row() )->geometry() );
+    }
   }
 
   return QVariant();
@@ -174,6 +178,11 @@ void QgsStacItemListModel::addItems( const QVector<QgsStacItem *> &items )
       nextItemIndex++;
     }
   }
+}
+
+QVector<QgsStacItem *> QgsStacItemListModel::items() const
+{
+  return mItems;
 }
 
 
