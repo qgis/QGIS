@@ -583,9 +583,6 @@ void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnCreation()
   // remove edits
   layer->rollBackFrameEditing( transform, false );
 
-  // remove edits
-  layer->rollBackFrameEditing( transform, false );
-
   // start editing again
   layer->startFrameEditing( transform, error, false );
   mEditMeshMapTool->mZValueWidget->setDefaultValue( defaultZ );
