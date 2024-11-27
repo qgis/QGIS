@@ -17,9 +17,6 @@
 #include "moc_qgsmaptooleditmeshframe.cpp"
 
 #include <QMessageBox>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QCheckBox>
 #include <QLocale>
 
 #include "qgis.h"
@@ -64,12 +61,9 @@
 
 QgsZValueWidget::QgsZValueWidget( const QString &label, QWidget *parent ): QWidget( parent )
 {
-  QVBoxLayout *mainLayout = new QVBoxLayout( this );
-  mainLayout->setContentsMargins( 0, 0, 0, 0 );
-  setLayout( mainLayout );
-
-  QHBoxLayout *layout = new QHBoxLayout();
+  QHBoxLayout *layout = new QHBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
+  setLayout( layout );
 
   if ( !label.isEmpty() )
   {
@@ -89,8 +83,6 @@ QgsZValueWidget::QgsZValueWidget( const QString &label, QWidget *parent ): QWidg
   mZValueSpinBox->clear();
 
   mZValueSpinBox->setFocusPolicy( Qt::NoFocus );
-
-  mainLayout->addLayout( layout );
 }
 
 double QgsZValueWidget::zValue() const
