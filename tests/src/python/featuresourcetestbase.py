@@ -89,7 +89,7 @@ class FeatureSourceTestCase:
             # force the num_char attribute to be text - some sources (e.g., delimited text) will
             # automatically detect that this attribute contains numbers and set it as a numeric
             # field
-            attrs[4] = str(attrs[4])
+            attrs[4] = 'NULL' if attrs[4] is None else str(attrs[4])
             attributes[f['pk']] = attrs
             geometries[f['pk']] = f.hasGeometry() and f.geometry().asWkt()
 
