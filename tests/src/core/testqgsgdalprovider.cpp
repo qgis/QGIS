@@ -723,7 +723,11 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.count(), 4 );
   QCOMPARE( res.at( 0 ).layerNumber(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "SENTINEL2_L2A:/vsizip/%1/zip/S2A_MSIL2A_0000.zip/S2A_MSIL2A_0000.SAFE/MTD_MSIL2A.xml:10m:EPSG_32634" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 9, 0)
+  QCOMPARE( res.at( 0 ).description(), QString( "Bands B2, B3, B4, B8, AOT, WVP with 10m resolution, UTM 34N" ) );
+#else
   QCOMPARE( res.at( 0 ).description(), QString( "Bands B2, B3, B4, B8 with 10m resolution, UTM 34N" ) );
+#endif
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "SENTINEL2_L2A:/vsizip/%1/zip/S2A_MSIL2A_0000.zip/S2A_MSIL2A_0000.SAFE/MTD_MSIL2A.xml:10m:EPSG_32634" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Raster );
