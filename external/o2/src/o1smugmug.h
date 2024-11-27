@@ -42,7 +42,7 @@ public:
     };
     Q_ENUM(Permissions)
 
-    Q_INVOKABLE void initAuthorizationUrl(Access access, Permissions permissions);
+    Q_INVOKABLE void initAuthorizationUrl(O1SmugMug::Access access, O1SmugMug::Permissions permissions);
 
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
     class AuthorizationUrlBuilder {

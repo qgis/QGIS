@@ -31,8 +31,8 @@ void O2Uber::onVerificationReceived(const QMap<QString, QString> response){
 
     if (response.contains("error")) {
         qWarning() << "O2Uber::onVerificationReceived: Verification failed";
-        foreach (QString key, response.keys()) {
-            qWarning() << "O2Uber::onVerificationReceived:" << key << response.value(key);
+        for (auto it=response.constBegin(); it!=response.constEnd(); ++it) {
+            qWarning() << "O2Uber::onVerificationReceived:" << it.key() << it.value();
         }
         Q_EMIT linkingFailed();
         return;
@@ -43,7 +43,7 @@ void O2Uber::onVerificationReceived(const QMap<QString, QString> response){
 
     // Exchange access code for access/refresh tokens
     QUrl url(tokenUrl_);
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
     url.addQueryItem(O2_OAUTH2_CLIENT_ID, clientId_);
     url.addQueryItem(O2_OAUTH2_CLIENT_SECRET, clientSecret_);
     url.addQueryItem(O2_OAUTH2_GRANT_TYPE, UberGrantType);
@@ -65,11 +65,11 @@ void O2Uber::onVerificationReceived(const QMap<QString, QString> response){
     tokenRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     QNetworkReply *tokenReply = manager_->post(tokenRequest, QByteArray());
     timedReplies_.add(tokenReply);
-    connect(tokenReply, SIGNAL(finished()), this, SLOT(onTokenReplyFinished()), Qt::QueuedConnection);
-#if QT_VERSION < 0x051500
+    connect(tokenReply, &QNetworkReply::finished, this, &O2Uber::onTokenReplyFinished, Qt::QueuedConnection);
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
     connect(tokenReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onTokenReplyError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
 #else
-    connect(tokenReply, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this, SLOT(onTokenReplyError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
+    connect(tokenReply, &QNetworkReply::errorOccurred, this, &O2Uber::onTokenReplyError, Qt::QueuedConnection);
 #endif
 }
 
@@ -84,7 +84,8 @@ void O2Uber::onTokenReplyFinished(){
         const QJsonObject rootObject = doc.object();
 
         QVariantMap reply;
-        for (const QString &key : rootObject.keys()) {
+        const QStringList keys = rootObject.keys();
+        for (const QString &key : keys) {
             reply.insert(key, rootObject[key].toVariant());
         }
 

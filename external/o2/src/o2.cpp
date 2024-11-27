@@ -162,7 +162,10 @@ QString O2::grantType()
 
 void O2::setGrantType(const QString &value)
 {
+    if (grantType_ == value)
+        return;
     grantType_ = value;
+    Q_EMIT grantTypeChanged(grantType_);
 }
 
 void O2::link() {
@@ -192,7 +195,7 @@ void O2::link() {
     setRefreshToken(QString());
     setExpires(0);
 
-    if (grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowImplicit) {
+    if (grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowImplicit || grantFlow_ == GrantFlowPkce) {
 
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
         const thread_local QRegularExpression rx("([^a-zA-Z0-9]|[-])");
@@ -232,6 +235,17 @@ void O2::link() {
         parameters.append(qMakePair(QString(O2_OAUTH2_STATE), uniqueState));
         if ( !apiKey_.isEmpty() )
             parameters.append(qMakePair(QString(O2_OAUTH2_API_KEY), apiKey_));
+
+        if ( grantFlow_ == GrantFlowPkce )
+        {
+            pkceCodeVerifier_ = ( QUuid::createUuid().toString( QUuid::WithoutBraces ) +
+                                 QUuid::createUuid().toString( QUuid::WithoutBraces ) ).toLatin1();
+            pkceCodeChallenge_ = QCryptographicHash::hash( pkceCodeVerifier_, QCryptographicHash::Sha256 ).toBase64(
+                QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals );
+            parameters.append( qMakePair( QString( O2_OAUTH2_PKCE_CODE_CHALLENGE_PARAM ), pkceCodeChallenge_ ) );
+            parameters.append( qMakePair( QString( O2_OAUTH2_PKCE_CODE_CHALLENGE_METHOD_PARAM ), QString( O2_OAUTH2_PKCE_CODE_CHALLENGE_METHOD_S256 ) ) );
+        }
+
         const QVariantMap extraParams = extraRequestParams();
         for (auto it = extraParams.constBegin(); it != extraParams.constEnd(); ++it) {
             parameters.append(qMakePair(it.key(), it.value().toString()));
@@ -320,7 +334,7 @@ void O2::onVerificationReceived(const QMap<QString, QString> response) {
         return;
     }
 
-    if (grantFlow_ == GrantFlowAuthorizationCode) {
+    if (grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowPkce ) {
         // Save access code
         setCode(response.value(QString(O2_OAUTH2_GRANT_TYPE_CODE)));
 
@@ -334,9 +348,17 @@ void O2::onVerificationReceived(const QMap<QString, QString> response) {
         QMap<QString, QString> parameters;
         parameters.insert(O2_OAUTH2_GRANT_TYPE_CODE, code());
         parameters.insert(O2_OAUTH2_CLIENT_ID, clientId_);
-        parameters.insert(O2_OAUTH2_CLIENT_SECRET, clientSecret_);
+        //No client secret with PKCE
+        if ( grantFlow_ != GrantFlowPkce )
+        {
+            parameters.insert(O2_OAUTH2_CLIENT_SECRET, clientSecret_);
+        }
         parameters.insert(O2_OAUTH2_REDIRECT_URI, redirectUri_);
         parameters.insert(O2_OAUTH2_GRANT_TYPE, O2_AUTHORIZATION_CODE);
+        if ( grantFlow() == GrantFlowPkce )
+        {
+            parameters.insert( O2_OAUTH2_PKCE_CODE_VERIFIER_PARAM, pkceCodeVerifier_ );
+        }
         QByteArray data = buildRequestBody(parameters);
 
         log( QStringLiteral("O2::onVerificationReceived: Exchange access code data:\n%1").arg(QString(data)) );
@@ -360,10 +382,10 @@ void O2::onVerificationReceived(const QMap<QString, QString> response) {
           setToken(response.value(O2_OAUTH2_ACCESS_TOKEN));
           if (response.contains(O2_OAUTH2_EXPIRES_IN)) {
             bool ok = false;
-            int expiresIn = response.value(O2_OAUTH2_EXPIRES_IN).toInt(&ok);
+            const int expiresIn = response.value(O2_OAUTH2_EXPIRES_IN).toInt(&ok);
             if (ok) {
                 log( QStringLiteral("O2::onVerificationReceived: Token expires in %1 seconds" ).arg( expiresIn ) );
-                setExpires((int)(QDateTime::currentMSecsSinceEpoch() / 1000 + expiresIn));
+                setExpires(QDateTime::currentMSecsSinceEpoch() / 1000 + static_cast< qint64 >( expiresIn ));
             }
           }
           if (response.contains(O2_OAUTH2_REFRESH_TOKEN)) {
@@ -421,10 +443,10 @@ void O2::onTokenReplyFinished() {
             log( QStringLiteral("O2::onTokenReplyFinished: Access token returned") );
             setToken(tokens.take(O2_OAUTH2_ACCESS_TOKEN).toString());
             bool ok = false;
-            int expiresIn = tokens.take(O2_OAUTH2_EXPIRES_IN).toInt(&ok);
+            const int expiresIn = tokens.take(O2_OAUTH2_EXPIRES_IN).toInt(&ok);
             if (ok) {
                 log( QStringLiteral("O2::onTokenReplyFinished: Token expires in %1 seconds").arg( expiresIn ) );
-                setExpires((int)(QDateTime::currentMSecsSinceEpoch() / 1000 + expiresIn));
+                setExpires(QDateTime::currentMSecsSinceEpoch() / 1000 + static_cast< qint64 >( expiresIn ));
             }
             setRefreshToken(tokens.take(O2_OAUTH2_REFRESH_TOKEN).toString());
             setExtraTokens(tokens);
@@ -469,12 +491,12 @@ QByteArray O2::buildRequestBody(const QMap<QString, QString> &parameters) {
     return body;
 }
 
-int O2::expires() {
+qint64 O2::expires() {
     QString key = QString(O2_KEY_EXPIRES).arg(clientId_);
-    return store_->value(key).toInt();
+    return store_->value(key).toLongLong();
 }
 
-void O2::setExpires(int v) {
+void O2::setExpires(qint64 v) {
     QString key = QString(O2_KEY_EXPIRES).arg(clientId_);
     store_->setValue(key, QString::number(v));
 }
@@ -487,7 +509,7 @@ QNetworkAccessManager *O2::getManager()
 void O2::startPollServer(const QVariantMap &params)
 {
     bool ok = false;
-    int expiresIn = params[O2_OAUTH2_EXPIRES_IN].toInt(&ok);
+    const int expiresIn = params[O2_OAUTH2_EXPIRES_IN].toInt(&ok);
     if (!ok) {
         log( QStringLiteral("O2::startPollServer: No expired_in parameter"), O0BaseAuth::LogLevel::Warning );
         Q_EMIT linkingFailed();
@@ -586,7 +608,7 @@ void O2::onRefreshFinished() {
         else
         {
           setToken(tokens.value(O2_OAUTH2_ACCESS_TOKEN).toString());
-          setExpires((int)(QDateTime::currentMSecsSinceEpoch() / 1000 + tokens.value(O2_OAUTH2_EXPIRES_IN).toInt()));
+          setExpires(QDateTime::currentMSecsSinceEpoch() / 1000 + static_cast<qint64>(tokens.value(O2_OAUTH2_EXPIRES_IN).toInt()));
           QString refreshToken = tokens.value(O2_OAUTH2_REFRESH_TOKEN).toString();
           if(!refreshToken.isEmpty()) {
               setRefreshToken(refreshToken);
@@ -678,7 +700,11 @@ QString O2::localhostPolicy() const {
 }
 
 void O2::setLocalhostPolicy(const QString &value) {
+    if (localhostPolicy_ == value)
+        return;
+
     localhostPolicy_ = value;
+    Q_EMIT localHostPolicyChanged(localhostPolicy_);
 }
 
 QString O2::apiKey() {
@@ -686,7 +712,11 @@ QString O2::apiKey() {
 }
 
 void O2::setApiKey(const QString &value) {
+    if (apiKey_ == value)
+        return;
+
     apiKey_ = value;
+    Q_EMIT apiKeyChanged(apiKey_);
 }
 
 bool O2::ignoreSslErrors() {
@@ -695,4 +725,5 @@ bool O2::ignoreSslErrors() {
 
 void O2::setIgnoreSslErrors(bool ignoreSslErrors) {
     timedReplies_.setIgnoreSslErrors(ignoreSslErrors);
+    Q_EMIT ignoreSslErrorsChanged(ignoreSslErrors);
 }
