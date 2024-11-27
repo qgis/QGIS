@@ -511,6 +511,36 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
   if ( dsm )
     bar = dsm->messageBar();
 
+  QAction *zoomToAction = new QAction( tr( "Zoom to Item" ) );
+  connect( zoomToAction, &QAction::triggered, this, [index, this]
+  {
+    QgsGeometry geom = index.data( QgsStacItemListModel::Role::Geometry ).value<QgsGeometry>();
+    if ( QgsMapCanvas *map = mapCanvas() )
+    {
+      const QgsRectangle bbox = geom.boundingBox();
+      const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4324 ),
+                                       map->mapSettings().destinationCrs(),
+                                       QgsProject::instance() );
+      QgsRectangle extent = ct.transformBoundingBox( bbox );
+      map->zoomToFeatureExtent( extent );
+    }
+  } );
+
+  QAction *panToAction = new QAction( tr( "Pan to Item" ) );
+  connect( panToAction, &QAction::triggered, this, [index, this]
+  {
+    QgsGeometry geom = index.data( QgsStacItemListModel::Role::Geometry ).value<QgsGeometry>();
+    if ( QgsMapCanvas *map = mapCanvas() )
+    {
+      const QgsRectangle bbox = geom.boundingBox();
+      const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4324 ),
+                                       map->mapSettings().destinationCrs(),
+                                       QgsProject::instance() );
+      const QgsRectangle extent = ct.transformBoundingBox( bbox );
+      map->setCenter( extent.center() );
+    }
+  } );
+
   QAction *downloadAction = new QAction( tr( "Download Assets…" ), menu );
   connect( downloadAction, &QAction::triggered, this, [index, bar, authCfg = mStac->authCfg()]
   {
@@ -530,6 +560,8 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
     details.exec();
   } );
 
+  menu->addAction( zoomToAction );
+  menu->addAction( panToAction );
   menu->addAction( downloadAction );
   menu->addAction( detailsAction );
 
