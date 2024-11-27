@@ -419,7 +419,15 @@ void TestQgsNetworkAccessManager::fetchEncodedContent()
   connect( QgsNetworkAccessManager::instance(), qOverload<QgsNetworkReplyContent>( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent &reply ) {
     QCOMPARE( reply.error(), QNetworkReply::NoError );
     QCOMPARE( reply.requestId(), requestId );
-    QVERIFY( reply.rawHeaderList().contains( "Content-Length" ) );
+
+    // newer qt versions force headers to lower case, older ones didn't
+    QStringList lowerCaseRawHeaders;
+    for ( const QByteArray &header : reply.rawHeaderList() )
+    {
+      lowerCaseRawHeaders.append( header.toLower() );
+    }
+
+    QVERIFY( lowerCaseRawHeaders.contains( "content-length" ) );
     QCOMPARE( reply.request().url(), u );
     loaded = true;
   } );
@@ -502,7 +510,15 @@ void TestQgsNetworkAccessManager::fetchPost()
   connect( QgsNetworkAccessManager::instance(), qOverload<QgsNetworkReplyContent>( &QgsNetworkAccessManager::finished ), &context, [&]( const QgsNetworkReplyContent &reply ) {
     QCOMPARE( reply.error(), QNetworkReply::NoError );
     QCOMPARE( reply.requestId(), requestId );
-    QVERIFY( reply.rawHeaderList().contains( "Content-Type" ) );
+
+    // newer qt versions force headers to lower case, older ones didn't
+    QStringList lowerCaseRawHeaders;
+    for ( const QByteArray &header : reply.rawHeaderList() )
+    {
+      lowerCaseRawHeaders.append( header.toLower() );
+    }
+
+    QVERIFY( lowerCaseRawHeaders.contains( "content-type" ) );
     QCOMPARE( reply.request().url(), u );
     loaded = true;
   } );
@@ -591,7 +607,15 @@ void TestQgsNetworkAccessManager::fetchPostMultiPart()
   el.exec();
 
   QCOMPARE( reply->error(), QNetworkReply::NoError );
-  QVERIFY( reply->rawHeaderList().contains( "Content-Type" ) );
+
+  // newer qt versions force headers to lower case, older ones didn't
+  QStringList lowerCaseRawHeaders;
+  for ( const QByteArray &header : reply->rawHeaderList() )
+  {
+    lowerCaseRawHeaders.append( header.toLower() );
+  }
+  QVERIFY( lowerCaseRawHeaders.contains( "content-type" ) );
+
   QCOMPARE( reply->request().url(), u );
 }
 
