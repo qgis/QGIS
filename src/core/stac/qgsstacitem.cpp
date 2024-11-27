@@ -191,50 +191,14 @@ QString QgsStacItem::description() const
 QgsMimeDataUtils::UriList QgsStacItem::uris() const
 {
   QgsMimeDataUtils::UriList uris;
-  for ( auto it = mAssets.constBegin(); it != mAssets.constEnd(); ++it )
+  for ( const QgsStacAsset &asset : std::as_const( mAssets ) )
   {
-    QgsMimeDataUtils::Uri uri;
-    QUrl url( it->href() );
-    if ( url.isLocalFile() )
-    {
-      uri.uri = it->href();
-    }
-    else if ( it->formatName() == QLatin1String( "COG" ) )
-    {
-      uri.layerType = QStringLiteral( "raster" );
-      uri.providerKey = QStringLiteral( "gdal" );
-      if ( it->href().startsWith( QLatin1String( "http" ), Qt::CaseInsensitive ) ||
-           it->href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
-      {
-        uri.uri = QStringLiteral( "/vsicurl/%1" ).arg( it->href() );
-      }
-      else if ( it->href().startsWith( QLatin1String( "s3://" ), Qt::CaseInsensitive ) )
-      {
-        uri.uri = QStringLiteral( "/vsis3/%1" ).arg( it->href().mid( 5 ) );
-      }
-      else
-      {
-        uri.uri = it->href();
-      }
-    }
-    else if ( it->formatName() == QLatin1String( "COPC" ) )
-    {
-      uri.layerType = QStringLiteral( "pointcloud" );
-      uri.providerKey = QStringLiteral( "copc" );
-      uri.uri = it->href();
-    }
-    else if ( it->formatName() == QLatin1String( "EPT" ) )
-    {
-      uri.layerType = QStringLiteral( "pointcloud" );
-      uri.providerKey = QStringLiteral( "ept" );
-      uri.uri = it->href();
-    }
+    QgsMimeDataUtils::Uri uri = asset.uri();
 
     // skip assets with incompatible formats
     if ( uri.uri.isEmpty() )
       continue;
 
-    uri.name = it->title().isEmpty() ? url.fileName() : it->title();
     uris.append( uri );
   }
   return uris;

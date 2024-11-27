@@ -15,6 +15,8 @@
 
 #include "qgsstacasset.h"
 
+#include <QUrl>
+
 QgsStacAsset::QgsStacAsset( const QString &href,
                             const QString &title,
                             const QString &description,
@@ -71,4 +73,47 @@ QString QgsStacAsset::formatName() const
   else if ( mHref.endsWith( QLatin1String( "/ept.json" ) ) )
     return QStringLiteral( "EPT" );
   return QString();
+}
+
+QgsMimeDataUtils::Uri QgsStacAsset::uri() const
+{
+  QgsMimeDataUtils::Uri uri;
+  QUrl url( href() );
+  if ( url.isLocalFile() )
+  {
+    uri.uri = href();
+  }
+  else if ( formatName() == QLatin1String( "COG" ) )
+  {
+    uri.layerType = QStringLiteral( "raster" );
+    uri.providerKey = QStringLiteral( "gdal" );
+    if ( href().startsWith( QLatin1String( "http" ), Qt::CaseInsensitive ) ||
+         href().startsWith( QLatin1String( "ftp" ), Qt::CaseInsensitive ) )
+    {
+      uri.uri = QStringLiteral( "/vsicurl/%1" ).arg( href() );
+    }
+    else if ( href().startsWith( QLatin1String( "s3://" ), Qt::CaseInsensitive ) )
+    {
+      uri.uri = QStringLiteral( "/vsis3/%1" ).arg( href().mid( 5 ) );
+    }
+    else
+    {
+      uri.uri = href();
+    }
+  }
+  else if ( formatName() == QLatin1String( "COPC" ) )
+  {
+    uri.layerType = QStringLiteral( "pointcloud" );
+    uri.providerKey = QStringLiteral( "copc" );
+    uri.uri = href();
+  }
+  else if ( formatName() == QLatin1String( "EPT" ) )
+  {
+    uri.layerType = QStringLiteral( "pointcloud" );
+    uri.providerKey = QStringLiteral( "ept" );
+    uri.uri = href();
+  }
+  uri.name = title().isEmpty() ? url.fileName() : title();
+
+  return uri;
 }

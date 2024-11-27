@@ -19,6 +19,7 @@
 #define SIP_NO_FILE
 
 #include "qgis_core.h"
+#include "qgsmimedatautils.h"
 
 #include <QString>
 #include <QStringList>
@@ -72,6 +73,12 @@ class CORE_EXPORT QgsStacAsset
      * \since QGIS 3.42
      */
     QString formatName() const;
+
+    /**
+     * Returns a uri for the asset if it is a local or cloud optimized file like COG or COPC
+     * \since QGIS 3.42
+     */
+    QgsMimeDataUtils::Uri uri() const;
 
   private:
     QString mHref;

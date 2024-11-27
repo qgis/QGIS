@@ -19,6 +19,7 @@
 #include "ui_qgsstacsourceselectbase.h"
 #include "qgsabstractdatasourcewidget.h"
 #include "qgis_gui.h"
+#include "qgsmimedatautils.h"
 
 #include <QStandardItemModel>
 #include <QStyledItemDelegate>
@@ -31,7 +32,6 @@ class QgsStacSearchParametersDialog;
 class QgsStacItemListModel;
 class QgsStacController;
 class QgsRubberBand;
-
 
 class GUI_EXPORT QgsStacSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsStacSourceSelectBase
 {
@@ -99,6 +99,7 @@ class GUI_EXPORT QgsStacSourceSelect : public QgsAbstractDataSourceWidget, priva
 
     void highlightFootprint( const QModelIndex &index );
     void showFootprints( bool enable );
+    void loadUri( const QgsMimeDataUtils::Uri &uri );
 
     QString mCollectionsUrl;
     QString mSearchUrl;
