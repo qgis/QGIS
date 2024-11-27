@@ -21,13 +21,14 @@ public:
     explicit O2PollServer(QNetworkAccessManager * manager, const QNetworkRequest &request, const QByteArray & payload, int expiresIn, QObject *parent = nullptr);
 
     /// Seconds to wait between polling requests
-    Q_PROPERTY(int interval READ interval WRITE setInterval)
+    Q_PROPERTY(int interval READ interval WRITE setInterval NOTIFY intervalChanged)
     int interval() const;
     void setInterval(int interval);
 
 Q_SIGNALS:
     void verificationReceived(QMap<QString, QString>);
     void serverClosed(bool); // whether it has found parameters
+    void intervalChanged(int interval);
 
 public Q_SLOTS:
     void startPolling();

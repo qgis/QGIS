@@ -51,18 +51,18 @@ public:
 
     /// Localhost policy. By default it's value is http://127.0.0.1:%1/, however some services may
     /// require the use of http://localhost:%1/ or any other value.
-    Q_PROPERTY(QString localhostPolicy READ localhostPolicy WRITE setLocalhostPolicy)
+    Q_PROPERTY(QString localhostPolicy READ localhostPolicy WRITE setLocalhostPolicy NOTIFY localHostPolicyChanged)
     QString localhostPolicy() const;
     void setLocalhostPolicy(const QString &value);
 
     /// API key.
-    Q_PROPERTY(QString apiKey READ apiKey WRITE setApiKey)
+    Q_PROPERTY(QString apiKey READ apiKey WRITE setApiKey NOTIFY apiKeyChanged)
     QString apiKey();
     void setApiKey(const QString &value);
 
     /// Allow ignoring SSL errors?
     /// E.g. SurveyMonkey fails on Mac due to SSL error. Ignoring the error circumvents the problem
-    Q_PROPERTY(bool ignoreSslErrors READ ignoreSslErrors WRITE setIgnoreSslErrors)
+    Q_PROPERTY(bool ignoreSslErrors READ ignoreSslErrors WRITE setIgnoreSslErrors NOTIFY ignoreSslErrorsChanged)
     bool ignoreSslErrors();
     void setIgnoreSslErrors(bool ignoreSslErrors);
 
@@ -87,7 +87,7 @@ public:
     void setRefreshTokenUrl(const QString &value);
 
     /// Grant type (if non-standard)
-    Q_PROPERTY(QString grantType READ grantType WRITE setGrantType)
+    Q_PROPERTY(QString grantType READ grantType WRITE setGrantType NOTIFY grantTypeChanged)
     QString grantType();
     void setGrantType(const QString &value);
 
@@ -103,7 +103,7 @@ public:
     QString refreshToken();
 
     /// Get token expiration time (seconds from Epoch).
-    int expires();
+    qint64 expires();
 
 public Q_SLOTS:
     /// Authenticate.
@@ -131,6 +131,10 @@ Q_SIGNALS:
     void extraRequestParamsChanged();
     void refreshTokenUrlChanged();
     void tokenUrlChanged();
+    void localHostPolicyChanged(const QString& policy);
+    void apiKeyChanged(const QString& key);
+    void ignoreSslErrorsChanged(bool ignore);
+    void grantTypeChanged(const QString& type);
 
 public Q_SLOTS:
     /// Handle verification response.
@@ -163,7 +167,7 @@ protected:
     void setRefreshToken(const QString &v);
 
     /// Set token expiration time.
-    void setExpires(int v);
+    void setExpires(qint64 v);
 
     /// Returns the QNetworkAccessManager instance to use for network access
     virtual QNetworkAccessManager *getManager();

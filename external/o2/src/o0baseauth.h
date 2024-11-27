@@ -58,13 +58,13 @@ public:
     void setClientSecret(const QString &value);
 
     /// Should we use a reply server (default) or an external web interceptor?
-    Q_PROPERTY(bool useExternalWebInterceptor READ useExternalWebInterceptor WRITE setUseExternalWebInterceptor)
+    Q_PROPERTY(bool useExternalWebInterceptor READ useExternalWebInterceptor WRITE setUseExternalWebInterceptor NOTIFY useExternalWebInterceptorChanged)
     bool useExternalWebInterceptor();
     void setUseExternalWebInterceptor(bool useExternalWebInterceptor);
 
     /// Page content on local host after successful oauth.
     /// Provide it in case you do not want to close the browser, but display something
-    Q_PROPERTY(QByteArray replyContent READ replyContent WRITE setReplyContent)
+    Q_PROPERTY(QByteArray replyContent READ replyContent WRITE setReplyContent NOTIFY replyContentChanged)
     QByteArray replyContent() const;
     void setReplyContent(const QByteArray &value);
 
@@ -121,6 +121,8 @@ Q_SIGNALS:
     void tokenChanged();
     void tokenSecretChanged();
     void extraTokensChanged();
+    void useExternalWebInterceptorChanged( bool enabled );
+    void replyContentChanged();
 
 protected:
     /// Set authentication token.

@@ -43,6 +43,7 @@ int O2PollServer::interval() const
 void O2PollServer::setInterval(int interval)
 {
     pollTimer.setInterval(interval * 1000);
+    Q_EMIT intervalChanged(interval);
 }
 
 void O2PollServer::startPolling()

@@ -39,7 +39,11 @@ QByteArray O1::userAgent() const {
 }
 
 void O1::setUserAgent(const QByteArray &value) {
+    if (userAgent_ == value)
+        return;
+
     userAgent_ = value;
+    Q_EMIT userAgentChanged(userAgent_);
 }
 
 QUrl O1::requestTokenUrl() {
@@ -57,6 +61,7 @@ QList<O0RequestParameter> O1::requestParameters() {
 
 void O1::setRequestParameters(const QList<O0RequestParameter> &value) {
     requestParameters_ = value;
+    Q_EMIT requestParametersChanged();
 }
 
 QString O1::callbackUrl() {
@@ -64,7 +69,11 @@ QString O1::callbackUrl() {
 }
 
 void O1::setCallbackUrl(const QString &value) {
+    if ( callbackUrl_ == value )
+        return;
+
     callbackUrl_ = value;
+    Q_EMIT callbackUrlChanged(callbackUrl_);
 }
 
 QUrl O1::authorizeUrl() {

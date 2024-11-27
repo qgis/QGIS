@@ -152,7 +152,10 @@ QByteArray O2ReplyServer::replyContent() {
 }
 
 void O2ReplyServer::setReplyContent(const QByteArray &value) {
-  replyContent_ = value;
+    if (replyContent_ == value)
+        return;
+    replyContent_ = value;
+    Q_EMIT replyContentChanged();
 }
 
 int O2ReplyServer::timeout()
@@ -162,7 +165,11 @@ int O2ReplyServer::timeout()
 
 void O2ReplyServer::setTimeout(int timeout)
 {
-  timeout_ = timeout;
+    if ( timeout_ == timeout )
+        return;
+
+    timeout_ = timeout;
+    Q_EMIT timeoutChanged(timeout_);
 }
 
 int O2ReplyServer::callbackTries()
@@ -172,7 +179,11 @@ int O2ReplyServer::callbackTries()
 
 void O2ReplyServer::setCallbackTries(int maxtries)
 {
-  maxtries_ = maxtries;
+    if (maxtries_ == maxtries)
+        return;
+
+    maxtries_ = maxtries;
+    Q_EMIT callbackTriesChanged(maxtries_);
 }
 
 QString O2ReplyServer::uniqueState()

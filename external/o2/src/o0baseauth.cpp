@@ -92,7 +92,10 @@ bool O0BaseAuth::useExternalWebInterceptor() {
 }
 
 void O0BaseAuth::setUseExternalWebInterceptor(bool useExternalWebInterceptor) {
+    if ( useExternalWebInterceptor_ == useExternalWebInterceptor )
+        return;
     useExternalWebInterceptor_ = useExternalWebInterceptor;
+    Q_EMIT useExternalWebInterceptorChanged(useExternalWebInterceptor_);
 }
 
 QByteArray O0BaseAuth::replyContent() const {
@@ -100,9 +103,14 @@ QByteArray O0BaseAuth::replyContent() const {
 }
 
 void O0BaseAuth::setReplyContent(const QByteArray &value) {
+    bool changed = replyContent_ != value;
     replyContent_ = value;
     if (replyServer_) {
         replyServer_->setReplyContent(replyContent_);
+    }
+    if ( changed )
+    {
+        Q_EMIT replyContentChanged();
     }
 }
 
