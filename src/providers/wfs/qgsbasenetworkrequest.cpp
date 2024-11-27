@@ -511,7 +511,7 @@ QStringList QgsBaseNetworkRequest::sendOPTIONS( const QUrl &url )
 
     for ( const auto &headerKeyValue : mResponseHeaders )
     {
-      if ( headerKeyValue.first == QByteArray( "Allow" ) )
+      if ( headerKeyValue.first.compare( QByteArray( "Allow" ), Qt::CaseInsensitive ) == 0 )
       {
         allowValue = headerKeyValue.second;
         break;
