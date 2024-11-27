@@ -322,13 +322,13 @@ class TestQgsProjectionSelectionWidgets(QgisTestCase):
     def testTreeWidgetUnknownCrs(self):
         w = QgsProjectionSelectionTreeWidget()
         self.assertFalse(w.hasValidSelection())
-        crs = QgsCoordinateReferenceSystem.fromWkt('GEOGCS["WGS 84",DATUM["unknown",SPHEROID["WGS84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]]')
+        crs = QgsCoordinateReferenceSystem.fromWkt('GEOGCS["WGS 84",DATUM["unknown",SPHEROID["WGS84",6378237,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]]')
         self.assertTrue(crs.isValid())
         w.setCrs(crs)
         self.assertTrue(w.crs().isValid())
         self.assertFalse(w.crs().authid())
         self.assertTrue(w.hasValidSelection())
-        self.assertEqual(w.crs().toWkt(QgsCoordinateReferenceSystem.WktVariant.WKT2_2018), 'GEOGCRS["WGS 84",DATUM["unknown",ELLIPSOID["WGS84",6378137,298.257223563,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["longitude",east,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["latitude",north,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]]]')
+        self.assertEqual(w.crs().toWkt(QgsCoordinateReferenceSystem.WktVariant.WKT2_2018), 'GEOGCRS["WGS 84",DATUM["unknown",ELLIPSOID["WGS84",6378237,298.257223563,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["longitude",east,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["latitude",north,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]]]')
 
     def testTreeWidgetNotSetOption(self):
         """ test allowing no projection option for QgsProjectionSelectionTreeWidget """
