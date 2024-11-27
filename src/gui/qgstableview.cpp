@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstableview.h"
+#include "moc_qgstableview.cpp"
 
 #include <QWheelEvent>
 

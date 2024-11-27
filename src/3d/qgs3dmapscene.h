@@ -188,6 +188,24 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     Qgs3DMapSettings *mapSettings() const { return &mMap; }
 
     /**
+     * Returns whether updates of the 3D scene's entities are allowed.
+     * Normally, scene updates are enabled. But for debugging purposes,
+     * it may be useful to temporarily disable scene updates.
+     *
+     * \since QGIS 3.40
+     */
+    bool hasSceneUpdatesEnabled() const { return mSceneUpdatesEnabled; }
+
+    /**
+     * Sets whether updates of the 3D scene's entities are allowed.
+     * Normally, scene updates are enabled. But for debugging purposes,
+     * it may be useful to temporarily disable scene updates.
+     *
+     * \since QGIS 3.40
+     */
+    void setSceneUpdatesEnabled( bool enabled ) { mSceneUpdatesEnabled = enabled; }
+
+    /**
      * Returns a map of 3D map scenes (by name) open in the QGIS application.
      *
      * \note Only available from the QGIS desktop application.
@@ -195,6 +213,36 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      * \since QGIS 3.30
      */
     Q_DECL_DEPRECATED static QMap< QString, Qgs3DMapScene * > openScenes() SIP_DEPRECATED;
+
+    /**
+     * Enables OpenGL clipping based on the planes equations defined in \a clipPlaneEquations.
+     * The number of planes is equal to the size of \a clipPlaneEquations.
+     * A plane equation contains 4 elements.
+     * A simple way to define a clip plane equation is to define a normalized normal to
+     * the plane and its distance from the origin of the scene.
+     * In that case, the first 3 elements are the coordinates of the normal of the plane as ``(X, Y, Z)``.
+     * They need to be normalized.
+     * The last element is the distance of the plane from the origin of the scene.
+     * In mathematical terms, a 3d plane can be defined with the equation ``ax+by+cz+d=0``
+     * The normal is ``(a, b, c)`` with ``|a, b, c| = 1``
+     * The distance is ``-d``.
+     *
+     * The number of available clip planes depends on the OpenGL implementation. It should at least handle
+     * 6 additional clip planes. When the map scene is created, this number is retrieved.
+     * If \a clipPlaneEquations contains more than this maximum, only the first ones will be kept.
+     *
+     * \see disableClipping()
+     * \since QGIS 3.40
+    */
+    void enableClipping( const QList<QVector4D> &clipPlaneEquations );
+
+    /**
+     * Disables OpenGL clipping.
+     *
+     * \see enableClipping()
+     * \since QGIS 3.40
+     */
+    void disableClipping();
 
 #ifndef SIP_RUN
     //! Static function for returning open 3D map scenes
@@ -257,8 +305,10 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onCameraMovementSpeedChanged();
     void onCameraNavigationModeChanged();
     void onDebugOverlayEnabledChanged();
-
+    void onStopUpdatesChanged();
     void on3DAxisSettingsChanged();
+
+    void onOriginChanged();
 
     bool updateCameraNearFarPlanes();
 
@@ -278,7 +328,11 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void finalizeNewEntity( Qt3DCore::QEntity *newEntity );
     int maximumTextureSize() const;
 
+    void handleClippingOnEntity( QEntity *entity ) const;
+    void handleClippingOnAllEntities() const;
+
   private:
+
     Qgs3DMapSettings &mMap;
     QgsAbstract3DEngine *mEngine = nullptr;
     //! Provides a way to have a synchronous function executed each frame
@@ -301,6 +355,11 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
 
     //! 3d axis visualization
     Qgs3DAxis *m3DAxis = nullptr;
+
+    bool mSceneUpdatesEnabled = true;
+
+    QList<QVector4D> mClipPlanesEquations;
+    int mMaxClipPlanes = 6;
 
 };
 #endif // QGS3DMAPSCENE_H

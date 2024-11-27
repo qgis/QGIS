@@ -103,8 +103,6 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
 
   protected:
 
-    void setDefaultCapabilities();
-
     virtual QString databaseQueryLogIdentifier() const;
 
     virtual QString primaryKeyColumnName( const QString &table ) const;
@@ -113,6 +111,9 @@ class QgsOgrProviderConnection : public QgsAbstractDatabaseProviderConnection
     QueryResult executeGdalSqlPrivate( const QString &sql, QgsFeedback *feedback = nullptr ) const;
 
   private:
+
+    void setDefaultCapabilities();
+
     QString mDriverName;
     bool mSingleTableDataset = false;
     QList< Qgis::RelationshipCardinality > mSupportedRelationshipCardinality;

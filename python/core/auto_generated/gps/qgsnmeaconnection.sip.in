@@ -71,10 +71,6 @@ process HDT sentence
 %Docstring
 process HCHDG sentence
 %End
-    void processHchdtSentence( const char *data, int len );
-%Docstring
-process HCHDT sentence
-%End
 };
 
 /************************************************************************

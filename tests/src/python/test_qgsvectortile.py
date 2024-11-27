@@ -19,6 +19,7 @@ import tempfile
 from pathlib import Path
 
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtGui import QPainter
 from qgis.core import (
     Qgis,
     QgsDataSourceUri,
@@ -29,6 +30,8 @@ from qgis.core import (
     QgsVectorLayer,
     QgsVectorTileLayer,
     QgsVectorTileWriter,
+    QgsMapSettings,
+    QgsRenderContext
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -293,6 +296,25 @@ class TestVectorTile(QgisTestCase):
 
         self.assertCountEqual({f.geometry().asWkt(-3) for f in layer.selectedFeatures()}, {'Polygon ((-10958000 3835000, -10958000 3796000, -10919000 3835000, -10841000 3874000, -10684000 3992000, -10567000 4031000, -10410000 4031000, -10332000 3992000, -10254000 3914000, -10136000 3914000, -10058000 3874000, -10019000 3796000, -10019000 3757000, -10058000 3718000, -10097000 3718000, -10254000 3796000, -10332000 3796000, -10371000 3757000, -10371000 3718000, -10371000 3679000, -10332000 3640000, -10332000 3561000, -10410000 3483000, -10449000 3405000, -10488000 3366000, -10645000 3327000, -10723000 3366000, -10762000 3405000, -10801000 3444000, -10762000 3483000, -10801000 3522000, -10841000 3561000, -10919000 3561000, -10958000 3600000, -10958000 3640000, -10958000 3679000, -10958000 3718000, -10997000 3796000, -10958000 3835000))'})
         self.assertEqual(len(spy), 11)
+
+    def test_force_raster_render(self):
+        layer = QgsVectorTileLayer(f"type=vtpk&url={unitTestDataPath() + '/testvtpk.vtpk'}", 'tiles')
+        self.assertTrue(layer.isValid())
+        settings = QgsMapSettings()
+        rc = QgsRenderContext.fromMapSettings(settings)
+        renderer = layer.createMapRenderer(rc)
+        self.assertFalse(renderer.forceRasterRender())
+
+        # layer opacity should force raster render
+        layer.setOpacity(0.5)
+        renderer = layer.createMapRenderer(rc)
+        self.assertTrue(renderer.forceRasterRender())
+        layer.setOpacity(1.0)
+
+        # alternate blend mode should force raster render
+        layer.setBlendMode(QPainter.CompositionMode.CompositionMode_Multiply)
+        renderer = layer.createMapRenderer(rc)
+        self.assertTrue(renderer.forceRasterRender())
 
 
 if __name__ == '__main__':

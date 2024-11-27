@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsdelimitedtextfile.h"
+#include "moc_qgsdelimitedtextfile.cpp"
 #include "qgslogger.h"
 
 #include <QtGlobal>

@@ -56,12 +56,6 @@ class CORE_EXPORT QgsDatabaseSchemaItem : public QgsDataCollectionItem
 
     QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
 
-    /**
-     * Returns the standard browser data collection icon.
-     * \see iconDir()
-     */
-    static QIcon iconDataCollection();
-
 };
 
 #endif // QGSDATABASESCHEMAITEM_H

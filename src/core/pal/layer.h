@@ -88,7 +88,7 @@ namespace pal
       /**
        * Returns the number of features in layer.
        */
-      int featureCount() { return mHashtable.size(); }
+      int featureCount() const { return mHashtable.size(); }
 
       /**
        * Returns the maximum number of point label candidates to generate for features

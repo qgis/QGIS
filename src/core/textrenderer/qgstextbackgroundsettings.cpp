@@ -62,7 +62,7 @@ QgsTextBackgroundSettings::~QgsTextBackgroundSettings() //NOLINT
 
 bool QgsTextBackgroundSettings::operator==( const QgsTextBackgroundSettings &other ) const
 {
-  if ( !d->enabled == other.enabled()
+  if ( d->enabled != other.enabled()
        || d->type != other.type()
        || d->svgFile != other.svgFile()
        || d->sizeType != other.sizeType()

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdbrelationshipwidget.h"
+#include "moc_qgsdbrelationshipwidget.cpp"
 #include "qgsgui.h"
 #include "qgsdatabasetablemodel.h"
 #include "qgsproviderregistry.h"

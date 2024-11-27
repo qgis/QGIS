@@ -240,6 +240,9 @@ class Climb(QgisAlgorithm):
                 no_z_report=(', '.join(no_z_nodes)))
         )
         )
+
+        sink.finalize()
+
         # Return the results
         return {self.OUTPUT: dest_id, self.TOTALCLIMB: totalclimb,
                 self.TOTALDESCENT: totaldescent,

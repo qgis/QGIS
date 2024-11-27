@@ -20,6 +20,7 @@
 #include "qgsgeometry.h"
 #include "qgsmaplayer.h"
 #include "qgsofflineediting.h"
+#include "moc_qgsofflineediting.cpp"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayereditbuffer.h"
@@ -65,7 +66,7 @@ extern "C"
 
 QgsOfflineEditing::QgsOfflineEditing()
 {
-  connect( QgsProject::instance(), &QgsProject::layerWasAdded, this, &QgsOfflineEditing::setupLayer );
+  connect( QgsProject::instance(), &QgsProject::layerWasAdded, this, &QgsOfflineEditing::setupLayer ); // skip-keyword-check
 }
 
 /**
@@ -108,7 +109,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
       {
         emit layerProgressUpdated( i + 1, layerIds.count() );
 
-        QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerIds.at( i ) );
+        QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerIds.at( i ) ); // skip-keyword-check
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( vl && vl->isValid() )
         {
@@ -119,14 +120,14 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
       emit progressStopped();
 
       // save offline project
-      QString projectTitle = QgsProject::instance()->title();
+      QString projectTitle = QgsProject::instance()->title(); // skip-keyword-check
       if ( projectTitle.isEmpty() )
       {
-        projectTitle = QFileInfo( QgsProject::instance()->fileName() ).fileName();
+        projectTitle = QFileInfo( QgsProject::instance()->fileName() ).fileName(); // skip-keyword-check
       }
-      projectTitle += QLatin1String( " (offline)" );
-      QgsProject::instance()->setTitle( projectTitle );
-      QgsProject::instance()->writeEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH, QgsProject::instance()->writePath( dbPath ) );
+      projectTitle += QLatin1String( " (offline)" ); // skip-keyword-check
+      QgsProject::instance()->setTitle( projectTitle ); // skip-keyword-check
+      QgsProject::instance()->writeEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH, QgsProject::instance()->writePath( dbPath ) ); // skip-keyword-check
 
       return true;
     }
@@ -137,7 +138,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
 
 bool QgsOfflineEditing::isOfflineProject() const
 {
-  return !QgsProject::instance()->readEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH ).isEmpty();
+  return !QgsProject::instance()->readEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH ).isEmpty(); // skip-keyword-check
 }
 
 void QgsOfflineEditing::synchronize( bool useTransaction )
@@ -151,10 +152,10 @@ void QgsOfflineEditing::synchronize( bool useTransaction )
 
   emit progressStarted();
 
-  const QgsSnappingConfig snappingConfig = QgsProject::instance()->snappingConfig();
+  const QgsSnappingConfig snappingConfig = QgsProject::instance()->snappingConfig(); // skip-keyword-check
 
   // restore and sync remote layers
-  QMap<QString, QgsMapLayer *> mapLayers = QgsProject::instance()->mapLayers();
+  QMap<QString, QgsMapLayer *> mapLayers = QgsProject::instance()->mapLayers(); // skip-keyword-check
   QMap<int, std::shared_ptr<QgsVectorLayer>> remoteLayersByOfflineId;
   QMap<int, QgsVectorLayer *> offlineLayersByOfflineId;
 
@@ -177,7 +178,7 @@ void QgsOfflineEditing::synchronize( bool useTransaction )
     const QString remoteNameSuffix = offlineLayer->customProperty( CUSTOM_PROPERTY_LAYERNAME_SUFFIX, " (offline)" ).toString();
     if ( remoteName.endsWith( remoteNameSuffix ) )
       remoteName.chop( remoteNameSuffix.size() );
-    const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+    const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() }; // skip-keyword-check
 
     std::shared_ptr<QgsVectorLayer> remoteLayer = std::make_shared<QgsVectorLayer>( remoteSource, remoteName, remoteProvider, options );
 
@@ -332,9 +333,9 @@ void QgsOfflineEditing::synchronize( bool useTransaction )
   }
 
   // disable offline project
-  const QString projectTitle = QgsProject::instance()->title().remove( QRegularExpression( " \\(offline\\)$" ) );
-  QgsProject::instance()->setTitle( projectTitle );
-  QgsProject::instance()->removeEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH );
+  const QString projectTitle = QgsProject::instance()->title().remove( QRegularExpression( " \\(offline\\)$" ) ); // skip-keyword-check
+  QgsProject::instance()->setTitle( projectTitle ); // skip-keyword-check
+  QgsProject::instance()->removeEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH ); // skip-keyword-check
   // reset commitNo
   const QString sql = QStringLiteral( "UPDATE 'log_indices' SET 'last_index' = 0 WHERE \"name\" = 'commit_no'" );
   sqlExec( database.get(), sql );
@@ -645,7 +646,7 @@ void QgsOfflineEditing::convertToOfflineLayer( QgsVectorLayer *layer, sqlite3 *d
       const QString connectionString = QStringLiteral( "dbname='%1' table='%2'%3 sql=" )
                                        .arg( offlineDbPath,
                                              tableName, layer->isSpatial() ? "(Geometry)" : "" );
-      const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+      const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() }; // skip-keyword-check
       newLayer = std::make_unique<QgsVectorLayer>( connectionString,
                  layer->name() + layerNameSuffix, QStringLiteral( "spatialite" ), options );
       break;
@@ -762,7 +763,7 @@ void QgsOfflineEditing::convertToOfflineLayer( QgsVectorLayer *layer, sqlite3 *d
       hDS.reset();
 
       const QString uri = QStringLiteral( "%1|layername=%2|option:QGIS_FORCE_WAL=ON" ).arg( offlineDbPath,  tableName );
-      const QgsVectorLayer::LayerOptions layerOptions { QgsProject::instance()->transformContext() };
+      const QgsVectorLayer::LayerOptions layerOptions { QgsProject::instance()->transformContext() }; // skip-keyword-check
       newLayer = std::make_unique<QgsVectorLayer>( uri, layer->name() + layerNameSuffix, QStringLiteral( "ogr" ), layerOptions );
       break;
     }
@@ -1170,10 +1171,10 @@ void QgsOfflineEditing::showWarning( const QString &message )
 sqlite3_database_unique_ptr QgsOfflineEditing::openLoggingDb()
 {
   sqlite3_database_unique_ptr database;
-  const QString dbPath = QgsProject::instance()->readEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH );
+  const QString dbPath = QgsProject::instance()->readEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH ); // skip-keyword-check
   if ( !dbPath.isEmpty() )
   {
-    const QString absoluteDbPath = QgsProject::instance()->readPath( dbPath );
+    const QString absoluteDbPath = QgsProject::instance()->readPath( dbPath ); // skip-keyword-check
     const int rc = database.open( absoluteDbPath );
     if ( rc != SQLITE_OK )
     {
@@ -1486,11 +1487,11 @@ void QgsOfflineEditing::committedFeaturesAdded( const QString &qgisLayerId, cons
   const int layerId = getOrCreateLayerId( database.get(), qgisLayerId );
 
   // get new feature ids from db
-  QgsMapLayer *layer = QgsProject::instance()->mapLayer( qgisLayerId );
+  QgsMapLayer *layer = QgsProject::instance()->mapLayer( qgisLayerId ); // skip-keyword-check
   const QString dataSourceString = layer->source();
   const QgsDataSourceUri uri = QgsDataSourceUri( dataSourceString );
 
-  const QString offlinePath = QgsProject::instance()->readPath( QgsProject::instance()->readEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH ) );
+  const QString offlinePath = QgsProject::instance()->readPath( QgsProject::instance()->readEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH ) ); // skip-keyword-check
   QString tableName;
 
   if ( !offlinePath.contains( ".gpkg" ) )

@@ -237,10 +237,10 @@
   </action>
   <action name="mActionAddPoint">
    <property name="text">
-    <string>Add Point</string>
+    <string>Add GCP Point</string>
    </property>
    <property name="statusTip">
-    <string>Add point</string>
+    <string>Add GCP point</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
@@ -248,10 +248,10 @@
   </action>
   <action name="mActionDeletePoint">
    <property name="text">
-    <string>Delete Point</string>
+    <string>Delete GCP Point</string>
    </property>
    <property name="statusTip">
-    <string>Delete point</string>
+    <string>Delete GCP point</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssensorthingssubseteditor.h"
+#include "moc_qgssensorthingssubseteditor.cpp"
 #include "qgsvectorlayer.h"
 #include "qgscodeeditor.h"
 #include "qgsfieldproxymodel.h"
@@ -55,6 +56,7 @@ QgsSensorThingsSubsetEditor::QgsSensorThingsSubsetEditor( QgsVectorLayer *layer,
   boldFont.setBold( true );
   mLabelComparisons->setFont( boldFont );
   mLabelLogical->setFont( boldFont );
+  mLabelDate->setFont( boldFont );
   mLabelArithmetic->setFont( boldFont );
 
   mButtonEq->setToolTip( tr( "Equal" ) );

@@ -19,6 +19,7 @@
 #include "qgsgui.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsxyzsourceselect.h"
+#include "moc_qgsxyzsourceselect.cpp"
 #include "qgsxyzconnection.h"
 #include "qgsxyzconnectiondialog.h"
 #include "qgsowsconnection.h"

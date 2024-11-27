@@ -19,6 +19,7 @@
 #include "qgsexception.h"
 #include "qgsmeasuredialog.h"
 #include "qgsmeasuretool.h"
+#include "moc_qgsmeasuretool.cpp"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 #include "qgsproject.h"

@@ -4675,6 +4675,47 @@ class TestQgsVectorLayerTransformContext(QgisTestCase):
             self.assertEqual(vl2.selectionProperties().selectionColor(),
                              QColor(255, 0, 0))
 
+    def testConstraintsotSet(self):
+        """Test that a NotSet constraint does not become a Hard constraint
+           when saving and loading a layer style, see issue GH #58431"""
+
+        # Create a memory layer with unique constraints
+        layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer", "test_unique", "memory")
+        self.assertTrue(layer.isValid())
+
+        # Se not constraints on fldtxt
+        layer.setFieldConstraint(0, QgsFieldConstraints.Constraint.ConstraintNotNull, QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft)
+        layer.setFieldConstraint(0, QgsFieldConstraints.Constraint.ConstraintUnique, QgsFieldConstraints.ConstraintStrength.ConstraintStrengthNotSet)
+
+        # Check constraints at the field level
+        field = layer.fields().at(0)
+        constraints = field.constraints()
+        self.assertEqual(constraints.constraintStrength(QgsFieldConstraints.Constraint.ConstraintNotNull), QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft)
+        self.assertEqual(constraints.constraintStrength(QgsFieldConstraints.Constraint.ConstraintUnique), QgsFieldConstraints.ConstraintStrength.ConstraintStrengthNotSet)
+
+        # Check constraints at the layer level
+        constraints = layer.fieldConstraintsAndStrength(0)
+        self.assertEqual(constraints[QgsFieldConstraints.Constraint.ConstraintNotNull], QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft)
+        self.assertEqual(constraints[QgsFieldConstraints.Constraint.ConstraintUnique], QgsFieldConstraints.ConstraintStrength.ConstraintStrengthNotSet)
+
+        # Export the style to QML and reload it
+        style = QgsMapLayerStyle()
+        temp_file = tempfile.mktemp(suffix='.qml')
+        layer.saveNamedStyle(temp_file)
+        layer.loadNamedStyle(temp_file)
+
+        # Check constraints at the field level
+        field = layer.fields().at(0)
+        constraints = field.constraints()
+        self.assertEqual(constraints.constraintStrength(QgsFieldConstraints.Constraint.ConstraintNotNull), QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft)
+        self.assertEqual(constraints.constraintStrength(QgsFieldConstraints.Constraint.ConstraintUnique), QgsFieldConstraints.ConstraintStrength.ConstraintStrengthNotSet)
+
+        # Check constraints at the layer level
+        constraints = layer.fieldConstraintsAndStrength(0)
+        self.assertEqual(constraints[QgsFieldConstraints.Constraint.ConstraintNotNull], QgsFieldConstraints.ConstraintStrength.ConstraintStrengthSoft)
+        self.assertEqual(constraints[QgsFieldConstraints.Constraint.ConstraintUnique], QgsFieldConstraints.ConstraintStrength.ConstraintStrengthNotSet)
+
+
 # TODO:
 # - fetch rect: feat with changed geometry: 1. in rect, 2. out of rect
 # - more join tests

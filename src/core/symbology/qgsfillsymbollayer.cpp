@@ -2707,7 +2707,6 @@ QImage QgsLinePatternFillSymbolLayer::toTiledPatternImage() const
   layerClone->drawPreviewIcon( symbolContext, pixmap.size() );
   painter.end();
   return pixmap.toImage();
-  return QImage();
 }
 
 double QgsLinePatternFillSymbolLayer::estimateMaxBleed( const QgsRenderContext & ) const
@@ -5200,7 +5199,7 @@ QgsSymbolLayer *QgsRasterFillSymbolLayer::createFromSld( QDomElement &element )
   // Try to correct the path, this is a wild guess but we have not access to the SLD path here.
   if ( ! QFile::exists( path ) )
   {
-    path = QgsProject::instance()->pathResolver().readPath( path );
+    path = QgsProject::instance()->pathResolver().readPath( path ); // skip-keyword-check
   }
 
   std::unique_ptr< QgsRasterFillSymbolLayer> sl = std::make_unique< QgsRasterFillSymbolLayer>( path );

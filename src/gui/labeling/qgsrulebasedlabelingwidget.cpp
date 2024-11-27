@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrulebasedlabelingwidget.h"
+#include "moc_qgsrulebasedlabelingwidget.cpp"
 
 #include "qgsapplication.h"
 #include "qgsexpressionbuilderdialog.h"
@@ -33,23 +34,22 @@
 
 const double ICON_PADDING_FACTOR = 0.16;
 
-static QList<QgsExpressionContextScope *> _globalProjectAtlasMapLayerScopes( QgsMapCanvas *mapCanvas, const QgsMapLayer *layer )
+QgsExpressionContext QgsLabelingRulePropsWidget::createExpressionContext( QgsMapCanvas *mapCanvas, const QgsMapLayer *layer )
 {
-  QList<QgsExpressionContextScope *> scopes;
-  scopes << QgsExpressionContextUtils::globalScope()
-         << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-         << QgsExpressionContextUtils::atlasScope( nullptr );
+  QgsExpressionContext context;
   if ( mapCanvas )
   {
-    scopes << QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() )
-           << new QgsExpressionContextScope( mapCanvas->expressionContextScope() );
+    context = mapCanvas->createExpressionContext();
   }
   else
   {
-    scopes << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+    context << QgsExpressionContextUtils::globalScope()
+            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+            << QgsExpressionContextUtils::atlasScope( nullptr )
+            << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
   }
-  scopes << QgsExpressionContextUtils::layerScope( layer );
-  return scopes;
+  context << QgsExpressionContextUtils::layerScope( layer );
+  return context;
 }
 
 
@@ -739,7 +739,7 @@ void QgsLabelingRulePropsWidget::testFilter()
     return;
   }
 
-  QgsExpressionContext context( _globalProjectAtlasMapLayerScopes( mMapCanvas, mLayer ) );
+  QgsExpressionContext context( createExpressionContext( mMapCanvas, mLayer ) );
 
   if ( !filter.prepare( &context ) )
   {
@@ -772,7 +772,7 @@ void QgsLabelingRulePropsWidget::testFilter()
 
 void QgsLabelingRulePropsWidget::buildExpression()
 {
-  const QgsExpressionContext context( _globalProjectAtlasMapLayerScopes( mMapCanvas, mLayer ) );
+  const QgsExpressionContext context( createExpressionContext( mMapCanvas, mLayer ) );
 
   QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, QStringLiteral( "generic" ), context );
 

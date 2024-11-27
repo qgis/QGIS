@@ -55,7 +55,7 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
     void syncToLayer();
 
     /**
-     * Updates the widget to reflect the diagram renderer.
+     * Updates the widget to reflect the diagram renderer. Does not take ownership.
      * \param dr Diagram renderer where settings are taken from.
      *
      * \since QGIS 3.40
@@ -63,7 +63,7 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
     void syncToRenderer( const QgsDiagramRenderer *dr );
 
     /**
-     * Updates the widget to reflect the diagram layer settings.
+     * Updates the widget to reflect the diagram layer settings. Does not take ownership.
      * \param dls Diagram Layer Settings to update the widget.
      *
      * \since QGIS 3.40
@@ -81,15 +81,18 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
 
     /**
      * Defines the widget's diagram type and lets it know it should hide the type comboBox.
-     * @param diagramType Type of diagram to be set
+     *
+     * \param diagramType Type of diagram to be set
      */
     void setDiagramType( const QString diagramType );
 
     /**
      * Sets whether the widget should show diagram layer settings.
+     *
      * Used by stacked diagrams, which disable editing of DLS for sub diagrams
      * other than the first one.
-     * @param allowed Whether this widget should be allowed to edit diagram layer settings.
+     *
+     * \param allowed Whether this widget should be allowed to edit diagram layer settings.
     */
     void setAllowedToEditDiagramLayerSettings( bool allowed );
 
@@ -166,7 +169,8 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
 
     /**
      * Convenience function to chain widgets' change value signal to another signal.
-     * @param widgets List of widgets.
+     *
+     * \param widgets List of widgets.
      */
     void connectValueChanged( const QList<QWidget *> &widgets );
 
@@ -202,6 +206,26 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
      * Insert reasonable defaults to have an initial diagram widget status.
      */
     void insertDefaults();
+
+    /**
+     * Sets widgets to reflect the \a enabled status of the diagram.
+     * \param enabled Whether the diagram is enabled or not.
+     *
+     * \see isDiagramEnabled()
+     *
+     * \since QGIS 3.40
+     */
+    void setDiagramEnabled( const bool enabled );
+
+    /**
+     * Returns whether the current diagram should be enabled or not,
+     * according to changes in the corresponding widgets.
+     *
+     * \see setDiagramEnabled()
+     *
+     * \since QGIS 3.40
+     */
+    bool isDiagramEnabled() const;
 
     friend class QgsStackedDiagramProperties;
     friend class QgsStackedDiagramPropertiesDialog;

@@ -15,6 +15,7 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsfilewidgetplugin.h"
+#include "moc_qgsfilewidgetplugin.cpp"
 #include "qgsfilewidget.h"
 
 

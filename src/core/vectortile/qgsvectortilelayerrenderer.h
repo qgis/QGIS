@@ -63,6 +63,8 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     //! Tile renderer object to do rendering of individual tiles
     std::unique_ptr<QgsVectorTileRenderer> mRenderer;
 
+    QPainter::CompositionMode mLayerBlendMode = QPainter::CompositionMode::CompositionMode_SourceOver;
+
     /**
      * Label provider that handles registration of labels.
      * No need to delete: if exists it is owned by labeling engine.

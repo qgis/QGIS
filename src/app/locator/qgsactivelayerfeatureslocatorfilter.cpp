@@ -17,6 +17,7 @@
 
 #include "qgisapp.h"
 #include "qgsactivelayerfeatureslocatorfilter.h"
+#include "moc_qgsactivelayerfeatureslocatorfilter.cpp"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeatureaction.h"
 #include "qgsiconutils.h"
@@ -65,6 +66,9 @@ QStringList QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string,
 
   QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
   if ( !layer )
+    return QStringList();
+
+  if ( !layer->flags().testFlag( QgsMapLayer::Searchable ) )
     return QStringList();
 
   mLayerIsSpatial = layer->isSpatial();

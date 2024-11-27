@@ -299,7 +299,7 @@ namespace QgsWms
        * Check layer read permissions
        * Returns true if the layer is readable, false otherwise
        */
-      bool checkLayerReadPermissions( QgsMapLayer *layer );
+      bool checkLayerReadPermissions( QgsMapLayer *layer ) const;
 
       bool layerScaleVisibility( const QString &name ) const;
 

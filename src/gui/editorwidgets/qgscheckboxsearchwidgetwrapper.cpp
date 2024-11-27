@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscheckboxsearchwidgetwrapper.h"
+#include "moc_qgscheckboxsearchwidgetwrapper.cpp"
 
 #include "qgsfields.h"
 #include "qgscheckboxwidgetfactory.h"

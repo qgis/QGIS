@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmodelgraphicsscene.h"
+#include "moc_qgsmodelgraphicsscene.cpp"
 #include "qgsprocessingmodelchildparametersource.h"
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsmodelcomponentgraphicitem.h"

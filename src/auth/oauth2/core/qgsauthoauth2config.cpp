@@ -14,6 +14,7 @@
 #include <functional>
 
 #include "qgsauthoauth2config.h"
+#include "moc_qgsauthoauth2config.cpp"
 
 #include <QDir>
 

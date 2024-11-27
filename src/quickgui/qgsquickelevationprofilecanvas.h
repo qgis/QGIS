@@ -260,8 +260,6 @@ class QUICK_EXPORT QgsQuickElevationProfileCanvas : public QQuickItem
     QgsGeometry mProfileCurve;
     double mTolerance = 0;
 
-    bool mFirstDrawOccurred = false;
-
     bool mZoomFullWhenJobFinished = true;
 
     bool mForceRegenerationAfterCurrentJobCompletes = false;

@@ -19,6 +19,7 @@
 #include <QMenu>
 
 #include "qgsmaptoolannotation.h"
+#include "moc_qgsmaptoolannotation.cpp"
 #include "qgsannotation.h"
 #include "qgsformannotationdialog.h"
 #include "qgsformannotation.h"

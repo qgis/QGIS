@@ -18,6 +18,7 @@
 #include <QMessageBox>
 
 #include "qgsmdalsourceselect.h"
+#include "moc_qgsmdalsourceselect.cpp"
 #include "qgsproviderregistry.h"
 #include "qgshelp.h"
 

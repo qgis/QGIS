@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspostgreslistener.h"
+#include "moc_qgspostgreslistener.cpp"
 #include "qgsdatasourceuri.h"
 #include "qgscredentials.h"
 #include "qgslogger.h"

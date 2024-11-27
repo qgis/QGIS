@@ -61,6 +61,7 @@ class TestQgsExpressionContext : public QObject
     void description();
     void readWriteScope();
     void layerStores();
+    void uniqueHash();
 
   private:
 
@@ -812,6 +813,7 @@ void TestQgsExpressionContext::projectScope()
   QgsNamedColorList colorList;
   colorList << qMakePair( QColor( 200, 255, 0 ), QStringLiteral( "vomit yellow" ) );
   colorList << qMakePair( QColor( 30, 60, 20 ), QStringLiteral( "murky depths of hades" ) );
+  colorList << qMakePair( QColor::fromCmykF( 1., 0.9, 0.8, 0.7 ), QStringLiteral( "cmyk colors" ) );
   s.setColors( colorList );
   QgsExpressionContext contextColors;
   contextColors << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
@@ -823,6 +825,16 @@ void TestQgsExpressionContext::projectScope()
   QCOMPARE( expProjectColorCaseInsensitive.evaluate( &contextColors ).toString(), QString( "30,60,20" ) );
   QgsExpression badProjectColor( QStringLiteral( "project_color('dusk falls in san juan del sur')" ) );
   QCOMPARE( badProjectColor.evaluate( &contextColors ), QVariant() );
+
+  QgsExpression expProjectColorObject( QStringLiteral( "project_color_object('murky depths of hades')" ) );
+  QCOMPARE( expProjectColorObject.evaluate( &contextColors ), QVariant( QColor::fromRgb( 30, 60, 20 ) ) );
+  //matching color names should be case insensitive
+  QgsExpression expProjectColorObjectCaseInsensitive( QStringLiteral( "project_color_object('Murky Depths of hades')" ) );
+  QCOMPARE( expProjectColorObjectCaseInsensitive.evaluate( &contextColors ), QVariant( QColor::fromRgb( 30, 60, 20 ) ) );
+  QgsExpression expProjectColorCmyk( QStringLiteral( "project_color_object('cmyk colors')" ) );
+  QCOMPARE( expProjectColorCmyk.evaluate( &contextColors ), QVariant( QColor::fromCmykF( 1., 0.9, 0.8, 0.7 ) ) );
+  QgsExpression badProjectColorObject( QStringLiteral( "project_color_object('dusk falls in san juan del sur')" ) );
+  QCOMPARE( badProjectColorObject.evaluate( &contextColors ), QVariant() );
 }
 
 void TestQgsExpressionContext::layerScope()
@@ -1041,6 +1053,48 @@ void TestQgsExpressionContext::layerStores()
   QgsExpressionContext c3;
   c3 = context;
   QCOMPARE( c3.loadedLayerStore(), &store4 );
+}
+
+void TestQgsExpressionContext::uniqueHash()
+{
+  QgsExpressionContext context;
+  bool ok = true;
+  // the actual hash values aren't important, just that they are unique. Feel free to change the expected results accordingly
+  QSet< QString > vars;
+  vars.insert( QStringLiteral( "var1" ) );
+  vars.insert( QStringLiteral( "var2" ) );
+  QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "var1=||~~||var2=||~~||" ) );
+  QVERIFY( ok );
+
+  QgsExpressionContextScope *scope1 = new QgsExpressionContextScope();
+  context.appendScope( scope1 );
+  scope1->setVariable( QStringLiteral( "var1" ), QStringLiteral( "a string" ) );
+  scope1->setVariable( QStringLiteral( "var2" ), 5 );
+  QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "var1=a string||~~||var2=5||~~||" ) );
+  QVERIFY( ok );
+
+  QgsExpressionContextScope *scope2 = new QgsExpressionContextScope();
+  context.appendScope( scope2 );
+  scope2->setVariable( QStringLiteral( "var1" ), QStringLiteral( "b string" ) );
+  QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "var1=b string||~~||var2=5||~~||" ) );
+  QVERIFY( ok );
+
+  QgsFeature feature;
+  feature.setId( 11 );
+  feature.setAttributes( QgsAttributes() << 5 << 11 );
+  context.setFeature( feature );
+
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+  QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "11||~~||1566||~~||var1=b string||~~||var2=5||~~||" ) );
+#else
+  QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "11||~~||18646899||~~||var1=b string||~~||var2=5||~~||" ) );
+#endif
+  QVERIFY( ok );
+
+  // a value which can't be converted to string
+  scope2->setVariable( QStringLiteral( "var1" ), QVariant::fromValue( QgsCoordinateReferenceSystem( "EPSG:3857" ) ) );
+  context.uniqueHash( ok, vars );
+  QVERIFY( !ok );
 }
 
 QGSTEST_MAIN( TestQgsExpressionContext )

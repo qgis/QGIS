@@ -133,7 +133,7 @@ namespace QgsWms
     for ( const auto &layer : std::as_const( layersToRender ) )
     {
       // If it is a cascading WMS layer, get legend node image size
-      if ( layer->dataProvider()->name() == QStringLiteral( "wms" ) )
+      if ( layer->dataProvider()->name() == QLatin1String( "wms" ) )
       {
         if ( QgsWmsLegendNode *layerNode = qobject_cast<QgsWmsLegendNode *>( model.findLegendNode( layer->id(), QString() ) ) )
         {
@@ -288,7 +288,7 @@ namespace QgsWms
         if ( vLayer->renderer() )
         {
           const QString ruleKey { legendNode.data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString() };
-          bool ok;
+          bool ok = false;
           const QString ruleExp { vLayer->renderer()->legendKeyToExpression( ruleKey, vLayer, ok ) };
           if ( ok )
           {
@@ -718,7 +718,7 @@ namespace QgsWms
       {
         exportSettings.exportThemes = exportThemes;
       }
-      exportSettings.writeGeoPdf = mWmsParameters.writeGeoPdf();
+      exportSettings.writeGeoPdf = mWmsParameters.writeGeospatialPdf();
       exportSettings.textRenderFormat = mWmsParameters.pdfTextRenderFormat();
       exportSettings.forceVectorOutput = mWmsParameters.pdfForceVectorOutput();
       exportSettings.appendGeoreference = mWmsParameters.pdfAppendGeoreference();
@@ -1228,7 +1228,7 @@ namespace QgsWms
     ms.setOutputSize( QSize( mWmsParameters.widthAsInt(), mWmsParameters.heightAsInt() ) );
     ms.setDpiTarget( mWmsParameters.dpiAsDouble() );
 
-    QgsAbstractGeoPdfExporter::ExportDetails pdfExportDetails;
+    QgsAbstractGeospatialPdfExporter::ExportDetails pdfExportDetails;
     if ( mWmsParameters.pdfExportMetadata() )
     {
       pdfExportDetails.author = QgsProject::instance()->metadata().author();
@@ -1241,8 +1241,8 @@ namespace QgsWms
     }
     pdfExportDetails.useIso32000ExtensionFormatGeoreferencing = mWmsParameters.pdfUseIso32000ExtensionFormatGeoreferencing();
     pdfExportDetails.useOgcBestPracticeFormatGeoreferencing = mWmsParameters.pdfUseOgcBestPracticeFormatGeoreferencing();
-    const bool geoPdf = mWmsParameters.pdfAppendGeoreference();
-    std::unique_ptr<QgsMapRendererTask> pdf = std::make_unique<QgsMapRendererTask>( ms, tmpFileName, QStringLiteral( "PDF" ), false, QgsTask::Hidden, geoPdf, pdfExportDetails );
+    const bool geospatialPdf = mWmsParameters.pdfAppendGeoreference();
+    std::unique_ptr<QgsMapRendererTask> pdf = std::make_unique<QgsMapRendererTask>( ms, tmpFileName, QStringLiteral( "PDF" ), false, QgsTask::Hidden, geospatialPdf, pdfExportDetails );
     if ( mWmsParameters.pdfAppendGeoreference() )
     {
       pdf->setSaveWorldFile( true );
@@ -1598,7 +1598,8 @@ namespace QgsWms
     {
       featuresRect.reset( new QgsRectangle() );
     }
-    else if ( filterGeomDefined )
+
+    if ( filterGeomDefined )
     {
       filterGeom.reset( new QgsGeometry( QgsGeometry::fromWkt( mWmsParameters.filterGeom() ) ) );
     }
@@ -2415,7 +2416,7 @@ namespace QgsWms
 
       //numbers are OK
       bool isNumeric;
-      tokenIt->toDouble( &isNumeric );
+      ( void )tokenIt->toDouble( &isNumeric );
       if ( isNumeric )
       {
         continue;

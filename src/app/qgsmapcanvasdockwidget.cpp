@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmapcanvasdockwidget.h"
+#include "moc_qgsmapcanvasdockwidget.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsexception.h"
 #include "qgsprojectionselectiondialog.h"
@@ -54,6 +55,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   mToolbar->setIconSize( QgisApp::instance()->iconSize( true ) );
 
   mMapCanvas = new QgsMapCanvas( this );
+  mMapCanvas->setFlags( Qgis::MapCanvasFlag::ShowMainAnnotationLayer );
   mXyMarker = new QgsVertexMarker( mMapCanvas );
   mXyMarker->setIconType( QgsVertexMarker::ICON_CIRCLE );
   mXyMarker->setIconSize( 6 );

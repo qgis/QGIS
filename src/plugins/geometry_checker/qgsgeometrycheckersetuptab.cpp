@@ -17,6 +17,7 @@
 
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckersetuptab.h"
+#include "moc_qgsgeometrycheckersetuptab.cpp"
 #include "qgsgeometrychecker.h"
 #include "qgsgeometrycheckfactory.h"
 #include "qgsgeometrycheck.h"
@@ -43,10 +44,10 @@ static const int LayerIdRole = Qt::UserRole + 1;
 
 QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QDialog *checkerDialog, QWidget *parent )
   : QWidget( parent )
-  , mIface( iface )
-  , mCheckerDialog( checkerDialog )
 
 {
+  Q_UNUSED( checkerDialog )
+  Q_UNUSED( iface )
   ui.setupUi( this );
   ui.progressBar->hide();
   ui.labelStatus->hide();

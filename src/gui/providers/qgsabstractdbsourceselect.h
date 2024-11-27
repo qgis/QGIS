@@ -69,7 +69,6 @@ class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget,
 
     QAction *mSearchColumnAllAction = nullptr;
     QList<QAction *> mSearchColumnActions;
-    QAction *mSearchModeWildCardAction = nullptr;
     QAction *mSearchModeRegexAction = nullptr;
 };
 

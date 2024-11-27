@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerfeaturecounter.h"
+#include "moc_qgsvectorlayerfeaturecounter.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsfeatureid.h"
 #include "qgsfeedback.h"

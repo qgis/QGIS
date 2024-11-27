@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgsattributetablefiltermodel.h"
+#include "moc_qgsattributetablefiltermodel.cpp"
 #include "qgsattributetablemodel.h"
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
@@ -281,7 +282,7 @@ void QgsAttributeTableFilterModel::setSelectedOnTop( bool selectedOnTop )
     if ( order != Qt::AscendingOrder && order != Qt::DescendingOrder )
       order = Qt::AscendingOrder;
 
-    sort( 0, Qt::AscendingOrder );
+    sort( column, order );
     invalidate();
   }
 }

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutmanager.h"
+#include "moc_qgslayoutmanager.cpp"
 #include "qgslayout.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
@@ -417,7 +418,7 @@ bool QgsLayoutManagerModel::setData( const QModelIndex &index, const QVariant &v
 
   //check if name already exists
   QStringList layoutNames;
-  const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
+  const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts(); // skip-keyword-check
   for ( QgsMasterLayoutInterface *l : layouts )
   {
     layoutNames << l->name();

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsdatabaseschemaitem.h"
+#include "moc_qgsdatabaseschemaitem.cpp"
 #include "qgsapplication.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsprovidermetadata.h"
@@ -31,11 +32,6 @@ QgsDatabaseSchemaItem::QgsDatabaseSchemaItem( QgsDataItem *parent, const QString
 QgsDatabaseSchemaItem::~QgsDatabaseSchemaItem()
 {
 
-}
-
-QIcon QgsDatabaseSchemaItem::iconDataCollection()
-{
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.svg" ) );
 }
 
 QgsAbstractDatabaseProviderConnection *QgsDatabaseSchemaItem::databaseConnection() const

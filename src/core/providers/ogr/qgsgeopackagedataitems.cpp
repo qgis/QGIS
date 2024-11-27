@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgeopackagedataitems.h"
+#include "moc_qgsgeopackagedataitems.cpp"
 ///@cond PRIVATE
 
 #include "qgsgeopackagedataitems.h"
@@ -387,7 +388,7 @@ QList<QgsMapLayer *> QgsGeoPackageAbstractLayerItem::layersInProject() const
 {
   // Check if the layer(s) are in the registry
   QList<QgsMapLayer *> layersList;
-  const auto mapLayers( QgsProject::instance()->mapLayers() );
+  const auto mapLayers( QgsProject::instance()->mapLayers() ); // skip-keyword-check
   for ( QgsMapLayer *layer :  mapLayers )
   {
     if ( layer->publicSource() == mUri )

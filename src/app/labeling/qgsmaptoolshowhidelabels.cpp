@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshowhidelabels.h"
+#include "moc_qgsmaptoolshowhidelabels.cpp"
 
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"

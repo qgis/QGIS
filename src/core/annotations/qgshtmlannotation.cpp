@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgshtmlannotation.h"
+#include "moc_qgshtmlannotation.cpp"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
@@ -150,7 +151,7 @@ void QgsHtmlAnnotation::readXml( const QDomElement &itemElem, const QgsReadWrite
   // upgrade old layer
   if ( !mapLayer() && itemElem.hasAttribute( QStringLiteral( "vectorLayer" ) ) )
   {
-    setMapLayer( QgsProject::instance()->mapLayer( itemElem.attribute( QStringLiteral( "vectorLayer" ) ) ) );
+    setMapLayer( QgsProject::instance()->mapLayer( itemElem.attribute( QStringLiteral( "vectorLayer" ) ) ) ); // skip-keyword-check
   }
 
   if ( mWebPage )

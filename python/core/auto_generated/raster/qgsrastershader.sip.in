@@ -70,7 +70,7 @@ Generates a new RGBA value based on one input ``value``.
                 int *returnRedValue /Out/,
                 int *returnGreenValue /Out/,
                 int *returnBlueValue /Out/,
-                int *returnAlpha /Out/ );
+                int *returnAlpha /Out/ ) const;
 %Docstring
 Generates a new RGBA value based on an original RGBA value.
 

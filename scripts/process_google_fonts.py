@@ -1585,7 +1585,7 @@ for p in path.rglob("*METADATA.pb"):
 
         match = re.match(r'\s*filename: "(.*)"', line)
         if match:
-            filenames.append(f'{github_path}/{match.group(1)}')
+            filenames.append(f'{github_path}/{match.group(1).replace("[", "%5B").replace("]", "%5D")}')
 
     license_path = None
     if not (p.parent / f'{license}.txt').exists():

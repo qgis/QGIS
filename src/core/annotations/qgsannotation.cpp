@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsannotation.h"
+#include "moc_qgsannotation.cpp"
 #include "qgssymbollayerutils.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
@@ -351,7 +352,7 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QgsReadWr
   mVisible = annotationElem.attribute( QStringLiteral( "visible" ), QStringLiteral( "1" ) ).toInt();
   if ( annotationElem.hasAttribute( QStringLiteral( "mapLayer" ) ) )
   {
-    mMapLayer = QgsProject::instance()->mapLayer( annotationElem.attribute( QStringLiteral( "mapLayer" ) ) );
+    mMapLayer = QgsProject::instance()->mapLayer( annotationElem.attribute( QStringLiteral( "mapLayer" ) ) ); // skip-keyword-check
   }
 
   //marker symbol

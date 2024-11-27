@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutlegendwidget.h"
+#include "moc_qgslayoutlegendwidget.cpp"
 #include "qgslayoutitemlegend.h"
 #include "qgslayoutlegendlayersdialog.h"
 #include "qgslayoutitemwidget.h"

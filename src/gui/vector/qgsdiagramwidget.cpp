@@ -22,6 +22,7 @@
 #include "diagram/qgsstackeddiagram.h"
 
 #include "qgsdiagramwidget.h"
+#include "moc_qgsdiagramwidget.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
@@ -48,7 +49,7 @@ QgsDiagramWidget::QgsDiagramWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas,
   mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "text.svg" ) ), tr( "Text Diagram" ), ModeText );
   mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "histogram.svg" ) ), tr( "Histogram" ), ModeHistogram );
   mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "stacked-bar.svg" ) ), tr( "Stacked Bars" ), ModeStackedBar );
-  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "diagramNone.svg" ) ), tr( "Stacked Diagram" ), ModeStacked );
+  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "stacked-diagram.svg" ) ), tr( "Stacked Diagram" ), ModeStacked );
 
   connect( mEngineSettingsButton, &QAbstractButton::clicked, this, &QgsDiagramWidget::showEngineConfigDialog );
 
@@ -107,7 +108,7 @@ void QgsDiagramWidget::syncToOwnLayer()
   // pick the right mode from the layer
   if ( dr && dr->diagram() )
   {
-    if ( dr->rendererName() == QgsStackedDiagram::DIAGRAM_NAME_STACKED )
+    if ( dr->rendererName() == QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED )
     {
       mDiagramTypeComboBox->setCurrentIndex( ModeStacked );
     }
@@ -131,8 +132,6 @@ void QgsDiagramWidget::syncToOwnLayer()
         // Play safe and set to histogram by default if the diagram name is unknown
         mDiagramTypeComboBox->setCurrentIndex( ModeHistogram );
       }
-      // TODO: if we get a stacked diagram, take the first subdiagram,
-      // Set its diagram type and sync to its settings
 
       // Delegate to single diagram's syncToLayer
       static_cast<QgsDiagramProperties *>( mWidget )->syncToLayer();

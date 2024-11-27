@@ -89,7 +89,7 @@ bool QgsPluginLayerRegistry::removePluginLayerType( const QString &typeName )
     return false;
 
   // remove all remaining layers of this type - to avoid invalid behavior
-  const QList<QgsMapLayer *> layers = QgsProject::instance()->mapLayers().values();
+  const QList<QgsMapLayer *> layers = QgsProject::instance()->mapLayers().values(); // skip-keyword-check
   const auto constLayers = layers;
   for ( QgsMapLayer *layer : constLayers )
   {
@@ -98,7 +98,7 @@ bool QgsPluginLayerRegistry::removePluginLayerType( const QString &typeName )
       QgsPluginLayer *pl = qobject_cast<QgsPluginLayer *>( layer );
       if ( pl->pluginLayerType() == typeName )
       {
-        QgsProject::instance()->removeMapLayers(
+        QgsProject::instance()->removeMapLayers( // skip-keyword-check
           QStringList() << layer->id() );
       }
     }

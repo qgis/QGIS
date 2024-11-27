@@ -984,7 +984,7 @@ class TestQgsVectorFileWriter(QgisTestCase):
             filename,
             options)
         self.assertEqual(write_result, QgsVectorFileWriter.WriterError.ErrCreateDataSource)
-        self.assertEqual(error_message, 'Cannot overwrite a OGR layer in place')
+        self.assertEqual(error_message, 'Cannot overwrite an OGR layer in place')
 
         options.layerName = 'test2'
         write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(

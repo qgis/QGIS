@@ -267,6 +267,7 @@ set(QGIS_GUI_SRCS
   labeling/qgslabelobstaclesettingswidget.cpp
   labeling/qgslabelsettingswidgetbase.cpp
   labeling/qgsrulebasedlabelingwidget.cpp
+  labeling/qgstabpositionwidget.cpp
 
   layertree/qgscustomlayerorderwidget.cpp
   layertree/qgslayertreeembeddedconfigwidget.cpp
@@ -504,6 +505,11 @@ set(QGIS_GUI_SRCS
   settings/qgssettingsregistrygui.cpp
   settings/qgssettingstreemodel.cpp
   settings/qgssettingstreewidget.cpp
+
+  stac/qgsstacconnectiondialog.cpp
+  stac/qgsstacdataitemguiprovider.cpp
+  stac/qgsstacdownloadassetsdialog.cpp
+  stac/qgsstacobjectdetailsdialog.cpp
 
   tableeditor/qgstableeditordialog.cpp
   tableeditor/qgstableeditorformattingwidget.cpp
@@ -1062,6 +1068,7 @@ set(QGIS_GUI_HDRS
   annotations/qgsannotationitemguiregistry.h
   annotations/qgsannotationitemwidget.h
   annotations/qgscreateannotationitemmaptool.h
+  annotations/qgscreateannotationitemmaptool_impl.h
   annotations/qgsmaptoolmodifyannotation.h
 
   attributeformconfig/qgsattributeformcontaineredit.h
@@ -1239,6 +1246,7 @@ set(QGIS_GUI_HDRS
   labeling/qgslabelobstaclesettingswidget.h
   labeling/qgslabelsettingswidgetbase.h
   labeling/qgsrulebasedlabelingwidget.h
+  labeling/qgstabpositionwidget.h
 
   layertree/qgscustomlayerorderwidget.h
   layertree/qgslayertreeembeddedconfigwidget.h
@@ -1559,6 +1567,11 @@ set(QGIS_GUI_HDRS
   settings/qgssettingstreemodel.h
   settings/qgssettingstreewidget.h
 
+  stac/qgsstacconnectiondialog.h
+  stac/qgsstacdataitemguiprovider.h
+  stac/qgsstacdownloadassetsdialog.h
+  stac/qgsstacobjectdetailsdialog.h
+
   tableeditor/qgstableeditordialog.h
   tableeditor/qgstableeditorformattingwidget.h
   tableeditor/qgstableeditorwidget.h
@@ -1719,6 +1732,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/gui/sensor
   ${CMAKE_SOURCE_DIR}/src/gui/settings
+  ${CMAKE_SOURCE_DIR}/src/gui/stac
   ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/gui/tiledscene
   ${CMAKE_SOURCE_DIR}/src/gui/vector
@@ -1807,6 +1821,13 @@ if (BUILD_WITH_QT6)
   find_package(Qt6 COMPONENTS SvgWidgets REQUIRED)
   target_link_libraries(qgis_gui
     Qt6::SvgWidgets
+  )
+endif()
+
+if (WITH_QTWEBENGINE)
+  find_package(${QT_VERSION_BASE} COMPONENTS WebEngineWidgets REQUIRED)
+  target_link_libraries(qgis_gui
+    ${QT_VERSION_BASE}::WebEngineWidgets
   )
 endif()
 

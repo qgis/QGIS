@@ -14,6 +14,7 @@
 ***************************************************************************/
 
 #include "qgsscalerangewidget.h"
+#include "moc_qgsscalerangewidget.cpp"
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgsscalewidget.h"

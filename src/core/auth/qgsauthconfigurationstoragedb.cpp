@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsauthconfigurationstoragedb.h"
+#include "moc_qgsauthconfigurationstoragedb.cpp"
 
 #include "qgslogger.h"
 #include "qgsauthcertutils.h"
@@ -176,7 +177,7 @@ bool QgsAuthConfigurationStorageDb::authDbQuery( QSqlQuery *query, const QString
     const QStringList keys = query->boundValueNames();
     const QVariantList values = query->boundValues();
     QMap<QString, QVariant> boundValues;
-   for ( int i=0; i<keys.count(); i++)
+    for ( int i = 0; i < keys.count(); i++ )
     {
       boundValues.insert( keys.at( i ), values.at( i ).toString() );
     }
@@ -267,7 +268,7 @@ QList<QgsAuthConfigurationStorage::SettingParameter> QgsAuthConfigurationStorage
 {
   return
   {
-    { QStringLiteral( "driver" ), tr( "SQL Driver (see https://doc.qt.io/qt-6/sql-driver.html)" ), QVariant::String },
+    { QStringLiteral( "driver" ), tr( "SQL Driver (see https://doc.qt.io/qt/sql-driver.html)" ), QVariant::String },
     { QStringLiteral( "database" ), tr( "Database" ), QVariant::String },
     { QStringLiteral( "schema" ), tr( "Schema for all tables" ), QVariant::String },
     { QStringLiteral( "host" ), tr( "Host" ), QVariant::String },
@@ -448,7 +449,7 @@ const QPair<QSslCertificate, QString> QgsAuthConfigurationStorageDb::loadCertIde
     }
     if ( query.next() )
     {
-      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Select contains more than one certificate identity for id: %1" ).arg( id ),  Qgis::MessageLevel::Warning );
+      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Retrieved more than one certificate identity for id: %1" ).arg( id ),  Qgis::MessageLevel::Warning );
       return bundle;
     }
     bundle = qMakePair( cert, key );
@@ -715,7 +716,7 @@ const QgsAuthConfigSslServer QgsAuthConfigurationStorageDb::loadSslCertCustomCon
     }
     if ( query.next() )
     {
-      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Select contains more than one SSL cert custom config for id: %1" ).arg( id ), Qgis::MessageLevel::Warning );
+      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Retrieved more than one SSL cert custom config for id: %1" ).arg( id ), Qgis::MessageLevel::Warning );
       return QgsAuthConfigSslServer();
     }
   }
@@ -838,7 +839,7 @@ bool QgsAuthConfigurationStorageDb::sslCertCustomConfigExists( const QString &id
     }
     if ( query.next() )
     {
-      QgsDebugError( QStringLiteral( "Select contains more than one SSL cert custom config for host:port, id: %1, %2" ).arg( hostport, id ) );
+      QgsDebugError( QStringLiteral( "Retrieved more than one SSL cert custom config for host:port, id: %1, %2" ).arg( hostport, id ) );
       emit messageLog( tr( "Authentication database contains more than one SSL cert custom configs for host:port, id: %1, %2" )
                        .arg( hostport, id ), loggerTag(), Qgis::MessageLevel::Warning );
       return false;
@@ -1003,7 +1004,7 @@ const QSslCertificate QgsAuthConfigurationStorageDb::loadCertAuthority( const QS
     }
     if ( query.next() )
     {
-      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Select contains more than one certificate authority for id: %1" ).arg( id ), Qgis::MessageLevel::Warning );
+      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Retrieved more than one certificate authority for id: %1" ).arg( id ), Qgis::MessageLevel::Warning );
       return emptycert;
     }
   }
@@ -1048,7 +1049,7 @@ bool QgsAuthConfigurationStorageDb::certAuthorityExists( const QSslCertificate &
     }
     if ( query.next() )
     {
-      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Select contains more than one certificate authority for id: %1" ).arg( id ), Qgis::MessageLevel::Warning );
+      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Retrieved more than one certificate authority for id: %1" ).arg( id ), Qgis::MessageLevel::Warning );
       // TODO: check whether it makes sense to return false here (and in other similar cases)
       return false;
     }
@@ -1286,7 +1287,7 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthConfigurationStorageDb::loadCertTrustPo
     }
     if ( query.next() )
     {
-      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Select contains more than one certificate trust policy for id: %1" ).arg( id ), Qgis::MessageLevel::Warning );
+      const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Retrieved more than one certificate trust policy for id: %1" ).arg( id ), Qgis::MessageLevel::Warning );
       return QgsAuthCertUtils::DefaultTrust;
     }
   }

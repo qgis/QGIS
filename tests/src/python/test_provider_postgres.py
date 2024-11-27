@@ -3475,6 +3475,15 @@ INSERT INTO public.test_geog_ext(g)
         cur.execute(sql_pk)
         self.assertEqual(cur.fetchall(), [('dep', 'character varying')])
 
+    def testNameType(self):
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'"table_catalog","table_schema","table_name"\' table="information_schema"."tables" () sql=', 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        feat = next(vl.getFeatures())
+        self.assertTrue(feat.isValid())
+        self.assertIsNotNone(feat.attributes()[0])
+
     def testColumnRestrictedLayerIsEditable(self):
         """
             Test editability of table with partial column insert privs
@@ -3506,6 +3515,28 @@ CREATE UNLOGGED TABLE public.qgis_issue_gh_28835 (
         vl = QgsVectorLayer(uri.uri(), 'test', 'postgres')
         self.assertTrue(vl.isValid(), "qgis_issue_gh_28835 is an invalid layer")
         self.assertTrue(vl.startEditing(), "qgis_issue_gh_28835 is not editable by qgis_test_unprivileged_user after restricted-column insert grant")
+
+    def testBitAndBitVarying(self):
+        """Test issue GH #59129"""
+
+        self.execSQLCommand(
+            'ALTER TABLE IF EXISTS qgis_test."bit_and_bit_varying" DROP CONSTRAINT IF EXISTS pk_bit_and_bit_varying;')
+        self.execSQLCommand(
+            'DROP TABLE IF EXISTS qgis_test."bit_and_bit_varying" CASCADE;')
+        self.execSQLCommand(
+            'CREATE TABLE qgis_test."bit_and_bit_varying" ( "T_Id" integer NOT NULL, a BIT(3), b BIT VARYING(5) );')
+        self.execSQLCommand(
+            """INSERT INTO qgis_test."bit_and_bit_varying" VALUES (1, B'101', B'00');""")
+        self.execSQLCommand(
+            'ALTER TABLE qgis_test."bit_and_bit_varying" ADD CONSTRAINT pk_gh_bit_and_bit_varying PRIMARY KEY ("T_Id");')
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'id\' table="qgis_test"."bit_and_bit_varying" () sql=', 'bit_and_bit_varying', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        feat = next(vl.getFeatures())
+        self.assertTrue(feat.isValid())
+        self.assertEqual(feat["a"], "101")
+        self.assertEqual(feat["b"], "00")
 
 
 class TestPyQgsPostgresProviderCompoundKey(QgisTestCase, ProviderTestCase):

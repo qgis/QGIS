@@ -27,6 +27,7 @@
 #include "qgsxmlutils.h"
 #include "qgsvectorlayer.h"
 #include "qgspostgresprovider.h"
+#include "moc_qgspostgresprovider.cpp"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
 #include "qgspostgresdataitems.h"
@@ -1235,6 +1236,8 @@ bool QgsPostgresProvider::loadFields()
                 fieldTypeName == QLatin1String( "ltree" ) ||
                 fieldTypeName == QLatin1String( "uuid" ) ||
                 fieldTypeName == QLatin1String( "xml" ) ||
+                fieldTypeName == QLatin1String( "bit" ) ||
+                fieldTypeName == QLatin1String( "varbit" ) ||
                 fieldTypeName.startsWith( QLatin1String( "time" ) ) ||
                 fieldTypeName.startsWith( QLatin1String( "date" ) ) )
       {
@@ -1302,7 +1305,7 @@ bool QgsPostgresProvider::loadFields()
       // PG 12 returns "name" type for some system table fields (e.g. information_schema.tables)
       else if ( fieldTypeName == QLatin1String( "name" ) )
       {
-        fieldSubType = QMetaType::Type::QString;
+        fieldType = QMetaType::Type::QString;
         fieldSize = 63;
       }
       else
@@ -1323,7 +1326,7 @@ bool QgsPostgresProvider::loadFields()
         }
         else
         {
-          QgsMessageLog::logMessage( tr( "Field %1 ignored, because of unsupported type %2" ).arg( fieldName, fieldTType ), tr( "PostGIS" ) );
+          QgsMessageLog::logMessage( tr( "Field %1 ignored, because of unsupported type %2" ).arg( fieldName, fieldTypeName ), tr( "PostGIS" ) );
           continue;
         }
       }

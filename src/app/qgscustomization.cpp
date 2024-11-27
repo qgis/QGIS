@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgscustomization.h"
+#include "moc_qgscustomization.cpp"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -52,7 +53,7 @@ bool isInternalWidget( const QString &name )
   return false;
 }
 
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
 QgsCustomizationDialog::QgsCustomizationDialog( QWidget *parent, QSettings *settings )
   : QMainWindow( parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
 #else

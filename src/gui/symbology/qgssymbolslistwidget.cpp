@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgssymbolslistwidget.h"
+#include "moc_qgssymbolslistwidget.cpp"
 #include "qgsstylesavedialog.h"
 #include "qgsstyleitemslistwidget.h"
 #include "qgsvectorlayer.h"

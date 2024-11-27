@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecircularstringabstract.h"
+#include "moc_qgsmaptoolshapecircularstringabstract.cpp"
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
 #include "qgscurvepolygon.h"

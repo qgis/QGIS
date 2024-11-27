@@ -869,6 +869,7 @@ Alters the size of rendered diagrams using a linear scaling.
 #include "qgsdiagramrenderer.h"
 %End
   public:
+
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer();
     QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
@@ -965,7 +966,12 @@ the rendered diagram is given by a combination of subrenderers.
 #include "qgsdiagramrenderer.h"
 %End
   public:
+
     QgsStackedDiagramRenderer();
+    ~QgsStackedDiagramRenderer();
+
+    QgsStackedDiagramRenderer( const QgsStackedDiagramRenderer &other );
+
 
     virtual QgsStackedDiagramRenderer *clone() const /Factory/;
 
@@ -1020,21 +1026,31 @@ Writes stacked renderers state to a DOM element.
     QList< QgsDiagramRenderer * > renderers( bool sortByDiagramMode = false ) const;
 %Docstring
 Returns an ordered list with the renderers of the stacked renderer object.
-@param sortByDiagramMode If true, the list is returned backwards for vertical orientation.
+Does not transfer ownership.
+
+:param sortByDiagramMode: If true, the list is returned backwards for vertical orientation.
 %End
 
-    void addRenderer( QgsDiagramRenderer *renderer );
+    void addRenderer( QgsDiagramRenderer *renderer /Transfer/ );
 %Docstring
-Adds a renderer to the stacked renderer object.
-@param renderer diagram renderer to be added to the stacked renderer
+Adds a renderer to the stacked renderer object. Takes ownership.
+
 Renderers added first will render their diagrams first, i.e., more to
 the left (horizontal mode) or more to the top (vertical mode).
+
+:param renderer: diagram renderer to be added to the stacked renderer
 %End
 
     const QgsDiagramRenderer *renderer( const int index ) const;
 %Docstring
-Returns the renderer at the given ``index``.
-@param index index of the disired renderer in the stacked renderer
+Returns the renderer at the given ``index``. Does not transfer ownership.
+
+:param index: index of the desired renderer in the stacked renderer
+%End
+
+    int rendererCount() const;
+%Docstring
+Returns the number of sub renderers in the stacked diagram renderer
 %End
 
   protected:

@@ -67,8 +67,10 @@ class CORE_EXPORT QgsMaskMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
 
+    // TODO QGIS 4.0 rename to avoid collision with base class member
+
     //! Whether some masked symbol layers are defined
-    bool enabled() const;
+    bool enabled() const; // cppcheck-suppress duplInheritedMember
 
     /**
      * Returns a list of references to symbol layers that are masked by the sub symbol's shape.

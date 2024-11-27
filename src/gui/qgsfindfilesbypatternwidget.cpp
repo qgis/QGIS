@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsfindfilesbypatternwidget.h"
+#include "moc_qgsfindfilesbypatternwidget.cpp"
 #include "qgsgui.h"
 #include "qgssettings.h"
 

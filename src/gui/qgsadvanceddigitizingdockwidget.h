@@ -1083,7 +1083,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * \param snapMatch the snap match to add or remove.
      * \param previouslySnap the previous snap match to avoid toggling the same match.
      */
-    void toggleLockedSnapVertex( const QgsPointLocator::Match &snapMatch, QgsPointLocator::Match previouslySnap );
+    void toggleLockedSnapVertex( const QgsPointLocator::Match &snapMatch, const QgsPointLocator::Match &previouslySnap );
 
     /**
      * Resets the vector layer and point locator objects handling construction guides.

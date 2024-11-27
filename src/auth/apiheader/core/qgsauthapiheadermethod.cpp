@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthapiheadermethod.h"
+#include "moc_qgsauthapiheadermethod.cpp"
 
 #include "qgsauthmanager.h"
 #include "qgslogger.h"

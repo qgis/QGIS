@@ -24,6 +24,7 @@
 #include "qgslabelingresults.h"
 #include "qgsrendercontext.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsscaleutils.h"
 
 #include "feature.h"
 #include "labelposition.h"
@@ -197,16 +198,16 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( const QgsFeatur
       // Note: scale might be a non-round number, so compare with qgsDoubleNear
       const double rendererScale = context.rendererScale();
 
-      // maxScale is inclusive ( (< && !=) --> < --> no diagram )
+      // maxScale is inclusive ( < --> no diagram )
       double maxScale = settingList.at( 0 ).maximumScale;
-      if ( maxScale > 0 && ( rendererScale < maxScale && !qgsDoubleNear( rendererScale, maxScale, 1E-8 ) ) )
+      if ( maxScale > 0 && QgsScaleUtils::lessThanMaximumScale( rendererScale, maxScale ) )
       {
         return nullptr;
       }
 
       // minScale is exclusive ( >= --> no diagram)
       double minScale = settingList.at( 0 ).minimumScale;
-      if ( minScale > 0 && ( rendererScale > minScale || qgsDoubleNear( rendererScale, minScale, 1E-8 ) ) )
+      if ( minScale > 0 && QgsScaleUtils::equalToOrGreaterThanMinimumScale( rendererScale, minScale ) )
       {
         return nullptr;
       }

@@ -16,6 +16,7 @@
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsmssqlconnection.h"
 #include "qgsmssqldataitemguiprovider.h"
+#include "moc_qgsmssqldataitemguiprovider.cpp"
 #include "qgsmssqldataitems.h"
 #include "qgsmssqlnewconnection.h"
 #include "qgsmssqlsourceselect.h"

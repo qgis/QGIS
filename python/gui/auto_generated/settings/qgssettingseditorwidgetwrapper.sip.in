@@ -23,7 +23,7 @@ Base class for settings editor wrappers
 #include "qgssettingseditorwidgetwrapper.h"
 %End
   public:
-    static QgsSettingsEditorWidgetWrapper *fromWidget( const QWidget *widget ) /Factory/;
+    static QgsSettingsEditorWidgetWrapper *fromWidget( const QWidget *widget );
 %Docstring
 Creates a wrapper from the definition stored in a ``widget`` created by :py:func:`~QgsSettingsEditorWidgetWrapper.createEditor`
 %End
@@ -44,12 +44,12 @@ This id of the type of settings it handles
    This mostly correspond to the content of :py:class:`Qgis`.SettingsType but it's a string since custom Python implementation are possible.
 %End
 
-    virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const = 0;
+    virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const = 0 /Factory/;
 %Docstring
 Creates a new instance of the editor wrapper so it can be configured for a widget and a setting
 %End
 
-    QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList(), QWidget *parent = 0 );
+    QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList(), QWidget *parent = 0 ) /TransferBack/;
 %Docstring
 Creates the editor widget for the given ``setting``
 %End
@@ -77,7 +77,7 @@ Returns the value from the widget as a variant
 The wrapper must be configured before calling this medthod
 %End
 
-    virtual void setWidgetFromVariant( const QVariant &value ) const = 0;
+    virtual bool setWidgetFromVariant( const QVariant &value ) const = 0;
 %Docstring
 Sets the ``value`` of the widget
 The wrapper must be configured before calling this medthod
@@ -97,14 +97,21 @@ If not, the setting will be updated directly at each widget value change.
 .. versionadded:: 3.40
 %End
 
+    QStringList dynamicKeyPartList() const;
+%Docstring
+Returns the dynamic key parts
+
+.. versionadded:: 3.40
+%End
+
 
   protected:
-    virtual QWidget *createEditorPrivate( QWidget *parent = 0 ) const = 0;
+    virtual QWidget *createEditorPrivate( QWidget *parent = 0 ) const = 0 /TransferBack/;
 %Docstring
 Creates the widgets
 %End
 
-    virtual bool configureEditorPrivate( QWidget *editor, const QgsSettingsEntryBase *setting ) = 0;
+    virtual bool configureEditorPrivate( QWidget *editor /TransferBack/, const QgsSettingsEntryBase *setting /KeepReference/ ) = 0;
 %Docstring
 Configures an existing ``editor`` widget
 %End

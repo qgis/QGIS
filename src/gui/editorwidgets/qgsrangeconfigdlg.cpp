@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrangeconfigdlg.h"
+#include "moc_qgsrangeconfigdlg.cpp"
 
 #include "qgsvectorlayer.h"
 

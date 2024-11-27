@@ -31,6 +31,7 @@
 #include "qgslinesymbol.h"
 #include "qgsmarkersymbol.h"
 #include "qgsunittypes.h"
+#include "qgsscaleutils.h"
 
 #include <QDomElement>
 #include <QPainter>
@@ -538,16 +539,16 @@ QSizeF QgsDiagramRenderer::sizeMapUnits( const QgsFeature &feature, const QgsRen
     // Note: scale might be a non-round number, so compare with qgsDoubleNear
     const double rendererScale = c.rendererScale();
 
-    // maxScale is inclusive ( (< && !=) --> < --> no size )
+    // maxScale is inclusive ( < --> no size )
     double maxScale = s.maximumScale;
-    if ( maxScale > 0 && ( rendererScale < maxScale && !qgsDoubleNear( rendererScale, maxScale, 1E-8 ) ) )
+    if ( maxScale > 0 && QgsScaleUtils::lessThanMaximumScale( rendererScale, maxScale ) )
     {
       return QSizeF();
     }
 
     // minScale is exclusive ( >= --> no size)
     double minScale = s.minimumScale;
-    if ( minScale > 0 && ( rendererScale > minScale || qgsDoubleNear( rendererScale, minScale, 1E-8 ) ) )
+    if ( minScale > 0 && QgsScaleUtils::equalToOrGreaterThanMinimumScale( rendererScale, minScale ) )
     {
       return QSizeF();
     }
@@ -653,6 +654,8 @@ void QgsDiagramRenderer::_writeXml( QDomElement &rendererElem, QDomDocument &doc
   rendererElem.setAttribute( QStringLiteral( "attributeLegend" ), mShowAttributeLegend );
 }
 
+const QString QgsSingleCategoryDiagramRenderer::DIAGRAM_RENDERER_NAME_SINGLE_CATEGORY = QStringLiteral( "SingleCategory" );
+
 QgsSingleCategoryDiagramRenderer *QgsSingleCategoryDiagramRenderer::clone() const
 {
   return new QgsSingleCategoryDiagramRenderer( *this );
@@ -696,6 +699,8 @@ void QgsSingleCategoryDiagramRenderer::writeXml( QDomElement &layerElem, QDomDoc
   _writeXml( rendererElem, doc, context );
   layerElem.appendChild( rendererElem );
 }
+
+const QString QgsLinearlyInterpolatedDiagramRenderer::DIAGRAM_RENDERER_NAME_LINEARLY_INTERPOLATED = QLatin1String( "LinearlyInterpolated" );
 
 QgsLinearlyInterpolatedDiagramRenderer::QgsLinearlyInterpolatedDiagramRenderer()
 {
@@ -857,6 +862,39 @@ void QgsLinearlyInterpolatedDiagramRenderer::writeXml( QDomElement &layerElem, Q
   layerElem.appendChild( rendererElem );
 }
 
+const QString QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED = QStringLiteral( "Stacked" );
+
+QgsStackedDiagramRenderer::QgsStackedDiagramRenderer( const QgsStackedDiagramRenderer &other )
+  : QgsDiagramRenderer( other )
+  , mSettings( other.mSettings )
+  , mDiagramRenderers()
+{
+  for ( QgsDiagramRenderer *renderer : std::as_const( other.mDiagramRenderers ) )
+  {
+    if ( renderer )
+      mDiagramRenderers << renderer->clone();
+  }
+}
+
+QgsStackedDiagramRenderer &QgsStackedDiagramRenderer::operator=( const QgsStackedDiagramRenderer &other )
+{
+  mSettings = other.mSettings;
+  qDeleteAll( mDiagramRenderers );
+  mDiagramRenderers.clear();
+  for ( QgsDiagramRenderer *renderer : std::as_const( other.mDiagramRenderers ) )
+  {
+    if ( renderer )
+      mDiagramRenderers << renderer->clone();
+  }
+
+  return *this;
+}
+
+QgsStackedDiagramRenderer::~QgsStackedDiagramRenderer()
+{
+  qDeleteAll( mDiagramRenderers );
+}
+
 QgsStackedDiagramRenderer *QgsStackedDiagramRenderer::clone() const
 {
   return new QgsStackedDiagramRenderer( *this );
@@ -870,7 +908,7 @@ QSizeF QgsStackedDiagramRenderer::sizeMapUnits( const QgsFeature &feature, const
   // Iterate renderers. For each renderer, get the diagram
   // size for the feature and add it to the total size
   // accounting for stacked diagram defined spacing
-  for ( const auto &subRenderer : std::as_const( mDiagramRenderers ) )
+  for ( const QgsDiagramRenderer *subRenderer : std::as_const( mDiagramRenderers ) )
   {
     QSizeF size = subRenderer->sizeMapUnits( feature, c );
 
@@ -922,9 +960,9 @@ void QgsStackedDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRen
   // Get subrenderers sorted by mode (vertical diagrams are returned backwards)
   const QList< QgsDiagramRenderer * > stackedRenderers = renderers( true );
 
-  for ( const auto &stackedRenderer : stackedRenderers )
+  for ( const QgsDiagramRenderer *stackedRenderer : stackedRenderers )
   {
-    if ( stackedRenderer->rendererName() == QStringLiteral( "Stacked" ) )
+    if ( stackedRenderer->rendererName() == QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED )
     {
       // Nested stacked diagrams will use this recursion
       stackedRenderer->renderDiagram( feature, c, newPos, properties );
@@ -947,16 +985,16 @@ void QgsStackedDiagramRenderer::renderDiagram( const QgsFeature &feature, QgsRen
       // Note: scale might be a non-round number, so compare with qgsDoubleNear
       const double rendererScale = c.rendererScale();
 
-      // maxScale is inclusive ( (< && !=) --> < --> no diagram )
+      // maxScale is inclusive ( < --> no diagram )
       double maxScale = s.maximumScale;
-      if ( maxScale > 0 && ( rendererScale < maxScale && !qgsDoubleNear( rendererScale, maxScale, 1E-8 ) ) )
+      if ( maxScale > 0 && QgsScaleUtils::lessThanMaximumScale( rendererScale, maxScale ) )
       {
         continue;
       }
 
       // minScale is exclusive ( >= --> no diagram)
       double minScale = s.minimumScale;
-      if ( minScale > 0 && ( rendererScale > minScale || qgsDoubleNear( rendererScale, minScale, 1E-8 ) ) )
+      if ( minScale > 0 && QgsScaleUtils::equalToOrGreaterThanMinimumScale( rendererScale, minScale ) )
       {
         continue;
       }
@@ -1017,7 +1055,7 @@ QList<QString> QgsStackedDiagramRenderer::diagramAttributes() const
 QList< QgsLayerTreeModelLegendNode * > QgsStackedDiagramRenderer::legendItems( QgsLayerTreeLayer *nodeLayer ) const
 {
   QList< QgsLayerTreeModelLegendNode * > nodes;
-  for ( const auto &renderer : std::as_const( mDiagramRenderers ) )
+  for ( const QgsDiagramRenderer *renderer : std::as_const( mDiagramRenderers ) )
   {
     nodes << renderer->legendItems( nodeLayer );
   }
@@ -1048,12 +1086,12 @@ void QgsStackedDiagramRenderer::addRenderer( QgsDiagramRenderer *renderer )
 
 const QgsDiagramRenderer *QgsStackedDiagramRenderer::renderer( const int index ) const
 {
-  if ( index >= 0 && index < mDiagramRenderers.count() )
-  {
-    return mDiagramRenderers.at( index );
-  }
+  return mDiagramRenderers.value( index );
+}
 
-  return nullptr;
+int QgsStackedDiagramRenderer::rendererCount() const
+{
+  return mDiagramRenderers.size();
 }
 
 void QgsStackedDiagramRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
@@ -1071,6 +1109,9 @@ void QgsStackedDiagramRenderer::readXml( const QDomElement &elem, const QgsReadW
 
 void QgsStackedDiagramRenderer::_readXmlSubRenderers( const QDomElement &elem, const QgsReadWriteContext &context )
 {
+  qDeleteAll( mDiagramRenderers );
+  mDiagramRenderers.clear();
+
   const QDomElement subRenderersElem = elem.firstChildElement( QStringLiteral( "DiagramRenderers" ) );
 
   if ( !subRenderersElem.isNull() )
@@ -1081,19 +1122,19 @@ void QgsStackedDiagramRenderer::_readXmlSubRenderers( const QDomElement &elem, c
     {
       const QDomElement subRendererElem = childRendererList.at( i ).toElement();
 
-      if ( subRendererElem.nodeName() == QStringLiteral( "SingleCategoryDiagramRenderer" ) )
+      if ( subRendererElem.nodeName() == QLatin1String( "SingleCategoryDiagramRenderer" ) )
       {
         std::unique_ptr< QgsSingleCategoryDiagramRenderer > singleCatDiagramRenderer = std::make_unique< QgsSingleCategoryDiagramRenderer >();
         singleCatDiagramRenderer->readXml( subRendererElem, context );
         addRenderer( singleCatDiagramRenderer.release() );
       }
-      else if ( subRendererElem.nodeName() == QStringLiteral( "LinearlyInterpolatedDiagramRenderer" ) )
+      else if ( subRendererElem.nodeName() == QLatin1String( "LinearlyInterpolatedDiagramRenderer" ) )
       {
         std::unique_ptr< QgsLinearlyInterpolatedDiagramRenderer > linearDiagramRenderer = std::make_unique< QgsLinearlyInterpolatedDiagramRenderer >();
         linearDiagramRenderer->readXml( subRendererElem, context );
         addRenderer( linearDiagramRenderer.release() );
       }
-      else if ( subRendererElem.nodeName() == QStringLiteral( "StackedDiagramRenderer" ) )
+      else if ( subRendererElem.nodeName() == QLatin1String( "StackedDiagramRenderer" ) )
       {
         std::unique_ptr< QgsStackedDiagramRenderer > stackedDiagramRenderer = std::make_unique< QgsStackedDiagramRenderer >();
         stackedDiagramRenderer->readXml( subRendererElem, context );

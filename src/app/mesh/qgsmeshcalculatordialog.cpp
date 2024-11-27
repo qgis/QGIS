@@ -16,6 +16,7 @@
 
 #include "qgsgdalutils.h"
 #include "qgsmeshcalculatordialog.h"
+#include "moc_qgsmeshcalculatordialog.cpp"
 #include "qgsproject.h"
 #include "qgsmeshcalcnode.h"
 #include "qgsmeshdataprovider.h"

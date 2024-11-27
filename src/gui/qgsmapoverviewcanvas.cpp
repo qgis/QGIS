@@ -20,6 +20,7 @@
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
 #include "qgsmapoverviewcanvas.h"
+#include "moc_qgsmapoverviewcanvas.cpp"
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmaptopixel.h"
 #include "qgsprojectviewsettings.h"

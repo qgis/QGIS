@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsspatialiteconnection.h"
+#include "moc_qgsspatialiteconnection.cpp"
 #include "qgssettings.h"
 #include "qgslogger.h"
 #include "qgsspatialiteutils.h"

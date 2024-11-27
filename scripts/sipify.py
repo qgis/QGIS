@@ -1130,8 +1130,13 @@ def fix_annotations(line):
         r'SIP_PYNAME\(\s*(\w+)\s*\)': r'/PyName=\1/',
         r'SIP_TYPEHINT\(\s*([\w\.\s,\[\]]+?)\s*\)': r'/TypeHint="\1"/',
         r'SIP_VIRTUALERRORHANDLER\(\s*(\w+)\s*\)': r'/VirtualErrorHandler=\1/',
-        r'SIP_THROW\(\s*([\w\s,]+?)\s*\)': r'throw( \1 )',
     }
+
+    if not CONTEXT.is_qt6:
+        replacements[r'SIP_THROW\(\s*([\w\s,]+?)\s*\)'] = r'throw( \1 )'
+    else:
+        # these have no effect (and aren't required) on sip >= 6
+        replacements[r'SIP_THROW\(\s*([\w\s,]+?)\s*\)'] = ''
 
     for _pattern, replacement in replacements.items():
         line = re.sub(_pattern, replacement, line)
@@ -2100,15 +2105,16 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                         if part_idx < len(value_comment_parts) - 1:
                             value_comment_indented += '\n'
 
+                    complete_class_path = '.'.join(CONTEXT.classname)
                     if monkeypatch and enum_mk_base:
                         if compat_name != enum_member:
                             value_comment_indented += f'\n\n  Available as ``{enum_mk_base}.{compat_name}`` in older QGIS releases.\n'
                         if CONTEXT.actual_class:
                             CONTEXT.output_python.append(
-                                f"{enum_mk_base}.{compat_name} = {CONTEXT.actual_class}.{enum_qualname}.{enum_member}\n")
+                                f"{enum_mk_base}.{compat_name} = {complete_class_path}.{enum_qualname}.{enum_member}\n")
                             if enum_old_name and compat_name != enum_member:
                                 CONTEXT.output_python.append(
-                                    f"{enum_mk_base}.{enum_old_name}.{compat_name} = {CONTEXT.actual_class}.{enum_qualname}.{enum_member}\n")
+                                    f"{enum_mk_base}.{enum_old_name}.{compat_name} = {complete_class_path}.{enum_qualname}.{enum_member}\n")
                             CONTEXT.output_python.append(
                                 f"{enum_mk_base}.{compat_name}.is_monkey_patched = True\n")
                             CONTEXT.output_python.append(
@@ -2130,11 +2136,10 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
                         if monkeypatch:
                             CONTEXT.output_python.append(
-                                f"{CONTEXT.actual_class}.{compat_name} = {CONTEXT.actual_class}.{enum_qualname}.{enum_member}\n")
+                                f"{complete_class_path}.{compat_name} = {complete_class_path}.{enum_qualname}.{enum_member}\n")
                             CONTEXT.output_python.append(
-                                f"{CONTEXT.actual_class}.{compat_name}.is_monkey_patched = True\n")
+                                f"{complete_class_path}.{compat_name}.is_monkey_patched = True\n")
                         if CONTEXT.actual_class:
-                            complete_class_path = '.'.join(CONTEXT.classname)
                             CONTEXT.output_python.append(
                                 f"{complete_class_path}.{enum_qualname}.{compat_name}.__doc__ = \"{value_comment}\"\n")
                             enum_members_doc.append(
@@ -2163,7 +2168,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 enum_member_doc_string = "\n".join(enum_members_doc)
                 if CONTEXT.actual_class:
                     CONTEXT.output_python.append(
-                        f'{CONTEXT.actual_class}.{enum_qualname}.__doc__ = """{CONTEXT.comment}\n\n{enum_member_doc_string}\n\n"""\n# --\n')
+                        f'{".".join(CONTEXT.classname)}.{enum_qualname}.__doc__ = """{CONTEXT.comment}\n\n{enum_member_doc_string}\n\n"""\n# --\n')
                 else:
                     CONTEXT.output_python.append(
                         f'{enum_qualname}.__doc__ = """{CONTEXT.comment}\n\n{enum_member_doc_string}\n\n"""\n# --\n')
@@ -2241,9 +2246,9 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
     # TODO needs fixing!!
     # original perl regex was:
-    #       ^(?<staticconst> *(?<static>static )?const \w+(?:<(?:[\w<>, ]|::)+>)? \w+)(?: = [^()]+?(\((?:[^()]++|(?3))*\))?[^()]*?)?(?<endingchar>[|;]) *(\/\/.*?)?$
+    #       ^(?<staticconst> *(?<static>static )?const (\w+::)*\w+(?:<(?:[\w<>, ]|::)+>)? \w+)(?: = [^()]+?(\((?:[^()]++|(?3))*\))?[^()]*?)?(?<endingchar>[|;]) *(\/\/.*?)?$
     match = re.search(
-        r'^(?P<staticconst> *(?P<static>static )?const \w+(?:<(?:[\w<>, ]|::)+>)? \w+)(?: = [^()]+?(\((?:[^()]|\([^()]*\))*\))?[^()]*?)?(?P<endingchar>[|;]) *(//.*)?$',
+        r'^(?P<staticconst> *(?P<static>static )?const (\w+::)*\w+(?:<(?:[\w<>, ]|::)+>)? \w+)(?: = [^()]+?(\((?:[^()]|\([^()]*\))*\))?[^()]*?)?(?P<endingchar>[|;]) *(//.*)?$',
         CONTEXT.current_line
     )
     if match:

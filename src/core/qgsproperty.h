@@ -271,7 +271,7 @@ class CORE_EXPORT QgsProperty
     /**
      * Returns TRUE if the property is not an invalid type.
      */
-    operator bool() const;
+    explicit operator bool() const SIP_SKIP;
 
     bool operator==( const QgsProperty &other ) const;
     bool operator!=( const QgsProperty &other ) const;

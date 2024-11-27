@@ -59,6 +59,15 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
             parent = pluginName
         super().__init__(key, parent, defaultValueStr, description, options)
 
+    def metaEnum(self):
+        return self.__metaEnum
+
+    def typeId(self):
+        """
+        Defines a custom id since this class has not the same API as the cpp implementation
+        """
+        return "py-enumflag"
+
     def value(self, dynamicKeyPart=None):
         """
         Get settings value.
@@ -138,5 +147,4 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         """
         Get the settings entry type.
         """
-
         return self.SettingsType.EnumFlag

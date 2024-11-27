@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvaluerelationwidgetwrapper.h"
+#include "moc_qgsvaluerelationwidgetwrapper.cpp"
 
 #include "qgis.h"
 #include "qgsfields.h"
@@ -456,9 +457,10 @@ void QgsValueRelationWidgetWrapper::updateValues( const QVariant &value, const Q
 
 void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute, const QVariant &newValue, bool attributeChanged )
 {
-
-  // Do nothing if the value has not changed
-  if ( attributeChanged )
+  // Do nothing if the value has not changed except for multi edit mode
+  // In multi edit mode feature is not updated (so attributeChanged is false) until user validate it but we need to update the
+  // value relation which could have an expression depending on another modified field
+  if ( attributeChanged || context().attributeFormMode() == QgsAttributeEditorContext::Mode::MultiEditMode )
   {
     QVariant oldValue( value( ) );
     setFormFeatureAttribute( attribute, newValue );

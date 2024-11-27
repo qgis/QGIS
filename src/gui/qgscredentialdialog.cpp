@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscredentialdialog.h"
+#include "moc_qgscredentialdialog.cpp"
 
 #include "qgsauthmanager.h"
 #include "qgsdatasourceuri.h"

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudstatscalculator.h"
+#include "moc_qgspointcloudstatscalculator.cpp"
 
 #include "qgspointcloudstatistics.h"
 
@@ -69,6 +70,11 @@ struct StatsProcessor
       else
       {
         QgsPointCloudBlockRequest *request = mIndex->asyncNodeData( node, mRequest );
+        if ( request == nullptr )
+        {
+          QgsDebugError( QStringLiteral( "Unable to calculate statistics for node %1: Got nullptr async request" ).arg( node.toString() ) );
+          return QgsPointCloudStatistics();
+        }
         QEventLoop loop;
         QObject::connect( request, &QgsPointCloudBlockRequest::finished, &loop, &QEventLoop::quit );
         QObject::connect( mFeedback, &QgsFeedback::canceled, &loop, &QEventLoop::quit );

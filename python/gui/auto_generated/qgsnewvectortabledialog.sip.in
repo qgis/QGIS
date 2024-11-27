@@ -96,8 +96,7 @@ Sets the fields to ``fields``
 
     bool createSpatialIndex();
 %Docstring
-Returns ``True`` if spatialindex checkbox is checked
-@return
+Returns ``True`` if spatialindex checkbox is checked.
 %End
 
     QStringList validationErrors() const;

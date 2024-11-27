@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstylemanagerdialog.h"
+#include "moc_qgsstylemanagerdialog.cpp"
 #include "qgsstylesavedialog.h"
 
 #include "qgssymbol.h"

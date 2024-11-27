@@ -18,6 +18,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsgui.h"
 #include "qgshanasourceselect.h"
+#include "moc_qgshanasourceselect.cpp"
 #include "qgshanaconnection.h"
 #include "qgshananewconnection.h"
 #include "qgshanatablemodel.h"

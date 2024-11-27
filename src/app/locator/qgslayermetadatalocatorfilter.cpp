@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayermetadatalocatorfilter.h"
+#include "moc_qgslayermetadatalocatorfilter.cpp"
 #include "qgslayermetadataproviderregistry.h"
 #include "qgsfeedback.h"
 #include "qgsapplication.h"

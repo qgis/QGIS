@@ -34,7 +34,7 @@ Constructor for QgsConnectionRegistry.
 %End
 
 
-    QgsAbstractProviderConnection *createConnection( const QString &name ) throw( QgsProviderConnectionException ) /Factory/;
+    QgsAbstractProviderConnection *createConnection( const QString &name )  /Factory/;
 %Docstring
 Creates a new connection by loading the connection with the given ``id`` from the settings.
 

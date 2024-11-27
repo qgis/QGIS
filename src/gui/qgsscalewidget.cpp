@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgsscalewidget.h"
+#include "moc_qgsscalewidget.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgslayoutmanager.h"

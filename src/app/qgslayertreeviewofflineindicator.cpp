@@ -14,9 +14,8 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewofflineindicator.h"
+#include "moc_qgslayertreeviewofflineindicator.cpp"
 #include "qgslayertreeview.h"
-#include "qgslayertree.h"
-#include "qgslayertreemodel.h"
 #include "qgisapp.h"
 
 QgsLayerTreeViewOfflineIndicatorProvider::QgsLayerTreeViewOfflineIndicatorProvider( QgsLayerTreeView *view )
@@ -58,11 +57,3 @@ QString QgsLayerTreeViewOfflineIndicatorProvider::tooltipText( QgsMapLayer *laye
   return tr( "<b>Offline layer</b>" );
 }
 
-void QgsLayerTreeViewOfflineIndicatorProvider::onLayerChanged()
-{
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
-  if ( !layer )
-    return;
-
-  updateLayerIndicator( layer );
-}

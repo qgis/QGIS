@@ -15,10 +15,11 @@
 
 #pragma once
 
-#include "qgschunknode_p.h"
+#include "qgschunknode.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmaplayerref.h"
-#include "qgsterrainentity_p.h"
+#include "qgsterrainentity.h"
+#include "qgsrectangle.h"
 #include "qgsterraingenerator.h"
 #include "qgsquantizedmeshdataprovider.h"
 #include "qgstiledsceneindex.h"
@@ -41,6 +42,7 @@ class _3D_EXPORT QgsQuantizedMeshTerrainGenerator : public QgsTerrainGenerator
     virtual void setTerrain( QgsTerrainEntity *t ) override;
     virtual QgsTerrainGenerator *clone() const override SIP_FACTORY;
     virtual QgsTerrainGenerator::Type type() const override;
+    virtual void setExtent( const QgsRectangle &extent ) override;
     virtual QgsRectangle rootChunkExtent() const override;
     virtual float rootChunkError( const Qgs3DMapSettings &map ) const override;
     virtual void rootChunkHeightRange( float &hMin, float &hMax ) const override;
@@ -67,6 +69,7 @@ class _3D_EXPORT QgsQuantizedMeshTerrainGenerator : public QgsTerrainGenerator
     std::optional<QgsQuantizedMeshMetadata> mMetadata;
     QgsCoordinateTransform mTileCrsToMapCrs;
     QgsTiledSceneIndex mIndex;
+    QgsRectangle mMapExtent;
 
     QgsQuantizedMeshTerrainGenerator( QgsMapLayerRef layerRef, const QgsQuantizedMeshMetadata &metadata );
     QgsTileXYZ nodeIdToTile( QgsChunkNodeId nodeId ) const;

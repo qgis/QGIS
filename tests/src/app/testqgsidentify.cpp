@@ -72,6 +72,7 @@ class TestQgsIdentify : public QObject
     void testLineStringZ();
     void testPolygonZ();
     void identifyPointCloud();
+    void identifyVirtualPointCloud();
 
   private:
     void doAction();
@@ -1300,6 +1301,34 @@ void TestQgsIdentify::identifyPointCloud()
   double z4985 = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Z (EPSG:4985 - WGS 72)" )].toDouble();
   QGSCOMPARENEAR( z4979, -5.79000, 0.001 );
   QGSCOMPARENEAR( z4985, -5.40314874, 0.001 );
+#endif
+}
+
+void TestQgsIdentify::identifyVirtualPointCloud()
+{
+#ifdef HAVE_COPC
+  std::unique_ptr< QgsPointCloudLayer > pointCloud = std::make_unique< QgsPointCloudLayer >( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/virtual/sunshine-coast/combined.vpc", QStringLiteral( "pointcloud" ), QStringLiteral( "vpc" ) );
+  QVERIFY( pointCloud->isValid() );
+  pointCloud->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) );
+  QCOMPARE( pointCloud->crs3D().horizontalCrs().authid(), QStringLiteral( "EPSG:28356" ) );
+
+  for ( int i = 0; i < pointCloud->dataProvider()->subIndexes().size(); i++ )
+    pointCloud->dataProvider()->loadSubIndex( i );
+
+  // set project CRS and ellipsoid
+  // Note that using a different CRS here (a world-wide WGS84-based one) caused
+  // problems on some machines due to insufficient precision in reprojection.
+  QgsProject::instance()->setCrs( pointCloud->crs() );
+  canvas->setDestinationCrs( pointCloud->crs() );
+  canvas->setExtent( QgsRectangle::fromCenterAndSize( QgsPointXY( 498065.5, 7050992.5 ), 1, 1 ) );
+
+  const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 498065.23, 7050992.90 );
+
+  std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( static_cast< int >( mapPoint.x() ), static_cast< int >( mapPoint.y() ), QList<QgsMapLayer *>() << pointCloud.get() );
+  QCOMPARE( result.length(), 1 );
+  double z = result.at( 0 ).mDerivedAttributes[ QStringLiteral( "Z" )].toDouble();
+  QGSCOMPARENEAR( z, 74.91, 0.001 );
 #endif
 }
 

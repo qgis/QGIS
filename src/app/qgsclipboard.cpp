@@ -26,6 +26,7 @@
 #include <QTextCodec>
 
 #include "qgsclipboard.h"
+#include "moc_qgsclipboard.cpp"
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"
 #include "qgsfields.h"

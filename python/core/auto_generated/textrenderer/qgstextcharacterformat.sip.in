@@ -264,6 +264,62 @@ Sets whether the format has overline ``enabled``.
 .. seealso:: :py:func:`overline`
 %End
 
+    QString imagePath() const;
+%Docstring
+Returns the path to the image to render, if the format applies to a document image fragment.
+
+.. seealso:: :py:func:`QgsTextFragment.isImage`
+
+.. seealso:: :py:func:`imageSize`
+
+.. seealso:: :py:func:`setImagePath`
+
+.. versionadded:: 3.40
+%End
+
+    void setImagePath( const QString &path );
+%Docstring
+Sets the ``path`` to the image to render, if the format applies to a document image fragment.
+
+.. seealso:: :py:func:`QgsTextFragment.isImage`
+
+.. seealso:: :py:func:`setImageSize`
+
+.. seealso:: :py:func:`imagePath`
+
+.. versionadded:: 3.40
+%End
+
+    QSizeF imageSize() const;
+%Docstring
+Returns the image size, if the format applies to a document image fragment.
+
+The image size is always considered to be in :py:class:`Qgis`.RenderUnit.Points.
+
+.. seealso:: :py:func:`QgsTextFragment.isImage`
+
+.. seealso:: :py:func:`imagePath`
+
+.. seealso:: :py:func:`setImageSize`
+
+.. versionadded:: 3.40
+%End
+
+    void setImageSize( const QSizeF &size );
+%Docstring
+Sets the image ``size``, if the format applies to a document image fragment.
+
+The image size is always considered to be in :py:class:`Qgis`.RenderUnit.Points.
+
+.. seealso:: :py:func:`QgsTextFragment.isImage`
+
+.. seealso:: :py:func:`setImagePath`
+
+.. seealso:: :py:func:`imageSize`
+
+.. versionadded:: 3.40
+%End
+
     bool hasVerticalAlignmentSet() const;
 %Docstring
 Returns ``True`` if the format has an explicit vertical alignment set.
@@ -314,6 +370,63 @@ This property is only respected if :py:func:`~QgsTextCharacterFormat.hasVertical
 .. seealso:: :py:func:`verticalAlignment`
 
 .. versionadded:: 3.30
+%End
+
+    bool hasBackground() const;
+%Docstring
+Returns ``True`` if the fragment has a background set.
+
+.. seealso:: :py:func:`backgroundBrush`
+
+.. versionadded:: 3.42
+%End
+
+    QBrush backgroundBrush() const;
+%Docstring
+Returns the brush used for rendering the background of the fragment.
+
+Alternatively, the format may have a :py:func:`~QgsTextCharacterFormat.backgroundImagePath` set.
+
+.. seealso:: :py:func:`hasBackground`
+
+.. seealso:: :py:func:`setBackgroundBrush`
+
+.. versionadded:: 3.42
+%End
+
+    void setBackgroundBrush( const QBrush &brush );
+%Docstring
+Sets the ``brush`` used for rendering the background of the fragment.
+
+Alternatively, the format may have a :py:func:`~QgsTextCharacterFormat.backgroundImagePath` set.
+
+.. seealso:: :py:func:`backgroundBrush`
+
+.. versionadded:: 3.42
+%End
+
+    QString backgroundImagePath() const;
+%Docstring
+Returns the path for the image to be used for rendering the background of the fragment.
+
+Alternatively, the format may have a :py:func:`~QgsTextCharacterFormat.backgroundBrush` set.
+
+.. seealso:: :py:func:`hasBackground`
+
+.. seealso:: :py:func:`setBackgroundImagePath`
+
+.. versionadded:: 3.42
+%End
+
+    void setBackgroundImagePath( const QString &path );
+%Docstring
+Sets the ``path`` for the image to be used for rendering the background of the fragment.
+
+Alternatively, the format may have a :py:func:`~QgsTextCharacterFormat.backgroundBrush` set.
+
+.. seealso:: :py:func:`backgroundImagePath`
+
+.. versionadded:: 3.42
 %End
 
     void updateFontForFormat( QFont &font, const QgsRenderContext &context, double scaleFactor = 1.0 ) const;

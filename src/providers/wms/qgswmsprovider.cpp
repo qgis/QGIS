@@ -26,6 +26,7 @@
 
 #include "qgslogger.h"
 #include "qgswmsprovider.h"
+#include "moc_qgswmsprovider.cpp"
 #include "qgscoordinatetransform.h"
 #include "qgswmsdataitems.h"
 #include "qgsdatasourceuri.h"
@@ -835,10 +836,13 @@ QImage *QgsWmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, in
   QImage *image = new QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
   image->fill( 0 );
 
-  int maxWidth  = mCaps.mCapabilities.service.maxWidth == 0 ? std::numeric_limits<int>::max() : mCaps.mCapabilities.service.maxWidth;
-  int maxHeight = mCaps.mCapabilities.service.maxHeight == 0 ? std::numeric_limits<int>::max() : mCaps.mCapabilities.service.maxHeight;
 
-  if ( !mSettings.mTiled && mSettings.mMaxWidth == 0 && mSettings.mMaxHeight == 0 && pixelWidth <= maxWidth && pixelHeight <= maxHeight )
+  const QSize maxTileSize { maximumTileSize() };
+
+  const int maxWidth { maxTileSize.width() };
+  const int maxHeight { maxTileSize.height() };
+
+  if ( !mSettings.mTiled && pixelWidth <= maxWidth && pixelHeight <= maxHeight )
   {
     QUrl url = createRequestUrlWMS( viewExtent, pixelWidth, pixelHeight );
 
@@ -4102,6 +4106,32 @@ QList<double> QgsWmsProvider::nativeResolutions() const
 QgsLayerMetadata QgsWmsProvider::layerMetadata() const
 {
   return mLayerMetadata;
+}
+
+QSize QgsWmsProvider::maximumTileSize() const
+{
+  const int capsMaxHeight { static_cast<int>( mCaps.mCapabilities.service.maxHeight ) };
+  const int capsMaxWidth { static_cast<int>( mCaps.mCapabilities.service.maxWidth ) };
+
+  if ( mSettings.mMaxHeight > 0 && mSettings.mMaxWidth > 0 )
+  {
+    if ( capsMaxHeight > 0 && capsMaxWidth > 0 )
+    {
+      return QSize( std::min( mSettings.mMaxWidth, capsMaxWidth ), std::min( mSettings.mMaxHeight, capsMaxHeight ) );
+    }
+    else
+    {
+      return QSize( mSettings.mMaxWidth, mSettings.mMaxHeight );
+    }
+  }
+  else if ( capsMaxHeight > 0 && capsMaxWidth > 0 )
+  {
+    return QSize( capsMaxWidth, capsMaxHeight );
+  }
+  else  // default fallback
+  {
+    return QgsRasterDataProvider::maximumTileSize();
+  }
 }
 
 QgsRasterBandStats QgsWmsProvider::bandStatistics(

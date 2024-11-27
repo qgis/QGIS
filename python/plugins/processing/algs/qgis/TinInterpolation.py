@@ -185,4 +185,6 @@ class TinInterpolation(QgisAlgorithm):
                                    rows)
 
         writer.writeFile(feedback)
+        if triangulation_sink:
+            triangulation_sink.finalize()
         return {self.OUTPUT: output, self.TRIANGULATION: triangulation_dest_id}

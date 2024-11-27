@@ -15,6 +15,7 @@
 
 #include "qgsabstractgeometry.h"
 #include "qgsvectorrenderingoptions.h"
+#include "moc_qgsvectorrenderingoptions.cpp"
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"

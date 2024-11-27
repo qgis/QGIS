@@ -46,6 +46,8 @@ Returns a new instance of QgsNullMaterialSettings.
 
     virtual QgsNullMaterialSettings *clone() const /Factory/;
 
+    virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
+
 
     virtual QMap<QString, QString> toExportParameters() const;
 

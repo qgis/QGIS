@@ -17,6 +17,7 @@
 #include <limits>
 
 #include "qgslayoutitemlegend.h"
+#include "moc_qgslayoutitemlegend.cpp"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutmodel.h"
@@ -106,20 +107,14 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
   if ( !painter )
     return;
 
+  const QPointF oldPos = pos();
+
   ensureModelIsInitialized();
 
   if ( mFilterAskedForUpdate )
   {
     mFilterAskedForUpdate = false;
     doUpdateFilterByMap();
-  }
-
-  if ( mLayout )
-  {
-    if ( !mLayout->renderContext().isPreviewRender() && mLegendModel->hitTestInProgress() )
-    {
-      mLegendModel->waitForHitTestBlocking();
-    }
   }
 
   const int dpi = painter->device()->logicalDpiX();
@@ -156,8 +151,6 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
 
   QgsLegendRenderer legendRenderer = createRenderer();
   legendRenderer.setLegendSize( mForceResize && mSizeToContents ? QSize() : rect().size() );
-
-  const QPointF oldPos = pos();
 
   //adjust box if width or height is too small
   if ( mSizeToContents )
@@ -1140,6 +1133,10 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
   {
     mLegendModel->setLayerStyleOverrides( QMap<QString, QString>() );
   }
+
+  // only use thread hit tests for preview renders. In other cases we'll need a blocking hit test anyway, and we run a risk
+  // of deadlocks if a non-preview render is then started on the main thread.
+  mLegendModel->setFlag( QgsLayerTreeModel::UseThreadedHitTest, mLayout->renderContext().isPreviewRender() );
 
   const bool filterByExpression = QgsLayerTreeUtils::hasLegendFilterExpression( *( mCustomLayerTree ? mCustomLayerTree.get() : mLayout->project()->layerTreeRoot() ) );
 

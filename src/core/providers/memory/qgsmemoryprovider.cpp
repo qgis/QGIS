@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmemoryprovider.h"
+#include "moc_qgsmemoryprovider.cpp"
 #include "qgsmemoryfeatureiterator.h"
 
 #include "qgsfeature.h"

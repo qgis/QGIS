@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudelevationpropertieswidget.h"
+#include "moc_qgspointcloudelevationpropertieswidget.cpp"
 #include "qgspointcloudrendererpropertieswidget.h"
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"

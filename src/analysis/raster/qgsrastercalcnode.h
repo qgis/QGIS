@@ -129,13 +129,13 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
      * It uses QgsRasterCalcNode::cleanRasterReferences
      * \note since QGIS 3.22
      */
-    QStringList referencedLayerNames( );
+    QStringList referencedLayerNames() const;
 
     /**
      * Returns a list of raster layer references that are addressed in the formula, without quotation marks.
      * \note since QGIS 3.22
      */
-    QStringList cleanRasterReferences();
+    QStringList cleanRasterReferences() const;
 
   private:
 #ifdef SIP_RUN

@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstiledscenerendererpropertieswidget.h"
+#include "moc_qgstiledscenerendererpropertieswidget.cpp"
 
 #include "qgis.h"
 #include "qgstiledscenerendererregistry.h"

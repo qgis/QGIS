@@ -29,8 +29,8 @@
 //
 
 #include "qgscoordinatetransform.h"
-#include "qgschunkedentity_p.h"
-#include "qgs3dmapsceneentity_p.h"
+#include "qgschunkedentity.h"
+#include "qgs3dmapsceneentity.h"
 #include "qgs3drendercontext.h"
 
 class QgsAABB;
@@ -97,7 +97,6 @@ class QgsVirtualPointCloudEntity : public Qgs3DMapSceneEntity
     QgsChunkBoundsEntity *mBboxesEntity = nullptr;
     QList<QgsAABB> mBboxes;
     QgsCoordinateTransform mCoordinateTransform;
-    QgsPointCloudIndex *mPointCloudIndex;
     std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
     double mZValueScale = 1.0;
     double mZValueOffset = 0;

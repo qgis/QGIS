@@ -130,7 +130,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \param widget The widget which was created by a wrapper
      * \returns The wrapper for the widget or NULLPTR
      */
-    static QgsEditorWidgetWrapper *fromWidget( QWidget *widget );
+    static QgsEditorWidgetWrapper *fromWidget( QWidget *widget ); // cppcheck-suppress duplInheritedMember
 
     /**
      * Check if the given widget or one of its parent is a QTableView.

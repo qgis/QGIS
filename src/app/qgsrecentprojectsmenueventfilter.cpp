@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrecentprojectsmenueventfilter.h"
+#include "moc_qgsrecentprojectsmenueventfilter.cpp"
 
 #include "qgsapplication.h"
 #include "qgsfocuskeeper.h"

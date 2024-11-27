@@ -6,3 +6,7 @@ try:
     QgsTextFormat.__group__ = ['textrenderer']
 except NameError:
     pass
+try:
+    QgsTextFormat.Tab.__group__ = ['textrenderer']
+except NameError:
+    pass

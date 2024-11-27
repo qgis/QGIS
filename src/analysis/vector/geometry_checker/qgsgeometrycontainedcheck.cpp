@@ -27,7 +27,7 @@ void QgsGeometryContainedCheck::collectErrors( const QMap<QString, QgsFeaturePoo
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureA : layerFeaturesA )
   {
     const QgsRectangle bboxA = layerFeatureA.geometry().boundingBox();
-    std::unique_ptr< QgsGeometryEngine > geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry().constGet(), mContext->tolerance );
+    std::unique_ptr< QgsGeometryEngine > geomEngineA( QgsGeometry::createGeometryEngine( layerFeatureA.geometry().constGet(), mContext->tolerance ) );
     if ( !geomEngineA->isValid() )
     {
       messages.append( tr( "Contained check failed for (%1): the geometry is invalid" ).arg( layerFeatureA.id() ) );
@@ -40,7 +40,7 @@ void QgsGeometryContainedCheck::collectErrors( const QMap<QString, QgsFeaturePoo
       {
         continue;
       }
-      std::unique_ptr< QgsGeometryEngine > geomEngineB = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureB.geometry().constGet(), mContext->tolerance );
+      std::unique_ptr< QgsGeometryEngine > geomEngineB( QgsGeometry::createGeometryEngine( layerFeatureB.geometry().constGet(), mContext->tolerance ) );
       if ( !geomEngineB->isValid() )
       {
         messages.append( tr( "Contained check failed for (%1): the geometry is invalid" ).arg( layerFeatureB.id() ) );
@@ -79,8 +79,8 @@ void QgsGeometryContainedCheck::fixError( const QMap<QString, QgsFeaturePool *> 
   const QgsGeometryCheckerUtils::LayerFeature layerFeatureA( featurePoolA, featureA, mContext, true );
   const QgsGeometryCheckerUtils::LayerFeature layerFeatureB( featurePoolB, featureB, mContext, true );
 
-  std::unique_ptr< QgsGeometryEngine > geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry().constGet(), mContext->tolerance );
-  std::unique_ptr< QgsGeometryEngine > geomEngineB = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureB.geometry().constGet(), mContext->tolerance );
+  std::unique_ptr< QgsGeometryEngine > geomEngineA( QgsGeometry::createGeometryEngine( layerFeatureA.geometry().constGet(), mContext->tolerance ) );
+  std::unique_ptr< QgsGeometryEngine > geomEngineB( QgsGeometry::createGeometryEngine( layerFeatureB.geometry().constGet(), mContext->tolerance ) );
 
   if ( !( geomEngineB->contains( layerFeatureA.geometry().constGet() ) && !geomEngineA->contains( layerFeatureB.geometry().constGet() ) ) )
   {

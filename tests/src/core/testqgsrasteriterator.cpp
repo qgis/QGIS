@@ -89,6 +89,11 @@ void TestQgsRasterIterator::testBasic()
 
   it.startRasterRead( 1, mpRasterLayer->width(), mpRasterLayer->height(), mpRasterLayer->extent() );
 
+  QCOMPARE( it.blockCount(), 9 );
+  QCOMPARE( it.blockCountWidth(), 3 );
+  QCOMPARE( it.blockCountHeight(), 3 );
+  QCOMPARE( it.progress( 1 ), 0 );
+
   int nCols;
   int nRows;
   int topLeftCol;
@@ -97,6 +102,7 @@ void TestQgsRasterIterator::testBasic()
   std::unique_ptr< QgsRasterBlock > block;
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QGSCOMPARENEAR( it.progress( 1 ), 0.111, 0.001 );
   QCOMPARE( nCols, 3000 );
   QCOMPARE( nRows, 2500 );
   QCOMPARE( topLeftCol, 0 );
@@ -116,6 +122,7 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QGSCOMPARENEAR( it.progress( 1 ), 0.222, 0.001 );
   QCOMPARE( nCols, 3000 );
   QCOMPARE( nRows, 2500 );
   QCOMPARE( topLeftCol, 3000 );
@@ -131,6 +138,7 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QGSCOMPARENEAR( it.progress( 1 ), 0.333, 0.001 );
   QCOMPARE( nCols, 1200 );
   QCOMPARE( nRows, 2500 );
   QCOMPARE( topLeftCol, 6000 );
@@ -146,6 +154,7 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QGSCOMPARENEAR( it.progress( 1 ), 0.444, 0.001 );
   QCOMPARE( nCols, 3000 );
   QCOMPARE( nRows, 2500 );
   QCOMPARE( topLeftCol, 0 );
@@ -161,6 +170,7 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QGSCOMPARENEAR( it.progress( 1 ), 0.555, 0.001 );
   QCOMPARE( nCols, 3000 );
   QCOMPARE( nRows, 2500 );
   QCOMPARE( topLeftCol, 3000 );
@@ -176,6 +186,7 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QGSCOMPARENEAR( it.progress( 1 ), 0.666, 0.001 );
   QCOMPARE( nCols, 1200 );
   QCOMPARE( nRows, 2500 );
   QCOMPARE( topLeftCol, 6000 );
@@ -189,6 +200,7 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QGSCOMPARENEAR( it.progress( 1 ), 0.777, 0.001 );
   QCOMPARE( nCols, 3000 );
   QCOMPARE( nRows, 450 );
   QCOMPARE( topLeftCol, 0 );
@@ -204,6 +216,7 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QGSCOMPARENEAR( it.progress( 1 ), 0.888, 0.001 );
   QCOMPARE( nCols, 3000 );
   QCOMPARE( nRows, 450 );
   QCOMPARE( topLeftCol, 3000 );
@@ -217,6 +230,7 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QGSCOMPARENEAR( it.progress( 1 ), 1.0, 0.01 );
   QCOMPARE( nCols, 1200 );
   QCOMPARE( nRows, 450 );
   QCOMPARE( topLeftCol, 6000 );

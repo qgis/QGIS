@@ -11,7 +11,7 @@ class O0_EXPORT O2Hubic: public O2 {
 public:
     /// Constructor.
     /// @param  parent  Parent object.
-    explicit O2Hubic(QObject *parent = 0);
+    explicit O2Hubic(QObject *parent = nullptr);
 
 };
 

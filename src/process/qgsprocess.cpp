@@ -17,6 +17,7 @@
 
 #include "qgscommandlineutils.h"
 #include "qgsprocess.h"
+#include "moc_qgsprocess.cpp"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsnativealgorithms.h"

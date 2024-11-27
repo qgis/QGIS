@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsstyleexportimportdialog.h"
+#include "moc_qgsstyleexportimportdialog.cpp"
 #include "ui_qgsstyleexportimportdialogbase.h"
 
 #include "qgsapplication.h"

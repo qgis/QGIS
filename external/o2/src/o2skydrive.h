@@ -9,10 +9,10 @@ class O0_EXPORT O2Skydrive: public O2 {
     Q_OBJECT
 
 public:
-    explicit O2Skydrive(QObject *parent = 0);
+    explicit O2Skydrive(QObject *parent = nullptr);
 
 public Q_SLOTS:
-    Q_INVOKABLE void link();
+    Q_INVOKABLE void link() override;
     Q_INVOKABLE virtual void redirected(const QUrl &url);
 };
 

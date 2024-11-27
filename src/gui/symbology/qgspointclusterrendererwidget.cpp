@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspointclusterrendererwidget.h"
+#include "moc_qgspointclusterrendererwidget.cpp"
 #include "qgspointclusterrenderer.h"
 #include "qgsrendererregistry.h"
 #include "qgsstyle.h"

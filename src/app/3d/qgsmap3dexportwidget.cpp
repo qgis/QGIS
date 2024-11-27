@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmap3dexportwidget.h"
+#include "moc_qgsmap3dexportwidget.cpp"
 #include "ui_map3dexportwidget.h"
 
 #include <QPushButton>

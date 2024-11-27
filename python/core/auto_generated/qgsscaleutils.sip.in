@@ -43,6 +43,36 @@ Load scales from the given file
 
 :return: ``True`` on success and ``False`` if failed
 %End
+
+    static bool equalToOrGreaterThanMinimumScale( const double scale, const double minScale );
+%Docstring
+Returns whether the ``scale`` is equal to or greater than the ``minScale``,
+taking non-round numbers into account.
+
+:param scale: The current scale to be compared.
+:param minScale: The minimum map scale (i.e. most "zoomed out" scale) at
+                 which features, labels or diagrams will be visible. The scale value
+                 indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+
+.. seealso:: :py:func:`lessThanMaximumScale`
+
+.. versionadded:: 3.40
+%End
+
+    static bool lessThanMaximumScale( const double scale, const double maxScale );
+%Docstring
+Returns whether the ``scale`` is less than the ``maxScale``, taking non-round
+numbers into account.
+
+:param scale: The current scale to be compared.
+:param maxScale: The maximum map scale (i.e. most "zoomed in" scale) at which
+                 features, labels or diagrams will be visible. The scale value indicates the
+                 scale denominator, e.g. 1000.0 for a 1:1000 map.
+
+.. seealso:: :py:func:`equalToOrGreaterThanMinimumScale`
+
+.. versionadded:: 3.40
+%End
 };
 
 /************************************************************************

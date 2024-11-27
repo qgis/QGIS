@@ -27,8 +27,6 @@ class QgsVectorRenderingOptionsWidget : public QgsOptionsPageWidget, private Ui:
     QgsVectorRenderingOptionsWidget( QWidget *parent );
     QString helpKey() const override;
     void apply() override;
-  private:
-    bool mBlockStoringChanges = false;
 };
 
 

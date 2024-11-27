@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "topolTest.h"
+#include "moc_topolTest.cpp"
 
 #include "qgsvectorlayer.h"
 #include "qgsfeatureiterator.h"

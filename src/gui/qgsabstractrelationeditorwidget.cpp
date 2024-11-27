@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsabstractrelationeditorwidget.h"
+#include "moc_qgsabstractrelationeditorwidget.cpp"
 
 #include "qgsfeatureiterator.h"
 #include "qgsexpression.h"
@@ -417,8 +418,9 @@ void QgsAbstractRelationEditorWidget::deleteFeatures( const QgsFeatureIds &fids 
     }
 
     // for extra safety to make sure we know that the delete can have impact on children and joins
-    const int res = QMessageBox::question( this, tr( "Delete at least %1 feature(s) on other layer(s)" ).arg( childrenCount ),
-                                           tr( "Delete %1 feature(s) on layer \"%2\", %3 as well\nand all of its other descendants.\nDelete these features?" ).arg( fids.count() ).arg( layer->name() ).arg( childrenInfo ),
+    const int res = QMessageBox::question( this, tr( "Delete at least %n feature(s) on other layer(s)", nullptr, childrenCount ),
+                                           tr( "Delete %n feature(s) on layer \"%1\", %2 as well and all of its other descendants.\nDelete these features?", nullptr, fids.count() )
+                                           .arg( layer->name() ).arg( childrenInfo ),
                                            QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
       deleteFeatures = false;

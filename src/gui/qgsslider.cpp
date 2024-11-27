@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsslider.h"
+#include "moc_qgsslider.cpp"
 #include "qgslogger.h"
 #include "qgsvariantutils.h"
 

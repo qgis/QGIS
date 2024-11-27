@@ -385,7 +385,7 @@ class CORE_EXPORT QgsScopedRuntimeProfile
      *
      * \since QGIS 3.14
      */
-    void switchTask( const QString &name );
+    void switchTask( const QString &name ); // cppcheck-suppress functionConst
 
   private:
 

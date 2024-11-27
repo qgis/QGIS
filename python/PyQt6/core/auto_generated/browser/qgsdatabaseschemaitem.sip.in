@@ -45,13 +45,6 @@ The optional ``providerKey`` string can be used to specify the key for the :py:c
     virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const;
 
 
-    static QIcon iconDataCollection();
-%Docstring
-Returns the standard browser data collection icon.
-
-.. seealso:: :py:func:`iconDir`
-%End
-
 };
 
 

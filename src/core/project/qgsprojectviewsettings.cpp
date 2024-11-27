@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprojectviewsettings.h"
+#include "moc_qgsprojectviewsettings.cpp"
 #include "qgis.h"
 #include "qgsproject.h"
 #include "qgsmaplayerutils.h"

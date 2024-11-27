@@ -105,12 +105,12 @@ Write server exception
 Returns the underlying QIODevice
 %End
 
-    virtual void finish() throw( QgsServerException ) /VirtualErrorHandler=server_exception_handler/;
+    virtual void finish()  /VirtualErrorHandler=server_exception_handler/;
 %Docstring
 Finish the response, ending the transaction. The default implementation does nothing.
 %End
 
-    virtual void flush() throw( QgsServerException ) /VirtualErrorHandler=server_exception_handler/;
+    virtual void flush()  /VirtualErrorHandler=server_exception_handler/;
 %Docstring
 Flushes the current output buffer to the network
 

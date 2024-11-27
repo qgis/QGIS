@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsencodingfiledialog.h"
+#include "moc_qgsencodingfiledialog.cpp"
 #include "qgsproject.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"

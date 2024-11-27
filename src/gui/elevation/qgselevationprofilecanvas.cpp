@@ -18,6 +18,7 @@
 
 #include "qgsapplication.h"
 #include "qgselevationprofilecanvas.h"
+#include "moc_qgselevationprofilecanvas.cpp"
 #include "qgsmaplayerlistutils_p.h"
 #include "qgsplotcanvasitem.h"
 #include "qgsprofilerequest.h"
@@ -864,13 +865,7 @@ void QgsElevationProfileCanvas::refresh()
   if ( !mProject || !profileCurve() )
     return;
 
-  if ( mCurrentJob )
-  {
-    mPlotItem->setRenderer( nullptr );
-    disconnect( mCurrentJob, &QgsProfilePlotRenderer::generationFinished, this, &QgsElevationProfileCanvas::generationFinished );
-    mCurrentJob->deleteLater();
-    mCurrentJob = nullptr;
-  }
+  cancelJobs();
 
   QgsProfileRequest request( profileCurve()->clone() );
   request.setCrs( mCrs );
@@ -1434,7 +1429,7 @@ QVector<QgsProfileIdentifyResults> QgsElevationProfileCanvas::identify( const QR
 void QgsElevationProfileCanvas::clear()
 {
   setProfileCurve( nullptr );
-  mPlotItem->setRenderer( nullptr );
+  cancelJobs();
   mPlotItem->updatePlot();
 }
 

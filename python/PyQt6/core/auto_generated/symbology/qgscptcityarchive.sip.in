@@ -37,7 +37,10 @@ Represents a CPT City color scheme.
     static QMap< QString, QString > copyingInfo( const QString &fileName );
     static QMap< QString, QString > description( const QString &fileName );
 
-    bool isEmpty();
+    bool isEmpty() const;
+%Docstring
+Returns ``True`` if archive is empty
+%End
     QString archiveName() const;
     static void initArchives( bool loadAll = false );
     static void initArchive( const QString &archiveName, const QString &archiveBaseDir );

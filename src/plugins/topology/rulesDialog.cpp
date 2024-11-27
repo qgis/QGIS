@@ -27,6 +27,7 @@
 #include "qgsapplication.h"
 #include "qgshelp.h"
 #include "rulesDialog.h"
+#include "moc_rulesDialog.cpp"
 #include "topolTest.h"
 
 rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterface *qgisIface, QWidget *parent )

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstextformatwidget.h"
+#include "moc_qgstextformatwidget.cpp"
 #include "qgsmapcanvas.h"
 #include "qgscharacterselectordialog.h"
 #include "qgslogger.h"
@@ -44,6 +45,7 @@
 #include "qgsconfig.h"
 #include "qgsprojectstylesettings.h"
 #include "qgsprojectviewsettings.h"
+#include "qgstabpositionwidget.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
@@ -109,6 +111,7 @@ void QgsTextFormatWidget::initWidget()
   connect( mToolButtonConfigureSubstitutes, &QToolButton::clicked, this, &QgsTextFormatWidget::mToolButtonConfigureSubstitutes_clicked );
   connect( mKerningCheckBox, &QCheckBox::toggled, this, &QgsTextFormatWidget::kerningToggled );
   connect( mComboOverlapHandling, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::overlapModeChanged );
+  connect( mTabStopsButton, &QToolButton::clicked, this, &QgsTextFormatWidget::configureTabStops );
 
   const int iconSize = QgsGuiUtils::scaleIconSize( 20 );
   mOptionsTab->setIconSize( QSize( iconSize, iconSize ) );
@@ -366,7 +369,9 @@ void QgsTextFormatWidget::initWidget()
 
   overlapModeChanged();
 
-#ifndef HAS_KDE_QT5_FONT_STRETCH_FIX
+#if defined(HAS_KDE_QT5_FONT_STRETCH_FIX) || (QT_VERSION >= QT_VERSION_CHECK(6, 3, 0))
+  // stretch is available
+#else
   mLabelStretch->hide();
   mSpinStretch->hide();
   mFontStretchDDBtn->hide();
@@ -633,7 +638,9 @@ void QgsTextFormatWidget::toggleDDButtons( bool visible )
   const auto buttons = findChildren< QgsPropertyOverrideButton * >();
   for ( QgsPropertyOverrideButton *button : buttons )
   {
-#ifndef HAS_KDE_QT5_FONT_STRETCH_FIX
+#if defined(HAS_KDE_QT5_FONT_STRETCH_FIX) || (QT_VERSION >= QT_VERSION_CHECK(6, 3, 0))
+    // stretch is available
+#else
     if ( button == mFontStretchDDBtn )
       continue; // always hidden
 #endif
@@ -924,6 +931,9 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
     mDataDefinedProperties = format.dataDefinedProperties();
   }
 
+  mTabPositions = format.tabPositions();
+  mTabStopDistanceSpin->setEnabled( mTabPositions.empty() );
+
   // buffer
   mBufferDrawChkBx->setChecked( buffer.enabled() );
   mBufferFrame->setEnabled( buffer.enabled() );
@@ -1123,6 +1133,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   format.setTabStopDistance( mTabDistanceUnitWidget->unit() == Qgis::RenderUnit::Percentage ? ( mTabStopDistanceSpin->value() / 100 ) : mTabStopDistanceSpin->value() );
   format.setTabStopDistanceUnit( mTabDistanceUnitWidget->unit() );
   format.setTabStopDistanceMapUnitScale( mTabDistanceUnitWidget->getMapUnitScale() );
+  format.setTabPositions( mTabPositions );
 
   // buffer
   QgsTextBufferSettings buffer;
@@ -2157,6 +2168,37 @@ void QgsTextFormatWidget::mToolButtonConfigureSubstitutes_clicked()
   }
 }
 
+void QgsTextFormatWidget::configureTabStops()
+{
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsTabPositionWidget *widget = new QgsTabPositionWidget( panel );
+    widget->setPanelTitle( tr( "Tab Positions" ) );
+    widget->setPositions( mTabPositions );
+    widget->setUnit( mTabDistanceUnitWidget->unit() );
+    connect( widget, &QgsTabPositionWidget::positionsChanged, this, [ = ]( const QList< QgsTextFormat::Tab > &positions )
+    {
+      mTabPositions = positions;
+      mTabStopDistanceSpin->setEnabled( mTabPositions.empty() );
+      emit widgetChanged();
+    } );
+    panel->openPanel( widget );
+  }
+  else
+  {
+    QgsTabPositionDialog dlg( this );
+    dlg.setPositions( mTabPositions );
+    dlg.setUnit( mTabDistanceUnitWidget->unit() );
+    if ( dlg.exec() == QDialog::Accepted )
+    {
+      mTabPositions = dlg.positions();
+      mTabStopDistanceSpin->setEnabled( mTabPositions.empty() );
+      emit widgetChanged();
+    }
+  }
+}
+
 void QgsTextFormatWidget::showBackgroundRadius( bool show )
 {
   mShapeRadiusLabel->setVisible( show );
@@ -2176,11 +2218,17 @@ QgsExpressionContext QgsTextFormatWidget::createExpressionContext() const
     return *lExpressionContext;
 
   QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
-    expContext << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() );
+  {
+    expContext = mMapCanvas->createExpressionContext();
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::globalScope()
+               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+               << QgsExpressionContextUtils::atlasScope( nullptr )
+               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
 
   if ( mLayer )
     expContext << QgsExpressionContextUtils::layerScope( mLayer );

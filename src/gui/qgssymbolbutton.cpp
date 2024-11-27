@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgssymbolbutton.h"
+#include "moc_qgssymbolbutton.cpp"
 #include "qgspanelwidget.h"
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextgenerator.h"

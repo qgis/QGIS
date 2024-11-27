@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsfeatureselectiondlg.h"
+#include "moc_qgsfeatureselectiondlg.cpp"
 
 #include "qgsvectorlayerselectionmanager.h"
 #include "qgsdistancearea.h"

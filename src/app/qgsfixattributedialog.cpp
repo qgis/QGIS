@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfixattributedialog.h"
+#include "moc_qgsfixattributedialog.cpp"
 
 #include "qgsattributeform.h"
 #include "qgsapplication.h"

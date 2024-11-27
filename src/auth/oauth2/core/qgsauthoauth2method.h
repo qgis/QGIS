@@ -21,12 +21,59 @@
 #include <QEventLoop>
 #include <QTimer>
 #include <QMutex>
+#include <QReadWriteLock>
+#include <QThread>
 
 #include "qgsauthmethod.h"
 #include "qgsauthmethodmetadata.h"
 
-
 class QgsO2;
+class QgsAuthOAuth2Config;
+
+/**
+ * A long-running thread on which all QgsO2 objects run.
+ *
+ * We have to take care that we don't directly create QgsO2 objects on the thread
+ * where the authentication request is occurring, as QgsO2 objects are long running
+ * but the thread requesting authentication may be short-lived.
+ *
+ * Accordingly, all QgsO2 objects run on an instance of QgsOAuth2Factory
+ * (see QgsOAuth2Factory::instance()). This ensures that they will run
+ * on a thread with an application-long lifetime.
+ *
+ * \ingroup auth_plugins
+ * \since QGIS 3.42
+ */
+class QgsOAuth2Factory : public QThread
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Creates a new QgsO2 object, ensuring that it is correctly created on the
+     * QgsOAuth2Factory thread instance.
+     *
+     * The \a oauth2config object will be re-parented to the new QgsO2 object.
+     */
+    static QgsO2 *createO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config );
+
+    /**
+     * Request linking a \a o2 object. This ensures that the link is done
+     * in a thread-safe manner.
+     */
+    static void requestLink( QgsO2 *o2 );
+
+  private:
+    static QgsOAuth2Factory *instance();
+
+    QgsOAuth2Factory( QObject *parent = nullptr );
+
+    QgsO2 *createO2Private( const QString &authcfg, QgsAuthOAuth2Config *oauth2config );
+
+    static QgsOAuth2Factory *sInstance;
+};
+
 
 /**
  * The QgsAuthOAuth2Method class handles all network connection operation for the OAuth2 authentication plugin
@@ -105,7 +152,6 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     void setAuthCode( const QString code );
 
   private:
-    QString mTempStorePath;
 
     QgsO2 *getOAuth2Bundle( const QString &authcfg, bool fullconfig = true );
 
@@ -113,10 +159,12 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
 
     void removeOAuth2Bundle( const QString &authcfg );
 
-    static QMap<QString, QgsO2 *> sOAuth2ConfigCache;
+    QReadWriteLock mO2CacheLock;
+    QMap<QString, QgsO2 *> mOAuth2ConfigCache;
 
     QgsO2 *authO2( const QString &authcfg );
 
+    // TODO: This mutex does not appear to be protecting anything which is thread-unsafe?
     QRecursiveMutex mNetworkRequestMutex;
 };
 

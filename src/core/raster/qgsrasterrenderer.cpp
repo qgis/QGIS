@@ -146,7 +146,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsRasterRenderer::createLegendNodes( QgsLa
 
     if ( count == max_count )
     {
-      const QString label = tr( "following %1 items\nnot displayed" ).arg( rasterItemList.size() - max_count );
+      const QString label = tr( "following %n item(s) not displayed", nullptr, rasterItemList.size() - max_count );
       nodes << new QgsSimpleLegendNode( nodeLayer, label );
       break;
     }

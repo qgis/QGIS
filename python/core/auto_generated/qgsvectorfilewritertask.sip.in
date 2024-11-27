@@ -28,10 +28,13 @@ QGIS interface.
 
     QgsVectorFileWriterTask( QgsVectorLayer *layer,
                              const QString &fileName,
-                             const QgsVectorFileWriter::SaveVectorOptions &options );
+                             const QgsVectorFileWriter::SaveVectorOptions &options,
+                             QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 %Docstring
 Constructor for QgsVectorFileWriterTask. Takes a source ``layer``, destination ``fileName``
 and save ``options``.
+
+Since QGIS 3.40 the ``sinkFlags`` can be specified.
 %End
 
     virtual void cancel();

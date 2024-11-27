@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspostgrestransaction.h"
+#include "moc_qgspostgrestransaction.cpp"
 #include "qgspostgresconn.h"
 #include "qgslogger.h"
 #include "qgis.h"

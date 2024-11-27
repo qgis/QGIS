@@ -243,7 +243,7 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
 
   if ( !unmatchedCategories.empty() )
   {
-    feedback->pushInfo( QObject::tr( "\n%n categorie(s) could not be matched:", nullptr, unmatchedCategories.count() ) );
+    feedback->pushInfo( QObject::tr( "\n%n categories could not be matched:", nullptr, unmatchedCategories.count() ) );
     std::sort( unmatchedCategories.begin(), unmatchedCategories.end() );
     for ( const QVariant &cat : std::as_const( unmatchedCategories ) )
     {
@@ -277,6 +277,11 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
 
   context.addLayerToLoadOnCompletion( mLayerId, QgsProcessingContext::LayerDetails( mLayerName, context.project(), mLayerName ) );
   context.layerToLoadOnCompletionDetails( mLayerId ).setPostProcessor( new SetCategorizedRendererPostProcessor( std::move( mRenderer ) ) );
+
+  if ( nonMatchingCategoriesSink )
+    nonMatchingCategoriesSink->finalize();
+  if ( nonMatchingSymbolsSink )
+    nonMatchingSymbolsSink->finalize();
 
   QVariantMap results;
   results.insert( QStringLiteral( "OUTPUT" ), mLayerId );

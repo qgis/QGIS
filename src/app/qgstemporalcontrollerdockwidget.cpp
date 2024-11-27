@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgstemporalcontrollerdockwidget.h"
+#include "moc_qgstemporalcontrollerdockwidget.cpp"
 #include "qgstemporalcontrollerwidget.h"
 #include "qgspanelwidgetstack.h"
 #include "qgsanimationexportdialog.h"

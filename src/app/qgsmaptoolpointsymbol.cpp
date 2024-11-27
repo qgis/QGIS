@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolpointsymbol.h"
+#include "moc_qgsmaptoolpointsymbol.cpp"
 #include "qgsfeatureiterator.h"
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"

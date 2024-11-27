@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmssqlgeomcolumntypethread.h"
+#include "moc_qgsmssqlgeomcolumntypethread.cpp"
 
 #include <QSqlDatabase>
 #include <QSqlQuery>

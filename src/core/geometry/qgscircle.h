@@ -96,7 +96,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param center Center point.
      * \param pt1 A point on the circle.
      */
-    static QgsCircle fromCenterPoint( const QgsPoint &center, const QgsPoint &pt1 ) SIP_HOLDGIL;
+    static QgsCircle fromCenterPoint( const QgsPoint &center, const QgsPoint &pt1 ) SIP_HOLDGIL; // cppcheck-suppress duplInheritedMember
 
 
     /**
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \param pt1 First corner.
      * \param pt2 Second corner.
      */
-    static QgsCircle fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL;
+    static QgsCircle fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 ) SIP_HOLDGIL; // cppcheck-suppress duplInheritedMember
 
     /**
      * Constructs the smallest circle from 3 points.

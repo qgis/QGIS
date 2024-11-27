@@ -1,0 +1,14 @@
+const int MAX_PLANE = 8;
+uniform int max_plane_real;
+
+uniform vec4 clipPlane[MAX_PLANE];
+
+out float gl_ClipDistance[MAX_PLANE];
+
+void setClipDistance(vec3 worldPos)
+{
+  for (int i = 0; i < max_plane_real; ++i)
+    {
+      gl_ClipDistance[i] = dot(vec4(worldPos, 1.0), clipPlane[i]);
+    }
+}

@@ -935,6 +935,13 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
         symbol_f = createMarkerSymbol()
         renderer.addCategory(QgsRendererCategory(None, symbol_f, 'f', True, '4'))
 
+        # this category should NOT be included in the SLD, as it would otherwise result
+        # in an invalid se:rule with no symbolizer element
+        symbol_which_is_empty_in_sld = createFillSymbol()
+        symbol_which_is_empty_in_sld[0].setBrushStyle(Qt.BrushStyle.NoBrush)
+        symbol_which_is_empty_in_sld[0].setStrokeStyle(Qt.PenStyle.NoPen)
+        renderer.addCategory(QgsRendererCategory(None, symbol_which_is_empty_in_sld, 'empty', True, '4'))
+
         dom = QDomDocument()
         root = dom.createElement("FakeRoot")
         dom.appendChild(root)

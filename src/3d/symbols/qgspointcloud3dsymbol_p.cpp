@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspointcloud3dsymbol_p.h"
+#include "moc_qgspointcloud3dsymbol_p.cpp"
 
 ///@cond PRIVATE
 
@@ -24,6 +25,7 @@
 #include "qgspointcloudblockrequest.h"
 #include "qgsfeedback.h"
 #include "qgsaabb.h"
+#include "qgsgeotransform.h"
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QGeometryRenderer>
@@ -53,6 +55,28 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 #include <QUrl>
 
 #include <delaunator.hpp>
+
+// pick a point that we'll use as origin for coordinates for this node's points
+static QgsVector3D originFromNodeBounds( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, const QgsPointCloudBlock *block )
+{
+  const QgsVector3D blockScale = block->scale();
+  const QgsVector3D blockOffset = block->offset();
+
+  QgsPointCloudDataBounds bounds = pc->nodeBounds( n );
+  double nodeOriginX = bounds.xMin() * blockScale.x() + blockOffset.x();
+  double nodeOriginY = bounds.yMin() * blockScale.y() + blockOffset.y();
+  double nodeOriginZ = ( bounds.zMin() * blockScale.z() + blockOffset.z() ) * context.zValueScale() + context.zValueFixedOffset();
+  try
+  {
+    context.coordinateTransform().transformInPlace( nodeOriginX, nodeOriginY, nodeOriginZ );
+  }
+  catch ( QgsCsException & )
+  {
+    QgsDebugError( QStringLiteral( "Error transforming node origin point" ) );
+  }
+  return QgsVector3D( nodeOriginX, nodeOriginY, nodeOriginZ );
+}
+
 
 QgsPointCloud3DGeometry::QgsPointCloud3DGeometry( Qt3DCore::QNode *parent, const QgsPointCloud3DSymbolHandler::PointData &data, unsigned int byteStride )
   : Qt3DQGeometry( parent )
@@ -241,6 +265,7 @@ void QgsClassificationPointCloud3DGeometry::makeVertexBuffer( const QgsPointClou
   float *rawVertexArray = reinterpret_cast<float *>( vertexBufferData.data() );
   int idx = 0;
   Q_ASSERT( data.positions.size() == data.parameter.size() );
+  Q_ASSERT( data.positions.size() == data.pointSizes.size() );
   for ( int i = 0; i < data.positions.size(); ++i )
   {
     rawVertexArray[idx++] = data.positions.at( i ).x();
@@ -281,11 +306,13 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
   }
   gr->setGeometry( geom );
 
-  // Transform
-  Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
+  // Transform: chunks are using coordinates relative to chunk origin, with X,Y,Z axes being the same
+  // as map coordinates, so we need to rotate and translate entities to get them into world coordinates
+  QgsGeoTransform *tr = new QgsGeoTransform;
+  tr->setGeoTranslation( out.positionsOrigin );
 
   // Material
-  Qt3DRender::QMaterial *mat = new Qt3DRender::QMaterial;
+  QgsMaterial *mat = new QgsMaterial;
   if ( context.symbol() )
     context.symbol()->fillMaterial( mat );
 
@@ -332,11 +359,12 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 }
 
 
-std::vector<double> QgsPointCloud3DSymbolHandler::getVertices( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, const QgsAABB &bbox )
+std::vector<double> QgsPointCloud3DSymbolHandler::getVertices( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, const QgsBox3D &box3D )
 {
 
   bool hasColorData = !outNormal.colors.empty();
   bool hasParameterData = !outNormal.parameter.empty();
+  bool hasPointSizeData = !outNormal.pointSizes.empty();
 
   // first, get the points of the concerned node
   std::vector<double> vertices( outNormal.positions.size() * 2 );
@@ -344,56 +372,55 @@ std::vector<double> QgsPointCloud3DSymbolHandler::getVertices( QgsPointCloudInde
   for ( int i = 0; i < outNormal.positions.size(); ++i )
   {
     vertices[idx++] = outNormal.positions.at( i ).x();
-    vertices[idx++] = outNormal.positions.at( i ).z();
+    vertices[idx++] = -outNormal.positions.at( i ).y();  // flipping y to have correctly oriented triangles from delaunator
   }
 
   // next, we also need all points of all parents nodes to make the triangulation (also external points)
   IndexedPointCloudNode parentNode = n.parentNode();
 
-  int properPointsCount = outNormal.positions.count();
-  while ( parentNode.d() >= 0 )
-  {
-    processNode( pc, parentNode, context );
-    parentNode = parentNode.parentNode();
-  }
-
-  PointData filteredExtraPointData;
-
   double span = pc->span();
   //factor to take account of the density of the point to calculate extension of the bounding box
   // with a usual value span = 128, bounding box is extended by 12.5 % on each side.
   double extraBoxFactor = 16 / span;
-  double extraX = extraBoxFactor * bbox.xExtent();
-  double extraZ = extraBoxFactor * bbox.zExtent();
 
   // We keep all points in vertical direction to avoid odd triangulation if points are isolated on top
-  const QgsAABB extendedBBox( bbox.xMin - extraX, -std::numeric_limits<float>::max(), bbox.zMin - extraZ, bbox.xMax + extraX, std::numeric_limits<float>::max(), bbox.zMax + extraZ );
+  QgsRectangle rectRelativeToChunkOrigin = ( box3D - outNormal.positionsOrigin ).toRectangle();
+  rectRelativeToChunkOrigin.grow( extraBoxFactor * std::max( box3D.width(), box3D.height() ) );
 
-  for ( int i = properPointsCount; i < outNormal.positions.count(); ++i )
+  PointData filteredExtraPointData;
+  while ( parentNode.d() >= 0 )
   {
-    const  QVector3D pos = outNormal.positions.at( i );
-    if ( extendedBBox.intersects( pos.x(), pos.y(), pos.z() ) )
+    PointData outputParent;
+    processNode( pc, parentNode, context, &outputParent );
+
+    // the "main" chunk and each parent chunks have their origins
+    QVector3D originDifference = ( outputParent.positionsOrigin - outNormal.positionsOrigin ).toVector3D();
+
+    for ( int i = 0; i < outputParent.positions.count(); ++i )
     {
-      filteredExtraPointData.positions.append( pos );
-      vertices.push_back( pos.x() );
-      vertices.push_back( pos.z() );
+      const QVector3D pos = outputParent.positions.at( i ) + originDifference;
+      if ( rectRelativeToChunkOrigin.contains( pos.x(), pos.y() ) )
+      {
+        filteredExtraPointData.positions.append( pos );
+        vertices.push_back( pos.x() );
+        vertices.push_back( -pos.y() );  // flipping y to have correctly oriented triangles from delaunator
 
-      if ( hasColorData )
-        filteredExtraPointData.colors.append( outNormal.colors.at( i ) );
-      if ( hasParameterData )
-        filteredExtraPointData.parameter.append( outNormal.parameter.at( i ) );
+        if ( hasColorData )
+          filteredExtraPointData.colors.append( outputParent.colors.at( i ) );
+        if ( hasParameterData )
+          filteredExtraPointData.parameter.append( outputParent.parameter.at( i ) );
+        if ( hasPointSizeData )
+          filteredExtraPointData.pointSizes.append( outputParent.pointSizes.at( i ) );
+      }
     }
-  }
 
-  outNormal.positions.resize( properPointsCount );
-  if ( hasColorData )
-    outNormal.colors.resize( properPointsCount );
-  if ( hasParameterData )
-    outNormal.parameter.resize( properPointsCount );
+    parentNode = parentNode.parentNode();
+  }
 
   outNormal.positions.append( filteredExtraPointData.positions );
   outNormal.colors.append( filteredExtraPointData.colors );
   outNormal.parameter.append( filteredExtraPointData.parameter );
+  outNormal.pointSizes.append( filteredExtraPointData.pointSizes );
 
   return vertices;
 }
@@ -430,7 +457,7 @@ void QgsPointCloud3DSymbolHandler::calculateNormals( const std::vector<size_t> &
   }
 }
 
-void QgsPointCloud3DSymbolHandler::filterTriangles( const std::vector<size_t> &triangleIndexes, const QgsPointCloud3DRenderContext &context, const QgsAABB &bbox )
+void QgsPointCloud3DSymbolHandler::filterTriangles( const std::vector<size_t> &triangleIndexes, const QgsPointCloud3DRenderContext &context, const QgsBox3D &box3D )
 {
   outNormal.triangles.resize( triangleIndexes.size() * sizeof( quint32 ) );
   quint32 *indexPtr = reinterpret_cast<quint32 *>( outNormal.triangles.data() );
@@ -441,6 +468,8 @@ void QgsPointCloud3DSymbolHandler::filterTriangles( const std::vector<size_t> &t
   float horizontalThreshold =  context.symbol()->horizontalFilterThreshold();
   float verticalThreshold =  context.symbol()->verticalFilterThreshold();
 
+  QgsBox3D boxRelativeToChunkOrigin = box3D - outNormal.positionsOrigin;
+
   for ( size_t i = 0; i < triangleIndexes.size(); i += 3 )
   {
     bool atLeastOneInBox = false;
@@ -449,20 +478,20 @@ void QgsPointCloud3DSymbolHandler::filterTriangles( const std::vector<size_t> &t
     for ( size_t j = 0; j < 3; j++ )
     {
       QVector3D pos = outNormal.positions.at( triangleIndexes.at( i  + j ) );
-      atLeastOneInBox |= bbox.intersects( pos.x(), pos.y(), pos.z() );
+      atLeastOneInBox |= boxRelativeToChunkOrigin.contains( pos.x(), pos.y(), pos.z() );
 
       if ( verticalFilter || horizontalFilter )
       {
         const QVector3D pos2 = outNormal.positions.at( triangleIndexes.at( i + ( j + 1 ) % 3 ) );
 
         if ( verticalFilter )
-          verticalSkip |= std::fabs( pos.y() - pos2.y() ) > verticalThreshold;
+          verticalSkip |= std::fabs( pos.z() - pos2.z() ) > verticalThreshold;
 
         if ( horizontalFilter && ! verticalSkip )
         {
           // filter only in the horizontal plan, it is a 2.5D triangulation.
           horizontalSkip |= sqrt( std::pow( pos.x() - pos2.x(), 2 ) +
-                                  std::pow( pos.z() - pos2.z(), 2 ) ) > horizontalThreshold;
+                                  std::pow( pos.y() - pos2.y(), 2 ) ) > horizontalThreshold;
         }
 
         if ( horizontalSkip || verticalSkip )
@@ -491,7 +520,7 @@ void QgsPointCloud3DSymbolHandler::filterTriangles( const std::vector<size_t> &t
   }
 }
 
-void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, const QgsAABB &bbox )
+void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, const QgsBox3D &box3D )
 {
   if ( outNormal.positions.isEmpty() )
     return;
@@ -500,7 +529,7 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const In
   std::unique_ptr<delaunator::Delaunator> triangulation;
   try
   {
-    std::vector<double> vertices = getVertices( pc, n, context, bbox );
+    std::vector<double> vertices = getVertices( pc, n, context, box3D );
     triangulation.reset( new delaunator::Delaunator( vertices ) );
   }
   catch ( std::exception &e )
@@ -515,7 +544,7 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const In
   const std::vector<size_t> &triangleIndexes = triangulation->triangles;
 
   calculateNormals( triangleIndexes );
-  filterTriangles( triangleIndexes, context, bbox );
+  filterTriangles( triangleIndexes, context, box3D );
 }
 
 std::unique_ptr<QgsPointCloudBlock> QgsPointCloud3DSymbolHandler::pointCloudBlock( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloudRequest &request, const QgsPointCloud3DRenderContext &context )
@@ -561,7 +590,7 @@ bool QgsSingleColorPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DRend
   return true;
 }
 
-void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context )
+void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, PointData *output )
 {
   QgsPointCloudAttributeCollection attributes;
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
@@ -584,6 +613,11 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
   const double zValueOffset = context.zValueFixedOffset();
   const QgsCoordinateTransform coordinateTransform = context.coordinateTransform();
   bool alreadyPrintedDebug = false;
+
+  if ( !output )
+    output = &outNormal;
+
+  output->positionsOrigin = originFromNodeBounds( pc, n, context, block.get() );
 
   for ( int i = 0; i < count; ++i )
   {
@@ -609,8 +643,8 @@ void QgsSingleColorPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *p
         alreadyPrintedDebug = true;
       }
     }
-    const QgsVector3D point = context.mapToWorldCoordinates( QgsVector3D( x, y, z ) );
-    outNormal.positions.push_back( QVector3D( static_cast<float>( point.x() ), static_cast<float>( point.y() ), static_cast<float>( point.z() ) ) );
+    const QgsVector3D point = QgsVector3D( x, y, z ) - output->positionsOrigin;
+    output->positions.push_back( point.toVector3D() );
   }
 }
 
@@ -636,7 +670,7 @@ bool QgsColorRampPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DRender
   return true;
 }
 
-void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context )
+void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, PointData *output )
 {
   QgsPointCloudAttributeCollection attributes;
   const int xOffset = 0;
@@ -705,6 +739,11 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
   const QgsVector3D blockScale = block->scale();
   const QgsVector3D blockOffset = block->offset();
 
+  if ( !output )
+    output = &outNormal;
+
+  output->positionsOrigin = originFromNodeBounds( pc, n, context, block.get() );
+
   for ( int i = 0; i < count; ++i )
   {
     if ( context.isCanceled() )
@@ -729,20 +768,20 @@ void QgsColorRampPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc,
         alreadyPrintedDebug = true;
       }
     }
-    const QgsVector3D point = context.mapToWorldCoordinates( QgsVector3D( x, y, z ) );
-    outNormal.positions.push_back( QVector3D( static_cast<float>( point.x() ), static_cast<float>( point.y() ), static_cast<float>( point.z() ) ) );
+    const QgsVector3D point = QgsVector3D( x, y, z ) - output->positionsOrigin;
+    output->positions.push_back( point.toVector3D() );
 
     if ( attrIsX )
-      outNormal.parameter.push_back( x );
+      output->parameter.push_back( x );
     else if ( attrIsY )
-      outNormal.parameter.push_back( y );
+      output->parameter.push_back( y );
     else if ( attrIsZ )
-      outNormal.parameter.push_back( z );
+      output->parameter.push_back( z );
     else
     {
       float iParam = 0.0f;
       context.getAttribute( ptr, i * recordSize + attributeOffset, attributeType, iParam );
-      outNormal.parameter.push_back( iParam );
+      output->parameter.push_back( iParam );
     }
   }
 }
@@ -769,7 +808,7 @@ bool QgsRGBPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DRenderContex
   return true;
 }
 
-void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context )
+void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, PointData *output )
 {
   QgsPointCloudAttributeCollection attributes;
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "X" ), QgsPointCloudAttribute::Int32 ) );
@@ -822,6 +861,11 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
   const bool useBlueContrastEnhancement = blueContrastEnhancement && blueContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;
   const bool useGreenContrastEnhancement = greenContrastEnhancement && greenContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement;
 
+  if ( !output )
+    output = &outNormal;
+
+  output->positionsOrigin = originFromNodeBounds( pc, n, context, block.get() );
+
   int ir = 0;
   int ig = 0;
   int ib = 0;
@@ -848,7 +892,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
         alreadyPrintedDebug = true;
       }
     }
-    const QgsVector3D point = context.mapToWorldCoordinates( QgsVector3D( x, y, z ) );
+    const QgsVector3D point = QgsVector3D( x, y, z ) - output->positionsOrigin;
 
     QVector3D color( 0.0f, 0.0f, 0.0f );
 
@@ -882,8 +926,8 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
     color.setY( ig / 255.0f );
     color.setZ( ib / 255.0f );
 
-    outNormal.positions.push_back( QVector3D( static_cast<float>( point.x() ), static_cast<float>( point.y() ), static_cast<float>( point.z() ) ) );
-    outNormal.colors.push_back( color );
+    output->positions.push_back( point.toVector3D() );
+    output->colors.push_back( color );
   }
 }
 
@@ -909,7 +953,7 @@ bool QgsClassificationPointCloud3DSymbolHandler::prepare( const QgsPointCloud3DR
   return true;
 }
 
-void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context )
+void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, PointData *output )
 {
   QgsPointCloudAttributeCollection attributes;
   const int xOffset = 0;
@@ -987,6 +1031,11 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
                                  context.symbol() ? context.symbol()->pointSize() : 1.0 );
   }
 
+  if ( !output )
+    output = &outNormal;
+
+  output->positionsOrigin = originFromNodeBounds( pc, n, context, block.get() );
+
   const QSet<int> filteredOutValues = context.getFilteredOutValues();
   for ( int i = 0; i < count; ++i )
   {
@@ -1012,7 +1061,7 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
         alreadyPrintedDebug = true;
       }
     }
-    const QgsVector3D point = context.mapToWorldCoordinates( QgsVector3D( x, y, z ) );
+    const QgsVector3D point = QgsVector3D( x, y, z ) - output->positionsOrigin;
     float iParam = 0.0f;
     if ( attrIsX )
       iParam = x;
@@ -1026,12 +1075,12 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
     if ( filteredOutValues.contains( ( int ) iParam ) ||
          ! categoriesValues.contains( ( int ) iParam ) )
       continue;
-    outNormal.positions.push_back( QVector3D( static_cast<float>( point.x() ), static_cast<float>( point.y() ), static_cast<float>( point.z() ) ) );
+    output->positions.push_back( point.toVector3D() );
 
     // find iParam actual index in the categories list
     float iParam2 = categoriesValues.indexOf( ( int )iParam ) + 1;
-    outNormal.parameter.push_back( iParam2 );
-    outNormal.pointSizes.push_back( categoriesPointSizes.value( ( int ) iParam ) );
+    output->parameter.push_back( iParam2 );
+    output->pointSizes.push_back( categoriesPointSizes.value( ( int ) iParam ) );
   }
 }
 

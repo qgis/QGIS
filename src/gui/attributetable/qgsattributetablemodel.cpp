@@ -15,6 +15,7 @@
 
 #include "qgsapplication.h"
 #include "qgsattributetablemodel.h"
+#include "moc_qgsattributetablemodel.cpp"
 
 #include "qgsactionmanager.h"
 #include "qgseditorwidgetregistry.h"

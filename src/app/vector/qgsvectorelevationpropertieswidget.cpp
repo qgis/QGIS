@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvectorelevationpropertieswidget.h"
+#include "moc_qgsvectorelevationpropertieswidget.cpp"
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"

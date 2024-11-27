@@ -89,6 +89,7 @@ class TestQgsGeometry : public QgsTest
     void curveIndexOf();
     void splitCurve_data();
     void splitCurve();
+    void splitToDisjointXYParts();
 
     void fromBox3d();
     void fromPoint();
@@ -134,6 +135,7 @@ class TestQgsGeometry : public QgsTest
     void bufferCheck();
     void smoothCheck();
     void shortestLineEmptyGeometry();
+    void distanceCheck();
 
     void unaryUnion();
 
@@ -749,6 +751,38 @@ void TestQgsGeometry::splitCurve()
   auto [p1, p2] = qgsgeometry_cast< const QgsCurve * >( curve.constGet() )->splitCurveAtVertex( vertex );
   QCOMPARE( p1->asWkt(), curve1 );
   QCOMPARE( p2->asWkt(), curve2 );
+}
+
+void TestQgsGeometry::splitToDisjointXYParts()
+{
+  QgsLineString onePartLine( QgsPoint( 1.0, 1.0 ), QgsPoint( 2.0, 2.0 ) );
+  QVector<QgsLineString *> onePartParts = onePartLine.splitToDisjointXYParts();
+  QCOMPARE( onePartParts.size(), 1 );
+  QCOMPARE( onePartParts[0]->asWkt(), onePartLine.asWkt() );
+  for ( QgsLineString *part : onePartParts )
+    delete part;
+
+  QgsLineString onePointLine( QVector<QgsPoint> {QgsPoint( 1.0, 1.0 )} );
+  QVector<QgsLineString *> onePointParts = onePointLine.splitToDisjointXYParts();
+  QCOMPARE( onePointParts.size(), 1 );
+  QCOMPARE( onePointParts[0]->asWkt(), onePointLine.asWkt() );
+  for ( QgsLineString *part : onePointParts )
+    delete part;
+
+  QgsLineString emptyLine( QVector<QgsPoint> { } );
+  QVector<QgsLineString *> emptyParts = emptyLine.splitToDisjointXYParts();
+  QCOMPARE( emptyParts.size(), 1 );
+  QCOMPARE( emptyParts[0]->asWkt(), emptyLine.asWkt() );
+  for ( QgsLineString *part : emptyParts )
+    delete part;
+
+  QgsLineString triangle( QVector<QgsPoint> {QgsPoint( 0.0, 0.0 ), QgsPoint( 1.0, 0.0 ), QgsPoint( 1.0, 1.0 ), QgsPoint( 0.0, 0.0 )} );
+  QVector<QgsLineString *> triangleParts = triangle.splitToDisjointXYParts();
+  QCOMPARE( triangleParts.size(), 2 );
+  QCOMPARE( triangleParts[0]->asWkt(), "LineString (0 0, 1 0, 1 1)" );
+  QCOMPARE( triangleParts[1]->asWkt(), "LineString (1 1, 0 0)" );
+  for ( QgsLineString *part : triangleParts )
+    delete part;
 }
 
 void TestQgsGeometry::fromBox3d()
@@ -1677,6 +1711,83 @@ void TestQgsGeometry::shortestLineEmptyGeometry()
   QgsGeometry geom2( new QgsPoint() );
   QgsGeos geos( geom1.constGet() );
   QVERIFY( geos.shortestLine( geom2.constGet() ).isNull() );
+}
+
+void TestQgsGeometry::distanceCheck()
+{
+  QgsGeometry polygon( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ))" ) ) );
+  std::unique_ptr< QgsGeometryEngine > polygonEngine( QgsGeometry::createGeometryEngine( polygon.constGet() ) );
+  polygonEngine->prepareGeometry();
+
+  /**
+   * Test polygon and 2D line
+   */
+  QgsGeometry line2D( QgsGeometry::fromWkt( QStringLiteral( "LineString (15.05 25.2, 13.2 14.1, 17.05 18.1, 15.5 25.2)" ) ) );
+  std::unique_ptr< QgsGeometryEngine > line2DEngine( QgsGeometry::createGeometryEngine( line2D.constGet() ) );
+  line2DEngine->prepareGeometry();
+
+  const double distanceToLine2D = 5.20;
+  QGSCOMPARENEAR( polygonEngine->distance( line2D.constGet() ), distanceToLine2D, 0.01 );
+  QGSCOMPARENEAR( line2DEngine->distance( polygon.constGet() ), distanceToLine2D, 0.01 );
+  QGSCOMPARENEAR( polygon.distance( line2D ), distanceToLine2D, 0.01 );
+  QGSCOMPARENEAR( line2D.distance( polygon ), distanceToLine2D, 0.01 );
+  QVERIFY( polygonEngine->distanceWithin( line2D.constGet(), distanceToLine2D + 0.01 ) );
+  QVERIFY( line2DEngine->distanceWithin( polygon.constGet(), distanceToLine2D + 0.01 ) );
+
+  /**
+   * Test polygon and 3D line
+   */
+  QgsGeometry line3D( QgsGeometry::fromWkt( QStringLiteral( "LineString Z(40 50 1, -30 10 30, -70 80 20, 40 50 1)" ) ) );
+  std::unique_ptr< QgsGeometryEngine > line3DEngine( QgsGeometry::createGeometryEngine( line3D.constGet() ) );
+  line3DEngine->prepareGeometry();
+
+  const double distanceToLine3D = 14.88;
+  QGSCOMPARENEAR( polygonEngine->distance( line3D.constGet() ), distanceToLine3D, 0.01 );
+  QGSCOMPARENEAR( line3DEngine->distance( polygon.constGet() ), distanceToLine3D, 0.01 );
+  QGSCOMPARENEAR( polygon.distance( line3D ), distanceToLine3D, 0.01 );
+  QGSCOMPARENEAR( line3D.distance( polygon ), distanceToLine3D, 0.01 );
+  QVERIFY( polygonEngine->distanceWithin( line3D.constGet(), distanceToLine3D + 0.01 ) );
+  QVERIFY( line3DEngine->distanceWithin( polygon.constGet(), distanceToLine3D + 0.01 ) );
+
+  /**
+   * Test polygon and 3D point
+   */
+  QgsGeometry point3D( QgsGeometry::fromWkt( QStringLiteral( "Point Z(40.3 50.1 10.2)" ) ) );
+  std::unique_ptr< QgsGeometryEngine > point3DEngine( QgsGeometry::createGeometryEngine( point3D.constGet() ) );
+  point3DEngine->prepareGeometry();
+  const double distanceToPoint3D = 50.26;
+  QGSCOMPARENEAR( polygonEngine->distance( point3D.constGet() ), distanceToPoint3D, 0.01 );
+  QGSCOMPARENEAR( point3DEngine->distance( polygon.constGet() ), distanceToPoint3D, 0.01 );
+  QGSCOMPARENEAR( polygon.distance( point3D ), distanceToPoint3D, 0.01 );
+  QGSCOMPARENEAR( point3D.distance( polygon ), distanceToPoint3D, 0.01 );
+  QVERIFY( polygonEngine->distanceWithin( point3D.constGet(), distanceToPoint3D + 0.01 ) );
+  QVERIFY( point3DEngine->distanceWithin( polygon.constGet(), distanceToPoint3D + 0.01 ) );
+
+  /**
+   * Test polygon and 3D vertical line ((X Y Z1, X Y Z2, ..., X Y ZN, X Y Z1))
+   */
+  QgsGeometry line3DVertical( QgsGeometry::fromWkt( QStringLiteral( "LineString Z(40.3 50.1 10, 40.3 50.1 -2, 40.3 50.1 -46, 40.3 50.1 10)" ) ) );
+  std::unique_ptr< QgsGeometryEngine > line3DVerticalEngine( QgsGeometry::createGeometryEngine( line3DVertical.constGet() ) );
+  line3DVerticalEngine->prepareGeometry();
+  QGSCOMPARENEAR( polygonEngine->distance( line3DVertical.constGet() ), distanceToPoint3D, 0.01 );
+  QGSCOMPARENEAR( line3DVerticalEngine->distance( polygon.constGet() ), distanceToPoint3D, 0.01 );
+  QGSCOMPARENEAR( polygon.distance( line3DVertical ), distanceToPoint3D, 0.01 );
+  QGSCOMPARENEAR( line3DVertical.distance( polygon ), distanceToPoint3D, 0.01 );
+  QVERIFY( polygonEngine->distanceWithin( line3DVertical.constGet(), distanceToPoint3D + 0.01 ) );
+  QVERIFY( line3DVerticalEngine->distanceWithin( polygon.constGet(), distanceToPoint3D + 0.01 ) );
+
+  /**
+   * Test polygon and 3D vertical line of two points ((X Y Z1, X Y Z2))
+   */
+  QgsGeometry line3DVertical2( QgsGeometry::fromWkt( QStringLiteral( "LineString Z(40.3 50.1 10, 40.3 50.1 -2)" ) ) );
+  std::unique_ptr< QgsGeometryEngine > line3DVertical2Engine( QgsGeometry::createGeometryEngine( line3DVertical2.constGet() ) );
+  line3DVertical2Engine->prepareGeometry();
+  QGSCOMPARENEAR( polygonEngine->distance( line3DVertical2.constGet() ), distanceToPoint3D, 0.01 );
+  QGSCOMPARENEAR( line3DVertical2Engine->distance( polygon.constGet() ), distanceToPoint3D, 0.01 );
+  QGSCOMPARENEAR( polygon.distance( line3DVertical2 ), distanceToPoint3D, 0.01 );
+  QGSCOMPARENEAR( line3DVertical2.distance( polygon ), distanceToPoint3D, 0.01 );
+  QVERIFY( polygonEngine->distanceWithin( line3DVertical2.constGet(), distanceToPoint3D + 0.01 ) );
+  QVERIFY( line3DVertical2Engine->distanceWithin( polygon.constGet(), distanceToPoint3D + 0.01 ) );
 }
 
 void TestQgsGeometry::unaryUnion()

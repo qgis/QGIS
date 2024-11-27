@@ -14,10 +14,10 @@
  ***************************************************************************/
 
 #include "qgsmesh3dsymbolwidget.h"
+#include "moc_qgsmesh3dsymbolwidget.cpp"
 #include "qgs3dtypes.h"
 #include "qgsmeshlayer.h"
 #include "qgstriangularmesh.h"
-#include "qgsmeshdataprovider.h"
 #include "qgsmesh3dsymbol.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgsmeshdatasetgrouptreeview.h"
@@ -30,7 +30,7 @@ QgsMesh3DSymbolWidget::QgsMesh3DSymbolWidget( QgsMeshLayer *meshLayer, QWidget *
   mSpinBoxVerticaleScale->setClearValue( 1.0 );
   mArrowsSpacingSpinBox->setClearValue( 25.0 );
 
-  mComboBoxTextureType->addItem( tr( "Single Color" ), QgsMesh3DSymbol::SingleColor );
+  mComboBoxTextureType->addItem( tr( "Single Color" ), static_cast< int >( QgsMesh3DSymbol::RenderingStyle::SingleColor ) );
   mComboBoxTextureType->setCurrentIndex( 0 );
 
   mCullingMode->addItem( tr( "No Culling" ), Qgs3DTypes::NoCulling );
@@ -100,7 +100,7 @@ void QgsMesh3DSymbolWidget::setSymbol( const QgsMesh3DSymbol *symbol )
 
 
   mSpinBoxVerticaleScale->setValue( symbol->verticalScale() );
-  mComboBoxTextureType->setCurrentIndex( mComboBoxTextureType->findData( symbol->renderingStyle() ) );
+  mComboBoxTextureType->setCurrentIndex( mComboBoxTextureType->findData( static_cast< int >( symbol->renderingStyle() ) ) );
   mMeshSingleColorButton->setColor( symbol->singleMeshColor() );
   mColorRampShaderWidget->setFromShader( symbol->colorRampShader() );
   mColorRampShaderWidget->setMinimumMaximumAndClassify( symbol->colorRampShader().minimumValue(),
@@ -117,7 +117,7 @@ void QgsMesh3DSymbolWidget::setSymbol( const QgsMesh3DSymbol *symbol )
 
 void QgsMesh3DSymbolWidget::configureForTerrain()
 {
-  mComboBoxTextureType->addItem( tr( "Color Ramp Shader" ), QgsMesh3DSymbol::ColorRamp );
+  mComboBoxTextureType->addItem( tr( "Color Ramp Shader" ), static_cast< int >( QgsMesh3DSymbol::RenderingStyle::ColorRamp ) );
   enableVerticalSetting( false );
   enableArrowSettings( false );
 
@@ -126,7 +126,7 @@ void QgsMesh3DSymbolWidget::configureForTerrain()
 
 void QgsMesh3DSymbolWidget::configureForDataset()
 {
-  mComboBoxTextureType->addItem( tr( "2D Contour Color Ramp Shader" ), QgsMesh3DSymbol::ColorRamp2DRendering );
+  mComboBoxTextureType->addItem( tr( "2D Contour Color Ramp Shader" ), static_cast< int >( QgsMesh3DSymbol::RenderingStyle::ColorRamp2DRendering ) );
   mGroupBoxColorRampShader->hide();
   enableVerticalSetting( true );
   enableArrowSettings( true );
@@ -207,7 +207,7 @@ std::unique_ptr<QgsMesh3DSymbol> QgsMesh3DSymbolWidget::symbol() const
   sym->setVerticalDatasetGroupIndex( mComboBoxDatasetVertical->currentIndex() );
   sym->setIsVerticalMagnitudeRelative( mCheckBoxVerticalMagnitudeRelative->isChecked() );
 
-  if ( sym->renderingStyle() == QgsMesh3DSymbol::ColorRamp )
+  if ( sym->renderingStyle() == QgsMesh3DSymbol::RenderingStyle::ColorRamp )
     sym->setColorRampShader( mColorRampShaderWidget->shader() );
 
   sym->setArrowsEnabled( mGroupBoxArrowsSettings->isChecked() );
@@ -252,8 +252,8 @@ void QgsMesh3DSymbolWidget::onColorRampShaderMinMaxChanged()
 
 void QgsMesh3DSymbolWidget::onColoringTypeChanged()
 {
-  mGroupBoxColorRampShader->setVisible( mComboBoxTextureType->currentData() == QgsMesh3DSymbol::ColorRamp );
-  mMeshSingleColorWidget->setVisible( mComboBoxTextureType->currentData()  == QgsMesh3DSymbol::SingleColor );
+  mGroupBoxColorRampShader->setVisible( static_cast< QgsMesh3DSymbol::RenderingStyle >( mComboBoxTextureType->currentData().toInt() ) == QgsMesh3DSymbol::RenderingStyle::ColorRamp );
+  mMeshSingleColorWidget->setVisible( static_cast< QgsMesh3DSymbol::RenderingStyle >( mComboBoxTextureType->currentData().toInt() ) == QgsMesh3DSymbol::RenderingStyle::SingleColor );
 }
 
 void QgsMesh3DSymbolWidget::onTextureSettingsCollapseStateChanged( bool collapsed )

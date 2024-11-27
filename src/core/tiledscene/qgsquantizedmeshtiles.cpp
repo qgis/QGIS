@@ -469,23 +469,53 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
     // Create texture coordinates matching X, Y
 
     tinygltf::Buffer textureCoordBuffer;
-    textureCoordBuffer.data.resize( mVertexCoords.size() / 3 * 2 * sizeof( float ) );
+    textureCoordBuffer.data.resize( vertexBuffer.data.size() / 3 * 2 );
     std::vector<double> texCoordMinimums = {1.0, 1.0};
     std::vector<double> texCoordMaximums = {0.0, 0.0};
     auto textureCoordFloats = reinterpret_cast<float *>( textureCoordBuffer.data.data() );
 
-    for ( size_t i = 0; i < mVertexCoords.size() / 3; i++ )
+    auto addTexCoordForVertex = [&]( size_t vertexIdx )
     {
-      double u = mVertexCoords[i * 3] / 32767.0;
+      double u = mVertexCoords[vertexIdx * 3] / 32767.0;
       // V coord needs to be flipped for terrain for some reason
-      double v = 1.0 - ( mVertexCoords[i * 3 + 1] / 32767.0 );
+      double v = 1.0 - ( mVertexCoords[vertexIdx * 3 + 1] / 32767.0 );
       if ( texCoordMinimums[0] > u ) texCoordMinimums[0] = u;
       if ( texCoordMinimums[1] > v ) texCoordMinimums[1] = v;
       if ( texCoordMaximums[0] < u ) texCoordMaximums[0] = u;
       if ( texCoordMaximums[1] < v ) texCoordMaximums[1] = v;
-      textureCoordFloats[i * 2] = u;
-      textureCoordFloats[i * 2 + 1] = v;
+      *textureCoordFloats++ = u;
+      *textureCoordFloats++ = v;
+    };
+
+    for ( size_t i = 0; i < mVertexCoords.size() / 3; i++ )
+    {
+      addTexCoordForVertex( i );
     }
+
+    if ( addSkirt )
+    {
+      // Add UV for generated bottom vertices matching the top edge vertices
+      auto addSkirtVertexUVs = [&]( const std::vector<uint32_t> &idxs )
+      {
+        for ( uint32_t idx : idxs )
+        {
+          addTexCoordForVertex( idx );
+        }
+
+        if ( idxs.size() > 1 )
+        {
+          // The two bottom corner vertices get UVs too
+          addTexCoordForVertex( idxs[0] );
+          addTexCoordForVertex( idxs[idxs.size() - 1] );
+        }
+      };
+      addSkirtVertexUVs( mWestVertices );
+      addSkirtVertexUVs( mSouthVertices );
+      addSkirtVertexUVs( mEastVertices );
+      addSkirtVertexUVs( mNorthVertices );
+    }
+
+    Q_ASSERT( textureCoordFloats == ( float * )( textureCoordBuffer.data.data() + textureCoordBuffer.data.size() ) );
 
     model.buffers.push_back( textureCoordBuffer );
 
@@ -523,4 +553,32 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
   model.defaultScene = 0;
 
   return model;
+}
+
+QgsMesh QgsQuantizedMeshTile::toMesh( QgsRectangle tileBounds )
+{
+  QgsMesh mesh;
+
+  mesh.vertices.reserve( mVertexCoords.size() / 3 );
+  for ( size_t i = 0; i < mVertexCoords.size(); i += 3 )
+  {
+    // Rescale to X,Y in CRS and Z in meters
+    double x = ( mVertexCoords[i] / 32767.0 ) * ( tileBounds.width() ) + tileBounds.xMinimum();
+    double y = ( mVertexCoords[i + 1] / 32767.0 ) * ( tileBounds.height() ) + tileBounds.yMinimum();
+    double z = ( mVertexCoords[i + 2] / 32767.0 ) * ( mHeader.MaximumHeight - mHeader.MinimumHeight ) + mHeader.MinimumHeight;
+    mesh.vertices.push_back( {x, y, z} );
+  }
+
+  mesh.faces.reserve( mTriangleIndices.size() / 3 );
+  for ( size_t i = 0; i < mTriangleIndices.size(); i += 3 )
+  {
+    mesh.faces.push_back(
+    {
+      static_cast<int>( mTriangleIndices[i] ),
+      static_cast<int>( mTriangleIndices[i + 1] ),
+      static_cast<int>( mTriangleIndices[i + 2] ),
+    } );
+  }
+
+  return mesh;
 }

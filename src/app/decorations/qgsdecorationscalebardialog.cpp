@@ -11,6 +11,7 @@
  ***************************************************************************/
 
 #include "qgsdecorationscalebardialog.h"
+#include "moc_qgsdecorationscalebardialog.cpp"
 #include "qgsdecorationscalebar.h"
 #include "qgslogger.h"
 #include "qgshelp.h"

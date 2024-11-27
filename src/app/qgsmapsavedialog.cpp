@@ -26,6 +26,7 @@
 #include <QUrl>
 
 #include "qgsmapsavedialog.h"
+#include "moc_qgsmapsavedialog.cpp"
 #include "qgsabstractgeopdfexporter.h"
 #include "qgsguiutils.h"
 #include "qgis.h"
@@ -111,28 +112,29 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
 
       mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Paths (Recommended)" ), static_cast< int>( Qgis::TextRenderFormat::AlwaysOutlines ) );
       mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), static_cast< int >( Qgis::TextRenderFormat::AlwaysText ) );
+      mTextRenderFormatComboBox->addItem( tr( "Prefer Exporting Text as Text Objects" ), static_cast< int >( Qgis::TextRenderFormat::PreferText ) );
 
-      const bool geoPdfAvailable = QgsAbstractGeoPdfExporter::geoPDFCreationAvailable();
-      mGeoPDFGroupBox->setEnabled( geoPdfAvailable );
-      mGeoPDFGroupBox->setChecked( false );
-      if ( !geoPdfAvailable )
+      const bool geospatialPdfAvailable = QgsAbstractGeospatialPdfExporter::geospatialPDFCreationAvailable();
+      mGeospatialPDFGroupBox->setEnabled( geospatialPdfAvailable );
+      mGeospatialPDFGroupBox->setChecked( false );
+      if ( !geospatialPdfAvailable )
       {
-        mGeoPDFOptionsStackedWidget->setCurrentIndex( 0 );
-        mGeoPdfUnavailableReason->setText( QgsAbstractGeoPdfExporter::geoPDFAvailabilityExplanation() );
+        mGeospatialPDFOptionsStackedWidget->setCurrentIndex( 0 );
+        mGeospatialPdfUnavailableReason->setText( QgsAbstractGeospatialPdfExporter::geospatialPDFAvailabilityExplanation() );
         // avoid showing reason in disabled text color - we want it to stand out
-        QPalette p = mGeoPdfUnavailableReason->palette();
+        QPalette p = mGeospatialPdfUnavailableReason->palette();
         p.setColor( QPalette::Disabled, QPalette::WindowText, QPalette::WindowText );
-        mGeoPdfUnavailableReason->setPalette( p );
-        mGeoPDFOptionsStackedWidget->removeWidget( mGeoPDFOptionsStackedWidget->widget( 1 ) );
+        mGeospatialPdfUnavailableReason->setPalette( p );
+        mGeospatialPDFOptionsStackedWidget->removeWidget( mGeospatialPDFOptionsStackedWidget->widget( 1 ) );
       }
       else
       {
-        mGeoPDFOptionsStackedWidget->setCurrentIndex( 1 );
-        mGeoPdfFormatComboBox->addItem( tr( "ISO 32000 Extension (recommended)" ) );
-        mGeoPdfFormatComboBox->addItem( tr( "OGC Best Practice" ) );
+        mGeospatialPDFOptionsStackedWidget->setCurrentIndex( 1 );
+        mGeospatialPdfFormatComboBox->addItem( tr( "ISO 32000 Extension (recommended)" ) );
+        mGeospatialPdfFormatComboBox->addItem( tr( "OGC Best Practice" ) );
       }
 
-      connect( mGeoPDFGroupBox, &QGroupBox::toggled, this, &QgsMapSaveDialog::updatePdfExportWarning );
+      connect( mGeospatialPDFGroupBox, &QGroupBox::toggled, this, &QgsMapSaveDialog::updatePdfExportWarning );
       updatePdfExportWarning();
       break;
     }
@@ -140,7 +142,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
     case Image:
     {
       mExportMetadataCheckBox->hide();
-      mGeoPDFGroupBox->hide();
+      mGeospatialPDFGroupBox->hide();
       mAdvancedPdfSettings->hide();
       mTextExportLabel->hide();
       QPushButton *button = new QPushButton( tr( "Copy to Clipboard" ) );
@@ -533,35 +535,35 @@ void QgsMapSaveDialog::onAccepted()
 
         ms.setTextRenderFormat( static_cast< Qgis::TextRenderFormat >( mTextRenderFormatComboBox->currentData().toInt() ) );
 
-        QgsAbstractGeoPdfExporter::ExportDetails geoPdfExportDetails;
+        QgsAbstractGeospatialPdfExporter::ExportDetails geospatialPdfExportDetails;
         if ( mExportMetadataCheckBox->isChecked() )
         {
-          // These details will be used on non-GeoPDF exports is the export metadata checkbox is checked
-          geoPdfExportDetails.author = QgsProject::instance()->metadata().author();
-          geoPdfExportDetails.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
-          geoPdfExportDetails.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
-          geoPdfExportDetails.creationDateTime = QDateTime::currentDateTime();
-          geoPdfExportDetails.subject = QgsProject::instance()->metadata().abstract();
-          geoPdfExportDetails.title = QgsProject::instance()->metadata().title();
-          geoPdfExportDetails.keywords = QgsProject::instance()->metadata().keywords();
+          // These details will be used on non-Geospatial PDF exports is the export metadata checkbox is checked
+          geospatialPdfExportDetails.author = QgsProject::instance()->metadata().author();
+          geospatialPdfExportDetails.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+          geospatialPdfExportDetails.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+          geospatialPdfExportDetails.creationDateTime = QDateTime::currentDateTime();
+          geospatialPdfExportDetails.subject = QgsProject::instance()->metadata().abstract();
+          geospatialPdfExportDetails.title = QgsProject::instance()->metadata().title();
+          geospatialPdfExportDetails.keywords = QgsProject::instance()->metadata().keywords();
         }
 
-        if ( mGeoPDFGroupBox->isChecked() )
+        if ( mGeospatialPDFGroupBox->isChecked() )
         {
-          if ( mGeoPdfFormatComboBox->currentIndex() == 0 )
+          if ( mGeospatialPdfFormatComboBox->currentIndex() == 0 )
           {
-            geoPdfExportDetails.useIso32000ExtensionFormatGeoreferencing = true;
-            geoPdfExportDetails.useOgcBestPracticeFormatGeoreferencing = false;
+            geospatialPdfExportDetails.useIso32000ExtensionFormatGeoreferencing = true;
+            geospatialPdfExportDetails.useOgcBestPracticeFormatGeoreferencing = false;
           }
           else
           {
-            geoPdfExportDetails.useIso32000ExtensionFormatGeoreferencing = false;
-            geoPdfExportDetails.useOgcBestPracticeFormatGeoreferencing = true;
+            geospatialPdfExportDetails.useIso32000ExtensionFormatGeoreferencing = false;
+            geospatialPdfExportDetails.useOgcBestPracticeFormatGeoreferencing = true;
           }
 
-          geoPdfExportDetails.includeFeatures = mExportGeoPdfFeaturesCheckBox->isChecked();
+          geospatialPdfExportDetails.includeFeatures = mExportGeospatialPdfFeaturesCheckBox->isChecked();
         }
-        QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileName, QStringLiteral( "PDF" ), saveAsRaster(), QgsTask::CanCancel, mGeoPDFGroupBox->isChecked(), geoPdfExportDetails );
+        QgsMapRendererTask *mapRendererTask = new QgsMapRendererTask( ms, fileName, QStringLiteral( "PDF" ), saveAsRaster(), QgsTask::CanCancel, mGeospatialPDFGroupBox->isChecked(), geospatialPdfExportDetails );
 
         if ( drawAnnotations() )
         {
@@ -599,7 +601,7 @@ void QgsMapSaveDialog::onAccepted()
 
 void QgsMapSaveDialog::updatePdfExportWarning()
 {
-  const QStringList layers = QgsMapSettingsUtils::containsAdvancedEffects( mMapCanvas->mapSettings(), mGeoPDFGroupBox->isChecked() ? QgsMapSettingsUtils::EffectsCheckFlags( QgsMapSettingsUtils::EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ) : QgsMapSettingsUtils::EffectsCheckFlags() );
+  const QStringList layers = QgsMapSettingsUtils::containsAdvancedEffects( mMapCanvas->mapSettings(), mGeospatialPDFGroupBox->isChecked() ? QgsMapSettingsUtils::EffectsCheckFlags( QgsMapSettingsUtils::EffectsCheckFlag::IgnoreGeoPdfSupportedEffects ) : QgsMapSettingsUtils::EffectsCheckFlags() );
   if ( !layers.isEmpty() )
   {
     mInfoDetails = tr( "The following layer(s) use advanced effects:\n\n%1\n\nRasterizing map is recommended for proper rendering." ).arg(

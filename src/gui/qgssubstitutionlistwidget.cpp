@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include "qgssubstitutionlistwidget.h"
+#include "moc_qgssubstitutionlistwidget.cpp"
 #include "qgsgui.h"
 
 #include <QDialogButtonBox>

@@ -200,13 +200,25 @@ QVariantMap QgsFilterByGeometryAlgorithm::processAlgorithm( const QVariantMap &p
   QVariantMap outputs;
 
   if ( pointSink )
+  {
+    pointSink->finalize();
     outputs.insert( QStringLiteral( "POINTS" ), pointSinkId );
+  }
   if ( lineSink )
+  {
+    lineSink->finalize();
     outputs.insert( QStringLiteral( "LINES" ), lineSinkId );
+  }
   if ( polygonSink )
+  {
+    polygonSink->finalize();
     outputs.insert( QStringLiteral( "POLYGONS" ), polygonSinkId );
+  }
   if ( noGeomSink )
+  {
+    noGeomSink->finalize();
     outputs.insert( QStringLiteral( "NO_GEOMETRY" ), noGeomSinkId );
+  }
 
   outputs.insert( QStringLiteral( "POINT_COUNT" ), pointCount );
   outputs.insert( QStringLiteral( "LINE_COUNT" ), lineCount );

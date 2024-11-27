@@ -19,6 +19,7 @@
 #include <QStyle>
 
 #include "qgsdoublespinbox.h"
+#include "moc_qgsdoublespinbox.cpp"
 #include "qgsexpression.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -280,4 +281,9 @@ bool QgsDoubleSpinBox::shouldShowClearForValue( const double value ) const
     return false;
   }
   return value != clearValue();
+}
+
+bool QgsDoubleSpinBox::isCleared() const
+{
+  return value() == clearValue();
 }

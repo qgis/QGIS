@@ -19,6 +19,7 @@ email                : even.rouault at spatialys.com
  ***************************************************************************/
 
 #include "qgssqlcomposerdialog.h"
+#include "moc_qgssqlcomposerdialog.cpp"
 #include "qgssqlstatement.h"
 #include "qgshelp.h"
 #include "qgsvectorlayer.h"
@@ -438,7 +439,7 @@ static QString getFunctionAbbridgedParameters( const QgsSQLComposerDialog::Funct
 {
   if ( f.minArgs >= 0 && f.maxArgs > f.minArgs )
   {
-    return QObject::tr( "%1 to %2 arguments" ).arg( f.minArgs ).arg( f.maxArgs );
+    return QObject::tr( "%1 to %n argument(s)", nullptr, f.maxArgs ).arg( f.minArgs );
   }
   else if ( f.minArgs == 0 && f.maxArgs == 0 )
   {

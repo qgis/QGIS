@@ -1399,11 +1399,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * the specified data \a provider in use. See QgsDataSourceUri and the documentation for the various QgsMapLayer
      * subclasses for further details on data source strings.
      *
-     * The \a baseName argument specifies the user-visible name to use for the layer. (See name() or setName()).
+     * The \a baseName argument specifies the user-visible name to use for the layer. (See name() or setName()). If not
+     * specified, then the current name will be left unchanged (since QGIS 3.40).
      *
      * The \a provider argument is used to specify the unique key of the data provider to use for
      * the layer. This must match one of the values returned by QgsProviderRegistry::instance()->providerList().
-     * (See providerType()).
+     * (See providerType()). If not specified, then the current data provider will be used (since QGIS 3.40).
      *
      * If \a loadDefaultStyleFlag is set to TRUE then the layer's existing style will be reset to the default
      * for the data source.
@@ -1421,7 +1422,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see dataSourceChanged()
      * \since QGIS 3.20
      */
-    void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
+    void setDataSource( const QString &dataSource, const QString &baseName = QString(), const QString &provider = QString(), bool loadDefaultStyleFlag = false );
 
     /**
      * Updates the data source of the layer.
@@ -2485,7 +2486,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     friend class TestQgsMapLayer;
 };
 
-Q_DECLARE_METATYPE( QgsMapLayer * )
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayer::LayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayer::StyleCategories )
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayer::ReadFlags )

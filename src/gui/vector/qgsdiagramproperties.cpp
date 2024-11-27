@@ -26,6 +26,7 @@
 #include "qgsdatadefinedsizelegend.h"
 #include "qgsdatadefinedsizelegendwidget.h"
 #include "qgsdiagramproperties.h"
+#include "moc_qgsdiagramproperties.cpp"
 #include "qgsdiagramrenderer.h"
 #include "qgsfeatureiterator.h"
 #include "qgssymbolselectordialog.h"
@@ -49,11 +50,18 @@
 QgsExpressionContext QgsDiagramProperties::createExpressionContext() const
 {
   QgsExpressionContext expContext;
-  expContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::atlasScope( nullptr )
-             << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-             << QgsExpressionContextUtils::layerScope( mLayer );
+  if ( mMapCanvas )
+  {
+    expContext = mMapCanvas->createExpressionContext();
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::globalScope()
+               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+               << QgsExpressionContextUtils::atlasScope( nullptr )
+               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+  expContext << QgsExpressionContextUtils::layerScope( mLayer );
 
   return expContext;
 }
@@ -305,6 +313,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   widgets << mDiagramLineUnitComboBox;
   widgets << mDiagramTypeComboBox;
   widgets << mDiagramUnitComboBox;
+  widgets << mEnableDiagramCheckBox;
   widgets << mFixedSizeRadio;
   widgets << mIncreaseMinimumSizeSpinBox;
   widgets << mIncreaseSmallDiagramsGroupBox;
@@ -413,6 +422,16 @@ void QgsDiagramProperties::insertDefaults()
 void QgsDiagramProperties::syncToLayer()
 {
   const QgsDiagramRenderer *renderer = mLayer->diagramRenderer();
+  if ( renderer && renderer->rendererName() == QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED )
+  {
+    const QgsStackedDiagramRenderer *stackedRenderer = static_cast< const QgsStackedDiagramRenderer *>( renderer );
+    if ( stackedRenderer->rendererCount() > 0 )
+    {
+      // If layer has a stacked diagram renderer, take its first sub
+      // renderer as the basis for the new single one being created
+      renderer = stackedRenderer->renderer( 0 );
+    }
+  }
   syncToRenderer( renderer );
 
   const QgsDiagramLayerSettings *layerDls = mLayer->diagramLayerSettings();
@@ -430,7 +449,7 @@ void QgsDiagramProperties::syncToRenderer( const QgsDiagramRenderer *dr )
   else // already a diagram renderer present
   {
     //single category renderer or interpolated one?
-    if ( dr->rendererName() == QLatin1String( "SingleCategory" ) )
+    if ( dr->rendererName() == QgsSingleCategoryDiagramRenderer::DIAGRAM_RENDERER_NAME_SINGLE_CATEGORY )
     {
       mFixedSizeRadio->setChecked( true );
     }
@@ -446,8 +465,7 @@ void QgsDiagramProperties::syncToRenderer( const QgsDiagramRenderer *dr )
     const QList<QgsDiagramSettings> settingList = dr->diagramSettings();
     if ( !settingList.isEmpty() )
     {
-      mOptionsTab->setEnabled( settingList.at( 0 ).enabled );
-      mDiagramFrame->setEnabled( settingList.at( 0 ).enabled );
+      setDiagramEnabled( settingList.at( 0 ).enabled );
       mDiagramFontButton->setCurrentFont( settingList.at( 0 ).font );
       const QSizeF size = settingList.at( 0 ).size;
       mBackgroundColorButton->setColor( settingList.at( 0 ).backgroundColor );
@@ -536,7 +554,7 @@ void QgsDiagramProperties::syncToRenderer( const QgsDiagramRenderer *dr )
       }
     }
 
-    if ( dr->rendererName() == QLatin1String( "LinearlyInterpolated" ) )
+    if ( dr->rendererName() == QgsLinearlyInterpolatedDiagramRenderer::DIAGRAM_RENDERER_NAME_LINEARLY_INTERPOLATED )
     {
       const QgsLinearlyInterpolatedDiagramRenderer *lidr = dynamic_cast<const QgsLinearlyInterpolatedDiagramRenderer *>( dr );
       if ( lidr )
@@ -644,8 +662,6 @@ void QgsDiagramProperties::updateProperty()
 
 void QgsDiagramProperties::mDiagramTypeComboBox_currentIndexChanged( int index )
 {
-  mDiagramFrame->setEnabled( true );
-
   mDiagramType = mDiagramTypeComboBox->itemData( index ).toString();
 
   if ( QgsTextDiagram::DIAGRAM_NAME_TEXT == mDiagramType )
@@ -873,7 +889,7 @@ std::unique_ptr< QgsDiagram > QgsDiagramProperties::createDiagramObject()
 std::unique_ptr<QgsDiagramSettings> QgsDiagramProperties::createDiagramSettings()
 {
   std::unique_ptr< QgsDiagramSettings > ds = std::make_unique< QgsDiagramSettings>();
-  ds->enabled = ( mDiagramTypeComboBox->currentIndex() != -1 );
+  ds->enabled = isDiagramEnabled();
   ds->font = mDiagramFontButton->currentFont();
   ds->opacity = mOpacityWidget->opacity();
 
@@ -1037,14 +1053,11 @@ QgsDiagramLayerSettings QgsDiagramProperties::createDiagramLayerSettings()
 
 void QgsDiagramProperties::apply()
 {
-  const int index = mDiagramTypeComboBox->currentIndex();
-  const bool diagramsEnabled = ( index != -1 );
-
   // Avoid this messageBox when in both dock and liveUpdate mode
   QgsSettings settings;
   if ( !dockMode() || !settings.value( QStringLiteral( "UI/autoApplyStyling" ), true ).toBool() )
   {
-    if ( diagramsEnabled && 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
+    if ( isDiagramEnabled() && 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
     {
       QMessageBox::warning( this, tr( "Diagrams: No attributes added." ),
                             tr( "You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams." ) );
@@ -1064,12 +1077,7 @@ void QgsDiagramProperties::apply()
 
 QString QgsDiagramProperties::showExpressionBuilder( const QString &initialExpression )
 {
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-          << QgsExpressionContextUtils::atlasScope( nullptr )
-          << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
-          << QgsExpressionContextUtils::layerScope( mLayer );
+  QgsExpressionContext context = createExpressionContext();
 
   QgsExpressionBuilderDialog dlg( mLayer, initialExpression, this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Expression Based Attribute" ) );
@@ -1321,4 +1329,14 @@ void QgsDiagramProperties::connectValueChanged( const QList<QWidget *> &widgets 
       QgsLogger::warning( QStringLiteral( "Could not create connection for widget %1" ).arg( widget->objectName() ) );
     }
   }
+}
+
+void QgsDiagramProperties::setDiagramEnabled( bool enabled )
+{
+  mEnableDiagramCheckBox->setChecked( enabled );
+}
+
+bool QgsDiagramProperties::isDiagramEnabled() const
+{
+  return mEnableDiagramCheckBox->isChecked();
 }

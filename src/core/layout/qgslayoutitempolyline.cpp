@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitempolyline.h"
+#include "moc_qgslayoutitempolyline.cpp"
 #include "qgslayoutitemregistry.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorutils.h"
@@ -83,20 +84,15 @@ bool QgsLayoutItemPolyline::_addNode( const int indexPoint,
 
 bool QgsLayoutItemPolyline::_removeNode( const int index )
 {
-  if ( index < 0 || index >= mPolygon.size() )
+  if ( index < 0 || index >= mPolygon.size() || mPolygon.size() <= 2 )
     return false;
 
   mPolygon.remove( index );
 
-  if ( mPolygon.size() < 2 )
-    mPolygon.clear();
-  else
-  {
-    int newSelectNode = index;
-    if ( index >= mPolygon.size() )
-      newSelectNode = mPolygon.size() - 1;
-    setSelectedNode( newSelectNode );
-  }
+  int newSelectNode = index;
+  if ( index >= mPolygon.size() )
+    newSelectNode = mPolygon.size() - 1;
+  setSelectedNode( newSelectNode );
 
   return true;
 }
@@ -280,20 +276,25 @@ QString QgsLayoutItemPolyline::displayName() const
 
 void QgsLayoutItemPolyline::_draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem * )
 {
-  const QgsScopedQPainterState painterState( context.renderContext().painter() );
+  QgsRenderContext renderContext = context.renderContext();
+  // symbol clipping messes with geometry generators used in the symbol for this item, and has no
+  // valid use here. See https://github.com/qgis/QGIS/issues/58909
+  renderContext.setFlag( Qgis::RenderContextFlag::DisableSymbolClippingToExtent );
+
+  const QgsScopedQPainterState painterState( renderContext.painter() );
   //setup painter scaling to dots so that raster symbology is drawn to scale
-  const double scale = context.renderContext().convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
+  const double scale = renderContext.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
   const QTransform t = QTransform::fromScale( scale, scale );
 
-  mPolylineStyleSymbol->startRender( context.renderContext() );
-  mPolylineStyleSymbol->renderPolyline( t.map( mPolygon ), nullptr, context.renderContext() );
-  mPolylineStyleSymbol->stopRender( context.renderContext() );
+  mPolylineStyleSymbol->startRender( renderContext );
+  mPolylineStyleSymbol->renderPolyline( t.map( mPolygon ), nullptr, renderContext );
+  mPolylineStyleSymbol->stopRender( renderContext );
 
   // painter is scaled to dots, so scale back to layout units
-  context.renderContext().painter()->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
+  renderContext.painter()->scale( renderContext.scaleFactor(), renderContext.scaleFactor() );
 
-  drawStartMarker( context.renderContext().painter() );
-  drawEndMarker( context.renderContext().painter() );
+  drawStartMarker( renderContext.painter() );
+  drawEndMarker( renderContext.painter() );
 }
 
 void QgsLayoutItemPolyline::_readXmlStyle( const QDomElement &elmt, const QgsReadWriteContext &context )
@@ -337,6 +338,23 @@ QPainterPath QgsLayoutItemPolyline::shape() const
   const QPainterPath strokedOutline = ps.createStroke( path );
 
   return strokedOutline;
+}
+
+bool QgsLayoutItemPolyline::isValid() const
+{
+  // A Polyline is valid if it has at least 2 unique points
+  QList<QPointF> uniquePoints;
+  int seen = 0;
+  for ( QPointF point : mPolygon )
+  {
+    if ( !uniquePoints.contains( point ) )
+    {
+      uniquePoints.append( point );
+      if ( ++seen > 1 )
+        return true;
+    }
+  }
+  return false;
 }
 
 QgsLineSymbol *QgsLayoutItemPolyline::symbol()

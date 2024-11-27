@@ -183,6 +183,7 @@ class ExportGeometryInfo(QgisAlgorithm):
 
             feedback.setProgress(int(current * total))
 
+        sink.finalize()
         return {self.OUTPUT: dest_id}
 
     def point_attributes(self, geometry):

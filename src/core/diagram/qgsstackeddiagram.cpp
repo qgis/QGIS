@@ -16,7 +16,7 @@
 #include "qgsdiagramrenderer.h"
 #include "qgsrendercontext.h"
 
-const QString QgsStackedDiagram::DIAGRAM_NAME_STACKED = QStringLiteral( "Stacked" );
+const QString QgsStackedDiagram::DIAGRAM_NAME_STACKED = QStringLiteral( "StackedDiagram" );
 
 QgsStackedDiagram::QgsStackedDiagram()
 {

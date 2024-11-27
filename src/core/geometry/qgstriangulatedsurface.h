@@ -180,7 +180,7 @@ class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      */
-    inline static const QgsTriangulatedSurface *cast( const QgsAbstractGeometry *geom )
+    inline static const QgsTriangulatedSurface *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::TIN )
         return static_cast<const QgsTriangulatedSurface *>( geom );

@@ -96,7 +96,6 @@ class GUI_EXPORT QgsListWidget: public QgsTableWidgetBase
 
   private:
     QgsListModel mModel;
-    QMetaType::Type mSubType;
 };
 
 

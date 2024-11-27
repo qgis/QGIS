@@ -18,6 +18,7 @@ using namespace nlohmann;
 
 #include "qgslogger.h"
 #include "qgsoapifapirequest.h"
+#include "moc_qgsoapifapirequest.cpp"
 
 #include <QTextCodec>
 

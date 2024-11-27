@@ -283,6 +283,7 @@ QVariantMap QgsRasterLayerZonalStatsAlgorithm::processAlgorithm( const QVariantM
                      it->s.min() << it->s.max() << it->s.mean() );
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT_TABLE" ) ) );
+    sink->finalize();
   }
   outputs.insert( QStringLiteral( "OUTPUT_TABLE" ), tableDest );
 

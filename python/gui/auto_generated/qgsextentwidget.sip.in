@@ -238,6 +238,8 @@ to permit access to the map canvas)
 
     virtual void dropEvent( QDropEvent *event );
 
+    virtual void showEvent( QShowEvent *event );
+
 
 };
 

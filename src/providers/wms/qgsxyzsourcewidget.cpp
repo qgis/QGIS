@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsxyzsourcewidget.h"
+#include "moc_qgsxyzsourcewidget.cpp"
 #include "qgswmssourceselect.h"
 #include "qgsproviderregistry.h"
 

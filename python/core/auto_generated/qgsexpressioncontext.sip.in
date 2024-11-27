@@ -946,6 +946,18 @@ if evaluation should be canceled, if set.
 .. versionadded:: 3.20
 %End
 
+    QString uniqueHash( bool &ok /Out/, const QSet<QString> &variables = QSet<QString>() ) const;
+%Docstring
+Returns a unique hash representing the current state of the context.
+
+:param variables: optional names of a subset of variables to include in the hash. If not specified, all variables will be considered.
+
+:return: - calculated hash
+         - ok: ``True`` if the hash could be generated, or false if e.g. a variable value is of a type which cannot be hashed
+
+.. versionadded:: 3.40
+%End
+
     static const QString EXPR_FIELDS;
     static const QString EXPR_ORIGINAL_VALUE;
     static const QString EXPR_SYMBOL_COLOR;

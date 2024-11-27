@@ -74,6 +74,15 @@ QgsPhongMaterialSettings *QgsPhongMaterialSettings::clone() const
   return new QgsPhongMaterialSettings( *this );
 }
 
+bool QgsPhongMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
+{
+  const QgsPhongMaterialSettings *otherPhong = dynamic_cast< const QgsPhongMaterialSettings * >( other );
+  if ( !otherPhong )
+    return false;
+
+  return *this == *otherPhong;
+}
+
 void QgsPhongMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mAmbient = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
@@ -103,7 +112,7 @@ void QgsPhongMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteCo
 }
 
 
-Qt3DRender::QMaterial *QgsPhongMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
+QgsMaterial *QgsPhongMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
   switch ( technique )
   {
@@ -253,9 +262,9 @@ void QgsPhongMaterialSettings::applyDataDefinedToGeometry( Qt3DQGeometry *geomet
   dataBuffer->setData( data );
 }
 
-Qt3DRender::QMaterial *QgsPhongMaterialSettings::buildMaterial( const QgsMaterialContext &context ) const
+QgsMaterial *QgsPhongMaterialSettings::buildMaterial( const QgsMaterialContext &context ) const
 {
-  Qt3DRender::QMaterial *material = new Qt3DRender::QMaterial;
+  QgsMaterial *material = new QgsMaterial;
 
   Qt3DRender::QEffect *effect = new Qt3DRender::QEffect( material );
 

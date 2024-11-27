@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsjsoneditwidget.h"
+#include "moc_qgsjsoneditwidget.cpp"
 
 #include <QAction>
 #include <QClipboard>

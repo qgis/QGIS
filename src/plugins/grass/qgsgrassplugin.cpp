@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsgrassplugin.h"
+#include "moc_qgsgrassplugin.cpp"
 #include "qgis.h"
 #include "qgsgrass.h"
 #include "qgsgrassprovider.h"

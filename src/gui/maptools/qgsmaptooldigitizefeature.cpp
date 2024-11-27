@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsmaptooldigitizefeature.h"
+#include "moc_qgsmaptooldigitizefeature.cpp"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
@@ -106,6 +107,7 @@ void QgsMapToolDigitizeFeature::activate()
 
   if ( vlayer && vlayer->geometryType() == Qgis::GeometryType::Null )
   {
+    setCursor( QCursor( Qt::ArrowCursor ) );
     layerGeometryCaptured( QgsGeometry() );
     return;
   }

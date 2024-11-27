@@ -84,6 +84,10 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QgsGraphicsViewMouseHandles
     void endItemCommand( QGraphicsItem *item ) override;
     void startMacroCommand( const QString &text ) override;
     void endMacroCommand() override;
+
+
+    void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) override;
+
   public slots:
 
     //! Sets up listeners to sizeChanged signal for all selected items

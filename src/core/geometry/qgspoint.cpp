@@ -17,6 +17,7 @@
 
 
 #include "qgspoint.h"
+#include "moc_qgspoint.cpp"
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometryutils.h"

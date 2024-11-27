@@ -144,6 +144,16 @@ Read band scale for raster value
 Read band offset for raster value
 %End
 
+    virtual QSize maximumTileSize() const;
+%Docstring
+Returns the maximum tile size in pixels for the data provider.
+By default, the maximum tile size is set to :py:class:`QgsRasterIterator`.DEFAULT_MAXIMUM_TILE_WIDTH x
+:py:class:`QgsRasterIterator`.DEFAULT_MAXIMUM_TILE_HEIGHT but can be overridden in subclasses (e.g. WMS
+can retrieve that information from the GetCapabilities document).
+
+.. versionadded:: 3.40
+%End
+
 
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
 

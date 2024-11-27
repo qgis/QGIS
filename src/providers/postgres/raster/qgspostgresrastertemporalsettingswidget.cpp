@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspostgresrastertemporalsettingswidget.h"
+#include "moc_qgspostgresrastertemporalsettingswidget.cpp"
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
 

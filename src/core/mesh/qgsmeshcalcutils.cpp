@@ -842,8 +842,9 @@ const QgsTriangularMesh *QgsMeshCalcUtils::triangularMesh() const
 const QgsMesh *QgsMeshCalcUtils::nativeMesh() const
 {
   updateMesh();
-  Q_ASSERT( mMeshLayer->nativeMesh() );
-  return mMeshLayer->nativeMesh();
+  const QgsMesh *res = mMeshLayer->nativeMesh();
+  Q_ASSERT( res );
+  return res;
 }
 
 void QgsMeshCalcUtils::updateMesh() const

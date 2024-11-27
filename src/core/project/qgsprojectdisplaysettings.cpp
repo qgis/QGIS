@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprojectdisplaysettings.h"
+#include "moc_qgsprojectdisplaysettings.cpp"
 #include "qgis.h"
 #include "qgsbearingnumericformat.h"
 #include "qgscoordinatenumericformat.h"
@@ -223,7 +224,7 @@ bool QgsProjectDisplaySettings::readXml( const QDomElement &element, const QgsRe
   }
   else if ( project )
   {
-    setCoordinateAxisOrder( qgsEnumKeyToValue( QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ) ), Qgis::CoordinateOrder::Default ) );
+    setCoordinateAxisOrder( qgsEnumKeyToValue( QgsProject::instance()->readEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/CoordinateOrder" ) ), Qgis::CoordinateOrder::Default ) ); // skip-keyword-check
   }
 
   return true;

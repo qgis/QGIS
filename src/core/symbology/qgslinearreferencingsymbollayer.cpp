@@ -69,15 +69,7 @@ class QgsLinearReferencingSymbolLayerLabelProvider final : public QgsAbstractLab
       QgsPoint mapPoint( painterPoint );
       mapPoint.transform( context.mapToPixel().transform().inverted() );
 
-      QgsTextDocument doc;
-      if ( format.allowHtmlFormatting() && !text.isEmpty() )
-      {
-        doc = QgsTextDocument::fromHtml( QStringList() << text );
-      }
-      else
-      {
-        doc = QgsTextDocument::fromPlainText( { text } );
-      }
+      const QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( { text }, format );
       QgsTextDocumentMetrics documentMetrics = QgsTextDocumentMetrics::calculateMetrics( doc, format, context );
       const QSizeF size = documentMetrics.documentSize( Qgis::TextLayoutMode::Point, Qgis::TextOrientation::Horizontal );
 
@@ -145,7 +137,7 @@ QgsSymbolLayer *QgsLinearReferencingSymbolLayer::create( const QVariantMap &prop
   // it's impossible to get the project's path resolver here :(
   // TODO QGIS 4.0 -- force use of QgsReadWriteContext in create methods
   QgsReadWriteContext rwContext;
-  //rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+  //rwContext.setPathResolver( QgsProject::instance()->pathResolver() ); // skip-keyword-check
 
   const QString textFormatXml = properties.value( QStringLiteral( "text_format" ) ).toString();
   if ( !textFormatXml.isEmpty() )
@@ -229,7 +221,7 @@ QVariantMap QgsLinearReferencingSymbolLayer::properties() const
   // it's impossible to get the project's path resolver here :(
   // TODO QGIS 4.0 -- force use of QgsReadWriteContext in properties methods
   QgsReadWriteContext rwContext;
-  // rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+  // rwContext.setPathResolver( QgsProject::instance()->pathResolver() ); // skip-keyword-check
   const QDomElement textElem = mTextFormat.writeXml( textFormatDoc, rwContext );
   textFormatDoc.appendChild( textElem );
 

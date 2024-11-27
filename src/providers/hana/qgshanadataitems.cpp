@@ -20,6 +20,7 @@
 #include "qgshanaconnectionpool.h"
 #include "qgshanaexception.h"
 #include "qgshanadataitems.h"
+#include "moc_qgshanadataitems.cpp"
 #include "qgshanasettings.h"
 #include "qgshanautils.h"
 #include "qgslogger.h"

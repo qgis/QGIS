@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsannotationwidget.h"
+#include "moc_qgsannotationwidget.cpp"
 #include "qgsmapcanvasannotationitem.h"
 #include "qgsannotation.h"
 #include "qgsstyle.h"

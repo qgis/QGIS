@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsserverlogger.h"
+#include "moc_qgsserverlogger.cpp"
 
 QgsServerLogger *QgsServerLogger::sInstance = nullptr;
 

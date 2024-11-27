@@ -20,8 +20,8 @@
 #include "qgis_sip.h"
 
 #include <QColor>
-#include <Qt3DRender/qmaterial.h>
 #include "qgspropertycollection.h"
+#include "qgsmaterial.h"
 
 class QDomElement;
 class QgsReadWriteContext;
@@ -171,15 +171,22 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     //! Writes settings to a DOM \a element
     virtual void writeXml( QDomElement &element, const QgsReadWriteContext & ) const;
 
+    /**
+     * Returns TRUE if this settings exactly matches an \a other settings.
+     *
+     * \since QGIS 3.42
+     */
+    virtual bool equals( const QgsAbstractMaterialSettings *other ) const = 0;
+
 #ifndef SIP_RUN
 
     /**
-     * Creates a new QMaterial object representing the material settings.
+     * Creates a new QgsMaterial object representing the material settings.
      *
      * The \a technique argument specifies the rendering technique which will be used with the returned
      * material.
      */
-    virtual Qt3DRender::QMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const = 0 SIP_FACTORY;
+    virtual QgsMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const = 0 SIP_FACTORY;
 
     /**
      * Returns the parameters to be exported to .mtl file

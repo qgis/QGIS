@@ -58,7 +58,6 @@ namespace Qt3DRender
   class QAttribute;
 #endif
   class QGeometryRenderer;
-  class QMaterial;
 }
 
 /**

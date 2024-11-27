@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgshistoryentrymodel.h"
+#include "moc_qgshistoryentrymodel.cpp"
 #include "qgshistoryentrynode.h"
 #include "qgshistoryproviderregistry.h"
 #include "qgsgui.h"

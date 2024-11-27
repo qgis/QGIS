@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthpkcs12edit.h"
+#include "moc_qgsauthpkcs12edit.cpp"
 #include "ui_qgsauthpkcs12edit.h"
 
 #include <QDateTime>

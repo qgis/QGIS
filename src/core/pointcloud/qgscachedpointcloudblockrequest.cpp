@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscachedpointcloudblockrequest.h"
+#include "moc_qgscachedpointcloudblockrequest.cpp"
 
 ///@cond PRIVATE
 

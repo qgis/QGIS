@@ -37,6 +37,7 @@ class TestQgsTracer : public QObject
     void testSimple();
     void testPolygon();
     void testButterfly();
+    void testAddPointsOnIntersections();
     void testLayerUpdates();
     void testExtent();
     void testReprojection();
@@ -303,6 +304,50 @@ void TestQgsTracer::testButterfly()
   QCOMPARE( points[1], QgsPointXY( 5, 5 ) );
   QCOMPARE( points[2], QgsPointXY( 10, 0 ) );
 
+  delete vl;
+}
+
+void TestQgsTracer::testAddPointsOnIntersections()
+{
+  // checks whether tracer adds vertices at intersections
+
+  QStringList wkts;
+  wkts << QStringLiteral( "LINESTRING(0 0, 10 10)" )
+       << QStringLiteral( "LINESTRING(0 10, 10 0)" );
+
+  /* This shape (without a vertex where the linestring crosses itself):
+   *    +  +  10,10
+   *     \/
+   *     /\
+   *    +  +
+   *  0,0
+   */
+
+  QgsVectorLayer *vl = make_layer( wkts );
+
+  QgsTracer tracer;
+  tracer.setLayers( QList<QgsVectorLayer *>() << vl );
+
+  QgsPolylineXY points = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 10, 10 ) );
+
+  QCOMPARE( points.count(), 2 );
+  QCOMPARE( points[0], QgsPointXY( 0, 0 ) );
+  QCOMPARE( points[1], QgsPointXY( 10, 10 ) );
+
+  // now enable adding points on intersections
+  tracer.setAddPointsOnIntersectionsEnabled( true );
+  points = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 10, 10 ) );
+  QCOMPARE( points.count(), 3 );
+  QCOMPARE( points[0], QgsPointXY( 0, 0 ) );
+  QCOMPARE( points[1], QgsPointXY( 5, 5 ) );
+  QCOMPARE( points[2], QgsPointXY( 10, 10 ) );
+
+  // and disable it again
+  tracer.setAddPointsOnIntersectionsEnabled( false );
+  points = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 10, 10 ) );
+  QCOMPARE( points.count(), 2 );
+  QCOMPARE( points[0], QgsPointXY( 0, 0 ) );
+  QCOMPARE( points[1], QgsPointXY( 10, 10 ) );
   delete vl;
 }
 

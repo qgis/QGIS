@@ -18,6 +18,7 @@ using namespace nlohmann;
 
 #include "qgslogger.h"
 #include "qgsoapiflandingpagerequest.h"
+#include "moc_qgsoapiflandingpagerequest.cpp"
 #include "qgsoapifutils.h"
 #include "qgswfsconstants.h"
 

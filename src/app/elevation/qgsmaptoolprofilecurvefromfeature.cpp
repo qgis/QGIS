@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmaptoolprofilecurvefromfeature.h"
+#include "moc_qgsmaptoolprofilecurvefromfeature.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsidentifymenu.h"
 #include "qgsmapmouseevent.h"

@@ -170,6 +170,40 @@ class CORE_EXPORT QgsRasterIterator
      */
     int maximumTileHeight() const { return mMaximumTileHeight; }
 
+    /**
+     * Returns the total number of blocks which cover the width of the input raster.
+     *
+     * \see blockCount()
+     * \see blockCountHeight()
+     * \since QGIS 3.42
+     */
+    int blockCountWidth() const { return mNumberBlocksWidth; }
+
+    /**
+     * Returns the total number of blocks which cover the height of the input raster.
+     *
+     * \see blockCount()
+     * \see blockCountWidth()
+     * \since QGIS 3.42
+     */
+    int blockCountHeight() const { return mNumberBlocksWidth; }
+
+    /**
+     * Returns the total number of blocks required to iterate over the input raster.
+     *
+     * \see blockCountWidth()
+     * \see blockCountHeight()
+     * \since QGIS 3.42
+     */
+    qgssize blockCount() const { return static_cast< qgssize >( mNumberBlocksHeight ) * mNumberBlocksWidth; }
+
+    /**
+     * Returns the raster iteration progress as a fraction from 0 to 1.0, for the specified \a bandNumber.
+     *
+     * \since QGIS 3.42
+     */
+    double progress( int bandNumber ) const;
+
     //! Default maximum tile width
     static const int DEFAULT_MAXIMUM_TILE_WIDTH = 2000;
 
@@ -194,6 +228,9 @@ class CORE_EXPORT QgsRasterIterator
     int mTileOverlapPixels = 0;
     int mMaximumTileWidth;
     int mMaximumTileHeight;
+
+    int mNumberBlocksWidth = 0;
+    int mNumberBlocksHeight = 0;
 
     //! Remove part into and release memory
     void removePartInfo( int bandNumber );

@@ -26,7 +26,6 @@ from qgis.core import (
     QgsRectangle,
     QgsSnappingConfig,
     QgsSnappingUtils,
-    QgsTolerance,
     QgsVectorLayer,
 )
 import unittest
@@ -193,13 +192,21 @@ class TestLayerDependencies(QgisTestCase):
         self.assertEqual(len(spy_points_data_changed), 3)
         self.assertEqual(len(spy_lines_data_changed), 2)
 
-        # added feature is deleted and added with its new defined id
-        # (it was -1 before) so it fires 2 more signal dataChanged on
-        # depending line (on featureAdded and on featureDeleted)
-        # and so 2 more signal on points because it depends on line
-        self.pointsLayer.commitChanges()
+        # commit changes fires dataChanged because external changes could happen (provider side)
+        self.pointsLayer.commitChanges(False)
+        self.assertEqual(len(spy_points_data_changed), 4)
+        self.assertEqual(len(spy_lines_data_changed), 3)
+
+        # points fire dataChanged on geometryChanged
+        # line depends on point, so fire dataChanged
+        self.pointsLayer.changeGeometry(f.id(), QgsGeometry.fromWkt("POINT(0 2)"))
         self.assertEqual(len(spy_points_data_changed), 5)
         self.assertEqual(len(spy_lines_data_changed), 4)
+
+        # commit changes fires dataChanged because external changes could happen (provider side)
+        self.assertTrue(self.pointsLayer.commitChanges())
+        self.assertEqual(len(spy_points_data_changed), 6)
+        self.assertEqual(len(spy_lines_data_changed), 5)
 
         # repaintRequested is called on commit changes on point
         # so it is on depending line
@@ -229,15 +236,21 @@ class TestLayerDependencies(QgisTestCase):
         self.linesLayer.addFeatures([f])
         self.assertEqual(len(spy_lines_data_changed), 2)
 
-        # added feature is deleted and added with its new defined id
-        # (it was -1 before) so it fires 2 more signal dataChanged on
-        # depending line (on featureAdded and on featureDeleted)
-        self.linesLayer.commitChanges()
-        self.assertEqual(len(spy_lines_data_changed), 4)
+        # line fire dataChanged on commitChanges
+        self.linesLayer.commitChanges(False)
+        self.assertEqual(len(spy_lines_data_changed), 3)
 
         # repaintRequested is called only once on commit changes on line
         # (ideally only one repaintRequested signal is fired, but it's harmless to fire multiple ones)
         self.assertGreaterEqual(len(spy_lines_repaint_requested), 2)
+
+        # line fire dataChanged on geometryChanged
+        self.linesLayer.changeGeometry(f.id(), QgsGeometry.fromWkt("LINESTRING(0 0, 2 2)"))
+        self.assertEqual(len(spy_lines_data_changed), 4)
+
+        # commit changes fires dataChanged because external changes could happen (provider side)
+        self.linesLayer.commitChanges()
+        self.assertEqual(len(spy_lines_data_changed), 5)
 
     def test_layerDefinitionRewriteId(self):
         tmpfile = os.path.join(tempfile.tempdir, "test.qlr")

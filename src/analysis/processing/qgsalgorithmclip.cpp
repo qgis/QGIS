@@ -229,6 +229,8 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
     }
   }
 
+  sink->finalize();
+
   return outputs;
 }
 

@@ -34,6 +34,7 @@
 #include "qgsvectorlayer.h"
 
 #include "qgsoracleprovider.h"
+#include "moc_qgsoracleprovider.cpp"
 #include "qgsoracledataitems.h"
 #include "qgsoraclefeatureiterator.h"
 #include "qgsoracleconnpool.h"

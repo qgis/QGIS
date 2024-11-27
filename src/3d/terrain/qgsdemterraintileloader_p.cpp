@@ -14,14 +14,16 @@
  ***************************************************************************/
 
 #include "qgsdemterraintileloader_p.h"
+#include "moc_qgsdemterraintileloader_p.cpp"
 
 #include "qgs3dmapsettings.h"
-#include "qgschunknode_p.h"
+#include "qgschunknode.h"
 #include "qgsdemterraingenerator.h"
 #include "qgsdemterraintilegeometry_p.h"
 #include "qgseventtracing.h"
+#include "qgsgeotransform.h"
 #include "qgsonlineterraingenerator.h"
-#include "qgsterrainentity_p.h"
+#include "qgsterrainentity.h"
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintileentity_p.h"
 #include "qgsterraingenerator.h"
@@ -96,11 +98,7 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   Qgs3DMapSettings *map = terrain()->mapSettings();
   QgsChunkNodeId nodeId = mNode->tileId();
   QgsRectangle extent = map->terrainGenerator()->tilingScheme().tileToExtent( nodeId );
-  double x0 = extent.xMinimum() - map->origin().x();
-  double y0 = extent.yMinimum() - map->origin().y();
   double side = extent.width();
-  double half = side / 2;
-
 
   QgsTerrainTileEntity *entity = new QgsTerrainTileEntity( nodeId );
 
@@ -115,15 +113,12 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   createTextureComponent( entity, map->isTerrainShadingEnabled(), map->terrainShadingMaterial(), !map->layers().empty() );
 
   // create transform
-
-  Qt3DCore::QTransform *transform = nullptr;
-  transform = new Qt3DCore::QTransform();
+  QgsGeoTransform *transform = new QgsGeoTransform;
+  transform->setGeoTranslation( QgsVector3D( extent.xMinimum(), extent.yMinimum(), 0 ) );
   entity->addComponent( transform );
 
-  transform->setScale( side );
-  transform->setTranslation( QVector3D( x0 + half, 0, - ( y0 + half ) ) );
-
-  mNode->setExactBbox( QgsAABB( x0, zMin * map->terrainVerticalScale(), -y0, x0 + side, zMax * map->terrainVerticalScale(), -( y0 + side ) ) );
+  mNode->setExactBox3D( QgsBox3D( extent.xMinimum(), extent.yMinimum(), zMin * map->terrainVerticalScale(),
+                                  extent.xMinimum() + side, extent.yMinimum() + side, zMax * map->terrainVerticalScale() ) );
   mNode->updateParentBoundingBoxesRecursively();
 
   entity->setParent( parent );

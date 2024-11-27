@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include "qgsserverrequest.h"
+#include "moc_qgsserverrequest.cpp"
 #include "qgsstringutils.h"
 #include <QUrlQuery>
 

@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitemshape.h"
+#include "moc_qgslayoutitemshape.cpp"
 #include "qgslayout.h"
 #include "qgslayoututils.h"
 #include "qgssymbollayerutils.h"
@@ -196,17 +197,22 @@ bool QgsLayoutItemShape::accept( QgsStyleEntityVisitorInterface *visitor ) const
 
 void QgsLayoutItemShape::draw( QgsLayoutItemRenderContext &context )
 {
-  QPainter *painter = context.renderContext().painter();
+  QgsRenderContext renderContext = context.renderContext();
+  // symbol clipping messes with geometry generators used in the symbol for this item, and has no
+  // valid use here. See https://github.com/qgis/QGIS/issues/58909
+  renderContext.setFlag( Qgis::RenderContextFlag::DisableSymbolClippingToExtent );
+
+  QPainter *painter = renderContext.painter();
   painter->setPen( Qt::NoPen );
   painter->setBrush( Qt::NoBrush );
 
-  const double scale = context.renderContext().convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
+  const double scale = renderContext.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
 
   const QVector<QPolygonF> rings; //empty list
 
-  symbol()->startRender( context.renderContext() );
-  symbol()->renderPolygon( calculatePolygon( scale ), &rings, nullptr, context.renderContext() );
-  symbol()->stopRender( context.renderContext() );
+  symbol()->startRender( renderContext );
+  symbol()->renderPolygon( calculatePolygon( scale ), &rings, nullptr, renderContext );
+  symbol()->stopRender( renderContext );
 }
 
 QPolygonF QgsLayoutItemShape::calculatePolygon( double scale ) const

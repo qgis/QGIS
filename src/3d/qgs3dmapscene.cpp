@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dmapscene.h"
+#include "moc_qgs3dmapscene.cpp"
 
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QMesh>
@@ -48,9 +49,11 @@
 #include "qgs3dutils.h"
 #include "qgsabstract3drenderer.h"
 #include "qgscameracontroller.h"
-#include "qgschunkedentity_p.h"
-#include "qgschunknode_p.h"
+#include "qgschunkedentity.h"
+#include "qgschunknode.h"
 #include "qgseventtracing.h"
+#include "qgsgeotransform.h"
+#include "qgsmaterial.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgspoint3dsymbol.h"
@@ -58,7 +61,7 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgssourcecache.h"
-#include "qgsterrainentity_p.h"
+#include "qgsterrainentity.h"
 #include "qgsterraingenerator.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenelayer3drenderer.h"
@@ -96,6 +99,9 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   mEngine->renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::OnDemand );
 
   QRect viewportRect( QPoint( 0, 0 ), mEngine->size() );
+
+  // Get the maximum of clip planes available
+  mMaxClipPlanes = Qgs3DUtils::openGlMaxClipPlanes( mEngine->surface() );
 
   // Camera
   float aspectRatio = ( float )viewportRect.width() / viewportRect.height();
@@ -140,8 +146,11 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapScene::onCameraMovementSpeedChanged );
   connect( &map, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapScene::onCameraNavigationModeChanged );
   connect( &map, &Qgs3DMapSettings::debugOverlayEnabledChanged, this, &Qgs3DMapScene::onDebugOverlayEnabledChanged );
+  connect( &map, &Qgs3DMapSettings::stopUpdatesChanged, this, &Qgs3DMapScene::onStopUpdatesChanged );
 
   connect( &map, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapScene::on3DAxisSettingsChanged );
+
+  connect( &map, &Qgs3DMapSettings::originChanged, this, &Qgs3DMapScene::onOriginChanged );
 
   connect( QgsApplication::sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
   {
@@ -246,9 +255,9 @@ QVector<QgsPointXY> Qgs3DMapScene::viewFrustum2DExtent() const
     const QPoint p( ( ( i >> 0 ) & 1 ) ? 0 : mEngine->size().width(), ( ( i >> 1 ) & 1 ) ? 0 : mEngine->size().height() );
     QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( p, mEngine->size(), camera );
     QVector3D dir = ray.direction();
-    if ( dir.y() == 0.0 )
-      dir.setY( 0.000001 );
-    double t = - ray.origin().y() / dir.y();
+    if ( dir.z() == 0.0 )
+      dir.setZ( 0.000001 );
+    double t = - ray.origin().z() / dir.z();
     if ( t < 0 )
     {
       // If the projected point is on the back of the camera we choose the farthest point in the front
@@ -322,6 +331,12 @@ void Qgs3DMapScene::onCameraChanged()
 
 void Qgs3DMapScene::updateScene( bool forceUpdate )
 {
+  if ( !mSceneUpdatesEnabled )
+  {
+    QgsDebugMsgLevel( "Scene update skipped", 2 );
+    return;
+  }
+
   if ( forceUpdate )
     QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
 
@@ -464,10 +479,10 @@ void Qgs3DMapScene::createTerrainDeferred()
   {
     double tile0width = mMap.terrainGenerator()->rootChunkExtent().width();
     int maxZoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, mMap.mapTileResolution(), mMap.maxTerrainGroundError() );
-    QgsAABB rootBbox = mMap.terrainGenerator()->rootChunkBbox( mMap );
+    const QgsBox3D rootBox3D = mMap.terrainGenerator()->rootChunkBox3D( mMap );
     float rootError = mMap.terrainGenerator()->rootChunkError( mMap );
-    const QgsAABB clippingBbox = Qgs3DUtils::mapToWorldExtent( mMap.extent(), rootBbox.zMin, rootBbox.zMax, mMap.origin() );
-    mMap.terrainGenerator()->setupQuadtree( rootBbox, rootError, maxZoomLevel, clippingBbox );
+    const QgsBox3D clippingBox3D( mMap.extent(), rootBox3D.zMinimum(), rootBox3D.zMaximum() );
+    mMap.terrainGenerator()->setupQuadtree( rootBox3D, rootError, maxZoomLevel, clippingBox3D );
 
     mTerrain = new QgsTerrainEntity( &mMap );
     mTerrain->setParent( this );
@@ -477,6 +492,18 @@ void Qgs3DMapScene::createTerrainDeferred()
 
     connect( mTerrain, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
     connect( mTerrain, &QgsTerrainEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::terrainPendingJobsCountChanged );
+    connect( mTerrain, &Qgs3DMapSceneEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity * entity )
+    {
+      // let's make sure that any entity we're about to show has the right scene origin set
+      const QList<QgsGeoTransform *> transforms = entity->findChildren<QgsGeoTransform *>();
+      for ( QgsGeoTransform *transform : transforms )
+      {
+        transform->setOrigin( mMap.origin() );
+      }
+
+      // enable clipping on the terrain if necessary
+      handleClippingOnEntity( entity );
+    } );
   }
   else
   {
@@ -732,6 +759,16 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
 
 void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
 {
+  // let's make sure that any entity we're about to show has the right scene origin set
+  const QList<QgsGeoTransform *> transforms = newEntity->findChildren<QgsGeoTransform *>();
+  for ( QgsGeoTransform *transform : transforms )
+  {
+    transform->setOrigin( mMap.origin() );
+  }
+
+  // set clip planes on the new entity if necessary
+  handleClippingOnEntity( newEntity );
+
   // this is probably not the best place for material-specific configuration,
   // maybe this could be more generalized when other materials need some specific treatment
   const QList< QgsLineMaterial *> childLineMaterials = newEntity->findChildren<QgsLineMaterial *>();
@@ -1054,9 +1091,9 @@ QgsDoubleRange Qgs3DMapScene::elevationRange() const
   double yMax = std::numeric_limits< double >::lowest();
   if ( mMap.terrainRenderingEnabled() && mTerrain )
   {
-    const QgsAABB bbox = mTerrain->rootNode()->bbox();
-    yMin = std::min( yMin, static_cast< double >( bbox.yMin ) );
-    yMax = std::max( yMax, static_cast< double >( bbox.yMax ) );
+    const QgsBox3D box3D = mTerrain->rootNode()->box3D();
+    yMin = std::min( yMin, box3D.zMinimum() );
+    yMax = std::max( yMax, box3D.zMaximum() );
   }
 
   for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); it++ )
@@ -1160,4 +1197,91 @@ void Qgs3DMapScene::on3DAxisSettingsChanged()
                                &mMap );
     }
   }
+}
+
+void Qgs3DMapScene::onOriginChanged()
+{
+  const QList<QgsGeoTransform *> geoTransforms = findChildren<QgsGeoTransform *>();
+  for ( QgsGeoTransform *transform : geoTransforms )
+  {
+    transform->setOrigin( mMap.origin() );
+  }
+
+  mCameraController->setOrigin( mMap.origin() );
+}
+
+void Qgs3DMapScene::handleClippingOnEntity( QEntity *entity ) const
+{
+  if ( mClipPlanesEquations.isEmpty() ) // no clip plane equations, disable clipping
+  {
+    for ( QgsMaterial *material : entity->componentsOfType<QgsMaterial>() )
+    {
+      material->disableClipping();
+    }
+  }
+  else // enable clipping
+  {
+    for ( QgsMaterial *material : entity->componentsOfType<QgsMaterial>() )
+    {
+      material->enableClipping( mClipPlanesEquations );
+    }
+  }
+
+  // recursive call
+  // enable or disable clipping on the children accordingly
+  for ( QObject *child : entity->children() )
+  {
+    Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>( child );
+    if ( childEntity )
+    {
+      handleClippingOnEntity( childEntity );
+    }
+  }
+}
+
+void Qgs3DMapScene::handleClippingOnAllEntities() const
+{
+  // Need to loop mLayerEntities instead of mSceneEntities to handle entities
+  // which do no inherit from Qgs3DMapSceneEntity. For example, mesh entities.
+  for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); ++it )
+  {
+    handleClippingOnEntity( it.value() );
+  }
+  if ( mTerrain )
+  {
+    handleClippingOnEntity( mTerrain );
+  }
+}
+
+void Qgs3DMapScene::enableClipping( const QList<QVector4D> &clipPlaneEquations )
+{
+  if ( clipPlaneEquations.size() > mMaxClipPlanes )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Qgs3DMapScene::enableClipping: it is not possible to use more than %1 clipping planes." ).arg( mMaxClipPlanes ), 2 );
+  }
+  mClipPlanesEquations = clipPlaneEquations.mid( 0, mMaxClipPlanes );
+
+  // enable the clip planes on the framegraph
+  QgsFrameGraph *frameGraph = mEngine->frameGraph();
+  frameGraph->addClipPlanes( clipPlaneEquations.size() );
+
+  // Enable the clip planes for the material of each entity.
+  handleClippingOnAllEntities();
+}
+
+void Qgs3DMapScene::disableClipping()
+{
+  mClipPlanesEquations.clear();
+
+  // disable the clip planes on the framegraph
+  QgsFrameGraph *frameGraph = mEngine->frameGraph();
+  frameGraph->removeClipPlanes();
+
+  // Disable the clip planes for the material of each entity.
+  handleClippingOnAllEntities();
+}
+
+void Qgs3DMapScene::onStopUpdatesChanged()
+{
+  mSceneUpdatesEnabled = !mMap.stopUpdates();
 }

@@ -1,0 +1,108 @@
+---
+name: 🍎 Build - MacOS Qt6
+on:
+  # push:
+  #   branches:
+  #     - main
+  # pull_request:
+  # release:
+  #   types: ['published']
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+#          - os: macos-13
+#            triplet: x64-osx
+#            deployment-target: "10.15"
+          - os: macos-14
+            triplet: arm64-osx-dynamic-release
+            deployment-target: "11.0"
+    name: build (macos)
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: 🐣 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🐩 Install CMake and Ninja
+        uses: lukka/get-cmake@latest
+        with:
+          # Pin to specific version to avoid rebuilding too often
+          # Also helps to avoid spurious build failures like https://github.com/qgis/QGIS/pull/47098
+          cmakeVersion: 3.30.4
+
+      - name: 🎡 Setup vcpkg
+        id: setup-vcpkg
+        uses: ./.github/actions/setup-vcpkg
+
+      - name: 🔨 Prepare build env
+        run: |
+          brew install automake bison flex gnu-sed create-dmg autoconf-archive nasm libtool fdupes
+          echo $(brew --prefix bison)/bin >> $GITHUB_PATH
+          echo $(brew --prefix flex)/bin >> $GITHUB_PATH
+          echo $(brew --prefix libtool)/bin >> $GITHUB_PATH
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 🍭 Setup XCode
+        uses: maxim-lobanov/setup-xcode@v1.6.0
+        with:
+          xcode-version: latest-stable
+
+      - name: 🌱 Install dependencies and generate project files
+        run: |
+          echo "VCPKG_ROOT: ${VCPKG_ROOT}"
+
+          # Install first only with binarycaching, then deduplicate binaries and replace copies with symlinks.
+          # Nuget doesn't understand the symlink concept
+          cmake -S . \
+                -G Ninja \
+                -B build \
+                -D WITH_VCPKG=ON \
+                -D BUILD_WITH_QT6=ON \
+                -D WITH_QTWEBKIT=OFF \
+                -D WITH_BINDINGS=ON \
+                -D QGIS_MACAPP_FRAMEWORK=OFF \
+                -D VCPKG_TARGET_TRIPLET="${{ matrix.triplet }}" \
+                -D VCPKG_HOST_TRIPLET="${{ matrix.triplet }}" \
+                -D VCPKG_INSTALL_OPTIONS="--only-binarycaching" \
+                -D NUGET_USERNAME=${{ github.actor }} \
+                -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }} || true
+
+                fdupes -r -1 build/vcpkg_installed/arm64-osx-dynamic/lib | grep libQt | while read line; do master=""; for file in ${line[*]}; do if  [[ "x${master}" == "x" ]]; then master=$file; else rm "${file}"; ln -s $(basename "${master}") "${file}"; fi; done; done
+
+                cmake -D VCPKG_INSTALL_OPTIONS="" build
+
+      - name: 📑 Upload vcpkg build logs
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: build-logs-${{ matrix.triplet }}
+          path: |
+            ${{ env.VCPKG_ROOT }}/buildtrees/**/*.log
+
+      - name: 📦 Create SDK
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
+        run: |
+          ./build/_deps/vcpkg-src/vcpkg export --zip --output-dir=./sdk --x-install-root=./build/vcpkg_installed  --x-manifest-root=vcpkg
+
+      - name: 📤 Upload sdk
+        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: kadas-albireo2-sdk-${{ matrix.triplet }}
+          path: |
+            sdk/vcpkg-export-*.zip
+
+      - name: 🌋 Build
+        run: |
+          cmake --build build

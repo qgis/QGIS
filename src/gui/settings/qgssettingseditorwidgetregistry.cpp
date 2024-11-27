@@ -29,11 +29,11 @@
 
 QgsSettingsEditorWidgetRegistry::QgsSettingsEditorWidgetRegistry()
 {
-  addWrapper( new QgsSettingsStringEditorWidgetWrapper() );
-  addWrapper( new QgsSettingsBoolEditorWidgetWrapper() );
-  addWrapper( new QgsSettingsIntegerEditorWidgetWrapper() );
-  addWrapper( new QgsSettingsDoubleEditorWidgetWrapper() );
-  addWrapper( new QgsSettingsColorEditorWidgetWrapper() );
+  addWrapper( new QgsSettingsStringLineEditWrapper() );
+  addWrapper( new QgsSettingsBoolCheckBoxWrapper() );
+  addWrapper( new QgsSettingsIntegerSpinBoxWrapper() );
+  addWrapper( new QgsSettingsDoubleSpinBoxWrapper() );
+  addWrapper( new QgsSettingsColorButtonWrapper() );
 
   // enum
 #if defined( HAVE_QTSERIALPORT )
@@ -81,6 +81,11 @@ bool QgsSettingsEditorWidgetRegistry::addWrapper( QgsSettingsEditorWidgetWrapper
   return true;
 }
 
+void QgsSettingsEditorWidgetRegistry::addWrapperForSetting( QgsSettingsEditorWidgetWrapper *wrapper, const QgsSettingsEntryBase *setting )
+{
+  mSpecificWrappers.insert( setting, wrapper );
+}
+
 QgsSettingsEditorWidgetWrapper *QgsSettingsEditorWidgetRegistry::createWrapper( const QString &id, QObject *parent ) const
 {
   QgsSettingsEditorWidgetWrapper *wrapper = mWrappers.value( id );
@@ -97,6 +102,10 @@ QgsSettingsEditorWidgetWrapper *QgsSettingsEditorWidgetRegistry::createWrapper( 
 
 QWidget *QgsSettingsEditorWidgetRegistry::createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList, QWidget *parent ) const
 {
+  if ( mSpecificWrappers.contains( setting ) )
+  {
+    return mSpecificWrappers.value( setting )->createEditor( setting, dynamicKeyPartList, parent );
+  }
   QgsSettingsEditorWidgetWrapper *eww = createWrapper( setting->typeId(), parent );
   if ( eww )
     return eww->createEditor( setting, dynamicKeyPartList, parent );

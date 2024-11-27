@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgoochmaterialwidget.h"
+#include "moc_qgsgoochmaterialwidget.cpp"
 
 #include "qgsgoochmaterialsettings.h"
 #include "qgis.h"

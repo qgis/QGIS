@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsreportorganizerwidget.h"
+#include "moc_qgsreportorganizerwidget.cpp"
 #include "qgsreport.h"
 #include "qgsreportsectionmodel.h"
 #include "qgsreportsectionlayout.h"

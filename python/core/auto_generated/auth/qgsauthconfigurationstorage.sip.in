@@ -80,7 +80,7 @@ Initializes the storage.
 
 .. note::
 
-     The default implementation does nothing and returns ``True``.
+   The default implementation does nothing and returns ``True``.
    This method is called by the authentication manager when the storage is added to the manager.
 %End
 

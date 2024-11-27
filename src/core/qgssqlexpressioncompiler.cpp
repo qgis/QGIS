@@ -93,6 +93,42 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
   if ( staticRes != Fail )
     return staticRes;
 
+  // This is just to identify the most simple cases where nodes are numeric
+  std::function<bool( const QgsExpressionNode * )> nodeIsNumeric;
+  nodeIsNumeric = [this, &nodeIsNumeric]( const QgsExpressionNode * node )
+  {
+    const QgsExpressionNode::NodeType nodeType { node->nodeType() };
+
+    switch ( nodeType )
+    {
+      case QgsExpressionNode::ntColumnRef:
+      {
+        const QgsExpressionNodeColumnRef *col = static_cast<const QgsExpressionNodeColumnRef *>( node );
+        const int idx = mFields.indexFromName( col->name() );
+        return idx >= 0 && QgsVariantUtils::isNumericType( mFields[idx].type() );
+      }
+      case QgsExpressionNode::ntLiteral:
+      {
+        const QgsExpressionNodeLiteral *lit = static_cast<const QgsExpressionNodeLiteral *>( node );
+        return QgsVariantUtils::isNumericType( static_cast< QMetaType::Type >( lit->value().userType() ) );
+      }
+      case QgsExpressionNode::ntBinaryOperator:
+      {
+        const QgsExpressionNodeBinaryOperator *op = static_cast<const QgsExpressionNodeBinaryOperator *>( node );
+        return nodeIsNumeric( op->opLeft() ) && nodeIsNumeric( op->opRight() );
+      }
+      case QgsExpressionNode::ntUnaryOperator:
+      {
+        const QgsExpressionNodeUnaryOperator *op = static_cast<const QgsExpressionNodeUnaryOperator *>( node );
+        return nodeIsNumeric( op->operand() );
+      }
+
+      default:
+        return false;
+    }
+
+  };
+
   switch ( node->nodeType() )
   {
     case QgsExpressionNode::ntUnaryOperator:
@@ -232,8 +268,14 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
           break;
 
         case QgsExpressionNodeBinaryOperator::boPlus:
-          op = QStringLiteral( "+" );
+        {
+          const QgsExpressionNodeBinaryOperator *nodeOp = static_cast<const QgsExpressionNodeBinaryOperator *>( node );
+          if ( nodeIsNumeric( nodeOp->opLeft() ) && nodeIsNumeric( nodeOp->opRight() ) )
+          {
+            op = QStringLiteral( "+" );
+          }
           break;
+        }
 
         case QgsExpressionNodeBinaryOperator::boMinus:
           op = QStringLiteral( "-" );

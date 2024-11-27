@@ -18,6 +18,7 @@ using namespace nlohmann;
 
 #include "qgslogger.h"
 #include "qgsoapifconformancerequest.h"
+#include "moc_qgsoapifconformancerequest.cpp"
 #include "qgsoapifutils.h"
 #include "qgswfsconstants.h"
 

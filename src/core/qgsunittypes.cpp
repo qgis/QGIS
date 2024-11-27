@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsunittypes.h"
+#include "moc_qgsunittypes.cpp"
 #include "qgis.h"
 
 /***************************************************************************
@@ -449,7 +450,7 @@ QString QgsUnitTypes::toString( Qgis::DistanceUnit unit )
       return QObject::tr( "chains (Clarke's)", "distance" );
 
     case Qgis::DistanceUnit::ChainsUSSurvey:
-      return QObject::tr( "chains (US surver)", "distance" );
+      return QObject::tr( "chains (US survey)", "distance" );
 
     case Qgis::DistanceUnit::FeetBritish1865:
       return QObject::tr( "feet (British, 1865)", "distance" );

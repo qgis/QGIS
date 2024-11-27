@@ -58,6 +58,12 @@ class CORE_EXPORT QgsVariantUtils
     static bool isNull( const QVariant &variant, bool silenceNullWarnings SIP_PYARGREMOVE = false );
 
     /**
+     * Returns TRUE if the specified \a metaType is a numeric type.
+     * \since QGIS 3.40
+     */
+    static bool isNumericType( QMetaType::Type metaType );
+
+    /**
      * Converts a QVariant::Type to a QMetaType::Type.
      * \see metaTypeToVariantType()
      * \since QGIS 3.36

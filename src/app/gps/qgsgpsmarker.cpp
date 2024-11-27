@@ -17,6 +17,7 @@
 #include <QObject>
 
 #include "qgsgpsmarker.h"
+#include "moc_qgsgpsmarker.cpp"
 #include "qgscoordinatetransform.h"
 #include "qgsmapcanvas.h"
 #include "qgsexception.h"

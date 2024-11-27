@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutmarkerwidget.h"
+#include "moc_qgslayoutmarkerwidget.cpp"
 #include "qgsstyle.h"
 #include "qgslayoutitemmarker.h"
 #include "qgslayout.h"

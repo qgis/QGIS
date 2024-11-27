@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitemhtml.h"
+#include "moc_qgslayoutitemhtml.cpp"
 #include "qgslayoutframe.h"
 #include "qgslayout.h"
 #include "qgsnetworkaccessmanager.h"
@@ -39,6 +40,7 @@
 #include <QNetworkReply>
 #include <QThread>
 #include <QUrl>
+#include <QAbstractTextDocumentLayout>
 
 // clazy:excludeall=lambda-in-connect
 
@@ -335,8 +337,10 @@ QSizeF QgsLayoutItemHtml::totalSize() const
   return mSize;
 }
 
-void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRectF &renderExtent, const int )
+void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRectF &renderExtent, const int frameIndex )
 {
+#ifdef WITH_QTWEBKIT
+  Q_UNUSED( frameIndex )
   if ( !mWebPage )
     return;
 
@@ -346,6 +350,38 @@ void QgsLayoutItemHtml::render( QgsLayoutItemRenderContext &context, const QRect
   painter->scale( context.renderContext().scaleFactor() / mHtmlUnitsToLayoutUnits, context.renderContext().scaleFactor() / mHtmlUnitsToLayoutUnits );
   painter->translate( 0.0, -renderExtent.top() * mHtmlUnitsToLayoutUnits );
   mWebPage->mainFrame()->render( painter, QRegion( renderExtent.left(), renderExtent.top() * mHtmlUnitsToLayoutUnits, renderExtent.width() * mHtmlUnitsToLayoutUnits, renderExtent.height() * mHtmlUnitsToLayoutUnits ) );
+#else
+  Q_UNUSED( renderExtent )
+  if ( mLayout->renderContext().isPreviewRender() )
+  {
+    if ( QgsLayoutFrame *currentFrame = frame( frameIndex ) )
+    {
+      QPainter *painter = context.renderContext().painter();
+
+      // painter is scaled to dots, so scale back to layout units
+      const QRectF painterRect = QRectF( currentFrame->rect().left() * context.renderContext().scaleFactor(),
+                                         currentFrame->rect().top() * context.renderContext().scaleFactor(),
+                                         currentFrame->rect().width() * context.renderContext().scaleFactor(),
+                                         currentFrame->rect().height() * context.renderContext().scaleFactor()
+                                       );
+
+      painter->setBrush( QBrush( QColor( 255, 125, 125, 125 ) ) );
+      painter->setPen( Qt::NoPen );
+      painter->drawRect( painterRect );
+      painter->setBrush( Qt::NoBrush );
+
+      painter->setPen( QColor( 200, 0, 0, 255 ) );
+      QTextDocument td;
+      td.setTextWidth( painterRect.width() );
+      td.setHtml( QStringLiteral( "<span style=\"color: rgb(200,0,0);\"><b>%1</b><br>%2</span>" ).arg(
+                    tr( "WebKit not available!" ),
+                    tr( "The item cannot be rendered because this QGIS install was built without WebKit support." ) ) );
+      painter->setClipRect( painterRect );
+      QAbstractTextDocumentLayout::PaintContext ctx;
+      td.documentLayout()->draw( painter, ctx );
+    }
+  }
+#endif
 }
 
 double QgsLayoutItemHtml::htmlUnitsToLayoutUnits()

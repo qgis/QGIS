@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsattributewidgetedit.h"
+#include "moc_qgsattributewidgetedit.cpp"
 #include "qgsattributesformproperties.h"
 #include "qgsgui.h"
 #include "qgsrelationwidgetregistry.h"

@@ -808,16 +808,21 @@ void TestQgsRasterLayer::palettedRendererNoDataColor()
 
 void TestQgsRasterLayer::palettedRendererConstantInt()
 {
-  char data { 2 };
-  std::unique_ptr< QgsRasterLayer> rl = std::make_unique< QgsRasterLayer >( QStringLiteral( "MEM:::DATAPOINTER=0x%1,PIXELS=1,LINES=1,BANDS=1,DATATYPE=Byte" )
-                                        .arg( reinterpret_cast<quintptr>( &data ),
-                                            QT_POINTER_SIZE * 2, 16, QChar( '0' ) ).toStdString().c_str(),
-                                        QStringLiteral( "rl" ) );
+  constexpr double value = 2.0;
+  GDALDriverH hGTiffDrv = GDALGetDriverByName( "GTiff" );
+  Q_ASSERT( hGTiffDrv );
+  const char *tempFileName = "/vsimem/temp.tif";
+  GDALDatasetH hDS = GDALCreate( hGTiffDrv, tempFileName, 1, 1, 1, GDT_Byte, NULL );
+  Q_ASSERT( hDS );
+  GDALFillRaster( GDALGetRasterBand( hDS, 1 ), value, 0 );
+  GDALClose( hDS );
+  std::unique_ptr< QgsRasterLayer> rl = std::make_unique< QgsRasterLayer >( QString( tempFileName ), QStringLiteral( "rl" ) );
   Q_ASSERT( rl->isValid() );
   const auto classData { QgsPalettedRasterRenderer::classDataFromRaster( rl->dataProvider(), 1 ) };
   QCOMPARE( classData.size(), 1 );
-  QCOMPARE( classData.first().value, 2.0 );
+  QCOMPARE( classData.first().value, value );
   rl.reset( );
+  VSIUnlink( tempFileName );
 }
 
 void TestQgsRasterLayer::singleBandGrayRendererNoData()

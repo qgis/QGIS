@@ -24,6 +24,7 @@
 
 #include "qgsbox3d.h"
 #include "qgsmetadatawidget.h"
+#include "moc_qgsmetadatawidget.cpp"
 #include "qgslogger.h"
 #include "qgslayermetadatavalidator.h"
 #include "qgsapplication.h"

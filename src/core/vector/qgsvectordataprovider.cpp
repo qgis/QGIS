@@ -18,6 +18,7 @@
 #include <limits>
 
 #include "qgsvectordataprovider.h"
+#include "moc_qgsvectordataprovider.cpp"
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
 #include "qgsfeature.h"

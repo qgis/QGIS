@@ -39,7 +39,7 @@ class CORE_EXPORT QgsMapSettingsUtils
      */
     enum class EffectsCheckFlag : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      IgnoreGeoPdfSupportedEffects = 1 << 0, //!< Ignore advanced effects which are supported in GeoPDF exports
+      IgnoreGeoPdfSupportedEffects = 1 << 0, //!< Ignore advanced effects which are supported in geospatial PDF exports
     };
     Q_DECLARE_FLAGS( EffectsCheckFlags, EffectsCheckFlag )
 

@@ -27,8 +27,8 @@
 // version without notice, or even be removed.
 //
 
-#include "qgschunkloader_p.h"
-#include "qgschunkedentity_p.h"
+#include "qgschunkloader.h"
+#include "qgschunkedentity.h"
 #include "qgsrulebased3drenderer.h"
 #include "qgs3drendercontext.h"
 #include <QFutureWatcher>

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprofilerpanelwidget.h"
+#include "moc_qgsprofilerpanelwidget.cpp"
 #include "qgsruntimeprofiler.h"
 #include "qgslogger.h"
 #include "qgis.h"

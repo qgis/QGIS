@@ -15,6 +15,7 @@
 
 #include "qgseditformconfig_p.h"
 #include "qgseditformconfig.h"
+#include "moc_qgseditformconfig.cpp"
 #include "qgsnetworkcontentfetcherregistry.h"
 #include "qgspathresolver.h"
 #include "qgsproject.h"
@@ -85,7 +86,7 @@ void QgsEditFormConfig::onRelationsLoaded()
     if ( !rel )
       continue;
 
-    rel->init( QgsProject::instance()->relationManager() );
+    rel->init( QgsProject::instance()->relationManager() ); // skip-keyword-check
   }
 }
 
@@ -516,7 +517,7 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
   }
 }
 
-void QgsEditFormConfig::fixLegacyConfig( QDomElement &el )
+void QgsEditFormConfig::fixLegacyConfig( QDomElement &el ) const
 {
   // recursive method to move widget config into attribute element config
 

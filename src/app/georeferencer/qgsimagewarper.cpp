@@ -25,6 +25,7 @@
 #include <QFile>
 
 #include "qgsimagewarper.h"
+#include "moc_qgsimagewarper.cpp"
 #include "qgsgeoreftransform.h"
 #include "qgslogger.h"
 #include "qgsogrutils.h"

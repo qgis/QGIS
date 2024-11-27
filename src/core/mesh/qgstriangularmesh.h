@@ -351,7 +351,7 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
     QgsMeshVertex transformVertex( const QgsMeshVertex &vertex, Qgis::TransformDirection direction ) const;
 
     // calculate the centroid of the native mesh, mNativeMeshCentroids container must have the emplacment for the corresponding centroid before calling this method
-    QgsMeshVertex calculateCentroid( const QgsMeshFace &nativeFace );
+    QgsMeshVertex calculateCentroid( const QgsMeshFace &nativeFace ) const;
 
     // check clock wise and calculate average size of triangles
     void finalizeTriangles();

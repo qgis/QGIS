@@ -732,7 +732,7 @@ QgsLineString *doDensify( const QgsLineString *ring, int extraNodesPerSegment = 
     if ( extraNodesPerSegment < 0 )
     {
       // distance mode
-      extraNodesThisSegment = std::floor( QgsGeometryUtilsBase::distance2D( x2, y2, x1, y1 ) / distance );
+      extraNodesThisSegment = std::floor( QgsGeometryUtilsBase::distance2D( x1, y1, x2, y2 ) / distance );
       if ( extraNodesThisSegment >= 1 )
         multiplier = 1.0 / ( extraNodesThisSegment + 1 );
     }
@@ -1230,6 +1230,7 @@ QVector<QgsPointXY> randomPointsInPolygonPoly2TriBackend( const QgsAbstractGeome
   // step 1 - tessellate the polygon to triangles
   QgsRectangle bounds = geometry->boundingBox();
   QgsTessellator t( bounds, false, false, false, true );
+  t.setOutputZUp( true );
 
   if ( const QgsMultiSurface *ms = qgsgeometry_cast< const QgsMultiSurface * >( geometry ) )
   {
@@ -1285,14 +1286,14 @@ QVector<QgsPointXY> randomPointsInPolygonPoly2TriBackend( const QgsAbstractGeome
       return QVector< QgsPointXY >();
 
     const float aX = *it++;
+    const float aY = *it++;
     ( void )it++; // z
-    const float aY = -( *it++ );
     const float bX = *it++;
+    const float bY = *it++;
     ( void )it++; // z
-    const float bY = -( *it++ );
     const float cX = *it++;
+    const float cY = *it++;
     ( void )it++; // z
-    const float cY = -( *it++ );
 
     const double area = QgsGeometryUtilsBase::triangleArea( aX, aY, bX, bY, cX, cY );
     totalArea += area;
@@ -1338,11 +1339,11 @@ QVector<QgsPointXY> randomPointsInPolygonPoly2TriBackend( const QgsAbstractGeome
 
     // get triangle
     const double aX = triangleData.at( triangleIndex * 9 ) + bounds.xMinimum();
-    const double aY = -triangleData.at( triangleIndex * 9 + 2 ) + bounds.yMinimum();
+    const double aY = triangleData.at( triangleIndex * 9 + 1 ) + bounds.yMinimum();
     const double bX = triangleData.at( triangleIndex * 9 + 3 ) + bounds.xMinimum();
-    const double bY = -triangleData.at( triangleIndex * 9 + 5 ) + bounds.yMinimum();
+    const double bY = triangleData.at( triangleIndex * 9 + 4 ) + bounds.yMinimum();
     const double cX = triangleData.at( triangleIndex * 9 + 6 ) + bounds.xMinimum();
-    const double cY = -triangleData.at( triangleIndex * 9 + 8 ) + bounds.yMinimum();
+    const double cY = triangleData.at( triangleIndex * 9 + 7 ) + bounds.yMinimum();
     QgsGeometryUtilsBase::weightedPointInTriangle( aX, aY, bX, bY, cX, cY, weightB, weightC, x, y );
 
     QgsPointXY candidate( x, y );

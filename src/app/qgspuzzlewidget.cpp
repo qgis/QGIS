@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspuzzlewidget.h"
+#include "moc_qgspuzzlewidget.cpp"
 
 #include "qgsmapcanvas.h"
 

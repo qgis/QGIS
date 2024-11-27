@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsbackgroundcachedfeatureiterator.h"
+#include "moc_qgsbackgroundcachedfeatureiterator.cpp"
 #include "qgsbackgroundcachedshareddata.h"
 
 #include "qgsapplication.h"

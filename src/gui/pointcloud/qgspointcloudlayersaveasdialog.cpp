@@ -20,6 +20,7 @@
 #include <QRegularExpression>
 
 #include "qgspointcloudlayersaveasdialog.h"
+#include "moc_qgspointcloudlayersaveasdialog.cpp"
 #include "qgsgui.h"
 #include "qgsmapcanvas.h"
 #include "qgsdatums.h"

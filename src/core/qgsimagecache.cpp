@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsimagecache.h"
+#include "moc_qgsimagecache.cpp"
 
 #include "qgis.h"
 #include "qgsimageoperation.h"
@@ -162,6 +163,13 @@ QImage QgsImageCache::pathAsImagePrivate( const QString &f, const QSize size, co
 
   fitsInCache = true;
 
+  QString base64String;
+  QString mimeType;
+  if ( parseBase64DataUrl( file, &mimeType, &base64String ) && mimeType.startsWith( QLatin1String( "image/" ) ) )
+  {
+    file = QStringLiteral( "base64:%1" ).arg( base64String );
+  }
+
   QgsImageCacheEntry *currentEntry = findExistingEntry( new QgsImageCacheEntry( file, size, keepAspectRatio, opacity, targetDpi, frameNumber ) );
 
   QImage result;
@@ -212,7 +220,7 @@ QSize QgsImageCache::originalSize( const QString &path, bool blocking ) const
     return QSize();
 
   // direct read if path is a file -- maybe more efficient than going the bytearray route? (untested!)
-  if ( !path.startsWith( QLatin1String( "base64:" ) ) && QFile::exists( path ) )
+  if ( !isBase64Data( path ) && QFile::exists( path ) )
   {
     const QImageReader reader( path );
     if ( reader.size().isValid() )
@@ -298,7 +306,7 @@ void QgsImageCache::prepareAnimation( const QString &path )
   std::unique_ptr< QImageReader > reader;
   std::unique_ptr< QBuffer > buffer;
 
-  if ( !path.startsWith( QLatin1String( "base64:" ) ) && QFile::exists( path ) )
+  if ( !isBase64Data( path ) && QFile::exists( path ) )
   {
     const QString basePart = QFileInfo( path ).baseName();
     int id = 1;
@@ -355,7 +363,7 @@ QImage QgsImageCache::renderImage( const QString &path, QSize size, const bool k
   isBroken = false;
 
   // direct read if path is a file -- maybe more efficient than going the bytearray route? (untested!)
-  if ( !path.startsWith( QLatin1String( "base64:" ) ) && QFile::exists( path ) )
+  if ( !isBase64Data( path ) && QFile::exists( path ) )
   {
     QImageReader reader( path );
     reader.setAutoTransform( true );

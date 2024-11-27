@@ -123,6 +123,9 @@ class Editor(QgsCodeEditorPython):
         self.modificationChanged.connect(self.editor_tab.modified)
         self.modificationAttempted.connect(self.fileReadOnly)
 
+    def showApiDocumentation(self, text):
+        self.console_widget.shell.showApiDocumentation(text)
+
     def set_code_editor_widget(self, widget: QgsCodeEditorWidget):
         self.code_editor_widget = widget
         self.code_editor_widget.loadedExternalChanges.connect(
@@ -154,11 +157,15 @@ class Editor(QgsCodeEditorPython):
         runSelected.setShortcut('Ctrl+E')  # spellok
         menu.addAction(runSelected)  # spellok
 
-        pyQGISHelpAction = QAction(QgsApplication.getThemeIcon("console/iconHelpConsole.svg"),
-                                   QCoreApplication.translate("PythonConsole", "Search Selection in PyQGIS Documentation"),
-                                   menu)
-        pyQGISHelpAction.triggered.connect(self.searchSelectedTextInPyQGISDocs)
-        menu.addAction(pyQGISHelpAction)
+        word = self.selectedText() or self.wordAtPoint(e.pos())
+        if word:
+            context_help_action = QAction(
+                QgsApplication.getThemeIcon("mActionHelpContents.svg"),
+                QCoreApplication.translate("PythonConsole", "Context Help"),
+                menu)
+            context_help_action.triggered.connect(partial(self.console_widget.shell.showApiDocumentation, word, force_search=True))
+            context_help_action.setShortcut('F1')
+            menu.addAction(context_help_action)
 
         start_action = QAction(QgsApplication.getThemeIcon("mActionStart.svg"),
                                QCoreApplication.translate("PythonConsole", "Run Script"),
@@ -246,7 +253,6 @@ class Editor(QgsCodeEditorPython):
                        self.console_widget.openSettings)
         syntaxCheckAction.setEnabled(False)
         pasteAction.setEnabled(False)
-        pyQGISHelpAction.setEnabled(False)
         cutAction.setEnabled(False)
         runSelected.setEnabled(False)  # spellok
         copyAction.setEnabled(False)
@@ -258,7 +264,6 @@ class Editor(QgsCodeEditorPython):
             runSelected.setEnabled(True)  # spellok
             copyAction.setEnabled(True)
             cutAction.setEnabled(True)
-            pyQGISHelpAction.setEnabled(True)
         if not self.text() == '':
             selectAllAction.setEnabled(True)
             syntaxCheckAction.setEnabled(True)

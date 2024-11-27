@@ -118,7 +118,9 @@ class QgsGrassModuleParam
 
     /**
      * Gets gisprompt attribute
-     * @paream name gisprompt tag attribute name (age, element, prompt)
+     *
+     * \param descDomElement
+     * \param name gisprompt tag attribute name (age, element, prompt)
      */
     static QString getDescPrompt( QDomElement descDomElement, const QString &name );
 
@@ -561,9 +563,6 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
 
     //! Pointer to layer input
     QgsGrassModuleInput *mLayerInput = nullptr;
-
-    //! Currently connected layer
-    QgsVectorLayer *mVectorLayer = nullptr;
 
     //! Field type (integer,double,string,datetime)
     QString mType;

@@ -11,6 +11,7 @@
  ***************************************************************************/
 
 #include "qgsdecorationnortharrowdialog.h"
+#include "moc_qgsdecorationnortharrowdialog.cpp"
 #include "qgsdecorationnortharrow.h"
 #include "qgshelp.h"
 #include "qgsproject.h"

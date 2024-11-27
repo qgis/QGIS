@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslabelpropertydialog.h"
+#include "moc_qgslabelpropertydialog.cpp"
 #include "qgscallout.h"
 #include "qgsfontutils.h"
 #include "qgslogger.h"
@@ -360,12 +361,8 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
   //even if the data defined property is set to an expression, as it's useful to show
   //users what the evaluated property is...
 
-  QgsExpressionContext context;
-  context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-          << QgsExpressionContextUtils::atlasScope( nullptr )
-          << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
-          << QgsExpressionContextUtils::layerScope( vlayer );
+  QgsExpressionContext context = QgisApp::instance()->mapCanvas()->createExpressionContext();
+  context << QgsExpressionContextUtils::layerScope( vlayer );
   context.setFeature( mCurLabelFeat );
 
   const auto constPropertyKeys = mDataDefinedProperties.propertyKeys();

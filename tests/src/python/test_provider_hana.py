@@ -440,7 +440,7 @@ class TestPyQgsHanaProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(fields.at(fields.indexFromName('emb')).length(), 3)
 
         values = {feat['id']: feat['emb'] for feat in vl.getFeatures()}
-        expected = {1: '[0.1,0.2,0.1]', 2: QVariant()}
+        expected = {1: '[0.1,0.2,0.1]', 2: NULL}
         self.assertEqual(values, expected)
 
     def testRealVectorTypeEdit(self):

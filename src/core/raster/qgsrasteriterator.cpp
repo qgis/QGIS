@@ -93,6 +93,9 @@ void QgsRasterIterator::startRasterRead( int bandNumber, qgssize nCols, qgssize 
   pInfo.currentCol = 0;
   pInfo.currentRow = 0;
   mRasterPartInfos.insert( bandNumber, pInfo );
+
+  mNumberBlocksWidth = static_cast< int >( std::ceil( static_cast< double >( nCols ) / mMaximumTileWidth ) );
+  mNumberBlocksHeight = static_cast< int >( std::ceil( static_cast< double >( nRows ) / mMaximumTileHeight ) );
 }
 
 bool QgsRasterIterator::next( int bandNumber, int &columns, int &rows, int &topLeftColumn, int &topLeftRow, QgsRectangle &blockExtent )
@@ -219,6 +222,17 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
 void QgsRasterIterator::stopRasterRead( int bandNumber )
 {
   removePartInfo( bandNumber );
+}
+
+double QgsRasterIterator::progress( int bandNumber ) const
+{
+  const auto partIt = mRasterPartInfos.find( bandNumber );
+  if ( partIt == mRasterPartInfos.constEnd() )
+  {
+    return 0;
+  }
+
+  return ( ( static_cast< double >( partIt->currentRow ) / static_cast< double >( mMaximumTileHeight ) ) * mNumberBlocksWidth + static_cast< double >( partIt->currentCol ) / static_cast< double >( mMaximumTileWidth ) ) / ( static_cast< double >( mNumberBlocksWidth ) * static_cast< double >( mNumberBlocksHeight ) );
 }
 
 void QgsRasterIterator::removePartInfo( int bandNumber )

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewdefaultactions.h"
+#include "moc_qgslayertreeviewdefaultactions.cpp"
 #include "qgsguiutils.h"
 #include "qgsapplication.h"
 #include "qgslayertree.h"
@@ -181,7 +182,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionCheckAndAllChildren( QObject *par
   QgsLayerTreeNode *node = mView->currentNode();
   if ( !node || !QgsLayerTree::isGroup( node ) || node->isItemVisibilityCheckedRecursive() )
     return nullptr;
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
   QAction *a = new QAction( tr( "Check and All its Children (⌘-click)" ), parent );
 #else
   QAction *a = new QAction( tr( "Check and All its Children (Ctrl-click)" ), parent );
@@ -195,7 +196,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionUncheckAndAllChildren( QObject *p
   QgsLayerTreeNode *node = mView->currentNode();
   if ( !node || !QgsLayerTree::isGroup( node ) || node->isItemVisibilityUncheckedRecursive() )
     return nullptr;
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
   QAction *a = new QAction( tr( "Uncheck and All its Children (⌘-click)" ), parent );
 #else
   QAction *a = new QAction( tr( "Uncheck and All its Children (Ctrl-click)" ), parent );

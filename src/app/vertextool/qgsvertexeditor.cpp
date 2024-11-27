@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsvertexeditor.h"
+#include "moc_qgsvertexeditor.cpp"
 #include "qgscoordinateutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagelog.h"
@@ -51,8 +52,8 @@ static const int MIN_RADIUS_ROLE = Qt::UserRole + 1;
 
 QgsVertexEditorModel::QgsVertexEditorModel( QgsMapCanvas *canvas, QObject *parent )
   : QAbstractTableModel( parent )
-  , mCanvas( canvas )
 {
+  Q_UNUSED( canvas )
   QWidget *parentWidget = qobject_cast< QWidget * >( parent );
   if ( parentWidget )
     mWidgetFont = parentWidget->font();

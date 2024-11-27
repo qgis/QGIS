@@ -16,6 +16,7 @@
 
 #include "qgis.h"
 #include "qgsquickmapsettings.h"
+#include "moc_qgsquickmapsettings.cpp"
 
 #include "qgsmaplayer.h"
 #include "qgsmessagelog.h"

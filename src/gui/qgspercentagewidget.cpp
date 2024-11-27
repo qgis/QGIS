@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspercentagewidget.h"
+#include "moc_qgspercentagewidget.cpp"
 #include "qgsdoublespinbox.h"
 #include "qgis.h"
 #include <QHBoxLayout>

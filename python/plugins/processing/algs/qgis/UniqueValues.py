@@ -136,6 +136,7 @@ class UniqueValues(QgisAlgorithm):
                 f = QgsFeature()
                 f.setAttributes([attr for attr in value])
                 sink.addFeature(f, QgsFeatureSink.Flag.FastInsert)
+            sink.finalize()
             results[self.OUTPUT] = dest_id
 
         output_file = self.parameterAsFileOutput(parameters, self.OUTPUT_HTML_FILE, context)

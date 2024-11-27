@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include "qgshttpheaderwidget.h"
+#include "moc_qgshttpheaderwidget.cpp"
 #include "ui_qgshttpheaderwidget.h"
 #include "qgsapplication.h"
 

@@ -9,6 +9,7 @@
 
 
 
+
 class QgsDial : QDial
 {
 
@@ -38,6 +39,7 @@ Constructor for QgsDial
 
 
 };
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

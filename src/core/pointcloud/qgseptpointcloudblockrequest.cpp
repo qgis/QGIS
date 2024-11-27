@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgseptpointcloudblockrequest.h"
+#include "moc_qgseptpointcloudblockrequest.cpp"
 
 #include "qgstiledownloadmanager.h"
 #include "qgseptdecoder.h"

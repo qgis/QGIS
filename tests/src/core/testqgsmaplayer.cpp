@@ -188,9 +188,13 @@ void TestQgsMapLayer::isInScaleRange_data()
   QTest::newRow( "in the middle" ) << 3000.0 << true;
   QTest::newRow( "too low" ) << 1000.0 << false;
   QTest::newRow( "too high" ) << 6000.0 << false;
-  QTest::newRow( "max is not inclusive" ) << 5000.0 << false;
-  QTest::newRow( "min is inclusive" ) << 2500.0 << true;
-  QTest::newRow( "min is inclusive even with conversion errors" ) << static_cast< double >( 1.0f / ( ( float )1.0 / 2500.0 ) ) << true;
+  QTest::newRow( "min is not inclusive" ) << 5000.0 << false;
+  QTest::newRow( "max is inclusive" ) << 2500.0 << true;
+  QTest::newRow( "max is inclusive even with conversion errors" ) << static_cast< double >( 1.0f / ( ( float )1.0 / 2500.0 ) ) << true;
+  QTest::newRow( "max is inclusive even with non-round scales (below)" ) << 2499.9999999966526 << true;
+  QTest::newRow( "max is inclusive even with non-round scales (above)" ) << 2500.0000000027226 << true;
+  QTest::newRow( "min is exclusive even with non-round scales (below)" ) << 4999.999999997278 << false;
+  QTest::newRow( "min is exclusive even with non-round scales (above)" ) << 5000.000000003348 << false;
 }
 
 void TestQgsMapLayer::isInScaleRange()

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscoordinatenumericformat.h"
+#include "moc_qgscoordinatenumericformat.cpp"
 #include "qgis.h"
 #include "qgscoordinateformatter.h"
 

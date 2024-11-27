@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgssymbollayerwidget.h"
+#include "moc_qgssymbollayerwidget.cpp"
 
 #include "qgslinesymbollayer.h"
 #include "qgsmarkersymbollayer.h"

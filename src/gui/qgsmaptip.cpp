@@ -42,6 +42,7 @@
 #include <QHBoxLayout>
 
 #include "qgsmaptip.h"
+#include "moc_qgsmaptip.cpp"
 
 
 const QString QgsMapTip::sMapTipTemplate = "<html>\n"

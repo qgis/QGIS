@@ -18,6 +18,7 @@
 
 #include "qgis_3d.h"
 #include "qgsabstractmaterialsettings.h"
+#include "qgsmaterial.h"
 
 #include <QColor>
 
@@ -51,6 +52,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     static QgsAbstractMaterialSettings *create() SIP_FACTORY;
 
     QgsPhongMaterialSettings *clone() const override SIP_FACTORY;
+    bool equals( const QgsAbstractMaterialSettings *other ) const override;
 
     //! Returns ambient color component
     QColor ambient() const { return mAmbient; }
@@ -154,7 +156,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 
 #ifndef SIP_RUN
-    Qt3DRender::QMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
+    QgsMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
     void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsMaterialContext &materialContext ) const override;
 
     QByteArray dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const override;
@@ -176,7 +178,8 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
              mShininess == other.mShininess &&
              mAmbientCoefficient == other.mAmbientCoefficient &&
              mDiffuseCoefficient == other.mDiffuseCoefficient &&
-             mSpecularCoefficient == other.mSpecularCoefficient;
+             mSpecularCoefficient == other.mSpecularCoefficient &&
+             dataDefinedProperties() == other.dataDefinedProperties();
     }
 
   private:
@@ -192,7 +195,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     double mOpacity = 1.0;
 
     //! Constructs a material from shader files
-    Qt3DRender::QMaterial *buildMaterial( const QgsMaterialContext &context ) const;
+    QgsMaterial *buildMaterial( const QgsMaterialContext &context ) const;
 };
 
 

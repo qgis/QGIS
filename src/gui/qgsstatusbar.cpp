@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsstatusbar.h"
+#include "moc_qgsstatusbar.cpp"
 #include <QLayout>
 #include <QLineEdit>
 #include <QPalette>

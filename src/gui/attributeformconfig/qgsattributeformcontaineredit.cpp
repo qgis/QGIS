@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsattributeformcontaineredit.h"
+#include "moc_qgsattributeformcontaineredit.cpp"
 #include "ui_qgsattributeformcontaineredit.h"
 #include "qgsattributesformproperties.h"
 #include "qgsvectorlayer.h"

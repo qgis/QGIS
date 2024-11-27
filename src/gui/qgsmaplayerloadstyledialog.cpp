@@ -17,6 +17,7 @@
 #include <QVector>
 
 #include "qgsmaplayerloadstyledialog.h"
+#include "moc_qgsmaplayerloadstyledialog.cpp"
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgslayerpropertiesdialog.h"
@@ -24,7 +25,6 @@
 #include "qgshelp.h"
 #include "qgsapplication.h"
 #include "qgsgui.h"
-
 
 QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWidget *parent )
   : QDialog( parent )
@@ -74,6 +74,8 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   const QgsMapLayer::StyleCategories lastStyleCategories = settings.flagValue( QStringLiteral( "style/lastStyleCategories" ), QgsMapLayer::AllStyleCategories );
   mModel->setCategories( lastStyleCategories );
   mStyleCategoriesListView->setModel( mModel );
+  mStyleCategoriesListView->setWordWrap( true );
+  mStyleCategoriesListView->setItemDelegate( new QgsCategoryDisplayLabelDelegate( this ) );
 
   // load from file setup
   switch ( mLayer->type() )

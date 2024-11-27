@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgeometryoptions.h"
+#include "moc_qgsgeometryoptions.cpp"
 #include "qgsxmlutils.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"

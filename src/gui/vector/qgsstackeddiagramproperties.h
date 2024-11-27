@@ -50,6 +50,8 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
     //! constructor
     QgsStackedDiagramPropertiesModel( QObject *parent = nullptr );
 
+    ~QgsStackedDiagramPropertiesModel() override;
+
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     QVariant headerData( int section, Qt::Orientation orientation,
@@ -63,15 +65,15 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
 
     // new methods
 
-    //! Returns the diagram renderer at the specified index
+    //! Returns the diagram renderer at the specified index. Does not transfer ownership.
     QgsDiagramRenderer *subDiagramForIndex( const QModelIndex &index ) const;
 
-    //! Inserts a new diagram at the specified position
+    //! Inserts a new diagram at the specified position. Takes ownership.
     void insertSubDiagram( const int index, QgsDiagramRenderer *newSubDiagram );
-    //! Replaces the diagram located at \a index by \a dr
+    //! Replaces the diagram located at \a index by \a dr. Takes ownership.
     void updateSubDiagram( const QModelIndex &index, QgsDiagramRenderer *dr );
 
-    //! Returns the list of diagram renderers from the model
+    //! Returns the list of diagram renderers from the model. Does not transfer ownership.
     QList< QgsDiagramRenderer *> subRenderers() const;
 
     //! Returns the diagram layer settings from the model
@@ -79,7 +81,6 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
 
     /**
      * Sets the diagram layer settings for the model.
-     * @param dls DiagramLayerSettings to be set.
      */
     void updateDiagramLayerSettings( QgsDiagramLayerSettings dls );
 
@@ -116,31 +117,30 @@ class GUI_EXPORT QgsStackedDiagramProperties : public QgsPanelWidget, private Ui
   private slots:
 
     /**
-     * Adds a diagram to the current QgsStackedDiagramProperties.
+     * Adds a sub diagram renderer to the current QgsStackedDiagramProperties.
      */
-    void addSubDiagram();
+    void addSubDiagramRenderer();
 
     /**
-     * Appends a diagram to the current QgsStackedDiagramProperties.
-     * @param dr Diagram renderer to be appended.
+     * Appends a sub diagram renderer to the current QgsStackedDiagramProperties.
+     * Takes ownership.
      */
-    void appendSubDiagram( QgsDiagramRenderer *dr );
+    void appendSubDiagramRenderer( QgsDiagramRenderer *dr );
 
     /**
-     * Edits the properties of the current diagram.
+     * Edits the properties of the current diagram renderer.
      */
-    void editSubDiagram();
+    void editSubDiagramRenderer();
 
     /**
-     * Edits the properties of a diagram located at a given \a index.
-     * @param index Model index where the diagram is located.
+     * Edits the properties of a diagram renderer located at a given \a index.
      */
-    void editSubDiagram( const QModelIndex &index );
+    void editSubDiagramRenderer( const QModelIndex &index );
 
     /**
      * Removes a diagram from the current QgsStackedDiagramProperties.
      */
-    void removeSubDiagram();
+    void removeSubDiagramRenderer();
 
   private:
     QgsVectorLayer *mLayer = nullptr;
@@ -153,7 +153,6 @@ class GUI_EXPORT QgsStackedDiagramProperties : public QgsPanelWidget, private Ui
      * the first sub diagram in the stacked diagram. This includes the
      * first enabled sub diagram, as well as disabled sub diagrams that,
      * after being edited, can become the first enabled one.
-     * @param index Model index where the sub diagram is located.
      */
     bool couldBeFirstSubDiagram( const QModelIndex &index ) const;
 
@@ -186,18 +185,17 @@ class GUI_EXPORT QgsStackedDiagramPropertiesDialog : public QDialog
 
     /**
      * Delegates to the diagram properties widget to sync with the given renderer.
-     * @param dr Diagram Renderer to be used for the sync.
      */
     void syncToRenderer( const QgsDiagramRenderer *dr ) const;
 
     /**
      * Delegates to the diagram properties widget to sync with the given diagram layer settings.
-     * @param dls Diagram Layer Settings to be used for the sync.
      */
     void syncToSettings( const QgsDiagramLayerSettings *dls ) const;
 
     /**
      * Gets a renderer object built from the diagram properties widget.
+     * Transfers ownership.
      */
     QgsDiagramRenderer *renderer();
 
@@ -209,7 +207,8 @@ class GUI_EXPORT QgsStackedDiagramPropertiesDialog : public QDialog
     /**
      * Delegates to the main widget to set whether the widget should show
      * diagram layer settings to be edited.
-     * @param allowed Whether the main widget should be allowed to edit diagram layer settings.
+     *
+     * \param allowed Whether the main widget should be allowed to edit diagram layer settings.
     */
     void setAllowedToEditDiagramLayerSettings( bool allowed ) const;
 

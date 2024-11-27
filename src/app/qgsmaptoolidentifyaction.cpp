@@ -25,6 +25,7 @@
 #include "qgsidentifymenu.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolidentifyaction.h"
+#include "moc_qgsmaptoolidentifyaction.cpp"
 #include "qgsmaptoolselectionhandler.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"

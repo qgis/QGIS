@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsarcgisrestdataitems.h"
+#include "moc_qgsarcgisrestdataitems.cpp"
 #include "qgslogger.h"
 #include "qgsowsconnection.h"
 #include "qgsarcgisrestutils.h"

@@ -366,6 +366,17 @@ Convenience function to set the selection using linear indexes
 .. versionadded:: 3.36
 %End
 
+    virtual void callTip();
+
+    int wrapPosition( int line = -1 );
+%Docstring
+Returns the linear position of the start of the last wrapped part for the specified line, or
+for the current line if line = -1
+If wrapping is disabled, returns -1 instead
+
+.. versionadded:: 3.40
+%End
+
   public slots:
 
     void runCommand( const QString &command, bool skipHistory = false );
@@ -506,6 +517,14 @@ Emitted when the history of commands run in the current session is cleared.
 Emitted when the persistent history of commands run in the editor is cleared.
 
 .. versionadded:: 3.30
+%End
+
+
+    void helpRequested( const QString &word );
+%Docstring
+Emitted when documentation was requested for the specified ``word``.
+
+.. versionadded:: 3.42
 %End
 
   protected:

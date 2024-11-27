@@ -27,6 +27,7 @@
 #include "qgsactionmanager.h"
 #include "qgsattributetablemodel.h"
 #include "qgsdualview.h"
+#include "moc_qgsdualview.cpp"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfeaturelistmodel.h"
 #include "qgsifeatureselectionmanager.h"

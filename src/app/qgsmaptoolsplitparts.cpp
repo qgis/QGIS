@@ -18,6 +18,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsmaptoolsplitparts.h"
+#include "moc_qgsmaptoolsplitparts.cpp"
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapmouseevent.h"

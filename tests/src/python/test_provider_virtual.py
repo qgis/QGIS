@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 import os
 import tempfile
 
-from qgis.PyQt.QtCore import QTemporaryDir, QUrl, QVariant
+from qgis.PyQt.QtCore import QTemporaryDir, QUrl, QVariant, QMetaType
 from qgis.core import (
     Qgis,
     QgsFeature,
@@ -679,6 +679,19 @@ class TestQgsVirtualLayerProvider(QgisTestCase, ProviderTestCase):
         l4 = QgsVectorLayer(f"?query={query}", "tt", "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertTrue(l4.isValid())
         self.assertEqual(l4.dataProvider().wkbType(), QgsWkbTypes.Type.Point)
+
+    def test_select_qgis_expression_value_types(self):
+        query = toPercent("SELECT geom_from_wkt( 'POINT(4 5)' ) as geom, make_interval(1) as years")
+        l4 = QgsVectorLayer(f"?query={query}&geometry=geom", "tt", "virtual", QgsVectorLayer.LayerOptions(False))
+        self.assertTrue(l4.isValid())
+        self.assertEqual(l4.dataProvider().wkbType(), QgsWkbTypes.Type.Point)
+        self.assertEqual([f.name() for f in l4.dataProvider().fields()], ['years'])
+        self.assertEqual([f.type() for f in l4.dataProvider().fields()],
+                         [QMetaType.Type.Double])
+        self.assertEqual([f.attributes() for f in l4.getFeatures()],
+                         [[31557600.0]])
+        self.assertEqual([f.geometry().asWkt() for f in l4.getFeatures()],
+                         ['Point (4 5)'])
 
     def test_sql4(self):
         l2 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr",

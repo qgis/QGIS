@@ -13,6 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSMAPTOOLADDPART_H
+#define QGSMAPTOOLADDPART_H
+
 #include "qgsmaptoolcapturelayergeometry.h"
 #include "qgis_app.h"
 
@@ -47,3 +50,5 @@ class APP_EXPORT QgsMapToolAddPart : public QgsMapToolCaptureLayerGeometry
 
     void finalizeEditCommand( QgsVectorLayer *layer, Qgis::GeometryOperationResult errorCode );
 };
+
+#endif // QGSMAPTOOLADDPART_H

@@ -22,6 +22,7 @@
 
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrychecker.h"
+#include "moc_qgsgeometrychecker.cpp"
 #include "qgsgeometrycheck.h"
 #include "qgsfeaturepool.h"
 #include "qgsproject.h"

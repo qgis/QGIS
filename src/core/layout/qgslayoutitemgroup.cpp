@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitemgroup.h"
+#include "moc_qgslayoutitemgroup.cpp"
 #include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
 #include "qgslayoututils.h"
@@ -206,7 +207,8 @@ void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size, bool includes
       command->saveBeforeState();
     }
 
-    QRectF itemRect = mapRectFromItem( item, item->rect() );
+    const QRectF originalItemRect = item->rect();
+    QRectF itemRect = mapRectFromItem( item, originalItemRect );
     QgsLayoutUtils::relativeResizeRect( itemRect, oldRect, newRect );
 
     itemRect = itemRect.normalized();

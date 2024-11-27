@@ -1072,6 +1072,16 @@ QString QgsRasterFileWriter::driverForExtension( const QString &extension )
   if ( ext.startsWith( '.' ) )
     ext.remove( 0, 1 );
 
+  if ( ext.compare( QLatin1String( "tif" ), Qt::CaseInsensitive ) == 0 ||
+       ext.compare( QLatin1String( "tiff" ), Qt::CaseInsensitive ) == 0 )
+  {
+    // Be robust to GDAL drivers potentially recognizing the tif/tiff extensions
+    // but being registered before the GTiff one.
+    // Cf https://github.com/qgis/QGIS/issues/59112
+    if ( GDALGetDriverByName( "GTiff" ) )
+      return "GTiff";
+  }
+
   GDALAllRegister();
   int const drvCount = GDALGetDriverCount();
 

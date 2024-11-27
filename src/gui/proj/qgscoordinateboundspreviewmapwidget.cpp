@@ -9,6 +9,7 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "qgscoordinateboundspreviewmapwidget.h"
+#include "moc_qgscoordinateboundspreviewmapwidget.cpp"
 #include "qgsrubberband.h"
 #include "qgsvertexmarker.h"
 #include "qgsapplication.h"

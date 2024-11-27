@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslabelingengine.h"
+#include "moc_qgslabelingengine.cpp"
 
 #include "qgslogger.h"
 

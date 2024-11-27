@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3danimationwidget.h"
+#include "moc_qgs3danimationwidget.cpp"
 
 #include "qgs3danimationsettings.h"
 #include "qgsapplication.h"

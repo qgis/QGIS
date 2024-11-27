@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoollabel.h"
+#include "moc_qgsmaptoollabel.cpp"
 #include "qgsfeatureiterator.h"
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"

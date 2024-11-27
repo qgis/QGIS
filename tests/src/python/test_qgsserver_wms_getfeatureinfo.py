@@ -204,6 +204,20 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'FEATURE_COUNT=10&FILTER_GEOM=POLYGON((8.2035381 44.901459,8.2035562 44.901459,8.2035562 44.901418,8.2035381 44.901418,8.2035381 44.901459))',
                                  'wms_getfeatureinfo_geometry_filter')
 
+        # Test feature info request with filter geometry and feature filter
+        # FILTER_GEOM includes feature "two" and "three" and FILTER includes
+        # feature "one" and "two". We expect to get only feature "two"
+        # See issue GH #58998
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'width=600&height=400&srs=EPSG%3A4326&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&' +
+                                 'FILTER_GEOM=POLYGON((8.20343877754122275 44.90137289898639494, 8.20356495882830572 44.90137289898639494, 8.20356495882830572 44.90146497029139994, 8.20343877754122275 44.90146497029139994, 8.20343877754122275 44.90137289898639494))&' +
+                                 'FILTER=testlayer%20%C3%A8%C3%A9:"name" = \'two\' or "name" = \'one\'',
+                                 'wms_getfeatureinfo_geometry_and_exp_filter_exclude')
+
         # Test feature info request with filter geometry in non-layer CRS
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=testlayer%20%C3%A8%C3%A9&' +

@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthesritokenmethod.h"
+#include "moc_qgsauthesritokenmethod.cpp"
 
 #include "qgsauthmanager.h"
 #include "qgslogger.h"

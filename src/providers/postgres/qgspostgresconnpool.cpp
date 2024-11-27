@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspostgresconnpool.h"
+#include "moc_qgspostgresconnpool.cpp"
 #include "qgspostgresconn.h"
 #include "qgslogger.h"
 

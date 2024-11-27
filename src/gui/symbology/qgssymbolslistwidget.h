@@ -115,7 +115,6 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     QAction *mBufferSettingsAction = nullptr;
     QAction *mAnimationSettingsAction = nullptr;
     QgsVectorLayer *mLayer = nullptr;
-    QgsMapCanvas *mMapCanvas = nullptr;
 
     QgsColorButton *mSymbolColorButton = nullptr;
     QgsOpacityWidget *mSymbolOpacityWidget = nullptr;

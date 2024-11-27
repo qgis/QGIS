@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingaggregatewidgetwrapper.h"
+#include "moc_qgsprocessingaggregatewidgetwrapper.cpp"
 
 #include <QBoxLayout>
 #include <QLineEdit>

@@ -99,12 +99,12 @@ class CORE_EXPORT QgsLayoutItemMapGridStack : public QgsLayoutItemMapItemStack
      * Returns a reference to a grid at the specified \a index within the stack.
      * \see grid()
      */
-    QgsLayoutItemMapGrid &operator[]( int index );
+    QgsLayoutItemMapGrid &operator[]( int index ); // cppcheck-suppress duplInheritedMember
 
     /**
      * Returns a list of QgsLayoutItemMapGrids contained by the stack.
      */
-    QList< QgsLayoutItemMapGrid * > asList() const;
+    QList< QgsLayoutItemMapGrid * > asList() const; // cppcheck-suppress duplInheritedMember
 
     bool readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
 

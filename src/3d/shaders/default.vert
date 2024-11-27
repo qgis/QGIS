@@ -19,6 +19,10 @@ uniform mat4 mvp;
 
 uniform float texCoordScale;
 
+#ifdef CLIPPING
+    #pragma include clipplane.shaderinc
+#endif
+
 void main()
 {
     // Pass through scaled texture coordinates
@@ -32,4 +36,8 @@ void main()
 
     // Calculate vertex position in clip coordinates
     gl_Position = mvp * vec4(vertexPosition, 1.0);
+
+#ifdef CLIPPING
+    setClipDistance(worldPosition);
+#endif
 }

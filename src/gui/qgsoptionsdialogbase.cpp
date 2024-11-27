@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsoptionsdialogbase.h"
+#include "moc_qgsoptionsdialogbase.cpp"
 
 #include <QDialog>
 #include <QDialogButtonBox>

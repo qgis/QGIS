@@ -51,6 +51,7 @@ email                : sherman at mrcc.com
 #include "qgsgrouplayer.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "moc_qgsmapcanvas.cpp"
 #include "qgsmapcanvasmap.h"
 #include "qgsmapcanvassnappingutils.h"
 #include "qgsmaplayer.h"
@@ -406,6 +407,16 @@ void QgsMapCanvas::setLayers( const QList<QgsMapLayer *> &layers )
     return;
 
   setLayersPrivate( layers );
+}
+
+void QgsMapCanvas::setFlags( Qgis::MapCanvasFlags flags )
+{
+  mFlags = flags;
+}
+
+Qgis::MapCanvasFlags QgsMapCanvas::flags() const
+{
+  return mFlags;
 }
 
 void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
@@ -825,7 +836,8 @@ void QgsMapCanvas::refreshMap()
   // render main annotation layer above all other layers
   QgsMapSettings renderSettings = mSettings;
   QList<QgsMapLayer *> allLayers = renderSettings.layers();
-  allLayers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
+  if ( mFlags & Qgis::MapCanvasFlag::ShowMainAnnotationLayer )
+    allLayers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
 
   renderSettings.setLayers( filterLayersForRender( allLayers ) );
 
@@ -3590,7 +3602,8 @@ void QgsMapCanvas::startPreviewJob( int number )
 
     previewLayers << layer;
   }
-  if ( QgsProject::instance()->mainAnnotationLayer()->dataProvider()->renderInPreview( context ) )
+  if ( ( mFlags & Qgis::MapCanvasFlag::ShowMainAnnotationLayer )
+       && QgsProject::instance()->mainAnnotationLayer()->dataProvider()->renderInPreview( context ) )
   {
     previewLayers.insert( 0, QgsProject::instance()->mainAnnotationLayer() );
   }

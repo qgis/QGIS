@@ -19,7 +19,7 @@
 #include "qgis_3d.h"
 
 #include "qgsterraingenerator.h"
-#include "qgsterraintileloader_p.h"
+#include "qgsterraintileloader.h"
 #include <Qt3DExtras/QPlaneGeometry>
 
 #define SIP_NO_FILE
@@ -68,7 +68,7 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
     //! Sets CRS of the terrain
     void setCrs( const QgsCoordinateReferenceSystem &crs );
     //! Returns CRS of the terrain
-    QgsCoordinateReferenceSystem crs() const { return mCrs; }
+    QgsCoordinateReferenceSystem crs() const override { return mCrs; }
 
   private:
 

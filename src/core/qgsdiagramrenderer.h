@@ -874,12 +874,13 @@ class CORE_EXPORT QgsDiagramRenderer
 class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 {
   public:
+    static const QString DIAGRAM_RENDERER_NAME_SINGLE_CATEGORY SIP_SKIP;
 
     QgsSingleCategoryDiagramRenderer() = default;
 
     QgsSingleCategoryDiagramRenderer *clone() const override SIP_FACTORY;
 
-    QString rendererName() const override { return QStringLiteral( "SingleCategory" ); }
+    QString rendererName() const override { return QgsSingleCategoryDiagramRenderer::DIAGRAM_RENDERER_NAME_SINGLE_CATEGORY; }
 
     QList<QString> diagramAttributes() const override { return mSettings.categoryAttributes; }
 
@@ -909,6 +910,8 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRenderer
 {
   public:
+    static const QString DIAGRAM_RENDERER_NAME_LINEARLY_INTERPOLATED SIP_SKIP;
+
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer() override;
     QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
@@ -926,7 +929,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
 
-    QString rendererName() const override { return QStringLiteral( "LinearlyInterpolated" ); }
+    QString rendererName() const override { return QgsLinearlyInterpolatedDiagramRenderer::DIAGRAM_RENDERER_NAME_LINEARLY_INTERPOLATED; }
 
     void setLowerValue( double val ) { mInterpolationSettings.lowerValue = val; }
     double lowerValue() const { return mInterpolationSettings.lowerValue; }
@@ -997,7 +1000,14 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
 {
   public:
+    static const QString DIAGRAM_RENDERER_NAME_STACKED SIP_SKIP;
+
     QgsStackedDiagramRenderer() = default;
+    ~QgsStackedDiagramRenderer() override;
+
+    QgsStackedDiagramRenderer( const QgsStackedDiagramRenderer &other );
+
+    QgsStackedDiagramRenderer &operator=( const QgsStackedDiagramRenderer &other );
 
     QgsStackedDiagramRenderer *clone() const override SIP_FACTORY;
 
@@ -1018,7 +1028,7 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
 
     QList<QString> diagramAttributes() const override;
 
-    QString rendererName() const override { return QStringLiteral( "Stacked" ); }
+    QString rendererName() const override { return QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED; }
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
@@ -1039,23 +1049,31 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
 
     /**
      * Returns an ordered list with the renderers of the stacked renderer object.
-     * @param sortByDiagramMode If true, the list is returned backwards for vertical orientation.
+     * Does not transfer ownership.
+     *
+     * \param sortByDiagramMode If true, the list is returned backwards for vertical orientation.
      */
     QList< QgsDiagramRenderer * > renderers( bool sortByDiagramMode = false ) const;
 
     /**
-     * Adds a renderer to the stacked renderer object.
-     * @param renderer diagram renderer to be added to the stacked renderer
+     * Adds a renderer to the stacked renderer object. Takes ownership.
+     *
      * Renderers added first will render their diagrams first, i.e., more to
      * the left (horizontal mode) or more to the top (vertical mode).
+     *
+     * \param renderer diagram renderer to be added to the stacked renderer
      */
-    void addRenderer( QgsDiagramRenderer *renderer );
+    void addRenderer( QgsDiagramRenderer *renderer SIP_TRANSFER );
 
     /**
-     * Returns the renderer at the given \a index.
-     * @param index index of the disired renderer in the stacked renderer
+     * Returns the renderer at the given \a index. Does not transfer ownership.
+     *
+     * \param index index of the desired renderer in the stacked renderer
      */
     const QgsDiagramRenderer *renderer( const int index ) const;
+
+    //! Returns the number of sub renderers in the stacked diagram renderer
+    int rendererCount() const;
 
   protected:
     bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const override;

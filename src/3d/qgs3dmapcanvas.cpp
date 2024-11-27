@@ -34,6 +34,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptool.h"
 #include "qgstemporalcontroller.h"
+#include "moc_qgs3dmapcanvas.cpp"
 
 Qgs3DMapCanvas::Qgs3DMapCanvas()
   : m_aspectEngine( new Qt3DCore::QAspectEngine )
@@ -199,7 +200,7 @@ void Qgs3DMapCanvas::setViewFromTop( const QgsPointXY &center, float distance, f
 
   const float worldX = center.x() - mMapSettings->origin().x();
   const float worldY = center.y() - mMapSettings->origin().y();
-  mScene->cameraController()->setViewFromTop( worldX, -worldY, distance, rotation );
+  mScene->cameraController()->setViewFromTop( worldX, worldY, distance, rotation );
 }
 
 void Qgs3DMapCanvas::saveAsImage( const QString &fileName, const QString &fileFormat )

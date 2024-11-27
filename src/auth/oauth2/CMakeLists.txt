@@ -18,9 +18,11 @@ endif()
 if(WITH_INTERNAL_O2)
   set(O2_SRCS
     ${O2_SOURCE_DIR}/o0baseauth.cpp
+    ${O2_SOURCE_DIR}/o0jsonresponse.cpp
     ${O2_SOURCE_DIR}/o0keychainstore.cpp
     ${O2_SOURCE_DIR}/o0settingsstore.cpp
     ${O2_SOURCE_DIR}/o2.cpp
+    ${O2_SOURCE_DIR}/o2pollserver.cpp
     ${O2_SOURCE_DIR}/o2reply.cpp
     ${O2_SOURCE_DIR}/o2replyserver.cpp
     ${O2_SOURCE_DIR}/o2requestor.cpp
@@ -28,10 +30,12 @@ if(WITH_INTERNAL_O2)
   )
   set(O2_HDRS
     ${O2_INCLUDE_DIR}/o0abstractstore.h
+    ${O2_INCLUDE_DIR}/o0jsonresponse.h
     ${O2_INCLUDE_DIR}/o0baseauth.h
     ${O2_INCLUDE_DIR}/o0export.h
     ${O2_INCLUDE_DIR}/o0globals.h
     ${O2_INCLUDE_DIR}/o0keychainstore.h
+    ${O2_INCLUDE_DIR}/o2pollserver.h
     ${O2_INCLUDE_DIR}/o0requestparameter.h
     ${O2_INCLUDE_DIR}/o0settingsstore.h
     ${O2_INCLUDE_DIR}/o0simplecrypt.h

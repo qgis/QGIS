@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutaddpagesdialog.h"
+#include "moc_qgslayoutaddpagesdialog.cpp"
 #include "qgspagesizeregistry.h"
 #include "qgssettings.h"
 #include "qgslayout.h"

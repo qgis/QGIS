@@ -44,6 +44,7 @@
 
 #include "qgsgpxfeatureiterator.h"
 #include "qgsgpxprovider.h"
+#include "moc_qgsgpxprovider.cpp"
 #include "gpsdata.h"
 
 const QStringList QgsGPXProvider::sAttributeNames = { "name", "elevation", "symbol", "number",

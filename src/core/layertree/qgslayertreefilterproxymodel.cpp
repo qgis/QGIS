@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayertreefilterproxymodel.h"
+#include "moc_qgslayertreefilterproxymodel.cpp"
 
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
@@ -23,7 +24,7 @@
 QgsLayerTreeFilterProxyModel::QgsLayerTreeFilterProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
 {
-  connect( QgsProject::instance(), &QgsProject::readProject, this, [this]
+  connect( QgsProject::instance(), &QgsProject::readProject, this, [this] // skip-keyword-check
   {
     beginResetModel();
     endResetModel();

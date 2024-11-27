@@ -166,6 +166,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void onZoomToSelected();
     void reindexMesh();
     void onUndoRedo();
+    void updateStatusBarMessage() const;
 
   private:
 
@@ -349,6 +350,9 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 
     QAction *mActionSelectByExpression = nullptr;
     QAction *mActionForceByLines = nullptr;
+
+    QAction *mActionSelectIsolatedVertices = nullptr;
+    QAction *mActionSelectAllVertices = nullptr;
 
     QgsMeshEditForceByLineAction *mWidgetActionForceByLine = nullptr;
     QAction *mActionReindexMesh = nullptr;

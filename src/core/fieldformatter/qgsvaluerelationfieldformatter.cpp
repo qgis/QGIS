@@ -31,16 +31,6 @@ using namespace nlohmann;
 
 #include <QSettings>
 
-bool orderByKeyLessThan( const QgsValueRelationFieldFormatter::ValueRelationItem &p1, const QgsValueRelationFieldFormatter::ValueRelationItem &p2 )
-{
-  return p1.group == p2.group ? qgsVariantLessThan( p1.key, p2.key ) : qgsVariantLessThan( p1.group, p2.group );
-}
-
-bool orderByValueLessThan( const QgsValueRelationFieldFormatter::ValueRelationItem &p1, const QgsValueRelationFieldFormatter::ValueRelationItem &p2 )
-{
-  return p1.group == p2.group ? qgsVariantLessThan( p1.value, p2.value ) : qgsVariantLessThan( p1.group, p2.group );
-}
-
 QgsValueRelationFieldFormatter::QgsValueRelationFieldFormatter()
 {
   setFlags( flags() | QgsFieldFormatter::CanProvideAvailableValues );
@@ -129,7 +119,7 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
 {
   ValueRelationCache cache;
 
-  const QgsVectorLayer *layer = resolveLayer( config, QgsProject::instance() );
+  const QgsVectorLayer *layer = resolveLayer( config, QgsProject::instance() ); // skip-keyword-check
 
   if ( !layer )
     return cache;
@@ -176,6 +166,11 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
   }
 
   QgsFeatureIterator fit = layer->getFeatures( request );
+  const bool orderByField { config.value( QStringLiteral( "OrderByField" ) ).toBool() };
+  const int fieldIdx { orderByField ? layer->fields().lookupField( config.value( QStringLiteral( "OrderByFieldName" ) ).toString() ) : -1 };
+  const bool reverseSort { config.value( QStringLiteral( "OrderByDescending" ) ).toBool() };
+
+  QMap<QVariant, QVariant> orderByFieldValues;
 
   QgsFeature f;
   while ( fit.nextFeature( f ) )
@@ -187,16 +182,47 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
       description = descriptionExpression.evaluate( &context ).toString();
     }
     const QVariant group = groupIdx > -1 ? f.attribute( groupIdx ) : QVariant();
-    cache.append( ValueRelationItem( f.attribute( keyIdx ), f.attribute( valueIdx ).toString(), description, group ) );
+    const QVariant keyValue = f.attribute( keyIdx );
+    if ( fieldIdx != -1 )
+    {
+      orderByFieldValues.insert( keyValue, f.attribute( fieldIdx ) );
+    }
+    cache.append( ValueRelationItem( keyValue, f.attribute( valueIdx ).toString(), description, group ) );
   }
+
 
   if ( config.value( QStringLiteral( "OrderByValue" ) ).toBool() )
   {
-    std::sort( cache.begin(), cache.end(), orderByValueLessThan );
+    std::sort( cache.begin(), cache.end(), [&reverseSort]( const QgsValueRelationFieldFormatter::ValueRelationItem & p1, const QgsValueRelationFieldFormatter::ValueRelationItem & p2 ) -> bool
+    {
+      if ( reverseSort )
+        return p1.group == p2.group ? qgsVariantGreaterThan( p1.value, p2.value ) : qgsVariantGreaterThan( p1.group, p2.group );
+      else
+        return p1.group == p2.group ? qgsVariantLessThan( p1.value, p2.value ) : qgsVariantLessThan( p1.group, p2.group );
+    } );
   }
+  // Order by field
+  else if ( fieldIdx != -1 )
+  {
+    std::sort( cache.begin(), cache.end(), [&reverseSort, &orderByFieldValues]( const QgsValueRelationFieldFormatter::ValueRelationItem & p1, const QgsValueRelationFieldFormatter::ValueRelationItem & p2 ) -> bool
+    {
+      if ( reverseSort )
+        return p1.group == p2.group ? qgsVariantGreaterThan( orderByFieldValues.value( p1.key ), orderByFieldValues.value( p2.key ) ) : qgsVariantGreaterThan( p1.group, p2.group );
+      else
+        return p1.group == p2.group ? qgsVariantLessThan( orderByFieldValues.value( p1.key ), orderByFieldValues.value( p2.key ) ) : qgsVariantLessThan( p1.group, p2.group );
+
+    } );
+  }
+  // OrderByKey is the default
   else
   {
-    std::sort( cache.begin(), cache.end(), orderByKeyLessThan );
+    std::sort( cache.begin(), cache.end(), [&reverseSort]( const QgsValueRelationFieldFormatter::ValueRelationItem & p1, const QgsValueRelationFieldFormatter::ValueRelationItem & p2 ) -> bool
+    {
+      if ( reverseSort )
+        return p1.group == p2.group ? qgsVariantGreaterThan( p1.key, p2.key ) : qgsVariantGreaterThan( p1.group, p2.group );
+      else
+        return p1.group == p2.group ? qgsVariantLessThan( p1.key, p2.key ) : qgsVariantLessThan( p1.group, p2.group );
+    } );
   }
 
   return cache;

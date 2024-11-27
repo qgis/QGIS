@@ -156,4 +156,5 @@ class HubDistancePoints(QgisAlgorithm):
             sink.addFeature(feat, QgsFeatureSink.Flag.FastInsert)
             feedback.setProgress(int(current * total))
 
+        sink.finalize()
         return {self.OUTPUT: dest_id}

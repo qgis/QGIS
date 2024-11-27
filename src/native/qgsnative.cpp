@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsnative.h"
+#include "moc_qgsnative.cpp"
 #include <QString>
 #include <QDesktopServices>
 #include <QUrl>

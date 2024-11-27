@@ -24,6 +24,7 @@ set(QGIS_3D_SRCS
   qgsfeature3dhandler_p.cpp
   qgsfgutils.cpp
   qgsframegraph.cpp
+  qgsgeotransform.cpp
   qgsgltf3dutils.cpp
   qgsimagetexture.cpp
   qgslayoutitem3dmap.cpp
@@ -56,11 +57,11 @@ set(QGIS_3D_SRCS
   qgsvirtualpointcloudentity_p.cpp
 
   chunks/qgschunkboundsentity_p.cpp
-  chunks/qgschunkedentity_p.cpp
+  chunks/qgschunkedentity.cpp
   chunks/qgschunklist_p.cpp
-  chunks/qgschunkloader_p.cpp
-  chunks/qgschunknode_p.cpp
-  chunks/qgschunkqueuejob_p.cpp
+  chunks/qgschunkloader.cpp
+  chunks/qgschunknode.cpp
+  chunks/qgschunkqueuejob.cpp
 
   lights/qgsdirectionallightsettings.cpp
   lights/qgslightsource.cpp
@@ -68,6 +69,7 @@ set(QGIS_3D_SRCS
 
   materials/qgsabstractmaterialsettings.cpp
   materials/qgsgoochmaterialsettings.cpp
+  materials/qgsmaterial.cpp
   materials/qgsmaterialregistry.cpp
   materials/qgsmetalroughmaterial.cpp
   materials/qgsmetalroughmaterialsettings.cpp
@@ -102,11 +104,11 @@ set(QGIS_3D_SRCS
   terrain/qgsonlineterraingenerator.cpp
   terrain/qgsquantizedmeshterraingenerator.cpp
   terrain/qgsterraindownloader.cpp
-  terrain/qgsterrainentity_p.cpp
+  terrain/qgsterrainentity.cpp
   terrain/qgsterraingenerator.cpp
   terrain/qgsterraintexturegenerator_p.cpp
   terrain/qgsterraintextureimage_p.cpp
-  terrain/qgsterraintileloader_p.cpp
+  terrain/qgsterraintileloader.cpp
 
   mesh/qgsmesh3dgeometry_p.cpp
   mesh/qgsmesh3dentity_p.cpp
@@ -124,6 +126,7 @@ set(QGIS_3D_HDRS
   qgs3dmapsettings.h
   qgs3dmaptool.h
   qgs3drendercontext.h
+  qgs3dmapsceneentity.h
   qgs3dsceneexporter.h
   qgs3dtypes.h
   qgs3dutils.h
@@ -136,6 +139,7 @@ set(QGIS_3D_HDRS
   qgscamerapose.h
   qgsfgutils.h
   qgsframegraph.h
+  qgsgeotransform.h
   qgsgltf3dutils.h
   qgslayoutitem3dmap.h
   qgsmeshlayer3drenderer.h
@@ -165,6 +169,7 @@ set(QGIS_3D_HDRS
 
   materials/qgsabstractmaterialsettings.h
   materials/qgsgoochmaterialsettings.h
+  materials/qgsmaterial.h
   materials/qgsmaterialregistry.h
   materials/qgsmetalroughmaterial.h
   materials/qgsmetalroughmaterialsettings.h
@@ -189,10 +194,13 @@ set(QGIS_3D_HDRS
   terrain/qgsquantizedmeshterraingenerator.h
   terrain/qgsterraindownloader.h
   terrain/qgsterraingenerator.h
-  terrain/qgsterraintileloader_p.h
+  terrain/qgsterraintileloader.h
+  terrain/qgsterrainentity.h
 
-  chunks/qgschunkloader_p.h
-  chunks/qgschunkqueuejob_p.h
+  chunks/qgschunkloader.h
+  chunks/qgschunkqueuejob.h
+  chunks/qgschunknode.h
+  chunks/qgschunkedentity.h
 
   mesh/qgsmeshterraingenerator.h
 )
@@ -202,11 +210,8 @@ set(QGIS_3D_PRIVATE_HDRS
   qgsvectorlayerchunkloader_p.h
   qgspointcloudlayerchunkloader_p.h
   qgsvirtualpointcloudentity_p.h
-  qgs3dmapsceneentity_p.h
   chunks/qgschunkboundsentity_p.h
-  chunks/qgschunkedentity_p.h
   chunks/qgschunklist_p.h
-  chunks/qgschunknode_p.h
   symbols/qgsline3dsymbol_p.h
   symbols/qgslinematerial_p.h
   symbols/qgslinevertexdata_p.h
@@ -215,13 +220,13 @@ set(QGIS_3D_PRIVATE_HDRS
   symbols/qgspointcloud3dsymbol_p.h
   terrain/qgsdemterraintilegeometry_p.h
   terrain/qgsdemterraintileloader_p.h
-  terrain/qgsterrainentity_p.h
   terrain/qgsterraintexturegenerator_p.h
   terrain/qgsterraintextureimage_p.h
   terrain/qgsterraintileentity_p.h
   mesh/qgsmesh3dentity_p.h
   mesh/qgsmesh3dgeometry_p.h
   mesh/qgsmesh3dmaterial_p.h
+  mesh/qgsmeshterraintileloader_p.h
   qgscolorramptexture.h
 )
 

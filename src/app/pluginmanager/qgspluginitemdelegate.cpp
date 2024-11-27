@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspluginitemdelegate.h"
+#include "moc_qgspluginitemdelegate.cpp"
 #include "qgsrendercontext.h"
 #include <QPainter>
 #include <QFont>

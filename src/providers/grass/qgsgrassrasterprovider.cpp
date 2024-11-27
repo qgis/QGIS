@@ -21,6 +21,7 @@
 #include "qgsgrass.h"
 #include "qgsrasteridentifyresult.h"
 #include "qgsgrassrasterprovider.h"
+#include "moc_qgsgrassrasterprovider.cpp"
 #include "qgsconfig.h"
 
 #include "qgsapplication.h"

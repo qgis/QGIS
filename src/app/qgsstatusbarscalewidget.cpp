@@ -20,6 +20,7 @@
 #include <QValidator>
 
 #include "qgsstatusbarscalewidget.h"
+#include "moc_qgsstatusbarscalewidget.cpp"
 
 #include "qgsmapcanvas.h"
 #include "qgsscalecombobox.h"

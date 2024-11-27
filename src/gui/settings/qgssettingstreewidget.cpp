@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgssettingstreewidget.h"
+#include "moc_qgssettingstreewidget.cpp"
 #include "qgssettingstreemodel.h"
 #include "qgssettingstree.h"
 

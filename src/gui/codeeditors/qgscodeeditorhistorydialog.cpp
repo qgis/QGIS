@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscodeeditorhistorydialog.h"
+#include "moc_qgscodeeditorhistorydialog.cpp"
 #include "qgscodeeditor.h"
 #include <QStandardItemModel>
 #include <QShortcut>

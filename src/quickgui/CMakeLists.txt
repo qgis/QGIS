@@ -34,12 +34,6 @@ include_directories(SYSTEM
 
 ############################################################
 # qgis_quick shared library
-if (BUILD_WITH_QT6)
-  QT6_WRAP_CPP(QGIS_QUICK_GUI_MOC_SRCS ${QGIS_QUICK_GUI_MOC_HDRS})
-else()
-  QT5_WRAP_CPP(QGIS_QUICK_GUI_MOC_SRCS ${QGIS_QUICK_GUI_MOC_HDRS})
-endif()
-
 if(MSVC)
   set_source_files_properties(${QGIS_QUICK_GUI_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4512 /wd4996" )
 else()

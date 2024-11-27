@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsline3dsymbolwidget.h"
+#include "moc_qgsline3dsymbolwidget.cpp"
 
 #include "qgsline3dsymbol.h"
 #include "qgsphongmaterialsettings.h"

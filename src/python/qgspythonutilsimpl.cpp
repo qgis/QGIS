@@ -64,35 +64,47 @@ bool QgsPythonUtilsImpl::checkSystemImports()
 exec(
     compile(
         """
-def run_startup_script(script_path):
-    script_executed = False
-    if not script_path:
+class StartupScriptRunner:
+    def __init__(self):
+        self.info_messages: list[str] = []
+        self.warning_messages: list[str] = []
+
+    def run_startup_script(self, script_path: 'pathlib.Path | str | None') -> bool:
+        script_executed = False
+        if not script_path:
+            return script_executed
+
+        p1 = pathlib.Path(script_path)
+        if p1.exists():
+            self.info_messages.append(f"Executed startup script: {p1}")
+            code = compile(p1.read_text(), p1, 'exec')
+            exec(code, globals())
+            script_executed = True
+
+        p2 = pathlib.Path('%1') / script_path
+        if p2.exists() and p2 != p1:
+            self.info_messages.append(f"Executed startup script: {p2}")
+            code = compile(p2.read_text(), p2, 'exec')
+            exec(code, globals())
+            script_executed = True
+
+        if not script_executed:
+            self.warning_messages.append(
+                f"Startup script not executed - neither {p1} nor {p2} exist!"
+            )
+
         return script_executed
 
-    from qgis.core import Qgis, QgsMessageLog
+    def log_messages(self):
+        from qgis.core import Qgis, QgsMessageLog
 
-    p1 = pathlib.Path(script_path)
-    if p1.exists():
-        QgsMessageLog.logMessage(f"Running {p1}", "QGIS", Qgis.MessageLevel.Info)
-        code = compile(p1.read_text(), p1, 'exec')
-        exec(code, globals())
-        script_executed = True
+        for msg in self.info_messages:
+            QgsMessageLog.logMessage(msg, "QGIS", Qgis.MessageLevel.Info)
 
-    p2 = pathlib.Path('%1') / script_path
-    if p2.exists() and p2 != p1:
-        QgsMessageLog.logMessage(f"Running {p2}", "QGIS", Qgis.MessageLevel.Info)
-        code = compile(p2.read_text(), p2, 'exec')
-        exec(code, globals())
-        script_executed = True
+        for msg in self.warning_messages:
+            QgsMessageLog.logMessage(msg, "QGIS", Qgis.MessageLevel.Warning)
 
-    if not script_executed:
-        QgsMessageLog.logMessage(
-            f"Startup script not executed - neither {p1} nor {p2} exist!",
-            "QGIS",
-            Qgis.MessageLevel.Warning,
-        )
-
-    return script_executed
+_ssr = StartupScriptRunner()
         """,
         'QgsPythonUtilsImpl::checkSystemImports [run_startup_script]',
         'exec',
@@ -100,7 +112,7 @@ def run_startup_script(script_path):
     globals(),
 )
 )"""" ).arg( pythonPath() ), QObject::tr( "Couldn't create run_startup_script." ), true );
-  runString( QStringLiteral( "is_startup_script_executed = run_startup_script(pyqgstart)" ) );
+  runString( QStringLiteral( "is_startup_script_executed = _ssr.run_startup_script(pyqgstart)" ) );
 
 #ifdef Q_OS_WIN
   runString( "oldhome=None" );
@@ -183,6 +195,9 @@ def run_startup_script(script_path):
 #ifdef Q_OS_WIN
   runString( "if oldhome: os.environ['HOME']=oldhome\n" );
 #endif
+
+  // now, after successful import of `qgis` module, we can show logs from `StartupScriptRunner`
+  runString( QStringLiteral( "_ssr.log_messages()" ));
 
   return true;
 }

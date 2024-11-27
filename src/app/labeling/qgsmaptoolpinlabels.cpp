@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolpinlabels.h"
+#include "moc_qgsmaptoolpinlabels.cpp"
 
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
@@ -190,7 +191,6 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
 
   const QList<QgsLabelPosition> labelPosList = labelingResults->labelsWithinRect( ext );
 
-  QApplication::setOverrideCursor( Qt::WaitCursor );
   for ( const QgsLabelPosition &pos : labelPosList )
   {
     mCurrentLabel = LabelDetails( pos, canvas() );
@@ -254,18 +254,15 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
       highlightCallout( false, callout, calloutStringID, calloutColor );
     }
   }
-  QApplication::restoreOverrideCursor();
 }
 
 void QgsMapToolPinLabels::removePinnedHighlights()
 {
-  QApplication::setOverrideCursor( Qt::BusyCursor );
   for ( QgsRubberBand *rb : std::as_const( mHighlights ) )
   {
     delete rb;
   }
   mHighlights.clear();
-  QApplication::restoreOverrideCursor();
 }
 
 void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle &ext, QMouseEvent *e )

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgswfsgetfeature.h"
+#include "moc_qgswfsgetfeature.cpp"
 #include "qgsmessagelog.h"
 #include <QUrlQuery>
 

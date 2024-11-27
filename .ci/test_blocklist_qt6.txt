@@ -13,10 +13,6 @@ test_app_vertextool
 # Crashes -- also disabled on qt5 builds!
 test_gui_queryresultwidget
 
-# block list
-qgis_composerutils
-PyQgsAppStartup
-
 # code layout tests are run on separate build
 qgis_spelling
 qgis_sipify
@@ -54,20 +50,16 @@ PyQgsMapBoxGlStyleConverter
 PyQgsMemoryProvider
 PyQgsNetworkAccessManager
 PyQgsPalLabelingPlacement
-PyQgsPlot
 PyQgsRasterAttributeTable
 PyQgsRasterLayerRenderer
 PyQgsShapefileProvider
-PyQgsTextRenderer
 PyQgsSpatialiteProvider
 PyQgsSymbolLayerReadSld
-PyQgsVectorLayerCache
 PyQgsVectorLayerEditBuffer
 PyQgsVectorLayerEditUtils
 PyQgsLayerDefinition
 PyQgsSettings
 PyQgsSettingsEntry
-PyQgsSelectiveMasking
 PyQgsServerApi
 PyQgsServerWMSGetFeatureInfo
 PyQgsServerWMSGetMap

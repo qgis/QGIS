@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitempicture.h"
+#include "moc_qgslayoutitempicture.cpp"
 #include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
 #include "qgslayoutrendercontext.h"

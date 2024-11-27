@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgpsdetector.h"
+#include "moc_qgsgpsdetector.cpp"
 #include "qgsgpsconnection.h"
 #include "qgsnmeaconnection.h"
 #include "qgsgpsdconnection.h"
@@ -274,6 +275,6 @@ void QgsGpsDetector::connDestroyed( QObject *obj )
   // WTF? This whole class needs re-writing...
   if ( obj == mConn.get() )
   {
-    mConn.release();
+    mConn.release(); // cppcheck-suppress ignoredReturnValue
   }
 }

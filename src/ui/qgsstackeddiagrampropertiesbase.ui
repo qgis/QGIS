@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>842</width>
-    <height>472</height>
+    <width>802</width>
+    <height>462</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -117,23 +117,30 @@
     </layout>
    </item>
    <item>
-    <widget class="QFrame" name="mStackedDiagramSettingsFrame">
-     <property name="frameShape">
-      <enum>QFrame::Shape::StyledPanel</enum>
+    <widget class="QGroupBox" name="mStackedDiagramSettingsGroupBox">
+     <property name="title">
+      <string>Layout</string>
      </property>
-     <property name="frameShadow">
-      <enum>QFrame::Shadow::Raised</enum>
-     </property>
-     <layout class="QGridLayout" name="gridLayout">
+     <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
       <item row="1" column="0">
+       <widget class="QLabel" name="dIagramSpacingLabel">
+        <property name="text">
+         <string>Spacing</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="stackedDiagramModeLabel">
+        <property name="text">
+         <string>Diagram arrangement</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="mStackedDiagramModeComboBox"/>
+      </item>
+      <item row="1" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QLabel" name="dIagramSpacingLabel">
-          <property name="text">
-           <string>Diagram spacing</string>
-          </property>
-         </widget>
-        </item>
         <item>
          <widget class="QgsDoubleSpinBox" name="mStackedDiagramSpacingSpinBox">
           <property name="minimumSize">
@@ -141,6 +148,12 @@
             <width>70</width>
             <height>0</height>
            </size>
+          </property>
+          <property name="decimals">
+           <number>6</number>
+          </property>
+          <property name="maximum">
+           <double>9999999999.000000000000000</double>
           </property>
          </widget>
         </item>
@@ -156,46 +169,6 @@
            <string/>
           </property>
          </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Orientation::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </item>
-      <item row="0" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
-         <widget class="QLabel" name="stackedDiagramModeLabel">
-          <property name="text">
-           <string>Stacked diagram mode</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="mStackedDiagramModeComboBox"/>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Orientation::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
         </item>
        </layout>
       </item>
@@ -217,6 +190,14 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mSubDiagramsView</tabstop>
+  <tabstop>mAddSubDiagramButton</tabstop>
+  <tabstop>mEditSubDiagramButton</tabstop>
+  <tabstop>mRemoveSubDiagramButton</tabstop>
+  <tabstop>mStackedDiagramModeComboBox</tabstop>
+  <tabstop>mStackedDiagramSpacingSpinBox</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

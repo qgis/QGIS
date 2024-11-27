@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayertreelocatorfilter.h"
+#include "moc_qgslayertreelocatorfilter.cpp"
 #include "qgslayertree.h"
 #include "qgsproject.h"
 #include "qgsiconutils.h"

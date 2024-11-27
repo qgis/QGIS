@@ -444,6 +444,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
   QVariantMap outputs;
   if ( outputSink )
   {
+    outputSink->finalize();
     outputs.insert( QStringLiteral( "OUTPUT" ), outputDest );
 
     if ( context.willLoadLayerOnCompletion( outputDest ) )
@@ -453,7 +454,10 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
   }
 
   if ( invalidSink )
+  {
+    invalidSink->finalize();
     outputs.insert( QStringLiteral( "INVALID" ), invalidDest );
+  }
   return outputs;
 }
 

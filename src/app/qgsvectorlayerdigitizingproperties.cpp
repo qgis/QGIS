@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerdigitizingproperties.h"
+#include "moc_qgsvectorlayerdigitizingproperties.cpp"
 #include "qgsanalysis.h"
 #include "qgscollapsiblegroupbox.h"
 #include "qgsdoublespinbox.h"
@@ -43,9 +44,8 @@ QgsVectorLayerDigitizingPropertiesPage::QgsVectorLayerDigitizingPropertiesPage( 
     mGeometryPrecisionLineEdit->setValidator( new QDoubleValidator( mGeometryPrecisionLineEdit ) );
 
     const double precision( vlayer->geometryOptions()->geometryPrecision() );
-    const bool ok = true;
-    QString precisionStr( QLocale().toString( precision, ok ) );
-    if ( precision == 0.0 || ! ok )
+    QString precisionStr( QLocale().toString( precision, 'g', 17 ) );
+    if ( precision == 0.0 )
       precisionStr = QString();
     mGeometryPrecisionLineEdit->setText( precisionStr );
 

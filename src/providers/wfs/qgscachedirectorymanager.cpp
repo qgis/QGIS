@@ -16,6 +16,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgscachedirectorymanager.h"
+#include "moc_qgscachedirectorymanager.cpp"
 #include "qgssettings.h"
 
 // 1 minute

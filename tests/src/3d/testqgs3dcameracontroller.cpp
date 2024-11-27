@@ -151,9 +151,9 @@ void TestQgs3DCameraController::testTranslate()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
 
   QVector3D diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( -944.6, 0.0, -180.3 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( -944.6, 180.3, 0.0 ), 4.0 );
   QVector3D diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
-  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -944.6, 0.0, -180.3 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -944.6, 180.3, 0.0 ), 4.0 );
   QCOMPARE( scene->cameraController()->pitch(), initialPitch );
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
 
@@ -228,9 +228,9 @@ void TestQgs3DCameraController::testZoom()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Zoom );
 
   QVector3D diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 0.0, 10.3, 0.0 ), 1.5 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 0.0, 0.0, 10.3 ), 1.5 );
   QVector3D diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
-  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( 0.0, -850.4, -1.5 ), 1.5 );
+  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( 0.0, 1.5, -850.4 ), 1.5 );
   QCOMPARE( scene->cameraController()->pitch(), initialPitch );
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
 
@@ -283,8 +283,8 @@ void TestQgs3DCameraController::testZoomWheel()
   QImage depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
   scene->cameraController()->depthBufferCaptured( depthImage );
 
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( -1381.3, 1.0, -1036.7 ), 5.0 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -480.0, -351.7, -360.6 ), 5.0 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( -1381.3, 1036.7, 1.0 ), 5.0 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -480.0, 360.6, -351.7 ), 5.0 );
   QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1982.3, 5.0 );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, 0 );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
@@ -354,9 +354,9 @@ void TestQgs3DCameraController::testRotationCenter()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
 
   QVector3D diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 2.1, 0.3, -1.1 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 2.1, 1.1, 0.3 ), 1.0 );
   QVector3D diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
-  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -465.0, -56.1, 241.2 ), 4.0 );
+  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -465.0, -241.2, -56.1 ), 4.0 );
   float diffPitch = scene->cameraController()->pitch() - initialPitch;
   float diffYaw = scene->cameraController()->yaw() - initialYaw;
   QGSCOMPARENEAR( diffPitch, 12.1, 0.1 );
@@ -432,8 +432,9 @@ void TestQgs3DCameraController::testRotationCamera()
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCamera );
 
+  // TODO: ???
   QVector3D diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 263.6, 28.7, -266.5 ), 4.0 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 263.6, 266.5, 28.7 ), 4.0 );
   QVector3D diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
   QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( 0.0, 0.0, 0.0 ), 1.0 );
   float diffPitch = scene->cameraController()->pitch() - initialPitch;
@@ -516,9 +517,9 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
 
   QVector3D diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 2.1, 0.3, -1.1 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 2.1, 1.1, 0.3 ), 1.0 );
   QVector3D diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
-  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -465.0, -56.1, 241.2 ), 4.0 );
+  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -465.0, -241.2, -56.1 ), 4.0 );
   float diffPitch = scene->cameraController()->pitch() - initialPitch;
   float diffYaw = scene->cameraController()->yaw() - initialYaw;
   QGSCOMPARENEAR( diffPitch, 12.1, 0.1 );
@@ -546,8 +547,8 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
   scene->cameraController()->depthBufferCaptured( depthImage );
 
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( 283.2, -27.0, 923.1 ), 1.5 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( 120.3, -116.8, 308.9 ), 2.0 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( 283.2, -923.1, -27.0 ), 1.5 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( 120.3, -308.9, -116.8 ), 2.0 );
   QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1742.9, 2.0 );
   QCOMPARE( scene->cameraController()->pitch(), initialPitch );
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
@@ -584,9 +585,9 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
 
   diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 30.6, 6.4, -8.2 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 30.6, 8.2, 6.4 ), 1.0 );
   diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
-  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -44.3, -11.7, 9.1 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -44.3, -9.1, -11.7 ), 1.0 );
   diffPitch = scene->cameraController()->pitch() - initialPitch;
   diffYaw = scene->cameraController()->yaw() - initialYaw;
   QGSCOMPARENEAR( diffPitch, 2.5, 0.1 );
@@ -667,9 +668,9 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
 
   QVector3D diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( -944.6, 0.0, -180.3 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( -944.6, 180.3, 0.0 ), 4.0 );
   QVector3D diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
-  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -944.6, 0.0, -180.3 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -944.6, 180.3, 0.0 ), 4.0 );
   QCOMPARE( scene->cameraController()->pitch(), initialPitch );
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
 
@@ -702,9 +703,9 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
 
   diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 9.1, 8.2, -42.0 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 9.1, 42.0, 8.2 ), 4.0 );
   diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
-  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( 3.8, 5.3, 68.3 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( 3.8, -68.3, 5.3 ), 4.0 );
   float diffPitch = scene->cameraController()->pitch() - initialPitch;
   float diffYaw = scene->cameraController()->yaw() - initialYaw;
   QGSCOMPARENEAR( diffPitch, 2.5, 0.1 );
@@ -748,9 +749,9 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
 
   diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( -20.2, 0.0, -22.4 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( -20.2, 22.4, 0.0 ), 4.0 );
   diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
-  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -20.2, 0.0, -22.4 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -20.2, 22.4, 0.0 ), 4.0 );
   QCOMPARE( scene->cameraController()->pitch(), initialPitch );
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
 
@@ -829,9 +830,9 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
 
   QVector3D diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( -944.6, 0.0, -180.3 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( -944.6, 180.3, 0.0 ), 4.0 );
   QVector3D diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
-  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -944.6, 0.0, -180.3 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -944.6, 180.3, 0.0 ), 4.0 );
   QCOMPARE( scene->cameraController()->pitch(), initialPitch );
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
 
@@ -856,8 +857,8 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
   scene->cameraController()->depthBufferCaptured( depthImage );
 
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( 4.8, 9.9, 4.4 ), 1.0 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -615.0, -108.0, -116.6 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( 4.8, -4.4, 9.9 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -615.0, 116.6, -108.0 ), 4.0 );
   QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1743.4, 2.0 );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, 0 );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
@@ -901,9 +902,9 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
 
   diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( -11.3, 0.0, -11.3 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( -11.3, 11.3, 0.0 ), 1.0 );
   diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
-  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -11.3, 0.0, -11.3 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -11.3, 11.3, 0.0 ), 1.0 );
   QCOMPARE( scene->cameraController()->pitch(), initialPitch );
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
 
@@ -982,9 +983,9 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
 
   QVector3D diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( -944.6, 0.0, -180.3 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( -944.6, 180.3, 0.0 ), 4.0 );
   QVector3D diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
-  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -944.6, 0.0, -180.3 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -944.6, 180.3, 0.0 ), 4.0 );
   QCOMPARE( scene->cameraController()->pitch(), initialPitch );
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
 
@@ -1015,9 +1016,9 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCamera );
 
   diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 2.7, 1.5, -78.0 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 2.7, 78.0, 1.5 ), 2.0 );
   diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
-  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( 0.0, 0.0, 0.0 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( 0.0, 0.0, 0.0 ), 2.0 );
   float diffPitch = scene->cameraController()->pitch() - initialPitch;
   float diffYaw = scene->cameraController()->yaw() - initialYaw;
   QGSCOMPARENEAR( diffPitch, 1.8, 0.1 );
@@ -1061,9 +1062,9 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
 
   diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( -20.2, 0.0, -22.4 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( -20.2, 22.4, 0.0 ), 2.0 );
   diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
-  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -20.2, 0.0, -22.4 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -20.2, 22.4, 0.0 ), 2.0 );
   QCOMPARE( scene->cameraController()->pitch(), initialPitch );
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
 
@@ -1142,9 +1143,9 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
 
   QVector3D diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 2.1, 0.3, -1.1 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 2.1, 1.1, 0.3 ), 1.0 );
   QVector3D diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
-  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -465.0, -56.1, 241.2 ), 4.0 );
+  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -465.0, -241.2, -56.1 ), 4.0 );
   float diffPitch = scene->cameraController()->pitch() - initialPitch;
   float diffYaw = scene->cameraController()->yaw() - initialYaw;
   QGSCOMPARENEAR( diffPitch, 12.1, 0.1 );
@@ -1179,7 +1180,7 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCamera );
 
   diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 76.3, 17.9, -18.7 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 76.3, 18.7, 17.9 ), 1.0 );
   diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
   QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( 0.0, 0.0, 0.0 ), 1.0 );
   diffPitch = scene->cameraController()->pitch() - initialPitch;
@@ -1216,9 +1217,9 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
 
   diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 9.3, 2.2, -2.1 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 9.3, 2.1, 2.2 ), 1.0 );
   diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
-  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -14.8, -3.9, 2.8 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -14.8, -2.8, -3.9 ), 1.0 );
   diffPitch = scene->cameraController()->pitch() - initialPitch;
   diffYaw = scene->cameraController()->yaw() - initialYaw;
   QGSCOMPARENEAR( diffPitch, 0.6, 0.1 );

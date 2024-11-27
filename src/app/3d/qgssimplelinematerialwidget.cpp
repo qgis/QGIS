@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgssimplelinematerialwidget.h"
+#include "moc_qgssimplelinematerialwidget.cpp"
 
 #include "qgssimplelinematerialsettings.h"
 #include "qgis.h"

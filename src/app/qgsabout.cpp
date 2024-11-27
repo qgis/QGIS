@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsabout.h"
+#include "moc_qgsabout.cpp"
 #include "qgsapplication.h"
 #include "qgsauthmethodregistry.h"
 #include "qgsproviderregistry.h"
@@ -30,7 +31,7 @@
 #include <QUrl>
 #include <QRegularExpression>
 
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
 // Modeless dialog with close button only
 constexpr Qt::WindowFlags kAboutWindowFlags = Qt::WindowSystemMenuHint;
 #else
@@ -150,8 +151,8 @@ void QgsAbout::init()
   {
     const QString donorsHTML = tr( "<p>For a list of individuals and institutions who have contributed "
                                    "money to fund QGIS development and other project costs see "
-                                   "<a href=\"https://qgis.org/en/site/about/sustaining_members.html#list-of-donors\">"
-                                   "https://qgis.org/en/site/about/sustaining_members.html#list-of-donors</a></p>" );
+                                   "<a href=\"https://qgis.org/funding/donate/\">"
+                                   "https://qgis.org/funding/donate/</a></p>" );
 #if 0
     QString website;
     QTextStream donorsStream( &donorsFile );

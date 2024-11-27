@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdatadefinedsizelegendwidget.h"
+#include "moc_qgsdatadefinedsizelegendwidget.cpp"
 
 #include <QInputDialog>
 #include <QStyledItemDelegate>
@@ -190,11 +191,17 @@ void QgsDataDefinedSizeLegendWidget::changeSymbol()
     context.setMapCanvas( mMapCanvas );
 
   QgsExpressionContext ec;
-  ec << QgsExpressionContextUtils::globalScope()
-     << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-     << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
-    ec << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() );
+  {
+    ec = mMapCanvas->createExpressionContext();
+  }
+  else
+  {
+    ec << QgsExpressionContextUtils::globalScope()
+       << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+       << QgsExpressionContextUtils::atlasScope( nullptr )
+       << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
   context.setExpressionContext( &ec );
 
   const QString crsAuthId = mMapCanvas ? mMapCanvas->mapSettings().destinationCrs().authid() : QString();

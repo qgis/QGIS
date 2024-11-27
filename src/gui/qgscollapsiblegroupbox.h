@@ -139,7 +139,6 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     void setStyleSheet( const QString &style );
 
   protected:
-    void init();
 
     //! Visual fixes for when group box is collapsed/expanded
     void collapseExpandFixes();
@@ -168,6 +167,11 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
 
     QIcon mCollapseIcon;
     QIcon mExpandIcon;
+
+  private:
+
+    void init();
+
 };
 
 /**
@@ -244,9 +248,11 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
     void saveState() const;
 
   protected:
-    void init();
     void showEvent( QShowEvent *event ) override;
     QString saveKey() const;
+
+  private:
+    void init();
 
     // pointer to app or custom, external QgsSettings
     // QPointer in case custom settings obj gets deleted while groupbox's dialog is open

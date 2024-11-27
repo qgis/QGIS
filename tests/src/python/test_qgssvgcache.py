@@ -249,6 +249,29 @@ class TestQgsSvgCache(QgisTestCase):
         for i in range(1000):
             QCoreApplication.processEvents()
 
+    def test_inline_svg(self):
+        inline_svg = """data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve" height="100px" width="100px"><path fill="param(fill) #000000" d="M50,2.5c-19.2,0-34.8,15-34.8,33.4C15.2,61.3,50,97.5,50,97.5s34.8-36.2,34.8-61.6  C84.8,17.5,69.2,2.5,50,2.5z M50,48.2c-7.1,0-12.9-5.8-12.9-12.9c0-7.1,5.8-12.9,12.9-12.9c7.1,0,12.9,5.8,12.9,12.9  C62.9,42.4,57.1,48.2,50,48.2z"/></svg>"""
+        image, in_cache = QgsApplication.svgCache().svgAsImage(inline_svg, 100,
+                                                               fill=QColor(0,
+                                                                           0,
+                                                                           0),
+                                                               stroke=QColor(0,
+                                                                             0,
+                                                                             0),
+                                                               strokeWidth=0.1,
+                                                               widthScaleFactor=1,
+                                                               blocking=True)
+        self.assertTrue(
+            self.image_check(
+                'Inline svg',
+                'inline_svg',
+                image,
+                color_tolerance=2,
+                allowed_mismatch=20,
+                use_checkerboard_background=True
+            )
+        )
+
 
 if __name__ == '__main__':
     unittest.main()

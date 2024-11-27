@@ -162,7 +162,8 @@ QList<QgsGdalOption> QgsGdalOption::optionsFromXml( const CPLXMLNode *node )
 bool QgsGdalUtils::supportsRasterCreate( GDALDriverH driver )
 {
   const QString driverShortName = GDALGetDriverShortName( driver );
-  if ( driverShortName == QLatin1String( "SQLite" ) )
+  if ( driverShortName == QLatin1String( "SQLite" ) ||
+       driverShortName == QLatin1String( "PDF" ) )
   {
     // it supports Create() but only for vector side
     return false;
@@ -854,7 +855,13 @@ QString QgsGdalUtils::vsiPrefixForPath( const QString &path )
     return QStringLiteral( "/vsizip/" );
   }
   else if ( path.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) )
+  {
+    // GTFS driver directly handles .zip files
+    const char *const apszAllowedDrivers[] = { "GTFS", nullptr };
+    if ( GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, apszAllowedDrivers, nullptr ) )
+      return QString();
     return QStringLiteral( "/vsizip/" );
+  }
   else if ( path.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) ||
             path.endsWith( QLatin1String( ".tar.gz" ), Qt::CaseInsensitive ) ||
             path.endsWith( QLatin1String( ".tgz" ), Qt::CaseInsensitive ) )

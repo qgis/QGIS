@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayermetadatasearchwidget.h"
+#include "moc_qgslayermetadatasearchwidget.cpp"
 #include "qgslayermetadataresultsmodel.h"
 #include "qgslayermetadataresultsproxymodel.h"
 #include "qgsapplication.h"

@@ -31,6 +31,8 @@ namespace Qt3DExtras
   class QPhongMaterial;
 }
 
+class QSurface;
+
 #include "qgs3dmapsettings.h"
 #include "qgs3danimationsettings.h"
 #include "qgs3dtypes.h"
@@ -143,7 +145,7 @@ class _3D_EXPORT Qgs3DUtils
     static QMatrix4x4 stringToMatrix4x4( const QString &str );
 
     //! Calculates (x,y,z) positions of (multi)point from the given feature
-    static void extractPointPositions( const QgsFeature &f, const Qgs3DRenderContext &context, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions );
+    static void extractPointPositions( const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions );
 
     /**
      * Returns TRUE if bbox is completely outside the current viewing volume.
@@ -151,9 +153,9 @@ class _3D_EXPORT Qgs3DUtils
     */
     static bool isCullable( const QgsAABB &bbox, const QMatrix4x4 &viewProjectionMatrix );
 
-    //! Converts map coordinates to 3D world coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+    //! Converts map coordinates to 3D world coordinates (applies offset)
     static QgsVector3D mapToWorldCoordinates( const QgsVector3D &mapCoords, const QgsVector3D &origin );
-    //! Converts 3D world coordinates to map coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+    //! Converts 3D world coordinates to map coordinates (applies offset)
     static QgsVector3D worldToMapCoordinates( const QgsVector3D &worldCoords, const QgsVector3D &origin );
 
     /**
@@ -173,6 +175,12 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.12
      */
     static QgsAABB mapToWorldExtent( const QgsRectangle &extent, double zMin, double zMax, const QgsVector3D &mapOrigin );
+
+    /**
+     * Converts 3D box in map coordinates to AABB in world coordinates.
+     * \since QGIS 3.42
+     */
+    static QgsAABB mapToWorldExtent( const QgsBox3D &box3D, const QgsVector3D &mapOrigin );
 
     /**
      * Converts axis aligned bounding box in 3D world coordinates to extent in map coordinates
@@ -315,6 +323,33 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.40
      */
     static QByteArray addDefinesToShaderCode( const QByteArray &shaderCode, const QStringList &defines );
+
+    /**
+     * Removes some define macros from a shader source code.
+     *
+     * \param shaderCode shader code
+     * \param defines list of defines to remove
+     *
+     * \since QGIS 3.40
+     */
+    static QByteArray removeDefinesFromShaderCode( const QByteArray &shaderCode, const QStringList &defines );
+
+    /**
+     * Tries to decompose a 4x4 transform matrix into translation, rotation and scale components.
+     * It is expected that the matrix has been created by only applying these transforms, otherwise
+     * the results are undefined.
+     *
+     * \since QGIS 3.42
+     */
+    static void decomposeTransformMatrix( const QMatrix4x4 &matrix, QVector3D &translation, QQuaternion &rotation, QVector3D &scale );
+
+    /**
+     * Gets the maximum number of clip planes that can be used.
+     * This value depends on the OpenGL implementation. It should be at least 6.
+     *
+     * \since QGIS 3.42
+     */
+    static int openGlMaxClipPlanes( QSurface *surface );
 };
 
 #endif // QGS3DUTILS_H

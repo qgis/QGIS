@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfieldconditionalformatwidget.h"
+#include "moc_qgsfieldconditionalformatwidget.cpp"
 
 #include "qgsexpressionbuilderdialog.h"
 #include "qgssymbol.h"

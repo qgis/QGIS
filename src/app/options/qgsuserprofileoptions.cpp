@@ -19,6 +19,7 @@
 #include "qgsuserprofilemanager.h"
 
 #include "qgsuserprofileoptions.h"
+#include "moc_qgsuserprofileoptions.cpp"
 
 //
 // QgsUserProfileOptionsWidget

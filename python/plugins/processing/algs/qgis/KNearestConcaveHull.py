@@ -161,6 +161,7 @@ class KNearestConcaveHull(QgisAlgorithm):
                     fid += 1
                 if not success:
                     raise QgsProcessingException('No hulls could be created. Most likely there were not at least three unique points in any of the groups.')
+                sink.finalize()
             else:
                 # Field parameter provided but can't read from it
                 raise QgsProcessingException('Unable to find grouping field')
@@ -202,6 +203,8 @@ class KNearestConcaveHull(QgisAlgorithm):
                     raise QgsProcessingException('At least three unique points are required to create a concave hull.')
             else:
                 raise QgsProcessingException('At least three points are required to create a concave hull.')
+
+            sink.finalize()
 
         return {self.OUTPUT: dest_id}
 

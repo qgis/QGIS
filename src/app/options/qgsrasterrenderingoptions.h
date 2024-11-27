@@ -28,8 +28,6 @@ class QgsRasterRenderingOptionsWidget : public QgsOptionsPageWidget, private Ui:
     QString helpKey() const override;
     void apply() override;
   private:
-    bool mBlockStoringChanges = false;
-
     void initContrastEnhancement( QComboBox *cbox, const QString &name, const QString &defaultVal );
     void saveContrastEnhancement( QComboBox *cbox, const QString &name );
     void initMinMaxLimits( QComboBox *cbox, const QString &name, const QString &defaultVal );

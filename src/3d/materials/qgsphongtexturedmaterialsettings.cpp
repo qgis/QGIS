@@ -63,7 +63,16 @@ QgsPhongTexturedMaterialSettings *QgsPhongTexturedMaterialSettings::clone() cons
   return new QgsPhongTexturedMaterialSettings( *this );
 }
 
-float QgsPhongTexturedMaterialSettings::textureRotation() const
+bool QgsPhongTexturedMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
+{
+  const QgsPhongTexturedMaterialSettings *otherPhong = dynamic_cast< const QgsPhongTexturedMaterialSettings * >( other );
+  if ( !otherPhong )
+    return false;
+
+  return *this == *otherPhong;
+}
+
+double QgsPhongTexturedMaterialSettings::textureRotation() const
 {
   return mTextureRotation;
 }
@@ -75,8 +84,8 @@ void QgsPhongTexturedMaterialSettings::readXml( const QDomElement &elem, const Q
   mShininess = elem.attribute( QStringLiteral( "shininess" ) ).toDouble();
   mOpacity = elem.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1.0" ) ).toDouble();
   mDiffuseTexturePath = elem.attribute( QStringLiteral( "diffuse_texture_path" ), QString() );
-  mTextureScale = elem.attribute( QStringLiteral( "texture_scale" ), QString( "1.0" ) ).toFloat();
-  mTextureRotation = elem.attribute( QStringLiteral( "texture-rotation" ), QString( "0.0" ) ).toFloat();
+  mTextureScale = elem.attribute( QStringLiteral( "texture_scale" ), QString( "1.0" ) ).toDouble();
+  mTextureRotation = elem.attribute( QStringLiteral( "texture-rotation" ), QString( "0.0" ) ).toDouble();
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }
@@ -94,7 +103,7 @@ void QgsPhongTexturedMaterialSettings::writeXml( QDomElement &elem, const QgsRea
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }
 
-Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
+QgsMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
   switch ( technique )
   {
@@ -119,7 +128,7 @@ Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterial
         phongSettings.setOpacity( mOpacity );
         phongSettings.setShininess( mShininess );
         phongSettings.setSpecular( mSpecular );
-        Qt3DRender::QMaterial *material = phongSettings.toMaterial( technique, context );
+        QgsMaterial *material = phongSettings.toMaterial( technique, context );
         return material;
       }
 
@@ -149,7 +158,7 @@ Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterial
       texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
 
       material->setDiffuseTexture( texture );
-      material->setDiffuseTextureScale( mTextureScale );
+      material->setDiffuseTextureScale( static_cast< float >( mTextureScale ) );
 
       return material;
     }

@@ -19,10 +19,46 @@ endif()
 # don't relink it only the shared object changes
 set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 
+set (WITH_BINDINGS TRUE CACHE BOOL "Determines whether Python bindings should be built")
+set (WITH_3D TRUE CACHE BOOL "Determines whether QGIS 3D library should be built")
+set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
+set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
+set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library should be built")
+set(WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
+
+set(SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
+
+if(NOT SDK_PATH STREQUAL "")
+  message(STATUS "Building with SDK -- ${SDK_PATH}")
+  set(CMAKE_TOOLCHAIN_FILE "${SDK_PATH}/scripts/buildsystems/vcpkg.cmake")
+  set(VCPKG_INSTALL_PREFIX "${SDK_PATH}/installed")
+  if(APPLE AND NOT VCPKG_TARGET_TRIPLET)
+    message(FATAL_ERROR "VCPKG_TARGET_TRIPLET not set (set it to arm64-osx-dynamic-release or x64-osx-dynamic-release")
+  endif()
+  set(WITH_VCPKG ON)
+elseif(WITH_VCPKG)
+  message(STATUS "Building local dependencies with VCPKG --")
+  set(VCPKG_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/vcpkg_installed")
+  include(VcpkgToolchain)
+else()
+  message(STATUS "Building with system libraries --")
+endif()
+
+if(WITH_VCPKG)
+  if(WIN32)
+    list(APPEND CMAKE_PROGRAM_PATH "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}/tools/python3/Scripts/")
+  else()
+    list(APPEND CMAKE_PROGRAM_PATH "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}/bin")
+  endif()
+  set(PREFER_INTERNAL_LIBS FALSE)
+else()
+  set(PREFER_INTERNAL_LIBS TRUE)
+endif()
+
 #############################################################
 # Project and version
 set(CPACK_PACKAGE_VERSION_MAJOR "3")
-set(CPACK_PACKAGE_VERSION_MINOR "39")
+set(CPACK_PACKAGE_VERSION_MINOR "41")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 set(RELEASE_NAME "Master")
@@ -43,7 +79,7 @@ set (ENABLE_LOCAL_BUILD_SHORTCUTS FALSE CACHE BOOL "Disables some build steps wh
 #############################################################
 if (APPLE)
   # QGIS custom dependencies package from qgis/QGIS-Mac-Packager
-  # they can be downloaded from https://qgis.org/downloads/macos/qgis-deps
+  # they can be downloaded from https://download.qgis.org/downloads/macos/deps/
   # and extracted to /opt/QGIS/qgis-deps-<deps-version>/stage
   set (QGIS_MAC_DEPS_DIR "" CACHE PATH "Path to QGIS Mac custom dependencies directory")
 
@@ -138,7 +174,6 @@ if(WITH_CORE)
     endif()
   endforeach (GRASS_SEARCH_VERSION)
 
-  set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library (and everything built on top of it) should be built")
 
   set (WITH_OAUTH2_PLUGIN TRUE CACHE BOOL "Determines whether OAuth2 authentication method plugin should be built")
   if(WITH_OAUTH2_PLUGIN)
@@ -148,8 +183,6 @@ if(WITH_CORE)
   set (WITH_AUTH TRUE CACHE BOOL "Determines whether QGIS authentication methods should be built")
 
   set (WITH_ANALYSIS TRUE CACHE BOOL "Determines whether QGIS analysis library should be built")
-
-  set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 
   if(WITH_DESKTOP)
       if((WIN32 AND NOT MINGW) OR (UNIX AND NOT APPLE AND NOT ANDROID AND NOT IOS))
@@ -169,17 +202,12 @@ if(WITH_CORE)
       endif()
   endif()
 
-  set (WITH_3D TRUE CACHE BOOL "Determines whether QGIS 3D library should be built")
-
   set (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
-
-  set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
 
   set (NATIVE_CRSSYNC_BIN "" CACHE PATH "Path to a natively compiled synccrsdb binary. If set, crssync will not build but use provided bin instead.")
   mark_as_advanced (NATIVE_CRSSYNC_BIN)
 
   # try to configure and build python bindings by default
-  set (WITH_BINDINGS TRUE CACHE BOOL "Determines whether Python bindings should be built")
   if (WITH_BINDINGS)
     # By default bindings will be installed only to QGIS directory
     # Someone might want to install it to python site-packages directory
@@ -252,7 +280,8 @@ if(WITH_CORE)
   endif()
 
   # try to configure and build POLY2TRI support
-  set (WITH_INTERNAL_POLY2TRI TRUE CACHE BOOL "Determines whether POLY2TRI should be built from internal copy")
+  set (WITH_INTERNAL_POLY2TRI ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether POLY2TRI should be built from internal copy")
+  set (WITH_INTERNAL_MESHOPTIMIZER ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether MESHOPTIMIZER should be built from internal copy")
 
   # try to configure and build POSTGRESQL support
   set (WITH_POSTGRESQL TRUE CACHE BOOL "Determines whether POSTGRESQL support should be built")
@@ -365,7 +394,7 @@ if(WITH_CORE)
   find_package(EXPAT REQUIRED)
   find_package(Spatialindex REQUIRED)
   find_package(LibZip REQUIRED)
-  set (WITH_INTERNAL_NLOHMANN_JSON ON CACHE BOOL "Determines whether the vendored copy of nlohmann-json should be used")
+  set (WITH_INTERNAL_NLOHMANN_JSON ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether the vendored copy of nlohmann-json should be used")
   find_package(nlohmann_json REQUIRED)
 
   # The following bypasses the FindSQLite3 module introduced in CMake 3.14
@@ -795,10 +824,14 @@ if(MSVC)
   add_definitions(-DNOMINMAX)
 endif()
 
-# Prevent build when Qt api deprecated before this Qt version is used:
-add_definitions(-DQT_DEPRECATED_WARNINGS)
-# Unfortunately Qwt uses deprecated QString::null in headers, preventing this being raised above 5.8
-add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
+if(BUILD_WITH_QT6)
+  # Qt deprecated warnings are too noisy for now -- we have a LOT of QVariant::Type usage
+  # in order to maintain Qt5 compatibility
+  add_definitions(-DQT_NO_DEPRECATED_WARNINGS)
+else()
+  # Unfortunately Qwt uses deprecated QString::null in headers, preventing this being raised above 5.8
+  add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
+endif()
 
 # For fast string concatenation
 add_definitions(-DQT_USE_QSTRINGBUILDER)
@@ -1218,39 +1251,8 @@ endif()
 #############################################################
 # Enable packaging
 if (WITH_CORE)
-  # Do not warn about runtime libs when building using VS Express
-  if(NOT DEFINED CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS)
-    set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS ON)
-  endif()
-
-  if(QGIS_INSTALL_SYS_LIBS)
-    include(InstallRequiredSystemLibraries)
-  endif()
-
-  set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "QGIS")
-  set(CPACK_PACKAGE_VENDOR "Open Source Geospatial Foundation")
-  set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
-  set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
-  set(CPACK_PACKAGE_INSTALL_DIRECTORY "QGIS ${COMPLETE_VERSION}")
-  if(WIN32 AND NOT UNIX)
-    # There is a bug in NSI that does not handle full unix paths properly. Make
-    # sure there is at least one set of four (4) backslashes.
-    set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/win_build\\\\sidebar.bmp")
-    set(CPACK_NSIS_INSTALLED_ICON_NAME "\\\\qgis.exe")
-    set(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} QGIS")
-    set(CPACK_NSIS_HELP_LINK "http:\\\\\\\\qgis.org")
-    set(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\qgis.org")
-    set(CPACK_NSIS_CONTACT "info@qgis.org")
-    set(CPACK_NSIS_MODIFY_PATH ON)
-
-  #  set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "  !include \\\"${CMAKE_SOURCE_DIR}\\\\win_build\\\\extra.nsh\\\"")
-  else()
-    #set(CPACK_STRIP_FILES "QGIS")
-    #set(CPACK_SOURCE_STRIP_FILES "")
-  endif()
-  set(CPACK_PACKAGE_EXECUTABLES "qgis" "QGIS")
-  set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README.md")
-  include(CPack)
+  include(Bundle)
+  include(VcpkgInstallDeps)
 endif()
 
 if (UNIX AND NOT APPLE)

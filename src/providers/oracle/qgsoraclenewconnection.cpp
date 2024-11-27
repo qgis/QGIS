@@ -21,6 +21,7 @@
 
 #include "qgssettings.h"
 #include "qgsoraclenewconnection.h"
+#include "moc_qgsoraclenewconnection.cpp"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgsoracleproviderconnection.h"

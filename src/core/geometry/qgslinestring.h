@@ -992,6 +992,16 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 #endif
 
     /**
+     * Divides the linestring into parts that don't share any points or lines.
+     *
+     * This method throws away Z and M coordinates.
+     *
+     * The ownership of returned pointers is transferred to the caller.
+     * \since QGIS 3.40
+     */
+    QVector<QgsLineString *> splitToDisjointXYParts() const SIP_FACTORY;
+
+    /**
      * Returns the length in 3D world of the line string.
      * If it is not a 3D line string, return its 2D length.
      * \see length()
@@ -1068,7 +1078,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      */
-    inline static const QgsLineString *cast( const QgsAbstractGeometry *geom )
+    inline static const QgsLineString *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::LineString )
         return static_cast<const QgsLineString *>( geom );

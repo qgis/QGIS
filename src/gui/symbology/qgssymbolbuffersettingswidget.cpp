@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgssymbolbuffersettingswidget.h"
+#include "moc_qgssymbolbuffersettingswidget.cpp"
 #include "qgssymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"

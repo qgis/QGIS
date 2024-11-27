@@ -140,7 +140,7 @@ class StatisticsByCategories(QgisAlgorithm):
             fields.append(QgsField('q1', QMetaType.Type.Double))
             fields.append(QgsField('q3', QMetaType.Type.Double))
             fields.append(QgsField('iqr', QMetaType.Type.Double))
-        elif value_field.type() in (QMetaType.Type.QDate, QMetaType.QTime, QMetaType.QDateTime):
+        elif value_field.type() in (QMetaType.Type.QDate, QMetaType.Type.QTime, QMetaType.Type.QDateTime):
             field_type = 'datetime'
             fields.append(QgsField('count', QMetaType.Type.Int))
             fields.append(QgsField('unique', QMetaType.Type.Int))
@@ -215,6 +215,7 @@ class StatisticsByCategories(QgisAlgorithm):
         else:
             self.calcStringStats(values, sink, feedback)
 
+        sink.finalize()
         return {self.OUTPUT: dest_id}
 
     def saveCounts(self, values, sink, feedback):

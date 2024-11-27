@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsprojectproperties.h"
+#include "moc_qgsprojectproperties.cpp"
 
 //qgis includes
 #include "qgsapplication.h"

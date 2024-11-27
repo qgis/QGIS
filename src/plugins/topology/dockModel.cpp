@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "dockModel.h"
+#include "moc_dockModel.cpp"
 #include "topolError.h"
 #include "qgsvectorlayer.h"
 #include <qlogging.h>

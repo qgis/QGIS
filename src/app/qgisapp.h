@@ -798,6 +798,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Unregister a previously registered dev tool factory
     void unregisterDevToolFactory( QgsDevToolWidgetFactory *factory );
 
+    //! Show a page of the API documentation
+    void showApiDocumentation( Qgis::DocumentationApi api, Qgis::DocumentationBrowser browser, const QString &object = QString(), const QString &module = QString() );
+
     /**
      * Register a new application exit blocker, which can be used to prevent the QGIS application
      * from exiting while a plugin or script has unsaved changes.
@@ -897,9 +900,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsAppCanvasFiltering *canvasFiltering();
 
     /**
-     * Take screenshots for user documentation
-     * @param saveDirectory path were the screenshots will be saved
-     * @param categories an int as a flag value of QgsAppScreenShots::Categories
+     * Take screenshots for user documentation.
+     *
+     * \param saveDirectory path were the screenshots will be saved
+     * \param categories an int as a flag value of QgsAppScreenShots::Categories
      */
     void takeAppScreenShots( const QString &saveDirectory, const int categories = 0 );
 
@@ -1414,6 +1418,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     */
     void activateDeactivateLayerRelatedActions( QgsMapLayer *layer );
 
+    //! Open a url in the users configured browser
+    void openURL( QString url, bool useQgisDocDirectory = true );
+
   protected:
     void showEvent( QShowEvent *event ) override;
 
@@ -1777,8 +1784,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void supportProviders();
     //! Open the QGIS homepage in users browser
     void helpQgisHomePage();
-    //! Open a url in the users configured browser
-    void openURL( QString url, bool useQgisDocDirectory = true );
     //! Check qgis version against the qgis version server
     void checkQgisVersion();
     //!Invoke the custom projection dialog
@@ -2736,6 +2741,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsScopedDevToolWidgetFactory mStartupProfilerWidgetFactory;
     QgsAppQueryLogger *mQueryLogger = nullptr;
     QgsScopedDevToolWidgetFactory mQueryLoggerWidgetFactory;
+    QgsScopedDevToolWidgetFactory mDocumentationWidgetFactory;
 
     std::vector< QgsScopedOptionsWidgetFactory > mOptionWidgetFactories;
 

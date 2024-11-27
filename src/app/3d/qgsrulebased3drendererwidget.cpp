@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrulebased3drendererwidget.h"
+#include "moc_qgsrulebased3drendererwidget.cpp"
 
 #include "qgs3dutils.h"
 #include "qgsexpressionbuilderdialog.h"

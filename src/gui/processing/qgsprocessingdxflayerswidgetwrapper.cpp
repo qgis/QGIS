@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingdxflayerswidgetwrapper.h"
+#include "moc_qgsprocessingdxflayerswidgetwrapper.cpp"
 
 #include <QBoxLayout>
 #include <QLineEdit>

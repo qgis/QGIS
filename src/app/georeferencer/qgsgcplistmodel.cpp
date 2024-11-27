@@ -15,12 +15,15 @@
 
 #include "qgsgcplist.h"
 #include "qgsgcplistmodel.h"
+#include "moc_qgsgcplistmodel.cpp"
 #include "qgis.h"
 #include "qgsgeorefdatapoint.h"
 #include "qgsgeoreftransform.h"
 #include "qgssettings.h"
+#include "qgsdoublevalidator.h"
 
 #include <cmath>
+#include <QLocale>
 
 QgsGCPListModel::QgsGCPListModel( QObject *parent )
   : QAbstractTableModel( parent )
@@ -253,9 +256,9 @@ bool QgsGCPListModel::setData( const QModelIndex &index, const QVariant &value, 
     {
       QgsPointXY sourcePoint = point->sourcePoint();
       if ( column == QgsGCPListModel::Column::SourceX )
-        sourcePoint.setX( value.toDouble() );
+        sourcePoint.setX( QgsDoubleValidator::toDouble( value.toString() ) );
       else
-        sourcePoint.setY( value.toDouble() );
+        sourcePoint.setY( QgsDoubleValidator::toDouble( value.toString() ) );
       point->setSourcePoint( sourcePoint );
       emit dataChanged( index, index );
       updateResiduals();
@@ -269,9 +272,9 @@ bool QgsGCPListModel::setData( const QModelIndex &index, const QVariant &value, 
       // as this is what we were showing to users
       QgsPointXY destinationPoint = point->transformedDestinationPoint( mTargetCrs, mTransformContext );
       if ( column == QgsGCPListModel::Column::DestinationX )
-        destinationPoint.setX( value.toDouble() );
+        destinationPoint.setX( QgsDoubleValidator::toDouble( value.toString() ) );
       else
-        destinationPoint.setY( value.toDouble() );
+        destinationPoint.setY( QgsDoubleValidator::toDouble( value.toString() ) );
       point->setDestinationPoint( destinationPoint );
       // we also have to update the destination point crs to the target crs, as the point is now in a different CRS
       point->setDestinationPointCrs( mTargetCrs );
@@ -439,7 +442,7 @@ QString QgsGCPListModel::formatNumber( double number )
   else if ( std::fabs( number ) < 1000 )
     decimalPlaces = 6;
 
-  return QString::number( number, 'f', decimalPlaces );
+  return QLocale().toString( number, 'f', decimalPlaces );
 }
 
 

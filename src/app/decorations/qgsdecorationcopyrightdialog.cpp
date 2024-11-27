@@ -11,6 +11,7 @@
  ***************************************************************************/
 
 #include "qgsdecorationcopyrightdialog.h"
+#include "moc_qgsdecorationcopyrightdialog.cpp"
 #include "qgsdecorationcopyright.h"
 
 #include "qgisapp.h"
