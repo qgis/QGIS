@@ -2783,6 +2783,9 @@ void QgsMapToolEditMeshFrame::addVertex(
   double zValue;
   QgsPointXY effectivePoint = mapPoint;
 
+  // initial Z value that can be modified
+  zValue = currentZValue();
+
   bool isOnMesh = mCurrentFaceIndex != -1 || ( mCurrentEdge.first != -1 && mCurrentEdge.second != -1 );
 
   if ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::Terrain ||
@@ -2836,25 +2839,15 @@ void QgsMapToolEditMeshFrame::addVertex(
       const QgsMeshVertex &v3 = triangularMesh.vertices().at( triangleFace.at( 2 ) );
       zValue = QgsMeshLayerUtils::interpolateFromVerticesData( v1, v2, v3, v1.z(), v2.z(), v3.z(), mapPoint );
     }
-    else // this should not really happen
-    {
-      zValue = currentZValue();
-    }
   }
   else
   {
-    if ( mCadDockWidget->cadEnabled() && mCurrentFaceIndex == -1 )
-      zValue = currentZValue();
-    else if ( mapPointMatch.isValid() &&
-              mapPointMatch.layer() &&
-              QgsWkbTypes::hasZ( mapPointMatch.layer()->wkbType() ) )
+    if ( mapPointMatch.isValid() &&
+         mapPointMatch.layer() &&
+         QgsWkbTypes::hasZ( mapPointMatch.layer()->wkbType() ) )
     {
       const QgsPoint layerPoint = mapPointMatch.interpolatedPoint( mCanvas->mapSettings().destinationCrs() );
       zValue = layerPoint.z();
-    }
-    else
-    {
-      zValue = currentZValue();
     }
   }
 
