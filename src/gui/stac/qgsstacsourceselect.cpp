@@ -79,7 +79,7 @@ QgsStacSourceSelect::QgsStacSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   connect( mItemsView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsStacSourceSelect::onCurrentItemChanged );
   connect( mItemsView->verticalScrollBar(), &QScrollBar::valueChanged, this, &QgsStacSourceSelect::onItemsViewScroll );
 
-
+  connect( mFootprintsCheckBox, &QCheckBox::clicked, this, &QgsStacSourceSelect::showFootprints );
 
   mParametersDialog = new QgsStacSearchParametersDialog( mapCanvas(), this );
   mFiltersLabel->clear();
@@ -88,6 +88,24 @@ QgsStacSourceSelect::QgsStacSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
 QgsStacSourceSelect::~QgsStacSourceSelect()
 {
   delete mStac;
+}
+
+void QgsStacSourceSelect::hideEvent( QHideEvent *e )
+{
+  if ( !e->spontaneous() )
+  {
+    showFootprints( false );
+  }
+  QgsAbstractDataSourceWidget::hideEvent( e );
+}
+
+void QgsStacSourceSelect::showEvent( QShowEvent *e )
+{
+  if ( !e->spontaneous() && mFootprintsCheckBox->isChecked() )
+  {
+    showFootprints( true );
+  }
+  QgsAbstractDataSourceWidget::showEvent( e );
 }
 
 void QgsStacSourceSelect::addButtonClicked()
@@ -141,6 +159,9 @@ void QgsStacSourceSelect::onCurrentItemChanged( const QModelIndex &current, cons
 {
   Q_UNUSED( previous )
 
+  if ( mFootprintsCheckBox->isChecked() )
+    highlightFootprint( current );
+
   const QVariant mediaTypes = current.data( QgsStacItemListModel::Role::MediaTypes );
   emit enableButtons( !mediaTypes.toStringList().isEmpty() );
 }
@@ -157,6 +178,8 @@ void QgsStacSourceSelect::btnConnect_clicked()
   mSearchUrl.clear();
   mNextPageUrl.clear();
   mItemsModel->clear();
+  qDeleteAll( mRubberBands );
+  mRubberBands.clear();
   mStatusLabel->setText( tr( "Connecting…" ) );
   mStac->cancelPendingAsyncRequests();
   mStac->fetchStacObjectAsync( connection.url );
@@ -337,6 +360,13 @@ void QgsStacSourceSelect::onItemCollectionRequestFinished( int requestId, QStrin
   const QVector< QgsStacItem *> items = col->takeItems();
   mItemsModel->addItems( items );
 
+  for ( QgsStacItem *i : items )
+  {
+    QgsRubberBand *band = new QgsRubberBand( mapCanvas(), Qgis::GeometryType::Polygon );
+    band->setToGeometry( i->geometry(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+    mRubberBands.append( band );
+  }
+
   const int count = mItemsModel->rowCount();
   if ( mNextPageUrl.isEmpty() )
   {
@@ -437,6 +467,8 @@ void QgsStacSourceSelect::openSearchParametersDialog()
     return;
 
   mItemsModel->clear();
+  qDeleteAll( mRubberBands );
+  mRubberBands.clear();
   mItemsModel->setCollections( mParametersDialog->collections() );
   mNextPageUrl.clear();
   mStatusLabel->setText( tr( "Searching…" ) );
@@ -503,6 +535,42 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
 
   menu->popup( mItemsView->mapToGlobal( point ) );
   connect( menu, &QMenu::aboutToHide, menu, &QMenu::deleteLater );
+}
+
+void QgsStacSourceSelect::highlightFootprint( const QModelIndex &index )
+{
+  QgsGeometry geom = index.data( QgsStacItemListModel::Role::Geometry ).value<QgsGeometry>();
+  if ( QgsMapCanvas *map = mapCanvas() )
+  {
+    mCurrentItemBand.reset( new QgsRubberBand( map, Qgis::GeometryType::Polygon ) );
+    mCurrentItemBand->setFillColor( QColor::fromRgb( 255, 0, 0, 128 ) );
+    mCurrentItemBand->setToGeometry( geom, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+  }
+}
+
+void QgsStacSourceSelect::showFootprints( bool enable )
+{
+  if ( enable )
+  {
+    const QVector<QgsStacItem *> items = mItemsModel->items();
+    for ( QgsStacItem *i : items )
+    {
+      QgsRubberBand *band = new QgsRubberBand( mapCanvas(), Qgis::GeometryType::Polygon );
+      band->setToGeometry( i->geometry(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+      mRubberBands.append( band );
+    }
+    const QModelIndex index = mItemsView->selectionModel()->currentIndex();
+    if ( index.isValid() )
+    {
+      highlightFootprint( index );
+    }
+  }
+  else
+  {
+    qDeleteAll( mRubberBands );
+    mRubberBands.clear();
+    mCurrentItemBand.reset();
+  }
 }
 
 ///@endcond
