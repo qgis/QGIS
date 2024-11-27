@@ -22,6 +22,7 @@
 #include "qgslinestring.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
+#include "qgsgeometryengine.h"
 
 #include <QTextStream>
 
@@ -202,7 +203,6 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
     i++;
   }
 
-
   if ( feedback )
   {
     feedback->setProgressText( "Creating final geometry." );
@@ -215,26 +215,64 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
   mergedLines = mergedLines.mergeLines();
   QgsAbstractGeometry *multiLinesAbstract = mergedLines.get();
 
-  // create resulting multipolygon
-  std::unique_ptr<QgsMultiPolygon> multiPolygon = std::make_unique<QgsMultiPolygon>();
+  // set of polygons to consturct result
+  QVector<QgsAbstractGeometry *> polygons;
 
   // for every part create polygon and add to resulting multipolygon
-  for ( int i = 0; i < mergedLines.get()->partCount(); i++ )
+  for ( auto pit = multiLinesAbstract->const_parts_begin(); pit != multiLinesAbstract->const_parts_end(); ++pit )
   {
-    for ( auto pit = multiLinesAbstract->const_parts_begin(); pit != multiLinesAbstract->const_parts_end(); ++pit )
+    if ( feedback )
     {
-      if ( feedback )
-      {
-        if ( feedback->isCanceled() )
-          return QVariantMap();
-      }
-
-      std::unique_ptr<QgsPolygon> polygon = std::make_unique<QgsPolygon>();
-      polygon->setExteriorRing( qgsgeometry_cast< QgsLineString * >( *pit )->clone() );
-      multiPolygon->addGeometry( polygon.release() );
+      if ( feedback->isCanceled() )
+        return QVariantMap();
     }
 
+    // individula polygon - can be either polygon or hole in polygon
+    QgsPolygon *polygon = new QgsPolygon();
+    polygon->setExteriorRing( qgsgeometry_cast< QgsLineString * >( *pit )->clone() );
+
+    // add first polygon, no need to check anything
+    if ( polygons.empty() )
+    {
+      polygons.push_back( polygon );
+      continue;
+    }
+
+    // engine for spatial relations
+    std::unique_ptr<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( polygon ) );
+
+    // need to check if polygon is not either contained (hole) or covering (main polygon) with another
+    // this solves meshes with holes
+    bool isHole = false;
+
+    for ( int i = 0; i < polygons.count(); i++ )
+    {
+      QgsPolygon *p = qgsgeometry_cast<QgsPolygon *> ( polygons.at( i ) );
+
+      // polygon covers another, turn contained polygon into interior ring
+      if ( engine->contains( p ) )
+      {
+        polygons.removeAt( i );
+        polygon->addInteriorRing( p->exteriorRing() );
+        break;
+      }
+      // polygon is within another, make it interior rind and do not add it
+      else if ( engine->within( p ) )
+      {
+        p->addInteriorRing( polygon->exteriorRing() );
+        isHole = true;
+        break;
+      }
+    }
+
+    // if is not a hole polygon add it to the vector of polygons
+    if ( ! isHole )
+      polygons.append( polygon );
   }
+
+  // create resulting multipolygon
+  std::unique_ptr<QgsMultiPolygon> multiPolygon = std::make_unique<QgsMultiPolygon>();
+  multiPolygon->addGeometries( polygons );
 
   if ( feedback )
   {
@@ -273,6 +311,5 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
 
   return ret;
 }
-
 
 ///@endcond PRIVATE
