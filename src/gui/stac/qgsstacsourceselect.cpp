@@ -110,6 +110,7 @@ void QgsStacSourceSelect::showEvent( QShowEvent *e )
 
 void QgsStacSourceSelect::addButtonClicked()
 {
+  QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
   const QItemSelection selection = mItemsView->selectionModel()->selection();
   const QModelIndexList selectedIndices = selection.indexes();
 
