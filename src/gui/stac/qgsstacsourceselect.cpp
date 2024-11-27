@@ -15,6 +15,7 @@
 
 #include "qgsstacsourceselect.h"
 #include "moc_qgsstacsourceselect.cpp"
+#include "qgsdatasourcemanagerdialog.h"
 #include "qgsgui.h"
 #include "qgsmapcanvas.h"
 #include "qgsstaccontroller.h"
@@ -473,6 +474,22 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
 
   QMenu *menu = new QMenu( this );
 
+  QgsMessageBar *bar = nullptr;
+  QgsDataSourceManagerDialog *dsm = qobject_cast<QgsDataSourceManagerDialog *>( window() );
+  if ( dsm )
+    bar = dsm->messageBar();
+
+  QAction *downloadAction = new QAction( tr( "Download Assets…" ), menu );
+  connect( downloadAction, &QAction::triggered, this, [index, bar, authCfg = mStac->authCfg()]
+  {
+    QgsStacDownloadAssetsDialog dialog;
+    QgsStacItem *item = dynamic_cast<QgsStacItem *>( index.data( QgsStacItemListModel::Role::StacObject ).value<QgsStacObject *>() );
+    dialog.setStacItem( item );
+    dialog.setMessageBar( bar );
+    dialog.setAuthCfg( authCfg );
+    dialog.exec();
+  } );
+
   QAction *detailsAction = new QAction( tr( "Details…" ), menu );
   connect( detailsAction, &QAction::triggered, this, [this, index]
   {
@@ -480,6 +497,8 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
     details.setStacObject( index.data( QgsStacItemListModel::Role::StacObject ).value<QgsStacObject *>() );
     details.exec();
   } );
+
+  menu->addAction( downloadAction );
   menu->addAction( detailsAction );
 
   menu->popup( mItemsView->mapToGlobal( point ) );
