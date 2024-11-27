@@ -417,7 +417,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
         if ( ok )
         {
           QgsDebugMsgLevel( QStringLiteral( "O2::onVerificationReceived: Token expires in %1 seconds" ).arg( expiresIn ), 2 );
-          setExpires( static_cast< int >( QDateTime::currentMSecsSinceEpoch() / 1000 + expiresIn ) );
+          setExpires( QDateTime::currentMSecsSinceEpoch() / 1000 + static_cast< qint64 >( expiresIn ) );
         }
       }
       setLinked( true );
@@ -507,7 +507,7 @@ void QgsO2::refreshSynchronous()
     else
     {
       setToken( tokens.value( O2_OAUTH2_ACCESS_TOKEN ).toString() );
-      setExpires( static_cast< int >( QDateTime::currentMSecsSinceEpoch() / 1000 + tokens.value( O2_OAUTH2_EXPIRES_IN ).toInt() ) );
+      setExpires( QDateTime::currentMSecsSinceEpoch() / 1000 + static_cast< qint64 >( tokens.value( O2_OAUTH2_EXPIRES_IN ).toInt() ) );
       const QString refreshToken = tokens.value( O2_OAUTH2_REFRESH_TOKEN ).toString();
       if ( !refreshToken.isEmpty() )
         setRefreshToken( refreshToken );
@@ -527,6 +527,6 @@ void QgsO2::refreshSynchronous()
 
 void QgsO2::computeExpirationDelay()
 {
-  const int lExpires = expires();
-  mExpirationDelay = lExpires > 0 ? lExpires - static_cast<int>( QDateTime::currentMSecsSinceEpoch() / 1000 ) : 0;
+  const qint64 lExpires = expires();
+  mExpirationDelay = static_cast< int >( lExpires > 0 ? lExpires - static_cast<qint64>( QDateTime::currentMSecsSinceEpoch() / 1000 ) : 0 );
 }
