@@ -65,6 +65,16 @@ void QgsMapLayerStyleCategoriesModel::setCategories( QgsMapLayer::StyleCategorie
   if ( mCategories == categories )
     return;
 
+  // determine the allowed categories to consider only these in the last categories.
+  QgsMapLayer::StyleCategories allowedCategories;
+  for ( const QgsMapLayer::StyleCategory &category : mCategoryList )
+  {
+    if ( category == QgsMapLayer::AllStyleCategories )
+      continue;
+    allowedCategories |= category;
+  }
+  categories &= allowedCategories;
+
   beginResetModel();
   mCategories = categories;
   endResetModel();
