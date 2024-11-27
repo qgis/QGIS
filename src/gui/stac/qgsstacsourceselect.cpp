@@ -123,20 +123,7 @@ void QgsStacSourceSelect::addButtonClicked()
 
   for ( auto &uri : std::as_const( allUris ) )
   {
-    if ( uri.layerType == QLatin1String( "raster" ) )
-    {
-      Q_NOWARN_DEPRECATED_PUSH
-      emit addRasterLayer( uri.uri, uri.name, uri.providerKey );
-      Q_NOWARN_DEPRECATED_POP
-      emit addLayer( Qgis::LayerType::Raster, uri.uri, uri.name, uri.providerKey );
-    }
-    else if ( uri.layerType == QLatin1String( "pointcloud" ) )
-    {
-      Q_NOWARN_DEPRECATED_PUSH
-      emit addPointCloudLayer( uri.uri, uri.name, uri.providerKey );
-      Q_NOWARN_DEPRECATED_POP
-      emit addLayer( Qgis::LayerType::PointCloud, uri.uri, uri.name, uri.providerKey );
-    }
+    loadUri( uri );
   }
 }
 
@@ -512,6 +499,23 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
   if ( dsm )
     bar = dsm->messageBar();
 
+  const QgsStacItem *item = dynamic_cast<QgsStacItem *>( index.data( QgsStacItemListModel::Role::StacObject ).value<QgsStacObject *>() );
+  QMenu *assetsMenu = menu->addMenu( tr( "Add Layer" ) );
+  const QMap<QString, QgsStacAsset> assets = item->assets();
+  for ( const QgsStacAsset &asset : assets )
+  {
+    if ( asset.isCloudOptimized() )
+    {
+      QAction *loadAssetAction = new QAction( asset.title(), assetsMenu );
+      connect( loadAssetAction, &QAction::triggered, this, [this, &asset]
+      {
+        QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
+        loadUri( asset.uri() );
+      } );
+      assetsMenu->addAction( loadAssetAction );
+    }
+  }
+
   QAction *zoomToAction = new QAction( tr( "Zoom to Item" ) );
   connect( zoomToAction, &QAction::triggered, this, [index, this]
   {
@@ -561,8 +565,11 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
     details.exec();
   } );
 
+
   menu->addAction( zoomToAction );
   menu->addAction( panToAction );
+  if ( !assetsMenu->isEmpty() )
+    menu->addMenu( assetsMenu );
   menu->addAction( downloadAction );
   menu->addAction( detailsAction );
 
@@ -606,4 +613,21 @@ void QgsStacSourceSelect::showFootprints( bool enable )
   }
 }
 
+void QgsStacSourceSelect::loadUri( const QgsMimeDataUtils::Uri &uri )
+{
+  if ( uri.layerType == QLatin1String( "raster" ) )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
+    emit addRasterLayer( uri.uri, uri.name, uri.providerKey );
+    Q_NOWARN_DEPRECATED_POP
+    emit addLayer( Qgis::LayerType::Raster, uri.uri, uri.name, uri.providerKey );
+  }
+  else if ( uri.layerType == QLatin1String( "pointcloud" ) )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
+    emit addPointCloudLayer( uri.uri, uri.name, uri.providerKey );
+    Q_NOWARN_DEPRECATED_POP
+    emit addLayer( Qgis::LayerType::PointCloud, uri.uri, uri.name, uri.providerKey );
+  }
+}
 ///@endcond
