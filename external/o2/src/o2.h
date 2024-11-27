@@ -11,21 +11,21 @@
 #include "o2reply.h"
 #include "o0abstractstore.h"
 
-class O2ReplyServer;
-
 /// Simple OAuth2 authenticator.
-class O0_EXPORT O2: public O0BaseAuth {
+class O0_EXPORT O2: public O0BaseAuth
+{
     Q_OBJECT
-    Q_ENUMS(GrantFlow)
-
 public:
+
     /// Authorization flow types.
     enum GrantFlow {
         GrantFlowAuthorizationCode, ///< @see http://tools.ietf.org/html/draft-ietf-oauth-v2-15#section-4.1
         GrantFlowImplicit, ///< @see http://tools.ietf.org/html/draft-ietf-oauth-v2-15#section-4.2
         GrantFlowResourceOwnerPasswordCredentials,
         GrantFlowPkce, ///< @see https://www.rfc-editor.org/rfc/rfc7636
+        GrantFlowDevice ///< @see https://tools.ietf.org/html/rfc8628#section-1
     };
+    Q_ENUM(GrantFlow)
 
     /// Authorization flow.
     Q_PROPERTY(GrantFlow grantFlow READ grantFlow WRITE setGrantFlow NOTIFY grantFlowChanged)
@@ -51,24 +51,18 @@ public:
 
     /// Localhost policy. By default it's value is http://127.0.0.1:%1/, however some services may
     /// require the use of http://localhost:%1/ or any other value.
-    Q_PROPERTY(QString localhostPolicy READ localhostPolicy WRITE setLocalhostPolicy)
+    Q_PROPERTY(QString localhostPolicy READ localhostPolicy WRITE setLocalhostPolicy NOTIFY localHostPolicyChanged)
     QString localhostPolicy() const;
     void setLocalhostPolicy(const QString &value);
 
     /// API key.
-    Q_PROPERTY(QString apiKey READ apiKey WRITE setApiKey)
+    Q_PROPERTY(QString apiKey READ apiKey WRITE setApiKey NOTIFY apiKeyChanged)
     QString apiKey();
     void setApiKey(const QString &value);
 
-    /// Page content on local host after successful oauth.
-    /// Provide it in case you do not want to close the browser, but display something
-    Q_PROPERTY(QByteArray replyContent READ replyContent WRITE setReplyContent)
-    QByteArray replyContent();
-    void setReplyContent(const QByteArray &value);
-
     /// Allow ignoring SSL errors?
     /// E.g. SurveyMonkey fails on Mac due to SSL error. Ignoring the error circumvents the problem
-    Q_PROPERTY(bool ignoreSslErrors READ ignoreSslErrors WRITE setIgnoreSslErrors)
+    Q_PROPERTY(bool ignoreSslErrors READ ignoreSslErrors WRITE setIgnoreSslErrors NOTIFY ignoreSslErrorsChanged)
     bool ignoreSslErrors();
     void setIgnoreSslErrors(bool ignoreSslErrors);
 
@@ -92,10 +86,15 @@ public:
     QString refreshTokenUrl();
     void setRefreshTokenUrl(const QString &value);
 
+    /// Grant type (if non-standard)
+    Q_PROPERTY(QString grantType READ grantType WRITE setGrantType NOTIFY grantTypeChanged)
+    QString grantType();
+    void setGrantType(const QString &value);
+
 public:
     /// Constructor.
     /// @param  parent  Parent object.
-    explicit O2(QObject *parent = 0, QNetworkAccessManager *manager = 0);
+    explicit O2(QObject *parent = nullptr, QNetworkAccessManager *manager = nullptr, O0AbstractStore *store = nullptr);
 
     /// Get authentication code.
     QString code();
@@ -104,14 +103,14 @@ public:
     QString refreshToken();
 
     /// Get token expiration time (seconds from Epoch).
-    int expires();
+    qint64 expires();
 
 public Q_SLOTS:
     /// Authenticate.
-    Q_INVOKABLE virtual void link();
+    Q_INVOKABLE void link() override;
 
     /// De-authenticate.
-    Q_INVOKABLE virtual void unlink();
+    Q_INVOKABLE void unlink() override;
 
     /// Refresh token.
     Q_INVOKABLE void refresh();
@@ -132,11 +131,16 @@ Q_SIGNALS:
     void extraRequestParamsChanged();
     void refreshTokenUrlChanged();
     void tokenUrlChanged();
+    void localHostPolicyChanged(const QString& policy);
+    void apiKeyChanged(const QString& key);
+    void ignoreSslErrorsChanged(bool ignore);
+    void grantTypeChanged(const QString& type);
 
-protected Q_SLOTS:
+public Q_SLOTS:
     /// Handle verification response.
     virtual void onVerificationReceived(QMap<QString, QString>);
 
+protected Q_SLOTS:
     /// Handle completion of a token request.
     virtual void onTokenReplyFinished();
 
@@ -149,20 +153,27 @@ protected Q_SLOTS:
     /// Handle failure of a refresh request.
     virtual void onRefreshError(QNetworkReply::NetworkError error);
 
+    /// Handle completion of a Device Authorization Request
+    virtual void onDeviceAuthReplyFinished();
+
 protected:
     /// Build HTTP request body.
     QByteArray buildRequestBody(const QMap<QString, QString> &parameters);
 
     /// Set authentication code.
-    void setCode(const QString &v);
+    void setCode(const QString &c);
 
     /// Set refresh token.
     void setRefreshToken(const QString &v);
 
     /// Set token expiration time.
-    void setExpires(int v);
+    void setExpires(qint64 v);
 
+    /// Returns the QNetworkAccessManager instance to use for network access
     virtual QNetworkAccessManager *getManager();
+
+    /// Start polling authorization server
+    void startPollServer(const QVariantMap &params);
 
 protected:
     QString username_;
@@ -176,9 +187,11 @@ protected:
     QString localhostPolicy_;
     QString apiKey_;
     QNetworkAccessManager *manager_;
-    O2ReplyServer *replyServer_;
     O2ReplyList timedReplies_;
     GrantFlow grantFlow_;
+    QString grantType_;
+
+    friend class TestO2;
 };
 
 #endif // O2_H
