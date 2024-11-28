@@ -16,14 +16,16 @@
  ***************************************************************************/
 
 #include "qgspointcloudextentrenderer.h"
-#include "qgspointcloudblock.h"
-#include "qgssymbollayerutils.h"
-#include "qgssymbol.h"
-#include "qgspolygon.h"
 #include "qgscurve.h"
-#include "qgslinesymbollayer.h"
-#include "qgslayertreemodellegendnode.h"
 #include "qgsfillsymbol.h"
+#include "qgslayertreemodellegendnode.h"
+#include "qgslinesymbollayer.h"
+#include "qgspointcloudblock.h"
+#include "qgspolygon.h"
+#include "qgsstyle.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextrenderer.h"
 
 QgsPointCloudExtentRenderer::QgsPointCloudExtentRenderer( QgsFillSymbol *symbol )
   : mFillSymbol( symbol ? symbol : defaultFillSymbol() )
@@ -133,6 +135,16 @@ QgsFillSymbol *QgsPointCloudExtentRenderer::fillSymbol() const
 void QgsPointCloudExtentRenderer::setFillSymbol( QgsFillSymbol *symbol )
 {
   mFillSymbol.reset( symbol );
+}
+void QgsPointCloudExtentRenderer::renderLabels( const QRectF &extent, const QString &text, QgsPointCloudRenderContext &context )
+{
+  const double textWidth = QgsTextRenderer::textWidth( context.renderContext(), QgsStyle::defaultStyle()->textFormat( "Default" ), QStringList() << text );
+  if ( textWidth < extent.width() )
+  {
+    QgsTextFormat textFormat = QgsStyle::defaultStyle()->textFormat( "Default" );
+    textFormat.buffer().setEnabled( true );
+    QgsTextRenderer::drawText( extent, 0, Qgis::TextHorizontalAlignment::Center, QStringList() << text, context.renderContext(), textFormat, true, Qgis::TextVerticalAlignment::VerticalCenter );
+  }
 }
 
 QDomElement QgsPointCloudExtentRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context ) const

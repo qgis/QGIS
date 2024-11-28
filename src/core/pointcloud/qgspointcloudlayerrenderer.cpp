@@ -36,8 +36,6 @@
 #include "qgspointcloudrequest.h"
 #include "qgsrendercontext.h"
 #include "qgsruntimeprofiler.h"
-#include "qgsstyle.h"
-#include "qgstextrenderer.h"
 
 #include <delaunator.hpp>
 
@@ -214,14 +212,12 @@ bool QgsPointCloudLayerRenderer::render()
         // and only use the selected renderer when zoomed in
         mSubIndexExtentRenderer->renderExtent( si.polygonBounds(), context );
         // render the label of point cloud tile
-        QString text = si.uri().section( "/", -1 );
-        double textWidth = QgsTextRenderer::textWidth( context.renderContext(), QgsStyle::defaultStyle()->textFormat( "Default" ), QStringList() << text );
-        QRectF rect = context.renderContext().mapToPixel().transformBounds( si.extent().toRectF() );
-        if ( textWidth < rect.width() )
+        if ( mSubIndexExtentRenderer->showLabels() )
         {
-          QgsTextFormat textFormat = QgsStyle::defaultStyle()->textFormat( "Default" );
-          textFormat.buffer().setEnabled( true );
-          QgsTextRenderer::drawText( rect, 0, Qgis::TextHorizontalAlignment::Center, QStringList() << text, context.renderContext(), textFormat, true, Qgis::TextVerticalAlignment::VerticalCenter );
+          mSubIndexExtentRenderer->renderLabels(
+            context.renderContext().mapToPixel().transformBounds( si.extent().toRectF() ),
+            si.uri().section( "/", -1 ).section( ".", 0, 0 ),
+            context );
         }
       }
       else

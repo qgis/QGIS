@@ -83,9 +83,33 @@ class CORE_EXPORT QgsPointCloudExtentRenderer : public QgsPointCloudRenderer
      */
     void setFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
+    /**
+     * Set whether the renderer should also render file labels inside extent
+     * \since QGIS 3.42
+     */
+    void setShowLabels( const bool show ) { mShowLabels = show; }
+
+    /**
+     * Returns whether the renderer shows file labels inside the extent
+     * rectangle
+     * \since QGIS 3.42
+     */
+    bool showLabels() const { return mShowLabels; }
+
+    /**
+     * Renders the file name label inside extent rectangle
+     * @param extent QRectF in screen CRS inside which the label will be
+     * rendered
+     * @param text QString - file name without suffix
+     * @param context point cloud rendering context
+     * \since QGIS 3.42
+     */
+    void renderLabels( const QRectF &extent, const QString &text, QgsPointCloudRenderContext &context );
+
   private:
 
     std::unique_ptr< QgsFillSymbol > mFillSymbol;
+    bool mShowLabels = false;
 
 };
 
