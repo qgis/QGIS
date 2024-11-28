@@ -921,7 +921,7 @@ Extracts minimum and maximum value for active scalar dataset on mesh faces.
 
     QgsMeshDatasetIndex activeScalarDatasetIndex( QgsRenderContext &rendererContext );
 %Docstring
-Get current active scalar dataset index for current renderer context.
+Returns current active scalar dataset index for current renderer context.
 
 .. versionadded:: 3.42
 %End
