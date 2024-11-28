@@ -18,6 +18,7 @@
 #include "qgsmeshrenderersettings.h"
 #include "qgscolorutils.h"
 #include "qgsunittypes.h"
+#include "qgscolorramp.h"
 
 bool QgsMeshRendererMeshSettings::isEnabled() const
 {
@@ -96,6 +97,7 @@ void QgsMeshRendererScalarSettings::setClassificationMinimumMaximum( double mini
 {
   mClassificationMinimum = minimum;
   mClassificationMaximum = maximum;
+  updateShader();
 }
 
 double QgsMeshRendererScalarSettings::opacity() const { return mOpacity; }
@@ -130,6 +132,25 @@ QDomElement QgsMeshRendererScalarSettings::writeXml( QDomDocument &doc, const Qg
       break;
   }
   elem.setAttribute( QStringLiteral( "interpolation-method" ), methodTxt );
+
+  QString minMaxTypeText;
+  switch ( mMinMaxValueType )
+  {
+    case QgsMeshRendererScalarSettings::MinMaxValueType::UserDefined:
+      minMaxTypeText = QStringLiteral( "user-defined" );
+      break;
+    case QgsMeshRendererScalarSettings::MinMaxValueType::FixedCanvas:
+      minMaxTypeText = QStringLiteral( "fixed-canvas" );
+      break;
+    case QgsMeshRendererScalarSettings::MinMaxValueType::InteractiveFromCanvas:
+      minMaxTypeText = QStringLiteral( "interactive-canvas" );
+      break;
+    case QgsMeshRendererScalarSettings::MinMaxValueType::WholeMesh:
+      minMaxTypeText = QStringLiteral( "whole-mesh" );
+      break;
+  }
+  elem.setAttribute( QStringLiteral( "min-max-value-type" ), minMaxTypeText );
+
   const QDomElement elemShader = mColorRampShader.writeXml( doc, context );
   elem.appendChild( elemShader );
 
@@ -156,6 +177,29 @@ void QgsMeshRendererScalarSettings::readXml( const QDomElement &elem, const QgsR
   {
     mDataResamplingMethod = DataResamplingMethod::NoResampling;
   }
+
+  const QString minMaxTypeText = elem.attribute( QStringLiteral( "min-max-value-type" ) );
+  if ( QStringLiteral( "interactive-canvas" ) == minMaxTypeText )
+  {
+    mMinMaxValueType = QgsMeshRendererScalarSettings::MinMaxValueType::InteractiveFromCanvas;
+  }
+  else if ( QStringLiteral( "fixed-canvas" ) == minMaxTypeText )
+  {
+    mMinMaxValueType = QgsMeshRendererScalarSettings::MinMaxValueType::FixedCanvas;
+  }
+  else if ( QStringLiteral( "user-defined" ) == minMaxTypeText )
+  {
+    mMinMaxValueType = QgsMeshRendererScalarSettings::MinMaxValueType::UserDefined;
+  }
+  else if ( QStringLiteral( "whole-mesh" ) == minMaxTypeText )
+  {
+    mMinMaxValueType = QgsMeshRendererScalarSettings::MinMaxValueType::WholeMesh;
+  }
+  else
+  {
+    mMinMaxValueType = MinMaxValueType::WholeMesh;
+  }
+
   const QDomElement elemShader = elem.firstChildElement( QStringLiteral( "colorrampshader" ) );
   mColorRampShader.readXml( elemShader, context );
 
@@ -184,6 +228,22 @@ Qgis::RenderUnit QgsMeshRendererScalarSettings::edgeStrokeWidthUnit() const
 void QgsMeshRendererScalarSettings::setEdgeStrokeWidthUnit( Qgis::RenderUnit edgeStrokeWidthUnit )
 {
   mEdgeStrokeWidthUnit = edgeStrokeWidthUnit;
+}
+
+void QgsMeshRendererScalarSettings::updateShader()
+{
+
+  mColorRampShader.setMinimumValue( mClassificationMinimum );
+  mColorRampShader.setMaximumValue( mClassificationMaximum );
+
+  if ( !mColorRampShader.isEmpty() )
+    mColorRampShader.classifyColorRamp( mColorRampShader.sourceColorRamp()->count(), 1, QgsRectangle(), nullptr );
+}
+
+void QgsMeshRendererScalarSettings::setMinMaxValueType( QgsMeshRendererScalarSettings::MinMaxValueType minMaxValueType )
+{
+  mMinMaxValueType = minMaxValueType;
+  updateShader();
 }
 
 // ---------------------------------------------------------------------

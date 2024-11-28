@@ -20,7 +20,6 @@
 
 #include <QColor>
 #include <QDomElement>
-#include <limits>
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -115,6 +114,17 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
       NeighbourAverage,
     };
 
+    /**
+     *  This enumerator describes the extent used to compute min/max values
+     */
+    enum class MinMaxValueType
+    {
+      UserDefined, //User defined Min Max values
+      WholeMesh, // Values from whole mesh
+      FixedCanvas, //Fixed Min Max Values set from canvas
+      InteractiveFromCanvas, //Constantly updated from extent of the canvas used to compute statistics
+    };
+
     //! Returns color ramp shader function
     QgsColorRampShader colorRampShader() const;
     //! Sets color ramp shader function
@@ -176,12 +186,28 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
      */
     void setEdgeStrokeWidthUnit( Qgis::RenderUnit edgeStrokeWidthUnit );
 
+    /**
+     * Gets the extent type for minimum maximum calculation
+     *
+     * \since QGIS 3.42
+     */
+    QgsMeshRendererScalarSettings::MinMaxValueType minMaxValueType() const { return mMinMaxValueType; }
+
+    /**
+     * Sets the extent type for minimum maximum calculation
+     *
+     * \since QGIS 3.42
+     */
+    void setMinMaxValueType( QgsMeshRendererScalarSettings::MinMaxValueType minMaxValueType );
+
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
     //! Reads configuration from the given DOM element
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
 
   private:
+    void updateShader();
+
     QgsColorRampShader mColorRampShader;
     DataResamplingMethod mDataResamplingMethod = DataResamplingMethod::NoResampling;
     double mClassificationMinimum = 0;
@@ -190,6 +216,8 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
 
     QgsInterpolatedLineWidth mEdgeStrokeWidth;
     Qgis::RenderUnit mEdgeStrokeWidthUnit = Qgis::RenderUnit::Millimeters;
+
+    MinMaxValueType mMinMaxValueType = MinMaxValueType::UserDefined;
 };
 
 /**
