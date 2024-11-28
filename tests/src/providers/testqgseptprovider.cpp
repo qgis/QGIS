@@ -633,7 +633,7 @@ void TestQgsEptProvider::testPointCloudIndex()
   QCOMPARE( index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "0-0-0-0" ) ) ).pointCount(), 41998 );
   QCOMPARE( index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "1-1-1-1" ) ) ).pointCount(), 48879 );
   QCOMPARE( index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "2-3-3-1" ) ) ).pointCount(), 41734 );
-  QCOMPARE( index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "9-9-9-9" ) ) ).pointCount(), -1 );
+  QVERIFY( !index->hasNode( QgsPointCloudNodeId::fromString( QStringLiteral( "9-9-9-9" ) ) ) );
 
   QCOMPARE( index->pointCount(), 518862 );
   QCOMPARE( index->zMin(), 2322 );
@@ -647,15 +647,6 @@ void TestQgsEptProvider::testPointCloudIndex()
   QCOMPARE( index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "2-3-3-1" ) ) ).error(), 0.0859375 );
 
   {
-<<<<<<< HEAD
-    QgsPointCloudDataBounds bounds = index->nodeBounds( IndexedPointCloudNode::fromString( QStringLiteral( "0-0-0-0" ) ) );
-    QCOMPARE( bounds.xMin(), -88000 );
-    QCOMPARE( bounds.yMin(), -88000 );
-    QCOMPARE( bounds.zMin(), -88000 );
-    QCOMPARE( bounds.xMax(), 88000 );
-    QCOMPARE( bounds.yMax(), 88000 );
-    QCOMPARE( bounds.zMax(), 88000 );
-=======
     QgsBox3D bounds = index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "0-0-0-0" ) ) ).bounds();
     QCOMPARE( bounds.xMinimum(), 515363 );
     QCOMPARE( bounds.yMinimum(), 4918339 );
@@ -663,7 +654,6 @@ void TestQgsEptProvider::testPointCloudIndex()
     QCOMPARE( bounds.xMaximum(), 515407 );
     QCOMPARE( bounds.yMaximum(), 4918383 );
     QCOMPARE( bounds.zMaximum(), 2353 );
->>>>>>> 4bac513354a (Refactor QgsPointCloudIndex)
   }
 
   {
