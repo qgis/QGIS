@@ -113,6 +113,8 @@ class TestQgsMeshLayer : public QgsTest
     void updateTimePropertiesWhenReloading();
 
     void testHaveSameParentQuantity();
+
+    void testMinimumMaximumActiveScalarDataset();
 };
 
 QString TestQgsMeshLayer::readFile( const QString &fname ) const
@@ -2364,6 +2366,109 @@ void TestQgsMeshLayer::testHaveSameParentQuantity()
   QVERIFY( layer2.isValid() );
 
   QVERIFY( !QgsMeshLayerUtils::haveSameParentQuantity( &layer2, QgsMeshDatasetIndex( 0 ), QgsMeshDatasetIndex( 1 ) ) );
+}
+
+void TestQgsMeshLayer::testMinimumMaximumActiveScalarDataset()
+{
+  double min, max;
+  QgsRectangle extent;
+  QgsMeshDatasetIndex datasetIndex = QgsMeshDatasetIndex( 0, 0 );
+  bool found;
+
+  // test vertex data - bed elevation values
+  datasetIndex = QgsMeshDatasetIndex( 0, 0 );
+  QgsMeshDatasetGroupMetadata meta = mMdalLayer->datasetGroupMetadata( datasetIndex );
+  QCOMPARE( meta.name(), QStringLiteral( "Bed Elevation" ) );
+
+  extent = mMdalLayer->extent();
+  found = mMdalLayer->minimumMaximumActiveScalarDataset( extent, datasetIndex, min, max );
+  QVERIFY( found );
+  QCOMPARE( min, 10 );
+  QCOMPARE( max, 50 );
+
+  extent = QgsRectangle( 2310, 2010, 2315, 2015 );
+  found = mMdalLayer->minimumMaximumActiveScalarDataset( extent, datasetIndex, min, max );
+  QVERIFY( found );
+  QCOMPARE( min, 30 );
+  QCOMPARE( max, 50 );
+
+  // test face values
+  datasetIndex = QgsMeshDatasetIndex( 3, 0 );
+  meta = mMdalLayer->datasetGroupMetadata( datasetIndex );
+  QCOMPARE( meta.name(), QStringLiteral( "FaceScalarDataset" ) );
+
+  extent = mMdalLayer->extent();
+  found = mMdalLayer->minimumMaximumActiveScalarDataset( extent, datasetIndex, min, max );
+  QVERIFY( found );
+  QCOMPARE( min, 1 );
+  QCOMPARE( max, 2 );
+
+  extent = QgsRectangle( 900, 1900, 1100, 2100 );
+  found = mMdalLayer->minimumMaximumActiveScalarDataset( extent, datasetIndex, min, max );
+  QVERIFY( found );
+  QCOMPARE( min, 1 );
+  QCOMPARE( max, 1 );
+
+  // cannot get data for vector dataset - index points to wrong dadataset index
+  datasetIndex = QgsMeshDatasetIndex( 2, 0 );
+  meta = mMdalLayer->datasetGroupMetadata( datasetIndex );
+  QCOMPARE( meta.name(), QStringLiteral( "VertexVectorDataset" ) );
+
+  extent = QgsRectangle( 900, 1900, 1100, 2100 );
+  found = mMdalLayer->minimumMaximumActiveScalarDataset( extent, datasetIndex, min, max );
+  QCOMPARE( found, false );
+
+  // layer with several separated parts
+  QgsMeshLayer layer(
+    testDataPath( "mesh/several_parts.2dm" ),
+    QStringLiteral( "mesh" ),
+    QStringLiteral( "mdal" ) );
+  QVERIFY( layer.isValid() );
+  layer.updateTriangularMesh();
+
+  datasetIndex = QgsMeshDatasetIndex( 0, 0 );
+
+  // tests for basic dataset
+  extent = layer.extent();
+  found = layer.minimumMaximumActiveScalarDataset( extent, datasetIndex, min, max );
+  QVERIFY( found );
+  QCOMPARE( min, 1 );
+  QCOMPARE( max, 46 );
+
+  extent = QgsRectangle( -0.5, -0.5, 1.5, 1.5 );
+  found = layer.minimumMaximumActiveScalarDataset( extent, datasetIndex, min, max );
+  QVERIFY( found );
+  QCOMPARE( min, 1 );
+  QCOMPARE( max, 4 );
+
+  extent = QgsRectangle( 3.5, 3.5, 6.5, 6.5 );
+  found = layer.minimumMaximumActiveScalarDataset( extent, datasetIndex, min, max );
+  QVERIFY( found );
+  QCOMPARE( min, 11 );
+  QCOMPARE( max, 14 );
+
+  // add additional dataset and test on it
+  bool added = layer.addDatasets( testDataPath( "mesh/several_parts_data.dat" ) );
+  QVERIFY( added );
+  datasetIndex = QgsMeshDatasetIndex( 1, 0 );
+
+  extent = layer.extent();
+  found = layer.minimumMaximumActiveScalarDataset( extent, datasetIndex, min, max );
+  QVERIFY( found );
+  QCOMPARE( min, 10 );
+  QCOMPARE( max, 460 );
+
+  extent = QgsRectangle( -0.5, 7.5, 2.5, 10.5 );
+  found = layer.minimumMaximumActiveScalarDataset( extent, datasetIndex, min, max );
+  QVERIFY( found );
+  QCOMPARE( min, 220 );
+  QCOMPARE( max, 290 );
+
+  extent = QgsRectangle( 7.5, 7.5, 10.5, 10.5 );
+  found = layer.minimumMaximumActiveScalarDataset( extent, datasetIndex, min, max );
+  QVERIFY( found );
+  QCOMPARE( min, 400 );
+  QCOMPARE( max, 460 );
 }
 
 QGSTEST_MAIN( TestQgsMeshLayer )

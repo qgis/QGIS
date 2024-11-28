@@ -1664,6 +1664,95 @@ QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &renderer
   return new QgsMeshLayerRenderer( this, rendererContext );
 }
 
+QgsMeshDatasetIndex QgsMeshLayer::activeScalarDatasetIndex( QgsRenderContext &rendererContext )
+{
+  if ( rendererContext.isTemporal() )
+    return activeScalarDatasetAtTime( rendererContext.temporalRange(), mRendererSettings.activeScalarDatasetGroup() );
+  else
+    return staticScalarDatasetIndex( mRendererSettings.activeScalarDatasetGroup() );
+
+  return QgsMeshDatasetIndex();
+}
+
+bool QgsMeshLayer::minimumMaximumActiveScalarDataset( const QgsRectangle &extent, const QgsMeshDatasetIndex &datasetIndex, double &min, double &max )
+{
+
+  if ( extent.isNull() || !this->extent().intersects( extent ) )
+    return false;
+
+  QgsTriangularMesh *tMesh = triangularMesh();
+
+  QVector<double> scalarDatasetValues;
+  const QgsMeshDatasetGroupMetadata metadata = datasetGroupMetadata( datasetIndex.group() );
+
+  if ( !metadata.isScalar() )
+  {
+    return false;
+  }
+
+  QgsMeshDatasetGroupMetadata::DataType scalarDataType = QgsMeshLayerUtils::datasetValuesType( metadata.dataType() );
+
+  if ( !datasetIndex.isValid() )
+  {
+    return false;
+  }
+
+  // populate scalar values
+  const int count = QgsMeshLayerUtils::datasetValuesCount( mNativeMesh.get(), scalarDataType );
+  const QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
+                                  this,
+                                  datasetIndex,
+                                  0,
+                                  count );
+
+  if ( vals.isValid() )
+  {
+    // vals could be scalar or vectors, for contour rendering we want always magnitude
+    scalarDatasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
+  }
+  else
+  {
+    scalarDatasetValues = QVector<double>( count, std::numeric_limits<double>::quiet_NaN() );
+  }
+
+  QList<int> intersectedFacesIndices = tMesh->faceIndexesForRectangle( extent );
+
+  if ( intersectedFacesIndices.isEmpty() )
+  {
+    return false;
+  }
+
+  min = std::numeric_limits<double>::max();
+  max = -std::numeric_limits<double>::max();
+
+  double value;
+
+  for ( int intersectedFaceIndex : intersectedFacesIndices )
+  {
+    QgsMeshFace face = tMesh->triangles().at( intersectedFaceIndex );
+
+    if ( metadata.dataType() == QgsMeshDatasetGroupMetadata::DataType::DataOnFaces || metadata.dataType() == QgsMeshDatasetGroupMetadata::DataType::DataOnVolumes )
+    {
+      value = scalarDatasetValues.at( tMesh->trianglesToNativeFaces().at( intersectedFaceIndex ) );
+      min = std::min( min, value );
+      max = std::max( max, value );
+    }
+    else if ( metadata.dataType() == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices )
+    {
+      QgsMeshVertex vertex;
+
+      for ( int vertexIndex : face )
+      {
+        value = scalarDatasetValues.at( vertexIndex );
+        min = std::min( min, value );
+        max = std::max( max, value );
+      }
+    }
+  }
+
+  return true;
+}
+
 QgsAbstractProfileGenerator *QgsMeshLayer::createProfileGenerator( const QgsProfileRequest &request )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

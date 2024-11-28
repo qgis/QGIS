@@ -932,6 +932,23 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      */
     void setLabeling( QgsAbstractMeshLayerLabeling *labeling SIP_TRANSFER );
 
+    /**
+     * Extracts minimum and maximum value for active scalar dataset on mesh faces.
+     * \param extent extent in which intersecting faces are searched for
+     * \param datasetIndex index for which dataset the values should be extracted
+     * \param min minimal value
+     * \param max maximal value
+     * \return TRUE if values were extracted
+     * \since QGIS 3.42
+     */
+    bool minimumMaximumActiveScalarDataset( const QgsRectangle &extent, const QgsMeshDatasetIndex &datasetIndex, double &min SIP_OUT, double &max SIP_OUT );
+
+    /**
+     * Get current active scalar dataset index for current renderer context.
+     *
+     * \since QGIS 3.42
+     */
+    QgsMeshDatasetIndex activeScalarDatasetIndex( QgsRenderContext &rendererContext );
 
   public slots:
 
