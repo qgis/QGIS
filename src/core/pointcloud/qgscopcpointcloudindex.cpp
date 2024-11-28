@@ -432,31 +432,28 @@ bool QgsCopcPointCloudIndex::hasNode( const QgsPointCloudNodeId &n ) const
 
 QgsPointCloudNode QgsCopcPointCloudIndex::getNode( const QgsPointCloudNodeId &id ) const
 {
-  fetchNodeHierarchy( id );
+  Q_ASSERT( fetchNodeHierarchy( id ) );
 
   qint64 pointCount;
-
-  QList<QgsPointCloudNodeId> children;
   {
     QMutexLocker locker( &mHierarchyMutex );
-
     pointCount = mHierarchy.value( id, -1 );
+  }
 
-    auto hierarchyIt = mHierarchy.constFind( id );
-    Q_ASSERT( hierarchyIt != mHierarchy.constEnd() );
-    children.reserve( 8 );
-    const int d = id.d() + 1;
-    const int x = id.x() * 2;
-    const int y = id.y() * 2;
-    const int z = id.z() * 2;
+  QList<QgsPointCloudNodeId> children;
+  children.reserve( 8 );
+  const int d = id.d() + 1;
+  const int x = id.x() * 2;
+  const int y = id.y() * 2;
+  const int z = id.z() * 2;
 
-    for ( int i = 0; i < 8; ++i )
+  for ( int i = 0; i < 8; ++i )
+  {
+    int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
+    const QgsPointCloudNodeId n2( d, x + dx, y + dy, z + dz );
+    bool found = fetchNodeHierarchy( n2 );
     {
-      int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
-      const QgsPointCloudNodeId n2( d, x + dx, y + dy, z + dz );
-      mHierarchyMutex.unlock();
-      bool found = fetchNodeHierarchy( n2 );
-      mHierarchyMutex.lock();
+      QMutexLocker locker( &mHierarchyMutex );
       if ( found && mHierarchy[id] >= 0 )
         children.append( n2 );
     }

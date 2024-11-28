@@ -871,10 +871,11 @@ void QgsPointCloudLayer::calculateStatistics()
     }
   }
 
+  // Use the layer statistics for now, until we can calculate complete ones
+  mStatistics = indexStats;
   if ( attributes.empty() && indexStats.sampledPointsCount() > 0 )
   {
-    // All attributes are covered by the saved stats, use them directly
-    mStatistics = indexStats;
+    // All attributes are covered by the saved stats, skip calculating anything
     mStatisticsCalculationState = QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculated;
     emit statisticsCalculationStateChanged( mStatisticsCalculationState );
     resetRenderer();

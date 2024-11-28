@@ -828,9 +828,9 @@ void TestQgsCopcProvider::testPointCloudIndex()
   QVERIFY( index->isValid() );
 
   QCOMPARE( index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "0-0-0-0" ) ) ).pointCount(), 56721 );
-  QCOMPARE( index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "1-1-1-1" ) ) ).pointCount(), -1 );
+  QVERIFY( !index->hasNode( QgsPointCloudNodeId::fromString( QStringLiteral( "1-1-1-1" ) ) ) );
   QCOMPARE( index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "2-3-3-1" ) ) ).pointCount(), 446 );
-  QCOMPARE( index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "9-9-9-9" ) ) ).pointCount(), -1 );
+  QVERIFY( !index->hasNode( QgsPointCloudNodeId::fromString( QStringLiteral( "9-9-9-9" ) ) ) );
 
   QCOMPARE( index->pointCount(), 518862 );
   QCOMPARE( index->zMin(), 2322.89625 );
@@ -840,7 +840,6 @@ void TestQgsCopcProvider::testPointCloudIndex()
   QCOMPARE( index->span(), 128 );
 
   QCOMPARE( index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "0-0-0-0" ) ) ).error(), 0.328125 );
-  QCOMPARE( index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "1-1-1-1" ) ) ).error(), 0.1640625 );
   QCOMPARE( index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "2-3-3-1" ) ) ).error(), 0.08203125 );
 
   {
@@ -854,7 +853,7 @@ void TestQgsCopcProvider::testPointCloudIndex()
   }
 
   {
-    QgsBox3D bounds = index->getNode( QgsPointCloudNodeId::fromString( QStringLiteral( "1-1-1-1" ) ) ).bounds();
+    QgsBox3D bounds = QgsPointCloudNode::bounds( index->rootNodeBounds(), QgsPointCloudNodeId::fromString( QStringLiteral( "1-1-1-1" ) ) );
     QCOMPARE( bounds.xMinimum(), 515389 );
     QCOMPARE( bounds.yMinimum(), 4918361 );
     QCOMPARE( bounds.zMinimum(), 2343 );
