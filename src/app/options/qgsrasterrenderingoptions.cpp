@@ -143,11 +143,11 @@ void QgsRasterRenderingOptionsWidget::initMinMaxLimits( QComboBox *cbox, const Q
 
   //add items to the color limitsContrast combo boxes
   cbox->addItem( tr( "Cumulative Pixel Count Cut" ),
-                 QgsRasterMinMaxOrigin::limitsString( QgsRasterMinMaxOrigin::CumulativeCut ) );
+                 QgsRasterMinMaxOrigin::limitsString( Qgis::RasterRangeLimit::CumulativeCut ) );
   cbox->addItem( tr( "Minimum / Maximum" ),
-                 QgsRasterMinMaxOrigin::limitsString( QgsRasterMinMaxOrigin::MinMax ) );
+                 QgsRasterMinMaxOrigin::limitsString( Qgis::RasterRangeLimit::MinimumMaximum ) );
   cbox->addItem( tr( "Mean +/- Standard Deviation" ),
-                 QgsRasterMinMaxOrigin::limitsString( QgsRasterMinMaxOrigin::StdDev ) );
+                 QgsRasterMinMaxOrigin::limitsString( Qgis::RasterRangeLimit::StdDev ) );
 
   QString contrastLimits = settings.value( "/Raster/defaultContrastEnhancementLimits/" + name, defaultVal ).toString();
   cbox->setCurrentIndex( cbox->findData( contrastLimits ) );

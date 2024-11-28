@@ -2319,7 +2319,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void refreshProfileMenu();
 
     //! Do histogram stretch for singleband gray / multiband color rasters
-    void histogramStretch( bool visibleAreaOnly = false, QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax );
+    void histogramStretch( bool visibleAreaOnly = false, Qgis::RasterRangeLimit limits = Qgis::RasterRangeLimit::MinimumMaximum );
 
     //! Apply raster brightness/contrast
     void adjustBrightnessContrast( int delta, bool updateBrightness = true );
