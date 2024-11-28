@@ -30,6 +30,7 @@
 #include "qgstemporalutils.h"
 #include "qgshttpheaders.h"
 #include "qgscoordinatetransformcontext.h"
+#include "../wfs/qgsauthorizationsettings.h"
 
 class QNetworkReply;
 
@@ -686,53 +687,6 @@ struct QgsWmsParserSettings
     bool invertAxisOrientation;
 };
 
-struct QgsWmsAuthorization
-{
-    QgsWmsAuthorization( const QString &userName = QString(), const QString &password = QString(), const QgsHttpHeaders &httpHeaders = QgsHttpHeaders(), const QString &authcfg = QString() )
-      : mUserName( userName )
-      , mPassword( password )
-      , mHttpHeaders( httpHeaders )
-      , mAuthCfg( authcfg )
-    {}
-
-    bool setAuthorization( QNetworkRequest &request ) const
-    {
-      if ( !mAuthCfg.isEmpty() )
-      {
-        return QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
-      }
-      else if ( !mUserName.isEmpty() || !mPassword.isEmpty() )
-      {
-        request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUserName, mPassword ).toUtf8().toBase64() );
-      }
-
-      mHttpHeaders.updateNetworkRequest( request );
-
-      return true;
-    }
-    //! Sets authorization reply
-    bool setAuthorizationReply( QNetworkReply *reply ) const
-    {
-      if ( !mAuthCfg.isEmpty() )
-      {
-        return QgsApplication::authManager()->updateNetworkReply( reply, mAuthCfg );
-      }
-      return true;
-    }
-
-    //! Username for basic http authentication
-    QString mUserName;
-
-    //! Password for basic http authentication
-    QString mPassword;
-
-    //! headers for http requests
-    QgsHttpHeaders mHttpHeaders;
-
-    //! Authentication configuration ID
-    QString mAuthCfg;
-};
-
 
 //! URI that gets passed to provider
 class QgsWmsSettings
@@ -741,7 +695,7 @@ class QgsWmsSettings
     bool parseUri( const QString &uriString );
 
     QString baseUrl() const { return mBaseUrl; }
-    QgsWmsAuthorization authorization() const { return mAuth; }
+    QgsAuthorizationSettings authorization() const { return mAuth; }
 
     QgsWmsParserSettings parserSettings() const { return mParserSettings; }
 
@@ -861,7 +815,7 @@ class QgsWmsSettings
     //! URL part of URI (httpuri)
     QString mBaseUrl;
 
-    QgsWmsAuthorization mAuth;
+    QgsAuthorizationSettings mAuth;
 
     bool mIgnoreGetMapUrl;
     bool mIgnoreGetFeatureInfoUrl;
@@ -1078,13 +1032,13 @@ class QgsWmsCapabilitiesDownload : public QObject
   public:
     explicit QgsWmsCapabilitiesDownload( bool forceRefresh, QObject *parent = nullptr );
 
-    QgsWmsCapabilitiesDownload( const QString &baseUrl, const QgsWmsAuthorization &auth, bool forceRefresh, QObject *parent = nullptr );
+    QgsWmsCapabilitiesDownload( const QString &baseUrl, const QgsAuthorizationSettings &auth, bool forceRefresh, QObject *parent = nullptr );
 
     ~QgsWmsCapabilitiesDownload() override;
 
     bool downloadCapabilities();
 
-    bool downloadCapabilities( const QString &baseUrl, const QgsWmsAuthorization &auth );
+    bool downloadCapabilities( const QString &baseUrl, const QgsAuthorizationSettings &auth );
 
     /**
      * Returns the download refresh state.
@@ -1124,7 +1078,7 @@ class QgsWmsCapabilitiesDownload : public QObject
     //! URL part of URI (httpuri)
     QString mBaseUrl;
 
-    QgsWmsAuthorization mAuth;
+    QgsAuthorizationSettings mAuth;
 
     //! The reply to the capabilities request
     QNetworkReply *mCapabilitiesReply = nullptr;

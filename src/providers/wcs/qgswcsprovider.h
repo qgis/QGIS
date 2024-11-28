@@ -31,6 +31,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsogrutils.h"
 #include "qgsapplication.h"
+#include "../wfs/qgsauthorizationsettings.h"
 
 #include "qgsprovidermetadata.h"
 
@@ -53,48 +54,6 @@ class QNetworkRequest;
 #include <gdal.h>
 #include "cpl_conv.h"
 
-// TODO: merge with QgsWmsAuthorization?
-struct QgsWcsAuthorization
-{
-    QgsWcsAuthorization( const QString &userName = QString(), const QString &password = QString(), const QString &authcfg = QString() )
-      : mUserName( userName )
-      , mPassword( password )
-      , mAuthCfg( authcfg )
-    {}
-
-    //! Sets authorization header
-    bool setAuthorization( QNetworkRequest &request ) const
-    {
-      if ( !mAuthCfg.isEmpty() )
-      {
-        return QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
-      }
-      else if ( !mUserName.isNull() || !mPassword.isNull() )
-      {
-        request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUserName, mPassword ).toLatin1().toBase64() );
-      }
-      return true;
-    }
-
-    //! Sets authorization reply
-    bool setAuthorizationReply( QNetworkReply *reply ) const
-    {
-      if ( !mAuthCfg.isEmpty() )
-      {
-        return QgsApplication::authManager()->updateNetworkReply( reply, mAuthCfg );
-      }
-      return true;
-    }
-
-    //! Username for basic http authentication
-    QString mUserName;
-
-    //! Password for basic http authentication
-    QString mPassword;
-
-    //! Authentication configuration ID
-    QString mAuthCfg;
-};
 
 /**
  *
@@ -384,7 +343,7 @@ class QgsWcsProvider final : public QgsRasterDataProvider, QgsGdalProviderBase
     //QMap<int, QStringList> mLayerParentNames;
 
     //! http authorization details
-    mutable QgsWcsAuthorization mAuth;
+    mutable QgsAuthorizationSettings mAuth;
 
     //! whether to use hrefs from GetCapabilities (default) or
     // the given base urls for GetMap and GetFeatureInfo
@@ -413,7 +372,7 @@ class QgsWcsDownloadHandler : public QObject
 {
     Q_OBJECT
   public:
-    QgsWcsDownloadHandler( const QUrl &url, QgsWcsAuthorization &auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray &cachedData, const QString &wcsVersion, QgsError &cachedError, QgsRasterBlockFeedback *feedback );
+    QgsWcsDownloadHandler( const QUrl &url, QgsAuthorizationSettings &auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray &cachedData, const QString &wcsVersion, QgsError &cachedError, QgsRasterBlockFeedback *feedback );
     ~QgsWcsDownloadHandler() override;
 
     void blockingDownload();
@@ -426,7 +385,7 @@ class QgsWcsDownloadHandler : public QObject
   protected:
     void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
 
-    QgsWcsAuthorization &mAuth;
+    QgsAuthorizationSettings &mAuth;
     QEventLoop *mEventLoop = nullptr;
 
     QNetworkReply *mCacheReply = nullptr;

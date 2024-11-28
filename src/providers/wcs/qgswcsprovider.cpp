@@ -436,6 +436,8 @@ bool QgsWcsProvider::parseUri( const QString &uriString )
   }
   QgsDebugMsgLevel( "set authcfg to " + mAuth.mAuthCfg, 2 );
 
+  mAuth.mHttpHeaders = uri.httpHeaders();
+
   mIdentifier = uri.param( QStringLiteral( "identifier" ) );
 
   mTime = uri.param( QStringLiteral( "time" ) );
@@ -1648,7 +1650,7 @@ QgsWcsProvider *QgsWcsProviderMetadata::createProvider( const QString &uri, cons
 
 int QgsWcsDownloadHandler::sErrors = 0;
 
-QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl &url, QgsWcsAuthorization &auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray &cachedData, const QString &wcsVersion, QgsError &cachedError, QgsRasterBlockFeedback *feedback )
+QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl &url, QgsAuthorizationSettings &auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray &cachedData, const QString &wcsVersion, QgsError &cachedError, QgsRasterBlockFeedback *feedback )
   : mAuth( auth )
   , mEventLoop( new QEventLoop )
   , mCachedData( cachedData )
