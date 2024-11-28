@@ -48,6 +48,8 @@ struct CORE_EXPORT QgsPointCloudAttributeStatistics
   //! Updates the current point cloud statistics to hold the cumulation of the current statistics and \a stats
   void cumulateStatistics( const QgsPointCloudAttributeStatistics &stats );
 #endif
+  //! Returns the count of points in given class or -1 on error
+  int singleClassCount( int cls ) const;
 };
 
 /**
