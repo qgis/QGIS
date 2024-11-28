@@ -48,8 +48,6 @@ void QgsStacParser::setData( const QByteArray &data )
   }
   catch ( nlohmann::json::exception &ex )
   {
-    mError = QStringLiteral( "Error parsing JSON" );
-    QgsDebugError( QStringLiteral( "Error parsing JSON : %1" ).arg( ex.what() ) );
     mType = QgsStacObject::Type::Unknown;
   }
 }

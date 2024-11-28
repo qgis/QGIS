@@ -120,6 +120,7 @@ void QgsStacController::handleStacObjectReply()
   parser.setData( data );
   parser.setBaseUrl( reply->url() );
 
+  QString error;
   QgsStacObject *object = nullptr;
   switch ( parser.type() )
   {
@@ -134,10 +135,11 @@ void QgsStacController::handleStacObjectReply()
       break;
     case QgsStacObject::Type::Unknown:
       object = nullptr;
+      error = QStringLiteral( "Parsed STAC data is not a Catalog, Collection or Item" );
       break;
   }
   mFetchedStacObjects.insert( requestId, object );
-  emit finishedStacObjectRequest( requestId, parser.error() );
+  emit finishedStacObjectRequest( requestId, error.isEmpty() ? parser.error() : error );
   reply->deleteLater();
   mReplies.removeOne( reply );
 }

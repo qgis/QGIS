@@ -229,6 +229,11 @@ QgsMimeDataUtils::UriList QgsStacItem::uris() const
       uri.providerKey = QStringLiteral( "ept" );
       uri.uri = it->href();
     }
+
+    // skip assets with incompatible formats
+    if ( uri.uri.isEmpty() )
+      continue;
+
     uri.name = it->title().isEmpty() ? url.fileName() : it->title();
     uris.append( uri );
   }
