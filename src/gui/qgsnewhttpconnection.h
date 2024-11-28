@@ -22,8 +22,10 @@
 #include "ui_qgsnewhttpconnectionbase.h"
 #include "qgsguiutils.h"
 #include "qgis_gui.h"
+#include "qgssettingstree.h"
 
 class QgsAuthSettingsWidget;
+class QgsSettingsEntryBool;
 
 /**
  * \ingroup gui
@@ -35,6 +37,12 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     Q_OBJECT
 
   public:
+#ifndef SIP_RUN
+    static inline QgsSettingsTreeNode *sTreeHttpConnectionDialog = QgsSettingsTree::sTreeConnections->createChildNode( QStringLiteral( "http-connection-dialog" ) );
+
+    static const QgsSettingsEntryBool *settingsIgnoreReportedLayerExtentsDefault;
+#endif
+
     /**
      * Available connection types for configuring in the dialog.
      */
