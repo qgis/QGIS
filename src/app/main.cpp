@@ -416,7 +416,11 @@ void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString 
            msg.contains( QLatin1String( "KLocalizedString" ), Qt::CaseInsensitive ) ||
            msg.contains( QLatin1String( "KServiceTypeTrader" ), Qt::CaseInsensitive ) ||
            msg.contains( QLatin1String( "No node found for item that was just removed" ), Qt::CaseInsensitive ) ||
-           msg.contains( QLatin1String( "Audio notification requested" ), Qt::CaseInsensitive ) )
+           msg.contains( QLatin1String( "Audio notification requested" ), Qt::CaseInsensitive ) ||
+
+           // coming from WebEngine:
+           msg.contains( QLatin1String( "An OpenGL Core Profile was requested, but it is not supported on the current platform" ), Qt::CaseInsensitive )
+         )
         break;
 
       myPrint( "Warning: %s\n", msg.toLocal8Bit().constData() );
