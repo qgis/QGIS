@@ -725,7 +725,7 @@ void QgsColorButton::setButtonBackground( const QColor &color )
 
       //draw fully opaque color on the left side
       const QRectF clipRect( 0, 0,
-                             currentIconSize.width() / 2,
+                             static_cast<qreal>( currentIconSize.width() ) / 2.0,
                              currentIconSize.height() );
       p.setClipRect( clipRect );
       backgroundColor.setAlpha( 255 );
