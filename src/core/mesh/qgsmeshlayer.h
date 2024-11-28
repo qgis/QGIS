@@ -944,7 +944,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     bool minimumMaximumActiveScalarDataset( const QgsRectangle &extent, const QgsMeshDatasetIndex &datasetIndex, double &min SIP_OUT, double &max SIP_OUT );
 
     /**
-     * Get current active scalar dataset index for current renderer context.
+     * Returns current active scalar dataset index for current renderer context.
      *
      * \since QGIS 3.42
      */
