@@ -288,9 +288,11 @@ void QgsFeatureListComboBox::setIdentifierValuesToNull()
 
 QgsFeatureRequest QgsFeatureListComboBox::currentFeatureRequest() const
 {
+  QgsFeatureRequest request;
+  request.setRequestMayBeNested( true );
   if ( mModel->extraIdentifierValues().isEmpty() )
   {
-    return QgsFeatureRequest().setFilterFids( QgsFeatureIds() ); // NULL: Return a request that's guaranteed to not return anything
+    request.setFilterFids( QgsFeatureIds() ); // NULL: Return a request that's guaranteed to not return anything
   }
   else
   {
@@ -309,8 +311,9 @@ QgsFeatureRequest QgsFeatureListComboBox::currentFeatureRequest() const
       }
     }
     const QString expression = filtersAttrs.join( QLatin1String( " AND " ) );
-    return QgsFeatureRequest().setFilterExpression( expression );
+    return request.setFilterExpression( expression );
   }
+  return request;
 }
 
 QString QgsFeatureListComboBox::filterExpression() const
