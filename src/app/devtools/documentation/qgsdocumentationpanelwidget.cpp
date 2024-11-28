@@ -16,6 +16,7 @@
 #include "qgsdocumentationpanelwidget.h"
 #include "moc_qgsdocumentationpanelwidget.cpp"
 #include "qgisapp.h"
+#include "qgsguiutils.h"
 #include <QVBoxLayout>
 
 #ifdef HAVE_WEBENGINE
@@ -33,6 +34,9 @@ QgsDocumentationPanelWidget::QgsDocumentationPanelWidget( QWidget *parent )
   : QgsDevToolWidget( parent )
 {
   setupUi( this );
+
+  mToolbar->setIconSize( QgsGuiUtils::iconSize( true ) );
+
 #ifdef HAVE_WEBENGINE
   mWebView = new QWebEngineView( this );
 #else
@@ -41,10 +45,9 @@ QgsDocumentationPanelWidget::QgsDocumentationPanelWidget( QWidget *parent )
 
   mWebViewContainer->layout()->addWidget( mWebView );
 
-  connect( mPyQgisHomeButton, &QToolButton::clicked, this, [] {QgisApp::instance()->showApiDocumentation( Qgis::DocumentationApi::PyQgis, Qgis::DocumentationBrowser::DeveloperToolsPanel );} );
-  connect( mQtHomeButton, &QToolButton::clicked, this, [] {QgisApp::instance()->showApiDocumentation( Qgis::DocumentationApi::Qt, Qgis::DocumentationBrowser::DeveloperToolsPanel );} );
-  connect( mOpenUrlButton, &QToolButton::clicked, this, [this] {QgisApp::instance()->openURL( mWebView->url().toString(), false );} );
-
+  connect( mActionPyQgis, &QAction::triggered, this, [] {QgisApp::instance()->showApiDocumentation( Qgis::DocumentationApi::PyQgis, Qgis::DocumentationBrowser::DeveloperToolsPanel );} );
+  connect( mActionQt, &QAction::triggered, this, [] {QgisApp::instance()->showApiDocumentation( Qgis::DocumentationApi::Qt, Qgis::DocumentationBrowser::DeveloperToolsPanel );} );
+  connect( mActionOpenInBrowser, &QAction::triggered, this, [this] {QgisApp::instance()->openURL( mWebView->url().toString(), false );} );
 }
 
 void QgsDocumentationPanelWidget::showUrl( const QUrl &url )
