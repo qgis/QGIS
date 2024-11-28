@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgeometrymissingvertexcheck.h"
+#include "moc_qgsgeometrymissingvertexcheck.cpp"
 
 #include "qgsfeedback.h"
 #include "qgsgeometrycollection.h"
