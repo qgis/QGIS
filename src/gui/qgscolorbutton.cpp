@@ -718,11 +718,25 @@ void QgsColorButton::setButtonBackground( const QColor &color )
       const QBrush checkBrush = QBrush( transparentBackground() );
       p.setBrush( checkBrush );
       p.drawRoundedRect( rect, 3, 3 );
-    }
 
-    //draw semi-transparent color on top
-    p.setBrush( backgroundColor );
-    p.drawRoundedRect( rect, 3, 3 );
+      //draw semi-transparent color on top
+      p.setBrush( backgroundColor );
+      p.drawRoundedRect( rect, 3, 3 );
+
+      //draw fully opaque color on the left side
+      const QRectF clipRect( 0, 0,
+                             currentIconSize.width() / 2,
+                             currentIconSize.height() );
+      p.setClipRect( clipRect );
+      backgroundColor.setAlpha( 255 );
+      p.setBrush( backgroundColor );
+      p.drawRoundedRect( rect, 3, 3 );
+    }
+    else
+    {
+      p.setBrush( backgroundColor );
+      p.drawRoundedRect( rect, 3, 3 );
+    }
     p.end();
   }
 
