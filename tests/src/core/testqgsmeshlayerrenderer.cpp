@@ -88,6 +88,7 @@ class TestQgsMeshRenderer : public QgsTest
     void test_stacked_3d_mesh_single_level_averaging();
     void test_simplified_triangular_mesh_rendering();
     void test_classified_values();
+    void test_color_scale_based_on_canvas_extent();
 
     void test_signals();
 };
@@ -865,6 +866,51 @@ void TestQgsMeshRenderer::test_classified_values()
   mMapSettings->setOutputDpi( 96 );
   mMapSettings->setRotation( 0 );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_values", "classified_values", *mMapSettings, 0, 15 );
+}
+
+void TestQgsMeshRenderer::test_color_scale_based_on_canvas_extent()
+{
+  // layer with several separated parts
+  QgsMeshLayer layer(
+    testDataPath( "mesh/several_parts.2dm" ),
+    QStringLiteral( "mesh" ),
+    QStringLiteral( "mdal" ) );
+
+  QVERIFY( layer.isValid() );
+
+  layer.updateTriangularMesh();
+  layer.temporalProperties()->setIsActive( false );
+
+  int groupIndex = 0;
+  layer.setStaticScalarDatasetIndex( QgsMeshDatasetIndex( groupIndex, 0 ) );
+
+  // min max from current canvas settings for group
+  QgsMeshRendererSettings rendererSettings = layer.rendererSettings();
+  QgsMeshRendererScalarSettings scalarRendererSettings = rendererSettings.scalarSettings( groupIndex );
+  scalarRendererSettings.setMinMaxValueType( QgsMeshRendererScalarSettings::MinMaxValueType::InteractiveFromCanvas );
+  rendererSettings.setScalarSettings( groupIndex, scalarRendererSettings );
+  layer.setRendererSettings( rendererSettings );
+
+  QgsProject::instance()->addMapLayer( &layer );
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << &layer );
+  mMapSettings->setDestinationCrs( layer.crs() );
+  mMapSettings->setOutputDpi( 96 );
+  mMapSettings->setRotation( 0 );
+
+  QgsRectangle extent = layer.extent();
+  extent.grow( 0.1 );
+  mMapSettings->setExtent( extent );
+  QGSRENDERMAPSETTINGSCHECK( "scale_interactive_from_canvas_1", "scale_interactive_from_canvas_1", *mMapSettings, 0, 5 );
+
+  extent = QgsRectangle( 0, 8, 2, 10 );
+  extent.grow( 0.1 );
+  mMapSettings->setExtent( extent );
+  QGSRENDERMAPSETTINGSCHECK( "scale_interactive_from_canvas_2", "scale_interactive_from_canvas_2", *mMapSettings, 0, 5 );
+
+  extent = QgsRectangle( 8, 8, 10, 10 );
+  extent.grow( 0.1 );
+  mMapSettings->setExtent( extent );
+  QGSRENDERMAPSETTINGSCHECK( "scale_interactive_from_canvas_3", "scale_interactive_from_canvas_3", *mMapSettings, 0, 5 );
 }
 
 QGSTEST_MAIN( TestQgsMeshRenderer )
