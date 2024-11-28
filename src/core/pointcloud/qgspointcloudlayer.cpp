@@ -456,13 +456,6 @@ void QgsPointCloudLayer::setDataSourcePrivate( const QString &dataSource, const 
     calculateStatistics();
   }
 
-  // Note: we load the statistics from the data provider regardless of it being an existing metadata (do not check for hasStatisticsMetadata)
-  // since the X, Y & Z coordinates will be in the header of the dataset
-  if ( mDataProvider && mDataProvider->isValid() && mStatistics.sampledPointsCount() == 0 && mDataProvider->indexingState() == QgsPointCloudDataProvider::Indexed )
-  {
-    mStatistics = mDataProvider->metadataStatistics();
-  }
-
   if ( !mRenderer || loadDefaultStyleFlag )
   {
     std::unique_ptr< QgsScopedRuntimeProfile > profile;
@@ -864,13 +857,6 @@ void QgsPointCloudLayer::calculateStatistics()
     QgsMessageLog::logMessage( QObject::tr( "A statistics calculation task for the point cloud %1 is already in progress" ).arg( this->name() ) );
     return;
   }
-  if ( mStatistics.sampledPointsCount() != 0 )
-  {
-    mStatisticsCalculationState = QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculated;
-    emit statisticsCalculationStateChanged( mStatisticsCalculationState );
-    resetRenderer();
-    return;
-  }
 
   QgsPointCloudStatistics indexStats = mDataProvider->metadataStatistics();
   QList<QString> indexStatsAttributes = indexStats.statisticsMap().keys();
@@ -883,6 +869,16 @@ void QgsPointCloudLayer::calculateStatistics()
       attributes.remove( i );
       --i;
     }
+  }
+
+  if ( attributes.empty() && indexStats.sampledPointsCount() > 0 )
+  {
+    // All attributes are covered by the saved stats, use them directly
+    mStatistics = indexStats;
+    mStatisticsCalculationState = QgsPointCloudLayer::PointCloudStatisticsCalculationState::Calculated;
+    emit statisticsCalculationStateChanged( mStatisticsCalculationState );
+    resetRenderer();
+    return;
   }
 
   QgsPointCloudStatsCalculationTask *task = new QgsPointCloudStatsCalculationTask( mDataProvider->index(), attributes, 1000000 );

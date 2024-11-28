@@ -269,6 +269,8 @@ void QgsPointCloudIndex::copyCommonProperties( QgsPointCloudIndex *destination )
   destination->mZMin = mZMin;
   destination->mZMax = mZMax;
   destination->mHierarchy = mHierarchy;
+  destination->mScale = mScale;
+  destination->mOffset = mOffset;
   destination->mRootBounds = mRootBounds;
   destination->mAttributes = mAttributes;
   destination->mSpan = mSpan;
