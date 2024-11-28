@@ -1,6 +1,20 @@
 # The following has been generated automatically from src/core/mesh/qgsmeshrenderersettings.h
 QgsMeshRendererScalarSettings.NoResampling = QgsMeshRendererScalarSettings.DataResamplingMethod.NoResampling
 QgsMeshRendererScalarSettings.NeighbourAverage = QgsMeshRendererScalarSettings.DataResamplingMethod.NeighbourAverage
+# monkey patching scoped based enum
+QgsMeshRendererScalarSettings.MinMaxValueType.UserDefined.__doc__ = ""
+QgsMeshRendererScalarSettings.MinMaxValueType.WholeMesh.__doc__ = ""
+QgsMeshRendererScalarSettings.MinMaxValueType.FixedCanvas.__doc__ = ""
+QgsMeshRendererScalarSettings.MinMaxValueType.InteractiveFromCanvas.__doc__ = ""
+QgsMeshRendererScalarSettings.MinMaxValueType.__doc__ = """This enumerator describes the extent used to compute min/max values
+
+* ``UserDefined``: 
+* ``WholeMesh``: 
+* ``FixedCanvas``: 
+* ``InteractiveFromCanvas``: 
+
+"""
+# --
 QgsMeshRendererVectorArrowSettings.MinMax = QgsMeshRendererVectorArrowSettings.ArrowScalingMethod.MinMax
 QgsMeshRendererVectorArrowSettings.Scaled = QgsMeshRendererVectorArrowSettings.ArrowScalingMethod.Scaled
 QgsMeshRendererVectorArrowSettings.Fixed = QgsMeshRendererVectorArrowSettings.ArrowScalingMethod.Fixed
