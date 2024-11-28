@@ -449,13 +449,15 @@ QgsPointCloudNode QgsCopcPointCloudIndex::getNode( const QgsPointCloudNodeId &id
     const int x = id.x() * 2;
     const int y = id.y() * 2;
     const int z = id.z() * 2;
-    mHierarchyMutex.unlock();
 
     for ( int i = 0; i < 8; ++i )
     {
       int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
       const QgsPointCloudNodeId n2( d, x + dx, y + dy, z + dz );
-      if ( fetchNodeHierarchy( n2 ) && mHierarchy[id] >= 0 )
+      mHierarchyMutex.unlock();
+      bool found = fetchNodeHierarchy( n2 );
+      mHierarchyMutex.lock();
+      if ( found && mHierarchy[id] >= 0 )
         children.append( n2 );
     }
   }

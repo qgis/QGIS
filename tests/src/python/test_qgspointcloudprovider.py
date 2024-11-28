@@ -37,93 +37,25 @@ class TestQgsPointCloudDataProvider(QgisTestCase):
         )
         self.assertTrue(layer.isValid())
 
-        self.assertEqual(
-            layer.dataProvider().metadataStatistic(
-                "X", QgsStatisticalSummary.Statistic.Count
-            ),
-            253,
-        )
-        self.assertEqual(
-            layer.dataProvider().metadataStatistic(
-                "X", QgsStatisticalSummary.Statistic.Min
-            ),
-            498062.0,
-        )
-        self.assertEqual(
-            layer.dataProvider().metadataStatistic(
-                "X", QgsStatisticalSummary.Statistic.Max
-            ),
-            498067.39,
-        )
-        self.assertAlmostEqual(
-            layer.dataProvider().metadataStatistic(
-                "X", QgsStatisticalSummary.Statistic.Range
-            ),
-            5.39000000001397,
-            5,
-        )
-        self.assertAlmostEqual(
-            layer.dataProvider().metadataStatistic(
-                "X", QgsStatisticalSummary.Statistic.Mean
-            ),
-            498064.7342292491,
-            5,
-        )
-        self.assertAlmostEqual(
-            layer.dataProvider().metadataStatistic(
-                "X", QgsStatisticalSummary.Statistic.StDev
-            ),
-            1.5636647117681046,
-            5,
-        )
-        with self.assertRaises(ValueError):
-            layer.dataProvider().metadataStatistic(
-                "X", QgsStatisticalSummary.Statistic.Majority
-            )
+        stats = layer.dataProvider().metadataStatistics()
+        self.assertEqual(stats.statisticsOf("X").count, 253)
+        self.assertEqual(stats.statisticsOf("X").minimum, 498062.0)
+        self.assertEqual(stats.statisticsOf("X").maximum, 498067.39)
+        self.assertAlmostEqual(stats.statisticsOf("X").mean, 498064.7342292491, 5)
+        self.assertAlmostEqual(stats.statisticsOf("X").stDev, 1.5636647117681046, 5)
+        with self.assertRaises(AttributeError):
+            stats.statisticsOf("X").majority
 
-        with self.assertRaises(ValueError):
-            layer.dataProvider().metadataStatistic(
-                "Xxxxx", QgsStatisticalSummary.Statistic.Count
-            )
+        self.assertEqual(stats.statisticsOf("Xxxxx").count, 0)
 
-        self.assertEqual(
-            layer.dataProvider().metadataStatistic(
-                "Intensity", QgsStatisticalSummary.Statistic.Count
-            ),
-            253,
-        )
-        self.assertEqual(
-            layer.dataProvider().metadataStatistic(
-                "Intensity", QgsStatisticalSummary.Statistic.Min
-            ),
-            199,
-        )
-        self.assertEqual(
-            layer.dataProvider().metadataStatistic(
-                "Intensity", QgsStatisticalSummary.Statistic.Max
-            ),
-            2086.0,
+        self.assertEqual(stats.statisticsOf("Intensity").count, 253)
+        self.assertEqual(stats.statisticsOf("Intensity").minimum, 199)
+        self.assertEqual(stats.statisticsOf("Intensity").maximum, 2086.0)
+        self.assertAlmostEqual(
+            stats.statisticsOf("Intensity").mean, 728.521739130435, 5
         )
         self.assertAlmostEqual(
-            layer.dataProvider().metadataStatistic(
-                "Intensity", QgsStatisticalSummary.Statistic.Range
-            ),
-            1887.0,
-            5,
-        )
-        self.assertAlmostEqual(
-            layer.dataProvider().metadataStatistic(
-                "Intensity", QgsStatisticalSummary.Statistic.Mean
-            ),
-            728.521739130435,
-            5,
-        )
-        self.assertAlmostEqual(
-            layer.dataProvider().metadataStatistic(
-                "Intensity", QgsStatisticalSummary.Statistic.StDev
-            ),
-            440.9652417017358,
-            5,
+            stats.statisticsOf("Intensity").stDev, 440.9652417017358, 5
         )
 
     @unittest.skipIf(
@@ -138,10 +70,9 @@ class TestQgsPointCloudDataProvider(QgisTestCase):
         )
         self.assertTrue(layer.isValid())
 
-        self.assertEqual(layer.dataProvider().metadataClasses("X"), [])
-        self.assertCountEqual(
-            layer.dataProvider().metadataClasses("Classification"), [1, 2, 3, 5]
-        )
+        stats = layer.dataProvider().metadataStatistics()
+        self.assertEqual(stats.classesOf("X"), [])
+        self.assertCountEqual(stats.classesOf("Classification"), [1, 2, 3, 5])
 
     @unittest.skipIf(
         "ept" not in QgsProviderRegistry.instance().providerList(),
@@ -155,54 +86,15 @@ class TestQgsPointCloudDataProvider(QgisTestCase):
         )
         self.assertTrue(layer.isValid())
 
-        with self.assertRaises(ValueError):
-            self.assertEqual(
-                layer.dataProvider().metadataClassStatistic(
-                    "X", 0, QgsStatisticalSummary.Statistic.Count
-                ),
-                [],
-            )
+        stats = layer.dataProvider().metadataStatistics()
 
-        with self.assertRaises(ValueError):
-            self.assertEqual(
-                layer.dataProvider().metadataClassStatistic(
-                    "Classification", 0, QgsStatisticalSummary.Statistic.Count
-                ),
-                [],
-            )
+        self.assertEqual(stats.statisticsOf("X").singleClassCount(0), -1)
+        self.assertEqual(stats.statisticsOf("Classification").singleClassCount(0), -1)
 
-        with self.assertRaises(ValueError):
-            self.assertEqual(
-                layer.dataProvider().metadataClassStatistic(
-                    "Classification", 1, QgsStatisticalSummary.Statistic.Sum
-                ),
-                [],
-            )
-
-        self.assertEqual(
-            layer.dataProvider().metadataClassStatistic(
-                "Classification", 1, QgsStatisticalSummary.Statistic.Count
-            ),
-            1,
-        )
-        self.assertEqual(
-            layer.dataProvider().metadataClassStatistic(
-                "Classification", 2, QgsStatisticalSummary.Statistic.Count
-            ),
-            160,
-        )
-        self.assertEqual(
-            layer.dataProvider().metadataClassStatistic(
-                "Classification", 3, QgsStatisticalSummary.Statistic.Count
-            ),
-            89,
-        )
-        self.assertEqual(
-            layer.dataProvider().metadataClassStatistic(
-                "Classification", 5, QgsStatisticalSummary.Statistic.Count
-            ),
-            3,
-        )
+        self.assertEqual(stats.statisticsOf("Classification").singleClassCount(1), 1)
+        self.assertEqual(stats.statisticsOf("Classification").singleClassCount(2), 160)
+        self.assertEqual(stats.statisticsOf("Classification").singleClassCount(3), 89)
+        self.assertEqual(stats.statisticsOf("Classification").singleClassCount(5), 3)
 
     @unittest.skipIf(
         "ept" not in QgsProviderRegistry.instance().providerList(),
