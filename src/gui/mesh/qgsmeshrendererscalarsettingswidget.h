@@ -59,6 +59,9 @@ class GUI_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer();
 
+    //! Associates map canvas with the widget
+    void setCanvas( QgsMapCanvas *canvas );
+
   signals:
     //! Mesh rendering settings changed
     void widgetChanged();
@@ -67,16 +70,21 @@ class GUI_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
     void minMaxChanged();
     void recalculateMinMaxButtonClicked();
     void onEdgeStrokeWidthMethodChanged();
+    void minMaxSourceChanged();
 
   private:
     double spinBoxValue( const QgsDoubleSpinBox *spinBox ) const;
     QgsMeshRendererScalarSettings::DataResamplingMethod dataIntepolationMethod() const;
+    QgsMeshRendererScalarSettings::MinMaxValueType minMaxValueType() const;
+
+    void recalculateMinMax();
 
     bool dataIsDefinedOnFaces() const;
     bool dataIsDefinedOnEdges() const;
 
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
     int mActiveDatasetGroup = -1;
+    QgsMapCanvas *mCanvas = nullptr;
 };
 
 #endif // QGSMESHRENDERERSCALARSETTINGSWIDGET_H

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>381</width>
+    <width>416</width>
     <height>206</height>
    </rect>
   </property>
@@ -172,6 +172,20 @@
          <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
        </property>
       </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="mMinMaxValueTypeLabel">
+       <property name="text">
+        <string>Statistics extent</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mMinMaxValueTypeComboBox"/>
      </item>
     </layout>
    </item>
