@@ -44,6 +44,7 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmeshlayerelevationproperties.h"
+#include "qgsrenderedlayerstatistics.h"
 
 QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   QgsMeshLayer *layer,
@@ -159,6 +160,38 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   prepareLabeling( layer, attrs );
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
+
+  if ( !context.testFlag( Qgis::RenderContextFlag::RenderPreviewJob ) )
+  {
+    QgsMeshDatasetIndex activeDatasetIndex = layer->activeScalarDatasetIndex( context );
+
+    if ( activeDatasetIndex.isValid() )
+    {
+      QgsMeshRendererScalarSettings scalarRendererSettings = mRendererSettings.scalarSettings( activeDatasetIndex.group() );
+
+      if ( scalarRendererSettings.minMaxValueType() == QgsMeshRendererScalarSettings::MinMaxValueType::InteractiveFromCanvas )
+      {
+        double previousMin = scalarRendererSettings.classificationMinimum();
+        double previousMax = scalarRendererSettings.classificationMaximum();
+        double min, max;
+
+        bool found  = layer->minimumMaximumActiveScalarDataset( context.extent(), activeDatasetIndex, min, max );
+
+        if ( found )
+        {
+          if ( previousMin != min || previousMax != max )
+          {
+            QgsRenderedLayerStatistics *layerStatistics = new QgsRenderedLayerStatistics( layer->id(), min, max );
+            layerStatistics->setBoundingBox( context.extent() );
+            appendRenderedItemDetails( layerStatistics );
+
+            scalarRendererSettings.setClassificationMinimumMaximum( min, max );
+            mRendererSettings.setScalarSettings( activeDatasetIndex.group(), scalarRendererSettings );
+          }
+        }
+      }
+    }
+  }
 
   mPreparationTime = timer.elapsed();
 }
