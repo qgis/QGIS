@@ -18,6 +18,10 @@ struct QgsPointCloudAttributeStatistics
   double mean;
   double stDev;
   int count;
+  int singleClassCount( int cls ) const;
+%Docstring
+Returns the count of points in given class or -1 on error
+%End
 };
 
 class QgsPointCloudStatistics
