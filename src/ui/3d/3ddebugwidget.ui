@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>283</width>
-    <height>452</height>
+    <width>515</width>
+    <height>681</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,6 +23,18 @@
    <property name="sizeConstraint">
     <enum>QLayout::SetDefaultConstraint</enum>
    </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QgsScrollArea" name="scrollArea">
      <property name="sizePolicy">
@@ -30,6 +42,9 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
      </property>
      <property name="horizontalScrollBarPolicy">
       <enum>Qt::ScrollBarAsNeeded</enum>
@@ -44,9 +59,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-350</y>
-        <width>250</width>
-        <height>790</height>
+        <y>0</y>
+        <width>501</width>
+        <height>753</height>
        </rect>
       </property>
       <property name="sizePolicy">
