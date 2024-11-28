@@ -197,7 +197,7 @@ void TestQgsRasterLayer::cleanupTestCase()
 void TestQgsRasterLayer::isValid()
 {
   QVERIFY( mpRasterLayer->isValid() );
-  mpRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterMinMaxOrigin::MinMax );
+  mpRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, Qgis::RasterRangeLimit::MinimumMaximum );
   mMapSettings->setExtent( mpRasterLayer->extent() );
   QVERIFY( render( "raster" ) );
 }
@@ -346,7 +346,7 @@ void TestQgsRasterLayer::colorRamp4()
 void TestQgsRasterLayer::landsatBasic()
 {
   QVERIFY2( mpLandsatRasterLayer->isValid(), "landsat.tif layer is not valid!" );
-  mpLandsatRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterMinMaxOrigin::MinMax );
+  mpLandsatRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, Qgis::RasterRangeLimit::MinimumMaximum );
   mMapSettings->setLayers( QList<QgsMapLayer *>() << mpLandsatRasterLayer );
   mMapSettings->setDestinationCrs( mpLandsatRasterLayer->crs() );
   mMapSettings->setExtent( mpLandsatRasterLayer->extent() );
@@ -652,7 +652,7 @@ void TestQgsRasterLayer::transparency()
   QVERIFY( mpFloat32RasterLayer->isValid() );
   QgsSingleBandGrayRenderer *renderer = new QgsSingleBandGrayRenderer( mpRasterLayer->dataProvider(), 1 );
   mpFloat32RasterLayer->setRenderer( renderer );
-  mpFloat32RasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterMinMaxOrigin::MinMax );
+  mpFloat32RasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, Qgis::RasterRangeLimit::MinimumMaximum );
 
   qDebug( "contrastEnhancement.minimumValue = %.17g", renderer->contrastEnhancement()->minimumValue() );
   qDebug( "contrastEnhancement.maximumValue = %.17g", renderer->contrastEnhancement()->maximumValue() );
@@ -1004,7 +1004,7 @@ void TestQgsRasterLayer::regression992()
 void TestQgsRasterLayer::testRefreshRendererIfNeeded()
 {
   QVERIFY2( mpLandsatRasterLayer->isValid(), "landsat.tif layer is not valid!" );
-  mpLandsatRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterMinMaxOrigin::MinMax );
+  mpLandsatRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, Qgis::RasterRangeLimit::MinimumMaximum );
   QVERIFY( dynamic_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() ) );
   mMapSettings->setLayers( QList<QgsMapLayer *>() << mpLandsatRasterLayer );
   mMapSettings->setExtent( mpLandsatRasterLayer->extent() );
@@ -1021,10 +1021,10 @@ void TestQgsRasterLayer::testRefreshRendererIfNeeded()
 
   // Change to UpdatedCanvas
   QgsRasterMinMaxOrigin mmo = mpLandsatRasterLayer->renderer()->minMaxOrigin();
-  mmo.setExtent( QgsRasterMinMaxOrigin::UpdatedCanvas );
-  mmo.setStatAccuracy( QgsRasterMinMaxOrigin::Exact );
+  mmo.setExtent( Qgis::RasterRangeExtent::UpdatedCanvas );
+  mmo.setStatAccuracy( Qgis::RasterRangeAccuracy::Exact );
   mpLandsatRasterLayer->renderer()->setMinMaxOrigin( mmo );
-  QCOMPARE( mpLandsatRasterLayer->renderer()->minMaxOrigin().extent(), QgsRasterMinMaxOrigin::UpdatedCanvas );
+  QCOMPARE( mpLandsatRasterLayer->renderer()->minMaxOrigin().extent(), Qgis::RasterRangeExtent::UpdatedCanvas );
   QVERIFY( mpLandsatRasterLayer->renderer()->needsRefresh( newExtent ) );
 
   QList<double> minValues;

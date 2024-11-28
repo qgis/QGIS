@@ -165,41 +165,41 @@ QgsRasterRenderer *QgsSingleBandPseudoColorRenderer::create( const QDomElement &
   {
     if ( minMaxOrigin.contains( QLatin1String( "MinMax" ) ) )
     {
-      r->mMinMaxOrigin.setLimits( QgsRasterMinMaxOrigin::MinMax );
+      r->mMinMaxOrigin.setLimits( Qgis::RasterRangeLimit::MinimumMaximum );
     }
     else if ( minMaxOrigin.contains( QLatin1String( "CumulativeCut" ) ) )
     {
-      r->mMinMaxOrigin.setLimits( QgsRasterMinMaxOrigin::CumulativeCut );
+      r->mMinMaxOrigin.setLimits( Qgis::RasterRangeLimit::CumulativeCut );
     }
     else if ( minMaxOrigin.contains( QLatin1String( "StdDev" ) ) )
     {
-      r->mMinMaxOrigin.setLimits( QgsRasterMinMaxOrigin::StdDev );
+      r->mMinMaxOrigin.setLimits( Qgis::RasterRangeLimit::StdDev );
     }
     else
     {
-      r->mMinMaxOrigin.setLimits( QgsRasterMinMaxOrigin::None );
+      r->mMinMaxOrigin.setLimits( Qgis::RasterRangeLimit::NotSet );
     }
 
     if ( minMaxOrigin.contains( QLatin1String( "FullExtent" ) ) )
     {
-      r->mMinMaxOrigin.setExtent( QgsRasterMinMaxOrigin::WholeRaster );
+      r->mMinMaxOrigin.setExtent( Qgis::RasterRangeExtent::WholeRaster );
     }
     else if ( minMaxOrigin.contains( QLatin1String( "SubExtent" ) ) )
     {
-      r->mMinMaxOrigin.setExtent( QgsRasterMinMaxOrigin::CurrentCanvas );
+      r->mMinMaxOrigin.setExtent( Qgis::RasterRangeExtent::FixedCanvas );
     }
     else
     {
-      r->mMinMaxOrigin.setExtent( QgsRasterMinMaxOrigin::WholeRaster );
+      r->mMinMaxOrigin.setExtent( Qgis::RasterRangeExtent::WholeRaster );
     }
 
     if ( minMaxOrigin.contains( QLatin1String( "Estimated" ) ) )
     {
-      r->mMinMaxOrigin.setStatAccuracy( QgsRasterMinMaxOrigin::Estimated );
+      r->mMinMaxOrigin.setStatAccuracy( Qgis::RasterRangeAccuracy::Estimated );
     }
     else // if ( minMaxOrigin.contains( QLatin1String( "Exact" ) ) )
     {
-      r->mMinMaxOrigin.setStatAccuracy( QgsRasterMinMaxOrigin::Exact );
+      r->mMinMaxOrigin.setStatAccuracy( Qgis::RasterRangeAccuracy::Exact );
     }
   }
 

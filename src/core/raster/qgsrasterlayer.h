@@ -35,7 +35,6 @@
 #include "qgsmaplayer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterviewport.h"
-#include "qgsrasterminmaxorigin.h"
 #include "qgscontrastenhancement.h"
 #include "qgsabstractprofilesource.h"
 
@@ -50,6 +49,7 @@ class QgsHueSaturationFilter;
 class QgsRasterLayerElevationProperties;
 class QgsSettingsEntryBool;
 class QgsSettingsEntryDouble;
+class QgsRasterMinMaxOrigin;
 
 class QImage;
 class QPixmap;
@@ -96,13 +96,13 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     static const QgsContrastEnhancement::ContrastEnhancementAlgorithm MULTIPLE_BAND_MULTI_BYTE_ENHANCEMENT_ALGORITHM;
 
     //! \brief Default enhancement limits for single band raster
-    static const QgsRasterMinMaxOrigin::Limits SINGLE_BAND_MIN_MAX_LIMITS;
+    static const Qgis::RasterRangeLimit SINGLE_BAND_MIN_MAX_LIMITS;
 
     //! \brief Default enhancement limits for multiple band raster of type Byte
-    static const QgsRasterMinMaxOrigin::Limits MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS;
+    static const Qgis::RasterRangeLimit MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS;
 
     //! \brief Default enhancement limits for multiple band raster of type different from Byte
-    static const QgsRasterMinMaxOrigin::Limits MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS;
+    static const Qgis::RasterRangeLimit MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS;
 
     //! \brief Constructor. Provider is not set.
     QgsRasterLayer();
@@ -392,7 +392,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      *  \param generateLookupTableFlag Generate lookup table.
     */
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
-                                 QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax,
+                                 Qgis::RasterRangeLimit limits = Qgis::RasterRangeLimit::MinimumMaximum,
                                  const QgsRectangle &extent = QgsRectangle(),
                                  int sampleSize = QgsRasterLayer::SAMPLE_SIZE,
                                  bool generateLookupTableFlag = true );
@@ -426,7 +426,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      */
     bool defaultContrastEnhancementSettings(
       QgsContrastEnhancement::ContrastEnhancementAlgorithm &myAlgorithm,
-      QgsRasterMinMaxOrigin::Limits &myLimits ) const SIP_SKIP;
+      Qgis::RasterRangeLimit &myLimits ) const SIP_SKIP;
 
     //! Sets the default contrast enhancement
     void setDefaultContrastEnhancement();
@@ -477,7 +477,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      */
     void computeMinMax( int band,
                         const QgsRasterMinMaxOrigin &mmo,
-                        QgsRasterMinMaxOrigin::Limits limits,
+                        Qgis::RasterRangeLimit limits,
                         const QgsRectangle &extent,
                         int sampleSize,
                         double &min, double &max ) SIP_SKIP;
@@ -526,7 +526,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     void setRendererForDrawingStyle( Qgis::RasterDrawingStyle drawingStyle );
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
-                                 QgsRasterMinMaxOrigin::Limits limits,
+                                 Qgis::RasterRangeLimit limits,
                                  const QgsRectangle &extent,
                                  int sampleSize,
                                  bool generateLookupTableFlag,

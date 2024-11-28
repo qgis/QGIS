@@ -889,7 +889,7 @@ void QgsGeoreferencerMainWindow::localHistogramStretch()
 
   if ( mLayer && mLayer->type() == Qgis::LayerType::Raster && mCanvas )
   {
-    qobject_cast<QgsRasterLayer *>( mLayer.get() )->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterMinMaxOrigin::MinMax, rectangle );
+    qobject_cast<QgsRasterLayer *>( mLayer.get() )->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, Qgis::RasterRangeLimit::MinimumMaximum, rectangle );
     mCanvas->refresh();
   }
 }

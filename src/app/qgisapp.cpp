@@ -12793,25 +12793,25 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
 
 void QgisApp::fullHistogramStretch()
 {
-  histogramStretch( false, QgsRasterMinMaxOrigin::MinMax );
+  histogramStretch( false, Qgis::RasterRangeLimit::MinimumMaximum );
 }
 
 void QgisApp::localHistogramStretch()
 {
-  histogramStretch( true, QgsRasterMinMaxOrigin::MinMax );
+  histogramStretch( true, Qgis::RasterRangeLimit::MinimumMaximum );
 }
 
 void QgisApp::fullCumulativeCutStretch()
 {
-  histogramStretch( false, QgsRasterMinMaxOrigin::CumulativeCut );
+  histogramStretch( false, Qgis::RasterRangeLimit::CumulativeCut );
 }
 
 void QgisApp::localCumulativeCutStretch()
 {
-  histogramStretch( true, QgsRasterMinMaxOrigin::CumulativeCut );
+  histogramStretch( true, Qgis::RasterRangeLimit::CumulativeCut );
 }
 
-void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRasterMinMaxOrigin::Limits limits )
+void QgisApp::histogramStretch( bool visibleAreaOnly, Qgis::RasterRangeLimit limits )
 {
   QgsMapLayer *myLayer = mLayerTreeView->currentLayer();
 

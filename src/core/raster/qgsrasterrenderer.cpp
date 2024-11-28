@@ -248,8 +248,8 @@ bool QgsRasterRenderer::accept( QgsStyleEntityVisitorInterface * ) const
 bool QgsRasterRenderer::needsRefresh( const QgsRectangle &extent ) const
 {
   if ( mLastRectangleUsedByRefreshContrastEnhancementIfNeeded != extent &&
-       mMinMaxOrigin.limits() != QgsRasterMinMaxOrigin::None &&
-       mMinMaxOrigin.extent() == QgsRasterMinMaxOrigin::UpdatedCanvas )
+       mMinMaxOrigin.limits() != Qgis::RasterRangeLimit::NotSet &&
+       mMinMaxOrigin.extent() == Qgis::RasterRangeExtent::UpdatedCanvas )
   {
     return true;
   }

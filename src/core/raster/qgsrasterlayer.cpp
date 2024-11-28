@@ -100,12 +100,12 @@ QgsRasterLayer::MULTIPLE_BAND_SINGLE_BYTE_ENHANCEMENT_ALGORITHM = QgsContrastEnh
 const QgsContrastEnhancement::ContrastEnhancementAlgorithm
 QgsRasterLayer::MULTIPLE_BAND_MULTI_BYTE_ENHANCEMENT_ALGORITHM = QgsContrastEnhancement::StretchToMinimumMaximum;
 
-const QgsRasterMinMaxOrigin::Limits
-QgsRasterLayer::SINGLE_BAND_MIN_MAX_LIMITS = QgsRasterMinMaxOrigin::MinMax;
-const QgsRasterMinMaxOrigin::Limits
-QgsRasterLayer::MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS = QgsRasterMinMaxOrigin::MinMax;
-const QgsRasterMinMaxOrigin::Limits
-QgsRasterLayer::MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS = QgsRasterMinMaxOrigin::CumulativeCut;
+const Qgis::RasterRangeLimit
+QgsRasterLayer::SINGLE_BAND_MIN_MAX_LIMITS = Qgis::RasterRangeLimit::MinimumMaximum;
+const Qgis::RasterRangeLimit
+QgsRasterLayer::MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS = Qgis::RasterRangeLimit::MinimumMaximum;
+const Qgis::RasterRangeLimit
+QgsRasterLayer::MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS = Qgis::RasterRangeLimit::CumulativeCut;
 
 QgsRasterLayer::QgsRasterLayer()
   : QgsMapLayer( Qgis::LayerType::Raster )
@@ -1211,7 +1211,7 @@ void QgsRasterLayer::closeDataProvider()
 
 void QgsRasterLayer::computeMinMax( int band,
                                     const QgsRasterMinMaxOrigin &mmo,
-                                    QgsRasterMinMaxOrigin::Limits limits,
+                                    Qgis::RasterRangeLimit limits,
                                     const QgsRectangle &extent,
                                     int sampleSize,
                                     double &min, double &max )
@@ -1223,7 +1223,7 @@ void QgsRasterLayer::computeMinMax( int band,
   if ( !mDataProvider )
     return;
 
-  if ( limits == QgsRasterMinMaxOrigin::MinMax )
+  if ( limits == Qgis::RasterRangeLimit::MinimumMaximum )
   {
     QgsRasterBandStats myRasterBandStats = mDataProvider->bandStatistics( band, Qgis::RasterBandStatistic::Min | Qgis::RasterBandStatistic::Max, extent, sampleSize );
     // Check if statistics were actually gathered, None means a failure
@@ -1296,13 +1296,13 @@ void QgsRasterLayer::computeMinMax( int band,
     min = myRasterBandStats.minimumValue;
     max = myRasterBandStats.maximumValue;
   }
-  else if ( limits == QgsRasterMinMaxOrigin::StdDev )
+  else if ( limits == Qgis::RasterRangeLimit::StdDev )
   {
     const QgsRasterBandStats myRasterBandStats = mDataProvider->bandStatistics( band, Qgis::RasterBandStatistic::Mean | Qgis::RasterBandStatistic::StdDev, extent, sampleSize );
     min = myRasterBandStats.mean - ( mmo.stdDevFactor() * myRasterBandStats.stdDev );
     max = myRasterBandStats.mean + ( mmo.stdDevFactor() * myRasterBandStats.stdDev );
   }
-  else if ( limits == QgsRasterMinMaxOrigin::CumulativeCut )
+  else if ( limits == Qgis::RasterRangeLimit::CumulativeCut )
   {
     const double myLower = mmo.cumulativeCutLower();
     const double myUpper = mmo.cumulativeCutUpper();
@@ -1334,7 +1334,7 @@ QgsMapLayerElevationProperties *QgsRasterLayer::elevationProperties()
   return mElevationProperties;
 }
 
-void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, QgsRasterMinMaxOrigin::Limits limits, const QgsRectangle &extent, int sampleSize, bool generateLookupTableFlag )
+void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, Qgis::RasterRangeLimit limits, const QgsRectangle &extent, int sampleSize, bool generateLookupTableFlag )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -1347,7 +1347,7 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
 }
 
 void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
-    QgsRasterMinMaxOrigin::Limits limits,
+    Qgis::RasterRangeLimit limits,
     const QgsRectangle &extent,
     int sampleSize,
     bool generateLookupTableFlag,
@@ -1355,7 +1355,7 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsDebugMsgLevel( QStringLiteral( "theAlgorithm = %1 limits = %2 extent.isEmpty() = %3" ).arg( algorithm ).arg( limits ).arg( extent.isEmpty() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "theAlgorithm = %1 limits = %2 extent.isEmpty() = %3" ).arg( algorithm ).arg( qgsEnumValueToKey( limits ) ).arg( extent.isEmpty() ), 4 );
   if ( !rasterRenderer || !mDataProvider )
   {
     return;
@@ -1483,9 +1483,9 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
 
   myMinMaxOrigin.setLimits( limits );
   if ( extent != QgsRectangle() &&
-       myMinMaxOrigin.extent() == QgsRasterMinMaxOrigin::WholeRaster )
+       myMinMaxOrigin.extent() == Qgis::RasterRangeExtent::WholeRaster )
   {
-    myMinMaxOrigin.setExtent( QgsRasterMinMaxOrigin::CurrentCanvas );
+    myMinMaxOrigin.setExtent( Qgis::RasterRangeExtent::FixedCanvas );
   }
   if ( myRasterRenderer )
   {
@@ -1520,8 +1520,8 @@ void QgsRasterLayer::refreshContrastEnhancement( const QgsRectangle &extent )
   {
     setContrastEnhancement( ce->contrastEnhancementAlgorithm() == QgsContrastEnhancement::NoEnhancement ?
                             QgsContrastEnhancement::StretchToMinimumMaximum : ce->contrastEnhancementAlgorithm(),
-                            renderer()->minMaxOrigin().limits() == QgsRasterMinMaxOrigin::None ?
-                            QgsRasterMinMaxOrigin::MinMax : renderer()->minMaxOrigin().limits(),
+                            renderer()->minMaxOrigin().limits() == Qgis::RasterRangeLimit::NotSet ?
+                            Qgis::RasterRangeLimit::MinimumMaximum : renderer()->minMaxOrigin().limits(),
                             extent,
                             static_cast<int>( SAMPLE_SIZE ),
                             true,
@@ -1530,7 +1530,7 @@ void QgsRasterLayer::refreshContrastEnhancement( const QgsRectangle &extent )
   else
   {
     QgsContrastEnhancement::ContrastEnhancementAlgorithm myAlgorithm;
-    QgsRasterMinMaxOrigin::Limits myLimits;
+    Qgis::RasterRangeLimit myLimits;
     if ( defaultContrastEnhancementSettings( myAlgorithm, myLimits ) )
     {
       setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum,
@@ -1609,7 +1609,7 @@ bool QgsRasterLayer::setSubsetString( const QString &subset )
 
 bool QgsRasterLayer::defaultContrastEnhancementSettings(
   QgsContrastEnhancement::ContrastEnhancementAlgorithm &myAlgorithm,
-  QgsRasterMinMaxOrigin::Limits &myLimits ) const
+  Qgis::RasterRangeLimit &myLimits ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -1676,7 +1676,7 @@ void QgsRasterLayer::setDefaultContrastEnhancement()
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
 
   QgsContrastEnhancement::ContrastEnhancementAlgorithm myAlgorithm;
-  QgsRasterMinMaxOrigin::Limits myLimits;
+  Qgis::RasterRangeLimit myLimits;
   defaultContrastEnhancementSettings( myAlgorithm, myLimits );
 
   setContrastEnhancement( myAlgorithm, myLimits );

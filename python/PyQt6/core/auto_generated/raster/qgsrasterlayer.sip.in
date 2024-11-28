@@ -45,11 +45,11 @@ Sample usage of the :py:class:`QgsRasterLayer` class:
 
     static const QgsContrastEnhancement::ContrastEnhancementAlgorithm MULTIPLE_BAND_MULTI_BYTE_ENHANCEMENT_ALGORITHM;
 
-    static const QgsRasterMinMaxOrigin::Limits SINGLE_BAND_MIN_MAX_LIMITS;
+    static const Qgis::RasterRangeLimit SINGLE_BAND_MIN_MAX_LIMITS;
 
-    static const QgsRasterMinMaxOrigin::Limits MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS;
+    static const Qgis::RasterRangeLimit MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS;
 
-    static const QgsRasterMinMaxOrigin::Limits MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS;
+    static const Qgis::RasterRangeLimit MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS;
 
     QgsRasterLayer();
 %Docstring
@@ -339,7 +339,7 @@ In a world file, this is normally the first row (without the sign).
 
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
-                                 QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax,
+                                 Qgis::RasterRangeLimit limits = Qgis::RasterRangeLimit::MinimumMaximum,
                                  const QgsRectangle &extent = QgsRectangle(),
                                  int sampleSize = QgsRasterLayer::SAMPLE_SIZE,
                                  bool generateLookupTableFlag = true );
