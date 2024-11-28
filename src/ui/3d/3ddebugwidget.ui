@@ -61,7 +61,7 @@
         <x>0</x>
         <y>0</y>
         <width>501</width>
-        <height>753</height>
+        <height>742</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -74,8 +74,17 @@
        <property name="sizeConstraint">
         <enum>QLayout::SetDefaultConstraint</enum>
        </property>
+       <property name="leftMargin">
+        <number>6</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
        <property name="rightMargin">
         <number>6</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
        </property>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -134,9 +143,9 @@
         </layout>
        </item>
        <item>
-        <widget class="QGroupBox" name="mDebugShadowMapGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mDebugShadowMapGroupBox">
          <property name="title">
-          <string>Debug Shadow Map</string>
+          <string>Debug shadow map</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -144,7 +153,13 @@
          <property name="checked">
           <bool>false</bool>
          </property>
+         <property name="collapsed" stdset="0">
+          <bool>true</bool>
+         </property>
          <layout class="QGridLayout" name="gridLayout_10">
+          <property name="topMargin">
+           <number>10</number>
+          </property>
           <item row="0" column="1">
            <widget class="QComboBox" name="mDebugShadowMapCornerComboBox"/>
           </item>
@@ -179,15 +194,18 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="mDebugDepthMapGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mDebugDepthMapGroupBox">
          <property name="title">
-          <string>Debug Depth Map</string>
+          <string>Debug depth map</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
          </property>
          <property name="checked">
           <bool>false</bool>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_9">
           <item row="0" column="1">
@@ -224,7 +242,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="mCameraInfoGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mCameraInfoGroupBox">
          <property name="title">
           <string>Show camera info</string>
          </property>
@@ -359,6 +377,19 @@
          </layout>
         </widget>
        </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
      </widget>
     </widget>
@@ -375,6 +406,12 @@
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
