@@ -555,6 +555,13 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
     return;
   }
 
+  if ( mDoubleClickInProgress )
+  {
+      mDoubleClickInProgress = false;
+      event->accept();
+      return;
+  }
+
   // Mouse may have been grabbed from the QgsLayoutViewSelectTool, so we need to release it explicitly
   // otherwise, hover events will not be received
   ungrabMouse();
@@ -1073,6 +1080,9 @@ void QgsGraphicsViewMouseHandles::setHandleSize( double size )
 void QgsGraphicsViewMouseHandles::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
 {
   Q_UNUSED( event )
+
+        mDoubleClickInProgress = true;
+
 }
 
 QSizeF QgsGraphicsViewMouseHandles::calcCursorEdgeOffset( QPointF cursorPos )
