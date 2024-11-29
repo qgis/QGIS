@@ -704,7 +704,7 @@ void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewIte
     painter->drawRect( option.rect );
   }
 
-  const QColor color = index.model()->data( index, Qt::DisplayRole ).value<QColor>();
+  QColor color = index.model()->data( index, Qt::DisplayRole ).value<QColor>();
   if ( !color.isValid() )
   {
     return;
@@ -729,11 +729,23 @@ void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewIte
     const QBrush checkBrush = QBrush( transparentBackground() );
     painter->setBrush( checkBrush );
     painter->drawRoundedRect( rect, cornerSize, cornerSize );
+    //draw semi-transparent color on top
+    painter->setBrush( color );
+    painter->drawRoundedRect( rect, cornerSize, cornerSize );
+    //draw fully opaque color on the left side
+    const QRectF clipRect( rect.left(), rect.top(),
+                           static_cast<qreal>( rect.width() ) / 2.0,
+                           rect.height() );
+    painter->setClipRect( clipRect );
+    color.setAlpha( 255 );
+    painter->setBrush( color );
+    painter->drawRoundedRect( rect, cornerSize, cornerSize );
   }
-
-  //draw semi-transparent color on top
-  painter->setBrush( color );
-  painter->drawRoundedRect( rect, cornerSize, cornerSize );
+  else
+  {
+    painter->setBrush( color );
+    painter->drawRoundedRect( rect, cornerSize, cornerSize );
+  }
 }
 
 QPixmap QgsColorSwatchDelegate::transparentBackground() const
