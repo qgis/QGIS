@@ -52,7 +52,7 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
     void load( const QString &fileName ) override;
 
     bool hasNode( const QgsPointCloudNodeId &n ) const override;
-    virtual QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const override;
+    QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const override;
 
     std::unique_ptr< QgsPointCloudBlock> nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
     QgsPointCloudBlockRequest *asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
      * If the dataset doesn't contain statistics EVLR, an object with 0 samples will be returned.
      * \since QGIS 3.42
      */
-    virtual QgsPointCloudStatistics metadataStatistics() const override;
+    QgsPointCloudStatistics metadataStatistics() const override;
 
     /**
      * Copies common properties to the \a destination index

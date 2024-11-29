@@ -52,9 +52,9 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
 
     QgsCoordinateReferenceSystem crs() const override;
     qint64 pointCount() const override;
-    virtual QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const override;
+    QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const override;
     QVariantMap originalMetadata() const override { return mOriginalMetadata; }
-    virtual QgsPointCloudStatistics metadataStatistics() const override;
+    QgsPointCloudStatistics metadataStatistics() const override;
 
     bool isValid() const override;
     QgsPointCloudIndex::AccessType accessType() const override;
