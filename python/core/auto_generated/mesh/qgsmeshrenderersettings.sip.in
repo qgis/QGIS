@@ -105,14 +105,6 @@ Represents a mesh renderer settings for scalar datasets
       NeighbourAverage,
     };
 
-    enum class MinMaxValueType
-    {
-      UserDefined,
-      WholeMesh,
-      FixedCanvas,
-      InteractiveFromCanvas,
-    };
-
     QgsColorRampShader colorRampShader() const;
 %Docstring
 Returns color ramp shader function
@@ -188,16 +180,30 @@ Sets the stroke width unit used to render edges scalar dataset
 .. versionadded:: 3.14
 %End
 
-    QgsMeshRendererScalarSettings::MinMaxValueType minMaxValueType() const;
+    void setLimits( Qgis::MeshRangeLimit limits );
 %Docstring
-Gets the extent type for minimum maximum calculation
+Sets the range limits type for minimum maximum calculation
 
 .. versionadded:: 3.42
 %End
 
-    void setMinMaxValueType( QgsMeshRendererScalarSettings::MinMaxValueType minMaxValueType );
+    Qgis::MeshRangeLimit limits() const;
 %Docstring
-Sets the extent type for minimum maximum calculation
+Returns the range limits type for minimum maximum calculation
+
+.. versionadded:: 3.42
+%End
+
+    void setExtent( Qgis::MeshRangeExtent extent );
+%Docstring
+Sets the mesh extent for minimum maximum calculation
+
+.. versionadded:: 3.42
+%End
+
+    Qgis::MeshRangeExtent extent() const;
+%Docstring
+Returns the mesh extent for minimum maximum calculation
 
 .. versionadded:: 3.42
 %End
