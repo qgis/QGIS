@@ -70,12 +70,12 @@ class GUI_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
     void minMaxChanged();
     void recalculateMinMaxButtonClicked();
     void onEdgeStrokeWidthMethodChanged();
-    void minMaxSourceChanged();
 
   private:
     double spinBoxValue( const QgsDoubleSpinBox *spinBox ) const;
     QgsMeshRendererScalarSettings::DataResamplingMethod dataIntepolationMethod() const;
-    QgsMeshRendererScalarSettings::MinMaxValueType minMaxValueType() const;
+    void mUserDefinedRadioButton_toggled( bool toggled );
+    void mMinMaxRadioButton_toggled( bool toggled );
 
     void recalculateMinMax();
 
