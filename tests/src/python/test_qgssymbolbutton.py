@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '23/07/2017'
-__copyright__ = 'Copyright 2017, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "23/07/2017"
+__copyright__ = "Copyright 2017, The QGIS Project"
 
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtTest import QSignalSpy
@@ -25,8 +26,8 @@ class TestQgsSymbolButton(QgisTestCase):
         button = QgsSymbolButton()
         canvas = QgsMapCanvas()
 
-        button.setDialogTitle('test title')
-        self.assertEqual(button.dialogTitle(), 'test title')
+        button.setDialogTitle("test title")
+        self.assertEqual(button.dialogTitle(), "test title")
 
         button.setMapCanvas(canvas)
         self.assertEqual(button.mapCanvas(), canvas)
@@ -112,5 +113,5 @@ class TestQgsSymbolButton(QgisTestCase):
         self.assertEqual(r.color(), QColor(0, 255, 0))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'January 2016'
-__copyright__ = '(C) 2016, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "January 2016"
+__copyright__ = "(C) 2016, Victor Olaya"
 
 import os
 import codecs
@@ -37,25 +37,29 @@ def loadShortHelp():
     for f in os.listdir(path):
         if f.endswith("yaml"):
             filename = os.path.join(path, f)
-            with codecs.open(filename, encoding='utf-8') as stream:
+            with codecs.open(filename, encoding="utf-8") as stream:
                 with warnings.catch_warnings():
                     warnings.filterwarnings("ignore", category=DeprecationWarning)
                     for k, v in yaml.load(stream, Loader=yaml.SafeLoader).items():
                         if v is None:
                             continue
-                        h[k] = QCoreApplication.translate(f"{f[:-5].upper()}Algorithm", v)
+                        h[k] = QCoreApplication.translate(
+                            f"{f[:-5].upper()}Algorithm", v
+                        )
 
     version = ".".join(Qgis.QGIS_VERSION.split(".")[0:2])
-    overrideLocale = QgsSettings().value('locale/overrideFlag', False, bool)
+    overrideLocale = QgsSettings().value("locale/overrideFlag", False, bool)
     if not overrideLocale:
         locale = QLocale.system().name()[:2]
     else:
-        locale = QgsSettings().value('locale/userLocale', '')
+        locale = QgsSettings().value("locale/userLocale", "")
     locale = locale.split("_")[0]
 
     def replace(s):
         if s is not None:
-            return s.replace("{qgisdocs}", f"https://docs.qgis.org/{version}/{locale}/docs")
+            return s.replace(
+                "{qgisdocs}", f"https://docs.qgis.org/{version}/{locale}/docs"
+            )
         else:
             return None
 

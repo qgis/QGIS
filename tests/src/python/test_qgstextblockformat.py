@@ -7,6 +7,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+
 import math
 
 from qgis.PyQt.QtGui import QBrush, QColor
@@ -15,7 +16,7 @@ from qgis.core import (
     QgsFontUtils,
     QgsRenderContext,
     QgsTextBlockFormat,
-    QgsMargins
+    QgsMargins,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -26,12 +27,14 @@ start_app()
 class TestQgsTextBlockFormat(QgisTestCase):
 
     def setUp(self):
-        QgsFontUtils.loadStandardTestFonts(['Bold', 'Oblique'])
+        QgsFontUtils.loadStandardTestFonts(["Bold", "Oblique"])
 
     def testGettersSetters(self):
         format = QgsTextBlockFormat()
         self.assertFalse(format.hasHorizontalAlignmentSet())
-        self.assertEqual(format.horizontalAlignment(), Qgis.TextHorizontalAlignment.Left)
+        self.assertEqual(
+            format.horizontalAlignment(), Qgis.TextHorizontalAlignment.Left
+        )
         self.assertTrue(math.isnan(format.lineHeight()))
         self.assertTrue(math.isnan(format.lineHeightPercentage()))
         self.assertTrue(math.isnan(format.margins().top()))
@@ -43,7 +46,9 @@ class TestQgsTextBlockFormat(QgisTestCase):
         format.setHasHorizontalAlignmentSet(True)
         self.assertTrue(format.hasHorizontalAlignmentSet())
         format.setHorizontalAlignment(Qgis.TextHorizontalAlignment.Right)
-        self.assertEqual(format.horizontalAlignment(), Qgis.TextHorizontalAlignment.Right)
+        self.assertEqual(
+            format.horizontalAlignment(), Qgis.TextHorizontalAlignment.Right
+        )
 
         format.setLineHeight(5)
         self.assertEqual(format.lineHeight(), 5)
@@ -59,12 +64,12 @@ class TestQgsTextBlockFormat(QgisTestCase):
 
         format.setBackgroundBrush(QBrush(QColor(255, 255, 0)))
         self.assertTrue(format.hasBackground())
-        self.assertEqual(format.backgroundBrush().color().name(), '#ffff00')
+        self.assertEqual(format.backgroundBrush().color().name(), "#ffff00")
 
         format = QgsTextBlockFormat()
-        format.setBackgroundImagePath('test')
+        format.setBackgroundImagePath("test")
         self.assertTrue(format.hasBackground())
-        self.assertEqual(format.backgroundImagePath(), 'test')
+        self.assertEqual(format.backgroundImagePath(), "test")
 
     def testUpdateFont(self):
         context = QgsRenderContext()
@@ -76,5 +81,5 @@ class TestQgsTextBlockFormat(QgisTestCase):
         # no effect for now...
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

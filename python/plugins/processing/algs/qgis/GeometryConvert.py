@@ -15,64 +15,75 @@
 ***************************************************************************
 """
 
-__author__ = 'Michael Minn'
-__date__ = 'May 2010'
-__copyright__ = '(C) 2010, Michael Minn'
+__author__ = "Michael Minn"
+__date__ = "May 2010"
+__copyright__ = "(C) 2010, Michael Minn"
 
-from qgis.core import (QgsFeature,
-                       QgsGeometry,
-                       QgsMultiPoint,
-                       QgsMultiLineString,
-                       QgsLineString,
-                       QgsPolygon,
-                       QgsFeatureSink,
-                       QgsWkbTypes,
-                       QgsProcessingException,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterEnum,
-                       QgsProcessingParameterFeatureSink)
+from qgis.core import (
+    QgsFeature,
+    QgsGeometry,
+    QgsMultiPoint,
+    QgsMultiLineString,
+    QgsLineString,
+    QgsPolygon,
+    QgsFeatureSink,
+    QgsWkbTypes,
+    QgsProcessingException,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterFeatureSink,
+)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class GeometryConvert(QgisAlgorithm):
-    INPUT = 'INPUT'
-    TYPE = 'TYPE'
-    OUTPUT = 'OUTPUT'
+    INPUT = "INPUT"
+    TYPE = "TYPE"
+    OUTPUT = "OUTPUT"
 
     def group(self):
-        return self.tr('Vector geometry')
+        return self.tr("Vector geometry")
 
     def groupId(self):
-        return 'vectorgeometry'
+        return "vectorgeometry"
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.types = [self.tr('Centroids'),
-                      self.tr('Nodes'),
-                      self.tr('Linestrings'),
-                      self.tr('Multilinestrings'),
-                      self.tr('Polygons')]
+        self.types = [
+            self.tr("Centroids"),
+            self.tr("Nodes"),
+            self.tr("Linestrings"),
+            self.tr("Multilinestrings"),
+            self.tr("Polygons"),
+        ]
 
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterEnum(self.TYPE,
-                                                     self.tr('New geometry type'), options=self.types))
+        self.addParameter(
+            QgsProcessingParameterFeatureSource(self.INPUT, self.tr("Input layer"))
+        )
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                self.TYPE, self.tr("New geometry type"), options=self.types
+            )
+        )
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
-                                                            self.tr('Converted')))
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr("Converted"))
+        )
 
     def name(self):
-        return 'convertgeometrytype'
+        return "convertgeometrytype"
 
     def displayName(self):
-        return self.tr('Convert geometry type')
+        return self.tr("Convert geometry type")
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
-            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+            raise QgsProcessingException(
+                self.invalidSourceError(parameters, self.INPUT)
+            )
 
         index = self.parameterAsEnum(parameters, self.TYPE, context)
 
@@ -103,8 +114,14 @@ class GeometryConvert(QgisAlgorithm):
             if QgsWkbTypes.hasZ(source.wkbType()):
                 newType = QgsWkbTypes.addZ(newType)
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               source.fields(), newType, source.sourceCrs())
+        (sink, dest_id) = self.parameterAsSink(
+            parameters,
+            self.OUTPUT,
+            context,
+            source.fields(),
+            newType,
+            source.sourceCrs(),
+        )
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
@@ -161,10 +178,19 @@ class GeometryConvert(QgisAlgorithm):
         return [QgsGeometry(mp)]
 
     def convertToLineStrings(self, geom):
-        if QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.GeometryType.PointGeometry:
+        if (
+            QgsWkbTypes.geometryType(geom.wkbType())
+            == QgsWkbTypes.GeometryType.PointGeometry
+        ):
             raise QgsProcessingException(
-                self.tr('Cannot convert from {0} to LineStrings').format(QgsWkbTypes.displayString(geom.wkbType())))
-        elif QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.GeometryType.LineGeometry:
+                self.tr("Cannot convert from {0} to LineStrings").format(
+                    QgsWkbTypes.displayString(geom.wkbType())
+                )
+            )
+        elif (
+            QgsWkbTypes.geometryType(geom.wkbType())
+            == QgsWkbTypes.GeometryType.LineGeometry
+        ):
             if QgsWkbTypes.isMultiType(geom.wkbType()):
                 return geom.asGeometryCollection()
             else:
@@ -178,10 +204,19 @@ class GeometryConvert(QgisAlgorithm):
             return boundary.asGeometryCollection()
 
     def convertToMultiLineStrings(self, geom):
-        if QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.GeometryType.PointGeometry:
+        if (
+            QgsWkbTypes.geometryType(geom.wkbType())
+            == QgsWkbTypes.GeometryType.PointGeometry
+        ):
             raise QgsProcessingException(
-                self.tr('Cannot convert from {0} to MultiLineStrings').format(QgsWkbTypes.displayString(geom.wkbType())))
-        elif QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.GeometryType.LineGeometry:
+                self.tr("Cannot convert from {0} to MultiLineStrings").format(
+                    QgsWkbTypes.displayString(geom.wkbType())
+                )
+            )
+        elif (
+            QgsWkbTypes.geometryType(geom.wkbType())
+            == QgsWkbTypes.GeometryType.LineGeometry
+        ):
             if QgsWkbTypes.isMultiType(geom.wkbType()):
                 return [geom]
             else:
@@ -195,10 +230,20 @@ class GeometryConvert(QgisAlgorithm):
             return [QgsGeometry(geom.constGet().boundary())]
 
     def convertToPolygon(self, geom):
-        if QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.GeometryType.PointGeometry and geom.constGet().nCoordinates() < 3:
+        if (
+            QgsWkbTypes.geometryType(geom.wkbType())
+            == QgsWkbTypes.GeometryType.PointGeometry
+            and geom.constGet().nCoordinates() < 3
+        ):
             raise QgsProcessingException(
-                self.tr('Cannot convert from Point to Polygon').format(QgsWkbTypes.displayString(geom.wkbType())))
-        elif QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.GeometryType.PointGeometry:
+                self.tr("Cannot convert from Point to Polygon").format(
+                    QgsWkbTypes.displayString(geom.wkbType())
+                )
+            )
+        elif (
+            QgsWkbTypes.geometryType(geom.wkbType())
+            == QgsWkbTypes.GeometryType.PointGeometry
+        ):
             # multipoint with at least 3 points
             # TODO: mega inefficient - needs rework when geometry iterators land
             # (but at least it doesn't lose Z/M values)
@@ -212,7 +257,10 @@ class GeometryConvert(QgisAlgorithm):
             p = QgsPolygon()
             p.setExteriorRing(linestring)
             return [QgsGeometry(p)]
-        elif QgsWkbTypes.geometryType(geom.wkbType()) == QgsWkbTypes.GeometryType.LineGeometry:
+        elif (
+            QgsWkbTypes.geometryType(geom.wkbType())
+            == QgsWkbTypes.GeometryType.LineGeometry
+        ):
             if QgsWkbTypes.isMultiType(geom.wkbType()):
                 parts = []
                 for i in range(geom.constGet().numGeometries()):

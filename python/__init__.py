@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     __init__.py
@@ -17,11 +15,10 @@
 ***************************************************************************
 """
 
-__author__ = 'Martin Dobias'
-__date__ = 'January 2007'
-__copyright__ = '(C) 2007, Martin Dobias'
+__author__ = "Martin Dobias"
+__date__ = "January 2007"
+__copyright__ = "(C) 2007, Martin Dobias"
 
-from builtins import zip
 import os
 import sys
 
@@ -32,7 +29,7 @@ def setupenv():
     OSGeo4W package format.
     """
     # If the prefix path is already set then we don't do any more path setup.
-    if os.getenv('QGIS_PREFIX_PATH'):
+    if os.getenv("QGIS_PREFIX_PATH"):
         return
 
     # Setup the paths based on the .vars file.
@@ -41,13 +38,13 @@ def setupenv():
     path_split = PurePath(os.path.dirname(os.path.realpath(__file__))).parts
 
     try:
-        appname = os.environ['QGIS_ENVNAME']
+        appname = os.environ["QGIS_ENVNAME"]
     except KeyError:
         appname = path_split[-3]
 
     envfile = list(path_split[:-4])
     envfile.append("bin")
-    envfile.append("{0}-bin.env".format(appname))
+    envfile.append(f"{appname}-bin.env")
     envfile = os.path.join(*envfile)
 
     if not os.path.exists(envfile):
@@ -65,12 +62,14 @@ def setupenv():
                 pass
 
 
-if os.name == 'nt':
+if os.name == "nt":
     # On Windows we need to setup the paths before we can import
     # any of the QGIS modules or else it will error.
     setupenv()
 
-    if sys.version_info[0] > 3 or (sys.version_info[0] == 3 and sys.version_info[1] >= 9):
+    if sys.version_info[0] > 3 or (
+        sys.version_info[0] == 3 and sys.version_info[1] >= 9
+    ):
         for p in os.getenv("PATH").split(";"):
             if os.path.exists(p):
                 os.add_dll_directory(p)
@@ -84,11 +83,12 @@ from qgis.PyQt import QtCore
 # (thanks to uic/widget-plugins/qgis_customwidgets.py)
 try:
     import qgis.gui
+
     widget_list = dir(qgis.gui)
     # remove widgets that are not allowed as custom widgets (they need to be manually promoted)
-    skip_list = ['QgsScrollArea']
+    skip_list = ["QgsScrollArea"]
     for widget in widget_list:
-        if widget.startswith('Qgs') and widget not in skip_list:
+        if widget.startswith("Qgs") and widget not in skip_list:
             sys.modules[widget.lower()] = qgis.gui
 except ImportError:
     # gui might not be built

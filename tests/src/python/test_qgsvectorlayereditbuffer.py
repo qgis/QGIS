@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '15/07/2016'
-__copyright__ = 'Copyright 2016, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "15/07/2016"
+__copyright__ = "Copyright 2016, The QGIS Project"
 
 import os
 
@@ -31,15 +32,17 @@ start_app()
 
 
 def createEmptyLayer():
-    layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
-                           "addfeat", "memory")
+    layer = QgsVectorLayer(
+        "Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory"
+    )
     assert layer.isValid()
     return layer
 
 
 def createLayerWithOnePoint():
-    layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
-                           "addfeat", "memory")
+    layer = QgsVectorLayer(
+        "Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory"
+    )
     pr = layer.dataProvider()
     f = QgsFeature()
     f.setAttributes(["test", 123])
@@ -50,8 +53,9 @@ def createLayerWithOnePoint():
 
 
 def createEmptyLinestringLayer():
-    layer = QgsVectorLayer("Linestring?field=fldtxt:string&field=fldint:integer",
-                           "addfeat", "memory")
+    layer = QgsVectorLayer(
+        "Linestring?field=fldtxt:string&field=fldint:integer", "addfeat", "memory"
+    )
     assert layer.isValid()
     return layer
 
@@ -83,14 +87,17 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
         # test contents of buffer
         added = layer.editBuffer().addedFeatures()
         new_feature_ids = list(added.keys())
-        self.assertEqual(added[new_feature_ids[0]]['fldtxt'], 'test2')
-        self.assertEqual(added[new_feature_ids[0]]['fldint'], 246)
-        self.assertEqual(added[new_feature_ids[1]]['fldtxt'], 'test')
-        self.assertEqual(added[new_feature_ids[1]]['fldint'], 123)
+        self.assertEqual(added[new_feature_ids[0]]["fldtxt"], "test2")
+        self.assertEqual(added[new_feature_ids[0]]["fldint"], 246)
+        self.assertEqual(added[new_feature_ids[1]]["fldtxt"], "test")
+        self.assertEqual(added[new_feature_ids[1]]["fldint"], 123)
 
         self.assertTrue(layer.editBuffer().isFeatureAdded(new_feature_ids[0]))
         self.assertTrue(layer.editBuffer().isFeatureAdded(new_feature_ids[1]))
-        self.assertCountEqual(layer.editBuffer().allAddedOrEditedFeatures(), [new_feature_ids[0], new_feature_ids[1]])
+        self.assertCountEqual(
+            layer.editBuffer().allAddedOrEditedFeatures(),
+            [new_feature_ids[0], new_feature_ids[1]],
+        )
 
         # check if error in case adding not adaptable geometry
         # eg. a Multiline in a Line
@@ -137,14 +144,17 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
         # test contents of buffer
         added = layer.editBuffer().addedFeatures()
         new_feature_ids = list(added.keys())
-        self.assertEqual(added[new_feature_ids[0]]['fldtxt'], 'test2')
-        self.assertEqual(added[new_feature_ids[0]]['fldint'], 246)
-        self.assertEqual(added[new_feature_ids[1]]['fldtxt'], 'test')
-        self.assertEqual(added[new_feature_ids[1]]['fldint'], 123)
+        self.assertEqual(added[new_feature_ids[0]]["fldtxt"], "test2")
+        self.assertEqual(added[new_feature_ids[0]]["fldint"], 246)
+        self.assertEqual(added[new_feature_ids[1]]["fldtxt"], "test")
+        self.assertEqual(added[new_feature_ids[1]]["fldint"], 123)
 
         self.assertTrue(layer.editBuffer().isFeatureAdded(new_feature_ids[0]))
         self.assertTrue(layer.editBuffer().isFeatureAdded(new_feature_ids[1]))
-        self.assertCountEqual(layer.editBuffer().allAddedOrEditedFeatures(), [new_feature_ids[0], new_feature_ids[1]])
+        self.assertCountEqual(
+            layer.editBuffer().allAddedOrEditedFeatures(),
+            [new_feature_ids[0], new_feature_ids[1]],
+        )
 
     def testDeleteFeatures(self):
         # test deleting features from an edit buffer
@@ -248,11 +258,11 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
         self.assertEqual(layer.editBuffer().allAddedOrEditedFeatures(), [])
 
         # change attribute values
-        layer.changeAttributeValue(1, 0, 'a')
+        layer.changeAttributeValue(1, 0, "a")
 
         # test contents of buffer
         self.assertEqual(list(layer.editBuffer().changedAttributeValues().keys()), [1])
-        self.assertEqual(layer.editBuffer().changedAttributeValues()[1], {0: 'a'})
+        self.assertEqual(layer.editBuffer().changedAttributeValues()[1], {0: "a"})
         self.assertTrue(layer.editBuffer().isFeatureAttributesChanged(1))
         self.assertFalse(layer.editBuffer().isFeatureAttributesChanged(2))
         self.assertEqual(layer.editBuffer().allAddedOrEditedFeatures(), [1])
@@ -260,8 +270,10 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
         layer.changeAttributeValue(2, 1, 5)
 
         # test contents of buffer
-        self.assertEqual(set(layer.editBuffer().changedAttributeValues().keys()), {1, 2})
-        self.assertEqual(layer.editBuffer().changedAttributeValues()[1], {0: 'a'})
+        self.assertEqual(
+            set(layer.editBuffer().changedAttributeValues().keys()), {1, 2}
+        )
+        self.assertEqual(layer.editBuffer().changedAttributeValues()[1], {0: "a"})
         self.assertEqual(layer.editBuffer().changedAttributeValues()[2], {1: 5})
         self.assertTrue(layer.editBuffer().isFeatureAttributesChanged(1))
         self.assertTrue(layer.editBuffer().isFeatureAttributesChanged(2))
@@ -309,7 +321,9 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
         self.assertEqual(layer.getFeature(2).geometry().constGet().x(), 2)
 
         # apply second change to same feature
-        layer.beginEditCommand('second change')  # need to use an edit command to avoid the two geometry changes being merged
+        layer.beginEditCommand(
+            "second change"
+        )  # need to use an edit command to avoid the two geometry changes being merged
         layer.changeGeometry(1, QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
         layer.endEditCommand()
 
@@ -402,17 +416,17 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
         self.assertEqual(layer.editBuffer().addedAttributes(), [])
 
         # add attribute
-        layer.addAttribute(QgsField('new1', QVariant.String))
+        layer.addAttribute(QgsField("new1", QVariant.String))
 
         # test contents of buffer
-        self.assertEqual(layer.editBuffer().addedAttributes()[0].name(), 'new1')
+        self.assertEqual(layer.editBuffer().addedAttributes()[0].name(), "new1")
 
         # add another attribute
-        layer.addAttribute(QgsField('new2', QVariant.String))
+        layer.addAttribute(QgsField("new2", QVariant.String))
 
         # test contents of buffer
-        self.assertEqual(layer.editBuffer().addedAttributes()[0].name(), 'new1')
-        self.assertEqual(layer.editBuffer().addedAttributes()[1].name(), 'new2')
+        self.assertEqual(layer.editBuffer().addedAttributes()[0].name(), "new1")
+        self.assertEqual(layer.editBuffer().addedAttributes()[1].name(), "new2")
 
     def testTransactionGroup(self):
         """Test that the buffer works the same when used in transaction and when not"""
@@ -434,19 +448,28 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
                 f = list(buffer.addedFeatures().values())[0]
                 self.assertEqual(f.geometry().asWkt().upper(), wkt)
 
-            ml = QgsVectorLayer('Point?crs=epsg:4326&field=int:integer&field=int2:integer', 'test', 'memory')
+            ml = QgsVectorLayer(
+                "Point?crs=epsg:4326&field=int:integer&field=int2:integer",
+                "test",
+                "memory",
+            )
             self.assertTrue(ml.isValid())
 
             d = QTemporaryDir()
             options = QgsVectorFileWriter.SaveVectorOptions()
-            options.driverName = 'GPKG'
-            options.layerName = 'layer_a'
-            err, msg, newFileName, newLayer = QgsVectorFileWriter.writeAsVectorFormatV3(ml, os.path.join(d.path(), 'transaction_test.gpkg'), QgsCoordinateTransformContext(), options)
+            options.driverName = "GPKG"
+            options.layerName = "layer_a"
+            err, msg, newFileName, newLayer = QgsVectorFileWriter.writeAsVectorFormatV3(
+                ml,
+                os.path.join(d.path(), "transaction_test.gpkg"),
+                QgsCoordinateTransformContext(),
+                options,
+            )
 
             self.assertEqual(err, QgsVectorFileWriter.WriterError.NoError)
             self.assertTrue(os.path.isfile(newFileName))
 
-            layer_a = QgsVectorLayer(newFileName + '|layername=layer_a')
+            layer_a = QgsVectorLayer(newFileName + "|layername=layer_a")
 
             self.assertTrue(layer_a.isValid())
 
@@ -461,11 +484,11 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
             buffer = layer_a.editBuffer()
 
             f = QgsFeature(layer_a.fields())
-            f.setAttribute('int', 123)
-            f.setGeometry(QgsGeometry.fromWkt('point(7 45)'))
+            f.setAttribute("int", 123)
+            f.setGeometry(QgsGeometry.fromWkt("point(7 45)"))
             self.assertTrue(layer_a.addFeatures([f]))
 
-            _check_feature('POINT (7 45)')
+            _check_feature("POINT (7 45)")
 
             # Need to fetch the feature because its ID is NULL (-9223372036854775808)
             f = next(layer_a.getFeatures())
@@ -476,7 +499,7 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
             layer_a.undoStack().redo()
             self.assertEqual(len(buffer.addedFeatures()), 1)
             f = list(buffer.addedFeatures().values())[0]
-            self.assertEqual(f.attribute('int'), 123)
+            self.assertEqual(f.attribute("int"), 123)
 
             # Now change attribute
             self.assertEqual(buffer.changedAttributeValues(), {})
@@ -489,7 +512,7 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
             # This is surprising: because it was a new feature it has been changed directly
             self.assertEqual(buffer.changedAttributeValues(), {})
             f = list(buffer.addedFeatures().values())[0]
-            self.assertEqual(f.attribute('int'), 321)
+            self.assertEqual(f.attribute("int"), 321)
 
             spy_attribute_changed = QSignalSpy(layer_a.attributeValueChanged)
             layer_a.undoStack().undo()
@@ -497,9 +520,9 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
             self.assertEqual(spy_attribute_changed[0], [f.id(), 1, 123])
             self.assertEqual(buffer.changedAttributeValues(), {})
             f = list(buffer.addedFeatures().values())[0]
-            self.assertEqual(f.attribute('int'), 123)
+            self.assertEqual(f.attribute("int"), 123)
             f = next(layer_a.getFeatures())
-            self.assertEqual(f.attribute('int'), 123)
+            self.assertEqual(f.attribute("int"), 123)
 
             # Change multiple attributes
             spy_attribute_changed = QSignalSpy(layer_a.attributeValueChanged)
@@ -517,8 +540,8 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
             if transactionMode != Qgis.TransactionMode.AutomaticGroups:
                 layer_a.undoStack().undo()
             f = next(layer_a.getFeatures())
-            self.assertEqual(f.attribute('int'), 123)
-            self.assertEqual(f.attribute('int2'), None)
+            self.assertEqual(f.attribute("int"), 123)
+            self.assertEqual(f.attribute("int2"), None)
             self.assertEqual(len(spy_attribute_changed), 2)
             if transactionMode == Qgis.TransactionMode.AutomaticGroups:
                 self.assertEqual(spy_attribute_changed[1], [f.id(), 2, None])
@@ -530,29 +553,38 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
             # Change geometry
             f = next(layer_a.getFeatures())
             spy_geometry_changed = QSignalSpy(layer_a.geometryChanged)
-            self.assertTrue(layer_a.changeGeometry(f.id(), QgsGeometry.fromWkt('point(9 43)')))
+            self.assertTrue(
+                layer_a.changeGeometry(f.id(), QgsGeometry.fromWkt("point(9 43)"))
+            )
             self.assertTrue(len(spy_geometry_changed), 1)
             self.assertEqual(spy_geometry_changed[0][0], f.id())
-            self.assertEqual(spy_geometry_changed[0][1].asWkt(), QgsGeometry.fromWkt('point(9 43)').asWkt())
+            self.assertEqual(
+                spy_geometry_changed[0][1].asWkt(),
+                QgsGeometry.fromWkt("point(9 43)").asWkt(),
+            )
 
-            _check_feature('POINT (9 43)')
+            _check_feature("POINT (9 43)")
             self.assertEqual(buffer.changedGeometries(), {})
 
             layer_a.undoStack().undo()
 
-            _check_feature('POINT (7 45)')
+            _check_feature("POINT (7 45)")
             self.assertEqual(buffer.changedGeometries(), {})
 
-            self.assertTrue(layer_a.changeGeometry(f.id(), QgsGeometry.fromWkt('point(9 43)')))
-            _check_feature('POINT (9 43)')
+            self.assertTrue(
+                layer_a.changeGeometry(f.id(), QgsGeometry.fromWkt("point(9 43)"))
+            )
+            _check_feature("POINT (9 43)")
 
-            self.assertTrue(layer_a.changeGeometry(f.id(), QgsGeometry.fromWkt('point(10 44)')))
-            _check_feature('POINT (10 44)')
+            self.assertTrue(
+                layer_a.changeGeometry(f.id(), QgsGeometry.fromWkt("point(10 44)"))
+            )
+            _check_feature("POINT (10 44)")
 
             # This is another surprise: geometry edits get collapsed into a single
             # one because they have the same hardcoded id
             layer_a.undoStack().undo()
-            _check_feature('POINT (7 45)')
+            _check_feature("POINT (7 45)")
 
             self.assertTrue(layer_a.commitChanges())
 
@@ -562,8 +594,8 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
             # Get the feature
             f = next(layer_a.getFeatures())
             self.assertTrue(f.isValid())
-            self.assertEqual(f.attribute('int'), 123)
-            self.assertEqual(f.geometry().asWkt().upper(), 'POINT (7 45)')
+            self.assertEqual(f.attribute("int"), 123)
+            self.assertEqual(f.geometry().asWkt().upper(), "POINT (7 45)")
 
             # Change single attribute
             self.assertTrue(layer_a.startEditing())
@@ -613,22 +645,32 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
 
             # Change geometry
             spy_geometry_changed = QSignalSpy(layer_a.geometryChanged)
-            self.assertTrue(layer_a.changeGeometry(f.id(), QgsGeometry.fromWkt('point(9 43)')))
+            self.assertTrue(
+                layer_a.changeGeometry(f.id(), QgsGeometry.fromWkt("point(9 43)"))
+            )
             self.assertEqual(spy_geometry_changed[0][0], 1)
-            self.assertEqual(spy_geometry_changed[0][1].asWkt(), QgsGeometry.fromWkt('point(9 43)').asWkt())
+            self.assertEqual(
+                spy_geometry_changed[0][1].asWkt(),
+                QgsGeometry.fromWkt("point(9 43)").asWkt(),
+            )
 
             f = next(layer_a.getFeatures())
-            self.assertEqual(f.geometry().asWkt().upper(), 'POINT (9 43)')
-            self.assertEqual(buffer.changedGeometries()[1].asWkt().upper(), 'POINT (9 43)')
+            self.assertEqual(f.geometry().asWkt().upper(), "POINT (9 43)")
+            self.assertEqual(
+                buffer.changedGeometries()[1].asWkt().upper(), "POINT (9 43)"
+            )
 
             spy_geometry_changed = QSignalSpy(layer_a.geometryChanged)
             layer_a.undoStack().undo()
             self.assertEqual(spy_geometry_changed[0][0], 1)
-            self.assertEqual(spy_geometry_changed[0][1].asWkt(), QgsGeometry.fromWkt('point(7 45)').asWkt())
+            self.assertEqual(
+                spy_geometry_changed[0][1].asWkt(),
+                QgsGeometry.fromWkt("point(7 45)").asWkt(),
+            )
             self.assertEqual(buffer.changedGeometries(), {})
             f = next(layer_a.getFeatures())
 
-            self.assertEqual(f.geometry().asWkt().upper(), 'POINT (7 45)')
+            self.assertEqual(f.geometry().asWkt().upper(), "POINT (7 45)")
             self.assertEqual(buffer.changedGeometries(), {})
 
             # Delete an existing feature
@@ -646,10 +688,10 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
 
             # Delete a new feature
             f = QgsFeature(layer_a.fields())
-            f.setAttribute('int', 555)
-            f.setGeometry(QgsGeometry.fromWkt('point(8 46)'))
+            f.setAttribute("int", 555)
+            f.setGeometry(QgsGeometry.fromWkt("point(8 46)"))
             self.assertTrue(layer_a.addFeatures([f]))
-            f = [f for f in layer_a.getFeatures() if f.attribute('int') == 555][0]
+            f = [f for f in layer_a.getFeatures() if f.attribute("int") == 555][0]
             self.assertIn(f.id(), buffer.addedFeatures())
             self.assertTrue(layer_a.deleteFeature(f.id()))
             self.assertNotIn(f.id(), buffer.addedFeatures())
@@ -661,7 +703,7 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
             ###########################################
             # Add attribute
 
-            field = QgsField('attr1', QVariant.String)
+            field = QgsField("attr1", QVariant.String)
             self.assertTrue(layer_a.addAttribute(field))
             self.assertNotEqual(layer_a.fields().lookupField(field.name()), -1)
             self.assertEqual(buffer.addedAttributes(), [field])
@@ -704,9 +746,11 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
                 # Rollback!
                 self.assertTrue(layer_a.rollBack())
 
-                self.assertIn('attr1', layer_a.dataProvider().fields().names())
-                self.assertIn('attr1', layer_a.fields().names())
-                self.assertEqual(layer_a.fields().names(), layer_a.dataProvider().fields().names())
+                self.assertIn("attr1", layer_a.dataProvider().fields().names())
+                self.assertIn("attr1", layer_a.fields().names())
+                self.assertEqual(
+                    layer_a.fields().names(), layer_a.dataProvider().fields().names()
+                )
 
                 attr_idx = layer_a.fields().lookupField(field.name())
                 self.assertNotEqual(attr_idx, -1)
@@ -719,22 +763,24 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
             # Rename attribute
 
             attr_idx = layer_a.fields().lookupField(field.name())
-            self.assertEqual(layer_a.fields().lookupField('new_name'), -1)
-            self.assertTrue(layer_a.renameAttribute(attr_idx, 'new_name'))
-            self.assertEqual(layer_a.fields().lookupField('new_name'), attr_idx)
+            self.assertEqual(layer_a.fields().lookupField("new_name"), -1)
+            self.assertTrue(layer_a.renameAttribute(attr_idx, "new_name"))
+            self.assertEqual(layer_a.fields().lookupField("new_name"), attr_idx)
 
             layer_a.undoStack().undo()
             self.assertEqual(layer_a.fields().lookupField(field.name()), attr_idx)
-            self.assertEqual(layer_a.fields().lookupField('new_name'), -1)
+            self.assertEqual(layer_a.fields().lookupField("new_name"), -1)
 
             layer_a.undoStack().redo()
-            self.assertEqual(layer_a.fields().lookupField('new_name'), attr_idx)
+            self.assertEqual(layer_a.fields().lookupField("new_name"), attr_idx)
             self.assertEqual(layer_a.fields().lookupField(field.name()), -1)
 
             #############################################
             # Try hard to make this fail for transactions
-            if (transactionMode == Qgis.TransactionMode.AutomaticGroups
-                    or transactionMode == Qgis.TransactionMode.BufferedGroups):
+            if (
+                transactionMode == Qgis.TransactionMode.AutomaticGroups
+                or transactionMode == Qgis.TransactionMode.BufferedGroups
+            ):
                 self.assertTrue(layer_a.commitChanges())
                 self.assertTrue(layer_a.startEditing())
                 f = next(layer_a.getFeatures())
@@ -761,7 +807,9 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
                     self.assertEqual(len(spy_attribute_changed), 1)
                     self.assertEqual(spy_attribute_changed[0], [f.id(), 2, 8 - i])
                     buffer = layer_a.editBuffer()
-                    self.assertEqual(buffer.changedAttributeValues(), {f.id(): {2: 8 - i}})
+                    self.assertEqual(
+                        buffer.changedAttributeValues(), {f.id(): {2: 8 - i}}
+                    )
 
                     # Redo
                     spy_attribute_changed = QSignalSpy(layer_a.attributeValueChanged)
@@ -779,7 +827,9 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
                     self.assertEqual(len(spy_attribute_changed), 1)
                     self.assertEqual(spy_attribute_changed[0], [f.id(), 2, 8 - i])
                     buffer = layer_a.editBuffer()
-                    self.assertEqual(buffer.changedAttributeValues(), {f.id(): {2: 8 - i}})
+                    self.assertEqual(
+                        buffer.changedAttributeValues(), {f.id(): {2: 8 - i}}
+                    )
 
                     # Last check
                     f = next(layer_a.getFeatures())
@@ -797,5 +847,5 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
         _test(Qgis.TransactionMode.BufferedGroups)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

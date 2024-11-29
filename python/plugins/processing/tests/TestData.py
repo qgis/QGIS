@@ -15,22 +15,22 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'March 2013'
-__copyright__ = '(C) 2013, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "March 2013"
+__copyright__ = "(C) 2013, Victor Olaya"
 
 import os.path
 
-testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
+testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
 
 
 def table():
-    return os.path.join(testDataPath, 'table.dbf')
+    return os.path.join(testDataPath, "table.dbf")
 
 
 def points():
-    return os.path.join(testDataPath, 'points.gml')
+    return os.path.join(testDataPath, "points.gml")
 
 
 def invalid_geometries():
-    return os.path.join(testDataPath, 'invalidgeometries.gml')
+    return os.path.join(testDataPath, "invalidgeometries.gml")

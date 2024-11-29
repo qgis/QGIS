@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Alexander Bruy'
-__date__ = 'December 2012'
-__copyright__ = '(C) 2012, Alexander Bruy'
+__author__ = "Alexander Bruy"
+__date__ = "December 2012"
+__copyright__ = "(C) 2012, Alexander Bruy"
 
 import os
 import codecs
@@ -27,24 +27,16 @@ import warnings
 
 from qgis.PyQt import uic, sip
 from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtWidgets import (
-    QMessageBox,
-    QFileDialog,
-    QVBoxLayout
-)
+from qgis.PyQt.QtWidgets import QMessageBox, QFileDialog, QVBoxLayout
 
-from qgis.gui import (
-    QgsGui,
-    QgsErrorDialog,
-    QgsCodeEditorWidget
-)
+from qgis.gui import QgsGui, QgsErrorDialog, QgsCodeEditorWidget
 from qgis.core import (
     QgsApplication,
     QgsFileUtils,
     QgsSettings,
     QgsError,
     QgsProcessingAlgorithm,
-    QgsProcessingFeatureBasedAlgorithm
+    QgsProcessingFeatureBasedAlgorithm,
 )
 from qgis.utils import iface, OverrideCursor
 from qgis.processing import alg as algfactory
@@ -58,8 +50,7 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
-    WIDGET, BASE = uic.loadUiType(
-        os.path.join(pluginPath, "ui", "DlgScriptEditor.ui"))
+    WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, "ui", "DlgScriptEditor.ui"))
 
 
 class ScriptEditorDialog(BASE, WIDGET):
@@ -77,8 +68,9 @@ class ScriptEditorDialog(BASE, WIDGET):
         ScriptEditorDialog.DIALOG_STORE.append(self)
 
         def clean_up_store():
-            ScriptEditorDialog.DIALOG_STORE =\
-                [d for d in ScriptEditorDialog.DIALOG_STORE if d != self]
+            ScriptEditorDialog.DIALOG_STORE = [
+                d for d in ScriptEditorDialog.DIALOG_STORE if d != self
+            ]
 
         self.destroyed.connect(clean_up_store)
 
@@ -100,31 +92,32 @@ class ScriptEditorDialog(BASE, WIDGET):
             self.setStyleSheet(iface.mainWindow().styleSheet())
 
         self.actionOpenScript.setIcon(
-            QgsApplication.getThemeIcon('/mActionScriptOpen.svg'))
+            QgsApplication.getThemeIcon("/mActionScriptOpen.svg")
+        )
         self.actionSaveScript.setIcon(
-            QgsApplication.getThemeIcon('/mActionFileSave.svg'))
+            QgsApplication.getThemeIcon("/mActionFileSave.svg")
+        )
         self.actionSaveScriptAs.setIcon(
-            QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
-        self.actionRunScript.setIcon(
-            QgsApplication.getThemeIcon('/mActionStart.svg'))
-        self.actionCut.setIcon(
-            QgsApplication.getThemeIcon('/mActionEditCut.svg'))
-        self.actionCopy.setIcon(
-            QgsApplication.getThemeIcon('/mActionEditCopy.svg'))
-        self.actionPaste.setIcon(
-            QgsApplication.getThemeIcon('/mActionEditPaste.svg'))
-        self.actionUndo.setIcon(
-            QgsApplication.getThemeIcon('/mActionUndo.svg'))
-        self.actionRedo.setIcon(
-            QgsApplication.getThemeIcon('/mActionRedo.svg'))
+            QgsApplication.getThemeIcon("/mActionFileSaveAs.svg")
+        )
+        self.actionRunScript.setIcon(QgsApplication.getThemeIcon("/mActionStart.svg"))
+        self.actionCut.setIcon(QgsApplication.getThemeIcon("/mActionEditCut.svg"))
+        self.actionCopy.setIcon(QgsApplication.getThemeIcon("/mActionEditCopy.svg"))
+        self.actionPaste.setIcon(QgsApplication.getThemeIcon("/mActionEditPaste.svg"))
+        self.actionUndo.setIcon(QgsApplication.getThemeIcon("/mActionUndo.svg"))
+        self.actionRedo.setIcon(QgsApplication.getThemeIcon("/mActionRedo.svg"))
         self.actionFindReplace.setIcon(
-            QgsApplication.getThemeIcon('/mActionFindReplace.svg'))
+            QgsApplication.getThemeIcon("/mActionFindReplace.svg")
+        )
         self.actionIncreaseFontSize.setIcon(
-            QgsApplication.getThemeIcon('/mActionIncreaseFont.svg'))
+            QgsApplication.getThemeIcon("/mActionIncreaseFont.svg")
+        )
         self.actionDecreaseFontSize.setIcon(
-            QgsApplication.getThemeIcon('/mActionDecreaseFont.svg'))
+            QgsApplication.getThemeIcon("/mActionDecreaseFont.svg")
+        )
         self.actionToggleComment.setIcon(
-            QgsApplication.getThemeIcon('console/iconCommentEditorConsole.svg'))
+            QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg")
+        )
 
         # Connect signals and slots
         self.actionOpenScript.triggered.connect(self.openScript)
@@ -160,16 +153,14 @@ class ScriptEditorDialog(BASE, WIDGET):
         Updates the script editor dialog title
         """
         if self.code_editor_widget.filePath():
-            path, file_name = os.path.split(
-                self.code_editor_widget.filePath()
-            )
+            path, file_name = os.path.split(self.code_editor_widget.filePath())
         else:
-            file_name = self.tr('Untitled Script')
+            file_name = self.tr("Untitled Script")
 
         if self.hasChanged:
-            file_name = '*' + file_name
+            file_name = "*" + file_name
 
-        self.setWindowTitle(self.tr('{} - Processing Script Editor').format(file_name))
+        self.setWindowTitle(self.tr("{} - Processing Script Editor").format(file_name))
 
     def closeEvent(self, event):
         settings = QgsSettings()
@@ -178,9 +169,16 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         if self.hasChanged:
             ret = QMessageBox.question(
-                self, self.tr('Save Script?'),
-                self.tr('There are unsaved changes in this script. Do you want to keep those?'),
-                QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Cancel | QMessageBox.StandardButton.Discard, QMessageBox.StandardButton.Cancel)
+                self,
+                self.tr("Save Script?"),
+                self.tr(
+                    "There are unsaved changes in this script. Do you want to keep those?"
+                ),
+                QMessageBox.StandardButton.Save
+                | QMessageBox.StandardButton.Cancel
+                | QMessageBox.StandardButton.Discard,
+                QMessageBox.StandardButton.Cancel,
+            )
 
             if ret == QMessageBox.StandardButton.Save:
                 self.saveScript(False)
@@ -194,18 +192,23 @@ class ScriptEditorDialog(BASE, WIDGET):
 
     def openScript(self):
         if self.hasChanged:
-            ret = QMessageBox.warning(self,
-                                      self.tr("Unsaved changes"),
-                                      self.tr("There are unsaved changes in the script. Continue?"),
-                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, QMessageBox.StandardButton.No)
+            ret = QMessageBox.warning(
+                self,
+                self.tr("Unsaved changes"),
+                self.tr("There are unsaved changes in the script. Continue?"),
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No,
+            )
             if ret == QMessageBox.StandardButton.No:
                 return
 
         scriptDir = ScriptUtils.scriptsFolders()[0]
-        fileName, _ = QFileDialog.getOpenFileName(self,
-                                                  self.tr("Open script"),
-                                                  scriptDir,
-                                                  self.tr("Processing scripts (*.py *.PY)"))
+        fileName, _ = QFileDialog.getOpenFileName(
+            self,
+            self.tr("Open script"),
+            scriptDir,
+            self.tr("Processing scripts (*.py *.PY)"),
+        )
 
         if fileName == "":
             return
@@ -223,13 +226,15 @@ class ScriptEditorDialog(BASE, WIDGET):
         newPath = None
         if not self.code_editor_widget.filePath() or saveAs:
             scriptDir = ScriptUtils.scriptsFolders()[0]
-            newPath, _ = QFileDialog.getSaveFileName(self,
-                                                     self.tr("Save script"),
-                                                     scriptDir,
-                                                     self.tr("Processing scripts (*.py *.PY)"))
+            newPath, _ = QFileDialog.getSaveFileName(
+                self,
+                self.tr("Save script"),
+                scriptDir,
+                self.tr("Processing scripts (*.py *.PY)"),
+            )
 
             if newPath:
-                newPath = QgsFileUtils.ensureFileNameHasExtension(newPath, ['py'])
+                newPath = QgsFileUtils.ensureFileNameHasExtension(newPath, ["py"])
                 self.code_editor_widget.save(newPath)
         elif self.code_editor_widget.filePath():
             self.code_editor_widget.save()
@@ -255,9 +260,7 @@ class ScriptEditorDialog(BASE, WIDGET):
             exec(self.editor.text(), _locals)
         except Exception as e:
             error = QgsError(traceback.format_exc(), "Processing")
-            QgsErrorDialog.show(error,
-                                self.tr("Execution error")
-                                )
+            QgsErrorDialog.show(error, self.tr("Execution error"))
             return
 
         alg = None
@@ -265,15 +268,27 @@ class ScriptEditorDialog(BASE, WIDGET):
             alg = algfactory.instances.pop().createInstance()
         except IndexError:
             for name, attr in _locals.items():
-                if inspect.isclass(attr) and issubclass(attr, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm)) and attr.__name__ not in ("QgsProcessingAlgorithm", "QgsProcessingFeatureBasedAlgorithm"):
+                if (
+                    inspect.isclass(attr)
+                    and issubclass(
+                        attr,
+                        (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm),
+                    )
+                    and attr.__name__
+                    not in (
+                        "QgsProcessingAlgorithm",
+                        "QgsProcessingFeatureBasedAlgorithm",
+                    )
+                ):
                     alg = attr()
                     break
 
         if alg is None:
-            QMessageBox.warning(self,
-                                self.tr("No script found"),
-                                self.tr("Seems there is no valid script in the file.")
-                                )
+            QMessageBox.warning(
+                self,
+                self.tr("No script found"),
+                self.tr("Seems there is no valid script in the file."),
+            )
             return
 
         alg.setProvider(QgsApplication.processingRegistry().providerById("script"))
