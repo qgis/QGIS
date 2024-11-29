@@ -15,19 +15,20 @@
 ***************************************************************************
 """
 
-__author__ = 'Médéric Ribreux'
-__date__ = 'March 2016'
-__copyright__ = '(C) 2016, Médéric Ribreux'
+__author__ = "Médéric Ribreux"
+__date__ = "March 2016"
+__copyright__ = "(C) 2016, Médéric Ribreux"
 
 from .i import verifyRasterNum
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
-    if alg.parameterAsBoolean(parameters, '-m', context):
-        return verifyRasterNum(alg, parameters, context, 'input', 7)
-    elif alg.parameterAsBoolean(parameters, '-n', context):
-        return verifyRasterNum(alg, parameters, context, 'input', 2)
-    elif (alg.parameterAsBoolean(parameters, '-l', context)
-          or alg.parameterAsBoolean(parameters, '-a', context)):
-        return verifyRasterNum(alg, parameters, context, 'input', 6)
+    if alg.parameterAsBoolean(parameters, "-m", context):
+        return verifyRasterNum(alg, parameters, context, "input", 7)
+    elif alg.parameterAsBoolean(parameters, "-n", context):
+        return verifyRasterNum(alg, parameters, context, "input", 2)
+    elif alg.parameterAsBoolean(parameters, "-l", context) or alg.parameterAsBoolean(
+        parameters, "-a", context
+    ):
+        return verifyRasterNum(alg, parameters, context, "input", 6)
     return True, None

@@ -5,13 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor
-from qgis.core import (
-    Qgis,
-    QgsProperty,
-    QgsAbstract3DSymbol
-)
+from qgis.core import Qgis, QgsProperty, QgsAbstract3DSymbol
 from qgis._3d import (
     QgsMesh3DSymbol,
     Qgs3DTypes,
@@ -41,11 +38,9 @@ class TestQgsQgsMesh3DSymbol(QgisTestCase):
         self.assertEqual(symbol.cullingMode(), Qgs3DTypes.Front)
 
         # Test altitude clamping
-        self.assertEqual(symbol.altitudeClamping(),
-                         Qgis.AltitudeClamping.Relative)
+        self.assertEqual(symbol.altitudeClamping(), Qgis.AltitudeClamping.Relative)
         symbol.setAltitudeClamping(Qgis.AltitudeClamping.Absolute)
-        self.assertEqual(symbol.altitudeClamping(),
-                         Qgis.AltitudeClamping.Absolute)
+        self.assertEqual(symbol.altitudeClamping(), Qgis.AltitudeClamping.Absolute)
 
         # Test height
         self.assertEqual(symbol.height(), 0.0)
@@ -91,11 +86,13 @@ class TestQgsQgsMesh3DSymbol(QgisTestCase):
         self.assertTrue(symbol.isVerticalMagnitudeRelative())
 
         # Test rendering style
-        self.assertEqual(symbol.renderingStyle(),
-                         QgsMesh3DSymbol.RenderingStyle.SingleColor)
+        self.assertEqual(
+            symbol.renderingStyle(), QgsMesh3DSymbol.RenderingStyle.SingleColor
+        )
         symbol.setRenderingStyle(QgsMesh3DSymbol.RenderingStyle.ColorRamp)
-        self.assertEqual(symbol.renderingStyle(),
-                         QgsMesh3DSymbol.RenderingStyle.ColorRamp)
+        self.assertEqual(
+            symbol.renderingStyle(), QgsMesh3DSymbol.RenderingStyle.ColorRamp
+        )
 
         default_color = QColor(Qt.GlobalColor.darkGreen)
         self.assertEqual(symbol.singleMeshColor(), default_color)
@@ -126,8 +123,15 @@ class TestQgsQgsMesh3DSymbol(QgisTestCase):
         symbol.setLevelOfDetailIndex(1)
         self.assertEqual(symbol.levelOfDetailIndex(), 1)
 
-        symbol.dataDefinedProperties().setProperty(QgsAbstract3DSymbol.Property.Height, QgsProperty.fromExpression('1+2'))
-        self.assertEqual(symbol.dataDefinedProperties().property(QgsAbstract3DSymbol.Property.Height).asExpression(), '1+2')
+        symbol.dataDefinedProperties().setProperty(
+            QgsAbstract3DSymbol.Property.Height, QgsProperty.fromExpression("1+2")
+        )
+        self.assertEqual(
+            symbol.dataDefinedProperties()
+            .property(QgsAbstract3DSymbol.Property.Height)
+            .asExpression(),
+            "1+2",
+        )
 
     def test_equality(self):
         symbol1 = QgsMesh3DSymbol()
@@ -249,9 +253,11 @@ class TestQgsQgsMesh3DSymbol(QgisTestCase):
         symbol2.setLevelOfDetailIndex(0)
         self.assertEqual(symbol1, symbol2)
 
-        symbol2.dataDefinedProperties().setProperty(QgsAbstract3DSymbol.Property.Height, QgsProperty.fromExpression('1+2'))
+        symbol2.dataDefinedProperties().setProperty(
+            QgsAbstract3DSymbol.Property.Height, QgsProperty.fromExpression("1+2")
+        )
         self.assertNotEqual(symbol1, symbol2)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

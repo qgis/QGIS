@@ -15,77 +15,109 @@
 ***************************************************************************
 """
 
-__author__ = 'Alexander Bruy'
-__date__ = 'July 2013'
-__copyright__ = '(C) 2013, Alexander Bruy'
+__author__ = "Alexander Bruy"
+__date__ = "July 2013"
+__copyright__ = "(C) 2013, Alexander Bruy"
 
 import math
-from qgis.core import (QgsFeatureSink,
-                       QgsGeometry,
-                       QgsPointXY,
-                       QgsSpatialIndex,
-                       QgsRectangle,
-                       QgsProcessing,
-                       QgsProcessingException,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterDistance,
-                       QgsProcessingParameterBoolean,
-                       QgsProcessingParameterFeatureSink)
+from qgis.core import (
+    QgsFeatureSink,
+    QgsGeometry,
+    QgsPointXY,
+    QgsSpatialIndex,
+    QgsRectangle,
+    QgsProcessing,
+    QgsProcessingException,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterDistance,
+    QgsProcessingParameterBoolean,
+    QgsProcessingParameterFeatureSink,
+)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class PointsDisplacement(QgisAlgorithm):
-    INPUT = 'INPUT'
-    DISTANCE = 'DISTANCE'
-    PROXIMITY = 'PROXIMITY'
-    HORIZONTAL = 'HORIZONTAL'
-    OUTPUT = 'OUTPUT'
+    INPUT = "INPUT"
+    DISTANCE = "DISTANCE"
+    PROXIMITY = "PROXIMITY"
+    HORIZONTAL = "HORIZONTAL"
+    OUTPUT = "OUTPUT"
 
     def group(self):
-        return self.tr('Vector geometry')
+        return self.tr("Vector geometry")
 
     def groupId(self):
-        return 'vectorgeometry'
+        return "vectorgeometry"
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer'), [QgsProcessing.SourceType.TypeVectorPoint]))
-        param = QgsProcessingParameterDistance(self.PROXIMITY,
-                                               self.tr('Minimum distance to other points'), parentParameterName='INPUT',
-                                               minValue=0.00001, defaultValue=1.0)
-        param.setMetadata({'widget_wrapper': {'decimals': 5}})
+        self.addParameter(
+            QgsProcessingParameterFeatureSource(
+                self.INPUT,
+                self.tr("Input layer"),
+                [QgsProcessing.SourceType.TypeVectorPoint],
+            )
+        )
+        param = QgsProcessingParameterDistance(
+            self.PROXIMITY,
+            self.tr("Minimum distance to other points"),
+            parentParameterName="INPUT",
+            minValue=0.00001,
+            defaultValue=1.0,
+        )
+        param.setMetadata({"widget_wrapper": {"decimals": 5}})
         self.addParameter(param)
 
-        param = QgsProcessingParameterDistance(self.DISTANCE,
-                                               self.tr('Displacement distance'), parentParameterName='INPUT',
-                                               minValue=0.00001, defaultValue=1.0)
-        param.setMetadata({'widget_wrapper': {'decimals': 5}})
+        param = QgsProcessingParameterDistance(
+            self.DISTANCE,
+            self.tr("Displacement distance"),
+            parentParameterName="INPUT",
+            minValue=0.00001,
+            defaultValue=1.0,
+        )
+        param.setMetadata({"widget_wrapper": {"decimals": 5}})
         self.addParameter(param)
 
-        self.addParameter(QgsProcessingParameterBoolean(self.HORIZONTAL,
-                                                        self.tr('Horizontal distribution for two point case')))
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Displaced'), QgsProcessing.SourceType.TypeVectorPoint))
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.HORIZONTAL, self.tr("Horizontal distribution for two point case")
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(
+                self.OUTPUT,
+                self.tr("Displaced"),
+                QgsProcessing.SourceType.TypeVectorPoint,
+            )
+        )
 
     def name(self):
-        return 'pointsdisplacement'
+        return "pointsdisplacement"
 
     def displayName(self):
-        return self.tr('Points displacement')
+        return self.tr("Points displacement")
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
-            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+            raise QgsProcessingException(
+                self.invalidSourceError(parameters, self.INPUT)
+            )
 
         proximity = self.parameterAsDouble(parameters, self.PROXIMITY, context)
         radius = self.parameterAsDouble(parameters, self.DISTANCE, context)
         horizontal = self.parameterAsBoolean(parameters, self.HORIZONTAL, context)
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               source.fields(), source.wkbType(), source.sourceCrs())
+        (sink, dest_id) = self.parameterAsSink(
+            parameters,
+            self.OUTPUT,
+            context,
+            source.fields(),
+            source.wkbType(),
+            source.sourceCrs(),
+        )
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
@@ -94,7 +126,12 @@ class PointsDisplacement(QgisAlgorithm):
         total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         def searchRect(p):
-            return QgsRectangle(p.x() - proximity, p.y() - proximity, p.x() + proximity, p.y() + proximity)
+            return QgsRectangle(
+                p.x() - proximity,
+                p.y() - proximity,
+                p.x() + proximity,
+                p.y() + proximity,
+            )
 
         index = QgsSpatialIndex()
 
@@ -136,8 +173,10 @@ class PointsDisplacement(QgisAlgorithm):
 
                 # calculate new centroid of group
                 old_center = group_locations[min_dist_feature_id]
-                group_locations[min_dist_feature_id] = QgsPointXY((old_center.x() * len(group) + point.x()) / (len(group) + 1.0),
-                                                                  (old_center.y() * len(group) + point.y()) / (len(group) + 1.0))
+                group_locations[min_dist_feature_id] = QgsPointXY(
+                    (old_center.x() * len(group) + point.x()) / (len(group) + 1.0),
+                    (old_center.y() * len(group) + point.y()) / (len(group) + 1.0),
+                )
                 # add to a group
                 clustered_groups[group_index_pos].append(f)
                 group_index[f.id()] = group_index_pos

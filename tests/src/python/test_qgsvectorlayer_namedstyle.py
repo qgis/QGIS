@@ -6,9 +6,10 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
 """
-__author__ = 'Alessandro Pasotti'
-__date__ = '22/01/2020'
-__copyright__ = 'Copyright 2020, The QGIS Project'
+
+__author__ = "Alessandro Pasotti"
+__date__ = "22/01/2020"
+__copyright__ = "Copyright 2020, The QGIS Project"
 
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import QgsMapLayer, QgsReadWriteContext, QgsVectorLayer
@@ -25,9 +26,19 @@ class TestPyQgsVectorLayerNamedStyle(unittest.TestCase):
         vl.setMinimumScale(125.0)
         vl.setMaximumScale(1.25)
         style = QDomDocument()
-        style.setContent("<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'><qgis></qgis>")
+        style.setContent(
+            "<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'><qgis></qgis>"
+        )
         node = style.firstChild()
-        self.assertTrue(vl.writeStyle(node, style, "Error writing style", QgsReadWriteContext(), QgsMapLayer.StyleCategory.Rendering))
+        self.assertTrue(
+            vl.writeStyle(
+                node,
+                style,
+                "Error writing style",
+                QgsReadWriteContext(),
+                QgsMapLayer.StyleCategory.Rendering,
+            )
+        )
 
         style_content = style.toString()
         del vl
@@ -37,11 +48,18 @@ class TestPyQgsVectorLayerNamedStyle(unittest.TestCase):
         self.assertFalse(vl2.hasScaleBasedVisibility())
         style2 = QDomDocument()
         style2.setContent(style_content)
-        self.assertTrue(vl2.readStyle(style.namedItem('qgis'), "Error reading style", QgsReadWriteContext(), QgsMapLayer.StyleCategory.Rendering))
+        self.assertTrue(
+            vl2.readStyle(
+                style.namedItem("qgis"),
+                "Error reading style",
+                QgsReadWriteContext(),
+                QgsMapLayer.StyleCategory.Rendering,
+            )
+        )
         self.assertTrue(vl2.hasScaleBasedVisibility())
         self.assertEqual(vl2.minimumScale(), 125.0)
         self.assertEqual(vl2.maximumScale(), 1.25)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

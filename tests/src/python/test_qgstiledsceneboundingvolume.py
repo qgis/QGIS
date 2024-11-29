@@ -7,6 +7,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+
 __author__ = "(C) 2023 by Nyall Dawson"
 __date__ = "10/07/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"

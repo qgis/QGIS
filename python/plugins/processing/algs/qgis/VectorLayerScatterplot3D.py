@@ -15,16 +15,18 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'January 2013'
-__copyright__ = '(C) 2013, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "January 2013"
+__copyright__ = "(C) 2013, Victor Olaya"
 
 import warnings
-from qgis.core import (QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterField,
-                       QgsProcessingParameterFileDestination,
-                       QgsProcessingException,
-                       QgsProcessingParameterString)
+from qgis.core import (
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterField,
+    QgsProcessingParameterFileDestination,
+    QgsProcessingException,
+    QgsProcessingParameterString,
+)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -34,68 +36,87 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 
 class VectorLayerScatterplot3D(QgisAlgorithm):
-    INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
-    XFIELD = 'XFIELD'
-    YFIELD = 'YFIELD'
-    ZFIELD = 'ZFIELD'
-    TITLE = 'TITLE'
+    INPUT = "INPUT"
+    OUTPUT = "OUTPUT"
+    XFIELD = "XFIELD"
+    YFIELD = "YFIELD"
+    ZFIELD = "ZFIELD"
+    TITLE = "TITLE"
     XAXIS_TITLE = "XAXIS_TITLE"
     YAXIS_TITLE = "YAXIS_TITLE"
     ZAXIS_TITLE = "ZAXIS_TITLE"
 
     def group(self):
-        return self.tr('Plots')
+        return self.tr("Plots")
 
     def groupId(self):
-        return 'plots'
+        return "plots"
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterField(self.XFIELD,
-                                                      self.tr('X attribute'),
-                                                      parentLayerParameterName=self.INPUT,
-                                                      type=QgsProcessingParameterField.DataType.Numeric))
-        self.addParameter(QgsProcessingParameterField(self.YFIELD,
-                                                      self.tr('Y attribute'),
-                                                      parentLayerParameterName=self.INPUT,
-                                                      type=QgsProcessingParameterField.DataType.Numeric))
-        self.addParameter(QgsProcessingParameterField(self.ZFIELD,
-                                                      self.tr('Z attribute'),
-                                                      parentLayerParameterName=self.INPUT,
-                                                      type=QgsProcessingParameterField.DataType.Numeric))
+        self.addParameter(
+            QgsProcessingParameterFeatureSource(self.INPUT, self.tr("Input layer"))
+        )
+        self.addParameter(
+            QgsProcessingParameterField(
+                self.XFIELD,
+                self.tr("X attribute"),
+                parentLayerParameterName=self.INPUT,
+                type=QgsProcessingParameterField.DataType.Numeric,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterField(
+                self.YFIELD,
+                self.tr("Y attribute"),
+                parentLayerParameterName=self.INPUT,
+                type=QgsProcessingParameterField.DataType.Numeric,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterField(
+                self.ZFIELD,
+                self.tr("Z attribute"),
+                parentLayerParameterName=self.INPUT,
+                type=QgsProcessingParameterField.DataType.Numeric,
+            )
+        )
 
-        self.addParameter(QgsProcessingParameterString(
-            self.TITLE,
-            self.tr('Title'),
-            optional=True))
+        self.addParameter(
+            QgsProcessingParameterString(self.TITLE, self.tr("Title"), optional=True)
+        )
 
-        self.addParameter(QgsProcessingParameterString(
-            self.XAXIS_TITLE,
-            self.tr('X-axis title'),
-            optional=True))
+        self.addParameter(
+            QgsProcessingParameterString(
+                self.XAXIS_TITLE, self.tr("X-axis title"), optional=True
+            )
+        )
 
-        self.addParameter(QgsProcessingParameterString(
-            self.YAXIS_TITLE,
-            self.tr('Y-axis title'),
-            optional=True))
+        self.addParameter(
+            QgsProcessingParameterString(
+                self.YAXIS_TITLE, self.tr("Y-axis title"), optional=True
+            )
+        )
 
-        self.addParameter(QgsProcessingParameterString(
-            self.ZAXIS_TITLE,
-            self.tr('Z-axis title'),
-            optional=True))
+        self.addParameter(
+            QgsProcessingParameterString(
+                self.ZAXIS_TITLE, self.tr("Z-axis title"), optional=True
+            )
+        )
 
-        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Scatterplot 3D'), self.tr('HTML files (*.html)')))
+        self.addParameter(
+            QgsProcessingParameterFileDestination(
+                self.OUTPUT, self.tr("Scatterplot 3D"), self.tr("HTML files (*.html)")
+            )
+        )
 
     def name(self):
-        return 'scatter3dplot'
+        return "scatter3dplot"
 
     def displayName(self):
-        return self.tr('Vector layer scatterplot 3D')
+        return self.tr("Vector layer scatterplot 3D")
 
     def processAlgorithm(self, parameters, context, feedback):
         try:
@@ -106,11 +127,18 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
                 import plotly as plt
                 import plotly.graph_objs as go
         except ImportError:
-            raise QgsProcessingException(QCoreApplication.translate('VectorLayerScatterplot3D', 'This algorithm requires the Python “plotly” library. Please install this library and try again.'))
+            raise QgsProcessingException(
+                QCoreApplication.translate(
+                    "VectorLayerScatterplot3D",
+                    "This algorithm requires the Python “plotly” library. Please install this library and try again.",
+                )
+            )
 
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
-            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+            raise QgsProcessingException(
+                self.invalidSourceError(parameters, self.INPUT)
+            )
 
         xfieldname = self.parameterAsString(parameters, self.XFIELD, context)
         yfieldname = self.parameterAsString(parameters, self.YFIELD, context)
@@ -136,18 +164,22 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
 
         values = vector.values(source, xfieldname, yfieldname, zfieldname)
 
-        data = [go.Scatter3d(
+        data = [
+            go.Scatter3d(
                 x=values[xfieldname],
                 y=values[yfieldname],
                 z=values[zfieldname],
-                mode='markers')]
+                mode="markers",
+            )
+        ]
 
         fig = go.Figure(
             data=data,
             layout_title_text=title,
             layout_scene_xaxis_title=xaxis_title,
             layout_scene_yaxis_title=yaxis_title,
-            layout_scene_zaxis_title=zaxis_title)
+            layout_scene_zaxis_title=zaxis_title,
+        )
 
         fig.write_html(output)
 
