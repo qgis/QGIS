@@ -1,3 +1,15 @@
+
+
+
+
+
+
+.h#L175
+.h#L730
+.h#L747
+/3d/qgs3dmapsettings.h#L184
+L403
+L753
 Qgs3D.initialize: src/3d/qgs3d.h#L50
 Qgs3D.instance: src/3d/qgs3d.h#L43
 Qgs3D.materialRegistry: src/3d/qgs3d.h#L55
@@ -12,10 +24,8 @@ Qgs3DAlgorithms.svgIconPath: src/3d/processing/qgs3dalgorithms.h#L42
 Qgs3DAlgorithms: src/3d/processing/qgs3dalgorithms.h#L30
 Qgs3DMapCanvas.cameraController: src/3d/qgs3dmapcanvas.h#L94
 Qgs3DMapCanvas.eventFilter: src/3d/qgs3dmapcanvas.h#L205
-Qgs3DMapCanvas.mapSettings: src/3d/qgs3dmapcanvas.h#L88
 Qgs3DMapCanvas.resizeEvent: src/3d/qgs3dmapcanvas.h#L203
 Qgs3DMapCanvas.scene: src/3d/qgs3dmapcanvas.h#L91
-Qgs3DMapCanvas.showEvent: src/3d/qgs3dmapcanvas.h#L198
 Qgs3DMapCanvas: src/3d/qgs3dmapcanvas.h#L79
 Qgs3DMapExportSettings.exportNormals: src/3d/qgs3dmapexportsettings.h#L48
 Qgs3DMapExportSettings.exportTextures: src/3d/qgs3dmapexportsettings.h#L50
@@ -41,7 +51,6 @@ Qgs3DMapScene.enableClipping: src/3d/qgs3dmapscene.h#L237
 Qgs3DMapScene.exportScene: src/3d/qgs3dmapscene.h#L131
 Qgs3DMapScene.fpsCountChanged: src/3d/qgs3dmapscene.h#L267
 Qgs3DMapScene.fpsCounterEnabledChanged: src/3d/qgs3dmapscene.h#L269
-Qgs3DMapScene.gpuMemoryLimitReached: src/3d/qgs3dmapscene.h#L283
 Qgs3DMapScene.hasSceneUpdatesEnabled: src/3d/qgs3dmapscene.h#L197
 Qgs3DMapScene.mapSettings: src/3d/qgs3dmapscene.h#L188
 Qgs3DMapScene.sceneExtent: src/3d/qgs3dmapscene.h#L159
@@ -54,17 +63,12 @@ Qgs3DMapScene.terrainPendingJobsCount: src/3d/qgs3dmapscene.h#L106
 Qgs3DMapScene.terrainPendingJobsCountChanged: src/3d/qgs3dmapscene.h#L256
 Qgs3DMapScene.totalPendingJobsCount: src/3d/qgs3dmapscene.h#L112
 Qgs3DMapScene.totalPendingJobsCountChanged: src/3d/qgs3dmapscene.h#L262
-Qgs3DMapScene.updateTemporal: src/3d/qgs3dmapscene.h#L287
 Qgs3DMapScene.viewZoomFull: src/3d/qgs3dmapscene.h#L89
 Qgs3DMapScene.viewed2DExtentFrom3DChanged: src/3d/qgs3dmapscene.h#L276
 Qgs3DMapScene.worldSpaceError: src/3d/qgs3dmapscene.h#L128
 Qgs3DMapScene: src/3d/qgs3dmapscene.h#L70
-Qgs3DMapSettings.ambientOcclusionSettingsChanged: src/3d/qgs3dmapsettings.h#L882
-Qgs3DMapSettings.axisSettingsChanged: src/3d/qgs3dmapsettings.h#L901
-Qgs3DMapSettings.backgroundColor: src/3d/qgs3dmapsettings.h#L184
 Qgs3DMapSettings.backgroundColorChanged: src/3d/qgs3dmapsettings.h#L720
 Qgs3DMapSettings.cameraMovementSpeed: src/3d/qgs3dmapsettings.h#L524
-Qgs3DMapSettings.cameraMovementSpeedChanged: src/3d/qgs3dmapsettings.h#L863
 Qgs3DMapSettings.cameraNavigationModeChanged: src/3d/qgs3dmapsettings.h#L857
 Qgs3DMapSettings.crs: src/3d/qgs3dmapsettings.h#L130
 Qgs3DMapSettings.debugDepthMapCorner: src/3d/qgs3dmapsettings.h#L460
@@ -76,39 +80,30 @@ Qgs3DMapSettings.debugShadowMapCorner: src/3d/qgs3dmapsettings.h#L445
 Qgs3DMapSettings.debugShadowMapEnabled: src/3d/qgs3dmapsettings.h#L443
 Qgs3DMapSettings.debugShadowMapSettingsChanged: src/3d/qgs3dmapsettings.h#L815
 Qgs3DMapSettings.debugShadowMapSize: src/3d/qgs3dmapsettings.h#L447
-Qgs3DMapSettings.directionalLightsChanged: src/3d/qgs3dmapsettings.h#L839
 Qgs3DMapSettings.extent: src/3d/qgs3dmapsettings.h#L78
 Qgs3DMapSettings.extentChanged: src/3d/qgs3dmapsettings.h#L914
 Qgs3DMapSettings.eyeDomeLightingDistance: src/3d/qgs3dmapsettings.h#L432
-Qgs3DMapSettings.eyeDomeLightingDistanceChanged: src/3d/qgs3dmapsettings.h#L809
 Qgs3DMapSettings.eyeDomeLightingEnabled: src/3d/qgs3dmapsettings.h#L414
-Qgs3DMapSettings.eyeDomeLightingEnabledChanged: src/3d/qgs3dmapsettings.h#L797
 Qgs3DMapSettings.eyeDomeLightingStrength: src/3d/qgs3dmapsettings.h#L423
 Qgs3DMapSettings.eyeDomeLightingStrengthChanged: src/3d/qgs3dmapsettings.h#L803
 Qgs3DMapSettings.fieldOfView: src/3d/qgs3dmapsettings.h#L485
 Qgs3DMapSettings.fieldOfViewChanged: src/3d/qgs3dmapsettings.h#L845
-Qgs3DMapSettings.fpsCounterEnabledChanged: src/3d/qgs3dmapsettings.h#L888
 Qgs3DMapSettings.isDebugOverlayEnabled: src/3d/qgs3dmapsettings.h#L685
 Qgs3DMapSettings.isFpsCounterEnabled: src/3d/qgs3dmapsettings.h#L601
 Qgs3DMapSettings.isSkyboxEnabled: src/3d/qgs3dmapsettings.h#L587
 Qgs3DMapSettings.isTerrainShadingEnabled: src/3d/qgs3dmapsettings.h#L322
-Qgs3DMapSettings.layersChanged: src/3d/qgs3dmapsettings.h#L730
 Qgs3DMapSettings.lightSourcesChanged: src/3d/qgs3dmapsettings.h#L833
 Qgs3DMapSettings.mapThemeCollection: src/3d/qgs3dmapsettings.h#L172
 Qgs3DMapSettings.mapTileResolution: src/3d/qgs3dmapsettings.h#L240
 Qgs3DMapSettings.mapTileResolutionChanged: src/3d/qgs3dmapsettings.h#L737
 Qgs3DMapSettings.mapToWorldCoordinates: src/3d/qgs3dmapsettings.h#L114
 Qgs3DMapSettings.maxTerrainGroundError: src/3d/qgs3dmapsettings.h#L269
-Qgs3DMapSettings.maxTerrainGroundErrorChanged: src/3d/qgs3dmapsettings.h#L741
 Qgs3DMapSettings.maxTerrainScreenError: src/3d/qgs3dmapsettings.h#L255
 Qgs3DMapSettings.maxTerrainScreenErrorChanged: src/3d/qgs3dmapsettings.h#L739
 Qgs3DMapSettings.origin: src/3d/qgs3dmapsettings.h#L111
-Qgs3DMapSettings.outputDpi: src/3d/qgs3dmapsettings.h#L544
 Qgs3DMapSettings.pointLightsChanged: src/3d/qgs3dmapsettings.h#L827
 Qgs3DMapSettings.projectionTypeChanged: src/3d/qgs3dmapsettings.h#L851
 Qgs3DMapSettings.readXml: src/3d/qgs3dmapsettings.h#L66
-Qgs3DMapSettings.rendererUsage: src/3d/qgs3dmapsettings.h#L630
-Qgs3DMapSettings.renderersChanged: src/3d/qgs3dmapsettings.h#L765
 Qgs3DMapSettings.resolveReferences: src/3d/qgs3dmapsettings.h#L70
 Qgs3DMapSettings.selectionColor: src/3d/qgs3dmapsettings.h#L189
 Qgs3DMapSettings.selectionColorChanged: src/3d/qgs3dmapsettings.h#L722
@@ -122,7 +117,6 @@ Qgs3DMapSettings.setEyeDomeLightingDistance: src/3d/qgs3dmapsettings.h#L430
 Qgs3DMapSettings.setEyeDomeLightingEnabled: src/3d/qgs3dmapsettings.h#L412
 Qgs3DMapSettings.setEyeDomeLightingStrength: src/3d/qgs3dmapsettings.h#L421
 Qgs3DMapSettings.setFieldOfView: src/3d/qgs3dmapsettings.h#L491
-Qgs3DMapSettings.setIsDebugOverlayEnabled: src/3d/qgs3dmapsettings.h#L695
 Qgs3DMapSettings.setIsFpsCounterEnabled: src/3d/qgs3dmapsettings.h#L608
 Qgs3DMapSettings.setIsSkyboxEnabled: src/3d/qgs3dmapsettings.h#L594
 Qgs3DMapSettings.setLayers: src/3d/qgs3dmapsettings.h#L199
@@ -134,27 +128,20 @@ Qgs3DMapSettings.setMaxTerrainScreenError: src/3d/qgs3dmapsettings.h#L246
 Qgs3DMapSettings.setOrigin: src/3d/qgs3dmapsettings.h#L104
 Qgs3DMapSettings.setOutputDpi: src/3d/qgs3dmapsettings.h#L537
 Qgs3DMapSettings.setPathResolver: src/3d/qgs3dmapsettings.h#L164
-Qgs3DMapSettings.setRendererUsage: src/3d/qgs3dmapsettings.h#L638
 Qgs3DMapSettings.setSelectionColor: src/3d/qgs3dmapsettings.h#L187
-Qgs3DMapSettings.setShowCameraRotationCenter: src/3d/qgs3dmapsettings.h#L382
 Qgs3DMapSettings.setShowCameraViewCenter: src/3d/qgs3dmapsettings.h#L370
 Qgs3DMapSettings.setShowExtentIn2DView: src/3d/qgs3dmapsettings.h#L708
-Qgs3DMapSettings.setShowLabels: src/3d/qgs3dmapsettings.h#L403
 Qgs3DMapSettings.setShowLightSourceOrigins: src/3d/qgs3dmapsettings.h#L394
 Qgs3DMapSettings.setShowTerrainBoundingBoxes: src/3d/qgs3dmapsettings.h#L358
 Qgs3DMapSettings.setShowTerrainTilesInfo: src/3d/qgs3dmapsettings.h#L362
 Qgs3DMapSettings.setTerrainElevationOffset: src/3d/qgs3dmapsettings.h#L276
 Qgs3DMapSettings.setTerrainMapTheme: src/3d/qgs3dmapsettings.h#L343
-Qgs3DMapSettings.setTerrainRenderingEnabled: src/3d/qgs3dmapsettings.h#L622
 Qgs3DMapSettings.setTerrainShadingEnabled: src/3d/qgs3dmapsettings.h#L314
 Qgs3DMapSettings.setTerrainShadingMaterial: src/3d/qgs3dmapsettings.h#L329
 Qgs3DMapSettings.setTerrainVerticalScale: src/3d/qgs3dmapsettings.h#L226
 Qgs3DMapSettings.setTransformContext: src/3d/qgs3dmapsettings.h#L148
-Qgs3DMapSettings.setViewFrustumVisualizationEnabled: src/3d/qgs3dmapsettings.h#L666
 Qgs3DMapSettings.setViewSyncMode: src/3d/qgs3dmapsettings.h#L652
 Qgs3DMapSettings.settingsChanged: src/3d/qgs3dmapsettings.h#L717
-Qgs3DMapSettings.shadowSettingsChanged: src/3d/qgs3dmapsettings.h#L875
-Qgs3DMapSettings.showCameraRotationCenter: src/3d/qgs3dmapsettings.h#L388
 Qgs3DMapSettings.showCameraRotationCenterChanged: src/3d/qgs3dmapsettings.h#L782
 Qgs3DMapSettings.showCameraViewCenter: src/3d/qgs3dmapsettings.h#L376
 Qgs3DMapSettings.showCameraViewCenterChanged: src/3d/qgs3dmapsettings.h#L776
@@ -162,27 +149,18 @@ Qgs3DMapSettings.showExtentIn2DView: src/3d/qgs3dmapsettings.h#L702
 Qgs3DMapSettings.showExtentIn2DViewChanged: src/3d/qgs3dmapsettings.h#L921
 Qgs3DMapSettings.showLabels: src/3d/qgs3dmapsettings.h#L405
 Qgs3DMapSettings.showLabelsChanged: src/3d/qgs3dmapsettings.h#L791
-Qgs3DMapSettings.showLightSourceOrigins: src/3d/qgs3dmapsettings.h#L400
 Qgs3DMapSettings.showLightSourceOriginsChanged: src/3d/qgs3dmapsettings.h#L788
 Qgs3DMapSettings.showTerrainBoundingBoxes: src/3d/qgs3dmapsettings.h#L360
 Qgs3DMapSettings.showTerrainBoundingBoxesChanged: src/3d/qgs3dmapsettings.h#L768
 Qgs3DMapSettings.showTerrainTilesInfo: src/3d/qgs3dmapsettings.h#L364
 Qgs3DMapSettings.showTerrainTilesInfoChanged: src/3d/qgs3dmapsettings.h#L770
-Qgs3DMapSettings.skyboxSettingsChanged: src/3d/qgs3dmapsettings.h#L869
 Qgs3DMapSettings.terrainElevationOffset: src/3d/qgs3dmapsettings.h#L281
-Qgs3DMapSettings.terrainElevationOffsetChanged: src/3d/qgs3dmapsettings.h#L747
-Qgs3DMapSettings.terrainGeneratorChanged: src/3d/qgs3dmapsettings.h#L733
 Qgs3DMapSettings.terrainMapTheme: src/3d/qgs3dmapsettings.h#L351
-Qgs3DMapSettings.terrainMapThemeChanged: src/3d/qgs3dmapsettings.h#L759
-Qgs3DMapSettings.terrainRenderingEnabled: src/3d/qgs3dmapsettings.h#L615
-Qgs3DMapSettings.terrainShadingChanged: src/3d/qgs3dmapsettings.h#L753
 Qgs3DMapSettings.terrainShadingMaterial: src/3d/qgs3dmapsettings.h#L336
 Qgs3DMapSettings.terrainVerticalScale: src/3d/qgs3dmapsettings.h#L228
 Qgs3DMapSettings.terrainVerticalScaleChanged: src/3d/qgs3dmapsettings.h#L735
 Qgs3DMapSettings.transformContext: src/3d/qgs3dmapsettings.h#L139
-Qgs3DMapSettings.viewFrustumVisualizationEnabled: src/3d/qgs3dmapsettings.h#L659
 Qgs3DMapSettings.viewFrustumVisualizationEnabledChanged: src/3d/qgs3dmapsettings.h#L895
-Qgs3DMapSettings.viewSyncMode: src/3d/qgs3dmapsettings.h#L645
 Qgs3DMapSettings.worldToMapCoordinates: src/3d/qgs3dmapsettings.h#L116
 Qgs3DMapSettings.writeXml: src/3d/qgs3dmapsettings.h#L68
 Qgs3DMapSettings: src/3d/qgs3dmapsettings.h#L54
@@ -192,55 +170,34 @@ QgsAbstractMaterialSettings.readXml: src/3d/materials/qgsabstractmaterialsetting
 QgsAbstractMaterialSettings.type: src/3d/materials/qgsabstractmaterialsettings.h#L159
 QgsAbstractMaterialSettings.writeXml: src/3d/materials/qgsabstractmaterialsettings.h#L172
 QgsAbstractMaterialSettings: src/3d/materials/qgsabstractmaterialsettings.h#L120
-QgsAbstractVectorLayer3DRenderer.copyBaseProperties: src/3d/qgsabstractvectorlayer3drenderer.h#L96
 QgsAbstractVectorLayer3DRenderer.layer: src/3d/qgsabstractvectorlayer3drenderer.h#L85
 QgsAbstractVectorLayer3DRenderer.readXmlBaseProperties: src/3d/qgsabstractvectorlayer3drenderer.h#L100
 QgsAbstractVectorLayer3DRenderer.resolveReferences: src/3d/qgsabstractvectorlayer3drenderer.h#L92
 QgsAbstractVectorLayer3DRenderer.setLayer: src/3d/qgsabstractvectorlayer3drenderer.h#L83
-QgsAbstractVectorLayer3DRenderer.setTilingSettings: src/3d/qgsabstractvectorlayer3drenderer.h#L88
 QgsAbstractVectorLayer3DRenderer.tilingSettings: src/3d/qgsabstractvectorlayer3drenderer.h#L90
 QgsAbstractVectorLayer3DRenderer.writeXmlBaseProperties: src/3d/qgsabstractvectorlayer3drenderer.h#L98
 QgsAbstractVectorLayer3DRenderer: src/3d/qgsabstractvectorlayer3drenderer.h#L77
 QgsCameraController.cameraChanged: src/3d/qgscameracontroller.h#L253
-QgsCameraController.cameraMovementSpeed: src/3d/qgscameracontroller.h#L90
 QgsCameraController.cameraMovementSpeedChanged: src/3d/qgscameracontroller.h#L261
 QgsCameraController.cameraNavigationMode: src/3d/qgscameracontroller.h#L84
-QgsCameraController.cameraPose: src/3d/qgscameracontroller.h#L140
-QgsCameraController.cameraRotationCenterChanged: src/3d/qgscameracontroller.h#L279
 QgsCameraController.depthBufferCaptured: src/3d/qgscameracontroller.h#L212
-QgsCameraController.distance: src/3d/qgscameracontroller.h#L147
 QgsCameraController.frameTriggered: src/3d/qgscameracontroller.h#L111
 QgsCameraController.lookingAtPoint: src/3d/qgscameracontroller.h#L120
 QgsCameraController.moveView: src/3d/qgscameracontroller.h#L177
 QgsCameraController.navigationModeChanged: src/3d/qgscameracontroller.h#L256
-QgsCameraController.pitch: src/3d/qgscameracontroller.h#L154
-QgsCameraController.readXml: src/3d/qgscameracontroller.h#L166
-QgsCameraController.requestDepthBufferCapture: src/3d/qgscameracontroller.h#L273
 QgsCameraController.resetView: src/3d/qgscameracontroller.h#L114
-QgsCameraController.rotateAroundViewCenter: src/3d/qgscameracontroller.h#L173
-QgsCameraController.rotateCamera: src/3d/qgscameracontroller.h#L191
-QgsCameraController.setCameraHeadingAngle: src/3d/qgscameracontroller.h#L175
 QgsCameraController.setCameraMovementSpeed: src/3d/qgscameracontroller.h#L96
-QgsCameraController.setCameraNavigationMode: src/3d/qgscameracontroller.h#L206
-QgsCameraController.setCameraPose: src/3d/qgscameracontroller.h#L134
 QgsCameraController.setCursorPosition: src/3d/qgscameracontroller.h#L267
 QgsCameraController.setLookingAtPoint: src/3d/qgscameracontroller.h#L128
 QgsCameraController.setVerticalAxisInversion: src/3d/qgscameracontroller.h#L108
 QgsCameraController.setViewFromTop: src/3d/qgscameracontroller.h#L117
-QgsCameraController.tiltUpAroundViewCenter: src/3d/qgscameracontroller.h#L171
-QgsCameraController.verticalAxisInversion: src/3d/qgscameracontroller.h#L102
 QgsCameraController.walkView: src/3d/qgscameracontroller.h#L183
-QgsCameraController.willHandleKeyEvent: src/3d/qgscameracontroller.h#L198
 QgsCameraController.writeXml: src/3d/qgscameracontroller.h#L164
-QgsCameraController.yaw: src/3d/qgscameracontroller.h#L161
 QgsCameraController.zoom: src/3d/qgscameracontroller.h#L169
 QgsCameraController: src/3d/qgscameracontroller.h#L60
-QgsCameraPose.centerPoint: src/3d/qgscamerapose.h#L51
-QgsCameraPose.distanceFromCenterPoint: src/3d/qgscamerapose.h#L56
 QgsCameraPose.headingAngle: src/3d/qgscamerapose.h#L66
 QgsCameraPose.pitchAngle: src/3d/qgscamerapose.h#L61
 QgsCameraPose.readXml: src/3d/qgscamerapose.h#L76
-QgsCameraPose.setCenterPoint: src/3d/qgscamerapose.h#L53
 QgsCameraPose.setDistanceFromCenterPoint: src/3d/qgscamerapose.h#L58
 QgsCameraPose.setHeadingAngle: src/3d/qgscamerapose.h#L68
 QgsCameraPose.setPitchAngle: src/3d/qgscamerapose.h#L63
@@ -563,7 +520,6 @@ QgsRuleBased3DRenderer.Rule.isElse: src/3d/qgsrulebased3drenderer.h#L122
 QgsRuleBased3DRenderer.Rule.parent: src/3d/qgsrulebased3drenderer.h#L196
 QgsRuleBased3DRenderer.Rule.removeChildAt: src/3d/qgsrulebased3drenderer.h#L205
 QgsRuleBased3DRenderer.Rule.ruleKey: src/3d/qgsrulebased3drenderer.h#L125
-QgsRuleBased3DRenderer.Rule.save: src/3d/qgsrulebased3drenderer.h#L231
 QgsRuleBased3DRenderer.Rule.setActive: src/3d/qgsrulebased3drenderer.h#L148
 QgsRuleBased3DRenderer.Rule.setDescription: src/3d/qgsrulebased3drenderer.h#L142
 QgsRuleBased3DRenderer.Rule.setFilterExpression: src/3d/qgsrulebased3drenderer.h#L135
@@ -575,7 +531,6 @@ QgsRuleBased3DRenderer.Rule: src/3d/qgsrulebased3drenderer.h#L74
 QgsRuleBased3DRenderer.clone: src/3d/qgsrulebased3drenderer.h#L303
 QgsRuleBased3DRenderer.readXml: src/3d/qgsrulebased3drenderer.h#L307
 QgsRuleBased3DRenderer.rootRule: src/3d/qgsrulebased3drenderer.h#L298
-QgsRuleBased3DRenderer.type: src/3d/qgsrulebased3drenderer.h#L302
 QgsRuleBased3DRenderer.writeXml: src/3d/qgsrulebased3drenderer.h#L306
 QgsRuleBased3DRenderer: src/3d/qgsrulebased3drenderer.h#L61
 QgsRuleBased3DRendererMetadata.createRenderer: src/3d/qgsrulebased3drenderer.h#L46
@@ -608,7 +563,6 @@ QgsTiledSceneLayer3DRenderer.showBoundingBoxes: src/3d/qgstiledscenelayer3drende
 QgsTiledSceneLayer3DRenderer.type: src/3d/qgstiledscenelayer3drenderer.h#L108
 QgsTiledSceneLayer3DRenderer.writeXml: src/3d/qgstiledscenelayer3drenderer.h#L111
 QgsTiledSceneLayer3DRenderer: src/3d/qgstiledscenelayer3drenderer.h#L52
-QgsTiledSceneLayer3DRendererMetadata.createRenderer: src/3d/qgstiledscenelayer3drenderer.h#L42
 QgsTiledSceneLayer3DRendererMetadata: src/3d/qgstiledscenelayer3drenderer.h#L36
 QgsVectorLayer3DRenderer.QgsVectorLayer3DRenderer: src/3d/qgsvectorlayer3drenderer.h#L58
 QgsVectorLayer3DRenderer.clone: src/3d/qgsvectorlayer3drenderer.h#L66
@@ -622,8 +576,21 @@ QgsVectorLayer3DRendererMetadata.createRenderer: src/3d/qgsvectorlayer3drenderer
 QgsVectorLayer3DRendererMetadata: src/3d/qgsvectorlayer3drenderer.h#L39
 QgsVectorLayer3DTilingSettings.readXml: src/3d/qgsabstractvectorlayer3drenderer.h#L63
 QgsVectorLayer3DTilingSettings.setShowBoundingBoxes: src/3d/qgsabstractvectorlayer3drenderer.h#L56
-QgsVectorLayer3DTilingSettings.setZoomLevelsCount: src/3d/qgsabstractvectorlayer3drenderer.h#L53
-QgsVectorLayer3DTilingSettings.showBoundingBoxes: src/3d/qgsabstractvectorlayer3drenderer.h#L58
 QgsVectorLayer3DTilingSettings.writeXml: src/3d/qgsabstractvectorlayer3drenderer.h#L61
-QgsVectorLayer3DTilingSettings.zoomLevelsCount: src/3d/qgsabstractvectorlayer3drenderer.h#L48
 QgsVectorLayer3DTilingSettings: src/3d/qgsabstractvectorlayer3drenderer.h#L37
+d/qgs3dmapsettings.h#L382
+d/qgs3dmapsettings.h#L901
+ectorlayer3drenderer.h#L96
+ings.h#L388
+mapscene.h#L283
+mapsettings.h#L809
+nelayer3drenderer.h#L42
+oller.h#L279
+ractvectorlayer3drenderer.h#L88
+rlayer3drenderer.h#L58
+s.h#L839
+ttings.h#L400
+ttings.h#L797
+vectorlayer3drenderer.h#L48
+vectorlayer3drenderer.h#L53
+8

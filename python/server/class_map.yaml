@@ -76,7 +76,6 @@ QgsRequestHandler.clear: src/server/qgsrequesthandler.h#L85
 QgsRequestHandler.clearBody: src/server/qgsrequesthandler.h#L94
 QgsRequestHandler.data: src/server/qgsrequesthandler.h#L100
 QgsRequestHandler.exceptionRaised: src/server/qgsrequesthandler.h#L91
-QgsRequestHandler.format: src/server/qgsrequesthandler.h#L140
 QgsRequestHandler.headersSent: src/server/qgsrequesthandler.h#L143
 QgsRequestHandler.parameter: src/server/qgsrequesthandler.h#L128
 QgsRequestHandler.path: src/server/qgsrequesthandler.h#L109
@@ -96,7 +95,6 @@ QgsRequestHandler.url: src/server/qgsrequesthandler.h#L103
 QgsRequestHandler: src/server/qgsrequesthandler.h#L38
 QgsServer.handleRequest: src/server/qgsserver.h#L76
 QgsServer.initPython: src/server/qgsserver.h#L88
-QgsServer.putenv: src/server/qgsserver.h#L62
 QgsServer.serverInterface: src/server/qgsserver.h#L80
 QgsServer: src/server/qgsserver.h#L48
 QgsServerApi.accept: src/server/qgsserverapi.h#L116
@@ -310,7 +308,6 @@ QgsServerSettings.getPrintDisabled: src/server/qgsserversettings.h#L303
 QgsServerSettings.ignoreBadLayers: src/server/qgsserversettings.h#L272
 QgsServerSettings.iniFile: src/server/qgsserversettings.h#L133
 QgsServerSettings.landingPageBaseUrlPrefix: src/server/qgsserversettings.h#L241
-QgsServerSettings.landingPageProjectsDirectories: src/server/qgsserversettings.h#L227
 QgsServerSettings.landingPageProjectsPgConnections: src/server/qgsserversettings.h#L235
 QgsServerSettings.load: src/server/qgsserversettings.h#L116
 QgsServerSettings.load: src/server/qgsserversettings.h#L122
@@ -359,3 +356,5 @@ QgsServiceRegistry: src/server/qgsserviceregistry.h#L48
 QgsStoreBadLayerInfo.badLayers: src/server/qgsstorebadlayerinfo.h#L50
 QgsStoreBadLayerInfo.handleBadLayers: src/server/qgsstorebadlayerinfo.h#L44
 QgsStoreBadLayerInfo: src/server/qgsstorebadlayerinfo.h#L31
+rversettings.h#L227
+srequesthandler.h#L140

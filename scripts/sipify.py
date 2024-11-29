@@ -50,7 +50,7 @@ args = parser.parse_args()
 
 # Read the input file
 try:
-    with open(args.headerfile, "r") as f:
+    with open(args.headerfile, "r", encoding='utf-8') as f:
         input_lines = f.read().splitlines()
 except IOError as e:
     print(f"Couldn't open '{args.headerfile}' for reading because: {e}",
@@ -60,7 +60,7 @@ except IOError as e:
 # Read configuration
 cfg_file = os.path.join(os.path.dirname(__file__), '../python/sipify.yaml')
 try:
-    with open(cfg_file, 'r') as f:
+    with open(cfg_file, 'r', encoding='utf-8') as f:
         sip_config = yaml.safe_load(f)
 except IOError as e:
     print(f"Couldn't open configuration file '{cfg_file}' because: {e}",
@@ -1725,7 +1725,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
         # append to class map file
         if args.class_map:
-            with open(args.class_map, 'a') as fh3:
+            with open(args.class_map, 'a', encoding="utf8") as fh3:
                 fh3.write(
                     f"{'.'.join(CONTEXT.classname)}: {CONTEXT.header_file}#L{CONTEXT.line_idx}\n")
 
@@ -2582,7 +2582,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             r'^ *(const |virtual |static )* *[\w:]+ +\*?(?P<method>\w+)\(.*$',
             CONTEXT.current_line)
         if match:
-            with open(args.class_map, 'a') as f:
+            with open(args.class_map, 'a', encoding="utf8") as f:
                 f.write(
                     f"{'.'.join(CONTEXT.classname)}.{match.group('method')}: {CONTEXT.header_file}#L{CONTEXT.line_idx}\n")
 
@@ -2776,7 +2776,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
 # Output results
 if args.sip_output:
-    with open(args.sip_output, 'w') as f:
+    with open(args.sip_output, 'w', encoding="utf8") as f:
         f.write(''.join(sip_header_footer()))
         f.write(''.join(CONTEXT.output))
         f.write(''.join(sip_header_footer()))
@@ -2848,6 +2848,6 @@ for _class, additions in class_additions.items():
 
 if args.python_output and CONTEXT.output_python:
 
-    with open(args.python_output, 'w') as f:
+    with open(args.python_output, 'w', encoding="utf8") as f:
         f.write(''.join(python_header()))
         f.write(''.join(CONTEXT.output_python))

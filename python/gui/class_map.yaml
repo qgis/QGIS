@@ -1,3 +1,23 @@
+
+
+
+
+
+
+
+
+
+
+
+
+#L152
+#L253
+.h#L1183
+.h#L238
+.h#L246
+.h#L434
+.h#L77
+/qgssymbollayerwidget.h#L1319
 CharacterWidget.character: src/gui/symbology/characterwidget.h#L99
 CharacterWidget.characterSelected: src/gui/symbology/characterwidget.h#L151
 CharacterWidget.clearCharacter: src/gui/symbology/characterwidget.h#L144
@@ -17,6 +37,16 @@ CharacterWidget.sizeHint: src/gui/symbology/characterwidget.h#L83
 CharacterWidget.squareSize: src/gui/symbology/characterwidget.h#L93
 CharacterWidget.updateFontMerging: src/gui/symbology/characterwidget.h#L125
 CharacterWidget: src/gui/symbology/characterwidget.h#L69
+L1162
+L168
+L175
+L206
+L248
+L343
+L439
+L485
+L596
+L606
 QgisInterface.actionAbout: src/gui/qgisinterface.h#L689
 QgisInterface.actionAddAfsLayer: src/gui/qgisinterface.h#L623
 QgisInterface.actionAddAllToOverview: src/gui/qgisinterface.h#L651
@@ -381,7 +411,6 @@ QgsAbstractProcessingParameterWidgetWrapper.registerProcessingContextGenerator: 
 QgsAbstractProcessingParameterWidgetWrapper.registerProcessingParametersGenerator: src/gui/processing/qgsprocessingwidgetwrapper.h#L401
 QgsAbstractProcessingParameterWidgetWrapper.setDialog: src/gui/processing/qgsprocessingwidgetwrapper.h#L425
 QgsAbstractProcessingParameterWidgetWrapper.setParameterValue: src/gui/processing/qgsprocessingwidgetwrapper.h#L372
-QgsAbstractProcessingParameterWidgetWrapper.setWidgetContext: src/gui/processing/qgsprocessingwidgetwrapper.h#L305
 QgsAbstractProcessingParameterWidgetWrapper.setWidgetValue: src/gui/processing/qgsprocessingwidgetwrapper.h#L468
 QgsAbstractProcessingParameterWidgetWrapper.stretch: src/gui/processing/qgsprocessingwidgetwrapper.h#L416
 QgsAbstractProcessingParameterWidgetWrapper.type: src/gui/processing/qgsprocessingwidgetwrapper.h#L294
@@ -672,9 +701,6 @@ QgsAlignmentComboBox.setAvailableAlignments: src/gui/qgsalignmentcombobox.h#L48
 QgsAlignmentComboBox.setCurrentAlignment: src/gui/qgsalignmentcombobox.h#L62
 QgsAlignmentComboBox: src/gui/qgsalignmentcombobox.h#L34
 QgsAnimatedImageSourceLineEdit: src/gui/qgsfilecontentsourcelineedit.h#L303
-QgsAnimatedMarkerSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L739
-QgsAnimatedMarkerSymbolLayerWidget.setContext: src/gui/symbology/qgssymbollayerwidget.h#L744
-QgsAnimatedMarkerSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L742
 QgsAnimatedMarkerSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L743
 QgsAnimatedMarkerSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L722
 QgsAnnotationItemAbstractGuiMetadata.createItem: src/gui/annotations/qgsannotationitemguiregistry.h#L120
@@ -1183,28 +1209,22 @@ QgsCalloutWidget.vectorLayer: src/gui/callouts/qgscalloutwidget.h#L79
 QgsCalloutWidget: src/gui/callouts/qgscalloutwidget.h#L32
 QgsCategorizedSymbolRendererWidget.addCategories: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L160
 QgsCategorizedSymbolRendererWidget.addCategory: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L159
-QgsCategorizedSymbolRendererWidget.applyChangeToSymbol: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L239
 QgsCategorizedSymbolRendererWidget.applyColorRamp: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L165
 QgsCategorizedSymbolRendererWidget.categoriesDoubleClicked: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L158
 QgsCategorizedSymbolRendererWidget.categoryColumnChanged: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L157
 QgsCategorizedSymbolRendererWidget.changeCategorizedSymbol: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L156
-QgsCategorizedSymbolRendererWidget.changeCategorySymbol: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L237
 QgsCategorizedSymbolRendererWidget.changeSelectedSymbols: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L235
 QgsCategorizedSymbolRendererWidget.create: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L135
 QgsCategorizedSymbolRendererWidget.createExpressionContext: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L143
-QgsCategorizedSymbolRendererWidget.currentCategoryRow: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L229
 QgsCategorizedSymbolRendererWidget.deleteAllCategories: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L168
 QgsCategorizedSymbolRendererWidget.deleteCategories: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L167
 QgsCategorizedSymbolRendererWidget.keyPressEvent: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L244
 QgsCategorizedSymbolRendererWidget.matchToSymbols: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L153
 QgsCategorizedSymbolRendererWidget.matchToSymbolsFromLibrary: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L180
 QgsCategorizedSymbolRendererWidget.matchToSymbolsFromXml: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L188
-QgsCategorizedSymbolRendererWidget.pasteSymbolToSelection: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L195
-QgsCategorizedSymbolRendererWidget.populateCategories: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L226
 QgsCategorizedSymbolRendererWidget.refreshSymbolView: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L243
 QgsCategorizedSymbolRendererWidget.renderer: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L140
 QgsCategorizedSymbolRendererWidget.rowsMoved: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L172
-QgsCategorizedSymbolRendererWidget.selectedCategoryList: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L242
 QgsCategorizedSymbolRendererWidget.setContext: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L141
 QgsCategorizedSymbolRendererWidget.setSymbolLevels: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L191
 QgsCategorizedSymbolRendererWidget.showSymbolLevels: src/gui/symbology/qgscategorizedsymbolrendererwidget.h#L170
@@ -1214,7 +1234,6 @@ QgsCategoryDisplayLabelDelegate.QgsCategoryDisplayLabelDelegate: src/gui/qgsmapl
 QgsCategoryDisplayLabelDelegate.drawDisplay: src/gui/qgsmaplayerstylecategoriesmodel.h#L88
 QgsCategoryDisplayLabelDelegate.sizeHint: src/gui/qgsmaplayerstylecategoriesmodel.h#L90
 QgsCategoryDisplayLabelDelegate: src/gui/qgsmaplayerstylecategoriesmodel.h#L79
-QgsCentroidFillSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L1273
 QgsCentroidFillSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L1276
 QgsCentroidFillSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L1277
 QgsCentroidFillSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L1256
@@ -1749,8 +1768,6 @@ QgsCompoundColorWidget: src/gui/qgscompoundcolorwidget.h#L34
 QgsConfigureShortcutsDialog.keyPressEvent: src/gui/qgsconfigureshortcutsdialog.h#L50
 QgsConfigureShortcutsDialog.keyReleaseEvent: src/gui/qgsconfigureshortcutsdialog.h#L51
 QgsConfigureShortcutsDialog: src/gui/qgsconfigureshortcutsdialog.h#L35
-QgsCoordinateBoundsPreviewMapWidget.canvasRect: src/gui/proj/qgscoordinateboundspreviewmapwidget.h#L53
-QgsCoordinateBoundsPreviewMapWidget.setCanvasRect: src/gui/proj/qgscoordinateboundspreviewmapwidget.h#L47
 QgsCoordinateBoundsPreviewMapWidget.setPreviewRect: src/gui/proj/qgscoordinateboundspreviewmapwidget.h#L59
 QgsCoordinateBoundsPreviewMapWidget: src/gui/proj/qgscoordinateboundspreviewmapwidget.h#L28
 QgsCoordinateOperationWidget.defaultOperation: src/gui/proj/qgscoordinateoperationwidget.h#L125
@@ -1795,7 +1812,6 @@ QgsCptCityColorRampDialog.buttonBox: src/gui/symbology/qgscptcitycolorrampdialog
 QgsCptCityColorRampDialog.changed: src/gui/symbology/qgscptcitycolorrampdialog.h#L92
 QgsCptCityColorRampDialog.eventFilter: src/gui/symbology/qgscptcitycolorrampdialog.h#L87
 QgsCptCityColorRampDialog.ramp: src/gui/symbology/qgscptcitycolorrampdialog.h#L59
-QgsCptCityColorRampDialog.saveAsGradientRamp: src/gui/symbology/qgscptcitycolorrampdialog.h#L79
 QgsCptCityColorRampDialog.selectedName: src/gui/symbology/qgscptcitycolorrampdialog.h#L74
 QgsCptCityColorRampDialog.setRamp: src/gui/symbology/qgscptcitycolorrampdialog.h#L66
 QgsCptCityColorRampDialog: src/gui/symbology/qgscptcitycolorrampdialog.h#L41
@@ -1867,29 +1883,16 @@ QgsDashSpaceDialog: src/gui/symbology/qgsdashspacedialog.h#L60
 QgsDashSpaceWidget.setUnit: src/gui/symbology/qgsdashspacedialog.h#L48
 QgsDashSpaceWidget: src/gui/symbology/qgsdashspacedialog.h#L33
 QgsDataDefinedRotationDialog.setDataDefined: src/gui/symbology/qgsrendererwidget.h#L320
-QgsDataDefinedRotationDialog.symbolDataDefined: src/gui/symbology/qgsrendererwidget.h#L316
-QgsDataDefinedRotationDialog.value: src/gui/symbology/qgsrendererwidget.h#L318
-QgsDataDefinedRotationDialog: src/gui/symbology/qgsrendererwidget.h#L309
 QgsDataDefinedSizeDialog.setDataDefined: src/gui/symbology/qgsrendererwidget.h#L298
 QgsDataDefinedSizeDialog.symbolDataDefined: src/gui/symbology/qgsrendererwidget.h#L294
-QgsDataDefinedSizeDialog.value: src/gui/symbology/qgsrendererwidget.h#L296
-QgsDataDefinedSizeDialog: src/gui/symbology/qgsrendererwidget.h#L287
 QgsDataDefinedSizeLegendWidget.QgsDataDefinedSizeLegendWidget: src/gui/symbology/qgsdatadefinedsizelegendwidget.h#L57
 QgsDataDefinedSizeLegendWidget.dataDefinedSizeLegend: src/gui/symbology/qgsdatadefinedsizelegendwidget.h#L61
 QgsDataDefinedSizeLegendWidget: src/gui/symbology/qgsdatadefinedsizelegendwidget.h#L46
 QgsDataDefinedValueDialog.context: src/gui/symbology/qgsrendererwidget.h#L249
-QgsDataDefinedValueDialog.dataDefinedChanged: src/gui/symbology/qgsrendererwidget.h#L257
-QgsDataDefinedValueDialog.init: src/gui/symbology/qgsrendererwidget.h#L266
-QgsDataDefinedValueDialog.setContext: src/gui/symbology/qgsrendererwidget.h#L243
 QgsDataDefinedValueDialog.setDataDefined: src/gui/symbology/qgsrendererwidget.h#L273
-QgsDataDefinedValueDialog.symbolDataDefined: src/gui/symbology/qgsrendererwidget.h#L269
-QgsDataDefinedValueDialog.symbolDataDefined: src/gui/symbology/qgsrendererwidget.h#L271
-QgsDataDefinedValueDialog.value: src/gui/symbology/qgsrendererwidget.h#L272
 QgsDataDefinedValueDialog.vectorLayer: src/gui/symbology/qgsrendererwidget.h#L254
 QgsDataDefinedValueDialog: src/gui/symbology/qgsrendererwidget.h#L223
-QgsDataDefinedWidthDialog.setDataDefined: src/gui/symbology/qgsrendererwidget.h#L338
 QgsDataDefinedWidthDialog.symbolDataDefined: src/gui/symbology/qgsrendererwidget.h#L334
-QgsDataDefinedWidthDialog.value: src/gui/symbology/qgsrendererwidget.h#L336
 QgsDataDefinedWidthDialog: src/gui/symbology/qgsrendererwidget.h#L327
 QgsDataItemGuiContext.messageBar: src/gui/qgsdataitemguiprovider.h#L54
 QgsDataItemGuiContext.setMessageBar: src/gui/qgsdataitemguiprovider.h#L63
@@ -2916,7 +2919,6 @@ QgsFileWidget.useLink: src/gui/qgsfilewidget.h#L218
 QgsFileWidget: src/gui/qgsfilewidget.h#L38
 QgsFilledLineSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L939
 QgsFilledLineSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L941
-QgsFilledLineSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L942
 QgsFilledLineSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L920
 QgsFilledMarkerSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L321
 QgsFilledMarkerSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L324
@@ -3019,11 +3021,7 @@ QgsFontMarkerSymbolLayerWidget.setCharacter: src/gui/symbology/qgssymbollayerwid
 QgsFontMarkerSymbolLayerWidget.setCharacterFromText: src/gui/symbology/qgssymbollayerwidget.h#L1208
 QgsFontMarkerSymbolLayerWidget.setColor: src/gui/symbology/qgssymbollayerwidget.h#L1188
 QgsFontMarkerSymbolLayerWidget.setColorStroke: src/gui/symbology/qgssymbollayerwidget.h#L1193
-QgsFontMarkerSymbolLayerWidget.setFontFamily: src/gui/symbology/qgssymbollayerwidget.h#L1187
 QgsFontMarkerSymbolLayerWidget.setSize: src/gui/symbology/qgssymbollayerwidget.h#L1194
-QgsFontMarkerSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L1183
-QgsFontMarkerSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L1184
-QgsFontMarkerSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L1162
 QgsFormAnnotation.clone: src/gui/qgsformannotation.h#L42
 QgsFormAnnotation.create: src/gui/qgsformannotation.h#L68
 QgsFormAnnotation.designerForm: src/gui/qgsformannotation.h#L58
@@ -3150,7 +3148,6 @@ QgsGeographicCoordinateNumericFormatDialog: src/gui/numericformats/qgsnumericfor
 QgsGeographicCoordinateNumericFormatWidget.format: src/gui/numericformats/qgsnumericformatwidget.h#L205
 QgsGeographicCoordinateNumericFormatWidget.setFormat: src/gui/numericformats/qgsnumericformatwidget.h#L203
 QgsGeographicCoordinateNumericFormatWidget: src/gui/numericformats/qgsnumericformatwidget.h#L191
-QgsGeometryGeneratorSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L1360
 QgsGeometryGeneratorSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L1363
 QgsGeometryGeneratorSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L1364
 QgsGeometryGeneratorSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L1344
@@ -3196,7 +3193,6 @@ QgsGradientFillSymbolLayerWidget.setColor2: src/gui/symbology/qgssymbollayerwidg
 QgsGradientFillSymbolLayerWidget.setColor: src/gui/symbology/qgssymbollayerwidget.h#L381
 QgsGradientFillSymbolLayerWidget.setCoordinateMode: src/gui/symbology/qgssymbollayerwidget.h#L389
 QgsGradientFillSymbolLayerWidget.setGradientSpread: src/gui/symbology/qgssymbollayerwidget.h#L390
-QgsGradientFillSymbolLayerWidget.setGradientType: src/gui/symbology/qgssymbollayerwidget.h#L388
 QgsGradientFillSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L377
 QgsGradientFillSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L378
 QgsGradientFillSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L357
@@ -3234,7 +3230,6 @@ QgsGraduatedSymbolRendererWidget.changeRange: src/gui/symbology/qgsgraduatedsymb
 QgsGraduatedSymbolRendererWidget.changeRangeSymbol: src/gui/symbology/qgsgraduatedsymbolrendererwidget.h#L170
 QgsGraduatedSymbolRendererWidget.changeSelectedSymbols: src/gui/symbology/qgsgraduatedsymbolrendererwidget.h#L173
 QgsGraduatedSymbolRendererWidget.classifyGraduated: src/gui/symbology/qgsgraduatedsymbolrendererwidget.h#L112
-QgsGraduatedSymbolRendererWidget.connectUpdateHandlers: src/gui/symbology/qgsgraduatedsymbolrendererwidget.h#L162
 QgsGraduatedSymbolRendererWidget.create: src/gui/symbology/qgsgraduatedsymbolrendererwidget.h#L100
 QgsGraduatedSymbolRendererWidget.createExpressionContext: src/gui/symbology/qgsgraduatedsymbolrendererwidget.h#L108
 QgsGraduatedSymbolRendererWidget.deleteAllClasses: src/gui/symbology/qgsgraduatedsymbolrendererwidget.h#L124
@@ -3257,7 +3252,6 @@ QgsGraduatedSymbolRendererWidget.rowsMoved: src/gui/symbology/qgsgraduatedsymbol
 QgsGraduatedSymbolRendererWidget.rowsOrdered: src/gui/symbology/qgsgraduatedsymbolrendererwidget.h#L164
 QgsGraduatedSymbolRendererWidget.selectedRanges: src/gui/symbology/qgsgraduatedsymbolrendererwidget.h#L168
 QgsGraduatedSymbolRendererWidget.setContext: src/gui/symbology/qgsgraduatedsymbolrendererwidget.h#L106
-QgsGraduatedSymbolRendererWidget.setSymbolLevels: src/gui/symbology/qgsgraduatedsymbolrendererwidget.h#L143
 QgsGraduatedSymbolRendererWidget.showSymbolLevels: src/gui/symbology/qgsgraduatedsymbolrendererwidget.h#L130
 QgsGraduatedSymbolRendererWidget.toggleBoundariesLink: src/gui/symbology/qgsgraduatedsymbolrendererwidget.h#L126
 QgsGraduatedSymbolRendererWidget.updateUiFromRenderer: src/gui/symbology/qgsgraduatedsymbolrendererwidget.h#L161
@@ -3309,16 +3303,10 @@ QgsGui.sourceWidgetProviderRegistry: src/gui/qgsgui.h#L211
 QgsGui.subsetStringEditorProviderRegistry: src/gui/qgsgui.h#L205
 QgsGui.windowManager: src/gui/qgsgui.h#L249
 QgsGui: src/gui/qgsgui.h#L63
-QgsHashedLineSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L539
-QgsHashedLineSymbolLayerWidget.setContext: src/gui/symbology/qgssymbollayerwidget.h#L544
 QgsHashedLineSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L542
 QgsHashedLineSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L543
-QgsHashedLineSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L522
 QgsHeatmapRendererWidget.create: src/gui/symbology/qgsheatmaprendererwidget.h#L42
 QgsHeatmapRendererWidget.createExpressionContext: src/gui/symbology/qgsheatmaprendererwidget.h#L55
-QgsHeatmapRendererWidget.renderer: src/gui/symbology/qgsheatmaprendererwidget.h#L53
-QgsHeatmapRendererWidget.setContext: src/gui/symbology/qgsheatmaprendererwidget.h#L54
-QgsHeatmapRendererWidget: src/gui/symbology/qgsheatmaprendererwidget.h#L30
 QgsHelp.helpUrl: src/gui/qgshelp.h#L59
 QgsHelp.openHelp: src/gui/qgshelp.h#L52
 QgsHelp: src/gui/qgshelp.h#L43
@@ -4102,10 +4090,7 @@ QgsLinePatternFillSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidg
 QgsLinePatternFillSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L1038
 QgsLinePatternFillSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L1039
 QgsLinePatternFillSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L1019
-QgsLinearReferencingSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L1319
 QgsLinearReferencingSymbolLayerWidget.setContext: src/gui/symbology/qgssymbollayerwidget.h#L1323
-QgsLinearReferencingSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L1321
-QgsLinearReferencingSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L1322
 QgsLinearReferencingSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L1302
 QgsLineburstSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L895
 QgsLineburstSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L898
@@ -4684,11 +4669,9 @@ QgsMapUnitScaleWidget.setMapCanvas: src/gui/qgsunitselectionwidget.h#L78
 QgsMapUnitScaleWidget.setMapUnitScale: src/gui/qgsunitselectionwidget.h#L71
 QgsMapUnitScaleWidget: src/gui/qgsunitselectionwidget.h#L43
 QgsMarkerLineSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L483
-QgsMarkerLineSymbolLayerWidget.setContext: src/gui/symbology/qgssymbollayerwidget.h#L488
 QgsMarkerLineSymbolLayerWidget.setInterval: src/gui/symbology/qgssymbollayerwidget.h#L492
 QgsMarkerLineSymbolLayerWidget.setOffsetAlongLine: src/gui/symbology/qgssymbollayerwidget.h#L493
 QgsMarkerLineSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L486
-QgsMarkerLineSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L487
 QgsMarkerLineSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L466
 QgsMaskMarkerSymbolLayerWidget.create: src/gui/symbology/qgsmasksymbollayerwidget.h#L49
 QgsMaskMarkerSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgsmasksymbollayerwidget.h#L52
@@ -4791,9 +4774,6 @@ QgsMetadataWidget.setTitle: src/gui/qgsmetadatawidget.h#L179
 QgsMetadataWidget.title: src/gui/qgsmetadatawidget.h#L167
 QgsMetadataWidget.titleChanged: src/gui/qgsmetadatawidget.h#L191
 QgsMetadataWidget: src/gui/qgsmetadatawidget.h#L40
-QgsModelArrowItem.paint: src/gui/processing/models/qgsmodelarrowitem.h#L81
-QgsModelArrowItem.setPenStyle: src/gui/processing/models/qgsmodelarrowitem.h#L86
-QgsModelArrowItem.updatePath: src/gui/processing/models/qgsmodelarrowitem.h#L93
 QgsModelArrowItem: src/gui/processing/models/qgsmodelarrowitem.h#L35
 QgsModelChildAlgorithmGraphicItem.canDeleteComponent: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L461
 QgsModelChildAlgorithmGraphicItem.contextMenuEvent: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L460
@@ -4825,38 +4805,27 @@ QgsModelCommentGraphicItem.strokeStyle: src/gui/processing/models/qgsmodelcompon
 QgsModelCommentGraphicItem.textColor: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L608
 QgsModelCommentGraphicItem.updateStoredComponentPosition: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L610
 QgsModelCommentGraphicItem: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L577
-QgsModelComponentGraphicItem.aboutToChange: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L270
 QgsModelComponentGraphicItem.boundingRect: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L174
-QgsModelComponentGraphicItem.calculateAutomaticLinkPoint: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L224
 QgsModelComponentGraphicItem.calculateAutomaticLinkPoint: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L233
-QgsModelComponentGraphicItem.canDeleteComponent: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L245
 QgsModelComponentGraphicItem.changed: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L276
 QgsModelComponentGraphicItem.component: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L91
 QgsModelComponentGraphicItem.contains: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L175
-QgsModelComponentGraphicItem.deleteComponent: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L252
-QgsModelComponentGraphicItem.editComment: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L240
 QgsModelComponentGraphicItem.editComponent: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L300
 QgsModelComponentGraphicItem.fillColor: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L313
-QgsModelComponentGraphicItem.flags: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L86
 QgsModelComponentGraphicItem.font: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L112
 QgsModelComponentGraphicItem.hoverEnterEvent: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L170
 QgsModelComponentGraphicItem.hoverLeaveEvent: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L172
 QgsModelComponentGraphicItem.hoverMoveEvent: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L171
 QgsModelComponentGraphicItem.iconPicture: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L338
-QgsModelComponentGraphicItem.iconPixmap: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L343
 QgsModelComponentGraphicItem.itemChange: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L173
 QgsModelComponentGraphicItem.itemRect: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L181
 QgsModelComponentGraphicItem.label: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L188
-QgsModelComponentGraphicItem.linkPoint: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L215
 QgsModelComponentGraphicItem.linkPointCount: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L205
 QgsModelComponentGraphicItem.linkPointText: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L210
-QgsModelComponentGraphicItem.model: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L101
 QgsModelComponentGraphicItem.mouseDoubleClickEvent: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L169
 QgsModelComponentGraphicItem.moveComponentBy: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L125
 QgsModelComponentGraphicItem.paint: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L176
 QgsModelComponentGraphicItem.previewItemMove: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L130
-QgsModelComponentGraphicItem.repaintArrows: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L281
-QgsModelComponentGraphicItem.requestModelRepaint: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L261
 QgsModelComponentGraphicItem.setFont: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L118
 QgsModelComponentGraphicItem.setItemRect: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L135
 QgsModelComponentGraphicItem.setLabel: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L195
@@ -4873,28 +4842,19 @@ QgsModelComponentGraphicItem.updateStoredComponentPosition: src/gui/processing/m
 QgsModelComponentGraphicItem.view: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L106
 QgsModelComponentGraphicItem: src/gui/processing/models/qgsmodelcomponentgraphicitem.h#L47
 QgsModelDesignerDialog.actionOpen: src/gui/processing/models/qgsmodeldesignerdialog.h#L134
-QgsModelDesignerDialog.actionRun: src/gui/processing/models/qgsmodeldesignerdialog.h#L136
-QgsModelDesignerDialog.actionSaveInProject: src/gui/processing/models/qgsmodeldesignerdialog.h#L135
 QgsModelDesignerDialog.activate: src/gui/processing/models/qgsmodeldesignerdialog.h#L117
 QgsModelDesignerDialog.addAlgorithm: src/gui/processing/models/qgsmodeldesignerdialog.h#L123
-QgsModelDesignerDialog.addInput: src/gui/processing/models/qgsmodeldesignerdialog.h#L125
 QgsModelDesignerDialog.beginUndoCommand: src/gui/processing/models/qgsmodeldesignerdialog.h#L70
-QgsModelDesignerDialog.checkForUnsavedChanges: src/gui/processing/models/qgsmodeldesignerdialog.h#L152
 QgsModelDesignerDialog.closeEvent: src/gui/processing/models/qgsmodeldesignerdialog.h#L65
 QgsModelDesignerDialog.createExecutionDialog: src/gui/processing/models/qgsmodeldesignerdialog.h#L131
-QgsModelDesignerDialog.endUndoCommand: src/gui/processing/models/qgsmodeldesignerdialog.h#L75
-QgsModelDesignerDialog.exportAsScriptAlgorithm: src/gui/processing/models/qgsmodeldesignerdialog.h#L127
 QgsModelDesignerDialog.loadModel: src/gui/processing/models/qgsmodeldesignerdialog.h#L92
 QgsModelDesignerDialog.messageBar: src/gui/processing/models/qgsmodeldesignerdialog.h#L137
 QgsModelDesignerDialog.model: src/gui/processing/models/qgsmodeldesignerdialog.h#L80
 QgsModelDesignerDialog.repaintModel: src/gui/processing/models/qgsmodeldesignerdialog.h#L122
 QgsModelDesignerDialog.saveModel: src/gui/processing/models/qgsmodeldesignerdialog.h#L129
-QgsModelDesignerDialog.setDirty: src/gui/processing/models/qgsmodeldesignerdialog.h#L140
 QgsModelDesignerDialog.setLastRunResult: src/gui/processing/models/qgsmodeldesignerdialog.h#L157
 QgsModelDesignerDialog.setModel: src/gui/processing/models/qgsmodeldesignerdialog.h#L87
-QgsModelDesignerDialog.setModelName: src/gui/processing/models/qgsmodeldesignerdialog.h#L166
 QgsModelDesignerDialog.setModelScene: src/gui/processing/models/qgsmodeldesignerdialog.h#L97
-QgsModelDesignerDialog.toolbar: src/gui/processing/models/qgsmodeldesignerdialog.h#L133
 QgsModelDesignerDialog.validateSave: src/gui/processing/models/qgsmodeldesignerdialog.h#L145
 QgsModelDesignerDialog.view: src/gui/processing/models/qgsmodeldesignerdialog.h#L138
 QgsModelDesignerDialog: src/gui/processing/models/qgsmodeldesignerdialog.h#L57
@@ -4914,8 +4874,6 @@ QgsModelDesignerFoldButtonGraphicItem: src/gui/processing/models/qgsmodelgraphic
 QgsModelGraphicsScene.componentAboutToChange: src/gui/processing/models/qgsmodelgraphicsscene.h#L177
 QgsModelGraphicsScene.componentChanged: src/gui/processing/models/qgsmodelgraphicsscene.h#L182
 QgsModelGraphicsScene.componentItemAt: src/gui/processing/models/qgsmodelgraphicsscene.h#L115
-QgsModelGraphicsScene.createChildAlgGraphicItem: src/gui/processing/models/qgsmodelgraphicsscene.h#L228
-QgsModelGraphicsScene.createCommentGraphicItem: src/gui/processing/models/qgsmodelgraphicsscene.h#L238
 QgsModelGraphicsScene.createGroupBoxGraphicItem: src/gui/processing/models/qgsmodelgraphicsscene.h#L244
 QgsModelGraphicsScene.createItems: src/gui/processing/models/qgsmodelgraphicsscene.h#L105
 QgsModelGraphicsScene.createOutputGraphicItem: src/gui/processing/models/qgsmodelgraphicsscene.h#L233
@@ -4942,12 +4900,9 @@ QgsModelGraphicsScene.showChildAlgorithmOutputs: src/gui/processing/models/qgsmo
 QgsModelGraphicsScene.showWarning: src/gui/processing/models/qgsmodelgraphicsscene.h#L162
 QgsModelGraphicsScene: src/gui/processing/models/qgsmodelgraphicsscene.h#L43
 QgsModelGraphicsView.algorithmDropped: src/gui/processing/models/qgsmodelgraphicsview.h#L163
-QgsModelGraphicsView.beginCommand: src/gui/processing/models/qgsmodelgraphicsview.h#L201
 QgsModelGraphicsView.copyItems: src/gui/processing/models/qgsmodelgraphicsview.h#L133
 QgsModelGraphicsView.copySelectedItems: src/gui/processing/models/qgsmodelgraphicsview.h#L126
 QgsModelGraphicsView.deleteSelectedItems: src/gui/processing/models/qgsmodelgraphicsview.h#L211
-QgsModelGraphicsView.dragEnterEvent: src/gui/processing/models/qgsmodelgraphicsview.h#L54
-QgsModelGraphicsView.dragMoveEvent: src/gui/processing/models/qgsmodelgraphicsview.h#L56
 QgsModelGraphicsView.dropEvent: src/gui/processing/models/qgsmodelgraphicsview.h#L55
 QgsModelGraphicsView.endCommand: src/gui/processing/models/qgsmodelgraphicsview.h#L206
 QgsModelGraphicsView.endMacroCommand: src/gui/processing/models/qgsmodelgraphicsview.h#L111
@@ -5619,12 +5574,7 @@ QgsProcessingGuiRegistry.createParameterWidgetWrapper: src/gui/processing/qgspro
 QgsProcessingGuiRegistry.removeAlgorithmConfigurationWidgetFactory: src/gui/processing/qgsprocessingguiregistry.h#L69
 QgsProcessingGuiRegistry.removeParameterWidgetFactory: src/gui/processing/qgsprocessingguiregistry.h#L105
 QgsProcessingGuiRegistry: src/gui/processing/qgsprocessingguiregistry.h#L44
-QgsProcessingHiddenWidgetWrapper.createLabel: src/gui/processing/qgsprocessingwidgetwrapper.h#L707
-QgsProcessingHiddenWidgetWrapper.createWidget: src/gui/processing/qgsprocessingwidgetwrapper.h#L706
-QgsProcessingHiddenWidgetWrapper.linkedVectorLayer: src/gui/processing/qgsprocessingwidgetwrapper.h#L698
 QgsProcessingHiddenWidgetWrapper.setLinkedVectorLayer: src/gui/processing/qgsprocessingwidgetwrapper.h#L703
-QgsProcessingHiddenWidgetWrapper.setWidgetValue: src/gui/processing/qgsprocessingwidgetwrapper.h#L695
-QgsProcessingHiddenWidgetWrapper.widgetValue: src/gui/processing/qgsprocessingwidgetwrapper.h#L696
 QgsProcessingHiddenWidgetWrapper: src/gui/processing/qgsprocessingwidgetwrapper.h#L682
 QgsProcessingHistoryDialog: src/gui/processing/qgsprocessinghistorywidget.h#L74
 QgsProcessingHistoryProvider.createNodeForEntry: src/gui/processing/qgsprocessinghistoryprovider.h#L47
@@ -5651,7 +5601,6 @@ QgsProcessingLayerOutputDestinationWidget.setValue: src/gui/processing/qgsproces
 QgsProcessingLayerOutputDestinationWidget.setWidgetContext: src/gui/processing/qgsprocessingoutputdestinationwidget.h#L68
 QgsProcessingLayerOutputDestinationWidget.skipOutputChanged: src/gui/processing/qgsprocessingoutputdestinationwidget.h#L98
 QgsProcessingLayerOutputDestinationWidget.value: src/gui/processing/qgsprocessingoutputdestinationwidget.h#L61
-QgsProcessingLayerOutputDestinationWidget: src/gui/processing/qgsprocessingoutputdestinationwidget.h#L37
 QgsProcessingMapLayerComboBox.currentLayer: src/gui/processing/qgsprocessingmaplayercombobox.h#L70
 QgsProcessingMapLayerComboBox.currentText: src/gui/processing/qgsprocessingmaplayercombobox.h#L80
 QgsProcessingMapLayerComboBox.dragEnterEvent: src/gui/processing/qgsprocessingmaplayercombobox.h#L127
@@ -5682,7 +5631,6 @@ QgsProcessingModelerParameterWidget.setWidgetValue: src/gui/processing/qgsproces
 QgsProcessingModelerParameterWidget.value: src/gui/processing/qgsprocessingmodelerparameterwidget.h#L185
 QgsProcessingModelerParameterWidget: src/gui/processing/qgsprocessingmodelerparameterwidget.h#L61
 QgsProcessingMultipleInputDialog.selectedOptions: src/gui/processing/qgsprocessingmultipleselectiondialog.h#L313
-QgsProcessingMultipleInputDialog.setProject: src/gui/processing/qgsprocessingmultipleselectiondialog.h#L318
 QgsProcessingMultipleInputDialog: src/gui/processing/qgsprocessingmultipleselectiondialog.h#L292
 QgsProcessingMultipleInputPanelWidget.compatibleUrisFromMimeData: src/gui/processing/qgsprocessingmultipleselectiondialog.h#L259
 QgsProcessingMultipleInputPanelWidget.dragEnterEvent: src/gui/processing/qgsprocessingmultipleselectiondialog.h#L270
@@ -5730,12 +5678,9 @@ QgsProcessingParameterWidgetContext.setModelChildAlgorithmId: src/gui/processing
 QgsProcessingParameterWidgetContext.setProject: src/gui/processing/qgsprocessingwidgetwrapper.h#L169
 QgsProcessingParameterWidgetContext: src/gui/processing/qgsprocessingwidgetwrapper.h#L114
 QgsProcessingParameterWidgetFactoryInterface.compatibleOutputTypes: src/gui/processing/qgsprocessingwidgetwrapper.h#L632
-QgsProcessingParameterWidgetFactoryInterface.compatibleParameterTypes: src/gui/processing/qgsprocessingwidgetwrapper.h#L616
-QgsProcessingParameterWidgetFactoryInterface.createModelerWidgetWrapper: src/gui/processing/qgsprocessingwidgetwrapper.h#L565
 QgsProcessingParameterWidgetFactoryInterface.createParameterDefinitionWidget: src/gui/processing/qgsprocessingwidgetwrapper.h#L594
 QgsProcessingParameterWidgetFactoryInterface.createWidgetWrapper: src/gui/processing/qgsprocessingwidgetwrapper.h#L547
 QgsProcessingParameterWidgetFactoryInterface.defaultModelSource: src/gui/processing/qgsprocessingwidgetwrapper.h#L666
-QgsProcessingParameterWidgetFactoryInterface.modelerExpressionFormatString: src/gui/processing/qgsprocessingwidgetwrapper.h#L659
 QgsProcessingParameterWidgetFactoryInterface.parameterType: src/gui/processing/qgsprocessingwidgetwrapper.h#L538
 QgsProcessingParameterWidgetFactoryInterface: src/gui/processing/qgsprocessingwidgetwrapper.h#L528
 QgsProcessingParametersGenerator.createProcessingParameters: src/gui/processing/qgsprocessingwidgetwrapper.h#L97
@@ -5753,12 +5698,8 @@ QgsProcessingRecentAlgorithmLog.push: src/gui/processing/qgsprocessingrecentalgo
 QgsProcessingRecentAlgorithmLog.recentAlgorithmIds: src/gui/processing/qgsprocessingrecentalgorithmlog.h#L52
 QgsProcessingRecentAlgorithmLog: src/gui/processing/qgsprocessingrecentalgorithmlog.h#L36
 QgsProcessingToolboxModel.algorithmForIndex: src/gui/processing/qgsprocessingtoolboxmodel.h#L386
-QgsProcessingToolboxModel.columnCount: src/gui/processing/qgsprocessingtoolboxmodel.h#L344
-QgsProcessingToolboxModel.data: src/gui/processing/qgsprocessingtoolboxmodel.h#L342
 QgsProcessingToolboxModel.favoriteAlgorithmAdded: src/gui/processing/qgsprocessingtoolboxmodel.h#L416
-QgsProcessingToolboxModel.flags: src/gui/processing/qgsprocessingtoolboxmodel.h#L341
 QgsProcessingToolboxModel.index2node: src/gui/processing/qgsprocessingtoolboxmodel.h#L353
-QgsProcessingToolboxModel.index: src/gui/processing/qgsprocessingtoolboxmodel.h#L345
 QgsProcessingToolboxModel.indexForProvider: src/gui/processing/qgsprocessingtoolboxmodel.h#L399
 QgsProcessingToolboxModel.indexOfParentTreeNode: src/gui/processing/qgsprocessingtoolboxmodel.h#L404
 QgsProcessingToolboxModel.isAlgorithm: src/gui/processing/qgsprocessingtoolboxmodel.h#L393
@@ -5768,15 +5709,11 @@ QgsProcessingToolboxModel.parent: src/gui/processing/qgsprocessingtoolboxmodel.h
 QgsProcessingToolboxModel.providerForIndex: src/gui/processing/qgsprocessingtoolboxmodel.h#L368
 QgsProcessingToolboxModel.providerIdForIndex: src/gui/processing/qgsprocessingtoolboxmodel.h#L377
 QgsProcessingToolboxModel.recentAlgorithmAdded: src/gui/processing/qgsprocessingtoolboxmodel.h#L411
-QgsProcessingToolboxModel.rowCount: src/gui/processing/qgsprocessingtoolboxmodel.h#L343
 QgsProcessingToolboxModel: src/gui/processing/qgsprocessingtoolboxmodel.h#L296
 QgsProcessingToolboxModelAlgorithmNode.algorithm: src/gui/processing/qgsprocessingtoolboxmodel.h#L277
-QgsProcessingToolboxModelAlgorithmNode.nodeType: src/gui/processing/qgsprocessingtoolboxmodel.h#L272
-QgsProcessingToolboxModelAlgorithmNode: src/gui/processing/qgsprocessingtoolboxmodel.h#L260
 QgsProcessingToolboxModelFavoriteNode.nodeType: src/gui/processing/qgsprocessingtoolboxmodel.h#L169
 QgsProcessingToolboxModelFavoriteNode: src/gui/processing/qgsprocessingtoolboxmodel.h#L161
 QgsProcessingToolboxModelGroupNode.id: src/gui/processing/qgsprocessingtoolboxmodel.h#L241
-QgsProcessingToolboxModelGroupNode.name: src/gui/processing/qgsprocessingtoolboxmodel.h#L246
 QgsProcessingToolboxModelGroupNode.nodeType: src/gui/processing/qgsprocessingtoolboxmodel.h#L236
 QgsProcessingToolboxModelGroupNode: src/gui/processing/qgsprocessingtoolboxmodel.h#L221
 QgsProcessingToolboxModelNode.addChildNode: src/gui/processing/qgsprocessingtoolboxmodel.h#L123
@@ -5803,10 +5740,8 @@ QgsProcessingToolboxProxyModel.setFilters: src/gui/processing/qgsprocessingtoolb
 QgsProcessingToolboxProxyModel.setInPlaceLayer: src/gui/processing/qgsprocessingtoolboxmodel.h#L526
 QgsProcessingToolboxProxyModel.toolboxModel: src/gui/processing/qgsprocessingtoolboxmodel.h#L503
 QgsProcessingToolboxProxyModel: src/gui/processing/qgsprocessingtoolboxmodel.h#L460
-QgsProcessingToolboxTreeView.algorithmForIndex: src/gui/processing/qgsprocessingtoolboxtreeview.h#L84
 QgsProcessingToolboxTreeView.filters: src/gui/processing/qgsprocessingtoolboxtreeview.h#L103
 QgsProcessingToolboxTreeView.keyPressEvent: src/gui/processing/qgsprocessingtoolboxtreeview.h#L120
-QgsProcessingToolboxTreeView.selectedAlgorithm: src/gui/processing/qgsprocessingtoolboxtreeview.h#L90
 QgsProcessingToolboxTreeView.setFilterString: src/gui/processing/qgsprocessingtoolboxtreeview.h#L116
 QgsProcessingToolboxTreeView.setFilters: src/gui/processing/qgsprocessingtoolboxtreeview.h#L96
 QgsProcessingToolboxTreeView.setInPlaceLayer: src/gui/processing/qgsprocessingtoolboxtreeview.h#L108
@@ -5848,7 +5783,6 @@ QgsProjectionSelectionTreeWidget.initialized: src/gui/proj/qgsprojectionselectio
 QgsProjectionSelectionTreeWidget.previewRect: src/gui/proj/qgsprojectionselectiontreewidget.h#L143
 QgsProjectionSelectionTreeWidget.projectionDoubleClicked: src/gui/proj/qgsprojectionselectiontreewidget.h#L216
 QgsProjectionSelectionTreeWidget.pushProjectionToFront: src/gui/proj/qgsprojectionselectiontreewidget.h#L191
-QgsProjectionSelectionTreeWidget.resizeEvent: src/gui/proj/qgsprojectionselectiontreewidget.h#L228
 QgsProjectionSelectionTreeWidget.setCrs: src/gui/proj/qgsprojectionselectiontreewidget.h#L167
 QgsProjectionSelectionTreeWidget.setFilters: src/gui/proj/qgsprojectionselectiontreewidget.h#L159
 QgsProjectionSelectionTreeWidget.setNotSetText: src/gui/proj/qgsprojectionselectiontreewidget.h#L123
@@ -5859,7 +5793,6 @@ QgsProjectionSelectionTreeWidget.setShowNoProjection: src/gui/proj/qgsprojection
 QgsProjectionSelectionTreeWidget.showBoundsMap: src/gui/proj/qgsprojectionselectiontreewidget.h#L129
 QgsProjectionSelectionTreeWidget.showNoProjection: src/gui/proj/qgsprojectionselectiontreewidget.h#L116
 QgsProjectionSelectionTreeWidget: src/gui/proj/qgsprojectionselectiontreewidget.h#L74
-QgsProjectionSelectionWidget.QgsProjectionSelectionWidget: src/gui/proj/qgsprojectionselectionwidget.h#L77
 QgsProjectionSelectionWidget.cleared: src/gui/proj/qgsprojectionselectionwidget.h#L208
 QgsProjectionSelectionWidget.crs: src/gui/proj/qgsprojectionselectionwidget.h#L84
 QgsProjectionSelectionWidget.crsChanged: src/gui/proj/qgsprojectionselectionwidget.h#L203
@@ -6042,8 +5975,6 @@ QgsRangeSlider: src/gui/qgsrangeslider.h#L31
 QgsRasterAttributeTableDialog.reject: src/gui/raster/qgsrasterattributetabledialog.h#L46
 QgsRasterAttributeTableDialog: src/gui/raster/qgsrasterattributetabledialog.h#L32
 QgsRasterAttributeTableModel.QgsRasterAttributeTableModel: src/gui/raster/qgsrasterattributetablemodel.h#L40
-QgsRasterAttributeTableModel.columnCount: src/gui/raster/qgsrasterattributetablemodel.h#L150
-QgsRasterAttributeTableModel.data: src/gui/raster/qgsrasterattributetablemodel.h#L151
 QgsRasterAttributeTableModel.editable: src/gui/raster/qgsrasterattributetablemodel.h#L45
 QgsRasterAttributeTableModel.flags: src/gui/raster/qgsrasterattributetablemodel.h#L154
 QgsRasterAttributeTableModel.hasColor: src/gui/raster/qgsrasterattributetablemodel.h#L55
@@ -6054,7 +5985,6 @@ QgsRasterAttributeTableModel.headerTooltip: src/gui/raster/qgsrasterattributetab
 QgsRasterAttributeTableModel.insertColor: src/gui/raster/qgsrasterattributetablemodel.h#L125
 QgsRasterAttributeTableModel.insertField: src/gui/raster/qgsrasterattributetablemodel.h#L105
 QgsRasterAttributeTableModel.insertField: src/gui/raster/qgsrasterattributetablemodel.h#L93
-QgsRasterAttributeTableModel.insertRamp: src/gui/raster/qgsrasterattributetablemodel.h#L130
 QgsRasterAttributeTableModel.insertRow: src/gui/raster/qgsrasterattributetablemodel.h#L120
 QgsRasterAttributeTableModel.isDirty: src/gui/raster/qgsrasterattributetablemodel.h#L80
 QgsRasterAttributeTableModel.isValid: src/gui/raster/qgsrasterattributetablemodel.h#L75
@@ -6062,7 +5992,6 @@ QgsRasterAttributeTableModel.removeColorOrRamp: src/gui/raster/qgsrasterattribut
 QgsRasterAttributeTableModel.removeField: src/gui/raster/qgsrasterattributetablemodel.h#L110
 QgsRasterAttributeTableModel.removeRow: src/gui/raster/qgsrasterattributetablemodel.h#L135
 QgsRasterAttributeTableModel.rowCount: src/gui/raster/qgsrasterattributetablemodel.h#L149
-QgsRasterAttributeTableModel.setData: src/gui/raster/qgsrasterattributetablemodel.h#L152
 QgsRasterAttributeTableModel.setEditable: src/gui/raster/qgsrasterattributetablemodel.h#L50
 QgsRasterAttributeTableModel: src/gui/raster/qgsrasterattributetablemodel.h#L31
 QgsRasterAttributeTableWidget.QgsRasterAttributeTableWidget: src/gui/raster/qgsrasterattributetablewidget.h#L138
@@ -6075,10 +6004,8 @@ QgsRasterAttributeTableWidget.setMessageBar: src/gui/raster/qgsrasterattributeta
 QgsRasterAttributeTableWidget.setRasterLayer: src/gui/raster/qgsrasterattributetablewidget.h#L145
 QgsRasterAttributeTableWidget: src/gui/raster/qgsrasterattributetablewidget.h#L126
 QgsRasterBandComboBox.bandChanged: src/gui/raster/qgsrasterbandcombobox.h#L97
-QgsRasterBandComboBox.currentBand: src/gui/raster/qgsrasterbandcombobox.h#L56
 QgsRasterBandComboBox.displayBandName: src/gui/raster/qgsrasterbandcombobox.h#L75
 QgsRasterBandComboBox.isShowingNotSetOption: src/gui/raster/qgsrasterbandcombobox.h#L62
-QgsRasterBandComboBox.layer: src/gui/raster/qgsrasterbandcombobox.h#L49
 QgsRasterBandComboBox.setBand: src/gui/raster/qgsrasterbandcombobox.h#L90
 QgsRasterBandComboBox.setLayer: src/gui/raster/qgsrasterbandcombobox.h#L84
 QgsRasterBandComboBox.setShowNotSetOption: src/gui/raster/qgsrasterbandcombobox.h#L70
@@ -6086,10 +6013,7 @@ QgsRasterBandComboBox: src/gui/raster/qgsrasterbandcombobox.h#L33
 QgsRasterContourRendererWidget.create: src/gui/raster/qgsrastercontourrendererwidget.h#L37
 QgsRasterContourRendererWidget.renderer: src/gui/raster/qgsrastercontourrendererwidget.h#L39
 QgsRasterContourRendererWidget: src/gui/raster/qgsrastercontourrendererwidget.h#L29
-QgsRasterFillSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L798
 QgsRasterFillSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L801
-QgsRasterFillSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L802
-QgsRasterFillSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L781
 QgsRasterFormatSaveOptionsWidget.apply: src/gui/qgsrasterformatsaveoptionswidget.h#L102
 QgsRasterFormatSaveOptionsWidget.createOptions: src/gui/qgsrasterformatsaveoptionswidget.h#L158
 QgsRasterFormatSaveOptionsWidget.currentProfileKey: src/gui/qgsrasterformatsaveoptionswidget.h#L157
@@ -6177,10 +6101,7 @@ QgsRasterLineSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerw
 QgsRasterLineSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L853
 QgsRasterLineSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L832
 QgsRasterMarkerSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L682
-QgsRasterMarkerSymbolLayerWidget.setContext: src/gui/symbology/qgssymbollayerwidget.h#L687
 QgsRasterMarkerSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L685
-QgsRasterMarkerSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L686
-QgsRasterMarkerSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L665
 QgsRasterMinMaxWidget.doComputations: src/gui/raster/qgsrasterminmaxwidget.h#L89
 QgsRasterMinMaxWidget.extent: src/gui/raster/qgsrasterminmaxwidget.h#L74
 QgsRasterMinMaxWidget.hideUpdatedExtent: src/gui/raster/qgsrasterminmaxwidget.h#L86
@@ -6424,16 +6345,11 @@ QgsRendererRasterPropertiesWidget.syncToLayer: src/gui/raster/qgsrendererrasterp
 QgsRendererRasterPropertiesWidget: src/gui/raster/qgsrendererrasterpropertieswidget.h#L36
 QgsRendererRulePropsDialog.accept: src/gui/symbology/qgsrulebasedrendererwidget.h#L287
 QgsRendererRulePropsDialog.buildExpression: src/gui/symbology/qgsrulebasedrendererwidget.h#L286
-QgsRendererRulePropsDialog.rule: src/gui/symbology/qgsrulebasedrendererwidget.h#L282
 QgsRendererRulePropsDialog.testFilter: src/gui/symbology/qgsrulebasedrendererwidget.h#L285
-QgsRendererRulePropsDialog: src/gui/symbology/qgsrulebasedrendererwidget.h#L266
 QgsRendererRulePropsWidget.apply: src/gui/symbology/qgsrulebasedrendererwidget.h#L244
-QgsRendererRulePropsWidget.buildExpression: src/gui/symbology/qgsrulebasedrendererwidget.h#L239
 QgsRendererRulePropsWidget.rule: src/gui/symbology/qgsrulebasedrendererwidget.h#L227
 QgsRendererRulePropsWidget.setDockMode: src/gui/symbology/qgsrulebasedrendererwidget.h#L250
 QgsRendererRulePropsWidget.testFilter: src/gui/symbology/qgsrulebasedrendererwidget.h#L234
-QgsRendererRulePropsWidget: src/gui/symbology/qgsrulebasedrendererwidget.h#L203
-QgsRendererWidget.apply: src/gui/symbology/qgsrendererwidget.h#L201
 QgsRendererWidget.applyChanges: src/gui/symbology/qgsrendererwidget.h#L83
 QgsRendererWidget.changeSymbolAngle: src/gui/symbology/qgsrendererwidget.h#L177
 QgsRendererWidget.changeSymbolColor: src/gui/symbology/qgsrendererwidget.h#L167
@@ -6443,12 +6359,9 @@ QgsRendererWidget.changeSymbolUnit: src/gui/symbology/qgsrendererwidget.h#L171
 QgsRendererWidget.changeSymbolWidth: src/gui/symbology/qgsrendererwidget.h#L173
 QgsRendererWidget.context: src/gui/symbology/qgsrendererwidget.h#L73
 QgsRendererWidget.contextMenuViewCategories: src/gui/symbology/qgsrendererwidget.h#L165
-QgsRendererWidget.copy: src/gui/symbology/qgsrendererwidget.h#L180
 QgsRendererWidget.createDataDefinedSizeLegendWidget: src/gui/symbology/qgsrendererwidget.h#L144
 QgsRendererWidget.createExpressionContext: src/gui/symbology/qgsrendererwidget.h#L52
 QgsRendererWidget.layerVariablesChanged: src/gui/symbology/qgsrendererwidget.h#L102
-QgsRendererWidget.paste: src/gui/symbology/qgsrendererwidget.h#L181
-QgsRendererWidget.pasteSymbolToSelection: src/gui/symbology/qgsrendererwidget.h#L188
 QgsRendererWidget.refreshSymbolView: src/gui/symbology/qgsrendererwidget.h#L138
 QgsRendererWidget.registerDataDefinedButton: src/gui/symbology/qgsrendererwidget.h#L162
 QgsRendererWidget.renderer: src/gui/symbology/qgsrendererwidget.h#L55
@@ -6529,25 +6442,16 @@ QgsRuleBasedRendererModel.mimeTypes: src/gui/symbology/qgsrulebasedrendererwidge
 QgsRuleBasedRendererModel.parent: src/gui/symbology/qgsrulebasedrendererwidget.h#L65
 QgsRuleBasedRendererModel.removeRows: src/gui/symbology/qgsrulebasedrendererwidget.h#L76
 QgsRuleBasedRendererModel.removeRule: src/gui/symbology/qgsrulebasedrendererwidget.h#L86
-QgsRuleBasedRendererModel.rowCount: src/gui/symbology/qgsrulebasedrendererwidget.h#L62
 QgsRuleBasedRendererModel.ruleForIndex: src/gui/symbology/qgsrulebasedrendererwidget.h#L80
-QgsRuleBasedRendererModel.setData: src/gui/symbology/qgsrulebasedrendererwidget.h#L68
 QgsRuleBasedRendererModel.setSymbol: src/gui/symbology/qgsrulebasedrendererwidget.h#L94
 QgsRuleBasedRendererModel.supportedDropActions: src/gui/symbology/qgsrulebasedrendererwidget.h#L71
-QgsRuleBasedRendererModel.updateRule: src/gui/symbology/qgsrulebasedrendererwidget.h#L83
 QgsRuleBasedRendererModel.updateRule: src/gui/symbology/qgsrulebasedrendererwidget.h#L85
 QgsRuleBasedRendererModel.willAddRules: src/gui/symbology/qgsrulebasedrendererwidget.h#L96
 QgsRuleBasedRendererModel: src/gui/symbology/qgsrulebasedrendererwidget.h#L47
-QgsRuleBasedRendererWidget.addRule: src/gui/symbology/qgsrulebasedrendererwidget.h#L134
 QgsRuleBasedRendererWidget.clearFeatureCounts: src/gui/symbology/qgsrulebasedrendererwidget.h#L139
-QgsRuleBasedRendererWidget.copy: src/gui/symbology/qgsrulebasedrendererwidget.h#L180
 QgsRuleBasedRendererWidget.countFeatures: src/gui/symbology/qgsrulebasedrendererwidget.h#L138
 QgsRuleBasedRendererWidget.create: src/gui/symbology/qgsrulebasedrendererwidget.h#L124
-QgsRuleBasedRendererWidget.currentRule: src/gui/symbology/qgsrulebasedrendererwidget.h#L163
 QgsRuleBasedRendererWidget.currentRuleChanged: src/gui/symbology/qgsrulebasedrendererwidget.h#L147
-QgsRuleBasedRendererWidget.editRule: src/gui/symbology/qgsrulebasedrendererwidget.h#L135
-QgsRuleBasedRendererWidget.editRule: src/gui/symbology/qgsrulebasedrendererwidget.h#L136
-QgsRuleBasedRendererWidget.keyPressEvent: src/gui/symbology/qgsrulebasedrendererwidget.h#L168
 QgsRuleBasedRendererWidget.paste: src/gui/symbology/qgsrulebasedrendererwidget.h#L181
 QgsRuleBasedRendererWidget.pasteSymbolToSelection: src/gui/symbology/qgsrulebasedrendererwidget.h#L182
 QgsRuleBasedRendererWidget.refineRule: src/gui/symbology/qgsrulebasedrendererwidget.h#L154
@@ -6559,21 +6463,16 @@ QgsRuleBasedRendererWidget.refineRuleScales: src/gui/symbology/qgsrulebasedrende
 QgsRuleBasedRendererWidget.refineRuleScalesGui: src/gui/symbology/qgsrulebasedrendererwidget.h#L159
 QgsRuleBasedRendererWidget.refreshSymbolView: src/gui/symbology/qgsrulebasedrendererwidget.h#L167
 QgsRuleBasedRendererWidget.removeRule: src/gui/symbology/qgsrulebasedrendererwidget.h#L137
-QgsRuleBasedRendererWidget.renderer: src/gui/symbology/qgsrulebasedrendererwidget.h#L129
 QgsRuleBasedRendererWidget.restoreSectionWidths: src/gui/symbology/qgsrulebasedrendererwidget.h#L151
 QgsRuleBasedRendererWidget.saveSectionWidth: src/gui/symbology/qgsrulebasedrendererwidget.h#L150
 QgsRuleBasedRendererWidget.selectedRules: src/gui/symbology/qgsrulebasedrendererwidget.h#L166
 QgsRuleBasedRendererWidget.selectedRulesChanged: src/gui/symbology/qgsrulebasedrendererwidget.h#L148
-QgsRuleBasedRendererWidget.setDockMode: src/gui/symbology/qgsrulebasedrendererwidget.h#L130
 QgsRuleBasedRendererWidget.setRenderingOrder: src/gui/symbology/qgsrulebasedrendererwidget.h#L145
 QgsRuleBasedRendererWidget.setSymbolLevels: src/gui/symbology/qgsrulebasedrendererwidget.h#L161
-QgsRuleBasedRendererWidget: src/gui/symbology/qgsrulebasedrendererwidget.h#L118
 QgsSVGFillSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L978
 QgsSVGFillSymbolLayerWidget.setContext: src/gui/symbology/qgssymbollayerwidget.h#L983
-QgsSVGFillSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L981
 QgsSVGFillSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L982
 QgsSVGFillSymbolLayerWidget.updateParamGui: src/gui/symbology/qgssymbollayerwidget.h#L994
-QgsSVGFillSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L961
 QgsScaleComboBox.allowNull: src/gui/qgsscalecombobox.h#L112
 QgsScaleComboBox.isNull: src/gui/qgsscalecombobox.h#L69
 QgsScaleComboBox.minScale: src/gui/qgsscalecombobox.h#L77
@@ -6703,14 +6602,10 @@ QgsSearchWidgetWrapper: src/gui/editorwidgets/core/qgssearchwidgetwrapper.h#L85
 QgsSensorAbstractGuiMetadata.createSensor: src/gui/sensor/qgssensorguiregistry.h#L91
 QgsSensorAbstractGuiMetadata.createSensorWidget: src/gui/sensor/qgssensorguiregistry.h#L86
 QgsSensorAbstractGuiMetadata.creationIcon: src/gui/sensor/qgssensorguiregistry.h#L66
-QgsSensorAbstractGuiMetadata.type: src/gui/sensor/qgssensorguiregistry.h#L56
 QgsSensorAbstractGuiMetadata.visibleName: src/gui/sensor/qgssensorguiregistry.h#L61
 QgsSensorAbstractGuiMetadata: src/gui/sensor/qgssensorguiregistry.h#L37
-QgsSensorGuiRegistry.addSensorGuiMetadata: src/gui/sensor/qgssensorguiregistry.h#L213
-QgsSensorGuiRegistry.createSensor: src/gui/sensor/qgssensorguiregistry.h#L233
 QgsSensorGuiRegistry.createSensorWidget: src/gui/sensor/qgssensorguiregistry.h#L241
 QgsSensorGuiRegistry.populate: src/gui/sensor/qgssensorguiregistry.h#L202
-QgsSensorGuiRegistry.sensorAdded: src/gui/sensor/qgssensorguiregistry.h#L254
 QgsSensorGuiRegistry.sensorMetadata: src/gui/sensor/qgssensorguiregistry.h#L208
 QgsSensorGuiRegistry: src/gui/sensor/qgssensorguiregistry.h#L180
 QgsSettingsBoolCheckBoxWrapper.createWrapper: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L216
@@ -6719,7 +6614,6 @@ QgsSettingsBoolCheckBoxWrapper.id: src/gui/settings/qgssettingseditorwidgetwrapp
 QgsSettingsBoolCheckBoxWrapper.setSettingFromWidget: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L220
 QgsSettingsBoolCheckBoxWrapper.setWidgetValue: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L224
 QgsSettingsBoolCheckBoxWrapper.valueFromWidget: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L222
-QgsSettingsBoolCheckBoxWrapper: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L204
 QgsSettingsColorButtonWrapper.configureEditorPrivateImplementation: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L321
 QgsSettingsColorButtonWrapper.createWrapper: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L311
 QgsSettingsColorButtonWrapper.enableAutomaticUpdatePrivate: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L323
@@ -6727,7 +6621,6 @@ QgsSettingsColorButtonWrapper.id: src/gui/settings/qgssettingseditorwidgetwrappe
 QgsSettingsColorButtonWrapper.setSettingFromWidget: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L315
 QgsSettingsColorButtonWrapper.setWidgetValue: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L319
 QgsSettingsColorButtonWrapper.valueFromWidget: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L317
-QgsSettingsColorButtonWrapper: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L299
 QgsSettingsDoubleSpinBoxWrapper.createWrapper: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L279
 QgsSettingsDoubleSpinBoxWrapper.enableAutomaticUpdatePrivate: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L289
 QgsSettingsDoubleSpinBoxWrapper.id: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L281
@@ -6735,11 +6628,9 @@ QgsSettingsDoubleSpinBoxWrapper.setSettingFromWidget: src/gui/settings/qgssettin
 QgsSettingsDoubleSpinBoxWrapper.setWidgetValue: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L287
 QgsSettingsDoubleSpinBoxWrapper.valueFromWidget: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L285
 QgsSettingsDoubleSpinBoxWrapper: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L267
-QgsSettingsEditorWidgetRegistry.addWrapper: src/gui/settings/qgssettingseditorwidgetregistry.h#L46
 QgsSettingsEditorWidgetRegistry.addWrapperForSetting: src/gui/settings/qgssettingseditorwidgetregistry.h#L52
 QgsSettingsEditorWidgetRegistry.createEditor: src/gui/settings/qgssettingseditorwidgetregistry.h#L58
 QgsSettingsEditorWidgetRegistry.createWrapper: src/gui/settings/qgssettingseditorwidgetregistry.h#L55
-QgsSettingsEditorWidgetRegistry: src/gui/settings/qgssettingseditorwidgetregistry.h#L35
 QgsSettingsEditorWidgetWrapper.configureAutomaticUpdate: src/gui/settings/qgssettingseditorwidgetwrapper.h#L95
 QgsSettingsEditorWidgetWrapper.configureEditor: src/gui/settings/qgssettingseditorwidgetwrapper.h#L59
 QgsSettingsEditorWidgetWrapper.configureEditorPrivate: src/gui/settings/qgssettingseditorwidgetwrapper.h#L109
@@ -6778,7 +6669,6 @@ QgsSettingsIntegerSpinBoxWrapper.valueFromWidget: src/gui/settings/qgssettingsed
 QgsSettingsIntegerSpinBoxWrapper: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L235
 QgsSettingsRegistryGui: src/gui/settings/qgssettingsregistrygui.h#L35
 QgsSettingsStringComboBoxWrapper.createWrapper: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L181
-QgsSettingsStringComboBoxWrapper.enableAutomaticUpdatePrivate: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L191
 QgsSettingsStringComboBoxWrapper.id: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L183
 QgsSettingsStringComboBoxWrapper.setSettingFromWidget: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L185
 QgsSettingsStringComboBoxWrapper.setWidgetValue: src/gui/settings/qgssettingseditorwidgetwrapperimpl.h#L189
@@ -6815,10 +6705,6 @@ QgsShadowEffectWidget.create: src/gui/effects/qgspainteffectwidget.h#L145
 QgsShadowEffectWidget.setPaintEffect: src/gui/effects/qgspainteffectwidget.h#L147
 QgsShadowEffectWidget: src/gui/effects/qgspainteffectwidget.h#L138
 QgsShapeburstFillSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L431
-QgsShapeburstFillSymbolLayerWidget.setColor2: src/gui/symbology/qgssymbollayerwidget.h#L439
-QgsShapeburstFillSymbolLayerWidget.setColor: src/gui/symbology/qgssymbollayerwidget.h#L438
-QgsShapeburstFillSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L434
-QgsShapeburstFillSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L435
 QgsShapeburstFillSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L414
 QgsShortcutsManager.actionByName: src/gui/qgsshortcutsmanager.h#L237
 QgsShortcutsManager.actionForSequence: src/gui/qgsshortcutsmanager.h#L222
@@ -6843,10 +6729,8 @@ QgsShortcutsManager.shortcutForSequence: src/gui/qgsshortcutsmanager.h#L230
 QgsShortcutsManager.unregisterAction: src/gui/qgsshortcutsmanager.h#L117
 QgsShortcutsManager.unregisterShortcut: src/gui/qgsshortcutsmanager.h#L127
 QgsShortcutsManager: src/gui/qgsshortcutsmanager.h#L36
-QgsSimpleFillSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L268
 QgsSimpleFillSymbolLayerWidget.setColor: src/gui/symbology/qgssymbollayerwidget.h#L275
 QgsSimpleFillSymbolLayerWidget.setStrokeColor: src/gui/symbology/qgssymbollayerwidget.h#L276
-QgsSimpleFillSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L271
 QgsSimpleFillSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L272
 QgsSimpleFillSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L251
 QgsSimpleLineSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L142
@@ -6856,12 +6740,9 @@ QgsSimpleLineSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerw
 QgsSimpleLineSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L145
 QgsSimpleLineSymbolLayerWidget.updatePatternIcon: src/gui/symbology/qgssymbollayerwidget.h#L152
 QgsSimpleLineSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L123
-QgsSimpleMarkerSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L206
 QgsSimpleMarkerSymbolLayerWidget.setColorFill: src/gui/symbology/qgssymbollayerwidget.h#L215
 QgsSimpleMarkerSymbolLayerWidget.setColorStroke: src/gui/symbology/qgssymbollayerwidget.h#L214
 QgsSimpleMarkerSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L209
-QgsSimpleMarkerSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L210
-QgsSimpleMarkerSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L188
 QgsSingleBandGrayRendererWidget.contrastEnhancementAlgorithm: src/gui/raster/qgssinglebandgrayrendererwidget.h#L55
 QgsSingleBandGrayRendererWidget.create: src/gui/raster/qgssinglebandgrayrendererwidget.h#L39
 QgsSingleBandGrayRendererWidget.doComputations: src/gui/raster/qgssinglebandgrayrendererwidget.h#L58
@@ -6896,7 +6777,6 @@ QgsSingleSymbolRendererWidget.renderer: src/gui/symbology/qgssinglesymbolrendere
 QgsSingleSymbolRendererWidget.setContext: src/gui/symbology/qgssinglesymbolrendererwidget.h#L43
 QgsSingleSymbolRendererWidget.setDockMode: src/gui/symbology/qgssinglesymbolrendererwidget.h#L44
 QgsSingleSymbolRendererWidget.setSymbolLevels: src/gui/symbology/qgssinglesymbolrendererwidget.h#L48
-QgsSingleSymbolRendererWidget: src/gui/symbology/qgssinglesymbolrendererwidget.h#L31
 QgsSlider.paintEvent: src/gui/qgsslider.h#L56
 QgsSlider.setMaximum: src/gui/qgsslider.h#L44
 QgsSlider.setMinimum: src/gui/qgsslider.h#L43
@@ -6905,7 +6785,6 @@ QgsSlider.setValue: src/gui/qgsslider.h#L46
 QgsSlider.valueChanged: src/gui/qgsslider.h#L50
 QgsSlider.variantValue: src/gui/qgsslider.h#L47
 QgsSlider: src/gui/qgsslider.h#L32
-QgsSmartGroupCondition.constraint: src/gui/symbology/qgssmartgroupeditordialog.h#L35
 QgsSmartGroupCondition.destruct: src/gui/symbology/qgssmartgroupeditordialog.h#L50
 QgsSmartGroupCondition.hideRemoveButton: src/gui/symbology/qgssmartgroupeditordialog.h#L47
 QgsSmartGroupCondition.parameter: src/gui/symbology/qgssmartgroupeditordialog.h#L38
@@ -6916,10 +6795,8 @@ QgsSmartGroupCondition: src/gui/symbology/qgssmartgroupeditordialog.h#L27
 QgsSmartGroupEditorDialog.addCondition: src/gui/symbology/qgssmartgroupeditordialog.h#L109
 QgsSmartGroupEditorDialog.conditionOperator: src/gui/symbology/qgssmartgroupeditordialog.h#L92
 QgsSmartGroupEditorDialog.removeCondition: src/gui/symbology/qgssmartgroupeditordialog.h#L112
-QgsSmartGroupEditorDialog.setOperator: src/gui/symbology/qgssmartgroupeditordialog.h#L101
 QgsSmartGroupEditorDialog.setSmartgroupName: src/gui/symbology/qgssmartgroupeditordialog.h#L104
 QgsSmartGroupEditorDialog.smartgroupName: src/gui/symbology/qgssmartgroupeditordialog.h#L83
-QgsSmartGroupEditorDialog: src/gui/symbology/qgssmartgroupeditordialog.h#L75
 QgsSnapIndicator.isVisible: src/gui/qgssnapindicator.h#L46
 QgsSnapIndicator.match: src/gui/qgssnapindicator.h#L41
 QgsSnapIndicator.setMatch: src/gui/qgssnapindicator.h#L39
@@ -7030,11 +6907,8 @@ QgsStyleManagerDialog.addColorRamp: src/gui/symbology/qgsstylemanagerdialog.h#L2
 QgsStyleManagerDialog.addColorRampStatic: src/gui/symbology/qgsstylemanagerdialog.h#L112
 QgsStyleManagerDialog.addFavoriteSelectedSymbols: src/gui/symbology/qgsstylemanagerdialog.h#L294
 QgsStyleManagerDialog.addItem: src/gui/symbology/qgsstylemanagerdialog.h#L154
-QgsStyleManagerDialog.addSmartgroup: src/gui/symbology/qgsstylemanagerdialog.h#L243
 QgsStyleManagerDialog.addSymbol: src/gui/symbology/qgsstylemanagerdialog.h#L337
-QgsStyleManagerDialog.addTag: src/gui/symbology/qgsstylemanagerdialog.h#L238
 QgsStyleManagerDialog.currentItemName: src/gui/symbology/qgsstylemanagerdialog.h#L334
-QgsStyleManagerDialog.currentItemType: src/gui/symbology/qgsstylemanagerdialog.h#L333
 QgsStyleManagerDialog.detagSelectedSymbols: src/gui/symbology/qgsstylemanagerdialog.h#L300
 QgsStyleManagerDialog.editColorRamp: src/gui/symbology/qgsstylemanagerdialog.h#L340
 QgsStyleManagerDialog.editItem: src/gui/symbology/qgsstylemanagerdialog.h#L159
@@ -7042,29 +6916,23 @@ QgsStyleManagerDialog.editSmartgroupAction: src/gui/symbology/qgsstylemanagerdia
 QgsStyleManagerDialog.editSymbol: src/gui/symbology/qgsstylemanagerdialog.h#L339
 QgsStyleManagerDialog.enableGroupInputs: src/gui/symbology/qgsstylemanagerdialog.h#L355
 QgsStyleManagerDialog.enableItemsForGroupingMode: src/gui/symbology/qgsstylemanagerdialog.h#L357
-QgsStyleManagerDialog.enableSymbolInputs: src/gui/symbology/qgsstylemanagerdialog.h#L353
 QgsStyleManagerDialog.exportItems: src/gui/symbology/qgsstylemanagerdialog.h#L195
 QgsStyleManagerDialog.exportItemsPNG: src/gui/symbology/qgsstylemanagerdialog.h#L180
 QgsStyleManagerDialog.exportItemsSVG: src/gui/symbology/qgsstylemanagerdialog.h#L172
 QgsStyleManagerDialog.exportSelectedItemsImages: src/gui/symbology/qgsstylemanagerdialog.h#L188
 QgsStyleManagerDialog.filterSymbols: src/gui/symbology/qgsstylemanagerdialog.h#L268
 QgsStyleManagerDialog.groupChanged: src/gui/symbology/qgsstylemanagerdialog.h#L228
-QgsStyleManagerDialog.groupRenamed: src/gui/symbology/qgsstylemanagerdialog.h#L233
 QgsStyleManagerDialog.grouptreeContextMenu: src/gui/symbology/qgsstylemanagerdialog.h#L277
 QgsStyleManagerDialog.importItems: src/gui/symbology/qgsstylemanagerdialog.h#L202
-QgsStyleManagerDialog.itemChanged: src/gui/symbology/qgsstylemanagerdialog.h#L223
 QgsStyleManagerDialog.listitemsContextMenu: src/gui/symbology/qgsstylemanagerdialog.h#L280
 QgsStyleManagerDialog.onClose: src/gui/symbology/qgsstylemanagerdialog.h#L215
 QgsStyleManagerDialog.onFinished: src/gui/symbology/qgsstylemanagerdialog.h#L212
 QgsStyleManagerDialog.populateColorRamps: src/gui/symbology/qgsstylemanagerdialog.h#L331
-QgsStyleManagerDialog.populateGroups: src/gui/symbology/qgsstylemanagerdialog.h#L312
 QgsStyleManagerDialog.populateList: src/gui/symbology/qgsstylemanagerdialog.h#L207
 QgsStyleManagerDialog.populateSymbols: src/gui/symbology/qgsstylemanagerdialog.h#L324
 QgsStyleManagerDialog.populateTypes: src/gui/symbology/qgsstylemanagerdialog.h#L309
 QgsStyleManagerDialog.regrouped: src/gui/symbology/qgsstylemanagerdialog.h#L263
-QgsStyleManagerDialog.removeColorRamp: src/gui/symbology/qgsstylemanagerdialog.h#L350
 QgsStyleManagerDialog.removeFavoriteSelectedSymbols: src/gui/symbology/qgsstylemanagerdialog.h#L296
-QgsStyleManagerDialog.removeGroup: src/gui/symbology/qgsstylemanagerdialog.h#L248
 QgsStyleManagerDialog.removeItem: src/gui/symbology/qgsstylemanagerdialog.h#L164
 QgsStyleManagerDialog.removeSymbol: src/gui/symbology/qgsstylemanagerdialog.h#L345
 QgsStyleManagerDialog.selectedSymbolsChanged: src/gui/symbology/qgsstylemanagerdialog.h#L274
@@ -7072,11 +6940,9 @@ QgsStyleManagerDialog.setBaseStyleName: src/gui/symbology/qgsstylemanagerdialog.
 QgsStyleManagerDialog.setBold: src/gui/symbology/qgsstylemanagerdialog.h#L360
 QgsStyleManagerDialog.setFavoritesGroupVisible: src/gui/symbology/qgsstylemanagerdialog.h#L120
 QgsStyleManagerDialog.setSmartGroupsVisible: src/gui/symbology/qgsstylemanagerdialog.h#L127
-QgsStyleManagerDialog.setSymbolsChecked: src/gui/symbology/qgsstylemanagerdialog.h#L317
 QgsStyleManagerDialog.showHelp: src/gui/symbology/qgsstylemanagerdialog.h#L218
 QgsStyleManagerDialog.symbolSelected: src/gui/symbology/qgsstylemanagerdialog.h#L271
 QgsStyleManagerDialog.tagSelectedSymbols: src/gui/symbology/qgsstylemanagerdialog.h#L298
-QgsStyleManagerDialog.tagSymbolsAction: src/gui/symbology/qgsstylemanagerdialog.h#L253
 QgsStyleManagerDialog: src/gui/symbology/qgsstylemanagerdialog.h#L70
 QgsStyleSaveDialog.destinationStyle: src/gui/symbology/qgsstylesavedialog.h#L78
 QgsStyleSaveDialog.isFavorite: src/gui/symbology/qgsstylesavedialog.h#L65
@@ -7115,15 +6981,8 @@ QgsSubstitutionListWidget.setSubstitutions: src/gui/qgssubstitutionlistwidget.h#
 QgsSubstitutionListWidget.substitutions: src/gui/qgssubstitutionlistwidget.h#L59
 QgsSubstitutionListWidget.substitutionsChanged: src/gui/qgssubstitutionlistwidget.h#L64
 QgsSubstitutionListWidget: src/gui/qgssubstitutionlistwidget.h#L35
-QgsSvgMarkerSymbolLayerWidget.create: src/gui/symbology/qgssymbollayerwidget.h#L596
-QgsSvgMarkerSymbolLayerWidget.populateList: src/gui/symbology/qgssymbollayerwidget.h#L618
 QgsSvgMarkerSymbolLayerWidget.setContext: src/gui/symbology/qgssymbollayerwidget.h#L602
-QgsSvgMarkerSymbolLayerWidget.setGuiForSvg: src/gui/symbology/qgssymbollayerwidget.h#L626
 QgsSvgMarkerSymbolLayerWidget.setSvgParameters: src/gui/symbology/qgssymbollayerwidget.h#L608
-QgsSvgMarkerSymbolLayerWidget.setSvgPath: src/gui/symbology/qgssymbollayerwidget.h#L606
-QgsSvgMarkerSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L599
-QgsSvgMarkerSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L600
-QgsSvgMarkerSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L578
 QgsSvgSelectorDialog.svgSelector: src/gui/symbology/qgssvgselectorwidget.h#L498
 QgsSvgSelectorDialog: src/gui/symbology/qgssvgselectorwidget.h#L484
 QgsSvgSelectorFilterModel: src/gui/symbology/qgssvgselectorwidget.h#L279
@@ -7133,10 +6992,8 @@ QgsSvgSelectorListModel.rowCount: src/gui/symbology/qgssvgselectorwidget.h#L326
 QgsSvgSelectorListModel: src/gui/symbology/qgssvgselectorwidget.h#L304
 QgsSvgSelectorWidget.allowParamerters: src/gui/symbology/qgssvgselectorwidget.h#L414
 QgsSvgSelectorWidget.allowParameters: src/gui/symbology/qgssvgselectorwidget.h#L420
-QgsSvgSelectorWidget.browserVisible: src/gui/symbology/qgssvgselectorwidget.h#L432
 QgsSvgSelectorWidget.currentSvgPath: src/gui/symbology/qgssvgselectorwidget.h#L395
 QgsSvgSelectorWidget.initParametersModel: src/gui/symbology/qgssvgselectorwidget.h#L393
-QgsSvgSelectorWidget.populateList: src/gui/symbology/qgssvgselectorwidget.h#L464
 QgsSvgSelectorWidget.propertyOverrideToolButton: src/gui/symbology/qgssvgselectorwidget.h#L438
 QgsSvgSelectorWidget.setAllowParameters: src/gui/symbology/qgssvgselectorwidget.h#L407
 QgsSvgSelectorWidget.setBrowserVisible: src/gui/symbology/qgssvgselectorwidget.h#L426
@@ -7150,8 +7007,6 @@ QgsSvgSourceLineEdit: src/gui/qgsfilecontentsourcelineedit.h#L254
 QgsSymbolAnimationSettingsDialog.animationSettings: src/gui/symbology/qgssymbolanimationsettingswidget.h#L88
 QgsSymbolAnimationSettingsDialog.setAnimationSettings: src/gui/symbology/qgssymbolanimationsettingswidget.h#L81
 QgsSymbolAnimationSettingsDialog: src/gui/symbology/qgssymbolanimationsettingswidget.h#L68
-QgsSymbolAnimationSettingsWidget.animationSettings: src/gui/symbology/qgssymbolanimationsettingswidget.h#L55
-QgsSymbolAnimationSettingsWidget.setAnimationSettings: src/gui/symbology/qgssymbolanimationsettingswidget.h#L48
 QgsSymbolAnimationSettingsWidget: src/gui/symbology/qgssymbolanimationsettingswidget.h#L35
 QgsSymbolBufferSettingsDialog.bufferSettings: src/gui/symbology/qgssymbolbuffersettingswidget.h#L92
 QgsSymbolBufferSettingsDialog.setBufferSettings: src/gui/symbology/qgssymbolbuffersettingswidget.h#L85
@@ -7210,72 +7065,43 @@ QgsSymbolLayerWidget.symbolLayer: src/gui/symbology/qgssymbollayerwidget.h#L53
 QgsSymbolLayerWidget.updateDataDefinedProperty: src/gui/symbology/qgssymbollayerwidget.h#L104
 QgsSymbolLayerWidget.vectorLayer: src/gui/symbology/qgssymbollayerwidget.h#L71
 QgsSymbolLayerWidget: src/gui/symbology/qgssymbollayerwidget.h#L36
-QgsSymbolLevelsDialog.setForceOrderingEnabled: src/gui/symbology/qgssymbollevelsdialog.h#L113
 QgsSymbolLevelsDialog.symbolLevels: src/gui/symbology/qgssymbollevelsdialog.h#L127
 QgsSymbolLevelsDialog.usingLevels: src/gui/symbology/qgssymbollevelsdialog.h#L120
-QgsSymbolLevelsDialog: src/gui/symbology/qgssymbollevelsdialog.h#L104
-QgsSymbolLevelsWidget.apply: src/gui/symbology/qgssymbollevelsdialog.h#L76
 QgsSymbolLevelsWidget.setForceOrderingEnabled: src/gui/symbology/qgssymbollevelsdialog.h#L67
-QgsSymbolLevelsWidget.symbolLevels: src/gui/symbology/qgssymbollevelsdialog.h#L61
 QgsSymbolLevelsWidget.usingLevels: src/gui/symbology/qgssymbollevelsdialog.h#L54
 QgsSymbolLevelsWidget: src/gui/symbology/qgssymbollevelsdialog.h#L36
-QgsSymbolSelectorDialog.addLayer: src/gui/symbology/qgssymbolselectordialog.h#L348
-QgsSymbolSelectorDialog.advancedMenu: src/gui/symbology/qgssymbolselectordialog.h#L309
-QgsSymbolSelectorDialog.buttonBox: src/gui/symbology/qgssymbolselectordialog.h#L341
 QgsSymbolSelectorDialog.changeLayer: src/gui/symbology/qgssymbolselectordialog.h#L371
-QgsSymbolSelectorDialog.context: src/gui/symbology/qgssymbolselectordialog.h#L322
-QgsSymbolSelectorDialog.duplicateLayer: src/gui/symbology/qgssymbolselectordialog.h#L356
 QgsSymbolSelectorDialog.keyPressEvent: src/gui/symbology/qgssymbolselectordialog.h#L376
-QgsSymbolSelectorDialog.layerChanged: src/gui/symbology/qgssymbolselectordialog.h#L358
 QgsSymbolSelectorDialog.lockLayer: src/gui/symbology/qgssymbolselectordialog.h#L351
-QgsSymbolSelectorDialog.moveLayerDown: src/gui/symbology/qgssymbolselectordialog.h#L345
 QgsSymbolSelectorDialog.moveLayerUp: src/gui/symbology/qgssymbolselectordialog.h#L346
-QgsSymbolSelectorDialog.removeLayer: src/gui/symbology/qgssymbolselectordialog.h#L349
 QgsSymbolSelectorDialog.setContext: src/gui/symbology/qgssymbolselectordialog.h#L316
 QgsSymbolSelectorDialog.symbol: src/gui/symbology/qgssymbolselectordialog.h#L328
-QgsSymbolSelectorDialog.symbolChanged: src/gui/symbology/qgssymbolselectordialog.h#L364
 QgsSymbolSelectorDialog.symbolModified: src/gui/symbology/qgssymbolselectordialog.h#L387
-QgsSymbolSelectorDialog.updateLayerPreview: src/gui/symbology/qgssymbolselectordialog.h#L360
 QgsSymbolSelectorDialog.updatePreview: src/gui/symbology/qgssymbolselectordialog.h#L361
 QgsSymbolSelectorDialog: src/gui/symbology/qgssymbolselectordialog.h#L291
 QgsSymbolSelectorWidget.addLayer: src/gui/symbology/qgssymbolselectordialog.h#L165
-QgsSymbolSelectorWidget.advancedMenu: src/gui/symbology/qgssymbolselectordialog.h#L119
-QgsSymbolSelectorWidget.changeLayer: src/gui/symbology/qgssymbolselectordialog.h#L206
-QgsSymbolSelectorWidget.context: src/gui/symbology/qgssymbolselectordialog.h#L132
-QgsSymbolSelectorWidget.duplicateLayer: src/gui/symbology/qgssymbolselectordialog.h#L180
-QgsSymbolSelectorWidget.layerChanged: src/gui/symbology/qgssymbolselectordialog.h#L186
-QgsSymbolSelectorWidget.lockLayer: src/gui/symbology/qgssymbolselectordialog.h#L175
 QgsSymbolSelectorWidget.moveLayerDown: src/gui/symbology/qgssymbolselectordialog.h#L155
 QgsSymbolSelectorWidget.moveLayerUp: src/gui/symbology/qgssymbolselectordialog.h#L160
 QgsSymbolSelectorWidget.removeLayer: src/gui/symbology/qgssymbolselectordialog.h#L170
-QgsSymbolSelectorWidget.setContext: src/gui/symbology/qgssymbolselectordialog.h#L126
-QgsSymbolSelectorWidget.symbol: src/gui/symbology/qgssymbolselectordialog.h#L138
-QgsSymbolSelectorWidget.symbolChanged: src/gui/symbology/qgssymbolselectordialog.h#L199
 QgsSymbolSelectorWidget.symbolModified: src/gui/symbology/qgssymbolselectordialog.h#L213
 QgsSymbolSelectorWidget.updateLayerPreview: src/gui/symbology/qgssymbolselectordialog.h#L191
 QgsSymbolSelectorWidget.updatePreview: src/gui/symbology/qgssymbolselectordialog.h#L196
 QgsSymbolSelectorWidget: src/gui/symbology/qgssymbolselectordialog.h#L88
 QgsSymbolWidgetContext.expressionContext: src/gui/symbology/qgssymbolwidgetcontext.h#L87
-QgsSymbolWidgetContext.mapCanvas: src/gui/symbology/qgssymbolwidgetcontext.h#L54
 QgsSymbolWidgetContext.messageBar: src/gui/symbology/qgssymbolwidgetcontext.h#L69
 QgsSymbolWidgetContext.setAdditionalExpressionContextScopes: src/gui/symbology/qgssymbolwidgetcontext.h#L94
 QgsSymbolWidgetContext.setExpressionContext: src/gui/symbology/qgssymbolwidgetcontext.h#L79
 QgsSymbolWidgetContext.setMapCanvas: src/gui/symbology/qgssymbolwidgetcontext.h#L48
 QgsSymbolWidgetContext.setMessageBar: src/gui/symbology/qgssymbolwidgetcontext.h#L62
-QgsSymbolWidgetContext.setSymbolType: src/gui/symbology/qgssymbolwidgetcontext.h#L124
-QgsSymbolWidgetContext.symbolType: src/gui/symbology/qgssymbolwidgetcontext.h#L115
 QgsSymbolWidgetContext: src/gui/symbology/qgssymbolwidgetcontext.h#L34
-QgsSymbolsListWidget.changed: src/gui/symbology/qgssymbolslistwidget.h#L90
 QgsSymbolsListWidget.clipFeaturesToggled: src/gui/symbology/qgssymbolslistwidget.h#L79
 QgsSymbolsListWidget.context: src/gui/symbology/qgssymbolslistwidget.h#L65
 QgsSymbolsListWidget.layer: src/gui/symbology/qgssymbolslistwidget.h#L70
 QgsSymbolsListWidget.setContext: src/gui/symbology/qgssymbolslistwidget.h#L59
 QgsSymbolsListWidget.setLineWidth: src/gui/symbology/qgssymbolslistwidget.h#L77
 QgsSymbolsListWidget.setMarkerAngle: src/gui/symbology/qgssymbolslistwidget.h#L75
-QgsSymbolsListWidget.setMarkerSize: src/gui/symbology/qgssymbolslistwidget.h#L76
 QgsSymbolsListWidget.setSymbolColor: src/gui/symbology/qgssymbolslistwidget.h#L74
 QgsSymbolsListWidget.updateDataDefinedLineWidth: src/gui/symbology/qgssymbolslistwidget.h#L83
-QgsSymbolsListWidget.updateDataDefinedMarkerAngle: src/gui/symbology/qgssymbolslistwidget.h#L82
 QgsSymbolsListWidget.updateDataDefinedMarkerSize: src/gui/symbology/qgssymbolslistwidget.h#L81
 QgsSymbolsListWidget: src/gui/symbology/qgssymbolslistwidget.h#L35
 QgsTabPositionDialog.setPositions: src/gui/labeling/qgstabpositionwidget.h#L93
@@ -7311,19 +7137,14 @@ QgsTableEditorDialog.tableContents: src/gui/tableeditor/qgstableeditordialog.h#L
 QgsTableEditorDialog.tableHeaders: src/gui/tableeditor/qgstableeditordialog.h#L131
 QgsTableEditorDialog.tableRowHeight: src/gui/tableeditor/qgstableeditordialog.h#L82
 QgsTableEditorDialog: src/gui/tableeditor/qgstableeditordialog.h#L43
-QgsTableEditorWidget.activeCellChanged: src/gui/tableeditor/qgstableeditorwidget.h#L485
 QgsTableEditorWidget.canMergeSelection: src/gui/tableeditor/qgstableeditorwidget.h#L306
 QgsTableEditorWidget.canSplitSelection: src/gui/tableeditor/qgstableeditorwidget.h#L313
 QgsTableEditorWidget.clearSelectedCells: src/gui/tableeditor/qgstableeditorwidget.h#L376
 QgsTableEditorWidget.deleteColumns: src/gui/tableeditor/qgstableeditorwidget.h#L357
-QgsTableEditorWidget.deleteRows: src/gui/tableeditor/qgstableeditorwidget.h#L350
 QgsTableEditorWidget.expandColumnSelection: src/gui/tableeditor/qgstableeditorwidget.h#L371
 QgsTableEditorWidget.expandRowSelection: src/gui/tableeditor/qgstableeditorwidget.h#L364
 QgsTableEditorWidget.hasMixedSelectionNumericFormat: src/gui/tableeditor/qgstableeditorwidget.h#L162
-QgsTableEditorWidget.insertColumnsAfter: src/gui/tableeditor/qgstableeditorwidget.h#L343
-QgsTableEditorWidget.insertColumnsBefore: src/gui/tableeditor/qgstableeditorwidget.h#L336
 QgsTableEditorWidget.insertRowsAbove: src/gui/tableeditor/qgstableeditorwidget.h#L329
-QgsTableEditorWidget.insertRowsBelow: src/gui/tableeditor/qgstableeditorwidget.h#L322
 QgsTableEditorWidget.isHeaderCellSelected: src/gui/tableeditor/qgstableeditorwidget.h#L299
 QgsTableEditorWidget.keyPressEvent: src/gui/tableeditor/qgstableeditorwidget.h#L473
 QgsTableEditorWidget.mergeSelectedCells: src/gui/tableeditor/qgstableeditorwidget.h#L462
@@ -7419,7 +7240,6 @@ QgsTextWidgetWrapper.setText: src/gui/editorwidgets/qgstextwidgetwrapper.h#L53
 QgsTextWidgetWrapper.valid: src/gui/editorwidgets/qgstextwidgetwrapper.h#L43
 QgsTextWidgetWrapper: src/gui/editorwidgets/qgstextwidgetwrapper.h#L28
 QgsTiledSceneRendererPropertiesWidget.apply: src/gui/tiledscene/qgstiledscenerendererpropertieswidget.h#L59
-QgsTiledSceneRendererPropertiesWidget.setContext: src/gui/tiledscene/qgstiledscenerendererpropertieswidget.h#L52
 QgsTiledSceneRendererPropertiesWidget.setDockMode: src/gui/tiledscene/qgstiledscenerendererpropertieswidget.h#L55
 QgsTiledSceneRendererPropertiesWidget.syncToLayer: src/gui/tiledscene/qgstiledscenerendererpropertieswidget.h#L54
 QgsTiledSceneRendererPropertiesWidget: src/gui/tiledscene/qgstiledscenerendererpropertieswidget.h#L38
@@ -7519,7 +7339,6 @@ QgsVariableEditorWidget.showEvent: src/gui/qgsvariableeditorwidget.h#L132
 QgsVariableEditorWidget.variablesInActiveScope: src/gui/qgsvariableeditorwidget.h#L112
 QgsVariableEditorWidget: src/gui/qgsvariableeditorwidget.h#L41
 QgsVectorFieldSymbolLayerWidget.create: src/gui/symbology/qgsvectorfieldsymbollayerwidget.h#L45
-QgsVectorFieldSymbolLayerWidget.setSymbolLayer: src/gui/symbology/qgsvectorfieldsymbollayerwidget.h#L48
 QgsVectorFieldSymbolLayerWidget.symbolLayer: src/gui/symbology/qgsvectorfieldsymbollayerwidget.h#L49
 QgsVectorFieldSymbolLayerWidget: src/gui/symbology/qgsvectorfieldsymbollayerwidget.h#L29
 QgsVectorLayerProperties.apply: src/gui/vector/qgsvectorlayerproperties.h#L70
@@ -7597,3 +7416,77 @@ QgsWidgetWrapper.widget: src/gui/editorwidgets/core/qgswidgetwrapper.h#L105
 QgsWidgetWrapper: src/gui/editorwidgets/core/qgswidgetwrapper.h#L52
 QgsWindowManagerInterface.openStandardDialog: src/gui/qgswindowmanagerinterface.h#L58
 QgsWindowManagerInterface: src/gui/qgswindowmanagerinterface.h#L38
+agerdialog.h#L223
+bollayerwidget.h#L388
+bollayerwidget.h#L48
+bolrendererwidget.h#L143
+dget.h#L742
+dialog.h#L345
+dsymbolrendererwidget.h#L226
+dsymbolrendererwidget.h#L237
+entgraphicitem.h#L245
+erdialog.h#L317
+erwidget.h#L599
+et.h#L188
+et.h#L47
+et.h#L539
+g.h#L243
+gerdialog.h#L333
+gscategorizedsymbolrendererwidget.h#L195
+gsmodelgraphicsscene.h#L228
+gwidgetwrapper.h#L616
+h#L435
+h#L438
+h#L744
+hicsscene.h#L238
+imationsettingswidget.h#L55
+item.h#L281
+log.h#L312
+mbolrendererwidget.h#L239
+nentgraphicitem.h#L224
+ogy/qgssymbolanimationsettingswidget.h#L48
+ollayerwidget.h#L1322
+ollayerwidget.h#L1360
+olrendererwidget.h#L229
+ontreewidget.h#L228
+phicitem.h#L270
+processing/qgsprocessingwidgetwrapper.h#L305
+processingwidgetwrapper.h#L659
+qgsprocessingwidgetwrapper.h#L565
+raphicitem.h#L240
+raphicitem.h#L252
+raphicitem.h#L261
+rerpropertieswidget.h#L52
+rerwidget.h#L163
+rerwidget.h#L62
+sdialog.h#L113
+t.h#L118
+t.h#L271
+t.h#L53
+t.h#L578
+t.h#L618
+t.h#L82
+tem.h#L215
+toolboxtreeview.h#L90
+tributetablemodel.h#L130
+widget.h#L162
+wrapperimpl.h#L191
+wrapperimpl.h#L299
+yerwidget.h#L739
+ymbollayerwidget.h#L1321
+zedsymbolrendererwidget.h#L242
+6
+8
+39
+44
+68
+73
+80
+86
+115
+150
+233
+322
+353
+432
+1184

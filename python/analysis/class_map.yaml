@@ -11,7 +11,6 @@ QgsAlignRaster.QgsAlignRaster.progress: src/analysis/raster/qgsalignraster.h#L12
 QgsAlignRaster.QgsAlignRaster.rasterSize: src/analysis/raster/qgsalignraster.h#L69
 QgsAlignRaster.alignedRasterExtent: src/analysis/raster/qgsalignraster.h#L205
 QgsAlignRaster.alignedRasterSize: src/analysis/raster/qgsalignraster.h#L199
-QgsAlignRaster.cellSize: src/analysis/raster/qgsalignraster.h#L145
 QgsAlignRaster.checkInputParameters: src/analysis/raster/qgsalignraster.h#L193
 QgsAlignRaster.clipExtent: src/analysis/raster/qgsalignraster.h#L168
 QgsAlignRaster.createAndWarp: src/analysis/raster/qgsalignraster.h#L228
@@ -26,7 +25,6 @@ QgsAlignRaster.setCellSize: src/analysis/raster/qgsalignraster.h#L141
 QgsAlignRaster.setCellSize: src/analysis/raster/qgsalignraster.h#L143
 QgsAlignRaster.setClipExtent: src/analysis/raster/qgsalignraster.h#L156
 QgsAlignRaster.setClipExtent: src/analysis/raster/qgsalignraster.h#L162
-QgsAlignRaster.setDestinationCrs: src/analysis/raster/qgsalignraster.h#L148
 QgsAlignRaster.setGridOffset: src/analysis/raster/qgsalignraster.h#L137
 QgsAlignRaster.setParametersFromRaster: src/analysis/raster/qgsalignraster.h#L181
 QgsAlignRaster.setParametersFromRaster: src/analysis/raster/qgsalignraster.h#L187
@@ -168,7 +166,6 @@ QgsGraph.edgeCount: src/analysis/network/qgsgraph.h#L221
 QgsGraph.findOppositeEdge: src/analysis/network/qgsgraph.h#L322
 QgsGraph.findVertex: src/analysis/network/qgsgraph.h#L291
 QgsGraph.hasEdge: src/analysis/network/qgsgraph.h#L341
-QgsGraph.hasVertex: src/analysis/network/qgsgraph.h#L348
 QgsGraph.removeEdge: src/analysis/network/qgsgraph.h#L273
 QgsGraph.removeVertex: src/analysis/network/qgsgraph.h#L204
 QgsGraph.vertex: src/analysis/network/qgsgraph.h#L170
@@ -297,7 +294,6 @@ QgsRasterMatrix.absoluteValue: src/analysis/raster/qgsrastermatrix.h#L148
 QgsRasterMatrix.acosinus: src/analysis/raster/qgsrastermatrix.h#L136
 QgsRasterMatrix.add: src/analysis/raster/qgsrastermatrix.h#L103
 QgsRasterMatrix.asinus: src/analysis/raster/qgsrastermatrix.h#L134
-QgsRasterMatrix.atangens: src/analysis/raster/qgsrastermatrix.h#L138
 QgsRasterMatrix.changeSign: src/analysis/raster/qgsrastermatrix.h#L139
 QgsRasterMatrix.cosinus: src/analysis/raster/qgsrastermatrix.h#L135
 QgsRasterMatrix.divide: src/analysis/raster/qgsrastermatrix.h#L107
@@ -328,12 +324,8 @@ QgsRasterMatrix.subtract: src/analysis/raster/qgsrastermatrix.h#L105
 QgsRasterMatrix.tangens: src/analysis/raster/qgsrastermatrix.h#L137
 QgsRasterMatrix: src/analysis/raster/qgsrastermatrix.h#L29
 QgsRelief.addReliefColorClass: src/analysis/raster/qgsrelief.h#L66
-QgsRelief.clearReliefColors: src/analysis/raster/qgsrelief.h#L65
 QgsRelief.exportFrequencyDistributionToCsv: src/analysis/raster/qgsrelief.h#L77
-QgsRelief.processRaster: src/analysis/raster/qgsrelief.h#L60
 QgsRelief.setReliefColors: src/analysis/raster/qgsrelief.h#L68
-QgsRelief.setZFactor: src/analysis/raster/qgsrelief.h#L63
-QgsRelief.zFactor: src/analysis/raster/qgsrelief.h#L62
 QgsRelief: src/analysis/raster/qgsrelief.h#L38
 QgsRuggednessFilter.processNineCellWindow: src/analysis/raster/qgsruggednessfilter.h#L37
 QgsRuggednessFilter: src/analysis/raster/qgsruggednessfilter.h#L30
@@ -371,3 +363,5 @@ QgsZonalStatistics.calculateStatistics: src/analysis/vector/qgszonalstatistics.h
 QgsZonalStatistics.displayName: src/analysis/vector/qgszonalstatistics.h#L110
 QgsZonalStatistics.shortName: src/analysis/vector/qgszonalstatistics.h#L117
 QgsZonalStatistics: src/analysis/vector/qgszonalstatistics.h#L46
+h#L145
+srastermatrix.h#L138

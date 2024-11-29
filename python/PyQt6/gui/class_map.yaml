@@ -5659,7 +5659,6 @@ QgsProcessingMapLayerComboBox.dragLeaveEvent: src/gui/processing/qgsprocessingma
 QgsProcessingMapLayerComboBox.dropEvent: src/gui/processing/qgsprocessingmaplayercombobox.h#L129
 QgsProcessingMapLayerComboBox.isEditable: src/gui/processing/qgsprocessingmaplayercombobox.h#L116
 QgsProcessingMapLayerComboBox.setEditable: src/gui/processing/qgsprocessingmaplayercombobox.h#L108
-QgsProcessingMapLayerComboBox.setLayer: src/gui/processing/qgsprocessingmaplayercombobox.h#L59
 QgsProcessingMapLayerComboBox.setValue: src/gui/processing/qgsprocessingmaplayercombobox.h#L87
 QgsProcessingMapLayerComboBox.setWidgetContext: src/gui/processing/qgsprocessingmaplayercombobox.h#L100
 QgsProcessingMapLayerComboBox.value: src/gui/processing/qgsprocessingmaplayercombobox.h#L94
@@ -5672,16 +5671,12 @@ QgsProcessingModelerParameterWidget.modelOutputName: src/gui/processing/qgsproce
 QgsProcessingModelerParameterWidget.parameterDefinition: src/gui/processing/qgsprocessingmodelerparameterwidget.h#L129
 QgsProcessingModelerParameterWidget.populateSources: src/gui/processing/qgsprocessingmodelerparameterwidget.h#L115
 QgsProcessingModelerParameterWidget.registerProcessingContextGenerator: src/gui/processing/qgsprocessingmodelerparameterwidget.h#L99
-QgsProcessingModelerParameterWidget.setDialog: src/gui/processing/qgsprocessingmodelerparameterwidget.h#L192
 QgsProcessingModelerParameterWidget.setExpressionHelpText: src/gui/processing/qgsprocessingmodelerparameterwidget.h#L124
 QgsProcessingModelerParameterWidget.setSourceType: src/gui/processing/qgsprocessingmodelerparameterwidget.h#L201
 QgsProcessingModelerParameterWidget.setToModelOutput: src/gui/processing/qgsprocessingmodelerparameterwidget.h#L160
 QgsProcessingModelerParameterWidget.setWidgetContext: src/gui/processing/qgsprocessingmodelerparameterwidget.h#L93
-QgsProcessingModelerParameterWidget.setWidgetValue: src/gui/processing/qgsprocessingmodelerparameterwidget.h#L143
 QgsProcessingModelerParameterWidget.setWidgetValue: src/gui/processing/qgsprocessingmodelerparameterwidget.h#L151
 QgsProcessingModelerParameterWidget.value: src/gui/processing/qgsprocessingmodelerparameterwidget.h#L185
-QgsProcessingModelerParameterWidget: src/gui/processing/qgsprocessingmodelerparameterwidget.h#L61
-QgsProcessingMultipleInputDialog.selectedOptions: src/gui/processing/qgsprocessingmultipleselectiondialog.h#L313
 QgsProcessingMultipleInputDialog.setProject: src/gui/processing/qgsprocessingmultipleselectiondialog.h#L318
 QgsProcessingMultipleInputDialog: src/gui/processing/qgsprocessingmultipleselectiondialog.h#L292
 QgsProcessingMultipleInputPanelWidget.compatibleUrisFromMimeData: src/gui/processing/qgsprocessingmultipleselectiondialog.h#L259
@@ -7597,3 +7592,7 @@ QgsWidgetWrapper.widget: src/gui/editorwidgets/core/qgswidgetwrapper.h#L105
 QgsWidgetWrapper: src/gui/editorwidgets/core/qgswidgetwrapper.h#L52
 QgsWindowManagerInterface.openStandardDialog: src/gui/qgswindowmanagerinterface.h#L58
 QgsWindowManagerInterface: src/gui/qgswindowmanagerinterface.h#L38
+dget.h#L61
+erwidget.h#L143
+h#L313
+92
