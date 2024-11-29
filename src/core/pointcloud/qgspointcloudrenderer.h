@@ -675,6 +675,19 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     virtual QStringList legendRuleKeys() const;
 
+    /**
+     * Set whether the renderer should also render file labels inside extent
+     * \since QGIS 3.42
+     */
+    void setShowLabels( const bool show ) { mShowLabels = show; }
+
+    /**
+     * Returns whether the renderer shows file labels inside the extent
+     * rectangle
+     * \since QGIS 3.42
+     */
+    bool showLabels() const { return mShowLabels; }
+
   protected:
 
     /**
@@ -813,6 +826,8 @@ class CORE_EXPORT QgsPointCloudRenderer
     bool mHorizontalTriangleFilter = false;
     double mHorizontalTriangleFilterThreshold = 5.0;
     Qgis::RenderUnit mHorizontalTriangleFilterUnit = Qgis::RenderUnit::Millimeters;
+
+    bool mShowLabels = false;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H

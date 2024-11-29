@@ -64,6 +64,12 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
 
     void emitWidgetChanged();
 
+    /**
+     * Opens dialog with settings for label text
+     * \since QGIS 3.42
+     */
+    void showLabelTextDialog();
+
   private:
 
     static void initRendererWidgetFunctions();

@@ -79,21 +79,6 @@ Ownership of ``symbol`` is transferred to the renderer.
 .. seealso:: :py:func:`fillSymbol`
 %End
 
-    void setShowLabels( const bool show );
-%Docstring
-Set whether the renderer should also render file labels inside extent
-
-.. versionadded:: 3.42
-%End
-
-    bool showLabels() const;
-%Docstring
-Returns whether the renderer shows file labels inside the extent
-rectangle
-
-.. versionadded:: 3.42
-%End
-
     void renderLabels( const QRectF &extent, const QString &text, QgsPointCloudRenderContext &context );
 %Docstring
 Renders the file name label inside extent rectangle

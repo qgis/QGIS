@@ -212,7 +212,7 @@ bool QgsPointCloudLayerRenderer::render()
         // and only use the selected renderer when zoomed in
         mSubIndexExtentRenderer->renderExtent( si.polygonBounds(), context );
         // render the label of point cloud tile
-        if ( mSubIndexExtentRenderer->showLabels() )
+        if ( mRenderer->showLabels() )
         {
           mSubIndexExtentRenderer->renderLabels(
             context.renderContext().mapToPixel().transformBounds( si.extent().toRectF() ),
