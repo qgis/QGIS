@@ -338,10 +338,11 @@ void QgsLayoutItemLabel::adjustSizeToText()
 QSizeF QgsLayoutItemLabel::sizeForText() const
 {
   QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
+  context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
 
   const QStringList lines = currentText().split( '\n' );
-  const double textWidth = QgsTextRenderer::textWidth( context, mFormat, lines ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
-  const double fontHeight = QgsTextRenderer::textHeight( context, mFormat, lines ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
+  const double textWidth = std::ceil( QgsTextRenderer::textWidth( context, mFormat, lines ) + 1 ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
+  const double fontHeight = std::ceil( QgsTextRenderer::textHeight( context, mFormat, lines ) + 1 ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
 
   const double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
 
