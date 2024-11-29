@@ -59,8 +59,7 @@ QgsProjectElevationSettingsWidget::QgsProjectElevationSettingsWidget( QWidget *p
   mStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
 
   mStackedWidget->setCurrentWidget( mPageFlat );
-  connect( mComboTerrainType, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]
-  {
+  connect( mComboTerrainType, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
     const QString terrainType = mComboTerrainType->currentData().toString();
     if ( terrainType == QLatin1String( "flat" ) )
     {
@@ -91,24 +90,24 @@ QgsProjectElevationSettingsWidget::QgsProjectElevationSettingsWidget( QWidget *p
     mStackedWidget->setCurrentWidget( mPageRasterDem );
     mDemOffsetSpinBox->setValue( provider->offset() );
     mDemScaleSpinBox->setValue( provider->scale() );
-    mComboDemLayer->setLayer( qgis::down_cast< const QgsRasterDemTerrainProvider * >( provider )->layer() );
+    mComboDemLayer->setLayer( qgis::down_cast<const QgsRasterDemTerrainProvider *>( provider )->layer() );
   }
   else if ( provider->type() == QLatin1String( "mesh" ) )
   {
     mStackedWidget->setCurrentWidget( mPageMesh );
     mMeshOffsetSpinBox->setValue( provider->offset() );
     mMeshScaleSpinBox->setValue( provider->scale() );
-    mComboMeshLayer->setLayer( qgis::down_cast< const QgsMeshTerrainProvider * >( provider )->layer() );
+    mComboMeshLayer->setLayer( qgis::down_cast<const QgsMeshTerrainProvider *>( provider )->layer() );
   }
 
   connect( mComboDemLayer, &QgsMapLayerComboBox::layerChanged, this, &QgsProjectElevationSettingsWidget::validate );
   connect( mComboMeshLayer, &QgsMapLayerComboBox::layerChanged, this, &QgsProjectElevationSettingsWidget::validate );
 
-  if ( elevationProperties->elevationRange().lower() != std::numeric_limits< double >::lowest() )
+  if ( elevationProperties->elevationRange().lower() != std::numeric_limits<double>::lowest() )
     whileBlocking( mElevationLowerSpin )->setValue( elevationProperties->elevationRange().lower() );
   else
     whileBlocking( mElevationLowerSpin )->clear();
-  if ( elevationProperties->elevationRange().upper() != std::numeric_limits< double >::max() )
+  if ( elevationProperties->elevationRange().upper() != std::numeric_limits<double>::max() )
     whileBlocking( mElevationUpperSpin )->setValue( elevationProperties->elevationRange().upper() );
   else
     whileBlocking( mElevationUpperSpin )->clear();
@@ -128,40 +127,40 @@ QgsProjectElevationSettingsWidget::QgsProjectElevationSettingsWidget( QWidget *p
 void QgsProjectElevationSettingsWidget::apply()
 {
   const QString terrainType = mComboTerrainType->currentData().toString();
-  std::unique_ptr< QgsAbstractTerrainProvider > provider;
+  std::unique_ptr<QgsAbstractTerrainProvider> provider;
   if ( terrainType == QLatin1String( "flat" ) )
   {
-    provider = std::make_unique< QgsFlatTerrainProvider >();
+    provider = std::make_unique<QgsFlatTerrainProvider>();
     provider->setOffset( mFlatHeightSpinBox->value() );
     provider->setScale( 1.0 );
   }
   else if ( terrainType == QLatin1String( "raster" ) )
   {
-    provider = std::make_unique< QgsRasterDemTerrainProvider >();
+    provider = std::make_unique<QgsRasterDemTerrainProvider>();
     provider->setOffset( mDemOffsetSpinBox->value() );
     provider->setScale( mDemScaleSpinBox->value() );
-    QgsRasterLayer *demLayer = qobject_cast< QgsRasterLayer * >( mComboDemLayer->currentLayer() );
+    QgsRasterLayer *demLayer = qobject_cast<QgsRasterLayer *>( mComboDemLayer->currentLayer() );
     // always mark the terrain layer as a "dem" layer -- it seems odd for a user to have to manually set this after picking a terrain raster!
-    qobject_cast< QgsRasterLayerElevationProperties * >( demLayer->elevationProperties() )->setEnabled( true );
-    qobject_cast< QgsRasterLayerElevationProperties * >( demLayer->elevationProperties() )->setMode( Qgis::RasterElevationMode::RepresentsElevationSurface );
-    qgis::down_cast< QgsRasterDemTerrainProvider * >( provider.get() )->setLayer( demLayer );
+    qobject_cast<QgsRasterLayerElevationProperties *>( demLayer->elevationProperties() )->setEnabled( true );
+    qobject_cast<QgsRasterLayerElevationProperties *>( demLayer->elevationProperties() )->setMode( Qgis::RasterElevationMode::RepresentsElevationSurface );
+    qgis::down_cast<QgsRasterDemTerrainProvider *>( provider.get() )->setLayer( demLayer );
   }
   else if ( terrainType == QLatin1String( "mesh" ) )
   {
-    provider = std::make_unique< QgsMeshTerrainProvider >();
+    provider = std::make_unique<QgsMeshTerrainProvider>();
     provider->setOffset( mMeshOffsetSpinBox->value() );
     provider->setScale( mMeshScaleSpinBox->value() );
-    qgis::down_cast< QgsMeshTerrainProvider * >( provider.get() )->setLayer( qobject_cast< QgsMeshLayer * >( mComboMeshLayer->currentLayer() ) );
+    qgis::down_cast<QgsMeshTerrainProvider *>( provider.get() )->setLayer( qobject_cast<QgsMeshLayer *>( mComboMeshLayer->currentLayer() ) );
   }
 
   QgsProject::instance()->elevationProperties()->setTerrainProvider( provider.release() );
 
   double zLower = mElevationLowerSpin->value();
   if ( zLower == mElevationLowerSpin->clearValue() )
-    zLower = std::numeric_limits< double >::lowest();
+    zLower = std::numeric_limits<double>::lowest();
   double zUpper = mElevationUpperSpin->value();
   if ( zUpper == mElevationUpperSpin->clearValue() )
-    zUpper = std::numeric_limits< double >::max();
+    zUpper = std::numeric_limits<double>::max();
 
   QgsProject::instance()->elevationProperties()->setElevationRange( QgsDoubleRange( zLower, zUpper ) );
 
@@ -176,33 +175,24 @@ void QgsProjectElevationSettingsWidget::updateVerticalCrsOptions()
   {
     case Qgis::CrsType::Compound:
       mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-      mCrsDisabledLabel->setText( tr( "Project coordinate reference system is set to a compound CRS (%1), so the project's vertical CRS is the vertical component of this CRS (%2)." ).arg(
-                                    QgsProject::instance()->crs().userFriendlyIdentifier(),
-                                    QgsProject::instance()->verticalCrs().userFriendlyIdentifier()
-                                  ) );
+      mCrsDisabledLabel->setText( tr( "Project coordinate reference system is set to a compound CRS (%1), so the project's vertical CRS is the vertical component of this CRS (%2)." ).arg( QgsProject::instance()->crs().userFriendlyIdentifier(), QgsProject::instance()->verticalCrs().userFriendlyIdentifier() ) );
       break;
 
     case Qgis::CrsType::Geographic3d:
       mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-      mCrsDisabledLabel->setText( tr( "Project coordinate reference system is set to a geographic 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg(
-                                    QgsProject::instance()->crs().userFriendlyIdentifier()
-                                  ) );
+      mCrsDisabledLabel->setText( tr( "Project coordinate reference system is set to a geographic 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg( QgsProject::instance()->crs().userFriendlyIdentifier() ) );
       break;
 
     case Qgis::CrsType::Geocentric:
       mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-      mCrsDisabledLabel->setText( tr( "Project coordinate reference system is set to a geocentric CRS (%1), so the vertical CRS cannot be manually specified." ).arg(
-                                    QgsProject::instance()->crs().userFriendlyIdentifier()
-                                  ) );
+      mCrsDisabledLabel->setText( tr( "Project coordinate reference system is set to a geocentric CRS (%1), so the vertical CRS cannot be manually specified." ).arg( QgsProject::instance()->crs().userFriendlyIdentifier() ) );
       break;
 
     case Qgis::CrsType::Projected:
       if ( QgsProject::instance()->crs().hasVerticalAxis() )
       {
         mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-        mCrsDisabledLabel->setText( tr( "Project coordinate reference system is set to a projected 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg(
-                                      QgsProject::instance()->crs().userFriendlyIdentifier()
-                                    ) );
+        mCrsDisabledLabel->setText( tr( "Project coordinate reference system is set to a projected 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg( QgsProject::instance()->crs().userFriendlyIdentifier() ) );
         break;
       }
       [[fallthrough]];

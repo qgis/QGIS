@@ -163,7 +163,7 @@ void TestQgsVectorLayerFeaturePool::changeGeometry()
   QCOMPARE( feat.geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0))" ) );
 
   // Add enough features for the cache to be full
-  for ( int i = 0; i < 1100; i++ )  // max cache size is 1000
+  for ( int i = 0; i < 1100; i++ ) // max cache size is 1000
   {
     feat = QgsFeature();
     feat.setGeometry( QgsGeometry::fromWkt( "Polygon (( 0 0, 20 0, 20 20, 0 20, 0 0))" ) );

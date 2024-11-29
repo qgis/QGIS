@@ -20,7 +20,7 @@
 #include <qgsmaptopixel.h>
 #include <qgspoint.h>
 
-class TestQgsMapToPixel: public QObject
+class TestQgsMapToPixel : public QObject
 {
     Q_OBJECT
   private slots:
@@ -71,9 +71,9 @@ void TestQgsMapToPixel::rotation()
 {
   QgsMapToPixel m2p( 1, 5, 5, 10, 10, 90 );
 
-  QgsPointXY p( 5, 5 ); // in geographical units
+  QgsPointXY p( 5, 5 );              // in geographical units
   QgsPointXY d = m2p.transform( p ); // to device pixels
-  QCOMPARE( d.x(), 5.0 ); // center doesn't move
+  QCOMPARE( d.x(), 5.0 );            // center doesn't move
   QCOMPARE( d.y(), 5.0 );
 
   const QgsPointXY b = m2p.toMapCoordinates( d.x(), d.y() ); // transform back
@@ -108,7 +108,6 @@ void TestQgsMapToPixel::rotation()
   QCOMPARE( p.y(), 5.5 );
   d = m2p.transform( p );
   QCOMPARE( d, QgsPointXY( 10, 0 ) );
-
 }
 
 void TestQgsMapToPixel::getters()
@@ -207,7 +206,3 @@ void TestQgsMapToPixel::transformBounds()
 
 QGSTEST_MAIN( TestQgsMapToPixel )
 #include "testqgsmaptopixel.moc"
-
-
-
-

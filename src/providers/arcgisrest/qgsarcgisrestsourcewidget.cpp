@@ -104,4 +104,3 @@ QString QgsArcGisRestSourceWidget::referer() const
 {
   return mEditReferer->text();
 }
-

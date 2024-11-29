@@ -90,10 +90,9 @@ void QgsHanaTableModel::addTableEntry( const QString &connName, const QgsHanaLay
   }
 
   QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
-  QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ),
-      wkbType == Qgis::WkbType::Unknown ? tr( "Select…" ) : QgsWkbTypes::displayString( wkbType ) );
+  QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == Qgis::WkbType::Unknown ? tr( "Select…" ) : QgsWkbTypes::displayString( wkbType ) );
   typeItem->setData( wkbType == Qgis::WkbType::Unknown, Qt::UserRole + 1 );
-  typeItem->setData( static_cast< quint32>( wkbType ), Qt::UserRole + 2 );
+  typeItem->setData( static_cast<quint32>( wkbType ), Qt::UserRole + 2 );
   if ( wkbType == Qgis::WkbType::Unknown )
     typeItem->setFlags( typeItem->flags() | Qt::ItemIsEditable );
 
@@ -137,7 +136,7 @@ void QgsHanaTableModel::addTableEntry( const QString &connName, const QgsHanaLay
   if ( !pkColumns.isEmpty() )
     pkItem->setText( pkColumns.join( ',' ) );
 
-  QStandardItem *selItem = new QStandardItem( QString( ) );
+  QStandardItem *selItem = new QStandardItem( QString() );
   selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
   selItem->setCheckState( Qt::Checked );
   selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping "
@@ -157,7 +156,7 @@ void QgsHanaTableModel::addTableEntry( const QString &connName, const QgsHanaLay
   childItemList << selItem;
   childItemList << sqlItem;
 
-  for ( QStandardItem *item :  std::as_const( childItemList ) )
+  for ( QStandardItem *item : std::as_const( childItemList ) )
   {
     if ( tip.isEmpty() || withTipButSelectable )
       item->setFlags( item->flags() | Qt::ItemIsSelectable );
@@ -166,7 +165,7 @@ void QgsHanaTableModel::addTableEntry( const QString &connName, const QgsHanaLay
 
     if ( tip.isEmpty() )
     {
-      item->setToolTip( QString( ) );
+      item->setToolTip( QString() );
     }
     else
     {
@@ -310,7 +309,7 @@ bool QgsHanaTableModel::setData( const QModelIndex &idx, const QVariant &value, 
         }
 
         item->setFlags( item->flags() | Qt::ItemIsSelectable );
-        item->setToolTip( QString( ) );
+        item->setToolTip( QString() );
       }
       else
       {
@@ -367,7 +366,7 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
 
     srid = index.sibling( index.row(), DbtmSrid ).data( Qt::DisplayRole ).toString();
     bool ok;
-    ( void )srid.toInt( &ok );
+    ( void ) srid.toInt( &ok );
     if ( !ok )
       return QString();
   }
@@ -376,7 +375,7 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
   QString sql = index.sibling( index.row(), DbtmSql ).data( Qt::DisplayRole ).toString();
 
   QgsDataSourceUri uri( connInfo );
-  uri.setDataSource( schemaName, tableName, geomColumnName, sql,  QgsHanaPrimaryKeyUtils::buildUriKey( pkColumns ) );
+  uri.setDataSource( schemaName, tableName, geomColumnName, sql, QgsHanaPrimaryKeyUtils::buildUriKey( pkColumns ) );
   uri.setWkbType( wkbType );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );

@@ -38,8 +38,8 @@ class TestQgs3DCameraController : public QgsTest
     {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testTranslate();
     void testZoom();
     void testZoomWheel();
@@ -54,7 +54,6 @@ class TestQgs3DCameraController : public QgsTest
   private:
     QgsRasterLayer *mLayerRgb = nullptr;
     QgsVectorLayer *mLayerBuildings = nullptr;
-
 };
 
 // runs before all tests
@@ -82,7 +81,6 @@ void TestQgs3DCameraController::initTestCase()
   symbol3d->setExtrusionHeight( 10.f );
   QgsVectorLayer3DRenderer *renderer3d = new QgsVectorLayer3DRenderer( symbol3d );
   mLayerBuildings->setRenderer3D( renderer3d );
-
 }
 
 //runs after all tests
@@ -121,8 +119,7 @@ void TestQgs3DCameraController::testTranslate()
   // this call is not used but ensures to synchronize the scene
   Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent ) );
 
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
@@ -135,16 +132,14 @@ void TestQgs3DCameraController::testTranslate()
   // the first mouse event only updates the mouse position
   // the second one will update the camera
   QPoint movement1( 220, 42 );
-  QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent1 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
 
   QPoint movement2( 1, 1 );
-  QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent2 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
@@ -157,8 +152,7 @@ void TestQgs3DCameraController::testTranslate()
   QCOMPARE( scene->cameraController()->pitch(), initialPitch );
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
 
-  QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos,
-                                 Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent ) );
 
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
@@ -198,8 +192,7 @@ void TestQgs3DCameraController::testZoom()
   // this call is not used but ensures to synchronize the scene
   Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos,
-                               Qt::RightButton, Qt::RightButton, Qt::NoModifier );
+  QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos, Qt::RightButton, Qt::RightButton, Qt::NoModifier );
   scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent ) );
 
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
@@ -212,16 +205,14 @@ void TestQgs3DCameraController::testZoom()
   // the first mouse event only updates the mouse position
   // the second one will update the camera
   QPoint movement1( 220, 42 );
-  QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1,
-                               Qt::RightButton, Qt::RightButton, Qt::NoModifier );
+  QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1, Qt::RightButton, Qt::RightButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent1 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Zoom );
 
   QPoint movement2( 1, 1 );
-  QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2,
-                               Qt::RightButton, Qt::RightButton, Qt::NoModifier );
+  QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2, Qt::RightButton, Qt::RightButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent2 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
@@ -234,8 +225,7 @@ void TestQgs3DCameraController::testZoom()
   QCOMPARE( scene->cameraController()->pitch(), initialPitch );
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
 
-  QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos,
-                                 Qt::RightButton, Qt::RightButton, Qt::NoModifier );
+  QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos, Qt::RightButton, Qt::RightButton, Qt::NoModifier );
   scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent ) );
 
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
@@ -271,9 +261,7 @@ void TestQgs3DCameraController::testZoomWheel()
   // this call is not used but ensures to synchronize the scene
   Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QWheelEvent wheelEvent( midPos, midPos, QPoint(), QPoint( 0, 200 ),
-                          Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase,
-                          false, Qt::MouseEventSynthesizedByApplication );
+  QWheelEvent wheelEvent( midPos, midPos, QPoint(), QPoint( 0, 200 ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false, Qt::MouseEventSynthesizedByApplication );
   scene->cameraController()->onWheel( new Qt3DInput::QWheelEvent( wheelEvent ) );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::ZoomWheel );
@@ -324,8 +312,7 @@ void TestQgs3DCameraController::testRotationCenter()
   // this call is not used but ensures to synchronize the scene
   Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent ) );
 
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
@@ -338,16 +325,14 @@ void TestQgs3DCameraController::testRotationCenter()
   // the first mouse event only updates the mouse position
   // the second one will update the camera
   QPoint movement1( 220, 42 );
-  QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent1 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
 
   QPoint movement2( 1, 1 );
-  QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent2 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
@@ -362,8 +347,7 @@ void TestQgs3DCameraController::testRotationCenter()
   QGSCOMPARENEAR( diffPitch, 12.1, 0.1 );
   QGSCOMPARENEAR( diffYaw, -62.2, 0.1 );
 
-  QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos,
-                                 Qt::RightButton, Qt::RightButton, Qt::NoModifier );
+  QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos, Qt::RightButton, Qt::RightButton, Qt::NoModifier );
   scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent ) );
 
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
@@ -403,8 +387,7 @@ void TestQgs3DCameraController::testRotationCamera()
   // this call is not used but ensures to synchronize the scene
   Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
+  QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
   scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent ) );
 
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
@@ -417,16 +400,14 @@ void TestQgs3DCameraController::testRotationCamera()
   // the first mouse event only updates the mouse position
   // the second one will update the camera
   QPoint movement1( 220, 42 );
-  QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
+  QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent1 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCamera );
 
   QPoint movement2( 1, 1 );
-  QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
+  QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent2 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
@@ -442,8 +423,7 @@ void TestQgs3DCameraController::testRotationCamera()
   QGSCOMPARENEAR( diffPitch, 8.6, 0.1 );
   QGSCOMPARENEAR( diffYaw, -44.2, 0.1 );
 
-  QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos,
-                                 Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
+  QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
   scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent ) );
 
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
@@ -483,8 +463,7 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   // this call is not used but ensures to synchronize the scene
   Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent ) );
 
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
@@ -501,16 +480,14 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   // the first mouse event only updates the mouse position
   // the second one will update the camera
   QPoint movement1( 220, 42 );
-  QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent1 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
 
   QPoint movement2( 1, 1 );
-  QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent2 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
@@ -534,9 +511,7 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   initialPitch = scene->cameraController()->pitch();
   initialYaw = scene->cameraController()->yaw();
 
-  QWheelEvent wheelEvent( midPos, midPos, QPoint(), QPoint( 0, 200 ),
-                          Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase,
-                          false, Qt::MouseEventSynthesizedByApplication );
+  QWheelEvent wheelEvent( midPos, midPos, QPoint(), QPoint( 0, 200 ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false, Qt::MouseEventSynthesizedByApplication );
   scene->cameraController()->onWheel( new Qt3DInput::QWheelEvent( wheelEvent ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::ZoomWheel );
@@ -567,8 +542,7 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
 
   // the first mouse event only updates the mouse position
   // the second one will update the camera
-  QMouseEvent mouseMoveEvent3( QEvent::MouseMove, midPos + movement1 + movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  QMouseEvent mouseMoveEvent3( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent3 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
@@ -577,8 +551,7 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
   scene->cameraController()->depthBufferCaptured( depthImage );
 
-  QMouseEvent mouseMoveEvent4( QEvent::MouseMove, midPos + movement1 + 10 * movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  QMouseEvent mouseMoveEvent4( QEvent::MouseMove, midPos + movement1 + 10 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent4 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 10 * movement2 );
@@ -593,8 +566,7 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   QGSCOMPARENEAR( diffPitch, 2.5, 0.1 );
   QGSCOMPARENEAR( diffYaw, -2.5, 0.1 );
 
-  QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos,
-                                 Qt::RightButton, Qt::RightButton, Qt::NoModifier );
+  QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos, Qt::RightButton, Qt::RightButton, Qt::NoModifier );
   scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent ) );
 
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
@@ -638,8 +610,7 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   // 1. Translate
   //
 
-  QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent ) );
 
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
@@ -652,16 +623,14 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   // the first mouse event only updates the mouse position
   // the second one will update the camera
   QPoint movement1( 220, 42 );
-  QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent1 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
 
   QPoint movement2( 1, 1 );
-  QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent2 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
@@ -685,8 +654,7 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
 
   // the first mouse event only updates the mouse position
   // the second one will update the camera
-  QMouseEvent mouseMoveEvent3( QEvent::MouseMove, midPos + movement1 + movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  QMouseEvent mouseMoveEvent3( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent3 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
@@ -695,8 +663,7 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
   scene->cameraController()->depthBufferCaptured( depthImage );
 
-  QMouseEvent mouseMoveEvent4( QEvent::MouseMove, midPos + movement1 + 10 * movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  QMouseEvent mouseMoveEvent4( QEvent::MouseMove, midPos + movement1 + 10 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent4 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 10 * movement2 );
@@ -721,8 +688,7 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   initialYaw = scene->cameraController()->yaw();
 
   // switch to translation
-  QMouseEvent mouseMoveEvent5( QEvent::MouseMove, midPos + movement1 + 10 * movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseMoveEvent5( QEvent::MouseMove, midPos + movement1 + 10 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent5 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 10 * movement2 );
@@ -732,8 +698,7 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   // this updates the mouse position
-  QMouseEvent mouseMoveEvent6( QEvent::MouseMove, midPos + movement1 + 15 * movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseMoveEvent6( QEvent::MouseMove, midPos + movement1 + 15 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent6 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 15 * movement2 );
@@ -741,8 +706,7 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
 
 
   // this updates the camera
-  QMouseEvent mouseMoveEvent7( QEvent::MouseMove, midPos + movement1 + 15 * movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseMoveEvent7( QEvent::MouseMove, midPos + movement1 + 15 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent7 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 15 * movement2 );
@@ -755,8 +719,7 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   QCOMPARE( scene->cameraController()->pitch(), initialPitch );
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
 
-  QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos,
-                                 Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent ) );
 
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
@@ -800,8 +763,7 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   // 1. Translate
   //
 
-  QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent ) );
 
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
@@ -814,16 +776,14 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   // the first mouse event only updates the mouse position
   // the second one will update the camera
   QPoint movement1( 220, 42 );
-  QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent1 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
 
   QPoint movement2( 1, 1 );
-  QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent2 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
@@ -844,9 +804,7 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   initialCamViewCenter = scene->cameraController()->camera()->viewCenter();
   initialCamPosition = scene->cameraController()->camera()->position();
 
-  QWheelEvent wheelEvent( midPos + movement1 + movement2, midPos + movement1 + movement2, QPoint(), QPoint( 0, 200 ),
-                          Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase,
-                          false, Qt::MouseEventSynthesizedByApplication );
+  QWheelEvent wheelEvent( midPos + movement1 + movement2, midPos + movement1 + movement2, QPoint(), QPoint( 0, 200 ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false, Qt::MouseEventSynthesizedByApplication );
   scene->cameraController()->onWheel( new Qt3DInput::QWheelEvent( wheelEvent ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::ZoomWheel );
@@ -874,8 +832,7 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   initialCamPosition = scene->cameraController()->camera()->position();
 
   // switch to translation
-  QMouseEvent mouseMoveEvent3( QEvent::MouseMove, midPos + movement1 + movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseMoveEvent3( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent3 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
@@ -885,8 +842,7 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   // this updates the mouse position
-  QMouseEvent mouseMoveEvent4( QEvent::MouseMove, midPos + movement1 + 5 * movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseMoveEvent4( QEvent::MouseMove, midPos + movement1 + 5 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent4 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 5 * movement2 );
@@ -894,8 +850,7 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
 
 
   // this updates the camera
-  QMouseEvent mouseMoveEvent5( QEvent::MouseMove, midPos + movement1 + 5 * movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseMoveEvent5( QEvent::MouseMove, midPos + movement1 + 5 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent5 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 5 * movement2 );
@@ -908,8 +863,7 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   QCOMPARE( scene->cameraController()->pitch(), initialPitch );
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
 
-  QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos,
-                                 Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent ) );
 
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
@@ -953,8 +907,7 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
   // 1. Translate
   //
 
-  QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent ) );
 
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
@@ -967,16 +920,14 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
   // the first mouse event only updates the mouse position
   // the second one will update the camera
   QPoint movement1( 220, 42 );
-  QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent1 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Translation );
 
   QPoint movement2( 1, 1 );
-  QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent2 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
@@ -998,8 +949,7 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
 
   // the first mouse event only updates the mouse position
   // the second one will update the camera
-  QMouseEvent mouseMoveEvent3( QEvent::MouseMove, midPos + movement1 + movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
+  QMouseEvent mouseMoveEvent3( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent3 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
@@ -1008,8 +958,7 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
   scene->cameraController()->depthBufferCaptured( depthImage );
 
-  QMouseEvent mouseMoveEvent4( QEvent::MouseMove, midPos + movement1 + 10 * movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
+  QMouseEvent mouseMoveEvent4( QEvent::MouseMove, midPos + movement1 + 10 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent4 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 10 * movement2 );
@@ -1034,8 +983,7 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
   initialYaw = scene->cameraController()->yaw();
 
   // switch to translation
-  QMouseEvent mouseMoveEvent5( QEvent::MouseMove, midPos + movement1 + 10 * movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseMoveEvent5( QEvent::MouseMove, midPos + movement1 + 10 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent5 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 10 * movement2 );
@@ -1045,8 +993,7 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   // this updates the mouse position
-  QMouseEvent mouseMoveEvent6( QEvent::MouseMove, midPos + movement1 + 15 * movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseMoveEvent6( QEvent::MouseMove, midPos + movement1 + 15 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent6 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 15 * movement2 );
@@ -1054,8 +1001,7 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
 
 
   // this updates the camera
-  QMouseEvent mouseMoveEvent7( QEvent::MouseMove, midPos + movement1 + 15 * movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseMoveEvent7( QEvent::MouseMove, midPos + movement1 + 15 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent7 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 15 * movement2 );
@@ -1068,8 +1014,7 @@ void TestQgs3DCameraController::testTranslateRotationCameraTranslate()
   QCOMPARE( scene->cameraController()->pitch(), initialPitch );
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
 
-  QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos,
-                                 Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent ) );
 
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
@@ -1109,8 +1054,7 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   // this call is not used but ensures to synchronize the scene
   Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  QMouseEvent mousePressEvent( QEvent::MouseButtonPress, midPos, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   scene->cameraController()->onMousePressed( new Qt3DInput::QMouseEvent( mousePressEvent ) );
 
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
@@ -1127,16 +1071,14 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   // the first mouse event only updates the mouse position
   // the second one will update the camera
   QPoint movement1( 220, 42 );
-  QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  QMouseEvent mouseMoveEvent1( QEvent::MouseMove, midPos + movement1, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent1 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
 
   QPoint movement2( 1, 1 );
-  QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  QMouseEvent mouseMoveEvent2( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent2 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
@@ -1162,8 +1104,7 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
 
   // the first mouse event only updates the mouse position
   // the second one will update the camera
-  QMouseEvent mouseMoveEvent3( QEvent::MouseMove, midPos + movement1 + movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
+  QMouseEvent mouseMoveEvent3( QEvent::MouseMove, midPos + movement1 + movement2, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent3 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + movement2 );
@@ -1172,8 +1113,7 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
   scene->cameraController()->depthBufferCaptured( depthImage );
 
-  QMouseEvent mouseMoveEvent4( QEvent::MouseMove, midPos + movement1 + 10 * movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
+  QMouseEvent mouseMoveEvent4( QEvent::MouseMove, midPos + movement1 + 10 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::ControlModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent4 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 10 * movement2 );
@@ -1199,8 +1139,7 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
 
   // the first mouse event only updates the mouse position
   // the second one will update the camera
-  QMouseEvent mouseMoveEvent5( QEvent::MouseMove, midPos + movement1 + 10 * movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  QMouseEvent mouseMoveEvent5( QEvent::MouseMove, midPos + movement1 + 10 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent5 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 10 * movement2 );
@@ -1209,8 +1148,7 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   depthImage = Qgs3DUtils::captureSceneDepthBuffer( engine, scene );
   scene->cameraController()->depthBufferCaptured( depthImage );
 
-  QMouseEvent mouseMoveEvent6( QEvent::MouseMove, midPos + movement1 + 12 * movement2,
-                               Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  QMouseEvent mouseMoveEvent6( QEvent::MouseMove, midPos + movement1 + 12 * movement2, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   scene->cameraController()->onPositionChanged( new Qt3DInput::QMouseEvent( mouseMoveEvent6 ) );
   QCOMPARE( scene->cameraController()->mClickPoint, midPos + movement1 + 10 * movement2 );
   QCOMPARE( scene->cameraController()->mMousePos, midPos + movement1 + 12 * movement2 );
@@ -1225,8 +1163,7 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   QGSCOMPARENEAR( diffPitch, 0.6, 0.1 );
   QGSCOMPARENEAR( diffYaw, -0.6, 0.1 );
 
-  QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos,
-                                 Qt::RightButton, Qt::RightButton, Qt::NoModifier );
+  QMouseEvent mouseReleaseEvent( QEvent::MouseButtonRelease, midPos, Qt::RightButton, Qt::RightButton, Qt::NoModifier );
   scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent ) );
 
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );

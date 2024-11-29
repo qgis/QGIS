@@ -48,7 +48,7 @@ QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mo
 
 std::unique_ptr<QgsHighlight> QgsMapToolAddFeature::createHighlight( QgsVectorLayer *layer, const QgsFeature &f )
 {
-  std::unique_ptr< QgsHighlight > highlight = std::make_unique< QgsHighlight >( mCanvas, f.geometry(), layer );
+  std::unique_ptr<QgsHighlight> highlight = std::make_unique<QgsHighlight>( mCanvas, f.geometry(), layer );
   highlight->applyDefaultStyle();
 
   switch ( f.geometry().type() )
@@ -79,10 +79,10 @@ std::unique_ptr<QgsHighlight> QgsMapToolAddFeature::createHighlight( QgsVectorLa
 bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, bool showModal )
 {
   QgsFeature feat( f );
-  std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::mapToolCaptureScope( snappingMatches() ) );
+  std::unique_ptr<QgsExpressionContextScope> scope( QgsExpressionContextUtils::mapToolCaptureScope( snappingMatches() ) );
   QgsFeatureAction *action = new QgsFeatureAction( tr( "add feature" ), feat, vlayer, QUuid(), -1, this );
 
-  std::unique_ptr< QgsHighlight > highlight;
+  std::unique_ptr<QgsHighlight> highlight;
   if ( QgsRubberBand *rb = takeRubberBand() )
   {
     connect( action, &QgsFeatureAction::addFeatureFinished, rb, &QgsRubberBand::deleteLater );
@@ -123,10 +123,8 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
     //add points to other features to keep topology up-to-date
     const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
     const Qgis::AvoidIntersectionsMode avoidIntersectionsMode = QgsProject::instance()->avoidIntersectionsMode();
-    if ( topologicalEditing && avoidIntersectionsMode == Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers &&
-         ( mode() == CaptureLine || mode() == CapturePolygon ) )
+    if ( topologicalEditing && avoidIntersectionsMode == Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers && ( mode() == CaptureLine || mode() == CapturePolygon ) )
     {
-
       //use always topological editing for avoidIntersection.
       //Otherwise, no way to guarantee the geometries don't have a small gap in between.
       const QList<QgsVectorLayer *> intersectionLayers = QgsProject::instance()->avoidIntersectionsLayers();

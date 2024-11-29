@@ -24,7 +24,7 @@ QgsWfsRequest::QgsWfsRequest( const QgsWFSDataSourceURI &uri )
   : QgsBaseNetworkRequest( uri.auth(), tr( "WFS" ) )
   , mUri( uri )
 {
-  QgsDebugMsgLevel( QStringLiteral( "theUri = " ) + uri.uri( ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "theUri = " ) + uri.uri(), 4 );
 }
 
 QUrl QgsWfsRequest::requestUrl( const QString &request ) const

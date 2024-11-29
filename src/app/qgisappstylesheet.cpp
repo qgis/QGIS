@@ -132,7 +132,8 @@ void QgisAppStyleSheet::applyStyleSheet( const QMap<QString, QVariant> &opts )
                                     "    color: palette(window-text);"
                                     "    background-color:palette(window);"
                                     "    padding-right: 0px;"
-                                    "}" ).arg( frameMargin );
+                                    "}" )
+                      .arg( frameMargin );
 
     style += QStringLiteral( "QTreeView#mOptionsTreeView {"
                              "    background-color: rgba(69, 69, 69, 0);"
@@ -149,7 +150,8 @@ void QgisAppStyleSheet::applyStyleSheet( const QMap<QString, QVariant> &opts )
                              "    color: palette(window-text);"
                              "    background-color:palette(window);"
                              "    padding-right: 0px;"
-                             "}" ).arg( frameMargin );
+                             "}" )
+               .arg( frameMargin );
 
     const QString toolbarSpacing = opts.value( QStringLiteral( "toolbarSpacing" ), QString() ).toString();
     if ( !toolbarSpacing.isEmpty() )
@@ -170,8 +172,7 @@ void QgisAppStyleSheet::applyStyleSheet( const QMap<QString, QVariant> &opts )
                    "selection-background-color: %1;"
                    "selection-color: %2;"
                    "}" )
-          .arg( palette.highlight().color().name(),
-                palette.highlightedText().color().name() );
+            .arg( palette.highlight().color().name(), palette.highlightedText().color().name() );
   }
 
   QgsDebugMsgLevel( QStringLiteral( "Stylesheet built: %1" ).arg( ss ), 2 );
@@ -237,7 +238,7 @@ void QgisAppStyleSheet::setActiveValues()
   QgsDebugMsgLevel( QStringLiteral( "Style name: %1" ).arg( mStyle ), 2 );
 
   mMacStyle = mStyle.contains( QLatin1String( "macintosh" ) ); // macintosh (aqua)
-  mOxyStyle = mStyle.contains( QLatin1String( "oxygen" ) ); // oxygen
+  mOxyStyle = mStyle.contains( QLatin1String( "oxygen" ) );    // oxygen
 
   mDefaultFont = qApp->font(); // save before it is changed in any way
 
@@ -284,5 +285,4 @@ void QgisAppStyleSheet::setActiveValues()
 #else
   mAndroidOS = false;
 #endif
-
 }

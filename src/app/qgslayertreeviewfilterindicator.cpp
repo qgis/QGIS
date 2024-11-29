@@ -40,7 +40,7 @@ void QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked( const QModelIn
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
   if ( vl && vl->isEditable() )
   {
-    QgisApp::instance()->messageBar()->pushWarning( tr( "Edit filter" ),  tr( "Cannot edit filter when layer is in edit mode" ) );
+    QgisApp::instance()->messageBar()->pushWarning( tr( "Edit filter" ), tr( "Cannot edit filter when layer is in edit mode" ) );
     return;
   }
 
@@ -158,17 +158,17 @@ bool QgsLayerTreeViewFilterIndicatorProvider::acceptLayer( QgsMapLayer *layer )
     case Qgis::LayerType::Vector:
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-      return ! vlayer->subsetString().isEmpty();
+      return !vlayer->subsetString().isEmpty();
     }
     case Qgis::LayerType::Raster:
     {
       QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
-      return ! rlayer->subsetString().isEmpty();
+      return !rlayer->subsetString().isEmpty();
     }
     case Qgis::LayerType::PointCloud:
     {
       QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer );
-      return ! pclayer->subsetString().isEmpty();
+      return !pclayer->subsetString().isEmpty();
     }
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:

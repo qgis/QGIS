@@ -306,9 +306,6 @@ bool QgsSLConnectionItem::layerCollection() const
 QVector<QgsDataItem *> QgsSLLayerItem::createChildren()
 {
   QVector<QgsDataItem *> children;
-  children.push_back( new QgsFieldsItem( this,
-                                         path() + QStringLiteral( "/columns/ " ),
-                                         uri(),
-                                         QStringLiteral( "spatialite" ), QString(), name() ) );
+  children.push_back( new QgsFieldsItem( this, path() + QStringLiteral( "/columns/ " ), uri(), QStringLiteral( "spatialite" ), QString(), name() ) );
   return children;
 }

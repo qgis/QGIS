@@ -46,7 +46,7 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *it
 
   if ( mItem && mItem->annotation() )
   {
-    QgsTextAnnotation *annotation = static_cast< QgsTextAnnotation * >( mItem->annotation() );
+    QgsTextAnnotation *annotation = static_cast<QgsTextAnnotation *>( mItem->annotation() );
     mTextDocument.reset( annotation->document() ? annotation->document()->clone() : nullptr );
     mTextEdit->setDocument( mTextDocument.get() );
   }
@@ -63,7 +63,7 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *it
   QObject::connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsTextAnnotationDialog::applyTextToItem );
   QObject::connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsTextAnnotationDialog::showHelp );
   QObject::connect( mFontComboBox, &QFontComboBox::currentFontChanged, this, &QgsTextAnnotationDialog::changeCurrentFormat );
-  QObject::connect( mFontSizeSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsTextAnnotationDialog::changeCurrentFormat );
+  QObject::connect( mFontSizeSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsTextAnnotationDialog::changeCurrentFormat );
   QObject::connect( mBoldPushButton, &QPushButton::toggled, this, &QgsTextAnnotationDialog::changeCurrentFormat );
   QObject::connect( mItalicsPushButton, &QPushButton::toggled, this, &QgsTextAnnotationDialog::changeCurrentFormat );
   QObject::connect( mTextEdit, &QTextEdit::cursorPositionChanged, this, &QgsTextAnnotationDialog::setCurrentFontPropertiesToGui );
@@ -78,7 +78,6 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *it
   connect( mLiveCheckBox, &QCheckBox::toggled, this, &QgsTextAnnotationDialog::onSettingsChanged );
   connect( mEmbeddedWidget, &QgsAnnotationWidget::changed, this, &QgsTextAnnotationDialog::onSettingsChanged );
   connect( mTextEdit, &QTextEdit::textChanged, this, &QgsTextAnnotationDialog::onSettingsChanged );
-
 }
 
 void QgsTextAnnotationDialog::showEvent( QShowEvent * )
@@ -107,7 +106,7 @@ void QgsTextAnnotationDialog::applyTextToItem()
 {
   if ( mItem && mTextDocument && mItem->annotation() )
   {
-    QgsTextAnnotation *annotation = static_cast< QgsTextAnnotation * >( mItem->annotation() );
+    QgsTextAnnotation *annotation = static_cast<QgsTextAnnotation *>( mItem->annotation() );
     //apply settings from embedded item widget
     if ( mEmbeddedWidget )
     {

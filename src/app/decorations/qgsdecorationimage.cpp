@@ -250,15 +250,13 @@ void QgsDecorationImage::render( const QgsMapSettings &mapSettings, QgsRenderCon
       context.painter()->translate( deviceWidth - xOffset - size.width(), yOffset );
       break;
     case BottomRight:
-      context.painter()->translate( deviceWidth - xOffset - size.width(),
-                                    deviceHeight - yOffset - size.height() );
+      context.painter()->translate( deviceWidth - xOffset - size.width(), deviceHeight - yOffset - size.height() );
       break;
     case TopCenter:
       context.painter()->translate( deviceWidth / 2 - size.width() / 2 + xOffset, yOffset );
       break;
     case BottomCenter:
-      context.painter()->translate( deviceWidth / 2 - size.width() / 2 + xOffset,
-                                    deviceHeight - yOffset - size.height() );
+      context.painter()->translate( deviceWidth / 2 - size.width() / 2 + xOffset, deviceHeight - yOffset - size.height() );
       break;
     default:
       QgsDebugError( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );

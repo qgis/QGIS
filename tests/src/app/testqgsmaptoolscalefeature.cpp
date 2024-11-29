@@ -33,15 +33,15 @@
  * \ingroup UnitTests
  * This is a unit test for the vertex tool
  */
-class TestQgsMapToolScaleFeature: public QObject
+class TestQgsMapToolScaleFeature : public QObject
 {
     Q_OBJECT
   public:
     TestQgsMapToolScaleFeature();
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testScaleFeature();
     void testScaleFeatureWithAnchor();

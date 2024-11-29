@@ -34,6 +34,7 @@ class GRASS_LIB_EXPORT QgsGrassUndoCommandChangeAttribute : public QgsGrassUndoC
   public:
     QgsGrassUndoCommandChangeAttribute( QgsGrassProvider *provider, int fid, int lid, int field, int cat, bool deleteCat, bool deleteRecord );
     void undo() override;
+
   private:
     QgsGrassProvider *mProvider = nullptr;
     int mFid;

@@ -34,8 +34,7 @@ class QgsHanaSourceSelectProvider : public QgsSourceSelectProvider
 
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddHanaLayer.svg" ) ); }
 
-    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget,
-        QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsHanaSourceSelect( parent, fl, widgetMode );
     }
@@ -44,7 +43,8 @@ class QgsHanaSourceSelectProvider : public QgsSourceSelectProvider
 class QgsHanaProviderGuiMetadata : public QgsProviderGuiMetadata
 {
   public:
-    QgsHanaProviderGuiMetadata() : QgsProviderGuiMetadata( QgsHanaProvider::HANA_KEY )
+    QgsHanaProviderGuiMetadata()
+      : QgsProviderGuiMetadata( QgsHanaProvider::HANA_KEY )
     {
     }
 

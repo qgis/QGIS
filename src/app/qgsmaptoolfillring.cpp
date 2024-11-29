@@ -89,7 +89,7 @@ void QgsMapToolFillRing::polygonCaptured( const QgsCurvePolygon *polygon )
     {
       errorMessage = tr( "the inserted Ring is not closed" );
     }
-    else if ( addRingReturnCode ==  Qgis::GeometryOperationResult::AddRingNotValid )
+    else if ( addRingReturnCode == Qgis::GeometryOperationResult::AddRingNotValid )
     {
       errorMessage = tr( "the inserted Ring is not a valid geometry" );
     }
@@ -117,7 +117,6 @@ void QgsMapToolFillRing::polygonCaptured( const QgsCurvePolygon *polygon )
 
 void QgsMapToolFillRing::createFeature( const QgsGeometry &geometry, QgsFeatureId fid )
 {
-
   QgsVectorLayer *vlayer = getCheckLayer();
   if ( !vlayer )
     return;
@@ -197,7 +196,7 @@ void QgsMapToolFillRing::fillRingUnderPoint( const QgsPointXY &p )
       pol = g.asMultiPolygon();
     }
 
-    for ( int i = 0; i < pol.size() ; ++i )
+    for ( int i = 0; i < pol.size(); ++i )
     {
       //for each part
       if ( pol[i].size() > 1 )

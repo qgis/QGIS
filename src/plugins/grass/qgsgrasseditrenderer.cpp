@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include  <QVBoxLayout>
+#include <QVBoxLayout>
 
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgscategorizedsymbolrendererwidget.h"
@@ -125,16 +125,11 @@ QgsSymbol *QgsGrassEditRenderer::symbolForFeature( const QgsFeature &feature, Qg
   QgsDebugMsgLevel( QString( "fid = %1 symbolCode = %2" ).arg( feature.id() ).arg( symbolCode ), 3 );
 
   QgsSymbol *symbol = nullptr;
-  if ( symbolCode == QgsGrassVectorMap::TopoPoint || symbolCode == QgsGrassVectorMap::TopoCentroidIn ||
-       symbolCode == QgsGrassVectorMap::TopoCentroidOut || symbolCode == QgsGrassVectorMap::TopoCentroidDupl ||
-       symbolCode == QgsGrassVectorMap::TopoNode0 || symbolCode == QgsGrassVectorMap::TopoNode1 ||
-       symbolCode == QgsGrassVectorMap::TopoNode2 )
+  if ( symbolCode == QgsGrassVectorMap::TopoPoint || symbolCode == QgsGrassVectorMap::TopoCentroidIn || symbolCode == QgsGrassVectorMap::TopoCentroidOut || symbolCode == QgsGrassVectorMap::TopoCentroidDupl || symbolCode == QgsGrassVectorMap::TopoNode0 || symbolCode == QgsGrassVectorMap::TopoNode1 || symbolCode == QgsGrassVectorMap::TopoNode2 )
   {
     symbol = mMarkerRenderer->symbolForFeature( feature, context );
   }
-  else if ( symbolCode == QgsGrassVectorMap::TopoLine || symbolCode == QgsGrassVectorMap::TopoBoundaryError ||
-            symbolCode == QgsGrassVectorMap::TopoBoundaryErrorLeft || symbolCode == QgsGrassVectorMap::TopoBoundaryErrorRight ||
-            symbolCode == QgsGrassVectorMap::TopoBoundaryOk )
+  else if ( symbolCode == QgsGrassVectorMap::TopoLine || symbolCode == QgsGrassVectorMap::TopoBoundaryError || symbolCode == QgsGrassVectorMap::TopoBoundaryErrorLeft || symbolCode == QgsGrassVectorMap::TopoBoundaryErrorRight || symbolCode == QgsGrassVectorMap::TopoBoundaryOk )
   {
     symbol = mLineRenderer->symbolForFeature( feature, context );
   }
@@ -302,6 +297,3 @@ QgsFeatureRenderer *QgsGrassEditRendererWidget::renderer()
   mRenderer->setMarkerRenderer( mPointRendererWidget->renderer()->clone() );
   return mRenderer;
 }
-
-
-

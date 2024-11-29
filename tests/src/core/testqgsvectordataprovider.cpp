@@ -33,8 +33,8 @@ class TestQgsVectorDataProvider : public QObject
 
   private slots:
 
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     // test whether QgsFeature content is set up correctly
     void select_checkContents_data();
@@ -49,7 +49,6 @@ class TestQgsVectorDataProvider : public QObject
     void sourceExtent();
 
   private:
-
     QgsVectorLayer *vlayerPoints = nullptr;
     QgsVectorLayer *vlayerLines = nullptr;
     QgsVectorLayer *vlayerPoints3D = nullptr;
@@ -112,7 +111,7 @@ static void checkFid4( QgsFeature &f, bool hasGeometry, bool hasAttrs, int onlyO
 {
   const QgsAttributes &attrs = f.attributes();
 
-  QCOMPARE( f.id(), ( QgsFeatureId )4 );
+  QCOMPARE( f.id(), ( QgsFeatureId ) 4 );
 
   QCOMPARE( f.attributes().count(), 6 );
   if ( hasAttrs )
@@ -133,7 +132,7 @@ static void checkFid4( QgsFeature &f, bool hasGeometry, bool hasAttrs, int onlyO
     QVERIFY( f.hasGeometry() );
     QVERIFY( f.geometry().wkbType() == Qgis::WkbType::Point );
     QCOMPARE( keep6digits( f.geometry().asPoint().x() ), -88.302277 );
-    QCOMPARE( keep6digits( f.geometry().asPoint().y() ),  33.731884 );
+    QCOMPARE( keep6digits( f.geometry().asPoint().y() ), 33.731884 );
   }
   else
   {

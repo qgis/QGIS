@@ -76,8 +76,7 @@ QgsMapToolShapeAbstract *QgsMapToolShapeRectangle3PointsMetadata::factory( QgsMa
 }
 
 QgsMapToolShapeRectangle3Points::QgsMapToolShapeRectangle3Points( const QString &id, QgsMapToolShapeRectangle3PointsMetadata::CreateMode createMode, QgsMapToolCapture *parentTool )
-  : QgsMapToolShapeRectangleAbstract( id, parentTool ),
-    mCreateMode( createMode )
+  : QgsMapToolShapeRectangleAbstract( id, parentTool ), mCreateMode( createMode )
 {
 }
 
@@ -160,7 +159,7 @@ void QgsMapToolShapeRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, Q
             mRectangle = QgsQuadrilateral::rectangleFrom3Points( mPoints.at( 0 ), mPoints.at( 1 ), point, QgsQuadrilateral::Projected );
             break;
         }
-        mTempRubberBand->setGeometry( mRectangle.toPolygon( ) );
+        mTempRubberBand->setGeometry( mRectangle.toPolygon() );
       }
       break;
       default:

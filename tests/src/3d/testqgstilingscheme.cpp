@@ -28,13 +28,15 @@ class TestQgsTilingScheme : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsTilingScheme() : QgsTest( QStringLiteral( "Test QgsTilingScheme" ) ) {}
+    TestQgsTilingScheme()
+      : QgsTest( QStringLiteral( "Test QgsTilingScheme" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testTileTransforms();
+
   private:
 };
 
@@ -100,7 +102,7 @@ void TestQgsTilingScheme::testTileTransforms()
   y = 2.0f;
 
 
-  QgsRectangle rec425 = tilingScheme.tileToExtent( ( int )x, ( int )y, z );
+  QgsRectangle rec425 = tilingScheme.tileToExtent( ( int ) x, ( int ) y, z );
   QgsRectangle expectedRec425 = QgsRectangle( xMinFour, yMinTwo, xMaxFour, yMaxTwo );
   QCOMPARE( rec425, expectedRec425 );
 
@@ -114,8 +116,8 @@ void TestQgsTilingScheme::testTileTransforms()
 
 
   // test (x, y+1) tile
-  QgsRectangle rec435 = tilingScheme.tileToExtent( ( int )x, ( int )( y + 1 ), z );
-  QgsRectangle expectedRec435 = QgsRectangle( xMinFour, yMinTwo + tileSize, xMaxFour,  yMaxTwo + tileSize );
+  QgsRectangle rec435 = tilingScheme.tileToExtent( ( int ) x, ( int ) ( y + 1 ), z );
+  QgsRectangle expectedRec435 = QgsRectangle( xMinFour, yMinTwo + tileSize, xMaxFour, yMaxTwo + tileSize );
   QCOMPARE( rec435, expectedRec435 );
   tilingScheme.extentToTile( expectedRec435, newX, newY, newZ );
   QCOMPARE( newX, 4 );
@@ -124,8 +126,8 @@ void TestQgsTilingScheme::testTileTransforms()
 
 
   // test (x+1, y) tile
-  QgsRectangle rec525 = tilingScheme.tileToExtent( ( int )( x + 1 ), ( int )y, z );
-  QgsRectangle expectedRec525 = QgsRectangle( xMinFour + tileSize, yMinTwo, xMaxFour + tileSize,  yMaxTwo );
+  QgsRectangle rec525 = tilingScheme.tileToExtent( ( int ) ( x + 1 ), ( int ) y, z );
+  QgsRectangle expectedRec525 = QgsRectangle( xMinFour + tileSize, yMinTwo, xMaxFour + tileSize, yMaxTwo );
   QCOMPARE( rec525, expectedRec525 );
 
   tilingScheme.extentToTile( expectedRec525, newX, newY, newZ );
@@ -135,8 +137,8 @@ void TestQgsTilingScheme::testTileTransforms()
 
 
   // test (x, y-1) tile
-  QgsRectangle rec415 = tilingScheme.tileToExtent( ( int )x, ( int )( y - 1 ), z );
-  QgsRectangle expectedRec415 = QgsRectangle( xMinFour, yMinTwo - tileSize, xMaxFour,  yMaxTwo - tileSize );
+  QgsRectangle rec415 = tilingScheme.tileToExtent( ( int ) x, ( int ) ( y - 1 ), z );
+  QgsRectangle expectedRec415 = QgsRectangle( xMinFour, yMinTwo - tileSize, xMaxFour, yMaxTwo - tileSize );
   QCOMPARE( rec415, expectedRec415 );
 
   tilingScheme.extentToTile( expectedRec415, newX, newY, newZ );
@@ -146,8 +148,8 @@ void TestQgsTilingScheme::testTileTransforms()
 
 
   // test (x-1, y) tile
-  QgsRectangle rec325 = tilingScheme.tileToExtent( ( int )( x - 1 ), ( int )y, z );
-  QgsRectangle expectedRec325 = QgsRectangle( xMinFour - tileSize, yMinTwo, xMaxFour - tileSize,  yMaxTwo );
+  QgsRectangle rec325 = tilingScheme.tileToExtent( ( int ) ( x - 1 ), ( int ) y, z );
+  QgsRectangle expectedRec325 = QgsRectangle( xMinFour - tileSize, yMinTwo, xMaxFour - tileSize, yMaxTwo );
   QCOMPARE( rec325, expectedRec325 );
   tilingScheme.extentToTile( expectedRec325, newX, newY, newZ );
   QCOMPARE( newX, 3 );

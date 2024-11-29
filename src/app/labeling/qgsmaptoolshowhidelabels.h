@@ -42,7 +42,6 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   protected:
-
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
 
@@ -57,12 +56,10 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
     void showHideLabels( QMouseEvent *e );
 
     //! Returns the features intersecting rubberband
-    bool selectedFeatures( QgsVectorLayer *vlayer,
-                           QgsFeatureIds &selectedFeatIds );
+    bool selectedFeatures( QgsVectorLayer *vlayer, QgsFeatureIds &selectedFeatIds );
 
     //! Returns the label features intersecting rubberband
-    bool selectedLabelFeatures( QgsVectorLayer *vlayer,
-                                QList<QgsLabelPosition> &listPos );
+    bool selectedLabelFeatures( QgsVectorLayer *vlayer, QList<QgsLabelPosition> &listPos );
 
     bool showHide( const QgsLabelPosition &pos, bool show );
 };

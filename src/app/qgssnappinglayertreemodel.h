@@ -17,7 +17,6 @@
 #define QGSSNAPPINGLAYERTREEVIEW_H
 
 
-
 #include <QSortFilterProxyModel>
 #include <QItemDelegate>
 
@@ -77,7 +76,11 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
 
     QgsLayerTreeModel *layerTreeModel() const;
     void setLayerTreeModel( QgsLayerTreeModel *layerTreeModel );
-    void resetLayerTreeModel() {  beginResetModel(); endResetModel(); }
+    void resetLayerTreeModel()
+    {
+      beginResetModel();
+      endResetModel();
+    }
 
     QgsVectorLayer *vectorLayer( const QModelIndex &idx ) const;
 
@@ -102,7 +105,7 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
     void hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings );
 };
 
-class SnappingLayerDelegateTypeMenu: public QMenu
+class SnappingLayerDelegateTypeMenu : public QMenu
 {
     Q_OBJECT
 

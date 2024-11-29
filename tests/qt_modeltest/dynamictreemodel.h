@@ -48,9 +48,10 @@ class DynamicTreeModel : public QAbstractItemModel
      * Returns -1 if not found.
     */
     qint64 findParentId( qint64 searchId ) const;
+
   private:
     QHash<qint64, QString> m_items;
-    QHash<qint64, QList<QList<qint64> > > m_childItems;
+    QHash<qint64, QList<QList<qint64>>> m_childItems;
     qint64 nextId;
     qint64 newId()
     {
@@ -89,6 +90,7 @@ class ModelChangeCommand : public QObject
       m_numCols = cols;
     }
     virtual void doCommand() = 0;
+
   protected:
     DynamicTreeModel *m_model;
     QList<int> m_rowNumbers;
@@ -109,8 +111,7 @@ class ModelMoveCommand : public ModelChangeCommand
     Q_OBJECT
   public:
     ModelMoveCommand( DynamicTreeModel *model, QObject *parent );
-    virtual bool emitPreSignal( const QModelIndex &srcParent, int srcStart, int srcEnd,
-                                const QModelIndex &destParent, int destRow );
+    virtual bool emitPreSignal( const QModelIndex &srcParent, int srcStart, int srcEnd, const QModelIndex &destParent, int destRow );
     void doCommand() override;
     virtual void emitPostSignal();
     void setDestAncestors( QList<int> rows )
@@ -121,6 +122,7 @@ class ModelMoveCommand : public ModelChangeCommand
     {
       m_destRow = row;
     }
+
   protected:
     QList<int> m_destRowNumbers;
     int m_destRow;
@@ -134,8 +136,7 @@ class ModelResetCommand : public ModelMoveCommand
     Q_OBJECT
   public:
     ModelResetCommand( DynamicTreeModel *model, QObject *parent = 0 );
-    bool emitPreSignal( const QModelIndex &srcParent, int srcStart, int srcEnd,
-                        const QModelIndex &destParent, int destRow ) override;
+    bool emitPreSignal( const QModelIndex &srcParent, int srcStart, int srcEnd, const QModelIndex &destParent, int destRow ) override;
     void emitPostSignal() override;
 };
 
@@ -147,8 +148,7 @@ class ModelResetCommandFixed : public ModelMoveCommand
     Q_OBJECT
   public:
     ModelResetCommandFixed( DynamicTreeModel *model, QObject *parent = 0 );
-    bool emitPreSignal( const QModelIndex &srcParent, int srcStart, int srcEnd,
-                        const QModelIndex &destParent, int destRow ) override;
+    bool emitPreSignal( const QModelIndex &srcParent, int srcStart, int srcEnd, const QModelIndex &destParent, int destRow ) override;
     void emitPostSignal() override;
 };
 class ModelChangeChildrenLayoutsCommand : public ModelChangeCommand
@@ -161,6 +161,7 @@ class ModelChangeChildrenLayoutsCommand : public ModelChangeCommand
     {
       m_secondRowNumbers = rows;
     }
+
   protected:
     QList<int> m_secondRowNumbers;
     int m_destRow;

@@ -38,7 +38,7 @@ QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *pa
 
   for ( int i = 0; i < mDimensions->rowCount(); i++ )
   {
-    const QgsWmtsDimension &d = layer.dimensions[ dims[i] ];
+    const QgsWmtsDimension &d = layer.dimensions[dims[i]];
 
     mDimensions->setItem( i, 0, new QTableWidgetItem( d.identifier ) );
     mDimensions->setItem( i, 1, new QTableWidgetItem( d.title ) );
@@ -60,7 +60,7 @@ QHash<QString, QString> QgsWmtsDimensions::selectedDimensions() const
 
   for ( int i = 0; i < mDimensions->rowCount(); i++ )
   {
-    QComboBox *cb = qobject_cast< QComboBox * >( mDimensions->cellWidget( i, 4 ) );
+    QComboBox *cb = qobject_cast<QComboBox *>( mDimensions->cellWidget( i, 4 ) );
     Q_ASSERT( cb );
     selected.insert( mDimensions->item( i, 0 )->text(), cb->currentText() );
   }
