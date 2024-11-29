@@ -205,6 +205,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     QPointF mMouseMoveStartPos;
 
     Qgis::MouseHandlesAction mCurrentMouseMoveAction = Qgis::MouseHandlesAction::NoAction;
+    bool mDoubleClickInProgress = false;
 
     //! True if user is currently dragging items
     bool mIsDragging = false;

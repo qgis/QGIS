@@ -272,6 +272,8 @@ void QgsLayoutMouseHandles::showStatusMessage( const QString &message )
 
 void QgsLayoutMouseHandles::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
 {
+    QgsGraphicsViewMouseHandles::mouseDoubleClickEvent( event );
+
   QList<QGraphicsItem *> items = selectedSceneItems();
   if ( items.isEmpty() )
     return;
