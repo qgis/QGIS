@@ -158,7 +158,7 @@ void TestQgsProcessingFixGeometry::fixAngleAlg()
   QCOMPARE( outputLayer->featureCount(), sourceLayer->featureCount() );
   QCOMPARE( reportLayer->featureCount(), reportList.count() );
   int idx = 1;
-  for ( QString expectedReport : reportList )
+  for ( const QString &expectedReport : reportList )
   {
     const QgsFeature reportFeature = reportLayer->getFeature( idx );
     QCOMPARE( reportFeature.attribute( "report" ), expectedReport );
@@ -166,18 +166,18 @@ void TestQgsProcessingFixGeometry::fixAngleAlg()
   }
 
   // Verification of vertex number
-  for ( auto fid : finalVertexCount.keys() )
+  for ( auto it = finalVertexCount.constBegin(); it != finalVertexCount.constEnd(); ++it )
   {
     int nbVertices = 0;
     QgsFeature feat;
-    outputLayer->getFeatures( QgsFeatureRequest( QString( "\"fid\" = %1" ).arg( fid ) ) ).nextFeature( feat );
-    auto vit =  feat.geometry().vertices();
+    outputLayer->getFeatures( QgsFeatureRequest( QString( "\"fid\" = %1" ).arg( it.key() ) ) ).nextFeature( feat );
+    QgsVertexIterator vit =  feat.geometry().vertices();
     while ( vit.hasNext() )
     {
       vit.next();
       nbVertices++;
     }
-    QCOMPARE( nbVertices, finalVertexCount.value( fid ) );
+    QCOMPARE( nbVertices, it.value() );
   }
 }
 
@@ -229,7 +229,7 @@ void TestQgsProcessingFixGeometry::fixAreaAlg()
 
   const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
   QgsVectorLayer sourceLayer = QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
-  QgsVectorLayer errorsLayer = QgsVectorLayer( mDataDir.absoluteFilePath( "merge_polygons.gpkg|layername=errors_layer" ), QStringLiteral( "" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer errorsLayer = QgsVectorLayer( mDataDir.absoluteFilePath( "merge_polygons.gpkg|layername=errors_layer" ), QString(), QStringLiteral( "ogr" ) );
   QFETCH( QStringList, reportList );
   QFETCH( int, method );
 
@@ -267,7 +267,7 @@ void TestQgsProcessingFixGeometry::fixAreaAlg()
   QCOMPARE( outputLayer->featureCount(), 21 );
   QCOMPARE( reportLayer->featureCount(), reportList.count() );
   int idx = 1;
-  for ( QString expectedReport : reportList )
+  for ( const QString &expectedReport : reportList )
   {
     const QgsFeature reportFeature = reportLayer->getFeature( idx );
     QCOMPARE( reportFeature.attribute( "report" ), expectedReport );
@@ -279,10 +279,10 @@ void TestQgsProcessingFixGeometry::fixHoleAlg()
 {
   const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
   QgsVectorLayer sourceLayer = QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
-  QgsVectorLayer errorsLayer = QgsVectorLayer( mDataDir.absoluteFilePath( "remove_hole.gpkg|layername=errors_layer" ), QStringLiteral( "" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer errorsLayer = QgsVectorLayer( mDataDir.absoluteFilePath( "remove_hole.gpkg|layername=errors_layer" ), QString(), QStringLiteral( "ogr" ) );
   QVERIFY( sourceLayer.isValid() );
   QVERIFY( errorsLayer.isValid() );
-  const auto reportList = QStringList() << QStringLiteral( "Remove hole" );
+  const QStringList reportList = QStringList() << QStringLiteral( "Remove hole" );
 
   const std::unique_ptr< QgsProcessingAlgorithm > alg(
     QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:fixgeometryhole" ) )
@@ -312,7 +312,7 @@ void TestQgsProcessingFixGeometry::fixHoleAlg()
   QCOMPARE( outputLayer->featureCount(), 25 );
   QCOMPARE( reportLayer->featureCount(), reportList.count() );
   int idx = 1;
-  for ( QString expectedReport : reportList )
+  for ( const QString &expectedReport : reportList )
   {
     const QgsFeature reportFeature = reportLayer->getFeature( idx );
     QCOMPARE( reportFeature.attribute( "report" ), expectedReport );
@@ -324,15 +324,15 @@ void TestQgsProcessingFixGeometry::fixMissingVertexAlg()
 {
   const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
   QgsVectorLayer sourceLayer = QgsVectorLayer( testDataDir.absoluteFilePath( "missing_vertex.gpkg|layername=missing_vertex" ), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
-  QgsVectorLayer errorsLayer = QgsVectorLayer( mDataDir.absoluteFilePath( "add_missing_vertex.gpkg|layername=errors_layer" ), QStringLiteral( "" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer errorsLayer = QgsVectorLayer( mDataDir.absoluteFilePath( "add_missing_vertex.gpkg|layername=errors_layer" ), QString(), QStringLiteral( "ogr" ) );
   QVERIFY( sourceLayer.isValid() );
   QVERIFY( errorsLayer.isValid() );
-  const auto reportList = QStringList()
-                          << QStringLiteral( "Add missing vertex" )
-                          << QStringLiteral( "Add missing vertex" )
-                          << QStringLiteral( "Add missing vertex" )
-                          << QStringLiteral( "Add missing vertex" )
-                          << QStringLiteral( "Add missing vertex" );
+  const QStringList reportList = QStringList()
+                                 << QStringLiteral( "Add missing vertex" )
+                                 << QStringLiteral( "Add missing vertex" )
+                                 << QStringLiteral( "Add missing vertex" )
+                                 << QStringLiteral( "Add missing vertex" )
+                                 << QStringLiteral( "Add missing vertex" );
 
   const std::unique_ptr< QgsProcessingAlgorithm > alg(
     QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:fixgeometrymissingvertex" ) )
@@ -362,7 +362,7 @@ void TestQgsProcessingFixGeometry::fixMissingVertexAlg()
   QCOMPARE( outputLayer->featureCount(), 6 );
   QCOMPARE( reportLayer->featureCount(), reportList.count() );
   int idx = 1;
-  for ( QString expectedReport : reportList )
+  for ( const QString &expectedReport : reportList )
   {
     const QgsFeature reportFeature = reportLayer->getFeature( idx );
     QCOMPARE( reportFeature.attribute( "report" ), expectedReport );
