@@ -884,18 +884,19 @@ void TestQgsMeshRenderer::test_color_scale_based_on_canvas_extent()
   int groupIndex = 0;
   layer.setStaticScalarDatasetIndex( QgsMeshDatasetIndex( groupIndex, 0 ) );
 
-  // min max from current canvas settings for group
-  QgsMeshRendererSettings rendererSettings = layer.rendererSettings();
-  QgsMeshRendererScalarSettings scalarRendererSettings = rendererSettings.scalarSettings( groupIndex );
-  scalarRendererSettings.setMinMaxValueType( QgsMeshRendererScalarSettings::MinMaxValueType::InteractiveFromCanvas );
-  rendererSettings.setScalarSettings( groupIndex, scalarRendererSettings );
-  layer.setRendererSettings( rendererSettings );
-
   QgsProject::instance()->addMapLayer( &layer );
   mMapSettings->setLayers( QList<QgsMapLayer *>() << &layer );
   mMapSettings->setDestinationCrs( layer.crs() );
   mMapSettings->setOutputDpi( 96 );
   mMapSettings->setRotation( 0 );
+
+  // min max from current canvas settings for group
+  QgsMeshRendererSettings rendererSettings = layer.rendererSettings();
+  QgsMeshRendererScalarSettings scalarRendererSettings = rendererSettings.scalarSettings( groupIndex );
+  scalarRendererSettings.setLimits( Qgis::MeshRangeLimit::MinimumMaximum );
+  scalarRendererSettings.setExtent( Qgis::MeshRangeExtent::UpdatedCanvas );
+  rendererSettings.setScalarSettings( groupIndex, scalarRendererSettings );
+  layer.setRendererSettings( rendererSettings );
 
   QgsRectangle extent = layer.extent();
   extent.grow( 0.1 );
@@ -911,6 +912,53 @@ void TestQgsMeshRenderer::test_color_scale_based_on_canvas_extent()
   extent.grow( 0.1 );
   mMapSettings->setExtent( extent );
   QGSRENDERMAPSETTINGSCHECK( "scale_interactive_from_canvas_3", "scale_interactive_from_canvas_3", *mMapSettings, 0, 5 );
+
+  // min max from whole mesh settings for group
+  rendererSettings = layer.rendererSettings();
+  scalarRendererSettings = rendererSettings.scalarSettings( groupIndex );
+  scalarRendererSettings.setLimits( Qgis::MeshRangeLimit::MinimumMaximum );
+  scalarRendererSettings.setExtent( Qgis::MeshRangeExtent::WholeMesh );
+  rendererSettings.setScalarSettings( groupIndex, scalarRendererSettings );
+  layer.setRendererSettings( rendererSettings );
+
+  extent = layer.extent();
+  extent.grow( 0.1 );
+  mMapSettings->setExtent( extent );
+  QGSRENDERMAPSETTINGSCHECK( "scale_interactive_whole_mesh_1", "scale_interactive_whole_mesh_1", *mMapSettings, 0, 5 );
+
+  extent = QgsRectangle( 0, 8, 2, 10 );
+  extent.grow( 0.1 );
+  mMapSettings->setExtent( extent );
+  QGSRENDERMAPSETTINGSCHECK( "scale_interactive_whole_mesh_2", "scale_interactive_whole_mesh_2", *mMapSettings, 0, 5 );
+
+  extent = QgsRectangle( 8, 8, 10, 10 );
+  extent.grow( 0.1 );
+  mMapSettings->setExtent( extent );
+  QGSRENDERMAPSETTINGSCHECK( "scale_interactive_whole_mesh_3", "scale_interactive_whole_mesh_3", *mMapSettings, 0, 5 );
+
+  // user defined
+  rendererSettings = layer.rendererSettings();
+  scalarRendererSettings = rendererSettings.scalarSettings( groupIndex );
+  scalarRendererSettings.setLimits( Qgis::MeshRangeLimit::NotSet );
+  scalarRendererSettings.setExtent( Qgis::MeshRangeExtent::WholeMesh );
+  scalarRendererSettings.setClassificationMinimumMaximum( 7.0, 38.0 );
+  rendererSettings.setScalarSettings( groupIndex, scalarRendererSettings );
+  layer.setRendererSettings( rendererSettings );
+
+  extent = layer.extent();
+  extent.grow( 0.1 );
+  mMapSettings->setExtent( extent );
+  QGSRENDERMAPSETTINGSCHECK( "scale_user_defined_1", "scale_user_defined_1", *mMapSettings, 0, 5 );
+
+  extent = QgsRectangle( 0, 8, 2, 10 );
+  extent.grow( 0.1 );
+  mMapSettings->setExtent( extent );
+  QGSRENDERMAPSETTINGSCHECK( "scale_user_defined_2", "scale_user_defined_2", *mMapSettings, 0, 5 );
+
+  extent = QgsRectangle( 8, 8, 10, 10 );
+  extent.grow( 0.1 );
+  mMapSettings->setExtent( extent );
+  QGSRENDERMAPSETTINGSCHECK( "scale_user_defined_3", "scale_user_defined_3", *mMapSettings, 0, 5 );
 }
 
 QGSTEST_MAIN( TestQgsMeshRenderer )
