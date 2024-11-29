@@ -1,8 +1,9 @@
+name: 🤸 Run pre-commit on PR
 on:
   pull_request:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   main:
