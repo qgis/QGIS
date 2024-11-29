@@ -1160,8 +1160,8 @@ QTreeWidgetItem *QgsAttributesDnDTree::addItem( QTreeWidgetItem *parent, QgsAttr
 
   if ( data.type() == QgsAttributesFormProperties::DnDTreeItemData::Relation )
   {
-    const bool isValid = QgsProject::instance()->relationManager()->relation( data.name() ).isValid();
-    if ( !isValid )
+    const QgsRelation relation = QgsProject::instance()->relationManager()->relation( data.name() );
+    if ( !relation.isValid() || relation.referencedLayer() != mLayer )
     {
       newItem->setText( 0, tr( "Invalid relation" ) );
       newItem->setForeground( 0, QColor( 255, 0, 0 ) );
