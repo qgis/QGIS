@@ -42,9 +42,11 @@
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenelayer3drenderer.h"
 
+#include <QDialogButtonBox>
 #include <QHBoxLayout>
+#include <QPushButton>
 #include <QScreen>
-#include <qgisapp.h>
+#include <QToolBar>
 
 void initCanvas3D( Qgs3DMapCanvas *canvas )
 {
@@ -115,7 +117,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
   qDebug() << "pending jobs:" << canvas->scene()->totalPendingJobsCount();
 }
 
-QPointer<QDialog> createConfigDialog( Qgs3DMapCanvas *canvas )
+QDialog *createConfigDialog( Qgs3DMapCanvas *canvas )
 {
   const QPointer configDialog = new QDialog;
   configDialog->setWindowTitle( QStringLiteral( "3D Configuration" ) );
@@ -124,7 +126,7 @@ QPointer<QDialog> createConfigDialog( Qgs3DMapCanvas *canvas )
   QgsGui::enableAutoGeometryRestore( configDialog );
 
   Qgs3DMapSettings *map = canvas->mapSettings();
-  Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, new QgsMapCanvas, canvas, configDialog );
+  Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, nullptr, canvas, configDialog );
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Apply | QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, configDialog );
 
   auto applyConfig = [ = ]
@@ -167,12 +169,7 @@ QPointer<QDialog> createConfigDialog( Qgs3DMapCanvas *canvas )
     buttons->button( QDialogButtonBox::Ok )->setEnabled( valid );
   } );
 
-  QgsMessageBar *messageBar = new QgsMessageBar;
-  QgsMessageBarItem *warningWidget = QgsMessageBar::createMessage( QString(), "Some settings are unavailable in sandbox" );
-  messageBar->pushWidget( warningWidget, Qgis::MessageLevel::Warning, 0 );
-
   QVBoxLayout *layout = new QVBoxLayout( configDialog );
-  layout->addWidget( messageBar );
   layout->addWidget( w, 1 );
   layout->addWidget( buttons );
   return configDialog;
@@ -226,12 +223,9 @@ int main( int argc, char *argv[] )
 
   // set up the UI
   QWidget *windowWidget = new QWidget;
-  QVBoxLayout *vLayout = new QVBoxLayout;
-  vLayout->setContentsMargins( 0, 0, 0, 0 );
-  vLayout->setSpacing( 0 );
 
   QToolBar *toolBar = new QToolBar( windowWidget );
-  toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
+  toolBar->setIconSize( QgsGuiUtils::iconSize() );
   toolBar->addAction( QIcon( QgsApplication::iconPath( "mActionZoomFullExtent.svg" ) ), QStringLiteral( "Reset camera to default position" ), windowWidget, [canvas]
   {
     canvas->resetView();
@@ -242,13 +236,12 @@ int main( int argc, char *argv[] )
   toggleDebugPanel->setCheckable( true );
   QAction *configureAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ),
                                           QStringLiteral( "Configure…" ), windowWidget );
-  QPointer<QDialog> configDialog = createConfigDialog( canvas );
+  QDialog *configDialog = createConfigDialog( canvas );
   QObject::connect( configureAction, &QAction::triggered, windowWidget, [configDialog]
   {
     configDialog->setVisible( true );
   } );
   toolBar->addAction( configureAction );
-  vLayout->addWidget( toolBar );
 
   QWidget *container = QWidget::createWindowContainer( canvas );
   container->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -269,6 +262,11 @@ int main( int argc, char *argv[] )
     debugWidget->setVisible( enabled );
   } );
 
+  // construct the layout of sandbox
+  QVBoxLayout *vLayout = new QVBoxLayout;
+  vLayout->setContentsMargins( 0, 0, 0, 0 );
+  vLayout->setSpacing( 0 );
+  vLayout->addWidget( toolBar );
   QHBoxLayout *hLayout = new QHBoxLayout;
   vLayout->addLayout( hLayout );
   hLayout->setContentsMargins( 0, 0, 0, 0 );

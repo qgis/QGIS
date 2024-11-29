@@ -46,7 +46,6 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   setupUi( this );
 
   Q_ASSERT( map );
-  Q_ASSERT( mainCanvas );
 
   const QgsSettings settings;
 
@@ -231,7 +230,10 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   groupExtent->setOutputCrs( mMap->crs() );
   groupExtent->setCurrentExtent( mMap->extent(), mMap->crs() );
   groupExtent->setOutputExtentFromCurrent();
-  groupExtent->setMapCanvas( mMainCanvas );
+  if ( mMainCanvas )
+  {
+    groupExtent->setMapCanvas( mMainCanvas );
+  }
 
   // checkbox to display the extent in the 2D Map View
   mShowExtentIn2DViewCheckbox = new QCheckBox( tr( "Show in 2D map view" ) );
