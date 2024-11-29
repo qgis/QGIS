@@ -200,14 +200,27 @@ void TestQgsStac::testParseLocalItem()
   QVERIFY( asset.isCloudOptimized() );
   QCOMPARE( asset.formatName(), QStringLiteral( "COG" ) );
 
+  QgsMimeDataUtils::Uri uri = asset.uri();
+  QCOMPARE( uri.uri, basePath + QStringLiteral( "20201211_223832_CS2_analytic.tif" ) );
+  QCOMPARE( uri.name, QStringLiteral( "analytic" ) );
+  QCOMPARE( uri.layerType, QStringLiteral( "raster" ) );
+
   asset = item->assets().value( QStringLiteral( "thumbnail" ), QgsStacAsset( {}, {}, {}, {}, {} ) );
   QCOMPARE( asset.href(), QStringLiteral( "https://storage.googleapis.com/open-cogs/stac-examples/20201211_223832_CS2.jpg" ) );
   QVERIFY( !asset.isCloudOptimized() );
+  uri = asset.uri();
+  QVERIFY( !uri.isValid() );
+  QVERIFY( uri.uri.isEmpty() );
+  QVERIFY( uri.name.isEmpty() );
 
   // normal geotiff is not cloud optimized
   asset = item->assets().value( QStringLiteral( "udm" ), QgsStacAsset( {}, {}, {}, {}, {} ) );
   QVERIFY( !asset.isCloudOptimized() );
   QCOMPARE( asset.formatName(), QString() );
+  uri = asset.uri();
+  QVERIFY( !uri.isValid() );
+  QVERIFY( uri.uri.isEmpty() );
+  QVERIFY( uri.name.isEmpty() );
 
   delete item;
 }
