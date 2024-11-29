@@ -52,6 +52,17 @@ Resizes the item so that the label's text fits to the item. Keeps the top left p
 .. seealso:: :py:func:`sizeForText`
 %End
 
+    void adjustSizeToText( QgsLayoutItem::ReferencePoint referencePoint );
+%Docstring
+Resizes the item so that the label's text fits to the item.
+
+Keeps the specified reference point stationary.
+
+.. seealso:: :py:func:`sizeForText`
+
+.. versionadded:: 3.42
+%End
+
     QSizeF sizeForText() const;
 %Docstring
 Returns the required item size (in layout units) for the label's text to fill the item.

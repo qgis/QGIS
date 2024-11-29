@@ -199,6 +199,54 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     label->attemptSetSceneRect( QRectF( label->pos().x(), label->pos().y(), labelWidth, labelHeight ) );
   } );
 
+  labelItemMetadata->setItemDoubleClickedFunction( [ = ]( QgsLayoutItem * item, Qgis::MouseHandlesAction action )
+  {
+    QgsLayoutItemLabel *label = qobject_cast< QgsLayoutItemLabel * >( item );
+    Q_ASSERT( label );
+    QgsLayoutItem::ReferencePoint reference = QgsLayoutItem::ReferencePoint::UpperLeft;
+    switch ( action )
+    {
+      case Qgis::MouseHandlesAction::MoveItem:
+      case Qgis::MouseHandlesAction::NoAction:
+      case Qgis::MouseHandlesAction::SelectItem:
+        return;
+
+      case Qgis::MouseHandlesAction::ResizeUp:
+        reference = QgsLayoutItem::ReferencePoint::LowerMiddle;
+        break;
+
+      case Qgis::MouseHandlesAction::ResizeDown:
+        reference = QgsLayoutItem::ReferencePoint::UpperMiddle;
+        break;
+
+      case Qgis::MouseHandlesAction::ResizeLeft:
+        reference = QgsLayoutItem::ReferencePoint::MiddleRight;
+        break;
+
+      case Qgis::MouseHandlesAction::ResizeRight:
+        reference = QgsLayoutItem::ReferencePoint::MiddleLeft;
+        break;
+
+      case Qgis::MouseHandlesAction::ResizeLeftUp:
+        reference = QgsLayoutItem::ReferencePoint::LowerRight;
+        break;
+
+      case Qgis::MouseHandlesAction::ResizeRightUp:
+        reference = QgsLayoutItem::ReferencePoint::LowerLeft;
+        break;
+
+      case Qgis::MouseHandlesAction::ResizeLeftDown:
+        reference = QgsLayoutItem::ReferencePoint::UpperRight;
+        break;
+
+      case Qgis::MouseHandlesAction::ResizeRightDown:
+        reference = QgsLayoutItem::ReferencePoint::UpperLeft;
+        break;
+    }
+
+    label->adjustSizeToText( reference );
+  } );
+
   registry->addLayoutItemGuiMetadata( labelItemMetadata.release() );
 
 
