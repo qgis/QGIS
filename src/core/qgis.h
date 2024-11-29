@@ -5635,6 +5635,30 @@ class CORE_EXPORT Qgis
     Q_ENUM( MouseHandlesAction )
 
     /**
+     * Describes the limits used to compute mesh ranges (min/max values).
+     * \since QGIS 3.42
+     */
+    enum class MeshRangeLimit : int
+    {
+      NotSet, //!< User defined
+      MinimumMaximum,  //!< Real min-max values
+    };
+    Q_ENUM( MeshRangeLimit )
+
+    /**
+     * Describes the extent used to compute mesh ranges (min/max values).
+     *
+     * \since QGIS 3.42
+     */
+    enum class MeshRangeExtent : int
+    {
+      WholeMesh, //!< Whole mesh is used to compute statistics
+      FixedCanvas, //!< Current extent of the canvas (at the time of computation) is used to compute statistics
+      UpdatedCanvas, //!< Constantly updated extent of the canvas is used to compute statistics
+    };
+    Q_ENUM( MeshRangeExtent )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;

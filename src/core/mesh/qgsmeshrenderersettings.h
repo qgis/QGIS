@@ -114,17 +114,6 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
       NeighbourAverage,
     };
 
-    /**
-     *  This enumerator describes the extent used to compute min/max values
-     */
-    enum class MinMaxValueType
-    {
-      UserDefined, //User defined Min Max values
-      WholeMesh, // Values from whole mesh
-      FixedCanvas, //Fixed Min Max Values set from canvas
-      InteractiveFromCanvas, //Constantly updated from extent of the canvas used to compute statistics
-    };
-
     //! Returns color ramp shader function
     QgsColorRampShader colorRampShader() const;
     //! Sets color ramp shader function
@@ -187,18 +176,32 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
     void setEdgeStrokeWidthUnit( Qgis::RenderUnit edgeStrokeWidthUnit );
 
     /**
-     * Gets the extent type for minimum maximum calculation
+     * Sets the range limits type for minimum maximum calculation
      *
      * \since QGIS 3.42
      */
-    QgsMeshRendererScalarSettings::MinMaxValueType minMaxValueType() const { return mMinMaxValueType; }
+    void setLimits( Qgis::MeshRangeLimit limits ) { mRangeLimit = limits; }
 
     /**
-     * Sets the extent type for minimum maximum calculation
+     * Returns the range limits type for minimum maximum calculation
      *
      * \since QGIS 3.42
      */
-    void setMinMaxValueType( QgsMeshRendererScalarSettings::MinMaxValueType minMaxValueType );
+    Qgis::MeshRangeLimit limits() const { return mRangeLimit; }
+
+    /**
+     * Sets the mesh extent for minimum maximum calculation
+     *
+     * \since QGIS 3.42
+     */
+    void setExtent( Qgis::MeshRangeExtent extent ) { mRangeExtent = extent; }
+
+    /**
+     * Returns the mesh extent for minimum maximum calculation
+     *
+     * \since QGIS 3.42
+     */
+    Qgis::MeshRangeExtent extent() const { return mRangeExtent; }
 
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
@@ -207,6 +210,19 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
 
   private:
     void updateShader();
+
+    //! Returns a string to serialize Limits
+    static QString limitsString( Qgis::MeshRangeLimit limits );
+
+    //! \brief Deserialize Limits
+    static Qgis::MeshRangeLimit limitsFromString( const QString &limits );
+
+    //! Returns a string to serialize Extent
+    static QString extentString( Qgis::MeshRangeExtent extent );
+
+    //! \brief Deserialize Extent
+    static Qgis::MeshRangeExtent extentFromString( const QString &extent );
+
 
     QgsColorRampShader mColorRampShader;
     DataResamplingMethod mDataResamplingMethod = DataResamplingMethod::NoResampling;
@@ -217,7 +233,8 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
     QgsInterpolatedLineWidth mEdgeStrokeWidth;
     Qgis::RenderUnit mEdgeStrokeWidthUnit = Qgis::RenderUnit::Millimeters;
 
-    MinMaxValueType mMinMaxValueType = MinMaxValueType::UserDefined;
+    Qgis::MeshRangeExtent mRangeExtent = Qgis::MeshRangeExtent::WholeMesh;
+    Qgis::MeshRangeLimit mRangeLimit = Qgis::MeshRangeLimit::NotSet;
 };
 
 /**

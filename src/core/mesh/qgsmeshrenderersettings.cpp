@@ -133,23 +133,8 @@ QDomElement QgsMeshRendererScalarSettings::writeXml( QDomDocument &doc, const Qg
   }
   elem.setAttribute( QStringLiteral( "interpolation-method" ), methodTxt );
 
-  QString minMaxTypeText;
-  switch ( mMinMaxValueType )
-  {
-    case QgsMeshRendererScalarSettings::MinMaxValueType::UserDefined:
-      minMaxTypeText = QStringLiteral( "user-defined" );
-      break;
-    case QgsMeshRendererScalarSettings::MinMaxValueType::FixedCanvas:
-      minMaxTypeText = QStringLiteral( "fixed-canvas" );
-      break;
-    case QgsMeshRendererScalarSettings::MinMaxValueType::InteractiveFromCanvas:
-      minMaxTypeText = QStringLiteral( "interactive-canvas" );
-      break;
-    case QgsMeshRendererScalarSettings::MinMaxValueType::WholeMesh:
-      minMaxTypeText = QStringLiteral( "whole-mesh" );
-      break;
-  }
-  elem.setAttribute( QStringLiteral( "min-max-value-type" ), minMaxTypeText );
+  elem.setAttribute( QStringLiteral( "range-extent" ), QgsMeshRendererScalarSettings::extentString( mRangeExtent ) );
+  elem.setAttribute( QStringLiteral( "range-limit" ), QgsMeshRendererScalarSettings::limitsString( mRangeLimit ) );
 
   const QDomElement elemShader = mColorRampShader.writeXml( doc, context );
   elem.appendChild( elemShader );
@@ -178,27 +163,8 @@ void QgsMeshRendererScalarSettings::readXml( const QDomElement &elem, const QgsR
     mDataResamplingMethod = DataResamplingMethod::NoResampling;
   }
 
-  const QString minMaxTypeText = elem.attribute( QStringLiteral( "min-max-value-type" ) );
-  if ( QStringLiteral( "interactive-canvas" ) == minMaxTypeText )
-  {
-    mMinMaxValueType = QgsMeshRendererScalarSettings::MinMaxValueType::InteractiveFromCanvas;
-  }
-  else if ( QStringLiteral( "fixed-canvas" ) == minMaxTypeText )
-  {
-    mMinMaxValueType = QgsMeshRendererScalarSettings::MinMaxValueType::FixedCanvas;
-  }
-  else if ( QStringLiteral( "user-defined" ) == minMaxTypeText )
-  {
-    mMinMaxValueType = QgsMeshRendererScalarSettings::MinMaxValueType::UserDefined;
-  }
-  else if ( QStringLiteral( "whole-mesh" ) == minMaxTypeText )
-  {
-    mMinMaxValueType = QgsMeshRendererScalarSettings::MinMaxValueType::WholeMesh;
-  }
-  else
-  {
-    mMinMaxValueType = MinMaxValueType::WholeMesh;
-  }
+  mRangeExtent = QgsMeshRendererScalarSettings::extentFromString( elem.attribute( "range-extent" ) );
+  mRangeLimit = QgsMeshRendererScalarSettings::limitsFromString( elem.attribute( "range-limit" ) );
 
   const QDomElement elemShader = elem.firstChildElement( QStringLiteral( "colorrampshader" ) );
   mColorRampShader.readXml( elemShader, context );
@@ -240,10 +206,59 @@ void QgsMeshRendererScalarSettings::updateShader()
     mColorRampShader.classifyColorRamp( mColorRampShader.sourceColorRamp()->count(), 1, QgsRectangle(), nullptr );
 }
 
-void QgsMeshRendererScalarSettings::setMinMaxValueType( QgsMeshRendererScalarSettings::MinMaxValueType minMaxValueType )
+QString QgsMeshRendererScalarSettings::extentString( Qgis::MeshRangeExtent extent )
 {
-  mMinMaxValueType = minMaxValueType;
-  updateShader();
+  switch ( extent )
+  {
+    case Qgis::MeshRangeExtent::WholeMesh:
+      return QStringLiteral( "WholeMesh" );
+    case Qgis::MeshRangeExtent::FixedCanvas:
+      return QStringLiteral( "CurrentCanvas" );
+    case Qgis::MeshRangeExtent::UpdatedCanvas:
+      return QStringLiteral( "UpdatedCanvas" );
+  }
+  return QStringLiteral( "WholeMesh" );
+}
+
+Qgis::MeshRangeExtent QgsMeshRendererScalarSettings::extentFromString( const QString &extent )
+{
+  if ( extent == "WholeMesh" )
+  {
+    return Qgis::MeshRangeExtent::WholeMesh;
+  }
+  else if ( extent == "CurrentCanvas" )
+  {
+    return Qgis::MeshRangeExtent::FixedCanvas;
+  }
+  else if ( extent == "UpdatedCanvas" )
+  {
+    return Qgis::MeshRangeExtent::UpdatedCanvas;
+  }
+  else
+  {
+    return Qgis::MeshRangeExtent::WholeMesh;
+  }
+}
+
+QString QgsMeshRendererScalarSettings::limitsString( Qgis::MeshRangeLimit limits )
+{
+  switch ( limits )
+  {
+    case Qgis::MeshRangeLimit::MinimumMaximum:
+      return QStringLiteral( "MinMax" );
+    default:
+      break;
+  }
+  return QStringLiteral( "None" );
+}
+
+Qgis::MeshRangeLimit QgsMeshRendererScalarSettings::limitsFromString( const QString &limits )
+{
+  if ( limits == QLatin1String( "MinMax" ) )
+  {
+    return Qgis::MeshRangeLimit::MinimumMaximum;
+  }
+  return Qgis::MeshRangeLimit::NotSet;
 }
 
 // ---------------------------------------------------------------------
