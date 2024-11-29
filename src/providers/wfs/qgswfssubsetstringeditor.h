@@ -33,29 +33,26 @@ class QgsWfsSubsetStringEditor
     static QgsSubsetStringEditorInterface *create( QgsVectorLayer *layer, QgsWFSProvider *provider, QWidget *parent, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 };
 
-class QgsWFSValidatorCallback: public QObject, public QgsSQLComposerDialog::SQLValidatorCallback
+class QgsWFSValidatorCallback : public QObject, public QgsSQLComposerDialog::SQLValidatorCallback
 {
     Q_OBJECT
 
   public:
-    QgsWFSValidatorCallback( QObject *parent,
-                             const QgsWFSDataSourceURI &uri, const QString &allSql,
-                             const QgsWfsCapabilities::Capabilities &caps );
+    QgsWFSValidatorCallback( QObject *parent, const QgsWFSDataSourceURI &uri, const QString &allSql, const QgsWfsCapabilities::Capabilities &caps );
     bool isValid( const QString &sql, QString &errorReason, QString &warningMsg ) override;
+
   private:
     QgsWFSDataSourceURI mURI;
     QString mAllSql;
     const QgsWfsCapabilities::Capabilities mCaps;
 };
 
-class QgsWFSTableSelectedCallback: public QObject, public QgsSQLComposerDialog::TableSelectedCallback
+class QgsWFSTableSelectedCallback : public QObject, public QgsSQLComposerDialog::TableSelectedCallback
 {
     Q_OBJECT
 
   public:
-    QgsWFSTableSelectedCallback( QgsSQLComposerDialog *dialog,
-                                 const QgsWFSDataSourceURI &uri,
-                                 const QgsWfsCapabilities::Capabilities &caps );
+    QgsWFSTableSelectedCallback( QgsSQLComposerDialog *dialog, const QgsWFSDataSourceURI &uri, const QgsWfsCapabilities::Capabilities &caps );
     void tableSelected( const QString &name ) override;
 
   private:

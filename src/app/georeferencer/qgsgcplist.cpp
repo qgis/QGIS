@@ -152,14 +152,9 @@ bool QgsGCPList::saveGcps( const QString &filePath, const QgsCoordinateReference
     {
       const QgsPointXY transformedDestinationPoint = pt->transformedDestinationPoint( targetCrs, context );
       points << QStringLiteral( "%1,%2,%3,%4,%5,%6,%7,%8" )
-             .arg( qgsDoubleToString( transformedDestinationPoint.x() ),
-                   qgsDoubleToString( transformedDestinationPoint.y() ),
-                   qgsDoubleToString( pt->sourcePoint().x() ),
-                   qgsDoubleToString( pt->sourcePoint().y() ) )
-             .arg( pt->isEnabled() )
-             .arg( qgsDoubleToString( pt->residual().x() ),
-                   qgsDoubleToString( pt->residual().y() ),
-                   qgsDoubleToString( std::sqrt( pt->residual().x() * pt->residual().x() + pt->residual().y() * pt->residual().y() ) ) );
+                  .arg( qgsDoubleToString( transformedDestinationPoint.x() ), qgsDoubleToString( transformedDestinationPoint.y() ), qgsDoubleToString( pt->sourcePoint().x() ), qgsDoubleToString( pt->sourcePoint().y() ) )
+                  .arg( pt->isEnabled() )
+                  .arg( qgsDoubleToString( pt->residual().x() ), qgsDoubleToString( pt->residual().y() ), qgsDoubleToString( std::sqrt( pt->residual().x() * pt->residual().x() + pt->residual().y() * pt->residual().y() ) ) );
       points << Qt::endl;
     }
     return true;
@@ -210,7 +205,7 @@ QList<QgsGcpPoint> QgsGCPList::loadGcps( const QString &filePath, const QgsCoord
     lineNumber++;
     QStringList ls;
     if ( line.contains( ',' ) ) // in previous format "\t" is delimiter of points in new - ","
-      ls = line.split( ',' ); // points from new georeferencer
+      ls = line.split( ',' );   // points from new georeferencer
     else
       ls = line.split( '\t' ); // points from prev georeferencer
 
@@ -221,7 +216,7 @@ QList<QgsGcpPoint> QgsGCPList::loadGcps( const QString &filePath, const QgsCoord
     }
 
     const QgsPointXY destinationPoint( ls.at( 0 ).toDouble(), ls.at( 1 ).toDouble() ); // map x,y
-    const QgsPointXY sourcePoint( ls.at( 2 ).toDouble(), ls.at( 3 ).toDouble() ); // source x,y
+    const QgsPointXY sourcePoint( ls.at( 2 ).toDouble(), ls.at( 3 ).toDouble() );      // source x,y
     bool enable = true;
     if ( ls.count() >= 5 )
     {

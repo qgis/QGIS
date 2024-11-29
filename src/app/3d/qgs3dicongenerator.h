@@ -25,7 +25,6 @@ class Qgs3DIconGenerator : public QgsAbstractStyleEntityIconGenerator
     Q_OBJECT
 
   public:
-
     Qgs3DIconGenerator( QObject *parent );
 
     void generateIcon( QgsStyle *style, QgsStyle::StyleEntity type, const QString &name ) override;

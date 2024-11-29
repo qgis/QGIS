@@ -27,72 +27,46 @@ class QgsAppMissingGridHandler : public QObject
 {
     Q_OBJECT
   public:
-
     QgsAppMissingGridHandler( QObject *parent );
 
   signals:
 
-    void missingRequiredGrid( const QgsCoordinateReferenceSystem &sourceCrs,
-                              const QgsCoordinateReferenceSystem &destinationCrs,
-                              const QgsDatumTransform::GridDetails &grid );
+    void missingRequiredGrid( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::GridDetails &grid );
 
-    void missingPreferredGrid( const QgsCoordinateReferenceSystem &sourceCrs,
-                               const QgsCoordinateReferenceSystem &destinationCrs,
-                               const QgsDatumTransform::TransformDetails &preferredOperation,
-                               const QgsDatumTransform::TransformDetails &availableOperation );
+    void missingPreferredGrid( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &preferredOperation, const QgsDatumTransform::TransformDetails &availableOperation );
 
-    void coordinateOperationCreationError( const QgsCoordinateReferenceSystem &sourceCrs,
-                                           const QgsCoordinateReferenceSystem &destinationCrs,
-                                           const QString &error );
+    void coordinateOperationCreationError( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &error );
 
-    void missingGridUsedByContextHandler( const QgsCoordinateReferenceSystem &sourceCrs,
-                                          const QgsCoordinateReferenceSystem &destinationCrs,
-                                          const QgsDatumTransform::TransformDetails &desired );
+    void missingGridUsedByContextHandler( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &desired );
 
-    void fallbackOperationOccurred( const QgsCoordinateReferenceSystem &sourceCrs,
-                                    const QgsCoordinateReferenceSystem &destinationCrs,
-                                    const QString &desired );
+    void fallbackOperationOccurred( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &desired );
 
-    void dynamicToDynamicWarning( const QgsCoordinateReferenceSystem &sourceCrs,
-                                  const QgsCoordinateReferenceSystem &destinationCrs );
+    void dynamicToDynamicWarning( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
 
   private slots:
 
-    void onMissingRequiredGrid( const QgsCoordinateReferenceSystem &sourceCrs,
-                                const QgsCoordinateReferenceSystem &destinationCrs,
-                                const QgsDatumTransform::GridDetails &grid );
+    void onMissingRequiredGrid( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::GridDetails &grid );
 
-    void onMissingPreferredGrid( const QgsCoordinateReferenceSystem &sourceCrs,
-                                 const QgsCoordinateReferenceSystem &destinationCrs,
-                                 const QgsDatumTransform::TransformDetails &preferredOperation,
-                                 const QgsDatumTransform::TransformDetails &availableOperation );
+    void onMissingPreferredGrid( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &preferredOperation, const QgsDatumTransform::TransformDetails &availableOperation );
 
-    void onCoordinateOperationCreationError( const QgsCoordinateReferenceSystem &sourceCrs,
-        const QgsCoordinateReferenceSystem &destinationCrs,
-        const QString &error );
+    void onCoordinateOperationCreationError( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &error );
 
-    void onMissingGridUsedByContextHandler( const QgsCoordinateReferenceSystem &sourceCrs,
-                                            const QgsCoordinateReferenceSystem &destinationCrs,
-                                            const QgsDatumTransform::TransformDetails &desired );
+    void onMissingGridUsedByContextHandler( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &desired );
 
-    void onFallbackOperationOccurred( const QgsCoordinateReferenceSystem &sourceCrs,
-                                      const QgsCoordinateReferenceSystem &destinationCrs,
-                                      const QString &desired );
+    void onFallbackOperationOccurred( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &desired );
 
-    void onDynamicToDynamicWarning( const QgsCoordinateReferenceSystem &sourceCrs,
-                                    const QgsCoordinateReferenceSystem &destinationCrs );
+    void onDynamicToDynamicWarning( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
 
   private:
-
     bool shouldWarnAboutPair( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest );
     bool shouldWarnAboutPairForCurrentProject( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest );
     bool shouldWarnAboutBallparkPairForCurrentProject( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest );
     bool shouldWarnAboutDynamicCrsForCurrentProject( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest );
 
-    QList< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem > > mAlreadyWarnedPairs;
-    QList< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem > > mAlreadyWarnedPairsForProject;
-    QList< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem > > mAlreadyWarnedBallparkPairsForProject;
-    QList< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem > > mAlreadyWarnedDynamicCrsForProject;
+    QList<QPair<QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem>> mAlreadyWarnedPairs;
+    QList<QPair<QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem>> mAlreadyWarnedPairsForProject;
+    QList<QPair<QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem>> mAlreadyWarnedBallparkPairsForProject;
+    QList<QPair<QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem>> mAlreadyWarnedDynamicCrsForProject;
 };
 
 #endif // QGSAPPCOORDINATEOPERATIONHANDLERS_H

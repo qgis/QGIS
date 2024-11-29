@@ -27,7 +27,7 @@
  * \ingroup UnitTests
  * Unit tests for QgsAuthConfig
  */
-class TestQgsAuthConfig: public QObject
+class TestQgsAuthConfig : public QObject
 {
     Q_OBJECT
 
@@ -132,10 +132,7 @@ void TestQgsAuthConfig::testPkiBundle()
   const QList<QSslCertificate> cacerts( QSslCertificate::fromPath( sPkiData + "/chain_subissuer-issuer-root.pem" ) );
   QVERIFY( !cacerts.isEmpty() );
   QCOMPARE( cacerts.size(), 3 );
-  const QgsPkiBundle bundle2( QgsPkiBundle::fromPemPaths( sPkiData + "/fra_cert.pem",
-                              sPkiData + "/fra_key_w-pass.pem",
-                              QStringLiteral( "password" ),
-                              cacerts ) );
+  const QgsPkiBundle bundle2( QgsPkiBundle::fromPemPaths( sPkiData + "/fra_cert.pem", sPkiData + "/fra_key_w-pass.pem", QStringLiteral( "password" ), cacerts ) );
   QVERIFY( !bundle2.isNull() );
   QVERIFY( bundle2.isValid() );
   QCOMPARE( bundle2.certId(), QString( "c3633c428d441853973e5081ba9be39f667f5af6" ) );
@@ -158,8 +155,7 @@ void TestQgsAuthConfig::testPkiBundle()
   QVERIFY( !bundle.isNull() );
   QVERIFY( bundle.isValid() );
 
-  const QgsPkiBundle bundle4( QgsPkiBundle::fromPkcs12Paths( sPkiData + "/fra_w-chain.p12",
-                              QStringLiteral( "password" ) ) );
+  const QgsPkiBundle bundle4( QgsPkiBundle::fromPkcs12Paths( sPkiData + "/fra_w-chain.p12", QStringLiteral( "password" ) ) );
   QVERIFY( !bundle4.isNull() );
   QVERIFY( bundle4.isValid() );
   const QList<QSslCertificate> cachain4( bundle2.caChain() );

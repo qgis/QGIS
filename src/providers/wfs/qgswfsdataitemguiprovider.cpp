@@ -29,7 +29,7 @@
 
 void QgsWfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsWfsRootItem *rootItem = qobject_cast< QgsWfsRootItem * >( item ) )
+  if ( QgsWfsRootItem *rootItem = qobject_cast<QgsWfsRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
@@ -44,7 +44,7 @@ void QgsWfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     menu->addAction( actionLoadServers );
   }
 
-  if ( QgsWfsConnectionItem *connItem = qobject_cast< QgsWfsConnectionItem * >( item ) )
+  if ( QgsWfsConnectionItem *connItem = qobject_cast<QgsWfsConnectionItem *>( item ) )
   {
     QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
     connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
@@ -60,14 +60,10 @@ void QgsWfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
     menu->addAction( actionDuplicate );
 
-    const QList< QgsWfsConnectionItem * > wfsConnectionItems = QgsDataItem::filteredItems<QgsWfsConnectionItem>( selection );
+    const QList<QgsWfsConnectionItem *> wfsConnectionItems = QgsDataItem::filteredItems<QgsWfsConnectionItem>( selection );
     QAction *actionDelete = new QAction( wfsConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [wfsConnectionItems, context]
-    {
-      QgsDataItemGuiProviderUtils::deleteConnections( wfsConnectionItems, []( const QString & connectionName )
-      {
-        QgsWfsConnection::deleteConnection( connectionName );
-      }, context );
+    connect( actionDelete, &QAction::triggered, this, [wfsConnectionItems, context] {
+      QgsDataItemGuiProviderUtils::deleteConnections( wfsConnectionItems, []( const QString &connectionName ) { QgsWfsConnection::deleteConnection( connectionName ); }, context );
     } );
     menu->addAction( actionDelete );
   }
@@ -99,7 +95,7 @@ void QgsWfsDataItemGuiProvider::editConnection( QgsDataItem *item )
 void QgsWfsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 {
   const QString connectionName = item->name();
-  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "wfs" )} );
+  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( { QStringLiteral( "wfs" ) } );
 
   const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
@@ -143,8 +139,7 @@ void QgsWfsDataItemGuiProvider::saveConnections()
 
 void QgsWfsDataItemGuiProvider::loadConnections( QgsDataItem *item )
 {
-  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                           tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

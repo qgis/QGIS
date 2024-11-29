@@ -47,12 +47,13 @@ class TestQgsQuickPrint : public QObject
     {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {};         // will be called before each testfunction is executed.
+    void cleanup() {};      // will be called after every testfunction.
 
     void basicMapTest();
+
   private:
     bool imageCheck( QString type ); //as above
     QgsMapRenderer *mpMapRenderer = nullptr;
@@ -80,8 +81,7 @@ void TestQgsQuickPrint::initTestCase()
   mTestDataDir = myDataDir + "/";
   QString myPointsFileName = mTestDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
-  mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
-                                      myPointFileInfo.completeBaseName(), "ogr" );
+  mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
   QgsProject::instance()->addMapLayer( mpPointsLayer );
 
@@ -90,8 +90,7 @@ void TestQgsQuickPrint::initTestCase()
   //
   QString myPolysFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );
-  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), "ogr" );
+  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
   QgsProject::instance()->addMapLayer( mpPolysLayer );
 
@@ -100,8 +99,7 @@ void TestQgsQuickPrint::initTestCase()
   //
   QString myLinesFileName = mTestDataDir + "lines.shp";
   QFileInfo myLineFileInfo( myLinesFileName );
-  mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
-                                     myLineFileInfo.completeBaseName(), "ogr" );
+  mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(), myLineFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
   QgsProject::instance()->addMapLayer( mpLinesLayer );
   //

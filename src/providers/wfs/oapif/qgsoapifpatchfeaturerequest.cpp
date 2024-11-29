@@ -22,8 +22,8 @@ using namespace nlohmann;
 #include "moc_qgsoapifpatchfeaturerequest.cpp"
 #include "qgsoapifprovider.h"
 
-QgsOapifPatchFeatureRequest::QgsOapifPatchFeatureRequest( const QgsDataSourceUri &uri ):
-  QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), uri.authConfigId() ), "OAPIF" )
+QgsOapifPatchFeatureRequest::QgsOapifPatchFeatureRequest( const QgsDataSourceUri &uri )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), uri.authConfigId() ), "OAPIF" )
 {
 }
 
@@ -53,10 +53,10 @@ bool QgsOapifPatchFeatureRequest::patchFeature( const QgsOapifSharedData *shared
   for ( ; attMapIt != attrMap.constEnd(); ++attMapIt )
   {
     QString fieldName = sharedData->mFields.at( attMapIt.key() ).name();
-    properties[ fieldName.toStdString() ] = QgsJsonUtils::jsonFromVariant( attMapIt.value() );
+    properties[fieldName.toStdString()] = QgsJsonUtils::jsonFromVariant( attMapIt.value() );
   }
   json j;
-  j[ "properties" ] = properties;
+  j["properties"] = properties;
   mEmptyResponseIsValid = true;
   mFakeURLIncludesContentType = true;
   QUrl url( sharedData->mItemsUrl + QString( QStringLiteral( "/" ) + jsonId ) );

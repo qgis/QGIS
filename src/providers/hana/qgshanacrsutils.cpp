@@ -22,8 +22,7 @@
 
 double QgsHanaCrsUtils::getAngularUnits( const QgsCoordinateReferenceSystem &crs )
 {
-  auto throwUnableToGetAngularUnits = []()
-  {
+  auto throwUnableToGetAngularUnits = []() {
     throw QgsHanaException( "Unable to retrieve angular units from a spatial reference system" );
   };
 
@@ -40,14 +39,7 @@ double QgsHanaCrsUtils::getAngularUnits( const QgsCoordinateReferenceSystem &crs
     throwUnableToGetAngularUnits();
 
   double factor;
-  const bool ret = proj_cs_get_axis_info( context, pjCoordinateSystem.get(), 0,
-                                          nullptr,
-                                          nullptr,
-                                          nullptr,
-                                          &factor,
-                                          nullptr,
-                                          nullptr,
-                                          nullptr );
+  const bool ret = proj_cs_get_axis_info( context, pjCoordinateSystem.get(), 0, nullptr, nullptr, nullptr, &factor, nullptr, nullptr, nullptr );
   if ( !ret )
     throwUnableToGetAngularUnits();
   return factor;

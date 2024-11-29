@@ -24,13 +24,12 @@ class TestQgsTiledSceneConnection : public QObject
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
     void encodeDecode();
     void testConnections();
-
 };
 
 
@@ -91,7 +90,7 @@ void TestQgsTiledSceneConnection::testConnections()
   data.httpHeaders.insert( QStringLiteral( "my_header" ), QStringLiteral( "value" ) );
 
   QgsTiledSceneProviderConnection::addConnection( QStringLiteral( "my connection" ), data );
-  QCOMPARE( QgsTiledSceneProviderConnection::connectionList(), {QStringLiteral( "my connection" )} );
+  QCOMPARE( QgsTiledSceneProviderConnection::connectionList(), { QStringLiteral( "my connection" ) } );
 
   QCOMPARE( QgsTiledSceneProviderConnection::connection( QStringLiteral( "my connection" ) ).provider, QStringLiteral( "test_provider" ) );
   QCOMPARE( QgsTiledSceneProviderConnection::connection( QStringLiteral( "my connection" ) ).url, QStringLiteral( "http://testurl" ) );
@@ -99,7 +98,7 @@ void TestQgsTiledSceneConnection::testConnections()
   // retrieve stored connection
   conn = QgsTiledSceneProviderConnection( QStringLiteral( "my connection" ) );
   QCOMPARE( conn.uri(), QStringLiteral( "url=http://testurl&username=my_user&password=my_pw&authcfg=my_auth&http-header:my_header=value" ) );
-  QCOMPARE( qgis::down_cast< QgsTiledSceneProviderConnection * >( &conn )->providerKey(), QStringLiteral( "test_provider" ) );
+  QCOMPARE( qgis::down_cast<QgsTiledSceneProviderConnection *>( &conn )->providerKey(), QStringLiteral( "test_provider" ) );
 
   // add a second connection
   QgsTiledSceneProviderConnection::Data data2;
@@ -112,7 +111,7 @@ void TestQgsTiledSceneConnection::testConnections()
   // construct connection using encoded uri
   QgsTiledSceneProviderConnection conn2( QgsTiledSceneProviderConnection::encodedUri( data2 ), QStringLiteral( "test_provider2" ), {} );
   QCOMPARE( conn2.uri(), QStringLiteral( "url=http://testurl2&username=my_user2&password=my_pw2&authcfg=my_auth2&http-header:my_header=value2" ) );
-  QCOMPARE( qgis::down_cast< QgsTiledSceneProviderConnection * >( &conn2 )->providerKey(), QStringLiteral( "test_provider2" ) );
+  QCOMPARE( qgis::down_cast<QgsTiledSceneProviderConnection *>( &conn2 )->providerKey(), QStringLiteral( "test_provider2" ) );
   conn2.store( QStringLiteral( "second connection" ) );
 
   // retrieve stored connections

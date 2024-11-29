@@ -60,10 +60,9 @@ class TestNineCellFilters : public QgsTest
 #endif
 
   private:
-
     void _rasterCompare( QgsAlignRaster::RasterInfo &out, QgsAlignRaster::RasterInfo &ref );
 
-    template <class T> void _testAlg( const QString &name, bool useOpenCl = false );
+    template<class T> void _testAlg( const QString &name, bool useOpenCl = false );
 
     static QString referenceFile( const QString &name )
     {
@@ -98,7 +97,7 @@ void TestNineCellFilters::cleanupTestCase()
   QgsApplication::exitQgis();
 }
 
-template <class T>
+template<class T>
 void TestNineCellFilters::_testAlg( const QString &name, bool useOpenCl )
 {
 #ifdef HAVE_OPENCL
@@ -117,7 +116,7 @@ void TestNineCellFilters::_testAlg( const QString &name, bool useOpenCl )
   QVERIFY( out.isValid() );
 
   // Regenerate reference rasters
-  if ( ! useOpenCl && REGENERATE_REFERENCES )
+  if ( !useOpenCl && REGENERATE_REFERENCES )
   {
     if ( QFile::exists( refFile ) )
     {
@@ -130,7 +129,6 @@ void TestNineCellFilters::_testAlg( const QString &name, bool useOpenCl )
   QgsAlignRaster::RasterInfo ref( refFile );
   //qDebug() << "Comparing " << tmpFile << refFile;
   _rasterCompare( out, ref );
-
 }
 
 
@@ -177,13 +175,13 @@ void TestNineCellFilters::testRuggedness()
   _testAlg<QgsRuggednessFilter>( QStringLiteral( "ruggedness" ) );
 }
 
-void TestNineCellFilters::_rasterCompare( QgsAlignRaster::RasterInfo &out,  QgsAlignRaster::RasterInfo &ref )
+void TestNineCellFilters::_rasterCompare( QgsAlignRaster::RasterInfo &out, QgsAlignRaster::RasterInfo &ref )
 {
   const QSize refSize( ref.rasterSize() );
-  const QSizeF refCellSize( ref.cellSize( ) );
+  const QSizeF refCellSize( ref.cellSize() );
   const QgsAlignRaster::RasterInfo in( SRC_FILE );
   const QSize inSize( in.rasterSize() );
-  const QSizeF inCellSize( in.cellSize( ) );
+  const QSizeF inCellSize( in.cellSize() );
   QCOMPARE( out.rasterSize(), inSize );
   QCOMPARE( out.cellSize(), inCellSize );
   QCOMPARE( out.rasterSize(), refSize );
@@ -217,7 +215,6 @@ void TestNineCellFilters::_rasterCompare( QgsAlignRaster::RasterInfo &out,  QgsA
     //qDebug() << "Identify " <<  x << "," << y << " diff " << diff << " check: < " << tolerance;
     QVERIFY( diff <= tolerance );
   }
-
 }
 
 void TestNineCellFilters::testTotalCurvature()

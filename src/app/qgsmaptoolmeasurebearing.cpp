@@ -32,8 +32,7 @@ QgsMapToolMeasureBearing::QgsMapToolMeasureBearing( QgsMapCanvas *canvas )
 {
   mToolName = tr( "Measure bearing" );
 
-  connect( canvas, &QgsMapCanvas::destinationCrsChanged,
-           this, &QgsMapToolMeasureBearing::updateSettings );
+  connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapToolMeasureBearing::updateSettings );
 }
 
 QgsMapToolMeasureBearing::~QgsMapToolMeasureBearing()
@@ -66,7 +65,6 @@ void QgsMapToolMeasureBearing::canvasMoveEvent( QgsMapMouseEvent *e )
     }
     catch ( QgsCsException & )
     {
-
     }
   }
 }

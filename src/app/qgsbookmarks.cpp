@@ -54,7 +54,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   connect( lstBookmarks, &QTreeView::customContextMenuRequested, this, &QgsBookmarks::lstBookmarks_customContextMenuRequested );
 
   bookmarksDockContents->layout()->setContentsMargins( 0, 0, 0, 0 );
-  static_cast< QGridLayout * >( bookmarksDockContents->layout() )->setVerticalSpacing( 0 );
+  static_cast<QGridLayout *>( bookmarksDockContents->layout() )->setVerticalSpacing( 0 );
 
   QToolButton *btnImpExp = new QToolButton;
   btnImpExp->setAutoRaise( true );
@@ -126,9 +126,7 @@ void QgsBookmarks::deleteClicked()
     return;
 
   // make sure the user really wants to delete these bookmarks
-  if ( QMessageBox::No == QMessageBox::question( this, tr( "Delete Bookmarks" ),
-       tr( "Are you sure you want to delete %n bookmark(s)?", "number of rows", rows.size() ),
-       QMessageBox::Yes | QMessageBox::No ) )
+  if ( QMessageBox::No == QMessageBox::question( this, tr( "Delete Bookmarks" ), tr( "Are you sure you want to delete %n bookmark(s)?", "number of rows", rows.size() ), QMessageBox::Yes | QMessageBox::No ) )
     return;
 
   // Remove in reverse order to keep the merged model indexes
@@ -170,7 +168,7 @@ void QgsBookmarks::lstBookmarks_customContextMenuRequested( QPoint pos )
   menu.addAction( actionDelete );
 
   // Get the bookmark
-  const QString id = lstBookmarks->model()->data( index, static_cast< int >( QgsBookmarkManagerModel::CustomRole::Id ) ).toString();
+  const QString id = lstBookmarks->model()->data( index, static_cast<int>( QgsBookmarkManagerModel::CustomRole::Id ) ).toString();
   QgsBookmark bookmark = QgsApplication::bookmarkManager()->bookmarkById( id );
   bool inProject = false;
   if ( bookmark.id().isEmpty() )
@@ -181,8 +179,7 @@ void QgsBookmarks::lstBookmarks_customContextMenuRequested( QPoint pos )
 
   // Add an edit action (similar to the one in QgsBookmarksItemGuiProvider)
   QAction *actionEdit = new QAction( tr( "Edit Spatial Bookmark…" ), &menu );
-  connect( actionEdit, &QAction::triggered, this, [bookmark, inProject]
-  {
+  connect( actionEdit, &QAction::triggered, this, [bookmark, inProject] {
     QgsBookmarkEditorDialog *dlg = new QgsBookmarkEditorDialog( bookmark, inProject, QgisApp::instance(), QgisApp::instance()->mapCanvas() );
     dlg->setAttribute( Qt::WA_DeleteOnClose );
     dlg->show();
@@ -201,12 +198,12 @@ void QgsBookmarks::zoomToBookmark()
 
 void QgsBookmarks::zoomToBookmarkIndex( const QModelIndex &index )
 {
-  const QgsReferencedRectangle rect = index.data( static_cast< int >( QgsBookmarkManagerModel::CustomRole::Extent ) ).value< QgsReferencedRectangle >();
+  const QgsReferencedRectangle rect = index.data( static_cast<int>( QgsBookmarkManagerModel::CustomRole::Extent ) ).value<QgsReferencedRectangle>();
   try
   {
     if ( QgisApp::instance()->mapCanvas()->setReferencedExtent( rect ) )
     {
-      QgisApp::instance()->mapCanvas()->setRotation( index.data( static_cast< int >( QgsBookmarkManagerModel::CustomRole::Rotation ) ).toDouble() );
+      QgisApp::instance()->mapCanvas()->setRotation( index.data( static_cast<int>( QgsBookmarkManagerModel::CustomRole::Rotation ) ).toDouble() );
       QgisApp::instance()->mapCanvas()->refresh();
     }
     else
@@ -225,8 +222,7 @@ void QgsBookmarks::importFromXml()
   const QgsSettings settings;
 
   const QString lastUsedDir = settings.value( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
-  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Import Bookmarks" ), lastUsedDir,
-                           tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Import Bookmarks" ), lastUsedDir, tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -263,7 +259,6 @@ QMap<QString, QModelIndex> QgsBookmarks::getIndexMap()
   }
 
   return map;
-
 }
 
 void QgsBookmarks::exportToXml()
@@ -271,8 +266,7 @@ void QgsBookmarks::exportToXml()
   QgsSettings settings;
 
   const QString lastUsedDir = settings.value( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Export Bookmarks" ), lastUsedDir,
-                     tr( "XML files (*.xml *.XML)" ) );
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Export Bookmarks" ), lastUsedDir, tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -284,15 +278,13 @@ void QgsBookmarks::exportToXml()
     fileName += QLatin1String( ".xml" );
   }
 
-  if ( !QgsBookmarkManager::exportToFile( fileName, QList< const QgsBookmarkManager * >() << QgsApplication::bookmarkManager()
-                                          << QgsProject::instance()->bookmarkManager() ) )
+  if ( !QgsBookmarkManager::exportToFile( fileName, QList<const QgsBookmarkManager *>() << QgsApplication::bookmarkManager() << QgsProject::instance()->bookmarkManager() ) )
   {
     QgisApp::instance()->messageBar()->pushWarning( tr( "Export Bookmarks" ), tr( "Error exporting bookmark file" ) );
   }
   else
   {
-    QgisApp::instance()->messageBar()->pushSuccess( tr( "Export Bookmarks" ), tr( "Successfully exported bookmarks to <a href=\"%1\">%2</a>" )
-        .arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
+    QgisApp::instance()->messageBar()->pushSuccess( tr( "Export Bookmarks" ), tr( "Successfully exported bookmarks to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
   }
 
   settings.setValue( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QFileInfo( fileName ).path() );
@@ -305,7 +297,6 @@ void QgsBookmarks::exportToXml()
 QgsDoubleSpinBoxBookmarksDelegate::QgsDoubleSpinBoxBookmarksDelegate( QObject *parent, int decimals )
   : QStyledItemDelegate( parent ), mDecimals( decimals == -1 ? QgsDoubleSpinBoxBookmarksDelegate::DEFAULT_DECIMAL_PLACES : decimals )
 {
-
 }
 
 QString QgsDoubleSpinBoxBookmarksDelegate::displayText( const QVariant &value, const QLocale &locale ) const

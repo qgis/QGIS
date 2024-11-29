@@ -45,9 +45,9 @@ QgsDocumentationPanelWidget::QgsDocumentationPanelWidget( QWidget *parent )
 
   mWebViewContainer->layout()->addWidget( mWebView );
 
-  connect( mActionPyQgis, &QAction::triggered, this, [] {QgisApp::instance()->showApiDocumentation( Qgis::DocumentationApi::PyQgis, Qgis::DocumentationBrowser::DeveloperToolsPanel );} );
-  connect( mActionQt, &QAction::triggered, this, [] {QgisApp::instance()->showApiDocumentation( Qgis::DocumentationApi::Qt, Qgis::DocumentationBrowser::DeveloperToolsPanel );} );
-  connect( mActionOpenInBrowser, &QAction::triggered, this, [this] {QgisApp::instance()->openURL( mWebView->url().toString(), false );} );
+  connect( mActionPyQgis, &QAction::triggered, this, [] { QgisApp::instance()->showApiDocumentation( Qgis::DocumentationApi::PyQgis, Qgis::DocumentationBrowser::DeveloperToolsPanel ); } );
+  connect( mActionQt, &QAction::triggered, this, [] { QgisApp::instance()->showApiDocumentation( Qgis::DocumentationApi::Qt, Qgis::DocumentationBrowser::DeveloperToolsPanel ); } );
+  connect( mActionOpenInBrowser, &QAction::triggered, this, [this] { QgisApp::instance()->openURL( mWebView->url().toString(), false ); } );
 }
 
 void QgsDocumentationPanelWidget::showUrl( const QUrl &url )

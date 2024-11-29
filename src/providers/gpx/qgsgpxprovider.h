@@ -38,7 +38,7 @@ class QgsGPXFeatureIterator;
  * \brief Data provider for GPX (GPS eXchange) files
  * This provider adds the ability to load GPX files as vector layers.
 */
-class QgsGPXProvider final: public QgsVectorDataProvider
+class QgsGPXProvider final : public QgsVectorDataProvider
 {
     Q_OBJECT
 
@@ -72,8 +72,7 @@ class QgsGPXProvider final: public QgsVectorDataProvider
 
     /* new functions */
 
-    void changeAttributeValues( QgsGpsObject &obj,
-                                const QgsAttributeMap &attrs );
+    void changeAttributeValues( QgsGpsObject &obj, const QgsAttributeMap &attrs );
 
     bool addFeature( QgsFeature &f, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
@@ -91,13 +90,21 @@ class QgsGPXProvider final: public QgsVectorDataProvider
 
     };
 
-    enum Attribute { NameAttr = 0, EleAttr, SymAttr, NumAttr,
-                     CmtAttr, DscAttr, SrcAttr, URLAttr, URLNameAttr,
-                     TimeAttr
-                   };
+    enum Attribute
+    {
+      NameAttr = 0,
+      EleAttr,
+      SymAttr,
+      NumAttr,
+      CmtAttr,
+      DscAttr,
+      SrcAttr,
+      URLAttr,
+      URLNameAttr,
+      TimeAttr
+    };
 
   private:
-
     QgsGpsData *mData = nullptr;
 
     //! Fields
@@ -110,15 +117,15 @@ class QgsGPXProvider final: public QgsVectorDataProvider
     DataType mFeatureType = WaypointType;
 
     static const QStringList sAttributeNames;
-    static const QList< QMetaType::Type > sAttributeTypes;
-    static const QList< DataType > sAttributedUsedForLayerType;
+    static const QList<QMetaType::Type> sAttributeTypes;
+    static const QList<DataType> sAttributedUsedForLayerType;
 
     bool mValid = false;
 
     friend class QgsGPXFeatureSource;
 };
 
-class QgsGpxProviderMetadata final: public QgsProviderMetadata
+class QgsGpxProviderMetadata final : public QgsProviderMetadata
 {
     Q_OBJECT
   public:
@@ -130,7 +137,7 @@ class QgsGpxProviderMetadata final: public QgsProviderMetadata
     QVariantMap decodeUri( const QString &uri ) const override;
     QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 #endif

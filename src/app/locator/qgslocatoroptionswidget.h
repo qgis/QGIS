@@ -35,7 +35,6 @@ class QgsLocatorOptionsWidget : public QTreeView
     Q_OBJECT
 
   public:
-
     QgsLocatorOptionsWidget( QgsLocatorWidget *locator, QWidget *parent = nullptr );
 
   public slots:
@@ -62,7 +61,6 @@ class QgsLocatorFiltersModel : public QAbstractTableModel
     Q_OBJECT
 
   public:
-
     //! Custom model roles
     enum Role
     {
@@ -90,8 +88,7 @@ class QgsLocatorFiltersModel : public QAbstractTableModel
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
     QgsLocatorFilter *filterForIndex( const QModelIndex &index ) const;
 
@@ -100,18 +97,14 @@ class QgsLocatorFiltersModel : public QAbstractTableModel
     void commitChanges();
 
   private:
-
     QgsLocator *mLocator = nullptr;
 
     // changes are deferred to support cancellation
-    QHash< QgsLocatorFilter *, QString > mPrefixes;
-    QHash< QgsLocatorFilter *, bool > mEnabledChanges;
-    QHash< QgsLocatorFilter *, bool > mDefaultChanges;
+    QHash<QgsLocatorFilter *, QString> mPrefixes;
+    QHash<QgsLocatorFilter *, bool> mEnabledChanges;
+    QHash<QgsLocatorFilter *, bool> mDefaultChanges;
 
     int mIconSize, mRowSize;
-
 };
 
 #endif // QGSLOCATOROPTIONSWIDGET_H
-
-

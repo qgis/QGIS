@@ -54,8 +54,8 @@ class TestQgsMarkerLineSymbol : public QgsTest
     ~TestQgsMarkerLineSymbol() override;
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void lineOffset();
     void pointNumInterval();
@@ -85,8 +85,7 @@ void TestQgsMarkerLineSymbol::initTestCase()
   //create a line layer that will be used in all tests...
   const QString myLinesFileName = mTestDataDir + "lines_cardinals.shp";
   const QFileInfo myLinesFileInfo( myLinesFileName );
-  mLinesLayer = new QgsVectorLayer( myLinesFileInfo.filePath(),
-                                    myLinesFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mLinesLayer = new QgsVectorLayer( myLinesFileInfo.filePath(), myLinesFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   mapLayers << mLinesLayer;
 
   // Register all layers with the registry
@@ -144,7 +143,7 @@ void TestQgsMarkerLineSymbol::pointNumInterval()
   props[QStringLiteral( "color" )] = QStringLiteral( "255,0,0" );
   props[QStringLiteral( "size" )] = QStringLiteral( "2" );
   props[QStringLiteral( "outline_style" )] = QStringLiteral( "no" );
-  QgsSimpleMarkerSymbolLayer *marker = static_cast< QgsSimpleMarkerSymbolLayer * >( QgsSimpleMarkerSymbolLayer::create( props ) );
+  QgsSimpleMarkerSymbolLayer *marker = static_cast<QgsSimpleMarkerSymbolLayer *>( QgsSimpleMarkerSymbolLayer::create( props ) );
 
   marker->setDataDefinedProperty( QgsSymbolLayer::Property::Size, QgsProperty::fromExpression( QStringLiteral( "@geometry_point_num * 2" ) ) );
 
@@ -173,7 +172,7 @@ void TestQgsMarkerLineSymbol::pointNumVertex()
   props[QStringLiteral( "color" )] = QStringLiteral( "255,0,0" );
   props[QStringLiteral( "size" )] = QStringLiteral( "2" );
   props[QStringLiteral( "outline_style" )] = QStringLiteral( "no" );
-  QgsSimpleMarkerSymbolLayer *marker = static_cast< QgsSimpleMarkerSymbolLayer * >( QgsSimpleMarkerSymbolLayer::create( props ) );
+  QgsSimpleMarkerSymbolLayer *marker = static_cast<QgsSimpleMarkerSymbolLayer *>( QgsSimpleMarkerSymbolLayer::create( props ) );
 
   marker->setDataDefinedProperty( QgsSymbolLayer::Property::Size, QgsProperty::fromExpression( QStringLiteral( "@geometry_point_num * 2" ) ) );
 
@@ -197,225 +196,224 @@ void TestQgsMarkerLineSymbol::collectPoints_data()
   QTest::addColumn<QVector<QPointF>>( "expected" );
 
   QTest::newRow( "empty" )
-      << QVector< QPointF >()
-      << 1.0 << 0.0 << 0.0 << 0
-      << QVector< QPointF >();
+    << QVector<QPointF>()
+    << 1.0 << 0.0 << 0.0 << 0
+    << QVector<QPointF>();
 
   QTest::newRow( "a" )
-      << ( QVector< QPointF >() << QPointF( 1, 2 ) )
-      << 1.0 << 0.0 << 0.0 << 0
-      << ( QVector< QPointF >() );
+    << ( QVector<QPointF>() << QPointF( 1, 2 ) )
+    << 1.0 << 0.0 << 0.0 << 0
+    << ( QVector<QPointF>() );
 
   QTest::newRow( "b" )
-      << ( QVector< QPointF >() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
-      << 1.0 << 0.0 << 0.0 << 0
-      << ( QVector< QPointF >()  << QPointF( 2, 2 ) << QPointF( 3, 2 )
-           << QPointF( 4, 2 ) << QPointF( 5, 2 ) << QPointF( 6, 2 ) << QPointF( 7, 2 ) << QPointF( 8, 2 )
-           << QPointF( 9, 2 ) << QPointF( 10, 2 ) << QPointF( 11, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
+    << 1.0 << 0.0 << 0.0 << 0
+    << ( QVector<QPointF>() << QPointF( 2, 2 ) << QPointF( 3, 2 )
+                            << QPointF( 4, 2 ) << QPointF( 5, 2 ) << QPointF( 6, 2 ) << QPointF( 7, 2 ) << QPointF( 8, 2 )
+                            << QPointF( 9, 2 ) << QPointF( 10, 2 ) << QPointF( 11, 2 ) );
 
   QTest::newRow( "b maxpoints" )
-      << ( QVector< QPointF >() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
-      << 1.0 << 0.0 << 0.0 << 3
-      << ( QVector< QPointF >()  << QPointF( 2, 2 ) << QPointF( 3, 2 )
-           << QPointF( 4, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
+    << 1.0 << 0.0 << 0.0 << 3
+    << ( QVector<QPointF>() << QPointF( 2, 2 ) << QPointF( 3, 2 )
+                            << QPointF( 4, 2 ) );
 
   QTest::newRow( "b pad points" )
-      << ( QVector< QPointF >() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
-      << 1.0 << 0.0 << 0.0 << 13
-      << ( QVector< QPointF >()  << QPointF( 2, 2 ) << QPointF( 3, 2 )
-           << QPointF( 4, 2 ) << QPointF( 5, 2 ) << QPointF( 6, 2 ) << QPointF( 7, 2 ) << QPointF( 8, 2 )
-           << QPointF( 9, 2 ) << QPointF( 10, 2 ) << QPointF( 11, 2 ) << QPointF( 11, 2 ) << QPointF( 11, 2 ) << QPointF( 11, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
+    << 1.0 << 0.0 << 0.0 << 13
+    << ( QVector<QPointF>() << QPointF( 2, 2 ) << QPointF( 3, 2 )
+                            << QPointF( 4, 2 ) << QPointF( 5, 2 ) << QPointF( 6, 2 ) << QPointF( 7, 2 ) << QPointF( 8, 2 )
+                            << QPointF( 9, 2 ) << QPointF( 10, 2 ) << QPointF( 11, 2 ) << QPointF( 11, 2 ) << QPointF( 11, 2 ) << QPointF( 11, 2 ) );
 
   QTest::newRow( "c" )
-      << ( QVector< QPointF >() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
-      << 1.0 << 1.0 << 0.0 << 0
-      << ( QVector< QPointF >()  << QPointF( 1, 2 )  << QPointF( 2, 2 ) << QPointF( 3, 2 )
-           << QPointF( 4, 2 ) << QPointF( 5, 2 ) << QPointF( 6, 2 ) << QPointF( 7, 2 ) << QPointF( 8, 2 )
-           << QPointF( 9, 2 ) << QPointF( 10, 2 ) << QPointF( 11, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
+    << 1.0 << 1.0 << 0.0 << 0
+    << ( QVector<QPointF>() << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 3, 2 )
+                            << QPointF( 4, 2 ) << QPointF( 5, 2 ) << QPointF( 6, 2 ) << QPointF( 7, 2 ) << QPointF( 8, 2 )
+                            << QPointF( 9, 2 ) << QPointF( 10, 2 ) << QPointF( 11, 2 ) );
 
   QTest::newRow( "c3" )
-      << ( QVector< QPointF >() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
-      << 2.0 << 0.0 << 0.0 << 0
-      << ( QVector< QPointF >() << QPointF( 3, 2 ) << QPointF( 5, 2 )
-           << QPointF( 7, 2 ) << QPointF( 9, 2 ) << QPointF( 11, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
+    << 2.0 << 0.0 << 0.0 << 0
+    << ( QVector<QPointF>() << QPointF( 3, 2 ) << QPointF( 5, 2 )
+                            << QPointF( 7, 2 ) << QPointF( 9, 2 ) << QPointF( 11, 2 ) );
 
   QTest::newRow( "d" )
-      << ( QVector< QPointF >() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
-      << 2.0 << 1.0 << 0.0 << 0
-      << ( QVector< QPointF >() << QPointF( 2, 2 ) << QPointF( 4, 2 )
-           << QPointF( 6, 2 ) << QPointF( 8, 2 ) << QPointF( 10, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
+    << 2.0 << 1.0 << 0.0 << 0
+    << ( QVector<QPointF>() << QPointF( 2, 2 ) << QPointF( 4, 2 )
+                            << QPointF( 6, 2 ) << QPointF( 8, 2 ) << QPointF( 10, 2 ) );
 
   QTest::newRow( "e" )
-      << ( QVector< QPointF >() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
-      << 2.0 << 2.0 << 0.0 << 0
-      << ( QVector< QPointF >() << QPointF( 1, 2 ) << QPointF( 3, 2 ) << QPointF( 5, 2 )
-           << QPointF( 7, 2 ) << QPointF( 9, 2 ) << QPointF( 11, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
+    << 2.0 << 2.0 << 0.0 << 0
+    << ( QVector<QPointF>() << QPointF( 1, 2 ) << QPointF( 3, 2 ) << QPointF( 5, 2 )
+                            << QPointF( 7, 2 ) << QPointF( 9, 2 ) << QPointF( 11, 2 ) );
 
   QTest::newRow( "f" )
-      << ( QVector< QPointF >() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
-      << 2.0 << 0.0 << 1.0 << 0
-      << ( QVector< QPointF >() << QPointF( 1, 2 ) << QPointF( 2, 2 )  << QPointF( 4, 2 ) << QPointF( 6, 2 ) << QPointF( 8, 2 )
-           << QPointF( 10, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
+    << 2.0 << 0.0 << 1.0 << 0
+    << ( QVector<QPointF>() << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 4, 2 ) << QPointF( 6, 2 ) << QPointF( 8, 2 )
+                            << QPointF( 10, 2 ) );
 
   QTest::newRow( "g" )
-      << ( QVector< QPointF >() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
-      << 2.0 << 0.0 << 2.0 << 0
-      << ( QVector< QPointF >() << QPointF( 1, 2 )  << QPointF( 1, 2 ) << QPointF( 3, 2 ) << QPointF( 5, 2 ) << QPointF( 7, 2 )
-           << QPointF( 9, 2 ) << QPointF( 11, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
+    << 2.0 << 0.0 << 2.0 << 0
+    << ( QVector<QPointF>() << QPointF( 1, 2 ) << QPointF( 1, 2 ) << QPointF( 3, 2 ) << QPointF( 5, 2 ) << QPointF( 7, 2 )
+                            << QPointF( 9, 2 ) << QPointF( 11, 2 ) );
 
   QTest::newRow( "h" )
-      << ( QVector< QPointF >() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
-      << 2.0 << 0.0 << 2.1 << 0
-      << ( QVector< QPointF >() << QPointF( 1, 2 )  << QPointF( 1, 2 ) << QPointF( 2.9, 2 ) << QPointF( 4.9, 2 ) << QPointF( 6.9, 2 )
-           << QPointF( 8.9, 2 ) << QPointF( 10.9, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 1, 2 ) << QPointF( 11, 2 ) )
+    << 2.0 << 0.0 << 2.1 << 0
+    << ( QVector<QPointF>() << QPointF( 1, 2 ) << QPointF( 1, 2 ) << QPointF( 2.9, 2 ) << QPointF( 4.9, 2 ) << QPointF( 6.9, 2 )
+                            << QPointF( 8.9, 2 ) << QPointF( 10.9, 2 ) );
 
   QTest::newRow( "i" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 8, 2 ) )
-      << 2.0 << 2.0 << 0.0 << 0
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 4, 2 ) << QPointF( 6, 2 ) << QPointF( 8, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 8, 2 ) )
+    << 2.0 << 2.0 << 0.0 << 0
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 4, 2 ) << QPointF( 6, 2 ) << QPointF( 8, 2 ) );
 
   QTest::newRow( "j" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 8, 2 ) )
-      << 2.0 << 0.0 << 2.0 << 0
-      << ( QVector< QPointF >() << QPointF( 0, 2 )  << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 4, 2 ) << QPointF( 6, 2 ) << QPointF( 8, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 8, 2 ) )
+    << 2.0 << 0.0 << 2.0 << 0
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 4, 2 ) << QPointF( 6, 2 ) << QPointF( 8, 2 ) );
 
   QTest::newRow( "k" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 8, 2 ) )
-      << 2.0 << 0.0 << 0.0 << 0
-      << ( QVector< QPointF >() << QPointF( 2, 2 ) << QPointF( 4, 2 ) << QPointF( 6, 2 ) << QPointF( 8, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 8, 2 ) )
+    << 2.0 << 0.0 << 0.0 << 0
+    << ( QVector<QPointF>() << QPointF( 2, 2 ) << QPointF( 4, 2 ) << QPointF( 6, 2 ) << QPointF( 8, 2 ) );
 
   QTest::newRow( "closed ring" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
-      << 2.0 << 2.0 << 0.0 << 0
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
+    << 2.0 << 2.0 << 0.0 << 0
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) );
 
   QTest::newRow( "closed ring required points" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
-      << 2.0 << 2.0 << 0.0 << 7
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
+    << 2.0 << 2.0 << 0.0 << 7
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) );
   QTest::newRow( "closed ring 1.0" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
-      << 1.0 << 1.0 << 0.0 << 0
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 1 ) << QPointF( 2, 0 )
-           << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
+    << 1.0 << 1.0 << 0.0 << 0
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 1 ) << QPointF( 2, 0 )
+                            << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) );
   QTest::newRow( "closed ring 1.0" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
-      << 1.0 << 1.0 << 0.0 << 11
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 1 ) << QPointF( 2, 0 )
-           << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) << QPointF( 1, 2 ) << QPointF( 2, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
+    << 1.0 << 1.0 << 0.0 << 11
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 1 ) << QPointF( 2, 0 )
+                            << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) << QPointF( 1, 2 ) << QPointF( 2, 2 ) );
   QTest::newRow( "closed ring initial offset 1.0" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
-      << 1.0 << 0.0 << 0.0 << 0
-      << ( QVector< QPointF >() << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 1 ) << QPointF( 2, 0 )
-           << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
+    << 1.0 << 0.0 << 0.0 << 0
+    << ( QVector<QPointF>() << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 1 ) << QPointF( 2, 0 )
+                            << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) );
   QTest::newRow( "closed ring initial offset 1.0 num points" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
-      << 1.0 << 0.0 << 0.0 << 10
-      << ( QVector< QPointF >() << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 1 ) << QPointF( 2, 0 )
-           << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) << QPointF( 1, 2 ) << QPointF( 2, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
+    << 1.0 << 0.0 << 0.0 << 10
+    << ( QVector<QPointF>() << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 1 ) << QPointF( 2, 0 )
+                            << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) << QPointF( 1, 2 ) << QPointF( 2, 2 ) );
 
   QTest::newRow( "closed ring 1.0 initial lag 1.0" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
-      << 1.0 << 0.0 << 1.0 << 0
-      << ( QVector< QPointF >() << QPointF( 0, 1 ) << QPointF( 0, 2 ) << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 1 ) << QPointF( 2, 0 )
-           << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
+    << 1.0 << 0.0 << 1.0 << 0
+    << ( QVector<QPointF>() << QPointF( 0, 1 ) << QPointF( 0, 2 ) << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 1 ) << QPointF( 2, 0 )
+                            << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) );
   QTest::newRow( "closed ring 2.0 initial lag" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
-      << 2.0 << 0.0 << 1.0 << 0
-      << ( QVector< QPointF >() << QPointF( 0, 1 ) << QPointF( 1, 2 ) << QPointF( 2, 1 ) << QPointF( 1, 0 ) << QPointF( 0, 1 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
+    << 2.0 << 0.0 << 1.0 << 0
+    << ( QVector<QPointF>() << QPointF( 0, 1 ) << QPointF( 1, 2 ) << QPointF( 2, 1 ) << QPointF( 1, 0 ) << QPointF( 0, 1 ) );
   QTest::newRow( "closed ring 1.0 initial lag 0.5" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
-      << 1.0 << 0.0 << 0.5 << 0
-      << ( QVector< QPointF >() << QPointF( 0, 1.5 ) << QPointF( 0.5, 2 ) << QPointF( 1.5, 2 ) << QPointF( 2, 1.5 ) << QPointF( 2, 0.5 ) << QPointF( 1.5, 0 )
-           << QPointF( 0.5, 0 ) << QPointF( 0, 0.5 ) << QPointF( 0, 1.5 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
+    << 1.0 << 0.0 << 0.5 << 0
+    << ( QVector<QPointF>() << QPointF( 0, 1.5 ) << QPointF( 0.5, 2 ) << QPointF( 1.5, 2 ) << QPointF( 2, 1.5 ) << QPointF( 2, 0.5 ) << QPointF( 1.5, 0 )
+                            << QPointF( 0.5, 0 ) << QPointF( 0, 0.5 ) << QPointF( 0, 1.5 ) );
   QTest::newRow( "closed ring 1.0 initial offset 0.5" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
-      << 1.0 << 0.5 << 0.0 << 10
-      << ( QVector< QPointF >() << QPointF( 0.5, 2 ) << QPointF( 1.5, 2 ) << QPointF( 2, 1.5 ) << QPointF( 2, 0.5 ) << QPointF( 1.5, 0 )
-           << QPointF( 0.5, 0 ) << QPointF( 0, 0.5 ) << QPointF( 0, 1.5 ) << QPointF( 0.5, 2.0 ) << QPointF( 1.5, 2.0 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
+    << 1.0 << 0.5 << 0.0 << 10
+    << ( QVector<QPointF>() << QPointF( 0.5, 2 ) << QPointF( 1.5, 2 ) << QPointF( 2, 1.5 ) << QPointF( 2, 0.5 ) << QPointF( 1.5, 0 )
+                            << QPointF( 0.5, 0 ) << QPointF( 0, 0.5 ) << QPointF( 0, 1.5 ) << QPointF( 0.5, 2.0 ) << QPointF( 1.5, 2.0 ) );
   QTest::newRow( "closed ring 1.0 initial lag 1.5" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
-      << 1.0 << 0.0 << 1.5 << 0
-      << ( QVector< QPointF >() << QPointF( 0, 0.5 ) << QPointF( 0, 1.5 ) << QPointF( 0.5, 2 ) << QPointF( 1.5, 2 ) << QPointF( 2, 1.5 ) << QPointF( 2, 0.5 ) << QPointF( 1.5, 0 )
-           << QPointF( 0.5, 0 ) << QPointF( 0, 0.5 ) << QPointF( 0, 1.5 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
+    << 1.0 << 0.0 << 1.5 << 0
+    << ( QVector<QPointF>() << QPointF( 0, 0.5 ) << QPointF( 0, 1.5 ) << QPointF( 0.5, 2 ) << QPointF( 1.5, 2 ) << QPointF( 2, 1.5 ) << QPointF( 2, 0.5 ) << QPointF( 1.5, 0 )
+                            << QPointF( 0.5, 0 ) << QPointF( 0, 0.5 ) << QPointF( 0, 1.5 ) );
   QTest::newRow( "closed ring 1.0 initial lag 2.0" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
-      << 1.0 << 0.0 << 2.0 << 0
-      << ( QVector< QPointF >() << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 1 ) << QPointF( 2, 0 )
-           << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
+    << 1.0 << 0.0 << 2.0 << 0
+    << ( QVector<QPointF>() << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 1 ) << QPointF( 2, 0 )
+                            << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) );
   QTest::newRow( "closed ring 1.0 initial lag 3.0" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
-      << 1.0 << 0.0 << 3.0 << 0
-      << ( QVector< QPointF >() << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 1 ) << QPointF( 2, 0 )
-           << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
+    << 1.0 << 0.0 << 3.0 << 0
+    << ( QVector<QPointF>() << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 1 ) << QPointF( 2, 0 )
+                            << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) );
   QTest::newRow( "closed ring 1.0 initial lag 3.5" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
-      << 1.0 << 0.0 << 3.5 << 0
-      << ( QVector< QPointF >() << QPointF( 1.5, 0 ) << QPointF( 0.5, 0 ) << QPointF( 0, 0.5 ) << QPointF( 0, 1.5 ) << QPointF( 0.5, 2 ) << QPointF( 1.5, 2 ) << QPointF( 2, 1.5 ) << QPointF( 2, 0.5 )
-           << QPointF( 1.5, 0 ) << QPointF( 0.5, 0 ) << QPointF( 0, 0.5 ) << QPointF( 0, 1.5 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
+    << 1.0 << 0.0 << 3.5 << 0
+    << ( QVector<QPointF>() << QPointF( 1.5, 0 ) << QPointF( 0.5, 0 ) << QPointF( 0, 0.5 ) << QPointF( 0, 1.5 ) << QPointF( 0.5, 2 ) << QPointF( 1.5, 2 ) << QPointF( 2, 1.5 ) << QPointF( 2, 0.5 )
+                            << QPointF( 1.5, 0 ) << QPointF( 0.5, 0 ) << QPointF( 0, 0.5 ) << QPointF( 0, 1.5 ) );
   QTest::newRow( "closed ring 1.0 initial lag 4.0" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
-      << 1.0 << 0.0 << 4.0 << 0
-      << ( QVector< QPointF >() << QPointF( 2, 0 ) << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 1 ) << QPointF( 2, 0 )
-           << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
+    << 1.0 << 0.0 << 4.0 << 0
+    << ( QVector<QPointF>() << QPointF( 2, 0 ) << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 1 ) << QPointF( 2, 0 )
+                            << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) );
   QTest::newRow( "closed ring 1.0 initial lag 5.0" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
-      << 1.0 << 0.0 << 5.0 << 0
-      << ( QVector< QPointF >() << QPointF( 2, 1 ) << QPointF( 2, 0 ) << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 1 ) << QPointF( 2, 0 )
-           << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
+    << 1.0 << 0.0 << 5.0 << 0
+    << ( QVector<QPointF>() << QPointF( 2, 1 ) << QPointF( 2, 0 ) << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) << QPointF( 1, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 1 ) << QPointF( 2, 0 )
+                            << QPointF( 1, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 1 ) << QPointF( 0, 2 ) );
 
   QTest::newRow( "simulate initial offset 0.5" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) )
-      << 2.0 << 1.5 << 0.0 << 0
-      << ( QVector< QPointF >() << QPointF( 0.5, 2 ) << QPointF( 2, 1.5 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) )
+    << 2.0 << 1.5 << 0.0 << 0
+    << ( QVector<QPointF>() << QPointF( 0.5, 2 ) << QPointF( 2, 1.5 ) );
   QTest::newRow( "simulate initial offset 0.5 lag 0.5" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) )
-      << 2.0 << 2.0 - ( 0.5 - 0.5 ) << 0.5 - 0.5 << 0
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 )  << QPointF( 2, 0 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) )
+    << 2.0 << 2.0 - ( 0.5 - 0.5 ) << 0.5 - 0.5 << 0
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) );
 
   QTest::newRow( "simulate initial offset 0.5 lag 0.1" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) )
-      << 2.0 << 2.0 - ( 0.5 - 0.1 ) << 0.0 << 0
-      << ( QVector< QPointF >() << QPointF( 0.4, 2 ) << QPointF( 2, 1.6 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) )
+    << 2.0 << 2.0 - ( 0.5 - 0.1 ) << 0.0 << 0
+    << ( QVector<QPointF>() << QPointF( 0.4, 2 ) << QPointF( 2, 1.6 ) );
   QTest::newRow( "simulate initial offset 0.1 lag 0.5" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) )
-      << 2.0 << 0.0 << 0.5 - 0.1 << 0
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 1.6, 2.0 ) << QPointF( 2.0, 0.4 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) )
+    << 2.0 << 0.0 << 0.5 - 0.1 << 0
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 1.6, 2.0 ) << QPointF( 2.0, 0.4 ) );
 
   QTest::newRow( "simulate initial offset 0.5 lag -0.1" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) )
-      << 2.0 << 2.0 - 0.5 - 0.1 << 0.0 << 0
-      << ( QVector< QPointF >() << QPointF( 0.6, 2 ) << QPointF( 2, 1.4 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) )
+    << 2.0 << 2.0 - 0.5 - 0.1 << 0.0 << 0
+    << ( QVector<QPointF>() << QPointF( 0.6, 2 ) << QPointF( 2, 1.4 ) );
   QTest::newRow( "simulate initial offset 0.1 lag -0.5" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) )
-      << 2.0 << 2.0 - 0.1 - 0.5 << 0.0 << 0
-      << ( QVector< QPointF >() << QPointF( 0.6, 2 ) << QPointF( 2.0, 1.4 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) )
+    << 2.0 << 2.0 - 0.1 - 0.5 << 0.0 << 0
+    << ( QVector<QPointF>() << QPointF( 0.6, 2 ) << QPointF( 2.0, 1.4 ) );
 
   QTest::newRow( "simulate initial offset 0.5 closed" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
-      << 2.0 << 1.5 << 0.0 << 0
-      << ( QVector< QPointF >() << QPointF( 0.5, 2 ) << QPointF( 2, 1.5 ) << QPointF( 1.5, 0 ) << QPointF( 0.0, 0.5 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
+    << 2.0 << 1.5 << 0.0 << 0
+    << ( QVector<QPointF>() << QPointF( 0.5, 2 ) << QPointF( 2, 1.5 ) << QPointF( 1.5, 0 ) << QPointF( 0.0, 0.5 ) );
   QTest::newRow( "simulate initial offset 0.5 lag 0.1 closed" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
-      << 2.0 << 2.0 - ( 0.5 - 0.1 ) << 0.0 << 0
-      << ( QVector< QPointF >() << QPointF( 0.4, 2 ) << QPointF( 2, 1.6 ) << QPointF( 1.6, 0 ) << QPointF( 0, 0.4 ) );
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
+    << 2.0 << 2.0 - ( 0.5 - 0.1 ) << 0.0 << 0
+    << ( QVector<QPointF>() << QPointF( 0.4, 2 ) << QPointF( 2, 1.6 ) << QPointF( 1.6, 0 ) << QPointF( 0, 0.4 ) );
   QTest::newRow( "simulate initial offset 0.1 lag 0.5 closed" )
-      << ( QVector< QPointF >() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
-      << 2.0 << 0.0 << 0.5 - 0.1 << 0
-      << ( QVector< QPointF >() << QPointF( 0, 1.6 ) << QPointF( 1.6, 2 ) << QPointF( 2.0, 0.4 ) << QPointF( 0.4, 0.0 ) << QPointF( 0.0, 1.6 ) );
-
+    << ( QVector<QPointF>() << QPointF( 0, 2 ) << QPointF( 2, 2 ) << QPointF( 2, 0 ) << QPointF( 0, 0 ) << QPointF( 0, 2 ) )
+    << 2.0 << 0.0 << 0.5 - 0.1 << 0
+    << ( QVector<QPointF>() << QPointF( 0, 1.6 ) << QPointF( 1.6, 2 ) << QPointF( 2.0, 0.4 ) << QPointF( 0.4, 0.0 ) << QPointF( 0.0, 1.6 ) );
 }
 
 void TestQgsMarkerLineSymbol::collectPoints()
 {
-  QFETCH( QVector< QPointF >, input );
+  QFETCH( QVector<QPointF>, input );
   QFETCH( double, interval );
   QFETCH( double, initialOffset );
   QFETCH( double, initialLag );
   QFETCH( int, numberPointsRequired );
-  QFETCH( QVector< QPointF >, expected );
+  QFETCH( QVector<QPointF>, expected );
 
-  QVector <QPointF> dest;
+  QVector<QPointF> dest;
   QgsTemplatedLineSymbolLayerBase::collectOffsetPoints( input, dest, interval, initialOffset, initialLag, numberPointsRequired );
   QCOMPARE( dest, expected );
 }

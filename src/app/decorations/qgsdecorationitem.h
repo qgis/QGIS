@@ -33,7 +33,6 @@ class APP_EXPORT QgsDecorationItem : public QObject, public QgsMapDecoration
     Q_OBJECT
 
   public:
-
     //! Item placements
     enum Placement
     {
@@ -79,7 +78,6 @@ class APP_EXPORT QgsDecorationItem : public QObject, public QgsMapDecoration
     void update();
 
   protected:
-
     //! True if decoration item has to be displayed
     bool mEnabled = false;
 

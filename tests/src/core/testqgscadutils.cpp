@@ -34,10 +34,10 @@ class TestQgsCadUtils : public QObject
     TestQgsCadUtils() = default;
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void testBasic();
     void testXY();
@@ -49,7 +49,6 @@ class TestQgsCadUtils : public QObject
     void testEdge();
 
   private:
-
     QgsCadUtils::AlignMapPointContext baseContext()
     {
       QgsCadUtils::AlignMapPointContext context;
@@ -257,7 +256,7 @@ void TestQgsCadUtils::testDistance()
   QCOMPARE( res1.finalMapPoint, QgsPointXY( 35, 20 ) );
 
   // dist+x
-  const double d = distance * sqrt( 2 ) / 2.;   // sine/cosine of 45 times radius of our distance constraint
+  const double d = distance * sqrt( 2 ) / 2.; // sine/cosine of 45 times radius of our distance constraint
   const double expectedX1 = 30 + d;
   const double expectedY1 = 20 + d;
   context.xConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, expectedX1 );
@@ -323,7 +322,7 @@ void TestQgsCadUtils::testLineExtension()
   mLayerPolygon->getFeatures().nextFeature( feature );
   QgsFeatureId featId = feature.id();
 
-  QQueue< QgsPointLocator::Match > lockedSnapVertices;
+  QQueue<QgsPointLocator::Match> lockedSnapVertices;
   lockedSnapVertices.append( QgsPointLocator::Match( QgsPointLocator::Type::Vertex, mLayerPolygon, featId, 0, QgsPointXY( 30, 10 ), 2 ) );
   lockedSnapVertices.append( QgsPointLocator::Match( QgsPointLocator::Type::Vertex, mLayerPolygon, featId, 0, QgsPointXY( 10, 20 ), 3 ) );
   context.setLockedSnapVertices( lockedSnapVertices );
@@ -453,7 +452,7 @@ void TestQgsCadUtils::testVertexConstrainst()
   mLayerPolygon->getFeatures().nextFeature( feature );
   QgsFeatureId featId = feature.id();
 
-  QQueue< QgsPointLocator::Match > lockedSnapVertices;
+  QQueue<QgsPointLocator::Match> lockedSnapVertices;
   lockedSnapVertices.append( QgsPointLocator::Match( QgsPointLocator::Type::Vertex, mLayerPolygon, featId, 0, QgsPointXY( 20, 0 ), 1 ) );
   lockedSnapVertices.append( QgsPointLocator::Match( QgsPointLocator::Type::Vertex, mLayerPolygon, featId, 0, QgsPointXY( 10, 20 ), 3 ) );
   context.setLockedSnapVertices( lockedSnapVertices );
@@ -574,7 +573,7 @@ void TestQgsCadUtils::testEdge()
   QgsCadUtils::AlignMapPointContext context( baseContext() );
   context.setCadPoints( QList<QgsPoint>() << QgsPoint() << QgsPoint( 40, 30 ) << QgsPoint( 40, 40 ) );
 
-  const QgsPointXY edgePt( 20, 15 );  // in the middle of the triangle polygon's edge
+  const QgsPointXY edgePt( 20, 15 ); // in the middle of the triangle polygon's edge
 
   // x+edge
   context.xConstraint = QgsCadUtils::AlignMapPointConstraint( true, false, 40 );

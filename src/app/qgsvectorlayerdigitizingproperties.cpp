@@ -53,12 +53,11 @@ QgsVectorLayerDigitizingPropertiesPage::QgsVectorLayerDigitizingPropertiesPage( 
     mRemoveDuplicateNodesCheckbox->setChecked( mRemoveDuplicateNodesManuallyActivated );
     if ( !precisionStr.isNull() )
       mRemoveDuplicateNodesCheckbox->setEnabled( false );
-    connect( mGeometryPrecisionLineEdit, &QLineEdit::textChanged, this, [this]
-    {
+    connect( mGeometryPrecisionLineEdit, &QLineEdit::textChanged, this, [this] {
       if ( !mGeometryPrecisionLineEdit->text().isEmpty() )
       {
         if ( mRemoveDuplicateNodesCheckbox->isEnabled() )
-          mRemoveDuplicateNodesManuallyActivated  = mRemoveDuplicateNodesCheckbox->isChecked();
+          mRemoveDuplicateNodesManuallyActivated = mRemoveDuplicateNodesCheckbox->isChecked();
         mRemoveDuplicateNodesCheckbox->setEnabled( false );
         mRemoveDuplicateNodesCheckbox->setChecked( true );
       }
@@ -141,7 +140,7 @@ void QgsVectorLayerDigitizingPropertiesPage::apply()
   vlayer->geometryOptions()->setRemoveDuplicateNodes( mRemoveDuplicateNodesCheckbox->isChecked() );
   bool ok = true;
   double precision( QLocale().toDouble( mGeometryPrecisionLineEdit->text(), &ok ) );
-  if ( ! ok )
+  if ( !ok )
     precision = 0.0;
   vlayer->geometryOptions()->setGeometryPrecision( precision );
 

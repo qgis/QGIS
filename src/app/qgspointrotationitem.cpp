@@ -47,7 +47,7 @@ void QgsPointRotationItem::paint( QPainter *painter )
   if ( mPixmap.width() > 0 && mPixmap.height() > 0 )
   {
     h = std::sqrt( ( double ) mPixmap.width() * mPixmap.width() + mPixmap.height() * mPixmap.height() ) / 2; //the half of the item diagonal
-    dAngel = std::acos( mPixmap.width() / ( h * 2 ) ) * 180 / M_PI; //the diagonal angel of the original rect
+    dAngel = std::acos( mPixmap.width() / ( h * 2 ) ) * 180 / M_PI;                                          //the diagonal angel of the original rect
     x = h * std::cos( ( painterRotation( mRotation ) - dAngel ) * M_PI / 180 );
     y = h * std::sin( ( painterRotation( mRotation ) - dAngel ) * M_PI / 180 );
   }
@@ -76,12 +76,8 @@ void QgsPointRotationItem::paint( QPainter *painter )
   bufferPen.setWidthF( QgsGuiUtils::scaleIconSize( 4 ) );
   const QFontMetricsF fm( mFont );
   QPainterPath label;
-  const double rotationText = mRotation * QgsUnitTypes::fromUnitToUnitFactor( Qgis::AngleUnit::Degrees,
-                              mRotationUnit );
-  label.addText( mPixmap.width(),
-                 mPixmap.height() / 2.0 + fm.height() / 2.0,
-                 mFont,
-                 QgsUnitTypes::formatAngle( rotationText, -1, mRotationUnit ) );
+  const double rotationText = mRotation * QgsUnitTypes::fromUnitToUnitFactor( Qgis::AngleUnit::Degrees, mRotationUnit );
+  label.addText( mPixmap.width(), mPixmap.height() / 2.0 + fm.height() / 2.0, mFont, QgsUnitTypes::formatAngle( rotationText, -1, mRotationUnit ) );
   painter->setPen( bufferPen );
   painter->setBrush( Qt::NoBrush );
   painter->drawPath( label );
@@ -139,4 +135,3 @@ int QgsPointRotationItem::painterRotation( int rotation ) const
 
   return 360 - ( rotation % 360 );
 }
-

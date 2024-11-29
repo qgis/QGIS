@@ -26,23 +26,22 @@
 //header for class being tested
 #include "fieldformatter/qgsrelationreferencefieldformatter.h"
 
-class TestQgsRelationReferenceFieldFormatter: public QObject
+class TestQgsRelationReferenceFieldFormatter : public QObject
 {
     Q_OBJECT
 
   private slots:
 
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
     void testDependencies();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
     std::unique_ptr<QgsVectorLayer> mLayer2;
     std::unique_ptr<QgsRelation> mRelation;
-
 };
 
 
@@ -131,11 +130,11 @@ void TestQgsRelationReferenceFieldFormatter::testDependencies()
   // Test dependencies
 
   const QgsEditorWidgetSetup setup { QStringLiteral( "RelationReference" ), {
-      { QStringLiteral( "ReferencedLayerDataSource" ), mLayer2->publicSource() },
-      { QStringLiteral( "ReferencedLayerProviderKey" ), mLayer2->providerType() },
-      { QStringLiteral( "ReferencedLayerId" ), mLayer2->id() },
-      { QStringLiteral( "ReferencedLayerName" ), mLayer2->name() },
-    }};
+                                                                              { QStringLiteral( "ReferencedLayerDataSource" ), mLayer2->publicSource() },
+                                                                              { QStringLiteral( "ReferencedLayerProviderKey" ), mLayer2->providerType() },
+                                                                              { QStringLiteral( "ReferencedLayerId" ), mLayer2->id() },
+                                                                              { QStringLiteral( "ReferencedLayerName" ), mLayer2->name() },
+                                                                            } };
   QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
   const QList<QgsVectorLayerRef> dependencies = fieldFormatter->layerDependencies( setup.config() );
   QVERIFY( dependencies.count() == 1 );
@@ -148,7 +147,3 @@ void TestQgsRelationReferenceFieldFormatter::testDependencies()
 
 QGSTEST_MAIN( TestQgsRelationReferenceFieldFormatter )
 #include "testqgsrelationreferencefieldformatter.moc"
-
-
-
-

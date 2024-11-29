@@ -22,9 +22,8 @@ using namespace nlohmann;
 
 #include <QTextCodec>
 
-QgsOapifApiRequest::QgsOapifApiRequest( const QgsDataSourceUri &baseUri, const QString &url ):
-  QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), baseUri.authConfigId() ), tr( "OAPIF" ) ),
-  mUrl( url )
+QgsOapifApiRequest::QgsOapifApiRequest( const QgsDataSourceUri &baseUri, const QString &url )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), baseUri.authConfigId() ), tr( "OAPIF" ) ), mUrl( url )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main
@@ -145,16 +144,15 @@ void QgsOapifApiRequest::processReply()
       const auto &paths = j["paths"];
       if ( paths.is_object() )
       {
-        for ( const auto& [key, val] : paths.items() )
+        for ( const auto &[key, val] : paths.items() )
         {
           const char *prefix = "/collections/";
           const char *suffix = "/items";
-          if ( key.size() > strlen( prefix ) + strlen( suffix ) &&
-               key.compare( 0, strlen( prefix ), prefix ) == 0 &&
-               key.compare( key.size() - strlen( suffix ), std::string::npos, suffix ) == 0 )
+          if ( key.size() > strlen( prefix ) + strlen( suffix ) && key.compare( 0, strlen( prefix ), prefix ) == 0 && key.compare( key.size() - strlen( suffix ), std::string::npos, suffix ) == 0 )
           {
             const std::string collection = key.substr(
-                                             strlen( prefix ), key.size() - strlen( prefix ) - strlen( suffix ) );
+              strlen( prefix ), key.size() - strlen( prefix ) - strlen( suffix )
+            );
             if ( val.is_object() && val.contains( "get" ) )
             {
               const auto &get = val["get"];
@@ -178,37 +176,21 @@ void QgsOapifApiRequest::processReply()
                           parameterResolved = resolveRef( j, refStr );
                         }
                       }
-                      if ( parameterResolved &&
-                           parameterResolved->is_object() &&
-                           parameterResolved->contains( "name" ) &&
-                           parameterResolved->contains( "in" ) &&
-                           parameterResolved->contains( "style" ) &&
-                           parameterResolved->contains( "explode" ) &&
-                           parameterResolved->contains( "schema" ) )
+                      if ( parameterResolved && parameterResolved->is_object() && parameterResolved->contains( "name" ) && parameterResolved->contains( "in" ) && parameterResolved->contains( "style" ) && parameterResolved->contains( "explode" ) && parameterResolved->contains( "schema" ) )
                       {
                         const auto &jName = ( *parameterResolved )["name"];
                         const auto &jIn = ( *parameterResolved )["in"];
                         const auto &jStyle = ( *parameterResolved )["style"];
                         const auto &jExplode = ( *parameterResolved )["explode"];
                         const auto &jSchema = ( *parameterResolved )["schema"];
-                        if ( jName.is_string() && jIn.is_string() &&
-                             jStyle.is_string() && jExplode.is_boolean() &&
-                             jSchema.is_object() && jSchema.contains( "type" ) )
+                        if ( jName.is_string() && jIn.is_string() && jStyle.is_string() && jExplode.is_boolean() && jSchema.is_object() && jSchema.contains( "type" ) )
                         {
                           const auto name = jName.get<std::string>();
                           const auto in = jIn.get<std::string>();
                           const auto style = jStyle.get<std::string>();
                           const bool explode = jExplode.get<bool>();
                           const auto jSchemaType = jSchema["type"];
-                          if ( in == "query" &&
-                               style == "form" &&
-                               !explode &&
-                               jSchemaType.is_string() &&
-                               name != "crs" &&
-                               name != "bbox" && name != "bbox-crs" &&
-                               name != "filter" && name != "filter-lang" &&
-                               name != "filter-crs" && name != "datetime" &&
-                               name != "limit" )
+                          if ( in == "query" && style == "form" && !explode && jSchemaType.is_string() && name != "crs" && name != "bbox" && name != "bbox-crs" && name != "filter" && name != "filter-lang" && name != "filter-crs" && name != "datetime" && name != "limit" )
                           {
                             SimpleQueryable queryable;
                             queryable.mType = QString::fromStdString( jSchemaType.get<std::string>() );
