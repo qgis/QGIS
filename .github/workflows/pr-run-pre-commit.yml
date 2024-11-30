@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - release-3_40
 
 jobs:
   main:
