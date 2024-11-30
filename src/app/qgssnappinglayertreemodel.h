@@ -91,6 +91,8 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
     void onSnappingSettingsChanged();
 
   private:
+    void onNodesInserted( const QModelIndex &parent, int first, int last );
+    void onNodesRemoved( const QModelIndex &parent, int first, int last );
     bool nodeShown( QgsLayerTreeNode *node ) const;
 
     QgsProject *mProject = nullptr;
