@@ -28,7 +28,6 @@ QgsAuthOAuth2Config::QgsAuthOAuth2Config( QObject *parent )
   : QObject( parent )
   , mQueryPairs( QVariantMap() )
 {
-
   // internal signal bounces
   connect( this, &QgsAuthOAuth2Config::idChanged, this, &QgsAuthOAuth2Config::configChanged );
   connect( this, &QgsAuthOAuth2Config::versionChanged, this, &QgsAuthOAuth2Config::configChanged );
@@ -275,33 +274,12 @@ void QgsAuthOAuth2Config::setToDefaults()
 
 bool QgsAuthOAuth2Config::operator==( const QgsAuthOAuth2Config &other ) const
 {
-  return ( other.version() == this->version()
-           && other.configType() == this->configType()
-           && other.grantFlow() == this->grantFlow()
-           && other.name() == this->name()
-           && other.description() == this->description()
-           && other.requestUrl() == this->requestUrl()
-           && other.tokenUrl() == this->tokenUrl()
-           && other.refreshTokenUrl() == this->refreshTokenUrl()
-           && other.redirectHost() == this->redirectHost()
-           && other.redirectUrl() == this->redirectUrl()
-           && other.redirectPort() == this->redirectPort()
-           && other.clientId() == this->clientId()
-           && other.clientSecret() == this->clientSecret()
-           && other.username() == this->username()
-           && other.password() == this->password()
-           && other.scope() == this->scope()
-           && other.apiKey() == this->apiKey()
-           && other.persistToken() == this->persistToken()
-           && other.accessMethod() == this->accessMethod()
-           && other.customHeader() == this->customHeader()
-           && other.requestTimeout() == this->requestTimeout()
-           && other.queryPairs() == this->queryPairs() );
+  return ( other.version() == this->version() && other.configType() == this->configType() && other.grantFlow() == this->grantFlow() && other.name() == this->name() && other.description() == this->description() && other.requestUrl() == this->requestUrl() && other.tokenUrl() == this->tokenUrl() && other.refreshTokenUrl() == this->refreshTokenUrl() && other.redirectHost() == this->redirectHost() && other.redirectUrl() == this->redirectUrl() && other.redirectPort() == this->redirectPort() && other.clientId() == this->clientId() && other.clientSecret() == this->clientSecret() && other.username() == this->username() && other.password() == this->password() && other.scope() == this->scope() && other.apiKey() == this->apiKey() && other.persistToken() == this->persistToken() && other.accessMethod() == this->accessMethod() && other.customHeader() == this->customHeader() && other.requestTimeout() == this->requestTimeout() && other.queryPairs() == this->queryPairs() );
 }
 
 bool QgsAuthOAuth2Config::operator!=( const QgsAuthOAuth2Config &other ) const
 {
-  return  !( *this == other );
+  return !( *this == other );
 }
 
 bool QgsAuthOAuth2Config::isValid() const
@@ -322,27 +300,15 @@ void QgsAuthOAuth2Config::validateConfigId( bool needsId )
 
   if ( mGrantFlow == AuthCode || mGrantFlow == Implicit )
   {
-    mValid = ( !requestUrl().isEmpty()
-               && !tokenUrl().isEmpty()
-               && !clientId().isEmpty()
-               && ( ( mGrantFlow == AuthCode || mGrantFlow == Pkce ) ? !clientSecret().isEmpty() : true )
-               && redirectPort() > 0
-               && ( needsId ? !id().isEmpty() : true ) );
+    mValid = ( !requestUrl().isEmpty() && !tokenUrl().isEmpty() && !clientId().isEmpty() && ( ( mGrantFlow == AuthCode || mGrantFlow == Pkce ) ? !clientSecret().isEmpty() : true ) && redirectPort() > 0 && ( needsId ? !id().isEmpty() : true ) );
   }
-  else if ( mGrantFlow == Pkce )  // No client secret for PKCE
+  else if ( mGrantFlow == Pkce ) // No client secret for PKCE
   {
-    mValid = ( !requestUrl().isEmpty()
-               && !tokenUrl().isEmpty()
-               && !clientId().isEmpty()
-               && redirectPort() > 0
-               && ( needsId ? !id().isEmpty() : true ) );
+    mValid = ( !requestUrl().isEmpty() && !tokenUrl().isEmpty() && !clientId().isEmpty() && redirectPort() > 0 && ( needsId ? !id().isEmpty() : true ) );
   }
   else if ( mGrantFlow == ResourceOwner )
   {
-    mValid = ( !tokenUrl().isEmpty()
-               && !username().isEmpty()
-               && !password().isEmpty()
-               && ( needsId ? !id().isEmpty() : true ) );
+    mValid = ( !tokenUrl().isEmpty() && !username().isEmpty() && !password().isEmpty() && ( needsId ? !id().isEmpty() : true ) );
   }
 
   if ( mValid != oldvalid )
@@ -350,7 +316,8 @@ void QgsAuthOAuth2Config::validateConfigId( bool needsId )
 }
 
 bool QgsAuthOAuth2Config::loadConfigTxt(
-  const QByteArray &configtxt, QgsAuthOAuth2Config::ConfigFormat format )
+  const QByteArray &configtxt, QgsAuthOAuth2Config::ConfigFormat format
+)
 {
   QByteArray errStr;
   bool res = false;
@@ -384,7 +351,8 @@ bool QgsAuthOAuth2Config::loadConfigTxt(
 }
 
 QByteArray QgsAuthOAuth2Config::saveConfigTxt(
-  QgsAuthOAuth2Config::ConfigFormat format, bool pretty, bool *ok ) const
+  QgsAuthOAuth2Config::ConfigFormat format, bool pretty, bool *ok
+) const
 {
   QByteArray out;
   QByteArray errStr;
@@ -454,7 +422,8 @@ QByteArray QgsAuthOAuth2Config::serializeFromVariant(
   const QVariantMap &variant,
   QgsAuthOAuth2Config::ConfigFormat format,
   bool pretty,
-  bool *ok )
+  bool *ok
+)
 {
   QByteArray out;
   QByteArray errStr;
@@ -482,7 +451,8 @@ QByteArray QgsAuthOAuth2Config::serializeFromVariant(
 QVariantMap QgsAuthOAuth2Config::variantFromSerialized(
   const QByteArray &serial,
   QgsAuthOAuth2Config::ConfigFormat format,
-  bool *ok )
+  bool *ok
+)
 {
   QVariantMap vmap;
   QByteArray errStr;
@@ -532,7 +502,8 @@ bool QgsAuthOAuth2Config::writeOAuth2Config(
   const QString &filepath,
   QgsAuthOAuth2Config *config,
   QgsAuthOAuth2Config::ConfigFormat format,
-  bool pretty )
+  bool pretty
+)
 {
   bool res = false;
   const QByteArray configtxt = config->saveConfigTxt( format, pretty, &res );
@@ -575,7 +546,8 @@ QList<QgsAuthOAuth2Config *> QgsAuthOAuth2Config::loadOAuth2Configs(
   const QString &configdirectory,
   QObject *parent,
   QgsAuthOAuth2Config::ConfigFormat format,
-  bool *ok )
+  bool *ok
+)
 {
   QList<QgsAuthOAuth2Config *> configs = QList<QgsAuthOAuth2Config *>();
   const bool res = false;
@@ -599,13 +571,13 @@ QList<QgsAuthOAuth2Config *> QgsAuthOAuth2Config::loadOAuth2Configs(
 
   if ( configfiles.size() > 0 )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Config files found in: %1...\n%2" )
-                      .arg( configdir.path(), configfiles.join( QLatin1String( ", " ) ) ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Config files found in: %1...\n%2" ).arg( configdir.path(), configfiles.join( QLatin1String( ", " ) ) ), 2 );
   }
   else
   {
     QgsDebugMsgLevel( QStringLiteral( "No config files found in: %1" ).arg( configdir.path() ), 2 );
-    if ( ok ) *ok = res;
+    if ( ok )
+      *ok = res;
     return configs;
   }
 
@@ -644,7 +616,8 @@ QList<QgsAuthOAuth2Config *> QgsAuthOAuth2Config::loadOAuth2Configs(
     configs << config;
   }
 
-  if ( ok ) *ok = true;
+  if ( ok )
+    *ok = true;
   return configs;
 }
 
@@ -653,7 +626,8 @@ QgsStringMap QgsAuthOAuth2Config::mapOAuth2Configs(
   const QString &configdirectory,
   QObject *parent,
   QgsAuthOAuth2Config::ConfigFormat format,
-  bool *ok )
+  bool *ok
+)
 {
   QgsStringMap configs = QgsStringMap();
   const bool res = false;
@@ -677,8 +651,7 @@ QgsStringMap QgsAuthOAuth2Config::mapOAuth2Configs(
 
   if ( configfiles.size() > 0 )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Config files found in: %1...\n%2" )
-                      .arg( configdir.path(), configfiles.join( QLatin1String( ", " ) ) ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Config files found in: %1...\n%2" ).arg( configdir.path(), configfiles.join( QLatin1String( ", " ) ) ), 2 );
   }
   else
   {
@@ -714,7 +687,7 @@ QgsStringMap QgsAuthOAuth2Config::mapOAuth2Configs(
     }
 
     // validate the config before caching it
-    std::unique_ptr<QgsAuthOAuth2Config, std::function<void( QgsAuthOAuth2Config * )> > config( new QgsAuthOAuth2Config( parent ), []( QgsAuthOAuth2Config * cfg ) { cfg->deleteLater( );} );
+    std::unique_ptr<QgsAuthOAuth2Config, std::function<void( QgsAuthOAuth2Config * )>> config( new QgsAuthOAuth2Config( parent ), []( QgsAuthOAuth2Config *cfg ) { cfg->deleteLater(); } );
     if ( !config->loadConfigTxt( configtxt, format ) )
     {
       QgsDebugError( QStringLiteral( "FAILED to load config: %1" ).arg( configfile ) );
@@ -763,7 +736,8 @@ QgsStringMap QgsAuthOAuth2Config::mappedOAuth2ConfigsCache( QObject *parent, con
       continue;
     }
     const QgsStringMap newconfigs = QgsAuthOAuth2Config::mapOAuth2Configs(
-                                      configdirinfo.canonicalFilePath(), parent, QgsAuthOAuth2Config::JSON, &ok );
+      configdirinfo.canonicalFilePath(), parent, QgsAuthOAuth2Config::JSON, &ok
+    );
     if ( ok )
     {
       QgsStringMap::const_iterator i = newconfigs.constBegin();
@@ -838,7 +812,7 @@ QString QgsAuthOAuth2Config::accessMethodString( QgsAuthOAuth2Config::AccessMeth
 QString QgsAuthOAuth2Config::tokenCacheDirectory( bool temporary )
 {
   const QDir setdir( QgsApplication::qgisSettingsDirPath() );
-  return  QStringLiteral( "%1/oauth2-cache" ).arg( temporary ? QDir::tempPath() : setdir.canonicalPath() );
+  return QStringLiteral( "%1/oauth2-cache" ).arg( temporary ? QDir::tempPath() : setdir.canonicalPath() );
 }
 
 // static
@@ -850,6 +824,5 @@ QString QgsAuthOAuth2Config::tokenCacheFile( const QString &suffix )
 // static
 QString QgsAuthOAuth2Config::tokenCachePath( const QString &suffix, bool temporary )
 {
-  return QStringLiteral( "%1/%2" ).arg( QgsAuthOAuth2Config::tokenCacheDirectory( temporary ),
-                                        QgsAuthOAuth2Config::tokenCacheFile( suffix ) );
+  return QStringLiteral( "%1/%2" ).arg( QgsAuthOAuth2Config::tokenCacheDirectory( temporary ), QgsAuthOAuth2Config::tokenCacheFile( suffix ) );
 }

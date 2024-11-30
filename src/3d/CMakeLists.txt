@@ -24,6 +24,7 @@ set(QGIS_3D_SRCS
   qgsfeature3dhandler_p.cpp
   qgsfgutils.cpp
   qgsframegraph.cpp
+  qgsgeotransform.cpp
   qgsgltf3dutils.cpp
   qgsimagetexture.cpp
   qgslayoutitem3dmap.cpp
@@ -138,6 +139,7 @@ set(QGIS_3D_HDRS
   qgscamerapose.h
   qgsfgutils.h
   qgsframegraph.h
+  qgsgeotransform.h
   qgsgltf3dutils.h
   qgslayoutitem3dmap.h
   qgsmeshlayer3drenderer.h

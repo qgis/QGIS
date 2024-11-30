@@ -21,22 +21,22 @@
 #include "qgspostgresprovider.h"
 
 //The only purpose of this class is to set geomColumn and srid
-class QgsTestPostgresExpressionCompiler: public QgsPostgresExpressionCompiler
+class QgsTestPostgresExpressionCompiler : public QgsPostgresExpressionCompiler
 {
   public:
-    QgsTestPostgresExpressionCompiler( QgsPostgresFeatureSource *source, const QString &srid, const QString &geometryColumn ): QgsPostgresExpressionCompiler( source )
+    QgsTestPostgresExpressionCompiler( QgsPostgresFeatureSource *source, const QString &srid, const QString &geometryColumn )
+      : QgsPostgresExpressionCompiler( source )
     {
       mDetectedSrid = srid;
       mGeometryColumn = geometryColumn;
     }
 };
 
-class TestQgsPostgresExpressionCompiler: public QObject
+class TestQgsPostgresExpressionCompiler : public QObject
 {
     Q_OBJECT
 
   public:
-
     TestQgsPostgresExpressionCompiler() = default;
 
   private slots:

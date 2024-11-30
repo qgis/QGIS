@@ -45,6 +45,8 @@ Returns a new instance of QgsMetalRoughMaterialSettings.
 
     virtual QgsMetalRoughMaterialSettings *clone() const /Factory/;
 
+    virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
+
 
     QColor baseColor() const;
 %Docstring
@@ -53,14 +55,14 @@ Returns the base material color.
 .. seealso:: :py:func:`setBaseColor`
 %End
 
-    float metalness() const;
+    double metalness() const;
 %Docstring
 Returns the material's metalness.
 
 .. seealso:: :py:func:`setMetalness`
 %End
 
-    float roughness() const;
+    double roughness() const;
 %Docstring
 Returns the material's roughness.
 
@@ -77,14 +79,14 @@ Sets the base material ``color``.
 .. seealso:: :py:func:`baseColor`
 %End
 
-    void setMetalness( float metalness );
+    void setMetalness( double metalness );
 %Docstring
 Returns the material's ``metalness``.
 
 .. seealso:: :py:func:`metalness`
 %End
 
-    void setRoughness( float roughness );
+    void setRoughness( double roughness );
 %Docstring
 Returns the material's ``roughness``.
 

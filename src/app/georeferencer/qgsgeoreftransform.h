@@ -36,7 +36,6 @@
 class APP_EXPORT QgsGeorefTransform : public QgsGcpTransformerInterface
 {
   public:
-
     explicit QgsGeorefTransform( TransformMethod parametrisation );
     QgsGeorefTransform();
     ~QgsGeorefTransform() override;
@@ -119,7 +118,7 @@ class APP_EXPORT QgsGeorefTransform : public QgsGcpTransformerInterface
   private:
     // shallow copy constructor
     QgsGeorefTransform( const QgsGeorefTransform &other );
-    QgsGeorefTransform &operator= ( const QgsGeorefTransform & ) = delete;
+    QgsGeorefTransform &operator=( const QgsGeorefTransform & ) = delete;
 
     bool transformPrivate( const QgsPointXY &src, QgsPointXY &dst, bool inverseTransform ) const;
 
@@ -127,7 +126,7 @@ class APP_EXPORT QgsGeorefTransform : public QgsGcpTransformerInterface
     QVector<QgsPointXY> mDestinationCoordinates;
     bool mInvertYAxis = false;
 
-    std::unique_ptr< QgsGcpTransformerInterface > mGeorefTransformImplementation;
+    std::unique_ptr<QgsGcpTransformerInterface> mGeorefTransformImplementation;
 
     TransformMethod mTransformParametrisation = TransformMethod::InvalidTransform;
     bool mParametersInitialized = false;

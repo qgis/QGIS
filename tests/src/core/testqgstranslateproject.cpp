@@ -36,19 +36,17 @@ class TestQgsTranslateProject : public QObject
     Q_OBJECT
 
   public:
-
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void createTsFile();
     void translateProject();
 
   private:
     QString original_locale;
-
 };
 
 void TestQgsTranslateProject::initTestCase()
@@ -198,7 +196,7 @@ void TestQgsTranslateProject::translateProject()
   //Class (Alias: Level) -> Klasse
   QCOMPARE( points_fields.field( QStringLiteral( "Class" ) ).alias(), QStringLiteral( "Klasse" ) );
   //Heading -> Titel  //#spellok
-  QCOMPARE( points_fields.field( QStringLiteral( "Heading" ) ).alias(), QStringLiteral( "Titel" ) );  //#spellok
+  QCOMPARE( points_fields.field( QStringLiteral( "Heading" ) ).alias(), QStringLiteral( "Titel" ) ); //#spellok
   //Importance -> Wichtigkeit
   QCOMPARE( points_fields.field( QStringLiteral( "Importance" ) ).alias(), QStringLiteral( "Wichtigkeit" ) );
   //Pilots -> Piloten

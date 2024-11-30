@@ -37,7 +37,6 @@ class APP_EXPORT QgsAvoidIntersectionsOperation : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      */
@@ -45,19 +44,18 @@ class APP_EXPORT QgsAvoidIntersectionsOperation : public QObject
 
     struct Result
     {
-      Result()
-        : operationResult( Qgis::GeometryOperationResult::NothingHappened ),
-          geometryHasChanged( false ) {}
+        Result()
+          : operationResult( Qgis::GeometryOperationResult::NothingHappened ), geometryHasChanged( false ) {}
 
-      /**
+        /**
        * The result of an avoid intersection operation
        */
-      Qgis::GeometryOperationResult operationResult;
+        Qgis::GeometryOperationResult operationResult;
 
-      /**
+        /**
        * True if the geometry has changed during the avoid intersection operation
        */
-      bool geometryHasChanged;
+        bool geometryHasChanged;
     };
 
     /**
@@ -67,8 +65,7 @@ class APP_EXPORT QgsAvoidIntersectionsOperation : public QObject
      * \returns the operation result
      * \since QGIS 3.34
      */
-    Result apply( QgsVectorLayer *layer, QgsFeatureId fid, QgsGeometry &geom,
-                  const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
+    Result apply( QgsVectorLayer *layer, QgsFeatureId fid, QgsGeometry &geom, const QHash<QgsVectorLayer *, QSet<QgsFeatureId>> &ignoreFeatures = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId>>() ) );
 
   signals:
 

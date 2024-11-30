@@ -28,7 +28,7 @@
 #include <QFutureWatcher>
 #include "qgstest.h"
 
-class TestQgsConnectionPool: public QObject
+class TestQgsConnectionPool : public QObject
 {
     Q_OBJECT
 
@@ -40,9 +40,10 @@ class TestQgsConnectionPool: public QObject
   private:
     struct ReadJob
     {
-      explicit ReadJob( QgsVectorLayer *_layer ) : source( std::make_shared< QgsVectorLayerFeatureSource >( _layer ) ) {}
-      std::shared_ptr< QgsVectorLayerFeatureSource> source;
-      QList<QgsFeature> features;
+        explicit ReadJob( QgsVectorLayer *_layer )
+          : source( std::make_shared<QgsVectorLayerFeatureSource>( _layer ) ) {}
+        std::shared_ptr<QgsVectorLayerFeatureSource> source;
+        QList<QgsFeature> features;
     };
 
     static void processJob( ReadJob &job )
@@ -54,14 +55,12 @@ class TestQgsConnectionPool: public QObject
         job.features.append( f );
       }
     }
-
 };
 
 void TestQgsConnectionPool::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
 }
 
 void TestQgsConnectionPool::cleanupTestCase()

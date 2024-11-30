@@ -159,7 +159,7 @@ static Qt3DQAttribute *reprojectPositions( tinygltf::Model &model, int accessorI
   byteArray.resize( accessor.count * 4 * 3 );
   float *out = reinterpret_cast<float *>( byteArray.data() );
 
-  QgsVector3D sceneOrigin = transform.sceneOriginTargetCrs;
+  QgsVector3D sceneOrigin = transform.chunkOriginTargetCrs;
   for ( int i = 0; i < static_cast<int>( accessor.count ); ++i )
   {
     double x = vx[i] - sceneOrigin.x();

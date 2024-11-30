@@ -219,4 +219,3 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
   // Paint label to canvas
   QgsTextRenderer::drawText( QPointF( xOffset, yOffset ), 0.0, horizontalAlignment, displayStringList, context, mTextFormat );
 }
-

@@ -33,7 +33,8 @@ void QgsOracleConnPool::cleanupInstance()
   sInstance = nullptr;
 }
 
-QgsOracleConnPool::QgsOracleConnPool() : QgsConnectionPool<QgsOracleConn *, QgsOracleConnPoolGroup>()
+QgsOracleConnPool::QgsOracleConnPool()
+  : QgsConnectionPool<QgsOracleConn *, QgsOracleConnPoolGroup>()
 {
   QgsDebugCall;
 }
@@ -42,4 +43,3 @@ QgsOracleConnPool::~QgsOracleConnPool()
 {
   QgsDebugCall;
 }
-

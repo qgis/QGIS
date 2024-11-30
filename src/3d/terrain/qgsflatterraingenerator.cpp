@@ -17,13 +17,13 @@
 #include "moc_qgsflatterraingenerator.cpp"
 
 #include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DCore/QTransform>
 
 #include "qgs3dmapsettings.h"
 #include "qgschunknode.h"
+#include "qgsgeotransform.h"
 #include "qgsterrainentity.h"
 #include "qgsterraintileentity_p.h"
-#include "qgs3dutils.h"
+
 /// @cond PRIVATE
 
 
@@ -58,8 +58,8 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
 
   // create transform
 
-  Qt3DCore::QTransform *transform = nullptr;
-  transform = new Qt3DCore::QTransform();
+  QgsGeoTransform *transform = nullptr;
+  transform = new QgsGeoTransform();
   entity->addComponent( transform );
 
   // set up transform according to the extent covered by the quad geometry
@@ -74,12 +74,12 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
                                box3D.zMaximum() );
   const double xSide = commonExtent.width();
   const double ySide = commonExtent.height();
-  const double xMin = commonExtent.xMinimum() - map->origin().x();
-  const double yMin = commonExtent.yMinimum() - map->origin().y();
+  const double xMin = commonExtent.xMinimum();
+  const double yMin = commonExtent.yMinimum();
 
   transform->setRotation( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), 90 ) ); // QPlaneGeometry uses XZ as the base plane
   transform->setScale3D( QVector3D( static_cast<float>( xSide ), 1, static_cast<float>( ySide ) ) );
-  transform->setTranslation( QVector3D( static_cast<float>( xMin + xSide / 2 ), static_cast<float>( yMin + ySide / 2 ), 0 ) );
+  transform->setGeoTranslation( QgsVector3D( xMin + xSide / 2, yMin + ySide / 2, 0 ) );
 
   createTextureComponent( entity, map->isTerrainShadingEnabled(), map->terrainShadingMaterial(), !map->layers().empty() );
 

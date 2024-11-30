@@ -45,7 +45,7 @@ int main( int argc, char *argv[] )
   QgsApplication::initQgis();
 
   // 2) Load QGIS Project
-  QString dataDir( TEST_DATA_DIR );  // defined in CMakeLists.txt
+  QString dataDir( TEST_DATA_DIR ); // defined in CMakeLists.txt
   QString projectFile = dataDir + "/quickapp_project.qgs";
   QgsDebugMsgLevel( QStringLiteral( "project file:  %1" ).arg( projectFile ), 2 );
   QgsProject project;

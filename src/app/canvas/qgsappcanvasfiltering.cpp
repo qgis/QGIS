@@ -27,14 +27,12 @@
 QgsAppCanvasFiltering::QgsAppCanvasFiltering( QObject *parent )
   : QObject( parent )
 {
-
 }
 
 void QgsAppCanvasFiltering::setupElevationControllerAction( QAction *action, QgsMapCanvas *canvas )
 {
   action->setCheckable( true );
-  connect( action, &QAction::toggled, canvas, [canvas, action, this]( bool checked )
-  {
+  connect( action, &QAction::toggled, canvas, [canvas, action, this]( bool checked ) {
     if ( checked )
     {
       createElevationController( action, canvas );
@@ -56,30 +54,26 @@ void QgsAppCanvasFiltering::createElevationController( QAction *senderAction, Qg
 
   QAction *setProjectLimitsAction = new QAction( tr( "Set Elevation Range…" ), controller );
   controller->menu()->addAction( setProjectLimitsAction );
-  connect( setProjectLimitsAction, &QAction::triggered, QgisApp::instance(), []
-  {
+  connect( setProjectLimitsAction, &QAction::triggered, QgisApp::instance(), [] {
     QgisApp::instance()->showProjectProperties( tr( "Elevation" ) );
   } );
   QAction *disableAction = new QAction( tr( "Disable Elevation Filter" ), controller );
   controller->menu()->addAction( disableAction );
-  connect( disableAction, &QAction::triggered, senderAction, [senderAction]
-  {
+  connect( disableAction, &QAction::triggered, senderAction, [senderAction] {
     senderAction->setChecked( false );
   } );
 
   mCanvasElevationControllerMap.insert( canvas, controller );
-  connect( canvas, &QObject::destroyed, this, [canvas, this]
-  {
+  connect( canvas, &QObject::destroyed, this, [canvas, this] {
     mCanvasElevationControllerMap.remove( canvas );
   } );
-  connect( controller, &QObject::destroyed, this, [canvas, this]
-  {
+  connect( controller, &QObject::destroyed, this, [canvas, this] {
     mCanvasElevationControllerMap.remove( canvas );
   } );
 
   // bridge is parented to controller
   QgsCanvasElevationControllerBridge *bridge = new QgsCanvasElevationControllerBridge( controller, canvas );
-  ( void )bridge;
+  ( void ) bridge;
 }
 
 QgsCanvasElevationControllerBridge::QgsCanvasElevationControllerBridge( QgsElevationControllerWidget *controller, QgsMapCanvas *canvas )
@@ -100,13 +94,11 @@ QgsCanvasElevationControllerBridge::QgsCanvasElevationControllerBridge( QgsEleva
   {
     // for main canvas, attach settings to project settings
     mController->setFixedRangeSize( QgsProject::instance()->elevationProperties()->elevationFilterRangeSize() );
-    connect( mController, &QgsElevationControllerWidget::fixedRangeSizeChanged, this, []( double size )
-    {
+    connect( mController, &QgsElevationControllerWidget::fixedRangeSizeChanged, this, []( double size ) {
       QgsProject::instance()->elevationProperties()->setElevationFilterRangeSize( size );
     } );
     mController->setInverted( QgsProject::instance()->elevationProperties()->invertElevationFilter() );
-    connect( mController, &QgsElevationControllerWidget::invertedChanged, this, []( bool inverted )
-    {
+    connect( mController, &QgsElevationControllerWidget::invertedChanged, this, []( bool inverted ) {
       QgsProject::instance()->elevationProperties()->setInvertElevationFilter( inverted );
     } );
   }
@@ -131,7 +123,7 @@ void QgsCanvasElevationControllerBridge::canvasLayersChanged()
   }
 
   // and connect to new
-  const QList< QgsMapLayer * > layers = mCanvas->layers( true );
+  const QList<QgsMapLayer *> layers = mCanvas->layers( true );
   for ( QgsMapLayer *layer : layers )
   {
     connect( layer->elevationProperties(), &QgsMapLayerElevationProperties::changed, this, &QgsCanvasElevationControllerBridge::updateSignificantElevations );

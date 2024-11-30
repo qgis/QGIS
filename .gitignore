@@ -31,6 +31,7 @@
 .vscode
 .vs
 .devcontainer
+.worktrees
 CMakePresets.json
 /CMakeLists.txt.user
 /CMakeLists.txt.user.*

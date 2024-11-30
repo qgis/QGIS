@@ -89,7 +89,7 @@ def read_file(file_path):
     """
     Read the content of a file.
     """
-    with open(file_path, "r") as file:
+    with open(file_path) as file:
         return file.read()
 
 

@@ -49,7 +49,6 @@ class QgsGeorefMapToolEmitPoint : public QgsMapTool
     void mouseReleased();
 
   private:
-
     QgsPointLocator::Match mapPointMatch( QMouseEvent *e );
 
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
@@ -60,7 +59,6 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsMapCoordsDialog.
      * \param qgisCanvas

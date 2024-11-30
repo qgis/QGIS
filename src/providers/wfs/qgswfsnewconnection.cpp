@@ -23,8 +23,8 @@
 
 #include <algorithm>
 
-QgsWFSNewConnection::QgsWFSNewConnection( QWidget *parent, const QString &connName ):
-  QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWfs, QStringLiteral( "WFS" ), connName )
+QgsWFSNewConnection::QgsWFSNewConnection( QWidget *parent, const QString &connName )
+  : QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWfs, QStringLiteral( "WFS" ), connName )
 {
   connect( wfsVersionDetectButton(), &QPushButton::clicked, this, &QgsWFSNewConnection::versionDetectButton );
 }
@@ -109,9 +109,8 @@ void QgsWFSNewConnection::capabilitiesReplyFinished()
   wfsVersionComboBox()->setCurrentIndex( versionIdx );
 
   wfsPagingComboBox()->setCurrentIndex(
-    static_cast<int>( caps.supportsPaging ?
-                      QgsNewHttpConnection::WfsFeaturePagingIndex::ENABLED :
-                      QgsNewHttpConnection::WfsFeaturePagingIndex::DISABLED ) );
+    static_cast<int>( caps.supportsPaging ? QgsNewHttpConnection::WfsFeaturePagingIndex::ENABLED : QgsNewHttpConnection::WfsFeaturePagingIndex::DISABLED )
+  );
 
   mCapabilities.reset();
 }

@@ -446,7 +446,7 @@ class CORE_EXPORT QgsTextRenderer
                               Qgis::TextLayoutMode mode );
 
     static void drawBackground( QgsRenderContext &context,
-                                Component component,
+                                const Component &component,
                                 const QgsTextFormat &format,
                                 const QgsTextDocumentMetrics &metrics,
                                 Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Rectangle );
@@ -516,12 +516,26 @@ class CORE_EXPORT QgsTextRenderer
       QString text;
     };
 
+    struct BlockMetrics
+    {
+      double xOffset = 0;
+      double backgroundXOffset = 0;
+      double width = 0;
+      double backgroundWidth = 0;
+      double extraWordSpace = 0;
+      double extraLetterSpace = 0;
+    };
+
+    static QVector< QgsTextRenderer::BlockMetrics > calculateBlockMetrics( const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, Qgis::TextLayoutMode mode, double targetWidth, const Qgis::TextHorizontalAlignment hAlignment );
+
     struct DeferredRenderBlock
     {
       QPointF origin;
       Component component;
       QVector< DeferredRenderFragment > fragments;
     };
+
+    static QBrush createBrushForPath( QgsRenderContext &context, const QString &path );
 
     static void renderBlockHorizontal( const QgsTextBlock &block, int blockIndex,
                                        const QgsTextDocumentMetrics &metrics, QgsRenderContext &context,
@@ -530,6 +544,7 @@ class CORE_EXPORT QgsTextRenderer
                                        double fontScale, double extraWordSpace, double extraLetterSpace,
                                        Qgis::TextLayoutMode mode,
                                        DeferredRenderBlock *deferredRenderBlock );
+    static void renderDocumentBackgrounds( QgsRenderContext &context, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, const Component &component, const QVector< QgsTextRenderer::BlockMetrics > &blockMetrics, Qgis::TextLayoutMode mode, double verticalAlignOffset, double rotation );
     static void renderDeferredBlocks( QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents components, const std::vector<DeferredRenderBlock> &deferredBlocks, bool usePathsForText, double fontScale, const Component &component, double rotation );
     static void renderDeferredBuffer( QgsRenderContext &context, const QgsTextFormat &format, Qgis::TextComponents components, const std::vector<DeferredRenderBlock> &deferredBlocks, double fontScale, const Component &component, double rotation );
     static void renderDeferredShadowForText( QgsRenderContext &context, const QgsTextFormat &format, const std::vector<DeferredRenderBlock> &deferredBlocks, double fontScale, const Component &component, double rotation );

@@ -58,8 +58,8 @@ class _3D_EXPORT QgsGltf3DUtils
     //! Helper struct to keep track of transforms to be applied to positions
     struct EntityTransform
     {
-      //! 3D scene's origin in coordinates of the target CRS
-      QgsVector3D sceneOriginTargetCrs;
+      //! chunk's origin in coordinates of the target CRS
+      QgsVector3D chunkOriginTargetCrs;
       //! Tile's matrix to transform GLTF model coordinates to ECEF (normally EPSG:4978)
       QgsMatrix4x4 tileTransform;
       //! Transform from ECEF (normally EPSG:4978) to the target CRS

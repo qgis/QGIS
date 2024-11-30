@@ -191,15 +191,13 @@ void Qgs3DAnimationWidget::onExportAnimation()
   if ( dialog.exec() == QDialog::Accepted )
   {
     QgsFeedback progressFeedback;
-    std::unique_ptr< QgsScopedProxyProgressTask > progressTask = std::make_unique< QgsScopedProxyProgressTask >( tr( "Exporting animation" ) );
+    std::unique_ptr<QgsScopedProxyProgressTask> progressTask = std::make_unique<QgsScopedProxyProgressTask>( tr( "Exporting animation" ) );
 
     QProgressDialog progressDialog( tr( "Exporting frames..." ), tr( "Abort" ), 0, 100, this );
     progressDialog.setWindowModality( Qt::WindowModal );
     QString error;
 
-    connect( &progressFeedback, &QgsFeedback::progressChanged, this,
-             [&progressDialog, &progressTask]( double progress )
-    {
+    connect( &progressFeedback, &QgsFeedback::progressChanged, this, [&progressDialog, &progressTask]( double progress ) {
       progressDialog.setValue( static_cast<int>( progress ) );
       progressTask->setProgress( progress );
       QCoreApplication::processEvents();
@@ -208,14 +206,15 @@ void Qgs3DAnimationWidget::onExportAnimation()
     connect( &progressDialog, &QProgressDialog::canceled, &progressFeedback, &QgsFeedback::cancel );
 
     const bool success = Qgs3DUtils::exportAnimation(
-                           animation(),
-                           *mMap,
-                           dialog.fps(),
-                           dialog.outputDirectory(),
-                           dialog.fileNameExpression(),
-                           dialog.frameSize(),
-                           error,
-                           &progressFeedback );
+      animation(),
+      *mMap,
+      dialog.fps(),
+      dialog.outputDirectory(),
+      dialog.fileNameExpression(),
+      dialog.frameSize(),
+      error,
+      &progressFeedback
+    );
 
     progressTask.reset();
 

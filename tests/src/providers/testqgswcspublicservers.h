@@ -28,35 +28,37 @@
  * This class tries to get samples of coverages from public WCS servers,
  * cache results and write report.
  */
-class TestQgsWcsPublicServers: public QObject
+class TestQgsWcsPublicServers : public QObject
 {
     Q_OBJECT
   public:
     // Known problem
     struct Issue
     {
-      QString offender; // server or empty == qgis
-      QStringList versions; // version regex
-      QStringList coverages; // coverage regex
-      QString description; // problem description
-      Issue( const QString &d ) : description( d ) {}
+        QString offender;      // server or empty == qgis
+        QStringList versions;  // version regex
+        QStringList coverages; // coverage regex
+        QString description;   // problem description
+        Issue( const QString &d )
+          : description( d ) {}
     };
     struct Server
     {
-      Server() = default;
-      Server( const QString &u ) : url( u ) {}
-      QString url; // URL
-      QString description; // notes
-      QList<TestQgsWcsPublicServers::Issue> issues;
-      // additional params to be set on URI, e.g. IgnoreGetMapUrl
-      QMap<QString, QString> params;
+        Server() = default;
+        Server( const QString &u )
+          : url( u ) {}
+        QString url;         // URL
+        QString description; // notes
+        QList<TestQgsWcsPublicServers::Issue> issues;
+        // additional params to be set on URI, e.g. IgnoreGetMapUrl
+        QMap<QString, QString> params;
     };
 
     enum OffenderType
     {
-      NoOffender      = 0,
-      ServerOffender  = 1,
-      QgisOffender    = 1 << 1
+      NoOffender = 0,
+      ServerOffender = 1,
+      QgisOffender = 1 << 1
     };
 
     TestQgsWcsPublicServers( const QString &cacheDirPath, int maxCoverages, const QString &server = QString(), const QString &coverage = QString(), const QString &version = QString(), bool force = false );
@@ -66,6 +68,7 @@ class TestQgsWcsPublicServers: public QObject
     void init();
     void test();
     void report();
+
   private:
     QString cells( const QStringList &values, const QString &classStr = QString(), int colspan = 1, int rowspan = 1 );
     QString row( const QStringList &values, const QString &classStr = QString() );

@@ -21,46 +21,37 @@
 ###############################################################################
 
 WMSWMST_LINK_TYPES = [
-    'WMS',
-    'WMTS',
-    'OGC:WMS',
-    'OGC:WMTS',
-    'OGC:WMS-1.1.1-http-get-map',
-    'OGC:WMS-1.1.1-http-get-capabilities',
-    'OGC:WMS-1.3.0-http-get-map',
-    'OGC:WMS-1.3.0-http-get-capabilities',
-    'urn:x-esri:specification:ServiceType:wms:url',
-    'urn:x-esri:specification:ServiceType:Gmd:URL.wms'
+    "WMS",
+    "WMTS",
+    "OGC:WMS",
+    "OGC:WMTS",
+    "OGC:WMS-1.1.1-http-get-map",
+    "OGC:WMS-1.1.1-http-get-capabilities",
+    "OGC:WMS-1.3.0-http-get-map",
+    "OGC:WMS-1.3.0-http-get-capabilities",
+    "urn:x-esri:specification:ServiceType:wms:url",
+    "urn:x-esri:specification:ServiceType:Gmd:URL.wms",
 ]
 
 WFS_LINK_TYPES = [
-    'WFS',
-    'OGC:WFS',
-    'OGC:WFS-1.0.0-http-get-capabilities',
-    'OGC:WFS-1.1.0-http-get-capabilities',
-    'urn:x-esri:specification:ServiceType:wfs:url',
-    'urn:x-esri:specification:ServiceType:Gmd:URL.wfs'
+    "WFS",
+    "OGC:WFS",
+    "OGC:WFS-1.0.0-http-get-capabilities",
+    "OGC:WFS-1.1.0-http-get-capabilities",
+    "urn:x-esri:specification:ServiceType:wfs:url",
+    "urn:x-esri:specification:ServiceType:Gmd:URL.wfs",
 ]
 
 WCS_LINK_TYPES = [
-    'WCS',
-    'OGC:WCS',
-    'OGC:WCS-1.1.0-http-get-capabilities',
-    'urn:x-esri:specification:ServiceType:wcs:url',
-    'urn:x-esri:specification:ServiceType:Gmd:URL.wcs'
+    "WCS",
+    "OGC:WCS",
+    "OGC:WCS-1.1.0-http-get-capabilities",
+    "urn:x-esri:specification:ServiceType:wcs:url",
+    "urn:x-esri:specification:ServiceType:Gmd:URL.wcs",
 ]
 
-AMS_LINK_TYPES = [
-    'ESRI:ArcGIS:MapServer',
-    'Esri REST: Map Service',
-    'ESRI REST'
-]
+AMS_LINK_TYPES = ["ESRI:ArcGIS:MapServer", "Esri REST: Map Service", "ESRI REST"]
 
-AFS_LINK_TYPES = [
-    'ESRI:ArcGIS:FeatureServer',
-    'Esri REST: Feature Service'
-]
+AFS_LINK_TYPES = ["ESRI:ArcGIS:FeatureServer", "Esri REST: Feature Service"]
 
-GIS_FILE_LINK_TYPES = [
-    'FILE:GEO'
-]
+GIS_FILE_LINK_TYPES = ["FILE:GEO"]

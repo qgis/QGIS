@@ -34,10 +34,10 @@ class TestQgsMeshCalculatorDialog : public QObject
     TestQgsMeshCalculatorDialog();
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void testCalc();
 
@@ -70,7 +70,8 @@ void TestQgsMeshCalculatorDialog::initTestCase()
   mpMeshLayer->dataProvider()->addDataset( testDataDir + "/quad_and_triangle_els_face_vector.dat" );
 
   QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpMeshLayer );
+    QList<QgsMapLayer *>() << mpMeshLayer
+  );
 }
 
 //runs after all tests
@@ -84,7 +85,7 @@ void TestQgsMeshCalculatorDialog::testCalc()
   if ( !QgsTest::runFlakyTests() )
     QSKIP( "This test is disabled on Travis CI environment" );
 
-  std::unique_ptr< QgsMeshCalculatorDialog > dialog( new QgsMeshCalculatorDialog( mpMeshLayer ) );
+  std::unique_ptr<QgsMeshCalculatorDialog> dialog( new QgsMeshCalculatorDialog( mpMeshLayer ) );
 
   const int groupCount = mpMeshLayer->dataProvider()->datasetGroupCount();
 

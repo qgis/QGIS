@@ -31,7 +31,7 @@
 
 #include "qgsmapsettings.h"
 
-class QgsBench :  public QObject
+class QgsBench : public QObject
 {
     Q_OBJECT
   public:
@@ -98,4 +98,3 @@ class QgsBench :  public QObject
 };
 
 #endif // QGSBENCH_H
-

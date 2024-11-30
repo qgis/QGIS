@@ -15,11 +15,11 @@
 ***************************************************************************
 """
 
-__author__ = 'Médéric Ribreux'
-__date__ = 'February 2016'
-__copyright__ = '(C) 2016, Médéric Ribreux'
+__author__ = "Médéric Ribreux"
+__date__ = "February 2016"
+__copyright__ = "(C) 2016, Médéric Ribreux"
 
 
 def processInputs(alg, parameters, context, feedback):
     # We need to import all the bands and color tables of the input rasters
-    alg.loadRasterLayerFromParameter('input', parameters, context, False, None)
+    alg.loadRasterLayerFromParameter("input", parameters, context, False, None)

@@ -111,11 +111,11 @@ void TestQgsSettingsEntry::enumValue()
   }
 
   // check that value is stored as string
-  QCOMPARE( settingsEntryEnum.valueAsVariant().toString(), QMetaEnum::fromType<Qgis::LayoutUnit>().key( static_cast< int >( Qgis::LayoutUnit::Picas ) ) );
+  QCOMPARE( settingsEntryEnum.valueAsVariant().toString(), QMetaEnum::fromType<Qgis::LayoutUnit>().key( static_cast<int>( Qgis::LayoutUnit::Picas ) ) );
 
   // auto conversion of old settings (int to str)
   QSettings().setValue( QStringLiteral( "%1/%2" ).arg( mSettingsSection, settingsKey ), static_cast<int>( Qgis::LayoutUnit::Centimeters ) );
-  QCOMPARE( settingsEntryEnum.valueAsVariant().toInt(), static_cast< int >( Qgis::LayoutUnit::Centimeters ) );
+  QCOMPARE( settingsEntryEnum.valueAsVariant().toInt(), static_cast<int>( Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( settingsEntryEnum.value(), Qgis::LayoutUnit::Centimeters );
 
   // save as int instead of string

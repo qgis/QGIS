@@ -23,6 +23,7 @@
 
 #include <QFont>
 #include <QColor>
+#include <QBrush>
 
 class QTextBlockFormat;
 class QgsRenderContext;
@@ -182,6 +183,56 @@ class CORE_EXPORT QgsTextBlockFormat
     void setMargins( const QgsMargins &margins ) { mMargins = margins; }
 
     /**
+     * Returns TRUE if the block has a background set.
+     *
+     * \see backgroundBrush()
+     * \since QGIS 3.42
+     */
+    bool hasBackground() const;
+
+    /**
+     * Returns the brush used for rendering the background of the block.
+     *
+     * Alternatively, the format may have a backgroundBrush() set.
+     *
+     * \see hasBackground()
+     * \see setBackgroundBrush()
+     * \since QGIS 3.42
+     */
+    QBrush backgroundBrush() const;
+
+    /**
+     * Sets the \a brush used for rendering the background of the block.
+     *
+     * Alternatively, the format may have a backgroundBrush() set.
+     *
+     * \see backgroundBrush()
+     * \since QGIS 3.42
+     */
+    void setBackgroundBrush( const QBrush &brush );
+
+    /**
+     * Returns the path for the image to be used for rendering the background of the fragment.
+     *
+     * Alternatively, the format may have a backgroundBrush() set.
+     *
+     * \see hasBackground()
+     * \see setBackgroundImagePath()
+     * \since QGIS 3.42
+     */
+    QString backgroundImagePath() const;
+
+    /**
+     * Sets the \a path for the image to be used for rendering the background of the fragment.
+     *
+     * Alternatively, the format may have a backgroundBrush() set.
+     *
+     * \see backgroundImagePath()
+     * \since QGIS 3.42
+     */
+    void setBackgroundImagePath( const QString &path );
+
+    /**
      * Updates the specified \a font in place, applying block formatting options which
      * are applicable on a font level when rendered in the given \a context.
      *
@@ -193,6 +244,9 @@ class CORE_EXPORT QgsTextBlockFormat
     void updateFontForFormat( QFont &font, const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 
   private:
+
+    QBrush mBackgroundBrush;
+    QString mBackgroundPath;
 
     double mLineHeight = std::numeric_limits< double >::quiet_NaN();
     double mLineHeightPercentage = std::numeric_limits< double >::quiet_NaN();

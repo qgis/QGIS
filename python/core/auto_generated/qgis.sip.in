@@ -852,6 +852,27 @@ The development version
     typedef QFlags<Qgis::RasterRendererCapability> RasterRendererCapabilities;
 
 
+    enum class RasterRangeLimit
+      {
+      NotSet,
+      MinimumMaximum,
+      StdDev,
+      CumulativeCut
+    };
+
+    enum class RasterRangeExtent
+      {
+      WholeRaster,
+      FixedCanvas,
+      UpdatedCanvas,
+    };
+
+    enum class RasterRangeAccuracy
+      {
+      Exact,
+      Estimated,
+    };
+
     enum class RasterAttributeTableFieldUsage
     {
       Generic,
@@ -3188,6 +3209,21 @@ The development version
     {
       DeveloperToolsPanel,
       SystemWebBrowser,
+    };
+
+    enum class MouseHandlesAction
+    {
+      MoveItem,
+      ResizeUp,
+      ResizeDown,
+      ResizeLeft,
+      ResizeRight,
+      ResizeLeftUp,
+      ResizeRightUp,
+      ResizeLeftDown,
+      ResizeRightDown,
+      SelectItem,
+      NoAction
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;

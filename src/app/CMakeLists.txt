@@ -379,6 +379,7 @@ if (WITH_3D)
     3d/qgspointcloudlayer3drendererwidget.cpp
     3d/qgs3dmapcanvaswidget.cpp
     3d/qgs3dviewsmanagerdialog.cpp
+    3d/qgs3ddebugwidget.cpp
   )
 endif()
 

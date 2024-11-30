@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Matthias Kuhn'
-__date__ = 'January 2016'
-__copyright__ = '(C) 2016, Matthiasd Kuhn'
+__author__ = "Matthias Kuhn"
+__date__ = "January 2016"
+__copyright__ = "(C) 2016, Matthiasd Kuhn"
 
 import os
 
@@ -45,8 +45,8 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestQgsSymbolExpressionVariables(QgisTestCase):
 
     def setUp(self):
-        myShpFile = os.path.join(TEST_DATA_DIR, 'polys.shp')
-        self.layer = QgsVectorLayer(myShpFile, 'Polys', 'ogr')
+        myShpFile = os.path.join(TEST_DATA_DIR, "polys.shp")
+        self.layer = QgsVectorLayer(myShpFile, "Polys", "ogr")
         QgsProject.instance().addMapLayer(self.layer)
 
         self.iface = get_iface()
@@ -62,54 +62,77 @@ class TestQgsSymbolExpressionVariables(QgisTestCase):
 
     def testPartNum(self):
         # Create rulebased style
-        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
+        sym1 = QgsFillSymbol.createSimple(
+            {"color": "#fdbf6f", "outline_color": "black"}
+        )
 
         renderer = QgsSingleSymbolRenderer(sym1)
-        renderer.symbols(QgsRenderContext())[0].symbolLayers()[0].setDataDefinedProperty(QgsSymbolLayer.Property.PropertyFillColor, QgsProperty.fromExpression('color_rgb( (@geometry_part_num - 1) * 200, 0, 0 )'))
+        renderer.symbols(QgsRenderContext())[0].symbolLayers()[
+            0
+        ].setDataDefinedProperty(
+            QgsSymbolLayer.Property.PropertyFillColor,
+            QgsProperty.fromExpression(
+                "color_rgb( (@geometry_part_num - 1) * 200, 0, 0 )"
+            ),
+        )
         self.layer.setRenderer(renderer)
 
         # Setup rendering check
         self.assertTrue(
             self.render_map_settings_check(
-                'part_geometry_part_num',
-                'geometry_part_num',
-                self.mapsettings
+                "part_geometry_part_num", "geometry_part_num", self.mapsettings
             )
         )
 
     def testPartCount(self):
         # Create rulebased style
-        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
+        sym1 = QgsFillSymbol.createSimple(
+            {"color": "#fdbf6f", "outline_color": "black"}
+        )
 
         renderer = QgsSingleSymbolRenderer(sym1)
-        renderer.symbols(QgsRenderContext())[0].symbolLayers()[0].setDataDefinedProperty(QgsSymbolLayer.Property.PropertyFillColor, QgsProperty.fromExpression('color_rgb( (@geometry_part_count - 1) * 200, 0, 0 )'))
+        renderer.symbols(QgsRenderContext())[0].symbolLayers()[
+            0
+        ].setDataDefinedProperty(
+            QgsSymbolLayer.Property.PropertyFillColor,
+            QgsProperty.fromExpression(
+                "color_rgb( (@geometry_part_count - 1) * 200, 0, 0 )"
+            ),
+        )
         self.layer.setRenderer(renderer)
 
         self.assertTrue(
             self.render_map_settings_check(
-                'part_geometry_part_count',
-                'geometry_part_count',
-                self.mapsettings
+                "part_geometry_part_count", "geometry_part_count", self.mapsettings
             )
         )
 
     def testSymbolColor(self):
         # Create rulebased style
-        sym1 = QgsFillSymbol.createSimple({'color': '#ff0000', 'outline_color': 'black'})
+        sym1 = QgsFillSymbol.createSimple(
+            {"color": "#ff0000", "outline_color": "black"}
+        )
 
         renderer = QgsSingleSymbolRenderer(sym1)
-        renderer.symbols(QgsRenderContext())[0].symbolLayers()[0].setDataDefinedProperty(QgsSymbolLayer.Property.PropertyFillColor, QgsProperty.fromExpression('set_color_part( @symbol_color, \'value\', "Value" * 4)'))
+        renderer.symbols(QgsRenderContext())[0].symbolLayers()[
+            0
+        ].setDataDefinedProperty(
+            QgsSymbolLayer.Property.PropertyFillColor,
+            QgsProperty.fromExpression(
+                "set_color_part( @symbol_color, 'value', \"Value\" * 4)"
+            ),
+        )
         self.layer.setRenderer(renderer)
 
         self.assertTrue(
             self.render_map_settings_check(
-                'symbol_color_variable',
-                'symbol_color_variable',
+                "symbol_color_variable",
+                "symbol_color_variable",
                 self.mapsettings,
-                allowed_mismatch=50
+                allowed_mismatch=50,
             )
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

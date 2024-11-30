@@ -351,7 +351,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
       saveOptions.fileEncoding = layer->dataProvider()->encoding();
       saveOptions.driverName = outputDriverName;
       saveOptions.onlySelectedFeatures = selectedOnly;
-      QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormatV3( layer, outputPath, layer->transformContext(), saveOptions, &errMsg, nullptr, nullptr );
+      QgsVectorFileWriter::WriterError err = QgsVectorFileWriter::writeAsVectorFormatV3( layer, outputPath, layer->transformContext(), saveOptions, &errMsg, nullptr, nullptr );
       if ( err != QgsVectorFileWriter::NoError )
       {
         createErrors.append( errMsg );
@@ -529,5 +529,5 @@ void QgsGeometryCheckerSetupTab::showCancelFeedback()
   mAbortButton->setEnabled( false );
   ui.labelStatus->setText( tr( "<b>Waiting for running checks to finish…</b>" ) );
   ui.labelStatus->show();
-  ui.progressBar->hide() ;
+  ui.progressBar->hide();
 }

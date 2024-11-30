@@ -28,6 +28,7 @@
 
 class QgsLayoutItemManualTable;
 class QgsLayoutFrame;
+class QgsTableEditorDialog;
 
 /**
  * \ingroup gui
@@ -46,6 +47,10 @@ class GUI_EXPORT QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, pub
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
     QgsExpressionContext createExpressionContext() const override;
 
+    //! Creates and open the table editor dialog
+    static void openTableDesigner( QgsLayoutFrame *frame, QWidget *parent = nullptr );
+
+
   protected:
 
     bool setNewItem( QgsLayoutItem *item ) override;
@@ -55,10 +60,10 @@ class GUI_EXPORT QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, pub
     QPointer< QgsLayoutFrame > mFrame;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
-    QPointer< QgsTableEditorDialog > mEditorDialog;
-
     //! Blocks / unblocks the signals of all GUI elements
     void blockAllSignals( bool b );
+
+    static QPointer< QgsTableEditorDialog > sEditorDialog;
 
   private slots:
 

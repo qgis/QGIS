@@ -29,7 +29,7 @@
 extern "C"
 {
 #include <grass/version.h>
-#if defined(_MSC_VER) && defined(M_PI_4)
+#if defined( _MSC_VER ) && defined( M_PI_4 )
 #undef M_PI_4 //avoid redefinition warning
 #endif
 #include <grass/gprojects.h>
@@ -71,7 +71,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
 
     static QStringList fieldNames( const QgsFields &fields );
 
-    QMap<int, QList<QVariant> > &attributes() { return mAttributes; }
+    QMap<int, QList<QVariant>> &attributes() { return mAttributes; }
 
     /**
      * Gets attribute for index corresponding to current fields(),
@@ -82,7 +82,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     bool hasTable() { return mHasTable; }
     int keyColumn() { return mKeyColumn; }
     QString keyColumnName() { return mFieldInfo ? mFieldInfo->key : QString(); }
-    QList< QPair<double, double> > minMax() { return mMinMax; }
+    QList<QPair<double, double>> minMax() { return mMinMax; }
 
     int userCount() { return mUsers; }
     void addUser();
@@ -207,13 +207,13 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     QgsFields mAttributeFields;
 
     // Map of attributes with cat as key
-    QMap<int, QList<QVariant> > mAttributes;
+    QMap<int, QList<QVariant>> mAttributes;
 
     // Map of current original fields() indexes to mAttributes, skipping topo symbol
     //QMap<int, int> mAttributeIndexes;
 
     // minimum and maximum values of attributes
-    QList<QPair<double, double> > mMinMax;
+    QList<QPair<double, double>> mMinMax;
     // timestamp when attributes were loaded
     QDateTime mLastLoaded;
     // number of instances using this layer

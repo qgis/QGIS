@@ -149,6 +149,15 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
      */
     virtual void newItemAddedToLayout( QgsLayoutItem *item );
 
+    /**
+     * Called when a layout item is double-clicked.
+     * The action parameter is used to specify which mouse handle, if any, was clicked
+     * If no mouse handle is selected, Qgis::MouseHandlesAction::NoAction is used
+     *
+     * \since QGIS 3.42
+     */
+    virtual void handleDoubleClick( QgsLayoutItem *item, Qgis::MouseHandlesAction action );
+
   private:
 
     int mType = -1;
@@ -170,6 +179,9 @@ typedef std::function<QAbstractGraphicsShapeItem *( QgsLayoutView * )> QgsLayout
 
 //! Layout item added to layout callback
 typedef std::function<void ( QgsLayoutItem *, const QVariantMap & )> QgsLayoutItemAddedToLayoutFunc SIP_SKIP;
+
+//! Layout item double clicked
+typedef std::function<void ( QgsLayoutItem *, Qgis::MouseHandlesAction action )> QgsLayoutItemDoubleClickedFunc SIP_SKIP;
 
 #ifndef SIP_RUN
 
@@ -266,6 +278,20 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      */
     void setItemAddedToLayoutFunction( const QgsLayoutItemAddedToLayoutFunc &function ) { mAddedToLayoutFunc = function; }
 
+    /**
+     * Returns the classes' item double clicked function.
+     * \see setItemAddedToLayoutFunction()
+     */
+    QgsLayoutItemDoubleClickedFunc itemDoubleClickedFunction() const { return mDoubleClickedFunc; }
+
+    /**
+     * Sets the classes' item double clicked \a function.
+     * \see itemDoubleClickedFunction()
+     */
+    void setItemDoubleClickedFunction( const QgsLayoutItemDoubleClickedFunc &function ) { mDoubleClickedFunc = function; }
+
+    void handleDoubleClick( QgsLayoutItem *item, Qgis::MouseHandlesAction action ) override;
+
     QIcon creationIcon() const override { return mIcon.isNull() ? QgsLayoutItemAbstractGuiMetadata::creationIcon() : mIcon; }
     QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) override { return mWidgetFunc ? mWidgetFunc( item ) : nullptr; }
     QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) override { return mRubberBandFunc ? mRubberBandFunc( view ) : nullptr; }
@@ -294,6 +320,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
     QgsLayoutNodeItemRubberBandFunc mNodeRubberBandFunc = nullptr;
     QgsLayoutItemCreateFunc mCreateFunc = nullptr;
     QgsLayoutItemAddedToLayoutFunc mAddedToLayoutFunc = nullptr;
+    QgsLayoutItemDoubleClickedFunc mDoubleClickedFunc = nullptr;
 
 };
 

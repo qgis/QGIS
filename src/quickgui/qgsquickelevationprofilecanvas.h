@@ -58,7 +58,6 @@ class QUICK_EXPORT QgsQuickElevationProfileCanvas : public QQuickItem
     Q_PROPERTY( bool isRendering READ isRendering NOTIFY isRenderingChanged )
 
   public:
-
     /**
      * Constructor for QgsElevationProfileCanvas, with the specified \a parent widget.
      */

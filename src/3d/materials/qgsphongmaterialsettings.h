@@ -52,6 +52,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     static QgsAbstractMaterialSettings *create() SIP_FACTORY;
 
     QgsPhongMaterialSettings *clone() const override SIP_FACTORY;
+    bool equals( const QgsAbstractMaterialSettings *other ) const override;
 
     //! Returns ambient color component
     QColor ambient() const { return mAmbient; }
@@ -177,7 +178,8 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
              mShininess == other.mShininess &&
              mAmbientCoefficient == other.mAmbientCoefficient &&
              mDiffuseCoefficient == other.mDiffuseCoefficient &&
-             mSpecularCoefficient == other.mSpecularCoefficient;
+             mSpecularCoefficient == other.mSpecularCoefficient &&
+             dataDefinedProperties() == other.dataDefinedProperties();
     }
 
   private:

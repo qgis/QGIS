@@ -48,7 +48,7 @@ namespace
 
     return res;
   }
-}
+} // namespace
 
 QgsHanaResultSet::QgsHanaResultSet( ResultSetRef &&resultSet )
   : mResultSet( std::move( resultSet ) )
@@ -164,22 +164,22 @@ QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
         return QgsHanaUtils::toVariant( str );
     }
     case QgsHanaDataType::TinyInt:
-      if ( mMetadata ->isSigned( columnIndex ) )
+      if ( mMetadata->isSigned( columnIndex ) )
         return QgsHanaUtils::toVariant( mResultSet->getByte( columnIndex ) );
       else
         return QgsHanaUtils::toVariant( mResultSet->getUByte( columnIndex ) );
     case QgsHanaDataType::SmallInt:
-      if ( mMetadata ->isSigned( columnIndex ) )
+      if ( mMetadata->isSigned( columnIndex ) )
         return QgsHanaUtils::toVariant( mResultSet->getShort( columnIndex ) );
       else
         return QgsHanaUtils::toVariant( mResultSet->getUShort( columnIndex ) );
     case QgsHanaDataType::Integer:
-      if ( mMetadata ->isSigned( columnIndex ) )
+      if ( mMetadata->isSigned( columnIndex ) )
         return QgsHanaUtils::toVariant( mResultSet->getInt( columnIndex ) );
       else
         return QgsHanaUtils::toVariant( mResultSet->getUInt( columnIndex ) );
     case QgsHanaDataType::BigInt:
-      if ( mMetadata ->isSigned( columnIndex ) )
+      if ( mMetadata->isSigned( columnIndex ) )
         return QgsHanaUtils::toVariant( mResultSet->getLong( columnIndex ) );
       else
         return QgsHanaUtils::toVariant( mResultSet->getULong( columnIndex ) );
@@ -239,11 +239,10 @@ QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
 
 QgsGeometry QgsHanaResultSet::getGeometry( unsigned short columnIndex )
 {
-  auto toWkbSize = []( size_t size )
-  {
+  auto toWkbSize = []( size_t size ) {
     if ( size > static_cast<size_t>( std::numeric_limits<int>::max() ) )
       throw QgsHanaException( "Geometry size is larger than maximum integer value" );
-    return  static_cast<int>( size );
+    return static_cast<int>( size );
   };
 
   const size_t bufLength = mResultSet->getBinaryLength( columnIndex );

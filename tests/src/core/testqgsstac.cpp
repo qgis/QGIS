@@ -43,10 +43,10 @@ class TestQgsStac : public QObject
     TestQgsStac() = default;
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void testParseLocalCatalog();
     void testParseLocalCollection();
@@ -89,7 +89,7 @@ void TestQgsStac::testParseLocalCatalog()
   QgsStacObject *obj = c.fetchStacObject( url.toString() );
   QVERIFY( obj );
   QCOMPARE( obj->type(), QgsStacObject::Type::Catalog );
-  QgsStacCatalog *cat = dynamic_cast< QgsStacCatalog * >( obj );
+  QgsStacCatalog *cat = dynamic_cast<QgsStacCatalog *>( obj );
 
   QVERIFY( cat );
   QCOMPARE( cat->id(), QLatin1String( "examples" ) );
@@ -119,7 +119,7 @@ void TestQgsStac::testParseLocalCollection()
   QgsStacObject *obj = c.fetchStacObject( url.toString() );
   QVERIFY( obj );
   QCOMPARE( obj->type(), QgsStacObject::Type::Collection );
-  QgsStacCollection *col = dynamic_cast< QgsStacCollection * >( obj );
+  QgsStacCollection *col = dynamic_cast<QgsStacCollection *>( obj );
 
   QVERIFY( col );
   QCOMPARE( col->id(), QLatin1String( "simple-collection" ) );

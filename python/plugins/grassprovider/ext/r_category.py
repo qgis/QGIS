@@ -15,24 +15,28 @@
 ***************************************************************************
 """
 
-__author__ = 'Médéric Ribreux'
-__date__ = 'February 2016'
-__copyright__ = '(C) 2016, Médéric Ribreux'
+__author__ = "Médéric Ribreux"
+__date__ = "February 2016"
+__copyright__ = "(C) 2016, Médéric Ribreux"
 
 from processing.tools.system import getTempFilename
 from grassprovider.grass_utils import GrassUtils
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
-    """ Verify if we have the right parameters """
-    rules = alg.parameterAsString(parameters, 'rules', context)
-    txtrules = alg.parameterAsString(parameters, 'txtrules', context)
-    raster = alg.parameterAsString(parameters, 'raster', context)
+    """Verify if we have the right parameters"""
+    rules = alg.parameterAsString(parameters, "rules", context)
+    txtrules = alg.parameterAsString(parameters, "txtrules", context)
+    raster = alg.parameterAsString(parameters, "raster", context)
 
     if rules and txtrules:
-        return False, alg.tr("You need to set either a rules file or write directly the rules!")
+        return False, alg.tr(
+            "You need to set either a rules file or write directly the rules!"
+        )
     elif (rules and raster) or (txtrules and raster):
-        return False, alg.tr("You need to set either rules or a raster from which to copy categories!")
+        return False, alg.tr(
+            "You need to set either rules or a raster from which to copy categories!"
+        )
 
     return True, None
 
@@ -40,18 +44,16 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
 def processInputs(alg, parameters, context, feedback):
     # If there is another raster to copy categories from
     # we need to import it with r.in.gdal rather than r.external
-    raster = alg.parameterAsString(parameters, 'raster', context)
+    raster = alg.parameterAsString(parameters, "raster", context)
     if raster:
-        alg.loadRasterLayerFromParameter('raster',
-                                         parameters, context,
-                                         False, None)
-    alg.loadRasterLayerFromParameter('map', parameters, context)
+        alg.loadRasterLayerFromParameter("raster", parameters, context, False, None)
+    alg.loadRasterLayerFromParameter("map", parameters, context)
     alg.postInputs(context)
 
 
 def processCommand(alg, parameters, context, feedback):
     # Handle inline rules
-    txtRules = alg.parameterAsString(parameters, 'txtrules', context)
+    txtRules = alg.parameterAsString(parameters, "txtrules", context)
     if txtRules:
         # Creates a temporary txt file
         tempRulesName = getTempFilename(context=context)
@@ -59,8 +61,8 @@ def processCommand(alg, parameters, context, feedback):
         # Inject rules into temporary txt file
         with open(tempRulesName, "w") as tempRules:
             tempRules.write(txtRules)
-        alg.removeParameter('txtrules')
-        parameters['rules'] = tempRulesName
+        alg.removeParameter("txtrules")
+        parameters["rules"] = tempRulesName
 
     alg.processCommand(parameters, context, feedback, True)
 
@@ -71,8 +73,7 @@ def processOutputs(alg, parameters, context, feedback):
     metaOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_META, context)
 
     # We need to export the raster with all its bands and its color table
-    fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
+    fileName = alg.parameterAsOutputLayer(parameters, "output", context)
     outFormat = GrassUtils.getRasterFormatFromFilename(fileName)
-    grassName = alg.exportedLayers['map']
-    alg.exportRasterLayer(grassName, fileName, True,
-                          outFormat, createOpt, metaOpt)
+    grassName = alg.exportedLayers["map"]
+    alg.exportRasterLayer(grassName, fileName, True, outFormat, createOpt, metaOpt)

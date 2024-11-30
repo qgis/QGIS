@@ -282,3 +282,8 @@ bool QgsDoubleSpinBox::shouldShowClearForValue( const double value ) const
   }
   return value != clearValue();
 }
+
+bool QgsDoubleSpinBox::isCleared() const
+{
+  return value() == clearValue();
+}

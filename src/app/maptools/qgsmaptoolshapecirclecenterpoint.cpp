@@ -65,7 +65,6 @@ bool QgsMapToolShapeCircleCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *
       mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
       mTempRubberBand->show();
     }
-
   }
   else if ( e->button() == Qt::RightButton )
   {

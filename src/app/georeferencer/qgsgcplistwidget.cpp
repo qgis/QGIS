@@ -48,20 +48,16 @@ QgsGCPListWidget::QgsGCPListWidget( QWidget *parent )
   setAlternatingRowColors( true );
 
   // set delegates for items
-  setItemDelegateForColumn( static_cast< int >( QgsGCPListModel::Column::SourceX ), mCoordDelegate );
-  setItemDelegateForColumn( static_cast< int >( QgsGCPListModel::Column::SourceY ), mCoordDelegate );
-  setItemDelegateForColumn( static_cast< int >( QgsGCPListModel::Column::DestinationX ), mDmsAndDdDelegate );
-  setItemDelegateForColumn( static_cast< int >( QgsGCPListModel::Column::DestinationY ), mDmsAndDdDelegate );
+  setItemDelegateForColumn( static_cast<int>( QgsGCPListModel::Column::SourceX ), mCoordDelegate );
+  setItemDelegateForColumn( static_cast<int>( QgsGCPListModel::Column::SourceY ), mCoordDelegate );
+  setItemDelegateForColumn( static_cast<int>( QgsGCPListModel::Column::DestinationX ), mDmsAndDdDelegate );
+  setItemDelegateForColumn( static_cast<int>( QgsGCPListModel::Column::DestinationY ), mDmsAndDdDelegate );
 
-  connect( this, &QAbstractItemView::doubleClicked,
-           this, &QgsGCPListWidget::itemDoubleClicked );
-  connect( this, &QAbstractItemView::clicked,
-           this, &QgsGCPListWidget::itemClicked );
-  connect( this, &QWidget::customContextMenuRequested,
-           this, &QgsGCPListWidget::showContextMenu );
+  connect( this, &QAbstractItemView::doubleClicked, this, &QgsGCPListWidget::itemDoubleClicked );
+  connect( this, &QAbstractItemView::clicked, this, &QgsGCPListWidget::itemClicked );
+  connect( this, &QWidget::customContextMenuRequested, this, &QgsGCPListWidget::showContextMenu );
 
-  connect( mGCPListModel, &QgsGCPListModel::pointEnabled, this, [ = ]( QgsGeorefDataPoint * point, int row )
-  {
+  connect( mGCPListModel, &QgsGCPListModel::pointEnabled, this, [=]( QgsGeorefDataPoint *point, int row ) {
     emit pointEnabled( point, row );
     adjustTableContent();
     return;
@@ -176,7 +172,7 @@ void QgsGCPListWidget::showContextMenu( QPoint p )
   if ( !mGCPList || 0 == mGCPList->count() )
     return;
 
-  QMenu m;// = new QMenu(this);
+  QMenu m; // = new QMenu(this);
   const QModelIndex index = indexAt( p );
   if ( index == QModelIndex() )
     return;
@@ -185,8 +181,7 @@ void QgsGCPListWidget::showContextMenu( QPoint p )
   setCurrentIndex( index );
 
   QAction *jumpToPointAction = new QAction( tr( "Recenter" ), this );
-  connect( jumpToPointAction, &QAction::triggered, this, [ = ]
-  {
+  connect( jumpToPointAction, &QAction::triggered, this, [=] {
     const QModelIndex sourceIndex = static_cast<const QSortFilterProxyModel *>( model() )->mapToSource( currentIndex() );
     mPrevRow = sourceIndex.row();
     mPrevColumn = sourceIndex.column();
@@ -208,7 +203,7 @@ void QgsGCPListWidget::removeRow()
 
 void QgsGCPListWidget::jumpToSourcePoint( const QModelIndex &modelIndex )
 {
-  const QgsPointXY sourcePoint = mGCPListModel->data( modelIndex, static_cast< int >( QgsGCPListModel::Role::SourcePointRole ) ).value< QgsPointXY >();
+  const QgsPointXY sourcePoint = mGCPListModel->data( modelIndex, static_cast<int>( QgsGCPListModel::Role::SourcePointRole ) ).value<QgsPointXY>();
   if ( !sourcePoint.isEmpty() )
   {
     emit jumpToGCP( sourcePoint );

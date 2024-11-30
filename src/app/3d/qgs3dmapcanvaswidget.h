@@ -36,6 +36,7 @@ class Qgs3DMapSettings;
 class Qgs3DMapToolIdentify;
 class Qgs3DMapToolMeasureLine;
 class Qgs3DNavigationWidget;
+class Qgs3DDebugWidget;
 class QgsMapTool;
 class QgsMapToolExtent;
 class QgsMapCanvas;
@@ -79,6 +80,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void exportScene();
     void toggleNavigationWidget( bool visibility );
     void toggleFpsCounter( bool visibility );
+    void toggleDebugWidget( bool visibility ) const;
+    void toggleDebugWidget() const;
     void setSceneExtentOn2DCanvas();
     void setSceneExtent( const QgsRectangle &extent );
 
@@ -129,8 +132,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionEffects = nullptr;
     QAction *mActionSetSceneExtent = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
-    QObjectUniquePtr< QgsRubberBand > mViewFrustumHighlight;
-    QObjectUniquePtr< QgsRubberBand > mViewExtentHighlight;
+    QObjectUniquePtr<QgsRubberBand> mViewFrustumHighlight;
+    QObjectUniquePtr<QgsRubberBand> mViewExtentHighlight;
     QPointer<QDialog> mConfigureDialog;
     QgsMessageBar *mMessageBar = nullptr;
     bool mGpuMemoryLimitReachedReported = false;
@@ -139,7 +142,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QWidget *mContainer = nullptr;
     //! On-Screen Navigation widget.
     Qgs3DNavigationWidget *mNavigationWidget = nullptr;
-
+    //! On-screen Debug widget
+    Qgs3DDebugWidget *mDebugWidget = nullptr;
 };
 
 #endif // QGS3DMAPCANVASWIDGET_H

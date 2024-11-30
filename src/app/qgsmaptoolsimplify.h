@@ -32,15 +32,14 @@ class QgsSimplifyUserInputWidget;
 
 
 //! Map tool to simplify line/polygon features
-class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
+class APP_EXPORT QgsMapToolSimplify : public QgsMapToolEdit
 {
     Q_OBJECT
   public:
-
     enum Method
     {
-      SimplifyDistance    = 0,
-      SimplifySnapToGrid  = 1,
+      SimplifyDistance = 0,
+      SimplifySnapToGrid = 1,
       SimplifyVisvalingam = 2,
       Smooth = 3
     };
@@ -84,7 +83,6 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     void setMethod( QgsMapToolSimplify::Method method );
 
   private:
-
     void selectOneFeature( QPoint canvasPoint );
     void selectFeaturesInRect();
 
@@ -135,15 +133,12 @@ class APP_EXPORT QgsSimplifyUserInputWidget : public QWidget, private Ui::Simpli
     Q_OBJECT
 
   public:
-
     QgsSimplifyUserInputWidget( QWidget *parent = nullptr );
 
     void updateStatusText( const QString &text );
     void enableOkButton( bool enabled );
 
-    void setConfig( QgsMapToolSimplify::Method method, double tolerance,
-                    Qgis::MapToolUnit units, double smoothOffset,
-                    int smoothIterations );
+    void setConfig( QgsMapToolSimplify::Method method, double tolerance, Qgis::MapToolUnit units, double smoothOffset, int smoothIterations );
 
   signals:
     void accepted();

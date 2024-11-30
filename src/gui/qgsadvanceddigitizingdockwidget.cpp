@@ -1272,7 +1272,7 @@ static QgsCadUtils::AlignMapPointConstraint _constraint( QgsAdvancedDigitizingDo
   return constr;
 }
 
-void QgsAdvancedDigitizingDockWidget::toggleLockedSnapVertex( const QgsPointLocator::Match &snapMatch, QgsPointLocator::Match previouslySnap )
+void QgsAdvancedDigitizingDockWidget::toggleLockedSnapVertex( const QgsPointLocator::Match &snapMatch, const QgsPointLocator::Match &previouslySnap )
 {
   // do nothing if not activated
   if ( !mLineExtensionConstraint->isLocked() && !mXyVertexConstraint->isLocked() )
