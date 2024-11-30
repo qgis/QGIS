@@ -30,7 +30,7 @@
 QReadWriteLock QgsGoogleMapsGeocoder::sMutex;
 
 typedef QMap< QUrl, QList< QgsGeocoderResult > > CachedGeocodeResult;
-Q_GLOBAL_STATIC( CachedGeocodeResult, sCachedResults )
+Q_GLOBAL_STATIC( CachedGeocodeResult, sCachedResultsGM )
 
 
 QgsGoogleMapsGeocoder::QgsGoogleMapsGeocoder( const QString &apiKey, const QString &regionBias )
@@ -91,8 +91,8 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
   const QUrl url = requestUrl( string, bounds );
 
   QgsReadWriteLocker locker( sMutex, QgsReadWriteLocker::Read );
-  const auto it = sCachedResults()->constFind( url );
-  if ( it != sCachedResults()->constEnd() )
+  const auto it = sCachedResultsGM()->constFind( url );
+  if ( it != sCachedResultsGM()->constEnd() )
   {
     return *it;
   }
@@ -142,7 +142,7 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
   const QVariantList results = res.value( QStringLiteral( "results" ) ).toList();
   if ( results.empty() )
   {
-    sCachedResults()->insert( url, QList<QgsGeocoderResult>() );
+    sCachedResultsGM()->insert( url, QList<QgsGeocoderResult>() );
     return QList<QgsGeocoderResult>();
   }
 
@@ -152,7 +152,7 @@ QList<QgsGeocoderResult> QgsGoogleMapsGeocoder::geocodeString( const QString &st
   {
     matches << jsonToResult( result.toMap() );
   }
-  sCachedResults()->insert( url, matches );
+  sCachedResultsGM()->insert( url, matches );
 
   return matches;
 }
