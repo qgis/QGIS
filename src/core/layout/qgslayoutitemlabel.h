@@ -251,8 +251,6 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     void updateBoundingRect();
 
   private:
-    bool mFirstRender = true;
-
     // Text
     QString mText;
 
