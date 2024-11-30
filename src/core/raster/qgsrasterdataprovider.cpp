@@ -1050,3 +1050,5 @@ QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const VirtualRast
   uri.setQuery( query );
   return QString( QUrl::toPercentEncoding( uri.toEncoded() ) );
 }
+
+#undef ERR
