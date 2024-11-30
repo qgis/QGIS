@@ -76,15 +76,6 @@ QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
   }
 }
 
-static void setItemBold_( QTreeWidgetItem *item )
-{
-  item->setFirstColumnSpanned( true );
-  QFont secf( item->font( 0 ) );
-  secf.setBold( true );
-  item->setFont( 0, secf );
-}
-
-
 void QgsAuthServersEditor::setupSslConfigsTree()
 {
   treeServerConfigs->setColumnCount( 3 );
@@ -100,24 +91,15 @@ void QgsAuthServersEditor::setupSslConfigsTree()
     treeServerConfigs,
     QStringList( tr( "SSL Server Configurations" ) ),
     static_cast<int>( QgsAuthServersEditor::Section ) );
-  setItemBold_( mRootSslConfigItem );
+  QgsAuthGuiUtils::setItemBold( mRootSslConfigItem );
   mRootSslConfigItem->setFlags( Qt::ItemIsEnabled );
   mRootSslConfigItem->setExpanded( true );
   treeServerConfigs->insertTopLevelItem( 0, mRootSslConfigItem );
 }
 
-static void removeChildren_( QTreeWidgetItem *item )
-{
-  const auto constTakeChildren = item->takeChildren();
-  for ( QTreeWidgetItem *child : constTakeChildren )
-  {
-    delete child;
-  }
-}
-
 void QgsAuthServersEditor::populateSslConfigsView()
 {
-  removeChildren_( mRootSslConfigItem );
+  QgsAuthGuiUtils::removeChildren( mRootSslConfigItem );
 
   populateSslConfigsSection( mRootSslConfigItem,
                              QgsApplication::authManager()->sslCertCustomConfigs(),
