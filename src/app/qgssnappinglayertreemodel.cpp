@@ -408,8 +408,33 @@ QgsLayerTreeModel *QgsSnappingLayerTreeModel::layerTreeModel() const
 
 void QgsSnappingLayerTreeModel::setLayerTreeModel( QgsLayerTreeModel *layerTreeModel )
 {
+  if ( mLayerTreeModel )
+  {
+    disconnect( mLayerTreeModel, &QAbstractItemModel::rowsInserted, this, &QgsSnappingLayerTreeModel::onNodesInserted );
+    disconnect( mLayerTreeModel, &QAbstractItemModel::rowsRemoved, this, &QgsSnappingLayerTreeModel::onNodesRemoved );
+  }
+
   mLayerTreeModel = layerTreeModel;
   QSortFilterProxyModel::setSourceModel( layerTreeModel );
+
+  connect( mLayerTreeModel, &QAbstractItemModel::rowsInserted, this, &QgsSnappingLayerTreeModel::onNodesInserted );
+  connect( mLayerTreeModel, &QAbstractItemModel::rowsRemoved, this, &QgsSnappingLayerTreeModel::onNodesRemoved );
+}
+
+void QgsSnappingLayerTreeModel::onNodesInserted( const QModelIndex &parent, int first, int last )
+{
+  if ( mLayerTreeModel->rowCount( parent ) - ( last - first + 1 ) <= 0 )
+  {
+    invalidateFilter();
+  }
+}
+
+void QgsSnappingLayerTreeModel::onNodesRemoved( const QModelIndex &parent, int, int )
+{
+  if ( mLayerTreeModel->rowCount( parent ) == 0 )
+  {
+    invalidateFilter();
+  }
 }
 
 bool QgsSnappingLayerTreeModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
