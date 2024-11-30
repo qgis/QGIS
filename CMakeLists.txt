@@ -1080,6 +1080,8 @@ endif()
 # whether to install required system libs in the output package
 set(QGIS_INSTALL_SYS_LIBS TRUE CACHE BOOL "If set to TRUE install all required system libs in the output package")
 
+option(ENABLE_UNITY_BUILDS "Enable Unity builds, that is compiling several .cpp files in the same compilation unit (EXPERIMENTAL. Not recommended for production builds)" OFF)
+
 #############################################################
 # Python
 
