@@ -1680,6 +1680,8 @@ target_compile_features(qgis_gui PRIVATE cxx_std_17)
 
 target_precompile_headers(qgis_gui PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
 
+set_target_properties(qgis_gui PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+
 target_include_directories(qgis_gui SYSTEM PUBLIC
   ${QWT_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
