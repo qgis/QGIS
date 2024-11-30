@@ -613,6 +613,8 @@ target_compile_definitions(qgis_app PRIVATE "-DQT_NO_FOREACH")
 
 target_precompile_headers(qgis_app PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
 
+set_target_properties(qgis_app PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+
 if (WITH_BINDINGS)
   add_definitions(-DWITH_BINDINGS)
   target_link_libraries(qgis_app qgispython)
