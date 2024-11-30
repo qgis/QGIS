@@ -2603,3 +2603,5 @@ bool QgsRasterLayer::update()
   }
   return isValid();
 }
+
+#undef ERR
