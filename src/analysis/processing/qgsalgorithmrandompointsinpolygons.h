@@ -52,6 +52,21 @@ class QgsRandomPointsInPolygonsAlgorithm : public QgsProcessingAlgorithm
                                   QgsProcessingFeedback *feedback ) override;
 
   private:
+
+// The algorithm parameter names:
+    static inline const QString INPUT = QStringLiteral( "INPUT" );
+    static inline const QString POINTS_NUMBER = QStringLiteral( "POINTS_NUMBER" );
+    static inline const QString MIN_DISTANCE_GLOBAL = QStringLiteral( "MIN_DISTANCE_GLOBAL" );
+    static inline const QString MIN_DISTANCE = QStringLiteral( "MIN_DISTANCE" );
+    static inline const QString MAX_TRIES_PER_POINT = QStringLiteral( "MAX_TRIES_PER_POINT" );
+    static inline const QString SEED = QStringLiteral( "SEED" );
+    static inline const QString INCLUDE_POLYGON_ATTRIBUTES = QStringLiteral( "INCLUDE_POLYGON_ATTRIBUTES" );
+    static inline const QString OUTPUT = QStringLiteral( "OUTPUT" );
+    static inline const QString OUTPUT_POINTS = QStringLiteral( "OUTPUT_POINTS" );
+    static inline const QString POINTS_MISSED = QStringLiteral( "POINTS_MISSED" );
+    static inline const QString POLYGONS_WITH_MISSED_POINTS = QStringLiteral( "POLYGONS_WITH_MISSED_POINTS" );
+    static inline const QString FEATURES_WITH_EMPTY_OR_NO_GEOMETRY = QStringLiteral( "FEATURES_WITH_EMPTY_OR_NO_GEOMETRY" );
+
     int mNumPoints = 0;
     bool mDynamicNumPoints = false;
     QgsProperty mNumPointsProperty;

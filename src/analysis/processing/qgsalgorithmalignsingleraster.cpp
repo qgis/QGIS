@@ -92,18 +92,6 @@ void QgsAlignSingleRasterAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Aligned raster" ) ) );
 }
 
-struct QgsAlignRasterProgress : public QgsAlignRaster::ProgressHandler
-{
-    explicit QgsAlignRasterProgress( QgsFeedback *feedback ) : mFeedback( feedback ) {}
-    bool progress( double complete ) override
-    {
-      mFeedback->setProgress( complete * 100 );
-      return true;
-    }
-
-  protected:
-    QgsFeedback *mFeedback = nullptr;
-};
 
 
 QVariantMap QgsAlignSingleRasterAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -214,6 +202,19 @@ QVariantMap QgsAlignSingleRasterAlgorithm::processAlgorithm( const QVariantMap &
     QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context );
     rasterAlign.setClipExtent( extent );
   }
+
+  struct QgsAlignRasterProgress : public QgsAlignRaster::ProgressHandler
+  {
+      explicit QgsAlignRasterProgress( QgsFeedback *feedback ) : mFeedback( feedback ) {}
+      bool progress( double complete ) override
+      {
+        mFeedback->setProgress( complete * 100 );
+        return true;
+      }
+
+    protected:
+      QgsFeedback *mFeedback = nullptr;
+  };
 
   rasterAlign.setProgressHandler( new QgsAlignRasterProgress( feedback ) );
 
