@@ -134,11 +134,19 @@ class GUI_EXPORT QgsMapLayerConfigWidget : public QgsPanelWidget
      */
     virtual bool shouldTriggerLayerRepaint() const { return true; }
 
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
+#endif
+
     /**
      * Reset to original (vector layer) values
      * \since QGIS 3.14
      */
     virtual void syncToLayer( QgsMapLayer *layer ) { Q_UNUSED( layer ) }
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
     /**
      * Sets the \a context under which the widget is being shown.
