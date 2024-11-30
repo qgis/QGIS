@@ -226,7 +226,6 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     int mSubWidgetSignalBlocking = 0; //! Set to non-zero when a endless loop of notifications could happen.
 
     QgsValueRelationFieldFormatter::ValueRelationCache mCache;
-    QgsVectorLayer *mLayer = nullptr;
 
     bool mEnabled = true;
     QString mExpression;
