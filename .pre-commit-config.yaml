@@ -1,6 +1,7 @@
 exclude: |
     (?x)^(
-        python/.*/auto_\w+/.*.py
+        python/.*/auto_\w+/.*.py|
+        tests/testdata/script_with_error.py
     )$
 fail_fast: false
 
