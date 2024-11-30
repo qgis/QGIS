@@ -2341,7 +2341,7 @@ add_library(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS
 
 target_precompile_headers(qgis_core PRIVATE $<$<COMPILE_LANGUAGE:CXX>:qgis.h>)
 
-set_target_properties(qgis_core PROPERTIES UNITY_BUILD ON)
+set_target_properties(qgis_core PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
 # Exclude below files because they include tiny_gltf.h with different #define settings
 set_source_files_properties(tiledscene/qgsgltfutils.cpp
