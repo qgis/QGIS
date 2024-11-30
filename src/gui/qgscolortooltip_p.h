@@ -54,9 +54,19 @@ class QgsColorTooltip
 
       //draw color over pattern
       p.setBrush( QBrush( color ) );
+      p.drawRect( margin, margin, width, height );
+
+      if ( color.alpha() < 255 )
+      {
+        //draw fully opaque color over half of the area
+        color.setAlpha( 255 );
+        p.setBrush( QBrush( color ) );
+        p.drawRect( margin, margin, width / 2, height );
+      }
 
       //draw border
       p.setPen( QColor( 197, 197, 197 ) );
+      p.setBrush( Qt::NoBrush );
       p.drawRect( margin, margin, width, height );
       p.end();
 
