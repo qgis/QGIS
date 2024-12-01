@@ -60,6 +60,7 @@
 #include "qgsvectortilebasiclabeling.h"
 #include "qgsfontmanager.h"
 #include "qgsvariantutils.h"
+#include "qgsmeshlayer.h"
 
 using namespace pal;
 
@@ -4090,9 +4091,14 @@ bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
       return false;
     }
 
+    case Qgis::LayerType::Mesh:
+    {
+      const QgsMeshLayer *ml = qobject_cast< const QgsMeshLayer * >( layer );
+      return ml->labeling() && ml->labelsEnabled();
+    }
+
     case Qgis::LayerType::Raster:
     case Qgis::LayerType::Plugin:
-    case Qgis::LayerType::Mesh:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
