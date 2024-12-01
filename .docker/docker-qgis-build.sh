@@ -18,6 +18,9 @@ ccache -M 2.0G
 # export CCACHE_LOGFILE=/tmp/cache.debug
 ccache -z
 
+# To make ccache work properly with precompiled headers
+ccache --set-config sloppiness=pch_defines,time_macros
+
 ##############################
 # Variables for output styling
 ##############################

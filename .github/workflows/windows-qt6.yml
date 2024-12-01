@@ -53,6 +53,12 @@ jobs:
           key: build-ccache-win64-qt6-${{ github.event.pull_request.base.ref || github.ref_name }}
           save: ${{ github.event_name == 'push' }}
 
+      - name: 🛍️ Tune ccache configuration
+        shell: bash
+        run: |
+          # To make ccache work properly with precompiled headers
+          ccache --set-config sloppiness=pch_defines,time_macros
+
       - name: 🌱 Install dependencies and generate project files
         shell: bash
         run: |
