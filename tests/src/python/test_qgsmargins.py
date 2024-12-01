@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '2017-01'
-__copyright__ = 'Copyright 2017, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "2017-01"
+__copyright__ = "Copyright 2017, The QGIS Project"
 
 
 from qgis.core import QgsMargins
@@ -101,19 +102,19 @@ class TestQgsOptional(unittest.TestCase):
         # null margin
         self.assertFalse(QgsMargins().toString())
 
-        self.assertEqual(QgsMargins(1, 2, 3, 4).toString(), '1,2,3,4')
-        self.assertEqual(QgsMargins(1, -2, 3, -4).toString(), '1,-2,3,-4')
+        self.assertEqual(QgsMargins(1, 2, 3, 4).toString(), "1,2,3,4")
+        self.assertEqual(QgsMargins(1, -2, 3, -4).toString(), "1,-2,3,-4")
 
     def testFromString(self):
 
-        self.assertTrue(QgsMargins.fromString('').isNull())
-        self.assertTrue(QgsMargins.fromString('not good').isNull())
-        self.assertTrue(QgsMargins.fromString('1,2,3').isNull())
-        self.assertTrue(QgsMargins.fromString('1,2,3,4,5').isNull())
+        self.assertTrue(QgsMargins.fromString("").isNull())
+        self.assertTrue(QgsMargins.fromString("not good").isNull())
+        self.assertTrue(QgsMargins.fromString("1,2,3").isNull())
+        self.assertTrue(QgsMargins.fromString("1,2,3,4,5").isNull())
 
-        self.assertEqual(QgsMargins.fromString('1,2,3,4'), QgsMargins(1, 2, 3, 4))
-        self.assertEqual(QgsMargins.fromString('1,-2,3,-4'), QgsMargins(1, -2, 3, -4))
+        self.assertEqual(QgsMargins.fromString("1,2,3,4"), QgsMargins(1, 2, 3, 4))
+        self.assertEqual(QgsMargins.fromString("1,-2,3,-4"), QgsMargins(1, -2, 3, -4))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

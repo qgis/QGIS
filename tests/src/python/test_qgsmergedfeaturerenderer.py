@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '30/12/2020'
-__copyright__ = 'Copyright 2020, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "30/12/2020"
+__copyright__ = "Copyright 2020, The QGIS Project"
 
 import os
 
@@ -44,15 +45,19 @@ class TestQgsMergedFeatureRenderer(QgisTestCase):
     def test_legend_keys(self):
         symbol1 = QgsFillSymbol()
         symbol2 = QgsFillSymbol()
-        sub_renderer = QgsCategorizedSymbolRenderer('cat', [QgsRendererCategory('cat1', symbol1, 'cat1', True, '0'),
-                                                            QgsRendererCategory('cat2', symbol2, 'cat2', True, '1')
-                                                            ])
+        sub_renderer = QgsCategorizedSymbolRenderer(
+            "cat",
+            [
+                QgsRendererCategory("cat1", symbol1, "cat1", True, "0"),
+                QgsRendererCategory("cat2", symbol2, "cat2", True, "1"),
+            ],
+        )
 
         renderer = QgsMergedFeatureRenderer(sub_renderer)
-        self.assertEqual(renderer.legendKeys(), {'0', '1'})
+        self.assertEqual(renderer.legendKeys(), {"0", "1"})
 
     def testSinglePolys(self):
-        source = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'polys_overlapping.shp'))
+        source = QgsVectorLayer(os.path.join(TEST_DATA_DIR, "polys_overlapping.shp"))
         self.assertTrue(source.isValid())
         map_settings = QgsMapSettings()
         map_settings.setExtent(source.extent())
@@ -70,13 +75,19 @@ class TestQgsMergedFeatureRenderer(QgisTestCase):
 
         map_settings.setOutputDpi(96)
         self.assertTrue(
-            self.render_map_settings_check('single_subrenderer', 'single_subrenderer', map_settings,
-                                           color_tolerance=2,
-                                           allowed_mismatch=20)
+            self.render_map_settings_check(
+                "single_subrenderer",
+                "single_subrenderer",
+                map_settings,
+                color_tolerance=2,
+                allowed_mismatch=20,
+            )
         )
 
     def testCategorizedPolys(self):
-        source = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'polys_overlapping_with_cat.shp'))
+        source = QgsVectorLayer(
+            os.path.join(TEST_DATA_DIR, "polys_overlapping_with_cat.shp")
+        )
         self.assertTrue(source.isValid())
         map_settings = QgsMapSettings()
         map_settings.setExtent(source.extent())
@@ -97,20 +108,28 @@ class TestQgsMergedFeatureRenderer(QgisTestCase):
         symbol2 = QgsFillSymbol()
         symbol2.changeSymbolLayer(0, layer)
 
-        sub_renderer = QgsCategorizedSymbolRenderer('cat', [QgsRendererCategory('cat1', symbol1, 'cat1'),
-                                                            QgsRendererCategory('cat2', symbol2, 'cat2')
-                                                            ])
+        sub_renderer = QgsCategorizedSymbolRenderer(
+            "cat",
+            [
+                QgsRendererCategory("cat1", symbol1, "cat1"),
+                QgsRendererCategory("cat2", symbol2, "cat2"),
+            ],
+        )
         source.setRenderer(QgsMergedFeatureRenderer(sub_renderer))
 
         map_settings.setOutputDpi(96)
         self.assertTrue(
-            self.render_map_settings_check('polys_categorizedrenderer', 'polys_categorizedrenderer', map_settings,
-                                           color_tolerance=2,
-                                           allowed_mismatch=20)
+            self.render_map_settings_check(
+                "polys_categorizedrenderer",
+                "polys_categorizedrenderer",
+                map_settings,
+                color_tolerance=2,
+                allowed_mismatch=20,
+            )
         )
 
     def testSingleLines(self):
-        source = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'lines_touching.shp'))
+        source = QgsVectorLayer(os.path.join(TEST_DATA_DIR, "lines_touching.shp"))
         self.assertTrue(source.isValid())
         map_settings = QgsMapSettings()
         map_settings.setExtent(source.extent().buffered(2))
@@ -124,7 +143,9 @@ class TestQgsMergedFeatureRenderer(QgisTestCase):
 
         layer2 = QgsMarkerLineSymbolLayer()
         layer2.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.FirstVertex)
-        marker = QgsMarkerSymbol.createSimple({'size': '4', 'color': '255,0,0', 'outline_style': 'no'})
+        marker = QgsMarkerSymbol.createSimple(
+            {"size": "4", "color": "255,0,0", "outline_style": "no"}
+        )
         layer2.setSubSymbol(marker)
         symbol.appendSymbolLayer(layer2)
 
@@ -133,13 +154,17 @@ class TestQgsMergedFeatureRenderer(QgisTestCase):
 
         map_settings.setOutputDpi(96)
         self.assertTrue(
-            self.render_map_settings_check('lines_single_subrenderer', 'lines_single_subrenderer', map_settings,
-                                           color_tolerance=2,
-                                           allowed_mismatch=20)
+            self.render_map_settings_check(
+                "lines_single_subrenderer",
+                "lines_single_subrenderer",
+                map_settings,
+                color_tolerance=2,
+                allowed_mismatch=20,
+            )
         )
 
     def testLinesCategorized(self):
-        source = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'lines_touching.shp'))
+        source = QgsVectorLayer(os.path.join(TEST_DATA_DIR, "lines_touching.shp"))
         self.assertTrue(source.isValid())
         map_settings = QgsMapSettings()
         map_settings.setExtent(source.extent().buffered(2))
@@ -154,7 +179,9 @@ class TestQgsMergedFeatureRenderer(QgisTestCase):
 
         layer2 = QgsMarkerLineSymbolLayer()
         layer2.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.FirstVertex)
-        marker = QgsMarkerSymbol.createSimple({'size': '4', 'color': '255,0,0', 'outline_style': 'no'})
+        marker = QgsMarkerSymbol.createSimple(
+            {"size": "4", "color": "255,0,0", "outline_style": "no"}
+        )
         layer2.setSubSymbol(marker)
         symbol1.appendSymbolLayer(layer2)
 
@@ -162,36 +189,48 @@ class TestQgsMergedFeatureRenderer(QgisTestCase):
         symbol2.changeSymbolLayer(0, layer.clone())
         layer2 = QgsMarkerLineSymbolLayer()
         layer2.setPlacement(QgsTemplatedLineSymbolLayerBase.Placement.FirstVertex)
-        marker = QgsMarkerSymbol.createSimple({'size': '4', 'color': '0,255,0', 'outline_style': 'no'})
+        marker = QgsMarkerSymbol.createSimple(
+            {"size": "4", "color": "0,255,0", "outline_style": "no"}
+        )
         layer2.setSubSymbol(marker)
         symbol2.appendSymbolLayer(layer2)
 
-        sub_renderer = QgsCategorizedSymbolRenderer('cat', [QgsRendererCategory('cat1', symbol1, 'cat1'),
-                                                            QgsRendererCategory('cat2', symbol2, 'cat2')
-                                                            ])
+        sub_renderer = QgsCategorizedSymbolRenderer(
+            "cat",
+            [
+                QgsRendererCategory("cat1", symbol1, "cat1"),
+                QgsRendererCategory("cat2", symbol2, "cat2"),
+            ],
+        )
 
         source.setRenderer(QgsMergedFeatureRenderer(sub_renderer))
 
         map_settings.setOutputDpi(96)
         self.assertTrue(
-            self.render_map_settings_check('lines_categorized_subrenderer', 'lines_categorized_subrenderer', map_settings,
-                                           color_tolerance=2,
-                                           allowed_mismatch=20)
+            self.render_map_settings_check(
+                "lines_categorized_subrenderer",
+                "lines_categorized_subrenderer",
+                map_settings,
+                color_tolerance=2,
+                allowed_mismatch=20,
+            )
         )
 
     def test_legend_key_to_expression(self):
-        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
+        sym1 = QgsFillSymbol.createSimple(
+            {"color": "#fdbf6f", "outline_color": "black"}
+        )
         sub_renderer = QgsSingleSymbolRenderer(sym1)
 
         renderer = QgsMergedFeatureRenderer(sub_renderer)
 
-        exp, ok = renderer.legendKeyToExpression('0', None)
+        exp, ok = renderer.legendKeyToExpression("0", None)
         self.assertTrue(ok)
-        self.assertEqual(exp, 'TRUE')
+        self.assertEqual(exp, "TRUE")
 
-        exp, ok = renderer.legendKeyToExpression('xxxx', None)
+        exp, ok = renderer.legendKeyToExpression("xxxx", None)
         self.assertFalse(ok)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

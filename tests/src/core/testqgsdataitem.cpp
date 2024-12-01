@@ -44,10 +44,10 @@ class TestQgsDataItem : public QObject
     TestQgsDataItem();
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void testValid();
     void testDirItem();
@@ -119,7 +119,7 @@ void TestQgsDataItem::testValid()
 
 void TestQgsDataItem::testDirItem()
 {
-  std::unique_ptr< QgsDirectoryItem > dirItem = std::make_unique< QgsDirectoryItem >( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );
+  std::unique_ptr<QgsDirectoryItem> dirItem = std::make_unique<QgsDirectoryItem>( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );
   QCOMPARE( dirItem->dirPath(), QStringLiteral( TEST_DATA_DIR ) );
   QCOMPARE( dirItem->name(), QStringLiteral( "Test" ) );
 
@@ -146,7 +146,7 @@ void TestQgsDataItem::testDirItemChildren()
     {
       QgsDataItem *dataItem = children[i];
       QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( dataItem );
-      if ( ! layerItem )
+      if ( !layerItem )
         continue;
 
       // test .vrt and .gz files are not loaded by gdal and ogr
@@ -198,7 +198,6 @@ void TestQgsDataItem::testDirItemChildren()
       {
         QVERIFY2( lName == QLatin1String( "points3" ), errStr.toLocal8Bit().constData() );
       }
-
     }
     qDeleteAll( children );
 
@@ -216,14 +215,14 @@ void TestQgsDataItem::testDirItemMonitoring()
   QVERIFY( QDir().mkpath( child1 ) );
   QVERIFY( QDir().mkpath( child2 ) );
 
-  std::unique_ptr< QgsDirectoryItem > dirItem = std::make_unique< QgsDirectoryItem >( nullptr, QStringLiteral( "parent name" ), parentDir, parentDir + '/' );
+  std::unique_ptr<QgsDirectoryItem> dirItem = std::make_unique<QgsDirectoryItem>( nullptr, QStringLiteral( "parent name" ), parentDir, parentDir + '/' );
   QCOMPARE( dirItem->path(), parentDir + '/' );
   QCOMPARE( dirItem->dirPath(), parentDir );
 
   dirItem->populate( true );
   QCOMPARE( dirItem->rowCount(), 2 );
-  QPointer< QgsDirectoryItem > childItem1( qobject_cast< QgsDirectoryItem * >( dirItem->children().at( 0 ) ) );
-  QPointer< QgsDirectoryItem > childItem2( qobject_cast< QgsDirectoryItem * >( dirItem->children().at( 1 ) ) );
+  QPointer<QgsDirectoryItem> childItem1( qobject_cast<QgsDirectoryItem *>( dirItem->children().at( 0 ) ) );
+  QPointer<QgsDirectoryItem> childItem2( qobject_cast<QgsDirectoryItem *>( dirItem->children().at( 1 ) ) );
   QVERIFY( childItem1 );
   QCOMPARE( childItem1->path(), child1 );
   QCOMPARE( childItem1->dirPath(), child1 );
@@ -253,7 +252,7 @@ void TestQgsDataItem::testDirItemMonitoring()
   QCOMPARE( dirItem->rowCount(), 3 );
   QVERIFY( childItem1 );
   QVERIFY( childItem2 );
-  QPointer< QgsDirectoryItem > childItem3( qobject_cast< QgsDirectoryItem * >( dirItem->children().at( 2 ) ) );
+  QPointer<QgsDirectoryItem> childItem3( qobject_cast<QgsDirectoryItem *>( dirItem->children().at( 2 ) ) );
   QCOMPARE( childItem3->dirPath(), child3 );
 
   QCOMPARE( childItem3->monitoring(), Qgis::BrowserDirectoryMonitoring::Default );
@@ -384,7 +383,7 @@ void TestQgsDataItem::testDirItemMonitoringSlowDrive()
   QVERIFY( !QgsDirectoryItem::pathShouldByMonitoredByDefault( child2 ) );
   QVERIFY( !QgsDirectoryItem::pathShouldByMonitoredByDefault( child2child ) );
 
-  std::unique_ptr< QgsDirectoryItem > dirItem = std::make_unique< QgsDirectoryItem >( nullptr, QStringLiteral( "parent name" ), parentDir, QStringLiteral( "/" ) + parentDir );
+  std::unique_ptr<QgsDirectoryItem> dirItem = std::make_unique<QgsDirectoryItem>( nullptr, QStringLiteral( "parent name" ), parentDir, QStringLiteral( "/" ) + parentDir );
   // user has not explicitly set the path to be monitored or not, so Default should be returned here:
   QCOMPARE( dirItem->monitoring(), Qgis::BrowserDirectoryMonitoring::Default );
   // but directory should NOT be monitored
@@ -394,8 +393,8 @@ void TestQgsDataItem::testDirItemMonitoringSlowDrive()
   QVERIFY( !dirItem->mFileSystemWatcher );
 
   QCOMPARE( dirItem->rowCount(), 2 );
-  QPointer< QgsDirectoryItem > childItem1( qobject_cast< QgsDirectoryItem * >( dirItem->children().at( 0 ) ) );
-  QPointer< QgsDirectoryItem > childItem2( qobject_cast< QgsDirectoryItem * >( dirItem->children().at( 1 ) ) );
+  QPointer<QgsDirectoryItem> childItem1( qobject_cast<QgsDirectoryItem *>( dirItem->children().at( 0 ) ) );
+  QPointer<QgsDirectoryItem> childItem2( qobject_cast<QgsDirectoryItem *>( dirItem->children().at( 1 ) ) );
   QVERIFY( childItem1 );
   QVERIFY( childItem2 );
   // neither of these should be monitored either!
@@ -419,37 +418,30 @@ void TestQgsDataItem::testDirItemMonitoringSlowDrive()
 
 void TestQgsDataItem::testLayerItemType()
 {
-  std::unique_ptr< QgsMapLayer > layer = std::make_unique< QgsVectorLayer >( mTestDataDir + "polys.shp",
-                                         QString(), QStringLiteral( "ogr" ) );
+  std::unique_ptr<QgsMapLayer> layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp", QString(), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::Polygon );
 
-  layer = std::make_unique< QgsVectorLayer >( mTestDataDir + "points.shp",
-          QString(), QStringLiteral( "ogr" ) );
+  layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "points.shp", QString(), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::Point );
 
-  layer = std::make_unique< QgsVectorLayer >( mTestDataDir + "lines.shp",
-          QString(), QStringLiteral( "ogr" ) );
+  layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "lines.shp", QString(), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::Line );
 
-  layer = std::make_unique< QgsVectorLayer >( mTestDataDir + "nonspatial.dbf",
-          QString(), QStringLiteral( "ogr" ) );
+  layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "nonspatial.dbf", QString(), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::TableLayer );
 
-  layer = std::make_unique< QgsVectorLayer >( mTestDataDir + "invalid.dbf",
-          QString(), QStringLiteral( "ogr" ) );
+  layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "invalid.dbf", QString(), QStringLiteral( "ogr" ) );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::Vector );
 
-  layer = std::make_unique< QgsRasterLayer >( mTestDataDir + "rgb256x256.png",
-          QString(), QStringLiteral( "gdal" ) );
+  layer = std::make_unique<QgsRasterLayer>( mTestDataDir + "rgb256x256.png", QString(), QStringLiteral( "gdal" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::Raster );
 
-  layer = std::make_unique< QgsMeshLayer >( mTestDataDir + "mesh/quad_and_triangle.2dm",
-          QString(), QStringLiteral( "mdal" ) );
+  layer = std::make_unique<QgsMeshLayer>( mTestDataDir + "mesh/quad_and_triangle.2dm", QString(), QStringLiteral( "mdal" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( QgsLayerItem::typeFromMapLayer( layer.get() ), Qgis::BrowserLayerType::Mesh );
 }

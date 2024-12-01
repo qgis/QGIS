@@ -15,9 +15,9 @@ Script to add inclusion of mocs to files recursively.
 
 # pylint: disable=redefined-outer-name
 
+import argparse
 import os
 import re
-import argparse
 import sys
 
 dirty = False
@@ -38,11 +38,11 @@ def shouldExclude(root, path):
         return False  # No excludes provided
 
     assert root.startswith(args.root)
-    root = stripInitialSlash(root[len(args.root):])
+    root = stripInitialSlash(root[len(args.root) :])
 
     if args.headerPrefix:
         assert root.startswith(args.headerPrefix)
-        root = stripInitialSlash(root[len(args.headerPrefix):])
+        root = stripInitialSlash(root[len(args.headerPrefix) :])
 
     return (path in args.excludes) or (root + "/" + path in args.excludes)
 
@@ -52,7 +52,7 @@ regexp = re.compile("\\s*(Q_OBJECT|Q_GADGET|Q_NAMESPACE)\\s*")
 
 
 def hasMacro(fileName):
-    with open(fileName, "r", encoding="ISO-8859-1") as fileHandle:
+    with open(fileName, encoding="ISO-8859-1") as fileHandle:
         for line in fileHandle:
             if regexp.match(line):
                 return True
@@ -64,11 +64,11 @@ def hasMacro(fileName):
 
 def matchingCPPFile(root, fileName):
     assert root.startswith(args.root)
-    root = stripInitialSlash(root[len(args.root):])
+    root = stripInitialSlash(root[len(args.root) :])
 
     if args.headerPrefix:
         assert root.startswith(args.headerPrefix)
-        root = stripInitialSlash(root[len(args.headerPrefix):])
+        root = stripInitialSlash(root[len(args.headerPrefix) :])
 
     if args.sourcePrefix:
         root = args.sourcePrefix + "/" + root
@@ -112,7 +112,7 @@ def trimExistingMocInclude(content, cppFileName):
     )
     match = mocStrRegex.search(content)
     if match:
-        return content[: match.start()] + content[match.end():]
+        return content[: match.start()] + content[match.end() :]
     return content
 
 
@@ -143,7 +143,7 @@ def processFile(root, fileName):
             else:
                 log("Updating %s" % cppFileName)
 
-                with open(cppFileName, "r", encoding="utf8") as f:
+                with open(cppFileName, encoding="utf8") as f:
                     content = f.read()
 
                 if args.replaceExisting:

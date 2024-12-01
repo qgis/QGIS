@@ -41,8 +41,8 @@ class TestQgsAppLocatorFilters : public QObject
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testCalculator();
     void testLayers();
     void testLayouts();
@@ -56,7 +56,7 @@ class TestQgsAppLocatorFilters : public QObject
   private:
     QgisApp *mQgisApp = nullptr;
 
-    QList< QgsLocatorResult > gatherResults( QgsLocatorFilter *filter, const QString &string, const QgsLocatorContext &context );
+    QList<QgsLocatorResult> gatherResults( QgsLocatorFilter *filter, const QString &string, const QgsLocatorContext &context );
 };
 
 //runs before all tests
@@ -79,7 +79,7 @@ void TestQgsAppLocatorFilters::testCalculator()
   QgsExpressionCalculatorLocatorFilter filter;
 
   // valid expression
-  QList< QgsLocatorResult > results = gatherResults( &filter, QStringLiteral( "1+2" ), QgsLocatorContext() );
+  QList<QgsLocatorResult> results = gatherResults( &filter, QStringLiteral( "1+2" ), QgsLocatorContext() );
   QCOMPARE( results.count(), 1 );
   QCOMPARE( results.at( 0 ).userData().toInt(), 3 );
 
@@ -97,11 +97,11 @@ void TestQgsAppLocatorFilters::testLayers()
   QgsVectorLayer *l1 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "aaaaa" ), QStringLiteral( "memory" ) );
   QgsVectorLayer *l2 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "abc" ), QStringLiteral( "memory" ) );
   QgsVectorLayer *l3 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "ccccc" ), QStringLiteral( "memory" ) );
-  QgsProject::instance()->addMapLayers( QList< QgsMapLayer *>() << l1 << l2 << l3 );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << l1 << l2 << l3 );
 
   QgsLayerTreeLocatorFilter filter;
 
-  QList< QgsLocatorResult > results = gatherResults( &filter, QStringLiteral( "xxxxx" ), QgsLocatorContext() );
+  QList<QgsLocatorResult> results = gatherResults( &filter, QStringLiteral( "xxxxx" ), QgsLocatorContext() );
   QCOMPARE( results.count(), 0 );
 
   results = gatherResults( &filter, QStringLiteral( "aa" ), QgsLocatorContext() );
@@ -139,7 +139,7 @@ void TestQgsAppLocatorFilters::testLayouts()
 
   QgsLayoutLocatorFilter filter;
 
-  QList< QgsLocatorResult > results = gatherResults( &filter, QStringLiteral( "xxxxx" ), QgsLocatorContext() );
+  QList<QgsLocatorResult> results = gatherResults( &filter, QStringLiteral( "xxxxx" ), QgsLocatorContext() );
   QCOMPARE( results.count(), 0 );
 
   results = gatherResults( &filter, QStringLiteral( "aa" ), QgsLocatorContext() );
@@ -183,7 +183,7 @@ void TestQgsAppLocatorFilters::testSearchActiveLayer()
   QgsActiveLayerFeaturesLocatorFilter filter;
   const QgsLocatorContext context;
 
-  QList< QgsLocatorResult > results = gatherResults( &filter, QStringLiteral( "12345.6789" ), context );
+  QList<QgsLocatorResult> results = gatherResults( &filter, QStringLiteral( "12345.6789" ), context );
   QCOMPARE( results.count(), 1 );
 
   results = gatherResults( &filter, QStringLiteral( "12345.67" ), context );
@@ -272,7 +272,7 @@ void TestQgsAppLocatorFilters::testSearchAllLayers()
   QgsVectorLayer *l1 = new QgsVectorLayer( layerDef, QStringLiteral( "Layer 1" ), QStringLiteral( "memory" ) );
   QgsVectorLayer *l2 = new QgsVectorLayer( layerDef, QStringLiteral( "Layer 2" ), QStringLiteral( "memory" ) );
 
-  QgsProject::instance()->addMapLayers( QList< QgsMapLayer *>() << l1 << l2 );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << l1 << l2 );
 
   QgsFeature f1;
   f1.setAttributes( QVector<QVariant>() << 1001 << "A nice feature" << 6789 );
@@ -290,7 +290,7 @@ void TestQgsAppLocatorFilters::testSearchAllLayers()
   QgsAllLayersFeaturesLocatorFilter filter;
   const QgsLocatorContext context;
 
-  QList< QgsLocatorResult > results = gatherResults( &filter, QStringLiteral( "100" ), context );
+  QList<QgsLocatorResult> results = gatherResults( &filter, QStringLiteral( "100" ), context );
 
   l1->setDisplayExpression( QStringLiteral( "\"my_text\" || ' is ' || \"my_number\"" ) );
   l2->setDisplayExpression( QStringLiteral( "\"my_text\" || ' is ' || \"my_number\"" ) );
@@ -311,7 +311,7 @@ void TestQgsAppLocatorFilters::testSearchAllLayersPrioritizeExactMatch()
   const QString layerDef = QStringLiteral( "Point?crs=epsg:4326&field=pk:integer&field=my_text:string&field=my_number:integer&key=pk" );
   QgsVectorLayer *l1 = new QgsVectorLayer( layerDef, QStringLiteral( "Layer 1" ), QStringLiteral( "memory" ) );
 
-  QgsProject::instance()->addMapLayers( QList< QgsMapLayer *>() << l1 );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << l1 );
 
   QgsFeature f1;
   f1.setAttributes( QVector<QVariant>() << 100 << "A nice feature" << 100 );
@@ -331,7 +331,7 @@ void TestQgsAppLocatorFilters::testSearchAllLayersPrioritizeExactMatch()
 
   l1->setDisplayExpression( QStringLiteral( "\"my_number\"" ) );
 
-  QList< QgsLocatorResult > results = gatherResults( &filter, QStringLiteral( "1" ), context );
+  QList<QgsLocatorResult> results = gatherResults( &filter, QStringLiteral( "1" ), context );
   QCOMPARE( results.count(), 2 );
   QCOMPARE( results.first().displayString, QStringLiteral( "1" ) );
   QCOMPARE( results.last().displayString, QStringLiteral( "100" ) );
@@ -346,8 +346,8 @@ QList<QgsLocatorResult> TestQgsAppLocatorFilters::gatherResults( QgsLocatorFilte
   filter->prepare( string, context );
   filter->fetchResults( string, context, &f );
 
-  QList< QgsLocatorResult > results;
-  for ( int i = 0; i < spy.count(); ++ i )
+  QList<QgsLocatorResult> results;
+  for ( int i = 0; i < spy.count(); ++i )
   {
     const QVariant v = spy.at( i ).at( 0 );
     const QgsLocatorResult result = v.value<QgsLocatorResult>();
@@ -361,7 +361,7 @@ void TestQgsAppLocatorFilters::testGoto()
   QgsGotoLocatorFilter filter;
 
   // simple goto
-  QList< QgsLocatorResult > results = gatherResults( &filter, QStringLiteral( "4 5" ), QgsLocatorContext() );
+  QList<QgsLocatorResult> results = gatherResults( &filter, QStringLiteral( "4 5" ), QgsLocatorContext() );
   QCOMPARE( results.count(), 2 );
   QCOMPARE( results.at( 0 ).displayString, QObject::tr( "Go to 4 5 (Map CRS, )" ) );
   QCOMPARE( results.at( 0 ).userData().toMap()[QStringLiteral( "point" )].value<QgsPointXY>(), QgsPointXY( 4, 5 ) );

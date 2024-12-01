@@ -16,12 +16,14 @@ Contact : ole.moller.nielsen@gmail.com
 
 """
 
-__author__ = 'tim@linfiniti.com'
-__version__ = '0.5.0'
-__date__ = '10/01/2011'
-__copyright__ = ('Copyright (c) 2010 by Ivan Mincik, ivan.mincik@gista.sk and '
-                 'Copyright (c) 2011 German Carrillo, '
-                 'geotux_tuxman@linuxmail.org')
+__author__ = "tim@linfiniti.com"
+__version__ = "0.5.0"
+__date__ = "10/01/2011"
+__copyright__ = (
+    "Copyright (c) 2010 by Ivan Mincik, ivan.mincik@gista.sk and "
+    "Copyright (c) 2011 German Carrillo, "
+    "geotux_tuxman@linuxmail.org"
+)
 
 from qgis.PyQt.QtCore import QObject
 from qgis.core import QgsProject
@@ -93,5 +95,5 @@ class QgisInterface(QObject):
         pass
 
     def addDockWidget(self, area, dockwidget):
-        """ Add a dock widget to the main window """
+        """Add a dock widget to the main window"""
         pass

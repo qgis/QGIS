@@ -113,21 +113,12 @@ bool QgsNewArcGisRestConnectionDialog::validate()
   bool newNameAlreadyExists = QgsArcGisConnectionSettings::sTreeConnectionArcgis->items().contains( newName );
 
   // warn if entry was renamed to an existing connection
-  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( newName, Qt::CaseInsensitive ) != 0 ) &&
-       newNameAlreadyExists &&
-       QMessageBox::question( this,
-                              tr( "Save Connection" ),
-                              tr( "Should the existing connection '%1' be overwritten?" ).arg( newName ),
-                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( newName, Qt::CaseInsensitive ) != 0 ) && newNameAlreadyExists && QMessageBox::question( this, tr( "Save Connection" ), tr( "Should the existing connection '%1' be overwritten?" ).arg( newName ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return false;
   }
 
-  if ( ! mAuthSettings->password().isEmpty() &&
-       QMessageBox::question( this,
-                              tr( "Saving Passwords" ),
-                              tr( "WARNING: You have entered a password. It will be stored in unsecured plain text in your project files and your home directory (Unix-like OS) or user profile (Windows). If you want to avoid this, press Cancel and either:\n\na) Don't provide a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your credentials in an HTTP Basic Authentication method and store them in an encrypted database." ),
-                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( !mAuthSettings->password().isEmpty() && QMessageBox::question( this, tr( "Saving Passwords" ), tr( "WARNING: You have entered a password. It will be stored in unsecured plain text in your project files and your home directory (Unix-like OS) or user profile (Windows). If you want to avoid this, press Cancel and either:\n\na) Don't provide a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your credentials in an HTTP Basic Authentication method and store them in an encrypted database." ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return false;
   }
@@ -139,8 +130,8 @@ QUrl QgsNewArcGisRestConnectionDialog::urlTrimmed() const
 {
   QUrl url( txtUrl->text().trimmed() );
   const QUrlQuery query( url );
-  const QList<QPair<QString, QString> > items = query.queryItems( QUrl::FullyEncoded );
-  QHash< QString, QPair<QString, QString> > params;
+  const QList<QPair<QString, QString>> items = query.queryItems( QUrl::FullyEncoded );
+  QHash<QString, QPair<QString, QString>> params;
   for ( const QPair<QString, QString> &it : items )
   {
     params.insert( it.first.toUpper(), it );

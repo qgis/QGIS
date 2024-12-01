@@ -73,4 +73,3 @@ QString QgsElevationOptionsFactory::pagePositionHint() const
 {
   return QStringLiteral( "mOptionsPageColors" );
 }
-

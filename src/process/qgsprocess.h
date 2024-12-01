@@ -35,7 +35,6 @@ class ConsoleFeedback : public QgsProcessingFeedback
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingAlgorithmDialogFeedback.
      */
@@ -67,9 +66,7 @@ class ConsoleFeedback : public QgsProcessingFeedback
 
 class QgsProcessingExec
 {
-
   public:
-
     enum class Flag
     {
       UseJson = 1 << 0,
@@ -84,19 +81,12 @@ class QgsProcessingExec
     static void showVersionInformation();
 
   private:
-
     void loadPlugins();
     void listAlgorithms();
     void listPlugins( bool useJson, bool showLoaded );
     int enablePlugin( const QString &name, bool enabled );
     int showAlgorithmHelp( const QString &id );
-    int execute( const QString &algId,
-                 const QVariantMap &parameters,
-                 const QString &ellipsoid,
-                 Qgis::DistanceUnit distanceUnit,
-                 Qgis::AreaUnit areaUnit,
-                 Qgis::ProcessingLogLevel logLevel,
-                 const QString &projectPath = QString() );
+    int execute( const QString &algId, const QVariantMap &parameters, const QString &ellipsoid, Qgis::DistanceUnit distanceUnit, Qgis::AreaUnit areaUnit, Qgis::ProcessingLogLevel logLevel, const QString &projectPath = QString() );
 
     void addVersionInformation( QVariantMap &json );
     void addAlgorithmInformation( QVariantMap &json, const QgsProcessingAlgorithm *algorithm );
@@ -104,7 +94,7 @@ class QgsProcessingExec
 
     Flags mFlags;
 #ifdef WITH_BINDINGS
-    std::unique_ptr< QgsPythonUtils > mPythonUtils;
+    std::unique_ptr<QgsPythonUtils> mPythonUtils;
     std::unique_ptr<QgsPythonUtils> loadPythonSupport();
 #endif
 };
@@ -112,4 +102,3 @@ class QgsProcessingExec
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingExec::Flags );
 
 #endif // QGSPROCESS_H
-

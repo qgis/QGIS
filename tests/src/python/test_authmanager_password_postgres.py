@@ -20,6 +20,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+
 import os
 from contextlib import contextmanager
 
@@ -36,9 +37,9 @@ from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
-__author__ = 'Alessandro Pasotti'
-__date__ = '25/10/2016'
-__copyright__ = 'Copyright 2016, The QGIS Project'
+__author__ = "Alessandro Pasotti"
+__date__ = "25/10/2016"
+__copyright__ = "Copyright 2016, The QGIS Project"
 
 qgis_app = start_app()
 
@@ -51,9 +52,9 @@ def ScopedCertAuthority(username, password, sslrootcert_path=None):
     """
     authm = QgsApplication.authManager()
     auth_config = QgsAuthMethodConfig("Basic")
-    auth_config.setConfig('username', username)
-    auth_config.setConfig('password', password)
-    auth_config.setName('test_password_auth_config')
+    auth_config.setConfig("username", username)
+    auth_config.setConfig("password", password)
+    auth_config.setName("test_password_auth_config")
     if sslrootcert_path:
         sslrootcert = QSslCertificate.fromPath(sslrootcert_path)
         assert sslrootcert is not None
@@ -61,7 +62,7 @@ def ScopedCertAuthority(username, password, sslrootcert_path=None):
         authm.rebuildCaCertsCache()
         authm.rebuildTrustedCaCertsCache()
         authm.rebuildCertTrustCache()
-    assert (authm.storeAuthenticationConfig(auth_config)[0])
+    assert authm.storeAuthenticationConfig(auth_config)[0]
     assert auth_config.isValid()
     yield auth_config
     if sslrootcert_path:
@@ -79,16 +80,18 @@ class TestAuthManager(QgisTestCase):
         """Run before all tests:
         Creates an auth configuration"""
         super().setUpClass()
-        cls.username = 'docker'
-        cls.password = 'docker'
-        cls.dbname = 'qgis_test'
-        cls.hostname = 'postgres'
-        cls.port = '5432'
+        cls.username = "docker"
+        cls.password = "docker"
+        cls.dbname = "qgis_test"
+        cls.hostname = "postgres"
+        cls.port = "5432"
 
         authm = QgsApplication.authManager()
-        assert (authm.setMasterPassword('masterpassword', True))
-        cls.certsdata_path = os.path.join(unitTestDataPath('auth_system'), 'certs_keys_2048')
-        cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'qgis_ca.crt')
+        assert authm.setMasterPassword("masterpassword", True)
+        cls.certsdata_path = os.path.join(
+            unitTestDataPath("auth_system"), "certs_keys_2048"
+        )
+        cls.sslrootcert_path = os.path.join(cls.certsdata_path, "qgis_ca.crt")
 
     def setUp(self):
         """Run before each test."""
@@ -99,36 +102,46 @@ class TestAuthManager(QgisTestCase):
         pass
 
     @classmethod
-    def _getPostGISLayer(cls, type_name, layer_name=None, authcfg=None, sslmode=QgsDataSourceUri.SslMode.SslVerifyFull):
+    def _getPostGISLayer(
+        cls,
+        type_name,
+        layer_name=None,
+        authcfg=None,
+        sslmode=QgsDataSourceUri.SslMode.SslVerifyFull,
+    ):
         """
         PG layer factory
         """
         if layer_name is None:
-            layer_name = 'pg_' + type_name
+            layer_name = "pg_" + type_name
         uri = QgsDataSourceUri()
         uri.setWkbType(QgsWkbTypes.Type.Point)
         uri.setConnection(cls.hostname, cls.port, cls.dbname, "", "", sslmode, authcfg)
-        uri.setKeyColumn('pk')
-        uri.setSrid('EPSG:4326')
-        uri.setDataSource('qgis_test', 'someData', "geom", "", "pk")
+        uri.setKeyColumn("pk")
+        uri.setSrid("EPSG:4326")
+        uri.setDataSource("qgis_test", "someData", "geom", "", "pk")
         # Note: do not expand here!
-        layer = QgsVectorLayer(uri.uri(False), layer_name, 'postgres')
+        layer = QgsVectorLayer(uri.uri(False), layer_name, "postgres")
         return layer
 
     def testValidAuthAccess(self):
         """
         Access the protected layer with valid credentials
         """
-        with ScopedCertAuthority(self.username, self.password, self.sslrootcert_path) as auth_config:
-            pg_layer = self._getPostGISLayer('testlayer_èé', authcfg=auth_config.id())
+        with ScopedCertAuthority(
+            self.username, self.password, self.sslrootcert_path
+        ) as auth_config:
+            pg_layer = self._getPostGISLayer("testlayer_èé", authcfg=auth_config.id())
             self.assertTrue(pg_layer.isValid())
 
     def testInvalidAuthAccess(self):
         """
         Access the protected layer with invalid credentials
         """
-        with ScopedCertAuthority(self.username, self.password, self.sslrootcert_path) as auth_config:
-            pg_layer = self._getPostGISLayer('testlayer_èé')
+        with ScopedCertAuthority(
+            self.username, self.password, self.sslrootcert_path
+        ) as auth_config:
+            pg_layer = self._getPostGISLayer("testlayer_èé")
             self.assertFalse(pg_layer.isValid())
 
     def testSslRequireNoCaCheck(self):
@@ -137,7 +150,11 @@ class TestAuthManager(QgisTestCase):
         This should work.
         """
         with ScopedCertAuthority(self.username, self.password) as auth_config:
-            pg_layer = self._getPostGISLayer('testlayer_èé', authcfg=auth_config.id(), sslmode=QgsDataSourceUri.SslMode.SslRequire)
+            pg_layer = self._getPostGISLayer(
+                "testlayer_èé",
+                authcfg=auth_config.id(),
+                sslmode=QgsDataSourceUri.SslMode.SslRequire,
+            )
             self.assertTrue(pg_layer.isValid())
 
     def testSslVerifyFullCaCheck(self):
@@ -146,9 +163,9 @@ class TestAuthManager(QgisTestCase):
         This should not work.
         """
         with ScopedCertAuthority(self.username, self.password) as auth_config:
-            pg_layer = self._getPostGISLayer('testlayer_èé', authcfg=auth_config.id())
+            pg_layer = self._getPostGISLayer("testlayer_èé", authcfg=auth_config.id())
             self.assertFalse(pg_layer.isValid())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

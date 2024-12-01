@@ -17,7 +17,7 @@
 
 #include <Qt3DCore/QEntity>
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
@@ -48,11 +48,12 @@ class TestQgsGltf3DUtils : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsGltf3DUtils() : QgsTest( QStringLiteral( "GLTF 3D Utils" ) ) {}
+    TestQgsGltf3DUtils()
+      : QgsTest( QStringLiteral( "GLTF 3D Utils" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testInvalid();
     void testBox();
@@ -214,7 +215,7 @@ static void extractTriangleCoordinates( Qt3DCore::QEntity *entity, QVector3D &v1
   Qt3DRender::QGeometryRenderer *geomRenderer = geomRenderers[0];
   Qt3DQAttribute *positionAttr = geomRenderer->geometry()->attributes()[0];
   QByteArray positionBufferData = positionAttr->buffer()->data();
-  const float *f = ( float * )positionBufferData.constData();
+  const float *f = ( float * ) positionBufferData.constData();
   v1 = QVector3D( f[0], f[1], f[2] );
   v2 = QVector3D( f[3], f[4], f[5] );
   v3 = QVector3D( f[6], f[7], f[8] );
@@ -254,10 +255,7 @@ void TestQgsGltf3DUtils::testTransforms()
   delete entity2;
 
   QgsGltf3DUtils::EntityTransform transform3;
-  transform3.tileTransform = QgsMatrix4x4( 2, 0, 0, 0,
-                             0, 2, 0, 0,
-                             0, 0, 2, 0,
-                             0, 0, 0, 1 );
+  transform3.tileTransform = QgsMatrix4x4( 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1 );
   transform3.sceneOriginTargetCrs = QgsVector3D( -10, -20, 0 );
   Qt3DCore::QEntity *entity3 = QgsGltf3DUtils::gltfToEntity( gltfData, transform3, QString(), nullptr );
   extractTriangleCoordinates( entity3, v1, v2, v3 );
@@ -265,7 +263,6 @@ void TestQgsGltf3DUtils::testTransforms()
   QCOMPARE( v2, QVector3D( 12, 0, -20 ) );
   QCOMPARE( v3, QVector3D( 10, 2, -20 ) );
   delete entity3;
-
 }
 
 QGSTEST_MAIN( TestQgsGltf3DUtils )

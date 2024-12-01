@@ -25,7 +25,7 @@
 #include "qgstriangulatedsurface.h"
 #include "testgeometryutils.h"
 
-class TestQgsTriangulatedSurface: public QObject
+class TestQgsTriangulatedSurface : public QObject
 {
     Q_OBJECT
 
@@ -134,7 +134,7 @@ void TestQgsTriangulatedSurface::testClone()
 {
   QgsTriangulatedSurface surface;
 
-  std::unique_ptr< QgsTriangulatedSurface >cloned( surface.clone() );
+  std::unique_ptr<QgsTriangulatedSurface> cloned( surface.clone() );
   QCOMPARE( surface, *cloned );
 
   QgsTriangle *triangle = new QgsTriangle( QgsPoint( 4, 4 ), QgsPoint( 6, 10 ), QgsPoint( 10, 10 ) );
@@ -187,9 +187,7 @@ void TestQgsTriangulatedSurface::testAddPatch()
   // Try to add a Polygon which is not a Triangle
   QgsPolygon *notTriangle = new QgsPolygon();
   QgsLineString notTriangleExterior;
-  notTriangleExterior.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
-                                 << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 )
-                                 << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 ) );
+  notTriangleExterior.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 ) << QgsPoint( 10, 0 ) << QgsPoint( 0, 0 ) );
   QCOMPARE( notTriangleExterior.nCoordinates(), 5 );
   notTriangle->setExteriorRing( notTriangleExterior.clone() );
   surface.addPatch( notTriangle );
@@ -219,7 +217,7 @@ void TestQgsTriangulatedSurface::testAddPatch()
   QCOMPARE( surface.patchN( 1 )->wkbType(), Qgis::WkbType::Triangle );
 
   // try adding a patch with zm to a 2d surface, z and m should be dropped
-  triangle = new QgsTriangle( QgsPoint( 10, 0, 1, 2 ), QgsPoint( 0, 10, 1, 2 ),  QgsPoint( 10, 10, 1, 2 ) );
+  triangle = new QgsTriangle( QgsPoint( 10, 0, 1, 2 ), QgsPoint( 0, 10, 1, 2 ), QgsPoint( 10, 10, 1, 2 ) );
   surface.addPatch( triangle );
   QCOMPARE( surface.numPatches(), 3 );
   QVERIFY( !surface.is3D() );
@@ -233,7 +231,7 @@ void TestQgsTriangulatedSurface::testAddPatch()
 
   // addPatch without z/m to TriangleZM
   QgsTriangulatedSurface surface2;
-  triangle = new QgsTriangle( QgsPoint( 10, 0, 1, 2 ), QgsPoint( 0, 10, 1, 2 ),  QgsPoint( 10, 10, 1, 2 ) );
+  triangle = new QgsTriangle( QgsPoint( 10, 0, 1, 2 ), QgsPoint( 0, 10, 1, 2 ), QgsPoint( 10, 10, 1, 2 ) );
   surface2.addTriangle( triangle );
 
   QCOMPARE( surface2.numPatches(), 1 );
@@ -272,7 +270,7 @@ void TestQgsTriangulatedSurface::testAddPatch()
 void TestQgsTriangulatedSurface::testRemovePatch()
 {
   QgsTriangulatedSurface surface;
-  QVector< QgsTriangle * > patches;
+  QVector<QgsTriangle *> patches;
 
   QVERIFY( !surface.removePatch( -1 ) );
   QVERIFY( !surface.removePatch( 0 ) );
@@ -308,12 +306,12 @@ void TestQgsTriangulatedSurface::testRemovePatch()
 void TestQgsTriangulatedSurface::testPatches()
 {
   QgsTriangulatedSurface surface;
-  QVector< QgsTriangle * > triangles;
+  QVector<QgsTriangle *> triangles;
 
   QgsTriangle *triangle1 = new QgsTriangle( QgsPoint( 0.1, 0.1, 2 ), QgsPoint( 0.1, 0.2, 2 ), QgsPoint( 0.2, 0.2, 2 ) );
   triangles.append( triangle1 );
 
-  QgsTriangle *triangle2 = new QgsTriangle( QgsPoint( 0.2, 0.1, 2 ), QgsPoint( 0.2, 0.2, 2 ),  QgsPoint( 0.3, 0.2, 2 ) );
+  QgsTriangle *triangle2 = new QgsTriangle( QgsPoint( 0.2, 0.1, 2 ), QgsPoint( 0.2, 0.2, 2 ), QgsPoint( 0.3, 0.2, 2 ) );
   triangles.append( triangle2 );
 
   surface.setTriangles( triangles );
@@ -331,13 +329,10 @@ void TestQgsTriangulatedSurface::testPatches()
 
   // Only the second polygon can be converted to a QgsTriangle
   // The QgsTriangulatedSurface only contains triangle3
-  QVector< QgsPolygon * > patchesPolygons;
+  QVector<QgsPolygon *> patchesPolygons;
   QgsPolygon *polygonPatch = new QgsPolygon();
   QgsLineString *exteriorRing = new QgsLineString();
-  exteriorRing->setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
-                           << QgsPoint( 0.5, 0 ) << QgsPoint( 1, 0 )
-                           << QgsPoint( 2, 1 ) << QgsPoint( 1, 2 )
-                           << QgsPoint( 0, 2 ) << QgsPoint( 0, 0 ) );
+  exteriorRing->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0.5, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 0, 2 ) << QgsPoint( 0, 0 ) );
   polygonPatch->setExteriorRing( exteriorRing );
   patchesPolygons.append( polygonPatch );
 
@@ -404,19 +399,19 @@ void TestQgsTriangulatedSurface::testMoveVertex()
   QVERIFY( surface.moveVertex( QgsVertexId( 0, 0, 0 ), QgsPoint( 6.0, 7.0 ) ) );
   QVERIFY( surface.moveVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( 16.0, 17.0 ) ) );
   QVERIFY( surface.moveVertex( QgsVertexId( 0, 0, 2 ), QgsPoint( 26.0, 27.0 ) ) );
-  QCOMPARE( static_cast< const QgsLineString * >( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( 6.0, 7.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( surface.patchN( 0 )->exteriorRing() )->pointN( 1 ), QgsPoint( 16.0, 17.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( surface.patchN( 0 )->exteriorRing() )->pointN( 2 ), QgsPoint( 26.0, 27.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( surface.patchN( 0 )->exteriorRing() )->pointN( 3 ), QgsPoint( 6.0, 7.0 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( 6.0, 7.0 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 1 ), QgsPoint( 16.0, 17.0 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 2 ), QgsPoint( 26.0, 27.0 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 3 ), QgsPoint( 6.0, 7.0 ) );
 
   // out of range
   QVERIFY( !surface.moveVertex( QgsVertexId( 0, 0, -1 ), QgsPoint( 3.0, 4.0 ) ) );
   QVERIFY( !surface.moveVertex( QgsVertexId( 0, 0, 10 ), QgsPoint( 3.0, 4.0 ) ) );
   QVERIFY( !surface.moveVertex( QgsVertexId( 1, 0, 0 ), QgsPoint( 3.0, 4.0 ) ) );
-  QCOMPARE( static_cast< const QgsLineString * >( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( 6.0, 7.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( surface.patchN( 0 )->exteriorRing() )->pointN( 1 ), QgsPoint( 16.0, 17.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( surface.patchN( 0 )->exteriorRing() )->pointN( 2 ), QgsPoint( 26.0, 27.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( surface.patchN( 0 )->exteriorRing() )->pointN( 3 ), QgsPoint( 6.0, 7.0 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( 6.0, 7.0 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 1 ), QgsPoint( 16.0, 17.0 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 2 ), QgsPoint( 26.0, 27.0 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 3 ), QgsPoint( 6.0, 7.0 ) );
 
   // add a second triangle
   triangle = QgsTriangle( QgsPoint( 10, 10 ), QgsPoint( 12, 10 ), QgsPoint( 12, 12 ) );
@@ -425,10 +420,10 @@ void TestQgsTriangulatedSurface::testMoveVertex()
   QVERIFY( surface.moveVertex( QgsVertexId( 1, 0, 0 ), QgsPoint( 4.0, 5.0 ) ) );
   QVERIFY( surface.moveVertex( QgsVertexId( 1, 0, 1 ), QgsPoint( 14.0, 15.0 ) ) );
   QVERIFY( surface.moveVertex( QgsVertexId( 1, 0, 2 ), QgsPoint( 24.0, 25.0 ) ) );
-  QCOMPARE( static_cast< const QgsLineString * >( surface.patchN( 1 )->exteriorRing() )->pointN( 0 ), QgsPoint( 4.0, 5.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( surface.patchN( 1 )->exteriorRing() )->pointN( 1 ), QgsPoint( 14.0, 15.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( surface.patchN( 1 )->exteriorRing() )->pointN( 2 ), QgsPoint( 24.0, 25.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( surface.patchN( 1 )->exteriorRing() )->pointN( 3 ), QgsPoint( 4.0, 5.0 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 1 )->exteriorRing() )->pointN( 0 ), QgsPoint( 4.0, 5.0 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 1 )->exteriorRing() )->pointN( 1 ), QgsPoint( 14.0, 15.0 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 1 )->exteriorRing() )->pointN( 2 ), QgsPoint( 24.0, 25.0 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 1 )->exteriorRing() )->pointN( 3 ), QgsPoint( 4.0, 5.0 ) );
 
   // out of range
   QVERIFY( !surface.moveVertex( QgsVertexId( 1, 1, 0 ), QgsPoint( 3.0, 4.0 ) ) );
@@ -437,10 +432,10 @@ void TestQgsTriangulatedSurface::testMoveVertex()
   QVERIFY( !surface.moveVertex( QgsVertexId( 1, 1, 10 ), QgsPoint( 3.0, 4.0 ) ) );
   QVERIFY( !surface.moveVertex( QgsVertexId( 1, 0, 10 ), QgsPoint( 3.0, 4.0 ) ) );
   QVERIFY( !surface.moveVertex( QgsVertexId( 2, 0, 0 ), QgsPoint( 3.0, 4.0 ) ) );
-  QCOMPARE( static_cast< const QgsLineString * >( surface.patchN( 1 )->exteriorRing() )->pointN( 0 ), QgsPoint( 4.0, 5.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( surface.patchN( 1 )->exteriorRing() )->pointN( 1 ), QgsPoint( 14.0, 15.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( surface.patchN( 1 )->exteriorRing() )->pointN( 2 ), QgsPoint( 24.0, 25.0 ) );
-  QCOMPARE( static_cast< const QgsLineString * >( surface.patchN( 1 )->exteriorRing() )->pointN( 3 ), QgsPoint( 4.0, 5.0 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 1 )->exteriorRing() )->pointN( 0 ), QgsPoint( 4.0, 5.0 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 1 )->exteriorRing() )->pointN( 1 ), QgsPoint( 14.0, 15.0 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 1 )->exteriorRing() )->pointN( 2 ), QgsPoint( 24.0, 25.0 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 1 )->exteriorRing() )->pointN( 3 ), QgsPoint( 4.0, 5.0 ) );
 }
 
 void TestQgsTriangulatedSurface::testDeleteVertex()
@@ -470,7 +465,7 @@ void TestQgsTriangulatedSurface::testNextVertex()
 
   QgsPoint pt;
   QgsVertexId vId;
-  ( void )empty.closestSegment( QgsPoint( 1, 2 ), pt, vId ); // empty segment, just want no crash
+  ( void ) empty.closestSegment( QgsPoint( 1, 2 ), pt, vId ); // empty segment, just want no crash
 
   // nextVertex
   QgsTriangulatedSurface surfacePoly;
@@ -512,7 +507,7 @@ void TestQgsTriangulatedSurface::testNextVertex()
   QVERIFY( !surfacePoly.nextVertex( vId, pt ) );
 
   // add a second triangle
-  triangle = QgsTriangle( QgsPoint( 1, 2 ), QgsPoint( 11, 12 ),  QgsPoint( 11, 2 ) );
+  triangle = QgsTriangle( QgsPoint( 1, 2 ), QgsPoint( 11, 12 ), QgsPoint( 11, 2 ) );
   surfacePoly.addPatch( triangle.clone() );
 
   vId = QgsVertexId( 1, 1, 7 ); // out of range
@@ -557,9 +552,9 @@ void TestQgsTriangulatedSurface::testVertexAngle()
   QgsTriangulatedSurface surface;
 
   // just want no crash
-  ( void )surface.vertexAngle( QgsVertexId() );
-  ( void )surface.vertexAngle( QgsVertexId( 0, 0, 0 ) );
-  ( void )surface.vertexAngle( QgsVertexId( 0, 1, 0 ) );
+  ( void ) surface.vertexAngle( QgsVertexId() );
+  ( void ) surface.vertexAngle( QgsVertexId( 0, 0, 0 ) );
+  ( void ) surface.vertexAngle( QgsVertexId( 0, 1, 0 ) );
 
   QgsTriangle triangle = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0.5, 0 ), QgsPoint( 1, 2 ) );
   surface.addPatch( triangle.clone() );
@@ -576,7 +571,7 @@ void TestQgsTriangulatedSurface::testVertexNumberFromVertexId()
   QgsTriangle triangle;
 
   // with only one triangle
-  triangle = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 1, 0 ),  QgsPoint( 1, 1 ) );
+  triangle = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 1, 0 ), QgsPoint( 1, 1 ) );
   surface.addPatch( triangle.clone() );
 
   QCOMPARE( surface.vertexNumberFromVertexId( QgsVertexId( 0, 0, 0 ) ), 0 );
@@ -585,7 +580,7 @@ void TestQgsTriangulatedSurface::testVertexNumberFromVertexId()
   QCOMPARE( surface.vertexNumberFromVertexId( QgsVertexId( 0, 0, 3 ) ), 3 );
   QCOMPARE( surface.vertexNumberFromVertexId( QgsVertexId( 0, 0, 4 ) ), -1 );
 
-  triangle = QgsTriangle( QgsPoint( 1, 0 ), QgsPoint( 1, 1 ),  QgsPoint( 2, 0 ) );
+  triangle = QgsTriangle( QgsPoint( 1, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, 0 ) );
   surface.addPatch( triangle.clone() );
 
   QCOMPARE( surface.vertexNumberFromVertexId( QgsVertexId( 0, 0, 0 ) ), 0 );
@@ -620,7 +615,7 @@ void TestQgsTriangulatedSurface::testClosestSegment()
   QgsPoint pt;
   QgsVertexId v;
   int leftOf = 0;
-  ( void )empty.closestSegment( QgsPoint( 1, 2 ), pt, v ); // empty segment, just want no crash
+  ( void ) empty.closestSegment( QgsPoint( 1, 2 ), pt, v ); // empty segment, just want no crash
 
   QgsTriangulatedSurface surface;
   QgsTriangle triangle = QgsTriangle( QgsPoint( 5, 10 ), QgsPoint( 7, 12 ), QgsPoint( 5, 15 ) );
@@ -632,7 +627,7 @@ void TestQgsTriangulatedSurface::testClosestSegment()
   QCOMPARE( v, QgsVertexId( 0, 0, 3 ) );
   QCOMPARE( leftOf, 1 );
 
-  QGSCOMPARENEAR( surface.closestSegment( QgsPoint( 8, 11 ), pt, v, &leftOf ),  2.0, 0.0001 );
+  QGSCOMPARENEAR( surface.closestSegment( QgsPoint( 8, 11 ), pt, v, &leftOf ), 2.0, 0.0001 );
   QGSCOMPARENEAR( pt.x(), 7, 0.01 );
   QGSCOMPARENEAR( pt.y(), 12, 0.01 );
   QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
@@ -672,7 +667,7 @@ void TestQgsTriangulatedSurface::testClosestSegment()
   QCOMPARE( v, QgsVertexId( 1, 0, 3 ) );
   QCOMPARE( leftOf, -1 );
 
-  QGSCOMPARENEAR( surface.closestSegment( QgsPoint( 8, 11 ), pt, v, &leftOf ),  2.0, 0.0001 );
+  QGSCOMPARENEAR( surface.closestSegment( QgsPoint( 8, 11 ), pt, v, &leftOf ), 2.0, 0.0001 );
   QGSCOMPARENEAR( pt.x(), 7, 0.01 );
   QGSCOMPARENEAR( pt.y(), 12, 0.01 );
   QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
@@ -708,14 +703,12 @@ void TestQgsTriangulatedSurface::testBoundary()
   QgsTriangulatedSurface surface;
   QVERIFY( !surface.boundary() );
 
-  QgsTriangle *triangle1 = new QgsTriangle( QgsPoint( 1, 2 ),
-      QgsPoint( 4, 5 ),
-      QgsPoint( 4, 3 ) );
+  QgsTriangle *triangle1 = new QgsTriangle( QgsPoint( 1, 2 ), QgsPoint( 4, 5 ), QgsPoint( 4, 3 ) );
   surface.addPatch( triangle1 );
 
   QgsAbstractGeometry *boundary = surface.boundary();
   QVERIFY( surface.boundary() );
-  QgsMultiLineString *multiLineBoundary = dynamic_cast< QgsMultiLineString * >( boundary );
+  QgsMultiLineString *multiLineBoundary = dynamic_cast<QgsMultiLineString *>( boundary );
   QVERIFY( multiLineBoundary );
   QCOMPARE( multiLineBoundary->numGeometries(), 1 );
   QgsLineString *lineBoundary = multiLineBoundary->lineStringN( 0 );
@@ -733,12 +726,10 @@ void TestQgsTriangulatedSurface::testBoundary()
   surface.removePatch( 0 );
   QCOMPARE( surface.numPatches(), 0 );
 
-  QgsTriangle *triangleZ = new QgsTriangle( QgsPoint( Qgis::WkbType::PointZ, 10, 11, 12 ),
-      QgsPoint( Qgis::WkbType::PointZ, 13, 14, 15 ),
-      QgsPoint( Qgis::WkbType::PointZ, 16, 17, 18 ) );
+  QgsTriangle *triangleZ = new QgsTriangle( QgsPoint( Qgis::WkbType::PointZ, 10, 11, 12 ), QgsPoint( Qgis::WkbType::PointZ, 13, 14, 15 ), QgsPoint( Qgis::WkbType::PointZ, 16, 17, 18 ) );
   surface.addPatch( triangleZ );
   boundary = surface.boundary();
-  multiLineBoundary = dynamic_cast< QgsMultiLineString * >( boundary );
+  multiLineBoundary = dynamic_cast<QgsMultiLineString *>( boundary );
   QVERIFY( multiLineBoundary );
   QCOMPARE( multiLineBoundary->numGeometries(), 1 );
   lineBoundary = multiLineBoundary->lineStringN( 0 );
@@ -756,14 +747,10 @@ void TestQgsTriangulatedSurface::testBoundingBox()
   QgsTriangulatedSurface surface;
   QgsRectangle bBox = surface.boundingBox(); // no crash!
 
-  QgsTriangle *triangle1 = new QgsTriangle( QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ),
-      QgsPoint( Qgis::WkbType::PointZ, 4, 5, 6 ),
-      QgsPoint( Qgis::WkbType::PointZ, 7, 8, 9 ) );
+  QgsTriangle *triangle1 = new QgsTriangle( QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ), QgsPoint( Qgis::WkbType::PointZ, 4, 5, 6 ), QgsPoint( Qgis::WkbType::PointZ, 7, 8, 9 ) );
   surface.addPatch( triangle1 );
 
-  QgsTriangle *triangle2 = new QgsTriangle( QgsPoint( Qgis::WkbType::PointZ, 10, 11, 12 ),
-      QgsPoint( Qgis::WkbType::PointZ, 13, 14, 15 ),
-      QgsPoint( Qgis::WkbType::PointZ, 16, 17, 18 ) );
+  QgsTriangle *triangle2 = new QgsTriangle( QgsPoint( Qgis::WkbType::PointZ, 10, 11, 12 ), QgsPoint( Qgis::WkbType::PointZ, 13, 14, 15 ), QgsPoint( Qgis::WkbType::PointZ, 16, 17, 18 ) );
   surface.addPatch( triangle2 );
 
   bBox = surface.boundingBox();
@@ -784,9 +771,7 @@ void TestQgsTriangulatedSurface::testBoundingBox3D()
   QCOMPARE( bBox.zMinimum(), std::numeric_limits<double>::quiet_NaN() );
   QCOMPARE( bBox.zMaximum(), std::numeric_limits<double>::quiet_NaN() );
 
-  QgsTriangle *triangle = new QgsTriangle( QgsPoint( Qgis::WkbType::PointZ, -1, 0, 6 ),
-      QgsPoint( Qgis::WkbType::PointZ, 1, 10, 2 ),
-      QgsPoint( Qgis::WkbType::PointZ, 0, 18, 3 ) );
+  QgsTriangle *triangle = new QgsTriangle( QgsPoint( Qgis::WkbType::PointZ, -1, 0, 6 ), QgsPoint( Qgis::WkbType::PointZ, 1, 10, 2 ), QgsPoint( Qgis::WkbType::PointZ, 0, 18, 3 ) );
   surface.addPatch( triangle );
 
   bBox = surface.boundingBox3D();
@@ -807,7 +792,8 @@ void TestQgsTriangulatedSurface::testBoundingBoxIntersects()
   QgsTriangle *triangle1 = new QgsTriangle(
     QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ),
     QgsPoint( Qgis::WkbType::PointZ, 1, 10, 2 ),
-    QgsPoint( Qgis::WkbType::PointZ, 0, 18, 3 ) );
+    QgsPoint( Qgis::WkbType::PointZ, 0, 18, 3 )
+  );
   surface1.addPatch( triangle1 );
 
   QVERIFY( surface1.boundingBoxIntersects( QgsRectangle( 1, 3, 6, 9 ) ) );
@@ -817,9 +803,7 @@ void TestQgsTriangulatedSurface::testBoundingBoxIntersects()
   QgsTriangulatedSurface surface2;
   QVERIFY( !surface2.boundingBoxIntersects( QgsBox3D( 1, 3, 1, 6, 9, 2 ) ) );
 
-  QgsTriangle *triangle2 = new QgsTriangle( QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ),
-      QgsPoint( Qgis::WkbType::PointZ, 1, 10, 2 ),
-      QgsPoint( Qgis::WkbType::PointZ, 0, 18, 3 ) );
+  QgsTriangle *triangle2 = new QgsTriangle( QgsPoint( Qgis::WkbType::PointZ, 0, 0, 1 ), QgsPoint( Qgis::WkbType::PointZ, 1, 10, 2 ), QgsPoint( Qgis::WkbType::PointZ, 0, 18, 3 ) );
   surface2.addPatch( triangle2 );
 
   QVERIFY( surface2.boundingBoxIntersects( QgsBox3D( 1, 3, 1, 6, 9, 2 ) ) );
@@ -835,9 +819,7 @@ void TestQgsTriangulatedSurface::testDropZValue()
   surface.dropZValue();
   QCOMPARE( surface.wkbType(), Qgis::WkbType::TIN );
 
-  triangle = QgsTriangle( QgsPoint( 1, 2 ),
-                          QgsPoint( 1, 4 ),
-                          QgsPoint( 4, 4 ) );
+  triangle = QgsTriangle( QgsPoint( 1, 2 ), QgsPoint( 1, 4 ), QgsPoint( 4, 4 ) );
   surface.addPatch( triangle.clone() );
   QCOMPARE( surface.numPatches(), 1 );
   QCOMPARE( surface.wkbType(), Qgis::WkbType::TIN );
@@ -845,39 +827,35 @@ void TestQgsTriangulatedSurface::testDropZValue()
   surface.dropZValue(); // not z
   QCOMPARE( surface.wkbType(), Qgis::WkbType::TIN );
   QCOMPARE( surface.patchN( 0 )->wkbType(), Qgis::WkbType::Triangle );
-  QCOMPARE( static_cast< const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( 1, 2 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( 1, 2 ) );
 
   // with z
-  triangle = QgsTriangle( QgsPoint( 10, 20, 3 ),
-                          QgsPoint( 11, 12, 13 ),
-                          QgsPoint( 1, 12, 23 ) );
+  triangle = QgsTriangle( QgsPoint( 10, 20, 3 ), QgsPoint( 11, 12, 13 ), QgsPoint( 1, 12, 23 ) );
   surface.clear();
   surface.addPatch( triangle.clone() );
 
   QCOMPARE( surface.wkbType(), Qgis::WkbType::TINZ );
   QCOMPARE( surface.patchN( 0 )->wkbType(), Qgis::WkbType::TriangleZ );
-  QCOMPARE( static_cast< const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( 10, 20, 3 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( 10, 20, 3 ) );
 
   surface.dropZValue();
   QCOMPARE( surface.wkbType(), Qgis::WkbType::TIN );
   QCOMPARE( surface.patchN( 0 )->wkbType(), Qgis::WkbType::Triangle );
-  QCOMPARE( static_cast< const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( 10, 20 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( 10, 20 ) );
 
   // with zm
-  triangle = QgsTriangle( QgsPoint( 1, 2, 3, 4 ),
-                          QgsPoint( 11, 12, 13, 14 ),
-                          QgsPoint( 1, 12, 23, 24 ) );
+  triangle = QgsTriangle( QgsPoint( 1, 2, 3, 4 ), QgsPoint( 11, 12, 13, 14 ), QgsPoint( 1, 12, 23, 24 ) );
   surface.clear();
   surface.addPatch( triangle.clone() );
 
   QCOMPARE( surface.wkbType(), Qgis::WkbType::TINZM );
   QCOMPARE( surface.patchN( 0 )->wkbType(), Qgis::WkbType::TriangleZM );
-  QCOMPARE( static_cast< const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) );
 
   surface.dropZValue();
   QCOMPARE( surface.wkbType(), Qgis::WkbType::TINM );
   QCOMPARE( surface.patchN( 0 )->wkbType(), Qgis::WkbType::TriangleM );
-  QCOMPARE( static_cast< const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 ) );
 }
 
 void TestQgsTriangulatedSurface::testDropMValue()
@@ -889,50 +867,44 @@ void TestQgsTriangulatedSurface::testDropMValue()
   surface.dropMValue();
   QCOMPARE( surface.wkbType(), Qgis::WkbType::TIN );
 
-  triangle = QgsTriangle( QgsPoint( 1, 2 ),
-                          QgsPoint( 11, 12 ),
-                          QgsPoint( 1, 12 ) );
+  triangle = QgsTriangle( QgsPoint( 1, 2 ), QgsPoint( 11, 12 ), QgsPoint( 1, 12 ) );
   surface.addPatch( triangle.clone() );
 
   QCOMPARE( surface.wkbType(), Qgis::WkbType::TIN );
-  QCOMPARE( static_cast< const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( 1, 2 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( 1, 2 ) );
 
   surface.dropMValue(); // not zm
   QCOMPARE( surface.wkbType(), Qgis::WkbType::TIN );
   QCOMPARE( surface.patchN( 0 )->wkbType(), Qgis::WkbType::Triangle );
-  QCOMPARE( static_cast< const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( 1, 2 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( 1, 2 ) );
 
   // with m
-  triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointM,  1, 2, 0, 3 ),
-                          QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 13 ),
-                          QgsPoint( Qgis::WkbType::PointM, 1, 12, 0, 23 ) );
+  triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ), QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 13 ), QgsPoint( Qgis::WkbType::PointM, 1, 12, 0, 23 ) );
   surface.clear();
   surface.addPatch( triangle.clone() );
 
   QCOMPARE( surface.wkbType(), Qgis::WkbType::TINM );
   QCOMPARE( surface.patchN( 0 )->wkbType(), Qgis::WkbType::TriangleM );
-  QCOMPARE( static_cast< const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ) );
 
   surface.dropMValue();
   QCOMPARE( surface.wkbType(), Qgis::WkbType::TIN );
   QCOMPARE( surface.patchN( 0 )->wkbType(), Qgis::WkbType::Triangle );
-  QCOMPARE( static_cast< const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( 1, 2 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( 1, 2 ) );
 
   // with zm
-  triangle = QgsTriangle( QgsPoint( 1, 2, 3, 4 ),
-                          QgsPoint( 11, 12, 13, 14 ),
-                          QgsPoint( 1, 12, 23, 24 ) );
+  triangle = QgsTriangle( QgsPoint( 1, 2, 3, 4 ), QgsPoint( 11, 12, 13, 14 ), QgsPoint( 1, 12, 23, 24 ) );
   surface.clear();
   surface.addPatch( triangle.clone() );
 
   QCOMPARE( surface.wkbType(), Qgis::WkbType::TINZM );
   QCOMPARE( surface.patchN( 0 )->wkbType(), Qgis::WkbType::TriangleZM );
-  QCOMPARE( static_cast< const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( 1, 2, 3, 4 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( 1, 2, 3, 4 ) );
 
   surface.dropMValue();
   QCOMPARE( surface.wkbType(), Qgis::WkbType::TINZ );
   QCOMPARE( surface.patchN( 0 )->wkbType(), Qgis::WkbType::TriangleZ );
-  QCOMPARE( static_cast< const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) );
+  QCOMPARE( static_cast<const QgsLineString *>( surface.patchN( 0 )->exteriorRing() )->pointN( 0 ), QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) );
 }
 
 void TestQgsTriangulatedSurface::testWKB()
@@ -975,14 +947,10 @@ void TestQgsTriangulatedSurface::testWKB()
   surface2.clear();
 
   // TINM
-  triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 1 ),
-                          QgsPoint( Qgis::WkbType::PointM, 1, 0, 0, 2 ),
-                          QgsPoint( Qgis::WkbType::PointM, 1, 0.5, 0, 4 ) );
+  triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 1 ), QgsPoint( Qgis::WkbType::PointM, 1, 0, 0, 2 ), QgsPoint( Qgis::WkbType::PointM, 1, 0.5, 0, 4 ) );
   surface1.addPatch( triangle.clone() );
 
-  triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 1 ),
-                          QgsPoint( Qgis::WkbType::PointM, 0.1, 0, 0, 2 ),
-                          QgsPoint( Qgis::WkbType::PointM, 0.1, 0.05, 0, 4 ) );
+  triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 1 ), QgsPoint( Qgis::WkbType::PointM, 0.1, 0, 0, 2 ), QgsPoint( Qgis::WkbType::PointM, 0.1, 0.05, 0, 4 ) );
   surface1.addPatch( triangle.clone() );
 
   QCOMPARE( surface1.wkbType(), Qgis::WkbType::TINM );
@@ -995,14 +963,10 @@ void TestQgsTriangulatedSurface::testWKB()
   surface2.clear();
 
   // TINZM
-  triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZM, 0, 0, 10, 1 ),
-                          QgsPoint( Qgis::WkbType::PointZM, 1, 0, 11, 2 ),
-                          QgsPoint( Qgis::WkbType::PointZM, 1, 0.5, 13, 4 ) );
+  triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZM, 0, 0, 10, 1 ), QgsPoint( Qgis::WkbType::PointZM, 1, 0, 11, 2 ), QgsPoint( Qgis::WkbType::PointZM, 1, 0.5, 13, 4 ) );
   surface1.addPatch( triangle.clone() );
 
-  triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZM, 0, 0, 10, 1 ),
-                          QgsPoint( Qgis::WkbType::PointZM, 0.1, 0, 11, 2 ),
-                          QgsPoint( Qgis::WkbType::PointZM, 0.1, 0.05, 13, 4 ) );
+  triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZM, 0, 0, 10, 1 ), QgsPoint( Qgis::WkbType::PointZM, 0.1, 0, 11, 2 ), QgsPoint( Qgis::WkbType::PointZM, 0.1, 0.05, 13, 4 ) );
   surface1.addPatch( triangle.clone() );
 
   QCOMPARE( surface1.wkbType(), Qgis::WkbType::TINZM );
@@ -1043,9 +1007,7 @@ void TestQgsTriangulatedSurface::testWKB()
 void TestQgsTriangulatedSurface::testWKT()
 {
   QgsTriangulatedSurface surface;
-  QgsTriangle triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZM, 0, 0, 10, 1 ),
-                                      QgsPoint( Qgis::WkbType::PointZM, 0.1, 0, 11, 2 ),
-                                      QgsPoint( Qgis::WkbType::PointZM, 0.2, 0, 12, 3 ) );
+  QgsTriangle triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZM, 0, 0, 10, 1 ), QgsPoint( Qgis::WkbType::PointZM, 0.1, 0, 11, 2 ), QgsPoint( Qgis::WkbType::PointZM, 0.2, 0, 12, 3 ) );
 
   surface.addPatch( triangle.clone() );
   QCOMPARE( surface.numPatches(), 1 );
@@ -1078,9 +1040,7 @@ void TestQgsTriangulatedSurface::testExport()
 
   // Z
   // as GML3 with one triangle
-  triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZ, 0, 0, 10 ),
-                          QgsPoint( Qgis::WkbType::PointZ, 1, 0, 11 ),
-                          QgsPoint( Qgis::WkbType::PointZ, 2, 0, 12 ) );
+  triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZ, 0, 0, 10 ), QgsPoint( Qgis::WkbType::PointZ, 1, 0, 11 ), QgsPoint( Qgis::WkbType::PointZ, 2, 0, 12 ) );
   exportPolygon.addPatch( triangle.clone() );
 
   expectedSimpleGML3 = QString( QStringLiteral( "<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>" ) );
@@ -1088,9 +1048,7 @@ void TestQgsTriangulatedSurface::testExport()
   QCOMPARE( elemToString( exportPolygon.asGml3( doc ) ), expectedSimpleGML3 );
 
   // as GML3 with two triangles
-  triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZ, 10, 10, 10 ),
-                          QgsPoint( Qgis::WkbType::PointZ, 11, 10, 11 ),
-                          QgsPoint( Qgis::WkbType::PointZ, 12, 10, 12 ) );
+  triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZ, 10, 10, 10 ), QgsPoint( Qgis::WkbType::PointZ, 11, 10, 11 ), QgsPoint( Qgis::WkbType::PointZ, 12, 10, 12 ) );
   exportPolygon.addPatch( triangle.clone() );
 
   expectedSimpleGML3 = QString( QStringLiteral( "<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">10 10 10 11 10 11 12 10 12 10 10 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>" ) );
@@ -1100,9 +1058,7 @@ void TestQgsTriangulatedSurface::testExport()
   // ZM
   // as GML3 with one triangle - M is dropped
   exportPolygon.clear();
-  triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZM, 0, 0, 10, 1 ),
-                          QgsPoint( Qgis::WkbType::PointZM, 1, 0, 11, 2 ),
-                          QgsPoint( Qgis::WkbType::PointZM, 2, 0, 12, 3 ) );
+  triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZM, 0, 0, 10, 1 ), QgsPoint( Qgis::WkbType::PointZM, 1, 0, 11, 2 ), QgsPoint( Qgis::WkbType::PointZM, 2, 0, 12, 3 ) );
   exportPolygon.addPatch( triangle.clone() );
 
   expectedSimpleGML3 = QString( QStringLiteral( "<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>" ) );
@@ -1110,9 +1066,7 @@ void TestQgsTriangulatedSurface::testExport()
   QCOMPARE( elemToString( exportPolygon.asGml3( doc ) ), expectedSimpleGML3 );
 
   // as GML3 with two triangles - M is dropped
-  triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZM, 10, 10, 10, 1 ),
-                          QgsPoint( Qgis::WkbType::PointZM, 11, 10, 11, 2 ),
-                          QgsPoint( Qgis::WkbType::PointZM, 12, 10, 12, 3 ) );
+  triangle = QgsTriangle( QgsPoint( Qgis::WkbType::PointZM, 10, 10, 10, 1 ), QgsPoint( Qgis::WkbType::PointZM, 11, 10, 11, 2 ), QgsPoint( Qgis::WkbType::PointZM, 12, 10, 12, 3 ) );
   exportPolygon.addPatch( triangle.clone() );
 
   expectedSimpleGML3 = QString( QStringLiteral( "<TriangulatedSurface xmlns=\"gml\"><patches xmlns=\"gml\"><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">0 0 10 1 0 11 2 0 12 0 0 10</posList></LinearRing></exterior></Triangle><Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">10 10 10 11 10 11 12 10 12 10 10 10</posList></LinearRing></exterior></Triangle></patches></TriangulatedSurface>" ) );

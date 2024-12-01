@@ -33,7 +33,6 @@ class QgsCodeEditorOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsC
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCodeEditorOptionsWidget with the specified \a parent widget.
      */
@@ -45,16 +44,13 @@ class QgsCodeEditorOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsC
     void apply() override;
 
   private:
-
-    QMap< QgsCodeEditorColorScheme::ColorRole, QgsColorButton * > mColorButtonMap;
+    QMap<QgsCodeEditorColorScheme::ColorRole, QgsColorButton *> mColorButtonMap;
     bool mBlockCustomColorChange = false;
 
     void updatePreview();
 
     QgsCodeEditorShell *mBashPreview = nullptr;
     QgsCodeEditorShell *mBatchPreview = nullptr;
-
-
 };
 
 
@@ -63,14 +59,12 @@ class QgsCodeEditorOptionsFactory : public QgsOptionsWidgetFactory
     Q_OBJECT
 
   public:
-
     QgsCodeEditorOptionsFactory();
 
     QIcon icon() const override;
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
     QStringList path() const override;
     QString pagePositionHint() const override;
-
 };
 
 

@@ -72,7 +72,7 @@ QgsLightsWidget::QgsLightsWidget( QWidget *parent )
   connect( spinDirectionalIntensity, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
   connect( btnDirectionalColor, &QgsColorButton::colorChanged, this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
 
-  connect( dialAzimuth, &QSlider::valueChanged, this, [this]( int value ) {spinBoxAzimuth->setValue( ( value + 180 ) % 360 );} );
+  connect( dialAzimuth, &QSlider::valueChanged, this, [this]( int value ) { spinBoxAzimuth->setValue( ( value + 180 ) % 360 ); } );
   connect( sliderAltitude, &QSlider::valueChanged, spinBoxAltitude, &QgsDoubleSpinBox::setValue );
   connect( spinBoxAzimuth, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::onDirectionChange );
   connect( spinBoxAltitude, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::onDirectionChange );
@@ -83,17 +83,17 @@ QgsLightsWidget::QgsLightsWidget( QWidget *parent )
 
 void QgsLightsWidget::setLights( const QList<QgsLightSource *> sources )
 {
-  QList< QgsPointLightSettings > pointLights;
-  QList< QgsDirectionalLightSettings > directionalLights;
+  QList<QgsPointLightSettings> pointLights;
+  QList<QgsDirectionalLightSettings> directionalLights;
   for ( const QgsLightSource *source : sources )
   {
     switch ( source->type() )
     {
       case Qgis::LightSourceType::Point:
-        pointLights.append( *qgis::down_cast< const QgsPointLightSettings *>( source ) );
+        pointLights.append( *qgis::down_cast<const QgsPointLightSettings *>( source ) );
         break;
       case Qgis::LightSourceType::Directional:
-        directionalLights.append( *qgis::down_cast< const QgsDirectionalLightSettings *>( source ) );
+        directionalLights.append( *qgis::down_cast<const QgsDirectionalLightSettings *>( source ) );
         break;
     }
   }
@@ -138,7 +138,7 @@ void QgsLightsWidget::selectedLightChanged( const QItemSelection &selected, cons
     return;
   }
 
-  const QgsLightsModel::LightType lightType = static_cast< QgsLightsModel::LightType >( mLightsModel->data( selected.indexes().at( 0 ), QgsLightsModel::LightTypeRole ).toInt() );
+  const QgsLightsModel::LightType lightType = static_cast<QgsLightsModel::LightType>( mLightsModel->data( selected.indexes().at( 0 ), QgsLightsModel::LightTypeRole ).toInt() );
   const int listIndex = mLightsModel->data( selected.indexes().at( 0 ), QgsLightsModel::LightListIndex ).toInt();
 
   switch ( lightType )
@@ -302,14 +302,12 @@ void QgsLightsWidget::onDirectionChange()
 }
 
 
-
 //
 // QgsLightsModel
 //
 QgsLightsModel::QgsLightsModel( QObject *parent )
   : QAbstractListModel( parent )
 {
-
 }
 
 int QgsLightsModel::rowCount( const QModelIndex &parent ) const
@@ -425,12 +423,12 @@ QList<QgsDirectionalLightSettings> QgsLightsModel::directionalLights() const
 
 void QgsLightsModel::setPointLightSettings( int index, const QgsPointLightSettings &light )
 {
-  mPointLights[ index ] = light;
+  mPointLights[index] = light;
 }
 
 void QgsLightsModel::setDirectionalLightSettings( int index, const QgsDirectionalLightSettings &light )
 {
-  mDirectionalLights[ index ] = light;
+  mDirectionalLights[index] = light;
 }
 
 QModelIndex QgsLightsModel::addPointLight( const QgsPointLightSettings &light )

@@ -44,11 +44,12 @@ class TestQgsGradients : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsGradients() : QgsTest( QStringLiteral( "Gradient Renderer Tests" ) ) {}
+    TestQgsGradients()
+      : QgsTest( QStringLiteral( "Gradient Renderer Tests" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void gradientSymbol();
     void gradientSymbolColors();
@@ -66,7 +67,7 @@ class TestQgsGradients : public QgsTest
     void gradientSymbolFromQml();
 
   private:
-    bool mTestHasError =  false ;
+    bool mTestHasError = false;
     bool setQml( const QString &type );
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
@@ -92,8 +93,7 @@ void TestQgsGradients::initTestCase()
   //
   const QString myPolysFileName = mTestDataDir + "polys.shp";
   const QFileInfo myPolyFileInfo( myPolysFileName );
-  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
@@ -104,7 +104,6 @@ void TestQgsGradients::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
-
 }
 void TestQgsGradients::cleanupTestCase()
 {

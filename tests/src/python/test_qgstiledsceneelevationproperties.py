@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '23/08/2023'
-__copyright__ = 'Copyright 2023, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "23/08/2023"
+__copyright__ = "Copyright 2023, The QGIS Project"
 
 import tempfile
 import os
@@ -45,7 +46,7 @@ class TestQgsTiledSceneElevationProperties(QgisTestCase):
         self.assertEqual(props.zOffset(), 0.5)
 
         doc = QDomDocument("testdoc")
-        elem = doc.createElement('test')
+        elem = doc.createElement("test")
         props.writeXml(elem, doc, QgsReadWriteContext())
 
         props2 = QgsTiledSceneLayerElevationProperties(None)
@@ -60,7 +61,7 @@ class TestQgsTiledSceneElevationProperties(QgisTestCase):
     def testCalculateZRange(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             tmp_file = os.path.join(temp_dir, "tileset.json")
-            with open(tmp_file, "wt", encoding="utf-8") as f:
+            with open(tmp_file, "w", encoding="utf-8") as f:
                 f.write(
                     """
 {
@@ -99,23 +100,22 @@ class TestQgsTiledSceneElevationProperties(QgisTestCase):
             z_range = props.calculateZRange(layer)
             self.assertEqual(z_range.lower(), 1.2)
             self.assertEqual(z_range.upper(), 67.00999999999999)
-            self.assertEqual(props.significantZValues(layer),
-                             [1.2, 67.00999999999999])
+            self.assertEqual(props.significantZValues(layer), [1.2, 67.00999999999999])
 
             props.setZOffset(10)
             z_range = props.calculateZRange(layer)
             self.assertEqual(z_range.lower(), 11.2)
             self.assertEqual(z_range.upper(), 77.00999999999999)
-            self.assertEqual(props.significantZValues(layer),
-                             [11.2, 77.00999999999999])
+            self.assertEqual(props.significantZValues(layer), [11.2, 77.00999999999999])
 
             props.setZScale(2)
             z_range = props.calculateZRange(layer)
             self.assertEqual(z_range.lower(), 12.4)
             self.assertEqual(z_range.upper(), 144.01999999999998)
-            self.assertEqual(props.significantZValues(layer),
-                             [12.4, 144.01999999999998])
+            self.assertEqual(
+                props.significantZValues(layer), [12.4, 144.01999999999998]
+            )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

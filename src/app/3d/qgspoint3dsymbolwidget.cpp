@@ -74,11 +74,11 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
     connect( spinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPoint3DSymbolWidget::changed );
   connect( lineEditModel, &QgsAbstractFileContentSourceLineEdit::sourceChanged, this, &QgsPoint3DSymbolWidget::changed );
   connect( widgetMaterial, &QgsMaterialWidget::changed, this, &QgsPoint3DSymbolWidget::changed );
-  connect( btnChangeSymbol, static_cast<void ( QgsSymbolButton::* )( )>( &QgsSymbolButton::changed ), this, &QgsPoint3DSymbolWidget::changed );
+  connect( btnChangeSymbol, static_cast<void ( QgsSymbolButton::* )()>( &QgsSymbolButton::changed ), this, &QgsPoint3DSymbolWidget::changed );
 
   // Sync between billboard height and TZ
-  connect( spinBillboardHeight, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinTZ,  &QDoubleSpinBox::setValue );
-  connect( spinTZ, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinBillboardHeight,  &QDoubleSpinBox::setValue );
+  connect( spinBillboardHeight, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinTZ, &QDoubleSpinBox::setValue );
+  connect( spinTZ, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), spinBillboardHeight, &QDoubleSpinBox::setValue );
 }
 
 Qgs3DSymbolWidget *QgsPoint3DSymbolWidget::create( QgsVectorLayer * )
@@ -88,7 +88,7 @@ Qgs3DSymbolWidget *QgsPoint3DSymbolWidget::create( QgsVectorLayer * )
 
 void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorLayer *layer )
 {
-  const QgsPoint3DSymbol *pointSymbol = dynamic_cast< const QgsPoint3DSymbol *>( symbol );
+  const QgsPoint3DSymbol *pointSymbol = dynamic_cast<const QgsPoint3DSymbol *>( symbol );
   if ( !pointSymbol )
     return;
 
@@ -156,15 +156,20 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
   // A point on the 2D plane (x', y') is transformed to (x, -z) in the 3D world.
   // The formula from stackexchange need to be changed to take into account the 3D representation.
   QMatrix4x4 m = pointSymbol->transform();
-  float *md = m.data();  // returns data in column-major order
+  float *md = m.data(); // returns data in column-major order
   const float sx = QVector3D( md[0], md[1], md[2] ).length();
   const float sz = QVector3D( md[4], md[5], md[6] ).length();
   const float sy = QVector3D( md[8], md[9], md[10] ).length();
-  float rd[9] =
-  {
-    md[0] / sx, md[4] / sy, md[8] / sz,
-    md[1] / sx, md[5] / sy, md[9] / sz,
-    md[2] / sx, md[6] / sy, md[10] / sz,
+  float rd[9] = {
+    md[0] / sx,
+    md[4] / sy,
+    md[8] / sz,
+    md[1] / sx,
+    md[5] / sy,
+    md[9] / sz,
+    md[2] / sx,
+    md[6] / sy,
+    md[10] / sz,
   };
   const QMatrix3x3 rot3x3( rd ); // takes data in row-major order
   const QVector3D rot = QQuaternion::fromRotationMatrix( rot3x3 ).toEulerAngles();
@@ -185,9 +190,9 @@ void QgsPoint3DSymbolWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVe
 QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
 {
   QVariantMap vm;
-  std::unique_ptr< QgsPoint3DSymbol > sym = std::make_unique< QgsPoint3DSymbol >();
+  std::unique_ptr<QgsPoint3DSymbol> sym = std::make_unique<QgsPoint3DSymbol>();
   sym->setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
-  switch ( cboShape->currentData().value< Qgis::Point3DShape >() )
+  switch ( cboShape->currentData().value<Qgis::Point3DShape>() )
   {
     case Qgis::Point3DShape::Sphere:
       vm[QStringLiteral( "radius" )] = spinRadius->value();
@@ -234,7 +239,7 @@ QgsAbstract3DSymbol *QgsPoint3DSymbolWidget::symbol()
   tr.rotate( rot );
 
   sym->setAltitudeClamping( static_cast<Qgis::AltitudeClamping>( cboAltClamping->currentIndex() ) );
-  sym->setShape( cboShape->itemData( cboShape->currentIndex() ).value< Qgis::Point3DShape >() );
+  sym->setShape( cboShape->itemData( cboShape->currentIndex() ).value<Qgis::Point3DShape>() );
   sym->setShapeProperties( vm );
   sym->setMaterialSettings( widgetMaterial->settings() );
   sym->setTransform( tr );
@@ -262,7 +267,7 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
   transformationWidget->show();
   QList<QWidget *> activeWidgets;
   QgsMaterialSettingsRenderingTechnique technique = QgsMaterialSettingsRenderingTechnique::InstancedPoints;
-  switch ( cboShape->currentData().value< Qgis::Point3DShape >() )
+  switch ( cboShape->currentData().value<Qgis::Point3DShape>() )
   {
     case Qgis::Point3DShape::Sphere:
       activeWidgets << labelRadius << spinRadius;

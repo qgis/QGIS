@@ -46,7 +46,6 @@ class QgsDistanceWidget : public QWidget
     Q_OBJECT
 
   public:
-
     //! Constrructor
     explicit QgsDistanceWidget( const QString &label = QString(), QWidget *parent = nullptr );
 
@@ -84,7 +83,6 @@ class QgsMapToolSelectionHandler : public QObject
     Q_OBJECT
 
   public:
-
     //! Select features to identify by:
     enum SelectionMode
     {
@@ -106,8 +104,7 @@ class QgsMapToolSelectionHandler : public QObject
     Q_ENUM( SelectionMode )
 
     //! constructor
-    QgsMapToolSelectionHandler( QgsMapCanvas *canvas,
-                                QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
+    QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgsMapToolSelectionHandler::SelectionMode selectionMode = QgsMapToolSelectionHandler::SelectionMode::SelectSimple );
 
     //! destructor
     ~QgsMapToolSelectionHandler() override;
@@ -152,7 +149,6 @@ class QgsMapToolSelectionHandler : public QObject
     void cancel();
 
   private:
-
     void selectFeaturesMoveEvent( QgsMapMouseEvent *e );
     void selectFeaturesReleaseEvent( QgsMapMouseEvent *e );
     void selectFeaturesPressEvent( QgsMapMouseEvent *e );
@@ -176,7 +172,6 @@ class QgsMapToolSelectionHandler : public QObject
     void updateRadiusFromEdge( QgsPointXY &radiusEdge );
 
   private:
-
     QgsMapCanvas *mCanvas = nullptr;
 
     //! the rubberband for selection visualization

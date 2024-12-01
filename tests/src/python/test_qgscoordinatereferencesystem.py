@@ -7,9 +7,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = '(C) 2022 by Nyall Dawson'
-__date__ = '06/04/2022'
-__copyright__ = 'Copyright 2022, The QGIS Project'
+
+__author__ = "(C) 2022 by Nyall Dawson"
+__date__ = "06/04/2022"
+__copyright__ = "Copyright 2022, The QGIS Project"
 
 
 from qgis.core import Qgis, QgsCoordinateReferenceSystem
@@ -26,9 +27,15 @@ class TestQgsCoordinateReferenceSystem(QgisTestCase):
         Test QgsCoordinateReferenceSystem.axisOrdering() (including the Python MethodCode associated with this)
         """
         self.assertEqual(QgsCoordinateReferenceSystem().axisOrdering(), [])
-        self.assertEqual(QgsCoordinateReferenceSystem('EPSG:4326').axisOrdering(), [Qgis.CrsAxisDirection.North, Qgis.CrsAxisDirection.East])
-        self.assertEqual(QgsCoordinateReferenceSystem('EPSG:3111').axisOrdering(), [Qgis.CrsAxisDirection.East, Qgis.CrsAxisDirection.North])
+        self.assertEqual(
+            QgsCoordinateReferenceSystem("EPSG:4326").axisOrdering(),
+            [Qgis.CrsAxisDirection.North, Qgis.CrsAxisDirection.East],
+        )
+        self.assertEqual(
+            QgsCoordinateReferenceSystem("EPSG:3111").axisOrdering(),
+            [Qgis.CrsAxisDirection.East, Qgis.CrsAxisDirection.North],
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

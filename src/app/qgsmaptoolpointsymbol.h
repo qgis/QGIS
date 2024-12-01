@@ -29,7 +29,7 @@ class QgsMarkerSymbol;
  * snapping the mouse press to a feature, and detecting whether the clicked feature has symbology which is
  * compatible with the map tool.
  */
-class APP_EXPORT QgsMapToolPointSymbol: public QgsMapToolEdit
+class APP_EXPORT QgsMapToolPointSymbol : public QgsMapToolEdit
 {
     Q_OBJECT
 
@@ -52,7 +52,6 @@ class APP_EXPORT QgsMapToolPointSymbol: public QgsMapToolEdit
     virtual bool checkSymbolCompatibility( QgsMarkerSymbol *markerSymbol, QgsRenderContext &context ) = 0;
 
     virtual void noCompatibleSymbols() {}
-
 };
 
 #endif // QGSMAPTOOLPOINTSYMBOL_H

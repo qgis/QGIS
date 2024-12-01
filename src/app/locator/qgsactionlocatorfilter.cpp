@@ -23,7 +23,6 @@
 #include <QRegularExpression>
 
 
-
 QgsActionLocatorFilter::QgsActionLocatorFilter( const QList<QWidget *> &parentObjectsForActions, QObject *parent )
   : QgsLocatorFilter( parent )
   , mActionParents( parentObjectsForActions )
@@ -51,14 +50,14 @@ void QgsActionLocatorFilter::fetchResults( const QString &string, const QgsLocat
 
 void QgsActionLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
-  QAction *action = qobject_cast< QAction * >( qvariant_cast<QObject *>( result.userData() ) );
+  QAction *action = qobject_cast<QAction *>( qvariant_cast<QObject *>( result.userData() ) );
   if ( action )
     action->trigger();
 }
 
 void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *parent, QList<QAction *> &found )
 {
-  const QList< QWidget *> children = parent->findChildren<QWidget *>();
+  const QList<QWidget *> children = parent->findChildren<QWidget *>();
   for ( QWidget *widget : children )
   {
     searchActions( string, widget, found );

@@ -28,45 +28,27 @@
 QgsAppMissingGridHandler::QgsAppMissingGridHandler( QObject *parent )
   : QObject( parent )
 {
-  QgsCoordinateTransform::setCustomMissingRequiredGridHandler( [ = ]( const QgsCoordinateReferenceSystem & sourceCrs,
-      const QgsCoordinateReferenceSystem & destinationCrs,
-      const QgsDatumTransform::GridDetails & grid )
-  {
+  QgsCoordinateTransform::setCustomMissingRequiredGridHandler( [=]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::GridDetails &grid ) {
     emit missingRequiredGrid( sourceCrs, destinationCrs, grid );
   } );
 
-  QgsCoordinateTransform::setCustomMissingPreferredGridHandler( [ = ]( const QgsCoordinateReferenceSystem & sourceCrs,
-      const QgsCoordinateReferenceSystem & destinationCrs,
-      const QgsDatumTransform::TransformDetails & preferredOperation,
-      const QgsDatumTransform::TransformDetails & availableOperation )
-  {
+  QgsCoordinateTransform::setCustomMissingPreferredGridHandler( [=]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &preferredOperation, const QgsDatumTransform::TransformDetails &availableOperation ) {
     emit missingPreferredGrid( sourceCrs, destinationCrs, preferredOperation, availableOperation );
   } );
 
-  QgsCoordinateTransform::setCustomCoordinateOperationCreationErrorHandler( [ = ]( const QgsCoordinateReferenceSystem & sourceCrs,
-      const QgsCoordinateReferenceSystem & destinationCrs,
-      const QString & error )
-  {
+  QgsCoordinateTransform::setCustomCoordinateOperationCreationErrorHandler( [=]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &error ) {
     emit coordinateOperationCreationError( sourceCrs, destinationCrs, error );
   } );
 
-  QgsCoordinateTransform::setCustomMissingGridUsedByContextHandler( [ = ]( const QgsCoordinateReferenceSystem & sourceCrs,
-      const QgsCoordinateReferenceSystem & destinationCrs,
-      const QgsDatumTransform::TransformDetails & desired )
-  {
+  QgsCoordinateTransform::setCustomMissingGridUsedByContextHandler( [=]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &desired ) {
     emit missingGridUsedByContextHandler( sourceCrs, destinationCrs, desired );
   } );
 
-  QgsCoordinateTransform::setFallbackOperationOccurredHandler( [ = ]( const QgsCoordinateReferenceSystem & sourceCrs,
-      const QgsCoordinateReferenceSystem & destinationCrs,
-      const QString & desired )
-  {
+  QgsCoordinateTransform::setFallbackOperationOccurredHandler( [=]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &desired ) {
     emit fallbackOperationOccurred( sourceCrs, destinationCrs, desired );
   } );
 
-  QgsCoordinateTransform::setDynamicCrsToDynamicCrsWarningHandler( [ = ]( const QgsCoordinateReferenceSystem & sourceCrs,
-      const QgsCoordinateReferenceSystem & destinationCrs )
-  {
+  QgsCoordinateTransform::setDynamicCrsToDynamicCrsWarningHandler( [=]( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs ) {
     emit dynamicToDynamicWarning( sourceCrs, destinationCrs );
   } );
 
@@ -77,12 +59,10 @@ QgsAppMissingGridHandler::QgsAppMissingGridHandler( QObject *parent )
   connect( this, &QgsAppMissingGridHandler::fallbackOperationOccurred, this, &QgsAppMissingGridHandler::onFallbackOperationOccurred, Qt::QueuedConnection );
   connect( this, &QgsAppMissingGridHandler::dynamicToDynamicWarning, this, &QgsAppMissingGridHandler::onDynamicToDynamicWarning, Qt::QueuedConnection );
 
-  connect( QgsProject::instance(), &QgsProject::cleared, this, [ = ]
-  {
+  connect( QgsProject::instance(), &QgsProject::cleared, this, [=] {
     mAlreadyWarnedPairsForProject.clear();
     mAlreadyWarnedBallparkPairsForProject.clear();
   } );
-
 }
 
 void QgsAppMissingGridHandler::onMissingRequiredGrid( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::GridDetails &grid )
@@ -90,8 +70,7 @@ void QgsAppMissingGridHandler::onMissingRequiredGrid( const QgsCoordinateReferen
   if ( !shouldWarnAboutPair( sourceCrs, destinationCrs ) )
     return;
 
-  const QString shortMessage = tr( "No transform available between %1 and %2" ).arg( sourceCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ),
-                               destinationCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
+  const QString shortMessage = tr( "No transform available between %1 and %2" ).arg( sourceCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ), destinationCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
 
   QString downloadMessage;
   const QString gridName = grid.shortName;
@@ -108,15 +87,13 @@ void QgsAppMissingGridHandler::onMissingRequiredGrid( const QgsCoordinateReferen
   }
 
   const QString longMessage = tr( "<p>No transform is available between <i>%1</i> and <i>%2</i>.</p>"
-                                  "<p>This transformation requires the grid file “%3”, which is not available for use on the system.</p>" ).arg( sourceCrs.userFriendlyIdentifier(),
-                                      destinationCrs.userFriendlyIdentifier(),
-                                      grid.shortName );
+                                  "<p>This transformation requires the grid file “%3”, which is not available for use on the system.</p>" )
+                                .arg( sourceCrs.userFriendlyIdentifier(), destinationCrs.userFriendlyIdentifier(), grid.shortName );
 
   QgsMessageBar *bar = QgisApp::instance()->messageBar();
   QgsMessageBarItem *widget = QgsMessageBar::createMessage( QString(), shortMessage );
   QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
-  connect( detailsButton, &QPushButton::clicked, this, [longMessage, downloadMessage, bar, widget, gridName]
-  {
+  connect( detailsButton, &QPushButton::clicked, this, [longMessage, downloadMessage, bar, widget, gridName] {
     QgsInstallGridShiftFileDialog *dlg = new QgsInstallGridShiftFileDialog( gridName, QgisApp::instance() );
     dlg->setAttribute( Qt::WA_DeleteOnClose );
     dlg->setWindowTitle( tr( "No Transformations Available" ) );
@@ -137,8 +114,7 @@ void QgsAppMissingGridHandler::onMissingPreferredGrid( const QgsCoordinateRefere
   if ( !shouldWarnAboutPair( sourceCrs, destinationCrs ) )
     return;
 
-  const QString shortMessage = tr( "Cannot use preferred transform between %1 and %2" ).arg( sourceCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ),
-                               destinationCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
+  const QString shortMessage = tr( "Cannot use preferred transform between %1 and %2" ).arg( sourceCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ), destinationCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
 
   QString gridMessage;
   QString downloadMessage;
@@ -170,21 +146,17 @@ void QgsAppMissingGridHandler::onMissingPreferredGrid( const QgsCoordinateRefere
 
   QString accuracyMessage;
   if ( availableOperation.accuracy >= 0 && preferredOperation.accuracy >= 0 )
-    accuracyMessage = tr( "<p>Current transform “<i>%1</i>” has an accuracy of %2 meters, while the preferred transformation “<i>%3</i>” has accuracy %4 meters.</p>" ).arg( availableOperation.name )
-                      .arg( availableOperation.accuracy ).arg( preferredOperation.name ).arg( preferredOperation.accuracy );
+    accuracyMessage = tr( "<p>Current transform “<i>%1</i>” has an accuracy of %2 meters, while the preferred transformation “<i>%3</i>” has accuracy %4 meters.</p>" ).arg( availableOperation.name ).arg( availableOperation.accuracy ).arg( preferredOperation.name ).arg( preferredOperation.accuracy );
   else if ( preferredOperation.accuracy >= 0 )
-    accuracyMessage = tr( "<p>Current transform “<i>%1</i>” has an unknown accuracy, while the preferred transformation “<i>%2</i>” has accuracy %3 meters.</p>" ).arg( availableOperation.name )
-                      .arg( preferredOperation.name ).arg( preferredOperation.accuracy );
+    accuracyMessage = tr( "<p>Current transform “<i>%1</i>” has an unknown accuracy, while the preferred transformation “<i>%2</i>” has accuracy %3 meters.</p>" ).arg( availableOperation.name ).arg( preferredOperation.name ).arg( preferredOperation.accuracy );
 
-  const QString longMessage = tr( "<p>The preferred transform between <i>%1</i> and <i>%2</i> is not available for use on the system.</p>" ).arg( sourceCrs.userFriendlyIdentifier(),
-                              destinationCrs.userFriendlyIdentifier() )
+  const QString longMessage = tr( "<p>The preferred transform between <i>%1</i> and <i>%2</i> is not available for use on the system.</p>" ).arg( sourceCrs.userFriendlyIdentifier(), destinationCrs.userFriendlyIdentifier() )
                               + gridMessage + accuracyMessage;
 
   QgsMessageBar *bar = QgisApp::instance()->messageBar();
   QgsMessageBarItem *widget = QgsMessageBar::createMessage( QString(), shortMessage );
   QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
-  connect( detailsButton, &QPushButton::clicked, this, [longMessage, downloadMessage, gridName, widget, bar]
-  {
+  connect( detailsButton, &QPushButton::clicked, this, [longMessage, downloadMessage, gridName, widget, bar] {
     QgsInstallGridShiftFileDialog *dlg = new QgsInstallGridShiftFileDialog( gridName, QgisApp::instance() );
     dlg->setAttribute( Qt::WA_DeleteOnClose );
     dlg->setWindowTitle( tr( "Preferred Transformation Not Available" ) );
@@ -211,10 +183,9 @@ void QgsAppMissingGridHandler::onCoordinateOperationCreationError( const QgsCoor
   QgsMessageBar *bar = QgisApp::instance()->messageBar();
   QgsMessageBarItem *widget = QgsMessageBar::createMessage( QString(), shortMessage );
   QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
-  connect( detailsButton, &QPushButton::clicked, this, [longMessage]
-  {
+  connect( detailsButton, &QPushButton::clicked, this, [longMessage] {
     // dlg has deleted on close
-    QgsMessageOutput * dlg( QgsMessageOutput::createMessageOutput() );
+    QgsMessageOutput *dlg( QgsMessageOutput::createMessageOutput() );
     dlg->setTitle( tr( "No Transformations Available" ) );
     dlg->setMessage( longMessage, QgsMessageOutput::MessageHtml );
     dlg->showMessage();
@@ -229,8 +200,7 @@ void QgsAppMissingGridHandler::onMissingGridUsedByContextHandler( const QgsCoord
   if ( !shouldWarnAboutPairForCurrentProject( sourceCrs, destinationCrs ) )
     return;
 
-  const QString shortMessage = tr( "Cannot use project transform between %1 and %2" ).arg( sourceCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ),
-                               destinationCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
+  const QString shortMessage = tr( "Cannot use project transform between %1 and %2" ).arg( sourceCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ), destinationCrs.userFriendlyIdentifier( Qgis::CrsIdentifierType::ShortString ) );
 
   QString gridMessage;
   QString downloadMessage;
@@ -260,16 +230,14 @@ void QgsAppMissingGridHandler::onMissingGridUsedByContextHandler( const QgsCoord
     gridMessage = "<ul>" + gridMessage + "</ul>";
   }
 
-  const QString longMessage = tr( "<p>This project specifies a preset transform between <i>%1</i> and <i>%2</i>, which is not available for use on the system.</p>" ).arg( sourceCrs.userFriendlyIdentifier(),
-                              destinationCrs.userFriendlyIdentifier() )
+  const QString longMessage = tr( "<p>This project specifies a preset transform between <i>%1</i> and <i>%2</i>, which is not available for use on the system.</p>" ).arg( sourceCrs.userFriendlyIdentifier(), destinationCrs.userFriendlyIdentifier() )
                               + gridMessage
-                              + tr( "<p>The operation specified for use in the project is:</p><p><code>%1</code></p>" ).arg( desired.proj ) ;
+                              + tr( "<p>The operation specified for use in the project is:</p><p><code>%1</code></p>" ).arg( desired.proj );
 
   QgsMessageBar *bar = QgisApp::instance()->messageBar();
   QgsMessageBarItem *widget = QgsMessageBar::createMessage( QString(), shortMessage );
   QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
-  connect( detailsButton, &QPushButton::clicked, this, [longMessage, gridName, downloadMessage, bar, widget]
-  {
+  connect( detailsButton, &QPushButton::clicked, this, [longMessage, gridName, downloadMessage, bar, widget] {
     QgsInstallGridShiftFileDialog *dlg = new QgsInstallGridShiftFileDialog( gridName, QgisApp::instance() );
     dlg->setAttribute( Qt::WA_DeleteOnClose );
     dlg->setWindowTitle( tr( "Project Transformation Not Available" ) );
@@ -296,10 +264,9 @@ void QgsAppMissingGridHandler::onFallbackOperationOccurred( const QgsCoordinateR
   QgsMessageBar *bar = QgisApp::instance()->messageBar();
   QgsMessageBarItem *widget = QgsMessageBar::createMessage( QString(), shortMessage );
   QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
-  connect( detailsButton, &QPushButton::clicked, this, [longMessage]
-  {
+  connect( detailsButton, &QPushButton::clicked, this, [longMessage] {
     // dlg has deleted on close
-    QgsMessageOutput * dlg( QgsMessageOutput::createMessageOutput() );
+    QgsMessageOutput *dlg( QgsMessageOutput::createMessageOutput() );
     dlg->setTitle( tr( "Ballpark Transform Occurred" ) );
     dlg->setMessage( longMessage, QgsMessageOutput::MessageHtml );
     dlg->showMessage();
@@ -320,10 +287,9 @@ void QgsAppMissingGridHandler::onDynamicToDynamicWarning( const QgsCoordinateRef
   QgsMessageBar *bar = QgisApp::instance()->messageBar();
   QgsMessageBarItem *widget = QgsMessageBar::createMessage( QString(), shortMessage );
   QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
-  connect( detailsButton, &QPushButton::clicked, this, [longMessage]
-  {
+  connect( detailsButton, &QPushButton::clicked, this, [longMessage] {
     // dlg has deleted on close
-    QgsMessageOutput * dlg( QgsMessageOutput::createMessageOutput() );
+    QgsMessageOutput *dlg( QgsMessageOutput::createMessageOutput() );
     dlg->setTitle( tr( "Unsupported Transformation" ) );
     dlg->setMessage( longMessage, QgsMessageOutput::MessageHtml );
     dlg->showMessage();

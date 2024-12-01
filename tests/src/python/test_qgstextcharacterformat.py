@@ -7,9 +7,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '12/05/2020'
-__copyright__ = 'Copyright 2020, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "12/05/2020"
+__copyright__ = "Copyright 2020, The QGIS Project"
 
 from qgis.PyQt.QtCore import QSizeF
 from qgis.PyQt.QtGui import QColor
@@ -28,7 +29,7 @@ start_app()
 class TestQgsTextCharacterFormat(QgisTestCase):
 
     def setUp(self):
-        QgsFontUtils.loadStandardTestFonts(['Bold', 'Oblique'])
+        QgsFontUtils.loadStandardTestFonts(["Bold", "Oblique"])
 
     def testGettersSetters(self):
         format = QgsTextCharacterFormat()
@@ -39,17 +40,23 @@ class TestQgsTextCharacterFormat(QgisTestCase):
         self.assertEqual(format.fontPointSize(), -1)
         self.assertFalse(format.family())
         self.assertFalse(format.hasVerticalAlignmentSet())
-        self.assertEqual(format.verticalAlignment(), Qgis.TextCharacterVerticalAlignment.Normal)
+        self.assertEqual(
+            format.verticalAlignment(), Qgis.TextCharacterVerticalAlignment.Normal
+        )
 
         format.setTextColor(QColor(255, 0, 0))
         self.assertTrue(format.textColor().isValid())
-        self.assertEqual(format.textColor().name(), '#ff0000')
+        self.assertEqual(format.textColor().name(), "#ff0000")
 
         format.setUnderline(QgsTextCharacterFormat.BooleanValue.SetTrue)
-        self.assertEqual(format.underline(), QgsTextCharacterFormat.BooleanValue.SetTrue)
+        self.assertEqual(
+            format.underline(), QgsTextCharacterFormat.BooleanValue.SetTrue
+        )
 
         format.setStrikeOut(QgsTextCharacterFormat.BooleanValue.SetTrue)
-        self.assertEqual(format.strikeOut(), QgsTextCharacterFormat.BooleanValue.SetTrue)
+        self.assertEqual(
+            format.strikeOut(), QgsTextCharacterFormat.BooleanValue.SetTrue
+        )
 
         format.setOverline(QgsTextCharacterFormat.BooleanValue.SetTrue)
         self.assertEqual(format.overline(), QgsTextCharacterFormat.BooleanValue.SetTrue)
@@ -57,19 +64,21 @@ class TestQgsTextCharacterFormat(QgisTestCase):
         format.setFontPointSize(12.5)
         self.assertEqual(format.fontPointSize(), 12.5)
 
-        format.setFamily('comic sans')
-        self.assertEqual(format.family(), 'comic sans')
+        format.setFamily("comic sans")
+        self.assertEqual(format.family(), "comic sans")
 
         format.setHasVerticalAlignmentSet(True)
         self.assertTrue(format.hasVerticalAlignmentSet())
         format.setVerticalAlignment(Qgis.TextCharacterVerticalAlignment.SuperScript)
-        self.assertEqual(format.verticalAlignment(), Qgis.TextCharacterVerticalAlignment.SuperScript)
+        self.assertEqual(
+            format.verticalAlignment(), Qgis.TextCharacterVerticalAlignment.SuperScript
+        )
 
         self.assertFalse(format.imagePath())
         self.assertEqual(format.imageSize(), QSizeF())
-        format.setImagePath('my.jpg')
+        format.setImagePath("my.jpg")
         format.setImageSize(QSizeF(40, 60))
-        self.assertEqual(format.imagePath(), 'my.jpg')
+        self.assertEqual(format.imagePath(), "my.jpg")
         self.assertEqual(format.imageSize(), QSizeF(40, 60))
 
     def testUpdateFont(self):
@@ -135,14 +144,14 @@ class TestQgsTextCharacterFormat(QgisTestCase):
         self.assertEqual(font.pointSizeF(), old_size)
 
         self.assertEqual(font.family(), old_family)
-        format.setFamily('Serif')
+        format.setFamily("Serif")
         format.updateFontForFormat(font, context)
-        self.assertEqual(font.family(), 'Serif')
-        format.setFamily('')
+        self.assertEqual(font.family(), "Serif")
+        format.setFamily("")
         font.setFamily(old_family)
         format.updateFontForFormat(font, context)
         self.assertEqual(font.family(), old_family)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

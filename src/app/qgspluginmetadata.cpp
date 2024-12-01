@@ -18,14 +18,11 @@
 
 #include "../plugins/qgisplugin.h"
 #include "qgspluginmetadata.h"
-QgsPluginMetadata::QgsPluginMetadata( const QString &_libraryPath,
-                                      const QString &_name,
-                                      QgisPlugin *_plugin )
+QgsPluginMetadata::QgsPluginMetadata( const QString &_libraryPath, const QString &_name, QgisPlugin *_plugin )
   : m_name( _name )
   , libraryPath( _libraryPath )
   , m_plugin( _plugin )
 {
-
 }
 
 QString QgsPluginMetadata::name() const

@@ -55,7 +55,7 @@ class QgsPgTableModel : public QgsAbstractDbTableModel
       DbtmComment,
       DbtmGeomCol,
       DbtmGeomType, // Data type (geometry, geography, topogeometry, ...)
-      DbtmType, // Spatial type (point, line, polygon, ...)
+      DbtmType,     // Spatial type (point, line, polygon, ...)
       DbtmSrid,
       DbtmPkCol,
       DbtmSelectAtId,
@@ -67,7 +67,7 @@ class QgsPgTableModel : public QgsAbstractDbTableModel
 
     QString layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata );
 
-    void setConnectionName( const QString &connName ) { mConnName = connName;  }
+    void setConnectionName( const QString &connName ) { mConnName = connName; }
 
   private:
     //! Number of tables in the model
@@ -75,7 +75,6 @@ class QgsPgTableModel : public QgsAbstractDbTableModel
     //! connection name
     QString mConnName;
     QStringList mColumns;
-
 };
 
 #endif // QGSPGTABLEMODEL_H

@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '20/11/2017'
-__copyright__ = 'Copyright 2017, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "20/11/2017"
+__copyright__ = "Copyright 2017, The QGIS Project"
 
 import os
 
@@ -17,7 +18,7 @@ from qgis.core import (
     QgsLayoutFrame,
     QgsLayoutItemHtml,
     QgsLayoutMultiFrame,
-    QgsProject
+    QgsProject,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -57,10 +58,7 @@ class TestQgsLayoutHtml(QgisTestCase):
         layout_html.addFrame(html_frame)
         layout_html.setUrl(self.htmlUrl())
 
-        result = self.render_layout_check(
-            'composerhtml_table',
-            self.layout
-        )
+        result = self.render_layout_check("composerhtml_table", self.layout)
 
         self.layout.removeMultiFrame(layout_html)
         self.assertTrue(result)
@@ -71,25 +69,17 @@ class TestQgsLayoutHtml(QgisTestCase):
         html_frame = QgsLayoutFrame(self.layout, layout_html)
         html_frame.attemptSetSceneRect(QRectF(10, 10, 100, 50))
         layout_html.addFrame(html_frame)
-        layout_html.setResizeMode(
-            QgsLayoutMultiFrame.ResizeMode.RepeatUntilFinished)
+        layout_html.setResizeMode(QgsLayoutMultiFrame.ResizeMode.RepeatUntilFinished)
         layout_html.setUseSmartBreaks(False)
         layout_html.setUrl(self.htmlUrl())
         layout_html.frame(0).setFrameEnabled(True)
 
         self.assertTrue(
-            self.render_layout_check(
-                'composerhtml_multiframe1',
-                self.layout
-            )
+            self.render_layout_check("composerhtml_multiframe1", self.layout)
         )
 
         self.assertTrue(
-            self.render_layout_check(
-                'composerhtml_multiframe2',
-                self.layout,
-                page=1
-            )
+            self.render_layout_check("composerhtml_multiframe2", self.layout, page=1)
         )
 
         self.layout.removeMultiFrame(layout_html)
@@ -101,25 +91,19 @@ class TestQgsLayoutHtml(QgisTestCase):
         html_frame = QgsLayoutFrame(self.layout, layout_html)
         html_frame.attemptSetSceneRect(QRectF(10, 10, 100, 52))
         layout_html.addFrame(html_frame)
-        layout_html.setResizeMode(
-            QgsLayoutMultiFrame.ResizeMode.RepeatUntilFinished)
+        layout_html.setResizeMode(QgsLayoutMultiFrame.ResizeMode.RepeatUntilFinished)
         layout_html.setUseSmartBreaks(True)
         layout_html.setUrl(self.htmlUrl())
         layout_html.frame(0).setFrameEnabled(True)
 
         self.assertTrue(
             self.render_layout_check(
-                'composerhtml_smartbreaks1',
-                self.layout,
-                allowed_mismatch=200
+                "composerhtml_smartbreaks1", self.layout, allowed_mismatch=200
             )
         )
         self.assertTrue(
             self.render_layout_check(
-                'composerhtml_smartbreaks2',
-                self.layout,
-                page=1,
-                allowed_mismatch=200
+                "composerhtml_smartbreaks2", self.layout, page=1, allowed_mismatch=200
             )
         )
 
@@ -127,5 +111,5 @@ class TestQgsLayoutHtml(QgisTestCase):
         layout_html = None
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

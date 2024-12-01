@@ -15,47 +15,57 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "August 2012"
+__copyright__ = "(C) 2012, Victor Olaya"
 
-from qgis.core import (QgsProcessingAlgorithm,
-                       QgsProcessingParameterFile,
-                       QgsProcessingParameterVectorLayer,
-                       QgsProcessingOutputVectorLayer)
+from qgis.core import (
+    QgsProcessingAlgorithm,
+    QgsProcessingParameterFile,
+    QgsProcessingParameterVectorLayer,
+    QgsProcessingOutputVectorLayer,
+)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class SetVectorStyle(QgisAlgorithm):
-    INPUT = 'INPUT'
-    STYLE = 'STYLE'
-    OUTPUT = 'OUTPUT'
+    INPUT = "INPUT"
+    STYLE = "STYLE"
+    OUTPUT = "OUTPUT"
 
     def group(self):
-        return self.tr('Vector general')
+        return self.tr("Vector general")
 
     def groupId(self):
-        return 'vectorgeneral'
+        return "vectorgeneral"
 
     def __init__(self):
         super().__init__()
 
     def flags(self):
-        return super().flags() | QgsProcessingAlgorithm.Flag.FlagNoThreading | QgsProcessingAlgorithm.Flag.FlagDeprecated | QgsProcessingAlgorithm.Flag.FlagNotAvailableInStandaloneTool
+        return (
+            super().flags()
+            | QgsProcessingAlgorithm.Flag.FlagNoThreading
+            | QgsProcessingAlgorithm.Flag.FlagDeprecated
+            | QgsProcessingAlgorithm.Flag.FlagNotAvailableInStandaloneTool
+        )
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
-                                                            self.tr('Vector layer')))
-        self.addParameter(QgsProcessingParameterFile(self.STYLE,
-                                                     self.tr('Style file'), extension='qml'))
-        self.addOutput(QgsProcessingOutputVectorLayer(self.INPUT,
-                                                      self.tr('Styled')))
+        self.addParameter(
+            QgsProcessingParameterVectorLayer(self.INPUT, self.tr("Vector layer"))
+        )
+        self.addParameter(
+            QgsProcessingParameterFile(
+                self.STYLE, self.tr("Style file"), extension="qml"
+            )
+        )
+        self.addOutput(QgsProcessingOutputVectorLayer(self.INPUT, self.tr("Styled")))
 
     def name(self):
-        return 'setstyleforvectorlayer'
+        return "setstyleforvectorlayer"
 
     def displayName(self):
-        return self.tr('Set style for vector layer')
+        return self.tr("Set style for vector layer")
 
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)

@@ -34,54 +34,67 @@ static bool qgsVectorNear( const QVector3D &v1, const QVector3D &v2, double eps 
  */
 struct TriangleCoords
 {
-  //! Constructs from expected triangle coordinates
-  TriangleCoords( const QVector3D &a, const QVector3D &b, const QVector3D &c,
-                  const QVector3D &na = QVector3D(), const QVector3D &nb = QVector3D(), const QVector3D &nc = QVector3D() )
-  {
-    pts[0] = a; pts[1] = b; pts[2] = c;
-    normals[0] = na; normals[1] = nb; normals[2] = nc;
-  }
+    //! Constructs from expected triangle coordinates
+    TriangleCoords( const QVector3D &a, const QVector3D &b, const QVector3D &c, const QVector3D &na = QVector3D(), const QVector3D &nb = QVector3D(), const QVector3D &nc = QVector3D() )
+    {
+      pts[0] = a;
+      pts[1] = b;
+      pts[2] = c;
+      normals[0] = na;
+      normals[1] = nb;
+      normals[2] = nc;
+    }
 
-  //! Constructs from tessellator output. Note: tessellator outputs (X,-Z,Y) tuples for (X,Y,Z) input coords
-  TriangleCoords( const float *data, bool withNormal )
-  {
-#define FLOAT3_TO_VECTOR(x)  QVector3D( data[0], -data[2], data[1] )
+    //! Constructs from tessellator output. Note: tessellator outputs (X,-Z,Y) tuples for (X,Y,Z) input coords
+    TriangleCoords( const float *data, bool withNormal )
+    {
+#define FLOAT3_TO_VECTOR( x ) QVector3D( data[0], -data[2], data[1] )
 
-    pts[0] = FLOAT3_TO_VECTOR( data ); data += 3;
-    if ( withNormal ) { normals[0] = FLOAT3_TO_VECTOR( data ); data += 3; }
+      pts[0] = FLOAT3_TO_VECTOR( data );
+      data += 3;
+      if ( withNormal )
+      {
+        normals[0] = FLOAT3_TO_VECTOR( data );
+        data += 3;
+      }
 
-    pts[1] = FLOAT3_TO_VECTOR( data ); data += 3;
-    if ( withNormal ) { normals[1] = FLOAT3_TO_VECTOR( data ); data += 3; }
+      pts[1] = FLOAT3_TO_VECTOR( data );
+      data += 3;
+      if ( withNormal )
+      {
+        normals[1] = FLOAT3_TO_VECTOR( data );
+        data += 3;
+      }
 
-    pts[2] = FLOAT3_TO_VECTOR( data ); data += 3;
-    if ( withNormal ) { normals[2] = FLOAT3_TO_VECTOR( data ); data += 3; }
-  }
+      pts[2] = FLOAT3_TO_VECTOR( data );
+      data += 3;
+      if ( withNormal )
+      {
+        normals[2] = FLOAT3_TO_VECTOR( data );
+        data += 3;
+      }
+    }
 
-  //! Compares two triangles
-  bool operator==( const TriangleCoords &other ) const
-  {
-    // TODO: allow that the two triangles have coordinates shifted (but still in the same order)
-    const double eps = 1e-6;
-    return qgsVectorNear( pts[0], other.pts[0], eps ) &&
-           qgsVectorNear( pts[1], other.pts[1], eps ) &&
-           qgsVectorNear( pts[2], other.pts[2], eps ) &&
-           qgsVectorNear( normals[0], other.normals[0], eps ) &&
-           qgsVectorNear( normals[1], other.normals[1], eps ) &&
-           qgsVectorNear( normals[2], other.normals[2], eps );
-  }
+    //! Compares two triangles
+    bool operator==( const TriangleCoords &other ) const
+    {
+      // TODO: allow that the two triangles have coordinates shifted (but still in the same order)
+      const double eps = 1e-6;
+      return qgsVectorNear( pts[0], other.pts[0], eps ) && qgsVectorNear( pts[1], other.pts[1], eps ) && qgsVectorNear( pts[2], other.pts[2], eps ) && qgsVectorNear( normals[0], other.normals[0], eps ) && qgsVectorNear( normals[1], other.normals[1], eps ) && qgsVectorNear( normals[2], other.normals[2], eps );
+    }
 
-  bool operator!=( const TriangleCoords &other ) const
-  {
-    return !operator==( other );
-  }
+    bool operator!=( const TriangleCoords &other ) const
+    {
+      return !operator==( other );
+    }
 
-  void dump() const
-  {
-    qDebug() << pts[0] << pts[1] << pts[2] << normals[0] << normals[1] << normals[2];
-  }
+    void dump() const
+    {
+      qDebug() << pts[0] << pts[1] << pts[2] << normals[0] << normals[1] << normals[2];
+    }
 
-  QVector3D pts[3];
-  QVector3D normals[3];
+    QVector3D pts[3];
+    QVector3D normals[3];
 };
 
 
@@ -123,11 +136,12 @@ class TestQgsTessellator : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsTessellator() : QgsTest( QStringLiteral( "Test QgsTessellator" ) ) {};
+    TestQgsTessellator()
+      : QgsTest( QStringLiteral( "Test QgsTessellator" ) ) {};
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testBasic();
     void testWalls();
@@ -175,7 +189,7 @@ void TestQgsTessellator::testBasic()
   tcZ << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 2, 1, 3 ), QVector3D( 3, 2, 3 ) );
   tcZ << TriangleCoords( QVector3D( 1, 2, 3 ), QVector3D( 1, 1, 3 ), QVector3D( 2, 1, 3 ) );
 
-  const QVector3D up( 0, 0, 1 );  // surface normal pointing straight up
+  const QVector3D up( 0, 0, 1 ); // surface normal pointing straight up
   QList<TriangleCoords> tcNormals;
   tcNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ), up, up, up );
   tcNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ), up, up, up );
@@ -290,7 +304,7 @@ void TestQgsTessellator::testBackEdges()
   polygon.fromWkt( "POLYGON((1 1, 2 1, 3 2, 1 2, 1 1))" );
 
   const QVector3D up( 0, 0, 1 );  // surface normal pointing straight up
-  const QVector3D dn( 0, 0, -1 );  // surface normal pointing straight down for back faces
+  const QVector3D dn( 0, 0, -1 ); // surface normal pointing straight down for back faces
   QList<TriangleCoords> tcNormals;
   tcNormals << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ), up, up, up );
   tcNormals << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 1, 2, 0 ), dn, dn, dn );
@@ -310,10 +324,10 @@ void TestQgsTessellator::test2DTriangle()
   QgsPolygon polygon;
   polygon.fromWkt( "POLYGON((1 1, 2 1, 1 2, 1 1))" );
 
-  const QVector3D up( 0, 0, 1 );  // surface normal pointing straight up
-  const QVector3D left( -1, 0, 0 );  // surface normal pointing straight down for back faces
+  const QVector3D up( 0, 0, 1 );    // surface normal pointing straight up
+  const QVector3D left( -1, 0, 0 ); // surface normal pointing straight down for back faces
   const QVector3D ne( 0.707107, 0.707107, 0 );
-  const QVector3D bt( 0, -1, 0 );  // surface normal pointing straight down for back faces
+  const QVector3D bt( 0, -1, 0 ); // surface normal pointing straight down for back faces
 
   {
     // NO extrusion
@@ -356,10 +370,10 @@ void TestQgsTessellator::test3DTriangle()
   QgsPolygon polygon;
   polygon.fromWkt( "POLYGONZ((1 1 5, 2 1 5, 1 2 5, 1 1 5))" );
 
-  const QVector3D up( 0, 0, 1 );  // surface normal pointing straight up
-  const QVector3D left( -1, 0, 0 );  // surface normal pointing straight down for back faces
+  const QVector3D up( 0, 0, 1 );    // surface normal pointing straight up
+  const QVector3D left( -1, 0, 0 ); // surface normal pointing straight down for back faces
   const QVector3D ne( 0.707107, 0.707107, 0 );
-  const QVector3D bt( 0, -1, 0 );  // surface normal pointing straight down for back faces
+  const QVector3D bt( 0, -1, 0 ); // surface normal pointing straight down for back faces
 
   {
     // NO extrusion
@@ -458,7 +472,7 @@ void TestQgsTessellator::testIssue17745()
   const bool resWktRead = p.fromWkt( "Polygon((0 0, 1 1e-15, 4 0, 4 5, 1 5, 0 5, 0 0))" );
   QVERIFY( resWktRead );
 
-  t.addPolygon( p, 0 );   // must not crash - that's all we test here
+  t.addPolygon( p, 0 ); // must not crash - that's all we test here
 }
 
 void TestQgsTessellator::testCrashSelfIntersection()
@@ -471,7 +485,7 @@ void TestQgsTessellator::testCrashSelfIntersection()
 
   QVERIFY( resWktRead );
 
-  t.addPolygon( p, 0 );   // must not crash - that's all we test here
+  t.addPolygon( p, 0 ); // must not crash - that's all we test here
 }
 
 void TestQgsTessellator::testCrashEmptyPolygon()
@@ -483,7 +497,7 @@ void TestQgsTessellator::testCrashEmptyPolygon()
   const bool resWktRead = p.fromWkt( "PolygonZ ((0 0 0, 0 0 0, 0 0 0))" );
   QVERIFY( resWktRead );
 
-  t.addPolygon( p, 0 );  // must not crash - that's all we test here
+  t.addPolygon( p, 0 ); // must not crash - that's all we test here
 }
 
 void TestQgsTessellator::testBoundsScaling()

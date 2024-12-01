@@ -45,11 +45,13 @@ class QgsHanaSourceSelectDelegate : public QItemDelegate
     QWidget *createEditor(
       QWidget *parent,
       const QStyleOptionViewItem &option,
-      const QModelIndex &index ) const override;
+      const QModelIndex &index
+    ) const override;
     void setModelData(
       QWidget *editor,
       QAbstractItemModel *model,
-      const QModelIndex &index ) const override;
+      const QModelIndex &index
+    ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
 };
 
@@ -66,7 +68,6 @@ class QgsHanaSourceSelect : public QgsAbstractDbSourceSelect
     Q_OBJECT
 
   public:
-
     //! static function to delete a connection
     static void deleteConnection( const QString &key );
 
@@ -74,7 +75,8 @@ class QgsHanaSourceSelect : public QgsAbstractDbSourceSelect
     QgsHanaSourceSelect(
       QWidget *parent = nullptr,
       Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
-      QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
+      QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone
+    );
 
     ~QgsHanaSourceSelect() override;
     //! Populate the connection list combo box
@@ -131,7 +133,8 @@ class QgsHanaSourceSelect : public QgsAbstractDbSourceSelect
       const QString &schema,
       const QString &table,
       const QString &column,
-      const QString &type );
+      const QString &type
+    );
     void finishList();
     void showHelp();
 

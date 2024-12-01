@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '2024-02-02'
-__copyright__ = 'Copyright 2024, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "2024-02-02"
+__copyright__ = "Copyright 2024, The QGIS Project"
 
 
 from qgis.core import Qgis, QgsPalLayerSettings
@@ -28,15 +29,19 @@ class TestQgsLabelPlacementSettings(QgisTestCase):
         pal_settings = QgsPalLayerSettings()
         pal_settings.displayAll = True
         self.assertTrue(pal_settings.displayAll)
-        self.assertEqual(pal_settings.placementSettings().overlapHandling(),
-                         Qgis.LabelOverlapHandling.AllowOverlapIfRequired)
+        self.assertEqual(
+            pal_settings.placementSettings().overlapHandling(),
+            Qgis.LabelOverlapHandling.AllowOverlapIfRequired,
+        )
         self.assertTrue(pal_settings.placementSettings().allowDegradedPlacement())
         pal_settings.displayAll = False
         self.assertFalse(pal_settings.displayAll)
-        self.assertEqual(pal_settings.placementSettings().overlapHandling(),
-                         Qgis.LabelOverlapHandling.PreventOverlap)
+        self.assertEqual(
+            pal_settings.placementSettings().overlapHandling(),
+            Qgis.LabelOverlapHandling.PreventOverlap,
+        )
         self.assertFalse(pal_settings.placementSettings().allowDegradedPlacement())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

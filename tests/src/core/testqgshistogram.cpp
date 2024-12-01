@@ -44,7 +44,6 @@ class TestQgsHistogram : public QObject
     void fromLayer();
 
   private:
-
 };
 
 TestQgsHistogram::TestQgsHistogram() = default;
@@ -53,7 +52,6 @@ void TestQgsHistogram::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
 }
 
 void TestQgsHistogram::cleanupTestCase()
@@ -143,7 +141,7 @@ void TestQgsHistogram::fromLayer()
 
   QVERIFY( !h.setValues( layer, QString() ) );
   QVERIFY( h.setValues( layer, QString( "col1" ) ) );
-  const QList<int>counts = h.counts( 5 );
+  const QList<int> counts = h.counts( 5 );
   QList<int> expected;
   expected << 2 << 2 << 2 << 2 << 2;
   QCOMPARE( counts, expected );

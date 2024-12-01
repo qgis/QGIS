@@ -19,11 +19,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerundocommand.h"
 
-class TestQgsVectorLayerUndoCommand: public QObject
+class TestQgsVectorLayerUndoCommand : public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void baseClass();
@@ -66,22 +66,24 @@ void TestQgsVectorLayerUndoCommand::baseClass()
 
 void TestQgsVectorLayerUndoCommand::changeAttribute()
 {
-  std::unique_ptr< QgsVectorLayerUndoCommandChangeAttribute > cmd;
+  std::unique_ptr<QgsVectorLayerUndoCommandChangeAttribute> cmd;
 
   // Should this be allowed at all, when fid is nonexistent ?
   cmd.reset( new QgsVectorLayerUndoCommandChangeAttribute(
-               mLayerEditBuffer,
-               1, // Positive (not-new) non-existent FID
-               0, "newvalue", "oldvalue" ) );
+    mLayerEditBuffer,
+    1, // Positive (not-new) non-existent FID
+    0, "newvalue", "oldvalue"
+  ) );
   QCOMPARE( cmd->layer(), mLayerPoint );
   QCOMPARE( cmd->id(), -1 );
   cmd->undo();
 
   // Test for https://github.com/qgis/QGIS/issues/23243
   cmd.reset( new QgsVectorLayerUndoCommandChangeAttribute(
-               mLayerEditBuffer,
-               -1, // Negative (new) non-existent FID
-               0, "newvalue", "oldvalue" ) );
+    mLayerEditBuffer,
+    -1, // Negative (new) non-existent FID
+    0, "newvalue", "oldvalue"
+  ) );
   QCOMPARE( cmd->layer(), mLayerPoint );
   QCOMPARE( cmd->id(), -1 );
   cmd->undo();
@@ -90,7 +92,3 @@ void TestQgsVectorLayerUndoCommand::changeAttribute()
 
 QGSTEST_MAIN( TestQgsVectorLayerUndoCommand )
 #include "testqgsvectorlayerundocommand.moc"
-
-
-
-

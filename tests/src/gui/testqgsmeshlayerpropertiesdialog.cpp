@@ -35,10 +35,10 @@ class TestQgsMeshLayerPropertiesDialog : public QObject
     TestQgsMeshLayerPropertiesDialog();
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void testInvalidLayer();
     void testCrs();
@@ -63,7 +63,8 @@ void TestQgsMeshLayerPropertiesDialog::initTestCase()
   mpMeshLayer = new QgsMeshLayer( uri, "Triangle and Quad MDAL", "mdal" );
 
   QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpMeshLayer );
+    QList<QgsMapLayer *>() << mpMeshLayer
+  );
 }
 
 //runs after all tests
@@ -76,8 +77,7 @@ void TestQgsMeshLayerPropertiesDialog::testInvalidLayer()
 {
   QgsMeshLayer invalidLayer;
   QgsMapCanvas mapCanvas;
-  const std::unique_ptr< QgsMeshLayerProperties > dialog = std::make_unique< QgsMeshLayerProperties > ( &invalidLayer,
-      &mapCanvas );
+  const std::unique_ptr<QgsMeshLayerProperties> dialog = std::make_unique<QgsMeshLayerProperties>( &invalidLayer, &mapCanvas );
 
   QVERIFY( dialog );
 }
@@ -85,8 +85,7 @@ void TestQgsMeshLayerPropertiesDialog::testInvalidLayer()
 void TestQgsMeshLayerPropertiesDialog::testCrs()
 {
   QgsMapCanvas mapCanvas;
-  std::unique_ptr< QgsMeshLayerProperties > dialog = std::make_unique< QgsMeshLayerProperties > ( mpMeshLayer,
-      &mapCanvas );
+  std::unique_ptr<QgsMeshLayerProperties> dialog = std::make_unique<QgsMeshLayerProperties>( mpMeshLayer, &mapCanvas );
   QCOMPARE( dialog->mCrsSelector->crs(), mpMeshLayer->crs() );
   const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromEpsgId( 27700 );
   dialog->mCrsSelector->setCrs( crs );
@@ -115,7 +114,6 @@ void TestQgsMeshLayerPropertiesDialog::testDatasetGroupTree()
   meshLayer.setDatasetGroupTreeRootItem( rootItem.get() );
 
   QCOMPARE( activeDatasetWidget.activeScalarDatasetGroup(), 0 );
-
 }
 
 QGSTEST_MAIN( TestQgsMeshLayerPropertiesDialog )

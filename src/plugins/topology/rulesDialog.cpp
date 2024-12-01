@@ -40,16 +40,14 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   mContextMenu = new QMenu( this );
 
   QAction *selectAllAction = new QAction( tr( "Select All" ), this );
-  connect( selectAllAction, &QAction::triggered, this, [ = ]
-  {
+  connect( selectAllAction, &QAction::triggered, this, [=] {
     mRulesTable->setRangeSelected( QTableWidgetSelectionRange( 0, 0, mRulesTable->rowCount() - 1, mRulesTable->columnCount() - 1 ), true );
   } );
   mContextMenu->addAction( selectAllAction );
   mContextMenu->addSeparator();
 
   QAction *enableAction = new QAction( tr( "Activate" ), this );
-  connect( enableAction, &QAction::triggered, this, [ = ]
-  {
+  connect( enableAction, &QAction::triggered, this, [=] {
     const QModelIndexList selectedIndexes = mRulesTable->selectionModel()->selectedRows();
     for ( const QModelIndex index : selectedIndexes )
     {
@@ -59,8 +57,7 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   } );
   mContextMenu->addAction( enableAction );
   QAction *disableAction = new QAction( tr( "Deactivate" ), this );
-  connect( disableAction, &QAction::triggered, this, [ = ]
-  {
+  connect( disableAction, &QAction::triggered, this, [=] {
     const QModelIndexList selectedIndexes = mRulesTable->selectionModel()->selectedRows();
     for ( const QModelIndex index : selectedIndexes )
     {
@@ -70,8 +67,7 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   } );
   mContextMenu->addAction( disableAction );
   QAction *toggleAction = new QAction( tr( "Toggle Activation" ), this );
-  connect( toggleAction, &QAction::triggered, this, [ = ]
-  {
+  connect( toggleAction, &QAction::triggered, this, [=] {
     const QModelIndexList selectedIndexes = mRulesTable->selectionModel()->selectedRows();
     for ( const QModelIndex index : selectedIndexes )
     {
@@ -86,8 +82,7 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   connect( deleteAction, &QAction::triggered, this, &rulesDialog::deleteTests );
   mContextMenu->addAction( deleteAction );
 
-  connect( mContextMenu, &QMenu::aboutToShow, this, [ = ]
-  {
+  connect( mContextMenu, &QMenu::aboutToShow, this, [=] {
     selectAllAction->setEnabled( mRulesTable->rowCount() > 0 );
     const bool hasSelectedItems = !mRulesTable->selectionModel()->selectedIndexes().isEmpty();
     enableAction->setEnabled( hasSelectedItems );
@@ -97,8 +92,7 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   } );
 
   mRulesTable->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( mRulesTable, &QTableWidget::customContextMenuRequested, this, [ = ]
-  {
+  connect( mRulesTable, &QTableWidget::customContextMenuRequested, this, [=] {
     mContextMenu->exec( QCursor::pos() );
   } );
 
@@ -116,8 +110,7 @@ rulesDialog::rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterf
   connect( mAddTestButton, &QAbstractButton::clicked, this, &rulesDialog::addRule );
   connect( mAddTestButton, &QAbstractButton::clicked, mRulesTable, &QTableView::resizeColumnsToContents );
 
-  connect( mRulesTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, [ = ]()
-  {
+  connect( mRulesTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, [=]() {
     bool enabled = !mRulesTable->selectionModel()->selectedIndexes().isEmpty();
     mDeleteTestButton->setEnabled( enabled );
   } );
@@ -153,10 +146,10 @@ void rulesDialog::readTest( int index, QgsProject *project )
   const QString layer2Id = project->readEntry( QStringLiteral( "Topol" ), "/layer2_" + postfix, QString() );
 
   QgsVectorLayer *l1 = nullptr;
-  if ( !( QgsVectorLayer * )project->mapLayers().contains( layer1Id ) )
+  if ( !( QgsVectorLayer * ) project->mapLayers().contains( layer1Id ) )
     return;
 
-  l1 = ( QgsVectorLayer * )project->mapLayer( layer1Id );
+  l1 = ( QgsVectorLayer * ) project->mapLayer( layer1Id );
   if ( !l1 )
     return;
 
@@ -166,11 +159,11 @@ void rulesDialog::readTest( int index, QgsProject *project )
 
   if ( mTestConfMap[testName].useSecondLayer )
   {
-    if ( !( QgsVectorLayer * )project->mapLayers().contains( layer2Id ) )
+    if ( !( QgsVectorLayer * ) project->mapLayers().contains( layer2Id ) )
       return;
     else
     {
-      l2 = ( QgsVectorLayer * )project->mapLayer( layer2Id );
+      l2 = ( QgsVectorLayer * ) project->mapLayer( layer2Id );
       layer2Name = l2->name();
     }
   }
@@ -229,7 +222,7 @@ void rulesDialog::showControls( const QString &testName )
     mLayer2Box->setVisible( true );
     for ( int i = 0; i < layerList.count(); ++i )
     {
-      QgsVectorLayer *v1 = ( QgsVectorLayer * )QgsProject::instance()->mapLayer( layerList[i] );
+      QgsVectorLayer *v1 = ( QgsVectorLayer * ) QgsProject::instance()->mapLayer( layerList[i] );
 
       if ( !v1 )
       {
@@ -272,9 +265,7 @@ void rulesDialog::addRule()
 
   for ( int i = 0; i < mRulesTable->rowCount(); ++i )
   {
-    if ( mRulesTable->item( i, 0 )->text() == test &&
-         mRulesTable->item( i, 1 )->text() == layer1 &&
-         mRulesTable->item( i, 2 )->text() == layer2 )
+    if ( mRulesTable->item( i, 0 )->text() == test && mRulesTable->item( i, 1 )->text() == layer1 && mRulesTable->item( i, 2 )->text() == layer2 )
     {
       return;
     }
@@ -358,7 +349,7 @@ void rulesDialog::updateRuleItems( const QString &layerName )
 
   const QString layerId = mLayer1Box->currentData().toString();
 
-  QgsVectorLayer *vlayer = ( QgsVectorLayer * )QgsProject::instance()->mapLayer( layerId );
+  QgsVectorLayer *vlayer = ( QgsVectorLayer * ) QgsProject::instance()->mapLayer( layerId );
 
   if ( !vlayer )
   {
@@ -373,7 +364,6 @@ void rulesDialog::updateRuleItems( const QString &layerName )
     {
       mRuleBox->addItem( it.key() );
     }
-
   }
 }
 
@@ -390,7 +380,7 @@ void rulesDialog::initGui()
   mLayer1Box->blockSignals( true );
   for ( int i = 0; i < layerList.size(); ++i )
   {
-    QgsVectorLayer *v1 = ( QgsVectorLayer * )QgsProject::instance()->mapLayer( layerList[i] );
+    QgsVectorLayer *v1 = ( QgsVectorLayer * ) QgsProject::instance()->mapLayer( layerList[i] );
 
     // add layer name to the layer combo boxes
     if ( v1->type() == Qgis::LayerType::Vector )
@@ -399,7 +389,6 @@ void rulesDialog::initGui()
     }
   }
   mLayer1Box->blockSignals( false );
-
 }
 
 void rulesDialog::clearRules()

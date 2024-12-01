@@ -5,15 +5,11 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor
 
-from qgis.core import (
-    Qgis,
-    QgsMapUnitScale,
-    QgsSymbolBufferSettings,
-    QgsFillSymbol
-)
+from qgis.core import Qgis, QgsMapUnitScale, QgsSymbolBufferSettings, QgsFillSymbol
 from qgis.gui import QgsSymbolBufferSettingsWidget
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -38,7 +34,7 @@ class TestQgsSymbolBufferSettingsWidget(QgisTestCase):
 
         s.setJoinStyle(Qt.PenJoinStyle.MiterJoin)
         s.setFillSymbol(
-            QgsFillSymbol.createSimple({'color': '#00ff00', 'outline_color': 'red'})
+            QgsFillSymbol.createSimple({"color": "#00ff00", "outline_color": "red"})
         )
 
         widget.setBufferSettings(s)
@@ -55,5 +51,5 @@ class TestQgsSymbolBufferSettingsWidget(QgisTestCase):
         self.assertEqual(new_settings.fillSymbol()[0].strokeColor(), QColor(255, 0, 0))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

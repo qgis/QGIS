@@ -21,10 +21,7 @@ extern "C"
 {
 #include <sqlite3.h>
 
-  int qgsvlayerModuleInit( sqlite3 *db,
-                           char **pzErrMsg,
-                           void *unused /*const sqlite3_api_routines *pApi*/ );
-
+  int qgsvlayerModuleInit( sqlite3 *db, char **pzErrMsg, void *unused /*const sqlite3_api_routines *pApi*/ );
 }
 
 // RAII class for sqlite3*
@@ -90,6 +87,6 @@ namespace Sqlite
       sqlite3_stmt *stmt_ = nullptr;
       int nBind_;
   };
-}
+} // namespace Sqlite
 
 #endif

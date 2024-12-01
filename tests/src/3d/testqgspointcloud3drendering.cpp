@@ -40,11 +40,12 @@ class TestQgsPointCloud3DRendering : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsPointCloud3DRendering() : QgsTest( QStringLiteral( "Point Cloud 3D Rendering Tests" ), QStringLiteral( "3d" ) ) {}
+    TestQgsPointCloud3DRendering()
+      : QgsTest( QStringLiteral( "Point Cloud 3D Rendering Tests" ), QStringLiteral( "3d" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testSync3DRendererTo2DRenderer();
     void testDisableSync3DRendererTo2DRenderer();
 
@@ -59,10 +60,8 @@ class TestQgsPointCloud3DRendering : public QgsTest
 
 
   private:
-
     std::unique_ptr<QgsProject> mProject;
     QgsPointCloudLayer *mLayer;
-
 };
 
 //runs before all tests
@@ -221,23 +220,23 @@ void TestQgsPointCloud3DRendering::testDisableSync3DRendererTo2DRenderer()
 
   {
     mLayer->setRenderer( colorramp2DRenderer );
-    QgsPointCloudLayer3DRenderer *r3D  = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QgsPointCloudLayer3DRenderer *r3D = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
     QVERIFY( r3D );
-    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3D ->symbol() );
+    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3D->symbol() );
     QVERIFY( s );
   }
   {
     mLayer->setRenderer( rgb2DRenderer );
-    QgsPointCloudLayer3DRenderer *r3D  = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QgsPointCloudLayer3DRenderer *r3D = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
     QVERIFY( r3D );
-    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3D ->symbol() );
+    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3D->symbol() );
     QVERIFY( s );
   }
   {
     mLayer->setRenderer( classification2DRenderer );
-    QgsPointCloudLayer3DRenderer *r3D  = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
+    QgsPointCloudLayer3DRenderer *r3D = static_cast<QgsPointCloudLayer3DRenderer *>( mLayer->renderer3D() );
     QVERIFY( r3D );
-    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3D ->symbol() );
+    const QgsColorRampPointCloud3DSymbol *s = dynamic_cast<const QgsColorRampPointCloud3DSymbol *>( r3D->symbol() );
     QVERIFY( s );
   }
 }
@@ -425,8 +424,8 @@ void TestQgsPointCloud3DRendering::testPointCloudClassificationOverridePointSize
   QgsClassificationPointCloud3DSymbol *symbol = new QgsClassificationPointCloud3DSymbol();
   symbol->setAttribute( QStringLiteral( "Classification" ) );
   auto categories = QgsPointCloudClassifiedRenderer::defaultCategories();
-  categories[ 2 ].setPointSize( 4 );
-  categories[ 5 ].setPointSize( 7 );
+  categories[2].setPointSize( 4 );
+  categories[5].setPointSize( 7 );
   symbol->setCategoriesList( categories );
   symbol->setPointSize( 10 );
 
@@ -487,8 +486,7 @@ void TestQgsPointCloud3DRendering::testPointCloudFilteredClassification()
 void TestQgsPointCloud3DRendering::testPointCloudFilteredSceneExtent()
 {
   const QgsRectangle fullExtent = mLayer->extent();
-  const QgsRectangle filteredExtent = QgsRectangle( fullExtent.xMinimum(), fullExtent.yMinimum(),
-                                      fullExtent.xMinimum() + fullExtent.width() / 3.0, fullExtent.yMinimum() + fullExtent.height() / 4.0 );
+  const QgsRectangle filteredExtent = QgsRectangle( fullExtent.xMinimum(), fullExtent.yMinimum(), fullExtent.xMinimum() + fullExtent.width() / 3.0, fullExtent.yMinimum() + fullExtent.height() / 4.0 );
 
   Qgs3DMapSettings *map = new Qgs3DMapSettings;
   map->setCrs( mProject->crs() );

@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'April 2014'
-__copyright__ = '(C) 201, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "April 2014"
+__copyright__ = "(C) 201, Victor Olaya"
 
 import os
 import shutil
@@ -35,48 +35,75 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class AddModelFromFileAction(ToolboxAction):
 
     def __init__(self):
-        self.name = QCoreApplication.translate('AddModelFromFileAction', 'Add Model to Toolbox…')
-        self.group = self.tr('Tools')
+        self.name = QCoreApplication.translate(
+            "AddModelFromFileAction", "Add Model to Toolbox…"
+        )
+        self.group = self.tr("Tools")
 
     def getIcon(self):
         return QgsApplication.getThemeIcon("/processingModel.svg")
 
     def execute(self):
         settings = QgsSettings()
-        lastDir = settings.value('Processing/lastModelsDir', QDir.homePath())
-        filename, selected_filter = QFileDialog.getOpenFileName(self.toolbox,
-                                                                self.tr('Open Model', 'AddModelFromFileAction'), lastDir,
-                                                                self.tr('Processing models (*.model3 *.MODEL3)', 'AddModelFromFileAction'))
+        lastDir = settings.value("Processing/lastModelsDir", QDir.homePath())
+        filename, selected_filter = QFileDialog.getOpenFileName(
+            self.toolbox,
+            self.tr("Open Model", "AddModelFromFileAction"),
+            lastDir,
+            self.tr("Processing models (*.model3 *.MODEL3)", "AddModelFromFileAction"),
+        )
         if filename:
-            settings.setValue('Processing/lastModelsDir',
-                              QFileInfo(filename).absoluteDir().absolutePath())
+            settings.setValue(
+                "Processing/lastModelsDir",
+                QFileInfo(filename).absoluteDir().absolutePath(),
+            )
 
             alg = QgsProcessingModelAlgorithm()
             if not alg.fromFile(filename):
                 QMessageBox.warning(
                     self.toolbox,
-                    self.tr('Open Model', 'AddModelFromFileAction'),
-                    self.tr('The selected file does not contain a valid model', 'AddModelFromFileAction'))
+                    self.tr("Open Model", "AddModelFromFileAction"),
+                    self.tr(
+                        "The selected file does not contain a valid model",
+                        "AddModelFromFileAction",
+                    ),
+                )
                 return
 
-            if QgsApplication.instance().processingRegistry().algorithmById(f'model:{alg.id()}'):
+            if (
+                QgsApplication.instance()
+                .processingRegistry()
+                .algorithmById(f"model:{alg.id()}")
+            ):
                 QMessageBox.warning(
                     self.toolbox,
-                    self.tr('Open Model', 'AddModelFromFileAction'),
-                    self.tr('Model with the same name already exists', 'AddModelFromFileAction'))
+                    self.tr("Open Model", "AddModelFromFileAction"),
+                    self.tr(
+                        "Model with the same name already exists",
+                        "AddModelFromFileAction",
+                    ),
+                )
                 return
 
-            destFilename = os.path.join(ModelerUtils.modelsFolders()[0], os.path.basename(filename))
+            destFilename = os.path.join(
+                ModelerUtils.modelsFolders()[0], os.path.basename(filename)
+            )
             if os.path.exists(destFilename):
                 reply = QMessageBox.question(
                     self.toolbox,
-                    self.tr('Open Model', 'AddModelFromFileAction'),
-                    self.tr('There is already a model file with the same name. Overwrite?', 'AddModelFromFileAction'),
+                    self.tr("Open Model", "AddModelFromFileAction"),
+                    self.tr(
+                        "There is already a model file with the same name. Overwrite?",
+                        "AddModelFromFileAction",
+                    ),
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                    QMessageBox.StandardButton.No)
+                    QMessageBox.StandardButton.No,
+                )
 
                 if reply == QMessageBox.StandardButton.No:
                     return
 
             shutil.copyfile(filename, destFilename)
-            QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()
+            QgsApplication.processingRegistry().providerById(
+                "model"
+            ).refreshAlgorithms()
