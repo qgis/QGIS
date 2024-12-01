@@ -234,10 +234,8 @@ Qgis::MeshRangeExtent QgsMeshRendererScalarSettings::extentFromString( const QSt
   {
     return Qgis::MeshRangeExtent::UpdatedCanvas;
   }
-  else
-  {
-    return Qgis::MeshRangeExtent::WholeMesh;
-  }
+
+  return Qgis::MeshRangeExtent::WholeMesh;
 }
 
 QString QgsMeshRendererScalarSettings::limitsString( Qgis::MeshRangeLimit limits )
