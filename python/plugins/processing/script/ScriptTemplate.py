@@ -10,12 +10,14 @@
 """
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsProcessing,
-                       QgsFeatureSink,
-                       QgsProcessingException,
-                       QgsProcessingAlgorithm,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFeatureSink)
+from qgis.core import (
+    QgsProcessing,
+    QgsFeatureSink,
+    QgsProcessingException,
+    QgsProcessingAlgorithm,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterFeatureSink,
+)
 from qgis import processing
 
 
@@ -37,14 +39,14 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
     # used when calling the algorithm from another algorithm, or when
     # calling from the QGIS console.
 
-    INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
+    INPUT = "INPUT"
+    OUTPUT = "OUTPUT"
 
     def tr(self, string):
         """
         Returns a translatable string with the self.tr() function.
         """
-        return QCoreApplication.translate('Processing', string)
+        return QCoreApplication.translate("Processing", string)
 
     def createInstance(self):
         return ExampleProcessingAlgorithm()
@@ -57,21 +59,21 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         lowercase alphanumeric characters only and no spaces or other
         formatting characters.
         """
-        return 'myscript'
+        return "myscript"
 
     def displayName(self):
         """
         Returns the translated algorithm name, which should be used for any
         user-visible display of the algorithm name.
         """
-        return self.tr('My Script')
+        return self.tr("My Script")
 
     def group(self):
         """
         Returns the name of the group this algorithm belongs to. This string
         should be localised.
         """
-        return self.tr('Example scripts')
+        return self.tr("Example scripts")
 
     def groupId(self):
         """
@@ -81,7 +83,7 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         contain lowercase alphanumeric characters only and no spaces or other
         formatting characters.
         """
-        return 'examplescripts'
+        return "examplescripts"
 
     def shortHelpString(self):
         """
@@ -102,8 +104,8 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFeatureSource(
                 self.INPUT,
-                self.tr('Input layer'),
-                [QgsProcessing.SourceType.TypeVectorAnyGeometry]
+                self.tr("Input layer"),
+                [QgsProcessing.SourceType.TypeVectorAnyGeometry],
             )
         )
 
@@ -111,10 +113,7 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         # usually takes the form of a newly created vector layer when the
         # algorithm is run in QGIS).
         self.addParameter(
-            QgsProcessingParameterFeatureSink(
-                self.OUTPUT,
-                self.tr('Output layer')
-            )
+            QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr("Output layer"))
         )
 
     def processAlgorithm(self, parameters, context, feedback):
@@ -125,18 +124,16 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         # Retrieve the feature source and sink. The 'dest_id' variable is used
         # to uniquely identify the feature sink, and must be included in the
         # dictionary returned by the processAlgorithm function.
-        source = self.parameterAsSource(
-            parameters,
-            self.INPUT,
-            context
-        )
+        source = self.parameterAsSource(parameters, self.INPUT, context)
 
         # If source was not found, throw an exception to indicate that the algorithm
         # encountered a fatal error. The exception text can be any string, but in this
         # case we use the pre-built invalidSourceError method to return a standard
         # helper text for when a source cannot be evaluated
         if source is None:
-            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+            raise QgsProcessingException(
+                self.invalidSourceError(parameters, self.INPUT)
+            )
 
         (sink, dest_id) = self.parameterAsSink(
             parameters,
@@ -144,11 +141,11 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
             context,
             source.fields(),
             source.wkbType(),
-            source.sourceCrs()
+            source.sourceCrs(),
         )
 
         # Send some information to the user
-        feedback.pushInfo(f'CRS is {source.sourceCrs().authid()}')
+        feedback.pushInfo(f"CRS is {source.sourceCrs().authid()}")
 
         # If sink was not created, throw an exception to indicate that the algorithm
         # encountered a fatal error. The exception text can be any string, but in this
@@ -179,16 +176,21 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
         # to the executed algorithm, and that the executed algorithm can send feedback
         # reports to the user (and correctly handle cancellation and progress reports!)
         if False:
-            buffered_layer = processing.run("native:buffer", {
-                'INPUT': dest_id,
-                'DISTANCE': 1.5,
-                'SEGMENTS': 5,
-                'END_CAP_STYLE': 0,
-                'JOIN_STYLE': 0,
-                'MITER_LIMIT': 2,
-                'DISSOLVE': False,
-                'OUTPUT': 'memory:'
-            }, context=context, feedback=feedback)['OUTPUT']
+            buffered_layer = processing.run(
+                "native:buffer",
+                {
+                    "INPUT": dest_id,
+                    "DISTANCE": 1.5,
+                    "SEGMENTS": 5,
+                    "END_CAP_STYLE": 0,
+                    "JOIN_STYLE": 0,
+                    "MITER_LIMIT": 2,
+                    "DISSOLVE": False,
+                    "OUTPUT": "memory:",
+                },
+                context=context,
+                feedback=feedback,
+            )["OUTPUT"]
 
         # Return the results of the algorithm. In this case our only result is
         # the feature sink which contains the processed features, but some

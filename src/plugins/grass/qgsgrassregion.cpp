@@ -185,8 +185,7 @@ void QgsGrassRegionEdit::setSrcRegion( const QgsRectangle &rect )
   mSrcRectangle = rect;
 }
 
-QgsGrassRegion::QgsGrassRegion( QgisInterface *iface,
-                                QWidget *parent, Qt::WindowFlags f )
+QgsGrassRegion::QgsGrassRegion( QgisInterface *iface, QWidget *parent, Qt::WindowFlags f )
   : QWidget( parent, f )
   , QgsGrassRegionBase()
   , mUpdatingGui( false )
@@ -225,7 +224,7 @@ QgsGrassRegion::QgsGrassRegion( QgisInterface *iface,
   mResRadio->setChecked( true );
   radioChanged();
 
-  connect( mRadioGroup, qOverload< QAbstractButton * >( &QButtonGroup::buttonClicked ), this, &QgsGrassRegion::radioChanged );
+  connect( mRadioGroup, qOverload<QAbstractButton *>( &QButtonGroup::buttonClicked ), this, &QgsGrassRegion::radioChanged );
 
   // Connect entries
   connect( mNorth, &QLineEdit::editingFinished, this, &QgsGrassRegion::northChanged );
@@ -441,7 +440,6 @@ void QgsGrassRegion::adjust()
 
 void QgsGrassRegion::radioChanged()
 {
-
   bool res = !mRowsColsRadio->isChecked();
 
   mEWResLabel->setEnabled( res );
@@ -515,5 +513,3 @@ void QgsGrassRegion::buttonClicked( QAbstractButton *button )
   // Better to keep the tool selected until another tool is chosen?
   mCanvas->unsetMapTool( mRegionEdit );
 }
-
-

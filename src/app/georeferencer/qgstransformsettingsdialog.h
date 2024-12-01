@@ -27,7 +27,6 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     Q_OBJECT
 
   public:
-
     static const QgsSettingsEntryString *settingLastDestinationFolder;
     static const QgsSettingsEntryString *settingLastPdfFolder;
 

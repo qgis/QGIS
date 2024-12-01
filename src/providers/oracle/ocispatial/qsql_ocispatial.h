@@ -70,19 +70,13 @@ class Q_EXPORT_SQLDRIVER_OCISPATIAL QOCISpatialDriver : public QSqlDriver
     QOCISpatialDriver( OCIEnv *env, OCISvcCtx *ctx, QObject *parent = nullptr );
     ~QOCISpatialDriver() override;
     bool hasFeature( DriverFeature f ) const override;
-    bool open( const QString &db,
-               const QString &user,
-               const QString &password,
-               const QString &host,
-               int port,
-               const QString &connOpts ) override;
+    bool open( const QString &db, const QString &user, const QString &password, const QString &host, int port, const QString &connOpts ) override;
     void close() override;
     QSqlResult *createResult() const override;
     QStringList tables( QSql::TableType ) const override;
     QSqlRecord record( const QString &tablename ) const override;
     QSqlIndex primaryIndex( const QString &tablename ) const override;
-    QString formatValue( const QSqlField &field,
-                         bool trimStrings ) const override;
+    QString formatValue( const QSqlField &field, bool trimStrings ) const override;
     QVariant handle() const override;
     QString escapeIdentifier( const QString &identifier, IdentifierType ) const override;
 
@@ -90,7 +84,6 @@ class Q_EXPORT_SQLDRIVER_OCISPATIAL QOCISpatialDriver : public QSqlDriver
     bool beginTransaction() override;
     bool commitTransaction() override;
     bool rollbackTransaction() override;
-
 };
 
 QT_END_NAMESPACE

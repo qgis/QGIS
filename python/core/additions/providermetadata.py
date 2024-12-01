@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     providermetadata.py
@@ -21,12 +19,12 @@ from qgis._core import QgsProviderMetadata
 
 
 class PyProviderMetadata(QgsProviderMetadata):
-    """ wrapper around QgsProviderMetadata to keep the existing Python code running which registers
-        data providers by passing a custom python createProvider() function to QgsProviderMetadata
-        constructor. The proper new way of doing it is to subclass QgsProviderMetadata and implement
-        its virtual functions.
+    """wrapper around QgsProviderMetadata to keep the existing Python code running which registers
+    data providers by passing a custom python createProvider() function to QgsProviderMetadata
+    constructor. The proper new way of doing it is to subclass QgsProviderMetadata and implement
+    its virtual functions.
 
-        TODO: QGIS 4 - remove this wrapper (only subclassing of QgsProviderMetadata should be used)
+    TODO: QGIS 4 - remove this wrapper (only subclassing of QgsProviderMetadata should be used)
     """
 
     # this is a workaround to keep references to metadata classes

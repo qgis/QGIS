@@ -26,12 +26,7 @@ class QgsWFSGetFeature : public QgsWfsRequest
     explicit QgsWFSGetFeature( QgsWFSDataSourceURI &uri );
 
     //! Issue the request
-    bool request( bool synchronous,
-                  const QString &WFSVersion,
-                  const QString &typeName,
-                  const QString &filter,
-                  bool hitsOnly,
-                  const QgsWfsCapabilities::Capabilities &caps );
+    bool request( bool synchronous, const QString &WFSVersion, const QString &typeName, const QString &filter, bool hitsOnly, const QgsWfsCapabilities::Capabilities &caps );
 
   protected:
     QString errorMessageWithReason( const QString &reason ) override;

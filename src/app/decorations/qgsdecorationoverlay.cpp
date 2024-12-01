@@ -40,7 +40,7 @@ QgsDecorationOverlay::QgsDecorationOverlay( QWidget *parent )
 
 void QgsDecorationOverlay::paintEvent( QPaintEvent * )
 {
-  const QList< QgsMapDecoration * > decorations = QgisApp::instance()->activeDecorations();
+  const QList<QgsMapDecoration *> decorations = QgisApp::instance()->activeDecorations();
   if ( decorations.empty() )
     return;
 

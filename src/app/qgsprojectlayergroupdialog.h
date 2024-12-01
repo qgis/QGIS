@@ -33,7 +33,6 @@ class QgsEmbeddedLayerTreeModel : public QgsLayerTreeModel
 {
     Q_OBJECT
   public:
-
     /**
      * Construct a new tree model with given layer tree (root node must not be NULLPTR).
      * The root node is not transferred by the model.
@@ -54,11 +53,10 @@ class QgsEmbeddedLayerTreeModel : public QgsLayerTreeModel
  *
  * In the second case, the file selection dialog is hidden.
  */
-class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProjectLayerGroupDialogBase
+class APP_EXPORT QgsProjectLayerGroupDialog : public QDialog, private Ui::QgsProjectLayerGroupDialogBase
 {
     Q_OBJECT
   public:
-
     //! Constructor. If a project file is given, the groups/layers are displayed directly and the file selection hidden
     QgsProjectLayerGroupDialog( QWidget *parent = nullptr, const QString &projectFile = QString(), Qt::WindowFlags f = Qt::WindowFlags() );
 

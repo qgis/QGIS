@@ -36,7 +36,7 @@ class QgsLayerTreeViewEmbeddedIndicatorProvider : public QObject
     void onAddedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
 
   private:
-    std::unique_ptr< QgsLayerTreeViewIndicator > newIndicator( const QString &project );
+    std::unique_ptr<QgsLayerTreeViewIndicator> newIndicator( const QString &project );
     void addIndicatorForEmbeddedLayer( QgsLayerTreeNode *node );
 
   private:

@@ -15,20 +15,22 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "August 2012"
+__copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 import tempfile
 
 from qgis.PyQt.QtCore import QCoreApplication, QObject, pyqtSignal
-from qgis.core import (NULL,
-                       QgsApplication,
-                       QgsSettings,
-                       QgsVectorFileWriter,
-                       QgsRasterFileWriter,
-                       QgsProcessingUtils)
+from qgis.core import (
+    NULL,
+    QgsApplication,
+    QgsSettings,
+    QgsVectorFileWriter,
+    QgsRasterFileWriter,
+    QgsProcessingUtils,
+)
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 from multiprocessing import cpu_count
@@ -42,26 +44,26 @@ settingsWatcher = SettingsWatcher()
 
 
 class ProcessingConfig:
-    OUTPUT_FOLDER = 'OUTPUTS_FOLDER'
-    RASTER_STYLE = 'RASTER_STYLE'
-    VECTOR_POINT_STYLE = 'VECTOR_POINT_STYLE'
-    VECTOR_LINE_STYLE = 'VECTOR_LINE_STYLE'
-    VECTOR_POLYGON_STYLE = 'VECTOR_POLYGON_STYLE'
-    FILTER_INVALID_GEOMETRIES = 'FILTER_INVALID_GEOMETRIES'
-    PREFER_FILENAME_AS_LAYER_NAME = 'prefer-filename-as-layer-name'
-    KEEP_DIALOG_OPEN = 'KEEP_DIALOG_OPEN'
-    PRE_EXECUTION_SCRIPT = 'PRE_EXECUTION_SCRIPT'
-    POST_EXECUTION_SCRIPT = 'POST_EXECUTION_SCRIPT'
-    SHOW_CRS_DEF = 'SHOW_CRS_DEF'
-    WARN_UNMATCHING_CRS = 'WARN_UNMATCHING_CRS'
-    SHOW_PROVIDERS_TOOLTIP = 'SHOW_PROVIDERS_TOOLTIP'
-    SHOW_ALGORITHMS_KNOWN_ISSUES = 'SHOW_ALGORITHMS_KNOWN_ISSUES'
-    MAX_THREADS = 'MAX_THREADS'
-    DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'default-output-raster-ext'
-    DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'default-output-vector-ext'
-    TEMP_PATH = 'temp-path'
-    RESULTS_GROUP_NAME = 'RESULTS_GROUP_NAME'
-    VECTOR_FEATURE_COUNT = 'VECTOR_FEATURE_COUNT'
+    OUTPUT_FOLDER = "OUTPUTS_FOLDER"
+    RASTER_STYLE = "RASTER_STYLE"
+    VECTOR_POINT_STYLE = "VECTOR_POINT_STYLE"
+    VECTOR_LINE_STYLE = "VECTOR_LINE_STYLE"
+    VECTOR_POLYGON_STYLE = "VECTOR_POLYGON_STYLE"
+    FILTER_INVALID_GEOMETRIES = "FILTER_INVALID_GEOMETRIES"
+    PREFER_FILENAME_AS_LAYER_NAME = "prefer-filename-as-layer-name"
+    KEEP_DIALOG_OPEN = "KEEP_DIALOG_OPEN"
+    PRE_EXECUTION_SCRIPT = "PRE_EXECUTION_SCRIPT"
+    POST_EXECUTION_SCRIPT = "POST_EXECUTION_SCRIPT"
+    SHOW_CRS_DEF = "SHOW_CRS_DEF"
+    WARN_UNMATCHING_CRS = "WARN_UNMATCHING_CRS"
+    SHOW_PROVIDERS_TOOLTIP = "SHOW_PROVIDERS_TOOLTIP"
+    SHOW_ALGORITHMS_KNOWN_ISSUES = "SHOW_ALGORITHMS_KNOWN_ISSUES"
+    MAX_THREADS = "MAX_THREADS"
+    DEFAULT_OUTPUT_RASTER_LAYER_EXT = "default-output-raster-ext"
+    DEFAULT_OUTPUT_VECTOR_LAYER_EXT = "default-output-vector-ext"
+    TEMP_PATH = "temp-path"
+    RESULTS_GROUP_NAME = "RESULTS_GROUP_NAME"
+    VECTOR_FEATURE_COUNT = "VECTOR_FEATURE_COUNT"
 
     settings = {}
     settingIcons = {}
@@ -69,128 +71,213 @@ class ProcessingConfig:
     @staticmethod
     def initialize():
         icon = QgsApplication.getThemeIcon("/processingAlgorithm.svg")
-        ProcessingConfig.settingIcons['General'] = icon
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.KEEP_DIALOG_OPEN,
-            ProcessingConfig.tr('Keep dialog open after running an algorithm'), True))
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.PREFER_FILENAME_AS_LAYER_NAME,
-            ProcessingConfig.tr('Prefer output filename for layer names'), True,
-            hasSettingEntry=True))
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.SHOW_PROVIDERS_TOOLTIP,
-            ProcessingConfig.tr('Show tooltip when there are disabled providers'), True))
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.OUTPUT_FOLDER,
-            ProcessingConfig.tr('Output folder'), defaultOutputFolder(),
-            valuetype=Setting.FOLDER))
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.SHOW_CRS_DEF,
-            ProcessingConfig.tr('Show layer CRS definition in selection boxes'), True))
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.WARN_UNMATCHING_CRS,
-            ProcessingConfig.tr("Warn before executing if parameter CRS's do not match"), True))
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES,
-            ProcessingConfig.tr("Show algorithms with known issues"), False))
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.RASTER_STYLE,
-            ProcessingConfig.tr('Style for raster layers'), '',
-            valuetype=Setting.FILE))
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.VECTOR_POINT_STYLE,
-            ProcessingConfig.tr('Style for point layers'), '',
-            valuetype=Setting.FILE))
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.VECTOR_LINE_STYLE,
-            ProcessingConfig.tr('Style for line layers'), '',
-            valuetype=Setting.FILE))
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.VECTOR_POLYGON_STYLE,
-            ProcessingConfig.tr('Style for polygon layers'), '',
-            valuetype=Setting.FILE))
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.PRE_EXECUTION_SCRIPT,
-            ProcessingConfig.tr('Pre-execution script'), '',
-            valuetype=Setting.FILE))
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.POST_EXECUTION_SCRIPT,
-            ProcessingConfig.tr('Post-execution script'), '',
-            valuetype=Setting.FILE))
+        ProcessingConfig.settingIcons["General"] = icon
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.KEEP_DIALOG_OPEN,
+                ProcessingConfig.tr("Keep dialog open after running an algorithm"),
+                True,
+            )
+        )
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.PREFER_FILENAME_AS_LAYER_NAME,
+                ProcessingConfig.tr("Prefer output filename for layer names"),
+                True,
+                hasSettingEntry=True,
+            )
+        )
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.SHOW_PROVIDERS_TOOLTIP,
+                ProcessingConfig.tr("Show tooltip when there are disabled providers"),
+                True,
+            )
+        )
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.OUTPUT_FOLDER,
+                ProcessingConfig.tr("Output folder"),
+                defaultOutputFolder(),
+                valuetype=Setting.FOLDER,
+            )
+        )
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.SHOW_CRS_DEF,
+                ProcessingConfig.tr("Show layer CRS definition in selection boxes"),
+                True,
+            )
+        )
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.WARN_UNMATCHING_CRS,
+                ProcessingConfig.tr(
+                    "Warn before executing if parameter CRS's do not match"
+                ),
+                True,
+            )
+        )
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES,
+                ProcessingConfig.tr("Show algorithms with known issues"),
+                False,
+            )
+        )
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.RASTER_STYLE,
+                ProcessingConfig.tr("Style for raster layers"),
+                "",
+                valuetype=Setting.FILE,
+            )
+        )
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.VECTOR_POINT_STYLE,
+                ProcessingConfig.tr("Style for point layers"),
+                "",
+                valuetype=Setting.FILE,
+            )
+        )
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.VECTOR_LINE_STYLE,
+                ProcessingConfig.tr("Style for line layers"),
+                "",
+                valuetype=Setting.FILE,
+            )
+        )
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.VECTOR_POLYGON_STYLE,
+                ProcessingConfig.tr("Style for polygon layers"),
+                "",
+                valuetype=Setting.FILE,
+            )
+        )
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.PRE_EXECUTION_SCRIPT,
+                ProcessingConfig.tr("Pre-execution script"),
+                "",
+                valuetype=Setting.FILE,
+            )
+        )
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.POST_EXECUTION_SCRIPT,
+                ProcessingConfig.tr("Post-execution script"),
+                "",
+                valuetype=Setting.FILE,
+            )
+        )
 
-        invalidFeaturesOptions = [ProcessingConfig.tr('Do not filter (better performance)'),
-                                  ProcessingConfig.tr('Skip (ignore) features with invalid geometries'),
-                                  ProcessingConfig.tr('Stop algorithm execution when a geometry is invalid')]
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.FILTER_INVALID_GEOMETRIES,
-            ProcessingConfig.tr('Invalid features filtering'),
-            invalidFeaturesOptions[2],
-            valuetype=Setting.SELECTION,
-            options=invalidFeaturesOptions))
+        invalidFeaturesOptions = [
+            ProcessingConfig.tr("Do not filter (better performance)"),
+            ProcessingConfig.tr("Skip (ignore) features with invalid geometries"),
+            ProcessingConfig.tr("Stop algorithm execution when a geometry is invalid"),
+        ]
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.FILTER_INVALID_GEOMETRIES,
+                ProcessingConfig.tr("Invalid features filtering"),
+                invalidFeaturesOptions[2],
+                valuetype=Setting.SELECTION,
+                options=invalidFeaturesOptions,
+            )
+        )
 
-        threads = QgsApplication.maxThreads()  # if user specified limit for rendering, lets keep that as default here, otherwise max
-        threads = cpu_count() if threads == -1 else threads  # if unset, maxThreads() returns -1
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.MAX_THREADS,
-            ProcessingConfig.tr('Max Threads'), threads,
-            valuetype=Setting.INT))
+        threads = (
+            QgsApplication.maxThreads()
+        )  # if user specified limit for rendering, lets keep that as default here, otherwise max
+        threads = (
+            cpu_count() if threads == -1 else threads
+        )  # if unset, maxThreads() returns -1
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.MAX_THREADS,
+                ProcessingConfig.tr("Max Threads"),
+                threads,
+                valuetype=Setting.INT,
+            )
+        )
 
         extensions = QgsVectorFileWriter.supportedFormatExtensions()
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,
-            ProcessingConfig.tr('Default output vector layer extension'),
-            QgsVectorFileWriter.supportedFormatExtensions()[0],
-            valuetype=Setting.SELECTION_STORE_STRING,
-            options=extensions,
-            hasSettingEntry=True))
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,
+                ProcessingConfig.tr("Default output vector layer extension"),
+                QgsVectorFileWriter.supportedFormatExtensions()[0],
+                valuetype=Setting.SELECTION_STORE_STRING,
+                options=extensions,
+                hasSettingEntry=True,
+            )
+        )
 
         extensions = QgsRasterFileWriter.supportedFormatExtensions()
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT,
-            ProcessingConfig.tr('Default output raster layer extension'),
-            'tif',
-            valuetype=Setting.SELECTION_STORE_STRING,
-            options=extensions,
-            hasSettingEntry=True))
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT,
+                ProcessingConfig.tr("Default output raster layer extension"),
+                "tif",
+                valuetype=Setting.SELECTION_STORE_STRING,
+                options=extensions,
+                hasSettingEntry=True,
+            )
+        )
 
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.TEMP_PATH,
-            ProcessingConfig.tr('Override temporary output folder path'), None,
-            valuetype=Setting.FOLDER,
-            placeholder=ProcessingConfig.tr('Leave blank for default'),
-            hasSettingEntry=True))
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.TEMP_PATH,
+                ProcessingConfig.tr("Override temporary output folder path"),
+                None,
+                valuetype=Setting.FOLDER,
+                placeholder=ProcessingConfig.tr("Leave blank for default"),
+                hasSettingEntry=True,
+            )
+        )
 
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.RESULTS_GROUP_NAME,
-            ProcessingConfig.tr("Results group name"),
-            "",
-            valuetype=Setting.STRING,
-            placeholder=ProcessingConfig.tr("Leave blank to avoid loading results in a predetermined group")
-        ))
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.RESULTS_GROUP_NAME,
+                ProcessingConfig.tr("Results group name"),
+                "",
+                valuetype=Setting.STRING,
+                placeholder=ProcessingConfig.tr(
+                    "Leave blank to avoid loading results in a predetermined group"
+                ),
+            )
+        )
 
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.VECTOR_FEATURE_COUNT,
-            ProcessingConfig.tr('Show feature count for output vector layers'), False))
+        ProcessingConfig.addSetting(
+            Setting(
+                ProcessingConfig.tr("General"),
+                ProcessingConfig.VECTOR_FEATURE_COUNT,
+                ProcessingConfig.tr("Show feature count for output vector layers"),
+                False,
+            )
+        )
 
     @staticmethod
     def setGroupIcon(group, icon):
@@ -198,7 +285,7 @@ class ProcessingConfig:
 
     @staticmethod
     def getGroupIcon(group):
-        if group == ProcessingConfig.tr('General'):
+        if group == ProcessingConfig.tr("General"):
             return QgsApplication.getThemeIcon("/processingAlgorithm.svg")
         if group in ProcessingConfig.settingIcons:
             return ProcessingConfig.settingIcons[group]
@@ -215,7 +302,7 @@ class ProcessingConfig:
 
     @staticmethod
     def getSettings():
-        '''Return settings as a dict with group names as keys and lists of settings as values'''
+        """Return settings as a dict with group names as keys and lists of settings as values"""
         settings = {}
         for setting in list(ProcessingConfig.settings.values()):
             if setting.group not in settings:
@@ -251,21 +338,23 @@ class ProcessingConfig:
     def setSettingValue(name, value):
         if name in list(ProcessingConfig.settings.keys()):
             if ProcessingConfig.settings[name].valuetype == Setting.SELECTION:
-                ProcessingConfig.settings[name].setValue(ProcessingConfig.settings[name].options[value])
+                ProcessingConfig.settings[name].setValue(
+                    ProcessingConfig.settings[name].options[value]
+                )
             else:
                 ProcessingConfig.settings[name].setValue(value)
             ProcessingConfig.settings[name].save()
 
     @staticmethod
-    def tr(string, context=''):
-        if context == '':
-            context = 'ProcessingConfig'
+    def tr(string, context=""):
+        if context == "":
+            context = "ProcessingConfig"
         return QCoreApplication.translate(context, string)
 
 
 class Setting:
-    """A simple config parameter that will appear on the config dialog.
-    """
+    """A simple config parameter that will appear on the config dialog."""
+
     STRING = 0
     FILE = 1
     FOLDER = 2
@@ -275,14 +364,27 @@ class Setting:
     MULTIPLE_FOLDERS = 6
     SELECTION_STORE_STRING = 7
 
-    def __init__(self, group, name, description, default, hidden=False, valuetype=None,
-                 validator=None, options=None, placeholder="", hasSettingEntry=False):
+    def __init__(
+        self,
+        group,
+        name,
+        description,
+        default,
+        hidden=False,
+        valuetype=None,
+        validator=None,
+        options=None,
+        placeholder="",
+        hasSettingEntry=False,
+    ):
         """
         hasSettingEntry is true if the given setting is part of QgsSettingsRegistry entries
         """
         self.group = group
         self.name = name
-        self.qname = ("qgis/configuration/" if hasSettingEntry else "Processing/Configuration/") + self.name
+        self.qname = (
+            "qgis/configuration/" if hasSettingEntry else "Processing/Configuration/"
+        ) + self.name
         self.description = description
         self.default = default
         self.hidden = hidden
@@ -298,38 +400,52 @@ class Setting:
 
         if validator is None:
             if self.valuetype == self.FLOAT:
+
                 def checkFloat(v):
                     try:
                         float(v)
                     except ValueError:
-                        raise ValueError(self.tr('Wrong parameter value:\n{0}').format(v))
+                        raise ValueError(
+                            self.tr("Wrong parameter value:\n{0}").format(v)
+                        )
 
                 validator = checkFloat
             elif self.valuetype == self.INT:
+
                 def checkInt(v):
                     try:
                         int(v)
                     except ValueError:
-                        raise ValueError(self.tr('Wrong parameter value:\n{0}').format(v))
+                        raise ValueError(
+                            self.tr("Wrong parameter value:\n{0}").format(v)
+                        )
 
                 validator = checkInt
             elif self.valuetype in [self.FILE, self.FOLDER]:
+
                 def checkFileOrFolder(v):
                     if v and not os.path.exists(v):
-                        raise ValueError(self.tr('Specified path does not exist:\n{0}').format(v))
+                        raise ValueError(
+                            self.tr("Specified path does not exist:\n{0}").format(v)
+                        )
 
                 validator = checkFileOrFolder
             elif self.valuetype == self.MULTIPLE_FOLDERS:
+
                 def checkMultipleFolders(v):
-                    folders = v.split(';')
+                    folders = v.split(";")
                     for f in folders:
                         if f and not os.path.exists(f):
-                            raise ValueError(self.tr('Specified path does not exist:\n{0}').format(f))
+                            raise ValueError(
+                                self.tr("Specified path does not exist:\n{0}").format(f)
+                            )
 
                 validator = checkMultipleFolders
             else:
+
                 def validator(x):
                     return True
+
         self.validator = validator
         self.value = default
 
@@ -365,9 +481,9 @@ class Setting:
             qsettings.setValue(self.qname, self.value)
 
     def __str__(self):
-        return self.name + '=' + str(self.value)
+        return self.name + "=" + str(self.value)
 
-    def tr(self, string, context=''):
-        if context == '':
-            context = 'ProcessingConfig'
+    def tr(self, string, context=""):
+        if context == "":
+            context = "ProcessingConfig"
         return QCoreApplication.translate(context, string)

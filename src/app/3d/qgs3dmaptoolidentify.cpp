@@ -49,8 +49,7 @@ void Qgs3DMapToolIdentify::mousePressEvent( QMouseEvent *event )
 
 void Qgs3DMapToolIdentify::mouseMoveEvent( QMouseEvent *event )
 {
-  if ( !mMouseHasMoved &&
-       ( event->pos() - mMouseClickPos ).manhattanLength() >= QApplication::startDragDistance() )
+  if ( !mMouseHasMoved && ( event->pos() - mMouseClickPos ).manhattanLength() >= QApplication::startDragDistance() )
   {
     mMouseHasMoved = true;
   }
@@ -76,7 +75,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
   for ( auto it = allHits.constKeyValueBegin(); it != allHits.constKeyValueEnd(); ++it )
   {
     //  We can directly show vector layer results
-    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer * >( it->first ) )
+    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( it->first ) )
     {
       const QgsRayCastingUtils::RayHit hit = it->second.first();
       const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hit.pos, mCanvas->mapSettings()->origin() );
@@ -85,20 +84,20 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       showTerrainResults = false;
     }
     // We need to restructure point cloud layer results to display them later
-    else if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer * >( it->first ) )
+    else if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( it->first ) )
     {
-      pointCloudResults[ pclayer ] = QVector<QVariantMap>();
+      pointCloudResults[pclayer] = QVector<QVariantMap>();
       for ( const QgsRayCastingUtils::RayHit &hit : it->second )
       {
-        pointCloudResults[ pclayer ].append( hit.attributes );
+        pointCloudResults[pclayer].append( hit.attributes );
       }
     }
     else if ( QgsTiledSceneLayer *tslayer = qobject_cast<QgsTiledSceneLayer *>( it->first ) )
     {
-      tiledSceneResults[ tslayer ] = QVector<QVariantMap>();
+      tiledSceneResults[tslayer] = QVector<QVariantMap>();
       for ( const QgsRayCastingUtils::RayHit &hit : it->second )
       {
-        tiledSceneResults[ tslayer ].append( hit.attributes );
+        tiledSceneResults[tslayer].append( hit.attributes );
       }
     }
   }
@@ -166,7 +165,6 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
 
     identifyTool2D->showIdentifyResults( identifyResults );
   }
-
 }
 
 void Qgs3DMapToolIdentify::activate()

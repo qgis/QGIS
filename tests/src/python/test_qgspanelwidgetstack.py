@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '05/10/2016'
-__copyright__ = 'Copyright 2016, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "05/10/2016"
+__copyright__ = "Copyright 2016, The QGIS Project"
 
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.gui import QgsPanelWidget, QgsPanelWidgetStack
@@ -20,7 +21,7 @@ start_app()
 class TestQgsPanelWidgetStack(QgisTestCase):
 
     def testMainPanel(self):
-        """ test mainPanel methods """
+        """test mainPanel methods"""
 
         s = QgsPanelWidgetStack()
 
@@ -39,7 +40,7 @@ class TestQgsPanelWidgetStack(QgisTestCase):
         self.assertFalse(s.takeMainPanel())
 
     def testAddingPanels(self):
-        """ test adding panels to stack """
+        """test adding panels to stack"""
 
         s = QgsPanelWidgetStack()
         mp = QgsPanelWidget()
@@ -54,7 +55,7 @@ class TestQgsPanelWidgetStack(QgisTestCase):
         self.assertEqual(s.currentPanel(), p2)
 
     def testAcceptCurrentPanel(self):
-        """ test accepting current panel """
+        """test accepting current panel"""
 
         s = QgsPanelWidgetStack()
         # call on empty stack
@@ -85,7 +86,7 @@ class TestQgsPanelWidgetStack(QgisTestCase):
         self.assertEqual(len(p1_accept_spy), 1)
 
     def testAcceptAllPanel(self):
-        """ test accepting all panels """
+        """test accepting all panels"""
         s = QgsPanelWidgetStack()
         # call on empty stack
         s.acceptAllPanels()
@@ -116,7 +117,7 @@ class TestQgsPanelWidgetStack(QgisTestCase):
         self.assertEqual(len(p3_accept_spy), 1)
 
     def testClear(self):
-        """ test clearing stack """
+        """test clearing stack"""
         s = QgsPanelWidgetStack()
         # call on empty stack
         s.clear()
@@ -137,7 +138,7 @@ class TestQgsPanelWidgetStack(QgisTestCase):
         self.assertFalse(s.mainPanel())
 
     def testTakeMainAcceptsAll(self):
-        """ test that taking the main panel accepts all open child panels"""
+        """test that taking the main panel accepts all open child panels"""
         s = QgsPanelWidgetStack()
         mp = QgsPanelWidget()
         s.setMainPanel(mp)
@@ -158,5 +159,5 @@ class TestQgsPanelWidgetStack(QgisTestCase):
         self.assertEqual(len(p3_accept_spy), 1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

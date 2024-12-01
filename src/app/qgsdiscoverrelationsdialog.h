@@ -48,7 +48,6 @@ class APP_EXPORT QgsDiscoverRelationsDialog : public QDialog, private Ui::QgsDis
     QList<QgsRelation> mFoundRelations;
 
     void addRelation( const QgsRelation &rel );
-
 };
 
 #endif // QGSDISCOVERRELATIONSDLG_H

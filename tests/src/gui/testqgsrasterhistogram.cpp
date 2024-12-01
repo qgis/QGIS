@@ -45,7 +45,6 @@ class TestRasterHistogram : public QObject
     TestRasterHistogram() {}
 
   private:
-
     QString mDataDir;
     QString mTestPrefix;
     int mWidth, mHeight, mImageQuality;
@@ -59,19 +58,15 @@ class TestRasterHistogram : public QObject
     bool openLayer( const QString &fileName );
     void closeLayer();
     bool saveImage( const QString &fileName );
-    int testFile( QString testName,
-                  QString rendererName,
-                  QgsRasterRendererWidget *rendererWidget,
-                  QStringList actionsList = QStringList(),
-                  int selectedBand = -1 );
+    int testFile( QString testName, QString rendererName, QgsRasterRendererWidget *rendererWidget, QStringList actionsList = QStringList(), int selectedBand = -1 );
 
   private slots:
 
     // init / cleanup
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {};         // will be called before each testfunction is executed.
+    void cleanup() {};      // will be called after every testfunction.
 
     // tests
     void testGray1();
@@ -193,7 +188,7 @@ void TestRasterHistogram::testPseudo1()
 bool TestRasterHistogram::openLayer( const QString &fileName )
 {
   mRasterLayer = new QgsRasterLayer( mDataDir + "/" + fileName, fileName );
-  if ( ! mRasterLayer )
+  if ( !mRasterLayer )
     return false;
   mGrayRendererWidget = new QgsSingleBandGrayRendererWidget( mRasterLayer );
   mRGBRendererWidget = new QgsMultiBandColorRendererWidget( mRasterLayer );
@@ -239,9 +234,7 @@ bool TestRasterHistogram::saveImage( const QString &fileName )
 
 // test resulting image file - relax this test because there are too many possible outputs depending on machine
 // 1 means pass, 0 means warning (different images), -1 means fail (no image output)
-int TestRasterHistogram::testFile( QString testType,
-                                   QString rendererName, QgsRasterRendererWidget *rendererWidget,
-                                   QStringList actionsList, int selectedBand )
+int TestRasterHistogram::testFile( QString testType, QString rendererName, QgsRasterRendererWidget *rendererWidget, QStringList actionsList, int selectedBand )
 {
   if ( mRasterLayer == 0 )
   {
@@ -264,9 +257,8 @@ int TestRasterHistogram::testFile( QString testType,
   {
     mHistogramWidget->setSelectedBand( selectedBand );
   }
-  QString fileName = QDir::tempPath() + "/" +
-                     testType + "_result.png";
-  if ( ! saveImage( fileName ) )
+  QString fileName = QDir::tempPath() + "/" + testType + "_result.png";
+  if ( !saveImage( fileName ) )
   {
     QWARN( QString( "Did not save image file " + fileName ).toLocal8Bit().data() );
     return -1;
@@ -281,7 +273,7 @@ int TestRasterHistogram::testFile( QString testType,
   mReport += "\n\n\n" + myChecker.report();
 
   // return myResultFlag;
-  if ( ! myResultFlag )
+  if ( !myResultFlag )
   {
     QWARN( QString( "Test %1 failed with file %2 " ).arg( testType ).arg( fileName ).toLocal8Bit().data() );
     return 0;

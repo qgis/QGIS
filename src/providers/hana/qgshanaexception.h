@@ -36,7 +36,7 @@ class QgsHanaException final : public QException
       QgsDebugError( what );
     }
 
-    void raise() const override  { throw *this;  }
+    void raise() const override { throw *this; }
 
     QgsHanaException *clone() const override
     {
@@ -52,4 +52,4 @@ class QgsHanaException final : public QException
     std::string mMessage;
 };
 
-#endif  // QGSHANAEXCEPTION_H
+#endif // QGSHANAEXCEPTION_H

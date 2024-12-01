@@ -18,26 +18,24 @@
 
 #include <editorwidgets/qgsdoublespinbox.h>
 
-class TestQgsDoubleSpinBox: public QObject
+class TestQgsDoubleSpinBox : public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void clear();
     void expression();
     void step();
 
   private:
-
 };
 
 void TestQgsDoubleSpinBox::initTestCase()
 {
-
 }
 
 void TestQgsDoubleSpinBox::cleanupTestCase()

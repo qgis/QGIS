@@ -48,7 +48,6 @@ class APP_EXPORT QgsZValueWidget : public QWidget
 {
     Q_OBJECT
   public:
-
     //! Constructor
     QgsZValueWidget( const QString &label, QWidget *parent = nullptr );
 
@@ -74,7 +73,6 @@ class QgsMeshEditForceByLineAction : public QWidgetAction
 {
     Q_OBJECT
   public:
-
     enum IntepolationMode
     {
       Mesh,
@@ -104,7 +102,6 @@ class QgsMeshEditForceByLineAction : public QWidgetAction
     void updateSettings();
 
   private:
-
     QComboBox *mComboInterpolateFrom = nullptr;
     QCheckBox *mCheckBoxNewVertex = nullptr;
     QgsUnitSelectionWidget *mUnitSelecionWidget = nullptr;
@@ -115,7 +112,6 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
   public:
-
     //! Constructor
     QgsMapToolEditMeshFrame( QgsMapCanvas *canvas );
     ~QgsMapToolEditMeshFrame();
@@ -168,15 +164,14 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void onUndoRedo();
 
   private:
-
     enum State
     {
-      Digitizing, //!< Digitizing action can be start (add/remove vertices, selection, add/remove faces, move vertices)
-      AddingNewFace, //!< Adding a face has been start and the user have to choose or digitize vertices
-      Selecting, //!< Selection is in process
-      MovingSelection, //!< Moving vertex or vertices is processing
+      Digitizing,         //!< Digitizing action can be start (add/remove vertices, selection, add/remove faces, move vertices)
+      AddingNewFace,      //!< Adding a face has been start and the user have to choose or digitize vertices
+      Selecting,          //!< Selection is in process
+      MovingSelection,    //!< Moving vertex or vertices is processing
       SelectingByPolygon, //!< Selection elements by polygon is in progress
-      ForceByLines, //!< Force by a lines drawn or selected by users
+      ForceByLines,       //!< Force by a lines drawn or selected by users
     };
 
     typedef QPair<int, int> Edge; //first face index, second the vertex index corresponding to the end extremity (ccw)
@@ -229,9 +224,9 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void addNewSelectedVertex( int vertexIndex );
     void removeFromSelection( int vertexIndex );
     bool isFaceSelected( int faceIndex );
-    void setSelectedVertices( const QList<int> &newSelectedVertices,  Qgis::SelectBehavior behavior );
-    void setSelectedFaces( const QList<int> &newSelectedFaces,  Qgis::SelectBehavior behavior );
-    void selectByGeometry( const QgsGeometry &geometry,  Qt::KeyboardModifiers modifiers );
+    void setSelectedVertices( const QList<int> &newSelectedVertices, Qgis::SelectBehavior behavior );
+    void setSelectedFaces( const QList<int> &newSelectedFaces, Qgis::SelectBehavior behavior );
+    void selectByGeometry( const QgsGeometry &geometry, Qt::KeyboardModifiers modifiers );
     void selectTouchedByGeometry( const QgsGeometry &geometry, Qgis::SelectBehavior behavior );
     void selectContainedByGeometry( const QgsGeometry &geometry, Qgis::SelectBehavior behavior );
     void applyZValueOnSelectedVertices();
@@ -250,9 +245,9 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     // members
     struct SelectedVertexData
     {
-      //Here edges are the indexes of the face where the following vertices (ccw) is the other extremity of the edge
-      QList<Edge> meshFixedEdges; // that have one extremity not on the selection
-      QList<Edge> borderEdges; // that are on the border of the selection
+        //Here edges are the indexes of the face where the following vertices (ccw) is the other extremity of the edge
+        QList<Edge> meshFixedEdges; // that have one extremity not on the selection
+        QList<Edge> borderEdges;    // that are on the border of the selection
     };
 
     bool mIsInitialized = false;
@@ -260,11 +255,11 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     bool mLeftButtonPressed = false;
     bool mKeepSelectionOnEdit = false;
 
-    QPointer<QgsMeshLayer> mCurrentLayer = nullptr; //not own
+    QPointer<QgsMeshLayer> mCurrentLayer = nullptr;   //not own
     QPointer<QgsMeshEditor> mCurrentEditor = nullptr; // own by mesh layer
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
     int mCurrentFaceIndex = -1;
-    Edge mCurrentEdge = {-1, -1};
+    Edge mCurrentEdge = { -1, -1 };
     int mCurrentVertexIndex = -1;
     QList<int> mNewFaceCandidate;
     QList<QgsMeshVertex> mNewVerticesForNewFaceCandidate;
@@ -299,16 +294,16 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QSet<int> mConcernedFaceBySelection;
     QgsVertexMarker *mSelectFaceMarker = nullptr; //own by map canvas
     QgsVertexMarker *mSelectEdgeMarker = nullptr; //own by map canvas
-    QgsRubberBand *mSelectionBand = nullptr; //own by map canvas
+    QgsRubberBand *mSelectionBand = nullptr;      //own by map canvas
     QPoint mStartSelectionPos;
     QgsRubberBand *mSelectedFacesRubberband = nullptr; //own by map canvas
-    QMap< int, QgsVertexMarker * > mSelectedVerticesMarker;
+    QMap<int, QgsVertexMarker *> mSelectedVerticesMarker;
 
     //! members for moving vertices
     QgsPointXY mStartMovingPoint;
     bool mCanMovingStart = false;
-    QgsRubberBand *mMovingEdgesRubberband = nullptr; //own by map canvas
-    QgsRubberBand *mMovingFacesRubberband = nullptr; //own by map canvas
+    QgsRubberBand *mMovingEdgesRubberband = nullptr;      //own by map canvas
+    QgsRubberBand *mMovingFacesRubberband = nullptr;      //own by map canvas
     QgsRubberBand *mMovingFreeVertexRubberband = nullptr; //own by map canvas
     bool mIsMovingAllowed = false;
 

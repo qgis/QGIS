@@ -24,12 +24,11 @@
 #include "qgsproject.h"
 #include "qgssqliteexpressioncompiler.h"
 
-class TestQgsSQLiteExpressionCompiler: public QObject
+class TestQgsSQLiteExpressionCompiler : public QObject
 {
     Q_OBJECT
 
   public:
-
     TestQgsSQLiteExpressionCompiler() = default;
 
     QgsExpression makeExpression( const int length );
@@ -46,10 +45,8 @@ class TestQgsSQLiteExpressionCompiler: public QObject
     void testPlusWithStrings_data();
 
   private:
-
     QgsVectorLayer *mPointsLayer = nullptr;
 };
-
 
 
 QgsExpression TestQgsSQLiteExpressionCompiler::makeExpression( const int length )
@@ -103,7 +100,7 @@ void TestQgsSQLiteExpressionCompiler::testCompiler()
   exp = makeExpression( 3 );
   QCOMPARE( compiler.compile( &exp ), QgsSqlExpressionCompiler::Result::Complete );
   // Check that parenthesis matches
-  QCOMPARE( compiler.result().count( '(' ),  compiler.result().count( ')' ) );
+  QCOMPARE( compiler.result().count( '(' ), compiler.result().count( ')' ) );
   QCOMPARE( compiler.result(), QStringLiteral( "((((\"Z\" >= 0) AND (\"Bottom\" <= 1)) OR ((\"Z\" >= 1) AND (\"Bottom\" <= 2))) OR ((\"Z\" >= 2) AND (\"Bottom\" <= 3)))" ) );
 
   const QgsExpression ilike( QStringLiteral( "'a' ilike 'A'" ) );
@@ -127,7 +124,7 @@ void TestQgsSQLiteExpressionCompiler::testPreparedCachedNodes()
   QgsExpression exp( QStringLiteral( "\"Z\" = (1 + 2) OR \"z\" < (@static_var + 5)" ) );
 
   QgsExpressionContext context;
-  std::unique_ptr< QgsExpressionContextScope > scope = std::make_unique< QgsExpressionContextScope >();
+  std::unique_ptr<QgsExpressionContextScope> scope = std::make_unique<QgsExpressionContextScope>();
   scope->setVariable( QStringLiteral( "static_var" ), 10, true );
   context.appendScope( scope.release() );
   // not possible to compile due to use of a variable
@@ -176,7 +173,6 @@ void TestQgsSQLiteExpressionCompiler::testPlusWithStrings()
   if ( success )
     QCOMPARE( compiler.result(), compiledExpression );
 }
-
 
 
 QGSTEST_MAIN( TestQgsSQLiteExpressionCompiler )

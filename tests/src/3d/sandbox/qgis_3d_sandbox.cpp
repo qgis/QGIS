@@ -40,7 +40,7 @@
 void initCanvas3D( Qgs3DMapCanvas *canvas )
 {
   QgsLayerTree *root = QgsProject::instance()->layerTreeRoot();
-  const QList< QgsMapLayer * > visibleLayers = root->checkedLayers();
+  const QList<QgsMapLayer *> visibleLayers = root->checkedLayers();
 
   QgsCoordinateReferenceSystem crs = QgsProject::instance()->crs();
   if ( crs.isGeographic() )
@@ -68,8 +68,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
   map->setTransformContext( QgsProject::instance()->transformContext() );
   map->setPathResolver( QgsProject::instance()->pathResolver() );
   map->setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );
-  QObject::connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map]
-  {
+  QObject::connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map] {
     map->setTransformContext( QgsProject::instance()->transformContext() );
   } );
 
@@ -81,7 +80,7 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
   QgsPointLightSettings defaultPointLight;
   defaultPointLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
   defaultPointLight.setConstantAttenuation( 0 );
-  map->setLightSources( {defaultPointLight.clone() } );
+  map->setLightSources( { defaultPointLight.clone() } );
   if ( QScreen *screen = QGuiApplication::primaryScreen() )
   {
     map->setOutputDpi( screen->physicalDotsPerInch() );
@@ -95,11 +94,10 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
 
   QgsRectangle extent = fullExtent;
   extent.scale( 1.3 );
-  const float dist = static_cast< float >( std::max( extent.width(), extent.height() ) );
+  const float dist = static_cast<float>( std::max( extent.width(), extent.height() ) );
   canvas->setViewFromTop( extent.center(), dist * 2, 0 );
 
-  QObject::connect( canvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, canvas, [canvas]
-  {
+  QObject::connect( canvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, canvas, [canvas] {
     qDebug() << "pending jobs:" << canvas->scene()->totalPendingJobsCount();
   } );
 

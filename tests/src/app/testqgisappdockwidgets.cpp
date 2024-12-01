@@ -38,10 +38,10 @@ class TestQgisAppDockWidgets : public QObject
     TestQgisAppDockWidgets();
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void tabifiedQDockWidgetEmptyArea();
     void tabifiedQgsDockWidgetEmptyArea();
@@ -155,7 +155,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetOneExisting()
   QVERIFY( dw->isVisible() );
 
   // Check our dock widget is tabified
-  const QList< QDockWidget *> tdw = mQgisApp->tabifiedDockWidgets( mLayerTreeDock );
+  const QList<QDockWidget *> tdw = mQgisApp->tabifiedDockWidgets( mLayerTreeDock );
   QCOMPARE( tdw.length(), 1 );
   QCOMPARE( tdw.at( 0 ), dw );
 
@@ -210,7 +210,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetOneExistingRaiseTab()
   QVERIFY( dw->isVisible() );
 
   // Check our dock widget is tabified
-  const QList< QDockWidget *> tdw = mQgisApp->tabifiedDockWidgets( mLayerTreeDock );
+  const QList<QDockWidget *> tdw = mQgisApp->tabifiedDockWidgets( mLayerTreeDock );
   QCOMPARE( tdw.length(), 1 );
   QCOMPARE( tdw.at( 0 ), dw );
 
@@ -265,7 +265,7 @@ void TestQgisAppDockWidgets::tabifiedQgsDockWidgetOneExisting()
   QVERIFY( dw->isVisible() );
 
   // Check our dock widget is tabified
-  const QList< QDockWidget *> tdw = mQgisApp->tabifiedDockWidgets( mLayerTreeDock );
+  const QList<QDockWidget *> tdw = mQgisApp->tabifiedDockWidgets( mLayerTreeDock );
   QCOMPARE( tdw.length(), 1 );
   QCOMPARE( tdw.at( 0 ), dw );
 
@@ -320,7 +320,7 @@ void TestQgisAppDockWidgets::tabifiedQgsDockWidgetOneExistingRaiseTab()
   QVERIFY( dw->isVisible() );
 
   // Check our dock widget is tabified
-  const QList< QDockWidget *> tdw = mQgisApp->tabifiedDockWidgets( mLayerTreeDock );
+  const QList<QDockWidget *> tdw = mQgisApp->tabifiedDockWidgets( mLayerTreeDock );
   QCOMPARE( tdw.length(), 1 );
   QCOMPARE( tdw.at( 0 ), dw );
 
@@ -558,7 +558,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingOneHidden()
   QgsDockWidget *mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), mQgisApp );
   mLayerTreeDock->setObjectName( objectName1 );
   mQgisApp->addDockWidget( area, mLayerTreeDock );
-  mLayerTreeDock->hide();  // This one will be hidden
+  mLayerTreeDock->hide(); // This one will be hidden
   QVERIFY( !mLayerTreeDock->isVisible() );
   QgsDockWidget *mLayerOrderDock = new QgsDockWidget( tr( "Layer Order" ), mQgisApp );
   mLayerOrderDock->setObjectName( objectName2 );
@@ -630,7 +630,7 @@ void TestQgisAppDockWidgets::tabifiedQDockWidgetTwoExistingOneHiddenRaiseTab()
   QgsDockWidget *mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), mQgisApp );
   mLayerTreeDock->setObjectName( objectName1 );
   mQgisApp->addDockWidget( area, mLayerTreeDock );
-  mLayerTreeDock->hide();  // This one will be hidden
+  mLayerTreeDock->hide(); // This one will be hidden
   QVERIFY( !mLayerTreeDock->isVisible() );
   QgsDockWidget *mLayerOrderDock = new QgsDockWidget( tr( "Layer Order" ), mQgisApp );
   mLayerOrderDock->setObjectName( objectName2 );

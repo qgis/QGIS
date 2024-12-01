@@ -151,19 +151,19 @@ void QgsDecorationScaleBar::setupScaleBar()
     case 0:
     case 1:
     {
-      std::unique_ptr< QgsTicksScaleBarRenderer > tickStyle = std::make_unique< QgsTicksScaleBarRenderer >();
+      std::unique_ptr<QgsTicksScaleBarRenderer> tickStyle = std::make_unique<QgsTicksScaleBarRenderer>();
       tickStyle->setTickPosition( mStyleIndex == 0 ? QgsTicksScaleBarRenderer::TicksDown : QgsTicksScaleBarRenderer::TicksUp );
       mStyle = std::move( tickStyle );
 
-      std::unique_ptr< QgsFillSymbol > fillSymbol = std::make_unique< QgsFillSymbol >();
+      std::unique_ptr<QgsFillSymbol> fillSymbol = std::make_unique<QgsFillSymbol>();
       fillSymbol->setColor( mColor ); // Compatibility with pre 3.2 configuration
-      if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( fillSymbol->symbolLayer( 0 ) ) )
+      if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast<QgsSimpleFillSymbolLayer *>( fillSymbol->symbolLayer( 0 ) ) )
       {
         fill->setStrokeStyle( Qt::NoPen );
       }
       mSettings.setFillSymbol( fillSymbol.release() );
 
-      std::unique_ptr< QgsLineSymbol > lineSymbol = std::make_unique< QgsLineSymbol >();
+      std::unique_ptr<QgsLineSymbol> lineSymbol = std::make_unique<QgsLineSymbol>();
       lineSymbol->setColor( mColor ); // Compatibility with pre 3.2 configuration
       lineSymbol->setWidth( 0.3 );
       lineSymbol->setOutputUnit( Qgis::RenderUnit::Millimeters );
@@ -175,27 +175,27 @@ void QgsDecorationScaleBar::setupScaleBar()
     case 2:
     case 3:
     {
-      mStyle = std::make_unique< QgsSingleBoxScaleBarRenderer >();
+      mStyle = std::make_unique<QgsSingleBoxScaleBarRenderer>();
 
 
-      std::unique_ptr< QgsFillSymbol > fillSymbol = std::make_unique< QgsFillSymbol >();
+      std::unique_ptr<QgsFillSymbol> fillSymbol = std::make_unique<QgsFillSymbol>();
       fillSymbol->setColor( mColor );
-      if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( fillSymbol->symbolLayer( 0 ) ) )
+      if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast<QgsSimpleFillSymbolLayer *>( fillSymbol->symbolLayer( 0 ) ) )
       {
         fill->setStrokeStyle( Qt::NoPen );
       }
       mSettings.setFillSymbol( fillSymbol.release() );
 
-      std::unique_ptr< QgsFillSymbol > fillSymbol2 = std::make_unique< QgsFillSymbol >();
+      std::unique_ptr<QgsFillSymbol> fillSymbol2 = std::make_unique<QgsFillSymbol>();
       fillSymbol2->setColor( QColor( 255, 255, 255, 0 ) );
-      if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( fillSymbol2->symbolLayer( 0 ) ) )
+      if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast<QgsSimpleFillSymbolLayer *>( fillSymbol2->symbolLayer( 0 ) ) )
       {
         fill->setStrokeStyle( Qt::NoPen );
       }
       mSettings.setAlternateFillSymbol( fillSymbol2.release() );
 
       mSettings.setHeight( mStyleIndex == 2 ? 1 : 3 );
-      std::unique_ptr< QgsLineSymbol > lineSymbol = std::make_unique< QgsLineSymbol >();
+      std::unique_ptr<QgsLineSymbol> lineSymbol = std::make_unique<QgsLineSymbol>();
       lineSymbol->setColor( mOutlineColor ); // Compatibility with pre 3.2 configuration
       lineSymbol->setWidth( mStyleIndex == 2 ? 0.2 : 0.3 );
       lineSymbol->setOutputUnit( Qgis::RenderUnit::Millimeters );
@@ -229,8 +229,7 @@ double QgsDecorationScaleBar::mapWidth( const QgsMapSettings &settings ) const
     double measure = 0;
     try
     {
-      measure = da.measureLine( QgsPointXY( mapExtent.xMinimum(), yPosition ),
-                                QgsPointXY( mapExtent.xMaximum(), yPosition ) );
+      measure = da.measureLine( QgsPointXY( mapExtent.xMinimum(), yPosition ), QgsPointXY( mapExtent.xMaximum(), yPosition ) );
     }
     catch ( QgsCsException & )
     {
@@ -271,7 +270,7 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
   //If scale bar is very small reset to 1/4 of the canvas wide
   if ( scaleBarWidth < 30 )
   {
-    scaleBarWidth = deviceWidth / 4.0; // value in pixels
+    scaleBarWidth = deviceWidth / 4.0;                       // value in pixels
     unitsPerSegment = scaleBarWidth * scaleBarUnitsPerPixel; // value in map units
   }
 

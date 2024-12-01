@@ -29,7 +29,8 @@
 #include "qgsgui.h"
 
 
-QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags fl ) : QDialog( parent, fl )
+QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
   QgsProviderMetadata *meta = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
 
@@ -61,16 +62,14 @@ QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags f
   mFileWidget->setFilter( filters.join( QLatin1String( ";;" ) ) );
   mMeshProjectComboBox->setFilters( Qgis::LayerFilter::MeshLayer );
 
-  connect( mFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-           this, &QgsNewMeshLayerDialog::onFormatChanged );
+  connect( mFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewMeshLayerDialog::onFormatChanged );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsNewMeshLayerDialog::onFilePathChanged );
   connect( mInitializeMeshGroupBox, &QGroupBox::toggled, this, &QgsNewMeshLayerDialog::updateDialog );
   connect( mMeshFileRadioButton, &QRadioButton::toggled, this, &QgsNewMeshLayerDialog::updateDialog );
   connect( mMeshFromFileWidget, &QgsFileWidget::fileChanged, this, &QgsNewMeshLayerDialog::updateDialog );
   connect( mMeshProjectComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsNewMeshLayerDialog::updateDialog );
 
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [ = ]
-  {
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [=] {
     QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-a-new-mesh-layer" ) );
   } );
 
@@ -99,10 +98,7 @@ void QgsNewMeshLayerDialog::updateDialog()
 {
   updateSourceMeshframe();
 
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled(
-    ! mFileWidget->filePath().isEmpty() &&
-    mFormatComboBox->currentIndex() != -1 &&
-    mSourceMeshFrameReady );
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( !mFileWidget->filePath().isEmpty() && mFormatComboBox->currentIndex() != -1 && mSourceMeshFrameReady );
 }
 
 void QgsNewMeshLayerDialog::updateSourceMeshframe()
@@ -136,7 +132,7 @@ void QgsNewMeshLayerDialog::updateSourceMeshframe()
 
       mProjectionSelectionWidget->setEnabled( false );
 
-      mSourceMeshFrameReady = static_cast< bool >( mSourceMeshFromFile );
+      mSourceMeshFrameReady = static_cast<bool>( mSourceMeshFromFile );
 
       QgsApplication::restoreOverrideCursor();
     }
@@ -162,7 +158,7 @@ void QgsNewMeshLayerDialog::onFormatChanged()
   const QString currentSuffix = fileInfo.suffix();
 
   if ( !currentSuffix.isEmpty() )
-    currentFilePath =  currentFilePath.mid( 0, currentFilePath.lastIndexOf( '.' ) );
+    currentFilePath = currentFilePath.mid( 0, currentFilePath.lastIndexOf( '.' ) );
 
   if ( currentFilePath.right( 1 ) == QString( '.' ) )
     currentFilePath.remove( currentFilePath.count() - 1, 1 );
@@ -281,4 +277,3 @@ QgsMeshLayer *QgsNewMeshLayerDialog::newLayer() const
 {
   return mNewLayer;
 }
-

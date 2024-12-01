@@ -10,9 +10,9 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-__author__ = 'Larry Shaffer'
-__date__ = '2014/02/21'
-__copyright__ = 'Copyright 2013, The QGIS Project'
+__author__ = "Larry Shaffer"
+__date__ = "2014/02/21"
+__copyright__ = "Copyright 2013, The QGIS Project"
 
 import os
 import subprocess
@@ -43,7 +43,7 @@ from utilities import getExecutablePath, getTempfilePath, mapSettingsString
 # * Poppler w/o Cairo does not always correctly render vectors in PDF to image
 # * muPDF renders correctly, but slightly shifts colors
 for util in [
-    'pdftocairo',
+    "pdftocairo",
     # 'mudraw',
 ]:
     PDFUTIL = getExecutablePath(util)
@@ -52,13 +52,14 @@ for util in [
 
 # noinspection PyUnboundLocalVariable
 if not PDFUTIL:
-    raise Exception('PDF-to-image utility not found on PATH: '
-                    'install Poppler (with Cairo)')
+    raise Exception(
+        "PDF-to-image utility not found on PATH: " "install Poppler (with Cairo)"
+    )
 
 
 # output kind enum
 # noinspection PyClassHasNoInit
-class OutputKind():
+class OutputKind:
     Img, Svg, Pdf = list(range(3))
 
 
@@ -73,9 +74,9 @@ class TestLayoutBase(TestQgsPalLabeling):
         if not cls._BaseSetup:
             TestQgsPalLabeling.setUpClass()
         # the blue background (set via layer style) to match renderchecker's
-        TestQgsPalLabeling.loadFeatureLayer('background', True)
+        TestQgsPalLabeling.loadFeatureLayer("background", True)
         cls._TestKind = 0  # OutputKind.(Img|Svg|Pdf)
-        cls._test_base_name = ''
+        cls._test_base_name = ""
 
     @classmethod
     def tearDownClass(cls):
@@ -112,7 +113,10 @@ class TestLayoutBase(TestQgsPalLabeling):
         """:type: QgsLayoutItemMap"""
         self._cmap.setFrameEnabled(False)
         self._cmap.setLayers(self._TestMapSettings.layers())
-        if self._TestMapSettings.labelingEngineSettings().flags() & QgsLabelingEngineSettings.Flag.UsePartialCandidates:
+        if (
+            self._TestMapSettings.labelingEngineSettings().flags()
+            & QgsLabelingEngineSettings.Flag.UsePartialCandidates
+        ):
             self._cmap.setMapFlags(QgsLayoutItemMap.MapItemFlag.ShowPartialLabels)
         self._c.addLayoutItem(self._cmap)
         # now expand map to fill page and set its extent
@@ -124,8 +128,7 @@ class TestLayoutBase(TestQgsPalLabeling):
 
     # noinspection PyUnusedLocal
     def _get_layout_image(self, width, height, dpi):
-        image = QImage(QSize(width, height),
-                       self._TestMapSettings.outputImageFormat())
+        image = QImage(QSize(width, height), self._TestMapSettings.outputImageFormat())
         image.fill(QColor(152, 219, 249).rgb())
         image.setDotsPerMeterX(int(dpi / 25.4 * 1000))
         image.setDotsPerMeterY(int(dpi / 25.4 * 1000))
@@ -133,7 +136,7 @@ class TestLayoutBase(TestQgsPalLabeling):
         p = QPainter(image)
         p.setRenderHint(
             QPainter.RenderHint.Antialiasing,
-            self._TestMapSettings.testFlag(QgsMapSettings.Flag.Antialiasing)
+            self._TestMapSettings.testFlag(QgsMapSettings.Flag.Antialiasing),
         )
         exporter = QgsLayoutExporter(self._c)
         exporter.renderPage(p, 0)
@@ -145,7 +148,7 @@ class TestLayoutBase(TestQgsPalLabeling):
         return image
 
     def _get_layout_svg_image(self, width, height, dpi):
-        svgpath = getTempfilePath('svg')
+        svgpath = getTempfilePath("svg")
         temp_size = os.path.getsize(svgpath)
 
         svg_g = QSvgGenerator()
@@ -162,7 +165,7 @@ class TestLayoutBase(TestQgsPalLabeling):
         sp.end()
 
         if temp_size == os.path.getsize(svgpath):
-            return False, ''
+            return False, ""
 
         image = QImage(width, height, self._TestMapSettings.outputImageFormat())
         image.fill(QColor(152, 219, 249).rgb())
@@ -173,7 +176,7 @@ class TestLayoutBase(TestQgsPalLabeling):
         p = QPainter(image)
         p.setRenderHint(
             QPainter.RenderHint.Antialiasing,
-            self._TestMapSettings.testFlag(QgsMapSettings.Flag.Antialiasing)
+            self._TestMapSettings.testFlag(QgsMapSettings.Flag.Antialiasing),
         )
         p.setRenderHint(QPainter.RenderHint.TextAntialiasing)
         svgr.render(p)
@@ -182,7 +185,7 @@ class TestLayoutBase(TestQgsPalLabeling):
         return image
 
     def _get_layout_pdf_image(self, width, height, dpi):
-        pdfpath = getTempfilePath('pdf')
+        pdfpath = getTempfilePath("pdf")
         temp_size = os.path.getsize(pdfpath)
 
         exporter = QgsLayoutExporter(self._c)
@@ -191,32 +194,53 @@ class TestLayoutBase(TestQgsPalLabeling):
         exporter.exportToPdf(pdfpath, settings)
 
         if temp_size == os.path.getsize(pdfpath):
-            return False, ''
+            return False, ""
 
-        filepath = getTempfilePath('png')
+        filepath = getTempfilePath("png")
         # Poppler (pdftocairo or pdftoppm):
         # PDFUTIL -png -singlefile -r 72 -x 0 -y 0 -W 420 -H 280 in.pdf pngbase
         # muPDF (mudraw):
         # PDFUTIL -c rgb[a] -r 72 -w 420 -h 280 -o out.png in.pdf
-        if PDFUTIL.strip().endswith('pdftocairo'):
+        if PDFUTIL.strip().endswith("pdftocairo"):
             filebase = os.path.join(
                 os.path.dirname(filepath),
-                os.path.splitext(os.path.basename(filepath))[0]
+                os.path.splitext(os.path.basename(filepath))[0],
             )
             call = [
-                PDFUTIL, '-png', '-singlefile', '-r', str(dpi),
-                '-x', '0', '-y', '0', '-W', str(width), '-H', str(height),
-                pdfpath, filebase
+                PDFUTIL,
+                "-png",
+                "-singlefile",
+                "-r",
+                str(dpi),
+                "-x",
+                "0",
+                "-y",
+                "0",
+                "-W",
+                str(width),
+                "-H",
+                str(height),
+                pdfpath,
+                filebase,
             ]
-        elif PDFUTIL.strip().endswith('mudraw'):
+        elif PDFUTIL.strip().endswith("mudraw"):
             call = [
-                PDFUTIL, '-c', 'rgba',
-                '-r', str(dpi), '-w', str(width), '-h', str(height),
+                PDFUTIL,
+                "-c",
+                "rgba",
+                "-r",
+                str(dpi),
+                "-w",
+                str(width),
+                "-h",
+                str(height),
                 # '-b', '8',
-                '-o', filepath, pdfpath
+                "-o",
+                filepath,
+                pdfpath,
             ]
         else:
-            return False, ''
+            return False, ""
 
         qDebug(f"_get_layout_pdf_image call: {' '.join(call)}")
         res = False
@@ -224,14 +248,16 @@ class TestLayoutBase(TestQgsPalLabeling):
             subprocess.check_call(call)
             res = True
         except subprocess.CalledProcessError as e:
-            qDebug("_get_layout_pdf_image failed!\n"
-                   "cmd: {}\n"
-                   "returncode: {}\n"
-                   "message: {}".format(e.cmd, e.returncode, e.message))
+            qDebug(
+                "_get_layout_pdf_image failed!\n"
+                "cmd: {}\n"
+                "returncode: {}\n"
+                "message: {}".format(e.cmd, e.returncode, e.message)
+            )
 
         if not res:
             os.unlink(filepath)
-            filepath = ''
+            filepath = ""
 
         return QImage(filepath)
 
@@ -255,13 +281,13 @@ class TestLayoutBase(TestQgsPalLabeling):
 
         self.assertTrue(
             self.image_check(
-                f'{self._test_base_name}{self._TestGroupPrefix}_{self._Test}',
+                f"{self._test_base_name}{self._TestGroupPrefix}_{self._Test}",
                 self._Test,
                 image,
                 self._Test,
                 color_tolerance=0,
                 allowed_mismatch=0,
-                control_path_prefix='expected_' + self._TestGroupPrefix
+                control_path_prefix="expected_" + self._TestGroupPrefix,
             )
         )
 
@@ -271,7 +297,7 @@ class TestLayoutPointBase(TestLayoutBase):
     @classmethod
     def setUpClass(cls):
         TestLayoutBase.setUpClass()
-        cls.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        cls.layer = TestQgsPalLabeling.loadFeatureLayer("point")
 
 
 class TestLayoutImagePoint(TestLayoutPointBase, TestPointBase):
@@ -280,8 +306,8 @@ class TestLayoutImagePoint(TestLayoutPointBase, TestPointBase):
         """Run before each test."""
         super().setUp()
         self._TestKind = OutputKind.Img
-        self._test_base_name = 'layout_image'
-        self.configTest('pal_composer', 'sp_img')
+        self._test_base_name = "layout_image"
+        self.configTest("pal_composer", "sp_img")
 
 
 class TestLayoutImageVsCanvasPoint(TestLayoutPointBase, TestPointBase):
@@ -290,8 +316,8 @@ class TestLayoutImageVsCanvasPoint(TestLayoutPointBase, TestPointBase):
         """Run before each test."""
         super().setUp()
         self._TestKind = OutputKind.Img
-        self._test_base_name = 'layout_image_v_canvas'
-        self.configTest('pal_canvas', 'sp')
+        self._test_base_name = "layout_image_v_canvas"
+        self.configTest("pal_canvas", "sp")
 
 
 class TestLayoutSvgPoint(TestLayoutPointBase, TestPointBase):
@@ -300,12 +326,11 @@ class TestLayoutSvgPoint(TestLayoutPointBase, TestPointBase):
         """Run before each test."""
         super().setUp()
         self._TestKind = OutputKind.Svg
-        self._test_base_name = 'layout_svg'
-        self.configTest('pal_composer', 'sp_svg')
+        self._test_base_name = "layout_svg"
+        self.configTest("pal_composer", "sp_svg")
 
 
 class TestLayoutSvgVsLayoutPoint(TestLayoutPointBase, TestPointBase):
-
     """
     Compare only to layout image, which is already compared to canvas point
     """
@@ -314,8 +339,8 @@ class TestLayoutSvgVsLayoutPoint(TestLayoutPointBase, TestPointBase):
         """Run before each test."""
         super().setUp()
         self._TestKind = OutputKind.Svg
-        self._test_base_name = 'layout_svg_v_img'
-        self.configTest('pal_composer', 'sp_img')
+        self._test_base_name = "layout_svg_v_img"
+        self.configTest("pal_composer", "sp_img")
 
 
 class TestLayoutPdfPoint(TestLayoutPointBase, TestPointBase):
@@ -323,13 +348,12 @@ class TestLayoutPdfPoint(TestLayoutPointBase, TestPointBase):
     def setUp(self):
         """Run before each test."""
         super().setUp()
-        self._test_base_name = 'layout_pdf'
+        self._test_base_name = "layout_pdf"
         self._TestKind = OutputKind.Pdf
-        self.configTest('pal_composer', 'sp_pdf')
+        self.configTest("pal_composer", "sp_pdf")
 
 
 class TestLayoutPdfVsLayoutPoint(TestLayoutPointBase, TestPointBase):
-
     """
     Compare only to layout image, which is already compared to canvas point
     """
@@ -337,9 +361,9 @@ class TestLayoutPdfVsLayoutPoint(TestLayoutPointBase, TestPointBase):
     def setUp(self):
         """Run before each test."""
         super().setUp()
-        self._test_base_name = 'layout_pdf_v_img'
+        self._test_base_name = "layout_pdf_v_img"
         self._TestKind = OutputKind.Pdf
-        self.configTest('pal_composer', 'sp_img')
+        self.configTest("pal_composer", "sp_img")
 
 
 class TestLayoutLineBase(TestLayoutBase):
@@ -347,7 +371,7 @@ class TestLayoutLineBase(TestLayoutBase):
     @classmethod
     def setUpClass(cls):
         TestLayoutBase.setUpClass()
-        cls.layer = TestQgsPalLabeling.loadFeatureLayer('line')
+        cls.layer = TestQgsPalLabeling.loadFeatureLayer("line")
 
 
 class TestLayoutImageLine(TestLayoutLineBase, TestLineBase):
@@ -355,9 +379,9 @@ class TestLayoutImageLine(TestLayoutLineBase, TestLineBase):
     def setUp(self):
         """Run before each test."""
         super().setUp()
-        self._test_base_name = 'layout_img'
+        self._test_base_name = "layout_img"
         self._TestKind = OutputKind.Img
-        self.configTest('pal_composer_line', 'sp_img')
+        self.configTest("pal_composer_line", "sp_img")
 
 
 class TestLayoutImageVsCanvasLine(TestLayoutLineBase, TestLineBase):
@@ -365,9 +389,9 @@ class TestLayoutImageVsCanvasLine(TestLayoutLineBase, TestLineBase):
     def setUp(self):
         """Run before each test."""
         super().setUp()
-        self._test_base_name = 'layout_img_v_canvas'
+        self._test_base_name = "layout_img_v_canvas"
         self._TestKind = OutputKind.Img
-        self.configTest('pal_canvas_line', 'sp')
+        self.configTest("pal_canvas_line", "sp")
 
 
 class TestLayoutSvgLine(TestLayoutLineBase, TestLineBase):
@@ -375,13 +399,12 @@ class TestLayoutSvgLine(TestLayoutLineBase, TestLineBase):
     def setUp(self):
         """Run before each test."""
         super().setUp()
-        self._test_base_name = 'layout_svg'
+        self._test_base_name = "layout_svg"
         self._TestKind = OutputKind.Svg
-        self.configTest('pal_composer_line', 'sp_svg')
+        self.configTest("pal_composer_line", "sp_svg")
 
 
 class TestLayoutSvgVsLayoutLine(TestLayoutLineBase, TestLineBase):
-
     """
     Compare only to layout image, which is already compared to canvas line
     """
@@ -389,9 +412,9 @@ class TestLayoutSvgVsLayoutLine(TestLayoutLineBase, TestLineBase):
     def setUp(self):
         """Run before each test."""
         super().setUp()
-        self._test_base_name = 'layout_svg_v_img'
+        self._test_base_name = "layout_svg_v_img"
         self._TestKind = OutputKind.Svg
-        self.configTest('pal_composer_line', 'sp_img')
+        self.configTest("pal_composer_line", "sp_img")
 
 
 class TestLayoutPdfLine(TestLayoutLineBase, TestLineBase):
@@ -399,13 +422,12 @@ class TestLayoutPdfLine(TestLayoutLineBase, TestLineBase):
     def setUp(self):
         """Run before each test."""
         super().setUp()
-        self._test_base_name = 'layout_pdf'
+        self._test_base_name = "layout_pdf"
         self._TestKind = OutputKind.Pdf
-        self.configTest('pal_composer_line', 'sp_pdf')
+        self.configTest("pal_composer_line", "sp_pdf")
 
 
 class TestLayoutPdfVsLayoutLine(TestLayoutLineBase, TestLineBase):
-
     """
     Compare only to layout image, which is already compared to canvas line
     """
@@ -414,20 +436,20 @@ class TestLayoutPdfVsLayoutLine(TestLayoutLineBase, TestLineBase):
         """Run before each test."""
         super().setUp()
         self._TestKind = OutputKind.Pdf
-        self._test_base_name = 'layout_pdf_v_img'
-        self.configTest('pal_composer_line', 'sp_img')
+        self._test_base_name = "layout_pdf_v_img"
+        self.configTest("pal_composer_line", "sp_img")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run
     # SEE: test_qgspallabeling_tests.suiteTests() to define suite
     st = suiteTests()
-    sp_i = ['TestLayoutImagePoint.' + t for t in st['sp_suite']]
-    sp_ivs = ['TestLayoutImageVsCanvasPoint.' + t for t in st['sp_vs_suite']]
-    sp_s = ['TestLayoutSvgPoint.' + t for t in st['sp_suite']]
-    sp_svs = ['TestLayoutSvgVsLayoutPoint.' + t for t in st['sp_vs_suite']]
-    sp_p = ['TestLayoutPdfPoint.' + t for t in st['sp_suite']]
-    sp_pvs = ['TestLayoutPdfVsLayoutPoint.' + t for t in st['sp_vs_suite']]
+    sp_i = ["TestLayoutImagePoint." + t for t in st["sp_suite"]]
+    sp_ivs = ["TestLayoutImageVsCanvasPoint." + t for t in st["sp_vs_suite"]]
+    sp_s = ["TestLayoutSvgPoint." + t for t in st["sp_suite"]]
+    sp_svs = ["TestLayoutSvgVsLayoutPoint." + t for t in st["sp_vs_suite"]]
+    sp_p = ["TestLayoutPdfPoint." + t for t in st["sp_suite"]]
+    sp_pvs = ["TestLayoutPdfVsLayoutPoint." + t for t in st["sp_vs_suite"]]
     suite = []
 
     # extended separately for finer control of PAL_SUITE (comment-out undesired)

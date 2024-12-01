@@ -49,7 +49,6 @@ class APP_EXPORT QgsTiledSceneLayerProperties : public QgsLayerPropertiesDialog,
     QgsMetadataWidget *mMetadataWidget = nullptr;
 
     QgsCoordinateReferenceSystem mBackupCrs;
-
 };
 
 #endif // QGSTILEDSCENELAYERPROPERTIES_H

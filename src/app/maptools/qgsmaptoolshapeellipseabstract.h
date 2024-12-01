@@ -25,7 +25,7 @@
 class QgsGeometryRubberBand;
 class QgsSnapIndicator;
 
-class APP_EXPORT QgsMapToolShapeEllipseAbstract: public QgsMapToolShapeAbstract
+class APP_EXPORT QgsMapToolShapeEllipseAbstract : public QgsMapToolShapeAbstract
 {
     Q_OBJECT
   public:
@@ -42,7 +42,7 @@ class APP_EXPORT QgsMapToolShapeEllipseAbstract: public QgsMapToolShapeAbstract
     QgsEllipse mEllipse;
 
     //! convenient method to return the number of segments
-    unsigned int segments( ) { return QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg->value() * 12; }
+    unsigned int segments() { return QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg->value() * 12; }
 };
 
 #endif // QGSMAPTOOLSHAPEELLIPSEABSTRACT_H

@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Médéric Ribreux'
-__date__ = 'March 2016'
-__copyright__ = '(C) 2016, Médéric Ribreux'
+__author__ = "Médéric Ribreux"
+__date__ = "March 2016"
+__copyright__ = "(C) 2016, Médéric Ribreux"
 
 import os
 from grassprovider.grass_utils import GrassUtils
@@ -25,17 +25,20 @@ from processing.tools.system import getTempFilename
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
-    """ Verify if we have the right parameters """
-    if (alg.parameterAsString(parameters, 'inline_points', context)
-            and alg.parameterAsString(parameters, 'points', context)):
-        return False, alg.tr("You need to set either an input control point file or inline control points!")
+    """Verify if we have the right parameters"""
+    if alg.parameterAsString(
+        parameters, "inline_points", context
+    ) and alg.parameterAsString(parameters, "points", context):
+        return False, alg.tr(
+            "You need to set either an input control point file or inline control points!"
+        )
 
     return True, None
 
 
 def processCommand(alg, parameters, context, feedback):
     # handle inline points
-    inlinePoints = alg.parameterAsString(parameters, 'inline_points', context)
+    inlinePoints = alg.parameterAsString(parameters, "inline_points", context)
     if inlinePoints:
         # Creates a temporary txt file
         pointsName = getTempFilename(context=context)
@@ -43,7 +46,7 @@ def processCommand(alg, parameters, context, feedback):
         # Inject rules into temporary txt file
         with open(pointsName, "w") as tempPoints:
             tempPoints.write(inlinePoints)
-        alg.removeParameter('inline_points')
-        parameters['points'] = pointsName
+        alg.removeParameter("inline_points")
+        parameters["points"] = pointsName
 
     alg.processCommand(parameters, context, feedback)

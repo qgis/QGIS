@@ -51,8 +51,7 @@ QgsMesh3DSymbolWidget::QgsMesh3DSymbolWidget( QgsMeshLayer *meshLayer, QWidget *
   connect( mChkSmoothTriangles, &QCheckBox::clicked, this, &QgsMesh3DSymbolWidget::changed );
   connect( mGroupBoxWireframe, &QGroupBox::toggled, this, &QgsMesh3DSymbolWidget::changed );
   connect( mColorButtonWireframe, &QgsColorButton::colorChanged, this, &QgsMesh3DSymbolWidget::changed );
-  connect( mSpinBoxWireframeLineWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ),
-           this, &QgsMesh3DSymbolWidget::changed );
+  connect( mSpinBoxWireframeLineWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsMesh3DSymbolWidget::changed );
   connect( mLodSlider, &QSlider::valueChanged, this, &QgsMesh3DSymbolWidget::changed );
 
   connect( mColorRampShaderMinMaxReloadButton, &QPushButton::clicked, this, &QgsMesh3DSymbolWidget::reloadColorRampShaderMinMax );
@@ -61,29 +60,24 @@ QgsMesh3DSymbolWidget::QgsMesh3DSymbolWidget( QgsMeshLayer *meshLayer, QWidget *
   connect( mColorRampShaderMinEdit, &QLineEdit::editingFinished, this, &QgsMesh3DSymbolWidget::onColorRampShaderMinMaxChanged );
   connect( mColorRampShaderMaxEdit, &QLineEdit::editingFinished, this, &QgsMesh3DSymbolWidget::onColorRampShaderMinMaxChanged );
 
-  connect( mComboBoxTextureType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-           this, &QgsMesh3DSymbolWidget::onColoringTypeChanged );
-  connect( mComboBoxTextureType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-           this, &QgsMesh3DSymbolWidget::changed );
+  connect( mComboBoxTextureType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMesh3DSymbolWidget::onColoringTypeChanged );
+  connect( mComboBoxTextureType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMesh3DSymbolWidget::changed );
 
   connect( mMeshSingleColorButton, &QgsColorButton::colorChanged, this, &QgsMesh3DSymbolWidget::changed );
 
-  connect( mSpinBoxVerticaleScale, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ),
-           this, &QgsMesh3DSymbolWidget::changed );
+  connect( mSpinBoxVerticaleScale, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsMesh3DSymbolWidget::changed );
 
-  connect( mComboBoxDatasetVertical, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-           this, &QgsMesh3DSymbolWidget::changed );
+  connect( mComboBoxDatasetVertical, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMesh3DSymbolWidget::changed );
 
   connect( mCheckBoxVerticalMagnitudeRelative, &QCheckBox::clicked, this, &QgsMesh3DSymbolWidget::changed );
 
   connect( mGroupBoxArrowsSettings, &QGroupBox::toggled, this, &QgsMesh3DSymbolWidget::changed );
 
-  connect( mArrowsSpacingSpinBox, static_cast<void ( QDoubleSpinBox::* )()>( &QDoubleSpinBox::editingFinished ),
-           this, &QgsMesh3DSymbolWidget::changed );
+  connect( mArrowsSpacingSpinBox, static_cast<void ( QDoubleSpinBox::* )()>( &QDoubleSpinBox::editingFinished ), this, &QgsMesh3DSymbolWidget::changed );
 
   connect( mArrowsFixedSizeCheckBox, &QCheckBox::clicked, this, &QgsMesh3DSymbolWidget::changed );
 
-  connect( mGroupBoxTextureSettings, &QgsCollapsibleGroupBox::collapsedStateChanged, this,  &QgsMesh3DSymbolWidget::onTextureSettingsCollapseStateChanged );
+  connect( mGroupBoxTextureSettings, &QgsCollapsibleGroupBox::collapsedStateChanged, this, &QgsMesh3DSymbolWidget::onTextureSettingsCollapseStateChanged );
 }
 
 void QgsMesh3DSymbolWidget::setSymbol( const QgsMesh3DSymbol *symbol )
@@ -104,8 +98,7 @@ void QgsMesh3DSymbolWidget::setSymbol( const QgsMesh3DSymbol *symbol )
   mComboBoxTextureType->setCurrentIndex( mComboBoxTextureType->findData( symbol->renderingStyle() ) );
   mMeshSingleColorButton->setColor( symbol->singleMeshColor() );
   mColorRampShaderWidget->setFromShader( symbol->colorRampShader() );
-  mColorRampShaderWidget->setMinimumMaximumAndClassify( symbol->colorRampShader().minimumValue(),
-      symbol->colorRampShader().maximumValue() );
+  mColorRampShaderWidget->setMinimumMaximumAndClassify( symbol->colorRampShader().minimumValue(), symbol->colorRampShader().maximumValue() );
 
   setColorRampMinMax( symbol->colorRampShader().minimumValue(), symbol->colorRampShader().maximumValue() );
   mComboBoxDatasetVertical->setCurrentIndex( symbol->verticalDatasetGroupIndex() );
@@ -159,9 +152,9 @@ void QgsMesh3DSymbolWidget::setLayer( QgsMeshLayer *meshLayer, bool updateSymbol
   {
     mDatasetGroupListModel->syncToLayer( meshLayer );
     QgsMeshLayer3DRenderer *renderer = static_cast<QgsMeshLayer3DRenderer *>( meshLayer->renderer3D() );
-    if ( renderer &&  renderer->type() == QLatin1String( "mesh" ) )
+    if ( renderer && renderer->type() == QLatin1String( "mesh" ) )
     {
-      if ( renderer->symbol() &&  renderer->symbol()->type() == QLatin1String( "mesh" ) )
+      if ( renderer->symbol() && renderer->symbol()->type() == QLatin1String( "mesh" ) )
       {
         setSymbol( static_cast<const QgsMesh3DSymbol *>( renderer->symbol() ) );
         return;
@@ -169,14 +162,14 @@ void QgsMesh3DSymbolWidget::setLayer( QgsMeshLayer *meshLayer, bool updateSymbol
     }
   }
 
-  const std::unique_ptr< QgsMesh3DSymbol > defaultSymbol = std::make_unique< QgsMesh3DSymbol >();
+  const std::unique_ptr<QgsMesh3DSymbol> defaultSymbol = std::make_unique<QgsMesh3DSymbol>();
   // set symbol does not take ownership!
   setSymbol( defaultSymbol.get() );
 
   reloadColorRampShaderMinMax(); //As the symbol is new, the Color ramp shader needs to be initialized with min max value
 }
 
-QgsMeshLayer *QgsMesh3DSymbolWidget::meshLayer() const {return mLayer;}
+QgsMeshLayer *QgsMesh3DSymbolWidget::meshLayer() const { return mLayer; }
 
 double QgsMesh3DSymbolWidget::lineEditValue( const QLineEdit *lineEdit ) const
 {
@@ -190,7 +183,7 @@ double QgsMesh3DSymbolWidget::lineEditValue( const QLineEdit *lineEdit ) const
 
 std::unique_ptr<QgsMesh3DSymbol> QgsMesh3DSymbolWidget::symbol() const
 {
-  std::unique_ptr< QgsMesh3DSymbol > sym( mSymbol->clone() );
+  std::unique_ptr<QgsMesh3DSymbol> sym( mSymbol->clone() );
 
   sym->setCullingMode( static_cast<Qgs3DTypes::CullingMode>( mCullingMode->currentData().toInt() ) );
   sym->setSmoothedTriangles( mChkSmoothTriangles->isChecked() );
@@ -254,7 +247,7 @@ void QgsMesh3DSymbolWidget::onColorRampShaderMinMaxChanged()
 void QgsMesh3DSymbolWidget::onColoringTypeChanged()
 {
   mGroupBoxColorRampShader->setVisible( mComboBoxTextureType->currentData() == QgsMesh3DSymbol::ColorRamp );
-  mMeshSingleColorWidget->setVisible( mComboBoxTextureType->currentData()  == QgsMesh3DSymbol::SingleColor );
+  mMeshSingleColorWidget->setVisible( mComboBoxTextureType->currentData() == QgsMesh3DSymbol::SingleColor );
 }
 
 void QgsMesh3DSymbolWidget::onTextureSettingsCollapseStateChanged( bool collapsed )

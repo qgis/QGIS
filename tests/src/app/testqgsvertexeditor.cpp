@@ -34,14 +34,13 @@ class TestQgsVertexEditor : public QgsTest
     TestQgsVertexEditor();
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testColumnZMR_data();
     void testColumnZMR();
 
   private:
-
     std::unique_ptr<QgsMapCanvas> mCanvas;
     QgisApp *mQgisApp = nullptr;
     std::unique_ptr<QgsVectorLayer> mLayerLine;
@@ -51,7 +50,8 @@ class TestQgsVertexEditor : public QgsTest
     std::unique_ptr<QgsVertexEditorWidget> mVertexEditor;
 };
 
-TestQgsVertexEditor::TestQgsVertexEditor(): QgsTest( QStringLiteral( "Vertex Editor tests" ) ) {}
+TestQgsVertexEditor::TestQgsVertexEditor()
+  : QgsTest( QStringLiteral( "Vertex Editor tests" ) ) {}
 
 //runs before all tests
 void TestQgsVertexEditor::initTestCase()

@@ -15,16 +15,14 @@
 ***************************************************************************8
 """
 
-__author__ = 'Nyall Dawson'
-__date__ = 'July 2018'
-__copyright__ = '(C) 2018, Nyall Dawson'
+__author__ = "Nyall Dawson"
+__date__ = "July 2018"
+__copyright__ = "(C) 2018, Nyall Dawson"
 
 import unittest
 from qgis.testing import start_app, QgisTestCase
 from qgis.PyQt.QtCore import QTemporaryFile
-from qgis.core import (QgsApplication,
-                       QgsProcessingModelAlgorithm,
-                       QgsProject)
+from qgis.core import QgsApplication, QgsProcessingModelAlgorithm, QgsProject
 from processing.modeler.ProjectProvider import ProjectProvider
 from processing.modeler.ModelerDialog import ModelerDialog
 
@@ -38,9 +36,9 @@ class ProjectProviderTest(QgisTestCase):
         provider = ProjectProvider(p)
 
         # add some algorithms
-        alg = QgsProcessingModelAlgorithm('test name', 'test group')
+        alg = QgsProcessingModelAlgorithm("test name", "test group")
         provider.add_model(alg)
-        alg2 = QgsProcessingModelAlgorithm('test name2', 'test group2')
+        alg2 = QgsProcessingModelAlgorithm("test name2", "test group2")
         provider.add_model(alg2)
         self.assertEqual(len(provider.algorithms()), 2)
 
@@ -58,10 +56,10 @@ class ProjectProviderTest(QgisTestCase):
 
         self.assertEqual(len(provider2.model_definitions), 2)
         self.assertEqual(len(provider2.algorithms()), 2)
-        self.assertEqual(provider2.algorithms()[0].name(), 'test name')
-        self.assertEqual(provider2.algorithms()[0].group(), 'test group')
-        self.assertEqual(provider2.algorithms()[1].name(), 'test name2')
-        self.assertEqual(provider2.algorithms()[1].group(), 'test group2')
+        self.assertEqual(provider2.algorithms()[0].name(), "test name")
+        self.assertEqual(provider2.algorithms()[0].group(), "test group")
+        self.assertEqual(provider2.algorithms()[1].name(), "test name2")
+        self.assertEqual(provider2.algorithms()[1].group(), "test group2")
 
         # clear project should remove algorithms
         p2.clear()
@@ -75,9 +73,9 @@ class ProjectProviderTest(QgisTestCase):
         provider = ProjectProvider(p)
 
         # add some models
-        alg = QgsProcessingModelAlgorithm('test name', 'test group')
+        alg = QgsProcessingModelAlgorithm("test name", "test group")
         provider.add_model(alg)
-        alg2 = QgsProcessingModelAlgorithm('test name2', 'test group2')
+        alg2 = QgsProcessingModelAlgorithm("test name2", "test group2")
         provider.add_model(alg2)
         self.assertEqual(len(provider.algorithms()), 2)
 
@@ -86,21 +84,21 @@ class ProjectProviderTest(QgisTestCase):
         self.assertEqual(len(provider.algorithms()), 2)
 
         # not in provider!
-        alg3 = QgsProcessingModelAlgorithm('test name3', 'test group')
+        alg3 = QgsProcessingModelAlgorithm("test name3", "test group")
         provider.remove_model(alg3)
         self.assertEqual(len(provider.algorithms()), 2)
 
         # delete model actually in project
         provider.remove_model(alg)
         self.assertEqual(len(provider.algorithms()), 1)
-        self.assertEqual(provider.algorithms()[0].name(), 'test name2')
+        self.assertEqual(provider.algorithms()[0].name(), "test name2")
 
         # overwrite model
-        alg2b = QgsProcessingModelAlgorithm('test name2', 'test group2')
-        alg2b.setHelpContent({'test': 'test'})
+        alg2b = QgsProcessingModelAlgorithm("test name2", "test group2")
+        alg2b.setHelpContent({"test": "test"})
         provider.add_model(alg2b)
         self.assertEqual(len(provider.algorithms()), 1)
-        self.assertEqual(provider.algorithms()[0].helpContent(), {'test': 'test'})
+        self.assertEqual(provider.algorithms()[0].helpContent(), {"test": "test"})
 
         provider.remove_model(alg2)
         self.assertEqual(len(provider.algorithms()), 0)
@@ -114,16 +112,16 @@ class ProjectProviderTest(QgisTestCase):
         QgsApplication.processingRegistry().addProvider(provider)
 
         # make an algorithm
-        alg = QgsProcessingModelAlgorithm('test name', 'test group')
+        alg = QgsProcessingModelAlgorithm("test name", "test group")
 
         dialog = ModelerDialog(alg)
         dialog.saveInProject()
 
         self.assertEqual(len(provider.model_definitions), 1)
         self.assertEqual(len(provider.algorithms()), 1)
-        self.assertEqual(provider.algorithms()[0].name(), 'test name')
-        self.assertEqual(provider.algorithms()[0].group(), 'test group')
+        self.assertEqual(provider.algorithms()[0].name(), "test name")
+        self.assertEqual(provider.algorithms()[0].group(), "test group")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

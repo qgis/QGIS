@@ -17,7 +17,11 @@ from qgis.core import (
     QgsSettingsEntryEnumFlag,
     QgsSettingsEntryInteger,
 )
-from qgis.gui import QgsGui, QgsSettingsEditorWidgetWrapper, QgsSettingsEnumEditorWidgetWrapper
+from qgis.gui import (
+    QgsGui,
+    QgsSettingsEditorWidgetWrapper,
+    QgsSettingsEnumEditorWidgetWrapper,
+)
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -30,7 +34,9 @@ PLUGIN_NAME = "UnitTestSettingsRegistry"
 class PyQgsSettingsRegistry(QgisTestCase):
 
     def setUp(self):
-        self.settings_node = QgsSettingsTree.createPluginTreeNode(pluginName=PLUGIN_NAME)
+        self.settings_node = QgsSettingsTree.createPluginTreeNode(
+            pluginName=PLUGIN_NAME
+        )
 
     def tearDown(self):
         QgsSettingsTree.unregisterPluginTreeNode(PLUGIN_NAME)
@@ -51,9 +57,13 @@ class PyQgsSettingsRegistry(QgisTestCase):
         self.assertEqual(int_setting.value(), 6)
 
     def test_settings_registry_custom_enumflag_py(self):
-        priority_setting = QgsSettingsEntryEnumFlag("priority", self.settings_node, QgsLocatorFilter.Priority.High)
+        priority_setting = QgsSettingsEntryEnumFlag(
+            "priority", self.settings_node, QgsLocatorFilter.Priority.High
+        )
         registry = QgsGui.settingsEditorWidgetRegistry()
-        registry.addWrapperForSetting(QgsSettingsEnumEditorWidgetWrapper(), priority_setting)
+        registry.addWrapperForSetting(
+            QgsSettingsEnumEditorWidgetWrapper(), priority_setting
+        )
 
         editor = registry.createEditor(priority_setting, [])
         self.assertIsInstance(editor, QComboBox)
@@ -71,5 +81,5 @@ class PyQgsSettingsRegistry(QgisTestCase):
         self.assertEqual(QgsSettings().value(f"plugins/{PLUGIN_NAME}/priority"), "Low")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
