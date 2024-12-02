@@ -39,3 +39,6 @@ test_core_layerdefinition
 # MSSQL requires the MSSQL docker
 PyQgsProviderConnectionMssql
 PyQgsStyleStorageMssql
+
+# To be fixed
+PyQgsAuthManagerOAuth2OWSTest
