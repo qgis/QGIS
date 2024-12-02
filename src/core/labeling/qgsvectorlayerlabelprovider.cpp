@@ -495,8 +495,6 @@ void QgsVectorLayerLabelProvider::drawUnplacedLabel( QgsRenderContext &context, 
 void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, QgsRenderContext &context, QgsPalLayerSettings &tmpLyr, Qgis::TextComponent drawType, double dpiRatio ) const
 {
   // NOTE: this is repeatedly called for multi-part labels
-  QPainter *painter = context.painter();
-
   Qgis::TextComponents components;
   switch ( drawType )
   {
@@ -522,46 +520,6 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
   xform.setMapRotation( 0, 0, 0 );
 
   QPointF outPt = xform.transform( label->getX(), label->getY() ).toQPointF();
-
-  if ( mEngine->engineSettings().testFlag( Qgis::LabelingFlag::DrawLabelRectOnly ) )  // TODO: this should get directly to labeling engine
-  {
-    //debugging rect
-    if ( drawType != Qgis::TextComponent::Text )
-      return;
-
-    QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
-    QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
-    painter->save();
-    painter->setRenderHint( QPainter::Antialiasing, false );
-    painter->translate( QPointF( outPt.x(), outPt.y() ) );
-    painter->rotate( -label->getAlpha() * 180 / M_PI );
-
-    if ( label->conflictsWithObstacle() )
-    {
-      painter->setBrush( QColor( 255, 0, 0, 100 ) );
-      painter->setPen( QColor( 255, 0, 0, 150 ) );
-    }
-    else
-    {
-      painter->setBrush( QColor( 0, 255, 0, 100 ) );
-      painter->setPen( QColor( 0, 255, 0, 150 ) );
-    }
-
-    painter->drawRect( rect );
-    painter->restore();
-
-    if ( label->nextPart() )
-      drawLabelPrivate( label->nextPart(), context, tmpLyr, drawType, dpiRatio );
-
-    return;
-  }
-  if ( mEngine->engineSettings().testFlag( Qgis::LabelingFlag::DrawLabelMetrics ) )
-  {
-    if ( drawType != Qgis::TextComponent::Text )
-      return;
-
-    QgsLabelingEngine::drawLabelMetrics( label, xform, context, outPt );
-  }
 
   QgsTextRenderer::Component component;
   component.dpiRatio = dpiRatio;
