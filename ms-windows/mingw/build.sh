@@ -68,7 +68,7 @@ installroot="$BUILDDIR/dist"
 installprefix="$installroot/usr/$arch-w64-mingw32/sys-root/mingw"
 
 # To make ccache work properly with precompiled headers
-ccache --set-config sloppiness=pch_defines,time_macros
+ccache --set-config sloppiness=pch_defines,time_macros,include_file_mtime,include_file_ctime
 
 # Cleanup
 rm -rf "$installroot"
