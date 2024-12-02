@@ -26,6 +26,7 @@
 #include <QScreen>
 
 #include "qgsgraduatedsymbolrendererwidget.h"
+#include "moc_qgsgraduatedsymbolrendererwidget.cpp"
 #include "qgspanelwidget.h"
 
 #include "qgsdatadefinedsizelegend.h"

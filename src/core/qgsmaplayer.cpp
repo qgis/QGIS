@@ -27,6 +27,7 @@
 #include "qgslogger.h"
 #include "qgsauthmanager.h"
 #include "qgsmaplayer.h"
+#include "moc_qgsmaplayer.cpp"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgspathresolver.h"
@@ -1357,15 +1358,18 @@ QgsCoordinateReferenceSystem QgsMapLayer::crs3D() const
 void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSignal )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-  if ( mCRS == srs )
+  const bool needToValidateCrs = mShouldValidateCrs && isSpatial() && !srs.isValid() && type() != Qgis::LayerType::Annotation;
+
+  if ( mCRS == srs && !needToValidateCrs )
     return;
 
   const QgsCoordinateReferenceSystem oldVerticalCrs = verticalCrs();
   const QgsCoordinateReferenceSystem oldCrs3D = mCrs3D;
+  const QgsCoordinateReferenceSystem oldCrs = mCRS;
 
   mCRS = srs;
 
-  if ( mShouldValidateCrs && isSpatial() && !mCRS.isValid() && type() != Qgis::LayerType::Annotation )
+  if ( needToValidateCrs )
   {
     mCRS.setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
     mCRS.validate();
@@ -1373,7 +1377,7 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
 
   rebuildCrs3D();
 
-  if ( emitSignal )
+  if ( emitSignal && mCRS != oldCrs )
     emit crsChanged();
 
   // Did vertical crs also change as a result of this? If so, emit signal

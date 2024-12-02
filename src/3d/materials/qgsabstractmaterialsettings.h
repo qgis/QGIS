@@ -171,6 +171,13 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     //! Writes settings to a DOM \a element
     virtual void writeXml( QDomElement &element, const QgsReadWriteContext & ) const;
 
+    /**
+     * Returns TRUE if this settings exactly matches an \a other settings.
+     *
+     * \since QGIS 3.42
+     */
+    virtual bool equals( const QgsAbstractMaterialSettings *other ) const = 0;
+
 #ifndef SIP_RUN
 
     /**

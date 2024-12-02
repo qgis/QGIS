@@ -17,6 +17,7 @@
 #include <QVector>
 
 #include "qgsmaplayerloadstyledialog.h"
+#include "moc_qgsmaplayerloadstyledialog.cpp"
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgslayerpropertiesdialog.h"

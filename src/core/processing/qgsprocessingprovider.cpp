@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingprovider.h"
+#include "moc_qgsprocessingprovider.cpp"
 #include "qgsapplication.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsrasterfilewriter.h"

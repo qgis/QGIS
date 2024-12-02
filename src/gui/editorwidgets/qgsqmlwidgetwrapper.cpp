@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsqmlwidgetwrapper.h"
+#include "moc_qgsqmlwidgetwrapper.cpp"
 #include "qgsattributeform.h"
 #include "qgsmessagelog.h"
 #include "qgsexpressioncontextutils.h"

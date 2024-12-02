@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsnumericformatselectorwidget.h"
+#include "moc_qgsnumericformatselectorwidget.cpp"
 #include "qgsapplication.h"
 #include "qgsnumericformatregistry.h"
 #include "qgsnumericformat.h"

@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsinterpolatedlinesymbollayerwidget.h"
+#include "moc_qgsinterpolatedlinesymbollayerwidget.cpp"
 
 #include "qgsvectorlayer.h"
 #include "qgsdoublevalidator.h"

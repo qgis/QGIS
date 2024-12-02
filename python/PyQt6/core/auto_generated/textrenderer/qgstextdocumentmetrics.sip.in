@@ -174,6 +174,24 @@ Returns the fixed height of the fragment at the specified block and fragment ind
 .. versionadded:: 3.40
 %End
 
+    double fragmentAscent( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
+%Docstring
+Returns the ascent of the fragment at the specified block and fragment index.
+
+.. seealso:: :py:func:`fragmentDescent`
+
+.. versionadded:: 3.42
+%End
+
+    double fragmentDescent( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
+%Docstring
+Returns the descent of the fragment at the specified block and fragment index.
+
+.. seealso:: :py:func:`fragmentAscent`
+
+.. versionadded:: 3.42
+%End
+
     double verticalOrientationXOffset( int blockIndex ) const;
 %Docstring
 Returns the vertical orientation x offset for the specified block.
@@ -187,6 +205,17 @@ Returns the maximum character width for the specified block.
     double blockMaximumDescent( int blockIndex ) const;
 %Docstring
 Returns the maximum descent encountered in the specified block.
+
+.. seealso:: :py:func:`blockMaximumAscent`
+%End
+
+    double blockMaximumAscent( int blockIndex ) const;
+%Docstring
+Returns the maximum ascent encountered in the specified block.
+
+.. seealso:: :py:func:`blockMaximumDescent`
+
+.. versionadded:: 3.42
 %End
 
     QFont fragmentFont( int blockIndex, int fragmentIndex ) const;
@@ -197,6 +226,42 @@ Returns the calculated font for the fragment at the specified block and fragment
     double ascentOffset() const;
 %Docstring
 Returns the ascent offset of the first block in the document.
+%End
+
+    double blockVerticalMargin( int blockIndex ) const;
+%Docstring
+Returns the vertical margin for the specified block index.
+
+If ``blockIndex`` >= 0 then the returned value will be the margin to place after the block.
+If ``blockIndex`` < 0 then the returned value will be the margin to place before the first block.
+
+.. seealso:: :py:func:`blockLeftMargin`
+
+.. seealso:: :py:func:`blockRightMargin`
+
+.. versionadded:: 3.42
+%End
+
+    double blockLeftMargin( int blockIndex ) const;
+%Docstring
+Returns the margin for the left side of the specified block index.
+
+.. seealso:: :py:func:`blockVerticalMargin`
+
+.. seealso:: :py:func:`blockRightMargin`
+
+.. versionadded:: 3.42
+%End
+
+    double blockRightMargin( int blockIndex ) const;
+%Docstring
+Returns the margin for the right side of the specified block index.
+
+.. seealso:: :py:func:`blockVerticalMargin`
+
+.. seealso:: :py:func:`blockLeftMargin`
+
+.. versionadded:: 3.42
 %End
 
 };

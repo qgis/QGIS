@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspropertyoverridebutton.h"
+#include "moc_qgspropertyoverridebutton.cpp"
 
 #include "qgsapplication.h"
 #include "qgsexpressionbuilderdialog.h"

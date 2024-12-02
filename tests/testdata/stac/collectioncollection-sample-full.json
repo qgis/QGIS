@@ -1,0 +1,85 @@
+{
+  "collections": [
+    {
+      "id": "simple-collection",
+      "type": "Collection",
+      "stac_extensions": [],
+      "stac_version": "1.0.0",
+      "description": "A simple collection demonstrating core collection fields in an API",
+      "title": "Simple Example Collection",
+      "providers": [
+        {
+          "name": "Remote Data, Inc",
+          "description": "Producers of awesome spatiotemporal assets",
+          "roles": [
+            "producer",
+            "processor"
+          ],
+          "url": "http://remotedata.io"
+        }
+      ],
+      "extent": {
+        "spatial": {
+          "bbox": [
+            [
+              172.91173669923782,
+              1.3438851951615003,
+              172.95469614953714,
+              1.3690476620161975
+            ]
+          ]
+        },
+        "temporal": {
+          "interval": [
+            [
+              "2020-12-11T22:38:32.125Z",
+              "2020-12-14T18:02:31.437Z"
+            ]
+          ]
+        }
+      },
+      "license": "CC-BY-4.0",
+      "links": [
+        {
+          "rel": "root",
+          "href": "http://stac.example.com/",
+          "type": "application/json"
+        },
+        {
+          "rel": "items",
+          "href": "http://stac.example.com/collections/simple-collection/items",
+          "type": "application/geo+json"
+        },
+        {
+          "rel": "self",
+          "href": "http://stac.example.com/collections/simple-collection",
+          "type": "application/json"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+        "rel": "self",
+        "href": "http://stac.example.com/collections?page=2",
+        "type": "application/json"
+    },
+    {
+        "rel": "root",
+        "href": "http://stac.example.com/",
+        "type": "application/json"
+    },
+    {
+        "rel": "next",
+        "href": "http://stac.example.com/collections?page=3",
+        "type": "application/json"
+    },
+    {
+        "rel": "prev",
+        "href": "http://stac.example.com/collections?page=1",
+        "type": "application/json"
+    }
+  ],
+  "numberMatched": 11,
+  "numberReturned": 1
+}

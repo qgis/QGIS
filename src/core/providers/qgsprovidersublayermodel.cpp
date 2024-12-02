@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprovidersublayermodel.h"
+#include "moc_qgsprovidersublayermodel.cpp"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsiconutils.h"
 #include "qgsapplication.h"

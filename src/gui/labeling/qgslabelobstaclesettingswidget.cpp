@@ -15,6 +15,7 @@
 
 
 #include "qgslabelobstaclesettingswidget.h"
+#include "moc_qgslabelobstaclesettingswidget.cpp"
 #include "qgsexpressioncontextutils.h"
 
 QgsLabelObstacleSettingsWidget::QgsLabelObstacleSettingsWidget( QWidget *parent, QgsVectorLayer *vl )

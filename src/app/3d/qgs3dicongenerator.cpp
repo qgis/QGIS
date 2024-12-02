@@ -14,19 +14,19 @@
  ***************************************************************************/
 
 #include "qgs3dicongenerator.h"
+#include "moc_qgs3dicongenerator.cpp"
 #include "qgsapplication.h"
 #include <QDir>
 
 Qgs3DIconGenerator::Qgs3DIconGenerator( QObject *parent )
   : QgsAbstractStyleEntityIconGenerator( parent )
 {
-
 }
 
 void Qgs3DIconGenerator::generateIcon( QgsStyle *, QgsStyle::StyleEntity type, const QString &name )
 {
   QIcon icon;
-  const QList< QSize > sizes = iconSizes();
+  const QList<QSize> sizes = iconSizes();
   if ( sizes.isEmpty() )
     icon.addFile( QgsApplication::defaultThemePath() + QDir::separator() + QStringLiteral( "3d.svg" ), QSize( 24, 24 ) );
   for ( const QSize &s : sizes )

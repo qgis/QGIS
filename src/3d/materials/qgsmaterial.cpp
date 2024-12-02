@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaterial.h"
+#include "moc_qgsmaterial.cpp"
 #include "qgs3dutils.h"
 
 #include <Qt3DRender/QEffect>

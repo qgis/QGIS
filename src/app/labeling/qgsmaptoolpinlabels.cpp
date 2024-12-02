@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolpinlabels.h"
+#include "moc_qgsmaptoolpinlabels.cpp"
 
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
@@ -135,9 +136,7 @@ void QgsMapToolPinLabels::updatePinnedLabels()
   }
 }
 
-void QgsMapToolPinLabels::highlightLabel( const QgsLabelPosition &labelpos,
-    const QString &id,
-    const QColor &color )
+void QgsMapToolPinLabels::highlightLabel( const QgsLabelPosition &labelpos, const QString &id, const QColor &color )
 {
   QgsRubberBand *rb = new QgsRubberBand( mCanvas, Qgis::GeometryType::Polygon );
   rb->addPoint( labelpos.cornerPoints.at( 0 ) );
@@ -280,7 +279,7 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle &ext, QMouseEvent *
 
   bool labelChanged = false;
   QList<QgsLabelPosition>::const_iterator it;
-  for ( it = labelPosList.constBegin() ; it != labelPosList.constEnd(); ++it )
+  for ( it = labelPosList.constBegin(); it != labelPosList.constEnd(); ++it )
   {
     const QgsLabelPosition &pos = *it;
 
@@ -293,7 +292,7 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle &ext, QMouseEvent *
     }
 
     // unpin label
-    if ( isPinned() && ( doUnpin  || toggleUnpinOrPin ) )
+    if ( isPinned() && ( doUnpin || toggleUnpinOrPin ) )
     {
       // unpin previously pinned label (set attribute table fields to NULL)
       if ( pinUnpinCurrentFeature( false ) )
@@ -373,8 +372,7 @@ bool QgsMapToolPinLabels::pinUnpinCurrentLabel( bool pin )
 
   if ( pin )
   {
-
-//     QgsPointXY labelpoint = labelpos.cornerPoints.at( 0 );
+    //     QgsPointXY labelpoint = labelpos.cornerPoints.at( 0 );
 
     QgsPointXY referencePoint;
     if ( !currentLabelRotationPoint( referencePoint, !preserveRot ) )
@@ -442,7 +440,7 @@ bool QgsMapToolPinLabels::pinUnpinCurrentFeature( bool pin )
 {
   bool rc = false;
 
-  if ( ! mCurrentLabel.pos.isDiagram )
+  if ( !mCurrentLabel.pos.isDiagram )
     rc = pinUnpinCurrentLabel( pin );
   else
     rc = pinUnpinCurrentDiagram( pin );
@@ -452,9 +450,8 @@ bool QgsMapToolPinLabels::pinUnpinCurrentFeature( bool pin )
 
 bool QgsMapToolPinLabels::pinUnpinCurrentDiagram( bool pin )
 {
-
   // skip diagrams
-  if ( ! mCurrentLabel.pos.isDiagram )
+  if ( !mCurrentLabel.pos.isDiagram )
     return false;
 
   // verify attribute table has x, y fields mapped

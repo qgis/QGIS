@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtooladdnodeitem.h"
+#include "moc_qgslayoutviewtooladdnodeitem.cpp"
 #include "qgsapplication.h"
 #include "qgslayoutview.h"
 #include "qgslayout.h"
@@ -69,15 +70,22 @@ void QgsLayoutViewToolAddNodeItem::layoutPressEvent( QgsLayoutViewMouseEvent *ev
     // last (temporary) point is removed
     mPolygon.remove( mPolygon.count() - 1 );
 
-    QgsLayoutItem *item = QgsGui::layoutItemGuiRegistry()->createItem( mItemMetadataId, layout() );
+    std::unique_ptr< QgsLayoutItem > item( QgsGui::layoutItemGuiRegistry()->createItem( mItemMetadataId, layout() ) );
     if ( !item )
       return;
 
-    if ( QgsLayoutNodesItem *nodesItem = qobject_cast< QgsLayoutNodesItem * >( item ) )
+    if ( QgsLayoutNodesItem *nodesItem = qobject_cast< QgsLayoutNodesItem * >( item.get() ) )
+    {
       nodesItem->setNodes( mPolygon );
-
-    layout()->addLayoutItem( item );
-    layout()->setSelectedItem( item );
+      if ( !nodesItem->isValid() )
+      {
+        mRubberBand.reset();
+        return;
+      }
+    }
+    QgsLayoutItem *newItem = item.get();
+    layout()->addLayoutItem( item.release() );
+    layout()->setSelectedItem( newItem );
     emit createdItem();
   }
   else

@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayoutlegendlayersdialog.h"
+#include "moc_qgslayoutlegendlayersdialog.cpp"
 
 #include <QStandardItem>
 #include "qgsmaplayer.h"

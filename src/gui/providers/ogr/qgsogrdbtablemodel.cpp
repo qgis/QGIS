@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsogrdbtablemodel.h"
+#include "moc_qgsogrdbtablemodel.cpp"
 ///@cond PRIVATE
 
 #include "qgsapplication.h"

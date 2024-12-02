@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaplayerstyleguiutils.h"
+#include "moc_qgsmaplayerstyleguiutils.cpp"
 
 #include <QAction>
 #include <QInputDialog>

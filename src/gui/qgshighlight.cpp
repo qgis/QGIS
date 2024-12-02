@@ -22,6 +22,7 @@
 #include "qgsfillsymbollayer.h"
 #include "qgsgeometry.h"
 #include "qgshighlight.h"
+#include "moc_qgshighlight.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsrendercontext.h"

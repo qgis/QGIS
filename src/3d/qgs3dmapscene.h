@@ -220,16 +220,16 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      * A plane equation contains 4 elements.
      * A simple way to define a clip plane equation is to define a normalized normal to
      * the plane and its distance from the origin of the scene.
-     * In that case, the first 3 elements are the coordinates of the normal of the plane as (X, Y, Z).
+     * In that case, the first 3 elements are the coordinates of the normal of the plane as ``(X, Y, Z)``.
      * They need to be normalized.
      * The last element is the distance of the plane from the origin of the scene.
-     * In mathematical terms, a 3d plane can be defined with the equation ax+by+cz+d=0
-     * The normal is (a, b, c) with |a, b, c| = 1
-     * The distance is -d.
+     * In mathematical terms, a 3d plane can be defined with the equation ``ax+by+cz+d=0``
+     * The normal is ``(a, b, c)`` with ``|a, b, c| = 1``
+     * The distance is ``-d``.
      *
-     * By default, OpenGL supports up to 8 additional clipping planes. If \a clipPlaneEquations
-     * contains more than 8 planes, only the first 8 ones will be used.
-     * If \a clipPlaneEquations is empty, the clipping is disabled.
+     * The number of available clip planes depends on the OpenGL implementation. It should at least handle
+     * 6 additional clip planes. When the map scene is created, this number is retrieved.
+     * If \a clipPlaneEquations contains more than this maximum, only the first ones will be kept.
      *
      * \see disableClipping()
      * \since QGIS 3.40
@@ -305,8 +305,10 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onCameraMovementSpeedChanged();
     void onCameraNavigationModeChanged();
     void onDebugOverlayEnabledChanged();
-
+    void onStopUpdatesChanged();
     void on3DAxisSettingsChanged();
+
+    void onOriginChanged();
 
     bool updateCameraNearFarPlanes();
 
@@ -357,6 +359,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     bool mSceneUpdatesEnabled = true;
 
     QList<QVector4D> mClipPlanesEquations;
+    int mMaxClipPlanes = 6;
 
 };
 #endif // QGS3DMAPSCENE_H

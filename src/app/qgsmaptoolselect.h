@@ -29,7 +29,6 @@ class APP_EXPORT QgsMapToolSelect : public QgsMapTool
 {
     Q_OBJECT
   public:
-
     enum Mode
     {
       GeometryIntersectsSetSelection,

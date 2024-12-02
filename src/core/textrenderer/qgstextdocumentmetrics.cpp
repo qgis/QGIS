@@ -32,8 +32,8 @@ constexpr double SUBSCRIPT_VERTICAL_BASELINE_ADJUSTMENT_FACTOR = 1.0 / 6.0;
 
 struct DocumentMetrics
 {
-  double lineHeightPainterUnits = 0;
   double tabStopDistancePainterUnits = 0;
+  QList< double > tabStopDistancesPainterUnits;
   double width = 0;
   double heightLabelMode = 0;
   double heightPointRectMode = 0;
@@ -50,6 +50,16 @@ struct DocumentMetrics
   double heightVerticalOrientation = 0;
 
   QVector < double > blockVerticalLineSpacing;
+
+  /**
+   * Calculated vertical margins between blocks. The first entry is the
+   * margin before the first block, and the last entry is the margin after
+   * the final block
+   */
+  QVector< double > verticalMarginsBetweenBlocks;
+
+  QVector< double > blockLeftMargin;
+  QVector< double > blockRightMargin;
 
   double outerXMin = 0;
   double outerXMax = 0;
@@ -76,20 +86,73 @@ struct BlockMetrics
   double maxBlockDescent = 0;
   double maxBlockMaxWidth = 0;
   double maxBlockLeading = 0;
+
   QList< QFont > fragmentFonts;
   QList< double > fragmentVerticalOffsets;
   QList< double > fragmentFixedHeights;
   QList< double > fragmentHorizontalAdvance;
+  QList< double > fragmentAscent;
+  QList< double > fragmentDescent;
 
   QFont previousNonSuperSubScriptFont;
   bool isFirstNonTabFragment = true;
+
+  // non calculated properties
+  double lineHeightPainterUnits = 0;
+  double lineHeightPercentage = 0;
+
+  double marginTop = 0;
+  double marginBottom = 0;
+  double marginLeft = 0;
+  double marginRight = 0;
+
+  void resetCalculatedStats()
+  {
+    isFirstBlock = false;
+    isLastBlock = false;
+    maxLineSpacing = 0;
+    blockWidth = 0;
+    blockXMax = 0;
+    blockYMaxAdjustLabel = 0;
+    blockHeightUsingAscentAccountingForVerticalOffset = 0;
+    blockHeightVerticalOrientation = 0;
+    blockHeightUsingAscentDescent = 0;
+    blockHeightUsingLineSpacing = 0;
+    maxBlockFixedItemHeight = 0;
+    maxBlockAscentForTextFragments = 0;
+    maxBlockCapHeight = 0;
+    maxBlockAscent = 0;
+    maxBlockDescent = 0;
+    maxBlockMaxWidth = 0;
+    maxBlockLeading = 0;
+    marginTop = 0;
+    marginBottom = 0;
+
+    fragmentFonts.clear();
+    fragmentVerticalOffsets.clear();
+    fragmentFixedHeights.clear();
+    fragmentHorizontalAdvance.clear();
+    fragmentAscent.clear();
+    fragmentDescent.clear();
+    previousNonSuperSubScriptFont = QFont();
+    isFirstNonTabFragment = true;
+  }
 };
 
 
-void QgsTextDocumentMetrics::finalizeBlock( QgsTextDocumentMetrics &res, const QgsTextFormat &format, DocumentMetrics &documentMetrics, QgsTextBlock &outputBlock, BlockMetrics &metrics )
+void QgsTextDocumentMetrics::finalizeBlock( QgsTextDocumentMetrics &res, const QgsTextFormat &, DocumentMetrics &documentMetrics, QgsTextBlock &outputBlock, BlockMetrics &metrics )
 {
   if ( metrics.isFirstBlock )
   {
+    documentMetrics.verticalMarginsBetweenBlocks.append( metrics.marginTop );
+    documentMetrics.verticalMarginsBetweenBlocks.append( metrics.marginBottom );
+
+    documentMetrics.currentLabelBaseline += metrics.marginTop;
+    documentMetrics.currentRectBaseline += metrics.marginTop;
+    documentMetrics.currentPointBaseline += metrics.marginTop;
+    documentMetrics.currentCapHeightBasedBaseline += metrics.marginTop;
+    documentMetrics.currentAscentBasedBaseline += metrics.marginTop;
+
     // same logic as used in QgsTextRenderer. (?!!)
     // needed to move bottom of text's descender to within bottom edge of label
     res.mFirstLineAscentOffset = 0.25 * metrics.maxBlockAscentForTextFragments; // descent() is not enough
@@ -108,40 +171,54 @@ void QgsTextDocumentMetrics::finalizeBlock( QgsTextDocumentMetrics &res, const Q
     // standard rendering - designed to exactly replicate QPainter's drawText method
     documentMetrics.currentRectBaseline = -res.mFirstLineAscentOffset + lineHeight - 1 /*baseline*/;
 
-    documentMetrics.currentCapHeightBasedBaseline = res.mFirstLineCapHeight;
-    documentMetrics.currentAscentBasedBaseline = metrics.maxBlockAscent;
+    documentMetrics.currentCapHeightBasedBaseline += res.mFirstLineCapHeight;
+    documentMetrics.currentAscentBasedBaseline += metrics.maxBlockAscent;
 
     // standard rendering - designed to exactly replicate QPainter's drawText rect method
     documentMetrics.currentPointBaseline = 0;
 
-    documentMetrics.heightLabelMode += metrics.blockHeightUsingAscentDescent;
-    documentMetrics.heightPointRectMode += metrics.blockHeightUsingAscentDescent;
-    documentMetrics.heightCapHeightMode += metrics.maxBlockCapHeight;
-    documentMetrics.heightAscentMode += metrics.maxBlockAscent;
+    documentMetrics.heightLabelMode += metrics.blockHeightUsingAscentDescent + metrics.marginTop;
+    documentMetrics.heightPointRectMode += metrics.blockHeightUsingAscentDescent + metrics.marginTop;
+    documentMetrics.heightCapHeightMode += metrics.maxBlockCapHeight + metrics.marginTop;
+    documentMetrics.heightAscentMode += metrics.maxBlockAscent + metrics.marginTop;
   }
   else
   {
-    double thisLineHeightUsingAscentDescent = format.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( format.lineHeight() * ( metrics.maxBlockAscent + metrics.maxBlockDescent ) ) : documentMetrics.lineHeightPainterUnits;
-    double thisLineHeightUsingLineSpacing = format.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( format.lineHeight() * metrics.maxLineSpacing ) : documentMetrics.lineHeightPainterUnits;
+    // html vertical margins between blocks collapse and take the size of the highest margin:
+    const double verticalMarginBeforeBlock = std::max( documentMetrics.verticalMarginsBetweenBlocks.last(), metrics.marginTop );
+    documentMetrics.verticalMarginsBetweenBlocks.last() = verticalMarginBeforeBlock;
+    documentMetrics.verticalMarginsBetweenBlocks.append( metrics.marginBottom );
+
+    double thisLineHeightUsingAscentDescent = metrics.lineHeightPercentage != 0 ? ( metrics.lineHeightPercentage * ( metrics.maxBlockAscent + metrics.maxBlockDescent ) ) : metrics.lineHeightPainterUnits;
+    double thisLineHeightUsingLineSpacing = metrics.lineHeightPercentage != 0 ? ( metrics.lineHeightPercentage * metrics.maxLineSpacing ) : metrics.lineHeightPainterUnits;
 
     thisLineHeightUsingAscentDescent = std::max( thisLineHeightUsingAscentDescent, metrics.maxBlockFixedItemHeight );
     thisLineHeightUsingLineSpacing = std::max( thisLineHeightUsingLineSpacing, metrics.maxBlockFixedItemHeight );
 
-    documentMetrics.currentLabelBaseline += thisLineHeightUsingAscentDescent;
-    documentMetrics.currentRectBaseline += thisLineHeightUsingLineSpacing;
-    documentMetrics.currentPointBaseline += thisLineHeightUsingLineSpacing;
+    documentMetrics.currentLabelBaseline += verticalMarginBeforeBlock + thisLineHeightUsingAscentDescent;
+    documentMetrics.currentRectBaseline += verticalMarginBeforeBlock + thisLineHeightUsingLineSpacing;
+    documentMetrics.currentPointBaseline += verticalMarginBeforeBlock + thisLineHeightUsingLineSpacing;
     // using cap height??
-    documentMetrics.currentCapHeightBasedBaseline += thisLineHeightUsingLineSpacing;
+    documentMetrics.currentCapHeightBasedBaseline += verticalMarginBeforeBlock + thisLineHeightUsingLineSpacing;
     // using ascent?
-    documentMetrics.currentAscentBasedBaseline += thisLineHeightUsingLineSpacing;
+    documentMetrics.currentAscentBasedBaseline += verticalMarginBeforeBlock + thisLineHeightUsingLineSpacing;
 
-    documentMetrics.heightLabelMode += thisLineHeightUsingAscentDescent;
-    documentMetrics.heightPointRectMode += thisLineHeightUsingLineSpacing;
-    documentMetrics.heightCapHeightMode += thisLineHeightUsingLineSpacing;
-    documentMetrics.heightAscentMode += thisLineHeightUsingLineSpacing;
+    documentMetrics.heightLabelMode += verticalMarginBeforeBlock + thisLineHeightUsingAscentDescent;
+    documentMetrics.heightPointRectMode += verticalMarginBeforeBlock + thisLineHeightUsingLineSpacing;
+    documentMetrics.heightCapHeightMode += verticalMarginBeforeBlock + thisLineHeightUsingLineSpacing;
+    documentMetrics.heightAscentMode += verticalMarginBeforeBlock + thisLineHeightUsingLineSpacing;
     if ( metrics.isLastBlock )
+    {
       res.mLastLineAscentOffset = 0.25 * metrics.maxBlockAscentForTextFragments;
+      documentMetrics.heightLabelMode += metrics.marginBottom;
+      documentMetrics.heightPointRectMode += metrics.marginBottom;
+      documentMetrics.heightCapHeightMode += metrics.marginBottom;
+      documentMetrics.heightAscentMode += metrics.marginBottom;
+    }
   }
+
+  documentMetrics.blockLeftMargin << metrics.marginLeft;
+  documentMetrics.blockRightMargin << metrics.marginRight;
 
   if ( metrics.isLastBlock )
   {
@@ -149,11 +226,11 @@ void QgsTextDocumentMetrics::finalizeBlock( QgsTextDocumentMetrics &res, const Q
       documentMetrics.outerYMaxLabel = metrics.blockYMaxAdjustLabel - metrics.maxBlockDescent;
   }
 
-  documentMetrics.blockVerticalLineSpacing << ( format.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( metrics.maxBlockMaxWidth * format.lineHeight() ) : documentMetrics.lineHeightPainterUnits );
+  documentMetrics.blockVerticalLineSpacing << ( metrics.lineHeightPercentage != 0 ? ( metrics.maxBlockMaxWidth * metrics.lineHeightPercentage ) : metrics.lineHeightPainterUnits );
 
   res.mBlockHeights << metrics.blockHeightUsingLineSpacing;
 
-  documentMetrics.width = std::max( documentMetrics.width, metrics.blockWidth );
+  documentMetrics.width = std::max( documentMetrics.width, metrics.blockWidth + metrics.marginLeft + metrics.marginRight );
   documentMetrics.outerXMax = std::max( documentMetrics.outerXMax, metrics.blockXMax );
 
   documentMetrics.heightVerticalOrientation = std::max( documentMetrics.heightVerticalOrientation, metrics.blockHeightVerticalOrientation );
@@ -165,12 +242,15 @@ void QgsTextDocumentMetrics::finalizeBlock( QgsTextDocumentMetrics &res, const Q
   res.mBaselineOffsetsCapHeightMode << documentMetrics.currentCapHeightBasedBaseline;
   res.mBaselineOffsetsAscentBased << documentMetrics.currentAscentBasedBaseline;
   res.mBlockMaxDescent << metrics.maxBlockDescent;
+  res.mBlockMaxAscent << metrics.maxBlockAscent;
   res.mBlockMaxCharacterWidth << metrics.maxBlockMaxWidth;
   res.mFragmentVerticalOffsetsLabelMode << metrics.fragmentVerticalOffsets;
   res.mFragmentFixedHeights << metrics.fragmentFixedHeights;
   res.mFragmentVerticalOffsetsRectMode << metrics.fragmentVerticalOffsets;
   res.mFragmentVerticalOffsetsPointMode << metrics.fragmentVerticalOffsets;
   res.mFragmentHorizontalAdvance << metrics.fragmentHorizontalAdvance;
+  res.mFragmentAscent << metrics.fragmentAscent;
+  res.mFragmentDescent << metrics.fragmentDescent;
 
   res.mDocument.append( outputBlock );
   outputBlock.clear();
@@ -179,7 +259,7 @@ void QgsTextDocumentMetrics::finalizeBlock( QgsTextDocumentMetrics &res, const Q
     documentMetrics.lastLineLeading = metrics.maxBlockLeading;
 
   // reset metrics for next block
-  metrics = BlockMetrics();
+  metrics.resetCalculatedStats();
 };
 
 
@@ -188,7 +268,24 @@ void QgsTextDocumentMetrics::processFragment( QgsTextDocumentMetrics &res, const
   if ( fragment.isTab() )
   {
     // special handling for tab characters
-    const double nextTabStop = ( std::floor( thisBlockMetrics.blockXMax / documentMetrics.tabStopDistancePainterUnits ) + 1 ) * documentMetrics.tabStopDistancePainterUnits;
+    double nextTabStop = 0;
+    if ( !documentMetrics.tabStopDistancesPainterUnits.isEmpty() )
+    {
+      // if we don't find a tab stop before the current length of line, we just ignore the tab character entirely
+      nextTabStop = thisBlockMetrics.blockXMax;
+      for ( const double tabStop : std::as_const( documentMetrics.tabStopDistancesPainterUnits ) )
+      {
+        if ( tabStop >= thisBlockMetrics.blockXMax )
+        {
+          nextTabStop = tabStop;
+          break;
+        }
+      }
+    }
+    else
+    {
+      nextTabStop = ( std::floor( thisBlockMetrics.blockXMax / documentMetrics.tabStopDistancePainterUnits ) + 1 ) * documentMetrics.tabStopDistancePainterUnits;
+    }
     const double fragmentWidth = nextTabStop - thisBlockMetrics.blockXMax;
 
     thisBlockMetrics.blockWidth += fragmentWidth;
@@ -198,6 +295,8 @@ void QgsTextDocumentMetrics::processFragment( QgsTextDocumentMetrics &res, const
     thisBlockMetrics.fragmentHorizontalAdvance << fragmentWidth;
     thisBlockMetrics.fragmentFixedHeights << -1;
     thisBlockMetrics.fragmentFonts << QFont();
+    thisBlockMetrics.fragmentAscent << 0;
+    thisBlockMetrics.fragmentDescent << 0;
     currentOutputBlock.append( fragment );
   }
   else
@@ -351,6 +450,8 @@ void QgsTextDocumentMetrics::processFragment( QgsTextDocumentMetrics &res, const
 
       thisBlockMetrics.maxBlockAscent = std::max( thisBlockMetrics.maxBlockAscent, imageHeight );
       thisBlockMetrics.maxBlockCapHeight = std::max( thisBlockMetrics.maxBlockCapHeight, imageHeight );
+      thisBlockMetrics.fragmentAscent << imageHeight;
+      thisBlockMetrics.fragmentDescent << 0;
       thisBlockMetrics.maxLineSpacing = std::max( thisBlockMetrics.maxLineSpacing, imageHeight + fm.leading() / scaleFactor );
       thisBlockMetrics.maxBlockLeading = std::max( thisBlockMetrics.maxBlockLeading, fm.leading() / scaleFactor );
       thisBlockMetrics.maxBlockMaxWidth = std::max( thisBlockMetrics.maxBlockMaxWidth, imageWidth );
@@ -375,12 +476,17 @@ void QgsTextDocumentMetrics::processFragment( QgsTextDocumentMetrics &res, const
         thisBlockMetrics.blockHeightUsingAscentDescent = std::max( thisBlockMetrics.blockHeightUsingAscentDescent, fragmentHeightUsingAscentDescent );
 
         thisBlockMetrics.blockHeightUsingLineSpacing = std::max( thisBlockMetrics.blockHeightUsingLineSpacing, fragmentHeightUsingLineSpacing );
-        thisBlockMetrics.maxBlockAscent = std::max( thisBlockMetrics.maxBlockAscent, fm.ascent() / scaleFactor );
-        thisBlockMetrics.maxBlockAscentForTextFragments = std::max( thisBlockMetrics.maxBlockAscentForTextFragments, fm.ascent() / scaleFactor );
+        const double ascent = fm.ascent() / scaleFactor;
+        thisBlockMetrics.fragmentAscent << ascent;
+        thisBlockMetrics.maxBlockAscent = std::max( thisBlockMetrics.maxBlockAscent, ascent );
+        thisBlockMetrics.maxBlockAscentForTextFragments = std::max( thisBlockMetrics.maxBlockAscentForTextFragments, ascent );
 
         thisBlockMetrics.maxBlockCapHeight = std::max( thisBlockMetrics.maxBlockCapHeight, fm.capHeight() / scaleFactor );
 
-        thisBlockMetrics.maxBlockDescent = std::max( thisBlockMetrics.maxBlockDescent, fm.descent() / scaleFactor );
+        const double descent = fm.descent() / scaleFactor;
+        thisBlockMetrics.fragmentDescent << descent;
+
+        thisBlockMetrics.maxBlockDescent = std::max( thisBlockMetrics.maxBlockDescent, descent );
         thisBlockMetrics.maxBlockMaxWidth = std::max( thisBlockMetrics.maxBlockMaxWidth, fm.maxWidth() / scaleFactor );
 
         if ( ( fm.lineSpacing() / scaleFactor ) > thisBlockMetrics.maxLineSpacing )
@@ -500,11 +606,22 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
   DocumentMetrics documentMetrics;
 
   // for absolute line heights
-  documentMetrics.lineHeightPainterUnits = context.convertToPainterUnits( format.lineHeight(), format.lineHeightUnit() );
+  const double documentLineHeightPainterUnits = context.convertToPainterUnits( format.lineHeight(), format.lineHeightUnit() );
 
   documentMetrics.tabStopDistancePainterUnits = format.tabStopDistanceUnit() == Qgis::RenderUnit::Percentage
       ? format.tabStopDistance() * font.pixelSize() / scaleFactor
       : context.convertToPainterUnits( format.tabStopDistance(), format.tabStopDistanceUnit(), format.tabStopDistanceMapUnitScale() );
+
+  const QList< QgsTextFormat::Tab > tabPositions = format.tabPositions();
+  documentMetrics.tabStopDistancesPainterUnits.reserve( tabPositions.size() );
+  for ( const QgsTextFormat::Tab &tab : tabPositions )
+  {
+    documentMetrics.tabStopDistancesPainterUnits.append(
+      format.tabStopDistanceUnit() == Qgis::RenderUnit::Percentage
+      ? tab.position() * font.pixelSize() / scaleFactor
+      : context.convertToPainterUnits( tab.position(), format.tabStopDistanceUnit(), format.tabStopDistanceMapUnitScale() )
+    );
+  }
 
   documentMetrics.blockSize = document.size();
   res.mDocument.reserve( documentMetrics.blockSize );
@@ -520,6 +637,21 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
     const int fragmentSize = block.size();
 
     BlockMetrics thisBlockMetrics;
+    thisBlockMetrics.lineHeightPainterUnits = documentLineHeightPainterUnits;
+    // apply block line height if set
+    if ( !std::isnan( block.blockFormat().lineHeightPercentage() ) )
+    {
+      thisBlockMetrics.lineHeightPercentage = block.blockFormat().lineHeightPercentage();
+    }
+    else if ( !std::isnan( block.blockFormat().lineHeight() ) )
+    {
+      thisBlockMetrics.lineHeightPainterUnits = context.convertToPainterUnits( block.blockFormat().lineHeight(), Qgis::RenderUnit::Points );
+    }
+    else if ( format.lineHeightUnit() == Qgis::RenderUnit::Percentage )
+    {
+      thisBlockMetrics.lineHeightPercentage = format.lineHeight();
+    }
+
     thisBlockMetrics.fragmentVerticalOffsets.reserve( fragmentSize );
     thisBlockMetrics.fragmentFonts.reserve( fragmentSize );
     thisBlockMetrics.fragmentHorizontalAdvance.reserve( fragmentSize );
@@ -527,6 +659,15 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
 
     thisBlockMetrics.isFirstBlock = blockIndex == 0;
     thisBlockMetrics.isLastBlock = blockIndex == documentMetrics.blockSize - 1;
+
+    thisBlockMetrics.marginTop = context.convertToPainterUnits(
+                                   !std::isnan( block.blockFormat().margins().top() ) ? block.blockFormat().margins().top() : 0, Qgis::RenderUnit::Points );
+    thisBlockMetrics.marginBottom = context.convertToPainterUnits(
+                                      !std::isnan( block.blockFormat().margins().bottom() ) ? block.blockFormat().margins().bottom() : 0, Qgis::RenderUnit::Points );
+    thisBlockMetrics.marginLeft = context.convertToPainterUnits(
+                                    !std::isnan( block.blockFormat().margins().left() ) ? block.blockFormat().margins().left() : 0, Qgis::RenderUnit::Points );
+    thisBlockMetrics.marginRight = context.convertToPainterUnits(
+                                     !std::isnan( block.blockFormat().margins().right() ) ? block.blockFormat().margins().right() : 0, Qgis::RenderUnit::Points );
 
     for ( int fragmentIndex = 0; fragmentIndex < fragmentSize; ++fragmentIndex )
     {
@@ -582,6 +723,10 @@ QgsTextDocumentMetrics QgsTextDocumentMetrics::calculateMetrics( const QgsTextDo
 
     res.mDocumentSizeVerticalOrientation = QSizeF( widthVerticalOrientation, documentMetrics.heightVerticalOrientation );
   }
+
+  res.mVerticalMarginsBetweenBlocks = documentMetrics.verticalMarginsBetweenBlocks;
+  res.mLeftBlockMargins = documentMetrics.blockLeftMargin;
+  res.mRightBlockMargins = documentMetrics.blockRightMargin;
 
   res.mOuterBoundsLabelMode = QRectF( documentMetrics.outerXMin, -documentMetrics.outerYMaxLabel,
                                       documentMetrics.outerXMax - documentMetrics.outerXMin,
@@ -664,18 +809,25 @@ double QgsTextDocumentMetrics::firstLineCapHeight() const
 
 double QgsTextDocumentMetrics::baselineOffset( int blockIndex, Qgis::TextLayoutMode mode ) const
 {
+  double verticalAdjustmentForBlockMargins = 0;
+  for ( int i = 0; i < blockIndex; ++i )
+  {
+    double marginBeforeBlock = 0;
+    verticalAdjustmentForBlockMargins += marginBeforeBlock;
+  }
+
   switch ( mode )
   {
     case Qgis::TextLayoutMode::Rectangle:
-      return mBaselineOffsetsRectMode.value( blockIndex );
+      return mBaselineOffsetsRectMode.value( blockIndex ) + verticalAdjustmentForBlockMargins;
     case Qgis::TextLayoutMode::RectangleCapHeightBased:
-      return mBaselineOffsetsCapHeightMode.value( blockIndex );
+      return mBaselineOffsetsCapHeightMode.value( blockIndex ) + verticalAdjustmentForBlockMargins;
     case Qgis::TextLayoutMode::RectangleAscentBased:
-      return mBaselineOffsetsAscentBased.value( blockIndex );
+      return mBaselineOffsetsAscentBased.value( blockIndex ) + verticalAdjustmentForBlockMargins;
     case Qgis::TextLayoutMode::Point:
-      return mBaselineOffsetsPointMode.value( blockIndex );
+      return mBaselineOffsetsPointMode.value( blockIndex ) + verticalAdjustmentForBlockMargins;
     case Qgis::TextLayoutMode::Labeling:
-      return mBaselineOffsetsLabelMode.value( blockIndex );
+      return mBaselineOffsetsLabelMode.value( blockIndex ) + verticalAdjustmentForBlockMargins;
   }
   BUILTIN_UNREACHABLE
 }
@@ -706,6 +858,16 @@ double QgsTextDocumentMetrics::fragmentFixedHeight( int blockIndex, int fragment
   return mFragmentFixedHeights.value( blockIndex ).value( fragmentIndex );
 }
 
+double QgsTextDocumentMetrics::fragmentAscent( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode ) const
+{
+  return mFragmentAscent.value( blockIndex ).value( fragmentIndex );
+}
+
+double QgsTextDocumentMetrics::fragmentDescent( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode ) const
+{
+  return mFragmentDescent.value( blockIndex ).value( fragmentIndex );
+}
+
 double QgsTextDocumentMetrics::verticalOrientationXOffset( int blockIndex ) const
 {
   return mVerticalOrientationXOffsets.value( blockIndex );
@@ -721,8 +883,31 @@ double QgsTextDocumentMetrics::blockMaximumDescent( int blockIndex ) const
   return mBlockMaxDescent.value( blockIndex );
 }
 
+double QgsTextDocumentMetrics::blockMaximumAscent( int blockIndex ) const
+{
+  return mBlockMaxAscent.value( blockIndex );
+}
+
 QFont QgsTextDocumentMetrics::fragmentFont( int blockIndex, int fragmentIndex ) const
 {
   return mFragmentFonts.value( blockIndex ).value( fragmentIndex );
+}
+
+double QgsTextDocumentMetrics::blockVerticalMargin( int blockIndex ) const
+{
+  if ( blockIndex < 0 )
+    return mVerticalMarginsBetweenBlocks.value( 0 );
+
+  return mVerticalMarginsBetweenBlocks.value( blockIndex + 1 );
+}
+
+double QgsTextDocumentMetrics::blockLeftMargin( int blockIndex ) const
+{
+  return mLeftBlockMargins.value( blockIndex );
+}
+
+double QgsTextDocumentMetrics::blockRightMargin( int blockIndex ) const
+{
+  return mRightBlockMargins.value( blockIndex );
 }
 

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsattributesforminitcode.h"
+#include "moc_qgsattributesforminitcode.cpp"
 #include "ui_qgsattributesforminitcode.h"
 #include "qgssettings.h"
 #include "qgsgui.h"

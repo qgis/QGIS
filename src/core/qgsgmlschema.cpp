@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgmlschema.h"
+#include "moc_qgsgmlschema.cpp"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgserror.h"
@@ -30,7 +31,11 @@
 
 #include <limits>
 
-const char NS_SEPARATOR = '?';
+#ifndef NS_SEPARATOR_DEFINED
+#define NS_SEPARATOR_DEFINED
+static const char NS_SEPARATOR = '?';
+#endif
+
 #define GML_NAMESPACE QStringLiteral( "http://www.opengis.net/gml" )
 
 

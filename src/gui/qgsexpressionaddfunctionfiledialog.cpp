@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsexpressionaddfunctionfiledialog.h"
+#include "moc_qgsexpressionaddfunctionfiledialog.cpp"
 
 #include <QPushButton>
 #include <QStandardItemModel>
@@ -40,7 +41,7 @@ QgsExpressionAddFunctionFileDialog::QgsExpressionAddFunctionFileDialog( bool ena
 
 void QgsExpressionAddFunctionFileDialog::cboFileOptions_currentIndexChanged( int )
 {
-  bool projectSelected = cboFileOptions->currentData() == QStringLiteral( "project" );
+  bool projectSelected = cboFileOptions->currentData() == QLatin1String( "project" );
   lblNewFileName->setVisible( !projectSelected );
   txtNewFileName->setVisible( !projectSelected );
   updateOkButtonStatus();
@@ -51,7 +52,7 @@ void QgsExpressionAddFunctionFileDialog::updateOkButtonStatus()
   QPushButton *okBtn = buttonBox->button( QDialogButtonBox::StandardButton::Ok );
   okBtn->setEnabled( true );
 
-  if ( cboFileOptions->currentData() != QStringLiteral( "project" ) )
+  if ( cboFileOptions->currentData() != QLatin1String( "project" ) )
   {
     okBtn->setEnabled( !txtNewFileName->text().trimmed().isEmpty() );
   }
@@ -59,7 +60,7 @@ void QgsExpressionAddFunctionFileDialog::updateOkButtonStatus()
 
 bool QgsExpressionAddFunctionFileDialog::createProjectFunctions() const
 {
-  return cboFileOptions->currentData() == QStringLiteral( "project" );
+  return cboFileOptions->currentData() == QLatin1String( "project" );
 }
 
 QString QgsExpressionAddFunctionFileDialog::fileName()

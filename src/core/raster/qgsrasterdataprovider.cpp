@@ -17,6 +17,7 @@
 
 #include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
+#include "moc_qgsrasterdataprovider.cpp"
 #include "qgsrasteridentifyresult.h"
 #include "qgslogger.h"
 #include "qgspoint.h"
@@ -1049,3 +1050,5 @@ QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const VirtualRast
   uri.setQuery( query );
   return QString( QUrl::toPercentEncoding( uri.toEncoded() ) );
 }
+
+#undef ERR

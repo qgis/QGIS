@@ -98,12 +98,6 @@ include_directories(SYSTEM
   ${${QT_VERSION_BASE}Designer_INCLUDE_DIRS}
 )
 
-if (BUILD_WITH_QT6)
-  QT6_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
-else()
-  QT5_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
-endif()
-
 #############################################################
 # qgis_customwidgets library
 

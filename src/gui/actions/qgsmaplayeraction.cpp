@@ -19,6 +19,7 @@
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsmaplayeractioncontext.h"
+#include "moc_qgsmaplayeraction.cpp"
 
 QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, Qgis::MapLayerActionTargets targets, const QIcon &icon, Qgis::MapLayerActionFlags flags )
   : QAction( icon, name, parent )

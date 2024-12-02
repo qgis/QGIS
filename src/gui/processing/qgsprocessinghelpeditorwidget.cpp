@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessinghelpeditorwidget.h"
+#include "moc_qgsprocessinghelpeditorwidget.cpp"
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsgui.h"
 #include <QTreeWidgetItem>

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspalettedrendererwidget.h"
+#include "moc_qgspalettedrendererwidget.cpp"
 #include "qgspalettedrasterrenderer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"

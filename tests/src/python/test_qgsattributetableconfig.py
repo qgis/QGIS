@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '07/06/2016'
-__copyright__ = 'Copyright 2016, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "07/06/2016"
+__copyright__ = "Copyright 2016, The QGIS Project"
 
 
 from qgis.core import QgsAttributeTableConfig, QgsVectorLayer
@@ -20,17 +21,18 @@ start_app()
 class TestQgsAttributeTableConfig(QgisTestCase):
 
     def testLayerConfig(self):
-        """ test retrieving attribute table config from a layer """
+        """test retrieving attribute table config from a layer"""
 
         # make a layer
-        point_layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
-                                     "pointlayer", "memory")
+        point_layer = QgsVectorLayer(
+            "Point?field=fldtxt:string&field=fldint:integer", "pointlayer", "memory"
+        )
 
         # make sure attribute table config is initially populated
         config = point_layer.attributeTableConfig()
         self.assertFalse(config.isEmpty())
-        self.assertEqual(config.columns()[0].name, 'fldtxt')
-        self.assertEqual(config.columns()[1].name, 'fldint')
+        self.assertEqual(config.columns()[0].name, "fldtxt")
+        self.assertEqual(config.columns()[1].name, "fldint")
 
         # try replacing it
         config.setColumns([config.columns()[1], config.columns()[0]])
@@ -39,16 +41,16 @@ class TestQgsAttributeTableConfig(QgisTestCase):
         # and make sure changes were applied
         config = point_layer.attributeTableConfig()
         self.assertFalse(config.isEmpty())
-        self.assertEqual(config.columns()[0].name, 'fldint')
-        self.assertEqual(config.columns()[1].name, 'fldtxt')
+        self.assertEqual(config.columns()[0].name, "fldint")
+        self.assertEqual(config.columns()[1].name, "fldtxt")
 
     def testIsEmpty(self):
-        """ test isEmpty method """
+        """test isEmpty method"""
         config = QgsAttributeTableConfig()
         self.assertTrue(config.isEmpty())
 
         c = QgsAttributeTableConfig.ColumnConfig()
-        c.name = 'test'
+        c.name = "test"
         config.setColumns([c])
         self.assertFalse(config.isEmpty())
 
@@ -68,36 +70,36 @@ class TestQgsAttributeTableConfig(QgisTestCase):
         self.assertEqual(len(config), 2)
 
     def testSetColumns(self):
-        """ test setting columns """
+        """test setting columns"""
         config = QgsAttributeTableConfig()
         self.assertEqual(config.columns(), [])
 
         c1 = QgsAttributeTableConfig.ColumnConfig()
-        c1.name = 'test'
+        c1.name = "test"
         c1.hidden = False
         c1.width = 9
         c2 = QgsAttributeTableConfig.ColumnConfig()
-        c2.name = 'test2'
+        c2.name = "test2"
         c2.hidden = True
         c2.width = 11
         config.setColumns([c1, c2])
         result = config.columns()
-        self.assertEqual(result[0].name, 'test')
-        self.assertEqual(result[1].name, 'test2')
+        self.assertEqual(result[0].name, "test")
+        self.assertEqual(result[1].name, "test2")
         self.assertEqual(result[0].hidden, False)
         self.assertEqual(result[1].hidden, True)
         self.assertEqual(result[0].width, 9)
         self.assertEqual(result[1].width, 11)
 
     def testColumnHidden(self):
-        """ test hiding columns """
+        """test hiding columns"""
 
         config = QgsAttributeTableConfig()
         c1 = QgsAttributeTableConfig.ColumnConfig()
-        c1.name = 'test'
+        c1.name = "test"
         c1.hidden = False
         c2 = QgsAttributeTableConfig.ColumnConfig()
-        c2.name = 'test2'
+        c2.name = "test2"
         c2.hidden = False
         config.setColumns([c1, c2])
 
@@ -132,14 +134,14 @@ class TestQgsAttributeTableConfig(QgisTestCase):
         self.assertTrue(config.columnHidden(1))
 
     def testColumnWidth(self):
-        """ test setting column widths """
+        """test setting column widths"""
 
         config = QgsAttributeTableConfig()
         c1 = QgsAttributeTableConfig.ColumnConfig()
-        c1.name = 'test'
+        c1.name = "test"
         c1.width = -1
         c2 = QgsAttributeTableConfig.ColumnConfig()
-        c2.name = 'test2'
+        c2.name = "test2"
         c2.width = 27
         config.setColumns([c1, c2])
 
@@ -174,15 +176,15 @@ class TestQgsAttributeTableConfig(QgisTestCase):
         self.assertEqual(config.columnWidth(1), 12)
 
     def testSameColumns(self):
-        """ test hasSameColumns() check """
+        """test hasSameColumns() check"""
 
         config = QgsAttributeTableConfig()
         c1 = QgsAttributeTableConfig.ColumnConfig()
-        c1.name = 'test'
+        c1.name = "test"
         c1.hidden = False
         c1.width = 100
         c2 = QgsAttributeTableConfig.ColumnConfig()
-        c2.name = 'test2'
+        c2.name = "test2"
         c2.hidden = False
         c2.width = 120
         config.setColumns([c1, c2])
@@ -202,7 +204,7 @@ class TestQgsAttributeTableConfig(QgisTestCase):
         config2.setColumns([c2, c1])
         self.assertFalse(config.hasSameColumns(config2))
 
-        c2.name = 'test3'
+        c2.name = "test3"
         config2.setColumns([c1, c2])
         self.assertFalse(config.hasSameColumns(config2))
 
@@ -210,5 +212,5 @@ class TestQgsAttributeTableConfig(QgisTestCase):
         pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

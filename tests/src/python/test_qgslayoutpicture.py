@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = '(C) 2017 by Nyall Dawson'
-__date__ = '23/10/2017'
-__copyright__ = 'Copyright 2017, The QGIS Project'
+
+__author__ = "(C) 2017 by Nyall Dawson"
+__date__ = "23/10/2017"
+__copyright__ = "Copyright 2017, The QGIS Project"
 
 import http.server
 import os
@@ -24,7 +25,7 @@ from qgis.core import (
     QgsLayoutItemPicture,
     QgsProject,
     QgsReadWriteContext,
-    QgsRectangle
+    QgsRectangle,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -44,14 +45,14 @@ class TestQgsLayoutPicture(QgisTestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
-        super(TestQgsLayoutPicture, cls).setUpClass()
+        super().setUpClass()
         cls.item_class = QgsLayoutItemPicture
 
         # Bring up a simple HTTP server, for remote picture tests
-        os.chdir(unitTestDataPath() + '')
+        os.chdir(unitTestDataPath() + "")
         handler = http.server.SimpleHTTPRequestHandler
 
-        cls.httpd = socketserver.TCPServer(('localhost', 0), handler)
+        cls.httpd = socketserver.TCPServer(("localhost", 0), handler)
         cls.port = cls.httpd.server_address[1]
 
         cls.httpd_thread = threading.Thread(target=cls.httpd.serve_forever)
@@ -119,14 +120,18 @@ class TestQgsLayoutPicture(QgisTestCase, LayoutItemTestCase):
         self.assertTrue(pic.writeXml(elem, doc, QgsReadWriteContext()))
 
         pic2 = QgsLayoutItemPicture(l)
-        self.assertTrue(pic2.readXml(elem.firstChildElement(), doc, QgsReadWriteContext()))
+        self.assertTrue(
+            pic2.readXml(elem.firstChildElement(), doc, QgsReadWriteContext())
+        )
         self.assertEqual(pic2.mode(), QgsLayoutItemPicture.Format.FormatRaster)
 
         pic.setMode(QgsLayoutItemPicture.Format.FormatSVG)
         elem = doc.createElement("test2")
         self.assertTrue(pic.writeXml(elem, doc, QgsReadWriteContext()))
         pic3 = QgsLayoutItemPicture(l)
-        self.assertTrue(pic3.readXml(elem.firstChildElement(), doc, QgsReadWriteContext()))
+        self.assertTrue(
+            pic3.readXml(elem.firstChildElement(), doc, QgsReadWriteContext())
+        )
         self.assertEqual(pic3.mode(), QgsLayoutItemPicture.Format.FormatSVG)
 
     def testResizeZoom(self):
@@ -134,21 +139,18 @@ class TestQgsLayoutPicture(QgisTestCase, LayoutItemTestCase):
         self.picture.setResizeMode(QgsLayoutItemPicture.ResizeMode.Zoom)
 
         self.assertTrue(
-            self.render_layout_check(
-                'composerpicture_resize_zoom',
-                self.layout
-            )
+            self.render_layout_check("composerpicture_resize_zoom", self.layout)
         )
 
     def testRemoteImage(self):
         """Test fetching remote picture."""
         self.picture.setPicturePath(
-            'http://localhost:' + str(TestQgsLayoutPicture.port) + '/qgis_local_server/logo.png')
-
-        res = self.render_layout_check(
-            'composerpicture_remote',
-            self.layout
+            "http://localhost:"
+            + str(TestQgsLayoutPicture.port)
+            + "/qgis_local_server/logo.png"
         )
+
+        res = self.render_layout_check("composerpicture_remote", self.layout)
 
         self.picture.setPicturePath(self.pngImage)
         self.assertTrue(res)
@@ -212,7 +214,9 @@ class TestQgsLayoutPicture(QgisTestCase, LayoutItemTestCase):
         map = QgsLayoutItemMap(layout)
         map.attemptSetSceneRect(QRectF(0, 0, 10, 10))
         map.setCrs(QgsCoordinateReferenceSystem.fromEpsgId(3575))
-        map.setExtent(QgsRectangle(-2126029.962, -2200807.749, -119078.102, -757031.156))
+        map.setExtent(
+            QgsRectangle(-2126029.962, -2200807.749, -119078.102, -757031.156)
+        )
         layout.addLayoutItem(map)
 
         picture = QgsLayoutItemPicture(layout)
@@ -225,7 +229,9 @@ class TestQgsLayoutPicture(QgisTestCase, LayoutItemTestCase):
         self.assertAlmostEqual(picture.pictureRotation(), 37.20, 1)
 
         # shift map
-        map.setExtent(QgsRectangle(2120672.293, -3056394.691, 2481640.226, -2796718.780))
+        map.setExtent(
+            QgsRectangle(2120672.293, -3056394.691, 2481640.226, -2796718.780)
+        )
         self.assertAlmostEqual(picture.pictureRotation(), -38.18, 1)
 
         # rotate map
@@ -252,5 +258,5 @@ class TestQgsLayoutPicture(QgisTestCase, LayoutItemTestCase):
         self.assertEqual(picture.mode(), QgsLayoutItemPicture.Format.FormatRaster)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

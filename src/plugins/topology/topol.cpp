@@ -29,6 +29,7 @@
 #include <QMenu>
 
 #include "topol.h"
+#include "moc_topol.cpp"
 #include "checkDock.h"
 
 static const QString sName = QObject::tr( "Topology Checker" );

@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsattributeformwidget.h"
+#include "moc_qgsattributeformwidget.cpp"
 #include <QHBoxLayout>
 #include <QStackedWidget>
 

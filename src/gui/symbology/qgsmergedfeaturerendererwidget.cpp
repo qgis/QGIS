@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmergedfeaturerendererwidget.h"
+#include "moc_qgsmergedfeaturerendererwidget.cpp"
 #include "qgsmergedfeaturerenderer.h"
 #include "qgsrendererregistry.h"
 #include "qgsvectorlayer.h"

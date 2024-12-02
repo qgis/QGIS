@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmhttprequest.h"
+#include "moc_qgsalgorithmhttprequest.cpp"
 #include "qgsprocessingparameters.h"
 #include "qgis.h"
 

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdummyconfigdlg.h"
+#include "moc_qgsdummyconfigdlg.cpp"
 
 QgsDummyConfigDlg::QgsDummyConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent, const QString &description )
   :    QgsEditorConfigWidget( vl, fieldIdx, parent )

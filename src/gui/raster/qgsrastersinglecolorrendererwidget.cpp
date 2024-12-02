@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsrastersinglecolorrendererwidget.h"
+#include "moc_qgsrastersinglecolorrendererwidget.cpp"
 #include "qgsrastersinglecolorrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"

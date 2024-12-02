@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingalgorithmdialogbase.h"
+#include "moc_qgsprocessingalgorithmdialogbase.cpp"
 #include "qgssettings.h"
 #include "qgshelp.h"
 #include "qgsmessagebar.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmodelviewtooltemporarykeyzoom.h"
+#include "moc_qgsmodelviewtooltemporarykeyzoom.cpp"
 #include "qgsmodelviewmouseevent.h"
 #include "qgsmodelgraphicsview.h"
 #include "qgsapplication.h"

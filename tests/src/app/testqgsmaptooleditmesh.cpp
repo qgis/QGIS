@@ -28,14 +28,16 @@ class TestQgsMapToolEditMesh : public QObject
     TestQgsMapToolEditMesh() = default;
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase() {};// will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();       // will be called before the first testfunction is executed.
+    void cleanupTestCase() {}; // will be called after the last testfunction was executed.
+    void init();               // will be called before each testfunction is executed.
+    void cleanup() {}          // will be called after every testfunction.
 
     void hoverElements();
 
     void editMesh();
+
+    void selectElements();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -90,17 +92,17 @@ void TestQgsMapToolEditMesh::hoverElements()
   mEditMeshMapTool->mActionDigitizing->trigger();
   tool.mouseMove( 3.31376427, 47.97500487 );
   QCOMPARE( mEditMeshMapTool->mCurrentFaceIndex, 8 );
-  QVERIFY( mEditMeshMapTool->mCurrentEdge == QgsMapToolEditMeshFrame::Edge( {-1, -1} ) );
+  QVERIFY( mEditMeshMapTool->mCurrentEdge == QgsMapToolEditMeshFrame::Edge( { -1, -1 } ) );
   QCOMPARE( mEditMeshMapTool->mCurrentVertexIndex, -1 );
 
   tool.mouseMove( 3.31368247, 47.97500500 );
   QCOMPARE( mEditMeshMapTool->mCurrentFaceIndex, 8 );
-  QVERIFY( mEditMeshMapTool->mCurrentEdge == QgsMapToolEditMeshFrame::Edge( {8, 5} ) );
+  QVERIFY( mEditMeshMapTool->mCurrentEdge == QgsMapToolEditMeshFrame::Edge( { 8, 5 } ) );
   QCOMPARE( mEditMeshMapTool->mCurrentVertexIndex, -1 );
 
   tool.mouseMove( 3.31368064, 47.97503705 );
   QCOMPARE( mEditMeshMapTool->mCurrentFaceIndex, 8 );
-  QVERIFY( mEditMeshMapTool->mCurrentEdge == QgsMapToolEditMeshFrame::Edge( {8, 5} ) );
+  QVERIFY( mEditMeshMapTool->mCurrentEdge == QgsMapToolEditMeshFrame::Edge( { 8, 5 } ) );
   QCOMPARE( mEditMeshMapTool->mCurrentVertexIndex, 10 );
 }
 
@@ -160,20 +162,20 @@ void TestQgsMapToolEditMesh::editMesh()
   QCOMPARE( meshLayerQuadFlower->meshEditor()->freeVerticesIndexes().count(), 0 );
 
   // add a free vertex
-  tool.mouseDoubleClick( 2500, 3500, Qt::LeftButton );  // 9
+  tool.mouseDoubleClick( 2500, 3500, Qt::LeftButton ); // 9
   QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 8 );
   QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 10 );
   QCOMPARE( meshLayerQuadFlower->meshEditor()->freeVerticesIndexes().count(), 1 );
 
   // add a face
-  tool.mouseMove( 1999, 2999 ); //move near a vertex
+  tool.mouseMove( 1999, 2999 );                                                               //move near a vertex
   tool.mouseMove( 2000 + offsetInMapUnits / sqrt( 2 ), 3000 + offsetInMapUnits / sqrt( 2 ) ); //move on the new face marker
   tool.mouseClick( 2000 + offsetInMapUnits / sqrt( 4 ), 3000 + offsetInMapUnits / sqrt( 2 ), Qt::LeftButton );
-  tool.mouseMove( 2499, 3501 ); //move near the new free vertex
-  tool.mouseClick( 2501, 3499, Qt::LeftButton ); // click near the vertex
-  tool.mouseMove( 2490, 2600 ); //move elsewhere
-  tool.mouseMove( 2495, 2500 ); //move near another vertex
-  tool.mouseClick( 2495, 2500, Qt::LeftButton ); // click near the vertex
+  tool.mouseMove( 2499, 3501 );                   //move near the new free vertex
+  tool.mouseClick( 2501, 3499, Qt::LeftButton );  // click near the vertex
+  tool.mouseMove( 2490, 2600 );                   //move elsewhere
+  tool.mouseMove( 2495, 2500 );                   //move near another vertex
+  tool.mouseClick( 2495, 2500, Qt::LeftButton );  // click near the vertex
   tool.mouseClick( 5000, 5000, Qt::RightButton ); // valid the face
 
   QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 9 );
@@ -188,9 +190,9 @@ void TestQgsMapToolEditMesh::editMesh()
   tool.mouseMove( 3000, 3500 ); //move to a new place outsite the mesh (cross edge of new face: invalid)
   tool.mouseClick( 3000, 3500, Qt::LeftButton );
   tool.mouseMove( 2500, 2500 );
-  tool.mouseClick( 2500, 2500, Qt::LeftButton );// close the face
-  tool.mouseClick( 5000, 5000, Qt::RightButton ); // valid the fac
-  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 9 ); //-> face not added
+  tool.mouseClick( 2500, 2500, Qt::LeftButton );          // close the face
+  tool.mouseClick( 5000, 5000, Qt::RightButton );         // valid the fac
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 9 );    //-> face not added
   QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 10 ); //-> vertices not added
   tool.keyClick( Qt::Key_Backspace );
   tool.keyClick( Qt::Key_Backspace );
@@ -322,9 +324,9 @@ void TestQgsMapToolEditMesh::editMesh()
 
   // select only one vertex
   tool.mouseMove( 1520, 1516.66 );
-  tool.mouseClick( 1520,  1516.66, Qt::LeftButton ); //select vertex
+  tool.mouseClick( 1520, 1516.66, Qt::LeftButton ); //select vertex
   tool.mouseMove( 1521, 1516.66 );
-  tool.mouseClick( 1520, 1516.66, Qt::LeftButton );  //start move
+  tool.mouseClick( 1520, 1516.66, Qt::LeftButton ); //start move
   tool.mouseMove( 1500, 1500 );
   tool.mouseClick( 1500, 1500, Qt::LeftButton ); //end move
   QgsPointXY vertexPosition = meshLayerQuadFlower->snapOnElement( QgsMesh::Vertex, QgsPointXY( 1520, 1480 ), 30 );
@@ -332,7 +334,7 @@ void TestQgsMapToolEditMesh::editMesh()
 
   // select an edge and move it
   tool.mouseMove( 1760, 1758 );
-  tool.mouseClick( 1760,  1758, Qt::LeftButton );
+  tool.mouseClick( 1760, 1758, Qt::LeftButton );
   tool.mouseMove( 1760, 1758 );
   tool.mouseClick( 1760, 1760, Qt::LeftButton );
   tool.mouseMove( 1800, 1760 );
@@ -386,6 +388,54 @@ void TestQgsMapToolEditMesh::editMesh()
 
   QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 1 );
   QCOMPARE( mEditMeshMapTool->mSelectedFaces.count(), 0 );
+}
+
+void TestQgsMapToolEditMesh::selectElements()
+{
+  QString uri = QString( mDataDir + "/quad_and_triangle_with_free_vertices.2dm" );
+  std::unique_ptr<QgsMeshLayer> layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
+  QVERIFY( layer->isValid() );
+
+  const QgsCoordinateTransform transform;
+  QgsMeshEditingError error;
+  layer->startFrameEditing( transform, error, false );
+  QVERIFY( error == QgsMeshEditingError() );
+
+  mCanvas->setLayers( QList<QgsMapLayer *>() << layer.get() );
+
+  QVERIFY( layer->meshEditor() );
+
+  TestQgsMapToolAdvancedDigitizingUtils tool( mEditMeshMapTool );
+  mCanvas->setCurrentLayer( layer.get() );
+  mEditMeshMapTool->mActionDigitizing->trigger();
+
+  // select all vertices
+  QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 0 );
+  mEditMeshMapTool->mActionSelectAllVertices->trigger();
+  QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 10 );
+
+  // reset selection
+  tool.mouseClick( 0, 0, Qt::LeftButton );
+
+  // select isolated vertices
+  QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 0 );
+  mEditMeshMapTool->mActionSelectIsolatedVertices->trigger();
+  QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 5 );
+
+  // reset selection
+  tool.mouseClick( 0, 0, Qt::LeftButton );
+
+  // select by polygon
+  QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 0 );
+  mEditMeshMapTool->mActionSelectByPolygon->trigger();
+
+  // polygon definition
+  tool.mouseClick( 2100, 3000, Qt::LeftButton );
+  tool.mouseClick( 2900, 2300, Qt::LeftButton );
+  tool.mouseClick( 3100, 3000, Qt::LeftButton );
+  tool.mouseClick( 2500, 3000, Qt::RightButton );
+
+  QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 3 );
 }
 
 QGSTEST_MAIN( TestQgsMapToolEditMesh )

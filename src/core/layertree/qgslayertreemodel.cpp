@@ -17,6 +17,7 @@
 #include <QTextStream>
 
 #include "qgslayertreemodel.h"
+#include "moc_qgslayertreemodel.cpp"
 
 #include "qgsapplication.h"
 #include "qgslayertree.h"

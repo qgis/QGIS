@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmeshtriangulation.h"
+#include "moc_qgsmeshtriangulation.cpp"
 #include "qgsdualedgetriangulation.h"
 #include "qgscurve.h"
 #include "qgscurvepolygon.h"

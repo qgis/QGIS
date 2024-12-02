@@ -37,7 +37,7 @@ void TestQgsStoredExpressionManager::init()
 {
   mManager = new QgsStoredExpressionManager();
 
-  QList <QgsStoredExpression> newStoredExpressions;
+  QList<QgsStoredExpression> newStoredExpressions;
 
   //fill up some for the FilterExpression
   for ( int i = 0; i < 10; i++ )
@@ -74,11 +74,11 @@ void TestQgsStoredExpressionManager::storeSingleExpression()
   QCOMPARE( storedExpression.tag, QgsStoredExpression::Category::FilterExpression );
 
   //get all expressions
-  const QList <QgsStoredExpression> allStoredExpressions = mManager->storedExpressions();
+  const QList<QgsStoredExpression> allStoredExpressions = mManager->storedExpressions();
   QCOMPARE( allStoredExpressions.count(), 21 );
 
   //get all expressions for Category::FilterExpression
-  const QList <QgsStoredExpression> allStoredFilterExpressions = mManager->storedExpressions( QgsStoredExpression::Category::FilterExpression );
+  const QList<QgsStoredExpression> allStoredFilterExpressions = mManager->storedExpressions( QgsStoredExpression::Category::FilterExpression );
   QCOMPARE( allStoredFilterExpressions.count(), 11 );
 
   QCOMPARE( allStoredFilterExpressions.at( 10 ).id, id );
@@ -89,7 +89,7 @@ void TestQgsStoredExpressionManager::storeSingleExpression()
 
 void TestQgsStoredExpressionManager::storeListOfExpressions()
 {
-  QList <QgsStoredExpression> newStoredExpressions;
+  QList<QgsStoredExpression> newStoredExpressions;
 
   //fill up
   for ( int i = 20; i < 30; i++ )
@@ -100,7 +100,7 @@ void TestQgsStoredExpressionManager::storeListOfExpressions()
   mManager->addStoredExpressions( newStoredExpressions );
 
   //get all expressions
-  const QList <QgsStoredExpression> allStoredExpressions = mManager->storedExpressions();
+  const QList<QgsStoredExpression> allStoredExpressions = mManager->storedExpressions();
   QCOMPARE( allStoredExpressions.count(), 30 );
   QCOMPARE( allStoredExpressions.at( 0 ).name, QStringLiteral( "filter0" ) );
   QCOMPARE( allStoredExpressions.at( 0 ).expression, QStringLiteral( "\"age\"=0" ) );

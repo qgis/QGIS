@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsjsoneditwrapper.h"
+#include "moc_qgsjsoneditwrapper.cpp"
 
 #include "qgsjsoneditwidget.h"
 

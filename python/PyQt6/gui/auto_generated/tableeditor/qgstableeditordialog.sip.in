@@ -140,6 +140,8 @@ Sets the ``layer`` to be used associated with the expression editor context.
 .. versionadded:: 3.40
 %End
 
+
+
   signals:
 
     void tableChanged();

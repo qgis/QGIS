@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayoutguidewidget.h"
+#include "moc_qgslayoutguidewidget.cpp"
 #include "qgslayout.h"
 #include "qgslayoutview.h"
 #include "qgsdoublespinbox.h"

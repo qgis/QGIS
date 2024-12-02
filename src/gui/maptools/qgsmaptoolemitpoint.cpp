@@ -15,6 +15,7 @@
 
 
 #include "qgsmaptoolemitpoint.h"
+#include "moc_qgsmaptoolemitpoint.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 

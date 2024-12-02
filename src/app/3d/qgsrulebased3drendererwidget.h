@@ -41,8 +41,7 @@ class QgsRuleBased3DRendererModel : public QAbstractItemModel
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex & = QModelIndex() ) const override;
     //! provide model index for parent's child item
@@ -72,12 +71,11 @@ class QgsRuleBased3DRendererModel : public QAbstractItemModel
     void removeRule( const QModelIndex &index );
 
     void willAddRules( const QModelIndex &parent, int count ); // call beginInsertRows
-    void finishedAddingRules(); // call endInsertRows
+    void finishedAddingRules();                                // call endInsertRows
 
   protected:
     QgsRuleBased3DRenderer::Rule *mRootRule = nullptr;
 };
-
 
 
 class QgsRuleBased3DRendererWidget : public QgsPanelWidget, private Ui::QgsRuleBased3DRendererWidget
@@ -122,8 +120,6 @@ class QgsRuleBased3DRendererWidget : public QgsPanelWidget, private Ui::QgsRuleB
 };
 
 
-
-
 //////
 
 class QgsSymbol3DWidget;
@@ -141,8 +137,7 @@ class Qgs3DRendererRulePropsWidget : public QgsPanelWidget, private Ui::Qgs3DRen
       Editing
     };
 
-    Qgs3DRendererRulePropsWidget( QgsRuleBased3DRenderer::Rule *rule, QgsVectorLayer *layer,
-                                  QWidget *parent = nullptr );
+    Qgs3DRendererRulePropsWidget( QgsRuleBased3DRenderer::Rule *rule, QgsVectorLayer *layer, QWidget *parent = nullptr );
     ~Qgs3DRendererRulePropsWidget() override;
 
     QgsRuleBased3DRenderer::Rule *rule() { return mRule; }
@@ -162,7 +157,6 @@ class Qgs3DRendererRulePropsWidget : public QgsPanelWidget, private Ui::Qgs3DRen
 
     QgsSymbol3DWidget *mSymbolWidget = nullptr;
     std::unique_ptr<QgsAbstract3DSymbol> mSymbol; // a clone of original symbol
-
 };
 
 #endif // QGSRULEBASED3DRENDERERWIDGET_H

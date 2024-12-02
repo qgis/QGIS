@@ -42,6 +42,7 @@
 #include "qgsrastertransparencywidget.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
+#include "moc_qgsrasterlayerproperties.cpp"
 #include "qgsrasterpyramid.h"
 #include "qgsrasterrange.h"
 #include "qgsrasterrenderer.h"

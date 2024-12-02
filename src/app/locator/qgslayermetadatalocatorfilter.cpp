@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayermetadatalocatorfilter.h"
+#include "moc_qgslayermetadatalocatorfilter.cpp"
 #include "qgslayermetadataproviderregistry.h"
 #include "qgsfeedback.h"
 #include "qgsapplication.h"
@@ -34,13 +35,12 @@ QgsLocatorFilter *QgsLayerMetadataLocatorFilter::clone() const
 
 void QgsLayerMetadataLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
 {
-
   QgsMetadataSearchContext ctx;
   ctx.transformContext = context.transformContext;
   const QList<QgsAbstractLayerMetadataProvider *> providers { QgsApplication::instance()->layerMetadataProviderRegistry()->layerMetadataProviders() };
   for ( QgsAbstractLayerMetadataProvider *mdProvider : std::as_const( providers ) )
   {
-    const QList<QgsLayerMetadataProviderResult> mdRecords { mdProvider->search( ctx, string, QgsRectangle(), feedback ).metadata()  };
+    const QList<QgsLayerMetadataProviderResult> mdRecords { mdProvider->search( ctx, string, QgsRectangle(), feedback ).metadata() };
     for ( const QgsLayerMetadataProviderResult &metadata : std::as_const( mdRecords ) )
     {
       QgsLocatorResult result;
@@ -73,11 +73,10 @@ void QgsLayerMetadataLocatorFilter::triggerResult( const QgsLocatorResult &resul
       QgisApp::instance()->addMeshLayer( metadataResult.uri(), metadataResult.identifier(), metadataResult.dataProviderName() );
       break;
     }
-    default:  // unsupported
+    default: // unsupported
     {
       // Ignore
       break;
     }
   }
-
 }

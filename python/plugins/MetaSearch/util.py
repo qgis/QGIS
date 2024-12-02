@@ -53,18 +53,21 @@ class StaticContext:
 
 def get_ui_class(ui_file):
     """return class object of a uifile"""
-    ui_file_full = '{}{}ui{}{}'.format(os.path.dirname(os.path.abspath(__file__)), os.sep, os.sep, ui_file)
+    ui_file_full = (
+        f"{os.path.dirname(os.path.abspath(__file__))}{os.sep}ui{os.sep}{ui_file}"
+    )
     return loadUiType(ui_file_full)[0]
 
 
 def render_template(language, context, data, template):
     """Renders HTML display of raw API request/response/content"""
 
-    env = Environment(extensions=['jinja2.ext.i18n'],
-                      loader=FileSystemLoader(context.ppath))
+    env = Environment(
+        extensions=["jinja2.ext.i18n"], loader=FileSystemLoader(context.ppath)
+    )
     env.install_gettext_callables(gettext, ngettext, newstyle=True)
 
-    template_file = 'resources/templates/%s' % template
+    template_file = "resources/templates/%s" % template
     template = env.get_template(template_file)
     return template.render(language=language, obj=data)
 
@@ -75,18 +78,18 @@ def get_connections_from_file(parent, filename):
     error = 0
     try:
         doc = etree.parse(filename).getroot()
-        if doc.tag != 'qgsCSWConnections':
+        if doc.tag != "qgsCSWConnections":
             error = 1
-            msg = parent.tr('Invalid Catalog connections XML.')
+            msg = parent.tr("Invalid Catalog connections XML.")
     except etree.ParseError as err:
         error = 1
-        msg = parent.tr('Cannot parse XML file: {0}').format(err)
+        msg = parent.tr("Cannot parse XML file: {0}").format(err)
     except OSError as err:
         error = 1
-        msg = parent.tr('Cannot open file: {0}').format(err)
+        msg = parent.tr("Cannot open file: {0}").format(err)
 
     if error == 1:
-        QMessageBox.information(parent, parent.tr('Loading Connections'), msg)
+        QMessageBox.information(parent, parent.tr("Loading Connections"), msg)
         return
     return doc
 
@@ -95,13 +98,13 @@ def prettify_xml(xml):
     """convenience function to prettify XML"""
 
     if isinstance(xml, bytes):
-        xml = xml.decode('utf-8')
+        xml = xml.decode("utf-8")
 
-    if xml.count('\n') > 20:  # likely already pretty printed
+    if xml.count("\n") > 20:  # likely already pretty printed
         return xml
 
     # check if it's a GET request
-    if xml.startswith('http'):
+    if xml.startswith("http"):
         return xml
     else:
         return parseString(xml).toprettyxml()
@@ -110,17 +113,17 @@ def prettify_xml(xml):
 def get_help_url():
     """return QGIS MetaSearch help documentation link"""
 
-    locale_name = QgsSettings().value('locale/userLocale')[0:2]
-    major, minor = Qgis.QGIS_VERSION.split('.')[:2]
+    locale_name = QgsSettings().value("locale/userLocale")[0:2]
+    major, minor = Qgis.QGIS_VERSION.split(".")[:2]
 
-    if minor == '99':  # master
-        version = 'testing'
+    if minor == "99":  # master
+        version = "testing"
     else:
-        version = '.'.join([major, minor])
+        version = ".".join([major, minor])
 
-    path = f'{version}/{locale_name}/docs/user_manual/plugins/core_plugins/plugins_metasearch.html'  # noqa
+    path = f"{version}/{locale_name}/docs/user_manual/plugins/core_plugins/plugins_metasearch.html"  # noqa
 
-    return '/'.join(['https://docs.qgis.org', path])
+    return "/".join(["https://docs.qgis.org", path])
 
 
 def open_url(url):
@@ -132,7 +135,7 @@ def open_url(url):
 def normalize_text(text):
     """tidy up string"""
 
-    return text.replace('\n', '')
+    return text.replace("\n", "")
 
 
 def serialize_string(input_string):
@@ -141,12 +144,12 @@ def serialize_string(input_string):
     s = input_string.strip().split()
 
     last_token = s[-1]
-    all_other_tokens_as_string = input_string.replace(last_token, '')
+    all_other_tokens_as_string = input_string.replace(last_token, "")
 
     if last_token.isdigit():
-        value = f'{all_other_tokens_as_string}{int(last_token) + 1}'
+        value = f"{all_other_tokens_as_string}{int(last_token) + 1}"
     else:
-        value = '%s 1' % input_string
+        value = "%s 1" % input_string
 
     return value
 
@@ -159,10 +162,10 @@ def clean_ows_url(url):
 
     if query_string:
         query_string = QUrlQuery(query_string)
-        query_string.removeQueryItem('service')
-        query_string.removeQueryItem('SERVICE')
-        query_string.removeQueryItem('request')
-        query_string.removeQueryItem('REQUEST')
+        query_string.removeQueryItem("service")
+        query_string.removeQueryItem("SERVICE")
+        query_string.removeQueryItem("request")
+        query_string.removeQueryItem("REQUEST")
         url.setQuery(query_string)
 
     return url.toString()
@@ -171,4 +174,4 @@ def clean_ows_url(url):
 def log_message(message, level=Qgis.MessageLevel.Info):
     """helper function to emit logging messages"""
 
-    LOGGER.logMessage(message, 'MetaSearch', level)
+    LOGGER.logMessage(message, "MetaSearch", level)

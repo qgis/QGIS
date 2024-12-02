@@ -17,6 +17,7 @@
 #include <QFont>
 
 #include "qgssettingstreemodel.h"
+#include "moc_qgssettingstreemodel.cpp"
 #include "qgssettingsentry.h"
 #include "qgssettingstreenode.h"
 #include "qgssettingseditorwidgetwrapper.h"
@@ -486,7 +487,10 @@ void QgsSettingsTreeItemDelegate::setEditorData( QWidget *editor, const QModelIn
 {
   QgsSettingsEditorWidgetWrapper *eww = QgsSettingsEditorWidgetWrapper::fromWidget( editor );
   if ( eww )
-    eww->setWidgetFromVariant( index.model()->data( index, Qt::DisplayRole ) );
+  {
+    const QVariant value = index.model()->data( index, Qt::DisplayRole );
+    eww->setWidgetFromVariant( value );
+  }
 }
 
 void QgsSettingsTreeItemDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const

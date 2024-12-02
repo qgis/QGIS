@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgssinglesymbolrendererwidget.h"
+#include "moc_qgssinglesymbolrendererwidget.cpp"
 
 #include "qgsdatadefinedsizelegend.h"
 #include "qgsdatadefinedsizelegendwidget.h"

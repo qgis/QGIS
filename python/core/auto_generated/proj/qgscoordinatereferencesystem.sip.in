@@ -203,6 +203,11 @@ If no prefix is specified, WKT definition is assumed.
 
 :param definition: A String containing a coordinate reference system definition.
 
+.. note::
+
+   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
+
 .. seealso:: :py:func:`createFromString`
 %End
 
@@ -245,6 +250,11 @@ QgsCoordinateReferenceSystem object.
 %Docstring
 Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
 
+.. note::
+
+   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
+
 :param ogcCrs: OGR compliant CRS definition, e.g., "EPSG:4326"
 
 :return: matching CRS, or an invalid CRS if string could not be matched
@@ -256,6 +266,11 @@ Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
 %Docstring
 Creates a CRS from a given EPSG ID.
 
+.. note::
+
+   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
+
 :param epsg: epsg CRS ID
 
 :return: matching CRS, or an invalid CRS if string could not be matched
@@ -264,6 +279,11 @@ Creates a CRS from a given EPSG ID.
  static QgsCoordinateReferenceSystem fromProj4( const QString &proj4 ) /Deprecated/;
 %Docstring
 Creates a CRS from a proj style formatted string.
+
+.. note::
+
+   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 :return: matching CRS, or an invalid CRS if string could not be matched
 
@@ -291,6 +311,11 @@ Creates a CRS from a proj style formatted string.
 %Docstring
 Creates a CRS from a WKT spatial ref sys definition string.
 
+.. note::
+
+   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
+
 :param wkt: WKT for the desired spatial reference system.
 
 :return: matching CRS, or an invalid CRS if string could not be matched
@@ -301,6 +326,11 @@ Creates a CRS from a WKT spatial ref sys definition string.
     static QgsCoordinateReferenceSystem fromSrsId( long srsId );
 %Docstring
 Creates a CRS from a specified QGIS SRS ID.
+
+.. note::
+
+   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 :param srsId: internal QGIS SRS ID
 
@@ -354,7 +384,8 @@ and refer to QGIS internal CRS IDs.
 
 .. note::
 
-   this method uses an internal cache. Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
+   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 .. seealso:: :py:func:`fromOgcWmsCrs`
 %End
@@ -390,7 +421,8 @@ and :py:func:`~QgsCoordinateReferenceSystem.createFromOgcWmsCrs` is used to init
 
 .. note::
 
-   this method uses an internal cache. Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
+   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 .. seealso:: :py:func:`fromWkt`
 %End
@@ -408,7 +440,8 @@ user's local CRS database from home directory is used.
 
 .. note::
 
-   this method uses an internal cache. Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
+   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 .. seealso:: :py:func:`fromSrsId`
 
@@ -445,7 +478,8 @@ We try to match the Proj string to internal QGIS CRS ID using the following logi
 
 .. note::
 
-   This method uses an internal cache. Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
+   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 .. seealso:: :py:func:`fromProj`
 
@@ -484,7 +518,8 @@ We try to match the Proj string to internal QGIS CRS ID using the following logi
 
 .. note::
 
-   This method uses an internal cache. Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
+   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 .. seealso:: :py:func:`fromProj`
 
@@ -506,6 +541,11 @@ It supports the following formats:
 If no prefix is specified, WKT definition is assumed.
 
 :param definition: A String containing a coordinate reference system definition.
+
+.. note::
+
+   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 :return: ``True`` on success else ``False``
 %End
@@ -531,6 +571,11 @@ For more details on supported formats see OGRSpatialReference.SetFromUserInput()
 
    this function generates a WKT string using OSRSetFromUserInput() and
    passes it to :py:func:`~QgsCoordinateReferenceSystem.createFromWkt` function.
+
+.. note::
+
+   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
+   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 %End
 
  static void setupESRIWktFix() /Deprecated/;

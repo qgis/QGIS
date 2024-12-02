@@ -16,6 +16,7 @@
 // along with CppSheets. If not, see <https://www.gnu.org/licenses/>.
 
 #include "qgstableeditorwidget.h"
+#include "moc_qgstableeditorwidget.cpp"
 #include "qgsnumericformat.h"
 #include <QStringList>
 #include <QKeyEvent>
@@ -1376,8 +1377,33 @@ void QgsTableEditorWidget::mergeSelectedCells()
     if ( maxCol == -1 || index.column() > maxCol )
       maxCol = index.column();
   }
+  QStringList mergedCellText;
+  for ( int row = minRow; row <= maxRow; ++row )
+  {
+    for ( int col = minCol; col <= maxCol; ++col )
+    {
+      if ( QTableWidgetItem *i = item( row, col ) )
+      {
+        const QString content = i->data( CellContent ).toString();
+        if ( !content.isEmpty() )
+        {
+          mergedCellText.append( content );
+        }
+      }
+    }
+  }
 
   setSpan( minRow, minCol, maxRow - minRow + 1, maxCol - minCol + 1 );
+
+  // set merged cell text to concatenate original cell text
+  if ( !mergedCellText.isEmpty() )
+  {
+    if ( QTableWidgetItem *i = item( minRow, minCol ) )
+    {
+      i->setText( mergedCellText.join( ' ' ) );
+      i->setData( CellContent, i->text() );
+    }
+  }
 
   if ( !mBlockSignals )
     emit tableChanged();

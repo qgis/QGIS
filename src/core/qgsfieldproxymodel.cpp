@@ -14,6 +14,7 @@
 ***************************************************************************/
 
 #include "qgsfieldproxymodel.h"
+#include "moc_qgsfieldproxymodel.cpp"
 #include "qgsfieldmodel.h"
 #include "qgsvariantutils.h"
 

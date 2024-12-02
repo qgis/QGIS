@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaterialwidget.h"
+#include "moc_qgsmaterialwidget.cpp"
 #include "qgs3d.h"
 #include "qgsmaterialregistry.h"
 #include "qgsabstractmaterialsettings.h"
@@ -23,7 +24,7 @@
 
 QgsMaterialWidget::QgsMaterialWidget( QWidget *parent )
   : QWidget( parent )
-  , mCurrentSettings( std::make_unique< QgsPhongMaterialSettings >() )
+  , mCurrentSettings( std::make_unique<QgsPhongMaterialSettings>() )
   , mTechnique( QgsMaterialSettingsRenderingTechnique::Triangles )
 {
   setupUi( this );
@@ -31,8 +32,7 @@ QgsMaterialWidget::QgsMaterialWidget( QWidget *parent )
   const QStringList materialTypes = Qgs3D::materialRegistry()->materialSettingsTypes();
   for ( const QString &type : materialTypes )
   {
-    mMaterialTypeComboBox->addItem( Qgs3D::materialRegistry()->materialSettingsMetadata( type )->icon(),
-                                    Qgs3D::materialRegistry()->materialSettingsMetadata( type )->visibleName(), type );
+    mMaterialTypeComboBox->addItem( Qgs3D::materialRegistry()->materialSettingsMetadata( type )->icon(), Qgs3D::materialRegistry()->materialSettingsMetadata( type )->visibleName(), type );
   }
 
   connect( mMaterialTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMaterialWidget::materialTypeChanged );
@@ -51,8 +51,7 @@ void QgsMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique tech
     if ( !Qgs3D::materialRegistry()->materialSettingsMetadata( type )->supportsTechnique( technique ) )
       continue;
 
-    mMaterialTypeComboBox->addItem( Qgs3D::materialRegistry()->materialSettingsMetadata( type )->icon(),
-                                    Qgs3D::materialRegistry()->materialSettingsMetadata( type )->visibleName(), type );
+    mMaterialTypeComboBox->addItem( Qgs3D::materialRegistry()->materialSettingsMetadata( type )->icon(), Qgs3D::materialRegistry()->materialSettingsMetadata( type )->visibleName(), type );
   }
 
   const int prevIndex = mMaterialTypeComboBox->findData( prevType );
@@ -68,7 +67,7 @@ void QgsMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique tech
   else
     mMaterialTypeComboBox->setCurrentIndex( prevIndex );
 
-  if ( QgsMaterialSettingsWidget *w = qobject_cast< QgsMaterialSettingsWidget * >( mStackedWidget->currentWidget() ) )
+  if ( QgsMaterialSettingsWidget *w = qobject_cast<QgsMaterialSettingsWidget *>( mStackedWidget->currentWidget() ) )
     w->setTechnique( technique );
 
   mMaterialTypeComboBox->blockSignals( false );
@@ -96,7 +95,7 @@ void QgsMaterialWidget::setType( const QString &type )
 
 void QgsMaterialWidget::materialTypeChanged()
 {
-  std::unique_ptr< QgsAbstractMaterialSettings > currentSettings( settings() );
+  std::unique_ptr<QgsAbstractMaterialSettings> currentSettings( settings() );
   const QString existingType = currentSettings ? currentSettings->type() : QString();
   const QString newType = mMaterialTypeComboBox->currentData().toString();
   if ( existingType == newType )
@@ -106,7 +105,7 @@ void QgsMaterialWidget::materialTypeChanged()
   {
     // change material to a new (with different type)
     // base new layer on existing materials's properties
-    std::unique_ptr< QgsAbstractMaterialSettings > newMaterial( am->create() );
+    std::unique_ptr<QgsAbstractMaterialSettings> newMaterial( am->create() );
     if ( newMaterial )
     {
       if ( currentSettings )
@@ -126,7 +125,7 @@ void QgsMaterialWidget::materialTypeChanged()
 
 void QgsMaterialWidget::materialWidgetChanged()
 {
-  if ( QgsMaterialSettingsWidget *w = qobject_cast< QgsMaterialSettingsWidget * >( mStackedWidget->currentWidget() ) )
+  if ( QgsMaterialSettingsWidget *w = qobject_cast<QgsMaterialSettingsWidget *>( mStackedWidget->currentWidget() ) )
   {
     mCurrentSettings.reset( w->settings() );
   }
@@ -138,7 +137,7 @@ void QgsMaterialWidget::updateMaterialWidget()
   if ( mStackedWidget->currentWidget() != mPageDummy )
   {
     // stop updating from the original widget
-    if ( QgsMaterialSettingsWidget *w = qobject_cast< QgsMaterialSettingsWidget * >( mStackedWidget->currentWidget() ) )
+    if ( QgsMaterialSettingsWidget *w = qobject_cast<QgsMaterialSettingsWidget *>( mStackedWidget->currentWidget() ) )
       disconnect( w, &QgsMaterialSettingsWidget::changed, this, &QgsMaterialWidget::materialWidgetChanged );
     mStackedWidget->removeWidget( mStackedWidget->currentWidget() );
   }
@@ -160,4 +159,3 @@ void QgsMaterialWidget::updateMaterialWidget()
   // When anything is not right
   mStackedWidget->setCurrentWidget( mPageDummy );
 }
-

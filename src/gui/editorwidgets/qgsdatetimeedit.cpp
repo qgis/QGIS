@@ -22,6 +22,7 @@
 
 
 #include "qgsdatetimeedit.h"
+#include "moc_qgsdatetimeedit.cpp"
 
 #include "qgsapplication.h"
 #include "qgsvariantutils.h"

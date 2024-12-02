@@ -18,24 +18,9 @@
 #include "qgsalgorithmzonalstatistics.h"
 #include "qgszonalstatistics.h"
 #include "qgsvectorlayer.h"
+#include "qgsalgorithmzonalstatistics_private.h"
 
 ///@cond PRIVATE
-
-const std::vector< Qgis::ZonalStatistic > STATS
-{
-  Qgis::ZonalStatistic::Count,
-  Qgis::ZonalStatistic::Sum,
-  Qgis::ZonalStatistic::Mean,
-  Qgis::ZonalStatistic::Median,
-  Qgis::ZonalStatistic::StDev,
-  Qgis::ZonalStatistic::Min,
-  Qgis::ZonalStatistic::Max,
-  Qgis::ZonalStatistic::Range,
-  Qgis::ZonalStatistic::Minority,
-  Qgis::ZonalStatistic::Majority,
-  Qgis::ZonalStatistic::Variety,
-  Qgis::ZonalStatistic::Variance,
-};
 
 QString QgsZonalStatisticsAlgorithm::name() const
 {

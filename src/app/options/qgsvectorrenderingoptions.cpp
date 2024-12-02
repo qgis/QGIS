@@ -15,6 +15,7 @@
 
 #include "qgsabstractgeometry.h"
 #include "qgsvectorrenderingoptions.h"
+#include "moc_qgsvectorrenderingoptions.cpp"
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
@@ -91,7 +92,7 @@ void QgsVectorRenderingOptionsWidget::apply()
   QgsVectorLayer::settingsSimplifyMaxScale->setValue( mSimplifyMaximumScaleComboBox->scale() );
 
   //curve segmentation
-  QgsAbstractGeometry::SegmentationToleranceType segmentationType = ( QgsAbstractGeometry::SegmentationToleranceType )mToleranceTypeComboBox->currentData().toInt();
+  QgsAbstractGeometry::SegmentationToleranceType segmentationType = ( QgsAbstractGeometry::SegmentationToleranceType ) mToleranceTypeComboBox->currentData().toInt();
   settings.setEnumValue( QStringLiteral( "/qgis/segmentationToleranceType" ), segmentationType );
   double segmentationTolerance = mSegmentationToleranceSpinBox->value();
   if ( segmentationType == QgsAbstractGeometry::MaximumAngle )
@@ -99,7 +100,6 @@ void QgsVectorRenderingOptionsWidget::apply()
     segmentationTolerance = segmentationTolerance / 180.0 * M_PI; //user sets angle tolerance in degrees, internal classes need value in rad
   }
   settings.setValue( QStringLiteral( "/qgis/segmentationTolerance" ), segmentationTolerance );
-
 }
 
 
@@ -109,7 +109,6 @@ void QgsVectorRenderingOptionsWidget::apply()
 QgsVectorRenderingOptionsFactory::QgsVectorRenderingOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "Vector" ), QIcon(), QStringLiteral( "vector" ) )
 {
-
 }
 
 QIcon QgsVectorRenderingOptionsFactory::icon() const
@@ -124,5 +123,5 @@ QgsOptionsPageWidget *QgsVectorRenderingOptionsFactory::createWidget( QWidget *p
 
 QStringList QgsVectorRenderingOptionsFactory::path() const
 {
-  return {QStringLiteral( "rendering" ) };
+  return { QStringLiteral( "rendering" ) };
 }

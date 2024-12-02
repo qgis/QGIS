@@ -65,7 +65,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     /**
      * \brief QgsMapLayerModel creates a model to display layers in widgets.
      *
-     * If a specific \a project is not specified then the QgsProject.instance() project will be used to
+     * If \a project is not specified then the QgsProject.instance() project will be used to
      * populate the model.
      */
     explicit QgsMapLayerModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProject *project = nullptr );
@@ -73,13 +73,13 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     /**
      * \brief QgsMapLayerModel creates a model to display a specific list of layers in a widget.
      *
-     * If a specific \a project is not specified then the QgsProject.instance() project will be used to
+     * If \a project is not specified then the QgsProject.instance() project will be used to
      * populate the model.
      */
     explicit QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent = nullptr, QgsProject *project = nullptr );
 
     /**
-     * \brief setItemsCheckable defines if layers should be selectable in the widget
+     * \brief Defines if layers should be selectable in the widget
      */
     void setItemsCheckable( bool checkable );
 
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     bool showCrs() const { return mShowCrs; }
 
     /**
-     * \brief layersChecked returns the list of layers which are checked (or unchecked)
+     * \brief Returns the list of layers which are checked (or unchecked)
      */
     QList<QgsMapLayer *> layersChecked( Qt::CheckState checkState = Qt::Checked );
 
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
      */
     void setLayersChecked( const QList< QgsMapLayer * > &layers );
 
-    //! returns if the items can be checked or not
+    //! Returns whether the items can be checked or not
     bool itemsCheckable() const { return mItemCheckable; }
 
     /**

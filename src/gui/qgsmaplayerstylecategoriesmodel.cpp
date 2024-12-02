@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaplayerstylecategoriesmodel.h"
+#include "moc_qgsmaplayerstylecategoriesmodel.cpp"
 #include "qgsapplication.h"
 
 QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( Qgis::LayerType type, QObject *parent )

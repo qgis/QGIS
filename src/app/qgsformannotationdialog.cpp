@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsformannotationdialog.h"
+#include "moc_qgsformannotationdialog.cpp"
 #include "qgsannotationwidget.h"
 #include "qgsformannotation.h"
 #include "qgsmapcanvasannotationitem.h"
@@ -49,7 +50,7 @@ QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem *it
 
   if ( item && item->annotation() )
   {
-    QgsFormAnnotation *annotation = static_cast< QgsFormAnnotation * >( item->annotation() );
+    QgsFormAnnotation *annotation = static_cast<QgsFormAnnotation *>( item->annotation() );
     mFileLineEdit->setText( annotation->designerForm() );
   }
 
@@ -80,7 +81,7 @@ void QgsFormAnnotationDialog::applySettingsToItem()
   {
     if ( !mFileLineEdit->text().isEmpty() )
     {
-      QgsFormAnnotation *annotation = static_cast< QgsFormAnnotation * >( mItem->annotation() );
+      QgsFormAnnotation *annotation = static_cast<QgsFormAnnotation *>( mItem->annotation() );
       annotation->setDesignerForm( mFileLineEdit->text() );
       mItem->update();
     }

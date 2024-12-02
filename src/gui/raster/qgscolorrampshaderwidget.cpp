@@ -18,6 +18,7 @@
 #include "qgsrasterdataprovider.h"
 
 #include "qgscolorrampshaderwidget.h"
+#include "moc_qgscolorrampshaderwidget.cpp"
 #include "qgsrasterdataprovider.h"
 #include "qgstreewidgetitem.h"
 #include "qgssettings.h"

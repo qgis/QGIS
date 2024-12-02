@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspointcloud3dsymbol_p.h"
+#include "moc_qgspointcloud3dsymbol_p.cpp"
 
 ///@cond PRIVATE
 
@@ -24,6 +25,7 @@
 #include "qgspointcloudblockrequest.h"
 #include "qgsfeedback.h"
 #include "qgsaabb.h"
+#include "qgsgeotransform.h"
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QGeometryRenderer>
@@ -306,10 +308,8 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 
   // Transform: chunks are using coordinates relative to chunk origin, with X,Y,Z axes being the same
   // as map coordinates, so we need to rotate and translate entities to get them into world coordinates
-  Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
-  QVector3D nodeTranslation = ( out.positionsOrigin - context.origin() ).toVector3D();
-  tr->setRotation( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), -90 ) ); // flip map (x,y,z) to world (x,z,-y)
-  tr->setTranslation( QVector3D( nodeTranslation.x(), nodeTranslation.z(), -nodeTranslation.y() ) );
+  QgsGeoTransform *tr = new QgsGeoTransform;
+  tr->setGeoTranslation( out.positionsOrigin );
 
   // Material
   QgsMaterial *mat = new QgsMaterial;
@@ -359,7 +359,7 @@ void QgsPointCloud3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 }
 
 
-std::vector<double> QgsPointCloud3DSymbolHandler::getVertices( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, const QgsAABB &bbox )
+std::vector<double> QgsPointCloud3DSymbolHandler::getVertices( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, const QgsBox3D &box3D )
 {
 
   bool hasColorData = !outNormal.colors.empty();
@@ -382,11 +382,10 @@ std::vector<double> QgsPointCloud3DSymbolHandler::getVertices( QgsPointCloudInde
   //factor to take account of the density of the point to calculate extension of the bounding box
   // with a usual value span = 128, bounding box is extended by 12.5 % on each side.
   double extraBoxFactor = 16 / span;
-  double extraX = extraBoxFactor * bbox.xExtent();
-  double extraY = extraBoxFactor * bbox.yExtent();
 
   // We keep all points in vertical direction to avoid odd triangulation if points are isolated on top
-  const QgsAABB extendedBBox( bbox.xMin - extraX, bbox.yMin - extraY, -std::numeric_limits<float>::max(), bbox.xMax + extraX, bbox.yMax + extraY, std::numeric_limits<float>::max() );
+  QgsRectangle rectRelativeToChunkOrigin = ( box3D - outNormal.positionsOrigin ).toRectangle();
+  rectRelativeToChunkOrigin.grow( extraBoxFactor * std::max( box3D.width(), box3D.height() ) );
 
   PointData filteredExtraPointData;
   while ( parentNode.d() >= 0 )
@@ -400,7 +399,7 @@ std::vector<double> QgsPointCloud3DSymbolHandler::getVertices( QgsPointCloudInde
     for ( int i = 0; i < outputParent.positions.count(); ++i )
     {
       const QVector3D pos = outputParent.positions.at( i ) + originDifference;
-      if ( extendedBBox.intersects( pos.x(), pos.y(), pos.z() ) )
+      if ( rectRelativeToChunkOrigin.contains( pos.x(), pos.y() ) )
       {
         filteredExtraPointData.positions.append( pos );
         vertices.push_back( pos.x() );
@@ -458,7 +457,7 @@ void QgsPointCloud3DSymbolHandler::calculateNormals( const std::vector<size_t> &
   }
 }
 
-void QgsPointCloud3DSymbolHandler::filterTriangles( const std::vector<size_t> &triangleIndexes, const QgsPointCloud3DRenderContext &context, const QgsAABB &bbox )
+void QgsPointCloud3DSymbolHandler::filterTriangles( const std::vector<size_t> &triangleIndexes, const QgsPointCloud3DRenderContext &context, const QgsBox3D &box3D )
 {
   outNormal.triangles.resize( triangleIndexes.size() * sizeof( quint32 ) );
   quint32 *indexPtr = reinterpret_cast<quint32 *>( outNormal.triangles.data() );
@@ -469,6 +468,8 @@ void QgsPointCloud3DSymbolHandler::filterTriangles( const std::vector<size_t> &t
   float horizontalThreshold =  context.symbol()->horizontalFilterThreshold();
   float verticalThreshold =  context.symbol()->verticalFilterThreshold();
 
+  QgsBox3D boxRelativeToChunkOrigin = box3D - outNormal.positionsOrigin;
+
   for ( size_t i = 0; i < triangleIndexes.size(); i += 3 )
   {
     bool atLeastOneInBox = false;
@@ -477,7 +478,7 @@ void QgsPointCloud3DSymbolHandler::filterTriangles( const std::vector<size_t> &t
     for ( size_t j = 0; j < 3; j++ )
     {
       QVector3D pos = outNormal.positions.at( triangleIndexes.at( i  + j ) );
-      atLeastOneInBox |= bbox.intersects( pos.x(), pos.y(), pos.z() );
+      atLeastOneInBox |= boxRelativeToChunkOrigin.contains( pos.x(), pos.y(), pos.z() );
 
       if ( verticalFilter || horizontalFilter )
       {
@@ -519,30 +520,16 @@ void QgsPointCloud3DSymbolHandler::filterTriangles( const std::vector<size_t> &t
   }
 }
 
-void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, const QgsAABB &bbox )
+void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, const QgsBox3D &box3D )
 {
   if ( outNormal.positions.isEmpty() )
     return;
-
-  // The bbox we get is in world coordinates, we need to transform it to map coordinates
-  // (flip axes and add scene origin vector), but relative to the chunk's origin (subtract it)
-  // because that's the coordinate system used within the chunk
-  QgsBox3D boxRelativeToChunkOrigin(
-    bbox.xMin + context.origin().x() - outNormal.positionsOrigin.x(),
-    -bbox.zMax + context.origin().y() - outNormal.positionsOrigin.y(),
-    bbox.yMin + context.origin().z() - outNormal.positionsOrigin.z(),
-    bbox.xMax + context.origin().x() - outNormal.positionsOrigin.x(),
-    -bbox.zMin + context.origin().y() - outNormal.positionsOrigin.y(),
-    bbox.yMax + context.origin().z() - outNormal.positionsOrigin.z() );
-  QgsAABB aabbRelativeToChunkOrigin(
-    boxRelativeToChunkOrigin.xMinimum(), boxRelativeToChunkOrigin.yMinimum(), boxRelativeToChunkOrigin.zMinimum(),
-    boxRelativeToChunkOrigin.xMaximum(), boxRelativeToChunkOrigin.yMaximum(), boxRelativeToChunkOrigin.zMaximum() );
 
   // Triangulation happens here
   std::unique_ptr<delaunator::Delaunator> triangulation;
   try
   {
-    std::vector<double> vertices = getVertices( pc, n, context, aabbRelativeToChunkOrigin );
+    std::vector<double> vertices = getVertices( pc, n, context, box3D );
     triangulation.reset( new delaunator::Delaunator( vertices ) );
   }
   catch ( std::exception &e )
@@ -557,7 +544,7 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex *pc, const In
   const std::vector<size_t> &triangleIndexes = triangulation->triangles;
 
   calculateNormals( triangleIndexes );
-  filterTriangles( triangleIndexes, context, aabbRelativeToChunkOrigin );
+  filterTriangles( triangleIndexes, context, box3D );
 }
 
 std::unique_ptr<QgsPointCloudBlock> QgsPointCloud3DSymbolHandler::pointCloudBlock( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloudRequest &request, const QgsPointCloud3DRenderContext &context )

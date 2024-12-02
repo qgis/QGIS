@@ -22,15 +22,11 @@
 #include "qgslocatorfilter.h"
 
 
-
-
-
 class APP_EXPORT QgsLayoutLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT
 
   public:
-
     QgsLayoutLocatorFilter( QObject *parent = nullptr );
     QgsLayoutLocatorFilter *clone() const override;
     QString name() const override { return QStringLiteral( "layouts" ); }
@@ -41,7 +37,6 @@ class APP_EXPORT QgsLayoutLocatorFilter : public QgsLocatorFilter
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
-
 };
 
 #endif // QGSLAYOUTLOCATORFILTERS_H

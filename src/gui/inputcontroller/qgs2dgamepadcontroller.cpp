@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs2dgamepadcontroller.h"
+#include "moc_qgs2dgamepadcontroller.cpp"
 
 #ifdef HAVE_QTGAMEPAD
 

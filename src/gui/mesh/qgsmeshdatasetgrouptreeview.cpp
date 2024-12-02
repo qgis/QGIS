@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmeshdatasetgrouptreeview.h"
+#include "moc_qgsmeshdatasetgrouptreeview.cpp"
 
 #include "qgis.h"
 #include "qgsapplication.h"

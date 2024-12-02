@@ -8,13 +8,8 @@ the Free Software Foundation; either version 2 of the License, or
 
 from qgis.PyQt.QtWidgets import QComboBox
 from qgis.PyQt.QtTest import QSignalSpy
-from qgis.core import (
-    QgsBalloonCallout,
-    QgsSimpleLineCallout
-)
-from qgis.gui import (
-    QgsCalloutPanelWidget
-)
+from qgis.core import QgsBalloonCallout, QgsSimpleLineCallout
+from qgis.gui import QgsCalloutPanelWidget
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -33,17 +28,17 @@ class TestQgsCalloutPanelWidget(QgisTestCase):
         widget.setCallout(callout)
         self.assertEqual(len(changed_spy), 1)
 
-        style_combo = widget.findChild(QComboBox, 'mCalloutStyleComboBox')
+        style_combo = widget.findChild(QComboBox, "mCalloutStyleComboBox")
         self.assertIsInstance(style_combo, QComboBox)
         style_combo.setCurrentIndex(style_combo.findData("curved"))
         self.assertEqual(len(changed_spy), 2)
 
-        self.assertEqual(widget.callout().type(), 'curved')
+        self.assertEqual(widget.callout().type(), "curved")
 
         style_combo.setCurrentIndex(style_combo.findData("balloon"))
         self.assertEqual(len(changed_spy), 3)
 
-        self.assertEqual(widget.callout().type(), 'balloon')
+        self.assertEqual(widget.callout().type(), "balloon")
         callout = QgsBalloonCallout()
         callout.setWedgeWidth(11)
 
@@ -53,5 +48,5 @@ class TestQgsCalloutPanelWidget(QgisTestCase):
         self.assertEqual(widget.callout().wedgeWidth(), 11)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

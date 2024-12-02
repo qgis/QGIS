@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingoutputdestinationwidget.h"
+#include "moc_qgsprocessingoutputdestinationwidget.cpp"
 #include "qgsprocessingparameters.h"
 #include "qgsnewdatabasetablenamewidget.h"
 #include "qgssettings.h"

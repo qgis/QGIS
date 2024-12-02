@@ -83,7 +83,6 @@ class GUI_EXPORT QgsCreateAnnotationItemMapToolHandler : public QObject
   private:
 
     QgsMapCanvas *mMapCanvas = nullptr;
-    QgsAdvancedDigitizingDockWidget *mCadDockWidget = nullptr;
     std::unique_ptr< QgsAnnotationItem > mCreatedItem;
 
 };

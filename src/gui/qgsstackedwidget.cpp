@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstackedwidget.h"
+#include "moc_qgsstackedwidget.cpp"
 
 #include <QStackedWidget>
 #include <QSize>

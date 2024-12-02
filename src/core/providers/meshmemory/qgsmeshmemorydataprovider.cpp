@@ -17,6 +17,7 @@
 ///@cond PRIVATE
 
 #include "qgsmeshmemorydataprovider.h"
+#include "moc_qgsmeshmemorydataprovider.cpp"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsapplication.h"
 
@@ -627,5 +628,8 @@ QList<Qgis::LayerType> QgsMeshMemoryProviderMetadata::supportedLayerTypes() cons
 {
   return { Qgis::LayerType::Mesh };
 }
+
+#undef TEXT_PROVIDER_KEY
+#undef TEXT_PROVIDER_DESCRIPTION
 
 ///@endcond

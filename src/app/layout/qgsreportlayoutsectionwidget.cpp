@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsreportlayoutsectionwidget.h"
+#include "moc_qgsreportlayoutsectionwidget.cpp"
 #include "qgsreportsectionlayout.h"
 #include "qgslayout.h"
 #include "qgslayoutdesignerdialog.h"
@@ -47,7 +48,7 @@ void QgsReportLayoutSectionWidget::editBody()
 {
   if ( !mSection->body() )
   {
-    std::unique_ptr< QgsLayout > body = std::make_unique< QgsLayout >( mSection->project() );
+    std::unique_ptr<QgsLayout> body = std::make_unique<QgsLayout>( mSection->project() );
     body->initializeDefaults();
     mSection->setBody( body.release() );
   }

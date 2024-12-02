@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsexpressionselectiondialog.h"
+#include "moc_qgsexpressionselectiondialog.cpp"
 
 #include "qgsapplication.h"
 #include "qgsexpression.h"

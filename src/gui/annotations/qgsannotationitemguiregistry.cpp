@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsannotationitemguiregistry.h"
+#include "moc_qgsannotationitemguiregistry.cpp"
 #include "qgsannotationitemregistry.h"
 #include "qgsannotationitem.h"
 
@@ -266,7 +267,7 @@ void QgsAnnotationItemGuiRegistry::addDefaultItems()
   } ) );
 
   addAnnotationItemGuiMetadata( new QgsAnnotationItemGuiMetadata( QStringLiteral( "picture" ),
-                                QObject::tr( "Picture" ),
+                                QObject::tr( "Picture Annotation" ),
                                 QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddImage.svg" ) ),
                                 [ = ]( QgsAnnotationItem * item )->QgsAnnotationItemBaseWidget *
   {

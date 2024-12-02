@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstaccontroller.h"
+#include "moc_qgsstaccontroller.cpp"
 #include "qgsstaccatalog.h"
 #include "qgsstaccollection.h"
 #include "qgsstacitem.h"
@@ -48,6 +49,24 @@ int QgsStacController::fetchItemCollectionAsync( const QUrl &url )
   connect( reply, &QNetworkReply::finished, this, &QgsStacController::handleItemCollectionReply );
 
   return reply->property( "requestId" ).toInt();
+}
+
+int QgsStacController::fetchCollectionsAsync( const QUrl &url )
+{
+  QNetworkReply *reply = fetchAsync( url );
+  connect( reply, &QNetworkReply::finished, this, &QgsStacController::handleCollectionsReply );
+
+  return reply->property( "requestId" ).toInt();
+}
+
+void QgsStacController::cancelPendingAsyncRequests()
+{
+  for ( QNetworkReply *reply : std::as_const( mReplies ) )
+  {
+    reply->abort();
+    reply->deleteLater();
+  }
+  mReplies.clear();
 }
 
 QNetworkReply *QgsStacController::fetchAsync( const QUrl &url )
@@ -99,7 +118,9 @@ void QgsStacController::handleStacObjectReply()
   const QByteArray data = reply->readAll();
   QgsStacParser parser;
   parser.setData( data );
+  parser.setBaseUrl( reply->url() );
 
+  QString error;
   QgsStacObject *object = nullptr;
   switch ( parser.type() )
   {
@@ -114,10 +135,11 @@ void QgsStacController::handleStacObjectReply()
       break;
     case QgsStacObject::Type::Unknown:
       object = nullptr;
+      error = QStringLiteral( "Parsed STAC data is not a Catalog, Collection or Item" );
       break;
   }
   mFetchedStacObjects.insert( requestId, object );
-  emit finishedStacObjectRequest( requestId, parser.error() );
+  emit finishedStacObjectRequest( requestId, error.isEmpty() ? parser.error() : error );
   reply->deleteLater();
   mReplies.removeOne( reply );
 }
@@ -142,10 +164,40 @@ void QgsStacController::handleItemCollectionReply()
   const QByteArray data = reply->readAll();
   QgsStacParser parser;
   parser.setData( data );
+  parser.setBaseUrl( reply->url() );
 
   QgsStacItemCollection *fc = parser.itemCollection();
   mFetchedItemCollections.insert( requestId, fc );
   emit finishedItemCollectionRequest( requestId, parser.error() );
+  reply->deleteLater();
+  mReplies.removeOne( reply );
+}
+
+void QgsStacController::handleCollectionsReply()
+{
+  QNetworkReply *reply = qobject_cast<QNetworkReply *>( QObject::sender() );
+  if ( !reply )
+    return;
+
+  const int requestId = reply->property( "requestId" ).toInt();
+  QgsDebugMsgLevel( QStringLiteral( "Finished STAC request with id %1" ).arg( requestId ), 2 );
+
+  if ( reply->error() != QNetworkReply::NoError )
+  {
+    emit finishedCollectionsRequest( requestId, reply->errorString() );
+    reply->deleteLater();
+    mReplies.removeOne( reply );
+    return;
+  }
+
+  const QByteArray data = reply->readAll();
+  QgsStacParser parser;
+  parser.setData( data );
+  parser.setBaseUrl( reply->url() );
+
+  QgsStacCollections *cols = parser.collections();
+  mFetchedCollections.insert( requestId, cols );
+  emit finishedCollectionsRequest( requestId, parser.error() );
   reply->deleteLater();
   mReplies.removeOne( reply );
 }
@@ -158,6 +210,11 @@ QgsStacObject *QgsStacController::takeStacObject( int requestId )
 QgsStacItemCollection *QgsStacController::takeItemCollection( int requestId )
 {
   return mFetchedItemCollections.take( requestId );
+}
+
+QgsStacCollections *QgsStacController::takeCollections( int requestId )
+{
+  return mFetchedCollections.take( requestId );
 }
 
 QgsStacObject *QgsStacController::fetchStacObject( const QUrl &url, QString *error )
@@ -176,6 +233,7 @@ QgsStacObject *QgsStacController::fetchStacObject( const QUrl &url, QString *err
 
   QgsStacParser parser;
   parser.setData( data );
+  parser.setBaseUrl( url );
   QgsStacObject *object = nullptr;
   switch ( parser.type() )
   {
@@ -215,12 +273,37 @@ QgsStacItemCollection *QgsStacController::fetchItemCollection( const QUrl &url, 
 
   QgsStacParser parser;
   parser.setData( data );
+  parser.setBaseUrl( url );
   QgsStacItemCollection *ic = parser.itemCollection();
 
   if ( error )
     *error = parser.error();
 
   return ic;
+}
+
+QgsStacCollections *QgsStacController::fetchCollections( const QUrl &url, QString *error )
+{
+  QgsNetworkReplyContent content = fetchBlocking( url );
+
+  if ( content.error() != QNetworkReply::NoError )
+  {
+    if ( error )
+      *error = content.errorString();
+
+    return nullptr;
+  }
+
+  const QByteArray data = content.content();
+
+  QgsStacParser parser;
+  parser.setData( data );
+  QgsStacCollections *col = parser.collections();
+
+  if ( error )
+    *error = parser.error();
+
+  return col;
 }
 
 QgsNetworkReplyContent QgsStacController::fetchBlocking( const QUrl &url )
@@ -263,6 +346,7 @@ QgsStacCatalog *QgsStacController::openLocalCatalog( const QString &fileName ) c
 
   QgsStacParser parser;
   parser.setData( file.readAll() );
+  parser.setBaseUrl( fileName );
   return parser.catalog();
 }
 
@@ -279,6 +363,7 @@ QgsStacCollection *QgsStacController::openLocalCollection( const QString &fileNa
 
   QgsStacParser parser;
   parser.setData( file.readAll() );
+  parser.setBaseUrl( fileName );
   return parser.collection();
 }
 
@@ -294,6 +379,7 @@ QgsStacItem *QgsStacController::openLocalItem( const QString &fileName ) const
 
   QgsStacParser parser;
   parser.setData( file.readAll() );
+  parser.setBaseUrl( fileName );
   return parser.item();
 }
 

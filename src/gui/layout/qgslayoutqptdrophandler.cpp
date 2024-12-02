@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutqptdrophandler.h"
+#include "moc_qgslayoutqptdrophandler.cpp"
 #include "qgslayoutdesignerinterface.h"
 #include "qgslayout.h"
 #include "qgsreadwritecontext.h"

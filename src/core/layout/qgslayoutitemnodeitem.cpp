@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitemnodeitem.h"
+#include "moc_qgslayoutitemnodeitem.cpp"
 #include "qgssymbol.h"
 #include "qgslayout.h"
 #include "qgsmarkersymbol.h"

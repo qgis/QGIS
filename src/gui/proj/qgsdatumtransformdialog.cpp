@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsdatumtransformdialog.h"
+#include "moc_qgsdatumtransformdialog.cpp"
 #include "qgscoordinatetransform.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgslogger.h"

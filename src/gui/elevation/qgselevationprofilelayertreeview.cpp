@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgselevationprofilelayertreeview.h"
+#include "moc_qgselevationprofilelayertreeview.cpp"
 #include "qgslayertreenode.h"
 #include "qgslayertree.h"
 #include "qgssymbollayerutils.h"

@@ -18,13 +18,14 @@ using namespace nlohmann;
 
 #include "qgslogger.h"
 #include "qgsoapifqueryablesrequest.h"
+#include "moc_qgsoapifqueryablesrequest.cpp"
 #include "qgsoapifutils.h"
 #include "qgswfsconstants.h"
 
 #include <QTextCodec>
 
-QgsOapifQueryablesRequest::QgsOapifQueryablesRequest( const QgsDataSourceUri &uri ):
-  QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), uri.authConfigId() ), "OAPIF" )
+QgsOapifQueryablesRequest::QgsOapifQueryablesRequest( const QgsDataSourceUri &uri )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), uri.authConfigId() ), "OAPIF" )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main
@@ -81,10 +82,9 @@ void QgsOapifQueryablesRequest::processReply()
       const json jProperties = j["properties"];
       if ( jProperties.is_object() )
       {
-        for ( const auto& [key, val] : jProperties.items() )
+        for ( const auto &[key, val] : jProperties.items() )
         {
-          if ( val.is_object() &&
-               val.contains( "type" ) )
+          if ( val.is_object() && val.contains( "type" ) )
           {
             const json jType = val["type"];
             if ( jType.is_string() )
@@ -99,23 +99,21 @@ void QgsOapifQueryablesRequest::processReply()
                   queryable.mFormat = QString::fromStdString( jFormat.get<std::string>() );
                 }
               }
-              mQueryables[ QString::fromStdString( key ) ] = queryable;
+              mQueryables[QString::fromStdString( key )] = queryable;
             }
           }
-          else if ( val.is_object() &&
-                    val.contains( "$ref" ) )
+          else if ( val.is_object() && val.contains( "$ref" ) )
           {
             const json jRef = val["$ref"];
             if ( jRef.is_string() )
             {
               const auto ref = jRef.get<std::string>();
               const char *prefix = "https://geojson.org/schema/";
-              if ( ref.size() > strlen( prefix ) &&
-                   ref.compare( 0, strlen( prefix ), prefix ) == 0 )
+              if ( ref.size() > strlen( prefix ) && ref.compare( 0, strlen( prefix ), prefix ) == 0 )
               {
                 Queryable queryable;
                 queryable.mIsGeometry = true;
-                mQueryables[ QString::fromStdString( key ) ] = queryable;
+                mQueryables[QString::fromStdString( key )] = queryable;
               }
             }
           }

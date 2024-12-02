@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscesiumtilesdataprovider.h"
+#include "moc_qgscesiumtilesdataprovider.cpp"
 #include "qgsauthmanager.h"
 #include "qgsproviderutils.h"
 #include "qgsapplication.h"

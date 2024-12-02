@@ -52,7 +52,6 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 {
     Q_OBJECT
   public:
-
     static inline QgsSettingsTreeNode *sTreePluginManager = QgsSettingsTree::treeRoot()->createChildNode( QStringLiteral( "plugin-manager" ) );
 
     static const QgsSettingsEntryBool *settingsAutomaticallyCheckForPluginUpdates;
@@ -246,7 +245,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 
     QMap<QString, QString> mTabDescriptions;
 
-    QMap< QString, QMap< QString, QString > > mPlugins;
+    QMap<QString, QMap<QString, QString>> mPlugins;
 
     QString mCurrentlyDisplayedPlugin;
 

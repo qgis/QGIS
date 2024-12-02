@@ -48,7 +48,7 @@ class QgsPointCloud3DSymbolHandler
     virtual void processNode( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, PointData *output = nullptr ) = 0; // override;
     virtual void finalize( Qt3DCore::QEntity *parent, const QgsPointCloud3DRenderContext &context ) = 0;// override;
 
-    void triangulate( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, const QgsAABB &bbox );
+    void triangulate( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, const QgsBox3D &box3D );
 
     float zMinimum() const { return mZMin; }
     float zMaximum() const { return mZMax; }
@@ -83,7 +83,7 @@ class QgsPointCloud3DSymbolHandler
 
   private:
     //! Returns all vertices of the node \a n, and of its parents contained in \a bbox and in an extension of this box depending of the density of the points
-    std::vector<double> getVertices( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, const QgsAABB &bbox );
+    std::vector<double> getVertices( QgsPointCloudIndex *pc, const IndexedPointCloudNode &n, const QgsPointCloud3DRenderContext &context, const QgsBox3D &box3D );
 
     //! Calculates the normals of triangles dedined by index contained in \a triangles. Must be used only in the method triangulate().
     void calculateNormals( const std::vector<size_t> &triangles );
@@ -91,12 +91,12 @@ class QgsPointCloud3DSymbolHandler
     /**
      * Applies a filter on triangles to improve the rendering:
      *
-     * - keeps only triangles that have a least one point in the bounding box \a bbox
+     * - keeps only triangles that have a least one point in the bounding box \a box3D
      * - if options are selected, skips triangles with horizontal or vertical size greater than a threshold
      *
      * Must be used only in the method triangulate().
      */
-    void filterTriangles( const std::vector<size_t> &triangleIndexes, const QgsPointCloud3DRenderContext &context, const QgsAABB &bbox );
+    void filterTriangles( const std::vector<size_t> &triangleIndexes, const QgsPointCloud3DRenderContext &context, const QgsBox3D &box3D );
 };
 
 class QgsSingleColorPointCloud3DSymbolHandler : public QgsPointCloud3DSymbolHandler

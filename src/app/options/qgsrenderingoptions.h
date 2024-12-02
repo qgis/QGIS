@@ -26,12 +26,9 @@ class QgsRenderingOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsRe
     Q_OBJECT
 
   public:
-
     QgsRenderingOptionsWidget( QWidget *parent );
     QString helpKey() const override;
     void apply() override;
-  private:
-    bool mBlockStoringChanges = false;
 };
 
 
@@ -40,14 +37,11 @@ class QgsRenderingOptionsFactory : public QgsOptionsWidgetFactory
     Q_OBJECT
 
   public:
-
     QgsRenderingOptionsFactory();
 
     QIcon icon() const override;
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
     QString pagePositionHint() const override;
-
-
 };
 
 

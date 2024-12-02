@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmapthemes.h"
+#include "moc_qgsmapthemes.cpp"
 #include "qgsmapthemecollection.h"
 
 #include "qgslayertree.h"
@@ -37,7 +38,6 @@ QgsMapThemes *QgsMapThemes::sInstance;
 QgsMapThemes::QgsMapThemes()
   : mMenu( new QMenu )
 {
-
   mMenu->addAction( QgisApp::instance()->actionShowAllLayers() );
   mMenu->addAction( QgisApp::instance()->actionHideAllLayers() );
   mMenu->addAction( QgisApp::instance()->actionShowSelectedLayers() );
@@ -50,7 +50,7 @@ QgsMapThemes::QgsMapThemes()
   mReplaceMenu = new QMenu( tr( "Replace Theme" ) );
   mMenu->addMenu( mReplaceMenu );
   mActionRenameCurrentPreset = mMenu->addAction( tr( "Rename Current Theme…" ), this, &QgsMapThemes::renameCurrentPreset );
-  mActionAddPreset = mMenu->addAction( tr( "Add Theme…" ), this, [ = ] { addPreset(); } );
+  mActionAddPreset = mMenu->addAction( tr( "Add Theme…" ), this, [=] { addPreset(); } );
   mMenuSeparator = mMenu->addSeparator();
 
   mActionRemoveCurrentPreset = mMenu->addAction( tr( "Remove Current Theme" ), this, &QgsMapThemes::removeCurrentPreset );
@@ -122,9 +122,7 @@ void QgsMapThemes::replaceTriggered()
   if ( !actionPreset )
     return;
 
-  int res = QMessageBox::question( QgisApp::instance(), tr( "Replace Theme" ),
-                                   tr( "Are you sure you want to replace the existing theme “%1”?" ).arg( actionPreset->text() ),
-                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+  int res = QMessageBox::question( QgisApp::instance(), tr( "Replace Theme" ), tr( "Are you sure you want to replace the existing theme “%1”?" ).arg( actionPreset->text() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
   if ( res != QMessageBox::Yes )
     return;
 
@@ -155,7 +153,8 @@ void QgsMapThemes::renameCurrentPreset()
       QgsNewNameDialog dlg(
         tr( "theme" ),
         tr( "%1" ).arg( actionPreset->text() ),
-        QStringList(), existingNames,  Qt::CaseInsensitive, mMenu );
+        QStringList(), existingNames, Qt::CaseInsensitive, mMenu
+      );
 
       dlg.setWindowTitle( tr( "Rename Map Theme" ) );
       dlg.setHintString( tr( "Enter the new name of the map theme" ) );
@@ -177,9 +176,7 @@ void QgsMapThemes::removeCurrentPreset()
   {
     if ( actionPreset->isChecked() )
     {
-      int res = QMessageBox::question( QgisApp::instance(), tr( "Remove Theme" ),
-                                       tr( "Are you sure you want to remove the existing theme “%1”?" ).arg( actionPreset->text() ),
-                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+      int res = QMessageBox::question( QgisApp::instance(), tr( "Remove Theme" ), tr( "Are you sure you want to remove the existing theme “%1”?" ).arg( actionPreset->text() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
       if ( res == QMessageBox::Yes )
         QgsProject::instance()->mapThemeCollection()->removeMapTheme( actionPreset->text() );
       break;

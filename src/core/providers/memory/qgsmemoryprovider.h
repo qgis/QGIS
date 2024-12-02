@@ -13,6 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSMEMORYPROVIDER_H
+#define QGSMEMORYPROVIDER_H
+
 #define SIP_NO_FILE
 
 #include "qgsvectordataprovider.h"
@@ -113,3 +116,4 @@ class QgsMemoryProviderMetadata final: public QgsProviderMetadata
 };
 
 ///@endcond
+#endif // QGSMEMORYPROVIDER_H

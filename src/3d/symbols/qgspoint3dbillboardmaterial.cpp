@@ -24,6 +24,7 @@
 #include <QUrl>
 
 #include "qgspoint3dbillboardmaterial.h"
+#include "moc_qgspoint3dbillboardmaterial.cpp"
 #include "qgsterraintextureimage_p.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmarkersymbol.h"

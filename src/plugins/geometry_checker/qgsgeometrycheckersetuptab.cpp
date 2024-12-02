@@ -17,6 +17,7 @@
 
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckersetuptab.h"
+#include "moc_qgsgeometrycheckersetuptab.cpp"
 #include "qgsgeometrychecker.h"
 #include "qgsgeometrycheckfactory.h"
 #include "qgsgeometrycheck.h"
@@ -43,10 +44,10 @@ static const int LayerIdRole = Qt::UserRole + 1;
 
 QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QDialog *checkerDialog, QWidget *parent )
   : QWidget( parent )
-  , mIface( iface )
-  , mCheckerDialog( checkerDialog )
 
 {
+  Q_UNUSED( checkerDialog )
+  Q_UNUSED( iface )
   ui.setupUi( this );
   ui.progressBar->hide();
   ui.labelStatus->hide();
@@ -350,7 +351,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
       saveOptions.fileEncoding = layer->dataProvider()->encoding();
       saveOptions.driverName = outputDriverName;
       saveOptions.onlySelectedFeatures = selectedOnly;
-      QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormatV3( layer, outputPath, layer->transformContext(), saveOptions, &errMsg, nullptr, nullptr );
+      QgsVectorFileWriter::WriterError err = QgsVectorFileWriter::writeAsVectorFormatV3( layer, outputPath, layer->transformContext(), saveOptions, &errMsg, nullptr, nullptr );
       if ( err != QgsVectorFileWriter::NoError )
       {
         createErrors.append( errMsg );
@@ -528,5 +529,5 @@ void QgsGeometryCheckerSetupTab::showCancelFeedback()
   mAbortButton->setEnabled( false );
   ui.labelStatus->setText( tr( "<b>Waiting for running checks to finish…</b>" ) );
   ui.labelStatus->show();
-  ui.progressBar->hide() ;
+  ui.progressBar->hide();
 }

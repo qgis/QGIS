@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrulebasedchunkloader_p.h"
+#include "moc_qgsrulebasedchunkloader_p.cpp"
 #include "qgsvectorlayerchunkloader_p.h"
 
 #include "qgs3dutils.h"
@@ -50,6 +51,12 @@ QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderF
 
   QgsVectorLayer *layer = mFactory->mLayer;
 
+  // only a subset of data to be queried
+  const QgsRectangle rect = node->box3D().toRectangle();
+  // origin for coordinates of the chunk - it is kind of arbitrary, but it should be
+  // picked so that the coordinates are relatively small to avoid numerical precision issues
+  QgsVector3D chunkOrigin( rect.center().x(), rect.center().y(), 0 );
+
   QgsExpressionContext exprContext( Qgs3DUtils::globalProjectLayerExpressionContext( layer ) );
   exprContext.setFields( layer->fields() );
   mContext.setExpressionContext( exprContext );
@@ -63,15 +70,12 @@ QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderF
   mRootRule->createHandlers( layer, mHandlers );
 
   QSet<QString> attributeNames;
-  mRootRule->prepare( mContext, attributeNames, mHandlers );
+  mRootRule->prepare( mContext, attributeNames, chunkOrigin, mHandlers );
 
   // build the feature request
   QgsFeatureRequest req;
   req.setDestinationCrs( mContext.crs(), mContext.transformContext() );
   req.setSubsetOfAttributes( attributeNames, layer->fields() );
-
-  // only a subset of data to be queried
-  const QgsRectangle rect = Qgs3DUtils::worldToMapExtent( node->bbox(), mContext.origin() );
   req.setFilterRect( rect );
 
   //
@@ -150,10 +154,10 @@ Qt3DCore::QEntity *QgsRuleBasedChunkLoader::createEntity( Qt3DCore::QEntity *par
   // fix the vertical range of the node from the estimated vertical range to the true range
   if ( zMin != std::numeric_limits<float>::max() && zMax != std::numeric_limits<float>::lowest() )
   {
-    QgsAABB box = mNode->bbox();
-    box.yMin = zMin;
-    box.yMax = zMax;
-    mNode->setExactBbox( box );
+    QgsBox3D box = mNode->box3D();
+    box.setZMinimum( zMin );
+    box.setZMaximum( zMax );
+    mNode->setExactBox3D( box );
     mNode->updateParentBoundingBoxesRecursively();
   }
 
@@ -170,8 +174,8 @@ QgsRuleBasedChunkLoaderFactory::QgsRuleBasedChunkLoaderFactory( const Qgs3DRende
   , mRootRule( rootRule->clone() )
   , mLeafLevel( leafLevel )
 {
-  const QgsAABB rootBbox = Qgs3DUtils::mapToWorldExtent( context.extent(), zMin, zMax, context.origin() );
-  setupQuadtree( rootBbox, -1, leafLevel );  // negative root error means that the node does not contain anything
+  const QgsBox3D rootBox3D( context.extent(), zMin, zMax );
+  setupQuadtree( rootBox3D, -1, leafLevel );  // negative root error means that the node does not contain anything
 }
 
 QgsRuleBasedChunkLoaderFactory::~QgsRuleBasedChunkLoaderFactory() = default;
@@ -266,6 +270,6 @@ void QgsRuleBasedChunkedEntity::onTerrainElevationOffsetChanged( float newOffset
 
 QVector<QgsRayCastingUtils::RayHit> QgsRuleBasedChunkedEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
 {
-  return QgsVectorLayerChunkedEntity::rayIntersection( activeNodes(), mTransform->matrix(), ray, context );
+  return QgsVectorLayerChunkedEntity::rayIntersection( activeNodes(), mTransform->matrix(), ray, context, mMapSettings->origin() );
 }
 /// @endcond

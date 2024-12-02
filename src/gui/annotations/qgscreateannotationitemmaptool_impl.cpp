@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscreateannotationitemmaptool_impl.h"
+#include "moc_qgscreateannotationitemmaptool_impl.cpp"
 #include "qgsmapmouseevent.h"
 #include "qgsannotationpointtextitem.h"
 #include "qgsannotationmarkeritem.h"

@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprojectlayergroupdialog.h"
+#include "moc_qgsprojectlayergroupdialog.cpp"
 #include "qgsproject.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
@@ -41,7 +42,6 @@ QVariant QgsEmbeddedLayerTreeModel::data( const QModelIndex &index, int role ) c
 
   return QgsLayerTreeModel::data( index, role );
 }
-
 
 
 QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const QString &projectFile, Qt::WindowFlags f )
@@ -84,7 +84,6 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const Q
 QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( const QgsProject *project, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
 {
-
   // Preconditions
   Q_ASSERT( project );
   Q_ASSERT( project->layerTreeRoot() );
@@ -105,7 +104,6 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( const QgsProject *projec
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProjectLayerGroupDialog::mButtonBox_accepted );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectLayerGroupDialog::showHelp );
-
 }
 
 QgsProjectLayerGroupDialog::~QgsProjectLayerGroupDialog()
@@ -159,7 +157,7 @@ QString QgsProjectLayerGroupDialog::selectedProjectFile() const
 
 bool QgsProjectLayerGroupDialog::isValid() const
 {
-  return static_cast< bool >( mTreeView->layerTreeModel() );
+  return static_cast<bool>( mTreeView->layerTreeModel() );
 }
 
 void QgsProjectLayerGroupDialog::changeProjectFile()
@@ -194,7 +192,6 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   QDomDocument projectDom;
   if ( QgsZipUtils::isZipFile( mProjectFileWidget->filePath() ) )
   {
-
     archive = std::make_unique<QgsProjectArchive>();
 
     // unzip the archive
@@ -220,9 +217,9 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   if ( !projectDom.setContent( &projectFile, &errorMessage, &errorLine ) )
   {
     QgsDebugError( QStringLiteral( "Error reading the project file %1 at line %2: %3" )
-                   .arg( projectFile.fileName() )
-                   .arg( errorLine )
-                   .arg( errorMessage ) );
+                     .arg( projectFile.fileName() )
+                     .arg( errorLine )
+                     .arg( errorMessage ) );
     return;
   }
 
@@ -233,7 +230,7 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   {
     // Use a temporary tree to read the nodes to prevent signals being delivered to the models
     QgsLayerTree tempTree;
-    tempTree.readChildrenFromXml( layerTreeElem,  QgsReadWriteContext() );
+    tempTree.readChildrenFromXml( layerTreeElem, QgsReadWriteContext() );
     mRootGroup->insertChildNodes( -1, tempTree.abandonChildren() );
   }
   else
@@ -307,5 +304,4 @@ void QgsProjectLayerGroupDialog::mButtonBox_accepted()
 void QgsProjectLayerGroupDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#nesting-projects" ) );
-
 }

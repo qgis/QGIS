@@ -20,31 +20,41 @@
 #include "qgssettingstree.h"
 
 class QgsDevToolWidgetFactory;
-
+class QgsDevToolWidget;
+class QgsDocumentationPanelWidget;
 class APP_EXPORT QgsDevToolsPanelWidget : public QWidget, private Ui::QgsDevToolsWidgetBase
 {
     Q_OBJECT
   public:
-
     static inline QgsSettingsTreeNode *sTreeDevTools = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "devtools" ) );
     static const QgsSettingsEntryString *settingLastActiveTab;
 
     QgsDevToolsPanelWidget( const QList<QgsDevToolWidgetFactory *> &factories, QWidget *parent = nullptr );
     ~QgsDevToolsPanelWidget() override;
 
+    void addToolWidget( QgsDevToolWidget *widget );
     void addToolFactory( QgsDevToolWidgetFactory *factory );
 
     void removeToolFactory( QgsDevToolWidgetFactory *factory );
 
     void setActiveTab( const QString &title );
 
+    void showApiDocumentation(
+      Qgis::DocumentationApi api = Qgis::DocumentationApi::PyQgis,
+      Qgis::DocumentationBrowser browser = Qgis::DocumentationBrowser::DeveloperToolsPanel,
+      const QString &object = QString(),
+      const QString &module = QString()
+    );
+
+    void showUrl( const QUrl &url );
+
   private slots:
 
     void setCurrentTool( int row );
 
   private:
-
-    QMap< QgsDevToolWidgetFactory *, int> mFactoryPages;
+    QMap<QgsDevToolWidgetFactory *, int> mFactoryPages;
+    QgsDocumentationPanelWidget *mDocumentationPanel = nullptr;
 };
 
 #endif // QGSDEVTOOLSPANELWIDGET_H

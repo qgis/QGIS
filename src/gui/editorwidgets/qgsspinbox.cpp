@@ -19,6 +19,7 @@
 #include <QStyle>
 
 #include "qgsspinbox.h"
+#include "moc_qgsspinbox.cpp"
 #include "qgsexpression.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"

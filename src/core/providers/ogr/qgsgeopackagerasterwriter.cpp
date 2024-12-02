@@ -16,6 +16,7 @@
 
 ///@cond PRIVATE
 
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include "gdal.h"
 #include "gdal_utils.h"
 #include "qgsogrutils.h"

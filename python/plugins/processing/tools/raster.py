@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya  and Alexander Bruy'
-__date__ = 'February 2013'
-__copyright__ = '(C) 2013, Victor Olaya  and Alexander Bruy'
+__author__ = "Victor Olaya  and Alexander Bruy"
+__date__ = "February 2013"
+__copyright__ = "(C) 2013, Victor Olaya  and Alexander Bruy"
 
 import struct
 
@@ -36,24 +36,23 @@ def scanraster(layer, feedback, band_number=1):
     bandtype = gdal.GetDataTypeName(band.DataType)
     for y in range(band.YSize):
         feedback.setProgress(y / float(band.YSize) * 100)
-        scanline = band.ReadRaster(0, y, band.XSize, 1, band.XSize, 1,
-                                   band.DataType)
-        if bandtype == 'Byte':
-            values = struct.unpack('B' * band.XSize, scanline)
-        elif bandtype == 'Int16':
-            values = struct.unpack('h' * band.XSize, scanline)
-        elif bandtype == 'UInt16':
-            values = struct.unpack('H' * band.XSize, scanline)
-        elif bandtype == 'Int32':
-            values = struct.unpack('i' * band.XSize, scanline)
-        elif bandtype == 'UInt32':
-            values = struct.unpack('I' * band.XSize, scanline)
-        elif bandtype == 'Float32':
-            values = struct.unpack('f' * band.XSize, scanline)
-        elif bandtype == 'Float64':
-            values = struct.unpack('d' * band.XSize, scanline)
+        scanline = band.ReadRaster(0, y, band.XSize, 1, band.XSize, 1, band.DataType)
+        if bandtype == "Byte":
+            values = struct.unpack("B" * band.XSize, scanline)
+        elif bandtype == "Int16":
+            values = struct.unpack("h" * band.XSize, scanline)
+        elif bandtype == "UInt16":
+            values = struct.unpack("H" * band.XSize, scanline)
+        elif bandtype == "Int32":
+            values = struct.unpack("i" * band.XSize, scanline)
+        elif bandtype == "UInt32":
+            values = struct.unpack("I" * band.XSize, scanline)
+        elif bandtype == "Float32":
+            values = struct.unpack("f" * band.XSize, scanline)
+        elif bandtype == "Float64":
+            values = struct.unpack("d" * band.XSize, scanline)
         else:
-            raise QgsProcessingException('Raster format not supported')
+            raise QgsProcessingException("Raster format not supported")
         for value in values:
             if value == nodata:
                 value = None
@@ -61,8 +60,7 @@ def scanraster(layer, feedback, band_number=1):
 
 
 def mapToPixel(mX, mY, geoTransform):
-    (pX, pY) = gdal.ApplyGeoTransform(
-        gdal.InvGeoTransform(geoTransform), mX, mY)
+    (pX, pY) = gdal.ApplyGeoTransform(gdal.InvGeoTransform(geoTransform), mX, mY)
     return (int(pX), int(pY))
 
 

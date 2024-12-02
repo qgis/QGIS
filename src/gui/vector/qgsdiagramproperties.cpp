@@ -26,6 +26,7 @@
 #include "qgsdatadefinedsizelegend.h"
 #include "qgsdatadefinedsizelegendwidget.h"
 #include "qgsdiagramproperties.h"
+#include "moc_qgsdiagramproperties.cpp"
 #include "qgsdiagramrenderer.h"
 #include "qgsfeatureiterator.h"
 #include "qgssymbolselectordialog.h"
@@ -421,7 +422,7 @@ void QgsDiagramProperties::insertDefaults()
 void QgsDiagramProperties::syncToLayer()
 {
   const QgsDiagramRenderer *renderer = mLayer->diagramRenderer();
-  if ( renderer->rendererName() == QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED )
+  if ( renderer && renderer->rendererName() == QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED )
   {
     const QgsStackedDiagramRenderer *stackedRenderer = static_cast< const QgsStackedDiagramRenderer *>( renderer );
     if ( stackedRenderer->rendererCount() > 0 )

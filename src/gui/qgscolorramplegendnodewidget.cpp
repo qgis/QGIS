@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscolorramplegendnodewidget.h"
+#include "moc_qgscolorramplegendnodewidget.cpp"
 #include "qgshelp.h"
 #include "qgsnumericformatselectorwidget.h"
 #include "qgsnumericformat.h"

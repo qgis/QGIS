@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscalloutwidget.h"
+#include "moc_qgscalloutwidget.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsunitselectionwidget.h"

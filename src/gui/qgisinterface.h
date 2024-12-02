@@ -1281,6 +1281,16 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
 
     /**
+     * Show a page of the API documentation
+     * \param api Which API to display
+     * \param browser Web browser used to display the API documentation
+     * \param object object to show in the documentation
+     * \param module used only if api = Qgis::DocumentationApi::PyQgis
+     * \since QGIS 3.42
+    */
+    virtual void showApiDocumentation( Qgis::DocumentationApi api = Qgis::DocumentationApi::PyQgis, Qgis::DocumentationBrowser browser = Qgis::DocumentationBrowser::DeveloperToolsPanel, const QString &object = QString(), const QString &module = QString() ) = 0;
+
+    /**
      * Register a new application exit blocker, which can be used to prevent the QGIS application
      * from exiting while a plugin or script has unsaved changes.
      *

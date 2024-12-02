@@ -387,6 +387,8 @@ QVariantMap QgsExtractWithinDistanceAlgorithm::processAlgorithm( const QVariantM
   };
   process( context, input.get(), referenceSource.get(), distance, distanceProperty, addToSink, false, feedback, expressionContext );
 
+  sink->finalize();
+
   QVariantMap results;
   results.insert( QStringLiteral( "OUTPUT" ), dest );
   return results;

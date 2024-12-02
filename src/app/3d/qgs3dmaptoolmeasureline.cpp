@@ -16,6 +16,7 @@
 #include <QKeyEvent>
 
 #include "qgs3dmaptoolmeasureline.h"
+#include "moc_qgs3dmaptoolmeasureline.cpp"
 #include "qgs3dutils.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapcanvas.h"
@@ -31,7 +32,7 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )
 {
   // Dialog
-  mDialog = std::make_unique< Qgs3DMeasureDialog >( this );
+  mDialog = std::make_unique<Qgs3DMeasureDialog>( this );
   mDialog->setWindowFlags( mDialog->windowFlags() | Qt::Tool );
   mDialog->restorePosition();
 }
@@ -96,10 +97,7 @@ void Qgs3DMapToolMeasureLine::handleClick( const QPoint &screenPos )
     if ( minDist < 0 || resDist < minDist )
     {
       minDist = resDist;
-      worldIntersection = QgsVector3D( result.pos.x(),
-                                       result.pos.y(),
-                                       result.pos.z()
-                                     );
+      worldIntersection = QgsVector3D( result.pos.x(), result.pos.y(), result.pos.z() );
     }
   }
   const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( worldIntersection, mCanvas->mapSettings()->origin() );
@@ -188,8 +186,7 @@ void Qgs3DMapToolMeasureLine::mousePressEvent( QMouseEvent *event )
 
 void Qgs3DMapToolMeasureLine::mouseMoveEvent( QMouseEvent *event )
 {
-  if ( !mMouseHasMoved &&
-       ( event->pos() - mMouseClickPos ).manhattanLength() >= QApplication::startDragDistance() )
+  if ( !mMouseHasMoved && ( event->pos() - mMouseClickPos ).manhattanLength() >= QApplication::startDragDistance() )
   {
     mMouseHasMoved = true;
   }
@@ -227,8 +224,7 @@ void Qgs3DMapToolMeasureLine::mouseReleaseEvent( QMouseEvent *event )
 
 void Qgs3DMapToolMeasureLine::keyPressEvent( QKeyEvent *event )
 {
-  if ( event->key() == Qt::Key_Backspace ||
-       event->key() == Qt::Key_Delete )
+  if ( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete )
   {
     undo();
   }

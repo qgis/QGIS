@@ -29,12 +29,11 @@ class QAction;
 class QToolBar;
 class QPainter;
 
-class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
+class APP_EXPORT QgsDecorationNorthArrow : public QgsDecorationItem
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsDecorationNorthArrow, with the specified \a parent object.
      */
@@ -55,7 +54,6 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
     QString svgPath();
 
   private:
-
     //  static const double DEG2RAD;
     static const double TOL;
 

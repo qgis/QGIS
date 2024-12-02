@@ -78,7 +78,7 @@ Constructor for QgsSettingsEntryBase.
                           QgsSettingsTreeNode *parent,
                           const QVariant &defaultValue = QVariant(),
                           const QString &description = QString(),
-                          Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException );
+                          Qgis::SettingsOptions options = Qgis::SettingsOptions() );
 %Docstring
 Constructor for QgsSettingsEntryBase.
 

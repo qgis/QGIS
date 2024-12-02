@@ -23,7 +23,6 @@
 class QgsMssqlExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
-
     explicit QgsMssqlExpressionCompiler( QgsMssqlFeatureSource *source, bool ignoreStaticNodes = false );
 
   protected:

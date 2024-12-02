@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsquerybuilder.h"
+#include "moc_qgsquerybuilder.cpp"
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"

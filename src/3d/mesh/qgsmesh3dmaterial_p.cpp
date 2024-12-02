@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmesh3dmaterial_p.h"
+#include "moc_qgsmesh3dmaterial_p.cpp"
 
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGraphicsApiFilter>

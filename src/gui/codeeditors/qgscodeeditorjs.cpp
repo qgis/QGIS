@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscodeeditorjs.h"
+#include "moc_qgscodeeditorjs.cpp"
 
 #include <QWidget>
 #include <QString>

@@ -133,7 +133,7 @@ namespace QgsWms
     for ( const auto &layer : std::as_const( layersToRender ) )
     {
       // If it is a cascading WMS layer, get legend node image size
-      if ( layer->dataProvider()->name() == QStringLiteral( "wms" ) )
+      if ( layer->dataProvider()->name() == QLatin1String( "wms" ) )
       {
         if ( QgsWmsLegendNode *layerNode = qobject_cast<QgsWmsLegendNode *>( model.findLegendNode( layer->id(), QString() ) ) )
         {

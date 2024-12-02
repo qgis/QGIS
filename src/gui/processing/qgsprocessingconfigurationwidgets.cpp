@@ -17,6 +17,7 @@
 
 
 #include "qgsprocessingconfigurationwidgets.h"
+#include "moc_qgsprocessingconfigurationwidgets.cpp"
 #include "qgsprocessingalgorithm.h"
 #include "qgsexpressionlineedit.h"
 #include "qgsapplication.h"

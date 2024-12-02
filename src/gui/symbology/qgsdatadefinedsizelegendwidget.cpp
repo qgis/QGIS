@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdatadefinedsizelegendwidget.h"
+#include "moc_qgsdatadefinedsizelegendwidget.cpp"
 
 #include <QInputDialog>
 #include <QStyledItemDelegate>

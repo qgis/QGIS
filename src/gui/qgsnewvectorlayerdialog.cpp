@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsnewvectorlayerdialog.h"
+#include "moc_qgsnewvectorlayerdialog.cpp"
 #include "qgsapplication.h"
 #include "qgsfilewidget.h"
 #include "qgis.h"

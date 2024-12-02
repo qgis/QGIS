@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvaluemapwidgetwrapper.h"
+#include "moc_qgsvaluemapwidgetwrapper.cpp"
 #include "qgsvaluemapconfigdlg.h"
 #include "qgsvaluemapfieldformatter.h"
 #include "qgsapplication.h"

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudattributebyramprendererwidget.h"
+#include "moc_qgspointcloudattributebyramprendererwidget.cpp"
 #include "qgscontrastenhancement.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudattributebyramprenderer.h"

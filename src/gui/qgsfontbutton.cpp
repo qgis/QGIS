@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsfontbutton.h"
+#include "moc_qgsfontbutton.cpp"
 #include "qgstextformatwidget.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorscheme.h"

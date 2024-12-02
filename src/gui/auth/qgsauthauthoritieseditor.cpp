@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthauthoritieseditor.h"
+#include "moc_qgsauthauthoritieseditor.cpp"
 #include "ui_qgsauthauthoritieseditor.h"
 
 #include <QAction>
@@ -96,14 +97,6 @@ QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
   }
 }
 
-static void setItemBold_( QTreeWidgetItem *item )
-{
-  item->setFirstColumnSpanned( true );
-  QFont secf( item->font( 0 ) );
-  secf.setBold( true );
-  item->setFont( 0, secf );
-}
-
 void QgsAuthAuthoritiesEditor::setupCaCertsTree()
 {
   treeWidgetCAs->setColumnCount( 4 );
@@ -121,7 +114,7 @@ void QgsAuthAuthoritiesEditor::setupCaCertsTree()
     treeWidgetCAs,
     QStringList( QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::InDatabase ) ),
     static_cast<int>( QgsAuthAuthoritiesEditor::Section ) );
-  setItemBold_( mDbCaSecItem );
+  QgsAuthGuiUtils::setItemBold( mDbCaSecItem );
   mDbCaSecItem->setFlags( Qt::ItemIsEnabled );
   mDbCaSecItem->setExpanded( true );
   treeWidgetCAs->insertTopLevelItem( 0, mDbCaSecItem );
@@ -130,7 +123,7 @@ void QgsAuthAuthoritiesEditor::setupCaCertsTree()
     treeWidgetCAs,
     QStringList( QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::FromFile ) ),
     static_cast<int>( QgsAuthAuthoritiesEditor::Section ) );
-  setItemBold_( mFileCaSecItem );
+  QgsAuthGuiUtils::setItemBold( mFileCaSecItem );
   mFileCaSecItem->setFlags( Qt::ItemIsEnabled );
   mFileCaSecItem->setExpanded( true );
   treeWidgetCAs->insertTopLevelItem( 0, mFileCaSecItem );
@@ -139,7 +132,7 @@ void QgsAuthAuthoritiesEditor::setupCaCertsTree()
     treeWidgetCAs,
     QStringList( QgsAuthCertUtils::getCaSourceName( QgsAuthCertUtils::SystemRoot ) ),
     static_cast<int>( QgsAuthAuthoritiesEditor::Section ) );
-  setItemBold_( mRootCaSecItem );
+  QgsAuthGuiUtils::setItemBold( mRootCaSecItem );
   mRootCaSecItem->setFlags( Qt::ItemIsEnabled );
   mRootCaSecItem->setExpanded( false );
   treeWidgetCAs->insertTopLevelItem( 0, mRootCaSecItem );
@@ -159,18 +152,9 @@ void QgsAuthAuthoritiesEditor::refreshCaCertsView()
   populateCaCertsView();
 }
 
-static void removeChildren_( QTreeWidgetItem *item )
-{
-  const auto constTakeChildren = item->takeChildren();
-  for ( QTreeWidgetItem *child : constTakeChildren )
-  {
-    delete child;
-  }
-}
-
 void QgsAuthAuthoritiesEditor::populateDatabaseCaCerts()
 {
-  removeChildren_( mDbCaSecItem );
+  QgsAuthGuiUtils::removeChildren( mDbCaSecItem );
 
   const bool expanded = mDbCaSecItem->isExpanded();
   populateCaCertsSection( mDbCaSecItem,
@@ -181,7 +165,7 @@ void QgsAuthAuthoritiesEditor::populateDatabaseCaCerts()
 
 void QgsAuthAuthoritiesEditor::populateFileCaCerts()
 {
-  removeChildren_( mFileCaSecItem );
+  QgsAuthGuiUtils::removeChildren( mFileCaSecItem );
 
   const bool expanded = mFileCaSecItem->isExpanded();
   populateCaCertsSection( mFileCaSecItem,
@@ -192,7 +176,7 @@ void QgsAuthAuthoritiesEditor::populateFileCaCerts()
 
 void QgsAuthAuthoritiesEditor::populateRootCaCerts()
 {
-  removeChildren_( mRootCaSecItem );
+  QgsAuthGuiUtils::removeChildren( mRootCaSecItem );
 
   const bool expanded = mRootCaSecItem->isExpanded();
   populateCaCertsSection( mRootCaSecItem,

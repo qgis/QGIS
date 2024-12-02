@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmetalroughmaterial.h"
+#include "moc_qgsmetalroughmaterial.cpp"
 #include "qgs3dutils.h"
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QRenderPass>

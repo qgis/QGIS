@@ -20,16 +20,19 @@ endif(NOT o2_WITH_QT5)
 
 set( o2_SRCS
     o2.cpp
+    o2pollserver.cpp
     o2reply.cpp
     o2replyserver.cpp
     o2requestor.cpp
     o2simplecrypt.cpp
+    o0jsonresponse.cpp
     o0settingsstore.cpp
     o0baseauth.cpp
 )
 
 set( o2_HDRS
     o2.h
+    o2pollserver.h
     o2reply.h
     o2replyserver.h
     o2requestor.h
@@ -37,6 +40,7 @@ set( o2_HDRS
     o0baseauth.h
     o0export.h
     o0globals.h
+    o0jsonresponse.h
     o0requestparameter.h
     o0settingsstore.h
     o0simplecrypt.h
@@ -82,13 +86,26 @@ if(o2_WITH_GOOGLE)
         ${o2_SRCS}
         o2gft.cpp
         o2google.cpp
+        o2googledevice.cpp
     )
     set( o2_HDRS
         ${o2_HDRS}
         o2gft.h
         o2google.h
+        o2googledevice.h
     )
 endif(o2_WITH_GOOGLE)
+
+if(o2_WITH_VIMEO)
+    set( o2_SRCS
+        ${o2_SRCS}
+        o2vimeo.cpp
+    )
+    set( o2_HDRS
+        ${o2_HDRS}
+        o2vimeo.h
+    )
+endif(o2_WITH_VIMEO)
 
 if(o2_WITH_FACEBOOK)
     set( o2_SRCS
@@ -152,6 +169,27 @@ if(o2_WITH_SURVEYMONKEY)
     )
 endif(o2_WITH_SURVEYMONKEY)
 
+if(o2_WITH_SMUGMUG)
+    set( o2_SRCS
+        ${o2_SRCS}
+        o1smugmug.cpp
+    )
+    set( o2_HDRS
+        ${o2_HDRS}
+        o1smugmug.h
+    )
+endif(o2_WITH_SMUGMUG)
+
+if(o2_WITH_MSGRAPH)
+    set( o2_SRCS
+        ${o2_SRCS}
+        o2msgraph.cpp
+    )
+    set( o2_HDRS
+        ${o2_HDRS}
+        o2msgraph.h
+    )
+endif(o2_WITH_MSGRAPH)
 
 if(o2_WITH_KEYCHAIN)
     if (Qt5Core_DIR)
@@ -160,7 +198,7 @@ if(o2_WITH_KEYCHAIN)
         find_package(QtKeychain REQUIRED)
     endif()
     if(QTKEYCHAIN_FOUND OR QT5KEYCHAIN_FOUND)
-        message("Found QTKeychain")
+        MESSAGE("Found QTKeychain")
         list(APPEND LINK_TARGETS ${QTKEYCHAIN_LIBRARY})
         include_directories(${QTKEYCHAIN_INCLUDE_DIR})
         set( o2_SRCS
@@ -172,7 +210,7 @@ if(o2_WITH_KEYCHAIN)
                 o0keychainstore.h
                 )
     else()
-        message("Qt5Keychain or QtKeychain is required")
+        MESSAGE("Qt5Keychain or QtKeychain is required")
     endif()
 
 
@@ -229,5 +267,9 @@ install(FILES ${o2_HDRS}
 )
 
 message(STATUS "Writing pkg-config file...")
-configure_file(${CMAKE_SOURCE_DIR}/o2.pc.cmake ${CMAKE_BINARY_DIR}/o2.pc @ONLY)
-install(FILES ${CMAKE_BINARY_DIR}/o2.pc DESTINATION "${CMAKE_INSTALL_PREFIX}/lib${o2_LIB_SUFFIX}/pkgconfig/")
+configure_file(${CMAKE_CURRENT_LIST_DIR}/../o2.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/o2.pc @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/o2.pc DESTINATION "${CMAKE_INSTALL_PREFIX}/lib${o2_LIB_SUFFIX}/pkgconfig/")
+
+configure_file(${CMAKE_CURRENT_LIST_DIR}/../o2-config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/o2-config.h @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/o2-config.h DESTINATION "${CMAKE_INSTALL_PREFIX}/include/o2")
+

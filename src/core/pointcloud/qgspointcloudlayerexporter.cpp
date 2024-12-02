@@ -21,6 +21,7 @@
 #include <QThread>
 
 #include "qgspointcloudlayerexporter.h"
+#include "moc_qgspointcloudlayerexporter.cpp"
 #include "qgsmemoryproviderutils.h"
 #include "qgspointcloudrequest.h"
 #include "qgsvectorfilewriter.h"

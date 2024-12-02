@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingtoolboxmodel.h"
+#include "moc_qgsprocessingtoolboxmodel.cpp"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsprocessingregistry.h"

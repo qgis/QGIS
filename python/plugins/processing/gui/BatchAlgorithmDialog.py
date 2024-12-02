@@ -15,18 +15,20 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "August 2012"
+__copyright__ = "(C) 2012, Victor Olaya"
 
 import codecs
 import time
 
-from qgis.core import (QgsProcessingOutputHtml,
-                       QgsProcessingOutputNumber,
-                       QgsProcessingOutputString,
-                       QgsProcessingOutputBoolean,
-                       QgsProject)
+from qgis.core import (
+    QgsProcessingOutputHtml,
+    QgsProcessingOutputNumber,
+    QgsProcessingOutputString,
+    QgsProcessingOutputBoolean,
+    QgsProject,
+)
 from qgis.gui import QgsProcessingBatchAlgorithmDialogBase
 from qgis.utils import iface
 
@@ -44,7 +46,9 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
 
         self.setAlgorithm(alg)
 
-        self.setWindowTitle(self.tr('Batch Processing - {0}').format(self.algorithm().displayName()))
+        self.setWindowTitle(
+            self.tr("Batch Processing - {0}").format(self.algorithm().displayName())
+        )
         self.setMainWidget(BatchPanel(self, self.algorithm()))
 
         self.context = None
@@ -54,6 +58,7 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
         self.close()
 
         from processing.gui.AlgorithmDialog import AlgorithmDialog
+
         dlg = AlgorithmDialog(self.algorithm().create(), parent=iface.mainWindow())
         dlg.show()
         dlg.exec()
@@ -79,7 +84,8 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
                 row=row,
                 context=self.processingContext(),
                 destinationProject=project,
-                warnOnInvalid=True)
+                warnOnInvalid=True,
+            )
             if ok:
                 alg_parameters.append(parameters)
         if not alg_parameters:
@@ -92,61 +98,84 @@ class BatchAlgorithmDialog(QgsProcessingBatchAlgorithmDialogBase):
 
     def loadHtmlResults(self, results, num):
         for out in self.algorithm().outputDefinitions():
-            if isinstance(out, QgsProcessingOutputHtml) and out.name() in results and results[out.name()]:
-                resultsList.addResult(icon=self.algorithm().icon(), name=f'{out.description()} [{num}]',
-                                      result=results[out.name()])
+            if (
+                isinstance(out, QgsProcessingOutputHtml)
+                and out.name() in results
+                and results[out.name()]
+            ):
+                resultsList.addResult(
+                    icon=self.algorithm().icon(),
+                    name=f"{out.description()} [{num}]",
+                    result=results[out.name()],
+                )
 
     def createSummaryTable(self, algorithm_results, errors):
         createTable = False
 
         for out in self.algorithm().outputDefinitions():
-            if isinstance(out, (QgsProcessingOutputNumber, QgsProcessingOutputString, QgsProcessingOutputBoolean)):
+            if isinstance(
+                out,
+                (
+                    QgsProcessingOutputNumber,
+                    QgsProcessingOutputString,
+                    QgsProcessingOutputBoolean,
+                ),
+            ):
                 createTable = True
                 break
 
         if not createTable and not errors:
             return
 
-        outputFile = getTempFilename('html')
-        with codecs.open(outputFile, 'w', encoding='utf-8') as f:
+        outputFile = getTempFilename("html")
+        with codecs.open(outputFile, "w", encoding="utf-8") as f:
             if createTable:
                 for i, res in enumerate(algorithm_results):
-                    results = res['results']
-                    params = res['parameters']
+                    results = res["results"]
+                    params = res["parameters"]
                     if i > 0:
-                        f.write('<hr>\n')
-                    f.write(self.tr('<h3>Parameters</h3>\n'))
-                    f.write('<table>\n')
+                        f.write("<hr>\n")
+                    f.write(self.tr("<h3>Parameters</h3>\n"))
+                    f.write("<table>\n")
                     for param in self.algorithm().parameterDefinitions():
                         if not param.isDestination():
                             if param.name() in params:
-                                f.write('<tr><th>{}</th><td>{}</td></tr>\n'.format(param.description(),
-                                                                                   params[param.name()]))
-                    f.write('</table>\n')
-                    f.write(self.tr('<h3>Results</h3>\n'))
-                    f.write('<table>\n')
+                                f.write(
+                                    "<tr><th>{}</th><td>{}</td></tr>\n".format(
+                                        param.description(), params[param.name()]
+                                    )
+                                )
+                    f.write("</table>\n")
+                    f.write(self.tr("<h3>Results</h3>\n"))
+                    f.write("<table>\n")
                     for out in self.algorithm().outputDefinitions():
                         if out.name() in results:
-                            f.write(f'<tr><th>{out.description()}</th><td>{results[out.name()]}</td></tr>\n')
-                    f.write('</table>\n')
+                            f.write(
+                                f"<tr><th>{out.description()}</th><td>{results[out.name()]}</td></tr>\n"
+                            )
+                    f.write("</table>\n")
             if errors:
-                f.write('<h2 style="color: red">{}</h2>\n'.format(self.tr('Errors')))
+                f.write('<h2 style="color: red">{}</h2>\n'.format(self.tr("Errors")))
             for i, res in enumerate(errors):
-                errors = res['errors']
-                params = res['parameters']
+                errors = res["errors"]
+                params = res["parameters"]
                 if i > 0:
-                    f.write('<hr>\n')
-                f.write(self.tr('<h3>Parameters</h3>\n'))
-                f.write('<table>\n')
+                    f.write("<hr>\n")
+                f.write(self.tr("<h3>Parameters</h3>\n"))
+                f.write("<table>\n")
                 for param in self.algorithm().parameterDefinitions():
                     if not param.isDestination():
                         if param.name() in params:
                             f.write(
-                                f'<tr><th>{param.description()}</th><td>{params[param.name()]}</td></tr>\n')
-                f.write('</table>\n')
-                f.write('<h3>{}</h3>\n'.format(self.tr('Error')))
-                f.write('<p style="color: red">{}</p>\n'.format('<br>'.join(errors)))
+                                f"<tr><th>{param.description()}</th><td>{params[param.name()]}</td></tr>\n"
+                            )
+                f.write("</table>\n")
+                f.write("<h3>{}</h3>\n".format(self.tr("Error")))
+                f.write('<p style="color: red">{}</p>\n'.format("<br>".join(errors)))
 
-        resultsList.addResult(icon=self.algorithm().icon(),
-                              name=f'{self.algorithm().name()} [summary]', timestamp=time.localtime(),
-                              result=outputFile)
+        resultsList.addResult(
+            icon=self.algorithm().icon(),
+            name=f"{self.algorithm().name()} [summary]",
+            timestamp=time.localtime(),
+            result=outputFile,
+        )

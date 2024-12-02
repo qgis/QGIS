@@ -14,11 +14,14 @@
  ***************************************************************************/
 
 #include "qgstiledscenechunkloader_p.h"
+#include "moc_qgstiledscenechunkloader_p.cpp"
 
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
 #include "qgsapplication.h"
 #include "qgscesiumutils.h"
 #include "qgscoordinatetransform.h"
+#include "qgsgeotransform.h"
 #include "qgsgltf3dutils.h"
 #include "qgsquantizedmeshtiles.h"
 #include "qgsraycastingutils_p.h"
@@ -61,7 +64,8 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
   const QgsCoordinateTransform &boundsTransform = factory.mBoundsTransform;
 
   const QgsChunkNodeId tileId = node->tileId();
-  const QFuture<void> future = QtConcurrent::run( [this, tileId, zValueScale, zValueOffset, boundsTransform]
+  const QgsVector3D chunkOrigin = node->box3D().center();
+  const QFuture<void> future = QtConcurrent::run( [this, tileId, zValueScale, zValueOffset, boundsTransform, chunkOrigin]
   {
     const QgsTiledSceneTile tile = mIndex.getTile( tileId.uniqueId );
 
@@ -90,7 +94,7 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
 
     QgsGltf3DUtils::EntityTransform entityTransform;
     entityTransform.tileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
-    entityTransform.sceneOriginTargetCrs = mFactory.mRenderContext.origin();
+    entityTransform.chunkOriginTargetCrs = chunkOrigin;
     entityTransform.ecefToTargetCrs = &mFactory.mBoundsTransform;
     entityTransform.zValueScale = zValueScale;
     entityTransform.zValueOffset = zValueOffset;
@@ -129,7 +133,13 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
     }
 
     if ( mEntity )
+    {
+      QgsGeoTransform *transform = new QgsGeoTransform;
+      transform->setGeoTranslation( chunkOrigin );
+      mEntity->addComponent( transform );
+
       mEntity->moveToThread( QgsApplication::instance()->thread() );
+    }
   } );
 
   // emit finished() as soon as the handler is populated with features
@@ -168,32 +178,24 @@ QgsChunkLoader *QgsTiledSceneChunkLoaderFactory::createChunkLoader( QgsChunkNode
   return new QgsTiledSceneChunkLoader( node, mIndex, *this, mZValueScale, mZValueOffset );
 }
 
-// converts box from map coordinates to world coords (also flips [X,Y] to [X,-Z])
-static QgsAABB aabbConvert( const QgsBox3D &b0, const QgsVector3D &sceneOriginTargetCrs )
-{
-  const QgsBox3D b = b0 - sceneOriginTargetCrs;
-  return QgsAABB( b.xMinimum(), b.zMinimum(), -b.yMaximum(), b.xMaximum(), b.zMaximum(), -b.yMinimum() );
-}
-
 QgsChunkNode *QgsTiledSceneChunkLoaderFactory::nodeForTile( const QgsTiledSceneTile &t, const QgsChunkNodeId &nodeId, QgsChunkNode *parent ) const
 {
   QgsChunkNode *node = nullptr;
   if ( hasLargeBounds( t, mBoundsTransform ) )
   {
     // use the full extent of the scene
-    QgsVector3D v0 = mRenderContext.mapToWorldCoordinates( QgsVector3D( mRenderContext.extent().xMinimum(), mRenderContext.extent().yMinimum(), -100 ) );
-    QgsVector3D v1 = mRenderContext.mapToWorldCoordinates( QgsVector3D( mRenderContext.extent().xMaximum(), mRenderContext.extent().yMaximum(), +100 ) );
-    QgsAABB aabb( v0.x(), v0.y(), v0.z(), v1.x(), v1.y(), v1.z() );
+    QgsVector3D v0( mRenderContext.extent().xMinimum(), mRenderContext.extent().yMinimum(), -100 );
+    QgsVector3D v1( mRenderContext.extent().xMaximum(), mRenderContext.extent().yMaximum(), +100 );
+    QgsBox3D box3D( v0, v1 );
     float err = std::min( 1e6, t.geometricError() );
-    node = new QgsChunkNode( nodeId, aabb, err, parent );
+    node = new QgsChunkNode( nodeId, box3D, err, parent );
   }
   else
   {
     QgsBox3D box = t.boundingVolume().bounds( mBoundsTransform );
     box.setZMinimum( box.zMinimum() * mZValueScale + mZValueOffset );
     box.setZMaximum( box.zMaximum() * mZValueScale + mZValueOffset );
-    const QgsAABB aabb = aabbConvert( box, mRenderContext.origin() );
-    node = new QgsChunkNode( nodeId, aabb, t.geometricError(), parent );
+    node = new QgsChunkNode( nodeId, box, t.geometricError(), parent );
   }
 
   node->setRefinementProcess( t.refinementProcess() );
@@ -376,9 +378,12 @@ QVector<QgsRayCastingUtils::RayHit> QgsTiledSceneLayerChunkedEntity::rayIntersec
 #ifdef QGISDEBUG
     nodesAll++;
 #endif
+
+    QgsAABB nodeBbox = Qgs3DUtils::mapToWorldExtent( node->box3D(), mMapSettings->origin() );
+
     if ( node->entity() &&
-         ( minDist < 0 || node->bbox().distanceFromPoint( ray.origin() ) < minDist ) &&
-         QgsRayCastingUtils::rayBoxIntersection( ray, node->bbox() ) )
+         ( minDist < 0 || nodeBbox.distanceFromPoint( ray.origin() ) < minDist ) &&
+         QgsRayCastingUtils::rayBoxIntersection( ray, nodeBbox ) )
     {
 #ifdef QGISDEBUG
       nodeUsed++;
@@ -412,10 +417,10 @@ QVector<QgsRayCastingUtils::RayHit> QgsTiledSceneLayerChunkedEntity::rayIntersec
     QVariantMap vm;
     QgsTiledSceneTile tile = mIndex.getTile( minNode->tileId().uniqueId );
     // at this point this is mostly for debugging - we may want to change/rename what's returned here
-    vm["node_id"] = tile.id();
-    vm["node_error"] = tile.geometricError();
-    vm["node_content"] = tile.resources().value( QStringLiteral( "content" ) );
-    vm["triangle_index"] = minTriangleIndex;
+    vm[ QStringLiteral( "node_id" ) ] = tile.id();
+    vm[ QStringLiteral( "node_error" ) ] = tile.geometricError();
+    vm[ QStringLiteral( "node_content" ) ] = tile.resources().value( QStringLiteral( "content" ) );
+    vm[ QStringLiteral( "triangle_index" ) ] = minTriangleIndex;
     QgsRayCastingUtils::RayHit hit( minDist, intersectionPoint, FID_NULL, vm );
     result.append( hit );
   }

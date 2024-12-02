@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthsslconfigwidget.h"
+#include "moc_qgsauthsslconfigwidget.cpp"
 #include "qgsauthcertificateinfo.h"
 
 #include <QDialogButtonBox>
@@ -27,14 +28,6 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 
-
-static void setItemBold_( QTreeWidgetItem *item )
-{
-  item->setFirstColumnSpanned( true );
-  QFont secf( item->font( 0 ) );
-  secf.setBold( true );
-  item->setFont( 0, secf );
-}
 
 static const QString configFoundText_() { return QObject::tr( "Configuration loaded from database" ); }
 static const QString configNotFoundText_() { return QObject::tr( "Configuration not found in database" ); }
@@ -103,7 +96,7 @@ QTreeWidgetItem *QgsAuthSslConfigWidget::addRootItem( const QString &label )
   QTreeWidgetItem *item = new QTreeWidgetItem(
     QStringList() << label,
     static_cast<int>( ConfigParent ) );
-  setItemBold_( item );
+  QgsAuthGuiUtils::setItemBold( item );
   item->setTextAlignment( 0, Qt::AlignVCenter );
   item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
   treeSslConfig->insertTopLevelItem( treeSslConfig->topLevelItemCount(), item );

@@ -17,6 +17,7 @@
 
 
 #include "qgsfieldcalculator.h"
+#include "moc_qgsfieldcalculator.cpp"
 #include "qgsdistancearea.h"
 #include "qgsexpression.h"
 #include "qgsfeatureiterator.h"
@@ -55,6 +56,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   connect( mCreateVirtualFieldCheckbox, &QCheckBox::stateChanged, this, &QgsFieldCalculator::mCreateVirtualFieldCheckbox_stateChanged );
   connect( mOutputFieldNameLineEdit, &QLineEdit::textChanged, this, &QgsFieldCalculator::mOutputFieldNameLineEdit_textChanged );
   connect( mOutputFieldTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsFieldCalculator::mOutputFieldTypeComboBox_activated );
+  connect( mExistingFieldComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsFieldCalculator::mExistingFieldComboBox_currentIndexChanged );
 
   QgsGui::enableAutoGeometryRestore( this );
 
@@ -501,6 +503,12 @@ void QgsFieldCalculator::mOutputFieldTypeComboBox_activated( int index )
   setPrecisionMinMax();
 }
 
+void QgsFieldCalculator::mExistingFieldComboBox_currentIndexChanged( const int index )
+{
+  Q_UNUSED( index )
+  setDialogButtonState();
+}
+
 void QgsFieldCalculator::populateFields()
 {
   if ( !mVectorLayer )
@@ -573,9 +581,20 @@ void QgsFieldCalculator::setDialogButtonState()
     tooltip = tr( "Please enter a field name" );
     enableButtons = false;
   }
+  else if ( ( mUpdateExistingGroupBox->isChecked() || !mNewFieldGroupBox->isEnabled() )
+            && mExistingFieldComboBox->currentIndex() == -1 )
+  {
+    tooltip = tr( "Please select a field" );
+    enableButtons = false;
+  }
+  else if ( builder->expressionText().isEmpty() )
+  {
+    tooltip = tr( "Please insert an expression" );
+    enableButtons = false;
+  }
   else if ( !builder->isExpressionValid() )
   {
-    tooltip = tr( "The expression is invalid see \"(more info)\" for details" );
+    tooltip = tr( "The expression is invalid. See \"(more info)\" for details" );
     enableButtons = false;
   }
 

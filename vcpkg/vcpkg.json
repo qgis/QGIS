@@ -2,14 +2,13 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "reference": "7adc2e4d49e8d0efc07a369079faa6bc3dbb90f3",
-      "baseline": "7adc2e4d49e8d0efc07a369079faa6bc3dbb90f3",
+      "baseline": "41626fd77bf42f29e8f7e43dc1f2f05780588cde",
       "repository": "https://github.com/microsoft/vcpkg"
     },
     "registries": [
       {
         "kind": "git",
-        "baseline": "ca825c7a82276390809adda410246720e54964c2",
+        "baseline": "d842b9ba9f5a032fbfb459f68bc6c4a3510e1032",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "python3",
@@ -60,12 +59,14 @@
     },
     "libxml2",
     "libzip",
+    "meshoptimizer",
+    "nlohmann-json",
     "pdal",
     "proj",
     "protobuf",
     {
-      "default-features": false,
       "name": "qca",
+      "default-features": false,
       "features": [
         "ossl"
       ]
@@ -93,15 +94,22 @@
             "python"
           ]
         },
-        "py-pip",
-        "py-pyqt6",
-        "py-qscintilla",
-        "py-numpy",
-        "py-requests",
+        "py-autopep8",
+        "py-dateutil",
+        "py-isort",
+        "py-jinja2",
+        "py-lxml",
         "py-markupsafe",
-        "py-pyyaml",
+        "py-numpy",
+        "py-owslib",
+        "py-pip",
         "py-psycopg2",
-        "py-qgis-requirements",
+        "py-pyqt6",
+        "py-pytz",
+        "py-pyyaml",
+        "py-qscintilla",
+        "py-requests",
+        "py-six",
         "python3"
       ]
     },

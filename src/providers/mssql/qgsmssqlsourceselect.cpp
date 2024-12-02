@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsmssqlsourceselect.h"
+#include "moc_qgsmssqlsourceselect.cpp"
 
 #include "qgslogger.h"
 #include "qgsmssqlgeomcolumntypethread.h"
@@ -84,7 +85,7 @@ QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QSty
             Qgis::WkbType::NoGeometry
           } )
     {
-      cb->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), static_cast< quint32>( type ) );
+      cb->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), static_cast<quint32>( type ) );
     }
     cb->setCurrentIndex( cb->findData( index.data( Qt::UserRole + 2 ).toInt() ) );
     return cb;
@@ -121,11 +122,11 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
   {
     if ( index.column() == QgsMssqlTableModel::DbtmType )
     {
-      const Qgis::WkbType type = static_cast< Qgis::WkbType >( cb->currentData().toInt() );
+      const Qgis::WkbType type = static_cast<Qgis::WkbType>( cb->currentData().toInt() );
 
       model->setData( index, QgsIconUtils::iconForWkbType( type ), Qt::DecorationRole );
       model->setData( index, type != Qgis::WkbType::Unknown ? QgsWkbTypes::translatedDisplayString( type ) : tr( "Select…" ) );
-      model->setData( index, static_cast< quint32>( type ), Qt::UserRole + 2 );
+      model->setData( index, static_cast<quint32>( type ), Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsMssqlTableModel::DbtmPkCol )
     {
@@ -197,7 +198,7 @@ void QgsMssqlSourceSelect::btnNew_clicked()
 void QgsMssqlSourceSelect::btnDelete_clicked()
 {
   const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                      .arg( cmbConnections->currentText() );
+                        .arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -232,8 +233,7 @@ void QgsMssqlSourceSelect::btnSave_clicked()
 
 void QgsMssqlSourceSelect::btnLoad_clicked()
 {
-  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
-                           tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -401,8 +401,7 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
   if ( !db->isValid() )
   {
     // Let user know we couldn't initialize the MSSQL provider
-    QMessageBox::warning( this,
-                          tr( "MS SQL Server Provider" ), db->errorText() );
+    QMessageBox::warning( this, tr( "MS SQL Server Provider" ), db->errorText() );
     return;
   }
 
@@ -416,10 +415,7 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
     if ( !q.exec( testquery ) || !q.first() || q.value( 0 ).toInt() == 0 )
     {
       QMessageBox::StandardButtons reply;
-      reply = QMessageBox::question( this, QStringLiteral( "Scan full database?" ),
-                                     QStringLiteral( "No geometry_columns table found. \nWould you like to search full database (might be slower)? " ),
-                                     QMessageBox::Yes | QMessageBox::No
-                                   );
+      reply = QMessageBox::question( this, QStringLiteral( "Scan full database?" ), QStringLiteral( "No geometry_columns table found. \nWould you like to search full database (might be slower)? " ), QMessageBox::Yes | QMessageBox::No );
       if ( reply == QMessageBox::Yes )
         useGeometryColumns = false;
       else
@@ -435,7 +431,7 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
   // issue the sql query
   q = QSqlQuery( db->db() );
   q.setForwardOnly( true );
-  ( void )q.exec( query );
+  ( void ) q.exec( query );
 
   if ( q.isActive() )
   {
@@ -449,7 +445,7 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
       layer.isView = q.value( 5 ).toBool();
       layer.pkCols = QStringList(); //TODO
       layer.isGeography = false;
-      const int dimensions { q.value( 6 ).toInt( ) };
+      const int dimensions { q.value( 6 ).toInt() };
       layer.type = QgsMssqlProvider::typeFromMetadata( q.value( 4 ).toString().toUpper(), dimensions );
 
       QString type = layer.type;
@@ -484,7 +480,8 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
       for ( int i = 0; i < numTopLevelItems; ++i )
       {
         mTablesTreeView->expand( proxyModel()->mapFromSource(
-                                   mTableModel->indexFromItem( mTableModel->invisibleRootItem()->child( i ) ) ) );
+          mTableModel->indexFromItem( mTableModel->invisibleRootItem()->child( i ) )
+        ) );
       }
     }
   }
@@ -492,8 +489,7 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
   {
     QApplication::restoreOverrideCursor();
     // Let user know we couldn't retrieve tables from the MSSQL provider
-    QMessageBox::warning( this,
-                          tr( "MS SQL Server Provider" ), q.lastError().text() );
+    QMessageBox::warning( this, tr( "MS SQL Server Provider" ), q.lastError().text() );
     return;
   }
 
@@ -551,7 +547,7 @@ void QgsMssqlSourceSelect::setSql( const QModelIndex &index )
   const QString tableName = mTableModel->itemFromIndex( index.sibling( index.row(), QgsMssqlTableModel::DbtmTable ) )->text();
   const bool disableInvalidGeometryHandling = QgsMssqlConnection::isInvalidGeometryHandlingDisabled( cmbConnections->currentText() );
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  std::unique_ptr< QgsVectorLayer > vlayer = std::make_unique< QgsVectorLayer>( mTableModel->layerURI( index, mConnInfo, mUseEstimatedMetadata, disableInvalidGeometryHandling ), tableName, QStringLiteral( "mssql" ), options );
+  std::unique_ptr<QgsVectorLayer> vlayer = std::make_unique<QgsVectorLayer>( mTableModel->layerURI( index, mConnInfo, mUseEstimatedMetadata, disableInvalidGeometryHandling ), tableName, QStringLiteral( "mssql" ), options );
 
   if ( !vlayer->isValid() )
   {
@@ -573,13 +569,9 @@ void QgsMssqlSourceSelect::addSearchGeometryColumn( const QString &service, cons
   {
     mColumnTypeThread = new QgsMssqlGeomColumnTypeThread( service, host, database, username, password, estimateMetadata );
 
-    connect( mColumnTypeThread, &QgsMssqlGeomColumnTypeThread::setLayerType,
-             this, &QgsMssqlSourceSelect::setLayerType );
-    connect( this, &QgsMssqlSourceSelect::addGeometryColumn,
-             mColumnTypeThread, &QgsMssqlGeomColumnTypeThread::addGeometryColumn );
-    connect( mColumnTypeThread, &QThread::finished,
-             this, &QgsMssqlSourceSelect::columnThreadFinished );
-
+    connect( mColumnTypeThread, &QgsMssqlGeomColumnTypeThread::setLayerType, this, &QgsMssqlSourceSelect::setLayerType );
+    connect( this, &QgsMssqlSourceSelect::addGeometryColumn, mColumnTypeThread, &QgsMssqlGeomColumnTypeThread::addGeometryColumn );
+    connect( mColumnTypeThread, &QThread::finished, this, &QgsMssqlSourceSelect::columnThreadFinished );
   }
 
   emit addGeometryColumn( layerProperty );

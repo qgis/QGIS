@@ -52,6 +52,7 @@ class _3D_EXPORT QgsNullMaterialSettings : public QgsAbstractMaterialSettings
     static QgsAbstractMaterialSettings *create() SIP_FACTORY;
 
     QgsNullMaterialSettings *clone() const override SIP_FACTORY;
+    bool equals( const QgsAbstractMaterialSettings *other ) const override;
 
     QMap<QString, QString> toExportParameters() const override;
 #ifndef SIP_RUN

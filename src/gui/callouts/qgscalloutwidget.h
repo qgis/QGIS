@@ -23,8 +23,6 @@
 #include <QWidget>
 #include <QStandardItemModel>
 
-class QgsMapCanvas;
-
 /**
  * \ingroup gui
  * \class QgsCalloutWidget
@@ -105,8 +103,6 @@ class GUI_EXPORT QgsCalloutWidget : public QWidget, protected QgsExpressionConte
 
   private:
     QgsMapLayer *mLayer = nullptr;
-
-    QgsMapCanvas *mMapCanvas = nullptr;
 
   signals:
 

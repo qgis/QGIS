@@ -101,6 +101,147 @@ This property is only respected if :py:func:`~QgsTextBlockFormat.hasHorizontalAl
 .. seealso:: :py:func:`horizontalAlignment`
 %End
 
+    double lineHeight() const;
+%Docstring
+Returns the line height in points, or NaN if the line height is not set
+and should be auto calculated.
+
+.. note::
+
+   A format should have either :py:func:`~QgsTextBlockFormat.lineHeight` or :py:func:`~QgsTextBlockFormat.lineHeightPercentage` set, not both.
+
+.. seealso:: :py:func:`lineHeightPercentage`
+
+.. seealso:: :py:func:`setLineHeight`
+
+.. versionadded:: 3.42
+%End
+
+    void setLineHeight( double height );
+%Docstring
+Sets the font line ``height``, in points.
+
+Set ``height`` to NaN if the line height is not set
+and should be auto calculated.
+
+.. note::
+
+   A format should have either :py:func:`~QgsTextBlockFormat.lineHeight` or :py:func:`~QgsTextBlockFormat.lineHeightPercentage` set, not both.
+
+.. seealso:: :py:func:`lineHeight`
+
+.. seealso:: :py:func:`setLineHeightPercentage`
+
+.. versionadded:: 3.42
+%End
+
+    double lineHeightPercentage() const;
+%Docstring
+Returns the line height percentage size (as fraction of font size from 0.0 to 1.0), or NaN if the line height percentage is not set.
+
+.. note::
+
+   A format should have either :py:func:`~QgsTextBlockFormat.lineHeight` or :py:func:`~QgsTextBlockFormat.lineHeightPercentage` set, not both.
+
+.. seealso:: :py:func:`lineHeight`
+
+.. seealso:: :py:func:`setLineHeightPercentage`
+
+.. versionadded:: 3.42
+%End
+
+    void setLineHeightPercentage( double height );
+%Docstring
+Sets the line height percentage ``height`` (as fraction of font size from 0.0 to 1.0).
+
+Set ``height`` to NaN if the line height percentange is not set.
+
+.. note::
+
+   A format should have either :py:func:`~QgsTextBlockFormat.lineHeight` or :py:func:`~QgsTextBlockFormat.lineHeightPercentage` set, not both.
+
+.. seealso:: :py:func:`lineHeightPercentage`
+
+.. seealso:: :py:func:`setLineHeight`
+
+.. versionadded:: 3.42
+%End
+
+    QgsMargins margins() const;
+%Docstring
+Returns the block margins, in points.
+
+.. seealso:: :py:func:`setMargins`
+
+.. versionadded:: 3.42
+%End
+
+    void setMargins( const QgsMargins &margins );
+%Docstring
+Sets the block margins, in points.
+
+.. seealso:: :py:func:`margins`
+
+.. versionadded:: 3.42
+%End
+
+    bool hasBackground() const;
+%Docstring
+Returns ``True`` if the block has a background set.
+
+.. seealso:: :py:func:`backgroundBrush`
+
+.. versionadded:: 3.42
+%End
+
+    QBrush backgroundBrush() const;
+%Docstring
+Returns the brush used for rendering the background of the block.
+
+Alternatively, the format may have a :py:func:`~QgsTextBlockFormat.backgroundBrush` set.
+
+.. seealso:: :py:func:`hasBackground`
+
+.. seealso:: :py:func:`setBackgroundBrush`
+
+.. versionadded:: 3.42
+%End
+
+    void setBackgroundBrush( const QBrush &brush );
+%Docstring
+Sets the ``brush`` used for rendering the background of the block.
+
+Alternatively, the format may have a :py:func:`~QgsTextBlockFormat.backgroundBrush` set.
+
+.. seealso:: :py:func:`backgroundBrush`
+
+.. versionadded:: 3.42
+%End
+
+    QString backgroundImagePath() const;
+%Docstring
+Returns the path for the image to be used for rendering the background of the fragment.
+
+Alternatively, the format may have a :py:func:`~QgsTextBlockFormat.backgroundBrush` set.
+
+.. seealso:: :py:func:`hasBackground`
+
+.. seealso:: :py:func:`setBackgroundImagePath`
+
+.. versionadded:: 3.42
+%End
+
+    void setBackgroundImagePath( const QString &path );
+%Docstring
+Sets the ``path`` for the image to be used for rendering the background of the fragment.
+
+Alternatively, the format may have a :py:func:`~QgsTextBlockFormat.backgroundBrush` set.
+
+.. seealso:: :py:func:`backgroundImagePath`
+
+.. versionadded:: 3.42
+%End
+
     void updateFontForFormat( QFont &font, const QgsRenderContext &context, double scaleFactor = 1.0 ) const;
 %Docstring
 Updates the specified ``font`` in place, applying block formatting options which

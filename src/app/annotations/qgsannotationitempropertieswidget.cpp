@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsannotationitempropertieswidget.h"
+#include "moc_qgsannotationitempropertieswidget.cpp"
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgsannotationlayer.h"
@@ -50,7 +51,7 @@ QgsAnnotationItemPropertiesWidget::QgsAnnotationItemPropertiesWidget( QgsAnnotat
   mStack->setCurrentWidget( mPageNoItem );
 
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsAnnotationItemPropertiesWidget::onLayerPropertyChanged );
-  connect( mBlendModeComboBox, qOverload< int >( &QgsBlendModeComboBox::currentIndexChanged ), this, &QgsAnnotationItemPropertiesWidget::onLayerPropertyChanged );
+  connect( mBlendModeComboBox, qOverload<int>( &QgsBlendModeComboBox::currentIndexChanged ), this, &QgsAnnotationItemPropertiesWidget::onLayerPropertyChanged );
   connect( mEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsAnnotationItemPropertiesWidget::onLayerPropertyChanged );
 
   setDockMode( true );
@@ -65,7 +66,7 @@ void QgsAnnotationItemPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   if ( layer == mLayer )
     return;
 
-  mLayer = qobject_cast< QgsAnnotationLayer * >( layer );
+  mLayer = qobject_cast<QgsAnnotationLayer *>( layer );
   if ( !mLayer )
     return;
 
@@ -137,7 +138,7 @@ void QgsAnnotationItemPropertiesWidget::onChanged()
 
   if ( QgsAnnotationItem *existingItem = mLayer->item( mMapLayerConfigWidgetContext.annotationId() ) )
   {
-    std::unique_ptr< QgsAnnotationItem > newItem( existingItem->clone() );
+    std::unique_ptr<QgsAnnotationItem> newItem( existingItem->clone() );
     mItemWidget->updateItem( newItem.get() );
 
     mLayer->replaceItem( mMapLayerConfigWidgetContext.annotationId(), newItem.release() );
@@ -227,7 +228,7 @@ QgsAnnotationItemPropertiesWidgetFactory::QgsAnnotationItemPropertiesWidgetFacto
 
 QgsMapLayerConfigWidget *QgsAnnotationItemPropertiesWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool, QWidget *parent ) const
 {
-  return new QgsAnnotationItemPropertiesWidget( qobject_cast< QgsAnnotationLayer * >( layer ), canvas, parent );
+  return new QgsAnnotationItemPropertiesWidget( qobject_cast<QgsAnnotationLayer *>( layer ), canvas, parent );
 }
 
 bool QgsAnnotationItemPropertiesWidgetFactory::supportLayerPropertiesDialog() const
@@ -244,4 +245,3 @@ bool QgsAnnotationItemPropertiesWidgetFactory::supportsLayer( QgsMapLayer *layer
 {
   return layer->type() == Qgis::LayerType::Annotation;
 }
-

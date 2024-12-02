@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvaluemapconfigdlg.h"
+#include "moc_qgsvaluemapconfigdlg.cpp"
 
 #include "qgsattributetypeloaddialog.h"
 #include "qgsvaluemapfieldformatter.h"

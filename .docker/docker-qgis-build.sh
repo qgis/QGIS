@@ -18,6 +18,9 @@ ccache -M 2.0G
 # export CCACHE_LOGFILE=/tmp/cache.debug
 ccache -z
 
+# To make ccache work properly with precompiled headers
+ccache --set-config sloppiness=pch_defines,time_macros,include_file_mtime,include_file_ctime
+
 ##############################
 # Variables for output styling
 ##############################
@@ -89,6 +92,7 @@ cmake \
  -DENABLE_MSSQLTEST=${WITH_QT5} \
  -DENABLE_HANATEST=${WITH_QT5} \
  -DENABLE_ORACLETEST=${WITH_QT5} \
+ -DENABLE_UNITY_BUILDS=${ENABLE_UNITY_BUILDS} \
  -DPUSH_TO_CDASH=${PUSH_TO_CDASH} \
  -DWITH_HANA=ON \
  -DWITH_QGIS_PROCESS=ON \

@@ -24,7 +24,6 @@ email                : wonder.sk at gmail dot com
 #include <QDir>
 
 
-
 static bool _executeSqliteStatement( sqlite3 *db, const QString &sql )
 {
   sqlite3_stmt *stmt = nullptr;
@@ -94,7 +93,6 @@ static bool _renameConnectionInCache( sqlite3 *db, const QString &oldName, const
 
   return res1 && res2;
 }
-
 
 
 QString QgsOracleTableCache::cacheDatabaseFilename()

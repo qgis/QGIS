@@ -15,6 +15,7 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsscalerangewidgetplugin.h"
+#include "moc_qgsscalerangewidgetplugin.cpp"
 #include "qgsscalerangewidget.h"
 
 
@@ -93,5 +94,5 @@ QString QgsScaleRangeWidgetPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

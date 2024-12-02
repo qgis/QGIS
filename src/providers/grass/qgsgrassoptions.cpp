@@ -20,6 +20,7 @@
 
 #include "qgsgrass.h"
 #include "qgsgrassoptions.h"
+#include "moc_qgsgrassoptions.cpp"
 #include "ui_qgsgrassoptionsbase.h"
 
 extern "C"
@@ -96,9 +97,11 @@ void QgsGrassOptions::mGisbaseBrowseButton_clicked()
   // For Mac, GISBASE folder may be inside GRASS bundle. Use Qt file dialog
   // since Mac native dialog doesn't allow user to browse inside bundles.
   gisbase = QFileDialog::getExistingDirectory(
-              nullptr, QObject::tr( "Choose GRASS installation path (GISBASE)" ), gisbase,
-              QFileDialog::DontUseNativeDialog );
-  if ( !gisbase.isEmpty() )gisbaseChanged();
+    nullptr, QObject::tr( "Choose GRASS installation path (GISBASE)" ), gisbase,
+    QFileDialog::DontUseNativeDialog
+  );
+  if ( !gisbase.isEmpty() )
+    gisbaseChanged();
   {
     mGisbaseLineEdit->setText( gisbase );
   }
@@ -129,9 +132,7 @@ void QgsGrassOptions::gisbaseChanged()
 
 void QgsGrassOptions::mModulesConfigBrowseButton_clicked()
 {
-  QString dir = QFileDialog::getExistingDirectory( this,
-                tr( "Choose a directory with configuration files (default.qgc, *.qgm)" ),
-                mModulesConfigDirLineEdit->text() );
+  QString dir = QFileDialog::getExistingDirectory( this, tr( "Choose a directory with configuration files (default.qgc, *.qgm)" ), mModulesConfigDirLineEdit->text() );
 
   if ( !dir.isEmpty() )
   {
@@ -155,8 +156,7 @@ void QgsGrassOptions::saveOptions()
   QgsGrass::instance()->setModulesDebug( mModulesDebugCheckBox->isChecked() );
 
   // Browser
-  settings.setEnumValue( mImportSettingsPath + "/crsTransform",
-                         ( QgsRasterProjector::Precision )mCrsTransformationComboBox->currentData().toInt() );
+  settings.setEnumValue( mImportSettingsPath + "/crsTransform", ( QgsRasterProjector::Precision ) mCrsTransformationComboBox->currentData().toInt() );
 
   settings.setValue( mImportSettingsPath + "/external", mImportExternalCheckBox->isChecked() );
 

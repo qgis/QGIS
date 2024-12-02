@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdecoratedscrollbar.h"
+#include "moc_qgsdecoratedscrollbar.cpp"
 #include <QAbstractScrollArea>
 #include <QScrollBar>
 #include <QPainter>

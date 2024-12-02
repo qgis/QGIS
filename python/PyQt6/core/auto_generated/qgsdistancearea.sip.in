@@ -148,7 +148,7 @@ The inverse flattening is calculated with invf = a/(a-b).
 .. seealso:: :py:func:`ellipsoidSemiMinor`
 %End
 
-    double measureArea( const QgsGeometry &geometry ) const throw( QgsCsException );
+    double measureArea( const QgsGeometry &geometry ) const;
 %Docstring
 Measures the area of a geometry.
 
@@ -166,7 +166,7 @@ Measures the area of a geometry.
 :raises QgsCsException: if a transformation error occurs while calculating the area
 %End
 
-    double measureLength( const QgsGeometry &geometry ) const throw( QgsCsException );
+    double measureLength( const QgsGeometry &geometry ) const;
 %Docstring
 Measures the length of a geometry.
 
@@ -184,7 +184,7 @@ Measures the length of a geometry.
 :raises QgsCsException: if a transformation error occurs while calculating the length
 %End
 
-    double measurePerimeter( const QgsGeometry &geometry ) const throw( QgsCsException );
+    double measurePerimeter( const QgsGeometry &geometry ) const;
 %Docstring
 Measures the perimeter of a polygon geometry.
 
@@ -202,7 +202,7 @@ Measures the perimeter of a polygon geometry.
 :raises QgsCsException: if a transformation error occurs while calculating the perimeter
 %End
 
-    double measureLine( const QVector<QgsPointXY> &points ) const throw( QgsCsException );
+    double measureLine( const QVector<QgsPointXY> &points ) const;
 %Docstring
 Measures the length of a line with multiple segments.
 
@@ -215,7 +215,7 @@ Measures the length of a line with multiple segments.
 .. seealso:: :py:func:`lengthUnits`
 %End
 
-    double measureLine( const QgsPointXY &p1, const QgsPointXY &p2 ) const throw( QgsCsException );
+    double measureLine( const QgsPointXY &p1, const QgsPointXY &p2 ) const;
 %Docstring
 Measures the distance between two points.
 
@@ -265,14 +265,14 @@ Returns the units of area for areal calculations made by this object.
 .. seealso:: :py:func:`lengthUnits`
 %End
 
-    double measurePolygon( const QVector<QgsPointXY> &points ) const throw( QgsCsException );
+    double measurePolygon( const QVector<QgsPointXY> &points ) const;
 %Docstring
 Measures the area of the polygon described by a set of points.
 
 :raises QgsCsException: if a transformation error occurs while calculating the area.
 %End
 
-    double bearing( const QgsPointXY &p1, const QgsPointXY &p2 ) const throw( QgsCsException );
+    double bearing( const QgsPointXY &p1, const QgsPointXY &p2 ) const;
 %Docstring
 Computes the bearing (in radians) between two points.
 

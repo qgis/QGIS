@@ -40,6 +40,20 @@ class QgsBox3D;
  */
 class CORE_EXPORT QgsRectangle
 {
+    Q_GADGET
+
+    Q_PROPERTY( double xMinimum READ xMinimum WRITE setXMinimum )
+    Q_PROPERTY( double xMaximum READ xMaximum WRITE setXMaximum )
+    Q_PROPERTY( double yMinimum READ yMinimum WRITE setYMinimum )
+    Q_PROPERTY( double yMaximum READ yMaximum WRITE setYMaximum )
+    Q_PROPERTY( double width READ width )
+    Q_PROPERTY( double height READ height )
+    Q_PROPERTY( double area READ area )
+    Q_PROPERTY( double perimeter READ perimeter )
+    Q_PROPERTY( QgsPointXY center READ center )
+    Q_PROPERTY( bool isEmpty READ isEmpty )
+    Q_PROPERTY( bool isNull READ isNull )
+
   public:
 
     //! Constructor for a null rectangle
@@ -518,12 +532,12 @@ class CORE_EXPORT QgsRectangle
     /**
      * Returns a string representation of the rectangle in WKT format.
      */
-    QString asWktCoordinates() const;
+    Q_INVOKABLE QString asWktCoordinates() const;
 
     /**
      * Returns a string representation of the rectangle as a WKT Polygon.
      */
-    QString asWktPolygon() const;
+    Q_INVOKABLE QString asWktPolygon() const;
 
     /**
      * Returns a QRectF with same coordinates as the rectangle.
@@ -538,7 +552,7 @@ class CORE_EXPORT QgsRectangle
      * Coordinates will be truncated to the specified precision.
      * If the specified precision is less than 0, a suitable minimum precision is used.
      */
-    QString toString( int precision = 16 ) const;
+    Q_INVOKABLE QString toString( int precision = 16 ) const;
 
     /**
      * Returns the rectangle as a polygon.

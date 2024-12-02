@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutattributetablewidget.h"
+#include "moc_qgslayoutattributetablewidget.cpp"
 #include "qgslayoutatlas.h"
 #include "qgslayout.h"
 #include "qgslayoutframe.h"

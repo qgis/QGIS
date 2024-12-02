@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgeometrywidgetwrapper.h"
+#include "moc_qgsgeometrywidgetwrapper.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsmessagebar.h"
 #include "qgsgeometrywidget.h"
@@ -28,8 +29,8 @@
 
 QgsGeometryWidgetWrapper::QgsGeometryWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent, QgsMessageBar *messageBar )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
-  , mMessageBar( messageBar )
 {
+  Q_UNUSED( messageBar )
 }
 
 

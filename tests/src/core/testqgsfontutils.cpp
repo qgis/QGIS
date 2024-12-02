@@ -21,21 +21,20 @@
 #include "qgsapplication.h"
 #include "qgsfontutils.h"
 
-class TestQgsFontUtils: public QObject
+class TestQgsFontUtils : public QObject
 {
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
-    void xmlMethods(); //test saving and reading from xml
-    void fromChildNode(); //test reading from child node
-    void toCss(); //test converting font to CSS
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
+    void xmlMethods();      //test saving and reading from xml
+    void fromChildNode();   //test reading from child node
+    void toCss();           //test converting font to CSS
 
   private:
-
 };
 
 void TestQgsFontUtils::initTestCase()
@@ -51,21 +50,19 @@ void TestQgsFontUtils::cleanupTestCase()
 
 void TestQgsFontUtils::init()
 {
-
 }
 
 void TestQgsFontUtils::cleanup()
 {
-
 }
 
 void TestQgsFontUtils::xmlMethods()
 {
   //create a test dom element
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType =
-    DomImplementation.createDocumentType(
-      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType(
+    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
+  );
   QDomDocument doc( documentType );
 
   QFont f1 = QgsFontUtils::getStandardTestFont();
@@ -117,9 +114,9 @@ void TestQgsFontUtils::fromChildNode()
 {
   //create a test dom element
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType =
-    DomImplementation.createDocumentType(
-      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType(
+    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
+  );
   QDomDocument doc( documentType );
 
   QFont f1 = QgsFontUtils::getStandardTestFont();

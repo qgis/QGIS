@@ -16,6 +16,7 @@
 #include "qgiscustomwidgets.h"
 #include "qgsrasterbandcombobox.h"
 #include "qgsrasterbandcomboboxplugin.h"
+#include "moc_qgsrasterbandcomboboxplugin.cpp"
 
 
 QgsRasterBandComboBoxPlugin::QgsRasterBandComboBoxPlugin( QObject *parent )
@@ -93,5 +94,5 @@ QString QgsRasterBandComboBoxPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

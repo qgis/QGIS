@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgstemporalcontrollerwidget.h"
+#include "moc_qgstemporalcontrollerwidget.cpp"
 #include "qgsmaplayermodel.h"
 #include "qgsproject.h"
 #include "qgsprojecttimesettings.h"
