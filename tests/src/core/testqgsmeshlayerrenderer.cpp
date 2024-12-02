@@ -877,7 +877,8 @@ void TestQgsMeshRenderer::test_color_scale_based_on_canvas_extent()
   QgsMeshLayer layer(
     testDataPath( "mesh/several_parts.2dm" ),
     QStringLiteral( "mesh" ),
-    QStringLiteral( "mdal" ) );
+    QStringLiteral( "mdal" )
+  );
 
   QVERIFY( layer.isValid() );
 

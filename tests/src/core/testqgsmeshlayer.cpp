@@ -2422,7 +2422,8 @@ void TestQgsMeshLayer::testMinimumMaximumActiveScalarDataset()
   QgsMeshLayer layer(
     testDataPath( "mesh/several_parts.2dm" ),
     QStringLiteral( "mesh" ),
-    QStringLiteral( "mdal" ) );
+    QStringLiteral( "mdal" )
+  );
   QVERIFY( layer.isValid() );
   layer.updateTriangularMesh();
 
