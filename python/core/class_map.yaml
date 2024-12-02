@@ -8439,8 +8439,6 @@ QgsLineString.dropZValue: src/core/geometry/qgslinestring.h#L1062
 QgsLineString.endPoint: src/core/geometry/qgslinestring.h#L1012
 QgsLineString.equals: src/core/geometry/qgslinestring.h#L429
 QgsLineString.extend: src/core/geometry/qgslinestring.h#L934
-QgsLineString.fromBezierCurve: src/core/geometry/qgslinestring.h#L296
-QgsLineString.fromQPolygonF: src/core/geometry/qgslinestring.h#L303
 QgsLineString.fromWkb: src/core/geometry/qgslinestring.h#L976
 QgsLineString.fromWkt: src/core/geometry/qgslinestring.h#L977
 QgsLineString.fuzzyDistanceEqual: src/core/geometry/qgslinestring.h#L424
@@ -8448,7 +8446,6 @@ QgsLineString.fuzzyEqual: src/core/geometry/qgslinestring.h#L395
 QgsLineString.geometryType: src/core/geometry/qgslinestring.h#L950
 QgsLineString.indexOf: src/core/geometry/qgslinestring.h#L955
 QgsLineString.insertVertex: src/core/geometry/qgslinestring.h#L1034
-QgsLineString.interpolateM: src/core/geometry/qgslinestring.h#L1222
 QgsLineString.interpolatePoint: src/core/geometry/qgslinestring.h#L1039
 QgsLineString.isClosed2D: src/core/geometry/qgslinestring.h#L960
 QgsLineString.isClosed: src/core/geometry/qgslinestring.h#L959
@@ -8458,7 +8455,6 @@ QgsLineString.length3D: src/core/geometry/qgslinestring.h#L1010
 QgsLineString.length: src/core/geometry/qgslinestring.h#L988
 QgsLineString.lineLocatePointByM: src/core/geometry/qgslinestring.h#L1248
 QgsLineString.mAt: src/core/geometry/qgslinestring.h#L698
-QgsLineString.measuredLine: src/core/geometry/qgslinestring.h#L1207
 QgsLineString.moveVertex: src/core/geometry/qgslinestring.h#L1035
 QgsLineString.nCoordinates: src/core/geometry/qgslinestring.h#L1023
 QgsLineString.numPoints: src/core/geometry/qgslinestring.h#L1022
@@ -9248,13 +9244,13 @@ QgsMapLayerTemporalProperties.readXml: src/core/qgsmaplayertemporalproperties.h#
 QgsMapLayerTemporalProperties.setDefaultsFromDataProviderTemporalCapabilities: src/core/qgsmaplayertemporalproperties.h#L106
 QgsMapLayerTemporalProperties.writeXml: src/core/qgsmaplayertemporalproperties.h#L88
 QgsMapLayerTemporalProperties: src/core/qgsmaplayertemporalproperties.h#L43
-QgsMapLayerUtils.combinedExtent: src/core/qgsmaplayerutils.h#L47
-QgsMapLayerUtils.databaseConnection: src/core/qgsmaplayerutils.h#L54
-QgsMapLayerUtils.isOpenStreetMapLayer: src/core/qgsmaplayerutils.h#L104
-QgsMapLayerUtils.launderLayerName: src/core/qgsmaplayerutils.h#L97
-QgsMapLayerUtils.layerSourceMatchesPath: src/core/qgsmaplayerutils.h#L63
-QgsMapLayerUtils.updateLayerSourcePath: src/core/qgsmaplayerutils.h#L73
-QgsMapLayerUtils: src/core/qgsmaplayerutils.h#L37
+QgsMapLayerUtils.combinedExtent: src/core/qgsmaplayerutils.h#L48
+QgsMapLayerUtils.databaseConnection: src/core/qgsmaplayerutils.h#L55
+QgsMapLayerUtils.isOpenStreetMapLayer: src/core/qgsmaplayerutils.h#L105
+QgsMapLayerUtils.launderLayerName: src/core/qgsmaplayerutils.h#L98
+QgsMapLayerUtils.layerSourceMatchesPath: src/core/qgsmaplayerutils.h#L64
+QgsMapLayerUtils.updateLayerSourcePath: src/core/qgsmaplayerutils.h#L74
+QgsMapLayerUtils: src/core/qgsmaplayerutils.h#L38
 QgsMapRendererAbstractCustomPainterJob.preparePainter: src/core/maprenderer/qgsmaprenderercustompainterjob.h#L49
 QgsMapRendererAbstractCustomPainterJob: src/core/maprenderer/qgsmaprenderercustompainterjob.h#L31
 QgsMapRendererCache.cacheImage: src/core/maprenderer/qgsmaprenderercache.h#L140
