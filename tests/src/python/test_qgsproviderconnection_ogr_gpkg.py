@@ -491,6 +491,20 @@ class TestPyQgsProviderConnectionGpkg(
         osm = tables[0]
         self.assertEqual(osm.tableName(), "osm_new")
 
+    def test_table_layer_with_comment(self):
+        """Test a comment layer"""
+        gpkg_test_comment_layers_path = f'{TEST_DATA_DIR}/test_comment_layers.gpkg'
+        temp_comment_layers_path = f'{self.temp_dir.path()}/test_comment_layers.gpkg'
+        shutil.copy(gpkg_test_comment_layers_path, temp_comment_layers_path)
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(temp_comment_layers_path, {})
+
+        tables = conn.tables('', QgsAbstractDatabaseProviderConnection.TableFlag.Vector)
+        table_with_comment = tables[0]
+        self.assertEqual(table_with_comment.tableName(), 'table_with_comment')
+        self.assertEqual(table_with_comment.comment(), 'table_with_comment')
+
 
 if __name__ == "__main__":
     unittest.main()
