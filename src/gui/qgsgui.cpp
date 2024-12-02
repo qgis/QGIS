@@ -68,6 +68,7 @@
 #include "qgsinputcontrollermanager.h"
 #include "qgssensorguiregistry.h"
 #include "qgshistoryentry.h"
+#include "qgsstacsourceselectprovider.h"
 
 #include "qgssettingseditorwidgetregistry.h"
 
@@ -346,6 +347,7 @@ QgsGui::QgsGui()
   mDataItemGuiProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mSourceSelectProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mSourceSelectProviderRegistry->addProvider( new QgsLayerMetadataSourceSelectProvider() );
+  mSourceSelectProviderRegistry->addProvider( new QgsStacSourceSelectProvider() );
   mSubsetStringEditorProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mProviderSourceWidgetProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
 
