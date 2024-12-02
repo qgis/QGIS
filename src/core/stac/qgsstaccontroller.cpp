@@ -135,7 +135,7 @@ void QgsStacController::handleStacObjectReply()
       break;
     case QgsStacObject::Type::Unknown:
       object = nullptr;
-      error = QStringLiteral( "Parsed STAC data is not a Catalog, Collection or Item" );
+      error = parser.error().isEmpty() ? QStringLiteral( "Parsed STAC data is not a Catalog, Collection or Item" ) : parser.error();
       break;
   }
   mFetchedStacObjects.insert( requestId, object );
