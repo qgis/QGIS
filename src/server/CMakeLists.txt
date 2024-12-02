@@ -86,7 +86,9 @@ endif()
 
 add_library(qgis_server SHARED ${QGIS_SERVER_SRCS} ${QGIS_SERVER_HDRS})
 
-target_precompile_headers(qgis_server PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
+if (USE_PRECOMPILED_HEADERS)
+  target_precompile_headers(qgis_server PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
+endif()
 
 set_target_properties(qgis_server PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
