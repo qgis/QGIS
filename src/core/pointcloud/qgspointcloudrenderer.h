@@ -688,6 +688,18 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     bool showLabels() const { return mShowLabels; }
 
+    /**
+       * Sets the text format renderers should use for rendering labels
+       * \since QGIS 3.42
+       */
+    void setLabelTextFormat( QgsTextFormat &textFormat ) { mLabelTextFormat = &textFormat; }
+
+    /**
+     * Returns the text format renderer is using for rendering labels
+     * \since QGIS 3.42
+     */
+    QgsTextFormat &labelTextFormat() const { return *mLabelTextFormat; }
+
   protected:
 
     /**
@@ -828,6 +840,7 @@ class CORE_EXPORT QgsPointCloudRenderer
     Qgis::RenderUnit mHorizontalTriangleFilterUnit = Qgis::RenderUnit::Millimeters;
 
     bool mShowLabels = false;
+    QgsTextFormat *mLabelTextFormat = nullptr;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H

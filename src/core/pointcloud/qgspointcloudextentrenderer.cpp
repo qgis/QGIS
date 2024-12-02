@@ -138,12 +138,12 @@ void QgsPointCloudExtentRenderer::setFillSymbol( QgsFillSymbol *symbol )
 }
 void QgsPointCloudExtentRenderer::renderLabels( const QRectF &extent, const QString &text, QgsPointCloudRenderContext &context )
 {
-  const double textWidth = QgsTextRenderer::textWidth( context.renderContext(), QgsStyle::defaultStyle()->textFormat( "Default" ), QStringList() << text );
+  const double textWidth = QgsTextRenderer::textWidth( context.renderContext(), labelTextFormat(), QStringList() << text );
   if ( textWidth < extent.width() )
   {
-    QgsTextFormat textFormat = QgsStyle::defaultStyle()->textFormat( "Default" );
-    textFormat.buffer().setEnabled( true );
-    QgsTextRenderer::drawText( extent, 0, Qgis::TextHorizontalAlignment::Center, QStringList() << text, context.renderContext(), textFormat, true, Qgis::TextVerticalAlignment::VerticalCenter );
+    // QgsTextFormat textFormat = QgsStyle::defaultStyle()->textFormat( "Default" );
+    // textFormat.buffer().setEnabled( true );
+    QgsTextRenderer::drawText( extent, 0, Qgis::TextHorizontalAlignment::Center, QStringList() << text, context.renderContext(), labelTextFormat(), true, Qgis::TextVerticalAlignment::VerticalCenter );
   }
 }
 

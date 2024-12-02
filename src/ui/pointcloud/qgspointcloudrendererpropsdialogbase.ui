@@ -300,7 +300,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="mLabelOptions">
+          <widget class="QToolButton" name="mLabelOptions">
            <property name="text">
             <string/>
            </property>

@@ -31,6 +31,7 @@
 #include "qgsprojectutils.h"
 #include "qgsstyle.h"
 #include "qgssymbolwidgetcontext.h"
+#include "qgstextformatwidget.h"
 
 static bool initPointCloudRenderer( const QString &name, QgsPointCloudRendererWidgetFunc f, const QString &iconName = QString() )
 {
@@ -321,5 +322,31 @@ void QgsPointCloudRendererPropertiesWidget::emitWidgetChanged()
     emit widgetChanged();
 }
 
-void QgsPointCloudRendererPropertiesWidget::showLabelTextDialog() {}
+void QgsPointCloudRendererPropertiesWidget::showLabelTextDialog()
+{
+  if ( !mLayer->renderer()->labelTextFormat().isValid() )
+    return;
+  setCursor( QCursor( Qt::WaitCursor ) );
+  QgsPanelWidget *panel = findParentPanel( qobject_cast< QWidget * >( this ) );
+  if ( panel && panel->dockMode() )
+  {
+    QgsTextFormatWidget *textFormatWidget = new QgsTextFormatWidget( mLayer->renderer()->labelTextFormat(), nullptr, panel );
+    textFormatWidget->setPanelTitle( QString( "Text format options" ) );
+
+    connect( textFormatWidget, &QgsTextFormatWidget::widgetChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+    connect( textFormatWidget, &QgsPanelWidget::panelAccepted, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+    panel->openPanel( textFormatWidget );
+  }
+  else
+  {
+    QDialog *wrapperDialog = new QDialog( this );
+    new QgsTextFormatWidget( mLayer->renderer()->labelTextFormat(), nullptr, wrapperDialog );
+
+    if ( wrapperDialog->exec() == QDialog::Accepted )
+    {
+      emitWidgetChanged();
+    }
+  }
+  setCursor( QCursor( Qt::ArrowCursor ) );
+}
 

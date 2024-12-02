@@ -51,7 +51,7 @@
 #include <QMessageBox>
 
 QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent, QgsMapLayer *layer )
-  : QWidget( parent )
+  : QgsPanelWidget( parent )
   , mMapCanvas( mapCanvas )
   , mLayer( layer )
 {
@@ -62,7 +62,7 @@ QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCan
 }
 
 QgsTextFormatWidget::QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent, Mode mode, QgsMapLayer *layer )
-  : QWidget( parent )
+  : QgsPanelWidget( parent )
   , mMapCanvas( mapCanvas )
   , mLayer( layer )
   , mWidgetMode( mode )

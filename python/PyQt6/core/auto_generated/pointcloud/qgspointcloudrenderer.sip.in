@@ -564,6 +564,20 @@ rectangle
 .. versionadded:: 3.42
 %End
 
+    void setLabelTextFormat( QgsTextFormat &textFormat );
+%Docstring
+Sets the text format renderers should use for rendering labels
+
+.. versionadded:: 3.42
+%End
+
+    QgsTextFormat &labelTextFormat() const;
+%Docstring
+Returns the text format renderer is using for rendering labels
+
+.. versionadded:: 3.42
+%End
+
   protected:
 
     static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y );
