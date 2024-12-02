@@ -521,7 +521,3 @@ try:
     QgsPalLabeling.__group__ = ['labeling']
 except NameError:
     pass
-try:
-    QgsLabelCandidate.__group__ = ['labeling']
-except NameError:
-    pass

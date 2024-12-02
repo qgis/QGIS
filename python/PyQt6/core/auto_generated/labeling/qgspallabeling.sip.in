@@ -620,21 +620,6 @@ Sets the layer's unplaced label ``visibility``.
 
 };
 
-class QgsLabelCandidate
-{
-%Docstring(signature="appended")
-Represents a label candidate.
-%End
-
-%TypeHeaderCode
-#include "qgspallabeling.h"
-%End
-  public:
-    QgsLabelCandidate( const QRectF &r, double c );
-
-    QRectF rect;
-    double cost;
-};
 
 class QgsPalLabeling
 {
@@ -651,7 +636,6 @@ PAL labeling utilities.
 %Docstring
 Called to find out whether a specified ``layer`` is used for labeling.
 %End
-
 
     static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false ) /Factory/;
 %Docstring

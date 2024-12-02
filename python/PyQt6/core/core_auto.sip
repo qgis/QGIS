@@ -384,6 +384,7 @@
 %Include auto_generated/gps/qgsvectorlayergpslogger.sip
 %Include auto_generated/labeling/qgscalloutposition.sip
 %Include auto_generated/labeling/qgslabeling.sip
+%Include auto_generated/labeling/qgslabelingengine.sip
 %Include auto_generated/labeling/qgslabelingenginesettings.sip
 %Include auto_generated/labeling/qgslabelingresults.sip
 %Include auto_generated/labeling/qgslabellinesettings.sip
