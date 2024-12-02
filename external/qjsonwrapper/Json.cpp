@@ -43,7 +43,14 @@ namespace QJsonWrapper
       QMetaProperty metaproperty = metaObject->property( i );
       if ( metaproperty.isReadable() )
       {
-        map[ QLatin1String( metaproperty.name() ) ] = object->property( metaproperty.name() );
+        QVariant val = object->property( metaproperty.name() );
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
+        if ( ( val.metaType().flags() & QMetaType::IsEnumeration ) )
+        {
+          val.convert( QMetaType::Int );
+        }
+#endif
+        map[ QLatin1String( metaproperty.name() ) ] = val;
       }
     }
     return map;
@@ -60,9 +67,14 @@ namespace QJsonWrapper
       if ( property.isValid() )
       {
         QVariant value = iter.value();
-        if ( value.canConvert( property.type() ) )
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+        const QVariant::Type propertyType = property.type();
+#else
+        const QMetaType propertyType = property.metaType();
+#endif
+        if ( value.canConvert( propertyType ) )
         {
-          value.convert( property.type() );
+          value.convert( propertyType );
           object->setProperty( iter.key().toLatin1(), value );
         }
         else if ( QString( QLatin1String( "QVariant" ) ).compare( QLatin1String( property.typeName() ) ) == 0 )
