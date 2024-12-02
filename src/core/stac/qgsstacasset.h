@@ -75,7 +75,7 @@ class CORE_EXPORT QgsStacAsset
     QString formatName() const;
 
     /**
-     * Returns a uri for the asset if it is a local or cloud optimized file like COG or COPC
+     * Returns a uri for the asset if it is a cloud optimized file like COG or COPC
      * \since QGIS 3.42
      */
     QgsMimeDataUtils::Uri uri() const;

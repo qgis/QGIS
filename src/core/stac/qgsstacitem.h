@@ -128,7 +128,7 @@ class CORE_EXPORT QgsStacItem : public QgsStacObject
     QString description() const;
 
     /**
-     * Returns a list of uris of all assets that are local or have a cloud optimized format like COG or COPC
+     * Returns a list of uris of all assets that have a cloud optimized format like COG or COPC
      * \since QGIS 3.42
      */
     QgsMimeDataUtils::UriList uris() const;
