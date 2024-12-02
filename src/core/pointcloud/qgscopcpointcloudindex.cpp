@@ -432,7 +432,8 @@ bool QgsCopcPointCloudIndex::hasNode( const QgsPointCloudNodeId &n ) const
 
 QgsPointCloudNode QgsCopcPointCloudIndex::getNode( const QgsPointCloudNodeId &id ) const
 {
-  Q_ASSERT( fetchNodeHierarchy( id ) );
+  bool nodeFound = fetchNodeHierarchy( id );
+  Q_ASSERT( nodeFound );
 
   qint64 pointCount;
   {
