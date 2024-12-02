@@ -111,6 +111,9 @@ SpacesInSquareBrackets: false
 Standard:        Cpp11
 TabWidth:        2
 UseTab:       Never
+Macros:
+  - SIP_ENUM_BASETYPE(x)=x
+  - SIP_MONKEYPATCH_SCOPEENUM_UNNEST(x,y)=x
 
 ---
 
