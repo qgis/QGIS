@@ -37,6 +37,7 @@ PyQgsStyleStorageMssql
 PyQgsPythonProvider
 PyQgsAnnotation
 PyQgsAuthenticationSystem
+PyQgsAuthManagerOAuth2OWSTest
 PyQgsBlockingProcess
 PyQgsCodeEditor
 PyQgsDelimitedTextProvider
