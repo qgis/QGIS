@@ -2731,6 +2731,100 @@ Qgis.RasterRendererCapability.__doc__ = """Raster renderer capabilities.
 Qgis.RasterRendererCapability.baseClass = Qgis
 Qgis.RasterRendererCapabilities.baseClass = Qgis
 RasterRendererCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsRasterMinMaxOrigin.Limits = Qgis.RasterRangeLimit
+# monkey patching scoped based enum
+QgsRasterMinMaxOrigin.None_ = Qgis.RasterRangeLimit.NotSet
+QgsRasterMinMaxOrigin.Limits.None_ = Qgis.RasterRangeLimit.NotSet
+QgsRasterMinMaxOrigin.None_.is_monkey_patched = True
+QgsRasterMinMaxOrigin.None_.__doc__ = "User defined"
+QgsRasterMinMaxOrigin.MinMax = Qgis.RasterRangeLimit.MinimumMaximum
+QgsRasterMinMaxOrigin.Limits.MinMax = Qgis.RasterRangeLimit.MinimumMaximum
+QgsRasterMinMaxOrigin.MinMax.is_monkey_patched = True
+QgsRasterMinMaxOrigin.MinMax.__doc__ = "Real min-max values"
+QgsRasterMinMaxOrigin.StdDev = Qgis.RasterRangeLimit.StdDev
+QgsRasterMinMaxOrigin.StdDev.is_monkey_patched = True
+QgsRasterMinMaxOrigin.StdDev.__doc__ = "Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]"
+QgsRasterMinMaxOrigin.CumulativeCut = Qgis.RasterRangeLimit.CumulativeCut
+QgsRasterMinMaxOrigin.CumulativeCut.is_monkey_patched = True
+QgsRasterMinMaxOrigin.CumulativeCut.__doc__ = "Range is [ min + cumulativeCutLower() * (max - min), min + cumulativeCutUpper() * (max - min) ]"
+Qgis.RasterRangeLimit.__doc__ = """Describes the limits used to compute raster ranges (min/max values).
+
+.. note::
+
+   Prior to QGIS 3.42 this was available as :py:class:`QgsRasterMinMaxOrigin`.Limits
+
+.. versionadded:: 3.42
+
+* ``NotSet``: User defined
+
+  Available as ``QgsRasterMinMaxOrigin.None_`` in older QGIS releases.
+
+* ``MinimumMaximum``: Real min-max values
+
+  Available as ``QgsRasterMinMaxOrigin.MinMax`` in older QGIS releases.
+
+* ``StdDev``: Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]
+* ``CumulativeCut``: Range is [ min + cumulativeCutLower() * (max - min), min + cumulativeCutUpper() * (max - min) ]
+
+"""
+# --
+Qgis.RasterRangeLimit.baseClass = Qgis
+QgsRasterMinMaxOrigin.Extent = Qgis.RasterRangeExtent
+# monkey patching scoped based enum
+QgsRasterMinMaxOrigin.None_ = Qgis.RasterRangeExtent.WholeRaster
+QgsRasterMinMaxOrigin.Extent.None_ = Qgis.RasterRangeExtent.WholeRaster
+QgsRasterMinMaxOrigin.None_.is_monkey_patched = True
+QgsRasterMinMaxOrigin.None_.__doc__ = "Whole raster is used to compute statistics"
+QgsRasterMinMaxOrigin.CurrentCanvas = Qgis.RasterRangeExtent.FixedCanvas
+QgsRasterMinMaxOrigin.Extent.CurrentCanvas = Qgis.RasterRangeExtent.FixedCanvas
+QgsRasterMinMaxOrigin.CurrentCanvas.is_monkey_patched = True
+QgsRasterMinMaxOrigin.CurrentCanvas.__doc__ = "Current extent of the canvas (at the time of computation) is used to compute statistics"
+QgsRasterMinMaxOrigin.UpdatedCanvas = Qgis.RasterRangeExtent.UpdatedCanvas
+QgsRasterMinMaxOrigin.UpdatedCanvas.is_monkey_patched = True
+QgsRasterMinMaxOrigin.UpdatedCanvas.__doc__ = "Constantly updated extent of the canvas is used to compute statistics"
+Qgis.RasterRangeExtent.__doc__ = """Describes the extent used to compute raster ranges (min/max values).
+
+.. note::
+
+   Prior to QGIS 3.42 this was available as :py:class:`QgsRasterMinMaxOrigin`.Extent
+
+.. versionadded:: 3.42
+
+* ``WholeRaster``: Whole raster is used to compute statistics
+
+  Available as ``QgsRasterMinMaxOrigin.None_`` in older QGIS releases.
+
+* ``FixedCanvas``: Current extent of the canvas (at the time of computation) is used to compute statistics
+
+  Available as ``QgsRasterMinMaxOrigin.CurrentCanvas`` in older QGIS releases.
+
+* ``UpdatedCanvas``: Constantly updated extent of the canvas is used to compute statistics
+
+"""
+# --
+Qgis.RasterRangeExtent.baseClass = Qgis
+QgsRasterMinMaxOrigin.StatAccuracy = Qgis.RasterRangeAccuracy
+# monkey patching scoped based enum
+QgsRasterMinMaxOrigin.Exact = Qgis.RasterRangeAccuracy.Exact
+QgsRasterMinMaxOrigin.Exact.is_monkey_patched = True
+QgsRasterMinMaxOrigin.Exact.__doc__ = "Exact statistics"
+QgsRasterMinMaxOrigin.Estimated = Qgis.RasterRangeAccuracy.Estimated
+QgsRasterMinMaxOrigin.Estimated.is_monkey_patched = True
+QgsRasterMinMaxOrigin.Estimated.__doc__ = "Approximated statistics"
+Qgis.RasterRangeAccuracy.__doc__ = """Describes the accuracy used to compute raster ranges (min/max values).
+
+.. note::
+
+   Prior to QGIS 3.42 this was available as :py:class:`QgsRasterMinMaxOrigin`.StatAccuracy
+
+.. versionadded:: 3.42
+
+* ``Exact``: Exact statistics
+* ``Estimated``: Approximated statistics
+
+"""
+# --
+Qgis.RasterRangeAccuracy.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.RasterAttributeTableFieldUsage.Generic.__doc__ = "Field usage Generic"
 Qgis.RasterAttributeTableFieldUsage.PixelCount.__doc__ = "Field usage PixelCount"

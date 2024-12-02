@@ -9,34 +9,27 @@
 ***************************************************************************
 """
 
-from qgis.core import (
-    QgsStyle,
-    QgsProcessingAlgorithm,
-    QgsProcessingOutputBoolean,
-)
+from qgis.core import QgsProcessingAlgorithm, QgsProcessingOutputBoolean, QgsStyle
 
 
 class CheckStyleInitializationStatus(QgsProcessingAlgorithm):
-    IS_INITIALIZED = 'IS_INITIALIZED'
+    IS_INITIALIZED = "IS_INITIALIZED"
 
     def createInstance(self):
         return CheckStyleInitializationStatus()
 
     def name(self):
-        return 'checkstyleinitstatus'
+        return "checkstyleinitstatus"
 
     def displayName(self):
-        return 'Check style initialization status'
+        return "Check style initialization status"
 
     def shortDescription(self):
-        return 'Checks style initialization status'
+        return "Checks style initialization status"
 
     def initAlgorithm(self, config=None):
         self.addOutput(
-            QgsProcessingOutputBoolean(
-                self.IS_INITIALIZED,
-                'Style is initialized'
-            )
+            QgsProcessingOutputBoolean(self.IS_INITIALIZED, "Style is initialized")
         )
 
     def processAlgorithm(self, parameters, context, feedback):

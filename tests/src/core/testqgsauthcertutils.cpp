@@ -29,7 +29,7 @@
  * \ingroup UnitTests
  * Unit tests for QgsAuthCertUtils static functions
  */
-class TestQgsAuthCertUtils: public QObject
+class TestQgsAuthCertUtils : public QObject
 {
     Q_OBJECT
 

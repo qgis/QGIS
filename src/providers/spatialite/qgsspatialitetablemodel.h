@@ -30,9 +30,9 @@ class QIcon;
  *
  * The tables have the following columns: Type, Tablename, Geometry Column
 */
-class QgsSpatiaLiteTableModel: public QgsAbstractDbTableModel
+class QgsSpatiaLiteTableModel : public QgsAbstractDbTableModel
 {
-  Q_OBJECT public:
+  Q_OBJECT public :
 
     QgsSpatiaLiteTableModel( QObject *parent = nullptr );
 

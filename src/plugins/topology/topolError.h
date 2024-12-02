@@ -112,7 +112,6 @@ class TopolError
     bool fixUnion( const FeatureLayer &fl1, const FeatureLayer &fl2 );
 
   public:
-
     /**
      * Constructor
      * \param boundingBox bounding box of the two features

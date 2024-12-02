@@ -33,7 +33,6 @@ class TestQgsZonalStatistics : public QgsTest
     Q_OBJECT
 
   public:
-
     TestQgsZonalStatistics()
       : QgsTest( QStringLiteral( "Zonal Statistics Test" ) )
     {}
@@ -79,7 +78,8 @@ void TestQgsZonalStatistics::initTestCase()
   mVectorLayer = new QgsVectorLayer( mTempPath + "polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
   mRasterLayer = new QgsRasterLayer( mTempPath + "edge_problem.asc", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
   QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mVectorLayer << mRasterLayer );
+    QList<QgsMapLayer *>() << mVectorLayer << mRasterLayer
+  );
 }
 
 void TestQgsZonalStatistics::cleanupTestCase()
@@ -201,8 +201,8 @@ void TestQgsZonalStatistics::testReprojection()
   const QString myTestDataPath = myDataPath + "/zonalstatistics/";
 
   // create a reprojected version of the layer
-  std::unique_ptr< QgsVectorLayer > vectorLayer( new QgsVectorLayer( myTestDataPath + "polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) ) );
-  std::unique_ptr< QgsVectorLayer > reprojected( vectorLayer->materialize( QgsFeatureRequest().setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3785" ) ), QgsProject::instance()->transformContext() ) ) );
+  std::unique_ptr<QgsVectorLayer> vectorLayer( new QgsVectorLayer( myTestDataPath + "polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) ) );
+  std::unique_ptr<QgsVectorLayer> reprojected( vectorLayer->materialize( QgsFeatureRequest().setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3785" ) ), QgsProject::instance()->transformContext() ) ) );
 
   QCOMPARE( reprojected->featureCount(), vectorLayer->featureCount() );
   QgsZonalStatistics zs( reprojected.get(), mRasterLayer, QString(), 1, Qgis::ZonalStatistic::All );
@@ -263,8 +263,8 @@ void TestQgsZonalStatistics::testNoData()
   const QString myTestDataPath = myDataPath + "/zonalstatistics/";
 
   // test that zonal stats respects no data and user set no data values
-  std::unique_ptr< QgsRasterLayer > rasterLayer = std::make_unique< QgsRasterLayer >( myTestDataPath + "raster.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
-  std::unique_ptr< QgsVectorLayer > vectorLayer = std::make_unique< QgsVectorLayer >( mTempPath + "polys2.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
+  std::unique_ptr<QgsRasterLayer> rasterLayer = std::make_unique<QgsRasterLayer>( myTestDataPath + "raster.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  std::unique_ptr<QgsVectorLayer> vectorLayer = std::make_unique<QgsVectorLayer>( mTempPath + "polys2.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
 
   QgsZonalStatistics zs( vectorLayer.get(), rasterLayer.get(), QStringLiteral( "n" ), 1, Qgis::ZonalStatistic::All );
   zs.calculateStatistics( nullptr );
@@ -288,8 +288,7 @@ void TestQgsZonalStatistics::testNoData()
   QCOMPARE( f.attribute( QStringLiteral( "nsum" ) ).toDouble(), 0.0 );
 
   // with user no data
-  rasterLayer->dataProvider()->setUserNoDataValue( 1, QgsRasterRangeList() << QgsRasterRange( 842, 852 )
-      << QgsRasterRange( 877, 891 ) );
+  rasterLayer->dataProvider()->setUserNoDataValue( 1, QgsRasterRangeList() << QgsRasterRange( 842, 852 ) << QgsRasterRange( 877, 891 ) );
 
   zs = QgsZonalStatistics( vectorLayer.get(), rasterLayer.get(), QStringLiteral( "un" ), 1, Qgis::ZonalStatistic::All );
   zs.calculateStatistics( nullptr );
@@ -317,8 +316,8 @@ void TestQgsZonalStatistics::testSmallPolygons()
   const QString myTestDataPath = myDataPath + "/zonalstatistics/";
 
   // test that zonal stats works ok with polygons much smaller than pixel size
-  const std::unique_ptr< QgsRasterLayer > rasterLayer = std::make_unique< QgsRasterLayer >( myTestDataPath + "raster.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
-  std::unique_ptr< QgsVectorLayer > vectorLayer = std::make_unique< QgsVectorLayer >( mTempPath + "small_polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
+  const std::unique_ptr<QgsRasterLayer> rasterLayer = std::make_unique<QgsRasterLayer>( myTestDataPath + "raster.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  std::unique_ptr<QgsVectorLayer> vectorLayer = std::make_unique<QgsVectorLayer>( mTempPath + "small_polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
 
   QgsZonalStatistics zs( vectorLayer.get(), rasterLayer.get(), QStringLiteral( "n" ), 1, Qgis::ZonalStatistic::All );
   zs.calculateStatistics( nullptr );

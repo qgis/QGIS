@@ -852,6 +852,27 @@ The development version
     typedef QFlags<Qgis::RasterRendererCapability> RasterRendererCapabilities;
 
 
+    enum class RasterRangeLimit /BaseType=IntEnum/
+      {
+      NotSet,
+      MinimumMaximum,
+      StdDev,
+      CumulativeCut
+    };
+
+    enum class RasterRangeExtent /BaseType=IntEnum/
+      {
+      WholeRaster,
+      FixedCanvas,
+      UpdatedCanvas,
+    };
+
+    enum class RasterRangeAccuracy /BaseType=IntEnum/
+      {
+      Exact,
+      Estimated,
+    };
+
     enum class RasterAttributeTableFieldUsage /BaseType=IntEnum/
     {
       Generic,

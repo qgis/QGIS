@@ -22,10 +22,7 @@ The content of this file is based on
 """
 
 # this will disable the dbplugin if the connector raise an ImportError
-from typing import (
-    Optional,
-    Union
-)
+from typing import Optional, Union
 
 from .connector import OracleDBConnector
 
@@ -35,9 +32,19 @@ from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
 
 from qgis.core import QgsApplication, QgsVectorLayer, NULL, QgsSettings
 
-from ..plugin import ConnectionError, InvalidDataException, DBPlugin, \
-    Database, Schema, Table, VectorTable, TableField, TableConstraint, \
-    TableIndex, TableTrigger
+from ..plugin import (
+    ConnectionError,
+    InvalidDataException,
+    DBPlugin,
+    Database,
+    Schema,
+    Table,
+    VectorTable,
+    TableField,
+    TableConstraint,
+    TableIndex,
+    TableTrigger,
+)
 
 from qgis.core import QgsCredentials
 
@@ -54,19 +61,19 @@ class OracleDBPlugin(DBPlugin):
 
     @classmethod
     def typeName(self):
-        return 'oracle'
+        return "oracle"
 
     @classmethod
     def typeNameString(self):
-        return QCoreApplication.translate('db_manager', 'Oracle Spatial')
+        return QCoreApplication.translate("db_manager", "Oracle Spatial")
 
     @classmethod
     def providerName(self):
-        return 'oracle'
+        return "oracle"
 
     @classmethod
     def connectionSettingsKey(self):
-        return '/Oracle/connections'
+        return "/Oracle/connections"
 
     def connectToUri(self, uri):
         self.db = self.databasesFactory(self, uri)
@@ -80,35 +87,44 @@ class OracleDBPlugin(DBPlugin):
     def connect(self, parent=None):
         conn_name = self.connectionName()
         settings = QgsSettings()
-        settings.beginGroup("/{}/{}".format(
-            self.connectionSettingsKey(), conn_name))
+        settings.beginGroup(f"/{self.connectionSettingsKey()}/{conn_name}")
 
         if not settings.contains("database"):  # non-existent entry?
             raise InvalidDataException(
-                self.tr('There is no defined database connection "{}".'.format(
-                    conn_name)))
+                self.tr(f'There is no defined database connection "{conn_name}".')
+            )
 
         from qgis.core import QgsDataSourceUri
+
         uri = QgsDataSourceUri()
 
         settingsList = ["host", "port", "database", "username", "password"]
         host, port, database, username, password = (
-            settings.value(x, "", type=str) for x in settingsList)
+            settings.value(x, "", type=str) for x in settingsList
+        )
 
         # get all of the connection options
 
-        useEstimatedMetadata = settings.value(
-            "estimatedMetadata", False, type=bool)
-        uri.setParam('userTablesOnly', str(
-            settings.value("userTablesOnly", False, type=bool)))
-        uri.setParam('geometryColumnsOnly', str(
-            settings.value("geometryColumnsOnly", False, type=bool)))
-        uri.setParam('allowGeometrylessTables', str(
-            settings.value("allowGeometrylessTables", False, type=bool)))
-        uri.setParam('onlyExistingTypes', str(
-            settings.value("onlyExistingTypes", False, type=bool)))
-        uri.setParam('includeGeoAttributes', str(
-            settings.value("includeGeoAttributes", False, type=bool)))
+        useEstimatedMetadata = settings.value("estimatedMetadata", False, type=bool)
+        uri.setParam(
+            "userTablesOnly", str(settings.value("userTablesOnly", False, type=bool))
+        )
+        uri.setParam(
+            "geometryColumnsOnly",
+            str(settings.value("geometryColumnsOnly", False, type=bool)),
+        )
+        uri.setParam(
+            "allowGeometrylessTables",
+            str(settings.value("allowGeometrylessTables", False, type=bool)),
+        )
+        uri.setParam(
+            "onlyExistingTypes",
+            str(settings.value("onlyExistingTypes", False, type=bool)),
+        )
+        uri.setParam(
+            "includeGeoAttributes",
+            str(settings.value("includeGeoAttributes", False, type=bool)),
+        )
 
         settings.endGroup()
 
@@ -126,7 +142,8 @@ class OracleDBPlugin(DBPlugin):
         max_attempts = 3
         for i in range(max_attempts):
             (ok, username, password) = QgsCredentials.instance().get(
-                uri.connectionInfo(False), username, password, err)
+                uri.connectionInfo(False), username, password, err
+            )
 
             if not ok:
                 return False
@@ -141,8 +158,7 @@ class OracleDBPlugin(DBPlugin):
                 err = str(e)
                 continue
 
-            QgsCredentials.instance().put(
-                uri.connectionInfo(False), username, password)
+            QgsCredentials.instance().put(uri.connectionInfo(False), username, password)
 
             return True
 
@@ -166,6 +182,7 @@ class ORDatabase(Database):
 
     def info(self):
         from .info_model import ORDatabaseInfo
+
         return ORDatabaseInfo(self)
 
     def schemasFactory(self, row, db):
@@ -174,7 +191,7 @@ class ORDatabase(Database):
     def columnUniqueValuesModel(self, col, table, limit=10):
         l = ""
         if limit:
-            l = "WHERE ROWNUM < {:d}".format(limit)
+            l = f"WHERE ROWNUM < {limit:d}"
         con = self.database().connector
         # Prevent geometry column show
         tableName = table.replace('"', "").split(".")
@@ -185,11 +202,12 @@ class ORDatabase(Database):
         if con.isGeometryColumn(tableName, colName):
             return None
 
-        query = "SELECT DISTINCT {} FROM {} {}".format(col, table, l)
+        query = f"SELECT DISTINCT {col} FROM {table} {l}"
         return self.sqlResultModel(query, self)
 
     def sqlResultModel(self, sql, parent):
         from .data_model import ORSqlResultModel
+
         return ORSqlResultModel(self, sql, parent)
 
     def sqlResultModelAsync(self, sql, parent):
@@ -197,9 +215,16 @@ class ORDatabase(Database):
 
         return ORSqlResultModelAsync(self, sql, parent)
 
-    def toSqlLayer(self, sql, geomCol, uniqueCol,
-                   layerName="QueryLayer", layerType=None,
-                   avoidSelectById=False, filter=""):
+    def toSqlLayer(
+        self,
+        sql,
+        geomCol,
+        uniqueCol,
+        layerName="QueryLayer",
+        layerType=None,
+        avoidSelectById=False,
+        filter="",
+    ):
 
         uri = self.uri()
         con = self.database().connector
@@ -207,8 +232,7 @@ class ORDatabase(Database):
         if uniqueCol is not None:
             uniqueCol = uniqueCol.strip('"').replace('""', '"')
 
-        uri.setDataSource("", "({}\n)".format(
-            sql), geomCol, filter, uniqueCol)
+        uri.setDataSource("", f"({sql}\n)", geomCol, filter, uniqueCol)
 
         if avoidSelectById:
             uri.disableSelectAtId(True)
@@ -218,8 +242,7 @@ class ORDatabase(Database):
         # handling undetermined geometry type
         if not vlayer.isValid():
 
-            wkbType, srid = con.getTableMainGeomType(
-                "({}\n)".format(sql), geomCol)
+            wkbType, srid = con.getTableMainGeomType(f"({sql}\n)", geomCol)
             uri.setWkbType(wkbType)
             if srid:
                 uri.setSrid(str(srid))
@@ -228,45 +251,76 @@ class ORDatabase(Database):
         return vlayer
 
     def registerDatabaseActions(self, mainWindow):
-        action = QAction(QApplication.translate(
-            "DBManagerPlugin", "&Re-connect"), self)
-        mainWindow.registerAction(action, QApplication.translate(
-            "DBManagerPlugin", "&Database"), self.reconnectActionSlot)
+        action = QAction(QApplication.translate("DBManagerPlugin", "&Re-connect"), self)
+        mainWindow.registerAction(
+            action,
+            QApplication.translate("DBManagerPlugin", "&Database"),
+            self.reconnectActionSlot,
+        )
 
         if self.schemas():
-            action = QAction(QApplication.translate(
-                "DBManagerPlugin", "&Create Schema…"), self)
-            mainWindow.registerAction(action, QApplication.translate(
-                "DBManagerPlugin", "&Schema"), self.createSchemaActionSlot)
-            action = QAction(QApplication.translate(
-                "DBManagerPlugin", "&Delete (Empty) Schema…"), self)
-            mainWindow.registerAction(action, QApplication.translate(
-                "DBManagerPlugin", "&Schema"), self.deleteSchemaActionSlot)
+            action = QAction(
+                QApplication.translate("DBManagerPlugin", "&Create Schema…"), self
+            )
+            mainWindow.registerAction(
+                action,
+                QApplication.translate("DBManagerPlugin", "&Schema"),
+                self.createSchemaActionSlot,
+            )
+            action = QAction(
+                QApplication.translate("DBManagerPlugin", "&Delete (Empty) Schema…"),
+                self,
+            )
+            mainWindow.registerAction(
+                action,
+                QApplication.translate("DBManagerPlugin", "&Schema"),
+                self.deleteSchemaActionSlot,
+            )
 
-        action = QAction(QApplication.translate(
-            "DBManagerPlugin", "Delete Selected Item"), self)
+        action = QAction(
+            QApplication.translate("DBManagerPlugin", "Delete Selected Item"), self
+        )
         mainWindow.registerAction(action, None, self.deleteActionSlot)
         action.setShortcuts(QKeySequence.StandardKey.Delete)
 
-        action = QAction(QgsApplication.getThemeIcon("/mActionCreateTable.svg"),
-                         QApplication.translate(
-                             "DBManagerPlugin", "&Create Table…"), self)
-        mainWindow.registerAction(action, QApplication.translate(
-            "DBManagerPlugin", "&Table"), self.createTableActionSlot)
-        action = QAction(QgsApplication.getThemeIcon("/mActionEditTable.svg"),
-                         QApplication.translate(
-                             "DBManagerPlugin", "&Edit Table…"), self)
-        mainWindow.registerAction(action, QApplication.translate(
-            "DBManagerPlugin", "&Table"), self.editTableActionSlot)
-        action = QAction(QgsApplication.getThemeIcon("/mActionDeleteTable.svg"),
-                         QApplication.translate(
-                             "DBManagerPlugin", "&Delete Table/View…"), self)
-        mainWindow.registerAction(action, QApplication.translate(
-            "DBManagerPlugin", "&Table"), self.deleteTableActionSlot)
-        action = QAction(QApplication.translate(
-            "DBManagerPlugin", "&Empty Table…"), self)
-        mainWindow.registerAction(action, QApplication.translate(
-            "DBManagerPlugin", "&Table"), self.emptyTableActionSlot)
+        action = QAction(
+            QgsApplication.getThemeIcon("/mActionCreateTable.svg"),
+            QApplication.translate("DBManagerPlugin", "&Create Table…"),
+            self,
+        )
+        mainWindow.registerAction(
+            action,
+            QApplication.translate("DBManagerPlugin", "&Table"),
+            self.createTableActionSlot,
+        )
+        action = QAction(
+            QgsApplication.getThemeIcon("/mActionEditTable.svg"),
+            QApplication.translate("DBManagerPlugin", "&Edit Table…"),
+            self,
+        )
+        mainWindow.registerAction(
+            action,
+            QApplication.translate("DBManagerPlugin", "&Table"),
+            self.editTableActionSlot,
+        )
+        action = QAction(
+            QgsApplication.getThemeIcon("/mActionDeleteTable.svg"),
+            QApplication.translate("DBManagerPlugin", "&Delete Table/View…"),
+            self,
+        )
+        mainWindow.registerAction(
+            action,
+            QApplication.translate("DBManagerPlugin", "&Table"),
+            self.deleteTableActionSlot,
+        )
+        action = QAction(
+            QApplication.translate("DBManagerPlugin", "&Empty Table…"), self
+        )
+        mainWindow.registerAction(
+            action,
+            QApplication.translate("DBManagerPlugin", "&Table"),
+            self.emptyTableActionSlot,
+        )
 
     def supportsComment(self):
         return False
@@ -298,36 +352,40 @@ class ORTable(Table):
     def getDates(self):
         """Grab the creation/modification dates of the table"""
         self.creationDate, self.modificationDate = (
-            self.database().connector.getTableDates((self.schemaName(),
-                                                     self.name)))
+            self.database().connector.getTableDates((self.schemaName(), self.name))
+        )
 
     def refreshRowEstimation(self):
         """Use ALL_ALL_TABLE to get an estimation of rows"""
         if self.isView:
             self.estimatedRowCount = 0
 
-        self.estimatedRowCount = (
-            self.database().connector.getTableRowEstimation(
-                (self.schemaName(), self.name)))
+        self.estimatedRowCount = self.database().connector.getTableRowEstimation(
+            (self.schemaName(), self.name)
+        )
 
     def getType(self):
         """Grab the type of object for the table"""
         self.objectType = self.database().connector.getTableType(
-            (self.schemaName(), self.name))
+            (self.schemaName(), self.name)
+        )
 
     def getComment(self):
         """Grab the general comment of the table/view"""
         self.comment = self.database().connector.getTableComment(
-            (self.schemaName(), self.name), self.objectType)
+            (self.schemaName(), self.name), self.objectType
+        )
 
     def getDefinition(self):
         return self.database().connector.getDefinition(
-            (self.schemaName(), self.name), self.objectType)
+            (self.schemaName(), self.name), self.objectType
+        )
 
     def getMViewInfo(self):
         if self.objectType == "MATERIALIZED VIEW":
             return self.database().connector.getMViewInfo(
-                (self.schemaName(), self.name))
+                (self.schemaName(), self.name)
+            )
         else:
             return None
 
@@ -339,22 +397,25 @@ class ORTable(Table):
                 self.refreshRowCount()
                 return True
         elif action.startswith("index/"):
-            parts = action.split('/')
+            parts = action.split("/")
             index_name = parts[1]
             index_action = parts[2]
 
             msg = QApplication.translate(
                 "DBManagerPlugin",
-                "Do you want to {} index {}?".format(
-                    index_action, index_name))
+                f"Do you want to {index_action} index {index_name}?",
+            )
             QApplication.restoreOverrideCursor()
             try:
-                if QMessageBox.question(
+                if (
+                    QMessageBox.question(
                         None,
-                        QApplication.translate(
-                            "DBManagerPlugin", "Table Index"),
+                        QApplication.translate("DBManagerPlugin", "Table Index"),
                         msg,
-                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No) == QMessageBox.StandardButton.No:
+                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                    )
+                    == QMessageBox.StandardButton.No
+                ):
                     return False
             finally:
                 QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
@@ -362,14 +423,14 @@ class ORTable(Table):
             if index_action == "rebuild":
                 self.aboutToChange.emit()
                 self.database().connector.rebuildTableIndex(
-                    (self.schemaName(), self.name), index_name)
+                    (self.schemaName(), self.name), index_name
+                )
                 self.refreshIndexes()
                 return True
         elif action.startswith("mview/"):
             if action == "mview/refresh":
                 self.aboutToChange.emit()
-                self.database().connector.refreshMView(
-                    (self.schemaName(), self.name))
+                self.database().connector.refreshMView((self.schemaName(), self.name))
                 return True
 
         return Table.runAction(self, action)
@@ -388,14 +449,16 @@ class ORTable(Table):
 
     def info(self):
         from .info_model import ORTableInfo
+
         return ORTableInfo(self)
 
     def tableDataModel(self, parent):
         from .data_model import ORTableDataModel
+
         return ORTableDataModel(self, parent)
 
     def getValidQgisUniqueFields(self, onlyOne=False):
-        """ list of fields valid to load the table as layer in QGIS canvas.
+        """list of fields valid to load the table as layer in QGIS canvas.
         QGIS automatically search for a valid unique field, so it's
         needed only for queries and views.
         """
@@ -413,12 +476,22 @@ class ORTable(Table):
             for idx in indexes:
                 if idx.isUnique and len(idx.columns) == 1:
                     fld = idx.fields()[idx.columns[0]]
-                    if (fld.dataType == "NUMBER" and not fld.modifier and fld.notNull and fld not in ret):
+                    if (
+                        fld.dataType == "NUMBER"
+                        and not fld.modifier
+                        and fld.notNull
+                        and fld not in ret
+                    ):
                         ret.append(fld)
 
         # and finally append the other suitable fields
         for fld in self.fields():
-            if (fld.dataType == "NUMBER" and not fld.modifier and fld.notNull and fld not in ret):
+            if (
+                fld.dataType == "NUMBER"
+                and not fld.modifier
+                and fld.notNull
+                and fld not in ret
+            ):
                 ret.append(fld)
 
         if onlyOne:
@@ -427,13 +500,18 @@ class ORTable(Table):
 
     def uri(self):
         uri = self.database().uri()
-        schema = self.schemaName() if self.schemaName() else ''
-        geomCol = self.geomColumn if self.type in [
-            Table.VectorType, Table.RasterType] else ""
-        uniqueCol = self.getValidQgisUniqueFields(
-            True) if self.isView else None
-        uri.setDataSource(schema, self.name, geomCol if geomCol else None,
-                          None, uniqueCol.name if uniqueCol else "")
+        schema = self.schemaName() if self.schemaName() else ""
+        geomCol = (
+            self.geomColumn if self.type in [Table.VectorType, Table.RasterType] else ""
+        )
+        uniqueCol = self.getValidQgisUniqueFields(True) if self.isView else None
+        uri.setDataSource(
+            schema,
+            self.name,
+            geomCol if geomCol else None,
+            None,
+            uniqueCol.name if uniqueCol else "",
+        )
 
         # Handle geographic table
         if geomCol:
@@ -448,11 +526,13 @@ class ORVectorTable(ORTable, VectorTable):
     def __init__(self, row, db, schema=None):
         ORTable.__init__(self, row[0:3], db, schema)
         VectorTable.__init__(self, db, schema)
-        self.geomColumn, self.geomType, self.wkbType, self.geomDim, \
-            self.srid = row[-7:-2]
+        self.geomColumn, self.geomType, self.wkbType, self.geomDim, self.srid = row[
+            -7:-2
+        ]
 
     def info(self):
         from .info_model import ORVectorTableInfo
+
         return ORVectorTableInfo(self)
 
     def runAction(self, action):
@@ -468,13 +548,14 @@ class ORVectorTable(ORTable, VectorTable):
         return VectorTable.runAction(self, action)
 
     def canUpdateMetadata(self):
-        return self.database().connector.canUpdateMetadata((self.schemaName(),
-                                                            self.name))
+        return self.database().connector.canUpdateMetadata(
+            (self.schemaName(), self.name)
+        )
 
     def updateExtent(self):
         self.database().connector.updateMetadata(
-            (self.schemaName(), self.name),
-            self.geomColumn, extent=self.extent)
+            (self.schemaName(), self.name), self.geomColumn, extent=self.extent
+        )
         self.refreshTableEstimatedExtent()
         self.refresh()
 
@@ -490,11 +571,20 @@ class ORVectorTable(ORTable, VectorTable):
 class ORTableField(TableField):
 
     def __init__(self, row, table):
-        """ build fields information from query and find primary key """
+        """build fields information from query and find primary key"""
         TableField.__init__(self, table)
-        self.num, self.name, self.dataType, self.charMaxLen, \
-            self.modifier, self.notNull, self.hasDefault, \
-            self.default, typeStr, self.comment = row
+        (
+            self.num,
+            self.name,
+            self.dataType,
+            self.charMaxLen,
+            self.modifier,
+            self.notNull,
+            self.hasDefault,
+            self.default,
+            typeStr,
+            self.comment,
+        ) = row
 
         self.primaryKey = False
         self.num = int(self.num)
@@ -523,18 +613,23 @@ class ORTableField(TableField):
                 break
 
     def type2String(self):
-        if ("TIMESTAMP" in self.dataType or self.dataType in ["DATE", "SDO_GEOMETRY", "BINARY_FLOAT", "BINARY_DOUBLE"]):
-            return "{}".format(self.dataType)
+        if "TIMESTAMP" in self.dataType or self.dataType in [
+            "DATE",
+            "SDO_GEOMETRY",
+            "BINARY_FLOAT",
+            "BINARY_DOUBLE",
+        ]:
+            return f"{self.dataType}"
         if self.charMaxLen in [None, -1]:
-            return "{}".format(self.dataType)
+            return f"{self.dataType}"
         elif self.modifier in [None, -1, 0]:
-            return "{}({})".format(self.dataType, self.charMaxLen)
+            return f"{self.dataType}({self.charMaxLen})"
 
-        return "{}({},{})".format(self.dataType, self.charMaxLen,
-                                  self.modifier)
+        return f"{self.dataType}({self.charMaxLen},{self.modifier})"
 
-    def update(self, new_name, new_type_str=None, new_not_null=None,
-               new_default_str=None):
+    def update(
+        self, new_name, new_type_str=None, new_not_null=None, new_default_str=None
+    ):
         self.table().aboutToChange.emit()
         if self.name == new_name:
             new_name = None
@@ -545,10 +640,18 @@ class ORTableField(TableField):
         if self.default2String() == new_default_str:
             new_default_str = None
 
-        ret = self.table().database().connector.updateTableColumn(
-            (self.table().schemaName(), self.table().name),
-            self.name, new_name, new_type_str,
-            new_not_null, new_default_str)
+        ret = (
+            self.table()
+            .database()
+            .connector.updateTableColumn(
+                (self.table().schemaName(), self.table().name),
+                self.name,
+                new_name,
+                new_type_str,
+                new_not_null,
+                new_default_str,
+            )
+        )
 
         # When changing a field, refresh also constraints and
         # indexes.
@@ -560,17 +663,21 @@ class ORTableField(TableField):
 
 
 class ORTableConstraint(TableConstraint):
-    TypeCheck, TypeForeignKey, TypePrimaryKey, \
-        TypeUnique, TypeUnknown = list(range(5))
+    TypeCheck, TypeForeignKey, TypePrimaryKey, TypeUnique, TypeUnknown = list(range(5))
 
-    types = {"c": TypeCheck, "r": TypeForeignKey,
-             "p": TypePrimaryKey, "u": TypeUnique}
+    types = {"c": TypeCheck, "r": TypeForeignKey, "p": TypePrimaryKey, "u": TypeUnique}
 
     def __init__(self, row, table):
-        """ build constraints info from query """
+        """build constraints info from query"""
         TableConstraint.__init__(self, table)
-        self.name, constr_type_str, self.column, self.validated, \
-            self.generated, self.status = row[0:6]
+        (
+            self.name,
+            constr_type_str,
+            self.column,
+            self.validated,
+            self.generated,
+            self.status,
+        ) = row[0:6]
         constr_type_str = constr_type_str.lower()
 
         if constr_type_str in ORTableConstraint.types:
@@ -608,10 +715,10 @@ class ORTableConstraint(TableConstraint):
         if self.type == ORTableConstraint.TypeUnique:
             return QApplication.translate("DBManagerPlugin", "Unique")
 
-        return QApplication.translate("DBManagerPlugin", 'Unknown')
+        return QApplication.translate("DBManagerPlugin", "Unknown")
 
     def fields(self):
-        """ Hack to make edit dialog box work """
+        """Hack to make edit dialog box work"""
         fields = self.table().fields()
         field = None
         for fld in fields:
@@ -627,11 +734,18 @@ class ORTableIndex(TableIndex):
 
     def __init__(self, row, table):
         TableIndex.__init__(self, table)
-        self.name, self.column, self.indexType, self.status, \
-            self.analyzed, self.compression, self.isUnique = row
+        (
+            self.name,
+            self.column,
+            self.indexType,
+            self.status,
+            self.analyzed,
+            self.compression,
+            self.isUnique,
+        ) = row
 
     def fields(self):
-        """ Hack to make edit dialog box work """
+        """Hack to make edit dialog box work"""
         self.table().refreshFields()
         fields = self.table().fields()
 

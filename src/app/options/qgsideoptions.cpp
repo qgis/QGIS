@@ -55,8 +55,8 @@ void QgsIdeOptionsWidget::apply()
 void QgsIdeOptionsWidget::generateGitHubToken()
 {
   QDesktopServices::openUrl( QUrl(
-                               QStringLiteral( "https://github.com/settings/tokens/new?description=%1&scopes=gist" ).arg( tr( "QGIS Code Editor" ) )
-                             ) );
+    QStringLiteral( "https://github.com/settings/tokens/new?description=%1&scopes=gist" ).arg( tr( "QGIS Code Editor" ) )
+  ) );
 }
 
 //
@@ -66,7 +66,6 @@ void QgsIdeOptionsWidget::generateGitHubToken()
 QgsIdeOptionsFactory::QgsIdeOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "IDE" ), QIcon(), QStringLiteral( "ide" ) )
 {
-
 }
 
 QIcon QgsIdeOptionsFactory::icon() const

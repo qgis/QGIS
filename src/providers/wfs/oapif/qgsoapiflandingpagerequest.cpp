@@ -24,9 +24,8 @@ using namespace nlohmann;
 
 #include <QTextCodec>
 
-QgsOapifLandingPageRequest::QgsOapifLandingPageRequest( const QgsDataSourceUri &uri ):
-  QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), uri.authConfigId() ), "OAPIF" ),
-  mUri( uri )
+QgsOapifLandingPageRequest::QgsOapifLandingPageRequest( const QgsDataSourceUri &uri )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), uri.authConfigId() ), "OAPIF" ), mUri( uri )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main
@@ -88,41 +87,31 @@ void QgsOapifLandingPageRequest::processReply()
 
     const auto links = QgsOAPIFJson::parseLinks( j );
     QStringList apiTypes;
-    apiTypes <<  QStringLiteral( "application/vnd.oai.openapi+json;version=3.0" );
+    apiTypes << QStringLiteral( "application/vnd.oai.openapi+json;version=3.0" );
 #ifndef REMOVE_SUPPORT_DRAFT_VERSIONS
-    apiTypes <<  QStringLiteral( "application/openapi+json;version=3.0" );
+    apiTypes << QStringLiteral( "application/openapi+json;version=3.0" );
 #endif
-    mApiUrl = QgsOAPIFJson::findLink( links,
-                                      QStringLiteral( "service-desc" ),
-                                      apiTypes );
+    mApiUrl = QgsOAPIFJson::findLink( links, QStringLiteral( "service-desc" ), apiTypes );
 #ifndef REMOVE_SUPPORT_DRAFT_VERSIONS
     if ( mApiUrl.isEmpty() )
     {
-      mApiUrl = QgsOAPIFJson::findLink( links,
-                                        QStringLiteral( "service" ),
-                                        apiTypes );
+      mApiUrl = QgsOAPIFJson::findLink( links, QStringLiteral( "service" ), apiTypes );
     }
 #endif
 #ifndef REMOVE_SUPPORT_QGIS_SERVER_3_10_0_WRONG_SERVICE_DESC
     if ( mApiUrl.isEmpty() )
     {
-      mApiUrl = QgsOAPIFJson::findLink( links,
-                                        QStringLiteral( "service_desc" ),
-                                        apiTypes );
+      mApiUrl = QgsOAPIFJson::findLink( links, QStringLiteral( "service_desc" ), apiTypes );
     }
 #endif
 
     QStringList collectionsTypes;
     collectionsTypes << QStringLiteral( "application/json" );
-    mCollectionsUrl = QgsOAPIFJson::findLink( links,
-                      QStringLiteral( "data" ),
-                      collectionsTypes );
+    mCollectionsUrl = QgsOAPIFJson::findLink( links, QStringLiteral( "data" ), collectionsTypes );
 #ifndef REMOVE_SUPPORT_DRAFT_VERSIONS
     if ( mCollectionsUrl.isEmpty() )
     {
-      mCollectionsUrl = QgsOAPIFJson::findLink( links,
-                        QStringLiteral( "collections" ),
-                        apiTypes );
+      mCollectionsUrl = QgsOAPIFJson::findLink( links, QStringLiteral( "collections" ), apiTypes );
     }
 #endif
 

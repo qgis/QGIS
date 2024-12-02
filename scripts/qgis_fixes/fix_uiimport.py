@@ -3,8 +3,8 @@
 
 # Local imports
 from lib2to3 import fixer_base
+from lib2to3.fixer_util import FromImport, Leaf, Node, syms
 from lib2to3.fixes.fix_import import FixImport
-from lib2to3.fixer_util import FromImport, Node, Leaf, syms
 
 
 class FixUiimport(fixer_base.BaseFix):
@@ -17,14 +17,14 @@ class FixUiimport(fixer_base.BaseFix):
     """
 
     def transform(self, node, results):
-        imp = results.get('imp')
+        imp = results.get("imp")
 
         if node.type == syms.import_from:
             # Some imps are top-level (e.g., 'import ham')
             # some are first level (e.g., 'import ham.eggs')
             # some are third level (e.g., 'import ham.eggs as spam')
             # Hence, the loop
-            while not hasattr(imp, 'value'):
+            while not hasattr(imp, "value"):
                 imp = imp.children[0]
             if imp.value.startswith("ui_"):
                 imp.value = "." + imp.value

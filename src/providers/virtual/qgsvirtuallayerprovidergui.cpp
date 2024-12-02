@@ -24,7 +24,6 @@
 class QgsVirtualSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-
     QString providerKey() const override { return QStringLiteral( "virtual" ); }
     QString text() const override { return QObject::tr( "Virtual Layer" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 60; }

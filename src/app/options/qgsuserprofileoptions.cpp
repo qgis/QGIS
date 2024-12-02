@@ -43,8 +43,7 @@ QgsUserProfileOptionsWidget::QgsUserProfileOptionsWidget( QWidget *parent )
 
   // Connect icon size and allow profile creation
   mIconSize->setCurrentText( QString::number( manager->settings()->value( QStringLiteral( "/selector/iconSize" ), 24 ).toInt() ) );
-  connect( mIconSize, &QComboBox::currentTextChanged, this, [manager]( const QString & text )
-  {
+  connect( mIconSize, &QComboBox::currentTextChanged, this, [manager]( const QString &text ) {
     manager->settings()->setValue( QStringLiteral( "/selector/iconSize" ), text.toInt() );
     manager->settings()->sync();
   } );
@@ -153,7 +152,6 @@ void QgsUserProfileOptionsWidget::onAskUserChanged()
 QgsUserProfileOptionsFactory::QgsUserProfileOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "User Profiles" ), QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ) )
 {
-
 }
 
 QgsOptionsPageWidget *QgsUserProfileOptionsFactory::createWidget( QWidget *parent ) const

@@ -53,16 +53,16 @@ const QString QgsAmsProvider::AMS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS
 //! a helper class for ordering tile requests according to the distance from view center
 struct LessThanTileRequest
 {
-  QgsPointXY center;
-  bool operator()( const QgsAmsProvider::TileRequest &req1, const QgsAmsProvider::TileRequest &req2 )
-  {
-    QPointF p1 = req1.mapExtent.center();
-    QPointF p2 = req2.mapExtent.center();
-    // using chessboard distance (loading order more natural than euclidean/manhattan distance)
-    double d1 = std::max( std::fabs( center.x() - p1.x() ), std::fabs( center.y() - p1.y() ) );
-    double d2 = std::max( std::fabs( center.x() - p2.x() ), std::fabs( center.y() - p2.y() ) );
-    return d1 < d2;
-  }
+    QgsPointXY center;
+    bool operator()( const QgsAmsProvider::TileRequest &req1, const QgsAmsProvider::TileRequest &req2 )
+    {
+      QPointF p1 = req1.mapExtent.center();
+      QPointF p2 = req2.mapExtent.center();
+      // using chessboard distance (loading order more natural than euclidean/manhattan distance)
+      double d1 = std::max( std::fabs( center.x() - p1.x() ), std::fabs( center.y() - p1.y() ) );
+      double d2 = std::max( std::fabs( center.x() - p2.x() ), std::fabs( center.y() - p2.y() ) );
+      return d1 < d2;
+    }
 };
 
 QgsAmsLegendFetcher::QgsAmsLegendFetcher( QgsAmsProvider *provider, const QImage &fetchedImage )
@@ -120,7 +120,7 @@ void QgsAmsLegendFetcher::handleFinished()
   }
   QVariantMap queryResults = doc.object().toVariantMap();
   QgsDataSourceUri dataSource( mProvider->dataSourceUri() );
-  QVector< QPair<QString, QImage> > legendEntries;
+  QVector<QPair<QString, QImage>> legendEntries;
 
   const QVariantList layersList = queryResults.value( QStringLiteral( "layers" ) ).toList();
   for ( const QVariant &result : layersList )
@@ -166,8 +166,7 @@ void QgsAmsLegendFetcher::handleFinished()
       maxImageSize.setHeight( std::max( maxImageSize.height(), legendEntry.second.height() ) );
       textWidth = std::max( textWidth, fm.boundingRect( legendEntry.first ).width() + 10 );
     }
-    double scaleFactor = maxImageSize.width() == 0 || maxImageSize.height() == 0 ? 1.0 :
-                         std::min( 1., std::min( double( imageSize ) / maxImageSize.width(), double( imageSize ) / maxImageSize.height() ) );
+    double scaleFactor = maxImageSize.width() == 0 || maxImageSize.height() == 0 ? 1.0 : std::min( 1., std::min( double( imageSize ) / maxImageSize.width(), double( imageSize ) / maxImageSize.height() ) );
 
     mLegendImage = QImage( imageSize + padding + textWidth, verticalPadding + legendEntries.size() * ( verticalSize + verticalPadding ), QImage::Format_ARGB32 );
     mLegendImage.fill( Qt::transparent );
@@ -242,7 +241,7 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
   spatialExtent.bounds = QgsBox3D( mExtent );
   spatialExtent.extentCrs = mCrs;
   QgsLayerMetadata::Extent metadataExtent;
-  metadataExtent.setSpatialExtents( QList<  QgsLayerMetadata::SpatialExtent >() << spatialExtent );
+  metadataExtent.setSpatialExtents( QList<QgsLayerMetadata::SpatialExtent>() << spatialExtent );
   mLayerMetadata.setExtent( metadataExtent );
   mLayerMetadata.setCrs( mCrs );
 
@@ -258,8 +257,7 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
     mMaxImageHeight = mServiceInfo.value( QStringLiteral( "maxImageHeight" ) ).toInt();
 
   QVariantList layerList = mServiceInfo["layers"].toList();
-  std::function<void( int )> includeChildSublayers = [&]( int layerId )
-  {
+  std::function<void( int )> includeChildSublayers = [&]( int layerId ) {
     if ( layerId < layerList.size() )
     {
       QVariantList subLayersList = layerList[layerId].toMap()["subLayerIds"].toList();
@@ -271,7 +269,7 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
       }
     }
   };
-  includeChildSublayers( mLayerInfo[ QStringLiteral( "id" ) ].toInt() );
+  includeChildSublayers( mLayerInfo[QStringLiteral( "id" )].toInt() );
 
   mTimestamp = QDateTime::currentDateTime();
   mValid = true;
@@ -320,8 +318,8 @@ QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &optio
 QgsAmsProvider::QgsAmsProvider( const QgsAmsProvider &other, const QgsDataProvider::ProviderOptions &providerOptions )
   : QgsRasterDataProvider( other.dataSourceUri(), providerOptions )
   , mValid( other.mValid )
-// intentionally omitted:
-// - mLegendFetcher
+  // intentionally omitted:
+  // - mLegendFetcher
   , mServiceInfo( other.mServiceInfo )
   , mLayerInfo( other.mLayerInfo )
   , mCrs( other.mCrs )
@@ -530,14 +528,13 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
     {
       return QImage();
     }
-    std::sort( lodEntries.begin(), lodEntries.end(), []( const QVariant & a, const QVariant & b )
-    {
+    std::sort( lodEntries.begin(), lodEntries.end(), []( const QVariant &a, const QVariant &b ) {
       return a.toMap().value( QStringLiteral( "resolution" ) ).toDouble() > b.toMap().value( QStringLiteral( "resolution" ) ).toDouble();
     } );
     int level = 0;
     int foundLevel = -1;
 
-    QMap< int, double > levelToResMap;
+    QMap<int, double> levelToResMap;
     for ( const QVariant &lodEntry : lodEntries )
     {
       QVariantMap lodEntryMap = lodEntry.toMap();
@@ -560,17 +557,16 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
       level = lodEntries.constLast().toMap().value( QStringLiteral( "level" ) ).toInt();
     }
 
-    auto getRequests = [&levelToResMap, &viewExtent, tileWidth, tileHeight, ox, oy, targetRes, &dataSource]( int level, TileRequests & requests )
-    {
+    auto getRequests = [&levelToResMap, &viewExtent, tileWidth, tileHeight, ox, oy, targetRes, &dataSource]( int level, TileRequests &requests ) {
       const double resolution = levelToResMap.value( level );
 
       // Get necessary tiles to fill extent
       // tile_x = ox + i * (resolution * tileWidth)
       // tile_y = oy - j * (resolution * tileHeight)
-      int ixStart = static_cast< int >( std::floor( ( viewExtent.xMinimum() - ox ) / ( tileWidth * resolution ) ) );
-      int iyStart = static_cast< int >( std::floor( ( oy - viewExtent.yMaximum() ) / ( tileHeight * resolution ) ) );
-      int ixEnd = static_cast< int >( std::ceil( ( viewExtent.xMaximum() - ox ) / ( tileWidth * resolution ) ) );
-      int iyEnd = static_cast< int >( std::ceil( ( oy - viewExtent.yMinimum() ) / ( tileHeight * resolution ) ) );
+      int ixStart = static_cast<int>( std::floor( ( viewExtent.xMinimum() - ox ) / ( tileWidth * resolution ) ) );
+      int iyStart = static_cast<int>( std::floor( ( oy - viewExtent.yMaximum() ) / ( tileHeight * resolution ) ) );
+      int ixEnd = static_cast<int>( std::ceil( ( viewExtent.xMaximum() - ox ) / ( tileWidth * resolution ) ) );
+      int iyEnd = static_cast<int>( std::ceil( ( oy - viewExtent.yMinimum() ) / ( tileHeight * resolution ) ) );
       double imX = ( viewExtent.xMinimum() - ox ) / resolution;
       double imY = ( oy - viewExtent.yMaximum() ) / resolution;
 
@@ -581,10 +577,7 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
         for ( int ix = ixStart; ix <= ixEnd; ++ix )
         {
           const QUrl url = QUrl( dataSource.param( QStringLiteral( "url" ) ) + QStringLiteral( "/tile/%1/%2/%3" ).arg( level ).arg( iy ).arg( ix ) );
-          const QRectF tileImageRect( ( ix * tileWidth - imX ) * resScale,
-                                      ( iy * tileHeight - imY ) * resScale,
-                                      tileWidth * resScale,
-                                      tileHeight * resScale );
+          const QRectF tileImageRect( ( ix * tileWidth - imX ) * resScale, ( iy * tileHeight - imY ) * resScale, tileWidth * resScale, tileHeight * resScale );
 
           const QRectF worldRect( ox + ix * ( resolution * tileWidth ), oy - iy * ( resolution * tileHeight ), tileWidth * resolution, tileHeight * resolution );
 
@@ -598,8 +591,8 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
     TileRequests requests;
     getRequests( level, requests );
 
-    QList<TileImage> tileImages;  // in the correct resolution
-    QList<QRectF> missing;  // rectangles (in map coords) of missing tiles for this view
+    QList<TileImage> tileImages; // in the correct resolution
+    QList<QRectF> missing;       // rectangles (in map coords) of missing tiles for this view
 
     QImage image( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
     image.fill( Qt::transparent );
@@ -635,17 +628,16 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
       // from lower or higher resolution available to give the user a bit of context
       // while loading the right resolution
       p.setCompositionMode( QPainter::CompositionMode_Source );
-      p.setRenderHint( QPainter::SmoothPixmapTransform, false );  // let's not waste time with bilinear filtering
+      p.setRenderHint( QPainter::SmoothPixmapTransform, false ); // let's not waste time with bilinear filtering
 
-      auto fetchOtherResTiles = [&getRequests]( int otherLevel, QList< TileImage> &otherResTiles, QList< QRectF > &missingRects )
-      {
+      auto fetchOtherResTiles = [&getRequests]( int otherLevel, QList<TileImage> &otherResTiles, QList<QRectF> &missingRects ) {
         TileRequests otherRequests;
         getRequests( otherLevel, otherRequests );
         QList<QRectF> missingRectsToDelete;
         for ( const TileRequest &r : std::as_const( otherRequests ) )
         {
           QImage localImage;
-          if ( ! QgsTileCache::tile( r.url, localImage ) )
+          if ( !QgsTileCache::tile( r.url, localImage ) )
             continue;
 
           otherResTiles << TileImage( r.rect, localImage, false );
@@ -740,8 +732,8 @@ QImage QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int
 
     int maxWidth = mMaxImageWidth > 0 ? mMaxImageWidth : pixelWidth;
     int maxHeight = mMaxImageHeight > 0 ? mMaxImageHeight : pixelHeight;
-    int nbStepWidth = std::ceil( ( float )pixelWidth / maxWidth );
-    int nbStepHeight = std::ceil( ( float )pixelHeight / maxHeight );
+    int nbStepWidth = std::ceil( ( float ) pixelWidth / maxWidth );
+    int nbStepHeight = std::ceil( ( float ) pixelHeight / maxHeight );
     for ( int currentStepWidth = 0; currentStepWidth < nbStepWidth; currentStepWidth++ )
     {
       for ( int currentStepHeight = 0; currentStepHeight < nbStepHeight; currentStepHeight++ )
@@ -846,8 +838,7 @@ QImage QgsAmsProvider::getLegendGraphic( double /*scale*/, bool forceRefresh, co
 QgsImageFetcher *QgsAmsProvider::getLegendGraphicFetcher( const QgsMapSettings * /*mapSettings*/ )
 {
   QgsAmsLegendFetcher *fetcher = new QgsAmsLegendFetcher( this, mLegendFetcher->getImage() );
-  connect( fetcher, &QgsAmsLegendFetcher::fetchedNew, this, [ = ]( const QImage & fetched )
-  {
+  connect( fetcher, &QgsAmsLegendFetcher::fetchedNew, this, [=]( const QImage &fetched ) {
     mLegendFetcher->setImage( fetched );
   } );
   return fetcher;
@@ -862,7 +853,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, Qgis:
   query.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
   query.addQueryItem( QStringLiteral( "geometryType" ), QStringLiteral( "esriGeometryPoint" ) );
   query.addQueryItem( QStringLiteral( "geometry" ), QStringLiteral( "{x: %1, y: %2}" ).arg( point.x(), 0, 'f' ).arg( point.y(), 0, 'f' ) );
-//  query.addQueryItem( "sr", mCrs.postgisSrid() );
+  //  query.addQueryItem( "sr", mCrs.postgisSrid() );
   query.addQueryItem( QStringLiteral( "layers" ), QStringLiteral( "all:%1" ).arg( dataSource.param( QStringLiteral( "layer" ) ) ) );
   query.addQueryItem( QStringLiteral( "imageDisplay" ), QStringLiteral( "%1,%2,%3" ).arg( width ).arg( height ).arg( dpi ) );
   query.addQueryItem( QStringLiteral( "mapExtent" ), QStringLiteral( "%1,%2,%3,%4" ).arg( extent.xMinimum(), 0, 'f' ).arg( extent.yMinimum(), 0, 'f' ).arg( extent.xMaximum(), 0, 'f' ).arg( extent.yMaximum(), 0, 'f' ) );
@@ -903,7 +894,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, Qgis:
         featureAttributes.append( it.value().toString() );
       }
       QgsCoordinateReferenceSystem crs;
-      std::unique_ptr< QgsAbstractGeometry > geometry( QgsArcGisRestUtils::convertGeometry( resultMap[QStringLiteral( "geometry" )].toMap(), resultMap[QStringLiteral( "geometryType" )].toString(), false, false, &crs ) );
+      std::unique_ptr<QgsAbstractGeometry> geometry( QgsArcGisRestUtils::convertGeometry( resultMap[QStringLiteral( "geometry" )].toMap(), resultMap[QStringLiteral( "geometryType" )].toString(), false, false, &crs ) );
       QgsFeature feature( fields );
       feature.setGeometry( QgsGeometry( std::move( geometry ) ) );
       feature.setAttributes( featureAttributes );
@@ -954,7 +945,7 @@ bool QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle &viewExtent, 
 // QgsAmsTiledImageDownloadHandler
 //
 
-QgsAmsTiledImageDownloadHandler::QgsAmsTiledImageDownloadHandler( const QString &auth,  const QgsHttpHeaders &requestHeaders, int tileReqNo, const QgsAmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, QgsRasterBlockFeedback *feedback, const QString &urlPrefix )
+QgsAmsTiledImageDownloadHandler::QgsAmsTiledImageDownloadHandler( const QString &auth, const QgsHttpHeaders &requestHeaders, int tileReqNo, const QgsAmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, QgsRasterBlockFeedback *feedback, const QString &urlPrefix )
   : mAuth( auth )
   , mRequestHeaders( requestHeaders )
   , mImage( image )
@@ -1096,8 +1087,7 @@ void QgsAmsTiledImageDownloadHandler::tileReplyFinished()
 
     QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
     QgsDebugMsgLevel( "contentType: " + contentType, 2 );
-    if ( !contentType.isEmpty() && !contentType.startsWith( QLatin1String( "image/" ), Qt::CaseInsensitive ) &&
-         contentType.compare( QLatin1String( "application/octet-stream" ), Qt::CaseInsensitive ) != 0 )
+    if ( !contentType.isEmpty() && !contentType.startsWith( QLatin1String( "image/" ), Qt::CaseInsensitive ) && contentType.compare( QLatin1String( "application/octet-stream" ), Qt::CaseInsensitive ) != 0 )
     {
       QByteArray text = reply->readAll();
       QString errorTitle, errorText;
@@ -1127,11 +1117,7 @@ void QgsAmsTiledImageDownloadHandler::tileReplyFinished()
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Tile request error (Status: %1; Content-Type: %2; Length: %3; URL: %4)" )
-                                   .arg( status.toString(),
-                                         contentType )
-                                   .arg( text.size() )
-                                   .arg( reply->url().toString() ), tr( "WMS" ) );
+        QgsMessageLog::logMessage( tr( "Tile request error (Status: %1; Content-Type: %2; Length: %3; URL: %4)" ).arg( status.toString(), contentType ).arg( text.size() ).arg( reply->url().toString() ), tr( "WMS" ) );
 #ifdef QGISDEBUG
         QFile file( QDir::tempPath() + "/broken-image.png" );
         if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
@@ -1176,7 +1162,7 @@ void QgsAmsTiledImageDownloadHandler::tileReplyFinished()
       else
       {
         QString errorText = tr( "Returned image is flawed [Content-Type: %1; URL: %2]" )
-                            .arg( contentType, reply->url().toString() );
+                              .arg( contentType, reply->url().toString() );
         if ( mFeedback )
           mFeedback->appendError( errorText );
       }
@@ -1191,7 +1177,6 @@ void QgsAmsTiledImageDownloadHandler::tileReplyFinished()
 
     if ( mReplies.isEmpty() )
       finish();
-
   }
   else
   {
@@ -1261,7 +1246,6 @@ void QgsAmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
   mReplies << reply;
   connect( reply, &QNetworkReply::finished, this, &QgsAmsTiledImageDownloadHandler::tileReplyFinished );
 }
-
 
 
 QgsAmsProviderMetadata::QgsAmsProviderMetadata()

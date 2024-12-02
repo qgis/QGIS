@@ -49,7 +49,7 @@ namespace QTest
     QByteArray ba = geom.asWkt().toLatin1();
     return qstrdup( ba.data() );
   }
-}
+} // namespace QTest
 
 /**
  * \ingroup UnitTests
@@ -62,8 +62,8 @@ class TestQgsVertexTool : public QObject
     TestQgsVertexTool();
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testSelectVerticesByPolygon();
     void testTopologicalEditingMoveVertexZ();
@@ -261,37 +261,37 @@ void TestQgsVertexTool::initTestCase()
   mLayerLine->startEditing();
   mLayerLine->addFeature( lineF1 );
   mFidLineF1 = lineF1.id();
-  QCOMPARE( mLayerLine->featureCount(), ( long )1 );
+  QCOMPARE( mLayerLine->featureCount(), ( long ) 1 );
 
   mLayerMultiLine->startEditing();
   mLayerMultiLine->addFeature( multiLineF1 );
   mFidMultiLineF1 = multiLineF1.id();
-  QCOMPARE( mLayerMultiLine->featureCount(), ( long )1 );
+  QCOMPARE( mLayerMultiLine->featureCount(), ( long ) 1 );
 
   mLayerLineReprojected->startEditing();
   mLayerLineReprojected->addFeature( lineF13857 );
   mFidLineF13857 = lineF13857.id();
-  QCOMPARE( mLayerLineReprojected->featureCount(), ( long )1 );
+  QCOMPARE( mLayerLineReprojected->featureCount(), ( long ) 1 );
 
   mLayerPolygon->startEditing();
   mLayerPolygon->addFeature( polygonF1 );
   mFidPolygonF1 = polygonF1.id();
-  QCOMPARE( mLayerPolygon->featureCount(), ( long )1 );
+  QCOMPARE( mLayerPolygon->featureCount(), ( long ) 1 );
 
   mLayerMultiPolygon->startEditing();
   mLayerMultiPolygon->addFeature( multiPolygonF1 );
   mFidMultiPolygonF1 = multiPolygonF1.id();
-  QCOMPARE( mLayerMultiPolygon->featureCount(), ( long )1 );
+  QCOMPARE( mLayerMultiPolygon->featureCount(), ( long ) 1 );
 
   mLayerPoint->startEditing();
   mLayerPoint->addFeature( pointF1 );
   mFidPointF1 = pointF1.id();
-  QCOMPARE( mLayerPoint->featureCount(), ( long )1 );
+  QCOMPARE( mLayerPoint->featureCount(), ( long ) 1 );
 
   mLayerPointZ->startEditing();
   mLayerPointZ->addFeature( pointZF1 );
   mFidPointZF1 = pointZF1.id();
-  QCOMPARE( mLayerPointZ->featureCount(), ( long )1 );
+  QCOMPARE( mLayerPointZ->featureCount(), ( long ) 1 );
 
   mLayerLineZ->startEditing();
   mLayerLineZ->addFeature( linez1 );
@@ -629,7 +629,7 @@ void TestQgsVertexTool::testMovePointAddingZ()
   QgsFeature pointZF2;
   pointZF2.setGeometry( QgsGeometry::fromWkt( "Point (30 35)" ) );
   mLayerPointZ->addFeature( pointZF2 );
-  QCOMPARE( mLayerPointZ->featureCount(), ( long )2 );
+  QCOMPARE( mLayerPointZ->featureCount(), ( long ) 2 );
   QCOMPARE( mLayerPointZ->undoStack()->index(), 2 );
 
   // And snap on a point with Z
@@ -738,7 +738,6 @@ void TestQgsVertexTool::testAddVertexAtEndpoint()
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
 
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
-
 }
 
 void TestQgsVertexTool::testAddVertexDoubleClick()
@@ -771,7 +770,6 @@ void TestQgsVertexTool::testAddVertexDoubleClick()
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
   QCOMPARE( mLayerPolygon->undoStack()->index(), 1 );
   QCOMPARE( mLayerPoint->undoStack()->index(), 1 );
-
 }
 
 void TestQgsVertexTool::testAddVertexDoubleClickWithShift()
@@ -802,7 +800,6 @@ void TestQgsVertexTool::testAddVertexDoubleClickWithShift()
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
   QCOMPARE( mLayerPolygon->undoStack()->index(), 1 );
   QCOMPARE( mLayerPoint->undoStack()->index(), 1 );
-
 }
 
 void TestQgsVertexTool::testDeleteVertex()
@@ -1035,7 +1032,7 @@ void TestQgsVertexTool::testMoveVertexTopo()
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((3 3, 7 1, 7 4, 4 4, 3 3))" ) );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
-  QCOMPARE( mLayerPolygon->undoStack()->index(), 3 );  // one more move of vertex from earlier
+  QCOMPARE( mLayerPolygon->undoStack()->index(), 3 ); // one more move of vertex from earlier
   mLayerLine->undoStack()->undo();
   mLayerPolygon->undoStack()->undo();
   mLayerPolygon->undoStack()->undo();
@@ -1064,7 +1061,7 @@ void TestQgsVertexTool::testDeleteVertexTopo()
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((7 1, 7 4, 4 4, 7 1))" ) );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
-  QCOMPARE( mLayerPolygon->undoStack()->index(), 3 );  // one more move of vertex from earlier
+  QCOMPARE( mLayerPolygon->undoStack()->index(), 3 ); // one more move of vertex from earlier
   mLayerLine->undoStack()->undo();
   mLayerPolygon->undoStack()->undo();
   mLayerPolygon->undoStack()->undo();
@@ -1244,7 +1241,7 @@ void TestQgsVertexTool::testAddVertexTopoMultipleLayers()
 void TestQgsVertexTool::testAvoidIntersections()
 {
   // There is one feature in the layer
-  QCOMPARE( mLayerPolygon->featureCount(), ( long )1 );
+  QCOMPARE( mLayerPolygon->featureCount(), ( long ) 1 );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "Polygon ((4 1, 7 1, 7 4, 4 4, 4 1))" ) ); // avoid rounding errors
 
   QgsProject::instance()->setTopologicalEditing( true );
@@ -1267,7 +1264,7 @@ void TestQgsVertexTool::testAvoidIntersections()
   const QgsFeatureId mFidPolygonF2 = polygonF2.id();
 
   // Starting point
-  QCOMPARE( mLayerPolygon->featureCount(), ( long )2 );
+  QCOMPARE( mLayerPolygon->featureCount(), ( long ) 2 );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "Polygon ((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF2 ).geometry(), QgsGeometry::fromWkt( "Polygon ((8 2, 9 2, 9 3, 8 3, 8 2))" ) );
 
@@ -1282,7 +1279,7 @@ void TestQgsVertexTool::testAvoidIntersections()
 
   QCOMPARE( spy.count(), 1 ); // 1 for the moved vertex
 
-  QCOMPARE( mLayerPolygon->featureCount(), ( long )2 );
+  QCOMPARE( mLayerPolygon->featureCount(), ( long ) 2 );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "Polygon ((4 1, 7 1, 7 4, 5 5, 4 1))" ) );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF2 ).geometry(), QgsGeometry::fromWkt( "Polygon ((8 2, 9 2, 9 3, 8 3, 8 2))" ) );
 
@@ -1298,7 +1295,7 @@ void TestQgsVertexTool::testAvoidIntersections()
 
   QCOMPARE( spy.count(), 1 ); // 1 for the moved vertex
 
-  QCOMPARE( mLayerPolygon->featureCount(), ( long )2 );
+  QCOMPARE( mLayerPolygon->featureCount(), ( long ) 2 );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "Polygon ((4 4, 7 4, 8 3, 8 2, 9 2, 4 1, 4 4))" ) );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF2 ).geometry(), QgsGeometry::fromWkt( "Polygon ((8 2, 9 2, 9 3, 8 3, 8 2))" ) );
 
@@ -1331,7 +1328,7 @@ void TestQgsVertexTool::testAvoidIntersections()
 
   mLayerPolygon->undoStack()->undo(); // delete feature
 
-  QCOMPARE( mLayerPolygon->featureCount(), ( long )1 );
+  QCOMPARE( mLayerPolygon->featureCount(), ( long ) 1 );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
 
   QCOMPARE( mLayerPolygon->undoStack()->index(), 1 );
@@ -1358,7 +1355,7 @@ void TestQgsVertexTool::testAvoidIntersections()
   mLayerPolygon->addFeature( polygonF_topo2 );
   const QgsFeatureId mFidPolygonF_topo2 = polygonF_topo2.id();
 
-  QCOMPARE( mLayerPolygon->featureCount(), ( long )3 );
+  QCOMPARE( mLayerPolygon->featureCount(), ( long ) 3 );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "Polygon ((4 1, 7 1, 7 4, 4 4, 4 1))" ) );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF_topo1 ).geometry(), QgsGeometry::fromWkt( "Polygon ((0 10, 0 20, 5 15, 0 10))" ) );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF_topo2 ).geometry(), QgsGeometry::fromWkt( "Polygon ((10 15, 15 10, 15 20, 10 15))" ) );
@@ -1373,7 +1370,7 @@ void TestQgsVertexTool::testAvoidIntersections()
   mLayerPolygon->undoStack()->undo(); // undo move and topological points
   mLayerPolygon->undoStack()->undo(); // delete feature polygonF_topo2
   mLayerPolygon->undoStack()->undo(); // delete feature polygonF_topo1
-  QCOMPARE( mLayerPolygon->featureCount(), ( long )1 );
+  QCOMPARE( mLayerPolygon->featureCount(), ( long ) 1 );
 
   // Make sure the largest part is preserved if multiple parts are created
   polygonF2.setGeometry( QgsGeometry::fromWkt( "Polygon ((8 3, 9 3, 9 2, 8 2, 8 3))" ) );
@@ -1386,7 +1383,7 @@ void TestQgsVertexTool::testAvoidIntersections()
   mLayerPolygon->undoStack()->undo(); // undo edge move
   mLayerPolygon->undoStack()->undo(); // undo feature addition
 
-  QCOMPARE( mLayerPolygon->featureCount(), ( long )1 );
+  QCOMPARE( mLayerPolygon->featureCount(), ( long ) 1 );
 
   QgsProject::instance()->setTopologicalEditing( false );
   QgsProject::instance()->setAvoidIntersectionsMode( mode );
@@ -1448,7 +1445,7 @@ void TestQgsVertexTool::testActiveLayerPriority()
   layerLine2->startEditing();
   layerLine2->addFeature( lineF1 );
   const QgsFeatureId fidLineF1 = lineF1.id();
-  QCOMPARE( layerLine2->featureCount(), ( long )1 );
+  QCOMPARE( layerLine2->featureCount(), ( long ) 1 );
   QgsProject::instance()->addMapLayer( layerLine2 );
   QList<QgsMapLayer *> oldMapLayers = mCanvas->layers();
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint << mLayerCompoundCurve << layerLine2 );
@@ -1561,7 +1558,7 @@ void TestQgsVertexTool::testSelectedFeaturesPriority()
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((7 1, 7 4, 4 4, 7 1))" ) );
   mLayerPolygon->undoStack()->undo();
 
-  mLayerPolygon->undoStack()->undo();  // undo the initial change
+  mLayerPolygon->undoStack()->undo(); // undo the initial change
 }
 
 void TestQgsVertexTool::testVertexToolCompoundCurve()
@@ -1591,8 +1588,7 @@ void TestQgsVertexTool::testVertexToolCompoundCurve()
   mouseClick( 18, 17, Qt::LeftButton );
 
   QCOMPARE( mLayerCompoundCurve->undoStack()->index(), 3 );
-  QCOMPARE( mLayerCompoundCurve->getFeature( mFidCompoundCurveF1 ).geometry(),
-            QgsGeometry::fromWkt( "CompoundCurve ( CircularString (14 14, 18 17, 13.75126265847083928 13.78427124746189492, 10 10, 17 10))" ) );
+  QCOMPARE( mLayerCompoundCurve->getFeature( mFidCompoundCurveF1 ).geometry(), QgsGeometry::fromWkt( "CompoundCurve ( CircularString (14 14, 18 17, 13.75126265847083928 13.78427124746189492, 10 10, 17 10))" ) );
 
   mLayerCompoundCurve->undoStack()->undo();
 
@@ -1676,7 +1672,7 @@ void TestQgsVertexTool::testMoveVertexTopoOtherMapCrs()
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry().asWkt( 2 ), "LineString (3 3, 1 1, 1 3)" );
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry().asWkt( 2 ), "Polygon ((4 1, 3 3, 7 4, 4 4, 4 1))" );
 
-  QCOMPARE( mLayerLine->undoStack()->index(), 3 );  // one more move of vertex from earlier
+  QCOMPARE( mLayerLine->undoStack()->index(), 3 ); // one more move of vertex from earlier
   QCOMPARE( mLayerPolygon->undoStack()->index(), 2 );
   mLayerLine->undoStack()->undo();
   mLayerLine->undoStack()->undo();

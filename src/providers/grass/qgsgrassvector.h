@@ -77,8 +77,7 @@ class GRASS_LIB_EXPORT QgsGrassVector : public QObject
 {
     Q_OBJECT
   public:
-    QgsGrassVector( const QString &gisdbase, const QString &location, const QString &mapset,
-                    const QString &name, QObject *parent = nullptr );
+    QgsGrassVector( const QString &gisdbase, const QString &location, const QString &mapset, const QString &name, QObject *parent = nullptr );
 
     QgsGrassVector( const QgsGrassObject &grassObject, QObject *parent = nullptr );
 
@@ -92,7 +91,7 @@ class GRASS_LIB_EXPORT QgsGrassVector : public QObject
      * Gets numbers of primitives
      * \returns type/count pairs
     */
-    QMap<int, int> typeCounts() const {return mTypeCounts; }
+    QMap<int, int> typeCounts() const { return mTypeCounts; }
 
     //! Gets total number of primitives of given type. Types may be combined by bitwise or)
     int typeCount( int type ) const;

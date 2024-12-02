@@ -19,7 +19,7 @@
 #include <qgsprovidermetadata.h>
 #include <qgsproviderregistry.h>
 
-class TestQgsProviderMetadata: public QObject
+class TestQgsProviderMetadata : public QObject
 {
     Q_OBJECT
 
@@ -27,10 +27,10 @@ class TestQgsProviderMetadata: public QObject
     TestQgsProviderMetadata() = default;
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void checkBoolParameterSetting();
 
@@ -47,7 +47,6 @@ void TestQgsProviderMetadata::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
-
 }
 
 void TestQgsProviderMetadata::init()
@@ -76,12 +75,7 @@ void TestQgsProviderMetadata::checkBoolParameterSetting()
   QgsProviderMetadata::setBoolParameter( uri, QStringLiteral( "testFour" ), QStringLiteral( "true" ) );
   QgsProviderMetadata::setBoolParameter( uri, QStringLiteral( "testFive" ), true );
 
-  QVariantMap expected = { { QStringLiteral( "testOne" ), QVariant( true ) },
-    { QStringLiteral( "testTwo" ), QVariant( true ) },
-    { QStringLiteral( "testThree" ), QVariant( true ) },
-    { QStringLiteral( "testFour" ), QVariant( true ) },
-    { QStringLiteral( "testFive" ), QVariant( true ) }
-  };
+  QVariantMap expected = { { QStringLiteral( "testOne" ), QVariant( true ) }, { QStringLiteral( "testTwo" ), QVariant( true ) }, { QStringLiteral( "testThree" ), QVariant( true ) }, { QStringLiteral( "testFour" ), QVariant( true ) }, { QStringLiteral( "testFive" ), QVariant( true ) } };
 
   QCOMPARE( uri, expected );
 
@@ -96,12 +90,7 @@ void TestQgsProviderMetadata::checkBoolParameterSetting()
   QgsProviderMetadata::setBoolParameter( uri, QStringLiteral( "testFour" ), QStringLiteral( "false" ) );
   QgsProviderMetadata::setBoolParameter( uri, QStringLiteral( "testFive" ), false );
 
-  expected = { { QStringLiteral( "testOne" ), QVariant( false ) },
-    { QStringLiteral( "testTwo" ), QVariant( false ) },
-    { QStringLiteral( "testThree" ), QVariant( false ) },
-    { QStringLiteral( "testFour" ), QVariant( false ) },
-    { QStringLiteral( "testFive" ), QVariant( false ) }
-  };
+  expected = { { QStringLiteral( "testOne" ), QVariant( false ) }, { QStringLiteral( "testTwo" ), QVariant( false ) }, { QStringLiteral( "testThree" ), QVariant( false ) }, { QStringLiteral( "testFour" ), QVariant( false ) }, { QStringLiteral( "testFive" ), QVariant( false ) } };
   QCOMPARE( uri, expected );
 
   QgsProviderMetadata::setBoolParameter( uri, QStringLiteral( "testOne" ), QStringLiteral( "NO" ) );
@@ -109,12 +98,12 @@ void TestQgsProviderMetadata::checkBoolParameterSetting()
 
   QCOMPARE( uri, expected );
 
-  uri[ QStringLiteral( "testOne" ) ] = QStringLiteral( "yes" );
-  uri[ QStringLiteral( "testTwo" ) ] = QStringLiteral( "1" );
-  uri[ QStringLiteral( "testThree" ) ] = QStringLiteral( "true" );
-  uri[ QStringLiteral( "testFour" ) ] = 1;
-  uri[ QStringLiteral( "testFive" ) ] = true;
-  uri[ QStringLiteral( "testSix" ) ] = QStringLiteral( "otherValue" );
+  uri[QStringLiteral( "testOne" )] = QStringLiteral( "yes" );
+  uri[QStringLiteral( "testTwo" )] = QStringLiteral( "1" );
+  uri[QStringLiteral( "testThree" )] = QStringLiteral( "true" );
+  uri[QStringLiteral( "testFour" )] = 1;
+  uri[QStringLiteral( "testFive" )] = true;
+  uri[QStringLiteral( "testSix" )] = QStringLiteral( "otherValue" );
 
   QVERIFY( mMetadata->boolParameter( uri, QStringLiteral( "testOne" ), false ) );
   QVERIFY( mMetadata->boolParameter( uri, QStringLiteral( "testTwo" ), false ) );

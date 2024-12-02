@@ -65,7 +65,7 @@ QgsScaleMagnetWidget::QgsScaleMagnetWidget( const QString &label, QWidget *paren
 
   // connect signals
   mScaleSpinBox->installEventFilter( this );
-  connect( mScaleSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsScaleMagnetWidget::scaleSpinBoxValueChanged );
+  connect( mScaleSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsScaleMagnetWidget::scaleSpinBoxValueChanged );
 
   // config focus
   setFocusProxy( mScaleSpinBox );
@@ -112,7 +112,7 @@ void QgsScaleMagnetWidget::scaleSpinBoxValueChanged( double scale )
 
 QgsMapToolScaleFeature::QgsMapToolScaleFeature( QgsMapCanvas *canvas )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
-  , mSnapIndicator( std::make_unique< QgsSnapIndicator>( canvas ) )
+  , mSnapIndicator( std::make_unique<QgsSnapIndicator>( canvas ) )
 {
   mToolName = tr( "Scale feature" );
 }
@@ -204,8 +204,7 @@ void QgsMapToolScaleFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     const QgsPointXY layerCoords = toLayerCoordinates( vlayer, e->mapPoint() );
     const double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );
-    const QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
-                                   layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
+    const QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius, layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
 
     mAutoSetAnchorPoint = false;
     if ( !mAnchorPoint )
@@ -259,7 +258,7 @@ void QgsMapToolScaleFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
       else
       {
-        mFeatureCenterMapCoords =  mAnchorPoint->center();
+        mFeatureCenterMapCoords = mAnchorPoint->center();
       }
 
       mScaledFeatures.clear();
@@ -375,7 +374,7 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
   connect( &avoidIntersections, &QgsAvoidIntersectionsOperation::messageEmitted, this, &QgsMapTool::messageEmitted );
 
   // when removing intersections don't check for intersections with selected features
-  const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures {{vlayer, mScaledFeatures}};
+  const QHash<QgsVectorLayer *, QSet<QgsFeatureId>> ignoreFeatures { { vlayer, mScaledFeatures } };
 
   while ( fi.nextFeature( feat ) )
   {
@@ -394,9 +393,7 @@ void QgsMapToolScaleFeature::applyScaling( double scale )
 
       if ( res.operationResult == Qgis::GeometryOperationResult::InvalidInputGeometryType || geom.isEmpty() )
       {
-        const QString errorMessage = ( geom.isEmpty() ) ?
-                                     tr( "The feature cannot be scaled because the resulting geometry would be empty" ) :
-                                     tr( "An error was reported during intersection removal" );
+        const QString errorMessage = ( geom.isEmpty() ) ? tr( "The feature cannot be scaled because the resulting geometry would be empty" ) : tr( "An error was reported during intersection removal" );
 
         emit messageEmitted( errorMessage, Qgis::MessageLevel::Warning );
         vlayer->destroyEditCommand();
@@ -505,4 +502,3 @@ void QgsMapToolScaleFeature::deleteScalingWidget()
   }
   mScalingWidget = nullptr;
 }
-

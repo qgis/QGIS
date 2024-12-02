@@ -29,14 +29,14 @@
  * \ingroup UnitTests
  * This is a unit test for the QgsMesh3dAveragingMethod derived classes
  */
-class TestQgsMesh3dAveraging: public QObject
+class TestQgsMesh3dAveraging : public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void testMeshSingleLevelFromTopAveragingMethod_data();
     void testMeshSingleLevelFromTopAveragingMethod();
@@ -111,16 +111,12 @@ void TestQgsMesh3dAveraging::initTestCase()
   const QVector<int> faceToVolumeIndex = { 0, 4 };
 
   // so intervals are { 1, 0.5, 1.5, 1 }
-  const QVector<double> verticalLevels = { -1.0, -2.0, -2.5, -4.0, -5.0,
-                                           -1.0, -2.0, -2.5, -4.0, -5.0
-                                         };
+  const QVector<double> verticalLevels = { -1.0, -2.0, -2.5, -4.0, -5.0, -1.0, -2.0, -2.5, -4.0, -5.0 };
 
   const QVector<int> verticalLevelsCount = { 4, 4 };
 
   scalarBlock = QgsMesh3DDataBlock( 2, false );
-  const QVector<double> values = { 1, 2, std::numeric_limits<double>::quiet_NaN(), 4,
-                                   1, 2, std::numeric_limits<double>::quiet_NaN(), 4
-                                 };
+  const QVector<double> values = { 1, 2, std::numeric_limits<double>::quiet_NaN(), 4, 1, 2, std::numeric_limits<double>::quiet_NaN(), 4 };
 
   scalarBlock.setFaceToVolumeIndex( faceToVolumeIndex );
   scalarBlock.setVerticalLevelsCount( verticalLevelsCount );
@@ -129,9 +125,7 @@ void TestQgsMesh3dAveraging::initTestCase()
   scalarBlock.setValid( true );
 
   vectorBlock = QgsMesh3DDataBlock( 2, true );
-  const QVector<double> valuesVec = { 1, 1, 2, 2, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), 4, 4,
-                                      1, 1, 2, 2, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), 4, 4
-                                    };
+  const QVector<double> valuesVec = { 1, 1, 2, 2, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), 4, 4, 1, 1, 2, 2, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), 4, 4 };
   vectorBlock.setFaceToVolumeIndex( faceToVolumeIndex );
   vectorBlock.setVerticalLevelsCount( verticalLevelsCount );
   vectorBlock.setVerticalLevels( verticalLevels );
@@ -148,7 +142,7 @@ void TestQgsMesh3dAveraging::testMeshSingleLevelFromTopAveragingMethod_data()
   QTest::addColumn<int>( "level" );
   QTest::addColumn<double>( "expected" );
 
-  QTest::newRow( "invalid" ) << -111 << std::numeric_limits<double>::quiet_NaN() ;
+  QTest::newRow( "invalid" ) << -111 << std::numeric_limits<double>::quiet_NaN();
   QTest::newRow( "top" ) << 1 << 1.0;
   QTest::newRow( "2" ) << 2 << 2.0;
   QTest::newRow( "3" ) << 3 << std::numeric_limits<double>::quiet_NaN();
@@ -165,23 +159,18 @@ void TestQgsMesh3dAveraging::testMeshSingleLevelFromTopAveragingMethod()
   compare( &method, expected, level >= 1 );
 
   // Same test but with some vertical height equal to 0
-  QVector<double> verticalLevels = { -1.0, -2.0, -4.0, -4.0, -5.0,
-                                     -2.0, -2.0, -2.5, -4.0, -5.0
-                                   };
+  QVector<double> verticalLevels = { -1.0, -2.0, -4.0, -4.0, -5.0, -2.0, -2.0, -2.5, -4.0, -5.0 };
 
   scalarBlock.setVerticalLevels( verticalLevels );
   vectorBlock.setVerticalLevels( verticalLevels );
 
   compare( &method, expected, level >= 1 );
 
-  verticalLevels = { -1.0, -2.0, -2.5, -4.0, -5.0,
-                     -1.0, -2.0, -2.5, -4.0, -5.0
-                   };
+  verticalLevels = { -1.0, -2.0, -2.5, -4.0, -5.0, -1.0, -2.0, -2.5, -4.0, -5.0 };
 
   // Reset vertical levels
   scalarBlock.setVerticalLevels( verticalLevels );
   vectorBlock.setVerticalLevels( verticalLevels );
-
 }
 
 void TestQgsMesh3dAveraging::testMeshSingleLevelFromBottomAveragingMethod_data()
@@ -189,7 +178,7 @@ void TestQgsMesh3dAveraging::testMeshSingleLevelFromBottomAveragingMethod_data()
   QTest::addColumn<int>( "level" );
   QTest::addColumn<double>( "expected" );
 
-  QTest::newRow( "invalid" ) << -111 << std::numeric_limits<double>::quiet_NaN() ;
+  QTest::newRow( "invalid" ) << -111 << std::numeric_limits<double>::quiet_NaN();
   QTest::newRow( "bottom" ) << 1 << 4.0;
   QTest::newRow( "2" ) << 2 << std::numeric_limits<double>::quiet_NaN();
   QTest::newRow( "3" ) << 3 << 2.0;
@@ -206,18 +195,14 @@ void TestQgsMesh3dAveraging::testMeshSingleLevelFromBottomAveragingMethod()
   compare( &method, expected, level >= 1 );
 
   // Same test but with some vertical height equal to 0
-  QVector<double> verticalLevels = { -1.0, -2.0, -4.0, -4.0, -5.0,
-                                     -2.0, -2.0, -2.5, -4.0, -5.0
-                                   };
+  QVector<double> verticalLevels = { -1.0, -2.0, -4.0, -4.0, -5.0, -2.0, -2.0, -2.5, -4.0, -5.0 };
 
   scalarBlock.setVerticalLevels( verticalLevels );
   vectorBlock.setVerticalLevels( verticalLevels );
 
   compare( &method, expected, level >= 1 );
 
-  verticalLevels = { -1.0, -2.0, -2.5, -4.0, -5.0,
-                     -1.0, -2.0, -2.5, -4.0, -5.0
-                   };
+  verticalLevels = { -1.0, -2.0, -2.5, -4.0, -5.0, -1.0, -2.0, -2.5, -4.0, -5.0 };
 
   // Reset vertical levels
   scalarBlock.setVerticalLevels( verticalLevels );
@@ -230,15 +215,15 @@ void TestQgsMesh3dAveraging::testMeshMultiLevelsFromTopAveragingMethod_data()
   QTest::addColumn<int>( "endLevel" );
   QTest::addColumn<double>( "expected" );
 
-  QTest::newRow( "invalid" ) << -111 << -111 << std::numeric_limits<double>::quiet_NaN() ;
-  QTest::newRow( "invalid2" ) << 1 << -111 << std::numeric_limits<double>::quiet_NaN() ;
+  QTest::newRow( "invalid" ) << -111 << -111 << std::numeric_limits<double>::quiet_NaN();
+  QTest::newRow( "invalid2" ) << 1 << -111 << std::numeric_limits<double>::quiet_NaN();
   QTest::newRow( "single level" ) << 1 << 1 << 1.0;
-  QTest::newRow( "1to2" ) << 1 << 2 << ( 1.0 * 1.0 + 2.0 * 0.5 ) / 1.5 ;
-  QTest::newRow( "1to3" ) << 1 << 3 << ( 1.0 * 1.0 + 2.0 * 0.5 ) / 1.5 ;
-  QTest::newRow( "2to4" ) << 2 << 4 << ( 2.0 * 0.5 + 4.0 * 1.0 ) / 1.5 ;
+  QTest::newRow( "1to2" ) << 1 << 2 << ( 1.0 * 1.0 + 2.0 * 0.5 ) / 1.5;
+  QTest::newRow( "1to3" ) << 1 << 3 << ( 1.0 * 1.0 + 2.0 * 0.5 ) / 1.5;
+  QTest::newRow( "2to4" ) << 2 << 4 << ( 2.0 * 0.5 + 4.0 * 1.0 ) / 1.5;
   QTest::newRow( "outside" ) << 100 << 111 << std::numeric_limits<double>::quiet_NaN();
-  QTest::newRow( "outside2" ) << 1 << 111 << ( 1.0 * 1.0 + 2.0 * 0.5 + 4.0 * 1.0 ) / 2.5 ;
-  QTest::newRow( "reverted" ) << 111 << 1 << ( 1.0 * 1.0 + 2.0 * 0.5 + 4.0 * 1.0 ) / 2.5 ;
+  QTest::newRow( "outside2" ) << 1 << 111 << ( 1.0 * 1.0 + 2.0 * 0.5 + 4.0 * 1.0 ) / 2.5;
+  QTest::newRow( "reverted" ) << 111 << 1 << ( 1.0 * 1.0 + 2.0 * 0.5 + 4.0 * 1.0 ) / 2.5;
 }
 
 void TestQgsMesh3dAveraging::testMeshMultiLevelsFromTopAveragingMethod()
@@ -257,15 +242,15 @@ void TestQgsMesh3dAveraging::testMeshMultiLevelsFromBottomAveragingMethod_data()
   QTest::addColumn<int>( "endLevel" );
   QTest::addColumn<double>( "expected" );
 
-  QTest::newRow( "invalid" ) << -111 << -111 << std::numeric_limits<double>::quiet_NaN() ;
-  QTest::newRow( "invalid2" ) << 1 << -111 << std::numeric_limits<double>::quiet_NaN() ;
+  QTest::newRow( "invalid" ) << -111 << -111 << std::numeric_limits<double>::quiet_NaN();
+  QTest::newRow( "invalid2" ) << 1 << -111 << std::numeric_limits<double>::quiet_NaN();
   QTest::newRow( "single level" ) << 1 << 1 << 4.0;
   QTest::newRow( "1to2" ) << 1 << 2 << 4.0;
-  QTest::newRow( "1to3" ) << 1 << 3 << ( 4.0 * 1.0 + 2.0 * 0.5 ) / 1.5 ;
-  QTest::newRow( "2to4" ) << 2 << 4 << ( 2.0 * 0.5 + 1.0 * 1.0 ) / 1.5 ;
+  QTest::newRow( "1to3" ) << 1 << 3 << ( 4.0 * 1.0 + 2.0 * 0.5 ) / 1.5;
+  QTest::newRow( "2to4" ) << 2 << 4 << ( 2.0 * 0.5 + 1.0 * 1.0 ) / 1.5;
   QTest::newRow( "outside" ) << 100 << 111 << std::numeric_limits<double>::quiet_NaN();
-  QTest::newRow( "outside2" ) << 1 << 111 << ( 1.0 * 1.0 + 2.0 * 0.5 + 4.0 * 1.0 ) / 2.5 ;
-  QTest::newRow( "reverted" ) << 111 << 1 << ( 1.0 * 1.0 + 2.0 * 0.5 + 4.0 * 1.0 ) / 2.5 ;
+  QTest::newRow( "outside2" ) << 1 << 111 << ( 1.0 * 1.0 + 2.0 * 0.5 + 4.0 * 1.0 ) / 2.5;
+  QTest::newRow( "reverted" ) << 111 << 1 << ( 1.0 * 1.0 + 2.0 * 0.5 + 4.0 * 1.0 ) / 2.5;
 }
 
 void TestQgsMesh3dAveraging::testMeshMultiLevelsFromBottomAveragingMethod()
@@ -284,9 +269,9 @@ void TestQgsMesh3dAveraging::testMeshSigmaAveragingMethod_data()
   QTest::addColumn<double>( "endParam" );
   QTest::addColumn<double>( "expected" );
 
-  QTest::newRow( "invalid" ) << -1.0 << -111.0 << std::numeric_limits<double>::quiet_NaN() ;
-  QTest::newRow( "invalid2" ) << 1.1 << 111.0 << std::numeric_limits<double>::quiet_NaN() ;
-  QTest::newRow( "invalid3" ) << -1.0 << 111.0 << std::numeric_limits<double>::quiet_NaN() ;
+  QTest::newRow( "invalid" ) << -1.0 << -111.0 << std::numeric_limits<double>::quiet_NaN();
+  QTest::newRow( "invalid2" ) << 1.1 << 111.0 << std::numeric_limits<double>::quiet_NaN();
+  QTest::newRow( "invalid3" ) << -1.0 << 111.0 << std::numeric_limits<double>::quiet_NaN();
   QTest::newRow( "full" ) << 0.0 << 1.0 << ( 1.0 * 1.0 + 2.0 * 0.5 + 4.0 * 1.0 ) / 2.5;
 }
 
@@ -306,7 +291,7 @@ void TestQgsMesh3dAveraging::testMeshDepthAveragingMethod_data()
   QTest::addColumn<double>( "endParam" );
   QTest::addColumn<double>( "expected" );
 
-  QTest::newRow( "invalid" ) << -1.0 << -111.0 << std::numeric_limits<double>::quiet_NaN() ;
+  QTest::newRow( "invalid" ) << -1.0 << -111.0 << std::numeric_limits<double>::quiet_NaN();
   QTest::newRow( "1to2" ) << 0.0 << 1.5 << ( 1.0 * 1.0 + 2.0 * 0.5 ) / 1.5;
   QTest::newRow( "25to45" ) << 1.25 << 3.5 << ( 2.0 * 0.25 + 4.0 * 0.5 ) / 0.75;
   QTest::newRow( "full" ) << 0.0 << 10.0 << ( 1.0 * 1.0 + 2.0 * 0.5 + 4.0 * 1.0 ) / 2.5;
@@ -328,7 +313,7 @@ void TestQgsMesh3dAveraging::testMeshHeightAveragingMethod_data()
   QTest::addColumn<double>( "endParam" );
   QTest::addColumn<double>( "expected" );
 
-  QTest::newRow( "invalid" ) << -1.0 << -111.0 << std::numeric_limits<double>::quiet_NaN() ;
+  QTest::newRow( "invalid" ) << -1.0 << -111.0 << std::numeric_limits<double>::quiet_NaN();
   QTest::newRow( "1to2" ) << 2.5 << 4.0 << ( 1.0 * 1.0 + 2.0 * 0.5 ) / 1.5;
   QTest::newRow( "25to45" ) << 2.75 << 0.5 << ( 2.0 * 0.25 + 4.0 * 0.5 ) / 0.75;
   QTest::newRow( "full" ) << 0.0 << 10.0 << ( 1.0 * 1.0 + 2.0 * 0.5 + 4.0 * 1.0 ) / 2.5;
@@ -350,7 +335,7 @@ void TestQgsMesh3dAveraging::testMeshElevationAveragingMethod_data()
   QTest::addColumn<double>( "endParam" );
   QTest::addColumn<double>( "expected" );
 
-  QTest::newRow( "invalid" ) << 1.0 << 111.0 << std::numeric_limits<double>::quiet_NaN() ;
+  QTest::newRow( "invalid" ) << 1.0 << 111.0 << std::numeric_limits<double>::quiet_NaN();
   QTest::newRow( "1to2" ) << -1.0 << -2.5 << ( 1.0 * 1.0 + 2.0 * 0.5 ) / 1.5;
   QTest::newRow( "25to45" ) << -2.25 << -4.5 << ( 2.0 * 0.25 + 4.0 * 0.5 ) / 0.75;
   QTest::newRow( "full" ) << 0.0 << -10.0 << ( 1.0 * 1.0 + 2.0 * 0.5 + 4.0 * 1.0 ) / 2.5;
@@ -372,18 +357,12 @@ void TestQgsMesh3dAveraging::testMeshElevationAveragingMethodVariableMesh()
   // each face and also that for face 1 the vertical levels are outside of
   // requested elevation range
   const QVector<int> faceToVolumeIndex = { 0, 4, 7 };
-  const QVector<double> verticalLevels = { -1.0, -2.0, -3.0, -4.0, -5.0,
-                                           -1.0, -1.1, -1.3, -1.5,
-                                           -1.0, -2.0, -3.0, -4.0, -5.0, -6.0
-                                         };
+  const QVector<double> verticalLevels = { -1.0, -2.0, -3.0, -4.0, -5.0, -1.0, -1.1, -1.3, -1.5, -1.0, -2.0, -3.0, -4.0, -5.0, -6.0 };
 
   const QVector<int> verticalLevelsCount = { 4, 3, 5 };
 
   QgsMesh3DDataBlock scalarBlock2( 3, false );
-  const QVector<double> values = { 1, 2, 3, 4,
-                                   0, 0, 0,
-                                   100, 200, 300, 400, 500
-                                 };
+  const QVector<double> values = { 1, 2, 3, 4, 0, 0, 0, 100, 200, 300, 400, 500 };
 
   scalarBlock2.setFaceToVolumeIndex( faceToVolumeIndex );
   scalarBlock2.setVerticalLevelsCount( verticalLevelsCount );

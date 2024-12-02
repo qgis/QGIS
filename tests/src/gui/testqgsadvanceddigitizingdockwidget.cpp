@@ -27,13 +27,12 @@ class TestQgsAdvancedDigitizingDockWidget : public QObject
     TestQgsAdvancedDigitizingDockWidget() = default;
 
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void parseUserInput();
-
 };
 
 void TestQgsAdvancedDigitizingDockWidget::initTestCase()
@@ -60,7 +59,7 @@ void TestQgsAdvancedDigitizingDockWidget::parseUserInput()
 {
   QgsProject::instance()->clear();
   QgsMapCanvas canvas;
-  QgsAdvancedDigitizingDockWidget widget{ &canvas };
+  QgsAdvancedDigitizingDockWidget widget { &canvas };
 
   bool ok;
   double result;
@@ -127,7 +126,7 @@ void TestQgsAdvancedDigitizingDockWidget::parseUserInput()
   QVERIFY( ok );
 
   result = widget.parseUserInput( QStringLiteral( "120.123NM" ), Qgis::CadConstraintType::Distance, ok );
-  QCOMPARE( result,  120.123 );
+  QCOMPARE( result, 120.123 );
   QVERIFY( ok );
 
   // Set a CRS using feet as units
@@ -136,8 +135,6 @@ void TestQgsAdvancedDigitizingDockWidget::parseUserInput()
   result = widget.parseUserInput( QStringLiteral( "100" ), Qgis::CadConstraintType::Distance, ok );
   QCOMPARE( result, 100.0 * QgsUnitTypes::fromUnitToUnitFactor( Qgis::DistanceUnit::Meters, Qgis::DistanceUnit::FeetUSSurvey ) );
   QVERIFY( ok );
-
-
 }
 
 QGSTEST_MAIN( TestQgsAdvancedDigitizingDockWidget )

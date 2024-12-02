@@ -100,7 +100,7 @@ void TestQgsMapToolRectangle::cleanup()
 
 void TestQgsMapToolRectangle::resetMapTool( QgsMapToolShapeMetadata *metadata )
 {
-  mMapTool->setCurrentShapeMapTool( metadata ) ;
+  mMapTool->setCurrentShapeMapTool( metadata );
 }
 
 void TestQgsMapToolRectangle::testRectangleFromCenter()

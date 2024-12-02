@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Matthias Kuhn'
-__date__ = 'January 2016'
-__copyright__ = '(C) 2016, Matthias Kuhn'
+__author__ = "Matthias Kuhn"
+__date__ = "January 2016"
+__copyright__ = "(C) 2016, Matthias Kuhn"
 
 import AlgorithmsTestBase
 
@@ -25,11 +25,13 @@ import nose2
 import shutil
 import os
 
-from qgis.core import (QgsApplication,
-                       QgsProcessingAlgorithm,
-                       QgsProcessingFeedback,
-                       QgsProcessingException)
-from qgis.analysis import (QgsNativeAlgorithms)
+from qgis.core import (
+    QgsApplication,
+    QgsProcessingAlgorithm,
+    QgsProcessingFeedback,
+    QgsProcessingException,
+)
+from qgis.analysis import QgsNativeAlgorithms
 import unittest
 from qgis.testing import start_app, QgisTestCase
 from processing.tools.dataobjects import createContext
@@ -43,10 +45,10 @@ class TestAlg(QgsProcessingAlgorithm):
         super().__init__()
 
     def name(self):
-        return 'testalg'
+        return "testalg"
 
     def displayName(self):
-        return 'testalg'
+        return "testalg"
 
     def initAlgorithm(self, config=None):
         pass
@@ -55,7 +57,7 @@ class TestAlg(QgsProcessingAlgorithm):
         return TestAlg()
 
     def processAlgorithm(self, parameters, context, feedback):
-        raise QgsProcessingException('Exception while processing')
+        raise QgsProcessingException("Exception while processing")
         return {}
 
 
@@ -65,6 +67,7 @@ class TestQgisAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
     def setUpClass(cls):
         start_app()
         from processing.core.Processing import Processing
+
         Processing.initialize()
         cls.cleanup_paths = []
         cls.in_place_layers = {}
@@ -73,12 +76,13 @@ class TestQgisAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
     @classmethod
     def tearDownClass(cls):
         from processing.core.Processing import Processing
+
         Processing.deinitialize()
         for path in cls.cleanup_paths:
             shutil.rmtree(path)
 
     def definition_file(self):
-        return 'qgis_algorithm_tests1.yaml'
+        return "qgis_algorithm_tests1.yaml"
 
     def testProcessingException(self):
         """
@@ -97,11 +101,13 @@ class TestQgisAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             # check that pythonImportString correctly imports
             exec(import_string)
             # and now we should be able to instantiate an object!
-            if t.className() == 'QgsProcessingParameterProviderConnection':
-                exec(f'test = {t.className()}(\'id\',\'name\', \'provider\')\nself.assertIsNotNone(test)')
+            if t.className() == "QgsProcessingParameterProviderConnection":
+                exec(
+                    f"test = {t.className()}('id','name', 'provider')\nself.assertIsNotNone(test)"
+                )
             else:
-                exec(f'test = {t.className()}(\'id\',\'name\')\nself.assertIsNotNone(test)')
+                exec(f"test = {t.className()}('id','name')\nself.assertIsNotNone(test)")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     nose2.main()

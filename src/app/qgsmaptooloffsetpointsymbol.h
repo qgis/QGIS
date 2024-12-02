@@ -29,7 +29,7 @@ class QgsMapCanvasMarkerSymbolItem;
  * \brief A class that allows interactive manipulation of the offset field(s) for point layers.
  */
 
-class APP_EXPORT QgsMapToolOffsetPointSymbol: public QgsMapToolPointSymbol
+class APP_EXPORT QgsMapToolOffsetPointSymbol : public QgsMapToolPointSymbol
 {
     Q_OBJECT
 
@@ -48,13 +48,11 @@ class APP_EXPORT QgsMapToolOffsetPointSymbol: public QgsMapToolPointSymbol
     static bool layerIsOffsetable( QgsMapLayer *ml );
 
   protected:
-
     void canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint ) override;
     bool checkSymbolCompatibility( QgsMarkerSymbol *markerSymbol, QgsRenderContext &context ) override;
     void noCompatibleSymbols() override;
 
   private:
-
     //! True when user is dragging to offset a point
     bool mOffsetting;
 
@@ -62,7 +60,7 @@ class APP_EXPORT QgsMapToolOffsetPointSymbol: public QgsMapToolPointSymbol
     QgsMapCanvasMarkerSymbolItem *mOffsetItem = nullptr;
 
     //! Clone of first found marker symbol for feature with offset attribute set
-    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
+    std::unique_ptr<QgsMarkerSymbol> mMarkerSymbol;
 
     //! Feature which was clicked on
     QgsFeature mClickedFeature;
@@ -80,7 +78,7 @@ class APP_EXPORT QgsMapToolOffsetPointSymbol: public QgsMapToolPointSymbol
      * Calculates the new values for offset attributes, respecting the symbol's offset units
      * \note start and end point are in map units
      */
-    QMap< int, QVariant > calculateNewOffsetAttributes( const QgsPointXY &startPoint, const QgsPointXY &endPoint ) const;
+    QMap<int, QVariant> calculateNewOffsetAttributes( const QgsPointXY &startPoint, const QgsPointXY &endPoint ) const;
 
     /**
      * Updates the preview item to reflect a new offset.

@@ -1,4 +1,4 @@
-'''
+"""
 test_qgsoptional.py
                      --------------------------------------
                Date                 : September 2016
@@ -12,8 +12,7 @@ test_qgsoptional.py
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-'''
-
+"""
 
 from qgis.core import QgsExpression, QgsOptionalExpression
 from qgis.testing import unittest
@@ -34,27 +33,27 @@ class TestQgsOptional(unittest.TestCase):
         self.assertFalse(opt.enabled())
         self.assertFalse(opt)
 
-        opt = QgsOptionalExpression(QgsExpression('true'))
+        opt = QgsOptionalExpression(QgsExpression("true"))
         self.assertTrue(opt.enabled())
-        self.assertEqual(opt.data().expression(), 'true')
+        self.assertEqual(opt.data().expression(), "true")
         self.assertTrue(opt)
         opt.setEnabled(False)
         self.assertFalse(opt.enabled())
         self.assertFalse(opt)
         # boolean operator not yet working in python
         # self.assertFalse(opt)
-        self.assertEqual(opt.data().expression(), 'true')
+        self.assertEqual(opt.data().expression(), "true")
         opt.setEnabled(True)
         self.assertTrue(opt.enabled())
         # self.assertTrue(opt)
-        self.assertEqual(opt.data().expression(), 'true')
-        opt.setData(QgsExpression('xyz'))
+        self.assertEqual(opt.data().expression(), "true")
+        opt.setData(QgsExpression("xyz"))
         self.assertTrue(opt.enabled())
-        self.assertEqual(opt.data().expression(), 'xyz')
+        self.assertEqual(opt.data().expression(), "xyz")
 
-        opt = QgsOptionalExpression(QgsExpression('true'), False)
+        opt = QgsOptionalExpression(QgsExpression("true"), False)
         self.assertFalse(opt.enabled())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

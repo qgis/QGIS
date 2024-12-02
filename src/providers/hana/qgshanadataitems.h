@@ -70,8 +70,7 @@ class QgsHanaSchemaItem : public QgsDatabaseSchemaItem
 {
     Q_OBJECT
   public:
-    QgsHanaSchemaItem( QgsDataItem *parent, const QString &connectionName, const QString &name,
-                       const QString &path );
+    QgsHanaSchemaItem( QgsDataItem *parent, const QString &connectionName, const QString &name, const QString &path );
 
     const QString &connectionName() const { return mConnectionName; }
     QVector<QgsDataItem *> createChildren() override;
@@ -90,8 +89,7 @@ class QgsHanaLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsHanaLayerItem( QgsDataItem *parent, const QString &name, const QString &path,
-                      Qgis::BrowserLayerType layerType, const QgsHanaLayerProperty &layerProperties );
+    QgsHanaLayerItem( QgsDataItem *parent, const QString &name, const QString &path, Qgis::BrowserLayerType layerType, const QgsHanaLayerProperty &layerProperties );
 
     QVector<QgsDataItem *> createChildren() override;
 

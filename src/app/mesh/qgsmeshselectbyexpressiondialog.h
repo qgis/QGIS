@@ -34,7 +34,6 @@ class APP_EXPORT QgsMeshSelectByExpressionDialog : public QDialog, private Ui::Q
 {
     Q_OBJECT
   public:
-
     //! Constructor
     QgsMeshSelectByExpressionDialog( QWidget *parent = nullptr );
 

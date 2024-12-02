@@ -7,9 +7,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = '(C) 2020 by Nyall Dawson'
-__date__ = '29/07/2020'
-__copyright__ = 'Copyright 2020, The QGIS Project'
+
+__author__ = "(C) 2020 by Nyall Dawson"
+__date__ = "29/07/2020"
+__copyright__ = "Copyright 2020, The QGIS Project"
 
 from qgis.core import Qgis, QgsAnnotationItemNode, QgsPointXY, QgsVertexId
 import unittest
@@ -24,7 +25,11 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestQgsAnnotationItemNode(QgisTestCase):
 
     def test_basic(self):
-        node = QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(1, 2), Qgis.AnnotationItemNodeType.VertexHandle)
+        node = QgsAnnotationItemNode(
+            QgsVertexId(0, 0, 1),
+            QgsPointXY(1, 2),
+            Qgis.AnnotationItemNodeType.VertexHandle,
+        )
         self.assertEqual(node.point(), QgsPointXY(1, 2))
         self.assertEqual(node.id(), QgsVertexId(0, 0, 1))
 
@@ -34,21 +39,41 @@ class TestQgsAnnotationItemNode(QgisTestCase):
         self.assertEqual(node.type(), Qgis.AnnotationItemNodeType.VertexHandle)
 
     def test_repr(self):
-        node = QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(1, 2), Qgis.AnnotationItemNodeType.VertexHandle)
-        self.assertEqual(str(node), '<QgsAnnotationItemNode: 1 - VertexHandle (1, 2)>')
+        node = QgsAnnotationItemNode(
+            QgsVertexId(0, 0, 1),
+            QgsPointXY(1, 2),
+            Qgis.AnnotationItemNodeType.VertexHandle,
+        )
+        self.assertEqual(str(node), "<QgsAnnotationItemNode: 1 - VertexHandle (1, 2)>")
 
     def test_equality(self):
-        node = QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(1, 2), Qgis.AnnotationItemNodeType.VertexHandle)
-        node2 = QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(1, 2), Qgis.AnnotationItemNodeType.VertexHandle)
+        node = QgsAnnotationItemNode(
+            QgsVertexId(0, 0, 1),
+            QgsPointXY(1, 2),
+            Qgis.AnnotationItemNodeType.VertexHandle,
+        )
+        node2 = QgsAnnotationItemNode(
+            QgsVertexId(0, 0, 1),
+            QgsPointXY(1, 2),
+            Qgis.AnnotationItemNodeType.VertexHandle,
+        )
         self.assertEqual(node, node2)
 
         node2.setPoint(QgsPointXY(3, 4))
         self.assertNotEqual(node, node2)
 
-        node = QgsAnnotationItemNode(QgsVertexId(0, 0, 1), QgsPointXY(1, 2), Qgis.AnnotationItemNodeType.VertexHandle)
-        node2 = QgsAnnotationItemNode(QgsVertexId(0, 0, 2), QgsPointXY(1, 2), Qgis.AnnotationItemNodeType.VertexHandle)
+        node = QgsAnnotationItemNode(
+            QgsVertexId(0, 0, 1),
+            QgsPointXY(1, 2),
+            Qgis.AnnotationItemNodeType.VertexHandle,
+        )
+        node2 = QgsAnnotationItemNode(
+            QgsVertexId(0, 0, 2),
+            QgsPointXY(1, 2),
+            Qgis.AnnotationItemNodeType.VertexHandle,
+        )
         self.assertNotEqual(node, node2)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

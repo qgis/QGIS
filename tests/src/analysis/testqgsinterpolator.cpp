@@ -25,16 +25,15 @@ class TestQgsInterpolator : public QgsTest
     Q_OBJECT
 
   public:
-
     TestQgsInterpolator()
       : QgsTest( QStringLiteral( "Interpolator Tests" ) )
     {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() ;// will be called before each testfunction is executed.
-    void cleanup() ;// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
     void dualEdge();
 
     void TIN_IDW_Interpolator_with_attribute();
@@ -43,7 +42,7 @@ class TestQgsInterpolator : public QgsTest
   private:
 };
 
-void  TestQgsInterpolator::initTestCase()
+void TestQgsInterpolator::initTestCase()
 {
   //
   // Runs once before any tests are run
@@ -272,7 +271,7 @@ void TestQgsInterpolator::dualEdge()
   QCOMPARE( tri.oppositePoint( 4, 2 ), 1 );
   QCOMPARE( tri.oppositePoint( 4, 3 ), 2 );
 
-//  QVERIFY( tri.getSurroundingTriangles( 0 ).empty() );
+  //  QVERIFY( tri.getSurroundingTriangles( 0 ).empty() );
 
   const QgsMesh mesh = tri.triangulationToMesh();
   QCOMPARE( mesh.faceCount(), 4 );
@@ -284,17 +283,15 @@ void TestQgsInterpolator::dualEdge()
   QCOMPARE( mesh.vertex( 3 ), QgsMeshVertex( 2.0, 4.0, 6.0 ) );
   QCOMPARE( mesh.vertex( 4 ), QgsMeshVertex( 2.0, 2.0, 7.0 ) );
 
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 4, 3} ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {4, 2, 3} ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 2 ), QgsMeshFace( {1, 4, 0} ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 3 ), QgsMeshFace( {2, 4, 1} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( { 0, 4, 3 } ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( { 4, 2, 3 } ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 2 ), QgsMeshFace( { 1, 4, 0 } ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 3 ), QgsMeshFace( { 2, 4, 1 } ) ) );
 }
 
 void TestQgsInterpolator::TIN_IDW_Interpolator_with_Z()
 {
-  std::unique_ptr<QgsVectorLayer>mLayerPoint = std::make_unique<QgsVectorLayer>( QStringLiteral( "PointZ" ),
-      QStringLiteral( "point" ),
-      QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> mLayerPoint = std::make_unique<QgsVectorLayer>( QStringLiteral( "PointZ" ), QStringLiteral( "point" ), QStringLiteral( "memory" ) );
 
   const QString wkt1 = "PointZ (0.0 0.0 1.0)";
   const QString wkt2 = "PointZ (2.0 0.0 2.0)";
@@ -363,9 +360,7 @@ void TestQgsInterpolator::TIN_IDW_Interpolator_with_Z()
 
 void TestQgsInterpolator::TIN_IDW_Interpolator_with_attribute()
 {
-  std::unique_ptr<QgsVectorLayer>mLayerPoint = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=ZValue:real" ),
-      QStringLiteral( "point" ),
-      QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> mLayerPoint = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?field=ZValue:real" ), QStringLiteral( "point" ), QStringLiteral( "memory" ) );
 
   QVERIFY( mLayerPoint->fields().field( "ZValue" ).type() == QMetaType::Type::Double );
 

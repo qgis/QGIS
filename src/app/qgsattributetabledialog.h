@@ -41,7 +41,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      * \param layer layer pointer
@@ -49,12 +48,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * \param parent parent object
      * \param flags window flags
      */
-    QgsAttributeTableDialog( QgsVectorLayer *layer,
-                             QgsAttributeTableFilterModel::FilterMode initialMode = QgsAttributeTableFilterModel::ShowAll,
-                             QWidget *parent = nullptr,
-                             Qt::WindowFlags flags = Qt::Window,
-                             bool *initiallyDocked = nullptr,
-                             const QString &filterExpression = QString() );
+    QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode = QgsAttributeTableFilterModel::ShowAll, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window, bool *initiallyDocked = nullptr, const QString &filterExpression = QString() );
     ~QgsAttributeTableDialog() override;
 
     QgsExpressionContext createExpressionContext() const override;
@@ -82,9 +76,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * Sets the filter expression to filter visible features
      * \param filterString filter query string. QgsExpression compatible.
      */
-    void setFilterExpression( const QString &filterString,
-                              QgsAttributeForm::FilterType type = QgsAttributeForm::ReplaceFilter,
-                              bool alwaysShowFilter = false );
+    void setFilterExpression( const QString &filterString, QgsAttributeForm::FilterType type = QgsAttributeForm::ReplaceFilter, bool alwaysShowFilter = false );
 
     /**
      * Set the view \a mode (e.g. attribute table or attribute editor).
@@ -216,7 +208,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void saveEdits( QgsMapLayer *layer );
 
   protected:
-
     /*
      * Handle KeyPress event of the window
      * \param event
@@ -239,12 +230,12 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     QDialog *mDialog = nullptr;
 
-    QPointer< QgsVectorLayer > mLayer = nullptr;
+    QPointer<QgsVectorLayer> mLayer = nullptr;
     void updateMultiEditButtonState();
     void deleteFeature( QgsFeatureId fid );
     void toggleShortcuts( bool enable );
 
-    QList< QPointer< QgsVectorLayer> > mReferencingLayers;
+    QList<QPointer<QgsVectorLayer>> mReferencingLayers;
 
     QAction *mActionDockUndock = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;

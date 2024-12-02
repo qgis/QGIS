@@ -150,7 +150,7 @@ int main( int argc, char **argv )
   qint32 typeQint32;
   stdinStream >> typeQint32;
   checkStream( stdinStream );
-  Qgis::WkbType wkbType = static_cast< Qgis::WkbType >( typeQint32 );
+  Qgis::WkbType wkbType = static_cast<Qgis::WkbType>( typeQint32 );
   Qgis::WkbType wkbFlatType = QgsWkbTypes::flatType( wkbType );
   bool isPolygon = QgsWkbTypes::singleType( wkbFlatType ) == Qgis::WkbType::Polygon;
 
@@ -187,8 +187,7 @@ int main( int argc, char **argv )
   fields.extend( srcFields );
 
   struct field_info *fieldInfo = Vect_default_field_info( finalMap, 1, nullptr, GV_1TABLE );
-  if ( Vect_map_add_dblink( finalMap, 1, nullptr, fieldInfo->table, key.toLatin1().data(),
-                            fieldInfo->database, fieldInfo->driver ) != 0 )
+  if ( Vect_map_add_dblink( finalMap, 1, nullptr, fieldInfo->table, key.toLatin1().data(), fieldInfo->database, fieldInfo->driver ) != 0 )
   {
     G_fatal_error( "Cannot add link" );
   }
@@ -231,7 +230,7 @@ int main( int argc, char **argv )
     checkStream( stdinStream );
 #ifndef Q_OS_WIN
     // cannot be used on Windows, see notes in qgis.r.in
-//#if 0
+    //#if 0
     stdoutStream << true; // feature received
     stdoutFile.flush();
 //#endif

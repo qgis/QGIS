@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Andrea Aime'
-__date__ = 'July 2016'
-__copyright__ = '(C) 2012, Andrea Aime'
+__author__ = "Andrea Aime"
+__date__ = "July 2016"
+__copyright__ = "(C) 2012, Andrea Aime"
 
 import os
 
@@ -71,34 +71,42 @@ start_app()
 
 class TestQgsSymbolLayerCreateSld(QgisTestCase):
     """
-     This class tests the creation of SLD from QGis layers
-     """
+    This class tests the creation of SLD from QGis layers
+    """
 
     def testSimpleMarkerRotation(self):
         symbol = QgsSimpleMarkerSymbolLayer(
-            QgsSimpleMarkerSymbolLayerBase.Shape.Star, color=QColor(255, 0, 0), strokeColor=QColor(0, 255, 0), size=10)
+            QgsSimpleMarkerSymbolLayerBase.Shape.Star,
+            color=QColor(255, 0, 0),
+            strokeColor=QColor(0, 255, 0),
+            size=10,
+        )
         symbol.setAngle(50)
         dom, root = self.symbolToSld(symbol)
         # print( "Simple marker rotation: " + root.ownerDocument().toString())
 
-        self.assertStaticRotation(root, '50')
+        self.assertStaticRotation(root, "50")
 
         symbol.setAngle(-50)
         dom, root = self.symbolToSld(symbol)
         # print( "Simple marker rotation: " + root.ownerDocument().toString())
 
-        self.assertStaticRotation(root, '-50')
+        self.assertStaticRotation(root, "-50")
 
     def testSimpleMarkerUnitDefault(self):
         symbol = QgsSimpleMarkerSymbolLayer(
-            QgsSimpleMarkerSymbolLayerBase.Shape.Star, color=QColor(255, 0, 0), strokeColor=QColor(0, 255, 0), size=10)
+            QgsSimpleMarkerSymbolLayerBase.Shape.Star,
+            color=QColor(255, 0, 0),
+            strokeColor=QColor(0, 255, 0),
+            size=10,
+        )
         symbol.setStrokeWidth(3)
         symbol.setOffset(QPointF(5, 10))
         dom, root = self.symbolToSld(symbol)
         # print("Simple marker unit mm: " + root.ownerDocument().toString())
 
         # Check the size has been rescaled to pixels
-        self.assertStaticSize(root, '36')
+        self.assertStaticSize(root, "36")
 
         # Check the same happened to the stroke width
         self.assertStrokeWidth(root, 2, 11)
@@ -112,7 +120,11 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
 
     def testSimpleMarkerUnitPixels(self):
         symbol = QgsSimpleMarkerSymbolLayer(
-            QgsSimpleMarkerSymbolLayerBase.Shape.Star, color=QColor(255, 0, 0), strokeColor=QColor(0, 255, 0), size=10)
+            QgsSimpleMarkerSymbolLayerBase.Shape.Star,
+            color=QColor(255, 0, 0),
+            strokeColor=QColor(0, 255, 0),
+            size=10,
+        )
         symbol.setStrokeWidth(3)
         symbol.setOffset(QPointF(5, 10))
         symbol.setOutputUnit(QgsUnitTypes.RenderUnit.RenderPixels)
@@ -120,99 +132,104 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         # print("Marker unit mm: " + root.ownerDocument().toString())
 
         # Check the size has not been rescaled
-        self.assertStaticSize(root, '10')
+        self.assertStaticSize(root, "10")
 
         # Check the same happened to the stroke width
         self.assertStrokeWidth(root, 2, 3)
         self.assertStaticDisplacement(root, 5, 10)
 
     def testSvgMarkerUnitDefault(self):
-        symbol = QgsSvgMarkerSymbolLayer('symbols/star.svg', 10, 90)
+        symbol = QgsSvgMarkerSymbolLayer("symbols/star.svg", 10, 90)
         symbol.setFillColor(QColor("blue"))
         symbol.setStrokeWidth(1)
-        symbol.setStrokeColor(QColor('red'))
-        symbol.setPath('symbols/star.svg')
+        symbol.setStrokeColor(QColor("red"))
+        symbol.setPath("symbols/star.svg")
         symbol.setOffset(QPointF(5, 10))
 
         dom, root = self.symbolToSld(symbol)
         # print("Svg marker mm: " + dom.toString())
 
-        self.assertExternalGraphic(root, 0,
-                                   'symbols/star.svg?fill=%230000ff&fill-opacity=1&outline=%23ff0000&outline-opacity=1&outline-width=4',
-                                   'image/svg+xml')
-        self.assertExternalGraphic(root, 1,
-                                   'symbols/star.svg', 'image/svg+xml')
-        self.assertWellKnownMark(root, 0, 'square', '#0000ff', '#ff0000', 4)
+        self.assertExternalGraphic(
+            root,
+            0,
+            "symbols/star.svg?fill=%230000ff&fill-opacity=1&outline=%23ff0000&outline-opacity=1&outline-width=4",
+            "image/svg+xml",
+        )
+        self.assertExternalGraphic(root, 1, "symbols/star.svg", "image/svg+xml")
+        self.assertWellKnownMark(root, 0, "square", "#0000ff", "#ff0000", 4)
 
         # Check the size has been rescaled
-        self.assertStaticSize(root, '36')
+        self.assertStaticSize(root, "36")
 
         # Check rotation for good measure
-        self.assertStaticRotation(root, '90')
+        self.assertStaticRotation(root, "90")
         self.assertStaticDisplacement(root, 18, 36)
 
         symbol.setAngle(-45)
         dom, root = self.symbolToSld(symbol)
-        self.assertStaticRotation(root, '-45')
+        self.assertStaticRotation(root, "-45")
 
     def testSvgMarkerUnitPixels(self):
-        symbol = QgsSvgMarkerSymbolLayer('symbols/star.svg', 10, 0)
+        symbol = QgsSvgMarkerSymbolLayer("symbols/star.svg", 10, 0)
         symbol.setFillColor(QColor("blue"))
         symbol.setStrokeWidth(1)
-        symbol.setStrokeColor(QColor('red'))
-        symbol.setPath('symbols/star.svg')
+        symbol.setStrokeColor(QColor("red"))
+        symbol.setPath("symbols/star.svg")
         symbol.setOffset(QPointF(5, 10))
         symbol.setOutputUnit(QgsUnitTypes.RenderUnit.RenderPixels)
         dom, root = self.symbolToSld(symbol)
         # print("Svg marker unit px: " + dom.toString())
 
-        self.assertExternalGraphic(root, 0,
-                                   'symbols/star.svg?fill=%230000ff&fill-opacity=1&outline=%23ff0000&outline-opacity=1&outline-width=1',
-                                   'image/svg+xml')
-        self.assertExternalGraphic(root, 1,
-                                   'symbols/star.svg', 'image/svg+xml')
-        self.assertWellKnownMark(root, 0, 'square', '#0000ff', '#ff0000', 1)
+        self.assertExternalGraphic(
+            root,
+            0,
+            "symbols/star.svg?fill=%230000ff&fill-opacity=1&outline=%23ff0000&outline-opacity=1&outline-width=1",
+            "image/svg+xml",
+        )
+        self.assertExternalGraphic(root, 1, "symbols/star.svg", "image/svg+xml")
+        self.assertWellKnownMark(root, 0, "square", "#0000ff", "#ff0000", 1)
 
         # Check the size has not been rescaled
-        self.assertStaticSize(root, '10')
+        self.assertStaticSize(root, "10")
         self.assertStaticDisplacement(root, 5, 10)
 
     def testFontMarkerUnitDefault(self):
-        symbol = QgsFontMarkerSymbolLayer('sans', ',', 10, QColor('black'), 45)
+        symbol = QgsFontMarkerSymbolLayer("sans", ",", 10, QColor("black"), 45)
         symbol.setOffset(QPointF(5, 10))
         dom, root = self.symbolToSld(symbol)
         # print("Font marker unit mm: " + dom.toString())
 
         # Check the size has been rescaled
-        self.assertStaticSize(root, '36')
-        self.assertStaticRotation(root, '45')
+        self.assertStaticSize(root, "36")
+        self.assertStaticRotation(root, "45")
         self.assertStaticDisplacement(root, 18, 36)
 
         symbol.setAngle(-45)
         dom, root = self.symbolToSld(symbol)
-        self.assertStaticRotation(root, '-45')
+        self.assertStaticRotation(root, "-45")
 
     def testFontMarkerUnitPixel(self):
-        symbol = QgsFontMarkerSymbolLayer('sans', ',', 10, QColor('black'), 45)
+        symbol = QgsFontMarkerSymbolLayer("sans", ",", 10, QColor("black"), 45)
         symbol.setOffset(QPointF(5, 10))
         symbol.setOutputUnit(QgsUnitTypes.RenderUnit.RenderPixels)
         dom, root = self.symbolToSld(symbol)
         # print ("Font marker unit mm: " + dom.toString())
 
         # Check the size has been rescaled
-        self.assertStaticSize(root, '10')
-        self.assertStaticRotation(root, '45')
+        self.assertStaticSize(root, "10")
+        self.assertStaticRotation(root, "45")
         self.assertStaticDisplacement(root, 5, 10)
 
         symbol.setAngle(-45)
         dom, root = self.symbolToSld(symbol)
-        self.assertStaticRotation(root, '-45')
+        self.assertStaticRotation(root, "-45")
 
     def createEllipseSymbolLayer(self):
         # No way to build it programmatically...
-        mTestName = 'QgsEllipseSymbolLayer'
+        mTestName = "QgsEllipseSymbolLayer"
         mFilePath = QDir.toNativeSeparators(
-            f'{unitTestDataPath()}/symbol_layer/{mTestName}.sld')
+            f"{unitTestDataPath()}/symbol_layer/{mTestName}.sld"
+        )
 
         mDoc = QDomDocument(mTestName)
         mFile = QFile(mFilePath)
@@ -220,7 +237,8 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         mDoc.setContent(mFile, True)
         mFile.close()
         mSymbolLayer = QgsEllipseSymbolLayer.createFromSld(
-            mDoc.elementsByTagName('PointSymbolizer').item(0).toElement())
+            mDoc.elementsByTagName("PointSymbolizer").item(0).toElement()
+        )
         return mSymbolLayer
 
     def testEllipseMarkerUnitDefault(self):
@@ -231,7 +249,7 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         # print ("Ellipse marker unit mm: " + dom.toString())
 
         # Check the size has been rescaled
-        self.assertStaticSize(root, '25')
+        self.assertStaticSize(root, "25")
         # Check also the stroke width
         self.assertStrokeWidth(root, 2, 4)
         self.assertStaticDisplacement(root, 18, 36)
@@ -244,7 +262,7 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         # print ("Ellipse marker unit mm: " + dom.toString())
 
         # Check the size has been rescaled
-        self.assertStaticSize(root, '7')
+        self.assertStaticSize(root, "7")
         # Check also the stroke width
         self.assertStrokeWidth(root, 2, 1)
         self.assertStaticDisplacement(root, 5, 10)
@@ -268,8 +286,8 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         # print ("Simple line px: \n" + dom.toString())
 
         self.assertStrokeWidth(root, 1, 4)
-        self.assertDashPattern(root, 4, '36 36')
-        self.assertStaticPerpendicularOffset(root, '18')
+        self.assertDashPattern(root, 4, "36 36")
+        self.assertStaticPerpendicularOffset(root, "18")
 
     def testSimpleLineUnitPixel(self):
         symbol = QgsSimpleLineSymbolLayer(QColor("black"), 1)
@@ -282,13 +300,14 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         # print ("Simple line px: \n" + dom.toString())
 
         self.assertStrokeWidth(root, 1, 1)
-        self.assertDashPattern(root, 4, '10 10')
-        self.assertStaticPerpendicularOffset(root, '5')
+        self.assertDashPattern(root, 4, "10 10")
+        self.assertStaticPerpendicularOffset(root, "5")
 
     def testMarkLineUnitDefault(self):
         symbol = QgsMarkerLineSymbolLayer()
         symbol.setSubSymbol(
-            QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3'}))
+            QgsMarkerSymbol.createSimple({"color": "#ffffff", "size": "3"})
+        )
         symbol.setInterval(5)
         symbol.setOffset(5)
         dom, root = self.symbolToSld(symbol)
@@ -296,15 +315,16 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         # print ("Mark line mm: \n" + dom.toString())
 
         # size of the mark
-        self.assertStaticSize(root, '11')
+        self.assertStaticSize(root, "11")
         # gap and offset
-        self.assertStaticGap(root, '18')
-        self.assertStaticPerpendicularOffset(root, '18')
+        self.assertStaticGap(root, "18")
+        self.assertStaticPerpendicularOffset(root, "18")
 
     def testMarkLineUnitPixels(self):
         symbol = QgsMarkerLineSymbolLayer()
         symbol.setSubSymbol(
-            QgsMarkerSymbol.createSimple({'color': '#ffffff', 'size': '3'}))
+            QgsMarkerSymbol.createSimple({"color": "#ffffff", "size": "3"})
+        )
         symbol.setInterval(5)
         symbol.setOffset(5)
         symbol.setOutputUnit(QgsUnitTypes.RenderUnit.RenderPixels)
@@ -313,14 +333,19 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         # print ("Mark line px: \n" + dom.toString())
 
         # size of the mark
-        self.assertStaticSize(root, '3')
+        self.assertStaticSize(root, "3")
         # gap and offset
-        self.assertStaticGap(root, '5')
-        self.assertStaticPerpendicularOffset(root, '5')
+        self.assertStaticGap(root, "5")
+        self.assertStaticPerpendicularOffset(root, "5")
 
     def testSimpleFillDefault(self):
         symbol = QgsSimpleFillSymbolLayer(
-            QColor('red'), Qt.BrushStyle.SolidPattern, QColor('green'), Qt.PenStyle.SolidLine, 5)
+            QColor("red"),
+            Qt.BrushStyle.SolidPattern,
+            QColor("green"),
+            Qt.PenStyle.SolidLine,
+            5,
+        )
         symbol.setOffset(QPointF(5, 10))
 
         dom, root = self.symbolToSld(symbol)
@@ -332,7 +357,12 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
 
     def testSimpleFillPixels(self):
         symbol = QgsSimpleFillSymbolLayer(
-            QColor('red'), Qt.BrushStyle.SolidPattern, QColor('green'), Qt.PenStyle.SolidLine, 5)
+            QColor("red"),
+            Qt.BrushStyle.SolidPattern,
+            QColor("green"),
+            Qt.PenStyle.SolidLine,
+            5,
+        )
         symbol.setOffset(QPointF(5, 10))
         symbol.setOutputUnit(QgsUnitTypes.RenderUnit.RenderPixels)
 
@@ -343,61 +373,65 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         self.assertStaticDisplacement(root, 5, 10)
 
     def testSvgFillDefault(self):
-        symbol = QgsSVGFillSymbolLayer('test/star.svg', 10, 45)
-        symbol.setSvgFillColor(QColor('blue'))
+        symbol = QgsSVGFillSymbolLayer("test/star.svg", 10, 45)
+        symbol.setSvgFillColor(QColor("blue"))
         symbol.setSvgStrokeWidth(3)
-        symbol.setSvgStrokeColor(QColor('yellow'))
+        symbol.setSvgStrokeColor(QColor("yellow"))
         symbol.setSubSymbol(QgsLineSymbol())
         symbol.subSymbol().setWidth(10)
 
         dom, root = self.symbolToSld(symbol)
         # print ("Svg fill mm: \n" + dom.toString())
 
-        self.assertExternalGraphic(root, 0,
-                                   'test/star.svg?fill=%230000ff&fill-opacity=1&outline=%23ffff00&outline-opacity=1&outline-width=11',
-                                   'image/svg+xml')
-        self.assertExternalGraphic(root, 1,
-                                   'test/star.svg', 'image/svg+xml')
-        self.assertWellKnownMark(root, 0, 'square', '#0000ff', '#ffff00', 11)
+        self.assertExternalGraphic(
+            root,
+            0,
+            "test/star.svg?fill=%230000ff&fill-opacity=1&outline=%23ffff00&outline-opacity=1&outline-width=11",
+            "image/svg+xml",
+        )
+        self.assertExternalGraphic(root, 1, "test/star.svg", "image/svg+xml")
+        self.assertWellKnownMark(root, 0, "square", "#0000ff", "#ffff00", 11)
 
-        self.assertStaticRotation(root, '45')
-        self.assertStaticSize(root, '36')
+        self.assertStaticRotation(root, "45")
+        self.assertStaticSize(root, "36")
         # width of the polygon stroke
-        lineSymbolizer = root.elementsByTagName('se:LineSymbolizer').item(0).toElement()
+        lineSymbolizer = root.elementsByTagName("se:LineSymbolizer").item(0).toElement()
         self.assertStrokeWidth(lineSymbolizer, 1, 36)
 
         symbol.setAngle(-45)
         dom, root = self.symbolToSld(symbol)
-        self.assertStaticRotation(root, '-45')
+        self.assertStaticRotation(root, "-45")
 
     def testSvgFillPixel(self):
-        symbol = QgsSVGFillSymbolLayer('test/star.svg', 10, 45)
+        symbol = QgsSVGFillSymbolLayer("test/star.svg", 10, 45)
         symbol.setSubSymbol(QgsLineSymbol())
-        symbol.setSvgFillColor(QColor('blue'))
+        symbol.setSvgFillColor(QColor("blue"))
         symbol.setSvgStrokeWidth(3)
-        symbol.setSvgStrokeColor(QColor('black'))
+        symbol.setSvgStrokeColor(QColor("black"))
         symbol.setOutputUnit(QgsUnitTypes.RenderUnit.RenderPixels)
         symbol.subSymbol().setWidth(10)
 
         dom, root = self.symbolToSld(symbol)
         # print ("Svg fill px: \n" + dom.toString())
 
-        self.assertExternalGraphic(root, 0,
-                                   'test/star.svg?fill=%230000ff&fill-opacity=1&outline=%23000000&outline-opacity=1&outline-width=3',
-                                   'image/svg+xml')
-        self.assertExternalGraphic(root, 1,
-                                   'test/star.svg', 'image/svg+xml')
-        self.assertWellKnownMark(root, 0, 'square', '#0000ff', '#000000', 3)
+        self.assertExternalGraphic(
+            root,
+            0,
+            "test/star.svg?fill=%230000ff&fill-opacity=1&outline=%23000000&outline-opacity=1&outline-width=3",
+            "image/svg+xml",
+        )
+        self.assertExternalGraphic(root, 1, "test/star.svg", "image/svg+xml")
+        self.assertWellKnownMark(root, 0, "square", "#0000ff", "#000000", 3)
 
-        self.assertStaticRotation(root, '45')
-        self.assertStaticSize(root, '10')
+        self.assertStaticRotation(root, "45")
+        self.assertStaticSize(root, "10")
         # width of the polygon stroke
-        lineSymbolizer = root.elementsByTagName('se:LineSymbolizer').item(0).toElement()
+        lineSymbolizer = root.elementsByTagName("se:LineSymbolizer").item(0).toElement()
         self.assertStrokeWidth(lineSymbolizer, 1, 10)
 
         symbol.setAngle(-45)
         dom, root = self.symbolToSld(symbol)
-        self.assertStaticRotation(root, '-45')
+        self.assertStaticRotation(root, "-45")
 
     def testLineFillDefault(self):
         symbol = QgsLinePatternFillSymbolLayer()
@@ -408,14 +442,14 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         dom, root = self.symbolToSld(symbol)
         # print ("Line fill mm: \n" + dom.toString())
 
-        self.assertStaticRotation(root, '45')
+        self.assertStaticRotation(root, "45")
         self.assertStrokeWidth(root, 1, 4)
-        self.assertStaticSize(root, '18')
+        self.assertStaticSize(root, "18")
         self.assertStaticDisplacement(root, 15, 9)
 
         symbol.setLineAngle(-45)
         dom, root = self.symbolToSld(symbol)
-        self.assertStaticRotation(root, '-45')
+        self.assertStaticRotation(root, "-45")
 
     def testLineFillPixels(self):
         symbol = QgsLinePatternFillSymbolLayer()
@@ -427,21 +461,21 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         dom, root = self.symbolToSld(symbol)
         # print ("Line fill px: \n" + dom.toString())
 
-        self.assertStaticRotation(root, '45')
+        self.assertStaticRotation(root, "45")
         self.assertStrokeWidth(root, 1, 1)
-        self.assertStaticSize(root, '5')
+        self.assertStaticSize(root, "5")
         self.assertStaticDisplacement(root, 4.25, 2.63)
 
         symbol.setLineAngle(-45)
         dom, root = self.symbolToSld(symbol)
-        self.assertStaticRotation(root, '-45')
+        self.assertStaticRotation(root, "-45")
 
     def testPointFillDefault(self):
         symbol = QgsPointPatternFillSymbolLayer()
         dom, root = self.symbolToSld(symbol)
         # print ("Point fill mm: \n" + dom.toString())
 
-        self.assertStaticSize(root, '7')
+        self.assertStaticSize(root, "7")
 
     def testPointFillpixels(self):
         symbol = QgsPointPatternFillSymbolLayer()
@@ -449,11 +483,13 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         dom, root = self.symbolToSld(symbol)
         # print ("Point fill px: \n" + dom.toString())
 
-        self.assertStaticSize(root, '2')
+        self.assertStaticSize(root, "2")
 
     def testSingleSymbolNoScaleDependencies(self):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
-        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/singleSymbol.qml")
+        mFilePath = QDir.toNativeSeparators(
+            f"{unitTestDataPath()}/symbol_layer/singleSymbol.qml"
+        )
         layer.loadNamedStyle(mFilePath)
 
         dom, root = self.layerToSld(layer)
@@ -463,7 +499,9 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
 
     def testSingleSymbolScaleDependencies(self):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
-        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/singleSymbol.qml")
+        mFilePath = QDir.toNativeSeparators(
+            f"{unitTestDataPath()}/symbol_layer/singleSymbol.qml"
+        )
         layer.loadNamedStyle(mFilePath)
         layer.setMaximumScale(1000)
         layer.setMinimumScale(500000)
@@ -472,23 +510,27 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         dom, root = self.layerToSld(layer)
         # print("Scale dep on single symbol:" + dom.toString())
 
-        self.assertScaleDenominator(root, '1000', '500000')
+        self.assertScaleDenominator(root, "1000", "500000")
 
     def testCategorizedNoScaleDependencies(self):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
-        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/categorized.qml")
+        mFilePath = QDir.toNativeSeparators(
+            f"{unitTestDataPath()}/symbol_layer/categorized.qml"
+        )
         layer.loadNamedStyle(mFilePath)
 
         dom, root = self.layerToSld(layer)
         # print("Categorized no scale deps:" + dom.toString())
 
-        ruleCount = root.elementsByTagName('se:Rule').size()
+        ruleCount = root.elementsByTagName("se:Rule").size()
         for i in range(0, ruleCount):
             self.assertScaleDenominator(root, None, None, i)
 
     def testCategorizedWithScaleDependencies(self):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
-        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/categorized.qml")
+        mFilePath = QDir.toNativeSeparators(
+            f"{unitTestDataPath()}/symbol_layer/categorized.qml"
+        )
         layer.loadNamedStyle(mFilePath)
         layer.setMaximumScale(1000)
         layer.setMinimumScale(500000)
@@ -497,20 +539,22 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         dom, root = self.layerToSld(layer)
         # print("Categorized with scale deps:" + dom.toString())
 
-        ruleCount = root.elementsByTagName('se:Rule').size()
+        ruleCount = root.elementsByTagName("se:Rule").size()
         for i in range(0, ruleCount):
-            self.assertScaleDenominator(root, '1000', '500000', i)
+            self.assertScaleDenominator(root, "1000", "500000", i)
 
     def testGraduatedNoScaleDependencies(self):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
 
-        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/graduated.qml")
+        mFilePath = QDir.toNativeSeparators(
+            f"{unitTestDataPath()}/symbol_layer/graduated.qml"
+        )
         status = layer.loadNamedStyle(mFilePath)  # NOQA
 
         dom, root = self.layerToSld(layer)
         # print("Graduated no scale deps:" + dom.toString())
 
-        ruleCount = root.elementsByTagName('se:Rule').size()
+        ruleCount = root.elementsByTagName("se:Rule").size()
         for i in range(0, ruleCount):
             self.assertScaleDenominator(root, None, None, i)
 
@@ -530,7 +574,9 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
     def testRuleBasedNoRootScaleDependencies(self):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
 
-        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/ruleBased.qml")
+        mFilePath = QDir.toNativeSeparators(
+            f"{unitTestDataPath()}/symbol_layer/ruleBased.qml"
+        )
         status = layer.loadNamedStyle(mFilePath)  # NOQA
         layer.setMaximumScale(5000)
         layer.setMinimumScale(50000000)
@@ -539,37 +585,44 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         dom, root = self.layerToSld(layer)
         # print("Rule based, with root scale deps:" + dom.toString())
 
-        ruleCount = root.elementsByTagName('se:Rule').size()  # NOQA
-        self.assertScaleDenominator(root, '5000', '40000000', 0)
-        self.assertScaleDenominator(root, '5000', '50000000', 1)
+        ruleCount = root.elementsByTagName("se:Rule").size()  # NOQA
+        self.assertScaleDenominator(root, "5000", "40000000", 0)
+        self.assertScaleDenominator(root, "5000", "50000000", 1)
 
     def testCategorizedFunctionConflict(self):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
 
         mFilePath = QDir.toNativeSeparators(
-            f"{unitTestDataPath()}/symbol_layer/categorizedFunctionConflict.qml")
+            f"{unitTestDataPath()}/symbol_layer/categorizedFunctionConflict.qml"
+        )
         status = layer.loadNamedStyle(mFilePath)  # NOQA
 
         dom, root = self.layerToSld(layer)
         # print("Rule based, with root scale deps:" + dom.toString())
 
-        ruleCount = root.elementsByTagName('se:Rule').size()  # NOQA
+        ruleCount = root.elementsByTagName("se:Rule").size()  # NOQA
         self.assertEqual(7, ruleCount)
-        self.assertRuleRangeFilter(root, 0, 'Area', '0', True, '500', True)
-        self.assertRuleRangeFilter(root, 1, 'Area', '500', False, '1000', True)
-        self.assertRuleRangeFilter(root, 2, 'Area', '1000', False, '5000', True)
-        self.assertRuleRangeFilter(root, 3, 'Area', '5000', False, '10000', True)
-        self.assertRuleRangeFilter(root, 4, 'Area', '10000', False, '50000', True)
-        self.assertRuleRangeFilter(root, 5, 'Area', '50000', False, '100000', True)
-        self.assertRuleRangeFilter(root, 6, 'Area', '100000', False, '200000', True)
+        self.assertRuleRangeFilter(root, 0, "Area", "0", True, "500", True)
+        self.assertRuleRangeFilter(root, 1, "Area", "500", False, "1000", True)
+        self.assertRuleRangeFilter(root, 2, "Area", "1000", False, "5000", True)
+        self.assertRuleRangeFilter(root, 3, "Area", "5000", False, "10000", True)
+        self.assertRuleRangeFilter(root, 4, "Area", "10000", False, "50000", True)
+        self.assertRuleRangeFilter(root, 5, "Area", "50000", False, "100000", True)
+        self.assertRuleRangeFilter(root, 6, "Area", "100000", False, "200000", True)
 
-    def assertRuleRangeFilter(self, root, index, attributeName, min, includeMin, max, includeMax):
-        rule = root.elementsByTagName('se:Rule').item(index).toElement()
+    def assertRuleRangeFilter(
+        self, root, index, attributeName, min, includeMin, max, includeMax
+    ):
+        rule = root.elementsByTagName("se:Rule").item(index).toElement()
         filter = rule.elementsByTagName("Filter").item(0).firstChild()
         self.assertEqual("ogc:And", filter.nodeName())
 
         gt = filter.firstChild()
-        expectedGtName = "ogc:PropertyIsGreaterThanOrEqualTo" if includeMin else "ogc:PropertyIsGreaterThan"
+        expectedGtName = (
+            "ogc:PropertyIsGreaterThanOrEqualTo"
+            if includeMin
+            else "ogc:PropertyIsGreaterThan"
+        )
         self.assertEqual(expectedGtName, gt.nodeName())
         gtProperty = gt.firstChild()
         self.assertEqual("ogc:PropertyName", gtProperty.nodeName())
@@ -578,7 +631,11 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         self.assertEqual(min, gtValue.toElement().text())
 
         lt = filter.childNodes().item(1)
-        expectedLtName = "ogc:PropertyIsLessThanOrEqualTo" if includeMax else "ogc:PropertyIsLessThan"
+        expectedLtName = (
+            "ogc:PropertyIsLessThanOrEqualTo"
+            if includeMax
+            else "ogc:PropertyIsLessThan"
+        )
         self.assertEqual(expectedLtName, lt.nodeName())
         ltProperty = lt.firstChild()
         self.assertEqual("ogc:PropertyName", ltProperty.nodeName())
@@ -605,13 +662,15 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         # print("Simple label text symbolizer" + dom.toString())
 
         ts = self.getTextSymbolizer(root, 1, 0)
-        self.assertPropertyName(ts, 'se:Label', 'NAME')
-        font = self.assertElement(ts, 'se:Font', 0)
-        self.assertEqual(fontFamily, self.assertSvgParameter(font, 'font-family').text())
-        self.assertEqual('11', self.assertSvgParameter(font, 'font-size').text())
+        self.assertPropertyName(ts, "se:Label", "NAME")
+        font = self.assertElement(ts, "se:Font", 0)
+        self.assertEqual(
+            fontFamily, self.assertSvgParameter(font, "font-family").text()
+        )
+        self.assertEqual("11", self.assertSvgParameter(font, "font-size").text())
 
-        fill = self.assertElement(ts, 'se:Fill', 0)
-        self.assertEqual('#000000', self.assertSvgParameter(fill, "fill").text())
+        fill = self.assertElement(ts, "se:Fill", 0)
+        self.assertEqual("#000000", self.assertSvgParameter(fill, "fill").text())
         self.assertIsNone(self.assertSvgParameter(fill, "fill-opacity", True))
 
     def testLabelingUomMillimeter(self):
@@ -623,8 +682,8 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         # print("Label sized in mm " + dom.toString())
 
         ts = self.getTextSymbolizer(root, 1, 0)
-        font = self.assertElement(ts, 'se:Font', 0)
-        self.assertEqual('32', self.assertSvgParameter(font, 'font-size').text())
+        font = self.assertElement(ts, "se:Font", 0)
+        self.assertEqual("32", self.assertSvgParameter(font, "font-size").text())
 
     def testLabelingUomPixels(self):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
@@ -635,8 +694,8 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         # print("Label sized in pixels " + dom.toString())
 
         ts = self.getTextSymbolizer(root, 1, 0)
-        font = self.assertElement(ts, 'se:Font', 0)
-        self.assertEqual('9', self.assertSvgParameter(font, 'font-size').text())
+        font = self.assertElement(ts, "se:Font", 0)
+        self.assertEqual("9", self.assertSvgParameter(font, "font-size").text())
 
     def testLabelingUomInches(self):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
@@ -647,8 +706,8 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         # print("Label sized in inches " + dom.toString())
 
         ts = self.getTextSymbolizer(root, 1, 0)
-        font = self.assertElement(ts, 'se:Font', 0)
-        self.assertEqual('816', self.assertSvgParameter(font, 'font-size').text())
+        font = self.assertElement(ts, "se:Font", 0)
+        self.assertEqual("816", self.assertSvgParameter(font, "font-size").text())
 
     def testTextStyle(self):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
@@ -659,57 +718,65 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         dom, root = self.layerToSld(layer)
         # print("Simple label italic text" + dom.toString())
         ts = self.getTextSymbolizer(root, 1, 0)
-        font = self.assertElement(ts, 'se:Font', 0)
-        self.assertIsNone(self.assertSvgParameter(font, 'font-weight', True))
-        self.assertIsNone(self.assertSvgParameter(font, 'font-style', True))
+        font = self.assertElement(ts, "se:Font", 0)
+        self.assertIsNone(self.assertSvgParameter(font, "font-weight", True))
+        self.assertIsNone(self.assertSvgParameter(font, "font-style", True))
 
         # testing bold
         self.updateLayerLabelingFontStyle(layer, True, False)
         dom, root = self.layerToSld(layer)
         # print("Simple label bold text" + dom.toString())
         ts = self.getTextSymbolizer(root, 1, 0)
-        font = self.assertElement(ts, 'se:Font', 0)
-        self.assertEqual('bold', self.assertSvgParameter(font, 'font-weight').text())
-        self.assertIsNone(self.assertSvgParameter(font, 'font-style', True))
+        font = self.assertElement(ts, "se:Font", 0)
+        self.assertEqual("bold", self.assertSvgParameter(font, "font-weight").text())
+        self.assertIsNone(self.assertSvgParameter(font, "font-style", True))
 
         # testing italic
         self.updateLayerLabelingFontStyle(layer, False, True)
         dom, root = self.layerToSld(layer)
         # print("Simple label italic text" + dom.toString())
         ts = self.getTextSymbolizer(root, 1, 0)
-        font = self.assertElement(ts, 'se:Font', 0)
-        self.assertEqual('italic', self.assertSvgParameter(font, 'font-style').text())
-        self.assertIsNone(self.assertSvgParameter(font, 'font-weight', True))
+        font = self.assertElement(ts, "se:Font", 0)
+        self.assertEqual("italic", self.assertSvgParameter(font, "font-style").text())
+        self.assertIsNone(self.assertSvgParameter(font, "font-weight", True))
 
         # testing bold italic
         self.updateLayerLabelingFontStyle(layer, True, True)
         dom, root = self.layerToSld(layer)
         # print("Simple label bold and italic text" + dom.toString())
         ts = self.getTextSymbolizer(root, 1, 0)
-        font = self.assertElement(ts, 'se:Font', 0)
-        self.assertEqual('italic', self.assertSvgParameter(font, 'font-style').text())
-        self.assertEqual('bold', self.assertSvgParameter(font, 'font-weight').text())
+        font = self.assertElement(ts, "se:Font", 0)
+        self.assertEqual("italic", self.assertSvgParameter(font, "font-style").text())
+        self.assertEqual("bold", self.assertSvgParameter(font, "font-weight").text())
 
         # testing underline and strikethrough vendor options
         self.updateLayerLabelingFontStyle(layer, False, False, True, True)
         dom, root = self.layerToSld(layer)
         # print("Simple label underline and strikethrough text" + dom.toString())
         ts = self.getTextSymbolizer(root, 1, 0)
-        font = self.assertElement(ts, 'se:Font', 0)
-        self.assertEqual('true', self.assertVendorOption(ts, 'underlineText').text())
-        self.assertEqual('true', self.assertVendorOption(ts, 'strikethroughText').text())
+        font = self.assertElement(ts, "se:Font", 0)
+        self.assertEqual("true", self.assertVendorOption(ts, "underlineText").text())
+        self.assertEqual(
+            "true", self.assertVendorOption(ts, "strikethroughText").text()
+        )
 
     def testTextMixedCase(self):
         self.assertCapitalizationFunction(QFont.Capitalization.MixedCase, None)
 
     def testTextUppercase(self):
-        self.assertCapitalizationFunction(QFont.Capitalization.AllUppercase, "strToUpperCase")
+        self.assertCapitalizationFunction(
+            QFont.Capitalization.AllUppercase, "strToUpperCase"
+        )
 
     def testTextLowercase(self):
-        self.assertCapitalizationFunction(QFont.Capitalization.AllLowercase, "strToLowerCase")
+        self.assertCapitalizationFunction(
+            QFont.Capitalization.AllLowercase, "strToLowerCase"
+        )
 
     def testTextCapitalcase(self):
-        self.assertCapitalizationFunction(QFont.Capitalization.Capitalize, "strCapitalize")
+        self.assertCapitalizationFunction(
+            QFont.Capitalization.Capitalize, "strCapitalize"
+        )
 
     def assertCapitalizationFunction(self, capitalization, expectedFunction):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
@@ -749,9 +816,9 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         # print("Label with transparency  " + dom.toString())
 
         ts = self.getTextSymbolizer(root, 1, 0)
-        fill = self.assertElement(ts, 'se:Fill', 0)
-        self.assertEqual('#000000', self.assertSvgParameter(fill, "fill").text())
-        self.assertEqual('0.5', self.assertSvgParameter(fill, "fill-opacity").text())
+        fill = self.assertElement(ts, "se:Fill", 0)
+        self.assertEqual("#000000", self.assertSvgParameter(fill, "fill").text())
+        self.assertEqual("0.5", self.assertSvgParameter(fill, "fill-opacity").text())
 
     def testLabelingBuffer(self):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
@@ -767,11 +834,11 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         # print("Label with buffer 10 px  " + dom.toString())
 
         ts = self.getTextSymbolizer(root, 1, 0)
-        halo = self.assertElement(ts, 'se:Halo', 0)
+        halo = self.assertElement(ts, "se:Halo", 0)
         # not full width, just radius here
-        self.assertEqual('5', self.assertElement(ts, 'se:Radius', 0).text())
-        haloFill = self.assertElement(halo, 'se:Fill', 0)
-        self.assertEqual('#000000', self.assertSvgParameter(haloFill, "fill").text())
+        self.assertEqual("5", self.assertElement(ts, "se:Radius", 0).text())
+        haloFill = self.assertElement(halo, "se:Fill", 0)
+        self.assertEqual("#000000", self.assertSvgParameter(haloFill, "fill").text())
 
     def testLabelingBufferPointTranslucent(self):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
@@ -788,30 +855,32 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         # print("Label with buffer 10 points, red 50% transparent  " + dom.toString())
 
         ts = self.getTextSymbolizer(root, 1, 0)
-        halo = self.assertElement(ts, 'se:Halo', 0)
+        halo = self.assertElement(ts, "se:Halo", 0)
         # not full width, just radius here
-        self.assertEqual('6.5', self.assertElement(ts, 'se:Radius', 0).text())
-        haloFill = self.assertElement(halo, 'se:Fill', 0)
-        self.assertEqual('#ff0000', self.assertSvgParameter(haloFill, "fill").text())
-        self.assertEqual('0.5', self.assertSvgParameter(haloFill, "fill-opacity").text())
+        self.assertEqual("6.5", self.assertElement(ts, "se:Radius", 0).text())
+        haloFill = self.assertElement(halo, "se:Fill", 0)
+        self.assertEqual("#ff0000", self.assertSvgParameter(haloFill, "fill").text())
+        self.assertEqual(
+            "0.5", self.assertSvgParameter(haloFill, "fill-opacity").text()
+        )
 
     def testLabelingLowPriority(self):
-        self.assertLabelingPriority(0, 0, '0')
+        self.assertLabelingPriority(0, 0, "0")
 
     def testLabelingDefaultPriority(self):
         self.assertLabelingPriority(0, 5, None)
 
     def testLabelingHighPriority(self):
-        self.assertLabelingPriority(0, 10, '1000')
+        self.assertLabelingPriority(0, 10, "1000")
 
     def testLabelingZIndexLowPriority(self):
-        self.assertLabelingPriority(1, 0, '1001')
+        self.assertLabelingPriority(1, 0, "1001")
 
     def testLabelingZIndexDefaultPriority(self):
         self.assertLabelingPriority(1, 5, "1500")
 
     def testLabelingZIndexHighPriority(self):
-        self.assertLabelingPriority(1, 10, '2000')
+        self.assertLabelingPriority(1, 10, "2000")
 
     def assertLabelingPriority(self, zIndex, priority, expectedSldPriority):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
@@ -852,31 +921,49 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         self.assertStaticAnchorPoint(pointPlacement, 0.5, 0.5)
 
     def testPointPlacementAboveLeft(self):
-        self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantPosition.QuadrantAboveLeft, "AboveLeft", 1, 0)
+        self.assertLabelQuadrant(
+            QgsPalLayerSettings.QuadrantPosition.QuadrantAboveLeft, "AboveLeft", 1, 0
+        )
 
     def testPointPlacementAbove(self):
-        self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantPosition.QuadrantAbove, "Above", 0.5, 0)
+        self.assertLabelQuadrant(
+            QgsPalLayerSettings.QuadrantPosition.QuadrantAbove, "Above", 0.5, 0
+        )
 
     def testPointPlacementAboveRight(self):
-        self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantPosition.QuadrantAboveRight, "AboveRight", 0, 0)
+        self.assertLabelQuadrant(
+            QgsPalLayerSettings.QuadrantPosition.QuadrantAboveRight, "AboveRight", 0, 0
+        )
 
     def testPointPlacementLeft(self):
-        self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantPosition.QuadrantLeft, "Left", 1, 0.5)
+        self.assertLabelQuadrant(
+            QgsPalLayerSettings.QuadrantPosition.QuadrantLeft, "Left", 1, 0.5
+        )
 
     def testPointPlacementRight(self):
-        self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantPosition.QuadrantRight, "Right", 0, 0.5)
+        self.assertLabelQuadrant(
+            QgsPalLayerSettings.QuadrantPosition.QuadrantRight, "Right", 0, 0.5
+        )
 
     def testPointPlacementBelowLeft(self):
-        self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantPosition.QuadrantBelowLeft, "BelowLeft", 1, 1)
+        self.assertLabelQuadrant(
+            QgsPalLayerSettings.QuadrantPosition.QuadrantBelowLeft, "BelowLeft", 1, 1
+        )
 
     def testPointPlacementBelow(self):
-        self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantPosition.QuadrantBelow, "Below", 0.5, 1)
+        self.assertLabelQuadrant(
+            QgsPalLayerSettings.QuadrantPosition.QuadrantBelow, "Below", 0.5, 1
+        )
 
     def testPointPlacementBelowRight(self):
-        self.assertLabelQuadrant(QgsPalLayerSettings.QuadrantPosition.QuadrantBelowRight, "BelowRight", 0, 1)
+        self.assertLabelQuadrant(
+            QgsPalLayerSettings.QuadrantPosition.QuadrantBelowRight, "BelowRight", 0, 1
+        )
 
     def testPointPlacementCartoraphicOrderedPositionsAroundPoint(self):
-        self.assertPointPlacementDistance(QgsPalLayerSettings.Placement.OrderedPositionsAroundPoint)
+        self.assertPointPlacementDistance(
+            QgsPalLayerSettings.Placement.OrderedPositionsAroundPoint
+        )
 
     def testPointPlacementCartoraphicAroundPoint(self):
         self.assertPointPlacementDistance(QgsPalLayerSettings.Placement.AroundPoint)
@@ -888,45 +975,49 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         dom, root = self.layerToSld(layer)
         # print("Label with parallel line placement  " + dom.toString())
         linePlacement = self.assertLinePlacement(root)
-        generalize = self.assertElement(linePlacement, 'se:GeneralizeLine', 0)
+        generalize = self.assertElement(linePlacement, "se:GeneralizeLine", 0)
         self.assertEqual("true", generalize.text())
 
     def testLineParallelPlacementOffsetRepeat(self):
         layer = QgsVectorLayer("LineString", "addfeat", "memory")
         self.loadStyleWithCustomProperties(layer, "lineLabel")
-        self.updateLinePlacementProperties(layer, QgsPalLayerSettings.Placement.Line, 2, 50)
+        self.updateLinePlacementProperties(
+            layer, QgsPalLayerSettings.Placement.Line, 2, 50
+        )
 
         dom, root = self.layerToSld(layer)
         # print("Label with parallel line placement, perp. offset and repeat  " + dom.toString())
         ts = self.getTextSymbolizer(root, 1, 0)
         linePlacement = self.assertLinePlacement(ts)
-        generalize = self.assertElement(linePlacement, 'se:GeneralizeLine', 0)
+        generalize = self.assertElement(linePlacement, "se:GeneralizeLine", 0)
         self.assertEqual("true", generalize.text())
-        offset = self.assertElement(linePlacement, 'se:PerpendicularOffset', 0)
+        offset = self.assertElement(linePlacement, "se:PerpendicularOffset", 0)
         self.assertEqual("7", offset.text())
-        repeat = self.assertElement(linePlacement, 'se:Repeat', 0)
+        repeat = self.assertElement(linePlacement, "se:Repeat", 0)
         self.assertEqual("true", repeat.text())
-        gap = self.assertElement(linePlacement, 'se:Gap', 0)
+        gap = self.assertElement(linePlacement, "se:Gap", 0)
         self.assertEqual("179", gap.text())
         self.assertEqual("179", self.assertVendorOption(ts, "repeat").text())
 
     def testLineCurvePlacementOffsetRepeat(self):
         layer = QgsVectorLayer("LineString", "addfeat", "memory")
         self.loadStyleWithCustomProperties(layer, "lineLabel")
-        self.updateLinePlacementProperties(layer, QgsPalLayerSettings.Placement.Curved, 2, 50, 30, 40)
+        self.updateLinePlacementProperties(
+            layer, QgsPalLayerSettings.Placement.Curved, 2, 50, 30, 40
+        )
 
         dom, root = self.layerToSld(layer)
         # print("Label with curved line placement  " + dom.toString())
 
         ts = self.getTextSymbolizer(root, 1, 0)
         linePlacement = self.assertLinePlacement(ts)
-        generalize = self.assertElement(linePlacement, 'se:GeneralizeLine', 0)
+        generalize = self.assertElement(linePlacement, "se:GeneralizeLine", 0)
         self.assertEqual("true", generalize.text())
-        offset = self.assertElement(linePlacement, 'se:PerpendicularOffset', 0)
+        offset = self.assertElement(linePlacement, "se:PerpendicularOffset", 0)
         self.assertEqual("7", offset.text())
-        repeat = self.assertElement(linePlacement, 'se:Repeat', 0)
+        repeat = self.assertElement(linePlacement, "se:Repeat", 0)
         self.assertEqual("true", repeat.text())
-        gap = self.assertElement(linePlacement, 'se:Gap', 0)
+        gap = self.assertElement(linePlacement, "se:Gap", 0)
         self.assertEqual("179", gap.text())
         self.assertEqual("179", self.assertVendorOption(ts, "repeat").text())
         self.assertEqual("true", self.assertVendorOption(ts, "followLine").text())
@@ -966,20 +1057,22 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
     def testLabelingPolygonPerimeterCurved(self):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
         self.loadStyleWithCustomProperties(layer, "polygonLabel")
-        self.updateLinePlacementProperties(layer, QgsPalLayerSettings.Placement.PerimeterCurved, 2, 50, 30, -40)
+        self.updateLinePlacementProperties(
+            layer, QgsPalLayerSettings.Placement.PerimeterCurved, 2, 50, 30, -40
+        )
 
         dom, root = self.layerToSld(layer)
         # print("Polygon Label with curved perimeter line placement  " + dom.toString())
 
         ts = self.getTextSymbolizer(root, 1, 0)
         linePlacement = self.assertLinePlacement(ts)
-        generalize = self.assertElement(linePlacement, 'se:GeneralizeLine', 0)
+        generalize = self.assertElement(linePlacement, "se:GeneralizeLine", 0)
         self.assertEqual("true", generalize.text())
-        offset = self.assertElement(linePlacement, 'se:PerpendicularOffset', 0)
+        offset = self.assertElement(linePlacement, "se:PerpendicularOffset", 0)
         self.assertEqual("7", offset.text())
-        repeat = self.assertElement(linePlacement, 'se:Repeat', 0)
+        repeat = self.assertElement(linePlacement, "se:Repeat", 0)
         self.assertEqual("true", repeat.text())
-        gap = self.assertElement(linePlacement, 'se:Gap', 0)
+        gap = self.assertElement(linePlacement, "se:Gap", 0)
         self.assertEqual("179", gap.text())
         self.assertEqual("179", self.assertVendorOption(ts, "repeat").text())
         self.assertEqual("true", self.assertVendorOption(ts, "followLine").text())
@@ -1026,46 +1119,80 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         self.assertVendorOption(ts, "forceLeftToRight", "false")
 
     def testLabelBackgroundSquareResize(self):
-        self.assertLabelBackground(QgsTextBackgroundSettings.ShapeType.ShapeSquare, 'square',
-                                   QgsTextBackgroundSettings.SizeType.SizeBuffer, 'proportional')
+        self.assertLabelBackground(
+            QgsTextBackgroundSettings.ShapeType.ShapeSquare,
+            "square",
+            QgsTextBackgroundSettings.SizeType.SizeBuffer,
+            "proportional",
+        )
 
     def testLabelBackgroundRectangleResize(self):
-        self.assertLabelBackground(QgsTextBackgroundSettings.ShapeType.ShapeRectangle, 'square',
-                                   QgsTextBackgroundSettings.SizeType.SizeBuffer, 'stretch')
+        self.assertLabelBackground(
+            QgsTextBackgroundSettings.ShapeType.ShapeRectangle,
+            "square",
+            QgsTextBackgroundSettings.SizeType.SizeBuffer,
+            "stretch",
+        )
 
     def testLabelBackgroundCircleResize(self):
-        self.assertLabelBackground(QgsTextBackgroundSettings.ShapeType.ShapeCircle, 'circle',
-                                   QgsTextBackgroundSettings.SizeType.SizeBuffer, 'proportional')
+        self.assertLabelBackground(
+            QgsTextBackgroundSettings.ShapeType.ShapeCircle,
+            "circle",
+            QgsTextBackgroundSettings.SizeType.SizeBuffer,
+            "proportional",
+        )
 
     def testLabelBackgroundEllipseResize(self):
-        self.assertLabelBackground(QgsTextBackgroundSettings.ShapeType.ShapeEllipse, 'circle',
-                                   QgsTextBackgroundSettings.SizeType.SizeBuffer, 'stretch')
+        self.assertLabelBackground(
+            QgsTextBackgroundSettings.ShapeType.ShapeEllipse,
+            "circle",
+            QgsTextBackgroundSettings.SizeType.SizeBuffer,
+            "stretch",
+        )
 
     def testLabelBackgroundSquareAbsolute(self):
-        self.assertLabelBackground(QgsTextBackgroundSettings.ShapeType.ShapeSquare, 'square',
-                                   QgsTextBackgroundSettings.SizeType.SizeFixed, None)
+        self.assertLabelBackground(
+            QgsTextBackgroundSettings.ShapeType.ShapeSquare,
+            "square",
+            QgsTextBackgroundSettings.SizeType.SizeFixed,
+            None,
+        )
 
     def testLabelBackgroundRectangleAbsolute(self):
-        self.assertLabelBackground(QgsTextBackgroundSettings.ShapeType.ShapeRectangle, 'square',
-                                   QgsTextBackgroundSettings.SizeType.SizeFixed, None)
+        self.assertLabelBackground(
+            QgsTextBackgroundSettings.ShapeType.ShapeRectangle,
+            "square",
+            QgsTextBackgroundSettings.SizeType.SizeFixed,
+            None,
+        )
 
     def testLabelBackgroundCircleAbsolute(self):
-        self.assertLabelBackground(QgsTextBackgroundSettings.ShapeType.ShapeCircle, 'circle',
-                                   QgsTextBackgroundSettings.SizeType.SizeFixed, None)
+        self.assertLabelBackground(
+            QgsTextBackgroundSettings.ShapeType.ShapeCircle,
+            "circle",
+            QgsTextBackgroundSettings.SizeType.SizeFixed,
+            None,
+        )
 
     def testLabelBackgroundEllipseAbsolute(self):
-        self.assertLabelBackground(QgsTextBackgroundSettings.ShapeType.ShapeEllipse, 'circle',
-                                   QgsTextBackgroundSettings.SizeType.SizeFixed, None)
+        self.assertLabelBackground(
+            QgsTextBackgroundSettings.ShapeType.ShapeEllipse,
+            "circle",
+            QgsTextBackgroundSettings.SizeType.SizeFixed,
+            None,
+        )
 
-    def assertLabelBackground(self, backgroundType, expectedMarkName, sizeType, expectedResize):
+    def assertLabelBackground(
+        self, backgroundType, expectedMarkName, sizeType, expectedResize
+    ):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
         self.loadStyleWithCustomProperties(layer, "polygonLabel")
         settings = layer.labeling().settings()
         background = QgsTextBackgroundSettings()
         background.setEnabled(True)
         background.setType(backgroundType)
-        background.setFillColor(QColor('yellow'))
-        background.setStrokeColor(QColor('black'))
+        background.setFillColor(QColor("yellow"))
+        background.setStrokeColor(QColor("black"))
         background.setStrokeWidth(2)
         background.setSize(QSizeF(10, 10))
         background.setSizeType(sizeType)
@@ -1079,20 +1206,28 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
 
         ts = self.getTextSymbolizer(root, 1, 0)
         graphic = self.assertElement(ts, "se:Graphic", 0)
-        self.assertEqual("36", self.assertElement(graphic, 'se:Size', 0).text())
-        self.assertWellKnownMark(graphic, 0, expectedMarkName, '#ffff00', '#000000', 7)
+        self.assertEqual("36", self.assertElement(graphic, "se:Size", 0).text())
+        self.assertWellKnownMark(graphic, 0, expectedMarkName, "#ffff00", "#000000", 7)
         if expectedResize is None:
-            self.assertIsNone(expectedResize, self.assertVendorOption(ts, 'graphic-resize', True))
+            self.assertIsNone(
+                expectedResize, self.assertVendorOption(ts, "graphic-resize", True)
+            )
         else:
-            self.assertEqual(expectedResize, self.assertVendorOption(ts, 'graphic-resize').text())
+            self.assertEqual(
+                expectedResize, self.assertVendorOption(ts, "graphic-resize").text()
+            )
         if sizeType == 0:
             # check extra padding for proportional ellipse
             if backgroundType == QgsTextBackgroundSettings.ShapeType.ShapeEllipse:
-                self.assertEqual("42.5 49", self.assertVendorOption(ts, 'graphic-margin').text())
+                self.assertEqual(
+                    "42.5 49", self.assertVendorOption(ts, "graphic-margin").text()
+                )
             else:
-                self.assertEqual("36 36", self.assertVendorOption(ts, 'graphic-margin').text())
+                self.assertEqual(
+                    "36 36", self.assertVendorOption(ts, "graphic-margin").text()
+                )
         else:
-            self.assertIsNone(self.assertVendorOption(ts, 'graphic-margin', True))
+            self.assertIsNone(self.assertVendorOption(ts, "graphic-margin", True))
 
     def testLabelBackgroundSymbol(self):
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
@@ -1101,7 +1236,9 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         background = QgsTextBackgroundSettings()
         background.setEnabled(True)
         background.setType(QgsTextBackgroundSettings.ShapeType.ShapeRectangle)
-        fill_symbol = QgsFillSymbol.createSimple({'color': '#00ffff', 'outline_color': '#00ff00', 'outline_width': 2})
+        fill_symbol = QgsFillSymbol.createSimple(
+            {"color": "#00ffff", "outline_color": "#00ff00", "outline_width": 2}
+        )
         background.setFillSymbol(fill_symbol)
         format = settings.format()
         format.setBackground(background)
@@ -1112,7 +1249,7 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
 
         ts = self.getTextSymbolizer(root, 1, 0)
         graphic = self.assertElement(ts, "se:Graphic", 0)
-        self.assertWellKnownMark(graphic, 0, 'square', '#00ffff', '#00ff00', 7)
+        self.assertWellKnownMark(graphic, 0, "square", "#00ffff", "#00ff00", 7)
 
     def testRuleBasedLabels(self):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
@@ -1124,11 +1261,11 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         # three rules, one with the point symbol, one with the first rule based label,
         # one with the second rule based label
         rule1 = self.getRule(root, 0)
-        self.assertElement(rule1, 'se:PointSymbolizer', 0)
+        self.assertElement(rule1, "se:PointSymbolizer", 0)
 
         rule2 = self.getRule(root, 1)
-        self.assertScaleDenominator(root, '100000', '10000000', 1)
-        tsRule2 = self.assertElement(rule2, 'se:TextSymbolizer', 0)
+        self.assertScaleDenominator(root, "100000", "10000000", 1)
+        tsRule2 = self.assertElement(rule2, "se:TextSymbolizer", 0)
         gt = rule2.elementsByTagName("Filter").item(0).firstChild()
         self.assertEqual("ogc:PropertyIsGreaterThan", gt.nodeName())
         gtProperty = gt.toElement().firstChild()
@@ -1138,7 +1275,7 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         self.assertEqual("1000000", gtValue.toElement().text())
 
         rule3 = self.getRule(root, 2)
-        tsRule3 = self.assertElement(rule3, 'se:TextSymbolizer', 0)
+        tsRule3 = self.assertElement(rule3, "se:TextSymbolizer", 0)
         lt = rule3.elementsByTagName("Filter").item(0).firstChild()
         self.assertEqual("ogc:PropertyIsLessThan", lt.nodeName())
         ltProperty = lt.toElement().firstChild()
@@ -1154,8 +1291,15 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         xml2 = dom.toString()
         self.assertEqual(xml1, xml2)
 
-    def updateLinePlacementProperties(self, layer, linePlacement, distance, repeat, maxAngleInternal=25,
-                                      maxAngleExternal=-25):
+    def updateLinePlacementProperties(
+        self,
+        layer,
+        linePlacement,
+        distance,
+        repeat,
+        maxAngleInternal=25,
+        maxAngleExternal=-25,
+    ):
         settings = layer.labeling().settings()
         settings.placement = linePlacement
         settings.dist = distance
@@ -1205,7 +1349,9 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         settings.setFormat(format)
         layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
 
-    def updateLayerLabelingFontStyle(self, layer, bold, italic, underline=False, strikeout=False):
+    def updateLayerLabelingFontStyle(
+        self, layer, bold, italic, underline=False, strikeout=False
+    ):
         settings = layer.labeling().settings()
         format = settings.format()
         font = format.font()
@@ -1226,7 +1372,9 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
 
     def loadStyleWithCustomProperties(self, layer, qmlFileName):
         # load the style, only vector symbology
-        path = QDir.toNativeSeparators(f'{unitTestDataPath()}/symbol_layer/{qmlFileName}.qml')
+        path = QDir.toNativeSeparators(
+            f"{unitTestDataPath()}/symbol_layer/{qmlFileName}.qml"
+        )
 
         # labeling is in custom properties, they need to be loaded separately
         status = layer.loadNamedStyle(path)
@@ -1238,15 +1386,19 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         flag = layer.readCustomProperties(doc.documentElement())
 
     def assertPointPlacement(self, textSymbolizer):
-        labelPlacement = self.assertElement(textSymbolizer, 'se:LabelPlacement', 0)
-        self.assertIsNone(self.assertElement(labelPlacement, 'se:LinePlacement', 0, True))
-        pointPlacement = self.assertElement(labelPlacement, 'se:PointPlacement', 0)
+        labelPlacement = self.assertElement(textSymbolizer, "se:LabelPlacement", 0)
+        self.assertIsNone(
+            self.assertElement(labelPlacement, "se:LinePlacement", 0, True)
+        )
+        pointPlacement = self.assertElement(labelPlacement, "se:PointPlacement", 0)
         return pointPlacement
 
     def assertLinePlacement(self, textSymbolizer):
-        labelPlacement = self.assertElement(textSymbolizer, 'se:LabelPlacement', 0)
-        self.assertIsNone(self.assertElement(labelPlacement, 'se:PointPlacement', 0, True))
-        linePlacement = self.assertElement(labelPlacement, 'se:LinePlacement', 0)
+        labelPlacement = self.assertElement(textSymbolizer, "se:LabelPlacement", 0)
+        self.assertIsNone(
+            self.assertElement(labelPlacement, "se:PointPlacement", 0, True)
+        )
+        linePlacement = self.assertElement(labelPlacement, "se:LinePlacement", 0)
         return linePlacement
 
     def assertElement(self, container, elementName, index, allowMissing=False):
@@ -1255,20 +1407,30 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
             if allowMissing:
                 return None
             else:
-                self.fail('Expected to find at least ' + str(
-                    index + 1) + ' ' + elementName + ' in ' + container.nodeName() + ' but found ' + str(list.size()))
+                self.fail(
+                    "Expected to find at least "
+                    + str(index + 1)
+                    + " "
+                    + elementName
+                    + " in "
+                    + container.nodeName()
+                    + " but found "
+                    + str(list.size())
+                )
 
         node = list.item(index)
-        self.assertTrue(node.isElement(), 'Found node but it''s not an element')
+        self.assertTrue(node.isElement(), "Found node but it" "s not an element")
         return node.toElement()
 
     def getRule(self, root, ruleIndex):
-        rule = self.assertElement(root, 'se:Rule', ruleIndex)
+        rule = self.assertElement(root, "se:Rule", ruleIndex)
         return rule
 
     def getTextSymbolizer(self, root, ruleIndex, textSymbolizerIndex):
-        rule = self.assertElement(root, 'se:Rule', ruleIndex)
-        textSymbolizer = self.assertElement(rule, 'se:TextSymbolizer', textSymbolizerIndex)
+        rule = self.assertElement(root, "se:Rule", ruleIndex)
+        textSymbolizer = self.assertElement(
+            rule, "se:TextSymbolizer", textSymbolizerIndex
+        )
         return textSymbolizer
 
     def assertPropertyName(self, root, containerProperty, expectedAttributeName):
@@ -1280,187 +1442,232 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         list = container.elementsByTagName("se:SvgParameter")
         for i in range(0, list.size()):
             item = list.item(i)
-            if item.isElement and item.isElement() and item.toElement().attribute('name') == expectedName:
+            if (
+                item.isElement
+                and item.isElement()
+                and item.toElement().attribute("name") == expectedName
+            ):
                 return item.toElement()
         if allowMissing:
             return None
         else:
-            self.fail('Could not find a se:SvgParameter named ' + expectedName + ' in ' + container.nodeName())
+            self.fail(
+                "Could not find a se:SvgParameter named "
+                + expectedName
+                + " in "
+                + container.nodeName()
+            )
 
     def assertVendorOption(self, container, expectedName, allowMissing=False):
         list = container.elementsByTagName("se:VendorOption")
         for i in range(0, list.size()):
             item = list.item(i)
-            if item.isElement and item.isElement() and item.toElement().attribute('name') == expectedName:
+            if (
+                item.isElement
+                and item.isElement()
+                and item.toElement().attribute("name") == expectedName
+            ):
                 return item.toElement()
         if allowMissing:
             return None
         else:
-            self.fail('Could not find a se:VendorOption named ' + expectedName + ' in ' + container.nodeName())
+            self.fail(
+                "Could not find a se:VendorOption named "
+                + expectedName
+                + " in "
+                + container.nodeName()
+            )
 
     def testRuleBaseEmptyFilter(self):
         layer = QgsVectorLayer("Point", "addfeat", "memory")
 
-        mFilePath = QDir.toNativeSeparators(f"{unitTestDataPath()}/symbol_layer/categorizedEmptyValue.qml")
+        mFilePath = QDir.toNativeSeparators(
+            f"{unitTestDataPath()}/symbol_layer/categorizedEmptyValue.qml"
+        )
         status = layer.loadNamedStyle(mFilePath)  # NOQA
 
         dom, root = self.layerToSld(layer)
         # print("Rule based, with last rule checking against empty value:" + dom.toString())
 
         # get the third rule
-        rule = root.elementsByTagName('se:Rule').item(2).toElement()
-        filter = rule.elementsByTagName('ElseFilter').item(0).toElement()
+        rule = root.elementsByTagName("se:Rule").item(2).toElement()
+        filter = rule.elementsByTagName("ElseFilter").item(0).toElement()
         self.assertEqual("se:ElseFilter", filter.nodeName())
 
     def testDataDefinedAngle(self):
 
         l = QgsSimpleMarkerSymbolLayer(Qgis.MarkerShape.Triangle)
         p = l.dataDefinedProperties()
-        p.setProperty(QgsSymbolLayer.Property.PropertyAngle, QgsProperty.fromExpression('"field_a"'))
+        p.setProperty(
+            QgsSymbolLayer.Property.PropertyAngle,
+            QgsProperty.fromExpression('"field_a"'),
+        )
         dom = QDomDocument()
         root = dom.createElement("FakeRoot")
         dom.appendChild(root)
         l.toSld(dom, root, dict())
-        rot = dom.elementsByTagName('se:Rotation').at(0).firstChild().toElement()
-        self.assertEqual(rot.tagName(), 'ogc:PropertyName')
-        self.assertEqual(rot.text(), 'field_a')
+        rot = dom.elementsByTagName("se:Rotation").at(0).firstChild().toElement()
+        self.assertEqual(rot.tagName(), "ogc:PropertyName")
+        self.assertEqual(rot.text(), "field_a")
 
     def testSaveSldStyleV2Png(self):
         """Test SLD export for polygons with PNG tiles"""
 
         # Point pattern
         layer = QgsVectorLayer("Polygon", "addfeat", "memory")
-        error, ok = layer.loadSldStyle(os.path.join(unitTestDataPath('symbol_layer'), 'QgsPointPatternFillSymbolLayer.sld'))
+        error, ok = layer.loadSldStyle(
+            os.path.join(
+                unitTestDataPath("symbol_layer"), "QgsPointPatternFillSymbolLayer.sld"
+            )
+        )
         self.assertTrue(ok)
         temp_dir = QTemporaryDir()
         temp_path = temp_dir.path()
-        sld_path = os.path.join(temp_path, 'export.sld')
-        context = QgsSldExportContext(Qgis.SldExportOption.Png, Qgis.SldExportVendorExtension.NoVendorExtension, sld_path)
+        sld_path = os.path.join(temp_path, "export.sld")
+        context = QgsSldExportContext(
+            Qgis.SldExportOption.Png,
+            Qgis.SldExportVendorExtension.NoVendorExtension,
+            sld_path,
+        )
         message, ok = layer.saveSldStyleV2(context)
         self.assertTrue(ok)
-        self.assertTrue(os.path.exists(os.path.join(temp_path, 'export.png')))
+        self.assertTrue(os.path.exists(os.path.join(temp_path, "export.png")))
 
         with open(sld_path) as f:
-            self.assertIn('export.png', f.read())
+            self.assertIn("export.png", f.read())
 
-        image = QImage(os.path.join(temp_path, 'export.png'))
+        image = QImage(os.path.join(temp_path, "export.png"))
         self.assertTrue(image.hasAlphaChannel())
         self.assertEqual(image.height(), 33)
         self.assertEqual(image.width(), 33)
 
         for x, y in ((16, 0), (0, 16), (16, 16), (32, 16), (16, 32)):
-            self.assertEqual(image.pixelColor(x, y).name(), '#000000')
+            self.assertEqual(image.pixelColor(x, y).name(), "#000000")
             self.assertEqual(image.pixelColor(x, y).alpha(), 0)
 
         for x, y in ((0, 0), (0, 32), (32, 0), (32, 32)):
-            self.assertNotEqual(image.pixelColor(x, y).name(), '#000000')
+            self.assertNotEqual(image.pixelColor(x, y).name(), "#000000")
             self.assertGreater(image.pixelColor(x, y).alpha(), 0)
 
         # Line pattern
-        error, ok = layer.loadSldStyle(os.path.join(unitTestDataPath('symbol_layer'), 'QgsLinePatternFillSymbolLayer.sld'))
+        error, ok = layer.loadSldStyle(
+            os.path.join(
+                unitTestDataPath("symbol_layer"), "QgsLinePatternFillSymbolLayer.sld"
+            )
+        )
         self.assertTrue(ok)
         temp_dir = QTemporaryDir()
         temp_path = temp_dir.path()
-        sld_path = os.path.join(temp_path, 'export.sld')
-        context = QgsSldExportContext(Qgis.SldExportOption.Png, Qgis.SldExportVendorExtension.NoVendorExtension, sld_path)
+        sld_path = os.path.join(temp_path, "export.sld")
+        context = QgsSldExportContext(
+            Qgis.SldExportOption.Png,
+            Qgis.SldExportVendorExtension.NoVendorExtension,
+            sld_path,
+        )
         message, ok = layer.saveSldStyleV2(context)
         self.assertTrue(ok)
-        self.assertTrue(os.path.exists(os.path.join(temp_path, 'export.png')))
+        self.assertTrue(os.path.exists(os.path.join(temp_path, "export.png")))
 
         with open(sld_path) as f:
-            self.assertIn('export.png', f.read())
+            self.assertIn("export.png", f.read())
 
-        image = QImage(os.path.join(temp_path, 'export.png'))
+        image = QImage(os.path.join(temp_path, "export.png"))
         self.assertTrue(image.hasAlphaChannel())
         self.assertEqual(image.height(), 7)
         self.assertEqual(image.width(), 4)
 
         for x, y in ((0, 0), (3, 3), (3, 3), (0, 6)):
-            self.assertEqual(image.pixelColor(x, y).name(), '#000000')
+            self.assertEqual(image.pixelColor(x, y).name(), "#000000")
             self.assertEqual(image.pixelColor(x, y).alpha(), 0)
 
         for x, y in ((2, 0), (0, 3), (3, 6)):
-            self.assertNotEqual(image.pixelColor(x, y).name(), '#000000')
+            self.assertNotEqual(image.pixelColor(x, y).name(), "#000000")
             self.assertGreater(image.pixelColor(x, y).alpha(), 0)
 
     def assertScaleDenominator(self, root, expectedMinScale, expectedMaxScale, index=0):
-        rule = root.elementsByTagName('se:Rule').item(index).toElement()
+        rule = root.elementsByTagName("se:Rule").item(index).toElement()
 
         if expectedMinScale:
-            minScale = rule.elementsByTagName('se:MinScaleDenominator').item(0)
+            minScale = rule.elementsByTagName("se:MinScaleDenominator").item(0)
             self.assertEqual(expectedMinScale, minScale.firstChild().nodeValue())
         else:
-            self.assertEqual(0, root.elementsByTagName('se:MinScaleDenominator').size())
+            self.assertEqual(0, root.elementsByTagName("se:MinScaleDenominator").size())
 
         if expectedMaxScale:
-            maxScale = rule.elementsByTagName('se:MaxScaleDenominator').item(0)
+            maxScale = rule.elementsByTagName("se:MaxScaleDenominator").item(0)
             self.assertEqual(expectedMaxScale, maxScale.firstChild().nodeValue())
         else:
-            self.assertEqual(0, root.elementsByTagName('se:MaxScaleDenominator').size())
+            self.assertEqual(0, root.elementsByTagName("se:MaxScaleDenominator").size())
 
     def assertDashPattern(self, root, svgParameterIdx, expectedPattern):
-        strokeWidth = root.elementsByTagName(
-            'se:SvgParameter').item(svgParameterIdx)
-        svgParameterName = strokeWidth.attributes().namedItem('name')
+        strokeWidth = root.elementsByTagName("se:SvgParameter").item(svgParameterIdx)
+        svgParameterName = strokeWidth.attributes().namedItem("name")
         self.assertEqual("stroke-dasharray", svgParameterName.nodeValue())
-        self.assertEqual(
-            expectedPattern, strokeWidth.firstChild().nodeValue())
+        self.assertEqual(expectedPattern, strokeWidth.firstChild().nodeValue())
 
     def assertStaticGap(self, root, expectedValue):
         # Check the rotation element is a literal, not a
-        rotation = root.elementsByTagName('se:Gap').item(0)
+        rotation = root.elementsByTagName("se:Gap").item(0)
         literal = rotation.firstChild()
         self.assertEqual("ogc:Literal", literal.nodeName())
         self.assertEqual(expectedValue, literal.firstChild().nodeValue())
 
     def assertStaticSize(self, root, expectedValue):
-        size = root.elementsByTagName('se:Size').item(0)
+        size = root.elementsByTagName("se:Size").item(0)
         self.assertEqual(expectedValue, size.firstChild().nodeValue())
 
     def assertExternalGraphic(self, root, index, expectedLink, expectedFormat):
-        graphic = root.elementsByTagName('se:ExternalGraphic').item(index)
-        onlineResource = graphic.firstChildElement('se:OnlineResource')
-        self.assertEqual(expectedLink, onlineResource.attribute('xlink:href'))
-        format = graphic.firstChildElement('se:Format')
+        graphic = root.elementsByTagName("se:ExternalGraphic").item(index)
+        onlineResource = graphic.firstChildElement("se:OnlineResource")
+        self.assertEqual(expectedLink, onlineResource.attribute("xlink:href"))
+        format = graphic.firstChildElement("se:Format")
         self.assertEqual(expectedFormat, format.firstChild().nodeValue())
 
     def assertStaticPerpendicularOffset(self, root, expectedValue):
-        offset = root.elementsByTagName('se:PerpendicularOffset').item(0)
+        offset = root.elementsByTagName("se:PerpendicularOffset").item(0)
         self.assertEqual(expectedValue, offset.firstChild().nodeValue())
 
-    def assertWellKnownMark(self, root, index, expectedName, expectedFill, expectedStroke, expectedStrokeWidth):
-        mark = root.elementsByTagName('se:Mark').item(index)
-        wkn = mark.firstChildElement('se:WellKnownName')
+    def assertWellKnownMark(
+        self,
+        root,
+        index,
+        expectedName,
+        expectedFill,
+        expectedStroke,
+        expectedStrokeWidth,
+    ):
+        mark = root.elementsByTagName("se:Mark").item(index)
+        wkn = mark.firstChildElement("se:WellKnownName")
         self.assertEqual(expectedName, wkn.text())
 
-        fill = mark.firstChildElement('se:Fill')
+        fill = mark.firstChildElement("se:Fill")
         if expectedFill is None:
             self.assertTrue(fill.isNull())
         else:
-            parameter = fill.firstChildElement('se:SvgParameter')
-            self.assertEqual('fill', parameter.attribute('name'))
+            parameter = fill.firstChildElement("se:SvgParameter")
+            self.assertEqual("fill", parameter.attribute("name"))
             self.assertEqual(expectedFill, parameter.text())
 
-        stroke = mark.firstChildElement('se:Stroke')
+        stroke = mark.firstChildElement("se:Stroke")
         if expectedStroke is None:
             self.assertTrue(stroke.isNull())
         else:
-            parameter = stroke.firstChildElement('se:SvgParameter')
-            self.assertEqual('stroke', parameter.attribute('name'))
+            parameter = stroke.firstChildElement("se:SvgParameter")
+            self.assertEqual("stroke", parameter.attribute("name"))
             self.assertEqual(expectedStroke, parameter.text())
-            parameter = parameter.nextSiblingElement('se:SvgParameter')
-            self.assertEqual('stroke-width', parameter.attribute('name'))
+            parameter = parameter.nextSiblingElement("se:SvgParameter")
+            self.assertEqual("stroke-width", parameter.attribute("name"))
             self.assertEqual(str(expectedStrokeWidth), parameter.text())
 
     def assertStaticRotation(self, root, expectedValue, index=0):
         # Check the rotation element is a literal, not a
-        rotation = root.elementsByTagName('se:Rotation').item(index)
+        rotation = root.elementsByTagName("se:Rotation").item(index)
         literal = rotation.firstChild()
         self.assertEqual("ogc:Literal", literal.nodeName())
         self.assertEqual(expectedValue, literal.firstChild().nodeValue())
 
     def assertStaticDisplacement(self, root, expectedAnchorX, expectedAnchorY):
-        displacement = root.elementsByTagName('se:Displacement').item(0)
+        displacement = root.elementsByTagName("se:Displacement").item(0)
         self.assertIsNotNone(displacement)
         dx = displacement.firstChild()
         self.assertIsNotNone(dx)
@@ -1472,7 +1679,7 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         self.assertSldNumber(expectedAnchorY, dy.firstChild().nodeValue())
 
     def assertStaticAnchorPoint(self, root, expectedDispX, expectedDispY):
-        anchor = root.elementsByTagName('se:AnchorPoint').item(0)
+        anchor = root.elementsByTagName("se:AnchorPoint").item(0)
         self.assertIsNotNone(anchor)
         ax = anchor.firstChild()
         self.assertIsNotNone(ax)
@@ -1488,15 +1695,15 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         self.assertFloatEquals(expected, value, 0.01)
 
     def assertFloatEquals(self, expected, actual, tol):
-        self.assertLess(abs(expected - actual), tol, 'Expected %d but was %d' % (expected, actual))
+        self.assertLess(
+            abs(expected - actual), tol, "Expected %d but was %d" % (expected, actual)
+        )
 
     def assertStrokeWidth(self, root, svgParameterIdx, expectedWidth):
-        strokeWidth = root.elementsByTagName(
-            'se:SvgParameter').item(svgParameterIdx)
-        svgParameterName = strokeWidth.attributes().namedItem('name')
+        strokeWidth = root.elementsByTagName("se:SvgParameter").item(svgParameterIdx)
+        svgParameterName = strokeWidth.attributes().namedItem("name")
         self.assertEqual("stroke-width", svgParameterName.nodeValue())
-        self.assertSldNumber(
-            expectedWidth, strokeWidth.firstChild().nodeValue())
+        self.assertSldNumber(expectedWidth, strokeWidth.firstChild().nodeValue())
 
     def symbolToSld(self, symbolLayer):
         dom = QDomDocument()
@@ -1514,5 +1721,5 @@ class TestQgsSymbolLayerCreateSld(QgisTestCase):
         return dom, root
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

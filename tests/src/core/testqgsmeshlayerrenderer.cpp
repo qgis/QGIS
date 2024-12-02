@@ -44,7 +44,8 @@ class TestQgsMeshRenderer : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsMeshRenderer() : QgsTest( QStringLiteral( "Mesh Layer Rendering Tests" ), QStringLiteral( "mesh" ) ) {}
+    TestQgsMeshRenderer()
+      : QgsTest( QStringLiteral( "Mesh Layer Rendering Tests" ), QStringLiteral( "mesh" ) ) {}
 
   private:
     QString mDataDir;
@@ -55,9 +56,9 @@ class TestQgsMeshRenderer : public QgsTest
     QgsMapSettings *mMapSettings = nullptr;
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
     QString readFile( const QString &fname ) const;
 
     void test_native_mesh_rendering();
@@ -175,9 +176,11 @@ void TestQgsMeshRenderer::initTestCase()
 
   // Add layers
   QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mMemory1DLayer << mMemoryLayer << mMdalLayer << mMdal3DLayer );
+    QList<QgsMapLayer *>() << mMemory1DLayer << mMemoryLayer << mMdalLayer << mMdal3DLayer
+  );
   mMapSettings->setLayers(
-    QList<QgsMapLayer *>() << mMemory1DLayer << mMemoryLayer << mMdalLayer << mMdal3DLayer );
+    QList<QgsMapLayer *>() << mMemory1DLayer << mMemoryLayer << mMdalLayer << mMdal3DLayer
+  );
 
   // here we check that datasets automatically get our default color ramp applied ("Plasma")
   QgsMeshDatasetIndex ds( 0, 0 );
@@ -185,8 +188,8 @@ void TestQgsMeshRenderer::initTestCase()
   QgsColorRampShader shader = scalarSettings.colorRampShader();
   QList<QgsColorRampShader::ColorRampItem> lst = shader.colorRampItemList();
   QCOMPARE( lst.count(), 52 );
-  QCOMPARE( lst.at( 0 ).value, 1. );  // min group value
-  QCOMPARE( lst.at( lst.count() - 1 ).value, 4. );  // max group value
+  QCOMPARE( lst.at( 0 ).value, 1. );               // min group value
+  QCOMPARE( lst.at( lst.count() - 1 ).value, 4. ); // max group value
 
   ds = QgsMeshDatasetIndex( 1, 0 );
   const QgsMeshRendererVectorSettings vectorSettings = mMemoryLayer->rendererSettings().vectorSettings( ds.group() );
@@ -194,7 +197,7 @@ void TestQgsMeshRenderer::initTestCase()
   lst = shader.colorRampItemList();
   QCOMPARE( lst.count(), 52 );
   QVERIFY( fabs( lst.at( 0 ).value - 1.41421356237 ) < 0.000001 ); // min group value
-  QCOMPARE( lst.at( lst.count() - 1 ).value, 5. ); // max group value
+  QCOMPARE( lst.at( lst.count() - 1 ).value, 5. );                 // max group value
 }
 
 void TestQgsMeshRenderer::cleanupTestCase()
@@ -252,7 +255,7 @@ void TestQgsMeshRenderer::test_native_mesh_renderingWithClipping()
   mMapSettings->setOutputDpi( 96 );
   mMapSettings->setRotation( 0 );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "painterclip_region", "painterclip_region", *mMapSettings, 0, 15 );
-  mMapSettings->setClippingRegions( QList< QgsMapClippingRegion >() );
+  mMapSettings->setClippingRegions( QList<QgsMapClippingRegion>() );
 }
 
 void TestQgsMeshRenderer::test_triangular_mesh_rendering()

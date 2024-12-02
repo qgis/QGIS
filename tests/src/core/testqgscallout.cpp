@@ -75,8 +75,7 @@ class DummyCallout : public QgsCallout
     QString prop2() { return mProp2; }
 
   protected:
-
-    void draw( QgsRenderContext &, const QRectF &, const double, const QgsGeometry &, QgsCallout::QgsCalloutContext & ) override { }
+    void draw( QgsRenderContext &, const QRectF &, const double, const QgsGeometry &, QgsCallout::QgsCalloutContext & ) override {}
 
   private:
     QString mProp1;
@@ -87,7 +86,6 @@ class DummyCallout : public QgsCallout
 class TestSimpleCalloutUnder : public QgsSimpleLineCallout
 {
   public:
-
     QString type() const override { return QStringLiteral( "SimpleUnder" ); }
     TestSimpleCalloutUnder *clone() const override { return new TestSimpleCalloutUnder( *this ); }
     QVariantMap properties( const QgsReadWriteContext & ) const override
@@ -105,18 +103,19 @@ class TestSimpleCalloutUnder : public QgsSimpleLineCallout
 };
 
 
-class TestQgsCallout: public QgsTest
+class TestQgsCallout : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsCallout() : QgsTest( QStringLiteral( "Callout Tests" ), QStringLiteral( "callouts" ) ) {}
+    TestQgsCallout()
+      : QgsTest( QStringLiteral( "Callout Tests" ), QStringLiteral( "callouts" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
     void saveRestore();
 
     void calloutsInLabeling();
@@ -180,10 +179,8 @@ class TestQgsCallout: public QgsTest
     void calloutsBlend();
 
   private:
-
     QString mTestDataDir;
     QgsVectorLayer *vl = nullptr;
-
 };
 
 void TestQgsCallout::initTestCase()
@@ -208,10 +205,10 @@ void TestQgsCallout::init()
   const QString filename = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
   vl = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( vl->isValid() );
-  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
-  static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
+  static_cast<QgsSimpleMarkerSymbolLayer *>( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
 
   vl->setRenderer( new QgsSingleSymbolRenderer( marker ) );
   QgsProject::instance()->addMapLayer( vl );
@@ -228,9 +225,9 @@ void TestQgsCallout::saveRestore()
   DummyCallout *callout = new DummyCallout( QStringLiteral( "a" ), QStringLiteral( "b" ) );
 
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType =
-    DomImplementation.createDocumentType(
-      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType(
+    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
+  );
   QDomDocument doc( documentType );
 
   //test writing with no node
@@ -251,7 +248,7 @@ void TestQgsCallout::saveRestore()
   QCOMPARE( calloutElem.attribute( "type" ), QString( "Dummy" ) );
 
   //test reading empty node
-  std::unique_ptr< QgsCallout > restoredCallout( QgsApplication::calloutRegistry()->createCallout( QStringLiteral( "Dummy" ), noNode, QgsReadWriteContext() ) );
+  std::unique_ptr<QgsCallout> restoredCallout( QgsApplication::calloutRegistry()->createCallout( QStringLiteral( "Dummy" ), noNode, QgsReadWriteContext() ) );
   QVERIFY( restoredCallout );
 
   //test reading bad node
@@ -426,7 +423,7 @@ void TestQgsCallout::calloutsWithRotation()
   callout->lineSymbol()->setWidth( 1 );
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -444,7 +441,7 @@ void TestQgsCallout::calloutsInLayout()
 {
   //test rendering callouts inside a layout (tests DPI scaling of callouts)
   QgsLayout l( QgsProject::instance() );
-  std::unique_ptr< QgsLayoutItemPage > page = std::make_unique< QgsLayoutItemPage >( &l );
+  std::unique_ptr<QgsLayoutItemPage> page = std::make_unique<QgsLayoutItemPage>( &l );
   page->setPageSize( QgsLayoutSize( 50, 50 ) );
   l.pageCollection()->addPage( page.release() );
 
@@ -524,7 +521,7 @@ void TestQgsCallout::calloutsDisabled()
   callout->lineSymbol()->setWidth( 1 );
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -576,7 +573,7 @@ void TestQgsCallout::calloutsDataDefinedDisabled()
   settings.setCallout( callout );
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::CalloutDraw, QgsProperty::fromExpression( QStringLiteral( "Class = 'Jet'" ) ) );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -628,7 +625,7 @@ void TestQgsCallout::calloutDataDefinedSymbol()
   callout->lineSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 'green' else 'blue' end" ) ) );
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -680,7 +677,7 @@ void TestQgsCallout::calloutDataDefinedSymbolColor()
   callout->lineSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( QStringLiteral( "@symbol_color" ) ) );
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -732,7 +729,7 @@ void TestQgsCallout::calloutMinimumDistance()
   callout->setMinimumLength( 10 );
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -785,7 +782,7 @@ void TestQgsCallout::calloutDataDefinedMinimumDistance()
 
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -837,7 +834,7 @@ void TestQgsCallout::calloutOffsetFromAnchor()
   callout->setOffsetFromAnchor( 4 );
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -889,7 +886,7 @@ void TestQgsCallout::calloutDataDefinedOffsetFromAnchor()
   callout->dataDefinedProperties().setProperty( QgsCallout::Property::OffsetFromAnchor, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 2 else 6 end" ) ) );
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -942,7 +939,7 @@ void TestQgsCallout::calloutOffsetFromLabel()
   callout->setOffsetFromLabel( 4 );
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -995,7 +992,7 @@ void TestQgsCallout::calloutDataDefinedOffsetFromLabel()
   callout->dataDefinedProperties().setProperty( QgsCallout::Property::OffsetFromLabel, QgsProperty::fromExpression( QStringLiteral( "case when Class='Jet' then 3 else 4 end" ) ) );
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -1047,7 +1044,7 @@ void TestQgsCallout::calloutLabelAnchorTopRight()
   callout->setLabelAnchorPoint( QgsCallout::LabelTopRight );
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -1066,7 +1063,7 @@ void TestQgsCallout::calloutLabelAnchorTopRight()
   settings.xOffset = 6;
   settings.yOffset = -6;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
   engine2.setMapSettings( mapSettings );
@@ -1115,7 +1112,7 @@ void TestQgsCallout::calloutLabelAnchorTopLeft()
   callout->setLabelAnchorPoint( QgsCallout::LabelTopLeft );
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -1134,7 +1131,7 @@ void TestQgsCallout::calloutLabelAnchorTopLeft()
   settings.xOffset = 6;
   settings.yOffset = -6;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
   engine2.setMapSettings( mapSettings );
@@ -1183,7 +1180,7 @@ void TestQgsCallout::calloutLabelAnchorTop()
   callout->setLabelAnchorPoint( QgsCallout::LabelTopMiddle );
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -1202,7 +1199,7 @@ void TestQgsCallout::calloutLabelAnchorTop()
   settings.xOffset = 6;
   settings.yOffset = -6;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
   engine2.setMapSettings( mapSettings );
@@ -1251,7 +1248,7 @@ void TestQgsCallout::calloutLabelAnchorBottomLeft()
   callout->setLabelAnchorPoint( QgsCallout::LabelBottomLeft );
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -1270,7 +1267,7 @@ void TestQgsCallout::calloutLabelAnchorBottomLeft()
   settings.xOffset = 6;
   settings.yOffset = -6;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
   engine2.setMapSettings( mapSettings );
@@ -1319,7 +1316,7 @@ void TestQgsCallout::calloutLabelAnchorBottom()
   callout->setLabelAnchorPoint( QgsCallout::LabelBottomMiddle );
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -1338,7 +1335,7 @@ void TestQgsCallout::calloutLabelAnchorBottom()
   settings.xOffset = 6;
   settings.yOffset = -6;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
   engine2.setMapSettings( mapSettings );
@@ -1387,7 +1384,7 @@ void TestQgsCallout::calloutLabelAnchorBottomRight()
   callout->setLabelAnchorPoint( QgsCallout::LabelBottomRight );
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -1406,7 +1403,7 @@ void TestQgsCallout::calloutLabelAnchorBottomRight()
   settings.xOffset = 6;
   settings.yOffset = -6;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
   engine2.setMapSettings( mapSettings );
@@ -1455,7 +1452,7 @@ void TestQgsCallout::calloutLabelAnchorLeft()
   callout->setLabelAnchorPoint( QgsCallout::LabelMiddleLeft );
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -1474,7 +1471,7 @@ void TestQgsCallout::calloutLabelAnchorLeft()
   settings.xOffset = 6;
   settings.yOffset = -6;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
   engine2.setMapSettings( mapSettings );
@@ -1523,7 +1520,7 @@ void TestQgsCallout::calloutLabelAnchorRight()
   callout->setLabelAnchorPoint( QgsCallout::LabelMiddleRight );
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -1542,7 +1539,7 @@ void TestQgsCallout::calloutLabelAnchorRight()
   settings.xOffset = 6;
   settings.yOffset = -6;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
   engine2.setMapSettings( mapSettings );
@@ -1591,7 +1588,7 @@ void TestQgsCallout::calloutLabelAnchorCentroid()
   callout->setLabelAnchorPoint( QgsCallout::LabelCentroid );
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -1610,7 +1607,7 @@ void TestQgsCallout::calloutLabelAnchorCentroid()
   settings.xOffset = 6;
   settings.yOffset = -6;
   settings.dataDefinedProperties().setProperty( QgsPalLayerSettings::Property::LabelRotation, QgsProperty::fromValue( 15 ) );
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
 
   QgsDefaultLabelingEngine engine2;
   engine2.setMapSettings( mapSettings );
@@ -1660,7 +1657,7 @@ void TestQgsCallout::calloutLabelDataDefinedAnchor()
   callout->dataDefinedProperties().setProperty( QgsCallout::Property::LabelAnchorPointPosition, QgsProperty::fromExpression( QStringLiteral( "'TL'" ) ) );
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -1716,7 +1713,7 @@ void TestQgsCallout::calloutBehindLabel()
 
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -1772,7 +1769,7 @@ void TestQgsCallout::calloutBehindIndividualLabels()
 
   settings.setCallout( callout );
 
-  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -1788,11 +1785,11 @@ void TestQgsCallout::calloutBehindIndividualLabels()
 
 void TestQgsCallout::calloutNoDrawToAllParts()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
-  static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
+  static_cast<QgsSimpleMarkerSymbolLayer *>( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
   vl2->setRenderer( new QgsSingleSymbolRenderer( marker ) );
 
   QgsFeature f;
@@ -1840,7 +1837,7 @@ void TestQgsCallout::calloutNoDrawToAllParts()
   callout->lineSymbol()->setWidth( 1 );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -1856,11 +1853,11 @@ void TestQgsCallout::calloutNoDrawToAllParts()
 
 void TestQgsCallout::calloutDrawToAllParts()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
-  static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
+  static_cast<QgsSimpleMarkerSymbolLayer *>( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
   vl2->setRenderer( new QgsSingleSymbolRenderer( marker ) );
 
   QgsFeature f;
@@ -1909,7 +1906,7 @@ void TestQgsCallout::calloutDrawToAllParts()
   callout->setDrawCalloutToAllParts( true );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -1925,11 +1922,11 @@ void TestQgsCallout::calloutDrawToAllParts()
 
 void TestQgsCallout::calloutDataDefinedDrawToAllParts()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
-  static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
+  static_cast<QgsSimpleMarkerSymbolLayer *>( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
   vl2->setRenderer( new QgsSingleSymbolRenderer( marker ) );
 
   QgsFeature f;
@@ -1978,7 +1975,7 @@ void TestQgsCallout::calloutDataDefinedDrawToAllParts()
   callout->dataDefinedProperties().setProperty( QgsCallout::Property::DrawCalloutToAllParts, QgsProperty::fromExpression( QStringLiteral( "\"id\"=1" ) ) );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -1994,8 +1991,8 @@ void TestQgsCallout::calloutDataDefinedDrawToAllParts()
 
 void TestQgsCallout::calloutPointOnExterior()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsFillSymbol *fill = static_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
 
@@ -2041,7 +2038,7 @@ void TestQgsCallout::calloutPointOnExterior()
   callout->setAnchorPoint( QgsCallout::PointOnExterior );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -2057,8 +2054,8 @@ void TestQgsCallout::calloutPointOnExterior()
 
 void TestQgsCallout::calloutDataDefinedAnchorPoint()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsFillSymbol *fill = static_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
 
@@ -2104,7 +2101,7 @@ void TestQgsCallout::calloutDataDefinedAnchorPoint()
   callout->dataDefinedProperties().setProperty( QgsCallout::Property::AnchorPointPosition, QgsProperty::fromExpression( QStringLiteral( "'centroid'" ) ) );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -2120,8 +2117,8 @@ void TestQgsCallout::calloutDataDefinedAnchorPoint()
 
 void TestQgsCallout::calloutDataDefinedDestination()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsFillSymbol *fill = static_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
 
@@ -2169,7 +2166,7 @@ void TestQgsCallout::calloutDataDefinedDestination()
   callout->dataDefinedProperties().setProperty( QgsCallout::Property::DestinationY, QgsProperty::fromExpression( QStringLiteral( "5000096.84" ) ) );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -2185,8 +2182,8 @@ void TestQgsCallout::calloutDataDefinedDestination()
 
 void TestQgsCallout::calloutDataDefinedOrigin()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsFillSymbol *fill = static_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
 
@@ -2234,7 +2231,7 @@ void TestQgsCallout::calloutDataDefinedOrigin()
   callout->dataDefinedProperties().setProperty( QgsCallout::Property::OriginY, QgsProperty::fromExpression( QStringLiteral( "4999948.34" ) ) );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -2355,11 +2352,11 @@ void TestQgsCallout::manhattanRotated()
 
 void TestQgsCallout::manhattanNoDrawToAllParts()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
-  static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
+  static_cast<QgsSimpleMarkerSymbolLayer *>( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
   vl2->setRenderer( new QgsSingleSymbolRenderer( marker ) );
 
   QgsFeature f;
@@ -2407,7 +2404,7 @@ void TestQgsCallout::manhattanNoDrawToAllParts()
   callout->lineSymbol()->setWidth( 1 );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -2423,11 +2420,11 @@ void TestQgsCallout::manhattanNoDrawToAllParts()
 
 void TestQgsCallout::manhattanDrawToAllParts()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
-  static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
+  static_cast<QgsSimpleMarkerSymbolLayer *>( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
   vl2->setRenderer( new QgsSingleSymbolRenderer( marker ) );
 
   QgsFeature f;
@@ -2476,7 +2473,7 @@ void TestQgsCallout::manhattanDrawToAllParts()
   callout->setDrawCalloutToAllParts( true );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -2492,11 +2489,11 @@ void TestQgsCallout::manhattanDrawToAllParts()
 
 void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsMarkerSymbol *marker = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsMarkerSymbol *marker = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   marker->setColor( QColor( 255, 0, 0 ) );
   marker->setSize( 3 );
-  static_cast< QgsSimpleMarkerSymbolLayer * >( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
+  static_cast<QgsSimpleMarkerSymbolLayer *>( marker->symbolLayer( 0 ) )->setStrokeStyle( Qt::NoPen );
   vl2->setRenderer( new QgsSingleSymbolRenderer( marker ) );
 
   QgsFeature f;
@@ -2545,7 +2542,7 @@ void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
   callout->dataDefinedProperties().setProperty( QgsCallout::Property::DrawCalloutToAllParts, QgsProperty::fromExpression( QStringLiteral( "\"id\"=1" ) ) );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -2561,8 +2558,8 @@ void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
 
 void TestQgsCallout::manhattanDataDefinedDestination()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsFillSymbol *fill = static_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
 
@@ -2610,7 +2607,7 @@ void TestQgsCallout::manhattanDataDefinedDestination()
   callout->dataDefinedProperties().setProperty( QgsCallout::Property::DestinationY, QgsProperty::fromExpression( QStringLiteral( "5000096.84" ) ) );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -2626,8 +2623,8 @@ void TestQgsCallout::manhattanDataDefinedDestination()
 
 void TestQgsCallout::manhattanDataDefinedOrigin()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
-  QgsFillSymbol *fill = static_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QgsFillSymbol *fill = static_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) );
   fill->setColor( QColor( 255, 0, 0 ) );
   vl2->setRenderer( new QgsSingleSymbolRenderer( fill ) );
 
@@ -2675,7 +2672,7 @@ void TestQgsCallout::manhattanDataDefinedOrigin()
   callout->dataDefinedProperties().setProperty( QgsCallout::Property::OriginY, QgsProperty::fromExpression( QStringLiteral( "4999948.34" ) ) );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -2691,7 +2688,7 @@ void TestQgsCallout::manhattanDataDefinedOrigin()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtBottomLeft()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -2775,7 +2772,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottomLeft()
   callout->setLabelAnchorPoint( QgsCallout::LabelBottomLeft );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -2791,7 +2788,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottomLeft()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtBottomRight()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -2875,7 +2872,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottomRight()
   callout->setLabelAnchorPoint( QgsCallout::LabelBottomRight );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -2891,7 +2888,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottomRight()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtTopLeft()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -2975,7 +2972,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTopLeft()
   callout->setLabelAnchorPoint( QgsCallout::LabelTopLeft );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -2991,7 +2988,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTopLeft()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtTopRight()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -3075,7 +3072,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTopRight()
   callout->setLabelAnchorPoint( QgsCallout::LabelTopRight );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -3091,7 +3088,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTopRight()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtTop()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -3175,7 +3172,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTop()
   callout->setLabelAnchorPoint( QgsCallout::LabelTopMiddle );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -3191,7 +3188,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtTop()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtBottom()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -3275,7 +3272,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottom()
   callout->setLabelAnchorPoint( QgsCallout::LabelBottomMiddle );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -3291,7 +3288,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtBottom()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtLeft()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -3375,7 +3372,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtLeft()
   callout->setLabelAnchorPoint( QgsCallout::LabelMiddleLeft );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -3391,7 +3388,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtLeft()
 
 void TestQgsCallout::curvedAutoLeavingLabelsAtRight()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -3475,7 +3472,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtRight()
   callout->setLabelAnchorPoint( QgsCallout::LabelMiddleRight );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -3491,7 +3488,7 @@ void TestQgsCallout::curvedAutoLeavingLabelsAtRight()
 
 void TestQgsCallout::curvedAutoHorizontalLines()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -3544,7 +3541,7 @@ void TestQgsCallout::curvedAutoHorizontalLines()
   callout->lineSymbol()->setWidth( 1 );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -3560,7 +3557,7 @@ void TestQgsCallout::curvedAutoHorizontalLines()
 
 void TestQgsCallout::curvedAutoVerticalLines()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -3613,7 +3610,7 @@ void TestQgsCallout::curvedAutoVerticalLines()
   callout->lineSymbol()->setWidth( 1 );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -3629,7 +3626,7 @@ void TestQgsCallout::curvedAutoVerticalLines()
 
 void TestQgsCallout::curvedClockwise()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -3713,7 +3710,7 @@ void TestQgsCallout::curvedClockwise()
   callout->setOrientation( QgsCurvedLineCallout::Clockwise );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -3729,7 +3726,7 @@ void TestQgsCallout::curvedClockwise()
 
 void TestQgsCallout::curvedCounterClockwise()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -3813,7 +3810,7 @@ void TestQgsCallout::curvedCounterClockwise()
   callout->setOrientation( QgsCurvedLineCallout::CounterClockwise );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -3829,7 +3826,7 @@ void TestQgsCallout::curvedCounterClockwise()
 
 void TestQgsCallout::curvedCurvature()
 {
-  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3946&field=id:integer&field=labelx:integer&field=labely:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
   QgsFeature f;
@@ -3914,7 +3911,7 @@ void TestQgsCallout::curvedCurvature()
   callout->setCurvature( 0.3 );
   settings.setCallout( callout );
 
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
 
   QgsDefaultLabelingEngine engine;
@@ -3963,9 +3960,7 @@ void TestQgsCallout::balloonCallout()
 
   QgsBalloonCallout *callout = new QgsBalloonCallout();
   callout->setEnabled( true );
-  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc"},
-    { "outline-width", "1"}
-  } ) ) );
+  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc" }, { "outline-width", "1" } } ) ) );
   settings.setCallout( callout );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -4017,9 +4012,7 @@ void TestQgsCallout::balloonCalloutMargin()
 
   QgsBalloonCallout *callout = new QgsBalloonCallout();
   callout->setEnabled( true );
-  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc"},
-    { "outline-width", "1"}
-  } ) ) );
+  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc" }, { "outline-width", "1" } } ) ) );
   callout->setMargins( QgsMargins( 1, 2, 3, 4 ) );
   settings.setCallout( callout );
 
@@ -4072,9 +4065,7 @@ void TestQgsCallout::balloonCalloutWedgeWidth()
 
   QgsBalloonCallout *callout = new QgsBalloonCallout();
   callout->setEnabled( true );
-  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc"},
-    { "outline-width", "1"}
-  } ) ) );
+  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc" }, { "outline-width", "1" } } ) ) );
   callout->setWedgeWidth( 6 );
   settings.setCallout( callout );
 
@@ -4127,9 +4118,7 @@ void TestQgsCallout::balloonCalloutCornerRadius()
 
   QgsBalloonCallout *callout = new QgsBalloonCallout();
   callout->setEnabled( true );
-  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc"},
-    { "outline-width", "1"}
-  } ) ) );
+  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc" }, { "outline-width", "1" } } ) ) );
   callout->setCornerRadius( 3 );
   settings.setCallout( callout );
 
@@ -4182,9 +4171,7 @@ void TestQgsCallout::balloonCalloutMarkerSymbol()
 
   QgsBalloonCallout *callout = new QgsBalloonCallout();
   callout->setEnabled( true );
-  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc"},
-    { "outline-width", "1"}
-  } ) ) );
+  callout->setFillSymbol( QgsFillSymbol::createSimple( QVariantMap( { { "color", "#ffcccc" }, { "outline-width", "1" } } ) ) );
   callout->setOffsetFromAnchor( 1 );
 
   QVariantMap props;
@@ -4213,7 +4200,7 @@ void TestQgsCallout::balloonCalloutMarkerSymbol()
 
 void TestQgsCallout::blendMode()
 {
-  std::unique_ptr< QgsManhattanLineCallout > callout = std::make_unique< QgsManhattanLineCallout >();
+  std::unique_ptr<QgsManhattanLineCallout> callout = std::make_unique<QgsManhattanLineCallout>();
   QCOMPARE( callout->containsAdvancedEffects(), false );
 
   callout->setBlendMode( QPainter::CompositionMode_Multiply );

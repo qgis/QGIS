@@ -43,14 +43,14 @@ class QgsSpatiaLiteConnection : public QObject
 
     typedef struct TableEntry
     {
-      TableEntry( const QString &_tableName, const QString &_column, const QString &_type )
-        : tableName( _tableName )
-        , column( _column )
-        , type( _type )
-      {}
-      QString tableName;
-      QString column;
-      QString type;
+        TableEntry( const QString &_tableName, const QString &_column, const QString &_type )
+          : tableName( _tableName )
+          , column( _column )
+          , type( _type )
+        {}
+        QString tableName;
+        QString column;
+        QString type;
     } TableEntry;
 
     enum Error
@@ -191,7 +191,7 @@ class QgsSqliteHandle
     QString mDbPath;
     bool mIsValid;
 
-    static QMap < QString, QgsSqliteHandle * > sHandles;
+    static QMap<QString, QgsSqliteHandle *> sHandles;
     static QMutex sHandleMutex;
 };
 

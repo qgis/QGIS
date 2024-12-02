@@ -15,26 +15,28 @@
 ***************************************************************************
 """
 
-__author__ = 'Michael Minn'
-__date__ = 'May 2010'
-__copyright__ = '(C) 2010, Michael Minn'
+__author__ = "Michael Minn"
+__date__ = "May 2010"
+__copyright__ = "(C) 2010, Michael Minn"
 
 from qgis.PyQt.QtCore import QMetaType
-from qgis.core import (QgsField,
-                       QgsProcessing,
-                       QgsProcessingParameterField,
-                       QgsProcessingFeatureSource)
+from qgis.core import (
+    QgsField,
+    QgsProcessing,
+    QgsProcessingParameterField,
+    QgsProcessingFeatureSource,
+)
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
 class TextToFloat(QgisFeatureBasedAlgorithm):
-    FIELD = 'FIELD'
+    FIELD = "FIELD"
 
     def group(self):
-        return self.tr('Vector table')
+        return self.tr("Vector table")
 
     def groupId(self):
-        return 'vectortable'
+        return "vectortable"
 
     def __init__(self):
         super().__init__()
@@ -42,20 +44,23 @@ class TextToFloat(QgisFeatureBasedAlgorithm):
         self.field_idx = -1
 
     def initParameters(self, config=None):
-        self.addParameter(QgsProcessingParameterField(self.FIELD,
-                                                      self.tr('Text attribute to convert to float'),
-                                                      parentLayerParameterName='INPUT',
-                                                      type=QgsProcessingParameterField.DataType.String
-                                                      ))
+        self.addParameter(
+            QgsProcessingParameterField(
+                self.FIELD,
+                self.tr("Text attribute to convert to float"),
+                parentLayerParameterName="INPUT",
+                type=QgsProcessingParameterField.DataType.String,
+            )
+        )
 
     def name(self):
-        return 'texttofloat'
+        return "texttofloat"
 
     def displayName(self):
-        return self.tr('Text to float')
+        return self.tr("Text to float")
 
     def outputName(self):
-        return self.tr('Float from text')
+        return self.tr("Float from text")
 
     def inputLayerTypes(self):
         return [QgsProcessing.SourceType.TypeVector]
@@ -63,7 +68,9 @@ class TextToFloat(QgisFeatureBasedAlgorithm):
     def outputFields(self, inputFields):
         self.field_idx = inputFields.lookupField(self.field_name)
         if self.field_idx >= 0:
-            inputFields[self.field_idx] = QgsField(self.field_name, QMetaType.Type.Double, '', 24, 15)
+            inputFields[self.field_idx] = QgsField(
+                self.field_name, QMetaType.Type.Double, "", 24, 15
+            )
         return inputFields
 
     def prepareAlgorithm(self, parameters, context, feedback):
@@ -79,8 +86,8 @@ class TextToFloat(QgisFeatureBasedAlgorithm):
     def processFeature(self, feature, context, feedback):
         value = feature[self.field_idx]
         try:
-            if '%' in value:
-                feature[self.field_idx] = float(value.replace('%', '')) / 100.0
+            if "%" in value:
+                feature[self.field_idx] = float(value.replace("%", "")) / 100.0
             else:
                 feature[self.field_idx] = float(value)
         except:

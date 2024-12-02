@@ -14,6 +14,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+
 import json
 import os
 import random
@@ -24,9 +25,9 @@ import sys
 import tempfile
 import urllib
 
-__author__ = 'Alessandro Pasotti'
-__date__ = '20/04/2017'
-__copyright__ = 'Copyright 2017, The QGIS Project'
+__author__ = "Alessandro Pasotti"
+__date__ = "20/04/2017"
+__copyright__ = "Copyright 2017, The QGIS Project"
 
 from shutil import rmtree
 
@@ -42,18 +43,25 @@ from qgis.testing import start_app, QgisTestCase
 from utilities import unitTestDataPath, waitServer
 
 try:
-    QGIS_SERVER_ENDPOINT_PORT = os.environ['QGIS_SERVER_ENDPOINT_PORT']
+    QGIS_SERVER_ENDPOINT_PORT = os.environ["QGIS_SERVER_ENDPOINT_PORT"]
 except:
-    QGIS_SERVER_ENDPOINT_PORT = '0'  # Auto
+    QGIS_SERVER_ENDPOINT_PORT = "0"  # Auto
 
 QGIS_AUTH_DB_DIR_PATH = tempfile.mkdtemp()
 
-os.environ['QGIS_AUTH_DB_DIR_PATH'] = QGIS_AUTH_DB_DIR_PATH
+os.environ["QGIS_AUTH_DB_DIR_PATH"] = QGIS_AUTH_DB_DIR_PATH
 
 qgis_app = start_app()
 
 
-def setup_oauth(username, password, token_uri, refresh_token_uri='', authcfg_id='oauth-2', authcfg_name='OAuth2 test configuration'):
+def setup_oauth(
+    username,
+    password,
+    token_uri,
+    refresh_token_uri="",
+    authcfg_id="oauth-2",
+    authcfg_name="OAuth2 test configuration",
+):
     """Setup oauth configuration to access OAuth API,
     return authcfg_id on success, None on failure
     """
@@ -66,29 +74,31 @@ def setup_oauth(username, password, token_uri, refresh_token_uri='', authcfg_id=
         "grantFlow": 2,
         "password": password,
         "persistToken": False,
-        "redirectPort": '7070',
+        "redirectPort": "7070",
         "redirectUrl": "",
         "refreshTokenUrl": refresh_token_uri,
-        "requestTimeout": '30',
+        "requestTimeout": "30",
         "requestUrl": "",
         "scope": "",
         "tokenUrl": token_uri,
         "username": username,
-        "version": 1
+        "version": 1,
     }
 
     if authcfg_id not in QgsApplication.authManager().availableAuthMethodConfigs():
-        authConfig = QgsAuthMethodConfig('OAuth2')
+        authConfig = QgsAuthMethodConfig("OAuth2")
         authConfig.setId(authcfg_id)
         authConfig.setName(authcfg_name)
-        authConfig.setConfig('oauth2config', json.dumps(cfgjson))
+        authConfig.setConfig("oauth2config", json.dumps(cfgjson))
         if QgsApplication.authManager().storeAuthenticationConfig(authConfig):
             return authcfg_id
     else:
         authConfig = QgsAuthMethodConfig()
-        QgsApplication.authManager().loadAuthenticationConfig(authcfg_id, authConfig, True)
+        QgsApplication.authManager().loadAuthenticationConfig(
+            authcfg_id, authConfig, True
+        )
         authConfig.setName(authcfg_name)
-        authConfig.setConfig('oauth2config', json.dumps(cfgjson))
+        authConfig.setConfig("oauth2config", json.dumps(cfgjson))
         if QgsApplication.authManager().updateAuthenticationConfig(authConfig):
             return authcfg_id
     return None
@@ -100,8 +110,8 @@ class TestAuthManager(QgisTestCase):
     def setUpAuth(cls):
         """Run before all tests and set up authentication"""
         authm = QgsApplication.authManager()
-        assert (authm.setMasterPassword('masterpassword', True))
-        cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'qgis_ca.crt')
+        assert authm.setMasterPassword("masterpassword", True)
+        cls.sslrootcert_path = os.path.join(cls.certsdata_path, "qgis_ca.crt")
         assert os.path.isfile(cls.sslrootcert_path)
         os.chmod(cls.sslrootcert_path, stat.S_IRUSR)
 
@@ -111,24 +121,24 @@ class TestAuthManager(QgisTestCase):
         authm.rebuildCaCertsCache()
         authm.rebuildTrustedCaCertsCache()
 
-        cls.server_cert = os.path.join(cls.certsdata_path, '127_0_0_1.crt')
-        cls.server_key = os.path.join(cls.certsdata_path, '127_0_0_1.key')
+        cls.server_cert = os.path.join(cls.certsdata_path, "127_0_0_1.crt")
+        cls.server_key = os.path.join(cls.certsdata_path, "127_0_0_1.key")
         cls.server_rootcert = cls.sslrootcert_path
         os.chmod(cls.server_cert, stat.S_IRUSR)
         os.chmod(cls.server_key, stat.S_IRUSR)
         os.chmod(cls.server_rootcert, stat.S_IRUSR)
 
-        os.environ['QGIS_SERVER_HOST'] = cls.hostname
-        os.environ['QGIS_SERVER_PORT'] = str(cls.port)
-        os.environ['QGIS_SERVER_OAUTH2_KEY'] = cls.server_key
-        os.environ['QGIS_SERVER_OAUTH2_CERTIFICATE'] = cls.server_cert
-        os.environ['QGIS_SERVER_OAUTH2_USERNAME'] = cls.username
-        os.environ['QGIS_SERVER_OAUTH2_PASSWORD'] = cls.password
-        os.environ['QGIS_SERVER_OAUTH2_AUTHORITY'] = cls.server_rootcert
+        os.environ["QGIS_SERVER_HOST"] = cls.hostname
+        os.environ["QGIS_SERVER_PORT"] = str(cls.port)
+        os.environ["QGIS_SERVER_OAUTH2_KEY"] = cls.server_key
+        os.environ["QGIS_SERVER_OAUTH2_CERTIFICATE"] = cls.server_cert
+        os.environ["QGIS_SERVER_OAUTH2_USERNAME"] = cls.username
+        os.environ["QGIS_SERVER_OAUTH2_PASSWORD"] = cls.password
+        os.environ["QGIS_SERVER_OAUTH2_AUTHORITY"] = cls.server_rootcert
         # Set default token expiration to 2 seconds, note that this can be
         # also controlled when issuing token requests by adding ttl=<int>
         # to the query string
-        os.environ['QGIS_SERVER_OAUTH2_TOKEN_EXPIRES_IN'] = '2'
+        os.environ["QGIS_SERVER_OAUTH2_TOKEN_EXPIRES_IN"] = "2"
 
     @classmethod
     def setUpClass(cls):
@@ -137,43 +147,63 @@ class TestAuthManager(QgisTestCase):
         Creates an auth configuration"""
         cls.port = QGIS_SERVER_ENDPOINT_PORT
         # Clean env just to be sure
-        env_vars = ['QUERY_STRING', 'QGIS_PROJECT_FILE']
+        env_vars = ["QUERY_STRING", "QGIS_PROJECT_FILE"]
         for ev in env_vars:
             try:
                 del os.environ[ev]
             except KeyError:
                 pass
-        cls.testdata_path = unitTestDataPath('qgis_server')
-        cls.certsdata_path = os.path.join(unitTestDataPath('auth_system'), 'certs_keys_2048')
+        cls.testdata_path = unitTestDataPath("qgis_server")
+        cls.certsdata_path = os.path.join(
+            unitTestDataPath("auth_system"), "certs_keys_2048"
+        )
         cls.project_path = os.path.join(cls.testdata_path, "test_project.qgs")
         # cls.hostname = 'localhost'
-        cls.protocol = 'https'
-        cls.hostname = '127.0.0.1'
-        cls.username = 'username'
-        cls.password = 'password'
+        cls.protocol = "https"
+        cls.hostname = "127.0.0.1"
+        cls.username = "username"
+        cls.password = "password"
         cls.setUpAuth()
 
-        server_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                   'qgis_wrapped_server.py')
-        cls.server = subprocess.Popen([sys.executable, server_path],
-                                      env=os.environ, stdout=subprocess.PIPE)
+        server_path = os.path.join(
+            os.path.dirname(os.path.realpath(__file__)), "qgis_wrapped_server.py"
+        )
+        cls.server = subprocess.Popen(
+            [sys.executable, server_path], env=os.environ, stdout=subprocess.PIPE
+        )
         line = cls.server.stdout.readline()
-        cls.port = int(re.findall(br':(\d+)', line)[0])
+        cls.port = int(re.findall(rb":(\d+)", line)[0])
         assert cls.port != 0
 
         # We need a valid port before we setup the oauth configuration
-        cls.token_uri = f'{cls.protocol}://{cls.hostname}:{cls.port}/token'
-        cls.refresh_token_uri = f'{cls.protocol}://{cls.hostname}:{cls.port}/refresh'
+        cls.token_uri = f"{cls.protocol}://{cls.hostname}:{cls.port}/token"
+        cls.refresh_token_uri = f"{cls.protocol}://{cls.hostname}:{cls.port}/refresh"
         # Need a random authcfg or the cache will bites us back!
-        cls.authcfg_id = setup_oauth(cls.username, cls.password, cls.token_uri, cls.refresh_token_uri, str(random.randint(0, 10000000)))
+        cls.authcfg_id = setup_oauth(
+            cls.username,
+            cls.password,
+            cls.token_uri,
+            cls.refresh_token_uri,
+            str(random.randint(0, 10000000)),
+        )
         # This is to test wrong credentials
-        cls.wrong_authcfg_id = setup_oauth('wrong', 'wrong', cls.token_uri, cls.refresh_token_uri, str(random.randint(0, 10000000)))
+        cls.wrong_authcfg_id = setup_oauth(
+            "wrong",
+            "wrong",
+            cls.token_uri,
+            cls.refresh_token_uri,
+            str(random.randint(0, 10000000)),
+        )
         # Get the authentication configuration instance:
-        cls.auth_config = QgsApplication.authManager().availableAuthMethodConfigs()[cls.authcfg_id]
+        cls.auth_config = QgsApplication.authManager().availableAuthMethodConfigs()[
+            cls.authcfg_id
+        ]
         assert cls.auth_config.isValid()
 
         # Wait for the server process to start
-        assert waitServer(f'{cls.protocol}://{cls.hostname}:{cls.port}'), f"Server is not responding! {cls.protocol}://{cls.hostname}:{cls.port}"
+        assert waitServer(
+            f"{cls.protocol}://{cls.hostname}:{cls.port}"
+        ), f"Server is not responding! {cls.protocol}://{cls.hostname}:{cls.port}"
 
     @classmethod
     def tearDownClass(cls):
@@ -197,18 +227,18 @@ class TestAuthManager(QgisTestCase):
         WFS layer factory
         """
         if layer_name is None:
-            layer_name = 'wfs_' + type_name
+            layer_name = "wfs_" + type_name
         parms = {
-            'srsname': 'EPSG:4326',
-            'typename': type_name,
-            'url': f'{cls.protocol}://{cls.hostname}:{cls.port}/?map={cls.project_path}',
-            'version': 'auto',
-            'table': '',
+            "srsname": "EPSG:4326",
+            "typename": type_name,
+            "url": f"{cls.protocol}://{cls.hostname}:{cls.port}/?map={cls.project_path}",
+            "version": "auto",
+            "table": "",
         }
         if authcfg is not None:
-            parms.update({'authcfg': authcfg})
-        uri = ' '.join([(f"{k}='{v}'") for k, v in list(parms.items())])
-        wfs_layer = QgsVectorLayer(uri, layer_name, 'WFS')
+            parms.update({"authcfg": authcfg})
+        uri = " ".join([(f"{k}='{v}'") for k, v in list(parms.items())])
+        wfs_layer = QgsVectorLayer(uri, layer_name, "WFS")
         return wfs_layer
 
     @classmethod
@@ -217,36 +247,36 @@ class TestAuthManager(QgisTestCase):
         WMS layer factory
         """
         if layer_name is None:
-            layer_name = 'wms_' + layers.replace(',', '')
+            layer_name = "wms_" + layers.replace(",", "")
         parms = {
-            'crs': 'EPSG:4326',
-            'url': f'{cls.protocol}://{cls.hostname}:{cls.port}/?map={cls.project_path}',
-            'format': 'image/png',
+            "crs": "EPSG:4326",
+            "url": f"{cls.protocol}://{cls.hostname}:{cls.port}/?map={cls.project_path}",
+            "format": "image/png",
             # This is needed because of a really weird implementation in QGIS Server, that
             # replaces _ in the the real layer name with spaces
-            'layers': urllib.parse.quote(layers.replace('_', ' ')),
-            'styles': '',
-            'version': 'auto',
+            "layers": urllib.parse.quote(layers.replace("_", " ")),
+            "styles": "",
+            "version": "auto",
             # 'sql': '',
         }
         if authcfg is not None:
-            parms.update({'authcfg': authcfg})
-        uri = '&'.join([f"{k}={v.replace('=', '%3D')}" for k, v in list(parms.items())])
-        wms_layer = QgsRasterLayer(uri, layer_name, 'wms')
+            parms.update({"authcfg": authcfg})
+        uri = "&".join([f"{k}={v.replace('=', '%3D')}" for k, v in list(parms.items())])
+        wms_layer = QgsRasterLayer(uri, layer_name, "wms")
         return wms_layer
 
     def testNoAuthAccess(self):
         """
         Access the protected layer with no credentials
         """
-        wms_layer = self._getWMSLayer('testlayer_èé')
+        wms_layer = self._getWMSLayer("testlayer_èé")
         self.assertFalse(wms_layer.isValid())
 
     def testInvalidAuthAccess(self):
         """
         Access the protected layer with wrong credentials
         """
-        wms_layer = self._getWMSLayer('testlayer_èé', authcfg=self.wrong_authcfg_id)
+        wms_layer = self._getWMSLayer("testlayer_èé", authcfg=self.wrong_authcfg_id)
         self.assertFalse(wms_layer.isValid())
 
     def testValidAuthAccess(self):
@@ -255,11 +285,11 @@ class TestAuthManager(QgisTestCase):
         Note: cannot test invalid access WFS in a separate test  because
               it would fail the subsequent (valid) calls due to cached connections
         """
-        wfs_layer = self._getWFSLayer('testlayer_èé', authcfg=self.auth_config.id())
+        wfs_layer = self._getWFSLayer("testlayer_èé", authcfg=self.auth_config.id())
         self.assertTrue(wfs_layer.isValid())
-        wms_layer = self._getWMSLayer('testlayer_èé', authcfg=self.auth_config.id())
+        wms_layer = self._getWMSLayer("testlayer_èé", authcfg=self.auth_config.id())
         self.assertTrue(wms_layer.isValid())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

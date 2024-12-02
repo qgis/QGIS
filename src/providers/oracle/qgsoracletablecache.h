@@ -38,14 +38,13 @@ email                : wonder.sk at gmail dot com
 class QgsOracleTableCache
 {
   public:
-
     enum CacheFlag
     {
       OnlyLookIntoMetadataTable = 0x01,
-      OnlyLookForUserTables     = 0x02,
+      OnlyLookForUserTables = 0x02,
       UseEstimatedTableMetadata = 0x04,
       OnlyExistingGeometryTypes = 0x08,
-      AllowGeometrylessTables   = 0x10
+      AllowGeometrylessTables = 0x10
     };
     Q_DECLARE_FLAGS( CacheFlags, CacheFlag )
 
