@@ -79,11 +79,7 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri() const
 {
   QgsMimeDataUtils::Uri uri;
   QUrl url( href() );
-  if ( url.isLocalFile() )
-  {
-    uri.uri = href();
-  }
-  else if ( formatName() == QLatin1String( "COG" ) )
+  if( formatName() == QLatin1String( "COG" ) )
   {
     uri.layerType = QStringLiteral( "raster" );
     uri.providerKey = QStringLiteral( "gdal" );
@@ -113,6 +109,11 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri() const
     uri.providerKey = QStringLiteral( "ept" );
     uri.uri = href();
   }
+  else
+  {
+    return {};
+  }
+
   uri.name = title().isEmpty() ? url.fileName() : title();
 
   return uri;

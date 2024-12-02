@@ -202,7 +202,7 @@ void TestQgsStac::testParseLocalItem()
 
   QgsMimeDataUtils::Uri uri = asset.uri();
   QCOMPARE( uri.uri, basePath + QStringLiteral( "20201211_223832_CS2_analytic.tif" ) );
-  QCOMPARE( uri.name, QStringLiteral( "analytic" ) );
+  QCOMPARE( uri.name, QStringLiteral( "4-Band Analytic" ) );
   QCOMPARE( uri.layerType, QStringLiteral( "raster" ) );
 
   asset = item->assets().value( QStringLiteral( "thumbnail" ), QgsStacAsset( {}, {}, {}, {}, {} ) );
