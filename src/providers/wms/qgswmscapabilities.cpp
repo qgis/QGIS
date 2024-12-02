@@ -35,10 +35,6 @@
 #include "qgstemporalutils.h"
 #include "qgsunittypes.h"
 
-// %%% copied from qgswmsprovider.cpp
-static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
-
-
 bool QgsWmsSettings::parseUri( const QString &uriString )
 {
   QgsDebugMsgLevel( "uriString = " + uriString, 2 );
@@ -1268,12 +1264,12 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
           nodeElement.attribute( QStringLiteral( "maxy" ) ).replace( ',', '.' ).toDouble()
         );
 
-        if ( nodeElement.hasAttribute( QStringLiteral( "SRS" ) ) && nodeElement.attribute( QStringLiteral( "SRS" ) ) != DEFAULT_LATLON_CRS )
+        if ( nodeElement.hasAttribute( QStringLiteral( "SRS" ) ) && nodeElement.attribute( QStringLiteral( "SRS" ) ) != QgsWmsProvider::DEFAULT_LATLON_CRS )
         {
           try
           {
             QgsCoordinateReferenceSystem src = QgsCoordinateReferenceSystem::fromOgcWmsCrs( nodeElement.attribute( QStringLiteral( "SRS" ) ) );
-            QgsCoordinateReferenceSystem dst = QgsCoordinateReferenceSystem::fromOgcWmsCrs( DEFAULT_LATLON_CRS );
+            QgsCoordinateReferenceSystem dst = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsWmsProvider::DEFAULT_LATLON_CRS );
             QgsCoordinateTransform ct( src, dst, mCoordinateTransformContext );
             ct.setBallparkTransformsAreAppropriate( true );
             layerProperty.ex_GeographicBoundingBox = ct.transformBoundingBox( layerProperty.ex_GeographicBoundingBox );
@@ -1860,7 +1856,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
 
       if ( ll.size() == 2 && ur.size() == 2 )
       {
-        boundingBoxProperty.crs = DEFAULT_LATLON_CRS;
+        boundingBoxProperty.crs = QgsWmsProvider::DEFAULT_LATLON_CRS;
         boundingBoxProperty.box = QgsRectangle( QgsPointXY( ll[0].toDouble(), ll[1].toDouble() ), QgsPointXY( ur[0].toDouble(), ur[1].toDouble() ) );
 
         tileLayer.boundingBoxes << boundingBoxProperty;
@@ -2280,7 +2276,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
         QgsDebugError( "failed to detect bounding box for " + tileLayer.identifier + " - using extent of the whole world" );
 
         QgsWmsBoundingBoxProperty boundingBoxProperty;
-        boundingBoxProperty.crs = DEFAULT_LATLON_CRS;
+        boundingBoxProperty.crs = QgsWmsProvider::DEFAULT_LATLON_CRS;
         boundingBoxProperty.box = QgsRectangle( -180.0, -90.0, 180.0, 90.0 );
         tileLayer.boundingBoxes << boundingBoxProperty;
       }
