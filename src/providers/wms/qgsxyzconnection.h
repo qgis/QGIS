@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #ifndef QGSXYZCONNECTION_H
+#define QGSXYZCONNECTION_H
 
 #include <QStringList>
 

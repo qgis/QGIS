@@ -174,6 +174,8 @@ class QgsWmsProvider final : public QgsRasterDataProvider
     static QString WMS_KEY;
     static QString WMS_DESCRIPTION;
 
+    static inline QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
+
     /**
      * Constructor for the provider.
      *
