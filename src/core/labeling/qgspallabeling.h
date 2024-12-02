@@ -1026,18 +1026,6 @@ class CORE_EXPORT QgsPalLayerSettings
     static void initPropertyDefinitions();
 };
 
-/**
- * \ingroup core
- * \brief Represents a label candidate.
- */
-class CORE_EXPORT QgsLabelCandidate
-{
-  public:
-    QgsLabelCandidate( const QRectF &r, double c ): rect( r ), cost( c ) {}
-
-    QRectF rect;
-    double cost;
-};
 
 /**
  * \ingroup core
@@ -1052,9 +1040,6 @@ class CORE_EXPORT QgsPalLabeling
      * Called to find out whether a specified \a layer is used for labeling.
      */
     static bool staticWillUseLayer( const QgsMapLayer *layer );
-
-    //! \note not available in Python bindings
-    static void drawLabelCandidateRect( pal::LabelPosition *lp, QPainter *painter, const QgsMapToPixel *xform, QList<QgsLabelCandidate> *candidates = nullptr ) SIP_SKIP;
 
     /**
      * Prepares a geometry for registration with PAL. Handles reprojection, rotation, clipping, etc.
