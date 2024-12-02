@@ -1184,10 +1184,9 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     /**
      * Calculates the minimal 3D bounding box for the geometry.
-     * Deprecated: use calculateBoundingBox3D instead
      * \see calculateBoundingBox()
      * \since QGIS 3.26
-     * \deprecated QGIS 3.34
+     * \deprecated QGIS 3.34 use calculateBoundingBox3D() instead
      */
     Q_DECL_DEPRECATED QgsBox3D calculateBoundingBox3d() const SIP_DEPRECATED;
 

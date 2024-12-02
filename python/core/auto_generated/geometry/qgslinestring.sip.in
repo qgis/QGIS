@@ -857,13 +857,14 @@ corresponds to the last point in the line.
  QgsBox3D calculateBoundingBox3d() const /Deprecated/;
 %Docstring
 Calculates the minimal 3D bounding box for the geometry.
-Deprecated: use calculateBoundingBox3D instead
 
 .. seealso:: :py:func:`calculateBoundingBox`
 
 .. versionadded:: 3.26
 
 .. deprecated:: 3.34
+
+   use :py:func:`~QgsLineString.calculateBoundingBox3D` instead
 %End
 
     virtual QgsBox3D calculateBoundingBox3D() const;
