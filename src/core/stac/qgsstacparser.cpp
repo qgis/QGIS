@@ -26,9 +26,29 @@
 void QgsStacParser::setData( const QByteArray &data )
 {
   mError = QString();
+  mType = QgsStacObject::Type::Unknown;
   try
   {
     mData = nlohmann::json::parse( data.data() );
+    if ( mData.contains( "stac_version" ) )
+    {
+      const QString ver( QString::fromStdString( mData.at( "stac_version" ) ) );
+      if ( !isSupportedStacVersion( ver ) )
+      {
+        mError = QStringLiteral( "Unsupported STAC version: %1" ).arg( ver );
+        return;
+      }
+    }
+  }
+  catch ( nlohmann::json::exception &ex )
+  {
+    mError = QStringLiteral( "Error parsing JSON" );
+    QgsDebugError( QStringLiteral( "Error parsing JSON : %1" ).arg( ex.what() ) );
+    return;
+  }
+
+  try
+  {
     if ( mData.at( "type" ) == "Catalog" )
     {
       mType = QgsStacObject::Type::Catalog;
@@ -41,14 +61,10 @@ void QgsStacParser::setData( const QByteArray &data )
     {
       mType = QgsStacObject::Type::Item;
     }
-    else
-    {
-      mType = QgsStacObject::Type::Unknown;
-    }
   }
   catch ( nlohmann::json::exception &ex )
   {
-    mType = QgsStacObject::Type::Unknown;
+    // might still be FeatureCollection or Collections Collection
   }
 }
 
