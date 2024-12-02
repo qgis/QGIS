@@ -562,7 +562,7 @@ Returns the transaction this data provider is included in, if any.
 
 .. deprecated:: 3.12
 
-   Will be removed in QGIS 4.0 - use reloadData instead.
+   Will be removed in QGIS 4.0 - use :py:func:`~QgsVectorDataProvider.reloadData` instead.
 %End
 
     virtual QSet<QgsMapLayerDependency> dependencies() const;

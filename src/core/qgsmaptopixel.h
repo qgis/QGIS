@@ -232,7 +232,7 @@ class CORE_EXPORT QgsMapToPixel
     /**
      * Transforms device coordinates to map (world) coordinates.
      *
-     * \deprecated QGIS 3.4. Use toMapCoordinates instead.
+     * \deprecated QGIS 3.4. Use toMapCoordinates() instead.
      */
     Q_DECL_DEPRECATED QgsPointXY toMapPoint( double x, double y ) const SIP_DEPRECATED
     {

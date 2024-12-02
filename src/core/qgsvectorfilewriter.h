@@ -710,7 +710,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * \param newLayer potentially modified layer name (output parameter)
      * \param errorMessage will be set to the error message text, if an error occurs while writing the layer
      * \returns Error message code, or QgsVectorFileWriter.NoError if the write operation was successful
-     * \deprecated QGIS 3.20. Use writeAsVectorFormatV3 instead.
+     * \deprecated QGIS 3.20. Use writeAsVectorFormatV3() instead.
      */
     Q_DECL_DEPRECATED static QgsVectorFileWriter::WriterError writeAsVectorFormatV2( QgsVectorLayer *layer,
         const QString &fileName,
