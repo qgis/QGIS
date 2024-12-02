@@ -4404,11 +4404,11 @@ QgsMapLayerComboBox.setProject: src/gui/qgsmaplayercombobox.h#L106
 QgsMapLayerComboBox.setShowCrs: src/gui/qgsmaplayercombobox.h#L128
 QgsMapLayerComboBox.showCrs: src/gui/qgsmaplayercombobox.h#L134
 QgsMapLayerComboBox: src/gui/qgsmaplayercombobox.h#L33
-QgsMapLayerConfigWidget.apply: src/gui/qgsmaplayerconfigwidget.h#L156
-QgsMapLayerConfigWidget.focusDefaultWidget: src/gui/qgsmaplayerconfigwidget.h#L163
-QgsMapLayerConfigWidget.setMapLayerConfigWidgetContext: src/gui/qgsmaplayerconfigwidget.h#L148
+QgsMapLayerConfigWidget.apply: src/gui/qgsmaplayerconfigwidget.h#L164
+QgsMapLayerConfigWidget.focusDefaultWidget: src/gui/qgsmaplayerconfigwidget.h#L171
+QgsMapLayerConfigWidget.setMapLayerConfigWidgetContext: src/gui/qgsmaplayerconfigwidget.h#L156
 QgsMapLayerConfigWidget.shouldTriggerLayerRepaint: src/gui/qgsmaplayerconfigwidget.h#L135
-QgsMapLayerConfigWidget.syncToLayer: src/gui/qgsmaplayerconfigwidget.h#L141
+QgsMapLayerConfigWidget.syncToLayer: src/gui/qgsmaplayerconfigwidget.h#L146
 QgsMapLayerConfigWidget: src/gui/qgsmaplayerconfigwidget.h#L114
 QgsMapLayerConfigWidgetContext.annotationId: src/gui/qgsmaplayerconfigwidget.h#L46
 QgsMapLayerConfigWidgetContext.layerTreeGroup: src/gui/qgsmaplayerconfigwidget.h#L97
