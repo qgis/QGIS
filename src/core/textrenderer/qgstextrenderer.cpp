@@ -130,7 +130,7 @@ void QgsTextRenderer::drawText( QPointF point, double rotation, Qgis::TextHorizo
   drawDocument( point, lFormat, metrics.document(), metrics, context, alignment, rotation );
 }
 
-void QgsTextRenderer::drawDocument( QPointF point, const QgsTextFormat &format, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, Qgis::TextHorizontalAlignment alignment, double rotation )
+void QgsTextRenderer::drawDocument(QPointF point, const QgsTextFormat &format, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, Qgis::TextHorizontalAlignment alignment, double rotation , Qgis::TextLayoutMode mode)
 {
   Qgis::TextComponents components = Qgis::TextComponent::Text;
   if ( format.background().enabled() )
@@ -148,7 +148,7 @@ void QgsTextRenderer::drawDocument( QPointF point, const QgsTextFormat &format, 
     components |= Qgis::TextComponent::Buffer;
   }
 
-  drawParts( point, rotation, alignment, document, metrics, context, format, components, Qgis::TextLayoutMode::Point );
+  drawParts( point, rotation, alignment, document, metrics, context, format, components, mode );
 }
 
 void QgsTextRenderer::drawTextOnLine( const QPolygonF &line, const QString &text, QgsRenderContext &context, const QgsTextFormat &_format, double offsetAlongLine, double offsetFromLine )
