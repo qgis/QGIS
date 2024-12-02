@@ -32,6 +32,7 @@ RUN dnf -y --refresh install \
     libxml2-devel \
     libzip-devel \
     libzstd-devel \
+    mold \
     netcdf-devel \
     ninja-build \
     ocl-icd-devel \

@@ -70,6 +70,12 @@ if [[ ${WITH_GRASS7} == "ON" || ${WITH_GRASS8} == "ON" ]]; then
   )
 fi
 
+if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
+  CMAKE_EXTRA_ARGS+=(
+    "-DUSE_ALTERNATE_LINKER=mold"
+  )
+fi
+
 cmake \
  -GNinja \
  -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
