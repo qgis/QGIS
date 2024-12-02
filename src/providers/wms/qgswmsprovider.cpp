@@ -88,8 +88,6 @@
 QString QgsWmsProvider::WMS_KEY = QStringLiteral( "wms" );
 QString QgsWmsProvider::WMS_DESCRIPTION = QStringLiteral( "OGC Web Map Service version 1.3 data provider" );
 
-static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
-
 QMap<QString, QgsWmsStatistics::Stat> QgsWmsStatistics::sData;
 
 //! a helper class for ordering tile requests according to the distance from view center
