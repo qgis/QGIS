@@ -6035,7 +6035,7 @@ QgsKeyValueFieldFormatter.representValue: src/core/fieldformatter/qgskeyvaluefie
 QgsKeyValueFieldFormatter: src/core/fieldformatter/qgskeyvaluefieldformatter.h#L33
 QgsLabelBlockingRegion.QgsLabelBlockingRegion: src/core/qgsmapsettings.h#L65
 QgsLabelBlockingRegion: src/core/qgsmapsettings.h#L56
-QgsLabelCandidate: src/core/labeling/qgspallabeling.h#L1033
+QgsLabelCandidate: src/core/labeling/qgslabelingengine.h#L43
 QgsLabelLineSettings.addDirectionSymbol: src/core/labeling/qgslabellinesettings.h#L139
 QgsLabelLineSettings.anchorClipping: src/core/labeling/qgslabellinesettings.h#L332
 QgsLabelLineSettings.anchorTextPoint: src/core/labeling/qgslabellinesettings.h#L354
@@ -10721,12 +10721,12 @@ QgsPainting.qtDefaultDpiX: src/core/painting/qgspainting.h#L109
 QgsPainting.qtDefaultDpiY: src/core/painting/qgspainting.h#L119
 QgsPainting.triangleToTriangleTransform: src/core/painting/qgspainting.h#L78
 QgsPainting: src/core/painting/qgspainting.h#L31
-QgsPalLabeling.geometryRequiresPreparation: src/core/labeling/qgspallabeling.h#L1079
-QgsPalLabeling.prepareGeometry: src/core/labeling/qgspallabeling.h#L1068
-QgsPalLabeling.splitToGraphemes: src/core/labeling/qgspallabeling.h#L1101
-QgsPalLabeling.splitToLines: src/core/labeling/qgspallabeling.h#L1092
-QgsPalLabeling.staticWillUseLayer: src/core/labeling/qgspallabeling.h#L1054
-QgsPalLabeling: src/core/labeling/qgspallabeling.h#L1047
+QgsPalLabeling.geometryRequiresPreparation: src/core/labeling/qgspallabeling.h#L1064
+QgsPalLabeling.prepareGeometry: src/core/labeling/qgspallabeling.h#L1053
+QgsPalLabeling.splitToGraphemes: src/core/labeling/qgspallabeling.h#L1086
+QgsPalLabeling.splitToLines: src/core/labeling/qgspallabeling.h#L1077
+QgsPalLabeling.staticWillUseLayer: src/core/labeling/qgspallabeling.h#L1042
+QgsPalLabeling: src/core/labeling/qgspallabeling.h#L1035
 QgsPalLayerSettings.calculateLabelSize: src/core/labeling/qgspallabeling.h#L645
 QgsPalLayerSettings.callout: src/core/labeling/qgspallabeling.h#L734
 QgsPalLayerSettings.containsAdvancedEffects: src/core/labeling/qgspallabeling.h#L286
