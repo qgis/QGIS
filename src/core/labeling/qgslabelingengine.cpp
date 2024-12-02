@@ -517,41 +517,82 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
     lf->provider()->drawLabelBackground( context, label );
   }
 
-  // draw the labels
-  for ( pal::LabelPosition *label : std::as_const( mLabels ) )
+  if ( engineSettings().testFlag( Qgis::LabelingFlag::DrawLabelRectOnly ) )
   {
-    if ( context.renderingStopped() )
-      break;
+    // features are pre-rotated but not scaled/translated,
+    // so we only disable rotation here. Ideally, they'd be
+    // also pre-scaled/translated, as suggested here:
+    // https://github.com/qgis/QGIS/issues/20071
+    QgsMapToPixel xform = context.mapToPixel();
+    xform.setMapRotation( 0, 0, 0 );
 
-    QgsLabelFeature *lf = label->getFeaturePart()->feature();
-    if ( !lf )
+    std::function<void( pal::LabelPosition * )> drawLabelRect;
+    drawLabelRect = [&xform, painter, &drawLabelRect]( pal::LabelPosition * label )
     {
-      continue;
-    }
+      QPointF outPt = xform.transform( label->getX(), label->getY() ).toQPointF();
 
-    if ( !layerId.isEmpty() && lf->provider()->layerId() != layerId )
-      continue;
+      QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
+      QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
+      painter->save();
+      painter->setRenderHint( QPainter::Antialiasing, false );
+      painter->translate( QPointF( outPt.x(), outPt.y() ) );
+      painter->rotate( -label->getAlpha() * 180 / M_PI );
 
-    context.expressionContext().setFeature( lf->feature() );
-    context.expressionContext().setFields( lf->feature().fields() );
+      if ( label->conflictsWithObstacle() )
+      {
+        painter->setBrush( QColor( 255, 0, 0, 100 ) );
+        painter->setPen( QColor( 255, 0, 0, 150 ) );
+      }
+      else
+      {
+        painter->setBrush( QColor( 0, 255, 0, 100 ) );
+        painter->setPen( QColor( 0, 255, 0, 150 ) );
+      }
 
-    QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, lf->provider()->layerReferenceScale() );
-    if ( lf->symbol() )
+      painter->drawRect( rect );
+      painter->restore();
+
+      if ( pal::LabelPosition *nextPart = label->nextPart() )
+        drawLabelRect( nextPart );
+    };
+
+    for ( pal::LabelPosition *label : std::as_const( mLabels ) )
     {
-      symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
+      drawLabelRect( label );
     }
-    lf->provider()->drawLabel( context, label );
-    // finished with symbol -- we can't keep it around after this, it may be deleted
-    lf->setSymbol( nullptr );
   }
-
-  // draw unplaced labels. These are always rendered on top
-  if ( settings.testFlag( Qgis::LabelingFlag::DrawUnplacedLabels ) || settings.testFlag( Qgis::LabelingFlag::CollectUnplacedLabels ) )
+  else
   {
-    for ( pal::LabelPosition *label : std::as_const( mUnlabeled ) )
+    if ( engineSettings().testFlag( Qgis::LabelingFlag::DrawLabelMetrics ) )
+    {
+      // features are pre-rotated but not scaled/translated,
+      // so we only disable rotation here. Ideally, they'd be
+      // also pre-scaled/translated, as suggested here:
+      // https://github.com/qgis/QGIS/issues/20071
+      QgsMapToPixel xform = context.mapToPixel();
+      xform.setMapRotation( 0, 0, 0 );
+
+      std::function<void( pal::LabelPosition * )> drawLabelMetricsRecursive;
+      drawLabelMetricsRecursive = [&xform, &context, &drawLabelMetricsRecursive]( pal::LabelPosition * label )
+      {
+        QPointF outPt = xform.transform( label->getX(), label->getY() ).toQPointF();
+        QgsLabelingEngine::drawLabelMetrics( label, xform, context, outPt );
+        if ( pal::LabelPosition *nextPart = label->nextPart() )
+          drawLabelMetricsRecursive( nextPart );
+      };
+
+      for ( pal::LabelPosition *label : std::as_const( mLabels ) )
+      {
+        drawLabelMetricsRecursive( label );
+      }
+    }
+
+    // draw the labels
+    for ( pal::LabelPosition *label : std::as_const( mLabels ) )
     {
       if ( context.renderingStopped() )
         break;
+
       QgsLabelFeature *lf = label->getFeaturePart()->feature();
       if ( !lf )
       {
@@ -569,9 +610,39 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
       {
         symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
       }
-      lf->provider()->drawUnplacedLabel( context, label );
+      lf->provider()->drawLabel( context, label );
       // finished with symbol -- we can't keep it around after this, it may be deleted
       lf->setSymbol( nullptr );
+    }
+
+    // draw unplaced labels. These are always rendered on top
+    if ( settings.testFlag( Qgis::LabelingFlag::DrawUnplacedLabels ) || settings.testFlag( Qgis::LabelingFlag::CollectUnplacedLabels ) )
+    {
+      for ( pal::LabelPosition *label : std::as_const( mUnlabeled ) )
+      {
+        if ( context.renderingStopped() )
+          break;
+        QgsLabelFeature *lf = label->getFeaturePart()->feature();
+        if ( !lf )
+        {
+          continue;
+        }
+
+        if ( !layerId.isEmpty() && lf->provider()->layerId() != layerId )
+          continue;
+
+        context.expressionContext().setFeature( lf->feature() );
+        context.expressionContext().setFields( lf->feature().fields() );
+
+        QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, lf->provider()->layerReferenceScale() );
+        if ( lf->symbol() )
+        {
+          symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
+        }
+        lf->provider()->drawUnplacedLabel( context, label );
+        // finished with symbol -- we can't keep it around after this, it may be deleted
+        lf->setSymbol( nullptr );
+      }
     }
   }
 
