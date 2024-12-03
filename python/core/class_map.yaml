@@ -8418,14 +8418,14 @@ QgsLineString.asWkb: src/core/geometry/qgslinestring.h#L980
 QgsLineString.asWkt: src/core/geometry/qgslinestring.h#L981
 QgsLineString.boundingBoxIntersects: src/core/geometry/qgslinestring.h#L961
 QgsLineString.boundingBoxIntersects: src/core/geometry/qgslinestring.h#L962
-QgsLineString.calculateBoundingBox3D: src/core/geometry/qgslinestring.h#L1199
-QgsLineString.calculateBoundingBox3d: src/core/geometry/qgslinestring.h#L1192
+QgsLineString.calculateBoundingBox3D: src/core/geometry/qgslinestring.h#L1198
+QgsLineString.calculateBoundingBox3d: src/core/geometry/qgslinestring.h#L1191
 QgsLineString.centroid: src/core/geometry/qgslinestring.h#L1045
 QgsLineString.clear: src/core/geometry/qgslinestring.h#L953
 QgsLineString.clone: src/core/geometry/qgslinestring.h#L952
 QgsLineString.close: src/core/geometry/qgslinestring.h#L921
 QgsLineString.closestSegment: src/core/geometry/qgslinestring.h#L1042
-QgsLineString.compareToSameClass: src/core/geometry/qgslinestring.h#L1252
+QgsLineString.compareToSameClass: src/core/geometry/qgslinestring.h#L1251
 QgsLineString.convertTo: src/core/geometry/qgslinestring.h#L1066
 QgsLineString.createEmptyWithSameType: src/core/geometry/qgslinestring.h#L1089
 QgsLineString.curveSubstring: src/core/geometry/qgslinestring.h#L1040
@@ -8453,7 +8453,7 @@ QgsLineString.isEmpty: src/core/geometry/qgslinestring.h#L954
 QgsLineString.isValid: src/core/geometry/qgslinestring.h#L956
 QgsLineString.length3D: src/core/geometry/qgslinestring.h#L1010
 QgsLineString.length: src/core/geometry/qgslinestring.h#L988
-QgsLineString.lineLocatePointByM: src/core/geometry/qgslinestring.h#L1248
+QgsLineString.lineLocatePointByM: src/core/geometry/qgslinestring.h#L1247
 QgsLineString.mAt: src/core/geometry/qgslinestring.h#L698
 QgsLineString.moveVertex: src/core/geometry/qgslinestring.h#L1035
 QgsLineString.nCoordinates: src/core/geometry/qgslinestring.h#L1023
@@ -10862,6 +10862,7 @@ QgsPlotDefaultSettings: src/core/plot/qgsplot.h#L496
 QgsPluginLayer.__repr__: src/core/qgspluginlayer.h#L40
 QgsPluginLayer.clone: src/core/qgspluginlayer.h#L51
 QgsPluginLayer.dataProvider: src/core/qgspluginlayer.h#L64
+QgsPluginLayer.icon: src/core/qgspluginlayer.h#L71
 QgsPluginLayer.pluginLayerType: src/core/qgspluginlayer.h#L54
 QgsPluginLayer.setExtent: src/core/qgspluginlayer.h#L57
 QgsPluginLayer.setSource: src/core/qgspluginlayer.h#L62
