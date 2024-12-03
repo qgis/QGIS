@@ -560,6 +560,14 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
     {
       drawLabelRect( label );
     }
+
+    if ( settings.testFlag( Qgis::LabelingFlag::DrawUnplacedLabels ) )
+    {
+      for ( pal::LabelPosition *label : std::as_const( mUnlabeled ) )
+      {
+        drawLabelRect( label );
+      }
+    }
   }
   else
   {
