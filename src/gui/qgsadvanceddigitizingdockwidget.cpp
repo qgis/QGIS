@@ -1300,6 +1300,11 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   context.mConstraint = _constraint( mMConstraint.get() );
   context.distanceConstraint = _constraint( mDistanceConstraint.get() );
   context.angleConstraint = _constraint( mAngleConstraint.get() );
+
+  // if mAngleConstraint is only soft locked, do not consider that the context angle constraint
+  // is locked, as this would prevent the common angles constraint from being applied
+  context.angleConstraint.locked = mAngleConstraint->lockMode() == CadConstraint::HardLock;
+
   context.snappingToFeaturesOverridesCommonAngle = mSnappingPrioritizeFeatures;
 
   context.lineExtensionConstraint = _constraint( mLineExtensionConstraint.get() );
