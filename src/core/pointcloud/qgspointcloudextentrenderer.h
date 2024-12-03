@@ -85,10 +85,10 @@ class CORE_EXPORT QgsPointCloudExtentRenderer : public QgsPointCloudRenderer
 
     /**
      * Renders the file name label inside extent rectangle
-     * @param extent QRectF in screen CRS inside which the label will be
+     * \param extent QRectF in screen CRS inside which the label will be
      * rendered
-     * @param text QString - file name without suffix
-     * @param context point cloud rendering context
+     * \param text QString - file name without suffix
+     * \param context point cloud rendering context
      * \since QGIS 3.42
      */
     void renderLabels( const QRectF &extent, const QString &text, QgsPointCloudRenderContext &context );
