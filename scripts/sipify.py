@@ -1644,7 +1644,11 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             continue
 
     # TYPE HEADER CODE
-    if CONTEXT.header_code and not CONTEXT.sip_run:
+    if (
+        CONTEXT.header_code
+        and not CONTEXT.sip_run
+        and not re.match(r"^ *//.*$", CONTEXT.current_line)
+    ):
         CONTEXT.header_code = False
         write_output("HCE", "%End\n")
 
