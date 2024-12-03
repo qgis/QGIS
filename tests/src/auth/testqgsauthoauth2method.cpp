@@ -167,7 +167,7 @@ QByteArray TestQgsAuthOAuth2Method::baseConfigTxt( bool pretty )
            "    \"tokenUrl\": \"https://token.oauth2.test\",\n"
            "    \"username\": \"myusername\",\n"
            "    \"version\": 1\n"
-           "}\n";
+           "}";
   }
   else
   {
