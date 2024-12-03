@@ -29,7 +29,7 @@
 #include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgsauthoauth2config.h"
-#ifdef WITH_GUI
+#ifdef HAVE_GUI
 #include "qgsauthoauth2edit.h"
 #endif
 
@@ -418,7 +418,7 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigUtils()
 
 void TestQgsAuthOAuth2Method::testDynamicRegistrationNoEndpoint()
 {
-#ifdef WITH_GUI
+#ifdef HAVE_GUI
   QgsAuthOAuth2Config *config = baseConfig();
   config->setClientId( QString() );
   config->setClientSecret( QString() );
@@ -444,7 +444,7 @@ void TestQgsAuthOAuth2Method::testDynamicRegistrationNoEndpoint()
 
 void TestQgsAuthOAuth2Method::testDynamicRegistration()
 {
-#ifdef WITH_GUI
+#ifdef HAVE_GUI
   QgsAuthOAuth2Config *config = baseConfig();
   config->setClientId( QString() );
   config->setClientSecret( QString() );
@@ -483,7 +483,7 @@ void TestQgsAuthOAuth2Method::testDynamicRegistration()
 
 void TestQgsAuthOAuth2Method::testDynamicRegistrationJwt()
 {
-#ifdef WITH_GUI
+#ifdef HAVE_GUI
   QgsAuthOAuth2Config *config = baseConfig();
   config->setClientId( QString() );
   config->setClientSecret( QString() );
