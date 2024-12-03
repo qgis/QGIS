@@ -544,7 +544,7 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
   switch ( mode )
   {
     case Labeling:
-      toggleDDButtons( true );
+      setPropertyOverrideButtonsVisible( true );
       mTextFormatsListWidget->setEntityTypes( QList<QgsStyle::StyleEntity>() << QgsStyle::TextFormatEntity << QgsStyle::LabelSettingsEntity );
       mTextOrientationComboBox->addItem( tr( "Rotation-based" ), static_cast<int>( Qgis::TextOrientation::RotationBased ) );
       break;
@@ -552,7 +552,7 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
     case Text:
     {
       const int prevIndex = mOptionsTab->currentIndex();
-      toggleDDButtons( true );
+      setPropertyOverrideButtonsVisible( true );
       delete mLabelingOptionsListWidget->takeItem( 8 ); // rendering
       delete mLabelingOptionsListWidget->takeItem( 7 ); // placement
       delete mLabelingOptionsListWidget->takeItem( 6 ); // callouts
@@ -611,7 +611,7 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
   }
 }
 
-void QgsTextFormatWidget::toggleDDButtons( bool visible )
+void QgsTextFormatWidget::setPropertyOverrideButtonsVisible( bool visible )
 {
   const auto buttons = findChildren<QgsPropertyOverrideButton *>();
   for ( QgsPropertyOverrideButton *button : buttons )
