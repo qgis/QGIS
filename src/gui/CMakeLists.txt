@@ -1826,6 +1826,7 @@ target_link_libraries(qgis_gui
   ${QT_VERSION_BASE}::UiTools
   ${QWT_LIBRARY}
   ${QSCINTILLA_LIBRARY}
+  ${QT_VERSION_BASE}::Qml
   ${QT_VERSION_BASE}::QuickWidgets
   ${QT_VERSION_BASE}::Multimedia
   ${QT_VERSION_BASE}::MultimediaWidgets
