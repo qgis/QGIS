@@ -1497,11 +1497,11 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
     # Do not process SIP code %XXXCode
     if CONTEXT.sip_run and re.match(
-        r"^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$",
+        r"^ *[/]*% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$",
         CONTEXT.current_line,
     ):
         CONTEXT.current_line = (
-            f"%{re.match(r'^ *% *(.*)$', CONTEXT.current_line).group(1)}"
+            f"%{re.match(r'^ *[/]*% *(.*)$', CONTEXT.current_line).group(1)}"
         )
         CONTEXT.comment = ""
         dbg_info("do not process SIP code")
@@ -1516,7 +1516,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                     r"SIPLong_AsLong", "PyLong_AsLong", CONTEXT.current_line
                 )
             CONTEXT.current_line = re.sub(
-                r"^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$",
+                r"^ *[/]*% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$",
                 r"%\1\2",
                 CONTEXT.current_line,
             )
