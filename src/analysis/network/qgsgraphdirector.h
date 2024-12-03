@@ -29,9 +29,9 @@ class QgsGraphBuilderInterface;
 class QgsPoint;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 #include <qgsvectorlayerdirector.h>
-% End
+//%End
 #endif
 
 /**
