@@ -36,9 +36,7 @@
  */
 class CORE_EXPORT QgsMapLayerSelectionProperties : public QObject
 {
-#ifdef SIP_RUN
-#include "qgsvectorlayerselectionproperties.h"
-#endif
+SIP_TYPEHEADER_INCLUDE( qgsvectorlayerselectionproperties.h )
 
     Q_OBJECT
 
