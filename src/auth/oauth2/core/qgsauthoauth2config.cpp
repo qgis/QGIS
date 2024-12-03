@@ -18,8 +18,6 @@
 
 #include <QDir>
 
-#include "Json.h"
-
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsvariantutils.h"
@@ -335,15 +333,30 @@ bool QgsAuthOAuth2Config::loadConfigTxt(
         return false;
       }
       const QVariantMap variantMap = variant.toMap();
-      // safety check -- qvariant2qobject asserts if an non-matching property is found in the json
-      for ( QVariantMap::const_iterator iter = variantMap.constBegin(); iter != variantMap.constEnd(); ++iter )
-      {
-        const QVariant property = this->property( iter.key().toLatin1() );
-        if ( !property.isValid() ) // e.g. not a auth config json file
-          return false;
-      }
 
-      QJsonWrapper::qvariant2qobject( variantMap, this );
+      setApiKey( variantMap.value( QStringLiteral( "apiKey" ) ).toString() );
+      setClientId( variantMap.value( QStringLiteral( "clientId" ) ).toString() );
+      setClientSecret( variantMap.value( QStringLiteral( "clientSecret" ) ).toString() );
+      setConfigType( static_cast<ConfigType>( variantMap.value( QStringLiteral( "configType" ) ).toInt() ) );
+      setDescription( variantMap.value( QStringLiteral( "description" ) ).toString() );
+      setGrantFlow( static_cast<GrantFlow>( variantMap.value( QStringLiteral( "grantFlow" ) ).toInt() ) );
+      setId( variantMap.value( QStringLiteral( "id" ) ).toString() );
+      setName( variantMap.value( QStringLiteral( "name" ) ).toString() );
+      setPassword( variantMap.value( QStringLiteral( "password" ) ).toString() );
+      setPersistToken( variantMap.value( QStringLiteral( "persistToken" ) ).toBool() );
+      setQueryPairs( variantMap.value( QStringLiteral( "queryPairs" ) ).toMap() );
+      setRedirectHost( variantMap.value( QStringLiteral( "redirectHost" ) ).toString() );
+      setRedirectPort( variantMap.value( QStringLiteral( "redirectPort" ) ).toInt() );
+      setRedirectUrl( variantMap.value( QStringLiteral( "redirectUrl" ) ).toString() );
+      setRefreshTokenUrl( variantMap.value( QStringLiteral( "refreshTokenUrl" ) ).toString() );
+      setAccessMethod( static_cast<AccessMethod>( variantMap.value( QStringLiteral( "accessMethod" ) ).toInt() ) );
+      setCustomHeader( variantMap.value( QStringLiteral( "customHeader" ) ).toString() );
+      setRequestTimeout( variantMap.value( QStringLiteral( "requestTimeout" ) ).toInt() );
+      setRequestUrl( variantMap.value( QStringLiteral( "requestUrl" ) ).toString() );
+      setScope( variantMap.value( QStringLiteral( "scope" ) ).toString() );
+      setTokenUrl( variantMap.value( QStringLiteral( "tokenUrl" ) ).toString() );
+      setUsername( variantMap.value( QStringLiteral( "username" ) ).toString() );
+      setVersion( variantMap.value( QStringLiteral( "version" ) ).toInt() );
       break;
     }
     default:
@@ -371,13 +384,31 @@ QByteArray QgsAuthOAuth2Config::saveConfigTxt(
   {
     case JSON:
     {
-      QVariantMap variant = QJsonWrapper::qobject2qvariant( this );
-
-      // temporary workaround for tests
-      if ( variant.contains( QLatin1String( "objectName" ) ) && variant.value( QStringLiteral( "objectName" ) ).toString().isEmpty() )
-      {
-        variant[QStringLiteral( "objectName" )] = "";
-      }
+      QVariantMap variant;
+      variant.insert( "accessMethod", static_cast<int>( accessMethod() ) );
+      variant.insert( "apiKey", apiKey() );
+      variant.insert( "clientId", clientId() );
+      variant.insert( "clientSecret", clientSecret() );
+      variant.insert( "configType", static_cast<int>( configType() ) );
+      variant.insert( "customHeader", customHeader() );
+      variant.insert( "description", description() );
+      variant.insert( "grantFlow", static_cast<int>( grantFlow() ) );
+      variant.insert( "id", id() );
+      variant.insert( "name", name() );
+      variant.insert( "objectName", objectName().isEmpty() ? "" : objectName() );
+      variant.insert( "password", password() );
+      variant.insert( "persistToken", persistToken() );
+      variant.insert( "queryPairs", queryPairs() );
+      variant.insert( "redirectHost", redirectHost() );
+      variant.insert( "redirectPort", redirectPort() );
+      variant.insert( "redirectUrl", redirectUrl() );
+      variant.insert( "refreshTokenUrl", refreshTokenUrl() );
+      variant.insert( "requestTimeout", requestTimeout() );
+      variant.insert( "requestUrl", requestUrl() );
+      variant.insert( "scope", scope() );
+      variant.insert( "tokenUrl", tokenUrl() );
+      variant.insert( "username", username() );
+      variant.insert( "version", version() );
 
       out = QByteArray::fromStdString( QgsJsonUtils::jsonFromVariant( variant ).dump( pretty ? 4 : -1 ) );
       res = true;
