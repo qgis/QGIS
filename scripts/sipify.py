@@ -1577,10 +1577,6 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             continue
 
         if re.match(r"^\s*#ifdef SIP_RUN", CONTEXT.current_line):
-            # TYPE HEADER CODE
-            if CONTEXT.header_code and not CONTEXT.sip_run:
-                CONTEXT.header_code = False
-                write_output("HCE", "%End\n")
             CONTEXT.sip_run = True
             if CONTEXT.access[-1] == Visibility.Private:
                 dbg_info("writing private content (1)")
