@@ -26,9 +26,9 @@
 class QgsPoint;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 #include <qgsgraphbuilder.h>
-% End
+//%End
 #endif
 
 /**

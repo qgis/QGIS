@@ -30,9 +30,9 @@ class QgsGeometry;
 class QgsFeedback;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 #include "qgsinterpolator.h"
-% End
+//%End
 #endif
 
 /**

@@ -22,10 +22,10 @@
 #include "qgis_analysis.h"
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 #include <qgsnetworkspeedstrategy.h>
 #include <qgsnetworkdistancestrategy.h>
-% End
+//%End
 #endif
 
 /**
