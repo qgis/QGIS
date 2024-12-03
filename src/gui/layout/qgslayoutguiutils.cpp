@@ -202,6 +202,11 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
   labelItemMetadata->setItemDoubleClickedFunction( [ = ]( QgsLayoutItem * item, Qgis::MouseHandlesAction action )
   {
     QgsLayoutItemLabel *label = qobject_cast< QgsLayoutItemLabel * >( item );
+
+    // size to text doesn't have any real meaning for HTML content, skip it
+    if ( label->mode() == QgsLayoutItemLabel::ModeHtml )
+      return;
+
     Q_ASSERT( label );
     QgsLayoutItem::ReferencePoint reference = QgsLayoutItem::ReferencePoint::UpperLeft;
     switch ( action )
