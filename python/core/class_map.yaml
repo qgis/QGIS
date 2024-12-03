@@ -10857,6 +10857,7 @@ QgsPlotDefaultSettings: src/core/plot/qgsplot.h#L496
 QgsPluginLayer.__repr__: src/core/qgspluginlayer.h#L40
 QgsPluginLayer.clone: src/core/qgspluginlayer.h#L51
 QgsPluginLayer.dataProvider: src/core/qgspluginlayer.h#L64
+QgsPluginLayer.icon: src/core/qgspluginlayer.h#L71
 QgsPluginLayer.pluginLayerType: src/core/qgspluginlayer.h#L54
 QgsPluginLayer.setExtent: src/core/qgspluginlayer.h#L57
 QgsPluginLayer.setSource: src/core/qgspluginlayer.h#L62
