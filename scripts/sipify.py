@@ -3105,9 +3105,8 @@ for _class, additions in class_additions.items():
     if additions:
         this_class_additions = "\n".join("    " + c for c in additions)
         CONTEXT.output_python.append(
-            f"try:\n{this_class_additions}\nexcept NameError:\n    pass\n"
+            f"try:\n{this_class_additions}\nexcept (NameError, AttributeError):\n    pass\n"
         )
-
 
 if args.python_output and CONTEXT.output_python:
 
