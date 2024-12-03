@@ -64,23 +64,23 @@ void QgsLayoutToImageAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterLayout( QStringLiteral( "LAYOUT" ), QObject::tr( "Print layout" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterMultipleLayers > layersParam = std::make_unique< QgsProcessingParameterMultipleLayers>( QStringLiteral( "LAYERS" ), QObject::tr( "Map layers to assign to unlocked map item(s)" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), true );
+  std::unique_ptr<QgsProcessingParameterMultipleLayers> layersParam = std::make_unique<QgsProcessingParameterMultipleLayers>( QStringLiteral( "LAYERS" ), QObject::tr( "Map layers to assign to unlocked map item(s)" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), true );
   layersParam->setFlags( layersParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( layersParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > dpiParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DPI" ), QObject::tr( "DPI (leave blank for default layout DPI)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
+  std::unique_ptr<QgsProcessingParameterNumber> dpiParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "DPI" ), QObject::tr( "DPI (leave blank for default layout DPI)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
   dpiParam->setFlags( dpiParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dpiParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterBoolean > appendGeorefParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "GEOREFERENCE" ), QObject::tr( "Generate world file" ), true );
+  std::unique_ptr<QgsProcessingParameterBoolean> appendGeorefParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "GEOREFERENCE" ), QObject::tr( "Generate world file" ), true );
   appendGeorefParam->setFlags( appendGeorefParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( appendGeorefParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterBoolean > exportRDFParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "INCLUDE_METADATA" ), QObject::tr( "Export RDF metadata (title, author, etc.)" ), true );
+  std::unique_ptr<QgsProcessingParameterBoolean> exportRDFParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "INCLUDE_METADATA" ), QObject::tr( "Export RDF metadata (title, author, etc.)" ), true );
   exportRDFParam->setFlags( exportRDFParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( exportRDFParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterBoolean > antialias = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "ANTIALIAS" ), QObject::tr( "Enable antialiasing" ), true );
+  std::unique_ptr<QgsProcessingParameterBoolean> antialias = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "ANTIALIAS" ), QObject::tr( "Enable antialiasing" ), true );
   antialias->setFlags( antialias->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( antialias.release() );
 
@@ -119,9 +119,9 @@ QVariantMap QgsLayoutToImageAlgorithm::processAlgorithm( const QVariantMap &para
   QgsPrintLayout *l = parameterAsLayout( parameters, QStringLiteral( "LAYOUT" ), context );
   if ( !l )
     throw QgsProcessingException( QObject::tr( "Cannot find layout with name \"%1\"" ).arg( parameters.value( QStringLiteral( "LAYOUT" ) ).toString() ) );
-  std::unique_ptr< QgsPrintLayout > layout( l->clone() );
+  std::unique_ptr<QgsPrintLayout> layout( l->clone() );
 
-  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
   if ( layers.size() > 0 )
   {
     const QList<QGraphicsItem *> items = layout->items();
@@ -168,8 +168,8 @@ QVariantMap QgsLayoutToImageAlgorithm::processAlgorithm( const QVariantMap &para
 
     case QgsLayoutExporter::MemoryError:
       throw QgsProcessingException( !exporter.errorMessage().isEmpty() ? exporter.errorMessage() : QObject::tr( "Trying to create the image "
-                                    "resulted in a memory overflow.\n\n"
-                                    "Please try a lower resolution or a smaller paper size." ) );
+                                                                                                                "resulted in a memory overflow.\n\n"
+                                                                                                                "Please try a lower resolution or a smaller paper size." ) );
 
     case QgsLayoutExporter::SvgLayerError:
     case QgsLayoutExporter::IteratorError:
@@ -187,4 +187,3 @@ QVariantMap QgsLayoutToImageAlgorithm::processAlgorithm( const QVariantMap &para
 }
 
 ///@endcond
-

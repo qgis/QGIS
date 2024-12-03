@@ -30,15 +30,14 @@
 
 struct DataGroup
 {
-  QgsMeshDatasetGroupMetadata metadata;
-  QgsMeshDataBlock datasetValues;
-  QgsMeshDataBlock activeFaces;
-  QgsMesh3DDataBlock dataset3dStakedValue; //will be filled only if data are 3d stacked
+    QgsMeshDatasetGroupMetadata metadata;
+    QgsMeshDataBlock datasetValues;
+    QgsMeshDataBlock activeFaces;
+    QgsMesh3DDataBlock dataset3dStakedValue; //will be filled only if data are 3d stacked
 };
 
 class QgsExportMeshOnElement : public QgsProcessingAlgorithm
 {
-
   public:
     QString group() const override;
     QString groupId() const override;
@@ -50,7 +49,6 @@ class QgsExportMeshOnElement : public QgsProcessingAlgorithm
     QgsMesh mNativeMesh;
 
   private:
-
     virtual QSet<int> supportedDataType() const = 0;
     virtual Qgis::ProcessingSourceType sinkType() const = 0;
     virtual Qgis::WkbType sinkGeometryType() const = 0;
@@ -75,14 +73,14 @@ class QgsExportMeshVerticesAlgorithm : public QgsExportMeshOnElement
     QgsProcessingAlgorithm *createInstance() const override;
 
   private:
-    Qgis::WkbType sinkGeometryType() const override {return Qgis::WkbType::PointZ;}
+    Qgis::WkbType sinkGeometryType() const override { return Qgis::WkbType::PointZ; }
     QSet<int> supportedDataType() const override
     {
-      return QSet<int>( {QgsMeshDatasetGroupMetadata::DataOnVertices} );
+      return QSet<int>( { QgsMeshDatasetGroupMetadata::DataOnVertices } );
     }
-    Qgis::ProcessingSourceType sinkType() const override {return Qgis::ProcessingSourceType::VectorPoint;}
+    Qgis::ProcessingSourceType sinkType() const override { return Qgis::ProcessingSourceType::VectorPoint; }
     QgsGeometry meshElement( int index ) const override;
-    QgsMesh::ElementType meshElementType()const override {return QgsMesh::Vertex;}
+    QgsMesh::ElementType meshElementType() const override { return QgsMesh::Vertex; }
 };
 
 class QgsExportMeshFacesAlgorithm : public QgsExportMeshOnElement
@@ -97,14 +95,14 @@ class QgsExportMeshFacesAlgorithm : public QgsExportMeshOnElement
     QgsProcessingAlgorithm *createInstance() const override;
 
   private:
-    Qgis::WkbType sinkGeometryType() const override {return Qgis::WkbType::PolygonZ;}
+    Qgis::WkbType sinkGeometryType() const override { return Qgis::WkbType::PolygonZ; }
     QSet<int> supportedDataType() const override
     {
-      return QSet<int>( {QgsMeshDatasetGroupMetadata::DataOnFaces} );
+      return QSet<int>( { QgsMeshDatasetGroupMetadata::DataOnFaces } );
     }
-    Qgis::ProcessingSourceType sinkType() const override {return Qgis::ProcessingSourceType::VectorPolygon;}
+    Qgis::ProcessingSourceType sinkType() const override { return Qgis::ProcessingSourceType::VectorPolygon; }
     QgsGeometry meshElement( int index ) const override;
-    QgsMesh::ElementType meshElementType()const override {return QgsMesh::Face;}
+    QgsMesh::ElementType meshElementType() const override { return QgsMesh::Face; }
 };
 
 class QgsExportMeshEdgesAlgorithm : public QgsExportMeshOnElement
@@ -119,20 +117,19 @@ class QgsExportMeshEdgesAlgorithm : public QgsExportMeshOnElement
     QgsProcessingAlgorithm *createInstance() const override;
 
   private:
-    Qgis::WkbType sinkGeometryType() const override {return Qgis::WkbType::LineStringZ;}
+    Qgis::WkbType sinkGeometryType() const override { return Qgis::WkbType::LineStringZ; }
     QSet<int> supportedDataType() const override
     {
-      return QSet<int>( {QgsMeshDatasetGroupMetadata::DataOnEdges} );
+      return QSet<int>( { QgsMeshDatasetGroupMetadata::DataOnEdges } );
     }
-    Qgis::ProcessingSourceType sinkType() const override {return Qgis::ProcessingSourceType::VectorLine;}
+    Qgis::ProcessingSourceType sinkType() const override { return Qgis::ProcessingSourceType::VectorLine; }
     QgsGeometry meshElement( int index ) const override;
-    QgsMesh::ElementType meshElementType()const override {return QgsMesh::Edge;}
+    QgsMesh::ElementType meshElementType() const override { return QgsMesh::Edge; }
 };
 
 
 class QgsExportMeshOnGridAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
     QString name() const override;
     QString displayName() const override;
@@ -148,7 +145,6 @@ class QgsExportMeshOnGridAlgorithm : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     QSet<int> supportedDataType();
 
     QgsTriangularMesh mTriangularMesh;
@@ -161,7 +157,6 @@ class QgsExportMeshOnGridAlgorithm : public QgsProcessingAlgorithm
 
 class QgsMeshRasterizeAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
     QString name() const override;
     QString displayName() const override;
@@ -177,7 +172,6 @@ class QgsMeshRasterizeAlgorithm : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     QSet<int> supportedDataType();
 
     QgsTriangularMesh mTriangularMesh;
@@ -189,7 +183,6 @@ class QgsMeshRasterizeAlgorithm : public QgsProcessingAlgorithm
 
 class QgsMeshContoursAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
     QString name() const override;
     QString displayName() const override;
@@ -205,14 +198,13 @@ class QgsMeshContoursAlgorithm : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     QSet<int> supportedDataType()
     {
       return QSet<int>(
-      {
-        QgsMeshDatasetGroupMetadata::DataOnVertices,
-        QgsMeshDatasetGroupMetadata::DataOnFaces,
-        QgsMeshDatasetGroupMetadata::DataOnVolumes} );
+        { QgsMeshDatasetGroupMetadata::DataOnVertices,
+          QgsMeshDatasetGroupMetadata::DataOnFaces,
+          QgsMeshDatasetGroupMetadata::DataOnVolumes }
+      );
     }
 
     QgsTriangularMesh mTriangularMesh;
@@ -223,12 +215,10 @@ class QgsMeshContoursAlgorithm : public QgsProcessingAlgorithm
     QgsCoordinateTransform mTransform;
     QgsMeshRendererSettings mLayerRendererSettings;
     QString mDateTimeString;
-
 };
 
 class QgsMeshExportCrossSection : public QgsProcessingAlgorithm
 {
-
   public:
     QString name() const override;
     QString displayName() const override;
@@ -244,14 +234,13 @@ class QgsMeshExportCrossSection : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     QSet<int> supportedDataType()
     {
       return QSet<int>(
-      {
-        QgsMeshDatasetGroupMetadata::DataOnVertices,
-        QgsMeshDatasetGroupMetadata::DataOnFaces,
-        QgsMeshDatasetGroupMetadata::DataOnVolumes} );
+        { QgsMeshDatasetGroupMetadata::DataOnVertices,
+          QgsMeshDatasetGroupMetadata::DataOnFaces,
+          QgsMeshDatasetGroupMetadata::DataOnVolumes }
+      );
     }
 
     QgsTriangularMesh mTriangularMesh;
@@ -259,12 +248,10 @@ class QgsMeshExportCrossSection : public QgsProcessingAlgorithm
     QList<DataGroup> mDataPerGroup;
     QgsCoordinateReferenceSystem mMeshLayerCrs;
     QgsMeshRendererSettings mLayerRendererSettings;
-
 };
 
 class QgsMeshExportTimeSeries : public QgsProcessingAlgorithm
 {
-
   public:
     QString name() const override;
     QString displayName() const override;
@@ -280,14 +267,13 @@ class QgsMeshExportTimeSeries : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     QSet<int> supportedDataType()
     {
       return QSet<int>(
-      {
-        QgsMeshDatasetGroupMetadata::DataOnVertices,
-        QgsMeshDatasetGroupMetadata::DataOnFaces,
-        QgsMeshDatasetGroupMetadata::DataOnVolumes} );
+        { QgsMeshDatasetGroupMetadata::DataOnVertices,
+          QgsMeshDatasetGroupMetadata::DataOnFaces,
+          QgsMeshDatasetGroupMetadata::DataOnVolumes }
+      );
     }
 
     QgsTriangularMesh mTriangularMesh;
@@ -301,7 +287,6 @@ class QgsMeshExportTimeSeries : public QgsProcessingAlgorithm
     QStringList mTimeStepString;
     QMap<qint64, QMap<int, int>> mRelativeTimeToData;
     QMap<int, QgsMeshDatasetGroupMetadata> mGroupsMetadata;
-
 };
 
 

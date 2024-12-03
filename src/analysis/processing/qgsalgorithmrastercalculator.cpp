@@ -63,9 +63,8 @@ QgsRasterCalculatorAlgorithm *QgsRasterCalculatorAlgorithm::createInstance() con
 
 void QgsRasterCalculatorAlgorithm::initAlgorithm( const QVariantMap & )
 {
-
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::Raster ) );
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "EXPRESSION" ), QObject::tr( "Expression" ), QVariant(),  QStringLiteral( "LAYERS" ), false, Qgis::ExpressionType::RasterCalculator ) );
+  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "EXPRESSION" ), QObject::tr( "Expression" ), QVariant(), QStringLiteral( "LAYERS" ), false, Qgis::ExpressionType::RasterCalculator ) );
   std::unique_ptr<QgsProcessingParameterExtent> extentParam = std::make_unique<QgsProcessingParameterExtent>( QStringLiteral( "EXTENT" ), QObject::tr( "Output extent" ), QVariant(), true );
   extentParam->setHelp( QObject::tr( "Extent of the output layer. If not specified, the extent will be the overall extent of all input layers" ) );
   addParameter( extentParam.release() );
@@ -80,11 +79,10 @@ void QgsRasterCalculatorAlgorithm::initAlgorithm( const QVariantMap & )
 
 bool QgsRasterCalculatorAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
 
   for ( const QgsMapLayer *layer : std::as_const( layers ) )
   {
-
     QgsMapLayer *clonedLayer { layer->clone() };
     clonedLayer->moveToThread( nullptr );
     mLayers << clonedLayer;
@@ -129,7 +127,7 @@ QVariantMap QgsRasterCalculatorAlgorithm::processAlgorithm( const QVariantMap &p
 
   double minCellSize = 1e9;
 
-  QVector< QgsRasterCalculatorEntry > entries;
+  QVector<QgsRasterCalculatorEntry> entries;
   for ( QgsMapLayer *layer : mLayers )
   {
     QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( layer );
@@ -267,7 +265,7 @@ QVariantMap QgsRasterCalculatorModelerAlgorithm::processAlgorithm( const QVarian
 
   double minCellSize = 1e9;
 
-  QVector< QgsRasterCalculatorEntry > entries;
+  QVector<QgsRasterCalculatorEntry> entries;
   int n = 0;
   for ( QgsMapLayer *layer : mLayers )
   {
@@ -353,10 +351,9 @@ QString QgsRasterCalculatorModelerAlgorithm::indexToName( int index ) const
   {
     mod = ( div - 1 ) % 26;
     name = static_cast<char>( 65 + mod ) + name;
-    div = ( int )( ( div - mod ) / 26 );
+    div = ( int ) ( ( div - mod ) / 26 );
   }
   return name;
 }
 
 ///@endcond
-

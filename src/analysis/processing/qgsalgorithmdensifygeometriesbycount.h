@@ -29,7 +29,6 @@
 class QgsDensifyGeometriesByCountAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
   public:
-
     QgsDensifyGeometriesByCountAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -45,7 +44,7 @@ class QgsDensifyGeometriesByCountAlgorithm : public QgsProcessingFeatureBasedAlg
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     int mVerticesCnt = 0;

@@ -31,10 +31,9 @@
 
 ///@cond PRIVATE
 
-class QgsAlgorithmElevationProfilePlotItem: public Qgs2DPlot
+class QgsAlgorithmElevationProfilePlotItem : public Qgs2DPlot
 {
   public:
-
     explicit QgsAlgorithmElevationProfilePlotItem( int width, int height, int dpi )
       : mDpi( dpi )
     {
@@ -81,7 +80,6 @@ class QgsAlgorithmElevationProfilePlotItem: public Qgs2DPlot
     }
 
   private:
-
     int mDpi = 96;
     QRectF mPlotArea;
     QgsProfilePlotRenderer *mRenderer = nullptr;
@@ -89,40 +87,40 @@ class QgsAlgorithmElevationProfilePlotItem: public Qgs2DPlot
 
 void QgsGenerateElevationProfileAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterGeometry( QStringLiteral( "CURVE" ), QObject::tr( "Profile curve" ), QVariant(), false,  QList<int>() << static_cast<int>( Qgis::GeometryType::Line ) ) );
+  addParameter( new QgsProcessingParameterGeometry( QStringLiteral( "CURVE" ), QObject::tr( "Profile curve" ), QVariant(), false, QList<int>() << static_cast<int>( Qgis::GeometryType::Line ) ) );
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "MAP_LAYERS" ), QObject::tr( "Map layers" ), Qgis::ProcessingSourceType::MapLayer, QVariant(), false ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "WIDTH" ), QObject::tr( "Chart width (in pixels)" ), Qgis::ProcessingNumberParameterType::Integer, 400, false, 0 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "HEIGHT" ), QObject::tr( "Chart height (in pixels)" ), Qgis::ProcessingNumberParameterType::Integer, 300, false, 0 ) );
   addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "TERRAIN_LAYER" ), QObject::tr( "Terrain layer" ), QVariant(), true, QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Raster ) << static_cast<int>( Qgis::ProcessingSourceType::Mesh ) ) );
 
-  auto minimumDistanceParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MINIMUM_DISTANCE" ), QObject::tr( "Chart minimum distance (X axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  auto minimumDistanceParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MINIMUM_DISTANCE" ), QObject::tr( "Chart minimum distance (X axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   minimumDistanceParam->setFlags( minimumDistanceParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( minimumDistanceParam.release() );
-  auto maximumDistanceParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MAXIMUM_DISTANCE" ), QObject::tr( "Chart maximum distance (X axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  auto maximumDistanceParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MAXIMUM_DISTANCE" ), QObject::tr( "Chart maximum distance (X axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   maximumDistanceParam->setFlags( maximumDistanceParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( maximumDistanceParam.release() );
-  auto minimumElevationParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MINIMUM_ELEVATION" ), QObject::tr( "Chart minimum elevation (Y axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  auto minimumElevationParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MINIMUM_ELEVATION" ), QObject::tr( "Chart minimum elevation (Y axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   minimumElevationParam->setFlags( minimumElevationParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( minimumElevationParam.release() );
-  auto maximumElevationParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MAXIMUM_ELEVATION" ), QObject::tr( "Chart maximum elevation (Y axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  auto maximumElevationParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MAXIMUM_ELEVATION" ), QObject::tr( "Chart maximum elevation (Y axis)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   maximumElevationParam->setFlags( maximumElevationParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( maximumElevationParam.release() );
 
-  auto textColorParam = std::make_unique< QgsProcessingParameterColor >( QStringLiteral( "TEXT_COLOR" ), QObject::tr( "Chart text color" ), QColor( 0, 0, 0 ), true, true );
+  auto textColorParam = std::make_unique<QgsProcessingParameterColor>( QStringLiteral( "TEXT_COLOR" ), QObject::tr( "Chart text color" ), QColor( 0, 0, 0 ), true, true );
   textColorParam->setFlags( textColorParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( textColorParam.release() );
-  auto backgroundColorParam = std::make_unique< QgsProcessingParameterColor >( QStringLiteral( "BACKGROUND_COLOR" ), QObject::tr( "Chart background color" ), QColor( 255, 255, 255 ), true, true );
+  auto backgroundColorParam = std::make_unique<QgsProcessingParameterColor>( QStringLiteral( "BACKGROUND_COLOR" ), QObject::tr( "Chart background color" ), QColor( 255, 255, 255 ), true, true );
   backgroundColorParam->setFlags( backgroundColorParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( backgroundColorParam.release() );
-  auto borderColorParam = std::make_unique< QgsProcessingParameterColor >( QStringLiteral( "BORDER_COLOR" ), QObject::tr( "Chart border color" ), QColor( 99, 99, 99 ), true, true );
+  auto borderColorParam = std::make_unique<QgsProcessingParameterColor>( QStringLiteral( "BORDER_COLOR" ), QObject::tr( "Chart border color" ), QColor( 99, 99, 99 ), true, true );
   borderColorParam->setFlags( borderColorParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( borderColorParam.release() );
 
-  auto toleranceParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "TOLERANCE" ), QObject::tr( "Profile tolerance" ), Qgis::ProcessingNumberParameterType::Double, 5.0, false, 0 );
+  auto toleranceParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Profile tolerance" ), Qgis::ProcessingNumberParameterType::Double, 5.0, false, 0 );
   toleranceParam->setFlags( toleranceParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( toleranceParam.release() );
 
-  auto dpiParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DPI" ), QObject::tr( "Chart DPI" ), Qgis::ProcessingNumberParameterType::Integer, 96, false, 0 );
+  auto dpiParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "DPI" ), QObject::tr( "Chart DPI" ), Qgis::ProcessingNumberParameterType::Integer, 96, false, 0 );
   dpiParam->setFlags( dpiParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dpiParam.release() );
 

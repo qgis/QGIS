@@ -35,7 +35,6 @@ class QgsFeedback;
 class ANALYSIS_EXPORT QgsGridFileWriter
 {
   public:
-
     /**
      * Constructor for QgsGridFileWriter, for the specified \a interpolator.
      *
@@ -55,7 +54,6 @@ class ANALYSIS_EXPORT QgsGridFileWriter
     int writeFile( QgsFeedback *feedback = nullptr );
 
   private:
-
     QgsGridFileWriter() = delete;
 
     int writeHeader( QTextStream &outStream );

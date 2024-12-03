@@ -50,7 +50,6 @@ class QgsFeedback;
 class ANALYSIS_EXPORT QgsMeshContours
 {
   public:
-
     /**
      * Constructs the mesh contours exporter.
      * Caches the native and triangular mesh from data provider
@@ -71,10 +70,7 @@ class ANALYSIS_EXPORT QgsMeshContours
      *
      * \since QGIS 3.18
      */
-    QgsMeshContours( const QgsTriangularMesh &triangularMesh,
-                     const QgsMesh &nativeMesh,
-                     const QVector<double> &datasetValues,
-                     const QgsMeshDataBlock scalarActiveFaceFlagValues ) SIP_SKIP;
+    QgsMeshContours( const QgsTriangularMesh &triangularMesh, const QgsMesh &nativeMesh, const QVector<double> &datasetValues, const QgsMeshDataBlock scalarActiveFaceFlagValues ) SIP_SKIP;
 
 
     ~QgsMeshContours();
@@ -89,10 +85,7 @@ class ANALYSIS_EXPORT QgsMeshContours
      *
      * \note not thread safe
      */
-    QgsGeometry exportLines( const QgsMeshDatasetIndex &index,
-                             double value,
-                             QgsMeshRendererScalarSettings::DataResamplingMethod method,
-                             QgsFeedback *feedback = nullptr );
+    QgsGeometry exportLines( const QgsMeshDatasetIndex &index, double value, QgsMeshRendererScalarSettings::DataResamplingMethod method, QgsFeedback *feedback = nullptr );
 
     /**
      * Exports multi line string containing the contour line for particular value using the data stored in the cache
@@ -117,11 +110,7 @@ class ANALYSIS_EXPORT QgsMeshContours
      *
      * \note not thread safe
      */
-    QgsGeometry exportPolygons( const QgsMeshDatasetIndex &index,
-                                double min_value,
-                                double max_value,
-                                QgsMeshRendererScalarSettings::DataResamplingMethod method,
-                                QgsFeedback *feedback = nullptr );
+    QgsGeometry exportPolygons( const QgsMeshDatasetIndex &index, double min_value, double max_value, QgsMeshRendererScalarSettings::DataResamplingMethod method, QgsFeedback *feedback = nullptr );
 
     /**
      * Exports multi polygons representing the areas with values in range using the data stored in the cache
@@ -140,7 +129,8 @@ class ANALYSIS_EXPORT QgsMeshContours
   private:
     void populateCache(
       const QgsMeshDatasetIndex &index,
-      QgsMeshRendererScalarSettings::DataResamplingMethod method );
+      QgsMeshRendererScalarSettings::DataResamplingMethod method
+    );
 
     QgsMeshLayer *mMeshLayer = nullptr;
 

@@ -30,9 +30,7 @@
  */
 class QgsZonalMinimumMaximumPointAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsZonalMinimumMaximumPointAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -46,7 +44,6 @@ class QgsZonalMinimumMaximumPointAlgorithm : public QgsProcessingFeatureBasedAlg
     QgsZonalMinimumMaximumPointAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QString outputName() const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
@@ -57,10 +54,10 @@ class QgsZonalMinimumMaximumPointAlgorithm : public QgsProcessingFeatureBasedAlg
     QgsCoordinateReferenceSystem outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    std::unique_ptr< QgsRasterInterface > mRaster;
+    std::unique_ptr<QgsRasterInterface> mRaster;
     int mBand = 1;
     QgsCoordinateReferenceSystem mCrs;
     bool mCreatedTransform = false;

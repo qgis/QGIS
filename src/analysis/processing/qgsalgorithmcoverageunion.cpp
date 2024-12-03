@@ -50,7 +50,7 @@ QString QgsCoverageUnionAlgorithm::groupId() const
 
 void QgsCoverageUnionAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Dissolved" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 }
 
@@ -74,12 +74,12 @@ QgsCoverageUnionAlgorithm *QgsCoverageUnionAlgorithm::createInstance() const
 
 QVariantMap QgsCoverageUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   QString sinkId;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, sinkId, source->fields(), Qgis::WkbType::MultiPolygon, source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, sinkId, source->fields(), Qgis::WkbType::MultiPolygon, source->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -87,7 +87,7 @@ QVariantMap QgsCoverageUnionAlgorithm::processAlgorithm( const QVariantMap &para
   QgsGeometryCollection collection;
 
   const long count = source->featureCount();
-  if ( count >  0 )
+  if ( count > 0 )
   {
     collection.reserve( count );
   }
@@ -138,7 +138,7 @@ QVariantMap QgsCoverageUnionAlgorithm::processAlgorithm( const QVariantMap &para
     }
   }
 
-  std::unique_ptr< QgsAbstractGeometry > dissolved = geos.unionCoverage( &error );
+  std::unique_ptr<QgsAbstractGeometry> dissolved = geos.unionCoverage( &error );
 
   if ( !dissolved )
   {

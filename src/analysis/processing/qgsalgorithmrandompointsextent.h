@@ -35,7 +35,6 @@
 class QgsRandomPointsExtentAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-
     QgsRandomPointsExtentAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomPointsWithinExtent.svg" ) ); }
@@ -50,9 +49,7 @@ class QgsRandomPointsExtentAlgorithm : public QgsProcessingAlgorithm
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context,
-                                  QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 
   private:
@@ -61,7 +58,6 @@ class QgsRandomPointsExtentAlgorithm : public QgsProcessingAlgorithm
     double mDistance = 0;
     int mMaxAttempts = 0;
     QgsCoordinateReferenceSystem mCrs;
-
 };
 
 

@@ -34,8 +34,7 @@ bool QgsVectorLayerFeaturePool::addFeature( QgsFeature &feature, Flags flags )
 
   bool res = false;
 
-  auto addFeatureSynchronized = [ this, &feature, &res ]()
-  {
+  auto addFeatureSynchronized = [this, &feature, &res]() {
     QgsVectorLayer *lyr = layer();
     if ( lyr )
       res = lyr->addFeature( feature );
@@ -72,8 +71,7 @@ bool QgsVectorLayerFeaturePool::addFeatures( QgsFeatureList &features, QgsFeatur
 
   bool res = false;
 
-  auto addFeatureSynchronized = [ this, &features, &res ]()
-  {
+  auto addFeatureSynchronized = [this, &features, &res]() {
     QgsVectorLayer *lyr = layer();
     if ( lyr )
       res = lyr->addFeatures( features );
@@ -112,8 +110,7 @@ void QgsVectorLayerFeaturePool::updateFeature( QgsFeature &feature )
   QgsFeature origFeature;
   getFeature( feature.id(), origFeature );
 
-  QgsThreadingUtils::runOnMainThread( [this, &feature]()
-  {
+  QgsThreadingUtils::runOnMainThread( [this, &feature]() {
     QgsVectorLayer *lyr = layer();
     if ( lyr )
     {
@@ -127,8 +124,7 @@ void QgsVectorLayerFeaturePool::updateFeature( QgsFeature &feature )
 void QgsVectorLayerFeaturePool::deleteFeature( QgsFeatureId fid )
 {
   removeFeature( fid );
-  QgsThreadingUtils::runOnMainThread( [this, fid]()
-  {
+  QgsThreadingUtils::runOnMainThread( [this, fid]() {
     QgsVectorLayer *lyr = layer();
     if ( lyr )
     {

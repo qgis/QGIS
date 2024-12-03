@@ -30,9 +30,7 @@
  */
 class QgsSaveSelectedFeatures : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsSaveSelectedFeatures() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -45,16 +43,12 @@ class QgsSaveSelectedFeatures : public QgsProcessingAlgorithm
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     QgsFeatureIds mSelection;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMSAVESELECTEDFEATURES_H
-
-

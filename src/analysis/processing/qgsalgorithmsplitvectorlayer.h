@@ -31,9 +31,7 @@
  */
 class QgsSplitVectorLayerAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsSplitVectorLayerAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -47,9 +45,7 @@ class QgsSplitVectorLayerAlgorithm : public QgsProcessingAlgorithm
     QgsSplitVectorLayerAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE

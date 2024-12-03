@@ -31,9 +31,7 @@
  */
 class ANALYSIS_EXPORT QgsExtractBinaryFieldAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsExtractBinaryFieldAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -46,14 +44,9 @@ class ANALYSIS_EXPORT QgsExtractBinaryFieldAlgorithm : public QgsProcessingAlgor
     QgsExtractBinaryFieldAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMEXTRACTBINARY_H
-
-
