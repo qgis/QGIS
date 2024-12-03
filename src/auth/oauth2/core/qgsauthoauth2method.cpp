@@ -40,7 +40,7 @@
 #include <QString>
 #include <QMutexLocker>
 #include <QUrlQuery>
-#ifdef WITH_GUI
+#ifdef HAVE_GUI
 #include <QInputDialog>
 #endif
 
