@@ -41,9 +41,9 @@
 QgsExpressionContext QgsLabelingGui::createExpressionContext() const
 {
   QgsExpressionContext expContext;
-  if ( mCanvas )
+  if ( mMapCanvas )
   {
-    expContext = mCanvas->createExpressionContext();
+    expContext = mMapCanvas->createExpressionContext();
   }
   else
   {
@@ -275,9 +275,9 @@ QgsLabelingGui::QgsLabelingGui( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, con
 
   mFieldExpressionWidget->registerExpressionContextGenerator( this );
 
-  mMinScaleWidget->setMapCanvas( mCanvas );
+  mMinScaleWidget->setMapCanvas( mMapCanvas );
   mMinScaleWidget->setShowCurrentScaleButton( true );
-  mMaxScaleWidget->setMapCanvas( mCanvas );
+  mMaxScaleWidget->setMapCanvas( mMapCanvas );
   mMaxScaleWidget->setShowCurrentScaleButton( true );
 
   mGeometryGeneratorExpressionButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
