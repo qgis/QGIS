@@ -53,9 +53,7 @@ typedef QMap<QString, QString> QgsStringMap;
  */
 class CORE_EXPORT QgsSymbolLayer
 {
-#ifdef SIP_RUN
-#include <qgslinesymbollayer.h>
-#endif
+SIP_TYPEHEADER_INCLUDE( qgslinesymbollayer.h )
 
 
 #ifdef SIP_RUN
