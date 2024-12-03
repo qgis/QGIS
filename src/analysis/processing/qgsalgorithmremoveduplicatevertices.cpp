@@ -70,15 +70,13 @@ QgsAlgorithmRemoveDuplicateVertices *QgsAlgorithmRemoveDuplicateVertices::create
 
 void QgsAlgorithmRemoveDuplicateVertices::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterDistance> tolerance = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "TOLERANCE" ),
-      QObject::tr( "Tolerance" ), 0.000001, QStringLiteral( "INPUT" ), false, 0, 10000000.0 );
+  std::unique_ptr<QgsProcessingParameterDistance> tolerance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), 0.000001, QStringLiteral( "INPUT" ), false, 0, 10000000.0 );
   tolerance->setIsDynamic( true );
   tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Tolerance" ), QObject::tr( "Tolerance distance" ), QgsPropertyDefinition::DoublePositive ) );
   tolerance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( tolerance.release() );
 
-  std::unique_ptr< QgsProcessingParameterBoolean > useZ = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "USE_Z_VALUE" ),
-      QObject::tr( "Use Z Value" ), false );
+  std::unique_ptr<QgsProcessingParameterBoolean> useZ = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "USE_Z_VALUE" ), QObject::tr( "Use Z Value" ), false );
   useZ->setIsDynamic( true );
   useZ->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "UseZ" ), QObject::tr( "Use Z Value" ), QgsPropertyDefinition::Boolean ) );
   useZ->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -96,12 +94,12 @@ bool QgsAlgorithmRemoveDuplicateVertices::prepareAlgorithm( const QVariantMap &p
   mTolerance = parameterAsDouble( parameters, QStringLiteral( "TOLERANCE" ), context );
   mDynamicTolerance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "TOLERANCE" ) );
   if ( mDynamicTolerance )
-    mToleranceProperty = parameters.value( QStringLiteral( "TOLERANCE" ) ).value< QgsProperty >();
+    mToleranceProperty = parameters.value( QStringLiteral( "TOLERANCE" ) ).value<QgsProperty>();
 
   mUseZValues = parameterAsBoolean( parameters, QStringLiteral( "USE_Z_VALUE" ), context );
   mDynamicUseZ = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "USE_Z_VALUE" ) );
   if ( mDynamicUseZ )
-    mUseZProperty = parameters.value( QStringLiteral( "USE_Z_VALUE" ) ).value< QgsProperty >();
+    mUseZProperty = parameters.value( QStringLiteral( "USE_Z_VALUE" ) ).value<QgsProperty>();
 
   return true;
 }
@@ -127,5 +125,3 @@ QgsFeatureList QgsAlgorithmRemoveDuplicateVertices::processFeature( const QgsFea
 }
 
 ///@endcond
-
-

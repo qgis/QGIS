@@ -26,10 +26,9 @@
  * \class QgsIDWInterpolator
  * \brief Inverse distance weight interpolator.
  */
-class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
+class ANALYSIS_EXPORT QgsIDWInterpolator : public QgsInterpolator
 {
   public:
-
     /**
      * Constructor for QgsIDWInterpolator, with the specified \a layerData sources.
      */
@@ -45,7 +44,7 @@ class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
      *
      * \see distanceCoefficient()
     */
-    void setDistanceCoefficient( double coefficient ) { mDistanceCoefficient = coefficient;}
+    void setDistanceCoefficient( double coefficient ) { mDistanceCoefficient = coefficient; }
 
     /**
      * Returns the distance coefficient, the parameter that sets how the values are
@@ -59,7 +58,6 @@ class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
     double distanceCoefficient() const { return mDistanceCoefficient; }
 
   private:
-
     QgsIDWInterpolator() = delete;
 
     double mDistanceCoefficient = 2.0;

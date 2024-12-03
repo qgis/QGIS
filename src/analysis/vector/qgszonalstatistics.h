@@ -46,7 +46,6 @@ class QgsFeatureSource;
 class ANALYSIS_EXPORT QgsZonalStatistics
 {
   public:
-
     /**
      * Convenience constructor for QgsZonalStatistics, using an input raster layer.
      *
@@ -55,11 +54,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
      * \warning Constructing QgsZonalStatistics using this method is not thread safe, and
      * the constructor which accepts a QgsRasterInterface should be used instead.
      */
-    QgsZonalStatistics( QgsVectorLayer *polygonLayer,
-                        QgsRasterLayer *rasterLayer,
-                        const QString &attributePrefix = QString(),
-                        int rasterBand = 1,
-                        Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default );
+    QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix = QString(), int rasterBand = 1, Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default );
 
     /**
      * Constructor for QgsZonalStatistics, using a QgsRasterInterface.
@@ -87,14 +82,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
      *
      * \since QGIS 3.2
      */
-    QgsZonalStatistics( QgsVectorLayer *polygonLayer,
-                        QgsRasterInterface *rasterInterface,
-                        const QgsCoordinateReferenceSystem &rasterCrs,
-                        double rasterUnitsPerPixelX,
-                        double rasterUnitsPerPixelY,
-                        const QString &attributePrefix = QString(),
-                        int rasterBand = 1,
-                        Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default );
+    QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterInterface *rasterInterface, const QgsCoordinateReferenceSystem &rasterCrs, double rasterUnitsPerPixelX, double rasterUnitsPerPixelY, const QString &attributePrefix = QString(), int rasterBand = 1, Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default );
 
 
     /**
@@ -128,7 +116,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     static QMap<Qgis::ZonalStatistic, QVariant> calculateStatistics( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, double cellSizeX, double cellSizeY, int rasterBand, Qgis::ZonalStatistics statistics );
 #endif
 
-///@cond PRIVATE
+    ///@cond PRIVATE
     // Required to fix https://github.com/qgis/QGIS/issues/43245 (SIP is failing to convert the enum to values)
 
     /**
@@ -140,7 +128,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
      * \since QGIS 3.16
      */
     static QMap<int, QVariant> calculateStatisticsInt( QgsRasterInterface *rasterInterface, const QgsGeometry &geometry, double cellSizeX, double cellSizeY, int rasterBand, Qgis::ZonalStatistics statistics ) SIP_PYNAME( calculateStatistics );
-/// @endcond
+    /// @endcond
 
   private:
     QgsZonalStatistics() = default;
@@ -197,8 +185,8 @@ class ANALYSIS_EXPORT QgsZonalStatistics
         double min = std::numeric_limits<double>::max();
         QgsPointXY minPoint;
         QgsPointXY maxPoint;
-        QMap< double, int > valueCount;
-        QList< double > values;
+        QMap<double, int> valueCount;
+        QList<double> values;
 
       private:
         bool mStoreValues = false;

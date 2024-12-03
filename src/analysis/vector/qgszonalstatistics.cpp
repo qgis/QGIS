@@ -29,19 +29,11 @@
 #include <QFile>
 
 QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix, int rasterBand, Qgis::ZonalStatistics stats )
-  : QgsZonalStatistics( polygonLayer,
-                        rasterLayer ? rasterLayer->dataProvider() : nullptr,
-                        rasterLayer ? rasterLayer->crs() : QgsCoordinateReferenceSystem(),
-                        rasterLayer ? rasterLayer->rasterUnitsPerPixelX() : 0,
-                        rasterLayer ? rasterLayer->rasterUnitsPerPixelY() : 0,
-                        attributePrefix,
-                        rasterBand,
-                        stats )
+  : QgsZonalStatistics( polygonLayer, rasterLayer ? rasterLayer->dataProvider() : nullptr, rasterLayer ? rasterLayer->crs() : QgsCoordinateReferenceSystem(), rasterLayer ? rasterLayer->rasterUnitsPerPixelX() : 0, rasterLayer ? rasterLayer->rasterUnitsPerPixelY() : 0, attributePrefix, rasterBand, stats )
 {
 }
 
-QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterInterface *rasterInterface,
-                                        const QgsCoordinateReferenceSystem &rasterCrs, double rasterUnitsPerPixelX, double rasterUnitsPerPixelY, const QString &attributePrefix, int rasterBand, Qgis::ZonalStatistics stats )
+QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterInterface *rasterInterface, const QgsCoordinateReferenceSystem &rasterCrs, double rasterUnitsPerPixelX, double rasterUnitsPerPixelY, const QString &attributePrefix, int rasterBand, Qgis::ZonalStatistics stats )
   : mRasterInterface( rasterInterface )
   , mRasterCrs( rasterCrs )
   , mCellSizeX( std::fabs( rasterUnitsPerPixelX ) )
@@ -130,7 +122,7 @@ Qgis::ZonalStatisticResult QgsZonalStatistics::calculateStatistics( QgsFeedback 
 
     if ( feedback )
     {
-      feedback->setProgress( 100.0 * static_cast< double >( featureCounter ) / featureCount );
+      feedback->setProgress( 100.0 * static_cast<double>( featureCounter ) / featureCount );
     }
 
     QgsGeometry featureGeometry = feature.geometry();
@@ -302,7 +294,7 @@ QMap<int, QVariant> QgsZonalStatistics::calculateStatisticsInt( QgsRasterInterfa
   QMap<int, QVariant> pyResult;
   for ( auto it = result.constBegin(); it != result.constEnd(); ++it )
   {
-    pyResult.insert( static_cast< int >( it.key() ), it.value() );
+    pyResult.insert( static_cast<int>( it.key() ), it.value() );
   }
   return pyResult;
 }
@@ -322,11 +314,8 @@ QMap<Qgis::ZonalStatistic, QVariant> QgsZonalStatistics::calculateStatistics( Qg
   if ( featureRect.isEmpty() )
     return results;
 
-  bool statsStoreValues = ( statistics & Qgis::ZonalStatistic::Median ) ||
-                          ( statistics & Qgis::ZonalStatistic::StDev ) ||
-                          ( statistics & Qgis::ZonalStatistic::Variance );
-  bool statsStoreValueCount = ( statistics & Qgis::ZonalStatistic::Minority ) ||
-                              ( statistics & Qgis::ZonalStatistic::Majority );
+  bool statsStoreValues = ( statistics & Qgis::ZonalStatistic::Median ) || ( statistics & Qgis::ZonalStatistic::StDev ) || ( statistics & Qgis::ZonalStatistic::Variance );
+  bool statsStoreValueCount = ( statistics & Qgis::ZonalStatistic::Minority ) || ( statistics & Qgis::ZonalStatistic::Majority );
 
   FeatureStats featureStats( statsStoreValues, statsStoreValueCount );
 
@@ -338,13 +327,13 @@ QMap<Qgis::ZonalStatistic, QVariant> QgsZonalStatistics::calculateStatistics( Qg
   QgsRasterAnalysisUtils::cellInfoForBBox( rasterBBox, featureRect, cellSizeX, cellSizeY, nCellsX, nCellsY, nCellsXProvider, nCellsYProvider, rasterBlockExtent );
 
   featureStats.reset();
-  QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( rasterInterface, rasterBand, geometry, nCellsX, nCellsY, cellSizeX, cellSizeY, rasterBlockExtent, [ &featureStats ]( double value, const QgsPointXY & point ) { featureStats.addValue( value, point ); } );
+  QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( rasterInterface, rasterBand, geometry, nCellsX, nCellsY, cellSizeX, cellSizeY, rasterBlockExtent, [&featureStats]( double value, const QgsPointXY &point ) { featureStats.addValue( value, point ); } );
 
   if ( featureStats.count <= 1 )
   {
     //the cell resolution is probably larger than the polygon area. We switch to precise pixel - polygon intersection in this case
     featureStats.reset();
-    QgsRasterAnalysisUtils::statisticsFromPreciseIntersection( rasterInterface, rasterBand, geometry, nCellsX, nCellsY, cellSizeX, cellSizeY, rasterBlockExtent, [ &featureStats ]( double value, double weight, const QgsPointXY & point ) { featureStats.addValue( value, point, weight ); } );
+    QgsRasterAnalysisUtils::statisticsFromPreciseIntersection( rasterInterface, rasterBand, geometry, nCellsX, nCellsY, cellSizeX, cellSizeY, rasterBlockExtent, [&featureStats]( double value, double weight, const QgsPointXY &point ) { featureStats.addValue( value, point, weight ); } );
   }
 
   // calculate the statistics

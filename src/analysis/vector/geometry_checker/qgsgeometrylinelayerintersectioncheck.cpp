@@ -40,7 +40,7 @@ void QgsGeometryLineLayerIntersectionCheck::collectErrors( const QMap<QString, Q
       }
 
       // Check whether the line intersects with any other features of the specified layer
-      const QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, QStringList() << mCheckLayer, line->boundingBox(), {Qgis::GeometryType::Line, Qgis::GeometryType::Polygon}, mContext );
+      const QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, QStringList() << mCheckLayer, line->boundingBox(), { Qgis::GeometryType::Line, Qgis::GeometryType::Polygon }, mContext );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
         const QgsAbstractGeometry *testGeom = checkFeature.geometry().constGet();
@@ -49,7 +49,7 @@ void QgsGeometryLineLayerIntersectionCheck::collectErrors( const QMap<QString, Q
           const QgsAbstractGeometry *part = QgsGeometryCheckerUtils::getGeomPart( testGeom, jPart );
           if ( const QgsLineString *testLine = dynamic_cast<const QgsLineString *>( part ) )
           {
-            const QList< QgsPoint > intersections = QgsGeometryCheckerUtils::lineIntersections( line, testLine, mContext->tolerance );
+            const QList<QgsPoint> intersections = QgsGeometryCheckerUtils::lineIntersections( line, testLine, mContext->tolerance );
             for ( const QgsPoint &inter : intersections )
             {
               errors.append( new QgsGeometryCheckError( this, layerFeature, inter, QgsVertexId( iPart ), checkFeature.id() ) );
@@ -57,10 +57,10 @@ void QgsGeometryLineLayerIntersectionCheck::collectErrors( const QMap<QString, Q
           }
           else if ( const QgsPolygon *polygon = dynamic_cast<const QgsPolygon *>( part ) )
           {
-            const QList< const QgsLineString * > rings = QgsGeometryCheckerUtils::polygonRings( polygon );
+            const QList<const QgsLineString *> rings = QgsGeometryCheckerUtils::polygonRings( polygon );
             for ( const QgsLineString *ring : rings )
             {
-              const QList< QgsPoint > intersections = QgsGeometryCheckerUtils::lineIntersections( line, ring, mContext->tolerance );
+              const QList<QgsPoint> intersections = QgsGeometryCheckerUtils::lineIntersections( line, ring, mContext->tolerance );
               for ( const QgsPoint &inter : intersections )
               {
                 errors.append( new QgsGeometryCheckError( this, layerFeature, inter, QgsVertexId( iPart ), checkFeature.id() ) );

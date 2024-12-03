@@ -32,7 +32,6 @@
 class QgsVoronoiPolygonsAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-
     QgsVoronoiPolygonsAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmVoronoi.svg" ) ); }
@@ -46,16 +45,14 @@ class QgsVoronoiPolygonsAlgorithm : public QgsProcessingAlgorithm
     QgsVoronoiPolygonsAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     QString voronoiWithAttributes( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
     QString voronoiWithoutAttributes( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
-    std::unique_ptr< QgsProcessingFeatureSource > mSource;
+    std::unique_ptr<QgsProcessingFeatureSource> mSource;
     double mBuffer = 0;
     double mTolerance = 0;
     bool mCopyAttributes = false;

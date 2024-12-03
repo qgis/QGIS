@@ -30,9 +30,7 @@
  */
 class QgsAddUniqueValueIndexAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsAddUniqueValueIndexAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -44,14 +42,9 @@ class QgsAddUniqueValueIndexAlgorithm : public QgsProcessingAlgorithm
     QgsAddUniqueValueIndexAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMUNIQUEVALUEINDEX_H
-
-

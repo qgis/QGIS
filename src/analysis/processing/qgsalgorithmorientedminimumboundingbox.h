@@ -30,9 +30,7 @@
  */
 class QgsOrientedMinimumBoundingBoxAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsOrientedMinimumBoundingBoxAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -48,11 +46,8 @@ class QgsOrientedMinimumBoundingBoxAlgorithm : public QgsProcessingFeatureBasedA
     Qgis::WkbType outputWkbType( Qgis::WkbType ) const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
     QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMORIENTEDMINIMUMBOUNDINGBOX_H
-
-

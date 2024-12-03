@@ -30,9 +30,7 @@
  */
 class QgsRasterSamplingAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsRasterSamplingAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -45,21 +43,15 @@ class QgsRasterSamplingAlgorithm : public QgsProcessingAlgorithm
     QgsRasterSamplingAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
-    std::unique_ptr< QgsRasterDataProvider > mDataProvider;
+    std::unique_ptr<QgsRasterDataProvider> mDataProvider;
     int mBandCount = 1;
     QgsCoordinateReferenceSystem mCrs;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMRASTERSAMPLING_H
-
-

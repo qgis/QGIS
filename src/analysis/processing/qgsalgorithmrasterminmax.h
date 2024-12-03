@@ -30,9 +30,7 @@
  */
 class QgsRasterMinMaxAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsRasterMinMaxAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -45,14 +43,11 @@ class QgsRasterMinMaxAlgorithm : public QgsProcessingAlgorithm
     QgsRasterMinMaxAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
-    std::unique_ptr< QgsRasterInterface > mInterface;
+    std::unique_ptr<QgsRasterInterface> mInterface;
     bool mHasNoDataValue = false;
     int mBand = 1;
     int mLayerWidth = 0;
@@ -66,5 +61,3 @@ class QgsRasterMinMaxAlgorithm : public QgsProcessingAlgorithm
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMRASTERMINMAX_H
-
-

@@ -33,9 +33,7 @@ class QgsVectorLayer;
  */
 class QgsExportToSpreadsheetAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsExportToSpreadsheetAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -47,24 +45,15 @@ class QgsExportToSpreadsheetAlgorithm : public QgsProcessingAlgorithm
     QgsExportToSpreadsheetAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    bool prepareAlgorithm( const QVariantMap &parameters,
-                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
+    bool exportVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context, QgsProcessingFeedback *feedback, const QString &driverName, bool createNew, bool preferAlias, QgsVectorFileWriter::FieldValueConverter *converter );
 
-    bool exportVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context,
-                            QgsProcessingFeedback *feedback, const QString &driverName, bool createNew, bool preferAlias,
-                            QgsVectorFileWriter::FieldValueConverter *converter );
-
-    std::vector< std::unique_ptr< QgsMapLayer> > mLayers;
-
+    std::vector<std::unique_ptr<QgsMapLayer>> mLayers;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMEXPORTTOSPREADSHEET_H
-
-

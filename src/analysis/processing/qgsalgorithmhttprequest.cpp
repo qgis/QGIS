@@ -76,35 +76,39 @@ void QgsHttpRequestAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterString( QStringLiteral( "URL" ), tr( "URL" ), QVariant(), false, false ) );
 
-  std::unique_ptr< QgsProcessingParameterEnum > methodParam = std::make_unique < QgsProcessingParameterEnum > (
-        QStringLiteral( "METHOD" ),
-        QObject::tr( "Method" ),
-        QStringList()
-        << QStringLiteral( "GET" )
-        << QStringLiteral( "POST" ),
-        false,
-        0
-      );
+  std::unique_ptr<QgsProcessingParameterEnum> methodParam = std::make_unique<QgsProcessingParameterEnum>(
+    QStringLiteral( "METHOD" ),
+    QObject::tr( "Method" ),
+    QStringList()
+      << QStringLiteral( "GET" )
+      << QStringLiteral( "POST" ),
+    false,
+    0
+  );
   methodParam->setHelp( QObject::tr( "The HTTP method to use for the request" ) );
   addParameter( methodParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterString > dataParam = std::make_unique < QgsProcessingParameterString >(
-        QStringLiteral( "DATA" ), tr( "POST data" ), QVariant(), false, true );
+  std::unique_ptr<QgsProcessingParameterString> dataParam = std::make_unique<QgsProcessingParameterString>(
+    QStringLiteral( "DATA" ), tr( "POST data" ), QVariant(), false, true
+  );
   dataParam->setHelp( QObject::tr( "The data to add in the body if the request is a POST" ) );
   addParameter( dataParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterFileDestination > outputFileParam = std::make_unique < QgsProcessingParameterFileDestination >(
-        QStringLiteral( "OUTPUT" ), tr( "File destination" ), QObject::tr( "All files (*.*)" ), QVariant(), true, false );
+  std::unique_ptr<QgsProcessingParameterFileDestination> outputFileParam = std::make_unique<QgsProcessingParameterFileDestination>(
+    QStringLiteral( "OUTPUT" ), tr( "File destination" ), QObject::tr( "All files (*.*)" ), QVariant(), true, false
+  );
   outputFileParam->setHelp( tr( "The result can be written to a file instead of being returned as a string" ) );
   addParameter( outputFileParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterAuthConfig > authConfigParam = std::make_unique < QgsProcessingParameterAuthConfig >(
-        QStringLiteral( "AUTH_CONFIG" ), tr( "Authentication" ), QVariant(), true );
+  std::unique_ptr<QgsProcessingParameterAuthConfig> authConfigParam = std::make_unique<QgsProcessingParameterAuthConfig>(
+    QStringLiteral( "AUTH_CONFIG" ), tr( "Authentication" ), QVariant(), true
+  );
   authConfigParam->setHelp( tr( "An authentication configuration to pass" ) );
   addParameter( authConfigParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterBoolean > failureParam = std::make_unique < QgsProcessingParameterBoolean >(
-        QStringLiteral( "FAIL_ON_ERROR" ), tr( "Consider HTTP errors as failures" ), false );
+  std::unique_ptr<QgsProcessingParameterBoolean> failureParam = std::make_unique<QgsProcessingParameterBoolean>(
+    QStringLiteral( "FAIL_ON_ERROR" ), tr( "Consider HTTP errors as failures" ), false
+  );
   failureParam->setHelp( tr( "If set, the algorithm will fail on encountering a HTTP error" ) );
   addParameter( failureParam.release() );
 
@@ -119,18 +123,18 @@ QVariantMap QgsHttpRequestAlgorithm::processAlgorithm( const QVariantMap &parame
   const QString url = parameterAsString( parameters, QStringLiteral( "URL" ), context );
   if ( url.isEmpty() )
     throw QgsProcessingException( tr( "No URL specified" ) );
-  const Qgis::HttpMethod httpMethod = static_cast< Qgis::HttpMethod>( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
+  const Qgis::HttpMethod httpMethod = static_cast<Qgis::HttpMethod>( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
   const QString data = parameterAsString( parameters, QStringLiteral( "DATA" ), context );
   const QString authCfg = parameterAsString( parameters, QStringLiteral( "AUTH_CONFIG" ), context );
   const QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
-  const bool failOnError  = parameterAsBool( parameters, QStringLiteral( "FAIL_ON_ERROR" ), context );
+  const bool failOnError = parameterAsBool( parameters, QStringLiteral( "FAIL_ON_ERROR" ), context );
   const QUrl qurl = QUrl::fromUserInput( url );
 
   // Make Request
   QNetworkRequest request( qurl );
   QgsBlockingNetworkRequest blockingRequest;
   blockingRequest.setAuthCfg( authCfg );
-  QgsBlockingNetworkRequest::ErrorCode  errorCode = QgsBlockingNetworkRequest::NoError;
+  QgsBlockingNetworkRequest::ErrorCode errorCode = QgsBlockingNetworkRequest::NoError;
 
   switch ( httpMethod )
   {
@@ -180,9 +184,9 @@ QVariantMap QgsHttpRequestAlgorithm::processAlgorithm( const QVariantMap &parame
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "STATUS_CODE" ), statusCode );
   outputs.insert( QStringLiteral( "ERROR_CODE" ), errorCode );
-  outputs.insert( QStringLiteral( "ERROR_MESSAGE" ),  errorMessage );
+  outputs.insert( QStringLiteral( "ERROR_MESSAGE" ), errorMessage );
   outputs.insert( QStringLiteral( "RESULT_DATA" ), QString( resultData ) );
-  outputs.insert( QStringLiteral( "OUTPUT" ),  outputFile );
+  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
   return outputs;
 }
 

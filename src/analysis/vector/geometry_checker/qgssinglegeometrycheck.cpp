@@ -18,10 +18,7 @@ email                : matthias@opengis.ch
 #include "qgspoint.h"
 
 
-
-void QgsSingleGeometryCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools,
-    QList<QgsGeometryCheckError *> &errors,
-    QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+void QgsSingleGeometryCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
   Q_UNUSED( messages )
   const QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
@@ -85,7 +82,6 @@ QgsGeometryCheckErrorSingle::QgsGeometryCheckErrorSingle( QgsSingleGeometryCheck
   : QgsGeometryCheckError( error->check(), layerFeature, QgsPointXY( error->errorLocation().constGet()->centroid() ), error->vertexId() ) // TODO: should send geometry to QgsGeometryCheckError
   , mError( error )
 {
-
 }
 
 QgsSingleGeometryCheckError *QgsGeometryCheckErrorSingle::singleError() const

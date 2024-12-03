@@ -73,12 +73,10 @@ QVariantMap QgsPdalInformationAlgorithm::processAlgorithm( const QVariantMap &pa
   QStringList commandOutput;
 
   QgsBlockingProcess wrenchProcess( wrenchPath, processArgs );
-  wrenchProcess.setStdErrHandler( [ = ]( const QByteArray & ba )
-  {
+  wrenchProcess.setStdErrHandler( [=]( const QByteArray &ba ) {
     feedback->reportError( ba.trimmed() );
   } );
-  wrenchProcess.setStdOutHandler( [ =, &commandOutput ]( const QByteArray & ba )
-  {
+  wrenchProcess.setStdOutHandler( [=, &commandOutput]( const QByteArray &ba ) {
     feedback->pushConsoleInfo( ba.trimmed() );
     commandOutput << ba;
   } );
@@ -86,7 +84,7 @@ QVariantMap QgsPdalInformationAlgorithm::processAlgorithm( const QVariantMap &pa
   const int res = wrenchProcess.run( feedback );
   if ( feedback->isCanceled() && res != 0 )
   {
-    feedback->pushInfo( QObject::tr( "Process was canceled and did not complete" ) )  ;
+    feedback->pushInfo( QObject::tr( "Process was canceled and did not complete" ) );
   }
   else if ( !feedback->isCanceled() && wrenchProcess.exitStatus() == QProcess::CrashExit )
   {
@@ -112,7 +110,7 @@ QVariantMap QgsPdalInformationAlgorithm::processAlgorithm( const QVariantMap &pa
     if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
       QTextStream out( &file );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
       out.setCodec( "UTF-8" );
 #endif
       out << QStringLiteral( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
@@ -135,9 +133,7 @@ QStringList QgsPdalInformationAlgorithm::createArgumentLists( const QVariantMap 
   if ( !layer )
     throw QgsProcessingException( invalidPointCloudError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  return { QStringLiteral( "info" ),
-           QStringLiteral( "--input=%1" ).arg( layer->source() )
-         };
+  return { QStringLiteral( "info" ), QStringLiteral( "--input=%1" ).arg( layer->source() ) };
 }
 
 ///@endcond

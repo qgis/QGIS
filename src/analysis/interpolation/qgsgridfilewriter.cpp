@@ -48,7 +48,7 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
   }
 
   QTextStream outStream( &outputFile );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
   outStream.setCodec( "UTF-8" );
 #endif
   outStream.setRealNumberPrecision( 8 );
@@ -84,7 +84,7 @@ int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
         outputFile.remove();
         return 3;
       }
-      feedback->setProgress( 100.0 * i / static_cast< double >( mNumRows ) );
+      feedback->setProgress( 100.0 * i / static_cast<double>( mNumRows ) );
     }
   }
 
@@ -113,7 +113,7 @@ int QgsGridFileWriter::writeHeader( QTextStream &outStream )
   outStream << "NCOLS " << mNumColumns << Qt::endl;
   outStream << "NROWS " << mNumRows << Qt::endl;
   outStream << "XLLCORNER " << mInterpolationExtent.xMinimum() << Qt::endl;
-  outStream << "YLLCORNER " <<  mInterpolationExtent.yMinimum() << Qt::endl;
+  outStream << "YLLCORNER " << mInterpolationExtent.yMinimum() << Qt::endl;
   if ( mCellSizeX == mCellSizeY ) //standard way
   {
     outStream << "CELLSIZE " << mCellSizeX << Qt::endl;

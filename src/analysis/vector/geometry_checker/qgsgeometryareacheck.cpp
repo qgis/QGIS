@@ -43,7 +43,7 @@ void QgsGeometryAreaCheck::collectErrors( const QMap<QString, QgsFeaturePool *> 
 
 void QgsGeometryAreaCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const
 {
-  QgsFeaturePool *featurePool = featurePools[ error->layerId() ];
+  QgsFeaturePool *featurePool = featurePools[error->layerId()];
   QgsFeature feature;
   if ( !featurePool->getFeature( error->featureId(), feature ) )
   {
@@ -85,7 +85,7 @@ void QgsGeometryAreaCheck::fixError( const QMap<QString, QgsFeaturePool *> &feat
   else if ( method == MergeLongestEdge || method == MergeLargestArea || method == MergeIdenticalAttribute )
   {
     QString errMsg;
-    if ( mergeWithNeighbor( featurePools, error->layerId(), feature,  vidx.part, method, mergeAttributeIndices[error->layerId()], changes, errMsg ) )
+    if ( mergeWithNeighbor( featurePools, error->layerId(), feature, vidx.part, method, mergeAttributeIndices[error->layerId()], changes, errMsg ) )
     {
       error->setFixed( method );
     }
@@ -107,11 +107,9 @@ bool QgsGeometryAreaCheck::checkThreshold( double layerToMapUnits, const QgsAbst
   return value < threshold;
 }
 
-bool QgsGeometryAreaCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool *> &featurePools,
-    const QString &layerId, QgsFeature &feature,
-    int partIdx, int method, int mergeAttributeIndex, Changes &changes, QString &errMsg ) const
+bool QgsGeometryAreaCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool *> &featurePools, const QString &layerId, QgsFeature &feature, int partIdx, int method, int mergeAttributeIndex, Changes &changes, QString &errMsg ) const
 {
-  QgsFeaturePool *featurePool = featurePools[ layerId ];
+  QgsFeaturePool *featurePool = featurePools[layerId];
 
   double maxVal = 0.;
   QgsFeature mergeFeature;

@@ -20,8 +20,7 @@
 
 ///@cond PRIVATE
 
-const std::vector< Qgis::Statistic > STATS
-{
+const std::vector<Qgis::Statistic> STATS {
   Qgis::Statistic::First,
   Qgis::Statistic::Last,
   Qgis::Statistic::Count,
@@ -57,7 +56,7 @@ QString QgsExtractZMValuesAlgorithmBase::outputName() const
 
 QList<int> QgsExtractZMValuesAlgorithmBase::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry );
 }
 
 Qgis::ProcessingFeatureSourceFlags QgsExtractZMValuesAlgorithmBase::sourceFlags() const
@@ -74,9 +73,7 @@ void QgsExtractZMValuesAlgorithmBase::initParameters( const QVariantMap & )
     statChoices << QgsStatisticalSummary::displayName( stat );
   }
 
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "SUMMARIES" ),
-                QObject::tr( "Summaries to calculate" ),
-                statChoices, true, QVariantList() << 0 ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "SUMMARIES" ), QObject::tr( "Summaries to calculate" ), statChoices, true, QVariantList() << 0 ) );
 
   addParameter( new QgsProcessingParameterString( QStringLiteral( "COLUMN_PREFIX" ), QObject::tr( "Output column prefix" ), mDefaultFieldPrefix, false, true ) );
 }
@@ -90,7 +87,7 @@ bool QgsExtractZMValuesAlgorithmBase::prepareAlgorithm( const QVariantMap &param
 {
   mPrefix = parameterAsString( parameters, QStringLiteral( "COLUMN_PREFIX" ), context );
 
-  const QList< int > stats = parameterAsEnums( parameters, QStringLiteral( "SUMMARIES" ), context );
+  const QList<int> stats = parameterAsEnums( parameters, QStringLiteral( "SUMMARIES" ), context );
   mStats = Qgis::Statistics();
   for ( int s : stats )
   {
@@ -147,12 +144,10 @@ bool QgsExtractZMValuesAlgorithmBase::supportInPlaceEdit( const QgsMapLayer *lay
 
 QgsExtractZValuesAlgorithm::QgsExtractZValuesAlgorithm()
 {
-  mExtractValFunc = []( const QgsPoint & p ) -> double
-  {
+  mExtractValFunc = []( const QgsPoint &p ) -> double {
     return p.z();
   };
-  mTestGeomFunc = []( const QgsGeometry & g ) -> bool
-  {
+  mTestGeomFunc = []( const QgsGeometry &g ) -> bool {
     return QgsWkbTypes::hasZ( g.wkbType() );
   };
   mDefaultFieldPrefix = QStringLiteral( "z_" );
@@ -197,12 +192,10 @@ QString QgsExtractZValuesAlgorithm::shortDescription() const
 
 QgsExtractMValuesAlgorithm::QgsExtractMValuesAlgorithm()
 {
-  mExtractValFunc = []( const QgsPoint & p ) -> double
-  {
+  mExtractValFunc = []( const QgsPoint &p ) -> double {
     return p.m();
   };
-  mTestGeomFunc = []( const QgsGeometry & g ) -> bool
-  {
+  mTestGeomFunc = []( const QgsGeometry &g ) -> bool {
     return QgsWkbTypes::hasM( g.wkbType() );
   };
   mDefaultFieldPrefix = QStringLiteral( "m_" );
@@ -242,4 +235,3 @@ QString QgsExtractMValuesAlgorithm::shortDescription() const
 
 
 ///@endcond
-
