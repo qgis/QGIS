@@ -4209,7 +4209,6 @@ void TestQgsLabelingEngine::labelingResults()
 
   QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
   engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
-  engineSettings.setFlag( Qgis::LabelingFlag::DrawLabelRectOnly, true );
   //engineSettings.setFlag( Qgis::LabelingFlag::DrawCandidates, true );
   mapSettings.setLabelingEngineSettings( engineSettings );
 
@@ -4415,7 +4414,6 @@ void TestQgsLabelingEngine::labelingResultsCurved()
 
   QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
   engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
-  engineSettings.setFlag( Qgis::LabelingFlag::DrawLabelRectOnly, true );
   //engineSettings.setFlag( Qgis::LabelingFlag::DrawCandidates, true );
   mapSettings.setLabelingEngineSettings( engineSettings );
 
