@@ -205,6 +205,12 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     if ( !mLayer->dataProvider()->subIndexes().isEmpty() )
     {
       mLabels->setChecked( mLayer->renderer()->showLabels() );
+      // set some better defaults for label format
+      QgsTextBufferSettings settings;
+      settings.setEnabled( true );
+      settings.setSize( 0.5 );
+      mLayer->renderer()->labelTextFormat()->setBuffer( settings );
+      mLayer->renderer()->labelTextFormat()->setNamedStyle( QStringLiteral( "Regular" ) );
       mLabelOptions->setTextFormat( *mLayer->renderer()->labelTextFormat() );
     }
   }
