@@ -164,7 +164,11 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! What placement strategy to use for the labels
     Qgis::LabelPlacement placement() const { return mPlacement; }
 
-    //! Default priority of labels (may be overridden by individual labels)
+    /**
+     * Default priority of labels (may be overridden by individual labels).
+     *
+     * This is a value between 0 to 1, where 0 = highest priority and 1 = lowest priority. The default is 0.5.
+     */
     double priority() const { return mPriority; }
 
     //! How the feature geometries will work as obstacles
@@ -203,7 +207,7 @@ class CORE_EXPORT QgsAbstractLabelProvider
     Flags mFlags = DrawLabels;
     //! Placement strategy
     Qgis::LabelPlacement mPlacement = Qgis::LabelPlacement::AroundPoint;
-    //! Default priority of labels
+    //! Default priority of labels. 0 = highest priority, 1 = lowest priority
     double mPriority = 0.5;
     //! Type of the obstacle of feature geometries
     QgsLabelObstacleSettings::ObstacleType mObstacleType = QgsLabelObstacleSettings::ObstacleType::PolygonBoundary;
