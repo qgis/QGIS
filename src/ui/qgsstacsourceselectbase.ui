@@ -178,7 +178,7 @@
      <item>
       <widget class="QCheckBox" name="mFootprintsCheckBox">
        <property name="text">
-        <string>Show Footprints</string>
+        <string>Show footprints</string>
        </property>
        <property name="checked">
         <bool>true</bool>

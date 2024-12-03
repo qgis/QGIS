@@ -20,6 +20,7 @@
 #include "qgsabstractdatasourcewidget.h"
 #include "qgis_gui.h"
 #include "qgsmimedatautils.h"
+#include "qobjectuniqueptr.h"
 
 #include <QStandardItemModel>
 #include <QStyledItemDelegate>
@@ -108,7 +109,7 @@ class GUI_EXPORT QgsStacSourceSelect : public QgsAbstractDataSourceWidget, priva
     QgsStacController *mStac = nullptr;
     QgsStacItemListModel *mItemsModel = nullptr;
     QgsStacSearchParametersDialog *mParametersDialog = nullptr;
-    std::unique_ptr<QgsRubberBand> mCurrentItemBand;
+    QObjectUniquePtr<QgsRubberBand> mCurrentItemBand;
     QVector<QgsRubberBand *> mRubberBands;
 };
 
