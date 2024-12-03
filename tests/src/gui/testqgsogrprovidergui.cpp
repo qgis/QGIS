@@ -33,10 +33,10 @@ class TestQgsOgrProviderGui : public QObject
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {}// will be called before each testfunction is executed.
-    void cleanup() {}// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void providersRegistered();
     //! Test GPKG data items rename
@@ -84,9 +84,9 @@ void TestQgsOgrProviderGui::testGpkgDataItemRename()
   QTemporaryFile f( QStringLiteral( "qgis-XXXXXX.gpkg" ) );
   f.open();
   f.close();
-  const QString fileName { f.fileName( ) };
+  const QString fileName { f.fileName() };
   f.remove();
-  QVERIFY( QFile::copy( QStringLiteral( "%1/provider/bug_21227-rename-styles.gpkg" ).arg( mTestDataDir ),  fileName ) );
+  QVERIFY( QFile::copy( QStringLiteral( "%1/provider/bug_21227-rename-styles.gpkg" ).arg( mTestDataDir ), fileName ) );
 
   // create geopackage item and populate it with layers
   QgsGeoPackageCollectionItem gpkgItem( nullptr, QStringLiteral( "test gpkg" ), QStringLiteral( "gpkg:/%1" ).arg( fileName ) );

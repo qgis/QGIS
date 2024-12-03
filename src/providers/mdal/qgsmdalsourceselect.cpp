@@ -22,8 +22,8 @@
 #include "qgsproviderregistry.h"
 #include "qgshelp.h"
 
-QgsMdalSourceSelect::QgsMdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
-  QgsAbstractDataSourceWidget( parent, fl, widgetMode )
+QgsMdalSourceSelect::QgsMdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
   setupButtons( buttonBox );
@@ -31,10 +31,9 @@ QgsMdalSourceSelect::QgsMdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   mFileWidget->setDialogTitle( tr( "Open MDAL Supported Mesh Dataset(s)" ) );
   mFileWidget->setFilter( QgsProviderRegistry::instance()->fileMeshFilters() );
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
-  {
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [=]( const QString &path ) {
     mMeshPath = path;
-    emit enableButtons( ! mMeshPath.isEmpty() );
+    emit enableButtons( !mMeshPath.isEmpty() );
   } );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMdalSourceSelect::showHelp );
 }
@@ -43,9 +42,7 @@ void QgsMdalSourceSelect::addButtonClicked()
 {
   if ( mMeshPath.isEmpty() )
   {
-    QMessageBox::information( this,
-                              tr( "Add mesh layer" ),
-                              tr( "No layers selected." ) );
+    QMessageBox::information( this, tr( "Add mesh layer" ), tr( "No layers selected." ) );
     return;
   }
 

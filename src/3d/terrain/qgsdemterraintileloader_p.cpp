@@ -17,11 +17,11 @@
 #include "moc_qgsdemterraintileloader_p.cpp"
 
 #include "qgs3dmapsettings.h"
-#include "qgs3dutils.h"
 #include "qgschunknode.h"
 #include "qgsdemterraingenerator.h"
 #include "qgsdemterraintilegeometry_p.h"
 #include "qgseventtracing.h"
+#include "qgsgeotransform.h"
 #include "qgsonlineterraingenerator.h"
 #include "qgsterrainentity.h"
 #include "qgsterraintexturegenerator_p.h"
@@ -113,10 +113,8 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   createTextureComponent( entity, map->isTerrainShadingEnabled(), map->terrainShadingMaterial(), !map->layers().empty() );
 
   // create transform
-
-  Qt3DCore::QTransform *transform = new Qt3DCore::QTransform();
-  QgsVector3D translation = Qgs3DUtils::mapToWorldCoordinates( QgsVector3D( extent.xMinimum(), extent.yMinimum(), 0 ), map->origin() );
-  transform->setTranslation( translation.toVector3D() );
+  QgsGeoTransform *transform = new QgsGeoTransform;
+  transform->setGeoTranslation( QgsVector3D( extent.xMinimum(), extent.yMinimum(), 0 ) );
   entity->addComponent( transform );
 
   mNode->setExactBox3D( QgsBox3D( extent.xMinimum(), extent.yMinimum(), zMin * map->terrainVerticalScale(),

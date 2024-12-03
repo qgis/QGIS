@@ -31,7 +31,7 @@ inline void qgsConnectionPool_ConnectionCreate( const QString &connInfo, QgsSqli
 
 inline void qgsConnectionPool_ConnectionDestroy( QgsSqliteHandle *c )
 {
-  QgsSqliteHandle::closeDb( c );  // will delete itself
+  QgsSqliteHandle::closeDb( c ); // will delete itself
 }
 
 inline void qgsConnectionPool_InvalidateConnection( QgsSqliteHandle *c )
@@ -53,7 +53,8 @@ class QgsSpatiaLiteConnPoolGroup : public QObject, public QgsConnectionPoolGroup
     Q_OBJECT
 
   public:
-    explicit QgsSpatiaLiteConnPoolGroup( const QString &name ) : QgsConnectionPoolGroup<QgsSqliteHandle*>( name ) { initTimer( this ); }
+    explicit QgsSpatiaLiteConnPoolGroup( const QString &name )
+      : QgsConnectionPoolGroup<QgsSqliteHandle *>( name ) { initTimer( this ); }
 
   protected slots:
     void handleConnectionExpired() { onConnectionExpired(); }
@@ -62,13 +63,13 @@ class QgsSpatiaLiteConnPoolGroup : public QObject, public QgsConnectionPoolGroup
 
   protected:
     Q_DISABLE_COPY( QgsSpatiaLiteConnPoolGroup )
-
 };
 
 //! SpatiaLite connection pool - singleton
 class QgsSpatiaLiteConnPool : public QgsConnectionPool<QgsSqliteHandle *, QgsSpatiaLiteConnPoolGroup>
 {
     static QgsSpatiaLiteConnPool *sInstance;
+
   public:
     static QgsSpatiaLiteConnPool *instance();
 

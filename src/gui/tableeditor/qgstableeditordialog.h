@@ -28,6 +28,7 @@ class QgsPanelWidgetStack;
 class QgsTableEditorFormattingWidget;
 class QgsExpressionContextGenerator;
 class QgsMapLayer;
+class QgsLayoutItemManualTable;
 
 /**
  * \ingroup gui
@@ -156,6 +157,18 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
      */
     void setLayer( QgsMapLayer *layer );
 
+    /**
+     * Returns the manual table associated with the editor.
+     * \since QGIS 3.42
+     */
+    QgsLayoutItemManualTable *table() const SIP_SKIP;
+
+    /**
+     * Sets the \a table associated with the editor.
+     * \since QGIS 3.42
+     */
+    void setTable( QgsLayoutItemManualTable *table ) SIP_SKIP;
+
   signals:
 
     /**
@@ -180,6 +193,7 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
     QgsTableEditorFormattingWidget *mFormattingWidget = nullptr;
     bool mBlockSignals = false;
     QPointer< QgsMapLayer > mLayer;
+    QgsLayoutItemManualTable *mTable = nullptr;
 
     void updateActionsFromSelection();
 };

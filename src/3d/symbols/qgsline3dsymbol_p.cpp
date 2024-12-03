@@ -15,6 +15,7 @@
 
 #include "qgsline3dsymbol_p.h"
 
+#include "qgsgeotransform.h"
 #include "qgsline3dsymbol.h"
 #include "qgslinematerial_p.h"
 #include "qgslinevertexdata_p.h"
@@ -227,9 +228,8 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
   renderer->setGeometry( geometry );
 
   // add transform (our geometry has coordinates relative to mChunkOrigin)
-  Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
-  QVector3D nodeTranslation = ( mChunkOrigin - context.origin() ).toVector3D();
-  tr->setTranslation( nodeTranslation );
+  QgsGeoTransform *tr = new QgsGeoTransform;
+  tr->setGeoTranslation( mChunkOrigin );
 
   // make entity
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
@@ -395,9 +395,8 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
   renderer->setRestartIndexValue( 0 );
 
   // add transform (our geometry has coordinates relative to mChunkOrigin)
-  Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
-  QVector3D nodeTranslation = ( mChunkOrigin - context.origin() ).toVector3D();
-  tr->setTranslation( nodeTranslation );
+  QgsGeoTransform *tr = new QgsGeoTransform;
+  tr->setGeoTranslation( mChunkOrigin );
 
   // make entity
   entity->addComponent( renderer );

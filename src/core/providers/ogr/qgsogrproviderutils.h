@@ -21,6 +21,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgswkbtypes.h"
 #include "qgsvectordataprovider.h"
 
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
 
 #include <QString>

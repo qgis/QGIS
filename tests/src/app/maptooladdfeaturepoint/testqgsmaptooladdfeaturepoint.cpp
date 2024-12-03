@@ -45,8 +45,8 @@ class TestQgsMapToolAddFeaturePoint : public QObject
     TestQgsMapToolAddFeaturePoint();
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testPoint();
     void testMultiPoint(); //!< Test crash from regression GH #45153
@@ -97,7 +97,7 @@ void TestQgsMapToolAddFeaturePoint::initTestCase()
   pointF.setGeometry( QgsGeometry::fromWkt( pointWkt ) );
 
   mLayerPoint->addFeature( pointF );
-  QCOMPARE( mLayerPoint->featureCount(), ( long )1 );
+  QCOMPARE( mLayerPoint->featureCount(), ( long ) 1 );
 
   // create the tool
   mCaptureTool = new QgsMapToolAddFeature( mCanvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePoint );
@@ -125,7 +125,7 @@ void TestQgsMapToolAddFeaturePoint::testPoint()
   utils.mouseClick( 4, 0, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
-  QCOMPARE( mLayerPoint->featureCount(), ( long )2 );
+  QCOMPARE( mLayerPoint->featureCount(), ( long ) 2 );
 
   QString wkt = "Point (4 0)";
   QCOMPARE( mLayerPoint->getFeature( newFid ).geometry().asWkt(), wkt );
@@ -144,7 +144,6 @@ void TestQgsMapToolAddFeaturePoint::testPoint()
 
 void TestQgsMapToolAddFeaturePoint::testMultiPoint()
 {
-
   QgsVectorLayer layerMultiPoint { QStringLiteral( "MultiPoint?crs=EPSG:27700" ), QStringLiteral( "layer multi point" ), QStringLiteral( "memory" ) };
   layerMultiPoint.startEditing();
   mCanvas->setCurrentLayer( &layerMultiPoint );
@@ -156,7 +155,7 @@ void TestQgsMapToolAddFeaturePoint::testMultiPoint()
   utils.mouseClick( 4, 0, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   QgsFeatureId fid1 = utils.newFeatureId( oldFids );
 
-  QCOMPARE( layerMultiPoint.featureCount(), ( long )1 );
+  QCOMPARE( layerMultiPoint.featureCount(), ( long ) 1 );
 
   QString wkt = "MultiPoint ((4 0))";
   QCOMPARE( layerMultiPoint.getFeature( fid1 ).geometry().asWkt(), wkt );
@@ -165,7 +164,7 @@ void TestQgsMapToolAddFeaturePoint::testMultiPoint()
   oldFids = utils.existingFeatureIds();
   utils.mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  QCOMPARE( layerMultiPoint.featureCount(), ( long )2 );
+  QCOMPARE( layerMultiPoint.featureCount(), ( long ) 2 );
 
   QgsFeatureId fid2 = utils.newFeatureId( oldFids );
 
@@ -174,7 +173,6 @@ void TestQgsMapToolAddFeaturePoint::testMultiPoint()
 
   layerMultiPoint.undoStack()->undo(); // first point
   layerMultiPoint.undoStack()->undo(); // second point
-
 }
 
 QGSTEST_MAIN( TestQgsMapToolAddFeaturePoint )

@@ -44,7 +44,7 @@ namespace QTest
     QByteArray ba = geom.asWkt().toLatin1();
     return qstrdup( ba.data() );
   }
-}
+} // namespace QTest
 
 
 /**
@@ -58,8 +58,8 @@ class TestQgsMapToolAddFeatureLineM : public QObject
     TestQgsMapToolAddFeatureLineM();
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testM();
     void testTopologicalEditingM();
@@ -111,7 +111,7 @@ void TestQgsMapToolAddFeatureLineM::initTestCase()
   mLayerLine->startEditing();
   mLayerLine->addFeature( lineF1 );
   mFidLineF1 = lineF1.id();
-  QCOMPARE( mLayerLine->featureCount(), ( long )1 );
+  QCOMPARE( mLayerLine->featureCount(), ( long ) 1 );
 
   // just one added feature
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
@@ -128,7 +128,7 @@ void TestQgsMapToolAddFeatureLineM::initTestCase()
 
   mLayerLineM->startEditing();
   mLayerLineM->addFeature( lineF2 );
-  QCOMPARE( mLayerLineM->featureCount(), ( long )1 );
+  QCOMPARE( mLayerLineM->featureCount(), ( long ) 1 );
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );

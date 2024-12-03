@@ -1,0 +1,38 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabelingengine.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsLabelCandidate
+{
+%Docstring(signature="appended")
+Represents a label candidate.
+%End
+
+%TypeHeaderCode
+#include "qgslabelingengine.h"
+%End
+  public:
+    QgsLabelCandidate( const QRectF &r, double c );
+
+    QRectF rect;
+    double cost;
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabelingengine.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

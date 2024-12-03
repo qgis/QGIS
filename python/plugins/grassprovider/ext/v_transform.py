@@ -15,18 +15,20 @@
 ***************************************************************************
 """
 
-__author__ = 'Andrea Giudiceandrea'
-__date__ = 'February 2024'
-__copyright__ = '(C) 2024, Andrea Giudiceandrea'
+__author__ = "Andrea Giudiceandrea"
+__date__ = "February 2024"
+__copyright__ = "(C) 2024, Andrea Giudiceandrea"
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
-    """ Verify if we have the right parameters """
+    """Verify if we have the right parameters"""
     # -w, -x and -y parameters are mutually exclusive
-    w = alg.parameterAsBoolean(parameters, '-w', context)
-    x = alg.parameterAsBoolean(parameters, '-x', context)
-    y = alg.parameterAsBoolean(parameters, '-y', context)
+    w = alg.parameterAsBoolean(parameters, "-w", context)
+    x = alg.parameterAsBoolean(parameters, "-x", context)
+    y = alg.parameterAsBoolean(parameters, "-y", context)
     if sum([w, x, y]) > 1:
-        return False, alg.tr("The 'Swap coordinates' parameters -w, -x and -y are mutually exclusive. You need to set either none or only one of them!")
+        return False, alg.tr(
+            "The 'Swap coordinates' parameters -w, -x and -y are mutually exclusive. You need to set either none or only one of them!"
+        )
 
     return True, None

@@ -35,12 +35,13 @@ namespace QTest
     QByteArray ba = r.toString().toLocal8Bit();
     return qstrdup( ba.data() );
   }
-}
+} // namespace QTest
 
 class QgsMapToolTest : public QgsMapTool // clazy:exclude=missing-qobject-macro
 {
   public:
-    QgsMapToolTest( QgsMapCanvas *canvas ) : QgsMapTool( canvas ) {}
+    QgsMapToolTest( QgsMapCanvas *canvas )
+      : QgsMapTool( canvas ) {}
 
     bool canvasToolTipEvent( QHelpEvent *e ) override
     {
@@ -55,7 +56,6 @@ class QgsMapToolTest : public QgsMapTool // clazy:exclude=missing-qobject-macro
 
   private:
     bool mGotTooltipEvent = false;
-
 };
 
 class TestQgsMapCanvas : public QObject
@@ -65,7 +65,7 @@ class TestQgsMapCanvas : public QObject
     TestQgsMapCanvas() = default;
 
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testPanByKeyboard();
@@ -85,7 +85,6 @@ class TestQgsMapCanvas : public QObject
   private:
     QgsMapCanvas *mCanvas = nullptr;
 };
-
 
 
 void TestQgsMapCanvas::initTestCase()
@@ -138,7 +137,7 @@ void TestQgsMapCanvas::testSetExtent()
   QCOMPARE( mCanvas->extent().toString( 0 ), QStringLiteral( "-3,-3 : 13,13" ) );
   QVERIFY( mCanvas->setReferencedExtent( QgsReferencedRectangle( QgsRectangle( 16259461, -2477192, 16391255, -2372535 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) ) ) );
   QCOMPARE( mCanvas->extent().toString( 0 ), QStringLiteral( "146,-22 : 147,-21" ) );
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem() );
 }
 
 void TestQgsMapCanvas::testMagnification()
@@ -169,8 +168,7 @@ void TestQgsMapCanvas::testMagnification()
   // build vector layer
   const QString myPointsFileName = testDataDir + "points.shp";
   const QFileInfo myPointFileInfo( myPointsFileName );
-  QgsVectorLayer *layer = new QgsVectorLayer( myPointFileInfo.filePath(),
-      myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // prepare map canvas
   mCanvas->setLayers( QList<QgsMapLayer *>() << layer );
@@ -231,8 +229,7 @@ void TestQgsMapCanvas::testMagnification()
   QCOMPARE( checker.compareImages( QStringLiteral( "map_magnification" ), 100 ), true );
 }
 
-void compareExtent( const QgsRectangle &initialExtent,
-                    const QgsRectangle &extent )
+void compareExtent( const QgsRectangle &initialExtent, const QgsRectangle &extent )
 {
   QGSCOMPARENEAR( initialExtent.xMinimum(), extent.xMinimum(), 0.00000000001 );
   QGSCOMPARENEAR( initialExtent.xMaximum(), extent.xMaximum(), 0.00000000001 );
@@ -246,8 +243,7 @@ void TestQgsMapCanvas::testMagnificationExtent()
   const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
   const QString myPointsFileName = testDataDir + "points.shp";
   const QFileInfo myPointFileInfo( myPointsFileName );
-  QgsVectorLayer *layer = new QgsVectorLayer( myPointFileInfo.filePath(),
-      myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // prepare map canvas
   mCanvas->setLayers( QList<QgsMapLayer *>() << layer );
@@ -375,25 +371,25 @@ void TestQgsMapCanvas::testZoomByWheel()
   mCanvas->setWheelFactor( 2 );
 
   //test zoom out
-  std::unique_ptr< QWheelEvent > e = std::make_unique< QWheelEvent >( QPoint( 0, 0 ), QPointF(), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false );
+  std::unique_ptr<QWheelEvent> e = std::make_unique<QWheelEvent>( QPoint( 0, 0 ), QPointF(), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false );
   mCanvas->wheelEvent( e.get() );
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth * 2.0, 0.1 );
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight * 2.0, 0.1 );
 
   //test zoom in
-  e = std::make_unique< QWheelEvent >( QPoint( 0, 0 ), QPointF(), QPoint( 0, QWheelEvent::DefaultDeltasPerStep ), QPoint( 0, QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false );
+  e = std::make_unique<QWheelEvent>( QPoint( 0, 0 ), QPointF(), QPoint( 0, QWheelEvent::DefaultDeltasPerStep ), QPoint( 0, QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::NoModifier, Qt::NoScrollPhase, false );
   mCanvas->wheelEvent( e.get() );
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.1 );
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.1 );
 
   // test zoom out with ctrl
-  e = std::make_unique< QWheelEvent >( QPoint( 0, 0 ), QPointF(), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::ControlModifier, Qt::NoScrollPhase, false );
+  e = std::make_unique<QWheelEvent>( QPoint( 0, 0 ), QPointF(), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), QPoint( 0, -QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::ControlModifier, Qt::NoScrollPhase, false );
   mCanvas->wheelEvent( e.get() );
   QGSCOMPARENEAR( mCanvas->extent().width(), 1.05 * originalWidth, 0.1 );
   QGSCOMPARENEAR( mCanvas->extent().height(), 1.05 * originalHeight, 0.1 );
 
   //test zoom in with ctrl
-  e = std::make_unique< QWheelEvent >( QPoint( 0, 0 ), QPointF(), QPoint( 0, QWheelEvent::DefaultDeltasPerStep ), QPoint( 0, QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::ControlModifier, Qt::NoScrollPhase, false );
+  e = std::make_unique<QWheelEvent>( QPoint( 0, 0 ), QPointF(), QPoint( 0, QWheelEvent::DefaultDeltasPerStep ), QPoint( 0, QWheelEvent::DefaultDeltasPerStep ), Qt::NoButton, Qt::ControlModifier, Qt::NoScrollPhase, false );
   mCanvas->wheelEvent( e.get() );
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.1 );
   QGSCOMPARENEAR( mCanvas->extent().height(), originalHeight, 0.1 );
@@ -414,14 +410,11 @@ void TestQgsMapCanvas::testShiftZoom()
   // start by testing a tool with shift-zoom enabled
   mCanvas->setMapTool( &panTool );
 
-  std::unique_ptr< QMouseEvent > e = std::make_unique< QMouseEvent >( QMouseEvent::MouseButtonPress, startPos,
-                                     Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  std::unique_ptr<QMouseEvent> e = std::make_unique<QMouseEvent>( QMouseEvent::MouseButtonPress, startPos, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   mCanvas->mousePressEvent( e.get() );
-  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseMove, endPos,
-                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  e = std::make_unique<QMouseEvent>( QMouseEvent::MouseMove, endPos, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   mCanvas->mouseMoveEvent( e.get() );
-  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseButtonRelease, endPos,
-                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  e = std::make_unique<QMouseEvent>( QMouseEvent::MouseButtonRelease, endPos, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   mCanvas->mouseReleaseEvent( e.get() );
 
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth / 2.0, 0.2 );
@@ -431,14 +424,11 @@ void TestQgsMapCanvas::testShiftZoom()
   mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
 
   //test that a shift-click (no movement) will not zoom
-  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseButtonPress, startPos,
-                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  e = std::make_unique<QMouseEvent>( QMouseEvent::MouseButtonPress, startPos, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   mCanvas->mousePressEvent( e.get() );
-  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseMove, startPos,
-                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  e = std::make_unique<QMouseEvent>( QMouseEvent::MouseMove, startPos, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   mCanvas->mouseMoveEvent( e.get() );
-  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseButtonRelease, startPos,
-                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  e = std::make_unique<QMouseEvent>( QMouseEvent::MouseButtonRelease, startPos, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   mCanvas->mouseReleaseEvent( e.get() );
 
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.0001 );
@@ -451,14 +441,11 @@ void TestQgsMapCanvas::testShiftZoom()
   QgsMapToolTest mapTool( mCanvas );
   mCanvas->setMapTool( &mapTool );
 
-  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseButtonPress, startPos,
-                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  e = std::make_unique<QMouseEvent>( QMouseEvent::MouseButtonPress, startPos, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   mCanvas->mousePressEvent( e.get() );
-  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseMove, endPos,
-                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  e = std::make_unique<QMouseEvent>( QMouseEvent::MouseMove, endPos, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   mCanvas->mouseMoveEvent( e.get() );
-  e = std::make_unique< QMouseEvent >( QMouseEvent::MouseButtonRelease, endPos,
-                                       Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
+  e = std::make_unique<QMouseEvent>( QMouseEvent::MouseButtonRelease, endPos, Qt::LeftButton, Qt::LeftButton, Qt::ShiftModifier );
   mCanvas->mouseReleaseEvent( e.get() );
 
   QGSCOMPARENEAR( mCanvas->extent().width(), originalWidth, 0.00001 );
@@ -470,7 +457,6 @@ class TestNoDropHandler : public QgsCustomDropHandler
     Q_OBJECT
 
   public:
-
     QString customUriProviderKey() const override { return QStringLiteral( "test" ); }
     bool canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) override { return false; }
     bool handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) const override { return false; }
@@ -481,7 +467,6 @@ class TestYesDropHandler : public QgsCustomDropHandler
     Q_OBJECT
 
   public:
-
     QString customUriProviderKey() const override { return QStringLiteral( "test" ); }
     bool canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) override { return true; }
     bool handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &, QgsMapCanvas * ) const override { return true; }
@@ -490,8 +475,8 @@ class TestYesDropHandler : public QgsCustomDropHandler
 void TestQgsMapCanvas::testDragDrop()
 {
   // default drag, should not be accepted
-  std::unique_ptr< QMimeData > data = std::make_unique< QMimeData >();
-  std::unique_ptr< QDragEnterEvent > event = std::make_unique< QDragEnterEvent >( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
+  std::unique_ptr<QMimeData> data = std::make_unique<QMimeData>();
+  std::unique_ptr<QDragEnterEvent> event = std::make_unique<QDragEnterEvent>( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
   mCanvas->dragEnterEvent( event.get() );
   QVERIFY( !event->isAccepted() );
 
@@ -502,33 +487,33 @@ void TestQgsMapCanvas::testDragDrop()
   uri.providerKey = QStringLiteral( "test" );
   list << uri;
   data.reset( QgsMimeDataUtils::encodeUriList( list ) );
-  event = std::make_unique< QDragEnterEvent >( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
+  event = std::make_unique<QDragEnterEvent>( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
   mCanvas->dragEnterEvent( event.get() );
   // still not accepted by default
   QVERIFY( !event->isAccepted() );
 
   // add a custom drop handler to the canvas
   TestNoDropHandler handler;
-  mCanvas->setCustomDropHandlers( QVector< QPointer< QgsCustomDropHandler > >() << &handler );
+  mCanvas->setCustomDropHandlers( QVector<QPointer<QgsCustomDropHandler>>() << &handler );
   mCanvas->dragEnterEvent( event.get() );
   // not accepted by handler
   QVERIFY( !event->isAccepted() );
 
   TestYesDropHandler handler2;
-  mCanvas->setCustomDropHandlers( QVector< QPointer< QgsCustomDropHandler > >() << &handler << &handler2 );
+  mCanvas->setCustomDropHandlers( QVector<QPointer<QgsCustomDropHandler>>() << &handler << &handler2 );
   mCanvas->dragEnterEvent( event.get() );
   // IS accepted by handler
   QVERIFY( event->isAccepted() );
 
   // check drop event logic
-  mCanvas->setCustomDropHandlers( QVector< QPointer< QgsCustomDropHandler > >() );
-  std::unique_ptr< QDropEvent > dropEvent = std::make_unique< QDropEvent >( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
+  mCanvas->setCustomDropHandlers( QVector<QPointer<QgsCustomDropHandler>>() );
+  std::unique_ptr<QDropEvent> dropEvent = std::make_unique<QDropEvent>( QPoint( 10, 10 ), Qt::CopyAction, data.get(), Qt::LeftButton, Qt::NoModifier );
   mCanvas->dropEvent( dropEvent.get() );
   QVERIFY( !dropEvent->isAccepted() );
-  mCanvas->setCustomDropHandlers( QVector< QPointer< QgsCustomDropHandler > >() << &handler );
+  mCanvas->setCustomDropHandlers( QVector<QPointer<QgsCustomDropHandler>>() << &handler );
   mCanvas->dropEvent( dropEvent.get() );
   QVERIFY( !dropEvent->isAccepted() );
-  mCanvas->setCustomDropHandlers( QVector< QPointer< QgsCustomDropHandler > >() << &handler << &handler2 );
+  mCanvas->setCustomDropHandlers( QVector<QPointer<QgsCustomDropHandler>>() << &handler << &handler2 );
   mCanvas->dropEvent( dropEvent.get() );
   // is accepted!
   QVERIFY( dropEvent->isAccepted() );
@@ -611,13 +596,13 @@ void TestQgsMapCanvas::testMapLayers()
   QVERIFY( vl1->isValid() );
   QgsProject::instance()->addMapLayer( vl1 );
 
-  std::unique_ptr< QgsVectorLayer > vl2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:3946&field=halig:string&field=valig:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=halig:string&field=valig:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
   QVERIFY( vl2->isValid() );
 
-  std::unique_ptr< QgsMapCanvas > canvas = std::make_unique< QgsMapCanvas >();
+  std::unique_ptr<QgsMapCanvas> canvas = std::make_unique<QgsMapCanvas>();
   canvas->setLayers( { vl1, vl2.get() } );
 
-  QCOMPARE( canvas->layers(), QList< QgsMapLayer * >( { vl1, vl2.get() } ) );
+  QCOMPARE( canvas->layers(), QList<QgsMapLayer *>( { vl1, vl2.get() } ) );
   // retrieving layer by id should work for both layers from the project AND for freestanding layers
   QCOMPARE( canvas->layer( vl1->id() ), vl1 );
   QCOMPARE( canvas->layer( vl2->id() ), vl2.get() );

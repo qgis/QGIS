@@ -39,6 +39,8 @@ Creates a new color ramp shader.
 
     bool operator==( const QgsColorRampShader &other ) const;
 
+    bool operator!=( const QgsColorRampShader &other ) const;
+
     struct ColorRampItem
     {
 

@@ -42,11 +42,12 @@ class TestQgsCentroidFillSymbol : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsCentroidFillSymbol() : QgsTest( QStringLiteral( "Centroid Fill Symbol Tests" ), QStringLiteral( "symbol_centroidfill" ) ) {}
+    TestQgsCentroidFillSymbol()
+      : QgsTest( QStringLiteral( "Centroid Fill Symbol Tests" ), QStringLiteral( "symbol_centroidfill" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void centroidFillSymbol();
     void centroidFillSymbolPointOnSurface();
@@ -59,7 +60,7 @@ class TestQgsCentroidFillSymbol : public QgsTest
     void dataDefinedOpacity();
 
   private:
-    bool mTestHasError =  false ;
+    bool mTestHasError = false;
 
     QgsMapSettings mMapSettings;
     QgsVectorLayer *mpPolysLayer = nullptr;
@@ -87,8 +88,7 @@ void TestQgsCentroidFillSymbol::initTestCase()
   //
   const QString myPolysFileName = mTestDataDir + "polys.shp";
   const QFileInfo myPolyFileInfo( myPolysFileName );
-  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
@@ -96,7 +96,7 @@ void TestQgsCentroidFillSymbol::initTestCase()
 
   //setup gradient fill
   mCentroidFill = new QgsCentroidFillSymbolLayer();
-  static_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setStrokeColor( Qt::black );
+  static_cast<QgsSimpleMarkerSymbolLayer *>( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setStrokeColor( Qt::black );
   mFillSymbol = new QgsFillSymbol();
   mFillSymbol->changeSymbolLayer( 0, mCentroidFill );
   mSymbolRenderer = new QgsSingleSymbolRenderer( mFillSymbol );
@@ -107,7 +107,6 @@ void TestQgsCentroidFillSymbol::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
-
 }
 void TestQgsCentroidFillSymbol::cleanupTestCase()
 {
@@ -204,8 +203,8 @@ void TestQgsCentroidFillSymbol::opacityWithDataDefinedColor()
 
   mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'red', 'green')" ) ) );
   mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'blue', 'magenta')" ) ) );
-  qgis::down_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setStrokeWidth( 0.5 );
-  qgis::down_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setSize( 5 );
+  qgis::down_cast<QgsSimpleMarkerSymbolLayer *>( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setStrokeWidth( 0.5 );
+  qgis::down_cast<QgsSimpleMarkerSymbolLayer *>( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setSize( 5 );
   mCentroidFill->subSymbol()->setOpacity( 0.5 );
   mFillSymbol->setOpacity( 0.5 );
 
@@ -220,8 +219,8 @@ void TestQgsCentroidFillSymbol::dataDefinedOpacity()
 
   mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'red', 'green')" ) ) );
   mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'blue', 'magenta')" ) ) );
-  qgis::down_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setStrokeWidth( 0.5 );
-  qgis::down_cast< QgsSimpleMarkerSymbolLayer * >( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setSize( 5 );
+  qgis::down_cast<QgsSimpleMarkerSymbolLayer *>( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setStrokeWidth( 0.5 );
+  qgis::down_cast<QgsSimpleMarkerSymbolLayer *>( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setSize( 5 );
   mCentroidFill->subSymbol()->setOpacity( 0.5 );
   mFillSymbol->setOpacity( 1.0 );
   mFillSymbol->setDataDefinedProperty( QgsSymbol::Property::Opacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Value\" >10, 25, 50)" ) ) );

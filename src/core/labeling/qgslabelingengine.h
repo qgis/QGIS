@@ -16,8 +16,6 @@
 #ifndef QGSLABELINGENGINE_H
 #define QGSLABELINGENGINE_H
 
-#define SIP_NO_FILE
-
 #include "qgis_core.h"
 #include "qgsmapsettings.h"
 
@@ -29,12 +27,30 @@ class QgsLabelingResults;
 class QgsLabelFeature;
 class QgsLabelingEngineSettings;
 
+#ifndef SIP_RUN
 namespace pal
 {
   class Problem;
   class Pal;
   class LabelPosition;
 }
+#endif
+
+/**
+ * \ingroup core
+ * \brief Represents a label candidate.
+ */
+class CORE_EXPORT QgsLabelCandidate
+{
+  public:
+    QgsLabelCandidate( const QRectF &r, double c ): rect( r ), cost( c ) {}
+
+    QRectF rect;
+    double cost;
+};
+
+
+#ifndef SIP_RUN
 
 /**
  * \ingroup core
@@ -411,6 +427,20 @@ class CORE_EXPORT QgsLabelingEngine
     //! For internal use by the providers
     QgsLabelingResults *results() const { return mResults.get(); }
 
+    /**
+     * Draws label candidate rectangles.
+     *
+     * \see drawLabelMetrics()
+     */
+    static void drawLabelCandidateRect( pal::LabelPosition *lp, QgsRenderContext &context, const QgsMapToPixel *xform, QList<QgsLabelCandidate> *candidates = nullptr );
+
+    /**
+     * Draws label metrics.
+     *
+     * \see drawLabelCandidateRect()
+     */
+    static void drawLabelMetrics( pal::LabelPosition *label, QgsMapToPixel xform, QgsRenderContext &context, const QPointF &renderPoint );
+
   protected:
     void processProvider( QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p );
 
@@ -575,5 +605,7 @@ class CORE_EXPORT QgsLabelingUtils
     static Qgis::LabelLinePlacementFlags decodeLinePlacementFlags( const QString &string );
 
 };
+
+#endif
 
 #endif // QGSLABELINGENGINE_H

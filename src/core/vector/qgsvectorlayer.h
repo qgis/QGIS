@@ -1902,7 +1902,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * A set of attributes that are not advertised in WMS requests with QGIS server.
-     * \deprecated QGIS 3.16. Use setFieldConfigurationFlag instead.
+     * \deprecated QGIS 3.16. Use setFieldConfigurationFlag() instead.
      */
     Q_DECL_DEPRECATED void setExcludeAttributesWms( const QSet<QString> &att ) SIP_DEPRECATED;
 
@@ -1914,7 +1914,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * A set of attributes that are not advertised in WFS requests with QGIS server.
-     * \deprecated QGIS 3.16. Use setFieldConfigurationFlag instead.
+     * \deprecated QGIS 3.16. Use setFieldConfigurationFlag() instead.
      */
     Q_DECL_DEPRECATED void setExcludeAttributesWfs( const QSet<QString> &att ) SIP_DEPRECATED;
 

@@ -126,6 +126,13 @@ Applies a ``capitalization`` style to the block's text.
 .. versionadded:: 3.16
 %End
 
+    bool hasBackgrounds() const;
+%Docstring
+Returns ``True`` if the block or any of the fragments in the block have background brushes set.
+
+.. versionadded:: 3.42
+%End
+
     Py_ssize_t __len__() const;
 %MethodCode
     sipRes = sipCpp->size();

@@ -42,14 +42,13 @@ extern "C"
  *  \brief GRASS attributes.
  *
  */
-class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
+class QgsGrassRegion : public QWidget, private Ui::QgsGrassRegionBase
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsGrassRegion( QgisInterface *iface,
-                    QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
+    QgsGrassRegion( QgisInterface *iface, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
 
     ~QgsGrassRegion() override;
@@ -88,6 +87,7 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
     void mDrawButton_clicked();
 
     void canvasMapToolSet( QgsMapTool *tool );
+
   private:
     //! Pointer to plugin
     //QgsGrassPlugin *mPlugin;

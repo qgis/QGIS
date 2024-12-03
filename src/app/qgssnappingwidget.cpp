@@ -86,7 +86,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   connect( model, &QgsSnappingLayerTreeModel::rowsInserted, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
   connect( model, &QgsSnappingLayerTreeModel::modelReset, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
   connect( model, &QgsSnappingLayerTreeModel::rowsRemoved, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
-  connect( mProject, &QObject::destroyed, this, [ = ] {mLayerTreeView->setModel( nullptr );} );
+  connect( mProject, &QObject::destroyed, this, [=] { mLayerTreeView->setModel( nullptr ); } );
   // model->setFlags( 0 );
   mLayerTreeView->setModel( model );
   mLayerTreeView->resizeColumnToContents( 0 );
@@ -200,7 +200,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mToleranceSpinBox->setMaximum( 99999999.990000 );
   mToleranceSpinBox->setToolTip( tr( "Snapping Tolerance in Defined Units" ) );
   mToleranceSpinBox->setObjectName( QStringLiteral( "SnappingToleranceSpinBox" ) );
-  connect( mToleranceSpinBox, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, &QgsSnappingWidget::changeTolerance );
+  connect( mToleranceSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsSnappingWidget::changeTolerance );
 
   // units
   mUnitsComboBox = new QComboBox();
@@ -210,11 +210,9 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mUnitsComboBox->addItem( mapCanvasDistanceUnits, QVariant::fromValue( Qgis::MapToolUnit::Project ) );
   mUnitsComboBox->setToolTip( tr( "Snapping Unit Type: Pixels (px) or Project/Map Units (%1)" ).arg( mapCanvasDistanceUnits ) );
   mUnitsComboBox->setObjectName( QStringLiteral( "SnappingUnitComboBox" ) );
-  connect( mUnitsComboBox, qOverload<int>( &QComboBox::currentIndexChanged ),
-           this, &QgsSnappingWidget::changeUnit );
+  connect( mUnitsComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsSnappingWidget::changeUnit );
 
-  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ]
-  {
+  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [=] {
     // Update map units from canvas
     const QString mapCanvasDistanceUnits { QgsUnitTypes::toString( mCanvas->mapSettings().mapUnits() ) };
     mUnitsComboBox->setItemText( 1, mapCanvasDistanceUnits );
@@ -491,7 +489,6 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
   }
 
   toggleSnappingWidgets( config.enabled() );
-
 }
 
 void QgsSnappingWidget::projectAvoidIntersectionModeChanged()
@@ -581,7 +578,7 @@ void QgsSnappingWidget::changeMaxScale( double maxScale )
 
 void QgsSnappingWidget::changeUnit( int idx )
 {
-  Qgis::MapToolUnit unit = mUnitsComboBox->itemData( idx ).value< Qgis::MapToolUnit >();
+  Qgis::MapToolUnit unit = mUnitsComboBox->itemData( idx ).value<Qgis::MapToolUnit>();
   mConfig.setUnits( unit );
   mProject->setSnappingConfig( mConfig );
 
@@ -621,9 +618,7 @@ void QgsSnappingWidget::onSnappingTreeLayersChanged()
 
 void QgsSnappingWidget::avoidIntersectionsModeButtonTriggered( QAction *action )
 {
-  if ( action != mAllowIntersectionsAction &&
-       action != mAvoidIntersectionsCurrentLayerAction &&
-       action != mAvoidIntersectionsLayersAction )
+  if ( action != mAllowIntersectionsAction && action != mAvoidIntersectionsCurrentLayerAction && action != mAvoidIntersectionsLayersAction )
   {
     return;
   }
@@ -648,9 +643,7 @@ void QgsSnappingWidget::avoidIntersectionsModeButtonTriggered( QAction *action )
 
 void QgsSnappingWidget::modeButtonTriggered( QAction *action )
 {
-  if ( action != mAllLayersAction &&
-       action != mActiveLayerAction &&
-       action != mAdvancedModeAction )
+  if ( action != mAllLayersAction && action != mActiveLayerAction && action != mAdvancedModeAction )
   {
     return;
   }
@@ -712,7 +705,7 @@ void QgsSnappingWidget::snappingScaleModeTriggered( QAction *action )
 
   if ( action == mDefaultSnappingScaleAct )
   {
-    mode =  QgsSnappingConfig::Disabled;
+    mode = QgsSnappingConfig::Disabled;
   }
   else if ( action == mGlobalSnappingScaleAct )
   {
@@ -796,7 +789,7 @@ void QgsSnappingWidget::setConfig( const QgsSnappingConfig &config )
 
 bool QgsSnappingWidget::eventFilter( QObject *watched, QEvent *event )
 {
-  if ( watched == mLayerTreeView  && event->type() == QEvent::Show )
+  if ( watched == mLayerTreeView && event->type() == QEvent::Show )
   {
     if ( mRequireLayerTreeViewUpdate )
     {

@@ -33,10 +33,10 @@ class TestQgsRasterIterator : public QObject
     TestQgsRasterIterator() = default;
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void testBasic();
     void testNoBlock();
@@ -44,7 +44,6 @@ class TestQgsRasterIterator : public QObject
     void testPixelOverlap();
 
   private:
-
     QString mTestDataDir;
     QgsRasterLayer *mpRasterLayer = nullptr;
 };
@@ -99,7 +98,7 @@ void TestQgsRasterIterator::testBasic()
   int topLeftCol;
   int topLeftRow;
   QgsRectangle blockExtent;
-  std::unique_ptr< QgsRasterBlock > block;
+  std::unique_ptr<QgsRasterBlock> block;
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
   QGSCOMPARENEAR( it.progress( 1 ), 0.111, 0.001 );
@@ -165,7 +164,7 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( block->width(), 3000 );
   QCOMPARE( block->height(), 2500 );
   QCOMPARE( blockExtent.xMinimum(), mpRasterLayer->extent().xMinimum() + topLeftCol * mpRasterLayer->rasterUnitsPerPixelX() );
-  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow )* mpRasterLayer->rasterUnitsPerPixelY() );
+  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow ) * mpRasterLayer->rasterUnitsPerPixelY() );
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
@@ -181,7 +180,7 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( block->width(), 3000 );
   QCOMPARE( block->height(), 2500 );
   QCOMPARE( blockExtent.xMinimum(), mpRasterLayer->extent().xMinimum() + topLeftCol * mpRasterLayer->rasterUnitsPerPixelX() );
-  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow )* mpRasterLayer->rasterUnitsPerPixelY() );
+  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow ) * mpRasterLayer->rasterUnitsPerPixelY() );
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
@@ -195,7 +194,7 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( block->width(), 1200 );
   QCOMPARE( block->height(), 2500 );
   QCOMPARE( blockExtent.xMinimum(), mpRasterLayer->extent().xMinimum() + topLeftCol * mpRasterLayer->rasterUnitsPerPixelX() );
-  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow )* mpRasterLayer->rasterUnitsPerPixelY() );
+  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow ) * mpRasterLayer->rasterUnitsPerPixelY() );
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
@@ -211,7 +210,7 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( block->width(), 3000 );
   QCOMPARE( block->height(), 450 );
   QCOMPARE( blockExtent.xMinimum(), mpRasterLayer->extent().xMinimum() + topLeftCol * mpRasterLayer->rasterUnitsPerPixelX() );
-  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow )* mpRasterLayer->rasterUnitsPerPixelY() );
+  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow ) * mpRasterLayer->rasterUnitsPerPixelY() );
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
@@ -225,7 +224,7 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( block->width(), 3000 );
   QCOMPARE( block->height(), 450 );
   QCOMPARE( blockExtent.xMinimum(), mpRasterLayer->extent().xMinimum() + topLeftCol * mpRasterLayer->rasterUnitsPerPixelX() );
-  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow )* mpRasterLayer->rasterUnitsPerPixelY() );
+  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow ) * mpRasterLayer->rasterUnitsPerPixelY() );
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
@@ -241,7 +240,7 @@ void TestQgsRasterIterator::testBasic()
   QCOMPARE( block->width(), 1200 );
   QCOMPARE( block->height(), 450 );
   QCOMPARE( blockExtent.xMinimum(), mpRasterLayer->extent().xMinimum() + topLeftCol * mpRasterLayer->rasterUnitsPerPixelX() );
-  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow )* mpRasterLayer->rasterUnitsPerPixelY() );
+  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow ) * mpRasterLayer->rasterUnitsPerPixelY() );
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
@@ -312,7 +311,7 @@ void TestQgsRasterIterator::testNoBlock()
   QCOMPARE( topLeftCol, 0 );
   QCOMPARE( topLeftRow, 2500 );
   QCOMPARE( blockExtent.xMinimum(), mpRasterLayer->extent().xMinimum() + topLeftCol * mpRasterLayer->rasterUnitsPerPixelX() );
-  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow )* mpRasterLayer->rasterUnitsPerPixelY() );
+  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow ) * mpRasterLayer->rasterUnitsPerPixelY() );
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
@@ -322,7 +321,7 @@ void TestQgsRasterIterator::testNoBlock()
   QCOMPARE( topLeftCol, 3000 );
   QCOMPARE( topLeftRow, 2500 );
   QCOMPARE( blockExtent.xMinimum(), mpRasterLayer->extent().xMinimum() + topLeftCol * mpRasterLayer->rasterUnitsPerPixelX() );
-  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow )* mpRasterLayer->rasterUnitsPerPixelY() );
+  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow ) * mpRasterLayer->rasterUnitsPerPixelY() );
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
@@ -332,7 +331,7 @@ void TestQgsRasterIterator::testNoBlock()
   QCOMPARE( topLeftCol, 6000 );
   QCOMPARE( topLeftRow, 2500 );
   QCOMPARE( blockExtent.xMinimum(), mpRasterLayer->extent().xMinimum() + topLeftCol * mpRasterLayer->rasterUnitsPerPixelX() );
-  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow )* mpRasterLayer->rasterUnitsPerPixelY() );
+  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow ) * mpRasterLayer->rasterUnitsPerPixelY() );
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
@@ -342,7 +341,7 @@ void TestQgsRasterIterator::testNoBlock()
   QCOMPARE( topLeftCol, 0 );
   QCOMPARE( topLeftRow, 5000 );
   QCOMPARE( blockExtent.xMinimum(), mpRasterLayer->extent().xMinimum() + topLeftCol * mpRasterLayer->rasterUnitsPerPixelX() );
-  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow )* mpRasterLayer->rasterUnitsPerPixelY() );
+  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow ) * mpRasterLayer->rasterUnitsPerPixelY() );
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
@@ -352,7 +351,7 @@ void TestQgsRasterIterator::testNoBlock()
   QCOMPARE( topLeftCol, 3000 );
   QCOMPARE( topLeftRow, 5000 );
   QCOMPARE( blockExtent.xMinimum(), mpRasterLayer->extent().xMinimum() + topLeftCol * mpRasterLayer->rasterUnitsPerPixelX() );
-  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow )* mpRasterLayer->rasterUnitsPerPixelY() );
+  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow ) * mpRasterLayer->rasterUnitsPerPixelY() );
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
@@ -362,7 +361,7 @@ void TestQgsRasterIterator::testNoBlock()
   QCOMPARE( topLeftCol, 6000 );
   QCOMPARE( topLeftRow, 5000 );
   QCOMPARE( blockExtent.xMinimum(), mpRasterLayer->extent().xMinimum() + topLeftCol * mpRasterLayer->rasterUnitsPerPixelX() );
-  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow )* mpRasterLayer->rasterUnitsPerPixelY() );
+  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow ) * mpRasterLayer->rasterUnitsPerPixelY() );
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
@@ -385,9 +384,7 @@ void TestQgsRasterIterator::testSubRegion()
   int subRectTop = 0;
   int subRectLeft = 0;
   // sub region is whole of raster extent
-  QgsRectangle subRect = QgsRasterIterator::subRegion( provider->extent(), provider->xSize(), provider->ySize(),
-                         QgsRectangle( 497470, 7050585, 498190, 7051130 ),
-                         subRectWidth, subRectHeight, subRectLeft, subRectTop );
+  QgsRectangle subRect = QgsRasterIterator::subRegion( provider->extent(), provider->xSize(), provider->ySize(), QgsRectangle( 497470, 7050585, 498190, 7051130 ), subRectWidth, subRectHeight, subRectLeft, subRectTop );
   QCOMPARE( subRect.xMinimum(), 497470 );
   QCOMPARE( subRect.yMinimum(), 7050585 );
   QCOMPARE( subRect.xMaximum(), 498190 );
@@ -398,9 +395,7 @@ void TestQgsRasterIterator::testSubRegion()
   QCOMPARE( subRectTop, 0 );
 
   // sub region extends outside of raster extent, should be clipped back to raster extent
-  subRect = QgsRasterIterator::subRegion( provider->extent(), provider->xSize(), provider->ySize(),
-                                          QgsRectangle( 497370, 7050385, 498390, 7051330 ),
-                                          subRectWidth, subRectHeight, subRectLeft, subRectTop );
+  subRect = QgsRasterIterator::subRegion( provider->extent(), provider->xSize(), provider->ySize(), QgsRectangle( 497370, 7050385, 498390, 7051330 ), subRectWidth, subRectHeight, subRectLeft, subRectTop );
   QCOMPARE( subRect.xMinimum(), 497470 );
   QCOMPARE( subRect.yMinimum(), 7050585 );
   QCOMPARE( subRect.xMaximum(), 498190 );
@@ -411,9 +406,7 @@ void TestQgsRasterIterator::testSubRegion()
   QCOMPARE( subRectTop, 0 );
 
   // sub rect inside raster extent
-  subRect = QgsRasterIterator::subRegion( provider->extent(), provider->xSize(), provider->ySize(),
-                                          QgsRectangle( 497970.01, 7050985.05, 498030.95, 7051030.75 ),
-                                          subRectWidth, subRectHeight, subRectLeft, subRectTop );
+  subRect = QgsRasterIterator::subRegion( provider->extent(), provider->xSize(), provider->ySize(), QgsRectangle( 497970.01, 7050985.05, 498030.95, 7051030.75 ), subRectWidth, subRectHeight, subRectLeft, subRectTop );
   QCOMPARE( subRect.xMinimum(), 497970 );
   QCOMPARE( subRect.yMinimum(), 7050985.0 );
   QCOMPARE( subRect.xMaximum(), 498031 );
@@ -425,9 +418,7 @@ void TestQgsRasterIterator::testSubRegion()
   QCOMPARE( subRectTop, 992 );
 
   // sub rect JUST inside raster extent
-  subRect = QgsRasterIterator::subRegion( provider->extent(), provider->xSize(), provider->ySize(),
-                                          QgsRectangle( 497370.001, 7050385.001, 498389.99999, 7051329.9999 ),
-                                          subRectWidth, subRectHeight, subRectLeft, subRectTop );
+  subRect = QgsRasterIterator::subRegion( provider->extent(), provider->xSize(), provider->ySize(), QgsRectangle( 497370.001, 7050385.001, 498389.99999, 7051329.9999 ), subRectWidth, subRectHeight, subRectLeft, subRectTop );
   QCOMPARE( subRect.xMinimum(), 497470 );
   QCOMPARE( subRect.yMinimum(), 7050585 );
   QCOMPARE( subRect.xMaximum(), 498190 );
@@ -436,7 +427,6 @@ void TestQgsRasterIterator::testSubRegion()
   QCOMPARE( subRectHeight, 5450 );
   QCOMPARE( subRectLeft, 0 );
   QCOMPARE( subRectTop, 0 );
-
 }
 
 void TestQgsRasterIterator::testPixelOverlap()
@@ -465,7 +455,7 @@ void TestQgsRasterIterator::testPixelOverlap()
   int tileTopLeftRow;
 
   QgsRectangle blockExtent;
-  std::unique_ptr< QgsRasterBlock > block;
+  std::unique_ptr<QgsRasterBlock> block;
 
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent, &tileCols, &tileRows, &tileTopLeftCol, &tileTopLeftRow ) );
   QCOMPARE( nCols, 3020 );
@@ -543,7 +533,7 @@ void TestQgsRasterIterator::testPixelOverlap()
   QCOMPARE( block->width(), 3020 );
   QCOMPARE( block->height(), 2540 );
   QCOMPARE( blockExtent.xMinimum(), mpRasterLayer->extent().xMinimum() + topLeftCol * mpRasterLayer->rasterUnitsPerPixelX() );
-  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow )* mpRasterLayer->rasterUnitsPerPixelY() );
+  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow ) * mpRasterLayer->rasterUnitsPerPixelY() );
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
@@ -562,7 +552,7 @@ void TestQgsRasterIterator::testPixelOverlap()
   QCOMPARE( block->width(), 3040 );
   QCOMPARE( block->height(), 2540 );
   QCOMPARE( blockExtent.xMinimum(), mpRasterLayer->extent().xMinimum() + topLeftCol * mpRasterLayer->rasterUnitsPerPixelX() );
-  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow )* mpRasterLayer->rasterUnitsPerPixelY() );
+  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow ) * mpRasterLayer->rasterUnitsPerPixelY() );
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
@@ -579,7 +569,7 @@ void TestQgsRasterIterator::testPixelOverlap()
   QCOMPARE( block->width(), 1220 );
   QCOMPARE( block->height(), 2540 );
   QCOMPARE( blockExtent.xMinimum(), mpRasterLayer->extent().xMinimum() + topLeftCol * mpRasterLayer->rasterUnitsPerPixelX() );
-  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow )* mpRasterLayer->rasterUnitsPerPixelY() );
+  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow ) * mpRasterLayer->rasterUnitsPerPixelY() );
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
@@ -598,7 +588,7 @@ void TestQgsRasterIterator::testPixelOverlap()
   QCOMPARE( block->width(), 3020 );
   QCOMPARE( block->height(), 470 );
   QCOMPARE( blockExtent.xMinimum(), mpRasterLayer->extent().xMinimum() + topLeftCol * mpRasterLayer->rasterUnitsPerPixelX() );
-  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow )* mpRasterLayer->rasterUnitsPerPixelY() );
+  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow ) * mpRasterLayer->rasterUnitsPerPixelY() );
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
@@ -615,7 +605,7 @@ void TestQgsRasterIterator::testPixelOverlap()
   QCOMPARE( block->width(), 3040 );
   QCOMPARE( block->height(), 470 );
   QCOMPARE( blockExtent.xMinimum(), mpRasterLayer->extent().xMinimum() + topLeftCol * mpRasterLayer->rasterUnitsPerPixelX() );
-  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow )* mpRasterLayer->rasterUnitsPerPixelY() );
+  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow ) * mpRasterLayer->rasterUnitsPerPixelY() );
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 
@@ -634,7 +624,7 @@ void TestQgsRasterIterator::testPixelOverlap()
   QCOMPARE( block->width(), 1220 );
   QCOMPARE( block->height(), 470 );
   QCOMPARE( blockExtent.xMinimum(), mpRasterLayer->extent().xMinimum() + topLeftCol * mpRasterLayer->rasterUnitsPerPixelX() );
-  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow )* mpRasterLayer->rasterUnitsPerPixelY() );
+  QCOMPARE( blockExtent.yMinimum(), mpRasterLayer->extent().yMaximum() - ( nRows + topLeftRow ) * mpRasterLayer->rasterUnitsPerPixelY() );
   QCOMPARE( blockExtent.width(), nCols * mpRasterLayer->rasterUnitsPerPixelX() );
   QCOMPARE( blockExtent.height(), nRows * mpRasterLayer->rasterUnitsPerPixelY() );
 

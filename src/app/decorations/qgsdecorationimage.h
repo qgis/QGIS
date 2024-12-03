@@ -26,19 +26,18 @@ class QAction;
 class QToolBar;
 class QPainter;
 
-class APP_EXPORT QgsDecorationImage: public QgsDecorationItem
+class APP_EXPORT QgsDecorationImage : public QgsDecorationItem
 {
     Q_OBJECT
 
   public:
-
     /**
      * Format of source image
      */
     enum Format
     {
-      FormatSVG, //!< SVG image
-      FormatRaster, //!< Raster image
+      FormatSVG,     //!< SVG image
+      FormatRaster,  //!< Raster image
       FormatUnknown, //!< Invalid or unknown image type
     };
 
@@ -65,7 +64,6 @@ class APP_EXPORT QgsDecorationImage: public QgsDecorationItem
     QString imagePath();
 
   private:
-
     //! The image fill color used with parameter-enabled SVG files
     QColor mColor;
     //! The image outline color used with parameter-enabled SVG files

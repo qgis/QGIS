@@ -160,6 +160,13 @@ Applies a ``capitalization`` style to the document's text.
 .. versionadded:: 3.16
 %End
 
+    bool hasBackgrounds() const;
+%Docstring
+Returns ``True`` if any blocks or fragments in the document have background brushes set.
+
+.. versionadded:: 3.42
+%End
+
 
 };
 

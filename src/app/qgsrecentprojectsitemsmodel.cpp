@@ -36,7 +36,6 @@
 QgsRecentProjectItemsModel::QgsRecentProjectItemsModel( QObject *parent )
   : QAbstractListModel( parent )
 {
-
 }
 
 void QgsRecentProjectItemsModel::setRecentProjects( const QList<RecentProjectData> &recentProjects )
@@ -68,7 +67,7 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
       if ( !mRecentProjects.at( index.row() ).crs.isEmpty() )
       {
         const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
-        return  QStringLiteral( "%1 (%2)" ).arg( mRecentProjects.at( index.row() ).crs, crs.userFriendlyIdentifier() );
+        return QStringLiteral( "%1 (%2)" ).arg( mRecentProjects.at( index.row() ).crs, crs.userFriendlyIdentifier() );
       }
       else
       {
@@ -168,9 +167,9 @@ void QgsRecentProjectItemsModel::clear( bool clearPinned )
       std::remove_if(
         mRecentProjects.begin(),
         mRecentProjects.end(),
-    []( const QgsRecentProjectItemsModel::RecentProjectData & recentProject ) { return !recentProject.pin; }
+        []( const QgsRecentProjectItemsModel::RecentProjectData &recentProject ) { return !recentProject.pin; }
       ),
-    mRecentProjects.end()
+      mRecentProjects.end()
     );
   }
   endResetModel();

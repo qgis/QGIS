@@ -589,3 +589,43 @@ void QgsMultiBandColorRenderer::toSld( QDomDocument &doc, QDomElement &element, 
     }
   }
 }
+
+bool QgsMultiBandColorRenderer::refresh( const QgsRectangle &extent, const QList<double> &min, const QList<double> &max, bool forceRefresh )
+{
+  if ( !needsRefresh( extent ) && !forceRefresh )
+  {
+    return false;
+  }
+
+  bool refreshed = false;
+  if ( min.size() >= 3 && max.size() >= 3 )
+  {
+    mLastRectangleUsedByRefreshContrastEnhancementIfNeeded = extent;
+
+    if ( mRedContrastEnhancement && mRedContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement &&
+         !std::isnan( min[0] ) && !std::isnan( max[0] ) )
+    {
+      mRedContrastEnhancement->setMinimumValue( min[0] );
+      mRedContrastEnhancement->setMaximumValue( max[0] );
+      refreshed = true;
+    }
+
+    if ( mGreenContrastEnhancement && mGreenContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement &&
+         !std::isnan( min[1] ) && !std::isnan( max[1] ) )
+    {
+      mGreenContrastEnhancement->setMinimumValue( min[1] );
+      mGreenContrastEnhancement->setMaximumValue( max[1] );
+      refreshed = true;
+    }
+
+    if ( mBlueContrastEnhancement && mBlueContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement &&
+         !std::isnan( min[2] ) && !std::isnan( max[2] ) )
+    {
+      mBlueContrastEnhancement->setMinimumValue( min[2] );
+      mBlueContrastEnhancement->setMaximumValue( max[2] );
+      refreshed = true;
+    }
+  }
+
+  return refreshed;
+}

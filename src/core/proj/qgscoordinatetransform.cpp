@@ -830,6 +830,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   }
 
   mFallbackOperationOccurred = false;
+  bool errorOccurredDuringFallbackOperation = false;
   if ( actualRes != 0
        && ( d->mAvailableOpCount > 1 || d->mAvailableOpCount == -1 ) // only use fallbacks if more than one operation is possible -- otherwise we've already tried it and it failed
        && ( d->mAllowFallbackTransforms || mBallparkTransformsAreAppropriate ) )
@@ -854,13 +855,14 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
       // So here just check proj_errno() for single point transform
       if ( numPoints == 1 )
       {
+        projResult = proj_errno( transform );
         // hmm - something very odd here. We can't trust proj_errno( transform ), as that's giving us incorrect error numbers
         // (such as "failed to load datum shift file", which is definitely incorrect for a default proj created operation!)
         // so we resort to testing values ourselves...
-        projResult = std::isinf( xprev[0] ) || std::isinf( yprev[0] ) || std::isinf( zprev[0] ) ? 1 : 0;
+        errorOccurredDuringFallbackOperation = std::isinf( xprev[0] ) || std::isinf( yprev[0] ) || std::isinf( zprev[0] );
       }
 
-      if ( projResult == 0 )
+      if ( !errorOccurredDuringFallbackOperation )
       {
         memcpy( x, xprev.data(), sizeof( double ) * numPoints );
         memcpy( y, yprev.data(), sizeof( double ) * numPoints );
@@ -885,25 +887,33 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     z[pos] = std::numeric_limits<double>::quiet_NaN();
   }
 
-  if ( projResult != 0 )
+  if ( projResult != 0 || errorOccurredDuringFallbackOperation )
   {
     //something bad happened....
     QString points;
 
+    const QChar delim = numPoints > 1 ? '\n' : ' ';
     for ( int i = 0; i < numPoints; ++i )
     {
-      points += QStringLiteral( "(%1, %2)\n" ).arg( x[i], 0, 'f' ).arg( y[i], 0, 'f' );
+      points += QStringLiteral( "(%1, %2)" ).arg( xprev[i], 0, 'f' ).arg( yprev[i], 0, 'f' ) + delim;
     }
 
-    const QString dir = ( direction == Qgis::TransformDirection::Forward ) ? QObject::tr( "forward transform" ) : QObject::tr( "inverse transform" );
+    const QString dir = ( direction == Qgis::TransformDirection::Forward ) ? QObject::tr( "Forward transform" ) : QObject::tr( "Inverse transform" );
 
-    const QString msg = QObject::tr( "%1 of\n"
-                                     "%2"
-                                     "Error: %3" )
+#if PROJ_VERSION_MAJOR>=8
+    PJ_CONTEXT *projContext = QgsProjContext::get();
+    const QString projError = !errorOccurredDuringFallbackOperation ? QString::fromUtf8( proj_context_errno_string( projContext, projResult ) ) : QObject::tr( "Fallback transform failed" );
+#else
+    const QString projError = !errorOccurredDuringFallbackOperation ? QString::fromUtf8( proj_errno_string( projResult ) ) : QObject::tr( "Fallback transform failed" );
+#endif
+
+    const QString msg = QObject::tr( "%1 (%2 to %3) of%4%5Error: %6" )
                         .arg( dir,
+                              ( direction == Qgis::TransformDirection::Forward ) ? d->mSourceCRS.authid() : d->mDestCRS.authid(),
+                              ( direction == Qgis::TransformDirection::Forward ) ? d->mDestCRS.authid() : d->mSourceCRS.authid(),
+                              QString( delim ),
                               points,
-                              projResult < 0 ? QString::fromUtf8( proj_errno_string( projResult ) ) : QObject::tr( "Fallback transform failed" ) );
-
+                              projError );
 
     // don't flood console with thousands of duplicate transform error messages
     if ( msg != mLastError )

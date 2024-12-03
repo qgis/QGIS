@@ -76,14 +76,6 @@ QgsAuthIdentitiesEditor::QgsAuthIdentitiesEditor( QWidget *parent )
   }
 }
 
-static void setItemBold_( QTreeWidgetItem *item )
-{
-  item->setFirstColumnSpanned( true );
-  QFont secf( item->font( 0 ) );
-  secf.setBold( true );
-  item->setFont( 0, secf );
-}
-
 void QgsAuthIdentitiesEditor::setupIdentitiesTree()
 {
   treeIdentities->setColumnCount( 3 );
@@ -99,24 +91,15 @@ void QgsAuthIdentitiesEditor::setupIdentitiesTree()
     treeIdentities,
     QStringList( tr( "Certificate Bundles" ) ),
     static_cast<int>( QgsAuthIdentitiesEditor::Section ) );
-  setItemBold_( mRootCertIdentItem );
+  QgsAuthGuiUtils::setItemBold( mRootCertIdentItem );
   mRootCertIdentItem->setFlags( Qt::ItemIsEnabled );
   mRootCertIdentItem->setExpanded( true );
   treeIdentities->insertTopLevelItem( 0, mRootCertIdentItem );
 }
 
-static void removeChildren_( QTreeWidgetItem *item )
-{
-  const auto constTakeChildren = item->takeChildren();
-  for ( QTreeWidgetItem *child : constTakeChildren )
-  {
-    delete child;
-  }
-}
-
 void QgsAuthIdentitiesEditor::populateIdentitiesView()
 {
-  removeChildren_( mRootCertIdentItem );
+  QgsAuthGuiUtils::removeChildren( mRootCertIdentItem );
 
   populateIdentitiesSection( mRootCertIdentItem,
                              QgsApplication::authManager()->certIdentities(),

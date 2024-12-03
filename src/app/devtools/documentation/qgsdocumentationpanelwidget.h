@@ -37,7 +37,6 @@ class QgsDocumentationPanelWidget : public QgsDevToolWidget, private Ui::QgsDocu
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsDocumentationPanelWidget.
      */
@@ -47,14 +46,11 @@ class QgsDocumentationPanelWidget : public QgsDevToolWidget, private Ui::QgsDocu
     void showUrl( const QUrl &url );
 
   private:
-
 #ifdef HAVE_WEBENGINE
     QWebEngineView *mWebView = nullptr;
 #else
     QgsWebView *mWebView = nullptr;
 #endif
-
-
 };
 
 

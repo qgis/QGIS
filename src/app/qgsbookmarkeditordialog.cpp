@@ -107,4 +107,3 @@ void QgsBookmarkEditorDialog::onAccepted()
       QgsProject::instance()->bookmarkManager()->moveBookmark( bookmark.id(), QgsApplication::bookmarkManager() );
   }
 }
-

@@ -24,12 +24,12 @@
 //! Stores information parsed from postgres project URI
 typedef struct
 {
-  bool valid;
+    bool valid;
 
-  QgsDataSourceUri connInfo;  // using only the bits about connection info (server, port, username, password, service, ssl mode)
+    QgsDataSourceUri connInfo; // using only the bits about connection info (server, port, username, password, service, ssl mode)
 
-  QString schemaName;
-  QString projectName;
+    QString schemaName;
+    QString projectName;
 
 } QgsPostgresProjectUri;
 
@@ -38,7 +38,6 @@ typedef struct
 class QgsPostgresProjectStorage : public QgsProjectStorage
 {
   public:
-
     QString type() override { return QStringLiteral( "postgresql" ); }
 
     QStringList listProjects( const QString &uri ) override;

@@ -39,15 +39,14 @@ QgsCrashDialog::QgsCrashDialog( QWidget *parent )
 
   mCrashMessage->setText( tr( "Oh dear! Something unexpected happened and QGIS ended without being able to handle the error gracefully."
                               "<br><br>" )
-                          +  tr( "Are you keen to help us fix bugs? QGIS relies on donations to pay developers to do funded bug fixing to improve the stability of the software. "
-                                 "We also have a team of enthusiastic volunteers who are all working hard to improve the quality of QGIS. To do that, we need your help. "
-                                 "<a href=\"https://qgis.org/resources/support/bug-reporting/#bugs-features-and-issues\">Find out how to help our developers</a>."
-                                 "<br><br>"
-                                 "Send us a helpful bug report by using the 'Copy Report' button below, <br>then open a ticket on the "
-                                 "<a href=\"https://github.com/qgis/QGIS/issues\">QGIS Issue Tracker</a>." ) );
+                          + tr( "Are you keen to help us fix bugs? QGIS relies on donations to pay developers to do funded bug fixing to improve the stability of the software. "
+                                "We also have a team of enthusiastic volunteers who are all working hard to improve the quality of QGIS. To do that, we need your help. "
+                                "<a href=\"https://qgis.org/resources/support/bug-reporting/#bugs-features-and-issues\">Find out how to help our developers</a>."
+                                "<br><br>"
+                                "Send us a helpful bug report by using the 'Copy Report' button below, <br>then open a ticket on the "
+                                "<a href=\"https://github.com/qgis/QGIS/issues\">QGIS Issue Tracker</a>." ) );
   mCrashMessage->setTextInteractionFlags( Qt::TextBrowserInteraction );
   mCrashMessage->setOpenExternalLinks( true );
-
 }
 
 void QgsCrashDialog::setBugReport( const QString &reportData )
@@ -72,18 +71,14 @@ void QgsCrashDialog::setPythonFault( const QgsCrashReport::PythonFault &fault )
 
     case QgsCrashReport::LikelyPythonFaultCause::ProcessingScript:
       mCrashHeaderMessage->setText( tr( "A user script crashed QGIS" ).arg( fault.title ) );
-      mCrashMessage->setText( tr( "This user script <b>%1</b> caused QGIS to crash." ).arg( fault.filePath )
-                              + "<br><br>"
-                              +  tr( "This is a third party custom script, and this issue should be reported to the author of that script." ) );
+      mCrashMessage->setText( tr( "This user script <b>%1</b> caused QGIS to crash." ).arg( fault.filePath ) + "<br><br>" + tr( "This is a third party custom script, and this issue should be reported to the author of that script." ) );
       splitter->setSizes( { 0, splitter->width() } );
       mCopyReportButton->setEnabled( true );
       break;
 
     case QgsCrashReport::LikelyPythonFaultCause::Plugin:
       mCrashHeaderMessage->setText( tr( "Plugin %1 crashed QGIS" ).arg( fault.title ) );
-      mCrashMessage->setText( tr( "The plugin <b>%1</b> caused QGIS to crash." ).arg( fault.title )
-                              + "<br><br>"
-                              +  tr( "Please report this issue to the author of this plugin." ) );
+      mCrashMessage->setText( tr( "The plugin <b>%1</b> caused QGIS to crash." ).arg( fault.title ) + "<br><br>" + tr( "Please report this issue to the author of this plugin." ) );
       splitter->setSizes( { 0, splitter->width() } );
       mCopyReportButton->setEnabled( true );
       break;
@@ -103,9 +98,7 @@ void QgsCrashDialog::showReportWidget()
 
 void QgsCrashDialog::userFeedbackText_textChanged()
 {
-  mCopyReportButton->setEnabled( !mUserFeedbackText->toPlainText().isEmpty()
-                                 || ( mPythonFault.cause != QgsCrashReport::LikelyPythonFaultCause::NotPython
-                                      && mPythonFault.cause != QgsCrashReport::LikelyPythonFaultCause::Unknown ) );
+  mCopyReportButton->setEnabled( !mUserFeedbackText->toPlainText().isEmpty() || ( mPythonFault.cause != QgsCrashReport::LikelyPythonFaultCause::NotPython && mPythonFault.cause != QgsCrashReport::LikelyPythonFaultCause::Unknown ) );
 }
 
 QStringList QgsCrashDialog::splitCommand( const QString &command )
@@ -118,8 +111,8 @@ void QgsCrashDialog::createBugReport()
   QClipboard *clipboard = QApplication::clipboard();
 
   const QString userText = !mUserFeedbackText->toPlainText().isEmpty()
-                           ? ( "## User Feedback\n\n" + mUserFeedbackText->toPlainText() )
-                           : QString();
+                             ? ( "## User Feedback\n\n" + mUserFeedbackText->toPlainText() )
+                             : QString();
   const QString details = "## Report Details\n\n" + mReportData;
   const QString finalText = ( !userText.isEmpty() ? ( userText + "\n\n" ) : QString() )
                             + details;

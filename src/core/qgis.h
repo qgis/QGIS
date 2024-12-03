@@ -1426,6 +1426,51 @@ class CORE_EXPORT Qgis
     Q_FLAG( RasterRendererCapabilities )
 
     /**
+     * Describes the limits used to compute raster ranges (min/max values).
+     *
+     * \note Prior to QGIS 3.42 this was available as QgsRasterMinMaxOrigin::Limits
+     *
+     * \since QGIS 3.42
+     */
+    enum class RasterRangeLimit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterMinMaxOrigin, Limits ) : int
+      {
+      NotSet SIP_MONKEYPATCH_COMPAT_NAME( None_ ), //!< User defined
+      MinimumMaximum SIP_MONKEYPATCH_COMPAT_NAME( MinMax ), //!< Real min-max values
+      StdDev, //!< Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]
+      CumulativeCut //!< Range is [ min + cumulativeCutLower() * (max - min), min + cumulativeCutUpper() * (max - min) ]
+    };
+    Q_ENUM( RasterRangeLimit )
+
+    /**
+     * Describes the extent used to compute raster ranges (min/max values).
+     *
+     * \note Prior to QGIS 3.42 this was available as QgsRasterMinMaxOrigin::Extent
+     *
+     * \since QGIS 3.42
+     */
+    enum class RasterRangeExtent SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterMinMaxOrigin, Extent ) : int
+      {
+      WholeRaster SIP_MONKEYPATCH_COMPAT_NAME( None_ ), //!< Whole raster is used to compute statistics
+      FixedCanvas SIP_MONKEYPATCH_COMPAT_NAME( CurrentCanvas ), //!< Current extent of the canvas (at the time of computation) is used to compute statistics
+      UpdatedCanvas, //!< Constantly updated extent of the canvas is used to compute statistics
+    };
+    Q_ENUM( RasterRangeExtent )
+
+    /**
+     * Describes the accuracy used to compute raster ranges (min/max values).
+     *
+     * \note Prior to QGIS 3.42 this was available as QgsRasterMinMaxOrigin::StatAccuracy
+     *
+     * \since QGIS 3.42
+     */
+    enum class RasterRangeAccuracy SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterMinMaxOrigin, StatAccuracy ): int
+      {
+      Exact, //!< Exact statistics
+      Estimated, //!< Approximated statistics
+    };
+    Q_ENUM( RasterRangeAccuracy )
+
+    /**
      * \brief The RasterAttributeTableFieldUsage enum represents the usage of a Raster Attribute Table field.
      * \note Directly mapped from GDALRATFieldUsage enum values.
      * \since QGIS 3.30
@@ -5612,6 +5657,27 @@ class CORE_EXPORT Qgis
       SystemWebBrowser, //!< Default system web browser
     };
     Q_ENUM( DocumentationBrowser )
+
+    /**
+     * Action to be performed by the mouse handles
+     *
+     * \since QGIS 3.42
+     */
+    enum class MouseHandlesAction : int
+    {
+      MoveItem, //!< Move item
+      ResizeUp, //!< Resize up (Top handle)
+      ResizeDown, //!< Resize down (Bottom handle)
+      ResizeLeft, //!< Resize left (Left handle)
+      ResizeRight, //!< Resize right (Right handle)
+      ResizeLeftUp, //!< Resize left up (Top left handle)
+      ResizeRightUp, //!< Resize right up (Top right handle)
+      ResizeLeftDown, //!< Resize left down (Bottom left handle)
+      ResizeRightDown, //!< Resize right down (Bottom right handle)
+      SelectItem, //!< Select item
+      NoAction //!< No action
+    };
+    Q_ENUM( MouseHandlesAction )
 
     /**
      * Identify search radius in mm

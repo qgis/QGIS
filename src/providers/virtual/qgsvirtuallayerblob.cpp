@@ -68,7 +68,7 @@ void qgsGeometryToSpatialiteBlob( const QgsGeometry &geom, int32_t srid, char *&
   const int header_len = SpatialiteBlobHeader::LENGTH;
 
   // we segment the geometry as spatialite doesn't support curves
-  std::unique_ptr < QgsAbstractGeometry > segmentized( geom.constGet()->segmentize() );
+  std::unique_ptr<QgsAbstractGeometry> segmentized( geom.constGet()->segmentize() );
   const QByteArray wkb( segmentized->asWkb() );
 
   const int wkb_size = wkb.length();
@@ -189,7 +189,7 @@ void copySpatialiteCollectionWkbToQgsGeometry( const char *iwkb, char *owkb, uin
   if ( QgsWkbTypes::isMultiType( type ) )
   {
     // multi type
-    const uint32_t n_elements = *( reinterpret_cast<const  uint32_t * >( iwkb + 5 ) );
+    const uint32_t n_elements = *( reinterpret_cast<const uint32_t *>( iwkb + 5 ) );
     memcpy( owkb + 5, iwkb + 5, 4 );
     uint32_t p = 0;
     for ( uint32_t i = 0; i < n_elements; i++ )
@@ -211,14 +211,14 @@ void copySpatialiteCollectionWkbToQgsGeometry( const char *iwkb, char *owkb, uin
 QgsGeometry spatialiteBlobToQgsGeometry( const char *blob, size_t size )
 {
   const int header_size = SpatialiteBlobHeader::LENGTH;
-  const int wkb_size = static_cast< int >( size - header_size );
+  const int wkb_size = static_cast<int>( size - header_size );
   char *wkb = new char[wkb_size];
 
   uint32_t osize = 0;
-  copySpatialiteCollectionWkbToQgsGeometry( blob + header_size - 1, wkb, osize, /*endianness*/blob[1] );
+  copySpatialiteCollectionWkbToQgsGeometry( blob + header_size - 1, wkb, osize, /*endianness*/ blob[1] );
 
   QgsGeometry geom;
-  geom.fromWkb( reinterpret_cast< unsigned char * >( wkb ), wkb_size );
+  geom.fromWkb( reinterpret_cast<unsigned char *>( wkb ), wkb_size );
   return geom;
 }
 
@@ -229,8 +229,8 @@ QPair<Qgis::WkbType, long> spatialiteBlobGeometryType( const char *blob, size_t 
     return qMakePair( Qgis::WkbType::NoGeometry, long( 0 ) );
   }
 
-  const uint32_t srid = *( reinterpret_cast< const uint32_t * >( blob + 2 ) );
-  const uint32_t type = *( reinterpret_cast< const uint32_t * >( blob + SpatialiteBlobHeader::LENGTH ) );
+  const uint32_t srid = *( reinterpret_cast<const uint32_t *>( blob + 2 ) );
+  const uint32_t type = *( reinterpret_cast<const uint32_t *>( blob + SpatialiteBlobHeader::LENGTH ) );
 
   return qMakePair( static_cast<Qgis::WkbType>( type ), long( srid ) );
 }

@@ -34,6 +34,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsproviderregistry.h"
 #include "qgsvectorfilewriter.h"
 
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
 #include <QFileInfo>
 #include <QFile>
@@ -1253,5 +1254,8 @@ QgsProviderMetadata::ProviderCapabilities QgsOgrProviderMetadata::providerCapabi
 {
   return FileBasedUris | SaveLayerMetadata;
 }
+
+#undef TEXT_PROVIDER_KEY
+#undef TEXT_PROVIDER_DESCRIPTION
 
 ///@endcond

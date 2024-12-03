@@ -17,6 +17,7 @@ concurrency:
 
 jobs:
   on-success:
+    if: github.event.workflow_run.event == 'pull_request'
 
     permissions:
       pull-requests: write

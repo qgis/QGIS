@@ -190,6 +190,24 @@ class CORE_EXPORT QgsTextDocumentMetrics
     double fragmentFixedHeight( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
 
     /**
+     * Returns the ascent of the fragment at the specified block and fragment index.
+     *
+     * \see fragmentDescent()
+     *
+     * \since QGIS 3.42
+     */
+    double fragmentAscent( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
+
+    /**
+     * Returns the descent of the fragment at the specified block and fragment index.
+     *
+     * \see fragmentAscent()
+     *
+     * \since QGIS 3.42
+     */
+    double fragmentDescent( int blockIndex, int fragmentIndex, Qgis::TextLayoutMode mode ) const;
+
+    /**
      * Returns the vertical orientation x offset for the specified block.
      */
     double verticalOrientationXOffset( int blockIndex ) const;
@@ -201,8 +219,18 @@ class CORE_EXPORT QgsTextDocumentMetrics
 
     /**
      * Returns the maximum descent encountered in the specified block.
+     *
+     * \see blockMaximumAscent()
      */
     double blockMaximumDescent( int blockIndex ) const;
+
+    /**
+     * Returns the maximum ascent encountered in the specified block.
+     *
+     * \see blockMaximumDescent()
+     * \since QGIS 3.42
+     */
+    double blockMaximumAscent( int blockIndex ) const;
 
     /**
      * Returns the calculated font for the fragment at the specified block and fragment indices.
@@ -277,8 +305,12 @@ class CORE_EXPORT QgsTextDocumentMetrics
     QList< QList< double > > mFragmentVerticalOffsetsPointMode;
     QList< QList< double > > mFragmentVerticalOffsetsRectMode;
 
+    QList< QList< double > > mFragmentAscent;
+    QList< QList< double > > mFragmentDescent;
+
     QList< double > mVerticalOrientationXOffsets;
     QList< double > mBlockMaxDescent;
+    QList< double > mBlockMaxAscent;
     QList< double > mBlockMaxCharacterWidth;
     double mFirstLineAscentOffset = 0;
     double mLastLineAscentOffset = 0;

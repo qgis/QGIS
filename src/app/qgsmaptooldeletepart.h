@@ -24,7 +24,7 @@
 class QgsVertexMarker;
 
 //! Map tool to delete vertices from line/polygon features
-class APP_EXPORT QgsMapToolDeletePart: public QgsMapToolEdit
+class APP_EXPORT QgsMapToolDeletePart : public QgsMapToolEdit
 {
     Q_OBJECT
 

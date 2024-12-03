@@ -20,10 +20,12 @@ email                : brush.tyler@gmail.com
 
 from qgis.core import QgsMessageLog
 from ..plugin import BaseError
-from ..data_model import (TableDataModel,
-                          SqlResultModel,
-                          SqlResultModelAsync,
-                          SqlResultModelTask)
+from ..data_model import (
+    TableDataModel,
+    SqlResultModel,
+    SqlResultModelAsync,
+    SqlResultModelTask,
+)
 
 
 class PGTableDataModel(TableDataModel):
@@ -45,17 +47,21 @@ class PGTableDataModel(TableDataModel):
         table_txt = self.db.quoteId((self.table.schemaName(), self.table.name))
 
         self.cursor = self.db._get_cursor()
-        sql = "SELECT %s FROM %s" % (fields_txt, table_txt)
+        sql = f"SELECT {fields_txt} FROM {table_txt}"
         self.db._execute(self.cursor, sql)
 
     def _sanitizeTableField(self, field):
         # get fields, ignore geometry columns
         if field.dataType.lower() == "geometry":
-            return "CASE WHEN %(fld)s IS NULL THEN NULL ELSE GeometryType(%(fld)s) END AS %(fld)s" % {
-                'fld': self.db.quoteId(field.name)}
+            return "CASE WHEN {fld} IS NULL THEN NULL ELSE GeometryType({fld}) END AS {fld}".format(
+                fld=self.db.quoteId(field.name)
+            )
         elif field.dataType.lower() == "raster":
-            return "CASE WHEN %(fld)s IS NULL THEN NULL ELSE 'RASTER' END AS %(fld)s" % {
-                'fld': self.db.quoteId(field.name)}
+            return (
+                "CASE WHEN {fld} IS NULL THEN NULL ELSE 'RASTER' END AS {fld}".format(
+                    fld=self.db.quoteId(field.name)
+                )
+            )
         return "%s::text" % self.db.quoteId(field.name)
 
     def _deleteCursor(self):
@@ -72,7 +78,7 @@ class PGTableDataModel(TableDataModel):
             self._createCursor()
 
         try:
-            self.cursor.scroll(row_start, mode='absolute')
+            self.cursor.scroll(row_start, mode="absolute")
         except self.db.error_types():
             self._deleteCursor()
             return self.fetchMoreData(row_start)

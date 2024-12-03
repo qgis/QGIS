@@ -53,14 +53,14 @@ class TestQgsVirtualPointCloudProvider : public QgsTest
     Q_OBJECT
 
   public:
-
-    TestQgsVirtualPointCloudProvider() : QgsTest( QStringLiteral( "Virtual Point Cloud Provider Tests" ) ) {}
+    TestQgsVirtualPointCloudProvider()
+      : QgsTest( QStringLiteral( "Virtual Point Cloud Provider Tests" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {}// will be called before each testfunction is executed.
-    void cleanup() {}// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void filters();
     void encodeUri();
@@ -149,12 +149,12 @@ void TestQgsVirtualPointCloudProvider::preferredUri()
   QList<QgsProviderRegistry::ProviderCandidateDetails> candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "/home/test/dataset.vpc" ) );
   QCOMPARE( candidates.size(), 1 );
   QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "vpc" ) );
-  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::PointCloud );
+  QCOMPARE( candidates.at( 0 ).layerTypes(), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
 
   candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "/home/test/dataset.VPC" ) );
   QCOMPARE( candidates.size(), 1 );
   QCOMPARE( candidates.at( 0 ).metadata()->key(), QStringLiteral( "vpc" ) );
-  QCOMPARE( candidates.at( 0 ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::PointCloud );
+  QCOMPARE( candidates.at( 0 ).layerTypes(), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
 
   QVERIFY( !QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( QStringLiteral( "/home/test/dataset.vpc" ), QStringLiteral( "vpc" ) ) );
   QVERIFY( QgsProviderRegistry::instance()->shouldDeferUriForOtherProviders( QStringLiteral( "/home/test/dataset.vpc" ), QStringLiteral( "ogr" ) ) );
@@ -165,9 +165,9 @@ void TestQgsVirtualPointCloudProvider::layerTypesForUri()
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "vpc" ) );
   QVERIFY( metadata->capabilities() & QgsProviderMetadata::LayerTypesForUri );
 
-  QCOMPARE( metadata->validLayerTypesForUri( QStringLiteral( "/home/test/cloud.vpc" ) ), QList< Qgis::LayerType >() << Qgis::LayerType::PointCloud );
-  QCOMPARE( metadata->validLayerTypesForUri( QStringLiteral( "/home/test/cloud.copc.laz" ) ), QList< Qgis::LayerType >() );
-  QCOMPARE( metadata->validLayerTypesForUri( QStringLiteral( "/home/test/ept.json" ) ), QList< Qgis::LayerType >() );
+  QCOMPARE( metadata->validLayerTypesForUri( QStringLiteral( "/home/test/cloud.vpc" ) ), QList<Qgis::LayerType>() << Qgis::LayerType::PointCloud );
+  QCOMPARE( metadata->validLayerTypesForUri( QStringLiteral( "/home/test/cloud.copc.laz" ) ), QList<Qgis::LayerType>() );
+  QCOMPARE( metadata->validLayerTypesForUri( QStringLiteral( "/home/test/ept.json" ) ), QList<Qgis::LayerType>() );
 }
 
 void TestQgsVirtualPointCloudProvider::uriIsBlocklisted()
@@ -181,7 +181,7 @@ void TestQgsVirtualPointCloudProvider::querySublayers()
   QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "vpc" ) );
 
   // invalid uri
-  QList< QgsProviderSublayerDetails >res = metadata->querySublayers( QString() );
+  QList<QgsProviderSublayerDetails> res = metadata->querySublayers( QString() );
   QVERIFY( res.empty() );
 
   // not a VPC layer
@@ -197,21 +197,21 @@ void TestQgsVirtualPointCloudProvider::querySublayers()
   QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::PointCloud );
 
   // make sure result is valid to load layer from
-  QgsProviderSublayerDetails::LayerOptions options{ QgsCoordinateTransformContext() };
-  std::unique_ptr< QgsPointCloudLayer > ml( qgis::down_cast< QgsPointCloudLayer * >( res.at( 0 ).toLayer( options ) ) );
+  QgsProviderSublayerDetails::LayerOptions options { QgsCoordinateTransformContext() };
+  std::unique_ptr<QgsPointCloudLayer> ml( qgis::down_cast<QgsPointCloudLayer *>( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( ml->isValid() );
 }
 
 void TestQgsVirtualPointCloudProvider::brokenPath()
 {
   // test loading a bad layer URI
-  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( QStringLiteral( "not valid" ), QStringLiteral( "layer" ), QStringLiteral( "vpc" ) );
+  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( QStringLiteral( "not valid" ), QStringLiteral( "layer" ), QStringLiteral( "vpc" ) );
   QVERIFY( !layer->isValid() );
 }
 
 void TestQgsVirtualPointCloudProvider::validLayer()
 {
-  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/virtual/tiles.vpc" ), QStringLiteral( "layer" ), QStringLiteral( "vpc" ) );
+  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( mTestDataDir + QStringLiteral( "point_clouds/virtual/tiles.vpc" ), QStringLiteral( "layer" ), QStringLiteral( "vpc" ) );
   QVERIFY( layer->isValid() );
 
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:5514" ) );
@@ -228,7 +228,7 @@ void TestQgsVirtualPointCloudProvider::validLayer()
 
 void TestQgsVirtualPointCloudProvider::attributes()
 {
-  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/virtual/tiles.vpc" ), QStringLiteral( "layer" ), QStringLiteral( "vpc" ) );
+  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( mTestDataDir + QStringLiteral( "point_clouds/virtual/tiles.vpc" ), QStringLiteral( "layer" ), QStringLiteral( "vpc" ) );
   QVERIFY( layer->isValid() );
 
   const QgsPointCloudAttributeCollection attributes = layer->attributes();
@@ -269,13 +269,13 @@ void TestQgsVirtualPointCloudProvider::attributes()
 
 void TestQgsVirtualPointCloudProvider::testLazyLoading()
 {
-  std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/virtual/tiles.vpc" ), QStringLiteral( "layer" ), QStringLiteral( "vpc" ) );
+  std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( mTestDataDir + QStringLiteral( "point_clouds/virtual/tiles.vpc" ), QStringLiteral( "layer" ), QStringLiteral( "vpc" ) );
   QVERIFY( layer->isValid() );
 
   QgsPointCloudIndex *index = layer->dataProvider()->index();
   QCOMPARE( index, nullptr );
 
-  QVector< QgsPointCloudSubIndex > subIndexes = layer->dataProvider()->subIndexes();
+  QVector<QgsPointCloudSubIndex> subIndexes = layer->dataProvider()->subIndexes();
 
   QCOMPARE( subIndexes.size(), 18 );
   int loadedIndexes = 0;

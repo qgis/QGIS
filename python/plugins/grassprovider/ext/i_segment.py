@@ -15,14 +15,14 @@
 ***************************************************************************
 """
 
-__author__ = 'Médéric Ribreux'
-__date__ = 'March 2016'
-__copyright__ = '(C) 2016, Médéric Ribreux'
+__author__ = "Médéric Ribreux"
+__date__ = "March 2016"
+__copyright__ = "(C) 2016, Médéric Ribreux"
 
 from .i import regroupRasters
 
 
 def processCommand(alg, parameters, context, feedback):
     # Regroup rasters
-    regroupRasters(alg, parameters, context, 'input', 'group')
+    regroupRasters(alg, parameters, context, "input", "group")
     alg.processCommand(parameters, context, feedback)

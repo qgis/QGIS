@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 ***************************************************************************
@@ -18,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Radim Blazek'
-__date__ = 'February 2010'
-__copyright__ = '(C) 2010, Radim Blazek'
+__author__ = "Radim Blazek"
+__date__ = "February 2010"
+__copyright__ = "(C) 2010, Radim Blazek"
 
 
 ############################################################################
@@ -30,50 +29,57 @@ __copyright__ = '(C) 2010, Radim Blazek'
 #
 #############################################################################
 
-#%Module
-#% description: Generates a raster density map from vector points data using a moving 2D isotropic Gaussian kernel.
-#% keywords: vector, export, database
-#%End
+# %Module
+# % description: Generates a raster density map from vector points data using a moving 2D isotropic Gaussian kernel.
+# % keywords: vector, export, database
+# %End
 
-#%option
-#% key: input
-#% type: string
-#% gisprompt: old,vector,vector
-#% key_desc : name
-#% description: Input vector with training points
-#% required : yes
-#%end
+# %option
+# % key: input
+# % type: string
+# % gisprompt: old,vector,vector
+# % key_desc : name
+# % description: Input vector with training points
+# % required : yes
+# %end
 
-#%option
-#% key: stddeviation
-#% type: double
-#% description: Standard deviation in map units
-#% required : yes
-#%end
+# %option
+# % key: stddeviation
+# % type: double
+# % description: Standard deviation in map units
+# % required : yes
+# %end
 
-#%option
-#% key: output
-#% type: string
-#% gisprompt: new,cell,raster
-#% key_desc : name
-#% description: Output raster map
-#% required : yes
-#%end
+# %option
+# % key: output
+# % type: string
+# % gisprompt: new,cell,raster
+# % key_desc : name
+# % description: Output raster map
+# % required : yes
+# %end
 
 try:
     from grass.script import core as grass
 except ImportError:
     import grass
 except:
-    raise Exception("Cannot find 'grass' Python module. Python is supported by GRASS from version >= 6.4")
+    raise Exception(
+        "Cannot find 'grass' Python module. Python is supported by GRASS from version >= 6.4"
+    )
 
 
 def main():
-    input = options['input']
-    output = options['output']
-    stddeviation = options['stddeviation']
+    input = options["input"]
+    output = options["output"]
+    stddeviation = options["stddeviation"]
 
-    if grass.run_command('v.kernel', input=input, stddeviation=stddeviation, output=output) != 0:
+    if (
+        grass.run_command(
+            "v.kernel", input=input, stddeviation=stddeviation, output=output
+        )
+        != 0
+    ):
         grass.fatal("Cannot run v.kernel.")
 
 

@@ -34,8 +34,7 @@ QgsXyzConnectionDialog::QgsXyzConnectionDialog( QWidget *parent )
   mConnectionGroupBox->setLayout( hlayout );
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this,  [ = ]
-  {
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [=] {
     QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#using-xyz-tile-services" ) );
   } );
   connect( mEditName, &QLineEdit::textChanged, this, &QgsXyzConnectionDialog::updateOkButtonState );
@@ -67,7 +66,7 @@ QgsXyzConnection QgsXyzConnectionDialog::connection() const
   conn.password = mSourceWidget->password();
   conn.httpHeaders[QgsHttpHeaders::KEY_REFERER] = mSourceWidget->referer();
   conn.tilePixelRatio = mSourceWidget->tilePixelRatio();
-  conn.authCfg = mSourceWidget->authcfg( );
+  conn.authCfg = mSourceWidget->authcfg();
   conn.interpretation = mSourceWidget->interpretation();
   return conn;
 }

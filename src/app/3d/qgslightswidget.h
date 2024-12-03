@@ -27,7 +27,6 @@ class QgsLightsModel : public QAbstractListModel
 {
     Q_OBJECT
   public:
-
     enum LightType
     {
       Point,
@@ -59,7 +58,6 @@ class QgsLightsModel : public QAbstractListModel
     QModelIndex addDirectionalLight( const QgsDirectionalLightSettings &light );
 
   private:
-
     QList<QgsPointLightSettings> mPointLights;
     QList<QgsDirectionalLightSettings> mDirectionalLights;
 };
@@ -96,8 +94,8 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
     void onAddDirectionalLight();
     void setAzimuthAltitude();
     void onDirectionChange();
-  private:
 
+  private:
     void showSettingsForPointLight( const QgsPointLightSettings &settings );
     void showSettingsForDirectionalLight( const QgsDirectionalLightSettings &settings );
 

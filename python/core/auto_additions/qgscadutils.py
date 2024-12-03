@@ -4,7 +4,7 @@ try:
 except NameError:
     pass
 try:
-    QgsCadUtils.AlignMapPointOutput.__attribute_docs__ = {'valid': 'Whether the combination of constraints is actually valid', 'finalMapPoint': 'map point aligned according to the constraints', 'snapMatch': 'Snapped point - only valid if actually used for something\n\n.. versionadded:: 3.14', 'edgeMatch': 'Snapped segment - only valid if actually used for something\n\n.. deprecated:: 3.40\n\n   Will be removed in QGIS 4.0 - use snapMatch instead.', 'softLockCommonAngle': 'Angle (in degrees) to which we have soft-locked ourselves (if not set it is -1)'}
+    QgsCadUtils.AlignMapPointOutput.__attribute_docs__ = {'valid': 'Whether the combination of constraints is actually valid', 'finalMapPoint': 'map point aligned according to the constraints', 'snapMatch': 'Snapped point - only valid if actually used for something\n\n.. versionadded:: 3.14', 'edgeMatch': 'Snapped segment - only valid if actually used for something\n\n.. deprecated:: 3.40\n\n   Will be removed in QGIS 4.0 - use :py:func:`~AlignMapPointOutput.snapMatch` instead.', 'softLockCommonAngle': 'Angle (in degrees) to which we have soft-locked ourselves (if not set it is -1)'}
 except NameError:
     pass
 try:

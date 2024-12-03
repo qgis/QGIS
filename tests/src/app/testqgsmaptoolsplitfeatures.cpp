@@ -97,16 +97,12 @@ void TestQgsMapToolSplitFeatures::initTestCase()
   mCanvas->show(); // to make the canvas resize
   mCanvas->hide();
 
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mMultiLineStringLayer
-                                        << mPolygonLayer
-                                        << mMultiPolygonLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mMultiLineStringLayer << mPolygonLayer << mMultiPolygonLayer );
 
   // set layers in canvas
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mMultiLineStringLayer
-                      << mPolygonLayer
-                      << mMultiPolygonLayer );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mMultiLineStringLayer << mPolygonLayer << mMultiPolygonLayer );
 
-  QgsMapToolSplitFeatures *mapTool = new QgsMapToolSplitFeatures( mCanvas ) ;
+  QgsMapToolSplitFeatures *mapTool = new QgsMapToolSplitFeatures( mCanvas );
   mCanvas->setMapTool( mapTool );
   mUtils = new TestQgsMapToolUtils( mapTool );
 }
@@ -129,7 +125,6 @@ void TestQgsMapToolSplitFeatures::cleanup()
 
 QPoint TestQgsMapToolSplitFeatures::mapToPoint( double x, double y )
 {
-
   const QgsPointXY mapPoint = mCanvas->mapSettings().mapToPixel().transform( x, y );
 
   return QPoint( std::round( mapPoint.x() ), std::round( mapPoint.y() ) );

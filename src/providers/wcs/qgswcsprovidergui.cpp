@@ -30,7 +30,6 @@
 class QgsWcsSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-
     QString providerKey() const override { return QStringLiteral( "wcs" ); }
     QString text() const override { return QObject::tr( "WCS" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 30; }
@@ -40,7 +39,6 @@ class QgsWcsSourceSelectProvider : public QgsSourceSelectProvider
       return new QgsWCSSourceSelect( parent, fl, widgetMode );
     }
 };
-
 
 
 QgsWcsSourceWidgetProvider::QgsWcsSourceWidgetProvider() {}
@@ -59,11 +57,10 @@ QgsProviderSourceWidget *QgsWcsSourceWidgetProvider::createWidget( QgsMapLayer *
   if ( layer->providerType() != QLatin1String( "wcs" ) )
     return nullptr;
 
-  QgsOWSSourceWidget *sourceWidget = new QgsOWSSourceWidget( QLatin1String( "wcs" ),  parent );
+  QgsOWSSourceWidget *sourceWidget = new QgsOWSSourceWidget( QLatin1String( "wcs" ), parent );
 
   return sourceWidget;
 }
-
 
 
 QgsWcsProviderGuiMetadata::QgsWcsProviderGuiMetadata()

@@ -165,41 +165,41 @@ QgsRasterRenderer *QgsSingleBandPseudoColorRenderer::create( const QDomElement &
   {
     if ( minMaxOrigin.contains( QLatin1String( "MinMax" ) ) )
     {
-      r->mMinMaxOrigin.setLimits( QgsRasterMinMaxOrigin::MinMax );
+      r->mMinMaxOrigin.setLimits( Qgis::RasterRangeLimit::MinimumMaximum );
     }
     else if ( minMaxOrigin.contains( QLatin1String( "CumulativeCut" ) ) )
     {
-      r->mMinMaxOrigin.setLimits( QgsRasterMinMaxOrigin::CumulativeCut );
+      r->mMinMaxOrigin.setLimits( Qgis::RasterRangeLimit::CumulativeCut );
     }
     else if ( minMaxOrigin.contains( QLatin1String( "StdDev" ) ) )
     {
-      r->mMinMaxOrigin.setLimits( QgsRasterMinMaxOrigin::StdDev );
+      r->mMinMaxOrigin.setLimits( Qgis::RasterRangeLimit::StdDev );
     }
     else
     {
-      r->mMinMaxOrigin.setLimits( QgsRasterMinMaxOrigin::None );
+      r->mMinMaxOrigin.setLimits( Qgis::RasterRangeLimit::NotSet );
     }
 
     if ( minMaxOrigin.contains( QLatin1String( "FullExtent" ) ) )
     {
-      r->mMinMaxOrigin.setExtent( QgsRasterMinMaxOrigin::WholeRaster );
+      r->mMinMaxOrigin.setExtent( Qgis::RasterRangeExtent::WholeRaster );
     }
     else if ( minMaxOrigin.contains( QLatin1String( "SubExtent" ) ) )
     {
-      r->mMinMaxOrigin.setExtent( QgsRasterMinMaxOrigin::CurrentCanvas );
+      r->mMinMaxOrigin.setExtent( Qgis::RasterRangeExtent::FixedCanvas );
     }
     else
     {
-      r->mMinMaxOrigin.setExtent( QgsRasterMinMaxOrigin::WholeRaster );
+      r->mMinMaxOrigin.setExtent( Qgis::RasterRangeExtent::WholeRaster );
     }
 
     if ( minMaxOrigin.contains( QLatin1String( "Estimated" ) ) )
     {
-      r->mMinMaxOrigin.setStatAccuracy( QgsRasterMinMaxOrigin::Estimated );
+      r->mMinMaxOrigin.setStatAccuracy( Qgis::RasterRangeAccuracy::Estimated );
     }
     else // if ( minMaxOrigin.contains( QLatin1String( "Exact" ) ) )
     {
-      r->mMinMaxOrigin.setStatAccuracy( QgsRasterMinMaxOrigin::Exact );
+      r->mMinMaxOrigin.setStatAccuracy( Qgis::RasterRangeAccuracy::Exact );
     }
   }
 
@@ -493,3 +493,42 @@ bool QgsSingleBandPseudoColorRenderer::canCreateRasterAttributeTable() const
   return true;
 }
 
+bool QgsSingleBandPseudoColorRenderer::refresh( const QgsRectangle &extent, const QList<double> &min, const QList<double> &max, bool force )
+{
+  if ( !needsRefresh( extent ) && !force )
+  {
+    return false;
+  }
+
+  bool refreshed = false;
+  if ( min.size() >= 1 && max.size() >= 1 )
+  {
+    mLastRectangleUsedByRefreshContrastEnhancementIfNeeded = extent;
+
+    // Do not overwrite min/max with NaN if they were already set,
+    // for example when the style was already loaded from a raster attribute table
+    // in that case we need to respect the style from the attribute table and do
+    // not perform any reclassification.
+    bool refreshed = false;
+
+    if ( !std::isnan( min[0] ) )
+    {
+      setClassificationMin( min[0] );
+      refreshed = true;
+    }
+
+    if ( !std::isnan( max[0] ) )
+    {
+      setClassificationMax( max[0] );
+      refreshed = true;
+    }
+
+    QgsColorRampShader *rampShader = dynamic_cast<QgsColorRampShader *>( mShader->rasterShaderFunction() );
+    if ( rampShader && refreshed )
+    {
+      rampShader->classifyColorRamp( mBand, extent, input() );
+    }
+  }
+
+  return refreshed;
+}

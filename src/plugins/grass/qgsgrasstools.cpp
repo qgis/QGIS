@@ -85,8 +85,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget *parent, const char 
 
   mTreeView->setModel( mTreeModelProxy );
 
-  connect( mTreeView, &QAbstractItemView::clicked,
-           this, &QgsGrassTools::itemClicked );
+  connect( mTreeView, &QAbstractItemView::clicked, this, &QgsGrassTools::itemClicked );
 
   // List view with filter
   mModulesListModel = new QStandardItemModel( 0, 1 );
@@ -95,8 +94,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget *parent, const char 
   mModelProxy->setFilterRole( Qt::UserRole + 2 );
 
   mListView->setModel( mModelProxy );
-  connect( mListView, &QAbstractItemView::clicked,
-           this, &QgsGrassTools::itemClicked );
+  connect( mListView, &QAbstractItemView::clicked, this, &QgsGrassTools::itemClicked );
 
   mListView->hide();
 
@@ -130,7 +128,6 @@ void QgsGrassTools::resetTitle()
 
 void QgsGrassTools::showTabs()
 {
-
   resetTitle();
 
   // Build modules tree if empty
@@ -161,7 +158,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
 {
   if ( name.length() == 0 )
   {
-    return;  // Section
+    return; // Section
   }
 
   // set wait cursor because starting module may be slow because of getting temporal datasets (t.list)
@@ -220,7 +217,7 @@ bool QgsGrassTools::loadConfig( QString filePath, QStandardItemModel *treeModel,
     QMessageBox::warning( nullptr, tr( "Warning" ), tr( "The config file (%1) not found." ).arg( filePath ) );
     return false;
   }
-  if ( ! file.open( QIODevice::ReadOnly ) )
+  if ( !file.open( QIODevice::ReadOnly ) )
   {
     QMessageBox::warning( nullptr, tr( "Warning" ), tr( "Cannot open config file (%1)." ).arg( filePath ) );
     return false;
@@ -229,7 +226,7 @@ bool QgsGrassTools::loadConfig( QString filePath, QStandardItemModel *treeModel,
   QDomDocument doc( QStringLiteral( "qgisgrass" ) );
   QString err;
   int line, column;
-  if ( !doc.setContent( &file,  &err, &line, &column ) )
+  if ( !doc.setContent( &file, &err, &line, &column ) )
   {
     QString errmsg = tr( "Cannot read config file (%1):" ).arg( filePath )
                      + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
@@ -295,7 +292,7 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
     QDomElement e = n.toElement();
     if ( !e.isNull() )
     {
-// QgsDebugMsgLevel(QString("tag = %1").arg(e.tagName()), 3);
+      // QgsDebugMsgLevel(QString("tag = %1").arg(e.tagName()), 3);
 
       if ( e.tagName() != QLatin1String( "section" ) && e.tagName() != QLatin1String( "grass" ) )
       {
@@ -327,7 +324,7 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
         QString label = QApplication::translate( "grasslabel", e.attribute( QStringLiteral( "label" ) ).toUtf8() );
         QgsDebugMsgLevel( QString( "label = %1" ).arg( label ), 3 );
         QStandardItem *item = new QStandardItem( label );
-        item->setData( label, Qt::UserRole + Label ); // original label, for debug
+        item->setData( label, Qt::UserRole + Label );  // original label, for debug
         item->setData( label, Qt::UserRole + Search ); // for filtering later
 
         addModules( item, e, treeModel, modulesListModel, direct );
@@ -348,8 +345,8 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
           QString label = name + " - " + description.label;
           QPixmap pixmap = QgsGrassModule::pixmap( path, 32 );
           QStandardItem *item = new QStandardItem( name + "\n" + description.label );
-          item->setData( name, Qt::UserRole + Name ); // for calling runModule later
-          item->setData( label, Qt::UserRole + Label ); // original label, for debug
+          item->setData( name, Qt::UserRole + Name );    // for calling runModule later
+          item->setData( label, Qt::UserRole + Label );  // original label, for debug
           item->setData( label, Qt::UserRole + Search ); // for filtering later
           item->setData( pixmap, Qt::DecorationRole );
           item->setCheckable( false );
@@ -385,7 +382,6 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
     }
     n = n.nextSibling();
   }
-
 }
 
 // used for direct
@@ -431,7 +427,6 @@ void QgsGrassTools::closeMapset()
 
 void QgsGrassTools::mapsetChanged()
 {
-
   mTabWidget->setCurrentIndex( 0 );
   closeTools();
   mRegion->mapsetChanged();
@@ -440,7 +435,7 @@ void QgsGrassTools::mapsetChanged()
 
 QString QgsGrassTools::appDir( void )
 {
-#if defined(Q_OS_WIN)
+#if defined( Q_OS_WIN )
   return QgsGrass::shortPath( QgsApplication::applicationDirPath() );
 #else
   return QgsApplication::applicationDirPath();
@@ -464,7 +459,6 @@ void QgsGrassTools::emitRegionChanged()
 
 void QgsGrassTools::closeTools()
 {
-
   for ( int i = mTabWidget->count() - 1; i > 1; i-- ) // first is module tree, second is region
   {
     delete mTabWidget->widget( i );
@@ -531,7 +525,6 @@ void QgsGrassTools::itemClicked( const QModelIndex &index )
 
 void QgsGrassTools::mDebugButton_clicked()
 {
-
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
   int errors = 0;

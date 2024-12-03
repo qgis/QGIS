@@ -120,6 +120,7 @@ Sets the band used by the renderer.
     void setClassificationMin( double min );
     void setClassificationMax( double max );
 
+
   private:
     QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer & );
     const QgsSingleBandPseudoColorRenderer &operator=( const QgsSingleBandPseudoColorRenderer & );

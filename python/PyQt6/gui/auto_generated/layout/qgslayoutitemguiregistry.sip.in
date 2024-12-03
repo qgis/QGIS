@@ -112,7 +112,17 @@ This is only called for additions which result from GUI operations - i.e. it is 
 called for items added from templates.
 %End
 
+    virtual void handleDoubleClick( QgsLayoutItem *item, Qgis::MouseHandlesAction action );
+%Docstring
+Called when a layout item is double-clicked.
+The action parameter is used to specify which mouse handle, if any, was clicked
+If no mouse handle is selected, :py:class:`Qgis`.MouseHandlesAction.NoAction is used
+
+.. versionadded:: 3.42
+%End
+
 };
+
 
 
 

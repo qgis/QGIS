@@ -533,6 +533,11 @@ if (WITH_DESKTOP)
   ADD_PYTHON_TEST(PyQgsAppStartup test_qgsappstartup.py)
 endif()
 
+if (WITH_3D)
+  ADD_PYTHON_TEST(PyQgs3DMaterials test_qgs3dmaterials.py)
+  ADD_PYTHON_TEST(PyQgsMesh3DSymbol test_qgsmesh3dsymbol.py)
+endif()
+
 if (WITH_PDF4QT)
   ADD_PYTHON_TEST(PyQgsPdfRenderer test_qgspdfrenderer.py)
   if (WITH_QTWEBENGINE)

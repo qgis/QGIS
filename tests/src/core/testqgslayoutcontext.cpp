@@ -28,18 +28,19 @@
 #include "qgstest.h"
 #include <QtTest/QSignalSpy>
 
-class TestQgsLayoutContext: public QgsTest
+class TestQgsLayoutContext : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsLayoutContext() : QgsTest( QStringLiteral( "Layout Context Tests" ) ) {}
+    TestQgsLayoutContext()
+      : QgsTest( QStringLiteral( "Layout Context Tests" ) ) {}
 
   private slots:
 
     void cleanupTestCase();
     void creation(); //test creation of QgsLayout
-    void flags(); //test QgsLayout flags
+    void flags();    //test QgsLayout flags
     void feature();
     void layer();
     void dpi();
@@ -50,7 +51,6 @@ class TestQgsLayoutContext: public QgsTest
     void scales();
     void simplifyMethod();
     void maskRenderSettings();
-
 };
 
 void TestQgsLayoutContext::cleanupTestCase()
@@ -78,13 +78,13 @@ void TestQgsLayoutContext::flags()
   QVERIFY( context.flags() == ( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects ) );
   QVERIFY( context.testFlag( QgsLayoutRenderContext::FlagAntialiasing ) );
   QVERIFY( context.testFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects ) );
-  QVERIFY( ! context.testFlag( QgsLayoutRenderContext::FlagDebug ) );
+  QVERIFY( !context.testFlag( QgsLayoutRenderContext::FlagDebug ) );
   context.setFlag( QgsLayoutRenderContext::FlagDebug );
   QCOMPARE( spyFlagsChanged.count(), 1 );
   QVERIFY( context.testFlag( QgsLayoutRenderContext::FlagDebug ) );
   context.setFlag( QgsLayoutRenderContext::FlagDebug, false );
   QCOMPARE( spyFlagsChanged.count(), 2 );
-  QVERIFY( ! context.testFlag( QgsLayoutRenderContext::FlagDebug ) );
+  QVERIFY( !context.testFlag( QgsLayoutRenderContext::FlagDebug ) );
   context.setFlag( QgsLayoutRenderContext::FlagDebug, false ); //no change
   QCOMPARE( spyFlagsChanged.count(), 2 );
   context.setFlags( QgsLayoutRenderContext::FlagDebug );
@@ -127,7 +127,7 @@ void TestQgsLayoutContext::layer()
   QgsLayout l( QgsProject::instance() );
   l.reportContext().setLayer( layer );
   //test that expression context created for layout contains report context layer scope
-  const QgsExpressionContext expContext  = l.createExpressionContext();
+  const QgsExpressionContext expContext = l.createExpressionContext();
   Q_NOWARN_DEPRECATED_PUSH
   QCOMPARE( QgsExpressionUtils::getVectorLayer( expContext.variable( "layer" ), &expContext, nullptr ), layer );
   Q_NOWARN_DEPRECATED_POP
@@ -233,7 +233,7 @@ void TestQgsLayoutContext::geometry()
 
 void TestQgsLayoutContext::scales()
 {
-  QVector< qreal > scales;
+  QVector<qreal> scales;
   scales << 1 << 15 << 5 << 10;
 
   QgsLayoutRenderContext context( nullptr );
@@ -243,7 +243,7 @@ void TestQgsLayoutContext::scales()
   QCOMPARE( spyScalesChanged.count(), 1 );
 
   // should be sorted
-  QCOMPARE( context.predefinedScales(), QVector< qreal >() << 1 << 5 << 10 << 15 );
+  QCOMPARE( context.predefinedScales(), QVector<qreal>() << 1 << 5 << 10 << 15 );
 
   context.setPredefinedScales( context.predefinedScales() );
   QCOMPARE( spyScalesChanged.count(), 1 );

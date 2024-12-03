@@ -227,9 +227,9 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      * The normal is ``(a, b, c)`` with ``|a, b, c| = 1``
      * The distance is ``-d``.
      *
-     * By default, OpenGL supports up to 8 additional clipping planes. If \a clipPlaneEquations
-     * contains more than 8 planes, only the first 8 ones will be used.
-     * If \a clipPlaneEquations is empty, the clipping is disabled.
+     * The number of available clip planes depends on the OpenGL implementation. It should at least handle
+     * 6 additional clip planes. When the map scene is created, this number is retrieved.
+     * If \a clipPlaneEquations contains more than this maximum, only the first ones will be kept.
      *
      * \see disableClipping()
      * \since QGIS 3.40
@@ -305,8 +305,10 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onCameraMovementSpeedChanged();
     void onCameraNavigationModeChanged();
     void onDebugOverlayEnabledChanged();
-
+    void onStopUpdatesChanged();
     void on3DAxisSettingsChanged();
+
+    void onOriginChanged();
 
     bool updateCameraNearFarPlanes();
 
@@ -357,6 +359,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     bool mSceneUpdatesEnabled = true;
 
     QList<QVector4D> mClipPlanesEquations;
+    int mMaxClipPlanes = 6;
 
 };
 #endif // QGS3DMAPSCENE_H

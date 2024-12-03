@@ -32,10 +32,10 @@ class TestQgsExpressionContext : public QObject
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
     void contextScope();
     void contextScopeCopy();
     void contextScopeFunctions();
@@ -64,7 +64,6 @@ class TestQgsExpressionContext : public QObject
     void uniqueHash();
 
   private:
-
     class GetTestValueFunction : public QgsScopedExpressionFunction
     {
       public:
@@ -80,7 +79,6 @@ class TestQgsExpressionContext : public QObject
         {
           return new GetTestValueFunction();
         }
-
     };
 
     class GetTestValueFunction2 : public QgsScopedExpressionFunction
@@ -133,7 +131,6 @@ class TestQgsExpressionContext : public QObject
         }
 
       private:
-
         int *mVal = nullptr;
     };
 };
@@ -156,12 +153,10 @@ void TestQgsExpressionContext::cleanupTestCase()
 
 void TestQgsExpressionContext::init()
 {
-
 }
 
 void TestQgsExpressionContext::cleanup()
 {
-
 }
 
 void TestQgsExpressionContext::contextScope()
@@ -225,7 +220,6 @@ void TestQgsExpressionContext::contextScope()
   scope.setHiddenVariables( hiddenVariables );
 
   QCOMPARE( scope.hiddenVariables().length(), 3 );
-
 }
 
 void TestQgsExpressionContext::contextScopeCopy()
@@ -336,7 +330,7 @@ void TestQgsExpressionContext::contextStack()
   QCOMPARE( filteredNames.at( 1 ), QString( "test2" ) );
 
   //test scopes method
-  const QList< QgsExpressionContextScope *> scopes = context.scopes();
+  const QList<QgsExpressionContextScope *> scopes = context.scopes();
   QCOMPARE( scopes.length(), 2 );
   QCOMPARE( scopes.at( 0 ), scope1 );
   QCOMPARE( scopes.at( 1 ), scope2 );
@@ -669,7 +663,7 @@ void TestQgsExpressionContext::globalScope()
 
   //test removeGlobalVariables
   QgsExpressionContextUtils::setGlobalVariable( QStringLiteral( "key" ), "value" );
-  std::unique_ptr< QgsExpressionContextScope > globalScope3( QgsExpressionContextUtils::globalScope() );
+  std::unique_ptr<QgsExpressionContextScope> globalScope3( QgsExpressionContextUtils::globalScope() );
   QVERIFY( globalScope3->hasVariable( "key" ) );
   QgsExpressionContextUtils::removeGlobalVariable( QStringLiteral( "key" ) );
   globalScope3.reset( QgsExpressionContextUtils::globalScope() );
@@ -703,7 +697,7 @@ void TestQgsExpressionContext::projectScope()
   QCOMPARE( context.variable( "project_title" ).toString(), QStringLiteral( "project title" ) );
   QCOMPARE( context.variable( "project_author" ).toString(), QStringLiteral( "project author" ) );
   QCOMPARE( context.variable( "project_abstract" ).toString(), QStringLiteral( "project abstract" ) );
-  QCOMPARE( context.variable( "project_creation_date" ).toDateTime(),  QDateTime( QDate( 2011, 3, 5 ), QTime( 9, 5, 4 ) ) );
+  QCOMPARE( context.variable( "project_creation_date" ).toDateTime(), QDateTime( QDate( 2011, 3, 5 ), QTime( 9, 5, 4 ) ) );
   QCOMPARE( context.variable( "project_identifier" ).toString(), QStringLiteral( "project identifier" ) );
   QVariantMap keywordsExpected;
   keywordsExpected.insert( QStringLiteral( "voc1" ), QStringList() << "a" << "b" );
@@ -730,25 +724,25 @@ void TestQgsExpressionContext::projectScope()
   project.addMapLayer( vectorLayer );
   QgsExpressionContextScope *projectScope = QgsExpressionContextUtils::projectScope( &project );
   QCOMPARE( projectScope->variable( "layers" ).toList().size(), 1 );
-  QCOMPARE( qvariant_cast< QObject * >( projectScope->variable( "layers" ).toList().at( 0 ) ), vectorLayer );
+  QCOMPARE( qvariant_cast<QObject *>( projectScope->variable( "layers" ).toList().at( 0 ) ), vectorLayer );
   QCOMPARE( projectScope->variable( "layer_ids" ).toList().size(), 1 );
   QVERIFY( projectScope->variable( "layer_ids" ).toList().contains( vectorLayer->id() ) );
   delete projectScope;
   project.addMapLayer( vectorLayer2 );
   projectScope = QgsExpressionContextUtils::projectScope( &project );
   QCOMPARE( projectScope->variable( "layers" ).toList().size(), 2 );
-  QVERIFY( project.mapLayers().values().contains( qobject_cast< QgsMapLayer * >( qvariant_cast< QObject * >( projectScope->variable( "layers" ).toList().at( 0 ) ) ) ) );
-  QVERIFY( project.mapLayers().values().contains( qobject_cast< QgsMapLayer * >( qvariant_cast< QObject * >( projectScope->variable( "layers" ).toList().at( 1 ) ) ) ) );
+  QVERIFY( project.mapLayers().values().contains( qobject_cast<QgsMapLayer *>( qvariant_cast<QObject *>( projectScope->variable( "layers" ).toList().at( 0 ) ) ) ) );
+  QVERIFY( project.mapLayers().values().contains( qobject_cast<QgsMapLayer *>( qvariant_cast<QObject *>( projectScope->variable( "layers" ).toList().at( 1 ) ) ) ) );
   QCOMPARE( projectScope->variable( "layer_ids" ).toList().size(), 2 );
   QVERIFY( projectScope->variable( "layer_ids" ).toList().contains( vectorLayer->id() ) );
   QVERIFY( projectScope->variable( "layer_ids" ).toList().contains( vectorLayer2->id() ) );
   delete projectScope;
-  project.addMapLayers( QList< QgsMapLayer * >() << vectorLayer3 );
+  project.addMapLayers( QList<QgsMapLayer *>() << vectorLayer3 );
   projectScope = QgsExpressionContextUtils::projectScope( &project );
   QCOMPARE( projectScope->variable( "layers" ).toList().size(), 3 );
-  QVERIFY( project.mapLayers().values().contains( qobject_cast< QgsMapLayer * >( qvariant_cast< QObject * >( projectScope->variable( "layers" ).toList().at( 0 ) ) ) ) );
-  QVERIFY( project.mapLayers().values().contains( qobject_cast< QgsMapLayer * >( qvariant_cast< QObject * >( projectScope->variable( "layers" ).toList().at( 1 ) ) ) ) );
-  QVERIFY( project.mapLayers().values().contains( qobject_cast< QgsMapLayer * >( qvariant_cast< QObject * >( projectScope->variable( "layers" ).toList().at( 2 ) ) ) ) );
+  QVERIFY( project.mapLayers().values().contains( qobject_cast<QgsMapLayer *>( qvariant_cast<QObject *>( projectScope->variable( "layers" ).toList().at( 0 ) ) ) ) );
+  QVERIFY( project.mapLayers().values().contains( qobject_cast<QgsMapLayer *>( qvariant_cast<QObject *>( projectScope->variable( "layers" ).toList().at( 1 ) ) ) ) );
+  QVERIFY( project.mapLayers().values().contains( qobject_cast<QgsMapLayer *>( qvariant_cast<QObject *>( projectScope->variable( "layers" ).toList().at( 2 ) ) ) ) );
   QCOMPARE( projectScope->variable( "layer_ids" ).toList().size(), 3 );
   QVERIFY( projectScope->variable( "layer_ids" ).toList().contains( vectorLayer->id() ) );
   QVERIFY( projectScope->variable( "layer_ids" ).toList().contains( vectorLayer2->id() ) );
@@ -757,13 +751,13 @@ void TestQgsExpressionContext::projectScope()
   project.removeMapLayer( vectorLayer );
   projectScope = QgsExpressionContextUtils::projectScope( &project );
   QCOMPARE( projectScope->variable( "layers" ).toList().size(), 2 );
-  QVERIFY( project.mapLayers().values().contains( qobject_cast< QgsMapLayer * >( qvariant_cast< QObject * >( projectScope->variable( "layers" ).toList().at( 0 ) ) ) ) );
-  QVERIFY( project.mapLayers().values().contains( qobject_cast< QgsMapLayer * >( qvariant_cast< QObject * >( projectScope->variable( "layers" ).toList().at( 1 ) ) ) ) );
+  QVERIFY( project.mapLayers().values().contains( qobject_cast<QgsMapLayer *>( qvariant_cast<QObject *>( projectScope->variable( "layers" ).toList().at( 0 ) ) ) ) );
+  QVERIFY( project.mapLayers().values().contains( qobject_cast<QgsMapLayer *>( qvariant_cast<QObject *>( projectScope->variable( "layers" ).toList().at( 1 ) ) ) ) );
   QCOMPARE( projectScope->variable( "layer_ids" ).toList().size(), 2 );
   QVERIFY( projectScope->variable( "layer_ids" ).toList().contains( vectorLayer2->id() ) );
   QVERIFY( projectScope->variable( "layer_ids" ).toList().contains( vectorLayer3->id() ) );
   delete projectScope;
-  project.removeMapLayers( QList< QgsMapLayer * >() << vectorLayer2 << vectorLayer3 );
+  project.removeMapLayers( QList<QgsMapLayer *>() << vectorLayer2 << vectorLayer3 );
   projectScope = QgsExpressionContextUtils::projectScope( &project );
   QVERIFY( projectScope->variable( "layers" ).toList().isEmpty() );
   QVERIFY( projectScope->variable( "layer_ids" ).toList().isEmpty() );
@@ -981,9 +975,9 @@ void TestQgsExpressionContext::description()
 void TestQgsExpressionContext::readWriteScope()
 {
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType =
-    DomImplementation.createDocumentType(
-      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType(
+    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
+  );
   QDomDocument doc( documentType );
   const QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
 
@@ -1005,7 +999,7 @@ void TestQgsExpressionContext::readWriteScope()
   // valid element
   s2.readXml( e, QgsReadWriteContext() );
   QCOMPARE( s2.variableCount(), 2 );
-  QCOMPARE( qgis::listToSet( s2.variableNames() ), QSet< QString >() << QStringLiteral( "v1" ) << QStringLiteral( "v2" ) );
+  QCOMPARE( qgis::listToSet( s2.variableNames() ), QSet<QString>() << QStringLiteral( "v1" ) << QStringLiteral( "v2" ) );
   QCOMPARE( s2.variable( QStringLiteral( "v1" ) ).toString(), QStringLiteral( "t1" ) );
   QCOMPARE( s2.variable( QStringLiteral( "v2" ) ).toInt(), 55 );
 }
@@ -1016,16 +1010,16 @@ void TestQgsExpressionContext::layerStores()
   QVERIFY( scope1->layerStores().isEmpty() );
 
   QgsMapLayerStore store1;
-  std::unique_ptr< QgsMapLayerStore > store2 = std::make_unique< QgsMapLayerStore >();
+  std::unique_ptr<QgsMapLayerStore> store2 = std::make_unique<QgsMapLayerStore>();
   scope1->addLayerStore( &store1 );
   scope1->addLayerStore( store2.get() );
-  QCOMPARE( scope1->layerStores(), QList< QgsMapLayerStore *>( {&store1, store2.get() } ) );
+  QCOMPARE( scope1->layerStores(), QList<QgsMapLayerStore *>( { &store1, store2.get() } ) );
 
   QgsExpressionContextScope *scope3 = new QgsExpressionContextScope();
   QgsMapLayerStore store3;
   scope3->addLayerStore( &store3 );
 
-  QCOMPARE( scope3->layerStores(), QList< QgsMapLayerStore *>( {&store3 } ) );
+  QCOMPARE( scope3->layerStores(), QList<QgsMapLayerStore *>( { &store3 } ) );
 
   QgsExpressionContext context;
   QVERIFY( context.layerStores().isEmpty() );
@@ -1035,17 +1029,17 @@ void TestQgsExpressionContext::layerStores()
   context.appendScopes( { scope1, scope2, scope3 } );
 
   // stores from scope 3 should take precedence
-  QCOMPARE( context.layerStores(), QList< QgsMapLayerStore *>( {&store3, &store1, store2.get() } ) );
+  QCOMPARE( context.layerStores(), QList<QgsMapLayerStore *>( { &store3, &store1, store2.get() } ) );
 
   store2.reset();
-  QCOMPARE( context.layerStores(), QList< QgsMapLayerStore *>( {&store3, &store1 } ) );
+  QCOMPARE( context.layerStores(), QList<QgsMapLayerStore *>( { &store3, &store1 } ) );
 
   QVERIFY( !context.loadedLayerStore() );
   QgsMapLayerStore store4;
   context.setLoadedLayerStore( &store4 );
   QCOMPARE( context.loadedLayerStore(), &store4 );
   // store4 must also be present in layerStores()
-  QCOMPARE( context.layerStores(), QList< QgsMapLayerStore *>( {&store3, &store1, &store4 } ) );
+  QCOMPARE( context.layerStores(), QList<QgsMapLayerStore *>( { &store3, &store1, &store4 } ) );
 
   QgsExpressionContext c2( context );
   QCOMPARE( c2.loadedLayerStore(), &store4 );
@@ -1060,7 +1054,7 @@ void TestQgsExpressionContext::uniqueHash()
   QgsExpressionContext context;
   bool ok = true;
   // the actual hash values aren't important, just that they are unique. Feel free to change the expected results accordingly
-  QSet< QString > vars;
+  QSet<QString> vars;
   vars.insert( QStringLiteral( "var1" ) );
   vars.insert( QStringLiteral( "var2" ) );
   QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "var1=||~~||var2=||~~||" ) );
@@ -1084,7 +1078,7 @@ void TestQgsExpressionContext::uniqueHash()
   feature.setAttributes( QgsAttributes() << 5 << 11 );
   context.setFeature( feature );
 
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
+#if ( QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 ) )
   QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "11||~~||1566||~~||var1=b string||~~||var2=5||~~||" ) );
 #else
   QCOMPARE( context.uniqueHash( ok, vars ), QStringLiteral( "11||~~||18646899||~~||var1=b string||~~||var2=5||~~||" ) );

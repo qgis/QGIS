@@ -38,7 +38,6 @@ class QgsNetworkLogger : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsNetworkLogger, logging requests from the specified \a manager.
      *
@@ -73,12 +72,12 @@ class QgsNetworkLogger : public QAbstractItemModel
      *
      * The actions should be parented to \a parent.
      */
-    QList< QAction * > actions( const QModelIndex &index, QObject *parent );
+    QList<QAction *> actions( const QModelIndex &index, QObject *parent );
 
     /**
      * Removes a list of request \a rows from the log.
     */
-    void removeRequestRows( const QList< int > &rows );
+    void removeRequestRows( const QList<int> &rows );
 
     /**
      * Returns the root node of the log.
@@ -108,7 +107,6 @@ class QgsNetworkLogger : public QAbstractItemModel
     void requestEncounteredSslErrors( int requestId, const QList<QSslError> &errors );
 
   private:
-
     //! Returns index for a given node
     QModelIndex node2index( QgsDevToolsModelNode *node ) const;
     QModelIndex indexOfParentLayerTreeNode( QgsDevToolsModelNode *parentNode ) const;
@@ -116,10 +114,9 @@ class QgsNetworkLogger : public QAbstractItemModel
     QgsNetworkAccessManager *mNam = nullptr;
     bool mIsLogging = false;
 
-    std::unique_ptr< QgsNetworkLoggerRootNode > mRootNode;
+    std::unique_ptr<QgsNetworkLoggerRootNode> mRootNode;
 
-    QHash< int, QgsNetworkLoggerRequestGroup * > mRequestGroups;
-
+    QHash<int, QgsNetworkLoggerRequestGroup *> mRequestGroups;
 };
 
 /**
@@ -134,7 +131,6 @@ class QgsNetworkLoggerProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsNetworkLoggerProxyModel, filtering the specified network \a logger.
      */
@@ -164,7 +160,6 @@ class QgsNetworkLoggerProxyModel : public QSortFilterProxyModel
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
-
     QgsNetworkLogger *mLogger = nullptr;
 
     QString mFilterString;

@@ -59,7 +59,6 @@ class QgsAuthOAuth2Config : public QObject
     Q_PROPERTY( QString customHeader READ customHeader WRITE setCustomHeader NOTIFY customHeaderChanged )
 
   public:
-
     //! Configuration type
     enum ConfigType
     {
@@ -103,7 +102,7 @@ class QgsAuthOAuth2Config : public QObject
     ConfigType configType() const { return mConfigType; }
 
     //! Authorization flow
-    GrantFlow grantFlow()  const { return mGrantFlow; }
+    GrantFlow grantFlow() const { return mGrantFlow; }
 
     //! Configuration name
     QString name() const { return mName; }
@@ -197,10 +196,7 @@ class QgsAuthOAuth2Config : public QObject
      * \param ok is set to FALSE in case something goes wrong, TRUE otherwise
      * \return serialized config
      */
-    static QByteArray serializeFromVariant( const QVariantMap &variant,
-                                            ConfigFormat format = JSON,
-                                            bool pretty = false,
-                                            bool *ok = nullptr );
+    static QByteArray serializeFromVariant( const QVariantMap &variant, ConfigFormat format = JSON, bool pretty = false, bool *ok = nullptr );
 
     /**
      * Unserialize the configuration in \a serial according to \a format
@@ -209,29 +205,26 @@ class QgsAuthOAuth2Config : public QObject
      * \param ok is set to FALSE in case something goes wrong, TRUE otherwise
      * \return config map
      */
-    static QVariantMap variantFromSerialized( const QByteArray &serial,
-        ConfigFormat format = JSON,
-        bool *ok = nullptr );
+    static QVariantMap variantFromSerialized( const QByteArray &serial, ConfigFormat format = JSON, bool *ok = nullptr );
 
     //! Write config object out to a formatted file (e.g. JSON)
-    static bool writeOAuth2Config( const QString &filepath,
-                                   QgsAuthOAuth2Config *config,
-                                   ConfigFormat format = JSON,
-                                   bool pretty = false );
+    static bool writeOAuth2Config( const QString &filepath, QgsAuthOAuth2Config *config, ConfigFormat format = JSON, bool pretty = false );
 
     //! Load and parse a directory of configs (e.g. JSON) to objects
     static QList<QgsAuthOAuth2Config *> loadOAuth2Configs(
       const QString &configdirectory,
       QObject *parent = nullptr,
       ConfigFormat format = JSON,
-      bool *ok = nullptr );
+      bool *ok = nullptr
+    );
 
     //! Load and parse a directory of configs (e.g. JSON) to a map
     static QgsStringMap mapOAuth2Configs(
       const QString &configdirectory,
       QObject *parent = nullptr,
       ConfigFormat format = JSON,
-      bool *ok = nullptr );
+      bool *ok = nullptr
+    );
 
     /**
      * Returns an ordered list of locations from which stored configuration files
@@ -410,7 +403,7 @@ class QgsAuthOAuth2Config : public QObject
     bool mPersistToken = false;
     AccessMethod mAccessMethod = AccessMethod::Header;
     QString mCustomHeader;
-    int mRequestTimeout = 30 ; // in seconds
+    int mRequestTimeout = 30; // in seconds
     QVariantMap mQueryPairs;
     bool mValid = false;
 };

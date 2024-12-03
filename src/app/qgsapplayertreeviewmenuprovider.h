@@ -25,15 +25,15 @@ class QgsCoordinateReferenceSystem;
 
 struct LegendLayerAction
 {
-  LegendLayerAction( QAction *a, const QString &m, bool all )
-    : action( a )
-    , menu( m )
-    , allLayers( all )
-  {}
-  QAction *action = nullptr;
-  QString menu;
-  bool allLayers;
-  QList<QgsMapLayer *> layers;
+    LegendLayerAction( QAction *a, const QString &m, bool all )
+      : action( a )
+      , menu( m )
+      , allLayers( all )
+    {}
+    QAction *action = nullptr;
+    QString menu;
+    bool allLayers;
+    QList<QgsMapLayer *> layers;
 };
 
 class QgsMapCanvas;
@@ -46,21 +46,19 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
 
     QMenu *createContextMenu() override;
 
-    void addLegendLayerAction( QAction *action, const QString &menu,
-                               Qgis::LayerType type, bool allLayers );
+    void addLegendLayerAction( QAction *action, const QString &menu, Qgis::LayerType type, bool allLayers );
     bool removeLegendLayerAction( QAction *action );
     void addLegendLayerActionForLayer( QAction *action, QgsMapLayer *layer );
     void removeLegendLayerActionsForLayer( QgsMapLayer *layer );
-    QList< LegendLayerAction > legendLayerActions( Qgis::LayerType type ) const;
+    QList<LegendLayerAction> legendLayerActions( Qgis::LayerType type ) const;
 
   protected:
-
     void addCustomLayerActions( QMenu *menu, QgsMapLayer *layer );
 
     QgsLayerTreeView *mView = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
 
-    QMap< Qgis::LayerType, QList< LegendLayerAction > > mLegendLayerActionMap;
+    QMap<Qgis::LayerType, QList<LegendLayerAction>> mLegendLayerActionMap;
 
   private slots:
 
@@ -74,6 +72,7 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
     void setSymbolLegendNodeColor( const QColor &color );
     void setLayerCrs( const QgsCoordinateReferenceSystem &crs );
     void toggleLabels( bool enabled );
+
   private:
     bool removeActionEnabled();
 };

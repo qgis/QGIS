@@ -32,11 +32,10 @@ class QgsAttributeTableConfig;
 
 
 //! A dialog to insert the merge behavior for attributes (e.g. for the union features editing tool)
-class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeAttributesDialogBase
+class APP_EXPORT QgsMergeAttributesDialog : public QDialog, private Ui::QgsMergeAttributesDialogBase
 {
     Q_OBJECT
   public:
-
     enum ItemDataRole
     {
       FieldIndex = Qt::UserRole //!< Index of corresponding field in source table for table header
@@ -121,11 +120,10 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
 
     QgsFields mFields;
     QSet<int> mHiddenAttributes;
-    QMap< QString, int > mFieldToColumnMap;
+    QMap<QString, int> mFieldToColumnMap;
     bool mUpdating = false;
 
-    static const QList< Qgis::Statistic > DISPLAY_STATS;
-
+    static const QList<Qgis::Statistic> DISPLAY_STATS;
 };
 
 #endif // QGSMERGEATTRIBUTESDIALOG_H

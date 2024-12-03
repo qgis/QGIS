@@ -52,6 +52,7 @@
 #include "qgschunkedentity.h"
 #include "qgschunknode.h"
 #include "qgseventtracing.h"
+#include "qgsgeotransform.h"
 #include "qgsmaterial.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
@@ -99,6 +100,9 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
 
   QRect viewportRect( QPoint( 0, 0 ), mEngine->size() );
 
+  // Get the maximum of clip planes available
+  mMaxClipPlanes = Qgs3DUtils::openGlMaxClipPlanes( mEngine->surface() );
+
   // Camera
   float aspectRatio = ( float )viewportRect.width() / viewportRect.height();
   mEngine->camera()->lens()->setPerspectiveProjection( mMap.fieldOfView(), aspectRatio, 10.f, 10000.0f );
@@ -142,8 +146,11 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapScene::onCameraMovementSpeedChanged );
   connect( &map, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapScene::onCameraNavigationModeChanged );
   connect( &map, &Qgs3DMapSettings::debugOverlayEnabledChanged, this, &Qgs3DMapScene::onDebugOverlayEnabledChanged );
+  connect( &map, &Qgs3DMapSettings::stopUpdatesChanged, this, &Qgs3DMapScene::onStopUpdatesChanged );
 
   connect( &map, &Qgs3DMapSettings::axisSettingsChanged, this, &Qgs3DMapScene::on3DAxisSettingsChanged );
+
+  connect( &map, &Qgs3DMapSettings::originChanged, this, &Qgs3DMapScene::onOriginChanged );
 
   connect( QgsApplication::sourceCache(), &QgsSourceCache::remoteSourceFetched, this, [ = ]( const QString & url )
   {
@@ -487,6 +494,13 @@ void Qgs3DMapScene::createTerrainDeferred()
     connect( mTerrain, &QgsTerrainEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::terrainPendingJobsCountChanged );
     connect( mTerrain, &Qgs3DMapSceneEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity * entity )
     {
+      // let's make sure that any entity we're about to show has the right scene origin set
+      const QList<QgsGeoTransform *> transforms = entity->findChildren<QgsGeoTransform *>();
+      for ( QgsGeoTransform *transform : transforms )
+      {
+        transform->setOrigin( mMap.origin() );
+      }
+
       // enable clipping on the terrain if necessary
       handleClippingOnEntity( entity );
     } );
@@ -745,6 +759,13 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
 
 void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
 {
+  // let's make sure that any entity we're about to show has the right scene origin set
+  const QList<QgsGeoTransform *> transforms = newEntity->findChildren<QgsGeoTransform *>();
+  for ( QgsGeoTransform *transform : transforms )
+  {
+    transform->setOrigin( mMap.origin() );
+  }
+
   // set clip planes on the new entity if necessary
   handleClippingOnEntity( newEntity );
 
@@ -1178,6 +1199,17 @@ void Qgs3DMapScene::on3DAxisSettingsChanged()
   }
 }
 
+void Qgs3DMapScene::onOriginChanged()
+{
+  const QList<QgsGeoTransform *> geoTransforms = findChildren<QgsGeoTransform *>();
+  for ( QgsGeoTransform *transform : geoTransforms )
+  {
+    transform->setOrigin( mMap.origin() );
+  }
+
+  mCameraController->setOrigin( mMap.origin() );
+}
+
 void Qgs3DMapScene::handleClippingOnEntity( QEntity *entity ) const
 {
   if ( mClipPlanesEquations.isEmpty() ) // no clip plane equations, disable clipping
@@ -1223,11 +1255,11 @@ void Qgs3DMapScene::handleClippingOnAllEntities() const
 
 void Qgs3DMapScene::enableClipping( const QList<QVector4D> &clipPlaneEquations )
 {
-  if ( clipPlaneEquations.size() > 8 )
+  if ( clipPlaneEquations.size() > mMaxClipPlanes )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Qgs3DMapScene::enableClipping: it is not possible to use more than 8 clipping planes." ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Qgs3DMapScene::enableClipping: it is not possible to use more than %1 clipping planes." ).arg( mMaxClipPlanes ), 2 );
   }
-  mClipPlanesEquations = clipPlaneEquations.mid( 0, 8 );
+  mClipPlanesEquations = clipPlaneEquations.mid( 0, mMaxClipPlanes );
 
   // enable the clip planes on the framegraph
   QgsFrameGraph *frameGraph = mEngine->frameGraph();
@@ -1247,4 +1279,9 @@ void Qgs3DMapScene::disableClipping()
 
   // Disable the clip planes for the material of each entity.
   handleClippingOnAllEntities();
+}
+
+void Qgs3DMapScene::onStopUpdatesChanged()
+{
+  mSceneUpdatesEnabled = !mMap.stopUpdates();
 }

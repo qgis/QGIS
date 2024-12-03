@@ -21,6 +21,7 @@ email                : sherman at mrcc.com
 #include "qgsvectordataprovider.h"
 #include "qgsogrproviderutils.h"
 
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
 
 class QgsOgrLayer;
@@ -216,7 +217,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QMap<int, QString> mDefaultValues;
 
     bool mFirstFieldIsFid = false;
-    mutable std::unique_ptr< OGREnvelope3D > mExtent2D;
+    mutable std::unique_ptr< OGREnvelope > mExtent2D;
     mutable std::unique_ptr< OGREnvelope3D > mExtent3D;
     bool mForceRecomputeExtent = false;
 

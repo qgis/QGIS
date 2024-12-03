@@ -36,8 +36,8 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
       TopoUndefined = 0,
       TopoPoint,
       TopoLine,
-      TopoBoundaryError, // both sides  topology broken
-      TopoBoundaryErrorLeft, // left side topology broken
+      TopoBoundaryError,      // both sides  topology broken
+      TopoBoundaryErrorLeft,  // left side topology broken
       TopoBoundaryErrorRight, // right side topology broken
       TopoBoundaryOk,
       TopoCentroidIn,
@@ -88,7 +88,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QHash<int, QgsAbstractGeometry *> &oldGeometries() { return mOldGeometries; }
     QHash<int, int> &oldTypes() { return mOldTypes; }
     QHash<QgsFeatureId, int> &newCats() { return mNewCats; }
-    QMap<int, QList<QgsGrassUndoCommand *> > &undoCommands() { return mUndoCommands; }
+    QMap<int, QList<QgsGrassUndoCommand *>> &undoCommands() { return mUndoCommands; }
 
     /**
      * Gets geometry of line.
@@ -159,7 +159,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     */
     TopoSymbol topoSymbol( int lid );
 
-    static QString topoSymbolFieldName() { return QStringLiteral( "topo_symbol" ) ; }
+    static QString topoSymbolFieldName() { return QStringLiteral( "topo_symbol" ); }
 
     void printDebug();
 
@@ -199,7 +199,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QDateTime mLastAttributesModified;
     // when attributes are changed
     // map header
-    struct  Map_info *mMap = nullptr;
+    struct Map_info *mMap = nullptr;
     // Is 3D, has z coordinates
     bool mIs3d;
     // Vector layers
@@ -219,7 +219,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QHash<QgsFeatureId, int> mNewCats;
 
     // Map of undo commands with undo stack index as key.
-    QMap<int, QList<QgsGrassUndoCommand *> > mUndoCommands;
+    QMap<int, QList<QgsGrassUndoCommand *>> mUndoCommands;
 
     // Mutex used to avoid concurrent read/write, used only in editing mode
     QMutex mReadWriteMutex;

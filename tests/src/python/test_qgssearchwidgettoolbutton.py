@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '18/05/2016'
-__copyright__ = 'Copyright 2016, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "18/05/2016"
+__copyright__ = "Copyright 2016, The QGIS Project"
 
 
 from qgis.gui import QgsSearchWidgetToolButton, QgsSearchWidgetWrapper
@@ -24,9 +25,11 @@ class TestQgsSearchWidgetToolButton(QgisTestCase):
         Test setting available flags
         """
         w = QgsSearchWidgetToolButton()
-        w.setAvailableFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo |
-                            QgsSearchWidgetWrapper.FilterFlag.NotEqualTo |
-                            QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        w.setAvailableFlags(
+            QgsSearchWidgetWrapper.FilterFlag.EqualTo
+            | QgsSearchWidgetWrapper.FilterFlag.NotEqualTo
+            | QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive
+        )
 
         flags = w.availableFlags()
         self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.EqualTo)
@@ -35,9 +38,14 @@ class TestQgsSearchWidgetToolButton(QgisTestCase):
         self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.Between)
 
         # setting available flags should update active flags
-        w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.NotEqualTo | QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
-        w.setAvailableFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo |
-                            QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
+        w.setActiveFlags(
+            QgsSearchWidgetWrapper.FilterFlag.NotEqualTo
+            | QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive
+        )
+        w.setAvailableFlags(
+            QgsSearchWidgetWrapper.FilterFlag.EqualTo
+            | QgsSearchWidgetWrapper.FilterFlag.NotEqualTo
+        )
         flags = w.activeFlags()
         self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.EqualTo)
         self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
@@ -48,40 +56,55 @@ class TestQgsSearchWidgetToolButton(QgisTestCase):
         Test setting/retrieving active flag logic
         """
         w = QgsSearchWidgetToolButton()
-        w.setAvailableFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo |
-                            QgsSearchWidgetWrapper.FilterFlag.NotEqualTo |
-                            QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        w.setAvailableFlags(
+            QgsSearchWidgetWrapper.FilterFlag.EqualTo
+            | QgsSearchWidgetWrapper.FilterFlag.NotEqualTo
+            | QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive
+        )
 
         w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo)
         flags = w.activeFlags()
         self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.EqualTo)
         self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
 
-        w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo | QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        w.setActiveFlags(
+            QgsSearchWidgetWrapper.FilterFlag.EqualTo
+            | QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive
+        )
         flags = w.activeFlags()
         self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.EqualTo)
         self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
 
         # setting a non-available flag as active
-        w.setAvailableFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo |
-                            QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
-        w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo | QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        w.setAvailableFlags(
+            QgsSearchWidgetWrapper.FilterFlag.EqualTo
+            | QgsSearchWidgetWrapper.FilterFlag.NotEqualTo
+        )
+        w.setActiveFlags(
+            QgsSearchWidgetWrapper.FilterFlag.EqualTo
+            | QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive
+        )
         flags = w.activeFlags()
         self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.EqualTo)
         self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
 
         # setting conflicting flags
-        w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo | QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
+        w.setActiveFlags(
+            QgsSearchWidgetWrapper.FilterFlag.EqualTo
+            | QgsSearchWidgetWrapper.FilterFlag.NotEqualTo
+        )
         flags = w.activeFlags()
         self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.EqualTo)
         self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
 
     def testToggleFlag(self):
-        """ Test toggling flags """
+        """Test toggling flags"""
         w = QgsSearchWidgetToolButton()
-        w.setAvailableFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo |
-                            QgsSearchWidgetWrapper.FilterFlag.NotEqualTo |
-                            QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        w.setAvailableFlags(
+            QgsSearchWidgetWrapper.FilterFlag.EqualTo
+            | QgsSearchWidgetWrapper.FilterFlag.NotEqualTo
+            | QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive
+        )
         w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo)
         # should set flag
         w.toggleFlag(QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
@@ -97,8 +120,10 @@ class TestQgsSearchWidgetToolButton(QgisTestCase):
         self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
 
         # toggling non-available flag should be ignored
-        w.setAvailableFlags(QgsSearchWidgetWrapper.FilterFlag.Between |
-                            QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
+        w.setAvailableFlags(
+            QgsSearchWidgetWrapper.FilterFlag.Between
+            | QgsSearchWidgetWrapper.FilterFlag.NotEqualTo
+        )
         w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.Between)
         # should be ignored
         w.toggleFlag(QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
@@ -109,10 +134,15 @@ class TestQgsSearchWidgetToolButton(QgisTestCase):
         self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.Between)
 
         # toggling exclusive flag should result in other exclusive flags being cleared
-        w.setAvailableFlags(QgsSearchWidgetWrapper.FilterFlag.Between |
-                            QgsSearchWidgetWrapper.FilterFlag.NotEqualTo |
-                            QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
-        w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.Between | QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        w.setAvailableFlags(
+            QgsSearchWidgetWrapper.FilterFlag.Between
+            | QgsSearchWidgetWrapper.FilterFlag.NotEqualTo
+            | QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive
+        )
+        w.setActiveFlags(
+            QgsSearchWidgetWrapper.FilterFlag.Between
+            | QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive
+        )
         w.toggleFlag(QgsSearchWidgetWrapper.FilterFlag.Between)
         flags = w.activeFlags()
         self.assertTrue(flags & QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
@@ -125,13 +155,17 @@ class TestQgsSearchWidgetToolButton(QgisTestCase):
         self.assertFalse(flags & QgsSearchWidgetWrapper.FilterFlag.Between)
 
     def testSetInactive(self):
-        """ Test setting the search as inactive """
+        """Test setting the search as inactive"""
         w = QgsSearchWidgetToolButton()
-        w.setAvailableFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo |
-                            QgsSearchWidgetWrapper.FilterFlag.NotEqualTo |
-                            QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
-        w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.EqualTo |
-                         QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        w.setAvailableFlags(
+            QgsSearchWidgetWrapper.FilterFlag.EqualTo
+            | QgsSearchWidgetWrapper.FilterFlag.NotEqualTo
+            | QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive
+        )
+        w.setActiveFlags(
+            QgsSearchWidgetWrapper.FilterFlag.EqualTo
+            | QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive
+        )
         self.assertTrue(w.isActive())
         w.setInactive()
         flags = w.activeFlags()
@@ -140,11 +174,13 @@ class TestQgsSearchWidgetToolButton(QgisTestCase):
         self.assertFalse(w.isActive())
 
     def testSetActive(self):
-        """ Test setting the search as active should adopt default flags"""
+        """Test setting the search as active should adopt default flags"""
         w = QgsSearchWidgetToolButton()
-        w.setAvailableFlags(QgsSearchWidgetWrapper.FilterFlag.Between |
-                            QgsSearchWidgetWrapper.FilterFlag.NotEqualTo |
-                            QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
+        w.setAvailableFlags(
+            QgsSearchWidgetWrapper.FilterFlag.Between
+            | QgsSearchWidgetWrapper.FilterFlag.NotEqualTo
+            | QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive
+        )
         w.setActiveFlags(QgsSearchWidgetWrapper.FilterFlag.CaseInsensitive)
         w.setDefaultFlags(QgsSearchWidgetWrapper.FilterFlag.NotEqualTo)
         self.assertFalse(w.isActive())
@@ -155,5 +191,5 @@ class TestQgsSearchWidgetToolButton(QgisTestCase):
         self.assertTrue(w.isActive())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

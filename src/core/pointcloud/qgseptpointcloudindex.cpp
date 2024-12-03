@@ -720,4 +720,7 @@ void QgsEptPointCloudIndex::copyCommonProperties( QgsEptPointCloudIndex *destina
   destination->mOriginalMetadata = mOriginalMetadata;
 }
 
+#undef PROVIDER_KEY
+#undef PROVIDER_DESCRIPTION
+
 ///@endcond
