@@ -420,40 +420,40 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
         QwtSymbol::Style symbolStyle;
         if ( currentInfo.satType == 'P' )
         {
-          symbolStyle = QwtSymbol::Ellipse; // GPS;
-          myColor = QColor( 50, 205, 20 ); //limegreen;
+          symbolStyle = QwtSymbol::Ellipse; // GPS
+          myColor = QColor( 50, 205, 20 ); //limegreen
         }
         else if ( currentInfo.satType == 'L' )
         {
-          symbolStyle = QwtSymbol::Rect; // GLONASS;
-          myColor = QColor( 255, 165, 0 ); //orange;
+          symbolStyle = QwtSymbol::Rect; // GLONASS
+          myColor = QColor( 255, 165, 0 ); //orange
         }
         else if ( currentInfo.satType == 'B' )
         {
-          symbolStyle = QwtSymbol::Diamond; // BEIDOU;
-          myColor = QColor( 128, 0, 128 ); //purple;
+          symbolStyle = QwtSymbol::Diamond; // BEIDOU
+          myColor = QColor( 128, 0, 128 ); //purple
         }
         else if ( currentInfo.satType == 'A' )
         {
           symbolStyle = QwtSymbol::Triangle; //GALILEO
-          myColor = QColor( 0, 0, 255 ); //blue;
+          myColor = QColor( 0, 0, 255 ); //blue
         }
         else if ( currentInfo.satType == 'Q' )
         {
           symbolStyle = QwtSymbol::Cross; // QZSS
-          myColor = QColor( 255, 0, 255 ); //magenta;
+          myColor = QColor( 255, 0, 255 ); //magenta
         }
         else
         {
-          symbolStyle = QwtSymbol::Ellipse; // N, S;
-          myColor = QColor( 128, 128, 128 ); //gray;
+          symbolStyle = QwtSymbol::Ellipse; // N, S
+          myColor = QColor( 128, 128, 128 ); //gray
         }
         penColor = myColor;
         symbolBrush = QBrush( myColor );
 
         if ( currentInfo.signal < 30 ) //weak signal
         {
-          penColor = Qt::red; // red border;
+          penColor = Qt::red; // red border
         }
         if ( currentInfo.inUse )
         {
@@ -461,11 +461,9 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
         }
 
 #if (QWT_POLAR_VERSION<0x010000)
-        mypMarker->setSymbol( QwtSymbol( symbolStyle,
-                                         symbolBrush, QPen( penColor ), markerSize ) );
+        mypMarker->setSymbol( QwtSymbol( symbolStyle, symbolBrush, QPen( penColor ), markerSize ) );
 #else
-        mypMarker->setSymbol( new QwtSymbol( symbolStyle,
-                                             symbolBrush, QPen( penColor ), markerSize ) );
+        mypMarker->setSymbol( new QwtSymbol( symbolStyle, symbolBrush, QPen( penColor ), markerSize ) );
 #endif
 
         mypMarker->setLabelAlignment( Qt::AlignHCenter | Qt::AlignTop );
