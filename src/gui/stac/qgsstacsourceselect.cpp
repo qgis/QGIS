@@ -516,7 +516,7 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
     }
   }
 
-  QAction *zoomToAction = new QAction( tr( "Zoom to Item" ) );
+  QAction *zoomToAction = new QAction( tr( "Zoom to Item" ), menu );
   connect( zoomToAction, &QAction::triggered, this, [index, this]
   {
     QgsGeometry geom = index.data( QgsStacItemListModel::Role::Geometry ).value<QgsGeometry>();
@@ -531,7 +531,7 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
     }
   } );
 
-  QAction *panToAction = new QAction( tr( "Pan to Item" ) );
+  QAction *panToAction = new QAction( tr( "Pan to Item" ), menu );
   connect( panToAction, &QAction::triggered, this, [index, this]
   {
     QgsGeometry geom = index.data( QgsStacItemListModel::Role::Geometry ).value<QgsGeometry>();
