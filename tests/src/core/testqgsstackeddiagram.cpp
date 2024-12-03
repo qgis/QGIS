@@ -38,10 +38,11 @@ class TestQgsStackedDiagram : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsStackedDiagram() : QgsTest( QStringLiteral( "Stacked Diagram Tests" ), QStringLiteral( "stackeddiagrams" ) ) {}
+    TestQgsStackedDiagram()
+      : QgsTest( QStringLiteral( "Stacked Diagram Tests" ), QStringLiteral( "stackeddiagrams" ) ) {}
 
   private:
-    bool mTestHasError =  false ;
+    bool mTestHasError = false;
     QgsMapSettings *mMapSettings = nullptr;
     QgsVectorLayer *mPointsLayer = nullptr;
     QString mTestDataDir;
@@ -66,8 +67,7 @@ class TestQgsStackedDiagram : public QgsTest
       //create a point layer that will be used in all tests...
       //
       const QString myPointsFileName = mTestDataDir + "stacked_diagrams.gpkg|layername=centroids";
-      mPointsLayer = new QgsVectorLayer( myPointsFileName,
-                                         QStringLiteral( "population" ), QStringLiteral( "ogr" ) );
+      mPointsLayer = new QgsVectorLayer( myPointsFileName, QStringLiteral( "population" ), QStringLiteral( "ogr" ) );
 
       //Add points to diagrams, so that it's easier to also verify diagram positioning
       QVariantMap symbolProps { { QStringLiteral( "color" ), QStringLiteral( "0,0,0,0" ) } };
@@ -115,7 +115,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds1.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" );  //#spellok
+      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" ); //#spellok
       ds1.minimumScale = -1;
       ds1.maximumScale = -1;
       ds1.minimumSize = 0;
@@ -146,7 +146,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds2.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" );  //#spellok
+      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" ); //#spellok
       ds2.minimumScale = -1;
       ds2.maximumScale = -1;
       ds2.minimumSize = 0;
@@ -204,7 +204,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds1.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" );  //#spellok
+      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" ); //#spellok
       ds1.minimumScale = -1;
       ds1.maximumScale = -1;
       ds1.minimumSize = 0;
@@ -236,7 +236,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds2.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" );  //#spellok
+      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" ); //#spellok
       ds2.minimumScale = -1;
       ds2.maximumScale = -1;
       ds2.minimumSize = 0;
@@ -294,7 +294,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds1.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" );  //#spellok
+      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" ); //#spellok
       ds1.minimumScale = -1;
       ds1.maximumScale = -1;
       ds1.minimumSize = 0;
@@ -328,7 +328,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds2.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" );  //#spellok
+      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" ); //#spellok
       ds2.minimumScale = -1;
       ds2.maximumScale = -1;
       ds2.minimumSize = 0;
@@ -386,7 +386,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds1.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" );  //#spellok
+      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" ); //#spellok
       ds1.minimumScale = -1;
       ds1.maximumScale = -1;
       ds1.minimumSize = 0;
@@ -417,7 +417,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds2.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" );  //#spellok
+      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" ); //#spellok
       ds2.minimumScale = -1;
       ds2.maximumScale = -1;
       ds2.minimumSize = 0;
@@ -475,7 +475,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds1.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" );  //#spellok
+      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" ); //#spellok
       ds1.minimumScale = -1;
       ds1.maximumScale = -1;
       ds1.minimumSize = 0;
@@ -506,7 +506,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds2.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" );  //#spellok
+      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" ); //#spellok
       ds2.minimumScale = -1;
       ds2.maximumScale = -1;
       ds2.minimumSize = 0;
@@ -564,7 +564,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds1.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" );  //#spellok
+      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" ); //#spellok
       ds1.minimumScale = -1;
       ds1.maximumScale = -1;
       ds1.minimumSize = 0;
@@ -597,7 +597,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds2.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" );  //#spellok
+      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" ); //#spellok
       ds2.minimumScale = -1;
       ds2.maximumScale = -1;
       ds2.minimumSize = 0;
@@ -657,7 +657,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds1.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" );  //#spellok
+      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" ); //#spellok
       ds1.minimumScale = -1;
       ds1.maximumScale = -1;
       ds1.minimumSize = 0;
@@ -690,7 +690,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds2.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" );  //#spellok
+      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" ); //#spellok
       ds2.minimumScale = -1;
       ds2.maximumScale = -1;
       ds2.minimumSize = 0;
@@ -749,7 +749,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" );  //#spellok
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" ); //#spellok
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -766,7 +766,7 @@ class TestQgsStackedDiagram : public QgsTest
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 15000 );
       dr->setUpperSize( QSizeF( 20, 20 ) );
-      dr->setClassificationField( QStringLiteral( "max( \"maennlich_6_17\", \"maennlich_18_64\", \"maennlich_ab_65\",  \"maennlich_unter_6\" )" ) );  //#spellok
+      dr->setClassificationField( QStringLiteral( "max( \"maennlich_6_17\", \"maennlich_18_64\", \"maennlich_ab_65\",  \"maennlich_unter_6\" )" ) ); //#spellok
       dr->setDiagram( new QgsHistogramDiagram() );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );
@@ -795,7 +795,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" );  //#spellok
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" ); //#spellok
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -812,7 +812,7 @@ class TestQgsStackedDiagram : public QgsTest
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 15000 );
       dr->setUpperSize( QSizeF( 20, 20 ) );
-      dr->setClassificationField( QStringLiteral( "max(\"weiblich_unter_6\", \"weiblich_6_17\", \"weiblich_18_64\", \"weiblich_ab_65\")" ) );  //#spellok
+      dr->setClassificationField( QStringLiteral( "max(\"weiblich_unter_6\", \"weiblich_6_17\", \"weiblich_18_64\", \"weiblich_ab_65\")" ) ); //#spellok
       dr->setDiagram( new QgsHistogramDiagram() );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );
@@ -842,7 +842,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds1.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" );  //#spellok
+      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" ); //#spellok
       ds1.minimumScale = -1;
       ds1.maximumScale = -1;
       ds1.minimumSize = 0;
@@ -868,7 +868,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds2.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" );  //#spellok
+      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" ); //#spellok
       ds2.minimumScale = -1;
       ds2.maximumScale = -1;
       ds2.minimumSize = 0;
@@ -919,7 +919,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds1.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" );  //#spellok
+      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" ); //#spellok
       ds1.minimumScale = -1;
       ds1.maximumScale = -1;
       ds1.minimumSize = 0;
@@ -945,7 +945,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds2.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" );  //#spellok
+      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" ); //#spellok
       ds2.minimumScale = -1;
       ds2.maximumScale = -1;
       ds2.minimumSize = 0;
@@ -998,7 +998,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds1.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" );  //#spellok
+      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" ); //#spellok
       ds1.minimumScale = -1;
       ds1.maximumScale = -1;
       ds1.minimumSize = 0;
@@ -1024,7 +1024,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds2.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" );  //#spellok
+      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" ); //#spellok
       ds2.minimumScale = -1;
       ds2.maximumScale = -1;
       ds2.minimumSize = 0;
@@ -1076,7 +1076,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" );  //#spellok
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" ); //#spellok
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -1116,7 +1116,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" );  //#spellok
+      ds.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" ); //#spellok
       ds.minimumScale = -1;
       ds.maximumScale = -1;
       ds.minimumSize = 0;
@@ -1157,7 +1157,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds1.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" );  //#spellok
+      ds1.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" ); //#spellok
       ds1.minimumScale = -1;
       ds1.maximumScale = -1;
       ds1.minimumSize = 0;
@@ -1183,7 +1183,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds2.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" );  //#spellok
+      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" ); //#spellok
       ds2.minimumScale = -1;
       ds2.maximumScale = -1;
       ds2.minimumSize = 0;
@@ -1199,7 +1199,7 @@ class TestQgsStackedDiagram : public QgsTest
       dr2->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr2->setUpperValue( 15000 );
       dr2->setUpperSize( QSizeF( 20, 20 ) );
-      dr2->setClassificationField( QStringLiteral( "max(\"maennlich_18_64\", \"maennlich_ab_65\", \"weiblich_unter_6\", \"weiblich_6_17\", \"weiblich_18_64\", \"weiblich_ab_65\")" ) );  //#spellok
+      dr2->setClassificationField( QStringLiteral( "max(\"maennlich_18_64\", \"maennlich_ab_65\", \"weiblich_unter_6\", \"weiblich_6_17\", \"weiblich_18_64\", \"weiblich_ab_65\")" ) ); //#spellok
       dr2->setDiagram( new QgsHistogramDiagram() );
       dr2->setDiagramSettings( ds2 );
 
@@ -1249,7 +1249,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds11.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds11.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" );  //#spellok
+      ds11.categoryAttributes = QList<QString>() << QStringLiteral( "\"maennlich_ab_65\"" ) << QStringLiteral( "\"maennlich_18_64\"" ) << QStringLiteral( "\"maennlich_6_17\"" ) << QStringLiteral( "\"maennlich_unter_6\"" ); //#spellok
       ds11.minimumScale = -1;
       ds11.maximumScale = -1;
       ds11.minimumSize = 0;
@@ -1281,7 +1281,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds12.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds12.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" );  //#spellok
+      ds12.categoryAttributes = QList<QString>() << QStringLiteral( "\"weiblich_ab_65\"" ) << QStringLiteral( "\"weiblich_18_64\"" ) << QStringLiteral( "\"weiblich_6_17\"" ) << QStringLiteral( "\"weiblich_unter_6\"" ); //#spellok
       ds12.minimumScale = -1;
       ds12.maximumScale = -1;
       ds12.minimumSize = 0;
@@ -1325,7 +1325,7 @@ class TestQgsStackedDiagram : public QgsTest
       col3.setAlphaF( 0.5 );
       col4.setAlphaF( 0.5 );
       ds2.categoryColors = QList<QColor>() << col1 << col2 << col3 << col4;
-      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"gesamt_ab_65\"" ) << QStringLiteral( "\"gesamt_18_64\"" ) << QStringLiteral( "\"gesamt_6_17\"" ) << QStringLiteral( "\"gesamt_unter_6\"" );  //#spellok
+      ds2.categoryAttributes = QList<QString>() << QStringLiteral( "\"gesamt_ab_65\"" ) << QStringLiteral( "\"gesamt_18_64\"" ) << QStringLiteral( "\"gesamt_6_17\"" ) << QStringLiteral( "\"gesamt_unter_6\"" ); //#spellok
       ds2.minimumScale = -1;
       ds2.maximumScale = -1;
       ds2.minimumSize = 0;
@@ -1364,7 +1364,6 @@ class TestQgsStackedDiagram : public QgsTest
       mMapSettings->setOutputDpi( 96 );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stackeddiagramsnested", "stackeddiagramsnested", *mMapSettings, 200, 15 );
     }
-
 };
 
 

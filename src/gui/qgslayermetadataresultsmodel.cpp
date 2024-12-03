@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayermetadataresultsmodel.h"
+#include "moc_qgslayermetadataresultsmodel.cpp"
 #include "qgsfeedback.h"
 #include "qgsapplication.h"
 #include "qgslayermetadataproviderregistry.h"
@@ -185,7 +186,7 @@ void QgsLayerMetadataResultsModel::reloadAsync()
 
 void QgsLayerMetadataResultsModel::resultsReady( const QgsLayerMetadataSearchResults &results )
 {
-  mFeedback->setProgress( mFeedback->progress() + 100 / QgsApplication::instance()->layerMetadataProviderRegistry()->layerMetadataProviders().count() );
+  mFeedback->setProgress( mFeedback->progress() + static_cast< double >( 100 ) / QgsApplication::instance()->layerMetadataProviderRegistry()->layerMetadataProviders().count() );
   beginInsertRows( QModelIndex(), mResult.metadata().count(), mResult.metadata().count() + results.metadata().count() - 1 );
   const QList<QgsLayerMetadataProviderResult> metadata { results.metadata() };
   for ( const QgsLayerMetadataProviderResult &result : std::as_const( metadata ) )

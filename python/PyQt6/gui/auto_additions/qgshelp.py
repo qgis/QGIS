@@ -2,5 +2,5 @@
 try:
     QgsHelp.openHelp = staticmethod(QgsHelp.openHelp)
     QgsHelp.helpUrl = staticmethod(QgsHelp.helpUrl)
-except NameError:
+except (NameError, AttributeError):
     pass

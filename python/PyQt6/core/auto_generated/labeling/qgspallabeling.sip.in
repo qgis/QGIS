@@ -371,12 +371,22 @@ legendString
 :return: the string to show in the legend and in the preview icon
 %End
 
-    void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = 0, QgsRenderContext *context = 0, double *rotatedLabelX /Out/ = 0, double *rotatedLabelY /Out/ = 0 );
+ void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = 0, QgsRenderContext *context = 0, double *rotatedLabelX /Out/ = 0, double *rotatedLabelY /Out/ = 0 ) /Deprecated/;
 %Docstring
 Calculates the space required to render the provided ``text`` in map units.
 Results will be written to ``labelX`` and ``labelY``.
+
 If the text orientation is set to rotation-based, the spaced taken to render
-vertically oriented text will be written to ``rotatedLabelX`` and ``rotatedLabelY`` .
+vertically oriented text will be written to ``rotatedLabelX`` and ``rotatedLabelY``.
+
+.. warning::
+
+   This method only returns an approximate label size, and eg will not consider
+   HTML formatted text correctly.
+
+.. deprecated:: 3.40
+
+   Will be removed from public API in QGIS 4.0.
 %End
 
     void registerFeature( const QgsFeature &f, QgsRenderContext &context );
@@ -610,21 +620,6 @@ Sets the layer's unplaced label ``visibility``.
 
 };
 
-class QgsLabelCandidate
-{
-%Docstring(signature="appended")
-Represents a label candidate.
-%End
-
-%TypeHeaderCode
-#include "qgspallabeling.h"
-%End
-  public:
-    QgsLabelCandidate( const QRectF &r, double c );
-
-    QRectF rect;
-    double cost;
-};
 
 class QgsPalLabeling
 {
@@ -641,7 +636,6 @@ PAL labeling utilities.
 %Docstring
 Called to find out whether a specified ``layer`` is used for labeling.
 %End
-
 
     static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry(), bool mergeLines = false ) /Factory/;
 %Docstring

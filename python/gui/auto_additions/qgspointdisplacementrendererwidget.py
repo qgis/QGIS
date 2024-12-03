@@ -2,5 +2,5 @@
 try:
     QgsPointDisplacementRendererWidget.create = staticmethod(QgsPointDisplacementRendererWidget.create)
     QgsPointDisplacementRendererWidget.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

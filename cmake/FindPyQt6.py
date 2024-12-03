@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 #   Copyright (c) 2007, Simon Edwards <simon@simonzone.com>
 #    All rights reserved.
@@ -31,16 +30,19 @@
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
 import os.path
+import sys
+
 import PyQt6.QtCore
 import sipconfig
-import sys
 
 cfg = sipconfig.Configuration()
 sip_dir = cfg.default_sip_dir
-for p in (os.path.join(sip_dir, "PyQt6"),
-          os.path.join(sip_dir, "PyQt6-3"),
-          sip_dir,
-          os.path.join(cfg.default_mod_dir, "PyQt6", "bindings")):
+for p in (
+    os.path.join(sip_dir, "PyQt6"),
+    os.path.join(sip_dir, "PyQt6-3"),
+    sip_dir,
+    os.path.join(cfg.default_mod_dir, "PyQt6", "bindings"),
+):
     if os.path.exists(os.path.join(p, "QtCore", "QtCoremod.sip")):
         sip_dir = p
         break

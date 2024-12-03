@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvirtualpointcloudentity_p.h"
+#include "moc_qgsvirtualpointcloudentity_p.cpp"
 #include "qgsvirtualpointcloudprovider.h"
 #include "qgspointcloudlayerchunkloader_p.h"
 #include "qgschunkboundsentity_p.h"

@@ -535,22 +535,26 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
 #endif
 
     /**
-     * Freeze/thaw the map canvas. This is used to prevent the canvas from
+     * Freezes/thaws the map canvas. This is used to prevent the canvas from
      * responding to events while layers are being added/removed etc.
      * \param frozen Boolean specifying if the canvas should be frozen (TRUE) or
      * thawed (FALSE). Default is TRUE.
      * \see isFrozen()
-     * \see setRenderFlag(). freeze() should be used to programmatically halt map updates,
+     * \see setRenderFlag()
+     *
+     * \note freeze() should be used to programmatically halt map updates,
      * while setRenderFlag() should only be used when users disable rendering via GUI.
      */
     void freeze( bool frozen = true );
 
     /**
      * Returns TRUE if canvas is frozen.
-     * \see renderFlag(). isFrozen() should be used to determine whether map updates
+     * \see freeze()
+     * \see renderFlag()
+     *
+     * \note isFrozen() should be used to determine whether map updates
      * have been halted programmatically, while renderFlag() should be used to
      * determine whether a user has disabled rendering via GUI.
-     * \see freeze()
      */
     bool isFrozen() const;
 
@@ -558,7 +562,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * Returns TRUE if canvas render is disabled as a result of user disabling
      * renders via the GUI.
      * \see setRenderFlag()
-     * \see isFrozen(). isFrozen() should be used to determine whether map updates
+     * \see isFrozen()
+     *
+     * \note isFrozen() should be used to determine whether map updates
      * have been halted programmatically, while renderFlag() should be used to
      * determine whether a user has disabled rendering via GUI.
      */
@@ -938,7 +944,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * Sets whether a user has disabled canvas renders via the GUI.
      * \param flag set to FALSE to indicate that user has disabled renders
      * \see renderFlag()
-     * \see freeze(). freeze() should be used to programmatically halt map updates,
+     * \see freeze()
+     *
+     * \note freeze() should be used to programmatically halt map updates,
      * while setRenderFlag() should only be used when users disable rendering via GUI.
      */
     void setRenderFlag( bool flag );

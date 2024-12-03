@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolmodifyannotation.h"
+#include "moc_qgsmaptoolmodifyannotation.cpp"
 #include "qgsrubberband.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmapcanvas.h"

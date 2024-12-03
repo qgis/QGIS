@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmasksymbollayerwidget.h"
+#include "moc_qgsmasksymbollayerwidget.cpp"
 #include <QVBoxLayout>
 #include "qgsmasksymbollayer.h"
 

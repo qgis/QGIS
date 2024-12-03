@@ -21,8 +21,10 @@
 #include <QThread>
 
 #include "qgspointcloudlayerexporter.h"
+#include "moc_qgspointcloudlayerexporter.cpp"
 #include "qgsmemoryproviderutils.h"
 #include "qgspointcloudrequest.h"
+#include "qgsrectangle.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsgeos.h"
 
@@ -328,23 +330,23 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
       geometryFilterRectangle = envelope->boundingBox();
   }
 
-  QVector<IndexedPointCloudNode> nodes;
+  QVector<QgsPointCloudNodeId> nodes;
   qint64 pointCount = 0;
-  QQueue<IndexedPointCloudNode> queue;
+  QQueue<QgsPointCloudNodeId> queue;
   queue.push_back( mParent->mIndex->root() );
   while ( !queue.empty() )
   {
-    IndexedPointCloudNode node = queue.front();
+    QgsPointCloudNode node = mParent->mIndex->getNode( queue.front() );
     queue.pop_front();
-    const QgsRectangle nodeExtent = mParent->mIndex->nodeMapExtent( node );
-    if ( mParent->mExtent.intersects( nodeExtent ) &&
-         mParent->mZRange.overlaps( mParent->mIndex->nodeZRange( node ) ) &&
-         geometryFilterRectangle.intersects( nodeExtent ) )
+    const QgsBox3D nodeBounds = node.bounds();
+    if ( mParent->mExtent.intersects( nodeBounds.toRectangle() ) &&
+         mParent->mZRange.overlaps( { nodeBounds.zMinimum(), nodeBounds.zMaximum() } ) &&
+         geometryFilterRectangle.intersects( nodeBounds.toRectangle() ) )
     {
-      pointCount += mParent->mIndex->nodePointCount( node );
-      nodes.push_back( node );
+      pointCount += node.pointCount();
+      nodes.push_back( node.id() );
     }
-    for ( const IndexedPointCloudNode &child : mParent->mIndex->nodeChildren( node ) )
+    for ( const QgsPointCloudNodeId &child : node.children() )
     {
       queue.push_back( child );
     }
@@ -355,7 +357,7 @@ void QgsPointCloudLayerExporter::ExporterBase::run()
   request.setAttributes( mParent->requestedAttributeCollection() );
   std::unique_ptr<QgsPointCloudBlock> block = nullptr;
   qint64 pointsExported = 0;
-  for ( const IndexedPointCloudNode &node : nodes )
+  for ( const QgsPointCloudNodeId &node : nodes )
   {
     block = mParent->mIndex->nodeData( node, request );
     const QgsPointCloudAttributeCollection attributesCollection = block->attributes();

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsattributeformeditorwidget.h"
+#include "moc_qgsattributeformeditorwidget.cpp"
 #include "qgsattributeform.h"
 #include "qgsmultiedittoolbutton.h"
 #include "qgseditorwidgetwrapper.h"

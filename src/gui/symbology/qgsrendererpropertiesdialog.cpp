@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrendererpropertiesdialog.h"
+#include "moc_qgsrendererpropertiesdialog.cpp"
 
 #include "qgsrenderer.h"
 #include "qgsrendererregistry.h"

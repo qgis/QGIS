@@ -18,6 +18,7 @@
 #include <QVector3D>
 #include <QDir>
 #include <QImage>
+#include <QMatrix4x4>
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
@@ -49,14 +50,13 @@ void insertIndexData( QVector<uint> &vertexIndex, const QVector<T> &faceIndex )
   }
 }
 
-void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, float scale, const QVector3D &translation )
+void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, const QMatrix4x4 &transform )
 {
   for ( int i = 0; i < positionsBuffer.size(); i += 3 )
   {
-    for ( int j = 0; j < 3; ++j )
-    {
-      mVertexPosition << positionsBuffer[i + j] * scale + translation[j];
-    }
+    const QVector3D position( positionsBuffer[i], positionsBuffer[i + 1], positionsBuffer[i + 2] );
+    const QVector3D positionFinal = transform.map( position );
+    mVertexPosition << positionFinal.x() << positionFinal.y() << positionFinal.z();
   }
 }
 
@@ -71,9 +71,25 @@ void Qgs3DExportObject::setupLine( const QVector<uint> &lineIndexes )
   for ( int i = 0; i < mVertexPosition.size(); i += 3 ) mIndexes << i / 3 + 1;
 }
 
-void Qgs3DExportObject::setupNormalCoordinates( const QVector<float> &normalsBuffer )
+void Qgs3DExportObject::setupNormalCoordinates( const QVector<float> &normalsBuffer, const QMatrix4x4 &transform )
 {
-  mNormals << normalsBuffer;
+  // Qt does not provide QMatrix3x3 * QVector3D multiplication so we use QMatrix4x4
+  QMatrix3x3 normal3x3 = transform.normalMatrix();
+  QMatrix4x4 normal4x4( normal3x3( 0, 0 ), normal3x3( 0, 1 ), normal3x3( 0, 2 ), 0,
+                        normal3x3( 1, 0 ), normal3x3( 1, 1 ), normal3x3( 1, 2 ), 0,
+                        normal3x3( 2, 0 ), normal3x3( 2, 1 ), normal3x3( 2, 2 ), 0,
+                        0, 0, 0, 1 );
+
+  for ( int i = 0; i < normalsBuffer.size(); i += 3 )
+  {
+    const QVector3D normalVector( normalsBuffer[i], normalsBuffer[i + 1], normalsBuffer[i + 2] );
+    QVector3D v = normal4x4.mapVector( normalVector );
+    // round numbers very close to zero to avoid tiny numbers like 6e-8 in export
+    if ( qgsFloatNear( v.x(), 0 ) ) v.setX( 0 );
+    if ( qgsFloatNear( v.y(), 0 ) ) v.setY( 0 );
+    if ( qgsFloatNear( v.z(), 0 ) ) v.setZ( 0 );
+    mNormals << v.x() << v.y() << v.z();
+  }
 }
 
 void Qgs3DExportObject::setupTextureCoordinates( const QVector<float> &texturesBuffer )

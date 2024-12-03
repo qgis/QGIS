@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsshortcutsmanager.h"
+#include "moc_qgsshortcutsmanager.cpp"
 #include "qgslogger.h"
 #include "qgssettings.h"
 

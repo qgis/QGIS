@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslinematerial_p.h"
+#include "moc_qgslinematerial_p.cpp"
 
 #include <QColor>
 #include <QSizeF>

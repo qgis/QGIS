@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dsymbolwidget.h"
+#include "moc_qgs3dsymbolwidget.cpp"
 #include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgsabstract3dsymbol.h"

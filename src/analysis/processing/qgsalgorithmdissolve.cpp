@@ -202,6 +202,8 @@ QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &paramet
     }
   }
 
+  sink->finalize();
+
   return outputs;
 }
 

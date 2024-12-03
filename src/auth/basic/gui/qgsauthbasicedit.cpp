@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthbasicedit.h"
+#include "moc_qgsauthbasicedit.cpp"
 #include "ui_qgsauthbasicedit.h"
 
 

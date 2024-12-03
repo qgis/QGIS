@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgszipitem.h"
+#include "moc_qgszipitem.cpp"
 #include "qgsapplication.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"

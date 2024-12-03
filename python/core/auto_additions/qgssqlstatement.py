@@ -5,5 +5,5 @@ try:
     QgsSQLStatement.stripQuotedIdentifier = staticmethod(QgsSQLStatement.stripQuotedIdentifier)
     QgsSQLStatement.stripMsQuotedIdentifier = staticmethod(QgsSQLStatement.stripMsQuotedIdentifier)
     QgsSQLStatement.quotedString = staticmethod(QgsSQLStatement.quotedString)
-except NameError:
+except (NameError, AttributeError):
     pass

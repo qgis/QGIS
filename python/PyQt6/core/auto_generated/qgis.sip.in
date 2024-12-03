@@ -852,6 +852,27 @@ The development version
     typedef QFlags<Qgis::RasterRendererCapability> RasterRendererCapabilities;
 
 
+    enum class RasterRangeLimit /BaseType=IntEnum/
+      {
+      NotSet,
+      MinimumMaximum,
+      StdDev,
+      CumulativeCut
+    };
+
+    enum class RasterRangeExtent /BaseType=IntEnum/
+      {
+      WholeRaster,
+      FixedCanvas,
+      UpdatedCanvas,
+    };
+
+    enum class RasterRangeAccuracy /BaseType=IntEnum/
+      {
+      Exact,
+      Estimated,
+    };
+
     enum class RasterAttributeTableFieldUsage /BaseType=IntEnum/
     {
       Generic,
@@ -1591,13 +1612,16 @@ The development version
       RectangleAscentBased,
     };
 
-    enum class TextComponent /BaseType=IntEnum/
-      {
+    enum class TextComponent /BaseType=IntFlag/
+    {
       Text,
       Buffer,
       Background,
       Shadow,
     };
+
+    typedef QFlags<Qgis::TextComponent> TextComponents;
+
 
     enum class TextHorizontalAlignment /BaseType=IntEnum/
       {
@@ -3017,6 +3041,7 @@ The development version
       Other,
     };
 
+
     enum class ZonalStatistic /BaseType=IntFlag/
     {
       Count,
@@ -3031,7 +3056,10 @@ The development version
       Majority,
       Variety,
       Variance,
+      MinimumPoint,
+      MaximumPoint,
       All,
+      AllNumeric,
       Default,
     };
 
@@ -3167,6 +3195,35 @@ The development version
     {
       Rgb,
       Cmyk,
+    };
+
+    enum class DocumentationApi /BaseType=IntEnum/
+    {
+      PyQgis,
+      PyQgisSearch,
+      CppQgis,
+      Qt,
+    };
+
+    enum class DocumentationBrowser /BaseType=IntEnum/
+    {
+      DeveloperToolsPanel,
+      SystemWebBrowser,
+    };
+
+    enum class MouseHandlesAction /BaseType=IntEnum/
+    {
+      MoveItem,
+      ResizeUp,
+      ResizeDown,
+      ResizeLeft,
+      ResizeRight,
+      ResizeLeftUp,
+      ResizeRightUp,
+      ResizeLeftDown,
+      ResizeRightDown,
+      SelectItem,
+      NoAction
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -3328,6 +3385,8 @@ QFlags<Qgis::SymbolLayerUserFlag> operator|(Qgis::SymbolLayerUserFlag f1, QFlags
 QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgis::SymbolPreviewFlag> f2);
 
 QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);
+
+QFlags<Qgis::TextComponent> operator|(Qgis::TextComponent f1, QFlags<Qgis::TextComponent> f2);
 
 QFlags<Qgis::TextRendererFlag> operator|(Qgis::TextRendererFlag f1, QFlags<Qgis::TextRendererFlag> f2);
 

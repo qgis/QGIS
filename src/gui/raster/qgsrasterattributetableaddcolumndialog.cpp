@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterattributetableaddcolumndialog.h"
+#include "moc_qgsrasterattributetableaddcolumndialog.cpp"
 #include "qgsrasterattributetable.h"
 #include "qgsgui.h"
 

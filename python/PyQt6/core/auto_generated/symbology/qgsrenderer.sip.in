@@ -216,7 +216,7 @@ and generate a proper subclass.
 :return: A copy of this renderer
 %End
 
-    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 %Docstring
 Render a feature using this renderer in the given context.
 Must be called between :py:func:`~QgsFeatureRenderer.startRender` and :py:func:`~QgsFeatureRenderer.stopRender` calls.
@@ -633,7 +633,7 @@ Currently clones
   protected:
     QgsFeatureRenderer( const QString &type );
 
-    void renderFeatureWithSymbol( const QgsFeature &feature, QgsSymbol *symbol, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker ) throw( QgsCsException );
+    void renderFeatureWithSymbol( const QgsFeature &feature, QgsSymbol *symbol, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker );
 %Docstring
 Render the ``feature`` with the ``symbol`` using ``context``.
 Use ``layer`` to specify the symbol layer, ``selected`` to

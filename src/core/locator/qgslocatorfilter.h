@@ -36,6 +36,15 @@ class QgsLocatorFilter;
  */
 class CORE_EXPORT QgsLocatorResult
 {
+    Q_GADGET
+
+    Q_PROPERTY( QVariant userData READ userData WRITE setUserData )
+    Q_PROPERTY( QString displayString MEMBER displayString )
+    Q_PROPERTY( QString description MEMBER description )
+    Q_PROPERTY( double score MEMBER score )
+    Q_PROPERTY( QString group MEMBER group )
+    Q_PROPERTY( double groupScore MEMBER groupScore )
+
   public:
 
     QgsLocatorResult() = default;

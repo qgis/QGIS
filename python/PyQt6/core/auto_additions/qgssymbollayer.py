@@ -621,17 +621,17 @@ QgsLineSymbolLayer.InteriorRingsOnly = QgsLineSymbolLayer.RenderRingFilter.Inter
 try:
     QgsMarkerSymbolLayer._rotatedOffset = staticmethod(QgsMarkerSymbolLayer._rotatedOffset)
     QgsMarkerSymbolLayer.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsSymbolLayer.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsLineSymbolLayer.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsFillSymbolLayer.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

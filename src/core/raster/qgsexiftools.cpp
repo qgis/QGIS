@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsexiftools.h"
+#include "moc_qgsexiftools.cpp"
 #include "qgspoint.h"
 
 #include <exiv2/exiv2.hpp>

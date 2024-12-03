@@ -142,14 +142,14 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
 
     QHash< double, qgssize > fUniqueValues;
     QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( mRasterInterface.get(), mRasterBand, featureGeometry, nCellsX, nCellsY, mCellSizeX, mCellSizeY,
-    rasterBlockExtent, [ &fUniqueValues]( double value ) { fUniqueValues[value]++; }, false );
+    rasterBlockExtent, [ &fUniqueValues]( double value, const QgsPointXY & ) { fUniqueValues[value]++; }, false );
 
     if ( fUniqueValues.count() < 1 )
     {
       // The cell resolution is probably larger than the polygon area. We switch to slower precise pixel - polygon intersection in this case
       // TODO: eventually deal with weight if needed
       QgsRasterAnalysisUtils::statisticsFromPreciseIntersection( mRasterInterface.get(), mRasterBand, featureGeometry, nCellsX, nCellsY, mCellSizeX, mCellSizeY,
-      rasterBlockExtent, [ &fUniqueValues]( double value, double ) { fUniqueValues[value]++; }, false );
+      rasterBlockExtent, [ &fUniqueValues]( double value, double, const QgsPointXY & ) { fUniqueValues[value]++; }, false );
     }
 
     for ( auto it = fUniqueValues.constBegin(); it != fUniqueValues.constEnd(); ++it )
@@ -197,6 +197,8 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
     if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
   }
+
+  sink->finalize();
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );

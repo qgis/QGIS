@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "offline_editing_plugin_gui.h"
+#include "moc_offline_editing_plugin_gui.cpp"
 
 #include "qgshelp.h"
 #include "qgslayertree.h"
@@ -163,11 +164,7 @@ void QgsOfflineEditingPluginGui::mBrowseButton_clicked()
     case QgsOfflineEditing::GPKG:
     {
       //GeoPackage
-      QString fileName = QFileDialog::getSaveFileName( this,
-                         tr( "Select target database for offline data" ),
-                         QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ),
-                         tr( "GeoPackage" ) + " (*.gpkg);;"
-                         + tr( "All files" ) + " (*.*)" );
+      QString fileName = QFileDialog::getSaveFileName( this, tr( "Select target database for offline data" ), QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ), tr( "GeoPackage" ) + " (*.gpkg);;" + tr( "All files" ) + " (*.*)" );
 
       if ( !fileName.isEmpty() )
       {
@@ -185,11 +182,7 @@ void QgsOfflineEditingPluginGui::mBrowseButton_clicked()
     case QgsOfflineEditing::SpatiaLite:
     {
       //SpaciaLite
-      QString fileName = QFileDialog::getSaveFileName( this,
-                         tr( "Select target database for offline data" ),
-                         QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ),
-                         tr( "SpatiaLite DB" ) + " (*.sqlite);;"
-                         + tr( "All files" ) + " (*.*)" );
+      QString fileName = QFileDialog::getSaveFileName( this, tr( "Select target database for offline data" ), QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ), tr( "SpatiaLite DB" ) + " (*.sqlite);;" + tr( "All files" ) + " (*.*)" );
 
       if ( !fileName.isEmpty() )
       {
@@ -280,4 +273,3 @@ void QgsOfflineEditingPluginGui::datatypeChanged( int index )
   }
   mOfflineDataPathLineEdit->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );
 }
-

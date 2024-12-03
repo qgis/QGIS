@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvectortileconnectiondialog.h"
+#include "moc_qgsvectortileconnectiondialog.cpp"
 #include "qgsvectortileconnection.h"
 #include "qgsgui.h"
 #include "qgshelp.h"

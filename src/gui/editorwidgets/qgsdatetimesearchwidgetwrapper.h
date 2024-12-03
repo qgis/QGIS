@@ -77,7 +77,6 @@ class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
 
   private:
     QgsDateTimeEdit *mDateTimeEdit = nullptr;
-    QgsVectorLayer *mLayer = nullptr;
 
     friend class QgsDateTimeEditFactory;
 };

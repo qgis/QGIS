@@ -124,6 +124,7 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
     outputs.insert( QStringLiteral( "OUTPUT" ), dest );
 
     QgsOverlayUtils::resolveOverlaps( *sourceA, *sink, feedback );
+    sink->finalize();
     return outputs;
   }
   else

@@ -191,9 +191,9 @@ Returns transform for individual objects represented by the symbol
 Sets transform for individual objects represented by the symbol
 %End
 
-    QMatrix4x4 billboardTransform() const;
+    float billboardHeight() const;
 %Docstring
-Returns transform for billboards
+Returns how much the billboard should be elevated upwards
 %End
 
   private:

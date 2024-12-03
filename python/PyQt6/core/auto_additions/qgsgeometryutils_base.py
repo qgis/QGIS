@@ -36,5 +36,5 @@ try:
     QgsGeometryUtilsBase.project = staticmethod(QgsGeometryUtilsBase.project)
     QgsGeometryUtilsBase.azimuth = staticmethod(QgsGeometryUtilsBase.azimuth)
     QgsGeometryUtilsBase.__group__ = ['geometry']
-except NameError:
+except (NameError, AttributeError):
     pass

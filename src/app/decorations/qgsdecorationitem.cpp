@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsdecorationitem.h"
+#include "moc_qgsdecorationitem.cpp"
 
 #include "qgisapp.h"
 #include "qgslogger.h"
@@ -58,13 +59,13 @@ void QgsDecorationItem::update()
 void QgsDecorationItem::projectRead()
 {
   mEnabled = QgsProject::instance()->readBoolEntry( mConfigurationName, QStringLiteral( "/Enabled" ), false );
-  mPlacement = static_cast< Placement >( QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/Placement" ), static_cast< int >( mPlacement ) ) );
+  mPlacement = static_cast<Placement>( QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/Placement" ), static_cast<int>( mPlacement ) ) );
   mMarginUnit = QgsUnitTypes::decodeRenderUnit( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/MarginUnit" ), QgsUnitTypes::encodeUnit( mMarginUnit ) ) );
 }
 
 void QgsDecorationItem::saveToProject()
 {
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Enabled" ), mEnabled );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Placement" ), static_cast< int >( mPlacement ) );
+  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Placement" ), static_cast<int>( mPlacement ) );
   QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginUnit" ), QgsUnitTypes::encodeUnit( mMarginUnit ) );
 }

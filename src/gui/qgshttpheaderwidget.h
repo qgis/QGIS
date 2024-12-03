@@ -62,7 +62,7 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
      * \see QgsHttpHeaders::setFromSettings()
      * \param settings
      * \param key
-     * \deprecated QGIS 3.30. Use setFromHeaders instead.
+     * \deprecated QGIS 3.30. Use setFromHeaders() instead.
      */
     Q_DECL_DEPRECATED void setFromSettings( const QgsSettings &settings, const QString &key ) SIP_DEPRECATED;
 

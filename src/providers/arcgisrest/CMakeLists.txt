@@ -14,7 +14,7 @@ if (WITH_GUI)
     qgsarcgisrestsourcewidget.cpp
     qgsnewarcgisrestconnection.cpp
   )
-  
+
   set(AFS_UIS
     ${CMAKE_SOURCE_DIR}/src/ui/qgsarcgisrestsourcewidgetbase.ui
     ${CMAKE_SOURCE_DIR}/src/ui/qgsarcgisservicesourceselectbase.ui
@@ -23,6 +23,8 @@ if (WITH_GUI)
 endif()
 
 add_library (provider_arcgisfeatureserver_a STATIC ${AFS_SRCS})
+
+set_target_properties(provider_arcgisfeatureserver_a PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
 target_include_directories(provider_arcgisfeatureserver_a PUBLIC
   ${CMAKE_SOURCE_DIR}/src/providers/arcgisrest
@@ -45,12 +47,14 @@ if (WITH_GUI)
   else()
     QT5_WRAP_UI(AFS_UIS_H ${AFS_UIS})
   endif()
-  
+
   add_library(provider_arcgisfeatureserver_gui_a STATIC ${AFS_GUI_SRCS} ${AFS_UIS_H})
+
+  set_target_properties(provider_arcgisfeatureserver_gui_a PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
   # require c++17
   target_compile_features(provider_arcgisfeatureserver_gui_a PRIVATE cxx_std_17)
-  
+
   target_link_libraries(provider_arcgisfeatureserver_a
     qgis_gui
   )
@@ -74,15 +78,17 @@ if (FORCE_STATIC_LIBS)
   endif()
 else()
   add_library(provider_arcgisfeatureserver MODULE ${AFS_SRCS} ${AFS_GUI_SRCS} ${AFS_UIS_H})
-  
+
+  set_target_properties(provider_arcgisfeatureserver PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+
   target_link_libraries(provider_arcgisfeatureserver
     qgis_core
     ${QCA_LIBRARY}
   )
-  
+
   # require c++17
   target_compile_features(provider_arcgisfeatureserver PRIVATE cxx_std_17)
-  
+
   # We use private headers from core that need this
   target_compile_definitions(provider_arcgisfeatureserver PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
@@ -92,7 +98,7 @@ else()
     )
     add_dependencies(provider_arcgisfeatureserver ui)
   endif()
-  
+
   install (TARGETS provider_arcgisfeatureserver
     RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
     LIBRARY DESTINATION ${QGIS_PLUGIN_DIR}
@@ -127,17 +133,17 @@ if (FORCE_STATIC_LIBS)
   install (TARGETS provider_arcgismapserver_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
 else()
   add_library(provider_arcgismapserver MODULE ${AMS_SRCS})
-  
+
   # require c++17
   target_compile_features(provider_arcgismapserver PRIVATE cxx_std_17)
   # We use private headers from core that need this
   target_compile_definitions(provider_arcgismapserver PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
-  
+
   target_link_libraries(provider_arcgismapserver
     qgis_core
     ${QCA_LIBRARY}
   )
-  
+
   install (TARGETS provider_arcgismapserver
     RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
     LIBRARY DESTINATION ${QGIS_PLUGIN_DIR}

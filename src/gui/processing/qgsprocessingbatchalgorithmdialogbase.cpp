@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingbatchalgorithmdialogbase.h"
+#include "moc_qgsprocessingbatchalgorithmdialogbase.cpp"
 #include "qgsprocessingbatch.h"
 #include "qgsproxyprogresstask.h"
 #include "qgsprocessingalgorithm.h"

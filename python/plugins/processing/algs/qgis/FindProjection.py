@@ -15,27 +15,29 @@
 ***************************************************************************
 """
 
-__author__ = 'Nyall Dawson'
-__date__ = 'February 2017'
-__copyright__ = '(C) 2017, Nyall Dawson'
+__author__ = "Nyall Dawson"
+__date__ = "February 2017"
+__copyright__ = "(C) 2017, Nyall Dawson"
 
 import os
 
-from qgis.core import (QgsGeometry,
-                       QgsFeature,
-                       QgsFeatureSink,
-                       QgsField,
-                       QgsFields,
-                       QgsCoordinateReferenceSystem,
-                       QgsCoordinateTransform,
-                       QgsCoordinateTransformContext,
-                       QgsWkbTypes,
-                       QgsProcessingException,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterExtent,
-                       QgsProcessingParameterCrs,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterDefinition)
+from qgis.core import (
+    QgsGeometry,
+    QgsFeature,
+    QgsFeatureSink,
+    QgsField,
+    QgsFields,
+    QgsCoordinateReferenceSystem,
+    QgsCoordinateTransform,
+    QgsCoordinateTransformContext,
+    QgsWkbTypes,
+    QgsProcessingException,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterExtent,
+    QgsProcessingParameterCrs,
+    QgsProcessingParameterFeatureSink,
+    QgsProcessingParameterDefinition,
+)
 from qgis.PyQt.QtCore import QMetaType
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -44,48 +46,59 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class FindProjection(QgisAlgorithm):
-    INPUT = 'INPUT'
-    TARGET_AREA = 'TARGET_AREA'
-    TARGET_AREA_CRS = 'TARGET_AREA_CRS'
-    OUTPUT = 'OUTPUT'
+    INPUT = "INPUT"
+    TARGET_AREA = "TARGET_AREA"
+    TARGET_AREA_CRS = "TARGET_AREA_CRS"
+    OUTPUT = "OUTPUT"
 
     def tags(self):
-        return self.tr('crs,srs,coordinate,reference,system,guess,estimate,finder,determine').split(',')
+        return self.tr(
+            "crs,srs,coordinate,reference,system,guess,estimate,finder,determine"
+        ).split(",")
 
     def group(self):
-        return self.tr('Vector general')
+        return self.tr("Vector general")
 
     def groupId(self):
-        return 'vectorgeneral'
+        return "vectorgeneral"
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer')))
-        extent_parameter = QgsProcessingParameterExtent(self.TARGET_AREA,
-                                                        self.tr('Target area for layer'))
+        self.addParameter(
+            QgsProcessingParameterFeatureSource(self.INPUT, self.tr("Input layer"))
+        )
+        extent_parameter = QgsProcessingParameterExtent(
+            self.TARGET_AREA, self.tr("Target area for layer")
+        )
         self.addParameter(extent_parameter)
 
         # deprecated
-        crs_param = QgsProcessingParameterCrs(self.TARGET_AREA_CRS, 'Target area CRS', optional=True)
-        crs_param.setFlags(crs_param.flags() | QgsProcessingParameterDefinition.Flag.FlagHidden)
+        crs_param = QgsProcessingParameterCrs(
+            self.TARGET_AREA_CRS, "Target area CRS", optional=True
+        )
+        crs_param.setFlags(
+            crs_param.flags() | QgsProcessingParameterDefinition.Flag.FlagHidden
+        )
         self.addParameter(crs_param)
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
-                                                            self.tr('CRS candidates')))
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr("CRS candidates"))
+        )
 
     def name(self):
-        return 'findprojection'
+        return "findprojection"
 
     def displayName(self):
-        return self.tr('Find projection')
+        return self.tr("Find projection")
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
-            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+            raise QgsProcessingException(
+                self.invalidSourceError(parameters, self.INPUT)
+            )
 
         extent = self.parameterAsExtent(parameters, self.TARGET_AREA, context)
         target_crs = self.parameterAsExtentCrs(parameters, self.TARGET_AREA, context)
@@ -97,10 +110,16 @@ class FindProjection(QgisAlgorithm):
         target_geom = QgsGeometry.fromRect(extent)
 
         fields = QgsFields()
-        fields.append(QgsField('auth_id', QMetaType.Type.QString, '', 20))
+        fields.append(QgsField("auth_id", QMetaType.Type.QString, "", 20))
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.Type.NoGeometry, QgsCoordinateReferenceSystem())
+        (sink, dest_id) = self.parameterAsSink(
+            parameters,
+            self.OUTPUT,
+            context,
+            fields,
+            QgsWkbTypes.Type.NoGeometry,
+            QgsCoordinateReferenceSystem(),
+        )
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
@@ -124,7 +143,9 @@ class FindProjection(QgisAlgorithm):
             if not candidate_crs.isValid():
                 continue
 
-            transform_candidate = QgsCoordinateTransform(candidate_crs, target_crs, transform_context)
+            transform_candidate = QgsCoordinateTransform(
+                candidate_crs, target_crs, transform_context
+            )
             transform_candidate.setBallparkTransformsAreAppropriate(True)
             transform_candidate.disableFallbackOperationHandler(True)
             transformed_bounds = QgsGeometry(layer_bounds)
@@ -136,7 +157,11 @@ class FindProjection(QgisAlgorithm):
 
             try:
                 if engine.intersects(transformed_bounds.constGet()):
-                    feedback.pushInfo(self.tr('Found candidate CRS: {}').format(candidate_crs.authid()))
+                    feedback.pushInfo(
+                        self.tr("Found candidate CRS: {}").format(
+                            candidate_crs.authid()
+                        )
+                    )
                     f = QgsFeature(fields)
                     f.setAttributes([candidate_crs.authid()])
                     sink.addFeature(f, QgsFeatureSink.Flag.FastInsert)
@@ -147,6 +172,7 @@ class FindProjection(QgisAlgorithm):
             feedback.setProgress(int(current * total))
 
         if found_results == 0:
-            feedback.reportError(self.tr('No matching projections found'))
+            feedback.reportError(self.tr("No matching projections found"))
 
+        sink.finalize()
         return {self.OUTPUT: dest_id}

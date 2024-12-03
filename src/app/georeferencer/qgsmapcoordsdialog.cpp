@@ -18,6 +18,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsgeorefvalidators.h"
 #include "qgsmapcoordsdialog.h"
+#include "moc_qgsmapcoordsdialog.cpp"
 #include "qgssettings.h"
 #include "qgsmapmouseevent.h"
 #include "qgsgui.h"
@@ -56,8 +57,7 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, QgsGeorefDataP
 
   connect( mPointFromCanvasPushButton, &QAbstractButton::clicked, this, &QgsMapCoordsDialog::setToolEmitPoint );
 
-  connect( mToolEmitPoint, &QgsGeorefMapToolEmitPoint::canvasClicked,
-           this, &QgsMapCoordsDialog::maybeSetXY );
+  connect( mToolEmitPoint, &QgsGeorefMapToolEmitPoint::canvasClicked, this, &QgsMapCoordsDialog::maybeSetXY );
   connect( mToolEmitPoint, &QgsGeorefMapToolEmitPoint::mouseReleased, this, &QgsMapCoordsDialog::setPrevTool );
 
   connect( leXCoord, &QLineEdit::textChanged, this, &QgsMapCoordsDialog::updateOK );

@@ -353,7 +353,7 @@ namespace pal
 
     private:
 
-      LabelPosition::Quadrant quadrantFromOffset() const;
+      Qgis::LabelQuadrantPosition quadrantFromOffset() const;
 
       int mTotalRepeats = 0;
 

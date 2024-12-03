@@ -20,6 +20,7 @@
 #include <QCheckBox>
 
 #include "qgsmaskingwidget.h"
+#include "moc_qgsmaskingwidget.cpp"
 #include "qgsmasksourceselectionwidget.h"
 #include "qgssymbollayerselectionwidget.h"
 #include "qgssymbollayerreference.h"

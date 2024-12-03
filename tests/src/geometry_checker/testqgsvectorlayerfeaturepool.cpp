@@ -142,29 +142,59 @@ void TestQgsVectorLayerFeaturePool::changeGeometry()
   feat.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon((100 100, 110 100, 110 110, 100 110, 100 100))" ) ) );
   vl->updateFeature( feat );
 
-  // Still working on the cached data
+  // Cached data updated with geometryChanged vector layer signal
   const QgsFeatureIds ids3 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
-  QCOMPARE( ids3.size(), 1 );
+  QCOMPARE( ids3.size(), 0 );
 
-  // Repopulate the cache
-  const QgsFeatureIds ids4 = pool.getFeatures( QgsFeatureRequest().setFilterRect( QgsRectangle( 0, 0, 10, 10 ) ) );
-  QCOMPARE( ids4.size(), 0 );
-
-  // Still working on the cached data
-  const QgsFeatureIds ids5 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
-  QCOMPARE( ids5.size(), 0 );
+  // Verify that the geometry is up to date
+  pool.getFeature( 1, feat );
+  QCOMPARE( feat.geometry().asWkt(), QStringLiteral( "Polygon ((100 100, 110 100, 110 110, 100 110, 100 100))" ) );
 
   // Update a feature to be inside the AOI
   feat.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 0, 10 0, 10 10, 0 10, 0 0))" ) ) );
   vl->updateFeature( feat );
 
-  // Still cached
-  const QgsFeatureIds ids6 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
-  QCOMPARE( ids6.size(), 0 );
+  // Cached data updated with geometryChanged vector layer signal
+  const QgsFeatureIds ids4 = pool.getIntersects( QgsRectangle( 0, 0, 10, 10 ) );
+  QCOMPARE( ids4.size(), 1 );
 
-  // One in there again
-  const QgsFeatureIds ids7 = pool.getFeatures( QgsFeatureRequest().setFilterRect( QgsRectangle( 0, 0, 10, 10 ) ) );
-  QCOMPARE( ids7.size(), 1 );
+  // Verify that the geometry is up to date
+  pool.getFeature( 1, feat );
+  QCOMPARE( feat.geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0))" ) );
+
+  // Add enough features for the cache to be full
+  for ( int i = 0; i < 1100; i++ ) // max cache size is 1000
+  {
+    feat = QgsFeature();
+    feat.setGeometry( QgsGeometry::fromWkt( "Polygon (( 0 0, 20 0, 20 20, 0 20, 0 0))" ) );
+    vl->dataProvider()->addFeature( feat );
+  }
+
+  // Get all features: fill-in the cache
+  const QgsFeatureIds ids5 = pool.getFeatures( QgsFeatureRequest() );
+  QCOMPARE( ids5.size(), 1102 );
+
+  // Verify that the features 1 to 102 have been removed from the cache
+  for ( QgsFeatureId i : ids5 )
+  {
+    if ( i <= 102 )
+      QVERIFY( !pool.isFeatureCached( i ) );
+    else
+      QVERIFY( pool.isFeatureCached( i ) );
+  }
+
+  // Update enough features so that the first are removed from the cache
+  for ( int i = 100; i < 1103; i++ )
+  {
+    pool.getFeature( i, feat );
+    feat.setGeometry( QgsGeometry::fromWkt( "Polygon (( 0 0, 30 0, 30 30, 0 30, 0 0))" ) );
+    vl->updateFeature( feat );
+  }
+  QVERIFY( !pool.isFeatureCached( 102 ) );
+
+  // Verify that when we get a feature that is no more in the cache we have the updated geometry
+  pool.getFeature( 102, feat );
+  QCOMPARE( feat.geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 30 0, 30 30, 0 30, 0 0))" ) );
 }
 
 std::unique_ptr<QgsVectorLayer> TestQgsVectorLayerFeaturePool::createPopulatedLayer()

@@ -2,5 +2,5 @@
 try:
     QgsProcessingMapLayerComboBox.__attribute_docs__ = {'valueChanged': 'Emitted whenever the value is changed in the widget.\n'}
     QgsProcessingMapLayerComboBox.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass

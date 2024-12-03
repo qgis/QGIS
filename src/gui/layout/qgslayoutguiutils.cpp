@@ -523,6 +523,10 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     // cppcheck-suppress returnDanglingLifetime
     return f;
   } );
+  manualTableItemMetadata->setItemDoubleClickedFunction( [ = ]( QgsLayoutItem * item, Qgis::MouseHandlesAction )
+  {
+    QgsLayoutManualTableWidget::openTableDesigner( qobject_cast< QgsLayoutFrame * >( item ) );
+  } );
   registry->addLayoutItemGuiMetadata( manualTableItemMetadata.release() );
 
 

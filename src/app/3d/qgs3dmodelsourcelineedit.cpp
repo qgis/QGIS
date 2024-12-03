@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dmodelsourcelineedit.h"
+#include "moc_qgs3dmodelsourcelineedit.cpp"
 
 //
 // Qgs3DModelSourceLineEdit

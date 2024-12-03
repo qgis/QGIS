@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspgtablemodel.h"
+#include "moc_qgspgtablemodel.cpp"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
@@ -86,8 +87,8 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
 
   for ( int i = 0; i < layerProperty.size(); i++ )
   {
-    Qgis::WkbType wkbType = layerProperty.types[ i ];
-    const int srid = layerProperty.srids[ i ];
+    Qgis::WkbType wkbType = layerProperty.types[i];
+    const int srid = layerProperty.srids[i];
 
     if ( wkbType == Qgis::WkbType::Unknown && layerProperty.geometryColName.isEmpty() )
     {
@@ -96,7 +97,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
 
     QString tip;
     bool withTipButSelectable = false;
-    if ( ! layerProperty.isRaster )
+    if ( !layerProperty.isRaster )
     {
       if ( wkbType == Qgis::WkbType::Unknown )
       {
@@ -124,7 +125,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
       typeItem = new QStandardItem( QgsIconUtils::iconForWkbType( wkbType ), wkbType == Qgis::WkbType::Unknown ? tr( "Select…" ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
     }
     typeItem->setData( wkbType == Qgis::WkbType::Unknown, Qt::UserRole + 1 );
-    typeItem->setData( static_cast< quint32>( wkbType ), Qt::UserRole + 2 );
+    typeItem->setData( static_cast<quint32>( wkbType ), Qt::UserRole + 2 );
     typeItem->setData( layerProperty.isRaster, Qt::UserRole + 3 );
     if ( wkbType == Qgis::WkbType::Unknown )
       typeItem->setFlags( typeItem->flags() | Qt::ItemIsEditable );
@@ -133,7 +134,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
 
     QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
     QStandardItem *commentItem = new QStandardItem( layerProperty.tableComment );
-    if ( ! layerProperty.tableComment.isEmpty() )
+    if ( !layerProperty.tableComment.isEmpty() )
     {
       // word wrap
       QString commentText { layerProperty.tableComment };
@@ -143,8 +144,8 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
       commentItem->setToolTip( QStringLiteral( "<span>%1</span>" ).arg( commentText.replace( '\n', QLatin1String( "<br/>" ) ) ) );
       commentItem->setTextAlignment( Qt::AlignTop );
     }
-    QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
-    QStandardItem *sridItem  = new QStandardItem( wkbType != Qgis::WkbType::NoGeometry ? QString::number( srid ) : QString() );
+    QStandardItem *geomItem = new QStandardItem( layerProperty.geometryColName );
+    QStandardItem *sridItem = new QStandardItem( wkbType != Qgis::WkbType::NoGeometry ? QString::number( srid ) : QString() );
     sridItem->setEditable( wkbType != Qgis::WkbType::NoGeometry && srid == std::numeric_limits<int>::min() );
     if ( sridItem->isEditable() )
     {
@@ -182,7 +183,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     selItem->setCheckState( Qt::Checked );
     selItem->setToolTip( headerData( Columns::DbtmSelectAtId, Qt::Orientation::Horizontal, Qt::ToolTipRole ).toString() );
 
-    QStandardItem *checkPkUnicityItem  = new QStandardItem( QString() );
+    QStandardItem *checkPkUnicityItem = new QStandardItem( QString() );
     checkPkUnicityItem->setFlags( checkPkUnicityItem->flags() | Qt::ItemIsUserCheckable );
 
     // Legacy: default value is determined by project option to trust layer's metadata
@@ -192,7 +193,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     {
       case Qgis::PostgresRelKind::View:
       case Qgis::PostgresRelKind::MaterializedView:
-        checkPkUnicityItem->setCheckState( ( QgsProject::instance( )->flags() & Qgis::ProjectFlag::TrustStoredLayerStatistics ) ? Qt::CheckState::Unchecked : Qt::CheckState::Checked );
+        checkPkUnicityItem->setCheckState( ( QgsProject::instance()->flags() & Qgis::ProjectFlag::TrustStoredLayerStatistics ) ? Qt::CheckState::Unchecked : Qt::CheckState::Checked );
         checkPkUnicityItem->setToolTip( headerData( Columns::DbtmCheckPkUnicity, Qt::Orientation::Horizontal, Qt::ToolTipRole ).toString() );
         break;
 
@@ -206,7 +207,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
       case Qgis::PostgresRelKind::ForeignTable:
       case Qgis::PostgresRelKind::PartitionedTable:
         checkPkUnicityItem->setCheckState( Qt::CheckState::Unchecked );
-        checkPkUnicityItem->setFlags( checkPkUnicityItem->flags() & ~ Qt::ItemIsEnabled );
+        checkPkUnicityItem->setFlags( checkPkUnicityItem->flags() & ~Qt::ItemIsEnabled );
         checkPkUnicityItem->setToolTip( tr( "This option is only available for views and materialized views." ) );
         break;
     }
@@ -216,9 +217,9 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     // For rasters, disable
     if ( layerProperty.isRaster )
     {
-      selItem->setFlags( selItem->flags() & ~ Qt::ItemIsUserCheckable );
+      selItem->setFlags( selItem->flags() & ~Qt::ItemIsUserCheckable );
       selItem->setCheckState( Qt::Unchecked );
-      checkPkUnicityItem->setFlags( checkPkUnicityItem->flags() & ~ Qt::ItemIsUserCheckable );
+      checkPkUnicityItem->setFlags( checkPkUnicityItem->flags() & ~Qt::ItemIsUserCheckable );
       checkPkUnicityItem->setCheckState( Qt::Unchecked );
     }
 
@@ -363,7 +364,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
 
   if ( idx.column() == DbtmType || idx.column() == DbtmSrid || idx.column() == DbtmPkCol )
   {
-    const Qgis::WkbType wkbType = static_cast< Qgis::WkbType >( idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt() );
+    const Qgis::WkbType wkbType = static_cast<Qgis::WkbType>( idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt() );
 
     QString tip;
     if ( wkbType == Qgis::WkbType::Unknown )
@@ -447,13 +448,9 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
       const QString tableName = index.sibling( index.row(), DbtmTable ).data( Qt::DisplayRole ).toString();
       const QString geomColumnName = index.sibling( index.row(), DbtmGeomCol ).data( Qt::DisplayRole ).toString();
       QString connString { QStringLiteral( "PG: %1 mode=2 %2schema='%3' column='%4' table='%5'" )
-                           .arg( connInfo,
-                                 cols.isEmpty() ? QString() : QStringLiteral( "key='%1' " ).arg( cols.join( ',' ) ),
-                                 schemaName,
-                                 geomColumnName,
-                                 tableName ) };
+                             .arg( connInfo, cols.isEmpty() ? QString() : QStringLiteral( "key='%1' " ).arg( cols.join( ',' ) ), schemaName, geomColumnName, tableName ) };
       const QString sql { index.sibling( index.row(), DbtmSql ).data( Qt::DisplayRole ).toString() };
-      if ( ! sql.isEmpty() )
+      if ( !sql.isEmpty() )
       {
         connString.append( QStringLiteral( " sql=%1" ).arg( sql ) );
       }
@@ -488,7 +485,7 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
 
     srid = index.sibling( index.row(), DbtmSrid ).data( Qt::DisplayRole ).toString();
     bool ok;
-    ( void )srid.toInt( &ok );
+    ( void ) srid.toInt( &ok );
     if ( !ok )
     {
       QgsDebugError( QStringLiteral( "srid not numeric" ) );
@@ -521,4 +518,3 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, const QString &conn
   QgsDebugMsgLevel( QStringLiteral( "returning uri %1" ).arg( uri.uri( false ) ), 2 );
   return uri.uri( false );
 }
-

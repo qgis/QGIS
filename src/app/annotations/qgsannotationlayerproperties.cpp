@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsannotationlayerproperties.h"
+#include "moc_qgsannotationlayerproperties.cpp"
 #include "qgshelp.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsgui.h"
@@ -58,8 +59,7 @@ QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *
   QgsSettings settings;
   if ( !settings.contains( QStringLiteral( "/Windows/AnnotationLayerProperties/tab" ) ) )
   {
-    settings.setValue( QStringLiteral( "Windows/AnnotationLayerProperties/tab" ),
-                       mOptStackedWidget->indexOf( mOptsPage_Information ) );
+    settings.setValue( QStringLiteral( "Windows/AnnotationLayerProperties/tab" ), mOptStackedWidget->indexOf( mOptsPage_Information ) );
   }
 
   mBtnStyle = new QPushButton( tr( "Style" ) );

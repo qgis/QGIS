@@ -2,17 +2,17 @@
 try:
     QgsInterpolatedLineSymbolLayer.create = staticmethod(QgsInterpolatedLineSymbolLayer.create)
     QgsInterpolatedLineSymbolLayer.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsInterpolatedLineColor.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsInterpolatedLineWidth.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsInterpolatedLineRenderer.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

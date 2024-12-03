@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsqueryresultwidget.h"
+#include "moc_qgsqueryresultwidget.cpp"
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsexpressionutils.h"
 #include "qgscodeeditorsql.h"
@@ -520,7 +521,7 @@ void QgsQueryResultWidget::copyResults( int fromRow, int toRow, int fromColumn, 
 
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsQueryResultWidget::sqlVectorLayerOptions() const
 {
-  mSqlVectorLayerOptions.sql = mSqlEditor->text();
+  mSqlVectorLayerOptions.sql = mSqlEditor->text().replace( QRegularExpression( ";\\s*$" ), QString() );
   mSqlVectorLayerOptions.filter = mFilterLineEdit->text();
   mSqlVectorLayerOptions.primaryKeyColumns = mPkColumnsComboBox->checkedItems();
   mSqlVectorLayerOptions.geometryColumn = mGeometryColumnComboBox->currentText();

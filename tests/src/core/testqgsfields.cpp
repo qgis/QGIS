@@ -20,19 +20,19 @@
 
 #include "qgsfields.h"
 
-class TestQgsFields: public QObject
+class TestQgsFields : public QObject
 {
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
-    void create();//test creating a data defined container
-    void copy();// test cpy destruction (double delete)
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
+    void create();          //test creating a data defined container
+    void copy();            // test cpy destruction (double delete)
     void assignment();
-    void equality(); //test equality operators
+    void equality();  //test equality operators
     void asVariant(); //test conversion to and from a QVariant
     void construct();
     void clear();
@@ -63,22 +63,18 @@ class TestQgsFields: public QObject
 
 void TestQgsFields::initTestCase()
 {
-
 }
 
 void TestQgsFields::cleanupTestCase()
 {
-
 }
 
 void TestQgsFields::init()
 {
-
 }
 
 void TestQgsFields::cleanup()
 {
-
 }
 
 void TestQgsFields::create()
@@ -171,12 +167,11 @@ void TestQgsFields::construct()
 {
   // construct using a list of fields
   QgsFields fields(
-    QList< QgsField >
-  {
-    QgsField( QStringLiteral( "field1" ), QMetaType::Type::QString ),
-    QgsField( QStringLiteral( "field2" ), QMetaType::Type::Int ),
-    QgsField( QStringLiteral( "field3" ), QMetaType::Type::Double ),
-  }
+    QList<QgsField> {
+      QgsField( QStringLiteral( "field1" ), QMetaType::Type::QString ),
+      QgsField( QStringLiteral( "field2" ), QMetaType::Type::Int ),
+      QgsField( QStringLiteral( "field3" ), QMetaType::Type::Double ),
+    }
   );
 
   QCOMPARE( fields.size(), 3 );
@@ -401,9 +396,9 @@ void TestQgsFields::indexFromName()
   QCOMPARE( fields.lookupField( QString( "teStFiEld2" ) ), 1 );
 
   //test that fieldNameIndex prefers exact case matches over case insensitive matches
-  const QgsField sameNameDifferentCase( QStringLiteral( "teStFielD" ) );  //#spellok
+  const QgsField sameNameDifferentCase( QStringLiteral( "teStFielD" ) ); //#spellok
   fields.append( sameNameDifferentCase );
-  QCOMPARE( fields.lookupField( QString( "teStFielD" ) ), 4 );  //#spellok
+  QCOMPARE( fields.lookupField( QString( "teStFielD" ) ), 4 ); //#spellok
 
   //test that the alias is only matched with fieldNameIndex
   QCOMPARE( fields.indexFromName( "testfieldAlias" ), -1 );
@@ -500,7 +495,7 @@ void TestQgsFields::dataStream()
 
   QCOMPARE( resultFields, originalFields );
   QCOMPARE( resultFields.field( 0 ).typeName(), originalFields.field( 0 ).typeName() ); //typename is NOT required for equality
-  QCOMPARE( resultFields.field( 0 ).comment(), originalFields.field( 0 ).comment() ); //comment is NOT required for equality
+  QCOMPARE( resultFields.field( 0 ).comment(), originalFields.field( 0 ).comment() );   //comment is NOT required for equality
   QCOMPARE( resultFields.field( 1 ).typeName(), originalFields.field( 1 ).typeName() );
   QCOMPARE( resultFields.field( 1 ).comment(), originalFields.field( 1 ).comment() );
 }
@@ -596,7 +591,7 @@ void TestQgsFields::constIterator()
 
   //test with empty fields
   QCOMPARE( fields.constBegin(), fields.constEnd() );
-  QCOMPARE( const_cast< const QgsFields * >( &fields )->begin(), const_cast< const QgsFields * >( &fields )->end() );
+  QCOMPARE( const_cast<const QgsFields *>( &fields )->begin(), const_cast<const QgsFields *>( &fields )->end() );
   for ( const QgsField &f : fields )
   {
     Q_UNUSED( f );
@@ -656,13 +651,12 @@ void TestQgsFields::appendList()
   QgsFields fields;
 
   QVERIFY( fields.append(
-             QList< QgsField >
-  {
-    QgsField( QStringLiteral( "field1" ), QMetaType::Type::QString ),
-    QgsField( QStringLiteral( "field2" ), QMetaType::Type::Int ),
-    QgsField( QStringLiteral( "field3" ), QMetaType::Type::Double ),
-  }
-           ) );
+    QList<QgsField> {
+      QgsField( QStringLiteral( "field1" ), QMetaType::Type::QString ),
+      QgsField( QStringLiteral( "field2" ), QMetaType::Type::Int ),
+      QgsField( QStringLiteral( "field3" ), QMetaType::Type::Double ),
+    }
+  ) );
 
   QCOMPARE( fields.size(), 3 );
   QCOMPARE( fields.at( 0 ).name(), QStringLiteral( "field1" ) );
@@ -680,22 +674,21 @@ void TestQgsFields::appendList()
 
   // should be rejected, duplicate field name
   QVERIFY( !fields.append(
-             QList< QgsField >
-  {
-    QgsField( QStringLiteral( "field1" ), QMetaType::Type::QString )
-  }
-           ) );
+    QList<QgsField> {
+      QgsField( QStringLiteral( "field1" ), QMetaType::Type::QString )
+    }
+  ) );
 
   QCOMPARE( fields.size(), 3 );
 
   QVERIFY( fields.append(
-             QList< QgsField >
-  {
-    QgsField( QStringLiteral( "field4" ), QMetaType::Type::QString ),
-    QgsField( QStringLiteral( "field5" ), QMetaType::Type::Int ),
-    QgsField( QStringLiteral( "field6" ), QMetaType::Type::Double ),
-  }, Qgis::FieldOrigin::Join
-           ) );
+    QList<QgsField> {
+      QgsField( QStringLiteral( "field4" ), QMetaType::Type::QString ),
+      QgsField( QStringLiteral( "field5" ), QMetaType::Type::Int ),
+      QgsField( QStringLiteral( "field6" ), QMetaType::Type::Double ),
+    },
+    Qgis::FieldOrigin::Join
+  ) );
 
   QCOMPARE( fields.size(), 6 );
   QCOMPARE( fields.at( 0 ).name(), QStringLiteral( "field1" ) );

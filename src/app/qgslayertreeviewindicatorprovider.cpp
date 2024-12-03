@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayertreeviewindicatorprovider.h"
+#include "moc_qgslayertreeviewindicatorprovider.cpp"
 
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
@@ -31,7 +32,6 @@ QgsLayerTreeViewIndicatorProvider::QgsLayerTreeViewIndicatorProvider( QgsLayerTr
   : QObject( view )
   , mLayerTreeView( view )
 {
-
   QgsLayerTree *tree = mLayerTreeView->layerTreeModel()->rootGroup();
   onAddedChildren( tree, 0, tree->children().count() - 1 );
 
@@ -53,7 +53,7 @@ void QgsLayerTreeViewIndicatorProvider::onAddedChildren( QgsLayerTreeNode *node,
     }
     else if ( QgsLayerTree::isLayer( childNode ) )
     {
-      if ( QgsLayerTreeLayer *layerNode = qobject_cast< QgsLayerTreeLayer * >( childNode ) )
+      if ( QgsLayerTreeLayer *layerNode = qobject_cast<QgsLayerTreeLayer *>( childNode ) )
       {
         if ( layerNode->layer() )
         {
@@ -86,8 +86,7 @@ void QgsLayerTreeViewIndicatorProvider::onWillRemoveChildren( QgsLayerTreeNode *
     else if ( QgsLayerTree::isLayer( childNode ) )
     {
       QgsLayerTreeLayer *childLayerNode = QgsLayerTree::toLayer( childNode );
-      if ( childLayerNode->layer() &&
-           QgsLayerTreeUtils::countMapLayerInTree( mLayerTreeView->layerTreeModel()->rootGroup(), childLayerNode->layer() ) == 1 )
+      if ( childLayerNode->layer() && QgsLayerTreeUtils::countMapLayerInTree( mLayerTreeView->layerTreeModel()->rootGroup(), childLayerNode->layer() ) == 1 )
         disconnectSignals( childLayerNode->layer() );
     }
   }
@@ -95,16 +94,11 @@ void QgsLayerTreeViewIndicatorProvider::onWillRemoveChildren( QgsLayerTreeNode *
 
 void QgsLayerTreeViewIndicatorProvider::onLayerLoaded()
 {
-
   QgsLayerTreeLayer *layerNode = qobject_cast<QgsLayerTreeLayer *>( sender() );
   if ( !layerNode )
     return;
 
-  if ( !( qobject_cast<QgsVectorLayer *>( layerNode->layer() ) ||
-          qobject_cast<QgsRasterLayer *>( layerNode->layer() ) ||
-          qobject_cast<QgsMeshLayer *>( layerNode->layer() ) ||
-          qobject_cast<QgsPointCloudLayer *>( layerNode->layer() ) ||
-          qobject_cast<QgsVectorTileLayer *>( layerNode->layer() ) ) )
+  if ( !( qobject_cast<QgsVectorLayer *>( layerNode->layer() ) || qobject_cast<QgsRasterLayer *>( layerNode->layer() ) || qobject_cast<QgsMeshLayer *>( layerNode->layer() ) || qobject_cast<QgsPointCloudLayer *>( layerNode->layer() ) || qobject_cast<QgsVectorTileLayer *>( layerNode->layer() ) ) )
     return;
 
   if ( QgsMapLayer *mapLayer = layerNode->layer() )
@@ -165,9 +159,9 @@ void QgsLayerTreeViewIndicatorProvider::updateLayerIndicator( QgsMapLayer *layer
   }
 }
 
-std::unique_ptr< QgsLayerTreeViewIndicator > QgsLayerTreeViewIndicatorProvider::newIndicator( QgsMapLayer *layer )
+std::unique_ptr<QgsLayerTreeViewIndicator> QgsLayerTreeViewIndicatorProvider::newIndicator( QgsMapLayer *layer )
 {
-  std::unique_ptr< QgsLayerTreeViewIndicator > indicator = std::make_unique< QgsLayerTreeViewIndicator >( this );
+  std::unique_ptr<QgsLayerTreeViewIndicator> indicator = std::make_unique<QgsLayerTreeViewIndicator>( this );
   indicator->setIcon( QgsApplication::getThemeIcon( iconName( layer ) ) );
   indicator->setToolTip( tooltipText( layer ) );
   connect( indicator.get(), &QgsLayerTreeViewIndicator::clicked, this, &QgsLayerTreeViewIndicatorProvider::onIndicatorClicked );
@@ -177,7 +171,6 @@ std::unique_ptr< QgsLayerTreeViewIndicator > QgsLayerTreeViewIndicatorProvider::
 
 void QgsLayerTreeViewIndicatorProvider::addOrRemoveIndicator( QgsLayerTreeNode *node, QgsMapLayer *layer )
 {
-
   if ( acceptLayer( layer ) )
   {
     const QList<QgsLayerTreeViewIndicator *> nodeIndicators = mLayerTreeView->indicators( node );
@@ -215,4 +208,3 @@ void QgsLayerTreeViewIndicatorProvider::addOrRemoveIndicator( QgsLayerTreeNode *
     // no indicator was there before, nothing to do
   }
 }
-

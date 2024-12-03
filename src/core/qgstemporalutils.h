@@ -158,9 +158,9 @@ class CORE_EXPORT QgsTemporalUtils
       /**
        * The filename template for exporting the frames.
        *
-       * This must be in format prefix####.format, where number of
-       * \a # characters represents how many 0's should be left-padded to the frame number
-       * e.g. my###.jpg will create frames my001.jpg, my002.jpg, etc
+       * This must be in format ``prefix####.format``, where number of
+       * \a ``#`` characters represents how many 0's should be left-padded to the frame number
+       * e.g. ``my###.jpg`` will create frames ``my001.jpg``, ``my002.jpg``, etc
        */
       QString fileNameTemplate;
 

@@ -41,21 +41,18 @@
 #include <AppKit/AppKit.h>
 #include <Cocoa/Cocoa.h>
 
-class CocoaInitializer::Private
-{
-  public:
-    NSAutoreleasePool *autoReleasePool_;
+class CocoaInitializer::Private {
+public:
+  NSAutoreleasePool *autoReleasePool_;
 };
 
-CocoaInitializer::CocoaInitializer()
-{
+CocoaInitializer::CocoaInitializer() {
   d = new CocoaInitializer::Private();
   NSApplicationLoad();
   d->autoReleasePool_ = [[NSAutoreleasePool alloc] init];
 }
 
-CocoaInitializer::~CocoaInitializer()
-{
+CocoaInitializer::~CocoaInitializer() {
   [d->autoReleasePool_ release];
   delete d;
 }

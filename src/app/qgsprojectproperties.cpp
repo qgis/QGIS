@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsprojectproperties.h"
+#include "moc_qgsprojectproperties.cpp"
 
 //qgis includes
 #include "qgsapplication.h"
@@ -133,9 +134,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( mButtonAddStyleDatabase, &QAbstractButton::clicked, this, &QgsProjectProperties::addStyleDatabase );
   connect( mButtonRemoveStyleDatabase, &QAbstractButton::clicked, this, &QgsProjectProperties::removeStyleDatabase );
   connect( mButtonNewStyleDatabase, &QAbstractButton::clicked, this, &QgsProjectProperties::newStyleDatabase );
-  connect( mCoordinateDisplayComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int ) { updateGuiForCoordinateType(); } );
-  connect( mCoordinateCrs, &QgsProjectionSelectionWidget::crsChanged, this, [ = ]( const QgsCoordinateReferenceSystem & ) { updateGuiForCoordinateCrs(); } );
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+  connect( mCoordinateDisplayComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) { updateGuiForCoordinateType(); } );
+  connect( mCoordinateCrs, &QgsProjectionSelectionWidget::crsChanged, this, [=]( const QgsCoordinateReferenceSystem & ) { updateGuiForCoordinateCrs(); } );
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
   connect( mAddIccProfile, &QToolButton::clicked, this, static_cast<void ( QgsProjectProperties::* )()>( &QgsProjectProperties::addIccProfile ) );
   connect( mRemoveIccProfile, &QToolButton::clicked, this, &QgsProjectProperties::removeIccProfile );
   connect( mSaveIccProfile, &QToolButton::clicked, this, &QgsProjectProperties::saveIccProfile );
@@ -165,53 +166,52 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mCoordinateDisplayComboBox->addItem( tr( "Map Geographic (degrees)" ), static_cast<int>( Qgis::CoordinateDisplayType::MapGeographic ) );
   mCoordinateDisplayComboBox->addItem( tr( "Custom Projection Units" ), static_cast<int>( Qgis::CoordinateDisplayType::CustomCrs ) );
 
-  mCoordinateOrderComboBox->addItem( tr( "Default" ), static_cast< int >( Qgis::CoordinateOrder::Default ) );
-  mCoordinateOrderComboBox->addItem( tr( "Easting, Northing (Longitude, Latitude)" ), static_cast< int >( Qgis::CoordinateOrder::XY ) );
-  mCoordinateOrderComboBox->addItem( tr( "Northing, Easting (Latitude, Longitude)" ), static_cast< int >( Qgis::CoordinateOrder::YX ) );
+  mCoordinateOrderComboBox->addItem( tr( "Default" ), static_cast<int>( Qgis::CoordinateOrder::Default ) );
+  mCoordinateOrderComboBox->addItem( tr( "Easting, Northing (Longitude, Latitude)" ), static_cast<int>( Qgis::CoordinateOrder::XY ) );
+  mCoordinateOrderComboBox->addItem( tr( "Northing, Easting (Latitude, Longitude)" ), static_cast<int>( Qgis::CoordinateOrder::YX ) );
 
-  mDistanceUnitsCombo->addItem( tr( "Meters" ), static_cast< int >( Qgis::DistanceUnit::Meters ) );
-  mDistanceUnitsCombo->addItem( tr( "Kilometers" ), static_cast< int >( Qgis::DistanceUnit::Kilometers ) );
-  mDistanceUnitsCombo->addItem( tr( "Feet" ), static_cast< int >( Qgis::DistanceUnit::Feet ) );
-  mDistanceUnitsCombo->addItem( tr( "Yards" ), static_cast< int >( Qgis::DistanceUnit::Yards ) );
-  mDistanceUnitsCombo->addItem( tr( "Miles" ), static_cast< int >( Qgis::DistanceUnit::Miles ) );
-  mDistanceUnitsCombo->addItem( tr( "Nautical Miles" ), static_cast< int >( Qgis::DistanceUnit::NauticalMiles ) );
-  mDistanceUnitsCombo->addItem( tr( "Centimeters" ), static_cast< int >( Qgis::DistanceUnit::Centimeters ) );
-  mDistanceUnitsCombo->addItem( tr( "Millimeters" ), static_cast< int >( Qgis::DistanceUnit::Millimeters ) );
-  mDistanceUnitsCombo->addItem( tr( "Inches" ), static_cast< int >( Qgis::DistanceUnit::Inches ) );
-  mDistanceUnitsCombo->addItem( tr( "Degrees" ), static_cast< int >( Qgis::DistanceUnit::Degrees ) );
-  mDistanceUnitsCombo->addItem( tr( "Map Units" ), static_cast< int >( Qgis::DistanceUnit::Unknown ) );
+  mDistanceUnitsCombo->addItem( tr( "Meters" ), static_cast<int>( Qgis::DistanceUnit::Meters ) );
+  mDistanceUnitsCombo->addItem( tr( "Kilometers" ), static_cast<int>( Qgis::DistanceUnit::Kilometers ) );
+  mDistanceUnitsCombo->addItem( tr( "Feet" ), static_cast<int>( Qgis::DistanceUnit::Feet ) );
+  mDistanceUnitsCombo->addItem( tr( "Yards" ), static_cast<int>( Qgis::DistanceUnit::Yards ) );
+  mDistanceUnitsCombo->addItem( tr( "Miles" ), static_cast<int>( Qgis::DistanceUnit::Miles ) );
+  mDistanceUnitsCombo->addItem( tr( "Nautical Miles" ), static_cast<int>( Qgis::DistanceUnit::NauticalMiles ) );
+  mDistanceUnitsCombo->addItem( tr( "Centimeters" ), static_cast<int>( Qgis::DistanceUnit::Centimeters ) );
+  mDistanceUnitsCombo->addItem( tr( "Millimeters" ), static_cast<int>( Qgis::DistanceUnit::Millimeters ) );
+  mDistanceUnitsCombo->addItem( tr( "Inches" ), static_cast<int>( Qgis::DistanceUnit::Inches ) );
+  mDistanceUnitsCombo->addItem( tr( "Degrees" ), static_cast<int>( Qgis::DistanceUnit::Degrees ) );
+  mDistanceUnitsCombo->addItem( tr( "Map Units" ), static_cast<int>( Qgis::DistanceUnit::Unknown ) );
 
-  mAreaUnitsCombo->addItem( tr( "Square Meters" ), static_cast< int >( Qgis::AreaUnit::SquareMeters ) );
-  mAreaUnitsCombo->addItem( tr( "Square Kilometers" ), static_cast< int >( Qgis::AreaUnit::SquareKilometers ) );
-  mAreaUnitsCombo->addItem( tr( "Square Feet" ), static_cast< int >( Qgis::AreaUnit::SquareFeet ) );
-  mAreaUnitsCombo->addItem( tr( "Square Yards" ), static_cast< int >( Qgis::AreaUnit::SquareYards ) );
-  mAreaUnitsCombo->addItem( tr( "Square Miles" ), static_cast< int >( Qgis::AreaUnit::SquareMiles ) );
-  mAreaUnitsCombo->addItem( tr( "Hectares" ), static_cast< int >( Qgis::AreaUnit::Hectares ) );
-  mAreaUnitsCombo->addItem( tr( "Acres" ), static_cast< int >( Qgis::AreaUnit::Acres ) );
-  mAreaUnitsCombo->addItem( tr( "Square Nautical Miles" ), static_cast< int >( Qgis::AreaUnit::SquareNauticalMiles ) );
-  mAreaUnitsCombo->addItem( tr( "Square Centimeters" ), static_cast< int >( Qgis::AreaUnit::SquareCentimeters ) );
-  mAreaUnitsCombo->addItem( tr( "Square Millimeters" ), static_cast< int >( Qgis::AreaUnit::SquareMillimeters ) );
-  mAreaUnitsCombo->addItem( tr( "Square Inches" ), static_cast< int >( Qgis::AreaUnit::SquareInches ) );
-  mAreaUnitsCombo->addItem( tr( "Square Degrees" ), static_cast< int >( Qgis::AreaUnit::SquareDegrees ) );
-  mAreaUnitsCombo->addItem( tr( "Map Units" ), static_cast< int >( Qgis::AreaUnit::Unknown ) );
+  mAreaUnitsCombo->addItem( tr( "Square Meters" ), static_cast<int>( Qgis::AreaUnit::SquareMeters ) );
+  mAreaUnitsCombo->addItem( tr( "Square Kilometers" ), static_cast<int>( Qgis::AreaUnit::SquareKilometers ) );
+  mAreaUnitsCombo->addItem( tr( "Square Feet" ), static_cast<int>( Qgis::AreaUnit::SquareFeet ) );
+  mAreaUnitsCombo->addItem( tr( "Square Yards" ), static_cast<int>( Qgis::AreaUnit::SquareYards ) );
+  mAreaUnitsCombo->addItem( tr( "Square Miles" ), static_cast<int>( Qgis::AreaUnit::SquareMiles ) );
+  mAreaUnitsCombo->addItem( tr( "Hectares" ), static_cast<int>( Qgis::AreaUnit::Hectares ) );
+  mAreaUnitsCombo->addItem( tr( "Acres" ), static_cast<int>( Qgis::AreaUnit::Acres ) );
+  mAreaUnitsCombo->addItem( tr( "Square Nautical Miles" ), static_cast<int>( Qgis::AreaUnit::SquareNauticalMiles ) );
+  mAreaUnitsCombo->addItem( tr( "Square Centimeters" ), static_cast<int>( Qgis::AreaUnit::SquareCentimeters ) );
+  mAreaUnitsCombo->addItem( tr( "Square Millimeters" ), static_cast<int>( Qgis::AreaUnit::SquareMillimeters ) );
+  mAreaUnitsCombo->addItem( tr( "Square Inches" ), static_cast<int>( Qgis::AreaUnit::SquareInches ) );
+  mAreaUnitsCombo->addItem( tr( "Square Degrees" ), static_cast<int>( Qgis::AreaUnit::SquareDegrees ) );
+  mAreaUnitsCombo->addItem( tr( "Map Units" ), static_cast<int>( Qgis::AreaUnit::Unknown ) );
 
-  mTransactionModeComboBox->addItem( tr( "Local Edit Buffer" ), static_cast< int >( Qgis::TransactionMode::Disabled ) );
+  mTransactionModeComboBox->addItem( tr( "Local Edit Buffer" ), static_cast<int>( Qgis::TransactionMode::Disabled ) );
   mTransactionModeComboBox->setItemData( mTransactionModeComboBox->count() - 1, tr( "Edits are buffered locally and sent to the provider when toggling layer editing mode." ), Qt::ToolTipRole );
-  mTransactionModeComboBox->addItem( tr( "Automatic Transaction Groups" ), static_cast< int >( Qgis::TransactionMode::AutomaticGroups ) );
+  mTransactionModeComboBox->addItem( tr( "Automatic Transaction Groups" ), static_cast<int>( Qgis::TransactionMode::AutomaticGroups ) );
   mTransactionModeComboBox->setItemData( mTransactionModeComboBox->count() - 1, tr( "Automatic transactional editing means that on supported datasources (postgres databases) the edit state of all tables that originate from the same database are synchronized and executed in a server side transaction." ), Qt::ToolTipRole );
-  mTransactionModeComboBox->addItem( tr( "Buffered Transaction Groups" ), static_cast< int >( Qgis::TransactionMode::BufferedGroups ) );
+  mTransactionModeComboBox->addItem( tr( "Buffered Transaction Groups" ), static_cast<int>( Qgis::TransactionMode::BufferedGroups ) );
   mTransactionModeComboBox->setItemData( mTransactionModeComboBox->count() - 1, tr( "Buffered transactional editing means that all editable layers in the buffered transaction group are toggled synchronously and all edits are saved in a local edit buffer. Saving changes is executed within a single transaction on all layers (per provider)." ), Qt::ToolTipRole );
 
   projectionSelector->setShowNoProjection( true );
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsProjectProperties::apply );
-  connect( this, &QDialog::finished, this, [ = ]( int result ) { if ( result == QDialog::Rejected ) cancel(); } );
+  connect( this, &QDialog::finished, this, [=]( int result ) { if ( result == QDialog::Rejected ) cancel(); } );
 
   // disconnect default connection setup by initOptionsBase for accepting dialog, and insert logic
   // to validate widgets before allowing dialog to be closed
   disconnect( mOptButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
-  connect( mOptButtonBox, &QDialogButtonBox::accepted, this, [ = ]
-  {
+  connect( mOptButtonBox, &QDialogButtonBox::accepted, this, [=] {
     for ( QgsOptionsPageWidget *widget : std::as_const( mAdditionalProjectPropertiesWidgets ) )
     {
       if ( !widget->isValid() )
@@ -224,8 +224,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     accept();
   } );
 
-  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::crsSelected, this, [ = ]
-  {
+  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::crsSelected, this, [=] {
     if ( mBlockCrsUpdates || !projectionSelector->hasValidSelection() )
       return;
 
@@ -263,12 +262,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   QgsGeometry g = QgsGeometry::fromQPolygonF( mainCanvasPoly );
   // close polygon
   mainCanvasPoly << mainCanvasPoly.at( 0 );
-  if ( QgsProject::instance()->crs() !=
-       QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) )
+  if ( QgsProject::instance()->crs() != QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) )
   {
     // reproject extent
-    QgsCoordinateTransform ct( QgsProject::instance()->crs(),
-                               QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance() );
+    QgsCoordinateTransform ct( QgsProject::instance()->crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance() );
     ct.setBallparkTransformsAreAppropriate( true );
 
     g = g.densifyByCount( 5 );
@@ -322,10 +319,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   mProjectHomeLineEdit->setShowClearButton( true );
   mProjectHomeLineEdit->setText( QDir::toNativeSeparators( QgsProject::instance()->presetHomePath() ) );
-  connect( mButtonSetProjectHome, &QToolButton::clicked, this, [ = ]
-  {
-    auto getAbsoluteHome = [this]()->QString
-    {
+  connect( mButtonSetProjectHome, &QToolButton::clicked, this, [=] {
+    auto getAbsoluteHome = [this]() -> QString {
       QString currentHome = QDir::fromNativeSeparators( mProjectHomeLineEdit->text() );
       if ( !currentHome.isEmpty() )
       {
@@ -350,14 +345,13 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     };
 
     QString newDir = QFileDialog::getExistingDirectory( this, tr( "Select Project Home Path" ), getAbsoluteHome() );
-    if ( ! newDir.isNull() )
+    if ( !newDir.isNull() )
     {
       mProjectHomeLineEdit->setText( QDir::toNativeSeparators( newDir ) );
     }
   } );
 
-  connect( mButtonOpenProjectFolder, &QToolButton::clicked, this, [ = ]
-  {
+  connect( mButtonOpenProjectFolder, &QToolButton::clicked, this, [=] {
     QString path;
     QString project = !QgsProject::instance()->fileName().isEmpty() ? QgsProject::instance()->fileName() : QgsProject::instance()->originalPath();
     QgsProjectStorage *storage = QgsProject::instance()->projectStorage();
@@ -370,7 +364,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     {
       QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( path );
     }
-
   } );
 
   // get the manner in which the number of decimal places in the mouse
@@ -391,9 +384,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   int dp = QgsProject::instance()->readNumEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ) );
   spinBoxDP->setValue( dp );
 
-  cbxAbsolutePath->addItem( tr( "Absolute" ), static_cast< int >( Qgis::FilePathType::Absolute ) );
-  cbxAbsolutePath->addItem( tr( "Relative" ), static_cast< int >( Qgis::FilePathType::Relative ) );
-  cbxAbsolutePath->setCurrentIndex( cbxAbsolutePath->findData( static_cast< int >( QgsProject::instance()->filePathStorage() ) ) );
+  cbxAbsolutePath->addItem( tr( "Absolute" ), static_cast<int>( Qgis::FilePathType::Absolute ) );
+  cbxAbsolutePath->addItem( tr( "Relative" ), static_cast<int>( Qgis::FilePathType::Relative ) );
+  cbxAbsolutePath->setCurrentIndex( cbxAbsolutePath->findData( static_cast<int>( QgsProject::instance()->filePathStorage() ) ) );
 
   // populate combo box with ellipsoids
   // selection of the ellipsoid from settings is deferred to a later point, because it would
@@ -411,7 +404,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     for ( int i = 0; i < mEllipsoidList.length(); i++ )
     {
       // TODO - use parameters instead of acronym
-      if ( mEllipsoidList[ i ].acronym == QgsProject::instance()->crs().ellipsoidAcronym() )
+      if ( mEllipsoidList[i].acronym == QgsProject::instance()->crs().ellipsoidAcronym() )
       {
         index = i;
         break;
@@ -439,10 +432,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   }
 
   const Qgis::CoordinateOrder axisOrder = QgsProject::instance()->displaySettings()->coordinateAxisOrder();
-  mCoordinateOrderComboBox->setCurrentIndex( mCoordinateOrderComboBox->findData( static_cast< int >( axisOrder ) ) );
+  mCoordinateOrderComboBox->setCurrentIndex( mCoordinateOrderComboBox->findData( static_cast<int>( axisOrder ) ) );
 
-  mDistanceUnitsCombo->setCurrentIndex( mDistanceUnitsCombo->findData( static_cast< int >( QgsProject::instance()->distanceUnits() ) ) );
-  mAreaUnitsCombo->setCurrentIndex( mAreaUnitsCombo->findData( static_cast< int >( QgsProject::instance()->areaUnits() ) ) );
+  mDistanceUnitsCombo->setCurrentIndex( mDistanceUnitsCombo->findData( static_cast<int>( QgsProject::instance()->distanceUnits() ) ) );
+  mAreaUnitsCombo->setCurrentIndex( mAreaUnitsCombo->findData( static_cast<int>( QgsProject::instance()->areaUnits() ) ) );
 
   //get the color selections and set the button color accordingly
   int myRedInt = settings.value( QStringLiteral( "qgis/default_selection_color_red" ), 255 ).toInt();
@@ -468,7 +461,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   pbnCanvasColor->setDefaultColor( defaultCanvasColor );
 
   //get project scales
-  const QVector< double > projectScales = QgsProject::instance()->viewSettings()->mapScales();
+  const QVector<double> projectScales = QgsProject::instance()->viewSettings()->mapScales();
   if ( !projectScales.isEmpty() )
   {
     for ( double scale : projectScales )
@@ -496,9 +489,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mLayerCapabilitiesTree->setSelectionBehavior( QAbstractItemView::SelectItems );
   mLayerCapabilitiesTree->setSelectionMode( QAbstractItemView::MultiSelection );
   mLayerCapabilitiesTree->expandAll();
-  connect( mLayerCapabilitiesTree->selectionModel(), &QItemSelectionModel::selectionChanged, this,
-           [ = ]( const QItemSelection & selected, const QItemSelection & deselected )
-  {
+  connect( mLayerCapabilitiesTree->selectionModel(), &QItemSelectionModel::selectionChanged, this, [=]( const QItemSelection &selected, const QItemSelection &deselected ) {
     Q_UNUSED( selected )
     Q_UNUSED( deselected )
     bool hasSelection = !mLayerCapabilitiesTree->selectionModel()->selectedIndexes().isEmpty();
@@ -508,22 +499,19 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mLayerCapabilitiesTreeFilterLineEdit->setShowClearButton( true );
   mLayerCapabilitiesTreeFilterLineEdit->setShowSearchIcon( true );
   mLayerCapabilitiesTreeFilterLineEdit->setPlaceholderText( tr( "Filter layers…" ) );
-  connect( mLayerCapabilitiesTreeFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [ = ]( const QString & filterText )
-  {
+  connect( mLayerCapabilitiesTreeFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [=]( const QString &filterText ) {
     mLayerCapabilitiesModel->setFilterText( filterText );
     mLayerCapabilitiesTree->expandAll();
   } );
 
-  connect( mLayerCapabilitiesToggleSelectionButton, &QToolButton::clicked, this, [ = ]( bool clicked )
-  {
+  connect( mLayerCapabilitiesToggleSelectionButton, &QToolButton::clicked, this, [=]( bool clicked ) {
     Q_UNUSED( clicked )
     const QModelIndexList indexes = mLayerCapabilitiesTree->selectionModel()->selectedIndexes();
     mLayerCapabilitiesModel->toggleSelectedItems( indexes );
     mLayerCapabilitiesTree->repaint();
   } );
 
-  connect( mShowSpatialLayersCheckBox, &QCheckBox::stateChanged, this, [ = ]( int state )
-  {
+  connect( mShowSpatialLayersCheckBox, &QCheckBox::stateChanged, this, [=]( int state ) {
     mLayerCapabilitiesModel->setShowSpatialLayersOnly( static_cast<bool>( state ) );
   } );
 
@@ -697,7 +685,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
         values[2].toDouble(),
         values[3].toDouble()
       ),
-      QgsProject::instance()->crs() );
+      QgsProject::instance()->crs()
+    );
     mAdvertisedExtentServer->setOutputExtentFromOriginal();
   }
 
@@ -921,7 +910,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       QCheckBox *cbp = new QCheckBox();
       cbp->setChecked( wfsLayerIdList.contains( currentLayer->id() ) );
       twWFSLayers->setCellWidget( j, 1, cbp );
-      connect( cbp, &QCheckBox::stateChanged, this, [ = ] { cbxWCSPubliedStateChanged( j ); } );
+      connect( cbp, &QCheckBox::stateChanged, this, [=] { cbxWCSPubliedStateChanged( j ); } );
 
       QSpinBox *psb = new QSpinBox();
       psb->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WFSLayersPrecision" ), "/" + currentLayer->id(), 8 ) );
@@ -931,7 +920,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       cbu->setEnabled( false );
       if ( ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeAttributeValues ) )
       {
-        if ( ! currentLayer->isSpatial() || ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeGeometries ) )
+        if ( !currentLayer->isSpatial() || ( provider->capabilities() & Qgis::VectorProviderCapability::ChangeGeometries ) )
         {
           cbu->setEnabled( true );
           cbu->setChecked( wfstUpdateLayerIdList.contains( currentLayer->id() ) );
@@ -979,7 +968,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     currentLayer = it.value();
     if ( currentLayer->type() == Qgis::LayerType::Raster )
     {
-
       QTableWidgetItem *twi = new QTableWidgetItem( QString::number( j ) );
       twWCSLayers->setVerticalHeaderItem( j, twi );
 
@@ -992,7 +980,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       cbp->setChecked( wcsLayerIdList.contains( currentLayer->id() ) );
       twWCSLayers->setCellWidget( j, 1, cbp );
 
-      connect( cbp, &QCheckBox::stateChanged, this, [ = ] { cbxWCSPubliedStateChanged( j ); } );
+      connect( cbp, &QCheckBox::stateChanged, this, [=] { cbxWCSPubliedStateChanged( j ); } );
 
       j++;
     }
@@ -1035,7 +1023,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mColorModel->addItem( tr( "CMYK" ), QVariant::fromValue( Qgis::ColorModel::Cmyk ) );
   mColorModel->setCurrentIndex( mColorModel->findData( QVariant::fromValue( QgsProject::instance()->styleSettings()->colorModel() ) ) );
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
   mColorSpace = QgsProject::instance()->styleSettings()->colorSpace();
   updateColorSpaceWidgets();
 #else
@@ -1119,7 +1107,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   // sync metadata title and project title fields
   connect( mMetadataWidget, &QgsMetadataWidget::titleChanged, titleEdit, &QLineEdit::setText, Qt::QueuedConnection );
-  connect( titleEdit, &QLineEdit::textChanged, this, [ = ] { whileBlocking( mMetadataWidget )->setTitle( title() ) ;} );
+  connect( titleEdit, &QLineEdit::textChanged, this, [=] { whileBlocking( mMetadataWidget )->setTitle( title() ); } );
 
   //fill ts language checkbox
   QString i18nPath = QgsApplication::i18nPath();
@@ -1128,7 +1116,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   for ( const QString &qmFile : qmFileList )
   {
     // Ignore the 'en' translation file, already added as 'en_US'.
-    if ( qmFile.compare( QLatin1String( "qgis_en.qm" ) ) == 0 ) continue;
+    if ( qmFile.compare( QLatin1String( "qgis_en.qm" ) ) == 0 )
+      continue;
 
     QString qmFileName = qmFile;
     QString l = qmFileName.remove( QStringLiteral( "qgis_" ) ).remove( QStringLiteral( ".qm" ) );
@@ -1201,8 +1190,8 @@ QgsExpressionContext QgsProjectProperties::createExpressionContext() const
 {
   QgsExpressionContext context;
   context
-      << QgsExpressionContextUtils::globalScope()
-      << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+    << QgsExpressionContextUtils::globalScope()
+    << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
   return context;
 }
@@ -1268,7 +1257,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ), radAutomatic->isChecked() );
   QgsProject::instance()->writeEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ), spinBoxDP->value() );
 
-  const Qgis::CoordinateDisplayType coordinateType = static_cast< Qgis::CoordinateDisplayType >( mCoordinateDisplayComboBox->currentData().toInt() );
+  const Qgis::CoordinateDisplayType coordinateType = static_cast<Qgis::CoordinateDisplayType>( mCoordinateDisplayComboBox->currentData().toInt() );
   QgsProject::instance()->displaySettings()->setCoordinateType( coordinateType );
   if ( coordinateType == Qgis::CoordinateDisplayType::CustomCrs )
   {
@@ -1279,18 +1268,18 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->displaySettings()->setCoordinateCustomCrs( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
   }
 
-  QgsProject::instance()->displaySettings()->setCoordinateAxisOrder( static_cast< Qgis::CoordinateOrder >( mCoordinateOrderComboBox->currentData().toInt() ) );
+  QgsProject::instance()->displaySettings()->setCoordinateAxisOrder( static_cast<Qgis::CoordinateOrder>( mCoordinateOrderComboBox->currentData().toInt() ) );
 
   // Announce that we may have a new display precision setting
   emit displayPrecisionChanged();
 
-  const Qgis::DistanceUnit distanceUnits = static_cast< Qgis::DistanceUnit >( mDistanceUnitsCombo->currentData().toInt() );
+  const Qgis::DistanceUnit distanceUnits = static_cast<Qgis::DistanceUnit>( mDistanceUnitsCombo->currentData().toInt() );
   QgsProject::instance()->setDistanceUnits( distanceUnits );
 
-  const Qgis::AreaUnit areaUnits = static_cast< Qgis::AreaUnit >( mAreaUnitsCombo->currentData().toInt() );
+  const Qgis::AreaUnit areaUnits = static_cast<Qgis::AreaUnit>( mAreaUnitsCombo->currentData().toInt() );
   QgsProject::instance()->setAreaUnits( areaUnits );
 
-  QgsProject::instance()->setFilePathStorage( static_cast< Qgis::FilePathType >( cbxAbsolutePath->currentData().toInt() ) );
+  QgsProject::instance()->setFilePathStorage( static_cast<Qgis::FilePathType>( cbxAbsolutePath->currentData().toInt() ) );
 
   if ( mEllipsoidList.at( mEllipsoidIndex ).acronym.startsWith( QLatin1String( "PARAMETER" ) ) )
   {
@@ -1301,7 +1290,7 @@ void QgsProjectProperties::apply()
     {
       QgsDebugMsgLevel( QStringLiteral( "Using parameteric major/minor" ), 4 );
       bool ok;
-      double val {QgsDoubleValidator::toDouble( leSemiMajor->text(), &ok )};
+      double val { QgsDoubleValidator::toDouble( leSemiMajor->text(), &ok ) };
       if ( ok )
       {
         major = val;
@@ -1313,12 +1302,12 @@ void QgsProjectProperties::apply()
       }
     }
     QgsProject::instance()->setEllipsoid( QStringLiteral( "PARAMETER:%1:%2" )
-                                          .arg( major, 0, 'g', 17 )
-                                          .arg( minor, 0, 'g', 17 ) );
+                                            .arg( major, 0, 'g', 17 )
+                                            .arg( minor, 0, 'g', 17 ) );
   }
   else
   {
-    QgsProject::instance()->setEllipsoid( mEllipsoidList[ mEllipsoidIndex ].acronym );
+    QgsProject::instance()->setEllipsoid( mEllipsoidList[mEllipsoidIndex].acronym );
   }
 
   //set the color for selections and canvas background color
@@ -1332,7 +1321,7 @@ void QgsProjectProperties::apply()
   }
 
   //save project scales
-  QVector< double > projectScales;
+  QVector<double> projectScales;
   projectScales.reserve( lstScales->count() );
   for ( int i = 0; i < lstScales->count(); ++i )
   {
@@ -1351,7 +1340,7 @@ void QgsProjectProperties::apply()
   }
   else
   {
-    QgsProject::instance()->viewSettings()->setMapScales( QVector< double >() );
+    QgsProject::instance()->viewSettings()->setMapScales( QVector<double>() );
     QgsProject::instance()->viewSettings()->setUseProjectScales( false );
   }
 
@@ -1505,10 +1494,10 @@ void QgsProjectProperties::apply()
     QgsProject::instance()->writeEntry(
       QStringLiteral( "WMSExtent" ), QStringLiteral( "/" ),
       QStringList()
-      << qgsDoubleToString( wmsExtent.xMinimum() )
-      << qgsDoubleToString( wmsExtent.yMinimum() )
-      << qgsDoubleToString( wmsExtent.xMaximum() )
-      << qgsDoubleToString( wmsExtent.yMaximum() )
+        << qgsDoubleToString( wmsExtent.xMinimum() )
+        << qgsDoubleToString( wmsExtent.yMinimum() )
+        << qgsDoubleToString( wmsExtent.xMaximum() )
+        << qgsDoubleToString( wmsExtent.yMaximum() )
     );
   }
   else
@@ -1882,19 +1871,16 @@ void QgsProjectProperties::twWmtsItemChanged( QTreeWidgetItem *item, int column 
     item->setCheckState( 2, Qt::Unchecked );
     item->setCheckState( 3, Qt::Unchecked );
   }
-  else if ( column == 1 && item->checkState( 1 ) &&
-            !item->checkState( 2 ) && !item->checkState( 3 ) )
+  else if ( column == 1 && item->checkState( 1 ) && !item->checkState( 2 ) && !item->checkState( 3 ) )
   {
     item->setCheckState( 2, Qt::Checked );
     item->setCheckState( 3, Qt::Checked );
   }
-  else if ( ( column == 2 && item->checkState( 2 ) ) ||
-            ( column == 3 && item->checkState( 3 ) ) )
+  else if ( ( column == 2 && item->checkState( 2 ) ) || ( column == 3 && item->checkState( 3 ) ) )
   {
     item->setCheckState( 1, Qt::Checked );
   }
-  else if ( ( column == 2 && !item->checkState( 2 ) && !item->checkState( 3 ) ) ||
-            ( column == 3 && !item->checkState( 2 ) && !item->checkState( 3 ) ) )
+  else if ( ( column == 2 && !item->checkState( 2 ) && !item->checkState( 3 ) ) || ( column == 3 && !item->checkState( 2 ) && !item->checkState( 3 ) ) )
   {
     item->setCheckState( 1, Qt::Unchecked );
   }
@@ -1984,7 +1970,7 @@ void QgsProjectProperties::updateGuiForMapUnits()
       mDistanceUnitsCombo->setItemText( idx, tr( "Unknown Units" ) );
       mDistanceUnitsCombo->setCurrentIndex( idx );
     }
-    idx = mAreaUnitsCombo->findData( static_cast< int >( Qgis::AreaUnit::Unknown ) );
+    idx = mAreaUnitsCombo->findData( static_cast<int>( Qgis::AreaUnit::Unknown ) );
     if ( idx >= 0 )
     {
       mAreaUnitsCombo->setItemText( idx, tr( "Unknown Units" ) );
@@ -2014,13 +2000,13 @@ void QgsProjectProperties::updateGuiForMapUnits()
     mCoordinateDisplayComboBox->setItemText( idx, mapUnitString );
 
     //also update unit combo boxes
-    idx = mDistanceUnitsCombo->findData( static_cast< int >( Qgis::DistanceUnit::Unknown ) );
+    idx = mDistanceUnitsCombo->findData( static_cast<int>( Qgis::DistanceUnit::Unknown ) );
     if ( idx >= 0 )
     {
       QString mapUnitString = tr( "Map Units (%1)" ).arg( QgsUnitTypes::toString( units ) );
       mDistanceUnitsCombo->setItemText( idx, mapUnitString );
     }
-    idx = mAreaUnitsCombo->findData( static_cast< int >( Qgis::AreaUnit::Unknown ) );
+    idx = mAreaUnitsCombo->findData( static_cast<int>( Qgis::AreaUnit::Unknown ) );
     if ( idx >= 0 )
     {
       QString mapUnitString = tr( "Map Units (%1)" ).arg( QgsUnitTypes::toString( QgsUnitTypes::distanceToAreaUnit( units ) ) );
@@ -2105,9 +2091,7 @@ void QgsProjectProperties::pbnWMSSetUsedSRS_clicked()
 {
   if ( mWMSList->count() > 1 )
   {
-    if ( QMessageBox::question( this,
-                                tr( "Coordinate System Restrictions" ),
-                                tr( "The current selection of coordinate systems will be lost.\nProceed?" ) ) == QMessageBox::No )
+    if ( QMessageBox::question( this, tr( "Coordinate System Restrictions" ), tr( "The current selection of coordinate systems will be lost.\nProceed?" ) ) == QMessageBox::No )
       return;
   }
 
@@ -2271,12 +2255,12 @@ void QgsProjectProperties::pbnLaunchOWSChecker_clicked()
 void QgsProjectProperties::pbnAddScale_clicked()
 {
   int myScale = QInputDialog::getInt(
-                  this,
-                  tr( "Enter scale" ),
-                  tr( "Scale denominator" ),
-                  -1,
-                  1
-                );
+    this,
+    tr( "Enter scale" ),
+    tr( "Scale denominator" ),
+    -1,
+    1
+  );
 
   if ( myScale != -1 )
   {
@@ -2294,8 +2278,7 @@ void QgsProjectProperties::pbnRemoveScale_clicked()
 
 void QgsProjectProperties::pbnImportScales_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load scales" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load scales" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -2314,7 +2297,7 @@ void QgsProjectProperties::pbnImportScales_clicked()
   {
     // Parse scale string
     const QStringList parts { scale.split( ':' ) };
-    if ( parts.count( ) == 2 )
+    if ( parts.count() == 2 )
     {
       const double scaleDenominator { parts.at( 1 ).toDouble( &ok ) };
       if ( ok )
@@ -2327,8 +2310,7 @@ void QgsProjectProperties::pbnImportScales_clicked()
 
 void QgsProjectProperties::pbnExportScales_clicked()
 {
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save scales" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save scales" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   // return dialog focus on Mac
   activateWindow();
   raise();
@@ -2360,8 +2342,8 @@ void QgsProjectProperties::pbnExportScales_clicked()
 void QgsProjectProperties::resetPythonMacros()
 {
   grpPythonMacros->setChecked( false );
-  ptePythonMacros->setText( "def openProject():\n    pass\n\n" \
-                            "def saveProject():\n    pass\n\n" \
+  ptePythonMacros->setText( "def openProject():\n    pass\n\n"
+                            "def saveProject():\n    pass\n\n"
                             "def closeProject():\n    pass\n" );
 }
 
@@ -2516,7 +2498,7 @@ void QgsProjectProperties::populateEllipsoidList()
   myItem.semiMinor = 6370997.0;
   mEllipsoidList.append( myItem );
 
-  const auto definitions {QgsEllipsoidUtils::definitions()};
+  const auto definitions { QgsEllipsoidUtils::definitions() };
   for ( const QgsEllipsoidUtils::EllipsoidDefinition &def : definitions )
   {
     myItem.acronym = def.acronym;
@@ -2555,8 +2537,8 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
   if ( leSemiMajor->isModified() || leSemiMinor->isModified() )
   {
     QgsDebugMsgLevel( QStringLiteral( "Saving major/minor" ), 4 );
-    mEllipsoidList[ mEllipsoidIndex ].semiMajor = QgsDoubleValidator::toDouble( leSemiMajor->text() );
-    mEllipsoidList[ mEllipsoidIndex ].semiMinor = QgsDoubleValidator::toDouble( leSemiMinor->text() );
+    mEllipsoidList[mEllipsoidIndex].semiMajor = QgsDoubleValidator::toDouble( leSemiMajor->text() );
+    mEllipsoidList[mEllipsoidIndex].semiMinor = QgsDoubleValidator::toDouble( leSemiMinor->text() );
   }
 
   mEllipsoidIndex = newIndex;
@@ -2577,7 +2559,7 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
     leSemiMajor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Custom" ) ) );
     leSemiMinor->setToolTip( tr( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Custom" ) ) );
   }
-  if ( mEllipsoidList[ mEllipsoidIndex ].acronym != geoNone() )
+  if ( mEllipsoidList[mEllipsoidIndex].acronym != geoNone() )
   {
     leSemiMajor->setText( QLocale().toString( myMajor, 'f', 3 ) );
     leSemiMinor->setText( QLocale().toString( myMinor, 'f', 3 ) );
@@ -2599,8 +2581,8 @@ void QgsProjectProperties::setCurrentEllipsoid( const QString &ellipsoidAcronym 
       if ( mEllipsoidList.at( i ).acronym.startsWith( QLatin1String( "PARAMETER" ), Qt::CaseInsensitive ) )
       {
         index = i;
-        mEllipsoidList[ index ].semiMajor = mySplitEllipsoid[ 1 ].toDouble();
-        mEllipsoidList[ index ].semiMinor = mySplitEllipsoid[ 2 ].toDouble();
+        mEllipsoidList[index].semiMajor = mySplitEllipsoid[1].toDouble();
+        mEllipsoidList[index].semiMinor = mySplitEllipsoid[2].toDouble();
       }
     }
   }
@@ -2622,8 +2604,7 @@ void QgsProjectProperties::setCurrentEllipsoid( const QString &ellipsoidAcronym 
 void QgsProjectProperties::mButtonAddColor_clicked()
 {
   const Qgis::ColorModel colorModel = mColorModel->currentData().value<Qgis::ColorModel>();
-  const QColor defaultColor = colorModel == Qgis::ColorModel::Cmyk ?
-                              QColor::fromCmykF( 0., 1., 1., 0. ) : QColor::fromRgbF( 1., 0., 0. );
+  const QColor defaultColor = colorModel == Qgis::ColorModel::Cmyk ? QColor::fromCmykF( 0., 1., 1., 0. ) : QColor::fromRgbF( 1., 0., 0. );
 
   QColor newColor = QgsColorDialog::getColor( defaultColor, this->parentWidget(), tr( "Select Color" ), true );
   if ( !newColor.isValid() )
@@ -2659,26 +2640,28 @@ void QgsProjectProperties::addStyleDatabasePrivate( bool createNew )
     initialFolder = QDir::homePath();
 
   QString databasePath = createNew
-                         ? QFileDialog::getSaveFileName(
-                           this,
-                           tr( "Create Style Database" ),
-                           initialFolder,
-                           tr( "Style databases" ) + " (*.db)" )
-                         : QFileDialog::getOpenFileName(
-                           this,
-                           tr( "Add Style Database" ),
-                           initialFolder,
-                           tr( "Style databases" ) + " (*.db *.xml)" );
+                           ? QFileDialog::getSaveFileName(
+                               this,
+                               tr( "Create Style Database" ),
+                               initialFolder,
+                               tr( "Style databases" ) + " (*.db)"
+                             )
+                           : QFileDialog::getOpenFileName(
+                               this,
+                               tr( "Add Style Database" ),
+                               initialFolder,
+                               tr( "Style databases" ) + " (*.db *.xml)"
+                             );
   // return dialog focus on Mac
   activateWindow();
   raise();
-  if ( ! databasePath.isEmpty() )
+  if ( !databasePath.isEmpty() )
   {
     QgsStyleManagerDialog::settingLastStyleDatabaseFolder->setValue( QFileInfo( databasePath ).path() );
 
     if ( createNew )
     {
-      databasePath = QgsFileUtils::ensureFileNameHasExtension( databasePath, { QStringLiteral( "db" )} );
+      databasePath = QgsFileUtils::ensureFileNameHasExtension( databasePath, { QStringLiteral( "db" ) } );
       if ( QFile::exists( databasePath ) )
       {
         QFile::remove( databasePath );
@@ -2706,15 +2689,16 @@ void QgsProjectProperties::removeStyleDatabase()
   delete mListStyleDatabases->takeItem( currentRow );
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
 
 void QgsProjectProperties::addIccProfile()
 {
   const QString iccProfileFilePath = QFileDialog::getOpenFileName(
-                                       this,
-                                       tr( "Load ICC Profile" ),
-                                       QDir::homePath(),
-                                       tr( "ICC Profile" ) + QStringLiteral( " (*.icc)" ) );
+    this,
+    tr( "Load ICC Profile" ),
+    QDir::homePath(),
+    tr( "ICC Profile" ) + QStringLiteral( " (*.icc)" )
+  );
 
   addIccProfile( iccProfileFilePath );
 }
@@ -2744,8 +2728,7 @@ void QgsProjectProperties::removeIccProfile()
 
 void QgsProjectProperties::saveIccProfile()
 {
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save ICC Profile" ), QDir::homePath(),
-                     tr( "ICC profile files (*.icc *.ICC)" ) );
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save ICC Profile" ), QDir::homePath(), tr( "ICC profile files (*.icc *.ICC)" ) );
 
   if ( fileName.isEmpty() )
     return;
@@ -2810,7 +2793,7 @@ void QgsProjectProperties::scaleItemChanged( QListWidgetItem *changedScaleItem )
   // Check if the new value is valid, restore the old value if not.
   const QStringList parts { changedScaleItem->text().split( ':' ) };
   bool valid { parts.count() == 2 };
-  double newDenominator { -1 };  // invalid
+  double newDenominator { -1 }; // invalid
 
   if ( valid )
   {
@@ -2872,7 +2855,7 @@ void QgsProjectProperties::showHelp()
 
 void QgsProjectProperties::checkPageWidgetNameMap()
 {
-  const QMap< QString, QString > pageNames = QgisApp::instance()->projectPropertiesPagesMap();
+  const QMap<QString, QString> pageNames = QgisApp::instance()->projectPropertiesPagesMap();
   Q_ASSERT_X( pageNames.count() == mOptionsListWidget->count(), "QgsProjectProperties::checkPageWidgetNameMap()", "QgisApp::projectPropertiesPagesMap() is outdated, contains too many entries" );
   for ( int idx = 0; idx < mOptionsListWidget->count(); ++idx )
   {
@@ -2905,13 +2888,14 @@ void QgsProjectProperties::onGenerateTsFileButton() const
   QString l = cbtsLocale->currentData().toString();
   QgsProject::instance()->generateTsFile( l );
   QMessageBox::information( nullptr, tr( "General TS file generated" ), tr( "TS file generated with source language %1.\n"
-                            "- open it with Qt Linguist\n"
-                            "- translate strings\n"
-                            "- save the TS file with the suffix of the target language (e.g. _de.ts)\n"
-                            "- release to get the QM file including the suffix (e.g. aproject_de.qm)\n"
-                            "- open the original QGIS file (e.g. aproject.qgs)\n"
-                            "- if your QGIS is set to use a specific language and the QM file for that language is found, the translated QGIS project will be generated on the fly.\n"
-                            "- you will be redirected to this new project (e.g. aproject_de.qgs)." ).arg( l ) ) ;
+                                                                            "- open it with Qt Linguist\n"
+                                                                            "- translate strings\n"
+                                                                            "- save the TS file with the suffix of the target language (e.g. _de.ts)\n"
+                                                                            "- release to get the QM file including the suffix (e.g. aproject_de.qm)\n"
+                                                                            "- open the original QGIS file (e.g. aproject.qgs)\n"
+                                                                            "- if your QGIS is set to use a specific language and the QM file for that language is found, the translated QGIS project will be generated on the fly.\n"
+                                                                            "- you will be redirected to this new project (e.g. aproject_de.qgs)." )
+                                                                          .arg( l ) );
 }
 
 void QgsProjectProperties::customizeBearingFormat()

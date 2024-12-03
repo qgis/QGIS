@@ -26,15 +26,15 @@
 #include <qgshillshaderenderer.h>
 #include <qgsrasterlayer.h>
 
-class TestQgsOpenClUtils: public QObject
+class TestQgsOpenClUtils : public QObject
 {
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void TestEnable();
     void TestDisable();
@@ -50,7 +50,6 @@ class TestQgsOpenClUtils: public QObject
     void testHillshadeGPU();
 
   private:
-
     void _testMakeRunProgram();
     void _testMakeHillshade( const int loops );
 
@@ -64,7 +63,6 @@ class TestQgsOpenClUtils: public QObject
            }
        )CL";
       return pgm;
-
     }
 
     QgsRasterLayer *mFloat32RasterLayer = nullptr;
@@ -95,8 +93,7 @@ void TestQgsOpenClUtils::initTestCase()
 
   const QString float32FileName = QStringLiteral( TEST_DATA_DIR ) + '/' + "/raster/band1_float32_noct_epsg4326.tif";
   const QFileInfo float32RasterFileInfo( float32FileName );
-  mFloat32RasterLayer = new QgsRasterLayer( float32RasterFileInfo.filePath(),
-      float32RasterFileInfo.completeBaseName() );
+  mFloat32RasterLayer = new QgsRasterLayer( float32RasterFileInfo.filePath(), float32RasterFileInfo.completeBaseName() );
 }
 
 
@@ -134,7 +131,6 @@ void TestQgsOpenClUtils::testMakeRunProgram()
 
 void TestQgsOpenClUtils::_testMakeRunProgram()
 {
-
   const cl_int err = 0;
 
   QVERIFY( err == 0 );
@@ -142,30 +138,21 @@ void TestQgsOpenClUtils::_testMakeRunProgram()
   const cl::Context ctx = QgsOpenClUtils::context();
   cl::CommandQueue queue = QgsOpenClUtils::commandQueue();
 
-  std::vector<float> a_vec = {1, 10, 100};
-  std::vector<float> b_vec = {1, 10, 100};
-  std::vector<float> c_vec = {-1, -1, -1};
+  std::vector<float> a_vec = { 1, 10, 100 };
+  std::vector<float> b_vec = { 1, 10, 100 };
+  std::vector<float> c_vec = { -1, -1, -1 };
   cl::Buffer a_buf( queue, a_vec.begin(), a_vec.end(), true );
   cl::Buffer b_buf( queue, b_vec.begin(), b_vec.end(), true );
   cl::Buffer c_buf( queue, c_vec.begin(), c_vec.end(), false );
 
   const cl::Program program = QgsOpenClUtils::buildProgram( QString::fromStdString( source() ) );
 
-  auto kernel =
-    cl::KernelFunctor <
+  auto kernel = cl::KernelFunctor<
     cl::Buffer &,
     cl::Buffer &,
-    cl::Buffer &
-    > ( program, "vectorAdd" );
+    cl::Buffer &>( program, "vectorAdd" );
 
-  kernel( cl::EnqueueArgs(
-            queue,
-            cl::NDRange( 3 )
-          ),
-          a_buf,
-          b_buf,
-          c_buf
-        );
+  kernel( cl::EnqueueArgs( queue, cl::NDRange( 3 ) ), a_buf, b_buf, c_buf );
 
   cl::copy( queue, c_buf, c_vec.begin(), c_vec.end() );
   for ( size_t i = 0; i < c_vec.size(); ++i )
@@ -178,11 +165,11 @@ void TestQgsOpenClUtils::testProgramSource()
 {
   QgsOpenClUtils::setSourcePath( QDir::tempPath() );
   QTemporaryFile tmpFile( QDir::tempPath() + "/XXXXXX.cl" );
-  tmpFile.open( );
-  tmpFile.write( QByteArray::fromStdString( source( ) ) );
+  tmpFile.open();
+  tmpFile.write( QByteArray::fromStdString( source() ) );
   tmpFile.flush();
   const QString baseName = tmpFile.fileName().replace( ".cl", "" ).replace( QDir::tempPath(), "" );
-  QVERIFY( ! QgsOpenClUtils::sourceFromBaseName( baseName ).isEmpty() );
+  QVERIFY( !QgsOpenClUtils::sourceFromBaseName( baseName ).isEmpty() );
 }
 
 void TestQgsOpenClUtils::testContext()
@@ -192,7 +179,7 @@ void TestQgsOpenClUtils::testContext()
 
 void TestQgsOpenClUtils::testDevices()
 {
-  std::vector<cl::Device> _devices( QgsOpenClUtils::devices( ) );
+  std::vector<cl::Device> _devices( QgsOpenClUtils::devices() );
   QVERIFY( _devices.size() > 0 );
   qDebug() << QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Name, _devices.at( 0 ) );
   qDebug() << QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Type, _devices.at( 0 ) );
@@ -207,7 +194,7 @@ void TestQgsOpenClUtils::testActiveDeviceVersion()
 
 void TestQgsOpenClUtils::_testMakeHillshade( const int loops )
 {
-  for ( int i = 0 ; i < loops;  i++ )
+  for ( int i = 0; i < loops; i++ )
   {
     QgsHillshadeRenderer renderer( mFloat32RasterLayer->dataProvider(), 1, 35.0, 5000.0 );
     // Note: CPU time grows linearly with raster dimensions while GPU time is roughly constant
@@ -233,7 +220,6 @@ void TestQgsOpenClUtils::testHillshadeCPU()
     _testMakeHillshade( 1 );
   }
 }
-
 
 
 QGSTEST_MAIN( TestQgsOpenClUtils )

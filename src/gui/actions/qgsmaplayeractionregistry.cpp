@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaplayeractionregistry.h"
+#include "moc_qgsmaplayeractionregistry.cpp"
 #include "qgsmaplayeraction.h"
 
 QgsMapLayerActionRegistry::QgsMapLayerActionRegistry( QObject *parent ) : QObject( parent )

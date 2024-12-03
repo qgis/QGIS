@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsarcgisrestsourcewidget.h"
+#include "moc_qgsarcgisrestsourcewidget.cpp"
 
 #include "qgsproviderregistry.h"
 
@@ -103,4 +104,3 @@ QString QgsArcGisRestSourceWidget::referer() const
 {
   return mEditReferer->text();
 }
-

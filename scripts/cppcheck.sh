@@ -46,6 +46,7 @@ cppcheck --library=qt.cfg --inline-suppr \
          -DSIP_ENUM_BASETYPE = \
          -DQT3D_FUNCTOR = \
          -DQgsSetCPLHTTPFetchOverriderInitiatorClass = \
+         -DQgsSetRequestInitiatorClass = \
          -DBUILTIN_UNREACHABLE="__builtin_unreachable();" \
          -i src/analysis/georeferencing/qgsgcptransformer.cpp \
          -j $(nproc) \

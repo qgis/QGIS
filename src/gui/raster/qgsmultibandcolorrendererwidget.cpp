@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmultibandcolorrendererwidget.h"
+#include "moc_qgsmultibandcolorrendererwidget.cpp"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"

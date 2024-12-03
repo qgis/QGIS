@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthcerttrustpolicycombobox.h"
+#include "moc_qgsauthcerttrustpolicycombobox.cpp"
 
 #include <QLineEdit>
 

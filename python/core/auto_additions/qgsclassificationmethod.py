@@ -4,9 +4,9 @@ try:
     QgsClassificationMethod.create = staticmethod(QgsClassificationMethod.create)
     QgsClassificationMethod.makeBreaksSymmetric = staticmethod(QgsClassificationMethod.makeBreaksSymmetric)
     QgsClassificationMethod.__group__ = ['classification']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsClassificationRange.__group__ = ['classification']
-except NameError:
+except (NameError, AttributeError):
     pass

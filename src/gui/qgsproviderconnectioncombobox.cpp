@@ -14,6 +14,7 @@
 ***************************************************************************/
 
 #include "qgsproviderconnectioncombobox.h"
+#include "moc_qgsproviderconnectioncombobox.cpp"
 #include "qgsproviderconnectionmodel.h"
 
 QgsProviderConnectionComboBox::QgsProviderConnectionComboBox( const QString &provider, QWidget *parent )

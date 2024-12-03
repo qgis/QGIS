@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerlegendwidget.h"
+#include "moc_qgsvectorlayerlegendwidget.cpp"
 
 #include <QBoxLayout>
 #include <QStandardItemModel>

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsvectorlayertemporalpropertieswidget.h"
+#include "moc_qgsvectorlayertemporalpropertieswidget.cpp"
 #include "qgsgui.h"
 #include "qgsunittypes.h"
 #include "qgsvectorlayer.h"

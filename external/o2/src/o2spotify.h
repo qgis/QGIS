@@ -8,7 +8,7 @@ class O0_EXPORT O2Spotify: public O2 {
     Q_OBJECT
 
 public:
-    explicit O2Spotify(QObject *parent = 0);
+    explicit O2Spotify(QObject *parent = nullptr);
 
     struct Scope {
         static const QString PLAYLIST_READ_PRIVATE;

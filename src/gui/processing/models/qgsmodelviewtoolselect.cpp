@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmodelviewtoolselect.h"
+#include "moc_qgsmodelviewtoolselect.cpp"
 #include "qgsmodelviewmouseevent.h"
 #include "qgsmodelgraphicsview.h"
 #include "qgsprocessingmodelalgorithm.h"
@@ -54,11 +55,11 @@ void QgsModelViewToolSelect::modelPressEvent( QgsModelViewMouseEvent *event )
   if ( mMouseHandles->isVisible() )
   {
     //selection handles are being shown, get mouse action for current cursor position
-    QgsGraphicsViewMouseHandles::MouseAction mouseAction = mMouseHandles->mouseActionForScenePos( event->modelPoint() );
+    Qgis::MouseHandlesAction mouseAction = mMouseHandles->mouseActionForScenePos( event->modelPoint() );
 
-    if ( mouseAction != QgsGraphicsViewMouseHandles::MoveItem
-         && mouseAction != QgsGraphicsViewMouseHandles::NoAction
-         && mouseAction != QgsGraphicsViewMouseHandles::SelectItem )
+    if ( mouseAction != Qgis::MouseHandlesAction::MoveItem
+         && mouseAction != Qgis::MouseHandlesAction::NoAction
+         && mouseAction != Qgis::MouseHandlesAction::SelectItem )
     {
       //mouse is over a resize handle, so propagate event onward
       event->ignore();

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptooltrimextendfeature.h"
+#include "moc_qgsmaptooltrimextendfeature.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
@@ -93,7 +94,6 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
         mRubberBandLimit->addPoint( p1 );
         mRubberBandLimit->addPoint( p2 );
         mRubberBandLimit->show();
-
       }
       else if ( mRubberBandLimit )
       {
@@ -247,7 +247,6 @@ void QgsMapToolTrimExtendFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 
           if ( auto *lLayer = match.layer() )
           {
-
             lLayer->beginEditCommand( tr( "Trim/Extend feature" ) );
             lLayer->changeGeometry( match.featureId(), mGeom );
             if ( QgsProject::instance()->topologicalEditing() )
@@ -273,7 +272,6 @@ void QgsMapToolTrimExtendFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     deactivate();
   }
-
 }
 
 void QgsMapToolTrimExtendFeature::keyPressEvent( QKeyEvent *e )

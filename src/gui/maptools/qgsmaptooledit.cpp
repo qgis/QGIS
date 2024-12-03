@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptooledit.h"
+#include "moc_qgsmaptooledit.cpp"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgsgeometryrubberband.h"

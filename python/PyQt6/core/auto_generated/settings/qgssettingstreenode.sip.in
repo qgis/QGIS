@@ -46,7 +46,7 @@ to automatically register a settings entry on its creation when a parent is prov
     virtual ~QgsSettingsTreeNode();
 
 
-    QgsSettingsTreeNode *createChildNode( const QString &key ) throw( QgsSettingsException ) /KeepReference/;
+    QgsSettingsTreeNode *createChildNode( const QString &key )  /KeepReference/;
 %Docstring
 Creates a normal tree node
 It will return the existing child node if it exists at the given key
@@ -54,7 +54,7 @@ It will return the existing child node if it exists at the given key
 :raises QgsSettingsException: if a setting exists with the same key
 %End
 
-    QgsSettingsTreeNamedListNode *createNamedListNode( const QString &key, const Qgis::SettingsTreeNodeOptions &options = Qgis::SettingsTreeNodeOptions() ) throw( QgsSettingsException ) /KeepReference/;
+    QgsSettingsTreeNamedListNode *createNamedListNode( const QString &key, const Qgis::SettingsTreeNodeOptions &options = Qgis::SettingsTreeNodeOptions() )  /KeepReference/;
 %Docstring
 Creates a named list tree node.
 This is useful to register groups of settings for several named items (for instance credentials for several named services)
@@ -66,7 +66,7 @@ This is useful to register groups of settings for several named items (for insta
 Returns the type of node
 %End
 
-    void registerChildSetting( const QgsSettingsEntryBase *setting, const QString &key ) throw( QgsSettingsException );
+    void registerChildSetting( const QgsSettingsEntryBase *setting, const QString &key );
 %Docstring
 Registers a child setting
 
@@ -190,7 +190,7 @@ the named list node is used to store a group of settings under a dynamically nam
   public:
     virtual ~QgsSettingsTreeNamedListNode();
 
-    QStringList items( const QStringList &parentsNamedItems = QStringList() ) const throw( QgsSettingsException );
+    QStringList items( const QStringList &parentsNamedItems = QStringList() ) const;
 %Docstring
 Returns the list of items
 
@@ -199,7 +199,7 @@ Returns the list of items
 :raises QgsSettingsException: if the number of given parent named items doesn't match the complete key definition
 %End
 
-    QStringList items( Qgis::SettingsOrigin origin, const QStringList &parentsNamedItems = QStringList() ) const throw( QgsSettingsException );
+    QStringList items( Qgis::SettingsOrigin origin, const QStringList &parentsNamedItems = QStringList() ) const;
 %Docstring
 Returns the list of items
 
@@ -210,7 +210,7 @@ Returns the list of items
 %End
 
 
-    void setSelectedItem( const QString &item, const QStringList &parentsNamedItems = QStringList() ) throw( QgsSettingsException );
+    void setSelectedItem( const QString &item, const QStringList &parentsNamedItems = QStringList() );
 %Docstring
 Sets the selected named item from the named list node
 
@@ -220,7 +220,7 @@ Sets the selected named item from the named list node
 :raises QgsSettingsException: if the number of given parent named items doesn't match the complete key definition
 %End
 
-    QString selectedItem( const QStringList &parentsNamedItems = QStringList() ) throw( QgsSettingsException );
+    QString selectedItem( const QStringList &parentsNamedItems = QStringList() );
 %Docstring
 Returns the selected named item from the named list node
 
@@ -229,7 +229,7 @@ Returns the selected named item from the named list node
 :raises QgsSettingsException: if the number of given parent named items doesn't match the complete key definition
 %End
 
-    void deleteItem( const QString &item, const QStringList &parentsNamedItems = QStringList() ) throw( QgsSettingsException );
+    void deleteItem( const QString &item, const QStringList &parentsNamedItems = QStringList() );
 %Docstring
 Deletes a named item from the named list node
 
@@ -239,7 +239,7 @@ Deletes a named item from the named list node
 :raises QgsSettingsException: if the number of given parent named items doesn't match the complete key definition
 %End
 
-    void deleteAllItems( const QStringList &parentsNamedItems = QStringList() ) throw( QgsSettingsException );
+    void deleteAllItems( const QStringList &parentsNamedItems = QStringList() );
 %Docstring
 Deletes all items from the named list node
 

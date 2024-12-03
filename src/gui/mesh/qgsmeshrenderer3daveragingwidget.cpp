@@ -19,6 +19,7 @@
 #include <QPixmap>
 
 #include "qgsmeshrenderer3daveragingwidget.h"
+#include "moc_qgsmeshrenderer3daveragingwidget.cpp"
 
 #include "qgis.h"
 #include "qgsmeshlayer.h"

@@ -15,70 +15,94 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "August 2012"
+__copyright__ = "(C) 2012, Victor Olaya"
 
 import random
 
-from qgis.core import (QgsFeatureSink,
-                       QgsProcessingException,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterEnum,
-                       QgsProcessingParameterField,
-                       QgsProcessingParameterNumber,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingFeatureSource,
-                       QgsFeatureRequest)
+from qgis.core import (
+    QgsFeatureSink,
+    QgsProcessingException,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterField,
+    QgsProcessingParameterNumber,
+    QgsProcessingParameterFeatureSink,
+    QgsProcessingFeatureSource,
+    QgsFeatureRequest,
+)
 from collections import defaultdict
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class RandomExtractWithinSubsets(QgisAlgorithm):
-    INPUT = 'INPUT'
-    METHOD = 'METHOD'
-    NUMBER = 'NUMBER'
-    FIELD = 'FIELD'
-    OUTPUT = 'OUTPUT'
+    INPUT = "INPUT"
+    METHOD = "METHOD"
+    NUMBER = "NUMBER"
+    FIELD = "FIELD"
+    OUTPUT = "OUTPUT"
 
     def group(self):
-        return self.tr('Vector selection')
+        return self.tr("Vector selection")
 
     def groupId(self):
-        return 'vectorselection'
+        return "vectorselection"
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.methods = [self.tr('Number of selected features'),
-                        self.tr('Percentage of selected features')]
+        self.methods = [
+            self.tr("Number of selected features"),
+            self.tr("Percentage of selected features"),
+        ]
 
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer')))
+        self.addParameter(
+            QgsProcessingParameterFeatureSource(self.INPUT, self.tr("Input layer"))
+        )
 
-        self.addParameter(QgsProcessingParameterField(self.FIELD,
-                                                      self.tr('ID field'), None, self.INPUT))
+        self.addParameter(
+            QgsProcessingParameterField(
+                self.FIELD, self.tr("ID field"), None, self.INPUT
+            )
+        )
 
-        self.addParameter(QgsProcessingParameterEnum(self.METHOD,
-                                                     self.tr('Method'), self.methods, False, 0))
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                self.METHOD, self.tr("Method"), self.methods, False, 0
+            )
+        )
 
-        self.addParameter(QgsProcessingParameterNumber(self.NUMBER,
-                                                       self.tr('Number/percentage of selected features'), QgsProcessingParameterNumber.Type.Integer,
-                                                       10, False, 0.0))
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                self.NUMBER,
+                self.tr("Number/percentage of selected features"),
+                QgsProcessingParameterNumber.Type.Integer,
+                10,
+                False,
+                0.0,
+            )
+        )
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Extracted (random stratified)')))
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(
+                self.OUTPUT, self.tr("Extracted (random stratified)")
+            )
+        )
 
     def name(self):
-        return 'randomextractwithinsubsets'
+        return "randomextractwithinsubsets"
 
     def displayName(self):
-        return self.tr('Random extract within subsets')
+        return self.tr("Random extract within subsets")
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
-            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+            raise QgsProcessingException(
+                self.invalidSourceError(parameters, self.INPUT)
+            )
 
         method = self.parameterAsEnum(parameters, self.METHOD, context)
 
@@ -86,24 +110,39 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
 
         index = source.fields().lookupField(field)
 
-        features = source.getFeatures(QgsFeatureRequest(), QgsProcessingFeatureSource.Flag.FlagSkipGeometryValidityChecks)
+        features = source.getFeatures(
+            QgsFeatureRequest(),
+            QgsProcessingFeatureSource.Flag.FlagSkipGeometryValidityChecks,
+        )
         featureCount = source.featureCount()
         unique = source.uniqueValues(index)
         value = self.parameterAsInt(parameters, self.NUMBER, context)
         if method == 0:
             if value > featureCount:
                 raise QgsProcessingException(
-                    self.tr('Selected number is greater that feature count. '
-                            'Choose lesser value and try again.'))
+                    self.tr(
+                        "Selected number is greater that feature count. "
+                        "Choose lesser value and try again."
+                    )
+                )
         else:
             if value > 100:
                 raise QgsProcessingException(
-                    self.tr("Percentage can't be greater than 100. Set "
-                            "correct value and try again."))
+                    self.tr(
+                        "Percentage can't be greater than 100. Set "
+                        "correct value and try again."
+                    )
+                )
             value = value / 100.0
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               source.fields(), source.wkbType(), source.sourceCrs())
+        (sink, dest_id) = self.parameterAsSink(
+            parameters,
+            self.OUTPUT,
+            context,
+            source.fields(),
+            source.wkbType(),
+            source.sourceCrs(),
+        )
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
@@ -122,14 +161,18 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
             selValue = value if method != 1 else int(round(value * len(subset), 0))
             if selValue > len(subset):
                 selValue = len(subset)
-                feedback.reportError(self.tr(
-                    'Subset "{}" is smaller than requested number of features.').format(k))
+                feedback.reportError(
+                    self.tr(
+                        'Subset "{}" is smaller than requested number of features.'
+                    ).format(k)
+                )
             selran.extend(random.sample(subset, selValue))
 
         total = 100.0 / featureCount if featureCount else 1
-        for (i, feat) in enumerate(selran):
+        for i, feat in enumerate(selran):
             if feedback.isCanceled():
                 break
             sink.addFeature(feat, QgsFeatureSink.Flag.FastInsert)
             feedback.setProgress(int(i * total))
+        sink.finalize()
         return {self.OUTPUT: dest_id}

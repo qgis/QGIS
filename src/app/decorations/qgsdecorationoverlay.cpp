@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsdecorationoverlay.h"
+#include "moc_qgsdecorationoverlay.cpp"
 #include "qgsmapdecoration.h"
 #include "qgsmapcanvas.h"
 #include "qgisapp.h"
@@ -39,7 +40,7 @@ QgsDecorationOverlay::QgsDecorationOverlay( QWidget *parent )
 
 void QgsDecorationOverlay::paintEvent( QPaintEvent * )
 {
-  const QList< QgsMapDecoration * > decorations = QgisApp::instance()->activeDecorations();
+  const QList<QgsMapDecoration *> decorations = QgisApp::instance()->activeDecorations();
   if ( decorations.empty() )
     return;
 

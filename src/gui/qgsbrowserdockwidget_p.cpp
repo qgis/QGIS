@@ -18,6 +18,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsbrowserdockwidget_p.h"
+#include "moc_qgsbrowserdockwidget_p.cpp"
 
 #include <memory>
 

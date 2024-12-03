@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsexpressionbuilderdialog.h"
+#include "moc_qgsexpressionbuilderdialog.cpp"
 #include "qgssettings.h"
 #include "qgsguiutils.h"
 #include "qgsgui.h"

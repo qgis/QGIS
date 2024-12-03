@@ -62,6 +62,7 @@
 
 #include "qgsauthcertificateinfo.h"
 #include "qgsauthsslimportdialog.h"
+#include "moc_qgsauthsslimportdialog.cpp"
 #include "qgsauthsslconfigwidget.h"
 #include "ui_qgsauthsslimporterrors.h"
 

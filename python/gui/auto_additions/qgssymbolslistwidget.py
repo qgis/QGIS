@@ -2,5 +2,5 @@
 try:
     QgsSymbolsListWidget.__attribute_docs__ = {'changed': 'Emitted when the symbol is modified in the widget.\n'}
     QgsSymbolsListWidget.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

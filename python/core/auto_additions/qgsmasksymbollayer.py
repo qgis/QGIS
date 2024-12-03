@@ -2,5 +2,5 @@
 try:
     QgsMaskMarkerSymbolLayer.create = staticmethod(QgsMaskMarkerSymbolLayer.create)
     QgsMaskMarkerSymbolLayer.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

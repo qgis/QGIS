@@ -29,6 +29,7 @@
 ****************************************************************************/
 
 #include "qgsimagedroptextedit.h"
+#include "moc_qgsimagedroptextedit.cpp"
 #include "qgsguiutils.h"
 
 #include <QMimeData>

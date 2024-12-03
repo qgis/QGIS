@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstacdataitemguiprovider.h"
+#include "moc_qgsstacdataitemguiprovider.cpp"
 #include "qgsnetworkcontentfetcherregistry.h"
 #include "qgsstaccontroller.h"
 #include "qgsstacdataitems.h"
@@ -76,7 +77,7 @@ void QgsStacDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
 
     if ( catalogItem->stacCatalog() )
     {
-      QAction *actionDetails = new QAction( tr( "Details" ), menu );
+      QAction *actionDetails = new QAction( tr( "Details…" ), menu );
       connect( actionDetails, &QAction::triggered, this, [catalogItem] { showDetails( catalogItem ); } );
       menu->addAction( actionDetails );
     }
@@ -92,11 +93,11 @@ void QgsStacDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     {
       menu->addSeparator();
 
-      QAction *actionDownload = new QAction( tr( "Download assets" ), menu );
+      QAction *actionDownload = new QAction( tr( "Download Assets…" ), menu );
       connect( actionDownload, &QAction::triggered, this, [itemItem, context] { downloadAssets( itemItem, context ); } );
       menu->addAction( actionDownload );
 
-      QAction *actionDetails = new QAction( tr( "Details" ), menu );
+      QAction *actionDetails = new QAction( tr( "Details…" ), menu );
       connect( actionDetails, &QAction::triggered, this, [itemItem] { showDetails( itemItem ); } );
       menu->addAction( actionDetails );
     }
@@ -217,9 +218,9 @@ void QgsStacDataItemGuiProvider::downloadAssets( QgsDataItem *item, QgsDataItemG
       connect( fetcher, &QgsNetworkContentFetcherTask::fetched, item, [fetcher, folder, context]
       {
         QNetworkReply *reply = fetcher->reply();
-        if ( !reply )
+        if ( !reply || reply->error() != QNetworkReply::NoError )
         {
-          // canceled
+          // canceled or failed
           return;
         }
         else

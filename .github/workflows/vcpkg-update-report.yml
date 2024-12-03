@@ -1,0 +1,36 @@
+---
+name: 🧮 Vcpkg report
+on:
+  pull_request:
+    paths:
+      - 'vcpkg/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  vcpkg-check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 30
+
+      - name: Generate diff report
+        id: vcpkg_diff
+        uses: ./.github/actions/vcpkg_update_report
+        with:
+          vcpkg-manifest-dir: vcpkg
+          triplet: x64-linux
+          features: 3d,bindings,gui,opencl,quick,server
+
+      - name: Schedule report comment
+        uses: ./.github/actions/post_sticky_comment
+        if: github.event_name == 'pull_request'
+        with:
+          marker: vcpkg-report
+          body: |
+            ### 🧮 Vcpkg update report
+            ${{ steps.vcpkg_diff.outputs.report }}
+          pr: ${{ github.event.number }}

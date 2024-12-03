@@ -329,14 +329,17 @@ QVariantMap QgsServiceAreaFromLayerAlgorithm::processAlgorithm( const QVariantMa
   QVariantMap outputs;
   if ( pointsSink )
   {
+    pointsSink->finalize();
     outputs.insert( QStringLiteral( "OUTPUT" ), pointsSinkId );
   }
   if ( linesSink )
   {
+    linesSink->finalize();
     outputs.insert( QStringLiteral( "OUTPUT_LINES" ), linesSinkId );
   }
   if ( nonRoutableSink )
   {
+    nonRoutableSink->finalize();
     outputs.insert( QStringLiteral( "OUTPUT_NON_ROUTABLE" ), nonRoutableSinkId );
   }
 

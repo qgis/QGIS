@@ -1,4 +1,3 @@
-# -*- coding:utf-8 -*-
 """
 /***************************************************************************
                            qgsplugininstallerrepositorydialog.py
@@ -31,10 +30,14 @@ from qgis.gui import QgsAuthConfigSelect
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QVBoxLayout
 from qgis.PyQt.QtCore import Qt
 
-Ui_QgsPluginInstallerRepositoryDetailsDialogBase, _ = uic.loadUiType(Path(__file__).parent / 'qgsplugininstallerrepositorybase.ui')
+Ui_QgsPluginInstallerRepositoryDetailsDialogBase, _ = uic.loadUiType(
+    Path(__file__).parent / "qgsplugininstallerrepositorybase.ui"
+)
 
 
-class QgsPluginInstallerRepositoryDialog(QDialog, Ui_QgsPluginInstallerRepositoryDetailsDialogBase):
+class QgsPluginInstallerRepositoryDialog(
+    QDialog, Ui_QgsPluginInstallerRepositoryDetailsDialogBase
+):
     # ----------------------------------------- #
 
     def __init__(self, parent=None):
@@ -49,7 +52,7 @@ class QgsPluginInstallerRepositoryDialog(QDialog, Ui_QgsPluginInstallerRepositor
 
     # ----------------------------------------- #
     def textChanged(self, string):
-        enable = (len(self.editName.text()) > 0 and len(self.editURL.text()) > 0)
+        enable = len(self.editName.text()) > 0 and len(self.editURL.text()) > 0
         self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(enable)
 
     def editAuthCfgId(self):
@@ -60,7 +63,9 @@ class QgsPluginInstallerRepositoryDialog(QDialog, Ui_QgsPluginInstallerRepositor
         if self.editAuthCfg.text():
             selector.setConfigId(self.editAuthCfg.text())
         layout.addWidget(selector)
-        buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Close)
+        buttonBox = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Close
+        )
         buttonBox.accepted.connect(dlg.accept)
         buttonBox.rejected.connect(dlg.reject)
         layout.addWidget(buttonBox)

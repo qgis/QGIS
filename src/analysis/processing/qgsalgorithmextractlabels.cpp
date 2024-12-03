@@ -218,23 +218,23 @@ class ExtractLabelSink : public QgsLabelSink
           break;
 
         case Qgis::LabelMultiLineAlignment::FollowPlacement:
-          switch ( label->getQuadrant() )
+          switch ( label->quadrant() )
           {
-            case pal::LabelPosition::QuadrantAboveLeft:
-            case pal::LabelPosition::QuadrantLeft:
-            case pal::LabelPosition::QuadrantBelowLeft:
+            case Qgis::LabelQuadrantPosition::AboveLeft:
+            case Qgis::LabelQuadrantPosition::Left:
+            case Qgis::LabelQuadrantPosition::BelowLeft:
               labelAlignment = QStringLiteral( "right" );
               break;
 
-            case pal::LabelPosition::QuadrantAbove:
-            case pal::LabelPosition::QuadrantOver:
-            case pal::LabelPosition::QuadrantBelow:
+            case Qgis::LabelQuadrantPosition::Above:
+            case Qgis::LabelQuadrantPosition::Over:
+            case Qgis::LabelQuadrantPosition::Below:
               labelAlignment = QStringLiteral( "center" );
               break;
 
-            case pal::LabelPosition::QuadrantAboveRight:
-            case pal::LabelPosition::QuadrantRight:
-            case pal::LabelPosition::QuadrantBelowRight:
+            case Qgis::LabelQuadrantPosition::AboveRight:
+            case Qgis::LabelQuadrantPosition::Right:
+            case Qgis::LabelQuadrantPosition::BelowRight:
               labelAlignment = QStringLiteral( "left" );
               break;
           }
@@ -507,6 +507,7 @@ QVariantMap QgsExtractLabelsAlgorithm::processAlgorithm( const QVariantMap &para
     if ( !sink->addFeature( feature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
   }
+  sink->finalize();
   sink.reset();
 
   if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( dest, context ) ) )

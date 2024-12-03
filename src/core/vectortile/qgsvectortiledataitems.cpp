@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvectortiledataitems.h"
+#include "moc_qgsvectortiledataitems.cpp"
 #include "qgsvectortileconnection.h"
 
 ///@cond PRIVATE

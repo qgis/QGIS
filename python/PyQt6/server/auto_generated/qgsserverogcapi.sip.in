@@ -90,7 +90,7 @@ QgsServerOgcApi constructor
 
     ~QgsServerOgcApi();
 
-    virtual void executeRequest( const QgsServerApiContext &context ) const throw( QgsServerApiBadRequestException ) /VirtualErrorHandler=serverapi_badrequest_exception_handler/;
+    virtual void executeRequest( const QgsServerApiContext &context ) const  /VirtualErrorHandler=serverapi_badrequest_exception_handler/;
 %Docstring
 Executes a request by passing the given ``context`` to the API handlers.
 %End

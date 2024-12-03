@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingmultipleselectiondialog.h"
+#include "moc_qgsprocessingmultipleselectiondialog.cpp"
 #include "qgsgui.h"
 #include "qgssettings.h"
 #include "qgsfileutils.h"

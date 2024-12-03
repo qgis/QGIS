@@ -46,7 +46,7 @@ a pre-initialized copy of the algorithm.
 
 
 
-    QgsProcessingAlgorithm *create( const QVariantMap &configuration = QVariantMap() ) const throw( QgsProcessingException ) /TransferBack/;
+    QgsProcessingAlgorithm *create( const QVariantMap &configuration = QVariantMap() ) const  /TransferBack/;
 %Docstring
 Creates a copy of the algorithm, ready for execution.
 
@@ -320,7 +320,7 @@ is passed in order to make a best guess determination of the output properties.
 %End
 
     QVariantMap run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok /Out/ = 0, const QVariantMap &configuration = QVariantMap(),
-                     bool catchExceptions = true ) const throw( QgsProcessingException );
+                     bool catchExceptions = true ) const;
 %Docstring
 Executes the algorithm using the specified ``parameters``. This method internally
 creates a copy of the algorithm before running it, so it is safe to call
@@ -361,7 +361,7 @@ calling :py:func:`~QgsProcessingAlgorithm.runPrepared` (which is safe to do in a
    of the algorithm should be created with :py:func:`~QgsProcessingAlgorithm.clone` and :py:func:`~QgsProcessingAlgorithm.prepare`/:py:func:`~QgsProcessingAlgorithm.runPrepared` called on the copy.
 %End
 
-    QVariantMap runPrepared( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException );
+    QVariantMap runPrepared( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 %Docstring
 Runs the algorithm, which has been prepared by an earlier call to :py:func:`~QgsProcessingAlgorithm.prepare`.
 This method is safe to call from any thread. Returns ``True`` if the algorithm was successfully executed.
@@ -541,7 +541,7 @@ See the notes in :py:func:`~QgsProcessingAlgorithm.addParameter` for a descripti
 .. seealso:: :py:func:`initAlgorithm`
 %End
 
-    virtual bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException ) /VirtualErrorHandler=processing_exception_handler/;
+    virtual bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )  /VirtualErrorHandler=processing_exception_handler/;
 %Docstring
 Prepares the algorithm to run using the specified ``parameters``. Algorithms should implement
 their logic for evaluating parameter values here. The evaluated parameter results should
@@ -575,7 +575,7 @@ will be canceled.
 .. seealso:: :py:func:`postProcessAlgorithm`
 %End
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException ) = 0 /VirtualErrorHandler=processing_exception_handler/;
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )  = 0 /VirtualErrorHandler=processing_exception_handler/;
 %Docstring
 Runs the algorithm using the specified ``parameters``. Algorithms should implement
 their custom processing logic here.
@@ -607,7 +607,7 @@ to indicate that a fatal error occurred within the execution.
 .. seealso:: :py:func:`postProcessAlgorithm`
 %End
 
-    virtual QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException ) /VirtualErrorHandler=processing_exception_handler/;
+    virtual QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback )  /VirtualErrorHandler=processing_exception_handler/;
 %Docstring
 Allows the algorithm to perform any required cleanup tasks. The returned variant map
 includes the results evaluated by the algorithm. These may be output layer references, or calculated
@@ -701,7 +701,7 @@ Evaluates the parameter with matching ``name`` to a static boolean value.
 %End
 
     QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier /Out/,
-                                     const QgsFields &fields, Qgis::WkbType geometryType = Qgis::WkbType::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) const throw( QgsProcessingException ) /Factory/;
+                                     const QgsFields &fields, Qgis::WkbType geometryType = Qgis::WkbType::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags(), const QVariantMap &createOptions = QVariantMap(), const QStringList &datasourceOptions = QStringList(), const QStringList &layerOptions = QStringList() ) const  /Factory/;
 %Docstring
 Evaluates the parameter with matching ``name`` to a feature sink.
 
@@ -1155,7 +1155,7 @@ algorithm in "chains", avoiding the need for temporary outputs in multi-step mod
     virtual Qgis::ProcessingAlgorithmFlags flags() const /HoldGIL/;
 
 
-    virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException ) = 0 /VirtualErrorHandler=processing_exception_handler/;
+    virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback )  = 0 /VirtualErrorHandler=processing_exception_handler/;
 %Docstring
 Processes an individual input ``feature`` from the source. Algorithms should implement their
 logic in this method for performing the algorithm's operation (e.g. replacing the feature's
@@ -1292,7 +1292,7 @@ called from a subclasses' :py:func:`~QgsProcessingFeatureBasedAlgorithm.processF
 %End
 
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException );
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
 
     virtual QgsFeatureRequest request() const;

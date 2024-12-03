@@ -15,6 +15,7 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsfontbuttonplugin.h"
+#include "moc_qgsfontbuttonplugin.cpp"
 #include "qgsfontbutton.h"
 
 
@@ -93,5 +94,5 @@ QString QgsFontButtonPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutpagepropertieswidget.h"
+#include "moc_qgslayoutpagepropertieswidget.cpp"
 #include "qgsapplication.h"
 #include "qgspagesizeregistry.h"
 #include "qgslayoutitempage.h"
@@ -83,12 +84,16 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
 
   mSymbolButton->registerExpressionContextGenerator( mPage );
   mSymbolButton->setLayer( coverageLayer() );
+
+  connect( mApplyToAllButton, &QPushButton::clicked, this, &QgsLayoutPagePropertiesWidget::applyToAll );
+
   if ( mPage->layout() )
   {
     connect( &mPage->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mSymbolButton, &QgsSymbolButton::setLayer );
 
     QgsLayoutPageCollection *pages = mPage->layout()->pageCollection();
-    if ( pages->pageCount() > 1 )
+    const bool multiPage = pages->pageCount() > 1;
+    if ( multiPage )
     {
       const int pageNumber = mPage->layout()->pageCollection()->pageNumber( mPage );
       mTitleLabel->setText( tr( "Page (%1/%2)" ).arg( pageNumber + 1 ).arg( pages->pageCount() ) );
@@ -97,6 +102,7 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
     {
       mTitleLabel->setText( tr( "Page" ) );
     }
+    mApplyToAllButton->setVisible( multiPage );
 
   }
 
@@ -235,4 +241,10 @@ void QgsLayoutPagePropertiesWidget::showCurrentPageSize()
     mSizeUnitsComboBox->setEnabled( true );
     mPageOrientationComboBox->setEnabled( false );
   }
+}
+
+void QgsLayoutPagePropertiesWidget::applyToAll()
+{
+  QgsLayoutPageCollection *pages = mPage->layout()->pageCollection();
+  pages->applyPropertiesToAllOtherPages( pages->pageNumber( mPage ) );
 }

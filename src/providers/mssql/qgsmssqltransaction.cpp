@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmssqltransaction.h"
+#include "moc_qgsmssqltransaction.cpp"
 
 #include "qgsmssqldatabase.h"
 
@@ -45,7 +46,7 @@ bool QgsMssqlTransaction::executeSql( const QString &sql, QString &error, bool i
   if ( isDirty )
   {
     QgsTransaction::createSavepoint( error );
-    if ( ! error.isEmpty() )
+    if ( !error.isEmpty() )
     {
       return false;
     }

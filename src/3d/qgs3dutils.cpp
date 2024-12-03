@@ -42,6 +42,9 @@
 #include <QtMath>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QRenderSettings>
+#include <QOpenGLContext>
+#include <QOpenGLFunctions>
+
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QBuffer>
@@ -488,7 +491,7 @@ QMatrix4x4 Qgs3DUtils::stringToMatrix4x4( const QString &str )
   return m;
 }
 
-void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DRenderContext &context, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions )
+void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions )
 {
   const QgsAbstractGeometry *g = f.geometry().constGet();
   for ( auto it = g->vertices_begin(); it != g->vertices_end(); ++it )
@@ -513,7 +516,10 @@ void Qgs3DUtils::extractPointPositions( const QgsFeature &f, const Qgs3DRenderCo
         h = terrainZ + geomZ;
         break;
     }
-    positions.append( QVector3D( pt.x() - context.origin().x(), h, -( pt.y() - context.origin().y() ) ) );
+    positions.append( QVector3D(
+                        static_cast<float>( pt.x() - chunkOrigin.x() ),
+                        static_cast<float>( pt.y() - chunkOrigin.y() ),
+                        h ) );
     QgsDebugMsgLevel( QStringLiteral( "%1 %2 %3" ).arg( positions.last().x() ).arg( positions.last().y() ).arg( positions.last().z() ), 2 );
   }
 }
@@ -574,16 +580,16 @@ bool Qgs3DUtils::isCullable( const QgsAABB &bbox, const QMatrix4x4 &viewProjecti
 QgsVector3D Qgs3DUtils::mapToWorldCoordinates( const QgsVector3D &mapCoords, const QgsVector3D &origin )
 {
   return QgsVector3D( mapCoords.x() - origin.x(),
-                      mapCoords.z() - origin.z(),
-                      -( mapCoords.y() - origin.y() ) );
+                      mapCoords.y() - origin.y(),
+                      mapCoords.z() - origin.z() );
 
 }
 
 QgsVector3D Qgs3DUtils::worldToMapCoordinates( const QgsVector3D &worldCoords, const QgsVector3D &origin )
 {
   return QgsVector3D( worldCoords.x() + origin.x(),
-                      -worldCoords.z() + origin.y(),
-                      worldCoords.y() + origin.z() );
+                      worldCoords.y() + origin.y(),
+                      worldCoords.z() + origin.z() );
 }
 
 QgsRectangle Qgs3DUtils::tryReprojectExtent2D( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs1, const QgsCoordinateReferenceSystem &crs2, const QgsCoordinateTransformContext &context )
@@ -628,6 +634,21 @@ QgsAABB Qgs3DUtils::mapToWorldExtent( const QgsRectangle &extent, double zMin, d
   QgsAABB rootBbox( worldExtentMin3D.x(), worldExtentMin3D.y(), worldExtentMin3D.z(),
                     worldExtentMax3D.x(), worldExtentMax3D.y(), worldExtentMax3D.z() );
   return rootBbox;
+}
+
+QgsAABB Qgs3DUtils::mapToWorldExtent( const QgsBox3D &box3D, const QgsVector3D &mapOrigin )
+{
+  const QgsVector3D extentMin3D( box3D.xMinimum(), box3D.yMinimum(), box3D.zMinimum() );
+  const QgsVector3D extentMax3D( box3D.xMaximum(), box3D.yMaximum(), box3D.zMaximum() );
+  const QgsVector3D worldExtentMin3D = mapToWorldCoordinates( extentMin3D, mapOrigin );
+  const QgsVector3D worldExtentMax3D = mapToWorldCoordinates( extentMax3D, mapOrigin );
+  // casting to float should be ok, assuming that the map origin is not too far from the box
+  return QgsAABB( static_cast<float>( worldExtentMin3D.x() ),
+                  static_cast<float>( worldExtentMin3D.y() ),
+                  static_cast<float>( worldExtentMin3D.z() ),
+                  static_cast<float>( worldExtentMax3D.x() ),
+                  static_cast<float>( worldExtentMax3D.y() ),
+                  static_cast<float>( worldExtentMax3D.z() ) );
 }
 
 QgsRectangle Qgs3DUtils::worldToMapExtent( const QgsAABB &bbox, const QgsVector3D &mapOrigin )
@@ -933,4 +954,42 @@ QByteArray Qgs3DUtils::removeDefinesFromShaderCode( const QByteArray &shaderCode
   }
 
   return newShaderCode;
+}
+
+void Qgs3DUtils::decomposeTransformMatrix( const QMatrix4x4 &matrix, QVector3D &translation, QQuaternion &rotation, QVector3D &scale )
+{
+  // decompose the transform matrix
+  // assuming the last row has values [0 0 0 1]
+  // see https://math.stackexchange.com/questions/237369/given-this-transformation-matrix-how-do-i-decompose-it-into-translation-rotati
+  const float *md = matrix.data();  // returns data in column-major order
+  const float sx = QVector3D( md[0], md[1], md[2] ).length();
+  const float sy = QVector3D( md[4], md[5], md[6] ).length();
+  const float sz = QVector3D( md[8], md[9], md[10] ).length();
+  float rd[9] =
+  {
+    md[0] / sx, md[4] / sy, md[8] / sz,
+    md[1] / sx, md[5] / sy, md[9] / sz,
+    md[2] / sx, md[6] / sy, md[10] / sz,
+  };
+  const QMatrix3x3 rot3x3( rd ); // takes data in row-major order
+
+  scale = QVector3D( sx, sy, sz );
+  rotation = QQuaternion::fromRotationMatrix( rot3x3 );
+  translation = QVector3D( md[12], md[13], md[14] );
+}
+
+int Qgs3DUtils::openGlMaxClipPlanes( QSurface *surface )
+{
+  int numPlanes = 6;
+
+  QOpenGLContext context;
+  context.setFormat( QSurfaceFormat::defaultFormat() );
+  if ( context.create() )
+  {
+    context.makeCurrent( surface );
+    QOpenGLFunctions *funcs = context.functions();
+    funcs->glGetIntegerv( GL_MAX_CLIP_PLANES, &numPlanes );
+  }
+
+  return numPlanes;
 }

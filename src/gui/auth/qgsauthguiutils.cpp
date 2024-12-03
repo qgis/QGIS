@@ -20,6 +20,7 @@
 #include <QInputDialog>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QTreeWidgetItem>
 
 #include "qgssettings.h"
 #include "qgsauthmanager.h"
@@ -417,4 +418,21 @@ void QgsAuthGuiUtils::passwordHelperLoggingEnable( bool enabled, QgsMessageBar *
   Q_UNUSED( msgbar )
   Q_UNUSED( timeout )
   QgsApplication::authManager()->setPasswordHelperLoggingEnabled( enabled );
+}
+
+void QgsAuthGuiUtils::setItemBold( QTreeWidgetItem *item )
+{
+  item->setFirstColumnSpanned( true );
+  QFont secf( item->font( 0 ) );
+  secf.setBold( true );
+  item->setFont( 0, secf );
+}
+
+void QgsAuthGuiUtils::removeChildren( QTreeWidgetItem *item )
+{
+  const auto constTakeChildren = item->takeChildren();
+  for ( QTreeWidgetItem *child : constTakeChildren )
+  {
+    delete child;
+  }
 }

@@ -24,11 +24,11 @@
 #include "qgsquickmapsettings.h"
 #include "qgsquickmaptoscreen.h"
 
-class TestQgsQuickMapSettings: public QObject
+class TestQgsQuickMapSettings : public QObject
 {
     Q_OBJECT
   private slots:
-    void init() {} // will be called before each testfunction is executed.
+    void init() {}    // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
     void test_project_existency();

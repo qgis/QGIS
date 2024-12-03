@@ -24,6 +24,7 @@
 #include "qgis_gui.h"
 
 #include "qgsdoublevalidator.h"
+#include "moc_qgsdoublevalidator.cpp"
 
 const QString PERMISSIVE_DOUBLE = R"([+\-%3]?[\d]{0,1000}([\.%1][\d]{0,1000})?([eE%4][+\-%3]?[\d]{0,%2})?)";
 

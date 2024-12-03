@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrulebasedrendererwidget.h"
+#include "moc_qgsrulebasedrendererwidget.cpp"
 
 #include "qgsrulebasedrenderer.h"
 #include "qgsfeatureiterator.h"

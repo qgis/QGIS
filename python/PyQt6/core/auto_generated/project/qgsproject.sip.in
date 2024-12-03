@@ -969,7 +969,7 @@ transaction.
 
 .. deprecated:: 3.26
 
-   Use transactionMode instead.
+   Use :py:func:`~QgsProject.transactionMode` instead.
 %End
 
  void setAutoTransaction( bool autoTransaction ) /Deprecated/;
@@ -984,7 +984,7 @@ transaction.
 
 .. deprecated:: 3.26
 
-   Use setTransactionMode instead.
+   Use :py:func:`~QgsProject.setTransactionMode` instead.
 %End
 
     Qgis::TransactionMode transactionMode() const;
@@ -1065,6 +1065,7 @@ A list of layers with which intersections should be avoided.
 %Docstring
 Sets the list of layers with which intersections should be avoided.
 Only used if the avoid intersection mode is set to advanced.
+Line and point layers will not be added.
 %End
 
     void setAvoidIntersectionsMode( const Qgis::AvoidIntersectionsMode mode );

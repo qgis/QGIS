@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsspatialitedataitems.h"
+#include "moc_qgsspatialitedataitems.cpp"
 #include "qgsspatialiteprovider.h"
 #include "qgsspatialiteconnection.h"
 #include "qgsfieldsitem.h"
@@ -305,9 +306,6 @@ bool QgsSLConnectionItem::layerCollection() const
 QVector<QgsDataItem *> QgsSLLayerItem::createChildren()
 {
   QVector<QgsDataItem *> children;
-  children.push_back( new QgsFieldsItem( this,
-                                         path() + QStringLiteral( "/columns/ " ),
-                                         uri(),
-                                         QStringLiteral( "spatialite" ), QString(), name() ) );
+  children.push_back( new QgsFieldsItem( this, path() + QStringLiteral( "/columns/ " ), uri(), QStringLiteral( "spatialite" ), QString(), name() ) );
   return children;
 }

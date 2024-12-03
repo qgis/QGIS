@@ -14,6 +14,7 @@
 ***************************************************************************/
 
 #include "qgsexpressionlineedit.h"
+#include "moc_qgsexpressionlineedit.cpp"
 #include "qgsfilterlineedit.h"
 #include "qgsexpressioncontext.h"
 #include "qgsapplication.h"

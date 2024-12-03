@@ -1,5 +1,5 @@
 # The following has been generated automatically from src/core/processing/qgsprocessingparametertype.h
 try:
     QgsProcessingParameterType.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass

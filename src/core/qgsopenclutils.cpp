@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsopenclutils.h"
+#include "moc_qgsopenclutils.cpp"
 #include "qgssettings.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
@@ -30,6 +31,11 @@
 #endif
 #include <windows.h>
 #include <tchar.h>
+#endif
+
+#if defined(_MSC_VER)
+#include <windows.h>
+#include <excpt.h>
 #endif
 
 QLatin1String QgsOpenClUtils::SETTINGS_GLOBAL_ENABLED_KEY = QLatin1String( "OpenClEnabled" );
@@ -342,118 +348,133 @@ bool QgsOpenClUtils::activate( const QString &preferredDeviceId )
     sAvailable = true;
     return false;
   }
-  try
+#if defined(_MSC_VER)
+  // Try to capture hard crashes such as https://github.com/qgis/QGIS/issues/59617
+  __try
   {
-    std::vector<cl::Platform> platforms;
-    cl::Platform::get( &platforms );
-    cl::Platform plat;
-    cl::Device dev;
-    bool deviceFound = false;
-    for ( const auto &p : platforms )
+#endif
+    try
     {
-      if ( deviceFound )
-        break;
-      const std::string platver = p.getInfo<CL_PLATFORM_VERSION>();
-      QgsDebugMsgLevel( QStringLiteral( "Found OpenCL platform %1: %2" ).arg( QString::fromStdString( platver ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ), 2 );
-      if ( platver.find( "OpenCL " ) != std::string::npos )
+      std::vector<cl::Platform> platforms;
+      cl::Platform::get( &platforms );
+      cl::Platform plat;
+      cl::Device dev;
+      bool deviceFound = false;
+      for ( const auto &p : platforms )
       {
-        std::vector<cl::Device> devices;
-        // Search for a device
-        try
+        if ( deviceFound )
+          break;
+        const std::string platver = p.getInfo<CL_PLATFORM_VERSION>();
+        QgsDebugMsgLevel( QStringLiteral( "Found OpenCL platform %1: %2" ).arg( QString::fromStdString( platver ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ), 2 );
+        if ( platver.find( "OpenCL " ) != std::string::npos )
         {
-          p.getDevices( CL_DEVICE_TYPE_ALL, &devices );
-          // First search for the preferred device
-          if ( ! preferredDeviceId.isEmpty() )
+          std::vector<cl::Device> devices;
+          // Search for a device
+          try
           {
-            for ( const auto &_dev : devices )
+            p.getDevices( CL_DEVICE_TYPE_ALL, &devices );
+            // First search for the preferred device
+            if ( ! preferredDeviceId.isEmpty() )
             {
-              if ( preferredDeviceId == deviceId( _dev ) )
+              for ( const auto &_dev : devices )
               {
-                // Got one!
-                plat = p;
-                dev = _dev;
-                deviceFound = true;
-                break;
+                if ( preferredDeviceId == deviceId( _dev ) )
+                {
+                  // Got one!
+                  plat = p;
+                  dev = _dev;
+                  deviceFound = true;
+                  break;
+                }
               }
             }
-          }
-          // Not found or preferred device id not set: get the first GPU
-          if ( ! deviceFound )
-          {
-            for ( const auto &_dev : devices )
+            // Not found or preferred device id not set: get the first GPU
+            if ( ! deviceFound )
             {
-              if ( _dev.getInfo<CL_DEVICE_TYPE>() == CL_DEVICE_TYPE_GPU )
+              for ( const auto &_dev : devices )
               {
-                // Got one!
-                plat = p;
-                dev = _dev;
-                deviceFound = true;
-                break;
+                if ( _dev.getInfo<CL_DEVICE_TYPE>() == CL_DEVICE_TYPE_GPU )
+                {
+                  // Got one!
+                  plat = p;
+                  dev = _dev;
+                  deviceFound = true;
+                  break;
+                }
               }
             }
-          }
-          // Still nothing? Get the first device
-          if ( ! deviceFound )
-          {
-            for ( const auto &_dev : devices )
+            // Still nothing? Get the first device
+            if ( ! deviceFound )
             {
-              if ( _dev.getInfo<CL_DEVICE_TYPE>() == CL_DEVICE_TYPE_CPU )
+              for ( const auto &_dev : devices )
               {
-                // Got one!
-                plat = p;
-                dev = _dev;
-                deviceFound = true;
-                break;
+                if ( _dev.getInfo<CL_DEVICE_TYPE>() == CL_DEVICE_TYPE_CPU )
+                {
+                  // Got one!
+                  plat = p;
+                  dev = _dev;
+                  deviceFound = true;
+                  break;
+                }
               }
             }
+            if ( ! deviceFound )
+            {
+              QgsMessageLog::logMessage( QObject::tr( "No OpenCL device could be found." ), LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
+            }
           }
-          if ( ! deviceFound )
+          catch ( cl::Error &e )
           {
-            QgsMessageLog::logMessage( QObject::tr( "No OpenCL device could be found." ), LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
+            QgsDebugError( QStringLiteral( "Error %1 on platform %3 searching for OpenCL device: %2" )
+                           .arg( errorText( e.err() ),
+                                 QString::fromStdString( e.what() ),
+                                 QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ) );
           }
-        }
-        catch ( cl::Error &e )
-        {
-          QgsDebugError( QStringLiteral( "Error %1 on platform %3 searching for OpenCL device: %2" )
-                         .arg( errorText( e.err() ),
-                               QString::fromStdString( e.what() ),
-                               QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ) );
-        }
 
+        }
       }
-    }
-    if ( ! plat() )
-    {
-      QgsMessageLog::logMessage( QObject::tr( "No OpenCL platform found." ), LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
-      sAvailable = false;
-    }
-    else
-    {
-      const cl::Platform newP = cl::Platform::setDefault( plat );
-      if ( newP != plat )
+      if ( ! plat() )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Error setting default platform." ),
-                                   LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
+        QgsMessageLog::logMessage( QObject::tr( "No OpenCL platform found." ), LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
         sAvailable = false;
       }
       else
       {
-        cl::Device::setDefault( dev );
-        QgsMessageLog::logMessage( QObject::tr( "Active OpenCL device: %1" )
-                                   .arg( QString::fromStdString( dev.getInfo<CL_DEVICE_NAME>() ) ),
-                                   LOGMESSAGE_TAG, Qgis::MessageLevel::Success );
-        sAvailable = true;
+        const cl::Platform newP = cl::Platform::setDefault( plat );
+        if ( newP != plat )
+        {
+          QgsMessageLog::logMessage( QObject::tr( "Error setting default platform." ),
+                                     LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
+          sAvailable = false;
+        }
+        else
+        {
+          cl::Device::setDefault( dev );
+          QgsMessageLog::logMessage( QObject::tr( "Active OpenCL device: %1" )
+                                     .arg( QString::fromStdString( dev.getInfo<CL_DEVICE_NAME>() ) ),
+                                     LOGMESSAGE_TAG, Qgis::MessageLevel::Success );
+          sAvailable = true;
+        }
       }
     }
-  }
 
-  catch ( cl::Error &e )
+    catch ( cl::Error &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Error %1 searching for OpenCL device: %2" )
+                                 .arg( errorText( e.err() ), QString::fromStdString( e.what() ) ),
+                                 LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
+      sAvailable = false;
+    }
+#if defined(_MSC_VER)
+  }
+  __except ( EXCEPTION_EXECUTE_HANDLER )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Error %1 searching for OpenCL device: %2" )
-                               .arg( errorText( e.err() ), QString::fromStdString( e.what() ) ),
+    QgsMessageLog::logMessage( QObject::tr( "Unexpected exception of code %1 occurred while searching for OpenCL device. Note that the application may become unreliable and may need to be restarted." ).arg( GetExceptionCode() ),
                                LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
     sAvailable = false;
   }
+#endif
+
   return sAvailable;
 }
 

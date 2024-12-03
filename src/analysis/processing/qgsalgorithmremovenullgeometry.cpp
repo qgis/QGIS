@@ -118,9 +118,15 @@ QVariantMap QgsRemoveNullGeometryAlgorithm::processAlgorithm( const QVariantMap 
 
   QVariantMap outputs;
   if ( nonNullSink )
+  {
+    nonNullSink->finalize();
     outputs.insert( QStringLiteral( "OUTPUT" ), nonNullSinkId );
+  }
   if ( nullSink )
+  {
+    nullSink->finalize();
     outputs.insert( QStringLiteral( "NULL_OUTPUT" ), nullSinkId );
+  }
   return outputs;
 }
 

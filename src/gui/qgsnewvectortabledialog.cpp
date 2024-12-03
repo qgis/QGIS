@@ -14,6 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewvectortabledialog.h"
+#include "moc_qgsnewvectortabledialog.cpp"
 #include "qgslogger.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
@@ -190,7 +191,7 @@ QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderCon
     mHasZChk->setEnabled( false );
     mHasZChk->setChecked( false );
   }
-  if ( ! hasM && ! hasM )
+  if ( ! hasM && ! hasZ )
   {
     mHasZChk->setVisible( false );
     mHasMChk->setVisible( false );

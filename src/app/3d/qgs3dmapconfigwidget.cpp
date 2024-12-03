@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dmapconfigwidget.h"
+#include "moc_qgs3dmapconfigwidget.cpp"
 
 #include "qgs3dmapsettings.h"
 #include "qgsdemterraingenerator.h"
@@ -40,17 +41,16 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   : QWidget( parent )
   , mMap( map )
   , mMainCanvas( mainCanvas )
-  , m3DMapCanvas( mapCanvas3D )
 {
+  Q_UNUSED( mapCanvas3D )
   setupUi( this );
 
   Q_ASSERT( map );
-  Q_ASSERT( mainCanvas );
 
   const QgsSettings settings;
 
   const int iconSize = QgsGuiUtils::scaleIconSize( 20 );
-  m3DOptionsListWidget->setIconSize( QSize( iconSize, iconSize ) ) ;
+  m3DOptionsListWidget->setIconSize( QSize( iconSize, iconSize ) );
 
   mCameraNavigationModeCombo->addItem( tr( "Terrain Based" ), QVariant::fromValue( Qgis::NavigationMode::TerrainBased ) );
   mCameraNavigationModeCombo->addItem( tr( "Walk Mode (First Person)" ), QVariant::fromValue( Qgis::NavigationMode::Walk ) );
@@ -58,7 +58,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   // get rid of annoying outer focus rect on Mac
   m3DOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
   m3DOptionsListWidget->setCurrentRow( settings.value( QStringLiteral( "Windows/3DMapConfig/Tab" ), 0 ).toInt() );
-  connect( m3DOptionsListWidget, &QListWidget::currentRowChanged, this, [ = ]( int index ) { m3DOptionsStackedWidget->setCurrentIndex( index ); } );
+  connect( m3DOptionsListWidget, &QListWidget::currentRowChanged, this, [=]( int index ) { m3DOptionsStackedWidget->setCurrentIndex( index ); } );
   m3DOptionsStackedWidget->setCurrentIndex( m3DOptionsListWidget->currentRow() );
 
   if ( !settings.contains( QStringLiteral( "Windows/3DMapConfig/OptionsSplitState" ) ) )
@@ -75,8 +75,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   cboCameraProjectionType->addItem( tr( "Perspective Projection" ), Qt3DRender::QCameraLens::PerspectiveProjection );
   cboCameraProjectionType->addItem( tr( "Orthogonal Projection" ), Qt3DRender::QCameraLens::OrthographicProjection );
-  connect( cboCameraProjectionType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]()
-  {
+  connect( cboCameraProjectionType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=]() {
     spinCameraFieldOfView->setEnabled( cboCameraProjectionType->currentIndex() == cboCameraProjectionType->findData( Qt3DRender::QCameraLens::PerspectiveProjection ) );
   } );
 
@@ -91,8 +90,6 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   terrainElevationOffsetSpinBox->setClearValue( 0.0 );
   edlStrengthSpinBox->setClearValue( 1000 );
   edlDistanceSpinBox->setClearValue( 1 );
-  mDebugShadowMapSizeSpinBox->setClearValue( 0.1 );
-  mDebugDepthMapSizeSpinBox->setClearValue( 0.1 );
 
   cboTerrainLayer->setAllowEmptyLayer( true );
   cboTerrainLayer->setFilters( Qgis::LayerFilter::RasterLayer );
@@ -157,15 +154,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   spinGroundError->setValue( mMap->maxTerrainGroundError() );
   terrainElevationOffsetSpinBox->setValue( mMap->terrainElevationOffset() );
   chkShowLabels->setChecked( mMap->showLabels() );
-  chkShowTileInfo->setChecked( mMap->showTerrainTilesInfo() );
-  chkShowBoundingBoxes->setChecked( mMap->showTerrainBoundingBoxes() );
-  chkShowCameraViewCenter->setChecked( mMap->showCameraViewCenter() );
-  chkShowCameraRotationCenter->setChecked( mMap->showCameraRotationCenter() );
-  chkShowLightSourceOrigins->setChecked( mMap->showLightSourceOrigins() );
   mFpsCounterCheckBox->setChecked( mMap->isFpsCounterEnabled() );
-
-  mDebugOverlayCheckBox->setChecked( mMap->isDebugOverlayEnabled() );
-  mDebugOverlayCheckBox->setVisible( true );
+  chkShowDebugPanel->setChecked( mMap->showDebugPanel() );
 
   groupTerrainShading->setChecked( mMap->isTerrainShadingEnabled() );
   widgetTerrainMaterial->setTechnique( QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture );
@@ -203,16 +193,16 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   // ==================
   // Page: 3D axis
-  mCbo3dAxisType->addItem( tr( "Coordinate Reference System" ), static_cast< int >( Qgs3DAxisSettings::Mode::Crs ) );
-  mCbo3dAxisType->addItem( tr( "Cube" ), static_cast< int >( Qgs3DAxisSettings::Mode::Cube ) );
+  mCbo3dAxisType->addItem( tr( "Coordinate Reference System" ), static_cast<int>( Qgs3DAxisSettings::Mode::Crs ) );
+  mCbo3dAxisType->addItem( tr( "Cube" ), static_cast<int>( Qgs3DAxisSettings::Mode::Cube ) );
 
-  mCbo3dAxisHorizPos->addItem( tr( "Left" ), static_cast< int >( Qt::AnchorPoint::AnchorLeft ) );
-  mCbo3dAxisHorizPos->addItem( tr( "Center" ), static_cast< int >( Qt::AnchorPoint::AnchorHorizontalCenter ) );
-  mCbo3dAxisHorizPos->addItem( tr( "Right" ), static_cast< int >( Qt::AnchorPoint::AnchorRight ) );
+  mCbo3dAxisHorizPos->addItem( tr( "Left" ), static_cast<int>( Qt::AnchorPoint::AnchorLeft ) );
+  mCbo3dAxisHorizPos->addItem( tr( "Center" ), static_cast<int>( Qt::AnchorPoint::AnchorHorizontalCenter ) );
+  mCbo3dAxisHorizPos->addItem( tr( "Right" ), static_cast<int>( Qt::AnchorPoint::AnchorRight ) );
 
-  mCbo3dAxisVertPos->addItem( tr( "Top" ), static_cast< int >( Qt::AnchorPoint::AnchorTop ) );
-  mCbo3dAxisVertPos->addItem( tr( "Middle" ), static_cast< int >( Qt::AnchorPoint::AnchorVerticalCenter ) );
-  mCbo3dAxisVertPos->addItem( tr( "Bottom" ), static_cast< int >( Qt::AnchorPoint::AnchorBottom ) );
+  mCbo3dAxisVertPos->addItem( tr( "Top" ), static_cast<int>( Qt::AnchorPoint::AnchorTop ) );
+  mCbo3dAxisVertPos->addItem( tr( "Middle" ), static_cast<int>( Qt::AnchorPoint::AnchorVerticalCenter ) );
+  mCbo3dAxisVertPos->addItem( tr( "Bottom" ), static_cast<int>( Qt::AnchorPoint::AnchorBottom ) );
 
   init3DAxisPage();
 
@@ -230,25 +220,6 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   edlStrengthSpinBox->setValue( map->eyeDomeLightingStrength() );
   edlDistanceSpinBox->setValue( map->eyeDomeLightingDistance() );
 
-  mDebugShadowMapCornerComboBox->addItem( tr( "Top Left" ) );
-  mDebugShadowMapCornerComboBox->addItem( tr( "Top Right" ) );
-  mDebugShadowMapCornerComboBox->addItem( tr( "Bottom Left" ) );
-  mDebugShadowMapCornerComboBox->addItem( tr( "Bottom Right" ) );
-
-  mDebugDepthMapCornerComboBox->addItem( tr( "Top Left" ) );
-  mDebugDepthMapCornerComboBox->addItem( tr( "Top Right" ) );
-  mDebugDepthMapCornerComboBox->addItem( tr( "Bottom Left" ) );
-  mDebugDepthMapCornerComboBox->addItem( tr( "Bottom Right" ) );
-
-  mDebugShadowMapGroupBox->setChecked( map->debugShadowMapEnabled() );
-
-  mDebugShadowMapCornerComboBox->setCurrentIndex( static_cast<int>( map->debugShadowMapCorner() ) );
-  mDebugShadowMapSizeSpinBox->setValue( map->debugShadowMapSize() );
-
-  mDebugDepthMapGroupBox->setChecked( map->debugDepthMapEnabled() );
-  mDebugDepthMapCornerComboBox->setCurrentIndex( static_cast<int>( map->debugDepthMapCorner() ) );
-  mDebugDepthMapSizeSpinBox->setValue( map->debugDepthMapSize() );
-
   // Ambient occlusion
   mAmbientOcclusionSettingsWidget->setAmbientOcclusionSettings( map->ambientOcclusionSettings() );
 
@@ -258,7 +229,10 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   groupExtent->setOutputCrs( mMap->crs() );
   groupExtent->setCurrentExtent( mMap->extent(), mMap->crs() );
   groupExtent->setOutputExtentFromCurrent();
-  groupExtent->setMapCanvas( mMainCanvas );
+  if ( mMainCanvas )
+  {
+    groupExtent->setMapCanvas( mMainCanvas );
+  }
 
   // checkbox to display the extent in the 2D Map View
   mShowExtentIn2DViewCheckbox = new QCheckBox( tr( "Show in 2D map view" ) );
@@ -301,9 +275,7 @@ void Qgs3DMapConfigWidget::apply()
       {
         // if we already have a DEM terrain generator, check whether there was actually any change
         QgsDemTerrainGenerator *oldDemTerrainGen = static_cast<QgsDemTerrainGenerator *>( mMap->terrainGenerator() );
-        if ( oldDemTerrainGen->layer() == demLayer &&
-             oldDemTerrainGen->resolution() == spinTerrainResolution->value() &&
-             oldDemTerrainGen->skirtHeight() == spinTerrainSkirtHeight->value() )
+        if ( oldDemTerrainGen->layer() == demLayer && oldDemTerrainGen->resolution() == spinTerrainResolution->value() && oldDemTerrainGen->skirtHeight() == spinTerrainSkirtHeight->value() )
           tGenNeedsUpdate = false;
       }
 
@@ -324,8 +296,7 @@ void Qgs3DMapConfigWidget::apply()
       if ( mMap->terrainGenerator()->type() == QgsTerrainGenerator::Online )
       {
         QgsOnlineTerrainGenerator *oldOnlineTerrainGen = static_cast<QgsOnlineTerrainGenerator *>( mMap->terrainGenerator() );
-        if ( oldOnlineTerrainGen->resolution() == spinTerrainResolution->value() &&
-             oldOnlineTerrainGen->skirtHeight() == spinTerrainSkirtHeight->value() )
+        if ( oldOnlineTerrainGen->resolution() == spinTerrainResolution->value() && oldOnlineTerrainGen->skirtHeight() == spinTerrainSkirtHeight->value() )
           tGenNeedsUpdate = false;
       }
 
@@ -345,7 +316,7 @@ void Qgs3DMapConfigWidget::apply()
       QgsMeshTerrainGenerator *newTerrainGenerator = new QgsMeshTerrainGenerator;
       newTerrainGenerator->setCrs( mMap->crs(), QgsProject::instance()->transformContext() );
       newTerrainGenerator->setLayer( meshLayer );
-      std::unique_ptr< QgsMesh3DSymbol > symbol = mMeshSymbolWidget->symbol();
+      std::unique_ptr<QgsMesh3DSymbol> symbol = mMeshSymbolWidget->symbol();
       symbol->setVerticalScale( spinTerrainScale->value() );
       newTerrainGenerator->setSymbol( symbol.release() );
       mMap->setTerrainGenerator( newTerrainGenerator );
@@ -362,8 +333,8 @@ void Qgs3DMapConfigWidget::apply()
   }
 
   mMap->setFieldOfView( spinCameraFieldOfView->value() );
-  mMap->setProjectionType( cboCameraProjectionType->currentData().value< Qt3DRender::QCameraLens::ProjectionType >() );
-  mMap->setCameraNavigationMode( mCameraNavigationModeCombo->currentData().value< Qgis::NavigationMode>() );
+  mMap->setProjectionType( cboCameraProjectionType->currentData().value<Qt3DRender::QCameraLens::ProjectionType>() );
+  mMap->setCameraNavigationMode( mCameraNavigationModeCombo->currentData().value<Qgis::NavigationMode>() );
   mMap->setCameraMovementSpeed( mCameraMovementSpeed->value() );
   mMap->setTerrainVerticalScale( spinTerrainScale->value() );
   mMap->setMapTileResolution( spinMapResolution->value() );
@@ -371,17 +342,12 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setMaxTerrainGroundError( spinGroundError->value() );
   mMap->setTerrainElevationOffset( terrainElevationOffsetSpinBox->value() );
   mMap->setShowLabels( chkShowLabels->isChecked() );
-  mMap->setShowTerrainTilesInfo( chkShowTileInfo->isChecked() );
-  mMap->setShowTerrainBoundingBoxes( chkShowBoundingBoxes->isChecked() );
-  mMap->setShowCameraViewCenter( chkShowCameraViewCenter->isChecked() );
-  mMap->setShowCameraRotationCenter( chkShowCameraRotationCenter->isChecked() );
-  mMap->setShowLightSourceOrigins( chkShowLightSourceOrigins->isChecked() );
   mMap->setIsFpsCounterEnabled( mFpsCounterCheckBox->isChecked() );
+  mMap->setShowDebugPanel( chkShowDebugPanel->isChecked() );
   mMap->setTerrainShadingEnabled( groupTerrainShading->isChecked() );
-  mMap->setIsDebugOverlayEnabled( mDebugOverlayCheckBox->isChecked() );
 
-  const std::unique_ptr< QgsAbstractMaterialSettings > terrainMaterial( widgetTerrainMaterial->settings() );
-  if ( QgsPhongMaterialSettings *phongMaterial = dynamic_cast< QgsPhongMaterialSettings * >( terrainMaterial.get() ) )
+  const std::unique_ptr<QgsAbstractMaterialSettings> terrainMaterial( widgetTerrainMaterial->settings() );
+  if ( QgsPhongMaterialSettings *phongMaterial = dynamic_cast<QgsPhongMaterialSettings *>( terrainMaterial.get() ) )
     mMap->setTerrainShadingMaterial( *phongMaterial );
 
   mMap->setLightSources( widgetLights->lightSources() );
@@ -402,11 +368,6 @@ void Qgs3DMapConfigWidget::apply()
   viewSyncMode.setFlag( Qgis::ViewSyncModeFlag::Sync3DTo2D, mSync3DTo2DCheckbox->isChecked() );
   mMap->setViewSyncMode( viewSyncMode );
   mMap->setViewFrustumVisualizationEnabled( mVisualizeExtentCheckBox->isChecked() );
-
-  mMap->setDebugDepthMapSettings( mDebugDepthMapGroupBox->isChecked(), static_cast<Qt::Corner>( mDebugDepthMapCornerComboBox->currentIndex() ), mDebugDepthMapSizeSpinBox->value() );
-
-  // Do not display the shadow debug map if the shadow effect is not enabled.
-  mMap->setDebugShadowMapSettings( mDebugShadowMapGroupBox->isChecked() && groupShadowRendering->isChecked(), static_cast<Qt::Corner>( mDebugShadowMapCornerComboBox->currentIndex() ), mDebugShadowMapSizeSpinBox->value() );
 }
 
 void Qgs3DMapConfigWidget::onTerrainTypeChanged()
@@ -483,7 +444,7 @@ void Qgs3DMapConfigWidget::validate()
   switch ( static_cast<QgsTerrainGenerator::Type>( cboTerrainType->currentData().toInt() ) )
   {
     case QgsTerrainGenerator::Dem:
-      if ( ! cboTerrainLayer->currentLayer() )
+      if ( !cboTerrainLayer->currentLayer() )
       {
         valid = false;
         mMessageBar->pushMessage( tr( "An elevation layer must be selected for a DEM terrain" ), Qgis::MessageLevel::Critical );
@@ -491,7 +452,7 @@ void Qgs3DMapConfigWidget::validate()
       break;
 
     case QgsTerrainGenerator::Mesh:
-      if ( ! cboTerrainLayer->currentLayer() )
+      if ( !cboTerrainLayer->currentLayer() )
       {
         valid = false;
         mMessageBar->pushMessage( tr( "An elevation layer must be selected for a mesh terrain" ), Qgis::MessageLevel::Critical );
@@ -499,7 +460,7 @@ void Qgs3DMapConfigWidget::validate()
       break;
 
     case QgsTerrainGenerator::QuantizedMesh:
-      if ( ! cboTerrainLayer->currentLayer() )
+      if ( !cboTerrainLayer->currentLayer() )
       {
         valid = false;
         mMessageBar->pushMessage( tr( "An elevation layer must be selected for a quantized mesh terrain" ), Qgis::MessageLevel::Critical );
@@ -533,11 +494,11 @@ void Qgs3DMapConfigWidget::init3DAxisPage()
   else
   {
     mGroupBox3dAxis->setChecked( true );
-    mCbo3dAxisType->setCurrentIndex( mCbo3dAxisType->findData( static_cast< int >( s.mode() ) ) );
+    mCbo3dAxisType->setCurrentIndex( mCbo3dAxisType->findData( static_cast<int>( s.mode() ) ) );
   }
 
-  mCbo3dAxisHorizPos->setCurrentIndex( mCbo3dAxisHorizPos->findData( static_cast< int >( s.horizontalPosition() ) ) );
-  mCbo3dAxisVertPos->setCurrentIndex( mCbo3dAxisVertPos->findData( static_cast< int >( s.verticalPosition() ) ) );
+  mCbo3dAxisHorizPos->setCurrentIndex( mCbo3dAxisHorizPos->findData( static_cast<int>( s.horizontalPosition() ) ) );
+  mCbo3dAxisVertPos->setCurrentIndex( mCbo3dAxisVertPos->findData( static_cast<int>( s.verticalPosition() ) ) );
 }
 
 void Qgs3DMapConfigWidget::on3DAxisChanged()
@@ -546,7 +507,7 @@ void Qgs3DMapConfigWidget::on3DAxisChanged()
   Qgs3DAxisSettings::Mode m;
 
   if ( mGroupBox3dAxis->isChecked() )
-    m = static_cast< Qgs3DAxisSettings::Mode >( mCbo3dAxisType->currentData().toInt() );
+    m = static_cast<Qgs3DAxisSettings::Mode>( mCbo3dAxisType->currentData().toInt() );
   else
     m = Qgs3DAxisSettings::Mode::Off;
 
@@ -556,8 +517,8 @@ void Qgs3DMapConfigWidget::on3DAxisChanged()
   }
   else
   {
-    const Qt::AnchorPoint hPos = static_cast< Qt::AnchorPoint >( mCbo3dAxisHorizPos->currentData().toInt() );
-    const Qt::AnchorPoint vPos = static_cast< Qt::AnchorPoint >( mCbo3dAxisVertPos->currentData().toInt() );
+    const Qt::AnchorPoint hPos = static_cast<Qt::AnchorPoint>( mCbo3dAxisHorizPos->currentData().toInt() );
+    const Qt::AnchorPoint vPos = static_cast<Qt::AnchorPoint>( mCbo3dAxisVertPos->currentData().toInt() );
 
     if ( s.horizontalPosition() != hPos || s.verticalPosition() != vPos )
     {

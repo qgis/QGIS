@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitemslistview.h"
+#include "moc_qgslayoutitemslistview.cpp"
 #include "qgslayout.h"
 #include "qgslayoutmodel.h"
 #include "qgslayoutdesignerinterface.h"

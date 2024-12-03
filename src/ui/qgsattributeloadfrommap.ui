@@ -31,7 +31,7 @@
       </widget>
      </item>
      <item row="1" column="1" colspan="2">
-      <widget class="QComboBox" name="layerComboBox"/>
+      <widget class="QgsMapLayerComboBox" name="layerComboBox"/>
      </item>
      <item row="5" column="0" colspan="3">
       <widget class="QTableWidget" name="previewTableWidget">
@@ -62,7 +62,7 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QComboBox" name="valueComboBox"/>
+      <widget class="QgsFieldComboBox" name="valueComboBox"/>
      </item>
      <item row="2" column="2" rowspan="2">
       <widget class="QPushButton" name="previewButton">
@@ -72,7 +72,7 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QComboBox" name="keyComboBox"/>
+      <widget class="QgsFieldComboBox" name="keyComboBox"/>
      </item>
      <item row="4" column="0" colspan="2">
       <widget class="QCheckBox" name="nullCheckBox">
@@ -89,12 +89,24 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsfieldcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsmaplayercombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>layerComboBox</tabstop>
   <tabstop>valueComboBox</tabstop>

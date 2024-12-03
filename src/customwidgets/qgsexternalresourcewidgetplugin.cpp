@@ -15,6 +15,7 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsexternalresourcewidgetplugin.h"
+#include "moc_qgsexternalresourcewidgetplugin.cpp"
 #include "qgsexternalresourcewidget.h"
 
 
@@ -92,5 +93,5 @@ QString QgsExternalResourceWidgetPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

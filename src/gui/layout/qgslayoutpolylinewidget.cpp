@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayoutpolylinewidget.h"
+#include "moc_qgslayoutpolylinewidget.cpp"
 #include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
 #include "qgslayoutundostack.h"

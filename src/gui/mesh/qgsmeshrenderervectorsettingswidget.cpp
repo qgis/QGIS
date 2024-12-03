@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmeshrenderervectorsettingswidget.h"
+#include "moc_qgsmeshrenderervectorsettingswidget.cpp"
 
 #include "qgis.h"
 #include "qgsmeshlayer.h"

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstiledscenedataitemguiprovider.h"
+#include "moc_qgstiledscenedataitemguiprovider.cpp"
 #include "qgsquantizedmeshdataprovider.h"
 #include "qgstiledscenedataitems.h"
 #include "qgstiledsceneconnection.h"

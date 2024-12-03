@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscalloutpanelwidget.h"
+#include "moc_qgscalloutpanelwidget.cpp"
 #include "qgsapplication.h"
 #include "qgscalloutsregistry.h"
 #include "qgscalloutwidget.h"

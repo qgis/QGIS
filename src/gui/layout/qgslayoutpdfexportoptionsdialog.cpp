@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayoutpdfexportoptionsdialog.h"
+#include "moc_qgslayoutpdfexportoptionsdialog.cpp"
 #include "qgis.h"
 #include "qgssettings.h"
 #include "qgsgui.h"

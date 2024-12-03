@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsattributeformrelationeditorwidget.h"
+#include "moc_qgsattributeformrelationeditorwidget.cpp"
 #include "qgsrelationaggregatesearchwidgetwrapper.h"
 #include "qgsattributeform.h"
 

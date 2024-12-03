@@ -16,6 +16,7 @@
 
 
 #include "qgsauthcertificateinfo.h"
+#include "moc_qgsauthcertificateinfo.cpp"
 #include "ui_qgsauthcertificateinfo.h"
 
 #include <QtCrypto>
@@ -30,24 +31,6 @@
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
-
-
-static void setItemBold_( QTreeWidgetItem *item )
-{
-  item->setFirstColumnSpanned( true );
-  QFont secf( item->font( 0 ) );
-  secf.setBold( true );
-  item->setFont( 0, secf );
-}
-
-static void removeChildren_( QTreeWidgetItem *item )
-{
-  const auto constTakeChildren = item->takeChildren();
-  for ( QTreeWidgetItem *child : constTakeChildren )
-  {
-    delete child;
-  }
-}
 
 QgsAuthCertInfo::QgsAuthCertInfo( const QSslCertificate &cert,
                                   bool manageCertTrust,
@@ -325,7 +308,7 @@ void QgsAuthCertInfo::setUpCertDetailsTree()
     treeDetails,
     QStringList( tr( "General" ) ),
     static_cast<int>( DetailsSection ) );
-  setItemBold_( mSecGeneral );
+  QgsAuthGuiUtils::setItemBold( mSecGeneral );
   mSecGeneral->setFirstColumnSpanned( true );
   mSecGeneral->setFlags( Qt::ItemIsEnabled );
   mSecGeneral->setExpanded( true );
@@ -335,7 +318,7 @@ void QgsAuthCertInfo::setUpCertDetailsTree()
     treeDetails,
     QStringList( tr( "Details" ) ),
     static_cast<int>( DetailsSection ) );
-  setItemBold_( mSecDetails );
+  QgsAuthGuiUtils::setItemBold( mSecDetails );
   mSecDetails->setFirstColumnSpanned( true );
   mSecDetails->setFlags( Qt::ItemIsEnabled );
   mSecDetails->setExpanded( false );
@@ -352,7 +335,7 @@ void QgsAuthCertInfo::setUpCertDetailsTree()
     treeDetails,
     QStringList( tr( "PEM Text" ) ),
     static_cast<int>( DetailsSection ) );
-  setItemBold_( mSecPemText );
+  QgsAuthGuiUtils::setItemBold( mSecPemText );
   mSecPemText->setFirstColumnSpanned( true );
   mSecPemText->setFlags( Qt::ItemIsEnabled );
   mSecPemText->setExpanded( false );
@@ -447,7 +430,7 @@ void QgsAuthCertInfo::addFieldItem( QTreeWidgetItem *parent, const QString &fiel
 
 void QgsAuthCertInfo::populateInfoGeneralSection()
 {
-  removeChildren_( mSecGeneral );
+  QgsAuthGuiUtils::removeChildren( mSecGeneral );
 
   if ( mCurrentQCert.isNull() )
   {
@@ -521,11 +504,11 @@ void QgsAuthCertInfo::populateInfoGeneralSection()
 
 void QgsAuthCertInfo::populateInfoDetailsSection()
 {
-  removeChildren_( mGrpSubj );
-  removeChildren_( mGrpIssu );
-  removeChildren_( mGrpCert );
-  removeChildren_( mGrpPkey );
-  removeChildren_( mGrpExts );
+  QgsAuthGuiUtils::removeChildren( mGrpSubj );
+  QgsAuthGuiUtils::removeChildren( mGrpIssu );
+  QgsAuthGuiUtils::removeChildren( mGrpCert );
+  QgsAuthGuiUtils::removeChildren( mGrpPkey );
+  QgsAuthGuiUtils::removeChildren( mGrpExts );
 
   if ( mCurrentQCert.isNull() )
     return;
@@ -815,7 +798,7 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
 
 void QgsAuthCertInfo::populateInfoPemTextSection()
 {
-  removeChildren_( mSecPemText );
+  QgsAuthGuiUtils::removeChildren( mSecPemText );
 
   if ( mCurrentQCert.isNull() )
     return;

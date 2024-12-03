@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvectortilelayerproperties.h"
+#include "moc_qgsvectortilelayerproperties.cpp"
 #include "qgshelp.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaplayerstyleguiutils.h"

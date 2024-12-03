@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsfilecontentsourcelineedit.h"
+#include "moc_qgsfilecontentsourcelineedit.cpp"
 #include "qgssettings.h"
 #include "qgsmessagebar.h"
 #include "qgsfilterlineedit.h"

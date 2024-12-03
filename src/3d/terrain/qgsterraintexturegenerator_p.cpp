@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsterraintexturegenerator_p.h"
+#include "moc_qgsterraintexturegenerator_p.cpp"
 
 #include <qgsmaprenderercustompainterjob.h>
 #include <qgsmaprenderersequentialjob.h>

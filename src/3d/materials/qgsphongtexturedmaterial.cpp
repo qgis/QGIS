@@ -21,6 +21,7 @@
 #include <Qt3DRender/QTechnique>
 
 #include "qgsphongtexturedmaterial.h"
+#include "moc_qgsphongtexturedmaterial.cpp"
 
 ///@cond PRIVATE
 QgsPhongTexturedMaterial::QgsPhongTexturedMaterial( QNode *parent )

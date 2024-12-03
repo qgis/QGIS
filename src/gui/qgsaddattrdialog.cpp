@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsaddattrdialog.h"
+#include "moc_qgsaddattrdialog.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgslogger.h"

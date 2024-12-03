@@ -240,11 +240,12 @@ bool QgsPointCloudLayerRenderer::renderIndex( QgsPointCloudIndex *pc )
   t.start();
 #endif
 
-  const IndexedPointCloudNode root = pc->root();
+  const QgsPointCloudNodeId root = pc->root();
 
   const double maximumError = context.renderContext().convertToPainterUnits( mRenderer->maximumScreenError(), mRenderer->maximumScreenErrorUnit() );// in pixels
 
-  const QgsRectangle rootNodeExtentLayerCoords = pc->nodeMapExtent( root );
+  const QgsPointCloudNode rootNode = pc->getNode( root );
+  const QgsRectangle rootNodeExtentLayerCoords = pc->extent();
   QgsRectangle rootNodeExtentMapCoords;
   if ( !context.renderContext().coordinateTransform().isShortCircuited() )
   {
@@ -274,7 +275,7 @@ bool QgsPointCloudLayerRenderer::renderIndex( QgsPointCloudIndex *pc )
     return false;
   }
   double rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
-  const QVector<IndexedPointCloudNode> nodes = traverseTree( pc, context.renderContext(), pc->root(), maximumError, rootErrorPixels );
+  const QVector<QgsPointCloudNodeId> nodes = traverseTree( pc, context.renderContext(), pc->root(), maximumError, rootErrorPixels );
 
   QgsPointCloudRequest request;
   request.setAttributes( mAttributes );
@@ -328,7 +329,7 @@ bool QgsPointCloudLayerRenderer::renderIndex( QgsPointCloudIndex *pc )
   return !canceled;
 }
 
-int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled )
+int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled )
 {
   QPainter *finalPainter = context.renderContext().painter();
   if ( mRenderer->renderAsTriangles() && context.renderContext().previewRenderPainter() )
@@ -339,7 +340,7 @@ int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<IndexedPointCloud
   }
 
   int nodesDrawn = 0;
-  for ( const IndexedPointCloudNode &n : nodes )
+  for ( const QgsPointCloudNodeId &n : nodes )
   {
     if ( context.renderContext().renderingStopped() )
     {
@@ -386,7 +387,7 @@ int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<IndexedPointCloud
   return nodesDrawn;
 }
 
-int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled )
+int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled )
 {
   if ( context.feedback() && context.feedback()->isCanceled() )
     return 0;
@@ -409,7 +410,7 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
 
   for ( int i = 0; i < nodes.size(); ++i )
   {
-    const IndexedPointCloudNode &n = nodes[i];
+    const QgsPointCloudNodeId &n = nodes[i];
     const QString nStr = n.toString();
     QgsPointCloudBlockRequest *blockRequest = pc->asyncNodeData( n, request );
     blockRequests.append( blockRequest );
@@ -486,7 +487,7 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<IndexedPointClou
   return nodesDrawn;
 }
 
-int QgsPointCloudLayerRenderer::renderNodesSorted( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled, Qgis::PointCloudDrawOrder order )
+int QgsPointCloudLayerRenderer::renderNodesSorted( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled, Qgis::PointCloudDrawOrder order )
 {
   int blockCount = 0;
   int pointCount = 0;
@@ -501,7 +502,7 @@ int QgsPointCloudLayerRenderer::renderNodesSorted( const QVector<IndexedPointClo
   // And pairs of byte array start positions paired with their Z values for sorting
   QVector<QPair<int, double>> allPairs;
 
-  for ( const IndexedPointCloudNode &n : nodes )
+  for ( const QgsPointCloudNodeId &n : nodes )
   {
     if ( context.renderContext().renderingStopped() )
     {
@@ -710,7 +711,7 @@ void QgsPointCloudLayerRenderer::renderTriangulatedSurface( QgsPointCloudRenderC
   QPainter *painter = context.renderContext().painter();
   QgsElevationMap *elevationMap = context.renderContext().elevationMap();
   QPointF triangle[3];
-  float elev[3];
+  float elev[3] {0, 0, 0};
   for ( size_t i = 0; i < triangleIndexes.size(); i += 3 )
   {
     size_t v0 = triangleIndexes[i], v1 = triangleIndexes[i + 1], v2 = triangleIndexes[i + 2];
@@ -758,13 +759,13 @@ void QgsPointCloudLayerRenderer::setLayerRenderingTimeHint( int time )
   mRenderTimeHint = time;
 }
 
-QVector<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const QgsPointCloudIndex *pc,
+QVector<QgsPointCloudNodeId> QgsPointCloudLayerRenderer::traverseTree( const QgsPointCloudIndex *pc,
     const QgsRenderContext &context,
-    IndexedPointCloudNode n,
+    QgsPointCloudNodeId n,
     double maxErrorPixels,
     double nodeErrorPixels )
 {
-  QVector<IndexedPointCloudNode> nodes;
+  QVector<QgsPointCloudNodeId> nodes;
 
   if ( context.renderingStopped() )
   {
@@ -772,23 +773,25 @@ QVector<IndexedPointCloudNode> QgsPointCloudLayerRenderer::traverseTree( const Q
     return nodes;
   }
 
-  if ( !context.extent().intersects( pc->nodeMapExtent( n ) ) )
+  QgsPointCloudNode node = pc->getNode( n );
+  QgsBox3D nodeExtent = node.bounds();
+
+  if ( !context.extent().intersects( nodeExtent.toRectangle() ) )
     return nodes;
 
-  const QgsDoubleRange nodeZRange = pc->nodeZRange( n );
+  const QgsDoubleRange nodeZRange( nodeExtent.zMinimum(), nodeExtent.zMaximum() );
   const QgsDoubleRange adjustedNodeZRange = QgsDoubleRange( nodeZRange.lower() + mZOffset, nodeZRange.upper() + mZOffset );
   if ( !context.zRange().isInfinite() && !context.zRange().overlaps( adjustedNodeZRange ) )
     return nodes;
 
-  if ( pc->nodePointCount( n ) > 0 )
+  if ( node.pointCount() > 0 )
     nodes.append( n );
 
   double childrenErrorPixels = nodeErrorPixels / 2.0;
   if ( childrenErrorPixels < maxErrorPixels )
     return nodes;
 
-  const QList<IndexedPointCloudNode> children = pc->nodeChildren( n );
-  for ( const IndexedPointCloudNode &nn : children )
+  for ( const QgsPointCloudNodeId &nn : node.children() )
   {
     nodes += traverseTree( pc, context, nn, maxErrorPixels, childrenErrorPixels );
   }

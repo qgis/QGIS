@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayoutpolygonwidget.h"
+#include "moc_qgslayoutpolygonwidget.cpp"
 #include "qgslayout.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutundostack.h"

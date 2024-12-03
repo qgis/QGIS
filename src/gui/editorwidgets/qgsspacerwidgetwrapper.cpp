@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsspacerwidgetwrapper.h"
+#include "moc_qgsspacerwidgetwrapper.cpp"
 #include "qframe.h"
 
 

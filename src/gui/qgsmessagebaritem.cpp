@@ -17,6 +17,7 @@
 
 #include "qgsapplication.h"
 #include "qgsmessagebaritem.h"
+#include "moc_qgsmessagebaritem.cpp"
 #include "qgsmessagebar.h"
 #include "qgsgui.h"
 #include "qgsnative.h"

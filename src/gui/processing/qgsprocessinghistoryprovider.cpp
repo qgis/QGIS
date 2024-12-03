@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsprocessinghistoryprovider.h"
+#include "moc_qgsprocessinghistoryprovider.cpp"
 #include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgshistoryproviderregistry.h"

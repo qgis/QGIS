@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsattributeactionpropertiesdialog.h"
+#include "moc_qgsattributeactionpropertiesdialog.cpp"
 #include "qgsfieldexpressionwidget.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"

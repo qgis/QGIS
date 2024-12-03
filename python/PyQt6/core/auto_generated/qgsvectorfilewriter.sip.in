@@ -485,7 +485,7 @@ Writes a layer out to a vector file.
 
 .. deprecated:: 3.20
 
-   Use writeAsVectorFormatV3 instead.
+   Use :py:func:`~QgsVectorFileWriter.writeAsVectorFormatV3` instead.
 %End
 
     static QgsVectorFileWriter::WriterError writeAsVectorFormatV3( QgsVectorLayer *layer,

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitemwidget.h"
+#include "moc_qgslayoutitemwidget.cpp"
 #include "qgspropertyoverridebutton.h"
 #include "qgslayout.h"
 #include "qgsproject.h"

@@ -534,7 +534,7 @@ Returns a large (roughly 100x100 pixel) preview image for the symbol.
 
 .. deprecated:: 3.40
 
-   Use bigSymbolPreviewImageV2 instead.
+   Use :py:func:`~QgsSymbol.bigSymbolPreviewImageV2` instead.
 %End
 
     QString dump() const;
@@ -826,7 +826,7 @@ and returns ``True`` if any of the layers returned ``True``.
    Will be removed in QGIS 4.0.
 %End
 
-    void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, Qgis::VertexMarkerType currentVertexMarkerType = Qgis::VertexMarkerType::SemiTransparentCircle, double currentVertexMarkerSize = 0.0 ) throw( QgsCsException );
+    void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, Qgis::VertexMarkerType currentVertexMarkerType = Qgis::VertexMarkerType::SemiTransparentCircle, double currentVertexMarkerSize = 0.0 );
 %Docstring
 Render a feature. Before calling this the :py:func:`~QgsSymbol.startRender` method should be called to initialize
 the rendering process. After rendering all features :py:func:`~QgsSymbol.stopRender` must be called.

@@ -22,6 +22,7 @@
 
 #include "qgssettings.h"
 #include "qgsrastertransparencywidget.h"
+#include "moc_qgsrastertransparencywidget.cpp"
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrastertransparency.h"

@@ -144,7 +144,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \param flags GEOS creation flags (since QGIS 3.40)
      * \note The third parameter was prior to QGIS 3.40 a boolean which has been incorporated into the flag
      */
-    QgsGeos( const QgsAbstractGeometry *geometry, double precision = 0, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlags() );
+    QgsGeos( const QgsAbstractGeometry *geometry, double precision = 0, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlag::SkipEmptyInteriorRings );
 
     /**
      * Creates a new QgsGeometry object, feeding in a geometry in GEOS format.

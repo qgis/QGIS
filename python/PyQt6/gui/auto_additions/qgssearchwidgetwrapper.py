@@ -32,5 +32,5 @@ try:
     QgsSearchWidgetWrapper.toString = staticmethod(QgsSearchWidgetWrapper.toString)
     QgsSearchWidgetWrapper.__signal_arguments__ = {'expressionChanged': ['exp: str']}
     QgsSearchWidgetWrapper.__group__ = ['editorwidgets', 'core']
-except NameError:
+except (NameError, AttributeError):
     pass

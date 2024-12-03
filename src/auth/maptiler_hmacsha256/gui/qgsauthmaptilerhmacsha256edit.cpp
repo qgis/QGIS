@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthmaptilerhmacsha256edit.h"
+#include "moc_qgsauthmaptilerhmacsha256edit.cpp"
 #include "ui_qgsauthmaptilerhmacsha256edit.h"
 
 

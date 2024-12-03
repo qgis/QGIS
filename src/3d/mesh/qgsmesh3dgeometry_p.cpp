@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmesh3dgeometry_p.h"
+#include "moc_qgsmesh3dgeometry_p.cpp"
 
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
@@ -64,16 +65,16 @@ static QByteArray createTerrainVertexData(
   {
     const QgsMeshVertex &vert = mesh.vertices().at( i );
     *fptr++ = float( vert.x() - origin.x() );
+    *fptr++ = float( vert.y() - origin.y() );
     *fptr++ = float( vert.z() - origin.z() ) * vertScale ;
-    *fptr++ = float( -vert.y() + origin.y() );
 
     QVector3D normal = normals.at( i );
-    normal = QVector3D( normal.x() * vertScale, -normal.y() * vertScale, normal.z() );
+    normal = QVector3D( normal.x(), normal.y(), normal.z() / vertScale );  // TODO: correct?
     normal.normalize();
 
     *fptr++ = normal.x();
-    *fptr++ = normal.z();
     *fptr++ = normal.y();
+    *fptr++ = normal.z();
   }
 
   return bufferBytes;
@@ -115,16 +116,16 @@ static QByteArray createDatasetVertexData(
       vertMag += vert.z();
 
     *fptr++ = float( vert.x() - origin.x() );
+    *fptr++ = float( vert.y() - origin.y() );
     *fptr++ = float( vertMag - origin.z() ) * vertScale ;
-    *fptr++ = float( -vert.y() + origin.y() );
 
     QVector3D normal = normals.at( i );
-    normal = QVector3D( normal.x() * vertScale, -normal.y() * vertScale, normal.z() );
+    normal = QVector3D( normal.x(), normal.y(), normal.z() / vertScale ); // TODO: correct?
     normal.normalize();
 
     *fptr++ = normal.x();
-    *fptr++ = normal.z();
     *fptr++ = normal.y();
+    *fptr++ = normal.z();
 
     *fptr++ = float( scalarMag );
   }

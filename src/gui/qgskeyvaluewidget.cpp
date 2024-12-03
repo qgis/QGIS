@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgskeyvaluewidget.h"
+#include "moc_qgskeyvaluewidget.cpp"
 
 QgsKeyValueWidget::QgsKeyValueWidget( QWidget *parent )
   : QgsTableWidgetBase( parent )

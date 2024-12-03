@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmeshstaticdatasetwidget.h"
+#include "moc_qgsmeshstaticdatasetwidget.cpp"
 
 #include "qgsmeshlayer.h"
 

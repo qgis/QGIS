@@ -126,8 +126,6 @@ class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, protected Q
 
     QgsVectorLayer *mVectorLayer = nullptr;
 
-    bool mBlockSignals = false;
-
     QgsSymbolWidgetContext mContext;
 
 

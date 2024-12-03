@@ -22,14 +22,14 @@
 #include <QAction>
 #include <QSignalSpy>
 
-class TestQgsDockWidget: public QObject
+class TestQgsDockWidget : public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void testSignals();
     void testUserVisible();
@@ -38,7 +38,6 @@ class TestQgsDockWidget: public QObject
     void testAction();
 
   private:
-
 };
 
 void TestQgsDockWidget::initTestCase()
@@ -177,7 +176,6 @@ void TestQgsDockWidget::testSetUserVisible()
   QVERIFY( !d1->isVisible() );
 
   delete w;
-
 }
 
 void TestQgsDockWidget::testToggleUserVisible()
@@ -220,7 +218,6 @@ void TestQgsDockWidget::testToggleUserVisible()
   QVERIFY( !d1->isVisible() );
 
   delete w;
-
 }
 
 void TestQgsDockWidget::testAction()
@@ -237,7 +234,7 @@ void TestQgsDockWidget::testAction()
   QAction *a1 = new QAction( w );
   QAction *a2 = new QAction( w );
 
-  QVERIFY( ! d1->toggleVisibilityAction() );
+  QVERIFY( !d1->toggleVisibilityAction() );
   d1->setToggleVisibilityAction( a1 );
   d2->setToggleVisibilityAction( a2 );
   QVERIFY( a1->isCheckable() );

@@ -26,6 +26,7 @@
 #include "qgsrasterbandstats.h"
 #include "qgsrasterhistogram.h"
 #include "qgsrasterinterface.h"
+#include "moc_qgsrasterinterface.cpp"
 #include "qgsrectangle.h"
 
 QgsRasterInterface::QgsRasterInterface( QgsRasterInterface *input )

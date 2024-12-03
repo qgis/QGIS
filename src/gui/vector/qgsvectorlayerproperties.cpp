@@ -38,6 +38,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerproperties.h"
+#include "moc_qgsvectorlayerproperties.cpp"
 #include "qgsvectordataprovider.h"
 #include "qgssubsetstringeditorinterface.h"
 #include "qgsdatasourceuri.h"

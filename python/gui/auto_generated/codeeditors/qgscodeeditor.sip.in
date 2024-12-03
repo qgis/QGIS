@@ -519,6 +519,14 @@ Emitted when the persistent history of commands run in the editor is cleared.
 .. versionadded:: 3.30
 %End
 
+
+    void helpRequested( const QString &word );
+%Docstring
+Emitted when documentation was requested for the specified ``word``.
+
+.. versionadded:: 3.42
+%End
+
   protected:
 
     static bool isFixedPitch( const QFont &font );

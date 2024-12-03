@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsdetaileditemdelegate.h"
+#include "moc_qgsdetaileditemdelegate.cpp"
 #include "qgsdetaileditemwidget.h"
 #include "qgsdetaileditemdata.h"
 #include "qgsrendercontext.h"

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspointdisplacementrendererwidget.h"
+#include "moc_qgspointdisplacementrendererwidget.cpp"
 #include "qgspointdisplacementrenderer.h"
 #include "qgsrendererregistry.h"
 #include "qgsfields.h"

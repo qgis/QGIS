@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutunitscombobox.h"
+#include "moc_qgslayoutunitscombobox.cpp"
 #include "qgslayoutmeasurementconverter.h"
 #include "qgsunittypes.h"
 #include "qgis.h"

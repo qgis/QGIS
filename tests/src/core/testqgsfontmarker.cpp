@@ -44,11 +44,12 @@ class TestQgsFontMarkerSymbol : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsFontMarkerSymbol() : QgsTest( QStringLiteral( "Font Marker Tests" ), QStringLiteral( "symbol_fontmarker" ) ) {}
+    TestQgsFontMarkerSymbol()
+      : QgsTest( QStringLiteral( "Font Marker Tests" ), QStringLiteral( "symbol_fontmarker" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void fontMarkerSymbol();
     void fontMarkerSymbolStyle();
@@ -60,7 +61,7 @@ class TestQgsFontMarkerSymbol : public QgsTest
     void massiveFont();
 
   private:
-    bool mTestHasError =  false ;
+    bool mTestHasError = false;
 
     QgsMapSettings mMapSettings;
     QgsVectorLayer *mpPointsLayer = nullptr;
@@ -89,8 +90,7 @@ void TestQgsFontMarkerSymbol::initTestCase()
   //
   const QString pointFileName = mTestDataDir + "points.shp";
   const QFileInfo pointFileInfo( pointFileName );
-  mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
-                                      pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   //setup symbol
   mFontMarkerLayer = new QgsFontMarkerSymbolLayer();
@@ -104,7 +104,6 @@ void TestQgsFontMarkerSymbol::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPointsLayer );
-
 }
 void TestQgsFontMarkerSymbol::cleanupTestCase()
 {

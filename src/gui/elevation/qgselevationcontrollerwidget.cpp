@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgselevationcontrollerwidget.h"
+#include "moc_qgselevationcontrollerwidget.cpp"
 #include "qgsrangeslider.h"
 #include "qgsrange.h"
 #include "qgsproject.h"

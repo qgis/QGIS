@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspostgreslistener.h"
+#include "moc_qgspostgreslistener.cpp"
 #include "qgsdatasourceuri.h"
 #include "qgscredentials.h"
 #include "qgslogger.h"
@@ -32,9 +33,9 @@ extern "C"
 #include <libpq-fe.h>
 }
 
-std::unique_ptr< QgsPostgresListener > QgsPostgresListener::create( const QString &connString )
+std::unique_ptr<QgsPostgresListener> QgsPostgresListener::create( const QString &connString )
 {
-  std::unique_ptr< QgsPostgresListener > res( new QgsPostgresListener( connString ) );
+  std::unique_ptr<QgsPostgresListener> res( new QgsPostgresListener( connString ) );
   QgsDebugMsgLevel( QStringLiteral( "starting notification listener" ), 2 );
 
   res->start();

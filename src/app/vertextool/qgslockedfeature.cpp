@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslockedfeature.h"
+#include "moc_qgslockedfeature.cpp"
 #include "qgsvertexeditor.h"
 
 #include "qgsfeatureiterator.h"
@@ -33,10 +34,7 @@
 #include "qgssettingsentryimpl.h"
 
 
-
-QgsLockedFeature::QgsLockedFeature( QgsFeatureId featureId,
-                                    QgsVectorLayer *layer,
-                                    QgsMapCanvas *canvas )
+QgsLockedFeature::QgsLockedFeature( QgsFeatureId featureId, QgsVectorLayer *layer, QgsMapCanvas *canvas )
   : mFeatureId( featureId )
   , mLayer( layer )
   , mCanvas( canvas )
@@ -230,7 +228,6 @@ QgsGeometry *QgsLockedFeature::geometry()
 
 void QgsLockedFeature::createVertexMap()
 {
-
   if ( !mGeometry )
   {
     QgsDebugMsgLevel( QStringLiteral( "Loading feature" ), 2 );

@@ -18,9 +18,11 @@
 
 def getSqlDictionary(spatial=True):
     from ..spatialite.sql_dictionary import getSqlDictionary
+
     return getSqlDictionary(spatial)
 
 
 def getQueryBuilderDictionary():
     from ..spatialite.sql_dictionary import getQueryBuilderDictionary
+
     return getQueryBuilderDictionary()

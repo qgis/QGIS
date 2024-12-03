@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmeshdatasetgroupstore.h"
+#include "moc_qgsmeshdatasetgroupstore.cpp"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsapplication.h"

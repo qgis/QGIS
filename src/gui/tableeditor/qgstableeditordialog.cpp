@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstableeditordialog.h"
+#include "moc_qgstableeditordialog.cpp"
 #include "qgstableeditorwidget.h"
 #include "qgsmessagebar.h"
 #include "qgsgui.h"
@@ -21,7 +22,11 @@
 #include "qgspanelwidgetstack.h"
 #include "qgstableeditorformattingwidget.h"
 #include "qgssettings.h"
-#include "qgsmaplayer.h"
+#include "qgsvectorlayer.h"
+#include "qgslayout.h"
+#include "qgslayoutreportcontext.h"
+#include "qgslayoutitemmanualtable.h"
+#include "qgslayouttablecolumn.h"
 
 #include <QClipboard>
 #include <QMessageBox>
@@ -166,6 +171,48 @@ void QgsTableEditorDialog::setLayer( QgsMapLayer *layer )
     mFormattingWidget->setLayer( layer );
   }
 }
+
+QgsLayoutItemManualTable *QgsTableEditorDialog::table() const
+{
+  return mTable;
+}
+
+void QgsTableEditorDialog::setTable( QgsLayoutItemManualTable *table )
+{
+  if ( mTable == table )
+    return;
+
+  mTable = table;
+
+  if ( QgsLayout *layout = table->layout() )
+  {
+    setLayer( layout->reportContext().layer() );
+  }
+  registerExpressionContextGenerator( table );
+
+  setIncludeTableHeader( table->includeTableHeader() );
+  setTableContents( table->tableContents() );
+
+  int row = 0;
+  const QList< double > rowHeights = table->rowHeights();
+  for ( const double height : rowHeights )
+  {
+    setTableRowHeight( row, height );
+    row++;
+  }
+  int col = 0;
+  const QList< double > columnWidths = table->columnWidths();
+  QVariantList headers;
+  headers.reserve( columnWidths.size() );
+  for ( const double width : columnWidths )
+  {
+    setTableColumnWidth( col, width );
+    headers << ( col < table->headers().count() ? table->headers().value( col ).heading() : QVariant() );
+    col++;
+  }
+  setTableHeaders( headers );
+}
+
 
 
 bool QgsTableEditorDialog::setTableContentsFromClipboard()

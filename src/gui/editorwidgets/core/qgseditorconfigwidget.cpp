@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgseditorconfigwidget.h"
+#include "moc_qgseditorconfigwidget.cpp"
 #include "qgspropertyoverridebutton.h"
 #include "qgsexpressioncontextutils.h"
 

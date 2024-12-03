@@ -16,22 +16,16 @@
  ***************************************************************************/
 
 #include "qgssinglebandpseudocolorrendererwidget.h"
+#include "moc_qgssinglebandpseudocolorrendererwidget.cpp"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrastershader.h"
 #include "qgsrasterminmaxwidget.h"
 #include "qgsdoublevalidator.h"
-#include "qgstreewidgetitem.h"
 #include "qgssettings.h"
 #include "qgsmapcanvas.h"
 #include "qgsguiutils.h"
-
-// for color ramps - todo add rasterStyle and refactor raster vs. vector ramps
-#include "qgsstyle.h"
-#include "qgscolorramp.h"
-#include "qgscolorrampbutton.h"
-#include "qgscolordialog.h"
 
 #include <QCursor>
 #include <QPushButton>
@@ -93,9 +87,9 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   if ( mMinLineEdit->text().isEmpty() || mMaxLineEdit->text().isEmpty() )
   {
     QgsRasterMinMaxOrigin minMaxOrigin = mMinMaxWidget->minMaxOrigin();
-    if ( minMaxOrigin.limits() == QgsRasterMinMaxOrigin::None )
+    if ( minMaxOrigin.limits() == Qgis::RasterRangeLimit::NotSet )
     {
-      minMaxOrigin.setLimits( QgsRasterMinMaxOrigin::MinMax );
+      minMaxOrigin.setLimits( Qgis::RasterRangeLimit::MinimumMaximum );
       mMinMaxWidget->setFromMinMaxOrigin( minMaxOrigin );
     }
     mMinMaxWidget->doComputations();

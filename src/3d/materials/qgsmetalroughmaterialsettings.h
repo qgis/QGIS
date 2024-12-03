@@ -51,6 +51,7 @@ class _3D_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSetti
     static QgsAbstractMaterialSettings *create() SIP_FACTORY;
 
     QgsMetalRoughMaterialSettings *clone() const override SIP_FACTORY;
+    bool equals( const QgsAbstractMaterialSettings *other ) const override;
 
     /**
      * Returns the base material color.
@@ -64,14 +65,14 @@ class _3D_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSetti
      *
      * \see setMetalness()
      */
-    float metalness() const { return mMetalness; }
+    double metalness() const { return mMetalness; }
 
     /**
      * Returns the material's roughness.
      *
      * \see setRoughness()
      */
-    float roughness() const { return mRoughness; }
+    double roughness() const { return mRoughness; }
 
     QMap<QString, QString> toExportParameters() const override;
 
@@ -87,14 +88,14 @@ class _3D_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSetti
      *
      * \see metalness()
      */
-    void setMetalness( float metalness ) { mMetalness = metalness; }
+    void setMetalness( double metalness ) { mMetalness = metalness; }
 
     /**
      * Returns the material's \a roughness.
      *
      * \see roughness()
      */
-    void setRoughness( float roughness ) { mRoughness = roughness; }
+    void setRoughness( double roughness ) { mRoughness = roughness; }
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
@@ -108,14 +109,15 @@ class _3D_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSetti
     bool operator==( const QgsMetalRoughMaterialSettings &other ) const
     {
       return mBaseColor == other.mBaseColor &&
-             mMetalness == other.mMetalness &&
-             mRoughness == other.mRoughness;
+             qgsDoubleNear( mMetalness, other.mMetalness ) &&
+             qgsDoubleNear( mRoughness, other.mRoughness ) &&
+             dataDefinedProperties() == other.dataDefinedProperties();
     }
 
   private:
     QColor mBaseColor{ QColor::fromRgbF( 0.5f, 0.5f, 0.5f, 1.0f ) };
-    float mMetalness = 0.0f;
-    float mRoughness = 0.0f;
+    double mMetalness = 0.0;
+    double mRoughness = 0.0;
 };
 
 

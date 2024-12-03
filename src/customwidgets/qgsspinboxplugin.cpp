@@ -15,6 +15,7 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsspinboxplugin.h"
+#include "moc_qgsspinboxplugin.cpp"
 #include "qgsspinbox.h"
 
 
@@ -93,5 +94,5 @@ QString QgsSpinBoxPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

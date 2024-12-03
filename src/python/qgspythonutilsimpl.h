@@ -29,7 +29,6 @@ typedef _object PyObject;
 class QgsPythonUtilsImpl : public QgsPythonUtils
 {
   public:
-
     QgsPythonUtilsImpl();
 
     ~QgsPythonUtilsImpl() override;
@@ -95,7 +94,6 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     void initGDAL() final;
 
   protected:
-
     /* functions that do the initialization work */
 
     //! initialize Python context
@@ -133,7 +131,6 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     bool mPythonEnabled = false;
 
   private:
-
     bool mErrorHookInstalled = false;
     QString mFaultHandlerLogPath;
 };

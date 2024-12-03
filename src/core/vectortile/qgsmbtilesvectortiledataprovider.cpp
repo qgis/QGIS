@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmbtilesvectortiledataprovider.h"
+#include "moc_qgsmbtilesvectortiledataprovider.cpp"
 #include "qgsthreadingutils.h"
 #include "qgsmbtiles.h"
 #include "qgstiles.h"

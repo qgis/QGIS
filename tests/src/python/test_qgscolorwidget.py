@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Julien Cabieces'
-__date__ = '02/05/2024'
-__copyright__ = 'Copyright 2024, The QGIS Project'
+
+__author__ = "Julien Cabieces"
+__date__ = "02/05/2024"
+__copyright__ = "Copyright 2024, The QGIS Project"
 
 from qgis.PyQt.QtGui import QColor
 from qgis.gui import QgsColorWidget
@@ -168,5 +169,5 @@ class TestQgsColorWidget(QgisTestCase):
         self.assertEqual(w.componentValue(QgsColorWidget.ColorComponent.Hue), 30)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

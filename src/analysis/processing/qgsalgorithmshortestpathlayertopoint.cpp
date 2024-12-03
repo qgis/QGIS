@@ -221,10 +221,14 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
     feedback->setProgress( i * step );
   }
 
+  if ( sink )
+    sink->finalize();
+
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   if ( nonRoutableSink )
   {
+    nonRoutableSink->finalize();
     outputs.insert( QStringLiteral( "OUTPUT_NON_ROUTABLE" ), nonRoutableSinkId );
   }
   return outputs;

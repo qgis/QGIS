@@ -18,6 +18,7 @@
 #include <QPushButton>
 
 #include "qgsmaplayersavestyledialog.h"
+#include "moc_qgsmaplayersavestyledialog.cpp"
 #include "qgssettings.h"
 #include "qgshelp.h"
 #include "qgsgui.h"

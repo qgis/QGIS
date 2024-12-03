@@ -16,6 +16,7 @@
 
 
 #include "qgsstylegroupselectiondialog.h"
+#include "moc_qgsstylegroupselectiondialog.cpp"
 #include "qgsstyle.h"
 #include "qgsgui.h"
 

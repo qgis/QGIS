@@ -28,18 +28,16 @@ class TestQgsMapSettingsUtils : public QObject
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
+    void initTestCase();      // will be called before the first testfunction is executed.
     void cleanupTestCase() {} // will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after each testfunction was executed.
+    void init() {}            // will be called before each testfunction is executed.
+    void cleanup() {}         // will be called after each testfunction was executed.
 
-    void createWorldFileContent(); //test world file content function
+    void createWorldFileContent();  //test world file content function
     void containsAdvancedEffects(); //test contains advanced effects function
 
   private:
-
     QgsMapSettings mMapSettings;
-
 };
 
 void TestQgsMapSettingsUtils::initTestCase()
@@ -82,7 +80,7 @@ void TestQgsMapSettingsUtils::containsAdvancedEffects()
 {
   QgsMapSettings mapSettings = mMapSettings;
 
-  std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( QStringLiteral( "Point?field=col1:real" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( QStringLiteral( "Point?field=col1:real" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) ) );
   layer->setBlendMode( QPainter::CompositionMode_Multiply );
 
   QList<QgsMapLayer *> layers;

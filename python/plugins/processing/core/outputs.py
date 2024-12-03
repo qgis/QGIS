@@ -15,31 +15,33 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "August 2012"
+__copyright__ = "(C) 2012, Victor Olaya"
 
 import sys
 
-from qgis.core import (QgsExpressionContext,
-                       QgsExpressionContextUtils,
-                       QgsExpression,
-                       QgsExpressionContextScope,
-                       QgsProject,
-                       QgsSettings,
-                       QgsVectorFileWriter,
-                       QgsProcessingUtils,
-                       QgsProcessingParameterDefinition,
-                       QgsProcessingOutputRasterLayer,
-                       QgsProcessingOutputVectorLayer,
-                       QgsProcessingOutputMapLayer,
-                       QgsProcessingOutputHtml,
-                       QgsProcessingOutputNumber,
-                       QgsProcessingOutputString,
-                       QgsProcessingOutputBoolean,
-                       QgsProcessingOutputFolder,
-                       QgsProcessingOutputMultipleLayers,
-                       QgsProcessingOutputPointCloudLayer)
+from qgis.core import (
+    QgsExpressionContext,
+    QgsExpressionContextUtils,
+    QgsExpression,
+    QgsExpressionContextScope,
+    QgsProject,
+    QgsSettings,
+    QgsVectorFileWriter,
+    QgsProcessingUtils,
+    QgsProcessingParameterDefinition,
+    QgsProcessingOutputRasterLayer,
+    QgsProcessingOutputVectorLayer,
+    QgsProcessingOutputMapLayer,
+    QgsProcessingOutputHtml,
+    QgsProcessingOutputNumber,
+    QgsProcessingOutputString,
+    QgsProcessingOutputBoolean,
+    QgsProcessingOutputFolder,
+    QgsProcessingOutputMultipleLayers,
+    QgsProcessingOutputPointCloudLayer,
+)
 
 
 def getOutputFromString(s):
@@ -51,22 +53,22 @@ def getOutputFromString(s):
             return clazz(*params)
         else:
             tokens = s.split("=")
-            if tokens[1].lower()[: len('output')] != 'output':
+            if tokens[1].lower()[: len("output")] != "output":
                 return None
 
             name = tokens[0]
             description = tokens[0]
 
-            token = tokens[1].strip()[len('output') + 1:]
+            token = tokens[1].strip()[len("output") + 1 :]
             out = None
 
-            if token.lower().strip().startswith('outputraster'):
+            if token.lower().strip().startswith("outputraster"):
                 out = QgsProcessingOutputRasterLayer(name, description)
-            elif token.lower().strip() == 'outputvector':
+            elif token.lower().strip() == "outputvector":
                 out = QgsProcessingOutputVectorLayer(name, description)
-            elif token.lower().strip() == 'outputlayer':
+            elif token.lower().strip() == "outputlayer":
                 out = QgsProcessingOutputMapLayer(name, description)
-            elif token.lower().strip() == 'outputmultilayers':
+            elif token.lower().strip() == "outputmultilayers":
                 out = QgsProcessingOutputMultipleLayers(name, description)
             #            elif token.lower().strip() == 'vector point':
             #                out = OutputVector(datatype=[dataobjects.TYPE_VECTOR_POINT])
@@ -76,22 +78,22 @@ def getOutputFromString(s):
             #                out = OutputVector(datatype=[OutputVector.TYPE_VECTOR_POLYGON])
             #            elif token.lower().strip().startswith('table'):
             #                out = OutputTable()
-            elif token.lower().strip().startswith('outputhtml'):
+            elif token.lower().strip().startswith("outputhtml"):
                 out = QgsProcessingOutputHtml(name, description)
             #            elif token.lower().strip().startswith('file'):
             #                out = OutputFile()
             #                ext = token.strip()[len('file') + 1:]
             #                if ext:
             #                    out.ext = ext
-            elif token.lower().strip().startswith('outputfolder'):
+            elif token.lower().strip().startswith("outputfolder"):
                 out = QgsProcessingOutputFolder(name, description)
-            elif token.lower().strip().startswith('outputnumber'):
+            elif token.lower().strip().startswith("outputnumber"):
                 out = QgsProcessingOutputNumber(name, description)
-            elif token.lower().strip().startswith('outputstring'):
+            elif token.lower().strip().startswith("outputstring"):
                 out = QgsProcessingOutputString(name, description)
-            elif token.lower().strip().startswith('outputboolean'):
+            elif token.lower().strip().startswith("outputboolean"):
                 out = QgsProcessingOutputBoolean(name, description)
-            elif token.lower().strip().startswith('outputPointCloud'):
+            elif token.lower().strip().startswith("outputPointCloud"):
                 out = QgsProcessingOutputPointCloudLayer(name, description)
             #            elif token.lower().strip().startswith('extent'):
             #                out = OutputExtent()

@@ -15,6 +15,7 @@
 
 
 #include "qgsrelationreferencewidgetwrapper.h"
+#include "moc_qgsrelationreferencewidgetwrapper.cpp"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsrelationreferencewidget.h"

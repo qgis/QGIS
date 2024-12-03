@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstyle.h"
+#include "moc_qgsstyle.cpp"
 
 #include "qgssymbol.h"
 #include "qgscolorramp.h"

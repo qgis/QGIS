@@ -183,9 +183,6 @@ class GUI_EXPORT QgsEditConditionalFormatRuleWidget : public QgsPanelWidget, pri
 
   private:
     QgsVectorLayer *mLayer = nullptr;
-    int mEditIndex = 0;
-    bool mEditing = false;
-    QStandardItemModel *mModel = nullptr;
     QStandardItemModel *mPresetsModel = nullptr;
     QList<QgsConditionalStyle> mPresets;
 

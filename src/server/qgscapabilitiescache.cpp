@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscapabilitiescache.h"
+#include "moc_qgscapabilitiescache.cpp"
 
 #include <QCoreApplication>
 #include <QFileInfo>

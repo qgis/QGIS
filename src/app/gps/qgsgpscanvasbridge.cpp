@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgpscanvasbridge.h"
+#include "moc_qgsgpscanvasbridge.cpp"
 #include "qgsgpsbearingitem.h"
 #include "qgsgpsmarker.h"
 #include "qgssymbollayerutils.h"
@@ -58,19 +59,16 @@ QgsGpsCanvasBridge::QgsGpsCanvasBridge( QgsAppGpsConnection *connection, QgsMapC
   connect( QgsGui::instance(), &QgsGui::optionsChanged, this, &QgsGpsCanvasBridge::gpsSettingsChanged );
 
   mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
-  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ]
-  {
+  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, [=] {
     mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
   } );
-  connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [ = ]
-  {
+  connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [=] {
     mCanvasToWgs84Transform = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
   } );
 
   mDistanceCalculator.setEllipsoid( QgsProject::instance()->ellipsoid() );
   mDistanceCalculator.setSourceCrs( mWgs84CRS, QgsProject::instance()->transformContext() );
-  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [ = ]
-  {
+  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [=] {
     mDistanceCalculator.setEllipsoid( QgsProject::instance()->ellipsoid() );
   } );
 
@@ -78,8 +76,7 @@ QgsGpsCanvasBridge::QgsGpsCanvasBridge( QgsAppGpsConnection *connection, QgsMapC
   connect( mCanvas, &QgsMapCanvas::tapAndHoldGestureOccurred, this, &QgsGpsCanvasBridge::tapAndHold );
 
   mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
-  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::bearingFormatChanged, this, [ = ]
-  {
+  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::bearingFormatChanged, this, [=] {
     mBearingNumericFormat.reset( QgsProject::instance()->displaySettings()->bearingFormat()->clone() );
     updateGpsDistanceStatusMessage( false );
   } );
@@ -157,7 +154,6 @@ void QgsGpsCanvasBridge::tapAndHold( const QgsPointXY &mapPoint, QTapAndHoldGest
   }
   catch ( QgsCsException & )
   {
-
   }
 }
 
@@ -179,7 +175,7 @@ void QgsGpsCanvasBridge::updateBearingAppearance()
   {
     doc.setContent( bearingLineSymbolXml );
     elem = doc.documentElement();
-    std::unique_ptr< QgsLineSymbol > bearingSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem, QgsReadWriteContext() ) );
+    std::unique_ptr<QgsLineSymbol> bearingSymbol( QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol>( elem, QgsReadWriteContext() ) );
     if ( bearingSymbol )
     {
       mMapBearingItem->setSymbol( std::move( bearingSymbol ) );
@@ -195,8 +191,8 @@ void QgsGpsCanvasBridge::gpsSettingsChanged()
   if ( QgsGpsConnection::settingsGpsConnectionType->exists() )
   {
     mBearingFromTravelDirection = QgsGpsConnection::settingGpsBearingFromTravelDirection->value();
-    mMapExtentMultiplier = static_cast< int >( QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold->value() );
-    mMapRotateInterval = static_cast< int >( QgsGpsCanvasBridge::settingMapRotateInterval->value() );
+    mMapExtentMultiplier = static_cast<int>( QgsGpsCanvasBridge::settingMapExtentRecenteringThreshold->value() );
+    mMapRotateInterval = static_cast<int>( QgsGpsCanvasBridge::settingMapRotateInterval->value() );
   }
   else
   {
@@ -210,7 +206,7 @@ void QgsGpsCanvasBridge::gpsSettingsChanged()
 
 void QgsGpsCanvasBridge::gpsDisconnected()
 {
-  if ( mMapMarker )  // marker should not be shown on GPS disconnected - not current position
+  if ( mMapMarker ) // marker should not be shown on GPS disconnected - not current position
   {
     delete mMapMarker;
     mMapMarker = nullptr;
@@ -249,7 +245,7 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
         {
           const QgsPointXY point = mCanvasToWgs84Transform.transform( myNewCenter, Qgis::TransformDirection::Reverse );
           //keep the extent the same just center the map canvas in the display so our feature is in the middle
-          const QgsRectangle rect( point, point );  // empty rect can be used to set new extent that is centered on the point used to construct the rect
+          const QgsRectangle rect( point, point ); // empty rect can be used to set new extent that is centered on the point used to construct the rect
 
           // testing if position is outside some proportion of the map extent
           // this is a user setting - useful range: 5% to 100% (0.05 to 1.0)
@@ -257,8 +253,7 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
           extentLimit.scale( mMapExtentMultiplier * 0.01 );
 
           // only change the extents if the point is beyond the current extents to minimize repaints
-          if ( mCenteringMode == Qgis::MapRecenteringMode::Always ||
-               ( mCenteringMode == Qgis::MapRecenteringMode::WhenOutsideVisibleExtent && !extentLimit.contains( point ) ) )
+          if ( mCenteringMode == Qgis::MapRecenteringMode::Always || ( mCenteringMode == Qgis::MapRecenteringMode::WhenOutsideVisibleExtent && !extentLimit.contains( point ) ) )
           {
             mCanvas->setExtent( rect, true );
             mCanvas->refresh();
@@ -266,7 +261,6 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
         }
         catch ( QgsCsException & )
         {
-
         }
         break;
 
@@ -295,7 +289,6 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
         }
         catch ( QgsException & )
         {
-
         }
       }
     }
@@ -307,12 +300,10 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
       }
       catch ( QgsCsException & )
       {
-
       }
-
     }
 
-    if ( mRotateMap && ( !mLastRotateTimer.isValid() || mLastRotateTimer.hasExpired( static_cast< long long >( mMapRotateInterval ) * 1000 ) ) )
+    if ( mRotateMap && ( !mLastRotateTimer.isValid() || mLastRotateTimer.hasExpired( static_cast<long long>( mMapRotateInterval ) * 1000 ) ) )
     {
       const QgsCoordinateTransform wgs84ToCanvas( mWgs84CRS, mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
 
@@ -328,8 +319,7 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
         double totalLength = 0;
         try
         {
-          totalLength = da1.measureLine( mCanvas->mapSettings().extent().center(), QgsPointXY( mCanvas->mapSettings().extent().xMaximum(),
-                                         mCanvas->mapSettings().extent().yMaximum() ) );
+          totalLength = da1.measureLine( mCanvas->mapSettings().extent().center(), QgsPointXY( mCanvas->mapSettings().extent().xMaximum(), mCanvas->mapSettings().extent().yMaximum() ) );
         }
         catch ( QgsCsException & )
         {
@@ -401,8 +391,6 @@ void QgsGpsCanvasBridge::gpsStateChanged( const QgsGpsInformation &info )
       mMapMarker = nullptr;
     }
   }
-
-
 }
 
 void QgsGpsCanvasBridge::cursorCoordinateChanged( const QgsPointXY &point )
@@ -417,7 +405,6 @@ void QgsGpsCanvasBridge::cursorCoordinateChanged( const QgsPointXY &point )
   }
   catch ( QgsCsException & )
   {
-
   }
 }
 
@@ -443,19 +430,15 @@ void QgsGpsCanvasBridge::updateGpsDistanceStatusMessage( bool forceDisplay )
 
   try
   {
-    const double distance = mDistanceCalculator.convertLengthMeasurement( mDistanceCalculator.measureLine( QVector< QgsPointXY >() << mLastCursorPosWgs84 << mLastGpsPosition ),
-                            QgsProject::instance()->distanceUnits() );
+    const double distance = mDistanceCalculator.convertLengthMeasurement( mDistanceCalculator.measureLine( QVector<QgsPointXY>() << mLastCursorPosWgs84 << mLastGpsPosition ), QgsProject::instance()->distanceUnits() );
     const double bearing = 180 * mDistanceCalculator.bearing( mLastGpsPosition, mLastCursorPosWgs84 ) / M_PI;
     const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
     const QString distanceString = QgsDistanceArea::formatDistance( distance, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
     const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
 
-    QgisApp::instance()->statusBarIface()->showMessage( tr( "%1 (%2) from GPS location" ).arg( distanceString, bearingString ), forceDisplay ? GPS_DISTANCE_MESSAGE_TIMEOUT_MS
-        : GPS_DISTANCE_MESSAGE_TIMEOUT_MS - static_cast< int >( mLastForcedStatusUpdate.elapsed() ) );
+    QgisApp::instance()->statusBarIface()->showMessage( tr( "%1 (%2) from GPS location" ).arg( distanceString, bearingString ), forceDisplay ? GPS_DISTANCE_MESSAGE_TIMEOUT_MS : GPS_DISTANCE_MESSAGE_TIMEOUT_MS - static_cast<int>( mLastForcedStatusUpdate.elapsed() ) );
   }
   catch ( QgsCsException & )
   {
-
   }
 }
-

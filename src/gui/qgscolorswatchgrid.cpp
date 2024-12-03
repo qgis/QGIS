@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscolorswatchgrid.h"
+#include "moc_qgscolorswatchgrid.cpp"
 #include "qgsapplication.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolortooltip_p.h"

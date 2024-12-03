@@ -552,7 +552,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual QgsTransaction *transaction() const;
 
     /**
-     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0 - use reloadData instead.
+     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0 - use reloadData() instead.
      */
     Q_DECL_DEPRECATED virtual void forceReload() SIP_DEPRECATED { reloadData(); }
 

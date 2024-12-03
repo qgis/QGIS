@@ -26,11 +26,9 @@ class QgsElevationProfileCanvas;
 
 class QgsElevationProfileToolIdentify : public QgsPlotTool
 {
-
     Q_OBJECT
 
   public:
-
     QgsElevationProfileToolIdentify( QgsElevationProfileCanvas *canvas );
     ~QgsElevationProfileToolIdentify() override;
 
@@ -38,8 +36,8 @@ class QgsElevationProfileToolIdentify : public QgsPlotTool
     void plotPressEvent( QgsPlotMouseEvent *event ) override;
     void plotReleaseEvent( QgsPlotMouseEvent *event ) override;
     void plotMoveEvent( QgsPlotMouseEvent *event ) override;
-  private:
 
+  private:
     //! Start position for mouse press
     QPointF mMousePressStartPos;
     QgsPointXY mSnappedMousePressStartPos;
@@ -47,8 +45,7 @@ class QgsElevationProfileToolIdentify : public QgsPlotTool
     bool mMarquee = false;
 
     //! Rubber band item
-    std::unique_ptr< QgsPlotRectangularRubberBand > mRubberBand;
-
+    std::unique_ptr<QgsPlotRectangularRubberBand> mRubberBand;
 };
 
 #endif // QGSELEVATIONPROFILETOOLIDENTIFY_H

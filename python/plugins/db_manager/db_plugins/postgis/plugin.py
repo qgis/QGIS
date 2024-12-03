@@ -21,18 +21,27 @@ email                : brush.tyler@gmail.com
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import PostGisDBConnector
 
-from qgis.PyQt.QtCore import (
-    Qt,
-    QRegularExpression,
-    QCoreApplication
-)
+from qgis.PyQt.QtCore import Qt, QRegularExpression, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
 from qgis.core import Qgis, QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar
 
-from ..plugin import ConnectionError, InvalidDataException, DBPlugin, Database, Schema, Table, VectorTable, RasterTable, \
-    TableField, TableConstraint, TableIndex, TableTrigger, TableRule
+from ..plugin import (
+    ConnectionError,
+    InvalidDataException,
+    DBPlugin,
+    Database,
+    Schema,
+    Table,
+    VectorTable,
+    RasterTable,
+    TableField,
+    TableConstraint,
+    TableIndex,
+    TableTrigger,
+    TableRule,
+)
 
 import re
 
@@ -49,19 +58,19 @@ class PostGisDBPlugin(DBPlugin):
 
     @classmethod
     def typeName(self):
-        return 'postgis'
+        return "postgis"
 
     @classmethod
     def typeNameString(self):
-        return QCoreApplication.translate('db_manager', 'PostGIS')
+        return QCoreApplication.translate("db_manager", "PostGIS")
 
     @classmethod
     def providerName(self):
-        return 'postgres'
+        return "postgres"
 
     @classmethod
     def connectionSettingsKey(self):
-        return '/PostgreSQL/connections'
+        return "/PostgreSQL/connections"
 
     def databasesFactory(self, connection, uri):
         return PGDatabase(connection, uri)
@@ -69,17 +78,31 @@ class PostGisDBPlugin(DBPlugin):
     def connect(self, parent=None):
         conn_name = self.connectionName()
         settings = QgsSettings()
-        settings.beginGroup("/%s/%s" % (self.connectionSettingsKey(), conn_name))
+        settings.beginGroup(f"/{self.connectionSettingsKey()}/{conn_name}")
 
         if not settings.contains("database"):  # non-existent entry?
-            raise InvalidDataException(self.tr('There is no defined database connection "{0}".').format(conn_name))
+            raise InvalidDataException(
+                self.tr('There is no defined database connection "{0}".').format(
+                    conn_name
+                )
+            )
 
         from qgis.core import QgsDataSourceUri
 
         uri = QgsDataSourceUri()
 
-        settingsList = ["service", "host", "port", "database", "username", "password", "authcfg"]
-        service, host, port, database, username, password, authcfg = (settings.value(x, "", type=str) for x in settingsList)
+        settingsList = [
+            "service",
+            "host",
+            "port",
+            "database",
+            "username",
+            "password",
+            "authcfg",
+        ]
+        service, host, port, database, username, password, authcfg = (
+            settings.value(x, "", type=str) for x in settingsList
+        )
 
         useEstimatedMetadata = settings.value("estimatedMetadata", False, type=bool)
         try:
@@ -89,13 +112,15 @@ class PostGisDBPlugin(DBPlugin):
 
         settings.endGroup()
 
-        if hasattr(authcfg, 'isNull') and authcfg.isNull():
-            authcfg = ''
+        if hasattr(authcfg, "isNull") and authcfg.isNull():
+            authcfg = ""
 
         if service:
             uri.setConnection(service, database, username, password, sslmode, authcfg)
         else:
-            uri.setConnection(host, port, database, username, password, sslmode, authcfg)
+            uri.setConnection(
+                host, port, database, username, password, sslmode, authcfg
+            )
 
         uri.setUseEstimatedMetadata(useEstimatedMetadata)
 
@@ -118,6 +143,7 @@ class PGDatabase(Database):
 
     def info(self):
         from .info_model import PGDatabaseInfo
+
         return PGDatabaseInfo(self)
 
     def vectorTablesFactory(self, row, db, schema=None):
@@ -148,17 +174,24 @@ class PGDatabase(Database):
         mainWindow.registerAction(separator, self.tr("&Table"))
 
         action = QAction(self.tr("Run &Vacuum Analyze"), self)
-        mainWindow.registerAction(action, self.tr("&Table"), self.runVacuumAnalyzeActionSlot)
+        mainWindow.registerAction(
+            action, self.tr("&Table"), self.runVacuumAnalyzeActionSlot
+        )
 
         action = QAction(self.tr("Run &Refresh Materialized View"), self)
-        mainWindow.registerAction(action, self.tr("&Table"), self.runRefreshMaterializedViewSlot)
+        mainWindow.registerAction(
+            action, self.tr("&Table"), self.runRefreshMaterializedViewSlot
+        )
 
     def runVacuumAnalyzeActionSlot(self, item, action, parent):
         QApplication.restoreOverrideCursor()
         try:
             if not isinstance(item, Table) or item.isView:
-                parent.infoBar.pushMessage(self.tr("Select a table for vacuum analyze."), Qgis.MessageLevel.Info,
-                                           parent.iface.messageTimeout())
+                parent.infoBar.pushMessage(
+                    self.tr("Select a table for vacuum analyze."),
+                    Qgis.MessageLevel.Info,
+                    parent.iface.messageTimeout(),
+                )
                 return
         finally:
             QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
@@ -168,9 +201,12 @@ class PGDatabase(Database):
     def runRefreshMaterializedViewSlot(self, item, action, parent):
         QApplication.restoreOverrideCursor()
         try:
-            if not isinstance(item, PGTable) or item._relationType != 'm':
-                parent.infoBar.pushMessage(self.tr("Select a materialized view for refresh."), Qgis.MessageLevel.Info,
-                                           parent.iface.messageTimeout())
+            if not isinstance(item, PGTable) or item._relationType != "m":
+                parent.infoBar.pushMessage(
+                    self.tr("Select a materialized view for refresh."),
+                    Qgis.MessageLevel.Info,
+                    parent.iface.messageTimeout(),
+                )
                 return
         finally:
             QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
@@ -198,8 +234,16 @@ class PGTable(Table):
 
     def __init__(self, row, db, schema=None):
         Table.__init__(self, db, schema)
-        self.name, schema_name, self._relationType, self.owner, self.estimatedRowCount, self.pages, self.comment = row
-        self.isView = self._relationType in {'v', 'm'}
+        (
+            self.name,
+            schema_name,
+            self._relationType,
+            self.owner,
+            self.estimatedRowCount,
+            self.pages,
+            self.comment,
+        ) = row
+        self.isView = self._relationType in {"v", "m"}
         self.estimatedRowCount = int(self.estimatedRowCount)
 
     def runVacuumAnalyze(self):
@@ -210,7 +254,9 @@ class PGTable(Table):
 
     def runRefreshMaterializedView(self):
         self.aboutToChange.emit()
-        self.database().connector.runRefreshMaterializedView((self.schemaName(), self.name))
+        self.database().connector.runRefreshMaterializedView(
+            (self.schemaName(), self.name)
+        )
         # TODO: change only this item, not re-create all the tables in the schema/database
         self.schema().refresh() if self.schema() else self.database().refresh()
 
@@ -223,7 +269,7 @@ class PGTable(Table):
                 return True
 
         elif action.startswith("rule/"):
-            parts = action.split('/')
+            parts = action.split("/")
             rule_name = parts[1]
             rule_action = parts[2]
 
@@ -232,15 +278,24 @@ class PGTable(Table):
             QApplication.restoreOverrideCursor()
 
             try:
-                if QMessageBox.question(None, self.tr("Table rule"), msg,
-                                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No) == QMessageBox.StandardButton.No:
+                if (
+                    QMessageBox.question(
+                        None,
+                        self.tr("Table rule"),
+                        msg,
+                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                    )
+                    == QMessageBox.StandardButton.No
+                ):
                     return False
             finally:
                 QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
 
             if rule_action == "delete":
                 self.aboutToChange.emit()
-                self.database().connector.deleteTableRule(rule_name, (self.schemaName(), self.name))
+                self.database().connector.deleteTableRule(
+                    rule_name, (self.schemaName(), self.name)
+                )
                 self.refreshRules()
                 return True
 
@@ -282,7 +337,9 @@ class PGTable(Table):
     def delete(self):
         self.aboutToChange.emit()
         if self.isView:
-            ret = self.database().connector.deleteView((self.schemaName(), self.name), self._relationType == 'm')
+            ret = self.database().connector.deleteView(
+                (self.schemaName(), self.name), self._relationType == "m"
+            )
         else:
             ret = self.database().connector.deleteTable((self.schemaName(), self.name))
         if not ret:
@@ -308,7 +365,7 @@ class PGVectorTable(PGTable, VectorTable):
         return VectorTable.runAction(self, action)
 
     def geometryType(self):
-        """ Returns the proper WKT type.
+        """Returns the proper WKT type.
         PostGIS records type like this:
         | WKT Type     | geomType    | geomDim |
         |--------------|-------------|---------|
@@ -331,8 +388,15 @@ class PGRasterTable(PGTable, RasterTable):
     def __init__(self, row, db, schema=None):
         PGTable.__init__(self, row[:-6], db, schema)
         RasterTable.__init__(self, db, schema)
-        self.geomColumn, self.pixelType, self.pixelSizeX, self.pixelSizeY, self.isExternal, self.srid = row[-6:]
-        self.geomType = 'RASTER'
+        (
+            self.geomColumn,
+            self.pixelType,
+            self.pixelSizeX,
+            self.pixelSizeY,
+            self.isExternal,
+            self.srid,
+        ) = row[-6:]
+        self.geomType = "RASTER"
 
     def info(self):
         from .info_model import PGRasterTableInfo
@@ -344,41 +408,56 @@ class PGRasterTable(PGTable, RasterTable):
 
         if not uri:
             uri = self.database().uri()
-        service = ('service=\'%s\'' % uri.service()) if uri.service() else ''
-        dbname = ('dbname=\'%s\'' % uri.database()) if uri.database() else ''
-        host = ('host=%s' % uri.host()) if uri.host() else ''
-        user = ('user=%s' % uri.username()) if uri.username() else ''
-        passw = ('password=%s' % uri.password()) if uri.password() else ''
-        port = ('port=%s' % uri.port()) if uri.port() else ''
+        service = ("service='%s'" % uri.service()) if uri.service() else ""
+        dbname = ("dbname='%s'" % uri.database()) if uri.database() else ""
+        host = ("host=%s" % uri.host()) if uri.host() else ""
+        user = ("user=%s" % uri.username()) if uri.username() else ""
+        passw = ("password=%s" % uri.password()) if uri.password() else ""
+        port = ("port=%s" % uri.port()) if uri.port() else ""
 
-        schema = self.schemaName() if self.schemaName() else 'public'
-        table = '"%s"."%s"' % (schema, self.name)
+        schema = self.schemaName() if self.schemaName() else "public"
+        table = f'"{schema}"."{self.name}"'
 
         if not dbname:
             # postgresraster provider *requires* a dbname
             connector = self.database().connector
             r = connector._execute(None, "SELECT current_database()")
-            dbname = ('dbname=\'%s\'' % connector._fetchone(r)[0])
+            dbname = "dbname='%s'" % connector._fetchone(r)[0]
             connector._close_cursor(r)
 
         # Find first raster field
-        col = ''
+        col = ""
         for fld in self.fields():
             if fld.dataType == "raster":
-                col = 'column=\'%s\'' % fld.name
+                col = "column='%s'" % fld.name
                 break
 
-        uri = '%s %s %s %s %s %s %s table=%s' % \
-            (service, dbname, host, user, passw, port, col, table)
+        uri = "{} {} {} {} {} {} {} table={}".format(
+            service,
+            dbname,
+            host,
+            user,
+            passw,
+            port,
+            col,
+            table,
+        )
 
         return uri
 
     def mimeUri(self):
-        uri = "raster:postgresraster:{}:{}".format(self.name, re.sub(":", r"\:", self.uri()))
+        uri = "raster:postgresraster:{}:{}".format(
+            self.name, re.sub(":", r"\:", self.uri())
+        )
         return uri
 
     def toMapLayer(self, geometryType=None, crs=None):
-        from qgis.core import QgsRasterLayer, QgsContrastEnhancement, QgsDataSourceUri, QgsCredentials
+        from qgis.core import (
+            QgsRasterLayer,
+            QgsContrastEnhancement,
+            QgsDataSourceUri,
+            QgsCredentials,
+        )
 
         rl = QgsRasterLayer(self.uri(), self.name, "postgresraster")
         if not rl.isValid():
@@ -389,7 +468,9 @@ class PGRasterTable(PGTable, RasterTable):
             password = uri.password()
 
             for i in range(3):
-                (ok, username, password) = QgsCredentials.instance().get(conninfo, username, password, err)
+                (ok, username, password) = QgsCredentials.instance().get(
+                    conninfo, username, password, err
+                )
                 if ok:
                     uri.setUsername(username)
                     uri.setPassword(password)
@@ -398,7 +479,9 @@ class PGRasterTable(PGTable, RasterTable):
                         break
 
         if rl.isValid():
-            rl.setContrastEnhancement(QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum)
+            rl.setContrastEnhancement(
+                QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum
+            )
         return rl
 
 
@@ -406,7 +489,17 @@ class PGTableField(TableField):
 
     def __init__(self, row, table):
         TableField.__init__(self, table)
-        self.num, self.name, self.dataType, self.charMaxLen, self.modifier, self.notNull, self.hasDefault, self.default, typeStr = row
+        (
+            self.num,
+            self.name,
+            self.dataType,
+            self.charMaxLen,
+            self.modifier,
+            self.notNull,
+            self.hasDefault,
+            self.default,
+            typeStr,
+        ) = row
         self.primaryKey = False
 
         # get modifier (e.g. "precision,scale") from formatted type string
@@ -428,9 +521,13 @@ class PGTableField(TableField):
         """Returns the comment for a field"""
         tab = self.table()
         # SQL Query checking if a comment exists for the field
-        sql_cpt = "Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tab.name, self.name)
+        sql_cpt = "Select count(*) from pg_description pd, pg_class pc, pg_attribute pa where relname = '{}' and attname = '{}' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum".format(
+            tab.name, self.name
+        )
         # SQL Query that return the comment of the field
-        sql = "Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '%s' and attname = '%s' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum" % (tab.name, self.name)
+        sql = "Select pd.description from pg_description pd, pg_class pc, pg_attribute pa where relname = '{}' and attname = '{}' and pa.attrelid = pc.oid and pd.objoid = pc.oid and pd.objsubid = pa.attnum".format(
+            tab.name, self.name
+        )
         c = tab.database().connector._execute(None, sql_cpt)  # Execute Check query
         res = tab.database().connector._fetchone(c)[0]  # Store result
         if res == 1:
@@ -440,15 +537,17 @@ class PGTableField(TableField):
             tab.database().connector._close_cursor(c)  # Close cursor
             return res  # Return comment
         else:
-            return ''
+            return ""
 
 
 class PGTableConstraint(TableConstraint):
 
     def __init__(self, row, table):
         TableConstraint.__init__(self, table)
-        self.name, constr_type_str, self.isDefferable, self.isDeffered, columns = row[:5]
-        self.columns = list(map(int, columns.split(' ')))
+        self.name, constr_type_str, self.isDefferable, self.isDeffered, columns = row[
+            :5
+        ]
+        self.columns = list(map(int, columns.split(" ")))
 
         if constr_type_str in TableConstraint.types:
             self.type = TableConstraint.types[constr_type_str]
@@ -470,7 +569,7 @@ class PGTableIndex(TableIndex):
     def __init__(self, row, table):
         TableIndex.__init__(self, table)
         self.name, columns, self.isUnique = row
-        self.columns = list(map(int, columns.split(' ')))
+        self.columns = list(map(int, columns.split(" ")))
 
 
 class PGTableTrigger(TableTrigger):

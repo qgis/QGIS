@@ -23,7 +23,7 @@
  * This is a unit test for the WMS-C capabilities parser
  * implemented as QgsWmsCapabilities::parseTileSetProfile
  */
-class TestQgsWmscCapabilities: public QObject
+class TestQgsWmscCapabilities : public QObject
 {
     Q_OBJECT
   private slots:

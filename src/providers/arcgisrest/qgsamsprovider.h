@@ -60,7 +60,6 @@ class QgsAmsLegendFetcher : public QgsImageFetcher
     QImage mLegendImage;
     QString mErrorTitle;
     QString mError;
-
 };
 
 class QgsAmsProvider : public QgsRasterDataProvider
@@ -68,7 +67,6 @@ class QgsAmsProvider : public QgsRasterDataProvider
     Q_OBJECT
 
   public:
-
     static const QString AMS_PROVIDER_KEY;
     static const QString AMS_PROVIDER_DESCRIPTION;
 
@@ -108,32 +106,33 @@ class QgsAmsProvider : public QgsRasterDataProvider
     QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle *visibleExtent = nullptr ) override;
     QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings ) override;
     QgsRasterIdentifyResult identify( const QgsPointXY &point, Qgis::RasterIdentifyFormat format, const QgsRectangle &extent = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
-    QList< double > nativeResolutions() const override;
+    QList<double> nativeResolutions() const override;
     bool ignoreExtents() const override { return true; }
 
     //! Helper struct for tile requests
     struct TileRequest
     {
-      TileRequest( const QUrl &u, const QRectF &r, int i, const QRectF &mapExtent )
-        : url( u )
-        , rect( r )
-        , mapExtent( mapExtent )
-        , index( i )
-      {}
-      QUrl url;
-      QRectF rect;
-      QRectF mapExtent;
-      int index;
+        TileRequest( const QUrl &u, const QRectF &r, int i, const QRectF &mapExtent )
+          : url( u )
+          , rect( r )
+          , mapExtent( mapExtent )
+          , index( i )
+        {}
+        QUrl url;
+        QRectF rect;
+        QRectF mapExtent;
+        int index;
     };
     typedef QList<TileRequest> TileRequests;
 
     //! Helper structure to store a cached tile image with its rectangle
     typedef struct TileImage
     {
-      TileImage( const QRectF &r, const QImage &i, bool smooth ): rect( r ), img( i ), smooth( smooth ) {}
-      QRectF rect; //!< Destination rectangle for a tile (in screen coordinates)
-      QImage img;  //!< Cached tile to be drawn
-      bool smooth;
+        TileImage( const QRectF &r, const QImage &i, bool smooth )
+          : rect( r ), img( i ), smooth( smooth ) {}
+        QRectF rect; //!< Destination rectangle for a tile (in screen coordinates)
+        QImage img;  //!< Cached tile to be drawn
+        bool smooth;
     } TileImage;
 
   protected:
@@ -161,7 +160,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     int mMaxImageWidth = 4096;
     int mMaxImageHeight = 4096;
     QgsLayerMetadata mLayerMetadata;
-    QList< double > mResolutions;
+    QList<double> mResolutions;
     QString mUrlPrefix;
 
     /**
@@ -175,8 +174,7 @@ class QgsAmsTiledImageDownloadHandler : public QObject
 {
     Q_OBJECT
   public:
-
-    QgsAmsTiledImageDownloadHandler( const QString &auth,  const QgsHttpHeaders &requestHeaders, int reqNo, const QgsAmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, QgsRasterBlockFeedback *feedback, const QString &urlPrefix );
+    QgsAmsTiledImageDownloadHandler( const QString &auth, const QgsHttpHeaders &requestHeaders, int reqNo, const QgsAmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, QgsRasterBlockFeedback *feedback, const QString &urlPrefix );
     ~QgsAmsTiledImageDownloadHandler() override;
 
     void downloadBlocking();
@@ -186,12 +184,11 @@ class QgsAmsTiledImageDownloadHandler : public QObject
     void canceled();
 
   private:
-
     enum TileAttribute
     {
       TileReqNo = QNetworkRequest::User + 0,
       TileIndex = QNetworkRequest::User + 1,
-      TileRect  = QNetworkRequest::User + 2,
+      TileRect = QNetworkRequest::User + 2,
       TileRetry = QNetworkRequest::User + 3,
     };
 
@@ -223,7 +220,7 @@ class QgsAmsTiledImageDownloadHandler : public QObject
     QString mUrlPrefix;
 };
 
-class QgsAmsProviderMetadata: public QgsProviderMetadata
+class QgsAmsProviderMetadata : public QgsProviderMetadata
 {
     Q_OBJECT
   public:
@@ -232,7 +229,7 @@ class QgsAmsProviderMetadata: public QgsProviderMetadata
     QgsAmsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 #endif // QGSMAPSERVERPROVIDER_H

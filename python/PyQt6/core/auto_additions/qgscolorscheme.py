@@ -16,5 +16,5 @@ QgsColorScheme.SchemeFlag.__or__ = lambda flag1, flag2: QgsColorScheme.SchemeFla
 try:
     QgsRecentColorScheme.addRecentColor = staticmethod(QgsRecentColorScheme.addRecentColor)
     QgsRecentColorScheme.lastUsedColor = staticmethod(QgsRecentColorScheme.lastUsedColor)
-except NameError:
+except (NameError, AttributeError):
     pass

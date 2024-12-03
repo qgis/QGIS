@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssensorthingsprovider.h"
+#include "moc_qgssensorthingsprovider.cpp"
 #include "qgssensorthingsutils.h"
 #include "qgsapplication.h"
 #include "qgssetrequestinitiator_p.h"

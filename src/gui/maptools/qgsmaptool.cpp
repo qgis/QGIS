@@ -15,6 +15,7 @@
 
 #include "qgslogger.h"
 #include "qgsmaptool.h"
+#include "moc_qgsmaptool.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
 #include "qgsrendercontext.h"

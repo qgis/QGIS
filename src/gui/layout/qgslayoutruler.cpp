@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayoutruler.h"
+#include "moc_qgslayoutruler.cpp"
 #include "qgslayout.h"
 #include "qgis.h"
 #include "qgslayoutview.h"

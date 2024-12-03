@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgselevationprofilepdfexportdialog.h"
+#include "moc_qgselevationprofilepdfexportdialog.cpp"
 #include "qgsplot.h"
 #include "qgselevationprofileexportsettingswidget.h"
 #include "qgsgui.h"
@@ -36,7 +37,7 @@ QgsElevationProfilePdfExportDialog::QgsElevationProfilePdfExportDialog( QWidget 
   mPageOrientationComboBox->addItem( tr( "Portrait" ), QgsLayoutItemPage::Portrait );
   mPageOrientationComboBox->addItem( tr( "Landscape" ), QgsLayoutItemPage::Landscape );
 
-  const QList< QgsPageSize> sizes = QgsApplication::pageSizeRegistry()->entries();
+  const QList<QgsPageSize> sizes = QgsApplication::pageSizeRegistry()->entries();
   for ( const QgsPageSize &size : sizes )
   {
     mPageSizeComboBox->addItem( size.displayName, size.name );
@@ -58,8 +59,8 @@ QgsElevationProfilePdfExportDialog::QgsElevationProfilePdfExportDialog( QWidget 
   connect( mPageSizeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsElevationProfilePdfExportDialog::pageSizeChanged );
   connect( mPageOrientationComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsElevationProfilePdfExportDialog::orientationChanged );
 
-  connect( mWidthSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsElevationProfilePdfExportDialog::setToCustomSize );
-  connect( mHeightSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsElevationProfilePdfExportDialog::setToCustomSize );
+  connect( mWidthSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsElevationProfilePdfExportDialog::setToCustomSize );
+  connect( mHeightSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsElevationProfilePdfExportDialog::setToCustomSize );
 
   whileBlocking( mPageSizeComboBox )->setCurrentIndex( mPageSizeComboBox->findData( QStringLiteral( "A4" ) ) );
   mLockAspectRatio->setEnabled( false );
