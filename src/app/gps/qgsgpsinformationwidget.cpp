@@ -585,7 +585,8 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
                                                                              : QString::number( info.fixType ) ); // 1=no fix, 2=2D, 3=3D; allowing for anything else
     mTxtQuality->setText( info.qualityDescription() );
     mTxtSatellitesUsed->setText( tr( "%1 used (%2 in view)" ).arg( info.satellitesUsed ).arg( info.satellitesInView.size() ) );
-    mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" ) : tr( "Other (%1)" ).arg( info.status ) );
+    mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" )
+                                                                                 : tr( "Other (%1)" ).arg( info.status ) ); 
   }
 
   if ( mLastGpsPosition != myNewCenter )
