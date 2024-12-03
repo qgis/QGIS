@@ -427,9 +427,9 @@ void TestQgsAuthOAuth2Method::testDynamicRegistrationNoEndpoint()
   QCOMPARE( configMap["clientSecret"].toString(), QString() );
   QgsAuthOAuth2Edit dlg;
   QgsStringMap stringMap;
-  for ( const auto &k : configMap.keys() )
+  for ( auto it = configMap.constBegin(); it != configMap.constEnd(); ++it )
   {
-    stringMap[k] = configMap.value( k ).toString();
+    stringMap[it.key()] = it.value().toString();
   }
   dlg.loadConfig( stringMap );
   QCOMPARE( dlg.leClientId->text(), QString() );
@@ -453,9 +453,9 @@ void TestQgsAuthOAuth2Method::testDynamicRegistration()
   QCOMPARE( configMap["clientSecret"].toString(), QString() );
   QgsAuthOAuth2Edit dlg;
   QgsStringMap stringMap;
-  for ( const auto &k : configMap.keys() )
+  for ( auto it = configMap.constBegin(); it != configMap.constEnd(); ++it )
   {
-    stringMap[k] = configMap.value( k ).toString();
+    stringMap[it.key()] = it.value().toString();
   }
   dlg.loadConfig( stringMap );
   QCOMPARE( dlg.leClientId->text(), QString() );
@@ -492,9 +492,9 @@ void TestQgsAuthOAuth2Method::testDynamicRegistrationJwt()
   QCOMPARE( configMap["clientSecret"].toString(), QString() );
   QgsAuthOAuth2Edit dlg;
   QgsStringMap stringMap;
-  for ( const auto &k : configMap.keys() )
+  for ( auto it = configMap.constBegin(); it != configMap.constEnd(); ++it )
   {
-    stringMap[k] = configMap.value( k ).toString();
+    stringMap[it.key()] = it.value().toString();
   }
   dlg.loadConfig( stringMap );
   QCOMPARE( dlg.leClientId->text(), QString() );
