@@ -460,7 +460,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
           penColor = Qt::black; // black border
         }
 
-#if (QWT_POLAR_VERSION<0x010000)
+#if ( QWT_POLAR_VERSION < 0x010000 )
         mypMarker->setSymbol( QwtSymbol( symbolStyle, symbolBrush, QPen( penColor ), markerSize ) );
 #else
         mypMarker->setSymbol( new QwtSymbol( symbolStyle, symbolBrush, QPen( penColor ), markerSize ) );
