@@ -165,6 +165,13 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
      */
     Qgis::GeometryType labelGeometryType() const;
 
+    /**
+     * Toggles whether data defined buttons should be shown in the widget.
+     *
+     * \since QGIS 3.42
+     */
+    void setPropertyOverrideButtonsVisible( bool visible );
+
     //! Text substitution list
     QgsStringReplacementCollection mSubstitutions;
     //! Tab positions
@@ -254,7 +261,6 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
 
     void initWidget();
     void setWidgetMode( Mode mode );
-    void toggleDDButtons( bool visible );
     void blockFontChangeSignals( bool blk );
     void populateFontCapitalsComboBox();
     void populateFontStyleComboBox();

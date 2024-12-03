@@ -156,6 +156,13 @@ when registering labels for the labeling settings currently defined by the widge
 .. versionadded:: 3.16
 %End
 
+    void setPropertyOverrideButtonsVisible( bool visible );
+%Docstring
+Toggles whether data defined buttons should be shown in the widget.
+
+.. versionadded:: 3.42
+%End
+
 
 
 
