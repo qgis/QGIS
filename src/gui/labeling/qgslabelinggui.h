@@ -87,7 +87,6 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     QgsPalLayerSettings mSettings;
     LabelMode mMode;
     QgsFeature mPreviewFeature;
-    QgsMapCanvas *mCanvas = nullptr;
 
     QgsLabelObstacleSettings mObstacleSettings;
     QgsLabelLineSettings mLineSettings;
