@@ -1475,6 +1475,11 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         dbg_info("found SIP_WHEN_FEATURE")
         CONTEXT.if_feature_condition = match.group(1)
 
+    match = re.search(r"SIP_TYPEHEADER_INCLUDE\(\s*(.*?)\s*\)", CONTEXT.current_line)
+    if match:
+        dbg_info("found SIP_TYPEHEADER_INCLUDE")
+        write_output("STI", f'#include "{match.group(1)}"\n')
+
     if CONTEXT.is_qt6:
         CONTEXT.current_line = re.sub(
             r"int\s*__len__\s*\(\s*\)", "Py_ssize_t __len__()", CONTEXT.current_line
