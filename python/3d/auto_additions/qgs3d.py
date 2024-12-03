@@ -3,5 +3,5 @@ try:
     Qgs3D.instance = staticmethod(Qgs3D.instance)
     Qgs3D.initialize = staticmethod(Qgs3D.initialize)
     Qgs3D.materialRegistry = staticmethod(Qgs3D.materialRegistry)
-except NameError:
+except (NameError, AttributeError):
     pass

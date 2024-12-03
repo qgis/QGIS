@@ -2,5 +2,5 @@
 try:
     QgsQueryBuilder.saveQueryToFile = staticmethod(QgsQueryBuilder.saveQueryToFile)
     QgsQueryBuilder.loadQueryFromFile = staticmethod(QgsQueryBuilder.loadQueryFromFile)
-except NameError:
+except (NameError, AttributeError):
     pass

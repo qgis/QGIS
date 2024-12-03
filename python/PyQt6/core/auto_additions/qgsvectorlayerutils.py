@@ -23,13 +23,13 @@ try:
     QgsVectorLayerUtils.impactsCascadeFeatures = staticmethod(QgsVectorLayerUtils.impactsCascadeFeatures)
     QgsVectorLayerUtils.guessFriendlyIdentifierField = staticmethod(QgsVectorLayerUtils.guessFriendlyIdentifierField)
     QgsVectorLayerUtils.__group__ = ['vector']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsVectorLayerUtils.QgsDuplicateFeatureContext.__group__ = ['vector']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsVectorLayerUtils.QgsFeatureData.__group__ = ['vector']
-except NameError:
+except (NameError, AttributeError):
     pass

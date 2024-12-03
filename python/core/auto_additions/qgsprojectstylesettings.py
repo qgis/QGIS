@@ -43,13 +43,13 @@ Filters = QgsProjectStyleDatabaseProxyModel  # dirty hack since SIP seems to int
 try:
     QgsProjectStyleSettings.__attribute_docs__ = {'styleDatabasesChanged': 'Emitted whenever the set of style databases associated with the project is changed.\n'}
     QgsProjectStyleSettings.__group__ = ['project']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsProjectStyleDatabaseModel.__group__ = ['project']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsProjectStyleDatabaseProxyModel.__group__ = ['project']
-except NameError:
+except (NameError, AttributeError):
     pass

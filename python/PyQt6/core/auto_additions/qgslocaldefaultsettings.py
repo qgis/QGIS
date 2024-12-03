@@ -4,5 +4,5 @@ try:
     QgsLocalDefaultSettings.bearingFormat = staticmethod(QgsLocalDefaultSettings.bearingFormat)
     QgsLocalDefaultSettings.setGeographicCoordinateFormat = staticmethod(QgsLocalDefaultSettings.setGeographicCoordinateFormat)
     QgsLocalDefaultSettings.geographicCoordinateFormat = staticmethod(QgsLocalDefaultSettings.geographicCoordinateFormat)
-except NameError:
+except (NameError, AttributeError):
     pass

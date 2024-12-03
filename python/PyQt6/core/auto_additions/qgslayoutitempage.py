@@ -6,5 +6,5 @@ try:
     QgsLayoutItemPage.create = staticmethod(QgsLayoutItemPage.create)
     QgsLayoutItemPage.decodePageOrientation = staticmethod(QgsLayoutItemPage.decodePageOrientation)
     QgsLayoutItemPage.__group__ = ['layout']
-except NameError:
+except (NameError, AttributeError):
     pass

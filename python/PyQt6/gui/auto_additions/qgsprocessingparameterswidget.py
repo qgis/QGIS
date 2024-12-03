@@ -1,5 +1,5 @@
 # The following has been generated automatically from src/gui/processing/qgsprocessingparameterswidget.h
 try:
     QgsProcessingParametersWidget.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass

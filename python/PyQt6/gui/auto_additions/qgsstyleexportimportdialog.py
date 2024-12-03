@@ -3,5 +3,5 @@ QgsStyleExportImportDialog.Export = QgsStyleExportImportDialog.Mode.Export
 QgsStyleExportImportDialog.Import = QgsStyleExportImportDialog.Mode.Import
 try:
     QgsStyleExportImportDialog.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

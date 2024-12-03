@@ -6,5 +6,5 @@ QgsLabelingEngineSettings.Popmusic_Tabu_Chain = QgsLabelingEngineSettings.Search
 QgsLabelingEngineSettings.Falp = QgsLabelingEngineSettings.Search.Falp
 try:
     QgsLabelingEngineSettings.__group__ = ['labeling']
-except NameError:
+except (NameError, AttributeError):
     pass

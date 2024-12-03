@@ -16,9 +16,9 @@ QgsNumericFormatContext.Interpretation.__doc__ = """Interpretation of numeric va
 QgsNumericFormatContext.Interpretation.baseClass = QgsNumericFormatContext
 try:
     QgsNumericFormatContext.__group__ = ['numericformats']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsNumericFormat.__group__ = ['numericformats']
-except NameError:
+except (NameError, AttributeError):
     pass

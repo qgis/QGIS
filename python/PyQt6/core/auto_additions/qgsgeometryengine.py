@@ -9,5 +9,5 @@ QgsGeometryEngine.InvalidInput = QgsGeometryEngine.EngineOperationResult.Invalid
 QgsGeometryEngine.SplitCannotSplitPoint = QgsGeometryEngine.EngineOperationResult.SplitCannotSplitPoint
 try:
     QgsGeometryEngine.__group__ = ['geometry']
-except NameError:
+except (NameError, AttributeError):
     pass

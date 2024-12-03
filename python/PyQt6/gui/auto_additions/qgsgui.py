@@ -49,5 +49,5 @@ try:
     QgsGui.sampleColor = staticmethod(QgsGui.sampleColor)
     QgsGui.findScreenAt = staticmethod(QgsGui.findScreenAt)
     QgsGui.hasWebEngine = staticmethod(QgsGui.hasWebEngine)
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -65,9 +65,9 @@ try:
     QgsCodeEditor.isFixedPitch = staticmethod(QgsCodeEditor.isFixedPitch)
     QgsCodeEditor.__signal_arguments__ = {'helpRequested': ['word: str']}
     QgsCodeEditor.__group__ = ['codeeditors']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsCodeInterpreter.__group__ = ['codeeditors']
-except NameError:
+except (NameError, AttributeError):
     pass

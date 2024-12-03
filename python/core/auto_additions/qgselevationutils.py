@@ -5,5 +5,5 @@ try:
     QgsElevationUtils.significantZValuesForLayers = staticmethod(QgsElevationUtils.significantZValuesForLayers)
     QgsElevationUtils.canEnableElevationForLayer = staticmethod(QgsElevationUtils.canEnableElevationForLayer)
     QgsElevationUtils.enableElevationForLayer = staticmethod(QgsElevationUtils.enableElevationForLayer)
-except NameError:
+except (NameError, AttributeError):
     pass

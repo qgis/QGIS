@@ -3,5 +3,5 @@ try:
     QgsTiledSceneTextureRenderer.create = staticmethod(QgsTiledSceneTextureRenderer.create)
     QgsTiledSceneTextureRenderer.createDefaultFillSymbol = staticmethod(QgsTiledSceneTextureRenderer.createDefaultFillSymbol)
     QgsTiledSceneTextureRenderer.__group__ = ['tiledscene']
-except NameError:
+except (NameError, AttributeError):
     pass

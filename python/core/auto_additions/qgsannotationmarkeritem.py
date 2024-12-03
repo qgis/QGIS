@@ -2,5 +2,5 @@
 try:
     QgsAnnotationMarkerItem.create = staticmethod(QgsAnnotationMarkerItem.create)
     QgsAnnotationMarkerItem.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass
