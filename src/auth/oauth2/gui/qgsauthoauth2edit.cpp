@@ -21,8 +21,6 @@
 #include <QDesktopServices>
 #include <QUrl>
 
-#include "Json.h"
-
 #include "qgsapplication.h"
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
@@ -30,6 +28,9 @@
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
+#include "qgsjsonutils.h"
+
+#include <nlohmann/json.hpp>
 
 QgsAuthOAuth2Edit::QgsAuthOAuth2Edit( QWidget *parent )
   : QgsAuthMethodEdit( parent )
@@ -989,10 +990,9 @@ void QgsAuthOAuth2Edit::parseSoftwareStatement( const QString &path )
   }
   const QByteArray payload = payloadParts[1];
   QByteArray decoded = QByteArray::fromBase64( payload /*, QByteArray::Base64UrlEncoding*/ );
-  QByteArray errStr;
-  bool res = false;
-  const QMap<QString, QVariant> jsonData = QJsonWrapper::parseJson( decoded, &res, &errStr ).toMap();
-  if ( !res )
+  QString errStr;
+  const QVariantMap jsonData = QgsJsonUtils::parseJson( decoded.toStdString(), errStr ).toMap();
+  if ( !errStr.isEmpty() )
   {
     QgsDebugError( QStringLiteral( "Error parsing JSON: %1" ).arg( QString( errStr ) ) );
     return;
@@ -1040,11 +1040,10 @@ void QgsAuthOAuth2Edit::configReplyFinished()
   if ( configReply->error() == QNetworkReply::NoError )
   {
     const QByteArray replyData = configReply->readAll();
-    QByteArray errStr;
-    bool res = false;
-    const QVariantMap config = QJsonWrapper::parseJson( replyData, &res, &errStr ).toMap();
+    QString errStr;
+    const QVariantMap config = QgsJsonUtils::parseJson( replyData.toStdString(), errStr ).toMap();
 
-    if ( !res )
+    if ( !errStr.isEmpty() )
     {
       QgsDebugError( QStringLiteral( "Error parsing JSON: %1" ).arg( QString( errStr ) ) );
       return;
@@ -1080,9 +1079,8 @@ void QgsAuthOAuth2Edit::registerReplyFinished()
   if ( registerReply->error() == QNetworkReply::NoError )
   {
     const QByteArray replyData = registerReply->readAll();
-    QByteArray errStr;
-    bool res = false;
-    const QVariantMap clientInfo = QJsonWrapper::parseJson( replyData, &res, &errStr ).toMap();
+    QString errStr;
+    const QVariantMap clientInfo = QgsJsonUtils::parseJson( replyData.toStdString(), errStr ).toMap();
 
     // According to RFC 7591 sec. 3.2.1.  Client Information Response the only
     // required field is client_id
@@ -1125,9 +1123,8 @@ void QgsAuthOAuth2Edit::registerSoftStatement( const QString &registrationUrl )
     qWarning() << "Registration url is not valid";
     return;
   }
-  QByteArray errStr;
-  bool res = false;
-  const QByteArray json = QJsonWrapper::toJson( QVariant( mSoftwareStatement ), &res, &errStr );
+
+  const QByteArray json = QByteArray::fromStdString( QgsJsonUtils::jsonFromVariant( QVariant( mSoftwareStatement ) ).dump() );
   QNetworkRequest registerRequest( regUrl );
   QgsSetRequestInitiatorClass( registerRequest, QStringLiteral( "QgsAuthOAuth2Edit" ) );
   registerRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/json" ) );

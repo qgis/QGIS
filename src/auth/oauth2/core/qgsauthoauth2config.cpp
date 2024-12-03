@@ -23,6 +23,9 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsvariantutils.h"
+#include "qgsjsonutils.h"
+
+#include <nlohmann/json.hpp>
 
 QgsAuthOAuth2Config::QgsAuthOAuth2Config( QObject *parent )
   : QObject( parent )
@@ -319,18 +322,17 @@ bool QgsAuthOAuth2Config::loadConfigTxt(
   const QByteArray &configtxt, QgsAuthOAuth2Config::ConfigFormat format
 )
 {
-  QByteArray errStr;
-  bool res = false;
+  QString errStr;
 
   switch ( format )
   {
     case JSON:
     {
-      const QVariant variant = QJsonWrapper::parseJson( configtxt, &res, &errStr );
-      if ( !res )
+      const QVariant variant = QgsJsonUtils::parseJson( configtxt.toStdString(), errStr );
+      if ( !errStr.isEmpty() )
       {
         QgsDebugError( QStringLiteral( "Error parsing JSON: %1" ).arg( QString( errStr ) ) );
-        return res;
+        return false;
       }
       const QVariantMap variantMap = variant.toMap();
       // safety check -- qvariant2qobject asserts if an non-matching property is found in the json
@@ -355,7 +357,6 @@ QByteArray QgsAuthOAuth2Config::saveConfigTxt(
 ) const
 {
   QByteArray out;
-  QByteArray errStr;
   bool res = false;
 
   if ( !isValid() )
@@ -370,12 +371,16 @@ QByteArray QgsAuthOAuth2Config::saveConfigTxt(
   {
     case JSON:
     {
-      const QVariantMap variant = QJsonWrapper::qobject2qvariant( this );
-      out = QJsonWrapper::toJson( variant, &res, &errStr, pretty );
-      if ( !res )
+      QVariantMap variant = QJsonWrapper::qobject2qvariant( this );
+
+      // temporary workaround for tests
+      if ( variant.contains( QLatin1String( "objectName" ) ) && variant.value( QStringLiteral( "objectName" ) ).toString().isEmpty() )
       {
-        QgsDebugError( QStringLiteral( "Error serializing JSON: %1" ).arg( QString( errStr ) ) );
+        variant[QStringLiteral( "objectName" )] = "";
       }
+
+      out = QByteArray::fromStdString( QgsJsonUtils::jsonFromVariant( variant ).dump( pretty ? 4 : -1 ) );
+      res = true;
       break;
     }
     default:
@@ -426,17 +431,12 @@ QByteArray QgsAuthOAuth2Config::serializeFromVariant(
 )
 {
   QByteArray out;
-  QByteArray errStr;
   bool res = false;
-
   switch ( format )
   {
     case JSON:
-      out = QJsonWrapper::toJson( variant, &res, &errStr, pretty );
-      if ( !res )
-      {
-        QgsDebugError( QStringLiteral( "Error serializing JSON: %1" ).arg( QString( errStr ) ) );
-      }
+      out = QByteArray::fromStdString( QgsJsonUtils::jsonFromVariant( variant ).dump( pretty ? 4 : -1 ) );
+      res = true;
       break;
     default:
       QgsDebugError( QStringLiteral( "Unsupported output format" ) );
@@ -455,19 +455,18 @@ QVariantMap QgsAuthOAuth2Config::variantFromSerialized(
 )
 {
   QVariantMap vmap;
-  QByteArray errStr;
-  bool res = false;
+  QString errStr;
 
   switch ( format )
   {
     case JSON:
     {
-      const QVariant var = QJsonWrapper::parseJson( serial, &res, &errStr );
-      if ( !res )
+      const QVariant var = QgsJsonUtils::parseJson( serial.toStdString(), errStr );
+      if ( !errStr.isEmpty() )
       {
         QgsDebugError( QStringLiteral( "Error parsing JSON to variant: %1" ).arg( QString( errStr ) ) );
         if ( ok )
-          *ok = res;
+          *ok = false;
         return vmap;
       }
 
@@ -475,7 +474,7 @@ QVariantMap QgsAuthOAuth2Config::variantFromSerialized(
       {
         QgsDebugError( QStringLiteral( "Error parsing JSON to variant: %1" ).arg( "invalid or null" ) );
         if ( ok )
-          *ok = res;
+          *ok = false;
         return vmap;
       }
       vmap = var.toMap();
@@ -483,7 +482,7 @@ QVariantMap QgsAuthOAuth2Config::variantFromSerialized(
       {
         QgsDebugError( QStringLiteral( "Error parsing JSON to variantmap: %1" ).arg( "map empty" ) );
         if ( ok )
-          *ok = res;
+          *ok = false;
         return vmap;
       }
       break;
@@ -493,7 +492,7 @@ QVariantMap QgsAuthOAuth2Config::variantFromSerialized(
   }
 
   if ( ok )
-    *ok = res;
+    *ok = true;
   return vmap;
 }
 
