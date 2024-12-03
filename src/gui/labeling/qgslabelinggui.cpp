@@ -32,6 +32,8 @@
 #include "qgslabellineanchorwidget.h"
 #include "qgsprojectstylesettings.h"
 #include "qgsgui.h"
+#include "qgsmeshlayer.h"
+#include "qgsvectortilelayer.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
@@ -229,15 +231,63 @@ void QgsLabelingGui::showLineAnchorSettings()
   }
 }
 
-QgsLabelingGui::QgsLabelingGui( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &layerSettings, QWidget *parent, Qgis::GeometryType geomType )
+QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &layerSettings, QWidget *parent, Qgis::GeometryType geomType )
   : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling, layer )
-  , mSettings( layerSettings )
   , mMode( NoLabels )
-  , mCanvas( mapCanvas )
+  , mSettings( layerSettings )
+{
+  mGeomType = geomType;
+
+  init();
+
+  setLayer( layer );
+}
+
+QgsLabelingGui::QgsLabelingGui( QgsMeshLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &settings, QWidget *parent, Qgis::GeometryType geomType )
+  : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling, layer )
+  , mMode( NoLabels )
+  , mSettings( settings )
+{
+  mGeomType = geomType;
+
+  init();
+
+  setLayer( layer );
+}
+
+QgsLabelingGui::QgsLabelingGui( QgsVectorTileLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &settings, QWidget *parent, Qgis::GeometryType geomType )
+  : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling, layer )
+  , mMode( NoLabels )
+  , mSettings( settings )
+{
+  mGeomType = geomType;
+
+  init();
+
+  setLayer( layer );
+}
+
+
+QgsLabelingGui::QgsLabelingGui( QgsMapCanvas *mapCanvas, QWidget *parent, QgsMapLayer *layer )
+  : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling, layer )
+  , mMode( NoLabels )
+{
+}
+
+
+QgsLabelingGui::QgsLabelingGui( QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &settings, QWidget *parent )
+  : QgsTextFormatWidget( mapCanvas, parent, QgsTextFormatWidget::Labeling, nullptr )
+  , mMode( NoLabels )
+  , mSettings( settings )
+{
+  init();
+
+  setLayer( nullptr );
+}
+
+void QgsLabelingGui::init()
 {
   QgsGui::initCalloutWidgets();
-
-  mGeomType = geomType;
 
   mFontMultiLineAlignComboBox->addItem( tr( "Left" ), static_cast<int>( Qgis::LabelMultiLineAlignment::Left ) );
   mFontMultiLineAlignComboBox->addItem( tr( "Center" ), static_cast<int>( Qgis::LabelMultiLineAlignment::Center ) );
@@ -299,8 +349,6 @@ QgsLabelingGui::QgsLabelingGui( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, con
   connect( mCalloutStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelingGui::calloutTypeChanged );
 
   mLblNoObstacle1->installEventFilter( this );
-
-  setLayer( layer );
 }
 
 void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )

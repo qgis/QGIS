@@ -690,7 +690,7 @@ QgsLabelingRulePropsWidget::QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Ru
     mSettings = new QgsPalLayerSettings;
   }
 
-  mLabelingGui = new QgsLabelingGui( nullptr, mMapCanvas, *mSettings, this );
+  mLabelingGui = new QgsLabelingGui( mMapCanvas, *mSettings, this );
   mLabelingGui->layout()->setContentsMargins( 0, 0, 0, 0 );
   QVBoxLayout *l = new QVBoxLayout;
   l->addWidget( mLabelingGui );
