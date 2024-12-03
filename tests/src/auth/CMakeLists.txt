@@ -13,6 +13,12 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src/auth/oauth2
 )
 
+if(WITH_GUI)
+    include_directories(
+      ${CMAKE_SOURCE_DIR}/src/auth/oauth2/gui
+    )
+endif()
+
 # libraries
 
 # because of htonl
