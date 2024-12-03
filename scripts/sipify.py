@@ -1474,6 +1474,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     if match:
         dbg_info("found SIP_TYPEHEADER_INCLUDE")
         write_output("STI", f'#include "{match.group(1)}"\n')
+        continue
 
     if CONTEXT.is_qt6:
         CONTEXT.current_line = re.sub(
