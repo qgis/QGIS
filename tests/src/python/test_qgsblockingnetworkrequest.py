@@ -110,9 +110,10 @@ class TestQgsBlockingNetworkRequest(QgisTestCase):
         reply = request.reply()
         self.assertEqual(reply.error(), QNetworkReply.NetworkError.NoError)
         self.assertEqual(reply.content(), "<html></html>\n")
+        # newer qt versions FORCE lowercase header keys, older ones didn't
         self.assertEqual(
-            reply.rawHeaderList(),
-            [b"Server", b"Date", b"Content-type", b"Content-Length"],
+            [h.data().decode().lower() for h in reply.rawHeaderList()],
+            ["server", "date", "content-type", "content-length"],
         )
         self.assertEqual(reply.rawHeader(b"Content-type"), "text/html")
         self.assertEqual(reply.rawHeader(b"xxxxxxxxx"), "")
