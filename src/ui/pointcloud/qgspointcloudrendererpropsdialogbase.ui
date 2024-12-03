@@ -300,7 +300,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="QToolButton" name="mLabelOptions">
+          <widget class="QgsFontButton" name="mLabelOptions">
            <property name="text">
             <string/>
            </property>
@@ -348,6 +348,11 @@
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

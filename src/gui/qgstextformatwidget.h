@@ -46,7 +46,7 @@ class QgsCharacterSelectorDialog;
  *
  */
 
-class GUI_EXPORT QgsTextFormatWidget : public QgsPanelWidget, public QgsExpressionContextGenerator, protected Ui::QgsTextFormatWidgetBase
+class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionContextGenerator, protected Ui::QgsTextFormatWidgetBase
 {
     Q_OBJECT
     Q_PROPERTY( QgsTextFormat format READ format )

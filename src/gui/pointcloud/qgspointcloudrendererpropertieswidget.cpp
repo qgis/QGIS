@@ -17,6 +17,7 @@
 
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgsfontbutton.h"
 #include "qgslogger.h"
 #include "qgspointcloudattributebyramprendererwidget.h"
 #include "qgspointcloudclassifiedrendererwidget.h"
@@ -142,10 +143,9 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   bool showLabelOptions = !mLayer->dataProvider()->subIndexes().isEmpty();
   mLabels->setVisible( showLabelOptions );
   mLabelOptions->setVisible( showLabelOptions );
-  mLabelOptions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/settings.svg" ) ) );
-  mLabelOptions->setToolTip( tr( "Customize label text" ) );
+  mLabelOptions->setDialogTitle( tr( "Customize label text" ) );
   connect( mLabels, &QCheckBox::stateChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
-  connect( mLabelOptions, &QAbstractButton::clicked, this, &QgsPointCloudRendererPropertiesWidget::showLabelTextDialog );
+  connect( mLabelOptions, &QgsFontButton::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
   syncToLayer( layer );
 }
@@ -205,6 +205,7 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     if ( !mLayer->dataProvider()->subIndexes().isEmpty() )
     {
       mLabels->setChecked( mLayer->renderer()->showLabels() );
+      mLabelOptions->setTextFormat( *mLayer->renderer()->labelTextFormat() );
     }
   }
 
@@ -247,6 +248,7 @@ void QgsPointCloudRendererPropertiesWidget::apply()
   mLayer->renderer()->setHorizontalTriangleFilterUnit( mHorizontalTriangleUnitWidget->unit() );
 
   mLayer->renderer()->setShowLabels( mLabels->isChecked() );
+  mLayer->renderer()->setLabelTextFormat( new QgsTextFormat( mLabelOptions->textFormat() ) );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()
@@ -321,32 +323,3 @@ void QgsPointCloudRendererPropertiesWidget::emitWidgetChanged()
   if ( !mBlockChangedSignal )
     emit widgetChanged();
 }
-
-void QgsPointCloudRendererPropertiesWidget::showLabelTextDialog()
-{
-  if ( !mLayer->renderer()->labelTextFormat().isValid() )
-    return;
-  setCursor( QCursor( Qt::WaitCursor ) );
-  QgsPanelWidget *panel = findParentPanel( qobject_cast< QWidget * >( this ) );
-  if ( panel && panel->dockMode() )
-  {
-    QgsTextFormatWidget *textFormatWidget = new QgsTextFormatWidget( mLayer->renderer()->labelTextFormat(), nullptr, panel );
-    textFormatWidget->setPanelTitle( QString( "Text format options" ) );
-
-    connect( textFormatWidget, &QgsTextFormatWidget::widgetChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
-    connect( textFormatWidget, &QgsPanelWidget::panelAccepted, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
-    panel->openPanel( textFormatWidget );
-  }
-  else
-  {
-    QDialog *wrapperDialog = new QDialog( this );
-    new QgsTextFormatWidget( mLayer->renderer()->labelTextFormat(), nullptr, wrapperDialog );
-
-    if ( wrapperDialog->exec() == QDialog::Accepted )
-    {
-      emitWidgetChanged();
-    }
-  }
-  setCursor( QCursor( Qt::ArrowCursor ) );
-}
-

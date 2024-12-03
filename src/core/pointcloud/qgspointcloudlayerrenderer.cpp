@@ -59,7 +59,11 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
 
   mRenderer.reset( mLayer->renderer()->clone() );
   if ( !mSubIndexes.isEmpty() )
+  {
     mSubIndexExtentRenderer.reset( new QgsPointCloudExtentRenderer() );
+    mSubIndexExtentRenderer->setShowLabels( mRenderer->showLabels() );
+    mSubIndexExtentRenderer->setLabelTextFormat( new QgsTextFormat( *mRenderer->labelTextFormat() ) );
+  }
 
   if ( mLayer->dataProvider()->index() )
   {
@@ -212,7 +216,7 @@ bool QgsPointCloudLayerRenderer::render()
         // and only use the selected renderer when zoomed in
         mSubIndexExtentRenderer->renderExtent( si.polygonBounds(), context );
         // render the label of point cloud tile
-        if ( mRenderer->showLabels() )
+        if ( mSubIndexExtentRenderer->showLabels() )
         {
           mSubIndexExtentRenderer->renderLabels(
             context.renderContext().mapToPixel().transformBounds( si.extent().toRectF() ),

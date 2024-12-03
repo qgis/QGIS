@@ -207,7 +207,7 @@ void QgsPointCloudRenderer::copyCommonProperties( QgsPointCloudRenderer *destina
   destination->setHorizontalTriangleFilterUnit( mHorizontalTriangleFilterUnit );
 
   destination->setShowLabels( mShowLabels );
-  destination->setLabelTextFormat( *mLabelTextFormat );
+  destination->setLabelTextFormat( mLabelTextFormat ? new QgsTextFormat( *mLabelTextFormat ) : nullptr );
 }
 
 void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext &context )
@@ -227,8 +227,11 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
   mHorizontalTriangleFilterUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "horizontalTriangleFilterUnit" ), QStringLiteral( "MM" ) ) );
 
   mShowLabels = element.attribute( QStringLiteral( "showLabels" ), QStringLiteral( "0" ) ).toInt();
-  mLabelTextFormat = new QgsTextFormat();
-  mLabelTextFormat->readXml( element.firstChild().toElement(), context );
+  if ( !element.firstChild().isNull() )
+  {
+    mLabelTextFormat = std::make_unique<QgsTextFormat>();
+    mLabelTextFormat->readXml( element.firstChildElement( QStringLiteral( "text-style" ) ), context );
+  }
 }
 
 void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const
@@ -248,8 +251,11 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
   element.setAttribute( QStringLiteral( "horizontalTriangleFilterUnit" ), QgsUnitTypes::encodeUnit( mHorizontalTriangleFilterUnit ) );
 
   element.setAttribute( QStringLiteral( "showLabels" ), QString::number( mShowLabels ) );
-  QDomDocument tempDoc;
-  element.appendChild( mLabelTextFormat->writeXml( tempDoc, context ) );
+  if ( mLabelTextFormat )
+  {
+    QDomDocument doc = element.ownerDocument();
+    element.appendChild( mLabelTextFormat->writeXml( doc, context ) );
+  }
 }
 
 Qgis::PointCloudSymbol QgsPointCloudRenderer::pointSymbol() const

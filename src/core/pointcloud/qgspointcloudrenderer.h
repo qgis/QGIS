@@ -690,15 +690,17 @@ class CORE_EXPORT QgsPointCloudRenderer
 
     /**
        * Sets the text format renderers should use for rendering labels
+       * \note This class takes ownership of textFormat
        * \since QGIS 3.42
        */
-    void setLabelTextFormat( QgsTextFormat &textFormat ) { mLabelTextFormat = &textFormat; }
+    void setLabelTextFormat( QgsTextFormat *textFormat SIP_TRANSFER ) { mLabelTextFormat.reset( textFormat ); }
 
     /**
      * Returns the text format renderer is using for rendering labels
+     * \note This function doesn't release the ownership of QgsTextFormat
      * \since QGIS 3.42
      */
-    QgsTextFormat &labelTextFormat() const { return *mLabelTextFormat; }
+    QgsTextFormat *labelTextFormat() const { return mLabelTextFormat.get(); }
 
   protected:
 
@@ -840,7 +842,7 @@ class CORE_EXPORT QgsPointCloudRenderer
     Qgis::RenderUnit mHorizontalTriangleFilterUnit = Qgis::RenderUnit::Millimeters;
 
     bool mShowLabels = false;
-    QgsTextFormat *mLabelTextFormat = nullptr;
+    std::unique_ptr<QgsTextFormat> mLabelTextFormat = nullptr;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H

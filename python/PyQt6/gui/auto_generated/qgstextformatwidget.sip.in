@@ -12,7 +12,7 @@
 
 
 
-class QgsTextFormatWidget : QgsPanelWidget, QgsExpressionContextGenerator, protected Ui::QgsTextFormatWidgetBase
+class QgsTextFormatWidget : QWidget, QgsExpressionContextGenerator, protected Ui::QgsTextFormatWidgetBase
 {
 %Docstring(signature="appended")
 A widget for customizing text formatting settings.
