@@ -79,7 +79,7 @@ QgsMimeDataUtils::Uri QgsStacAsset::uri() const
 {
   QgsMimeDataUtils::Uri uri;
   QUrl url( href() );
-  if( formatName() == QLatin1String( "COG" ) )
+  if ( formatName() == QLatin1String( "COG" ) )
   {
     uri.layerType = QStringLiteral( "raster" );
     uri.providerKey = QStringLiteral( "gdal" );
