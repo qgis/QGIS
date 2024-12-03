@@ -1505,7 +1505,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         )
         CONTEXT.comment = ""
         dbg_info("do not process SIP code")
-        while not re.match(r"^ *% *End", CONTEXT.current_line):
+        while not re.match(r"^ *[/]*% *End", CONTEXT.current_line):
             write_output("COD", CONTEXT.current_line + "\n")
             CONTEXT.current_line = read_line()
             if CONTEXT.is_qt6:
@@ -1524,12 +1524,14 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 r"^\s*SIP_END(.*)$", r"%End\1", CONTEXT.current_line
             )
 
-        CONTEXT.current_line = re.sub(r"^\s*% End", "%End", CONTEXT.current_line)
+        CONTEXT.current_line = re.sub(r"^\s*[/]*% *End", "%End", CONTEXT.current_line)
         write_output("COD", CONTEXT.current_line + "\n")
         continue
 
     # Do not process SIP code %Property
-    if CONTEXT.sip_run and re.match(r"^ *% *(Property)(.*)?$", CONTEXT.current_line):
+    if CONTEXT.sip_run and re.match(
+        r"^ *[/]*% *(Property)(.*)?$", CONTEXT.current_line
+    ):
         CONTEXT.current_line = (
             f"%{re.match(r'^ *% *(.*)$', CONTEXT.current_line).group(1)}"
         )
@@ -1538,7 +1540,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         continue
 
     # Do not process SIP code %If %End
-    if CONTEXT.sip_run and re.match(r"^ *% (If|End)(.*)?$", CONTEXT.current_line):
+    if CONTEXT.sip_run and re.match(r"^ *[/]*% *(If|End)(.*)?$", CONTEXT.current_line):
         CONTEXT.current_line = (
             f"%{re.match(r'^ *% (.*)$', CONTEXT.current_line).group(1)}"
         )

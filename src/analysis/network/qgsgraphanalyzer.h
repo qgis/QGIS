@@ -45,7 +45,7 @@ class ANALYSIS_EXPORT QgsGraphAnalyzer
     static void SIP_PYALTERNATIVETYPE( SIP_PYLIST ) dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum, QVector<int> *resultTree = nullptr, QVector<double> *resultCost = nullptr );
 
 #ifdef SIP_RUN
-    % MethodCode
+    //%MethodCode
     QVector< int > treeResult;
     QVector< double > costResult;
     QgsGraphAnalyzer::dijkstra( a0, a1, a2, &treeResult, &costResult );
@@ -72,7 +72,7 @@ class ANALYSIS_EXPORT QgsGraphAnalyzer
     sipRes = PyTuple_New( 2 );
     PyTuple_SET_ITEM( sipRes, 0, l1 );
     PyTuple_SET_ITEM( sipRes, 1, l2 );
-    % End
+    //%End
 #endif
 
     /**
