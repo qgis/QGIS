@@ -87,7 +87,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
 {
   const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
 
-  bool addSourceFields = parameterAsBool( parameters, QStringLiteral( "ADD_SOURCE_FIELDS" ), context );
+  const bool addSourceFields = parameterAsBool( parameters, QStringLiteral( "ADD_SOURCE_FIELDS" ), context );
 
   QgsFields outputFields;
   long totalFeatureCount = 0;
@@ -269,8 +269,6 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
       QgsAttributes destAttributes;
       for ( const QgsField &destField : outputFields )
       {
-        // add source layer information
-        if ( addSourceFields )  
         {
           if ( addLayerField && destField.name() == QLatin1String( "layer" ) )
           {
@@ -282,7 +280,6 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
             destAttributes.append( layerSource );
             continue;
           }
-        }
 
         QVariant destAttribute;
         const int sourceIndex = layerFields.lookupField( destField.name() );
