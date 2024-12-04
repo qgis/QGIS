@@ -114,6 +114,24 @@ class TestQgsSingleSymbolRenderer(QgisTestCase):
         exp, ok = renderer.legendKeyToExpression("xxxx", None)
         self.assertFalse(ok)
 
+    def test_maximum_extent_buffer(self):
+        sym1 = QgsFillSymbol.createSimple(
+            {"color": "#fdbf6f", "outline_color": "black"}
+        )
+
+        renderer1 = QgsSingleSymbolRenderer(sym1)
+
+        self.assertEqual(renderer1.maximumExtentBuffer(QgsRenderContext()), 0)
+
+        sym2 = QgsFillSymbol.createSimple(
+            {"color": "#fdbf6f", "outline_color": "black"}
+        )
+        sym2.setExtentBuffer(100)
+
+        renderer2 = QgsSingleSymbolRenderer(sym2)
+
+        self.assertEqual(renderer2.maximumExtentBuffer(QgsRenderContext()), 100)
+
 
 if __name__ == "__main__":
     unittest.main()
