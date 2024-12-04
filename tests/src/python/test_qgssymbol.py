@@ -921,6 +921,13 @@ class TestQgsSymbol(QgisTestCase):
         self.assertTrue(s3.animationSettings().isAnimated())
         self.assertEqual(s3.animationSettings().frameRate(), 30)
 
+    def test_extent_buffer(self):
+        s = QgsFillSymbol()
+        self.assertEqual(s.extentBuffer(), 0)
+
+        s.setExtentBuffer(10)
+        self.assertEqual(s.extentBuffer(), 10)
+
     def renderCollection(self, geom, symbol):
         f = QgsFeature()
         f.setGeometry(geom)
