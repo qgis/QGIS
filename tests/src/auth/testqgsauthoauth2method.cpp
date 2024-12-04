@@ -105,8 +105,8 @@ QgsAuthOAuth2Config *TestQgsAuthOAuth2Method::baseConfig( bool loaded )
   {
     config->setId( "abc1234" );
     config->setVersion( 1 );
-    config->setConfigType( QgsAuthOAuth2Config::Custom );
-    config->setGrantFlow( QgsAuthOAuth2Config::AuthCode );
+    config->setConfigType( QgsAuthOAuth2Config::ConfigType::Custom );
+    config->setGrantFlow( QgsAuthOAuth2Config::GrantFlow::AuthCode );
     config->setName( "MyConfig" );
     config->setDescription( "A test config" );
     config->setRequestUrl( "https://request.oauth2.test" );
@@ -122,7 +122,7 @@ QgsAuthOAuth2Config *TestQgsAuthOAuth2Method::baseConfig( bool loaded )
     config->setScope( "scope_1 scope_2 scope_3" );
     config->setApiKey( "someapikey" );
     config->setPersistToken( false );
-    config->setAccessMethod( QgsAuthOAuth2Config::Header );
+    config->setAccessMethod( QgsAuthOAuth2Config::AccessMethod::Header );
     config->setCustomHeader( QStringLiteral( "x-auth" ) );
     config->setRequestTimeout( 30 ); // in seconds
     QVariantMap queryPairs;
@@ -249,9 +249,9 @@ void TestQgsAuthOAuth2Method::testOAuth2Config()
   qDebug() << "Verify property interface";
   QObject *configo = config1;
   QCOMPARE( configo->property( "configType" ).toString(), QString( "1" ) ); // Custom
-  config1->setConfigType( QgsAuthOAuth2Config::Predefined );
+  config1->setConfigType( QgsAuthOAuth2Config::ConfigType::Predefined );
   QCOMPARE( configo->property( "configType" ).toString(), QString( "0" ) );
-  QCOMPARE( QString( "%1" ).arg( config1->configType() ), QString( "0" ) );
+  QCOMPARE( QString( "%1" ).arg( static_cast<int>( config1->configType() ) ), QString( "0" ) );
   configo->setProperty( "configType", "Custom" );
   QCOMPARE( configo->property( "configType" ).toString(), QString( "1" ) );
 
@@ -317,7 +317,7 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
   qDebug() << "Verify saving config to text";
   QgsAuthOAuth2Config *config1 = baseConfig( true );
   bool ok = false;
-  QByteArray cfgtxt = config1->saveConfigTxt( QgsAuthOAuth2Config::JSON, true, &ok );
+  QByteArray cfgtxt = config1->saveConfigTxt( QgsAuthOAuth2Config::ConfigFormat::JSON, true, &ok );
   QVERIFY( ok );
   //qDebug() << "cfgtxt: \n" << cfgtxt;
   //qDebug() << "baseConfigTxt: \n" << baseConfigTxt( true );
@@ -325,7 +325,7 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
   cfgtxt.clear();
 
   ok = false;
-  cfgtxt = config1->saveConfigTxt( QgsAuthOAuth2Config::JSON, false, &ok );
+  cfgtxt = config1->saveConfigTxt( QgsAuthOAuth2Config::ConfigFormat::JSON, false, &ok );
   QVERIFY( ok );
   //qDebug() << "cfgtxt: \n" << cfgtxt;
   //qDebug() << "baseConfigTxt: \n" << baseConfigTxt( false );
@@ -334,18 +334,18 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
   qDebug() << "Verify loading config from text";
   // from base
   QgsAuthOAuth2Config *config2 = new QgsAuthOAuth2Config( qApp );
-  QVERIFY( config2->loadConfigTxt( baseConfigTxt( true ), QgsAuthOAuth2Config::JSON ) );
+  QVERIFY( config2->loadConfigTxt( baseConfigTxt( true ), QgsAuthOAuth2Config::ConfigFormat::JSON ) );
   QVERIFY( *config1 == *config2 );
 
   // roundtrip already saved text
   QgsAuthOAuth2Config *config3 = new QgsAuthOAuth2Config( qApp );
-  QVERIFY( config3->loadConfigTxt( cfgtxt, QgsAuthOAuth2Config::JSON ) );
+  QVERIFY( config3->loadConfigTxt( cfgtxt, QgsAuthOAuth2Config::ConfigFormat::JSON ) );
   QVERIFY( *config1 == *config3 );
 
   // roundtrip already loaded obj
   ok = false;
   cfgtxt.clear();
-  cfgtxt = config2->saveConfigTxt( QgsAuthOAuth2Config::JSON, true, &ok );
+  cfgtxt = config2->saveConfigTxt( QgsAuthOAuth2Config::ConfigFormat::JSON, true, &ok );
   QVERIFY( ok );
   //qDebug() << "cfgtxt: \n" << cfgtxt;
   //qDebug() << "baseConfigTxt: \n" << baseConfigTxt( true );
@@ -367,12 +367,12 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
   const QString config4path( QDir::tempPath() + "/" + dirname + "/config4.json" );
   const QString config5path( QDir::tempPath() + "/" + dirname + "/config5.json" );
 
-  QVERIFY( QgsAuthOAuth2Config::writeOAuth2Config( config4path, config4, QgsAuthOAuth2Config::JSON, true ) );
-  QVERIFY( QgsAuthOAuth2Config::writeOAuth2Config( config5path, config5, QgsAuthOAuth2Config::JSON, true ) );
+  QVERIFY( QgsAuthOAuth2Config::writeOAuth2Config( config4path, config4, QgsAuthOAuth2Config::ConfigFormat::JSON, true ) );
+  QVERIFY( QgsAuthOAuth2Config::writeOAuth2Config( config5path, config5, QgsAuthOAuth2Config::ConfigFormat::JSON, true ) );
 
   qDebug() << "Verify reading config files from directory";
   ok = false;
-  QList<QgsAuthOAuth2Config *> configs = QgsAuthOAuth2Config::loadOAuth2Configs( QDir::tempPath() + "/" + dirname, qApp, QgsAuthOAuth2Config::JSON, &ok );
+  QList<QgsAuthOAuth2Config *> configs = QgsAuthOAuth2Config::loadOAuth2Configs( QDir::tempPath() + "/" + dirname, qApp, QgsAuthOAuth2Config::ConfigFormat::JSON, &ok );
   QVERIFY( ok );
   QCOMPARE( configs.size(), 2 );
   QgsAuthOAuth2Config *config6 = configs.takeFirst();
@@ -400,7 +400,7 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigUtils()
 
   qDebug() << "Verify serializeFromVariant";
   const QByteArray vtxt = QgsAuthOAuth2Config::serializeFromVariant(
-    basevmap, QgsAuthOAuth2Config::JSON, true, &ok
+    basevmap, QgsAuthOAuth2Config::ConfigFormat::JSON, true, &ok
   );
   QVERIFY( ok );
   //qDebug() << vtxt;
@@ -409,7 +409,7 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigUtils()
 
   qDebug() << "Verify variantFromSerialized";
   const QVariantMap vmap = QgsAuthOAuth2Config::variantFromSerialized(
-    baseConfigTxt( true ), QgsAuthOAuth2Config::JSON, &ok
+    baseConfigTxt( true ), QgsAuthOAuth2Config::ConfigFormat::JSON, &ok
   );
   QVERIFY( ok );
   QCOMPARE( vmap.value( "name" ).toString(), QString( "MyConfig" ) );

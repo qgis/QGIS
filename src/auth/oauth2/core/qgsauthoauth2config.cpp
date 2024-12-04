@@ -250,8 +250,8 @@ void QgsAuthOAuth2Config::setToDefaults()
 {
   setId( QString() );
   setVersion( 1 );
-  setConfigType( QgsAuthOAuth2Config::Custom );
-  setGrantFlow( QgsAuthOAuth2Config::AuthCode );
+  setConfigType( QgsAuthOAuth2Config::ConfigType::Custom );
+  setGrantFlow( QgsAuthOAuth2Config::GrantFlow::AuthCode );
   setName( QString() );
   setDescription( QString() );
   setRequestUrl( QString() );
@@ -267,7 +267,7 @@ void QgsAuthOAuth2Config::setToDefaults()
   setScope( QString() );
   setApiKey( QString() );
   setPersistToken( false );
-  setAccessMethod( QgsAuthOAuth2Config::Header );
+  setAccessMethod( QgsAuthOAuth2Config::AccessMethod::Header );
   setCustomHeader( QString() );
   setRequestTimeout( 30 ); // in seconds
   setQueryPairs( QVariantMap() );
@@ -299,15 +299,15 @@ void QgsAuthOAuth2Config::validateConfigId( bool needsId )
 {
   const bool oldvalid = mValid;
 
-  if ( mGrantFlow == AuthCode || mGrantFlow == Implicit )
+  if ( mGrantFlow == GrantFlow::AuthCode || mGrantFlow == GrantFlow::Implicit )
   {
-    mValid = ( !requestUrl().isEmpty() && !tokenUrl().isEmpty() && !clientId().isEmpty() && ( ( mGrantFlow == AuthCode || mGrantFlow == Pkce ) ? !clientSecret().isEmpty() : true ) && redirectPort() > 0 && ( needsId ? !id().isEmpty() : true ) );
+    mValid = ( !requestUrl().isEmpty() && !tokenUrl().isEmpty() && !clientId().isEmpty() && ( ( mGrantFlow == GrantFlow::AuthCode || mGrantFlow == GrantFlow::Pkce ) ? !clientSecret().isEmpty() : true ) && redirectPort() > 0 && ( needsId ? !id().isEmpty() : true ) );
   }
-  else if ( mGrantFlow == Pkce ) // No client secret for PKCE
+  else if ( mGrantFlow == GrantFlow::Pkce ) // No client secret for PKCE
   {
     mValid = ( !requestUrl().isEmpty() && !tokenUrl().isEmpty() && !clientId().isEmpty() && redirectPort() > 0 && ( needsId ? !id().isEmpty() : true ) );
   }
-  else if ( mGrantFlow == ResourceOwner )
+  else if ( mGrantFlow == GrantFlow::ResourceOwner )
   {
     mValid = ( !tokenUrl().isEmpty() && !username().isEmpty() && !password().isEmpty() && ( needsId ? !id().isEmpty() : true ) );
   }
@@ -324,7 +324,7 @@ bool QgsAuthOAuth2Config::loadConfigTxt(
 
   switch ( format )
   {
-    case JSON:
+    case ConfigFormat::JSON:
     {
       const QVariant variant = QgsJsonUtils::parseJson( configtxt.toStdString(), errStr );
       if ( !errStr.isEmpty() )
@@ -341,11 +341,19 @@ bool QgsAuthOAuth2Config::loadConfigTxt(
       if ( variantMap.contains( QStringLiteral( "clientSecret" ) ) )
         setClientSecret( variantMap.value( QStringLiteral( "clientSecret" ) ).toString() );
       if ( variantMap.contains( QStringLiteral( "configType" ) ) )
-        setConfigType( static_cast<ConfigType>( variantMap.value( QStringLiteral( "configType" ) ).toInt() ) );
+      {
+        const int configTypeInt = variantMap.value( QStringLiteral( "configType" ) ).toInt();
+        if ( configTypeInt >= 0 && configTypeInt <= static_cast<int>( ConfigType::Last ) )
+          setConfigType( static_cast<ConfigType>( configTypeInt ) );
+      }
       if ( variantMap.contains( QStringLiteral( "description" ) ) )
         setDescription( variantMap.value( QStringLiteral( "description" ) ).toString() );
       if ( variantMap.contains( QStringLiteral( "grantFlow" ) ) )
-        setGrantFlow( static_cast<GrantFlow>( variantMap.value( QStringLiteral( "grantFlow" ) ).toInt() ) );
+      {
+        const int grantFlowInt = variantMap.value( QStringLiteral( "grantFlow" ) ).toInt();
+        if ( grantFlowInt >= 0 && grantFlowInt <= static_cast<int>( GrantFlow::Last ) )
+          setGrantFlow( static_cast<GrantFlow>( grantFlowInt ) );
+      }
       if ( variantMap.contains( QStringLiteral( "id" ) ) )
         setId( variantMap.value( QStringLiteral( "id" ) ).toString() );
       if ( variantMap.contains( QStringLiteral( "name" ) ) )
@@ -365,7 +373,12 @@ bool QgsAuthOAuth2Config::loadConfigTxt(
       if ( variantMap.contains( QStringLiteral( "refreshTokenUrl" ) ) )
         setRefreshTokenUrl( variantMap.value( QStringLiteral( "refreshTokenUrl" ) ).toString() );
       if ( variantMap.contains( QStringLiteral( "accessMethod" ) ) )
-        setAccessMethod( static_cast<AccessMethod>( variantMap.value( QStringLiteral( "accessMethod" ) ).toInt() ) );
+      {
+        const int accessMethodInt = variantMap.value( QStringLiteral( "accessMethod" ) ).toInt();
+        if ( accessMethodInt >= 0 && accessMethodInt <= static_cast<int>( AccessMethod::Last ) )
+          setAccessMethod( static_cast<AccessMethod>( accessMethodInt ) );
+      }
+
       if ( variantMap.contains( QStringLiteral( "customHeader" ) ) )
         setCustomHeader( variantMap.value( QStringLiteral( "customHeader" ) ).toString() );
       if ( variantMap.contains( QStringLiteral( "requestTimeout" ) ) )
@@ -406,7 +419,7 @@ QByteArray QgsAuthOAuth2Config::saveConfigTxt(
 
   switch ( format )
   {
-    case JSON:
+    case ConfigFormat::JSON:
     {
       QVariantMap variant;
       variant.insert( "accessMethod", static_cast<int>( accessMethod() ) );
@@ -489,7 +502,7 @@ QByteArray QgsAuthOAuth2Config::serializeFromVariant(
   bool res = false;
   switch ( format )
   {
-    case JSON:
+    case ConfigFormat::JSON:
       out = QByteArray::fromStdString( QgsJsonUtils::jsonFromVariant( variant ).dump( pretty ? 4 : -1 ) );
       res = true;
       break;
@@ -514,7 +527,7 @@ QVariantMap QgsAuthOAuth2Config::variantFromSerialized(
 
   switch ( format )
   {
-    case JSON:
+    case ConfigFormat::JSON:
     {
       const QVariant var = QgsJsonUtils::parseJson( serial.toStdString(), errStr );
       if ( !errStr.isEmpty() )
@@ -609,7 +622,7 @@ QList<QgsAuthOAuth2Config *> QgsAuthOAuth2Config::loadOAuth2Configs(
 
   switch ( format )
   {
-    case JSON:
+    case ConfigFormat::JSON:
       namefilters << QStringLiteral( "*.json" );
       break;
     default:
@@ -689,7 +702,7 @@ QgsStringMap QgsAuthOAuth2Config::mapOAuth2Configs(
 
   switch ( format )
   {
-    case JSON:
+    case ConfigFormat::JSON:
       namefilters << QStringLiteral( "*.json" );
       break;
     default:
@@ -790,7 +803,7 @@ QgsStringMap QgsAuthOAuth2Config::mappedOAuth2ConfigsCache( QObject *parent, con
       continue;
     }
     const QgsStringMap newconfigs = QgsAuthOAuth2Config::mapOAuth2Configs(
-      configdirinfo.canonicalFilePath(), parent, QgsAuthOAuth2Config::JSON, &ok
+      configdirinfo.canonicalFilePath(), parent, QgsAuthOAuth2Config::ConfigFormat::JSON, &ok
     );
     if ( ok )
     {
@@ -822,12 +835,12 @@ QString QgsAuthOAuth2Config::configTypeString( QgsAuthOAuth2Config::ConfigType c
 {
   switch ( configtype )
   {
-    case QgsAuthOAuth2Config::Custom:
+    case QgsAuthOAuth2Config::ConfigType::Custom:
       return tr( "Custom" );
-    case QgsAuthOAuth2Config::Predefined:
-    default:
+    case QgsAuthOAuth2Config::ConfigType::Predefined:
       return tr( "Predefined" );
   }
+  BUILTIN_UNREACHABLE
 }
 
 // static
@@ -835,16 +848,16 @@ QString QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow flo
 {
   switch ( flow )
   {
-    case QgsAuthOAuth2Config::AuthCode:
+    case QgsAuthOAuth2Config::GrantFlow::AuthCode:
       return tr( "Authorization Code" );
-    case QgsAuthOAuth2Config::Implicit:
+    case QgsAuthOAuth2Config::GrantFlow::Implicit:
       return tr( "Implicit" );
-    case QgsAuthOAuth2Config::Pkce:
+    case QgsAuthOAuth2Config::GrantFlow::Pkce:
       return tr( "Authorization Code PKCE" );
-    case QgsAuthOAuth2Config::ResourceOwner:
-    default:
+    case QgsAuthOAuth2Config::GrantFlow::ResourceOwner:
       return tr( "Resource Owner" );
   }
+  BUILTIN_UNREACHABLE
 }
 
 // static
@@ -852,14 +865,14 @@ QString QgsAuthOAuth2Config::accessMethodString( QgsAuthOAuth2Config::AccessMeth
 {
   switch ( method )
   {
-    case QgsAuthOAuth2Config::Header:
+    case QgsAuthOAuth2Config::AccessMethod::Header:
       return tr( "Header" );
-    case QgsAuthOAuth2Config::Form:
+    case QgsAuthOAuth2Config::AccessMethod::Form:
       return tr( "Form (POST only)" );
-    case QgsAuthOAuth2Config::Query:
-    default:
+    case QgsAuthOAuth2Config::AccessMethod::Query:
       return tr( "URL Query" );
   }
+  BUILTIN_UNREACHABLE
 }
 
 // static

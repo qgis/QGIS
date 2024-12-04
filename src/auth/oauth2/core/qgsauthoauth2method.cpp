@@ -318,7 +318,7 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
 
   switch ( accessmethod )
   {
-    case QgsAuthOAuth2Config::Header:
+    case QgsAuthOAuth2Config::AccessMethod::Header:
     {
       const QString header = o2->oauth2config()->customHeader().isEmpty() ? QString( O2_HTTP_AUTHORIZATION_HEADER ) : o2->oauth2config()->customHeader();
       request.setRawHeader( header.toLatin1(), QStringLiteral( "Bearer %1" ).arg( o2->token() ).toLatin1() );
@@ -328,13 +328,13 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
 #endif
       break;
     }
-    case QgsAuthOAuth2Config::Form:
+    case QgsAuthOAuth2Config::AccessMethod::Form:
       // FIXME: what to do here if the parent request is not POST?
       //        probably have to skip this until auth system support is moved into QgsNetworkAccessManager
       msg = QStringLiteral( "Update request FAILED for authcfg %1: form POST token update is unsupported" ).arg( authcfg );
       QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
       break;
-    case QgsAuthOAuth2Config::Query:
+    case QgsAuthOAuth2Config::AccessMethod::Query:
       if ( !query.hasQueryItem( O2_OAUTH2_ACCESS_TOKEN ) )
       {
         query.addQueryItem( O2_OAUTH2_ACCESS_TOKEN, o2->token() );
@@ -616,7 +616,7 @@ QgsO2 *QgsAuthOAuth2Method::getOAuth2Bundle( const QString &authcfg, bool fullco
     //QgsDebugMsgLevel( QStringLiteral( "LOAD oauth2config configtxt: \n\n%1\n\n" ).arg( QString( configtxt ) ), 2 );
     //###################### DO NOT LEAVE ME UNCOMMENTED #####################
 
-    if ( !config->loadConfigTxt( configtxt, QgsAuthOAuth2Config::JSON ) )
+    if ( !config->loadConfigTxt( configtxt, QgsAuthOAuth2Config::ConfigFormat::JSON ) )
     {
       QgsDebugError( QStringLiteral( "FAILED to load OAuth2 config into object" ) );
       return nullptr;
@@ -653,7 +653,7 @@ QgsO2 *QgsAuthOAuth2Method::getOAuth2Bundle( const QString &authcfg, bool fullco
       return nullptr;
     }
 
-    if ( !config->loadConfigTxt( definedtxt, QgsAuthOAuth2Config::JSON ) )
+    if ( !config->loadConfigTxt( definedtxt, QgsAuthOAuth2Config::ConfigFormat::JSON ) )
     {
       QgsDebugError( QStringLiteral( "FAILED to load config text for defined ID: %1" ).arg( definedid ) );
       return nullptr;
@@ -662,7 +662,7 @@ QgsO2 *QgsAuthOAuth2Method::getOAuth2Bundle( const QString &authcfg, bool fullco
     const QByteArray querypairstxt = configmap.value( QStringLiteral( "querypairs" ) ).toUtf8();
     if ( !querypairstxt.isNull() && !querypairstxt.isEmpty() )
     {
-      const QVariantMap querypairsmap = QgsAuthOAuth2Config::variantFromSerialized( querypairstxt, QgsAuthOAuth2Config::JSON, &ok );
+      const QVariantMap querypairsmap = QgsAuthOAuth2Config::variantFromSerialized( querypairstxt, QgsAuthOAuth2Config::ConfigFormat::JSON, &ok );
       if ( !ok )
       {
         QgsDebugError( QStringLiteral( "No query pairs to load OAuth2 config: FAILED to parse" ) );
