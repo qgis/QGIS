@@ -10,7 +10,7 @@
 
 
 
-class QgsNewAuxiliaryLayerDialog: QDialog
+class QgsNewAuxiliaryLayerDialog : QDialog
 {
 %Docstring(signature="appended")
 
@@ -21,7 +21,6 @@ A dialog to create a new auxiliary layer
 #include "qgsnewauxiliarylayerdialog.h"
 %End
   public:
-
     QgsNewAuxiliaryLayerDialog( QgsVectorLayer *layer, QWidget *parent = 0 );
 %Docstring
 Constructor.

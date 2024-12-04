@@ -33,7 +33,6 @@ The default relation widget in QGIS.
 #include "qgsrelationeditorwidget.h"
 %End
   public:
-
     enum Button
     {
       NoButton,
@@ -167,7 +166,6 @@ Creates a new configuration widget for the relation editor widget
 #include "qgsrelationeditorwidget.h"
 %End
   public:
-
     explicit QgsRelationEditorConfigWidget( const QgsRelation &relation, QWidget *parent /TransferThis/ );
 %Docstring
 Create a new configuration widget

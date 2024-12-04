@@ -23,7 +23,6 @@ Contains information, source and style tabs
 #include "qgsmeshlayerproperties.h"
 %End
   public:
-
     QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = 0, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor

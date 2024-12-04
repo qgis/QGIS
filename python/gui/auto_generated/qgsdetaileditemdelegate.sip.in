@@ -22,20 +22,18 @@ and detail sections.
 #include "qgsdetaileditemdelegate.h"
 %End
   public:
-
     QgsDetailedItemDelegate( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDetailedItemDelegate
 %End
     ~QgsDetailedItemDelegate();
-     virtual void paint( QPainter *painter,
-                const QStyleOptionViewItem &option,
-                const QModelIndex &index ) const;
+    virtual void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+
 %Docstring
 Reimplement for parent class
 %End
-     virtual QSize sizeHint( const QStyleOptionViewItem &option,
-                    const QModelIndex &index ) const;
+    virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+
 %Docstring
 Reimplement for parent class
 %End

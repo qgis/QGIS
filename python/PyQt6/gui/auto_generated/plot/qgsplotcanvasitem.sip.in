@@ -32,7 +32,6 @@ An abstract class for items that can be placed on a :py:class:`QgsPlotCanvas`.
       sipType = nullptr;
 %End
   protected:
-
     QgsPlotCanvasItem( QgsPlotCanvas *canvas /TransferThis/ );
 %Docstring
 Constructor for QgsPlotCanvasItem for the specified ``canvas``.
@@ -45,13 +44,10 @@ Constructor for QgsPlotCanvasItem for the specified ``canvas``.
 Paints the item. Must be implemented by derived classes.
 %End
 
-     virtual void paint( QPainter *painter,
-                const QStyleOptionGraphicsItem *option,
-                QWidget *widget = 0 );
+    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+
 
   protected:
-
-
 };
 
 

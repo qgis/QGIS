@@ -20,7 +20,6 @@ A signal will then be emitted.
 #include "qgsmaptoolidentifyfeature.h"
 %End
   public:
-
     QgsMapToolIdentifyFeature( QgsMapCanvas *canvas, QgsVectorLayer *vl = 0 );
 %Docstring
 QgsMapToolIdentifyFeature is a map tool to identify a feature on a chosen layer

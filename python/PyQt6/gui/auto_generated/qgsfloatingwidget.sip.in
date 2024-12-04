@@ -9,7 +9,7 @@
 
 
 
-class QgsFloatingWidget: QWidget
+class QgsFloatingWidget : QWidget
 {
 %Docstring(signature="appended")
 A QWidget subclass for creating widgets which float outside of the normal Qt layout
@@ -21,7 +21,6 @@ within their parent widget.
 #include "qgsfloatingwidget.h"
 %End
   public:
-
     enum AnchorPoint /BaseType=IntEnum/
     {
       TopLeft,

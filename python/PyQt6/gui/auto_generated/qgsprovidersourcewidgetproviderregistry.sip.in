@@ -25,12 +25,11 @@ This class keeps a list of provider source widget providers.
 #include "qgsprovidersourcewidgetproviderregistry.h"
 %End
   public:
-
     QgsProviderSourceWidgetProviderRegistry();
     ~QgsProviderSourceWidgetProviderRegistry();
 
 
-    QList< QgsProviderSourceWidgetProvider *> providers();
+    QList<QgsProviderSourceWidgetProvider *> providers();
 %Docstring
 Gets list of available providers
 %End

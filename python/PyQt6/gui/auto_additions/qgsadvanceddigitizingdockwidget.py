@@ -7,6 +7,8 @@ QgsAdvancedDigitizingDockWidget.CadCapacities = lambda flags=0: QgsAdvancedDigit
 QgsAdvancedDigitizingDockWidget.CadCapacities.baseClass = QgsAdvancedDigitizingDockWidget
 CadCapacities = QgsAdvancedDigitizingDockWidget  # dirty hack since SIP seems to introduce the flags in module
 QgsAdvancedDigitizingDockWidget.ReturnPressed = QgsAdvancedDigitizingDockWidget.WidgetSetMode.ReturnPressed
+QgsAdvancedDigitizingDockWidget.FocusOut = QgsAdvancedDigitizingDockWidget.WidgetSetMode.FocusOut
+QgsAdvancedDigitizingDockWidget.TextEdited = QgsAdvancedDigitizingDockWidget.WidgetSetMode.TextEdited
 QgsAdvancedDigitizingDockWidget.CadConstraint.NoLock = QgsAdvancedDigitizingDockWidget.CadConstraint.LockMode.NoLock
 QgsAdvancedDigitizingDockWidget.CadConstraint.SoftLock = QgsAdvancedDigitizingDockWidget.CadConstraint.LockMode.SoftLock
 QgsAdvancedDigitizingDockWidget.CadConstraint.HardLock = QgsAdvancedDigitizingDockWidget.CadConstraint.LockMode.HardLock

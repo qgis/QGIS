@@ -23,12 +23,11 @@ When created, it automatically adds providers from data provider plugins (e.g. P
 #include "qgssourceselectproviderregistry.h"
 %End
   public:
-
     QgsSourceSelectProviderRegistry();
     ~QgsSourceSelectProviderRegistry();
 
 
-    QList< QgsSourceSelectProvider *> providers();
+    QList<QgsSourceSelectProvider *> providers();
 %Docstring
 Gets list of available providers
 %End

@@ -22,7 +22,6 @@ and whenever text is typed into the combobox, the completer and popup will adjus
 #include "qgsfeaturelistcombobox.h"
 %End
   public:
-
     QgsFeatureListComboBox( QWidget *parent = 0 );
 %Docstring
 Create a new QgsFeatureListComboBox, optionally specifying a ``parent``.
@@ -251,7 +250,6 @@ Emitted when the feature picker model changes its feature ``found`` state
 %End
 
 };
-
 
 
 /************************************************************************

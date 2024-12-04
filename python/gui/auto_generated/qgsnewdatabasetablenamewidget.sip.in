@@ -32,10 +32,7 @@ getters.
 #include "qgsnewdatabasetablenamewidget.h"
 %End
   public:
-
-    explicit QgsNewDatabaseTableNameWidget( QgsBrowserGuiModel *browserModel = 0,
-                                            const QStringList &providersFilter = QStringList(),
-                                            QWidget *parent = 0 );
+    explicit QgsNewDatabaseTableNameWidget( QgsBrowserGuiModel *browserModel = 0, const QStringList &providersFilter = QStringList(), QWidget *parent = 0 );
 %Docstring
 Constructs a new QgsNewDatabaseTableNameWidget
 
@@ -136,7 +133,7 @@ Emitted when the OK/accept button is clicked.
 };
 
 
-class QgsNewDatabaseTableNameDialog: QDialog
+class QgsNewDatabaseTableNameDialog : QDialog
 {
 %Docstring(signature="appended")
 :py:class:`QgsNewDatabaseTableNameDialog` is a dialog which allows selection of a DB schema and a new table name.
@@ -157,10 +154,7 @@ getters.
 #include "qgsnewdatabasetablenamewidget.h"
 %End
   public:
-
-    explicit QgsNewDatabaseTableNameDialog( QgsBrowserGuiModel *browserModel = 0,
-                                            const QStringList &providersFilter = QStringList(),
-                                            QWidget *parent = 0 );
+    explicit QgsNewDatabaseTableNameDialog( QgsBrowserGuiModel *browserModel = 0, const QStringList &providersFilter = QStringList(), QWidget *parent = 0 );
 %Docstring
 Constructs a new QgsNewDatabaseTableNameDialog
 

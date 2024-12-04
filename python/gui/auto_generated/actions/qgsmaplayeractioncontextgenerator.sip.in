@@ -22,7 +22,6 @@ An interface for objects which can create a :py:class:`QgsMapLayerActionContext`
 #include "qgsmaplayeractioncontextgenerator.h"
 %End
   public:
-
     virtual ~QgsMapLayerActionContextGenerator();
 
     virtual QgsMapLayerActionContext createActionContext() = 0;

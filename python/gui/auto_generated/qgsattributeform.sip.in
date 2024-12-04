@@ -19,7 +19,6 @@ class QgsAttributeForm : QWidget
 #include "qgsattributeform.h"
 %End
   public:
-
     enum Mode
     {
       SingleEditMode,
@@ -37,10 +36,7 @@ class QgsAttributeForm : QWidget
       FilterOr,
     };
 
-    explicit QgsAttributeForm( QgsVectorLayer *vl,
-                               const QgsFeature &feature = QgsFeature(),
-                               const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
-                               QWidget *parent /TransferThis/ = 0 );
+    explicit QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent /TransferThis/ = 0 );
     ~QgsAttributeForm();
 
     const QgsFeature &feature();

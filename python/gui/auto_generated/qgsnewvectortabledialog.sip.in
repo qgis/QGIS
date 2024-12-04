@@ -30,7 +30,6 @@ The actual creation of the table is delegated to the connections API method
 #include "qgsnewvectortabledialog.h"
 %End
   public:
-
     QgsNewVectorTableDialog( QgsAbstractDatabaseProviderConnection *conn, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsNewVectorTableDialog constructor
@@ -108,7 +107,6 @@ Returns the validation errors or an empty list if the dialog is valid
     virtual void showEvent( QShowEvent *event );
 
 };
-
 
 
 

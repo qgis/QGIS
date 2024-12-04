@@ -21,7 +21,6 @@ stops along the gradient.
 #include "qgsgradientstopeditor.h"
 %End
   public:
-
     QgsGradientStopEditor( QWidget *parent /TransferThis/ = 0, QgsGradientColorRamp *ramp = 0 );
 %Docstring
 Constructor for QgsGradientStopEditor.
@@ -165,7 +164,6 @@ Emitted when the current selected stop changes.
 %End
 
   protected:
-
     virtual void mouseMoveEvent( QMouseEvent *event );
 
     virtual void mousePressEvent( QMouseEvent *event );

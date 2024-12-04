@@ -27,7 +27,6 @@ of QScrollArea.
 #include "qgsscrollarea.h"
 %End
   public:
-
     explicit QgsScrollArea( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsScrollArea.

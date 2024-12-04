@@ -35,15 +35,13 @@ could provide their own implementation to be able to use plugins.
 #include "qgisinterface.h"
 %End
   public:
-
     QgisInterface();
 
     virtual QgsPluginManagerInterface *pluginManagerInterface() = 0;
 
     virtual QgsLayerTreeView *layerTreeView() = 0;
 
-    virtual void addCustomActionForLayerType( QAction *action, QString menu,
-        Qgis::LayerType type, bool allLayers ) = 0;
+    virtual void addCustomActionForLayerType( QAction *action, QString menu, Qgis::LayerType type, bool allLayers ) = 0;
 %Docstring
 Add action to context menu for layers in the layer tree.
 If allLayers is ``True``, then the action will be available for all layers of given type,
@@ -74,7 +72,7 @@ Remove action for layers in the layer tree previously added with :py:func:`~Qgis
 .. seealso:: :py:func:`addCustomActionForLayerType`
 %End
 
-    virtual QList< QgsMapCanvas * > mapCanvases() = 0;
+    virtual QList<QgsMapCanvas *> mapCanvases() = 0;
 %Docstring
 Returns a list of all map canvases open in the app.
 %End
@@ -93,7 +91,7 @@ Closes the additional map canvas with matching ``name``.
 .. seealso:: :py:func:`createNewMapCanvas`
 %End
 
-    virtual QList< Qgs3DMapCanvas * > mapCanvases3D() = 0;
+    virtual QList<Qgs3DMapCanvas *> mapCanvases3D() = 0;
 %Docstring
 Returns a list of all 3D map canvases open in the app.
 
@@ -1037,7 +1035,7 @@ Since QGIS 3.10.1, returns ``True`` if a new project was created, or ``False`` i
 the user opted to cancel when prompted to save the current project).
 %End
 
-    virtual void reloadConnections( ) = 0;
+    virtual void reloadConnections() = 0;
 %Docstring
 Triggered when connections have changed.
 This calls reloadConnections in the main application and triggers a signal that is
@@ -1839,7 +1837,6 @@ Emitted when starting an entirely new project.
 %Docstring
 Emitted when a layer has been saved using save as.
 %End
-
 };
 
 /************************************************************************

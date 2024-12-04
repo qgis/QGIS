@@ -23,7 +23,6 @@ Holds data for GUI part of the data providers
 #include "qgsproviderguimetadata.h"
 %End
   public:
-
     explicit QgsProviderGuiMetadata( const QString &key );
 %Docstring
 Constructor for provider gui metadata
@@ -103,7 +102,6 @@ Returns unique provider key
 %End
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

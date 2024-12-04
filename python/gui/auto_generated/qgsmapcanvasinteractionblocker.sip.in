@@ -21,7 +21,6 @@ An interface for objects which block interactions with a :py:class:`QgsMapCanvas
 #include "qgsmapcanvasinteractionblocker.h"
 %End
   public:
-
     enum class Interaction
     {
       MapPanOnSingleClick,
@@ -33,7 +32,6 @@ An interface for objects which block interactions with a :py:class:`QgsMapCanvas
 %Docstring
 Returns ``True`` if the specified ``interaction`` should be blocked.
 %End
-
 };
 
 /************************************************************************

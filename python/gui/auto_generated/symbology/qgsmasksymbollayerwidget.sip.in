@@ -8,7 +8,7 @@
 
 
 
-class QgsMaskMarkerSymbolLayerWidget: QgsSymbolLayerWidget
+class QgsMaskMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring(signature="appended")
 Symbol layer widget for the handling of :py:class:`QgsMaskMarkerSymbolLayer`.
@@ -20,7 +20,6 @@ Symbol layer widget for the handling of :py:class:`QgsMaskMarkerSymbolLayer`.
 #include "qgsmasksymbollayerwidget.h"
 %End
   public:
-
     QgsMaskMarkerSymbolLayerWidget( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
