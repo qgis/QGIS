@@ -41,25 +41,25 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
      * Validate current configuration
      * \return TRUE if current configuration is valid
      */
-    bool validateConfig() override;
+    bool validateConfig() final;
 
     /**
      * Current configuration
      * \return current configuration map
      */
-    QgsStringMap configMap() const override;
+    QgsStringMap configMap() const final;
 
 
   public slots:
 
     //! Load the configuration from \a configMap
-    void loadConfig( const QgsStringMap &configmap ) override;
+    void loadConfig( const QgsStringMap &configmap ) final;
 
     //! Reset configuration to defaults
-    void resetConfig() override;
+    void resetConfig() final;
 
     //! Clear configuration
-    void clearConfig() override;
+    void clearConfig() final;
 
   private slots:
     void setupConnections();
