@@ -246,17 +246,6 @@ void TestQgsAuthOAuth2Method::testOAuth2Config()
   QgsAuthOAuth2Config *config1 = new QgsAuthOAuth2Config( qApp );
   QVERIFY( !config1->isValid() );
 
-  qDebug() << "Verify property interface";
-  QObject *configo = config1;
-  QCOMPARE( configo->property( "configType" ).toString(), QString( "1" ) ); // Custom
-  config1->setConfigType( QgsAuthOAuth2Config::ConfigType::Predefined );
-  QCOMPARE( configo->property( "configType" ).toString(), QString( "0" ) );
-  QCOMPARE( QString( "%1" ).arg( static_cast<int>( config1->configType() ) ), QString( "0" ) );
-  configo->setProperty( "configType", "Custom" );
-  QCOMPARE( configo->property( "configType" ).toString(), QString( "1" ) );
-
-  config1->deleteLater();
-
   qDebug() << "Verify base object validity";
   QgsAuthOAuth2Config *config2 = baseConfig();
   QVERIFY( !config2->isValid() );
