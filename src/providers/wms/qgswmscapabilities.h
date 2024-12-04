@@ -30,7 +30,7 @@
 #include "qgstemporalutils.h"
 #include "qgshttpheaders.h"
 #include "qgscoordinatetransformcontext.h"
-#include "../wfs/qgsauthorizationsettings.h"
+#include "qgsauthorizationsettings.h"
 
 class QNetworkReply;
 

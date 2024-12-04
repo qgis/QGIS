@@ -624,17 +624,7 @@ class QgsWmsTiledImageDownloadHandler : public QObject
 {
     Q_OBJECT
   public:
-
-    QgsWmsTiledImageDownloadHandler( const QString &providerUri,
-                                     const QgsAuthorizationSettings &auth,
-                                     int reqNo,
-                                     const QgsWmsProvider::TileRequests &requests,
-                                     QImage *image,
-                                     const QgsRectangle &viewExtent,
-                                     double sourceResolution,
-                                     bool smoothPixmapTransform,
-                                     bool resamplingEnabled,
-                                     QgsRasterBlockFeedback *feedback );
+    QgsWmsTiledImageDownloadHandler( const QString &providerUri, const QgsAuthorizationSettings &auth, int reqNo, const QgsWmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, double sourceResolution, bool smoothPixmapTransform, bool resamplingEnabled, QgsRasterBlockFeedback *feedback );
     ~QgsWmsTiledImageDownloadHandler() override;
 
     void downloadBlocking();
