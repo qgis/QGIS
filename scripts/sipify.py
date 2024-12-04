@@ -1457,6 +1457,10 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
     match = re.match(r"^\s*SIP_CONVERT_TO_SUBCLASS_CODE(.*)$", CONTEXT.current_line)
     if match:
+        # TYPE HEADER CODE
+        if CONTEXT.header_code and not re.match(r"^ *//.*$", CONTEXT.current_line):
+            CONTEXT.header_code = False
+            write_output("HCE", "%End\n")
         CONTEXT.current_line = f"%ConvertToSubClassCode{match.group(1)}"
         # Do not continue here, let the code process the next steps
 
