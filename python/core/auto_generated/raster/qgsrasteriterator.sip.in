@@ -26,7 +26,37 @@ Constructor for QgsRasterIterator, iterating over the specified ``input`` raster
 Since QGIS 3.34 the tileOverlapPixels can be used to specify a margin in pixels for retrieving pixels overlapping into neighbor cells.
 %End
 
-    static QgsRectangle subRegion( const QgsRectangle &rasterExtent, int rasterWidth, int rasterHeight, const QgsRectangle &subRegion, int &subRegionWidth /Out/, int &subRegionHeight /Out/, int &subRegionLeft /Out/, int &subRegionTop /Out/ );
+    void setResamplingFactor( int factor );
+%Docstring
+Sets the resampling factor in pixels. When set to a value greater than 1,
+the raster blocks will be snapped to boundaries of the resampled pixels.
+Set to 1 to disable resampling (default).
+
+.. warning::
+
+   When the resampling factor is set, the iterated portion of the raster may not cover the entire input raster extent.
+   A band of pixels on the right and bottom, with size at most of ``resampling factor - 1``, may be skipped if they cannot be snapped
+   exactly to the resampling factor.
+
+.. versionadded:: 3.42
+%End
+
+    int resamplingFactor() const;
+%Docstring
+Returns the current resampling factor in pixels.
+
+.. warning::
+
+   When the resampling factor is set, the iterated portion of the raster may not cover the entire input raster extent.
+   A band of pixels on the right and bottom, with size at most of ``resampling factor - 1``, may be skipped if they cannot be snapped
+   exactly to the resampling factor.
+
+.. seealso:: :py:func:`setResamplingFactor`
+
+.. versionadded:: 3.42
+%End
+
+    static QgsRectangle subRegion( const QgsRectangle &rasterExtent, int rasterWidth, int rasterHeight, const QgsRectangle &subRegion, int &subRegionWidth /Out/, int &subRegionHeight /Out/, int &subRegionLeft /Out/, int &subRegionTop /Out/, int resamplingFactor = 1 );
 %Docstring
 Given an overall raster extent and width and height in pixels, calculates the sub region
 of the raster covering the specified ``subRegion``.
@@ -35,6 +65,7 @@ of the raster covering the specified ``subRegion``.
 :param rasterWidth: overall raster width
 :param rasterHeight: overall raster height
 :param subRegion: desired sub region extent
+:param resamplingFactor: optional resampling factor to snap boundaries to. When specified the calculated subregion will always be shrunk to snap to the pixel boundaries. (since QGIS 3.42)
 
 :return: - sub region geographic extent, snapped to exact pixel boundaries
          - subRegionWidth: width in pixels of sub region

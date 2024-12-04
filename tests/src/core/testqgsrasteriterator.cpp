@@ -42,6 +42,7 @@ class TestQgsRasterIterator : public QObject
     void testNoBlock();
     void testSubRegion();
     void testPixelOverlap();
+    void testResampling();
 
   private:
     QString mTestDataDir;
@@ -630,6 +631,216 @@ void TestQgsRasterIterator::testPixelOverlap()
 
   QVERIFY( !it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent, &tileCols, &tileRows, &tileTopLeftCol, &tileTopLeftRow ) );
   QVERIFY( !block.get() );
+}
+
+void TestQgsRasterIterator::testResampling()
+{
+  // Test setting/getting resampling factor
+  QgsRasterIterator it( mpRasterLayer->dataProvider() );
+  QCOMPARE( it.resamplingFactor(), 1 );
+
+  it.setResamplingFactor( 2 );
+  QCOMPARE( it.resamplingFactor(), 2 );
+
+  // Test invalid values are sanitized
+  it.setResamplingFactor( 0 );
+  QCOMPARE( it.resamplingFactor(), 1 );
+  it.setResamplingFactor( -1 );
+  QCOMPARE( it.resamplingFactor(), 1 );
+
+  // Test subregion calculation with resampling
+  int subRectWidth = 0;
+  int subRectHeight = 0;
+  int subRectTop = 0;
+  int subRectLeft = 0;
+
+  const QgsRectangle rasterExtent( 497470, 7050585, 498190, 7051130 );
+  constexpr int rasterWidth = 7200;
+  constexpr int rasterHeight = 5450;
+
+  // Request a region that will need to be snapped to 2-pixel boundaries
+  const QgsRectangle originalRegion( 497970.01, 7050985.05, 498030.95, 7051030.75 );
+  QgsRectangle subRect = QgsRasterIterator::subRegion( rasterExtent, rasterWidth, rasterHeight, originalRegion, subRectWidth, subRectHeight, subRectLeft, subRectTop, 2 );
+
+  // Dimensions should be multiples of resampling factor
+  QCOMPARE( subRectWidth, 608 );
+  QCOMPARE( subRectHeight, 456 );
+  QCOMPARE( subRectLeft, 5000 );
+  QCOMPARE( subRectTop, 992 );
+  // ..this is actually what we want to check, but the above explicit checks make debugging easier! Feel free to change the values above as required.
+  QCOMPARE( subRectWidth % 2, 0 );
+  QCOMPARE( subRectHeight % 2, 0 );
+  QCOMPARE( subRectLeft % 2, 0 );
+  QCOMPARE( subRectTop % 2, 0 );
+
+  QGSCOMPARENEAR( subRect.xMinimum(), 497970, 0.000001 );
+  QGSCOMPARENEAR( subRect.xMaximum(), 498030.8, 0.000001 );
+  QGSCOMPARENEAR( subRect.yMinimum(), 7050985.2, 0.000001 );
+  QGSCOMPARENEAR( subRect.yMaximum(), 7051030.8, 0.000001 );
+
+  // Test block iteration with resampling
+  it.setMaximumTileWidth( 3000 );
+  it.setMaximumTileHeight( 3000 );
+  it.startRasterRead( 1, rasterWidth, rasterHeight, rasterExtent );
+
+  int nCols, nRows, topLeftCol, topLeftRow;
+  QgsRectangle blockExtent;
+  std::unique_ptr<QgsRasterBlock> block;
+
+  // Test with resampling factor of 2
+  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+
+  // Block dimensions should be multiples of resampling factor
+  QCOMPARE( nCols, 3000 );
+  QCOMPARE( nRows, 3000 );
+  QCOMPARE( topLeftCol, 0 );
+  QCOMPARE( topLeftRow, 0 );
+
+  QGSCOMPARENEAR( blockExtent.xMinimum(), 497470, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.xMaximum(), 497770.0, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.yMinimum(), 7050830.0, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.yMaximum(), 7051130.0, 0.000001 );
+
+  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QCOMPARE( nCols, 3000 );
+  QCOMPARE( nRows, 3000 );
+  QCOMPARE( topLeftCol, 3000 );
+  QCOMPARE( topLeftRow, 0 );
+
+  QGSCOMPARENEAR( blockExtent.xMinimum(), 497770, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.xMaximum(), 498070.0, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.yMinimum(), 7050830.0, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.yMaximum(), 7051130.0, 0.000001 );
+
+  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QCOMPARE( nCols, 1200 );
+  QCOMPARE( nRows, 3000 );
+  QCOMPARE( topLeftCol, 6000 );
+  QCOMPARE( topLeftRow, 0 );
+
+  QGSCOMPARENEAR( blockExtent.xMinimum(), 498070, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.xMaximum(), 498190.0, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.yMinimum(), 7050830.0, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.yMaximum(), 7051130.0, 0.000001 );
+
+  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QCOMPARE( nCols, 3000 );
+  QCOMPARE( nRows, 2450 );
+  QCOMPARE( topLeftCol, 0 );
+  QCOMPARE( topLeftRow, 3000 );
+
+  QGSCOMPARENEAR( blockExtent.xMinimum(), 497470, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.xMaximum(), 497770.0, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.yMinimum(), 7050585.0, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.yMaximum(), 7050830.0, 0.000001 );
+
+  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QCOMPARE( nCols, 3000 );
+  QCOMPARE( nRows, 2450 );
+  QCOMPARE( topLeftCol, 3000 );
+  QCOMPARE( topLeftRow, 3000 );
+
+  QGSCOMPARENEAR( blockExtent.xMinimum(), 497770, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.xMaximum(), 498070.0, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.yMinimum(), 7050585.0, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.yMaximum(), 7050830.0, 0.000001 );
+
+  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QCOMPARE( nCols, 1200 );
+  QCOMPARE( nRows, 2450 );
+  QCOMPARE( topLeftCol, 6000 );
+  QCOMPARE( topLeftRow, 3000 );
+
+  QGSCOMPARENEAR( blockExtent.xMinimum(), 498070, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.xMaximum(), 498190.0, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.yMinimum(), 7050585.0, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.yMaximum(), 7050830.0, 0.000001 );
+
+  QVERIFY( !it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+
+  // Test with resampling factor of 4
+  subRectWidth = 0;
+  subRectHeight = 0;
+  subRectTop = 0;
+  subRectLeft = 0;
+
+  QgsRectangle subRect4 = QgsRasterIterator::subRegion( rasterExtent, rasterWidth, rasterHeight, originalRegion, subRectWidth, subRectHeight, subRectLeft, subRectTop, 4 );
+
+  // Test resampling factor 4 results
+  // Dimensions should be multiples of resampling factor
+  QCOMPARE( subRectWidth, 608 );
+  QCOMPARE( subRectHeight, 456 );
+  QCOMPARE( subRectLeft, 5000 );
+  QCOMPARE( subRectTop, 992 );
+  // ..this is actually what we want to check, but the above explicit checks make debugging easier! Feel free to change the values above as required.
+  QCOMPARE( subRectWidth % 4, 0 );
+  QCOMPARE( subRectHeight % 4, 0 );
+  QCOMPARE( subRectLeft % 4, 0 );
+  QCOMPARE( subRectTop % 4, 0 );
+
+  QGSCOMPARENEAR( subRect4.xMinimum(), 497970, 0.000001 );
+  QGSCOMPARENEAR( subRect4.xMaximum(), 498030.8, 0.000001 );
+  QGSCOMPARENEAR( subRect4.yMinimum(), 7050985.2, 0.000001 );
+  QGSCOMPARENEAR( subRect4.yMaximum(), 7051030.8, 0.000001 );
+
+  const QgsRectangle subRect128 = QgsRasterIterator::subRegion( rasterExtent, rasterWidth, rasterHeight, originalRegion, subRectWidth, subRectHeight, subRectLeft, subRectTop, 128 );
+
+  // Test resampling factor 128 results
+  // Dimensions should be multiples of resampling factor
+  QCOMPARE( subRectWidth, 384 );
+  QCOMPARE( subRectHeight, 384 );
+  QCOMPARE( subRectLeft, 5120 );
+  QCOMPARE( subRectTop, 1024 );
+  // ..this is actually what we want to check, but the above explicit checks make debugging easier! Feel free to change the values above as required.
+  QCOMPARE( subRectWidth % 128, 0 );
+  QCOMPARE( subRectHeight % 128, 0 );
+  QCOMPARE( subRectLeft % 128, 0 );
+  QCOMPARE( subRectTop % 128, 0 );
+
+  QGSCOMPARENEAR( subRect128.xMinimum(), 497982.0, 0.000001 );
+  QGSCOMPARENEAR( subRect128.xMaximum(), 498020.4, 0.000001 );
+  QGSCOMPARENEAR( subRect128.yMinimum(), 7050989.2, 0.000001 );
+  QGSCOMPARENEAR( subRect128.yMaximum(), 7051027.6, 0.000001 );
+
+  it.setResamplingFactor( 128 );
+  it.startRasterRead( 1, rasterWidth, rasterHeight, rasterExtent );
+  // Test with resampling factor of 128
+  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+
+  // Block dimensions should be multiples of resampling factor
+  QCOMPARE( nCols, 2944 );
+  QCOMPARE( nRows, 2944 );
+  QCOMPARE( topLeftCol, 0 );
+  QCOMPARE( topLeftRow, 0 );
+
+  QGSCOMPARENEAR( blockExtent.xMinimum(), 497470, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.xMaximum(), 497764.4, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.yMinimum(), 7050835.6, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.yMaximum(), 7051130.0, 0.000001 );
+
+  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QCOMPARE( nCols, 2944 );
+  QCOMPARE( nRows, 2944 );
+  QCOMPARE( topLeftCol, 2944 );
+  QCOMPARE( topLeftRow, 0 );
+
+  QGSCOMPARENEAR( blockExtent.xMinimum(), 497764.4, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.xMaximum(), 498058.8, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.yMinimum(), 7050835.6, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.yMaximum(), 7051130.0, 0.000001 );
+
+  QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
+  QCOMPARE( nCols, 1280 );
+  QCOMPARE( nRows, 2944 );
+  QCOMPARE( topLeftCol, 5888 );
+  QCOMPARE( topLeftRow, 0 );
+
+  QGSCOMPARENEAR( blockExtent.xMinimum(), 498058.8, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.xMaximum(), 498186.8, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.yMinimum(), 7050835.6, 0.000001 );
+  QGSCOMPARENEAR( blockExtent.yMaximum(), 7051130.0, 0.000001 );
+
+  QVERIFY( !it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
 }
 
 
