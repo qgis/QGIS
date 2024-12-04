@@ -51,7 +51,6 @@ class QgsRandomPointsOnLinesAlgorithm : public QgsProcessingAlgorithm
 
 
   private:
-
     // The algorithm parameter names:
     static inline const QString INPUT = QStringLiteral( "INPUT" );
     static inline const QString POINTS_NUMBER = QStringLiteral( "POINTS_NUMBER" );
