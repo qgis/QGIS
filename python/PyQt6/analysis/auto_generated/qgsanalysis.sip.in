@@ -25,7 +25,6 @@ related to analysis classes.
 %End
   public:
 
-
     static QgsAnalysis *instance();
 %Docstring
 Returns a pointer to the singleton instance.

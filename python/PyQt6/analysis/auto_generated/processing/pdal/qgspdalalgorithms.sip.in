@@ -11,7 +11,7 @@
 
 
 
-class QgsPdalAlgorithms: QgsProcessingProvider
+class QgsPdalAlgorithms : QgsProcessingProvider
 {
 %Docstring(signature="appended")
 PDAL Processing algorithm provider.
@@ -23,7 +23,6 @@ PDAL Processing algorithm provider.
 #include "qgspdalalgorithms.h"
 %End
   public:
-
     QgsPdalAlgorithms( QObject *parent = 0 );
 %Docstring
 Constructor for QgsPdalAlgorithms.
@@ -50,9 +49,7 @@ Constructor for QgsPdalAlgorithms.
 
 
   protected:
-
     virtual void loadAlgorithms();
-
 
 };
 
