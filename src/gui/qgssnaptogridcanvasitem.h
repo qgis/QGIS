@@ -24,10 +24,10 @@
 #include "qgscoordinatetransform.h"
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgssnaptogridcanvasitem.h>
-% End
+//%End
 #endif
 
 /**

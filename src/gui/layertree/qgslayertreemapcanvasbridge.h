@@ -67,9 +67,9 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
      * \deprecated QGIS 3.40. Use setOverviewCanvas() instead.
      */
     void setOvervewCanvas( QgsMapOverviewCanvas *overviewCanvas ) SIP_DEPRECATED; // TODO QGIS 4.0 remove
-    % MethodCode
+    //%MethodCode
     sipCpp->setOverviewCanvas( a0 );
-    % End
+    //%End
 #endif
 
     /**

@@ -30,11 +30,11 @@ class QgsVectorLayer;
 #ifdef SIP_RUN
 // This is required for the ConvertToSubClassCode to work properly
 // so RTTI for casting is available in the whole module.
-% ModuleCode
+//%ModuleCode
 #include "qgsrelationwidgetwrapper.h"
 #include "qgsqmlwidgetwrapper.h"
 #include "qgshtmlwidgetwrapper.h"
-% End
+//%End
 #endif
 
 /**

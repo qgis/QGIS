@@ -28,9 +28,9 @@
 
 #ifdef SIP_RUN
 // this is needed for the "convert to subclass" code below to compile
-% ModuleHeaderCode
+//%ModuleHeaderCode
 #include "qgsrelationeditorwidget.h"
-% End
+//%End
 #endif
 
 class QgsFeature;

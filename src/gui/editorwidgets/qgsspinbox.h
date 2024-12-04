@@ -24,12 +24,12 @@ class QgsSpinBoxLineEdit;
 
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // fix to allow compilation with sip 4.7 that for some reason
 // doesn't add this include to the file where the code from
 // ConvertToSubClassCode goes.
 #include <qgsspinbox.h>
-% End
+//%End
 #endif
 
 

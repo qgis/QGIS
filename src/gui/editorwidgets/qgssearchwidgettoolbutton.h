@@ -22,9 +22,9 @@
 #include "qgis_gui.h"
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 #include "qgssearchwidgettoolbutton.h"
-% End
+//%End
 #endif
 
 /**
