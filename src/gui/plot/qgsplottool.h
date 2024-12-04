@@ -39,11 +39,11 @@ class QMenu;
 class QAction;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 #include "qgsplottool.h"
 #include "qgsplottoolpan.h"
 #include "qgsplottoolzoom.h"
-% End
+//%End
 #endif
 
 

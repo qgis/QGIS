@@ -35,10 +35,10 @@ class QgsFeatureRenderer;
 
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgshighlight.h>
-% End
+//%End
 #endif
 
 /**

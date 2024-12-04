@@ -41,12 +41,12 @@ class QgsMapTool;
 class QgsMapToolDigitizeFeature;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // fix to allow compilation with sip that for some reason
 // doesn't add this include to the file where the code from
 // ConvertToSubClassCode goes.
 #include <qgsrelationeditorwidget.h>
-% End
+//%End
 #endif
 
 

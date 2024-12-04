@@ -31,10 +31,10 @@
 #include "qgspoint.h"
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgsgeometryrubberband.h>
-% End
+//%End
 #endif
 
 class QgsAbstractGeometry;

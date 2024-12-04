@@ -75,9 +75,9 @@ class QgsDataSourceManagerDialog;
 class Qgs3DMapCanvas SIP_EXTERNAL;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 class Qgs3DMapCanvas;
-% End
+//%End
 #endif
 
 /**

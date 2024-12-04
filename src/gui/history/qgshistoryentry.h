@@ -82,10 +82,10 @@ class GUI_EXPORT QgsHistoryEntry
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
+    //%MethodCode
     const QString str = QStringLiteral( "<QgsHistoryEntry: %1 %2>" ).arg( sipCpp->providerId, sipCpp->timestamp.toString( Qt::ISODate ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-    % End
+    //%End
 #endif
 
 };

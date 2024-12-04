@@ -25,10 +25,10 @@
 class QgsAdvancedDigitizingDockWidget;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgsadvanceddigitizingcanvasitem.h>
-% End
+//%End
 #endif
 
 /**

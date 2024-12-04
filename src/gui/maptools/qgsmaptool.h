@@ -43,7 +43,7 @@ class QgsMapMouseEvent;
 class QMenu;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // fix to allow compilation with sip 4.7 that for some reason
 // doesn't add these includes to the file where the code from
 // ConvertToSubClassCode goes.
@@ -57,7 +57,7 @@ class QMenu;
 #include <qgsmaptoolcapture.h>
 #include <qgsmaptooladvanceddigitizing.h>
 #include <qgsmaptooledit.h>
-% End
+//%End
 #endif
 
 /**

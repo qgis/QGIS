@@ -19,10 +19,10 @@
 #define QGSMAPCANVASANNOTATIONITEM_H
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgsmapcanvasannotationitem.h>
-% End
+//%End
 #endif
 
 #include "qgsmapcanvasitem.h"

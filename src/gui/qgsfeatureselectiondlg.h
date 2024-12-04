@@ -25,9 +25,9 @@ class QgsVectorLayerSelectionManager;
 #ifdef SIP_RUN
 // This is required for the ConvertToSubClassCode to work properly
 // so RTTI for casting is available in the whole module.
-% ModuleCode
+//%ModuleCode
 #include "qgsfeatureselectiondlg.h"
-% End
+//%End
 #endif
 
 /**
