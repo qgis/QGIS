@@ -22,8 +22,7 @@
 
 #include "qgis.h"
 
-const std::vector< Qgis::ZonalStatistic > STATS
-{
+const std::vector<Qgis::ZonalStatistic> STATS {
   Qgis::ZonalStatistic::Count,
   Qgis::ZonalStatistic::Sum,
   Qgis::ZonalStatistic::Mean,

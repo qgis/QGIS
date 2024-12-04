@@ -50,8 +50,7 @@ class QgsRandomPointsInPolygonsAlgorithm : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
-// The algorithm parameter names:
+    // The algorithm parameter names:
     static inline const QString INPUT = QStringLiteral( "INPUT" );
     static inline const QString POINTS_NUMBER = QStringLiteral( "POINTS_NUMBER" );
     static inline const QString MIN_DISTANCE_GLOBAL = QStringLiteral( "MIN_DISTANCE_GLOBAL" );
