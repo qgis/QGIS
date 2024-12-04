@@ -4395,16 +4395,7 @@ void QgsWmsImageDownloadHandler::canceled()
 // ----------
 
 
-QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString &providerUri,
-    const QgsAuthorizationSettings &auth,
-    int tileReqNo,
-    const QgsWmsProvider::TileRequests &requests,
-    QImage *image,
-    const QgsRectangle &viewExtent,
-    double sourceResolution,
-    bool smoothPixmapTransform,
-    bool resamplingEnabled,
-    QgsRasterBlockFeedback *feedback )
+QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString &providerUri, const QgsAuthorizationSettings &auth, int tileReqNo, const QgsWmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, double sourceResolution, bool smoothPixmapTransform, bool resamplingEnabled, QgsRasterBlockFeedback *feedback )
   : mProviderUri( providerUri )
   , mAuth( auth )
   , mImage( image )

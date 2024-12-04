@@ -31,7 +31,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsogrutils.h"
 #include "qgsapplication.h"
-#include "../wfs/qgsauthorizationsettings.h"
+#include "qgsauthorizationsettings.h"
 
 #include "qgsprovidermetadata.h"
 
