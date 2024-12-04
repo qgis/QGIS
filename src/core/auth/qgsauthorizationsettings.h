@@ -24,10 +24,11 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
+#define SIP_NO_FILE
 
 struct QgsAuthorizationSettings
 {
-    QgsAuthorizationSettings( const QString &userName = QString(), const QString &password = QString(), const QgsHttpHeaders &httpHeaders = QgsHttpHeaders(), const QString &authcfg = QString() )
+  QgsAuthorizationSettings( const QString &userName = QString(), const QString &password = QString(), const QgsHttpHeaders &httpHeaders = QgsHttpHeaders(), const QString &authcfg = QString() )
     : mUserName( userName )
     , mPassword( password )
     , mHttpHeaders( httpHeaders )
