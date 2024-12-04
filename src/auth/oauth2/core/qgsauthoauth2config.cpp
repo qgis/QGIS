@@ -334,29 +334,53 @@ bool QgsAuthOAuth2Config::loadConfigTxt(
       }
       const QVariantMap variantMap = variant.toMap();
 
-      setApiKey( variantMap.value( QStringLiteral( "apiKey" ) ).toString() );
-      setClientId( variantMap.value( QStringLiteral( "clientId" ) ).toString() );
-      setClientSecret( variantMap.value( QStringLiteral( "clientSecret" ) ).toString() );
-      setConfigType( static_cast<ConfigType>( variantMap.value( QStringLiteral( "configType" ) ).toInt() ) );
-      setDescription( variantMap.value( QStringLiteral( "description" ) ).toString() );
-      setGrantFlow( static_cast<GrantFlow>( variantMap.value( QStringLiteral( "grantFlow" ) ).toInt() ) );
-      setId( variantMap.value( QStringLiteral( "id" ) ).toString() );
-      setName( variantMap.value( QStringLiteral( "name" ) ).toString() );
-      setPassword( variantMap.value( QStringLiteral( "password" ) ).toString() );
-      setPersistToken( variantMap.value( QStringLiteral( "persistToken" ) ).toBool() );
-      setQueryPairs( variantMap.value( QStringLiteral( "queryPairs" ) ).toMap() );
-      setRedirectHost( variantMap.value( QStringLiteral( "redirectHost" ) ).toString() );
-      setRedirectPort( variantMap.value( QStringLiteral( "redirectPort" ) ).toInt() );
-      setRedirectUrl( variantMap.value( QStringLiteral( "redirectUrl" ) ).toString() );
-      setRefreshTokenUrl( variantMap.value( QStringLiteral( "refreshTokenUrl" ) ).toString() );
-      setAccessMethod( static_cast<AccessMethod>( variantMap.value( QStringLiteral( "accessMethod" ) ).toInt() ) );
-      setCustomHeader( variantMap.value( QStringLiteral( "customHeader" ) ).toString() );
-      setRequestTimeout( variantMap.value( QStringLiteral( "requestTimeout" ) ).toInt() );
-      setRequestUrl( variantMap.value( QStringLiteral( "requestUrl" ) ).toString() );
-      setScope( variantMap.value( QStringLiteral( "scope" ) ).toString() );
-      setTokenUrl( variantMap.value( QStringLiteral( "tokenUrl" ) ).toString() );
-      setUsername( variantMap.value( QStringLiteral( "username" ) ).toString() );
-      setVersion( variantMap.value( QStringLiteral( "version" ) ).toInt() );
+      if ( variantMap.contains( QStringLiteral( "apiKey" ) ) )
+        setApiKey( variantMap.value( QStringLiteral( "apiKey" ) ).toString() );
+      if ( variantMap.contains( QStringLiteral( "clientId" ) ) )
+        setClientId( variantMap.value( QStringLiteral( "clientId" ) ).toString() );
+      if ( variantMap.contains( QStringLiteral( "clientSecret" ) ) )
+        setClientSecret( variantMap.value( QStringLiteral( "clientSecret" ) ).toString() );
+      if ( variantMap.contains( QStringLiteral( "configType" ) ) )
+        setConfigType( static_cast<ConfigType>( variantMap.value( QStringLiteral( "configType" ) ).toInt() ) );
+      if ( variantMap.contains( QStringLiteral( "description" ) ) )
+        setDescription( variantMap.value( QStringLiteral( "description" ) ).toString() );
+      if ( variantMap.contains( QStringLiteral( "grantFlow" ) ) )
+        setGrantFlow( static_cast<GrantFlow>( variantMap.value( QStringLiteral( "grantFlow" ) ).toInt() ) );
+      if ( variantMap.contains( QStringLiteral( "id" ) ) )
+        setId( variantMap.value( QStringLiteral( "id" ) ).toString() );
+      if ( variantMap.contains( QStringLiteral( "name" ) ) )
+        setName( variantMap.value( QStringLiteral( "name" ) ).toString() );
+      if ( variantMap.contains( QStringLiteral( "password" ) ) )
+        setPassword( variantMap.value( QStringLiteral( "password" ) ).toString() );
+      if ( variantMap.contains( QStringLiteral( "persistToken" ) ) )
+        setPersistToken( variantMap.value( QStringLiteral( "persistToken" ) ).toBool() );
+      if ( variantMap.contains( QStringLiteral( "queryPairs" ) ) )
+        setQueryPairs( variantMap.value( QStringLiteral( "queryPairs" ) ).toMap() );
+      if ( variantMap.contains( QStringLiteral( "redirectHost" ) ) )
+        setRedirectHost( variantMap.value( QStringLiteral( "redirectHost" ) ).toString() );
+      if ( variantMap.contains( QStringLiteral( "redirectPort" ) ) )
+        setRedirectPort( variantMap.value( QStringLiteral( "redirectPort" ) ).toInt() );
+      if ( variantMap.contains( QStringLiteral( "redirectUrl" ) ) )
+        setRedirectUrl( variantMap.value( QStringLiteral( "redirectUrl" ) ).toString() );
+      if ( variantMap.contains( QStringLiteral( "refreshTokenUrl" ) ) )
+        setRefreshTokenUrl( variantMap.value( QStringLiteral( "refreshTokenUrl" ) ).toString() );
+      if ( variantMap.contains( QStringLiteral( "accessMethod" ) ) )
+        setAccessMethod( static_cast<AccessMethod>( variantMap.value( QStringLiteral( "accessMethod" ) ).toInt() ) );
+      if ( variantMap.contains( QStringLiteral( "customHeader" ) ) )
+        setCustomHeader( variantMap.value( QStringLiteral( "customHeader" ) ).toString() );
+      if ( variantMap.contains( QStringLiteral( "requestTimeout" ) ) )
+        setRequestTimeout( variantMap.value( QStringLiteral( "requestTimeout" ) ).toInt() );
+      if ( variantMap.contains( QStringLiteral( "requestUrl" ) ) )
+        setRequestUrl( variantMap.value( QStringLiteral( "requestUrl" ) ).toString() );
+      if ( variantMap.contains( QStringLiteral( "scope" ) ) )
+        setScope( variantMap.value( QStringLiteral( "scope" ) ).toString() );
+      if ( variantMap.contains( QStringLiteral( "tokenUrl" ) ) )
+        setTokenUrl( variantMap.value( QStringLiteral( "tokenUrl" ) ).toString() );
+      if ( variantMap.contains( QStringLiteral( "username" ) ) )
+        setUsername( variantMap.value( QStringLiteral( "username" ) ).toString() );
+      if ( variantMap.contains( QStringLiteral( "version" ) ) )
+        setVersion( variantMap.value( QStringLiteral( "version" ) ).toInt() );
+
       break;
     }
     default:
