@@ -50,7 +50,7 @@ class QgsTextDocumentMetrics;
  */
 class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 {
-SIP_TYPEHEADER_INCLUDE( qgscolorramplegendnode.h )
+    SIP_TYPEHEADER_INCLUDE( qgscolorramplegendnode.h )
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE

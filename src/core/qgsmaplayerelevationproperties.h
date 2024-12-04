@@ -43,11 +43,11 @@ class QgsMapLayer;
  */
 class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
 {
-SIP_TYPEHEADER_INCLUDE( qgspointcloudlayerelevationproperties.h )
-SIP_TYPEHEADER_INCLUDE( qgsrasterlayerelevationproperties.h )
-SIP_TYPEHEADER_INCLUDE( qgsvectorlayerelevationproperties.h )
-SIP_TYPEHEADER_INCLUDE( qgsmeshlayerelevationproperties.h )
-SIP_TYPEHEADER_INCLUDE( qgstiledscenelayerelevationproperties.h )
+    SIP_TYPEHEADER_INCLUDE( qgspointcloudlayerelevationproperties.h )
+    SIP_TYPEHEADER_INCLUDE( qgsrasterlayerelevationproperties.h )
+    SIP_TYPEHEADER_INCLUDE( qgsvectorlayerelevationproperties.h )
+    SIP_TYPEHEADER_INCLUDE( qgsmeshlayerelevationproperties.h )
+    SIP_TYPEHEADER_INCLUDE( qgstiledscenelayerelevationproperties.h )
     Q_OBJECT
 
 #ifdef SIP_RUN

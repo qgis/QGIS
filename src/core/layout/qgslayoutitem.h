@@ -105,19 +105,19 @@ class CORE_EXPORT QgsLayoutItemRenderContext
  */
 class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectItem, public QgsLayoutUndoObjectInterface
 {
-SIP_TYPEHEADER_INCLUDE( qgslayoutitemgroup.h )
-SIP_TYPEHEADER_INCLUDE( qgslayoutitemmap.h )
-SIP_TYPEHEADER_INCLUDE( qgslayoutitempicture.h )
-SIP_TYPEHEADER_INCLUDE( qgslayoutitemlabel.h )
-SIP_TYPEHEADER_INCLUDE( qgslayoutitemlegend.h )
-SIP_TYPEHEADER_INCLUDE( qgslayoutitempolygon.h ) 
-SIP_TYPEHEADER_INCLUDE( qgslayoutitempolyline.h )
-SIP_TYPEHEADER_INCLUDE( qgslayoutitemscalebar.h )
-SIP_TYPEHEADER_INCLUDE( qgslayoutframe.h )
-SIP_TYPEHEADER_INCLUDE( qgslayoutitemshape.h )
-SIP_TYPEHEADER_INCLUDE( qgslayoutitempage.h )
-SIP_TYPEHEADER_INCLUDE( qgslayoutitemmarker.h )
-SIP_TYPEHEADER_INCLUDE( qgslayoutitemelevationprofile.h )
+    SIP_TYPEHEADER_INCLUDE( qgslayoutitemgroup.h )
+    SIP_TYPEHEADER_INCLUDE( qgslayoutitemmap.h )
+    SIP_TYPEHEADER_INCLUDE( qgslayoutitempicture.h )
+    SIP_TYPEHEADER_INCLUDE( qgslayoutitemlabel.h )
+    SIP_TYPEHEADER_INCLUDE( qgslayoutitemlegend.h )
+    SIP_TYPEHEADER_INCLUDE( qgslayoutitempolygon.h )
+    SIP_TYPEHEADER_INCLUDE( qgslayoutitempolyline.h )
+    SIP_TYPEHEADER_INCLUDE( qgslayoutitemscalebar.h )
+    SIP_TYPEHEADER_INCLUDE( qgslayoutframe.h )
+    SIP_TYPEHEADER_INCLUDE( qgslayoutitemshape.h )
+    SIP_TYPEHEADER_INCLUDE( qgslayoutitempage.h )
+    SIP_TYPEHEADER_INCLUDE( qgslayoutitemmarker.h )
+    SIP_TYPEHEADER_INCLUDE( qgslayoutitemelevationprofile.h )
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
