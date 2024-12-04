@@ -111,7 +111,7 @@ void QgsO2::initOAuthConfig()
 
   switch ( mOAuth2Config->grantFlow() )
   {
-    case QgsAuthOAuth2Config::Pkce:
+    case QgsAuthOAuth2Config::GrantFlow::Pkce:
       setGrantFlow( O2::GrantFlowPkce );
       setRequestUrl( mOAuth2Config->requestUrl() );
       setClientId( mOAuth2Config->clientId() );
@@ -119,20 +119,20 @@ void QgsO2::initOAuthConfig()
       //setClientSecret( mOAuth2Config->clientSecret() );
 
       break;
-    case QgsAuthOAuth2Config::AuthCode:
+    case QgsAuthOAuth2Config::GrantFlow::AuthCode:
       setGrantFlow( O2::GrantFlowAuthorizationCode );
       setRequestUrl( mOAuth2Config->requestUrl() );
       setClientId( mOAuth2Config->clientId() );
       setClientSecret( mOAuth2Config->clientSecret() );
 
       break;
-    case QgsAuthOAuth2Config::Implicit:
+    case QgsAuthOAuth2Config::GrantFlow::Implicit:
       setGrantFlow( O2::GrantFlowImplicit );
       setRequestUrl( mOAuth2Config->requestUrl() );
       setClientId( mOAuth2Config->clientId() );
 
       break;
-    case QgsAuthOAuth2Config::ResourceOwner:
+    case QgsAuthOAuth2Config::GrantFlow::ResourceOwner:
       setGrantFlow( O2::GrantFlowResourceOwnerPasswordCredentials );
       setClientId( mOAuth2Config->clientId() );
       setClientSecret( mOAuth2Config->clientSecret() );

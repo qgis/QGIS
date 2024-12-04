@@ -30,10 +30,45 @@
 class QgsAuthOAuth2Config : public QObject
 {
     Q_OBJECT
-    Q_ENUMS( ConfigType )
-    Q_ENUMS( GrantFlow )
-    Q_ENUMS( ConfigFormat )
-    Q_ENUMS( AccessMethod )
+
+  public:
+    //! Configuration type
+    enum class ConfigType : int
+    {
+      Predefined,
+      Custom,
+      Last = Custom
+    };
+    Q_ENUM( ConfigType )
+
+    //! OAuth2 grant flow
+    enum class GrantFlow : int
+    {
+      AuthCode,      //!< See http://tools.ietf.org/html/rfc6749#section-4.1
+      Implicit,      //!< See http://tools.ietf.org/html/rfc6749#section-4.2
+      ResourceOwner, //!< See http://tools.ietf.org/html/rfc6749#section-4.3
+      Pkce,          //!< See https://www.rfc-editor.org/rfc/rfc7636
+      Last = Pkce
+    };
+    Q_ENUM( GrantFlow )
+
+    //! Configuration format for serialize/unserialize operations
+    enum class ConfigFormat : int
+    {
+      JSON,
+    };
+    Q_ENUM( ConfigFormat )
+
+    //! Access method
+    enum class AccessMethod : int
+    {
+      Header,
+      Form,
+      Query,
+      Last = Query
+    };
+    Q_ENUM( AccessMethod )
+
     Q_PROPERTY( QString id READ id WRITE setId NOTIFY idChanged )
     Q_PROPERTY( int version READ version WRITE setVersion NOTIFY versionChanged )
     Q_PROPERTY( ConfigType configType READ configType WRITE setConfigType NOTIFY configTypeChanged )
@@ -57,37 +92,6 @@ class QgsAuthOAuth2Config : public QObject
     Q_PROPERTY( int requestTimeout READ requestTimeout WRITE setRequestTimeout NOTIFY requestTimeoutChanged )
     Q_PROPERTY( QVariantMap queryPairs READ queryPairs WRITE setQueryPairs NOTIFY queryPairsChanged )
     Q_PROPERTY( QString customHeader READ customHeader WRITE setCustomHeader NOTIFY customHeaderChanged )
-
-  public:
-    //! Configuration type
-    enum ConfigType
-    {
-      Predefined,
-      Custom,
-    };
-
-    //! OAuth2 grant flow
-    enum GrantFlow
-    {
-      AuthCode,      //!< See http://tools.ietf.org/html/rfc6749#section-4.1
-      Implicit,      //!< See http://tools.ietf.org/html/rfc6749#section-4.2
-      ResourceOwner, //!< See http://tools.ietf.org/html/rfc6749#section-4.3
-      Pkce,          //!< See https://www.rfc-editor.org/rfc/rfc7636
-    };
-
-    //! Configuration format for serialize/unserialize operations
-    enum ConfigFormat
-    {
-      JSON,
-    };
-
-    //! Access method
-    enum AccessMethod
-    {
-      Header,
-      Form,
-      Query,
-    };
 
     //! Construct a QgsAuthOAuth2Config instance
     explicit QgsAuthOAuth2Config( QObject *parent = nullptr );
@@ -180,10 +184,10 @@ class QgsAuthOAuth2Config : public QObject
     void validateConfigId( bool needsId = false );
 
     //! Load a string (e.g. JSON) of a config
-    bool loadConfigTxt( const QByteArray &configtxt, ConfigFormat format = JSON );
+    bool loadConfigTxt( const QByteArray &configtxt, ConfigFormat format = ConfigFormat::JSON );
 
     //! Save a config to a string (e.g. JSON)
-    QByteArray saveConfigTxt( ConfigFormat format = JSON, bool pretty = false, bool *ok = nullptr ) const;
+    QByteArray saveConfigTxt( ConfigFormat format = ConfigFormat::JSON, bool pretty = false, bool *ok = nullptr ) const;
 
     //! Configuration as a QVariant map
     QVariantMap mappedProperties() const;
@@ -196,7 +200,7 @@ class QgsAuthOAuth2Config : public QObject
      * \param ok is set to FALSE in case something goes wrong, TRUE otherwise
      * \return serialized config
      */
-    static QByteArray serializeFromVariant( const QVariantMap &variant, ConfigFormat format = JSON, bool pretty = false, bool *ok = nullptr );
+    static QByteArray serializeFromVariant( const QVariantMap &variant, ConfigFormat format = ConfigFormat::JSON, bool pretty = false, bool *ok = nullptr );
 
     /**
      * Unserialize the configuration in \a serial according to \a format
@@ -205,16 +209,16 @@ class QgsAuthOAuth2Config : public QObject
      * \param ok is set to FALSE in case something goes wrong, TRUE otherwise
      * \return config map
      */
-    static QVariantMap variantFromSerialized( const QByteArray &serial, ConfigFormat format = JSON, bool *ok = nullptr );
+    static QVariantMap variantFromSerialized( const QByteArray &serial, ConfigFormat format = ConfigFormat::JSON, bool *ok = nullptr );
 
     //! Write config object out to a formatted file (e.g. JSON)
-    static bool writeOAuth2Config( const QString &filepath, QgsAuthOAuth2Config *config, ConfigFormat format = JSON, bool pretty = false );
+    static bool writeOAuth2Config( const QString &filepath, QgsAuthOAuth2Config *config, ConfigFormat format = ConfigFormat::JSON, bool pretty = false );
 
     //! Load and parse a directory of configs (e.g. JSON) to objects
     static QList<QgsAuthOAuth2Config *> loadOAuth2Configs(
       const QString &configdirectory,
       QObject *parent = nullptr,
-      ConfigFormat format = JSON,
+      ConfigFormat format = ConfigFormat::JSON,
       bool *ok = nullptr
     );
 
@@ -222,7 +226,7 @@ class QgsAuthOAuth2Config : public QObject
     static QgsStringMap mapOAuth2Configs(
       const QString &configdirectory,
       QObject *parent = nullptr,
-      ConfigFormat format = JSON,
+      ConfigFormat format = ConfigFormat::JSON,
       bool *ok = nullptr
     );
 
