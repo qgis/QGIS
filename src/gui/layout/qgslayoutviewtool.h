@@ -31,9 +31,9 @@ class QgsLayout;
 class QgsLayoutItem;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 #include <qgslayoutviewtooladditem.h>
-% End
+//%End
 #endif
 
 /**

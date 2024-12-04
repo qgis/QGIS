@@ -31,9 +31,9 @@ SIP_IF_MODULE( HAVE_QTGAMEPAD )
 
 #ifdef SIP_RUN
 // this is needed for the "convert to subclass" code below to compile
-% ModuleHeaderCode
+//%ModuleHeaderCode
 #include "qgs3dgamepadcontroller.h"
-% End
+//%End
 #endif
 
 class QGamepad;

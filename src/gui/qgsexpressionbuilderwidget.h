@@ -187,7 +187,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * \since QGIS 3.38
      */
     void setCustomPreviewGenerator( const QString &label, const QList< QPair< QString, QVariant > > &choices, SIP_PYCALLABLE );
-    % MethodCode
+    //%MethodCode
     Py_XINCREF( a2 );
     Py_BEGIN_ALLOW_THREADS
     sipCpp->setCustomPreviewGenerator( *a0, *a1, [a2]( const QVariant &value )->QgsExpressionContext
@@ -208,7 +208,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     } );
 
     Py_END_ALLOW_THREADS
-    % End
+    //%End
 #endif
 
 

@@ -29,13 +29,13 @@ class QgsField;
 #include "qgis_gui.h"
 
 #ifdef SIP_RUN
-% MappedType QList<QgsSearchWidgetWrapper::FilterFlag>
+//%MappedType QList<QgsSearchWidgetWrapper::FilterFlag>
 {
-  % TypeHeaderCode
+  //%TypeHeaderCode
 #include <QList>
-  % End
+  //%End
 
-  % ConvertFromTypeCode
+  //%ConvertFromTypeCode
   // Create the list.
   PyObject *l;
 
@@ -57,9 +57,9 @@ class QgsField;
   }
 
   return l;
-  % End
+  //%End
 
-  % ConvertToTypeCode
+  //%ConvertToTypeCode
   // Check the type if that is all that is required.
   if ( sipIsErr == NULL )
     return PyList_Check( sipPy );
@@ -73,7 +73,7 @@ class QgsField;
 
   *sipCppPtr = qlist;
   return sipGetState( sipTransferObj );
-  % End
+  //%End
 };
 #endif
 

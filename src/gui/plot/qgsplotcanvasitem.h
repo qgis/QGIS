@@ -25,9 +25,9 @@
 class QgsPlotCanvas;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 #include "qgsplotcanvasitem.h"
-% End
+//%End
 #endif
 
 /**

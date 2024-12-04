@@ -23,10 +23,10 @@
 class QPainter;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgsvertexmarker.h>
-% End
+//%End
 #endif
 
 /**

@@ -63,7 +63,7 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
     void setValueFormatter( const std::function< QString( const QVariant & )> &formatter );
 #else
     void setValueFormatter( SIP_PYCALLABLE );
-    % MethodCode
+    //%MethodCode
 
     Py_BEGIN_ALLOW_THREADS
 
@@ -85,7 +85,7 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
     } );
 
     Py_END_ALLOW_THREADS
-    % End
+    //%End
 #endif
 
 
@@ -187,7 +187,7 @@ class GUI_EXPORT QgsProcessingMultipleSelectionDialog : public QDialog
     void setValueFormatter( const std::function< QString( const QVariant & )> &formatter );
 #else
     void setValueFormatter( SIP_PYCALLABLE );
-    % MethodCode
+    //%MethodCode
 
     Py_BEGIN_ALLOW_THREADS
 
@@ -209,7 +209,7 @@ class GUI_EXPORT QgsProcessingMultipleSelectionDialog : public QDialog
     } );
 
     Py_END_ALLOW_THREADS
-    % End
+    //%End
 #endif
 
 

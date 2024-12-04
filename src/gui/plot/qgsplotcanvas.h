@@ -38,10 +38,10 @@ class QMenu;
 
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 #include "qgsplotcanvas.h"
 #include "qgselevationprofilecanvas.h"
-% End
+//%End
 #endif
 
 /**

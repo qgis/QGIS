@@ -36,10 +36,10 @@ class QPaintEvent;
 class QgsSymbol;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgsrubberband.h>
-% End
+//%End
 #endif
 
 /**
