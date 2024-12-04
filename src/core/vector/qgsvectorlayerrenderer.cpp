@@ -17,6 +17,7 @@
 
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"
+#include "qgsrectangle.h"
 #include "qgsrenderer.h"
 #include "qgsrendercontext.h"
 #include "qgssinglesymbolrenderer.h"
@@ -354,7 +355,25 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
     if ( mDiagramProvider )
       mDiagramProvider->setClipFeatureGeometry( mLabelClipFeatureGeom );
   }
+
+
   renderer->modifyRequestExtent( requestExtent, context );
+
+  double maximumExtentBuffer = renderer->maximumExtentBuffer( context );
+
+  if ( maximumExtentBuffer != 0 )
+  {
+    bool bufferDisappearsExtent = maximumExtentBuffer < 0 && ( requestExtent.width() + ( maximumExtentBuffer * 2 ) < 0 || requestExtent.height() + ( maximumExtentBuffer * 2 ) < 0 );
+
+    // nothing to draw
+    if ( bufferDisappearsExtent )
+    {
+      renderer->stopRender( context );
+      return true;
+    }
+
+    requestExtent = requestExtent.buffered( maximumExtentBuffer );
+  }
 
   QgsFeatureRequest featureRequest = QgsFeatureRequest()
                                      .setFilterRect( requestExtent )
