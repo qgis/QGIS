@@ -26,7 +26,6 @@ based on a transformation method and a list of GCPs.
     static const QMetaObject staticMetaObject;
 
   public:
-
     enum class TransformMethod /BaseType=IntEnum/
     {
       Linear,
