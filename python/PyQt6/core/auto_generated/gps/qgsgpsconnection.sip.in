@@ -25,8 +25,8 @@ Abstract base class for connection to a GPS device
 
 %TypeHeaderCode
 #include "qgsgpsconnection.h"
-#include <qgsgpsdconnection.h>
-#include <qgsnmeaconnection.h>
+#include "qgsgpsdconnection.h"
+#include "qgsnmeaconnection.h"
 %End
 %ConvertToSubClassCode
     if ( sipCpp->inherits( "QgsGpsdConnection" ) )
