@@ -871,7 +871,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     bool addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, Qgis::DistanceUnit outputUnit = Qgis::DistanceUnit::Meters );
 
     //! \note not available in Python bindings
-    QMap<int, int> attrIdxToOgrIdx() const { return mAttrIdxToOgrIdx; } SIP_SKIP
+    QMap<int, int> attrIdxToOgrIdx() const SIP_SKIP { return mAttrIdxToOgrIdx; }
 
     //! Close opened shapefile for writing
     ~QgsVectorFileWriter() override;
