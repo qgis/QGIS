@@ -269,6 +269,7 @@ class CORE_EXPORT QgsSymbol
     enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, Property ) : int
     {
       Opacity SIP_MONKEYPATCH_COMPAT_NAME( PropertyOpacity ), //!< Opacity
+      ExtentBuffer, //!< Extent buffer \since QGIS 3.42
     };
     // *INDENT-ON*
 
@@ -867,6 +868,23 @@ class CORE_EXPORT QgsSymbol
      */
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
 
+    /**
+     * Returns the symbol's extent buffer.
+     *
+     * \since QGIS 3.42
+     * \returns The symbol's extent buffer
+     */
+    double extentBuffer() const;
+
+    /**
+     * Sets the symbol's extent buffer.
+     *
+     * \since QGIS 3.42
+     * \param extentBuffer buffer distance in map units
+     * \see extentBuffer()
+     */
+    void setExtentBuffer( double extentBuffer );
+
   protected:
 
     /**
@@ -954,6 +972,8 @@ class CORE_EXPORT QgsSymbol
 
     Qgis::SymbolType mType;
     QgsSymbolLayerList mLayers;
+
+    double mExtentBuffer = 0;
 
     //! Symbol opacity (in the range 0 - 1)
     qreal mOpacity = 1.0;

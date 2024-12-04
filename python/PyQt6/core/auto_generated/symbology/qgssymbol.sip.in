@@ -244,6 +244,7 @@ Returns the default symbol type required for the specified geometry ``type``.
     enum class Property /BaseType=IntEnum/
     {
       Opacity,
+      ExtentBuffer,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -865,6 +866,26 @@ Internally, this notifies all symbol layers which were used via a call to
 .. versionadded:: 3.20
 %End
 
+    double extentBuffer() const;
+%Docstring
+Returns the symbol's extent buffer.
+
+.. versionadded:: 3.42
+
+:return: The symbol's extent buffer
+%End
+
+    void setExtentBuffer( double extentBuffer );
+%Docstring
+Sets the symbol's extent buffer.
+
+.. versionadded:: 3.42
+
+:param extentBuffer: buffer distance in map units
+
+.. seealso:: :py:func:`extentBuffer`
+%End
+
   protected:
 
     QgsSymbol( Qgis::SymbolType type, const QgsSymbolLayerList &layers /Transfer/ ); // can't be instantiated
@@ -926,6 +947,7 @@ geometry type, points and rings in which are being rendered by the parent symbol
 %Docstring
 Render editing vertex marker at specified point
 %End
+
 
 
 
