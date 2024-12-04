@@ -282,7 +282,7 @@
          <item>
           <widget class="QCheckBox" name="mLabels">
            <property name="text">
-            <string>Show Tile Labels</string>
+            <string>Show tile labels</string>
            </property>
           </widget>
          </item>

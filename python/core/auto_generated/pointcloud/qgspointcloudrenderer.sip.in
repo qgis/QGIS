@@ -564,24 +564,16 @@ rectangle
 .. versionadded:: 3.42
 %End
 
-    void setLabelTextFormat( QgsTextFormat *textFormat /Transfer/ );
+    void setLabelTextFormat( const QgsTextFormat &textFormat );
 %Docstring
 Sets the text format renderers should use for rendering labels
-
-.. note::
-
-   This class takes ownership of textFormat
 
 .. versionadded:: 3.42
 %End
 
-    QgsTextFormat *labelTextFormat() const;
+    QgsTextFormat labelTextFormat() const;
 %Docstring
 Returns the text format renderer is using for rendering labels
-
-.. note::
-
-   This function doesn't release the ownership of :py:class:`QgsTextFormat`
 
 .. versionadded:: 3.42
 %End

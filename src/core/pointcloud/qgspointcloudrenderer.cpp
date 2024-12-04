@@ -207,7 +207,7 @@ void QgsPointCloudRenderer::copyCommonProperties( QgsPointCloudRenderer *destina
   destination->setHorizontalTriangleFilterUnit( mHorizontalTriangleFilterUnit );
 
   destination->setShowLabels( mShowLabels );
-  destination->setLabelTextFormat( mLabelTextFormat ? new QgsTextFormat( *mLabelTextFormat ) : nullptr );
+  destination->setLabelTextFormat( mLabelTextFormat );
 }
 
 void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext &context )
@@ -227,10 +227,10 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
   mHorizontalTriangleFilterUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "horizontalTriangleFilterUnit" ), QStringLiteral( "MM" ) ) );
 
   mShowLabels = element.attribute( QStringLiteral( "showLabels" ), QStringLiteral( "0" ) ).toInt();
-  if ( !element.firstChild().isNull() )
+  if ( !element.firstChildElement( QStringLiteral( "text-style" ) ).isNull() )
   {
-    mLabelTextFormat = std::make_unique<QgsTextFormat>();
-    mLabelTextFormat->readXml( element.firstChildElement( QStringLiteral( "text-style" ) ), context );
+    mLabelTextFormat = QgsTextFormat();
+    mLabelTextFormat.readXml( element.firstChildElement( QStringLiteral( "text-style" ) ), context );
   }
 }
 
@@ -251,10 +251,10 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
   element.setAttribute( QStringLiteral( "horizontalTriangleFilterUnit" ), QgsUnitTypes::encodeUnit( mHorizontalTriangleFilterUnit ) );
 
   element.setAttribute( QStringLiteral( "showLabels" ), QString::number( mShowLabels ) );
-  if ( mLabelTextFormat )
+  if ( mLabelTextFormat.isValid() )
   {
     QDomDocument doc = element.ownerDocument();
-    element.appendChild( mLabelTextFormat->writeXml( doc, context ) );
+    element.appendChild( mLabelTextFormat.writeXml( doc, context ) );
   }
 }
 
@@ -307,8 +307,8 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
     return selectedPoints;
   }
 
-  const double maxErrorInMapCoordinates = maxErrorPixels * mapUnitsPerPixel;
-  const double maxErrorInLayerCoordinates = maxErrorInMapCoordinates * layerExtentLayerCoords.width() / layerExtentMapCoords.width();
+  const double maxErrorInMapCoordinates = maxErrorPixels *mapUnitsPerPixel;
+  const double maxErrorInLayerCoordinates = maxErrorInMapCoordinates *layerExtentLayerCoords.width() / layerExtentMapCoords.width();
 
   QgsGeometry selectionGeometry = geometry;
   if ( geometry.type() == Qgis::GeometryType::Point )

@@ -68,7 +68,7 @@ QgsPointCloudRenderer *QgsPointCloudExtentRenderer::create( QDomElement &element
 
 void QgsPointCloudExtentRenderer::renderExtent( const QgsGeometry &extent, QgsPointCloudRenderContext &context )
 {
-  auto transformRing = [&context]( QPolygonF & pts )
+  auto transformRing = [&context]( QPolygonF &pts )
   {
     //transform the QPolygonF to screen coordinates
     if ( context.renderContext().coordinateTransform().isValid() )
@@ -138,10 +138,10 @@ void QgsPointCloudExtentRenderer::setFillSymbol( QgsFillSymbol *symbol )
 }
 void QgsPointCloudExtentRenderer::renderLabels( const QRectF &extent, const QString &text, QgsPointCloudRenderContext &context )
 {
-  const double textWidth = QgsTextRenderer::textWidth( context.renderContext(), labelTextFormat() ? *labelTextFormat() : QgsTextFormat(), QStringList() << text );
+  const double textWidth = QgsTextRenderer::textWidth( context.renderContext(), labelTextFormat(), QStringList() << text );
   if ( textWidth < extent.width() )
   {
-    QgsTextRenderer::drawText( extent, 0, Qgis::TextHorizontalAlignment::Center, QStringList() << text, context.renderContext(), labelTextFormat() ? *labelTextFormat() : QgsTextFormat(), true, Qgis::TextVerticalAlignment::VerticalCenter );
+    QgsTextRenderer::drawText( extent, 0, Qgis::TextHorizontalAlignment::Center, QStringList() << text, context.renderContext(), labelTextFormat(), true, Qgis::TextVerticalAlignment::VerticalCenter );
   }
 }
 

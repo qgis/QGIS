@@ -206,12 +206,14 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     {
       mLabels->setChecked( mLayer->renderer()->showLabels() );
       // set some better defaults for label format
+      QgsTextFormat textFormat = mLayer->renderer()->labelTextFormat();
       QgsTextBufferSettings settings;
       settings.setEnabled( true );
-      settings.setSize( 0.5 );
-      mLayer->renderer()->labelTextFormat()->setBuffer( settings );
-      mLayer->renderer()->labelTextFormat()->setNamedStyle( QStringLiteral( "Regular" ) );
-      mLabelOptions->setTextFormat( *mLayer->renderer()->labelTextFormat() );
+      settings.setSize( 1 );
+      textFormat.setBuffer( settings );
+      textFormat.setNamedStyle( QStringLiteral( "Regular" ) );
+      mLayer->renderer()->setLabelTextFormat( textFormat );
+      mLabelOptions->setTextFormat( textFormat );
     }
   }
 
@@ -254,7 +256,7 @@ void QgsPointCloudRendererPropertiesWidget::apply()
   mLayer->renderer()->setHorizontalTriangleFilterUnit( mHorizontalTriangleUnitWidget->unit() );
 
   mLayer->renderer()->setShowLabels( mLabels->isChecked() );
-  mLayer->renderer()->setLabelTextFormat( new QgsTextFormat( mLabelOptions->textFormat() ) );
+  mLayer->renderer()->setLabelTextFormat( mLabelOptions->textFormat() );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()

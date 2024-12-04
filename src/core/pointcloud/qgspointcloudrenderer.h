@@ -690,17 +690,15 @@ class CORE_EXPORT QgsPointCloudRenderer
 
     /**
        * Sets the text format renderers should use for rendering labels
-       * \note This class takes ownership of textFormat
        * \since QGIS 3.42
        */
-    void setLabelTextFormat( QgsTextFormat *textFormat SIP_TRANSFER ) { mLabelTextFormat.reset( textFormat ); }
+    void setLabelTextFormat( const QgsTextFormat &textFormat ) { mLabelTextFormat = textFormat; }
 
     /**
      * Returns the text format renderer is using for rendering labels
-     * \note This function doesn't release the ownership of QgsTextFormat
      * \since QGIS 3.42
      */
-    QgsTextFormat *labelTextFormat() const { return mLabelTextFormat.get(); }
+    QgsTextFormat labelTextFormat() const { return mLabelTextFormat; }
 
   protected:
 
@@ -711,8 +709,8 @@ class CORE_EXPORT QgsPointCloudRenderer
     {
       // be wary when copying this code!! In the renderer we explicitly request x/y/z as qint32 values, but in other
       // situations these may be floats or doubles!
-      const qint32 ix = *reinterpret_cast< const qint32 * >( ptr + i * context.pointRecordSize() + context.xOffset() );
-      const qint32 iy = *reinterpret_cast< const qint32 * >( ptr + i * context.pointRecordSize() + context.yOffset() );
+      const qint32 ix = *reinterpret_cast< const qint32 * >( ptr + i *context.pointRecordSize() + context.xOffset() );
+      const qint32 iy = *reinterpret_cast< const qint32 * >( ptr + i *context.pointRecordSize() + context.yOffset() );
       x = context.offset().x() + context.scale().x() * ix;
       y = context.offset().y() + context.scale().y() * iy;
     }
@@ -724,7 +722,7 @@ class CORE_EXPORT QgsPointCloudRenderer
     {
       // be wary when copying this code!! In the renderer we explicitly request x/y/z as qint32 values, but in other
       // situations these may be floats or doubles!
-      const qint32 iz = *reinterpret_cast<const qint32 * >( ptr + i * context.pointRecordSize() + context.zOffset() );
+      const qint32 iz = *reinterpret_cast<const qint32 * >( ptr + i *context.pointRecordSize() + context.zOffset() );
       return ( context.offset().z() + context.scale().z() * iz ) * context.zValueScale() + context.zValueFixedOffset();
     }
 
@@ -842,7 +840,7 @@ class CORE_EXPORT QgsPointCloudRenderer
     Qgis::RenderUnit mHorizontalTriangleFilterUnit = Qgis::RenderUnit::Millimeters;
 
     bool mShowLabels = false;
-    std::unique_ptr<QgsTextFormat> mLabelTextFormat = nullptr;
+    QgsTextFormat mLabelTextFormat;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H
