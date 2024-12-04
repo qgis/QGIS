@@ -34,7 +34,7 @@ QgsNumericFormatSelectorWidget::QgsNumericFormatSelectorWidget( QWidget *parent 
 
   mCurrentFormat.reset( QgsApplication::numericFormatRegistry()->fallbackFormat() );
 
-  mPreviewFormat = std::make_unique< QgsBasicNumericFormat >();
+  mPreviewFormat = std::make_unique<QgsBasicNumericFormat>();
   mPreviewFormat->setShowThousandsSeparator( false );
   mPreviewFormat->setShowPlusSign( false );
   mPreviewFormat->setShowTrailingZeros( false );
@@ -61,7 +61,6 @@ void QgsNumericFormatSelectorWidget::setFormat( const QgsNumericFormat *format )
   if ( index < 0 )
   {
     whileBlocking( mCategoryCombo )->setCurrentIndex( mCategoryCombo->findData( QStringLiteral( "fallback" ) ) );
-
   }
   else
     mCategoryCombo->setCurrentIndex( index );
@@ -79,7 +78,7 @@ QgsNumericFormat *QgsNumericFormatSelectorWidget::format() const
 void QgsNumericFormatSelectorWidget::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
 {
   mExpressionContextGenerator = generator;
-  if ( QgsNumericFormatWidget *w = qobject_cast< QgsNumericFormatWidget * >( stackedWidget->currentWidget() ) )
+  if ( QgsNumericFormatWidget *w = qobject_cast<QgsNumericFormatWidget *>( stackedWidget->currentWidget() ) )
     w->registerExpressionContextGenerator( mExpressionContextGenerator );
 }
 
@@ -102,7 +101,7 @@ void QgsNumericFormatSelectorWidget::formatTypeChanged()
 
 void QgsNumericFormatSelectorWidget::formatChanged()
 {
-  if ( QgsNumericFormatWidget *w = qobject_cast< QgsNumericFormatWidget * >( stackedWidget->currentWidget() ) )
+  if ( QgsNumericFormatWidget *w = qobject_cast<QgsNumericFormatWidget *>( stackedWidget->currentWidget() ) )
     mCurrentFormat.reset( w->format() );
 
   updateSampleText();
@@ -113,8 +112,7 @@ void QgsNumericFormatSelectorWidget::populateTypes()
 {
   QStringList ids = QgsApplication::numericFormatRegistry()->formats();
 
-  std::sort( ids.begin(), ids.end(), [ = ]( const QString & a, const QString & b )->bool
-  {
+  std::sort( ids.begin(), ids.end(), [=]( const QString &a, const QString &b ) -> bool {
     if ( QgsApplication::numericFormatRegistry()->sortKey( a ) < QgsApplication::numericFormatRegistry()->sortKey( b ) )
       return true;
     else if ( QgsApplication::numericFormatRegistry()->sortKey( a ) > QgsApplication::numericFormatRegistry()->sortKey( b ) )
@@ -139,7 +137,7 @@ void QgsNumericFormatSelectorWidget::updateFormatWidget()
   if ( stackedWidget->currentWidget() != pageDummy )
   {
     // stop updating from the original widget
-    if ( QgsNumericFormatWidget *w = qobject_cast< QgsNumericFormatWidget * >( stackedWidget->currentWidget() ) )
+    if ( QgsNumericFormatWidget *w = qobject_cast<QgsNumericFormatWidget *>( stackedWidget->currentWidget() ) )
       disconnect( w, &QgsNumericFormatWidget::changed, this, &QgsNumericFormatSelectorWidget::formatChanged );
     stackedWidget->removeWidget( stackedWidget->currentWidget() );
   }
@@ -163,9 +161,7 @@ void QgsNumericFormatSelectorWidget::updateFormatWidget()
 void QgsNumericFormatSelectorWidget::updateSampleText()
 {
   const double sampleValue = mCurrentFormat->suggestSampleValue();
-  mSampleLabel->setText( QStringLiteral( "%1 %2 <b>%3</b>" ).arg( mPreviewFormat->formatDouble( sampleValue, QgsNumericFormatContext() ) )
-                         .arg( QChar( 0x2192 ) )
-                         .arg( mCurrentFormat->formatDouble( sampleValue, QgsNumericFormatContext() ) ) );
+  mSampleLabel->setText( QStringLiteral( "%1 %2 <b>%3</b>" ).arg( mPreviewFormat->formatDouble( sampleValue, QgsNumericFormatContext() ) ).arg( QChar( 0x2192 ) ).arg( mCurrentFormat->formatDouble( sampleValue, QgsNumericFormatContext() ) ) );
 }
 
 //

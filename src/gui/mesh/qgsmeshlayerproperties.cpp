@@ -57,10 +57,10 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   mStaticDatasetWidget->setLayer( mMeshLayer );
   mIsMapSettingsTemporal = mMeshLayer && canvas && canvas->mapSettings().isTemporal();
 
-  mTemporalProviderTimeUnitComboBox->addItem( tr( "Seconds" ), static_cast< int >( Qgis::TemporalUnit::Seconds ) );
-  mTemporalProviderTimeUnitComboBox->addItem( tr( "Minutes" ), static_cast< int >( Qgis::TemporalUnit::Minutes ) );
-  mTemporalProviderTimeUnitComboBox->addItem( tr( "Hours" ), static_cast< int >( Qgis::TemporalUnit::Hours ) );
-  mTemporalProviderTimeUnitComboBox->addItem( tr( "Days" ), static_cast< int >( Qgis::TemporalUnit::Days ) );
+  mTemporalProviderTimeUnitComboBox->addItem( tr( "Seconds" ), static_cast<int>( Qgis::TemporalUnit::Seconds ) );
+  mTemporalProviderTimeUnitComboBox->addItem( tr( "Minutes" ), static_cast<int>( Qgis::TemporalUnit::Minutes ) );
+  mTemporalProviderTimeUnitComboBox->addItem( tr( "Hours" ), static_cast<int>( Qgis::TemporalUnit::Hours ) );
+  mTemporalProviderTimeUnitComboBox->addItem( tr( "Days" ), static_cast<int>( Qgis::TemporalUnit::Days ) );
 
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsMeshLayerProperties::changeCrs );
   connect( mDatasetGroupTreeWidget, &QgsMeshDatasetGroupTreeWidget::datasetGroupAdded, this, &QgsMeshLayerProperties::syncToLayer );
@@ -88,17 +88,14 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
   mScaleRangeWidget->setScaleRange( lyr->minimumScale(), lyr->maximumScale() );
 
-  connect( mAlwaysTimeFromSourceCheckBox, &QCheckBox::stateChanged, this, [this]
-  {
+  connect( mAlwaysTimeFromSourceCheckBox, &QCheckBox::stateChanged, this, [this] {
     mTemporalDateTimeReference->setEnabled( !mAlwaysTimeFromSourceCheckBox->isChecked() );
     if ( mAlwaysTimeFromSourceCheckBox->isChecked() )
       reloadTemporalProperties();
   } );
 
-  mComboBoxTemporalDatasetMatchingMethod->addItem( tr( "Find Closest Dataset Before Requested Time" ),
-      QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime );
-  mComboBoxTemporalDatasetMatchingMethod->addItem( tr( "Find Closest Dataset From Requested Time (After or Before)" ),
-      QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetFromStartRangeTime );
+  mComboBoxTemporalDatasetMatchingMethod->addItem( tr( "Find Closest Dataset Before Requested Time" ), QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime );
+  mComboBoxTemporalDatasetMatchingMethod->addItem( tr( "Find Closest Dataset From Requested Time (After or Before)" ), QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetFromStartRangeTime );
 
   QVBoxLayout *labelingLayout = nullptr;
 
@@ -143,8 +140,7 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   // this will be read by restoreOptionsBaseUi()
   if ( !settings.contains( QStringLiteral( "/Windows/MeshLayerProperties/tab" ) ) )
   {
-    settings.setValue( QStringLiteral( "Windows/MeshLayerProperties/tab" ),
-                       mOptStackedWidget->indexOf( mOptsPage_Style ) );
+    settings.setValue( QStringLiteral( "Windows/MeshLayerProperties/tab" ), mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
   //Add help page references
@@ -216,7 +212,7 @@ void QgsMeshLayerProperties::syncToLayer()
   mSimplifyMeshResolutionSpinBox->setValue( simplifySettings.meshResolution() );
 
   QgsDebugMsgLevel( QStringLiteral( "populate temporal tab" ), 4 );
-  const QgsMeshLayerTemporalProperties *temporalProperties = qobject_cast< const QgsMeshLayerTemporalProperties * >( mMeshLayer->temporalProperties() );
+  const QgsMeshLayerTemporalProperties *temporalProperties = qobject_cast<const QgsMeshLayerTemporalProperties *>( mMeshLayer->temporalProperties() );
   whileBlocking( mTemporalDateTimeReference )->setDateTime( temporalProperties->referenceTime() );
   const QgsDateTimeRange timeRange = temporalProperties->timeExtent();
   mTemporalDateTimeStart->setDateTime( timeRange.begin() );
@@ -224,11 +220,13 @@ void QgsMeshLayerProperties::syncToLayer()
   if ( mMeshLayer->dataProvider() )
   {
     mTemporalProviderTimeUnitComboBox->setCurrentIndex(
-      mTemporalProviderTimeUnitComboBox->findData( static_cast< int >( mMeshLayer->dataProvider()->temporalCapabilities()->temporalUnit() ) ) );
+      mTemporalProviderTimeUnitComboBox->findData( static_cast<int>( mMeshLayer->dataProvider()->temporalCapabilities()->temporalUnit() ) )
+    );
   }
   mAlwaysTimeFromSourceCheckBox->setChecked( temporalProperties->alwaysLoadReferenceTimeFromSource() );
   mComboBoxTemporalDatasetMatchingMethod->setCurrentIndex(
-    mComboBoxTemporalDatasetMatchingMethod->findData( temporalProperties->matchingMethod() ) );
+    mComboBoxTemporalDatasetMatchingMethod->findData( temporalProperties->matchingMethod() )
+  );
 
   mStaticDatasetWidget->syncToLayer();
   mStaticDatasetGroupBox->setChecked( !mMeshLayer->temporalProperties()->isActive() );
@@ -278,8 +276,7 @@ void QgsMeshLayerProperties::apply()
   simplifySettings.setEnabled( mSimplifyMeshGroupBox->isChecked() );
   simplifySettings.setReductionFactor( mSimplifyReductionFactorSpinBox->value() );
   simplifySettings.setMeshResolution( mSimplifyMeshResolutionSpinBox->value() );
-  bool needMeshUpdating = ( ( simplifySettings.isEnabled() != mMeshLayer->meshSimplificationSettings().isEnabled() ) ||
-                            ( simplifySettings.reductionFactor() != mMeshLayer->meshSimplificationSettings().reductionFactor() ) );
+  bool needMeshUpdating = ( ( simplifySettings.isEnabled() != mMeshLayer->meshSimplificationSettings().isEnabled() ) || ( simplifySettings.reductionFactor() != mMeshLayer->meshSimplificationSettings().reductionFactor() ) );
 
   mMeshLayer->setMeshSimplificationSettings( simplifySettings );
 
@@ -304,15 +301,19 @@ void QgsMeshLayerProperties::apply()
   mMeshLayer->setReferenceTime( mTemporalDateTimeReference->dateTime() );
   if ( mMeshLayer->dataProvider() )
     mMeshLayer->dataProvider()->setTemporalUnit(
-      static_cast<Qgis::TemporalUnit>( mTemporalProviderTimeUnitComboBox->currentData().toInt() ) );
+      static_cast<Qgis::TemporalUnit>( mTemporalProviderTimeUnitComboBox->currentData().toInt() )
+    );
 
   mStaticDatasetWidget->apply();
   bool needEmitRendererChanged = mMeshLayer->temporalProperties()->isActive() == mStaticDatasetGroupBox->isChecked();
   mMeshLayer->temporalProperties()->setIsActive( !mStaticDatasetGroupBox->isChecked() );
   mMeshLayer->setTemporalMatchingMethod( static_cast<QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod>(
-      mComboBoxTemporalDatasetMatchingMethod->currentData().toInt() ) );
+    mComboBoxTemporalDatasetMatchingMethod->currentData().toInt()
+  ) );
   static_cast<QgsMeshLayerTemporalProperties *>(
-    mMeshLayer->temporalProperties() )->setAlwaysLoadReferenceTimeFromSource( mAlwaysTimeFromSourceCheckBox->isChecked() );
+    mMeshLayer->temporalProperties()
+  )
+    ->setAlwaysLoadReferenceTimeFromSource( mAlwaysTimeFromSourceCheckBox->isChecked() );
 
   mMetadataWidget->acceptMetadata();
 

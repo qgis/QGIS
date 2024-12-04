@@ -30,10 +30,7 @@
 #include "modeltest.h"
 #endif
 
-QgsFieldMappingWidget::QgsFieldMappingWidget( QWidget *parent,
-    const QgsFields &sourceFields,
-    const QgsFields &destinationFields,
-    const QMap<QString, QString> &expressions )
+QgsFieldMappingWidget::QgsFieldMappingWidget( QWidget *parent, const QgsFields &sourceFields, const QgsFields &destinationFields, const QMap<QString, QString> &expressions )
   : QgsPanelWidget( parent )
 {
   QVBoxLayout *verticalLayout = new QVBoxLayout();
@@ -53,8 +50,8 @@ QgsFieldMappingWidget::QgsFieldMappingWidget( QWidget *parent,
   mTableView->setItemDelegateForColumn( static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationType ), new QgsFieldMappingTypeDelegate( mTableView ) );
   updateColumns();
   // Make sure columns are updated when rows are added
-  connect( mModel, &QgsFieldMappingModel::rowsInserted, this, [ = ] { updateColumns(); } );
-  connect( mModel, &QgsFieldMappingModel::modelReset, this, [ = ] { updateColumns(); } );
+  connect( mModel, &QgsFieldMappingModel::rowsInserted, this, [=] { updateColumns(); } );
+  connect( mModel, &QgsFieldMappingModel::modelReset, this, [=] { updateColumns(); } );
   connect( mModel, &QgsFieldMappingModel::dataChanged, this, &QgsFieldMappingWidget::changed );
   connect( mModel, &QgsFieldMappingModel::rowsInserted, this, &QgsFieldMappingWidget::changed );
   connect( mModel, &QgsFieldMappingModel::rowsRemoved, this, &QgsFieldMappingWidget::changed );
@@ -134,14 +131,14 @@ void QgsFieldMappingWidget::appendField( const QgsField &field, const QString &e
 
 bool QgsFieldMappingWidget::removeSelectedFields()
 {
-  if ( ! mTableView->selectionModel()->hasSelection() )
+  if ( !mTableView->selectionModel()->hasSelection() )
     return false;
 
   std::list<int> rowsToRemove { selectedRows() };
   rowsToRemove.reverse();
   for ( const int row : rowsToRemove )
   {
-    if ( ! model()->removeField( model()->index( row, 0, QModelIndex() ) ) )
+    if ( !model()->removeField( model()->index( row, 0, QModelIndex() ) ) )
     {
       return false;
     }
@@ -163,13 +160,13 @@ void QgsFieldMappingWidget::invertSelection()
 
 bool QgsFieldMappingWidget::moveSelectedFieldsUp()
 {
-  if ( ! mTableView->selectionModel()->hasSelection() )
+  if ( !mTableView->selectionModel()->hasSelection() )
     return false;
 
   const std::list<int> rowsToMoveUp { selectedRows() };
   for ( const int row : rowsToMoveUp )
   {
-    if ( ! model()->moveUp( model()->index( row, 0, QModelIndex() ) ) )
+    if ( !model()->moveUp( model()->index( row, 0, QModelIndex() ) ) )
     {
       return false;
     }
@@ -179,14 +176,14 @@ bool QgsFieldMappingWidget::moveSelectedFieldsUp()
 
 bool QgsFieldMappingWidget::moveSelectedFieldsDown()
 {
-  if ( ! mTableView->selectionModel()->hasSelection() )
+  if ( !mTableView->selectionModel()->hasSelection() )
     return false;
 
   std::list<int> rowsToMoveDown { selectedRows() };
   rowsToMoveDown.reverse();
   for ( const int row : rowsToMoveDown )
   {
-    if ( ! model()->moveDown( model()->index( row, 0, QModelIndex() ) ) )
+    if ( !model()->moveDown( model()->index( row, 0, QModelIndex() ) ) )
     {
       return false;
     }
@@ -238,7 +235,7 @@ QgsFieldMappingExpressionDelegate::QgsFieldMappingExpressionDelegate( QObject *p
 void QgsFieldMappingExpressionDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   QgsFieldExpressionWidget *editorWidget { qobject_cast<QgsFieldExpressionWidget *>( editor ) };
-  if ( ! editorWidget )
+  if ( !editorWidget )
     return;
 
   bool isExpression;
@@ -257,7 +254,7 @@ void QgsFieldMappingExpressionDelegate::setModelData( QWidget *editor, QAbstract
 void QgsFieldMappingExpressionDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
   QgsFieldExpressionWidget *editorWidget { qobject_cast<QgsFieldExpressionWidget *>( editor ) };
-  if ( ! editorWidget )
+  if ( !editorWidget )
     return;
 
   const QVariant value = index.model()->data( index, Qt::EditRole );
@@ -285,25 +282,21 @@ QWidget *QgsFieldMappingExpressionDelegate::createEditor( QWidget *parent, const
     Q_ASSERT( false );
   }
 
-  if ( QgsFieldMappingWidget *mappingWidget = qobject_cast< QgsFieldMappingWidget *>( QgsFieldMappingExpressionDelegate::parent() ) )
+  if ( QgsFieldMappingWidget *mappingWidget = qobject_cast<QgsFieldMappingWidget *>( QgsFieldMappingExpressionDelegate::parent() ) )
   {
     if ( mappingWidget->sourceLayer() )
       editor->setLayer( mappingWidget->sourceLayer() );
   }
-  else if ( QgsAggregateMappingWidget *aggregateWidget = qobject_cast< QgsAggregateMappingWidget *>( QgsFieldMappingExpressionDelegate::parent() ) )
+  else if ( QgsAggregateMappingWidget *aggregateWidget = qobject_cast<QgsAggregateMappingWidget *>( QgsFieldMappingExpressionDelegate::parent() ) )
   {
     if ( aggregateWidget->sourceLayer() )
       editor->setLayer( aggregateWidget->sourceLayer() );
   }
 
   editor->setField( index.model()->data( index, Qt::DisplayRole ).toString() );
-  connect( editor,
-           qOverload<const  QString & >( &QgsFieldExpressionWidget::fieldChanged ),
-           this,
-           [ = ]( const QString & fieldName )
-  {
+  connect( editor, qOverload<const QString &>( &QgsFieldExpressionWidget::fieldChanged ), this, [=]( const QString &fieldName ) {
     Q_UNUSED( fieldName )
-    const_cast< QgsFieldMappingExpressionDelegate *>( this )->emit commitData( editor );
+    const_cast<QgsFieldMappingExpressionDelegate *>( this )->emit commitData( editor );
   } );
   return editor;
 }
@@ -338,13 +331,9 @@ QWidget *QgsFieldMappingTypeDelegate::createEditor( QWidget *parent, const QStyl
   }
   else
   {
-    connect( editor,
-             qOverload<int >( &QComboBox::currentIndexChanged ),
-             this,
-             [ = ]( int currentIndex )
-    {
+    connect( editor, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int currentIndex ) {
       Q_UNUSED( currentIndex )
-      const_cast< QgsFieldMappingTypeDelegate *>( this )->emit commitData( editor );
+      const_cast<QgsFieldMappingTypeDelegate *>( this )->emit commitData( editor );
     } );
   }
   return editor;
@@ -353,7 +342,7 @@ QWidget *QgsFieldMappingTypeDelegate::createEditor( QWidget *parent, const QStyl
 void QgsFieldMappingTypeDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
   QComboBox *editorWidget { qobject_cast<QComboBox *>( editor ) };
-  if ( ! editorWidget )
+  if ( !editorWidget )
     return;
 
   const QVariant value = index.model()->data( index, Qt::EditRole );
@@ -363,10 +352,10 @@ void QgsFieldMappingTypeDelegate::setEditorData( QWidget *editor, const QModelIn
 void QgsFieldMappingTypeDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   QComboBox *editorWidget { qobject_cast<QComboBox *>( editor ) };
-  if ( ! editorWidget )
+  if ( !editorWidget )
     return;
 
-  const QVariant currentValue = editorWidget->currentData( );
+  const QVariant currentValue = editorWidget->currentData();
   model->setData( index, currentValue, Qt::EditRole );
 }
 

@@ -70,9 +70,7 @@ void QgsLayoutViewToolEditNodes::layoutPressEvent( QgsLayoutViewMouseEvent *even
     return;
   }
 
-  const QList<QGraphicsItem *> itemsAtCursorPos = view()->items( event->pos().x(), event->pos().y(),
-      mMoveContentSearchRadius,
-      mMoveContentSearchRadius );
+  const QList<QGraphicsItem *> itemsAtCursorPos = view()->items( event->pos().x(), event->pos().y(), mMoveContentSearchRadius, mMoveContentSearchRadius );
   if ( itemsAtCursorPos.isEmpty() )
     return;
 
@@ -113,7 +111,7 @@ void QgsLayoutViewToolEditNodes::layoutMoveEvent( QgsLayoutViewMouseEvent *event
     return;
   }
 
-  if ( mNodesItem &&  mNodesItemIndex != -1 && event->layoutPoint() != mMoveContentStartPos )
+  if ( mNodesItem && mNodesItemIndex != -1 && event->layoutPoint() != mMoveContentStartPos )
   {
     mNodesItem->moveNode( mNodesItemIndex, event->snappedPoint() );
   }
@@ -158,9 +156,7 @@ void QgsLayoutViewToolEditNodes::layoutDoubleClickEvent( QgsLayoutViewMouseEvent
   }
 
   // search items in layout
-  const QList<QGraphicsItem *> itemsAtCursorPos = view()->items( event->pos().x(), event->pos().y(),
-      mMoveContentSearchRadius,
-      mMoveContentSearchRadius );
+  const QList<QGraphicsItem *> itemsAtCursorPos = view()->items( event->pos().x(), event->pos().y(), mMoveContentSearchRadius, mMoveContentSearchRadius );
 
   if ( itemsAtCursorPos.isEmpty() )
     return;
@@ -198,10 +194,7 @@ void QgsLayoutViewToolEditNodes::layoutDoubleClickEvent( QgsLayoutViewMouseEvent
 
 void QgsLayoutViewToolEditNodes::keyPressEvent( QKeyEvent *event )
 {
-  if ( mNodesItem && mNodesItemIndex != -1 && ( event->key() == Qt::Key_Left
-       || event->key() == Qt::Key_Right
-       || event->key() == Qt::Key_Up
-       || event->key() == Qt::Key_Down ) )
+  if ( mNodesItem && mNodesItemIndex != -1 && ( event->key() == Qt::Key_Left || event->key() == Qt::Key_Right || event->key() == Qt::Key_Up || event->key() == Qt::Key_Down ) )
   {
     QPointF currentPos;
 
@@ -233,7 +226,7 @@ void QgsLayoutViewToolEditNodes::deactivate()
 
 QList<QgsLayoutItem *> QgsLayoutViewToolEditNodes::ignoredSnapItems() const
 {
-  QList< QgsLayoutItem * > items;
+  QList<QgsLayoutItem *> items;
   if ( mNodesItem )
     items << mNodesItem;
   return items;
@@ -282,6 +275,4 @@ void QgsLayoutViewToolEditNodes::setSelectedNode( QgsLayoutNodesItem *shape, int
       item->update();
     }
   }
-
 }
-

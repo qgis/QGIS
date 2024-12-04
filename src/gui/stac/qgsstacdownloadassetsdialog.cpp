@@ -30,8 +30,8 @@
 
 ///@cond PRIVATE
 
-QgsStacDownloadAssetsDialog::QgsStacDownloadAssetsDialog( QWidget *parent ) :
-  QDialog( parent )
+QgsStacDownloadAssetsDialog::QgsStacDownloadAssetsDialog( QWidget *parent )
+  : QDialog( parent )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
@@ -50,8 +50,7 @@ QgsStacDownloadAssetsDialog::QgsStacDownloadAssetsDialog( QWidget *parent ) :
   connect( mDeselectAllButton, &QPushButton::clicked, this, &QgsStacDownloadAssetsDialog::deselectAll );
 
   mTreeWidget->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( mTreeWidget, &QWidget::customContextMenuRequested,
-           this, &QgsStacDownloadAssetsDialog::showContextMenu );
+  connect( mTreeWidget, &QWidget::customContextMenuRequested, this, &QgsStacDownloadAssetsDialog::showContextMenu );
 }
 
 void QgsStacDownloadAssetsDialog::accept()
@@ -60,22 +59,18 @@ void QgsStacDownloadAssetsDialog::accept()
   const QStringList urls = selectedUrls();
   for ( const QString &url : urls )
   {
-    QgsNetworkContentFetcherTask *fetcher = new QgsNetworkContentFetcherTask( url,
-        mAuthCfg,
-        QgsTask::CanCancel,
-        tr( "Downloading STAC asset" ) );
+    QgsNetworkContentFetcherTask *fetcher = new QgsNetworkContentFetcherTask( url, mAuthCfg, QgsTask::CanCancel, tr( "Downloading STAC asset" ) );
 
-    connect( fetcher, &QgsNetworkContentFetcherTask::errorOccurred, fetcher, [bar = mMessageBar]( QNetworkReply::NetworkError, const QString & errorMsg )
-    {
+    connect( fetcher, &QgsNetworkContentFetcherTask::errorOccurred, fetcher, [bar = mMessageBar]( QNetworkReply::NetworkError, const QString &errorMsg ) {
       if ( bar )
         bar->pushMessage(
           tr( "Error downloading STAC asset" ),
           errorMsg,
-          Qgis::MessageLevel::Critical );
+          Qgis::MessageLevel::Critical
+        );
     } );
 
-    connect( fetcher, &QgsNetworkContentFetcherTask::fetched, fetcher, [fetcher, folder, bar = mMessageBar]
-    {
+    connect( fetcher, &QgsNetworkContentFetcherTask::fetched, fetcher, [fetcher, folder, bar = mMessageBar] {
       QNetworkReply *reply = fetcher->reply();
       if ( !reply || reply->error() != QNetworkReply::NoError )
       {
@@ -116,7 +111,8 @@ void QgsStacDownloadAssetsDialog::accept()
             bar->pushMessage(
               tr( "Error downloading STAC asset" ),
               tr( "Could not write to file %1" ).arg( file.fileName() ),
-              Qgis::MessageLevel::Critical );
+              Qgis::MessageLevel::Critical
+            );
         }
         else
         {
@@ -124,7 +120,8 @@ void QgsStacDownloadAssetsDialog::accept()
             bar->pushMessage(
               tr( "STAC asset downloaded" ),
               file.fileName(),
-              Qgis::MessageLevel::Success );
+              Qgis::MessageLevel::Success
+            );
         }
       }
     } );
@@ -147,10 +144,10 @@ void QgsStacDownloadAssetsDialog::setMessageBar( QgsMessageBar *bar )
 
 void QgsStacDownloadAssetsDialog::setStacItem( QgsStacItem *stacItem )
 {
-  if ( ! stacItem )
+  if ( !stacItem )
     return;
 
-  const QMap< QString, QgsStacAsset > assets = stacItem->assets();
+  const QMap<QString, QgsStacAsset> assets = stacItem->assets();
   for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
   {
     QTreeWidgetItem *item = new QTreeWidgetItem();
@@ -200,8 +197,7 @@ void QgsStacDownloadAssetsDialog::showContextMenu( QPoint p )
 
   const QString url = item->text( 5 );
   QAction *copyUrlAction = new QAction( tr( "Copy URL" ), mContextMenu );
-  connect( copyUrlAction, &QAction::triggered, this, [url]
-  {
+  connect( copyUrlAction, &QAction::triggered, this, [url] {
     QApplication::clipboard()->setText( url );
   } );
   mContextMenu->addAction( copyUrlAction );

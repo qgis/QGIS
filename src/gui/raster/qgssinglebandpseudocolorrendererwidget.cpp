@@ -140,7 +140,7 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
   if ( pr )
   {
     mBandComboBox->setBand( pr->inputBand() );
-    mMinMaxWidget->setBands( QList< int >() << pr->inputBand() );
+    mMinMaxWidget->setBands( QList<int>() << pr->inputBand() );
     mColorRampShaderWidget->setRasterBand( pr->inputBand() );
 
     // need to set min/max properties here because if we use the raster shader below,
@@ -161,7 +161,7 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
   }
   else
   {
-    mMinMaxWidget->setBands( QList< int >() << mBandComboBox->currentBand() );
+    mMinMaxWidget->setBands( QList<int>() << mBandComboBox->currentBand() );
     mColorRampShaderWidget->setRasterBand( mBandComboBox->currentBand() );
   }
 }

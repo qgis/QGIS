@@ -30,7 +30,7 @@
 
 void QgsStacDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsStacRootItem *rootItem = qobject_cast< QgsStacRootItem * >( item ) )
+  if ( QgsStacRootItem *rootItem = qobject_cast<QgsStacRootItem *>( item ) )
   {
     QAction *actionNewConnection = new QAction( tr( "New STAC Connection…" ), menu );
     connect( actionNewConnection, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
@@ -47,25 +47,21 @@ void QgsStacDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     menu->addAction( actionLoad );
   }
 
-  if ( QgsStacConnectionItem *connItem = qobject_cast< QgsStacConnectionItem * >( item ) )
+  if ( QgsStacConnectionItem *connItem = qobject_cast<QgsStacConnectionItem *>( item ) )
   {
     QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
 
-    const QList< QgsStacConnectionItem * > stacConnectionItems = QgsDataItem::filteredItems<QgsStacConnectionItem>( selection );
+    const QList<QgsStacConnectionItem *> stacConnectionItems = QgsDataItem::filteredItems<QgsStacConnectionItem>( selection );
     QAction *actionDelete = new QAction( stacConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [stacConnectionItems, context]
-    {
-      QgsDataItemGuiProviderUtils::deleteConnections( stacConnectionItems, []( const QString & connectionName )
-      {
-        QgsStacConnection( QString() ).remove( connectionName );
-      }, context );
+    connect( actionDelete, &QAction::triggered, this, [stacConnectionItems, context] {
+      QgsDataItemGuiProviderUtils::deleteConnections( stacConnectionItems, []( const QString &connectionName ) { QgsStacConnection( QString() ).remove( connectionName ); }, context );
     } );
     menu->addAction( actionDelete );
   }
 
-  if ( QgsStacCatalogItem *catalogItem = qobject_cast< QgsStacCatalogItem * >( item ) )
+  if ( QgsStacCatalogItem *catalogItem = qobject_cast<QgsStacCatalogItem *>( item ) )
   {
     menu->addSeparator();
 
@@ -81,7 +77,7 @@ void QgsStacDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     }
   }
 
-  if ( QgsStacItemItem *itemItem = qobject_cast< QgsStacItemItem * >( item ) )
+  if ( QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( item ) )
   {
     QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
     connect( actionRefresh, &QAction::triggered, this, [itemItem] { itemItem->refresh(); } );
@@ -151,8 +147,7 @@ void QgsStacDataItemGuiProvider::saveConnections()
 
 void QgsStacDataItemGuiProvider::loadConnections( QgsDataItem *item )
 {
-  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                           tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -167,11 +162,11 @@ void QgsStacDataItemGuiProvider::showDetails( QgsDataItem *item )
 {
   QgsStacObject *obj = nullptr;
 
-  if ( QgsStacItemItem *itemItem = qobject_cast< QgsStacItemItem * >( item ) )
+  if ( QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( item ) )
   {
     obj = itemItem->stacItem();
   }
-  else if ( QgsStacCatalogItem *catalogItem = qobject_cast< QgsStacCatalogItem * >( item ) )
+  else if ( QgsStacCatalogItem *catalogItem = qobject_cast<QgsStacCatalogItem *>( item ) )
   {
     obj = catalogItem->stacCatalog();
   }
@@ -186,9 +181,9 @@ void QgsStacDataItemGuiProvider::showDetails( QgsDataItem *item )
 
 void QgsStacDataItemGuiProvider::downloadAssets( QgsDataItem *item, QgsDataItemGuiContext context )
 {
-  QgsStacItemItem *itemItem = qobject_cast< QgsStacItemItem * >( item );
+  QgsStacItemItem *itemItem = qobject_cast<QgsStacItemItem *>( item );
 
-  if ( ! itemItem )
+  if ( !itemItem )
     return;
 
   QgsStacDownloadAssetsDialog dialog;

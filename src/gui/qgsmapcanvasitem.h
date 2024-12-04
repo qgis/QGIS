@@ -33,7 +33,6 @@ class QPainter;
 class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
 {
   protected:
-
     //! protected constructor: cannot be constructed directly
     QgsMapCanvasItem( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS );
 
@@ -42,9 +41,7 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! function to be implemented by derived classes
     virtual void paint( QPainter *painter ) = 0;
 
-    void paint( QPainter *painter,
-                const QStyleOptionGraphicsItem *option,
-                QWidget *widget = nullptr ) override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
     //! schedules map canvas for repaint
     void updateCanvas();
@@ -58,7 +55,6 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     bool setRenderContextVariables( QPainter *p, QgsRenderContext &context ) const;
 
   public:
-
     //! called on changed extent or resize event to update position of the item
     virtual void updatePosition();
 
@@ -77,7 +73,6 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     QPointF toCanvasCoordinates( const QgsPointXY &point ) const;
 
   protected:
-
     //! pointer to map canvas
     QgsMapCanvas *mMapCanvas = nullptr;
 
@@ -97,7 +92,6 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
 
     //! cached size of the item (to return in boundingRect())
     QSizeF mItemSize;
-
 };
 
 

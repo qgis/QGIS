@@ -17,9 +17,9 @@
 #include "moc_qgsmaplayeractionregistry.cpp"
 #include "qgsmaplayeraction.h"
 
-QgsMapLayerActionRegistry::QgsMapLayerActionRegistry( QObject *parent ) : QObject( parent )
+QgsMapLayerActionRegistry::QgsMapLayerActionRegistry( QObject *parent )
+  : QObject( parent )
 {
-
 }
 
 void QgsMapLayerActionRegistry::addMapLayerAction( QgsMapLayerAction *action )
@@ -28,9 +28,9 @@ void QgsMapLayerActionRegistry::addMapLayerAction( QgsMapLayerAction *action )
   emit changed();
 }
 
-QList< QgsMapLayerAction * > QgsMapLayerActionRegistry::mapLayerActions( QgsMapLayer *layer, Qgis::MapLayerActionTargets targets, const QgsMapLayerActionContext &context )
+QList<QgsMapLayerAction *> QgsMapLayerActionRegistry::mapLayerActions( QgsMapLayer *layer, Qgis::MapLayerActionTargets targets, const QgsMapLayerActionContext &context )
 {
-  QList< QgsMapLayerAction * > validActions;
+  QList<QgsMapLayerAction *> validActions;
 
   for ( QgsMapLayerAction *action : std::as_const( mMapLayerActionList ) )
   {
@@ -74,7 +74,7 @@ bool QgsMapLayerActionRegistry::removeMapLayerAction( QgsMapLayerAction *action 
 
 void QgsMapLayerActionRegistry::setDefaultActionForLayer( QgsMapLayer *layer, QgsMapLayerAction *action )
 {
-  mDefaultLayerActionMap[ layer ] = action;
+  mDefaultLayerActionMap[layer] = action;
 }
 
 QgsMapLayerAction *QgsMapLayerActionRegistry::defaultActionForLayer( QgsMapLayer *layer )
@@ -84,6 +84,5 @@ QgsMapLayerAction *QgsMapLayerActionRegistry::defaultActionForLayer( QgsMapLayer
     return nullptr;
   }
 
-  return mDefaultLayerActionMap[ layer ];
+  return mDefaultLayerActionMap[layer];
 }
-

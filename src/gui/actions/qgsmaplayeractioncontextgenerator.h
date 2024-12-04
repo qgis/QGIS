@@ -31,7 +31,6 @@ class QgsMapLayerActionContext;
 class GUI_EXPORT QgsMapLayerActionContextGenerator
 {
   public:
-
     virtual ~QgsMapLayerActionContextGenerator();
 
     /**

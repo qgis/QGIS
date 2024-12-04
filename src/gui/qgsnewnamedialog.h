@@ -33,7 +33,6 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
 {
     Q_OBJECT
   public:
-
     /**
      * New dialog constructor.
      * \param source original data source name, e.g. original layer name of the layer to be copied
@@ -46,10 +45,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * \note Earlier versions had a similar constructor but with extra arguments for \a regexp which were removed in QGIS 3.22 as they relied on the deprecated QRegExp class. Use setRegularExpression() instead.
      * \since QGIS 3.22
      */
-    QgsNewNameDialog( const QString &source = QString(), const QString &initial = QString(),
-                      const QStringList &extensions = QStringList(), const QStringList &existing = QStringList(),
-                      Qt::CaseSensitivity cs = Qt::CaseSensitive,
-                      QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
+    QgsNewNameDialog( const QString &source = QString(), const QString &initial = QString(), const QStringList &extensions = QStringList(), const QStringList &existing = QStringList(), Qt::CaseSensitivity cs = Qt::CaseSensitive, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
 
     /**
      * Sets the hint string for the dialog (the text shown above the name
@@ -130,8 +126,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * \param cs case sensitivity for new name to existing names comparison
      * \returns TRUE if name exists
      */
-    static bool exists( const QString &name, const QStringList &extensions,
-                        const QStringList &existing, Qt::CaseSensitivity cs = Qt::CaseSensitive );
+    static bool exists( const QString &name, const QStringList &extensions, const QStringList &existing, Qt::CaseSensitivity cs = Qt::CaseSensitive );
   signals:
 
     // TODO QGIS 4.0 - rename to nameChanged
@@ -164,8 +159,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     QString highlightText( const QString &text );
     static QStringList fullNames( const QString &name, const QStringList &extensions );
     // get list of existing names
-    static QStringList matching( const QStringList &newNames, const QStringList &existingNames,
-                                 Qt::CaseSensitivity cs = Qt::CaseSensitive );
+    static QStringList matching( const QStringList &newNames, const QStringList &existingNames, Qt::CaseSensitivity cs = Qt::CaseSensitive );
 };
 
 #endif // QGSNEWNAMEDIALOG_H

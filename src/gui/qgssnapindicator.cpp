@@ -66,9 +66,9 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
     else if ( match.hasVertex() )
     {
       if ( match.layer() )
-        iconType = QgsVertexMarker::ICON_BOX;  // vertex snap
+        iconType = QgsVertexMarker::ICON_BOX; // vertex snap
       else
-        iconType = QgsVertexMarker::ICON_X;  // intersection snap
+        iconType = QgsVertexMarker::ICON_X; // intersection snap
     }
     else if ( match.hasMiddleSegment() )
     {
@@ -82,7 +82,7 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
     {
       iconType = QgsVertexMarker::ICON_RHOMBUS; // area snap
     }
-    else  // must be segment snap
+    else // must be segment snap
     {
       iconType = QgsVertexMarker::ICON_DOUBLE_TRIANGLE;
     }
@@ -96,7 +96,7 @@ void QgsSnapIndicator::setMatch( const QgsPointLocator::Match &match )
     {
       const QPoint ptCanvas = mSnappingMarker->toCanvasCoordinates( match.point() ).toPoint();
       const QPoint ptGlobal = mCanvas->mapToGlobal( ptCanvas );
-      const QRect rect( ptCanvas.x(), ptCanvas.y(), 1, 1 );  // area where is the tooltip valid
+      const QRect rect( ptCanvas.x(), ptCanvas.y(), 1, 1 ); // area where is the tooltip valid
       const QString layerName = match.layer() ? match.layer()->name() : QString();
       QToolTip::showText( ptGlobal, layerName, mCanvas, rect );
     }

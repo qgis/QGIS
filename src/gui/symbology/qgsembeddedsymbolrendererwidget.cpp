@@ -43,7 +43,8 @@ QgsEmbeddedSymbolRendererWidget::QgsEmbeddedSymbolRendererWidget( QgsVectorLayer
     QLabel *label = new QLabel( tr( "The embedded symbols renderer can only be used with layers\n"
                                     "containing embedded styling information.\n\n"
                                     "'%1' does not contain embedded styling and cannot be displayed." )
-                                .arg( layer->name() ), this );
+                                  .arg( layer->name() ),
+                                this );
     this->setLayout( layout );
     layout->addWidget( label );
     mDefaultSymbolToolButton = nullptr;
@@ -59,7 +60,7 @@ QgsEmbeddedSymbolRendererWidget::QgsEmbeddedSymbolRendererWidget( QgsVectorLayer
   {
     mRenderer.reset( QgsEmbeddedSymbolRenderer::convertFromRenderer( renderer ) );
   }
-  if ( ! mRenderer )
+  if ( !mRenderer )
   {
     // use default embedded renderer
     mRenderer.reset( new QgsEmbeddedSymbolRenderer( QgsSymbol::defaultSymbol( type ) ) );
@@ -72,8 +73,7 @@ QgsEmbeddedSymbolRendererWidget::QgsEmbeddedSymbolRendererWidget( QgsVectorLayer
   mDefaultSymbolToolButton->setLayer( mLayer );
   mDefaultSymbolToolButton->registerExpressionContextGenerator( this );
 
-  connect( mDefaultSymbolToolButton, &QgsSymbolButton::changed, this, [ = ]
-  {
+  connect( mDefaultSymbolToolButton, &QgsSymbolButton::changed, this, [=] {
     mRenderer->setDefaultSymbol( mDefaultSymbolToolButton->symbol()->clone() );
     emit widgetChanged();
   } );
@@ -104,11 +104,10 @@ QgsExpressionContext QgsEmbeddedSymbolRendererWidget::createExpressionContext() 
   else
     context.appendScopes( mContext.globalProjectAtlasMapLayerScopes( mLayer ) );
 
-  const QList< QgsExpressionContextScope > scopes = mContext.additionalExpressionContextScopes();
+  const QList<QgsExpressionContextScope> scopes = mContext.additionalExpressionContextScopes();
   for ( const QgsExpressionContextScope &s : scopes )
   {
     context << new QgsExpressionContextScope( s );
   }
   return context;
 }
-

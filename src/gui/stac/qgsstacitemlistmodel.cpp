@@ -150,8 +150,7 @@ void QgsStacItemListModel::addItems( const QVector<QgsStacItem *> &items )
         const QString href = it->href();
         QgsNetworkContentFetcher *f = new QgsNetworkContentFetcher();
         f->fetchContent( href );
-        connect( f, &QgsNetworkContentFetcher::finished, this, [this, f, href, nextItemIndex]
-        {
+        connect( f, &QgsNetworkContentFetcher::finished, this, [this, f, href, nextItemIndex] {
           if ( f->reply()->error() == QNetworkReply::NoError )
           {
             const QImage img = QImage::fromData( f->reply()->readAll() );
@@ -161,10 +160,7 @@ void QgsStacItemListModel::addItems( const QVector<QgsStacItem *> &items )
             previewPainter.setRenderHint( QPainter::Antialiasing, true );
             previewPainter.setPen( Qt::NoPen );
             previewPainter.setBrush( Qt::black );
-            previewPainter.drawRoundedRect( 0, 0,
-                                            previewImage.width(), previewImage.height(),
-                                            static_cast<double>( previewImage.width() ) / 10.,
-                                            static_cast<double>( previewImage.width() ) / 10. );
+            previewPainter.drawRoundedRect( 0, 0, previewImage.width(), previewImage.height(), static_cast<double>( previewImage.width() ) / 10., static_cast<double>( previewImage.width() ) / 10. );
             previewPainter.setCompositionMode( QPainter::CompositionMode_SourceIn );
             previewPainter.drawImage( 0, 0, img );
             previewPainter.end();
@@ -186,11 +182,9 @@ QVector<QgsStacItem *> QgsStacItemListModel::items() const
 }
 
 
-
 QgsStacItemDelegate::QgsStacItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
 {
-
 }
 
 QSize QgsStacItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -235,11 +229,7 @@ void QgsStacItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
   painter->setRenderHint( QPainter::SmoothPixmapTransform, true );
   painter->setPen( QColor( 0, 0, 0, 0 ) );
   painter->setBrush( QBrush( color ) );
-  painter->drawRoundedRect( option.rect.left() + static_cast<int>( 0.625 * mRoundedRectSizePixels ),
-                            option.rect.top() + static_cast<int>( 0.625 * mRoundedRectSizePixels ),
-                            option.rect.width() - static_cast<int>( 2 * 0.625 * mRoundedRectSizePixels ),
-                            option.rect.height() - static_cast<int>( 2 * 0.625 * mRoundedRectSizePixels ),
-                            mRoundedRectSizePixels, mRoundedRectSizePixels );
+  painter->drawRoundedRect( option.rect.left() + static_cast<int>( 0.625 * mRoundedRectSizePixels ), option.rect.top() + static_cast<int>( 0.625 * mRoundedRectSizePixels ), option.rect.width() - static_cast<int>( 2 * 0.625 * mRoundedRectSizePixels ), option.rect.height() - static_cast<int>( 2 * 0.625 * mRoundedRectSizePixels ), mRoundedRectSizePixels, mRoundedRectSizePixels );
 
   const QFontMetrics fm( option.font );
   const int textSize = static_cast<int>( fm.height() * 0.85 );
@@ -252,21 +242,16 @@ void QgsStacItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
   }
 
   doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-weight:bold;'>%2</span><br>%3<br><br><i>%4</i></div>" )
-               .arg( QString::number( textSize ),
-                     index.data( QgsStacItemListModel::Role::Title ).toString(),
-                     index.data( QgsStacItemListModel::Role::Collection ).toString(),
-                     index.data( QgsStacItemListModel::Role::Formats ).toStringList().join( QStringLiteral( ", " ) ) ) );
+                 .arg( QString::number( textSize ), index.data( QgsStacItemListModel::Role::Title ).toString(), index.data( QgsStacItemListModel::Role::Collection ).toString(), index.data( QgsStacItemListModel::Role::Formats ).toStringList().join( QStringLiteral( ", " ) ) ) );
   doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? iconSize.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
   if ( !icon.isNull() )
   {
-    painter->drawPixmap( option.rect.left() + static_cast<int>( 1.25 * mRoundedRectSizePixels ),
-                         option.rect.top() + static_cast<int>( 1.25 * mRoundedRectSizePixels ),
-                         iconSize.width(), iconSize.height(),  icon );
+    painter->drawPixmap( option.rect.left() + static_cast<int>( 1.25 * mRoundedRectSizePixels ), option.rect.top() + static_cast<int>( 1.25 * mRoundedRectSizePixels ), iconSize.width(), iconSize.height(), icon );
   }
 
   painter->translate( option.rect.left() + ( !icon.isNull() ? iconSize.width() + 3.125 * mRoundedRectSizePixels : 1.875 * mRoundedRectSizePixels ), option.rect.top() + 1.875 * mRoundedRectSizePixels );
-  ctx.clip = QRectF( 0, 0, option.rect.width() - ( !icon.isNull() ? iconSize.width() - 4.375 * mRoundedRectSizePixels : 3.125 *  mRoundedRectSizePixels ), option.rect.height() - 3.125 * mRoundedRectSizePixels );
+  ctx.clip = QRectF( 0, 0, option.rect.width() - ( !icon.isNull() ? iconSize.width() - 4.375 * mRoundedRectSizePixels : 3.125 * mRoundedRectSizePixels ), option.rect.height() - 3.125 * mRoundedRectSizePixels );
   doc.documentLayout()->draw( painter, ctx );
   painter->restore();
 }

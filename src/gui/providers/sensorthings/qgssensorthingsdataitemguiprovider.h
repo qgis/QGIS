@@ -26,11 +26,9 @@ class QgsSensorThingsDataItemGuiProvider : public QObject, public QgsDataItemGui
 {
     Q_OBJECT
   public:
-
     QString name() override { return QStringLiteral( "SensorThings" ); }
 
-    void populateContextMenu( QgsDataItem *item, QMenu *menu,
-                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
   private:
     static void editConnection( QgsDataItem *item );
@@ -38,7 +36,6 @@ class QgsSensorThingsDataItemGuiProvider : public QObject, public QgsDataItemGui
     static void newConnection( QgsDataItem *item );
     static void saveConnections();
     static void loadConnections( QgsDataItem *item );
-
 };
 
 ///@endcond

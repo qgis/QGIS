@@ -40,7 +40,6 @@ class GUI_EXPORT QgsTiledSceneRendererPropertiesWidget : public QgsMapLayerConfi
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsTiledSceneRendererPropertiesWidget, associated with the specified \a layer and \a style database.
      */
@@ -65,7 +64,6 @@ class GUI_EXPORT QgsTiledSceneRendererPropertiesWidget : public QgsMapLayerConfi
     void emitWidgetChanged();
 
   private:
-
     static void initRendererWidgetFunctions();
 
     QgsTiledSceneLayer *mLayer = nullptr;
@@ -77,7 +75,6 @@ class GUI_EXPORT QgsTiledSceneRendererPropertiesWidget : public QgsMapLayerConfi
     QgsMessageBar *mMessageBar = nullptr;
 
     bool mBlockChangedSignal = false;
-
 };
 
 

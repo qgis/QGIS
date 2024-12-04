@@ -67,8 +67,7 @@ void QgsValueMapWidgetWrapper::initWidget( QWidget *editor )
   {
     QgsValueMapConfigDlg::populateComboBox( mComboBox, config(), false );
     mComboBox->view()->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
-    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-             this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::emitValueChanged ) );
+    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::emitValueChanged ) );
   }
 }
 

@@ -58,7 +58,7 @@ void QgsProcessingBatchAlgorithmDialogBase::execute( const QList<QVariantMap> &p
 
   mFeedback.reset( createFeedback() );
 
-  mBatchFeedback = std::make_unique< QgsProcessingBatchFeedback >( mTotalSteps, mFeedback.get() );
+  mBatchFeedback = std::make_unique<QgsProcessingBatchFeedback>( mTotalSteps, mFeedback.get() );
 
   mProxyTask = new QgsProxyProgressTask( tr( "Batch Processing - %1" ).arg( algorithm()->displayName() ), true );
   connect( mProxyTask, &QgsProxyProgressTask::canceled, mBatchFeedback.get(), &QgsFeedback::cancel );
@@ -149,10 +149,10 @@ void QgsProcessingBatchAlgorithmDialogBase::onTaskComplete( bool ok, const QVari
     pushInfo( QString() );
 
     mResults.append( QVariantMap(
-    {
-      { QStringLiteral( "parameters" ), mCurrentParameters },
-      { QStringLiteral( "results" ), results }
-    } ) );
+      { { QStringLiteral( "parameters" ), mCurrentParameters },
+        { QStringLiteral( "results" ), results }
+      }
+    ) );
 
     handleAlgorithmResults( algorithm(), *mTaskContext, mBatchFeedback.get(), mCurrentParameters );
     executeNext();
@@ -170,10 +170,10 @@ void QgsProcessingBatchAlgorithmDialogBase::onTaskComplete( bool ok, const QVari
     reportError( tr( "Execution failed after %1 seconds" ).arg( mCurrentStepTimer.elapsed() / 1000.0, 2 ), false );
 
     mErrors.append( QVariantMap(
-    {
-      { QStringLiteral( "parameters" ), mCurrentParameters },
-      { QStringLiteral( "errors" ), taskErrors }
-    } ) );
+      { { QStringLiteral( "parameters" ), mCurrentParameters },
+        { QStringLiteral( "errors" ), taskErrors }
+      }
+    ) );
     executeNext();
   }
 }

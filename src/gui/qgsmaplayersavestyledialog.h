@@ -42,7 +42,6 @@ class GUI_EXPORT QgsMapLayerSaveStyleDialog : public QDialog, private Ui::QgsMap
     Q_OBJECT
 
   public:
-
     struct SaveToDbSettings
     {
       public:
@@ -94,13 +93,13 @@ class GUI_EXPORT QgsMapLayerSaveStyleDialog : public QDialog, private Ui::QgsMap
     /**
      * Returns the styles list widget.
      */
-    const QListWidget *stylesWidget( );
+    const QListWidget *stylesWidget();
 
     /**
      * Returns the SLD export options.
      * \since QGIS 3.30
      */
-    Qgis::SldExportOptions sldExportOptions( ) const;
+    Qgis::SldExportOptions sldExportOptions() const;
 
   public slots:
     void accept() override;

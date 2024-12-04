@@ -45,7 +45,6 @@ SIP_IF_MODULE( HAVE_QSCI_SIP )
 class GUI_EXPORT QgsCodeInterpreter
 {
   public:
-
     virtual ~QgsCodeInterpreter();
 
     /**
@@ -70,7 +69,6 @@ class GUI_EXPORT QgsCodeInterpreter
     virtual QString promptForState( int state ) const = 0;
 
   protected:
-
     /**
      * Pure virtual method for executing commands in the interpreter.
      *
@@ -80,9 +78,7 @@ class GUI_EXPORT QgsCodeInterpreter
     virtual int execCommandImpl( const QString &command ) = 0;
 
   private:
-
     int mState = 0;
-
 };
 
 
@@ -103,8 +99,6 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     Q_OBJECT
 
   public:
-
-
 #ifndef SIP_RUN
 
     static inline QgsSettingsTreeNode *sTreeCodeEditor = QgsSettingsTree::sTreeGui->createChildNode( QStringLiteral( "code-editor" ) );
@@ -118,9 +112,9 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     enum class Mode
     {
-      ScriptEditor, //!< Standard mode, allows for display and edit of entire scripts
+      ScriptEditor,  //!< Standard mode, allows for display and edit of entire scripts
       OutputDisplay, //!< Read only mode for display of command outputs
-      CommandInput, //!< Command input mode
+      CommandInput,  //!< Command input mode
     };
     Q_ENUM( Mode )
 
@@ -132,8 +126,8 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \since QGIS 3.16
      */
     enum class MarginRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsCodeEditor, MarginRole ) : int
-      {
-      LineNumbers = 0, //!< Line numbers
+    {
+      LineNumbers = 0,     //!< Line numbers
       ErrorIndicators = 1, //!< Error indicators
       FoldingControls = 2, //!< Folding controls
     };
@@ -146,7 +140,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     enum class Flag : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      CodeFolding = 1 << 0, //!< Indicates that code folding should be enabled for the editor
+      CodeFolding = 1 << 0,              //!< Indicates that code folding should be enabled for the editor
       ImmediatelyUpdateHistory = 1 << 1, //!< Indicates that the history file should be immediately updated whenever a command is executed, instead of the default behavior of only writing the history on widget close \since QGIS 3.32
     };
     Q_ENUM( Flag )
@@ -302,7 +296,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      * \note Not available in Python bindings
      * \since QGIS 3.16
      */
-    void setCustomAppearance( const QString &scheme = QString(), const QMap< QgsCodeEditorColorScheme::ColorRole, QColor > &customColors = QMap< QgsCodeEditorColorScheme::ColorRole, QColor >(), const QString &fontFamily = QString(), int fontSize = 0 ) SIP_SKIP;
+    void setCustomAppearance( const QString &scheme = QString(), const QMap<QgsCodeEditorColorScheme::ColorRole, QColor> &customColors = QMap<QgsCodeEditorColorScheme::ColorRole, QColor>(), const QString &fontFamily = QString(), int fontSize = 0 ) SIP_SKIP;
 
     /**
      * Adds a \a warning message and indicator to the specified a \a lineNumber.
@@ -562,7 +556,6 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     void helpRequested( const QString &word );
 
   protected:
-
     /**
      * Returns TRUE if a \a font is a fixed pitch font.
      */
@@ -649,7 +642,6 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     virtual void showMessage( const QString &title, const QString &message, Qgis::MessageLevel level );
 
   private:
-
     void setSciWidget();
     void updateFolding();
     bool readHistoryFile();
@@ -666,11 +658,11 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     // used if above is false, inplace of values taken from QSettings:
     bool mOverrideColors = false;
     QString mColorScheme;
-    QMap< QgsCodeEditorColorScheme::ColorRole, QColor > mCustomColors;
+    QMap<QgsCodeEditorColorScheme::ColorRole, QColor> mCustomColors;
     QString mFontFamily;
     int mFontSize = 0;
 
-    QVector< int > mWarningLines;
+    QVector<int> mWarningLines;
 
     // for use in command input mode
     QStringList mHistory;
@@ -680,7 +672,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
 
     QgsCodeInterpreter *mInterpreter = nullptr;
 
-    static QMap< QgsCodeEditorColorScheme::ColorRole, QString > sColorRoleToSettingsKey;
+    static QMap<QgsCodeEditorColorScheme::ColorRole, QString> sColorRoleToSettingsKey;
 
     static constexpr int MARKER_NUMBER = 6;
 };

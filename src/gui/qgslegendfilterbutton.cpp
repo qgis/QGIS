@@ -62,7 +62,7 @@ void QgsLegendFilterButton::onSetLegendFilterExpression()
 {
   QgsExpressionContext context;
   if ( mExpressionContextGenerator )
-    context  = mExpressionContextGenerator->createExpressionContext();
+    context = mExpressionContextGenerator->createExpressionContext();
   else
   {
     context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );

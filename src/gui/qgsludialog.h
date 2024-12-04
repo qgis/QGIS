@@ -27,7 +27,7 @@
  * \ingroup gui
  * \class QgsLUDialog
  */
-class GUI_EXPORT QgsLUDialog: public QDialog, private Ui::QgsLUDialogBase
+class GUI_EXPORT QgsLUDialog : public QDialog, private Ui::QgsLUDialogBase
 {
     Q_OBJECT
   public:
@@ -50,7 +50,6 @@ class GUI_EXPORT QgsLUDialog: public QDialog, private Ui::QgsLUDialogBase
     void setUpperValue( const QString &val );
 
   private:
-
     void setDecimalPlaces( QgsDoubleSpinBox *widget, double value ) const;
 };
 

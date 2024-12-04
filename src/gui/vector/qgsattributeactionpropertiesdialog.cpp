@@ -39,7 +39,7 @@ QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( Qgis::At
 
   populateActionTypes();
 
-  mActionType->setCurrentIndex( mActionType->findData( static_cast< int >( type ) ) );
+  mActionType->setCurrentIndex( mActionType->findData( static_cast<int>( type ) ) );
   mActionName->setText( description );
   mShortTitle->setText( shortTitle );
   mActionIcon->setText( iconPath );
@@ -146,7 +146,8 @@ void QgsAttributeActionPropertiesDialog::browse()
 {
   // Popup a file browser and place the results into the action widget
   const QString action = QFileDialog::getOpenFileName(
-                           this, tr( "Select an action", "File dialog window title" ), QDir::homePath() );
+    this, tr( "Select an action", "File dialog window title" ), QDir::homePath()
+  );
 
   if ( !action.isNull() )
     mActionText->insertText( action );
@@ -246,12 +247,12 @@ void QgsAttributeActionPropertiesDialog::showHelp()
 
 void QgsAttributeActionPropertiesDialog::populateActionTypes()
 {
-  mActionType->addItem( tr( "Generic" ), static_cast< int>( Qgis::AttributeActionType::Generic ) );
-  mActionType->addItem( tr( "Python" ), static_cast< int>( Qgis::AttributeActionType::GenericPython ) );
-  mActionType->addItem( tr( "macOS" ), static_cast< int>( Qgis::AttributeActionType::Mac ) );
-  mActionType->addItem( tr( "Windows" ), static_cast< int>( Qgis::AttributeActionType::Windows ) );
-  mActionType->addItem( tr( "Unix" ), static_cast< int>( Qgis::AttributeActionType::Unix ) );
-  mActionType->addItem( tr( "Open URL" ), static_cast< int>( Qgis::AttributeActionType::OpenUrl ) );
-  mActionType->addItem( tr( "Submit URL (urlencoded or JSON)" ), static_cast< int>( Qgis::AttributeActionType::SubmitUrlEncoded ) );
-  mActionType->addItem( tr( "Submit URL (multipart)" ), static_cast< int>( Qgis::AttributeActionType::SubmitUrlMultipart ) );
+  mActionType->addItem( tr( "Generic" ), static_cast<int>( Qgis::AttributeActionType::Generic ) );
+  mActionType->addItem( tr( "Python" ), static_cast<int>( Qgis::AttributeActionType::GenericPython ) );
+  mActionType->addItem( tr( "macOS" ), static_cast<int>( Qgis::AttributeActionType::Mac ) );
+  mActionType->addItem( tr( "Windows" ), static_cast<int>( Qgis::AttributeActionType::Windows ) );
+  mActionType->addItem( tr( "Unix" ), static_cast<int>( Qgis::AttributeActionType::Unix ) );
+  mActionType->addItem( tr( "Open URL" ), static_cast<int>( Qgis::AttributeActionType::OpenUrl ) );
+  mActionType->addItem( tr( "Submit URL (urlencoded or JSON)" ), static_cast<int>( Qgis::AttributeActionType::SubmitUrlEncoded ) );
+  mActionType->addItem( tr( "Submit URL (multipart)" ), static_cast<int>( Qgis::AttributeActionType::SubmitUrlMultipart ) );
 }

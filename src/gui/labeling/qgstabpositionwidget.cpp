@@ -62,8 +62,7 @@ QList<QgsTextFormat::Tab> QgsTabPositionWidget::positions() const
     }
   }
 
-  std::sort( result.begin(), result.end(), []( const QgsTextFormat::Tab & a, const QgsTextFormat::Tab & b )
-  {
+  std::sort( result.begin(), result.end(), []( const QgsTextFormat::Tab &a, const QgsTextFormat::Tab &b ) {
     return a.position() < b.position();
   } );
 
@@ -78,7 +77,7 @@ void QgsTabPositionWidget::setUnit( Qgis::RenderUnit unit )
 
 void QgsTabPositionWidget::mAddButton_clicked()
 {
-  const QList< QgsTextFormat::Tab > currentPositions = positions();
+  const QList<QgsTextFormat::Tab> currentPositions = positions();
   double newPosition = 6;
   if ( !currentPositions.empty() )
   {

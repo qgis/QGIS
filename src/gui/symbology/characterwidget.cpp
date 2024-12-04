@@ -118,7 +118,7 @@ void CharacterWidget::setCharacter( QChar character )
   QWidget *widget = parentWidget();
   if ( widget )
   {
-    QScrollArea *scrollArea = qobject_cast< QScrollArea *>( widget->parent() );
+    QScrollArea *scrollArea = qobject_cast<QScrollArea *>( widget->parent() );
     if ( scrollArea && mLastKey < 65536 )
     {
       scrollArea->ensureVisible( 0, mLastKey / mColumns * mSquareSize );
@@ -215,13 +215,11 @@ void CharacterWidget::mouseMoveEvent( QMouseEvent *event )
   const uint key = ( widgetPosition.y() / mSquareSize ) * mColumns + widgetPosition.x() / mSquareSize;
 
   const QString text = QStringLiteral( "<p style=\"text-align: center; font-size: 24pt; font-family: %1\">%2</p><p><table><tr><td>%3</td><td>%2</td></tr><tr><td>%4</td><td>%5</td></tr><tr><td>%6</td><td>0x%7</td></tr></table>" )
-                       .arg( mDisplayFont.family() )
-                       .arg( QChar( key ) )
-                       .arg( tr( "Character" ),
-                             tr( "Decimal" ) )
-                       .arg( key )
-                       .arg( tr( "Hex" ),
-                             QString::number( key, 16 ) );
+                         .arg( mDisplayFont.family() )
+                         .arg( QChar( key ) )
+                         .arg( tr( "Character" ), tr( "Decimal" ) )
+                         .arg( key )
+                         .arg( tr( "Hex" ), QString::number( key, 16 ) );
   QToolTip::showText( event->globalPos(), text, this );
 }
 
@@ -276,9 +274,7 @@ void CharacterWidget::paintEvent( QPaintEvent *event )
 
       if ( fontMetrics.inFont( QChar( key ) ) )
       {
-        painter.drawText( column * mSquareSize + ( mSquareSize / 2 ) - fontMetrics.boundingRect( QChar( key ) ).width() / 2,
-                          row * mSquareSize + 4 + fontMetrics.ascent(),
-                          QString( QChar( key ) ) );
+        painter.drawText( column * mSquareSize + ( mSquareSize / 2 ) - fontMetrics.boundingRect( QChar( key ) ).width() / 2, row * mSquareSize + 4 + fontMetrics.ascent(), QString( QChar( key ) ) );
       }
     }
   }

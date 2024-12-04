@@ -129,8 +129,7 @@ void QgsStacSearchParametersDialog::setMapCanvas( QgsMapCanvas *canvas )
 
 bool QgsStacSearchParametersDialog::hasTemporalFilter() const
 {
-  return mTemporalFilterEnabled &&
-         !( mFromDateTimeEdit->dateTime().isNull() || mToDateTimeEdit->dateTime().isNull() ) ;
+  return mTemporalFilterEnabled && !( mFromDateTimeEdit->dateTime().isNull() || mToDateTimeEdit->dateTime().isNull() );
 }
 
 bool QgsStacSearchParametersDialog::hasSpatialFilter() const
@@ -162,9 +161,7 @@ QgsGeometry QgsStacSearchParametersDialog::spatialExtent() const
 
 QgsDateTimeRange QgsStacSearchParametersDialog::temporalRange() const
 {
-  if ( mFromDateTimeEdit->dateTime() <= mToDateTimeEdit->dateTime() ||
-       mFromDateTimeEdit->dateTime().isNull() ||
-       mToDateTimeEdit->dateTime().isNull() )
+  if ( mFromDateTimeEdit->dateTime() <= mToDateTimeEdit->dateTime() || mFromDateTimeEdit->dateTime().isNull() || mToDateTimeEdit->dateTime().isNull() )
     return QgsDateTimeRange( mFromDateTimeEdit->dateTime(), mToDateTimeEdit->dateTime() );
   else
     return QgsDateTimeRange( mToDateTimeEdit->dateTime(), mFromDateTimeEdit->dateTime() );
@@ -206,8 +203,8 @@ QVector<QgsStacCollection *> QgsStacSearchParametersDialog::collections() const
 QString QgsStacSearchParametersDialog::activeFiltersPreview()
 {
   QString str = tr( "%1/%2 Collections" )
-                .arg( mCollectionsFilterEnabled ? mSelectedCollections.size() : mCollectionsModel->rowCount() )
-                .arg( mCollectionsModel->rowCount() );
+                  .arg( mCollectionsFilterEnabled ? mSelectedCollections.size() : mCollectionsModel->rowCount() )
+                  .arg( mCollectionsModel->rowCount() );
 
   if ( mSpatialFilterEnabled )
   {

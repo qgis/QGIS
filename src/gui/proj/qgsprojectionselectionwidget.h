@@ -46,26 +46,26 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 {
     Q_OBJECT
   public:
-
     /**
      * Predefined CRS options shown in widget
      */
     enum CrsOption SIP_ENUM_BASETYPE( IntFlag )
     {
-      Invalid = 1 << 0, //!< Invalid option, since QGIS 3.36
-      LayerCrs = 1 << 1, //!< Optional layer CRS
+      Invalid = 1 << 0,    //!< Invalid option, since QGIS 3.36
+      LayerCrs = 1 << 1,   //!< Optional layer CRS
       ProjectCrs = 1 << 2, //!< Current project CRS (if OTF reprojection enabled)
       CurrentCrs = 1 << 3, //!< Current user selected CRS
       DefaultCrs = 1 << 4, //!< Global default QGIS CRS
-      RecentCrs = 1 << 5, //!< Recently used CRS
-      CrsNotSet = 1 << 6, //!< Not set (hidden by default)
+      RecentCrs = 1 << 5,  //!< Recently used CRS
+      CrsNotSet = 1 << 6,  //!< Not set (hidden by default)
     };
 
     /**
      * Flags for predefined CRS options shown in widget.
      * \since QGIS 3.36
      */
-    Q_DECLARE_FLAGS( CrsOptions, CrsOption ) SIP_SKIP;
+    Q_DECLARE_FLAGS( CrsOptions, CrsOption )
+    SIP_SKIP;
 
     /**
      * Constructor for QgsProjectionSelectionWidget, with the specified \a parent widget.
@@ -74,8 +74,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      * shown in the widget. The default is to show all horizontal and compound CRS in order to match
      * the behavior of older QGIS releases. The \a filter can be altered to also include vertical CRS if desired.
      */
-    explicit QgsProjectionSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                                           QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
+    explicit QgsProjectionSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 
     /**
      * Returns the currently selected CRS for the widget
@@ -177,7 +176,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      *
      * \since QGIS 3.28
      */
-    void setFilter( const QList< QgsCoordinateReferenceSystem > &crses );
+    void setFilter( const QList<QgsCoordinateReferenceSystem> &crses );
 
     /**
      * Returns the filters set on the available CRS.
@@ -228,13 +227,11 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     void selectCrs();
 
   protected:
-
     void dragEnterEvent( QDragEnterEvent *event ) override;
     void dragLeaveEvent( QDragLeaveEvent *event ) override;
     void dropEvent( QDropEvent *event ) override;
 
   private:
-
     CombinedCoordinateReferenceSystemsProxyModel *mModel = nullptr;
 
     QgsHighlightableComboBox *mCrsComboBox = nullptr;
@@ -248,7 +245,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     QWidget *mWarningLabelContainer = nullptr;
     QLabel *mWarningLabel = nullptr;
 
-    QPointer< QgsCrsSelectionWidget > mActivePanel;
+    QPointer<QgsCrsSelectionWidget> mActivePanel;
     int mIgnorePanelSignals = 0;
 
     QString mDialogTitle;
@@ -261,10 +258,10 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 
     void comboIndexChanged( int idx );
     void updateWarning();
-
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProjectionSelectionWidget::CrsOptions ) SIP_SKIP
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProjectionSelectionWidget::CrsOptions )
+SIP_SKIP
 
 
 ///@cond PRIVATE
@@ -274,7 +271,6 @@ class StandardCoordinateReferenceSystemsModel : public QAbstractItemModel SIP_SK
     Q_OBJECT
 
   public:
-
     enum Role
     {
       // values copied from QgsRecentCoordinateReferenceSystemsModel
@@ -301,8 +297,8 @@ class StandardCoordinateReferenceSystemsModel : public QAbstractItemModel SIP_SK
     void setNotSetText( const QString &text );
     QString notSetText() const { return mNotSetText; }
     QgsCoordinateReferenceSystem currentCrs() const { return mCurrentCrs; }
-  private:
 
+  private:
     QgsProjectionSelectionWidget::CrsOptions mOptions;
     QgsCoordinateReferenceSystem mCurrentCrs;
     QgsCoordinateReferenceSystem mProjectCrs;
@@ -322,8 +318,8 @@ class CombinedCoordinateReferenceSystemsModel : public QConcatenateTablesProxyMo
     QString notSetText() const;
     QgsCoordinateReferenceSystem currentCrs() const;
     StandardCoordinateReferenceSystemsModel *standardModel() { return mStandardModel; }
-  private:
 
+  private:
     StandardCoordinateReferenceSystemsModel *mStandardModel = nullptr;
     QgsRecentCoordinateReferenceSystemsProxyModel *mRecentModel = nullptr;
 };
@@ -333,7 +329,6 @@ class CombinedCoordinateReferenceSystemsProxyModel : public QSortFilterProxyMode
     Q_OBJECT
 
   public:
-
     CombinedCoordinateReferenceSystemsProxyModel( QObject *parent );
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
     void setLayerCrs( const QgsCoordinateReferenceSystem &crs );
@@ -341,20 +336,19 @@ class CombinedCoordinateReferenceSystemsProxyModel : public QSortFilterProxyMode
     void setFilters( QgsCoordinateReferenceSystemProxyModel::Filters filters );
     QgsCoordinateReferenceSystemProxyModel::Filters filters() const;
 
-    void setFilteredCrs( const QList< QgsCoordinateReferenceSystem > &crses );
-    QList< QgsCoordinateReferenceSystem > filteredCrs() const { return mFilteredCrs; }
+    void setFilteredCrs( const QList<QgsCoordinateReferenceSystem> &crses );
+    QList<QgsCoordinateReferenceSystem> filteredCrs() const { return mFilteredCrs; }
 
     void setOption( QgsProjectionSelectionWidget::CrsOption option, bool enabled );
     CombinedCoordinateReferenceSystemsModel *combinedModel() const { return mModel; }
-  private:
 
+  private:
     CombinedCoordinateReferenceSystemsModel *mModel = nullptr;
     QgsProjectionSelectionWidget::CrsOptions mVisibleOptions;
 
     QList<QgsCoordinateReferenceSystem> mFilteredCrs;
 
     QgsCoordinateReferenceSystemProxyModel::Filters mFilters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound;
-
 };
 
 ///@endcond PRIVATE

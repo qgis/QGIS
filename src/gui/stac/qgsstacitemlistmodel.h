@@ -30,7 +30,6 @@ class QgsStacItemListModel : public QAbstractListModel
 {
     Q_OBJECT
   public:
-
     enum Role
     {
       StacObject = Qt::UserRole + 1,
@@ -53,16 +52,16 @@ class QgsStacItemListModel : public QAbstractListModel
     void clear();
 
     //! Builds collection dictionary. Does not take ownership
-    void setCollections( const QVector< QgsStacCollection * > &collections );
+    void setCollections( const QVector<QgsStacCollection *> &collections );
     //! Add items to the model. Takes ownership
-    void addItems( const QVector< QgsStacItem * > &items );
+    void addItems( const QVector<QgsStacItem *> &items );
     //! Returns all items in the model. Does not transfer ownership
-    QVector< QgsStacItem * > items() const;
+    QVector<QgsStacItem *> items() const;
 
   private:
-    QVector< QgsStacItem * > mItems;
-    QMap< QString, QPixmap > mThumbnails;
-    QMap< QString, QString > mCollections;
+    QVector<QgsStacItem *> mItems;
+    QMap<QString, QPixmap> mThumbnails;
+    QMap<QString, QString> mCollections;
 };
 
 

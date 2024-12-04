@@ -203,13 +203,12 @@ void QgsStacSourceSelect::btnEdit_clicked()
     populateConnectionList();
     emit connectionsChanged();
   }
-
 }
 
 void QgsStacSourceSelect::btnDelete_clicked()
 {
   const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                      .arg( cmbConnections->currentText() );
+                        .arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -227,8 +226,7 @@ void QgsStacSourceSelect::btnSave_clicked()
 
 void QgsStacSourceSelect::btnLoad_clicked()
 {
-  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
-                           tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -323,7 +321,7 @@ void QgsStacSourceSelect::onCollectionsRequestFinished( int requestId, QString e
     return;
   }
 
-  const QVector< QgsStacCollection * > vcols = cols->takeCollections();
+  const QVector<QgsStacCollection *> vcols = cols->takeCollections();
   mParametersDialog->setCollections( vcols );
   mItemsModel->setCollections( vcols );
   mStatusLabel->setText( tr( "Searching…" ) );
@@ -345,7 +343,7 @@ void QgsStacSourceSelect::onItemCollectionRequestFinished( int requestId, QStrin
 
   mNextPageUrl = col->nextUrl();
 
-  const QVector< QgsStacItem *> items = col->takeItems();
+  const QVector<QgsStacItem *> items = col->takeItems();
   mItemsModel->addItems( items );
 
   for ( QgsStacItem *i : items )
@@ -365,8 +363,7 @@ void QgsStacSourceSelect::onItemCollectionRequestFinished( int requestId, QStrin
     // Suppress warning: Potential leak of memory in qtimer.h [clang-analyzer-cplusplus.NewDeleteLeaks]
 #ifndef __clang_analyzer__
     // Let the results appear, then fetch more if there's no scrollbar
-    QTimer::singleShot( 100, this, [ = ]
-    {
+    QTimer::singleShot( 100, this, [=] {
       if ( !mItemsView->verticalScrollBar()->isVisible() )
       {
         fetchNextResultPage();
@@ -394,7 +391,7 @@ void QgsStacSourceSelect::search()
   }
   else
   {
-    const QVector< QgsStacCollection *> allCollections = mParametersDialog->collections();
+    const QVector<QgsStacCollection *> allCollections = mParametersDialog->collections();
     for ( QgsStacCollection *col : allCollections )
     {
       collections.append( col->id() );
@@ -412,10 +409,7 @@ void QgsStacSourceSelect::search()
     const QgsRectangle bbox = geom.boundingBox();
     if ( bbox == QgsGeometry::fromRect( bbox ).boundingBox() )
     {
-      q.addQueryItem( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( bbox.xMinimum() )
-                      .arg( bbox.yMinimum() )
-                      .arg( bbox.xMaximum() )
-                      .arg( bbox.yMaximum() ) );
+      q.addQueryItem( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( bbox.xMinimum() ).arg( bbox.yMinimum() ).arg( bbox.xMaximum() ).arg( bbox.yMaximum() ) );
     }
     else
     {
@@ -437,8 +431,9 @@ void QgsStacSourceSelect::search()
     else
     {
       dateString = QStringLiteral( "%1/%2" ).arg(
-                     fromDate.isNull() ? QStringLiteral( ".." ) : fromDate.toString( Qt::ISODateWithMs ),
-                     toDate.isNull() ? QStringLiteral( ".." ) : toDate.toString( Qt::ISODateWithMs ) );
+        fromDate.isNull() ? QStringLiteral( ".." ) : fromDate.toString( Qt::ISODateWithMs ),
+        toDate.isNull() ? QStringLiteral( ".." ) : toDate.toString( Qt::ISODateWithMs )
+      );
     }
     q.addQueryItem( QStringLiteral( "datetime" ), dateString );
   }
@@ -507,8 +502,7 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
     if ( asset.isCloudOptimized() )
     {
       QAction *loadAssetAction = new QAction( asset.title(), assetsMenu );
-      connect( loadAssetAction, &QAction::triggered, this, [this, &asset]
-      {
+      connect( loadAssetAction, &QAction::triggered, this, [this, &asset] {
         QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
         loadUri( asset.uri() );
       } );
@@ -517,38 +511,31 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
   }
 
   QAction *zoomToAction = new QAction( tr( "Zoom to Item" ), menu );
-  connect( zoomToAction, &QAction::triggered, this, [index, this]
-  {
+  connect( zoomToAction, &QAction::triggered, this, [index, this] {
     QgsGeometry geom = index.data( QgsStacItemListModel::Role::Geometry ).value<QgsGeometry>();
     if ( QgsMapCanvas *map = mapCanvas() )
     {
       const QgsRectangle bbox = geom.boundingBox();
-      const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4324 ),
-                                       map->mapSettings().destinationCrs(),
-                                       QgsProject::instance() );
+      const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4324 ), map->mapSettings().destinationCrs(), QgsProject::instance() );
       QgsRectangle extent = ct.transformBoundingBox( bbox );
       map->zoomToFeatureExtent( extent );
     }
   } );
 
   QAction *panToAction = new QAction( tr( "Pan to Item" ), menu );
-  connect( panToAction, &QAction::triggered, this, [index, this]
-  {
+  connect( panToAction, &QAction::triggered, this, [index, this] {
     QgsGeometry geom = index.data( QgsStacItemListModel::Role::Geometry ).value<QgsGeometry>();
     if ( QgsMapCanvas *map = mapCanvas() )
     {
       const QgsRectangle bbox = geom.boundingBox();
-      const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4324 ),
-                                       map->mapSettings().destinationCrs(),
-                                       QgsProject::instance() );
+      const QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromEpsgId( 4324 ), map->mapSettings().destinationCrs(), QgsProject::instance() );
       const QgsRectangle extent = ct.transformBoundingBox( bbox );
       map->setCenter( extent.center() );
     }
   } );
 
   QAction *downloadAction = new QAction( tr( "Download Assets…" ), menu );
-  connect( downloadAction, &QAction::triggered, this, [index, bar, authCfg = mStac->authCfg()]
-  {
+  connect( downloadAction, &QAction::triggered, this, [index, bar, authCfg = mStac->authCfg()] {
     QgsStacDownloadAssetsDialog dialog;
     QgsStacItem *item = dynamic_cast<QgsStacItem *>( index.data( QgsStacItemListModel::Role::StacObject ).value<QgsStacObject *>() );
     dialog.setStacItem( item );
@@ -558,8 +545,7 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
   } );
 
   QAction *detailsAction = new QAction( tr( "Details…" ), menu );
-  connect( detailsAction, &QAction::triggered, this, [this, index]
-  {
+  connect( detailsAction, &QAction::triggered, this, [this, index] {
     QgsStacObjectDetailsDialog details( this );
     details.setStacObject( index.data( QgsStacItemListModel::Role::StacObject ).value<QgsStacObject *>() );
     details.exec();

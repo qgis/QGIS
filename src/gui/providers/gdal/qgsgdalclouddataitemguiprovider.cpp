@@ -29,7 +29,7 @@
 
 void QgsGdalCloudDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsGdalCloudConnectionItem *providerItem = qobject_cast< QgsGdalCloudConnectionItem * >( item ) )
+  if ( QgsGdalCloudConnectionItem *providerItem = qobject_cast<QgsGdalCloudConnectionItem *>( item ) )
   {
     QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
     connect( actionEdit, &QAction::triggered, this, [providerItem] { editConnection( providerItem ); } );
@@ -39,31 +39,26 @@ void QgsGdalCloudDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QM
     connect( actionDuplicate, &QAction::triggered, this, [providerItem] { duplicateConnection( providerItem ); } );
     menu->addAction( actionDuplicate );
 
-    const QList< QgsGdalCloudConnectionItem * > stConnectionItems = QgsDataItem::filteredItems<QgsGdalCloudConnectionItem>( selection );
+    const QList<QgsGdalCloudConnectionItem *> stConnectionItems = QgsDataItem::filteredItems<QgsGdalCloudConnectionItem>( selection );
     QAction *actionDelete = new QAction( stConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [stConnectionItems, item, context]
-    {
-      QgsDataItemGuiProviderUtils::deleteConnections( stConnectionItems, []( const QString & connectionName )
-      {
-        QgsGdalCloudProviderConnection( QString() ).remove( connectionName );
-      }, context );
+    connect( actionDelete, &QAction::triggered, this, [stConnectionItems, item, context] {
+      QgsDataItemGuiProviderUtils::deleteConnections( stConnectionItems, []( const QString &connectionName ) { QgsGdalCloudProviderConnection( QString() ).remove( connectionName ); }, context );
 
-      if ( QgsGdalCloudProviderItem *cloudItem = qobject_cast< QgsGdalCloudProviderItem * >( item->parent() ) )
+      if ( QgsGdalCloudProviderItem *cloudItem = qobject_cast<QgsGdalCloudProviderItem *>( item->parent() ) )
         cloudItem->refresh();
     } );
     menu->addAction( actionDelete );
   }
-  else if ( QgsGdalCloudProviderItem *providerItem = qobject_cast< QgsGdalCloudProviderItem * >( item ) )
+  else if ( QgsGdalCloudProviderItem *providerItem = qobject_cast<QgsGdalCloudProviderItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [providerItem] { newConnection( providerItem, providerItem->vsiHandler() ); } );
     menu->addAction( actionNew );
   }
-  else if ( QgsGdalCloudRootItem *rootItem = qobject_cast< QgsGdalCloudRootItem * >( item ) )
+  else if ( QgsGdalCloudRootItem *rootItem = qobject_cast<QgsGdalCloudRootItem *>( item ) )
   {
-    QList< QgsGdalUtils::VsiNetworkFileSystemDetails > vsiDetails = QgsGdalUtils::vsiNetworkFileSystems();
-    std::sort( vsiDetails.begin(), vsiDetails.end(), []( const QgsGdalUtils::VsiNetworkFileSystemDetails & a, const QgsGdalUtils::VsiNetworkFileSystemDetails & b )
-    {
+    QList<QgsGdalUtils::VsiNetworkFileSystemDetails> vsiDetails = QgsGdalUtils::vsiNetworkFileSystems();
+    std::sort( vsiDetails.begin(), vsiDetails.end(), []( const QgsGdalUtils::VsiNetworkFileSystemDetails &a, const QgsGdalUtils::VsiNetworkFileSystemDetails &b ) {
       return QString::localeAwareCompare( a.name, b.name ) < 0;
     } );
 
@@ -93,11 +88,11 @@ void QgsGdalCloudDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QM
 
 void QgsGdalCloudDataItemGuiProvider::editConnection( QgsGdalCloudConnectionItem *item )
 {
-  QgsGdalCloudProviderItem *cloudItem = qobject_cast< QgsGdalCloudProviderItem * >( item->parent() );
+  QgsGdalCloudProviderItem *cloudItem = qobject_cast<QgsGdalCloudProviderItem *>( item->parent() );
   if ( !cloudItem )
     return;
 
-  QgsGdalCloudRootItem *rootItem = qobject_cast< QgsGdalCloudRootItem * >( cloudItem->parent() );
+  QgsGdalCloudRootItem *rootItem = qobject_cast<QgsGdalCloudRootItem *>( cloudItem->parent() );
   if ( !rootItem )
     return;
 
@@ -125,11 +120,11 @@ void QgsGdalCloudDataItemGuiProvider::editConnection( QgsGdalCloudConnectionItem
 
 void QgsGdalCloudDataItemGuiProvider::duplicateConnection( QgsGdalCloudConnectionItem *item )
 {
-  QgsGdalCloudProviderItem *cloudItem = qobject_cast< QgsGdalCloudProviderItem * >( item->parent() );
+  QgsGdalCloudProviderItem *cloudItem = qobject_cast<QgsGdalCloudProviderItem *>( item->parent() );
   if ( !cloudItem )
     return;
 
-  QgsGdalCloudRootItem *rootItem = qobject_cast< QgsGdalCloudRootItem * >( cloudItem->parent() );
+  QgsGdalCloudRootItem *rootItem = qobject_cast<QgsGdalCloudRootItem *>( cloudItem->parent() );
   if ( !rootItem )
     return;
 
@@ -145,13 +140,13 @@ void QgsGdalCloudDataItemGuiProvider::duplicateConnection( QgsGdalCloudConnectio
 
 void QgsGdalCloudDataItemGuiProvider::newConnection( QgsDataItem *item, const QgsGdalUtils::VsiNetworkFileSystemDetails &driver )
 {
-  QgsGdalCloudRootItem *rootItem = qobject_cast< QgsGdalCloudRootItem * >( item ) ? qobject_cast< QgsGdalCloudRootItem * >( item ) : qobject_cast< QgsGdalCloudRootItem * >( item->parent() );
+  QgsGdalCloudRootItem *rootItem = qobject_cast<QgsGdalCloudRootItem *>( item ) ? qobject_cast<QgsGdalCloudRootItem *>( item ) : qobject_cast<QgsGdalCloudRootItem *>( item->parent() );
 
   QgsGdalCloudProviderItem *cloudItem = nullptr;
-  const QVector< QgsDataItem * > cloudChildren = rootItem->children();
+  const QVector<QgsDataItem *> cloudChildren = rootItem->children();
   for ( QgsDataItem *child : cloudChildren )
   {
-    if ( QgsGdalCloudProviderItem *providerRoot = qobject_cast< QgsGdalCloudProviderItem * >( child ) )
+    if ( QgsGdalCloudProviderItem *providerRoot = qobject_cast<QgsGdalCloudProviderItem *>( child ) )
     {
       if ( providerRoot->vsiHandler().identifier == driver.identifier )
       {
@@ -186,8 +181,7 @@ void QgsGdalCloudDataItemGuiProvider::saveConnections()
 
 void QgsGdalCloudDataItemGuiProvider::loadConnections( QgsGdalCloudRootItem *item )
 {
-  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                           tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

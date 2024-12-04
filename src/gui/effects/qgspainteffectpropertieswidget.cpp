@@ -41,7 +41,7 @@ static bool _initWidgetFunction( const QString &name, QgsPaintEffectWidgetFunc f
   QgsPaintEffectMetadata *metadata = dynamic_cast<QgsPaintEffectMetadata *>( abstractMetadata );
   if ( !metadata )
   {
-    QgsDebugError( QStringLiteral( "Failed to cast paint effect's metadata: " ) .arg( name ) );
+    QgsDebugError( QStringLiteral( "Failed to cast paint effect's metadata: " ).arg( name ) );
     return false;
   }
   metadata->setWidgetFunction( f );
@@ -114,7 +114,7 @@ void QgsPaintEffectPropertiesWidget::updateEffectWidget( QgsPaintEffect *effect 
   if ( stackedWidget->currentWidget() != pageDummy )
   {
     // stop updating from the original widget
-    if ( QgsPaintEffectWidget *pew = qobject_cast< QgsPaintEffectWidget * >( stackedWidget->currentWidget() ) )
+    if ( QgsPaintEffectWidget *pew = qobject_cast<QgsPaintEffectWidget *>( stackedWidget->currentWidget() ) )
       disconnect( pew, &QgsPaintEffectWidget::changed, this, &QgsPaintEffectPropertiesWidget::emitSignalChanged );
     stackedWidget->removeWidget( stackedWidget->currentWidget() );
   }

@@ -444,8 +444,8 @@ void QgsRelationReferenceWidget::init()
 
         QgsFeature ft;
         QgsFeatureIterator fit = mFilterExpression.isEmpty()
-                                 ? mReferencedLayer->getFeatures()
-                                 : mReferencedLayer->getFeatures( mFilterExpression );
+                                   ? mReferencedLayer->getFeatures()
+                                   : mReferencedLayer->getFeatures( mFilterExpression );
         while ( fit.nextFeature( ft ) )
         {
           const int count = std::min( mFilterComboBoxes.count(), mFilterFields.count() );
@@ -478,7 +478,7 @@ void QgsRelationReferenceWidget::init()
     mComboBox->setIdentifierFields( mReferencedFields );
     mComboBox->setFetchLimit( mFetchLimit );
 
-    if ( ! mFilterExpression.isEmpty() )
+    if ( !mFilterExpression.isEmpty() )
       mComboBox->setFilterExpression( mFilterExpression );
 
     QVariant nullValue = QgsApplication::nullRepresentation();
@@ -807,7 +807,7 @@ void QgsRelationReferenceWidget::filterChanged()
           QgsAttributeList subset = attrs;
 
           QString expression = filterExpression;
-          if ( ! expression.isEmpty() && ! filtersAttrs.isEmpty() )
+          if ( !expression.isEmpty() && !filtersAttrs.isEmpty() )
             expression += QLatin1String( " AND " );
 
           expression += filtersAttrs.isEmpty() ? QString() : QStringLiteral( " ( " );
@@ -843,7 +843,7 @@ void QgsRelationReferenceWidget::filterChanged()
     }
   }
 
-  if ( ! filterExpression.isEmpty() && ! filters.isEmpty() )
+  if ( !filterExpression.isEmpty() && !filters.isEmpty() )
     filterExpression += QLatin1String( " AND " );
 
   filterExpression += filters.isEmpty() ? QString() : QStringLiteral( " ( " );
@@ -884,11 +884,10 @@ void QgsRelationReferenceWidget::addEntry()
 
     QString displayString = QgsVectorLayerUtils::getFeatureDisplayString( mReferencingLayer, mFormFeature );
     QString msg = tr( "Link feature to %1 \"%2\" : Digitize the geometry for the new feature on layer %3. Press &lt;ESC&gt; to cancel." )
-                  .arg( mReferencingLayer->name(), displayString, mReferencedLayer->name() );
+                    .arg( mReferencingLayer->name(), displayString, mReferencedLayer->name() );
     mMessageBarItem = QgsMessageBar::createMessage( title, msg, this );
     mMessageBar->pushItem( mMessageBarItem );
   }
-
 }
 
 void QgsRelationReferenceWidget::entryAdded( const QgsFeature &feat )

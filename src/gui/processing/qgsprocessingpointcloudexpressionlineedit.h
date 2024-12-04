@@ -49,7 +49,6 @@ class GUI_EXPORT QgsProcessingPointCloudExpressionLineEdit : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingPointCloudExpressionLineEdit.
      * \param parent parent widget
@@ -117,7 +116,6 @@ class GUI_EXPORT QgsProcessingPointCloudExpressionDialog : public QDialog, priva
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingPointCloudExpressionDialog.
      */

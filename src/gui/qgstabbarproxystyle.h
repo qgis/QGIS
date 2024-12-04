@@ -38,7 +38,6 @@ class GUI_EXPORT QgsTabBarProxyStyle : public QgsProxyStyle
 {
     Q_OBJECT
   public:
-
     QgsTabBarProxyStyle( QTabBar *tabBar );
 
     void drawControl( ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget ) const override;
@@ -48,23 +47,19 @@ class GUI_EXPORT QgsTabBarProxyStyle : public QgsProxyStyle
     const QMap<int, QgsAttributeEditorElement::LabelStyle> &tabStyles() const;
 
   private:
-
     QMap<int, QgsAttributeEditorElement::LabelStyle> mTabStyles;
-
 };
-
 
 
 /**
  * The QgsTabBar class supports custom fonts for tab's titles and provides the tab bar for QgsTabWidget.
  * This class is an implementation detail and it is not exposed to public API.
  */
-class QgsTabBar: public QTabBar
+class QgsTabBar : public QTabBar
 {
     Q_OBJECT
 
   public:
-
     /**
      * Create a new QgsTabBar with the optionally provided parent.
      */
@@ -76,12 +71,10 @@ class QgsTabBar: public QTabBar
     void setTabBarStyle( QgsTabBarProxyStyle *tabStyle );
 
   protected:
-
     QSize tabSizeHint( int index ) const;
 
   private:
     QgsTabBarProxyStyle *mTabBarStyle = nullptr;
-
 };
 
 /// @endcond private

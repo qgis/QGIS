@@ -187,7 +187,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     layout->setContentsMargins( 0, 0, 0, 0 );
     labelingDialog = new QgsLabelingWidget( mLayer, mCanvas, labelingFrame );
     labelingDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
-    connect( labelingDialog, &QgsLabelingWidget::auxiliaryFieldCreated, this, [ = ] { updateAuxiliaryStoragePage(); } );
+    connect( labelingDialog, &QgsLabelingWidget::auxiliaryFieldCreated, this, [=] { updateAuxiliaryStoragePage(); } );
     layout->addWidget( labelingDialog );
     labelingFrame->setLayout( layout );
 
@@ -204,7 +204,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   {
     labelingDialog = nullptr;
     mOptsPage_Labels->setEnabled( false ); // disable labeling item
-    mOptsPage_Masks->setEnabled( false ); // disable masking item
+    mOptsPage_Masks->setEnabled( false );  // disable masking item
     mGeomGroupBox->setEnabled( false );
     mGeomGroupBox->setVisible( false );
     mCrsGroupBox->setEnabled( false );
@@ -270,7 +270,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( mRadioOverrideSelectionSymbol, &QRadioButton::toggled, mSelectionSymbolButton, &QWidget::setEnabled );
   switch ( mLayer->geometryType() )
   {
-
     case Qgis::GeometryType::Point:
       mSelectionSymbolButton->setSymbolType( Qgis::SymbolType::Marker );
       break;
@@ -293,7 +292,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   diagLayout->setContentsMargins( 0, 0, 0, 0 );
   diagramPropertiesDialog = new QgsDiagramWidget( mLayer, mCanvas, mDiagramFrame );
   diagramPropertiesDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
-  connect( diagramPropertiesDialog, &QgsDiagramWidget::auxiliaryFieldCreated, this, [ = ] { updateAuxiliaryStoragePage(); } );
+  connect( diagramPropertiesDialog, &QgsDiagramWidget::auxiliaryFieldCreated, this, [=] { updateAuxiliaryStoragePage(); } );
   diagLayout->addWidget( diagramPropertiesDialog );
   mDiagramFrame->setLayout( diagLayout );
 
@@ -342,7 +341,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mCrsSelector->setCrs( mLayer->crs() );
 
   //insert existing join info
-  const QList< QgsVectorLayerJoinInfo > &joins = mLayer->vectorJoins();
+  const QList<QgsVectorLayerJoinInfo> &joins = mLayer->vectorJoins();
   for ( const QgsVectorLayerJoinInfo &join : joins )
   {
     addJoinToTreeWidget( join );
@@ -431,8 +430,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   // this will be read by restoreOptionsBaseUi()
   if ( !settings.contains( QStringLiteral( "/Windows/VectorLayerProperties/tab" ) ) )
   {
-    settings.setValue( QStringLiteral( "Windows/VectorLayerProperties/tab" ),
-                       mOptStackedWidget->indexOf( mOptsPage_Style ) );
+    settings.setValue( QStringLiteral( "Windows/VectorLayerProperties/tab" ), mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
   QList<QgsMapLayer *> dependencySources;
@@ -447,7 +445,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mLayersDependenciesTreeModel = new QgsLayerTreeFilterProxyModel( this );
   mLayersDependenciesTreeModel->setLayerTreeModel( new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), mLayersDependenciesTreeModel ) );
   mLayersDependenciesTreeModel->setCheckedLayers( dependencySources );
-  connect( QgsProject::instance(), &QObject::destroyed, this, [ = ] {mLayersDependenciesTreeView->setModel( nullptr );} );
+  connect( QgsProject::instance(), &QObject::destroyed, this, [=] { mLayersDependenciesTreeView->setModel( nullptr ); } );
   mLayersDependenciesTreeView->setModel( mLayersDependenciesTreeModel );
 
   mRefreshSettingsWidget->setLayer( mLayer );
@@ -469,7 +467,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   mAuxiliaryLayerActionExport = new QAction( tr( "Export" ), this );
   menu->addAction( mAuxiliaryLayerActionExport );
-  connect( mAuxiliaryLayerActionExport, &QAction::triggered, this, [ = ] { emit exportAuxiliaryLayer( mLayer->auxiliaryLayer() ); } );
+  connect( mAuxiliaryLayerActionExport, &QAction::triggered, this, [=] { emit exportAuxiliaryLayer( mLayer->auxiliaryLayer() ); } );
 
   mAuxiliaryStorageActions->setMenu( menu );
 
@@ -494,7 +492,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mOptsPage_Temporal->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#temporal-properties" ) );
   mOptsPage_Variables->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#variables-properties" ) );
   mOptsPage_Metadata->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#metadata-properties" ) );
-  mOptsPage_DataDependencies->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#dependencies-properties" ) ) ;
+  mOptsPage_DataDependencies->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#dependencies-properties" ) );
   mOptsPage_Legend->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#legend-properties" ) );
   mOptsPage_Server->setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#qgis-server-properties" ) );
 
@@ -575,8 +573,7 @@ void QgsVectorLayerProperties::syncToLayer()
 
       mSourceGroupBox->show();
 
-      connect( mSourceWidget, &QgsProviderSourceWidget::validChanged, this, [ = ]( bool isValid )
-      {
+      connect( mSourceWidget, &QgsProviderSourceWidget::validChanged, this, [=]( bool isValid ) {
         buttonBox->button( QDialogButtonBox::Apply )->setEnabled( isValid );
         buttonBox->button( QDialogButtonBox::Ok )->setEnabled( isValid );
       } );
@@ -634,7 +631,7 @@ void QgsVectorLayerProperties::syncToLayer()
   mSimplifyDrawingSpinBox->setValue( simplifyMethod.threshold() );
   mSimplifyDrawingSpinBox->setClearValue( 1.0 );
 
-  QgsVectorLayerSelectionProperties *selectionProperties = qobject_cast< QgsVectorLayerSelectionProperties *>( mLayer->selectionProperties() );
+  QgsVectorLayerSelectionProperties *selectionProperties = qobject_cast<QgsVectorLayerSelectionProperties *>( mLayer->selectionProperties() );
   if ( selectionProperties->selectionColor().isValid() )
   {
     mSelectionColorButton->setColor( selectionProperties->selectionColor() );
@@ -750,7 +747,6 @@ void QgsVectorLayerProperties::syncToLayer()
   mTemporalWidget->syncToLayer();
 
   mLegendWidget->setLayer( mLayer );
-
 }
 
 void QgsVectorLayerProperties::apply()
@@ -882,7 +878,7 @@ void QgsVectorLayerProperties::apply()
 
   // Metadata URL
   QList<QgsMapLayerServerProperties::MetadataUrl> metaUrls;
-  for ( int row = 0; row < mMetadataUrlModel->rowCount() ; row++ )
+  for ( int row = 0; row < mMetadataUrlModel->rowCount(); row++ )
   {
     QgsMapLayerServerProperties::MetadataUrl metaUrl;
     metaUrl.url = mMetadataUrlModel->item( row, 0 )->text();
@@ -912,7 +908,7 @@ void QgsVectorLayerProperties::apply()
   }
   QgsVectorSimplifyMethod simplifyMethod = mLayer->simplifyMethod();
   simplifyMethod.setSimplifyHints( simplifyHints );
-  simplifyMethod.setSimplifyAlgorithm( mSimplifyAlgorithmComboBox->currentData().value< Qgis::VectorSimplificationAlgorithm >() );
+  simplifyMethod.setSimplifyAlgorithm( mSimplifyAlgorithmComboBox->currentData().value<Qgis::VectorSimplificationAlgorithm>() );
   simplifyMethod.setThreshold( mSimplifyDrawingSpinBox->value() );
   simplifyMethod.setForceLocalOptimization( !mSimplifyDrawingAtProvider->isChecked() );
   simplifyMethod.setMaximumScale( mSimplifyMaximumScaleComboBox->scale() );
@@ -924,7 +920,7 @@ void QgsVectorLayerProperties::apply()
     mLayer->renderer()->setReferenceScale( mUseReferenceScaleGroupBox->isChecked() ? mReferenceScaleWidget->scale() : -1 );
   }
 
-  QgsVectorLayerSelectionProperties *selectionProperties = qobject_cast< QgsVectorLayerSelectionProperties *>( mLayer->selectionProperties() );
+  QgsVectorLayerSelectionProperties *selectionProperties = qobject_cast<QgsVectorLayerSelectionProperties *>( mLayer->selectionProperties() );
   if ( mSelectionColorButton->color() != mSelectionColorButton->defaultColor() )
     selectionProperties->setSelectionColor( mSelectionColorButton->color() );
   else
@@ -961,7 +957,7 @@ void QgsVectorLayerProperties::apply()
   const auto checkedLayers = mLayersDependenciesTreeModel->checkedLayers();
   for ( const QgsMapLayer *layer : checkedLayers )
     deps << QgsMapLayerDependency( layer->id() );
-  if ( ! mLayer->setDependencies( deps ) )
+  if ( !mLayer->setDependencies( deps ) )
   {
     QMessageBox::warning( nullptr, tr( "Save Dependency" ), tr( "This configuration introduces a cycle in data dependencies and will be ignored." ) );
   }
@@ -978,8 +974,7 @@ void QgsVectorLayerProperties::apply()
     const QString newSource = mSourceWidget->sourceUri();
     if ( newSource != mLayer->source() )
     {
-      mLayer->setDataSource( newSource, mLayer->name(), mLayer->providerType(),
-                             QgsDataProvider::ProviderOptions(), Qgis::DataProviderReadFlags() );
+      mLayer->setDataSource( newSource, mLayer->name(), mLayer->providerType(), QgsDataProvider::ProviderOptions(), Qgis::DataProviderReadFlags() );
 
       // resync dialog to layer's new state -- this allows any changed layer properties
       // (such as a forced creation of a new renderer compatible with the new layer, new field configuration, etc)
@@ -1009,7 +1004,6 @@ void QgsVectorLayerProperties::apply()
   mProjectDirtyBlocker.reset();
   QgsProject::instance()->setDirty( true );
   mProjectDirtyBlocker = std::make_unique<QgsProjectDirtyBlocker>( QgsProject::instance() );
-
 }
 
 void QgsVectorLayerProperties::rollback()
@@ -1043,7 +1037,6 @@ void QgsVectorLayerProperties::rollback()
 
   if ( backupCrs != mLayer->crs() )
     mLayer->setCrs( backupCrs );
-
 }
 
 void QgsVectorLayerProperties::pbnQueryBuilder_clicked()
@@ -1063,7 +1056,6 @@ void QgsVectorLayerProperties::pbnQueryBuilder_clicked()
 
     // The datasource for the layer needs to be updated with the new sql since this gets
     // saved to the project file. This should happen at the map layer level...
-
   }
   // delete the query builder object
   delete dialog;
@@ -1097,7 +1089,6 @@ QString QgsVectorLayerProperties::htmlMetadata()
 
 void QgsVectorLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
-
   QgsDatumTransformDialog::run( crs, QgsProject::instance()->crs(), this, mCanvas, tr( "Select Transformation for the vector layer" ) );
   mLayer->setCrs( crs );
   mMetadataFilled = false;
@@ -1128,7 +1119,7 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
       }
     }
 
-    if ( ! stylesSelected.isEmpty() )
+    if ( !stylesSelected.isEmpty() )
     {
       int styleIndex = 0;
       for ( const QString &styleName : std::as_const( stylesSelected ) )
@@ -1145,16 +1136,14 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
             QString message;
             const QString filePath { dlg.outputFilePath() };
             const QFileInfo fi { filePath };
-            QString safePath { QString( filePath ).replace( fi.baseName(),
-                               QStringLiteral( "%1_%2" ).arg( fi.baseName(), QgsFileUtils::stringToSafeFilename( styleName ) ) ) };
-            if ( styleIndex > 0 && stylesSelected.count( ) > 1 )
+            QString safePath { QString( filePath ).replace( fi.baseName(), QStringLiteral( "%1_%2" ).arg( fi.baseName(), QgsFileUtils::stringToSafeFilename( styleName ) ) ) };
+            if ( styleIndex > 0 && stylesSelected.count() > 1 )
             {
               int i = 1;
               while ( QFile::exists( safePath ) )
               {
                 const QFileInfo fi { safePath };
-                safePath = QString( safePath ).replace( '.' + fi.completeSuffix(),
-                                                        QStringLiteral( "_%1.%2" ).arg( QString::number( i ), fi.completeSuffix() ) );
+                safePath = QString( safePath ).replace( '.' + fi.completeSuffix(), QStringLiteral( "_%1.%2" ).arg( QString::number( i ), fi.completeSuffix() ) );
                 i++;
               }
             }
@@ -1179,7 +1168,7 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
           case DatasourceDatabase:
           {
             QString infoWindowTitle = QObject::tr( "Save style '%1' to DB (%2)" )
-                                      .arg( styleName, mLayer->providerType() );
+                                        .arg( styleName, mLayer->providerType() );
             QString msgError;
 
             QgsMapLayerSaveStyleDialog::SaveToDbSettings dbSettings = dlg.saveToDbSettings();
@@ -1206,9 +1195,7 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
             QString errorMessage;
             if ( QgsProviderRegistry::instance()->styleExists( mLayer->providerType(), mLayer->source(), dbSettings.name, errorMessage ) )
             {
-              if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
-                                          QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ),
-                                          QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+              if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ), QObject::tr( "A matching style already exists in the database for this layer. Do you want to overwrite it?" ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
               {
                 return;
               }
@@ -1234,7 +1221,7 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
           case UserDatabase:
             break;
         }
-        styleIndex ++;
+        styleIndex++;
       }
       // Restore original style
       mLayer->styleManager()->setCurrentStyle( originalStyle );
@@ -1277,7 +1264,7 @@ void QgsVectorLayerProperties::mButtonAddJoin_clicked()
     return;
 
   QList<QgsMapLayer *> joinedLayers;
-  const QList< QgsVectorLayerJoinInfo > &joins = mLayer->vectorJoins();
+  const QList<QgsVectorLayerJoinInfo> &joins = mLayer->vectorJoins();
   joinedLayers.reserve( joins.size() );
   for ( int i = 0; i < joins.size(); ++i )
   {
@@ -1320,13 +1307,13 @@ void QgsVectorLayerProperties::mJoinTreeWidget_itemDoubleClicked( QTreeWidgetIte
 
   QList<QgsMapLayer *> joinedLayers;
   QString joinLayerId = item->data( 0, Qt::UserRole ).toString();
-  const QList< QgsVectorLayerJoinInfo > &joins = mLayer->vectorJoins();
+  const QList<QgsVectorLayerJoinInfo> &joins = mLayer->vectorJoins();
   int j = -1;
   for ( int i = 0; i < joins.size(); ++i )
   {
     QgsVectorLayer *joinLayer = joins[i].joinLayer();
     if ( !joinLayer )
-      continue;  // invalid join (unresolved join layer)
+      continue; // invalid join (unresolved join layer)
 
     if ( joinLayer->id() == joinLayerId )
     {
@@ -1659,7 +1646,6 @@ void QgsVectorLayerProperties::mButtonRemoveWmsDimension_clicked()
 
 void QgsVectorLayerProperties::updateSymbologyPage()
 {
-
   //find out the type of renderer in the vectorlayer, create a dialog with these settings and add it to the form
   delete mRendererDialog;
   mRendererDialog = nullptr;
@@ -1674,7 +1660,7 @@ void QgsVectorLayerProperties::updateSymbologyPage()
     mRendererDialog->setContext( context );
     connect( mRendererDialog, &QgsRendererPropertiesDialog::showPanel, this, &QgsVectorLayerProperties::openPanel );
     connect( mRendererDialog, &QgsRendererPropertiesDialog::layerVariablesChanged, this, &QgsVectorLayerProperties::updateVariableEditor );
-    connect( mRendererDialog, &QgsRendererPropertiesDialog::widgetChanged, this,  [ = ] { updateAuxiliaryStoragePage(); } );
+    connect( mRendererDialog, &QgsRendererPropertiesDialog::widgetChanged, this, [=] { updateAuxiliaryStoragePage(); } );
   }
   else
   {
@@ -1692,16 +1678,12 @@ void QgsVectorLayerProperties::updateSymbologyPage()
 
 void QgsVectorLayerProperties::setPbnQueryBuilderEnabled()
 {
-  pbnQueryBuilder->setEnabled( mLayer &&
-                               mLayer->dataProvider() &&
-                               mLayer->dataProvider()->supportsSubsetString() &&
-                               !mLayer->isEditable() );
+  pbnQueryBuilder->setEnabled( mLayer && mLayer->dataProvider() && mLayer->dataProvider()->supportsSubsetString() && !mLayer->isEditable() );
 
   if ( mLayer && mLayer->isEditable() )
   {
     pbnQueryBuilder->setToolTip( tr( "Stop editing mode to enable this." ) );
   }
-
 }
 
 void QgsVectorLayerProperties::pbnUpdateExtents_clicked()
@@ -1714,7 +1696,7 @@ void QgsVectorLayerProperties::optionsStackedWidget_CurrentChanged( int index )
 {
   QgsLayerPropertiesDialog::optionsStackedWidget_CurrentChanged( index );
 
-  if ( index == mOptStackedWidget->indexOf( mOptsPage_Information ) && ! mMetadataFilled )
+  if ( index == mOptStackedWidget->indexOf( mOptsPage_Information ) && !mMetadataFilled )
   {
     // set the metadata contents (which can be expensive)
     teMetadataViewer->clear();
@@ -2003,8 +1985,8 @@ void QgsVectorLayerProperties::initMapTipPreview()
   mMapTipPreview = new QgsWebView( mMapTipPreviewContainer );
 
 #if WITH_QTWEBKIT
-  mMapTipPreview->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );//Handle link clicks by yourself
-  mMapTipPreview->setContextMenuPolicy( Qt::NoContextMenu ); //No context menu is allowed if you don't need it
+  mMapTipPreview->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks ); //Handle link clicks by yourself
+  mMapTipPreview->setContextMenuPolicy( Qt::NoContextMenu );                     //No context menu is allowed if you don't need it
   connect( mMapTipPreview, &QWebView::loadFinished, this, &QgsVectorLayerProperties::resizeMapTip );
 #endif
 
@@ -2018,7 +2000,7 @@ void QgsVectorLayerProperties::initMapTipPreview()
 
   // Update the map tip preview when the expression or the map tip template changes
   connect( mMapTipWidget, &QgsCodeEditorHTML::textChanged, this, &QgsVectorLayerProperties::updateMapTipPreview );
-  connect( mDisplayExpressionWidget, qOverload< const QString & >( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsVectorLayerProperties::updateMapTipPreview );
+  connect( mDisplayExpressionWidget, qOverload<const QString &>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsVectorLayerProperties::updateMapTipPreview );
 }
 
 void QgsVectorLayerProperties::updateMapTipPreview()
@@ -2035,14 +2017,14 @@ void QgsVectorLayerProperties::resizeMapTip()
 #if WITH_QTWEBKIT
   // Get the content size
   const QWebElement container = mMapTipPreview->page()->mainFrame()->findFirstElement(
-                                  QStringLiteral( "#QgsWebViewContainer" ) );
+    QStringLiteral( "#QgsWebViewContainer" )
+  );
   const int width = container.geometry().width();
   const int height = container.geometry().height();
   mMapTipPreview->resize( width, height );
 
   // Move the map tip to the center of the container
-  mMapTipPreview->move( ( mMapTipPreviewContainer->width() - mMapTipPreview->width() ) / 2,
-                        ( mMapTipPreviewContainer->height() - mMapTipPreview->height() ) / 2 );
+  mMapTipPreview->move( ( mMapTipPreviewContainer->width() - mMapTipPreview->width() ) / 2, ( mMapTipPreviewContainer->height() - mMapTipPreview->height() ) / 2 );
 
 #else
   mMapTipPreview->adjustSize();

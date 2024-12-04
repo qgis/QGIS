@@ -43,8 +43,7 @@ class QgsGdalItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     ~QgsGdalItemGuiProvider();
 
     QString name() override;
-    void populateContextMenu( QgsDataItem *item, QMenu *menu,
-                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
   protected slots:
     void onDeletePostgresRasterLayer( QgsDataItemGuiContext context );
@@ -59,7 +58,7 @@ class QgsGdalSourceWidgetProvider : public QgsProviderSourceWidgetProvider
     QgsProviderSourceWidget *createWidget( QgsMapLayer *layer, QWidget *parent = nullptr ) override;
 };
 
-class QgsGdalGuiProviderMetadata: public QgsProviderGuiMetadata
+class QgsGdalGuiProviderMetadata : public QgsProviderGuiMetadata
 {
   public:
     QgsGdalGuiProviderMetadata();

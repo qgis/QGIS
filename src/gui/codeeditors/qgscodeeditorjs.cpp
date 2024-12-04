@@ -23,11 +23,7 @@
 
 
 QgsCodeEditorJavascript::QgsCodeEditorJavascript( QWidget *parent )
-  : QgsCodeEditor( parent,
-                   QString(),
-                   false,
-                   false,
-                   QgsCodeEditor::Flag::CodeFolding )
+  : QgsCodeEditor( parent, QString(), false, false, QgsCodeEditor::Flag::CodeFolding )
 {
   if ( !parent )
   {

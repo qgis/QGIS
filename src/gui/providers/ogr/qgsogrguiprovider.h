@@ -24,7 +24,7 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-class QgsOgrGuiProviderMetadata: public QgsProviderGuiMetadata
+class QgsOgrGuiProviderMetadata : public QgsProviderGuiMetadata
 {
   public:
     QgsOgrGuiProviderMetadata();

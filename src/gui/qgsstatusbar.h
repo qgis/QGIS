@@ -47,12 +47,11 @@ class GUI_EXPORT QgsStatusBar : public QWidget
     Q_OBJECT
 
   public:
-
     //! Placement anchor for widgets
     enum Anchor
     {
       AnchorLeft = 0, //!< Anchor widget to left of status bar
-      AnchorRight, //!< Anchor widget to right of status bar
+      AnchorRight,    //!< Anchor widget to right of status bar
     };
 
     /**
@@ -111,19 +110,14 @@ class GUI_EXPORT QgsStatusBar : public QWidget
 
 
   protected:
-
     void changeEvent( QEvent *event ) override;
 
   private:
-
     QHBoxLayout *mLayout = nullptr;
     QLineEdit *mLineEdit = nullptr;
     QTimer *mTempMessageTimer = nullptr;
     QStatusBar *mParentStatusBar = nullptr;
     QMetaObject::Connection mShowMessageConnection;
-
 };
 
 #endif // QGSSTATUSBAR_H
-
-

@@ -49,7 +49,7 @@ QgsGeometryWidget::QgsGeometryWidget( QWidget *parent )
   const int iconSize = QgsGuiUtils::scaleIconSize( 24 );
   mButton->setIconSize( QSize( iconSize, iconSize ) );
   // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
-  mButton->setFixedSize( 2 * static_cast< int >( 1.25 * iconSize / 2.0 ), 2 * static_cast< int >( iconSize * 1.1 / 2.0 ) );
+  mButton->setFixedSize( 2 * static_cast<int>( 1.25 * iconSize / 2.0 ), 2 * static_cast<int>( iconSize * 1.1 / 2.0 ) );
 
   mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOffsetCurve.svg" ) ) );
@@ -119,7 +119,7 @@ void QgsGeometryWidget::setAcceptedWkbTypes( const QList<Qgis::WkbType> &types )
   mAcceptedTypes = types;
 }
 
-QList< Qgis::WkbType > QgsGeometryWidget::acceptedWkbTypes() const
+QList<Qgis::WkbType> QgsGeometryWidget::acceptedWkbTypes() const
 {
   return mAcceptedTypes;
 }
@@ -260,8 +260,7 @@ void QgsGeometryWidget::updateLineEdit()
 
     if ( mGeometry.crs().isValid() )
     {
-      mLineEdit->setText( QStringLiteral( "%1 [%2]" ).arg( wkt,
-                          mGeometry.crs().userFriendlyIdentifier( ) ) );
+      mLineEdit->setText( QStringLiteral( "%1 [%2]" ).arg( wkt, mGeometry.crs().userFriendlyIdentifier() ) );
     }
     else
     {
