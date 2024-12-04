@@ -18,6 +18,7 @@ from qgis.PyQt.QtCore import (
     Qt,
     QTemporaryDir,
     QTemporaryFile,
+    QT_VERSION
 )
 from qgis.PyQt.QtGui import QColor, QColorSpace, QFont
 from qgis.PyQt.QtTest import QSignalSpy
@@ -889,10 +890,12 @@ class TestQgsProjectViewSettings(QgisTestCase):
             [unitTestDataPath() + "/style1.db", unitTestDataPath() + "/style2.db"],
         )
 
+    @unittest.skipIf(QT_VERSION < 0x060800, "CMYK support was not complete before Qt 6.8.0")
     def testColorSettings(self):
         """
         Test ICC profile attachment
         """
+
         project = QgsProject()
         settings = project.styleSettings()
         self.assertFalse(project.isDirty())
@@ -907,6 +910,7 @@ class TestQgsProjectViewSettings(QgisTestCase):
         project.setDirty(False)
         self.assertEqual(settings.colorModel(), Qgis.ColorModel.Cmyk)
 
+        # set an RGB color space, reset color model to RGB
         with open(os.path.join(TEST_DATA_DIR, "sRGB2014.icc"), mode="rb") as f:
             colorSpace = QColorSpace.fromIccProfile(f.read())
 
@@ -914,8 +918,22 @@ class TestQgsProjectViewSettings(QgisTestCase):
 
         settings.setColorSpace(colorSpace)
         self.assertTrue(project.isDirty())
+        self.assertEqual(settings.colorModel(), Qgis.ColorModel.Rgb)
         self.assertTrue(settings.colorSpace().isValid())
         self.assertEqual(settings.colorSpace().primaries(), QColorSpace.Primaries.SRgb)
+        self.assertEqual(len(project.attachedFiles()), 2)
+
+        # set a CMYK color space, reset color model to CMYK
+        with open(os.path.join(TEST_DATA_DIR, "CGATS21_CRPC6.icc"), mode="rb") as f:
+            colorSpace = QColorSpace.fromIccProfile(f.read())
+
+        self.assertTrue(colorSpace.isValid())
+
+        settings.setColorSpace(colorSpace)
+        self.assertTrue(project.isDirty())
+        self.assertEqual(settings.colorModel(), Qgis.ColorModel.Cmyk)
+        self.assertTrue(settings.colorSpace().isValid())
+        self.assertEqual(settings.colorSpace().primaries(), QColorSpace.Primaries.Custom)
         self.assertEqual(len(project.attachedFiles()), 2)
 
         # save and restore
@@ -930,7 +948,7 @@ class TestQgsProjectViewSettings(QgisTestCase):
         settings = project.styleSettings()
         self.assertEqual(settings.colorModel(), Qgis.ColorModel.Cmyk)
         self.assertTrue(settings.colorSpace().isValid())
-        self.assertEqual(settings.colorSpace().primaries(), QColorSpace.Primaries.SRgb)
+        self.assertEqual(settings.colorSpace().primaries(), QColorSpace.Primaries.Custom)
         self.assertEqual(len(project.attachedFiles()), 2)
 
         # clear color space
