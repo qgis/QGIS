@@ -99,10 +99,10 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QgsVectorLayer *layer() const;
 
     //! \deprecated QGIS 3.14. This is now done automatically.
-    Q_DECL_DEPRECATED void loadFieldNames() {} SIP_DEPRECATED
+    Q_DECL_DEPRECATED void loadFieldNames() SIP_DEPRECATED {}
 
     //! \deprecated QGIS 3.14. Use expressionTree()->loadFieldNames() instead.
-    Q_DECL_DEPRECATED void loadFieldNames( const QgsFields &fields ) {mExpressionTreeView->loadFieldNames( fields );} SIP_DEPRECATED
+    Q_DECL_DEPRECATED void loadFieldNames( const QgsFields &fields ) SIP_DEPRECATED {mExpressionTreeView->loadFieldNames( fields );}
 
     /**
      * Loads field names and values from the specified map.
