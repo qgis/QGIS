@@ -72,7 +72,7 @@ Qgis::ProcessingAlgorithmFlags QgsSnapGeometriesAlgorithm::flags() const
 
 bool QgsSnapGeometriesAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );
   if ( !layer )
     return false;
 
@@ -81,21 +81,14 @@ bool QgsSnapGeometriesAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) cons
 
 void QgsSnapGeometriesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
-                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "REFERENCE_LAYER" ), QObject::tr( "Reference layer" ),
-                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "REFERENCE_LAYER" ), QObject::tr( "Reference layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
 
-  std::unique_ptr< QgsProcessingParameterDistance > tolParam = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), 10.0, QStringLiteral( "INPUT" ), false, 0.00000001 );
+  std::unique_ptr<QgsProcessingParameterDistance> tolParam = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), 10.0, QStringLiteral( "INPUT" ), false, 0.00000001 );
   tolParam->setMetadata(
-  {
-    QVariantMap( {{
-        QStringLiteral( "widget_wrapper" ),
-        QVariantMap( {{
-            QStringLiteral( "decimals" ), 8
-          }} )
-      }} )
-  } );
+    { QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "decimals" ), 8 } } ) } } )
+    }
+  );
   addParameter( tolParam.release() );
 
   const QStringList options = QStringList()
@@ -108,8 +101,7 @@ void QgsSnapGeometriesAlgorithm::initAlgorithm( const QVariantMap & )
                               << QObject::tr( "Snap end points to end points only" )
                               << QObject::tr( "Snap to anchor nodes (single layer only)" );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "BEHAVIOR" ), QObject::tr( "Behavior" ), options, false, QVariantList() << 0 ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ),
-                QObject::tr( "Snapped geometry" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Snapped geometry" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
 }
 
 QgsSnapGeometriesAlgorithm *QgsSnapGeometriesAlgorithm::createInstance() const
@@ -119,11 +111,11 @@ QgsSnapGeometriesAlgorithm *QgsSnapGeometriesAlgorithm::createInstance() const
 
 QVariantMap QgsSnapGeometriesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  const std::unique_ptr< QgsProcessingFeatureSource > referenceSource( parameterAsSource( parameters, QStringLiteral( "REFERENCE_LAYER" ), context ) );
+  const std::unique_ptr<QgsProcessingFeatureSource> referenceSource( parameterAsSource( parameters, QStringLiteral( "REFERENCE_LAYER" ), context ) );
   if ( !referenceSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "REFERENCE_LAYER" ) ) );
 
@@ -131,7 +123,7 @@ QVariantMap QgsSnapGeometriesAlgorithm::processAlgorithm( const QVariantMap &par
   const QgsGeometrySnapper::SnapMode mode = static_cast<QgsGeometrySnapper::SnapMode>( parameterAsEnum( parameters, QStringLiteral( "BEHAVIOR" ), context ) );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), source->wkbType(), source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), source->wkbType(), source->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 

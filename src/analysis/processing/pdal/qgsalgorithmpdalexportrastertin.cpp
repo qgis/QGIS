@@ -65,10 +65,10 @@ void QgsPdalExportRasterTinAlgorithm::initAlgorithm( const QVariantMap & )
 
   createCommonParameters();
 
-  std::unique_ptr< QgsProcessingParameterNumber > paramOriginX = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ORIGIN_X" ), QObject::tr( "X origin of a tile for parallel runs" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
+  std::unique_ptr<QgsProcessingParameterNumber> paramOriginX = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "ORIGIN_X" ), QObject::tr( "X origin of a tile for parallel runs" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
   paramOriginX->setFlags( paramOriginX->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( paramOriginX.release() );
-  std::unique_ptr< QgsProcessingParameterNumber > paramOriginY = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ORIGIN_Y" ), QObject::tr( "Y origin of a tile for parallel runs" ), Qgis::ProcessingNumberParameterType::Integer, QVariant(), true, 0 );
+  std::unique_ptr<QgsProcessingParameterNumber> paramOriginY = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "ORIGIN_Y" ), QObject::tr( "Y origin of a tile for parallel runs" ), Qgis::ProcessingNumberParameterType::Integer, QVariant(), true, 0 );
   paramOriginY->setFlags( paramOriginY->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( paramOriginY.release() );
 
@@ -99,12 +99,7 @@ QStringList QgsPdalExportRasterTinAlgorithm::createArgumentLists( const QVariant
 
   enableElevationPropertiesPostProcessor( true );
 
-  QStringList args = { QStringLiteral( "to_raster_tin" ),
-                       QStringLiteral( "--input=%1" ).arg( layer->source() ),
-                       QStringLiteral( "--output=%1" ).arg( outputFile ),
-                       QStringLiteral( "--resolution=%1" ).arg( resolution ),
-                       QStringLiteral( "--tile-size=%1" ).arg( tileSize )
-                     };
+  QStringList args = { QStringLiteral( "to_raster_tin" ), QStringLiteral( "--input=%1" ).arg( layer->source() ), QStringLiteral( "--output=%1" ).arg( outputFile ), QStringLiteral( "--resolution=%1" ).arg( resolution ), QStringLiteral( "--tile-size=%1" ).arg( tileSize ) };
 
   if ( hasOriginX && hasOriginY )
   {

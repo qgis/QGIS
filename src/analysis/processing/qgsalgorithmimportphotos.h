@@ -31,9 +31,7 @@
  */
 class ANALYSIS_EXPORT QgsImportPhotosAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsImportPhotosAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -45,9 +43,7 @@ class ANALYSIS_EXPORT QgsImportPhotosAlgorithm : public QgsProcessingAlgorithm
     QgsImportPhotosAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     static QVariant parseCoord( const QString &string );
@@ -65,5 +61,3 @@ class ANALYSIS_EXPORT QgsImportPhotosAlgorithm : public QgsProcessingAlgorithm
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMIMPORTPHOTOS_H
-
-

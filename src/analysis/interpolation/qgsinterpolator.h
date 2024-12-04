@@ -40,25 +40,24 @@ class QgsFeedback;
  */
 struct ANALYSIS_EXPORT QgsInterpolatorVertexData
 {
-
-  /**
+    /**
    * Constructor for QgsInterpolatorVertexData with the specified
    * \a x, \a y, and \a z coordinate.
    */
-  QgsInterpolatorVertexData( double x, double y, double z )
-    : x( x )
-    , y( y )
-    , z( z )
-  {}
+    QgsInterpolatorVertexData( double x, double y, double z )
+      : x( x )
+      , y( y )
+      , z( z )
+    {}
 
-  QgsInterpolatorVertexData() = default;
+    QgsInterpolatorVertexData() = default;
 
-  //! X-coordinate
-  double x = 0.0;
-  //! Y-coordinate
-  double y = 0.0;
-  //! Z-coordinate
-  double z = 0.0;
+    //! X-coordinate
+    double x = 0.0;
+    //! Y-coordinate
+    double y = 0.0;
+    //! Z-coordinate
+    double z = 0.0;
 };
 
 /**
@@ -72,50 +71,49 @@ struct ANALYSIS_EXPORT QgsInterpolatorVertexData
 class ANALYSIS_EXPORT QgsInterpolator
 {
   public:
-
     //! Describes the type of input data
     enum SourceType
     {
-      SourcePoints, //!< Point source
+      SourcePoints,         //!< Point source
       SourceStructureLines, //!< Structure lines
-      SourceBreakLines, //!< Break lines
+      SourceBreakLines,     //!< Break lines
     };
 
     //! Source for interpolated values from features
     enum ValueSource
     {
       ValueAttribute, //!< Take value from feature's attribute
-      ValueZ, //!< Use feature's geometry Z values for interpolation
-      ValueM, //!< Use feature's geometry M values for interpolation
+      ValueZ,         //!< Use feature's geometry Z values for interpolation
+      ValueM,         //!< Use feature's geometry M values for interpolation
     };
 
     //! Result of an interpolation operation
     enum Result
     {
-      Success = 0, //!< Operation was successful
-      Canceled, //!< Operation was manually canceled
-      InvalidSource, //!< Operation failed due to invalid source
+      Success = 0,          //!< Operation was successful
+      Canceled,             //!< Operation was manually canceled
+      InvalidSource,        //!< Operation failed due to invalid source
       FeatureGeometryError, //!< Operation failed due to invalid feature geometry
     };
 
     //! A source together with the information about interpolation attribute / z-coordinate interpolation and the type (point, structure line, breakline)
     struct LayerData
     {
-      //! Feature source
-      QgsFeatureSource *source = nullptr;
-      //! Source for feature values to interpolate
-      QgsInterpolator::ValueSource valueSource = QgsInterpolator::ValueAttribute;
-      //! Index of feature attribute to use for interpolation
-      int interpolationAttribute = -1;
-      //! Source type
-      QgsInterpolator::SourceType sourceType = SourcePoints;
+        //! Feature source
+        QgsFeatureSource *source = nullptr;
+        //! Source for feature values to interpolate
+        QgsInterpolator::ValueSource valueSource = QgsInterpolator::ValueAttribute;
+        //! Index of feature attribute to use for interpolation
+        int interpolationAttribute = -1;
+        //! Source type
+        QgsInterpolator::SourceType sourceType = SourcePoints;
 
-      /**
+        /**
        * Coordinate transform context.
        *
        * \since QGIS 3.10.1
        */
-      QgsCoordinateTransformContext transformContext;
+        QgsCoordinateTransformContext transformContext;
     };
 
     QgsInterpolator( const QList<QgsInterpolator::LayerData> &layerData );
@@ -133,10 +131,10 @@ class ANALYSIS_EXPORT QgsInterpolator
     virtual int interpolatePoint( double x, double y, double &result SIP_OUT, QgsFeedback *feedback = nullptr ) = 0;
 
     //! \note not available in Python bindings
-    QList<LayerData> layerData() const { return mLayerData; } SIP_SKIP
+    QList<LayerData> layerData() const { return mLayerData; }
+    SIP_SKIP
 
   protected:
-
     /**
      * Caches the vertex and value data from the provider. All the vertex data
      * will be held in virtual memory.

@@ -34,33 +34,31 @@
 #include <iterator>
 
 
-
 QgsNineCellFilter::QgsNineCellFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat )
   : mInputFile( inputFile )
   , mOutputFile( outputFile )
   , mOutputFormat( outputFormat )
 {
-
 }
 
 // TODO: return an anum instead of an int
 int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
 {
 #ifdef HAVE_OPENCL
-  if ( QgsOpenClUtils::enabled() && QgsOpenClUtils::available() && ! openClProgramBaseName( ).isEmpty() )
+  if ( QgsOpenClUtils::enabled() && QgsOpenClUtils::available() && !openClProgramBaseName().isEmpty() )
   {
     // Load the program sources
-    const QString source( QgsOpenClUtils::sourceFromBaseName( openClProgramBaseName( ) ) );
-    if ( ! source.isEmpty() )
+    const QString source( QgsOpenClUtils::sourceFromBaseName( openClProgramBaseName() ) );
+    if ( !source.isEmpty() )
     {
       try
       {
-        QgsDebugMsgLevel( QStringLiteral( "Running OpenCL program: %1" ).arg( openClProgramBaseName( ) ), 2 );
+        QgsDebugMsgLevel( QStringLiteral( "Running OpenCL program: %1" ).arg( openClProgramBaseName() ), 2 );
         return processRasterGPU( source, feedback );
       }
       catch ( cl::Error &e )
       {
-        const QString err = QObject::tr( "Error running OpenCL program: %1 - %2" ).arg( e.what( ), QgsOpenClUtils::errorText( e.err( ) ) );
+        const QString err = QObject::tr( "Error running OpenCL program: %1 - %2" ).arg( e.what(), QgsOpenClUtils::errorText( e.err() ) );
         QgsMessageLog::logMessage( err, QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
         throw QgsProcessingException( err );
       }
@@ -68,8 +66,7 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
     else
     {
       const QString err = QObject::tr( "Error loading OpenCL program sources" );
-      QgsMessageLog::logMessage( err,
-                                 QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
+      QgsMessageLog::logMessage( err, QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
       throw QgsProcessingException( err );
     }
   }
@@ -170,7 +167,6 @@ gdal::dataset_unique_ptr QgsNineCellFilter::openOutputFile( GDALDatasetH inputDa
 // TODO: return an anum instead of an int
 int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *feedback )
 {
-
   GDALAllRegister();
 
   //open input file
@@ -227,11 +223,11 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   // Cast to float (because double just crashes on some GPUs)
   std::vector<float> rasterParams;
 
-  rasterParams.push_back( mInputNodataValue ); //  0
+  rasterParams.push_back( mInputNodataValue );  //  0
   rasterParams.push_back( mOutputNodataValue ); // 1
-  rasterParams.push_back( mZFactor ); // 2
-  rasterParams.push_back( mCellSizeX ); // 3
-  rasterParams.push_back( mCellSizeY ); // 4
+  rasterParams.push_back( mZFactor );           // 2
+  rasterParams.push_back( mCellSizeX );         // 3
+  rasterParams.push_back( mCellSizeY );         // 4
 
   // Allow subclasses to add extra params needed for computation:
   // used to pass additional args to opencl program
@@ -244,23 +240,22 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   cl::Buffer scanLine1Buffer( ctx, CL_MEM_READ_ONLY, bufferSize, nullptr, nullptr );
   cl::Buffer scanLine2Buffer( ctx, CL_MEM_READ_ONLY, bufferSize, nullptr, nullptr );
   cl::Buffer scanLine3Buffer( ctx, CL_MEM_READ_ONLY, bufferSize, nullptr, nullptr );
-  cl::Buffer *scanLineBuffer[3] = {&scanLine1Buffer, &scanLine2Buffer, &scanLine3Buffer};
+  cl::Buffer *scanLineBuffer[3] = { &scanLine1Buffer, &scanLine2Buffer, &scanLine3Buffer };
   cl::Buffer resultLineBuffer( ctx, CL_MEM_WRITE_ONLY, inputSize, nullptr, nullptr );
 
   // Create a program from the kernel source
   const cl::Program program( QgsOpenClUtils::buildProgram( source, QgsOpenClUtils::ExceptionBehavior::Throw ) );
 
   // Create the OpenCL kernel
-  auto kernel = cl::KernelFunctor <
-                cl::Buffer &,
-                cl::Buffer &,
-                cl::Buffer &,
-                cl::Buffer &,
-                cl::Buffer &
-                > ( program, "processNineCellWindow" );
+  auto kernel = cl::KernelFunctor<
+    cl::Buffer &,
+    cl::Buffer &,
+    cl::Buffer &,
+    cl::Buffer &,
+    cl::Buffer &>( program, "processNineCellWindow" );
 
   // Rotate buffer index
-  std::vector<int> rowIndex = {0, 1, 2};
+  std::vector<int> rowIndex = { 0, 1, 2 };
 
   // values outside the layer extent (if the 3x3 window is on the border) are sent to the processing method as (input) nodata values
   for ( int i = 0; i < ySize; ++i )
@@ -272,14 +267,14 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 
     if ( feedback )
     {
-      feedback->setProgress( 100.0 * static_cast< double >( i ) / ySize );
+      feedback->setProgress( 100.0 * static_cast<double>( i ) / ySize );
     }
 
     if ( i == 0 )
     {
       // Fill scanline 1 with (input) nodata for the values above the first row and
       // feed scanline2 with the first actual data row
-      for ( int a = 0; a < xSize + 2 ; ++a )
+      for ( int a = 0; a < xSize + 2; ++a )
       {
         scanLine[a] = mInputNodataValue;
       }
@@ -322,16 +317,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
       }
     }
 
-    kernel( cl::EnqueueArgs(
-              queue,
-              cl::NDRange( xSize )
-            ),
-            *scanLineBuffer[rowIndex[0]],
-            *scanLineBuffer[rowIndex[1]],
-            *scanLineBuffer[rowIndex[2]],
-            resultLineBuffer,
-            rasterParamsBuffer
-          );
+    kernel( cl::EnqueueArgs( queue, cl::NDRange( xSize ) ), *scanLineBuffer[rowIndex[0]], *scanLineBuffer[rowIndex[1]], *scanLineBuffer[rowIndex[2]], resultLineBuffer, rasterParamsBuffer );
 
     queue.enqueueReadBuffer( resultLineBuffer, CL_TRUE, 0, inputSize, resultLine.get() );
 
@@ -356,7 +342,6 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 // TODO: return an anum instead of an int
 int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
 {
-
   GDALAllRegister();
 
   //open input file
@@ -420,13 +405,13 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
 
     if ( feedback )
     {
-      feedback->setProgress( 100.0 * static_cast< double >( yIndex ) / ySize );
+      feedback->setProgress( 100.0 * static_cast<double>( yIndex ) / ySize );
     }
 
     if ( yIndex == 0 )
     {
       //fill scanline 1 with (input) nodata for the values above the first row and feed scanline2 with the first row
-      for ( int a = 0; a < xSize + 2 ; ++a )
+      for ( int a = 0; a < xSize + 2; ++a )
       {
         scanLine1[a] = mInputNodataValue;
       }
@@ -466,15 +451,11 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
     scanLine3[0] = scanLine3[xSize + 1] = mInputNodataValue;
 
 
-
     // j is the x axis index, skip 0 and last cell that have been filled with nodata
-    for ( int xIndex = 0; xIndex < xSize ; ++xIndex )
+    for ( int xIndex = 0; xIndex < xSize; ++xIndex )
     {
       // cells(x, y) x11, x21, x31, x12, x22, x32, x13, x23, x33
-      resultLine[ xIndex ] = processNineCellWindow( &scanLine1[ xIndex ], &scanLine1[ xIndex + 1 ], &scanLine1[ xIndex + 2 ],
-                             &scanLine2[ xIndex ], &scanLine2[ xIndex + 1 ], &scanLine2[ xIndex + 2 ],
-                             &scanLine3[ xIndex ], &scanLine3[ xIndex + 1 ], &scanLine3[ xIndex + 2 ] );
-
+      resultLine[xIndex] = processNineCellWindow( &scanLine1[xIndex], &scanLine1[xIndex + 1], &scanLine1[xIndex + 2], &scanLine2[xIndex], &scanLine2[xIndex + 1], &scanLine2[xIndex + 2], &scanLine3[xIndex], &scanLine3[xIndex + 1], &scanLine3[xIndex + 2] );
     }
 
     if ( GDALRasterIO( outputRasterBand, GF_Write, 0, yIndex, xSize, 1, resultLine, xSize, 1, GDT_Float32, 0, 0 ) != CE_None )

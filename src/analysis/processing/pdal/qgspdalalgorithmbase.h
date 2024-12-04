@@ -31,12 +31,10 @@
 class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
 {
   public:
-
     /**
      * Builds a command line string to run required pdal_wrench tool.
      */
-    virtual QStringList createArgumentLists( const QVariantMap &parameters,
-        QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    virtual QStringList createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
   protected:
     void setOutputValue( const QString &name, const QVariant &value );
@@ -86,8 +84,7 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
      */
     QString wrenchExecutableBinary() const;
 
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     QMap<QString, QVariant> mOutputValues;

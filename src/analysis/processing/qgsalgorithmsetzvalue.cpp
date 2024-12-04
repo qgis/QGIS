@@ -66,7 +66,7 @@ QgsSetZValueAlgorithm *QgsSetZValueAlgorithm::createInstance() const
 
 bool QgsSetZValueAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );
   if ( !layer )
     return false;
 
@@ -85,7 +85,7 @@ Qgis::WkbType QgsSetZValueAlgorithm::outputWkbType( Qgis::WkbType type ) const
 
 void QgsSetZValueAlgorithm::initParameters( const QVariantMap & )
 {
-  auto zValueParam = std::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "Z_VALUE" ), QObject::tr( "Z Value" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
+  auto zValueParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "Z_VALUE" ), QObject::tr( "Z Value" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   zValueParam->setIsDynamic( true );
   zValueParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Z_VALUE" ), QObject::tr( "Z Value" ), QgsPropertyDefinition::Double ) );
   zValueParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -97,7 +97,7 @@ bool QgsSetZValueAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
   mZValue = parameterAsDouble( parameters, QStringLiteral( "Z_VALUE" ), context );
   mDynamicZValue = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "Z_VALUE" ) );
   if ( mDynamicZValue )
-    mZValueProperty = parameters.value( QStringLiteral( "Z_VALUE" ) ).value< QgsProperty >();
+    mZValueProperty = parameters.value( QStringLiteral( "Z_VALUE" ) ).value<QgsProperty>();
 
   return true;
 }
@@ -108,7 +108,7 @@ QgsFeatureList QgsSetZValueAlgorithm::processFeature( const QgsFeature &feature,
 
   if ( f.hasGeometry() )
   {
-    std::unique_ptr< QgsAbstractGeometry > newGeometry( f.geometry().constGet()->clone() );
+    std::unique_ptr<QgsAbstractGeometry> newGeometry( f.geometry().constGet()->clone() );
     // addZValue won't alter existing Z values, so drop them first
     if ( QgsWkbTypes::hasZ( newGeometry->wkbType() ) )
       newGeometry->dropZValue();

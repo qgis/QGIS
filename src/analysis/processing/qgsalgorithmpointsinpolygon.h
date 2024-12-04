@@ -30,9 +30,7 @@
  */
 class QgsPointsInPolygonAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsPointsInPolygonAlgorithm() = default;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -56,7 +54,7 @@ class QgsPointsInPolygonAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString inputParameterDescription() const override;
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
 
   private:
@@ -70,12 +68,9 @@ class QgsPointsInPolygonAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     mutable QgsFields mFields;
     mutable QgsCoordinateReferenceSystem mCrs;
     QgsAttributeList mPointAttributes;
-    std::unique_ptr< QgsProcessingFeatureSource > mPointSource;
-
+    std::unique_ptr<QgsProcessingFeatureSource> mPointSource;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMPOINTSINPOLYGON_H
-
-

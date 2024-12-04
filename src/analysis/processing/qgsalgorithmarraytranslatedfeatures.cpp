@@ -72,41 +72,31 @@ QgsArrayTranslatedFeaturesAlgorithm *QgsArrayTranslatedFeaturesAlgorithm::create
 
 void QgsArrayTranslatedFeaturesAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterNumber > count = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "COUNT" ),
-      QObject::tr( "Number of features to create" ), Qgis::ProcessingNumberParameterType::Integer,
-      10, false, 1 );
+  std::unique_ptr<QgsProcessingParameterNumber> count = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "COUNT" ), QObject::tr( "Number of features to create" ), Qgis::ProcessingNumberParameterType::Integer, 10, false, 1 );
   count->setIsDynamic( true );
   count->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "COUNT" ), QObject::tr( "Number of features to create" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
   count->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( count.release() );
 
-  std::unique_ptr< QgsProcessingParameterDistance > xOffset = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "DELTA_X" ),
-      QObject::tr( "Step distance (x-axis)" ),
-      0.0, QStringLiteral( "INPUT" ) );
+  std::unique_ptr<QgsProcessingParameterDistance> xOffset = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DELTA_X" ), QObject::tr( "Step distance (x-axis)" ), 0.0, QStringLiteral( "INPUT" ) );
   xOffset->setIsDynamic( true );
   xOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DELTA_X" ), QObject::tr( "Offset distance (x-axis)" ), QgsPropertyDefinition::Double ) );
   xOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( xOffset.release() );
 
-  std::unique_ptr< QgsProcessingParameterDistance > yOffset = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "DELTA_Y" ),
-      QObject::tr( "Step distance (y-axis)" ),
-      0.0, QStringLiteral( "INPUT" ) );
+  std::unique_ptr<QgsProcessingParameterDistance> yOffset = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DELTA_Y" ), QObject::tr( "Step distance (y-axis)" ), 0.0, QStringLiteral( "INPUT" ) );
   yOffset->setIsDynamic( true );
   yOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DELTA_Y" ), QObject::tr( "Offset distance (y-axis)" ), QgsPropertyDefinition::Double ) );
   yOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( yOffset.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > zOffset = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DELTA_Z" ),
-      QObject::tr( "Step distance (z-axis)" ), Qgis::ProcessingNumberParameterType::Double,
-      0.0 );
+  std::unique_ptr<QgsProcessingParameterNumber> zOffset = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "DELTA_Z" ), QObject::tr( "Step distance (z-axis)" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   zOffset->setIsDynamic( true );
   zOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DELTA_Z" ), QObject::tr( "Offset distance (z-axis)" ), QgsPropertyDefinition::Double ) );
   zOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( zOffset.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > mOffset = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "DELTA_M" ),
-      QObject::tr( "Step distance (m values)" ), Qgis::ProcessingNumberParameterType::Double,
-      0.0 );
+  std::unique_ptr<QgsProcessingParameterNumber> mOffset = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "DELTA_M" ), QObject::tr( "Step distance (m values)" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   mOffset->setIsDynamic( true );
   mOffset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DELTA_M" ), QObject::tr( "Offset distance (m values)" ), QgsPropertyDefinition::Double ) );
   mOffset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -118,27 +108,27 @@ bool QgsArrayTranslatedFeaturesAlgorithm::prepareAlgorithm( const QVariantMap &p
   mCount = parameterAsInt( parameters, QStringLiteral( "COUNT" ), context );
   mDynamicCount = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "COUNT" ) );
   if ( mDynamicCount )
-    mCountProperty = parameters.value( QStringLiteral( "COUNT" ) ).value< QgsProperty >();
+    mCountProperty = parameters.value( QStringLiteral( "COUNT" ) ).value<QgsProperty>();
 
   mDeltaX = parameterAsDouble( parameters, QStringLiteral( "DELTA_X" ), context );
   mDynamicDeltaX = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DELTA_X" ) );
   if ( mDynamicDeltaX )
-    mDeltaXProperty = parameters.value( QStringLiteral( "DELTA_X" ) ).value< QgsProperty >();
+    mDeltaXProperty = parameters.value( QStringLiteral( "DELTA_X" ) ).value<QgsProperty>();
 
   mDeltaY = parameterAsDouble( parameters, QStringLiteral( "DELTA_Y" ), context );
   mDynamicDeltaY = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DELTA_Y" ) );
   if ( mDynamicDeltaY )
-    mDeltaYProperty = parameters.value( QStringLiteral( "DELTA_Y" ) ).value< QgsProperty >();
+    mDeltaYProperty = parameters.value( QStringLiteral( "DELTA_Y" ) ).value<QgsProperty>();
 
   mDeltaZ = parameterAsDouble( parameters, QStringLiteral( "DELTA_Z" ), context );
   mDynamicDeltaZ = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DELTA_Z" ) );
   if ( mDynamicDeltaZ )
-    mDeltaZProperty = parameters.value( QStringLiteral( "DELTA_Z" ) ).value< QgsProperty >();
+    mDeltaZProperty = parameters.value( QStringLiteral( "DELTA_Z" ) ).value<QgsProperty>();
 
   mDeltaM = parameterAsDouble( parameters, QStringLiteral( "DELTA_M" ), context );
   mDynamicDeltaM = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DELTA_M" ) );
   if ( mDynamicDeltaM )
-    mDeltaMProperty = parameters.value( QStringLiteral( "DELTA_M" ) ).value< QgsProperty >();
+    mDeltaMProperty = parameters.value( QStringLiteral( "DELTA_M" ) ).value<QgsProperty>();
 
   return true;
 }
@@ -227,5 +217,3 @@ QgsFeatureSink::SinkFlags QgsArrayTranslatedFeaturesAlgorithm::sinkFlags() const
 }
 
 ///@endcond
-
-
