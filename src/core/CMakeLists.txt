@@ -1387,6 +1387,7 @@ set(QGIS_CORE_HDRS
   auth/qgsauthmethod.h
   auth/qgsauthmethodmetadata.h
   auth/qgsauthmethodregistry.h
+  auth/qgsauthorizationsettings.h
 
   auth/qgsauthconfigurationstoragesqlite.h
   auth/qgsauthconfigurationstoragedb.h
