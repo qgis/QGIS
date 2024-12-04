@@ -38,6 +38,7 @@
 #include <QDomDocument>
 #include <QPolygonF>
 #include <QThread>
+#include <algorithm>
 
 QgsPropertiesDefinition QgsFeatureRenderer::sPropertyDefinitions;
 
@@ -415,6 +416,38 @@ QString QgsFeatureRenderer::legendKeyToExpression( const QString &, QgsVectorLay
 QgsLegendSymbolList QgsFeatureRenderer::legendSymbolItems() const
 {
   return QgsLegendSymbolList();
+}
+
+double QgsFeatureRenderer::maximumExtentBuffer( QgsRenderContext &context ) const
+{
+  const QgsSymbolList symbolList = symbols( context );
+
+  if ( symbolList.empty() )
+    return 0;
+
+  const QgsExpressionContext &expContext = context.expressionContext();
+
+  auto getValueFromSymbol = [ &expContext ]( const QgsSymbol * sym ) -> double
+  {
+    const QgsProperty property = sym->dataDefinedProperties().property( QgsSymbol::Property::ExtentBuffer );
+
+    if ( property.isActive() && ! property.expressionString().isEmpty() )
+    {
+      return sym->dataDefinedProperties().valueAsDouble( QgsSymbol::Property::ExtentBuffer, expContext );
+    }
+
+    return sym->extentBuffer();
+  };
+
+  if ( symbolList.size() == 1 )
+    return getValueFromSymbol( symbolList[0] );
+
+  auto it = std::max_element( symbolList.constBegin(), symbolList.constEnd(), [ &getValueFromSymbol ]( const QgsSymbol * a, const QgsSymbol * b ) -> bool
+  {
+    return getValueFromSymbol( a ) < getValueFromSymbol( b );
+  } );
+
+  return getValueFromSymbol( *it );
 }
 
 QList<QgsLayerTreeModelLegendNode *> QgsFeatureRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer ) const
