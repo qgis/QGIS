@@ -269,7 +269,6 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
       QgsAttributes destAttributes;
       for ( const QgsField &destField : outputFields )
       {
-        {
           if ( addLayerField && destField.name() == QLatin1String( "layer" ) )
           {
             destAttributes.append( layerName );
