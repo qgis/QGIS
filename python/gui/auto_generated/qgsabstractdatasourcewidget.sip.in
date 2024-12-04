@@ -28,7 +28,6 @@ selection widgets.
 #include "qgsabstractdatasourcewidget.h"
 %End
   public:
-
     virtual void setBrowserModel( QgsBrowserModel *model );
 %Docstring
 Sets a browser ``model`` to use with the widget.
@@ -223,7 +222,6 @@ Emitted when a ``message`` with ``title`` and ``level`` must be shown to the use
 %End
 
   protected:
-
     QgsAbstractDataSourceWidget( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 %Docstring
 Constructor
@@ -246,7 +244,7 @@ Returns the associated browser model (may be ``None``).
 Connect the ok and apply/add buttons to the slots
 %End
 
-    QPushButton *addButton( ) const;
+    QPushButton *addButton() const;
 %Docstring
 Returns the add Button
 %End

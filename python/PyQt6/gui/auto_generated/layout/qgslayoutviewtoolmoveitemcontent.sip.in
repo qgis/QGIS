@@ -18,7 +18,6 @@ Layout view tool for moving and zooming item content.
 #include "qgslayoutviewtoolmoveitemcontent.h"
 %End
   public:
-
     QgsLayoutViewToolMoveItemContent( QgsLayoutView *view /TransferThis/ );
 %Docstring
 Constructor for QgsLayoutViewToolMoveItemContent.

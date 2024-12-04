@@ -22,7 +22,6 @@ Display referer http header field and collapsible table of key/value pairs
 #include "qgshttpheaderwidget.h"
 %End
   public:
-
     explicit QgsHttpHeaderWidget( QWidget *parent = 0 );
 %Docstring
 Default constructor

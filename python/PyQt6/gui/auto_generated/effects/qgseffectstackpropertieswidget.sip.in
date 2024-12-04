@@ -28,7 +28,6 @@ and reordering effects within the stack.
 #include "qgseffectstackpropertieswidget.h"
 %End
   public:
-
     QgsEffectStackPropertiesWidget( QgsEffectStack *stack, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsEffectStackPropertiesWidget constructor
@@ -94,7 +93,6 @@ Updates the effect stack when the currently selected effect changes properties.
 
   protected:
 
-
     void loadStack();
 %Docstring
 Refreshes the widget to reflect the current state of the stack.
@@ -122,12 +120,11 @@ Moves the currently selected effect within the stack by a specified offset
 %Docstring
 Sets the effect properties widget
 %End
-
 };
 
 
 
-class QgsEffectStackPropertiesDialog: QgsDialog
+class QgsEffectStackPropertiesDialog : QgsDialog
 {
 %Docstring(signature="appended")
 A dialog for modifying the properties of a :py:class:`QgsEffectStack`, including adding
@@ -144,7 +141,6 @@ and reordering effects within the stack.
 #include "qgseffectstackpropertieswidget.h"
 %End
   public:
-
     QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags f = Qt::WindowFlags() );
 %Docstring
 QgsEffectStackPropertiesDialog constructor
@@ -170,12 +166,11 @@ Sets the picture to use for effect previews for the dialog
 
   protected:
 
-
 };
 
 
 
-class QgsEffectStackCompactWidget: QgsPanelWidget
+class QgsEffectStackCompactWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
 A small widget consisting of a checkbox for enabling/disabling an effect stack
@@ -192,7 +187,6 @@ and a button for opening an effect stack customization dialog.
 #include "qgseffectstackpropertieswidget.h"
 %End
   public:
-
     QgsEffectStackCompactWidget( QWidget *parent /TransferThis/ = 0, QgsPaintEffect *effect = 0 );
 %Docstring
 QgsEffectStackCompactWidget constructor

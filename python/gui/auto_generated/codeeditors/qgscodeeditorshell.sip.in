@@ -27,7 +27,6 @@ on all other platforms.
 #include "qgscodeeditorshell.h"
 %End
   public:
-
     QgsCodeEditorShell( QWidget *parent /TransferThis/ = 0, QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor, Qgis::ScriptLanguage language = Qgis::ScriptLanguage::Unknown );
 %Docstring
 Constructor for QgsCodeEditorShell.

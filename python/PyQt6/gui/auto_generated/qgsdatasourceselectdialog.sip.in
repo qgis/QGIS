@@ -9,7 +9,7 @@
 
 
 
-class QgsDataSourceSelectWidget: QgsPanelWidget
+class QgsDataSourceSelectWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
 The :py:class:`QgsDataSourceSelectWidget` class embeds the browser view to
@@ -30,11 +30,7 @@ will return a (possibly invalid) :py:class:`QgsMimeDataUtils`.Uri.
 #include "qgsdatasourceselectdialog.h"
 %End
   public:
-
-    QgsDataSourceSelectWidget( QgsBrowserGuiModel *browserModel = 0,
-                               bool setFilterByLayerType = false,
-                               Qgis::LayerType layerType = Qgis::LayerType::Vector,
-                               QWidget *parent = 0 );
+    QgsDataSourceSelectWidget( QgsBrowserGuiModel *browserModel = 0, bool setFilterByLayerType = false, Qgis::LayerType layerType = Qgis::LayerType::Vector, QWidget *parent = 0 );
 %Docstring
 Constructs a QgsDataSourceSelectWidget, optionally filtering by layer type
 
@@ -130,7 +126,7 @@ Emitted when an item is triggered, e.g. via a double-click.
 };
 
 
-class QgsDataSourceSelectDialog: QDialog
+class QgsDataSourceSelectDialog : QDialog
 {
 %Docstring(signature="appended")
 The :py:class:`QgsDataSourceSelectDialog` class embeds the browser view to
@@ -151,11 +147,7 @@ will return a (possibly invalid) :py:class:`QgsMimeDataUtils`.Uri.
 #include "qgsdatasourceselectdialog.h"
 %End
   public:
-
-    QgsDataSourceSelectDialog( QgsBrowserGuiModel *browserModel = 0,
-                               bool setFilterByLayerType = false,
-                               Qgis::LayerType layerType = Qgis::LayerType::Vector,
-                               QWidget *parent = 0 );
+    QgsDataSourceSelectDialog( QgsBrowserGuiModel *browserModel = 0, bool setFilterByLayerType = false, Qgis::LayerType layerType = Qgis::LayerType::Vector, QWidget *parent = 0 );
 %Docstring
 Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
 

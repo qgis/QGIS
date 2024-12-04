@@ -18,7 +18,6 @@ A widget for customizing conditional formatting options.
 #include "qgsfieldconditionalformatwidget.h"
 %End
   public:
-
     explicit QgsFieldConditionalFormatWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFieldConditionalFormatWidget.
@@ -99,7 +98,6 @@ A widget for customizing an individual conditional formatting rule.
 #include "qgsfieldconditionalformatwidget.h"
 %End
   public:
-
     explicit QgsEditConditionalFormatRuleWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for :py:class:`QgsFieldConditionalFormatWidget`, with the specified ``parent`` widget.

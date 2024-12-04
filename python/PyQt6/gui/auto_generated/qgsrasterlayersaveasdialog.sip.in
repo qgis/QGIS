@@ -8,7 +8,7 @@
 
 
 
-class QgsRasterLayerSaveAsDialog: QDialog
+class QgsRasterLayerSaveAsDialog : QDialog
 {
 
 %TypeHeaderCode
@@ -32,13 +32,7 @@ class QgsRasterLayerSaveAsDialog: QDialog
       UserResolution
     };
 
-    QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer,
-                                QgsRasterDataProvider *sourceProvider,
-                                const QgsRectangle &currentExtent,
-                                const QgsCoordinateReferenceSystem &layerCrs,
-                                const QgsCoordinateReferenceSystem &currentCrs,
-                                QWidget *parent /TransferThis/ = 0,
-                                Qt::WindowFlags f = Qt::WindowFlags() );
+    QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer, QgsRasterDataProvider *sourceProvider, const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &layerCrs, const QgsCoordinateReferenceSystem &currentCrs, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags f = Qt::WindowFlags() );
 %Docstring
 Constructor for QgsRasterLayerSaveAsDialog
 %End
@@ -82,7 +76,7 @@ Name of the output layer within GeoPackage file
     QgsRectangle outputRectangle() const;
     QgsRasterRangeList noData() const;
 
-    QList< int > pyramidsList() const;
+    QList<int> pyramidsList() const;
 
     Qgis::RasterBuildPyramidOption buildPyramidsFlag() const;
 %Docstring
@@ -106,7 +100,6 @@ Returns the selected pyramid format.
 
 
 };
-
 
 
 /************************************************************************

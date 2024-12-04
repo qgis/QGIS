@@ -22,7 +22,6 @@ A canvas for elevation profiles.
 #include "qgselevationprofilecanvas.h"
 %End
   public:
-
     QgsElevationProfileCanvas( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsElevationProfileCanvas, with the specified ``parent`` widget.
@@ -86,14 +85,14 @@ This must be set before any layers which utilize terrain based elevation setting
 included in the canvas.
 %End
 
-    void setLayers( const QList< QgsMapLayer * > &layers );
+    void setLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
 Sets the list of ``layers`` to include in the profile.
 
 .. seealso:: :py:func:`layers`
 %End
 
-    QList< QgsMapLayer * > layers() const;
+    QList<QgsMapLayer *> layers() const;
 %Docstring
 Returns the list of layers included in the profile.
 

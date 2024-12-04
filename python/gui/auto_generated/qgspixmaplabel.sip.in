@@ -19,7 +19,6 @@ to the widget by the layout and keeping its aspect ratio.
 #include "qgspixmaplabel.h"
 %End
   public:
-
     explicit QgsPixmapLabel( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsPixmapLabel

@@ -26,11 +26,7 @@ Processing toolbox tree view, showing algorithms and providers in a tree structu
 #include "qgsprocessingtoolboxtreeview.h"
 %End
   public:
-
-    QgsProcessingToolboxTreeView( QWidget *parent /TransferThis/ = 0,
-                                  QgsProcessingRegistry *registry = 0,
-                                  QgsProcessingRecentAlgorithmLog *recentLog = 0,
-                                  QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0 );
+    QgsProcessingToolboxTreeView( QWidget *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0, QgsProcessingRecentAlgorithmLog *recentLog = 0, QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0 );
 %Docstring
 Constructor for QgsProcessingToolboxTreeView, with the specified ``parent`` widget.
 
@@ -48,7 +44,8 @@ level group containing favorite algorithms. Since QGIS 3.40
     void setRegistry(
       QgsProcessingRegistry *registry,
       QgsProcessingRecentAlgorithmLog *recentLog = 0,
-      QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0 );
+      QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0
+    );
 %Docstring
 Sets the processing ``registry`` associated with the view.
 
@@ -106,7 +103,6 @@ to matching algorithms.
 %End
 
   protected:
-
     virtual void keyPressEvent( QKeyEvent *event );
 
 

@@ -21,7 +21,6 @@ Encapsulates the context for a :py:class:`QgsMapLayerConfigWidget`.
 #include "qgsmaplayerconfigwidget.h"
 %End
   public:
-
     QString annotationId() const;
 %Docstring
 Returns the item ID of the target annotation, when modifying
@@ -99,7 +98,6 @@ A panel widget that can be shown in the map style dock
 #include "qgsmaplayerconfigwidget.h"
 %End
   public:
-
     QgsMapLayerConfigWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 %Docstring
 A panel widget that can be shown in the map style dock
@@ -157,7 +155,6 @@ Focuses the default widget for the page.
 
 
   protected:
-
 };
 
 /************************************************************************

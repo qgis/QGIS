@@ -9,16 +9,14 @@
 
 
 
-class QgsNewVectorLayerDialog: QDialog
+class QgsNewVectorLayerDialog : QDialog
 {
 
 %TypeHeaderCode
 #include "qgsnewvectorlayerdialog.h"
 %End
   public:
-
- static QString runAndCreateLayer( QWidget *parent = 0, QString *enc = 0, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
-        const QString &initialPath = QString() ) /Deprecated/;
+ static QString runAndCreateLayer( QWidget *parent = 0, QString *enc = 0, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QString &initialPath = QString() ) /Deprecated/;
 %Docstring
 Runs the dialog and creates a layer matching the dialog parameters.
 
@@ -62,7 +60,7 @@ New dialog constructor.
 %Docstring
 Returns the selected geometry type
 %End
-    void attributes( QList< QPair<QString, QString> > &at ) const;
+    void attributes( QList<QPair<QString, QString>> &at ) const;
 %Docstring
 Appends the chosen attribute names and types to at
 %End

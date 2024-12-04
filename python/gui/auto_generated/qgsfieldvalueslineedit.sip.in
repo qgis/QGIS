@@ -12,7 +12,7 @@
 
 
 
-class QgsFieldValuesLineEdit: QgsFilterLineEdit
+class QgsFieldValuesLineEdit : QgsFilterLineEdit
 {
 %Docstring(signature="appended")
 A line edit with an autocompleter which takes unique values from a vector layer's fields.
@@ -24,7 +24,6 @@ interaction with the widget.
 #include "qgsfieldvalueslineedit.h"
 %End
   public:
-
     QgsFieldValuesLineEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFieldValuesLineEdit

@@ -26,7 +26,6 @@ Base class for processing algorithm dialogs.
 #include "qgsprocessingalgorithmdialogbase.h"
 %End
   public:
-
     enum LogFormat
     {
       FormatPlainText,
@@ -230,7 +229,6 @@ Switches the dialog to the parameters page.
 
 
   protected:
-
     virtual void closeEvent( QCloseEvent *e );
 
 

@@ -31,9 +31,7 @@ of Labeling.
 #include "qgstextformatwidget.h"
 %End
   public:
-
-    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0,
-                         QgsMapLayer *layer = 0 );
+    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, QgsMapLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatWidget.
 
@@ -110,7 +108,6 @@ Emitted when an auxiliary field is created in the widget.
 %End
 
   protected:
-
     enum Mode /BaseType=IntEnum/
     {
       Text,
@@ -217,7 +214,6 @@ a :py:class:`QgsTextFormat`, including shadow, background and buffer.
 #include "qgstextformatwidget.h"
 %End
   public:
-
     QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsMapLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatDialog.
@@ -265,7 +261,6 @@ a :py:class:`QgsTextFormat`, including shadow, background and buffer.
 #include "qgstextformatwidget.h"
 %End
   public:
-
     QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, QgsMapLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatPanelWidget.

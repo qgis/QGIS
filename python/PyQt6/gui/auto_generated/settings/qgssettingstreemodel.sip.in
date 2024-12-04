@@ -25,7 +25,6 @@ class QgsSettingsTreeModel : QAbstractItemModel
 #include "qgssettingstreemodel.h"
 %End
   public:
-
     enum class Column
     {
       Name,

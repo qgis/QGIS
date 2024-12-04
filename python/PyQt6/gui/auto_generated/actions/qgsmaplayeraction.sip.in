@@ -24,7 +24,6 @@ The class can be used in two manners:
 #include "qgsmaplayeraction.h"
 %End
   public:
-
     QgsMapLayerAction( const QString &name, QObject *parent /TransferThis/, Qgis::MapLayerActionTargets targets = Qgis::MapLayerActionTarget::AllActions, const QIcon &icon = QIcon(), Qgis::MapLayerActionFlags flags = Qgis::MapLayerActionFlags() );
 %Docstring
 Creates a map layer action which can run on any layer

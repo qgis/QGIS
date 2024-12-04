@@ -20,7 +20,6 @@ History provider for operations performed through the Processing framework.
 #include "qgsprocessinghistoryprovider.h"
 %End
   public:
-
     QgsProcessingHistoryProvider();
 
     virtual QString id() const;
@@ -55,9 +54,6 @@ Emitted when the provider needs to create a Processing test with the given pytho
 %End
 
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
