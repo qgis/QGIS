@@ -43,6 +43,31 @@ class CORE_EXPORT QgsRasterIterator
     QgsRasterIterator( QgsRasterInterface *input, int tileOverlapPixels = 0 );
 
     /**
+     * Sets the resampling factor in pixels. When set to a value greater than 1,
+     * the raster blocks will be snapped to boundaries of the resampled pixels.
+     * Set to 1 to disable resampling (default).
+     *
+     * \warning When the resampling factor is set, the iterated portion of the raster may not cover the entire input raster extent.
+     * A band of pixels on the right and bottom, with size at most of ``resampling factor - 1``, may be skipped if they cannot be snapped
+     * exactly to the resampling factor.
+     *
+     * \since QGIS 3.42
+     */
+    void setResamplingFactor( int factor ) { mResamplingFactor = factor > 0 ? factor : 1; }
+
+    /**
+     * Returns the current resampling factor in pixels.
+     *
+     * \warning When the resampling factor is set, the iterated portion of the raster may not cover the entire input raster extent.
+     * A band of pixels on the right and bottom, with size at most of ``resampling factor - 1``, may be skipped if they cannot be snapped
+     * exactly to the resampling factor.
+     *
+     * \see setResamplingFactor()
+     * \since QGIS 3.42
+     */
+    int resamplingFactor() const { return mResamplingFactor; }
+
+    /**
      * Given an overall raster extent and width and height in pixels, calculates the sub region
      * of the raster covering the specified \a subRegion.
      *
@@ -54,12 +79,13 @@ class CORE_EXPORT QgsRasterIterator
      * \param subRegionHeight height in pixels of sub region
      * \param subRegionLeft starting column of left side of sub region
      * \param subRegionTop starting row of top side of sub region
+     * \param resamplingFactor optional resampling factor to snap boundaries to. When specified the calculated subregion will always be shrunk to snap to the pixel boundaries. (since QGIS 3.42)
      *
      * \returns sub region geographic extent, snapped to exact pixel boundaries
      *
      * \since QGIS 3.26
      */
-    static QgsRectangle subRegion( const QgsRectangle &rasterExtent, int rasterWidth, int rasterHeight, const QgsRectangle &subRegion, int &subRegionWidth SIP_OUT, int &subRegionHeight SIP_OUT, int &subRegionLeft SIP_OUT, int &subRegionTop SIP_OUT );
+    static QgsRectangle subRegion( const QgsRectangle &rasterExtent, int rasterWidth, int rasterHeight, const QgsRectangle &subRegion, int &subRegionWidth SIP_OUT, int &subRegionHeight SIP_OUT, int &subRegionLeft SIP_OUT, int &subRegionTop SIP_OUT, int resamplingFactor = 1 );
 
     /**
      * Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns FALSE.
@@ -228,6 +254,7 @@ class CORE_EXPORT QgsRasterIterator
     int mTileOverlapPixels = 0;
     int mMaximumTileWidth;
     int mMaximumTileHeight;
+    int mResamplingFactor = 1;
 
     int mNumberBlocksWidth = 0;
     int mNumberBlocksHeight = 0;
@@ -235,6 +262,7 @@ class CORE_EXPORT QgsRasterIterator
     //! Remove part into and release memory
     void removePartInfo( int bandNumber );
     bool readNextRasterPartInternal( int bandNumber, int &nCols, int &nRows, std::unique_ptr<QgsRasterBlock> *block, int &topLeftCol, int &topLeftRow, QgsRectangle *blockExtent, int &tileColumns, int &tileRows, int &tileTopLeftColumn, int &tileTopLeftRow );
+
 };
 
 #endif // QGSRASTERITERATOR_H

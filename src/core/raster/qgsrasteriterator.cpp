@@ -34,7 +34,7 @@ QgsRasterIterator::QgsRasterIterator( QgsRasterInterface *input, int tileOverlap
   }
 }
 
-QgsRectangle QgsRasterIterator::subRegion( const QgsRectangle &rasterExtent, int rasterWidth, int rasterHeight, const QgsRectangle &subRegion, int &subRegionWidth, int &subRegionHeight, int &subRegionLeft, int &subRegionTop )
+QgsRectangle QgsRasterIterator::subRegion( const QgsRectangle &rasterExtent, int rasterWidth, int rasterHeight, const QgsRectangle &subRegion, int &subRegionWidth, int &subRegionHeight, int &subRegionLeft, int &subRegionTop, int resamplingFactor )
 {
   const double xRes = rasterExtent.width() / rasterWidth;
   const double yRes = rasterExtent.height() / rasterHeight;
@@ -62,8 +62,20 @@ QgsRectangle QgsRasterIterator::subRegion( const QgsRectangle &rasterExtent, int
     right = static_cast< int >( std::ceil( ( subRegion.xMaximum() - rasterExtent.xMinimum() ) / xRes ) - 1 );
   }
 
+  if ( resamplingFactor > 1 )
+  {
+    // Round up the starting boundaries to resampling grid
+    left = ( ( left + resamplingFactor - 1 ) / resamplingFactor ) * resamplingFactor;
+    top = ( ( top + resamplingFactor - 1 ) / resamplingFactor ) * resamplingFactor;
+
+    // Round down the ending boundaries to resampling grid
+    right = ( right / resamplingFactor ) * resamplingFactor - 1;
+    bottom = ( bottom / resamplingFactor ) * resamplingFactor - 1;
+  }
+
   subRegionWidth = right - left + 1;
   subRegionHeight = bottom - top + 1;
+
   subRegionLeft = left;
   subRegionTop = top;
 
@@ -169,11 +181,19 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
   }
 
   //read data block
-
   tileTopLeftColumn = pInfo.currentCol;
   tileTopLeftRow = pInfo.currentRow;
+
   tileColumns = static_cast< int >( std::min( static_cast< qgssize >( mMaximumTileWidth ), pInfo.nCols - tileTopLeftColumn ) );
   tileRows = static_cast< int >( std::min( static_cast< qgssize >( mMaximumTileHeight ), pInfo.nRows - tileTopLeftRow ) );
+
+  if ( mResamplingFactor > 1 )
+  {
+    // Round down tile dimensions to resampling factor
+    tileColumns = ( tileColumns / mResamplingFactor ) * mResamplingFactor;
+    tileRows = ( tileRows / mResamplingFactor ) * mResamplingFactor;
+  }
+
   const qgssize tileRight = tileTopLeftColumn + tileColumns;
   const qgssize tileBottom = tileTopLeftRow + tileRows;
 
@@ -184,6 +204,15 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
 
   nCols = blockRight - blockLeft;
   nRows = blockBottom - blockTop;
+
+  if ( mResamplingFactor > 1 )
+  {
+    // Ensure overlap dimensions are also multiples of resampling factor
+    nCols = ( nCols / mResamplingFactor ) * mResamplingFactor;
+    nRows = ( nRows / mResamplingFactor ) * mResamplingFactor;
+    if ( nCols == 0 || nRows == 0 )
+      return false;
+  }
 
   QgsDebugMsgLevel( QStringLiteral( "nCols = %1 nRows = %2" ).arg( nCols ).arg( nRows ), 4 );
 
