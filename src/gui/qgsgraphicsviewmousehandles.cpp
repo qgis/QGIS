@@ -557,9 +557,9 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
 
   if ( mDoubleClickInProgress )
   {
-      mDoubleClickInProgress = false;
-      event->accept();
-      return;
+    mDoubleClickInProgress = false;
+    event->accept();
+    return;
   }
 
   // Mouse may have been grabbed from the QgsLayoutViewSelectTool, so we need to release it explicitly
@@ -1081,7 +1081,7 @@ void QgsGraphicsViewMouseHandles::mouseDoubleClickEvent( QGraphicsSceneMouseEven
 {
   Q_UNUSED( event )
 
-        mDoubleClickInProgress = true;
+  mDoubleClickInProgress = true;
 
 }
 
