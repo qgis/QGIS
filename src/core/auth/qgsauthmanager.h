@@ -240,7 +240,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Whether there is a scheduled opitonal erase of authentication database.
      * \note not available in Python bindings
      */
-    bool scheduledAuthDatabaseErase() { return mScheduledDbErase; } SIP_SKIP
+    bool scheduledAuthDatabaseErase() SIP_SKIP { return mScheduledDbErase; }
 
     /**
      * Schedule an optional erase of authentication database, starting when mutex is lockable.
@@ -573,7 +573,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \return hash keyed with cert/connection's sha:host:port.
      * \note not available in Python bindings
      */
-    QHash<QString, QSet<QSslError::SslError> > ignoredSslErrorCache() { return mIgnoredSslErrorsCache; } SIP_SKIP
+    QHash<QString, QSet<QSslError::SslError> > ignoredSslErrorCache() SIP_SKIP { return mIgnoredSslErrorsCache; }
 
     //! Utility function to dump the cache for debug purposes
     void dumpIgnoredSslErrorsCache_();
@@ -718,7 +718,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Error message getter
      * \note not available in Python bindings
      */
-    const QString passwordHelperErrorMessage() { return mPasswordHelperErrorMessage; } SIP_SKIP
+    const QString passwordHelperErrorMessage() SIP_SKIP { return mPasswordHelperErrorMessage; }
 
     /**
      * Delete master password from wallet
