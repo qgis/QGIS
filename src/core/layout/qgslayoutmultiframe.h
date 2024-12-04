@@ -46,7 +46,7 @@ class QgsLayoutItemRenderContext;
 
 class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutUndoObjectInterface
 {
-SIP_TYPEHEADER_INCLUDE( gslayoutitemhtml.h )
+SIP_TYPEHEADER_INCLUDE( qgslayoutitemhtml.h )
 SIP_TYPEHEADER_INCLUDE( qgslayoutitemattributetable.h )
 SIP_TYPEHEADER_INCLUDE( qgslayoutitemmanualtable.h )
 SIP_TYPEHEADER_INCLUDE( qgslayoutitemtexttable.h )
