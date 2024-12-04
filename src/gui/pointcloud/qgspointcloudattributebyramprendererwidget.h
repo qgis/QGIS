@@ -31,7 +31,7 @@ class QgsPointCloudAttributeByRampRenderer;
 
 ///@cond PRIVATE
 
-class GUI_EXPORT QgsPointCloudAttributeByRampRendererWidget: public QgsPointCloudRendererWidget, private Ui::QgsPointCloudAttributeByRampRendererWidgetBase
+class GUI_EXPORT QgsPointCloudAttributeByRampRendererWidget : public QgsPointCloudRendererWidget, private Ui::QgsPointCloudAttributeByRampRendererWidgetBase
 {
     Q_OBJECT
 
@@ -54,8 +54,8 @@ class GUI_EXPORT QgsPointCloudAttributeByRampRendererWidget: public QgsPointClou
     bool mBlockMinMaxChanged = false;
     bool mBlockSetMinMaxFromLayer = false;
 
-    double mProviderMin = std::numeric_limits< double >::quiet_NaN();
-    double mProviderMax = std::numeric_limits< double >::quiet_NaN();
+    double mProviderMin = std::numeric_limits<double>::quiet_NaN();
+    double mProviderMax = std::numeric_limits<double>::quiet_NaN();
 };
 
 ///@endcond

@@ -35,7 +35,6 @@ class QgsMessageBar;
 class GUI_EXPORT QgsAuthGuiUtils
 {
   public:
-
     //! Green color representing valid, trusted, etc. certificate
     static QColor greenColor();
 

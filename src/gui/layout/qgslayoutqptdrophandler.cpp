@@ -25,7 +25,6 @@
 QgsLayoutQptDropHandler::QgsLayoutQptDropHandler( QObject *parent )
   : QgsLayoutCustomDropHandler( parent )
 {
-
 }
 
 bool QgsLayoutQptDropHandler::handleFileDrop( QgsLayoutDesignerInterface *iface, QPointF, const QString &file )
@@ -47,7 +46,7 @@ bool QgsLayoutQptDropHandler::handleFileDrop( QgsLayoutDesignerInterface *iface,
   if ( templateDoc.setContent( &templateFile ) )
   {
     bool ok = false;
-    const QList< QgsLayoutItem * > items = iface->layout()->loadFromTemplate( templateDoc, context, false, &ok );
+    const QList<QgsLayoutItem *> items = iface->layout()->loadFromTemplate( templateDoc, context, false, &ok );
     if ( !ok )
     {
       QMessageBox::warning( iface->view(), tr( "Load from Template" ), tr( "Could not read template file." ) );

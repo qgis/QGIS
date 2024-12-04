@@ -45,11 +45,10 @@ QgsSpinBox::QgsSpinBox( QWidget *parent )
   setLineEdit( mLineEdit );
 
   const QSize msz = minimumSizeHint();
-  setMinimumSize( msz.width() + CLEAR_ICON_SIZE + 9 + frameWidth() * 2 + 2,
-                  std::max( msz.height(), CLEAR_ICON_SIZE + frameWidth() * 2 + 2 ) );
+  setMinimumSize( msz.width() + CLEAR_ICON_SIZE + 9 + frameWidth() * 2 + 2, std::max( msz.height(), CLEAR_ICON_SIZE + frameWidth() * 2 + 2 ) );
 
   connect( mLineEdit, &QgsFilterLineEdit::cleared, this, &QgsSpinBox::clear );
-  connect( this, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsSpinBox::changed );
+  connect( this, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsSpinBox::changed );
 }
 
 void QgsSpinBox::setShowClearButton( const bool showClearButton )

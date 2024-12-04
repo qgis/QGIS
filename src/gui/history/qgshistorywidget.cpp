@@ -56,8 +56,7 @@ QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProv
   QgsSettings settings;
   mSplitter->restoreState( settings.value( QStringLiteral( "history/splitterState%1" ).arg( providerId ) ).toByteArray() );
 
-  connect( mSplitter, &QSplitter::splitterMoved, this, [providerId, this]
-  {
+  connect( mSplitter, &QSplitter::splitterMoved, this, [providerId, this] {
     QgsSettings settings;
     settings.setValue( QStringLiteral( "history/splitterState%1" ).arg( providerId ), mSplitter->saveState() );
   } );
@@ -166,7 +165,7 @@ bool QgsHistoryEntryProxyModel::filterAcceptsRow( int source_row, const QModelIn
     return true;
 
   const QModelIndex sourceIndex = sourceModel()->index( source_row, 0, source_parent );
-  if ( QgsHistoryEntryNode *node = qobject_cast< QgsHistoryEntryModel * >( sourceModel() )->index2node( sourceIndex ) )
+  if ( QgsHistoryEntryNode *node = qobject_cast<QgsHistoryEntryModel *>( sourceModel() )->index2node( sourceIndex ) )
   {
     if ( !node->matchesString( mFilter ) )
     {

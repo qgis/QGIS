@@ -57,7 +57,7 @@ QgsPanelWidget *QgsPanelWidget::findParentPanel( QWidget *widget )
   QWidget *p = widget;
   while ( p )
   {
-    if ( QgsPanelWidget *panel = qobject_cast< QgsPanelWidget * >( p ) )
+    if ( QgsPanelWidget *panel = qobject_cast<QgsPanelWidget *>( p ) )
       return panel;
 
     if ( p->window() == p )

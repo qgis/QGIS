@@ -54,8 +54,7 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     int rowCount( const QModelIndex & = QModelIndex() ) const override;
     int columnCount( const QModelIndex & = QModelIndex() ) const override;
 
@@ -74,7 +73,7 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
     void updateSubDiagram( const QModelIndex &index, QgsDiagramRenderer *dr );
 
     //! Returns the list of diagram renderers from the model. Does not transfer ownership.
-    QList< QgsDiagramRenderer *> subRenderers() const;
+    QList<QgsDiagramRenderer *> subRenderers() const;
 
     //! Returns the diagram layer settings from the model
     QgsDiagramLayerSettings diagramLayerSettings() const;
@@ -85,7 +84,7 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
     void updateDiagramLayerSettings( QgsDiagramLayerSettings dls );
 
   protected:
-    QList< QgsDiagramRenderer *> mRenderers;
+    QList<QgsDiagramRenderer *> mRenderers;
     QgsDiagramLayerSettings mDiagramLayerSettings;
 };
 
@@ -174,7 +173,6 @@ class GUI_EXPORT QgsStackedDiagramPropertiesDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsStackedDiagramPropertiesDialog
      * \param layer source vector layer
@@ -229,7 +227,7 @@ class GUI_EXPORT QgsStackedDiagramPropertiesDialog : public QDialog
 
   private:
     QgsDiagramProperties *mPropsWidget = nullptr;
-    std::unique_ptr< QgsDiagramRenderer > mRenderer;
+    std::unique_ptr<QgsDiagramRenderer> mRenderer;
     QgsDiagramLayerSettings mDiagramLayerSettings;
     QDialogButtonBox *buttonBox = nullptr;
 };

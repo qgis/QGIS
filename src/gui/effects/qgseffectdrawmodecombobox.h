@@ -32,7 +32,6 @@ class GUI_EXPORT QgsEffectDrawModeComboBox : public QComboBox
     Q_OBJECT
 
   public:
-
     QgsEffectDrawModeComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
@@ -46,7 +45,6 @@ class GUI_EXPORT QgsEffectDrawModeComboBox : public QComboBox
      * \param drawMode selected draw mode
      */
     void setDrawMode( QgsPaintEffect::DrawMode drawMode );
-
 };
 
 #endif //QGSEFFECTDRAWMODECOMBOBOX_H

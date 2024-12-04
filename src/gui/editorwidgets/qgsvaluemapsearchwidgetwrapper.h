@@ -32,7 +32,6 @@ class GUI_EXPORT QgsValueMapSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
   public:
-
     //! Constructor for QgsValueMapSearchWidgetWrapper
     explicit QgsValueMapSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     bool applyDirectly() override;

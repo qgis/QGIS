@@ -30,11 +30,9 @@ class QgsQsciLexerCSS : public QsciLexerCSS
 {
     Q_OBJECT
   public:
-
     QgsQsciLexerCSS( QObject *parent = nullptr );
 
     QString description( int style ) const override;
-
 };
 ///@endcond
 #endif
@@ -50,7 +48,6 @@ class GUI_EXPORT QgsCodeEditorCSS : public QgsCodeEditor
     Q_OBJECT
 
   public:
-
     //! Constructor for QgsCodeEditorCSS
     QgsCodeEditorCSS( QWidget *parent SIP_TRANSFERTHIS = nullptr );
     Qgis::ScriptLanguage language() const override;

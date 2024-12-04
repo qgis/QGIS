@@ -36,8 +36,8 @@ QgsRasterSingleColorRendererWidget::QgsRasterSingleColorRendererWidget( QgsRaste
 
     mBandComboBox->setLayer( layer );
 
-    connect( mBandComboBox, &QgsRasterBandComboBox::bandChanged, this, [ = ]( int ) { emit widgetChanged(); } );
-    connect( mColorButton, &QgsColorButton::colorChanged, this, [ = ]( const QColor & ) { emit widgetChanged(); } );
+    connect( mBandComboBox, &QgsRasterBandComboBox::bandChanged, this, [=]( int ) { emit widgetChanged(); } );
+    connect( mColorButton, &QgsColorButton::colorChanged, this, [=]( const QColor & ) { emit widgetChanged(); } );
 
     setFromRenderer( layer->renderer() );
   }

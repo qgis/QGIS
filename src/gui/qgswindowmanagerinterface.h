@@ -38,7 +38,6 @@ class QWidget;
 class GUI_EXPORT QgsWindowManagerInterface
 {
   public:
-
     //! Standard QGIS dialogs
     enum StandardDialog
     {
@@ -56,7 +55,6 @@ class GUI_EXPORT QgsWindowManagerInterface
      * created or is not supported by the window manager implementation.
      */
     virtual QWidget *openStandardDialog( StandardDialog dialog ) = 0;
-
 };
 
 ///@endcond

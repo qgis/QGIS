@@ -79,7 +79,6 @@ class GUI_EXPORT QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui:
     void showEngineConfigDialog();
 
   private:
-
     enum Mode
     {
       ModeNone,
@@ -93,8 +92,8 @@ class GUI_EXPORT QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui:
     QgsMessageBar *mMessageBar = nullptr;
 
     QWidget *mWidget = nullptr;
-    std::unique_ptr< QgsPalLayerSettings > mSimpleSettings;
-    std::unique_ptr< QgsAbstractVectorLayerLabeling > mOldSettings;
+    std::unique_ptr<QgsPalLayerSettings> mSimpleSettings;
+    std::unique_ptr<QgsAbstractVectorLayerLabeling> mOldSettings;
     bool mOldLabelsEnabled = false;
 };
 

@@ -21,10 +21,7 @@
 
 ///@cond PRIVATE
 
-QgsProcessingToolboxTreeView::QgsProcessingToolboxTreeView( QWidget *parent,
-    QgsProcessingRegistry *registry,
-    QgsProcessingRecentAlgorithmLog *recentLog,
-    QgsProcessingFavoriteAlgorithmManager *favoriteManager )
+QgsProcessingToolboxTreeView::QgsProcessingToolboxTreeView( QWidget *parent, QgsProcessingRegistry *registry, QgsProcessingRecentAlgorithmLog *recentLog, QgsProcessingFavoriteAlgorithmManager *favoriteManager )
   : QTreeView( parent )
 {
   mModel = new QgsProcessingToolboxProxyModel( this, registry, recentLog, favoriteManager );

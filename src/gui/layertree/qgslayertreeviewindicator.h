@@ -42,7 +42,11 @@ class GUI_EXPORT QgsLayerTreeViewIndicator : public QObject
     //! Indicator icon that will be displayed in the layer tree view
     QIcon icon() const { return mIcon; }
     //! Sets indicator icon that will be displayed in the layer tree view
-    void setIcon( const QIcon &icon ) { mIcon = icon; emit changed(); }
+    void setIcon( const QIcon &icon )
+    {
+      mIcon = icon;
+      emit changed();
+    }
 
     //! Returns tool tip text that will be shown when user hovers mouse over the indicator
     QString toolTip() const { return mToolTip; }

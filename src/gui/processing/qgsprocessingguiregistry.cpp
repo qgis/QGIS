@@ -94,10 +94,10 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()
 {
-  const QList< QgsProcessingAlgorithmConfigurationWidgetFactory * > factories = mAlgorithmConfigurationWidgetFactories;
+  const QList<QgsProcessingAlgorithmConfigurationWidgetFactory *> factories = mAlgorithmConfigurationWidgetFactories;
   for ( QgsProcessingAlgorithmConfigurationWidgetFactory *factory : factories )
     removeAlgorithmConfigurationWidgetFactory( factory );
-  const QMap< QString, QgsProcessingParameterWidgetFactoryInterface * > paramFactories = mParameterWidgetFactories;
+  const QMap<QString, QgsProcessingParameterWidgetFactoryInterface *> paramFactories = mParameterWidgetFactories;
   for ( auto it = paramFactories.constBegin(); it != paramFactories.constEnd(); ++it )
     removeParameterWidgetFactory( it.value() );
 }
@@ -119,7 +119,7 @@ QgsProcessingAlgorithmConfigurationWidget *QgsProcessingGuiRegistry::algorithmCo
   {
     if ( factory->canCreateFor( algorithm ) )
     {
-      std::unique_ptr< QgsProcessingAlgorithmConfigurationWidget > widget( factory->create( algorithm ) );
+      std::unique_ptr<QgsProcessingAlgorithmConfigurationWidget> widget( factory->create( algorithm ) );
       if ( widget )
         widget->setAlgorithm( algorithm );
       return widget.release();
@@ -179,15 +179,10 @@ QgsProcessingModelerParameterWidget *QgsProcessingGuiRegistry::createModelerPara
   return mParameterWidgetFactories.value( parameterType )->createModelerWidgetWrapper( model, childId, parameter, context );
 }
 
-QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingGuiRegistry::createParameterDefinitionWidget( const QString &type,
-    QgsProcessingContext &context,
-    const QgsProcessingParameterWidgetContext &widgetContext,
-    const QgsProcessingParameterDefinition *definition,
-    const QgsProcessingAlgorithm *algorithm )
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingGuiRegistry::createParameterDefinitionWidget( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
 {
   if ( !mParameterWidgetFactories.contains( type ) )
     return nullptr;
 
   return mParameterWidgetFactories.value( type )->createParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
-

@@ -18,7 +18,8 @@
 
 #include "qgsmeshlayer.h"
 
-QgsMeshStaticDatasetWidget::QgsMeshStaticDatasetWidget( QWidget *parent ): QWidget( parent )
+QgsMeshStaticDatasetWidget::QgsMeshStaticDatasetWidget( QWidget *parent )
+  : QWidget( parent )
 {
   setupUi( this );
 
@@ -108,7 +109,8 @@ void QgsMeshStaticDatasetWidget::setVectorDatasetIndex( int index )
     mVectorDatasetComboBox->setCurrentIndex( 0 );
 }
 
-QgsMeshDatasetListModel::QgsMeshDatasetListModel( QObject *parent ): QAbstractListModel( parent )
+QgsMeshDatasetListModel::QgsMeshDatasetListModel( QObject *parent )
+  : QAbstractListModel( parent )
 {}
 
 void QgsMeshDatasetListModel::setMeshLayer( QgsMeshLayer *layer )
@@ -130,7 +132,7 @@ int QgsMeshDatasetListModel::rowCount( const QModelIndex &parent ) const
   Q_UNUSED( parent )
 
   if ( mLayer )
-    return  mLayer->datasetCount( mDatasetGroup ) + 1;
+    return mLayer->datasetCount( mDatasetGroup ) + 1;
   else
     return 0;
 }

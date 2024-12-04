@@ -45,9 +45,8 @@ struct QgsVertexId;
  * \ingroup gui
  * \brief A rubberband class for QgsAbstractGeometry (considering curved geometries).
 */
-class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
+class GUI_EXPORT QgsGeometryRubberBand : public QgsMapCanvasItem
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsGeometryRubberBand *>( sipCpp ) )

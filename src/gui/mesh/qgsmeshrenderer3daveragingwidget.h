@@ -40,7 +40,6 @@ class QgsMeshRenderer3DAveragingWidget : public QWidget, private Ui::QgsMeshRend
     Q_OBJECT
 
   public:
-
     /**
      * A widget to hold the renderer Vector settings for a mesh layer.
      * \param parent Parent object
@@ -69,8 +68,7 @@ class QgsMeshRenderer3DAveragingWidget : public QWidget, private Ui::QgsMeshRend
     void updateGraphics();
 
   private:
-    void setLabelSvg( QLabel *imageLabel,
-                      const QString &imgName );
+    void setLabelSvg( QLabel *imageLabel, const QString &imgName );
 
     QgsScreenHelper *mScreenHelper = nullptr;
 

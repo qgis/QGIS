@@ -93,7 +93,7 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
      * Emitted when the set of layers (or order of layers) visible in the
      * canvas changes.
      */
-    void canvasLayersChanged( const QList< QgsMapLayer * > &layers );
+    void canvasLayersChanged( const QList<QgsMapLayer *> &layers );
 
   private slots:
     void nodeVisibilityChanged();
@@ -102,8 +102,7 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
 
   private:
     //! Fill canvasLayers and overviewLayers lists from node and its descendants
-    void setCanvasLayers( QgsLayerTreeNode *node, QList<QgsMapLayer *> &canvasLayers, QList<QgsMapLayer *> &overviewLayers,
-                          QList<QgsMapLayer *> &allLayers );
+    void setCanvasLayers( QgsLayerTreeNode *node, QList<QgsMapLayer *> &canvasLayers, QList<QgsMapLayer *> &overviewLayers, QList<QgsMapLayer *> &allLayers );
 
     void deferredSetCanvasLayers();
 

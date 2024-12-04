@@ -33,7 +33,6 @@ class GUI_EXPORT QgsSlider : public QSlider
 {
     Q_OBJECT
   public:
-
     //! Constructor for QgsSlider
     QgsSlider( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 

@@ -34,7 +34,6 @@ class QgsMapCanvas;
 class GUI_EXPORT QgsAdvancedDigitizingToolAbstractMetadata
 {
   public:
-
     /**
      * Constructor for QgsAdvancedDigitizingToolAbstractMetadata with the specified tool \a name.
      *
@@ -81,7 +80,6 @@ typedef std::function<QgsAdvancedDigitizingTool *( QgsMapCanvas *, QgsAdvancedDi
 class GUI_EXPORT QgsAdvancedDigitizingToolMetadata : public QgsAdvancedDigitizingToolAbstractMetadata
 {
   public:
-
     /**
      * Constructor for QgsAdvancedDigitizingToolAbstractMetadata with the specified tool \a name.
      *
@@ -91,8 +89,7 @@ class GUI_EXPORT QgsAdvancedDigitizingToolMetadata : public QgsAdvancedDigitizin
      *
      * A tool creation function can be declared through the \a toolFunction parameter.
      */
-    QgsAdvancedDigitizingToolMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon(),
-                                       const QgsAdvancedDigitizingToolFunc &toolFunction = nullptr )
+    QgsAdvancedDigitizingToolMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon(), const QgsAdvancedDigitizingToolFunc &toolFunction = nullptr )
       : QgsAdvancedDigitizingToolAbstractMetadata( name, visibleName, icon )
       , mToolFunc( toolFunction )
     {}
@@ -123,7 +120,6 @@ class GUI_EXPORT QgsAdvancedDigitizingToolMetadata : public QgsAdvancedDigitizin
 class GUI_EXPORT QgsAdvancedDigitizingToolsRegistry
 {
   public:
-
     QgsAdvancedDigitizingToolsRegistry() = default;
     ~QgsAdvancedDigitizingToolsRegistry();
 

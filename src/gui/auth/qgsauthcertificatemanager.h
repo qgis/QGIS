@@ -34,7 +34,6 @@ class GUI_EXPORT QgsAuthCertEditors : public QWidget, private Ui::QgsAuthCertMan
     Q_OBJECT
 
   public:
-
     /**
      * Construct a widget to contain various certificate editors
      * \param parent Parent widget
@@ -44,8 +43,7 @@ class GUI_EXPORT QgsAuthCertEditors : public QWidget, private Ui::QgsAuthCertMan
     /**
      * Destructor: store last selected tab
      */
-    ~QgsAuthCertEditors( ) override;
-
+    ~QgsAuthCertEditors() override;
 };
 
 
@@ -60,7 +58,6 @@ class GUI_EXPORT QgsAuthCertManager : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Construct a dialog wrapper for widget to manage available certificate editors
      * \param parent Parent widget

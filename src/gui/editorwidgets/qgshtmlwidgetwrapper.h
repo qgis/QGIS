@@ -31,7 +31,6 @@ class GUI_EXPORT QgsHtmlWidgetWrapper : public QgsWidgetWrapper
     Q_OBJECT
 
   public:
-
     /**
      * Create a html widget wrapper
      *
@@ -64,13 +63,12 @@ class GUI_EXPORT QgsHtmlWidgetWrapper : public QgsWidgetWrapper
 
   private slots:
     //! sets the html context with the current values
-    void setHtmlContext( );
+    void setHtmlContext();
 #ifdef WITH_QTWEBKIT
     void fixHeight();
 #endif
 
   private:
-
     //! checks if HTML contains geometry related expression
     void checkGeometryNeeds();
 
@@ -102,7 +100,6 @@ class HtmlExpression : public QObject
     void setExpressionContext( const QgsExpressionContext &context );
 
   public:
-
     //! evaluates the value regarding the \a expression and the context
     Q_INVOKABLE QString evaluate( const QString &expression ) const;
 
@@ -121,7 +118,6 @@ class NeedsGeometryEvaluator : public QObject
     Q_OBJECT
 
   public:
-
     //! Returns true if the widget needs feature geometry
     bool needsGeometry() const { return mNeedsGeometry; }
 

@@ -38,7 +38,6 @@ class GUI_EXPORT QgsBrowserGuiModel : public QgsBrowserModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsBrowserGuiModel, with the specified \a parent object.
      *
@@ -49,8 +48,7 @@ class GUI_EXPORT QgsBrowserGuiModel : public QgsBrowserModel
     explicit QgsBrowserGuiModel( QObject *parent = nullptr );
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    bool dropMimeData( const QMimeData *data, Qt::DropAction action,
-                       int row, int column, const QModelIndex &parent ) override;
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     //! Sets message bar that will be passed in QgsDataItemGuiContext to data items
     void setMessageBar( QgsMessageBar *bar );

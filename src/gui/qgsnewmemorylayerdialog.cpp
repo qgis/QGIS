@@ -57,8 +57,7 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
 
   mNameLineEdit->setText( tr( "New scratch layer" ) );
 
-  const Qgis::WkbType geomTypes[] =
-  {
+  const Qgis::WkbType geomTypes[] = {
     Qgis::WkbType::NoGeometry,
     Qgis::WkbType::Point,
     Qgis::WkbType::LineString,
@@ -76,7 +75,7 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   };
 
   for ( const auto type : geomTypes )
-    mGeometryTypeBox->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), static_cast< quint32>( type ) );
+    mGeometryTypeBox->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), static_cast<quint32>( type ) );
   mGeometryTypeBox->setCurrentIndex( -1 );
 
   mGeometryWithZCheckBox->setEnabled( false );
@@ -131,8 +130,7 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
 Qgis::WkbType QgsNewMemoryLayerDialog::selectedType() const
 {
   Qgis::WkbType geomType = Qgis::WkbType::Unknown;
-  geomType = static_cast<Qgis::WkbType>
-             ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
+  geomType = static_cast<Qgis::WkbType>( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
 
   if ( geomType != Qgis::WkbType::Unknown && geomType != Qgis::WkbType::NoGeometry )
   {
@@ -147,8 +145,7 @@ Qgis::WkbType QgsNewMemoryLayerDialog::selectedType() const
 
 void QgsNewMemoryLayerDialog::geometryTypeChanged( int )
 {
-  const Qgis::WkbType geomType = static_cast<Qgis::WkbType>
-                                 ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
+  const Qgis::WkbType geomType = static_cast<Qgis::WkbType>( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
 
   const bool isSpatial = geomType != Qgis::WkbType::NoGeometry;
   mGeometryWithZCheckBox->setEnabled( isSpatial );
@@ -254,7 +251,7 @@ QString QgsNewMemoryLayerDialog::layerName() const
 
 void QgsNewMemoryLayerDialog::fieldNameChanged( const QString &name )
 {
-  mAddAttributeButton->setDisabled( name.isEmpty() || ! mAttributeView->findItems( name, Qt::MatchExactly ).isEmpty() );
+  mAddAttributeButton->setDisabled( name.isEmpty() || !mAttributeView->findItems( name, Qt::MatchExactly ).isEmpty() );
 }
 
 void QgsNewMemoryLayerDialog::selectionChanged()
@@ -333,9 +330,7 @@ void QgsNewMemoryLayerDialog::accept()
     const QString currentFieldName = mFieldNameEdit->text();
     if ( fields().lookupField( currentFieldName ) == -1 )
     {
-      if ( QMessageBox::question( this, tr( "New Temporary Scratch Layer" ),
-                                  tr( "The field “%1” has not been added to the fields list. Are you sure you want to proceed and discard this field?" ).arg( currentFieldName ),
-                                  QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
+      if ( QMessageBox::question( this, tr( "New Temporary Scratch Layer" ), tr( "The field “%1” has not been added to the fields list. Are you sure you want to proceed and discard this field?" ).arg( currentFieldName ), QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
       {
         return;
       }

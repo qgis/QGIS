@@ -127,7 +127,6 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
     void createAuxiliaryField();
 
   private:
-
     QgsVectorLayer *mLayer = nullptr;
     //! Point placement button group
     QButtonGroup *mPlacePointBtnGrp = nullptr;
@@ -136,7 +135,7 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
     //! Polygon placement button group
     QButtonGroup *mPlacePolygonBtnGrp = nullptr;
 
-    std::unique_ptr< QgsPaintEffect> mPaintEffect;
+    std::unique_ptr<QgsPaintEffect> mPaintEffect;
 
     enum Columns
     {
@@ -156,7 +155,7 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
 
     // Keeps track of the diagram type to properly save / restore settings when the diagram type combo box is set to no diagram.
     QString mDiagramType;
-    std::unique_ptr< QgsDataDefinedSizeLegend > mSizeLegend;
+    std::unique_ptr<QgsDataDefinedSizeLegend> mSizeLegend;
 
     QString guessLegendText( const QString &expression );
     QgsMapCanvas *mMapCanvas = nullptr;
@@ -179,7 +178,7 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
      *
      * \since QGIS 3.40
      */
-    std::unique_ptr< QgsDiagram > createDiagramObject();
+    std::unique_ptr<QgsDiagram> createDiagramObject();
 
     /**
      * Creates a QgsDiagramSettings object from the GUI settings.
@@ -236,7 +235,7 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
  * \ingroup gui
  * \class EditBlockerDelegate
  */
-class EditBlockerDelegate: public QStyledItemDelegate
+class EditBlockerDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
   public:

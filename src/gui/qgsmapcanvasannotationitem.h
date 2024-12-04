@@ -35,7 +35,7 @@ class QgsAnnotation;
  * \ingroup gui
  * \brief An interactive map canvas item which displays a QgsAnnotation.
  */
-class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvasItem
+class GUI_EXPORT QgsMapCanvasAnnotationItem : public QObject, public QgsMapCanvasItem
 {
     Q_OBJECT
 
@@ -52,19 +52,18 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvas
 #endif
 
   public:
-
     //! Mouse actions for interacting with item
     enum MouseMoveAction
     {
-      NoAction, //!< No action
-      MoveMapPosition, //!< Moving annotation map position
-      MoveFramePosition, //!< Moving position of frame relative to annotation
-      ResizeFrameUp, //!< Resize frame up
-      ResizeFrameDown, //!< Resize frame down
-      ResizeFrameLeft, //!< Resize frame left
-      ResizeFrameRight, //!< Resize frame right
-      ResizeFrameLeftUp, //!< Resize frame left up
-      ResizeFrameRightUp, //!< Resize frame right up
+      NoAction,            //!< No action
+      MoveMapPosition,     //!< Moving annotation map position
+      MoveFramePosition,   //!< Moving position of frame relative to annotation
+      ResizeFrameUp,       //!< Resize frame up
+      ResizeFrameDown,     //!< Resize frame down
+      ResizeFrameLeft,     //!< Resize frame left
+      ResizeFrameRight,    //!< Resize frame right
+      ResizeFrameLeftUp,   //!< Resize frame left up
+      ResizeFrameRightUp,  //!< Resize frame right up
       ResizeFrameLeftDown, //!< Resize frame left down
       ResizeFrameRightDown //!< Resize frame right down
     };
@@ -113,7 +112,6 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvas
     void annotationDeleted();
 
   private:
-
     //! Draws selection handles around the item
     void drawSelectionBoxes( QPainter *p ) const;
 
@@ -124,7 +122,6 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvas
 
     //! Bounding rect (including item frame and balloon)
     QRectF mBoundingRect;
-
 };
 
 #endif // QGSMAPCANVASANNOTATIONITEM_H

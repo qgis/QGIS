@@ -31,16 +31,13 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
   mCellMenu = new QMenu( this );
   setColumnCount( 0 );
   setRowCount( 0 );
-  connect( this, &QgsTableEditorWidget::cellChanged, this, [ = ]
-  {
+  connect( this, &QgsTableEditorWidget::cellChanged, this, [=] {
     if ( !mBlockSignals )
       emit tableChanged();
   } );
 
   setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( this, &QWidget::customContextMenuRequested, this, [ = ]( const QPoint & point )
-  {
-
+  connect( this, &QWidget::customContextMenuRequested, this, [=]( const QPoint &point ) {
     mCellMenu->clear();
     if ( canMergeSelection() )
     {
@@ -58,11 +55,10 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
 
 
   horizontalHeader()->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( horizontalHeader(), &QWidget::customContextMenuRequested, this, [ = ]( const QPoint & point )
-  {
+  connect( horizontalHeader(), &QWidget::customContextMenuRequested, this, [=]( const QPoint &point ) {
     const int column = horizontalHeader()->logicalIndexAt( point.x() );
 
-    QSet< int > selectedColumns;
+    QSet<int> selectedColumns;
     for ( const QModelIndex &index : selectedIndexes() )
     {
       selectedColumns.insert( index.column() );
@@ -100,11 +96,10 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
   } );
 
   verticalHeader()->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( verticalHeader(), &QWidget::customContextMenuRequested, this, [ = ]( const QPoint & point )
-  {
+  connect( verticalHeader(), &QWidget::customContextMenuRequested, this, [=]( const QPoint &point ) {
     const int row = verticalHeader()->logicalIndexAt( point.y() );
 
-    QSet< int > selectedRows;
+    QSet<int> selectedRows;
     for ( const QModelIndex &index : selectedIndexes() )
     {
       selectedRows.insert( index.row() );
@@ -147,9 +142,8 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
   setItemDelegate( delegate );
 
 
-  connect( this, &QTableWidget::cellDoubleClicked, this, [ = ]
-  {
-    if ( QgsTableEditorDelegate *d = qobject_cast< QgsTableEditorDelegate *>( itemDelegate( ) ) )
+  connect( this, &QTableWidget::cellDoubleClicked, this, [=] {
+    if ( QgsTableEditorDelegate *d = qobject_cast<QgsTableEditorDelegate *>( itemDelegate() ) )
     {
       d->setWeakEditorMode( false );
     }
@@ -229,8 +223,8 @@ void QgsTableEditorWidget::updateHeaders()
 
 bool QgsTableEditorWidget::collectConsecutiveRowRange( const QModelIndexList &list, int &minRow, int &maxRow ) const
 {
-  QSet< int > includedRows;
-  minRow = std::numeric_limits< int >::max();
+  QSet<int> includedRows;
+  minRow = std::numeric_limits<int>::max();
   maxRow = -1;
   for ( const QModelIndex &index : list )
   {
@@ -250,8 +244,8 @@ bool QgsTableEditorWidget::collectConsecutiveRowRange( const QModelIndexList &li
 
 bool QgsTableEditorWidget::collectConsecutiveColumnRange( const QModelIndexList &list, int &minColumn, int &maxColumn ) const
 {
-  QSet< int > includedColumns;
-  minColumn = std::numeric_limits< int >::max();
+  QSet<int> includedColumns;
+  minColumn = std::numeric_limits<int>::max();
   maxColumn = -1;
   for ( const QModelIndex &index : list )
   {
@@ -271,7 +265,7 @@ bool QgsTableEditorWidget::collectConsecutiveColumnRange( const QModelIndexList 
 
 QList<int> QgsTableEditorWidget::collectUniqueRows( const QModelIndexList &list ) const
 {
-  QList<int > res;
+  QList<int> res;
   for ( const QModelIndex &index : list )
   {
     if ( !res.contains( index.row() ) )
@@ -283,7 +277,7 @@ QList<int> QgsTableEditorWidget::collectUniqueRows( const QModelIndexList &list 
 
 QList<int> QgsTableEditorWidget::collectUniqueColumns( const QModelIndexList &list ) const
 {
-  QList<int > res;
+  QList<int> res;
   for ( const QModelIndex &index : list )
   {
     if ( !res.contains( index.column() ) )
@@ -302,7 +296,7 @@ bool QgsTableEditorWidget::isRectangularSelection( const QModelIndexList &list )
   int maxRow = -1;
   int minCol = -1;
   int maxCol = -1;
-  QSet< QPair< int, int > > selectedSet;
+  QSet<QPair<int, int>> selectedSet;
   for ( const QModelIndex &index : list )
   {
     if ( minRow == -1 || index.row() < minRow )
@@ -321,7 +315,7 @@ bool QgsTableEditorWidget::isRectangularSelection( const QModelIndexList &list )
     return false;
 
   // check if all cells within the rectangle are selected
-  QSet< QPair< int, int > > expectedSet;
+  QSet<QPair<int, int>> expectedSet;
   for ( int row = minRow; row <= maxRow; ++row )
   {
     for ( int col = minCol; col <= maxCol; ++col )
@@ -365,7 +359,7 @@ void QgsTableEditorWidget::keyPressEvent( QKeyEvent *event )
     default:
       QTableWidget::keyPressEvent( event );
   }
-  if ( QgsTableEditorDelegate *d = qobject_cast< QgsTableEditorDelegate *>( itemDelegate( ) ) )
+  if ( QgsTableEditorDelegate *d = qobject_cast<QgsTableEditorDelegate *>( itemDelegate() ) )
   {
     d->setWeakEditorMode( true );
   }
@@ -392,17 +386,17 @@ void QgsTableEditorWidget::setTableContents( const QgsTableContents &contents )
     int colNumber = 0;
     for ( const QgsTableCell &col : row )
     {
-      QTableWidgetItem *item = new QTableWidgetItem( col.content().value< QgsProperty >().isActive() ? col.content().value< QgsProperty >().asExpression() : col.content().toString() );
+      QTableWidgetItem *item = new QTableWidgetItem( col.content().value<QgsProperty>().isActive() ? col.content().value<QgsProperty>().asExpression() : col.content().toString() );
       item->setData( CellContent, col.content() ); // can't use EditRole, because Qt. (https://bugreports.qt.io/browse/QTBUG-11549)
       item->setData( Qt::BackgroundRole, col.backgroundColor().isValid() ? col.backgroundColor() : QColor( 255, 255, 255 ) );
       item->setData( PresetBackgroundColorRole, col.backgroundColor().isValid() ? col.backgroundColor() : QVariant() );
       item->setData( Qt::ForegroundRole, col.textFormat().isValid() ? col.textFormat().color() : QVariant() );
       item->setData( TextFormat, QVariant::fromValue( col.textFormat() ) );
-      item->setData( HorizontalAlignment, static_cast< int >( col.horizontalAlignment() ) );
-      item->setData( VerticalAlignment, static_cast< int >( col.verticalAlignment() ) );
-      item->setData( CellProperty, QVariant::fromValue( col.content().value< QgsProperty >() ) );
+      item->setData( HorizontalAlignment, static_cast<int>( col.horizontalAlignment() ) );
+      item->setData( VerticalAlignment, static_cast<int>( col.verticalAlignment() ) );
+      item->setData( CellProperty, QVariant::fromValue( col.content().value<QgsProperty>() ) );
 
-      if ( col.content().value< QgsProperty >().isActive() )
+      if ( col.content().value<QgsProperty>().isActive() )
         item->setFlags( item->flags() & ( ~Qt::ItemIsEditable ) );
 
       if ( auto *lNumericFormat = col.numericFormat() )
@@ -437,7 +431,7 @@ QgsTableContents QgsTableEditorWidget::tableContents() const
   QgsTableContents items;
   items.reserve( rowCount() );
 
-  QSet< QPair< int, int > > spannedCells;
+  QSet<QPair<int, int>> spannedCells;
   for ( int r = mIncludeHeader ? 1 : 0; r < rowCount(); r++ )
   {
     QgsTableRow row;
@@ -447,11 +441,11 @@ QgsTableContents QgsTableEditorWidget::tableContents() const
       QgsTableCell cell;
       if ( QTableWidgetItem *i = item( r, c ) )
       {
-        cell.setContent( i->data( CellProperty ).value< QgsProperty >().isActive() ? i->data( CellProperty ) : i->data( CellContent ) );
-        cell.setBackgroundColor( i->data( PresetBackgroundColorRole ).value< QColor >() );
-        cell.setTextFormat( i->data( TextFormat ).value< QgsTextFormat >() );
-        cell.setHorizontalAlignment( static_cast< Qt::Alignment >( i->data( HorizontalAlignment ).toInt() ) );
-        cell.setVerticalAlignment( static_cast< Qt::Alignment >( i->data( VerticalAlignment ).toInt() ) );
+        cell.setContent( i->data( CellProperty ).value<QgsProperty>().isActive() ? i->data( CellProperty ) : i->data( CellContent ) );
+        cell.setBackgroundColor( i->data( PresetBackgroundColorRole ).value<QColor>() );
+        cell.setTextFormat( i->data( TextFormat ).value<QgsTextFormat>() );
+        cell.setHorizontalAlignment( static_cast<Qt::Alignment>( i->data( HorizontalAlignment ).toInt() ) );
+        cell.setVerticalAlignment( static_cast<Qt::Alignment>( i->data( VerticalAlignment ).toInt() ) );
 
         // we only want to set row/col span > 1 for the left/top most cells in a span:
         if ( !spannedCells.contains( qMakePair( r, c ) ) )
@@ -489,7 +483,7 @@ void QgsTableEditorWidget::setSelectionNumericFormat( QgsNumericFormat *format )
 {
   bool changed = false;
   mBlockSignals++;
-  std::unique_ptr< QgsNumericFormat > newFormat( format );
+  std::unique_ptr<QgsNumericFormat> newFormat( format );
   const QModelIndexList selection = selectedIndexes();
   QgsNumericFormatContext numericContext;
   for ( const QModelIndex &index : selection )
@@ -600,7 +594,7 @@ QColor QgsTableEditorWidget::selectionBackgroundColor()
   const QModelIndexList selection = selectedIndexes();
   for ( const QModelIndex &index : selection )
   {
-    QColor indexColor = model()->data( index, PresetBackgroundColorRole ).isValid() ? model()->data( index, PresetBackgroundColorRole ).value< QColor >() : QColor();
+    QColor indexColor = model()->data( index, PresetBackgroundColorRole ).isValid() ? model()->data( index, PresetBackgroundColorRole ).value<QColor>() : QColor();
     if ( first )
     {
       c = indexColor;
@@ -623,7 +617,7 @@ Qt::Alignment QgsTableEditorWidget::selectionHorizontalAlignment()
   const QModelIndexList selection = selectedIndexes();
   for ( const QModelIndex &index : selection )
   {
-    Qt::Alignment cellAlign = static_cast< Qt::Alignment >( model()->data( index, HorizontalAlignment ).toInt() );
+    Qt::Alignment cellAlign = static_cast<Qt::Alignment>( model()->data( index, HorizontalAlignment ).toInt() );
     if ( first )
     {
       alignment = cellAlign;
@@ -646,7 +640,7 @@ Qt::Alignment QgsTableEditorWidget::selectionVerticalAlignment()
   const QModelIndexList selection = selectedIndexes();
   for ( const QModelIndex &index : selection )
   {
-    Qt::Alignment cellAlign = static_cast< Qt::Alignment >( model()->data( index, VerticalAlignment ).toInt() );
+    Qt::Alignment cellAlign = static_cast<Qt::Alignment>( model()->data( index, VerticalAlignment ).toInt() );
     if ( first )
     {
       alignment = cellAlign;
@@ -669,7 +663,7 @@ QgsProperty QgsTableEditorWidget::selectionCellProperty()
   const QModelIndexList selection = selectedIndexes();
   for ( const QModelIndex &index : selection )
   {
-    const QgsProperty cellProperty = model()->data( index, CellProperty ).value< QgsProperty >();
+    const QgsProperty cellProperty = model()->data( index, CellProperty ).value<QgsProperty>();
     if ( first )
     {
       property = cellProperty;
@@ -695,7 +689,7 @@ QgsTextFormat QgsTableEditorWidget::selectionTextFormat()
     if ( !model()->data( index, TextFormat ).isValid() )
       return QgsTextFormat();
 
-    QgsTextFormat cellFormat = model()->data( index, TextFormat ).value< QgsTextFormat >();
+    QgsTextFormat cellFormat = model()->data( index, TextFormat ).value<QgsTextFormat>();
     if ( first )
     {
       format = cellFormat;
@@ -971,7 +965,7 @@ void QgsTableEditorWidget::insertColumnsAfter()
 
 void QgsTableEditorWidget::deleteRows()
 {
-  const QList< int > rows = rowsAssociatedWithSelection();
+  const QList<int> rows = rowsAssociatedWithSelection();
   if ( rows.empty() )
     return;
 
@@ -982,13 +976,13 @@ void QgsTableEditorWidget::deleteRows()
     changed = true;
   }
   updateHeaders();
-  if ( changed &&  !mBlockSignals )
+  if ( changed && !mBlockSignals )
     emit tableChanged();
 }
 
 void QgsTableEditorWidget::deleteColumns()
 {
-  const QList< int > columns = columnsAssociatedWithSelection();
+  const QList<int> columns = columnsAssociatedWithSelection();
   if ( columns.empty() )
     return;
 
@@ -1052,10 +1046,10 @@ void QgsTableEditorWidget::setSelectionForegroundColor( const QColor &color )
 
     if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
     {
-      if ( i->data( Qt::ForegroundRole ).value< QColor >() != color )
+      if ( i->data( Qt::ForegroundRole ).value<QColor>() != color )
       {
         i->setData( Qt::ForegroundRole, color.isValid() ? color : QVariant() );
-        QgsTextFormat f = i->data( TextFormat ).value< QgsTextFormat >();
+        QgsTextFormat f = i->data( TextFormat ).value<QgsTextFormat>();
         f.setColor( color );
         i->setData( TextFormat, QVariant::fromValue( f ) );
         changed = true;
@@ -1089,7 +1083,7 @@ void QgsTableEditorWidget::setSelectionBackgroundColor( const QColor &color )
 
     if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
     {
-      if ( i->data( PresetBackgroundColorRole ).value< QColor >() != color )
+      if ( i->data( PresetBackgroundColorRole ).value<QColor>() != color )
       {
         i->setData( Qt::BackgroundRole, color.isValid() ? color : QVariant() );
         i->setData( PresetBackgroundColorRole, color.isValid() ? color : QVariant() );
@@ -1122,16 +1116,16 @@ void QgsTableEditorWidget::setSelectionHorizontalAlignment( Qt::Alignment alignm
 
     if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
     {
-      if ( static_cast< Qt::Alignment >( i->data( HorizontalAlignment ).toInt() ) != alignment )
+      if ( static_cast<Qt::Alignment>( i->data( HorizontalAlignment ).toInt() ) != alignment )
       {
-        i->setData( HorizontalAlignment, static_cast< int >( alignment ) );
+        i->setData( HorizontalAlignment, static_cast<int>( alignment ) );
         changed = true;
       }
     }
     else
     {
       QTableWidgetItem *newItem = new QTableWidgetItem();
-      newItem->setData( HorizontalAlignment, static_cast< int >( alignment ) );
+      newItem->setData( HorizontalAlignment, static_cast<int>( alignment ) );
       setItem( index.row(), index.column(), newItem );
       changed = true;
     }
@@ -1153,16 +1147,16 @@ void QgsTableEditorWidget::setSelectionVerticalAlignment( Qt::Alignment alignmen
 
     if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
     {
-      if ( static_cast< Qt::Alignment >( i->data( HorizontalAlignment ).toInt() ) != alignment )
+      if ( static_cast<Qt::Alignment>( i->data( HorizontalAlignment ).toInt() ) != alignment )
       {
-        i->setData( VerticalAlignment, static_cast< int >( alignment ) );
+        i->setData( VerticalAlignment, static_cast<int>( alignment ) );
         changed = true;
       }
     }
     else
     {
       QTableWidgetItem *newItem = new QTableWidgetItem();
-      newItem->setData( VerticalAlignment, static_cast< int >( alignment ) );
+      newItem->setData( VerticalAlignment, static_cast<int>( alignment ) );
       setItem( index.row(), index.column(), newItem );
       changed = true;
     }
@@ -1184,7 +1178,7 @@ void QgsTableEditorWidget::setSelectionCellProperty( const QgsProperty &property
 
     if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
     {
-      if ( i->data( CellProperty ).value< QgsProperty >() != property )
+      if ( i->data( CellProperty ).value<QgsProperty>() != property )
       {
         if ( property.isActive() )
         {
@@ -1206,7 +1200,7 @@ void QgsTableEditorWidget::setSelectionCellProperty( const QgsProperty &property
       QTableWidgetItem *newItem = new QTableWidgetItem( property.asExpression() );
       if ( property.isActive() )
       {
-        newItem->setData( CellProperty,  QVariant::fromValue( property ) );
+        newItem->setData( CellProperty, QVariant::fromValue( property ) );
         newItem->setFlags( newItem->flags() & ( ~Qt::ItemIsEditable ) );
       }
       else
@@ -1257,7 +1251,7 @@ void QgsTableEditorWidget::setSelectionRowHeight( double height )
 {
   bool changed = false;
   mBlockSignals++;
-  const QList< int > rows = rowsAssociatedWithSelection();
+  const QList<int> rows = rowsAssociatedWithSelection();
   for ( int row : rows )
   {
     if ( row == 0 && mIncludeHeader )
@@ -1291,7 +1285,7 @@ void QgsTableEditorWidget::setSelectionColumnWidth( double width )
 {
   bool changed = false;
   mBlockSignals++;
-  const QList< int > cols = columnsAssociatedWithSelection();
+  const QList<int> cols = columnsAssociatedWithSelection();
   for ( int col : cols )
   {
     for ( int row = 0; row < rowCount(); ++row )
@@ -1414,8 +1408,7 @@ void QgsTableEditorWidget::splitSelectedCells()
   const QModelIndexList selection = selectedIndexes();
   for ( const QModelIndex &index : selection )
   {
-    if ( rowSpan( index.row(), index.column() ) > 1 ||
-         columnSpan( index.row(), index.column() ) > 1 )
+    if ( rowSpan( index.row(), index.column() ) > 1 || columnSpan( index.row(), index.column() ) > 1 )
       setSpan( index.row(), index.column(), 1, 1 );
   }
 
@@ -1573,7 +1566,6 @@ void QgsTableEditorTextEdit::changeEvent( QEvent *e )
 QgsTableEditorDelegate::QgsTableEditorDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
 {
-
 }
 
 void QgsTableEditorDelegate::setWeakEditorMode( bool weakEditorMode )
@@ -1597,7 +1589,7 @@ QWidget *QgsTableEditorDelegate::createEditor( QWidget *parent, const QStyleOpti
 void QgsTableEditorDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
   QVariant value = index.model()->data( index, QgsTableEditorWidget::CellContent );
-  if ( QgsTableEditorTextEdit *lineEdit = qobject_cast<QgsTableEditorTextEdit * >( editor ) )
+  if ( QgsTableEditorTextEdit *lineEdit = qobject_cast<QgsTableEditorTextEdit *>( editor ) )
   {
     if ( index != mLastIndex || lineEdit->toPlainText() != value.toString() )
     {
@@ -1610,10 +1602,10 @@ void QgsTableEditorDelegate::setEditorData( QWidget *editor, const QModelIndex &
 
 void QgsTableEditorDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  if ( QgsTableEditorTextEdit *lineEdit = qobject_cast<QgsTableEditorTextEdit * >( editor ) )
+  if ( QgsTableEditorTextEdit *lineEdit = qobject_cast<QgsTableEditorTextEdit *>( editor ) )
   {
     const QString text = lineEdit->toPlainText();
-    if ( text != model->data( index, QgsTableEditorWidget::CellContent ).toString() && !model->data( index, QgsTableEditorWidget::CellProperty ).value< QgsProperty >().isActive() )
+    if ( text != model->data( index, QgsTableEditorWidget::CellContent ).toString() && !model->data( index, QgsTableEditorWidget::CellProperty ).value<QgsProperty>().isActive() )
     {
       model->setData( index, text, QgsTableEditorWidget::CellContent );
       model->setData( index, text, Qt::DisplayRole );
@@ -1624,4 +1616,3 @@ void QgsTableEditorDelegate::setModelData( QWidget *editor, QAbstractItemModel *
 
 
 ///@endcond
-

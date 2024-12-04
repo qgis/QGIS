@@ -37,7 +37,6 @@
 QgsGdalCredentialOptionsModel::QgsGdalCredentialOptionsModel( QObject *parent )
   : QAbstractItemModel( parent )
 {
-
 }
 
 int QgsGdalCredentialOptionsModel::columnCount( const QModelIndex & ) const
@@ -98,7 +97,7 @@ QVariant QgsGdalCredentialOptionsModel::data( const QModelIndex &index, int role
   if ( index.row() < 0 || index.row() >= mCredentialOptions.size() || index.column() < 0 || index.column() >= columnCount() )
     return QVariant();
 
-  const QPair< QString, QString > option = mCredentialOptions.at( index.row() );
+  const QPair<QString, QString> option = mCredentialOptions.at( index.row() );
   const QgsGdalOption gdalOption = QgsGdalCredentialOptionsModel::option( option.first );
 
   switch ( role )
@@ -111,8 +110,9 @@ QVariant QgsGdalCredentialOptionsModel::data( const QModelIndex &index, int role
           return option.first;
 
         case Column::Value:
-          return gdalOption.type == QgsGdalOption::Type::Boolean ? ( option.second == QLatin1String( "YES" ) ? tr( "Yes" ) : option.second == QLatin1String( "NO" ) ? tr( "No" ) : option.second )
-                 :  option.second;
+          return gdalOption.type == QgsGdalOption::Type::Boolean ? ( option.second == QLatin1String( "YES" ) ? tr( "Yes" ) : option.second == QLatin1String( "NO" ) ? tr( "No" )
+                                                                                                                                                                    : option.second )
+                                                                 : option.second;
 
         default:
           break;
@@ -167,7 +167,7 @@ bool QgsGdalCredentialOptionsModel::setData( const QModelIndex &index, const QVa
   if ( index.row() > mCredentialOptions.size() || index.row() < 0 )
     return false;
 
-  QPair< QString, QString > &option = mCredentialOptions[index.row()];
+  QPair<QString, QString> &option = mCredentialOptions[index.row()];
 
   switch ( role )
   {
@@ -257,7 +257,7 @@ bool QgsGdalCredentialOptionsModel::removeRows( int position, int rows, const QM
   return true;
 }
 
-void QgsGdalCredentialOptionsModel::setOptions( const QList< QPair< QString, QString > > &options )
+void QgsGdalCredentialOptionsModel::setOptions( const QList<QPair<QString, QString>> &options )
 {
   beginResetModel();
   mCredentialOptions = options;
@@ -290,7 +290,7 @@ QgsGdalOption QgsGdalCredentialOptionsModel::option( const QString &key ) const
   return QgsGdalOption();
 }
 
-void QgsGdalCredentialOptionsModel::setCredentialOptions( const QList<QPair<QString, QString> > &options )
+void QgsGdalCredentialOptionsModel::setCredentialOptions( const QList<QPair<QString, QString>> &options )
 {
   beginResetModel();
   mCredentialOptions = options;
@@ -312,7 +312,6 @@ void QgsGdalCredentialOptionsModel::setCredentialOptions( const QList<QPair<QStr
 QgsGdalCredentialOptionsDelegate::QgsGdalCredentialOptionsDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
 {
-
 }
 
 QWidget *QgsGdalCredentialOptionsDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index ) const
@@ -321,7 +320,7 @@ QWidget *QgsGdalCredentialOptionsDelegate::createEditor( QWidget *parent, const 
   {
     case QgsGdalCredentialOptionsModel::Column::Key:
     {
-      const QgsGdalCredentialOptionsModel *model = qgis::down_cast< const QgsGdalCredentialOptionsModel * >( index.model() );
+      const QgsGdalCredentialOptionsModel *model = qgis::down_cast<const QgsGdalCredentialOptionsModel *>( index.model() );
       QComboBox *combo = new QComboBox( parent );
       const QStringList availableKeys = model->availableKeys();
       for ( const QString &key : availableKeys )
@@ -340,7 +339,7 @@ QWidget *QgsGdalCredentialOptionsDelegate::createEditor( QWidget *parent, const 
     case QgsGdalCredentialOptionsModel::Column::Value:
     {
       // need to find out key for this row
-      const QgsGdalCredentialOptionsModel *model = qgis::down_cast< const QgsGdalCredentialOptionsModel * >( index.model() );
+      const QgsGdalCredentialOptionsModel *model = qgis::down_cast<const QgsGdalCredentialOptionsModel *>( index.model() );
       const QString key = index.model()->data( model->index( index.row(), QgsGdalCredentialOptionsModel::Column::Key ), Qt::EditRole ).toString();
       if ( key.isEmpty() )
         return nullptr;
@@ -361,7 +360,7 @@ void QgsGdalCredentialOptionsDelegate::setEditorData( QWidget *editor, const QMo
   {
     case QgsGdalCredentialOptionsModel::Column::Key:
     {
-      if ( QComboBox *combo = qobject_cast< QComboBox * >( editor ) )
+      if ( QComboBox *combo = qobject_cast<QComboBox *>( editor ) )
       {
         combo->setCurrentIndex( combo->findText( index.data( Qt::EditRole ).toString() ) );
       }
@@ -370,21 +369,21 @@ void QgsGdalCredentialOptionsDelegate::setEditorData( QWidget *editor, const QMo
 
     case QgsGdalCredentialOptionsModel::Column::Value:
     {
-      if ( QComboBox *combo = qobject_cast< QComboBox * >( editor ) )
+      if ( QComboBox *combo = qobject_cast<QComboBox *>( editor ) )
       {
         combo->setCurrentIndex( combo->findData( index.data( Qt::EditRole ).toString() ) );
         if ( combo->currentIndex() < 0 )
           combo->setCurrentIndex( 0 );
       }
-      else if ( QLineEdit *edit = qobject_cast< QLineEdit * >( editor ) )
+      else if ( QLineEdit *edit = qobject_cast<QLineEdit *>( editor ) )
       {
         edit->setText( index.data( Qt::EditRole ).toString() );
       }
-      else if ( QgsSpinBox *spin = qobject_cast< QgsSpinBox * >( editor ) )
+      else if ( QgsSpinBox *spin = qobject_cast<QgsSpinBox *>( editor ) )
       {
         spin->setValue( index.data( Qt::EditRole ).toInt() );
       }
-      else if ( QgsDoubleSpinBox *spin = qobject_cast< QgsDoubleSpinBox * >( editor ) )
+      else if ( QgsDoubleSpinBox *spin = qobject_cast<QgsDoubleSpinBox *>( editor ) )
       {
         spin->setValue( index.data( Qt::EditRole ).toDouble() );
       }
@@ -403,7 +402,7 @@ void QgsGdalCredentialOptionsDelegate::setModelData( QWidget *editor, QAbstractI
   {
     case QgsGdalCredentialOptionsModel::Column::Key:
     {
-      if ( QComboBox *combo = qobject_cast< QComboBox * >( editor ) )
+      if ( QComboBox *combo = qobject_cast<QComboBox *>( editor ) )
       {
         model->setData( index, combo->currentText() );
       }
@@ -412,19 +411,19 @@ void QgsGdalCredentialOptionsDelegate::setModelData( QWidget *editor, QAbstractI
 
     case QgsGdalCredentialOptionsModel::Column::Value:
     {
-      if ( QComboBox *combo = qobject_cast< QComboBox * >( editor ) )
+      if ( QComboBox *combo = qobject_cast<QComboBox *>( editor ) )
       {
         model->setData( index, combo->currentData() );
       }
-      else if ( QLineEdit *edit = qobject_cast< QLineEdit * >( editor ) )
+      else if ( QLineEdit *edit = qobject_cast<QLineEdit *>( editor ) )
       {
         model->setData( index, edit->text() );
       }
-      else if ( QgsSpinBox *spin = qobject_cast< QgsSpinBox * >( editor ) )
+      else if ( QgsSpinBox *spin = qobject_cast<QgsSpinBox *>( editor ) )
       {
         model->setData( index, spin->value() );
       }
-      else if ( QgsDoubleSpinBox *spin = qobject_cast< QgsDoubleSpinBox * >( editor ) )
+      else if ( QgsDoubleSpinBox *spin = qobject_cast<QgsDoubleSpinBox *>( editor ) )
       {
         model->setData( index, spin->value() );
       }
@@ -444,7 +443,6 @@ void QgsGdalCredentialOptionsDelegate::setModelData( QWidget *editor, QAbstractI
 QgsGdalCredentialOptionsRemoveOptionDelegate::QgsGdalCredentialOptionsRemoveOptionDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
 {
-
 }
 
 bool QgsGdalCredentialOptionsRemoveOptionDelegate::eventFilter( QObject *obj, QEvent *event )
@@ -462,7 +460,7 @@ bool QgsGdalCredentialOptionsRemoveOptionDelegate::eventFilter( QObject *obj, QE
   else if ( event->type() == QEvent::HoverLeave )
   {
     setHoveredIndex( QModelIndex() );
-    qobject_cast< QWidget * >( obj )->update();
+    qobject_cast<QWidget *>( obj )->update();
   }
   return QStyledItemDelegate::eventFilter( obj, event );
 }
@@ -481,9 +479,7 @@ void QgsGdalCredentialOptionsRemoveOptionDelegate::paint( QPainter *painter, con
   }
 
   const QIcon icon = QgsApplication::getThemeIcon( "/mIconClearItem.svg" );
-  const QRect iconRect( option.rect.left() + ( option.rect.width() - 16 ) / 2,
-                        option.rect.top() + ( option.rect.height() - 16 ) / 2,
-                        16, 16 );
+  const QRect iconRect( option.rect.left() + ( option.rect.width() - 16 ) / 2, option.rect.top() + ( option.rect.height() - 16 ) / 2, 16, 16 );
 
   icon.paint( painter, iconRect );
 }
@@ -492,7 +488,6 @@ void QgsGdalCredentialOptionsRemoveOptionDelegate::setHoveredIndex( const QModel
 {
   mHoveredIndex = index;
 }
-
 
 
 //
@@ -527,8 +522,7 @@ QgsGdalCredentialOptionsWidget::QgsGdalCredentialOptionsWidget( QWidget *parent 
   QgsGdalCredentialOptionsRemoveOptionDelegate *removeDelegate = new QgsGdalCredentialOptionsRemoveOptionDelegate( mTableView );
   mTableView->setItemDelegateForColumn( QgsGdalCredentialOptionsModel::Column::Actions, removeDelegate );
   mTableView->viewport()->installEventFilter( removeDelegate );
-  connect( mTableView, &QTableView::clicked, this, [this]( const QModelIndex & index )
-  {
+  connect( mTableView, &QTableView::clicked, this, [this]( const QModelIndex &index ) {
     if ( index.column() == QgsGdalCredentialOptionsModel::Column::Actions )
     {
       mModel->removeRows( index.row(), 1 );
@@ -568,7 +562,7 @@ void QgsGdalCredentialOptionsWidget::setHandler( const QString &handler )
     return;
   }
 
-  const QList< QgsGdalOption > options = QgsGdalOption::optionsFromXml( psOptionList );
+  const QList<QgsGdalOption> options = QgsGdalOption::optionsFromXml( psOptionList );
   CPLDestroyXMLNode( psDoc );
 
   int maxKeyLength = 0;
@@ -578,7 +572,7 @@ void QgsGdalCredentialOptionsWidget::setHandler( const QString &handler )
       maxKeyLength = option.name.length();
   }
 
-  mTableView->setColumnWidth( QgsGdalCredentialOptionsModel::Column::Key, static_cast< int >( QFontMetrics( mTableView->font() ).horizontalAdvance( 'X' ) * maxKeyLength * 1.1 ) );
+  mTableView->setColumnWidth( QgsGdalCredentialOptionsModel::Column::Key, static_cast<int>( QFontMetrics( mTableView->font() ).horizontalAdvance( 'X' ) * maxKeyLength * 1.1 ) );
 
   mModel->setAvailableOptions( options );
 }
@@ -586,8 +580,8 @@ void QgsGdalCredentialOptionsWidget::setHandler( const QString &handler )
 QVariantMap QgsGdalCredentialOptionsWidget::credentialOptions() const
 {
   QVariantMap result;
-  const QList< QPair< QString, QString > > options = mModel->credentialOptions();
-  for ( const QPair< QString, QString> &option : options )
+  const QList<QPair<QString, QString>> options = mModel->credentialOptions();
+  for ( const QPair<QString, QString> &option : options )
   {
     if ( option.first.isEmpty() )
       continue;
@@ -600,7 +594,7 @@ QVariantMap QgsGdalCredentialOptionsWidget::credentialOptions() const
 
 void QgsGdalCredentialOptionsWidget::setCredentialOptions( const QVariantMap &options )
 {
-  QList< QPair< QString, QString > > modelOptions;
+  QList<QPair<QString, QString>> modelOptions;
   for ( auto it = options.constBegin(); it != options.constEnd(); ++it )
   {
     modelOptions.append( qMakePair( it.key(), it.value().toString() ) );

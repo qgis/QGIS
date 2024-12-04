@@ -46,7 +46,6 @@ class GUI_EXPORT QgsSettingsTreeModelNodeData : public QObject
 {
     Q_OBJECT
   public:
-
     //! Type of tree element
     enum class Type
     {
@@ -70,41 +69,42 @@ class GUI_EXPORT QgsSettingsTreeModelNodeData : public QObject
     QStringList namedParentNodes() const { return mNamedParentNodes; }
 
     //! Returns the children nodes of the node (setting or tree node)
-    QList<QgsSettingsTreeModelNodeData *> children() const {return mChildren;}
+    QList<QgsSettingsTreeModelNodeData *> children() const { return mChildren; }
 
     //! Returns the parent of the node
-    QgsSettingsTreeModelNodeData *parent() const {return mParent;}
+    QgsSettingsTreeModelNodeData *parent() const { return mParent; }
 
     //! Returns the type of the node (setting or tree node)
-    Type type() const {return mType;}
+    Type type() const { return mType; }
 
     //! Returns the name of the node (setting or tree node)
-    QString name() const {return mName;}
+    QString name() const { return mName; }
 
     //! Returns the value of the node (setting or tree node)
-    QVariant value() const {return mValue;}
+    QVariant value() const { return mValue; }
 
     //! Returns the value of the node (setting or tree node)
-    QVariant originalValue() const {return mOriginalValue;}
+    QVariant originalValue() const { return mOriginalValue; }
 
     //! Sets the \a value of the setting node
     bool setValue( const QVariant &value );
 
     //! Returns if the setting exists (value is set)
-    bool exists() const {return mExists;}
+    bool exists() const { return mExists; }
 
     //! Returns if the setting is edited
-    bool isEdited() const {return mIsEdited;}
+    bool isEdited() const { return mIsEdited; }
 
     /**
      * Returns a pointer to the setting of the node or NULLPTR if the
      * setting does not exist.
      */
-    const QgsSettingsEntryBase *setting() const {return mSetting;}
+    const QgsSettingsEntryBase *setting() const { return mSetting; }
 
   private:
     //! Private constructor, use createRootNodeData() instead
-    QgsSettingsTreeModelNodeData( QObject *parent ) : QObject( parent ) {}
+    QgsSettingsTreeModelNodeData( QObject *parent )
+      : QObject( parent ) {}
     void addChildForTreeNode( const QgsSettingsTreeNode *node );
     void addChildForNamedListItemNode( const QString &item, const QgsSettingsTreeNamedListNode *namedListNode );
     void addChildForSetting( const QgsSettingsEntryBase *setting );
@@ -167,12 +167,11 @@ class GUI_EXPORT QgsSettingsTreeModel : public QAbstractItemModel
 {
     Q_OBJECT
   public:
-
     //! Columns
     enum class Column
     {
-      Name, //!< Name
-      Value, //!< Value
+      Name,        //!< Name
+      Value,       //!< Value
       Description, //!< Description
     };
 
@@ -210,7 +209,6 @@ class GUI_EXPORT QgsSettingsTreeModel : public QAbstractItemModel
     QColor mEditedColorBack;
     QColor mEditedColorFore;
     QColor mNotSetColor;
-
 };
 
 /**
@@ -228,7 +226,7 @@ class GUI_EXPORT QgsSettingsTreeProxyModel : public QSortFilterProxyModel
     QgsSettingsTreeProxyModel( QgsSettingsTreeNode *rootNode = nullptr, QObject *parent = nullptr );
 
     //! Apply pending changes in the model to the corresponding settings
-    void applyChanges() {mSourceModel->applyChanges();}
+    void applyChanges() { mSourceModel->applyChanges(); }
 
   public slots:
     //! Sets the filter text

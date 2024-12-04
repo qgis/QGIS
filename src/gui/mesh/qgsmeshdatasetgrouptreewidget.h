@@ -29,7 +29,7 @@ class QgsMeshLayer;
  * \ingroup gui
  * \class QgsMeshDatasetGroupTreeWidget
  */
-class GUI_EXPORT QgsMeshDatasetGroupTreeWidget: public QWidget, private Ui::QgsMeshDatasetGroupTreeWidgetBase
+class GUI_EXPORT QgsMeshDatasetGroupTreeWidget : public QWidget, private Ui::QgsMeshDatasetGroupTreeWidgetBase
 {
     Q_OBJECT
   public:

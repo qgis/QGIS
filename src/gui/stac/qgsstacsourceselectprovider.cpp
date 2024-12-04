@@ -25,7 +25,6 @@ QgsStacSourceSelectProvider::QgsStacSourceSelectProvider()
 QString QgsStacSourceSelectProvider::providerKey() const
 {
   return QStringLiteral( "stac" );
-
 }
 
 QString QgsStacSourceSelectProvider::text() const

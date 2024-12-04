@@ -51,9 +51,9 @@ QgsTiledSceneRendererWidget *QgsTiledSceneWireframeRendererWidget::create( QgsTi
 
 QgsTiledSceneRenderer *QgsTiledSceneWireframeRendererWidget::renderer()
 {
-  std::unique_ptr< QgsTiledSceneWireframeRenderer > renderer = std::make_unique< QgsTiledSceneWireframeRenderer >();
-  renderer->setFillSymbol( mFillSymbolButton->clonedSymbol< QgsFillSymbol >() );
-  renderer->setLineSymbol( mLineSymbolButton->clonedSymbol< QgsLineSymbol >() );
+  std::unique_ptr<QgsTiledSceneWireframeRenderer> renderer = std::make_unique<QgsTiledSceneWireframeRenderer>();
+  renderer->setFillSymbol( mFillSymbolButton->clonedSymbol<QgsFillSymbol>() );
+  renderer->setLineSymbol( mLineSymbolButton->clonedSymbol<QgsLineSymbol>() );
   renderer->setUseTextureColors( mCheckUseTextureColors->isChecked() );
 
   return renderer.release();
@@ -68,7 +68,7 @@ void QgsTiledSceneWireframeRendererWidget::emitWidgetChanged()
 void QgsTiledSceneWireframeRendererWidget::setFromRenderer( const QgsTiledSceneRenderer *renderer )
 {
   mBlockChangedSignal = true;
-  if ( const QgsTiledSceneWireframeRenderer *wireframeRenderer = dynamic_cast< const QgsTiledSceneWireframeRenderer * >( renderer ) )
+  if ( const QgsTiledSceneWireframeRenderer *wireframeRenderer = dynamic_cast<const QgsTiledSceneWireframeRenderer *>( renderer ) )
   {
     mFillSymbolButton->setSymbol( wireframeRenderer->fillSymbol()->clone() );
     mLineSymbolButton->setSymbol( wireframeRenderer->lineSymbol()->clone() );

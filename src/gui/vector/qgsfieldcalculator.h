@@ -40,7 +40,7 @@ class QgsMessageBar;
  *     dialog.exec()
  * \endcode
  */
-class GUI_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
+class GUI_EXPORT QgsFieldCalculator : public QDialog, private Ui::QgsFieldCalculatorBase
 {
     Q_OBJECT
   public:
