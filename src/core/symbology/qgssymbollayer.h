@@ -610,7 +610,7 @@ class CORE_EXPORT QgsSymbolLayer
      * Returns a reference to the symbol layer's property collection, used for data defined overrides.
      * \see setDataDefinedProperties()
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
 
     /**
      * Sets the symbol layer's property collection, used for data defined overrides.

@@ -145,7 +145,7 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
      * created symbols will be used instead.
      * \note not available in Python bindings
      */
-    void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; updatePreview(); } SIP_SKIP
+    void setSymbol( std::shared_ptr< QgsSymbol > symbol ) SIP_SKIP { mSymbol = symbol; updatePreview(); }
 
     void setDockMode( bool dockMode ) override;
 

@@ -219,7 +219,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
      * by the widget. If not specified, a default created symbol will be used instead.
      * \note not available in Python bindings
      */
-    void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; } SIP_SKIP
+    void setSymbol( std::shared_ptr< QgsSymbol > symbol ) SIP_SKIP { mSymbol = symbol; }
 
   public slots:
 

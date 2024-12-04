@@ -766,7 +766,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsExpressionContex
      * \see defaultExpressionContextScope()
      * \note not available in Python bindings
      */
-    const QgsExpressionContextScope &expressionContextScope() const { return mExpressionContextScope; } SIP_SKIP
+    const QgsExpressionContextScope &expressionContextScope() const SIP_SKIP { return mExpressionContextScope; }
 
     /**
      * Creates a new scope which contains default variables and functions relating to the map canvas.

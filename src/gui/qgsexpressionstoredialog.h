@@ -62,7 +62,7 @@ class GUI_EXPORT QgsExpressionStoreDialog : public QDialog, private Ui::QgsExpre
      * Returns whether the label text was modified either manually by the user,
      * or automatically because it contained slashes or leading/trailing whitespace characters
      */
-    bool isLabelModified() const { return mLabel->text() != mOriginalLabel; } SIP_SKIP
+    bool isLabelModified() const SIP_SKIP { return mLabel->text() != mOriginalLabel; }
 
   private:
 
