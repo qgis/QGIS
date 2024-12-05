@@ -31,6 +31,7 @@ from qgis.core import (
     QgsSimpleFillSymbolLayer,
     QgsSimpleLineSymbolLayer,
     QgsSingleSymbolRenderer,
+    QgsSymbol,
     QgsSymbolLayer,
     QgsSymbolLayerUtils,
     QgsUnitTypes,
@@ -1252,6 +1253,62 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
         elem = doc.documentElement()
         font_marker = QgsSymbolLayerUtils.loadSymbol(elem, QgsReadWriteContext())
         self.assertEqual(font_marker.symbolLayers()[0].character(), "()")
+
+    def test_extent_buffer_load(self):
+        doc = QDomDocument()
+        elem = QDomElement()
+
+        extent_buffer_xml_string = """<symbol is_animated="0" name="0" type="fill" alpha="1" clip_to_extent="1" force_rhr="0" frame_rate="10" extent_buffer="1000">
+  <data_defined_properties>
+  <Option type="Map">
+   <Option value="" name="name" type="QString"/>
+   <Option name="properties" type="Map">
+    <Option name="extent_buffer" type="Map">
+     <Option value="true" name="active" type="bool"/>
+     <Option value="if(@map_scale &lt;= 25000, 5000, 10000)" name="expression" type="QString"/>
+     <Option value="3" name="type" type="int"/>
+    </Option>
+   </Option>
+   <Option value="collection" name="type" type="QString"/>
+  </Option>
+ </data_defined_properties>
+ <layer pass="0" id="{2aefc556-4eb1-4f56-b96b-e1dea6b58f69}" locked="0" class="FontMarker" enabled="1">
+  <Option type="Map">
+   <Option value="0" type="QString" name="angle"/>
+   <Option value="~!_#!#_!~40~!_#!#_!~~!_#!#_!~41~!_#!#_!~" type="QString" name="chr"/>
+   <Option value="0,0,255,255" type="QString" name="color"/>
+   <Option value="Arial" type="QString" name="font"/>
+   <Option value="Italic" type="QString" name="font_style"/>
+   <Option value="1" type="QString" name="horizontal_anchor_point"/>
+   <Option value="miter" type="QString" name="joinstyle"/>
+   <Option value="0,0" type="QString" name="offset"/>
+   <Option value="3x:0,0,0,0,0,0" type="QString" name="offset_map_unit_scale"/>
+   <Option value="Point" type="QString" name="offset_unit"/>
+   <Option value="255,255,255,255" type="QString" name="outline_color"/>
+   <Option value="0" type="QString" name="outline_width"/>
+   <Option value="3x:0,0,0,0,0,0" type="QString" name="outline_width_map_unit_scale"/>
+   <Option value="MM" type="QString" name="outline_width_unit"/>
+   <Option value="42.4" type="QString" name="size"/>
+   <Option value="3x:0,0,0,0,0,0" type="QString" name="size_map_unit_scale"/>
+   <Option value="Point" type="QString" name="size_unit"/>
+   <Option value="1" type="QString" name="vertical_anchor_point"/>
+  </Option>
+ </layer>
+</symbol>"""
+
+        doc.setContent(extent_buffer_xml_string)
+        elem = doc.documentElement()
+        symbol = QgsSymbolLayerUtils.loadSymbol(elem, QgsReadWriteContext())
+        self.assertEqual(symbol.extentBuffer(), 1000)
+
+        property = symbol.dataDefinedProperties().property(
+            QgsSymbol.Property.ExtentBuffer
+        )
+
+        self.assertTrue(property.isActive())
+        self.assertEqual(
+            property.expressionString(), "if(@map_scale <= 25000, 5000, 10000)"
+        )
 
     def test_collect_symbol_layer_clip_geometries(self):
         """
