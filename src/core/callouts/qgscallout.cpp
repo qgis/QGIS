@@ -487,7 +487,7 @@ QgsGeometry QgsCallout::calloutLineToPart( const QgsGeometry &labelGeometry, con
       switch ( anchor )
       {
         case QgsCallout::PoleOfInaccessibility:
-          line = QgsGeometry( labelGeos.shortestLine( evaluatedPartAnchorGeom.poleOfInaccessibility( std::max( evaluatedPartAnchor->boundingBox().width(), evaluatedPartAnchor->boundingBox().height() ) / 20.0 ) ) ); // really rough (but quick) pole of inaccessibilit y
+          line = QgsGeometry( labelGeos.shortestLine( evaluatedPartAnchorGeom.poleOfInaccessibility( std::max( evaluatedPartAnchor->boundingBox().width(), evaluatedPartAnchor->boundingBox().height() ) / 20.0 ) ) ); // really rough (but quick) pole of inaccessibility
           break;
         case QgsCallout::PointOnSurface:
           line = QgsGeometry( labelGeos.shortestLine( evaluatedPartAnchorGeom.pointOnSurface() ) );
