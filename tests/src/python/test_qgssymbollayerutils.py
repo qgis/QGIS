@@ -1258,7 +1258,7 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
         doc = QDomDocument()
         elem = QDomElement()
 
-        extent_buffer_xml_string = """<symbol is_animated="0" name="0" type="fill" alpha="1" clip_to_extent="1" force_rhr="0" frame_rate="10" extent_buffer="1000">
+        extent_buffer_xml_string = """<symbol is_animated="0" name="0" type="fill" alpha="1" clip_to_extent="1" force_rhr="0" frame_rate="10" extent_buffer="1000" extent_buffer_unit="MM">
   <data_defined_properties>
   <Option type="Map">
    <Option value="" name="name" type="QString"/>
@@ -1300,6 +1300,7 @@ class PyQgsSymbolLayerUtils(QgisTestCase):
         elem = doc.documentElement()
         symbol = QgsSymbolLayerUtils.loadSymbol(elem, QgsReadWriteContext())
         self.assertEqual(symbol.extentBuffer(), 1000)
+        self.assertEqual(symbol.extentBufferSizeUnit(), Qgis.RenderUnit.Millimeters)
 
         property = symbol.dataDefinedProperties().property(
             QgsSymbol.Property.ExtentBuffer
