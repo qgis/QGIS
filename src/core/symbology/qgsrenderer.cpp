@@ -525,8 +525,9 @@ QgsSymbolList QgsFeatureRenderer::symbolsForFeature( const QgsFeature &feature, 
 
 void QgsFeatureRenderer::modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context )
 {
-  Q_UNUSED( extent )
-  Q_UNUSED( context )
+  double extentBuffer = maximumExtentBuffer( context );
+
+  extent.grow( extentBuffer );
 }
 
 QgsSymbolList QgsFeatureRenderer::originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const

@@ -2231,7 +2231,10 @@ double QgsSymbol::extentBuffer() const
 
 void QgsSymbol::setExtentBuffer( double extentBuffer )
 {
-  mExtentBuffer = extentBuffer;
+  if ( extentBuffer < 0 )
+    mExtentBuffer = 0;
+  else
+    mExtentBuffer = extentBuffer;
 }
 
 

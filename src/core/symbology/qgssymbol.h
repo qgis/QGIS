@@ -881,6 +881,7 @@ class CORE_EXPORT QgsSymbol
      *
      * \param extentBuffer buffer distance in map units
      * \see extentBuffer()
+     * \note Negative values are not supported and will be changed to 0.
      * \since QGIS 3.42
      */
     void setExtentBuffer( double extentBuffer );

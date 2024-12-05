@@ -356,24 +356,7 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
       mDiagramProvider->setClipFeatureGeometry( mLabelClipFeatureGeom );
   }
 
-
   renderer->modifyRequestExtent( requestExtent, context );
-
-  double maximumExtentBuffer = renderer->maximumExtentBuffer( context );
-
-  if ( maximumExtentBuffer != 0 )
-  {
-    bool bufferCausesEmptyExtent = maximumExtentBuffer < 0 && ( requestExtent.width() + ( maximumExtentBuffer * 2 ) < 0 || requestExtent.height() + ( maximumExtentBuffer * 2 ) < 0 );
-
-    // nothing to draw
-    if ( bufferCausesEmptyExtent )
-    {
-      renderer->stopRender( context );
-      return true;
-    }
-
-    requestExtent = requestExtent.buffered( maximumExtentBuffer );
-  }
 
   QgsFeatureRequest featureRequest = QgsFeatureRequest()
                                      .setFilterRect( requestExtent )
