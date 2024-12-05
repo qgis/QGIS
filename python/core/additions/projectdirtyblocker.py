@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     projectdirtyblocker.py
@@ -17,11 +15,10 @@
 ***************************************************************************
 """
 
-
 from qgis._core import QgsProjectDirtyBlocker
 
 
-class ProjectDirtyBlocker():
+class ProjectDirtyBlocker:
     """
     Context manager used to block project setDirty calls.
 

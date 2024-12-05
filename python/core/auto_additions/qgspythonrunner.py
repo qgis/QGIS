@@ -4,5 +4,5 @@ try:
     QgsPythonRunner.run = staticmethod(QgsPythonRunner.run)
     QgsPythonRunner.eval = staticmethod(QgsPythonRunner.eval)
     QgsPythonRunner.setInstance = staticmethod(QgsPythonRunner.setInstance)
-except NameError:
+except (NameError, AttributeError):
     pass

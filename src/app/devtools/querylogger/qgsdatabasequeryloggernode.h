@@ -34,7 +34,6 @@ class QAction;
 class QgsDatabaseQueryLoggerRootNode final : public QgsDevToolsModelGroup
 {
   public:
-
     QgsDatabaseQueryLoggerRootNode();
     QVariant data( int role = Qt::DisplayRole ) const override final;
 
@@ -62,14 +61,13 @@ class QgsDatabaseQueryLoggerRootNode final : public QgsDevToolsModelGroup
 class QgsDatabaseQueryLoggerQueryGroup final : public QgsDevToolsModelGroup
 {
   public:
-
     //! Query status
     enum class Status
     {
-      Pending, //!< Query underway
+      Pending,  //!< Query underway
       Complete, //!< Query was successfully completed
-      Error, //!< Query encountered an error
-      TimeOut, //!< Query timed out
+      Error,    //!< Query encountered an error
+      TimeOut,  //!< Query timed out
       Canceled, //!< Query was manually canceled
     };
 
@@ -79,7 +77,7 @@ class QgsDatabaseQueryLoggerQueryGroup final : public QgsDevToolsModelGroup
      */
     QgsDatabaseQueryLoggerQueryGroup( const QgsDatabaseQueryLogEntry &query );
     QVariant data( int role = Qt::DisplayRole ) const override;
-    QList< QAction * > actions( QObject *parent ) override final;
+    QList<QAction *> actions( QObject *parent ) override final;
     QVariant toVariant() const override;
 
     /**
@@ -87,7 +85,7 @@ class QgsDatabaseQueryLoggerQueryGroup final : public QgsDevToolsModelGroup
      *
      * Will automatically create children encapsulating the completed details.
      */
-    void setFinished( const  QgsDatabaseQueryLogEntry &query );
+    void setFinished( const QgsDatabaseQueryLogEntry &query );
 
     /**
      * Returns the query's status.
@@ -115,7 +113,6 @@ class QgsDatabaseQueryLoggerQueryGroup final : public QgsDevToolsModelGroup
     const QString &sql() const;
 
   private:
-
     QString mSql;
     int mQueryId = 0;
     QByteArray mData;

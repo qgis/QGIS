@@ -1,4 +1,6 @@
-from libfuturize.fixes.fix_absolute_import import FixAbsoluteImport as FixAbsoluteImportOrig
+from libfuturize.fixes.fix_absolute_import import (
+    FixAbsoluteImport as FixAbsoluteImportOrig,
+)
 
 
 class FixAbsoluteImport(FixAbsoluteImportOrig):

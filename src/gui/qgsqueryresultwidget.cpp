@@ -521,7 +521,7 @@ void QgsQueryResultWidget::copyResults( int fromRow, int toRow, int fromColumn, 
 
 QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions QgsQueryResultWidget::sqlVectorLayerOptions() const
 {
-  mSqlVectorLayerOptions.sql = mSqlEditor->text();
+  mSqlVectorLayerOptions.sql = mSqlEditor->text().replace( QRegularExpression( ";\\s*$" ), QString() );
   mSqlVectorLayerOptions.filter = mFilterLineEdit->text();
   mSqlVectorLayerOptions.primaryKeyColumns = mPkColumnsComboBox->checkedItems();
   mSqlVectorLayerOptions.geometryColumn = mGeometryColumnComboBox->currentText();

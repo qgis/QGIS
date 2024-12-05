@@ -4,5 +4,5 @@ try:
     QgsLayoutItemPicture.create = staticmethod(QgsLayoutItemPicture.create)
     QgsLayoutItemPicture.__signal_arguments__ = {'pictureRotationChanged': ['newRotation: float']}
     QgsLayoutItemPicture.__group__ = ['layout']
-except NameError:
+except (NameError, AttributeError):
     pass

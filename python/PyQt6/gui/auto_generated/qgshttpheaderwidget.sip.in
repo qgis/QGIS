@@ -55,7 +55,7 @@ fill the inner header map from the settings defined at ``key``
 
 .. deprecated:: 3.30
 
-   Use setFromHeaders instead.
+   Use :py:func:`~QgsHttpHeaderWidget.setFromHeaders` instead.
 %End
 
  void updateSettings( QgsSettings &settings, const QString &key ) const /Deprecated/;

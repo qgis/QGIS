@@ -715,7 +715,7 @@ when a constraint is toggled.
 
 .. deprecated:: 3.22
 
-   No longer used, will be removed in QGIS 4.0. Use pointChangedV2 instead.
+   No longer used, will be removed in QGIS 4.0. Use :py:func:`~QgsAdvancedDigitizingDockWidget.pointChangedV2` instead.
 %End
 
 

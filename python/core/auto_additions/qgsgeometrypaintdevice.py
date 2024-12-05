@@ -2,5 +2,5 @@
 try:
     QgsGeometryPaintDevice.painterPathToGeometry = staticmethod(QgsGeometryPaintDevice.painterPathToGeometry)
     QgsGeometryPaintDevice.__group__ = ['painting']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -79,8 +79,8 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
 
   for ( int i = 0; i < layerProperty.size(); i++ )
   {
-    Qgis::WkbType wkbType = layerProperty.types[ i ];
-    int srid = layerProperty.srids[ i ];
+    Qgis::WkbType wkbType = layerProperty.types[i];
+    int srid = layerProperty.srids[i];
 
 
     QString tip;
@@ -101,15 +101,16 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
     QStandardItem *ownerNameItem = new QStandardItem( layerProperty.ownerName );
     QStandardItem *typeItem = new QStandardItem(
       QgsIconUtils::iconForWkbType( wkbType ),
-      wkbType == Qgis::WkbType::Unknown ? tr( "Select…" ) : QgsWkbTypes::translatedDisplayString( wkbType ) );
+      wkbType == Qgis::WkbType::Unknown ? tr( "Select…" ) : QgsWkbTypes::translatedDisplayString( wkbType )
+    );
     typeItem->setData( wkbType == Qgis::WkbType::Unknown, Qt::UserRole + 1 );
-    typeItem->setData( static_cast< quint32>( wkbType ), Qt::UserRole + 2 );
+    typeItem->setData( static_cast<quint32>( wkbType ), Qt::UserRole + 2 );
     if ( wkbType == Qgis::WkbType::Unknown )
       typeItem->setFlags( typeItem->flags() | Qt::ItemIsEditable );
 
     QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
-    QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
-    QStandardItem *sridItem  = new QStandardItem( wkbType != Qgis::WkbType::NoGeometry ? QString::number( srid ) : "" );
+    QStandardItem *geomItem = new QStandardItem( layerProperty.geometryColName );
+    QStandardItem *sridItem = new QStandardItem( wkbType != Qgis::WkbType::NoGeometry ? QString::number( srid ) : "" );
     sridItem->setEditable( wkbType != Qgis::WkbType::NoGeometry && srid == 0 );
     if ( sridItem->isEditable() )
     {
@@ -259,7 +260,7 @@ bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value
 
   if ( idx.column() == DbtmType || idx.column() == DbtmSrid || idx.column() == DbtmPkCol )
   {
-    Qgis::WkbType wkbType = static_cast< Qgis::WkbType >( idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt() );
+    Qgis::WkbType wkbType = static_cast<Qgis::WkbType>( idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt() );
 
     QString tip;
     if ( wkbType == Qgis::WkbType::Unknown )
@@ -312,7 +313,7 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
     return QString();
   }
 
-  Qgis::WkbType wkbType = static_cast< Qgis::WkbType >( itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt() );
+  Qgis::WkbType wkbType = static_cast<Qgis::WkbType>( itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt() );
   if ( wkbType == Qgis::WkbType::Unknown )
   {
     QgsDebugError( QStringLiteral( "unknown geometry type" ) );
@@ -323,7 +324,7 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
   QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), DbtmPkCol ) );
   QString pkColumnName = pkItem->data( Qt::DisplayRole ).toString();
   bool isView = pkItem->data( Qt::UserRole + 1 ).toBool();
-  bool isSet  = pkItem->data( Qt::UserRole + 2 ).toBool();
+  bool isSet = pkItem->data( Qt::UserRole + 2 ).toBool();
 
   if ( isView && !isSet )
   {
@@ -343,7 +344,7 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
 
     srid = index.sibling( index.row(), DbtmSrid ).data( Qt::DisplayRole ).toString();
     bool ok;
-    ( void )srid.toInt( &ok );
+    ( void ) srid.toInt( &ok );
     if ( !ok )
     {
       QgsDebugError( QStringLiteral( "srid not numeric" ) );

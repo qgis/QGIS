@@ -4,5 +4,5 @@ try:
     QgsFractionNumericFormat.toUnicodeSuperscript = staticmethod(QgsFractionNumericFormat.toUnicodeSuperscript)
     QgsFractionNumericFormat.toUnicodeSubscript = staticmethod(QgsFractionNumericFormat.toUnicodeSubscript)
     QgsFractionNumericFormat.__group__ = ['numericformats']
-except NameError:
+except (NameError, AttributeError):
     pass

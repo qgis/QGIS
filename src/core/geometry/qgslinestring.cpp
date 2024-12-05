@@ -184,10 +184,10 @@ static double cubicInterpolate( double a, double b,
   return A * b * b * b + 3 * B * b * b * a + 3 * C * b * a * a + D * a * a * a;
 }
 
-QgsLineString *QgsLineString::fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments )
+std::unique_ptr< QgsLineString > QgsLineString::fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments )
 {
   if ( segments == 0 )
-    return new QgsLineString();
+    return std::make_unique< QgsLineString >();
 
   QVector<double> x;
   x.resize( segments + 1 );
@@ -242,10 +242,10 @@ QgsLineString *QgsLineString::fromBezierCurve( const QgsPoint &start, const QgsP
   if ( mData )
     *mData = end.m();
 
-  return new QgsLineString( x, y, z, m );
+  return std::make_unique< QgsLineString >( x, y, z, m );
 }
 
-QgsLineString *QgsLineString::fromQPolygonF( const QPolygonF &polygon )
+std::unique_ptr< QgsLineString > QgsLineString::fromQPolygonF( const QPolygonF &polygon )
 {
   QVector< double > x;
   QVector< double > y;
@@ -262,7 +262,7 @@ QgsLineString *QgsLineString::fromQPolygonF( const QPolygonF &polygon )
     src++;
   }
 
-  return new QgsLineString( x, y );
+  return std::make_unique< QgsLineString >( x, y );
 }
 
 QgsLineString *QgsLineString::clone() const
@@ -2608,19 +2608,19 @@ void QgsLineString::transformVertices( const std::function<QgsPoint( const QgsPo
 }
 
 
-QgsLineString *QgsLineString::measuredLine( double start, double end ) const
+std::unique_ptr< QgsLineString > QgsLineString::measuredLine( double start, double end ) const
 {
   const int nbpoints = numPoints();
   std::unique_ptr< QgsLineString > cloned( clone() );
 
   if ( !cloned->convertTo( QgsWkbTypes::addM( mWkbType ) ) )
   {
-    return cloned.release();
+    return cloned;
   }
 
   if ( isEmpty() || ( nbpoints < 2 ) )
   {
-    return cloned.release();
+    return cloned;
   }
 
   const double range = end - start;
@@ -2641,17 +2641,17 @@ QgsLineString *QgsLineString::measuredLine( double start, double end ) const
       *mOut++ = 0.0;
   }
 
-  return cloned.release();
+  return cloned;
 }
 
-QgsLineString *QgsLineString::interpolateM( bool use3DDistance ) const
+std::unique_ptr< QgsLineString > QgsLineString::interpolateM( bool use3DDistance ) const
 {
   if ( !isMeasure() )
     return nullptr;
 
   const int totalPoints = numPoints();
   if ( totalPoints < 2 )
-    return clone();
+    return std::unique_ptr< QgsLineString >( clone() );
 
   const double *xData = mX.constData();
   const double *yData = mY.constData();
@@ -2814,5 +2814,5 @@ QgsLineString *QgsLineString::interpolateM( bool use3DDistance ) const
     prevZ = thisZ;
     ++i;
   }
-  return new QgsLineString( xOut, yOut, zOut, mOut );
+  return std::make_unique< QgsLineString >( xOut, yOut, zOut, mOut );
 }

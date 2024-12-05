@@ -21,14 +21,14 @@
 #include <qgsdatetimeeditwrapper.h>
 #include <qgsdatetimefieldformatter.h>
 
-class TestQgsDateTimeEdit: public QObject
+class TestQgsDateTimeEdit : public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void nullValues();
     void focus();
@@ -43,7 +43,6 @@ class TestQgsDateTimeEdit: public QObject
     std::unique_ptr<QgsDateTimeEditWrapper> widget6; // For field 5
     std::unique_ptr<QgsDateTimeEditWrapper> widget7; // For field 6
     std::unique_ptr<QgsVectorLayer> vl;
-
 };
 
 void TestQgsDateTimeEdit::initTestCase()
@@ -56,10 +55,7 @@ void TestQgsDateTimeEdit::cleanupTestCase()
 
 void TestQgsDateTimeEdit::init()
 {
-
-  vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326" ),
-                                         QStringLiteral( "myvl" ),
-                                         QLatin1String( "memory" ) );
+  vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326" ), QStringLiteral( "myvl" ), QLatin1String( "memory" ) );
 
   // add fields
   QList<QgsField> fields;
@@ -330,11 +326,10 @@ void TestQgsDateTimeEdit::testDateTime()
   QVERIFY( dateedit7 );
   widget7->initWidget( dateedit7 );
   QgsFeature f { vl->fields() };
-  f.setAttribute( QStringLiteral( "text" ), QgsExpression{ QStringLiteral( "now()" ) }.evaluate() );
+  f.setAttribute( QStringLiteral( "text" ), QgsExpression { QStringLiteral( "now()" ) }.evaluate() );
   widget7->setFeature( f );
   const QDate value7 { widget7->value().toDate() };
   QCOMPARE( value7, QDate::currentDate() );
-
 }
 
 QGSTEST_MAIN( TestQgsDateTimeEdit )

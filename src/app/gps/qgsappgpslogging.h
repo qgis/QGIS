@@ -31,12 +31,11 @@ class QgsVectorLayerGpsLogger;
 class QgsVectorLayer;
 class QgsSettingsEntryString;
 
-class APP_EXPORT QgsAppGpsLogging: public QObject
+class APP_EXPORT QgsAppGpsLogging : public QObject
 {
     Q_OBJECT
 
   public:
-
     static const QgsSettingsEntryString *settingLastLogFolder;
     static const QgsSettingsEntryString *settingLastGpkgLog;
 
@@ -63,7 +62,6 @@ class APP_EXPORT QgsAppGpsLogging: public QObject
     void stopNmeaLogging();
 
   private:
-
     void createGpkgLogger();
     bool createOrUpdateLogDatabase();
     void createGpkgLogDatabase();
@@ -74,17 +72,16 @@ class APP_EXPORT QgsAppGpsLogging: public QObject
     QString mNmeaLogFile;
     bool mEnableNmeaLogging = false;
 
-    std::unique_ptr< QFile > mLogFile;
+    std::unique_ptr<QFile> mLogFile;
     QTextStream mLogFileTextStream;
 
     QString mGpkgLogFile;
-    std::unique_ptr< QgsVectorLayerGpsLogger > mGpkgLogger;
-    std::unique_ptr< QgsVectorLayer > mGpkgPointsLayer;
-    std::unique_ptr< QgsVectorLayer > mGpkgTracksLayer;
+    std::unique_ptr<QgsVectorLayerGpsLogger> mGpkgLogger;
+    std::unique_ptr<QgsVectorLayer> mGpkgPointsLayer;
+    std::unique_ptr<QgsVectorLayer> mGpkgTracksLayer;
 
-    static const std::vector< std::tuple< Qgis::GpsInformationComponent, std::tuple< QMetaType::Type, QString >>> sPointFields;
-    static const std::vector< std::tuple< Qgis::GpsInformationComponent, std::tuple< QMetaType::Type, QString >>> sTrackFields;
-
+    static const std::vector<std::tuple<Qgis::GpsInformationComponent, std::tuple<QMetaType::Type, QString>>> sPointFields;
+    static const std::vector<std::tuple<Qgis::GpsInformationComponent, std::tuple<QMetaType::Type, QString>>> sTrackFields;
 };
 
 #endif // QGSAPPGPSLOGGING_H

@@ -5,13 +5,13 @@ QgsPaintEffect.ModifyAndRender = QgsPaintEffect.DrawMode.ModifyAndRender
 try:
     QgsDrawSourceEffect.create = staticmethod(QgsDrawSourceEffect.create)
     QgsDrawSourceEffect.__group__ = ['effects']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsPaintEffect.__group__ = ['effects']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsEffectPainter.__group__ = ['effects']
-except NameError:
+except (NameError, AttributeError):
     pass

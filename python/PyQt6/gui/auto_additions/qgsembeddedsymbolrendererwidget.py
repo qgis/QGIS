@@ -2,5 +2,5 @@
 try:
     QgsEmbeddedSymbolRendererWidget.create = staticmethod(QgsEmbeddedSymbolRendererWidget.create)
     QgsEmbeddedSymbolRendererWidget.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

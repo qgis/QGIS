@@ -31,7 +31,11 @@
 
 #include <limits>
 
-const char NS_SEPARATOR = '?';
+#ifndef NS_SEPARATOR_DEFINED
+#define NS_SEPARATOR_DEFINED
+static const char NS_SEPARATOR = '?';
+#endif
+
 #define GML_NAMESPACE QStringLiteral( "http://www.opengis.net/gml" )
 
 

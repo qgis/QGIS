@@ -23,5 +23,5 @@ try:
     QgsLayoutAligner.distributeItems = staticmethod(QgsLayoutAligner.distributeItems)
     QgsLayoutAligner.resizeItems = staticmethod(QgsLayoutAligner.resizeItems)
     QgsLayoutAligner.__group__ = ['layout']
-except NameError:
+except (NameError, AttributeError):
     pass

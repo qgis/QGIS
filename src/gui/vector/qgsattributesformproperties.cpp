@@ -793,6 +793,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
     case DnDTreeItemData::Relation:
     {
       const QgsRelation relation = QgsProject::instance()->relationManager()->relation( itemData.name() );
+
       QgsAttributeEditorRelation *relDef = new QgsAttributeEditorRelation( relation, parent );
       const QgsAttributesFormProperties::RelationEditorConfiguration relationEditorConfig = itemData.relationEditorConfiguration();
       relDef->setRelationWidgetTypeId( relationEditorConfig.mRelationWidgetType );
@@ -1156,6 +1157,16 @@ QTreeWidgetItem *QgsAttributesDnDTree::addItem( QTreeWidgetItem *parent, const Q
   newItem->setData( 0, QgsAttributesFormProperties::DnDTreeRole, QVariant::fromValue( data ) );
   newItem->setText( 0, data.displayName() );
   newItem->setIcon( 0, icon );
+
+  if ( data.type() == QgsAttributesFormProperties::DnDTreeItemData::Relation )
+  {
+    const QgsRelation relation = QgsProject::instance()->relationManager()->relation( data.name() );
+    if ( !relation.isValid() || relation.referencedLayer() != mLayer )
+    {
+      newItem->setText( 0, tr( "Invalid relation" ) );
+      newItem->setForeground( 0, QColor( 255, 0, 0 ) );
+    }
+  }
 
   if ( index < 0 )
     parent->addChild( newItem );

@@ -1,0 +1,134 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsrenderedlayerstatistics.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsRenderedLayerStatistics: QgsRenderedItemDetails
+{
+%Docstring(signature="appended")
+Contains computed statistics for a layer render.
+
+.. versionadded:: 3.42
+%End
+
+%TypeHeaderCode
+#include "qgsrenderedlayerstatistics.h"
+%End
+  public:
+
+    QgsRenderedLayerStatistics( const QString &layerId, const QList<double> &minimum, const QList<double> &maximum );
+%Docstring
+Constructor for QgsRenderedLayerStatistics from a list of ``minimum`` and ``maximum``.
+
+This is used to store the minimum and maximum values of a layer. Many values may be stored.
+For example, a raster layer may have multiple bands. In that case, ``minimum`` will contain the minimum
+value of each band and ``maximum`` will contain the maximum value of each band.
+%End
+
+    QgsRenderedLayerStatistics( const QString &layerId, SIP_PYOBJECT minimum /TypeHint="Optional[float]"/ = Py_None, SIP_PYOBJECT maximum /TypeHint="Optional[float]"/ = Py_None ) [( const QString & layerId, double minimum = 0.0, double maximum = 0.0 )];
+%Docstring
+Constructor for QgsRenderedLayerStatistics with only one value for ``minimum`` and ``maximum``.
+%End
+%MethodCode
+    double minP = a1 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a1 );
+    double maxP = a2 == Py_None ? std::numeric_limits<double>::quiet_NaN() : PyFloat_AsDouble( a2 );
+    QList<double> minL = {minP};
+    QList<double> maxL = {maxP};
+    sipCpp = new sipQgsRenderedLayerStatistics( *a0, minL, maxL );
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QStringList minimums;
+    minimums.reserve( sipCpp->minimum().size() );
+    for ( double min : sipCpp->minimum() )
+    {
+      minimums.append( QString::number( min ) );
+    }
+    QStringList maximums;
+    maximums.reserve( sipCpp->maximum().size() );
+    for ( double max : sipCpp->maximum() )
+    {
+      maximums.append( QString::number( max ) );
+    }
+    QString str = QStringLiteral( "<QgsRenderedLayerStatistics: %1 (min: %2 - max: %3)>" ).arg( sipCpp->layerId(), minimums.join( ',' ), maximums.join( ',' ) );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+%End
+
+    QList<double> minimum() const;
+%Docstring
+Returns the minimum values of the computed statistics.
+
+.. seealso:: :py:func:`setMinimum`
+%End
+
+    double minimum( int index ) const;
+%Docstring
+Returns the minimum value of the computed statistics at ``index``.
+
+.. seealso:: :py:func:`setMinimum`
+%End
+
+    QList<double> maximum() const;
+%Docstring
+Returns the maximum values of the computed statistics.
+
+.. seealso:: :py:func:`setMaximum`
+%End
+
+    double maximum( int index ) const;
+%Docstring
+Returns the maximum values of the computed statistics at ``index``.
+
+.. seealso:: :py:func:`setMaximum`
+%End
+
+    void setMinimum( QList<double> &minimum );
+%Docstring
+Sets the minimum values of the computed statistics.
+
+.. seealso:: :py:func:`minimum`
+%End
+
+    bool setMinimum( int index, double minimum );
+%Docstring
+Sets the minimum value of the computed statistics at ``index``.
+
+:return: ``True`` if value has been set.
+
+.. seealso:: :py:func:`minimum`
+%End
+
+    void setMaximum( QList<double> &maximum );
+%Docstring
+Sets the maximum values of the computed statistics.
+
+.. seealso:: :py:func:`maximum`
+%End
+
+    bool setMaximum( int index, double maximum );
+%Docstring
+Sets the maximum value of the computed statistics at ``index``.
+
+:return: ``True`` if value has been set.
+
+.. seealso:: :py:func:`maximum`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsrenderedlayerstatistics.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

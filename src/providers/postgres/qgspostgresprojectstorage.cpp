@@ -50,11 +50,11 @@ static bool _projectsTableExists( QgsPostgresConn &conn, const QString &schemaNa
 {
   QString tableName( "qgis_projects" );
   QString sql( QStringLiteral( "SELECT COUNT(*) FROM information_schema.tables WHERE table_name=%1 and table_schema=%2" )
-               .arg( QgsPostgresConn::quotedValue( tableName ), QgsPostgresConn::quotedValue( schemaName ) )
-             );
+                 .arg( QgsPostgresConn::quotedValue( tableName ), QgsPostgresConn::quotedValue( schemaName ) )
+  );
   QgsPostgresResult res( conn.PQexec( sql ) );
 
-  if ( ! res.result() )
+  if ( !res.result() )
   {
     return false;
   }
@@ -178,18 +178,13 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
   // read from device and write to the table
   QByteArray content = device->readAll();
 
-  QString metadataExpr = QStringLiteral( "(%1 || (now() at time zone 'utc')::text || %2 || current_user || %3)::jsonb" ).arg(
-                           QgsPostgresConn::quotedValue( "{ \"last_modified_time\": \"" ),
-                           QgsPostgresConn::quotedValue( "\", \"last_modified_user\": \"" ),
-                           QgsPostgresConn::quotedValue( "\" }" )
-                         );
+  QString metadataExpr = QStringLiteral( "(%1 || (now() at time zone 'utc')::text || %2 || current_user || %3)::jsonb" ).arg( QgsPostgresConn::quotedValue( "{ \"last_modified_time\": \"" ), QgsPostgresConn::quotedValue( "\", \"last_modified_user\": \"" ), QgsPostgresConn::quotedValue( "\" }" ) );
 
   // TODO: would be useful to have QByteArray version of PQexec() to avoid bytearray -> string -> bytearray conversion
   QString sql( "INSERT INTO %1.qgis_projects VALUES (%2, %3, E'\\\\x" );
-  sql = sql.arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ),
-                 QgsPostgresConn::quotedValue( projectUri.projectName ),
-                 metadataExpr  // no need to quote: already quoted
-               );
+  sql = sql.arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ), QgsPostgresConn::quotedValue( projectUri.projectName ),
+                 metadataExpr // no need to quote: already quoted
+  );
   sql += QString::fromLatin1( content.toHex() );
   sql += "') ON CONFLICT (name) DO UPDATE SET content = EXCLUDED.content, metadata = EXCLUDED.metadata;";
 

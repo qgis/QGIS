@@ -37,5 +37,5 @@ try:
     QgsAttributeTableFilterModel.__attribute_docs__ = {'sortColumnChanged': 'Emitted whenever the sort column is changed\n\n:param column: The sort column\n:param order: The sort order\n', 'featuresFiltered': 'Emitted when the filtering of the features has been done\n', 'visibleReloaded': 'Emitted when the the visible features on extend are reloaded (the list is created)\n', 'filterError': 'Emitted when an error occurred while filtering features\n\n.. versionadded:: 3.18\n'}
     QgsAttributeTableFilterModel.__signal_arguments__ = {'sortColumnChanged': ['column: int', 'order: Qt.SortOrder'], 'filterError': ['errorMessage: str']}
     QgsAttributeTableFilterModel.__group__ = ['attributetable']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -18,7 +18,7 @@
 
 QgsValidatedDoubleSpinBox::QgsValidatedDoubleSpinBox( QWidget *widget )
   : QDoubleSpinBox( widget )
-{ }
+{}
 
 QValidator::State QgsValidatedDoubleSpinBox::validate( QString &input, int &pos ) const
 {

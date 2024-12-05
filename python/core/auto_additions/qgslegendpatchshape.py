@@ -1,5 +1,5 @@
 # The following has been generated automatically from src/core/layertree/qgslegendpatchshape.h
 try:
     QgsLegendPatchShape.__group__ = ['layertree']
-except NameError:
+except (NameError, AttributeError):
     pass

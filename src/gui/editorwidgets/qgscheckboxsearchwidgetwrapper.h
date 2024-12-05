@@ -79,7 +79,6 @@ class GUI_EXPORT QgsCheckboxSearchWidgetWrapper : public QgsSearchWidgetWrapper
 
   private:
     QCheckBox *mCheckBox = nullptr;
-    QgsVectorLayer *mLayer = nullptr;
 
     friend class QgsCheckboxWidgetFactory;
 };

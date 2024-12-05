@@ -81,9 +81,9 @@ QgsCoordinateReferenceSystemProxyModel.Filters.baseClass = QgsCoordinateReferenc
 Filters = QgsCoordinateReferenceSystemProxyModel  # dirty hack since SIP seems to introduce the flags in module
 try:
     QgsCoordinateReferenceSystemModel.__group__ = ['proj']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsCoordinateReferenceSystemProxyModel.__group__ = ['proj']
-except NameError:
+except (NameError, AttributeError):
     pass

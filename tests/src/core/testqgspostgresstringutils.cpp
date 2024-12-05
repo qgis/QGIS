@@ -31,7 +31,6 @@ class TestQgsPostgresStringUtils : public QObject
 
 void TestQgsPostgresStringUtils::testPgArrayStringToListAndBack()
 {
-
   QVariantList vl;
   vl.push_back( QStringLiteral( "one" ) );
   vl.push_back( QStringLiteral( "}two{" ) );

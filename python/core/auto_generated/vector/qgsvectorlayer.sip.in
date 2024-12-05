@@ -1968,7 +1968,7 @@ A set of attributes that are not advertised in WMS requests with QGIS server.
 
 .. deprecated:: 3.16
 
-   Use setFieldConfigurationFlag instead.
+   Use :py:func:`~QgsVectorLayer.setFieldConfigurationFlag` instead.
 %End
 
  QSet<QString> excludeAttributesWfs() const /Deprecated/;
@@ -1986,7 +1986,7 @@ A set of attributes that are not advertised in WFS requests with QGIS server.
 
 .. deprecated:: 3.16
 
-   Use setFieldConfigurationFlag instead.
+   Use :py:func:`~QgsVectorLayer.setFieldConfigurationFlag` instead.
 %End
 
     virtual bool deleteAttribute( int attr );

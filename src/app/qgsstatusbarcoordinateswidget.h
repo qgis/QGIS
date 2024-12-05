@@ -90,7 +90,6 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
 
     bool mIsFirstSizeChange = true;
     QElapsedTimer mLastSizeChangeTimer;
-
 };
 
 #endif // QGSSTATUSBARCOORDINATESWIDGET_H

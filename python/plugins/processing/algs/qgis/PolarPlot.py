@@ -15,16 +15,18 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'January 2013'
-__copyright__ = '(C) 2013, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "January 2013"
+__copyright__ = "(C) 2013, Victor Olaya"
 
 import warnings
 
-from qgis.core import (QgsProcessingException,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterField,
-                       QgsProcessingParameterFileDestination)
+from qgis.core import (
+    QgsProcessingException,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterField,
+    QgsProcessingParameterFileDestination,
+)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
 
@@ -32,37 +34,51 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 
 class PolarPlot(QgisAlgorithm):
-    INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
-    NAME_FIELD = 'NAME_FIELD'
-    VALUE_FIELD = 'VALUE_FIELD'
+    INPUT = "INPUT"
+    OUTPUT = "OUTPUT"
+    NAME_FIELD = "NAME_FIELD"
+    VALUE_FIELD = "VALUE_FIELD"
 
     def group(self):
-        return self.tr('Plots')
+        return self.tr("Plots")
 
     def groupId(self):
-        return 'plots'
+        return "plots"
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterField(self.NAME_FIELD,
-                                                      self.tr('Category name field'), parentLayerParameterName=self.INPUT))  # FIXME unused?
-        self.addParameter(QgsProcessingParameterField(self.VALUE_FIELD,
-                                                      self.tr('Value field'),
-                                                      parentLayerParameterName=self.INPUT,
-                                                      type=QgsProcessingParameterField.DataType.Numeric))
+        self.addParameter(
+            QgsProcessingParameterFeatureSource(self.INPUT, self.tr("Input layer"))
+        )
+        self.addParameter(
+            QgsProcessingParameterField(
+                self.NAME_FIELD,
+                self.tr("Category name field"),
+                parentLayerParameterName=self.INPUT,
+            )
+        )  # FIXME unused?
+        self.addParameter(
+            QgsProcessingParameterField(
+                self.VALUE_FIELD,
+                self.tr("Value field"),
+                parentLayerParameterName=self.INPUT,
+                type=QgsProcessingParameterField.DataType.Numeric,
+            )
+        )
 
-        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Polar plot'), self.tr('HTML files (*.html)')))
+        self.addParameter(
+            QgsProcessingParameterFileDestination(
+                self.OUTPUT, self.tr("Polar plot"), self.tr("HTML files (*.html)")
+            )
+        )
 
     def name(self):
-        return 'polarplot'
+        return "polarplot"
 
     def displayName(self):
-        return self.tr('Polar plot')
+        return self.tr("Polar plot")
 
     def processAlgorithm(self, parameters, context, feedback):
         try:
@@ -73,26 +89,46 @@ class PolarPlot(QgisAlgorithm):
                 import plotly as plt
                 import plotly.graph_objs as go
         except ImportError:
-            raise QgsProcessingException(QCoreApplication.translate('PolarPlot', 'This algorithm requires the Python “plotly” library. Please install this library and try again.'))
+            raise QgsProcessingException(
+                QCoreApplication.translate(
+                    "PolarPlot",
+                    "This algorithm requires the Python “plotly” library. Please install this library and try again.",
+                )
+            )
 
         try:
             import numpy as np
         except ImportError:
-            raise QgsProcessingException(QCoreApplication.translate('PolarPlot', 'This algorithm requires the Python “numpy” library. Please install this library and try again.'))
+            raise QgsProcessingException(
+                QCoreApplication.translate(
+                    "PolarPlot",
+                    "This algorithm requires the Python “numpy” library. Please install this library and try again.",
+                )
+            )
 
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
-            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+            raise QgsProcessingException(
+                self.invalidSourceError(parameters, self.INPUT)
+            )
 
-        namefieldname = self.parameterAsString(parameters, self.NAME_FIELD, context)  # NOQA  FIXME unused?
+        namefieldname = self.parameterAsString(
+            parameters, self.NAME_FIELD, context
+        )  # NOQA  FIXME unused?
         valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
         values = vector.values(source, valuefieldname)
 
-        data = [go.Barpolar(r=values[valuefieldname],
-                            theta=np.degrees(np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values[valuefieldname]))))]
+        data = [
+            go.Barpolar(
+                r=values[valuefieldname],
+                theta=np.degrees(
+                    np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values[valuefieldname]))
+                ),
+            )
+        ]
 
         plt.offline.plot(data, filename=output, auto_open=False)
 

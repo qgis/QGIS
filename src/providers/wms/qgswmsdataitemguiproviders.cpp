@@ -44,7 +44,7 @@ static QWidget *_paramWidget( QgsDataItem *root )
 
 void QgsWmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsWMSConnectionItem *connItem = qobject_cast< QgsWMSConnectionItem * >( item ) )
+  if ( QgsWMSConnectionItem *connItem = qobject_cast<QgsWMSConnectionItem *>( item ) )
   {
     QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
     connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
@@ -60,19 +60,15 @@ void QgsWmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
     menu->addAction( actionDuplicate );
 
-    const QList< QgsWMSConnectionItem * > wmsConnectionItems = QgsDataItem::filteredItems<QgsWMSConnectionItem>( selection );
+    const QList<QgsWMSConnectionItem *> wmsConnectionItems = QgsDataItem::filteredItems<QgsWMSConnectionItem>( selection );
     QAction *actionDelete = new QAction( wmsConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [wmsConnectionItems, context]
-    {
-      QgsDataItemGuiProviderUtils::deleteConnections( wmsConnectionItems, []( const QString & connectionName )
-      {
-        QgsWMSConnection::deleteConnection( connectionName );
-      }, context );
+    connect( actionDelete, &QAction::triggered, this, [wmsConnectionItems, context] {
+      QgsDataItemGuiProviderUtils::deleteConnections( wmsConnectionItems, []( const QString &connectionName ) { QgsWMSConnection::deleteConnection( connectionName ); }, context );
     } );
     menu->addAction( actionDelete );
   }
 
-  if ( QgsWMSRootItem *rootItem = qobject_cast< QgsWMSRootItem * >( item ) )
+  if ( QgsWMSRootItem *rootItem = qobject_cast<QgsWMSRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
@@ -107,7 +103,7 @@ void QgsWmsDataItemGuiProvider::editConnection( QgsDataItem *item )
 void QgsWmsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 {
   const QString connectionName = item->name();
-  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "wms" )} );
+  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( { QStringLiteral( "wms" ) } );
 
   const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
@@ -161,8 +157,7 @@ void QgsWmsDataItemGuiProvider::saveConnections()
 
 void QgsWmsDataItemGuiProvider::loadConnections( QgsDataItem *item )
 {
-  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -178,7 +173,7 @@ void QgsWmsDataItemGuiProvider::loadConnections( QgsDataItem *item )
 
 void QgsXyzDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsXyzLayerItem *layerItem = qobject_cast< QgsXyzLayerItem * >( item ) )
+  if ( QgsXyzLayerItem *layerItem = qobject_cast<QgsXyzLayerItem *>( item ) )
   {
     QAction *actionEdit = new QAction( tr( "Edit Connection…" ), this );
     connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
@@ -188,19 +183,15 @@ void QgsXyzDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     connect( actionDuplicate, &QAction::triggered, this, [layerItem] { duplicateConnection( layerItem ); } );
     menu->addAction( actionDuplicate );
 
-    const QList< QgsXyzLayerItem * > xyzConnectionItems = QgsDataItem::filteredItems<QgsXyzLayerItem>( selection );
+    const QList<QgsXyzLayerItem *> xyzConnectionItems = QgsDataItem::filteredItems<QgsXyzLayerItem>( selection );
     QAction *actionDelete = new QAction( xyzConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [xyzConnectionItems, context]
-    {
-      QgsDataItemGuiProviderUtils::deleteConnections( xyzConnectionItems, []( const QString & connectionName )
-      {
-        QgsXyzConnectionUtils::deleteConnection( connectionName );
-      }, context );
+    connect( actionDelete, &QAction::triggered, this, [xyzConnectionItems, context] {
+      QgsDataItemGuiProviderUtils::deleteConnections( xyzConnectionItems, []( const QString &connectionName ) { QgsXyzConnectionUtils::deleteConnection( connectionName ); }, context );
     } );
     menu->addAction( actionDelete );
   }
 
-  if ( QgsXyzTileRootItem *rootItem = qobject_cast< QgsXyzTileRootItem * >( item ) )
+  if ( QgsXyzTileRootItem *rootItem = qobject_cast<QgsXyzTileRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), this );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
@@ -241,7 +232,7 @@ void QgsXyzDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 
   const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
-  QgsXyzConnection connection =  QgsXyzConnectionUtils::connection( connectionName );
+  QgsXyzConnection connection = QgsXyzConnectionUtils::connection( connectionName );
   connection.name = newConnectionName;
   QgsXyzConnectionUtils::addConnection( connection );
 
@@ -266,8 +257,7 @@ void QgsXyzDataItemGuiProvider::saveXyzTilesServers()
 
 void QgsXyzDataItemGuiProvider::loadXyzTilesServers( QgsDataItem *item )
 {
-  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

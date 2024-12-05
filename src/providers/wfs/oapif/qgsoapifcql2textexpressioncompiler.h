@@ -37,14 +37,15 @@ class QgsOapifCql2TextExpressionCompiler
       bool supportsLikeBetweenIn,
       bool supportsCaseI,
       bool supportsBasicSpatialOperators,
-      bool invertAxisOrientation );
+      bool invertAxisOrientation
+    );
 
     //! Possible results from expression compilation
     enum Result
     {
       Complete, //!< Expression was successfully compiled and can be completely delegated to provider
-      Partial, //!< Expression was partially compiled, but provider will return extra records and results must be double-checked using QGIS' expression engine
-      Fail //!< Provider cannot handle expression
+      Partial,  //!< Expression was partially compiled, but provider will return extra records and results must be double-checked using QGIS' expression engine
+      Fail      //!< Provider cannot handle expression
     };
 
     /**
@@ -63,7 +64,6 @@ class QgsOapifCql2TextExpressionCompiler
     bool geometryLiteralUsed() const { return mGeometryLiteralUsed; }
 
   private:
-
     Result compileNode( const QgsExpressionNode *node, QString &result );
 
     Result compileNodeFunction( const QgsExpressionNodeFunction *n, QString &result );

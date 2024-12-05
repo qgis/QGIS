@@ -34,9 +34,9 @@ PyQgsProviderConnectionMssql
 PyQgsStyleStorageMssql
 
 # To be fixed
-PyQgsPythonProvider
 PyQgsAnnotation
 PyQgsAuthenticationSystem
+PyQgsAuthManagerOAuth2OWSTest
 PyQgsBlockingProcess
 PyQgsCodeEditor
 PyQgsDelimitedTextProvider
@@ -47,13 +47,10 @@ PyQgsFloatingWidget
 PyQgsLayoutHtml
 PyQgsLineSymbolLayers
 PyQgsMapBoxGlStyleConverter
-PyQgsMemoryProvider
 PyQgsNetworkAccessManager
 PyQgsPalLabelingPlacement
 PyQgsRasterAttributeTable
 PyQgsRasterLayerRenderer
-PyQgsShapefileProvider
-PyQgsSpatialiteProvider
 PyQgsSymbolLayerReadSld
 PyQgsVectorLayerEditBuffer
 PyQgsVectorLayerEditUtils

@@ -4,5 +4,5 @@ try:
     QgsLayerNotesUtils.setLayerNotes = staticmethod(QgsLayerNotesUtils.setLayerNotes)
     QgsLayerNotesUtils.layerHasNotes = staticmethod(QgsLayerNotesUtils.layerHasNotes)
     QgsLayerNotesUtils.removeNotes = staticmethod(QgsLayerNotesUtils.removeNotes)
-except NameError:
+except (NameError, AttributeError):
     pass

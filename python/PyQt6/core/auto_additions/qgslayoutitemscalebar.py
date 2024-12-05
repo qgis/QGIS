@@ -2,5 +2,5 @@
 try:
     QgsLayoutItemScaleBar.create = staticmethod(QgsLayoutItemScaleBar.create)
     QgsLayoutItemScaleBar.__group__ = ['layout']
-except NameError:
+except (NameError, AttributeError):
     pass

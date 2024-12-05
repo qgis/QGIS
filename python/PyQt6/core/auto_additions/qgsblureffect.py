@@ -4,5 +4,5 @@ QgsBlurEffect.GaussianBlur = QgsBlurEffect.BlurMethod.GaussianBlur
 try:
     QgsBlurEffect.create = staticmethod(QgsBlurEffect.create)
     QgsBlurEffect.__group__ = ['effects']
-except NameError:
+except (NameError, AttributeError):
     pass

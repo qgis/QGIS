@@ -91,12 +91,11 @@ QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem *item, QWid
   connect( mFrameStyleButton, &QgsSymbolButton::changed, this, &QgsAnnotationWidget::changed );
   connect( mMapMarkerButton, &QgsSymbolButton::changed, this, &QgsAnnotationWidget::changed );
   connect( mLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsAnnotationWidget::changed );
-  connect( mSpinTopMargin,  static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationWidget::changed );
-  connect( mSpinLeftMargin,  static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationWidget::changed );
-  connect( mSpinRightMargin,  static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationWidget::changed );
-  connect( mSpinBottomMargin,  static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationWidget::changed );
+  connect( mSpinTopMargin, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationWidget::changed );
+  connect( mSpinLeftMargin, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationWidget::changed );
+  connect( mSpinRightMargin, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationWidget::changed );
+  connect( mSpinBottomMargin, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsAnnotationWidget::changed );
   connect( mMapPositionFixedCheckBox, &QCheckBox::stateChanged, this, &QgsAnnotationWidget::changed );
-
 }
 
 QColor QgsAnnotationWidget::backgroundColor()
@@ -120,10 +119,7 @@ void QgsAnnotationWidget::apply()
       annotation->setFillSymbol( mFrameStyleButton->clonedSymbol<QgsFillSymbol>() );
       annotation->setMarkerSymbol( mMapMarkerButton->clonedSymbol<QgsMarkerSymbol>() );
       annotation->setMapLayer( mLayerComboBox->currentLayer() );
-      annotation->setContentsMargin( QgsMargins( mSpinLeftMargin->value(),
-                                     mSpinTopMargin->value(),
-                                     mSpinRightMargin->value(),
-                                     mSpinBottomMargin->value() ) );
+      annotation->setContentsMargin( QgsMargins( mSpinLeftMargin->value(), mSpinTopMargin->value(), mSpinRightMargin->value(), mSpinBottomMargin->value() ) );
     }
     mItem->update();
   }

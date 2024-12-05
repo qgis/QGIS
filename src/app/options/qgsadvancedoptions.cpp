@@ -46,8 +46,7 @@ QgsAdvancedSettingsWidget::QgsAdvancedSettingsWidget( QWidget *parent )
   {
     createSettingsTreeWidget( true, true, true );
 
-    connect( mAdvancedSettingsEnableButton, &QPushButton::clicked, this, [ = ]
-    {
+    connect( mAdvancedSettingsEnableButton, &QPushButton::clicked, this, [=] {
       settingsUseNewTreeWidget->setValue( mUseNewSettingsTree->isChecked() );
       mAdvancedSettingsWarning->hide();
       if ( settingsUseNewTreeWidget->value() )
@@ -73,7 +72,6 @@ void QgsAdvancedSettingsWidget::apply()
   // new settings tree is performing changes on apply
   if ( mTreeWidget )
     mTreeWidget->applyChanges();
-
 }
 
 void QgsAdvancedSettingsWidget::createSettingsTreeWidget( bool newWidget, bool oldWidget, bool hide )
@@ -101,7 +99,6 @@ void QgsAdvancedSettingsWidget::createSettingsTreeWidget( bool newWidget, bool o
 QgsAdvancedSettingsOptionsFactory::QgsAdvancedSettingsOptionsFactory()
   : QgsOptionsWidgetFactory( QCoreApplication::translate( "QgsOptionsBase", "Advanced" ), QIcon(), QStringLiteral( "advanced" ) )
 {
-
 }
 
 QIcon QgsAdvancedSettingsOptionsFactory::icon() const

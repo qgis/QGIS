@@ -50,8 +50,7 @@ void Qgs3DMapToolIdentify::mousePressEvent( QMouseEvent *event )
 
 void Qgs3DMapToolIdentify::mouseMoveEvent( QMouseEvent *event )
 {
-  if ( !mMouseHasMoved &&
-       ( event->pos() - mMouseClickPos ).manhattanLength() >= QApplication::startDragDistance() )
+  if ( !mMouseHasMoved && ( event->pos() - mMouseClickPos ).manhattanLength() >= QApplication::startDragDistance() )
   {
     mMouseHasMoved = true;
   }
@@ -78,7 +77,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
   for ( auto it = allHits.constKeyValueBegin(); it != allHits.constKeyValueEnd(); ++it )
   {
     //  We can directly show vector layer results
-    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer * >( it->first ) )
+    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( it->first ) )
     {
       const QgsRayCastingUtils::RayHit hit = it->second.first();
       const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hit.pos, mCanvas->mapSettings()->origin() );
@@ -98,7 +97,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       showTerrainResults = false;
     }
     // We need to restructure point cloud layer results to display them later. We may have multiple hits for each layer.
-    else if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer * >( it->first ) )
+    else if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( it->first ) )
     {
       QVector<QVariantMap> pointCloudResults;
       for ( const QgsRayCastingUtils::RayHit &hit : it->second )
@@ -114,7 +113,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       const QgsRayCastingUtils::RayHit hit = it->second.first();
       const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hit.pos, mCanvas->mapSettings()->origin() );
 
-      QMap< QString, QString > derivedAttributes;
+      QMap<QString, QString> derivedAttributes;
       QString x;
       QString y;
       QgsCoordinateUtils::formatCoordinatePartsForProject(
@@ -133,7 +132,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       {
         derivedAttributes[key] = hit.attributes[key].toString();
       }
-      QString nodeId = derivedAttributes[ QStringLiteral( "node_id" ) ];
+      QString nodeId = derivedAttributes[QStringLiteral( "node_id" )];
       // only derived attributes are supported for now, so attributes is empty
       QgsMapToolIdentify::IdentifyResult res( it->first, nodeId, {}, derivedAttributes );
       tiledSceneIdentifyResults.append( res );

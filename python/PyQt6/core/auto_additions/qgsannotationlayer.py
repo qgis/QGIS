@@ -5,9 +5,9 @@ try:
 
 .. versionadded:: 3.16"""
     QgsAnnotationLayer.LayerOptions.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsAnnotationLayer.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass

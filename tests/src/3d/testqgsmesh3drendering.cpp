@@ -41,8 +41,8 @@ class TestQgsMesh3DRendering : public QgsTest
       : QgsTest( QStringLiteral( "Mesh 3D Rendering Tests" ), QStringLiteral( "3d" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testMeshTerrain();
     void testMesh();
     void testMesh_datasetOnFaces();
@@ -51,12 +51,10 @@ class TestQgsMesh3DRendering : public QgsTest
     void testMeshClipping();
 
   private:
-
     std::unique_ptr<QgsProject> mProject;
     QgsMeshLayer *mLayerMeshTerrain = nullptr;
     QgsMeshLayer *mLayerMeshDataset = nullptr;
     QgsMeshLayer *mLayerMeshSimplified = nullptr;
-
 };
 
 //runs before all tests
@@ -290,8 +288,7 @@ void TestQgsMesh3DRendering::testMeshSimplified()
 void TestQgsMesh3DRendering::testFilteredMesh()
 {
   const QgsRectangle fullExtent = mLayerMeshDataset->extent();
-  const QgsRectangle filteredExtent = QgsRectangle( fullExtent.xMinimum(), fullExtent.yMinimum(),
-                                      fullExtent.xMinimum() + fullExtent.width() / 3.0, fullExtent.yMinimum() + fullExtent.height() / 4.0 );
+  const QgsRectangle filteredExtent = QgsRectangle( fullExtent.xMinimum(), fullExtent.yMinimum(), fullExtent.xMinimum() + fullExtent.width() / 3.0, fullExtent.yMinimum() + fullExtent.height() / 4.0 );
 
   QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
   symbolMesh3d->setVerticalDatasetGroupIndex( 0 );

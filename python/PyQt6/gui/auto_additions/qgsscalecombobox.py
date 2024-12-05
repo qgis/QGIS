@@ -4,5 +4,5 @@ try:
     QgsScaleComboBox.toString = staticmethod(QgsScaleComboBox.toString)
     QgsScaleComboBox.toDouble = staticmethod(QgsScaleComboBox.toDouble)
     QgsScaleComboBox.__signal_arguments__ = {'scaleChanged': ['scale: float']}
-except NameError:
+except (NameError, AttributeError):
     pass

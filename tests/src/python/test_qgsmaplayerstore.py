@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '2017-05'
-__copyright__ = 'Copyright 2017, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "2017-05"
+__copyright__ = "Copyright 2017, The QGIS Project"
 
 import os
 from time import sleep
@@ -41,55 +42,55 @@ class TestQgsMapLayerStore(QgisTestCase):
         pass
 
     def test_addMapLayer(self):
-        """ test adding individual map layers to store"""
+        """test adding individual map layers to store"""
         store = QgsMapLayerStore()
 
-        l1 = createLayer('test')
+        l1 = createLayer("test")
         self.assertEqual(store.addMapLayer(l1), l1)
-        self.assertEqual(len(store.mapLayersByName('test')), 1)
+        self.assertEqual(len(store.mapLayersByName("test")), 1)
         self.assertEqual(store.count(), 1)
         self.assertEqual(len(store), 1)
 
         # adding a second layer should leave existing layers intact
-        l2 = createLayer('test2')
+        l2 = createLayer("test2")
         self.assertEqual(store.addMapLayer(l2), l2)
-        self.assertEqual(len(store.mapLayersByName('test')), 1)
-        self.assertEqual(len(store.mapLayersByName('test2')), 1)
+        self.assertEqual(len(store.mapLayersByName("test")), 1)
+        self.assertEqual(len(store.mapLayersByName("test2")), 1)
         self.assertEqual(store.count(), 2)
         self.assertEqual(len(store), 2)
 
     def test_addMapLayerAlreadyAdded(self):
-        """ test that already added layers can't be readded to store """
+        """test that already added layers can't be readded to store"""
         store = QgsMapLayerStore()
 
-        l1 = createLayer('test')
+        l1 = createLayer("test")
         store.addMapLayer(l1)
-        self.assertEqual(len(store.mapLayersByName('test')), 1)
+        self.assertEqual(len(store.mapLayersByName("test")), 1)
         self.assertEqual(store.count(), 1)
         self.assertEqual(store.addMapLayer(l1), None)
-        self.assertEqual(len(store.mapLayersByName('test')), 1)
+        self.assertEqual(len(store.mapLayersByName("test")), 1)
         self.assertEqual(store.count(), 1)
         self.assertEqual(len(store), 1)
 
     def test_addMapLayerInvalid(self):
-        """ test that invalid map layers can't be added to store """
+        """test that invalid map layers can't be added to store"""
         store = QgsMapLayerStore()
 
-        vl = QgsVectorLayer("Point?field=x:string", 'test', "xxx")
+        vl = QgsVectorLayer("Point?field=x:string", "test", "xxx")
         self.assertEqual(store.addMapLayer(vl), vl)
-        self.assertEqual(len(store.mapLayersByName('test')), 1)
+        self.assertEqual(len(store.mapLayersByName("test")), 1)
         self.assertEqual(store.count(), 1)
         self.assertEqual(store.validCount(), 0)
 
     def test_addMapLayerSignals(self):
-        """ test that signals are correctly emitted when adding map layer"""
+        """test that signals are correctly emitted when adding map layer"""
 
         store = QgsMapLayerStore()
 
         layer_was_added_spy = QSignalSpy(store.layerWasAdded)
         layers_added_spy = QSignalSpy(store.layersAdded)
 
-        l1 = createLayer('test')
+        l1 = createLayer("test")
         store.addMapLayer(l1)
 
         # can't seem to actually test the data which was emitted, so best we can do is test
@@ -97,7 +98,7 @@ class TestQgsMapLayerStore(QgisTestCase):
         self.assertEqual(len(layer_was_added_spy), 1)
         self.assertEqual(len(layers_added_spy), 1)
 
-        store.addMapLayer(createLayer('test2'))
+        store.addMapLayer(createLayer("test2"))
         self.assertEqual(len(layer_was_added_spy), 2)
         self.assertEqual(len(layers_added_spy), 2)
 
@@ -108,59 +109,59 @@ class TestQgsMapLayerStore(QgisTestCase):
         self.assertEqual(len(layers_added_spy), 2)
 
     def test_addMapLayers(self):
-        """ test adding multiple map layers to store """
+        """test adding multiple map layers to store"""
         store = QgsMapLayerStore()
 
-        l1 = createLayer('test')
-        l2 = createLayer('test2')
+        l1 = createLayer("test")
+        l2 = createLayer("test2")
         self.assertEqual(set(store.addMapLayers([l1, l2])), {l1, l2})
-        self.assertEqual(len(store.mapLayersByName('test')), 1)
-        self.assertEqual(len(store.mapLayersByName('test2')), 1)
+        self.assertEqual(len(store.mapLayersByName("test")), 1)
+        self.assertEqual(len(store.mapLayersByName("test2")), 1)
         self.assertEqual(store.count(), 2)
 
         # adding more layers should leave existing layers intact
-        l3 = createLayer('test3')
-        l4 = createLayer('test4')
+        l3 = createLayer("test3")
+        l4 = createLayer("test4")
         self.assertEqual(set(store.addMapLayers([l3, l4])), {l3, l4})
-        self.assertEqual(len(store.mapLayersByName('test')), 1)
-        self.assertEqual(len(store.mapLayersByName('test2')), 1)
-        self.assertEqual(len(store.mapLayersByName('test3')), 1)
-        self.assertEqual(len(store.mapLayersByName('test4')), 1)
+        self.assertEqual(len(store.mapLayersByName("test")), 1)
+        self.assertEqual(len(store.mapLayersByName("test2")), 1)
+        self.assertEqual(len(store.mapLayersByName("test3")), 1)
+        self.assertEqual(len(store.mapLayersByName("test4")), 1)
         self.assertEqual(store.count(), 4)
 
         store.removeAllMapLayers()
 
     def test_addMapLayersInvalid(self):
-        """ test that invalid map layers can be added to store """
+        """test that invalid map layers can be added to store"""
         store = QgsMapLayerStore()
 
-        vl = QgsVectorLayer("Point?field=x:string", 'test', "xxx")
+        vl = QgsVectorLayer("Point?field=x:string", "test", "xxx")
         self.assertEqual(store.addMapLayers([vl]), [vl])
-        self.assertEqual(len(store.mapLayersByName('test')), 1)
+        self.assertEqual(len(store.mapLayersByName("test")), 1)
         self.assertEqual(store.count(), 1)
         self.assertEqual(store.validCount(), 0)
 
     def test_addMapLayersAlreadyAdded(self):
-        """ test that already added layers can't be readded to store """
+        """test that already added layers can't be readded to store"""
         store = QgsMapLayerStore()
 
-        l1 = createLayer('test')
+        l1 = createLayer("test")
         self.assertEqual(store.addMapLayers([l1]), [l1])
-        self.assertEqual(len(store.mapLayersByName('test')), 1)
+        self.assertEqual(len(store.mapLayersByName("test")), 1)
         self.assertEqual(store.count(), 1)
         self.assertEqual(store.addMapLayers([l1]), [])
-        self.assertEqual(len(store.mapLayersByName('test')), 1)
+        self.assertEqual(len(store.mapLayersByName("test")), 1)
         self.assertEqual(store.count(), 1)
 
     def test_addMapLayersSignals(self):
-        """ test that signals are correctly emitted when adding map layers"""
+        """test that signals are correctly emitted when adding map layers"""
         store = QgsMapLayerStore()
 
         layer_was_added_spy = QSignalSpy(store.layerWasAdded)
         layers_added_spy = QSignalSpy(store.layersAdded)
 
-        l1 = createLayer('test')
-        l2 = createLayer('test2')
+        l1 = createLayer("test")
+        l2 = createLayer("test2")
         store.addMapLayers([l1, l2])
 
         # can't seem to actually test the data which was emitted, so best we can do is test
@@ -168,7 +169,7 @@ class TestQgsMapLayerStore(QgisTestCase):
         self.assertEqual(len(layer_was_added_spy), 2)
         self.assertEqual(len(layers_added_spy), 1)
 
-        store.addMapLayers([createLayer('test3'), createLayer('test4')])
+        store.addMapLayers([createLayer("test3"), createLayer("test4")])
         self.assertEqual(len(layer_was_added_spy), 4)
         self.assertEqual(len(layers_added_spy), 2)
 
@@ -179,81 +180,81 @@ class TestQgsMapLayerStore(QgisTestCase):
         self.assertEqual(len(layers_added_spy), 2)
 
     def test_mapLayerById(self):
-        """ test retrieving map layer by ID """
+        """test retrieving map layer by ID"""
         store = QgsMapLayerStore()
 
         # test no crash with empty store
-        self.assertEqual(store.mapLayer('bad'), None)
+        self.assertEqual(store.mapLayer("bad"), None)
         self.assertEqual(store.mapLayer(None), None)
 
-        l1 = createLayer('test')
-        l2 = createLayer('test2')
+        l1 = createLayer("test")
+        l2 = createLayer("test2")
 
         store.addMapLayers([l1, l2])
 
-        self.assertEqual(store.mapLayer('bad'), None)
+        self.assertEqual(store.mapLayer("bad"), None)
         self.assertEqual(store.mapLayer(None), None)
         self.assertEqual(store.mapLayer(l1.id()), l1)
         self.assertEqual(store.mapLayer(l2.id()), l2)
 
     def test_mapLayersByName(self):
-        """ test retrieving map layer by name """
+        """test retrieving map layer by name"""
         store = QgsMapLayerStore()
 
         # test no crash with empty store
-        self.assertEqual(store.mapLayersByName('bad'), [])
+        self.assertEqual(store.mapLayersByName("bad"), [])
         self.assertEqual(store.mapLayersByName(None), [])
 
-        l1 = createLayer('test')
-        l2 = createLayer('test2')
+        l1 = createLayer("test")
+        l2 = createLayer("test2")
 
         store.addMapLayers([l1, l2])
 
-        self.assertEqual(store.mapLayersByName('bad'), [])
+        self.assertEqual(store.mapLayersByName("bad"), [])
         self.assertEqual(store.mapLayersByName(None), [])
-        self.assertEqual(store.mapLayersByName('test'), [l1])
-        self.assertEqual(store.mapLayersByName('test2'), [l2])
+        self.assertEqual(store.mapLayersByName("test"), [l1])
+        self.assertEqual(store.mapLayersByName("test2"), [l2])
 
         # duplicate name
 
         # little bit of a hack - we don't want a duplicate ID and since IDs are currently based on time we wait a bit here
         sleep(0.1)
-        l3 = createLayer('test')
+        l3 = createLayer("test")
 
         store.addMapLayer(l3)
-        self.assertEqual(set(store.mapLayersByName('test')), {l1, l3})
+        self.assertEqual(set(store.mapLayersByName("test")), {l1, l3})
 
     def test_mapLayers(self):
-        """ test retrieving map layers list """
+        """test retrieving map layers list"""
         store = QgsMapLayerStore()
 
         # test no crash with empty store
         self.assertEqual(store.mapLayers(), {})
 
-        l1 = createLayer('test')
-        l2 = createLayer('test2')
+        l1 = createLayer("test")
+        l2 = createLayer("test2")
 
         store.addMapLayers([l1, l2])
 
         self.assertEqual(store.mapLayers(), {l1.id(): l1, l2.id(): l2})
 
     def test_removeMapLayersById(self):
-        """ test removing map layers by ID """
+        """test removing map layers by ID"""
         store = QgsMapLayerStore()
 
         # test no crash with empty store
-        store.removeMapLayersById(['bad'])
+        store.removeMapLayersById(["bad"])
         store.removeMapLayersById([None])
 
-        l1 = createLayer('test')
-        l2 = createLayer('test2')
-        l3 = createLayer('test3')
+        l1 = createLayer("test")
+        l2 = createLayer("test2")
+        l3 = createLayer("test3")
 
         store.addMapLayers([l1, l2, l3])
         self.assertEqual(store.count(), 3)
 
         # remove bad layers
-        store.removeMapLayersById(['bad'])
+        store.removeMapLayersById(["bad"])
         self.assertEqual(store.count(), 3)
         store.removeMapLayersById([None])
         self.assertEqual(store.count(), 3)
@@ -275,20 +276,20 @@ class TestQgsMapLayerStore(QgisTestCase):
         self.assertTrue(sip.isdeleted(l2))
 
         # try removing a layer not in the store
-        l4 = createLayer('test4')
+        l4 = createLayer("test4")
         store.removeMapLayersById([l4.id()])
         self.assertFalse(sip.isdeleted(l4))
 
     def test_removeMapLayersByLayer(self):
-        """ test removing map layers by layer"""
+        """test removing map layers by layer"""
         store = QgsMapLayerStore()
 
         # test no crash with empty store
         store.removeMapLayers([None])
 
-        l1 = createLayer('test')
-        l2 = createLayer('test2')
-        l3 = createLayer('test3')
+        l1 = createLayer("test")
+        l2 = createLayer("test2")
+        l3 = createLayer("test3")
 
         store.addMapLayers([l1, l2, l3])
         self.assertEqual(store.count(), 3)
@@ -311,21 +312,21 @@ class TestQgsMapLayerStore(QgisTestCase):
         self.assertTrue(sip.isdeleted(l3))
 
     def test_removeMapLayerById(self):
-        """ test removing a map layer by ID """
+        """test removing a map layer by ID"""
         store = QgsMapLayerStore()
 
         # test no crash with empty store
-        store.removeMapLayer('bad')
+        store.removeMapLayer("bad")
         store.removeMapLayer(None)
 
-        l1 = createLayer('test')
-        l2 = createLayer('test2')
+        l1 = createLayer("test")
+        l2 = createLayer("test2")
 
         store.addMapLayers([l1, l2])
         self.assertEqual(store.count(), 2)
 
         # remove bad layers
-        store.removeMapLayer('bad')
+        store.removeMapLayer("bad")
         self.assertEqual(store.count(), 2)
         store.removeMapLayer(None)
         self.assertEqual(store.count(), 2)
@@ -347,20 +348,20 @@ class TestQgsMapLayerStore(QgisTestCase):
         self.assertTrue(sip.isdeleted(l2))
 
         # try removing a layer not in the store
-        l3 = createLayer('test3')
+        l3 = createLayer("test3")
         store.removeMapLayer(l3.id())
         self.assertFalse(sip.isdeleted(l3))
 
     def test_removeMapLayerByLayer(self):
-        """ test removing a map layer by layer """
+        """test removing a map layer by layer"""
         store = QgsMapLayerStore()
 
         # test no crash with empty store
-        store.removeMapLayer('bad')
+        store.removeMapLayer("bad")
         store.removeMapLayer(None)
 
-        l1 = createLayer('test')
-        l2 = createLayer('test2')
+        l1 = createLayer("test")
+        l2 = createLayer("test2")
 
         store.addMapLayers([l1, l2])
         self.assertEqual(store.count(), 2)
@@ -368,7 +369,7 @@ class TestQgsMapLayerStore(QgisTestCase):
         # remove bad layers
         store.removeMapLayer(None)
         self.assertEqual(store.count(), 2)
-        l3 = createLayer('test3')
+        l3 = createLayer("test3")
         store.removeMapLayer(l3)
         self.assertEqual(store.count(), 2)
 
@@ -385,38 +386,40 @@ class TestQgsMapLayerStore(QgisTestCase):
         self.assertTrue(sip.isdeleted(l2))
 
         # try removing a layer not in the store
-        l3 = createLayer('test3')
+        l3 = createLayer("test3")
         store.removeMapLayer(l3)
         self.assertFalse(sip.isdeleted(l3))
 
     def test_removeAllMapLayers(self):
-        """ test removing all map layers from store """
+        """test removing all map layers from store"""
         store = QgsMapLayerStore()
-        l1 = createLayer('test')
-        l2 = createLayer('test2')
+        l1 = createLayer("test")
+        l2 = createLayer("test2")
 
         store.addMapLayers([l1, l2])
         self.assertEqual(store.count(), 2)
         store.removeAllMapLayers()
         self.assertEqual(store.count(), 0)
-        self.assertEqual(store.mapLayersByName('test'), [])
-        self.assertEqual(store.mapLayersByName('test2'), [])
+        self.assertEqual(store.mapLayersByName("test"), [])
+        self.assertEqual(store.mapLayersByName("test2"), [])
 
     def test_addRemoveLayersSignals(self):
-        """ test that signals are correctly emitted when removing map layers"""
+        """test that signals are correctly emitted when removing map layers"""
         store = QgsMapLayerStore()
 
         layers_will_be_removed_spy = QSignalSpy(store.layersWillBeRemoved)
         layer_will_be_removed_spy_str = QSignalSpy(store.layerWillBeRemoved[str])
-        layer_will_be_removed_spy_layer = QSignalSpy(store.layerWillBeRemoved[QgsMapLayer])
+        layer_will_be_removed_spy_layer = QSignalSpy(
+            store.layerWillBeRemoved[QgsMapLayer]
+        )
         layers_removed_spy = QSignalSpy(store.layersRemoved)
         layer_removed_spy = QSignalSpy(store.layerRemoved)
         remove_all_spy = QSignalSpy(store.allLayersRemoved)
 
-        l1 = createLayer('l1')
-        l2 = createLayer('l2')
-        l3 = createLayer('l3')
-        l4 = createLayer('l4')
+        l1 = createLayer("l1")
+        l2 = createLayer("l2")
+        l3 = createLayer("l3")
+        l4 = createLayer("l4")
         store.addMapLayers([l1, l2, l3, l4])
 
         # remove 1 layer
@@ -451,7 +454,7 @@ class TestQgsMapLayerStore(QgisTestCase):
         self.assertEqual(len(remove_all_spy), 1)
 
         # remove some layers which aren't in the store
-        store.removeMapLayersById(['asdasd'])
+        store.removeMapLayersById(["asdasd"])
         self.assertEqual(len(layers_will_be_removed_spy), 3)
         self.assertEqual(len(layer_will_be_removed_spy_str), 4)
         self.assertEqual(len(layer_will_be_removed_spy_layer), 4)
@@ -459,7 +462,7 @@ class TestQgsMapLayerStore(QgisTestCase):
         self.assertEqual(len(layer_removed_spy), 4)
         self.assertEqual(len(remove_all_spy), 1)
 
-        l5 = createLayer('test5')
+        l5 = createLayer("test5")
         store.removeMapLayer(l5)
         self.assertEqual(len(layers_will_be_removed_spy), 3)
         self.assertEqual(len(layer_will_be_removed_spy_str), 4)
@@ -472,17 +475,17 @@ class TestQgsMapLayerStore(QgisTestCase):
         store = QgsMapLayerStore()
 
         # Should not segfault
-        store.removeMapLayersById(['not_exists'])
-        store.removeMapLayer('not_exists2')
+        store.removeMapLayersById(["not_exists"])
+        store.removeMapLayer("not_exists2")
 
         # check also that the removal of an unexistent layer does not insert a null layer
         for k, layer in list(store.mapLayers().items()):
-            assert (layer is not None)
+            assert layer is not None
 
     def testTakeLayer(self):
         # test taking ownership of a layer from the store
-        l1 = createLayer('l1')
-        l2 = createLayer('l2')
+        l1 = createLayer("l1")
+        l2 = createLayer("l2")
         store = QgsMapLayerStore()
 
         # add one layer to store
@@ -520,12 +523,12 @@ class TestQgsMapLayerStore(QgisTestCase):
         store1.transferLayersFromStore(None)
         store1.transferLayersFromStore(store1)
 
-        l1 = createLayer('l1')
-        l2 = createLayer('l2')
+        l1 = createLayer("l1")
+        l2 = createLayer("l2")
         store1.addMapLayer(l1)
         store1.addMapLayer(l2)
 
-        l3 = createLayer('l3')
+        l3 = createLayer("l3")
         store2.addMapLayer(l3)
 
         store2.transferLayersFromStore(store1)
@@ -545,8 +548,8 @@ class TestQgsMapLayerStore(QgisTestCase):
 
         p = QgsProject()
         store = p.layerStore()
-        vl1 = createLayer('valid')
-        vl2 = QgsVectorLayer('/not_a_valid_path.shp', 'invalid', 'ogr')
+        vl1 = createLayer("valid")
+        vl2 = QgsVectorLayer("/not_a_valid_path.shp", "invalid", "ogr")
         self.assertTrue(vl1.isValid())
         self.assertFalse(vl2.isValid())
         store.addMapLayers([vl1, vl2])
@@ -560,17 +563,20 @@ class TestQgsMapLayerStore(QgisTestCase):
 
         doc = QDomDocument()
         doc.setContent(
-            f'<maplayer><provider encoding="UTF-8">ogr</provider><layername>fixed</layername><id>{vl2.id()}</id></maplayer>')
+            f'<maplayer><provider encoding="UTF-8">ogr</provider><layername>fixed</layername><id>{vl2.id()}</id></maplayer>'
+        )
         layer_node = QDomNode(doc.firstChild())
         self.assertTrue(vl2.writeXml(layer_node, doc, QgsReadWriteContext()))
         datasource_node = doc.createElement("datasource")
-        datasource_node.appendChild(doc.createTextNode(os.path.join(TEST_DATA_DIR, 'points.shp')))
+        datasource_node.appendChild(
+            doc.createTextNode(os.path.join(TEST_DATA_DIR, "points.shp"))
+        )
         layer_node.appendChild(datasource_node)
         p.readLayer(layer_node)
         self.assertEqual(store.validCount(), 2)
         self.assertEqual(len(store.mapLayers()), 2)
-        self.assertEqual(store.mapLayers()[vl2.id()].name(), 'fixed')
+        self.assertEqual(store.mapLayers()[vl2.id()].name(), "fixed")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -6,19 +6,16 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import (
-    QgsReadWriteContext
-)
+from qgis.core import QgsReadWriteContext
 from qgis._3d import (
     QgsSimpleLineMaterialSettings,
     QgsPhongMaterialSettings,
     QgsGoochMaterialSettings,
     QgsMetalRoughMaterialSettings,
     QgsPhongTexturedMaterialSettings,
-    QgsNullMaterialSettings
+    QgsNullMaterialSettings,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -36,8 +33,7 @@ class TestQgsSimpleLineMaterialSettings(QgisTestCase):
         settings = QgsSimpleLineMaterialSettings()
 
         # Test default value
-        self.assertEqual(settings.ambient(),
-                         QColor.fromRgbF(0.1, 0.1, 0.1, 1.0))
+        self.assertEqual(settings.ambient(), QColor.fromRgbF(0.1, 0.1, 0.1, 1.0))
 
         # Test setter/getter
         settings.setAmbient(QColor(255, 0, 0))
@@ -101,12 +97,9 @@ class TestQgsPhongMaterialSettings(QgisTestCase):
         settings = QgsPhongMaterialSettings()
 
         # Test default values
-        self.assertEqual(settings.ambient(),
-                         QColor.fromRgbF(0.1, 0.1, 0.1, 1.0))
-        self.assertIn(settings.diffuse().name(),
-                      ('#b2b2b2', '#b3b3b3'))
-        self.assertEqual(settings.specular(),
-                         QColor.fromRgbF(1.0, 1.0, 1.0, 1.0))
+        self.assertEqual(settings.ambient(), QColor.fromRgbF(0.1, 0.1, 0.1, 1.0))
+        self.assertIn(settings.diffuse().name(), ("#b2b2b2", "#b3b3b3"))
+        self.assertEqual(settings.specular(), QColor.fromRgbF(1.0, 1.0, 1.0, 1.0))
         self.assertEqual(settings.shininess(), 0.0)
         self.assertEqual(settings.opacity(), 1.0)
         self.assertEqual(settings.ambientCoefficient(), 1.0)
@@ -248,10 +241,8 @@ class TestQgsGoochMaterialSettings(QgisTestCase):
         # Test default values
         self.assertEqual(settings.warm(), QColor(107, 0, 107))
         self.assertEqual(settings.cool(), QColor(255, 130, 0))
-        self.assertIn(settings.diffuse().name(),
-                      ('#b2b2b2', '#b3b3b3'))
-        self.assertEqual(settings.specular(),
-                         QColor.fromRgbF(1.0, 1.0, 1.0, 1.0))
+        self.assertIn(settings.diffuse().name(), ("#b2b2b2", "#b3b3b3"))
+        self.assertEqual(settings.specular(), QColor.fromRgbF(1.0, 1.0, 1.0, 1.0))
         self.assertEqual(settings.shininess(), 100.0)
         self.assertEqual(settings.alpha(), 0.25)
         self.assertEqual(settings.beta(), 0.5)
@@ -377,8 +368,7 @@ class TestQgsMetalRoughMaterialSettings(unittest.TestCase):
         settings = QgsMetalRoughMaterialSettings()
 
         # Test default values
-        self.assertEqual(settings.baseColor(),
-                         QColor.fromRgbF(0.5, 0.5, 0.5, 1.0))
+        self.assertEqual(settings.baseColor(), QColor.fromRgbF(0.5, 0.5, 0.5, 1.0))
         self.assertEqual(settings.metalness(), 0.0)
         self.assertEqual(settings.roughness(), 0.0)
 
@@ -459,12 +449,10 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         settings = QgsPhongTexturedMaterialSettings()
 
         # Test default values
-        self.assertEqual(settings.ambient(),
-                         QColor.fromRgbF(0.1, 0.1, 0.1, 1.0))
-        self.assertEqual(settings.specular(),
-                         QColor.fromRgbF(1.0, 1.0, 1.0, 1.0))
+        self.assertEqual(settings.ambient(), QColor.fromRgbF(0.1, 0.1, 0.1, 1.0))
+        self.assertEqual(settings.specular(), QColor.fromRgbF(1.0, 1.0, 1.0, 1.0))
         self.assertEqual(settings.shininess(), 0.0)
-        self.assertEqual(settings.diffuseTexturePath(), '')
+        self.assertEqual(settings.diffuseTexturePath(), "")
         self.assertEqual(settings.textureScale(), 1.0)
         self.assertEqual(settings.textureRotation(), 0.0)
         self.assertEqual(settings.opacity(), 1.0)
@@ -479,8 +467,8 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         settings.setShininess(0.5)
         self.assertEqual(settings.shininess(), 0.5)
 
-        settings.setDiffuseTexturePath('/path/to/texture.png')
-        self.assertEqual(settings.diffuseTexturePath(), '/path/to/texture.png')
+        settings.setDiffuseTexturePath("/path/to/texture.png")
+        self.assertEqual(settings.diffuseTexturePath(), "/path/to/texture.png")
 
         settings.setTextureScale(2.0)
         self.assertEqual(settings.textureScale(), 2.0)
@@ -496,7 +484,7 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         settings.setAmbient(QColor(255, 0, 0))
         settings.setSpecular(QColor(0, 0, 255))
         settings.setShininess(0.5)
-        settings.setDiffuseTexturePath('/path/to/texture.png')
+        settings.setDiffuseTexturePath("/path/to/texture.png")
         settings.setTextureScale(2.0)
         settings.setTextureRotation(45.0)
         settings.setOpacity(0.7)
@@ -506,7 +494,7 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         self.assertEqual(cloned.ambient(), QColor(255, 0, 0))
         self.assertEqual(cloned.specular(), QColor(0, 0, 255))
         self.assertEqual(cloned.shininess(), 0.5)
-        self.assertEqual(cloned.diffuseTexturePath(), '/path/to/texture.png')
+        self.assertEqual(cloned.diffuseTexturePath(), "/path/to/texture.png")
         self.assertEqual(cloned.textureScale(), 2.0)
         self.assertEqual(cloned.textureRotation(), 45.0)
         self.assertEqual(cloned.opacity(), 0.7)
@@ -532,9 +520,9 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         settings1.setShininess(0.5)
         self.assertEqual(settings1, settings2)
 
-        settings2.setDiffuseTexturePath('/path/to/texture.png')
+        settings2.setDiffuseTexturePath("/path/to/texture.png")
         self.assertNotEqual(settings1, settings2)
-        settings1.setDiffuseTexturePath('/path/to/texture.png')
+        settings1.setDiffuseTexturePath("/path/to/texture.png")
         self.assertEqual(settings1, settings2)
 
         settings2.setTextureScale(2.0)
@@ -569,7 +557,7 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         settings.setAmbient(QColor(255, 0, 0))
         settings.setSpecular(QColor(0, 0, 255))
         settings.setShininess(0.5)
-        settings.setDiffuseTexturePath('/path/to/texture.png')
+        settings.setDiffuseTexturePath("/path/to/texture.png")
         settings.setTextureScale(2.0)
         settings.setTextureRotation(45.0)
         settings.setOpacity(0.7)
@@ -587,10 +575,10 @@ class TestQgsPhongTexturedMaterialSettings(QgisTestCase):
         settings = QgsPhongTexturedMaterialSettings()
         self.assertFalse(settings.requiresTextureCoordinates())
 
-        settings.setDiffuseTexturePath('/path/to/texture.png')
+        settings.setDiffuseTexturePath("/path/to/texture.png")
         self.assertTrue(settings.requiresTextureCoordinates())
 
-        settings.setDiffuseTexturePath('')
+        settings.setDiffuseTexturePath("")
         self.assertFalse(settings.requiresTextureCoordinates())
 
 
@@ -620,5 +608,5 @@ class TestQgsNullMaterialSettings(QgisTestCase):
         self.assertTrue(settings.equals(settings2))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

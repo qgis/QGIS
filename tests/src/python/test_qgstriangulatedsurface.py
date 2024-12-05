@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Jean Felder'
-__date__ = '12/08/2024'
-__copyright__ = 'Copyright 2024, The QGIS Project'
+
+__author__ = "Jean Felder"
+__date__ = "12/08/2024"
+__copyright__ = "Copyright 2024, The QGIS Project"
 
 import qgis  # NOQA
 
@@ -34,7 +35,7 @@ class TestQgsTriangulatedSurface(QgisTestCase):
     def test_wkt(self):
         # 2D
         surface = QgsTriangulatedSurface()
-        surface.fromWkt('TIN (((0 0,0 1,1 0,0 0)),((1 0,0 1,1 1,1 0)))')
+        surface.fromWkt("TIN (((0 0,0 1,1 0,0 0)),((1 0,0 1,1 1,1 0)))")
         self.assertFalse(surface.isEmpty())
         self.assertEqual(surface.numPatches(), 2)
         self.assertFalse(surface.is3D())
@@ -47,7 +48,7 @@ class TestQgsTriangulatedSurface(QgisTestCase):
 
         # 3D
         surfaceZ = QgsTriangulatedSurface()
-        surfaceZ.fromWkt('TIN Z (((0 0 0,0 1 0,1 1 0,0 0 0)))')
+        surfaceZ.fromWkt("TIN Z (((0 0 0,0 1 0,1 1 0,0 0 0)))")
         self.assertFalse(surfaceZ.isEmpty())
         self.assertEqual(surfaceZ.numPatches(), 1)
         self.assertTrue(surfaceZ.is3D())
@@ -60,7 +61,7 @@ class TestQgsTriangulatedSurface(QgisTestCase):
 
         # Measure
         surfaceM = QgsTriangulatedSurface()
-        surfaceM.fromWkt('TIN M (((0 0 3,0 1 3,1 1 3,0 0 3)))')
+        surfaceM.fromWkt("TIN M (((0 0 3,0 1 3,1 1 3,0 0 3)))")
         self.assertFalse(surfaceM.isEmpty())
         self.assertEqual(surfaceM.numPatches(), 1)
         self.assertFalse(surfaceM.is3D())
@@ -73,9 +74,11 @@ class TestQgsTriangulatedSurface(QgisTestCase):
 
         # ZM
         surfaceZM = QgsTriangulatedSurface()
-        surfaceZM.fromWkt('TIN ZM '
-                          '(((0 0 1 2,0 1 1 2,1 1 1 2,0 0 1 2)),'
-                          '((10 10 0 0,10 11 0 0,11 11 0 0,10 10 0 0)))')
+        surfaceZM.fromWkt(
+            "TIN ZM "
+            "(((0 0 1 2,0 1 1 2,1 1 1 2,0 0 1 2)),"
+            "((10 10 0 0,10 11 0 0,11 11 0 0,10 10 0 0)))"
+        )
         self.assertFalse(surfaceZM.isEmpty())
         self.assertEqual(surfaceZM.numPatches(), 2)
         self.assertTrue(surfaceZM.is3D())
@@ -111,5 +114,5 @@ class TestQgsTriangulatedSurface(QgisTestCase):
         self.assertFalse(surface.isMeasure())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -58,6 +58,13 @@ Set source string. This is used for example in layer tree to show tooltip.
     virtual QgsDataProvider *dataProvider();
 
 
+    virtual QIcon icon() const;
+%Docstring
+Returns an icon for the layer.
+
+.. versionadded:: 3.42
+%End
+
   protected:
 };
 

@@ -95,9 +95,9 @@ QgsCoordinateReferenceSystemProxyModel.Filter.__and__ = lambda flag1, flag2: _fo
 QgsCoordinateReferenceSystemProxyModel.Filter.__or__ = lambda flag1, flag2: QgsCoordinateReferenceSystemProxyModel.Filter(_force_int(flag1) | _force_int(flag2))
 try:
     QgsCoordinateReferenceSystemModel.__group__ = ['proj']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsCoordinateReferenceSystemProxyModel.__group__ = ['proj']
-except NameError:
+except (NameError, AttributeError):
     pass

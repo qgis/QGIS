@@ -19,16 +19,11 @@
 #include "qgis.h"
 #include "qgsfields.h"
 #include "qgsproject.h"
-#include "qgsvaluerelationwidgetfactory.h"
 #include "qgsvectorlayer.h"
 #include "qgsfilterlineedit.h"
-#include "qgsfeatureiterator.h"
 #include "qgsvaluerelationfieldformatter.h"
 #include "qgsattributeform.h"
-#include "qgsattributes.h"
-#include "qgsjsonutils.h"
 #include "qgspostgresstringutils.h"
-#include "qgsapplication.h"
 
 #include <QComboBox>
 #include <QLineEdit>
@@ -383,6 +378,11 @@ bool QgsValueRelationWidgetWrapper::valid() const
 
 void QgsValueRelationWidgetWrapper::updateValues( const QVariant &value, const QVariantList & )
 {
+  updateValue( value, true );
+}
+
+void QgsValueRelationWidgetWrapper::updateValue( const QVariant &value, bool forceComboInsertion )
+{
   if ( mTableWidget )
   {
     QStringList checkList;
@@ -417,7 +417,7 @@ void QgsValueRelationWidgetWrapper::updateValues( const QVariant &value, const Q
     if ( idx == -1 )
     {
       // if value doesn't exist, we show it in '(...)' (just like value map widget)
-      if ( QgsVariantUtils::isNull( value ) )
+      if ( QgsVariantUtils::isNull( value ) || !forceComboInsertion )
       {
         mComboBox->setCurrentIndex( -1 );
       }
@@ -470,7 +470,7 @@ void QgsValueRelationWidgetWrapper::widgetValueChanged( const QString &attribute
     {
       populate();
       // Restore value
-      updateValues( value( ) );
+      updateValue( oldValue, false );
       // If the value has changed as a result of another widget's value change,
       // we need to emit the signal to make sure other dependent widgets are
       // updated.

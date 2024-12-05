@@ -31,10 +31,9 @@
 //simple item for testing, since some methods in QgsAnnotationItem are pure virtual
 class TestItem : public QgsAnnotationItem
 {
-
   public:
-
-    TestItem() : QgsAnnotationItem()
+    TestItem()
+      : QgsAnnotationItem()
     {
     }
 
@@ -66,15 +65,15 @@ class TestItem : public QgsAnnotationItem
 };
 
 
-class TestQgsAnnotationItemRegistry: public QObject
+class TestQgsAnnotationItemRegistry : public QObject
 {
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
     void metadata();
     void createInstance();
     void instanceHasItems();
@@ -95,24 +94,20 @@ void TestQgsAnnotationItemRegistry::cleanupTestCase()
 
 void TestQgsAnnotationItemRegistry::init()
 {
-
 }
 
 void TestQgsAnnotationItemRegistry::cleanup()
 {
-
 }
 
 void TestQgsAnnotationItemRegistry::metadata()
 {
-  QgsAnnotationItemMetadata metadata = QgsAnnotationItemMetadata( QStringLiteral( "name" ), QStringLiteral( "display name" ),
-                                       QStringLiteral( "display names" ),
-                                       TestItem::create );
+  QgsAnnotationItemMetadata metadata = QgsAnnotationItemMetadata( QStringLiteral( "name" ), QStringLiteral( "display name" ), QStringLiteral( "display names" ), TestItem::create );
   QCOMPARE( metadata.type(), QString( "name" ) );
   QCOMPARE( metadata.visibleName(), QString( "display name" ) );
 
   //test creating item from metadata
-  const std::unique_ptr< QgsAnnotationItem > item( metadata.createItem() );
+  const std::unique_ptr<QgsAnnotationItem> item( metadata.createItem() );
   QVERIFY( item );
   TestItem *dummyItem = dynamic_cast<TestItem *>( item.get() );
   QVERIFY( dummyItem );
@@ -143,16 +138,12 @@ void TestQgsAnnotationItemRegistry::addItem()
 
   const QSignalSpy spyTypeAdded( registry, &QgsAnnotationItemRegistry::typeAdded );
 
-  registry->addItemType( new QgsAnnotationItemMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "display name" ),
-                         QStringLiteral( "display names" ),
-                         TestItem::create ) );
+  registry->addItemType( new QgsAnnotationItemMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "display name" ), QStringLiteral( "display names" ), TestItem::create ) );
   QCOMPARE( registry->itemTypes().size(), previousCount + 1 );
   QCOMPARE( spyTypeAdded.count(), 1 );
   //try adding again, should have no effect
-  QgsAnnotationItemMetadata *dupe = new QgsAnnotationItemMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "display name" ),
-      QStringLiteral( "display names" ),
-      TestItem::create );
-  QVERIFY( ! registry->addItemType( dupe ) );
+  QgsAnnotationItemMetadata *dupe = new QgsAnnotationItemMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "display name" ), QStringLiteral( "display names" ), TestItem::create );
+  QVERIFY( !registry->addItemType( dupe ) );
   QCOMPARE( spyTypeAdded.count(), 1 );
   QCOMPARE( registry->itemTypes().size(), previousCount + 1 );
   delete dupe;
@@ -181,7 +172,7 @@ void TestQgsAnnotationItemRegistry::fetchTypes()
 void TestQgsAnnotationItemRegistry::createItem()
 {
   QgsAnnotationItemRegistry *registry = QgsApplication::annotationItemRegistry();
-  std::unique_ptr< QgsAnnotationItem > item( registry->createItem( QStringLiteral( "Dummy" ) ) );
+  std::unique_ptr<QgsAnnotationItem> item( registry->createItem( QStringLiteral( "Dummy" ) ) );
 
   QVERIFY( item.get() );
   TestItem *dummyItem = dynamic_cast<TestItem *>( item.get() );

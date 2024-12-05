@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Nyall Dawson'
-__date__ = 'February 2019'
-__copyright__ = '(C) 2019, Nyall Dawson'
+__author__ = "Nyall Dawson"
+__date__ = "February 2019"
+__copyright__ = "(C) 2019, Nyall Dawson"
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsProcessingAlgorithm, QgsProcessing, QgsApplication
@@ -31,17 +31,28 @@ class ExportModelAsPythonScriptAction(ContextAction):
 
     def __init__(self):
         super().__init__()
-        self.name = QCoreApplication.translate('ExportModelAsPythonScriptAction', 'Export Model as Python Algorithm…')
+        self.name = QCoreApplication.translate(
+            "ExportModelAsPythonScriptAction", "Export Model as Python Algorithm…"
+        )
 
     def isEnabled(self):
-        return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() in ("model", "project")
+        return isinstance(
+            self.itemData, QgsProcessingAlgorithm
+        ) and self.itemData.provider().id() in ("model", "project")
 
     def icon(self):
-        return QgsApplication.getThemeIcon('/mActionSaveAsPython.svg')
+        return QgsApplication.getThemeIcon("/mActionSaveAsPython.svg")
 
     def execute(self):
         alg = self.itemData
         dlg = ScriptEditorDialog(parent=iface.mainWindow())
 
-        dlg.editor.setText('\n'.join(alg.asPythonCode(QgsProcessing.PythonOutputType.PythonQgsProcessingAlgorithmSubclass, 4)))
+        dlg.editor.setText(
+            "\n".join(
+                alg.asPythonCode(
+                    QgsProcessing.PythonOutputType.PythonQgsProcessingAlgorithmSubclass,
+                    4,
+                )
+            )
+        )
         dlg.show()

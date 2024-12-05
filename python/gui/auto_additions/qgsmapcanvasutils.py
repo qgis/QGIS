@@ -3,5 +3,5 @@ try:
     QgsMapCanvasUtils.zoomToMatchingFeatures = staticmethod(QgsMapCanvasUtils.zoomToMatchingFeatures)
     QgsMapCanvasUtils.flashMatchingFeatures = staticmethod(QgsMapCanvasUtils.flashMatchingFeatures)
     QgsMapCanvasUtils.filterForLayer = staticmethod(QgsMapCanvasUtils.filterForLayer)
-except NameError:
+except (NameError, AttributeError):
     pass

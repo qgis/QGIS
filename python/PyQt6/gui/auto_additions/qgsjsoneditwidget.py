@@ -23,5 +23,5 @@ QgsJsonEditWidget.FormatJson.__doc__ = """Format mode in the text view
 # --
 try:
     QgsJsonEditWidget.__group__ = ['editorwidgets']
-except NameError:
+except (NameError, AttributeError):
     pass

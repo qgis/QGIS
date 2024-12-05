@@ -50,6 +50,11 @@ void QgsPointCloudAttributeStatistics::cumulateStatistics( const QgsPointCloudAt
   }
 }
 
+int QgsPointCloudAttributeStatistics::singleClassCount( int cls ) const
+{
+  return classCount.value( cls, -1 );
+}
+
 // QgsPointCloudStatistics
 
 QgsPointCloudStatistics::QgsPointCloudStatistics()

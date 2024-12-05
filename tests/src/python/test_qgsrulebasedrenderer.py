@@ -8,11 +8,7 @@ the Free Software Foundation; either version 2 of the License, or
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.core import (
-    QgsMarkerSymbol,
-    QgsFillSymbol,
-    QgsRuleBasedRenderer
-)
+from qgis.core import QgsMarkerSymbol, QgsFillSymbol, QgsRuleBasedRenderer
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -24,18 +20,14 @@ start_app()
 
 
 def createMarkerSymbol():
-    symbol = QgsMarkerSymbol.createSimple({
-        "color": "100,150,50",
-        "name": "square",
-        "size": "3.0"
-    })
+    symbol = QgsMarkerSymbol.createSimple(
+        {"color": "100,150,50", "name": "square", "size": "3.0"}
+    )
     return symbol
 
 
 def createFillSymbol():
-    symbol = QgsFillSymbol.createSimple({
-        "color": "100,150,50"
-    })
+    symbol = QgsFillSymbol.createSimple({"color": "100,150,50"})
     return symbol
 
 
@@ -45,11 +37,21 @@ class TestQgsRuleBasedSymbolRenderer(QgisTestCase):
         root_rule = QgsRuleBasedRenderer.Rule(None)
         symbol_a = createMarkerSymbol()
         root_rule.appendChild(
-            QgsRuleBasedRenderer.Rule(symbol_a, filterExp='"something"=1', label="label a", description="rule a")
+            QgsRuleBasedRenderer.Rule(
+                symbol_a,
+                filterExp='"something"=1',
+                label="label a",
+                description="rule a",
+            )
         )
         symbol_b = createMarkerSymbol()
         root_rule.appendChild(
-            QgsRuleBasedRenderer.Rule(symbol_b, filterExp='"something"=2', label="label b", description="rule b")
+            QgsRuleBasedRenderer.Rule(
+                symbol_b,
+                filterExp='"something"=2',
+                label="label b",
+                description="rule b",
+            )
         )
 
         # this rule should NOT be included in the SLD, as it would otherwise result
@@ -58,7 +60,13 @@ class TestQgsRuleBasedSymbolRenderer(QgisTestCase):
         symbol_which_is_empty_in_sld[0].setBrushStyle(Qt.BrushStyle.NoBrush)
         symbol_which_is_empty_in_sld[0].setStrokeStyle(Qt.PenStyle.NoPen)
         root_rule.appendChild(
-            QgsRuleBasedRenderer.Rule(symbol_which_is_empty_in_sld, filterExp='"something"=3', label="label c", description="rule c"))
+            QgsRuleBasedRenderer.Rule(
+                symbol_which_is_empty_in_sld,
+                filterExp='"something"=3',
+                label="label c",
+                description="rule c",
+            )
+        )
 
         renderer = QgsRuleBasedRenderer(root_rule)
 

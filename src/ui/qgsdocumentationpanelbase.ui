@@ -18,90 +18,48 @@
     <normaloff>:/images/themes/default/mActionHelpContents.svg</normaloff>:/images/themes/default/mActionHelpContents.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QToolButton" name="mPyQgisHomeButton">
-       <property name="toolTip">
-        <string>PyQGIS API Documentation</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/icons/qgis_icon.svg</normaloff>:/images/icons/qgis_icon.svg</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>24</width>
-         <height>24</height>
-        </size>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mQtHomeButton">
-       <property name="toolTip">
-        <string>Qt API Documentation</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mIconQt.svg</normaloff>:/images/themes/default/mIconQt.svg</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>24</width>
-         <height>24</height>
-        </size>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mOpenUrlButton">
-       <property name="toolTip">
-        <string>Open in Web Browser</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mIconWms.svg</normaloff>:/images/themes/default/mIconWms.svg</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>24</width>
-         <height>24</height>
-        </size>
-       </property>
-       <property name="autoRaise">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QToolBar" name="mToolbar">
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
+     <property name="floatable">
+      <bool>false</bool>
+     </property>
+     <addaction name="mActionPyQgis"/>
+     <addaction name="mActionQt"/>
+     <addaction name="separator"/>
+     <addaction name="mActionOpenInBrowser"/>
+    </widget>
    </item>
    <item>
-    <widget class="QWidget" name="mWebViewContainer" native="true">
+    <widget class="QFrame" name="mWebViewContainer">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <property name="leftMargin">
@@ -120,6 +78,48 @@
     </widget>
    </item>
   </layout>
+  <action name="mActionPyQgis">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/icons/qgis_icon.svg</normaloff>:/images/icons/qgis_icon.svg</iconset>
+   </property>
+   <property name="text">
+    <string>PyQGIS API Documentation</string>
+   </property>
+   <property name="toolTip">
+    <string>PyQGIS API Documentation</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
+  </action>
+  <action name="mActionQt">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconQt.svg</normaloff>:/images/themes/default/mIconQt.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Qt API Documentation</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
+  </action>
+  <action name="mActionOpenInBrowser">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconWms.svg</normaloff>:/images/themes/default/mIconWms.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open in Web Browser</string>
+   </property>
+   <property name="toolTip">
+    <string>Open in Web Browser</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

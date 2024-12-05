@@ -56,7 +56,6 @@ bool QgsMapToolShapeEllipseCenter2Points::cadCanvasReleaseEvent( QgsMapMouseEven
   const QgsPoint point = mParentTool->mapPoint( *e );
   if ( e->button() == Qt::LeftButton )
   {
-
     if ( mPoints.size() < 2 )
       mPoints.append( point );
 

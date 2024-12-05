@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Nyall Dawson'
-__date__ = 'September 2017'
-__copyright__ = '(C) 2017, Nyall Dawson'
+__author__ = "Nyall Dawson"
+__date__ = "September 2017"
+__copyright__ = "(C) 2017, Nyall Dawson"
 
 import os
 import math
@@ -25,23 +25,25 @@ import math
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QMetaType
 
-from qgis.core import (QgsApplication,
-                       QgsField,
-                       QgsFeatureSink,
-                       QgsGeometry,
-                       QgsWkbTypes,
-                       QgsFeatureRequest,
-                       QgsFields,
-                       QgsRectangle,
-                       QgsProcessingException,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterField,
-                       QgsProcessingParameterEnum,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessing,
-                       QgsFeature,
-                       QgsVertexId,
-                       QgsMultiPoint)
+from qgis.core import (
+    QgsApplication,
+    QgsField,
+    QgsFeatureSink,
+    QgsGeometry,
+    QgsWkbTypes,
+    QgsFeatureRequest,
+    QgsFields,
+    QgsRectangle,
+    QgsProcessingException,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterField,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterFeatureSink,
+    QgsProcessing,
+    QgsFeature,
+    QgsVertexId,
+    QgsMultiPoint,
+)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -49,10 +51,10 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class MinimumBoundingGeometry(QgisAlgorithm):
-    INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
-    TYPE = 'TYPE'
-    FIELD = 'FIELD'
+    INPUT = "INPUT"
+    OUTPUT = "OUTPUT"
+    TYPE = "TYPE"
+    FIELD = "FIELD"
 
     def icon(self):
         return QgsApplication.getThemeIcon("/algorithms/mAlgorithmConvexHull.svg")
@@ -61,45 +63,62 @@ class MinimumBoundingGeometry(QgisAlgorithm):
         return QgsApplication.iconPath("/algorithms/mAlgorithmConvexHull.svg")
 
     def group(self):
-        return self.tr('Vector geometry')
+        return self.tr("Vector geometry")
 
     def groupId(self):
-        return 'vectorgeometry'
+        return "vectorgeometry"
 
     def __init__(self):
         super().__init__()
-        self.type_names = [self.tr('Envelope (Bounding Box)'),
-                           self.tr('Minimum Oriented Rectangle'),
-                           self.tr('Minimum Enclosing Circle'),
-                           self.tr('Convex Hull')]
+        self.type_names = [
+            self.tr("Envelope (Bounding Box)"),
+            self.tr("Minimum Oriented Rectangle"),
+            self.tr("Minimum Enclosing Circle"),
+            self.tr("Convex Hull"),
+        ]
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterField(self.FIELD,
-                                                      self.tr(
-                                                          'Field (optional, set if features should be grouped by class)'),
-                                                      parentLayerParameterName=self.INPUT, optional=True))
-        self.addParameter(QgsProcessingParameterEnum(self.TYPE,
-                                                     self.tr('Geometry type'), options=self.type_names))
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Bounding geometry'),
-                                                            QgsProcessing.SourceType.TypeVectorPolygon))
+        self.addParameter(
+            QgsProcessingParameterFeatureSource(self.INPUT, self.tr("Input layer"))
+        )
+        self.addParameter(
+            QgsProcessingParameterField(
+                self.FIELD,
+                self.tr("Field (optional, set if features should be grouped by class)"),
+                parentLayerParameterName=self.INPUT,
+                optional=True,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                self.TYPE, self.tr("Geometry type"), options=self.type_names
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(
+                self.OUTPUT,
+                self.tr("Bounding geometry"),
+                QgsProcessing.SourceType.TypeVectorPolygon,
+            )
+        )
 
     def name(self):
-        return 'minimumboundinggeometry'
+        return "minimumboundinggeometry"
 
     def displayName(self):
-        return self.tr('Minimum bounding geometry')
+        return self.tr("Minimum bounding geometry")
 
     def tags(self):
         return self.tr(
-            'bounding,box,bounds,envelope,minimum,oriented,rectangle,enclosing,circle,convex,hull,generalization').split(
-            ',')
+            "bounding,box,bounds,envelope,minimum,oriented,rectangle,enclosing,circle,convex,hull,generalization"
+        ).split(",")
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
-            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+            raise QgsProcessingException(
+                self.invalidSourceError(parameters, self.INPUT)
+            )
 
         field_name = self.parameterAsString(parameters, self.FIELD, context)
         type = self.parameterAsEnum(parameters, self.TYPE, context)
@@ -108,7 +127,7 @@ class MinimumBoundingGeometry(QgisAlgorithm):
         field_index = -1
 
         fields = QgsFields()
-        fields.append(QgsField('id', QMetaType.Type.Int, '', 20))
+        fields.append(QgsField("id", QMetaType.Type.Int, "", 20))
 
         if use_field:
             # keep original field type, name and parameters
@@ -117,28 +136,34 @@ class MinimumBoundingGeometry(QgisAlgorithm):
                 fields.append(source.fields()[field_index])
         if type == 0:
             # envelope
-            fields.append(QgsField('width', QMetaType.Type.Double, '', 20, 6))
-            fields.append(QgsField('height', QMetaType.Type.Double, '', 20, 6))
-            fields.append(QgsField('area', QMetaType.Type.Double, '', 20, 6))
-            fields.append(QgsField('perimeter', QMetaType.Type.Double, '', 20, 6))
+            fields.append(QgsField("width", QMetaType.Type.Double, "", 20, 6))
+            fields.append(QgsField("height", QMetaType.Type.Double, "", 20, 6))
+            fields.append(QgsField("area", QMetaType.Type.Double, "", 20, 6))
+            fields.append(QgsField("perimeter", QMetaType.Type.Double, "", 20, 6))
         elif type == 1:
             # oriented rect
-            fields.append(QgsField('width', QMetaType.Type.Double, '', 20, 6))
-            fields.append(QgsField('height', QMetaType.Type.Double, '', 20, 6))
-            fields.append(QgsField('angle', QMetaType.Type.Double, '', 20, 6))
-            fields.append(QgsField('area', QMetaType.Type.Double, '', 20, 6))
-            fields.append(QgsField('perimeter', QMetaType.Type.Double, '', 20, 6))
+            fields.append(QgsField("width", QMetaType.Type.Double, "", 20, 6))
+            fields.append(QgsField("height", QMetaType.Type.Double, "", 20, 6))
+            fields.append(QgsField("angle", QMetaType.Type.Double, "", 20, 6))
+            fields.append(QgsField("area", QMetaType.Type.Double, "", 20, 6))
+            fields.append(QgsField("perimeter", QMetaType.Type.Double, "", 20, 6))
         elif type == 2:
             # circle
-            fields.append(QgsField('radius', QMetaType.Type.Double, '', 20, 6))
-            fields.append(QgsField('area', QMetaType.Type.Double, '', 20, 6))
+            fields.append(QgsField("radius", QMetaType.Type.Double, "", 20, 6))
+            fields.append(QgsField("area", QMetaType.Type.Double, "", 20, 6))
         elif type == 3:
             # convex hull
-            fields.append(QgsField('area', QMetaType.Type.Double, '', 20, 6))
-            fields.append(QgsField('perimeter', QMetaType.Type.Double, '', 20, 6))
+            fields.append(QgsField("area", QMetaType.Type.Double, "", 20, 6))
+            fields.append(QgsField("perimeter", QMetaType.Type.Double, "", 20, 6))
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.Type.Polygon, source.sourceCrs())
+        (sink, dest_id) = self.parameterAsSink(
+            parameters,
+            self.OUTPUT,
+            context,
+            fields,
+            QgsWkbTypes.Type.Polygon,
+            source.sourceCrs(),
+        )
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
@@ -146,7 +171,9 @@ class MinimumBoundingGeometry(QgisAlgorithm):
             geometry_dict = {}
             bounds_dict = {}
             total = 50.0 / source.featureCount() if source.featureCount() else 1
-            features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([field_index]))
+            features = source.getFeatures(
+                QgsFeatureRequest().setSubsetOfAttributes([field_index])
+            )
             for current, f in enumerate(features):
                 if feedback.isCanceled():
                     break
@@ -159,7 +186,9 @@ class MinimumBoundingGeometry(QgisAlgorithm):
                     if f[field_index] not in bounds_dict:
                         bounds_dict[f[field_index]] = f.geometry().boundingBox()
                     else:
-                        bounds_dict[f[field_index]].combineExtentWith(f.geometry().boundingBox())
+                        bounds_dict[f[field_index]].combineExtentWith(
+                            f.geometry().boundingBox()
+                        )
                 else:
                     if f[field_index] not in geometry_dict:
                         geometry_dict[f[field_index]] = [f.geometry()]
@@ -179,7 +208,16 @@ class MinimumBoundingGeometry(QgisAlgorithm):
                     # envelope
                     feature = QgsFeature()
                     feature.setGeometry(QgsGeometry.fromRect(rect))
-                    feature.setAttributes([current, group, rect.width(), rect.height(), rect.area(), rect.perimeter()])
+                    feature.setAttributes(
+                        [
+                            current,
+                            group,
+                            rect.width(),
+                            rect.height(),
+                            rect.area(),
+                            rect.perimeter(),
+                        ]
+                    )
                     sink.addFeature(feature, QgsFeatureSink.Flag.FastInsert)
                     geometry_dict[group] = None
 
@@ -192,7 +230,9 @@ class MinimumBoundingGeometry(QgisAlgorithm):
                     if feedback.isCanceled():
                         break
 
-                    feature = self.createFeature(feedback, current, type, geometries, group)
+                    feature = self.createFeature(
+                        feedback, current, type, geometries, group
+                    )
                     sink.addFeature(feature, QgsFeatureSink.Flag.FastInsert)
                     geometry_dict[group] = None
 
@@ -221,7 +261,15 @@ class MinimumBoundingGeometry(QgisAlgorithm):
                 if type == 0:
                     feature = QgsFeature()
                     feature.setGeometry(QgsGeometry.fromRect(bounds))
-                    feature.setAttributes([0, bounds.width(), bounds.height(), bounds.area(), bounds.perimeter()])
+                    feature.setAttributes(
+                        [
+                            0,
+                            bounds.width(),
+                            bounds.height(),
+                            bounds.area(),
+                            bounds.perimeter(),
+                        ]
+                    )
                 else:
                     feature = self.createFeature(feedback, 0, type, geometry_queue)
                 sink.addFeature(feature, QgsFeatureSink.Flag.FastInsert)
@@ -262,7 +310,9 @@ class MinimumBoundingGeometry(QgisAlgorithm):
             attrs.append(rect.perimeter())
         elif type == 1:
             # oriented rect
-            output_geometry, area, angle, width, height = geometry.orientedMinimumBoundingBox()
+            output_geometry, area, angle, width, height = (
+                geometry.orientedMinimumBoundingBox()
+            )
             attrs.append(width)
             attrs.append(height)
             attrs.append(angle)
@@ -270,7 +320,9 @@ class MinimumBoundingGeometry(QgisAlgorithm):
             attrs.append(2 * width + 2 * height)
         elif type == 2:
             # circle
-            output_geometry, center, radius = geometry.minimalEnclosingCircle(segments=72)
+            output_geometry, center, radius = geometry.minimalEnclosingCircle(
+                segments=72
+            )
             attrs.append(radius)
             attrs.append(math.pi * radius * radius)
         elif type == 3:

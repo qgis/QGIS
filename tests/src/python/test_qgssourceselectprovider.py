@@ -25,9 +25,9 @@ import os
 from qgis.testing import start_app, QgisTestCase
 from utilities import unitTestDataPath
 
-__author__ = 'Alessandro Pasotti'
-__date__ = '01/09/2017'
-__copyright__ = 'Copyright 2017, The QGIS Project'
+__author__ = "Alessandro Pasotti"
+__date__ = "01/09/2017"
+__copyright__ = "Copyright 2017, The QGIS Project"
 
 
 class ConcreteDataSourceWidget(QgsAbstractDataSourceWidget):
@@ -110,45 +110,77 @@ class TestQgsSourceSelectProvider(unittest.TestCase):
         registry.addProvider(ConcreteSourceSelectProvider2())
 
         # Check order
-        self.assertEqual(['MyTestProviderKey', 'MyName'],
-                         [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
+        self.assertEqual(
+            ["MyTestProviderKey", "MyName"],
+            [
+                p.name()
+                for p in registry.providers()
+                if p.providerKey().startswith("MyTestProviderKey")
+            ],
+        )
 
         registry = QgsSourceSelectProviderRegistry()
         registry.addProvider(ConcreteSourceSelectProvider())
         registry.addProvider(ConcreteSourceSelectProvider2())
 
         # Check order
-        self.assertEqual(['MyTestProviderKey', 'MyName'],
-                         [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
+        self.assertEqual(
+            ["MyTestProviderKey", "MyName"],
+            [
+                p.name()
+                for p in registry.providers()
+                if p.providerKey().startswith("MyTestProviderKey")
+            ],
+        )
 
         # Get provider by name
-        self.assertTrue(registry.providerByName('MyTestProviderKey'))
-        self.assertTrue(registry.providerByName('MyName'))
+        self.assertTrue(registry.providerByName("MyTestProviderKey"))
+        self.assertTrue(registry.providerByName("MyName"))
 
         # Get not existent by name
-        self.assertFalse(registry.providerByName('Oh This Is Missing!'))
+        self.assertFalse(registry.providerByName("Oh This Is Missing!"))
 
         # Get providers by data provider key
-        self.assertGreater(len(registry.providersByKey('MyTestProviderKey')), 0)
-        self.assertGreater(len(registry.providersByKey('MyTestProviderKey2')), 0)
+        self.assertGreater(len(registry.providersByKey("MyTestProviderKey")), 0)
+        self.assertGreater(len(registry.providersByKey("MyTestProviderKey2")), 0)
 
         # Get not existent by key
-        self.assertEqual(len(registry.providersByKey('Oh This Is Missing!')), 0)
+        self.assertEqual(len(registry.providersByKey("Oh This Is Missing!")), 0)
 
     def testRemoveProvider(self):
         registry = QgsSourceSelectProviderRegistry()
         registry.addProvider(ConcreteSourceSelectProvider())
         registry.addProvider(ConcreteSourceSelectProvider2())
-        self.assertEqual(['MyTestProviderKey', 'MyName'],
-                         [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
+        self.assertEqual(
+            ["MyTestProviderKey", "MyName"],
+            [
+                p.name()
+                for p in registry.providers()
+                if p.providerKey().startswith("MyTestProviderKey")
+            ],
+        )
 
-        self.assertTrue(registry.removeProvider(registry.providerByName('MyName')))
-        self.assertEqual(['MyTestProviderKey'],
-                         [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
+        self.assertTrue(registry.removeProvider(registry.providerByName("MyName")))
+        self.assertEqual(
+            ["MyTestProviderKey"],
+            [
+                p.name()
+                for p in registry.providers()
+                if p.providerKey().startswith("MyTestProviderKey")
+            ],
+        )
 
-        self.assertTrue(registry.removeProvider(registry.providerByName('MyTestProviderKey')))
-        self.assertEqual([],
-                         [p.name() for p in registry.providers() if p.providerKey().startswith('MyTestProviderKey')])
+        self.assertTrue(
+            registry.removeProvider(registry.providerByName("MyTestProviderKey"))
+        )
+        self.assertEqual(
+            [],
+            [
+                p.name()
+                for p in registry.providers()
+                if p.providerKey().startswith("MyTestProviderKey")
+            ],
+        )
 
     def testRegistry(self):
         registry = QgsSourceSelectProviderRegistry()
@@ -158,23 +190,28 @@ class TestQgsSourceSelectProvider(unittest.TestCase):
         registry = QgsGui.sourceSelectProviderRegistry()
         self._testRegistry(registry)
         # Check that at least OGR and GDAL are here
-        self.assertTrue(registry.providersByKey('ogr'))
-        self.assertTrue(registry.providersByKey('gdal'))
+        self.assertTrue(registry.providersByKey("ogr"))
+        self.assertTrue(registry.providersByKey("gdal"))
 
     def testSourceSelectProvidersConfigureFromUri(self):
         """
         Test configure from URI
         """
         registry = QgsGui.sourceSelectProviderRegistry()
-        enabled_entries = {reg_entry.name(): reg_entry for reg_entry in registry.providers() if reg_entry.capabilities() & QgsSourceSelectProvider.Capability.ConfigureFromUri}
-        self.assertIn('ogr', enabled_entries.keys())
-        self.assertIn('gdal', enabled_entries.keys())
-        self.assertIn('GeoPackage', enabled_entries.keys())
-        self.assertIn('spatialite', enabled_entries.keys())
+        enabled_entries = {
+            reg_entry.name(): reg_entry
+            for reg_entry in registry.providers()
+            if reg_entry.capabilities()
+            & QgsSourceSelectProvider.Capability.ConfigureFromUri
+        }
+        self.assertIn("ogr", enabled_entries.keys())
+        self.assertIn("gdal", enabled_entries.keys())
+        self.assertIn("GeoPackage", enabled_entries.keys())
+        self.assertIn("spatialite", enabled_entries.keys())
 
         # Test ogr
-        test_path = os.path.join(unitTestDataPath(), 'points.shp')
-        source_select = enabled_entries['ogr'].createDataSourceWidget()
+        test_path = os.path.join(unitTestDataPath(), "points.shp")
+        source_select = enabled_entries["ogr"].createDataSourceWidget()
         self.assertTrue(source_select.configureFromUri(test_path))
         spy = QSignalSpy(source_select.addVectorLayers)
         source_select.addButtonClicked()
@@ -183,8 +220,8 @@ class TestQgsSourceSelectProvider(unittest.TestCase):
         self.assertEqual(arg_path[0], test_path)
 
         # Test GDAL
-        test_path = os.path.join(unitTestDataPath(), 'raster_layer.tiff')
-        source_select = enabled_entries['gdal'].createDataSourceWidget()
+        test_path = os.path.join(unitTestDataPath(), "raster_layer.tiff")
+        source_select = enabled_entries["gdal"].createDataSourceWidget()
         spy = QSignalSpy(source_select.addRasterLayers)
         self.assertTrue(source_select.configureFromUri(test_path))
         source_select.addButtonClicked()
@@ -193,25 +230,27 @@ class TestQgsSourceSelectProvider(unittest.TestCase):
         self.assertEqual(arg_path[0], test_path)
 
         # Test vector GPKG
-        test_path = os.path.join(unitTestDataPath(), 'mixed_layers.gpkg|layername=points')
-        source_select = enabled_entries['GeoPackage'].createDataSourceWidget()
+        test_path = os.path.join(
+            unitTestDataPath(), "mixed_layers.gpkg|layername=points"
+        )
+        source_select = enabled_entries["GeoPackage"].createDataSourceWidget()
         self.assertTrue(source_select.configureFromUri(test_path))
         spy = QSignalSpy(source_select.addLayer)
         source_select.addButtonClicked()
         self.assertEqual(len(spy), 1)
         _, arg_path, arg_name, arg_key = spy[0]
         self.assertEqual(arg_path, test_path)
-        self.assertEqual(arg_name, 'points')
-        self.assertEqual(arg_key, 'ogr')
+        self.assertEqual(arg_name, "points")
+        self.assertEqual(arg_key, "ogr")
 
         # Test vector spatialite
-        test_path = os.path.join(unitTestDataPath(), 'provider', 'spatialite.db')
+        test_path = os.path.join(unitTestDataPath(), "provider", "spatialite.db")
         uri = QgsDataSourceUri()
         uri.setDatabase(test_path)
-        uri.setTable('some data')
-        uri.setGeometryColumn('geom')
-        uri.setSql('pk > 0')
-        source_select = enabled_entries['spatialite'].createDataSourceWidget()
+        uri.setTable("some data")
+        uri.setGeometryColumn("geom")
+        uri.setSql("pk > 0")
+        source_select = enabled_entries["spatialite"].createDataSourceWidget()
         self.assertTrue(source_select.configureFromUri(uri.uri()))
         spy = QSignalSpy(source_select.addDatabaseLayers)
         source_select.addButtonClicked()
@@ -220,5 +259,5 @@ class TestQgsSourceSelectProvider(unittest.TestCase):
         self.assertEqual(arg_tables[0], uri.uri())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

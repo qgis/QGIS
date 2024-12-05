@@ -37,7 +37,8 @@ class TestQgsGpsIntegration : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsGpsIntegration() : QgsTest( QStringLiteral( "GPS Integration Tests" ) ) {}
+    TestQgsGpsIntegration()
+      : QgsTest( QStringLiteral( "GPS Integration Tests" ) ) {}
 
   private slots:
     void initTestCase();
@@ -72,30 +73,21 @@ void TestQgsGpsIntegration::initTestCase()
   QCoreApplication::setOrganizationName( QStringLiteral( "QGISGpsTests" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
-  QgsSettings().clear( );
+  QgsSettings().clear();
 
   mQgisApp = new QgisApp();
 
 
-  tempLayer = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=intf:int" ),
-                                  QStringLiteral( "vl1" ),
-                                  QStringLiteral( "memory" ) );
-  tempLayerString = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=stringf:string&field=intf:int" ),
-                                        QStringLiteral( "vl2" ),
-                                        QStringLiteral( "memory" ) );
-  tempLayerDateTime = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=datetimef:datetime&field=intf:int" ),
-                                          QStringLiteral( "vl3" ),
-                                          QStringLiteral( "memory" ) );
-  tempLayerLineString = new QgsVectorLayer( QStringLiteral( "Linestring?crs=epsg:4326&field=intf:int&field=stringf:string" ),
-      QStringLiteral( "vl4" ),
-      QStringLiteral( "memory" ) );
+  tempLayer = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=intf:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  tempLayerString = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=stringf:string&field=intf:int" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  tempLayerDateTime = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=datetimef:datetime&field=intf:int" ), QStringLiteral( "vl3" ), QStringLiteral( "memory" ) );
+  tempLayerLineString = new QgsVectorLayer( QStringLiteral( "Linestring?crs=epsg:4326&field=intf:int&field=stringf:string" ), QStringLiteral( "vl4" ), QStringLiteral( "memory" ) );
 
   QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog->setValue( true );
 
   const QString tempPath = QDir::tempPath() + QStringLiteral( "/gps_timestamp.gpkg" );
   QFile::copy( TEST_DATA_DIR + QStringLiteral( "/gps_timestamp.gpkg" ), tempPath );
-  tempGpkgLayerPointString = new QgsVectorLayer( QStringLiteral( "%1|layername=points" ).arg( tempPath ),
-      QStringLiteral( "vl4" ) );
+  tempGpkgLayerPointString = new QgsVectorLayer( QStringLiteral( "%1|layername=points" ).arg( tempPath ), QStringLiteral( "vl4" ) );
   Q_ASSERT( tempGpkgLayerPointString->isValid() );
   Q_ASSERT( tempLayer->isValid() );
   Q_ASSERT( tempLayerString->isValid() );
@@ -173,9 +165,9 @@ void TestQgsGpsIntegration::testGpsOptionsTimeZoneWidgets()
   // Check tz combo
   QgsGpsOptionsWidget widget( nullptr );
   widget.mCboTimestampFormat->setCurrentIndex( widget.mCboTimestampFormat->findData( Qt::TimeSpec::UTC ) );
-  QVERIFY( ! widget.mCboTimeZones->isEnabled() );
+  QVERIFY( !widget.mCboTimeZones->isEnabled() );
   widget.mCboTimestampFormat->setCurrentIndex( widget.mCboTimestampFormat->findData( Qt::TimeSpec::LocalTime ) );
-  QVERIFY( ! widget.mCboTimeZones->isEnabled() );
+  QVERIFY( !widget.mCboTimeZones->isEnabled() );
   widget.mCboTimestampFormat->setCurrentIndex( widget.mCboTimestampFormat->findData( Qt::TimeSpec::TimeZone ) );
   QVERIFY( widget.mCboTimeZones->isEnabled() );
 }
@@ -198,11 +190,11 @@ void TestQgsGpsIntegration::testStorePreferredFields()
   QgsProject::instance()->gpsSettings()->setDestinationTimeStampField( tempGpkgLayerPointString, QStringLiteral( "datetimef" ) );
 
   mQgisApp->setActiveLayer( tempLayer );
-  QMap< QString, QString > preferredTimeStamps = QgsProject::instance()->gpsSettings()->destinationTimeStampFields();
+  QMap<QString, QString> preferredTimeStamps = QgsProject::instance()->gpsSettings()->destinationTimeStampFields();
   QVERIFY( preferredTimeStamps.contains( tempLayerString->id() ) );
-  QCOMPARE( preferredTimeStamps[ tempLayerString->id() ], QStringLiteral( "stringf" ) );
+  QCOMPARE( preferredTimeStamps[tempLayerString->id()], QStringLiteral( "stringf" ) );
   QVERIFY( preferredTimeStamps.contains( tempLayerDateTime->id() ) );
-  QCOMPARE( preferredTimeStamps[ tempLayerDateTime->id() ], QStringLiteral( "datetimef" ) );
+  QCOMPARE( preferredTimeStamps[tempLayerDateTime->id()], QStringLiteral( "datetimef" ) );
 }
 
 void TestQgsGpsIntegration::testTimestamp()
@@ -238,7 +230,7 @@ void TestQgsGpsIntegration::testTimestamp()
   gpsDigitizing.mTimeStampSpec = Qt::TimeSpec::OffsetFromUTC;
   dt = gpsDigitizing.timestamp( tempLayerDateTime, fieldIdx );
   QCOMPARE( dt.toDateTime().offsetFromUtc(), -36000 );
-  QDateTime expected = dateTime.addSecs( - 36000 );
+  QDateTime expected = dateTime.addSecs( -36000 );
   expected.setOffsetFromUtc( -36000 );
   QCOMPARE( dt.toDateTime(), expected );
 
@@ -302,54 +294,48 @@ void TestQgsGpsIntegration::testTimestampWrite()
   const QDateTime offsetFromUtcTime = dateTime.toOffsetFromUtc( -36000 );
 
   // Test write on datetime field
-  QCOMPARE( _testWrite( tempLayerDateTime, gpsDigitizing, QStringLiteral( "datetimef" ),  Qt::TimeSpec::UTC ), dateTime );
-  QCOMPARE( _testWrite( tempLayerDateTime, gpsDigitizing, QStringLiteral( "datetimef" ),  Qt::TimeSpec::OffsetFromUTC ), offsetFromUtcTime );
-  QCOMPARE( _testWrite( tempLayerDateTime, gpsDigitizing, QStringLiteral( "datetimef" ),  Qt::TimeSpec::LocalTime ), localTime );
-  QCOMPARE( _testWrite( tempLayerDateTime, gpsDigitizing, QStringLiteral( "datetimef" ),  Qt::TimeSpec::TimeZone ),  tzTime );
+  QCOMPARE( _testWrite( tempLayerDateTime, gpsDigitizing, QStringLiteral( "datetimef" ), Qt::TimeSpec::UTC ), dateTime );
+  QCOMPARE( _testWrite( tempLayerDateTime, gpsDigitizing, QStringLiteral( "datetimef" ), Qt::TimeSpec::OffsetFromUTC ), offsetFromUtcTime );
+  QCOMPARE( _testWrite( tempLayerDateTime, gpsDigitizing, QStringLiteral( "datetimef" ), Qt::TimeSpec::LocalTime ), localTime );
+  QCOMPARE( _testWrite( tempLayerDateTime, gpsDigitizing, QStringLiteral( "datetimef" ), Qt::TimeSpec::TimeZone ), tzTime );
 
   // Test write on string field
-  QCOMPARE( _testWrite( tempLayerString, gpsDigitizing, QStringLiteral( "stringf" ),  Qt::TimeSpec::UTC ).toString( Qt::DateFormat::ISODate ), dateTime.toString( Qt::DateFormat::ISODate ) );
-  QCOMPARE( _testWrite( tempLayerString, gpsDigitizing, QStringLiteral( "stringf" ),  Qt::TimeSpec::OffsetFromUTC ).toString( Qt::DateFormat::ISODate ), offsetFromUtcTime.toString( Qt::DateFormat::ISODate ) );
-  QCOMPARE( _testWrite( tempLayerString, gpsDigitizing, QStringLiteral( "stringf" ),  Qt::TimeSpec::LocalTime ).toString( Qt::DateFormat::ISODate ), localTime.toString( Qt::DateFormat::ISODate ) );
-  QCOMPARE( _testWrite( tempLayerString, gpsDigitizing, QStringLiteral( "stringf" ),  Qt::TimeSpec::TimeZone ).toString( Qt::DateFormat::ISODate ),  tzTime.toString( Qt::DateFormat::ISODate ) );
+  QCOMPARE( _testWrite( tempLayerString, gpsDigitizing, QStringLiteral( "stringf" ), Qt::TimeSpec::UTC ).toString( Qt::DateFormat::ISODate ), dateTime.toString( Qt::DateFormat::ISODate ) );
+  QCOMPARE( _testWrite( tempLayerString, gpsDigitizing, QStringLiteral( "stringf" ), Qt::TimeSpec::OffsetFromUTC ).toString( Qt::DateFormat::ISODate ), offsetFromUtcTime.toString( Qt::DateFormat::ISODate ) );
+  QCOMPARE( _testWrite( tempLayerString, gpsDigitizing, QStringLiteral( "stringf" ), Qt::TimeSpec::LocalTime ).toString( Qt::DateFormat::ISODate ), localTime.toString( Qt::DateFormat::ISODate ) );
+  QCOMPARE( _testWrite( tempLayerString, gpsDigitizing, QStringLiteral( "stringf" ), Qt::TimeSpec::TimeZone ).toString( Qt::DateFormat::ISODate ), tzTime.toString( Qt::DateFormat::ISODate ) );
 
   // Test write on line string field
   gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 1, 2 ) );
   gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 3, 4 ) );
-  QCOMPARE( _testWrite( tempLayerLineString, gpsDigitizing, QStringLiteral( "stringf" ),  Qt::TimeSpec::UTC ).toString( Qt::DateFormat::ISODate ), dateTime.toString( Qt::DateFormat::ISODate ) );
+  QCOMPARE( _testWrite( tempLayerLineString, gpsDigitizing, QStringLiteral( "stringf" ), Qt::TimeSpec::UTC ).toString( Qt::DateFormat::ISODate ), dateTime.toString( Qt::DateFormat::ISODate ) );
   gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 1, 2 ) );
   gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 3, 4 ) );
-  QCOMPARE( _testWrite( tempLayerLineString, gpsDigitizing, QStringLiteral( "stringf" ),  Qt::TimeSpec::OffsetFromUTC ).toString( Qt::DateFormat::ISODate ), offsetFromUtcTime.toString( Qt::DateFormat::ISODate ) );
+  QCOMPARE( _testWrite( tempLayerLineString, gpsDigitizing, QStringLiteral( "stringf" ), Qt::TimeSpec::OffsetFromUTC ).toString( Qt::DateFormat::ISODate ), offsetFromUtcTime.toString( Qt::DateFormat::ISODate ) );
   gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 1, 2 ) );
   gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 3, 4 ) );
-  QCOMPARE( _testWrite( tempLayerLineString, gpsDigitizing, QStringLiteral( "stringf" ),  Qt::TimeSpec::LocalTime ).toString( Qt::DateFormat::ISODate ), localTime.toString( Qt::DateFormat::ISODate ) );
+  QCOMPARE( _testWrite( tempLayerLineString, gpsDigitizing, QStringLiteral( "stringf" ), Qt::TimeSpec::LocalTime ).toString( Qt::DateFormat::ISODate ), localTime.toString( Qt::DateFormat::ISODate ) );
   gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 1, 2 ) );
   gpsDigitizing.mCaptureListWgs84.push_back( QgsPoint( 3, 4 ) );
-  QCOMPARE( _testWrite( tempLayerLineString, gpsDigitizing, QStringLiteral( "stringf" ),  Qt::TimeSpec::TimeZone ).toString( Qt::DateFormat::ISODate ),  tzTime.toString( Qt::DateFormat::ISODate ) );
+  QCOMPARE( _testWrite( tempLayerLineString, gpsDigitizing, QStringLiteral( "stringf" ), Qt::TimeSpec::TimeZone ).toString( Qt::DateFormat::ISODate ), tzTime.toString( Qt::DateFormat::ISODate ) );
 
   // Write on GPKG
   // Test write on datetime field
   QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "datetimef" ), Qt::TimeSpec::UTC, true ), dateTime );
   QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "datetimef" ), Qt::TimeSpec::OffsetFromUTC, true ), offsetFromUtcTime );
   QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "datetimef" ), Qt::TimeSpec::LocalTime, true ), localTime );
-  QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "datetimef" ), Qt::TimeSpec::TimeZone, true ),  tzTime );
+  QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "datetimef" ), Qt::TimeSpec::TimeZone, true ), tzTime );
 
   // Test write on string field
-  QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "stringf" ),
-                        Qt::TimeSpec::UTC, true ).toString( Qt::DateFormat::ISODate ), dateTime.toString( Qt::DateFormat::ISODate ) );
-  QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "stringf" ),
-                        Qt::TimeSpec::OffsetFromUTC, true ).toString( Qt::DateFormat::ISODate ), offsetFromUtcTime.toString( Qt::DateFormat::ISODate ) );
-  QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "stringf" ),
-                        Qt::TimeSpec::LocalTime, true ).toString( Qt::DateFormat::ISODate ), localTime.toString( Qt::DateFormat::ISODate ) );
-  QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "stringf" ),
-                        Qt::TimeSpec::TimeZone, true ).toString( Qt::DateFormat::ISODate ),  tzTime.toString( Qt::DateFormat::ISODate ) );
+  QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "stringf" ), Qt::TimeSpec::UTC, true ).toString( Qt::DateFormat::ISODate ), dateTime.toString( Qt::DateFormat::ISODate ) );
+  QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "stringf" ), Qt::TimeSpec::OffsetFromUTC, true ).toString( Qt::DateFormat::ISODate ), offsetFromUtcTime.toString( Qt::DateFormat::ISODate ) );
+  QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "stringf" ), Qt::TimeSpec::LocalTime, true ).toString( Qt::DateFormat::ISODate ), localTime.toString( Qt::DateFormat::ISODate ) );
+  QCOMPARE( _testWrite( tempGpkgLayerPointString, gpsDigitizing, QStringLiteral( "stringf" ), Qt::TimeSpec::TimeZone, true ).toString( Qt::DateFormat::ISODate ), tzTime.toString( Qt::DateFormat::ISODate ) );
 }
 
 void TestQgsGpsIntegration::testMultiPartLayers()
 {
-  QgsVectorLayer *multiLineString = new QgsVectorLayer( QStringLiteral( "MultiLinestring?crs=epsg:4326&field=intf:int&field=stringf:string" ),
-      QStringLiteral( "vl4" ),
-      QStringLiteral( "memory" ) );
+  QgsVectorLayer *multiLineString = new QgsVectorLayer( QStringLiteral( "MultiLinestring?crs=epsg:4326&field=intf:int&field=stringf:string" ), QStringLiteral( "vl4" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( multiLineString );
 
   QgsMapCanvas *canvas = mQgisApp->mapCanvas();
@@ -377,9 +363,7 @@ void TestQgsGpsIntegration::testMultiPartLayers()
   multiLineString->rollBack();
 
   // multipolygon
-  QgsVectorLayer *multiPolygon = new QgsVectorLayer( QStringLiteral( "MultiPolygon?crs=epsg:4326&field=intf:int&field=stringf:string" ),
-      QStringLiteral( "vl4" ),
-      QStringLiteral( "memory" ) );
+  QgsVectorLayer *multiPolygon = new QgsVectorLayer( QStringLiteral( "MultiPolygon?crs=epsg:4326&field=intf:int&field=stringf:string" ), QStringLiteral( "vl4" ), QStringLiteral( "memory" ) );
 
   QgsProject::instance()->addMapLayer( multiPolygon );
   mQgisApp->setActiveLayer( multiPolygon );
@@ -436,9 +420,7 @@ void TestQgsGpsIntegration::testFollowActiveLayer()
 
 void TestQgsGpsIntegration::testTrackDistance()
 {
-  QgsVectorLayer *lineString = new QgsVectorLayer( QStringLiteral( "Linestring?crs=epsg:4326&field=intf:int&field=stringf:string" ),
-      QStringLiteral( "vl" ),
-      QStringLiteral( "memory" ) );
+  QgsVectorLayer *lineString = new QgsVectorLayer( QStringLiteral( "Linestring?crs=epsg:4326&field=intf:int&field=stringf:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( lineString );
 
   QgsMapCanvas *canvas = mQgisApp->mapCanvas();

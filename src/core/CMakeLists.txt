@@ -578,6 +578,7 @@ set(QGIS_CORE_SRCS
   qgsremappingproxyfeaturesink.cpp
   qgsrenderchecker.cpp
   qgsrendercontext.cpp
+  qgsrenderedlayerstatistics.cpp
   qgsrendereditemdetails.cpp
   qgsrunprocess.cpp
   qgsruntimeprofiler.cpp
@@ -1280,6 +1281,7 @@ set(QGIS_CORE_HDRS
   qgsrenderchecker.h
   qgsrendercontext.h
   qgsrenderedfeaturehandlerinterface.h
+  qgsrenderedlayerstatistics.h
   qgsrendereditemdetails.h
   qgsrunprocess.h
   qgsruntimeprofiler.h
@@ -2336,6 +2338,18 @@ set(IMAGE_RCCS ../../images/images.qrc)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_library(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_PRIVATE_HDRS} ${IMAGE_RCCS})
+
+if(USE_PRECOMPILED_HEADERS)
+  target_precompile_headers(qgis_core PRIVATE $<$<COMPILE_LANGUAGE:CXX>:qgis.h>)
+endif()
+
+set_target_properties(qgis_core PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+
+# Exclude below files because they include tiny_gltf.h with different #define settings
+set_source_files_properties(tiledscene/qgsgltfutils.cpp
+                            tiledscene/qgsquantizedmeshtiles.cpp
+                            tiledscene/qgstiledscenelayerrenderer.cpp
+                            PROPERTIES SKIP_UNITY_BUILD_INCLUSION ON)
 
 # Add meshoptimizer
 if(WITH_INTERNAL_MESHOPTIMIZER)

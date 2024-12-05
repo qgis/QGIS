@@ -2,5 +2,5 @@
 try:
     QgsLayoutItemManualTable.create = staticmethod(QgsLayoutItemManualTable.create)
     QgsLayoutItemManualTable.__group__ = ['layout']
-except NameError:
+except (NameError, AttributeError):
     pass

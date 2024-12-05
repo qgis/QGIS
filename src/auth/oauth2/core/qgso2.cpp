@@ -35,18 +35,15 @@
 
 QString QgsO2::O2_OAUTH2_STATE = QStringLiteral( "state" );
 
-QgsO2::QgsO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config,
-              QObject *parent, QNetworkAccessManager *manager )
+QgsO2::QgsO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config, QObject *parent, QNetworkAccessManager *manager )
   : O2( parent, manager )
   , mTokenCacheFile( QString() )
   , mAuthcfg( authcfg )
   , mOAuth2Config( oauth2config )
 {
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]( )
-  {
-    setLoggingFunction( []( const QString & message, LogLevel level )
-    {
+  std::call_once( initialized, [=]() {
+    setLoggingFunction( []( const QString &message, LogLevel level ) {
 #ifdef QGISDEBUG
       switch ( level )
       {
@@ -59,8 +56,8 @@ QgsO2::QgsO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config,
           break;
       }
 #else
-      ( void )message;
-      ( void )level;
+                                         ( void ) message;
+                                         ( void ) level;
 #endif
     } );
   } );
@@ -114,7 +111,7 @@ void QgsO2::initOAuthConfig()
 
   switch ( mOAuth2Config->grantFlow() )
   {
-    case QgsAuthOAuth2Config::Pkce:
+    case QgsAuthOAuth2Config::GrantFlow::Pkce:
       setGrantFlow( O2::GrantFlowPkce );
       setRequestUrl( mOAuth2Config->requestUrl() );
       setClientId( mOAuth2Config->clientId() );
@@ -122,20 +119,20 @@ void QgsO2::initOAuthConfig()
       //setClientSecret( mOAuth2Config->clientSecret() );
 
       break;
-    case QgsAuthOAuth2Config::AuthCode:
+    case QgsAuthOAuth2Config::GrantFlow::AuthCode:
       setGrantFlow( O2::GrantFlowAuthorizationCode );
       setRequestUrl( mOAuth2Config->requestUrl() );
       setClientId( mOAuth2Config->clientId() );
       setClientSecret( mOAuth2Config->clientSecret() );
 
       break;
-    case QgsAuthOAuth2Config::Implicit:
+    case QgsAuthOAuth2Config::GrantFlow::Implicit:
       setGrantFlow( O2::GrantFlowImplicit );
       setRequestUrl( mOAuth2Config->requestUrl() );
       setClientId( mOAuth2Config->clientId() );
 
       break;
-    case QgsAuthOAuth2Config::ResourceOwner:
+    case QgsAuthOAuth2Config::GrantFlow::ResourceOwner:
       setGrantFlow( O2::GrantFlowResourceOwnerPasswordCredentials );
       setClientId( mOAuth2Config->clientId() );
       setClientSecret( mOAuth2Config->clientSecret() );
@@ -166,10 +163,11 @@ void QgsO2::setVerificationResponseContent()
   if ( verhtml.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
     setReplyContent( QString::fromUtf8( verhtml.readAll() )
-                     .replace( QLatin1String( "{{ H2_TITLE }}" ), tr( "QGIS OAuth2 verification has finished" ) )
-                     .replace( QLatin1String( "{{ H3_TITLE }}" ), tr( "If you have not been returned to QGIS, bring the application to the forefront." ) )
-                     .replace( QLatin1String( "{{ CLOSE_WINDOW }}" ), tr( "Close window" ) ).toUtf8()
-                   );
+                       .replace( QLatin1String( "{{ H2_TITLE }}" ), tr( "QGIS OAuth2 verification has finished" ) )
+                       .replace( QLatin1String( "{{ H3_TITLE }}" ), tr( "If you have not been returned to QGIS, bring the application to the forefront." ) )
+                       .replace( QLatin1String( "{{ CLOSE_WINDOW }}" ), tr( "Close window" ) )
+                       .toUtf8()
+    );
   }
 }
 
@@ -259,19 +257,15 @@ void QgsO2::link()
       }
     }
     // Assemble initial authentication URL
-    QList<QPair<QString, QString> > parameters;
-    parameters.append( qMakePair( QString( O2_OAUTH2_RESPONSE_TYPE ), ( grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowPkce ) ?
-                                  QString( O2_OAUTH2_GRANT_TYPE_CODE ) :
-                                  QString( O2_OAUTH2_GRANT_TYPE_TOKEN ) ) );
+    QList<QPair<QString, QString>> parameters;
+    parameters.append( qMakePair( QString( O2_OAUTH2_RESPONSE_TYPE ), ( grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowPkce ) ? QString( O2_OAUTH2_GRANT_TYPE_CODE ) : QString( O2_OAUTH2_GRANT_TYPE_TOKEN ) ) );
     parameters.append( qMakePair( QString( O2_OAUTH2_CLIENT_ID ), clientId_ ) );
     parameters.append( qMakePair( QString( O2_OAUTH2_REDIRECT_URI ), redirectUri_ ) );
 
     if ( grantFlow_ == GrantFlowPkce )
     {
-      pkceCodeVerifier_ = ( QUuid::createUuid().toString( QUuid::WithoutBraces ) +
-                            QUuid::createUuid().toString( QUuid::WithoutBraces ) ).toLatin1();
-      pkceCodeChallenge_ = QCryptographicHash::hash( pkceCodeVerifier_, QCryptographicHash::Sha256 ).toBase64(
-                             QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals );
+      pkceCodeVerifier_ = ( QUuid::createUuid().toString( QUuid::WithoutBraces ) + QUuid::createUuid().toString( QUuid::WithoutBraces ) ).toLatin1();
+      pkceCodeChallenge_ = QCryptographicHash::hash( pkceCodeVerifier_, QCryptographicHash::Sha256 ).toBase64( QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals );
       parameters.append( qMakePair( QString( O2_OAUTH2_PKCE_CODE_CHALLENGE_PARAM ), pkceCodeChallenge_ ) );
       parameters.append( qMakePair( QString( O2_OAUTH2_PKCE_CODE_CHALLENGE_METHOD_PARAM ), QString( O2_OAUTH2_PKCE_CODE_CHALLENGE_METHOD_S256 ) ) );
     }
@@ -357,7 +351,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
       {
         if ( response.value( QStringLiteral( "state" ), QStringLiteral( "ignore" ) ) != state_ )
         {
-          QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived: Verification failed: (Response returned wrong state)" ), 3 ) ;
+          QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived: Verification failed: (Response returned wrong state)" ), 3 );
           emit linkingFailed();
           return;
         }
@@ -375,7 +369,6 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
 
   if ( grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowPkce )
   {
-
     // Exchange access code for access/refresh tokens
     QString query;
     if ( !apiKey_.isEmpty() )
@@ -417,7 +410,7 @@ void QgsO2::onVerificationReceived( QMap<QString, QString> response )
         if ( ok )
         {
           QgsDebugMsgLevel( QStringLiteral( "O2::onVerificationReceived: Token expires in %1 seconds" ).arg( expiresIn ), 2 );
-          setExpires( QDateTime::currentMSecsSinceEpoch() / 1000 + static_cast< qint64 >( expiresIn ) );
+          setExpires( QDateTime::currentMSecsSinceEpoch() / 1000 + static_cast<qint64>( expiresIn ) );
         }
       }
       setLinked( true );
@@ -507,7 +500,7 @@ void QgsO2::refreshSynchronous()
     else
     {
       setToken( tokens.value( O2_OAUTH2_ACCESS_TOKEN ).toString() );
-      setExpires( QDateTime::currentMSecsSinceEpoch() / 1000 + static_cast< qint64 >( tokens.value( O2_OAUTH2_EXPIRES_IN ).toInt() ) );
+      setExpires( QDateTime::currentMSecsSinceEpoch() / 1000 + static_cast<qint64>( tokens.value( O2_OAUTH2_EXPIRES_IN ).toInt() ) );
       const QString refreshToken = tokens.value( O2_OAUTH2_REFRESH_TOKEN ).toString();
       if ( !refreshToken.isEmpty() )
         setRefreshToken( refreshToken );
@@ -528,5 +521,5 @@ void QgsO2::refreshSynchronous()
 void QgsO2::computeExpirationDelay()
 {
   const qint64 lExpires = expires();
-  mExpirationDelay = static_cast< int >( lExpires > 0 ? lExpires - static_cast<qint64>( QDateTime::currentMSecsSinceEpoch() / 1000 ) : 0 );
+  mExpirationDelay = static_cast<int>( lExpires > 0 ? lExpires - static_cast<qint64>( QDateTime::currentMSecsSinceEpoch() / 1000 ) : 0 );
 }

@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Nyall Dawson'
-__date__ = 'November 2023'
-__copyright__ = '(C) 2023, Nyall Dawson'
+__author__ = "Nyall Dawson"
+__date__ = "November 2023"
+__copyright__ = "(C) 2023, Nyall Dawson"
 
 from typing import Optional
 
@@ -57,9 +57,9 @@ class TestQgsFilledLineSymbolLayer(QgisTestCase):
 
         s.appendSymbolLayer(line.clone())
 
-        g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
+        g = QgsGeometry.fromWkt("LineString(0 0, 10 10, 10 0)")
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.image_check('render', 'render', rendered_image))
+        self.assertTrue(self.image_check("render", "render", rendered_image))
 
     def testRenderFlatCap(self):
         s = QgsLineSymbol()
@@ -72,9 +72,11 @@ class TestQgsFilledLineSymbolLayer(QgisTestCase):
 
         s.appendSymbolLayer(line.clone())
 
-        g = QgsGeometry.fromWkt('LineString(0 0, 10 10, 10 0)')
+        g = QgsGeometry.fromWkt("LineString(0 0, 10 10, 10 0)")
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.image_check('renderflatcap', 'renderflatcap', rendered_image))
+        self.assertTrue(
+            self.image_check("renderflatcap", "renderflatcap", rendered_image)
+        )
 
     def testRenderMiterJoin(self):
         s = QgsLineSymbol()
@@ -87,9 +89,11 @@ class TestQgsFilledLineSymbolLayer(QgisTestCase):
 
         s.appendSymbolLayer(line.clone())
 
-        g = QgsGeometry.fromWkt('LineString(0 15, 0 0, 10 10, 10 0)')
+        g = QgsGeometry.fromWkt("LineString(0 15, 0 0, 10 10, 10 0)")
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.image_check('render_miter', 'render_miter', rendered_image))
+        self.assertTrue(
+            self.image_check("render_miter", "render_miter", rendered_image)
+        )
 
     def testRenderBevelJoin(self):
         s = QgsLineSymbol()
@@ -102,9 +106,11 @@ class TestQgsFilledLineSymbolLayer(QgisTestCase):
 
         s.appendSymbolLayer(line.clone())
 
-        g = QgsGeometry.fromWkt('LineString(2 2, 10 10, 10 0)')
+        g = QgsGeometry.fromWkt("LineString(2 2, 10 10, 10 0)")
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.image_check('render_bevel', 'render_bevel', rendered_image))
+        self.assertTrue(
+            self.image_check("render_bevel", "render_bevel", rendered_image)
+        )
 
     def testLineOffset(self):
         s = QgsLineSymbol()
@@ -117,9 +123,11 @@ class TestQgsFilledLineSymbolLayer(QgisTestCase):
 
         s.appendSymbolLayer(line.clone())
 
-        g = QgsGeometry.fromWkt('LineString(2 2, 10 10, 10 0)')
+        g = QgsGeometry.fromWkt("LineString(2 2, 10 10, 10 0)")
         rendered_image = self.renderGeometry(s, g)
-        self.assertTrue(self.image_check('render_offset', 'render_offset', rendered_image))
+        self.assertTrue(
+            self.image_check("render_offset", "render_offset", rendered_image)
+        )
 
     def renderGeometry(self, symbol, geom, buffer=20):
         f = QgsFeature()
@@ -155,5 +163,5 @@ class TestQgsFilledLineSymbolLayer(QgisTestCase):
         return image
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
