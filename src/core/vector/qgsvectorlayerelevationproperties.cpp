@@ -141,7 +141,7 @@ void QgsVectorLayerElevationProperties::setDefaultsFromLayer( QgsMapLayer *layer
 
   if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) )
   {
-    mClamping = Qgis::AltitudeClamping::Relative;
+    mClamping = Qgis::AltitudeClamping::Absolute;
   }
   else
   {
