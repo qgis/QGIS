@@ -132,10 +132,7 @@ QgsMapLayerServerProperties::WmsDimensionInfo QgsWmsDimensionDialog::info() cons
   {
     refValue = mReferenceValueComboBox->currentData();
   }
-  return QgsMapLayerServerProperties::WmsDimensionInfo( name, mFieldComboBox->currentField(),
-         mEndFieldComboBox->currentField(),
-         mUnitsLineEdit->text(), mUnitSymbolLineEdit->text(),
-         mDefaultDisplayComboBox->currentData().toInt(), refValue );
+  return QgsMapLayerServerProperties::WmsDimensionInfo( name, mFieldComboBox->currentField(), mEndFieldComboBox->currentField(), mUnitsLineEdit->text(), mUnitSymbolLineEdit->text(), mDefaultDisplayComboBox->currentData().toInt(), refValue );
 }
 
 void QgsWmsDimensionDialog::nameChanged( const QString &name )
@@ -158,11 +155,7 @@ void QgsWmsDimensionDialog::nameChanged( const QString &name )
     const int data = mNameComboBox->currentData().toInt();
     if ( data == QgsMapLayerServerProperties::TIME )
     {
-      const QgsFieldProxyModel::Filters filters = QgsFieldProxyModel::String |
-          QgsFieldProxyModel::Int |
-          QgsFieldProxyModel::LongLong |
-          QgsFieldProxyModel::Date |
-          QgsFieldProxyModel::DateTime;
+      const QgsFieldProxyModel::Filters filters = QgsFieldProxyModel::String | QgsFieldProxyModel::Int | QgsFieldProxyModel::LongLong | QgsFieldProxyModel::Date | QgsFieldProxyModel::DateTime;
       mFieldComboBox->setFilters( filters );
       mEndFieldComboBox->setFilters( filters );
       mUnitsLineEdit->setText( QStringLiteral( "ISO8601" ) );

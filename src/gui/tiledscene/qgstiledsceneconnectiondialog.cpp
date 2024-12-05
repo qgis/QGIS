@@ -55,7 +55,7 @@ QString QgsTiledSceneConnectionDialog::connectionUri() const
   conn.username = mAuthSettings->username();
   conn.password = mAuthSettings->password();
   conn.httpHeaders[QgsHttpHeaders::KEY_REFERER] = mEditReferer->text();
-  conn.authCfg = mAuthSettings->configId( );
+  conn.authCfg = mAuthSettings->configId();
 
   return QgsTiledSceneProviderConnection::encodedUri( conn );
 }

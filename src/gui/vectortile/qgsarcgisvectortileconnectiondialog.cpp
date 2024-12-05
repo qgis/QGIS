@@ -36,8 +36,7 @@ QgsArcgisVectorTileConnectionDialog::QgsArcgisVectorTileConnectionDialog( QWidge
   mSpinZMax->setClearValue( 14 );
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this,  [ = ]
-  {
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [=] {
     QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#using-vector-tiles-services" ) );
   } );
   connect( mEditName, &QLineEdit::textChanged, this, &QgsArcgisVectorTileConnectionDialog::updateOkButtonState );
@@ -81,7 +80,7 @@ QString QgsArcgisVectorTileConnectionDialog::connectionUri() const
   conn.username = mAuthSettings->username();
   conn.password = mAuthSettings->password();
   conn.httpHeaders[QgsHttpHeaders::KEY_REFERER] = mEditReferer->text();
-  conn.authCfg = mAuthSettings->configId( );
+  conn.authCfg = mAuthSettings->configId();
 
   conn.styleUrl = mEditStyleUrl->text();
 

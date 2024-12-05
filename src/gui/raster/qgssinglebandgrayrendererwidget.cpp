@@ -57,11 +57,9 @@ QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer
     mMinMaxContainerWidget->setLayout( layout );
     layout->addWidget( mMinMaxWidget );
 
-    connect( mMinMaxWidget, &QgsRasterMinMaxWidget::widgetChanged,
-             this, &QgsSingleBandGrayRendererWidget::widgetChanged );
+    connect( mMinMaxWidget, &QgsRasterMinMaxWidget::widgetChanged, this, &QgsSingleBandGrayRendererWidget::widgetChanged );
 
-    connect( mMinMaxWidget, &QgsRasterMinMaxWidget::load,
-             this, &QgsSingleBandGrayRendererWidget::loadMinMax );
+    connect( mMinMaxWidget, &QgsRasterMinMaxWidget::load, this, &QgsSingleBandGrayRendererWidget::loadMinMax );
 
     mGrayBandComboBox->setLayer( mRasterLayer );
 
@@ -93,7 +91,8 @@ QgsRasterRenderer *QgsSingleBandGrayRendererWidget::renderer()
   const int band = mGrayBandComboBox->currentBand();
 
   QgsContrastEnhancement *e = new QgsContrastEnhancement( ( Qgis::DataType )(
-        provider->dataType( band ) ) );
+    provider->dataType( band )
+  ) );
   e->setMinimumValue( QgsDoubleValidator::toDouble( mMinLineEdit->text() ) );
   e->setMaximumValue( QgsDoubleValidator::toDouble( mMaxLineEdit->text() ) );
   e->setContrastEnhancementAlgorithm( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm )( mContrastEnhancementComboBox->currentData().toInt() ) );
@@ -137,7 +136,8 @@ void QgsSingleBandGrayRendererWidget::minMaxModified()
     if ( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm )( mContrastEnhancementComboBox->currentData().toInt() ) == QgsContrastEnhancement::NoEnhancement )
     {
       mContrastEnhancementComboBox->setCurrentIndex(
-        mContrastEnhancementComboBox->findData( ( int ) QgsContrastEnhancement::StretchToMinimumMaximum ) );
+        mContrastEnhancementComboBox->findData( ( int ) QgsContrastEnhancement::StretchToMinimumMaximum )
+      );
     }
     mMinMaxWidget->userHasSetManualMinMaxValues();
     emit widgetChanged();
@@ -187,7 +187,7 @@ void QgsSingleBandGrayRendererWidget::setFromRenderer( const QgsRasterRenderer *
   {
     //band
     mGrayBandComboBox->setBand( gr->inputBand() );
-    mMinMaxWidget->setBands( QList< int >() << gr->inputBand() );
+    mMinMaxWidget->setBands( QList<int>() << gr->inputBand() );
     mGradientComboBox->setCurrentIndex( mGradientComboBox->findData( gr->gradient() ) );
 
     const QgsContrastEnhancement *ce = gr->contrastEnhancement();
@@ -200,7 +200,8 @@ void QgsSingleBandGrayRendererWidget::setFromRenderer( const QgsRasterRenderer *
       mDisableMinMaxWidgetRefresh = false;
       //contrast enhancement algorithm
       mContrastEnhancementComboBox->setCurrentIndex(
-        mContrastEnhancementComboBox->findData( ( int )( ce->contrastEnhancementAlgorithm() ) ) );
+        mContrastEnhancementComboBox->findData( ( int ) ( ce->contrastEnhancementAlgorithm() ) )
+      );
     }
 
     mMinMaxWidget->setFromMinMaxOrigin( gr->minMaxOrigin() );
@@ -226,15 +227,14 @@ void QgsSingleBandGrayRendererWidget::setMax( const QString &value, int )
 
 void QgsSingleBandGrayRendererWidget::showLegendSettings()
 {
-  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast<QWidget *>( parent() ) );
   if ( panel && panel->dockMode() )
   {
     QgsColorRampLegendNodeWidget *legendPanel = new QgsColorRampLegendNodeWidget();
     legendPanel->setUseContinuousRampCheckBoxVisibility( false );
     legendPanel->setPanelTitle( tr( "Legend Settings" ) );
     legendPanel->setSettings( mLegendSettings );
-    connect( legendPanel, &QgsColorRampLegendNodeWidget::widgetChanged, this, [ = ]
-    {
+    connect( legendPanel, &QgsColorRampLegendNodeWidget::widgetChanged, this, [=] {
       mLegendSettings = legendPanel->settings();
       emit widgetChanged();
     } );

@@ -49,13 +49,12 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
   }
   setupUi( this );
   connect( mRendererComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointClusterRendererWidget::mRendererComboBox_currentIndexChanged );
-  connect( mDistanceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPointClusterRendererWidget::mDistanceSpinBox_valueChanged );
+  connect( mDistanceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPointClusterRendererWidget::mDistanceSpinBox_valueChanged );
   connect( mDistanceUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointClusterRendererWidget::mDistanceUnitWidget_changed );
   connect( mRendererSettingsButton, &QPushButton::clicked, this, &QgsPointClusterRendererWidget::mRendererSettingsButton_clicked );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  mDistanceUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels,
-                                   Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
+  mDistanceUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
 
   mCenterSymbolToolButton->setSymbolType( Qgis::SymbolType::Marker );
 
@@ -65,7 +64,7 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
   }
   if ( !mRenderer )
   {
-    mRenderer = std::make_unique< QgsPointClusterRenderer >();
+    mRenderer = std::make_unique<QgsPointClusterRenderer>();
     if ( renderer )
       renderer->copyRendererData( mRenderer.get() );
   }
@@ -135,7 +134,7 @@ void QgsPointClusterRendererWidget::mRendererComboBox_currentIndexChanged( int i
   if ( m )
   {
     // unfortunately renderer conversion is only available through the creation of a widget...
-    const std::unique_ptr< QgsFeatureRenderer > oldRenderer( mRenderer->embeddedRenderer()->clone() );
+    const std::unique_ptr<QgsFeatureRenderer> oldRenderer( mRenderer->embeddedRenderer()->clone() );
     QgsRendererWidget *tempRenderWidget = m->createRendererWidget( mLayer, mStyle, oldRenderer.get() );
     mRenderer->setEmbeddedRenderer( tempRenderWidget->renderer()->clone() );
     delete tempRenderWidget;
@@ -157,7 +156,7 @@ void QgsPointClusterRendererWidget::mRendererSettingsButton_clicked()
     QgsExpressionContextScope scope;
     scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "", true ) );
     scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0, true ) );
-    QList< QgsExpressionContextScope > scopes = mContext.additionalExpressionContextScopes();
+    QList<QgsExpressionContextScope> scopes = mContext.additionalExpressionContextScopes();
     scopes << scope;
     QgsSymbolWidgetContext context = mContext;
     context.setAdditionalExpressionContextScopes( scopes );
@@ -206,7 +205,7 @@ QgsExpressionContext QgsPointClusterRendererWidget::createExpressionContext() co
   QgsExpressionContextScope scope;
   scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "", true ) );
   scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0, true ) );
-  QList< QgsExpressionContextScope > scopes = mContext.additionalExpressionContextScopes();
+  QList<QgsExpressionContextScope> scopes = mContext.additionalExpressionContextScopes();
   scopes << scope;
   const auto constScopes = scopes;
   for ( const QgsExpressionContextScope &s : constScopes )
@@ -218,7 +217,7 @@ QgsExpressionContext QgsPointClusterRendererWidget::createExpressionContext() co
 
 void QgsPointClusterRendererWidget::centerSymbolChanged()
 {
-  mRenderer->setClusterSymbol( mCenterSymbolToolButton->clonedSymbol< QgsMarkerSymbol >() );
+  mRenderer->setClusterSymbol( mCenterSymbolToolButton->clonedSymbol<QgsMarkerSymbol>() );
   emit widgetChanged();
 }
 

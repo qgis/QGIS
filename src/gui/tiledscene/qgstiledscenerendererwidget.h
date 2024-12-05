@@ -37,7 +37,6 @@ class GUI_EXPORT QgsTiledSceneRendererWidget : public QgsPanelWidget
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsTiledSceneRendererWidget, associated with the
      * specified \a layer and \a style database.
@@ -76,7 +75,6 @@ class GUI_EXPORT QgsTiledSceneRendererWidget : public QgsPanelWidget
 
     //! Context in which widget is shown
     QgsSymbolWidgetContext mContext;
-
 };
 
 #endif // QGSTILEDSCENERENDERERWIDGET_H
