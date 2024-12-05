@@ -411,7 +411,7 @@ void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnCreation()
   terrainLayer->setCrs( crs3857 );
   QVERIFY( terrainLayer->isValid() );
 
-  std::unique_ptr< QgsRasterDemTerrainProvider > terrain = std::make_unique<QgsRasterDemTerrainProvider>();
+  std::unique_ptr<QgsRasterDemTerrainProvider> terrain = std::make_unique<QgsRasterDemTerrainProvider>();
   terrain->setLayer( terrainLayer.get() );
 
   QgsProject::instance()->elevationProperties()->setTerrainProvider( terrain.release() );
@@ -630,7 +630,7 @@ void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnButtonClick()
   terrainLayer->setCrs( crs3857 );
   QVERIFY( terrainLayer->isValid() );
 
-  std::unique_ptr< QgsRasterDemTerrainProvider > terrain = std::make_unique<QgsRasterDemTerrainProvider>();
+  std::unique_ptr<QgsRasterDemTerrainProvider> terrain = std::make_unique<QgsRasterDemTerrainProvider>();
   terrain->setLayer( terrainLayer.get() );
 
   QgsProject::instance()->elevationProperties()->setTerrainProvider( terrain.release() );

@@ -199,7 +199,7 @@ void QgsMeshTransformCoordinatesDockWidget::updateZValuesFromTerrain()
 
     if ( vertexTransformed )
     {
-      elevation  = terrainProvider->heightAt( point.x(), point.y() );
+      elevation = terrainProvider->heightAt( point.x(), point.y() );
       if ( !std::isnan( elevation ) )
       {
         modifiedVerticesIndexes.push_back( vertexIndex );

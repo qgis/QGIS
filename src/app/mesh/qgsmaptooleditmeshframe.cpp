@@ -248,8 +248,7 @@ void QgsMeshEditDigitizingAction::updateSettings()
 {
   QgsSettings settings;
 
-  settings.setEnumValue( QStringLiteral( "UI/Mesh/ZValueFrom" ),
-                         static_cast<ZValueSource>( mComboZValueType->currentData().toInt() ) );
+  settings.setEnumValue( QStringLiteral( "UI/Mesh/ZValueFrom" ), static_cast<ZValueSource>( mComboZValueType->currentData().toInt() ) );
 }
 
 QgsMeshEditDigitizingAction::ZValueSource QgsMeshEditDigitizingAction::zValueSourceType() const
@@ -2736,8 +2735,7 @@ void QgsMapToolEditMeshFrame::addVertex(
 
   bool isOnMesh = mCurrentFaceIndex != -1 || ( mCurrentEdge.first != -1 && mCurrentEdge.second != -1 );
 
-  if ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::Terrain ||
-       ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::InMeshUseMeshTerrainOtherwise && !isOnMesh ) )
+  if ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::Terrain || ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::InMeshUseMeshTerrainOtherwise && !isOnMesh ) )
   {
     const QgsAbstractTerrainProvider *terrainProvider = QgsProject::instance()->elevationProperties()->terrainProvider();
     const QgsCoordinateTransform transformation = QgsCoordinateTransform( mCurrentLayer->crs(), terrainProvider->crs(), QgsProject::instance() );
@@ -2764,8 +2762,7 @@ void QgsMapToolEditMeshFrame::addVertex(
       zValue = mZValueWidget->getDefaultValue();
     }
   }
-  else if ( isOnMesh && ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::InMeshUseMeshZWidgetOtherwise ||
-                          mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::InMeshUseMeshTerrainOtherwise ) )
+  else if ( isOnMesh && ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::InMeshUseMeshZWidgetOtherwise || mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::InMeshUseMeshTerrainOtherwise ) )
   {
     if ( mCurrentEdge.first != -1 && mCurrentEdge.second != -1 ) //we are on a edge -->interpolate the z value
     {
@@ -2790,9 +2787,7 @@ void QgsMapToolEditMeshFrame::addVertex(
   }
   else
   {
-    if ( mapPointMatch.isValid() &&
-         mapPointMatch.layer() &&
-         QgsWkbTypes::hasZ( mapPointMatch.layer()->wkbType() ) )
+    if ( mapPointMatch.isValid() && mapPointMatch.layer() && QgsWkbTypes::hasZ( mapPointMatch.layer()->wkbType() ) )
     {
       const QgsPoint layerPoint = mapPointMatch.interpolatedPoint( mCanvas->mapSettings().destinationCrs() );
       zValue = layerPoint.z();
