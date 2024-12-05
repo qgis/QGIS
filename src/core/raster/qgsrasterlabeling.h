@@ -29,7 +29,7 @@
 class QgsRasterLayer;
 class QgsNumericFormat;
 class QgsRasterPipe;
-class QgsRasterViewPort;
+struct QgsRasterViewPort;
 class QgsRasterLayerRendererFeedback;
 
 #ifndef SIP_RUN
