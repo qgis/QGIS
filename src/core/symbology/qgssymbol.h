@@ -879,12 +879,26 @@ class CORE_EXPORT QgsSymbol
     /**
      * Sets the symbol's extent buffer.
      *
-     * \param extentBuffer buffer distance in map units
+     * \param extentBuffer buffer distance.
      * \see extentBuffer()
      * \note Negative values are not supported and will be changed to 0.
      * \since QGIS 3.42
      */
     void setExtentBuffer( double extentBuffer );
+
+    /**
+     * Returns the units for the buffer size.
+     *
+     * \see setExtentBufferSizeUnit()
+     */
+    Qgis::RenderUnit extentBufferSizeUnit() const { return mExtentBufferSizeUnit; }
+
+    /**
+     * Sets the \a unit used for the extent buffer.
+     *
+     * \see extentBufferSizeUnit()
+     */
+    void setExtentBufferSizeUnit( Qgis::RenderUnit unit ) { mExtentBufferSizeUnit = unit; }
 
   protected:
 
@@ -975,6 +989,7 @@ class CORE_EXPORT QgsSymbol
     QgsSymbolLayerList mLayers;
 
     double mExtentBuffer = 0;
+    Qgis::RenderUnit mExtentBufferSizeUnit = Qgis::RenderUnit::MapUnits;
 
     //! Symbol opacity (in the range 0 - 1)
     qreal mOpacity = 1.0;

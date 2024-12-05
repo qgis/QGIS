@@ -879,7 +879,7 @@ Returns the symbol's extent buffer.
 %Docstring
 Sets the symbol's extent buffer.
 
-:param extentBuffer: buffer distance in map units
+:param extentBuffer: buffer distance.
 
 .. seealso:: :py:func:`extentBuffer`
 
@@ -888,6 +888,20 @@ Sets the symbol's extent buffer.
    Negative values are not supported and will be changed to 0.
 
 .. versionadded:: 3.42
+%End
+
+    Qgis::RenderUnit extentBufferSizeUnit() const;
+%Docstring
+Returns the units for the buffer size.
+
+.. seealso:: :py:func:`setExtentBufferSizeUnit`
+%End
+
+    void setExtentBufferSizeUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` used for the extent buffer.
+
+.. seealso:: :py:func:`extentBufferSizeUnit`
 %End
 
   protected:

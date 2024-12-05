@@ -2315,6 +2315,7 @@ void QgsSymbol::copyCommonProperties( const QgsSymbol *other )
   mSymbolFlags = other->mSymbolFlags;
   mAnimationSettings = other->mAnimationSettings;
   mExtentBuffer = other->mExtentBuffer;
+  mExtentBufferSizeUnit = other->mExtentBufferSizeUnit;
   if ( other->mBufferSettings )
     mBufferSettings = std::make_unique< QgsSymbolBufferSettings >( *other->mBufferSettings );
   else

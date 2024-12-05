@@ -311,6 +311,7 @@ void QgsSymbolsListWidget::showExtentBufferSettings()
     {
       mSymbol->setExtentBuffer( widget->extentBuffer() );
       mSymbol->setDataDefinedProperty( QgsSymbol::Property::ExtentBuffer, widget->dataDefinedProperty() );
+      mSymbol->setExtentBufferSizeUnit( widget->sizeUnit() );
 
       emit changed();
     } );
@@ -331,6 +332,7 @@ void QgsSymbolsListWidget::showExtentBufferSettings()
     {
       mSymbol->setExtentBuffer( dlg.extentBuffer() );
       mSymbol->setDataDefinedProperty( QgsSymbol::Property::ExtentBuffer, dlg.dataDefinedProperty() );
+      mSymbol->setExtentBufferSizeUnit( dlg.sizeUnit() );
 
       emit changed();
     }
