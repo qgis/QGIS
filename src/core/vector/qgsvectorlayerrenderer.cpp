@@ -363,10 +363,10 @@ bool QgsVectorLayerRenderer::renderInternal( QgsFeatureRenderer *renderer, int r
 
   if ( maximumExtentBuffer != 0 )
   {
-    bool bufferDisappearsExtent = maximumExtentBuffer < 0 && ( requestExtent.width() + ( maximumExtentBuffer * 2 ) < 0 || requestExtent.height() + ( maximumExtentBuffer * 2 ) < 0 );
+    bool bufferCausesEmptyExtent = maximumExtentBuffer < 0 && ( requestExtent.width() + ( maximumExtentBuffer * 2 ) < 0 || requestExtent.height() + ( maximumExtentBuffer * 2 ) < 0 );
 
     // nothing to draw
-    if ( bufferDisappearsExtent )
+    if ( bufferCausesEmptyExtent )
     {
       renderer->stopRender( context );
       return true;

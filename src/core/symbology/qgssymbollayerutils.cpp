@@ -1453,7 +1453,8 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, const QgsSymbo
   symEl.setAttribute( QStringLiteral( "name" ), name );
   symEl.setAttribute( QStringLiteral( "alpha" ), QString::number( symbol->opacity() ) );
   symEl.setAttribute( QStringLiteral( "clip_to_extent" ), symbol->clipFeaturesToExtent() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  symEl.setAttribute( QStringLiteral( "extent_buffer" ), QString::number( symbol->extentBuffer() ) );
+  if ( !qgsDoubleNear( symbol->extentBuffer(), 0 ) )
+    symEl.setAttribute( QStringLiteral( "extent_buffer" ), QString::number( symbol->extentBuffer() ) );
   symEl.setAttribute( QStringLiteral( "force_rhr" ), symbol->forceRHR() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   if ( symbol->flags() & Qgis::SymbolFlag::RendererShouldUseSymbolLevels )
     symEl.setAttribute( QStringLiteral( "renderer_should_use_levels" ), QStringLiteral( "1" ) );

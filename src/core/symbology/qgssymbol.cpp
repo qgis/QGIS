@@ -20,7 +20,6 @@
 #include <QSvgGenerator>
 #include <QPicture>
 
-#include <algorithm>
 #include <cmath>
 #include <map>
 #include <random>

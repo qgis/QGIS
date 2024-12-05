@@ -632,8 +632,7 @@ Currently clones
 
     double maximumExtentBuffer( QgsRenderContext &context ) const;
 %Docstring
-Returns the maximum extent buffer found in this renderer's
-symbols' symbol layers.
+Returns the maximum extent buffer found in this renderer's symbols.
 
 .. note::
 
