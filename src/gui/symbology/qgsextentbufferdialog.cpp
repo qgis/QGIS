@@ -21,6 +21,7 @@
 #include "qgspanelwidget.h"
 #include "qgssymbol.h"
 #include "qgssymbolwidgetcontext.h"
+#include "qgsunittypes.h"
 #include "qgsvectorlayer.h"
 
 QgsExtentBufferWidget::QgsExtentBufferWidget( QgsSymbol *symbol, QgsVectorLayer *layer, QWidget *parent )
@@ -28,9 +29,23 @@ QgsExtentBufferWidget::QgsExtentBufferWidget( QgsSymbol *symbol, QgsVectorLayer 
 {
   setupUi( this );
 
-  mExtentBufferSpinBox->setValue( mSymbol-> extentBuffer() );
+  mExtentBufferSpinBox->setValue( mSymbol->extentBuffer() );
+
+  mExtentBufferUnitSelectionWidget->setShowMapScaleButton( false );
+  mExtentBufferUnitSelectionWidget->setUnits( { Qgis::RenderUnit::Millimeters,
+      Qgis::RenderUnit::MetersInMapUnits,
+      Qgis::RenderUnit::MapUnits,
+      Qgis::RenderUnit::Pixels,
+      Qgis::RenderUnit::Points,
+      Qgis::RenderUnit::Inches } );
+  mExtentBufferUnitSelectionWidget->setUnit( mSymbol->extentBufferSizeUnit() );
 
   connect( mExtentBufferSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]()
+  {
+    emit widgetChanged();
+  } );
+
+  connect( mExtentBufferUnitSelectionWidget, &QgsUnitSelectionWidget::changed, this, [ = ]()
   {
     emit widgetChanged();
   } );
@@ -97,7 +112,7 @@ QgsExtentBufferDialog::QgsExtentBufferDialog( QgsSymbol *symbol, QgsVectorLayer 
   vLayout->addWidget( bbox );
   setLayout( vLayout );
 
-  setWindowTitle( tr( "Extent buffer" ) );
+  setWindowTitle( tr( "Extent Buffer" ) );
 }
 
 double QgsExtentBufferDialog::extentBuffer() const
@@ -106,6 +121,19 @@ double QgsExtentBufferDialog::extentBuffer() const
     return 0;
 
   return mWidget->extentBuffer();
+}
+
+Qgis::RenderUnit QgsExtentBufferWidget::sizeUnit() const
+{
+  return mExtentBufferUnitSelectionWidget->unit();
+}
+
+Qgis::RenderUnit QgsExtentBufferDialog::sizeUnit() const
+{
+  if ( !mWidget )
+    return Qgis::RenderUnit::MapUnits;
+
+  return mWidget->sizeUnit();
 }
 
 QgsProperty QgsExtentBufferDialog::dataDefinedProperty() const

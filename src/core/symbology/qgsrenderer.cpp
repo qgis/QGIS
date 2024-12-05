@@ -427,16 +427,27 @@ double QgsFeatureRenderer::maximumExtentBuffer( QgsRenderContext &context ) cons
 
   const QgsExpressionContext &expContext = context.expressionContext();
 
-  auto getValueFromSymbol = [ &expContext ]( const QgsSymbol * sym ) -> double
+  auto getValueFromSymbol = [ &expContext, &context ]( const QgsSymbol * sym ) -> double
   {
     const QgsProperty property = sym->dataDefinedProperties().property( QgsSymbol::Property::ExtentBuffer );
 
+    double value = 0.0;
+
     if ( property.isActive() )
     {
-      return sym->dataDefinedProperties().valueAsDouble( QgsSymbol::Property::ExtentBuffer, expContext, sym->extentBuffer() );
+      value = sym->dataDefinedProperties().valueAsDouble( QgsSymbol::Property::ExtentBuffer, expContext, sym->extentBuffer() );
+    }
+    else
+    {
+      value = sym->extentBuffer();
     }
 
-    return sym->extentBuffer();
+    if ( sym->extentBufferSizeUnit() != Qgis::RenderUnit::MapUnits )
+    {
+      value = context.convertToMapUnits( value, sym->extentBufferSizeUnit(), sym->mapUnitScale() );
+    }
+
+    return value;
   };
 
   if ( symbolList.size() == 1 )

@@ -71,6 +71,12 @@ class GUI_EXPORT QgsExtentBufferWidget : public QgsPanelWidget, public QgsExpres
      */
     QgsSymbolWidgetContext context() const;
 
+    /**
+     * Returns the extent buffer unit currently set in the widget.
+     * \see setContext()
+     */
+    Qgis::RenderUnit sizeUnit() const;
+
   private:
     QgsSymbol *mSymbol = nullptr;
     QgsVectorLayer *mLayer = nullptr;
@@ -104,6 +110,11 @@ class GUI_EXPORT QgsExtentBufferDialog : public QDialog
      * Returns the extent buffer value currently set in the widget.
      */
     double extentBuffer() const;
+
+    /**
+     * Returns the extent buffer unit currently set in the widget.
+     */
+    Qgis::RenderUnit sizeUnit() const;
 
     /**
      * Returns the extent buffer value currently set in the widget.

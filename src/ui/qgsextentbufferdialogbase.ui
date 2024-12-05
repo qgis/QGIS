@@ -17,7 +17,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Define an extent buffer distance in map units. The symbol will be rendered for features which are within the buffered map extent.</string>
+      <string>Define an extent buffer distance. The symbol will be rendered for features which are within the buffered map extent.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -36,7 +36,7 @@
      <item>
       <widget class="QgsDoubleSpinBox" name="mExtentBufferSpinBox">
        <property name="minimum">
-        <double>0</double>
+        <double>0.000000000000000</double>
        </property>
        <property name="maximum">
         <double>999999999.000000000000000</double>
@@ -48,6 +48,9 @@
         <bool>false</bool>
        </property>
       </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mExtentBufferUnitSelectionWidget" native="true"/>
      </item>
      <item>
       <widget class="QgsPropertyOverrideButton" name="mExtentBufferDDButton"/>
@@ -84,6 +87,12 @@
    <class>QgsPanelWidget</class>
    <extends>QWidget</extends>
    <header>qgspanelwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
