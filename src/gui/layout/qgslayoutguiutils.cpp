@@ -182,9 +182,8 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     label->attemptSetSceneRect( QRectF( label->pos().x(), label->pos().y(), labelWidth, labelHeight ) );
   } );
 
-  labelItemMetadata->setItemDoubleClickedFunction( [ = ]( QgsLayoutItem * item, Qgis::MouseHandlesAction action )
-  {
-    QgsLayoutItemLabel *label = qobject_cast< QgsLayoutItemLabel * >( item );
+  labelItemMetadata->setItemDoubleClickedFunction( [=]( QgsLayoutItem *item, Qgis::MouseHandlesAction action ) {
+    QgsLayoutItemLabel *label = qobject_cast<QgsLayoutItemLabel *>( item );
 
     // size to text doesn't have any real meaning for HTML content, skip it
     if ( label->mode() == QgsLayoutItemLabel::ModeHtml )
