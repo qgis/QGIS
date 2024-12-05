@@ -1,3 +1,6 @@
+# this doesn't seem to work on PRs from forks
+# so we use pre-commit.ci instead
+
 name: 🤸 Run pre-commit on PR
 on:
   pull_request:
