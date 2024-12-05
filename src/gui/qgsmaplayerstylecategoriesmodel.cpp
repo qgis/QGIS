@@ -65,7 +65,7 @@ void QgsMapLayerStyleCategoriesModel::setCategories( QgsMapLayer::StyleCategorie
   if ( mCategories == categories )
     return;
 
-  // determine the allowed categories to consider only these in the last categories.
+  // filter the categories and only preserve the categories supported by the current layer type
   QgsMapLayer::StyleCategories allowedCategories;
   for ( QgsMapLayer::StyleCategory category : std::as_const( mCategoryList ) )
   {
