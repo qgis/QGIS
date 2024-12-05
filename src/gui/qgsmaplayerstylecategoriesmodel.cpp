@@ -65,6 +65,16 @@ void QgsMapLayerStyleCategoriesModel::setCategories( QgsMapLayer::StyleCategorie
   if ( mCategories == categories )
     return;
 
+  // filter the categories and only preserve the categories supported by the current layer type
+  QgsMapLayer::StyleCategories allowedCategories;
+  for ( QgsMapLayer::StyleCategory category : std::as_const( mCategoryList ) )
+  {
+    if ( category == QgsMapLayer::AllStyleCategories )
+      continue;
+    allowedCategories |= category;
+  }
+  categories &= allowedCategories;
+
   beginResetModel();
   mCategories = categories;
   endResetModel();
