@@ -51,7 +51,11 @@ void OXTwitter::link() {
     oauthParams.append(O0RequestParameter(O2_OAUTH_SIGNATURE_METHOD, O2_SIGNATURE_TYPE_HMAC_SHA1));
     oauthParams.append(O0RequestParameter(O2_OAUTH_CONSUMER_KEY, clientId().toLatin1()));
     oauthParams.append(O0RequestParameter(O2_OAUTH_VERSION, "1.0"));
+#if QT_VERSION >= QT_VERSION_CHECK(5,8,0)
+    oauthParams.append(O0RequestParameter(O2_OAUTH_TIMESTAMP, QString::number(QDateTime::currentSecsSinceEpoch()).toLatin1()));
+#else
     oauthParams.append(O0RequestParameter(O2_OAUTH_TIMESTAMP, QString::number(QDateTime::currentDateTimeUtc().toTime_t()).toLatin1()));
+#endif
     oauthParams.append(O0RequestParameter(O2_OAUTH_NONCE, nonce()));
     oauthParams.append(O0RequestParameter(O2_OAUTH_TOKEN, QByteArray("")));
     oauthParams.append(O0RequestParameter(O2_OAUTH_VERFIER, QByteArray("")));
@@ -61,9 +65,13 @@ void OXTwitter::link() {
 
     // Post request
     QNetworkRequest request(accessTokenUrl());
-    request.setRawHeader(O2_HTTP_AUTHORIZATION_HEADER, buildAuthorizationHeader(oauthParams));
+    decorateRequest(request, oauthParams);
     request.setHeader(QNetworkRequest::ContentTypeHeader, O2_MIME_TYPE_XFORM);
     QNetworkReply *reply = manager_->post(request, createQueryParameters(xAuthParams_));
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onTokenExchangeError(QNetworkReply::NetworkError)));
-    connect(reply, SIGNAL(finished()), this, SLOT(onTokenExchangeFinished()));
+#else
+    connect(reply, &QNetworkReply::errorOccurred, this, &OXTwitter::onTokenExchangeError);
+#endif
+    connect(reply, &QNetworkReply::finished, this, &OXTwitter::onTokenExchangeFinished);
 }

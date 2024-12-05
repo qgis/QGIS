@@ -2,5 +2,5 @@
 try:
     QgsDistanceArea.formatDistance = staticmethod(QgsDistanceArea.formatDistance)
     QgsDistanceArea.formatArea = staticmethod(QgsDistanceArea.formatArea)
-except NameError:
+except (NameError, AttributeError):
     pass

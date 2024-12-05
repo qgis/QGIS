@@ -1062,6 +1062,7 @@ any data defined overrides and offsets which are set for the marker layer.
 
   protected:
 
+
     QgsMarkerSymbolLayer( bool locked = false );
 %Docstring
 Constructor for QgsMarkerSymbolLayer.

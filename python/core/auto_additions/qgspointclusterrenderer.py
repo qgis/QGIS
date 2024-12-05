@@ -3,5 +3,5 @@ try:
     QgsPointClusterRenderer.create = staticmethod(QgsPointClusterRenderer.create)
     QgsPointClusterRenderer.convertFromRenderer = staticmethod(QgsPointClusterRenderer.convertFromRenderer)
     QgsPointClusterRenderer.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -36,7 +36,7 @@ QgsAuthPkcs12Edit::QgsAuthPkcs12Edit( QWidget *parent )
   setupUi( this );
   connect( lePkcs12KeyPass, &QLineEdit::textChanged, this, &QgsAuthPkcs12Edit::lePkcs12KeyPass_textChanged );
   connect( btnPkcs12Bundle, &QToolButton::clicked, this, &QgsAuthPkcs12Edit::btnPkcs12Bundle_clicked );
-  connect( cbAddCas, &QCheckBox::stateChanged, this, [ = ]( int state ) {  cbAddRootCa->setEnabled( state == Qt::Checked ); } );
+  connect( cbAddCas, &QCheckBox::stateChanged, this, [=]( int state ) { cbAddRootCa->setEnabled( state == Qt::Checked ); } );
   lblCas->hide();
   twCas->hide();
   cbAddCas->hide();
@@ -109,9 +109,7 @@ bool QgsAuthPkcs12Edit::validateConfig()
   const QDateTime now( QDateTime::currentDateTime() );
   const bool bundlevalid = ( now >= startdate && now <= enddate );
 
-  writePkiMessage( lePkcs12Msg,
-                   tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ),
-                   ( bundlevalid ? Valid : Invalid ) );
+  writePkiMessage( lePkcs12Msg, tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ), ( bundlevalid ? Valid : Invalid ) );
 
   const bool showCas( bundlevalid && populateCas() );
   lblCas->setVisible( showCas );
@@ -127,8 +125,8 @@ QgsStringMap QgsAuthPkcs12Edit::configMap() const
   QgsStringMap config;
   config.insert( QStringLiteral( "bundlepath" ), lePkcs12Bundle->text() );
   config.insert( QStringLiteral( "bundlepass" ), lePkcs12KeyPass->text() );
-  config.insert( QStringLiteral( "addcas" ), cbAddCas->isChecked() ? QStringLiteral( "true" ) :  QStringLiteral( "false" ) );
-  config.insert( QStringLiteral( "addrootca" ), cbAddRootCa->isChecked() ? QStringLiteral( "true" ) :  QStringLiteral( "false" ) );
+  config.insert( QStringLiteral( "addcas" ), cbAddCas->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  config.insert( QStringLiteral( "addrootca" ), cbAddRootCa->isChecked() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
 
   return config;
 }
@@ -209,8 +207,7 @@ void QgsAuthPkcs12Edit::lePkcs12KeyPass_textChanged( const QString &pass )
 
 void QgsAuthPkcs12Edit::btnPkcs12Bundle_clicked()
 {
-  const QString &fn = QgsAuthGuiUtils::getOpenFileName( this, tr( "Open PKCS#12 Certificate Bundle" ),
-                      tr( "PKCS#12 (*.p12 *.pfx)" ) );
+  const QString &fn = QgsAuthGuiUtils::getOpenFileName( this, tr( "Open PKCS#12 Certificate Bundle" ), tr( "PKCS#12 (*.p12 *.pfx)" ) );
   if ( !fn.isEmpty() )
   {
     lePkcs12Bundle->setText( fn );
@@ -255,7 +252,7 @@ bool QgsAuthPkcs12Edit::populateCas()
       item = new QTreeWidgetItem( twCas, QStringList( cert.subjectInfo( QSslCertificate::SubjectInfo::CommonName ) ) );
     }
     item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
-    item->setToolTip( 0, tr( "<ul><li>Serial #: %1</li><li>Expiry date: %2</li></ul>" ).arg( cert.serialNumber( ), cert.expiryDate().toString( Qt::TextDate ) ) );
+    item->setToolTip( 0, tr( "<ul><li>Serial #: %1</li><li>Expiry date: %2</li></ul>" ).arg( cert.serialNumber(), cert.expiryDate().toString( Qt::TextDate ) ) );
     prevItem = item;
   }
   twCas->expandAll();

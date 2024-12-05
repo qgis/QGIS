@@ -26,14 +26,14 @@ class TestQgsElevationMap : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsElevationMap() : QgsTest( QStringLiteral( "Elevation Map Tests" ), QStringLiteral( "elevation_map" ) ) {}
+    TestQgsElevationMap()
+      : QgsTest( QStringLiteral( "Elevation Map Tests" ), QStringLiteral( "elevation_map" ) ) {}
 
   private slots:
     void initTestCase();
     void cleanupTestCase();
     void testRasterDemEdl();
     void testRasterDemReprojected();
-
 };
 
 
@@ -45,7 +45,6 @@ void TestQgsElevationMap::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
-
 }
 
 void TestQgsElevationMap::cleanupTestCase()
@@ -56,7 +55,6 @@ void TestQgsElevationMap::cleanupTestCase()
 
 void TestQgsElevationMap::testRasterDemEdl()
 {
-
   QString testDataDir = QStringLiteral( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QgsRasterLayer r( testDataDir + "/analysis/dem.tif" );
   QVERIFY( r.isValid() );

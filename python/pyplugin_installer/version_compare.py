@@ -45,8 +45,7 @@ the end of the shorter list and the matter is still unresolved, the longer
 list is usually recognized as higher, except following suffixes:
 ALPHA, BETA, RC, PREVIEW and TRUNK which make the version number lower.
 """
-from builtins import str
-from builtins import range
+
 from qgis.core import Qgis
 
 import re
@@ -56,21 +55,32 @@ import re
 
 
 def normalizeVersion(s):
-    """ remove possible prefix from given string and convert to uppercase """
-    prefixes = ['VERSION', 'VER.', 'VER', 'V.', 'V', 'REVISION', 'REV.', 'REV', 'R.', 'R']
+    """remove possible prefix from given string and convert to uppercase"""
+    prefixes = [
+        "VERSION",
+        "VER.",
+        "VER",
+        "V.",
+        "V",
+        "REVISION",
+        "REV.",
+        "REV",
+        "R.",
+        "R",
+    ]
     if not s:
-        return str()
+        return ""
     s = str(s).upper()
     for i in prefixes:
-        if s[:len(i)] == i:
-            s = s.replace(i, '')
+        if s[: len(i)] == i:
+            s = s.replace(i, "")
     s = s.strip()
     return s
 
 
 # ------------------------------------------------------------------------ #
 def classifyCharacter(c):
-    """ return 0 for delimiter, 1 for digit and 2 for alphabetic character """
+    """return 0 for delimiter, 1 for digit and 2 for alphabetic character"""
     if c in [".", "-", "_", " "]:
         return 0
     if c.isdigit():
@@ -81,7 +91,7 @@ def classifyCharacter(c):
 
 # ------------------------------------------------------------------------ #
 def chopString(s):
-    """ convert string to list of numbers and words """
+    """convert string to list of numbers and words"""
     l = [s[0]]
     for i in range(1, len(s)):
         if classifyCharacter(s[i]) == 0:
@@ -95,12 +105,19 @@ def chopString(s):
 
 # ------------------------------------------------------------------------ #
 def compareElements(s1, s2):
-    """ compare two particular elements """
+    """compare two particular elements"""
     # check if the matter is easy solvable:
     if s1 == s2:
         return 0
     # try to compare as numeric values (but only if the first character is not 0):
-    if s1 and s2 and s1.isnumeric() and s2.isnumeric() and s1[0] != '0' and s2[0] != '0':
+    if (
+        s1
+        and s2
+        and s1.isnumeric()
+        and s2.isnumeric()
+        and s1[0] != "0"
+        and s2[0] != "0"
+    ):
         if float(s1) == float(s2):
             return 0
         elif float(s1) > float(s2):
@@ -109,10 +126,10 @@ def compareElements(s1, s2):
             return 2
     # if the strings aren't numeric or start from 0, compare them as a strings:
     # but first, set ALPHA < BETA < PREVIEW < RC < TRUNK < [NOTHING] < [ANYTHING_ELSE]
-    if s1 not in ['ALPHA', 'BETA', 'PREVIEW', 'RC', 'TRUNK']:
-        s1 = 'Z' + s1
-    if s2 not in ['ALPHA', 'BETA', 'PREVIEW', 'RC', 'TRUNK']:
-        s2 = 'Z' + s2
+    if s1 not in ["ALPHA", "BETA", "PREVIEW", "RC", "TRUNK"]:
+        s1 = "Z" + s1
+    if s2 not in ["ALPHA", "BETA", "PREVIEW", "RC", "TRUNK"]:
+        s2 = "Z" + s2
     # the final test:
     if s1 > s2:
         return 1
@@ -122,7 +139,7 @@ def compareElements(s1, s2):
 
 # ------------------------------------------------------------------------ #
 def compareVersions(a, b):
-    """ Compare two version numbers. Return 0 if a==b or error, 1 if a>b and 2 if b>a """
+    """Compare two version numbers. Return 0 if a==b or error, 1 if a>b and 2 if b>a"""
     if not a or not b:
         return 0
     a = normalizeVersion(a)
@@ -143,9 +160,9 @@ def compareVersions(a, b):
     # if the lists are identical till the end of the shorter string, try to compare the odd tail
     # with the simple space (because the 'alpha', 'beta', 'preview' and 'rc' are LESS then nothing)
     if len(v1) > l:
-        return compareElements(v1[l], ' ')
+        return compareElements(v1[l], " ")
     if len(v2) > l:
-        return compareElements(' ', v2[l])
+        return compareElements(" ", v2[l])
     # if everything else fails...
     if a > b:
         return 1
@@ -160,10 +177,10 @@ ALLOWED FORMATS ARE: major.minor OR major.minor.bugfix, where each segment must 
 
 
 def splitVersion(s):
-    """ split string into 2 or 3 numerical segments """
+    """split string into 2 or 3 numerical segments"""
     if not s or type(s) is not str:
         return None
-    l = str(s).split('.')
+    l = str(s).split(".")
     for c in l:
         if not c.isnumeric():
             return None
@@ -175,14 +192,14 @@ def splitVersion(s):
 
 
 def isCompatible(curVer, minVer, maxVer):
-    """ Compare current QGIS version with qgisMinVersion and qgisMaxVersion """
+    """Compare current QGIS version with qgisMinVersion and qgisMaxVersion"""
 
     if not minVer or not curVer or not maxVer:
         return False
 
-    minVer = splitVersion(re.sub(r'[^0-9.]+', '', minVer))
-    maxVer = splitVersion(re.sub(r'[^0-9.]+', '', maxVer))
-    curVer = splitVersion(re.sub(r'[^0-9.]+', '', curVer))
+    minVer = splitVersion(re.sub(r"[^0-9.]+", "", minVer))
+    maxVer = splitVersion(re.sub(r"[^0-9.]+", "", maxVer))
+    curVer = splitVersion(re.sub(r"[^0-9.]+", "", curVer))
 
     if not minVer or not curVer or not maxVer:
         return False
@@ -196,20 +213,20 @@ def isCompatible(curVer, minVer, maxVer):
     if len(maxVer) < 3:
         maxVer += ["99"]
 
-    minVer = "{:04n}{:04n}{:04n}".format(int(minVer[0]), int(minVer[1]), int(minVer[2]))
-    maxVer = "{:04n}{:04n}{:04n}".format(int(maxVer[0]), int(maxVer[1]), int(maxVer[2]))
-    curVer = "{:04n}{:04n}{:04n}".format(int(curVer[0]), int(curVer[1]), int(curVer[2]))
+    minVer = f"{int(minVer[0]):04n}{int(minVer[1]):04n}{int(minVer[2]):04n}"
+    maxVer = f"{int(maxVer[0]):04n}{int(maxVer[1]):04n}{int(maxVer[2]):04n}"
+    curVer = f"{int(curVer[0]):04n}{int(curVer[1]):04n}{int(curVer[2]):04n}"
 
-    return (minVer <= curVer and maxVer >= curVer)
+    return minVer <= curVer and maxVer >= curVer
 
 
 def pyQgisVersion():
-    """ Return current QGIS version number as X.Y.Z for testing plugin compatibility.
-        If Y = 99, bump up to (X+1.0.0), so e.g. 2.99 becomes 3.0.0
-        This way QGIS X.99 is only compatible with plugins for the upcoming major release.
+    """Return current QGIS version number as X.Y.Z for testing plugin compatibility.
+    If Y = 99, bump up to (X+1.0.0), so e.g. 2.99 becomes 3.0.0
+    This way QGIS X.99 is only compatible with plugins for the upcoming major release.
     """
-    x, y, z = re.findall(r'^(\d*).(\d*).(\d*)', Qgis.QGIS_VERSION)[0]
-    if y == '99':
+    x, y, z = re.findall(r"^(\d*).(\d*).(\d*)", Qgis.QGIS_VERSION)[0]
+    if y == "99":
         x = str(int(x) + 1)
-        y = z = '0'
-    return '{}.{}.{}'.format(x, y, z)
+        y = z = "0"
+    return f"{x}.{y}.{z}"

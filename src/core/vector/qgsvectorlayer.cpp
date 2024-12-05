@@ -6110,19 +6110,18 @@ void QgsVectorLayer::emitDataChanged()
   if ( mDataChangedFired )
     return;
 
+  // If we are asked to fire dataChanged from a layer we depend on,
+  // be sure that this layer is not in the process of committing its changes, because
+  // we will be asked to fire dataChanged at the end of his commit, and we don't
+  // want to fire this signal more than necessary.
+  if ( QgsVectorLayer *layerWeDependUpon = qobject_cast<QgsVectorLayer *>( sender() );
+       layerWeDependUpon && layerWeDependUpon->mCommitChangesActive )
+    return;
+
   updateExtents(); // reset cached extent to reflect data changes
 
   mDataChangedFired = true;
   emit dataChanged();
-  mDataChangedFired = false;
-}
-
-void QgsVectorLayer::onAfterCommitChangesDependency()
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  mDataChangedFired = true;
-  reload();
   mDataChangedFired = false;
 }
 
@@ -6153,7 +6152,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
       disconnect( lyr, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayer::emitDataChanged );
       disconnect( lyr, &QgsVectorLayer::dataChanged, this, &QgsVectorLayer::emitDataChanged );
       disconnect( lyr, &QgsVectorLayer::repaintRequested, this, &QgsVectorLayer::triggerRepaint );
-      disconnect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::onAfterCommitChangesDependency );
+      disconnect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::emitDataChanged );
     }
   }
 
@@ -6177,7 +6176,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
       connect( lyr, &QgsVectorLayer::geometryChanged, this, &QgsVectorLayer::emitDataChanged );
       connect( lyr, &QgsVectorLayer::dataChanged, this, &QgsVectorLayer::emitDataChanged );
       connect( lyr, &QgsVectorLayer::repaintRequested, this, &QgsVectorLayer::triggerRepaint );
-      connect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::onAfterCommitChangesDependency );
+      connect( lyr, &QgsVectorLayer::afterCommitChanges, this, &QgsVectorLayer::emitDataChanged );
     }
   }
 

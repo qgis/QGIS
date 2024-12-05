@@ -283,6 +283,7 @@ class QgsTextSettingsPrivate : public QSharedData
       , allowHtmlFormatting( other.allowHtmlFormatting )
       , capitalization( other.capitalization )
       , tabStopDistance( other.tabStopDistance )
+      , tabPositions( other.tabPositions )
       , tabStopDistanceUnits( other.tabStopDistanceUnits )
       , tabStopDistanceMapUnitScale( other.tabStopDistanceMapUnitScale )
       , mDataDefinedProperties( other.mDataDefinedProperties )
@@ -311,6 +312,7 @@ class QgsTextSettingsPrivate : public QSharedData
     Qgis::Capitalization capitalization = Qgis::Capitalization::MixedCase;
 
     double tabStopDistance = 6.0;
+    QList< QgsTextFormat::Tab > tabPositions;
     Qgis::RenderUnit tabStopDistanceUnits = Qgis::RenderUnit::Percentage;
     QgsMapUnitScale tabStopDistanceMapUnitScale;
 

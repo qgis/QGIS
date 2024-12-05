@@ -37,7 +37,6 @@ class QgsVirtualLayerSourceWidget : public QWidget
     Q_OBJECT
 
   public:
-
     QgsVirtualLayerSourceWidget( QWidget *parent = nullptr );
     void setBrowserModel( QgsBrowserModel *model );
 
@@ -52,8 +51,8 @@ class QgsVirtualLayerSourceWidget : public QWidget
   public slots:
 
     void browseForLayer();
-  private:
 
+  private:
     QLineEdit *mLineEdit = nullptr;
     QString mProvider;
     QgsBrowserModel *mBrowserModel = nullptr;
@@ -89,7 +88,6 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
     void rowSourceChanged();
 
   private:
-
     enum LayerColumn
     {
       Name = 0,

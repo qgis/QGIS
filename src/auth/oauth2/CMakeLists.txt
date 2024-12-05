@@ -18,9 +18,11 @@ endif()
 if(WITH_INTERNAL_O2)
   set(O2_SRCS
     ${O2_SOURCE_DIR}/o0baseauth.cpp
+    ${O2_SOURCE_DIR}/o0jsonresponse.cpp
     ${O2_SOURCE_DIR}/o0keychainstore.cpp
     ${O2_SOURCE_DIR}/o0settingsstore.cpp
     ${O2_SOURCE_DIR}/o2.cpp
+    ${O2_SOURCE_DIR}/o2pollserver.cpp
     ${O2_SOURCE_DIR}/o2reply.cpp
     ${O2_SOURCE_DIR}/o2replyserver.cpp
     ${O2_SOURCE_DIR}/o2requestor.cpp
@@ -28,10 +30,12 @@ if(WITH_INTERNAL_O2)
   )
   set(O2_HDRS
     ${O2_INCLUDE_DIR}/o0abstractstore.h
+    ${O2_INCLUDE_DIR}/o0jsonresponse.h
     ${O2_INCLUDE_DIR}/o0baseauth.h
     ${O2_INCLUDE_DIR}/o0export.h
     ${O2_INCLUDE_DIR}/o0globals.h
     ${O2_INCLUDE_DIR}/o0keychainstore.h
+    ${O2_INCLUDE_DIR}/o2pollserver.h
     ${O2_INCLUDE_DIR}/o0requestparameter.h
     ${O2_INCLUDE_DIR}/o0settingsstore.h
     ${O2_INCLUDE_DIR}/o0simplecrypt.h
@@ -48,14 +52,12 @@ set(AUTH_OAUTH2_SRCS
   core/qgso2.cpp
   core/qgsauthoauth2config.cpp
   core/qgsauthoauth2method.cpp
-  ${CMAKE_SOURCE_DIR}/external/qjsonwrapper/Json.cpp
 )
 
 set(AUTH_OAUTH2_HDRS
   core/qgsauthoauth2config.h
   core/qgsauthoauth2method.h
   core/qgso2.h
-  ${CMAKE_SOURCE_DIR}/external/qjsonwrapper/Json.h
 )
 
 if(WITH_INTERNAL_O2)
@@ -120,7 +122,6 @@ else()
 endif()
 
 target_include_directories(authmethod_oauth2_a PRIVATE
-  ${CMAKE_SOURCE_DIR}/external/qjsonwrapper
   ${CMAKE_SOURCE_DIR}/src/auth/oauth2/core
 )
 if (WITH_GUI)
@@ -141,7 +142,6 @@ else()
   add_library(authmethod_oauth2 MODULE ${AUTH_OAUTH2_SRCS} ${AUTH_OAUTH2_HDRS} ${AUTH_OAUTH2_RCCS} ${AUTH_OAUTH2_UIS_H})
 
   target_include_directories(authmethod_oauth2 PRIVATE
-    ${CMAKE_SOURCE_DIR}/external/qjsonwrapper
     ${CMAKE_SOURCE_DIR}/src/auth/oauth2/core
   )
 

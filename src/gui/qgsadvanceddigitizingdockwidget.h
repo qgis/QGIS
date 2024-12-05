@@ -667,7 +667,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * when a constraint is toggled.
      *
      * \param point The last known digitizing point. Can be used to emulate a mouse event.
-     * \deprecated QGIS 3.22. No longer used, will be removed in QGIS 4.0. Use pointChangedV2 instead.
+     * \deprecated QGIS 3.22. No longer used, will be removed in QGIS 4.0. Use pointChangedV2() instead.
      */
     Q_DECL_DEPRECATED void pointChanged( const QgsPointXY &point ) SIP_DEPRECATED;
 
@@ -1083,7 +1083,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * \param snapMatch the snap match to add or remove.
      * \param previouslySnap the previous snap match to avoid toggling the same match.
      */
-    void toggleLockedSnapVertex( const QgsPointLocator::Match &snapMatch, QgsPointLocator::Match previouslySnap );
+    void toggleLockedSnapVertex( const QgsPointLocator::Match &snapMatch, const QgsPointLocator::Match &previouslySnap );
 
     /**
      * Resets the vector layer and point locator objects handling construction guides.

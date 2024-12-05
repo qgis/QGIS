@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Hugo Mercier'
-__date__ = '07/01/2016'
-__copyright__ = 'Copyright 2016, The QGIS Project'
+
+__author__ = "Hugo Mercier"
+__date__ = "07/01/2016"
+__copyright__ = "Copyright 2016, The QGIS Project"
 
 import os
 import shutil
@@ -106,7 +107,11 @@ class TestQgsLayerDefinition(QgisTestCase):
         layers = QgsProject.instance().mapLayers()
         self.assertEqual(len(layers), 0)
 
-        (result, errMsg) = QgsLayerDefinition.loadLayerDefinition(TEST_DATA_DIR + '/vector_and_raster.qlr', QgsProject.instance(), QgsProject.instance().layerTreeRoot())
+        (result, errMsg) = QgsLayerDefinition.loadLayerDefinition(
+            TEST_DATA_DIR + "/vector_and_raster.qlr",
+            QgsProject.instance(),
+            QgsProject.instance().layerTreeRoot(),
+        )
         self.assertTrue(result)
 
         layers = QgsProject.instance().mapLayers()
@@ -119,7 +124,11 @@ class TestQgsLayerDefinition(QgisTestCase):
         layers = QgsProject.instance().mapLayers()
         self.assertEqual(len(layers), 0)
 
-        (result, errMsg) = QgsLayerDefinition.loadLayerDefinition(TEST_DATA_DIR + '/invalid_source.qlr', QgsProject.instance(), QgsProject.instance().layerTreeRoot())
+        (result, errMsg) = QgsLayerDefinition.loadLayerDefinition(
+            TEST_DATA_DIR + "/invalid_source.qlr",
+            QgsProject.instance(),
+            QgsProject.instance().layerTreeRoot(),
+        )
         self.assertTrue(result)
         self.assertFalse(errMsg)
 
@@ -133,8 +142,8 @@ class TestQgsLayerDefinition(QgisTestCase):
         Test storage of relative/absolute paths
         """
         temp_dir = QTemporaryDir()
-        gpkg_path = temp_dir.filePath('points_gpkg.gpkg')
-        shutil.copy(TEST_DATA_DIR + '/points_gpkg.gpkg', gpkg_path)
+        gpkg_path = temp_dir.filePath("points_gpkg.gpkg")
+        shutil.copy(TEST_DATA_DIR + "/points_gpkg.gpkg", gpkg_path)
 
         p = QgsProject()
         vl = QgsVectorLayer(gpkg_path)
@@ -142,26 +151,34 @@ class TestQgsLayerDefinition(QgisTestCase):
         p.addMapLayer(vl)
 
         # write qlr with relative paths
-        ok, err = QgsLayerDefinition.exportLayerDefinition(temp_dir.filePath('relative.qlr'), [p.layerTreeRoot()], Qgis.FilePathType.Relative)
+        ok, err = QgsLayerDefinition.exportLayerDefinition(
+            temp_dir.filePath("relative.qlr"),
+            [p.layerTreeRoot()],
+            Qgis.FilePathType.Relative,
+        )
         self.assertTrue(ok)
 
-        with open(temp_dir.filePath('relative.qlr')) as f:
+        with open(temp_dir.filePath("relative.qlr")) as f:
             lines = f.readlines()
-        self.assertIn('source="./points_gpkg.gpkg"', '\n'.join(lines))
+        self.assertIn('source="./points_gpkg.gpkg"', "\n".join(lines))
 
         # write qlr with absolute paths
-        ok, err = QgsLayerDefinition.exportLayerDefinition(temp_dir.filePath('absolute.qlr'), [p.layerTreeRoot()], Qgis.FilePathType.Absolute)
+        ok, err = QgsLayerDefinition.exportLayerDefinition(
+            temp_dir.filePath("absolute.qlr"),
+            [p.layerTreeRoot()],
+            Qgis.FilePathType.Absolute,
+        )
         self.assertTrue(ok)
 
-        with open(temp_dir.filePath('absolute.qlr')) as f:
+        with open(temp_dir.filePath("absolute.qlr")) as f:
             lines = f.readlines()
-        self.assertIn(f'source="{gpkg_path}"', '\n'.join(lines))
+        self.assertIn(f'source="{gpkg_path}"', "\n".join(lines))
 
     def testWidgetConfig(self):
 
         temp = QTemporaryDir()
         temp_path = temp.path()
-        temp_qlr = os.path.join(temp_path, 'widget_config.qlr')
+        temp_qlr = os.path.join(temp_path, "widget_config.qlr")
 
         qlr = """<!DOCTYPE qgis-layer-definition>
         <qlr>
@@ -242,20 +259,22 @@ class TestQgsLayerDefinition(QgisTestCase):
         </qlr>
         """
 
-        with open(temp_qlr, 'w+') as f:
+        with open(temp_qlr, "w+") as f:
             f.write(qlr)
 
-        (result, errMsg) = QgsLayerDefinition.loadLayerDefinition(temp_qlr, QgsProject.instance(), QgsProject.instance().layerTreeRoot())
+        (result, errMsg) = QgsLayerDefinition.loadLayerDefinition(
+            temp_qlr, QgsProject.instance(), QgsProject.instance().layerTreeRoot()
+        )
         self.assertTrue(result)
         self.assertFalse(errMsg)
 
-        vl = QgsProject.instance().mapLayersByName('NewMemory')[0]
+        vl = QgsProject.instance().mapLayersByName("NewMemory")[0]
         field = vl.fields().at(0)
         config = field.editorWidgetSetup().config()
 
-        self.assertFalse(config['Description'])
-        self.assertFalse(config['FilterExpression'])
+        self.assertFalse(config["Description"])
+        self.assertFalse(config["FilterExpression"])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

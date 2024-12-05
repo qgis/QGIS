@@ -96,7 +96,6 @@ void QgsStatusBarScaleWidget::updateScales()
 {
   if ( QgsProject::instance()->viewSettings()->useProjectScales() )
   {
-
     mScale->setPredefinedScales( QgsProject::instance()->viewSettings()->mapScales() );
   }
   else

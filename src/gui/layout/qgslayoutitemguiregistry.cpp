@@ -43,6 +43,17 @@ void QgsLayoutItemAbstractGuiMetadata::newItemAddedToLayout( QgsLayoutItem * )
 
 }
 
+void QgsLayoutItemAbstractGuiMetadata::handleDoubleClick( QgsLayoutItem *, Qgis::MouseHandlesAction )
+{
+}
+
+void QgsLayoutItemGuiMetadata::handleDoubleClick( QgsLayoutItem *item, Qgis::MouseHandlesAction action )
+{
+  if ( mDoubleClickedFunc )
+    mDoubleClickedFunc( item, action );
+}
+
+
 QgsLayoutItemGuiRegistry::QgsLayoutItemGuiRegistry( QObject *parent )
   : QObject( parent )
 {

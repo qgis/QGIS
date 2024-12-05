@@ -24,6 +24,7 @@
 #include "qgschunklist_p.h"
 #include "qgschunkloader.h"
 #include "qgschunknode.h"
+#include "qgsgeotransform.h"
 
 #include "qgseventtracing.h"
 
@@ -163,6 +164,14 @@ void QgsChunkedEntity::handleSceneUpdate( const SceneContext &sceneContext )
         continue;
       }
       node->entity()->setEnabled( true );
+
+      // let's make sure that any entity we're about to show has the right scene origin set
+      const QList<QgsGeoTransform *> transforms = node->entity()->findChildren<QgsGeoTransform *>();
+      for ( QgsGeoTransform *transform : transforms )
+      {
+        transform->setOrigin( mMapSettings->origin() );
+      }
+
 #ifdef QGISDEBUG
       ++enabled;
 #endif

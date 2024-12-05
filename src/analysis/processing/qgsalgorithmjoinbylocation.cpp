@@ -217,10 +217,12 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   QVariantMap outputs;
   if ( mJoinedFeatures )
   {
+    mJoinedFeatures->finalize();
     outputs.insert( QStringLiteral( "OUTPUT" ), joinedSinkId );
   }
   if ( mUnjoinedFeatures )
   {
+    mUnjoinedFeatures->finalize();
     outputs.insert( QStringLiteral( "NON_MATCHING" ), nonMatchingSinkId );
   }
 

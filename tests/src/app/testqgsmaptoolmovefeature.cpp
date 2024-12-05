@@ -35,15 +35,15 @@
  * \ingroup UnitTests
  * This is a unit test for the vertex tool
  */
-class TestQgsMapToolMoveFeature: public QObject
+class TestQgsMapToolMoveFeature : public QObject
 {
     Q_OBJECT
   public:
     TestQgsMapToolMoveFeature();
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testMoveFeature();
     void testCopyMoveFeature();
@@ -104,7 +104,7 @@ void TestQgsMapToolMoveFeature::initTestCase()
   QgsFeatureList flist;
   flist << f1 << f2;
   mLayerBase->dataProvider()->addFeatures( flist );
-  QCOMPARE( mLayerBase->featureCount(), ( long )2 );
+  QCOMPARE( mLayerBase->featureCount(), ( long ) 2 );
   QCOMPARE( mLayerBase->getFeature( 1 ).geometry().asWkt(), wkt1 );
   QCOMPARE( mLayerBase->getFeature( 2 ).geometry().asWkt(), wkt2 );
 

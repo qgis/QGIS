@@ -27,12 +27,13 @@ class TestQgsImageOperation : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsImageOperation() : QgsTest( QStringLiteral( "Image Operation Tests" ) ) {}
+    TestQgsImageOperation()
+      : QgsTest( QStringLiteral( "Image Operation Tests" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+    void initTestCase(); // will be called before the first testfunction is executed.
+    void init();         // will be called before each testfunction is executed.
+    void cleanup();      // will be called after every testfunction.
     void smallImageOp(); //test operation on small image (single threaded op)
 
     //grayscale
@@ -83,7 +84,6 @@ class TestQgsImageOperation : public QgsTest
     void flipVertical();
 
   private:
-
     QString mSampleImage;
     QString mTransparentSampleImage;
 
@@ -105,7 +105,6 @@ void TestQgsImageOperation::init()
 
 void TestQgsImageOperation::cleanup()
 {
-
 }
 
 void TestQgsImageOperation::smallImageOp()

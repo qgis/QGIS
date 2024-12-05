@@ -256,8 +256,7 @@ void QgsGrassPlugin::initGui()
   // Connect start/stop editing
   connect( QgsProject::instance(), &QgsProject::layerWasAdded, this, &QgsGrassPlugin::onLayerWasAdded );
 
-  connect( qGisInterface->layerTreeView(), &QgsLayerTreeView::currentLayerChanged,
-           this, &QgsGrassPlugin::onCurrentLayerChanged );
+  connect( qGisInterface->layerTreeView(), &QgsLayerTreeView::currentLayerChanged, this, &QgsGrassPlugin::onCurrentLayerChanged );
 
   // open tools when plugin is loaded so that main app restores tools dock widget state
   mTools = new QgsGrassTools( qGisInterface, qGisInterface->mainWindow() );
@@ -266,11 +265,7 @@ void QgsGrassPlugin::initGui()
   // add edit renderer immediately so that if project was saved during editing, the layer can be loaded
   if ( !QgsApplication::rendererRegistry()->renderersList().contains( QStringLiteral( "grassEdit" ) ) )
   {
-    QgsApplication::rendererRegistry()->addRenderer( new QgsRendererMetadata( QStringLiteral( "grassEdit" ),
-        QObject::tr( "GRASS edit" ),
-        QgsGrassEditRenderer::create,
-        QIcon( QgsApplication::defaultThemePath() + "rendererGrassSymbol.svg" ),
-        QgsGrassEditRendererWidget::create ) );
+    QgsApplication::rendererRegistry()->addRenderer( new QgsRendererMetadata( QStringLiteral( "grassEdit" ), QObject::tr( "GRASS edit" ), QgsGrassEditRenderer::create, QIcon( QgsApplication::defaultThemePath() + "rendererGrassSymbol.svg" ), QgsGrassEditRendererWidget::create ) );
   }
 
   onGisbaseChanged();
@@ -329,7 +324,6 @@ void QgsGrassPlugin::onCurrentLayerChanged( QgsMapLayer *layer )
 
 void QgsGrassPlugin::resetEditActions()
 {
-
   QgsGrassProvider *grassProvider = nullptr;
   QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( qGisInterface->activeLayer() );
   if ( vectorLayer )
@@ -439,7 +433,7 @@ void QgsGrassPlugin::onFieldsChanged()
     }
 
     QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
-    if ( vectorLayer && vectorLayer->providerType() == QLatin1String( "grass" ) &&  vectorLayer->dataProvider() )
+    if ( vectorLayer && vectorLayer->providerType() == QLatin1String( "grass" ) && vectorLayer->dataProvider() )
     {
       if ( vectorLayer->dataProvider()->dataSourceUri().startsWith( uri ) )
       {
@@ -567,16 +561,13 @@ void QgsGrassPlugin::newVector()
   QString name;
 
   QgsGrassElementDialog dialog( qGisInterface->mainWindow() );
-  name = dialog.getItem( QStringLiteral( "vector" ), tr( "New vector name" ),
-                         tr( "New vector name" ), QString(), QString(), &ok );
+  name = dialog.getItem( QStringLiteral( "vector" ), tr( "New vector name" ), tr( "New vector name" ), QString(), QString(), &ok );
 
   if ( !ok )
     return;
 
   // Create new map
-  QgsGrass::setMapset( QgsGrass::getDefaultGisdbase(),
-                       QgsGrass::getDefaultLocation(),
-                       QgsGrass::getDefaultMapset() );
+  QgsGrass::setMapset( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation(), QgsGrass::getDefaultMapset() );
 
   struct Map_info *Map = nullptr;
   G_TRY
@@ -607,8 +598,7 @@ void QgsGrassPlugin::newVector()
 
   if ( !layer )
   {
-    QMessageBox::warning( nullptr, tr( "Warning" ),
-                          tr( "New vector created but cannot be opened by data provider." ) );
+    QMessageBox::warning( nullptr, tr( "Warning" ), tr( "New vector created but cannot be opened by data provider." ) );
     return;
   }
 
@@ -635,7 +625,6 @@ void QgsGrassPlugin::postRender( QPainter *painter )
 
 void QgsGrassPlugin::displayRegion()
 {
-
   mRegionBand->reset();
   if ( !mRegionAction->isChecked() )
   {
@@ -670,7 +659,6 @@ void QgsGrassPlugin::displayRegion()
 
 void QgsGrassPlugin::switchRegion( bool on )
 {
-
   QgsSettings settings;
   settings.setValue( QStringLiteral( "GRASS/region/on" ), on );
 
@@ -686,7 +674,6 @@ void QgsGrassPlugin::switchRegion( bool on )
 
 void QgsGrassPlugin::redrawRegion()
 {
-
   displayRegion();
 }
 
@@ -697,8 +684,7 @@ void QgsGrassPlugin::openMapset()
   if ( !sel->exec() )
     return;
 
-  QString err = QgsGrass::openMapset( sel->gisdbase,
-                                      sel->location, sel->mapset );
+  QString err = QgsGrass::openMapset( sel->gisdbase, sel->location, sel->mapset );
 
   if ( !err.isNull() )
   {
@@ -718,8 +704,7 @@ void QgsGrassPlugin::newMapset()
 {
   if ( !mNewMapset )
   {
-    mNewMapset = new QgsGrassNewMapset( qGisInterface,
-                                        this, qGisInterface->mainWindow() );
+    mNewMapset = new QgsGrassNewMapset( qGisInterface, this, qGisInterface->mainWindow() );
   }
   mNewMapset->show();
   mNewMapset->raise();
@@ -727,16 +712,21 @@ void QgsGrassPlugin::newMapset()
 
 void QgsGrassPlugin::projectRead()
 {
-
   bool ok;
   QString gisdbase = QgsProject::instance()->readPath(
-                       QgsProject::instance()->readEntry(
-                         QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingGisdbase" ), QString(), &ok ).trimmed()
-                     );
+    QgsProject::instance()->readEntry(
+                            QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingGisdbase" ), QString(), &ok
+    )
+      .trimmed()
+  );
   QString location = QgsProject::instance()->readEntry(
-                       QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingLocation" ), QString(), &ok ).trimmed();
+                                             QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingLocation" ), QString(), &ok
+  )
+                       .trimmed();
   QString mapset = QgsProject::instance()->readEntry(
-                     QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingMapset" ), QString(), &ok ).trimmed();
+                                           QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingMapset" ), QString(), &ok
+  )
+                     .trimmed();
 
   if ( gisdbase.isEmpty() || location.isEmpty() || mapset.isEmpty() )
   {
@@ -751,8 +741,7 @@ void QgsGrassPlugin::projectRead()
 
   QString newPath = gisdbase + "/" + location + "/" + mapset;
 
-  if ( QFileInfo( currentPath ).canonicalPath() ==
-       QFileInfo( newPath ).canonicalPath() )
+  if ( QFileInfo( currentPath ).canonicalPath() == QFileInfo( newPath ).canonicalPath() )
   {
     // The same mapset is already open
     return;
@@ -792,8 +781,7 @@ void QgsGrassPlugin::unload()
 
   disconnect( QgsProject::instance(), &QgsProject::layerWasAdded, this, &QgsGrassPlugin::onLayerWasAdded );
 
-  disconnect( qGisInterface->layerTreeView(), &QgsLayerTreeView::currentLayerChanged,
-              this, &QgsGrassPlugin::onCurrentLayerChanged );
+  disconnect( qGisInterface->layerTreeView(), &QgsLayerTreeView::currentLayerChanged, this, &QgsGrassPlugin::onCurrentLayerChanged );
 
   for ( QgsMapLayer *layer : QgsProject::instance()->mapLayers().values() )
   {

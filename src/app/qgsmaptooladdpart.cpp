@@ -213,8 +213,7 @@ QgsVectorLayer *QgsMapToolAddPart::getLayerAndCheckSelection()
     QgsFeatureIterator selectedFeatures = layer->getSelectedFeatures();
     QgsFeature selectedFeature;
     selectedFeatures.nextFeature( selectedFeature );
-    if ( QgsWkbTypes::isSingleType( layer->wkbType() ) &&
-         selectedFeature.geometry().constGet() )
+    if ( QgsWkbTypes::isSingleType( layer->wkbType() ) && selectedFeature.geometry().constGet() )
     {
       selectionErrorMsg = tr( "This layer does not support multipart geometries." );
     }

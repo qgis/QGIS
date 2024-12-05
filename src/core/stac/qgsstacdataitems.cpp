@@ -87,10 +87,7 @@ bool QgsStacItemItem::hasDragEnabled() const
   const QMap<QString, QgsStacAsset> assets = mStacItem->assets();
   for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
   {
-    if ( it->mediaType() == QLatin1String( "image/tiff; application=geotiff; profile=cloud-optimized" ) ||
-         it->mediaType() == QLatin1String( "image/vnd.stac.geotiff; cloud-optimized=true" ) ||
-         it->mediaType() == QLatin1String( "application/vnd.laszip+copc" ) ||
-         it->href().endsWith( QStringLiteral( "/ept.json" ) ) )
+    if ( it->isCloudOptimized() )
       return true;
   }
   return false;
@@ -137,7 +134,7 @@ QgsMimeDataUtils::UriList QgsStacItemItem::mimeUris() const
       uri.providerKey = QStringLiteral( "copc" );
       uri.uri = it->href();
     }
-    else if ( it->href().endsWith( QStringLiteral( "/ept.json" ) ) )
+    else if ( it->href().endsWith( QLatin1String( "/ept.json" ) ) )
     {
       uri.layerType = QStringLiteral( "pointcloud" );
       uri.providerKey = QStringLiteral( "ept" );
@@ -147,7 +144,7 @@ QgsMimeDataUtils::UriList QgsStacItemItem::mimeUris() const
     uris.append( uri );
   }
 
-  return { uris };
+  return uris;
 }
 
 bool QgsStacItemItem::equal( const QgsDataItem * )

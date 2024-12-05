@@ -2,5 +2,5 @@
 try:
     QgsAbstractSensorWidget.__attribute_docs__ = {'changed': 'Emitted whenever configuration changes happened on this sensor configuration.\n'}
     QgsAbstractSensorWidget.__group__ = ['sensor']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -26,7 +26,6 @@ class TestQgsKeyValueWidget : public QObject
 {
     Q_OBJECT
   public:
-
   private slots:
     void initTestCase() // will be called before the first testfunction is executed.
     {
@@ -46,7 +45,7 @@ class TestQgsKeyValueWidget : public QObject
       QVERIFY( wrapper );
       const QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant & ) ) );
 
-      QgsKeyValueWidget *widget = qobject_cast< QgsKeyValueWidget * >( wrapper->widget() );
+      QgsKeyValueWidget *widget = qobject_cast<QgsKeyValueWidget *>( wrapper->widget() );
       QVERIFY( widget );
 
       QVariantMap initial;
@@ -76,7 +75,6 @@ class TestQgsKeyValueWidget : public QObject
       QCOMPARE( rowSpy.count(), 1 );
       model->insertRow( 0, QModelIndex() );
       QCOMPARE( rowSpy.count(), 2 );
-
     }
 };
 

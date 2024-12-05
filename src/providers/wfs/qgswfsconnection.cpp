@@ -26,7 +26,7 @@ static const QString SERVICE_WFS = QStringLiteral( "WFS" );
 QgsWfsConnection::QgsWfsConnection( const QString &connName )
   : QgsOwsConnection( SERVICE_WFS, connName )
 {
-  const QStringList detailsParameters = {service().toLower(), connName};
+  const QStringList detailsParameters = { service().toLower(), connName };
   const QString version = settingsVersion->value( detailsParameters );
   if ( !version.isEmpty() )
   {
@@ -57,8 +57,7 @@ QgsWfsConnection::QgsWfsConnection( const QString &connName )
   if ( settingsPreferCoordinatesForWfsT11->exists( detailsParameters ) )
   {
     mUri.removeParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES ); // setParam allow for duplicates!
-    mUri.setParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES,
-                   settingsPreferCoordinatesForWfsT11->value( detailsParameters ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+    mUri.setParam( QgsWFSConstants::URI_PARAM_WFST_1_1_PREFER_COORDINATES, settingsPreferCoordinatesForWfsT11->value( detailsParameters ) ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   }
 
   QgsDebugMsgLevel( QStringLiteral( "WFS full uri: '%1'." ).arg( QString( mUri.uri() ) ), 4 );

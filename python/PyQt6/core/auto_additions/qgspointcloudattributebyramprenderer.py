@@ -2,5 +2,5 @@
 try:
     QgsPointCloudAttributeByRampRenderer.create = staticmethod(QgsPointCloudAttributeByRampRenderer.create)
     QgsPointCloudAttributeByRampRenderer.__group__ = ['pointcloud']
-except NameError:
+except (NameError, AttributeError):
     pass

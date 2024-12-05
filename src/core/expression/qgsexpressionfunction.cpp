@@ -1244,6 +1244,24 @@ static QVariant fcnCeil( const QVariantList &values, const QgsExpressionContext 
   return QVariant( std::ceil( x ) );
 }
 
+static QVariant fcnToBool( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
+{
+  const QVariant value = values.at( 0 );
+  if ( QgsExpressionUtils::isNull( value.isValid() ) )
+  {
+    return QVariant( false );
+  }
+  else if ( value.userType() == QMetaType::QString )
+  {
+    // Capture strings to avoid a '0' string value casted to 0 and wrongly returning false
+    return QVariant( !value.toString().isEmpty() );
+  }
+  else if ( QgsExpressionUtils::isList( value ) )
+  {
+    return !value.toList().isEmpty();
+  }
+  return QVariant( value.toBool() );
+}
 static QVariant fcnToInt( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   return QVariant( QgsExpressionUtils::getIntValue( values.at( 0 ), parent ) );
@@ -7728,6 +7746,12 @@ typedef bool ( QgsGeometry::*RelationFunction )( const QgsGeometry &geometry ) c
 static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const RelationFunction &relationFunction, bool invert = false, double bboxGrow = 0, bool isNearestFunc = false, bool isIntersectsFunc = false )
 {
 
+  if ( ! context )
+  {
+    parent->setEvalErrorString( QStringLiteral( "This function was called without an expression context." ) );
+    return QVariant();
+  }
+
   const QVariant sourceLayerRef = context->variable( QStringLiteral( "layer" ) ); //used to detect if sourceLayer and targetLayer are the same
   // TODO this function is NOT thread safe
   Q_NOWARN_DEPRECATED_PUSH
@@ -8367,6 +8391,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "floor" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnFloor, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "ceil" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnCeil, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "pi" ), 0, fcnPi, QStringLiteral( "Math" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "$pi" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "to_bool" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToBool, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "tobool" ), /* handlesNull = */ true )
         << new QgsStaticExpressionFunction( QStringLiteral( "to_int" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToInt, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "toint" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "to_real" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToReal, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "toreal" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "to_string" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToString, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "String" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "tostring" ) )

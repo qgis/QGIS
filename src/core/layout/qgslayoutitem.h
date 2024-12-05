@@ -74,7 +74,7 @@ class CORE_EXPORT QgsLayoutItemRenderContext
      *
      * \note Not available in Python bindings.
      */
-    const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
+    const QgsRenderContext &renderContext() const SIP_SKIP { return mRenderContext; }
 
     /**
      * Returns the current view zoom (scale factor). It can be

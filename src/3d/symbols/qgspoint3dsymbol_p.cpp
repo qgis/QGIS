@@ -19,7 +19,6 @@
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
-#include <Qt3DCore/QTransform>
 
 typedef Qt3DRender::QAttribute Qt3DQAttribute;
 typedef Qt3DRender::QBuffer Qt3DQBuffer;
@@ -58,6 +57,7 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 
 #include "qgspoint3dsymbol.h"
 #include "qgsapplication.h"
+#include "qgsgeotransform.h"
 #include "qgsvectorlayer.h"
 #include "qgs3dutils.h"
 #include "qgsbillboardgeometry.h"
@@ -214,9 +214,8 @@ void QgsInstancedPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   QgsMaterial *mat = material( mSymbol.get(), materialContext );
 
   // add transform (our geometry has coordinates relative to mChunkOrigin)
-  Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
-  QVector3D nodeTranslation = ( mChunkOrigin - context.origin() ).toVector3D();
-  tr->setTranslation( nodeTranslation );
+  QgsGeoTransform *tr = new QgsGeoTransform;
+  tr->setGeoTranslation( mChunkOrigin );
 
   // build the entity
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
@@ -421,7 +420,7 @@ class QgsModelPoint3DSymbolHandler : public QgsFeature3DHandler
 
     static void addSceneEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent );
     static void addMeshEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent, bool are_selected );
-    static Qt3DCore::QTransform *transform( QVector3D position, const QgsPoint3DSymbol *symbol, const QgsVector3D &chunkOrigin, const QgsVector3D &contextOrigin );
+    static QgsGeoTransform *transform( QVector3D position, const QgsPoint3DSymbol *symbol, const QgsVector3D &chunkOrigin );
 
     //! temporary data we will pass to the tessellator
     struct PointData
@@ -504,6 +503,7 @@ void QgsModelPoint3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const 
 
 void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DRenderContext &context, const QVector<QVector3D> &positions, const QgsVector3D &chunkOrigin, const QgsPoint3DSymbol *symbol, Qt3DCore::QEntity *parent )
 {
+  Q_UNUSED( context );
   for ( const QVector3D &position : positions )
   {
     const QString source = QgsApplication::sourceCache()->localFilePath( symbol->shapeProperty( QStringLiteral( "model" ) ).toString() );
@@ -518,7 +518,7 @@ void QgsModelPoint3DSymbolHandler::addSceneEntities( const Qgs3DRenderContext &c
       modelLoader->setSource( url );
 
       entity->addComponent( modelLoader );
-      entity->addComponent( transform( position, symbol, chunkOrigin, context.origin() ) );
+      entity->addComponent( transform( position, symbol, chunkOrigin ) );
       entity->setParent( parent );
 
 // cppcheck wrongly believes entity will leak
@@ -553,7 +553,7 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DRenderContext &co
 
       entity->addComponent( mesh );
       entity->addComponent( mat );
-      entity->addComponent( transform( position, symbol, chunkOrigin, context.origin() ) );
+      entity->addComponent( transform( position, symbol, chunkOrigin ) );
       entity->setParent( parent );
 
 // cppcheck wrongly believes entity will leak
@@ -562,15 +562,12 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DRenderContext &co
   }
 }
 
-Qt3DCore::QTransform *QgsModelPoint3DSymbolHandler::transform( QVector3D position, const QgsPoint3DSymbol *symbol, const QgsVector3D &chunkOrigin, const QgsVector3D &contextOrigin )
+QgsGeoTransform *QgsModelPoint3DSymbolHandler::transform( QVector3D position, const QgsPoint3DSymbol *symbol, const QgsVector3D &chunkOrigin )
 {
   // position is relative to chunkOrigin
-  QVector3D nodeTranslation = ( chunkOrigin - contextOrigin ).toVector3D();
-  QMatrix4x4 translation;
-  translation.translate( nodeTranslation + position );
-
-  Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
-  tr->setMatrix( translation * symbol->transform() );
+  QgsGeoTransform *tr = new QgsGeoTransform;
+  tr->setMatrix( symbol->transform() );
+  tr->setGeoTranslation( chunkOrigin + position + tr->translation() );
   return tr;
 }
 
@@ -673,11 +670,8 @@ void QgsPoint3DBillboardSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, co
   }
 
   // Billboard Transform
-  Qt3DCore::QTransform *billboardTransform = new Qt3DCore::QTransform();
-  QVector3D billboardHeightTranslation( 0, 0, mSymbol->billboardHeight() );
-  // our geometry has coordinates relative to mChunkOrigin
-  QVector3D nodeTranslation = ( mChunkOrigin - context.origin() ).toVector3D();
-  billboardTransform->setTranslation( billboardHeightTranslation + nodeTranslation );
+  QgsGeoTransform *billboardTransform = new QgsGeoTransform;
+  billboardTransform->setGeoTranslation( mChunkOrigin + QgsVector3D( 0, 0, mSymbol->billboardHeight() ) );
 
   // Build the entity
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;

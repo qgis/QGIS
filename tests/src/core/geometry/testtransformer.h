@@ -18,7 +18,6 @@
 class TestTransformer : public QgsAbstractGeometryTransformer
 {
   public:
-
     bool transformPoint( double &x, double &y, double &z, double &m ) override
     {
       x *= 3;
@@ -33,7 +32,6 @@ class TestTransformer : public QgsAbstractGeometryTransformer
 class TestFailTransformer : public QgsAbstractGeometryTransformer
 {
   public:
-
     bool transformPoint( double &x, double &y, double &z, double &m ) override
     {
       x *= 3;
@@ -43,4 +41,3 @@ class TestFailTransformer : public QgsAbstractGeometryTransformer
       return false;
     }
 };
-

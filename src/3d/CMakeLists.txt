@@ -24,6 +24,7 @@ set(QGIS_3D_SRCS
   qgsfeature3dhandler_p.cpp
   qgsfgutils.cpp
   qgsframegraph.cpp
+  qgsgeotransform.cpp
   qgsgltf3dutils.cpp
   qgsimagetexture.cpp
   qgslayoutitem3dmap.cpp
@@ -138,6 +139,7 @@ set(QGIS_3D_HDRS
   qgscamerapose.h
   qgsfgutils.h
   qgsframegraph.h
+  qgsgeotransform.h
   qgsgltf3dutils.h
   qgslayoutitem3dmap.h
   qgsmeshlayer3drenderer.h
@@ -236,6 +238,12 @@ set (QGIS_3D_RCCS  shaders.qrc  ../../resources/3d/textures/textures.qrc)
 
 
 add_library(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCCS} ${QGIS_3D_PRIVATE_HDRS})
+
+if (USE_PRECOMPILED_HEADERS)
+  target_precompile_headers(qgis_3d PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
+endif()
+
+set_target_properties(qgis_3d PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
 # require c++17
 target_compile_features(qgis_3d PRIVATE cxx_std_17)

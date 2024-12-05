@@ -111,7 +111,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     /**
      * Emitted when the widget's value changes
      * \param value new widget value
-     * \deprecated QGIS 3.10. Use valuesChanged instead.
+     * \deprecated QGIS 3.10. Use valuesChanged() instead.
      */
     Q_DECL_DEPRECATED void valueChanged( const QVariant &value );
 

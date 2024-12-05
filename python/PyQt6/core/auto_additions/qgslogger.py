@@ -6,5 +6,5 @@ try:
     QgsLogger.debugLevel = staticmethod(QgsLogger.debugLevel)
     QgsLogger.logMessageToFile = staticmethod(QgsLogger.logMessageToFile)
     QgsLogger.logFile = staticmethod(QgsLogger.logFile)
-except NameError:
+except (NameError, AttributeError):
     pass

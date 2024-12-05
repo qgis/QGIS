@@ -649,4 +649,7 @@ QList<Qgis::LayerType> QgsMeshMemoryProviderMetadata::supportedLayerTypes() cons
   return { Qgis::LayerType::Mesh };
 }
 
+#undef TEXT_PROVIDER_KEY
+#undef TEXT_PROVIDER_DESCRIPTION
+
 ///@endcond

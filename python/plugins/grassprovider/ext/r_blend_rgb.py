@@ -15,20 +15,20 @@
 ***************************************************************************
 """
 
-__author__ = 'Médéric Ribreux'
-__date__ = 'February 2016'
-__copyright__ = '(C) 2016, Médéric Ribreux'
+__author__ = "Médéric Ribreux"
+__date__ = "February 2016"
+__copyright__ = "(C) 2016, Médéric Ribreux"
 
 import os
 from grassprovider.grass_utils import GrassUtils
 
 
 def processInputs(alg, parameters, context, feedback):
-    if 'first' and 'second' in alg.exportedLayers:
+    if "first" and "second" in alg.exportedLayers:
         return
 
     # Use v.in.ogr
-    for name in ['first', 'second']:
+    for name in ["first", "second"]:
         alg.loadRasterLayerFromParameter(name, parameters, context, False, None)
     alg.postInputs(context)
 
@@ -43,10 +43,12 @@ def processOutputs(alg, parameters, context, feedback):
     metaOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_META, context)
 
     # Export each color raster
-    colors = ['red', 'green', 'blue']
+    colors = ["red", "green", "blue"]
     for color in colors:
         fileName = os.path.normpath(
-            alg.parameterAsOutputLayer(parameters, 'output_{}'.format(color), context))
+            alg.parameterAsOutputLayer(parameters, f"output_{color}", context)
+        )
         outFormat = GrassUtils.getRasterFormatFromFilename(fileName)
-        alg.exportRasterLayer('blended.{}'.format(color[0]),
-                              fileName, True, outFormat, createOpt, metaOpt)
+        alg.exportRasterLayer(
+            f"blended.{color[0]}", fileName, True, outFormat, createOpt, metaOpt
+        )

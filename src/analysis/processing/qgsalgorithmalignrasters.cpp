@@ -98,20 +98,6 @@ void QgsAlignRastersAlgorithm::initAlgorithm( const QVariantMap & )
   addOutput( new QgsProcessingOutputMultipleLayers( QStringLiteral( "OUTPUT_LAYERS" ), QObject::tr( "Aligned rasters" ) ) );
 }
 
-struct QgsAlignRasterProgress : public QgsAlignRaster::ProgressHandler
-{
-    explicit QgsAlignRasterProgress( QgsFeedback *feedback ) : mFeedback( feedback ) {}
-    bool progress( double complete ) override
-    {
-      mFeedback->setProgress( complete * 100 );
-      return true;
-    }
-
-  protected:
-    QgsFeedback *mFeedback = nullptr;
-};
-
-
 QVariantMap QgsAlignRastersAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsRasterLayer *referenceLayer = parameterAsRasterLayer( parameters, QStringLiteral( "REFERENCE_LAYER" ), context );
@@ -171,6 +157,19 @@ QVariantMap QgsAlignRastersAlgorithm::processAlgorithm( const QVariantMap &param
     QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context );
     rasterAlign.setClipExtent( extent );
   }
+
+  struct QgsAlignRasterProgress : public QgsAlignRaster::ProgressHandler
+  {
+      explicit QgsAlignRasterProgress( QgsFeedback *feedback ) : mFeedback( feedback ) {}
+      bool progress( double complete ) override
+      {
+        mFeedback->setProgress( complete * 100 );
+        return true;
+      }
+
+    protected:
+      QgsFeedback *mFeedback = nullptr;
+  };
 
   rasterAlign.setProgressHandler( new QgsAlignRasterProgress( feedback ) );
 

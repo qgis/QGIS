@@ -10,5 +10,5 @@ try:
     QgsVectorFieldSymbolLayer.create = staticmethod(QgsVectorFieldSymbolLayer.create)
     QgsVectorFieldSymbolLayer.createFromSld = staticmethod(QgsVectorFieldSymbolLayer.createFromSld)
     QgsVectorFieldSymbolLayer.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

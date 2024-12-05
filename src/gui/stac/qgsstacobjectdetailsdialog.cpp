@@ -18,6 +18,7 @@
 #include "qgsgui.h"
 #include "qgsapplication.h"
 #include "qgsstacitem.h"
+#include <QDesktopServices>
 
 ///@cond PRIVATE
 
@@ -53,6 +54,10 @@ void QgsStacObjectDetailsDialog::setStacObject( QgsStacObject *stacObject )
   html = html.replace( QLatin1String( "<head>" ), QStringLiteral( R"raw(<head><style type="text/css">%1</style>)raw" ) ).arg( myStyle );
 
   mWebView->page()->setLinkDelegationPolicy( QWebPage::LinkDelegationPolicy::DelegateAllLinks );
+  connect( mWebView, &QgsWebView::linkClicked, this, []( const QUrl & url )
+  {
+    QDesktopServices::openUrl( url );
+  } );
   mWebView->setHtml( html );
 }
 

@@ -42,13 +42,14 @@ class TestQgsEllipseMarkerSymbol : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsEllipseMarkerSymbol() : QgsTest( QStringLiteral( "Ellipse Marker Tests" ), QStringLiteral( "symbol_ellipsemarker" ) ) {}
+    TestQgsEllipseMarkerSymbol()
+      : QgsTest( QStringLiteral( "Ellipse Marker Tests" ), QStringLiteral( "symbol_ellipsemarker" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void ellipseMarkerSymbol();
 
@@ -72,7 +73,7 @@ class TestQgsEllipseMarkerSymbol : public QgsTest
     void dataDefinedOpacity();
 
   private:
-    bool mTestHasError =  false ;
+    bool mTestHasError = false;
 
     QgsMapSettings mMapSettings;
     QgsVectorLayer *mpPointsLayer = nullptr;
@@ -100,8 +101,7 @@ void TestQgsEllipseMarkerSymbol::initTestCase()
   //
   const QString pointFileName = mTestDataDir + "points.shp";
   const QFileInfo pointFileInfo( pointFileName );
-  mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
-                                      pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   //setup symbol
   mEllipseMarkerLayer = new QgsEllipseSymbolLayer();
@@ -115,7 +115,6 @@ void TestQgsEllipseMarkerSymbol::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPointsLayer );
-
 }
 void TestQgsEllipseMarkerSymbol::cleanupTestCase()
 {

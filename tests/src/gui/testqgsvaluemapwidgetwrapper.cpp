@@ -31,12 +31,11 @@ class TestQgsValueMapWidgetWrapper : public QObject
     TestQgsValueMapWidgetWrapper() = default;
 
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
     void testPopulateComboBox();
-
 };
 
 void TestQgsValueMapWidgetWrapper::initTestCase()
@@ -77,7 +76,7 @@ void TestQgsValueMapWidgetWrapper::testPopulateComboBox()
   config.insert( QStringLiteral( "map" ), valueList );
 
 
-  std::unique_ptr< QComboBox > combo = std::make_unique< QComboBox >();
+  std::unique_ptr<QComboBox> combo = std::make_unique<QComboBox>();
 
   // with nulls
   QgsValueMapConfigDlg::populateComboBox( combo.get(), config, false );
@@ -129,7 +128,6 @@ void TestQgsValueMapWidgetWrapper::testPopulateComboBox()
   QCOMPARE( combo->itemData( 0 ).toString(), QStringLiteral( "val 1" ) );
   QCOMPARE( combo->itemText( 1 ), QStringLiteral( "desc 2" ) );
   QCOMPARE( combo->itemData( 1 ).toString(), QStringLiteral( "val 2" ) );
-
 }
 
 QGSTEST_MAIN( TestQgsValueMapWidgetWrapper )

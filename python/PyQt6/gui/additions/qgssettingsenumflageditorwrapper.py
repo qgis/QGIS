@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     qgssettingsenumflageditorwrapper.py
@@ -28,7 +26,9 @@ class PyQgsSettingsEnumEditorWidgetWrapper(QgsSettingsEditorWidgetWrapper):
     A settings editor widget wrapper for enum settings as PyQgsSettingsEntryEnumFlag
     """
 
-    def __init__(self, parent=None, editor=None, setting=None, displayStrings: dict = None):
+    def __init__(
+        self, parent=None, editor=None, setting=None, displayStrings: dict = None
+    ):
         self.setting = setting
         self.editor = editor
         self.displayStrings = {}
@@ -39,19 +39,23 @@ class PyQgsSettingsEnumEditorWidgetWrapper(QgsSettingsEditorWidgetWrapper):
             self.configureEditor(editor, setting)
 
     def id(self):
-        return 'py-enum'
+        return "py-enum"
 
     def createWrapper(self, parent=None):
         return PyQgsSettingsEnumEditorWidgetWrapper(parent)
 
     def setWidgetFromSetting(self):
         if self.setting:
-            return self.setWidgetFromVariant(self.setting.valueAsVariant(self.dynamicKeyPartList()))
+            return self.setWidgetFromVariant(
+                self.setting.valueAsVariant(self.dynamicKeyPartList())
+            )
         return False
 
     def setSettingFromWidget(self):
         if self.editor:
-            self.setting.setVariantValue(self.variantValueFromWidget(), self.dynamicKeyPartList())
+            self.setting.setVariantValue(
+                self.variantValueFromWidget(), self.dynamicKeyPartList()
+            )
             return True
         else:
             return False
@@ -88,4 +92,7 @@ class PyQgsSettingsEnumEditorWidgetWrapper(QgsSettingsEditorWidgetWrapper):
 
     def enableAutomaticUpdatePrivate(self):
         self.editor.currentIndexChanged.connect(
-            lambda: self.setting.setValue(self.editor.currentData(), self.dynamicKeyPartList()))
+            lambda: self.setting.setValue(
+                self.editor.currentData(), self.dynamicKeyPartList()
+            )
+        )

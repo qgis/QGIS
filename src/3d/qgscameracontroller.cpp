@@ -35,6 +35,7 @@ QgsCameraController::QgsCameraController( Qgs3DMapScene *scene )
   , mCameraBefore( new Qt3DRender::QCamera )
   , mMouseHandler( new Qt3DInput::QMouseHandler )
   , mKeyboardHandler( new Qt3DInput::QKeyboardHandler )
+  , mOrigin( scene->mapSettings()->origin() )
 {
   mMouseHandler->setSourceDevice( new Qt3DInput::QMouseDevice() );
   connect( mMouseHandler, &Qt3DInput::QMouseHandler::positionChanged,
@@ -1110,4 +1111,20 @@ void QgsCameraController::setMouseParameters( const MouseOperation &newOperation
     mCameraBefore->setFieldOfView( mCamera->fieldOfView() );
     mCameraPose.updateCamera( mCameraBefore.get() );
   }
+}
+
+void QgsCameraController::setOrigin( const QgsVector3D &origin )
+{
+  QgsVector3D diff = origin - mOrigin;
+  mCameraPose.setCenterPoint( mCameraPose.centerPoint() - diff );
+
+  // update other members that depend on world coordinates
+  mCameraBefore->setPosition( ( QgsVector3D( mCameraBefore->position() ) - diff ).toVector3D() );
+  mCameraBefore->setViewCenter( ( QgsVector3D( mCameraBefore->viewCenter() ) - diff ).toVector3D() );
+  mDragPoint = ( QgsVector3D( mDragPoint ) - diff ).toVector3D();
+  mRotationCenter = ( QgsVector3D( mRotationCenter ) - diff ).toVector3D();
+
+  mOrigin = origin;
+
+  updateCameraFromPose();
 }

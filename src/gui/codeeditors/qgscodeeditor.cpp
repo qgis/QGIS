@@ -24,6 +24,7 @@
 #include "qgscodeeditorhistorydialog.h"
 #include "qgsstringutils.h"
 #include "qgsfontutils.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QLabel>
 #include <QWidget>
@@ -37,6 +38,12 @@
 #include <QScrollBar>
 #include <QMessageBox>
 #include "Qsci/qscilexer.h"
+
+///@cond PRIVATE
+const QgsSettingsEntryBool *QgsCodeEditor::settingContextHelpHover = new QgsSettingsEntryBool( QStringLiteral( "context-help-hover" ), sTreeCodeEditor, false, QStringLiteral( "Whether the context help should works on hovered words" ) );
+///@endcond PRIVATE
+
+
 
 QMap< QgsCodeEditorColorScheme::ColorRole, QString > QgsCodeEditor::sColorRoleToSettingsKey
 {
@@ -192,6 +199,30 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
     QWidget::keyPressEvent( event ); // NOLINT(bugprone-parent-virtual-call) clazy:exclude=skipped-base-method
     return;
   }
+
+  if ( event->key() == Qt::Key_F1 )
+  {
+
+    // Check if some text is selected
+    QString text = selectedText();
+
+    // Check if mouse is hovering over a word
+    if ( text.isEmpty() && settingContextHelpHover->value() )
+    {
+      text = wordAtPoint( mapFromGlobal( QCursor::pos() ) );
+    }
+
+    // Otherwise, check if there is a word at the current text cursor position
+    if ( text.isEmpty() )
+    {
+      int line, index;
+      getCursorPosition( &line, &index );
+      text = wordAtLineIndex( line, index );
+    }
+    emit helpRequested( text ) ;
+    return;
+  }
+
 
   if ( mMode == QgsCodeEditor::Mode::CommandInput )
   {

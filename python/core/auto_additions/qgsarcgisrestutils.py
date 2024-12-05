@@ -35,9 +35,9 @@ try:
     QgsArcGisRestUtils.fieldDefinitionToJson = staticmethod(QgsArcGisRestUtils.fieldDefinitionToJson)
     QgsArcGisRestUtils.serviceTypeFromString = staticmethod(QgsArcGisRestUtils.serviceTypeFromString)
     QgsArcGisRestUtils.__group__ = ['providers', 'arcgis']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsArcGisRestContext.__group__ = ['providers', 'arcgis']
-except NameError:
+except (NameError, AttributeError):
     pass

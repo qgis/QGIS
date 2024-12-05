@@ -123,6 +123,7 @@ be called for the layer after applying changes. This is ``True`` by default, but
 .. versionadded:: 3.8
 %End
 
+
     virtual void syncToLayer( QgsMapLayer *layer );
 %Docstring
 Reset to original (vector layer) values

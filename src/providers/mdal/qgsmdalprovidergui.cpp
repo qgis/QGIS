@@ -25,7 +25,6 @@
 class QgsMdalMeshSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
-
     QString providerKey() const override { return QStringLiteral( "mdal" ); }
     QString text() const override { return QObject::tr( "Mesh" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 22; }
@@ -37,7 +36,7 @@ class QgsMdalMeshSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 
-class QgsMdalProviderGuiMetadata: public QgsProviderGuiMetadata
+class QgsMdalProviderGuiMetadata : public QgsProviderGuiMetadata
 {
   public:
     QgsMdalProviderGuiMetadata()

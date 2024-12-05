@@ -5,5 +5,5 @@ try:
     QgsProcessingParameterAlignRasterLayers.variantMapAsItem = staticmethod(QgsProcessingParameterAlignRasterLayers.variantMapAsItem)
     QgsProcessingParameterAlignRasterLayers.itemAsVariantMap = staticmethod(QgsProcessingParameterAlignRasterLayers.itemAsVariantMap)
     QgsProcessingParameterAlignRasterLayers.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass

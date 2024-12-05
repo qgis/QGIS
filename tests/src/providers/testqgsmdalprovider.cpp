@@ -38,14 +38,14 @@ class TestQgsMdalProvider : public QgsTest
     Q_OBJECT
 
   public:
-
-    TestQgsMdalProvider() : QgsTest( QStringLiteral( "MDAL Provider Tests" ) ) {}
+    TestQgsMdalProvider()
+      : QgsTest( QStringLiteral( "MDAL Provider Tests" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {}// will be called before each testfunction is executed.
-    void cleanup() {}// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void load();
     void filters();
@@ -147,12 +147,12 @@ void TestQgsMdalProvider::load()
   {
     const QString file = QStringLiteral( TEST_DATA_DIR ) + "/mesh/quad_flower.2dm";
     QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
-                                  QStringLiteral( "mdal" ),
-                                  file,
-                                  QgsDataProvider::ProviderOptions()
-                                );
+      QStringLiteral( "mdal" ),
+      file,
+      QgsDataProvider::ProviderOptions()
+    );
 
-    QgsMeshDataProvider *mp = dynamic_cast< QgsMeshDataProvider * >( provider );
+    QgsMeshDataProvider *mp = dynamic_cast<QgsMeshDataProvider *>( provider );
     QVERIFY( mp );
     QVERIFY( mp->isValid() );
     delete provider;
@@ -160,12 +160,12 @@ void TestQgsMdalProvider::load()
   {
     const QString file = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/goodluckwiththisfilename.2dm" );
     QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
-                                  QStringLiteral( "mdal" ),
-                                  file,
-                                  QgsDataProvider::ProviderOptions()
-                                );
+      QStringLiteral( "mdal" ),
+      file,
+      QgsDataProvider::ProviderOptions()
+    );
 
-    QgsMeshDataProvider *mp = dynamic_cast< QgsMeshDataProvider * >( provider );
+    QgsMeshDataProvider *mp = dynamic_cast<QgsMeshDataProvider *>( provider );
     QVERIFY( mp );
     QVERIFY( !mp->isValid() );
     delete provider;
@@ -187,12 +187,12 @@ void TestQgsMdalProvider::preserveMeshMetadata()
   meshFile.copy( copiedFile );
 
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
-                                QStringLiteral( "mdal" ),
-                                copiedFile,
-                                QgsDataProvider::ProviderOptions()
-                              );
+    QStringLiteral( "mdal" ),
+    copiedFile,
+    QgsDataProvider::ProviderOptions()
+  );
 
-  QgsMeshDataProvider *mp = dynamic_cast< QgsMeshDataProvider * >( provider );
+  QgsMeshDataProvider *mp = dynamic_cast<QgsMeshDataProvider *>( provider );
   QVERIFY( mp );
   QVERIFY( mp->isValid() );
 

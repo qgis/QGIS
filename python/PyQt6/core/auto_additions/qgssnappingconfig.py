@@ -11,5 +11,5 @@ try:
     QgsSnappingConfig.snappingTypeFlagToString = staticmethod(QgsSnappingConfig.snappingTypeFlagToString)
     QgsSnappingConfig.snappingTypeToIcon = staticmethod(QgsSnappingConfig.snappingTypeToIcon)
     QgsSnappingConfig.snappingTypeFlagToIcon = staticmethod(QgsSnappingConfig.snappingTypeFlagToIcon)
-except NameError:
+except (NameError, AttributeError):
     pass

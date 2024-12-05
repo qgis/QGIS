@@ -26,11 +26,9 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
 {
     Q_OBJECT
   public:
-
     QString name() override { return QStringLiteral( "PostGIS" ); }
 
-    void populateContextMenu( QgsDataItem *item, QMenu *menu,
-                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
     bool deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context ) override;
 
@@ -40,7 +38,6 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
     QWidget *createParamWidget( QgsDataItem *root, QgsDataItemGuiContext ) override;
 
   private:
-
     static QString typeNameFromLayer( const QgsPostgresLayerProperty &layer );
     static void newConnection( QgsDataItem *item );
     static void editConnection( QgsDataItem *item );
@@ -54,7 +51,6 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
     static void refreshMaterializedView( QgsPGLayerItem *layerItem, QgsDataItemGuiContext context );
     static void saveConnections();
     static void loadConnections( QgsDataItem *item );
-
 };
 
 #endif // QGSPOSTGRESDATAITEMGUIPROVIDER_H

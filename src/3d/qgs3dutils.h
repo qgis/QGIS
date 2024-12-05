@@ -31,6 +31,8 @@ namespace Qt3DExtras
   class QPhongMaterial;
 }
 
+class QSurface;
+
 #include "qgs3dmapsettings.h"
 #include "qgs3danimationsettings.h"
 #include "qgs3dtypes.h"
@@ -340,6 +342,14 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.42
      */
     static void decomposeTransformMatrix( const QMatrix4x4 &matrix, QVector3D &translation, QQuaternion &rotation, QVector3D &scale );
+
+    /**
+     * Gets the maximum number of clip planes that can be used.
+     * This value depends on the OpenGL implementation. It should be at least 6.
+     *
+     * \since QGIS 3.42
+     */
+    static int openGlMaxClipPlanes( QSurface *surface );
 };
 
 #endif // QGS3DUTILS_H

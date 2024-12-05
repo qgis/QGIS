@@ -28,49 +28,22 @@ itself the min/max values.
 
     static const double DEFAULT_STDDEV_FACTOR;
 
-    //! \brief This enumerator describes the limits used to compute min/max values
-    enum Limits
-    {
-      None /PyName=None_/,
-      MinMax,
-      StdDev,
-      CumulativeCut
-    };
-
-    enum Extent
-    {
-      //! Whole raster is used to compute statistics.
-      WholeRaster,
-      //! Current extent of the canvas (at the time of computation) is used to compute statistics.
-      CurrentCanvas,
-      //! Constantly updated extent of the canvas is used to compute statistics.
-      UpdatedCanvas
-    };
-
-    enum StatAccuracy
-    {
-      //! Exact statistics.
-      Exact,
-      //! Approximated statistics.
-      Estimated
-    };
-
     QgsRasterMinMaxOrigin();
 
     bool operator ==( const QgsRasterMinMaxOrigin &other ) const;
 
 
-    QgsRasterMinMaxOrigin::Limits limits() const;
+    Qgis::RasterRangeLimit limits() const;
 %Docstring
 Returns the raster limits.
 %End
 
-    QgsRasterMinMaxOrigin::Extent extent() const;
+    Qgis::RasterRangeExtent extent() const;
 %Docstring
 Returns the raster extent.
 %End
 
-    QgsRasterMinMaxOrigin::StatAccuracy statAccuracy() const;
+    Qgis::RasterRangeAccuracy statAccuracy() const;
 %Docstring
 Returns the raster statistic accuracy.
 %End
@@ -91,17 +64,17 @@ Returns the factor f so that the min/max range is [ mean - f * stddev , mean + f
 %End
 
 
-    void setLimits( QgsRasterMinMaxOrigin::Limits limits );
+    void setLimits( Qgis::RasterRangeLimit limits );
 %Docstring
 Sets the limits.
 %End
 
-    void setExtent( QgsRasterMinMaxOrigin::Extent extent );
+    void setExtent( Qgis::RasterRangeExtent extent );
 %Docstring
 Sets the extent.
 %End
 
-    void setStatAccuracy( QgsRasterMinMaxOrigin::StatAccuracy accuracy );
+    void setStatAccuracy( Qgis::RasterRangeAccuracy accuracy );
 %Docstring
 Sets the statistics accuracy.
 %End
@@ -133,32 +106,32 @@ Deserialize object.
 %End
 
 
-    static QString limitsString( Limits limits );
+    static QString limitsString( Qgis::RasterRangeLimit limits );
 %Docstring
 Returns a string to serialize Limits
 %End
 
-    static Limits limitsFromString( const QString &limits );
+    static Qgis::RasterRangeLimit limitsFromString( const QString &limits );
 %Docstring
 Deserialize Limits
 %End
 
-    static QString extentString( QgsRasterMinMaxOrigin::Extent extent );
+    static QString extentString( Qgis::RasterRangeExtent extent );
 %Docstring
 Returns a string to serialize Extent
 %End
 
-    static QgsRasterMinMaxOrigin::Extent extentFromString( const QString &extent );
+    static Qgis::RasterRangeExtent extentFromString( const QString &extent );
 %Docstring
 Deserialize Extent
 %End
 
-    static QString statAccuracyString( QgsRasterMinMaxOrigin::StatAccuracy accuracy );
+    static QString statAccuracyString( Qgis::RasterRangeAccuracy accuracy );
 %Docstring
 Returns a string to serialize StatAccuracy
 %End
 
-    static QgsRasterMinMaxOrigin::StatAccuracy statAccuracyFromString( const QString &accuracy );
+    static Qgis::RasterRangeAccuracy statAccuracyFromString( const QString &accuracy );
 %Docstring
 Deserialize StatAccuracy
 %End

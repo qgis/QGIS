@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "August 2012"
+__copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 import warnings
@@ -26,7 +26,7 @@ from qgis.core import QgsProcessing
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal
 
-''
+""
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 from processing.gui.MultipleFileInputDialog import MultipleFileInputDialog
 
@@ -35,7 +35,8 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     WIDGET, BASE = uic.loadUiType(
-        os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
+        os.path.join(pluginPath, "ui", "widgetBaseSelector.ui")
+    )
 
 
 class MultipleInputPanel(BASE, WIDGET):
@@ -46,7 +47,7 @@ class MultipleInputPanel(BASE, WIDGET):
         self.setupUi(self)
 
         self.leText.setEnabled(False)
-        self.leText.setText(self.tr('0 elements selected'))
+        self.leText.setText(self.tr("0 elements selected"))
 
         self.btnSelect.clicked.connect(self.showSelectionDialog)
 
@@ -58,23 +59,29 @@ class MultipleInputPanel(BASE, WIDGET):
         # No checking is performed!
         self.selectedoptions = selected
         self.leText.setText(
-            self.tr('{0} elements selected').format(len(self.selectedoptions)))
+            self.tr("{0} elements selected").format(len(self.selectedoptions))
+        )
 
     def showSelectionDialog(self):
         if self.datatype == QgsProcessing.SourceType.TypeFile:
             dlg = MultipleFileInputDialog(self.selectedoptions)
         else:
-            dlg = MultipleInputDialog(self.options, self.selectedoptions, datatype=self.datatype)
+            dlg = MultipleInputDialog(
+                self.options, self.selectedoptions, datatype=self.datatype
+            )
         dlg.exec()
         if dlg.selectedoptions is not None:
             self.selectedoptions = dlg.selectedoptions
             self.leText.setText(
-                self.tr('{0} elements selected').format(len(self.selectedoptions)))
+                self.tr("{0} elements selected").format(len(self.selectedoptions))
+            )
             self.selectionChanged.emit()
 
     def updateForOptions(self, options):
         selectedoptions = []
-        selected = [self.options[i] if isinstance(i, int) else i for i in self.selectedoptions]
+        selected = [
+            self.options[i] if isinstance(i, int) else i for i in self.selectedoptions
+        ]
         for sel in selected:
             if not isinstance(sel, int):
                 try:

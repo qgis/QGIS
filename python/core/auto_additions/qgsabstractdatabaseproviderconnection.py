@@ -56,7 +56,7 @@ try:
 
 .. versionadded:: 3.22"""
     QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions.__group__ = ['providers']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsAbstractDatabaseProviderConnection.SpatialIndexOptions.__attribute_docs__ = {'geometryColumnName': 'Specifies the name of the geometry column to create the index for'}
@@ -64,7 +64,7 @@ try:
 
 .. versionadded:: 3.14"""
     QgsAbstractDatabaseProviderConnection.SpatialIndexOptions.__group__ = ['providers']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsAbstractDatabaseProviderConnection.QueryResult.__doc__ = """The QueryResult class represents the result of a query executed by :py:func:`~QgsAbstractDatabaseProviderConnection.execSql`
@@ -77,7 +77,7 @@ the whole result list.
 
 .. versionadded:: 3.18"""
     QgsAbstractDatabaseProviderConnection.QueryResult.__group__ = ['providers']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsAbstractDatabaseProviderConnection.TableProperty.__doc__ = """The TableProperty class represents a database table or view.
@@ -90,15 +90,15 @@ In case the table is a vector spatial table and the geometry column
 can contain multiple geometry types and/or CRSs, a clone of the property
 for the individual geometry type/CRS can be retrieved with at(i)"""
     QgsAbstractDatabaseProviderConnection.TableProperty.__group__ = ['providers']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType.__doc__ = """The GeometryColumnType struct represents the combination
 of geometry type and CRS for the table geometry column."""
     QgsAbstractDatabaseProviderConnection.TableProperty.GeometryColumnType.__group__ = ['providers']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsAbstractDatabaseProviderConnection.__group__ = ['providers']
-except NameError:
+except (NameError, AttributeError):
     pass

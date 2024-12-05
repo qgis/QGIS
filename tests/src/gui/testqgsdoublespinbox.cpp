@@ -18,26 +18,24 @@
 
 #include <editorwidgets/qgsdoublespinbox.h>
 
-class TestQgsDoubleSpinBox: public QObject
+class TestQgsDoubleSpinBox : public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void clear();
     void expression();
     void step();
 
   private:
-
 };
 
 void TestQgsDoubleSpinBox::initTestCase()
 {
-
 }
 
 void TestQgsDoubleSpinBox::cleanupTestCase()
@@ -59,15 +57,21 @@ void TestQgsDoubleSpinBox::clear()
   spinBox->setMinimum( 1.0 );
   spinBox->setValue( 5.0 );
   spinBox->setClearValueMode( QgsDoubleSpinBox::MinimumValue );
+  QVERIFY( !spinBox->isCleared() );
   spinBox->clear();
+  QVERIFY( spinBox->isCleared() );
   QCOMPARE( spinBox->value(), 1.0 );
   QCOMPARE( spinBox->clearValue(), 1.0 );
   spinBox->setClearValueMode( QgsDoubleSpinBox::MaximumValue );
+  QVERIFY( !spinBox->isCleared() );
   spinBox->clear();
+  QVERIFY( spinBox->isCleared() );
   QCOMPARE( spinBox->value(), 10.0 );
   QCOMPARE( spinBox->clearValue(), 10.0 );
   spinBox->setClearValue( 7.0 );
+  QVERIFY( !spinBox->isCleared() );
   spinBox->clear();
+  QVERIFY( spinBox->isCleared() );
   QCOMPARE( spinBox->value(), 7.0 );
   QCOMPARE( spinBox->clearValue(), 7.0 );
   delete spinBox;

@@ -2,5 +2,5 @@
 try:
     QgsPaintEngineHack.fixEngineFlags = staticmethod(QgsPaintEngineHack.fixEngineFlags)
     QgsPaintEngineHack.__group__ = ['painting']
-except NameError:
+except (NameError, AttributeError):
     pass

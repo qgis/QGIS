@@ -103,7 +103,7 @@ class GUI_EXPORT QgsSettingsTreeModelNodeData : public QObject
     const QgsSettingsEntryBase *setting() const {return mSetting;}
 
   private:
-    //! Private constructor, use createRootNodeData instead
+    //! Private constructor, use createRootNodeData() instead
     QgsSettingsTreeModelNodeData( QObject *parent ) : QObject( parent ) {}
     void addChildForTreeNode( const QgsSettingsTreeNode *node );
     void addChildForNamedListItemNode( const QString &item, const QgsSettingsTreeNamedListNode *namedListNode );

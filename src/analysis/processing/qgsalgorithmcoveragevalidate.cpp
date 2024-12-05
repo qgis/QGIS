@@ -168,6 +168,8 @@ QVariantMap QgsCoverageValidateAlgorithm::processAlgorithm( const QVariantMap &p
   }
 
   feedback->setProgress( 100 );
+  if ( sink )
+    sink->finalize();
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), sinkId );

@@ -60,7 +60,6 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     void showErrorContextMenu( const QPoint &pos );
 
   private:
-
     enum ZoomToAction
     {
       ZoomToFeature,

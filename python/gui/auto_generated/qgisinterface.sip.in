@@ -1492,6 +1492,18 @@ Unregister a previously registered tool factory from the development/debugging t
 .. versionadded:: 3.14
 %End
 
+    virtual void showApiDocumentation( Qgis::DocumentationApi api = Qgis::DocumentationApi::PyQgis, Qgis::DocumentationBrowser browser = Qgis::DocumentationBrowser::DeveloperToolsPanel, const QString &object = QString(), const QString &module = QString() ) = 0;
+%Docstring
+Show a page of the API documentation
+
+:param api: Which API to display
+:param browser: Web browser used to display the API documentation
+:param object: object to show in the documentation
+:param module: used only if api = :py:class:`Qgis`.DocumentationApi.PyQgis
+
+.. versionadded:: 3.42
+%End
+
     virtual void registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;
 %Docstring
 Register a new application exit blocker, which can be used to prevent the QGIS application

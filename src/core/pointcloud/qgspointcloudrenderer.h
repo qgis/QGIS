@@ -70,7 +70,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * Returns a reference to the context's render context.
      * \note Not available in Python bindings.
      */
-    const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
+    const QgsRenderContext &renderContext() const SIP_SKIP { return mRenderContext; }
 
     /**
      * Returns the scale of the layer's int32 coordinates compared to CRS coords.

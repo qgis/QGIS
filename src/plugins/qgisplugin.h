@@ -54,7 +54,6 @@ class QgisInterface;
 class QgisPlugin
 {
   public:
-
     //! Interface to gui element collection object
     //virtual QgisPluginGui *gui()=0;
     //! Element types that can be added to the interface
@@ -81,11 +80,7 @@ class QgisPlugin
     /**
      * Constructor for QgisPlugin
      */
-    QgisPlugin( QString const &name = "",
-                QString const &description = "",
-                QString const &category = "",
-                QString const &version = "",
-                PluginType type = MapLayer )
+    QgisPlugin( QString const &name = "", QString const &description = "", QString const &category = "", QString const &version = "", PluginType type = MapLayer )
       : mName( name )
       , mDescription( description )
       , mCategory( category )
@@ -101,7 +96,7 @@ class QgisPlugin
       return mName;
     }
 
-    QString        &name()
+    QString &name()
     {
       return mName;
     }
@@ -125,7 +120,7 @@ class QgisPlugin
     }
 
     //! A brief description of the plugin
-    QString        &description()
+    QString &description()
     {
       return mDescription;
     }
@@ -137,7 +132,7 @@ class QgisPlugin
     }
 
     //! Plugin category
-    QString        &category()
+    QString &category()
     {
       return mCategory;
     }
@@ -150,7 +145,7 @@ class QgisPlugin
 
 
     //! Plugin type, either UI or map layer
-    QgisPlugin::PluginType        &type()
+    QgisPlugin::PluginType &type()
     {
       return mType;
     }
@@ -162,7 +157,6 @@ class QgisPlugin
     virtual void unload() = 0;
 
   private:
-
     /// plug-in name
     QString mName;
 

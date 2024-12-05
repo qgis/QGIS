@@ -45,6 +45,7 @@
 #include "qgsconfig.h"
 #include "qgsprojectstylesettings.h"
 #include "qgsprojectviewsettings.h"
+#include "qgstabpositionwidget.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
@@ -110,6 +111,7 @@ void QgsTextFormatWidget::initWidget()
   connect( mToolButtonConfigureSubstitutes, &QToolButton::clicked, this, &QgsTextFormatWidget::mToolButtonConfigureSubstitutes_clicked );
   connect( mKerningCheckBox, &QCheckBox::toggled, this, &QgsTextFormatWidget::kerningToggled );
   connect( mComboOverlapHandling, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsTextFormatWidget::overlapModeChanged );
+  connect( mTabStopsButton, &QToolButton::clicked, this, &QgsTextFormatWidget::configureTabStops );
 
   const int iconSize = QgsGuiUtils::scaleIconSize( 20 );
   mOptionsTab->setIconSize( QSize( iconSize, iconSize ) );
@@ -929,6 +931,9 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
     mDataDefinedProperties = format.dataDefinedProperties();
   }
 
+  mTabPositions = format.tabPositions();
+  mTabStopDistanceSpin->setEnabled( mTabPositions.empty() );
+
   // buffer
   mBufferDrawChkBx->setChecked( buffer.enabled() );
   mBufferFrame->setEnabled( buffer.enabled() );
@@ -1128,6 +1133,7 @@ QgsTextFormat QgsTextFormatWidget::format( bool includeDataDefinedProperties ) c
   format.setTabStopDistance( mTabDistanceUnitWidget->unit() == Qgis::RenderUnit::Percentage ? ( mTabStopDistanceSpin->value() / 100 ) : mTabStopDistanceSpin->value() );
   format.setTabStopDistanceUnit( mTabDistanceUnitWidget->unit() );
   format.setTabStopDistanceMapUnitScale( mTabDistanceUnitWidget->getMapUnitScale() );
+  format.setTabPositions( mTabPositions );
 
   // buffer
   QgsTextBufferSettings buffer;
@@ -2159,6 +2165,37 @@ void QgsTextFormatWidget::mToolButtonConfigureSubstitutes_clicked()
   {
     mSubstitutions = dlg.substitutions();
     emit widgetChanged();
+  }
+}
+
+void QgsTextFormatWidget::configureTabStops()
+{
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsTabPositionWidget *widget = new QgsTabPositionWidget( panel );
+    widget->setPanelTitle( tr( "Tab Positions" ) );
+    widget->setPositions( mTabPositions );
+    widget->setUnit( mTabDistanceUnitWidget->unit() );
+    connect( widget, &QgsTabPositionWidget::positionsChanged, this, [ = ]( const QList< QgsTextFormat::Tab > &positions )
+    {
+      mTabPositions = positions;
+      mTabStopDistanceSpin->setEnabled( mTabPositions.empty() );
+      emit widgetChanged();
+    } );
+    panel->openPanel( widget );
+  }
+  else
+  {
+    QgsTabPositionDialog dlg( this );
+    dlg.setPositions( mTabPositions );
+    dlg.setUnit( mTabDistanceUnitWidget->unit() );
+    if ( dlg.exec() == QDialog::Accepted )
+    {
+      mTabPositions = dlg.positions();
+      mTabStopDistanceSpin->setEnabled( mTabPositions.empty() );
+      emit widgetChanged();
+    }
   }
 }
 

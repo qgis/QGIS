@@ -3,5 +3,5 @@ try:
     QgsMergedFeatureRenderer.create = staticmethod(QgsMergedFeatureRenderer.create)
     QgsMergedFeatureRenderer.convertFromRenderer = staticmethod(QgsMergedFeatureRenderer.convertFromRenderer)
     QgsMergedFeatureRenderer.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

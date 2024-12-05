@@ -6,5 +6,5 @@ try:
     QgsQuadrilateral.rectangleFromCenterPoint = staticmethod(QgsQuadrilateral.rectangleFromCenterPoint)
     QgsQuadrilateral.fromRectangle = staticmethod(QgsQuadrilateral.fromRectangle)
     QgsQuadrilateral.__group__ = ['geometry']
-except NameError:
+except (NameError, AttributeError):
     pass

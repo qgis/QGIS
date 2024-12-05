@@ -209,6 +209,13 @@ class CORE_EXPORT QgsTextDocument
      */
     void applyCapitalization( Qgis::Capitalization capitalization );
 
+    /**
+     * Returns TRUE if any blocks or fragments in the document have background brushes set.
+     *
+     * \since QGIS 3.42
+     */
+    bool hasBackgrounds() const;
+
 #ifndef SIP_RUN
     ///@cond PRIVATE
     QVector< QgsTextBlock >::const_iterator begin() const;

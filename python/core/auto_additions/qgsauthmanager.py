@@ -7,5 +7,5 @@ try:
     QgsAuthManager.passwordHelperEnabled = staticmethod(QgsAuthManager.passwordHelperEnabled)
     QgsAuthManager.__signal_arguments__ = {'passwordHelperMessageLog': ['message: str', 'tag: str = QgsAuthManager.AUTH_MAN_TAG', 'level: Qgis.MessageLevel = Qgis.MessageLevel.Info'], 'masterPasswordVerified': ['verified: bool']}
     QgsAuthManager.__group__ = ['auth']
-except NameError:
+except (NameError, AttributeError):
     pass

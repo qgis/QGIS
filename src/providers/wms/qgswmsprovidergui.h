@@ -22,7 +22,7 @@
 #include "qgsproviderguimetadata.h"
 #include <memory>
 
-class QgsWmsProviderGuiMetadata: public QgsProviderGuiMetadata
+class QgsWmsProviderGuiMetadata : public QgsProviderGuiMetadata
 {
   public:
     QgsWmsProviderGuiMetadata();
@@ -35,9 +35,7 @@ class QgsWmsProviderGuiMetadata: public QgsProviderGuiMetadata
     QList<const QgsMapLayerConfigWidgetFactory *> mapLayerConfigWidgetFactories() override;
 
   private:
-
-    std::unique_ptr< QgsMapLayerConfigWidgetFactory > mWmstConfigWidgetFactory;
-
+    std::unique_ptr<QgsMapLayerConfigWidgetFactory> mWmstConfigWidgetFactory;
 };
 
 #endif // QGSWMSPROVIDERGUI_H

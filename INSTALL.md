@@ -186,7 +186,7 @@ sudo apt-get update
 
 (extracted from the control.in file in `debian/`)
 
-See [debian-ubuntu](https://qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu) for
+See [debian-ubuntu](https://qgis.org/resources/installation-guide/#debianubuntu) for
 currently supported distributions (plain xenial's GDAL for instance is too old
 and we build with GDAL2 from ubuntugis).
 
@@ -776,13 +776,13 @@ Open a _Developer PowerShell for VS 2022_
 # and have changed the working directory into it
 
 # Configure
-cmake -S . \
-      -B build \
-      -DSDK_PATH="path/to/vcpkg-export-[date]" \
-      -DBUILD_WITH_QT6=ON \
-      -DWITH_QTWEBKIT=OFF \
-      -DVCPKG_TARGET_TRIPLET=x64-windows-release \
-      -DFLEX_EXECUTABLE="path/to/flex-executable" \
+cmake -S . `
+      -B build `
+      -DSDK_PATH="path/to/vcpkg-export-[date]" `
+      -DBUILD_WITH_QT6=ON `
+      -DWITH_QTWEBKIT=OFF `
+      -DVCPKG_TARGET_TRIPLET=x64-windows-release `
+      -DFLEX_EXECUTABLE="path/to/flex-executable" `
       -DBISON_EXECUTABLE="path/to/bison-executable"
 ```
 
@@ -808,12 +808,12 @@ This will require some time, cpu and disk space.
 # and have changed the working directory into it
 
 # Configure
-cmake -S . \
-      -B build \
-      -D WITH_VCPKG \
-      -D BUILD_WITH_QT6=ON \
-      -D WITH_QTWEBKIT=OFF \
-      -D VCPKG_TARGET_TRIPLET=x64-windows-release \
+cmake -S . `
+      -B build `
+      -D WITH_VCPKG=ON `
+      -D BUILD_WITH_QT6=ON `
+      -D WITH_QTWEBKIT=OFF `
+      -D VCPKG_TARGET_TRIPLET=x64-windows-release `
       -D VCPKG_HOST_TRIPLET=x64-windows-release
 ```
 
@@ -830,7 +830,7 @@ dependency into the folder `vcpkg/ports`. Whenever the build is reconfigured, it
 
 If you want to test QGIS, easiest option is to download and install all-in-one self-containing bundle directly from
 
-https://qgis.org/downloads/macos
+https://download.qgis.org/downloads/macos/
 
 On the other hand, if you want to build or develop QGIS on your own, you need a set of dependencies and tools.
 These instructions will use the same set of dependencies that are used for all-in-one QGIS bundle,
@@ -891,7 +891,7 @@ used to build dependency package.
 
 Download the latest QGIS-Deps install script, qt package and QGIS-Deps packages from
 
-https://qgis.org/downloads/macos/deps
+https://download.qgis.org/downloads/macos/deps
 
 You should have one bash script and two tar archive in your download folder.
 Run the install script to install Qt and QGIS-Deps to `/opt/` area. You need

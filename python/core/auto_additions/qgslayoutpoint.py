@@ -2,5 +2,5 @@
 try:
     QgsLayoutPoint.decodePoint = staticmethod(QgsLayoutPoint.decodePoint)
     QgsLayoutPoint.__group__ = ['layout']
-except NameError:
+except (NameError, AttributeError):
     pass

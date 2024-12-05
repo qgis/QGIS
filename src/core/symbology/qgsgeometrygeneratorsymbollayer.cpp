@@ -422,7 +422,8 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
         {
           for ( const QPolygonF &ring : *rings )
           {
-            polygon->addInteriorRing( QgsLineString::fromQPolygonF( ring ) );
+            std::unique_ptr< QgsLineString > fromRing = QgsLineString::fromQPolygonF( ring );
+            polygon->addInteriorRing( fromRing.release() );
           }
         }
         drawGeometry = QgsGeometry( std::move( polygon ) );

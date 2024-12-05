@@ -25,6 +25,7 @@
 #include <QPointer>
 #include <memory>
 
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QGraphicsView;
@@ -46,22 +47,6 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
 {
     Q_OBJECT
   public:
-
-    //! Describes the action (move or resize in different direction) to be done during mouse move
-    enum MouseAction
-    {
-      MoveItem,
-      ResizeUp,
-      ResizeDown,
-      ResizeLeft,
-      ResizeRight,
-      ResizeLeftUp,
-      ResizeRightUp,
-      ResizeLeftDown,
-      ResizeRightDown,
-      SelectItem,
-      NoAction
-    };
 
     enum ItemPositionMode
     {
@@ -85,7 +70,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     QgsGraphicsViewMouseHandles( QGraphicsView *view );
 
     //! Finds out which mouse move action to choose depending on the scene cursor position
-    QgsGraphicsViewMouseHandles::MouseAction mouseActionForScenePos( QPointF sceneCoordPos );
+    Qgis::MouseHandlesAction mouseActionForScenePos( QPointF sceneCoordPos );
 
     //! Returns TRUE is user is currently dragging the handles
     bool isDragging() const { return mIsDragging; }
@@ -171,7 +156,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     void setHandleSize( double size );
 
     //! Finds out which mouse move action to choose depending on the cursor position inside the widget
-    MouseAction mouseActionForPosition( QPointF itemCoordPos );
+    Qgis::MouseHandlesAction mouseActionForPosition( QPointF itemCoordPos );
 
     //! Calculates the distance of the mouse cursor from thed edge of the mouse handles
     QSizeF calcCursorEdgeOffset( QPointF cursorPos );
@@ -219,7 +204,8 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     //! Start point of the last mouse move action (in scene coordinates)
     QPointF mMouseMoveStartPos;
 
-    MouseAction mCurrentMouseMoveAction = NoAction;
+    Qgis::MouseHandlesAction mCurrentMouseMoveAction = Qgis::MouseHandlesAction::NoAction;
+    bool mDoubleClickInProgress = false;
 
     //! True if user is currently dragging items
     bool mIsDragging = false;

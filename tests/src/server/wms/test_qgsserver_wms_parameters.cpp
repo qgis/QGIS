@@ -95,8 +95,6 @@ void TestQgsServerWmsParameters::external_layers()
   QgsWms::QgsWmsParametersLayer layer_params2 = layers_params2[0];
   QCOMPARE( layer_params2.mNickname, QString( "external_layer_1" ) );
   QCOMPARE( layer_params2.mExternalUri, QString( "layers=layer_1_name&url=http://url_1" ) );
-
-
 }
 
 void TestQgsServerWmsParameters::percent_encoding()
@@ -199,9 +197,7 @@ void TestQgsServerWmsParameters::prefixed_layers()
   query.addQueryItem( "LAYERS", "a,b" );
 
   QgsWms::QgsWmsParameters parameters1( query );
-  QCOMPARE( parameters1.allLayersNickname(), QStringList()
-            << QStringLiteral( "a" )
-            << QStringLiteral( "b" ) );
+  QCOMPARE( parameters1.allLayersNickname(), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
 
   query.addQueryItem( "map0:LAYERS", "b,c" );
   query.addQueryItem( "map1:LAYERS", "c,d" );
@@ -215,12 +211,7 @@ void TestQgsServerWmsParameters::prefixed_layers()
   QCOMPARE( params.at( 2 ).mNickname, QStringLiteral( "c" ) );
   QCOMPARE( params.at( 3 ).mNickname, QStringLiteral( "d" ) );
 
-  QCOMPARE( parameters.allLayersNickname(), QStringList()
-            << QStringLiteral( "a" )
-            << QStringLiteral( "b" )
-            << QStringLiteral( "c" )
-            << QStringLiteral( "d" ) );
-
+  QCOMPARE( parameters.allLayersNickname(), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) );
 }
 
 QGSTEST_MAIN( TestQgsServerWmsParameters )

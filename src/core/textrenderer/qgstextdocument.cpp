@@ -74,12 +74,18 @@ QgsTextDocument QgsTextDocument::fromHtml( const QStringList &lines )
     // handle these markers as tab characters in the parsed HTML document.
     line.replace( QString( '\t' ), QStringLiteral( TAB_REPLACEMENT_MARKER ) );
 
-    // cheat a little. Qt css requires word-spacing and line-height to have the "px" suffix. But we don't treat word spacing/line height
+    // cheat a little. Qt css requires some properties to have the "px" suffix. But we don't treat these properties
     // as pixels, because that doesn't scale well with different dpi render targets! So let's instead use just instead treat the suffix as
     // optional, and ignore ANY unit suffix the user has put, and then replace it with "px" so that Qt's css parsing engine can process it
     // correctly...
-    const thread_local QRegularExpression sRxPixelsToPtFix( QStringLiteral( "(word-spacing|line-height):\\s*(-?\\d+(?:\\.\\d+)?)(?![%\\d])([a-zA-Z]*)" ) );
+    const thread_local QRegularExpression sRxPixelsToPtFix( QStringLiteral( "(word-spacing|line-height|margin-top|margin-bottom|margin-left|margin-right):\\s*(-?\\d+(?:\\.\\d+)?)(?![%\\d])([a-zA-Z]*)" ) );
     line.replace( sRxPixelsToPtFix, QStringLiteral( "\\1: \\2px" ) );
+    const thread_local QRegularExpression sRxMarginPixelsToPtFix( QStringLiteral( "margin:\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)\\s*(-?\\d+(?:\\.\\d+)?)([a-zA-Z]*)" ) );
+    line.replace( sRxMarginPixelsToPtFix, QStringLiteral( "margin: \\1px \\3px \\5px \\7px" ) );
+
+    // undo default margins on p, h1-6 elements. We didn't use to respect these and can't change the rendering
+    // of existing projects to suddenly start showing them...
+    line.prepend( QStringLiteral( "<style>p, h1, h2, h3, h4, h5, h6 { margin: 0pt; }</style>" ) );
 
     sourceDoc.setHtml( line );
 
@@ -385,6 +391,11 @@ void QgsTextDocument::applyCapitalization( Qgis::Capitalization capitalization )
   {
     block.applyCapitalization( capitalization );
   }
+}
+
+bool QgsTextDocument::hasBackgrounds() const
+{
+  return std::any_of( mBlocks.begin(), mBlocks.end(), []( const QgsTextBlock & block ) { return block.hasBackgrounds(); } );
 }
 
 ///@cond PRIVATE
