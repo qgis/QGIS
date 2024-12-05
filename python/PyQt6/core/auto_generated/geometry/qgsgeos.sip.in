@@ -471,7 +471,7 @@ Returns a GeometryCollection having two elements:
 %End
 
 
-    QgsGeometry mergeLines( QString *errorMsg /Out/ = 0 ) const;
+    std::unique_ptr< QgsAbstractGeometry > mergeLines( QString *errorMsg /Out/ = 0 ) const;
 %Docstring
 Merges any connected lines in a LineString/MultiLineString geometry and
 converts them to single line strings.
@@ -483,7 +483,7 @@ converts them to single line strings.
          - errorMsg: descriptive error string if the operation fails
 %End
 
-    QgsGeometry closestPoint( const QgsGeometry &other, QString *errorMsg /Out/ = 0 ) const;
+    std::unique_ptr< QgsAbstractGeometry > closestPoint( const QgsGeometry &other, QString *errorMsg /Out/ = 0 ) const;
 %Docstring
 Returns the closest point on the geometry to the other geometry.
 
@@ -495,7 +495,7 @@ Returns the closest point on the geometry to the other geometry.
 .. seealso:: :py:func:`shortestLine`
 %End
 
-    QgsGeometry shortestLine( const QgsGeometry &other, QString *errorMsg /Out/ = 0 ) const;
+    std::unique_ptr< QgsAbstractGeometry > shortestLine( const QgsGeometry &other, QString *errorMsg /Out/ = 0 ) const;
 %Docstring
 Returns the shortest line joining this geometry to the other geometry.
 
@@ -507,7 +507,7 @@ Returns the shortest line joining this geometry to the other geometry.
 .. seealso:: :py:func:`closestPoint`
 %End
 
-    QgsGeometry shortestLine( const QgsAbstractGeometry *other, QString *errorMsg /Out/ = 0 ) const;
+    std::unique_ptr< QgsAbstractGeometry > shortestLine( const QgsAbstractGeometry *other, QString *errorMsg /Out/ = 0 ) const;
 %Docstring
 Returns the shortest line joining this geometry to the other geometry.
 
@@ -561,7 +561,7 @@ This method is more efficient than creating a temporary :py:class:`QgsPoint` obj
 %End
 
 
-    QgsGeometry voronoiDiagram( const QgsAbstractGeometry *extent = 0, double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg /Out/ = 0 ) const;
+    std::unique_ptr< QgsAbstractGeometry > voronoiDiagram( const QgsAbstractGeometry *extent = 0, double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg /Out/ = 0 ) const;
 %Docstring
 Creates a Voronoi diagram for the nodes contained within the geometry.
 
@@ -584,7 +584,7 @@ An empty geometry will be returned if the diagram could not be calculated.
          - errorMsg: descriptive error string if the operation fails
 %End
 
-    QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg /Out/ = 0 ) const;
+    std::unique_ptr< QgsAbstractGeometry > delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg /Out/ = 0 ) const;
 %Docstring
 Returns the Delaunay triangulation for the vertices of the geometry.
 The ``tolerance`` parameter specifies an optional snapping tolerance which can
@@ -621,7 +621,7 @@ This method requires a QGIS build based on GEOS 3.11 or later.
 .. versionadded:: 3.36
 %End
 
-    QgsAbstractGeometry *concaveHull( double targetPercent, bool allowHoles = false, QString *errorMsg /Out/ = 0 ) const;
+    std::unique_ptr< QgsAbstractGeometry > concaveHull( double targetPercent, bool allowHoles = false, QString *errorMsg /Out/ = 0 ) const;
 %Docstring
 Returns a possibly concave geometry that encloses the input geometry.
 

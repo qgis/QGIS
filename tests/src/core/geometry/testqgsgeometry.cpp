@@ -1697,7 +1697,7 @@ void TestQgsGeometry::shortestLineEmptyGeometry()
   QgsGeometry geom1( QgsGeometry::fromWkt( QStringLiteral( "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ))" ) ) );
   QgsGeometry geom2( new QgsPoint() );
   QgsGeos geos( geom1.constGet() );
-  QVERIFY( geos.shortestLine( geom2.constGet() ).isNull() );
+  QVERIFY( !geos.shortestLine( geom2.constGet() ) );
 }
 
 void TestQgsGeometry::distanceCheck()
