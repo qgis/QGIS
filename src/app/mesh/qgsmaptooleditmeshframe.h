@@ -126,7 +126,6 @@ class QgsMeshEditDigitizingAction : public QWidgetAction
 {
     Q_OBJECT
   public:
-
     enum ZValueSource
     {
       ZWidget,
