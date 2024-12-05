@@ -65,7 +65,6 @@ class TestQgsOverlayExpression : public QObject
     void testOverlayMeasure_data();
 
     void testOverlayIntersectsDetails();
-
 };
 
 
@@ -451,7 +450,6 @@ void TestQgsOverlayExpression::testOverlayIntersectsDetails()
 
   QgsProject::instance()->removeMapLayer( poly1->id() );
   QgsProject::instance()->removeMapLayer( line->id() );
-
 }
 
 void TestQgsOverlayExpression::testOverlayExpression()
