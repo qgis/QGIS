@@ -43,6 +43,9 @@ class GUI_EXPORT QgsRasterLabelSettingsWidget : public QgsLabelingGui
     QgsRasterLabelSettingsWidget( QgsRasterLayer *layer, QgsMapCanvas *mapCanvas, QWidget *parent = nullptr );
     ~QgsRasterLabelSettingsWidget() override;
 
+    /**
+     * Sets the \a labeling settings to show in the widget.
+     */
     void setLabeling( QgsAbstractRasterLayerLabeling *labeling );
 
     /**

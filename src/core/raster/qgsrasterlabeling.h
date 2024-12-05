@@ -45,6 +45,10 @@ class QgsRasterLayerRendererFeedback;
 class CORE_EXPORT QgsRasterLayerLabelProvider final : public QgsAbstractLabelProvider
 {
   public:
+
+    /**
+     * Constructor for QgsRasterLayerLabelProvider.
+     */
     explicit QgsRasterLayerLabelProvider( QgsRasterLayer *layer );
 
     ~QgsRasterLayerLabelProvider() final;
@@ -52,8 +56,14 @@ class CORE_EXPORT QgsRasterLayerLabelProvider final : public QgsAbstractLabelPro
     void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const final;
     void startRender( QgsRenderContext &context ) final;
 
+    /**
+     * Generates the labels, given a render context and input pipe.
+     */
     void generateLabels( QgsRenderContext &context, QgsRasterPipe *pipe, QgsRasterViewPort *rasterViewPort, QgsRasterLayerRendererFeedback *feedback );
 
+    /**
+     * Adds a label at the specified point in map coordinates.
+     */
     void addLabel( const QgsPoint &mapPoint, const QString &text, QgsRenderContext &context );
 
     /**
@@ -385,11 +395,11 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * A scale of 0 indicates no maximum scale visibility.
      *
-     * This setting is only considered if scaleVisibility() is TRUE.
+     * This setting is only considered if hasScaleBasedVisibility() is TRUE.
      *
      * \see setMaximumScale()
      * \see minimumScale()
-     * \see scaleVisibility()
+     * \see hasScaleBasedVisibility()
     */
     double maximumScale() const;
 
@@ -399,7 +409,7 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * A scale of 0 indicates no maximum scale visibility.
      *
-     * This setting is only considered if scaleVisibility() is TRUE.
+     * This setting is only considered if hasScaleBasedVisibility() is TRUE.
      *
      * \see maximumScale()
      * \see setMinimumScale()
@@ -413,11 +423,11 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * A scale of 0 indicates no minimum scale visibility.
      *
-     * This setting is only considered if scaleVisibility() is TRUE.
+     * This setting is only considered if hasScaleBasedVisibility() is TRUE.
      *
      * \see setMinimumScale()
      * \see maximumScale()
-     * \see scaleVisibility()
+     * \see hasScaleBasedVisibility()
     */
     double minimumScale() const;
 
@@ -427,11 +437,11 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * A scale of 0 indicates no minimum scale visibility.
      *
-     * This setting is only considered if scaleVisibility() is TRUE.
+     * This setting is only considered if hasScaleBasedVisibility() is TRUE.
      *
      * \see minimumScale()
      * \see setMaximumScale()
-     * \see scaleVisibility()
+     * \see hasScaleBasedVisibility()
     */
     void setMinimumScale( double scale );
 
