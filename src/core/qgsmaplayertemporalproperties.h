@@ -42,9 +42,9 @@ class QgsDataProviderTemporalCapabilities;
  */
 class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
 {
-    SIP_TYPEHEADER_INCLUDE( qgsrasterlayertemporalproperties.h );
-    SIP_TYPEHEADER_INCLUDE( qgsmeshlayertemporalproperties.h );
-    SIP_TYPEHEADER_INCLUDE( qgsvectorlayertemporalproperties.h );
+    SIP_TYPEHEADER_INCLUDE( "qgsrasterlayertemporalproperties.h" );
+    SIP_TYPEHEADER_INCLUDE( "qgsmeshlayertemporalproperties.h" );
+    SIP_TYPEHEADER_INCLUDE( "qgsvectorlayertemporalproperties.h" );
 
     Q_OBJECT
 

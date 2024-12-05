@@ -32,8 +32,8 @@
  */
 class CORE_EXPORT QgsAbstractSensor : public QObject
 {
-    SIP_TYPEHEADER_INCLUDE( qgsiodevicesensor.h );
-    SIP_TYPEHEADER_INCLUDE( qgssensorregistry.h );
+    SIP_TYPEHEADER_INCLUDE( "qgsiodevicesensor.h" );
+    SIP_TYPEHEADER_INCLUDE( "qgssensorregistry.h" );
 
 
 #ifdef SIP_RUN
