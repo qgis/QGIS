@@ -283,7 +283,7 @@ This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.hasSc
 
 .. seealso:: :py:func:`setMinimumScale`
 
-.. seealso:: :py:func:`setScaleVisibility`
+.. seealso:: :py:func:`setScaleBasedVisibility`
 %End
 
     double minimumScale() const;

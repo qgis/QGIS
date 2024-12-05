@@ -413,7 +413,7 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
      *
      * \see maximumScale()
      * \see setMinimumScale()
-     * \see setScaleVisibility()
+     * \see setScaleBasedVisibility()
     */
     void setMaximumScale( double scale );
 
