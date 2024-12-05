@@ -70,6 +70,7 @@ QgsDualView::QgsDualView( QWidget *parent )
 
   const QgsSettings settings;
   mConditionalSplitter->restoreState( settings.value( QStringLiteral( "/qgis/attributeTable/splitterState" ), QByteArray() ).toByteArray() );
+  mAttributeEditorViewSplitter->restoreState( settings.value( QStringLiteral( "/qgis/attributeEditor/splitterState" ), QByteArray() ).toByteArray() );
 
   mPreviewColumnsMenu = new QMenu( this );
   mActionPreviewColumnsMenu->setMenu( mPreviewColumnsMenu );
@@ -114,8 +115,6 @@ QgsDualView::QgsDualView( QWidget *parent )
 
 QgsDualView::~QgsDualView()
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "/qgis/attributeTable/splitterState" ), mConditionalSplitter->saveState() );
 }
 
 void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request, const QgsAttributeEditorContext &context, bool loadFeatures, bool showFirstFeature )
@@ -815,6 +814,15 @@ void QgsDualView::hideEvent( QHideEvent *event )
 {
   Q_UNUSED( event )
   saveRecentDisplayExpressions();
+
+  // Better to save settings here than in destructor. This this last can be called after a new
+  // project is loaded. So, when Qgis::ProjectFlag::RememberAttributeTableWindowsBetweenSessions is set,
+  // a new QgsDualView is created at project loading and we restore the old settings before saving the
+  // new one.
+  // And also, we override close event to just hide in QgsDockableWidgetHelper::eventFilter, that's why hideEvent
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "/qgis/attributeTable/splitterState" ), mConditionalSplitter->saveState() );
+  settings.setValue( QStringLiteral( "/qgis/attributeEditor/splitterState" ), mAttributeEditorViewSplitter->saveState() );
 }
 
 void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &masterIndex )
