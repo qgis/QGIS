@@ -289,6 +289,8 @@ void QgsLabelingGui::init()
 {
   QgsGui::initCalloutWidgets();
 
+  mStackedWidgetLabelWith->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
+
   mFontMultiLineAlignComboBox->addItem( tr( "Left" ), static_cast<int>( Qgis::LabelMultiLineAlignment::Left ) );
   mFontMultiLineAlignComboBox->addItem( tr( "Center" ), static_cast<int>( Qgis::LabelMultiLineAlignment::Center ) );
   mFontMultiLineAlignComboBox->addItem( tr( "Right" ), static_cast<int>( Qgis::LabelMultiLineAlignment::Right ) );

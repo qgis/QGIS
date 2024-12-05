@@ -57,6 +57,7 @@
 #include "qgisapp.h"
 #include "qgssymbolwidgetcontext.h"
 #include "qgsannotationlayer.h"
+#include "qgsrasterlabelingwidget.h"
 
 #ifdef HAVE_3D
 #include "qgsvectorlayer3drendererwidget.h"
@@ -229,6 +230,11 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       transparencyItem->setToolTip( tr( "Transparency" ) );
       transparencyItem->setData( Qt::UserRole, RasterTransparency );
       mOptionsListWidget->addItem( transparencyItem );
+
+      QListWidgetItem *labelItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), QString() );
+      labelItem->setData( Qt::UserRole, VectorLabeling );
+      labelItem->setToolTip( tr( "Labels" ) );
+      mOptionsListWidget->addItem( labelItem );
 
       if ( static_cast<QgsRasterLayer *>( layer )->dataProvider() && static_cast<QgsRasterLayer *>( layer )->dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::Size )
       {
@@ -641,7 +647,24 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             mWidgetStack->setMainPanel( transwidget );
             break;
           }
-          case 2: // Histogram
+
+          case 2: // Labeling
+          {
+            if ( !mRasterLabelingWidget )
+            {
+              mRasterLabelingWidget = new QgsRasterLabelingWidget( rlayer, mMapCanvas, mWidgetStack, mMessageBar );
+              mRasterLabelingWidget->setDockMode( true );
+              connect( mRasterLabelingWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            }
+            else
+            {
+              mRasterLabelingWidget->setLayer( rlayer );
+            }
+            mWidgetStack->setMainPanel( mRasterLabelingWidget );
+            break;
+          }
+
+          case 3: // Histogram
           {
             if ( rlayer->dataProvider()->capabilities() & Qgis::RasterInterfaceCapability::Size )
             {
@@ -662,7 +685,8 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
             }
             break;
           }
-          case 3: // Attribute Tables
+
+          case 4: // Attribute Tables
           {
             if ( rlayer->attributeTableCount() > 0 )
             {

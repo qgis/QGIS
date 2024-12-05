@@ -68,7 +68,7 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
 
     void setLabelMode( LabelMode mode );
 
-    void setLayer( QgsMapLayer *layer );
+    virtual void setLayer( QgsMapLayer *layer );
 
     void setSettings( const QgsPalLayerSettings &settings );
 

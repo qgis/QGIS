@@ -44,14 +44,15 @@ QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canva
   mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingRuleBased.svg" ) ), tr( "Rule-based Labeling" ), ModeRuleBased );
   mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingObstacle.svg" ) ), tr( "Blocking" ), ModeBlocking );
 
-  connect( mLabelRulesButton, &QAbstractButton::clicked, this, &QgsLabelingWidget::showLabelingEngineRules );
-  connect( mEngineSettingsButton, &QAbstractButton::clicked, this, &QgsLabelingWidget::showEngineConfigDialog );
+  connect( mLabelRulesButton, &QAbstractButton::clicked, this, &QgsLabelingWidget::showLabelingEngineRulesPrivate );
+  connect( mEngineSettingsButton, &QAbstractButton::clicked, this, &QgsLabelingWidget::showEngineConfigDialogPrivate );
 
   connect( mLabelModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelingWidget::labelModeChanged );
   setLayer( layer );
 
   const int iconSize16 = QgsGuiUtils::scaleIconSize( 16 );
   mEngineSettingsButton->setIconSize( QSize( iconSize16, iconSize16 ) );
+  mLabelRulesButton->setIconSize( QSize( iconSize16, iconSize16 ) );
 }
 
 QgsLabelingGui *QgsLabelingWidget::labelingGui()
@@ -285,9 +286,10 @@ void QgsLabelingWidget::labelModeChanged( int index )
   emit widgetChanged();
 }
 
-void QgsLabelingWidget::showLabelingEngineRules()
+
+void QgsLabelingWidget::showLabelingEngineRules( QWidget *parent, QgsMapCanvas *canvas )
 {
-  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( parent );
   const QgsLabelingEngineSettings &settings = QgsProject::instance()->labelingEngineSettings();
   QList<QgsAbstractLabelingEngineRule *> rules;
   for ( const QgsAbstractLabelingEngineRule *rule : settings.rules() )
@@ -299,19 +301,19 @@ void QgsLabelingWidget::showLabelingEngineRules()
   {
     QgsLabelingEngineRulesWidget *widget = new QgsLabelingEngineRulesWidget();
     widget->setRules( rules );
-    connect( widget, &QgsLabelingEngineRulesWidget::changed, widget, [widget, this] {
+    connect( widget, &QgsLabelingEngineRulesWidget::changed, widget, [widget, canvas] {
       QgsLabelingEngineSettings settings = QgsProject::instance()->labelingEngineSettings();
       settings.setRules( widget->rules() );
       QgsProject::instance()->setLabelingEngineSettings( settings );
       QgsProject::instance()->setDirty();
-      if ( mCanvas )
-        mCanvas->refreshAllLayers();
+      if ( canvas )
+        canvas->refreshAllLayers();
     } );
     panel->openPanel( widget );
   }
   else
   {
-    QgsLabelingEngineRulesDialog dialog( this );
+    QgsLabelingEngineRulesDialog dialog( parent );
     dialog.setRules( rules );
     if ( dialog.exec() )
     {
@@ -319,27 +321,37 @@ void QgsLabelingWidget::showLabelingEngineRules()
       settings.setRules( dialog.rules() );
       QgsProject::instance()->setLabelingEngineSettings( settings );
       QgsProject::instance()->setDirty();
-      if ( mCanvas )
-        mCanvas->refreshAllLayers();
+      if ( canvas )
+        canvas->refreshAllLayers();
     }
-    activateWindow();
+    parent->activateWindow();
   }
 }
 
-void QgsLabelingWidget::showEngineConfigDialog()
+void QgsLabelingWidget::showLabelingEngineRulesPrivate()
 {
-  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  showLabelingEngineRules( this, mCanvas );
+}
+
+void QgsLabelingWidget::showEngineConfiguration( QWidget *parent, QgsMapCanvas *canvas )
+{
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( parent );
   if ( panel && panel->dockMode() )
   {
-    QgsLabelEngineConfigWidget *widget = new QgsLabelEngineConfigWidget( mCanvas );
+    QgsLabelEngineConfigWidget *widget = new QgsLabelEngineConfigWidget( canvas );
     connect( widget, &QgsLabelEngineConfigWidget::widgetChanged, widget, &QgsLabelEngineConfigWidget::apply );
     panel->openPanel( widget );
   }
   else
   {
-    QgsLabelEngineConfigDialog dialog( mCanvas, this );
+    QgsLabelEngineConfigDialog dialog( canvas, parent );
     dialog.exec();
     // reactivate button's window
-    activateWindow();
+    parent->activateWindow();
   }
+}
+
+void QgsLabelingWidget::showEngineConfigDialogPrivate()
+{
+  showEngineConfiguration( this, mCanvas );
 }

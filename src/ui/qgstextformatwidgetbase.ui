@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Layer Labeling Settings</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_8">
+  <layout class="QGridLayout" name="gridLayout_8" rowstretch="0,1">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -625,7 +625,7 @@
               <item>
                <widget class="QStackedWidget" name="mLabelStackedWidget">
                 <property name="currentIndex">
-                 <number>1</number>
+                 <number>8</number>
                 </property>
                 <widget class="QWidget" name="mLabelPage_Text">
                  <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -654,8 +654,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>485</width>
-                       <height>410</height>
+                       <width>305</width>
+                       <height>307</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -1217,7 +1217,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>471</width>
+                       <width>347</width>
                        <height>755</height>
                       </rect>
                      </property>
@@ -4185,7 +4185,7 @@ font-style: italic;</string>
                        <number>0</number>
                       </property>
                       <item>
-                       <widget class="QGroupBox" name="groupBox">
+                       <widget class="QGroupBox" name="mPlacementGroupBox">
                         <property name="title">
                          <string>General Settings</string>
                         </property>
@@ -5868,7 +5868,7 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item>
-                          <layout class="QHBoxLayout" name="horizontalLayout_16" stretch="0,2,0,1,0">
+                          <layout class="QHBoxLayout" name="horizontalLayout_16" stretch="0,0,0,1,0">
                            <item>
                             <widget class="QCheckBox" name="mChkNoObstacle">
                              <property name="enabled">
@@ -5882,7 +5882,7 @@ font-style: italic;</string>
                               <string>Features act as obstacles</string>
                              </property>
                              <property name="wordWrap">
-                              <bool>true</bool>
+                              <bool>false</bool>
                              </property>
                              <property name="buddy">
                               <cstring>mChkNoObstacle</cstring>
@@ -5973,9 +5973,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
-                       <width>368</width>
-                       <height>851</height>
+                       <y>-463</y>
+                       <width>471</width>
+                       <height>849</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -6132,131 +6132,133 @@ This limit is inclusive, that means the label will be displayed on this scale.</
                           </layout>
                          </item>
                          <item>
-                          <layout class="QGridLayout" name="gridLayout_16">
-                           <property name="verticalSpacing">
-                            <number>6</number>
-                           </property>
-                           <item row="1" column="0" colspan="3">
-                            <widget class="QFrame" name="mFontLimitPixelFrame">
-                             <property name="frameShape">
-                              <enum>QFrame::NoFrame</enum>
-                             </property>
-                             <layout class="QGridLayout" name="gridLayout_32">
-                              <property name="leftMargin">
-                               <number>20</number>
+                          <widget class="QWidget" name="mFramePixelSizeVisibility" native="true">
+                           <layout class="QGridLayout" name="gridLayout_16">
+                            <property name="verticalSpacing">
+                             <number>6</number>
+                            </property>
+                            <item row="1" column="0" colspan="3">
+                             <widget class="QFrame" name="mFontLimitPixelFrame">
+                              <property name="frameShape">
+                               <enum>QFrame::NoFrame</enum>
                               </property>
-                              <property name="topMargin">
-                               <number>0</number>
+                              <layout class="QGridLayout" name="gridLayout_32">
+                               <property name="leftMargin">
+                                <number>20</number>
+                               </property>
+                               <property name="topMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="rightMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="bottomMargin">
+                                <number>0</number>
+                               </property>
+                               <property name="verticalSpacing">
+                                <number>6</number>
+                               </property>
+                               <item row="0" column="0">
+                                <widget class="QgsSpinBox" name="mFontMinPixelSpinBox">
+                                 <property name="sizePolicy">
+                                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                                   <horstretch>0</horstretch>
+                                   <verstretch>0</verstretch>
+                                  </sizepolicy>
+                                 </property>
+                                 <property name="toolTip">
+                                  <string>Labels will not show if smaller than this on screen</string>
+                                 </property>
+                                 <property name="suffix">
+                                  <string> px</string>
+                                 </property>
+                                 <property name="prefix">
+                                  <string>Minimum </string>
+                                 </property>
+                                 <property name="minimum">
+                                  <number>1</number>
+                                 </property>
+                                 <property name="maximum">
+                                  <number>1000</number>
+                                 </property>
+                                 <property name="value">
+                                  <number>3</number>
+                                 </property>
+                                 <property name="showClearButton" stdset="0">
+                                  <bool>false</bool>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="0" column="1">
+                                <widget class="QgsPropertyOverrideButton" name="mFontMinPixelDDBtn">
+                                 <property name="text">
+                                  <string>…</string>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="1" column="0">
+                                <widget class="QgsSpinBox" name="mFontMaxPixelSpinBox">
+                                 <property name="sizePolicy">
+                                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                                   <horstretch>0</horstretch>
+                                   <verstretch>0</verstretch>
+                                  </sizepolicy>
+                                 </property>
+                                 <property name="toolTip">
+                                  <string>Labels will not show if larger than this on screen</string>
+                                 </property>
+                                 <property name="suffix">
+                                  <string> px</string>
+                                 </property>
+                                 <property name="prefix">
+                                  <string>Maximum </string>
+                                 </property>
+                                 <property name="minimum">
+                                  <number>1</number>
+                                 </property>
+                                 <property name="maximum">
+                                  <number>10000</number>
+                                 </property>
+                                 <property name="value">
+                                  <number>10000</number>
+                                 </property>
+                                 <property name="showClearButton" stdset="0">
+                                  <bool>false</bool>
+                                 </property>
+                                </widget>
+                               </item>
+                               <item row="1" column="1">
+                                <widget class="QgsPropertyOverrideButton" name="mFontMaxPixelDDBtn">
+                                 <property name="text">
+                                  <string>…</string>
+                                 </property>
+                                </widget>
+                               </item>
+                              </layout>
+                             </widget>
+                            </item>
+                            <item row="0" column="2">
+                             <widget class="QgsPropertyOverrideButton" name="mFontLimitPixelDDBtn">
+                              <property name="text">
+                               <string>…</string>
                               </property>
-                              <property name="rightMargin">
-                               <number>0</number>
+                             </widget>
+                            </item>
+                            <item row="0" column="0" colspan="2">
+                             <widget class="QCheckBox" name="mFontLimitPixelChkBox">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
                               </property>
-                              <property name="bottomMargin">
-                               <number>0</number>
+                              <property name="text">
+                               <string>Pixel size-based visibility (labels in map units)</string>
                               </property>
-                              <property name="verticalSpacing">
-                               <number>6</number>
-                              </property>
-                              <item row="0" column="0">
-                               <widget class="QgsSpinBox" name="mFontMinPixelSpinBox">
-                                <property name="sizePolicy">
-                                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                                  <horstretch>0</horstretch>
-                                  <verstretch>0</verstretch>
-                                 </sizepolicy>
-                                </property>
-                                <property name="toolTip">
-                                 <string>Labels will not show if smaller than this on screen</string>
-                                </property>
-                                <property name="suffix">
-                                 <string> px</string>
-                                </property>
-                                <property name="prefix">
-                                 <string>Minimum </string>
-                                </property>
-                                <property name="minimum">
-                                 <number>1</number>
-                                </property>
-                                <property name="maximum">
-                                 <number>1000</number>
-                                </property>
-                                <property name="value">
-                                 <number>3</number>
-                                </property>
-                                <property name="showClearButton" stdset="0">
-                                 <bool>false</bool>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="0" column="1">
-                               <widget class="QgsPropertyOverrideButton" name="mFontMinPixelDDBtn">
-                                <property name="text">
-                                 <string>…</string>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="1" column="0">
-                               <widget class="QgsSpinBox" name="mFontMaxPixelSpinBox">
-                                <property name="sizePolicy">
-                                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                                  <horstretch>0</horstretch>
-                                  <verstretch>0</verstretch>
-                                 </sizepolicy>
-                                </property>
-                                <property name="toolTip">
-                                 <string>Labels will not show if larger than this on screen</string>
-                                </property>
-                                <property name="suffix">
-                                 <string> px</string>
-                                </property>
-                                <property name="prefix">
-                                 <string>Maximum </string>
-                                </property>
-                                <property name="minimum">
-                                 <number>1</number>
-                                </property>
-                                <property name="maximum">
-                                 <number>10000</number>
-                                </property>
-                                <property name="value">
-                                 <number>10000</number>
-                                </property>
-                                <property name="showClearButton" stdset="0">
-                                 <bool>false</bool>
-                                </property>
-                               </widget>
-                              </item>
-                              <item row="1" column="1">
-                               <widget class="QgsPropertyOverrideButton" name="mFontMaxPixelDDBtn">
-                                <property name="text">
-                                 <string>…</string>
-                                </property>
-                               </widget>
-                              </item>
-                             </layout>
-                            </widget>
-                           </item>
-                           <item row="0" column="2">
-                            <widget class="QgsPropertyOverrideButton" name="mFontLimitPixelDDBtn">
-                             <property name="text">
-                              <string>…</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item row="0" column="0" colspan="2">
-                            <widget class="QCheckBox" name="mFontLimitPixelChkBox">
-                             <property name="sizePolicy">
-                              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                               <horstretch>0</horstretch>
-                               <verstretch>0</verstretch>
-                              </sizepolicy>
-                             </property>
-                             <property name="text">
-                              <string>Pixel size-based visibility (labels in map units)</string>
-                             </property>
-                            </widget>
-                           </item>
-                          </layout>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
                          </item>
                          <item>
                           <widget class="Line" name="line_2">
@@ -6303,28 +6305,30 @@ This limit is inclusive, that means the label will be displayed on this scale.</
                           </layout>
                          </item>
                          <item>
-                          <layout class="QHBoxLayout" name="horizontalLayout_20">
-                           <property name="topMargin">
-                            <number>0</number>
-                           </property>
-                           <item>
-                            <widget class="QCheckBox" name="mCheckAllowDegradedPlacement">
-                             <property name="toolTip">
-                              <string>If checked, then inferior placements are permitted when a label cannot otherwise be placed. For instance, it will permit a line label to be placed horizontal over the center of a line which is otherwise too short to fit the label text.</string>
-                             </property>
-                             <property name="text">
-                              <string>Allow inferior fallback placements</string>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QgsPropertyOverrideButton" name="mAllowInferiorPlacementDBtn">
-                             <property name="text">
-                              <string>…</string>
-                             </property>
-                            </widget>
-                           </item>
-                          </layout>
+                          <widget class="QWidget" name="mInferiorPlacementWidget" native="true">
+                           <layout class="QHBoxLayout" name="horizontalLayout_20">
+                            <property name="topMargin">
+                             <number>1</number>
+                            </property>
+                            <item>
+                             <widget class="QCheckBox" name="mCheckAllowDegradedPlacement">
+                              <property name="toolTip">
+                               <string>If checked, then inferior placements are permitted when a label cannot otherwise be placed. For instance, it will permit a line label to be placed horizontal over the center of a line which is otherwise too short to fit the label text.</string>
+                              </property>
+                              <property name="text">
+                               <string>Allow inferior fallback placements</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QgsPropertyOverrideButton" name="mAllowInferiorPlacementDBtn">
+                              <property name="text">
+                               <string>…</string>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
                          </item>
                          <item>
                           <widget class="QFrame" name="mLabelRenderingDDFrame">
@@ -6583,58 +6587,6 @@ This limit is inclusive, that means the label will be displayed on this scale.</
                          <property name="rightMargin">
                           <number>8</number>
                          </property>
-                         <item row="0" column="0">
-                          <widget class="QCheckBox" name="chkLabelPerFeaturePart">
-                           <property name="text">
-                            <string>Label every part of multi-part features</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="1">
-                          <widget class="QgsPropertyOverrideButton" name="mLabelAllPartsDDBtn">
-                           <property name="text">
-                            <string>…</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="0" colspan="2">
-                          <widget class="QCheckBox" name="chkMergeLines">
-                           <property name="text">
-                            <string>Merge connected lines to avoid duplicate labels</string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="4" column="0" colspan="2">
-                          <widget class="QFrame" name="mPolygonFeatureOptionsFrame">
-                           <property name="frameShape">
-                            <enum>QFrame::NoFrame</enum>
-                           </property>
-                           <property name="frameShadow">
-                            <enum>QFrame::Raised</enum>
-                           </property>
-                           <layout class="QHBoxLayout" name="horizontalLayout_12">
-                            <property name="leftMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="topMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="rightMargin">
-                             <number>0</number>
-                            </property>
-                            <property name="bottomMargin">
-                             <number>0</number>
-                            </property>
-                            <item>
-                             <widget class="QCheckBox" name="mFitInsidePolygonCheckBox">
-                              <property name="text">
-                               <string>Only draw labels which fit completely within feature</string>
-                              </property>
-                             </widget>
-                            </item>
-                           </layout>
-                          </widget>
-                         </item>
                          <item row="3" column="0" colspan="2">
                           <widget class="QFrame" name="mMinSizeFrame">
                            <layout class="QGridLayout" name="gridLayout_21">
@@ -6677,9 +6629,40 @@ This limit is inclusive, that means the label will be displayed on this scale.</
                              </widget>
                             </item>
                             <item row="0" column="0" colspan="2">
-                             <widget class="QLabel" name="label_19">
+                             <widget class="QLabel" name="mMinSizeLabel">
                               <property name="text">
                                <string>Suppress labeling of features smaller than</string>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item row="4" column="0" colspan="2">
+                          <widget class="QFrame" name="mPolygonFeatureOptionsFrame">
+                           <property name="frameShape">
+                            <enum>QFrame::NoFrame</enum>
+                           </property>
+                           <property name="frameShadow">
+                            <enum>QFrame::Raised</enum>
+                           </property>
+                           <layout class="QHBoxLayout" name="horizontalLayout_12">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
+                             <number>0</number>
+                            </property>
+                            <item>
+                             <widget class="QCheckBox" name="mFitInsidePolygonCheckBox">
+                              <property name="text">
+                               <string>Only draw labels which fit completely within feature</string>
                               </property>
                              </widget>
                             </item>
@@ -6752,6 +6735,51 @@ This limit is inclusive, that means the label will be displayed on this scale.</
                            </layout>
                           </widget>
                          </item>
+                         <item row="0" column="0" colspan="2">
+                          <widget class="QWidget" name="mLabelEveryPartWidget" native="true">
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>33</height>
+                            </size>
+                           </property>
+                           <layout class="QHBoxLayout" name="horizontalLayout_32" stretch="1,0">
+                            <property name="leftMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="topMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="rightMargin">
+                             <number>0</number>
+                            </property>
+                            <property name="bottomMargin">
+                             <number>0</number>
+                            </property>
+                            <item>
+                             <widget class="QCheckBox" name="chkLabelPerFeaturePart">
+                              <property name="text">
+                               <string>Label every part of multi-part features</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QgsPropertyOverrideButton" name="mLabelAllPartsDDBtn">
+                              <property name="text">
+                               <string>…</string>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item row="1" column="0" colspan="2">
+                          <widget class="QCheckBox" name="chkMergeLines">
+                           <property name="text">
+                            <string>Merge connected lines to avoid duplicate labels</string>
+                           </property>
+                          </widget>
+                         </item>
                         </layout>
                        </widget>
                       </item>
@@ -6788,63 +6816,65 @@ This limit is inclusive, that means the label will be displayed on this scale.</
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="QFrame" name="frameLabelWith">
-     <layout class="QHBoxLayout" name="horizontalLayout_19">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="label_12">
-        <property name="text">
-         <string>Value</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QgsFieldExpressionWidget" name="mFieldExpressionWidget" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="focusPolicy">
-         <enum>Qt::StrongFocus</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_7">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>0</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
+    <widget class="QgsStackedWidget" name="mStackedWidgetLabelWith">
+     <widget class="QWidget" name="stackedWidgetLabelWithPage1">
+      <layout class="QHBoxLayout" name="horizontalLayout_19">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_12">
+         <property name="text">
+          <string>Value</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsFieldExpressionWidget" name="mFieldExpressionWidget" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_7">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -6943,6 +6973,12 @@ This limit is inclusive, that means the label will be displayed on this scale.</
    <class>QgsStyleItemsListWidget</class>
    <extends>QWidget</extends>
    <header>qgsstyleitemslistwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsStackedWidget</class>
+   <extends>QStackedWidget</extends>
+   <header>qgsstackedwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
