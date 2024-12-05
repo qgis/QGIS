@@ -28,7 +28,6 @@
 class QgsFixGeometryAngleAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-
     QgsFixGeometryAngleAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -41,13 +40,11 @@ class QgsFixGeometryAngleAlgorithm : public QgsProcessingAlgorithm
     QgsFixGeometryAngleAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-  private:
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
-    int mTolerance{8};
+  private:
+    int mTolerance { 8 };
 };
 
 ///@endcond PRIVATE

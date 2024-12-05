@@ -66,49 +66,50 @@ void QgsFixGeometryHoleAlgorithm::initAlgorithm( const QVariantMap &configuratio
   Q_UNUSED( configuration )
 
   // Inputs
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
-                QList< int >() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) )
-              );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ),
-                QList< int >() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) )
-              );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) )
+  );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) )
+  );
   addParameter( new QgsProcessingParameterField(
-                  QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Field of original feature unique identifier" ),
-                  QStringLiteral( "id" ), QStringLiteral( "ERRORS" ) )
-              );
+    QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Field of original feature unique identifier" ),
+    QStringLiteral( "id" ), QStringLiteral( "ERRORS" )
+  )
+  );
   addParameter( new QgsProcessingParameterField(
-                  QStringLiteral( "PART_IDX" ), QObject::tr( "Field of part index" ),
-                  QStringLiteral( "gc_partidx" ), QStringLiteral( "ERRORS" ),
-                  Qgis::ProcessingFieldParameterDataType::Numeric )
-              );
+    QStringLiteral( "PART_IDX" ), QObject::tr( "Field of part index" ),
+    QStringLiteral( "gc_partidx" ), QStringLiteral( "ERRORS" ),
+    Qgis::ProcessingFieldParameterDataType::Numeric
+  )
+  );
   addParameter( new QgsProcessingParameterField(
-                  QStringLiteral( "RING_IDX" ), QObject::tr( "Field of ring index" ),
-                  QStringLiteral( "gc_ringidx" ), QStringLiteral( "ERRORS" ),
-                  Qgis::ProcessingFieldParameterDataType::Numeric )
-              );
+    QStringLiteral( "RING_IDX" ), QObject::tr( "Field of ring index" ),
+    QStringLiteral( "gc_ringidx" ), QStringLiteral( "ERRORS" ),
+    Qgis::ProcessingFieldParameterDataType::Numeric
+  )
+  );
   addParameter( new QgsProcessingParameterField(
-                  QStringLiteral( "VERTEX_IDX" ), QObject::tr( "Field of vertex index" ),
-                  QStringLiteral( "gc_vertidx" ), QStringLiteral( "ERRORS" ),
-                  Qgis::ProcessingFieldParameterDataType::Numeric )
-              );
+    QStringLiteral( "VERTEX_IDX" ), QObject::tr( "Field of vertex index" ),
+    QStringLiteral( "gc_vertidx" ), QStringLiteral( "ERRORS" ),
+    Qgis::ProcessingFieldParameterDataType::Numeric
+  )
+  );
 
   // Outputs
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "REPORT" ), QObject::tr( "Report layer" ), Qgis::ProcessingSourceType::VectorPoint ) );
 
-  std::unique_ptr< QgsProcessingParameterNumber > tolerance = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "TOLERANCE" ),
-      QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
+  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( tolerance.release() );
 }
 
 auto QgsFixGeometryHoleAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) -> QVariantMap
 {
-  const std::unique_ptr< QgsProcessingFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !input )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  const std::unique_ptr< QgsProcessingFeatureSource > errors( parameterAsSource( parameters, QStringLiteral( "ERRORS" ), context ) );
+  const std::unique_ptr<QgsProcessingFeatureSource> errors( parameterAsSource( parameters, QStringLiteral( "ERRORS" ), context ) );
   if ( !errors )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "ERRORS" ) ) );
 
@@ -137,7 +138,7 @@ auto QgsFixGeometryHoleAlgorithm::processAlgorithm( const QVariantMap &parameter
     throw QgsProcessingException( QObject::tr( "Field %1 does not have the same type than in errors layer." ).arg( featIdFieldName ) );
 
   QString dest_output;
-  const std::unique_ptr< QgsFeatureSink > sink_output( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest_output, input->fields(), input->wkbType(), input->sourceCrs() ) );
+  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest_output, input->fields(), input->wkbType(), input->sourceCrs() ) );
   if ( !sink_output )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -145,7 +146,7 @@ auto QgsFixGeometryHoleAlgorithm::processAlgorithm( const QVariantMap &parameter
   QgsFields reportFields = errors->fields();
   reportFields.append( QgsField( QStringLiteral( "report" ), QMetaType::QString ) );
   reportFields.append( QgsField( QStringLiteral( "error_fixed" ), QMetaType::Bool ) );
-  const std::unique_ptr< QgsFeatureSink > sink_report( parameterAsSink( parameters, QStringLiteral( "REPORT" ), context, dest_report, reportFields, errors->wkbType(), errors->sourceCrs() ) );
+  const std::unique_ptr<QgsFeatureSink> sink_report( parameterAsSink( parameters, QStringLiteral( "REPORT" ), context, dest_report, reportFields, errors->wkbType(), errors->sourceCrs() ) );
   if ( !sink_report )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "REPORT" ) ) );
 
@@ -195,15 +196,15 @@ auto QgsFixGeometryHoleAlgorithm::processAlgorithm( const QVariantMap &parameter
     else
     {
       QgsGeometryCheckError checkError = QgsGeometryCheckError(
-                                           &check,
-                                           QgsGeometryCheckerUtils::LayerFeature( featurePool.get(), inputFeature, checkContext.get(), false ),
-                                           errorFeature.geometry().asPoint(),
-                                           QgsVertexId(
-                                             errorFeature.attribute( partIdxFieldName ).toInt(),
-                                             errorFeature.attribute( ringIdxFieldName ).toInt(),
-                                             errorFeature.attribute( vertexIdxFieldName ).toInt()
-                                           )
-                                         );
+        &check,
+        QgsGeometryCheckerUtils::LayerFeature( featurePool.get(), inputFeature, checkContext.get(), false ),
+        errorFeature.geometry().asPoint(),
+        QgsVertexId(
+          errorFeature.attribute( partIdxFieldName ).toInt(),
+          errorFeature.attribute( ringIdxFieldName ).toInt(),
+          errorFeature.attribute( vertexIdxFieldName ).toInt()
+        )
+      );
       for ( auto changes : changesList )
         checkError.handleChanges( changes );
 
@@ -215,7 +216,6 @@ auto QgsFixGeometryHoleAlgorithm::processAlgorithm( const QVariantMap &parameter
 
     if ( !sink_report->addFeature( reportFeature, QgsFeatureSink::FastInsert ) )
       throw QgsProcessingException( writeFeatureError( sink_report.get(), parameters, QStringLiteral( "REPORT" ) ) );
-
   }
   multiStepFeedback.setProgress( 100 );
 

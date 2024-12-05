@@ -28,7 +28,6 @@
 class QgsGeometryCheckMissingVertexAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-
     QgsGeometryCheckMissingVertexAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -41,13 +40,12 @@ class QgsGeometryCheckMissingVertexAlgorithm : public QgsProcessingAlgorithm
     QgsGeometryCheckMissingVertexAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     static QgsFields outputFields();
 
   private:
-    int mTolerance{8};
+    int mTolerance { 8 };
 };
 
 ///@endcond PRIVATE
