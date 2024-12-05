@@ -44,12 +44,12 @@ typedef QgsDataItem *dataItem_t( QString, QgsDataItem * ) SIP_SKIP;
 */
 class CORE_EXPORT QgsDataItem : public QObject
 {
-    SIP_TYPEHEADER_INCLUDE( qgslayeritem.h );
-    SIP_TYPEHEADER_INCLUDE( qgsdirectoryitem.h );
-    SIP_TYPEHEADER_INCLUDE( qgsfavoritesitem.h );
-    SIP_TYPEHEADER_INCLUDE( qgszipitem.h );
-    SIP_TYPEHEADER_INCLUDE( qgsdatacollectionitem.h );
-    SIP_TYPEHEADER_INCLUDE( qgsprojectitem.h );
+    SIP_TYPEHEADER_INCLUDE( "qgslayeritem.h" );
+    SIP_TYPEHEADER_INCLUDE( "qgsdirectoryitem.h" );
+    SIP_TYPEHEADER_INCLUDE( "qgsfavoritesitem.h" );
+    SIP_TYPEHEADER_INCLUDE( "qgszipitem.h" );
+    SIP_TYPEHEADER_INCLUDE( "qgsdatacollectionitem.h" );
+    SIP_TYPEHEADER_INCLUDE( "qgsprojectitem.h" );
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE

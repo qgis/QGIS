@@ -32,8 +32,8 @@ class QSize;
   */
 class CORE_EXPORT QgsRasterResampler
 {
-    SIP_TYPEHEADER_INCLUDE( qgsbilinearrasterresampler.h );
-    SIP_TYPEHEADER_INCLUDE( qgscubicrasterresampler.h );
+    SIP_TYPEHEADER_INCLUDE( "qgsbilinearrasterresampler.h" );
+    SIP_TYPEHEADER_INCLUDE( "qgscubicrasterresampler.h" );
 
 
 #ifdef SIP_RUN

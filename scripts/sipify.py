@@ -1479,7 +1479,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         dbg_info("found SIP_WHEN_FEATURE")
         CONTEXT.if_feature_condition = match.group(1)
 
-    match = re.search(r"SIP_TYPEHEADER_INCLUDE\(\s*(.*?)\s*\)", CONTEXT.current_line)
+    match = re.search(r'SIP_TYPEHEADER_INCLUDE\(\s*"(.*?)"\s*\)', CONTEXT.current_line)
     if match:
         dbg_info("found SIP_TYPEHEADER_INCLUDE")
         write_output("STI", f'#include "{match.group(1)}"\n')
