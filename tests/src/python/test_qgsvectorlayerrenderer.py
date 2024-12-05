@@ -941,15 +941,21 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
             return feat
 
         def createSymbol() -> QgsMarkerSymbol:
-            sym = QgsMarkerSymbol.createSimple({'color': '#33aa33', 'outline_style': 'no', 'size': '5'})
+            sym = QgsMarkerSymbol.createSimple(
+                {"color": "#33aa33", "outline_style": "no", "size": "5"}
+            )
             return sym
 
         def createGeometryGenerator() -> QgsGeometryGeneratorSymbolLayer:
             geomgen = QgsGeometryGeneratorSymbolLayer.create(
-                {'geometryModifier': 'make_point($x + if($x <= 0, 5, -5), $y)'}
+                {"geometryModifier": "make_point($x + if($x <= 0, 5, -5), $y)"}
             )
             geomgen.setSymbolType(QgsSymbol.SymbolType.Marker)
-            geomgen.setSubSymbol(QgsMarkerSymbol.createSimple({'color': '#ff00ff', 'outline_style': 'no', 'size': '6'}))
+            geomgen.setSubSymbol(
+                QgsMarkerSymbol.createSimple(
+                    {"color": "#ff00ff", "outline_style": "no", "size": "6"}
+                )
+            )
 
             return geomgen
 
@@ -975,14 +981,14 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
         mapsettings.setOutputDpi(96)
-        mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
         mapsettings.setExtent(QgsRectangle(-10, -10, 10, 10))
         mapsettings.setLayers([point_layer])
 
         self.assertTrue(
             self.render_map_settings_check(
-                'buffer_extent_zero',
-                'buffer_extent_zero',
+                "buffer_extent_zero",
+                "buffer_extent_zero",
                 mapsettings,
             )
         )
@@ -996,17 +1002,19 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
 
         self.assertTrue(
             self.render_map_settings_check(
-                'buffer_extent',
-                'buffer_extent',
+                "buffer_extent",
+                "buffer_extent",
                 mapsettings,
             )
         )
 
     def testRenderWithExtentBufferNegative(self):
-        poly_layer = QgsVectorLayer(os.path.join(TEST_DATA_DIR, 'polys.shp'))
+        poly_layer = QgsVectorLayer(os.path.join(TEST_DATA_DIR, "polys.shp"))
         self.assertTrue(poly_layer.isValid())
 
-        sym1 = QgsFillSymbol.createSimple({'color': '#ff00ff', 'outline_color': '#000000', 'outline_width': '1'})
+        sym1 = QgsFillSymbol.createSimple(
+            {"color": "#ff00ff", "outline_color": "#000000", "outline_width": "1"}
+        )
         sym1.setExtentBuffer(-13.5)
 
         renderer = QgsSingleSymbolRenderer(sym1)
@@ -1015,15 +1023,15 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
         mapsettings = QgsMapSettings()
         mapsettings.setOutputSize(QSize(400, 400))
         mapsettings.setOutputDpi(96)
-        mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
-        mapsettings.setExtent(QgsRectangle(-13875783.2, 2266009.4, -8690110.7, 6673344.5))
+        mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
+        mapsettings.setExtent(
+            QgsRectangle(-13875783.2, 2266009.4, -8690110.7, 6673344.5)
+        )
         mapsettings.setLayers([poly_layer])
 
         self.assertTrue(
             self.render_map_settings_check(
-                'negative_buffer_extent',
-                'negative_buffer_extent',
-                mapsettings
+                "negative_buffer_extent", "negative_buffer_extent", mapsettings
             )
         )
 

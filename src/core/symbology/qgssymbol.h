@@ -871,17 +871,17 @@ class CORE_EXPORT QgsSymbol
     /**
      * Returns the symbol's extent buffer.
      *
-     * \since QGIS 3.42
      * \returns The symbol's extent buffer
+     * \since QGIS 3.42
      */
     double extentBuffer() const;
 
     /**
      * Sets the symbol's extent buffer.
      *
-     * \since QGIS 3.42
      * \param extentBuffer buffer distance in map units
      * \see extentBuffer()
+     * \since QGIS 3.42
      */
     void setExtentBuffer( double extentBuffer );
 

@@ -870,20 +870,20 @@ Internally, this notifies all symbol layers which were used via a call to
 %Docstring
 Returns the symbol's extent buffer.
 
-.. versionadded:: 3.42
-
 :return: The symbol's extent buffer
+
+.. versionadded:: 3.42
 %End
 
     void setExtentBuffer( double extentBuffer );
 %Docstring
 Sets the symbol's extent buffer.
 
-.. versionadded:: 3.42
-
 :param extentBuffer: buffer distance in map units
 
 .. seealso:: :py:func:`extentBuffer`
+
+.. versionadded:: 3.42
 %End
 
   protected:
