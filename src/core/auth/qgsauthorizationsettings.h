@@ -26,6 +26,12 @@
 
 #define SIP_NO_FILE
 
+/**
+ * \ingroup core
+ * \class QgsAuthorizationSettings
+ * \brief Utility class that contains authorization informations.
+ * \since QGIS 3.42
+ */
 struct QgsAuthorizationSettings
 {
   QgsAuthorizationSettings( const QString &userName = QString(), const QString &password = QString(), const QgsHttpHeaders &httpHeaders = QgsHttpHeaders(), const QString &authcfg = QString() )
@@ -35,7 +41,7 @@ struct QgsAuthorizationSettings
     , mAuthCfg( authcfg )
   {}
 
-  //! update authorization for request
+  //! Update authorization for request
   bool setAuthorization( QNetworkRequest &request ) const
   {
     if ( !mAuthCfg.isEmpty() ) // must be non-empty value
@@ -52,7 +58,7 @@ struct QgsAuthorizationSettings
     return true;
   }
 
-  //! update authorization for reply
+  //! Update authorization for reply
   bool setAuthorizationReply( QNetworkReply *reply ) const
   {
     if ( !mAuthCfg.isEmpty() )
