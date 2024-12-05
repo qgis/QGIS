@@ -43,7 +43,7 @@ typedef void *GDALDatasetH SIP_SKIP;
  */
 class ANALYSIS_EXPORT QgsAlignRaster
 {
-    SIP_TYPEHEADER_INCLUDE( "gdal_version.h" );
+    //SIP_TYPEHEADER_INCLUDE( "gdal_version.h" );
 
 
   public:
