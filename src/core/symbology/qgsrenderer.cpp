@@ -431,9 +431,9 @@ double QgsFeatureRenderer::maximumExtentBuffer( QgsRenderContext &context ) cons
   {
     const QgsProperty property = sym->dataDefinedProperties().property( QgsSymbol::Property::ExtentBuffer );
 
-    if ( property.isActive() && ! property.expressionString().isEmpty() )
+    if ( property.isActive() )
     {
-      return sym->dataDefinedProperties().valueAsDouble( QgsSymbol::Property::ExtentBuffer, expContext );
+      return sym->dataDefinedProperties().valueAsDouble( QgsSymbol::Property::ExtentBuffer, expContext, sym->extentBuffer() );
     }
 
     return sym->extentBuffer();

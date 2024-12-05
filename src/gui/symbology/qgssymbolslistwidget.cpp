@@ -60,7 +60,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   mAnimationSettingsAction = new QAction( tr( "Animation Settings…" ), this );
   connect( mAnimationSettingsAction, &QAction::triggered, this, &QgsSymbolsListWidget::showAnimationSettings );
 
-  mExtentBufferAction = new QAction( tr( "Extent buffer…" ), this );
+  mExtentBufferAction = new QAction( tr( "Extent Buffer…" ), this );
   connect( mExtentBufferAction, &QAction::triggered, this, &QgsSymbolsListWidget::showExtentBufferSettings );
 
   // select correct page in stacked widget
