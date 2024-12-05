@@ -883,6 +883,10 @@ Sets the symbol's extent buffer.
 
 .. seealso:: :py:func:`extentBuffer`
 
+.. note::
+
+   Negative values are not supported and will be changed to 0.
+
 .. versionadded:: 3.42
 %End
 

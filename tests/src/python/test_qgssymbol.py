@@ -928,6 +928,9 @@ class TestQgsSymbol(QgisTestCase):
         s.setExtentBuffer(10)
         self.assertEqual(s.extentBuffer(), 10)
 
+        s.setExtentBuffer(-10)
+        self.assertEqual(s.extentBuffer(), 0)
+
     def renderCollection(self, geom, symbol):
         f = QgsFeature()
         f.setGeometry(geom)

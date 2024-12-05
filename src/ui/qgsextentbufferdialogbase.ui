@@ -36,10 +36,10 @@
      <item>
       <widget class="QgsDoubleSpinBox" name="mExtentBufferSpinBox">
        <property name="minimum">
-        <double>-9999999999.000000000000000</double>
+        <double>0</double>
        </property>
        <property name="maximum">
-        <double>9999999999.000000000000000</double>
+        <double>999999999.000000000000000</double>
        </property>
        <property name="clearValue">
         <bool>false</bool>
