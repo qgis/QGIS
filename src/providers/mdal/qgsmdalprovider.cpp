@@ -699,7 +699,7 @@ void QgsMdalProvider::makeLastDatasetGroupNameUnique()
 
   QSet<QString> existingNames;
 
-  for ( int i = 0; i <  datasetGroupCount() - 1; i++ )
+  for ( int i = 0; i < datasetGroupCount() - 1; i++ )
   {
     existingNames.insert( MDAL_G_name( MDAL_M_datasetGroup( mMeshH, i ) ) );
   }
@@ -719,7 +719,7 @@ void QgsMdalProvider::makeLastDatasetGroupNameUnique()
       }
       else
       {
-        lastAddedGroupName = lastAddedGroupName.append( "_1" );;
+        lastAddedGroupName = lastAddedGroupName.append( "_1" );
       }
     }
     MDAL_G_setName( datasetGroupH, lastAddedGroupName.toStdString().c_str() );

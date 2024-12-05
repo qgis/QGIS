@@ -2390,7 +2390,8 @@ void TestQgsMeshLayer::testRemoveDatasets()
   QgsMeshLayer layer(
     testDataPath( "mesh/quad_and_triangle.2dm" ),
     QStringLiteral( "mesh" ),
-    QStringLiteral( "mdal" ) );
+    QStringLiteral( "mdal" )
+  );
   QVERIFY( layer.isValid() );
 
   // add datasets with same name

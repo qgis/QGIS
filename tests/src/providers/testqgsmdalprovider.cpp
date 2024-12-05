@@ -214,19 +214,19 @@ void TestQgsMdalProvider::uniqueDatasetNames()
 {
   const QString file = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/quad_and_triangle.2dm" );
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
-                                QStringLiteral( "mdal" ),
-                                file,
-                                QgsDataProvider::ProviderOptions()
-                              );
+    QStringLiteral( "mdal" ),
+    file,
+    QgsDataProvider::ProviderOptions()
+  );
 
-  QgsMeshDataProvider *mp = dynamic_cast< QgsMeshDataProvider * >( provider );
+  QgsMeshDataProvider *mp = dynamic_cast<QgsMeshDataProvider *>( provider );
 
   QgsDataProvider *provider1 = QgsProviderRegistry::instance()->createProvider(
-                                 QStringLiteral( "mdal" ),
-                                 file,
-                                 QgsDataProvider::ProviderOptions()
-                               );
-  QgsMeshDataProvider *mp1 = dynamic_cast< QgsMeshDataProvider * >( provider1 );
+    QStringLiteral( "mdal" ),
+    file,
+    QgsDataProvider::ProviderOptions()
+  );
+  QgsMeshDataProvider *mp1 = dynamic_cast<QgsMeshDataProvider *>( provider1 );
 
   // these three dataset files have the same name
   const QString fileDatasetGroup1 = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/quad_and_triangle_vertex_vector.dat" );
@@ -243,7 +243,7 @@ void TestQgsMdalProvider::uniqueDatasetNames()
   QVERIFY( mp->addDataset( fileDatasetGroup1 ) );
   QCOMPARE( mp->datasetGroupCount(), 2 );
 
-  QgsMeshDatasetGroupMetadata metadata =  mp->datasetGroupMetadata( 1 );
+  QgsMeshDatasetGroupMetadata metadata = mp->datasetGroupMetadata( 1 );
   QCOMPARE( metadata.name(), QStringLiteral( "VertexVectorDataset" ) );
 
   QVERIFY( mp1->addDataset( fileDatasetGroup2 ) );
@@ -261,11 +261,11 @@ void TestQgsMdalProvider::uniqueDatasetNames()
   QVERIFY( mp->addDataset( fileDatasetGroup3 ) );
   QCOMPARE( mp->datasetGroupCount(), 4 );
 
-  metadata =  mp->datasetGroupMetadata( 1 );
+  metadata = mp->datasetGroupMetadata( 1 );
   QCOMPARE( metadata.name(), QStringLiteral( "VertexVectorDataset" ) );
-  metadata =  mp->datasetGroupMetadata( 2 );
+  metadata = mp->datasetGroupMetadata( 2 );
   QCOMPARE( metadata.name(), QStringLiteral( "VertexVectorDataset_1" ) );
-  metadata =  mp->datasetGroupMetadata( 3 );
+  metadata = mp->datasetGroupMetadata( 3 );
   QCOMPARE( metadata.name(), QStringLiteral( "VertexVectorDataset_2" ) );
 
   delete provider;
@@ -276,12 +276,12 @@ void TestQgsMdalProvider::addRemoveDatasetGroups()
 {
   const QString file = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/quad_and_triangle.2dm" );
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider(
-                                QStringLiteral( "mdal" ),
-                                file,
-                                QgsDataProvider::ProviderOptions()
-                              );
+    QStringLiteral( "mdal" ),
+    file,
+    QgsDataProvider::ProviderOptions()
+  );
 
-  QgsMeshDataProvider *mp = dynamic_cast< QgsMeshDataProvider * >( provider );
+  QgsMeshDataProvider *mp = dynamic_cast<QgsMeshDataProvider *>( provider );
   QVERIFY( mp );
   QVERIFY( mp->isValid() );
   QCOMPARE( mp->datasetGroupCount(), 1 );
@@ -297,7 +297,7 @@ void TestQgsMdalProvider::addRemoveDatasetGroups()
   QVERIFY( mp->addDataset( fileDatasetGroup2 ) );
   QCOMPARE( mp->datasetGroupCount(), 3 );
 
-  QgsMeshDatasetGroupMetadata metadata =  mp->datasetGroupMetadata( 0 );
+  QgsMeshDatasetGroupMetadata metadata = mp->datasetGroupMetadata( 0 );
   QCOMPARE( metadata.name(), QStringLiteral( "Bed Elevation" ) );
 
   metadata = mp->datasetGroupMetadata( 1 );
