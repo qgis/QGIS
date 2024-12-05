@@ -479,8 +479,6 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
 
     double mZIndex = 0;
 
-    int mLabelLimit = 0;
-
     bool mScaleVisibility = false;
     double mMaximumScale = 0;
     double mMinimumScale = 0;
