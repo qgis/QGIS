@@ -472,7 +472,7 @@ QgsGeometry QgsCallout::calloutLineToPart( const QgsGeometry &labelGeometry, con
     case Qgis::GeometryType::Point:
     case Qgis::GeometryType::Line:
     {
-      line = labelGeos.shortestLine( evaluatedPartAnchor );
+      line = QgsGeometry( labelGeos.shortestLine( evaluatedPartAnchor ) );
       break;
     }
 
@@ -487,16 +487,16 @@ QgsGeometry QgsCallout::calloutLineToPart( const QgsGeometry &labelGeometry, con
       switch ( anchor )
       {
         case QgsCallout::PoleOfInaccessibility:
-          line = labelGeos.shortestLine( evaluatedPartAnchorGeom.poleOfInaccessibility( std::max( evaluatedPartAnchor->boundingBox().width(), evaluatedPartAnchor->boundingBox().height() ) / 20.0 ) ); // really rough (but quick) pole of inaccessibility
+          line = QgsGeometry( labelGeos.shortestLine( evaluatedPartAnchorGeom.poleOfInaccessibility( std::max( evaluatedPartAnchor->boundingBox().width(), evaluatedPartAnchor->boundingBox().height() ) / 20.0 ) ) ); // really rough (but quick) pole of inaccessibilit y
           break;
         case QgsCallout::PointOnSurface:
-          line = labelGeos.shortestLine( evaluatedPartAnchorGeom.pointOnSurface() );
+          line = QgsGeometry( labelGeos.shortestLine( evaluatedPartAnchorGeom.pointOnSurface() ) );
           break;
         case QgsCallout::PointOnExterior:
-          line = labelGeos.shortestLine( evaluatedPartAnchor );
+          line = QgsGeometry( labelGeos.shortestLine( evaluatedPartAnchor ) );
           break;
         case QgsCallout::Centroid:
-          line = labelGeos.shortestLine( evaluatedPartAnchorGeom.centroid() );
+          line = QgsGeometry( labelGeos.shortestLine( evaluatedPartAnchorGeom.centroid() ) );
           break;
       }
       break;

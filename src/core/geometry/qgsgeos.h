@@ -578,7 +578,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * joined. An empty geometry will be returned if the input geometry was not a
      * LineString/MultiLineString geometry.
      */
-    QgsGeometry mergeLines( QString *errorMsg SIP_OUT = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > mergeLines( QString *errorMsg SIP_OUT = nullptr ) const;
 
     /**
      * Returns the closest point on the geometry to the other geometry.
@@ -590,7 +590,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \see shortestLine()
      */
-    QgsGeometry closestPoint( const QgsGeometry &other, QString *errorMsg SIP_OUT = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > closestPoint( const QgsGeometry &other, QString *errorMsg SIP_OUT = nullptr ) const;
 
     /**
      * Returns the shortest line joining this geometry to the other geometry.
@@ -602,7 +602,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \see closestPoint()
      */
-    QgsGeometry shortestLine( const QgsGeometry &other, QString *errorMsg SIP_OUT = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > shortestLine( const QgsGeometry &other, QString *errorMsg SIP_OUT = nullptr ) const;
 
     /**
      * Returns the shortest line joining this geometry to the other geometry.
@@ -615,7 +615,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \see closestPoint()
      * \since QGIS 3.20
      */
-    QgsGeometry shortestLine( const QgsAbstractGeometry *other, QString *errorMsg SIP_OUT = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > shortestLine( const QgsAbstractGeometry *other, QString *errorMsg SIP_OUT = nullptr ) const;
 
     /**
      * Returns a distance representing the location along this linestring of the closest point
@@ -683,7 +683,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \returns Voronoi diagram
      */
-    QgsGeometry voronoiDiagram( const QgsAbstractGeometry *extent = nullptr, double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg SIP_OUT = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > voronoiDiagram( const QgsAbstractGeometry *extent = nullptr, double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg SIP_OUT = nullptr ) const;
 
     /**
      * Returns the Delaunay triangulation for the vertices of the geometry.
@@ -701,7 +701,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * \see constrainedDelaunayTriangulation()
      */
-    QgsGeometry delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg SIP_OUT = nullptr ) const;
+    std::unique_ptr< QgsAbstractGeometry > delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg SIP_OUT = nullptr ) const;
 
     /**
      * Returns a constrained Delaunay triangulation for the vertices of the geometry.
@@ -748,7 +748,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * \see convexHull()
      * \since QGIS 3.28
      */
-    QgsAbstractGeometry *concaveHull( double targetPercent, bool allowHoles = false, QString *errorMsg SIP_OUT = nullptr ) const SIP_THROW( QgsNotSupportedException );
+    std::unique_ptr< QgsAbstractGeometry > concaveHull( double targetPercent, bool allowHoles = false, QString *errorMsg SIP_OUT = nullptr ) const SIP_THROW( QgsNotSupportedException );
 
     /**
      * Analyze a coverage (represented as a collection of polygonal geometry with exactly matching edge
