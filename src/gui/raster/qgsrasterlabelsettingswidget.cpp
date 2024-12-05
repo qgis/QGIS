@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrasterlabelsettingswidget.h"
+#include "moc_qgsrasterlabelsettingswidget.cpp"
 #include "qgsrasterbandcombobox.h"
 #include "qgsrasterlabeling.h"
 #include "qgsnumericformatselectorwidget.h"
