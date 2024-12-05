@@ -15,6 +15,7 @@
 
 #include "qgssymbolslistwidget.h"
 #include "moc_qgssymbolslistwidget.cpp"
+#include "qgsextentbufferdialog.h"
 #include "qgsstylesavedialog.h"
 #include "qgsstyleitemslistwidget.h"
 #include "qgsvectorlayer.h"
@@ -58,6 +59,9 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
 
   mAnimationSettingsAction = new QAction( tr( "Animation Settings…" ), this );
   connect( mAnimationSettingsAction, &QAction::triggered, this, &QgsSymbolsListWidget::showAnimationSettings );
+
+  mExtentBufferAction = new QAction( tr( "Extent buffer…" ), this );
+  connect( mExtentBufferAction, &QAction::triggered, this, &QgsSymbolsListWidget::showExtentBufferSettings );
 
   // select correct page in stacked widget
   QgsPropertyOverrideButton *opacityDDBtn = nullptr;
@@ -148,6 +152,7 @@ QgsSymbolsListWidget::~QgsSymbolsListWidget()
   mStyleItemsListWidget->advancedMenu()->removeAction( mClipFeaturesAction );
   mStyleItemsListWidget->advancedMenu()->removeAction( mStandardizeRingsAction );
   mStyleItemsListWidget->advancedMenu()->removeAction( mAnimationSettingsAction );
+  mStyleItemsListWidget->advancedMenu()->removeAction( mExtentBufferAction );
   mStyleItemsListWidget->advancedMenu()->removeAction( mBufferSettingsAction );
 }
 
@@ -296,6 +301,45 @@ void QgsSymbolsListWidget::showAnimationSettings()
   {
     mSymbol->setAnimationSettings( d.animationSettings() );
     emit changed();
+  }
+}
+
+void QgsSymbolsListWidget::showExtentBufferSettings()
+{
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsExtentBufferWidget *widget = new QgsExtentBufferWidget( mSymbol, mLayer, panel );
+    widget->setPanelTitle( tr( "Extent Buffer" ) );
+    widget->setContext( mContext );
+
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ]()
+    {
+      mSymbol->setExtentBuffer( widget->extentBuffer() );
+      mSymbol->setDataDefinedProperty( QgsSymbol::Property::ExtentBuffer, widget->dataDefinedProperty() );
+
+      emit changed();
+    } );
+
+    panel->openPanel( widget );
+
+  }
+  else
+  {
+    QgsExtentBufferDialog dlg( mSymbol, mLayer, panel );
+
+    if ( dlg.widget() )
+    {
+      dlg.widget()->setContext( mContext );
+    }
+
+    if ( dlg.exec() == QDialog::Accepted )
+    {
+      mSymbol->setExtentBuffer( dlg.extentBuffer() );
+      mSymbol->setDataDefinedProperty( QgsSymbol::Property::ExtentBuffer, dlg.dataDefinedProperty() );
+
+      emit changed();
+    }
   }
 }
 
@@ -613,6 +657,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
             mClipFeaturesAction,
             mStandardizeRingsAction,
             mAnimationSettingsAction,
+            mExtentBufferAction,
             mBufferSettingsAction
           } )
     {
@@ -638,6 +683,7 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     mStyleItemsListWidget->advancedMenu()->addAction( mBufferSettingsAction );
   }
   mStyleItemsListWidget->advancedMenu()->addAction( mAnimationSettingsAction );
+  mStyleItemsListWidget->advancedMenu()->addAction( mExtentBufferAction );
 
   mStyleItemsListWidget->showAdvancedButton( mAdvancedMenu || !mStyleItemsListWidget->advancedMenu()->isEmpty() );
 
