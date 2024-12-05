@@ -58,6 +58,7 @@
 #include "qgsvectortiledataprovider.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
+#include "qgsrasterlabeling.h"
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
   : mView( view )
@@ -197,7 +198,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         showFeatureCount->setEnabled( vlayer->isValid() );
       }
 
-      if ( vlayer || vectorTileLayer || meshLayer )
+      if ( vlayer || vectorTileLayer || meshLayer || rlayer )
       {
         const QString iconName = vectorTileLayer || ( vlayer && vlayer->labeling() && vlayer->labeling()->type() == QLatin1String( "rule-based" ) )
                                    ? QStringLiteral( "labelingRuleBased.svg" )
@@ -205,6 +206,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         QAction *actionShowLabels = new QAction( QgsApplication::getThemeIcon( iconName ), tr( "Show &Labels" ), menu );
         actionShowLabels->setCheckable( true );
         actionShowLabels->setChecked( vectorTileLayer ? vectorTileLayer->labelsEnabled() : meshLayer ? meshLayer->labelsEnabled()
+                                                                                         : rlayer    ? rlayer->labelsEnabled()
                                                                                                      : vlayer->labelsEnabled() );
         connect( actionShowLabels, &QAction::toggled, this, &QgsAppLayerTreeViewMenuProvider::toggleLabels );
         menu->addAction( actionShowLabels );
@@ -1418,6 +1420,22 @@ void QgsAppLayerTreeViewMenuProvider::toggleLabels( bool enabled )
       meshLayer->setLabelsEnabled( enabled );
       meshLayer->emitStyleChanged();
       meshLayer->triggerRepaint();
+    }
+    else if ( QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( l->layer() ) )
+    {
+      if ( enabled && !rasterLayer->labeling() )
+      {
+        // no labeling setup - create default labeling for layer
+        rasterLayer->setLabeling( QgsAbstractRasterLayerLabeling::defaultLabelingForLayer( rasterLayer ) );
+        rasterLayer->setLabelsEnabled( true );
+      }
+      else
+      {
+        rasterLayer->setLabelsEnabled( enabled );
+      }
+
+      rasterLayer->emitStyleChanged();
+      rasterLayer->triggerRepaint();
     }
   }
 }

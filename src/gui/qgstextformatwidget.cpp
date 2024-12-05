@@ -587,7 +587,7 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
           break;
       }
 
-      frameLabelWith->hide();
+      mStackedWidgetLabelWith->hide();
       mDirectSymbolsFrame->hide();
       mFormatNumFrame->hide();
       mFormatNumChkBx->hide();

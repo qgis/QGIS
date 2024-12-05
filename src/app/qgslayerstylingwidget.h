@@ -47,6 +47,7 @@ class QgsMapLayerStyleManagerWidget;
 class QgsVectorLayer3DRendererWidget;
 class QgsMeshLayer3DRendererWidget;
 class QgsMeshLabelingWidget;
+class QgsRasterLabelingWidget;
 class QgsPointCloudLayer3DRendererWidget;
 class QgsMessageBar;
 class QgsVectorTileBasicRendererWidget;
@@ -171,6 +172,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     QgsMapLayer *mCurrentLayer = nullptr;
     QgsLabelingWidget *mLabelingWidget = nullptr;
     QgsMeshLabelingWidget *mMeshLabelingWidget = nullptr;
+    QPointer<QgsRasterLabelingWidget> mRasterLabelingWidget;
     QgsMaskingWidget *mMaskingWidget = nullptr;
 #ifdef HAVE_3D
     QgsVectorLayer3DRendererWidget *mVector3DWidget = nullptr;

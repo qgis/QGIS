@@ -18,6 +18,8 @@ set(QGIS_GUI_SRCS
   raster/qgsrasterbandcombobox.cpp
   raster/qgsrastercontourrendererwidget.cpp
   raster/qgsrasterhistogramwidget.cpp
+  raster/qgsrasterlabelingwidget.cpp
+  raster/qgsrasterlabelsettingswidget.cpp
   raster/qgsrasterlayerproperties.cpp
   raster/qgsrasterlayertemporalpropertieswidget.cpp
   raster/qgsrasterminmaxwidget.cpp
@@ -1495,6 +1497,8 @@ set(QGIS_GUI_HDRS
   raster/qgsrasterbandcombobox.h
   raster/qgsrastercontourrendererwidget.h
   raster/qgsrasterhistogramwidget.h
+  raster/qgsrasterlabelingwidget.h
+  raster/qgsrasterlabelsettingswidget.h
   raster/qgsrasterminmaxwidget.h
   raster/qgsrasterrendererwidget.h
   raster/qgsrastertransparencywidget.h
