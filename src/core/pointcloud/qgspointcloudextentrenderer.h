@@ -91,7 +91,7 @@ class CORE_EXPORT QgsPointCloudExtentRenderer : public QgsPointCloudRenderer
      * \param context point cloud rendering context
      * \since QGIS 3.42
      */
-    void renderLabels( const QRectF &extent, const QString &text, QgsPointCloudRenderContext &context );
+    void renderLabels( const QRectF &extent, const QString &text, QgsPointCloudRenderContext &context ) const;
 
   private:
 

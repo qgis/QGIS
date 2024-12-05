@@ -25,6 +25,8 @@
 #include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
+#include "qgstextdocument.h"
+#include "qgstextdocumentmetrics.h"
 #include "qgstextrenderer.h"
 
 QgsPointCloudExtentRenderer::QgsPointCloudExtentRenderer( QgsFillSymbol *symbol )
@@ -136,12 +138,15 @@ void QgsPointCloudExtentRenderer::setFillSymbol( QgsFillSymbol *symbol )
 {
   mFillSymbol.reset( symbol );
 }
-void QgsPointCloudExtentRenderer::renderLabels( const QRectF &extent, const QString &text, QgsPointCloudRenderContext &context )
+void QgsPointCloudExtentRenderer::renderLabels( const QRectF &extent, const QString &text, QgsPointCloudRenderContext &context ) const
 {
-  const double textWidth = QgsTextRenderer::textWidth( context.renderContext(), labelTextFormat(), QStringList() << text );
-  if ( textWidth < extent.width() )
+  QStringList labelText;
+  const QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( labelText << text, labelTextFormat() );
+  const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( doc, labelTextFormat(), context.renderContext() );
+  const QSizeF textSize = metrics.documentSize( Qgis::TextLayoutMode::Rectangle, labelTextFormat().orientation() );
+  if ( textSize.width() < extent.width() && textSize.height() < extent.height() )
   {
-    QgsTextRenderer::drawText( extent, 0, Qgis::TextHorizontalAlignment::Center, QStringList() << text, context.renderContext(), labelTextFormat(), true, Qgis::TextVerticalAlignment::VerticalCenter );
+    QgsTextRenderer::drawDocument( extent, labelTextFormat(), metrics.document(), metrics, context.renderContext(), Qgis::TextHorizontalAlignment::Center, Qgis::TextVerticalAlignment::VerticalCenter );
   }
 }
 

@@ -79,7 +79,7 @@ Ownership of ``symbol`` is transferred to the renderer.
 .. seealso:: :py:func:`fillSymbol`
 %End
 
-    void renderLabels( const QRectF &extent, const QString &text, QgsPointCloudRenderContext &context );
+    void renderLabels( const QRectF &extent, const QString &text, QgsPointCloudRenderContext &context ) const;
 %Docstring
 Renders the file name label inside extent rectangle
 
