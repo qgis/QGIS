@@ -421,31 +421,31 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
         if ( currentInfo.satType == 'P' )
         {
           symbolStyle = QwtSymbol::Ellipse; // GPS
-          myColor = QColor( 50, 205, 20 ); // limegreen
+          myColor = QColor( 50, 205, 20 );  // limegreen
         }
         else if ( currentInfo.satType == 'L' )
         {
-          symbolStyle = QwtSymbol::Rect; // GLONASS
+          symbolStyle = QwtSymbol::Rect;   // GLONASS
           myColor = QColor( 255, 165, 0 ); // orange
         }
         else if ( currentInfo.satType == 'B' )
         {
           symbolStyle = QwtSymbol::Diamond; // BEIDOU
-          myColor = QColor( 128, 0, 128 ); // purple
+          myColor = QColor( 128, 0, 128 );  // purple
         }
         else if ( currentInfo.satType == 'A' )
         {
           symbolStyle = QwtSymbol::Triangle; // GALILEO
-          myColor = QColor( 0, 0, 255 ); // blue
+          myColor = QColor( 0, 0, 255 );     // blue
         }
         else if ( currentInfo.satType == 'Q' )
         {
-          symbolStyle = QwtSymbol::Cross; // QZSS
+          symbolStyle = QwtSymbol::Cross;  // QZSS
           myColor = QColor( 255, 0, 255 ); // magenta
         }
         else
         {
-          symbolStyle = QwtSymbol::Ellipse; // N, S
+          symbolStyle = QwtSymbol::Ellipse;  // N, S
           myColor = QColor( 128, 128, 128 ); // gray
         }
         penColor = myColor;
@@ -584,7 +584,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     mTxtQuality->setText( info.qualityDescription() );
     mTxtSatellitesUsed->setText( tr( "%1 used (%2 in view)" ).arg( info.satellitesUsed ).arg( info.satellitesInView.size() ) );
     mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" )
-                                                                                 : tr( "Other (%1)" ).arg( info.status ) ); 
+                                                                                 : tr( "Other (%1)" ).arg( info.status ) );
   }
 
   if ( mLastGpsPosition != myNewCenter )
