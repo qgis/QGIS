@@ -1063,7 +1063,6 @@ void QgsGraphicsViewMouseHandles::mouseDoubleClickEvent( QGraphicsSceneMouseEven
   Q_UNUSED( event )
 
   mDoubleClickInProgress = true;
-
 }
 
 QSizeF QgsGraphicsViewMouseHandles::calcCursorEdgeOffset( QPointF cursorPos )
