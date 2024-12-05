@@ -400,6 +400,60 @@ Draws a preview of the rasterlayer into a QImage
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
+    bool labelsEnabled() const;
+%Docstring
+Returns whether the layer contains labels which are enabled and should be drawn.
+
+:return: ``True`` if layer contains enabled labels
+
+.. seealso:: :py:func:`setLabelsEnabled`
+
+.. seealso:: :py:func:`labeling`
+
+.. versionadded:: 3.42
+%End
+
+    void setLabelsEnabled( bool enabled );
+%Docstring
+Sets whether labels should be ``enabled`` for the layer.
+
+.. note::
+
+   Labels will only be rendered if :py:func:`~QgsRasterLayer.labelsEnabled` is ``True`` and a labeling
+   object is returned by :py:func:`~QgsRasterLayer.labeling`.
+
+.. seealso:: :py:func:`labelsEnabled`
+
+.. seealso:: :py:func:`labeling`
+
+.. versionadded:: 3.42
+%End
+
+
+    QgsAbstractRasterLayerLabeling *labeling();
+%Docstring
+Access to labeling configuration. May be ``None`` if labeling is not used.
+
+.. note::
+
+   Labels will only be rendered if :py:func:`~QgsRasterLayer.labelsEnabled` returns ``True``.
+
+.. seealso:: :py:func:`labelsEnabled`
+
+.. seealso:: :py:func:`setLabeling`
+
+.. versionadded:: 3.42
+%End
+
+    void setLabeling( QgsAbstractRasterLayerLabeling *labeling /Transfer/ );
+%Docstring
+Sets labeling configuration. Takes ownership of the object.
+
+.. seealso:: :py:func:`labeling`
+
+.. versionadded:: 3.42
+%End
+
     bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const;
 %Docstring
 Writes the symbology of the layer into the document provided in SLD 1.0.0 format
