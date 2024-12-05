@@ -29,9 +29,9 @@ QgsLayoutImageExportOptionsDialog::QgsLayoutImageExportOptionsDialog( QWidget *p
   : QDialog( parent, flags )
 {
   setupUi( this );
-  connect( mWidthSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mWidthSpinBox_valueChanged );
-  connect( mHeightSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mHeightSpinBox_valueChanged );
-  connect( mResolutionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mResolutionSpinBox_valueChanged );
+  connect( mWidthSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mWidthSpinBox_valueChanged );
+  connect( mHeightSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mHeightSpinBox_valueChanged );
+  connect( mResolutionSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mResolutionSpinBox_valueChanged );
 
   connect( mClipToContentGroupBox, &QGroupBox::toggled, this, &QgsLayoutImageExportOptionsDialog::clipToContentsToggled );
   connect( mHelpButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutImageExportOptionsDialog::showHelp );

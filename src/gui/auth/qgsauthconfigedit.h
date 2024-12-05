@@ -52,8 +52,7 @@ class GUI_EXPORT QgsAuthConfigEdit : public QDialog, private Ui::QgsAuthConfigEd
      * \param authcfg Authentication config id for a existing config in auth database
      * \param dataprovider The provider origin of the edit, to allow for customized code and filtering
      */
-    explicit QgsAuthConfigEdit( QWidget *parent = nullptr, const QString &authcfg = QString(),
-                                const QString &dataprovider = QString() );
+    explicit QgsAuthConfigEdit( QWidget *parent = nullptr, const QString &authcfg = QString(), const QString &dataprovider = QString() );
 
     //! Authentication config id, updated with generated id when a new config is saved to auth database
     const QString configId() const { return mAuthCfg; }

@@ -41,7 +41,6 @@ class QgsSpinBoxLineEdit;
  */
 class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsDoubleSpinBox *>( sipCpp ) )
@@ -57,13 +56,12 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     Q_PROPERTY( bool expressionsEnabled READ expressionsEnabled WRITE setExpressionsEnabled )
 
   public:
-
     //! Behavior when widget is cleared.
     enum ClearValueMode
     {
       MinimumValue, //!< Reset value to minimum()
       MaximumValue, //!< Reset value to maximum()
-      CustomValue, //!< Reset value to custom value (see setClearValue() )
+      CustomValue,  //!< Reset value to custom value (see setClearValue() )
     };
 
     /**
@@ -84,7 +82,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      * Returns whether the widget is showing a clear button.
      * \see setShowClearButton()
      */
-    bool showClearButton() const {return mShowClearButton;}
+    bool showClearButton() const { return mShowClearButton; }
 
     /**
      * Sets if the widget will allow entry of simple expressions, which are
@@ -98,7 +96,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      * evaluated and then discarded.
      * \returns TRUE if spin box allows expression entry
      */
-    bool expressionsEnabled() const {return mExpressionsEnabled;}
+    bool expressionsEnabled() const { return mExpressionsEnabled; }
 
     //! Sets the current value to the value defined by the clear value.
     void clear() override;

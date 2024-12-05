@@ -29,21 +29,20 @@
 
 
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
   : QgsDateTimeEdit( QDateTime(), QMetaType::Type::QDateTime, parent )
 #else
   : QgsDateTimeEdit( QDateTime(), QMetaType::QDateTime, parent )
 #endif
 {
-
 }
 
 ///@cond PRIVATE
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 QgsDateTimeEdit::QgsDateTimeEdit( const QVariant &var, QMetaType::Type parserType, QWidget *parent )
   : QDateTimeEdit( var, parserType, parent )
 #else
-QgsDateTimeEdit::QgsDateTimeEdit( const QVariant & var, QMetaType::Type parserType, QWidget * parent )
+QgsDateTimeEdit::QgsDateTimeEdit( const QVariant &var, QMetaType::Type parserType, QWidget *parent )
   : QDateTimeEdit( var, parserType, parent )
 #endif
   , mNullRepresentation( QgsApplication::nullRepresentation() )
@@ -81,7 +80,7 @@ void QgsDateTimeEdit::clear()
     displayCurrentDate();
 
     // Check if it's really changed or crash, see GH #29937
-    if ( ! dateTime().isNull() )
+    if ( !dateTime().isNull() )
     {
       changed( QVariant() );
     }
@@ -127,7 +126,7 @@ void QgsDateTimeEdit::mousePressEvent( QMouseEvent *event )
     if ( calendarPopup() )
     {
       QStyleOptionComboBox optCombo;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
       optCombo.init( this );
 #else
       optCombo.initFrom( this );
@@ -149,7 +148,7 @@ void QgsDateTimeEdit::mousePressEvent( QMouseEvent *event )
     {
       QStyleOptionSpinBox opt;
       this->initStyleOption( &opt );
-      control  = style()->hitTestComplexControl( QStyle::CC_SpinBox, &opt, event->pos(), this );
+      control = style()->hitTestComplexControl( QStyle::CC_SpinBox, &opt, event->pos(), this );
 
       if ( control == QStyle::SC_SpinBoxDown || control == QStyle::SC_SpinBoxUp )
       {
@@ -217,8 +216,7 @@ void QgsDateTimeEdit::wheelEvent( QWheelEvent *event )
 void QgsDateTimeEdit::showEvent( QShowEvent *event )
 {
   QDateTimeEdit::showEvent( event );
-  if ( mAllowNull && mIsNull &&
-       lineEdit()->text() != mNullRepresentation )
+  if ( mAllowNull && mIsNull && lineEdit()->text() != mNullRepresentation )
   {
     displayNull();
   }
@@ -398,13 +396,12 @@ QDate QgsDateTimeEdit::date() const
 //
 
 QgsTimeEdit::QgsTimeEdit( QWidget *parent )
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
   : QgsDateTimeEdit( QTime(), QMetaType::Type::QTime, parent )
 #else
   : QgsDateTimeEdit( QTime(), QMetaType::QTime, parent )
 #endif
 {
-
 }
 
 void QgsTimeEdit::setTime( const QTime &time )
@@ -439,13 +436,12 @@ void QgsTimeEdit::emitValueChanged( const QVariant &value )
 //
 
 QgsDateEdit::QgsDateEdit( QWidget *parent )
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
   : QgsDateTimeEdit( QDate(), QMetaType::Type::QDate, parent )
 #else
   : QgsDateTimeEdit( QDate(), QMetaType::QDate, parent )
 #endif
 {
-
 }
 
 void QgsDateEdit::setDate( const QDate &date )

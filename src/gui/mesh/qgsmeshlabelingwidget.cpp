@@ -119,7 +119,7 @@ void QgsMeshLabelingWidget::adaptToLayer()
 
 void QgsMeshLabelingWidget::writeSettingsToLayer()
 {
-  const Mode mode = static_cast< Mode >( mLabelModeComboBox->currentData().toInt() );
+  const Mode mode = static_cast<Mode>( mLabelModeComboBox->currentData().toInt() );
   switch ( mode )
   {
     case ModeVertices:
@@ -163,7 +163,7 @@ void QgsMeshLabelingWidget::labelModeChanged( int index )
   if ( index < 0 )
     return;
 
-  const Mode mode = static_cast< Mode >( mLabelModeComboBox->currentData().toInt() );
+  const Mode mode = static_cast<Mode>( mLabelModeComboBox->currentData().toInt() );
 
   switch ( mode )
   {
@@ -177,7 +177,7 @@ void QgsMeshLabelingWidget::labelModeChanged( int index )
       }
       else
       {
-        mSettings = std::make_unique< QgsPalLayerSettings >( QgsAbstractMeshLayerLabeling::defaultSettingsForLayer( mLayer ) );
+        mSettings = std::make_unique<QgsPalLayerSettings>( QgsAbstractMeshLayerLabeling::defaultSettingsForLayer( mLayer ) );
       }
 
       QgsSymbolWidgetContext context;

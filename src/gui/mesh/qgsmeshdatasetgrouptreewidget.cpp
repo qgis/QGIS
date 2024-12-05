@@ -28,8 +28,8 @@
 #include "qgssettings.h"
 
 
-QgsMeshDatasetGroupTreeWidget::QgsMeshDatasetGroupTreeWidget( QWidget *parent ):
-  QWidget( parent )
+QgsMeshDatasetGroupTreeWidget::QgsMeshDatasetGroupTreeWidget( QWidget *parent )
+  : QWidget( parent )
 {
   setupUi( this );
 
@@ -38,8 +38,7 @@ QgsMeshDatasetGroupTreeWidget::QgsMeshDatasetGroupTreeWidget( QWidget *parent ):
   connect( mExpandButton, &QToolButton::clicked, mDatasetGroupTreeView, &QTreeView::expandAll );
   connect( mCheckAllButton, &QToolButton::clicked, mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::selectAllGroups );
   connect( mUnCheckAllButton, &QToolButton::clicked, mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::deselectAllGroups );
-  connect( mResetDefaultButton, &QToolButton::clicked, this, [this]
-  {
+  connect( mResetDefaultButton, &QToolButton::clicked, this, [this] {
     this->mDatasetGroupTreeView->resetDefault( this->mMeshLayer );
   } );
 
@@ -65,10 +64,7 @@ void QgsMeshDatasetGroupTreeWidget::addDataset()
 
   QgsSettings settings;
   const QString openFileDir = settings.value( QStringLiteral( "lastMeshDatasetDir" ), QDir::homePath(), QgsSettings::App ).toString();
-  const QString openFileString = QFileDialog::getOpenFileName( nullptr,
-                                 tr( "Load mesh datasets" ),
-                                 openFileDir,
-                                 QgsProviderRegistry::instance()->fileMeshDatasetFilters() );
+  const QString openFileString = QFileDialog::getOpenFileName( nullptr, tr( "Load mesh datasets" ), openFileDir, QgsProviderRegistry::instance()->fileMeshDatasetFilters() );
 
   if ( openFileString.isEmpty() )
   {

@@ -42,7 +42,7 @@ class GUI_EXPORT QgsAbstractDbSourceSelect : public QgsAbstractDataSourceWidget,
     void init( QgsAbstractDbTableModel *model, QItemDelegate *delegate = nullptr );
 
     //! Returns the proxy model used to filter the results
-    QSortFilterProxyModel *proxyModel() {return mProxyModel;}
+    QSortFilterProxyModel *proxyModel() { return mProxyModel; }
 
     QPushButton *mBuildQueryButton = nullptr;
 

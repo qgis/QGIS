@@ -39,7 +39,6 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingLayerOutputDestinationWidget, associated with the specified \a parameter.
      */
@@ -101,8 +100,8 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
      * Emitted whenever the destination value is changed in the widget.
      */
     void destinationChanged();
-  protected:
 
+  protected:
     void dragEnterEvent( QDragEnterEvent *event ) override;
     void dragLeaveEvent( QDragLeaveEvent *event ) override;
     void dropEvent( QDropEvent *event ) override;
@@ -121,7 +120,6 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     void textChanged( const QString &text );
 
   private:
-
     void setAppendDestination( const QString &uri, const QgsFields &destFields );
 
     QString mimeDataToPath( const QMimeData *data );

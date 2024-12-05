@@ -53,8 +53,7 @@ QgsLayoutMouseHandles::QgsLayoutMouseHandles( QgsLayout *layout, QgsLayoutView *
 
 void QgsLayoutMouseHandles::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
-  paintInternal( painter, mLayout->renderContext().isPreviewRender(),
-                 mLayout->renderContext().boundingBoxesVisible(), true, option, widget );
+  paintInternal( painter, mLayout->renderContext().isPreviewRender(), mLayout->renderContext().boundingBoxesVisible(), true, option, widget );
 }
 
 void QgsLayoutMouseHandles::selectionChanged()
@@ -92,7 +91,7 @@ void QgsLayoutMouseHandles::setViewportCursor( Qt::CursorShape cursor )
   //workaround qt bug #3732 by setting cursor for QGraphicsView viewport,
   //rather then setting it directly here
 
-  if ( qobject_cast< QgsLayoutViewToolSelect *>( mView->tool() ) )
+  if ( qobject_cast<QgsLayoutViewToolSelect *>( mView->tool() ) )
   {
     mView->viewport()->setCursor( cursor );
   }
@@ -100,8 +99,8 @@ void QgsLayoutMouseHandles::setViewportCursor( Qt::CursorShape cursor )
 
 QList<QGraphicsItem *> QgsLayoutMouseHandles::sceneItemsAtPoint( QPointF scenePoint )
 {
-  QList< QGraphicsItem * > items;
-  if ( QgsLayoutViewToolSelect *tool = qobject_cast< QgsLayoutViewToolSelect *>( mView->tool() ) )
+  QList<QGraphicsItem *> items;
+  if ( QgsLayoutViewToolSelect *tool = qobject_cast<QgsLayoutViewToolSelect *>( mView->tool() ) )
   {
     const double searchTolerance = tool->searchToleranceInLayoutUnits();
     const QRectF area( scenePoint.x() - searchTolerance, scenePoint.y() - searchTolerance, 2 * searchTolerance, 2 * searchTolerance );
@@ -111,10 +110,10 @@ QList<QGraphicsItem *> QgsLayoutMouseHandles::sceneItemsAtPoint( QPointF scenePo
   {
     items = mLayout->items( scenePoint );
   }
-  items.erase( std::remove_if( items.begin(), items.end(), []( QGraphicsItem * item )
-  {
-    return !dynamic_cast<QgsLayoutItem *>( item );
-  } ), items.end() );
+  items.erase( std::remove_if( items.begin(), items.end(), []( QGraphicsItem *item ) {
+                 return !dynamic_cast<QgsLayoutItem *>( item );
+               } ),
+               items.end() );
 
   return items;
 }
@@ -157,25 +156,23 @@ QPointF QgsLayoutMouseHandles::snapPoint( QPointF originalPoint, QgsLayoutMouseH
 {
   bool snapped = false;
 
-  const QList< QGraphicsItem * > selectedItems = selectedSceneItems();
-  QList< QGraphicsItem * > itemsToExclude;
+  const QList<QGraphicsItem *> selectedItems = selectedSceneItems();
+  QList<QGraphicsItem *> itemsToExclude;
   expandItemList( selectedItems, itemsToExclude );
 
-  QList< QgsLayoutItem * > layoutItemsToExclude;
+  QList<QgsLayoutItem *> layoutItemsToExclude;
   for ( QGraphicsItem *item : itemsToExclude )
-    layoutItemsToExclude << dynamic_cast< QgsLayoutItem * >( item );
+    layoutItemsToExclude << dynamic_cast<QgsLayoutItem *>( item );
 
   //depending on the mode, we either snap just the single point, or all the bounds of the selection
   QPointF snappedPoint;
   switch ( mode )
   {
     case Item:
-      snappedPoint = mLayout->snapper().snapRect( rect().translated( originalPoint ), mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine : nullptr,
-                     snapVertical ? mVerticalSnapLine : nullptr, &layoutItemsToExclude ).topLeft();
+      snappedPoint = mLayout->snapper().snapRect( rect().translated( originalPoint ), mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine : nullptr, snapVertical ? mVerticalSnapLine : nullptr, &layoutItemsToExclude ).topLeft();
       break;
     case Point:
-      snappedPoint = mLayout->snapper().snapPoint( originalPoint, mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine : nullptr,
-                     snapVertical ? mVerticalSnapLine : nullptr, &layoutItemsToExclude );
+      snappedPoint = mLayout->snapper().snapPoint( originalPoint, mView->transform().m11(), snapped, snapHorizontal ? mHorizontalSnapLine : nullptr, snapVertical ? mVerticalSnapLine : nullptr, &layoutItemsToExclude );
       break;
   }
 
@@ -184,7 +181,7 @@ QPointF QgsLayoutMouseHandles::snapPoint( QPointF originalPoint, QgsLayoutMouseH
 
 void QgsLayoutMouseHandles::createItemCommand( QGraphicsItem *item )
 {
-  mItemCommand.reset( qgis::down_cast< QgsLayoutItem * >( item )->createCommand( QString(), 0 ) );
+  mItemCommand.reset( qgis::down_cast<QgsLayoutItem *>( item )->createCommand( QString(), 0 ) );
   mItemCommand->saveBeforeState();
 }
 
@@ -197,7 +194,6 @@ void QgsLayoutMouseHandles::endItemCommand( QGraphicsItem * )
 void QgsLayoutMouseHandles::startMacroCommand( const QString &text )
 {
   mLayout->undoStack()->beginMacro( text );
-
 }
 
 void QgsLayoutMouseHandles::endMacroCommand()
@@ -218,7 +214,7 @@ void QgsLayoutMouseHandles::expandItemList( const QList<QGraphicsItem *> &items,
     if ( item->type() == QgsLayoutItemRegistry::LayoutGroup )
     {
       // if a group is selected, we don't draw the bounds of the group - instead we draw the bounds of the grouped items
-      const QList<QgsLayoutItem *> groupItems = static_cast< QgsLayoutItemGroup * >( item )->items();
+      const QList<QgsLayoutItem *> groupItems = static_cast<QgsLayoutItemGroup *>( item )->items();
       expandItemList( groupItems, collected );
     }
     else
@@ -236,7 +232,7 @@ void QgsLayoutMouseHandles::expandItemList( const QList<QgsLayoutItem *> &items,
     if ( item->type() == QgsLayoutItemRegistry::LayoutGroup )
     {
       // if a group is selected, we don't draw the bounds of the group - instead we draw the bounds of the grouped items
-      const QList<QgsLayoutItem *> groupItems = static_cast< QgsLayoutItemGroup * >( item )->items();
+      const QList<QgsLayoutItem *> groupItems = static_cast<QgsLayoutItemGroup *>( item )->items();
       expandItemList( groupItems, collected );
     }
     else
@@ -248,12 +244,12 @@ void QgsLayoutMouseHandles::expandItemList( const QList<QgsLayoutItem *> &items,
 
 void QgsLayoutMouseHandles::moveItem( QGraphicsItem *item, double deltaX, double deltaY )
 {
-  qgis::down_cast< QgsLayoutItem * >( item )->attemptMoveBy( deltaX, deltaY );
+  qgis::down_cast<QgsLayoutItem *>( item )->attemptMoveBy( deltaX, deltaY );
 }
 
 void QgsLayoutMouseHandles::setItemRect( QGraphicsItem *item, QRectF rect )
 {
-  QgsLayoutItem *layoutItem = dynamic_cast< QgsLayoutItem * >( item );
+  QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
   layoutItem->attemptSetSceneRect( rect, true );
 }
 

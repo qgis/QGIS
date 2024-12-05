@@ -23,7 +23,6 @@
 QgsModelViewRubberBand::QgsModelViewRubberBand( QgsModelGraphicsView *view )
   : mView( view )
 {
-
 }
 
 QgsModelGraphicsView *QgsModelViewRubberBand::view() const

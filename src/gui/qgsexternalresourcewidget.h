@@ -52,7 +52,6 @@ class QgsExternalStorageFetchedContent;
  */
 class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsExternalResourceWidget *>( sipCpp ) )

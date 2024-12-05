@@ -220,4 +220,3 @@ void QgsMapToolDigitizeFeature::setLayer( QgsMapLayer *vl )
 {
   mLayer = vl;
 }
-

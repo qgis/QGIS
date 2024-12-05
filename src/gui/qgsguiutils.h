@@ -86,9 +86,7 @@ namespace QgsGuiUtils
    *
    * This method returns TRUE if cancel all was clicked, otherwise FALSE
   */
-  bool GUI_EXPORT openFilesRememberingFilter( QString const &filterName,
-      QString const &filters, QStringList &selectedFiles, QString &enc, QString &title,
-      bool cancelAll = false );
+  bool GUI_EXPORT openFilesRememberingFilter( QString const &filterName, QString const &filters, QStringList &selectedFiles, QString &enc, QString &title, bool cancelAll = false );
 
   /**
    * A helper function to get an image name from the user. It will nicely
@@ -202,7 +200,7 @@ namespace QgsGuiUtils
    */
   int GUI_EXPORT significantDigits( const Qgis::DataType rasterDataType );
 
-}
+} // namespace QgsGuiUtils
 
 /**
  * Temporarily disables updates for a QWidget for the lifetime of the object.
@@ -215,7 +213,6 @@ namespace QgsGuiUtils
 class GUI_EXPORT QWidgetUpdateBlocker
 {
   public:
-
     /**
      * Constructor for QWidgetUpdateBlocker. Blocks updates for the specified \a widget.
      *
@@ -234,7 +231,6 @@ class GUI_EXPORT QWidgetUpdateBlocker
     void release();
 
   private:
-
     QWidget *mWidget = nullptr;
 };
 
@@ -250,7 +246,6 @@ class GUI_EXPORT QWidgetUpdateBlocker
 class GUI_EXPORT QgsTemporaryCursorOverride
 {
   public:
-
     /**
      * Constructor for QgsTemporaryCursorOverride. Sets the application override
      * cursor to \a cursor.
@@ -265,9 +260,7 @@ class GUI_EXPORT QgsTemporaryCursorOverride
     void release();
 
   private:
-
     bool mHasOverride = true;
-
 };
 
 /**
@@ -282,7 +275,6 @@ class GUI_EXPORT QgsTemporaryCursorOverride
 class GUI_EXPORT QgsTemporaryCursorRestoreOverride
 {
   public:
-
     /**
      * Constructor for QgsTemporaryCursorRestoreOverride. Removes all application override
      * cursors.
@@ -297,9 +289,7 @@ class GUI_EXPORT QgsTemporaryCursorRestoreOverride
     void restore();
 
   private:
-
-    std::vector< QCursor > mCursors;
-
+    std::vector<QCursor> mCursors;
 };
 
 #endif // QGSGUIUTILS_H

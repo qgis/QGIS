@@ -68,7 +68,7 @@ class QgsField;
 
   for ( int i = 0; i < PyList_GET_SIZE( sipPy ); ++i )
   {
-    *qlist << ( QgsSearchWidgetWrapper::FilterFlag )SIPLong_AsLong( PyList_GET_ITEM( sipPy, i ) );
+    *qlist << ( QgsSearchWidgetWrapper::FilterFlag ) SIPLong_AsLong( PyList_GET_ITEM( sipPy, i ) );
   }
 
   *sipCppPtr = qlist;
@@ -86,27 +86,26 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 {
     Q_OBJECT
   public:
-
     /**
      * Flags which indicate what types of filtering and searching is possible using the widget
      */
     enum FilterFlag SIP_ENUM_BASETYPE( IntFlag )
     {
-      EqualTo = 1 << 1, //!< Supports equal to
-      NotEqualTo = 1 << 2, //!< Supports not equal to
-      GreaterThan = 1 << 3, //!< Supports greater than
-      LessThan = 1 << 4, //!< Supports less than
+      EqualTo = 1 << 1,              //!< Supports equal to
+      NotEqualTo = 1 << 2,           //!< Supports not equal to
+      GreaterThan = 1 << 3,          //!< Supports greater than
+      LessThan = 1 << 4,             //!< Supports less than
       GreaterThanOrEqualTo = 1 << 5, //!< Supports >=
-      LessThanOrEqualTo = 1 << 6, //!< Supports <=
-      Between = 1 << 7, //!< Supports searches between two values
-      CaseInsensitive = 1 << 8, //!< Supports case insensitive searching
-      Contains = 1 << 9, //!< Supports value "contains" searching
-      DoesNotContain = 1 << 10, //!< Supports value does not contain searching
-      IsNull = 1 << 11, //!< Supports searching for null values
-      IsNotBetween = 1 << 12, //!< Supports searching for values outside of a set range
-      IsNotNull = 1 << 13, //!< Supports searching for non-null values
-      StartsWith = 1 << 14, //!< Supports searching for strings that start with
-      EndsWith = 1 << 15, //!< Supports searching for strings that end with
+      LessThanOrEqualTo = 1 << 6,    //!< Supports <=
+      Between = 1 << 7,              //!< Supports searches between two values
+      CaseInsensitive = 1 << 8,      //!< Supports case insensitive searching
+      Contains = 1 << 9,             //!< Supports value "contains" searching
+      DoesNotContain = 1 << 10,      //!< Supports value does not contain searching
+      IsNull = 1 << 11,              //!< Supports searching for null values
+      IsNotBetween = 1 << 12,        //!< Supports searching for values outside of a set range
+      IsNotNull = 1 << 13,           //!< Supports searching for non-null values
+      StartsWith = 1 << 14,          //!< Supports searching for strings that start with
+      EndsWith = 1 << 15,            //!< Supports searching for strings that end with
     };
     Q_DECLARE_FLAGS( FilterFlags, FilterFlag )
 
@@ -114,13 +113,13 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * Returns a list of exclusive filter flags, which cannot be combined with other flags (e.g., EqualTo/NotEqualTo)
      * \see nonExclusiveFilterFlags()
      */
-    static QList< QgsSearchWidgetWrapper::FilterFlag > exclusiveFilterFlags();
+    static QList<QgsSearchWidgetWrapper::FilterFlag> exclusiveFilterFlags();
 
     /**
      * Returns a list of non-exclusive filter flags, which can be combined with other flags (e.g., CaseInsensitive)
      * \see exclusiveFilterFlags()
      */
-    static QList< QgsSearchWidgetWrapper::FilterFlag > nonExclusiveFilterFlags();
+    static QList<QgsSearchWidgetWrapper::FilterFlag> nonExclusiveFilterFlags();
 
     /**
      * Returns a translated string representing a filter flag.
@@ -174,7 +173,11 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * \param flags filter flags
      * \returns filter expression
      */
-    virtual QString createExpression( FilterFlags flags ) const { Q_UNUSED( flags ) return QStringLiteral( "TRUE" ); }
+    virtual QString createExpression( FilterFlags flags ) const
+    {
+      Q_UNUSED( flags )
+      return QStringLiteral( "TRUE" );
+    }
 
     /**
      * Gets a field name or expression to use as field comparison.

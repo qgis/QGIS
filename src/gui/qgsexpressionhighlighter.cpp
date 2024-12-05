@@ -79,4 +79,3 @@ void QgsExpressionHighlighter::highlightBlock( const QString &text )
     }
   }
 }
-

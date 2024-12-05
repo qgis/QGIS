@@ -42,7 +42,6 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     Q_OBJECT
 
   public:
-
     //! Available floater items
     enum class FloaterItem : int SIP_ENUM_BASETYPE( IntFlag )
     {
@@ -140,12 +139,11 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     void enabledChangedBearing( bool enabled );
 
   private:
-
     //! pointer to map canvas
     QgsMapCanvas *mMapCanvas = nullptr;
 
     //! pointer to map cad docker widget
-    QPointer< QgsAdvancedDigitizingDockWidget > mCadDockWidget;
+    QPointer<QgsAdvancedDigitizingDockWidget> mCadDockWidget;
 
     /**
     * event filter to track mouse position

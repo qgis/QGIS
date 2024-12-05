@@ -32,8 +32,8 @@
 #include <cpl_minixml.h>
 #include "qgshelp.h"
 
-QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
-  QgsAbstractDataSourceWidget( parent, fl, widgetMode )
+QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
   setupButtons( buttonBox );
@@ -49,9 +49,8 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   whileBlocking( radioSrcFile )->setChecked( true );
   protocolGroupBox->hide();
 
-  QList< QgsGdalUtils::VsiNetworkFileSystemDetails > vsiDetails = QgsGdalUtils::vsiNetworkFileSystems();
-  std::sort( vsiDetails.begin(), vsiDetails.end(), []( const QgsGdalUtils::VsiNetworkFileSystemDetails & a, const QgsGdalUtils::VsiNetworkFileSystemDetails & b )
-  {
+  QList<QgsGdalUtils::VsiNetworkFileSystemDetails> vsiDetails = QgsGdalUtils::vsiNetworkFileSystems();
+  std::sort( vsiDetails.begin(), vsiDetails.end(), []( const QgsGdalUtils::VsiNetworkFileSystemDetails &a, const QgsGdalUtils::VsiNetworkFileSystemDetails &b ) {
     return QString::localeAwareCompare( a.name, b.name ) < 0;
   } );
   for ( const QgsGdalUtils::VsiNetworkFileSystemDetails &vsiDetail : std::as_const( vsiDetails ) )
@@ -59,23 +58,20 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
     cmbProtocolTypes->addItem( vsiDetail.name, vsiDetail.identifier );
   }
 
-  connect( protocolURI, &QLineEdit::textChanged, this, [ = ]( const QString & text )
-  {
+  connect( protocolURI, &QLineEdit::textChanged, this, [=]( const QString &text ) {
     if ( radioSrcProtocol->isChecked() )
     {
       emit enableButtons( !text.isEmpty() );
     }
   } );
-  connect( mBucket, &QLineEdit::textChanged, this, [ = ]( const QString & text )
-  {
+  connect( mBucket, &QLineEdit::textChanged, this, [=]( const QString &text ) {
     if ( radioSrcProtocol->isChecked() )
     {
       emit enableButtons( !text.isEmpty() && !mKey->text().isEmpty() );
       fillOpenOptions();
     }
   } );
-  connect( mKey, &QLineEdit::textChanged, this, [ = ]( const QString & text )
-  {
+  connect( mKey, &QLineEdit::textChanged, this, [=]( const QString &text ) {
     if ( radioSrcProtocol->isChecked() )
     {
       emit enableButtons( !text.isEmpty() && !mBucket->text().isEmpty() );
@@ -87,10 +83,9 @@ QgsGdalSourceSelect::QgsGdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, Q
   mFileWidget->setFilter( QgsProviderRegistry::instance()->fileRasterFilters() );
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
   mFileWidget->setOptions( QFileDialog::HideNameFilterDetails );
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
-  {
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [=]( const QString &path ) {
     mRasterPath = mIsOgcApi ? QStringLiteral( "OGCAPI:%1" ).arg( path ) : path;
-    emit enableButtons( ! mRasterPath.isEmpty() );
+    emit enableButtons( !mRasterPath.isEmpty() );
     fillOpenOptions();
   } );
   mOpenOptionsGroupBox->setVisible( false );
@@ -149,7 +144,7 @@ void QgsGdalSourceSelect::radioSrcOgcApi_toggled( bool checked )
   {
     rasterDatasetLabel->setText( tr( "OGC API Endpoint" ) );
     const QString vectorPath = mFileWidget->filePath();
-    emit enableButtons( ! vectorPath.isEmpty() );
+    emit enableButtons( !vectorPath.isEmpty() );
     if ( mRasterPath.isEmpty() )
     {
       mRasterPath = QStringLiteral( "OGCAPI:" );
@@ -190,9 +185,7 @@ void QgsGdalSourceSelect::addButtonClicked()
 
   if ( mDataSources.isEmpty() )
   {
-    QMessageBox::information( this,
-                              tr( "Add Raster Layer" ),
-                              tr( "No layers selected." ) );
+    QMessageBox::information( this, tr( "Add Raster Layer" ), tr( "No layers selected." ) );
     return;
   }
 
@@ -218,10 +211,9 @@ void QgsGdalSourceSelect::addButtonClicked()
     {
       if ( promoteToVsiCurlStatus == PromoteToVsiCurlStatus::NotAsked )
       {
-        if ( QMessageBox::warning( this,
-                                   tr( "Add Raster Layer" ),
-                                   tr( "Directly adding HTTP(S) or FTP sources can be very slow, as it requires a full download of the dataset.\n\n"
-                                       "Would you like to use a streaming method to access this dataset instead (recommended)?" ), QMessageBox::Button::Yes | QMessageBox::Button::No, QMessageBox::Button::Yes )
+        if ( QMessageBox::warning( this, tr( "Add Raster Layer" ), tr( "Directly adding HTTP(S) or FTP sources can be very slow, as it requires a full download of the dataset.\n\n"
+                                                                       "Would you like to use a streaming method to access this dataset instead (recommended)?" ),
+                                   QMessageBox::Button::Yes | QMessageBox::Button::No, QMessageBox::Button::Yes )
              == QMessageBox::Yes )
         {
           promoteToVsiCurlStatus = PromoteToVsiCurlStatus::AutoPromote;
@@ -258,12 +250,11 @@ bool QgsGdalSourceSelect::configureFromUri( const QString &uri )
     openOptions.insert( QStringLiteral( "TABLE" ), layerName );
   }
 
-  if ( ! openOptions.isEmpty() )
+  if ( !openOptions.isEmpty() )
   {
     for ( auto opt = openOptions.constBegin(); opt != openOptions.constEnd(); ++opt )
     {
-      const auto widget { std::find_if( mOpenOptionsWidgets.cbegin(), mOpenOptionsWidgets.cend(), [ = ]( QWidget * widget )
-      {
+      const auto widget { std::find_if( mOpenOptionsWidgets.cbegin(), mOpenOptionsWidgets.cend(), [=]( QWidget *widget ) {
         return widget->objectName() == opt.key();
       } ) };
 
@@ -386,12 +377,7 @@ void QgsGdalSourceSelect::computeDataSources()
       parts.insert( QStringLiteral( "openOptions" ), openOptions );
     if ( !credentialOptions.isEmpty() )
       parts.insert( QStringLiteral( "credentialOptions" ), credentialOptions );
-    parts.insert( QStringLiteral( "path" ),
-                  QgsGdalGuiUtils::createProtocolURI( cmbProtocolTypes->currentData().toString(),
-                      uri,
-                      mAuthSettingsProtocol->configId(),
-                      mAuthSettingsProtocol->username(),
-                      mAuthSettingsProtocol->password() ) );
+    parts.insert( QStringLiteral( "path" ), QgsGdalGuiUtils::createProtocolURI( cmbProtocolTypes->currentData().toString(), uri, mAuthSettingsProtocol->configId(), mAuthSettingsProtocol->username(), mAuthSettingsProtocol->password() ) );
     mDataSources << QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts );
   }
 }
@@ -461,7 +447,7 @@ void QgsGdalSourceSelect::fillOpenOptions()
     return;
   }
 
-  const QList< QgsGdalOption > options = QgsGdalOption::optionsFromXml( psOpenOptionList );
+  const QList<QgsGdalOption> options = QgsGdalOption::optionsFromXml( psOpenOptionList );
   CPLDestroyXMLNode( psDoc );
 
   for ( const QgsGdalOption &option : options )
@@ -475,14 +461,14 @@ void QgsGdalSourceSelect::fillOpenOptions()
     if ( !control )
       continue;
 
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,8,0)
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 8, 0 )
     if ( QString( GDALGetDriverShortName( hDriver ) ).compare( QLatin1String( "BAG" ) ) == 0
          && option.name == QLatin1String( "MODE" ) && option.options.contains( QLatin1String( "INTERPOLATED" ) ) )
     {
       gdal::dataset_unique_ptr hSrcDS( GDALOpen( gdalUri.toUtf8().constData(), GA_ReadOnly ) );
-      if ( hSrcDS && QString{ GDALGetMetadataItem( hSrcDS.get(), "HAS_SUPERGRIDS", nullptr ) } == QLatin1String( "TRUE" ) )
+      if ( hSrcDS && QString { GDALGetMetadataItem( hSrcDS.get(), "HAS_SUPERGRIDS", nullptr ) } == QLatin1String( "TRUE" ) )
       {
-        if ( QComboBox *combo = qobject_cast< QComboBox * >( control ) )
+        if ( QComboBox *combo = qobject_cast<QComboBox *>( control ) )
         {
           combo->setCurrentIndex( combo->findText( QLatin1String( "INTERPOLATED" ) ) );
         }

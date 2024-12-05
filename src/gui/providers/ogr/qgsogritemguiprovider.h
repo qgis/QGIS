@@ -30,19 +30,15 @@ class QgsOgrItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     Q_OBJECT
 
   public:
-
     QgsOgrItemGuiProvider() = default;
 
     QString name() override { return QStringLiteral( "ogr_items" ); }
 
-    void populateContextMenu( QgsDataItem *item, QMenu *menu,
-                              const QList<QgsDataItem *> &selectedItems,
-                              QgsDataItemGuiContext context ) override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
   protected slots:
     void onDeleteLayer( QgsDataItemGuiContext context );
     void deleteCollection( QgsDataItemGuiContext context );
-
 };
 
 ///@endcond

@@ -34,7 +34,6 @@ class GUI_EXPORT QgsNonRejectableDialog : public QDialog
 {
     Q_OBJECT
   public:
-
     explicit QgsNonRejectableDialog( QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
     void reject() override;
 };
@@ -53,17 +52,13 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * Constructs an object that is responsible of making a docked widget or a window titled \a windowTitle that holds the \a widget
      * The ownership of \a widget is returned to \a ownerWindow once the object is destroyed.
      *
      * If \a usePersistentWidget is TRUE then the \a widget (either as a dock or window) cannot be destroyed and must be hidden instead.
      */
-    QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget, QMainWindow *ownerWindow,
-                             Qt::DockWidgetArea defaultDockArea = Qt::NoDockWidgetArea,
-                             const QStringList &tabifyWith = QStringList(), bool raiseTab = false,
-                             const QString &windowGeometrySettingsKey = QString(), bool usePersistentWidget = false );
+    QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget, QMainWindow *ownerWindow, Qt::DockWidgetArea defaultDockArea = Qt::NoDockWidgetArea, const QStringList &tabifyWith = QStringList(), bool raiseTab = false, const QString &windowGeometrySettingsKey = QString(), bool usePersistentWidget = false );
     ~QgsDockableWidgetHelper();
 
     //! Reads the dimensions of both the dock widget and the top level window
@@ -109,8 +104,8 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
 
     bool eventFilter( QObject *watched, QEvent *event ) override;
 
-    static std::function< void( Qt::DockWidgetArea, QDockWidget *, const QStringList &, bool ) > sAddTabifiedDockWidgetFunction;
-    static std::function< QString( ) > sAppStylesheetFunction;
+    static std::function<void( Qt::DockWidgetArea, QDockWidget *, const QStringList &, bool )> sAddTabifiedDockWidgetFunction;
+    static std::function<QString()> sAppStylesheetFunction;
 
     static QMainWindow *sOwnerWindow;
 
@@ -132,10 +127,10 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
     bool mIsDocked = true;
     QWidget *mWidget = nullptr;
 
-    QPointer< QDialog > mDialog;
+    QPointer<QDialog> mDialog;
     QRect mDialogGeometry;
 
-    QPointer< QgsDockWidget > mDock;
+    QPointer<QgsDockWidget> mDock;
     QRect mDockGeometry;
     bool mIsDockFloating = true;
     Qt::DockWidgetArea mDockArea = Qt::RightDockWidgetArea;

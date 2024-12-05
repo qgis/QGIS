@@ -184,9 +184,7 @@ void QgsValueRelationSearchWidgetWrapper::setExpression( const QString &expressi
   else
   {
     str = QStringLiteral( "%1 = '%3'" )
-          .arg( QgsExpression::quotedColumnRef( fieldName ),
-                exp.replace( '\'', QLatin1String( "''" ) )
-              );
+            .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', QLatin1String( "''" ) ) );
   }
   mExpression = str;
 }
@@ -249,5 +247,3 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget *editor )
     connect( mLineEdit, &QLineEdit::textChanged, this, &QgsValueRelationSearchWidgetWrapper::onValueChanged );
   }
 }
-
-

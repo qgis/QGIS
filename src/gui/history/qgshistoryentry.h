@@ -34,7 +34,6 @@
 class GUI_EXPORT QgsHistoryEntry
 {
   public:
-
     /**
      * Constructor for an invalid entry.
      */
@@ -87,7 +86,6 @@ class GUI_EXPORT QgsHistoryEntry
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     //%End
 #endif
-
 };
 
 Q_DECLARE_METATYPE( QgsHistoryEntry );

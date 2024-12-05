@@ -34,13 +34,10 @@ class GUI_EXPORT QgsDialog : public QDialog
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsDialog.
      */
-    QgsDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
-               QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close,
-               Qt::Orientation orientation = Qt::Horizontal );
+    QgsDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close, Qt::Orientation orientation = Qt::Horizontal );
 
     //! Returns the central layout. Widgets added to it must have this dialog as parent.
     QVBoxLayout *layout() { return mLayout; }

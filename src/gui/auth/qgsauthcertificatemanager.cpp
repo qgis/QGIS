@@ -47,8 +47,7 @@ QgsAuthCertManager::QgsAuthCertManager( QWidget *parent )
   mCertEditors = new QgsAuthCertEditors( this );
   layout->addWidget( mCertEditors );
 
-  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Close,
-      Qt::Horizontal, this );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Close, Qt::Horizontal, this );
   buttonBox->button( QDialogButtonBox::Close )->setDefault( true );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
   layout->addWidget( buttonBox );

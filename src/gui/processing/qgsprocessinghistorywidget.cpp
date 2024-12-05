@@ -41,12 +41,7 @@ QgsProcessingHistoryWidget::QgsProcessingHistoryWidget( QWidget *parent )
 
 void QgsProcessingHistoryWidget::clearHistory()
 {
-  if ( QMessageBox::question( this,
-                              tr( "Clear History" ),
-                              tr( "Are you sure you want to clear the Processing history?" ),
-                              QMessageBox::Yes | QMessageBox::No,
-                              QMessageBox::No
-                            ) == QMessageBox::Yes )
+  if ( QMessageBox::question( this, tr( "Clear History" ), tr( "Are you sure you want to clear the Processing history?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
   {
     QgsGui::historyProviderRegistry()->clearHistory( Qgis::HistoryProviderBackend::LocalProfile, QStringLiteral( "processing" ) );
   }
@@ -59,10 +54,7 @@ void QgsProcessingHistoryWidget::openHelp()
 
 void QgsProcessingHistoryWidget::saveLog()
 {
-  QString fileName = QFileDialog::getSaveFileName( this,
-                     tr( "Save File" ),
-                     QDir::homePath(),
-                     tr( "Log files (*.log *.LOG)" ) );
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save File" ), QDir::homePath(), tr( "Log files (*.log *.LOG)" ) );
   // return dialog focus on Mac
   activateWindow();
   raise();
@@ -72,7 +64,7 @@ void QgsProcessingHistoryWidget::saveLog()
 
   fileName = QgsFileUtils::ensureFileNameHasExtension( fileName, { QStringLiteral( "log" ) } );
 
-  const QList< QgsHistoryEntry > entries = QgsGui::historyProviderRegistry()->queryEntries( QDateTime(), QDateTime(), QStringLiteral( "processing" ) );
+  const QList<QgsHistoryEntry> entries = QgsGui::historyProviderRegistry()->queryEntries( QDateTime(), QDateTime(), QStringLiteral( "processing" ) );
 
   const QString logSeparator = QStringLiteral( "|~|" );
   QFile logFile( fileName );
@@ -81,10 +73,7 @@ void QgsProcessingHistoryWidget::saveLog()
     QTextStream logOut( &logFile );
     for ( const QgsHistoryEntry &entry : entries )
     {
-      logOut << QStringLiteral( "ALGORITHM%1%2%3%4\n" ).arg( logSeparator,
-             entry.timestamp.toString( "yyyy-MM-dd HH:mm:ss" ),
-             logSeparator,
-             entry.entry.value( QStringLiteral( "python_command" ) ).toString() );
+      logOut << QStringLiteral( "ALGORITHM%1%2%3%4\n" ).arg( logSeparator, entry.timestamp.toString( "yyyy-MM-dd HH:mm:ss" ), logSeparator, entry.entry.value( QStringLiteral( "python_command" ) ).toString() );
     }
   }
 }
@@ -119,7 +108,7 @@ QgsProcessingHistoryDialog::QgsProcessingHistoryDialog( QWidget *parent )
   connect( clearButton, &QPushButton::clicked, mWidget, &QgsProcessingHistoryWidget::clearHistory );
   connect( saveButton, &QPushButton::clicked, mWidget, &QgsProcessingHistoryWidget::saveLog );
   connect( mButtonBox->button( QDialogButtonBox::Help ), &QPushButton::clicked, mWidget, &QgsProcessingHistoryWidget::openHelp );
-  connect( mButtonBox->button( QDialogButtonBox::Close ), &QPushButton::clicked, mWidget, [ = ]() { close(); } );
+  connect( mButtonBox->button( QDialogButtonBox::Close ), &QPushButton::clicked, mWidget, [=]() { close(); } );
 
   vl->addWidget( mButtonBox );
 

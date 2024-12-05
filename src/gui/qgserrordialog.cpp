@@ -78,4 +78,3 @@ void QgsErrorDialog::mDetailCheckBox_stateChanged( int state )
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Error/dialog/detail" ), state );
 }
-

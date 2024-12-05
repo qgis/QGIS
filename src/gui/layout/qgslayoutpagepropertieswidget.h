@@ -44,7 +44,6 @@ class GUI_EXPORT QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget,
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutPagePropertiesWidget.
      */
@@ -66,7 +65,6 @@ class GUI_EXPORT QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget,
     void refreshLayout();
 
   private:
-
     QgsLayoutItemPage *mPage = nullptr;
 
     QgsLayoutMeasurementConverter mConverter;
@@ -75,7 +73,6 @@ class GUI_EXPORT QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget,
     bool mBlockPageUpdate = false;
 
     void showCurrentPageSize();
-
 };
 
 #endif // QGSLAYOUTPAGEPROPERTIESWIDGET_H

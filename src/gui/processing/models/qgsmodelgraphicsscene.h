@@ -45,15 +45,14 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     Q_OBJECT
 
   public:
-
     //! Z values for scene items
     enum ZValues
     {
-      GroupBox = 0, //!< A logical group box
-      ArrowLink = 1, //!< An arrow linking model items
-      ModelComponent = 2, //!< Model components (e.g. algorithms, inputs and outputs)
-      MouseHandles = 99, //!< Mouse handles
-      RubberBand = 100, //!< Rubber band item
+      GroupBox = 0,         //!< A logical group box
+      ArrowLink = 1,        //!< An arrow linking model items
+      ModelComponent = 2,   //!< Model components (e.g. algorithms, inputs and outputs)
+      MouseHandles = 99,    //!< Mouse handles
+      RubberBand = 100,     //!< Rubber band item
       ZSnapIndicator = 101, //!< Z-value for snapping indicator
 
     };
@@ -61,7 +60,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     //! Flags for controlling how the scene is rendered and scene behavior
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
-      FlagHideControls = 1 << 1,  //!< If set, item interactive controls will be hidden
+      FlagHideControls = 1 << 1, //!< If set, item interactive controls will be hidden
       FlagHideComments = 1 << 2, //!< If set, comments will be hidden
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -216,7 +215,6 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     void showChildAlgorithmLog( const QString &childId );
 
   protected:
-
     /**
      * Creates a new graphic item for a model parameter.
      */
@@ -225,7 +223,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Creates a new graphic item for a model child algorithm.
      */
-    virtual QgsModelChildAlgorithmGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const  SIP_FACTORY;
+    virtual QgsModelChildAlgorithmGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const SIP_FACTORY;
 
     /**
      * Creates a new graphic item for a model output.
@@ -235,8 +233,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Creates a new graphic item for a model comment.
      */
-    virtual QgsModelComponentGraphicItem *createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment,
-        QgsModelComponentGraphicItem *parentItem ) const SIP_FACTORY;
+    virtual QgsModelComponentGraphicItem *createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment, QgsModelComponentGraphicItem *parentItem ) const SIP_FACTORY;
 
     /**
      * Creates a new graphic item for a model group box.
@@ -244,14 +241,13 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QgsModelComponentGraphicItem *createGroupBoxGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelGroupBox *box ) const SIP_FACTORY;
 
   private:
-
     struct LinkSource
     {
-      QgsModelComponentGraphicItem *item = nullptr;
-      Qt::Edge edge = Qt::LeftEdge;
-      int linkIndex = -1;
+        QgsModelComponentGraphicItem *item = nullptr;
+        Qt::Edge edge = Qt::LeftEdge;
+        int linkIndex = -1;
     };
-    QList< LinkSource > linkSourcesForParameterValue( QgsProcessingModelAlgorithm *model, const QVariant &value, const QString &childId, QgsProcessingContext &context ) const;
+    QList<LinkSource> linkSourcesForParameterValue( QgsProcessingModelAlgorithm *model, const QVariant &value, const QString &childId, QgsProcessingContext &context ) const;
 
     void addCommentItemForComponent( QgsProcessingModelAlgorithm *model, const QgsProcessingModelComponent &component, QgsModelComponentGraphicItem *parentItem );
 
@@ -259,14 +255,13 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
 
     QgsProcessingModelAlgorithm *mModel = nullptr;
 
-    QMap< QString, QgsModelComponentGraphicItem * > mParameterItems;
-    QMap< QString, QgsModelChildAlgorithmGraphicItem * > mChildAlgorithmItems;
-    QMap< QString, QMap< QString, QgsModelComponentGraphicItem * > > mOutputItems;
-    QMap< QString, QgsModelComponentGraphicItem * > mGroupBoxItems;
+    QMap<QString, QgsModelComponentGraphicItem *> mParameterItems;
+    QMap<QString, QgsModelChildAlgorithmGraphicItem *> mChildAlgorithmItems;
+    QMap<QString, QMap<QString, QgsModelComponentGraphicItem *>> mOutputItems;
+    QMap<QString, QgsModelComponentGraphicItem *> mGroupBoxItems;
     QgsProcessingModelResult mLastResult;
 
     QgsMessageBar *mMessageBar = nullptr;
-
 };
 
 Q_DECLARE_METATYPE( QgsModelGraphicsScene::Flags )

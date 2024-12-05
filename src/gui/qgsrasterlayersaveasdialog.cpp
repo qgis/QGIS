@@ -38,10 +38,7 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 
-QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer,
-    QgsRasterDataProvider *sourceProvider, const QgsRectangle &currentExtent,
-    const QgsCoordinateReferenceSystem &layerCrs, const QgsCoordinateReferenceSystem &currentCrs,
-    QWidget *parent, Qt::WindowFlags f )
+QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer, QgsRasterDataProvider *sourceProvider, const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &layerCrs, const QgsCoordinateReferenceSystem &currentCrs, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
   , mRasterLayer( rasterLayer )
   , mDataProvider( sourceProvider )
@@ -113,8 +110,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   }
 
   // Only do pyramids if dealing directly with GDAL.
-  if ( mDataProvider && ( mDataProvider->capabilities() & Qgis::RasterInterfaceCapability::BuildPyramids
-                          || mDataProvider->providerCapabilities() & Qgis::RasterProviderCapability::BuildPyramids ) )
+  if ( mDataProvider && ( mDataProvider->capabilities() & Qgis::RasterInterfaceCapability::BuildPyramids || mDataProvider->providerCapabilities() & Qgis::RasterProviderCapability::BuildPyramids ) )
   {
     // setup pyramids option widget
     // mPyramidsOptionsWidget->createOptionsWidget()->setType( QgsRasterFormatSaveOptionsWidget::ProfileLineEdit );
@@ -127,8 +123,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
     mPyramidsUseExistingCheckBox->setVisible( false );
 
     populatePyramidsLevels();
-    connect( mPyramidsOptionsWidget, &QgsRasterPyramidsOptionsWidget::overviewListChanged,
-             this, &QgsRasterLayerSaveAsDialog::populatePyramidsLevels );
+    connect( mPyramidsOptionsWidget, &QgsRasterPyramidsOptionsWidget::overviewListChanged, this, &QgsRasterLayerSaveAsDialog::populatePyramidsLevels );
   }
   else
   {
@@ -160,8 +155,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   //default to layer CRS - see https://github.com/qgis/QGIS/issues/22211 for discussion
   mCrsSelector->setCrs( mLayerCrs );
 
-  connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged,
-           this, &QgsRasterLayerSaveAsDialog::crsChanged );
+  connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsRasterLayerSaveAsDialog::crsChanged );
 
   QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
   if ( okButton )
@@ -203,8 +197,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   }
 
   mFilename->setDefaultRoot( settings.value( QStringLiteral( "UI/lastRasterFileDir" ), QDir::homePath() ).toString() );
-  connect( mFilename, &QgsFileWidget::fileChanged, this, [ = ]( const QString & filePath )
-  {
+  connect( mFilename, &QgsFileWidget::fileChanged, this, [=]( const QString &filePath ) {
     QgsSettings settings;
     QFileInfo tmplFileInfo( filePath );
     settings.setValue( QStringLiteral( "UI/lastRasterFileDir" ), tmplFileInfo.absolutePath() );
@@ -234,9 +227,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
         if ( files.isEmpty() )
           break;
 
-        if ( QMessageBox::warning( this, tr( "Save Raster Layer" ),
-                                   tr( "The directory %1 contains files which will be overwritten: %2" ).arg( dir.absolutePath(), files.join( QLatin1String( ", " ) ) ),
-                                   QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
+        if ( QMessageBox::warning( this, tr( "Save Raster Layer" ), tr( "The directory %1 contains files which will be overwritten: %2" ).arg( dir.absolutePath(), files.join( QLatin1String( ", " ) ) ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
           break;
 
         fileName = QFileDialog::getExistingDirectory( this, tr( "Select output directory" ), tmplFileInfo.absolutePath() );
@@ -257,8 +248,8 @@ void QgsRasterLayerSaveAsDialog::insertAvailableOutputFormats()
   GDALAllRegister();
 
   int nDrivers = GDALGetDriverCount();
-  QMap< int, QPair< QString, QString > > topPriorityDrivers;
-  QMap< QString, QString > lowPriorityDrivers;
+  QMap<int, QPair<QString, QString>> topPriorityDrivers;
+  QMap<QString, QString> lowPriorityDrivers;
 
   for ( int i = 0; i < nDrivers; ++i )
   {
@@ -309,7 +300,6 @@ void QgsRasterLayerSaveAsDialog::insertAvailableOutputFormats()
   {
     mFormatComboBox->addItem( lowPriorityDriversIt.key(), lowPriorityDriversIt.value() );
   }
-
 }
 
 void QgsRasterLayerSaveAsDialog::setValidators()
@@ -337,9 +327,7 @@ void QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( const QStr
     filter = tr( "All files (*.*)" );
   else
   {
-    filter = QStringLiteral( "%1 (*.%2);;%3" ).arg( mFormatComboBox->currentText(),
-             extensions.join( QLatin1String( " *." ) ),
-             tr( "All files (*.*)" ) );
+    filter = QStringLiteral( "%1 (*.%2);;%3" ).arg( mFormatComboBox->currentText(), extensions.join( QLatin1String( " *." ) ), tr( "All files (*.*)" ) );
   }
   mFilename->setFilter( filter );
 
@@ -659,7 +647,8 @@ QgsCoordinateReferenceSystem QgsRasterLayerSaveAsDialog::outputCrs()
 
 QgsRasterLayerSaveAsDialog::Mode QgsRasterLayerSaveAsDialog::mode() const
 {
-  if ( mRenderedModeRadioButton->isChecked() ) return RenderedImageMode;
+  if ( mRenderedModeRadioButton->isChecked() )
+    return RenderedImageMode;
   return RawDataMode;
 }
 
@@ -676,9 +665,11 @@ void QgsRasterLayerSaveAsDialog::mAddNoDataManuallyToolButton_clicked()
 
 void QgsRasterLayerSaveAsDialog::mLoadTransparentNoDataToolButton_clicked()
 {
-  if ( !mRasterLayer->renderer() ) return;
+  if ( !mRasterLayer->renderer() )
+    return;
   const QgsRasterTransparency *rasterTransparency = mRasterLayer->renderer()->rasterTransparency();
-  if ( !rasterTransparency ) return;
+  if ( !rasterTransparency )
+    return;
 
   const auto constTransparentSingleValuePixelList = rasterTransparency->transparentSingleValuePixelList();
   for ( const QgsRasterTransparency::TransparentSingleValuePixel &transparencyPixel : constTransparentSingleValuePixelList )
@@ -751,7 +742,8 @@ void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString &text )
   Q_UNUSED( text )
 
   QLineEdit *lineEdit = qobject_cast<QLineEdit *>( sender() );
-  if ( !lineEdit ) return;
+  if ( !lineEdit )
+    return;
   int row = -1;
   int column = -1;
   for ( int r = 0; r < mNoDataTableWidget->rowCount(); r++ )
@@ -765,14 +757,16 @@ void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString &text )
         break;
       }
     }
-    if ( row != -1 ) break;
+    if ( row != -1 )
+      break;
   }
   QgsDebugMsgLevel( QStringLiteral( "row = %1 column =%2" ).arg( row ).arg( column ), 2 );
 
   if ( column == 0 )
   {
     QLineEdit *toLineEdit = dynamic_cast<QLineEdit *>( mNoDataTableWidget->cellWidget( row, 1 ) );
-    if ( !toLineEdit ) return;
+    if ( !toLineEdit )
+      return;
     bool toChanged = mNoDataToEdited.value( row );
     QgsDebugMsgLevel( QStringLiteral( "toChanged = %1" ).arg( toChanged ), 2 );
     if ( !toChanged )
@@ -838,15 +832,14 @@ void QgsRasterLayerSaveAsDialog::populatePyramidsLevels()
     }
     else
     {
-      if ( ! mPyramidsOptionsWidget->overviewList().isEmpty() )
+      if ( !mPyramidsOptionsWidget->overviewList().isEmpty() )
         myPyramidList = mDataProvider->buildPyramidList( mPyramidsOptionsWidget->overviewList() );
     }
     for ( const QgsRasterPyramid &pyramid : std::as_const( myPyramidList ) )
     {
-      if ( ! mPyramidsUseExistingCheckBox->isChecked() || pyramid.getExists() )
+      if ( !mPyramidsUseExistingCheckBox->isChecked() || pyramid.getExists() )
       {
-        text += QString::number( pyramid.getXDim() ) + QStringLiteral( "x" ) +
-                QString::number( pyramid.getYDim() ) + ' ';
+        text += QString::number( pyramid.getXDim() ) + QStringLiteral( "x" ) + QString::number( pyramid.getYDim() ) + ' ';
       }
     }
   }
@@ -876,7 +869,8 @@ double QgsRasterLayerSaveAsDialog::noDataCellValue( int row, int column ) const
 void QgsRasterLayerSaveAsDialog::adjustNoDataCellWidth( int row, int column )
 {
   QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( mNoDataTableWidget->cellWidget( row, column ) );
-  if ( !lineEdit ) return;
+  if ( !lineEdit )
+    return;
 
   int width = std::max( lineEdit->fontMetrics().boundingRect( lineEdit->text() ).width() + 10, 100 );
   width = std::max( width, mNoDataTableWidget->columnWidth( column ) );
@@ -887,7 +881,7 @@ void QgsRasterLayerSaveAsDialog::adjustNoDataCellWidth( int row, int column )
 QgsRasterRangeList QgsRasterLayerSaveAsDialog::noData() const
 {
   QgsRasterRangeList noDataList;
-  if ( ! mNoDataGroupBox->isChecked() )
+  if ( !mNoDataGroupBox->isChecked() )
     return noDataList;
 
   int rows = mNoDataTableWidget->rowCount();
@@ -896,7 +890,6 @@ QgsRasterRangeList QgsRasterLayerSaveAsDialog::noData() const
   {
     QgsRasterRange noData( noDataCellValue( r, 0 ), noDataCellValue( r, 1 ) );
     noDataList.append( noData );
-
   }
   return noDataList;
 }
@@ -908,7 +901,7 @@ QList<int> QgsRasterLayerSaveAsDialog::pyramidsList() const
 
 Qgis::RasterBuildPyramidOption QgsRasterLayerSaveAsDialog::buildPyramidsFlag() const
 {
-  if ( ! mPyramidsGroupBox->isChecked() )
+  if ( !mPyramidsGroupBox->isChecked() )
     return Qgis::RasterBuildPyramidOption::No;
   else if ( mPyramidsUseExistingCheckBox->isChecked() )
     return Qgis::RasterBuildPyramidOption::CopyExisting;
@@ -947,10 +940,10 @@ bool QgsRasterLayerSaveAsDialog::outputLayerExists() const
     rasterUri = outputFileName();
   }
 
-  QgsRasterLayer rasterLayer( rasterUri, QString( ), QStringLiteral( "gdal" ) );
+  QgsRasterLayer rasterLayer( rasterUri, QString(), QStringLiteral( "gdal" ) );
   if ( !vectorUri.isEmpty() )
   {
-    QgsVectorLayer vectorLayer( vectorUri, QString( ), QStringLiteral( "ogr" ) );
+    QgsVectorLayer vectorLayer( vectorUri, QString(), QStringLiteral( "ogr" ) );
     return rasterLayer.isValid() || vectorLayer.isValid();
   }
   else
@@ -974,18 +967,16 @@ void QgsRasterLayerSaveAsDialog::accept()
 
     if ( totalTiles > MAXIMUM_OPENSTREETMAP_TILES_FETCH )
     {
-      QMessageBox::warning( this, tr( "Save Raster Layer" ),
-                            tr( "The number of OpenStreetMap tiles needed to produce the raster layer is too large and will lead to bulk downloading behavior which is prohibited by the %1OpenStreetMap Foundation tile usage policy%2." ).arg( QStringLiteral( "<a href=\"https://operations.osmfoundation.org/policies/tiles/\">" ), QStringLiteral( "</a>" ) ),
-                            QMessageBox::Ok );
+      QMessageBox::warning( this, tr( "Save Raster Layer" ), tr( "The number of OpenStreetMap tiles needed to produce the raster layer is too large and will lead to bulk downloading behavior which is prohibited by the %1OpenStreetMap Foundation tile usage policy%2." ).arg( QStringLiteral( "<a href=\"https://operations.osmfoundation.org/policies/tiles/\">" ), QStringLiteral( "</a>" ) ), QMessageBox::Ok );
       return;
     }
   }
 
-  if ( outputFormat() == QLatin1String( "GPKG" ) && outputLayerExists() &&
-       QMessageBox::warning( this, tr( "Save Raster Layer" ),
-                             tr( "The layer %1 already exists in the target file, and overwriting layers in GeoPackage is not supported. "
-                                 "Do you want to overwrite the whole file?" ).arg( outputLayerName() ),
-                             QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+  if ( outputFormat() == QLatin1String( "GPKG" ) && outputLayerExists() && QMessageBox::warning( this, tr( "Save Raster Layer" ), tr( "The layer %1 already exists in the target file, and overwriting layers in GeoPackage is not supported. "
+                                                                                                                                      "Do you want to overwrite the whole file?" )
+                                                                                                                                    .arg( outputLayerName() ),
+                                                                                                 QMessageBox::Yes | QMessageBox::No )
+                                                                             == QMessageBox::No )
   {
     return;
   }

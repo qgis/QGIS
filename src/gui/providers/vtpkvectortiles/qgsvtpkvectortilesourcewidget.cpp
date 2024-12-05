@@ -47,9 +47,9 @@ QgsVtpkVectorTileSourceWidget::QgsVtpkVectorTileSourceWidget( QWidget *parent )
 void QgsVtpkVectorTileSourceWidget::setSourceUri( const QString &uri )
 {
   mSourceParts = QgsProviderRegistry::instance()->decodeUri(
-                   QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY,
-                   uri
-                 );
+    QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY,
+    uri
+  );
 
   mFileWidget->setFilePath( mSourceParts.value( QStringLiteral( "path" ) ).toString() );
   mIsValid = true;
@@ -60,9 +60,9 @@ QString QgsVtpkVectorTileSourceWidget::sourceUri() const
   QVariantMap parts = mSourceParts;
   parts.insert( QStringLiteral( "path" ), mFileWidget->filePath() );
   return QgsProviderRegistry::instance()->encodeUri(
-           QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY,
-           parts
-         );
+    QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY,
+    parts
+  );
 }
 
 void QgsVtpkVectorTileSourceWidget::validate()

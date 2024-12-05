@@ -71,7 +71,7 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   setItemDelegate( new QgsLayerTreeViewItemDelegate( this ) );
   setStyle( new QgsLayerTreeViewProxyStyle( this ) );
 
-  setLayerMarkWidth( static_cast< int >( QFontMetricsF( font() ).horizontalAdvance( 'l' ) * Qgis::UI_SCALE_FACTOR ) );
+  setLayerMarkWidth( static_cast<int>( QFontMetricsF( font() ).horizontalAdvance( 'l' ) * Qgis::UI_SCALE_FACTOR ) );
 
   connect( this, &QTreeView::collapsed, this, &QgsLayerTreeView::updateExpandedStateToNode );
   connect( this, &QTreeView::expanded, this, &QgsLayerTreeView::updateExpandedStateToNode );
@@ -92,13 +92,10 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
     return;
 
   if ( mMessageBar )
-    connect( treeModel, &QgsLayerTreeModel::messageEmitted, this,
-             [ = ]( const QString & message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 )
-  {
-    Q_UNUSED( duration )
-    mMessageBar->pushMessage( message, level );
-  }
-         );
+    connect( treeModel, &QgsLayerTreeModel::messageEmitted, this, [=]( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 ) {
+      Q_UNUSED( duration )
+      mMessageBar->pushMessage( message, level );
+    } );
 
   treeModel->addTargetScreenProperties( QgsScreenProperties( screen() ) );
 
@@ -266,7 +263,7 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
     const auto constLayerLegendNodes = layerModel->layerLegendNodes( QgsLayerTree::toLayer( parentNode ), true );
     for ( QgsLayerTreeModelLegendNode *legendNode : constLayerLegendNodes )
     {
-      const QString ruleKey = legendNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
+      const QString ruleKey = legendNode->data( static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
       if ( expandedNodeKeys.contains( ruleKey ) )
         setExpanded( legendNode2index( legendNode ), true );
     }
@@ -297,7 +294,7 @@ void QgsLayerTreeView::updateExpandedStateToNode( const QModelIndex &index )
   }
   else if ( QgsLayerTreeModelLegendNode *node = index2legendNode( index ) )
   {
-    const QString ruleKey = node->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
+    const QString ruleKey = node->data( static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
     QStringList lst = node->layerNode()->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList();
     const bool expanded = isExpanded( index );
     const bool isInList = lst.contains( ruleKey );
@@ -334,7 +331,7 @@ void QgsLayerTreeView::onCurrentChanged()
       proxyModelNodeLayerIndex = node2index( nodeLayer );
   }
 
-  if ( ! proxyModelNodeLayerIndex.isValid() )
+  if ( !proxyModelNodeLayerIndex.isValid() )
   {
     mCurrentLayerID = QString();
     layerModel->setCurrentIndex( QModelIndex() );
@@ -368,7 +365,7 @@ void QgsLayerTreeView::onCustomPropertyChanged( QgsLayerTreeNode *node, const QS
   const QList<QgsLayerTreeModelLegendNode *> legendNodes = layerModel->layerLegendNodes( QgsLayerTree::toLayer( node ), true );
   for ( QgsLayerTreeModelLegendNode *legendNode : legendNodes )
   {
-    const QString key = legendNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
+    const QString key = legendNode->data( static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString();
     if ( !key.isEmpty() )
       setExpanded( legendNode2index( legendNode ), expandedLegendNodes.contains( key ) );
   }
@@ -545,8 +542,7 @@ void QgsLayerTreeView::addIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewInd
   if ( !mIndicators[node].contains( indicator ) )
   {
     mIndicators[node].append( indicator );
-    connect( indicator, &QgsLayerTreeViewIndicator::changed, this, [ = ]
-    {
+    connect( indicator, &QgsLayerTreeViewIndicator::changed, this, [=] {
       update();
       viewport()->repaint();
     } );
@@ -594,7 +590,7 @@ static void _expandAllLegendNodes( QgsLayerTreeLayer *nodeLayer, bool expanded, 
     const auto constLayerLegendNodes = model->layerLegendNodes( nodeLayer, true );
     for ( QgsLayerTreeModelLegendNode *legendNode : constLayerLegendNodes )
     {
-      const QString parentKey = legendNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::ParentRuleKey ) ).toString();
+      const QString parentKey = legendNode->data( static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::ParentRuleKey ) ).toString();
       if ( !parentKey.isEmpty() && !lst.contains( parentKey ) )
         lst << parentKey;
     }
@@ -648,13 +644,10 @@ void QgsLayerTreeView::setMessageBar( QgsMessageBar *messageBar )
     return;
 
   if ( mMessageBar )
-    connect( layerModel, &QgsLayerTreeModel::messageEmitted, this,
-             [ = ]( const QString & message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 )
-  {
-    Q_UNUSED( duration )
-    mMessageBar->pushMessage( message, level );
-  }
-         );
+    connect( layerModel, &QgsLayerTreeModel::messageEmitted, this, [=]( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 5 ) {
+      Q_UNUSED( duration )
+      mMessageBar->pushMessage( message, level );
+    } );
 }
 
 void QgsLayerTreeView::setShowPrivateLayers( bool showPrivate )
@@ -723,7 +716,7 @@ void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
       const bool isFirstNodeChecked = constSelectedNodes[0]->itemVisibilityChecked();
       for ( QgsLayerTreeNode *node : constSelectedNodes )
       {
-        node->setItemVisibilityChecked( ! isFirstNodeChecked );
+        node->setItemVisibilityChecked( !isFirstNodeChecked );
       }
 
       // if we call the original keyPress handler, the current item will be checked to the original state yet again
@@ -946,7 +939,7 @@ bool QgsLayerTreeProxyModel::nodeShown( QgsLayerTreeNode *node ) const
       return true;
     if ( !mFilterText.isEmpty() && !layer->name().contains( mFilterText, Qt::CaseInsensitive ) )
       return false;
-    if ( ! mShowPrivateLayers && layer->flags().testFlag( QgsMapLayer::LayerFlag::Private ) )
+    if ( !mShowPrivateLayers && layer->flags().testFlag( QgsMapLayer::LayerFlag::Private ) )
     {
       return false;
     }

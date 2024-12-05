@@ -32,11 +32,10 @@
 QString formatRelationHelp( const QgsRelation &relation )
 {
   QString text = QStringLiteral( "<h3>%1</h3>\n<div class=\"description\"><p>%2</p></div>" )
-                 .arg( QCoreApplication::translate( "relation_help", "relation %1" ).arg( relation.name() ),
-                       QObject::tr( "Inserts the relation ID for the relation named '%1'." ).arg( relation.name() ) );
+                   .arg( QCoreApplication::translate( "relation_help", "relation %1" ).arg( relation.name() ), QObject::tr( "Inserts the relation ID for the relation named '%1'." ).arg( relation.name() ) );
 
   text += QStringLiteral( "<h4>%1</h4><div class=\"description\"><pre>%2</pre></div>" )
-          .arg( QObject::tr( "Current value" ), relation.id() );
+            .arg( QObject::tr( "Current value" ), relation.id() );
 
   return text;
 }
@@ -46,11 +45,10 @@ QString formatRelationHelp( const QgsRelation &relation )
 QString formatLayerHelp( const QgsMapLayer *layer )
 {
   QString text = QStringLiteral( "<h3>%1</h3>\n<div class=\"description\"><p>%2</p></div>" )
-                 .arg( QCoreApplication::translate( "layer_help", "map layer %1" ).arg( layer->name() ),
-                       QObject::tr( "Inserts the layer ID for the layer named '%1'." ).arg( layer->name() ) );
+                   .arg( QCoreApplication::translate( "layer_help", "map layer %1" ).arg( layer->name() ), QObject::tr( "Inserts the layer ID for the layer named '%1'." ).arg( layer->name() ) );
 
   text += QStringLiteral( "<h4>%1</h4><div class=\"description\"><pre>%2</pre></div>" )
-          .arg( QObject::tr( "Current value" ), layer->id() );
+            .arg( QObject::tr( "Current value" ), layer->id() );
 
   return text;
 }
@@ -59,11 +57,10 @@ QString formatLayerHelp( const QgsMapLayer *layer )
 QString formatRecentExpressionHelp( const QString &label, const QString &expression )
 {
   QString text = QStringLiteral( "<h3>%1</h3>\n<div class=\"description\"><p>%2</p></div>" )
-                 .arg( QCoreApplication::translate( "recent_expression_help", "expression %1" ).arg( label ),
-                       QCoreApplication::translate( "recent_expression_help", "Recently used expression." ) );
+                   .arg( QCoreApplication::translate( "recent_expression_help", "expression %1" ).arg( label ), QCoreApplication::translate( "recent_expression_help", "Recently used expression." ) );
 
   text += QStringLiteral( "<h4>%1</h4><div class=\"description\"><pre>%2</pre></div>" )
-          .arg( QObject::tr( "Expression" ), expression );
+            .arg( QObject::tr( "Expression" ), expression );
 
   return text;
 }
@@ -72,10 +69,10 @@ QString formatRecentExpressionHelp( const QString &label, const QString &express
 QString formatUserExpressionHelp( const QString &label, const QString &expression, const QString &description )
 {
   QString text = QStringLiteral( "<h3>%1</h3>\n<div class=\"description\"><p>%2</p></div>" )
-                 .arg( QCoreApplication::translate( "user_expression_help", "expression %1" ).arg( label ), description );
+                   .arg( QCoreApplication::translate( "user_expression_help", "expression %1" ).arg( label ), description );
 
   text += QStringLiteral( "<h4>%1</h4><div class=\"description\"><pre>%2</pre></div>" )
-          .arg( QObject::tr( "Expression" ), expression );
+            .arg( QObject::tr( "Expression" ), expression );
 
   return text;
 }
@@ -84,16 +81,16 @@ QString formatUserExpressionHelp( const QString &label, const QString &expressio
 QString formatVariableHelp( const QString &variable, const QString &description, bool showValue, const QVariant &value )
 {
   QString text = QStringLiteral( "<h3>%1</h3>\n<div class=\"description\"><p>%2</p></div>" )
-                 .arg( QCoreApplication::translate( "variable_help", "variable %1" ).arg( variable ), description );
+                   .arg( QCoreApplication::translate( "variable_help", "variable %1" ).arg( variable ), description );
 
   if ( showValue )
   {
     QString valueString = !value.isValid()
-                          ? QCoreApplication::translate( "variable_help", "not set" )
-                          : QStringLiteral( "<pre>%1</pre>" ).arg( QgsExpression::formatPreviewString( value ) );
+                            ? QCoreApplication::translate( "variable_help", "not set" )
+                            : QStringLiteral( "<pre>%1</pre>" ).arg( QgsExpression::formatPreviewString( value ) );
 
     text += QStringLiteral( "<h4>%1</h4><div class=\"description\"><p>%2</p></div>" )
-            .arg( QObject::tr( "Current value" ), valueString );
+              .arg( QObject::tr( "Current value" ), valueString );
   }
 
   return text;
@@ -153,7 +150,7 @@ void QgsExpressionTreeView::setExpressionContext( const QgsExpressionContext &co
   updateFunctionTree();
   loadFieldNames();
   loadRecent( mRecentKey );
-  loadUserExpressions( );
+  loadUserExpressions();
 }
 
 void QgsExpressionTreeView::setMenuProvider( QgsExpressionTreeView::MenuProvider *provider )
@@ -166,7 +163,7 @@ void QgsExpressionTreeView::refresh()
   updateFunctionTree();
   loadFieldNames();
   loadRecent( mRecentKey );
-  loadUserExpressions( );
+  loadUserExpressions();
 }
 
 QgsExpressionItem *QgsExpressionTreeView::currentItem() const
@@ -260,33 +257,33 @@ void QgsExpressionTreeView::updateFunctionTree()
   mExpressionGroups.clear();
 
   //list of pairs where the first is the name and the second is the expression value when adding it
-  static const QList< QPair<QString, QString> > operators = QList< QPair<QString, QString> >()
-      << QPair<QString, QString>( QStringLiteral( "+" ),  QStringLiteral( " + " ) )
-      << QPair<QString, QString>( QStringLiteral( "-" ),  QStringLiteral( " - " ) )
-      << QPair<QString, QString>( QStringLiteral( "*" ),  QStringLiteral( " * " ) )
-      << QPair<QString, QString>( QStringLiteral( "/" ),  QStringLiteral( " / " ) )
-      << QPair<QString, QString>( QStringLiteral( "//" ),  QStringLiteral( " // " ) )
-      << QPair<QString, QString>( QStringLiteral( "%" ),  QStringLiteral( " % " ) )
-      << QPair<QString, QString>( QStringLiteral( "^" ),  QStringLiteral( " ^ " ) )
-      << QPair<QString, QString>( QStringLiteral( "=" ),  QStringLiteral( " = " ) )
-      << QPair<QString, QString>( QStringLiteral( "~" ),  QStringLiteral( " ~ " ) )
-      << QPair<QString, QString>( QStringLiteral( ">" ),  QStringLiteral( " > " ) )
-      << QPair<QString, QString>( QStringLiteral( "<" ),  QStringLiteral( " < " ) )
-      << QPair<QString, QString>( QStringLiteral( "<>" ),  QStringLiteral( " <> " ) )
-      << QPair<QString, QString>( QStringLiteral( "<=" ),  QStringLiteral( " <= " ) )
-      << QPair<QString, QString>( QStringLiteral( ">=" ),  QStringLiteral( " >= " ) )
-      << QPair<QString, QString>( QStringLiteral( "[]" ),  QStringLiteral( "[]" ) )
-      << QPair<QString, QString>( QStringLiteral( "||" ),  QStringLiteral( " || " ) )
-      << QPair<QString, QString>( QStringLiteral( "BETWEEN" ),  QStringLiteral( " BETWEEN " ) )
-      << QPair<QString, QString>( QStringLiteral( "NOT BETWEEN" ),  QStringLiteral( " NOT BETWEEN " ) )
-      << QPair<QString, QString>( QStringLiteral( "IN" ),  QStringLiteral( " IN " ) )
-      << QPair<QString, QString>( QStringLiteral( "LIKE" ),  QStringLiteral( " LIKE " ) )
-      << QPair<QString, QString>( QStringLiteral( "ILIKE" ),  QStringLiteral( " ILIKE " ) )
-      << QPair<QString, QString>( QStringLiteral( "IS" ),  QStringLiteral( " IS " ) )
-      << QPair<QString, QString>( QStringLiteral( "IS NOT" ),  QStringLiteral( " IS NOT " ) )
-      << QPair<QString, QString>( QStringLiteral( "OR" ),  QStringLiteral( " OR " ) )
-      << QPair<QString, QString>( QStringLiteral( "AND" ),  QStringLiteral( " AND " ) )
-      << QPair<QString, QString>( QStringLiteral( "NOT" ),  QStringLiteral( " NOT " ) );
+  static const QList<QPair<QString, QString>> operators = QList<QPair<QString, QString>>()
+                                                          << QPair<QString, QString>( QStringLiteral( "+" ), QStringLiteral( " + " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "-" ), QStringLiteral( " - " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "*" ), QStringLiteral( " * " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "/" ), QStringLiteral( " / " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "//" ), QStringLiteral( " // " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "%" ), QStringLiteral( " % " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "^" ), QStringLiteral( " ^ " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "=" ), QStringLiteral( " = " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "~" ), QStringLiteral( " ~ " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( ">" ), QStringLiteral( " > " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "<" ), QStringLiteral( " < " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "<>" ), QStringLiteral( " <> " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "<=" ), QStringLiteral( " <= " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( ">=" ), QStringLiteral( " >= " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "[]" ), QStringLiteral( "[]" ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "||" ), QStringLiteral( " || " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "BETWEEN" ), QStringLiteral( " BETWEEN " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "NOT BETWEEN" ), QStringLiteral( " NOT BETWEEN " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "IN" ), QStringLiteral( " IN " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "LIKE" ), QStringLiteral( " LIKE " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "ILIKE" ), QStringLiteral( " ILIKE " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "IS" ), QStringLiteral( " IS " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "IS NOT" ), QStringLiteral( " IS NOT " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "OR" ), QStringLiteral( " OR " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "AND" ), QStringLiteral( " AND " ) )
+                                                          << QPair<QString, QString>( QStringLiteral( "NOT" ), QStringLiteral( " NOT " ) );
   for ( const auto &name : operators )
   {
     registerItem( QStringLiteral( "Operators" ), name.first, name.second, QString(), QgsExpressionItem::ExpressionNode, false, -1, QIcon(), QgsExpression::tags( name.first ) );
@@ -331,11 +328,7 @@ void QgsExpressionTreeView::updateFunctionTree()
   loadExpressionContext();
 }
 
-QgsExpressionItem *QgsExpressionTreeView::registerItem( const QString &group,
-    const QString &label,
-    const QString &expressionText,
-    const QString &helpText,
-    QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder, const QIcon &icon, const QStringList &tags, const QString &name )
+QgsExpressionItem *QgsExpressionTreeView::registerItem( const QString &group, const QString &label, const QString &expressionText, const QString &helpText, QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder, const QIcon &icon, const QStringList &tags, const QString &name )
 {
   QgsExpressionItem *item = new QgsExpressionItem( label, expressionText, helpText, type );
   item->setData( label, Qt::UserRole );
@@ -392,10 +385,7 @@ void QgsExpressionTreeView::loadExpressionContext()
   const auto constVariableNames = variableNames;
   for ( const QString &variable : constVariableNames )
   {
-    registerItem( QStringLiteral( "Variables" ), variable, " @" + variable + ' ',
-                  formatVariableHelp( variable, mExpressionContext.description( variable ), true, mExpressionContext.variable( variable ) ),
-                  QgsExpressionItem::ExpressionNode,
-                  mExpressionContext.isHighlightedVariable( variable ) );
+    registerItem( QStringLiteral( "Variables" ), variable, " @" + variable + ' ', formatVariableHelp( variable, mExpressionContext.description( variable ), true, mExpressionContext.variable( variable ) ), QgsExpressionItem::ExpressionNode, mExpressionContext.isHighlightedVariable( variable ) );
   }
 
   // Load the functions from the expression context
@@ -426,7 +416,6 @@ void QgsExpressionTreeView::loadLayers()
     QgsExpressionItem *parentItem = registerItem( QStringLiteral( "Map Layers" ), layerIt.value()->name(), QStringLiteral( "'%1'" ).arg( layerIt.key() ), formatLayerHelp( layerIt.value() ), QgsExpressionItem::ExpressionNode, false, 99, icon );
     loadLayerFields( qobject_cast<QgsVectorLayer *>( layerIt.value() ), parentItem );
   }
-
 }
 
 void QgsExpressionTreeView::loadLayerFields( QgsVectorLayer *layer, QgsExpressionItem *parentItem )
@@ -457,8 +446,7 @@ void QgsExpressionTreeView::loadFieldNames( const QgsFields &fields )
   {
     const QgsField field = fields.at( i );
     QIcon icon = fields.iconForField( i );
-    registerItem( QStringLiteral( "Fields and Values" ), field.displayNameWithAlias(),
-                  " \"" + field.name() + "\" ", QString(), QgsExpressionItem::Field, false, i, icon, QStringList(), field.name() );
+    registerItem( QStringLiteral( "Fields and Values" ), field.displayNameWithAlias(), " \"" + field.name() + "\" ", QString(), QgsExpressionItem::Field, false, i, icon, QStringList(), field.name() );
   }
 }
 
@@ -567,10 +555,10 @@ void QgsExpressionTreeView::saveToUserExpressions( const QString &label, const Q
   settings.beginGroup( label );
   settings.setValue( QStringLiteral( "expression" ), expression );
   settings.setValue( QStringLiteral( "helpText" ), helpText );
-  loadUserExpressions( );
+  loadUserExpressions();
   // Scroll
   const QModelIndexList idxs { mModel->match( mModel->index( 0, 0 ), Qt::DisplayRole, label, 1, Qt::MatchFlag::MatchRecursive ) };
-  if ( ! idxs.isEmpty() )
+  if ( !idxs.isEmpty() )
   {
     scrollTo( idxs.first() );
   }
@@ -580,11 +568,11 @@ void QgsExpressionTreeView::removeFromUserExpressions( const QString &label )
 {
   QgsSettings settings;
   settings.remove( QStringLiteral( "user/%1" ).arg( label ), QgsSettings::Section::Expressions );
-  loadUserExpressions( );
+  loadUserExpressions();
 }
 
 // this is potentially very slow if there are thousands of user expressions, every time entire cleanup and load
-void QgsExpressionTreeView::loadUserExpressions( )
+void QgsExpressionTreeView::loadUserExpressions()
 {
   // Cleanup
   if ( mExpressionGroups.contains( QStringLiteral( "UserGroup" ) ) )
@@ -620,12 +608,11 @@ QJsonDocument QgsExpressionTreeView::exportUserExpressions()
   const QString group = QStringLiteral( "user" );
   QgsSettings settings;
   QJsonArray exportList;
-  QJsonObject exportObject
-  {
-    {"qgis_version", Qgis::version()},
-    {"exported_at", QDateTime::currentDateTime().toString( Qt::ISODate )},
-    {"author", QgsApplication::userFullName()},
-    {"expressions", exportList}
+  QJsonObject exportObject {
+    { "qgis_version", Qgis::version() },
+    { "exported_at", QDateTime::currentDateTime().toString( Qt::ISODate ) },
+    { "author", QgsApplication::userFullName() },
+    { "expressions", exportList }
   };
 
   settings.beginGroup( group, QgsSettings::Section::Expressions );
@@ -638,13 +625,12 @@ QJsonDocument QgsExpressionTreeView::exportUserExpressions()
 
     const QString expression = settings.value( QStringLiteral( "expression" ) ).toString();
     const QString helpText = settings.value( QStringLiteral( "helpText" ) ).toString();
-    const QJsonObject expressionObject
-    {
-      {"name", label},
-      {"type", "expression"},
-      {"expression", expression},
-      {"group", group},
-      {"description", helpText}
+    const QJsonObject expressionObject {
+      { "name", label },
+      { "type", "expression" },
+      { "expression", expression },
+      { "group", group },
+      { "description", helpText }
     };
     exportList.push_back( expressionObject );
 
@@ -660,16 +646,16 @@ QJsonDocument QgsExpressionTreeView::exportUserExpressions()
 void QgsExpressionTreeView::loadExpressionsFromJson( const QJsonDocument &expressionsDocument )
 {
   // if the root of the json document is not an object, it means it's a wrong file
-  if ( ! expressionsDocument.isObject() )
+  if ( !expressionsDocument.isObject() )
     return;
 
   QJsonObject expressionsObject = expressionsDocument.object();
 
   // validate json for manadatory fields
-  if ( ! expressionsObject[QStringLiteral( "qgis_version" )].isString()
-       || ! expressionsObject[QStringLiteral( "exported_at" )].isString()
-       || ! expressionsObject[QStringLiteral( "author" )].isString()
-       || ! expressionsObject[QStringLiteral( "expressions" )].isArray() )
+  if ( !expressionsObject[QStringLiteral( "qgis_version" )].isString()
+       || !expressionsObject[QStringLiteral( "exported_at" )].isString()
+       || !expressionsObject[QStringLiteral( "author" )].isString()
+       || !expressionsObject[QStringLiteral( "expressions" )].isArray() )
     return;
 
   // validate versions
@@ -681,11 +667,11 @@ void QgsExpressionTreeView::loadExpressionsFromJson( const QJsonDocument &expres
   if ( qgisJsonVersion > qgisVersion )
   {
     QMessageBox::StandardButtons buttons = QMessageBox::Yes | QMessageBox::No;
-    switch ( QMessageBox::question( this,
-                                    tr( "QGIS Version Mismatch" ),
-                                    tr( "The imported expressions are from newer version of QGIS (%1) "
-                                        "and some of the expression might not work the current version (%2). "
-                                        "Are you sure you want to continue?" ).arg( qgisJsonVersion.toString(), qgisVersion.toString() ), buttons ) )
+    switch ( QMessageBox::question( this, tr( "QGIS Version Mismatch" ), tr( "The imported expressions are from newer version of QGIS (%1) "
+                                                                             "and some of the expression might not work the current version (%2). "
+                                                                             "Are you sure you want to continue?" )
+                                                                           .arg( qgisJsonVersion.toString(), qgisVersion.toString() ),
+                                    buttons ) )
     {
       case QMessageBox::No:
         return;
@@ -708,10 +694,10 @@ void QgsExpressionTreeView::loadExpressionsFromJson( const QJsonDocument &expres
   mUserExpressionLabels = settings.childGroups();
 
   const QJsonArray expressions = expressionsObject[QStringLiteral( "expressions" )].toArray();
-  for ( const QJsonValue && expressionValue : expressions )
+  for ( const QJsonValue &&expressionValue : expressions )
   {
     // validate the type of the array element, can be anything
-    if ( ! expressionValue.isObject() )
+    if ( !expressionValue.isObject() )
     {
       // try to stringify and put and indicator what happened
       skippedExpressionLabels.append( expressionValue.toString() );
@@ -721,14 +707,14 @@ void QgsExpressionTreeView::loadExpressionsFromJson( const QJsonDocument &expres
     QJsonObject expressionObj = expressionValue.toObject();
 
     // make sure the required keys are the correct types
-    if ( ! expressionObj[QStringLiteral( "name" )].isString()
-         || ! expressionObj[QStringLiteral( "type" )].isString()
-         || ! expressionObj[QStringLiteral( "expression" )].isString()
-         || ! expressionObj[QStringLiteral( "group" )].isString()
-         || ! expressionObj[QStringLiteral( "description" )].isString() )
+    if ( !expressionObj[QStringLiteral( "name" )].isString()
+         || !expressionObj[QStringLiteral( "type" )].isString()
+         || !expressionObj[QStringLiteral( "expression" )].isString()
+         || !expressionObj[QStringLiteral( "group" )].isString()
+         || !expressionObj[QStringLiteral( "description" )].isString() )
     {
       // try to stringify and put an indicator what happened. Try to stringify the name, if fails, go with the expression.
-      if ( ! expressionObj[QStringLiteral( "name" )].toString().isEmpty() )
+      if ( !expressionObj[QStringLiteral( "name" )].toString().isEmpty() )
         skippedExpressionLabels.append( expressionObj[QStringLiteral( "name" )].toString() );
       else
         skippedExpressionLabels.append( expressionObj[QStringLiteral( "expression" )].toString() );
@@ -768,7 +754,7 @@ void QgsExpressionTreeView::loadExpressionsFromJson( const QJsonDocument &expres
     // TODO would be nice to skip the cases when labels and expressions match
     if ( mUserExpressionLabels.contains( label ) && expression != oldExpression )
     {
-      if ( ! isApplyToAll )
+      if ( !isApplyToAll )
         showMessageBoxConfirmExpressionOverwrite( isApplyToAll, isOkToOverwrite, label, oldExpression, expression );
 
       if ( isOkToOverwrite )
@@ -785,19 +771,16 @@ void QgsExpressionTreeView::loadExpressionsFromJson( const QJsonDocument &expres
     }
   }
 
-  loadUserExpressions( );
+  loadUserExpressions();
 
-  if ( ! skippedExpressionLabels.isEmpty() )
+  if ( !skippedExpressionLabels.isEmpty() )
   {
     QStringList skippedExpressionLabelsQuoted;
     skippedExpressionLabelsQuoted.reserve( skippedExpressionLabels.size() );
     for ( const QString &skippedExpressionLabel : skippedExpressionLabels )
       skippedExpressionLabelsQuoted.append( QStringLiteral( "'%1'" ).arg( skippedExpressionLabel ) );
 
-    QMessageBox::information( this,
-                              tr( "Skipped Expression Imports" ),
-                              QStringLiteral( "%1\n%2" ).arg( tr( "The following expressions have been skipped:" ),
-                                  skippedExpressionLabelsQuoted.join( QLatin1String( ", " ) ) ) );
+    QMessageBox::information( this, tr( "Skipped Expression Imports" ), QStringLiteral( "%1\n%2" ).arg( tr( "The following expressions have been skipped:" ), skippedExpressionLabelsQuoted.join( QLatin1String( ", " ) ) ) );
   }
 }
 
@@ -806,8 +789,7 @@ const QList<QgsExpressionItem *> QgsExpressionTreeView::findExpressions( const Q
   QList<QgsExpressionItem *> result;
   const QList<QStandardItem *> found { mModel->findItems( label, Qt::MatchFlag::MatchRecursive ) };
   result.reserve( found.size() );
-  std::transform( found.begin(), found.end(), std::back_inserter( result ),
-                  []( QStandardItem * item ) -> QgsExpressionItem* { return static_cast<QgsExpressionItem *>( item ); } );
+  std::transform( found.begin(), found.end(), std::back_inserter( result ), []( QStandardItem *item ) -> QgsExpressionItem * { return static_cast<QgsExpressionItem *>( item ); } );
   return result;
 }
 
@@ -816,14 +798,15 @@ void QgsExpressionTreeView::showMessageBoxConfirmExpressionOverwrite(
   bool &isOkToOverwrite,
   const QString &label,
   const QString &oldExpression,
-  const QString &newExpression )
+  const QString &newExpression
+)
 {
   QMessageBox::StandardButtons buttons = QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll;
-  switch ( QMessageBox::question( this,
-                                  tr( "Expression Overwrite" ),
-                                  tr( "The expression with label '%1' was already defined."
-                                      "The old expression \"%2\" will be overwritten by \"%3\"."
-                                      "Are you sure you want to overwrite the expression?" ).arg( label, oldExpression, newExpression ), buttons ) )
+  switch ( QMessageBox::question( this, tr( "Expression Overwrite" ), tr( "The expression with label '%1' was already defined."
+                                                                          "The old expression \"%2\" will be overwritten by \"%3\"."
+                                                                          "Are you sure you want to overwrite the expression?" )
+                                                                        .arg( label, oldExpression, newExpression ),
+                                  buttons ) )
   {
     case QMessageBox::NoToAll:
       isApplyToAll = true;
@@ -891,8 +874,7 @@ bool QgsExpressionItemSearchProxy::filterAcceptsRow( int source_row, const QMode
   }
 
   const QStringList tags = sourceModel()->data( index, QgsExpressionItem::SEARCH_TAGS_ROLE ).toStringList();
-  return std::any_of( tags.begin(), tags.end(), [this]( const QString & tag )
-  {
+  return std::any_of( tags.begin(), tags.end(), [this]( const QString &tag ) {
     return tag.contains( mFilterString, Qt::CaseInsensitive );
   } );
 }
@@ -906,7 +888,7 @@ void QgsExpressionItemSearchProxy::setFilterString( const QString &string )
 bool QgsExpressionItemSearchProxy::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
   int leftSort = sourceModel()->data( left, QgsExpressionItem::CUSTOM_SORT_ROLE ).toInt();
-  int rightSort = sourceModel()->data( right,  QgsExpressionItem::CUSTOM_SORT_ROLE ).toInt();
+  int rightSort = sourceModel()->data( right, QgsExpressionItem::CUSTOM_SORT_ROLE ).toInt();
   if ( leftSort != rightSort )
     return leftSort < rightSort;
 

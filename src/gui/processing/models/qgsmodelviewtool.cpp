@@ -24,8 +24,7 @@ QgsModelViewTool::QgsModelViewTool( QgsModelGraphicsView *view, const QString &n
   , mView( view )
   , mToolName( name )
 {
-  connect( mView, &QgsModelGraphicsView::willBeDeleted, this, [ = ]
-  {
+  connect( mView, &QgsModelGraphicsView::willBeDeleted, this, [=] {
     mView = nullptr;
   } );
 }
@@ -44,7 +43,7 @@ QgsModelGraphicsView *QgsModelViewTool::view() const
 
 QgsModelGraphicsScene *QgsModelViewTool::scene() const
 {
-  return qobject_cast< QgsModelGraphicsScene * >( mView->scene() );
+  return qobject_cast<QgsModelGraphicsScene *>( mView->scene() );
 }
 
 QgsModelViewTool::~QgsModelViewTool()
