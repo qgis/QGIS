@@ -97,6 +97,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void createSymbolAuxiliaryField();
     void forceRHRToggled( bool checked );
     void showAnimationSettings();
+    void showExtentBufferSettings();
     void showBufferSettings();
     void saveSymbol();
     void updateSymbolDataDefinedProperty();
@@ -112,6 +113,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     QAction *mStandardizeRingsAction = nullptr;
     QAction *mBufferSettingsAction = nullptr;
     QAction *mAnimationSettingsAction = nullptr;
+    QAction *mExtentBufferAction = nullptr;
     QgsVectorLayer *mLayer = nullptr;
 
     QgsColorButton *mSymbolColorButton = nullptr;

@@ -80,6 +80,7 @@ set(QGIS_GUI_SRCS
   symbology/qgssymbolbuffersettingswidget.cpp
   symbology/qgssymbollayerwidget.cpp
   symbology/qgssymbollevelsdialog.cpp
+  symbology/qgsextentbufferdialog.cpp
   symbology/qgssymbolslistwidget.cpp
   symbology/qgssymbolselectordialog.cpp
   symbology/qgssymbolwidgetcontext.cpp
@@ -1555,6 +1556,7 @@ set(QGIS_GUI_HDRS
   symbology/qgssymbolbuffersettingswidget.h
   symbology/qgssymbollayerwidget.h
   symbology/qgssymbollevelsdialog.h
+  symbology/qgsextentbufferdialog.h
   symbology/qgssymbolselectordialog.h
   symbology/qgssymbolslistwidget.h
   symbology/qgssymbolwidgetcontext.h
