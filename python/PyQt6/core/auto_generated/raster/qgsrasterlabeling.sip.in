@@ -261,13 +261,13 @@ Returns the maximum map scale (i.e. most "zoomed in" scale) at which the labels 
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 A scale of 0 indicates no maximum scale visibility.
 
-This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.scaleVisibility` is ``True``.
+This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.hasScaleBasedVisibility` is ``True``.
 
 .. seealso:: :py:func:`setMaximumScale`
 
 .. seealso:: :py:func:`minimumScale`
 
-.. seealso:: :py:func:`scaleVisibility`
+.. seealso:: :py:func:`hasScaleBasedVisibility`
 %End
 
     void setMaximumScale( double scale );
@@ -277,7 +277,7 @@ Sets the maximum map ``scale`` (i.e. most "zoomed in" scale) at which the labels
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 A scale of 0 indicates no maximum scale visibility.
 
-This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.scaleVisibility` is ``True``.
+This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.hasScaleBasedVisibility` is ``True``.
 
 .. seealso:: :py:func:`maximumScale`
 
@@ -293,13 +293,13 @@ Returns the minimum map scale (i.e. most "zoomed out" scale) at which the labels
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 A scale of 0 indicates no minimum scale visibility.
 
-This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.scaleVisibility` is ``True``.
+This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.hasScaleBasedVisibility` is ``True``.
 
 .. seealso:: :py:func:`setMinimumScale`
 
 .. seealso:: :py:func:`maximumScale`
 
-.. seealso:: :py:func:`scaleVisibility`
+.. seealso:: :py:func:`hasScaleBasedVisibility`
 %End
 
     void setMinimumScale( double scale );
@@ -309,13 +309,13 @@ Sets the minimum map ``scale`` (i.e. most "zoomed out" scale) at which the label
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 A scale of 0 indicates no minimum scale visibility.
 
-This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.scaleVisibility` is ``True``.
+This setting is only considered if :py:func:`~QgsRasterLayerSimpleLabeling.hasScaleBasedVisibility` is ``True``.
 
 .. seealso:: :py:func:`minimumScale`
 
 .. seealso:: :py:func:`setMaximumScale`
 
-.. seealso:: :py:func:`scaleVisibility`
+.. seealso:: :py:func:`hasScaleBasedVisibility`
 %End
 
     void setScaleBasedVisibility( bool enabled );
