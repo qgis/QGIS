@@ -29,7 +29,6 @@
 class QgsGeometryCheckAngleAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-
     QgsGeometryCheckAngleAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -42,10 +41,8 @@ class QgsGeometryCheckAngleAlgorithm : public QgsProcessingAlgorithm
     QgsGeometryCheckAngleAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     QgsFeaturePool *createFeaturePool( QgsVectorLayer *layer ) const;

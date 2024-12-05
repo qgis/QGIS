@@ -55,7 +55,7 @@ auto QgsGeometryCheckAreaAlgorithm::shortHelpString() const -> QString
   return QObject::tr( "This algorithm check the area of geometry (polygon)." );
 }
 
-auto QgsGeometryCheckAreaAlgorithm::flags() const ->  Qgis::ProcessingAlgorithmFlags
+auto QgsGeometryCheckAreaAlgorithm::flags() const -> Qgis::ProcessingAlgorithmFlags
 {
   return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
 }
@@ -83,8 +83,7 @@ void QgsGeometryCheckAreaAlgorithm::initAlgorithm( const QVariantMap &configurat
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "ERRORS" ), QObject::tr( "Errors layer" ), Qgis::ProcessingSourceType::VectorPoint ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output layer" ), Qgis::ProcessingSourceType::VectorPolygon ) );
 
-  std::unique_ptr< QgsProcessingParameterNumber > tolerance = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "TOLERANCE" ),
-      QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
+  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13 );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( tolerance.release() );
 }
@@ -126,11 +125,11 @@ auto QgsGeometryCheckAreaAlgorithm::processAlgorithm( const QVariantMap &paramet
   QgsFields fields = outputFields();
   fields.append( uniqueIdField );
 
-  const std::unique_ptr< QgsFeatureSink > sink_output( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest_output, fields, input->wkbType(), input->sourceCrs() ) );
+  const std::unique_ptr<QgsFeatureSink> sink_output( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest_output, fields, input->wkbType(), input->sourceCrs() ) );
   if ( !sink_output )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  const std::unique_ptr< QgsFeatureSink > sink_errors( parameterAsSink( parameters, QStringLiteral( "ERRORS" ), context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs() ) );
+  const std::unique_ptr<QgsFeatureSink> sink_errors( parameterAsSink( parameters, QStringLiteral( "ERRORS" ), context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs() ) );
   if ( !sink_errors )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "ERRORS" ) ) );
 
@@ -163,13 +162,12 @@ auto QgsGeometryCheckAreaAlgorithm::processAlgorithm( const QVariantMap &paramet
 
   multiStepFeedback.setCurrentStep( 3 );
   feedback->setProgressText( QObject::tr( "Exporting errors…" ) );
-  const double step{checkErrors.size() > 0 ? 100.0 / checkErrors.size() : 1};
+  const double step { checkErrors.size() > 0 ? 100.0 / checkErrors.size() : 1 };
   long i = 0;
   feedback->setProgress( 0.0 );
 
   for ( QgsGeometryCheckError *error : checkErrors )
   {
-
     if ( feedback->isCanceled() )
     {
       break;

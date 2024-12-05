@@ -28,7 +28,6 @@
 class QgsGeometryCheckAreaAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-
     QgsGeometryCheckAreaAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -41,10 +40,8 @@ class QgsGeometryCheckAreaAlgorithm : public QgsProcessingAlgorithm
     QgsGeometryCheckAreaAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     int mTolerance { 8 };

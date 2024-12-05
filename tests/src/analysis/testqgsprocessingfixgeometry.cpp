@@ -19,18 +19,19 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
-class TestQgsProcessingFixGeometry: public QgsTest
+class TestQgsProcessingFixGeometry : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsProcessingFixGeometry() : QgsTest( QStringLiteral( "Processing Algorithms Fix Geometry" ) ) {}
+    TestQgsProcessingFixGeometry()
+      : QgsTest( QStringLiteral( "Processing Algorithms Fix Geometry" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void fixAngleAlg_data();
     void fixAngleAlg();
@@ -42,8 +43,7 @@ class TestQgsProcessingFixGeometry: public QgsTest
     void fixMissingVertexAlg();
 
   private:
-    const QDir mDataDir{ QDir( TEST_DATA_DIR ).absoluteFilePath( QStringLiteral( "geometry_fix" ) ) };
-
+    const QDir mDataDir { QDir( TEST_DATA_DIR ).absoluteFilePath( QStringLiteral( "geometry_fix" ) ) };
 };
 
 void TestQgsProcessingFixGeometry::initTestCase()
@@ -86,37 +86,33 @@ void TestQgsProcessingFixGeometry::fixAngleAlg_data()
   polygonsFinalVertexCount.insert( "5", 5 );
 
   QTest::newRow( "Lines" )
-      << new QgsVectorLayer( mDataDir.absoluteFilePath( "delete_vertex.gpkg|layername=lines" ),
-                             QStringLiteral( "lines" ), QStringLiteral( "ogr" ) )
-      << new QgsVectorLayer( mDataDir.absoluteFilePath( "delete_vertex.gpkg|layername=lines_vertex_to_delete" ),
-                             QStringLiteral( "lines vertex to delete" ), QStringLiteral( "ogr" ) )
-      << ( QStringList()
-           << QStringLiteral( "Delete node with small angle" )
-           << QStringLiteral( "Delete node with small angle" )
-           << QStringLiteral( "Delete node with small angle" )
-           << QStringLiteral( "Delete node with small angle" )
-           << QStringLiteral( "Delete node with small angle" )
-           << QStringLiteral( "Delete node with small angle" )
-           << QStringLiteral( "Delete node with small angle" ) )
-      << linesFinalVertexCount;
+    << new QgsVectorLayer( mDataDir.absoluteFilePath( "delete_vertex.gpkg|layername=lines" ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) )
+    << new QgsVectorLayer( mDataDir.absoluteFilePath( "delete_vertex.gpkg|layername=lines_vertex_to_delete" ), QStringLiteral( "lines vertex to delete" ), QStringLiteral( "ogr" ) )
+    << ( QStringList()
+         << QStringLiteral( "Delete node with small angle" )
+         << QStringLiteral( "Delete node with small angle" )
+         << QStringLiteral( "Delete node with small angle" )
+         << QStringLiteral( "Delete node with small angle" )
+         << QStringLiteral( "Delete node with small angle" )
+         << QStringLiteral( "Delete node with small angle" )
+         << QStringLiteral( "Delete node with small angle" ) )
+    << linesFinalVertexCount;
 
   QTest::newRow( "Polygon" )
-      << new QgsVectorLayer( mDataDir.absoluteFilePath( "delete_vertex.gpkg|layername=polygons" ),
-                             QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) )
-      << new QgsVectorLayer( mDataDir.absoluteFilePath( "delete_vertex.gpkg|layername=polygons_vertex_to_delete" ),
-                             QStringLiteral( "polygons vertex to delete" ), QStringLiteral( "ogr" ) )
-      << ( QStringList()
-           << QStringLiteral( "Delete node with small angle" )
-           << QStringLiteral( "Delete node with small angle" )
-           << QStringLiteral( "Delete node with small angle" )
-           << QStringLiteral( "Delete node with small angle" )
-           << QStringLiteral( "Delete node with small angle" )
-           << QStringLiteral( "Delete node with small angle" )
-           << QStringLiteral( "Resulting geometry is degenerate" )
-           << QStringLiteral( "Delete node with small angle" )
-           << QStringLiteral( "Delete node with small angle" )
-           << QStringLiteral( "Delete node with small angle" ) )
-      << polygonsFinalVertexCount;
+    << new QgsVectorLayer( mDataDir.absoluteFilePath( "delete_vertex.gpkg|layername=polygons" ), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) )
+    << new QgsVectorLayer( mDataDir.absoluteFilePath( "delete_vertex.gpkg|layername=polygons_vertex_to_delete" ), QStringLiteral( "polygons vertex to delete" ), QStringLiteral( "ogr" ) )
+    << ( QStringList()
+         << QStringLiteral( "Delete node with small angle" )
+         << QStringLiteral( "Delete node with small angle" )
+         << QStringLiteral( "Delete node with small angle" )
+         << QStringLiteral( "Delete node with small angle" )
+         << QStringLiteral( "Delete node with small angle" )
+         << QStringLiteral( "Delete node with small angle" )
+         << QStringLiteral( "Resulting geometry is degenerate" )
+         << QStringLiteral( "Delete node with small angle" )
+         << QStringLiteral( "Delete node with small angle" )
+         << QStringLiteral( "Delete node with small angle" ) )
+    << polygonsFinalVertexCount;
 }
 
 void TestQgsProcessingFixGeometry::fixAngleAlg()
@@ -130,7 +126,7 @@ void TestQgsProcessingFixGeometry::fixAngleAlg()
   QVERIFY( sourceLayer->isValid() );
   QVERIFY( errorsLayer->isValid() );
 
-  const std::unique_ptr< QgsProcessingAlgorithm > alg(
+  const std::unique_ptr<QgsProcessingAlgorithm> alg(
     QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:fixgeometryangle" ) )
   );
   QVERIFY( alg != nullptr );
@@ -144,14 +140,14 @@ void TestQgsProcessingFixGeometry::fixAngleAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  std::unique_ptr<QgsVectorLayer> reportLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "REPORT" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  std::unique_ptr<QgsVectorLayer> reportLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "REPORT" ) ).toString() ) ) );
   QVERIFY( reportLayer->isValid() );
   QVERIFY( outputLayer->isValid() );
 
@@ -171,7 +167,7 @@ void TestQgsProcessingFixGeometry::fixAngleAlg()
     int nbVertices = 0;
     QgsFeature feat;
     outputLayer->getFeatures( QgsFeatureRequest( QString( "\"fid\" = %1" ).arg( it.key() ) ) ).nextFeature( feat );
-    QgsVertexIterator vit =  feat.geometry().vertices();
+    QgsVertexIterator vit = feat.geometry().vertices();
     while ( vit.hasNext() )
     {
       vit.next();
@@ -188,45 +184,44 @@ void TestQgsProcessingFixGeometry::fixAreaAlg_data()
   QTest::addColumn<int>( "method" );
 
   QTest::newRow( "Merge with longest shared edge" )
-      << ( QStringList()
-           << QStringLiteral( "Merge with neighboring polygon with longest shared edge" )
-           << QStringLiteral( "Failed to merge with neighbor: " )
-           << QStringLiteral( "Merge with neighboring polygon with longest shared edge" )
-           << QStringLiteral( "Failed to merge with neighbor: " )
-           << QStringLiteral( "Failed to merge with neighbor: " )
-           << QStringLiteral( "Failed to merge with neighbor: " )
-           << QStringLiteral( "Merge with neighboring polygon with longest shared edge" )
-           << QStringLiteral( "Merge with neighboring polygon with longest shared edge" ) )
-      << 0;
+    << ( QStringList()
+         << QStringLiteral( "Merge with neighboring polygon with longest shared edge" )
+         << QStringLiteral( "Failed to merge with neighbor: " )
+         << QStringLiteral( "Merge with neighboring polygon with longest shared edge" )
+         << QStringLiteral( "Failed to merge with neighbor: " )
+         << QStringLiteral( "Failed to merge with neighbor: " )
+         << QStringLiteral( "Failed to merge with neighbor: " )
+         << QStringLiteral( "Merge with neighboring polygon with longest shared edge" )
+         << QStringLiteral( "Merge with neighboring polygon with longest shared edge" ) )
+    << 0;
 
   QTest::newRow( "Merge with largest area" )
-      << ( QStringList()
-           << QStringLiteral( "Merge with neighboring polygon with largest area" )
-           << QStringLiteral( "Failed to merge with neighbor: " )
-           << QStringLiteral( "Merge with neighboring polygon with largest area" )
-           << QStringLiteral( "Failed to merge with neighbor: " )
-           << QStringLiteral( "Failed to merge with neighbor: " )
-           << QStringLiteral( "Failed to merge with neighbor: " )
-           << QStringLiteral( "Merge with neighboring polygon with largest area" )
-           << QStringLiteral( "Merge with neighboring polygon with largest area" ) )
-      << 1;
+    << ( QStringList()
+         << QStringLiteral( "Merge with neighboring polygon with largest area" )
+         << QStringLiteral( "Failed to merge with neighbor: " )
+         << QStringLiteral( "Merge with neighboring polygon with largest area" )
+         << QStringLiteral( "Failed to merge with neighbor: " )
+         << QStringLiteral( "Failed to merge with neighbor: " )
+         << QStringLiteral( "Failed to merge with neighbor: " )
+         << QStringLiteral( "Merge with neighboring polygon with largest area" )
+         << QStringLiteral( "Merge with neighboring polygon with largest area" ) )
+    << 1;
 
   QTest::newRow( "Merge with identical attribute value" )
-      << ( QStringList()
-           << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
-           << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
-           << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
-           << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
-           << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
-           << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
-           << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
-           << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" ) )
-      << 2;
+    << ( QStringList()
+         << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
+         << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
+         << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
+         << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
+         << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
+         << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
+         << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" )
+         << QStringLiteral( "Merge with neighboring polygon with identical attribute value, if any, or leave as is" ) )
+    << 2;
 }
 
 void TestQgsProcessingFixGeometry::fixAreaAlg()
 {
-
   const QDir testDataDir( QDir( TEST_DATA_DIR ).absoluteFilePath( "geometry_checker" ) );
   QgsVectorLayer sourceLayer = QgsVectorLayer( testDataDir.absoluteFilePath( "polygon_layer.shp" ), QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
   QgsVectorLayer errorsLayer = QgsVectorLayer( mDataDir.absoluteFilePath( "merge_polygons.gpkg|layername=errors_layer" ), QString(), QStringLiteral( "ogr" ) );
@@ -236,7 +231,7 @@ void TestQgsProcessingFixGeometry::fixAreaAlg()
   QVERIFY( sourceLayer.isValid() );
   QVERIFY( errorsLayer.isValid() );
 
-  const std::unique_ptr< QgsProcessingAlgorithm > alg(
+  const std::unique_ptr<QgsProcessingAlgorithm> alg(
     QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:fixgeometryarea" ) )
   );
   QVERIFY( alg != nullptr );
@@ -253,14 +248,14 @@ void TestQgsProcessingFixGeometry::fixAreaAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  const std::unique_ptr<QgsVectorLayer> reportLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "REPORT" ) ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> reportLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "REPORT" ) ).toString() ) ) );
   QVERIFY( reportLayer->isValid() );
   QVERIFY( outputLayer->isValid() );
 
@@ -284,7 +279,7 @@ void TestQgsProcessingFixGeometry::fixHoleAlg()
   QVERIFY( errorsLayer.isValid() );
   const QStringList reportList = QStringList() << QStringLiteral( "Remove hole" );
 
-  const std::unique_ptr< QgsProcessingAlgorithm > alg(
+  const std::unique_ptr<QgsProcessingAlgorithm> alg(
     QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:fixgeometryhole" ) )
   );
   QVERIFY( alg != nullptr );
@@ -298,14 +293,14 @@ void TestQgsProcessingFixGeometry::fixHoleAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  const std::unique_ptr<QgsVectorLayer> reportLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "REPORT" ) ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> reportLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "REPORT" ) ).toString() ) ) );
   QVERIFY( reportLayer->isValid() );
   QVERIFY( outputLayer->isValid() );
 
@@ -334,7 +329,7 @@ void TestQgsProcessingFixGeometry::fixMissingVertexAlg()
                                  << QStringLiteral( "Add missing vertex" )
                                  << QStringLiteral( "Add missing vertex" );
 
-  const std::unique_ptr< QgsProcessingAlgorithm > alg(
+  const std::unique_ptr<QgsProcessingAlgorithm> alg(
     QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:fixgeometrymissingvertex" ) )
   );
   QVERIFY( alg != nullptr );
@@ -348,14 +343,14 @@ void TestQgsProcessingFixGeometry::fixMissingVertexAlg()
 
   bool ok = false;
   QgsProcessingFeedback feedback;
-  std::unique_ptr< QgsProcessingContext > context = std::make_unique< QgsProcessingContext >();
+  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
   QVERIFY( ok );
 
-  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
-  const std::unique_ptr<QgsVectorLayer> reportLayer( qobject_cast< QgsVectorLayer * >( context->getMapLayer( results.value( QStringLiteral( "REPORT" ) ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> outputLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "OUTPUT" ) ).toString() ) ) );
+  const std::unique_ptr<QgsVectorLayer> reportLayer( qobject_cast<QgsVectorLayer *>( context->getMapLayer( results.value( QStringLiteral( "REPORT" ) ).toString() ) ) );
   QVERIFY( reportLayer->isValid() );
   QVERIFY( outputLayer->isValid() );
 
