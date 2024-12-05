@@ -348,6 +348,7 @@
 %Include auto_generated/geometry/qgsgeometrytransformer.sip
 %Include auto_generated/geometry/qgsgeometryutils.sip
 %Include auto_generated/geometry/qgsgeometryutils_base.sip
+%Include auto_generated/geometry/qgsgeos.sip
 %Include auto_generated/geometry/qgslinesegment.sip
 %Include auto_generated/geometry/qgslinestring.sip
 %Include auto_generated/geometry/qgsmulticurve.sip
