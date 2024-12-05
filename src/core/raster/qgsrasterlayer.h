@@ -50,6 +50,7 @@ class QgsRasterLayerElevationProperties;
 class QgsSettingsEntryBool;
 class QgsSettingsEntryDouble;
 class QgsRasterMinMaxOrigin;
+class QgsAbstractRasterLayerLabeling;
 
 class QImage;
 class QPixmap;
@@ -445,6 +446,60 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     /**
+     * Returns whether the layer contains labels which are enabled and should be drawn.
+     * \returns TRUE if layer contains enabled labels
+     *
+     * \see setLabelsEnabled()
+     * \see labeling()
+     * \since QGIS 3.42
+     */
+    bool labelsEnabled() const;
+
+    /**
+     * Sets whether labels should be \a enabled for the layer.
+     *
+     * \note Labels will only be rendered if labelsEnabled() is TRUE and a labeling
+     * object is returned by labeling().
+     *
+     * \see labelsEnabled()
+     * \see labeling()
+     * \since QGIS 3.42
+     */
+    void setLabelsEnabled( bool enabled );
+
+    /**
+     * Access to const labeling configuration. May be NULLPTR if labeling is not used.
+     * \note Labels will only be rendered if labelsEnabled() returns TRUE.
+     *
+     * \see labelsEnabled()
+     * \see setLabelsEnabled()
+     * \see setLabeling()
+     *
+     * \since QGIS 3.42
+     */
+    const QgsAbstractRasterLayerLabeling *labeling() const SIP_SKIP;
+
+    /**
+     * Access to labeling configuration. May be NULLPTR if labeling is not used.
+     * \note Labels will only be rendered if labelsEnabled() returns TRUE.
+     *
+     * \see labelsEnabled()
+     * \see setLabeling()
+     *
+     * \since QGIS 3.42
+     */
+    QgsAbstractRasterLayerLabeling *labeling();
+
+    /**
+     * Sets labeling configuration. Takes ownership of the object.
+     *
+     * \see labeling()
+     *
+     * \since QGIS 3.42
+     */
+    void setLabeling( QgsAbstractRasterLayerLabeling *labeling SIP_TRANSFER );
+
+    /**
      * Writes the symbology of the layer into the document provided in SLD 1.0.0 format
      * \param node the node that will have the style element added to it.
      * \param doc the document that will have the QDomNode added.
@@ -573,6 +628,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     QgsRasterLayerTemporalProperties *mTemporalProperties = nullptr;
 
     QgsRasterLayerElevationProperties *mElevationProperties = nullptr;
+
+    //! True if labels are enabled
+    bool mLabelsEnabled = false;
+
+    //! Labeling configuration
+    std::unique_ptr< QgsAbstractRasterLayerLabeling > mLabeling;
 
     //! [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created
     QDateTime mLastModified;

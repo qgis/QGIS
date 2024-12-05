@@ -61,6 +61,7 @@ email                : tim at linfiniti.com
 #include "qgsthreadingutils.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
+#include "qgsrasterlabeling.h"
 
 #include <cmath>
 #include <cstdio>
@@ -156,6 +157,8 @@ QgsRasterLayer::~QgsRasterLayer()
 {
   emit willBeDeleted();
 
+  mLabeling.reset();
+
   setValid( false );
   // Note: provider and other interfaces are owned and deleted by pipe
 }
@@ -189,6 +192,10 @@ QgsRasterLayer *QgsRasterLayer::clone() const
     layer->dataProvider()->setZoomedInResamplingMethod( mDataProvider->zoomedInResamplingMethod() );
     layer->dataProvider()->setZoomedOutResamplingMethod( mDataProvider->zoomedOutResamplingMethod() );
   }
+
+  layer->setLabelsEnabled( mLabelsEnabled );
+  if ( mLabeling )
+    layer->setLabeling( mLabeling->clone() );
 
   return layer.release();
 }
@@ -1727,6 +1734,44 @@ bool QgsRasterLayer::accept( QgsStyleEntityVisitorInterface *visitor ) const
   return true;
 }
 
+bool QgsRasterLayer::labelsEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mLabelsEnabled && static_cast< bool >( mLabeling );
+}
+
+void QgsRasterLayer::setLabelsEnabled( bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  mLabelsEnabled = enabled;
+}
+
+const QgsAbstractRasterLayerLabeling *QgsRasterLayer::labeling() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mLabeling.get();
+}
+
+QgsAbstractRasterLayerLabeling *QgsRasterLayer::labeling()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mLabeling.get();
+}
+
+void QgsRasterLayer::setLabeling( QgsAbstractRasterLayerLabeling *labeling )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mLabeling.get() == labeling )
+    return;
+
+  mLabeling.reset( labeling );
+  triggerRepaint();
+}
 
 bool QgsRasterLayer::writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props ) const
 {
@@ -2195,6 +2240,20 @@ bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMe
       mPipe->dataDefinedProperties().readXml( elemDataDefinedProperties, QgsRasterPipe::propertyDefinitions() );
   }
 
+  // read labeling definition
+  if ( categories.testFlag( Labeling ) )
+  {
+    QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Labeling" ) );
+
+    QDomElement labelingElement = layer_node.firstChildElement( QStringLiteral( "labeling" ) );
+    if ( !labelingElement.isNull() )
+    {
+      QgsAbstractRasterLayerLabeling *labeling = QgsAbstractRasterLayerLabeling::createFromElement( labelingElement, context );
+      mLabelsEnabled = layer_node.toElement().attribute( QStringLiteral( "labelsEnabled" ), QStringLiteral( "0" ) ).toInt();
+      setLabeling( labeling );
+    }
+  }
+
   if ( categories.testFlag( MapTips ) )
   {
     QDomElement mapTipElem = layer_node.namedItem( QStringLiteral( "mapTip" ) ).toElement();
@@ -2401,6 +2460,16 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
   QDomElement layerElement = layer_node.toElement();
 
   writeCommonStyle( layerElement, document, context, categories );
+
+  if ( categories.testFlag( Labeling ) )
+  {
+    if ( mLabeling )
+    {
+      QDomElement labelingElement = mLabeling->save( document, context );
+      layerElement.appendChild( labelingElement );
+    }
+    layerElement.setAttribute( QStringLiteral( "labelsEnabled" ), mLabelsEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  }
 
   // save map tip
   if ( categories.testFlag( MapTips ) )

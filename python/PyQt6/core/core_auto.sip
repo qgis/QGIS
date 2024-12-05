@@ -653,6 +653,7 @@
 %Include auto_generated/raster/qgsrasteridentifyresult.sip
 %Include auto_generated/raster/qgsrasterinterface.sip
 %Include auto_generated/raster/qgsrasteriterator.sip
+%Include auto_generated/raster/qgsrasterlabeling.sip
 %Include auto_generated/raster/qgsrasterlayer.sip
 %Include auto_generated/raster/qgsrasterlayerelevationproperties.sip
 %Include auto_generated/raster/qgsrasterlayertemporalproperties.sip

@@ -59,6 +59,7 @@
 #include "qgsfontmanager.h"
 #include "qgsvariantutils.h"
 #include "qgsmeshlayer.h"
+#include "qgsrasterlayer.h"
 
 using namespace pal;
 
@@ -4096,7 +4097,13 @@ bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
     }
 
     case Qgis::LayerType::Raster:
+    {
+      const QgsRasterLayer *rl = qobject_cast< const QgsRasterLayer * >( layer );
+      return rl->labeling() && rl->labelsEnabled();
+    }
+
     case Qgis::LayerType::Plugin:
+
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
@@ -4231,7 +4238,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
     }
   }
 
-  // Rotate the geometry if needed, before clipping
+  // Rotate the geometry if needed
   const QgsMapToPixel &m2p = context.mapToPixel();
   if ( !qgsDoubleNear( m2p.mapRotation(), 0 ) )
   {

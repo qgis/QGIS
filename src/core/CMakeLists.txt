@@ -790,6 +790,7 @@ set(QGIS_CORE_SRCS
   raster/qgsrasteridentifyresult.cpp
   raster/qgsrasterinterface.cpp
   raster/qgsrasteriterator.cpp
+  raster/qgsrasterlabeling.cpp
   raster/qgsrasterlayer.cpp
   raster/qgsrasterlayerelevationproperties.cpp
   raster/qgsrasterlayerprofilegenerator.cpp
@@ -1924,6 +1925,7 @@ set(QGIS_CORE_HDRS
   raster/qgsrasteridentifyresult.h
   raster/qgsrasterinterface.h
   raster/qgsrasteriterator.h
+  raster/qgsrasterlabeling.h
   raster/qgsrasterlayer.h
   raster/qgsrasterlayerelevationproperties.h
   raster/qgsrasterlayerprofilegenerator.h

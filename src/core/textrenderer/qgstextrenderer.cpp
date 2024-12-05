@@ -130,25 +130,28 @@ void QgsTextRenderer::drawText( QPointF point, double rotation, Qgis::TextHorizo
   drawDocument( point, lFormat, metrics.document(), metrics, context, alignment, rotation );
 }
 
-void QgsTextRenderer::drawDocument(QPointF point, const QgsTextFormat &format, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, Qgis::TextHorizontalAlignment alignment, double rotation , Qgis::TextLayoutMode mode)
+void QgsTextRenderer::drawDocument( QPointF point, const QgsTextFormat &_format, const QgsTextDocument &document, const QgsTextDocumentMetrics &metrics, QgsRenderContext &context, Qgis::TextHorizontalAlignment alignment, double rotation, Qgis::TextLayoutMode mode )
 {
+  const QgsTextFormat lFormat = updateShadowPosition( _format );
+  // DO NOT USE _format in the following code, always use lFormat!!
+
   Qgis::TextComponents components = Qgis::TextComponent::Text;
-  if ( format.background().enabled() )
+  if ( lFormat.background().enabled() )
   {
     components |= Qgis::TextComponent::Background;
   }
 
-  if ( format.shadow().enabled() )
+  if ( lFormat.shadow().enabled() )
   {
     components |= Qgis::TextComponent::Shadow;
   }
 
-  if ( format.buffer().enabled() )
+  if ( lFormat.buffer().enabled() )
   {
     components |= Qgis::TextComponent::Buffer;
   }
 
-  drawParts( point, rotation, alignment, document, metrics, context, format, components, mode );
+  drawParts( point, rotation, alignment, document, metrics, context, lFormat, components, mode );
 }
 
 void QgsTextRenderer::drawTextOnLine( const QPolygonF &line, const QString &text, QgsRenderContext &context, const QgsTextFormat &_format, double offsetAlongLine, double offsetFromLine )
