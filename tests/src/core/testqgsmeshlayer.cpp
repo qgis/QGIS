@@ -2370,7 +2370,8 @@ void TestQgsMeshLayer::testDatasetsUniquePath()
   QgsMeshLayer layer(
     testDataPath( "mesh/quad_and_triangle.2dm" ),
     QStringLiteral( "mesh" ),
-    QStringLiteral( "mdal" ) );
+    QStringLiteral( "mdal" )
+  );
   QVERIFY( layer.isValid() );
 
   QString path = testDataPath( "/mesh/quad_and_triangle_vertex_vector.dat" );
