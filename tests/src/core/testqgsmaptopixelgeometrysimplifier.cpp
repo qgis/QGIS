@@ -43,7 +43,7 @@ class TestQgsMapToPixelGeometrySimplifier : public QObject
   private:
     // Release return with delete []
     unsigned char *
-    hex2bytes( const char *hex, int *size )
+      hex2bytes( const char *hex, int *size )
     {
       QByteArray ba = QByteArray::fromHex( hex );
       unsigned char *out = new unsigned char[ba.size()];
@@ -53,10 +53,10 @@ class TestQgsMapToPixelGeometrySimplifier : public QObject
     }
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void testDefaultGeometry();
     void testLine1();
@@ -69,7 +69,6 @@ class TestQgsMapToPixelGeometrySimplifier : public QObject
     void testVisvalingamZM();
     void testRingValidity();
     void testAbstractGeometrySimplify();
-
 };
 
 TestQgsMapToPixelGeometrySimplifier::TestQgsMapToPixelGeometrySimplifier() = default;
@@ -140,8 +139,7 @@ void TestQgsMapToPixelGeometrySimplifier::testLine1()
   QCOMPARE( wkt, QString( "LineString (0 0, 20 1)" ) );
 }
 
-void
-TestQgsMapToPixelGeometrySimplifier::testIsGeneralizableByMapBoundingBox()
+void TestQgsMapToPixelGeometrySimplifier::testIsGeneralizableByMapBoundingBox()
 {
   const QgsRectangle r1( 0, 0, 10, 1 );
   bool ret;
@@ -151,10 +149,10 @@ TestQgsMapToPixelGeometrySimplifier::testIsGeneralizableByMapBoundingBox()
 
   // NOTE: boundary case
   ret = QgsMapToPixelSimplifier::isGeneralizableByMapBoundingBox( r1, 10 );
-  QVERIFY( ! ret );
+  QVERIFY( !ret );
 
   ret = QgsMapToPixelSimplifier::isGeneralizableByMapBoundingBox( r1, 5 );
-  QVERIFY( ! ret );
+  QVERIFY( !ret );
 }
 
 void TestQgsMapToPixelGeometrySimplifier::testWkbDimensionMismatch()
@@ -239,14 +237,13 @@ void TestQgsMapToPixelGeometrySimplifier::testRingValidity()
   const QgsMapToPixelSimplifier simplifier( fl, 5 );
   const QgsGeometry ret = simplifier.simplify( poly );
   QVERIFY( ret.isGeosValid() );
-
 }
 
 void TestQgsMapToPixelGeometrySimplifier::testAbstractGeometrySimplify()
 {
   // test direct simplification of abstract geometries, especially the "no simplification required" paths
   QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, 5 );
-  std::unique_ptr< QgsAbstractGeometry > simplified;
+  std::unique_ptr<QgsAbstractGeometry> simplified;
 
   // no input geometry
   simplified.reset( simplifier.simplify( nullptr ) );

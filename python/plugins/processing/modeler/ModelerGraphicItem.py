@@ -15,26 +15,30 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "August 2012"
+__copyright__ = "(C) 2012, Victor Olaya"
 
 from qgis.PyQt.QtCore import QCoreApplication
 
-from qgis.core import (QgsProcessingParameterDefinition,
-                       QgsProcessingModelOutput,
-                       QgsProcessingModelAlgorithm,
-                       QgsProject,
-                       Qgis)
+from qgis.core import (
+    QgsProcessingParameterDefinition,
+    QgsProcessingModelOutput,
+    QgsProcessingModelAlgorithm,
+    QgsProject,
+    Qgis,
+)
 from qgis.gui import (
     QgsProcessingParameterDefinitionDialog,
     QgsProcessingParameterWidgetContext,
     QgsModelParameterGraphicItem,
     QgsModelChildAlgorithmGraphicItem,
     QgsModelOutputGraphicItem,
-    QgsProcessingContextGenerator
+    QgsProcessingContextGenerator,
 )
-from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
+from processing.modeler.ModelerParameterDefinitionDialog import (
+    ModelerParameterDefinitionDialog,
+)
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.tools.dataobjects import createContext
 from qgis.utils import iface
@@ -78,7 +82,9 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
         return widget_context
 
     def edit(self, edit_comment=False):
-        existing_param = self.model().parameterDefinition(self.component().parameterName())
+        existing_param = self.model().parameterDefinition(
+            self.component().parameterName()
+        )
         old_name = existing_param.name()
         old_description = existing_param.description()
 
@@ -87,8 +93,7 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
         new_param = None
         if ModelerParameterDefinitionDialog.use_legacy_dialog(param=existing_param):
             # boo, old api
-            dlg = ModelerParameterDefinitionDialog(self.model(),
-                                                   param=existing_param)
+            dlg = ModelerParameterDefinitionDialog(self.model(), param=existing_param)
             dlg.setComments(comment)
             dlg.setCommentColor(comment_color)
             if edit_comment:
@@ -101,11 +106,13 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
             # yay, use new API!
             context = createContext()
             widget_context = self.create_widget_context()
-            dlg = QgsProcessingParameterDefinitionDialog(type=existing_param.type(),
-                                                         context=context,
-                                                         widgetContext=widget_context,
-                                                         definition=existing_param,
-                                                         algorithm=self.model())
+            dlg = QgsProcessingParameterDefinitionDialog(
+                type=existing_param.type(),
+                context=context,
+                widgetContext=widget_context,
+                definition=existing_param,
+                algorithm=self.model(),
+            )
             dlg.setComments(comment)
             dlg.setCommentColor(comment_color)
             dlg.registerProcessingContextGenerator(self.context_generator)
@@ -122,7 +129,7 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
                 new_param.setName(safeName.lower())
 
         if new_param is not None:
-            self.aboutToChange.emit(self.tr('Edit {}').format(new_param.description()))
+            self.aboutToChange.emit(self.tr("Edit {}").format(new_param.description()))
             self.model().removeModelParameter(self.component().parameterName())
 
             if new_param.description() != old_description:
@@ -169,8 +176,12 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
 
     def edit(self, edit_comment=False):
         elemAlg = self.component().algorithm()
-        dlg = ModelerParametersDialog(elemAlg, self.model(), self.component().childId(),
-                                      self.component().configuration())
+        dlg = ModelerParametersDialog(
+            elemAlg,
+            self.model(),
+            self.component().childId(),
+            self.component().configuration(),
+        )
         dlg.setComments(self.component().comment().description())
         dlg.setCommentColor(self.component().comment().color())
         if edit_comment:
@@ -179,7 +190,7 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
             alg = dlg.createAlgorithm()
             alg.setChildId(self.component().childId())
             alg.copyNonDefinitionPropertiesFromModel(self.model())
-            self.aboutToChange.emit(self.tr('Edit {}').format(alg.description()))
+            self.aboutToChange.emit(self.tr("Edit {}").format(alg.description()))
             self.model().setChildAlgorithm(alg)
             self.requestModelRepaint.emit()
             self.changed.emit()
@@ -187,10 +198,15 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
             res, errors = self.model().validateChildAlgorithm(alg.childId())
             if not res:
                 self.scene().showWarning(
-                    QCoreApplication.translate('ModelerGraphicItem', 'Algorithm “{}” is invalid').format(alg.description()),
-                    self.tr('Algorithm is Invalid'),
-                    QCoreApplication.translate('ModelerGraphicItem', "<p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul>").format(alg.description(), '</li><li>'.join(errors)),
-                    level=Qgis.MessageLevel.Warning
+                    QCoreApplication.translate(
+                        "ModelerGraphicItem", "Algorithm “{}” is invalid"
+                    ).format(alg.description()),
+                    self.tr("Algorithm is Invalid"),
+                    QCoreApplication.translate(
+                        "ModelerGraphicItem",
+                        "<p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul>",
+                    ).format(alg.description(), "</li><li>".join(errors)),
+                    level=Qgis.MessageLevel.Warning,
                 )
             else:
                 self.scene().messageBar().clearWidgets()
@@ -215,8 +231,12 @@ class ModelerOutputGraphicItem(QgsModelOutputGraphicItem):
 
     def edit(self, edit_comment=False):
         child_alg = self.model().childAlgorithm(self.component().childId())
-        dlg = ModelerParameterDefinitionDialog(self.model(),
-                                               param=self.model().modelParameterFromChildIdAndOutputName(self.component().childId(), self.component().name()))
+        dlg = ModelerParameterDefinitionDialog(
+            self.model(),
+            param=self.model().modelParameterFromChildIdAndOutputName(
+                self.component().childId(), self.component().name()
+            ),
+        )
         dlg.setComments(self.component().comment().description())
         dlg.setCommentColor(self.component().comment().color())
         if edit_comment:
@@ -225,19 +245,28 @@ class ModelerOutputGraphicItem(QgsModelOutputGraphicItem):
         if dlg.exec():
             model_outputs = child_alg.modelOutputs()
 
-            model_output = QgsProcessingModelOutput(model_outputs[self.component().name()])
+            model_output = QgsProcessingModelOutput(
+                model_outputs[self.component().name()]
+            )
             del model_outputs[self.component().name()]
 
             model_output.setName(dlg.param.description())
             model_output.setDescription(dlg.param.description())
             model_output.setDefaultValue(dlg.param.defaultValue())
-            model_output.setMandatory(not (dlg.param.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional))
+            model_output.setMandatory(
+                not (
+                    dlg.param.flags()
+                    & QgsProcessingParameterDefinition.Flag.FlagOptional
+                )
+            )
             model_output.comment().setDescription(dlg.comments())
             model_output.comment().setColor(dlg.commentColor())
             model_outputs[model_output.name()] = model_output
             child_alg.setModelOutputs(model_outputs)
 
-            self.aboutToChange.emit(self.tr('Edit {}').format(model_output.description()))
+            self.aboutToChange.emit(
+                self.tr("Edit {}").format(model_output.description())
+            )
 
             self.model().updateDestinationParameters()
             self.requestModelRepaint.emit()

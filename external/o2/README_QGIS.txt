@@ -1,2 +1,1 @@
-
-O2 Library from https://github.com/pipacs/o2/archive/99902cc37e083a8311c1f8eee918e93c93cbc937.tar.gz
+Embedded copy of the O2 Library from the QGIS fork at https://github.com/qgis/o2/commit/4aae6439ec2fc5f6445e69f208b7710521b09ccc

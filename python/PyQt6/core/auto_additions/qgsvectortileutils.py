@@ -11,5 +11,5 @@ try:
     QgsVectorTileUtils.checkXYZUrlTemplate = staticmethod(QgsVectorTileUtils.checkXYZUrlTemplate)
     QgsVectorTileUtils.loadSprites = staticmethod(QgsVectorTileUtils.loadSprites)
     QgsVectorTileUtils.__group__ = ['vectortile']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -23,9 +23,9 @@
 
 #include <Windows.h>
 #include <ShlObj.h>
-#pragma comment(lib,"Shell32.lib")
+#pragma comment( lib, "Shell32.lib" )
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 class QWinTaskbarButton;
 class QWinTaskbarProgress;
 #endif
@@ -36,8 +36,7 @@ class QgsWinNativeEventFilter : public QObject, public QAbstractNativeEventFilte
 {
     Q_OBJECT
   public:
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     bool nativeEventFilter( const QByteArray &eventType, void *message, long * ) override;
 #else
     bool nativeEventFilter( const QByteArray &eventType, void *message, qintptr *result ) override;
@@ -48,7 +47,6 @@ class QgsWinNativeEventFilter : public QObject, public QAbstractNativeEventFilte
     void usbStorageNotification( const QString &path, bool inserted );
 
   private:
-
     quintptr mLastMessageHash = 0;
 };
 
@@ -57,31 +55,26 @@ class NATIVE_EXPORT QgsWinNative : public QgsNative
 {
   public:
     Capabilities capabilities() const override;
-    void initializeMainWindow( QWindow *window,
-                               const QString &applicationName,
-                               const QString &organizationName,
-                               const QString &version ) override;
+    void initializeMainWindow( QWindow *window, const QString &applicationName, const QString &organizationName, const QString &version ) override;
     void cleanup() override;
     void openFileExplorerAndSelectFile( const QString &path ) override;
     void showFileProperties( const QString &path ) override;
     void showUndefinedApplicationProgress() override;
     void setApplicationProgress( double progress ) override;
     void hideApplicationProgress() override;
-    void onRecentProjectsChanged( const std::vector< RecentProjectProperties > &recentProjects ) override;
+    void onRecentProjectsChanged( const std::vector<RecentProjectProperties> &recentProjects ) override;
     NotificationResult showDesktopNotification( const QString &summary, const QString &body, const NotificationSettings &settings = NotificationSettings() ) override;
     bool openTerminalAtPath( const QString &path ) override;
 
   private:
-
     QWindow *mWindow = nullptr;
     Capabilities mCapabilities = NativeFilePropertiesDialog | NativeOpenTerminalAtPath;
     bool mWinToastInitialized = false;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     QWinTaskbarButton *mTaskButton = nullptr;
     QWinTaskbarProgress *mTaskProgress = nullptr;
 #endif
     QgsWinNativeEventFilter *mNativeEventFilter = nullptr;
-
 };
 
 #endif // QGSWINNATIVE_H

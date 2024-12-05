@@ -2,5 +2,5 @@
 try:
     QgsAnnotationItemCommonPropertiesWidget.__attribute_docs__ = {'itemChanged': 'Emitted when the annotation item definition in the widget is changed by the user.\n'}
     QgsAnnotationItemCommonPropertiesWidget.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -21,8 +21,9 @@ class Qgs3DMapCanvas;
 
 #include <ui_3ddebugwidget.h>
 #include "qgs3dmapsettings.h"
+#include "qgis_app.h"
 
-class Qgs3DDebugWidget : public QWidget, Ui::Q3DDebugWidget
+class APP_EXPORT Qgs3DDebugWidget : public QWidget, Ui::Q3DDebugWidget
 {
     Q_OBJECT
   public:

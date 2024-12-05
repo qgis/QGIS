@@ -31,10 +31,10 @@ class TestQgsHtmlWidgetWrapper : public QObject
     TestQgsHtmlWidgetWrapper() = default;
 
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
 #ifdef WITH_QTWEBKIT
     void testExpressionEvaluate_data();
@@ -115,7 +115,7 @@ Second line)html" ) };
 
   QgsWebView *webView = qobject_cast<QgsWebView *>( htmlWrapper->widget() );
   Q_ASSERT( webView );
-  Q_ASSERT( ! htmlWrapper->needsGeometry() );
+  Q_ASSERT( !htmlWrapper->needsGeometry() );
   QCOMPARE( webView->page()->mainFrame()->toPlainText(), R"(First line
 Second line)" );
 }

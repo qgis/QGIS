@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Matthias Kuhn'
-__date__ = '07/10/2013'
-__copyright__ = 'Copyright 2013, The QGIS Project'
+
+__author__ = "Matthias Kuhn"
+__date__ = "07/10/2013"
+__copyright__ = "Copyright 2013, The QGIS Project"
 
 import os
 
@@ -30,8 +31,11 @@ start_app()
 
 
 def createReferencingLayer():
-    layer = QgsVectorLayer("Point?field=fldtxt:string&field=foreignkey:integer",
-                           "referencinglayer", "memory")
+    layer = QgsVectorLayer(
+        "Point?field=fldtxt:string&field=foreignkey:integer",
+        "referencinglayer",
+        "memory",
+    )
     pr = layer.dataProvider()
     f1 = QgsFeature()
     f1.setFields(layer.fields())
@@ -52,7 +56,9 @@ def createReferencingLayer():
 def createReferencedLayer():
     layer = QgsVectorLayer(
         "Point?field=x:string&field=y:integer&field=z:integer",
-        "referencedlayer", "memory")
+        "referencedlayer",
+        "memory",
+    )
     pr = layer.dataProvider()
     f1 = QgsFeature()
     f1.setFields(layer.fields())
@@ -79,7 +85,9 @@ class TestQgsRelation(QgisTestCase):
     def setUp(self):
         self.referencedLayer = createReferencedLayer()
         self.referencingLayer = createReferencingLayer()
-        QgsProject.instance().addMapLayers([self.referencedLayer, self.referencingLayer])
+        QgsProject.instance().addMapLayers(
+            [self.referencedLayer, self.referencingLayer]
+        )
 
     def tearDown(self):
         QgsProject.instance().removeAllMapLayers()
@@ -87,60 +95,60 @@ class TestQgsRelation(QgisTestCase):
     def test_isValid(self):
         rel = QgsRelation()
         self.assertFalse(rel.isValid())
-        self.assertEqual(rel.validationError(), 'Referencing layer not set')
+        self.assertEqual(rel.validationError(), "Referencing layer not set")
 
-        rel.setId('rel1')
+        rel.setId("rel1")
         self.assertFalse(rel.isValid())
-        self.assertEqual(rel.validationError(), 'Referencing layer not set')
+        self.assertEqual(rel.validationError(), "Referencing layer not set")
 
-        rel.setName('Relation Number One')
+        rel.setName("Relation Number One")
         self.assertFalse(rel.isValid())
-        self.assertEqual(rel.validationError(), 'Referencing layer not set')
+        self.assertEqual(rel.validationError(), "Referencing layer not set")
 
-        rel.setReferencingLayer('xxx')
+        rel.setReferencingLayer("xxx")
         self.assertFalse(rel.isValid())
-        self.assertEqual(rel.validationError(), 'Referencing layer xxx does not exist')
+        self.assertEqual(rel.validationError(), "Referencing layer xxx does not exist")
 
         rel.setReferencingLayer(self.referencingLayer.id())
         self.assertFalse(rel.isValid())
-        self.assertEqual(rel.validationError(), 'Referenced layer not set')
+        self.assertEqual(rel.validationError(), "Referenced layer not set")
 
-        rel.setReferencedLayer('yyy')
+        rel.setReferencedLayer("yyy")
         self.assertFalse(rel.isValid())
-        self.assertEqual(rel.validationError(), 'Referenced layer yyy does not exist')
+        self.assertEqual(rel.validationError(), "Referenced layer yyy does not exist")
 
         rel.setReferencedLayer(self.referencedLayer.id())
         self.assertFalse(rel.isValid())
-        self.assertEqual(rel.validationError(), 'No fields specified for relationship')
+        self.assertEqual(rel.validationError(), "No fields specified for relationship")
 
-        rel.addFieldPair('foreignkey', 'y')
+        rel.addFieldPair("foreignkey", "y")
         self.assertTrue(rel.isValid())
-        self.assertEqual(rel.validationError(), '')
+        self.assertEqual(rel.validationError(), "")
 
     def test_getRelatedFeatures(self):
         rel = QgsRelation()
 
-        rel.setId('rel1')
-        rel.setName('Relation Number One')
+        rel.setId("rel1")
+        rel.setName("Relation Number One")
         rel.setReferencingLayer(self.referencingLayer.id())
         rel.setReferencedLayer(self.referencedLayer.id())
-        rel.addFieldPair('foreignkey', 'y')
+        rel.addFieldPair("foreignkey", "y")
 
         feat = next(self.referencedLayer.getFeatures())
 
         self.assertEqual(rel.getRelatedFeaturesFilter(feat), '"foreignkey" = 123')
 
         it = rel.getRelatedFeatures(feat)
-        self.assertEqual([a.attributes() for a in it], [['test1', 123], ['test2', 123]])
+        self.assertEqual([a.attributes() for a in it], [["test1", 123], ["test2", 123]])
 
     def test_getRelatedFeaturesWithQuote(self):
         rel = QgsRelation()
 
-        rel.setId('rel1')
-        rel.setName('Relation Number One')
+        rel.setId("rel1")
+        rel.setName("Relation Number One")
         rel.setReferencingLayer(self.referencingLayer.id())
         rel.setReferencedLayer(self.referencedLayer.id())
-        rel.addFieldPair('fldtxt', 'x')
+        rel.addFieldPair("fldtxt", "x")
 
         feat = self.referencedLayer.getFeature(3)
 
@@ -149,48 +157,48 @@ class TestQgsRelation(QgisTestCase):
 
     def test_getReferencedFeature(self):
         rel = QgsRelation()
-        rel.setId('rel1')
-        rel.setName('Relation Number One')
+        rel.setId("rel1")
+        rel.setName("Relation Number One")
         rel.setReferencingLayer(self.referencingLayer.id())
         rel.setReferencedLayer(self.referencedLayer.id())
-        rel.addFieldPair('foreignkey', 'y')
+        rel.addFieldPair("foreignkey", "y")
 
         feat = next(self.referencingLayer.getFeatures())
 
         f = rel.getReferencedFeature(feat)
 
         self.assertTrue(f.isValid())
-        self.assertEqual(f[0], 'foo')
+        self.assertEqual(f[0], "foo")
 
         # try mixing up the field pair field name cases -- we should be tolerant to this
         rel2 = QgsRelation()
-        rel2.setId('rel1')
-        rel2.setName('Relation Number One')
+        rel2.setId("rel1")
+        rel2.setName("Relation Number One")
         rel2.setReferencingLayer(self.referencingLayer.id())
         rel2.setReferencedLayer(self.referencedLayer.id())
-        rel2.addFieldPair('ForeignKey', 'Y')
+        rel2.addFieldPair("ForeignKey", "Y")
 
         feat = next(self.referencingLayer.getFeatures())
 
         f = rel2.getReferencedFeature(feat)
 
         self.assertTrue(f.isValid())
-        self.assertEqual(f[0], 'foo')
+        self.assertEqual(f[0], "foo")
 
     def test_fieldPairs(self):
         rel = QgsRelation()
 
-        rel.setId('rel1')
-        rel.setName('Relation Number One')
+        rel.setId("rel1")
+        rel.setName("Relation Number One")
         rel.setReferencingLayer(self.referencingLayer.id())
         rel.setReferencedLayer(self.referencedLayer.id())
-        rel.addFieldPair('foreignkey', 'y')
+        rel.addFieldPair("foreignkey", "y")
 
-        self.assertEqual(rel.fieldPairs(), {'foreignkey': 'y'})
+        self.assertEqual(rel.fieldPairs(), {"foreignkey": "y"})
 
     def testValidRelationAfterChangingStyle(self):
         # load project
-        myPath = os.path.join(unitTestDataPath(), 'relations.qgs')
+        myPath = os.path.join(unitTestDataPath(), "relations.qgs")
         p = QgsProject.instance()
         self.assertTrue(p.read(myPath))
         for l in p.mapLayers().values():
@@ -206,7 +214,10 @@ class TestQgsRelation(QgisTestCase):
         self.assertEqual(len(referencedLayer.editFormConfig().tabs()[0].children()), 7)
         for tab in referencedLayer.editFormConfig().tabs():
             for t in tab.children():
-                if (t.type() == QgsAttributeEditorElement.AttributeEditorType.AeTypeRelation):
+                if (
+                    t.type()
+                    == QgsAttributeEditorElement.AttributeEditorType.AeTypeRelation
+                ):
                     valid = t.relation().isValid()
         self.assertTrue(valid)
 
@@ -233,18 +244,21 @@ class TestQgsRelation(QgisTestCase):
         valid = False
         for tab in referencedLayer.editFormConfig().tabs():
             for t in tab.children():
-                if (t.type() == QgsAttributeEditorElement.AttributeEditorType.AeTypeRelation):
+                if (
+                    t.type()
+                    == QgsAttributeEditorElement.AttributeEditorType.AeTypeRelation
+                ):
                     valid = t.relation().isValid()
         self.assertTrue(valid)
 
     def test_polymorphicRelationId(self):
         rel = QgsRelation()
 
-        self.assertEqual(rel.polymorphicRelationId(), '')
+        self.assertEqual(rel.polymorphicRelationId(), "")
 
-        rel.setPolymorphicRelationId('poly_rel_id')
+        rel.setPolymorphicRelationId("poly_rel_id")
 
-        self.assertEqual(rel.polymorphicRelationId(), 'poly_rel_id')
+        self.assertEqual(rel.polymorphicRelationId(), "poly_rel_id")
 
     def test_generateId_empty_relation(self):
         rel = QgsRelation()
@@ -254,21 +268,24 @@ class TestQgsRelation(QgisTestCase):
     def test_referencingFieldsAllowNull(self):
         rel = QgsRelation()
 
-        rel.setId('rel1')
-        rel.setName('Relation Number One')
+        rel.setId("rel1")
+        rel.setName("Relation Number One")
         rel.setReferencingLayer(self.referencingLayer.id())
         rel.setReferencedLayer(self.referencedLayer.id())
-        rel.addFieldPair('foreignkey', 'y')
+        rel.addFieldPair("foreignkey", "y")
 
         self.assertTrue(rel.referencingFieldsAllowNull())
 
         referencingLayer = rel.referencingLayer()
 
         # Set Not Null constraint on the field
-        referencingLayer.setFieldConstraint(referencingLayer.fields().indexFromName('foreignkey'), QgsFieldConstraints.Constraint.ConstraintNotNull)
+        referencingLayer.setFieldConstraint(
+            referencingLayer.fields().indexFromName("foreignkey"),
+            QgsFieldConstraints.Constraint.ConstraintNotNull,
+        )
 
         self.assertFalse(rel.referencingFieldsAllowNull())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

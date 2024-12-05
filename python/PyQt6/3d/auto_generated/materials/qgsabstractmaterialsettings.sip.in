@@ -138,6 +138,13 @@ Reads settings from a DOM ``element``
 Writes settings to a DOM ``element``
 %End
 
+    virtual bool equals( const QgsAbstractMaterialSettings *other ) const = 0;
+%Docstring
+Returns ``True`` if this settings exactly matches an ``other`` settings.
+
+.. versionadded:: 3.42
+%End
+
 
 };
 

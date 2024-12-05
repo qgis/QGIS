@@ -3,5 +3,5 @@ try:
     QgsDateTimeFieldFormatter.defaultFormat = staticmethod(QgsDateTimeFieldFormatter.defaultFormat)
     QgsDateTimeFieldFormatter.defaultDisplayFormat = staticmethod(QgsDateTimeFieldFormatter.defaultDisplayFormat)
     QgsDateTimeFieldFormatter.__group__ = ['fieldformatter']
-except NameError:
+except (NameError, AttributeError):
     pass

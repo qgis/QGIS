@@ -513,7 +513,11 @@ void Qgs3DMapSettings::setOrigin( const QgsVector3D &origin )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
+  if ( origin == mOrigin )
+    return;
+
   mOrigin = origin;
+  emit originChanged();
 }
 
 QgsVector3D Qgs3DMapSettings::origin() const

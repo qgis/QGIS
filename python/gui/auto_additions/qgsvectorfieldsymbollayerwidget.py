@@ -2,5 +2,5 @@
 try:
     QgsVectorFieldSymbolLayerWidget.create = staticmethod(QgsVectorFieldSymbolLayerWidget.create)
     QgsVectorFieldSymbolLayerWidget.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -436,5 +436,5 @@ try:
     QgsLayoutObject.__attribute_docs__ = {'changed': "Emitted when the object's properties change.\n"}
     QgsLayoutObject.propertyAssociatesWithParentMultiframe = staticmethod(QgsLayoutObject.propertyAssociatesWithParentMultiframe)
     QgsLayoutObject.__group__ = ['layout']
-except NameError:
+except (NameError, AttributeError):
     pass

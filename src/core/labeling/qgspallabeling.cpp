@@ -25,8 +25,6 @@
 #include "qgstextrenderer.h"
 #include "qgsscaleutils.h"
 
-#include "pal/labelposition.h"
-
 #include <cmath>
 
 #include <QApplication>
@@ -60,6 +58,7 @@
 #include "qgsvectortilebasiclabeling.h"
 #include "qgsfontmanager.h"
 #include "qgsvariantutils.h"
+#include "qgsmeshlayer.h"
 
 using namespace pal;
 
@@ -4090,9 +4089,14 @@ bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
       return false;
     }
 
+    case Qgis::LayerType::Mesh:
+    {
+      const QgsMeshLayer *ml = qobject_cast< const QgsMeshLayer * >( layer );
+      return ml->labeling() && ml->labelsEnabled();
+    }
+
     case Qgis::LayerType::Raster:
     case Qgis::LayerType::Plugin:
-    case Qgis::LayerType::Mesh:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
@@ -4830,63 +4834,4 @@ void QgsPalLabeling::dataDefinedDropShadow( QgsPalLayerSettings &tmpLyr,
     format.setShadow( shadow );
     tmpLyr.setFormat( format );
   }
-}
-
-void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition *lp, QPainter *painter, const QgsMapToPixel *xform, QList<QgsLabelCandidate> *candidates )
-{
-  QgsPointXY outPt = xform->transform( lp->getX(), lp->getY() );
-
-  painter->save();
-
-#if 0 // TODO: generalize some of this
-  double w = lp->getWidth();
-  double h = lp->getHeight();
-  double cx = lp->getX() + w / 2.0;
-  double cy = lp->getY() + h / 2.0;
-  double scale = 1.0 / xform->mapUnitsPerPixel();
-  double rotation = xform->mapRotation();
-  double sw = w * scale;
-  double sh = h * scale;
-  QRectF rect( -sw / 2, -sh / 2, sw, sh );
-
-  painter->translate( xform->transform( QPointF( cx, cy ) ).toQPointF() );
-  if ( rotation )
-  {
-    // Only if not horizontal
-    if ( lp->getFeaturePart()->getLayer()->getArrangement() != P_POINT &&
-         lp->getFeaturePart()->getLayer()->getArrangement() != P_POINT_OVER &&
-         lp->getFeaturePart()->getLayer()->getArrangement() != P_HORIZ )
-    {
-      painter->rotate( rotation );
-    }
-  }
-  painter->translate( rect.bottomLeft() );
-  painter->rotate( -lp->getAlpha() * 180 / M_PI );
-  painter->translate( -rect.bottomLeft() );
-#else
-  QgsPointXY outPt2 = xform->transform( lp->getX() + lp->getWidth(), lp->getY() + lp->getHeight() );
-  QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
-  painter->translate( QPointF( outPt.x(), outPt.y() ) );
-  painter->rotate( -lp->getAlpha() * 180 / M_PI );
-#endif
-
-  if ( lp->conflictsWithObstacle() )
-  {
-    painter->setPen( QColor( 255, 0, 0, 64 ) );
-  }
-  else
-  {
-    painter->setPen( QColor( 0, 0, 0, 64 ) );
-  }
-  painter->drawRect( rect );
-  painter->restore();
-
-  // save the rect
-  rect.moveTo( outPt.x(), outPt.y() );
-  if ( candidates )
-    candidates->append( QgsLabelCandidate( rect, lp->cost() * 1000 ) );
-
-  // show all parts of the multipart label
-  if ( lp->nextPart() )
-    drawLabelCandidateRect( lp->nextPart(), painter, xform, candidates );
 }

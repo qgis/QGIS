@@ -64,8 +64,8 @@ QgsFeaturePool.insertFeature: src/analysis/vector/geometry_checker/qgsfeaturepoo
 QgsFeaturePool.layer: src/analysis/vector/geometry_checker/qgsfeaturepool.h#L122
 QgsFeaturePool.layerId: src/analysis/vector/geometry_checker/qgsfeaturepool.h#L139
 QgsFeaturePool.layerName: src/analysis/vector/geometry_checker/qgsfeaturepool.h#L157
-QgsFeaturePool.refreshCache: src/analysis/vector/geometry_checker/qgsfeaturepool.h#L177
-QgsFeaturePool.removeFeature: src/analysis/vector/geometry_checker/qgsfeaturepool.h#L186
+QgsFeaturePool.refreshCache: src/analysis/vector/geometry_checker/qgsfeaturepool.h#L181
+QgsFeaturePool.removeFeature: src/analysis/vector/geometry_checker/qgsfeaturepool.h#L190
 QgsFeaturePool.updateFeature: src/analysis/vector/geometry_checker/qgsfeaturepool.h#L82
 QgsFeaturePool: src/analysis/vector/geometry_checker/qgsfeaturepool.h#L37
 QgsGcpGeometryTransformer.gcpTransformer: src/analysis/georeferencing/qgsgcpgeometrytransformer.h#L78

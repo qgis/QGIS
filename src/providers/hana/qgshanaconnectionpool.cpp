@@ -22,7 +22,7 @@
 #include "qgslogger.h"
 
 QgsHanaConnectionPoolGroup::QgsHanaConnectionPoolGroup( const QString &name )
-  : QgsConnectionPoolGroup<QgsHanaConnection*>( name )
+  : QgsConnectionPoolGroup<QgsHanaConnection *>( name )
 {
   initTimer( this );
 }
@@ -72,14 +72,16 @@ QgsHanaConnectionPool::~QgsHanaConnectionPool()
 QgsHanaConnectionRef::QgsHanaConnectionRef( const QgsDataSourceUri &uri )
 {
   mConnection = std::unique_ptr<QgsHanaConnection>(
-                  QgsHanaConnectionPool::getConnection( QgsHanaUtils::connectionInfo( uri ) ) );
+    QgsHanaConnectionPool::getConnection( QgsHanaUtils::connectionInfo( uri ) )
+  );
 }
 
 QgsHanaConnectionRef::QgsHanaConnectionRef( const QString &name )
 {
   QgsHanaSettings settings( name, true );
   mConnection = std::unique_ptr<QgsHanaConnection>(
-                  QgsHanaConnectionPool::getConnection( QgsHanaUtils::connectionInfo( settings.toDataSourceUri() ) ) );
+    QgsHanaConnectionPool::getConnection( QgsHanaUtils::connectionInfo( settings.toDataSourceUri() ) )
+  );
 }
 
 QgsHanaConnectionRef::~QgsHanaConnectionRef()

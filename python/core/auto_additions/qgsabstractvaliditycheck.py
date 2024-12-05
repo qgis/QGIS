@@ -24,9 +24,9 @@ QgsAbstractValidityCheck.Type.__doc__ = """Check types
 try:
     QgsValidityCheckResult.__attribute_docs__ = {'type': 'Result type', 'title': 'A short, translated string summarising the result. Ideally a single sentence.', 'detailedDescription': 'Detailed description of the result (translated), giving users enough detail for them to resolve\nthe error.', 'checkId': 'ID of the check which generated the result. This is usually automatically populated.'}
     QgsValidityCheckResult.__group__ = ['validity']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsAbstractValidityCheck.__group__ = ['validity']
-except NameError:
+except (NameError, AttributeError):
     pass

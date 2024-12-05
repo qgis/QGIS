@@ -2,9 +2,9 @@
 try:
     QgsAbstractBabelFormat.featureTypeToArgument = staticmethod(QgsAbstractBabelFormat.featureTypeToArgument)
     QgsAbstractBabelFormat.__group__ = ['gps']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsBabelSimpleImportFormat.__group__ = ['gps']
-except NameError:
+except (NameError, AttributeError):
     pass

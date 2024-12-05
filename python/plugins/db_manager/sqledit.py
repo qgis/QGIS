@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Alexander Bruy'
-__date__ = 'February 2014'
-__copyright__ = '(C) 2014, Alexander Bruy'
+__author__ = "Alexander Bruy"
+__date__ = "February 2014"
+__copyright__ = "(C) 2014, Alexander Bruy"
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor, QFont, QKeySequence
@@ -45,7 +45,7 @@ class SqlEdit(QsciScintilla):
 
         # Default font
         font = QFont()
-        font.setFamily('Courier')
+        font.setFamily("Courier")
         font.setFixedPitch(True)
         font.setPointSize(10)
         self.setFont(font)
@@ -54,30 +54,33 @@ class SqlEdit(QsciScintilla):
         self.setBraceMatching(QsciScintilla.BraceMatch.SloppyBraceMatch)
 
         self.setWrapMode(QsciScintilla.WrapMode.WrapWord)
-        self.setWrapVisualFlags(QsciScintilla.WrapVisualFlag.WrapFlagByText,
-                                QsciScintilla.WrapVisualFlag.WrapFlagNone, 4)
+        self.setWrapVisualFlags(
+            QsciScintilla.WrapVisualFlag.WrapFlagByText,
+            QsciScintilla.WrapVisualFlag.WrapFlagNone,
+            4,
+        )
 
-        self.setSelectionForegroundColor(QColor('#2e3436'))
-        self.setSelectionBackgroundColor(QColor('#babdb6'))
+        self.setSelectionForegroundColor(QColor("#2e3436"))
+        self.setSelectionBackgroundColor(QColor("#babdb6"))
 
         # Show line numbers
-        self.setMarginWidth(1, '000')
+        self.setMarginWidth(1, "000")
         self.setMarginLineNumbers(1, True)
-        self.setMarginsForegroundColor(QColor('#2e3436'))
-        self.setMarginsBackgroundColor(QColor('#babdb6'))
+        self.setMarginsForegroundColor(QColor("#2e3436"))
+        self.setMarginsBackgroundColor(QColor("#babdb6"))
 
         # Highlight current line
         self.setCaretLineVisible(True)
-        self.setCaretLineBackgroundColor(QColor('#d3d7cf'))
+        self.setCaretLineBackgroundColor(QColor("#d3d7cf"))
 
         # Folding
         self.setFolding(QsciScintilla.FoldStyle.BoxedTreeFoldStyle)
-        self.setFoldMarginColors(QColor('#d3d7cf'), QColor('#d3d7cf'))
+        self.setFoldMarginColors(QColor("#d3d7cf"), QColor("#d3d7cf"))
 
         # Mark column 80 with vertical line
         self.setEdgeMode(QsciScintilla.EdgeMode.EdgeLine)
         self.setEdgeColumn(80)
-        self.setEdgeColor(QColor('#eeeeec'))
+        self.setEdgeColor(QColor("#eeeeec"))
 
         # Indentation
         self.setAutoIndent(True)
@@ -94,8 +97,8 @@ class SqlEdit(QsciScintilla):
 
         # Load font from Python console settings
         settings = QgsSettings()
-        fontName = settings.value('pythonConsole/fontfamilytext', 'Monospace')
-        fontSize = int(settings.value('pythonConsole/fontsize', 10))
+        fontName = settings.value("pythonConsole/fontfamilytext", "Monospace")
+        fontSize = int(settings.value("pythonConsole/fontsize", 10))
 
         self.defaultFont = QFont(fontName)
         self.defaultFont.setFixedPitch(True)
@@ -118,18 +121,18 @@ class SqlEdit(QsciScintilla):
         (ctrl, shift) = (self.SCMOD_CTRL << 16, self.SCMOD_SHIFT << 16)
 
         # Disable some shortcuts
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('D') + ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl +
-                           shift)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T') + ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("D") + ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("L") + ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("L") + ctrl + shift)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("T") + ctrl)
 
         # self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Z") + ctrl)
         # self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Y") + ctrl)
 
         # Use Ctrl+Space for autocompletion
-        self.shortcutAutocomplete = QShortcut(QKeySequence(Qt.Modifier.CTRL +
-                                                           Qt.Key.Key_Space), self)
+        self.shortcutAutocomplete = QShortcut(
+            QKeySequence(Qt.Modifier.CTRL + Qt.Key.Key_Space), self
+        )
         self.shortcutAutocomplete.setContext(Qt.ShortcutContext.WidgetShortcut)
         self.shortcutAutocomplete.activated.connect(self.autoComplete)
 
@@ -139,13 +142,13 @@ class SqlEdit(QsciScintilla):
     def initLexer(self):
         self.mylexer = QsciLexerSQL()
 
-        colorDefault = QColor('#2e3436')
-        colorComment = QColor('#c00')
-        colorCommentBlock = QColor('#3465a4')
-        colorNumber = QColor('#4e9a06')
-        colorType = QColor('#4e9a06')
-        colorKeyword = QColor('#204a87')
-        colorString = QColor('#ce5c00')
+        colorDefault = QColor("#2e3436")
+        colorComment = QColor("#c00")
+        colorCommentBlock = QColor("#3465a4")
+        colorNumber = QColor("#4e9a06")
+        colorType = QColor("#4e9a06")
+        colorKeyword = QColor("#204a87")
+        colorString = QColor("#ce5c00")
 
         self.mylexer.setDefaultFont(self.defaultFont)
         self.mylexer.setDefaultColor(colorDefault)

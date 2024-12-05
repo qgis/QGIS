@@ -36,43 +36,29 @@ QgsGpsDeviceOptionsWidget::QgsGpsDeviceOptionsWidget( QWidget *parent )
   connect( mListDevices, &QListWidget::currentItemChanged, this, &QgsGpsDeviceOptionsWidget::selectedDeviceChanged );
 
   mDescriptionBrowser->setHtml( QStringLiteral( "<p>%1</p><ul>"
-                                "<li><code>%babel</code> - %2</li>"
-                                "<li><code>%in</code> - %3</li>"
-                                "<li><code>%out</code> - %4</li>"
-                                "<li><code>%type</code> - %5</li>"
-                                "</ul>" ).arg( tr( "In the download and upload commands there can be special words that will be replaced by "
-                                    "QGIS when the commands are used. These words are:" ),
-                                    tr( "the path to GPSBabel" ),
-                                    tr( "the GPX filename when uploading or the port when downloading" ),
-                                    tr( "the port when uploading or the GPX filename when downloading" ),
-                                    tr( "GPSBabel feature type argument matching selected feature type (e.g. '-w' for waypoints, '-t' for tracks, and '-r' for routes)" ) ) );
+                                                "<li><code>%babel</code> - %2</li>"
+                                                "<li><code>%in</code> - %3</li>"
+                                                "<li><code>%out</code> - %4</li>"
+                                                "<li><code>%type</code> - %5</li>"
+                                                "</ul>" )
+                                  .arg( tr( "In the download and upload commands there can be special words that will be replaced by "
+                                            "QGIS when the commands are used. These words are:" ),
+                                        tr( "the path to GPSBabel" ), tr( "the GPX filename when uploading or the port when downloading" ), tr( "the port when uploading or the GPX filename when downloading" ), tr( "GPSBabel feature type argument matching selected feature type (e.g. '-w' for waypoints, '-t' for tracks, and '-r' for routes)" ) ) );
 
-  const QMap< QString, QgsBabelGpsDeviceFormat * > registeredDevices = QgsApplication::gpsBabelFormatRegistry()->devices();
+  const QMap<QString, QgsBabelGpsDeviceFormat *> registeredDevices = QgsApplication::gpsBabelFormatRegistry()->devices();
   for ( auto it = registeredDevices.constBegin(); it != registeredDevices.constEnd(); ++it )
   {
     if ( !it.value() )
       continue;
 
-    const QString waypointDownloadCommand =
-      it.value()->importCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Waypoint, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
-    const QString waypointUploadCommand =
-      it.value()->exportCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Waypoint, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
-    const QString routeDownloadCommand =
-      it.value()->importCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Route, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
-    const QString routeUploadCommand =
-      it.value()->exportCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Route, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
-    const QString trackDownloadCommand =
-      it.value()->importCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Track, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
-    const QString trackUploadCommand =
-      it.value()->exportCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Track, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
+    const QString waypointDownloadCommand = it.value()->importCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Waypoint, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
+    const QString waypointUploadCommand = it.value()->exportCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Waypoint, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
+    const QString routeDownloadCommand = it.value()->importCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Route, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
+    const QString routeUploadCommand = it.value()->exportCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Route, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
+    const QString trackDownloadCommand = it.value()->importCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Track, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
+    const QString trackUploadCommand = it.value()->exportCommand( QStringLiteral( "%babel" ), Qgis::GpsFeatureType::Track, QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QLatin1Char( ' ' ) );
 
-    mDevices.insert( it.key(), {waypointDownloadCommand,
-                                waypointUploadCommand,
-                                routeDownloadCommand,
-                                routeUploadCommand,
-                                trackDownloadCommand,
-                                trackUploadCommand
-                               } );
+    mDevices.insert( it.key(), { waypointDownloadCommand, waypointUploadCommand, routeDownloadCommand, routeUploadCommand, trackDownloadCommand, trackUploadCommand } );
   }
 
   updateDeviceList();
@@ -129,9 +115,7 @@ void QgsGpsDeviceOptionsWidget::addNewDevice()
 
 void QgsGpsDeviceOptionsWidget::removeCurrentDevice()
 {
-  if ( QMessageBox::warning( this, tr( "Delete Device" ),
-                             tr( "Are you sure that you want to delete this device?" ),
-                             QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
+  if ( QMessageBox::warning( this, tr( "Delete Device" ), tr( "Are you sure that you want to delete this device?" ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
   {
     const auto iter = mDevices.find( mListDevices->currentItem()->text() );
     if ( iter != mDevices.end() )
@@ -157,8 +141,7 @@ void QgsGpsDeviceOptionsWidget::updateDeviceList( const QString &selection )
 
   // We're going to be changing the selected item, so disable our
   // notification of that.
-  disconnect( mListDevices, &QListWidget::currentItemChanged,
-              this, &QgsGpsDeviceOptionsWidget::selectedDeviceChanged );
+  disconnect( mListDevices, &QListWidget::currentItemChanged, this, &QgsGpsDeviceOptionsWidget::selectedDeviceChanged );
 
   mListDevices->clear();
   for ( auto iter = mDevices.constBegin(); iter != mDevices.constEnd(); ++iter )
@@ -175,8 +158,7 @@ void QgsGpsDeviceOptionsWidget::updateDeviceList( const QString &selection )
 
   // Update the display and reconnect the selection changed signal
   selectedDeviceChanged( mListDevices->currentItem() );
-  connect( mListDevices, &QListWidget::currentItemChanged,
-           this, &QgsGpsDeviceOptionsWidget::selectedDeviceChanged );
+  connect( mListDevices, &QListWidget::currentItemChanged, this, &QgsGpsDeviceOptionsWidget::selectedDeviceChanged );
 }
 
 void QgsGpsDeviceOptionsWidget::selectedDeviceChanged( QListWidgetItem *current )
@@ -204,13 +186,7 @@ void QgsGpsDeviceOptionsWidget::updateCurrentDevice()
     return;
 
   const QString name = mListDevices->currentItem()->text();
-  mDevices.insert( name, {leWptDown->text(),
-                          leWptUp->text(),
-                          leRteDown->text(),
-                          leRteUp->text(),
-                          leTrkDown->text(),
-                          leTrkUp->text()
-                         } );
+  mDevices.insert( name, { leWptDown->text(), leWptUp->text(), leRteDown->text(), leRteUp->text(), leTrkDown->text(), leTrkUp->text() } );
 }
 
 void QgsGpsDeviceOptionsWidget::renameCurrentDevice()
@@ -222,13 +198,7 @@ void QgsGpsDeviceOptionsWidget::renameCurrentDevice()
   const QString newName = leDeviceName->text();
   mDevices.remove( prevName );
 
-  mDevices.insert( newName, {leWptDown->text(),
-                             leWptUp->text(),
-                             leRteDown->text(),
-                             leRteUp->text(),
-                             leTrkDown->text(),
-                             leTrkUp->text()
-                            } );
+  mDevices.insert( newName, { leWptDown->text(), leWptUp->text(), leRteDown->text(), leRteUp->text(), leTrkDown->text(), leTrkUp->text() } );
 
   mListDevices->currentItem()->setText( newName );
 }
@@ -239,7 +209,6 @@ void QgsGpsDeviceOptionsWidget::renameCurrentDevice()
 QgsGpsDeviceOptionsFactory::QgsGpsDeviceOptionsFactory()
   : QgsOptionsWidgetFactory( tr( "GPSBabel" ), QIcon(), QStringLiteral( "gpsbabel" ) )
 {
-
 }
 
 QIcon QgsGpsDeviceOptionsFactory::icon() const
@@ -254,6 +223,5 @@ QgsOptionsPageWidget *QgsGpsDeviceOptionsFactory::createWidget( QWidget *parent 
 
 QStringList QgsGpsDeviceOptionsFactory::path() const
 {
-  return {QStringLiteral( "gps" ) };
+  return { QStringLiteral( "gps" ) };
 }
-

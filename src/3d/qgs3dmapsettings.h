@@ -958,6 +958,13 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void showDebugPanelChanged( bool shown );
 
+    /**
+     * Emitted when the world's origin point has been shifted
+     * \see setOrigin()
+     * \since QGIS 3.42
+     */
+    void originChanged();
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );

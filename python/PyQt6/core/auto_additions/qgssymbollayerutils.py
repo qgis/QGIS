@@ -163,5 +163,5 @@ try:
     QgsSymbolLayerUtils.resetSymbolLayerIds = staticmethod(QgsSymbolLayerUtils.resetSymbolLayerIds)
     QgsSymbolLayerUtils.collectSymbolLayerClipGeometries = staticmethod(QgsSymbolLayerUtils.collectSymbolLayerClipGeometries)
     QgsSymbolLayerUtils.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

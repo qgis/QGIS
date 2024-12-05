@@ -94,5 +94,5 @@ QString QgsPasswordLineEditPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

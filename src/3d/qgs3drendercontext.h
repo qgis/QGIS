@@ -149,7 +149,7 @@ class _3D_EXPORT Qgs3DRenderContext
      * \see setExpressionContext()
      * \note not available in Python bindings
      */
-    const QgsExpressionContext &expressionContext() const { return mExpressionContext; } SIP_SKIP
+    const QgsExpressionContext &expressionContext() const SIP_SKIP { return mExpressionContext; }
 
   private:
     QgsCoordinateReferenceSystem mCrs;   //!< Destination coordinate system of the world

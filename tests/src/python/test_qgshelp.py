@@ -7,9 +7,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Julien Cabieces'
-__date__ = '2022-09-21'
-__copyright__ = 'Copyright 2022, Julien Cabieces'
+
+__author__ = "Julien Cabieces"
+__date__ = "2022-09-21"
+__copyright__ = "Copyright 2022, Julien Cabieces"
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsSettings
@@ -45,7 +46,7 @@ class TestQgsHelp(QgisTestCase):
         Tests returned url according to help key
         """
 
-        server_url = f'http://localhost:{TestQgsHelp.port}/'
+        server_url = f"http://localhost:{TestQgsHelp.port}/"
 
         QgsSettings().setValue(
             "help/helpSearchPath",
@@ -56,16 +57,26 @@ class TestQgsHelp(QgisTestCase):
         )
 
         handler = mockedwebserver.SequentialHandler()
-        handler.add('HEAD', '/first_search_path/first_url.html', 200, {})
-        handler.add('HEAD', '/first_search_path/second_url.html', 400, {})
-        handler.add('HEAD', '/second_search_path/second_url.html', 200, {})
-        handler.add('HEAD', '/first_search_path/error_url.html', 404, {})
-        handler.add('HEAD', '/second_search_path/error_url.html', 404, {})
+        handler.add("HEAD", "/first_search_path/first_url.html", 200, {})
+        handler.add("HEAD", "/first_search_path/second_url.html", 400, {})
+        handler.add("HEAD", "/second_search_path/second_url.html", 200, {})
+        handler.add("HEAD", "/first_search_path/error_url.html", 404, {})
+        handler.add("HEAD", "/second_search_path/error_url.html", 404, {})
         with mockedwebserver.install_http_handler(handler):
-            self.assertEqual(server_url + "first_search_path/first_url.html", QgsHelp.helpUrl("first_url.html").toDisplayString())
-            self.assertEqual(server_url + "second_search_path/second_url.html", QgsHelp.helpUrl("second_url.html").toDisplayString())
-            self.assertTrue(QgsHelp.helpUrl("error_url.html").toDisplayString().endswith("nohelp.html"))
+            self.assertEqual(
+                server_url + "first_search_path/first_url.html",
+                QgsHelp.helpUrl("first_url.html").toDisplayString(),
+            )
+            self.assertEqual(
+                server_url + "second_search_path/second_url.html",
+                QgsHelp.helpUrl("second_url.html").toDisplayString(),
+            )
+            self.assertTrue(
+                QgsHelp.helpUrl("error_url.html")
+                .toDisplayString()
+                .endswith("nohelp.html")
+            )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

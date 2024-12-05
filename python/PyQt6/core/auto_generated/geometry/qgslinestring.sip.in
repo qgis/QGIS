@@ -245,7 +245,7 @@ Constructs a linestring with a single segment from ``p1`` to ``p2``.
 .. versionadded:: 3.2
 %End
 
-    static QgsLineString *fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments = 30 ) /Factory/;
+    static std::unique_ptr< QgsLineString > fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments = 30 );
 %Docstring
 Returns a new linestring created by segmentizing the bezier curve between ``start`` and ``end``, with
 the specified control points.
@@ -257,7 +257,7 @@ Any z or m values present in the input coordinates will be interpolated along wi
 .. versionadded:: 3.10
 %End
 
-    static QgsLineString *fromQPolygonF( const QPolygonF &polygon ) /Factory/;
+    static std::unique_ptr< QgsLineString > fromQPolygonF( const QPolygonF &polygon );
 %Docstring
 Returns a new linestring from a QPolygonF ``polygon`` input.
 
@@ -857,13 +857,14 @@ corresponds to the last point in the line.
  QgsBox3D calculateBoundingBox3d() const /Deprecated/;
 %Docstring
 Calculates the minimal 3D bounding box for the geometry.
-Deprecated: use calculateBoundingBox3D instead
 
 .. seealso:: :py:func:`calculateBoundingBox`
 
 .. versionadded:: 3.26
 
 .. deprecated:: 3.34
+
+   use :py:func:`~QgsLineString.calculateBoundingBox3D` instead
 %End
 
     virtual QgsBox3D calculateBoundingBox3D() const;
@@ -876,7 +877,7 @@ Calculates the minimal 3D bounding box for the geometry.
 .. versionadded:: 3.34
 %End
 
-    QgsLineString *measuredLine( double start, double end ) const /Factory/;
+    std::unique_ptr< QgsLineString > measuredLine( double start, double end ) const;
 %Docstring
 Re-write the measure ordinate (or add one, if it isn't already there) interpolating
 the measure between the supplied ``start`` and ``end`` values.
@@ -884,7 +885,7 @@ the measure between the supplied ``start`` and ``end`` values.
 .. versionadded:: 3.36
 %End
 
-    QgsLineString *interpolateM( bool use3DDistance = true ) const /Factory/;
+    std::unique_ptr< QgsLineString > interpolateM( bool use3DDistance = true ) const;
 %Docstring
 Returns a copy of this line with all missing (NaN) m values interpolated
 from m values of surrounding vertices.

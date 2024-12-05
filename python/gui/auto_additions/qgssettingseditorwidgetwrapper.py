@@ -2,5 +2,5 @@
 try:
     QgsSettingsEditorWidgetWrapper.fromWidget = staticmethod(QgsSettingsEditorWidgetWrapper.fromWidget)
     QgsSettingsEditorWidgetWrapper.__group__ = ['settings']
-except NameError:
+except (NameError, AttributeError):
     pass

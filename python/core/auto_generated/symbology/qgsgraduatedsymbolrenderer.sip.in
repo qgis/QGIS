@@ -156,14 +156,14 @@ This will take ownership of the method
 
 .. deprecated:: 3.10
 
-   Use classficationMethod instead.
+   Use :py:func:`~QgsGraduatedSymbolRenderer.classficationMethod` instead.
 %End
  void setMode( Mode mode ) /Deprecated/;
 %Docstring
 
 .. deprecated:: 3.10
 
-   Use classficationMethod instead.
+   Use :py:func:`~QgsGraduatedSymbolRenderer.classficationMethod` instead.
 %End
 
  bool useSymmetricMode() const /Deprecated/;
@@ -174,7 +174,7 @@ Returns if we want to classify symmetric around a given value
 
 .. deprecated:: 3.10
 
-   Use classficationMethod instead.
+   Use :py:func:`~QgsGraduatedSymbolRenderer.classficationMethod` instead.
 %End
 
   void setUseSymmetricMode( bool useSymmetricMode ) /Deprecated/;
@@ -185,7 +185,7 @@ Set if we want to classify symmetric around a given value
 
 .. deprecated:: 3.10
 
-   Use classficationMethod instead.
+   Use :py:func:`~QgsGraduatedSymbolRenderer.classficationMethod` instead.
 %End
 
  double symmetryPoint() const /Deprecated/;
@@ -196,7 +196,7 @@ Returns the pivot value for symmetric classification
 
 .. deprecated:: 3.10
 
-   Use classficationMethod instead.
+   Use :py:func:`~QgsGraduatedSymbolRenderer.classficationMethod` instead.
 %End
 
  void setSymmetryPoint( double symmetryPoint ) /Deprecated/;
@@ -207,7 +207,7 @@ Set the pivot point
 
 .. deprecated:: 3.10
 
-   Use classficationMethod instead.
+   Use :py:func:`~QgsGraduatedSymbolRenderer.classficationMethod` instead.
 %End
 
 
@@ -219,7 +219,7 @@ Returns if we want to have a central class astride the pivot value
 
 .. deprecated:: 3.10
 
-   Use classficationMethod instead.
+   Use :py:func:`~QgsGraduatedSymbolRenderer.classficationMethod` instead.
 %End
 
  void setAstride( bool astride ) /Deprecated/;
@@ -230,7 +230,7 @@ Set if we want a central class astride the pivot value
 
 .. deprecated:: 3.10
 
-   Use classficationMethod instead.
+   Use :py:func:`~QgsGraduatedSymbolRenderer.classficationMethod` instead.
 %End
 
  static void makeBreaksSymmetric( QList<double> &breaks /In,Out/, double symmetryPoint, bool astride ) /Deprecated/;

@@ -30,11 +30,10 @@ class QgsMeshLayer;
  *
  * \since QGIS 3.22
  */
-class APP_EXPORT QgsMeshTransformCoordinatesDockWidget: public QgsDockWidget, public QgsExpressionContextGenerator, private Ui::QgsMeshTransformCoordinatesDockWidgetBase
+class APP_EXPORT QgsMeshTransformCoordinatesDockWidget : public QgsDockWidget, public QgsExpressionContextGenerator, private Ui::QgsMeshTransformCoordinatesDockWidgetBase
 {
     Q_OBJECT
   public:
-
     //! Constructor
     QgsMeshTransformCoordinatesDockWidget( QWidget *parent );
 
@@ -87,7 +86,6 @@ class APP_EXPORT QgsMeshTransformCoordinatesDockWidget: public QgsDockWidget, pu
 
     QString displayCoordinateText( const QgsCoordinateReferenceSystem &crs, double value );
     void importVertexCoordinates();
-
 };
 
 #endif // QGSMESHTRANSFORMCOORDINATESDOCKWIDGET_H

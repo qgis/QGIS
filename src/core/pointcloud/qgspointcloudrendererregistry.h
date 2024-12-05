@@ -150,12 +150,12 @@ class CORE_EXPORT QgsPointCloudRendererMetadata : public QgsPointCloudRendererAb
 #endif
 
     //! \note not available in Python bindings
-    QgsPointCloudRendererCreateFunc createFunction() const { return mCreateFunc; } SIP_SKIP
+    QgsPointCloudRendererCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
     //! \note not available in Python bindings
-    QgsPointCloudRendererWidgetFunc widgetFunction() const { return mWidgetFunc; } SIP_SKIP
+    QgsPointCloudRendererWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
 
     //! \note not available in Python bindings
-    void setWidgetFunction( QgsPointCloudRendererWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
+    void setWidgetFunction( QgsPointCloudRendererWidgetFunc f ) SIP_SKIP { mWidgetFunc = f; }
 
   protected:
     //! pointer to function that creates an instance of the renderer when loading project / style

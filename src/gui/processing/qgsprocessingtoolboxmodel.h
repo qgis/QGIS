@@ -101,7 +101,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
      * Returns a list of children belonging to the node.
      * \note Not available in Python bindings
      */
-    QList<QgsProcessingToolboxModelNode *> children() const { return mChildren; } SIP_SKIP
+    QList<QgsProcessingToolboxModelNode *> children() const SIP_SKIP { return mChildren; }
 
     /**
      * Removes the specified \a node from this node's children, and gives

@@ -17,7 +17,7 @@ public:
     /// Set user agent to a value unique for your application (https://tools.ietf.org/html/rfc7231#section-5.5.3)
     /// if you see the following error in the application log:
     /// O1::onTokenRequestError: 201 "Error transferring requestTokenUrl() - server replied: Forbidden" "Bad bot"
-    Q_PROPERTY(QByteArray userAgent READ userAgent WRITE setUserAgent)
+    Q_PROPERTY(QByteArray userAgent READ userAgent WRITE setUserAgent NOTIFY userAgentChanged)
     QByteArray userAgent() const;
     void setUserAgent(const QByteArray &value);
 
@@ -32,14 +32,14 @@ public:
     void setRequestTokenUrl(const QUrl &value);
 
     /// Parameters to pass with request URL.
-    Q_PROPERTY(QList<O0RequestParameter> requestParameters READ requestParameters WRITE setRequestParameters)
+    Q_PROPERTY(QList<O0RequestParameter> requestParameters READ requestParameters WRITE setRequestParameters NOTIFY requestParametersChanged)
     QList<O0RequestParameter> requestParameters();
     void setRequestParameters(const QList<O0RequestParameter> &value);
 
     /// Callback URL.
     /// It should contain a `%1` place marker, to be replaced by `O0BaseAuth::localPort()`.
     /// Defaults to `O2_CALLBACK_URL`.
-    Q_PROPERTY(QString callbackUrl READ callbackUrl WRITE setCallbackUrl)
+    Q_PROPERTY(QString callbackUrl READ callbackUrl WRITE setCallbackUrl NOTIFY callbackUrlChanged)
     QString callbackUrl();
     void setCallbackUrl(const QString &value);
 
@@ -54,7 +54,7 @@ public:
     void setAccessTokenUrl(const QUrl &value);
 
     /// Constructor.
-    explicit O1(QObject *parent = 0, QNetworkAccessManager *manager = 0, O0AbstractStore *store = 0);
+    explicit O1(QObject *parent = nullptr, QNetworkAccessManager *manager = nullptr, O0AbstractStore *store = nullptr);
 
     /// Parse a URL-encoded response string.
     static QMap<QString, QString> parseResponse(const QByteArray &response);
@@ -89,16 +89,19 @@ public:
 
 public Q_SLOTS:
     /// Authenticate.
-    Q_INVOKABLE virtual void link();
+    Q_INVOKABLE void link() override;
 
     /// De-authenticate.
-    Q_INVOKABLE virtual void unlink();
+    Q_INVOKABLE void unlink() override;
 
 Q_SIGNALS:
     void requestTokenUrlChanged();
     void authorizeUrlChanged();
     void accessTokenUrlChanged();
     void signatureMethodChanged();
+    void userAgentChanged(const QByteArray& agent);
+    void requestParametersChanged();
+    void callbackUrlChanged(const QString& url);
 
 public Q_SLOTS:
     /// Handle verification received from the reply server.

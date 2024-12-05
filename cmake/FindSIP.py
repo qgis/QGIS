@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 #   Copyright (c) 2007, Simon Edwards <simon@simonzone.com>
 #    All rights reserved.
@@ -38,6 +37,7 @@ try:
     print("sip_version_str:%s" % sipbuild.version.SIP_VERSION_STR)
 
     import sysconfig
+
     if "deb_system" in sysconfig.get_scheme_names():
         python_modules_dir = sysconfig.get_path("purelib", "deb_system")
     else:

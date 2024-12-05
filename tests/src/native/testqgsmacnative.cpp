@@ -20,7 +20,7 @@
 //header for class being tested
 #include "qgsmacnative.h"
 
-class TestQgsMacNative: public QObject
+class TestQgsMacNative : public QObject
 {
     Q_OBJECT
 

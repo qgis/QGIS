@@ -21,20 +21,6 @@
 
 #include <random>
 
-// The algorithm parameter names:
-static const QString INPUT = QStringLiteral( "INPUT" );
-static const QString POINTS_NUMBER = QStringLiteral( "POINTS_NUMBER" );
-static const QString MIN_DISTANCE_GLOBAL = QStringLiteral( "MIN_DISTANCE_GLOBAL" );
-static const QString MIN_DISTANCE = QStringLiteral( "MIN_DISTANCE" );
-static const QString MAX_TRIES_PER_POINT = QStringLiteral( "MAX_TRIES_PER_POINT" );
-static const QString SEED = QStringLiteral( "SEED" );
-static const QString INCLUDE_LINE_ATTRIBUTES = QStringLiteral( "INCLUDE_LINE_ATTRIBUTES" );
-static const QString OUTPUT = QStringLiteral( "OUTPUT" );
-static const QString OUTPUT_POINTS = QStringLiteral( "OUTPUT_POINTS" );
-static const QString POINTS_MISSED = QStringLiteral( "POINTS_MISSED" );
-static const QString LINES_WITH_MISSED_POINTS = QStringLiteral( "LINES_WITH_MISSED_POINTS" );
-static const QString FEATURES_WITH_EMPTY_OR_NO_GEOMETRY = QStringLiteral( "FEATURES_WITH_EMPTY_OR_NO_GEOMETRY" );
-
 ///@cond PRIVATE
 
 QString QgsRandomPointsOnLinesAlgorithm::name() const

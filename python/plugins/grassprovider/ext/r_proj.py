@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Médéric Ribreux'
-__date__ = 'October 2017'
-__copyright__ = '(C) 2017, Médéric Ribreux'
+__author__ = "Médéric Ribreux"
+__date__ = "October 2017"
+__copyright__ = "(C) 2017, Médéric Ribreux"
 
 from qgis.core import QgsProcessingParameterString
 from processing.tools.system import isWindows
@@ -26,50 +26,51 @@ from grassprovider.grass_utils import GrassUtils
 
 def processInputs(alg, parameters, context, feedback):
     # Grab the projection from the input vector layer
-    layer = alg.parameterAsLayer(parameters, 'input', context)
+    layer = alg.parameterAsLayer(parameters, "input", context)
 
     # Creates a new location with this Crs
     wkt_file_name = GrassUtils.exportCrsWktToFile(layer.crs(), context)
-    newLocation = 'newProj{}'.format(alg.uniqueSuffix)
-    alg.commands.append('g.proj wkt="{}" location={}'.format(
-        wkt_file_name, newLocation))
+    newLocation = f"newProj{alg.uniqueSuffix}"
+    alg.commands.append(f'g.proj wkt="{wkt_file_name}" location={newLocation}')
 
     # Go to the newly created location
-    alg.commands.append('g.mapset mapset=PERMANENT location={}'.format(
-        newLocation))
+    alg.commands.append(f"g.mapset mapset=PERMANENT location={newLocation}")
 
     # Import the layer
-    alg.loadRasterLayerFromParameter(
-        'input', parameters, context, False)
+    alg.loadRasterLayerFromParameter("input", parameters, context, False)
 
     # Go back to default location
-    alg.commands.append('g.mapset mapset=PERMANENT location=temp_location')
+    alg.commands.append("g.mapset mapset=PERMANENT location=temp_location")
 
     # Grab the projected Crs
-    crs = alg.parameterAsCrs(parameters, 'crs', context)
+    crs = alg.parameterAsCrs(parameters, "crs", context)
     wkt_file_name = GrassUtils.exportCrsWktToFile(crs, context)
-    alg.commands.append('g.proj -c wkt="{}"'.format(wkt_file_name))
+    alg.commands.append(f'g.proj -c wkt="{wkt_file_name}"')
 
     # Remove crs parameter
-    alg.removeParameter('crs')
+    alg.removeParameter("crs")
 
     # Add the location parameter with proper value
     location = QgsProcessingParameterString(
-        'location',
-        'new location',
-        'newProj{}'.format(alg.uniqueSuffix)
+        "location", "new location", f"newProj{alg.uniqueSuffix}"
     )
     alg.addParameter(location)
 
     # And set the region
-    grassName = alg.exportedLayers['input']
+    grassName = alg.exportedLayers["input"]
     # We use the shell to capture the results from r.proj -g
     if isWindows():
         # TODO: make some tests under a non POSIX shell
-        alg.commands.append('set regVar=')
-        alg.commands.append('for /f "delims=" %%a in (\'r.proj -g input^="{}" location^="{}"\') do @set regVar=%%a'.format(
-            grassName, newLocation))
-        alg.commands.append('g.region -a %regVar%')
+        alg.commands.append("set regVar=")
+        alg.commands.append(
+            'for /f "delims=" %%a in (\'r.proj -g input^="{}" location^="{}"\') do @set regVar=%%a'.format(
+                grassName, newLocation
+            )
+        )
+        alg.commands.append("g.region -a %regVar%")
     else:
-        alg.commands.append('g.region -a $(r.proj -g input="{}" location="{}")'.format(
-            grassName, newLocation))
+        alg.commands.append(
+            'g.region -a $(r.proj -g input="{}" location="{}")'.format(
+                grassName, newLocation
+            )
+        )

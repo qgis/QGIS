@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '3/05/2016'
-__copyright__ = 'Copyright 2016, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "3/05/2016"
+__copyright__ = "Copyright 2016, The QGIS Project"
 
 from qgis.PyQt.QtCore import QT_VERSION_STR, QLocale, Qt, QVariant
 from qgis.core import (
@@ -32,8 +33,9 @@ from qgis.testing import start_app, QgisTestCase
 
 start_app()
 
-if int(QT_VERSION_STR.split('.')[0]) < 6:
+if int(QT_VERSION_STR.split(".")[0]) < 6:
     from qgis.PyQt.QtCore import QTextCodec
+
     codec = QTextCodec.codecForName("System")
 
 
@@ -45,14 +47,14 @@ class TestQgsJsonUtils(QgisTestCase):
         fields.append(QgsField("name", QVariant.String))
 
         # empty string
-        if int(QT_VERSION_STR.split('.')[0]) >= 6:
+        if int(QT_VERSION_STR.split(".")[0]) >= 6:
             features = QgsJsonUtils.stringToFeatureList("", fields)
         else:
             features = QgsJsonUtils.stringToFeatureList("", fields, codec)
         self.assertEqual(features, [])
 
         # bad string
-        if int(QT_VERSION_STR.split('.')[0]) >= 6:
+        if int(QT_VERSION_STR.split(".")[0]) >= 6:
             features = QgsJsonUtils.stringToFeatureList("asdasdas", fields)
         else:
             features = QgsJsonUtils.stringToFeatureList("asdasdas", fields, codec)
@@ -60,7 +62,7 @@ class TestQgsJsonUtils(QgisTestCase):
 
         # geojson string with 1 feature
         s = '{\n"type": "Feature","geometry": {"type": "Point","coordinates": [125, 10]},"properties": {"name": "Dinagat Islands"}}'
-        if int(QT_VERSION_STR.split('.')[0]) >= 6:
+        if int(QT_VERSION_STR.split(".")[0]) >= 6:
             features = QgsJsonUtils.stringToFeatureList(s, fields)
         else:
             features = QgsJsonUtils.stringToFeatureList(s, fields, codec)
@@ -70,11 +72,11 @@ class TestQgsJsonUtils(QgisTestCase):
         point = features[0].geometry().constGet()
         self.assertEqual(point.x(), 125.0)
         self.assertEqual(point.y(), 10.0)
-        self.assertEqual(features[0]['name'], "Dinagat Islands")
+        self.assertEqual(features[0]["name"], "Dinagat Islands")
 
         # geojson string with 2 features
         s = '{ "type": "FeatureCollection","features":[{\n"type": "Feature","geometry": {"type": "Point","coordinates": [125, 10]},"properties": {"name": "Dinagat Islands"}}, {\n"type": "Feature","geometry": {"type": "Point","coordinates": [110, 20]},"properties": {"name": "Henry Gale Island"}}]}'
-        if int(QT_VERSION_STR.split('.')[0]) >= 6:
+        if int(QT_VERSION_STR.split(".")[0]) >= 6:
             features = QgsJsonUtils.stringToFeatureList(s, fields)
         else:
             features = QgsJsonUtils.stringToFeatureList(s, fields, codec)
@@ -84,13 +86,13 @@ class TestQgsJsonUtils(QgisTestCase):
         point = features[0].geometry().constGet()
         self.assertEqual(point.x(), 125.0)
         self.assertEqual(point.y(), 10.0)
-        self.assertEqual(features[0]['name'], "Dinagat Islands")
+        self.assertEqual(features[0]["name"], "Dinagat Islands")
         self.assertFalse(features[1].geometry().isNull())
         self.assertEqual(features[1].geometry().wkbType(), QgsWkbTypes.Type.Point)
         point = features[1].geometry().constGet()
         self.assertEqual(point.x(), 110.0)
         self.assertEqual(point.y(), 20.0)
-        self.assertEqual(features[1]['name'], "Henry Gale Island")
+        self.assertEqual(features[1]["name"], "Henry Gale Island")
 
     def testStringToFeatureListWithDatetimeProperty_regression44160(self):
         """Test that milliseconds and time zone information is parsed from datetime properties"""
@@ -100,17 +102,32 @@ class TestQgsJsonUtils(QgisTestCase):
         date = "2020-01-01T"
 
         def geojson_with_time(timepart):
-            return '{"type": "Feature","geometry": {"type": "Point","coordinates": [0,0]},"properties": {"some_time_field": "' + date + timepart + '"}}'
+            return (
+                '{"type": "Feature","geometry": {"type": "Point","coordinates": [0,0]},"properties": {"some_time_field": "'
+                + date
+                + timepart
+                + '"}}'
+            )
 
         # No milliseconds
-        features = QgsJsonUtils.stringToFeatureList(geojson_with_time('22:00:10'), fields)
+        features = QgsJsonUtils.stringToFeatureList(
+            geojson_with_time("22:00:10"), fields
+        )
         self.assertEqual(len(features), 1)
-        self.assertEqual(features[0]['some_time_field'].toString(Qt.DateFormat.ISODateWithMs), f"{date}22:00:10.000")
+        self.assertEqual(
+            features[0]["some_time_field"].toString(Qt.DateFormat.ISODateWithMs),
+            f"{date}22:00:10.000",
+        )
 
         # milliseconds
-        features = QgsJsonUtils.stringToFeatureList(geojson_with_time('22:00:10.123'), fields)
+        features = QgsJsonUtils.stringToFeatureList(
+            geojson_with_time("22:00:10.123"), fields
+        )
         self.assertEqual(len(features), 1)
-        self.assertEqual(features[0]['some_time_field'].toString(Qt.DateFormat.ISODateWithMs), f"{date}22:00:10.123")
+        self.assertEqual(
+            features[0]["some_time_field"].toString(Qt.DateFormat.ISODateWithMs),
+            f"{date}22:00:10.123",
+        )
 
     def testStringToFeatureListWithTimeProperty_regression44160(self):
         """Test that milliseconds and time zone information is parsed from time properties"""
@@ -118,30 +135,44 @@ class TestQgsJsonUtils(QgisTestCase):
         fields.append(QgsField("some_time_field", QVariant.Time))
 
         def geojson_with_time(timepart):
-            return '{"type": "Feature","geometry": {"type": "Point","coordinates": [0,0]},"properties": {"some_time_field": "' + timepart + '"}}'
+            return (
+                '{"type": "Feature","geometry": {"type": "Point","coordinates": [0,0]},"properties": {"some_time_field": "'
+                + timepart
+                + '"}}'
+            )
 
         # No milliseconds
-        features = QgsJsonUtils.stringToFeatureList(geojson_with_time('22:00:10'), fields)
+        features = QgsJsonUtils.stringToFeatureList(
+            geojson_with_time("22:00:10"), fields
+        )
         self.assertEqual(len(features), 1)
-        self.assertEqual(features[0]['some_time_field'].toString(Qt.DateFormat.ISODateWithMs), "22:00:10.000")
+        self.assertEqual(
+            features[0]["some_time_field"].toString(Qt.DateFormat.ISODateWithMs),
+            "22:00:10.000",
+        )
 
         # milliseconds
-        features = QgsJsonUtils.stringToFeatureList(geojson_with_time('22:00:10.123'), fields)
+        features = QgsJsonUtils.stringToFeatureList(
+            geojson_with_time("22:00:10.123"), fields
+        )
         self.assertEqual(len(features), 1)
-        self.assertEqual(features[0]['some_time_field'].toString(Qt.DateFormat.ISODateWithMs), "22:00:10.123")
+        self.assertEqual(
+            features[0]["some_time_field"].toString(Qt.DateFormat.ISODateWithMs),
+            "22:00:10.123",
+        )
 
     def testStringToFields(self):
         """test retrieving fields from GeoJSON strings"""
 
         # empty string
-        if int(QT_VERSION_STR.split('.')[0]) >= 6:
+        if int(QT_VERSION_STR.split(".")[0]) >= 6:
             fields = QgsJsonUtils.stringToFields("")
         else:
             fields = QgsJsonUtils.stringToFields("", codec)
         self.assertEqual(fields.count(), 0)
 
         # bad string
-        if int(QT_VERSION_STR.split('.')[0]) >= 6:
+        if int(QT_VERSION_STR.split(".")[0]) >= 6:
             fields = QgsJsonUtils.stringToFields("asdasdas")
         else:
             fields = QgsJsonUtils.stringToFields("asdasdas", codec)
@@ -149,7 +180,7 @@ class TestQgsJsonUtils(QgisTestCase):
 
         # geojson string
         s = '{\n"type": "Feature","geometry": {"type": "Point","coordinates": [125, 10]},"properties": {"name": "Dinagat Islands","height":5.5}}'
-        if int(QT_VERSION_STR.split('.')[0]) >= 6:
+        if int(QT_VERSION_STR.split(".")[0]) >= 6:
             fields = QgsJsonUtils.stringToFields(s)
         else:
             fields = QgsJsonUtils.stringToFields(s, codec)
@@ -161,7 +192,7 @@ class TestQgsJsonUtils(QgisTestCase):
 
         # geojson string with 2 features
         s = '{ "type": "FeatureCollection","features":[{\n"type": "Feature","geometry": {"type": "Point","coordinates": [125, 10]},"properties": {"name": "Dinagat Islands","height":5.5}}, {\n"type": "Feature","geometry": {"type": "Point","coordinates": [110, 20]},"properties": {"name": "Henry Gale Island","height":6.5}}]}'
-        if int(QT_VERSION_STR.split('.')[0]) >= 6:
+        if int(QT_VERSION_STR.split(".")[0]) >= 6:
             fields = QgsJsonUtils.stringToFields(s)
         else:
             fields = QgsJsonUtils.stringToFields(s, codec)
@@ -172,33 +203,42 @@ class TestQgsJsonUtils(QgisTestCase):
         self.assertEqual(fields[1].type(), QVariant.Double)
 
     def testEncodeValue(self):
-        """ test encoding various values for use in GeoJSON strings """
-        self.assertEqual(QgsJsonUtils.encodeValue(NULL), 'null')
-        self.assertEqual(QgsJsonUtils.encodeValue(5), '5')
-        self.assertEqual(QgsJsonUtils.encodeValue(5.9), '5.9')
-        self.assertEqual(QgsJsonUtils.encodeValue(5999999999), '5999999999')
-        self.assertEqual(QgsJsonUtils.encodeValue('string'), '"string"')
-        self.assertEqual(QgsJsonUtils.encodeValue('str\ning'), '"str\\ning"')
-        self.assertEqual(QgsJsonUtils.encodeValue('str\ring'), '"str\\ring"')
-        self.assertEqual(QgsJsonUtils.encodeValue('str\bing'), '"str\\bing"')
-        self.assertEqual(QgsJsonUtils.encodeValue('str\ting'), '"str\\ting"')
-        self.assertEqual(QgsJsonUtils.encodeValue('str\\ing'), '"str\\\\ing"')
-        self.assertEqual(QgsJsonUtils.encodeValue('str\\ning'), '"str\\\\ning"')
-        self.assertEqual(QgsJsonUtils.encodeValue('str\n\\\\ing'), '"str\\n\\\\\\\\ing"')
-        self.assertEqual(QgsJsonUtils.encodeValue('str/ing'), '"str\\/ing"')
-        self.assertEqual(QgsJsonUtils.encodeValue([5, 6]), '[5,6]')
-        self.assertEqual(QgsJsonUtils.encodeValue(['a', 'b', 'c']), '["a","b","c"]')
-        self.assertEqual(QgsJsonUtils.encodeValue(['a', 3, 'c']), '["a",3,"c"]')
-        self.assertEqual(QgsJsonUtils.encodeValue(['a', 'c\nd']), '["a","c\\nd"]')
+        """test encoding various values for use in GeoJSON strings"""
+        self.assertEqual(QgsJsonUtils.encodeValue(NULL), "null")
+        self.assertEqual(QgsJsonUtils.encodeValue(5), "5")
+        self.assertEqual(QgsJsonUtils.encodeValue(5.9), "5.9")
+        self.assertEqual(QgsJsonUtils.encodeValue(5999999999), "5999999999")
+        self.assertEqual(QgsJsonUtils.encodeValue("string"), '"string"')
+        self.assertEqual(QgsJsonUtils.encodeValue("str\ning"), '"str\\ning"')
+        self.assertEqual(QgsJsonUtils.encodeValue("str\ring"), '"str\\ring"')
+        self.assertEqual(QgsJsonUtils.encodeValue("str\bing"), '"str\\bing"')
+        self.assertEqual(QgsJsonUtils.encodeValue("str\ting"), '"str\\ting"')
+        self.assertEqual(QgsJsonUtils.encodeValue("str\\ing"), '"str\\\\ing"')
+        self.assertEqual(QgsJsonUtils.encodeValue("str\\ning"), '"str\\\\ning"')
+        self.assertEqual(
+            QgsJsonUtils.encodeValue("str\n\\\\ing"), '"str\\n\\\\\\\\ing"'
+        )
+        self.assertEqual(QgsJsonUtils.encodeValue("str/ing"), '"str\\/ing"')
+        self.assertEqual(QgsJsonUtils.encodeValue([5, 6]), "[5,6]")
+        self.assertEqual(QgsJsonUtils.encodeValue(["a", "b", "c"]), '["a","b","c"]')
+        self.assertEqual(QgsJsonUtils.encodeValue(["a", 3, "c"]), '["a",3,"c"]')
+        self.assertEqual(QgsJsonUtils.encodeValue(["a", "c\nd"]), '["a","c\\nd"]')
         # handle differences due to Qt5 version, where compact output now lacks \n
-        enc_str = QgsJsonUtils.encodeValue({'key': 'value', 'key2': 5})
-        self.assertTrue(enc_str == '{"key":"value",\n"key2":5}' or enc_str == '{"key":"value","key2":5}')
-        enc_str = QgsJsonUtils.encodeValue({'key': [1, 2, 3], 'key2': {'nested': 'nested\\result'}})
+        enc_str = QgsJsonUtils.encodeValue({"key": "value", "key2": 5})
         self.assertTrue(
-            enc_str == '{"key":[1,2,3],\n"key2":{"nested":"nested\\\\result"}}' or enc_str == '{"key":[1,2,3],"key2":{"nested":"nested\\\\result"}}')
+            enc_str == '{"key":"value",\n"key2":5}'
+            or enc_str == '{"key":"value","key2":5}'
+        )
+        enc_str = QgsJsonUtils.encodeValue(
+            {"key": [1, 2, 3], "key2": {"nested": "nested\\result"}}
+        )
+        self.assertTrue(
+            enc_str == '{"key":[1,2,3],\n"key2":{"nested":"nested\\\\result"}}'
+            or enc_str == '{"key":[1,2,3],"key2":{"nested":"nested\\\\result"}}'
+        )
 
     def testExportAttributes(self):
-        """ test exporting feature's attributes to JSON object """
+        """test exporting feature's attributes to JSON object"""
         fields = QgsFields()
 
         # test empty attributes
@@ -213,7 +253,7 @@ class TestQgsJsonUtils(QgisTestCase):
 
         feature = QgsFeature(fields, 5)
         feature.setGeometry(QgsGeometry(QgsPoint(5, 6)))
-        feature.setAttributes(['Valsier Peninsula', 6.8, 198])
+        feature.setAttributes(["Valsier Peninsula", 6.8, 198])
 
         expected = """{"name":"Valsier Peninsula",
 "cost":6.8,
@@ -221,13 +261,16 @@ class TestQgsJsonUtils(QgisTestCase):
         self.assertEqual(QgsJsonUtils.exportAttributes(feature), expected)
 
         # test using field formatters
-        source = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
-                                "parent", "memory")
+        source = QgsVectorLayer(
+            "Point?field=fldtxt:string&field=fldint:integer", "parent", "memory"
+        )
         pf1 = QgsFeature()
         pf1.setFields(source.fields())
         pf1.setAttributes(["test1", 1])
 
-        setup = QgsEditorWidgetSetup('ValueMap', {"map": {"one": 1, "two": 2, "three": 3}})
+        setup = QgsEditorWidgetSetup(
+            "ValueMap", {"map": {"one": 1, "two": 2, "three": 3}}
+        )
         source.setEditorWidgetSetup(1, setup)
 
         expected = """{"fldtxt":"test1",
@@ -235,7 +278,7 @@ class TestQgsJsonUtils(QgisTestCase):
         self.assertEqual(QgsJsonUtils.exportAttributes(pf1, source), expected)
 
     def testJSONExporter(self):
-        """ test converting features to GeoJSON """
+        """test converting features to GeoJSON"""
         fields = QgsFields()
         fields.append(QgsField("name", QVariant.String))
         fields.append(QgsField("cost", QVariant.Double))
@@ -243,7 +286,7 @@ class TestQgsJsonUtils(QgisTestCase):
 
         feature = QgsFeature(fields, 5)
         feature.setGeometry(QgsGeometry(QgsPoint(5, 6)))
-        feature.setAttributes(['Valsier Peninsula', 6.8, 198])
+        feature.setAttributes(["Valsier Peninsula", 6.8, 198])
 
         exporter = QgsJsonExporter()
 
@@ -511,7 +554,9 @@ class TestQgsJsonUtils(QgisTestCase):
   },
   "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(feature, id="mylayer.29", indent=2), expected)
+        self.assertEqual(
+            exporter.exportFeature(feature, id="mylayer.29", indent=2), expected
+        )
 
         # test injecting extra attributes
         expected = """{
@@ -526,8 +571,12 @@ class TestQgsJsonUtils(QgisTestCase):
   },
   "type": "Feature"
 }"""
-        self.assertEqual(exporter.exportFeature(feature, extraProperties={"extra": "val1", "extra2": 2}, indent=2),
-                         expected)
+        self.assertEqual(
+            exporter.exportFeature(
+                feature, extraProperties={"extra": "val1", "extra2": 2}, indent=2
+            ),
+            expected,
+        )
 
         exporter.setIncludeAttributes(False)
         expected = """{
@@ -548,18 +597,25 @@ class TestQgsJsonUtils(QgisTestCase):
   "type": "Feature"
 }"""
 
-        exp_f = exporter.exportFeature(feature, extraProperties={"extra": "val1",
-                                                                 "extra2": {"nested_map": 5, "nested_map2": "val"},
-                                                                 "extra3": [1, 2, 3]}, indent=2)
+        exp_f = exporter.exportFeature(
+            feature,
+            extraProperties={
+                "extra": "val1",
+                "extra2": {"nested_map": 5, "nested_map2": "val"},
+                "extra3": [1, 2, 3],
+            },
+            indent=2,
+        )
         self.assertEqual(exp_f, expected)
         exporter.setIncludeGeometry(True)
 
     def testExportFeatureFieldFormatter(self):
-        """ Test exporting a feature with formatting fields """
+        """Test exporting a feature with formatting fields"""
 
         # source layer
-        source = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
-                                "parent", "memory")
+        source = QgsVectorLayer(
+            "Point?field=fldtxt:string&field=fldint:integer", "parent", "memory"
+        )
         pr = source.dataProvider()
         pf1 = QgsFeature(123)
         pf1.setFields(source.fields())
@@ -569,7 +625,9 @@ class TestQgsJsonUtils(QgisTestCase):
         pf2.setAttributes(["test2", 2])
         assert pr.addFeatures([pf1, pf2])
 
-        setup = QgsEditorWidgetSetup('ValueMap', {"map": {"one": 1, "two": 2, "three": 3}})
+        setup = QgsEditorWidgetSetup(
+            "ValueMap", {"map": {"one": 1, "two": 2, "three": 3}}
+        )
         source.setEditorWidgetSetup(1, setup)
 
         exporter = QgsJsonExporter()
@@ -587,30 +645,31 @@ class TestQgsJsonUtils(QgisTestCase):
         self.assertEqual(exporter.exportFeature(pf1, indent=2), expected)
 
     def testExportFeatureCrs(self):
-        """ Test CRS transform when exporting features """
+        """Test CRS transform when exporting features"""
 
         exporter = QgsJsonExporter()
         self.assertFalse(exporter.sourceCrs().isValid())
 
         # test layer
-        layer = QgsVectorLayer("Point?crs=epsg:3111&field=fldtxt:string",
-                               "parent", "memory")
+        layer = QgsVectorLayer(
+            "Point?crs=epsg:3111&field=fldtxt:string", "parent", "memory"
+        )
         exporter = QgsJsonExporter(layer)
         self.assertTrue(exporter.sourceCrs().isValid())
-        self.assertEqual(exporter.sourceCrs().authid(), 'EPSG:3111')
+        self.assertEqual(exporter.sourceCrs().authid(), "EPSG:3111")
 
-        exporter.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        exporter.setSourceCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
         self.assertTrue(exporter.sourceCrs().isValid())
-        self.assertEqual(exporter.sourceCrs().authid(), 'EPSG:3857')
+        self.assertEqual(exporter.sourceCrs().authid(), "EPSG:3857")
 
         # vector layer CRS should override
         exporter.setVectorLayer(layer)
-        self.assertEqual(exporter.sourceCrs().authid(), 'EPSG:3111')
+        self.assertEqual(exporter.sourceCrs().authid(), "EPSG:3111")
 
         # test that exported feature is reprojected
         feature = QgsFeature(layer.fields(), 5)
         feature.setGeometry(QgsGeometry(QgsPoint(2502577, 2403869)))
-        feature.setAttributes(['test point'])
+        feature.setAttributes(["test point"])
 
         # low precision, only need rough coordinate to check and don't want to deal with rounding errors
         exporter.setPrecision(1)
@@ -631,11 +690,14 @@ class TestQgsJsonUtils(QgisTestCase):
         self.assertEqual(exporter.exportFeature(feature, indent=2), expected)
 
     def testExportFeatureRelations(self):
-        """ Test exporting a feature with relations """
+        """Test exporting a feature with relations"""
 
         # parent layer
-        parent = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer&field=foreignkey:integer",
-                                "parent", "memory")
+        parent = QgsVectorLayer(
+            "Point?field=fldtxt:string&field=fldint:integer&field=foreignkey:integer",
+            "parent",
+            "memory",
+        )
         pr = parent.dataProvider()
         pf1 = QgsFeature(432)
         pf1.setFields(parent.fields())
@@ -648,7 +710,9 @@ class TestQgsJsonUtils(QgisTestCase):
         # child layer
         child = QgsVectorLayer(
             "Point?field=x:string&field=y:integer&field=z:integer",
-            "referencedlayer", "memory")
+            "referencedlayer",
+            "memory",
+        )
         pr = child.dataProvider()
         f1 = QgsFeature()
         f1.setFields(child.fields())
@@ -664,11 +728,11 @@ class TestQgsJsonUtils(QgisTestCase):
         QgsProject.instance().addMapLayers([child, parent])
 
         rel = QgsRelation()
-        rel.setId('rel1')
-        rel.setName('relation one')
+        rel.setId("rel1")
+        rel.setName("relation one")
         rel.setReferencingLayer(child.id())
         rel.setReferencedLayer(parent.id())
-        rel.addFieldPair('y', 'foreignkey')
+        rel.addFieldPair("y", "foreignkey")
 
         QgsProject.instance().relationManager().addRelation(rel)
 
@@ -724,9 +788,13 @@ class TestQgsJsonUtils(QgisTestCase):
         self.assertEqual(exporter.exportFeature(pf2, indent=2), expected)
 
         # with field formatter
-        setup = QgsEditorWidgetSetup('ValueMap', {"map": {"apples": 123, "bananas": 124}})
+        setup = QgsEditorWidgetSetup(
+            "ValueMap", {"map": {"apples": 123, "bananas": 124}}
+        )
         child.setEditorWidgetSetup(1, setup)
-        parent.setEditorWidgetSetup(1, QgsEditorWidgetSetup('ValueMap', {"map": {"sixty-seven": 67}}))
+        parent.setEditorWidgetSetup(
+            1, QgsEditorWidgetSetup("ValueMap", {"map": {"sixty-seven": 67}})
+        )
         expected = """{
   "geometry": null,
   "id": 432,
@@ -814,7 +882,7 @@ class TestQgsJsonUtils(QgisTestCase):
         self.assertEqual(exporter.exportFeature(pf2, indent=2), expected)
 
     def testExportFeatures(self):
-        """ Test exporting feature collections """
+        """Test exporting feature collections"""
 
         fields = QgsFields()
         fields.append(QgsField("name", QVariant.String))
@@ -823,7 +891,7 @@ class TestQgsJsonUtils(QgisTestCase):
 
         feature = QgsFeature(fields, 5)
         feature.setGeometry(QgsGeometry(QgsPoint(5, 6)))
-        feature.setAttributes(['Valsier Peninsula', 6.8, 198])
+        feature.setAttributes(["Valsier Peninsula", 6.8, 198])
 
         exporter = QgsJsonExporter()
 
@@ -854,7 +922,7 @@ class TestQgsJsonUtils(QgisTestCase):
         # multiple features
         feature2 = QgsFeature(fields, 6)
         feature2.setGeometry(QgsGeometry(QgsPoint(7, 8)))
-        feature2.setAttributes(['Henry Gale Island', 9.7, 38])
+        feature2.setAttributes(["Henry Gale Island", 9.7, 38])
 
         expected = """{
   "features": [
@@ -896,18 +964,21 @@ class TestQgsJsonUtils(QgisTestCase):
         self.assertEqual(exporter.exportFeatures([feature, feature2], 2), expected)
 
     def testExportFeaturesWithLocale_regression20053(self):
-        """ Test exporting feature export with range widgets and locale different than C
+        """Test exporting feature export with range widgets and locale different than C
         Regression: https://github.com/qgis/QGIS/issues/27875 - decimal separator in csv files
         """
 
-        source = QgsVectorLayer("Point?field=name:string&field=cost:double&field=population:int&field=date:date",
-                                "parent", "memory")
+        source = QgsVectorLayer(
+            "Point?field=name:string&field=cost:double&field=population:int&field=date:date",
+            "parent",
+            "memory",
+        )
         self.assertTrue(source.isValid())
         fields = source.fields()
 
         feature = QgsFeature(fields, 5)
         feature.setGeometry(QgsGeometry(QgsPoint(5, 6)))
-        feature.setAttributes(['Valsier Peninsula', 6.8, 198000, '2018-09-10'])
+        feature.setAttributes(["Valsier Peninsula", 6.8, 198000, "2018-09-10"])
 
         exporter = QgsJsonExporter()
 
@@ -936,28 +1007,31 @@ class TestQgsJsonUtils(QgisTestCase):
 }"""
         self.assertEqual(exporter.exportFeatures([feature], 2), expected)
 
-        setup = QgsEditorWidgetSetup('Range', {
-            'AllowNull': True,
-            'Max': 2147483647,
-            'Min': -2147483648,
-            'Precision': 4,
-            'Step': 1,
-            'Style': 'SpinBox'
-        }
+        setup = QgsEditorWidgetSetup(
+            "Range",
+            {
+                "AllowNull": True,
+                "Max": 2147483647,
+                "Min": -2147483648,
+                "Precision": 4,
+                "Step": 1,
+                "Style": "SpinBox",
+            },
         )
         source.setEditorWidgetSetup(1, setup)
         source.setEditorWidgetSetup(2, setup)
 
-        QLocale.setDefault(QLocale('it'))
+        QLocale.setDefault(QLocale("it"))
         exporter.setVectorLayer(source)
         self.assertEqual(exporter.exportFeatures([feature], 2), expected)
 
     def testExportFieldAlias(self):
-        """ Test exporting a feature with fields' alias """
+        """Test exporting a feature with fields' alias"""
 
         # source layer
-        source = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
-                                "parent", "memory")
+        source = QgsVectorLayer(
+            "Point?field=fldtxt:string&field=fldint:integer", "parent", "memory"
+        )
         pr = source.dataProvider()
         pf1 = QgsFeature()
         pf1.setFields(source.fields())

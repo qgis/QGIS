@@ -5,16 +5,13 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Mathieu Pellerin'
-__date__ = '30/12/2021'
-__copyright__ = 'Copyright 2021, The QGIS Project'
+
+__author__ = "Mathieu Pellerin"
+__date__ = "30/12/2021"
+__copyright__ = "Copyright 2021, The QGIS Project"
 
 
-from qgis.core import (
-    Qgis,
-    QgsRectangle,
-    QgsScaleCalculator
-)
+from qgis.core import Qgis, QgsRectangle, QgsScaleCalculator
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -73,5 +70,5 @@ class TestQgsScaleCalculator(QgisTestCase):
         self.assertAlmostEqual(image_size.height(), 339.983, 3)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

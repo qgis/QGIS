@@ -45,9 +45,9 @@ class QgsHanaPrimaryKeyContext
   protected:
     QMutex mMutex; //!< Access to all data members is guarded by the mutex
 
-    QgsFeatureId mFidCounter = 0;                    // next feature id if map is used
-    QMap<QVariantList, QgsFeatureId> mKeyToFid;      // map key values to feature id
-    QMap<QgsFeatureId, QVariantList> mFidToKey;      // map feature id back to key values
+    QgsFeatureId mFidCounter = 0;               // next feature id if map is used
+    QMap<QVariantList, QgsFeatureId> mKeyToFid; // map key values to feature id
+    QMap<QgsFeatureId, QVariantList> mFidToKey; // map feature id back to key values
 };
 
 class QgsHanaPrimaryKeyUtils
@@ -60,12 +60,9 @@ class QgsHanaPrimaryKeyUtils
     static int fidToInt( QgsFeatureId id );
     static QgsFeatureId intToFid( int id );
     static QgsHanaPrimaryKeyType getPrimaryKeyType( const QgsField &field );
-    static QString buildWhereClause( const QgsFields &fields, QgsHanaPrimaryKeyType pkType,
-                                     const QList<int> &pkAttrs );
-    static QString buildWhereClause( QgsFeatureId featureId, const QgsFields &fields, QgsHanaPrimaryKeyType pkType,
-                                     const QList<int> &pkAttrs, QgsHanaPrimaryKeyContext &primaryKeyCntx );
-    static QString buildWhereClause( const QgsFeatureIds &featureIds, const QgsFields &fields, QgsHanaPrimaryKeyType pkType,
-                                     const QList<int> &pkAttrs, QgsHanaPrimaryKeyContext &primaryKeyCntx );
+    static QString buildWhereClause( const QgsFields &fields, QgsHanaPrimaryKeyType pkType, const QList<int> &pkAttrs );
+    static QString buildWhereClause( QgsFeatureId featureId, const QgsFields &fields, QgsHanaPrimaryKeyType pkType, const QList<int> &pkAttrs, QgsHanaPrimaryKeyContext &primaryKeyCntx );
+    static QString buildWhereClause( const QgsFeatureIds &featureIds, const QgsFields &fields, QgsHanaPrimaryKeyType pkType, const QList<int> &pkAttrs, QgsHanaPrimaryKeyContext &primaryKeyCntx );
     static QString buildUriKey( const QStringList &columns );
     static QStringList parseUriKey( const QString &key );
 };

@@ -2,5 +2,5 @@
 try:
     QgsPointCloudRgbRenderer.create = staticmethod(QgsPointCloudRgbRenderer.create)
     QgsPointCloudRgbRenderer.__group__ = ['pointcloud']
-except NameError:
+except (NameError, AttributeError):
     pass

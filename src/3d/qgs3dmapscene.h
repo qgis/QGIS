@@ -308,6 +308,8 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onStopUpdatesChanged();
     void on3DAxisSettingsChanged();
 
+    void onOriginChanged();
+
     bool updateCameraNearFarPlanes();
 
   private:

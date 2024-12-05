@@ -23,7 +23,6 @@
 #include "qgstessellator.h"
 #include "qgsphongtexturedmaterialsettings.h"
 
-#include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QPhongMaterial>
 
 #include <Qt3DExtras/QDiffuseMapMaterial>
@@ -40,6 +39,7 @@
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
 #include "qgsmessagelog.h"
+#include "qgsgeotransform.h"
 
 #include "qgslinevertexdata_p.h"
 #include "qgslinematerial_p.h"
@@ -262,9 +262,8 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
     renderer->setRestartIndexValue( 0 );
 
     // add transform (our geometry has coordinates relative to mChunkOrigin)
-    Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
-    QVector3D nodeTranslation = ( mChunkOrigin - context.origin() ).toVector3D();
-    tr->setTranslation( nodeTranslation );
+    QgsGeoTransform *tr = new QgsGeoTransform;
+    tr->setGeoTranslation( mChunkOrigin );
 
     // make entity
     entity->addComponent( renderer );
@@ -300,9 +299,8 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   renderer->setGeometry( geometry );
 
   // add transform (our geometry has coordinates relative to mChunkOrigin)
-  Qt3DCore::QTransform *tr = new Qt3DCore::QTransform;
-  QVector3D nodeTranslation = ( mChunkOrigin - context.origin() ).toVector3D();
-  tr->setTranslation( nodeTranslation );
+  QgsGeoTransform *tr = new QgsGeoTransform;
+  tr->setGeoTranslation( mChunkOrigin );
 
   // make entity
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;

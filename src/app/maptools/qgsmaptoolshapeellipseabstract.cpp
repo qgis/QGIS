@@ -30,7 +30,6 @@ void QgsMapToolShapeEllipseAbstract::addEllipseToParentTool()
   std::unique_ptr<QgsLineString> ls( mEllipse.toLineString( segments() ) );
 
   mParentTool->addCurve( ls.release() );
-
 }
 
 void QgsMapToolShapeEllipseAbstract::clean()

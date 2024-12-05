@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 ***************************************************************************
@@ -42,18 +41,19 @@
 ***************************************************************************
 """
 
-__author__ = 'Alessandro Pasotti'
-__date__ = 'May 2016'
+__author__ = "Alessandro Pasotti"
+__date__ = "May 2016"
 
+import importlib
 import os
 import re
+import signal
 import sys
 import traceback
-import signal
-import importlib
-from pexpect import run
-from pipes import quote
 
+from shlex import quote
+
+from pexpect import run
 from qgis.utils import iface
 
 
@@ -68,14 +68,17 @@ def __get_test_function(test_module_name):
     print("QGIS Test Runner - Trying to import %s" % test_module_name)
     try:
         test_module = importlib.import_module(test_module_name)
-        function_name = 'run_all'
+        function_name = "run_all"
     except ImportError as e:
         # traceback.print_exc(file=sys.stdout)
         # Strip latest name
-        pos = test_module_name.rfind('.')
+        pos = test_module_name.rfind(".")
         if pos <= 0:
             raise e
-        test_module_name, function_name = test_module_name[:pos], test_module_name[pos + 1:]
+        test_module_name, function_name = (
+            test_module_name[:pos],
+            test_module_name[pos + 1 :],
+        )
         print("QGIS Test Runner - Trying to import %s" % test_module_name)
         sys.stdout.flush()
         try:
@@ -93,47 +96,55 @@ if iface is None:
     sys.path.append(os.getcwd())
     test_module_name = sys.argv[-1]
     if __get_test_function(test_module_name) is None:
-        print("QGIS Test Runner - [ERROR] cannot load test function from %s" % test_module_name)
+        print(
+            "QGIS Test Runner - [ERROR] cannot load test function from %s"
+            % test_module_name
+        )
         sys.exit(1)
     try:
         me = __file__
     except NameError:
         me = sys.argv[0]
-    os.environ['QGIS_DEBUG'] = '1'
+    os.environ["QGIS_DEBUG"] = "1"
     args = [
-        'qgis',
-        os.environ.get('QGIS_EXTRA_OPTIONS', ''),
-        '--nologo',
-        '--noversioncheck',
-        '--code',
+        "qgis",
+        os.environ.get("QGIS_EXTRA_OPTIONS", ""),
+        "--nologo",
+        "--noversioncheck",
+        "--code",
         me,
         test_module_name,  # Must be the last one!
     ]
-    command_line = ' '.join(args)
+    command_line = " ".join(args)
     print("QGIS Test Runner - launching QGIS as %s ..." % command_line)
     out, returncode = run("sh -c " + quote(command_line), withexitstatus=1)
     if isinstance(out, bytes):
         out = out.decode("utf-8")
     assert returncode is not None
     print("QGIS Test Runner - QGIS exited.")
-    ok = out.find('(failures=') < 0 and \
-        len(re.findall(r'Ran \d+ tests in\s',
-                       out, re.MULTILINE)) > 0
-    print('=' * 60)
+    ok = (
+        out.find("(failures=") < 0
+        and len(re.findall(r"Ran \d+ tests in\s", out, re.MULTILINE)) > 0
+    )
+    print("=" * 60)
     if not ok:
         print(out)
     else:
         eprint(out)
     if len(out) == 0:
         print("QGIS Test Runner - [WARNING] subprocess returned no output")
-    print('=' * 60)
+    print("=" * 60)
 
-    print("QGIS Test Runner - %s bytes returned and finished with exit code: %s" % (len(out), 0 if ok else 1))
+    print(
+        "QGIS Test Runner - {} bytes returned and finished with exit code: {}".format(
+            len(out), 0 if ok else 1
+        )
+    )
     sys.exit(0 if ok else 1)
 
 else:  # We are inside QGIS!
     # Start as soon as the initializationCompleted signal is fired
-    from qgis.core import QgsApplication, QgsProjectBadLayerHandler, QgsProject
+    from qgis.core import QgsApplication, QgsProject, QgsProjectBadLayerHandler
     from qgis.PyQt.QtCore import QDir
     from qgis.utils import iface
 

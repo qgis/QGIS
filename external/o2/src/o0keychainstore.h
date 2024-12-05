@@ -22,13 +22,13 @@ class Job;
 class O0_EXPORT o0keyChainStore  : public  O0AbstractStore{
     Q_OBJECT
 public:
-    explicit o0keyChainStore(const QString& app,const QString& name,QObject *parent = 0);
+    explicit o0keyChainStore(const QString& app,const QString& name,QObject *parent = nullptr);
 
     /// Retrieve a string value by key.
-    QString value(const QString &key, const QString &defaultValue = QString());
+    QString value(const QString &key, const QString &defaultValue = QString()) override;
 
     /// Set a string value for a key.
-    void setValue(const QString &key, const QString &value);
+    void setValue(const QString &key, const QString &value) override;
 
     // The functions below return QKeychain::Error casted to int. They don't
     // return the enumerator directly because it can not be forward-declared reliably,

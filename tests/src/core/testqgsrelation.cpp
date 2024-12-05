@@ -28,13 +28,13 @@
  * \ingroup UnitTests
  * This is a unit test for the QgsRelation changing style
  */
-class TestQgsRelation: public QObject
+class TestQgsRelation : public QObject
 {
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testValidRelationAfterChangingStyle();
 };
 
@@ -67,7 +67,7 @@ void TestQgsRelation::testValidRelationAfterChangingStyle()
 
   QVERIFY( p->read( projectPath ) );
 
-  const auto layers { p->mapLayers().values( ) };
+  const auto layers { p->mapLayers().values() };
   for ( const auto &l : std::as_const( layers ) )
   {
     QVERIFY( l->isValid() );
@@ -105,7 +105,6 @@ void TestQgsRelation::testValidRelationAfterChangingStyle()
   }
 
   QVERIFY( valid );
-
 }
 
 QGSTEST_MAIN( TestQgsRelation )

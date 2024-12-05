@@ -63,9 +63,9 @@ QgsLayoutItemMapGrid.FrameSideFlag.__or__ = lambda flag1, flag2: QgsLayoutItemMa
 try:
     QgsLayoutItemMapGrid.__attribute_docs__ = {'crsChanged': "Emitted whenever the grid's CRS is changed.\n\n.. versionadded:: 3.18\n"}
     QgsLayoutItemMapGrid.__group__ = ['layout']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsLayoutItemMapGridStack.__group__ = ['layout']
-except NameError:
+except (NameError, AttributeError):
     pass

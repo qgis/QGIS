@@ -83,7 +83,7 @@ void QgsRenderingOptionsWidget::apply()
 // QgsRenderingOptionsFactory
 //
 QgsRenderingOptionsFactory::QgsRenderingOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "Rendering" ), QIcon(),   QStringLiteral( "rendering" ) )
+  : QgsOptionsWidgetFactory( tr( "Rendering" ), QIcon(), QStringLiteral( "rendering" ) )
 {
 }
 

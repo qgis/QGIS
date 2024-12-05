@@ -65,7 +65,6 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
 
     // refresh specified schema or all schemas if schema name is empty
     void refreshSchema( const QString &schema );
-
 };
 
 class QgsPGSchemaItem : public QgsDatabaseSchemaItem
@@ -105,9 +104,7 @@ class QgsPGLayerItem : public QgsLayerItem
 
   private:
     QgsPostgresLayerProperty mLayerProperty;
-
 };
-
 
 
 //! Provider for Postgres data item

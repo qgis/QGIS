@@ -32,22 +32,20 @@ QgsDevToolsPanelWidget::QgsDevToolsPanelWidget( const QList<QgsDevToolWidgetFact
   setupUi( this );
 
   mOptionsListWidget->setIconSize( QgisApp::instance()->iconSize( false ) );
-  mOptionsListWidget->setMaximumWidth( static_cast< int >( mOptionsListWidget->iconSize().width() * 1.18 ) );
+  mOptionsListWidget->setMaximumWidth( static_cast<int>( mOptionsListWidget->iconSize().width() * 1.18 ) );
 
 
   // Add embedded documentation
   mDocumentationPanel = new QgsDocumentationPanelWidget( this );
-  addToolWidget( mDocumentationPanel ) ;
+  addToolWidget( mDocumentationPanel );
 
   for ( QgsDevToolWidgetFactory *factory : factories )
     addToolFactory( factory );
 
-  connect( mOptionsListWidget, &QListWidget::currentRowChanged, this, [ = ]( int row )
-  {
+  connect( mOptionsListWidget, &QListWidget::currentRowChanged, this, [=]( int row ) {
     setCurrentTool( row );
     settingLastActiveTab->setValue( mOptionsListWidget->currentItem()->data( Qt::UserRole ).toString() );
   } );
-
 }
 
 QgsDevToolsPanelWidget::~QgsDevToolsPanelWidget() = default;
@@ -155,8 +153,7 @@ void QgsDevToolsPanelWidget::showApiDocumentation(
     if ( api == Qgis::DocumentationApi::PyQgis || api == Qgis::DocumentationApi::PyQgisSearch )
     {
       QgsSettings settings;
-      baseUrl = settings.value( QStringLiteral( "qgis/PyQgisApiUrl" ),
-                                QString( "https://qgis.org/pyqgis/%1/" ).arg( version ) ).toString();
+      baseUrl = settings.value( QStringLiteral( "qgis/PyQgisApiUrl" ), QString( "https://qgis.org/pyqgis/%1/" ).arg( version ) ).toString();
     }
     else
     {
@@ -168,8 +165,7 @@ void QgsDevToolsPanelWidget::showApiDocumentation(
       else
       {
         QgsSettings settings;
-        baseUrl = settings.value( QStringLiteral( "qgis/QgisApiUrl" ),
-                                  QString( "https://qgis.org/api/%1/" ).arg( version ) ).toString();
+        baseUrl = settings.value( QStringLiteral( "qgis/QgisApiUrl" ), QString( "https://qgis.org/api/%1/" ).arg( version ) ).toString();
       }
     }
   }
@@ -216,14 +212,13 @@ void QgsDevToolsPanelWidget::showApiDocumentation(
       {
         url = "file://" + QgsApplication::pkgDataPath() + "/doc/" + url;
       }
-      if ( QgsDockWidget *dock = QgisApp::instance()->findChild< QgsDockWidget * >( "DevTools" ) )
+      if ( QgsDockWidget *dock = QgisApp::instance()->findChild<QgsDockWidget *>( "DevTools" ) )
       {
         dock->setUserVisible( true );
       }
       showUrl( QUrl( url ) );
       break;
   }
-
 }
 
 void QgsDevToolsPanelWidget::showUrl( const QUrl &url )

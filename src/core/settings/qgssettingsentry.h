@@ -254,13 +254,13 @@ class CORE_EXPORT QgsSettingsEntryBase
 
     /**
      * Returns settings value with an optional default value override
-     * \deprecated QGIS 3.26. Use valueAsVariantWithDefaultOverride instead.
+     * \deprecated QGIS 3.26. Use valueAsVariantWithDefaultOverride() instead.
      */
     Q_DECL_DEPRECATED QVariant valueAsVariant( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const SIP_DEPRECATED;
 
     /**
      * Returns settings value with an optional default value override
-     * \deprecated QGIS 3.26. Use valueAsVariantWithDefaultOverride instead.
+     * \deprecated QGIS 3.26. Use valueAsVariantWithDefaultOverride() instead.
      */
     Q_DECL_DEPRECATED QVariant valueAsVariant( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const SIP_DEPRECATED;
 

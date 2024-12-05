@@ -73,7 +73,6 @@ class TestQgsLayerTree : public QObject
     void testInsertLayerBelow();
 
   private:
-
     QgsLayerTreeGroup *mRoot = nullptr;
 
     void testRendererLegend( QgsFeatureRenderer *renderer );
@@ -338,7 +337,7 @@ void TestQgsLayerTree::testRestrictedSymbolSize()
   QgsProject project;
   project.addMapLayer( vl );
 
-  QgsMarkerSymbol *symbol = static_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
+  QgsMarkerSymbol *symbol = static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) );
   symbol->setSize( 500.0 );
   symbol->setSizeUnit( Qgis::RenderUnit::MapUnits );
 
@@ -358,7 +357,7 @@ void TestQgsLayerTree::testRestrictedSymbolSize()
   m->setLegendMapViewData( 10, 96, 10 );
 
   const QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
-  const QSize minimumSize = static_cast< QgsSymbolLegendNode *>( nodes.at( 0 ) )->minimumIconSize();
+  const QSize minimumSize = static_cast<QgsSymbolLegendNode *>( nodes.at( 0 ) )->minimumIconSize();
   QCOMPARE( minimumSize.width(), expectedSize );
 
   //cleanup
@@ -422,7 +421,7 @@ void TestQgsLayerTree::testRestrictedSymbolSizeWithGeometryGenerator()
   m->setLegendMapViewData( 10, 96, 10 );
 
   const QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
-  const QSize minimumSize = static_cast< QgsSymbolLegendNode *>( nodes.at( 0 ) )->minimumIconSize();
+  const QSize minimumSize = static_cast<QgsSymbolLegendNode *>( nodes.at( 0 ) )->minimumIconSize();
   QCOMPARE( minimumSize.width(), expectedSize );
 
   //cleanup
@@ -463,13 +462,13 @@ void TestQgsLayerTree::testShowHideAllSymbolNodes()
     QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Checked );
   }
   //uncheck all and test that all nodes are unchecked
-  static_cast< QgsSymbolLegendNode * >( nodes.at( 0 ) )->uncheckAllItems();
+  static_cast<QgsSymbolLegendNode *>( nodes.at( 0 ) )->uncheckAllItems();
   for ( QgsLayerTreeModelLegendNode *ln : nodes )
   {
     QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Unchecked );
   }
   //check all and test that all nodes are checked
-  static_cast< QgsSymbolLegendNode * >( nodes.at( 0 ) )->checkAllItems();
+  static_cast<QgsSymbolLegendNode *>( nodes.at( 0 ) )->checkAllItems();
   for ( QgsLayerTreeModelLegendNode *ln : nodes )
   {
     QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Checked );
@@ -643,12 +642,12 @@ void TestQgsLayerTree::testRendererLegend( QgsFeatureRenderer *renderer )
   QgsLegendSymbolList symbolList = renderer->legendSymbolItems();
   for ( const QgsLegendSymbolItem &symbol : symbolList )
   {
-    QgsSymbolLegendNode *symbolNode = dynamic_cast< QgsSymbolLegendNode * >( m->findLegendNode( vl->id(), symbol.ruleKey() ) );
+    QgsSymbolLegendNode *symbolNode = dynamic_cast<QgsSymbolLegendNode *>( m->findLegendNode( vl->id(), symbol.ruleKey() ) );
     QVERIFY( symbolNode );
     QCOMPARE( symbolNode->symbol()->color(), symbol.symbol()->color() );
   }
   //try changing a symbol's color
-  QgsSymbolLegendNode *symbolNode = dynamic_cast< QgsSymbolLegendNode * >( m->findLegendNode( vl->id(), symbolList.at( 1 ).ruleKey() ) );
+  QgsSymbolLegendNode *symbolNode = dynamic_cast<QgsSymbolLegendNode *>( m->findLegendNode( vl->id(), symbolList.at( 1 ).ruleKey() ) );
   QVERIFY( symbolNode );
   QgsSymbol *newSymbol = symbolNode->symbol()->clone();
   newSymbol->setColor( QColor( 255, 255, 0 ) );
@@ -664,7 +663,7 @@ void TestQgsLayerTree::testRendererLegend( QgsFeatureRenderer *renderer )
   props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   renderer->setLegendSymbolItem( symbolList.at( 2 ).ruleKey(), QgsMarkerSymbol::createSimple( props ) );
   m->refreshLayerLegend( n );
-  symbolNode = dynamic_cast< QgsSymbolLegendNode * >( m->findLegendNode( vl->id(), symbolList.at( 2 ).ruleKey() ) );
+  symbolNode = dynamic_cast<QgsSymbolLegendNode *>( m->findLegendNode( vl->id(), symbolList.at( 2 ).ruleKey() ) );
   QVERIFY( symbolNode );
   QCOMPARE( symbolNode->symbol()->color(), QColor( 0, 255, 255 ) );
 
@@ -918,10 +917,7 @@ void TestQgsLayerTree::testSymbolText()
   scope->setVariable( QStringLiteral( "bbbb" ), QStringLiteral( "aaaa,bbbb,cccc" ) );
   context.appendScope( scope );
   nodes.at( 2 )->setUserLabel( QStringLiteral( "[% @bbbb %],[% 3+4 %]" ) );
-  QCOMPARE( settings.evaluateItemText( nodes.at( 2 )->data( Qt::DisplayRole ).toString(), context ), QStringList() << QStringLiteral( "aaaa" )
-            << QStringLiteral( "bbbb" )
-            << QStringLiteral( "cccc" )
-            << QStringLiteral( "7" ) );
+  QCOMPARE( settings.evaluateItemText( nodes.at( 2 )->data( Qt::DisplayRole ).toString(), context ), QStringList() << QStringLiteral( "aaaa" ) << QStringLiteral( "bbbb" ) << QStringLiteral( "cccc" ) << QStringLiteral( "7" ) );
   //cleanup
   delete m;
   delete root;
@@ -967,27 +963,27 @@ void TestQgsLayerTree::testRasterSymbolNode()
   QgsLayerTreeNode *secondGroup = mRoot->children()[1];
   QCOMPARE( secondGroup->depth(), 1 );
 
-  std::unique_ptr< QgsRasterLayer > rl = std::make_unique< QgsRasterLayer >( QStringLiteral( TEST_DATA_DIR ) + "/tenbytenraster.asc", QStringLiteral( "rl" ), QStringLiteral( "gdal" ) );
+  std::unique_ptr<QgsRasterLayer> rl = std::make_unique<QgsRasterLayer>( QStringLiteral( TEST_DATA_DIR ) + "/tenbytenraster.asc", QStringLiteral( "rl" ), QStringLiteral( "gdal" ) );
   QVERIFY( rl->isValid() );
 
-  const std::unique_ptr< QgsLayerTreeLayer > n = std::make_unique< QgsLayerTreeLayer >( rl.get() );
+  const std::unique_ptr<QgsLayerTreeLayer> n = std::make_unique<QgsLayerTreeLayer>( rl.get() );
 
   // not checkable
   QgsRasterSymbolLegendNode rasterNode( n.get(), QColor( 255, 0, 0 ), QStringLiteral( "my node" ), nullptr, false, QStringLiteral( "key" ), QStringLiteral( "parentKey" ) );
   QVERIFY( !rasterNode.isCheckable() );
   QCOMPARE( rasterNode.ruleKey(), QStringLiteral( "key" ) );
-  QCOMPARE( static_cast< int >( rasterNode.flags() ), static_cast< int >( Qt::ItemIsEnabled | Qt::ItemIsSelectable ) );
+  QCOMPARE( static_cast<int>( rasterNode.flags() ), static_cast<int>( Qt::ItemIsEnabled | Qt::ItemIsSelectable ) );
   QCOMPARE( rasterNode.data( Qt::DisplayRole ).toString(), QStringLiteral( "my node" ) );
-  QCOMPARE( rasterNode.data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) ).toInt(), static_cast< int >( QgsLayerTreeModelLegendNode::RasterSymbolLegend ) );
-  QCOMPARE( rasterNode.data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString(), QStringLiteral( "key" ) );
-  QCOMPARE( rasterNode.data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::ParentRuleKey ) ).toString(), QStringLiteral( "parentKey" ) );
+  QCOMPARE( rasterNode.data( static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) ).toInt(), static_cast<int>( QgsLayerTreeModelLegendNode::RasterSymbolLegend ) );
+  QCOMPARE( rasterNode.data( static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::RuleKey ) ).toString(), QStringLiteral( "key" ) );
+  QCOMPARE( rasterNode.data( static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::ParentRuleKey ) ).toString(), QStringLiteral( "parentKey" ) );
   QCOMPARE( rasterNode.data( Qt::CheckStateRole ), QVariant() );
   QVERIFY( !rasterNode.setData( true, Qt::CheckStateRole ) );
 
   // checkable
   const QgsRasterSymbolLegendNode rasterNode2( n.get(), QColor( 255, 0, 0 ), QStringLiteral( "my node" ), nullptr, true, QStringLiteral( "key" ), QStringLiteral( "parentKey" ) );
   QVERIFY( rasterNode2.isCheckable() );
-  QCOMPARE( static_cast< int >( rasterNode2.flags() ), static_cast< int >( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable ) );
+  QCOMPARE( static_cast<int>( rasterNode2.flags() ), static_cast<int>( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable ) );
 }
 
 void TestQgsLayerTree::testLayersEditable()
@@ -1008,20 +1004,20 @@ void TestQgsLayerTree::testLayersEditable()
   QgsLayerTreeLayer *nodeVl2 = nodeGrp->addLayer( vl2 );
   QgsLayerTreeLayer *nodeAl = nodeGrp->addLayer( al );
   QVERIFY( !QgsLayerTreeUtils::layersEditable( {} ) );
-  QVERIFY( !QgsLayerTreeUtils::layersEditable( {nodeVl1, nodeVl2} ) );
+  QVERIFY( !QgsLayerTreeUtils::layersEditable( { nodeVl1, nodeVl2 } ) );
   vl1->startEditing();
-  QVERIFY( QgsLayerTreeUtils::layersEditable( {nodeVl1} ) );
-  QVERIFY( QgsLayerTreeUtils::layersEditable( {nodeVl1, nodeVl2} ) );
-  QVERIFY( QgsLayerTreeUtils::layersEditable( {nodeVl2, nodeVl1 } ) );
+  QVERIFY( QgsLayerTreeUtils::layersEditable( { nodeVl1 } ) );
+  QVERIFY( QgsLayerTreeUtils::layersEditable( { nodeVl1, nodeVl2 } ) );
+  QVERIFY( QgsLayerTreeUtils::layersEditable( { nodeVl2, nodeVl1 } ) );
 
-  QVERIFY( QgsLayerTreeUtils::layersEditable( {nodeAl} ) );
-  QVERIFY( QgsLayerTreeUtils::layersEditable( {nodeAl, nodeVl1} ) );
-  QVERIFY( QgsLayerTreeUtils::layersEditable( {nodeAl, nodeVl2} ) );
+  QVERIFY( QgsLayerTreeUtils::layersEditable( { nodeAl } ) );
+  QVERIFY( QgsLayerTreeUtils::layersEditable( { nodeAl, nodeVl1 } ) );
+  QVERIFY( QgsLayerTreeUtils::layersEditable( { nodeAl, nodeVl2 } ) );
 
   // ignore layers which can't be toggled (the annotation layer)
-  QVERIFY( !QgsLayerTreeUtils::layersEditable( {nodeAl}, true ) );
-  QVERIFY( QgsLayerTreeUtils::layersEditable( {nodeAl, nodeVl1}, true ) );
-  QVERIFY( !QgsLayerTreeUtils::layersEditable( {nodeAl, nodeVl2}, true ) );
+  QVERIFY( !QgsLayerTreeUtils::layersEditable( { nodeAl }, true ) );
+  QVERIFY( QgsLayerTreeUtils::layersEditable( { nodeAl, nodeVl1 }, true ) );
+  QVERIFY( !QgsLayerTreeUtils::layersEditable( { nodeAl, nodeVl2 }, true ) );
 }
 
 void TestQgsLayerTree::testInsertLayerBelow()

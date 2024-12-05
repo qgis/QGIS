@@ -220,4 +220,3 @@ class TestQgsMapToolUtils
   private:
     QgsMapTool *mMapTool = nullptr;
 };
-

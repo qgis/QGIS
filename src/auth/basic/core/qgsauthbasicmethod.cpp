@@ -41,17 +41,8 @@ QgsAuthBasicMethod::QgsAuthBasicMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::DataSourceUri );
-  setDataProviders( QStringList()
-                    << QStringLiteral( "postgres" )
-                    << QStringLiteral( "oracle" )
-                    << QStringLiteral( "ows" )
-                    << QStringLiteral( "wfs" )  // convert to lowercase
-                    << QStringLiteral( "wcs" )
-                    << QStringLiteral( "wms" )
-                    << QStringLiteral( "ogr" )
-                    << QStringLiteral( "gdal" )
-                    << QStringLiteral( "proxy" ) );
-
+  setDataProviders( QStringList() << QStringLiteral( "postgres" ) << QStringLiteral( "oracle" ) << QStringLiteral( "ows" ) << QStringLiteral( "wfs" ) // convert to lowercase
+                                  << QStringLiteral( "wcs" ) << QStringLiteral( "wms" ) << QStringLiteral( "ogr" ) << QStringLiteral( "gdal" ) << QStringLiteral( "proxy" ) );
 }
 
 QString QgsAuthBasicMethod::key() const
@@ -70,8 +61,7 @@ QString QgsAuthBasicMethod::displayDescription() const
 }
 
 
-bool QgsAuthBasicMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
-    const QString &dataprovider )
+bool QgsAuthBasicMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider )
 {
   Q_UNUSED( dataprovider )
   const QgsAuthMethodConfig mconfig = getMethodConfig( authcfg );
@@ -91,8 +81,7 @@ bool QgsAuthBasicMethod::updateNetworkRequest( QNetworkRequest &request, const Q
   return true;
 }
 
-bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
-    const QString &dataprovider )
+bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg, const QString &dataprovider )
 {
   Q_UNUSED( dataprovider )
   const QMutexLocker locker( &mMutex );
@@ -129,9 +118,10 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     // save CAs to temp file
     const QString tempFileBase = QStringLiteral( "tmp_basic_%1.pem" );
     const QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
-                                 tempFileBase.arg( QUuid::createUuid().toString() ),
-                                 QgsAuthCertUtils::certsToPemText( cas ) );
-    if ( ! caFilePath.isEmpty() )
+      tempFileBase.arg( QUuid::createUuid().toString() ),
+      QgsAuthCertUtils::certsToPemText( cas )
+    );
+    if ( !caFilePath.isEmpty() )
     {
       caparam = "sslrootcert='" + caFilePath + "'";
     }
@@ -140,8 +130,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
   // Branch for OGR
   if ( dataprovider == QLatin1String( "ogr" ) || dataprovider == QLatin1String( "gdal" ) )
   {
-
-    if ( ! password.isEmpty() )
+    if ( !password.isEmpty() )
     {
       const QString fullUri( connectionItems.first() );
       QString uri( fullUri );
@@ -151,7 +140,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
         uri = uri.left( uri.indexOf( '|' ) );
       }
       // At least username must be set... password can be empty
-      if ( ! username.isEmpty() )
+      if ( !username.isEmpty() )
       {
         // Inject credentials
         if ( uri.startsWith( QLatin1String( "PG:" ) ) )
@@ -165,7 +154,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
           uri += QStringLiteral( " user='%1'" ).arg( username );
           uri += QStringLiteral( " password='%1'" ).arg( password );
           // add extra CAs
-          if ( ! caparam.isEmpty() )
+          if ( !caparam.isEmpty() )
           {
             uri += ' ' + caparam;
           }
@@ -223,7 +212,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
         else if ( uri.startsWith( QLatin1String( "OCI:" ) ) )
         {
           // OCI:userid/password@database_instance:table,table
-          uri = uri.replace( QLatin1String( "OCI:/" ),  QStringLiteral( "OCI:%1/%2" ).arg( username, password ) );
+          uri = uri.replace( QLatin1String( "OCI:/" ), QStringLiteral( "OCI:%1/%2" ).arg( username, password ) );
         }
         else if ( uri.startsWith( QLatin1String( "ODBC:" ) ) )
         {
@@ -237,8 +226,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
                   || uri.startsWith( "https://" )
                   || uri.startsWith( "/vsicurl/https://" )
                   || uri.startsWith( "ftp://" )
-                  || uri.startsWith( "/vsicurl/ftp://" )
-                )
+                  || uri.startsWith( "/vsicurl/ftp://" ) )
         {
           uri = uri.replace( QLatin1String( "://" ), QStringLiteral( "://%1:%2@" ).arg( username, password ) );
         }
@@ -254,7 +242,6 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
     {
       QgsDebugError( QStringLiteral( "Update URI items FAILED for authcfg: %1: password empty" ).arg( authcfg ) );
     }
-
   }
   else // Not-ogr
   {
@@ -282,7 +269,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
       connectionItems.append( passparam );
     }
     // add extra CAs
-    if ( ! caparam.isEmpty() )
+    if ( !caparam.isEmpty() )
     {
       const thread_local QRegularExpression sslcaRegExp( "^sslrootcert='.*" );
       const int sslcaindx = connectionItems.indexOf( sslcaRegExp );
@@ -417,6 +404,3 @@ QGISEXTERN QgsAuthMethodMetadata *authMethodMetadataFactory()
   return new QgsAuthBasicMethodMetadata();
 }
 #endif
-
-
-

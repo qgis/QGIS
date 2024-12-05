@@ -84,7 +84,7 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
   elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-scale" ), mVerticalScale );
   elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-group-index" ), mVerticalDatasetGroupIndex );
   elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-relative" ), mIsVerticalMagnitudeRelative ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  elemAdvancedSettings.setAttribute( QStringLiteral( "texture-type" ), mRenderingStyle );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "texture-type" ), static_cast< int >( mRenderingStyle ) );
   elemAdvancedSettings.appendChild( mColorRampShader.writeXml( doc, context ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "min-color-ramp-shader" ), mColorRampShader.minimumValue() );
   elemAdvancedSettings.setAttribute( QStringLiteral( "max-color-ramp-shader" ), mColorRampShader.maximumValue() );
@@ -284,6 +284,46 @@ int QgsMesh3DSymbol::levelOfDetailIndex() const
 void QgsMesh3DSymbol::setLevelOfDetailIndex( int lod )
 {
   mLevelOfDetailIndex = lod;
+}
+
+bool QgsMesh3DSymbol::operator==( const QgsMesh3DSymbol &other ) const
+{
+  if ( mAltClamping != other.mAltClamping
+       || mHeight != other.mHeight
+       || mAddBackFaces != other.mAddBackFaces
+       || mEnabled != other.mEnabled
+       || mCullingMode != other.mCullingMode
+       || mSmoothedTriangles != other.mSmoothedTriangles
+       || mWireframeEnabled != other.mWireframeEnabled
+       || !qgsDoubleNear( mWireframeLineWidth, other.mWireframeLineWidth )
+       || mWireframeLineColor != other.mWireframeLineColor
+       || mLevelOfDetailIndex != other.mLevelOfDetailIndex
+       || !qgsDoubleNear( mVerticalScale, other.mVerticalScale )
+       || mVerticalDatasetGroupIndex != other.mVerticalDatasetGroupIndex
+       || mIsVerticalMagnitudeRelative != other.mIsVerticalMagnitudeRelative
+       || mRenderingStyle != other.mRenderingStyle
+       || mColorRampShader != other.mColorRampShader
+       || mSingleColor != other.mSingleColor
+       || mArrowsEnabled != other.mArrowsEnabled
+       || !qgsDoubleNear( mArrowsSpacing, other.mArrowsSpacing )
+       || mArrowsFixedSize != other.mArrowsFixedSize
+       || mArrowsColor != other.mArrowsColor
+       || mMaximumTextureSize != other.mMaximumTextureSize )
+    return false;
+
+  if ( !mMaterialSettings->equals( other.materialSettings() ) )
+    return false;
+
+  // base class properties
+  if ( mDataDefinedProperties != other.mDataDefinedProperties )
+    return false;
+
+  return true;
+}
+
+bool QgsMesh3DSymbol::operator!=( const QgsMesh3DSymbol &other ) const
+{
+  return !( *this == other );
 }
 
 bool QgsMesh3DSymbol::isEnabled() const

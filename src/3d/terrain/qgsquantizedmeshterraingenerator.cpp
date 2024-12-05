@@ -18,6 +18,7 @@
 #include "qgschunkloader.h"
 #include "qgschunknode.h"
 #include "qgscoordinatetransform.h"
+#include "qgsgeotransform.h"
 #include "qgslogger.h"
 #include "qgsmesh3dentity_p.h"
 #include "qgsmeshlayerutils.h"
@@ -75,10 +76,10 @@ QgsQuantizedMeshTerrainChunkLoader::QgsQuantizedMeshTerrainChunkLoader( QgsTerra
   // Access terrain only on the original thread.
   Qgs3DMapSettings *map = terrain()->mapSettings();
   double vertScale = map->terrainVerticalScale();
-  QgsVector3D mapOrigin = map->origin();
   bool shadingEnabled = map->isTerrainShadingEnabled();
+  QgsVector3D chunkOrigin = node->box3D().center();
 
-  QThreadPool::globalInstance()->start( [ this, node, tileId, index, tileCrsToMapCrs, vertScale, mapOrigin, shadingEnabled ]()
+  QThreadPool::globalInstance()->start( [ this, node, tileId, index, tileCrsToMapCrs, vertScale, chunkOrigin, shadingEnabled ]()
   {
     if ( tileId == QgsQuantizedMeshIndex::ROOT_TILE_ID )
     {
@@ -99,7 +100,7 @@ QgsQuantizedMeshTerrainChunkLoader::QgsQuantizedMeshTerrainChunkLoader( QgsTerra
 
     QgsGltf3DUtils::EntityTransform entityTransform;
     entityTransform.tileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
-    entityTransform.sceneOriginTargetCrs = mapOrigin;
+    entityTransform.chunkOriginTargetCrs = chunkOrigin;
     entityTransform.ecefToTargetCrs = &tileCrsToMapCrs;
     entityTransform.gltfUpAxis = static_cast< Qgis::Axis >( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Y ) ).toInt() );
 
@@ -134,6 +135,11 @@ QgsQuantizedMeshTerrainChunkLoader::QgsQuantizedMeshTerrainChunkLoader( QgsTerra
       // We count on only having one mesh.
       Q_ASSERT( gltfEntity->children().size() == 1 );
       gltfEntity->children()[0]->setParent( terrainEntity );
+
+      QgsGeoTransform *transform = new QgsGeoTransform;
+      transform->setGeoTranslation( chunkOrigin );
+      terrainEntity->addComponent( transform );
+
       terrainEntity->moveToThread( QgsApplication::instance()->thread() );
       mEntity = terrainEntity;
     }

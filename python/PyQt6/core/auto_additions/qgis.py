@@ -2763,6 +2763,100 @@ Qgis.RasterRendererCapability.baseClass = Qgis
 Qgis.RasterRendererCapabilities = lambda flags=0: Qgis.RasterRendererCapability(flags)
 Qgis.RasterRendererCapabilities.baseClass = Qgis
 RasterRendererCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsRasterMinMaxOrigin.Limits = Qgis.RasterRangeLimit
+# monkey patching scoped based enum
+QgsRasterMinMaxOrigin.None_ = Qgis.RasterRangeLimit.NotSet
+QgsRasterMinMaxOrigin.Limits.None_ = Qgis.RasterRangeLimit.NotSet
+QgsRasterMinMaxOrigin.None_.is_monkey_patched = True
+QgsRasterMinMaxOrigin.None_.__doc__ = "User defined"
+QgsRasterMinMaxOrigin.MinMax = Qgis.RasterRangeLimit.MinimumMaximum
+QgsRasterMinMaxOrigin.Limits.MinMax = Qgis.RasterRangeLimit.MinimumMaximum
+QgsRasterMinMaxOrigin.MinMax.is_monkey_patched = True
+QgsRasterMinMaxOrigin.MinMax.__doc__ = "Real min-max values"
+QgsRasterMinMaxOrigin.StdDev = Qgis.RasterRangeLimit.StdDev
+QgsRasterMinMaxOrigin.StdDev.is_monkey_patched = True
+QgsRasterMinMaxOrigin.StdDev.__doc__ = "Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]"
+QgsRasterMinMaxOrigin.CumulativeCut = Qgis.RasterRangeLimit.CumulativeCut
+QgsRasterMinMaxOrigin.CumulativeCut.is_monkey_patched = True
+QgsRasterMinMaxOrigin.CumulativeCut.__doc__ = "Range is [ min + cumulativeCutLower() * (max - min), min + cumulativeCutUpper() * (max - min) ]"
+Qgis.RasterRangeLimit.__doc__ = """Describes the limits used to compute raster ranges (min/max values).
+
+.. note::
+
+   Prior to QGIS 3.42 this was available as :py:class:`QgsRasterMinMaxOrigin`.Limits
+
+.. versionadded:: 3.42
+
+* ``NotSet``: User defined
+
+  Available as ``QgsRasterMinMaxOrigin.None_`` in older QGIS releases.
+
+* ``MinimumMaximum``: Real min-max values
+
+  Available as ``QgsRasterMinMaxOrigin.MinMax`` in older QGIS releases.
+
+* ``StdDev``: Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]
+* ``CumulativeCut``: Range is [ min + cumulativeCutLower() * (max - min), min + cumulativeCutUpper() * (max - min) ]
+
+"""
+# --
+Qgis.RasterRangeLimit.baseClass = Qgis
+QgsRasterMinMaxOrigin.Extent = Qgis.RasterRangeExtent
+# monkey patching scoped based enum
+QgsRasterMinMaxOrigin.None_ = Qgis.RasterRangeExtent.WholeRaster
+QgsRasterMinMaxOrigin.Extent.None_ = Qgis.RasterRangeExtent.WholeRaster
+QgsRasterMinMaxOrigin.None_.is_monkey_patched = True
+QgsRasterMinMaxOrigin.None_.__doc__ = "Whole raster is used to compute statistics"
+QgsRasterMinMaxOrigin.CurrentCanvas = Qgis.RasterRangeExtent.FixedCanvas
+QgsRasterMinMaxOrigin.Extent.CurrentCanvas = Qgis.RasterRangeExtent.FixedCanvas
+QgsRasterMinMaxOrigin.CurrentCanvas.is_monkey_patched = True
+QgsRasterMinMaxOrigin.CurrentCanvas.__doc__ = "Current extent of the canvas (at the time of computation) is used to compute statistics"
+QgsRasterMinMaxOrigin.UpdatedCanvas = Qgis.RasterRangeExtent.UpdatedCanvas
+QgsRasterMinMaxOrigin.UpdatedCanvas.is_monkey_patched = True
+QgsRasterMinMaxOrigin.UpdatedCanvas.__doc__ = "Constantly updated extent of the canvas is used to compute statistics"
+Qgis.RasterRangeExtent.__doc__ = """Describes the extent used to compute raster ranges (min/max values).
+
+.. note::
+
+   Prior to QGIS 3.42 this was available as :py:class:`QgsRasterMinMaxOrigin`.Extent
+
+.. versionadded:: 3.42
+
+* ``WholeRaster``: Whole raster is used to compute statistics
+
+  Available as ``QgsRasterMinMaxOrigin.None_`` in older QGIS releases.
+
+* ``FixedCanvas``: Current extent of the canvas (at the time of computation) is used to compute statistics
+
+  Available as ``QgsRasterMinMaxOrigin.CurrentCanvas`` in older QGIS releases.
+
+* ``UpdatedCanvas``: Constantly updated extent of the canvas is used to compute statistics
+
+"""
+# --
+Qgis.RasterRangeExtent.baseClass = Qgis
+QgsRasterMinMaxOrigin.StatAccuracy = Qgis.RasterRangeAccuracy
+# monkey patching scoped based enum
+QgsRasterMinMaxOrigin.Exact = Qgis.RasterRangeAccuracy.Exact
+QgsRasterMinMaxOrigin.Exact.is_monkey_patched = True
+QgsRasterMinMaxOrigin.Exact.__doc__ = "Exact statistics"
+QgsRasterMinMaxOrigin.Estimated = Qgis.RasterRangeAccuracy.Estimated
+QgsRasterMinMaxOrigin.Estimated.is_monkey_patched = True
+QgsRasterMinMaxOrigin.Estimated.__doc__ = "Approximated statistics"
+Qgis.RasterRangeAccuracy.__doc__ = """Describes the accuracy used to compute raster ranges (min/max values).
+
+.. note::
+
+   Prior to QGIS 3.42 this was available as :py:class:`QgsRasterMinMaxOrigin`.StatAccuracy
+
+.. versionadded:: 3.42
+
+* ``Exact``: Exact statistics
+* ``Estimated``: Approximated statistics
+
+"""
+# --
+Qgis.RasterRangeAccuracy.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.RasterAttributeTableFieldUsage.Generic.__doc__ = "Field usage Generic"
 Qgis.RasterAttributeTableFieldUsage.PixelCount.__doc__ = "Field usage PixelCount"
@@ -10916,6 +11010,37 @@ Qgis.DocumentationBrowser.__doc__ = """Documentation API browser
 """
 # --
 Qgis.DocumentationBrowser.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.MouseHandlesAction.MoveItem.__doc__ = "Move item"
+Qgis.MouseHandlesAction.ResizeUp.__doc__ = "Resize up (Top handle)"
+Qgis.MouseHandlesAction.ResizeDown.__doc__ = "Resize down (Bottom handle)"
+Qgis.MouseHandlesAction.ResizeLeft.__doc__ = "Resize left (Left handle)"
+Qgis.MouseHandlesAction.ResizeRight.__doc__ = "Resize right (Right handle)"
+Qgis.MouseHandlesAction.ResizeLeftUp.__doc__ = "Resize left up (Top left handle)"
+Qgis.MouseHandlesAction.ResizeRightUp.__doc__ = "Resize right up (Top right handle)"
+Qgis.MouseHandlesAction.ResizeLeftDown.__doc__ = "Resize left down (Bottom left handle)"
+Qgis.MouseHandlesAction.ResizeRightDown.__doc__ = "Resize right down (Bottom right handle)"
+Qgis.MouseHandlesAction.SelectItem.__doc__ = "Select item"
+Qgis.MouseHandlesAction.NoAction.__doc__ = "No action"
+Qgis.MouseHandlesAction.__doc__ = """Action to be performed by the mouse handles
+
+.. versionadded:: 3.42
+
+* ``MoveItem``: Move item
+* ``ResizeUp``: Resize up (Top handle)
+* ``ResizeDown``: Resize down (Bottom handle)
+* ``ResizeLeft``: Resize left (Left handle)
+* ``ResizeRight``: Resize right (Right handle)
+* ``ResizeLeftUp``: Resize left up (Top left handle)
+* ``ResizeRightUp``: Resize right up (Top right handle)
+* ``ResizeLeftDown``: Resize left down (Bottom left handle)
+* ``ResizeRightDown``: Resize right down (Bottom right handle)
+* ``SelectItem``: Select item
+* ``NoAction``: No action
+
+"""
+# --
+Qgis.MouseHandlesAction.baseClass = Qgis
 try:
     Qgis.__attribute_docs__ = {'QGIS_DEV_VERSION': 'The development version', 'DEFAULT_SEARCH_RADIUS_MM': 'Identify search radius in mm', 'DEFAULT_MAPTOPIXEL_THRESHOLD': 'Default threshold between map coordinates and device coordinates for map2pixel simplification', 'DEFAULT_HIGHLIGHT_COLOR': 'Default highlight color.  The transparency is expected to only be applied to polygon\nfill. Lines and outlines are rendered opaque.', 'DEFAULT_HIGHLIGHT_BUFFER_MM': 'Default highlight buffer in mm.', 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': 'Default highlight line/stroke minimum width in mm.', 'SCALE_PRECISION': 'Fudge factor used to compare two scales. The code is often going from scale to scale\ndenominator. So it looses precision and, when a limit is inclusive, can lead to errors.\nTo avoid that, use this factor instead of using <= or >=.\n\n.. deprecated:: 3.40\n\n   No longer used by QGIS and will be removed in QGIS 4.0.', 'DEFAULT_Z_COORDINATE': 'Default Z coordinate value.\nThis value have to be assigned to the Z coordinate for the vertex.', 'DEFAULT_M_COORDINATE': 'Default M coordinate value.\nThis value have to be assigned to the M coordinate for the vertex.\n\n.. versionadded:: 3.20', 'UI_SCALE_FACTOR': 'UI scaling factor. This should be applied to all widget sizes obtained from font metrics,\nto account for differences in the default font sizes across different platforms.', 'DEFAULT_SNAP_TOLERANCE': 'Default snapping distance tolerance.', 'DEFAULT_SNAP_UNITS': 'Default snapping distance units.'}
     Qgis.version = staticmethod(Qgis.version)
@@ -10928,5 +11053,5 @@ try:
     Qgis.geosVersionMinor = staticmethod(Qgis.geosVersionMinor)
     Qgis.geosVersionPatch = staticmethod(Qgis.geosVersionPatch)
     Qgis.geosVersion = staticmethod(Qgis.geosVersion)
-except NameError:
+except (NameError, AttributeError):
     pass
