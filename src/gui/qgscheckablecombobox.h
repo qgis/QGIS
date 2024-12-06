@@ -209,7 +209,10 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
      * \see QgsCheckableItemModel
      * \since QGIS 3.16
      */
-    QgsCheckableItemModel *model() const SIP_SKIP { return mModel; }
+    QgsCheckableItemModel *model() const SIP_SKIP
+    {
+      return mModel;
+    }
 
     /**
      * Hides the list of items in the combobox if it is currently
