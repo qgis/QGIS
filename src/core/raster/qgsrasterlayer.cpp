@@ -2468,7 +2468,8 @@ bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &documen
       QDomElement labelingElement = mLabeling->save( document, context );
       layerElement.appendChild( labelingElement );
     }
-    layerElement.setAttribute( QStringLiteral( "labelsEnabled" ), mLabelsEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+    if ( mLabelsEnabled )
+      layerElement.setAttribute( QStringLiteral( "labelsEnabled" ), QStringLiteral( "1" ) );
   }
 
   // save map tip
