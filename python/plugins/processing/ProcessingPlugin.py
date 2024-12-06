@@ -380,11 +380,6 @@ class ProcessingPlugin(QObject):
         )
         self.sync_in_place_button_state()
 
-        # Sync project models
-        self.projectModelsMenu = None
-        self.projectMenuAction = None
-        self.projectMenuSeparator = None
-
         self.projectProvider = (
             QgsApplication.instance().processingRegistry().providerById("project")
         )
@@ -394,38 +389,32 @@ class ProcessingPlugin(QObject):
 
     def updateProjectModelMenu(self):
         """Add projects models to menu"""
-
-        if self.projectMenuAction is None:
-            self.projectModelsMenu = QMenu(self.tr("Models"))
-            self.projectMenuAction = self.iface.projectMenu().insertMenu(
-                self.iface.projectMenu().children()[-1], self.projectModelsMenu
-            )
-            self.projectMenuAction.setParent(self.projectModelsMenu)
-            self.iface.projectMenu().insertSeparator(self.projectMenuAction)
-
-        self.projectModelsMenu.clear()
+        self.iface.projectModelsMenu().clear()
 
         for model in self.projectProvider.algorithms():
-            modelSubMenu = self.projectModelsMenu.addMenu(model.name())
-            modelSubMenu.setParent(self.projectModelsMenu)
-            action = QAction(self.tr("Execute…"), modelSubMenu)
+            model_sub_menu = self.iface.createProjectModelSubMenu(model.name())
+
+            action = QAction(self.tr("Execute…"))
+            action.setParent(model_sub_menu)
             action.triggered.connect(
                 partial(
                     self.executeAlgorithm,
                     model.id(),
-                    self.projectModelsMenu,
+                    self.iface.projectModelsMenu(),
                     self.toolbox.in_place_mode,
                 )
             )
-            modelSubMenu.addAction(action)
+            model_sub_menu.addAction(action)
             if model.flags() & QgsProcessingAlgorithm.Flag.FlagSupportsBatch:
-                action = QAction(self.tr("Execute as Batch Process…"), modelSubMenu)
-                modelSubMenu.addAction(action)
-                action.triggered.connect(
+                action_batch = QAction(
+                    self.tr("Execute as Batch Process…"), model_sub_menu
+                )
+                model_sub_menu.addAction(action_batch)
+                action_batch.triggered.connect(
                     partial(
                         self.executeAlgorithm,
                         model.id(),
-                        self.projectModelsMenu,
+                        self.iface.projectModelsMenu(),
                         self.toolbox.in_place_mode,
                         True,
                     )
@@ -579,13 +568,6 @@ class ProcessingPlugin(QObject):
 
         removeButtons()
         removeMenus()
-
-        if self.projectMenuAction is not None:
-            self.iface.projectMenu().removeAction(self.projectMenuAction)
-            self.projectMenuAction = None
-        if self.projectMenuSeparator is not None:
-            self.iface.projectMenu().removeAction(self.projectMenuSeparator)
-            self.projectMenuSeparator = None
 
         QgsGui.historyProviderRegistry().providerById(
             "processing"

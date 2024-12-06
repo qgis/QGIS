@@ -282,6 +282,20 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void removeProjectExportAction( QAction *action ) = 0;
 
     /**
+     * Returns a reference to the main window "Projects" - "Models" submenu.
+     *
+     * \since QGIS 3.42
+     */
+    virtual QMenu *projectModelsMenu() = 0;
+
+    /**
+     * Creates a new project model submenu in the "Projects" - "Models" submenu.
+     *
+     * \since QGIS 3.42
+     */
+    virtual QMenu *createProjectModelSubMenu( const QString &title ) = 0;
+
+    /**
      * Returns a reference to the main window "Edit" menu.
      */
     virtual QMenu *editMenu() = 0;

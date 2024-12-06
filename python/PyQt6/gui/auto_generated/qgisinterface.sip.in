@@ -247,6 +247,20 @@ Adds an ``action`` to the QGIS "Export project" menu.
 .. versionadded:: 3.30
 %End
 
+    virtual QMenu *projectModelsMenu() = 0;
+%Docstring
+Returns a reference to the main window "Projects" - "Models" submenu.
+
+.. versionadded:: 3.42
+%End
+
+    virtual QMenu *createProjectModelSubMenu( const QString &title ) = 0;
+%Docstring
+Creates a new project model submenu in the "Projects" - "Models" submenu.
+
+.. versionadded:: 3.42
+%End
+
     virtual QMenu *editMenu() = 0;
 %Docstring
 Returns a reference to the main window "Edit" menu.

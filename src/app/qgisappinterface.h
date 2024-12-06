@@ -172,6 +172,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void removeProjectImportAction( QAction *action ) override;
     void addProjectExportAction( QAction *action ) override;
     void removeProjectExportAction( QAction *action ) override;
+    QMenu *projectModelsMenu() override;
+    QMenu *createProjectModelSubMenu( const QString &title ) override;
     QMenu *editMenu() override;
     QMenu *viewMenu() override;
     QMenu *layerMenu() override;
