@@ -46,7 +46,7 @@ class VectorLayerScatterplot(QgisAlgorithm):
     OUTPUT = "OUTPUT"
     XFIELD = "XFIELD"
     YFIELD = "YFIELD"
-    HOVERTEXT = 'HOVERTEXT'
+    HOVERTEXT = "HOVERTEXT"
     TITLE = "TITLE"
     XAXIS_TITLE = "XAXIS_TITLE"
     YAXIS_TITLE = "YAXIS_TITLE"
@@ -86,7 +86,7 @@ class VectorLayerScatterplot(QgisAlgorithm):
         self.addParameter(
             QgsProcessingParameterExpression(
                 self.HOVERTEXT,
-                self.tr('Hover text'),
+                self.tr("Hover text"),
                 parentLayerParameterName=self.INPUT,
                 optional=True,
             )
@@ -182,14 +182,22 @@ class VectorLayerScatterplot(QgisAlgorithm):
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        hoverexpression = self.parameterAsExpression(parameters, self.HOVERTEXT, context)
+        hoverexpression = self.parameterAsExpression(
+            parameters, self.HOVERTEXT, context
+        )
         if hoverexpression.strip() != "":
             exp_context = QgsExpressionContext()
-            vlayer = QgsProcessingUtils.mapLayerFromString(parameters[self.INPUT], context)
-            exp_context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(vlayer))
+            vlayer = QgsProcessingUtils.mapLayerFromString(
+                parameters[self.INPUT], context
+            )
+            exp_context.appendScopes(
+                QgsExpressionContextUtils.globalProjectLayerScopes(vlayer)
+            )
             hoverexpression = QgsExpression(hoverexpression)
             if hoverexpression.hasParserError():
-                feedback.reportError(f"Expression evaluation error: {hoverexpression.evalErrorString()}")
+                feedback.reportError(
+                    f"Expression evaluation error: {hoverexpression.evalErrorString()}"
+                )
                 hoverexpression = None
         else:
             hoverexpression = None
@@ -217,8 +225,10 @@ class VectorLayerScatterplot(QgisAlgorithm):
                 exp_context.setFeature(feature)
                 txt = str(hoverexpression.evaluate(exp_context))
                 if hoverexpression.hasEvalError():
-                    txt = ''
-                    feedback.reportError(f"Expression evaluation error: {hoverexpression.evalErrorString()}")
+                    txt = ""
+                    feedback.reportError(
+                        f"Expression evaluation error: {hoverexpression.evalErrorString()}"
+                    )
                 hovertext.append(str(txt))
 
         data = [go.Scatter(x=values[xfieldname], y=values[yfieldname], mode="markers")]
