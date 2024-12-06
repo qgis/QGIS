@@ -551,30 +551,30 @@ int QgsPointCloudLayerRenderer::renderNodesSorted( const QVector<QgsPointCloudNo
 
     for ( int i = 0; i < block->pointCount(); ++i )
     {
-      allByteArrays.append( ptr + i *recordSize, recordSize );
+      allByteArrays.append( ptr + i * recordSize, recordSize );
 
       // Calculate the translated values only for axes that have a different offset
       if ( offsetDifference.x() != 0 )
       {
-        qint32 ix = *reinterpret_cast< const qint32 * >( ptr + i *recordSize + context.xOffset() );
+        qint32 ix = *reinterpret_cast< const qint32 * >( ptr + i * recordSize + context.xOffset() );
         ix -= std::lround( offsetDifference.x() / context.scale().x() );
         const char *xPtr = reinterpret_cast< const char * >( &ix );
-        allByteArrays.replace( pointCount *recordSize + context.xOffset(), 4, QByteArray( xPtr, 4 ) );
+        allByteArrays.replace( pointCount * recordSize + context.xOffset(), 4, QByteArray( xPtr, 4 ) );
       }
       if ( offsetDifference.y() != 0 )
       {
-        qint32 iy = *reinterpret_cast< const qint32 * >( ptr + i *recordSize + context.yOffset() );
+        qint32 iy = *reinterpret_cast< const qint32 * >( ptr + i * recordSize + context.yOffset() );
         iy -= std::lround( offsetDifference.y() / context.scale().y() );
         const char *yPtr = reinterpret_cast< const char * >( &iy );
-        allByteArrays.replace( pointCount *recordSize + context.yOffset(), 4, QByteArray( yPtr, 4 ) );
+        allByteArrays.replace( pointCount * recordSize + context.yOffset(), 4, QByteArray( yPtr, 4 ) );
       }
       // We need the Z value regardless of the node's offset
-      qint32 iz = *reinterpret_cast< const qint32 * >( ptr + i *recordSize + context.zOffset() );
+      qint32 iz = *reinterpret_cast< const qint32 * >( ptr + i * recordSize + context.zOffset() );
       if ( offsetDifference.z() != 0 )
       {
         iz -= std::lround( offsetDifference.z() / context.scale().z() );
         const char *zPtr = reinterpret_cast< const char * >( &iz );
-        allByteArrays.replace( pointCount *recordSize + context.zOffset(), 4, QByteArray( zPtr, 4 ) );
+        allByteArrays.replace( pointCount * recordSize + context.zOffset(), 4, QByteArray( zPtr, 4 ) );
       }
       allPairs.append( qMakePair( pointCount, double( iz ) + block->offset().z() ) );
 
@@ -602,13 +602,13 @@ int QgsPointCloudLayerRenderer::renderNodesSorted( const QVector<QgsPointCloudNo
   QByteArray sortedByteArray;
   sortedByteArray.reserve( allPairs.size() );
   for ( QPair<int, double> pair : allPairs )
-    sortedByteArray.append( allByteArrays.mid( pair.first *recordSize, recordSize ) );
+    sortedByteArray.append( allByteArrays.mid( pair.first * recordSize, recordSize ) );
 
   std::unique_ptr<QgsPointCloudBlock> bigBlock { new QgsPointCloudBlock( pointCount,
-      blockAttributes,
-      sortedByteArray,
-      blockScale,
-      blockOffset ) };
+        blockAttributes,
+        sortedByteArray,
+        blockScale,
+        blockOffset ) };
 
   QgsVector3D contextScale = context.scale();
   QgsVector3D contextOffset = context.offset();
@@ -635,7 +635,7 @@ static void renderTriangle( QImage &img, QPointF *pts, QRgb c0, QRgb c1, QRgb c2
 {
   if ( horizontalFilter > 0 )
   {
-    float filterThreshold2 = horizontalFilter *horizontalFilter;
+    float filterThreshold2 = horizontalFilter * horizontalFilter;
     if ( isEdgeTooLong( pts[0], pts[1], filterThreshold2 ) ||
          isEdgeTooLong( pts[1], pts[2], filterThreshold2 ) ||
          isEdgeTooLong( pts[2], pts[0], filterThreshold2 ) )
@@ -669,9 +669,9 @@ static void renderTriangle( QImage &img, QPointF *pts, QRgb c0, QRgb c1, QRgb c2
         continue;
 
       // interpolate color
-      int r = static_cast<int>( red0 *lam1 + red1 *lam2 + red2 *lam3 );
-      int g = static_cast<int>( green0 *lam1 + green1 *lam2 + green2 *lam3 );
-      int b = static_cast<int>( blue0 *lam1 + blue1 *lam2 + blue2 *lam3 );
+      int r = static_cast<int>( red0 * lam1 + red1 * lam2 + red2 * lam3 );
+      int g = static_cast<int>( green0 * lam1 + green1 * lam2 + green2 * lam3 );
+      int b = static_cast<int>( blue0 * lam1 + blue1 * lam2 + blue2 * lam3 );
       scanLine[k] = qRgb( r, g, b );
 
       // interpolate elevation - in case we are doing global map shading

@@ -70,7 +70,7 @@ QgsPointCloudRenderer *QgsPointCloudExtentRenderer::create( QDomElement &element
 
 void QgsPointCloudExtentRenderer::renderExtent( const QgsGeometry &extent, QgsPointCloudRenderContext &context )
 {
-  auto transformRing = [&context]( QPolygonF &pts )
+  auto transformRing = [&context]( QPolygonF & pts )
   {
     //transform the QPolygonF to screen coordinates
     if ( context.renderContext().coordinateTransform().isValid() )

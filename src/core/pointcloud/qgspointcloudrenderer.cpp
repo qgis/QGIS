@@ -307,8 +307,8 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
     return selectedPoints;
   }
 
-  const double maxErrorInMapCoordinates = maxErrorPixels *mapUnitsPerPixel;
-  const double maxErrorInLayerCoordinates = maxErrorInMapCoordinates *layerExtentLayerCoords.width() / layerExtentMapCoords.width();
+  const double maxErrorInMapCoordinates = maxErrorPixels * mapUnitsPerPixel;
+  const double maxErrorInLayerCoordinates = maxErrorInMapCoordinates * layerExtentLayerCoords.width() / layerExtentMapCoords.width();
 
   QgsGeometry selectionGeometry = geometry;
   if ( geometry.type() == Qgis::GeometryType::Point )
