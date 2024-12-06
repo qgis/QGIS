@@ -17,7 +17,7 @@
 
 #include "qgsalgorithmmergevector.h"
 #include "qgsvectorlayer.h"
-#include "qgsprocessingparameters.h" 
+#include "qgsprocessingparameters.h"
 ///@cond PRIVATE
 
 QString QgsMergeVectorAlgorithm::name() const
@@ -52,8 +52,7 @@ void QgsMergeVectorAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Merged" ) ) );
 
   // new boolean parameter to add source layer information
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "ADD_SOURCE_FIELDS" ),
-  QObject::tr( "Add source layer information (layer name and path)" ), true ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "ADD_SOURCE_FIELDS" ), QObject::tr( "Add source layer information (layer name and path)" ), true ) );
 }
 
 QString QgsMergeVectorAlgorithm::shortDescription() const
@@ -192,20 +191,20 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
 
   bool addLayerField = false;
   bool addPathField = false;
-  if ( addSourceFields )  // add source layer information
-{
-  if ( outputFields.lookupField( QStringLiteral( "layer" ) ) < 0 )
+  if ( addSourceFields ) // add source layer information
   {
-    outputFields.append( QgsField( QStringLiteral( "layer" ), QMetaType::Type::QString, QString() ) );
-    addLayerField = true;
+    if ( outputFields.lookupField( QStringLiteral( "layer" ) ) < 0 )
+    {
+      outputFields.append( QgsField( QStringLiteral( "layer" ), QMetaType::Type::QString, QString() ) );
+      addLayerField = true;
+    }
+
+    if ( outputFields.lookupField( QStringLiteral( "path" ) ) < 0 )
+    {
+      outputFields.append( QgsField( QStringLiteral( "path" ), QMetaType::Type::QString, QString() ) );
+      addPathField = true;
+    }
   }
-  
-  if ( outputFields.lookupField( QStringLiteral( "path" ) ) < 0 )
-  {
-    outputFields.append( QgsField( QStringLiteral( "path" ), QMetaType::Type::QString, QString() ) );
-    addPathField = true;
-  }
-}
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, outputType, outputCrs, QgsFeatureSink::RegeneratePrimaryKey ) );
@@ -269,16 +268,16 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
       QgsAttributes destAttributes;
       for ( const QgsField &destField : outputFields )
       {
-          if ( addLayerField && destField.name() == QLatin1String( "layer" ) )
-          {
-            destAttributes.append( layerName );
-            continue;
-          }
-          else if ( addPathField && destField.name() == QLatin1String( "path" ) )
-          {
-            destAttributes.append( layerSource );
-            continue;
-          }
+        if ( addLayerField && destField.name() == QLatin1String( "layer" ) )
+        {
+          destAttributes.append( layerName );
+          continue;
+        }
+        else if ( addPathField && destField.name() == QLatin1String( "path" ) )
+        {
+          destAttributes.append( layerSource );
+          continue;
+        }
 
         QVariant destAttribute;
         const int sourceIndex = layerFields.lookupField( destField.name() );
