@@ -178,6 +178,13 @@ class TestQgsRasterLabeling(QgisTestCase):
         mapsettings.setOutputSize(QSize(400, 400))
         mapsettings.setOutputDpi(96)
         mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
+        transform_context = mapsettings.transformContext()
+        transform_context.addCoordinateOperation(
+            raster_layer.crs(),
+            QgsCoordinateReferenceSystem("EPSG:3857"),
+            "+proj=pipeline +step +inv +proj=utm +zone=11 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-10 +y=158 +z=187 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84",
+        )
+        mapsettings.setTransformContext(transform_context)
         mapsettings.setExtent(
             QgsRectangle(-13095009.8, 4014898.9, -13094808.4, 4015061.7)
         )
@@ -209,6 +216,13 @@ class TestQgsRasterLabeling(QgisTestCase):
         mapsettings.setOutputDpi(96)
         mapsettings.setRotation(45)
         mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
+        transform_context = mapsettings.transformContext()
+        transform_context.addCoordinateOperation(
+            raster_layer.crs(),
+            QgsCoordinateReferenceSystem("EPSG:3857"),
+            "+proj=pipeline +step +inv +proj=utm +zone=11 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-10 +y=158 +z=187 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84",
+        )
+        mapsettings.setTransformContext(transform_context)
         mapsettings.setExtent(
             QgsRectangle(-13095009.8, 4014898.9, -13094808.4, 4015061.7)
         )
@@ -240,6 +254,13 @@ class TestQgsRasterLabeling(QgisTestCase):
         raster_layer.setLabelsEnabled(True)
 
         mapsettings = QgsMapSettings()
+        transform_context = mapsettings.transformContext()
+        transform_context.addCoordinateOperation(
+            raster_layer.crs(),
+            QgsCoordinateReferenceSystem("EPSG:3857"),
+            "+proj=pipeline +step +inv +proj=utm +zone=11 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-10 +y=158 +z=187 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84",
+        )
+        mapsettings.setTransformContext(transform_context)
         mapsettings.setOutputSize(QSize(400, 400))
         mapsettings.setOutputDpi(96)
         mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
