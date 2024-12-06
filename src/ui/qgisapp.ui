@@ -62,6 +62,11 @@
      <addaction name="separator"/>
      <addaction name="mActionDwgImport"/>
     </widget>
+    <widget class="QMenu" name="mMenuProjectModels">
+     <property name="title">
+      <string>Models</string>
+     </property>
+    </widget>
     <addaction name="mActionNewProject"/>
     <addaction name="mProjectFromTemplateMenu"/>
     <addaction name="separator"/>
@@ -84,6 +89,8 @@
     <addaction name="mActionNewReport"/>
     <addaction name="mActionShowLayoutManager"/>
     <addaction name="mLayoutsMenu"/>
+    <addaction name="separator"/>
+    <addaction name="mMenuProjectModels"/>
     <addaction name="separator"/>
     <addaction name="mActionExit"/>
    </widget>

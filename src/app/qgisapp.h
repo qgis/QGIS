@@ -665,6 +665,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Menus
     QMenu *projectMenu() { return mProjectMenu; }
     QMenu *projectImportExportMenu() { return menuImport_Export; }
+    QMenu *projectModelsMenu() { return mMenuProjectModels; }
     QMenu *editMenu() { return mEditMenu; }
     QMenu *viewMenu() { return mViewMenu; }
     QMenu *layerMenu() { return mLayerMenu; }
