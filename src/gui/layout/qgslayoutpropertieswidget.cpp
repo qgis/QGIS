@@ -87,7 +87,7 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   connect( mLeftMarginSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
   connect( mResizePageButton, &QPushButton::clicked, this, &QgsLayoutPropertiesWidget::resizeToContents );
 
-  connect( mResolutionSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::dpiChanged );
+  connect( mResolutionSpinBox, &QSpinBox::editingFinished, this, [this] { dpiChanged( mResolutionSpinBox->value() ); } );
 
   mReferenceMapComboBox->setCurrentLayout( mLayout );
   mReferenceMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
