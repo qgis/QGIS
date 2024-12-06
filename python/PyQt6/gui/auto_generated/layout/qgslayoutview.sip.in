@@ -270,15 +270,7 @@ Returns the delta (in layout coordinates) by which to move items
 for the given key ``event``.
 %End
 
-    void setPaintingEnabled( bool enabled );
-%Docstring
-Sets whether widget repainting should be allowed for the view. This is
-used to temporarily halt painting while exporting layouts.
 
-.. note::
-
-   Not available in Python bindings.
-%End
     void setSectionLabel( const QString &label );
 %Docstring
 Sets a section ``label``, to display above the first page shown in the

@@ -180,7 +180,10 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      *
      * \note not available in Python bindings
      */
-    QgsPropertyCollection &dataDefinedProperties() SIP_SKIP { return mPropertyCollection; }
+    QgsPropertyCollection &dataDefinedProperties() SIP_SKIP
+    {
+      return mPropertyCollection;
+    }
 
     /**
      * Returns a reference to the editor widget's property collection, used for data defined overrides.

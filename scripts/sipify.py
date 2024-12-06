@@ -2503,6 +2503,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     if match:
         flags = match.group(2)
         flag = CONTEXT.qflag_hash.get(flags)
+        if flag is None:
+            exit_with_error(f"error reading flags: {flags}")
         CONTEXT.current_line = (
             f"{match.group(1)}QFlags<{flag}> operator|({flag} f1, QFlags<{flag}> f2);\n"
         )

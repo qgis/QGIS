@@ -64,17 +64,16 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      * Flags for predefined CRS options shown in widget.
      * \since QGIS 3.36
      */
-    Q_DECLARE_FLAGS( CrsOptions, CrsOption )
-    SIP_SKIP;
+    SIP_SKIP Q_DECLARE_FLAGS( CrsOptions, CrsOption )
 
-    /**
+      /**
      * Constructor for QgsProjectionSelectionWidget, with the specified \a parent widget.
      *
      * Since QGIS 3.36, the optional \a filter argument can be used to specify filters on the systems
      * shown in the widget. The default is to show all horizontal and compound CRS in order to match
      * the behavior of older QGIS releases. The \a filter can be altered to also include vertical CRS if desired.
      */
-    explicit QgsProjectionSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
+      explicit QgsProjectionSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 
     /**
      * Returns the currently selected CRS for the widget
@@ -260,9 +259,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     void updateWarning();
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProjectionSelectionWidget::CrsOptions )
-SIP_SKIP
-
+SIP_SKIP Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProjectionSelectionWidget::CrsOptions );
 
 ///@cond PRIVATE
 

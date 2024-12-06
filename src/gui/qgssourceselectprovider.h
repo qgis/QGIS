@@ -60,7 +60,8 @@ class GUI_EXPORT QgsSourceSelectProvider
     Q_DECLARE_FLAGS( Capabilities, Capability )
     Q_FLAG( Capabilities )
 
-    virtual ~QgsSourceSelectProvider() = default;
+    virtual ~QgsSourceSelectProvider()
+      = default;
 
     //! Data Provider key
     virtual QString providerKey() const = 0;

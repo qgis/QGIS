@@ -32,10 +32,7 @@ A widget for selecting a projection.
       CrsNotSet,
     };
 
-    typedef QFlags<QgsProjectionSelectionWidget::CrsOption> CrsOptions;
-
-
-    explicit QgsProjectionSelectionWidget( QWidget *parent /TransferThis/ = 0, QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
+      explicit QgsProjectionSelectionWidget( QWidget *parent /TransferThis/ = 0, QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 %Docstring
 Constructor for QgsProjectionSelectionWidget, with the specified ``parent`` widget.
 
@@ -212,8 +209,6 @@ Opens the dialog for selecting a new CRS
 
 
 };
-
-QFlags<QgsProjectionSelectionWidget::CrsOption> operator|(QgsProjectionSelectionWidget::CrsOption f1, QFlags<QgsProjectionSelectionWidget::CrsOption> f2);
 
 
 
