@@ -27,7 +27,6 @@ Base class for "layer properties" dialogs, containing common utilities for handl
 %End
   public:
 
-
     QgsLayerPropertiesDialog( QgsMapLayer *layer, QgsMapCanvas *canvas, const QString &settingsKey, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsSettings *settings = 0 );
 %Docstring
 Constructor for QgsLayerPropertiesDialog.
@@ -130,7 +129,6 @@ Reloads the default style for the layer.
 %End
 
   protected:
-
     void initialize();
 %Docstring
 Initialize the dialog. Must be called in the subclass constructor

@@ -197,12 +197,14 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
     /**
      * Resets the dialog to the current layer state.
       */
-    virtual void syncToLayer() SIP_SKIP = 0;
+    virtual void syncToLayer() SIP_SKIP
+    = 0;
 
     /**
      * Applies the dialog settings to the layer.
      */
-    virtual void apply() SIP_SKIP = 0;
+    virtual void apply() SIP_SKIP
+    = 0;
 
     /**
      * Rolls back changes made to the layer.

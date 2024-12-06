@@ -152,7 +152,8 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     Q_FLAG( Flags )
 
     //! Indicator index for search results
-    static constexpr int SEARCH_RESULT_INDICATOR = QsciScintilla::INDIC_MAX - 1;
+    static constexpr int SEARCH_RESULT_INDICATOR
+      = QsciScintilla::INDIC_MAX - 1;
 
     /**
      * Construct a new code editor.

@@ -18,7 +18,6 @@ Base class for widgets for pages included in the options dialog.
 #include "qgsoptionswidgetfactory.h"
 %End
   public:
-
     QgsOptionsPageWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsOptionsPageWidget.
@@ -63,7 +62,6 @@ Called to cancel settings changed in the options page (e.g. save them to
 %End
 
   protected:
-
     void registerHighlightWidget( QgsOptionsDialogHighlightWidget *highlightWidget );
 %Docstring
 Register a highlight widget to be used to search and highlight text in
@@ -80,7 +78,6 @@ class QgsOptionsWidgetFactory : QObject
 #include "qgsoptionswidgetfactory.h"
 %End
   public:
-
     QgsOptionsWidgetFactory();
 
     QgsOptionsWidgetFactory( const QString &title, const QIcon &icon, const QString &key = QString() );
