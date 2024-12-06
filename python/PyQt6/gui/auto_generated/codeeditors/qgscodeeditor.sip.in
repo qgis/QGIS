@@ -98,11 +98,7 @@ A text editor based on QScintilla2.
     typedef QFlags<QgsCodeEditor::Flag> Flags;
 
 
-    static const int SEARCH_RESULT_INDICATOR
-%Docstring
-Indicator index for search results
-%End
-      = QsciScintilla::INDIC_MAX - 1;
+    static const int SEARCH_RESULT_INDICATOR;
 
     QgsCodeEditor( QWidget *parent /TransferThis/ = 0, const QString &title = QString(), bool folding = false, bool margin = false, QgsCodeEditor::Flags flags = QgsCodeEditor::Flags(), QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
 %Docstring
