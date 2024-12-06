@@ -625,7 +625,7 @@ class GUI_EXPORT QgsLayoutView : public QGraphicsView
     QGraphicsLineItem *createSnapLine() const;
 
     //! recently used extent
-    QList <QPair<QPointF, QTransform>> mLastTransform;
+    QList<QPair<QPointF, QTransform>> mLastTransform;
     int mLastTransformIndex = -1;
 };
 

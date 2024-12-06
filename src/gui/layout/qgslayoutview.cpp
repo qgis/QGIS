@@ -633,7 +633,6 @@ void QgsLayoutView::emitZoomLevelChanged()
 
 void QgsLayoutView::onExtentChanged()
 {
-
   //clear all transforms items after current index
   mLastTransform = mLastTransform.mid( 0, mLastTransformIndex + 1 );
 
@@ -641,7 +640,7 @@ void QgsLayoutView::onExtentChanged()
 
   if ( mLastTransform.isEmpty() || mLastTransform.last().second != transform() || mLastTransform.last().first != center )
   {
-    mLastTransform.append( {center, transform()} );
+    mLastTransform.append( { center, transform() } );
   }
 
   // adjust history to no more than 100
@@ -1048,7 +1047,6 @@ void QgsLayoutView::mouseReleaseEvent( QMouseEvent *event )
 
   if ( !mTool || !event->isAccepted() )
   {
-
     if ( event->button() == Qt::BackButton )
     {
       zoomLast();
@@ -1337,7 +1335,6 @@ bool QgsLayoutView::eventFilter( QObject *object, QEvent *event )
     emit extentChanged();
   }
   return QGraphicsView::eventFilter( object, event );
-
 }
 
 QGraphicsLineItem *QgsLayoutView::createSnapLine() const
