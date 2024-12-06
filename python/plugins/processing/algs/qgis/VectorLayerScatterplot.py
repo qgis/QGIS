@@ -27,6 +27,12 @@ from qgis.core import (
     QgsProcessingParameterFileDestination,
     QgsProcessingParameterString,
     QgsProcessingParameterBoolean,
+    QgsProcessingParameterExpression,
+    QgsExpression,
+    QgsExpressionContext,
+    QgsExpressionContextUtils,
+    QgsProcessingUtils,
+    QgsFeatureRequest,
 )
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -40,6 +46,7 @@ class VectorLayerScatterplot(QgisAlgorithm):
     OUTPUT = "OUTPUT"
     XFIELD = "XFIELD"
     YFIELD = "YFIELD"
+    HOVERTEXT = 'HOVERTEXT'
     TITLE = "TITLE"
     XAXIS_TITLE = "XAXIS_TITLE"
     YAXIS_TITLE = "YAXIS_TITLE"
@@ -73,6 +80,15 @@ class VectorLayerScatterplot(QgisAlgorithm):
                 self.tr("Y attribute"),
                 parentLayerParameterName=self.INPUT,
                 type=QgsProcessingParameterField.DataType.Numeric,
+            )
+        )
+
+        self.addParameter(
+            QgsProcessingParameterExpression(
+                self.HOVERTEXT,
+                self.tr('Hover text'),
+                parentLayerParameterName=self.INPUT,
+                optional=True,
             )
         )
 
@@ -166,7 +182,45 @@ class VectorLayerScatterplot(QgisAlgorithm):
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        values = vector.values(source, xfieldname, yfieldname)
+        hoverexpression = self.parameterAsExpression(parameters, self.HOVERTEXT, context)
+        if hoverexpression.strip() != "":
+            exp_context = QgsExpressionContext()
+            vlayer = QgsProcessingUtils.mapLayerFromString(parameters[self.INPUT], context)
+            exp_context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(vlayer))
+            hoverexpression = QgsExpression(hoverexpression)
+            if hoverexpression.hasParserError():
+                feedback.reportError(f"Expression evaluation error: {hoverexpression.evalErrorString()}")
+                hoverexpression = None
+        else:
+            hoverexpression = None
+
+        if xfieldname == yfieldname:
+            fields = [xfieldname]
+        else:
+            fields = [xfieldname, yfieldname]
+
+        values = {}
+        hovertext = []
+
+        for field in fields:
+            values[field] = []
+
+        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry)
+        for feature in source.getFeatures(request):
+            for field in fields:
+                try:
+                    v = float(feature[field])
+                except ValueError:
+                    v = None
+                values[field].append(v)
+            if hoverexpression:
+                exp_context.setFeature(feature)
+                txt = str(hoverexpression.evaluate(exp_context))
+                if hoverexpression.hasEvalError():
+                    txt = ''
+                    feedback.reportError(f"Expression evaluation error: {hoverexpression.evalErrorString()}")
+                hovertext.append(str(txt))
+
         data = [go.Scatter(x=values[xfieldname], y=values[yfieldname], mode="markers")]
         fig = go.Figure(
             data=data,
@@ -180,6 +234,9 @@ class VectorLayerScatterplot(QgisAlgorithm):
 
         if yaxis_log:
             fig.update_yaxes(type="log")
+
+        if hoverexpression:
+            fig.update_traces(text=hovertext)
 
         fig.write_html(output)
 
