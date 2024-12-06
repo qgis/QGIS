@@ -114,7 +114,8 @@ UseTab:       Never
 Macros:
   - SIP_ENUM_BASETYPE(x)=x
   - SIP_MONKEYPATCH_SCOPEENUM_UNNEST(x,y)=x
-
+AttributeMacros:
+  - SIP_SKIP
 ---
 
 Language:        ObjC
