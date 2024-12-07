@@ -137,7 +137,7 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
      * should be created. The default behavior is to return NULLPTR.
      * \see createRubberBand()
      */
-    virtual QAbstractGraphicsShapeItem *createNodeRubberBand( QgsLayoutView *view ) SIP_TRANSFERBACK;
+    virtual QGraphicsItem *createNodeRubberBand( QgsLayoutView *view ) SIP_TRANSFERBACK;
 
     /**
      * Creates an instance of the corresponding item type.
@@ -176,7 +176,7 @@ typedef std::function<QgsLayoutItemBaseWidget *( QgsLayoutItem * )> QgsLayoutIte
 typedef std::function<QgsLayoutViewRubberBand *( QgsLayoutView * )> QgsLayoutItemRubberBandFunc SIP_SKIP;
 
 //! Layout node based rubber band creation function
-typedef std::function<QAbstractGraphicsShapeItem *( QgsLayoutView * )> QgsLayoutNodeItemRubberBandFunc SIP_SKIP;
+typedef std::function<QGraphicsItem *( QgsLayoutView * )> QgsLayoutNodeItemRubberBandFunc SIP_SKIP;
 
 //! Layout item added to layout callback
 typedef std::function<void( QgsLayoutItem *, const QVariantMap & )> QgsLayoutItemAddedToLayoutFunc SIP_SKIP;
@@ -290,7 +290,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
     QIcon creationIcon() const override { return mIcon.isNull() ? QgsLayoutItemAbstractGuiMetadata::creationIcon() : mIcon; }
     QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) override { return mWidgetFunc ? mWidgetFunc( item ) : nullptr; }
     QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) override { return mRubberBandFunc ? mRubberBandFunc( view ) : nullptr; }
-    QAbstractGraphicsShapeItem *createNodeRubberBand( QgsLayoutView *view ) override { return mNodeRubberBandFunc ? mNodeRubberBandFunc( view ) : nullptr; }
+    QGraphicsItem *createNodeRubberBand( QgsLayoutView *view ) override { return mNodeRubberBandFunc ? mNodeRubberBandFunc( view ) : nullptr; }
 
     QgsLayoutItem *createItem( QgsLayout *layout ) override;
     void newItemAddedToLayout( QgsLayoutItem *item ) override;
@@ -494,7 +494,7 @@ class GUI_EXPORT QgsLayoutItemGuiRegistry : public QObject
      * \see createItemRubberBand()
      * \note not available from Python bindings
      */
-    QAbstractGraphicsShapeItem *createNodeItemRubberBand( int metadataId, QgsLayoutView *view ) SIP_SKIP;
+    QGraphicsItem *createNodeItemRubberBand( int metadataId, QgsLayoutView *view ) SIP_SKIP;
 
     /**
      * Returns a list of available item metadata ids handled by the registry.

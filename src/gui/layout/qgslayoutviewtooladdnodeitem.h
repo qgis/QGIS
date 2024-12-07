@@ -67,7 +67,7 @@ class GUI_EXPORT QgsLayoutViewToolAddNodeItem : public QgsLayoutViewTool
     int mItemMetadataId = -1;
 
     //! Rubber band item
-    std::unique_ptr<QAbstractGraphicsShapeItem> mRubberBand;
+    std::unique_ptr<QGraphicsItem> mRubberBand;
 
     QPolygonF mPolygon;
 

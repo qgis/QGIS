@@ -90,7 +90,7 @@ should be created. The default behavior is to create a rectangular rubber band.
 .. seealso:: :py:func:`createNodeRubberBand`
 %End
 
-    virtual QAbstractGraphicsShapeItem *createNodeRubberBand( QgsLayoutView *view ) /TransferBack/;
+    virtual QGraphicsItem *createNodeRubberBand( QgsLayoutView *view ) /TransferBack/;
 %Docstring
 Creates a rubber band for use when creating layout node based items of this type. Can return ``None`` if no rubber band
 should be created. The default behavior is to return ``None``.
