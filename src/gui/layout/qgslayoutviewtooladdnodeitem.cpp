@@ -191,16 +191,61 @@ void QgsLayoutViewToolAddNodeItem::moveTemporaryNode( QPointF scenePoint, Qt::Ke
 
 void QgsLayoutViewToolAddNodeItem::setRubberBandNodes()
 {
-  if ( QGraphicsPolygonItem *polygonItem = dynamic_cast<QGraphicsPolygonItem *>( mRubberBand.get() ) )
+  QList<QGraphicsItem *> items = mRubberBand->childItems();
+  if ( items.isEmpty() )
+    return;
+
+  if ( QGraphicsPolygonItem *polygonItem = dynamic_cast<QGraphicsPolygonItem *>( items[0] ) )
   {
-    polygonItem->setPolygon( mPolygon );
+    // The group contains two polygons
+    if ( items.size() == 2 && dynamic_cast<QGraphicsPolygonItem *>( items[1] ) != nullptr )
+    {
+      if ( mPolygon.size() > 3 )
+      {
+        polygonItem->setPolygon( QPolygonF( mPolygon.mid( 0, mPolygon.size() - 1 ) ) );
+      }
+      else
+      {
+        polygonItem->setPolygon( QPolygonF() );
+      }
+      dynamic_cast<QGraphicsPolygonItem *>( items[1] )->setPolygon( mPolygon );
+    }
+    // The group contains a single QGraphicsPolygonItem as rubberband
+    else
+    {
+      polygonItem->setPolygon( mPolygon );
+    }
   }
-  else if ( QGraphicsPathItem *polylineItem = dynamic_cast<QGraphicsPathItem *>( mRubberBand.get() ) )
+  else if ( QGraphicsPathItem *polylineItem = dynamic_cast<QGraphicsPathItem *>( items[0] ) )
   {
-    // rebuild a new qpainter path
-    QPainterPath path;
-    path.addPolygon( mPolygon );
-    polylineItem->setPath( path );
+    // The group contains two polylines
+    if ( items.size() == 2 && dynamic_cast<QGraphicsPathItem *>( items[1] ) != nullptr )
+    {
+      if ( mPolygon.size() > 2 )
+      {
+        QPainterPath path;
+        path.addPolygon( QPolygonF( mPolygon.mid( 0, mPolygon.size() - 1 ) ) );
+        polylineItem->setPath( path );
+      }
+      else
+      {
+        polylineItem->setPath( QPainterPath() );
+      }
+      if ( mPolygon.size() > 1 )
+      {
+        QPainterPath path;
+        path.addPolygon( mPolygon.mid( mPolygon.size() - 2 ) );
+        dynamic_cast<QGraphicsPathItem *>( items[1] )->setPath( path );
+      }
+    }
+    // The group contains a single QGraphicsPathItem as rubberband
+    else
+    {
+      // rebuild a new qpainter path
+      QPainterPath path;
+      path.addPolygon( mPolygon );
+      polylineItem->setPath( path );
+    }
   }
 }
 

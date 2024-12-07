@@ -387,9 +387,14 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     arrow->setEndMarker( QgsLayoutItemPolyline::ArrowHead );
     return arrow.release();
   } );
-  arrowMetadata->setNodeRubberBandCreationFunction( []( QgsLayoutView * ) -> QGraphicsPathItem * {
-    std::unique_ptr<QGraphicsPathItem> band = std::make_unique<QGraphicsPathItem>();
-    band->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 ) );
+  arrowMetadata->setNodeRubberBandCreationFunction( []( QgsLayoutView * ) -> QGraphicsItemGroup * {
+    std::unique_ptr<QGraphicsItemGroup> band = std::make_unique<QGraphicsItemGroup>();
+    QGraphicsPathItem *poly = new QGraphicsPathItem( band.get() );
+    poly->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 ) );
+
+    QGraphicsPathItem *tempPoly = new QGraphicsPathItem( band.get() );
+    tempPoly->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0, Qt::DotLine ) );
+
     band->setZValue( QgsLayout::ZViewTool );
     return band.release();
   } );
@@ -404,10 +409,16 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     },
     createRubberBand, QStringLiteral( "nodes" ), true
   );
-  polygonMetadata->setNodeRubberBandCreationFunction( []( QgsLayoutView * ) -> QGraphicsPolygonItem * {
-    std::unique_ptr<QGraphicsPolygonItem> band = std::make_unique<QGraphicsPolygonItem>();
-    band->setBrush( Qt::NoBrush );
-    band->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 ) );
+  polygonMetadata->setNodeRubberBandCreationFunction( []( QgsLayoutView * ) -> QGraphicsItemGroup * {
+    std::unique_ptr<QGraphicsItemGroup> band = std::make_unique<QGraphicsItemGroup>();
+    QGraphicsPolygonItem *poly = new QGraphicsPolygonItem( band.get() );
+    poly->setBrush( QBrush( QColor( 227, 22, 22, 20 ) ) );
+    poly->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 ) );
+
+    QGraphicsPolygonItem *tempPoly = new QGraphicsPolygonItem( band.get() );
+    tempPoly->setBrush( Qt::NoBrush );
+    tempPoly->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0, Qt::DotLine ) );
+
     band->setZValue( QgsLayout::ZViewTool );
     return band.release();
   } );
@@ -420,9 +431,14 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
     },
     createRubberBand, QStringLiteral( "nodes" ), true
   );
-  polylineMetadata->setNodeRubberBandCreationFunction( []( QgsLayoutView * ) -> QGraphicsPathItem * {
-    std::unique_ptr<QGraphicsPathItem> band = std::make_unique<QGraphicsPathItem>();
-    band->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 ) );
+  polylineMetadata->setNodeRubberBandCreationFunction( []( QgsLayoutView * ) -> QGraphicsItemGroup * {
+    std::unique_ptr<QGraphicsItemGroup> band = std::make_unique<QGraphicsItemGroup>();
+    QGraphicsPathItem *poly = new QGraphicsPathItem( band.get() );
+    poly->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 ) );
+
+    QGraphicsPathItem *tempPoly = new QGraphicsPathItem( band.get() );
+    tempPoly->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0, Qt::DotLine ) );
+
     band->setZValue( QgsLayout::ZViewTool );
     return band.release();
   } );
