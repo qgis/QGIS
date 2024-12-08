@@ -312,6 +312,8 @@ class CORE_EXPORT QgsOpenClUtils
      */
     static bool activate( const QString &preferredDeviceId = QString() );
 
+    static bool activateInternal( const QString &preferredDeviceId );
+
     /**
      * Initialize the OpenCL system by setting and activating the default device.
      */
