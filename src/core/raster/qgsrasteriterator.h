@@ -43,29 +43,33 @@ class CORE_EXPORT QgsRasterIterator
     QgsRasterIterator( QgsRasterInterface *input, int tileOverlapPixels = 0 );
 
     /**
-     * Sets the resampling factor in pixels. When set to a value greater than 1,
-     * the raster blocks will be snapped to boundaries of the resampled pixels.
-     * Set to 1 to disable resampling (default).
+     * Sets the "snap to pixel" factor in pixels.
      *
-     * \warning When the resampling factor is set, the iterated portion of the raster may not cover the entire input raster extent.
-     * A band of pixels on the right and bottom, with size at most of ``resampling factor - 1``, may be skipped if they cannot be snapped
-     * exactly to the resampling factor.
+     * When set to a value greater than 1, the raster blocks will be snapped to boundaries
+     * matching exact multiples of this factor.
      *
+     * Set to 1 to disable this behavior (default).
+     *
+     * \warning When the "snap to pixel" factor is set, the iterated portion of the raster may not cover the entire input raster extent.
+     * A band of pixels on the right and bottom, with size at most of ``snap to pixel factor - 1``, may be skipped if they cannot be snapped
+     * exactly to the factor.
+     *
+     * \see snapToPixelFactor()
      * \since QGIS 3.42
      */
-    void setResamplingFactor( int factor ) { mResamplingFactor = factor > 0 ? factor : 1; }
+    void setSnapToPixelFactor( int factor ) { mSnapToPixelFactor = factor > 0 ? factor : 1; }
 
     /**
-     * Returns the current resampling factor in pixels.
+     * Returns the current "snap to pixel" factor in pixels.
      *
-     * \warning When the resampling factor is set, the iterated portion of the raster may not cover the entire input raster extent.
-     * A band of pixels on the right and bottom, with size at most of ``resampling factor - 1``, may be skipped if they cannot be snapped
-     * exactly to the resampling factor.
+     * \warning When the "snap to pixel" factor is set, the iterated portion of the raster may not cover the entire input raster extent.
+     * A band of pixels on the right and bottom, with size at most of ``snap to pixel factor - 1``, may be skipped if they cannot be snapped
+     * exactly to the factor.
      *
-     * \see setResamplingFactor()
+     * \see setSnapToPixelFactor()
      * \since QGIS 3.42
      */
-    int resamplingFactor() const { return mResamplingFactor; }
+    int snapToPixelFactor() const { return mSnapToPixelFactor; }
 
     /**
      * Given an overall raster extent and width and height in pixels, calculates the sub region
@@ -254,7 +258,7 @@ class CORE_EXPORT QgsRasterIterator
     int mTileOverlapPixels = 0;
     int mMaximumTileWidth;
     int mMaximumTileHeight;
-    int mResamplingFactor = 1;
+    int mSnapToPixelFactor = 1;
 
     int mNumberBlocksWidth = 0;
     int mNumberBlocksHeight = 0;

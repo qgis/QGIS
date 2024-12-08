@@ -42,7 +42,7 @@ class TestQgsRasterIterator : public QObject
     void testNoBlock();
     void testSubRegion();
     void testPixelOverlap();
-    void testResampling();
+    void testSnapToPixelFactor();
 
   private:
     QString mTestDataDir;
@@ -633,22 +633,22 @@ void TestQgsRasterIterator::testPixelOverlap()
   QVERIFY( !block.get() );
 }
 
-void TestQgsRasterIterator::testResampling()
+void TestQgsRasterIterator::testSnapToPixelFactor()
 {
-  // Test setting/getting resampling factor
+  // Test setting/getting snap to pixel factor
   QgsRasterIterator it( mpRasterLayer->dataProvider() );
-  QCOMPARE( it.resamplingFactor(), 1 );
+  QCOMPARE( it.snapToPixelFactor(), 1 );
 
-  it.setResamplingFactor( 2 );
-  QCOMPARE( it.resamplingFactor(), 2 );
+  it.setSnapToPixelFactor( 2 );
+  QCOMPARE( it.snapToPixelFactor(), 2 );
 
   // Test invalid values are sanitized
-  it.setResamplingFactor( 0 );
-  QCOMPARE( it.resamplingFactor(), 1 );
-  it.setResamplingFactor( -1 );
-  QCOMPARE( it.resamplingFactor(), 1 );
+  it.setSnapToPixelFactor( 0 );
+  QCOMPARE( it.snapToPixelFactor(), 1 );
+  it.setSnapToPixelFactor( -1 );
+  QCOMPARE( it.snapToPixelFactor(), 1 );
 
-  // Test subregion calculation with resampling
+  // Test subregion calculation with snapping
   int subRectWidth = 0;
   int subRectHeight = 0;
   int subRectTop = 0;
@@ -662,7 +662,7 @@ void TestQgsRasterIterator::testResampling()
   const QgsRectangle originalRegion( 497970.01, 7050985.05, 498030.95, 7051030.75 );
   QgsRectangle subRect = QgsRasterIterator::subRegion( rasterExtent, rasterWidth, rasterHeight, originalRegion, subRectWidth, subRectHeight, subRectLeft, subRectTop, 2 );
 
-  // Dimensions should be multiples of resampling factor
+  // Dimensions should be multiples of snapping factor
   QCOMPARE( subRectWidth, 608 );
   QCOMPARE( subRectHeight, 456 );
   QCOMPARE( subRectLeft, 5000 );
@@ -678,7 +678,7 @@ void TestQgsRasterIterator::testResampling()
   QGSCOMPARENEAR( subRect.yMinimum(), 7050985.2, 0.000001 );
   QGSCOMPARENEAR( subRect.yMaximum(), 7051030.8, 0.000001 );
 
-  // Test block iteration with resampling
+  // Test block iteration with snapping
   it.setMaximumTileWidth( 3000 );
   it.setMaximumTileHeight( 3000 );
   it.startRasterRead( 1, rasterWidth, rasterHeight, rasterExtent );
@@ -687,10 +687,10 @@ void TestQgsRasterIterator::testResampling()
   QgsRectangle blockExtent;
   std::unique_ptr<QgsRasterBlock> block;
 
-  // Test with resampling factor of 2
+  // Test with snapping factor of 2
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
 
-  // Block dimensions should be multiples of resampling factor
+  // Block dimensions should be multiples of snapping factor
   QCOMPARE( nCols, 3000 );
   QCOMPARE( nRows, 3000 );
   QCOMPARE( topLeftCol, 0 );
@@ -758,7 +758,7 @@ void TestQgsRasterIterator::testResampling()
 
   QVERIFY( !it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
 
-  // Test with resampling factor of 4
+  // Test with snapping factor of 4
   subRectWidth = 0;
   subRectHeight = 0;
   subRectTop = 0;
@@ -766,8 +766,8 @@ void TestQgsRasterIterator::testResampling()
 
   QgsRectangle subRect4 = QgsRasterIterator::subRegion( rasterExtent, rasterWidth, rasterHeight, originalRegion, subRectWidth, subRectHeight, subRectLeft, subRectTop, 4 );
 
-  // Test resampling factor 4 results
-  // Dimensions should be multiples of resampling factor
+  // Test snapping factor 4 results
+  // Dimensions should be multiples of snapping factor
   QCOMPARE( subRectWidth, 608 );
   QCOMPARE( subRectHeight, 456 );
   QCOMPARE( subRectLeft, 5000 );
@@ -785,8 +785,8 @@ void TestQgsRasterIterator::testResampling()
 
   const QgsRectangle subRect128 = QgsRasterIterator::subRegion( rasterExtent, rasterWidth, rasterHeight, originalRegion, subRectWidth, subRectHeight, subRectLeft, subRectTop, 128 );
 
-  // Test resampling factor 128 results
-  // Dimensions should be multiples of resampling factor
+  // Test snapping factor 128 results
+  // Dimensions should be multiples of snapping factor
   QCOMPARE( subRectWidth, 384 );
   QCOMPARE( subRectHeight, 384 );
   QCOMPARE( subRectLeft, 5120 );
@@ -802,12 +802,12 @@ void TestQgsRasterIterator::testResampling()
   QGSCOMPARENEAR( subRect128.yMinimum(), 7050989.2, 0.000001 );
   QGSCOMPARENEAR( subRect128.yMaximum(), 7051027.6, 0.000001 );
 
-  it.setResamplingFactor( 128 );
+  it.setSnapToPixelFactor( 128 );
   it.startRasterRead( 1, rasterWidth, rasterHeight, rasterExtent );
-  // Test with resampling factor of 128
+  // Test with snapping factor of 128
   QVERIFY( it.readNextRasterPart( 1, nCols, nRows, block, topLeftCol, topLeftRow, &blockExtent ) );
 
-  // Block dimensions should be multiples of resampling factor
+  // Block dimensions should be multiples of snapping factor
   QCOMPARE( nCols, 2944 );
   QCOMPARE( nRows, 2944 );
   QCOMPARE( topLeftCol, 0 );
