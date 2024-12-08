@@ -187,11 +187,11 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
   tileColumns = static_cast< int >( std::min( static_cast< qgssize >( mMaximumTileWidth ), pInfo.nCols - tileTopLeftColumn ) );
   tileRows = static_cast< int >( std::min( static_cast< qgssize >( mMaximumTileHeight ), pInfo.nRows - tileTopLeftRow ) );
 
-  if ( mResamplingFactor > 1 )
+  if ( mSnapToPixelFactor > 1 )
   {
-    // Round down tile dimensions to resampling factor
-    tileColumns = ( tileColumns / mResamplingFactor ) * mResamplingFactor;
-    tileRows = ( tileRows / mResamplingFactor ) * mResamplingFactor;
+    // Round down tile dimensions to snap factor
+    tileColumns = ( tileColumns / mSnapToPixelFactor ) * mSnapToPixelFactor;
+    tileRows = ( tileRows / mSnapToPixelFactor ) * mSnapToPixelFactor;
   }
 
   const qgssize tileRight = tileTopLeftColumn + tileColumns;
@@ -205,11 +205,11 @@ bool QgsRasterIterator::readNextRasterPartInternal( int bandNumber, int &nCols, 
   nCols = blockRight - blockLeft;
   nRows = blockBottom - blockTop;
 
-  if ( mResamplingFactor > 1 )
+  if ( mSnapToPixelFactor > 1 )
   {
-    // Ensure overlap dimensions are also multiples of resampling factor
-    nCols = ( nCols / mResamplingFactor ) * mResamplingFactor;
-    nRows = ( nRows / mResamplingFactor ) * mResamplingFactor;
+    // Ensure overlap dimensions are also multiples of snap factor
+    nCols = ( nCols / mSnapToPixelFactor ) * mSnapToPixelFactor;
+    nRows = ( nRows / mSnapToPixelFactor ) * mSnapToPixelFactor;
     if ( nCols == 0 || nRows == 0 )
       return false;
   }

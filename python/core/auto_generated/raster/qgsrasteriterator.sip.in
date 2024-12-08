@@ -26,32 +26,37 @@ Constructor for QgsRasterIterator, iterating over the specified ``input`` raster
 Since QGIS 3.34 the tileOverlapPixels can be used to specify a margin in pixels for retrieving pixels overlapping into neighbor cells.
 %End
 
-    void setResamplingFactor( int factor );
+    void setSnapToPixelFactor( int factor );
 %Docstring
-Sets the resampling factor in pixels. When set to a value greater than 1,
-the raster blocks will be snapped to boundaries of the resampled pixels.
-Set to 1 to disable resampling (default).
+Sets the "snap to pixel" factor in pixels.
+
+When set to a value greater than 1, the raster blocks will be snapped to boundaries
+matching exact multiples of this factor.
+
+Set to 1 to disable this behavior (default).
 
 .. warning::
 
-   When the resampling factor is set, the iterated portion of the raster may not cover the entire input raster extent.
-   A band of pixels on the right and bottom, with size at most of ``resampling factor - 1``, may be skipped if they cannot be snapped
-   exactly to the resampling factor.
+   When the "snap to pixel" factor is set, the iterated portion of the raster may not cover the entire input raster extent.
+   A band of pixels on the right and bottom, with size at most of ``snap to pixel factor - 1``, may be skipped if they cannot be snapped
+   exactly to the factor.
+
+.. seealso:: :py:func:`snapToPixelFactor`
 
 .. versionadded:: 3.42
 %End
 
-    int resamplingFactor() const;
+    int snapToPixelFactor() const;
 %Docstring
-Returns the current resampling factor in pixels.
+Returns the current "snap to pixel" factor in pixels.
 
 .. warning::
 
-   When the resampling factor is set, the iterated portion of the raster may not cover the entire input raster extent.
-   A band of pixels on the right and bottom, with size at most of ``resampling factor - 1``, may be skipped if they cannot be snapped
-   exactly to the resampling factor.
+   When the "snap to pixel" factor is set, the iterated portion of the raster may not cover the entire input raster extent.
+   A band of pixels on the right and bottom, with size at most of ``snap to pixel factor - 1``, may be skipped if they cannot be snapped
+   exactly to the factor.
 
-.. seealso:: :py:func:`setResamplingFactor`
+.. seealso:: :py:func:`setSnapToPixelFactor`
 
 .. versionadded:: 3.42
 %End
