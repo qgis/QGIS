@@ -152,9 +152,9 @@ void QgsRasterLabelingWidget::labelModeChanged( int index )
     connect( settingsWidget, &QgsLabelingGui::widgetChanged, this, &QgsRasterLabelingWidget::widgetChanged );
 
     mWidget = settingsWidget;
-    if ( !dynamic_cast< QgsRasterLayerSimpleLabeling * >( mLayer->labeling() ) )
+    if ( !dynamic_cast<QgsRasterLayerSimpleLabeling *>( mLayer->labeling() ) )
     {
-      std::unique_ptr< QgsRasterLayerSimpleLabeling > labeling = std::make_unique< QgsRasterLayerSimpleLabeling >();
+      std::unique_ptr<QgsRasterLayerSimpleLabeling> labeling = std::make_unique<QgsRasterLayerSimpleLabeling>();
       settingsWidget->setLabeling( labeling.get() );
       mLayer->setLabeling( labeling.release() );
     }

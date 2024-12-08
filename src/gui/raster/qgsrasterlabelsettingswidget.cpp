@@ -148,7 +148,7 @@ void QgsRasterLabelSettingsWidget::setLabeling( QgsAbstractRasterLayerLabeling *
   {
     setFormat( simpleLabeling->textFormat() );
     mBandCombo->setBand( simpleLabeling->band() );
-    mPrioritySlider->setValue( static_cast< int >( 100 - simpleLabeling->priority() * 100 ) );
+    mPrioritySlider->setValue( static_cast<int>( 100 - simpleLabeling->priority() * 100 ) );
 
     mComboOverlapHandling->setCurrentIndex( mComboOverlapHandling->findData( static_cast<int>( simpleLabeling->placementSettings().overlapHandling() ) ) );
     mZIndexSpinBox->setValue( simpleLabeling->zIndex() );
