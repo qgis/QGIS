@@ -624,34 +624,18 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     bool isProviderResamplingEnabled() const { return mProviderResamplingEnabled; }
 
     /**
-     * Resampling method for provider-level resampling.
-     * \since QGIS 3.16
-     */
-    enum class ResamplingMethod
-    {
-      Nearest, //!< Nearest-neighbour resampling
-      Bilinear, //!< Bilinear (2x2 kernel) resampling
-      Cubic,//!< Cubic Convolution Approximation (4x4 kernel) resampling
-      CubicSpline, //!< Cubic B-Spline Approximation (4x4 kernel)
-      Lanczos, //!< Lanczos windowed sinc interpolation (6x6 kernel)
-      Average, //!< Average resampling
-      Mode, //!< Mode (selects the value which appears most often of all the sampled points)
-      Gauss //!< Gauss blurring
-    };
-
-    /**
      * Set resampling method to apply for zoomed-in operations.
      *
      * \return TRUE if success
      * \since QGIS 3.16
      */
-    virtual bool setZoomedInResamplingMethod( ResamplingMethod method ) { Q_UNUSED( method ); return false; }
+    virtual bool setZoomedInResamplingMethod( Qgis::RasterResamplingMethod method ) { Q_UNUSED( method ); return false; }
 
     /**
      * Returns resampling method for zoomed-in operations.
      * \since QGIS 3.16
      */
-    ResamplingMethod zoomedInResamplingMethod() const { return mZoomedInResamplingMethod; }
+    Qgis::RasterResamplingMethod zoomedInResamplingMethod() const { return mZoomedInResamplingMethod; }
 
     /**
      * Set resampling method to apply for zoomed-out operations.
@@ -659,13 +643,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \return TRUE if success
      * \since QGIS 3.16
      */
-    virtual bool setZoomedOutResamplingMethod( ResamplingMethod method ) { Q_UNUSED( method ); return false; }
+    virtual bool setZoomedOutResamplingMethod( Qgis::RasterResamplingMethod  method ) { Q_UNUSED( method ); return false; }
 
     /**
      * Returns resampling method for zoomed-out operations.
      * \since QGIS 3.16
      */
-    ResamplingMethod zoomedOutResamplingMethod() const { return mZoomedOutResamplingMethod; }
+    Qgis::RasterResamplingMethod  zoomedOutResamplingMethod() const { return mZoomedOutResamplingMethod; }
 
     /**
      * Sets maximum oversampling factor for zoomed-out operations.
@@ -827,10 +811,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     bool mProviderResamplingEnabled = false;
 
     //! Resampling method for zoomed in pixel extraction
-    ResamplingMethod mZoomedInResamplingMethod = ResamplingMethod::Nearest;
+    Qgis::RasterResamplingMethod mZoomedInResamplingMethod = Qgis::RasterResamplingMethod::Nearest;
 
     //! Resampling method for zoomed out pixel extraction
-    ResamplingMethod mZoomedOutResamplingMethod = ResamplingMethod::Nearest;
+    Qgis::RasterResamplingMethod mZoomedOutResamplingMethod = Qgis::RasterResamplingMethod::Nearest;
 
     //! Maximum boundary for oversampling (to avoid too much data traffic). Default: 2.0
     double mMaxOversampling = 2.0;

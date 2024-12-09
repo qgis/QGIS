@@ -43,9 +43,9 @@ void QgsResamplingUtils::initWidgets( QgsRasterLayer *rasterLayer, QComboBox *zo
 
   for ( QComboBox *combo : { mZoomedInResamplingComboBox, mZoomedOutResamplingComboBox } )
   {
-    combo->addItem( QObject::tr( "Nearest Neighbour" ), static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Nearest ) );
-    combo->addItem( QObject::tr( "Bilinear (2x2 Kernel)" ), static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Bilinear ) );
-    combo->addItem( QObject::tr( "Cubic (4x4 Kernel)" ), static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Cubic ) );
+    combo->addItem( QObject::tr( "Nearest Neighbour" ), static_cast<int>( Qgis::RasterResamplingMethod::Nearest ) );
+    combo->addItem( QObject::tr( "Bilinear (2x2 Kernel)" ), static_cast<int>( Qgis::RasterResamplingMethod::Bilinear ) );
+    combo->addItem( QObject::tr( "Cubic (4x4 Kernel)" ), static_cast<int>( Qgis::RasterResamplingMethod::Cubic ) );
   }
 
   if ( mCbEarlyResampling->isChecked() )
@@ -97,16 +97,16 @@ void QgsResamplingUtils::refreshWidgetsFromLayer()
       {
         if ( zoomedInResampler->type() == QLatin1String( "bilinear" ) )
         {
-          mZoomedInResamplingComboBox->setCurrentIndex( mZoomedInResamplingComboBox->findData( static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Bilinear ) ) );
+          mZoomedInResamplingComboBox->setCurrentIndex( mZoomedInResamplingComboBox->findData( static_cast<int>( Qgis::RasterResamplingMethod::Bilinear ) ) );
         }
         else if ( zoomedInResampler->type() == QLatin1String( "cubic" ) )
         {
-          mZoomedInResamplingComboBox->setCurrentIndex( mZoomedInResamplingComboBox->findData( static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Cubic ) ) );
+          mZoomedInResamplingComboBox->setCurrentIndex( mZoomedInResamplingComboBox->findData( static_cast<int>( Qgis::RasterResamplingMethod::Cubic ) ) );
         }
       }
       else
       {
-        mZoomedInResamplingComboBox->setCurrentIndex( mZoomedInResamplingComboBox->findData( static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Nearest ) ) );
+        mZoomedInResamplingComboBox->setCurrentIndex( mZoomedInResamplingComboBox->findData( static_cast<int>( Qgis::RasterResamplingMethod::Nearest ) ) );
       }
 
       const QgsRasterResampler *zoomedOutResampler = resampleFilter->zoomedOutResampler();
@@ -114,16 +114,16 @@ void QgsResamplingUtils::refreshWidgetsFromLayer()
       {
         if ( zoomedOutResampler->type() == QLatin1String( "bilinear" ) )
         {
-          mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Bilinear ) ) );
+          mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( static_cast<int>( Qgis::RasterResamplingMethod::Bilinear ) ) );
         }
         else if ( zoomedOutResampler->type() == QLatin1String( "cubic" ) )
         {
-          mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Cubic ) ) );
+          mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( static_cast<int>( Qgis::RasterResamplingMethod::Cubic ) ) );
         }
       }
       else
       {
-        mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Nearest ) ) );
+        mZoomedOutResamplingComboBox->setCurrentIndex( mZoomedOutResamplingComboBox->findData( static_cast<int>( Qgis::RasterResamplingMethod::Nearest ) ) );
       }
       mMaximumOversamplingSpinBox->setValue( resampleFilter->maxOversampling() );
     }
@@ -133,10 +133,10 @@ void QgsResamplingUtils::refreshWidgetsFromLayer()
 
 void QgsResamplingUtils::refreshLayerFromWidgets()
 {
-  const QgsRasterDataProvider::ResamplingMethod zoomedInMethod = static_cast<QgsRasterDataProvider::ResamplingMethod>(
+  const Qgis::RasterResamplingMethod zoomedInMethod = static_cast<Qgis::RasterResamplingMethod>(
     mZoomedInResamplingComboBox->itemData( mZoomedInResamplingComboBox->currentIndex() ).toInt()
   );
-  const QgsRasterDataProvider::ResamplingMethod zoomedOutMethod = static_cast<QgsRasterDataProvider::ResamplingMethod>(
+  const Qgis::RasterResamplingMethod zoomedOutMethod = static_cast<Qgis::RasterResamplingMethod>(
     mZoomedOutResamplingComboBox->itemData( mZoomedOutResamplingComboBox->currentIndex() ).toInt()
   );
 
@@ -157,22 +157,22 @@ void QgsResamplingUtils::refreshLayerFromWidgets()
 
     switch ( zoomedInMethod )
     {
-      case QgsRasterDataProvider::ResamplingMethod::Nearest:
+      case Qgis::RasterResamplingMethod::Nearest:
         break;
 
-      case QgsRasterDataProvider::ResamplingMethod::Bilinear:
+      case Qgis::RasterResamplingMethod::Bilinear:
         zoomedInResampler = std::make_unique<QgsBilinearRasterResampler>();
         break;
 
-      case QgsRasterDataProvider::ResamplingMethod::Cubic:
+      case Qgis::RasterResamplingMethod::Cubic:
         zoomedInResampler = std::make_unique<QgsCubicRasterResampler>();
         break;
 
-      case QgsRasterDataProvider::ResamplingMethod::CubicSpline:
-      case QgsRasterDataProvider::ResamplingMethod::Lanczos:
-      case QgsRasterDataProvider::ResamplingMethod::Average:
-      case QgsRasterDataProvider::ResamplingMethod::Mode:
-      case QgsRasterDataProvider::ResamplingMethod::Gauss:
+      case Qgis::RasterResamplingMethod::CubicSpline:
+      case Qgis::RasterResamplingMethod::Lanczos:
+      case Qgis::RasterResamplingMethod::Average:
+      case Qgis::RasterResamplingMethod::Mode:
+      case Qgis::RasterResamplingMethod::Gauss:
 
         // not supported as late resampler methods
         break;
@@ -185,23 +185,23 @@ void QgsResamplingUtils::refreshLayerFromWidgets()
 
     switch ( zoomedOutMethod )
     {
-      case QgsRasterDataProvider::ResamplingMethod::Nearest:
+      case Qgis::RasterResamplingMethod::Nearest:
         break;
 
-      case QgsRasterDataProvider::ResamplingMethod::Bilinear:
+      case Qgis::RasterResamplingMethod::Bilinear:
         zoomedOutResampler = std::make_unique<QgsBilinearRasterResampler>();
         break;
 
-      case QgsRasterDataProvider::ResamplingMethod::Cubic:
+      case Qgis::RasterResamplingMethod::Cubic:
         zoomedOutResampler = std::make_unique<QgsCubicRasterResampler>();
         break;
 
 
-      case QgsRasterDataProvider::ResamplingMethod::CubicSpline:
-      case QgsRasterDataProvider::ResamplingMethod::Lanczos:
-      case QgsRasterDataProvider::ResamplingMethod::Average:
-      case QgsRasterDataProvider::ResamplingMethod::Mode:
-      case QgsRasterDataProvider::ResamplingMethod::Gauss:
+      case Qgis::RasterResamplingMethod::CubicSpline:
+      case Qgis::RasterResamplingMethod::Lanczos:
+      case Qgis::RasterResamplingMethod::Average:
+      case Qgis::RasterResamplingMethod::Mode:
+      case Qgis::RasterResamplingMethod::Gauss:
         // not supported as late resampler methods
         break;
     }
@@ -214,33 +214,33 @@ void QgsResamplingUtils::refreshLayerFromWidgets()
 
 void QgsResamplingUtils::addExtraEarlyResamplingMethodsToCombos()
 {
-  if ( mZoomedInResamplingComboBox->findData( static_cast<int>( QgsRasterDataProvider::ResamplingMethod::CubicSpline ) ) != -1 )
+  if ( mZoomedInResamplingComboBox->findData( static_cast<int>( Qgis::RasterResamplingMethod::CubicSpline ) ) != -1 )
     return; // already present
 
   for ( QComboBox *combo : { mZoomedInResamplingComboBox, mZoomedOutResamplingComboBox } )
   {
-    combo->addItem( QObject::tr( "Cubic B-Spline (4x4 Kernel)" ), static_cast<int>( QgsRasterDataProvider::ResamplingMethod::CubicSpline ) );
-    combo->addItem( QObject::tr( "Lanczos (6x6 Kernel)" ), static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Lanczos ) );
-    combo->addItem( QObject::tr( "Average" ), static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Average ) );
-    combo->addItem( QObject::tr( "Mode" ), static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Mode ) );
-    combo->addItem( QObject::tr( "Gauss" ), static_cast<int>( QgsRasterDataProvider::ResamplingMethod::Gauss ) );
+    combo->addItem( QObject::tr( "Cubic B-Spline (4x4 Kernel)" ), static_cast<int>( Qgis::RasterResamplingMethod::CubicSpline ) );
+    combo->addItem( QObject::tr( "Lanczos (6x6 Kernel)" ), static_cast<int>( Qgis::RasterResamplingMethod::Lanczos ) );
+    combo->addItem( QObject::tr( "Average" ), static_cast<int>( Qgis::RasterResamplingMethod::Average ) );
+    combo->addItem( QObject::tr( "Mode" ), static_cast<int>( Qgis::RasterResamplingMethod::Mode ) );
+    combo->addItem( QObject::tr( "Gauss" ), static_cast<int>( Qgis::RasterResamplingMethod::Gauss ) );
   }
 }
 
 void QgsResamplingUtils::removeExtraEarlyResamplingMethodsFromCombos()
 {
-  if ( mZoomedInResamplingComboBox->findData( static_cast<int>( QgsRasterDataProvider::ResamplingMethod::CubicSpline ) ) == -1 )
+  if ( mZoomedInResamplingComboBox->findData( static_cast<int>( Qgis::RasterResamplingMethod::CubicSpline ) ) == -1 )
     return; // already removed
 
   for ( QComboBox *combo : { mZoomedInResamplingComboBox, mZoomedOutResamplingComboBox } )
   {
-    for ( const QgsRasterDataProvider::ResamplingMethod method :
+    for ( const Qgis::RasterResamplingMethod method :
           {
-            QgsRasterDataProvider::ResamplingMethod::CubicSpline,
-            QgsRasterDataProvider::ResamplingMethod::Lanczos,
-            QgsRasterDataProvider::ResamplingMethod::Average,
-            QgsRasterDataProvider::ResamplingMethod::Mode,
-            QgsRasterDataProvider::ResamplingMethod::Gauss
+            Qgis::RasterResamplingMethod::CubicSpline,
+            Qgis::RasterResamplingMethod::Lanczos,
+            Qgis::RasterResamplingMethod::Average,
+            Qgis::RasterResamplingMethod::Mode,
+            Qgis::RasterResamplingMethod::Gauss
           } )
     {
       combo->removeItem( combo->findData( static_cast<int>( method ) ) );

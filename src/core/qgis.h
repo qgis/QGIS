@@ -1378,12 +1378,30 @@ class CORE_EXPORT Qgis
      */
     enum class RasterResamplingStage SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterPipe, ResamplingStage ) : int
       {
-      //! Resampling occurs in ResamplingFilter
-      ResampleFilter,
-      //! Resampling occurs in Provider
-      Provider
+      ResampleFilter, //!< Resampling occurs in ResamplingFilter
+      Provider, //!< Resampling occurs in Provider
     };
     Q_ENUM( RasterResamplingStage )
+
+    /**
+     * Resampling method for raster provider-level resampling.
+     *
+     * \note Prior to QGIS 3.42 this was available as QgsRasterDataProvider::ResamplingMethod
+     *
+     * \since QGIS 3.42
+     */
+    enum class RasterResamplingMethod SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterDataProvider, ResamplingMethod ) : int
+      {
+      Nearest, //!< Nearest-neighbour resampling
+      Bilinear, //!< Bilinear (2x2 kernel) resampling
+      Cubic, //!< Cubic Convolution Approximation (4x4 kernel) resampling
+      CubicSpline, //!< Cubic B-Spline Approximation (4x4 kernel)
+      Lanczos, //!< Lanczos windowed sinc interpolation (6x6 kernel)
+      Average, //!< Average resampling
+      Mode, //!< Mode (selects the value which appears most often of all the sampled points)
+      Gauss //!< Gauss blurring
+    };
+    Q_ENUM( RasterResamplingMethod )
 
     /**
      * Flags which control behavior of raster renderers.
