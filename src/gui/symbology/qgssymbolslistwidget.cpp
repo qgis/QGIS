@@ -331,7 +331,7 @@ void QgsSymbolsListWidget::showExtentBufferSettings()
 
     if ( dlg.widget() )
     {
-      dlg.widget()->setContext( mContext );
+      dlg.setContext( mContext );
     }
 
     if ( dlg.exec() == QDialog::Accepted )

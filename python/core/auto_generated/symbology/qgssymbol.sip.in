@@ -870,7 +870,7 @@ Internally, this notifies all symbol layers which were used via a call to
 %Docstring
 Returns the symbol's extent buffer.
 
-:return: The symbol's extent buffer
+Units are retrieved via :py:func:`~QgsSymbol.extentBufferSizeUnit`.
 
 .. versionadded:: 3.42
 %End
@@ -878,6 +878,8 @@ Returns the symbol's extent buffer.
     void setExtentBuffer( double extentBuffer );
 %Docstring
 Sets the symbol's extent buffer.
+
+Units are set via :py:func:`~QgsSymbol.setExtentBufferSizeUnit`.
 
 :param extentBuffer: buffer distance.
 
@@ -894,12 +896,16 @@ Sets the symbol's extent buffer.
 %Docstring
 Returns the units for the buffer size.
 
+.. seealso:: :py:func:`extentBuffer`
+
 .. seealso:: :py:func:`setExtentBufferSizeUnit`
 %End
 
     void setExtentBufferSizeUnit( Qgis::RenderUnit unit );
 %Docstring
 Sets the ``unit`` used for the extent buffer.
+
+.. seealso:: :py:func:`setExtentBuffer`
 
 .. seealso:: :py:func:`extentBufferSizeUnit`
 %End

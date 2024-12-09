@@ -871,7 +871,7 @@ class CORE_EXPORT QgsSymbol
     /**
      * Returns the symbol's extent buffer.
      *
-     * \returns The symbol's extent buffer
+     * Units are retrieved via extentBufferSizeUnit().
      * \since QGIS 3.42
      */
     double extentBuffer() const;
@@ -879,6 +879,7 @@ class CORE_EXPORT QgsSymbol
     /**
      * Sets the symbol's extent buffer.
      *
+     * Units are set via setExtentBufferSizeUnit().
      * \param extentBuffer buffer distance.
      * \see extentBuffer()
      * \note Negative values are not supported and will be changed to 0.
@@ -889,6 +890,7 @@ class CORE_EXPORT QgsSymbol
     /**
      * Returns the units for the buffer size.
      *
+     * \see extentBuffer()
      * \see setExtentBufferSizeUnit()
      */
     Qgis::RenderUnit extentBufferSizeUnit() const { return mExtentBufferSizeUnit; }
@@ -896,6 +898,7 @@ class CORE_EXPORT QgsSymbol
     /**
      * Sets the \a unit used for the extent buffer.
      *
+     * \see setExtentBuffer()
      * \see extentBufferSizeUnit()
      */
     void setExtentBufferSizeUnit( Qgis::RenderUnit unit ) { mExtentBufferSizeUnit = unit; }
