@@ -644,7 +644,7 @@ void QgsRelationEditorWidget::updateUiSingleEdit()
     }
     else
     {
-      nmRequest.setFilterExpression( filters.join( QStringLiteral( " OR " ) ) );
+      nmRequest.setFilterExpression( filters.join( QLatin1String( " OR " ) ) );
     }
 
     request = nmRequest;

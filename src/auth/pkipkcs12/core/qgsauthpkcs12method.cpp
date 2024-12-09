@@ -107,9 +107,9 @@ bool QgsAuthPkcs12Method::updateNetworkRequest( QNetworkRequest &request, const 
   sslConfig.setPrivateKey( pkibundle->clientCertKey() );
 
   // add extra CAs from the bundle, QNAM will prepend the trusted CAs in createRequest()
-  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) == QStringLiteral( "true" ) )
+  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) )
   {
-    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) == QStringLiteral( "true" ) )
+    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) )
     {
       sslConfig.setCaCertificates( pkibundle->caChain() );
     }
@@ -168,9 +168,9 @@ bool QgsAuthPkcs12Method::updateDataSourceUriItems( QStringList &connectionItems
 
   // add extra CAs from the bundle
   QList<QSslCertificate> cas;
-  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) == QStringLiteral( "true" ) )
+  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) )
   {
-    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) == QStringLiteral( "true" ) )
+    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) )
     {
       cas = QgsAuthCertUtils::casMerge( QgsApplication::authManager()->trustedCaCerts(), pkibundle->caChain() );
     }

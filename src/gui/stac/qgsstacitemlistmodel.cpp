@@ -242,7 +242,7 @@ void QgsStacItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
   }
 
   doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-weight:bold;'>%2</span><br>%3<br><br><i>%4</i></div>" )
-                 .arg( QString::number( textSize ), index.data( QgsStacItemListModel::Role::Title ).toString(), index.data( QgsStacItemListModel::Role::Collection ).toString(), index.data( QgsStacItemListModel::Role::Formats ).toStringList().join( QStringLiteral( ", " ) ) ) );
+                 .arg( QString::number( textSize ), index.data( QgsStacItemListModel::Role::Title ).toString(), index.data( QgsStacItemListModel::Role::Collection ).toString(), index.data( QgsStacItemListModel::Role::Formats ).toStringList().join( QLatin1String( ", " ) ) ) );
   doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? iconSize.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
   if ( !icon.isNull() )

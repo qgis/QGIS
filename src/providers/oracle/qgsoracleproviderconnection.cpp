@@ -95,7 +95,7 @@ QgsOracleProviderConnection::QgsOracleProviderConnection( const QString &uri, co
 
   if ( inputUri.hasParam( QStringLiteral( "estimatedMetadata" ) ) )
   {
-    currentUri.setUseEstimatedMetadata( inputUri.param( QStringLiteral( "estimatedMetadata" ) ) == QStringLiteral( "true" ) || inputUri.param( QStringLiteral( "estimatedMetadata" ) ) == '1' );
+    currentUri.setUseEstimatedMetadata( inputUri.param( QStringLiteral( "estimatedMetadata" ) ) == QLatin1String( "true" ) || inputUri.param( QStringLiteral( "estimatedMetadata" ) ) == '1' );
   }
 
   for ( const auto &param : EXTRA_CONNECTION_PARAMETERS )
