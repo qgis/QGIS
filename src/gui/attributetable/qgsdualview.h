@@ -428,7 +428,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     //! Returns TRUE if the expression dialog has been accepted
     bool modifySort();
 
-    static const std::unique_ptr<QgsSettingsEntryVariant> conditionnalFormattingSplitterState;
+    static const std::unique_ptr<QgsSettingsEntryVariant> conditionalFormattingSplitterState;
     static const std::unique_ptr<QgsSettingsEntryVariant> attributeEditorSplitterState;
 
     QgsFieldConditionalFormatWidget *mConditionalFormatWidget = nullptr;
