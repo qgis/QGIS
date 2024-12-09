@@ -8063,40 +8063,70 @@ class TestQgsGeometry(QgisTestCase):
         array_linestring_z = geom_linestring_z.as_numpy()
         self.assertTrue(isinstance(array_linestring_z, numpy.ndarray))
         self.assertEqual(array_linestring_z.shape, (3, 3))
-        self.assertTrue(numpy.allclose(array_linestring_z, [[0, 0, 1], [1, 1, 2], [1, 2, 3]]))
+        self.assertTrue(
+            numpy.allclose(array_linestring_z, [[0, 0, 1], [1, 1, 2], [1, 2, 3]])
+        )
 
         # Test LINESTRING with M
         geom_linestring_m = QgsGeometry.fromWkt("LINESTRING M (0 0 1, 1 1 2, 1 2 3)")
         array_linestring_m = geom_linestring_m.as_numpy()
         self.assertTrue(isinstance(array_linestring_m, numpy.ndarray))
         self.assertEqual(array_linestring_m.shape, (3, 3))
-        self.assertTrue(numpy.allclose(array_linestring_m, [[0, 0, 1], [1, 1, 2], [1, 2, 3]]))
+        self.assertTrue(
+            numpy.allclose(array_linestring_m, [[0, 0, 1], [1, 1, 2], [1, 2, 3]])
+        )
 
         # Test LINESTRING with Z and M
-        geom_linestring_zm = QgsGeometry.fromWkt("LINESTRING ZM (0 0 1 2, 1 1 2 3, 1 2 3 4)")
+        geom_linestring_zm = QgsGeometry.fromWkt(
+            "LINESTRING ZM (0 0 1 2, 1 1 2 3, 1 2 3 4)"
+        )
         array_linestring_zm = geom_linestring_zm.as_numpy()
         self.assertTrue(isinstance(array_linestring_zm, numpy.ndarray))
         self.assertEqual(array_linestring_zm.shape, (3, 4))
-        self.assertTrue(numpy.allclose(array_linestring_zm, [[0, 0, 1, 2], [1, 1, 2, 3], [1, 2, 3, 4]]))
+        self.assertTrue(
+            numpy.allclose(
+                array_linestring_zm, [[0, 0, 1, 2], [1, 1, 2, 3], [1, 2, 3, 4]]
+            )
+        )
 
         # Test POLYGON with Z
-        geom_polygon_z = QgsGeometry.fromWkt("POLYGON Z ((0 0 1, 4 0 2, 4 4 3, 0 4 4, 0 0 1))")
+        geom_polygon_z = QgsGeometry.fromWkt(
+            "POLYGON Z ((0 0 1, 4 0 2, 4 4 3, 0 4 4, 0 0 1))"
+        )
         array_polygon_z = geom_polygon_z.as_numpy()
         self.assertTrue(isinstance(array_polygon_z, numpy.ndarray))
-        self.assertTrue(numpy.allclose(array_polygon_z[0], [[0, 0, 1], [4, 0, 2], [4, 4, 3], [0, 4, 4], [0, 0, 1]]))
+        self.assertTrue(
+            numpy.allclose(
+                array_polygon_z[0],
+                [[0, 0, 1], [4, 0, 2], [4, 4, 3], [0, 4, 4], [0, 0, 1]],
+            )
+        )
 
         # Test POLYGON with M
-        geom_polygon_m = QgsGeometry.fromWkt("POLYGON M ((0 0 1, 4 0 2, 4 4 3, 0 4 4, 0 0 1))")
+        geom_polygon_m = QgsGeometry.fromWkt(
+            "POLYGON M ((0 0 1, 4 0 2, 4 4 3, 0 4 4, 0 0 1))"
+        )
         array_polygon_m = geom_polygon_m.as_numpy()
         self.assertTrue(isinstance(array_polygon_m, numpy.ndarray))
-        self.assertTrue(numpy.allclose(array_polygon_m[0], [[0, 0, 1], [4, 0, 2], [4, 4, 3], [0, 4, 4], [0, 0, 1]]))
+        self.assertTrue(
+            numpy.allclose(
+                array_polygon_m[0],
+                [[0, 0, 1], [4, 0, 2], [4, 4, 3], [0, 4, 4], [0, 0, 1]],
+            )
+        )
 
         # Test POLYGON with Z and M
-        geom_polygon_zm = QgsGeometry.fromWkt("POLYGON ZM ((0 0 1 5, 4 0 2 6, 4 4 3 7, 0 4 4 8, 0 0 1 5))")
+        geom_polygon_zm = QgsGeometry.fromWkt(
+            "POLYGON ZM ((0 0 1 5, 4 0 2 6, 4 4 3 7, 0 4 4 8, 0 0 1 5))"
+        )
         array_polygon_zm = geom_polygon_zm.as_numpy()
         self.assertTrue(isinstance(array_polygon_zm, numpy.ndarray))
         self.assertTrue(
-            numpy.allclose(array_polygon_zm[0], [[0, 0, 1, 5], [4, 0, 2, 6], [4, 4, 3, 7], [0, 4, 4, 8], [0, 0, 1, 5]]))
+            numpy.allclose(
+                array_polygon_zm[0],
+                [[0, 0, 1, 5], [4, 0, 2, 6], [4, 4, 3, 7], [0, 4, 4, 8], [0, 0, 1, 5]],
+            )
+        )
 
         # Test MULTIPOINT with Z
         geom_multipoint_z = QgsGeometry.fromWkt("MULTIPOINT Z ((1 2 3), (3 4 5))")
@@ -8123,28 +8153,46 @@ class TestQgsGeometry(QgisTestCase):
         self.assertTrue(numpy.allclose(array_multipoint_zm[1], [3, 4, 5, 9]))
 
         # Test MULTILINESTRING with Z
-        geom_multilinestring_z = QgsGeometry.fromWkt("MULTILINESTRING Z ((0 0 1, 1 1 2), (2 2 3, 3 3 4))")
+        geom_multilinestring_z = QgsGeometry.fromWkt(
+            "MULTILINESTRING Z ((0 0 1, 1 1 2), (2 2 3, 3 3 4))"
+        )
         array_multilinestring_z = geom_multilinestring_z.as_numpy()
         self.assertTrue(isinstance(array_multilinestring_z, list))
         self.assertEqual(len(array_multilinestring_z), 2)
-        self.assertTrue(numpy.allclose(array_multilinestring_z[0], [[0, 0, 1], [1, 1, 2]]))
-        self.assertTrue(numpy.allclose(array_multilinestring_z[1], [[2, 2, 3], [3, 3, 4]]))
+        self.assertTrue(
+            numpy.allclose(array_multilinestring_z[0], [[0, 0, 1], [1, 1, 2]])
+        )
+        self.assertTrue(
+            numpy.allclose(array_multilinestring_z[1], [[2, 2, 3], [3, 3, 4]])
+        )
 
         # Test MULTILINESTRING with M
-        geom_multilinestring_m = QgsGeometry.fromWkt("MULTILINESTRING M ((0 0 5, 1 1 6), (2 2 7, 3 3 8))")
+        geom_multilinestring_m = QgsGeometry.fromWkt(
+            "MULTILINESTRING M ((0 0 5, 1 1 6), (2 2 7, 3 3 8))"
+        )
         array_multilinestring_m = geom_multilinestring_m.as_numpy()
         self.assertTrue(isinstance(array_multilinestring_m, list))
         self.assertEqual(len(array_multilinestring_m), 2)
-        self.assertTrue(numpy.allclose(array_multilinestring_m[0], [[0, 0, 5], [1, 1, 6]]))
-        self.assertTrue(numpy.allclose(array_multilinestring_m[1], [[2, 2, 7], [3, 3, 8]]))
+        self.assertTrue(
+            numpy.allclose(array_multilinestring_m[0], [[0, 0, 5], [1, 1, 6]])
+        )
+        self.assertTrue(
+            numpy.allclose(array_multilinestring_m[1], [[2, 2, 7], [3, 3, 8]])
+        )
 
         # Test MULTILINESTRING with Z and M
-        geom_multilinestring_zm = QgsGeometry.fromWkt("MULTILINESTRING ZM ((0 0 1 5, 1 1 2 6), (2 2 3 7, 3 3 4 8))")
+        geom_multilinestring_zm = QgsGeometry.fromWkt(
+            "MULTILINESTRING ZM ((0 0 1 5, 1 1 2 6), (2 2 3 7, 3 3 4 8))"
+        )
         array_multilinestring_zm = geom_multilinestring_zm.as_numpy()
         self.assertTrue(isinstance(array_multilinestring_zm, list))
         self.assertEqual(len(array_multilinestring_zm), 2)
-        self.assertTrue(numpy.allclose(array_multilinestring_zm[0], [[0, 0, 1, 5], [1, 1, 2, 6]]))
-        self.assertTrue(numpy.allclose(array_multilinestring_zm[1], [[2, 2, 3, 7], [3, 3, 4, 8]]))
+        self.assertTrue(
+            numpy.allclose(array_multilinestring_zm[0], [[0, 0, 1, 5], [1, 1, 2, 6]])
+        )
+        self.assertTrue(
+            numpy.allclose(array_multilinestring_zm[1], [[2, 2, 3, 7], [3, 3, 4, 8]])
+        )
 
         # Test MULTIPOLYGON with Z, and a hole
         geom_multipolygon_z = QgsGeometry.fromWkt(
@@ -8154,9 +8202,17 @@ class TestQgsGeometry(QgisTestCase):
         self.assertTrue(isinstance(array_multipolygon_z, list))
         self.assertEqual(len(array_multipolygon_z), 2)
         self.assertTrue(
-            numpy.allclose(array_multipolygon_z[0][0], [[0, 0, 1], [4, 0, 2], [4, 4, 3], [0, 4, 4], [0, 0, 1]]))
+            numpy.allclose(
+                array_multipolygon_z[0][0],
+                [[0, 0, 1], [4, 0, 2], [4, 4, 3], [0, 4, 4], [0, 0, 1]],
+            )
+        )
         self.assertTrue(
-            numpy.allclose(array_multipolygon_z[1][0], [[1, 1, 1], [3, 1, 1.5], [3, 3, 2], [1, 3, 2.5], [1, 1, 1]]))
+            numpy.allclose(
+                array_multipolygon_z[1][0],
+                [[1, 1, 1], [3, 1, 1.5], [3, 3, 2], [1, 3, 2.5], [1, 1, 1]],
+            )
+        )
 
         # Test MULTIPOLYGON with M
         geom_multipolygon_m = QgsGeometry.fromWkt(
@@ -8166,9 +8222,17 @@ class TestQgsGeometry(QgisTestCase):
         self.assertTrue(isinstance(array_multipolygon_m, list))
         self.assertEqual(len(array_multipolygon_m), 2)
         self.assertTrue(
-            numpy.allclose(array_multipolygon_m[0][0], [[0, 0, 5], [4, 0, 6], [4, 4, 7], [0, 4, 8], [0, 0, 5]]))
-        self.assertTrue(numpy.allclose(array_multipolygon_m[1][0],
-                                       [[10, 10, 9], [14, 10, 10], [14, 14, 11], [10, 14, 12], [10, 10, 9]]))
+            numpy.allclose(
+                array_multipolygon_m[0][0],
+                [[0, 0, 5], [4, 0, 6], [4, 4, 7], [0, 4, 8], [0, 0, 5]],
+            )
+        )
+        self.assertTrue(
+            numpy.allclose(
+                array_multipolygon_m[1][0],
+                [[10, 10, 9], [14, 10, 10], [14, 14, 11], [10, 14, 12], [10, 10, 9]],
+            )
+        )
 
         # Test MULTIPOLYGON with Z and M and holes
         geom_multipolygon_zm = QgsGeometry.fromWkt(
@@ -8178,27 +8242,42 @@ class TestQgsGeometry(QgisTestCase):
         self.assertTrue(isinstance(array_multipolygon_zm, list))
         self.assertEqual(len(array_multipolygon_zm), 3)
         self.assertTrue(
-            numpy.allclose(array_multipolygon_zm[0][0],
-                           [[-2.43197278911564618, 0.52380952380952384, 0, 0],
-                            [-2.0986394557823127, -0.65986394557823114, 0, 0],
-                            [-1.10544217687074831, -0.14965986394557818, 0, 0],
-                            [-1.07142857142857162, 0.29931972789115646, 0, 0],
-                            [-2.43197278911564618, 0.52380952380952384, 0, 0]]))
+            numpy.allclose(
+                array_multipolygon_zm[0][0],
+                [
+                    [-2.43197278911564618, 0.52380952380952384, 0, 0],
+                    [-2.0986394557823127, -0.65986394557823114, 0, 0],
+                    [-1.10544217687074831, -0.14965986394557818, 0, 0],
+                    [-1.07142857142857162, 0.29931972789115646, 0, 0],
+                    [-2.43197278911564618, 0.52380952380952384, 0, 0],
+                ],
+            )
+        )
 
         self.assertTrue(
-            numpy.allclose(array_multipolygon_zm[1][0],
-                           [[-2.12399582948757359, 0.08043619457833384, 0, 0],
-                            [-1.33488018322907021, 0.08043619457833384, 0, 0],
-                            [-1.77025433288893463, -0.19167264895908098, 0, 0],
-                            [-2.12399582948757359, 0.08043619457833384, 0, 0]]))
+            numpy.allclose(
+                array_multipolygon_zm[1][0],
+                [
+                    [-2.12399582948757359, 0.08043619457833384, 0, 0],
+                    [-1.33488018322907021, 0.08043619457833384, 0, 0],
+                    [-1.77025433288893463, -0.19167264895908098, 0, 0],
+                    [-2.12399582948757359, 0.08043619457833384, 0, 0],
+                ],
+            )
+        )
 
         self.assertTrue(
-            numpy.allclose(array_multipolygon_zm[2][0],
-                           [[1.0, 1.0, 1, 1],
-                            [2.0, 1.0, 2, 2],
-                            [2.0, 2.0, 3, 3],
-                            [1.0, 2.0, 4, 4],
-                            [1.0, 1.0, 1, 1]]))
+            numpy.allclose(
+                array_multipolygon_zm[2][0],
+                [
+                    [1.0, 1.0, 1, 1],
+                    [2.0, 1.0, 2, 2],
+                    [2.0, 2.0, 3, 3],
+                    [1.0, 2.0, 4, 4],
+                    [1.0, 1.0, 1, 1],
+                ],
+            )
+        )
 
 
 if __name__ == '__main__':
