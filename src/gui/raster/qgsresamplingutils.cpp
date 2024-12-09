@@ -155,6 +155,7 @@ void QgsResamplingUtils::refreshLayerFromWidgets()
   {
     std::unique_ptr<QgsRasterResampler> zoomedInResampler;
 
+    // NOLINTBEGIN(bugprone-branch-clone)
     switch ( zoomedInMethod )
     {
       case Qgis::RasterResamplingMethod::Nearest:
@@ -177,12 +178,14 @@ void QgsResamplingUtils::refreshLayerFromWidgets()
         // not supported as late resampler methods
         break;
     }
+    // NOLINTEND(bugprone-branch-clone)
 
     resampleFilter->setZoomedInResampler( zoomedInResampler.release() );
 
     //raster resampling
     std::unique_ptr<QgsRasterResampler> zoomedOutResampler;
 
+    // NOLINTBEGIN(bugprone-branch-clone)
     switch ( zoomedOutMethod )
     {
       case Qgis::RasterResamplingMethod::Nearest:
@@ -205,6 +208,7 @@ void QgsResamplingUtils::refreshLayerFromWidgets()
         // not supported as late resampler methods
         break;
     }
+    // NOLINTEND(bugprone-branch-clone)
 
     resampleFilter->setZoomedOutResampler( zoomedOutResampler.release() );
 
