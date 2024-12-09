@@ -123,6 +123,22 @@ class CORE_EXPORT QgsRasterLayerLabelProvider final : public QgsAbstractLabelPro
      */
     void setThinningSettings( const QgsLabelThinningSettings &settings ) { mThinningSettings = settings; }
 
+    /**
+     * Sets the resampling \a method to use when the raster labels are being
+     * resampled over neighboring pixels.
+     *
+     * \see setResampleOver()
+     */
+    void setResampleMethod( Qgis::RasterResamplingMethod method );
+
+    /**
+     * Sets the number of neighboring \a pixels to resample over, when labels are
+     * showing values resampled over neighboring pixels.
+     *
+     * \see setResampleMethod()
+     */
+    void setResampleOver( int pixels );
+
   private:
     QgsTextFormat mFormat;
     int mBandNumber = 1;
@@ -131,6 +147,9 @@ class CORE_EXPORT QgsRasterLayerLabelProvider final : public QgsAbstractLabelPro
     QgsLabelPlacementSettings mPlacementSettings;
     QgsLabelThinningSettings mThinningSettings;
     double mZIndex = 0;
+
+    Qgis::RasterResamplingMethod mResampleMethod = Qgis::RasterResamplingMethod::Average;
+    int mResampleOver = 1;
 
     QList<QgsLabelFeature *> mLabels;
 
@@ -464,6 +483,42 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
 
     bool isInScaleRange( double scale ) const override;
 
+    /**
+     * Returns the resampling method used when the raster labels are being
+     * resampled over neighboring pixels.
+     *
+     * \see setResampleMethod()
+     * \see resampleOver()
+     */
+    Qgis::RasterResamplingMethod resampleMethod() const;
+
+    /**
+     * Sets the resampling \a method to use when the raster labels are being
+     * resampled over neighboring pixels.
+     *
+     * \see resampleMethod()
+     * \see setResampleOver()
+     */
+    void setResampleMethod( Qgis::RasterResamplingMethod method );
+
+    /**
+     * Returns the number of neighboring pixels to resample over, when labels are
+     * showing values resampled over neighboring pixels.
+     *
+     * \see setResampleOver()
+     * \see resampleMethod()
+     */
+    int resampleOver() const;
+
+    /**
+     * Sets the number of neighboring \a pixels to resample over, when labels are
+     * showing values resampled over neighboring pixels.
+     *
+     * \see resampleOver()
+     * \see setResampleMethod()
+     */
+    void setResampleOver( int pixels );
+
   private:
     int mBandNumber = 1;
 
@@ -482,6 +537,9 @@ class CORE_EXPORT QgsRasterLayerSimpleLabeling : public QgsAbstractRasterLayerLa
     bool mScaleVisibility = false;
     double mMaximumScale = 0;
     double mMinimumScale = 0;
+
+    Qgis::RasterResamplingMethod mResampleMethod = Qgis::RasterResamplingMethod::Average;
+    int mResampleOver = 1;
 
 };
 
