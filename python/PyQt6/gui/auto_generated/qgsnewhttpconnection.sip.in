@@ -21,6 +21,7 @@ information for an HTTP Server for WMS, etc.
 #include "qgsnewhttpconnection.h"
 %End
   public:
+
     enum ConnectionType /BaseType=IntEnum/
     {
       ConnectionWfs,
