@@ -3,5 +3,5 @@ QgsServerSettingsEnv.Source.baseClass = QgsServerSettingsEnv
 QgsServerSettingsEnv.EnvVar.baseClass = QgsServerSettingsEnv
 try:
     QgsServerSettings.name = staticmethod(QgsServerSettings.name)
-except NameError:
+except (NameError, AttributeError):
     pass

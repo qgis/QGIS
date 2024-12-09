@@ -68,6 +68,16 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     void adjustSizeToText();
 
     /**
+     * Resizes the item so that the label's text fits to the item.
+     *
+     * Keeps the specified reference point stationary.
+     *
+     * \see sizeForText()
+     * \since QGIS 3.42
+     */
+    void adjustSizeToText( QgsLayoutItem::ReferencePoint referencePoint );
+
+    /**
      * Returns the required item size (in layout units) for the label's text to fill the item.
      * \see adjustSizeToText()
      */
@@ -251,8 +261,6 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     void updateBoundingRect();
 
   private:
-    bool mFirstRender = true;
-
     // Text
     QString mText;
 

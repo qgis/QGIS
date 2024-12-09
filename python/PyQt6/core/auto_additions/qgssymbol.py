@@ -31,13 +31,13 @@ try:
     QgsSymbol._getPolygonRing = staticmethod(QgsSymbol._getPolygonRing)
     QgsSymbol._getPolygon = staticmethod(QgsSymbol._getPolygon)
     QgsSymbol.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsSymbolAnimationSettings.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsSymbolBufferSettings.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

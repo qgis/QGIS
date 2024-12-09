@@ -27,10 +27,9 @@
 
 
 //! Provider for postgres source select
-class QgsPostgresSourceSelectProvider : public QgsSourceSelectProvider  //#spellok
+class QgsPostgresSourceSelectProvider : public QgsSourceSelectProvider //#spellok
 {
   public:
-
     QString providerKey() const override { return QStringLiteral( "postgres" ); }
     QString text() const override { return QObject::tr( "PostgreSQL" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 20; }
@@ -68,20 +67,19 @@ class QgsPostgresProjectStorageGuiProvider : public QgsProjectStorageGuiProvider
 
       return dlg.currentProjectUri();
     }
-
 };
 
 
-QgsPostgresProviderGuiMetadata::QgsPostgresProviderGuiMetadata():
-  QgsProviderGuiMetadata( QgsPostgresProvider::POSTGRES_KEY )
+QgsPostgresProviderGuiMetadata::QgsPostgresProviderGuiMetadata()
+  : QgsProviderGuiMetadata( QgsPostgresProvider::POSTGRES_KEY )
 {
-  mRasterTemporalWidgetFactory = std::make_unique< QgsPostgresRasterTemporalSettingsConfigWidgetFactory>();
+  mRasterTemporalWidgetFactory = std::make_unique<QgsPostgresRasterTemporalSettingsConfigWidgetFactory>();
 }
 
 QList<QgsSourceSelectProvider *> QgsPostgresProviderGuiMetadata::sourceSelectProviders()
 {
   QList<QgsSourceSelectProvider *> providers;
-  providers << new QgsPostgresSourceSelectProvider;  //#spellok
+  providers << new QgsPostgresSourceSelectProvider; //#spellok
   return providers;
 }
 

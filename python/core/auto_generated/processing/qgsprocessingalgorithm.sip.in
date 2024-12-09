@@ -519,6 +519,7 @@ occur.
 .. seealso:: :py:func:`addOutput`
 %End
 
+
     void removeParameter( const QString &name ) /HoldGIL/;
 %Docstring
 Removes the parameter with matching ``name`` from the algorithm, and deletes any existing
@@ -540,6 +541,7 @@ See the notes in :py:func:`~QgsProcessingAlgorithm.addParameter` for a descripti
 
 .. seealso:: :py:func:`initAlgorithm`
 %End
+
 
     virtual bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException ) /VirtualErrorHandler=processing_exception_handler/;
 %Docstring

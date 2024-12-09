@@ -43,7 +43,6 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAttributeFormEditorWidget.
      * \param editorWidget associated editor widget wrapper (for default/edit modes)
@@ -51,8 +50,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
      *        wrapper
      * \param form parent attribute form
      */
-    explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget, const QString &widgetType,
-                                           QgsAttributeForm *form  SIP_TRANSFERTHIS );
+    explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget, const QString &widgetType, QgsAttributeForm *form SIP_TRANSFERTHIS );
 
     ~QgsAttributeFormEditorWidget() override;
 
@@ -111,7 +109,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     /**
      * Emitted when the widget's value changes
      * \param value new widget value
-     * \deprecated QGIS 3.10. Use valuesChanged instead.
+     * \deprecated QGIS 3.10. Use valuesChanged() instead.
      */
     Q_DECL_DEPRECATED void valueChanged( const QVariant &value );
 

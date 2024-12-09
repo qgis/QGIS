@@ -48,7 +48,6 @@ void QgsBrowserTreeView::keyPressEvent( QKeyEvent *event )
 
 void QgsBrowserTreeView::setModel( QAbstractItemModel *model )
 {
-
   QTreeView::setModel( model );
 
   restoreState();
@@ -140,7 +139,7 @@ void QgsBrowserTreeView::expandTree( const QModelIndex &index )
   if ( !model() )
     return;
 
-  QgsDebugMsgLevel( "itemPath = " + model()->data( index, static_cast< int >( QgsBrowserModel::CustomRole::Path ) ).toString(), 4 );
+  QgsDebugMsgLevel( "itemPath = " + model()->data( index, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString(), 4 );
 
   expand( index );
   const QModelIndex parentIndex = model()->parent( index );
@@ -185,20 +184,20 @@ void QgsBrowserTreeView::expandPath( const QString &str, bool selectPath )
     return;
 
   // first we build a list of all directory item candidates we could use to start the expansion from
-  QVector< QgsDirectoryItem * > initialDirectoryItemCandidates;
-  const QVector< QgsDataItem * > rootItems = mBrowserModel->rootItems();
+  QVector<QgsDirectoryItem *> initialDirectoryItemCandidates;
+  const QVector<QgsDataItem *> rootItems = mBrowserModel->rootItems();
   for ( QgsDataItem *item : rootItems )
   {
-    if ( QgsDirectoryItem *dirItem = qobject_cast< QgsDirectoryItem * >( item ) )
+    if ( QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( item ) )
     {
       initialDirectoryItemCandidates << dirItem;
     }
-    else if ( QgsFavoritesItem *favoritesItem = qobject_cast< QgsFavoritesItem * >( item ) )
+    else if ( QgsFavoritesItem *favoritesItem = qobject_cast<QgsFavoritesItem *>( item ) )
     {
-      const QVector<QgsDataItem * > favoriteChildren = favoritesItem->children();
+      const QVector<QgsDataItem *> favoriteChildren = favoritesItem->children();
       for ( QgsDataItem *favoriteChild : favoriteChildren )
       {
-        if ( QgsDirectoryItem *dirItem = qobject_cast< QgsDirectoryItem * >( favoriteChild ) )
+        if ( QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( favoriteChild ) )
         {
           initialDirectoryItemCandidates << dirItem;
         }
@@ -248,7 +247,7 @@ void QgsBrowserTreeView::expandPath( const QString &str, bool selectPath )
   }
 
   currentDir = QDir( currentDirectoryItem->dirPath() );
-  QList< QgsDirectoryItem * > pathItems;
+  QList<QgsDirectoryItem *> pathItems;
 
   pathItems << currentDirectoryItem;
 
@@ -261,10 +260,10 @@ void QgsBrowserTreeView::expandPath( const QString &str, bool selectPath )
 
     // check if current directory item already has a child for the folder
     QgsDirectoryItem *existingChild = nullptr;
-    const QVector< QgsDataItem * > children = currentDirectoryItem->children();
+    const QVector<QgsDataItem *> children = currentDirectoryItem->children();
     for ( QgsDataItem *child : children )
     {
-      if ( QgsDirectoryItem *childDirectoryItem = qobject_cast< QgsDirectoryItem *>( child ) )
+      if ( QgsDirectoryItem *childDirectoryItem = qobject_cast<QgsDirectoryItem *>( child ) )
       {
         if ( childDirectoryItem->dirPath() == thisPath )
         {
@@ -277,14 +276,14 @@ void QgsBrowserTreeView::expandPath( const QString &str, bool selectPath )
     if ( existingChild )
     {
       pathItems << existingChild;
-      currentDirectoryItem  = existingChild;
+      currentDirectoryItem = existingChild;
     }
     else
     {
       QgsDirectoryItem *newDir = new QgsDirectoryItem( nullptr, currentFolderName, thisPath );
       pathItems << newDir;
-      currentDirectoryItem ->addChildItem( newDir, true );
-      currentDirectoryItem  = newDir;
+      currentDirectoryItem->addChildItem( newDir, true );
+      currentDirectoryItem = newDir;
     }
 
     currentDir = QDir( thisPath );
@@ -294,7 +293,7 @@ void QgsBrowserTreeView::expandPath( const QString &str, bool selectPath )
   for ( QgsDirectoryItem *i : std::as_const( pathItems ) )
   {
     QModelIndex index = mBrowserModel->findItem( i );
-    if ( QSortFilterProxyModel *proxyModel = qobject_cast< QSortFilterProxyModel *>( model() ) )
+    if ( QSortFilterProxyModel *proxyModel = qobject_cast<QSortFilterProxyModel *>( model() ) )
     {
       index = proxyModel->mapFromSource( index );
     }
@@ -315,7 +314,7 @@ bool QgsBrowserTreeView::setSelectedItem( QgsDataItem *item )
   if ( !index.isValid() )
     return false;
 
-  if ( QSortFilterProxyModel *proxyModel = qobject_cast< QSortFilterProxyModel *>( model() ) )
+  if ( QSortFilterProxyModel *proxyModel = qobject_cast<QSortFilterProxyModel *>( model() ) )
   {
     index = proxyModel->mapFromSource( index );
   }
@@ -337,7 +336,7 @@ void QgsBrowserTreeView::rowsInserted( const QModelIndex &parentIndex, int start
 
   QgsDebugMsgLevel( "mExpandPaths = " + mExpandPaths.join( ',' ), 2 );
 
-  const QString parentPath = model()->data( parentIndex, static_cast< int >( QgsBrowserModel::CustomRole::Path ) ).toString();
+  const QString parentPath = model()->data( parentIndex, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString();
   QgsDebugMsgLevel( "parentPath = " + parentPath, 2 );
 
   // remove parentPath from paths to be expanded
@@ -358,7 +357,7 @@ void QgsBrowserTreeView::rowsInserted( const QModelIndex &parentIndex, int start
   for ( int i = start; i <= end; i++ )
   {
     const QModelIndex childIndex = model()->index( i, 0, parentIndex );
-    const QString childPath = model()->data( childIndex, static_cast< int >( QgsBrowserModel::CustomRole::Path ) ).toString();
+    const QString childPath = model()->data( childIndex, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString();
     const QString escapedChildPath = QRegularExpression::escape( childPath );
 
     QgsDebugMsgLevel( "childPath = " + childPath + " escapedChildPath = " + escapedChildPath, 2 );
@@ -402,7 +401,7 @@ QStringList QgsBrowserTreeView::expandedPathsList( const QModelIndex &index )
       }
       else
       {
-        paths.append( model()->data( childIndex, static_cast< int >( QgsBrowserModel::CustomRole::Path ) ).toString() );
+        paths.append( model()->data( childIndex, static_cast<int>( QgsBrowserModel::CustomRole::Path ) ).toString() );
       }
     }
   }

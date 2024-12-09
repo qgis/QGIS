@@ -32,7 +32,6 @@
 class QgsWFSDataSourceURI
 {
   public:
-
     //! Http method for DCP URIs
     enum Method
     {
@@ -141,12 +140,7 @@ class QgsWFSDataSourceURI
     const QgsAuthorizationSettings &auth() const { return mAuth; }
 
     //! Builds a derived uri from a base uri
-    static QString build( const QString &uri,
-                          const QString &typeName,
-                          const QString &crsString = QString(),
-                          const QString &sql = QString(),
-                          const QString &filter = QString(),
-                          bool restrictToCurrentViewExtent = false );
+    static QString build( const QString &uri, const QString &typeName, const QString &crsString = QString(), const QString &sql = QString(), const QString &filter = QString(), bool restrictToCurrentViewExtent = false );
 
     //! Sets Get DCP endpoints
     void setGetEndpoints( const QgsStringMap &map );
@@ -164,7 +158,7 @@ class QgsWFSDataSourceURI
     QgsWFSDataSourceURI &operator=( const QgsWFSDataSourceURI &other );
 
   private:
-    QgsDataSourceUri    mURI;
+    QgsDataSourceUri mURI;
     QgsAuthorizationSettings mAuth;
     QgsStringMap mGetEndpoints;
     QgsStringMap mPostEndpoints;

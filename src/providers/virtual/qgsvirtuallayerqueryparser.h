@@ -56,11 +56,19 @@ namespace QgsVirtualLayerQueryParser
       void setName( const QString &name ) { mName = name; }
 
       bool isGeometry() const { return mType == QMetaType::Type::User; }
-      void setGeometry( Qgis::WkbType wkbType ) { mType = QMetaType::Type::User; mWkbType = wkbType; }
+      void setGeometry( Qgis::WkbType wkbType )
+      {
+        mType = QMetaType::Type::User;
+        mWkbType = wkbType;
+      }
       long srid() const { return mSrid; }
       void setSrid( long srid ) { mSrid = srid; }
 
-      void setScalarType( QMetaType::Type t ) { mType = t; mWkbType = Qgis::WkbType::NoGeometry; }
+      void setScalarType( QMetaType::Type t )
+      {
+        mType = t;
+        mWkbType = Qgis::WkbType::NoGeometry;
+      }
       QMetaType::Type scalarType() const { return mType; }
       Qgis::WkbType wkbType() const { return mWkbType; }
 
@@ -89,6 +97,6 @@ namespace QgsVirtualLayerQueryParser
   //! Gets the column types of a virtual table
   TableDef tableDefinitionFromVirtualTable( sqlite3 *db, const QString &tableName );
 
-}
+} // namespace QgsVirtualLayerQueryParser
 
 #endif

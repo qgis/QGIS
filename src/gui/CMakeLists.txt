@@ -510,7 +510,11 @@ set(QGIS_GUI_SRCS
   stac/qgsstacconnectiondialog.cpp
   stac/qgsstacdataitemguiprovider.cpp
   stac/qgsstacdownloadassetsdialog.cpp
+  stac/qgsstacitemlistmodel.cpp
   stac/qgsstacobjectdetailsdialog.cpp
+  stac/qgsstacsearchparametersdialog.cpp
+  stac/qgsstacsourceselect.cpp
+  stac/qgsstacsourceselectprovider.cpp
 
   tableeditor/qgstableeditordialog.cpp
   tableeditor/qgstableeditorformattingwidget.cpp
@@ -1572,7 +1576,11 @@ set(QGIS_GUI_HDRS
   stac/qgsstacconnectiondialog.h
   stac/qgsstacdataitemguiprovider.h
   stac/qgsstacdownloadassetsdialog.h
+  stac/qgsstacitemlistmodel.h
   stac/qgsstacobjectdetailsdialog.h
+  stac/qgsstacsearchparametersdialog.h
+  stac/qgsstacsourceselect.h
+  stac/qgsstacsourceselectprovider.h
 
   tableeditor/qgstableeditordialog.h
   tableeditor/qgstableeditorformattingwidget.h
@@ -1679,6 +1687,12 @@ add_library(qgis_gui ${LIBRARY_TYPE}
 
 # require c++17
 target_compile_features(qgis_gui PRIVATE cxx_std_17)
+
+if (USE_PRECOMPILED_HEADERS)
+  target_precompile_headers(qgis_gui PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
+endif()
+
+set_target_properties(qgis_gui PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
 target_include_directories(qgis_gui SYSTEM PUBLIC
   ${QWT_INCLUDE_DIR}
@@ -1814,6 +1828,7 @@ target_link_libraries(qgis_gui
   ${QT_VERSION_BASE}::UiTools
   ${QWT_LIBRARY}
   ${QSCINTILLA_LIBRARY}
+  ${QT_VERSION_BASE}::Qml
   ${QT_VERSION_BASE}::QuickWidgets
   ${QT_VERSION_BASE}::Multimedia
   ${QT_VERSION_BASE}::MultimediaWidgets

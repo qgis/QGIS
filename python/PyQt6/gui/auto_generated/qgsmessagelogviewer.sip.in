@@ -10,7 +10,7 @@
 
 
 
-class QgsMessageLogViewer: QDialog
+class QgsMessageLogViewer : QDialog
 {
 %Docstring(signature="appended")
 A generic dialog widget for displaying QGIS log messages.
@@ -20,7 +20,6 @@ A generic dialog widget for displaying QGIS log messages.
 #include "qgsmessagelogviewer.h"
 %End
   public:
-
     QgsMessageLogViewer( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Create a new message log viewer. The viewer will automatically connect to the system's

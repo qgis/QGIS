@@ -73,7 +73,7 @@ QgsProcessingAlignRasterLayerDetailsWidget::QgsProcessingAlignRasterLayerDetails
   chkRescaleValues->setChecked( item.rescaleValues );
 
   connect( mOutputFileWidget, &QgsFileWidget::fileChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( cmbResamplingMethod, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( cmbResamplingMethod, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( chkRescaleValues, &QCheckBox::stateChanged, this, &QgsPanelWidget::widgetChanged );
 }
 
@@ -93,7 +93,8 @@ QVariant QgsProcessingAlignRasterLayerDetailsWidget::value() const
 QgsProcessingAlignRasterLayersPanelWidget::QgsProcessingAlignRasterLayersPanelWidget(
   const QVariant &value,
   QgsProject *project,
-  QWidget *parent )
+  QWidget *parent
+)
   : QgsProcessingMultipleSelectionPanelWidget( QVariantList(), QVariantList(), parent )
   , mProject( project )
 {
@@ -106,7 +107,7 @@ QgsProcessingAlignRasterLayersPanelWidget::QgsProcessingAlignRasterLayersPanelWi
   // populate the list: first layers already selected, then layers from project not yet selected
   mContext.setProject( project );
 
-  QSet<const QString > seenFiles;
+  QSet<const QString> seenFiles;
   const QVariantList valueList = value.toList();
   for ( const QVariant &v : valueList )
   {
@@ -151,8 +152,7 @@ void QgsProcessingAlignRasterLayersPanelWidget::configureRaster()
     widget->setPanelTitle( tr( "Configure Raster" ) );
     widget->buttonBox()->hide();
 
-    connect( widget, &QgsProcessingAlignRasterLayerDetailsWidget::widgetChanged, this, [ = ]()
-    {
+    connect( widget, &QgsProcessingAlignRasterLayerDetailsWidget::widgetChanged, this, [=]() {
       setItemValue( item, widget->value() );
     } );
     panel->openPanel( widget );
@@ -238,8 +238,7 @@ void QgsProcessingAlignRasterLayersWidget::showDialog()
   {
     QgsProcessingAlignRasterLayersPanelWidget *widget = new QgsProcessingAlignRasterLayersPanelWidget( mValue, mProject );
     widget->setPanelTitle( tr( "Input layers" ) );
-    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [ = ]()
-    {
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [=]() {
       setValue( widget->selectedOptions() );
     } );
     connect( widget, &QgsProcessingMultipleSelectionPanelWidget::acceptClicked, widget, &QgsPanelWidget::acceptPanel );
@@ -292,8 +291,7 @@ QWidget *QgsProcessingAlignRasterLayersWidgetWrapper::createWidget()
 {
   mPanel = new QgsProcessingAlignRasterLayersWidget( nullptr );
   mPanel->setProject( widgetContext().project() );
-  connect( mPanel, &QgsProcessingAlignRasterLayersWidget::changed, this, [ = ]
-  {
+  connect( mPanel, &QgsProcessingAlignRasterLayersWidget::changed, this, [=] {
     emit widgetValueHasChanged( this );
   } );
   return mPanel;

@@ -35,7 +35,6 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     Q_OBJECT
 
   public:
-
     static const QgsSettingsEntryBool *settingClipboardHeader;
     static const QgsSettingsEntryString *settingClipboardSeparator;
     static const QgsSettingsEntryBool *settingClipboardAlwaysUseDecimalPoint;
@@ -84,7 +83,6 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void projChanged();
 
   private:
-
     //! \since QGIS 3.32 columns
     enum Columns
     {
@@ -136,13 +134,13 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     Qgis::DistanceUnit mCanvasUnits = Qgis::DistanceUnit::Unknown;
 
     //! Current unit for distance values
-    Qgis::DistanceUnit mDistanceUnits  = Qgis::DistanceUnit::Unknown;
+    Qgis::DistanceUnit mDistanceUnits = Qgis::DistanceUnit::Unknown;
 
     //! Current map unit for distance values
-    Qgis::DistanceUnit mMapDistanceUnits  = Qgis::DistanceUnit::Unknown;
+    Qgis::DistanceUnit mMapDistanceUnits = Qgis::DistanceUnit::Unknown;
 
     //! Current unit for area values
-    Qgis::AreaUnit mAreaUnits  = Qgis::AreaUnit::Unknown;
+    Qgis::AreaUnit mAreaUnits = Qgis::AreaUnit::Unknown;
 
     //! Our measurement object
     QgsDistanceArea mDa;

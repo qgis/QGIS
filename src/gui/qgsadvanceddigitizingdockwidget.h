@@ -53,7 +53,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     Q_OBJECT
 
   public:
-
     /**
      * The CadCapacity enum defines the possible constraints to be set
      * depending on the number of points in the CAD point list (the list of points
@@ -61,10 +60,10 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     enum CadCapacity SIP_ENUM_BASETYPE( IntFlag )
     {
-      AbsoluteAngle = 1, //!< Azimuth
-      RelativeAngle = 2, //!< Also for parallel and perpendicular
+      AbsoluteAngle = 1,       //!< Azimuth
+      RelativeAngle = 2,       //!< Also for parallel and perpendicular
       RelativeCoordinates = 4, //!< This corresponds to distance and relative coordinates
-      Distance = 8, //!< Distance
+      Distance = 8,            //!< Distance
     };
     Q_DECLARE_FLAGS( CadCapacities, CadCapacity )
     Q_FLAG( CadCapacities )
@@ -76,7 +75,9 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     enum WidgetSetMode
     {
-      ReturnPressed, FocusOut, TextEdited
+      ReturnPressed,
+      FocusOut,
+      TextEdited
     };
 
 
@@ -89,7 +90,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     class GUI_EXPORT CadConstraint
     {
       public:
-
         /**
          * The lock mode
          */
@@ -323,7 +323,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * Determines if Z or M will be enabled.
      * \since QGIS 3.22
      */
-    void switchZM( );
+    void switchZM();
 
     /**
      * Sets whether Z is enabled
@@ -371,9 +371,9 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * Returns the between line constraints which are used to place
      * perpendicular/parallel segments to snapped segments on the canvas
      */
-    Qgis::BetweenLineConstraint betweenLineConstraint() const  { return mBetweenLineConstraint; }
+    Qgis::BetweenLineConstraint betweenLineConstraint() const { return mBetweenLineConstraint; }
     //! Returns the \a CadConstraint on the angle
-    const CadConstraint *constraintAngle() const  { return mAngleConstraint.get(); }
+    const CadConstraint *constraintAngle() const { return mAngleConstraint.get(); }
     //! Returns the \a CadConstraint on the distance
     const CadConstraint *constraintDistance() const { return mDistanceConstraint.get(); }
     //! Returns the \a CadConstraint on the X coordinate
@@ -426,7 +426,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * Returns the snap matches whose vertices have been locked
      * \since QGIS 3.26
      */
-    QList< QgsPointLocator::Match > lockedSnapVertices() const { return mLockedSnapVertices; }
+    QList<QgsPointLocator::Match> lockedSnapVertices() const { return mLockedSnapVertices; }
 
     /**
       * Removes all points from the locked snap vertex list
@@ -472,7 +472,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      *
      * \since QGIS 3.22
      */
-    QgsPoint currentPointV2( bool *exists  = nullptr ) const;
+    QgsPoint currentPointV2( bool *exists = nullptr ) const;
 
     /**
      * Returns the last CAD point, in a map \a layer's coordinates.
@@ -487,7 +487,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
      * \deprecated QGIS 3.22. Use currentPointV2() instead.
      */
-    Q_DECL_DEPRECATED QgsPointXY currentPoint( bool *exists  = nullptr ) const SIP_DEPRECATED { return currentPointV2( exists ); };
+    Q_DECL_DEPRECATED QgsPointXY currentPoint( bool *exists = nullptr ) const SIP_DEPRECATED { return currentPointV2( exists ); };
 
     /**
      * The previous point.
@@ -619,13 +619,13 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * Convenient method to get the Z value from the line edit wiget
      * \since QGIS 3.22
      */
-    double getLineZ( ) const;
+    double getLineZ() const;
 
     /**
      * Convenient method to get the M value from the line edit wiget
      * \since QGIS 3.22
      */
-    double getLineM( ) const;
+    double getLineM() const;
 
     /**
      * Returns the capacities
@@ -667,7 +667,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * when a constraint is toggled.
      *
      * \param point The last known digitizing point. Can be used to emulate a mouse event.
-     * \deprecated QGIS 3.22. No longer used, will be removed in QGIS 4.0. Use pointChangedV2 instead.
+     * \deprecated QGIS 3.22. No longer used, will be removed in QGIS 4.0. Use pointChangedV2() instead.
      */
     Q_DECL_DEPRECATED void pointChanged( const QgsPointXY &point ) SIP_DEPRECATED;
 
@@ -1021,7 +1021,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void settingsButtonTriggered( QAction *action );
 
   private:
-
     /**
      * Returns the layer currently associated with the map tool using the dock widget.
      */
@@ -1116,14 +1115,14 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     bool mConstructionMode = false;
 
     // constraints
-    std::unique_ptr< CadConstraint > mAngleConstraint;
-    std::unique_ptr< CadConstraint > mDistanceConstraint;
-    std::unique_ptr< CadConstraint > mXConstraint;
-    std::unique_ptr< CadConstraint > mYConstraint;
-    std::unique_ptr< CadConstraint > mZConstraint;
-    std::unique_ptr< CadConstraint > mMConstraint;
-    std::unique_ptr< CadConstraint > mLineExtensionConstraint;
-    std::unique_ptr< CadConstraint > mXyVertexConstraint;
+    std::unique_ptr<CadConstraint> mAngleConstraint;
+    std::unique_ptr<CadConstraint> mDistanceConstraint;
+    std::unique_ptr<CadConstraint> mXConstraint;
+    std::unique_ptr<CadConstraint> mYConstraint;
+    std::unique_ptr<CadConstraint> mZConstraint;
+    std::unique_ptr<CadConstraint> mMConstraint;
+    std::unique_ptr<CadConstraint> mLineExtensionConstraint;
+    std::unique_ptr<CadConstraint> mXyVertexConstraint;
     Qgis::BetweenLineConstraint mBetweenLineConstraint;
     double mCommonAngleConstraint; // if 0: do not snap to common angles
 
@@ -1146,7 +1145,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     std::unique_ptr<QgsMessageBarItem> mErrorMessage;
 
     // UI
-    QMap< double, QAction *> mCommonAngleActions; // map the common angle actions with their angle values
+    QMap<double, QAction *> mCommonAngleActions; // map the common angle actions with their angle values
     QAction *mLineExtensionAction = nullptr;
     QAction *mXyVertexAction = nullptr;
     QAction *mRecordConstructionGuides = nullptr;
@@ -1162,7 +1161,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     Qgis::LineExtensionSide mSoftLockLineExtension;
     double mSoftLockX;
     double mSoftLockY;
-    QQueue< QgsPointLocator::Match > mLockedSnapVertices;
+    QQueue<QgsPointLocator::Match> mLockedSnapVertices;
 
     // Advanced digitizing tool
     QPointer<QgsAdvancedDigitizingTool> mCurrentTool;

@@ -19,7 +19,6 @@ class QgsDockWidget : QDockWidget
 #include "qgsdockwidget.h"
 %End
   public:
-
     explicit QgsDockWidget( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
 Constructor for QgsDockWidget.
@@ -102,7 +101,6 @@ and raised. If it is currently user visible it will be closed.
 %End
 
   protected:
-
     virtual void closeEvent( QCloseEvent * );
 
     virtual void showEvent( QShowEvent *event );

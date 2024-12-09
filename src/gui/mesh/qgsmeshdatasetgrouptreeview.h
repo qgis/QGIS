@@ -39,11 +39,12 @@ class QgsMeshLayer;
  * \ingroup gui
  * \class QgsMeshDatasetGroupSaveMenu
  */
-class QgsMeshDatasetGroupSaveMenu: public QObject
+class QgsMeshDatasetGroupSaveMenu : public QObject
 {
     Q_OBJECT
   public:
-    QgsMeshDatasetGroupSaveMenu( QObject *parent = nullptr ): QObject( parent ) {}
+    QgsMeshDatasetGroupSaveMenu( QObject *parent = nullptr )
+      : QObject( parent ) {}
     QMenu *createSaveMenu( int groupIndex, QMenu *parentMenu = nullptr );
 
     void setMeshLayer( QgsMeshLayer *meshLayer );
@@ -80,10 +81,8 @@ class QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
 
     QVariant data( const QModelIndex &index, int role ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole ) const override;
-    QModelIndex index( int row, int column,
-                       const QModelIndex &parent = QModelIndex() ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex parent( const QModelIndex &index ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -117,14 +116,13 @@ class QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
 
   private:
     std::unique_ptr<QgsMeshDatasetGroupTreeItem> mRootItem;
-
 };
 
 /**
  * \ingroup gui
  * \class QgsMeshAvailableDatasetGroupTreeModel
  */
-class QgsMeshAvailableDatasetGroupTreeModel: public QgsMeshDatasetGroupTreeModel
+class QgsMeshAvailableDatasetGroupTreeModel : public QgsMeshDatasetGroupTreeModel
 {
     Q_OBJECT
   public:
@@ -145,7 +143,7 @@ class QgsMeshAvailableDatasetGroupTreeModel: public QgsMeshDatasetGroupTreeModel
  * \ingroup gui
  * \class QgsMeshDatasetGroupProxyModel
  */
-class  QgsMeshDatasetGroupProxyModel: public QSortFilterProxyModel
+class QgsMeshDatasetGroupProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
   public:
@@ -183,21 +181,19 @@ class  QgsMeshDatasetGroupProxyModel: public QSortFilterProxyModel
  *
  * \brief Delegate to display tree item with a contours and vector selector
  */
-class QgsMeshDatasetGroupTreeItemDelegate: public QStyledItemDelegate
+class QgsMeshDatasetGroupTreeItemDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
   public:
     QgsMeshDatasetGroupTreeItemDelegate( QObject *parent = nullptr );
 
-    void paint( QPainter *painter,
-                const QStyleOptionViewItem &option,
-                const QModelIndex &index ) const override;
+    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
     //! Icon rectangle for given item rectangle
     QRect iconRect( const QRect &rect, bool isVector ) const;
 
-    QSize sizeHint( const QStyleOptionViewItem &option,
-                    const QModelIndex &index ) const override;
+    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+
   private:
     const QPixmap mScalarSelectedPixmap;
     const QPixmap mScalarDeselectedPixmap;
@@ -213,7 +209,7 @@ class QgsMeshDatasetGroupTreeItemDelegate: public QStyledItemDelegate
  *
  * \brief Tree widget for display of the mesh dataset groups.
  */
-class GUI_EXPORT QgsMeshDatasetGroupTreeView: public QTreeView
+class GUI_EXPORT QgsMeshDatasetGroupTreeView : public QTreeView
 {
     Q_OBJECT
   public:
@@ -301,7 +297,7 @@ class GUI_EXPORT QgsMeshActiveDatasetGroupTreeView : public QTreeView
  * \ingroup gui
  * \class QgsMeshDatasetGroupListModel
  */
-class GUI_EXPORT QgsMeshDatasetGroupListModel: public QAbstractListModel
+class GUI_EXPORT QgsMeshDatasetGroupListModel : public QAbstractListModel
 {
     Q_OBJECT
   public:

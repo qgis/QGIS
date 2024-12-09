@@ -34,9 +34,9 @@ try:
     QgsFeatureRenderer.convertSymbolSizeScale = staticmethod(QgsFeatureRenderer.convertSymbolSizeScale)
     QgsFeatureRenderer.convertSymbolRotation = staticmethod(QgsFeatureRenderer.convertSymbolRotation)
     QgsFeatureRenderer.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsSymbolLevelItem.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -74,7 +74,7 @@ class CORE_EXPORT QgsLayoutItemRenderContext
      *
      * \note Not available in Python bindings.
      */
-    const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
+    const QgsRenderContext &renderContext() const SIP_SKIP { return mRenderContext; }
 
     /**
      * Returns the current view zoom (scale factor). It can be
@@ -105,21 +105,19 @@ class CORE_EXPORT QgsLayoutItemRenderContext
  */
 class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectItem, public QgsLayoutUndoObjectInterface
 {
-#ifdef SIP_RUN
-#include "qgslayoutitemgroup.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayoutitempicture.h"
-#include "qgslayoutitemlabel.h"
-#include "qgslayoutitemlegend.h"
-#include "qgslayoutitempolygon.h"
-#include "qgslayoutitempolyline.h"
-#include "qgslayoutitemscalebar.h"
-#include "qgslayoutframe.h"
-#include "qgslayoutitemshape.h"
-#include "qgslayoutitempage.h"
-#include "qgslayoutitemmarker.h"
-#include "qgslayoutitemelevationprofile.h"
-#endif
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemgroup.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemmap.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitempicture.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemlabel.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemlegend.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitempolygon.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitempolyline.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemscalebar.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutframe.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemshape.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitempage.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemmarker.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemelevationprofile.h" );
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE

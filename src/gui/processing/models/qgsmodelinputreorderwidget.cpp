@@ -34,8 +34,7 @@ QgsModelInputReorderWidget::QgsModelInputReorderWidget( QWidget *parent )
   mInputsList->setDragEnabled( true );
   mInputsList->setDragDropMode( QAbstractItemView::InternalMove );
 
-  connect( mButtonUp, &QPushButton::clicked, this, [ = ]
-  {
+  connect( mButtonUp, &QPushButton::clicked, this, [=] {
     int currentRow = mInputsList->currentIndex().row();
     if ( currentRow == 0 )
       return;
@@ -44,8 +43,7 @@ QgsModelInputReorderWidget::QgsModelInputReorderWidget( QWidget *parent )
     mInputsList->setCurrentIndex( mItemModel->index( currentRow - 1, 0 ) );
   } );
 
-  connect( mButtonDown, &QPushButton::clicked, this, [ = ]
-  {
+  connect( mButtonDown, &QPushButton::clicked, this, [=] {
     int currentRow = mInputsList->currentIndex().row();
     if ( currentRow == mItemModel->rowCount() - 1 )
       return;
@@ -53,7 +51,6 @@ QgsModelInputReorderWidget::QgsModelInputReorderWidget( QWidget *parent )
     mItemModel->insertRow( currentRow + 1, mItemModel->takeRow( currentRow ) );
     mInputsList->setCurrentIndex( mItemModel->index( currentRow + 1, 0 ) );
   } );
-
 }
 
 void QgsModelInputReorderWidget::setModel( QgsProcessingModelAlgorithm *model )
@@ -73,7 +70,7 @@ void QgsModelInputReorderWidget::setModel( QgsProcessingModelAlgorithm *model )
 QStringList QgsModelInputReorderWidget::inputOrder() const
 {
   QStringList order;
-  order.reserve( mItemModel->rowCount( ) );
+  order.reserve( mItemModel->rowCount() );
   for ( int row = 0; row < mItemModel->rowCount(); ++row )
   {
     order << mItemModel->data( mItemModel->index( row, 0 ), Qt::UserRole + 1 ).toString();

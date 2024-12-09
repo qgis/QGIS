@@ -39,7 +39,7 @@ void QgsMapCanvasMap::setContent( const QImage &image, const QgsRectangle &rect 
   // For true retro fans: this is approximately how the graphics looked like in 1990
   if ( mMapCanvas->property( "retro" ).toBool() )
     mImage = mImage.scaled( mImage.width() / 3, mImage.height() / 3 )
-             .convertToFormat( QImage::Format_Indexed8, Qt::OrderedDither | Qt::OrderedAlphaDither );
+               .convertToFormat( QImage::Format_Indexed8, Qt::OrderedDither | Qt::OrderedAlphaDither );
 
   setRect( rect );
 }
@@ -67,10 +67,7 @@ void QgsMapCanvasMap::paint( QPainter *painter )
   bool scale = false;
   if ( mImage.size() != QSize( w, h ) * mImage.devicePixelRatioF() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" )
-                      .arg( mImage.width() / mImage.devicePixelRatioF() )
-                      .arg( mImage.height() / mImage.devicePixelRatioF() )
-                      .arg( w ).arg( h ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" ).arg( mImage.width() / mImage.devicePixelRatioF() ).arg( mImage.height() / mImage.devicePixelRatioF() ).arg( w ).arg( h ), 2 );
     // This happens on zoom events when ::paint is called before
     // the renderer has completed
     scale = true;
@@ -83,7 +80,7 @@ void QgsMapCanvasMap::paint( QPainter *painter )
   const double offsetY = pt.y() - mRect.yMaximum();
 
   //draw preview images first
-  QList< QPair< QImage, QgsRectangle > >::const_iterator imIt = mPreviewImages.constBegin();
+  QList<QPair<QImage, QgsRectangle>>::const_iterator imIt = mPreviewImages.constBegin();
   for ( ; imIt != mPreviewImages.constEnd(); ++imIt )
   {
     const QPointF ul = toCanvasCoordinates( QgsPoint( imIt->second.xMinimum() + offsetX, imIt->second.yMaximum() + offsetY ) );

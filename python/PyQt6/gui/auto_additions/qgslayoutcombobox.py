@@ -3,5 +3,5 @@ try:
     QgsLayoutComboBox.__attribute_docs__ = {'layoutChanged': 'Emitted whenever the currently selected layout changes\n'}
     QgsLayoutComboBox.__signal_arguments__ = {'layoutChanged': ['layout: QgsMasterLayoutInterface']}
     QgsLayoutComboBox.__group__ = ['layout']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -76,7 +76,7 @@ QgsSumLineLengthAlgorithm *QgsSumLineLengthAlgorithm::createInstance() const
 
 QList<int> QgsSumLineLengthAlgorithm::inputLayerTypes() const
 {
-  return QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 Qgis::ProcessingSourceType QgsSumLineLengthAlgorithm::outputLayerType() const
@@ -110,21 +110,16 @@ void QgsSumLineLengthAlgorithm::initParameters( const QVariantMap &configuration
 {
   mIsInPlace = configuration.value( QStringLiteral( "IN_PLACE" ) ).toBool();
 
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "LINES" ),
-                QObject::tr( "Lines" ), QList< int > () << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "LINES" ), QObject::tr( "Lines" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) ) );
   if ( mIsInPlace )
   {
-    addParameter( new QgsProcessingParameterField( QStringLiteral( "LEN_FIELD" ),
-                  QObject::tr( "Lines length field name" ), QStringLiteral( "LENGTH" ), inputParameterName(), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
-    addParameter( new QgsProcessingParameterField( QStringLiteral( "COUNT_FIELD" ),
-                  QObject::tr( "Lines count field name" ), QStringLiteral( "COUNT" ), inputParameterName(), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
+    addParameter( new QgsProcessingParameterField( QStringLiteral( "LEN_FIELD" ), QObject::tr( "Lines length field name" ), QStringLiteral( "LENGTH" ), inputParameterName(), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
+    addParameter( new QgsProcessingParameterField( QStringLiteral( "COUNT_FIELD" ), QObject::tr( "Lines count field name" ), QStringLiteral( "COUNT" ), inputParameterName(), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
   }
   else
   {
-    addParameter( new QgsProcessingParameterString( QStringLiteral( "LEN_FIELD" ),
-                  QObject::tr( "Lines length field name" ), QStringLiteral( "LENGTH" ) ) );
-    addParameter( new QgsProcessingParameterString( QStringLiteral( "COUNT_FIELD" ),
-                  QObject::tr( "Lines count field name" ), QStringLiteral( "COUNT" ) ) );
+    addParameter( new QgsProcessingParameterString( QStringLiteral( "LEN_FIELD" ), QObject::tr( "Lines length field name" ), QStringLiteral( "LENGTH" ) ) );
+    addParameter( new QgsProcessingParameterString( QStringLiteral( "COUNT_FIELD" ), QObject::tr( "Lines count field name" ), QStringLiteral( "COUNT" ) ) );
   }
 }
 
@@ -151,7 +146,7 @@ QgsFields QgsSumLineLengthAlgorithm::outputFields( const QgsFields &inputFields 
   if ( mIsInPlace )
   {
     mLengthFieldIndex = mLengthFieldName.isEmpty() ? -1 : inputFields.lookupField( mLengthFieldName );
-    mCountFieldIndex = mCountFieldName.isEmpty() ? -1 :  inputFields.lookupField( mCountFieldName );
+    mCountFieldIndex = mCountFieldName.isEmpty() ? -1 : inputFields.lookupField( mCountFieldName );
     return inputFields;
   }
   else
@@ -172,7 +167,7 @@ QgsFields QgsSumLineLengthAlgorithm::outputFields( const QgsFields &inputFields 
 
 bool QgsSumLineLengthAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
-  if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
+  if ( const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer ) )
   {
     return vl->geometryType() == Qgis::GeometryType::Polygon;
   }
@@ -196,16 +191,16 @@ QgsFeatureList QgsSumLineLengthAlgorithm::processFeature( const QgsFeature &feat
       attrs[mCountFieldIndex] = 0;
 
     outputFeature.setAttributes( attrs );
-    return QList< QgsFeature > () << outputFeature;
+    return QList<QgsFeature>() << outputFeature;
   }
   else
   {
     const QgsGeometry polyGeom = feature.geometry();
-    std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( polyGeom.constGet() ) );
+    std::unique_ptr<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( polyGeom.constGet() ) );
     engine->prepareGeometry();
 
     QgsFeatureRequest req = QgsFeatureRequest().setFilterRect( polyGeom.boundingBox() ).setDestinationCrs( mCrs, context.transformContext() );
-    req.setSubsetOfAttributes( QList< int >() );
+    req.setSubsetOfAttributes( QList<int>() );
     QgsFeatureIterator it = mLinesSource->getFeatures( req );
 
     double count = 0;
@@ -244,7 +239,7 @@ QgsFeatureList QgsSumLineLengthAlgorithm::processFeature( const QgsFeature &feat
       attrs[mCountFieldIndex] = count;
 
     outputFeature.setAttributes( attrs );
-    return QList< QgsFeature >() << outputFeature;
+    return QList<QgsFeature>() << outputFeature;
   }
 }
 

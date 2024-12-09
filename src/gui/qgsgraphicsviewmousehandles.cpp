@@ -64,7 +64,6 @@ QRectF QgsGraphicsViewMouseHandles::storedItemRect( QGraphicsItem *item ) const
 
 void QgsGraphicsViewMouseHandles::previewItemMove( QGraphicsItem *, double, double )
 {
-
 }
 
 QRectF QgsGraphicsViewMouseHandles::previewSetItemRect( QGraphicsItem *, QRectF )
@@ -74,22 +73,18 @@ QRectF QgsGraphicsViewMouseHandles::previewSetItemRect( QGraphicsItem *, QRectF 
 
 void QgsGraphicsViewMouseHandles::startMacroCommand( const QString & )
 {
-
 }
 
 void QgsGraphicsViewMouseHandles::endMacroCommand()
 {
-
 }
 
 void QgsGraphicsViewMouseHandles::endItemCommand( QGraphicsItem * )
 {
-
 }
 
 void QgsGraphicsViewMouseHandles::createItemCommand( QGraphicsItem * )
 {
-
 }
 
 QPointF QgsGraphicsViewMouseHandles::snapPoint( QPointF originalPoint, QgsGraphicsViewMouseHandles::SnapGuideMode, bool, bool )
@@ -142,7 +137,7 @@ void QgsGraphicsViewMouseHandles::drawSelectedItemBounds( QPainter *painter )
     return;
   }
 
-  QList< QGraphicsItem * > itemsToDraw;
+  QList<QGraphicsItem *> itemsToDraw;
   expandItemList( selectedItems, itemsToDraw );
 
   if ( itemsToDraw.size() <= 1 )
@@ -443,7 +438,6 @@ void QgsGraphicsViewMouseHandles::startMove( QPointF sceneCoordPos )
   {
     grabMouse();
   }
-
 }
 
 void QgsGraphicsViewMouseHandles::selectedItemSizeChanged()
@@ -500,8 +494,7 @@ void QgsGraphicsViewMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *eve
     //moving items
     mIsDragging = true;
   }
-  else if ( mCurrentMouseMoveAction != Qgis::MouseHandlesAction::SelectItem &&
-            mCurrentMouseMoveAction != Qgis::MouseHandlesAction::NoAction )
+  else if ( mCurrentMouseMoveAction != Qgis::MouseHandlesAction::SelectItem && mCurrentMouseMoveAction != Qgis::MouseHandlesAction::NoAction )
   {
     //resizing items
     mIsResizing = true;
@@ -509,7 +502,6 @@ void QgsGraphicsViewMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *eve
     mResizeMoveX = 0;
     mResizeMoveY = 0;
     mCursorOffset = calcCursorEdgeOffset( mMouseMoveStartPos );
-
   }
 }
 
@@ -552,6 +544,13 @@ void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *e
   if ( event->button() != Qt::LeftButton )
   {
     event->ignore();
+    return;
+  }
+
+  if ( mDoubleClickInProgress )
+  {
+    mDoubleClickInProgress = false;
+    event->accept();
     return;
   }
 
@@ -798,19 +797,9 @@ void QgsGraphicsViewMouseHandles::resizeMouseMove( QPointF currentPosition, bool
   {
     //snapping only occurs if handles are not rotated for now
 
-    bool snapVertical = mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeft ||
-                        mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRight ||
-                        mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeftUp ||
-                        mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRightUp ||
-                        mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeftDown ||
-                        mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRightDown;
+    bool snapVertical = mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeft || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRight || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeftUp || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRightUp || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeftDown || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRightDown;
 
-    bool snapHorizontal = mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeUp ||
-                          mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeDown ||
-                          mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeftUp ||
-                          mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRightUp ||
-                          mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeftDown ||
-                          mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRightDown;
+    bool snapHorizontal = mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeUp || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeDown || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeftUp || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRightUp || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeLeftDown || mCurrentMouseMoveAction == Qgis::MouseHandlesAction::ResizeRightDown;
 
     //subtract cursor edge offset from begin mouse event and current cursor position, so that snapping occurs to edge of mouse handles
     //rather then cursor position
@@ -1062,7 +1051,6 @@ void QgsGraphicsViewMouseHandles::resizeMouseMove( QPointF currentPosition, bool
 
   //show current size of selection in status bar
   showStatusMessage( tr( "width: %1 mm height: %2 mm" ).arg( rect().width() ).arg( rect().height() ) );
-
 }
 
 void QgsGraphicsViewMouseHandles::setHandleSize( double size )
@@ -1073,6 +1061,8 @@ void QgsGraphicsViewMouseHandles::setHandleSize( double size )
 void QgsGraphicsViewMouseHandles::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
 {
   Q_UNUSED( event )
+
+  mDoubleClickInProgress = true;
 }
 
 QSizeF QgsGraphicsViewMouseHandles::calcCursorEdgeOffset( QPointF cursorPos )

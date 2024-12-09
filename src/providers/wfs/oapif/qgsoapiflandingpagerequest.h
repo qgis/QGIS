@@ -74,7 +74,6 @@ class QgsOapifLandingPageRequest : public QgsBaseNetworkRequest
     QString mConformanceUrl;
 
     ApplicationLevelError mAppLevelError = ApplicationLevelError::NoError;
-
 };
 
 #endif // QGSOAPIFLANDINGPAGEREQUEST_H

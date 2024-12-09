@@ -43,10 +43,9 @@ class DummySourceWidget : public QgsProviderSourceWidget
 {
     Q_OBJECT
   public:
-
-    DummySourceWidget( QWidget *parent ) : QgsProviderSourceWidget( parent )
+    DummySourceWidget( QWidget *parent )
+      : QgsProviderSourceWidget( parent )
     {
-
     }
 
     void setSourceUri( const QString &uri ) override { Q_UNUSED( uri ); }
@@ -57,7 +56,6 @@ class DummySourceWidget : public QgsProviderSourceWidget
     }
 
     QString newSource;
-
 };
 
 class TestQgsLayerPropertiesDialogs : public QgsTest
@@ -95,8 +93,7 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
       // valid vector layer
       const QString pointFileName = mTestDataDir + "points.shp";
       const QFileInfo pointFileInfo( pointFileName );
-      std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( pointFileInfo.filePath(),
-                                             pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+      std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
       QVERIFY( vl->isValid() );
 
       QgsMapCanvas canvas;
@@ -111,8 +108,7 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
       // invalid vector layer
       const QString pointFileName = mTestDataDir + "xxpoints.shp";
       const QFileInfo pointFileInfo( pointFileName );
-      std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( pointFileInfo.filePath(),
-                                             pointFileInfo.completeBaseName(), QStringLiteral( "xxogr" ) );
+      std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "xxogr" ) );
       QVERIFY( !vl->isValid() );
 
       QgsMapCanvas canvas;
@@ -127,8 +123,7 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
       // start with a point layer
       const QString pointFileName = mTestDataDir + "points.shp";
       const QFileInfo pointFileInfo( pointFileName );
-      std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( pointFileInfo.filePath(),
-                                             pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+      std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
       QVERIFY( vl->isValid() );
       vl->setSubsetString( QStringLiteral( "\"class\"='Biplane'" ) );
       QCOMPARE( vl->subsetString(), QStringLiteral( "\"class\"='Biplane'" ) );
@@ -185,12 +180,11 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
       // start with a point layer
       const QString pointFileName = mTestDataDir + "points.shp";
       const QFileInfo pointFileInfo( pointFileName );
-      std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( pointFileInfo.filePath(),
-                                             pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+      std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
       QVERIFY( vl->isValid() );
       // point layer should have a marker symbol
       vl->setRenderer( new QgsSingleSymbolRenderer( new QgsMarkerSymbol() ) );
-      QCOMPARE( dynamic_cast< QgsSingleSymbolRenderer * >( vl->renderer() )->symbol()->type(), Qgis::SymbolType::Marker );
+      QCOMPARE( dynamic_cast<QgsSingleSymbolRenderer *>( vl->renderer() )->symbol()->type(), Qgis::SymbolType::Marker );
 
       // no change to data source
       QgsMapCanvas canvas;
@@ -202,7 +196,7 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
       }
 
       // renderer should still be a marker type
-      QCOMPARE( dynamic_cast< QgsSingleSymbolRenderer * >( vl->renderer() )->symbol()->type(), Qgis::SymbolType::Marker );
+      QCOMPARE( dynamic_cast<QgsSingleSymbolRenderer *>( vl->renderer() )->symbol()->type(), Qgis::SymbolType::Marker );
 
       // change the data source to a line layer:
       {
@@ -219,7 +213,7 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
       // single symbol renderer with marker symbol would be nonsense now, we expected a line symbol
       // ie the settings for the renderer which were present in the dialog MUST be ignored and overwritten
       // by the logic which triggers when the geometry type is changed via a data source change
-      QCOMPARE( dynamic_cast< QgsSingleSymbolRenderer * >( vl->renderer() )->symbol()->type(), Qgis::SymbolType::Line );
+      QCOMPARE( dynamic_cast<QgsSingleSymbolRenderer *>( vl->renderer() )->symbol()->type(), Qgis::SymbolType::Line );
     }
 
     void testValidRasterProperties()
@@ -228,7 +222,7 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
       QTemporaryDir tmpDir;
       QFile::copy( mTestDataDir + "landsat_4326.tif", tmpDir.filePath( QStringLiteral( "landsat_4326.tif" ) ) );
       const QString rasterFileName = tmpDir.filePath( QStringLiteral( "landsat_4326.tif" ) );
-      std::unique_ptr< QgsRasterLayer > rl = std::make_unique< QgsRasterLayer >( rasterFileName, QStringLiteral( "test" ), QStringLiteral( "gdal" ) );
+      std::unique_ptr<QgsRasterLayer> rl = std::make_unique<QgsRasterLayer>( rasterFileName, QStringLiteral( "test" ), QStringLiteral( "gdal" ) );
       QVERIFY( rl->isValid() );
 
       QgsMapCanvas canvas;
@@ -242,7 +236,7 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
     {
       // invalid raster layer
       const QString rasterFileName = mTestDataDir + "xxlandsat_4326.tif";
-      std::unique_ptr< QgsRasterLayer > rl = std::make_unique< QgsRasterLayer >( rasterFileName, QStringLiteral( "test" ), QStringLiteral( "xxgdal" ) );
+      std::unique_ptr<QgsRasterLayer> rl = std::make_unique<QgsRasterLayer>( rasterFileName, QStringLiteral( "test" ), QStringLiteral( "xxgdal" ) );
       QVERIFY( !rl->isValid() );
 
       QgsMapCanvas canvas;
@@ -256,7 +250,7 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
     {
       // valid mesh layer
       QString uri( mTestDataDir + "/mesh/quad_and_triangle.2dm" );
-      std::unique_ptr< QgsMeshLayer > ml = std::make_unique< QgsMeshLayer >( uri, QStringLiteral( "test" ), QStringLiteral( "mdal" ) );
+      std::unique_ptr<QgsMeshLayer> ml = std::make_unique<QgsMeshLayer>( uri, QStringLiteral( "test" ), QStringLiteral( "mdal" ) );
       QVERIFY( ml->isValid() );
 
       QgsMapCanvas canvas;
@@ -270,7 +264,7 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
     {
       // invalid mesh layer
       QString uri( mTestDataDir + "/mesh/xxquad_and_triangle.2dm" );
-      std::unique_ptr< QgsMeshLayer > ml = std::make_unique< QgsMeshLayer >( uri, QStringLiteral( "test" ), QStringLiteral( "xmdal" ) );
+      std::unique_ptr<QgsMeshLayer> ml = std::make_unique<QgsMeshLayer>( uri, QStringLiteral( "test" ), QStringLiteral( "xmdal" ) );
       QVERIFY( !ml->isValid() );
 
       QgsMapCanvas canvas;
@@ -283,7 +277,7 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
     void testValidPointCloudProperties()
     {
       // valid point cloud layer
-      std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
+      std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( mTestDataDir + QStringLiteral( "point_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "ept" ) );
       QVERIFY( layer->isValid() );
 
       QgsMapCanvas canvas;
@@ -296,7 +290,7 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
     void testInvalidPointCloudProperties()
     {
       // invalid point cloud layer
-      std::unique_ptr< QgsPointCloudLayer > layer = std::make_unique< QgsPointCloudLayer >( mTestDataDir + QStringLiteral( "xxpoint_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "xxept" ) );
+      std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( mTestDataDir + QStringLiteral( "xxpoint_clouds/ept/sunshine-coast/ept.json" ), QStringLiteral( "layer" ), QStringLiteral( "xxept" ) );
       QVERIFY( !layer->isValid() );
 
       QgsMapCanvas canvas;
@@ -310,7 +304,7 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
     {
       // valid vector tile layer
       const QString srcMbtiles = QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR );
-      std::unique_ptr< QgsVectorTileLayer > layer = std::make_unique< QgsVectorTileLayer >( srcMbtiles );
+      std::unique_ptr<QgsVectorTileLayer> layer = std::make_unique<QgsVectorTileLayer>( srcMbtiles );
       QVERIFY( layer->isValid() );
 
       QgsMapCanvas canvas;
@@ -324,7 +318,7 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
     {
       // invalid vector tile layer
       const QString srcMbtiles = QStringLiteral( "type=mbtiles&url=%1/vector_tile/xxmbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR );
-      std::unique_ptr< QgsVectorTileLayer > layer = std::make_unique< QgsVectorTileLayer >( srcMbtiles );
+      std::unique_ptr<QgsVectorTileLayer> layer = std::make_unique<QgsVectorTileLayer>( srcMbtiles );
       QVERIFY( !layer->isValid() );
 
       QgsMapCanvas canvas;
@@ -337,7 +331,7 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
     void testInvalidTileSceneProperties()
     {
       // invalid tiled scene layer
-      std::unique_ptr< QgsTiledSceneLayer > layer = std::make_unique< QgsTiledSceneLayer >( QStringLiteral( "xxx" ), QStringLiteral( "test" ), QStringLiteral( "xxx" ) );
+      std::unique_ptr<QgsTiledSceneLayer> layer = std::make_unique<QgsTiledSceneLayer>( QStringLiteral( "xxx" ), QStringLiteral( "test" ), QStringLiteral( "xxx" ) );
       QVERIFY( !layer->isValid() );
 
       QgsMapCanvas canvas;
@@ -350,7 +344,7 @@ class TestQgsLayerPropertiesDialogs : public QgsTest
     void testValidAnnotationLayerProperties()
     {
       // valid annotation layer
-      std::unique_ptr< QgsAnnotationLayer > layer = std::make_unique< QgsAnnotationLayer >( QStringLiteral( "xxx" ), QgsAnnotationLayer::LayerOptions( QgsCoordinateTransformContext() ) );
+      std::unique_ptr<QgsAnnotationLayer> layer = std::make_unique<QgsAnnotationLayer>( QStringLiteral( "xxx" ), QgsAnnotationLayer::LayerOptions( QgsCoordinateTransformContext() ) );
       QVERIFY( layer->isValid() );
 
       QgsMapCanvas canvas;

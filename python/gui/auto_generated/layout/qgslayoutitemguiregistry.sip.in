@@ -26,7 +26,6 @@ the components related to the GUI behavior of a layout item.
 #include "qgslayoutitemguiregistry.h"
 %End
   public:
-
     enum Flag
     {
       FlagNoCreationTools,
@@ -145,7 +144,6 @@ to display grouped within designer dialogs.
 #include "qgslayoutitemguiregistry.h"
 %End
   public:
-
     QgsLayoutItemGuiGroup( const QString &id = QString(), const QString &name = QString(), const QIcon &icon = QIcon() );
 %Docstring
 Constructor for QgsLayoutItemGuiGroup.
@@ -156,7 +154,6 @@ Constructor for QgsLayoutItemGuiGroup.
     QString name;
 
     QIcon icon;
-
 };
 
 
@@ -176,7 +173,6 @@ the components related to the GUI behavior of layout items.
 #include "qgslayoutitemguiregistry.h"
 %End
   public:
-
     QgsLayoutItemGuiRegistry( QObject *parent = 0 );
 %Docstring
 Creates a new empty item GUI registry.
@@ -254,7 +250,7 @@ Creates a new instance of a layout item configuration widget for the specified `
 
 
 
-    QList< int > itemMetadataIds() const;
+    QList<int> itemMetadataIds() const;
 %Docstring
 Returns a list of available item metadata ids handled by the registry.
 %End
@@ -270,9 +266,6 @@ Emitted whenever a new item type is added to the registry, with the specified
   private:
     QgsLayoutItemGuiRegistry( const QgsLayoutItemGuiRegistry &rh );
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

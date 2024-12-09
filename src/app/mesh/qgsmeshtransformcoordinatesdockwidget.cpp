@@ -28,8 +28,8 @@
 #include "qgscoordinateutils.h"
 #include "qgsapplication.h"
 
-QgsMeshTransformCoordinatesDockWidget::QgsMeshTransformCoordinatesDockWidget( QWidget *parent ):
-  QgsDockWidget( parent )
+QgsMeshTransformCoordinatesDockWidget::QgsMeshTransformCoordinatesDockWidget( QWidget *parent )
+  : QgsDockWidget( parent )
 {
   setupUi( this );
 
@@ -58,12 +58,12 @@ QgsMeshTransformCoordinatesDockWidget::QgsMeshTransformCoordinatesDockWidget( QW
 
 QgsExpressionContext QgsMeshTransformCoordinatesDockWidget::createExpressionContext() const
 {
-  return QgsExpressionContext( {QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Vertex )} );
+  return QgsExpressionContext( { QgsExpressionContextUtils::meshExpressionScope( QgsMesh::Vertex ) } );
 }
 
 QgsMeshVertex QgsMeshTransformCoordinatesDockWidget::transformedVertex( int i )
 {
-  if ( ! mInputLayer || !mIsCalculated )
+  if ( !mInputLayer || !mIsCalculated )
     return QgsMeshVertex();
 
   return mTransformVertices.transformedVertex( mInputLayer, i );
@@ -97,7 +97,7 @@ void QgsMeshTransformCoordinatesDockWidget::setInput( QgsMeshLayer *layer, const
         mLabelInformation->setText( tr( "No vertex selected for mesh \"%1\"" ).arg( mInputLayer->name() ) );
       else
         mLabelInformation->setText( tr( "%n vertices of mesh layer \"%1\" to transform", nullptr, mInputVertices.count() )
-                                    .arg( mInputLayer->name() ) );
+                                      .arg( mInputLayer->name() ) );
     }
   }
   importVertexCoordinates();
@@ -113,9 +113,7 @@ void QgsMeshTransformCoordinatesDockWidget::calculate()
   QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
   mTransformVertices.clear();
   mTransformVertices.setInputVertices( mInputVertices );
-  mTransformVertices.setExpressions( mCheckBoxX->isChecked() ? mExpressionEditX->expression() : QString(),
-                                     mCheckBoxY->isChecked() ? mExpressionEditY->expression() : QString(),
-                                     mCheckBoxZ->isChecked() ? mExpressionEditZ->expression() : QString() );
+  mTransformVertices.setExpressions( mCheckBoxX->isChecked() ? mExpressionEditX->expression() : QString(), mCheckBoxY->isChecked() ? mExpressionEditY->expression() : QString(), mCheckBoxZ->isChecked() ? mExpressionEditZ->expression() : QString() );
   QgsExpressionContext context;
   context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
 
@@ -155,7 +153,7 @@ void QgsMeshTransformCoordinatesDockWidget::apply()
   emit aboutToBeApplied();
   QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
   if ( mIsResultValid && mInputLayer && mInputLayer->meshEditor() )
-    mInputLayer->meshEditor()->advancedEdit( & mTransformVertices );
+    mInputLayer->meshEditor()->advancedEdit( &mTransformVertices );
   emit applied();
 }
 
@@ -195,4 +193,3 @@ void QgsMeshTransformCoordinatesDockWidget::importVertexCoordinates()
     }
   }
 }
-

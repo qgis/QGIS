@@ -27,7 +27,6 @@ the components related to the GUI behavior of sensor.
 #include "qgssensorguiregistry.h"
 %End
   public:
-
     QgsSensorAbstractGuiMetadata( const QString &type, const QString &visibleName );
 %Docstring
 Constructor for QgsSensorAbstractGuiMetadata with the specified class ``type``.
@@ -85,7 +84,6 @@ the components related to the GUI behavior of sensors.
 #include "qgssensorguiregistry.h"
 %End
   public:
-
     QgsSensorGuiRegistry( QObject *parent = 0 );
 %Docstring
 Creates a new empty sensor GUI registry.
@@ -143,9 +141,6 @@ Emitted whenever a new sensor type is added to the registry, with the specified
   private:
     QgsSensorGuiRegistry( const QgsSensorGuiRegistry &rh );
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -2,5 +2,5 @@
 try:
     QgsIdentifyMenu.findFeaturesOnCanvas = staticmethod(QgsIdentifyMenu.findFeaturesOnCanvas)
     QgsIdentifyMenu.styleHighlight = staticmethod(QgsIdentifyMenu.styleHighlight)
-except NameError:
+except (NameError, AttributeError):
     pass

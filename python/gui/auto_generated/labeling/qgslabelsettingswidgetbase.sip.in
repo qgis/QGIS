@@ -22,7 +22,6 @@ Base class for widgets which allow customization of label engine properties, suc
 #include "qgslabelsettingswidgetbase.h"
 %End
   public:
-
     QgsLabelSettingsWidgetBase( QWidget *parent /TransferThis/ = 0, QgsVectorLayer *vl = 0 );
 %Docstring
 Constructor for QgsLabelSettingsWidgetBase.
@@ -89,7 +88,6 @@ Emitted when an auxiliary field is created in the widget.
 %End
 
   protected:
-
     virtual QgsExpressionContext createExpressionContext() const;
 
 
@@ -115,8 +113,6 @@ A blocking dialog containing a :py:class:`QgsLabelSettingsWidgetBase`.
 #include "qgslabelsettingswidgetbase.h"
 %End
   public:
-
-
     QgsLabelSettingsWidgetDialog( QgsLabelSettingsWidgetBase *widget /Transfer/, QWidget *parent = 0 );
 %Docstring
 Constructor for QgsLabelSettingsWidgetDialog.

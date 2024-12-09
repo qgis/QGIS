@@ -19,7 +19,6 @@ Class to select destination file, type and CRS for ogr layers
 #include "qgsvectorlayersaveasdialog.h"
 %End
   public:
-
     enum class Option
     {
       Symbology,

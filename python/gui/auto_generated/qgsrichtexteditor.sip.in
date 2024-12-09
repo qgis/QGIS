@@ -26,7 +26,6 @@ and retrieving and setting the documents via HTML formatted strings.
 #include "qgsrichtexteditor.h"
 %End
   public:
-
     enum class Mode
     {
       QTextDocument,
@@ -125,7 +124,6 @@ Emitted when the text contents are changed.
 
 
 };
-
 
 
 /************************************************************************

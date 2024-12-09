@@ -47,16 +47,14 @@ QgsAbstractDbSourceSelect::QgsAbstractDbSourceSelect( QWidget *parent, Qt::Windo
   mBuildQueryButton->setDisabled( true );
   buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
 
-  connect( mTablesTreeView, &QTreeView::clicked, this, [ = ]( const QModelIndex & index )
-  {
+  connect( mTablesTreeView, &QTreeView::clicked, this, [=]( const QModelIndex &index ) {
     treeviewClicked( mProxyModel->mapToSource( index ) );
   } );
-  connect( mTablesTreeView, &QTreeView::doubleClicked, this, [ = ]( const QModelIndex & index )
-  {
+  connect( mTablesTreeView, &QTreeView::doubleClicked, this, [=]( const QModelIndex &index ) {
     treeviewDoubleClicked( mProxyModel->mapToSource( index ) );
   } );
 
-  connect( mBuildQueryButton, &QAbstractButton::clicked, this, [ = ]() {setSql( mProxyModel->mapToSource( mTablesTreeView->currentIndex() ) );} );
+  connect( mBuildQueryButton, &QAbstractButton::clicked, this, [=]() { setSql( mProxyModel->mapToSource( mTablesTreeView->currentIndex() ) ); } );
 }
 
 void QgsAbstractDbSourceSelect::init( QgsAbstractDbTableModel *model, QItemDelegate *delegate )
@@ -112,8 +110,8 @@ void QgsAbstractDbSourceSelect::init( QgsAbstractDbTableModel *model, QItemDeleg
 
   mSearchSettingsButton->setMenu( mSearchSettingsMenu );
 
-  connect( mSearchSettingsMenu, &QMenu::triggered, this, [ = ]() {filterResults();} );
-  connect( mSearchTableEdit, &QLineEdit::textChanged, this, [ = ]() {filterResults();} );
+  connect( mSearchSettingsMenu, &QMenu::triggered, this, [=]() { filterResults(); } );
+  connect( mSearchTableEdit, &QLineEdit::textChanged, this, [=]() { filterResults(); } );
 }
 
 void QgsAbstractDbSourceSelect::treeviewClicked( const QModelIndex &index )
@@ -150,7 +148,7 @@ void QgsAbstractDbSourceSelect::filterResults()
 
   if ( regex )
   {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     mProxyModel->setFilterRegExp( searchText );
 #else
     mProxyModel->setFilterRegularExpression( searchText );
@@ -161,4 +159,3 @@ void QgsAbstractDbSourceSelect::filterResults()
     mProxyModel->setFilterWildcard( searchText );
   }
 }
-

@@ -24,7 +24,6 @@ Class that handles mesh creation with Delaunay constrained triangulation
 #include "qgsmeshtriangulation.h"
 %End
   public:
-
     QgsMeshTriangulation();
     ~QgsMeshTriangulation();
 
@@ -76,7 +75,7 @@ Sets the coordinate reference system used for the triangulation
 };
 
 
-class QgsMeshZValueDatasetGroup: QgsMeshDatasetGroup
+class QgsMeshZValueDatasetGroup : QgsMeshDatasetGroup
 {
 %Docstring(signature="appended")
 
@@ -89,7 +88,6 @@ Convenient class that can be used to obtain a datasetgroup on vertices that repr
 #include "qgsmeshtriangulation.h"
 %End
   public:
-
     QgsMeshZValueDatasetGroup( const QString &datasetGroupName, const QgsMesh &mesh );
 %Docstring
 Constructor
@@ -129,7 +127,6 @@ a Delaunay triangulation on provided existing vertex.
 #include "qgsmeshtriangulation.h"
 %End
   public:
-
     QgsMeshEditingDelaunayTriangulation();
 
     virtual QString text() const;

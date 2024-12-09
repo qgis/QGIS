@@ -32,10 +32,7 @@
 class QgsCollectorAlgorithm : public QgsProcessingAlgorithm
 {
   protected:
-
-    QVariantMap processCollection( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback,
-                                   const std::function<QgsGeometry( const QVector<QgsGeometry>& )> &collector, int maxQueueLength = 0, Qgis::ProcessingFeatureSourceFlags sourceFlags = Qgis::ProcessingFeatureSourceFlags(),
-                                   bool separateDisjoint = false );
+    QVariantMap processCollection( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, const std::function<QgsGeometry( const QVector<QgsGeometry> & )> &collector, int maxQueueLength = 0, Qgis::ProcessingFeatureSourceFlags sourceFlags = Qgis::ProcessingFeatureSourceFlags(), bool separateDisjoint = false );
 };
 
 /**
@@ -43,9 +40,7 @@ class QgsCollectorAlgorithm : public QgsProcessingAlgorithm
  */
 class QgsDissolveAlgorithm : public QgsCollectorAlgorithm
 {
-
   public:
-
     QgsDissolveAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmDissolve.svg" ) ); }
@@ -60,10 +55,7 @@ class QgsDissolveAlgorithm : public QgsCollectorAlgorithm
     QgsDissolveAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 /**
@@ -71,9 +63,7 @@ class QgsDissolveAlgorithm : public QgsCollectorAlgorithm
  */
 class QgsCollectAlgorithm : public QgsCollectorAlgorithm
 {
-
   public:
-
     QgsCollectAlgorithm() = default;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCollect.svg" ) ); }
     QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmCollect.svg" ) ); }
@@ -88,14 +78,9 @@ class QgsCollectAlgorithm : public QgsCollectorAlgorithm
     QgsCollectAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMDISSOLVE_H
-
-

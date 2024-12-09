@@ -22,7 +22,6 @@ The default {:py:class:`QgsRelationEditorWidget`} is protected from removing.
 #include "qgsrelationwidgetregistry.h"
 %End
   public:
-
     QgsRelationWidgetRegistry();
 %Docstring
 Constructor

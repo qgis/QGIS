@@ -3,5 +3,5 @@ try:
     QgsTileMatrix.fromWebMercator = staticmethod(QgsTileMatrix.fromWebMercator)
     QgsTileMatrix.fromCustomDef = staticmethod(QgsTileMatrix.fromCustomDef)
     QgsTileMatrix.fromTileMatrix = staticmethod(QgsTileMatrix.fromTileMatrix)
-except NameError:
+except (NameError, AttributeError):
     pass

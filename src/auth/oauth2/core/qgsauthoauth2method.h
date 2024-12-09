@@ -49,7 +49,6 @@ class QgsOAuth2Factory : public QThread
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new QgsO2 object, ensuring that it is correctly created on the
      * QgsOAuth2Factory thread instance.
@@ -85,7 +84,6 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     Q_OBJECT
 
   public:
-
     static const QString AUTH_METHOD_KEY;
     static const QString AUTH_METHOD_DESCRIPTION;
     static const QString AUTH_METHOD_DISPLAY_DESCRIPTION;
@@ -102,16 +100,13 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     QString displayDescription() const override;
 
     //! Update network \a request with given \a authcfg and optional \a dataprovider
-    bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
-                               const QString &dataprovider = QString() ) override;
+    bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider = QString() ) override;
 
     //! Update network \a reply with given \a authcfg and optional \a dataprovider
-    bool updateNetworkReply( QNetworkReply *reply, const QString &authcfg,
-                             const QString &dataprovider ) override;
+    bool updateNetworkReply( QNetworkReply *reply, const QString &authcfg, const QString &dataprovider ) override;
 
     //! Update data source \a connectionItems with given \a authcfg and optional \a dataprovider
-    bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
-                                   const QString &dataprovider = QString() ) override;
+    bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg, const QString &dataprovider = QString() ) override;
 
     //! Clear cached configuration for given \a authcfg
     void clearCachedConfig( const QString &authcfg ) override;
@@ -143,7 +138,7 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     void onAuthCode();
 
 #ifdef HAVE_GUI
-    QWidget *editWidget( QWidget *parent )const override;
+    QWidget *editWidget( QWidget *parent ) const override;
 #endif
 
   signals:
@@ -152,7 +147,6 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     void setAuthCode( const QString code );
 
   private:
-
     QgsO2 *getOAuth2Bundle( const QString &authcfg, bool fullconfig = true );
 
     void putOAuth2Bundle( const QString &authcfg, QgsO2 *bundle );
@@ -175,7 +169,7 @@ class QgsAuthOAuth2MethodMetadata : public QgsAuthMethodMetadata
     QgsAuthOAuth2MethodMetadata()
       : QgsAuthMethodMetadata( QgsAuthOAuth2Method::AUTH_METHOD_KEY, QgsAuthOAuth2Method::AUTH_METHOD_DESCRIPTION )
     {}
-    QgsAuthOAuth2Method *createAuthMethod() const override {return new QgsAuthOAuth2Method;}
+    QgsAuthOAuth2Method *createAuthMethod() const override { return new QgsAuthOAuth2Method; }
     //QStringList supportedDataProviders() const override;
 };
 

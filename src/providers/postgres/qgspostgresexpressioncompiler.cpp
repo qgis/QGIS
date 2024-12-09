@@ -56,8 +56,7 @@ QString QgsPostgresExpressionCompiler::quotedValue( const QVariant &value, bool 
   return QgsPostgresConn::quotedValue( value );
 }
 
-static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP
-{
+static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP {
   { "sqrt", "sqrt" },
   { "radians", "radians" },
   { "degrees", "degrees" },

@@ -4,5 +4,5 @@ try:
     QgsProjectUtils.updateLayerPath = staticmethod(QgsProjectUtils.updateLayerPath)
     QgsProjectUtils.layerIsContainedInGroupLayer = staticmethod(QgsProjectUtils.layerIsContainedInGroupLayer)
     QgsProjectUtils.__group__ = ['project']
-except NameError:
+except (NameError, AttributeError):
     pass

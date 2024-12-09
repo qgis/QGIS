@@ -79,9 +79,7 @@ class ANALYSIS_EXPORT QgsNineCellFilter
      * \param x33 surrounding cell bottom right
      * \return the calculated cell value for the central cell x22
      */
-    virtual float processNineCellWindow( float *x11, float *x21, float *x31,
-                                         float *x12, float *x22, float *x32,
-                                         float *x13, float *x23, float *x33 ) = 0;
+    virtual float processNineCellWindow( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 ) = 0;
 
   private:
     //default constructor forbidden. We need input file, output file and format obligatory
@@ -137,7 +135,6 @@ class ANALYSIS_EXPORT QgsNineCellFilter
 #endif
 
   protected:
-
     QString mInputFile;
     QString mOutputFile;
     QString mOutputFormat;

@@ -136,7 +136,7 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
       const QList<QAction *> actions = tb->menu()->actions();
       for ( QAction *action : actions )
       {
-        action->setChecked( type & static_cast< Qgis::SnappingTypes >( action->data().toInt() ) );
+        action->setChecked( type & static_cast<Qgis::SnappingTypes>( action->data().toInt() ) );
       }
     }
   }
@@ -195,10 +195,10 @@ void QgsSnappingLayerDelegate::setModelData( QWidget *editor, QAbstractItemModel
       }
       model->setData( index, static_cast<int>( type ), Qt::EditRole );
     }
-
   }
   else if (
-    index.column() == QgsSnappingLayerTreeModel::UnitsColumn )
+    index.column() == QgsSnappingLayerTreeModel::UnitsColumn
+  )
   {
     QComboBox *w = qobject_cast<QComboBox *>( editor );
     if ( w )
@@ -242,7 +242,7 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject *project, QgsMa
 {
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
   connect( project, &QgsProject::avoidIntersectionsLayersChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
-  connect( project, &QgsProject::readProject, this, [ = ] {resetLayerTreeModel();} );
+  connect( project, &QgsProject::readProject, this, [=] { resetLayerTreeModel(); } );
 }
 
 int QgsSnappingLayerTreeModel::columnCount( const QModelIndex &parent ) const
@@ -409,8 +409,33 @@ QgsLayerTreeModel *QgsSnappingLayerTreeModel::layerTreeModel() const
 
 void QgsSnappingLayerTreeModel::setLayerTreeModel( QgsLayerTreeModel *layerTreeModel )
 {
+  if ( mLayerTreeModel )
+  {
+    disconnect( mLayerTreeModel, &QAbstractItemModel::rowsInserted, this, &QgsSnappingLayerTreeModel::onNodesInserted );
+    disconnect( mLayerTreeModel, &QAbstractItemModel::rowsRemoved, this, &QgsSnappingLayerTreeModel::onNodesRemoved );
+  }
+
   mLayerTreeModel = layerTreeModel;
   QSortFilterProxyModel::setSourceModel( layerTreeModel );
+
+  connect( mLayerTreeModel, &QAbstractItemModel::rowsInserted, this, &QgsSnappingLayerTreeModel::onNodesInserted );
+  connect( mLayerTreeModel, &QAbstractItemModel::rowsRemoved, this, &QgsSnappingLayerTreeModel::onNodesRemoved );
+}
+
+void QgsSnappingLayerTreeModel::onNodesInserted( const QModelIndex &parent, int first, int last )
+{
+  if ( mLayerTreeModel->rowCount( parent ) - ( last - first + 1 ) <= 0 )
+  {
+    invalidateFilter();
+  }
+}
+
+void QgsSnappingLayerTreeModel::onNodesRemoved( const QModelIndex &parent, int, int )
+{
+  if ( mLayerTreeModel->rowCount( parent ) == 0 )
+  {
+    invalidateFilter();
+  }
 }
 
 bool QgsSnappingLayerTreeModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
@@ -479,7 +504,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
     if ( role == Qt::CheckStateRole )
     {
       QgsVectorLayer *vl = vectorLayer( idx );
-      if ( vl  && mIndividualLayerSettings.contains( vl ) )
+      if ( vl && mIndividualLayerSettings.contains( vl ) )
       {
         const QgsSnappingConfig::IndividualLayerSettings ls = mIndividualLayerSettings.value( vl );
         if ( !ls.valid() )
@@ -527,7 +552,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
           return Qt::Unchecked;
 
         // both
-        if ( hasChecked &&  hasUnchecked )
+        if ( hasChecked && hasUnchecked )
           return Qt::PartiallyChecked;
 
         if ( hasChecked )
@@ -694,7 +719,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
     if ( role == Qt::CheckStateRole )
     {
       int i = 0;
-      for ( i = 0; ; i++ )
+      for ( i = 0;; i++ )
       {
         const QModelIndex child = QgsSnappingLayerTreeModel::index( i, LayerColumn, index );
         if ( !child.isValid() )

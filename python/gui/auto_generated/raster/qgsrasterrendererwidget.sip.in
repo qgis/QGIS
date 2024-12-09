@@ -11,7 +11,7 @@
 
 
 
-class QgsRasterRendererWidget: QWidget
+class QgsRasterRendererWidget : QWidget
 {
 %Docstring(signature="appended")
 
@@ -22,7 +22,6 @@ Abstract base class for widgets which configure a :py:class:`QgsRasterRenderer`.
 #include "qgsrasterrendererwidget.h"
 %End
   public:
-
     QgsRasterRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent );
 
     virtual QgsRasterRenderer *renderer() = 0 /Factory/;

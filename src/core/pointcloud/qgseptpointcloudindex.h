@@ -28,6 +28,7 @@
 
 #include "qgspointcloudindex.h"
 #include "qgis_sip.h"
+#include "qgsvector3d.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -36,7 +37,6 @@ class QgsCoordinateReferenceSystem;
 
 class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
 {
-    Q_OBJECT
   public:
 
     explicit QgsEptPointCloudIndex();
@@ -46,18 +46,15 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
 
     void load( const QString &fileName ) override;
 
-    std::unique_ptr<QgsPointCloudBlock> nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
-    QgsPointCloudBlockRequest *asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request ) override;
-    bool hasNode( const IndexedPointCloudNode &n ) const override;
+    std::unique_ptr<QgsPointCloudBlock> nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
+    QgsPointCloudBlockRequest *asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request ) override;
+    bool hasNode( const QgsPointCloudNodeId &n ) const override;
 
     QgsCoordinateReferenceSystem crs() const override;
     qint64 pointCount() const override;
-    virtual qint64 nodePointCount( const IndexedPointCloudNode &n ) const override;
-    bool hasStatisticsMetadata() const override;
-    QVariant metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const override;
-    QVariantList metadataClasses( const QString &attribute ) const override;
-    QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const override;
+    QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const override;
     QVariantMap originalMetadata() const override { return mOriginalMetadata; }
+    QgsPointCloudStatistics metadataStatistics() const override;
 
     bool isValid() const override;
     QgsPointCloudIndex::AccessType accessType() const override;
@@ -72,9 +69,9 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
     bool loadSchema( const QByteArray &dataJson );
     void loadManifest( const QByteArray &manifestJson );
     bool loadSchema( QFile &f );
-    bool loadSingleNodeHierarchy( const IndexedPointCloudNode &nodeId ) const;
-    QVector<IndexedPointCloudNode> nodePathToRoot( const IndexedPointCloudNode &nodeId ) const;
-    bool loadNodeHierarchy( const IndexedPointCloudNode &nodeId ) const;
+    bool loadSingleNodeHierarchy( const QgsPointCloudNodeId &nodeId ) const;
+    QVector<QgsPointCloudNodeId> nodePathToRoot( const QgsPointCloudNodeId &nodeId ) const;
+    bool loadNodeHierarchy( const QgsPointCloudNodeId &nodeId ) const;
 
     bool mIsValid = false;
     QgsPointCloudIndex::AccessType mAccessType = Local;
@@ -84,7 +81,7 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsPointCloudIndex
     QString mUrlDirectoryPart;
 
     //! Contains the nodes that will have */ept-hierarchy/d-x-y-z.json file
-    mutable QSet<IndexedPointCloudNode> mHierarchyNodes;
+    mutable QSet<QgsPointCloudNodeId> mHierarchyNodes;
 
     qint64 mPointCount = 0;
 

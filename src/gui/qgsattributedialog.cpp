@@ -79,9 +79,7 @@ void QgsAttributeDialog::accept()
     if ( error.isEmpty() )
       error = tr( "An unknown error was encountered saving attributes" );
 
-    mMessageBar->pushMessage( QString(),
-                              error,
-                              Qgis::MessageLevel::Critical );
+    mMessageBar->pushMessage( QString(), error, Qgis::MessageLevel::Critical );
   }
 }
 
@@ -191,4 +189,3 @@ QgsMapLayerActionContext QgsAttributeDialog::createActionContext()
   context.setMessageBar( mMessageBar );
   return context;
 }
-

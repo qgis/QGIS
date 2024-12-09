@@ -3,5 +3,5 @@ try:
     QgsEmbeddedSymbolRenderer.create = staticmethod(QgsEmbeddedSymbolRenderer.create)
     QgsEmbeddedSymbolRenderer.convertFromRenderer = staticmethod(QgsEmbeddedSymbolRenderer.convertFromRenderer)
     QgsEmbeddedSymbolRenderer.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

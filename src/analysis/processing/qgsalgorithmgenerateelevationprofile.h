@@ -34,9 +34,7 @@ class QgsProfilePlotRenderer;
  */
 class QgsGenerateElevationProfileAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsGenerateElevationProfileAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -48,14 +46,10 @@ class QgsGenerateElevationProfileAlgorithm : public QgsProcessingAlgorithm
     QgsGenerateElevationProfileAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    bool prepareAlgorithm( const QVariantMap &parameters,
-                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     std::unique_ptr<QgsProfilePlotRenderer> mRenderer;
 
     static constexpr double MAX_ERROR_PIXELS = 2;

@@ -20,7 +20,6 @@ A widget used represent options of a :py:class:`QgsEmbeddedSymbolRenderer`
 #include "qgsembeddedsymbolrendererwidget.h"
 %End
   public:
-
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
 Static creation method

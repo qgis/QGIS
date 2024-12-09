@@ -24,6 +24,7 @@
 
 #include <QDialog>
 
+class QgsMessageBar;
 
 class QgsStacDownloadAssetsDialog : public QDialog, private Ui::QgsStacDownloadAssetsDialog
 {
@@ -32,6 +33,10 @@ class QgsStacDownloadAssetsDialog : public QDialog, private Ui::QgsStacDownloadA
   public:
     explicit QgsStacDownloadAssetsDialog( QWidget *parent = nullptr );
 
+    void accept() override;
+
+    void setAuthCfg( const QString &authCfg );
+    void setMessageBar( QgsMessageBar *bar );
     void setStacItem( QgsStacItem *stacItem );
     QString selectedFolder();
     QStringList selectedUrls();
@@ -44,6 +49,8 @@ class QgsStacDownloadAssetsDialog : public QDialog, private Ui::QgsStacDownloadA
     void deselectAll();
 
     QMenu *mContextMenu = nullptr;
+    QString mAuthCfg;
+    QgsMessageBar *mMessageBar = nullptr;
 };
 
 ///@endcond

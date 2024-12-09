@@ -34,7 +34,7 @@ class QgsMessageBar;
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutAtlasWidget: public QWidget, private Ui::QgsLayoutAtlasWidgetBase
+class GUI_EXPORT QgsLayoutAtlasWidget : public QWidget, private Ui::QgsLayoutAtlasWidgetBase
 {
     Q_OBJECT
   public:
@@ -62,7 +62,7 @@ class GUI_EXPORT QgsLayoutAtlasWidget: public QWidget, private Ui::QgsLayoutAtla
     void updateAtlasFeatures();
 
   private:
-    QPointer< QgsPrintLayout > mLayout;
+    QPointer<QgsPrintLayout> mLayout;
     QgsLayoutAtlas *mAtlas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
     bool mBlockUpdates = false;

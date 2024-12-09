@@ -9,7 +9,7 @@
 
 
 
-class QgsLegendFilterButton: QToolButton
+class QgsLegendFilterButton : QToolButton
 {
 %Docstring(signature="appended")
 A tool button that allows enabling or disabling legend filter by contents of the map.
@@ -20,7 +20,6 @@ An additional pop down menu allows defining a boolean expression to refine the f
 #include "qgslegendfilterbutton.h"
 %End
   public:
-
     QgsLegendFilterButton( QWidget *parent = 0 );
 %Docstring
 Construct a new filter legend button

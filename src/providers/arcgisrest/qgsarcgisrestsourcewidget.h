@@ -43,7 +43,6 @@ class QgsArcGisRestSourceWidget : public QgsProviderSourceWidget, private Ui::Qg
     QString referer() const;
 
   private:
-
     const QString mProviderKey;
     QVariantMap mSourceParts;
 };

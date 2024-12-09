@@ -21,25 +21,23 @@ email                : hugo dot mercier at oslandia dot com
 extern "C"
 {
 #endif
-int vtableCreate( sqlite3 *sql, void *aux, int argc, const char *const *argv, sqlite3_vtab **out_vtab, char **out_err );
-int vtableConnect( sqlite3 *sql, void *aux, int argc, const char *const *argv, sqlite3_vtab **out_vtab, char **out_err );
-int vtableRename( sqlite3_vtab *vtab, const char *new_name );
-int vtableBestIndex( sqlite3_vtab *vtab, sqlite3_index_info * );
-int vtableDisconnect( sqlite3_vtab *vtab );
-int vtableDestroy( sqlite3_vtab *vtab );
+  int vtableCreate( sqlite3 *sql, void *aux, int argc, const char *const *argv, sqlite3_vtab **out_vtab, char **out_err );
+  int vtableConnect( sqlite3 *sql, void *aux, int argc, const char *const *argv, sqlite3_vtab **out_vtab, char **out_err );
+  int vtableRename( sqlite3_vtab *vtab, const char *new_name );
+  int vtableBestIndex( sqlite3_vtab *vtab, sqlite3_index_info * );
+  int vtableDisconnect( sqlite3_vtab *vtab );
+  int vtableDestroy( sqlite3_vtab *vtab );
 
-int vtableOpen( sqlite3_vtab *vtab, sqlite3_vtab_cursor **out_cursor );
-int vtableClose( sqlite3_vtab_cursor * );
-int vtableFilter( sqlite3_vtab_cursor *cursor, int idxNum, const char *idxStr, int argc, sqlite3_value **argv );
+  int vtableOpen( sqlite3_vtab *vtab, sqlite3_vtab_cursor **out_cursor );
+  int vtableClose( sqlite3_vtab_cursor * );
+  int vtableFilter( sqlite3_vtab_cursor *cursor, int idxNum, const char *idxStr, int argc, sqlite3_value **argv );
 
-int vtableNext( sqlite3_vtab_cursor *cursor );
-int vtableEof( sqlite3_vtab_cursor *cursor );
-int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context *, int );
-int vtableRowId( sqlite3_vtab_cursor *cursor, sqlite3_int64 *out_rowid );
+  int vtableNext( sqlite3_vtab_cursor *cursor );
+  int vtableEof( sqlite3_vtab_cursor *cursor );
+  int vtableColumn( sqlite3_vtab_cursor *cursor, sqlite3_context *, int );
+  int vtableRowId( sqlite3_vtab_cursor *cursor, sqlite3_int64 *out_rowid );
 
-int qgsvlayerModuleInit( sqlite3 *db,
-                         char **pzErrMsg,
-                         void *unused /*const sqlite3_api_routines *pApi*/ );
+  int qgsvlayerModuleInit( sqlite3 *db, char **pzErrMsg, void *unused /*const sqlite3_api_routines *pApi*/ );
 
 #ifdef __cplusplus
 }

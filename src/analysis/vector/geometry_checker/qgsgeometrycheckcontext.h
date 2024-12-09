@@ -31,14 +31,10 @@
 class ANALYSIS_EXPORT QgsGeometryCheckContext
 {
   public:
-
     /**
      * Creates a new QgsGeometryCheckContext.
      */
-    QgsGeometryCheckContext( int precision,
-                             const QgsCoordinateReferenceSystem &mapCrs,
-                             const QgsCoordinateTransformContext &transformContext,
-                             const QgsProject *mProject );
+    QgsGeometryCheckContext( int precision, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &transformContext, const QgsProject *mProject );
 
     /**
      * The tolerance to allow for in geometry checks.

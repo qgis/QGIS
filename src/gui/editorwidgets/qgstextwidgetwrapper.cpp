@@ -39,8 +39,7 @@ QWidget *QgsTextWidgetWrapper::createWidget( QWidget *parent )
   if ( form )
   {
     mFormFeature = form->feature();
-    connect( form, &QgsAttributeForm::widgetValueChanged, this, [ = ]( const QString & attribute, const QVariant & newValue, bool attributeChanged )
-    {
+    connect( form, &QgsAttributeForm::widgetValueChanged, this, [=]( const QString &attribute, const QVariant &newValue, bool attributeChanged ) {
       if ( attributeChanged )
       {
         if ( mRequiresFormScope )
@@ -48,7 +47,6 @@ QWidget *QgsTextWidgetWrapper::createWidget( QWidget *parent )
           mFormFeature.setAttribute( attribute, newValue );
           updateTextContext();
         }
-
       }
     } );
   }
@@ -65,7 +63,7 @@ void QgsTextWidgetWrapper::initWidget( QWidget *editor )
   mWidget->setText( QgsExpression::replaceExpressionText( mText, &mTextContext ) );
   mWidget->setOpenExternalLinks( true );
 
-  const thread_local QRegularExpression sRegEx{ QStringLiteral( "\\[%(.*?)%\\]" ),  QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
+  const thread_local QRegularExpression sRegEx { QStringLiteral( "\\[%(.*?)%\\]" ), QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption };
 
   mNeedsGeometry = false;
   QRegularExpressionMatchIterator matchIt { sRegEx.globalMatch( mText ) };
@@ -75,10 +73,9 @@ void QgsTextWidgetWrapper::initWidget( QWidget *editor )
     const QgsExpression exp { match.captured( 1 ) };
     mNeedsGeometry = exp.needsGeometry();
   }
-
 }
 
-void QgsTextWidgetWrapper::reinitWidget( )
+void QgsTextWidgetWrapper::reinitWidget()
 {
   if ( !mWidget )
     return;
@@ -92,7 +89,7 @@ void QgsTextWidgetWrapper::setText( const QString &text )
   mText = text;
 
   bool ok = false;
-  const thread_local QRegularExpression sRegEx( QStringLiteral( "\\[%(.*?)%\\]" ),  QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption );
+  const thread_local QRegularExpression sRegEx( QStringLiteral( "\\[%(.*?)%\\]" ), QRegularExpression::MultilineOption | QRegularExpression::DotMatchesEverythingOption );
   QRegularExpressionMatchIterator matchIt = sRegEx.globalMatch( mText );
   while ( !ok && matchIt.hasNext() )
   {
@@ -110,7 +107,7 @@ bool QgsTextWidgetWrapper::needsGeometry() const
   return mNeedsGeometry;
 }
 
-void QgsTextWidgetWrapper::updateTextContext( )
+void QgsTextWidgetWrapper::updateTextContext()
 {
   if ( !mWidget )
     return;
@@ -136,4 +133,3 @@ void QgsTextWidgetWrapper::setFeature( const QgsFeature &feature )
 
   updateTextContext();
 }
-

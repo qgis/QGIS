@@ -102,7 +102,6 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
       if ( !mAttributeList.contains( attrIdx ) )
         mAttributeList << attrIdx;
     }
-
   }
   else
     mAttributeList = mSource->mFields.allAttributesList();
@@ -135,7 +134,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
                                        ")" );
 
         whereClause = QStringLiteral( "sdo_filter(%1,%2)='TRUE'" )
-                      .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ), bbox );
+                        .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ), bbox );
 
         args << ( mSource->mSrid < 1 ? QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
 
@@ -146,8 +145,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
           if ( mConnection->hasSpatial() )
           {
             whereClause += QStringLiteral( " AND sdo_relate(%1,%2,'mask=ANYINTERACT')='TRUE'" )
-                           .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ),
-                                 bbox );
+                             .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ), bbox );
             args << ( mSource->mSrid < 1 ? QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
           }
           else
@@ -191,7 +189,6 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
     case Qgis::FeatureRequestFilterType::Expression:
       //handled below
       break;
-
   }
 
   if ( mSource->mRequestedGeomType != Qgis::WkbType::Unknown && mSource->mRequestedGeomType != mSource->mDetectedGeomType )
@@ -300,10 +297,8 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
       if ( !execQuery( mSql, mArgs, 1 ) )
       {
         const QString error { QObject::tr( "Fetching features failed.\nSQL: %1\nError: %2" )
-                              .arg( mQry.lastQuery(),
-                                    mQry.lastError().text() ) };
-        QgsMessageLog::logMessage( error,
-                                   QObject::tr( "Oracle" ) );
+                                .arg( mQry.lastQuery(), mQry.lastError().text() ) };
+        QgsMessageLog::logMessage( error, QObject::tr( "Oracle" ) );
         return false;
       }
     }
@@ -538,14 +533,11 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
 
     if ( !execQuery( query, args, 1 ) )
     {
-
       const QString error { QObject::tr( "Fetching features failed.\nSQL: %1\nError: %2" )
-                            .arg( mQry.lastQuery(),
-                                  mQry.lastError().text() ) };
+                              .arg( mQry.lastQuery(), mQry.lastError().text() ) };
       if ( showLog )
       {
-        QgsMessageLog::logMessage( error,
-                                   QObject::tr( "Oracle" ) );
+        QgsMessageLog::logMessage( error, QObject::tr( "Oracle" ) );
       }
       return false;
     }
@@ -570,10 +562,7 @@ bool QgsOracleFeatureIterator::execQuery( const QString &query, const QVariantLi
       // ORA-12170: TNS:Connect timeout occurred
       // Or if  there is a problem with the network connectivity try again N times
       // ORA-03114: Not Connected to Oracle
-      if ( mQry.lastError().nativeErrorCode() == QLatin1String( "12170" ) ||
-           mQry.lastError().nativeErrorCode().compare( QLatin1String( "ORA-12170" ), Qt::CaseInsensitive ) == 0 ||
-           mQry.lastError().nativeErrorCode() == QLatin1String( "3114" ) ||
-           mQry.lastError().nativeErrorCode().compare( QLatin1String( "ORA-3114" ), Qt::CaseInsensitive ) == 0 )
+      if ( mQry.lastError().nativeErrorCode() == QLatin1String( "12170" ) || mQry.lastError().nativeErrorCode().compare( QLatin1String( "ORA-12170" ), Qt::CaseInsensitive ) == 0 || mQry.lastError().nativeErrorCode() == QLatin1String( "3114" ) || mQry.lastError().nativeErrorCode().compare( QLatin1String( "ORA-3114" ), Qt::CaseInsensitive ) == 0 )
       {
         // restart connection
         mConnection->reconnect();

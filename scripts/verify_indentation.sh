@@ -39,13 +39,16 @@ for f in $FILES; do
 		;;
 	esac
 
-	m="$f.prepare"
-	cp "$f" "$m"
-	astyle.sh "$f"
-	if diff -u "$m" "$f" >>$ASTYLEDIFF; then
-		rm "$m"
-	else
-		echo "File $f is not styled properly."
+	# only run astyle on sipified directories, others are handled by clang-format (see .pre-commit-config.yaml)
+	if [[ $f =~ ^src/(core|3d|server) ]]; then
+		m="$f.prepare"
+		cp "$f" "$m"
+		astyle.sh "$f"
+		if diff -u "$m" "$f" >>$ASTYLEDIFF; then
+			rm "$m"
+		else
+			echo "File $f is not styled properly."
+		fi
 	fi
 done
 

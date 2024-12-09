@@ -30,7 +30,6 @@ QgsProjectListItemDelegate::QgsProjectListItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
   , mRoundedRectSizePixels( static_cast<int>( Qgis::UI_SCALE_FACTOR * QApplication::fontMetrics().height() * 0.5 ) )
 {
-
 }
 
 void QgsProjectListItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -72,8 +71,7 @@ void QgsProjectListItemDelegate::paint( QPainter *painter, const QStyleOptionVie
   painter->setRenderHint( QPainter::SmoothPixmapTransform, true );
   painter->setPen( QColor( 0, 0, 0, 0 ) );
   painter->setBrush( QBrush( color ) );
-  painter->drawRoundedRect( option.rect.left() + 0.625 * mRoundedRectSizePixels, option.rect.top() + 0.625 * mRoundedRectSizePixels,
-                            option.rect.width() - 2 * 0.625 * mRoundedRectSizePixels, option.rect.height() - 2 * 0.625 * mRoundedRectSizePixels, mRoundedRectSizePixels, mRoundedRectSizePixels );
+  painter->drawRoundedRect( option.rect.left() + 0.625 * mRoundedRectSizePixels, option.rect.top() + 0.625 * mRoundedRectSizePixels, option.rect.width() - 2 * 0.625 * mRoundedRectSizePixels, option.rect.height() - 2 * 0.625 * mRoundedRectSizePixels, mRoundedRectSizePixels, mRoundedRectSizePixels );
 
   const int titleSize = static_cast<int>( QApplication::fontMetrics().height() * 1.1 );
   const int textSize = static_cast<int>( titleSize * 0.85 );
@@ -83,21 +81,16 @@ void QgsProjectListItemDelegate::paint( QPainter *painter, const QStyleOptionVie
     iconSize /= w->devicePixelRatioF();
   }
 
-  doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-size:%2px;font-weight:bold;'>%3%4</span><br>%5<br>%6</div>" ).arg( textSize ).arg( QString::number( titleSize ),
-               index.data( QgsProjectListItemDelegate::TitleRole ).toString(),
-               index.data( QgsProjectListItemDelegate::PinRole ).toBool() ? QStringLiteral( "<img src=\":/images/themes/default/pin.svg\">" ) : QString(),
-               mShowPath ? index.data( QgsProjectListItemDelegate::AnonymisedNativePathRole ).toString() : QString(),
-               index.data( QgsProjectListItemDelegate::CrsRole ).toString() ) );
+  doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-size:%2px;font-weight:bold;'>%3%4</span><br>%5<br>%6</div>" ).arg( textSize ).arg( QString::number( titleSize ), index.data( QgsProjectListItemDelegate::TitleRole ).toString(), index.data( QgsProjectListItemDelegate::PinRole ).toBool() ? QStringLiteral( "<img src=\":/images/themes/default/pin.svg\">" ) : QString(), mShowPath ? index.data( QgsProjectListItemDelegate::AnonymisedNativePathRole ).toString() : QString(), index.data( QgsProjectListItemDelegate::CrsRole ).toString() ) );
   doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? iconSize.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
   if ( !icon.isNull() )
   {
-    painter->drawPixmap( option.rect.left() + 1.25 * mRoundedRectSizePixels, option.rect.top() + 1.25 * mRoundedRectSizePixels,
-                         iconSize.width(), iconSize.height(),  icon );
+    painter->drawPixmap( option.rect.left() + 1.25 * mRoundedRectSizePixels, option.rect.top() + 1.25 * mRoundedRectSizePixels, iconSize.width(), iconSize.height(), icon );
   }
 
   painter->translate( option.rect.left() + ( !icon.isNull() ? iconSize.width() + 3.125 * mRoundedRectSizePixels : 1.875 * mRoundedRectSizePixels ), option.rect.top() + 1.875 * mRoundedRectSizePixels );
-  ctx.clip = QRectF( 0, 0, option.rect.width() - ( !icon.isNull() ? iconSize.width() - 4.375 * mRoundedRectSizePixels : 3.125 *  mRoundedRectSizePixels ), option.rect.height() - 3.125 * mRoundedRectSizePixels );
+  ctx.clip = QRectF( 0, 0, option.rect.width() - ( !icon.isNull() ? iconSize.width() - 4.375 * mRoundedRectSizePixels : 3.125 * mRoundedRectSizePixels ), option.rect.height() - 3.125 * mRoundedRectSizePixels );
   doc.documentLayout()->draw( painter, ctx );
 }
 
@@ -124,11 +117,7 @@ QSize QgsProjectListItemDelegate::sizeHint( const QStyleOptionViewItem &option, 
   const int titleSize = QApplication::fontMetrics().height() * 1.1;
   const int textSize = titleSize * 0.85;
 
-  doc.setHtml( QStringLiteral( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3%4</span><br>%5<br>%6</div>" ).arg( textSize ).arg( titleSize )
-               .arg( index.data( QgsProjectListItemDelegate::TitleRole ).toString(),
-                     index.data( QgsProjectListItemDelegate::PinRole ).toBool() ? QStringLiteral( "<img src=\":/images/themes/default/pin.svg\">" ) : QString(),
-                     index.data( QgsProjectListItemDelegate::NativePathRole ).toString(),
-                     index.data( QgsProjectListItemDelegate::CrsRole ).toString() ) );
+  doc.setHtml( QStringLiteral( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3%4</span><br>%5<br>%6</div>" ).arg( textSize ).arg( titleSize ).arg( index.data( QgsProjectListItemDelegate::TitleRole ).toString(), index.data( QgsProjectListItemDelegate::PinRole ).toBool() ? QStringLiteral( "<img src=\":/images/themes/default/pin.svg\">" ) : QString(), index.data( QgsProjectListItemDelegate::NativePathRole ).toString(), index.data( QgsProjectListItemDelegate::CrsRole ).toString() ) );
   doc.setTextWidth( width - ( !icon.isNull() ? iconSize.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
   return QSize( width, std::max( ( double ) doc.size().height() + 1.25 * mRoundedRectSizePixels, static_cast<double>( iconSize.height() ) ) + 2.5 * mRoundedRectSizePixels );
@@ -196,7 +185,6 @@ QgsNewsItemListItemDelegate::QgsNewsItemListItemDelegate( QObject *parent )
   , mRoundedRectSizePixels( static_cast<int>( Qgis::UI_SCALE_FACTOR * QApplication::fontMetrics().height() * 0.5 ) )
   , mDismissRectSize( 20, 20 ) // TODO - hidpi friendly
 {
-
 }
 
 void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -238,8 +226,7 @@ void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionVi
   painter->setRenderHint( QPainter::SmoothPixmapTransform, true );
   painter->setPen( QColor( 0, 0, 0, 0 ) );
   painter->setBrush( QBrush( color ) );
-  painter->drawRoundedRect( option.rect.left() + 0.625 * mRoundedRectSizePixels, option.rect.top() + 0.625 * mRoundedRectSizePixels,
-                            option.rect.width() - 2 * 0.625 * mRoundedRectSizePixels, option.rect.height() - 2 * 0.625 * mRoundedRectSizePixels, mRoundedRectSizePixels, mRoundedRectSizePixels );
+  painter->drawRoundedRect( option.rect.left() + 0.625 * mRoundedRectSizePixels, option.rect.top() + 0.625 * mRoundedRectSizePixels, option.rect.width() - 2 * 0.625 * mRoundedRectSizePixels, option.rect.height() - 2 * 0.625 * mRoundedRectSizePixels, mRoundedRectSizePixels, mRoundedRectSizePixels );
 
   const int titleSize = static_cast<int>( QApplication::fontMetrics().height() * 1.1 );
   const int textSize = static_cast<int>( titleSize * 0.85 );
@@ -249,18 +236,14 @@ void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionVi
     iconSize /= w->devicePixelRatioF();
   }
 
-  doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-size:%2px;font-weight:bold;'>%3%4</span>%5</div>" ).arg( textSize ).arg( QString::number( titleSize ),
-               index.data( static_cast< int >( QgsNewsFeedModel::CustomRole::Title ) ).toString(),
-               index.data( static_cast< int >( QgsNewsFeedModel::CustomRole::Sticky ) ).toBool() ? QStringLiteral( "<img src=\":/images/themes/default/pin.svg\">" ) : QString(),
-               index.data( static_cast< int >( QgsNewsFeedModel::CustomRole::Content ) ).toString() ) );
+  doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-size:%2px;font-weight:bold;'>%3%4</span>%5</div>" ).arg( textSize ).arg( QString::number( titleSize ), index.data( static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), index.data( static_cast<int>( QgsNewsFeedModel::CustomRole::Sticky ) ).toBool() ? QStringLiteral( "<img src=\":/images/themes/default/pin.svg\">" ) : QString(), index.data( static_cast<int>( QgsNewsFeedModel::CustomRole::Content ) ).toString() ) );
 
 
   doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? iconSize.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
   if ( !icon.isNull() )
   {
-    painter->drawPixmap( option.rect.left() + 1.25 * mRoundedRectSizePixels, option.rect.top() + 1.25 * mRoundedRectSizePixels,
-                         iconSize.width(), iconSize.height(),  icon );
+    painter->drawPixmap( option.rect.left() + 1.25 * mRoundedRectSizePixels, option.rect.top() + 1.25 * mRoundedRectSizePixels, iconSize.width(), iconSize.height(), icon );
   }
 
   // Gross, but not well supported in Qt
@@ -270,7 +253,7 @@ void QgsNewsItemListItemDelegate::paint( QPainter *painter, const QStyleOptionVi
   mDismissRect.setTop( 10 );
 
   painter->translate( option.rect.left() + ( !icon.isNull() ? iconSize.width() + 3.125 * mRoundedRectSizePixels : 1.875 * mRoundedRectSizePixels ), option.rect.top() + 1.875 * mRoundedRectSizePixels );
-  ctx.clip = QRectF( 0, 0, option.rect.width() - ( !icon.isNull() ? iconSize.width() - 4.375 * mRoundedRectSizePixels : 3.125 *  mRoundedRectSizePixels ), option.rect.height() - 3.125 * mRoundedRectSizePixels );
+  ctx.clip = QRectF( 0, 0, option.rect.width() - ( !icon.isNull() ? iconSize.width() - 4.375 * mRoundedRectSizePixels : 3.125 * mRoundedRectSizePixels ), option.rect.height() - 3.125 * mRoundedRectSizePixels );
   doc.documentLayout()->draw( painter, ctx );
 }
 
@@ -296,13 +279,8 @@ QSize QgsNewsItemListItemDelegate::sizeHint( const QStyleOptionViewItem &option,
 
   const int titleSize = QApplication::fontMetrics().height() * 1.1;
   const int textSize = titleSize * 0.85;
-  doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-size:%2px;font-weight:bold;'>%3%4</span>%5</div>" ).arg( textSize ).arg( QString::number( titleSize ),
-               index.data( static_cast< int >( QgsNewsFeedModel::CustomRole::Title ) ).toString(),
-               index.data( static_cast< int >( QgsNewsFeedModel::CustomRole::Sticky ) ).toBool() ? QStringLiteral( "<img src=\":/images/themes/default/pin.svg\">" ) : QString(),
-               index.data( static_cast< int >( QgsNewsFeedModel::CustomRole::Content ) ).toString() ) );
+  doc.setHtml( QStringLiteral( "<div style='font-size:%1px'><span style='font-size:%2px;font-weight:bold;'>%3%4</span>%5</div>" ).arg( textSize ).arg( QString::number( titleSize ), index.data( static_cast<int>( QgsNewsFeedModel::CustomRole::Title ) ).toString(), index.data( static_cast<int>( QgsNewsFeedModel::CustomRole::Sticky ) ).toBool() ? QStringLiteral( "<img src=\":/images/themes/default/pin.svg\">" ) : QString(), index.data( static_cast<int>( QgsNewsFeedModel::CustomRole::Content ) ).toString() ) );
   doc.setTextWidth( width - ( !icon.isNull() ? iconSize.width() + 4.375 * mRoundedRectSizePixels : 4.375 * mRoundedRectSizePixels ) );
 
   return QSize( width, std::max( ( double ) doc.size().height() + 1.25 * mRoundedRectSizePixels, static_cast<double>( iconSize.height() ) ) + 2.5 * mRoundedRectSizePixels );
 }
-
-

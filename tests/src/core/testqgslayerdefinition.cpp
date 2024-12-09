@@ -24,17 +24,17 @@
 #include <qgslayertree.h>
 #include <qgslayerdefinition.h>
 
-class TestQgsLayerDefinition: public QObject
+class TestQgsLayerDefinition : public QObject
 {
     Q_OBJECT
   public:
     TestQgsLayerDefinition() = default;
 
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     /**
      * test findLayers()
@@ -61,7 +61,6 @@ void TestQgsLayerDefinition::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
 }
 
 void TestQgsLayerDefinition::cleanupTestCase()
@@ -119,8 +118,5 @@ void TestQgsLayerDefinition::testExportDoesNotCrash()
 }
 
 
-
 QGSTEST_MAIN( TestQgsLayerDefinition )
 #include "testqgslayerdefinition.moc"
-
-

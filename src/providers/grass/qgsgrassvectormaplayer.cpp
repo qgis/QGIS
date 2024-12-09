@@ -28,7 +28,7 @@
 extern "C"
 {
 #include <grass/version.h>
-#if defined(_MSC_VER) && defined(M_PI_4)
+#if defined( _MSC_VER ) && defined( M_PI_4 )
 #undef M_PI_4 //avoid redefinition warning
 #endif
 #include <grass/gprojects.h>
@@ -121,7 +121,7 @@ void QgsGrassVectorMapLayer::load()
       QgsGrass::lock(); // not sure if lock is necessary
       dbString dbstr;
       db_init_string( &dbstr );
-      db_set_string( &dbstr, ( char * )"select * from " );
+      db_set_string( &dbstr, ( char * ) "select * from " );
       db_append_string( &dbstr, mFieldInfo->table );
 
       QgsDebugMsgLevel( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ), 2 );
@@ -138,7 +138,7 @@ void QgsGrassVectorMapLayer::load()
         QgsDebugMsgLevel( QString( "Number of records: %1" ).arg( nRecords ), 2 );
 #endif
 
-        dbTable  *databaseTable = db_get_cursor_table( &databaseCursor );
+        dbTable *databaseTable = db_get_cursor_table( &databaseCursor );
         int nColumns = db_get_table_number_of_columns( databaseTable );
 
         // Read columns' description
@@ -172,8 +172,7 @@ void QgsGrassVectorMapLayer::load()
               qtype = QMetaType::Type::QString;
               break;
           }
-          mTableFields.append( QgsField( db_get_column_name( column ), qtype, ctypeStr,
-                                         db_get_column_length( column ), db_get_column_precision( column ) ) );
+          mTableFields.append( QgsField( db_get_column_name( column ), qtype, ctypeStr, db_get_column_length( column ), db_get_column_precision( column ) ) );
           mMinMax << minMax;
           if ( G_strcasecmp( db_get_column_name( column ), mFieldInfo->key ) == 0 )
           {
@@ -343,7 +342,6 @@ QStringList QgsGrassVectorMapLayer::fieldNames( const QgsFields &fields )
 
 void QgsGrassVectorMapLayer::updateFields()
 {
-
   // update fields to pass layer/buffer check when committing
   for ( int i = mFields.size() - 1; i >= 0; i-- )
   {
@@ -463,7 +461,6 @@ void QgsGrassVectorMapLayer::addTopoField( QgsFields &fields )
 
 void QgsGrassVectorMapLayer::startEdit()
 {
-
   // add topo field which is present until closeEdit when data are reloaded
   addTopoField( mFields );
 
@@ -480,7 +477,6 @@ void QgsGrassVectorMapLayer::startEdit()
 
 void QgsGrassVectorMapLayer::closeEdit()
 {
-
   if ( mDriver )
   {
     QgsDebugMsgLevel( "close driver", 2 );
@@ -605,7 +601,6 @@ void QgsGrassVectorMapLayer::createTable( const QgsFields &fields, QString &erro
   try
   {
     QgsGrass::createTable( mDriver, mFieldInfo->table, catFields );
-
   }
   catch ( QgsGrass::Exception &e )
   {
@@ -618,8 +613,7 @@ void QgsGrassVectorMapLayer::createTable( const QgsFields &fields, QString &erro
 
   if ( mFieldInfo )
   {
-    int ret = Vect_map_add_dblink( mMap->map(), mField, nullptr, mFieldInfo->table, mFieldInfo->key,
-                                   mFieldInfo->database, mFieldInfo->driver );
+    int ret = Vect_map_add_dblink( mMap->map(), mField, nullptr, mFieldInfo->table, mFieldInfo->key, mFieldInfo->database, mFieldInfo->driver );
 
     if ( ret == -1 )
     {
@@ -703,7 +697,8 @@ void QgsGrassVectorMapLayer::addColumn( const QgsField &field, QString &error )
           QVariant value = it.value().value( index );
           QString valueString = quotedValue( value );
           QString query = QStringLiteral( "UPDATE %1 SET %2 = %3 WHERE %4 = %5" )
-                          .arg( mFieldInfo->table, field.name(), valueString, keyColumnName() ).arg( it.key() );
+                            .arg( mFieldInfo->table, field.name(), valueString, keyColumnName() )
+                            .arg( it.key() );
           QString err;
           executeSql( query, err );
           if ( !err.isEmpty() )
@@ -870,8 +865,7 @@ void QgsGrassVectorMapLayer::insertAttributes( int cat, const QgsFeature &featur
     }
   }
 
-  QString query = QStringLiteral( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table,
-                  names.join( QLatin1String( ", " ) ), values.join( QLatin1Char( ',' ) ) );
+  QString query = QStringLiteral( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table, names.join( QLatin1String( ", " ) ), values.join( QLatin1Char( ',' ) ) );
   executeSql( query, error );
   if ( error.isEmpty() )
   {
@@ -990,8 +984,7 @@ void QgsGrassVectorMapLayer::updateAttributes( int cat, QgsFeature &feature, QSt
     return;
   }
 
-  QString query = QStringLiteral( "UPDATE %1 SET %2 WHERE %3 = %4" ).arg( mFieldInfo->table,
-                  updates.join( QLatin1String( ", " ) ), mFieldInfo->key ).arg( cat );
+  QString query = QStringLiteral( "UPDATE %1 SET %2 WHERE %3 = %4" ).arg( mFieldInfo->table, updates.join( QLatin1String( ", " ) ), mFieldInfo->key ).arg( cat );
 
   executeSql( query, error );
   if ( error.isEmpty() )
@@ -1054,8 +1047,7 @@ bool QgsGrassVectorMapLayer::isOrphan( int cat, QString &error )
     }
 
     int t, id;
-    int ret = Vect_cidx_find_next( mMap->map(), fieldIndex, cat,
-                                   GV_POINTS | GV_LINES | GV_FACE, 0, &t, &id );
+    int ret = Vect_cidx_find_next( mMap->map(), fieldIndex, cat, GV_POINTS | GV_LINES | GV_FACE, 0, &t, &id );
 
     if ( ret >= 0 )
     {
@@ -1092,8 +1084,7 @@ void QgsGrassVectorMapLayer::changeAttributeValue( int cat, const QgsField &fiel
 
   if ( exists )
   {
-    query = QStringLiteral( "UPDATE %1 SET %2 = %3 WHERE %4 = %5" ).arg( mFieldInfo->table,
-            field.name(), valueString, mFieldInfo->key ).arg( cat );
+    query = QStringLiteral( "UPDATE %1 SET %2 = %3 WHERE %4 = %5" ).arg( mFieldInfo->table, field.name(), valueString, mFieldInfo->key ).arg( cat );
   }
   else
   {
@@ -1103,8 +1094,7 @@ void QgsGrassVectorMapLayer::changeAttributeValue( int cat, const QgsField &fiel
     values << QString::number( cat );
     names << field.name();
     values << quotedValue( value );
-    query = QStringLiteral( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table,
-            names.join( QLatin1String( ", " ) ), values.join( QLatin1Char( ',' ) ) );
+    query = QStringLiteral( "INSERT INTO %1 ( %2 ) VALUES ( %3 )" ).arg( mFieldInfo->table, names.join( QLatin1String( ", " ) ), values.join( QLatin1Char( ',' ) ) );
   }
 
   QgsDebugMsgLevel( QString( "query: %1" ).arg( query ), 2 );
@@ -1118,7 +1108,7 @@ void QgsGrassVectorMapLayer::changeAttributeValue( int cat, const QgsField &fiel
   QgsDebugMsgLevel( QString( "qcs: %1" ).arg( qcs.data() ), 2 );
 
   char *cs = new char[qcs.length() + 1];
-  strcpy( cs, ( const char * )qcs );
+  strcpy( cs, ( const char * ) qcs );
   db_set_string( &dbstr, cs );
   delete[] cs;
 
@@ -1171,7 +1161,7 @@ void QgsGrassVectorMapLayer::printCachedAttributes()
   for ( int cat : constKeys )
   {
     QStringList values;
-    for ( int i = 0; i <  mAttributes.value( cat ).size(); i++ )
+    for ( int i = 0; i < mAttributes.value( cat ).size(); i++ )
     {
       values << mAttributes.value( cat ).value( i ).toString();
     }

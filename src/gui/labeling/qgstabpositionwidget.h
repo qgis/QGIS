@@ -30,11 +30,10 @@
  * \brief A widget for configuring QgsTextFormat tab positions.
  * \since QGIS 3.42
 */
-class GUI_EXPORT QgsTabPositionWidget: public QgsPanelWidget, private Ui::QgsTabPositionWidgetBase
+class GUI_EXPORT QgsTabPositionWidget : public QgsPanelWidget, private Ui::QgsTabPositionWidgetBase
 {
     Q_OBJECT
   public:
-
     //! Constructor for QgsTabPositionWidget, with the specified \a parent widget
     QgsTabPositionWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -43,14 +42,14 @@ class GUI_EXPORT QgsTabPositionWidget: public QgsPanelWidget, private Ui::QgsTab
      *
      * \see positions()
      */
-    void setPositions( const QList< QgsTextFormat::Tab > &positions );
+    void setPositions( const QList<QgsTextFormat::Tab> &positions );
 
     /**
      * Returns the tab positions defined in the widget.
      *
      * \see setPositions()
      */
-    QList< QgsTextFormat::Tab > positions() const;
+    QList<QgsTextFormat::Tab> positions() const;
 
     /**
      * Sets the unit type used for the tab positions (used to update interface labels).
@@ -62,14 +61,13 @@ class GUI_EXPORT QgsTabPositionWidget: public QgsPanelWidget, private Ui::QgsTab
     /**
      * Emitted when positions are changed in the widget.
      */
-    void positionsChanged( const QList< QgsTextFormat::Tab > &positions );
+    void positionsChanged( const QList<QgsTextFormat::Tab> &positions );
 
   private slots:
     void mAddButton_clicked();
     void mRemoveButton_clicked();
 
     void emitPositionsChanged();
-
 };
 
 /**
@@ -81,7 +79,6 @@ class GUI_EXPORT QgsTabPositionDialog : public QDialog
 {
     Q_OBJECT
   public:
-
     //! Constructor for QgsTabPositionDialog
     QgsTabPositionDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
@@ -90,14 +87,14 @@ class GUI_EXPORT QgsTabPositionDialog : public QDialog
      *
      * \see positions()
      */
-    void setPositions( const QList< QgsTextFormat::Tab > &positions );
+    void setPositions( const QList<QgsTextFormat::Tab> &positions );
 
     /**
     * Returns the tab positions defined in the dialog.
     *
     * \see setPositions()
     */
-    QList< QgsTextFormat::Tab > positions() const;
+    QList<QgsTextFormat::Tab> positions() const;
 
     /**
      * Sets the unit type used for the tab positions (used to update interface labels).
@@ -105,9 +102,7 @@ class GUI_EXPORT QgsTabPositionDialog : public QDialog
     void setUnit( Qgis::RenderUnit unit );
 
   private:
-
     QgsTabPositionWidget *mWidget = nullptr;
-
 };
 
 #endif // QGSTABPOSITIONWIDGET_H

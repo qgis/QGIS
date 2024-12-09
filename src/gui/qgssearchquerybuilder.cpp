@@ -35,8 +35,7 @@
 #include "qgsquerybuilder.h"
 
 
-QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer,
-    QWidget *parent, Qt::WindowFlags fl )
+QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mLayer( layer )
 {
@@ -132,7 +131,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   // determine the field type
   const QString fieldName = mModelFields->data( lstFields->currentIndex() ).toString();
   const int fieldIndex = mFieldMap[fieldName];
-  const QgsField field = mLayer->fields().at( fieldIndex );//provider->fields().at( fieldIndex );
+  const QgsField field = mLayer->fields().at( fieldIndex ); //provider->fields().at( fieldIndex );
   const bool numeric = ( field.type() == QMetaType::Type::Int || field.type() == QMetaType::Type::Double );
 
   QgsFeature feat;
@@ -151,8 +150,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   // MH: keep already inserted values in a set. Querying is much faster compared to QStandardItemModel::findItems
   QSet<QString> insertedValues;
 
-  while ( fit.nextFeature( feat ) &&
-          ( limit == 0 || mModelValues->rowCount() != limit ) )
+  while ( fit.nextFeature( feat ) && ( limit == 0 || mModelValues->rowCount() != limit ) )
   {
     value = feat.attribute( fieldIndex ).toString();
 
@@ -279,7 +277,6 @@ void QgsSearchQueryBuilder::btnOk_clicked()
   {
     accept();
   }
-
 }
 
 void QgsSearchQueryBuilder::btnEqual_clicked()

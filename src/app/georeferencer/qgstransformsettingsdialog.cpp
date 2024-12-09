@@ -76,8 +76,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( Qgis::LayerType type, co
   outputFile->setDialogTitle( tr( "Destination File" ) );
   const QString lastDestinationFolder = settingLastDestinationFolder->value();
   outputFile->setDefaultRoot( lastDestinationFolder.isEmpty() ? QDir::homePath() : lastDestinationFolder );
-  connect( outputFile, &QgsFileWidget::fileChanged, this, [ = ]
-  {
+  connect( outputFile, &QgsFileWidget::fileChanged, this, [=] {
     settingLastDestinationFolder->setValue( QFileInfo( outputFile->filePath() ).absolutePath() );
   } );
 
@@ -86,8 +85,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( Qgis::LayerType type, co
   mPdfMap->setDialogTitle( tr( "Save Map File As" ) );
   const QString lastPdfFolder = settingLastPdfFolder->value();
   mPdfMap->setDefaultRoot( lastPdfFolder.isEmpty() ? QDir::homePath() : lastPdfFolder );
-  connect( mPdfMap, &QgsFileWidget::fileChanged, this, [ = ]
-  {
+  connect( mPdfMap, &QgsFileWidget::fileChanged, this, [=] {
     settingLastPdfFolder->setValue( QFileInfo( mPdfMap->filePath() ).absolutePath() );
   } );
 
@@ -95,8 +93,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( Qgis::LayerType type, co
   mPdfReport->setFilter( tr( "PDF files" ) + " (*.pdf *.PDF)" );
   mPdfReport->setDialogTitle( tr( "Save Report File As" ) );
   mPdfReport->setDefaultRoot( lastPdfFolder.isEmpty() ? QDir::homePath() : lastPdfFolder );
-  connect( mPdfReport, &QgsFileWidget::fileChanged, this, [ = ]
-  {
+  connect( mPdfReport, &QgsFileWidget::fileChanged, this, [=] {
     settingLastPdfFolder->setValue( QFileInfo( mPdfMap->filePath() ).absolutePath() );
   } );
 
@@ -117,11 +114,11 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( Qgis::LayerType type, co
   cmbCompressionComboBox->addItem( tr( "PACKBITS" ), QStringLiteral( "PACKBITS" ) );
   cmbCompressionComboBox->addItem( tr( "DEFLATE" ), QStringLiteral( "DEFLATE" ) );
 
-  cmbResampling->addItem( tr( "Nearest Neighbour" ), static_cast< int >( QgsImageWarper::ResamplingMethod::NearestNeighbour ) );
-  cmbResampling->addItem( tr( "Bilinear (2x2 Kernel)" ), static_cast< int >( QgsImageWarper::ResamplingMethod::Bilinear ) );
-  cmbResampling->addItem( tr( "Cubic (4x4 Kernel)" ), static_cast< int >( QgsImageWarper::ResamplingMethod::Cubic ) );
-  cmbResampling->addItem( tr( "Cubic B-Spline (4x4 Kernel)" ), static_cast< int >( QgsImageWarper::ResamplingMethod::CubicSpline ) );
-  cmbResampling->addItem( tr( "Lanczos (6x6 Kernel)" ), static_cast< int >( QgsImageWarper::ResamplingMethod::Lanczos ) );
+  cmbResampling->addItem( tr( "Nearest Neighbour" ), static_cast<int>( QgsImageWarper::ResamplingMethod::NearestNeighbour ) );
+  cmbResampling->addItem( tr( "Bilinear (2x2 Kernel)" ), static_cast<int>( QgsImageWarper::ResamplingMethod::Bilinear ) );
+  cmbResampling->addItem( tr( "Cubic (4x4 Kernel)" ), static_cast<int>( QgsImageWarper::ResamplingMethod::Cubic ) );
+  cmbResampling->addItem( tr( "Cubic B-Spline (4x4 Kernel)" ), static_cast<int>( QgsImageWarper::ResamplingMethod::CubicSpline ) );
+  cmbResampling->addItem( tr( "Lanczos (6x6 Kernel)" ), static_cast<int>( QgsImageWarper::ResamplingMethod::Lanczos ) );
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsTransformSettingsDialog::showHelp );
 }
@@ -152,7 +149,7 @@ QgsGcpTransformerInterface::TransformMethod QgsTransformSettingsDialog::transfor
   if ( cmbTransformType->currentIndex() == -1 )
     return QgsGcpTransformerInterface::TransformMethod::InvalidTransform;
   else
-    return static_cast< QgsGcpTransformerInterface::TransformMethod >( cmbTransformType->currentData().toInt() );
+    return static_cast<QgsGcpTransformerInterface::TransformMethod>( cmbTransformType->currentData().toInt() );
 }
 
 void QgsTransformSettingsDialog::setTransformMethod( QgsGcpTransformerInterface::TransformMethod method )
@@ -160,17 +157,17 @@ void QgsTransformSettingsDialog::setTransformMethod( QgsGcpTransformerInterface:
   if ( method == QgsGcpTransformerInterface::TransformMethod::InvalidTransform )
     cmbTransformType->setCurrentIndex( 0 );
   else
-    cmbTransformType->setCurrentIndex( cmbTransformType->findData( static_cast< int >( method ) ) );
+    cmbTransformType->setCurrentIndex( cmbTransformType->findData( static_cast<int>( method ) ) );
 }
 
 QgsImageWarper::ResamplingMethod QgsTransformSettingsDialog::resamplingMethod() const
 {
-  return static_cast< QgsImageWarper::ResamplingMethod >( cmbResampling->currentData().toInt() );
+  return static_cast<QgsImageWarper::ResamplingMethod>( cmbResampling->currentData().toInt() );
 }
 
 void QgsTransformSettingsDialog::setResamplingMethod( QgsImageWarper::ResamplingMethod method )
 {
-  cmbResampling->setCurrentIndex( cmbResampling->findData( static_cast< int >( method ) ) );
+  cmbResampling->setCurrentIndex( cmbResampling->findData( static_cast<int>( method ) ) );
 }
 
 QString QgsTransformSettingsDialog::compressionMethod() const
@@ -240,7 +237,8 @@ void QgsTransformSettingsDialog::setLoadInProject( bool enabled )
 }
 
 void QgsTransformSettingsDialog::outputResolution(
-  double &resX, double &resY )
+  double &resX, double &resY
+)
 {
   resX = 0.0;
   resY = 0.0;
@@ -288,8 +286,7 @@ void QgsTransformSettingsDialog::accept()
 void QgsTransformSettingsDialog::cmbTransformType_currentIndexChanged( const QString & )
 {
   if ( cmbTransformType->currentIndex() != -1
-       && ( static_cast< QgsGcpTransformerInterface::TransformMethod >( cmbTransformType->currentData().toInt() ) == QgsGcpTransformerInterface::TransformMethod::Linear
-            || static_cast< QgsGcpTransformerInterface::TransformMethod >( cmbTransformType->currentData().toInt() ) == QgsGcpTransformerInterface::TransformMethod::Helmert ) )
+       && ( static_cast<QgsGcpTransformerInterface::TransformMethod>( cmbTransformType->currentData().toInt() ) == QgsGcpTransformerInterface::TransformMethod::Linear || static_cast<QgsGcpTransformerInterface::TransformMethod>( cmbTransformType->currentData().toInt() ) == QgsGcpTransformerInterface::TransformMethod::Helmert ) )
   {
     mWorldFileCheckBox->setEnabled( true );
   }

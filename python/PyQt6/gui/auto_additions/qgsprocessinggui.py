@@ -4,5 +4,5 @@ QgsProcessingGui.Batch = QgsProcessingGui.WidgetType.Batch
 QgsProcessingGui.Modeler = QgsProcessingGui.WidgetType.Modeler
 try:
     QgsProcessingGui.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass

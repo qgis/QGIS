@@ -27,5 +27,5 @@ try:
     QgsGcpTransformerInterface.create = staticmethod(QgsGcpTransformerInterface.create)
     QgsGcpTransformerInterface.createFromParameters = staticmethod(QgsGcpTransformerInterface.createFromParameters)
     QgsGcpTransformerInterface.__group__ = ['georeferencing']
-except NameError:
+except (NameError, AttributeError):
     pass

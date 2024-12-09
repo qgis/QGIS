@@ -25,7 +25,7 @@
  * \ingroup UnitTests
  * Unit tests for QgsCopyFileTask
  */
-class TestQgsCopyFileTask: public QObject
+class TestQgsCopyFileTask : public QObject
 {
     Q_OBJECT
 

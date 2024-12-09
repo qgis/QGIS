@@ -20,7 +20,6 @@
 #include "qgsmapmouseevent.h"
 
 
-
 QgsMapToolEmitPoint::QgsMapToolEmitPoint( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {

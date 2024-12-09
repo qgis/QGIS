@@ -27,9 +27,7 @@ QgsPlotCanvasItem::QgsPlotCanvasItem( QgsPlotCanvas *canvas )
 
 QgsPlotCanvasItem::~QgsPlotCanvasItem() = default;
 
-void QgsPlotCanvasItem::paint( QPainter *painter,
-                               const QStyleOptionGraphicsItem *,
-                               QWidget * )
+void QgsPlotCanvasItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
 {
   paint( painter );
 }

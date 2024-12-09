@@ -535,7 +535,7 @@ Returns a large (roughly 100x100 pixel) preview image for the symbol.
 
 .. deprecated:: 3.40
 
-   Use bigSymbolPreviewImageV2 instead.
+   Use :py:func:`~QgsSymbol.bigSymbolPreviewImageV2` instead.
 %End
 
     QString dump() const;

@@ -26,7 +26,8 @@
 // -------------------------- //
 // Condition Widget functions //
 // -------------------------- //
-QgsSmartGroupCondition::QgsSmartGroupCondition( int id, QWidget *parent ) : QWidget( parent )
+QgsSmartGroupCondition::QgsSmartGroupCondition( int id, QWidget *parent )
+  : QWidget( parent )
 {
   setupUi( this );
 

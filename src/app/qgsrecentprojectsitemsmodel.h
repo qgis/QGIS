@@ -29,14 +29,14 @@ class QgsRecentProjectItemsModel : public QAbstractListModel
   public:
     struct RecentProjectData
     {
-      bool operator==( const RecentProjectData &other ) const { return other.path == this->path; }
-      QString path;
-      QString title;
-      QString previewImagePath;
-      QString crs;
-      mutable bool pin = false;
-      mutable bool checkedExists = false;
-      mutable bool exists = false;
+        bool operator==( const RecentProjectData &other ) const { return other.path == this->path; }
+        QString path;
+        QString title;
+        QString previewImagePath;
+        QString crs;
+        mutable bool pin = false;
+        mutable bool checkedExists = false;
+        mutable bool exists = false;
     };
 
     explicit QgsRecentProjectItemsModel( QObject *parent = nullptr );

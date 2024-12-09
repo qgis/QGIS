@@ -19,6 +19,7 @@
 #define SIP_NO_FILE
 
 #include "qgis_core.h"
+#include "qgsmimedatautils.h"
 
 #include <QString>
 #include <QStringList>
@@ -60,6 +61,24 @@ class CORE_EXPORT QgsStacAsset
      * Roles are used to describe the purpose of the asset (eg. thumbnail, data etc).
      */
     QStringList roles() const;
+
+    /**
+     * Returns whether the asset is in a cloud optimized format like COG or COPC
+     * \since QGIS 3.42
+     */
+    bool isCloudOptimized() const;
+
+    /**
+     * Returns the format name for cloud optimized formats
+     * \since QGIS 3.42
+     */
+    QString formatName() const;
+
+    /**
+     * Returns a uri for the asset if it is a cloud optimized file like COG or COPC
+     * \since QGIS 3.42
+     */
+    QgsMimeDataUtils::Uri uri() const;
 
   private:
     QString mHref;

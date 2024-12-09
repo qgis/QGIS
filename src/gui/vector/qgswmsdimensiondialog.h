@@ -41,7 +41,7 @@ class QgsVectorLayer;
  * Dimensions can also be configured as ranges by defining an "end" field that contains the
  * upper value of the range.
  */
-class GUI_EXPORT QgsWmsDimensionDialog: public QDialog, private Ui::QgsWmsDimensionDialogBase
+class GUI_EXPORT QgsWmsDimensionDialog : public QDialog, private Ui::QgsWmsDimensionDialogBase
 {
     Q_OBJECT
   public:

@@ -21,14 +21,14 @@
 #include "qgsbearingnumericformat.h"
 #include <QSignalSpy>
 
-class TestQgsTableEditor: public QObject
+class TestQgsTableEditor : public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
     void testData();
     void insertRowsBelow();
     void insertRowsAbove();
@@ -50,12 +50,10 @@ class TestQgsTableEditor: public QObject
     void headers();
 
   private:
-
 };
 
 void TestQgsTableEditor::initTestCase()
 {
-
 }
 
 void TestQgsTableEditor::cleanupTestCase()
@@ -78,7 +76,7 @@ void TestQgsTableEditor::testData()
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr<QgsCurrencyNumericFormat> format = std::make_unique<QgsCurrencyNumericFormat>();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
@@ -129,14 +127,14 @@ void TestQgsTableEditor::insertRowsBelow()
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr<QgsCurrencyNumericFormat> format = std::make_unique<QgsCurrencyNumericFormat>();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
   QgsTableCell c2( 76 );
   c2.setBackgroundColor( QColor( 255, 0, 0 ) );
   QgsTextFormat c2f;
-  c2f.setColor( QColor( 0, 255, 0 ) ) ;
+  c2f.setColor( QColor( 0, 255, 0 ) );
   c2.setTextFormat( c2f );
   w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << c2 << c3 ) );
   QCOMPARE( spy.count(), 1 );
@@ -239,7 +237,7 @@ void TestQgsTableEditor::insertRowsAbove()
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr<QgsCurrencyNumericFormat> format = std::make_unique<QgsCurrencyNumericFormat>();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
@@ -349,7 +347,7 @@ void TestQgsTableEditor::insertColumnsBefore()
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr<QgsCurrencyNumericFormat> format = std::make_unique<QgsCurrencyNumericFormat>();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
@@ -431,7 +429,7 @@ void TestQgsTableEditor::insertColumnsAfter()
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr<QgsCurrencyNumericFormat> format = std::make_unique<QgsCurrencyNumericFormat>();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
@@ -513,7 +511,7 @@ void TestQgsTableEditor::deleteRows()
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr<QgsCurrencyNumericFormat> format = std::make_unique<QgsCurrencyNumericFormat>();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   QgsTableCell c2( 76 );
@@ -522,10 +520,7 @@ void TestQgsTableEditor::deleteRows()
   QgsTextFormat c2f;
   c2f.setColor( QColor( 0, 255, 0 ) );
   c2.setTextFormat( c2f );
-  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) )
-                      << ( QgsTableRow() << c2 )
-                      << ( QgsTableRow() << c3 )
-                      << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet3" ) ) ) );
+  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) ) << ( QgsTableRow() << c2 ) << ( QgsTableRow() << c3 ) << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet3" ) ) ) );
   QCOMPARE( spy.count(), 1 );
 
   // no selection
@@ -569,7 +564,6 @@ void TestQgsTableEditor::deleteRows()
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( w.tableContents().size(), 1 );
   QCOMPARE( w.tableContents().at( 0 ).size(), 1 );
-
 }
 
 void TestQgsTableEditor::deleteColumns()
@@ -580,7 +574,7 @@ void TestQgsTableEditor::deleteColumns()
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr<QgsCurrencyNumericFormat> format = std::make_unique<QgsCurrencyNumericFormat>();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   QgsTableCell c2( 76 );
@@ -635,16 +629,12 @@ void TestQgsTableEditor::deleteColumns()
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( w.tableContents().size(), 1 );
   QCOMPARE( w.tableContents().at( 0 ).size(), 1 );
-
 }
 
 void TestQgsTableEditor::selectRows()
 {
   QgsTableEditorWidget w;
-  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
-                      << ( QgsTableRow() << QgsTableCell()  << QgsTableCell() << QgsTableCell() )
-                      << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
-                      << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) );
+  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) );
 
   w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect );
   w.expandRowSelection();
@@ -674,9 +664,7 @@ void TestQgsTableEditor::selectRows()
 void TestQgsTableEditor::selectColumns()
 {
   QgsTableEditorWidget w;
-  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
-                      << ( QgsTableRow() << QgsTableCell()  << QgsTableCell() << QgsTableCell() )
-                      << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) );
+  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) );
 
   w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect );
   w.expandColumnSelection();
@@ -705,9 +693,7 @@ void TestQgsTableEditor::selectColumns()
 void TestQgsTableEditor::clearSelected()
 {
   QgsTableEditorWidget w;
-  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A1" ) ) << QgsTableCell( QStringLiteral( "A2" ) ) << QgsTableCell( QStringLiteral( "A3" ) ) )
-                      << ( QgsTableRow() << QgsTableCell( QStringLiteral( "B1" ) )  << QgsTableCell( QStringLiteral( "B2" ) ) << QgsTableCell( QStringLiteral( "B3" ) ) )
-                      << ( QgsTableRow() << QgsTableCell( QStringLiteral( "C1" ) ) << QgsTableCell( QStringLiteral( "C2" ) ) << QgsTableCell( QStringLiteral( "C3" ) ) ) );
+  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A1" ) ) << QgsTableCell( QStringLiteral( "A2" ) ) << QgsTableCell( QStringLiteral( "A3" ) ) ) << ( QgsTableRow() << QgsTableCell( QStringLiteral( "B1" ) ) << QgsTableCell( QStringLiteral( "B2" ) ) << QgsTableCell( QStringLiteral( "B3" ) ) ) << ( QgsTableRow() << QgsTableCell( QStringLiteral( "C1" ) ) << QgsTableCell( QStringLiteral( "C2" ) ) << QgsTableCell( QStringLiteral( "C3" ) ) ) );
 
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   w.selectionModel()->clearSelection();
@@ -745,7 +731,6 @@ void TestQgsTableEditor::clearSelected()
   QCOMPARE( w.tableContents().at( 2 ).at( 0 ).content().toString(), QStringLiteral( "C1" ) );
   QCOMPARE( w.tableContents().at( 2 ).at( 1 ).content().toString(), QStringLiteral( "C2" ) );
   QCOMPARE( w.tableContents().at( 2 ).at( 2 ).content().toString(), QStringLiteral( "C3" ) );
-
 }
 
 void TestQgsTableEditor::foregroundColor()
@@ -756,7 +741,7 @@ void TestQgsTableEditor::foregroundColor()
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr<QgsCurrencyNumericFormat> format = std::make_unique<QgsCurrencyNumericFormat>();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
@@ -821,7 +806,7 @@ void TestQgsTableEditor::backgroundColor()
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr<QgsCurrencyNumericFormat> format = std::make_unique<QgsCurrencyNumericFormat>();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
@@ -884,7 +869,7 @@ void TestQgsTableEditor::alignment()
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr<QgsCurrencyNumericFormat> format = std::make_unique<QgsCurrencyNumericFormat>();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
@@ -952,7 +937,7 @@ void TestQgsTableEditor::properties()
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr<QgsCurrencyNumericFormat> format = std::make_unique<QgsCurrencyNumericFormat>();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   c3.setNumericFormat( format.release() );
@@ -965,7 +950,7 @@ void TestQgsTableEditor::properties()
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().toString(), QStringLiteral( "Jet" ) );
   QVERIFY( w.tableContents().at( 0 ).at( 0 ).content().userType() != qMetaTypeId<QgsProperty>() );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().userType(), qMetaTypeId<QgsProperty>() );
-  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().value< QgsProperty >().asExpression(), QStringLiteral( "1+2" ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().value<QgsProperty>().asExpression(), QStringLiteral( "1+2" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QStringLiteral( "87" ) );
   QVERIFY( w.tableContents().at( 0 ).at( 2 ).content().userType() != qMetaTypeId<QgsProperty>() );
   QCOMPARE( w.tableContents().at( 0 ).at( 3 ).content().toString(), QStringLiteral( "Jet3" ) );
@@ -989,9 +974,9 @@ void TestQgsTableEditor::properties()
   QVERIFY( w.selectionCellProperty().isActive() );
   QCOMPARE( w.selectionCellProperty().asExpression(), QStringLiteral( "3+4" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().userType(), qMetaTypeId<QgsProperty>() );
-  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().value< QgsProperty >().asExpression(), QStringLiteral( "3+4" ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content().value<QgsProperty>().asExpression(), QStringLiteral( "3+4" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().userType(), qMetaTypeId<QgsProperty>() );
-  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().value< QgsProperty >().asExpression(), QStringLiteral( "3+4" ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content().value<QgsProperty>().asExpression(), QStringLiteral( "3+4" ) );
   QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content().toString(), QStringLiteral( "87" ) );
   QVERIFY( w.tableContents().at( 0 ).at( 2 ).content().userType() != qMetaTypeId<QgsProperty>() );
   QCOMPARE( w.tableContents().at( 0 ).at( 3 ).content().toString(), QStringLiteral( "Jet3" ) );
@@ -1035,13 +1020,13 @@ void TestQgsTableEditor::textFormat()
   QCOMPARE( spy.count(), 1 );
 
   w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::ClearAndSelect );
-  QVERIFY( w.selectionTextFormat().size() !=  21.0 );
+  QVERIFY( w.selectionTextFormat().size() != 21.0 );
   w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::Select );
-  QVERIFY( w.selectionTextFormat().size() !=  21.0 );
+  QVERIFY( w.selectionTextFormat().size() != 21.0 );
   w.selectionModel()->select( w.model()->index( 0, 1 ), QItemSelectionModel::ClearAndSelect );
   QCOMPARE( w.selectionTextFormat().size(), 12.6 );
   w.selectionModel()->select( w.model()->index( 0, 0 ), QItemSelectionModel::Select );
-  QVERIFY( w.selectionTextFormat().size() !=  21.0 );
+  QVERIFY( w.selectionTextFormat().size() != 21.0 );
   w.setSelectionTextFormat( format );
   QCOMPARE( spy.count(), 2 );
   QVERIFY( w.selectionTextFormat().isValid() );
@@ -1060,7 +1045,7 @@ void TestQgsTableEditor::numericFormat()
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
   QgsTableCell c3;
   c3.setContent( 87 );
-  std::unique_ptr< QgsCurrencyNumericFormat > format = std::make_unique< QgsCurrencyNumericFormat >();
+  std::unique_ptr<QgsCurrencyNumericFormat> format = std::make_unique<QgsCurrencyNumericFormat>();
   format->setNumberDecimalPlaces( 2 );
   format->setPrefix( QStringLiteral( "$" ) );
   QgsTableCell c2( 76 );
@@ -1128,9 +1113,7 @@ void TestQgsTableEditor::rowHeight()
   QVERIFY( w.tableContents().isEmpty() );
 
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
-  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
-                      << ( QgsTableRow() << QgsTableCell()  << QgsTableCell() << QgsTableCell() )
-                      << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) );
+  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) );
   QCOMPARE( spy.count(), 1 );
   w.setTableRowHeight( 1, 14.0 );
 
@@ -1170,9 +1153,7 @@ void TestQgsTableEditor::columnWidth()
   QVERIFY( w.tableContents().isEmpty() );
 
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
-  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() )
-                      << ( QgsTableRow() << QgsTableCell()  << QgsTableCell() << QgsTableCell() )
-                      << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) );
+  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) << ( QgsTableRow() << QgsTableCell() << QgsTableCell() << QgsTableCell() ) );
   QCOMPARE( spy.count(), 1 );
   w.setTableColumnWidth( 1, 14.0 );
 
@@ -1212,8 +1193,7 @@ void TestQgsTableEditor::headers()
   QVERIFY( w.tableContents().isEmpty() );
 
   const QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
-  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( 1 ) << QgsTableCell( 2 ) << QgsTableCell( 3 ) )
-                      << ( QgsTableRow() << QgsTableCell( 4 )  << QgsTableCell( 5 ) << QgsTableCell( 6 ) ) );
+  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( 1 ) << QgsTableCell( 2 ) << QgsTableCell( 3 ) ) << ( QgsTableRow() << QgsTableCell( 4 ) << QgsTableCell( 5 ) << QgsTableCell( 6 ) ) );
   QCOMPARE( spy.count(), 1 );
 
   w.setIncludeTableHeader( true );
@@ -1238,7 +1218,6 @@ void TestQgsTableEditor::headers()
   QCOMPARE( w.tableContents().at( 1 ).at( 0 ).content(), QVariant( 4 ) );
   QCOMPARE( w.tableContents().at( 1 ).at( 1 ).content(), QVariant( 5 ) );
   QCOMPARE( w.tableContents().at( 1 ).at( 2 ).content(), QVariant( 6 ) );
-
 }
 
 

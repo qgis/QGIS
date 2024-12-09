@@ -615,5 +615,9 @@ QgsProviderMetadata::ProviderMetadataCapabilities QgsVirtualPointCloudProviderMe
          | ProviderMetadataCapability::PriorityForUri
          | ProviderMetadataCapability::QuerySublayers;
 }
+
+#undef PROVIDER_KEY
+#undef PROVIDER_DESCRIPTION
+
 ///@endcond
 

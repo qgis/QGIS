@@ -26,7 +26,6 @@ has support for table foreground and background colors, and numeric formats.
 #include "qgstableeditorwidget.h"
 %End
   public:
-
     QgsTableEditorWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsTableEditorWidget with the specified ``parent`` widget.

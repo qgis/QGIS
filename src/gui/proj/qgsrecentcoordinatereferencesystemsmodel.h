@@ -39,7 +39,6 @@ class GUI_EXPORT QgsRecentCoordinateReferenceSystemsModel : public QAbstractItem
     Q_OBJECT
 
   public:
-
     // *INDENT-OFF*
 
     /**
@@ -47,8 +46,8 @@ class GUI_EXPORT QgsRecentCoordinateReferenceSystemsModel : public QAbstractItem
      */
     enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRecentCoordinateReferenceSystemsModel, Roles ) : int
     {
-      Crs SIP_MONKEYPATCH_COMPAT_NAME(RoleCrs) = Qt::UserRole, //!< Coordinate reference system
-      AuthId SIP_MONKEYPATCH_COMPAT_NAME(RoleAuthId), //!< CRS authority ID
+      Crs SIP_MONKEYPATCH_COMPAT_NAME( RoleCrs ) = Qt::UserRole, //!< Coordinate reference system
+      AuthId SIP_MONKEYPATCH_COMPAT_NAME( RoleAuthId ),          //!< CRS authority ID
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -79,10 +78,8 @@ class GUI_EXPORT QgsRecentCoordinateReferenceSystemsModel : public QAbstractItem
     void recentCrsCleared();
 
   private:
-
-    QList< QgsCoordinateReferenceSystem > mCrs;
+    QList<QgsCoordinateReferenceSystem> mCrs;
     int mColumnCount = 1;
-
 };
 
 
@@ -92,12 +89,11 @@ class GUI_EXPORT QgsRecentCoordinateReferenceSystemsModel : public QAbstractItem
  * \ingroup gui
  * \since QGIS 3.36
  */
-class GUI_EXPORT QgsRecentCoordinateReferenceSystemsProxyModel: public QSortFilterProxyModel
+class GUI_EXPORT QgsRecentCoordinateReferenceSystemsProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRecentCoordinateReferenceSystemsProxyModel, with the given \a parent object.
      */
@@ -146,7 +142,6 @@ class GUI_EXPORT QgsRecentCoordinateReferenceSystemsProxyModel: public QSortFilt
     QgsCoordinateReferenceSystem crs( const QModelIndex &index ) const;
 
   private:
-
     QgsRecentCoordinateReferenceSystemsModel *mModel = nullptr;
     QgsCoordinateReferenceSystemProxyModel::Filters mFilters = QgsCoordinateReferenceSystemProxyModel::Filters();
     bool mFilterDeprecated = false;

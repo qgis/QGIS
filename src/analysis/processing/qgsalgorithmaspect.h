@@ -30,9 +30,7 @@
  */
 class QgsAspectAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsAspectAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -44,9 +42,7 @@ class QgsAspectAlgorithm : public QgsProcessingAlgorithm
     QgsAspectAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE

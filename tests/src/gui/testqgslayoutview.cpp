@@ -27,14 +27,14 @@
 #include <QtTest/QSignalSpy>
 #include <QSvgGenerator>
 
-class TestQgsLayoutView: public QObject
+class TestQgsLayoutView : public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
     void basic();
     void tool();
     void events();
@@ -42,12 +42,10 @@ class TestQgsLayoutView: public QObject
     void rubberBand();
 
   private:
-
 };
 
 void TestQgsLayoutView::initTestCase()
 {
-
 }
 
 void TestQgsLayoutView::cleanupTestCase()
@@ -124,7 +122,6 @@ void TestQgsLayoutView::tool()
 class LoggingTool : public QgsLayoutViewTool // clazy:exclude=missing-qobject-macro
 {
   public:
-
     LoggingTool( QgsLayoutView *view )
       : QgsLayoutViewTool( view, QStringLiteral( "logging" ) )
     {}
@@ -148,7 +145,7 @@ class LoggingTool : public QgsLayoutViewTool // clazy:exclude=missing-qobject-ma
     bool receivedPressEvent = false;
     void layoutPressEvent( QgsLayoutViewMouseEvent *event ) override
     {
-      receivedPressEvent  = true;
+      receivedPressEvent = true;
       QCOMPARE( event->layoutPoint().x(), 8.0 );
       QCOMPARE( event->layoutPoint().y(), 6.0 );
     }
@@ -156,7 +153,7 @@ class LoggingTool : public QgsLayoutViewTool // clazy:exclude=missing-qobject-ma
     bool receivedReleaseEvent = false;
     void layoutReleaseEvent( QgsLayoutViewMouseEvent *event ) override
     {
-      receivedReleaseEvent  = true;
+      receivedReleaseEvent = true;
       QCOMPARE( event->layoutPoint().x(), 8.0 );
       QCOMPARE( event->layoutPoint().y(), 6.0 );
     }
@@ -170,7 +167,7 @@ class LoggingTool : public QgsLayoutViewTool // clazy:exclude=missing-qobject-ma
     bool receivedKeyPressEvent = false;
     void keyPressEvent( QKeyEvent * ) override
     {
-      receivedKeyPressEvent  = true;
+      receivedKeyPressEvent = true;
     }
 
     bool receivedKeyReleaseEvent = false;
@@ -203,16 +200,11 @@ void TestQgsLayoutView::events()
   view->setTool( tool );
 
   const QPointF point( 80, 60 );
-  QMouseEvent press( QEvent::MouseButtonPress, point,
-                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  QMouseEvent move( QEvent::MouseMove, point,
-                    Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  QMouseEvent releases( QEvent::MouseButtonRelease, point,
-                        Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  QMouseEvent dblClick( QEvent::MouseButtonDblClick, point,
-                        Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  QWheelEvent wheelEvent( point, QPointF(), QPoint( 0, 10 ), QPoint( 0, 10 ),
-                          Qt::LeftButton, Qt::NoModifier, Qt::NoScrollPhase, false );
+  QMouseEvent press( QEvent::MouseButtonPress, point, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent move( QEvent::MouseMove, point, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent releases( QEvent::MouseButtonRelease, point, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent dblClick( QEvent::MouseButtonDblClick, point, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QWheelEvent wheelEvent( point, QPointF(), QPoint( 0, 10 ), QPoint( 0, 10 ), Qt::LeftButton, Qt::NoModifier, Qt::NoScrollPhase, false );
   QKeyEvent keyPress( QEvent::KeyPress, 10, Qt::NoModifier );
   QKeyEvent keyRelease( QEvent::KeyRelease, 10, Qt::NoModifier );
 
@@ -236,15 +228,15 @@ void TestQgsLayoutView::events()
 class TestItem : public QgsLayoutItem // clazy:exclude=missing-qobject-macro
 {
   public:
-
-    TestItem( QgsLayout *layout ) : QgsLayoutItem( layout ) {}
+    TestItem( QgsLayout *layout )
+      : QgsLayoutItem( layout ) {}
 
     int mFlag = 0;
 
     //implement pure virtual methods
     int type() const override { return QgsLayoutItemRegistry::LayoutItem + 101; }
     void draw( QgsLayoutItemRenderContext & ) override
-    {    }
+    {}
 };
 
 void TestQgsLayoutView::guiRegistry()
@@ -258,19 +250,17 @@ void TestQgsLayoutView::guiRegistry()
   QCOMPARE( registry.metadataIdForItemType( 0 ), -1 );
   QVERIFY( !registry.createItemWidget( nullptr ) );
   QVERIFY( !registry.createItemWidget( nullptr ) );
-  const std::unique_ptr< TestItem > testItem = std::make_unique< TestItem >( nullptr );
+  const std::unique_ptr<TestItem> testItem = std::make_unique<TestItem>( nullptr );
   QVERIFY( !registry.createItemWidget( testItem.get() ) ); // not in registry
 
   const QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemGuiRegistry::typeAdded );
 
   // add a dummy item to registry
-  auto createWidget = []( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
-  {
+  auto createWidget = []( QgsLayoutItem *item ) -> QgsLayoutItemBaseWidget * {
     return new QgsLayoutItemBaseWidget( nullptr, item );
   };
 
-  auto createRubberBand = []( QgsLayoutView * view )->QgsLayoutViewRubberBand *
-  {
+  auto createRubberBand = []( QgsLayoutView *view ) -> QgsLayoutViewRubberBand * {
     return new QgsLayoutViewRectangularRubberBand( view );
   };
 
@@ -301,7 +291,7 @@ void TestQgsLayoutView::guiRegistry()
   //should use metadata's method
   QgsLayoutViewRubberBand *band = registry.createItemRubberBand( uuid, view );
   QVERIFY( band );
-  QVERIFY( dynamic_cast< QgsLayoutViewRectangularRubberBand * >( band ) );
+  QVERIFY( dynamic_cast<QgsLayoutViewRectangularRubberBand *>( band ) );
   QCOMPARE( band->view(), view );
   delete band;
 
@@ -314,21 +304,19 @@ void TestQgsLayoutView::guiRegistry()
   //creating item
   QgsLayoutItem *item = registry.createItem( uuid, nullptr );
   QVERIFY( !item );
-  QgsApplication::layoutItemRegistry()->addLayoutItemType( new QgsLayoutItemMetadata( QgsLayoutItemRegistry::LayoutItem + 101, QStringLiteral( "my type" ), QStringLiteral( "my types" ), []( QgsLayout * layout )->QgsLayoutItem*
-  {
+  QgsApplication::layoutItemRegistry()->addLayoutItemType( new QgsLayoutItemMetadata( QgsLayoutItemRegistry::LayoutItem + 101, QStringLiteral( "my type" ), QStringLiteral( "my types" ), []( QgsLayout *layout ) -> QgsLayoutItem * {
     return new TestItem( layout );
   } ) );
 
   item = registry.createItem( uuid, nullptr );
   QVERIFY( item );
   QCOMPARE( item->type(), QgsLayoutItemRegistry::LayoutItem + 101 );
-  QCOMPARE( static_cast< TestItem * >( item )->mFlag, 0 );
+  QCOMPARE( static_cast<TestItem *>( item )->mFlag, 0 );
   delete item;
 
   // override create func
   metadata = new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 101, QStringLiteral( "mytype" ), QIcon(), createWidget, createRubberBand );
-  metadata->setItemCreationFunction( []( QgsLayout * layout )->QgsLayoutItem*
-  {
+  metadata->setItemCreationFunction( []( QgsLayout *layout ) -> QgsLayoutItem * {
     TestItem *item = new TestItem( layout );
     item->mFlag = 2;
     return item;
@@ -338,9 +326,8 @@ void TestQgsLayoutView::guiRegistry()
   item = registry.createItem( uuid, nullptr );
   QVERIFY( item );
   QCOMPARE( item->type(), QgsLayoutItemRegistry::LayoutItem + 101 );
-  QCOMPARE( static_cast< TestItem * >( item )->mFlag, 2 );
+  QCOMPARE( static_cast<TestItem *>( item )->mFlag, 2 );
   delete item;
-
 }
 
 void TestQgsLayoutView::rubberBand()

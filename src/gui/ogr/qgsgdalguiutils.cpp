@@ -26,13 +26,13 @@
 
 #include <QComboBox>
 
-QString QgsGdalGuiUtils::createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &configId, QString username,  QString password, bool expandAuthConfig )
+QString QgsGdalGuiUtils::createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &configId, QString username, QString password, bool expandAuthConfig )
 {
   QString uri;
 
   // If an auth configuration is set, override username and password
   // Note that only Basic auth (username/password) is for now supported for OGR connections
-  if ( ! configId.isEmpty() )
+  if ( !configId.isEmpty() )
   {
     // Blank credentials: we are using authcfg!
     username = QString();
@@ -129,8 +129,7 @@ QString QgsGdalGuiUtils::createDatabaseURI( const QString &connectionType, const
   {
     uri = "OCI:" + username;
 
-    if ( ( !username.isEmpty() && !password.isEmpty() ) ||
-         ( username.isEmpty() && password.isEmpty() ) )
+    if ( ( !username.isEmpty() && !password.isEmpty() ) || ( username.isEmpty() && password.isEmpty() ) )
     {
       uri += '/';
       if ( !password.isEmpty() )
@@ -168,7 +167,6 @@ QString QgsGdalGuiUtils::createDatabaseURI( const QString &connectionType, const
       {
         uri = "ODBC:" + username + '/' + password + '@' + database;
       }
-
     }
     else
     {
@@ -203,7 +201,7 @@ QString QgsGdalGuiUtils::createDatabaseURI( const QString &connectionType, const
   // Append authentication configuration to the URI
   if ( !( configId.isEmpty() ) )
   {
-    if ( ! expandAuthConfig )
+    if ( !expandAuthConfig )
     {
       uri += QStringLiteral( " authcfg='%1'" ).arg( configId );
     }
@@ -241,8 +239,7 @@ QString QgsGdalGuiUtils::createProtocolURI( const QString &type, const QString &
             || type == QLatin1String( "vsiadls" )
             || type == QLatin1String( "vsioss" )
             || type == QLatin1String( "vsiswift" )
-            || type == QLatin1String( "vsihdfs" )
-          )
+            || type == QLatin1String( "vsihdfs" ) )
   {
     uri = url;
     uri.prepend( QStringLiteral( "/%1/" ).arg( type ) );
@@ -266,7 +263,7 @@ QString QgsGdalGuiUtils::createProtocolURI( const QString &type, const QString &
   }
   QgsDebugMsgLevel( "Connection type is=" + type + " and uri=" + uri, 2 );
   // Update URI with authentication information
-  if ( ! configId.isEmpty() )
+  if ( !configId.isEmpty() )
   {
     if ( expandAuthConfig )
     {
@@ -282,7 +279,7 @@ QString QgsGdalGuiUtils::createProtocolURI( const QString &type, const QString &
       uri += QStringLiteral( " authcfg='%1'" ).arg( configId );
     }
   }
-  else if ( !( username.isEmpty() || password.isEmpty( ) ) )
+  else if ( !( username.isEmpty() || password.isEmpty() ) )
   {
     uri.replace( QLatin1String( "://" ), QStringLiteral( "://%1:%2@" ).arg( username, password ) );
   }
@@ -346,12 +343,11 @@ QWidget *QgsGdalGuiUtils::createWidgetForOption( const QgsGdalOption &option, QW
       if ( option.maximum.isValid() )
         res->setMaximum( option.maximum.toInt() );
       else
-        res->setMaximum( std::numeric_limits< int>::max() - 1 );
+        res->setMaximum( std::numeric_limits<int>::max() - 1 );
       if ( includeDefaultChoices )
       {
         res->setMinimum( res->minimum() - 1 );
-        res->setClearValueMode( QgsSpinBox::ClearValueMode::MinimumValue,
-                                QObject::tr( "Default" ) );
+        res->setClearValueMode( QgsSpinBox::ClearValueMode::MinimumValue, QObject::tr( "Default" ) );
       }
       else if ( option.defaultValue.isValid() )
       {
@@ -372,14 +368,13 @@ QWidget *QgsGdalGuiUtils::createWidgetForOption( const QgsGdalOption &option, QW
       if ( option.maximum.isValid() )
         res->setMaximum( option.maximum.toDouble() );
       else
-        res->setMaximum( std::numeric_limits< double>::max() - 1 );
+        res->setMaximum( std::numeric_limits<double>::max() - 1 );
       if ( option.defaultValue.isValid() )
         res->setClearValue( option.defaultValue.toDouble() );
       if ( includeDefaultChoices )
       {
         res->setMinimum( res->minimum() - 1 );
-        res->setClearValueMode( QgsDoubleSpinBox::ClearValueMode::MinimumValue,
-                                QObject::tr( "Default" ) );
+        res->setClearValueMode( QgsDoubleSpinBox::ClearValueMode::MinimumValue, QObject::tr( "Default" ) );
       }
       else if ( option.defaultValue.isValid() )
       {

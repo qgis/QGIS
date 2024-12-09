@@ -19,7 +19,6 @@ Wraps a QQuickWidget to display HTML code
 #include "qgshtmlwidgetwrapper.h"
 %End
   public:
-
     QgsHtmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent );
 %Docstring
 Create a html widget wrapper

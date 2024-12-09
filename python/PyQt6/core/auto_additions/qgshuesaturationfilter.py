@@ -5,5 +5,5 @@ QgsHueSaturationFilter.GrayscaleLuminosity = QgsHueSaturationFilter.GrayscaleMod
 QgsHueSaturationFilter.GrayscaleAverage = QgsHueSaturationFilter.GrayscaleMode.GrayscaleAverage
 try:
     QgsHueSaturationFilter.__group__ = ['raster']
-except NameError:
+except (NameError, AttributeError):
     pass

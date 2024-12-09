@@ -33,8 +33,7 @@ QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas *canvas )
 {
   mToolName = tr( "Measure angle" );
 
-  connect( canvas, &QgsMapCanvas::destinationCrsChanged,
-           this, &QgsMapToolMeasureAngle::updateSettings );
+  connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapToolMeasureAngle::updateSettings );
 }
 
 QgsMapToolMeasureAngle::~QgsMapToolMeasureAngle()

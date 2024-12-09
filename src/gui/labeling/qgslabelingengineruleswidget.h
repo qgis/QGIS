@@ -41,7 +41,6 @@ class QgsLabelingEngineRulesModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLabelingEngineRulesModel.
      */
@@ -63,12 +62,12 @@ class QgsLabelingEngineRulesModel : public QAbstractItemModel
      *
      * Ownership is not transferred, an internal copy will be made.
      */
-    void setRules( const QList< QgsAbstractLabelingEngineRule * > &rules );
+    void setRules( const QList<QgsAbstractLabelingEngineRule *> &rules );
 
     /**
      * Adds a \a rule to the model.
      */
-    void addRule( std::unique_ptr< QgsAbstractLabelingEngineRule > &rule );
+    void addRule( std::unique_ptr<QgsAbstractLabelingEngineRule> &rule );
 
     /**
      * Returns the rule at the specified model \a index.
@@ -78,24 +77,20 @@ class QgsLabelingEngineRulesModel : public QAbstractItemModel
     /**
      * Swaps the rule at the specified \a index for a new \a rule.
      */
-    void changeRule( const QModelIndex &index, std::unique_ptr< QgsAbstractLabelingEngineRule > &rule );
+    void changeRule( const QModelIndex &index, std::unique_ptr<QgsAbstractLabelingEngineRule> &rule );
 
     /**
      * Returns the rules shown in the widget.
      *
      * The caller takes ownership of all returned rules.
      */
-    QList<QgsAbstractLabelingEngineRule * > rules() const;
+    QList<QgsAbstractLabelingEngineRule *> rules() const;
 
   private:
-
-    std::vector< std::unique_ptr< QgsAbstractLabelingEngineRule > > mRules;
-
+    std::vector<std::unique_ptr<QgsAbstractLabelingEngineRule>> mRules;
 };
 
 #endif
-
-
 
 
 /**
@@ -115,7 +110,6 @@ class GUI_EXPORT QgsLabelingEngineRulesWidget : public QgsPanelWidget, private U
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLabelingEngineRulesWidget.
      */
@@ -126,14 +120,14 @@ class GUI_EXPORT QgsLabelingEngineRulesWidget : public QgsPanelWidget, private U
      *
      * Ownership is not transferred, an internal copy will be made.
      */
-    void setRules( const QList< QgsAbstractLabelingEngineRule * > &rules );
+    void setRules( const QList<QgsAbstractLabelingEngineRule *> &rules );
 
     /**
      * Returns the rules shown in the widget.
      *
      * The caller takes ownership of all returned rules.
      */
-    QList<QgsAbstractLabelingEngineRule * > rules() const SIP_TRANSFERBACK;
+    QList<QgsAbstractLabelingEngineRule *> rules() const SIP_TRANSFERBACK;
 
   signals:
 
@@ -151,10 +145,8 @@ class GUI_EXPORT QgsLabelingEngineRulesWidget : public QgsPanelWidget, private U
     void removeRules();
 
   private:
-
     QgsLabelingEngineRulesModel *mModel = nullptr;
     QMenu *mAddRuleMenu = nullptr;
-
 };
 
 
@@ -174,7 +166,6 @@ class GUI_EXPORT QgsLabelingEngineRulesDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLabelingEngineRulesDialog.
      * \param parent parent widget
@@ -187,22 +178,19 @@ class GUI_EXPORT QgsLabelingEngineRulesDialog : public QDialog
      *
      * Ownership is not transferred, an internal copy will be made.
      */
-    void setRules( const QList< QgsAbstractLabelingEngineRule * > &rules );
+    void setRules( const QList<QgsAbstractLabelingEngineRule *> &rules );
 
     /**
      * Returns the rules shown in the dialog.
      *
      * The caller takes ownership of all returned rules.
      */
-    QList<QgsAbstractLabelingEngineRule * > rules() const SIP_TRANSFERBACK;
+    QList<QgsAbstractLabelingEngineRule *> rules() const SIP_TRANSFERBACK;
 
   private:
-
     QgsLabelingEngineRulesWidget *mWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
-
 };
-
 
 
 #endif // QGSLABELINGENGINERULESWIDGET_H

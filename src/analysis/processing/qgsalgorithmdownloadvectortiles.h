@@ -33,9 +33,7 @@
  */
 class QgsDownloadVectorTilesAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsDownloadVectorTilesAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -48,12 +46,10 @@ class QgsDownloadVectorTilesAlgorithm : public QgsProcessingAlgorithm
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
-    std::unique_ptr< QgsVectorTileDataProvider > mProvider;
+    std::unique_ptr<QgsVectorTileDataProvider> mProvider;
     int mMaxZoom = 10;
     int mSourceMinZoom = 1;
     long long mTileLimit = 100;

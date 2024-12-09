@@ -536,7 +536,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * \since QGIS 3.38
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
 
     /**
     * Sets the renderer's property collection, used for data defined overrides.

@@ -18,12 +18,11 @@ class QgsRelationWidgetWrapper : QgsWidgetWrapper
 #include "qgsrelationwidgetwrapper.h"
 %End
   public:
-
     QgsRelationWidgetWrapper(
       QgsVectorLayer *vl,
       const QgsRelation &relation,
       QWidget *editor /Constrained/ = 0,
-      QWidget *parent /TransferThis,Constrained/  = 0
+      QWidget *parent /TransferThis,Constrained/ = 0
     );
 %Docstring
 Constructor for QgsRelationWidgetWrapper

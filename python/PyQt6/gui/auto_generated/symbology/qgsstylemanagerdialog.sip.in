@@ -23,8 +23,7 @@ A dialog allowing users to customize and populate a :py:class:`QgsStyle`.
 %End
   public:
 
-    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags(),
-                           bool readOnly = false );
+    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags(), bool readOnly = false );
 %Docstring
 Constructor for QgsStyleManagerDialog, with the specified ``parent`` widget and window ``flags``.
 
@@ -43,8 +42,7 @@ All styles linked to the current project will be available.
 %End
 
 
-    static QString addColorRampStatic( QWidget *parent, QgsStyle *style,
-                                       const QString &RampType = QString() );
+    static QString addColorRampStatic( QWidget *parent, QgsStyle *style, const QString &RampType = QString() );
 %Docstring
 Opens the add color ramp dialog, returning the new color ramp's name if the ramp has been added.
 
@@ -268,7 +266,6 @@ Remove all tags from selected symbols
 %End
 
   protected:
-
  void populateTypes() /Deprecated/;
 %Docstring
 Populate combo box with known style items (symbols, color ramps).

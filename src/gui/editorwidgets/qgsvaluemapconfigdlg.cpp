@@ -117,7 +117,6 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
   }
 
   updateMap( orderedList, false );
-
 }
 
 void QgsValueMapConfigDlg::vCellChanged( int row, int column )
@@ -138,7 +137,7 @@ void QgsValueMapConfigDlg::vCellChanged( int row, int column )
       if ( validValue.length() != item->text().length() )
       {
         const QString errorMessage = tr( "Value '%1' has been trimmed (maximum field length: %2)" )
-                                     .arg( item->text(), QString::number( layer()->fields().field( field() ).length() ) );
+                                       .arg( item->text(), QString::number( layer()->fields().field( field() ).length() ) );
         item->setText( validValue );
         mValueMapErrorsLabel->setVisible( true );
         mValueMapErrorsLabel->setText( QStringLiteral( "%1<br>%2" ).arg( errorMessage, mValueMapErrorsLabel->text() ) );
@@ -216,20 +215,19 @@ void QgsValueMapConfigDlg::updateMap( const QList<QPair<QString, QVariant>> &lis
     {
       const QString value { pair.first };
       // Check value
-      const QString validValue = checkValueLength( value ) ;
+      const QString validValue = checkValueLength( value );
 
       if ( validValue.length() != value.length() )
       {
-
         if ( reportedErrors.length() < maxOverflowErrors )
         {
           reportedErrors.push_back( tr( "Value '%1' has been trimmed (maximum field length: %2)" )
-                                    .arg( value, QString::number( mappedField.length() ) ) );
+                                      .arg( value, QString::number( mappedField.length() ) ) );
         }
         else if ( reportedErrors.length() == maxOverflowErrors )
         {
           reportedErrors.push_back( tr( "Only first %1 errors have been reported." )
-                                    .arg( maxOverflowErrors ) );
+                                      .arg( maxOverflowErrors ) );
         }
       }
 
@@ -384,10 +382,7 @@ void QgsValueMapConfigDlg::loadMapFromCSV( const QString &filePath )
 
   if ( !f.open( QIODevice::ReadOnly ) )
   {
-    QMessageBox::information( nullptr,
-                              tr( "Load Value Map from File" ),
-                              tr( "Could not open file %1\nError was: %2" ).arg( filePath, f.errorString() ),
-                              QMessageBox::Cancel );
+    QMessageBox::information( nullptr, tr( "Load Value Map from File" ), tr( "Could not open file %1\nError was: %2" ).arg( filePath, f.errorString() ), QMessageBox::Cancel );
     return;
   }
 

@@ -23,7 +23,6 @@ Encapsulates the details of a highlight in a scrollbar, used alongside :py:class
 #include "qgsdecoratedscrollbar.h"
 %End
   public:
-
     enum class Priority
     {
       Invalid,
@@ -61,7 +60,6 @@ Adds highlights (colored markers) to a scrollbar.
 #include "qgsdecoratedscrollbar.h"
 %End
   public:
-
     QgsScrollBarHighlightController();
     ~QgsScrollBarHighlightController();
 

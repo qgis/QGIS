@@ -3,5 +3,5 @@ QgsCheckBoxFieldFormatter.ShowTrueFalse = QgsCheckBoxFieldFormatter.TextDisplayM
 QgsCheckBoxFieldFormatter.ShowStoredValues = QgsCheckBoxFieldFormatter.TextDisplayMethod.ShowStoredValues
 try:
     QgsCheckBoxFieldFormatter.__group__ = ['fieldformatter']
-except NameError:
+except (NameError, AttributeError):
     pass

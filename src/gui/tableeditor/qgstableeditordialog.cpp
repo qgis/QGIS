@@ -50,7 +50,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
 
   mMessageBar = new QgsMessageBar( centralWidget() );
   mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
-  static_cast< QGridLayout * >( centralWidget()->layout() )->addWidget( mMessageBar, 0, 0, 1, 1, Qt::AlignTop );
+  static_cast<QGridLayout *>( centralWidget()->layout() )->addWidget( mMessageBar, 0, 0, 1, 1, Qt::AlignTop );
 
   mTableWidget = new QgsTableEditorWidget();
   mTableWidget->setContentsMargins( 0, 0, 0, 0 );
@@ -61,8 +61,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   mTableWidget->setFocus();
   mTableWidget->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() ) );
 
-  connect( mTableWidget, &QgsTableEditorWidget::tableChanged, this, [ = ]
-  {
+  connect( mTableWidget, &QgsTableEditorWidget::tableChanged, this, [=] {
     if ( !mBlockSignals )
       emit tableChanged();
   } );
@@ -87,20 +86,17 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::verticalAlignmentChanged, mTableWidget, &QgsTableEditorWidget::setSelectionVerticalAlignment );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::cellPropertyChanged, mTableWidget, &QgsTableEditorWidget::setSelectionCellProperty );
 
-  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::textFormatChanged, this, [ = ]
-  {
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::textFormatChanged, this, [=] {
     mTableWidget->setSelectionTextFormat( mFormattingWidget->textFormat() );
   } );
 
-  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::numberFormatChanged, this, [ = ]
-  {
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::numberFormatChanged, this, [=] {
     mTableWidget->setSelectionNumericFormat( mFormattingWidget->numericFormat() );
   } );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::rowHeightChanged, mTableWidget, &QgsTableEditorWidget::setSelectionRowHeight );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::columnWidthChanged, mTableWidget, &QgsTableEditorWidget::setSelectionColumnWidth );
 
-  connect( mTableWidget, &QgsTableEditorWidget::activeCellChanged, this, [ = ]
-  {
+  connect( mTableWidget, &QgsTableEditorWidget::activeCellChanged, this, [=] {
     mFormattingWidget->setBackgroundColor( mTableWidget->selectionBackgroundColor() );
     mFormattingWidget->setNumericFormat( mTableWidget->selectionNumericFormat(), mTableWidget->hasMixedSelectionNumericFormat() );
     mFormattingWidget->setRowHeight( mTableWidget->selectionRowHeight() );
@@ -119,7 +115,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   addDockWidget( Qt::RightDockWidgetArea, mPropertiesDock );
 
   mActionImportFromClipboard->setEnabled( !QApplication::clipboard()->text().isEmpty() );
-  connect( QApplication::clipboard(), &QClipboard::dataChanged, this, [ = ]() { mActionImportFromClipboard->setEnabled( !QApplication::clipboard()->text().isEmpty() ); } );
+  connect( QApplication::clipboard(), &QClipboard::dataChanged, this, [=]() { mActionImportFromClipboard->setEnabled( !QApplication::clipboard()->text().isEmpty() ); } );
 
   connect( mActionImportFromClipboard, &QAction::triggered, this, &QgsTableEditorDialog::setTableContentsFromClipboard );
   connect( mActionClose, &QAction::triggered, this, &QMainWindow::close );
@@ -135,8 +131,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   connect( mActionSelectColumn, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::expandColumnSelection );
   connect( mActionSelectAll, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::selectAll );
   connect( mActionClear, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::clearSelectedCells );
-  connect( mActionIncludeHeader, &QAction::toggled, this, [ = ]( bool checked )
-  {
+  connect( mActionIncludeHeader, &QAction::toggled, this, [=]( bool checked ) {
     mTableWidget->setIncludeTableHeader( checked );
     emit includeHeaderChanged( checked );
   } );
@@ -194,14 +189,14 @@ void QgsTableEditorDialog::setTable( QgsLayoutItemManualTable *table )
   setTableContents( table->tableContents() );
 
   int row = 0;
-  const QList< double > rowHeights = table->rowHeights();
+  const QList<double> rowHeights = table->rowHeights();
   for ( const double height : rowHeights )
   {
     setTableRowHeight( row, height );
     row++;
   }
   int col = 0;
-  const QList< double > columnWidths = table->columnWidths();
+  const QList<double> columnWidths = table->columnWidths();
   QVariantList headers;
   headers.reserve( columnWidths.size() );
   for ( const double width : columnWidths )
@@ -214,14 +209,12 @@ void QgsTableEditorDialog::setTable( QgsLayoutItemManualTable *table )
 }
 
 
-
 bool QgsTableEditorDialog::setTableContentsFromClipboard()
 {
   if ( QApplication::clipboard()->text().isEmpty() )
     return false;
 
-  if ( QMessageBox::question( this, tr( "Import Content From Clipboard" ),
-                              tr( "Importing content from clipboard will overwrite current table content. Are you sure?" ) ) != QMessageBox::Yes )
+  if ( QMessageBox::question( this, tr( "Import Content From Clipboard" ), tr( "Importing content from clipboard will overwrite current table content. Are you sure?" ) ) != QMessageBox::Yes )
     return false;
 
   QgsTableContents contents;

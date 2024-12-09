@@ -20,7 +20,6 @@ map canvas.
 #include "qgsmapcanvasitem.h"
 %End
   protected:
-
     QgsMapCanvasItem( QgsMapCanvas *mapCanvas /TransferThis/ );
 %Docstring
 protected constructor: cannot be constructed directly
@@ -33,9 +32,8 @@ protected constructor: cannot be constructed directly
 function to be implemented by derived classes
 %End
 
-     virtual void paint( QPainter *painter,
-                const QStyleOptionGraphicsItem *option,
-                QWidget *widget = 0 );
+    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+
 
     void updateCanvas();
 %Docstring
@@ -53,7 +51,6 @@ Sets render context parameters
 %End
 
   public:
-
     virtual void updatePosition();
 %Docstring
 called on changed extent or resize event to update position of the item
@@ -83,8 +80,6 @@ transformation from map coordinates to screen coordinates
 %End
 
   protected:
-
-
 
 
 

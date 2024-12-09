@@ -27,21 +27,16 @@ void QgsPointsInPolygonAlgorithm::initParameters( const QVariantMap &configurati
 {
   mIsInPlace = configuration.value( QStringLiteral( "IN_PLACE" ) ).toBool();
 
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "POINTS" ),
-                QObject::tr( "Points" ), QList< int > () << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "WEIGHT" ),
-                QObject::tr( "Weight field" ), QVariant(), QStringLiteral( "POINTS" ), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "CLASSFIELD" ),
-                QObject::tr( "Class field" ), QVariant(), QStringLiteral( "POINTS" ), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "POINTS" ), QObject::tr( "Points" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "WEIGHT" ), QObject::tr( "Weight field" ), QVariant(), QStringLiteral( "POINTS" ), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "CLASSFIELD" ), QObject::tr( "Class field" ), QVariant(), QStringLiteral( "POINTS" ), Qgis::ProcessingFieldParameterDataType::Any, false, true ) );
   if ( mIsInPlace )
   {
-    addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ),
-                  QObject::tr( "Count field" ), QStringLiteral( "NUMPOINTS" ), inputParameterName() ) );
+    addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Count field" ), QStringLiteral( "NUMPOINTS" ), inputParameterName() ) );
   }
   else
   {
-    addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD" ),
-                  QObject::tr( "Count field name" ), QStringLiteral( "NUMPOINTS" ) ) );
+    addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD" ), QObject::tr( "Count field name" ), QStringLiteral( "NUMPOINTS" ) ) );
   }
 }
 
@@ -108,7 +103,7 @@ QgsPointsInPolygonAlgorithm *QgsPointsInPolygonAlgorithm::createInstance() const
 
 QList<int> QgsPointsInPolygonAlgorithm::inputLayerTypes() const
 {
-  return QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 Qgis::ProcessingSourceType QgsPointsInPolygonAlgorithm::outputLayerType() const
@@ -179,16 +174,16 @@ QgsFeatureList QgsPointsInPolygonAlgorithm::processFeature( const QgsFeature &fe
     else
       attrs[mDestFieldIndex] = 0;
     outputFeature.setAttributes( attrs );
-    return QList< QgsFeature > () << outputFeature;
+    return QList<QgsFeature>() << outputFeature;
   }
   else
   {
     const QgsGeometry polyGeom = feature.geometry();
-    std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( polyGeom.constGet() ) );
+    std::unique_ptr<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( polyGeom.constGet() ) );
     engine->prepareGeometry();
 
     double count = 0;
-    QSet< QVariant> classes;
+    QSet<QVariant> classes;
 
     QgsFeatureRequest req = QgsFeatureRequest().setFilterRect( polyGeom.boundingBox() ).setDestinationCrs( mCrs, context.transformContext() );
     req.setSubsetOfAttributes( mPointAttributes );
@@ -239,7 +234,7 @@ QgsFeatureList QgsPointsInPolygonAlgorithm::processFeature( const QgsFeature &fe
       attrs[mDestFieldIndex] = score;
 
     outputFeature.setAttributes( attrs );
-    return QList< QgsFeature >() << outputFeature;
+    return QList<QgsFeature>() << outputFeature;
   }
 }
 
@@ -264,7 +259,7 @@ QgsFields QgsPointsInPolygonAlgorithm::outputFields( const QgsFields &inputField
 
 bool QgsPointsInPolygonAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
-  if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
+  if ( const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer ) )
   {
     return vl->geometryType() == Qgis::GeometryType::Polygon;
   }
@@ -273,6 +268,3 @@ bool QgsPointsInPolygonAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer )
 
 
 ///@endcond
-
-
-

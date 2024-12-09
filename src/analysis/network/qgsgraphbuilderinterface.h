@@ -26,9 +26,9 @@
 class QgsPoint;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 #include <qgsgraphbuilder.h>
-% End
+//%End
 #endif
 
 /**
@@ -39,10 +39,9 @@ class QgsPoint;
 */
 class ANALYSIS_EXPORT QgsGraphBuilderInterface
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast< QgsGraphBuilder * >( sipCpp ) != NULL )
+    if ( dynamic_cast<QgsGraphBuilder *>( sipCpp ) != NULL )
       sipType = sipType_QgsGraphBuilder;
     else
       sipType = NULL;
@@ -50,7 +49,6 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
 #endif
 
   public:
-
     /**
      * Default constructor
      * \param crs Coordinate reference system for new graph vertex
@@ -58,8 +56,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
      * \param topologyTolerance sqrt distance between source point as one graph vertex
      * \param ellipsoidID ellipsoid for edge measurement
      */
-    QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem &crs, bool ctfEnabled = true,
-                              double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" );
+    QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem &crs, bool ctfEnabled = true, double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" );
 
     virtual ~QgsGraphBuilderInterface() = default;
 
@@ -104,7 +101,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
      * \param strategies optimization strategies
      * \note pt1id, pt1 and pt2id, pt2 is a redundant interface. You can use vertex coordinates or their identificators.
      */
-    virtual void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector< QVariant > &strategies );
+    virtual void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector<QVariant> &strategies );
 
   private:
     QgsCoordinateReferenceSystem mCrs;
@@ -114,7 +111,6 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
     bool mCtfEnabled;
 
     double mTopologyTolerance;
-
 };
 
 // clazy:excludeall=qstring-allocations

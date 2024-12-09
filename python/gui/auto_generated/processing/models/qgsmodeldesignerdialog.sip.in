@@ -28,7 +28,6 @@ Model designer dialog base class
 #include "qgsmodeldesignerdialog.h"
 %End
   public:
-
     QgsModelDesignerDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
     ~QgsModelDesignerDialog();
 
@@ -84,7 +83,6 @@ Raise, unminimize and activate this window.
 
   protected:
 
-
     virtual void repaintModel( bool showControls = true ) = 0;
     virtual void addAlgorithm( const QString &algorithmId, const QPointF &pos ) = 0;
 
@@ -134,7 +132,6 @@ Updates both the name text edit and the model name itself.
 };
 
 
-
 class QgsModelChildDependenciesWidget : QWidget
 {
 
@@ -142,10 +139,9 @@ class QgsModelChildDependenciesWidget : QWidget
 #include "qgsmodeldesignerdialog.h"
 %End
   public:
-
     QgsModelChildDependenciesWidget( QWidget *parent, QgsProcessingModelAlgorithm *model, const QString &childId );
-    QList< QgsProcessingModelChildDependency > value() const;
-    void setValue( const QList< QgsProcessingModelChildDependency >  &value );
+    QList<QgsProcessingModelChildDependency> value() const;
+    void setValue( const QList<QgsProcessingModelChildDependency> &value );
 };
 
 /************************************************************************

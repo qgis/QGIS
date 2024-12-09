@@ -22,5 +22,5 @@ try:
     QgsRenderChecker.shouldGenerateReport = staticmethod(QgsRenderChecker.shouldGenerateReport)
     QgsRenderChecker.drawBackground = staticmethod(QgsRenderChecker.drawBackground)
     QgsRenderChecker.sourcePath = staticmethod(QgsRenderChecker.sourcePath)
-except NameError:
+except (NameError, AttributeError):
     pass

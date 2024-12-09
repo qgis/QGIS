@@ -292,7 +292,7 @@ Sets the capabilities for the data item.
 
 .. deprecated:: 3.40
 
-   Use setCapabilitiesV2 instead.
+   Use :py:func:`~QgsDataItem.setCapabilitiesV2` instead.
 %End
 
 

@@ -58,11 +58,9 @@ QgsRasterStatisticsAlgorithm *QgsRasterStatisticsAlgorithm::createInstance() con
 void QgsRasterStatisticsAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ),
-                QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT" ) ) );
+  addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT" ) ) );
 
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_HTML_FILE" ), QObject::tr( "Statistics" ),
-                QObject::tr( "HTML files (*.html *.HTML)" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_HTML_FILE" ), QObject::tr( "Statistics" ), QObject::tr( "HTML files (*.html *.HTML)" ), QVariant(), true ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "COUNT" ), QObject::tr( "Count of non-NoData pixels" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MIN" ), QObject::tr( "Minimum value" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MAX" ), QObject::tr( "Maximum value" ) ) );
@@ -82,8 +80,7 @@ QVariantMap QgsRasterStatisticsAlgorithm::processAlgorithm( const QVariantMap &p
 
   const int band = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
   if ( band < 1 || band > layer->bandCount() )
-    throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( band )
-                                  .arg( layer->bandCount() ) );
+    throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( band ).arg( layer->bandCount() ) );
 
   const QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT_HTML_FILE" ), context );
 
@@ -105,7 +102,7 @@ QVariantMap QgsRasterStatisticsAlgorithm::processAlgorithm( const QVariantMap &p
     if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
       QTextStream out( &file );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
       out.setCodec( "UTF-8" );
 #endif
       out << QStringLiteral( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );

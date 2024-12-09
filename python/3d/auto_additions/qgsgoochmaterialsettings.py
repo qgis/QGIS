@@ -3,5 +3,5 @@ try:
     QgsGoochMaterialSettings.create = staticmethod(QgsGoochMaterialSettings.create)
     QgsGoochMaterialSettings.supportsTechnique = staticmethod(QgsGoochMaterialSettings.supportsTechnique)
     QgsGoochMaterialSettings.__group__ = ['materials']
-except NameError:
+except (NameError, AttributeError):
     pass

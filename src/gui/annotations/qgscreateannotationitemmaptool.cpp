@@ -35,7 +35,7 @@ QgsCreateAnnotationItemMapToolHandler::~QgsCreateAnnotationItemMapToolHandler() 
 
 QgsAnnotationLayer *QgsCreateAnnotationItemMapToolHandler::targetLayer()
 {
-  if ( QgsAnnotationLayer *res = qobject_cast< QgsAnnotationLayer * >( mMapCanvas->currentLayer() ) )
+  if ( QgsAnnotationLayer *res = qobject_cast<QgsAnnotationLayer *>( mMapCanvas->currentLayer() ) )
     return res;
   else
     return QgsProject::instance()->mainAnnotationLayer();

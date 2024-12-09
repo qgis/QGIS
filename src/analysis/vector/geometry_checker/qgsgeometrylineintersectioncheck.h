@@ -31,7 +31,7 @@ class ANALYSIS_EXPORT QgsGeometryLineIntersectionCheck : public QgsGeometryCheck
     QgsGeometryLineIntersectionCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
       : QgsGeometryCheck( context, configuration )
     {}
-    static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() {return {Qgis::GeometryType::Line}; }
+    static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() { return { Qgis::GeometryType::Line }; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
@@ -44,7 +44,10 @@ class ANALYSIS_EXPORT QgsGeometryLineIntersectionCheck : public QgsGeometryCheck
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 
-    enum ResolutionMethod { NoChange };
+    enum ResolutionMethod
+    {
+      NoChange
+    };
 };
 
 #endif // QGSGEOMETRYLINEINTERSECTIONCHECK_H

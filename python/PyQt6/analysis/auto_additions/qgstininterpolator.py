@@ -4,5 +4,5 @@ QgsTinInterpolator.CloughTocher = QgsTinInterpolator.TinInterpolation.CloughToch
 try:
     QgsTinInterpolator.triangulationFields = staticmethod(QgsTinInterpolator.triangulationFields)
     QgsTinInterpolator.__group__ = ['interpolation']
-except NameError:
+except (NameError, AttributeError):
     pass

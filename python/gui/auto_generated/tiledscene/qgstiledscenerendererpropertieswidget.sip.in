@@ -22,7 +22,6 @@ A generic widget for setting the 2D renderer for a tiled scene layer.
 #include "qgstiledscenerendererpropertieswidget.h"
 %End
   public:
-
     QgsTiledSceneRendererPropertiesWidget( QgsTiledSceneLayer *layer, QgsStyle *style, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsTiledSceneRendererPropertiesWidget, associated with the specified ``layer`` and ``style`` database.

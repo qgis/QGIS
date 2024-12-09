@@ -34,7 +34,6 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsGradientStopEditor.
      * \param parent parent widget
@@ -149,7 +148,6 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
     void selectedStopChanged( const QgsGradientStop &stop );
 
   protected:
-
     void mouseMoveEvent( QMouseEvent *event ) override;
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseDoubleClickEvent( QMouseEvent *event ) override;
@@ -162,7 +160,6 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
     void dropEvent( QDropEvent *e ) override;
 
   private:
-
     /**
      * Generates a checkboard pattern pixmap for use as a background to transparent colors
      * \returns checkerboard pixmap
@@ -203,7 +200,6 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
 
     //! Polygon for stop triangle marker inner
     QPolygonF sInnerTriangle;
-
 };
 
 #endif // QGSGRADIENTSTOPEDITOR_H

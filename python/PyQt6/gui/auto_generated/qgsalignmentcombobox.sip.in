@@ -24,7 +24,6 @@ when only a subset of Qt's alignment options should be exposed.
 #include "qgsalignmentcombobox.h"
 %End
   public:
-
     QgsAlignmentComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsAlignmentComboBox, with the specified parent widget.

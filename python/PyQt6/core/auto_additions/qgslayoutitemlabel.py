@@ -4,5 +4,5 @@ QgsLayoutItemLabel.ModeHtml = QgsLayoutItemLabel.Mode.ModeHtml
 try:
     QgsLayoutItemLabel.create = staticmethod(QgsLayoutItemLabel.create)
     QgsLayoutItemLabel.__group__ = ['layout']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -30,48 +30,47 @@
 class GUI_EXPORT QgsCodeEditorColorScheme
 {
   public:
-
     /**
      * Color roles.
      */
     enum class ColorRole
     {
-      Default, //!< Default text color
-      Keyword, //!< Keyword color
-      Class, //!< Class color
-      Method, //!< Method color
-      Decoration, //!< Decoration color
-      Number, //!< Number color
-      Comment, //!< Comment color
-      CommentLine, //!< Line comment color
-      CommentBlock, //!< Comment block color
-      Background, //!< Background color
-      Cursor, //!< Cursor color
-      CaretLine, //!< Caret line color
-      SingleQuote, //!< Single quote color
-      DoubleQuote, //!< Double quote color
-      TripleSingleQuote, //!< Triple single quote color
-      TripleDoubleQuote, //!< Triple double quote color
-      Operator, //!< Operator color
-      QuotedOperator, //!< Quoted operator color
-      Identifier, //!< Identifier color
-      QuotedIdentifier, //!< Quoted identifier color
-      Tag, //!< Tag color
-      UnknownTag, //!< Unknown tag
-      MarginBackground, //!< Margin background color
-      MarginForeground, //!< Margin foreground color
-      SelectionBackground, //!< Selection background color
-      SelectionForeground, //!< Selection foreground color
+      Default,                //!< Default text color
+      Keyword,                //!< Keyword color
+      Class,                  //!< Class color
+      Method,                 //!< Method color
+      Decoration,             //!< Decoration color
+      Number,                 //!< Number color
+      Comment,                //!< Comment color
+      CommentLine,            //!< Line comment color
+      CommentBlock,           //!< Comment block color
+      Background,             //!< Background color
+      Cursor,                 //!< Cursor color
+      CaretLine,              //!< Caret line color
+      SingleQuote,            //!< Single quote color
+      DoubleQuote,            //!< Double quote color
+      TripleSingleQuote,      //!< Triple single quote color
+      TripleDoubleQuote,      //!< Triple double quote color
+      Operator,               //!< Operator color
+      QuotedOperator,         //!< Quoted operator color
+      Identifier,             //!< Identifier color
+      QuotedIdentifier,       //!< Quoted identifier color
+      Tag,                    //!< Tag color
+      UnknownTag,             //!< Unknown tag
+      MarginBackground,       //!< Margin background color
+      MarginForeground,       //!< Margin foreground color
+      SelectionBackground,    //!< Selection background color
+      SelectionForeground,    //!< Selection foreground color
       MatchedBraceBackground, //!< Matched brace background color
       MatchedBraceForeground, //!< Matched brace foreground color
-      Edge, //!< Edge color
-      Fold, //!< Fold color
-      Error, //!< Error color
-      ErrorBackground, //!< Error background color
-      FoldIconForeground, //!< Fold icon foreground color
-      FoldIconHalo, //!< Fold icon halo color
-      IndentationGuide, //!< Indentation guide line
-      SearchMatchBackground, //!< Background color for search matches \since QGIS 3.38
+      Edge,                   //!< Edge color
+      Fold,                   //!< Fold color
+      Error,                  //!< Error color
+      ErrorBackground,        //!< Error background color
+      FoldIconForeground,     //!< Fold icon foreground color
+      FoldIconHalo,           //!< Fold icon halo color
+      IndentationGuide,       //!< Indentation guide line
+      SearchMatchBackground,  //!< Background color for search matches \since QGIS 3.38
     };
 
     /**
@@ -113,13 +112,12 @@ class GUI_EXPORT QgsCodeEditorColorScheme
      *
      * \note Not available in Python bindings.
      */
-    void setColors( const QMap< ColorRole, QColor > &colors ) SIP_SKIP;
+    void setColors( const QMap<ColorRole, QColor> &colors ) SIP_SKIP;
 
   private:
-
     QString mId;
     QString mThemeName;
-    QMap< ColorRole, QColor > mColors;
+    QMap<ColorRole, QColor> mColors;
 };
 
 #endif // QGSCODEEDITORCOLORSCHEME_H
