@@ -185,7 +185,7 @@ class VectorLayerScatterplot(QgisAlgorithm):
         hoverexpression = self.parameterAsExpression(
             parameters, self.HOVERTEXT, context
         )
-        if hoverexpression.strip() != "":
+        if hoverexpression.strip():
             exp_context = QgsExpressionContext()
             vlayer = QgsProcessingUtils.mapLayerFromString(
                 parameters[self.INPUT], context
