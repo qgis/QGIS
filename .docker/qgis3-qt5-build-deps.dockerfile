@@ -1,5 +1,5 @@
 
-ARG DISTRO_VERSION=22.04
+ARG DISTRO_VERSION=24.04
 
 # Oracle Docker image is too large, so we add as less dependencies as possible
 # so there is enough space on GitHub runner
@@ -14,6 +14,7 @@ LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Ve
 
 RUN  apt-get update \
   && apt-get install -y software-properties-common \
+  && add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable \
   && apt-get update \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     apt-transport-https \
@@ -27,16 +28,16 @@ RUN  apt-get update \
     gnupg \
     gpsbabel \
     graphviz \
-    libaio1 \
-    libdraco4 \
+    'libaio1|libaio1t64' \
+    'libdraco4|libdraco8' \
     libexiv2-27 \
-    libfcgi0ldbl \
+    'libfcgi0ldbl|libfcgi0t64' \
     libgsl27 \
-    'libprotobuf-lite17|libprotobuf-lite23' \
+    'libprotobuf-lite17|libprotobuf-lite23|libprotobuf-lite32t64' \
     libqca-qt5-2-plugins \
     libqt53dextras5 \
     libqt53drender5 \
-    libqt5concurrent5 \
+    'libqt5concurrent5|libqt5concurrent5t64' \
     libqt5keychain1 \
     libqt5positioning5 \
     libqt5multimedia5 \
@@ -48,12 +49,12 @@ RUN  apt-get update \
     libqt5serialport5 \
     libqt5sql5-odbc \
     libqt5sql5-sqlite \
-    libqt5xml5 \
+    'libqt5xml5|libqt5xml5t64' \
     libqt5webkit5 \
     libqwt-qt5-6 \
     libspatialindex6 \
     libsqlite3-mod-spatialite \
-    'libzip4|libzip5' \
+    'libzip4|libzip5|libzip4t64' \
     lighttpd \
     locales \
     pdal \
@@ -62,6 +63,7 @@ RUN  apt-get update \
     python3-gdal \
     python3-mock \
     python3-nose2 \
+    python3-numpy \
     python3-owslib \
     python3-pip \
     python3-psycopg2 \
@@ -93,7 +95,7 @@ RUN  apt-get update \
     xfonts-scalable \
     xvfb \
     ocl-icd-libopencl1 \
-  && pip3 install \
+  && pip3 install --break-system-packages \
     numpy \
     nose2 \
     pyyaml \
@@ -148,7 +150,7 @@ RUN  apt-get update \
     iproute2 \
     postgresql-client \
     spawn-fcgi \
-  && pip3 install \
+  && pip3 install --break-system-packages \
     psycopg2 \
   && apt-get clean
 
