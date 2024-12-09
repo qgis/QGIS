@@ -18,7 +18,7 @@ from qgis.PyQt.QtCore import (
     Qt,
     QTemporaryDir,
     QTemporaryFile,
-    QT_VERSION
+    QT_VERSION,
 )
 from qgis.PyQt.QtGui import QColor, QColorSpace, QFont
 from qgis.PyQt.QtTest import QSignalSpy
@@ -890,7 +890,9 @@ class TestQgsProjectViewSettings(QgisTestCase):
             [unitTestDataPath() + "/style1.db", unitTestDataPath() + "/style2.db"],
         )
 
-    @unittest.skipIf(QT_VERSION < 0x060800, "CMYK support was not complete before Qt 6.8.0")
+    @unittest.skipIf(
+        QT_VERSION < 0x060800, "CMYK support was not complete before Qt 6.8.0"
+    )
     def testColorSettings(self):
         """
         Test ICC profile attachment
@@ -933,7 +935,9 @@ class TestQgsProjectViewSettings(QgisTestCase):
         self.assertTrue(project.isDirty())
         self.assertEqual(settings.colorModel(), Qgis.ColorModel.Cmyk)
         self.assertTrue(settings.colorSpace().isValid())
-        self.assertEqual(settings.colorSpace().primaries(), QColorSpace.Primaries.Custom)
+        self.assertEqual(
+            settings.colorSpace().primaries(), QColorSpace.Primaries.Custom
+        )
         self.assertEqual(len(project.attachedFiles()), 2)
 
         # save and restore
@@ -948,7 +952,9 @@ class TestQgsProjectViewSettings(QgisTestCase):
         settings = project.styleSettings()
         self.assertEqual(settings.colorModel(), Qgis.ColorModel.Cmyk)
         self.assertTrue(settings.colorSpace().isValid())
-        self.assertEqual(settings.colorSpace().primaries(), QColorSpace.Primaries.Custom)
+        self.assertEqual(
+            settings.colorSpace().primaries(), QColorSpace.Primaries.Custom
+        )
         self.assertEqual(len(project.attachedFiles()), 2)
 
         # clear color space
