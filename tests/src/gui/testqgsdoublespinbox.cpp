@@ -18,6 +18,8 @@
 
 #include <editorwidgets/qgsdoublespinbox.h>
 
+#include <QSignalSpy>
+
 class TestQgsDoubleSpinBox : public QObject
 {
     Q_OBJECT
@@ -30,6 +32,7 @@ class TestQgsDoubleSpinBox : public QObject
     void clear();
     void expression();
     void step();
+    void editingTimeout();
 
   private:
 };
@@ -204,6 +207,42 @@ void TestQgsDoubleSpinBox::step()
   QCOMPARE( spin.value(), -1000 );
   spin.stepBy( -1 );
   QCOMPARE( spin.value(), -1000 );
+}
+
+void TestQgsDoubleSpinBox::editingTimeout()
+{
+  QgsDoubleSpinBox spin;
+  spin.setMinimum( -1000 );
+  spin.setMaximum( 1000 );
+  spin.setSingleStep( 1 );
+  spin.setFocus();
+
+  QSignalSpy spy( &spin, &QgsDoubleSpinBox::editingTimeout );
+  spin.selectAll();
+  QTest::keyClicks( &spin, QStringLiteral( "3" ) );
+  QTest::qWait( 500 );
+  // too short, should not be signal
+  QCOMPARE( spy.count(), 0 );
+  QTest::qWait( 2000 );
+  // long enough, signal should have been emitted
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).toInt(), 3 );
+
+  QTest::keyClicks( &spin, QStringLiteral( "2" ) );
+  QCOMPARE( spy.count(), 1 );
+  QTest::qWait( 2500 );
+  // long enough, signal should have been emitted
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).toInt(), 32 );
+
+  // no signal if value not changed
+  QTest::keyClicks( &spin, QStringLiteral( "4" ) );
+  QTest::qWait( 500 );
+  QCOMPARE( spy.count(), 2 );
+  QTest::keyPress( &spin, Qt::Key_Backspace );
+  QTest::qWait( 2500 );
+  // no signal, value did not change
+  QCOMPARE( spy.count(), 2 );
 }
 
 QGSTEST_MAIN( TestQgsDoubleSpinBox )

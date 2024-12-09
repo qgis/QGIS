@@ -17,6 +17,7 @@
 #include <QMouseEvent>
 #include <QSettings>
 #include <QStyle>
+#include <QTimer>
 
 #include "qgsdoublespinbox.h"
 #include "moc_qgsdoublespinbox.cpp"
@@ -51,6 +52,11 @@ QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
 
   connect( mLineEdit, &QgsFilterLineEdit::cleared, this, &QgsDoubleSpinBox::clear );
   connect( this, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsDoubleSpinBox::changed );
+
+  mLastEditTimer = new QTimer( this );
+  mLastEditTimer->setSingleShot( true );
+  mLastEditTimer->setInterval( 2000 );
+  connect( mLastEditTimer, &QTimer::timeout, this, &QgsDoubleSpinBox::onLastEditTimeout );
 }
 
 void QgsDoubleSpinBox::setShowClearButton( const bool showClearButton )
@@ -98,6 +104,12 @@ void QgsDoubleSpinBox::wheelEvent( QWheelEvent *event )
   setSingleStep( step );
 }
 
+void QgsDoubleSpinBox::focusOutEvent( QFocusEvent *event )
+{
+  QDoubleSpinBox::focusOutEvent( event );
+  onLastEditTimeout();
+}
+
 void QgsDoubleSpinBox::timerEvent( QTimerEvent *event )
 {
   // Process all events, which may include a mouse release event
@@ -132,6 +144,18 @@ void QgsDoubleSpinBox::stepBy( int steps )
 void QgsDoubleSpinBox::changed( double value )
 {
   mLineEdit->setShowClearButton( shouldShowClearForValue( value ) );
+  mLastEditTimer->start();
+}
+
+void QgsDoubleSpinBox::onLastEditTimeout()
+{
+  mLastEditTimer->stop();
+  const double currentValue = value();
+  if ( std::isnan( mLastEditTimeoutValue ) || mLastEditTimeoutValue != currentValue )
+  {
+    mLastEditTimeoutValue = currentValue;
+    emit editingTimeout( mLastEditTimeoutValue );
+  }
 }
 
 void QgsDoubleSpinBox::clear()

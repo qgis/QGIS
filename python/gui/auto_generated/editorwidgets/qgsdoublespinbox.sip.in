@@ -163,10 +163,25 @@ Emitted when the the value has been manually edited via line edit.
 .. versionadded:: 3.40
 %End
 
+    void editingTimeout( double value );
+%Docstring
+Emitted when either:
+
+1. 2 seconds has elapsed since the last value change in the widget (eg last key press or scroll wheel event)
+2. or, immediately after the widget has lost focus after its value was changed.
+
+This signal can be used to respond semi-instantly to changes in the spin box, without responding too quickly
+while the user in the middle of setting the value.
+
+.. versionadded:: 3.42
+%End
+
   protected:
     virtual void changeEvent( QEvent *event );
 
     virtual void wheelEvent( QWheelEvent *event );
+
+    virtual void focusOutEvent( QFocusEvent *event );
 
     virtual void timerEvent( QTimerEvent *event );
 
