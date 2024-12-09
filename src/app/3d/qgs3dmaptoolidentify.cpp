@@ -172,7 +172,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       QgsDebugError( QStringLiteral( "Could not transform identified coordinates to project crs: %1" ).arg( e.what() ) );
     }
 
-    identifyTool2D->identifyAndShowResults( QgsGeometry::fromPointXY( mapPointCanvas2D ), searchRadiusCanvas2D );
+    identifyTool2D->identifyAndShowResults( QgsGeometry::fromPointXY( mapPointCanvas2D ), searchRadiusCanvas2D, true );
   }
 
   // We need to show other layer type results AFTER terrain results so they don't get overwritten

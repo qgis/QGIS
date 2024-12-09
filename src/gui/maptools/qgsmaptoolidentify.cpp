@@ -189,14 +189,16 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( const Qg
   return results;
 }
 
-void QgsMapToolIdentify::setCanvasPropertiesOverrides( double searchRadiusMapUnits )
+void QgsMapToolIdentify::setCanvasPropertiesOverrides( double searchRadiusMapUnits, bool skip3DLayers )
 {
   mOverrideCanvasSearchRadius = searchRadiusMapUnits;
+  mSkip3DLayers = skip3DLayers;
 }
 
 void QgsMapToolIdentify::restoreCanvasPropertiesOverrides()
 {
   mOverrideCanvasSearchRadius = -1;
+  mSkip3DLayers = false;
 }
 
 void QgsMapToolIdentify::activate()
@@ -278,6 +280,9 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
 {
   QgsDebugMsgLevel( "point = " + point.toString(), 4 );
   if ( !layer )
+    return false;
+
+  if ( mSkip3DLayers && layer->renderer3D() )
     return false;
 
   if ( !identifyContext.zRange().isInfinite() )
@@ -540,6 +545,9 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
 
 bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsPointCloudLayer *layer, const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext )
 {
+  if ( mSkip3DLayers && layer->renderer3D() )
+    return false;
+
   if ( !identifyContext.zRange().isInfinite() )
   {
     if ( !layer->elevationProperties()->isVisibleInZRange( identifyContext.zRange(), layer ) )
@@ -580,6 +588,9 @@ QMap<QString, QString> QgsMapToolIdentify::derivedAttributesForPoint( const QgsP
 bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext )
 {
   if ( !layer || !layer->isSpatial() || !layer->dataProvider() )
+    return false;
+
+  if ( mSkip3DLayers && layer->renderer3D() )
     return false;
 
   if ( !layer->isInScaleRange( mCanvas->mapSettings().scale() ) )
