@@ -345,7 +345,7 @@ QString QgsOpenClUtils::deviceId( const cl::Device device )
 static void emitLogMessageForSEHException( int exceptionCode )
 {
   QgsMessageLog::logMessage( QObject::tr( "Unexpected exception of code %1 occurred while searching for OpenCL device. Note that the application may become unreliable and may need to be restarted." ).arg( exceptionCode ),
-                             LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
+                             QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
 }
 #endif
 
