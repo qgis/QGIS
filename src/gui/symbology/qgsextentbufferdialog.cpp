@@ -35,21 +35,14 @@ QgsExtentBufferWidget::QgsExtentBufferWidget( QgsSymbol *symbol, QgsVectorLayer 
   mExtentBufferSpinBox->setValue( mSymbol->extentBuffer() );
 
   mExtentBufferUnitSelectionWidget->setShowMapScaleButton( false );
-  mExtentBufferUnitSelectionWidget->setUnits( { Qgis::RenderUnit::Millimeters,
-      Qgis::RenderUnit::MetersInMapUnits,
-      Qgis::RenderUnit::MapUnits,
-      Qgis::RenderUnit::Pixels,
-      Qgis::RenderUnit::Points,
-      Qgis::RenderUnit::Inches } );
+  mExtentBufferUnitSelectionWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
   mExtentBufferUnitSelectionWidget->setUnit( mSymbol->extentBufferSizeUnit() );
 
-  connect( mExtentBufferSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]()
-  {
+  connect( mExtentBufferSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [=]() {
     emit widgetChanged();
   } );
 
-  connect( mExtentBufferUnitSelectionWidget, &QgsUnitSelectionWidget::changed, this, [ = ]()
-  {
+  connect( mExtentBufferUnitSelectionWidget, &QgsUnitSelectionWidget::changed, this, [=]() {
     emit widgetChanged();
   } );
 
@@ -70,9 +63,8 @@ void QgsExtentBufferWidget::registerDataDefinedButton( QgsPropertyOverrideButton
 {
   // pass in nullptr to avoid id, feature and geometry variables being added
   // since the buffer is not evaluated per-feature
-  button->init( static_cast< int >( key ), mSymbol->dataDefinedProperties(), QgsSymbol::propertyDefinitions(), nullptr );
-  connect( button, &QgsPropertyOverrideButton::changed, this, [ = ]()
-  {
+  button->init( static_cast<int>( key ), mSymbol->dataDefinedProperties(), QgsSymbol::propertyDefinitions(), nullptr );
+  connect( button, &QgsPropertyOverrideButton::changed, this, [=]() {
     emit widgetChanged();
   } );
 
@@ -182,4 +174,3 @@ void QgsExtentBufferDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#extent-buffer" ) );
 }
-

@@ -38,7 +38,6 @@ class GUI_EXPORT QgsExtentBufferWidget : public QgsPanelWidget, public QgsExpres
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsExtentBufferWidget
      */
@@ -102,7 +101,6 @@ class GUI_EXPORT QgsExtentBufferDialog : public QDialog
 {
     Q_OBJECT
   public:
-
     //! Constructor for QgsExtentBufferDialog.
     QgsExtentBufferDialog( QgsSymbol *symbol, QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -146,7 +144,6 @@ class GUI_EXPORT QgsExtentBufferDialog : public QDialog
   private slots:
 
     void showHelp();
-
 };
 
 #endif // QGSEXTENTBUFFERDIALOG_H
