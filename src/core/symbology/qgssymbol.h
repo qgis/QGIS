@@ -892,6 +892,7 @@ class CORE_EXPORT QgsSymbol
      *
      * \see extentBuffer()
      * \see setExtentBufferSizeUnit()
+     * \since QGIS 3.42
      */
     Qgis::RenderUnit extentBufferSizeUnit() const { return mExtentBufferSizeUnit; }
 
@@ -900,6 +901,7 @@ class CORE_EXPORT QgsSymbol
      *
      * \see setExtentBuffer()
      * \see extentBufferSizeUnit()
+     * \since QGIS 3.42
      */
     void setExtentBufferSizeUnit( Qgis::RenderUnit unit ) { mExtentBufferSizeUnit = unit; }
 

@@ -899,6 +899,8 @@ Returns the units for the buffer size.
 .. seealso:: :py:func:`extentBuffer`
 
 .. seealso:: :py:func:`setExtentBufferSizeUnit`
+
+.. versionadded:: 3.42
 %End
 
     void setExtentBufferSizeUnit( Qgis::RenderUnit unit );
@@ -908,6 +910,8 @@ Sets the ``unit`` used for the extent buffer.
 .. seealso:: :py:func:`setExtentBuffer`
 
 .. seealso:: :py:func:`extentBufferSizeUnit`
+
+.. versionadded:: 3.42
 %End
 
   protected:
