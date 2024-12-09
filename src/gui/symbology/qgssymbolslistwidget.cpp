@@ -307,8 +307,7 @@ void QgsSymbolsListWidget::showExtentBufferSettings()
     widget->setPanelTitle( tr( "Extent Buffer" ) );
     widget->setContext( mContext );
 
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ]()
-    {
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [=]() {
       mSymbol->setExtentBuffer( widget->extentBuffer() );
       mSymbol->setDataDefinedProperty( QgsSymbol::Property::ExtentBuffer, widget->dataDefinedProperty() );
       mSymbol->setExtentBufferSizeUnit( widget->sizeUnit() );
@@ -317,7 +316,6 @@ void QgsSymbolsListWidget::showExtentBufferSettings()
     } );
 
     panel->openPanel( widget );
-
   }
   else
   {
