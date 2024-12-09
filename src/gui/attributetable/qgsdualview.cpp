@@ -48,7 +48,7 @@
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsactionmenu.h"
 
-const std::unique_ptr<QgsSettingsEntryVariant> QgsDualView::conditionnalFormattingSplitterState = std::make_unique<QgsSettingsEntryVariant>( QStringLiteral( "attribute-table-splitter-state" ), QgsSettingsTree::sTreeGui, QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray ), QStringLiteral( "State of conditionnal formatting splitter's layout so it could be restored when opening attribute table view." ) );
+const std::unique_ptr<QgsSettingsEntryVariant> QgsDualView::conditionalFormattingSplitterState = std::make_unique<QgsSettingsEntryVariant>( QStringLiteral( "attribute-table-splitter-state" ), QgsSettingsTree::sTreeGui, QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray ), QStringLiteral( "State of conditionnal formatting splitter's layout so it could be restored when opening attribute table view." ) );
 const std::unique_ptr<QgsSettingsEntryVariant> QgsDualView::attributeEditorSplitterState = std::make_unique<QgsSettingsEntryVariant>( QStringLiteral( "attribute-editor-splitter-state" ), QgsSettingsTree::sTreeGui, QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray ), QStringLiteral( "State of attribute editor splitter's layout so it could be restored when opening attribute editor view." ) );
 
 QgsDualView::QgsDualView( QWidget *parent )
@@ -72,8 +72,8 @@ QgsDualView::QgsDualView( QWidget *parent )
 
   const QgsSettings settings;
   // copy old setting
-  conditionnalFormattingSplitterState->copyValueFromKey( QStringLiteral( "/qgis/attributeTable/splitterState" ), true );
-  mConditionalSplitter->restoreState( conditionnalFormattingSplitterState->value().toByteArray() );
+  conditionalFormattingSplitterState->copyValueFromKey( QStringLiteral( "/qgis/attributeTable/splitterState" ), true );
+  mConditionalSplitter->restoreState( conditionalFormattingSplitterState->value().toByteArray() );
   mAttributeEditorViewSplitter->restoreState( attributeEditorSplitterState->value().toByteArray() );
 
   mPreviewColumnsMenu = new QMenu( this );
@@ -824,7 +824,7 @@ void QgsDualView::hideEvent( QHideEvent *event )
   // a new QgsDualView is created at project loading and we restore the old settings before saving the
   // new one.
   // And also, we override close event to just hide in QgsDockableWidgetHelper::eventFilter, that's why hideEvent
-  conditionnalFormattingSplitterState->setValue( mConditionalSplitter->saveState() );
+  conditionalFormattingSplitterState->setValue( mConditionalSplitter->saveState() );
   attributeEditorSplitterState->setValue( mAttributeEditorViewSplitter->saveState() );
 }
 
