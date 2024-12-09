@@ -284,12 +284,12 @@ class QgsWmsProvider final : public QgsRasterDataProvider
       mProviderResamplingEnabled = enable;
       return true;
     }
-    bool setZoomedInResamplingMethod( ResamplingMethod method ) override
+    bool setZoomedInResamplingMethod( Qgis::RasterResamplingMethod method ) override
     {
       mZoomedInResamplingMethod = method;
       return true;
     }
-    bool setZoomedOutResamplingMethod( ResamplingMethod method ) override
+    bool setZoomedOutResamplingMethod( Qgis::RasterResamplingMethod method ) override
     {
       mZoomedOutResamplingMethod = method;
       return true;

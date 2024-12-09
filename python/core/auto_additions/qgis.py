@@ -2686,20 +2686,66 @@ QgsRasterPipe.ResamplingStage = Qgis.RasterResamplingStage
 # monkey patching scoped based enum
 QgsRasterPipe.ResampleFilter = Qgis.RasterResamplingStage.ResampleFilter
 QgsRasterPipe.ResampleFilter.is_monkey_patched = True
-QgsRasterPipe.ResampleFilter.__doc__ = ""
+QgsRasterPipe.ResampleFilter.__doc__ = "Resampling occurs in ResamplingFilter"
 QgsRasterPipe.Provider = Qgis.RasterResamplingStage.Provider
 QgsRasterPipe.Provider.is_monkey_patched = True
-QgsRasterPipe.Provider.__doc__ = ""
+QgsRasterPipe.Provider.__doc__ = "Resampling occurs in Provider"
 Qgis.RasterResamplingStage.__doc__ = """Stage at which raster resampling occurs.
 
 .. versionadded:: 3.22
 
-* ``ResampleFilter``: 
-* ``Provider``: 
+* ``ResampleFilter``: Resampling occurs in ResamplingFilter
+* ``Provider``: Resampling occurs in Provider
 
 """
 # --
 Qgis.RasterResamplingStage.baseClass = Qgis
+QgsRasterDataProvider.ResamplingMethod = Qgis.RasterResamplingMethod
+# monkey patching scoped based enum
+QgsRasterDataProvider.Nearest = Qgis.RasterResamplingMethod.Nearest
+QgsRasterDataProvider.Nearest.is_monkey_patched = True
+QgsRasterDataProvider.Nearest.__doc__ = "Nearest-neighbour resampling"
+QgsRasterDataProvider.Bilinear = Qgis.RasterResamplingMethod.Bilinear
+QgsRasterDataProvider.Bilinear.is_monkey_patched = True
+QgsRasterDataProvider.Bilinear.__doc__ = "Bilinear (2x2 kernel) resampling"
+QgsRasterDataProvider.Cubic = Qgis.RasterResamplingMethod.Cubic
+QgsRasterDataProvider.Cubic.is_monkey_patched = True
+QgsRasterDataProvider.Cubic.__doc__ = "Cubic Convolution Approximation (4x4 kernel) resampling"
+QgsRasterDataProvider.CubicSpline = Qgis.RasterResamplingMethod.CubicSpline
+QgsRasterDataProvider.CubicSpline.is_monkey_patched = True
+QgsRasterDataProvider.CubicSpline.__doc__ = "Cubic B-Spline Approximation (4x4 kernel)"
+QgsRasterDataProvider.Lanczos = Qgis.RasterResamplingMethod.Lanczos
+QgsRasterDataProvider.Lanczos.is_monkey_patched = True
+QgsRasterDataProvider.Lanczos.__doc__ = "Lanczos windowed sinc interpolation (6x6 kernel)"
+QgsRasterDataProvider.Average = Qgis.RasterResamplingMethod.Average
+QgsRasterDataProvider.Average.is_monkey_patched = True
+QgsRasterDataProvider.Average.__doc__ = "Average resampling"
+QgsRasterDataProvider.Mode = Qgis.RasterResamplingMethod.Mode
+QgsRasterDataProvider.Mode.is_monkey_patched = True
+QgsRasterDataProvider.Mode.__doc__ = "Mode (selects the value which appears most often of all the sampled points)"
+QgsRasterDataProvider.Gauss = Qgis.RasterResamplingMethod.Gauss
+QgsRasterDataProvider.Gauss.is_monkey_patched = True
+QgsRasterDataProvider.Gauss.__doc__ = "Gauss blurring"
+Qgis.RasterResamplingMethod.__doc__ = """Resampling method for raster provider-level resampling.
+
+.. note::
+
+   Prior to QGIS 3.42 this was available as :py:class:`QgsRasterDataProvider`.ResamplingMethod
+
+.. versionadded:: 3.42
+
+* ``Nearest``: Nearest-neighbour resampling
+* ``Bilinear``: Bilinear (2x2 kernel) resampling
+* ``Cubic``: Cubic Convolution Approximation (4x4 kernel) resampling
+* ``CubicSpline``: Cubic B-Spline Approximation (4x4 kernel)
+* ``Lanczos``: Lanczos windowed sinc interpolation (6x6 kernel)
+* ``Average``: Average resampling
+* ``Mode``: Mode (selects the value which appears most often of all the sampled points)
+* ``Gauss``: Gauss blurring
+
+"""
+# --
+Qgis.RasterResamplingMethod.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.RasterRendererFlag.InternalLayerOpacityHandling.__doc__ = "The renderer internally handles the raster layer's opacity, so the default layer level opacity handling should not be applied."
 Qgis.RasterRendererFlag.UseNoDataForOutOfRangePixels.__doc__ = "Out of range pixels (eg those values outside of the rendered map's z range filter) should be set using additional nodata values instead of additional transparency values \n.. versionadded:: 3.38"

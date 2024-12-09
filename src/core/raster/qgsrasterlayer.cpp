@@ -964,18 +964,18 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
     if ( resampling == QLatin1String( "bilinear" ) )
     {
       resampleFilter->setZoomedInResampler( new QgsBilinearRasterResampler() );
-      mDataProvider->setZoomedInResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Bilinear );
+      mDataProvider->setZoomedInResamplingMethod( Qgis::RasterResamplingMethod::Bilinear );
     }
     else if ( resampling == QLatin1String( "cubic" ) )
     {
       resampleFilter->setZoomedInResampler( new QgsCubicRasterResampler() );
-      mDataProvider->setZoomedInResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Cubic );
+      mDataProvider->setZoomedInResamplingMethod( Qgis::RasterResamplingMethod::Cubic );
     }
     resampling = settings.value( QStringLiteral( "/Raster/defaultZoomedOutResampling" ), QStringLiteral( "nearest neighbour" ) ).toString();
     if ( resampling == QLatin1String( "bilinear" ) )
     {
       resampleFilter->setZoomedOutResampler( new QgsBilinearRasterResampler() );
-      mDataProvider->setZoomedOutResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Bilinear );
+      mDataProvider->setZoomedOutResamplingMethod( Qgis::RasterResamplingMethod::Bilinear );
     }
 
     const double maxOversampling = QgsRasterLayer::settingsRasterDefaultOversampling->value();

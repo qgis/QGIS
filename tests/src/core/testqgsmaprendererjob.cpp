@@ -1080,7 +1080,7 @@ void TestQgsMapRendererJob::testMapShading()
   QVERIFY( rasterLayer->isValid() );
   static_cast<QgsRasterLayerElevationProperties *>( rasterLayer->elevationProperties() )->setEnabled( true );
   rasterLayer->dataProvider()->enableProviderResampling( true );
-  rasterLayer->dataProvider()->setZoomedOutResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Cubic );
+  rasterLayer->dataProvider()->setZoomedOutResamplingMethod( Qgis::RasterResamplingMethod::Cubic );
 
   std::unique_ptr<QgsMeshLayer> meshLayer = std::make_unique<QgsMeshLayer>(
     TEST_DATA_DIR + QStringLiteral( "/mesh/mesh_shading.nc" ),

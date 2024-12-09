@@ -828,10 +828,20 @@ The development version
 
     enum class RasterResamplingStage /BaseType=IntEnum/
       {
-      //! Resampling occurs in ResamplingFilter
       ResampleFilter,
-      //! Resampling occurs in Provider
-      Provider
+      Provider,
+    };
+
+    enum class RasterResamplingMethod /BaseType=IntEnum/
+      {
+      Nearest,
+      Bilinear,
+      Cubic,
+      CubicSpline,
+      Lanczos,
+      Average,
+      Mode,
+      Gauss
     };
 
     enum class RasterRendererFlag /BaseType=IntFlag/

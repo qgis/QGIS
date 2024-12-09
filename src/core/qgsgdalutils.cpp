@@ -636,37 +636,37 @@ GDALDataType QgsGdalUtils::gdalDataTypeFromQgisDataType( Qgis::DataType dataType
   return GDALDataType::GDT_Unknown;
 }
 
-GDALResampleAlg QgsGdalUtils::gdalResamplingAlgorithm( QgsRasterDataProvider::ResamplingMethod method )
+GDALResampleAlg QgsGdalUtils::gdalResamplingAlgorithm( Qgis::RasterResamplingMethod method )
 {
   GDALResampleAlg eResampleAlg = GRA_NearestNeighbour;
   switch ( method )
   {
-    case QgsRasterDataProvider::ResamplingMethod::Nearest:
-    case QgsRasterDataProvider::ResamplingMethod::Gauss: // Gauss not available in GDALResampleAlg
+    case Qgis::RasterResamplingMethod::Nearest:
+    case Qgis::RasterResamplingMethod::Gauss: // Gauss not available in GDALResampleAlg
       eResampleAlg = GRA_NearestNeighbour;
       break;
 
-    case QgsRasterDataProvider::ResamplingMethod::Bilinear:
+    case Qgis::RasterResamplingMethod::Bilinear:
       eResampleAlg = GRA_Bilinear;
       break;
 
-    case QgsRasterDataProvider::ResamplingMethod::Cubic:
+    case Qgis::RasterResamplingMethod::Cubic:
       eResampleAlg = GRA_Cubic;
       break;
 
-    case QgsRasterDataProvider::ResamplingMethod::CubicSpline:
+    case Qgis::RasterResamplingMethod::CubicSpline:
       eResampleAlg = GRA_CubicSpline;
       break;
 
-    case QgsRasterDataProvider::ResamplingMethod::Lanczos:
+    case Qgis::RasterResamplingMethod::Lanczos:
       eResampleAlg = GRA_Lanczos;
       break;
 
-    case QgsRasterDataProvider::ResamplingMethod::Average:
+    case Qgis::RasterResamplingMethod::Average:
       eResampleAlg = GRA_Average;
       break;
 
-    case QgsRasterDataProvider::ResamplingMethod::Mode:
+    case Qgis::RasterResamplingMethod::Mode:
       eResampleAlg = GRA_Mode;
       break;
   }
